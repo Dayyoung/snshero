@@ -15,7 +15,6 @@ import { collection, addDoc, serverTimestamp, initializeApp } from '../lib/fireb
 import { BGM_TRACKS } from '../lib/audioConstants';
 import { useGameSettings } from '../contexts/GameSettingsContext';
 import { CardThumbnailDebugGrid } from '../components/CardThumbnailDebugGrid';
-import { OFFICIAL_COMMUNITY_CHANNELS, getChannelIcon, getChannelPurposeKey, getChannelClickCount, recordChannelClick, isChannelAvailable } from '../content/communityChannels';
 import { getCardSkinThemePromptCount } from '../content/cardSkinThemes';
 import type { LocalAiCapabilityStatus } from '../lib/localAi';
 import { usePerformanceMode } from '../hooks/usePerformanceMode';
@@ -268,9 +267,6 @@ export const SettingView: React.FC<SettingViewProps> = ({
   }, [showHelp]);
 
   const [helpSlide, setHelpSlide] = useState(0);
-  const [channelClickCounts, setChannelClickCounts] = useState<Record<string, number>>(() =>
-    Object.fromEntries(OFFICIAL_COMMUNITY_CHANNELS.map((channel) => [channel.id, getChannelClickCount(channel.id)]))
-  );
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -288,40 +284,6 @@ export const SettingView: React.FC<SettingViewProps> = ({
   }, []);
 
   const canAccessThumbnailDiagnostics = testMode || isAdminAuthenticated;
-
-  const pushChannelFeedback = (message: string) => {
-    setSystemNotice(message);
-    window.setTimeout(() => {
-      setSystemNotice((current) => (current === message ? null : current));
-    }, 1800);
-  };
-
-  const markChannelClick = (channelId: string) => {
-    recordChannelClick(channelId);
-    setChannelClickCounts((prev) => ({
-      ...prev,
-      [channelId]: getChannelClickCount(channelId),
-    }));
-  };
-
-  const handleOpenChannel = (channel: (typeof OFFICIAL_COMMUNITY_CHANNELS)[number]) => {
-    if (!isChannelAvailable(channel) || !channel.url) return;
-    markChannelClick(channel.id);
-    window.open(channel.url, '_blank', 'noopener,noreferrer');
-    pushChannelFeedback(t('official_channels_click_tracked', language));
-  };
-
-  const handleCopyChannelLink = async (channel: (typeof OFFICIAL_COMMUNITY_CHANNELS)[number]) => {
-    if (!isChannelAvailable(channel) || !channel.url || !navigator.clipboard) return;
-
-    try {
-      await navigator.clipboard.writeText(channel.url);
-      markChannelClick(channel.id);
-      pushChannelFeedback(t('official_channels_copied', language));
-    } catch {
-      pushChannelFeedback(t('official_channels_notice', language));
-    }
-  };
 
   const handleDbModeChange = (mode: 'local' | 'production') => {
     if (mode === currentDbMode) return;
@@ -2084,7 +2046,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
                   <p>{language === 'ko' ? 'AI 난이도와 자동 전투 전술(자동/균형/공격적/방어적/무작위)을 선택할 수 있습니다. 전략 시뮬레이션으로 승률을 테스트해보세요.' : 'Choose AI difficulty and auto-battle strategy (Auto/Balanced/Aggressive/Defensive/Random). Test win rates with the strategy simulator.'}</p>
                 )}
                 {helpSlide === 2 && (
-                  <p>{language === 'ko' ? '피드백을 제출하거나 데이터베이스 모드를 전환할 수 있습니다. 공식 커뮤니티 채널, 튜토리얼, 위키, 정책 센터로 이동할 수 있는 바로가기도 제공됩니다.' : 'Submit feedback, switch database modes, and access official community channels, tutorials, wiki, and policy center.'}</p>
+                  <p>{language === 'ko' ? '피드백을 제출하거나 데이터베이스 모드를 전환할 수 있습니다. 튜토리얼, 위키, 정책 센터로 이동할 수 있는 바로가기도 제공됩니다.' : 'Submit feedback, switch database modes, and access tutorials, wiki, and policy center.'}</p>
                 )}
               </div>
               <div className="flex items-center justify-between">

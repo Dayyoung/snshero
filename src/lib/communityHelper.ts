@@ -104,18 +104,86 @@ export async function compressImagesToBase64(files: File[]): Promise<string[]> {
   return Promise.all(promises);
 }
 
+/**
+ * 서버에 이미지(Base64)를 업로드하여 모든 사용자가 공유 가능한 고유 HTTP URL 획득
+ */
+export async function uploadImageToServer(base64Image: string): Promise<string> {
+  if (!base64Image || typeof base64Image !== 'string') return '';
+  // 이미 유효한 원격/상대 HTTP URL인 경우 그대로 반환
+  if (base64Image.startsWith('http://') || base64Image.startsWith('https://') || base64Image.startsWith('/uploads/')) {
+    return base64Image;
+  }
+
+  if (typeof window !== 'undefined') {
+    try {
+      const resp = await fetch('/api/community/upload-image', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ image: base64Image }),
+      });
+      if (resp.ok) {
+        const json = await resp.json();
+        if (json.ok && json.url) {
+          const origin = window.location.origin;
+          return `${origin}${json.url}`;
+        }
+      }
+    } catch (e) {
+      console.warn('[CommunityHelper] Failed to upload image to server:', e);
+    }
+  }
+
+  return base64Image;
+}
+
+export async function uploadMultipleImagesToServer(base64Images: string[]): Promise<string[]> {
+  if (!base64Images || base64Images.length === 0) return [];
+  const uploads = base64Images.map(img => uploadImageToServer(img));
+  return Promise.all(uploads);
+}
+
+/**
+ * 이미지 URL을 현재 접속한 도메인 환경에 맞게 자동 정규화
+ * (다른 AI Studio / Cloud Run 도메인에서 저장된 /uploads/ 경로도 현재 도메인으로 복원)
+ */
+export function normalizeImageUrl(url: string | undefined | null): string {
+  if (!url || typeof url !== 'string') return '';
+  const trimmed = url.trim();
+
+  // /uploads/community/... 또는 /api/community/images/... 상대경로
+  if (trimmed.startsWith('/uploads/community/') || trimmed.startsWith('/api/community/images/')) {
+    if (typeof window !== 'undefined') {
+      return `${window.location.origin}${trimmed}`;
+    }
+    return trimmed;
+  }
+
+  // 다른 도메인의 업로드 URL인 경우 현재 접속 도메인으로 리매핑
+  if (trimmed.includes('/uploads/community/')) {
+    const filename = trimmed.split('/uploads/community/')[1]?.split('?')[0];
+    if (filename && typeof window !== 'undefined') {
+      return `${window.location.origin}/uploads/community/${filename}`;
+    }
+  }
+
+  if (trimmed.includes('/api/community/images/')) {
+    const filename = trimmed.split('/api/community/images/')[1]?.split('?')[0];
+    if (filename && typeof window !== 'undefined') {
+      return `${window.location.origin}/api/community/images/${filename}`;
+    }
+  }
+
+  return trimmed;
+}
+
 export async function uploadCommunityImage(file: File, isOffline: boolean = false): Promise<string> {
+  const base64 = await compressImageToBase64(file);
   if (isOffline) {
-    return await compressImageToBase64(file);
+    return base64;
   }
-  try {
-    const storageRef = ref(storage, `community/${Date.now()}_${file.name}`);
-    const snapshot = await uploadBytes(storageRef, file);
-    return await getDownloadURL(snapshot.ref);
-  } catch (error) {
-    console.warn('[Storage] Upload failed, falling back to compressed base64:', error);
-    return await compressImageToBase64(file);
-  }
+  return await uploadImageToServer(base64);
 }
 
 /**
@@ -211,52 +279,22 @@ export async function prepareImagesForGoogleForm(images: string[], maxTotalBytes
 }
 
 /**
- * 네이티브 HTML Form 및 히든 iframe을 이용해 구글 폼에 전송 (모든 브라우저 100% 무결점 전송)
+ * 구글 폼 제출 헬퍼: 순수 백그라운드 fetch를 사용하여 사용자 화면이 구글 폼으로 이동하지 않도록 보장
  */
 export function submitViaHiddenIframe(url: string, fields: Record<string, string>): void {
-  if (typeof document === 'undefined') return;
-
-  const iframeName = 'gform_sink_iframe_' + Date.now();
-  let iframe = document.getElementById('gform_sink_iframe') as HTMLIFrameElement;
-  if (!iframe) {
-    iframe = document.createElement('iframe');
-    iframe.id = 'gform_sink_iframe';
-    iframe.name = iframeName;
-    iframe.style.display = 'none';
-    iframe.style.width = '0';
-    iframe.style.height = '0';
-    iframe.style.border = 'none';
-    document.body.appendChild(iframe);
-  } else {
-    iframe.name = iframeName;
-  }
-
-  const form = document.createElement('form');
-  form.action = url;
-  form.method = 'POST';
-  form.target = iframeName;
-  form.style.display = 'none';
-
+  // 브라우저 최상위 창 리디렉션 위험을 원천 차단하기 위해 DOM form submit을 수행하지 않습니다.
+  // 백그라운드 no-cors fetch로 안전하게 전송합니다.
+  if (typeof window === 'undefined') return;
+  const formData = new URLSearchParams();
   for (const [key, value] of Object.entries(fields)) {
-    const input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = key;
-    input.value = value;
-    form.appendChild(input);
+    formData.append(key, value);
   }
-
-  document.body.appendChild(form);
-  try {
-    form.submit();
-  } catch (e) {
-    console.warn('[GoogleForm] Form submit exception:', e);
-  } finally {
-    setTimeout(() => {
-      if (form.parentNode) {
-        form.parentNode.removeChild(form);
-      }
-    }, 1500);
-  }
+  fetch(url, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: formData.toString(),
+  }).catch(() => {});
 }
 
 
@@ -478,29 +516,55 @@ export async function submitPostToGoogleForm(params: {
   text: string;
   images: string[];
 }): Promise<boolean> {
-  // 1. 구글 폼 30KB 페이로드 제한에 맞춰 이미지 썸네일 준비
-  const formImages = await prepareImagesForGoogleForm(params.images || [], 22000);
+  // 1. 구글 폼 전송을 위한 이미지 준비 (HTTP URL 우선 보존, Base64는 서버 업로드 우선 시도)
+  let cleanImages: string[] = [];
+  if (params.images && params.images.length > 0) {
+    const prepared: string[] = [];
+    for (const img of params.images.slice(0, 5)) {
+      if (!img) continue;
+      if (img.startsWith('http://') || img.startsWith('https://') || img.startsWith('/uploads/')) {
+        prepared.push(img);
+      } else if (img.startsWith('data:image/')) {
+        // Base64인 경우 서버 업로드 시도
+        try {
+          const uploadedUrl = await uploadImageToServer(img);
+          if (uploadedUrl && !uploadedUrl.startsWith('data:image/')) {
+            prepared.push(uploadedUrl);
+          } else {
+            const microThumb = await compressDataUrlToThumbnail(img, 120, 0.35);
+            prepared.push(microThumb);
+          }
+        } catch {
+          const microThumb = await compressDataUrlToThumbnail(img, 120, 0.35);
+          prepared.push(microThumb);
+        }
+      } else {
+        prepared.push(img);
+      }
+    }
+    cleanImages = prepared;
+  }
 
   const entries: Record<string, string> = {
     [FORM_ENTRY_CATEGORY]: params.category || 'free',
     [FORM_ENTRY_LABEL]: params.label || 'Anonymous Hunter',
     [FORM_ENTRY_TEXT]: params.text || '',
-    [FORM_ENTRY_IMAGE_1]: formImages[0] || '',
-    [FORM_ENTRY_IMAGE_2]: formImages[1] || '',
-    [FORM_ENTRY_IMAGE_3]: formImages[2] || '',
-    [FORM_ENTRY_IMAGE_4]: formImages[3] || '',
-    [FORM_ENTRY_IMAGE_5]: formImages[4] || '',
+    [FORM_ENTRY_IMAGE_1]: cleanImages[0] || '',
+    [FORM_ENTRY_IMAGE_2]: cleanImages[1] || '',
+    [FORM_ENTRY_IMAGE_3]: cleanImages[2] || '',
+    [FORM_ENTRY_IMAGE_4]: cleanImages[3] || '',
+    [FORM_ENTRY_IMAGE_5]: cleanImages[4] || '',
   };
 
   let submitSuccess = false;
 
-  // 2. 내부 프록시 호출 시도 (Node.js 백그라운드 직접 전송으로 100% 신뢰성 보장)
   const formData = new URLSearchParams();
   for (const [k, v] of Object.entries(entries)) {
     formData.append(k, v);
   }
   const formBodyStr = formData.toString();
 
+  // 1차: Vite 내부 백엔드 프록시로 백그라운드 전송 (CORS 영향 없음, 페이지 리디렉션 0%)
   if (typeof window !== 'undefined') {
     try {
       const proxyResp = await fetch('/api/community/submit-form', {
@@ -514,33 +578,25 @@ export async function submitPostToGoogleForm(params: {
         submitSuccess = true;
       }
     } catch (proxyErr) {
-      console.warn('[GoogleForm] Proxy submit failed, falling back to direct iframe/fetch:', proxyErr);
+      console.warn('[GoogleForm] Proxy submit failed, trying direct no-cors fetch:', proxyErr);
     }
   }
 
-  // 3. 브라우저 환경: 네이티브 히든 iframe 폼 제출 (CORS 및 서드파티 보호 100% 우회)
-  if (typeof document !== 'undefined') {
+  // 2차: Direct fetch fallback (mode: 'no-cors' 백그라운드 비동기 전송 - 절대 페이지 이동 안 함)
+  if (!submitSuccess && typeof window !== 'undefined') {
     try {
-      submitViaHiddenIframe(GOOGLE_FORM_URL, entries);
+      await fetch(GOOGLE_FORM_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: formBodyStr,
+      });
       submitSuccess = true;
-    } catch (err) {
-      console.warn('[GoogleForm] Hidden iframe submit failed:', err);
+    } catch (error) {
+      console.warn('[GoogleForm] Direct fetch submit failed:', error);
     }
-  }
-
-  // 4. fetch(..., { mode: 'no-cors' }) 병렬/대체 전송
-  try {
-    await fetch(GOOGLE_FORM_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: formBodyStr,
-    });
-    submitSuccess = true;
-  } catch (error) {
-    console.warn('[GoogleForm] fetch submit failed:', error);
   }
 
   return submitSuccess;
@@ -670,7 +726,7 @@ export function parseGvizDataToPosts(data: any): CommunityPost[] {
       if (cell && cell.v !== null && cell.v !== undefined) {
         const strVal = String(cell.v).trim();
         if (isValidImageUrl(strVal)) {
-          images.push(strVal);
+          images.push(normalizeImageUrl(strVal));
         }
       }
     }
@@ -744,7 +800,7 @@ export function parseCsvRowsToPosts(rows: string[][]): CommunityPost[] {
       if (row[imgIdx] && row[imgIdx].trim()) {
         const strVal = row[imgIdx].trim();
         if (isValidImageUrl(strVal)) {
-          images.push(strVal);
+          images.push(normalizeImageUrl(strVal));
         }
       }
     }
@@ -919,6 +975,16 @@ export async function createCommunityPost(
   const label = flair ? `${authorName} [${flair}]` : authorName;
   const allImages = imageUrls && imageUrls.length > 0 ? imageUrls : (imageUrl ? [imageUrl] : []);
 
+  // 0. Base64 이미지가 포함된 경우, 모든 사용자가 열람할 수 있도록 서버에 영구 업로드
+  let persistentImages = allImages;
+  if (allImages.length > 0 && typeof window !== 'undefined') {
+    try {
+      persistentImages = await uploadMultipleImagesToServer(allImages);
+    } catch (uploadErr) {
+      console.warn('[CommunityHelper] Server image upload failed, using fallback:', uploadErr);
+    }
+  }
+
   const newPost: CommunityPost = {
     id: `post_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
     userId: authorUid,
@@ -927,8 +993,8 @@ export async function createCommunityPost(
     userEmoticonKey: user.activeEmoticonKey || undefined,
     userBadgeKey: user.activeBadgeKey || undefined,
     userTitleKey: user.activeTitleKey || undefined,
-    imageUrl: allImages[0] || undefined,
-    imageUrls: allImages.length > 0 ? allImages : undefined,
+    imageUrl: persistentImages[0] || undefined,
+    imageUrls: persistentImages.length > 0 ? persistentImages : undefined,
     content,
     createdAt: Date.now(),
     likes: [],
@@ -946,13 +1012,13 @@ export async function createCommunityPost(
   posts.unshift(newPost);
   saveLocalPosts(posts);
 
-  // 2. 구글 폼에 안전하게 전송 (30KB 페이로드 버짓 제어 및 이중 전송)
+  // 2. 구글 폼에 안전하게 전송 (영구 HTTP 이미지 URL 전달로 다른 모든 사용자도 열람 가능)
   try {
     await submitPostToGoogleForm({
       category: selectedCategory,
       label: label,
       text: content,
-      images: allImages,
+      images: persistentImages,
     });
   } catch (err) {
     console.warn('[GoogleForm] Submit error occurred:', err);
@@ -1142,6 +1208,65 @@ export async function addReplyToComment(
   return post;
 }
 
+export async function deleteCommentFromPost(postId: string, commentId: string): Promise<CommunityPost> {
+  const posts = await getCommunityPosts();
+  const post = posts.find((p) => p.id === postId);
+  if (!post) {
+    throw new Error('Post not found');
+  }
+
+  post.comments = post.comments.filter((c) => c.id !== commentId);
+
+  // 영구 인터랙션 저장소 업데이트
+  const interactions = getStoredInteractions();
+  interactions.comments[postId] = post.comments;
+  saveStoredInteractions(interactions);
+
+  // Local Storage 업데이트
+  saveLocalPosts(posts);
+
+  // Firestore 업데이트
+  try {
+    const docRef = doc(db, 'community_posts', postId);
+    await updateDoc(docRef, { comments: sanitizeForFirestore(post.comments) });
+  } catch (error) {
+    console.warn('[Firestore] Failed to delete comment in cloud, saved locally:', error);
+  }
+
+  return post;
+}
+
+export async function deleteReplyFromComment(postId: string, commentId: string, replyId: string): Promise<CommunityPost> {
+  const posts = await getCommunityPosts();
+  const post = posts.find((p) => p.id === postId);
+  if (!post) {
+    throw new Error('Post not found');
+  }
+
+  const comment = post.comments.find((c) => c.id === commentId);
+  if (comment && comment.replies) {
+    comment.replies = comment.replies.filter((r) => r.id !== replyId);
+  }
+
+  // 영구 인터랙션 저장소 업데이트
+  const interactions = getStoredInteractions();
+  interactions.comments[postId] = post.comments;
+  saveStoredInteractions(interactions);
+
+  // Local Storage 업데이트
+  saveLocalPosts(posts);
+
+  // Firestore 업데이트
+  try {
+    const docRef = doc(db, 'community_posts', postId);
+    await updateDoc(docRef, { comments: sanitizeForFirestore(post.comments) });
+  } catch (error) {
+    console.warn('[Firestore] Failed to delete reply in cloud, saved locally:', error);
+  }
+
+  return post;
+}
+
 // ─── Pin / Hide / Report functions ─────────────────
 
 /** Toggle pinned status on a post */
@@ -1297,3 +1422,132 @@ export function generateWeeklyThread(
     flair: flair || undefined,
   };
 }
+
+// -------------------------------------------------------------
+// [Round 6] 햅틱 피드백 & 마이크로 인터랙션 헬퍼
+// -------------------------------------------------------------
+export type HapticFeedbackType = 'light' | 'medium' | 'heavy' | 'double' | 'success' | 'delete';
+
+export function triggerHaptic(type: HapticFeedbackType = 'light'): void {
+  if (typeof window === 'undefined' || !('navigator' in window) || !navigator.vibrate) return;
+  try {
+    switch (type) {
+      case 'light':
+        navigator.vibrate(15);
+        break;
+      case 'medium':
+        navigator.vibrate(30);
+        break;
+      case 'heavy':
+        navigator.vibrate(60);
+        break;
+      case 'double':
+        navigator.vibrate([25, 40, 25]);
+        break;
+      case 'success':
+        navigator.vibrate([20, 30, 45, 30, 60]);
+        break;
+      case 'delete':
+        navigator.vibrate([50, 60, 30]);
+        break;
+    }
+  } catch {
+    // 진동 비지원 기기 무시
+  }
+}
+
+// -------------------------------------------------------------
+// [Round 7] 소셜 공유 & 딥링크 시스템 헬퍼
+// -------------------------------------------------------------
+export function getCommunityPostShareUrl(postId: string): string {
+  if (typeof window === 'undefined') return '';
+  const url = new URL(window.location.href);
+  url.searchParams.set('tab', 'community');
+  url.searchParams.set('postId', postId);
+  return url.toString();
+}
+
+export async function shareCommunityPost(
+  post: CommunityPost,
+  onCopyFallback?: () => void
+): Promise<{ success: boolean; method: 'native' | 'clipboard' }> {
+  triggerHaptic('medium');
+  const shareUrl = getCommunityPostShareUrl(post.id);
+  const shareText = `[SNS히어로 아레나] ${post.userName}님의 포스트: "${post.content.slice(0, 60)}..."\n${shareUrl}`;
+
+  if (typeof navigator !== 'undefined' && navigator.share) {
+    try {
+      await navigator.share({
+        title: `[SNS히어로] ${post.userName}님의 게시글`,
+        text: shareText,
+        url: shareUrl,
+      });
+      return { success: true, method: 'native' };
+    } catch {
+      // 취소 또는 권한 거부 시 클립보드 폴백 시도
+    }
+  }
+
+  // 클립보드 복사 폴백
+  if (typeof navigator !== 'undefined' && navigator.clipboard) {
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      if (onCopyFallback) onCopyFallback();
+      return { success: true, method: 'clipboard' };
+    } catch {
+      return { success: false, method: 'clipboard' };
+    }
+  }
+
+  return { success: false, method: 'clipboard' };
+}
+
+// -------------------------------------------------------------
+// [Round 8] 오프라인 큐 및 캐시 내구성 헬퍼
+// -------------------------------------------------------------
+export interface OfflineAction {
+  id: string;
+  type: 'like' | 'comment' | 'reply' | 'post';
+  postId?: string;
+  payload: any;
+  timestamp: number;
+}
+
+const STORAGE_OFFLINE_QUEUE_KEY = 'hero_community_offline_queue_v1';
+
+export function getOfflineQueue(): OfflineAction[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const raw = localStorage.getItem(STORAGE_OFFLINE_QUEUE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function saveOfflineQueue(queue: OfflineAction[]): void {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.setItem(STORAGE_OFFLINE_QUEUE_KEY, JSON.stringify(queue));
+  } catch (e) {
+    console.warn('Failed to save offline queue:', e);
+  }
+}
+
+export function enqueueOfflineAction(action: Omit<OfflineAction, 'id' | 'timestamp'>): OfflineAction {
+  const newAction: OfflineAction = {
+    ...action,
+    id: `queue_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+    timestamp: Date.now(),
+  };
+  const queue = getOfflineQueue();
+  queue.push(newAction);
+  saveOfflineQueue(queue);
+  return newAction;
+}
+
+export function clearOfflineQueue(): void {
+  if (typeof window === 'undefined') return;
+  localStorage.removeItem(STORAGE_OFFLINE_QUEUE_KEY);
+}
+

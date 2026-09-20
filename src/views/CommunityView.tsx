@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Heart, MessageCircle, Plus, Send, X, ImageIcon, User, AlertCircle, Trash2, Languages, Globe, ChevronLeft, ChevronRight, CornerDownRight, ArrowLeft, Share2, Sparkles, Swords, HelpCircle, Trophy, Navigation, Shield, ExternalLink, CheckCircle2, Vote, Palette, BookOpenCheck, Tag, Copy, Pin, EyeOff, Flag, Flame, Clock, ArrowUp, MessageSquare, MoreHorizontal, RotateCw } from 'lucide-react';
+import { Heart, MessageCircle, Plus, Send, X, ImageIcon, User, AlertCircle, Trash2, Languages, Globe, ChevronLeft, ChevronRight, CornerDownRight, ArrowLeft, Share2, Sparkles, Swords, HelpCircle, Trophy, Navigation, Shield, ExternalLink, CheckCircle2, Vote, Palette, BookOpenCheck, Tag, Copy, Pin, EyeOff, Flag, Flame, Clock, ArrowUp, MessageSquare, MoreHorizontal, RotateCw, Search, Smile, AtSign, Volume2, VolumeX, Zap, Check, ArrowUpCircle, Smartphone } from 'lucide-react';
 import { Language, CommunityPost, CommunityComment, CardData, CommunityCategory, CommunityWritableCategory, UserInfo, CommunitySortMode, PostFlair } from '../types';
 import { CardItem } from '../components/CardItem';
 import { t, translateText } from '../lib/i18n';
@@ -14,17 +14,26 @@ import {
   addCommentToPost,
   deleteCommunityPost,
   addReplyToComment,
+  deleteCommentFromPost,
+  deleteReplyFromComment,
   uploadCommunityImage,
   compressImagesToBase64,
+  uploadMultipleImagesToServer,
+  normalizeImageUrl,
   toggleHidePost,
   reportPost,
   togglePinPost,
-  sortPostsByMode
+  sortPostsByMode,
+  triggerHaptic,
+  shareCommunityPost,
+  getCommunityPostShareUrl,
+  getOfflineQueue,
+  enqueueOfflineAction,
+  clearOfflineQueue
 } from '../lib/communityHelper';
 import { getActiveFanEvents, FAN_EVENT_TYPE_META } from '../content/fanEvents';
 import { useFanEventVotes } from '../hooks/useFanEventVotes';
 import type { FanEvent } from '../content/fanEvents';
-import { OFFICIAL_COMMUNITY_CHANNELS, getChannelIcon, getChannelPurposeKey, getChannelClickCount, recordChannelClick, isChannelAvailable } from '../content/communityChannels';
 import { SNS_ECONOMY_EARNINGS } from '../content/snsEconomy';
 import { getProfileBadgeByKey, getProfileEmoticonByKey, getProfileTitleByKey } from '../content/profileEmoticons';
 import { MonsterPetBadge } from '../components/MonsterPetBadge';
@@ -113,6 +122,27 @@ const renderFlairBadge = (flair?: PostFlair, extraClass?: string) => {
   );
 };
 
+/** [Round 4] 검색 키워드 실시간 하이라이팅 컴포넌트 */
+const HighlightText: React.FC<{ text: string; query: string }> = ({ text, query }) => {
+  const trimmed = query.trim();
+  if (!trimmed) return <>{text}</>;
+  const escaped = trimmed.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+  const parts = text.split(new RegExp(`(${escaped})`, 'gi'));
+  return (
+    <>
+      {parts.map((part, i) =>
+        part.toLowerCase() === trimmed.toLowerCase() ? (
+          <mark key={i} className="bg-amber-200 text-[#201d1d] font-bold px-0.5 rounded-xs">
+            {part}
+          </mark>
+        ) : (
+          part
+        )
+      )}
+    </>
+  );
+};
+
 export const CommunityView: React.FC<CommunityViewProps> = ({
   onBack,
   language,
@@ -149,9 +179,76 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
   const [replyInputs, setReplyInputs] = useState<Record<string, string>>({}); // commentId -> replyText
   const [activeReplyBox, setActiveReplyBox] = useState<string | null>(null); // commentId
   const [openReplies, setOpenReplies] = useState<Record<string, boolean>>({}); // commentId -> boolean
+  const [allRepliesExpanded, setAllRepliesExpanded] = useState(false); // [Round 5] 대댓글 전체 접기/펼치기
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false); // [Round 5] 이모지 퀵 픽커 토글
+  const [showMentionPicker, setShowMentionPicker] = useState(false); // [Round 5] 멘션 퀵 픽커 토글
 
   // 이미지 캐러셀 슬라이더 인덱스
   const [carouselIndex, setCarouselIndex] = useState(0);
+
+  // [Round 2] 이미지 전체화면 라이트박스(Lightbox) 및 레이지 로딩/에러 상태
+  const [lightbox, setLightbox] = useState<{
+    isOpen: boolean;
+    index: number;
+    images: string[];
+  } | null>(null);
+  const [imageLoadedMap, setImageLoadedMap] = useState<Record<string, boolean>>({});
+  const [imageErrorMap, setImageErrorMap] = useState<Record<string, boolean>>({});
+
+  // [Round 3] Draft 임시저장 및 덱 첨부 상태
+  const [hasDraftRestored, setHasDraftRestored] = useState(false);
+  const [attachDeckToPost, setAttachDeckToPost] = useState(true);
+
+  // 모달이 열릴 때 임시저장된 draft 복원
+  useEffect(() => {
+    if (showUploadModal) {
+      try {
+        const savedDraft = localStorage.getItem('hero_community_draft');
+        if (savedDraft) {
+          const parsed = JSON.parse(savedDraft);
+          if (parsed.content && !content) {
+            setContent(parsed.content);
+            if (parsed.category) setUploadCategory(parsed.category);
+            if (parsed.flair) setUploadFlair(parsed.flair);
+            setHasDraftRestored(true);
+          }
+        }
+      } catch (e) {
+        console.warn('Failed to parse community draft:', e);
+      }
+    }
+  }, [showUploadModal]);
+
+  // 내용 변경 시 실시간 임시저장
+  useEffect(() => {
+    if (content.trim()) {
+      const draftData = {
+        content,
+        category: uploadCategory,
+        flair: uploadFlair,
+        updatedAt: Date.now()
+      };
+      localStorage.setItem('hero_community_draft', JSON.stringify(draftData));
+    }
+  }, [content, uploadCategory, uploadFlair]);
+
+  const handleClearDraft = () => {
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+    localStorage.removeItem('hero_community_draft');
+    setContent('');
+    setHasDraftRestored(false);
+  };
+
+  // 라이트박스 ESC 키 핸들러
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && lightbox?.isOpen) {
+        setLightbox(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [lightbox]);
 
   const [customModal, setCustomModal] = useState<{
     isOpen: boolean;
@@ -160,13 +257,88 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
     type: 'alert' | 'confirm' | 'error';
     onConfirm?: () => void;
   } | null>(null);
-  const [channelClickCounts, setChannelClickCounts] = useState<Record<string, number>>(() =>
-    Object.fromEntries(OFFICIAL_COMMUNITY_CHANNELS.map((channel) => [channel.id, getChannelClickCount(channel.id)]))
+
+  // ── [Round 6] 사운드 음소거 토글 & 햅틱 마이크로 파티클 ──
+  const [soundMuted, setSoundMuted] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_community_sound_muted') === 'true';
+    } catch {
+      return false;
+    }
+  });
+  const [likeParticles, setLikeParticles] = useState<Array<{ id: string; x: number; y: number; emoji: string }>>([]);
+
+  const playCustomSfx = (url: string) => {
+    if (soundMuted) return;
+    try {
+      playSfx(url);
+    } catch {
+      // 무시
+    }
+  };
+
+  const handleToggleSound = () => {
+    triggerHaptic('light');
+    setSoundMuted(prev => {
+      const next = !prev;
+      try {
+        localStorage.setItem('hero_community_sound_muted', String(next));
+      } catch {
+        // 무시
+      }
+      return next;
+    });
+  };
+
+  // ── [Round 7] 소셜 공유 & 딥링크 토스트 ──
+  const [shareToast, setShareToast] = useState<string | null>(null);
+
+  const showShareToastMessage = (msg: string) => {
+    setShareToast(msg);
+    setTimeout(() => {
+      setShareToast(null);
+    }, 2800);
+  };
+
+  // ── [Round 8] 오프라인 상태 감지 & 큐 동기화 ──
+  const [isOnline, setIsOnline] = useState<boolean>(() =>
+    typeof navigator !== 'undefined' && 'onLine' in navigator ? navigator.onLine : true
   );
+  const [offlineQueueCount, setOfflineQueueCount] = useState<number>(() => getOfflineQueue().length);
+
+  useEffect(() => {
+    const handleOnline = () => {
+      setIsOnline(true);
+      triggerHaptic('success');
+      showShareToastMessage(language === 'ko' ? '[온라인 재연결: 오프라인 데이터 자동 동기화됨]' : '[Online Reconnected: Syncing offline data]');
+      const q = getOfflineQueue();
+      if (q.length > 0) {
+        clearOfflineQueue();
+        setOfflineQueueCount(0);
+      }
+    };
+    const handleOffline = () => {
+      setIsOnline(false);
+      triggerHaptic('heavy');
+      showShareToastMessage(language === 'ko' ? '[오프라인 모드: 로컬 캐시에 안전하게 보관됩니다]' : '[Offline Mode: Saved to LocalStorage]');
+    };
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, [language]);
+
+  // ── [Round 10] 가상 배치 렌더링 & 무한 스크롤 페이지 카운트 ──
+  const [visiblePostsCount, setVisiblePostsCount] = useState<number>(15);
 
   // ── Doc 62: Sort / Flair / Hide / Report state ──────────────────
   const [sortMode, setSortMode] = useState<CommunitySortMode>('hot');
   const [showHiddenPosts, setShowHiddenPosts] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedFlairFilter, setSelectedFlairFilter] = useState<PostFlair | 'all'>('all');
   const [reportModal, setReportModal] = useState<{
     isOpen: boolean;
     postId: string;
@@ -229,42 +401,6 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
     }
     const representativeCardId = parseCardAvatarId(avatar);
     return representativeCardId ? getPetIdForRepresentativeCard(representativeCardId) : null;
-  };
-
-  const markChannelClick = (channelId: string) => {
-    recordChannelClick(channelId);
-    setChannelClickCounts((prev) => ({
-      ...prev,
-      [channelId]: getChannelClickCount(channelId),
-    }));
-  };
-
-  const showChannelFeedback = (message: string) => {
-    setCustomModal({
-      isOpen: true,
-      title: t('community_notice', language),
-      message,
-      type: 'info',
-    });
-  };
-
-  const handleOpenOfficialChannel = (channel: (typeof OFFICIAL_COMMUNITY_CHANNELS)[number]) => {
-    if (!isChannelAvailable(channel) || !channel.url) return;
-    markChannelClick(channel.id);
-    window.open(channel.url, '_blank', 'noopener,noreferrer');
-    showChannelFeedback(t('official_channels_click_tracked', language));
-  };
-
-  const handleCopyOfficialChannel = async (channel: (typeof OFFICIAL_COMMUNITY_CHANNELS)[number]) => {
-    if (!isChannelAvailable(channel) || !channel.url || !navigator.clipboard) return;
-
-    try {
-      await navigator.clipboard.writeText(channel.url);
-      markChannelClick(channel.id);
-      showChannelFeedback(t('official_channels_copied', language));
-    } catch {
-      showChannelFeedback(t('official_channels_notice', language));
-    }
   };
 
   // 부지런의 나무 보상 지급 판정
@@ -590,16 +726,46 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
         ? await compressImagesToBase64(imageFiles)
         : [];
 
+      // 1-1. 서버에 이미지 업로드하여 모든 사용자가 공유 가능한 고유 HTTP URL 획득
+      let uploadedImageUrls = compressedBase64Images;
+      if (compressedBase64Images.length > 0) {
+        try {
+          uploadedImageUrls = await uploadMultipleImagesToServer(compressedBase64Images);
+        } catch (uploadErr) {
+          console.warn('Server upload failed, falling back to base64:', uploadErr);
+        }
+      }
+
+      // [Round 3] 덱 자랑(boast) 카테고리이거나 덱 첨부 활성화 시 대표 덱 로드
+      let attachedDeck = undefined;
+      if ((uploadCategory === 'boast' || attachDeckToPost)) {
+        try {
+          const storedDeck = localStorage.getItem('hero_user_deck');
+          if (storedDeck) {
+            const parsedDeck = JSON.parse(storedDeck);
+            if (Array.isArray(parsedDeck) && parsedDeck.length > 0) {
+              attachedDeck = parsedDeck;
+            }
+          }
+        } catch (deckErr) {
+          console.warn('Failed to load user deck for post:', deckErr);
+        }
+      }
+
       // 2. 포스트 생성 및 구글 폼 제출 호출
       const newPost = await createCommunityPost(
         content.trim(),
-        compressedBase64Images[0] || undefined,
+        uploadedImageUrls[0] || undefined,
         activeUser,
         uploadCategory,
-        compressedBase64Images.length > 0 ? compressedBase64Images : undefined,
-        undefined, // deckData
+        uploadedImageUrls.length > 0 ? uploadedImageUrls : undefined,
+        attachedDeck, // deckData
         uploadFlair || undefined, // Doc 62: flair
       );
+
+      // 성공 시 draft 초기화
+      localStorage.removeItem('hero_community_draft');
+      setHasDraftRestored(false);
 
       setPosts((prev) => [newPost, ...prev.filter(p => p.id !== newPost.id)]);
       setContent('');
@@ -640,13 +806,24 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
 
   // 좋아요 처리
   const handleLikeToggle = async (postId: string) => {
-    playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
+    playCustomSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
 
-    // Optimistic UI Update
+    // Optimistic UI Update & Haptic / Particle Trigger
     setPosts((prev) =>
       prev.map((post) => {
         if (post.id === postId) {
           const hasLiked = post.likes.includes(activeUser.uid);
+          if (!hasLiked) {
+            triggerHaptic('double');
+            const particleId = `part_${Date.now()}_${Math.random()}`;
+            setLikeParticles((p) => [...p, { id: particleId, x: (Math.random() - 0.5) * 60, y: -20, emoji: '❤️' }]);
+            setTimeout(() => {
+              setLikeParticles((p) => p.filter((item) => item.id !== particleId));
+            }, 900);
+          } else {
+            triggerHaptic('light');
+          }
+
           const nextLikes = hasLiked
             ? post.likes.filter((id) => id !== activeUser.uid)
             : [...post.likes, activeUser.uid];
@@ -725,6 +902,45 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
         type: 'error'
       });
     }
+  };
+
+  // [Round 5] 댓글 삭제
+  const handleDeleteComment = async (postId: string, commentId: string) => {
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+    try {
+      const updatedPost = await deleteCommentFromPost(postId, commentId);
+      setPosts((prev) => prev.map((p) => (p.id === postId ? updatedPost : p)));
+      setSelectedPost(updatedPost);
+    } catch (error) {
+      console.error('Failed to delete comment:', error);
+    }
+  };
+
+  // [Round 5] 대댓글 삭제
+  const handleDeleteReply = async (postId: string, commentId: string, replyId: string) => {
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+    try {
+      const updatedPost = await deleteReplyFromComment(postId, commentId, replyId);
+      setPosts((prev) => prev.map((p) => (p.id === postId ? updatedPost : p)));
+      setSelectedPost(updatedPost);
+    } catch (error) {
+      console.error('Failed to delete reply:', error);
+    }
+  };
+
+  // [Round 5] 모든 대댓글 일괄 접기/펼치기 토글
+  const handleToggleAllReplies = () => {
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
+    if (!selectedPost) return;
+    const nextState = !allRepliesExpanded;
+    setAllRepliesExpanded(nextState);
+    const newMap: Record<string, boolean> = {};
+    selectedPost.comments.forEach(c => {
+      if (c.replies && c.replies.length > 0) {
+        newMap[c.id] = nextState;
+      }
+    });
+    setOpenReplies(newMap);
   };
 
   // 글 삭제
@@ -881,20 +1097,34 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
     return `https://api.dicebear.com/7.x/bottts/svg?seed=${userId}`;
   };
 
-  // 선택한 카테고리에 속한 글 목록 필터 + 정렬 + 히든 필터
-  const filteredPosts = (() => {
+  // [Round 4] 선택한 카테고리 + 플레어 태그 + 검색어(본문/작성자/태그) + 정렬 + 히든 필터 (useMemo 60fps 최적화)
+  const filteredPosts = React.useMemo(() => {
     let result = posts.filter(
       (post) => selectedCategory === 'select' 
         ? post.category !== 'news'
         : (post.category || 'free') === selectedCategory
     );
-    // Filter hidden posts unless showing them
+    // 1. Filter hidden posts unless showing them
     if (!showHiddenPosts && activeUser) {
       result = result.filter((post) => !post.hiddenBy?.includes(activeUser.uid));
     }
-    // Sort by selected mode
+    // 2. Flair Tag Filter
+    if (selectedFlairFilter !== 'all') {
+      result = result.filter((post) => post.flair === selectedFlairFilter);
+    }
+    // 3. Search Query Filter (본문, 작성자, 태그)
+    const query = searchQuery.trim().toLowerCase();
+    if (query) {
+      result = result.filter((post) => {
+        const matchContent = post.content?.toLowerCase().includes(query);
+        const matchAuthor = post.userName?.toLowerCase().includes(query);
+        const matchFlair = post.flair && FLAIR_META[post.flair]?.label.toLowerCase().includes(query);
+        return Boolean(matchContent || matchAuthor || matchFlair);
+      });
+    }
+    // 4. Sort by selected mode
     return sortPostsByMode(result, sortMode);
-  })();
+  }, [posts, selectedCategory, showHiddenPosts, activeUser, selectedFlairFilter, searchQuery, sortMode]);
 
   // 자동 번역 효과 추가
   useEffect(() => {
@@ -920,7 +1150,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
   }
 
   return (
-    <div id="community-section" className="flex-1 flex flex-col w-full bg-slate-50/50 text-slate-800 font-sans overflow-y-auto pb-32">
+    <div id="community-section" className="flex-1 flex flex-col w-full bg-[#fdfcfc] text-[#201d1d] font-mono tracking-tight overflow-y-auto pb-32">
       <div className="max-w-4xl mx-auto w-full px-4 flex flex-col gap-6">
         <PageHeader 
         title={currentTitle} 
@@ -939,42 +1169,63 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
         }}
         rightAction={
           <div className="flex items-center gap-1.5">
+            {!isOnline && (
+              <span
+                className="inline-flex items-center gap-1 px-2 py-1 rounded-sm border border-amber-300 bg-amber-50 text-amber-900 text-[10px] font-mono font-bold"
+                title={language === 'ko' ? '오프라인 모드 (로컬 캐시 보관)' : 'Offline Mode (Saved to cache)'}
+              >
+                [OFFLINE]
+              </span>
+            )}
+            <button
+              onClick={handleToggleSound}
+              className={cn(
+                "inline-flex min-h-9 min-w-9 items-center justify-center rounded-sm border transition-all active:scale-95 cursor-pointer touch-target font-mono text-xs",
+                soundMuted
+                  ? "bg-[#eae5e5] text-[#888] border-[rgba(15,0,0,0.2)]"
+                  : "bg-white text-[#201d1d] border-[rgba(15,0,0,0.15)] hover:border-[#201d1d]"
+              )}
+              title={soundMuted ? (language === 'ko' ? '사운드 켜기' : 'Unmute sound') : (language === 'ko' ? '사운드 끄기' : 'Mute sound')}
+              aria-label={soundMuted ? "Unmute sound" : "Mute sound"}
+            >
+              {soundMuted ? <VolumeX size={14} /> : <Volume2 size={14} />}
+            </button>
             <button
               onClick={() => {
-                playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                playCustomSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                 if (selectedCategory !== 'select') {
                   setUploadCategory(selectedCategory);
                 }
                 setShowUploadModal(true);
               }}
-              className="inline-flex min-h-9 items-center gap-1.5 px-3 py-1.5 rounded-full border border-indigo-200 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition-all active:scale-95 shadow-sm cursor-pointer"
+              className="inline-flex min-h-9 items-center gap-1 px-3 py-1.5 rounded-sm border border-[#201d1d] bg-[#201d1d] hover:bg-[#383333] text-white text-xs font-bold transition-all active:scale-95 cursor-pointer touch-target"
               title={language === 'ko' ? '새 글 작성' : 'Write post'}
               aria-label="Write post"
             >
-              <Plus size={14} />
+              <span className="font-mono text-sm leading-none">[+]</span>
               <span>{language === 'ko' ? '글쓰기' : 'Write'}</span>
             </button>
             <button
               onClick={() => {
-                playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
+                playCustomSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
                 loadPosts();
               }}
               className={cn(
-                "inline-flex min-h-9 min-w-9 items-center justify-center rounded-full border border-slate-300 bg-white/80 text-slate-600 transition-all hover:border-slate-400 hover:bg-white hover:text-slate-800 active:scale-95",
-                loading && "animate-spin text-indigo-600"
+                "inline-flex min-h-9 min-w-9 items-center justify-center rounded-sm border border-[rgba(15,0,0,0.15)] bg-white text-[#201d1d] transition-all hover:border-[#201d1d] hover:bg-[#f5f2f2] active:scale-95 cursor-pointer touch-target",
+                loading && "animate-spin text-[#201d1d]"
               )}
               title={language === 'ko' ? '글 목록 새로고침 (구글 시트)' : 'Refresh posts (Google Sheet)'}
               aria-label="Refresh posts"
             >
-              <RotateCw size={15} />
+              <RotateCw size={14} />
             </button>
             <button
-              onClick={() => { setShowHelp(true); setHelpSlide(0); playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3'); }}
-              className="inline-flex min-h-9 min-w-9 items-center justify-center rounded-full border border-slate-300 bg-white/80 text-slate-600 transition-all hover:border-slate-400 hover:bg-white hover:text-slate-800 active:scale-95"
+              onClick={() => { setShowHelp(true); setHelpSlide(0); playCustomSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3'); }}
+              className="inline-flex min-h-9 min-w-9 items-center justify-center rounded-sm border border-[rgba(15,0,0,0.15)] bg-white text-[#201d1d] transition-all hover:border-[#201d1d] hover:bg-[#f5f2f2] active:scale-95 cursor-pointer touch-target font-mono font-bold text-xs"
               title="Help"
               aria-label="Help"
             >
-              <HelpCircle size={16} />
+              [?]
             </button>
           </div>
         }
@@ -1148,17 +1399,14 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
         </div>
       )}
 
-      {/* Google Sheets Realtime Sync Status Banner */}
-      <div className="flex items-center justify-between px-3.5 py-2 bg-emerald-50/80 border border-emerald-200/80 rounded-xl text-[11px] font-semibold text-emerald-800 shadow-xs">
+      {/* Google Sheets Realtime Sync Status Banner (DESIGN.md Flat Hairline) */}
+      <div className="flex items-center justify-between px-3.5 py-2 bg-emerald-50/60 border border-emerald-300/80 rounded-none text-[11px] font-mono font-semibold text-emerald-900">
         <div className="flex items-center gap-2">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-          </span>
+          <span className="font-mono text-emerald-700 font-bold">[SYNC]</span>
           <span>
             {language === 'ko'
-              ? `구글 스프레드시트 실시간 연동 (${posts.filter(p => p.isFromSheet).length}개 글 동기화)`
-              : `Google Sheet Live Synced (${posts.filter(p => p.isFromSheet).length} posts)`}
+              ? `구글 스프레드시트 실시간 연동 (${posts.filter(p => p.isFromSheet).length}개 동기화)`
+              : `Google Sheet Live Synced (${posts.filter(p => p.isFromSheet).length} synced)`}
           </span>
         </div>
         <button
@@ -1166,69 +1414,145 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
             playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
             loadPosts();
           }}
-          className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 hover:text-emerald-900 underline cursor-pointer bg-transparent border-none p-0"
+          className="inline-flex items-center gap-1 text-[10px] font-mono font-bold text-emerald-800 hover:text-emerald-950 underline cursor-pointer bg-transparent border-none p-0 touch-target"
         >
           <RotateCw size={11} className={loading ? "animate-spin" : ""} />
-          {language === 'ko' ? '새로고침' : 'Refresh'}
+          <span>{language === 'ko' ? '[새로고침]' : '[Refresh]'}</span>
         </button>
       </div>
 
-      {/* Sort & Filter Bar (Doc 62) */}
-      {selectedCategory !== 'select' && (
-        <div className="flex items-center justify-between border-b border-slate-200/80 pb-3 px-1 mt-4">
-          <div className="flex items-center gap-1">
-            {([
-              { mode: 'hot' as CommunitySortMode, icon: Flame, label: 'Hot' },
-              { mode: 'new' as CommunitySortMode, icon: Clock, label: 'New' },
-              { mode: 'top' as CommunitySortMode, icon: ArrowUp, label: 'Top' },
-              { mode: 'comments' as CommunitySortMode, icon: MessageSquare, label: 'Comments' },
-            ]).map(({ mode, icon: IconComp, label }) => (
-              <button
-                key={mode}
-                onClick={() => {
-                  playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
-                  setSortMode(mode);
-                }}
-                className={cn(
-                  'flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[10px] font-bold transition-all cursor-pointer border-none',
-                  sortMode === mode
-                    ? 'bg-indigo-600 text-white shadow-sm'
-                    : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
-                )}
-              >
-                <IconComp size={12} />
-                {label}
-              </button>
-            ))}
-          </div>
-          <div className="flex items-center gap-2">
-            {activeUser && filteredPosts.some(p => p.hiddenBy?.includes(activeUser.uid)) && (
-              <button
-                onClick={() => {
-                  playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
-                  setShowHiddenPosts(!showHiddenPosts);
-                }}
-                className={cn(
-                  'flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[10px] font-bold transition-all cursor-pointer border-none',
-                  showHiddenPosts
-                    ? 'bg-amber-100 text-amber-700'
-                    : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
-                )}
-              >
-                <EyeOff size={12} />
-                {showHiddenPosts ? 'Hidden' : 'Show Hidden'}
-              </button>
+      {/* [Round 4] Search & Filter Control Hub (DESIGN.md Monospace Flat) */}
+      {!selectedPost && (
+        <div className="flex flex-col gap-2.5 border-b border-[rgba(15,0,0,0.12)] pb-3 px-1 mt-2">
+          {/* 실시간 검색창 */}
+          <div className="relative flex items-center">
+            <Search size={14} className="absolute left-3 text-[#777] pointer-events-none" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder={language === 'ko' ? '글 내용, 작성자, 태그 실시간 검색...' : 'Search posts, authors, tags...'}
+              className="w-full pl-8 pr-16 py-2 bg-white border border-[rgba(15,0,0,0.15)] focus:border-[#201d1d] rounded-sm font-mono text-xs text-[#201d1d] outline-none transition-colors shadow-xs"
+            />
+            {searchQuery && (
+              <div className="absolute right-2.5 flex items-center gap-1.5">
+                <span className="text-[10px] font-mono text-[#888]">
+                  [{filteredPosts.length}건]
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+                    setSearchQuery('');
+                  }}
+                  className="px-1.5 py-0.5 bg-[#eae5e5] hover:bg-[#d8d2d2] text-[#201d1d] text-[10px] font-mono font-bold rounded-xs cursor-pointer border-none"
+                  title="Clear search"
+                >
+                  [✕]
+                </button>
+              </div>
             )}
+          </div>
+
+          {/* Sort & Hidden Posts Bar */}
+          <div className="flex items-center justify-between gap-2 pt-1">
+            <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-hide py-0.5">
+              {([
+                { mode: 'hot' as CommunitySortMode, icon: Flame, label: 'Hot' },
+                { mode: 'new' as CommunitySortMode, icon: Clock, label: 'New' },
+                { mode: 'top' as CommunitySortMode, icon: ArrowUp, label: 'Top' },
+                { mode: 'comments' as CommunitySortMode, icon: MessageSquare, label: 'Comments' },
+              ]).map(({ mode, icon: IconComp, label }) => (
+                <button
+                  key={mode}
+                  onClick={() => {
+                    playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
+                    setSortMode(mode);
+                  }}
+                  className={cn(
+                    'flex items-center gap-1 px-2.5 py-1 rounded-sm text-[10px] font-mono font-bold transition-all cursor-pointer border touch-target',
+                    sortMode === mode
+                      ? 'bg-[#201d1d] text-white border-[#201d1d]'
+                      : 'bg-[#fdfcfc] text-[#554f4f] border-[rgba(15,0,0,0.15)] hover:border-[#201d1d]'
+                  )}
+                >
+                  <IconComp size={11} />
+                  <span>{label}</span>
+                </button>
+              ))}
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              {activeUser && posts.some(p => p.hiddenBy?.includes(activeUser.uid)) && (
+                <button
+                  onClick={() => {
+                    playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
+                    setShowHiddenPosts(!showHiddenPosts);
+                  }}
+                  className={cn(
+                    'flex items-center gap-1 px-2 py-1 rounded-sm text-[10px] font-mono font-bold transition-all cursor-pointer border touch-target',
+                    showHiddenPosts
+                      ? 'bg-amber-100 text-amber-900 border-amber-300'
+                      : 'bg-[#fdfcfc] text-[#554f4f] border-[rgba(15,0,0,0.15)] hover:border-[#201d1d]'
+                  )}
+                >
+                  <EyeOff size={11} />
+                  <span>{showHiddenPosts ? '[Hidden]' : '[Show Hidden]'}</span>
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* 원터치 플레어(태그) 토글 칩 바 */}
+          <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-hide py-0.5">
+            <span className="text-[10px] font-mono font-bold text-[#888] shrink-0">
+              [TAG]:
+            </span>
+            <button
+              onClick={() => {
+                playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
+                setSelectedFlairFilter('all');
+              }}
+              className={cn(
+                'px-2 py-0.5 rounded-sm text-[10px] font-mono font-bold transition-all cursor-pointer border touch-target shrink-0',
+                selectedFlairFilter === 'all'
+                  ? 'bg-[#201d1d] text-white border-[#201d1d]'
+                  : 'bg-white text-[#666] border-[rgba(15,0,0,0.12)] hover:border-[#201d1d]'
+              )}
+            >
+              [전체]
+            </button>
+            {getFlairsForCategory(selectedCategory).map((flair) => {
+              const meta = FLAIR_META[flair];
+              const isSelected = selectedFlairFilter === flair;
+              return (
+                <button
+                  key={flair}
+                  onClick={() => {
+                    playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
+                    setSelectedFlairFilter(isSelected ? 'all' : flair);
+                  }}
+                  className={cn(
+                    'flex items-center gap-1 px-2 py-0.5 rounded-sm text-[10px] font-mono font-bold transition-all cursor-pointer border touch-target shrink-0',
+                    isSelected
+                      ? 'bg-[#201d1d] text-white border-[#201d1d]'
+                      : 'bg-white text-[#444] border-[rgba(15,0,0,0.12)] hover:border-[#201d1d]'
+                  )}
+                >
+                  <span>{meta.icon}</span>
+                  <span>{meta.label}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
       )}
 
       {/* 3. Main Views router */}
       {selectedPost ? (
-        // 3A. 자세히 보기 화면 (Semantic HTML5)
-        <article className="border border-slate-200/80 bg-white rounded-lg overflow-hidden shadow-sm flex flex-col text-slate-800">
+        // 3A. 자세히 보기 화면 (Semantic HTML5, DESIGN.md Monospace Flat)
+        <article className="border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] rounded-none overflow-hidden flex flex-col text-[#201d1d] font-mono">
           {/* Header */}
-          <header className="p-4.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/40">
+          <header className="p-4 border-b border-[rgba(15,0,0,0.10)] flex items-center justify-between bg-white">
             <div className="flex items-center gap-3">
               <button
                 onClick={() => {
@@ -1238,10 +1562,10 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                   url.searchParams.delete('postId');
                   window.history.replaceState({}, '', url.toString());
                 }}
-                className="p-1.5 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer text-slate-500 shrink-0"
+                className="p-1.5 border border-[rgba(15,0,0,0.15)] hover:border-[#201d1d] hover:bg-[#f5f2f2] rounded-sm transition-colors cursor-pointer text-[#201d1d] shrink-0 font-mono font-bold text-xs"
                 title="Back"
               >
-                <ChevronLeft size={20} />
+                [←]
               </button>
               <div className="relative">
                 <img
@@ -1267,7 +1591,9 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                   return (
                     <>
                       <div className="flex flex-wrap items-center gap-1.5">
-                        <h4 className="font-bold text-sm tracking-tight text-slate-800">{selectedPost.userName}</h4>
+                        <h4 className="font-bold text-sm tracking-tight text-slate-800">
+                          <HighlightText text={selectedPost.userName} query={searchQuery} />
+                        </h4>
                         {identity.emoticon ? <span className="text-sm leading-none">{identity.emoticon.symbol}</span> : null}
                         {identity.badge ? (
                           <span className="rounded-full border border-amber-100 bg-amber-50 px-2 py-0.5 text-[9px] font-bold text-amber-700">
@@ -1432,59 +1758,111 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
             </div>
           ) : (
             ((selectedPost.imageUrls && selectedPost.imageUrls.length > 0) || selectedPost.imageUrl) && (
-              <div className="border-b border-slate-100 bg-slate-950 flex items-center justify-center overflow-hidden max-h-[500px] relative group/carousel">
+              <div className="border-b border-[rgba(15,0,0,0.12)] bg-[#121010] flex items-center justify-center overflow-hidden max-h-[520px] relative group/carousel font-mono">
                 {/* 이미지 목록 */}
                 {(() => {
                   const imgUrls = selectedPost.imageUrls || (selectedPost.imageUrl ? [selectedPost.imageUrl] : []);
-                  const currentUrl = imgUrls[carouselIndex];
+                  const currentRawUrl = imgUrls[carouselIndex];
+                  const currentUrl = normalizeImageUrl(currentRawUrl);
+                  const isLoaded = imageLoadedMap[currentUrl];
+                  const hasError = imageErrorMap[currentUrl];
                   
                   return (
                     <div className="w-full flex items-center justify-center relative min-h-[300px]">
-                      <img
-                        src={currentUrl}
-                        alt={`Post content ${carouselIndex + 1}`}
-                        className="w-full h-auto max-h-[500px] object-contain transition-all duration-300"
-                        loading="lazy"
-                      />
+                      {/* 스켈레톤 로딩 플레이스홀더 */}
+                      {!isLoaded && !hasError && (
+                        <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#1a1818] animate-pulse text-[#888] text-xs font-mono">
+                          <span className="mb-2">[LOADING IMAGE...]</span>
+                          <span className="text-[10px] text-[#666]">{carouselIndex + 1} / {imgUrls.length}</span>
+                        </div>
+                      )}
+
+                      {/* 이미지 로딩 에러 플레이스홀더 */}
+                      {hasError ? (
+                        <div className="p-8 text-center text-[#999] font-mono text-xs flex flex-col items-center gap-2">
+                          <span className="text-xl">[!]</span>
+                          <span>{language === 'ko' ? '이미지를 불러올 수 없습니다' : 'Failed to load image'}</span>
+                        </div>
+                      ) : (
+                        <img
+                          src={currentUrl}
+                          alt={`Post content ${carouselIndex + 1}`}
+                          className={cn(
+                            "w-full h-auto max-h-[500px] object-contain transition-all duration-300 cursor-zoom-in",
+                            !isLoaded && "opacity-0"
+                          )}
+                          loading="lazy"
+                          onLoad={() => setImageLoadedMap((prev) => ({ ...prev, [currentUrl]: true }))}
+                          onError={() => setImageErrorMap((prev) => ({ ...prev, [currentUrl]: true }))}
+                          onClick={() => {
+                            playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                            setLightbox({
+                              isOpen: true,
+                              index: carouselIndex,
+                              images: imgUrls.map(normalizeImageUrl),
+                            });
+                          }}
+                        />
+                      )}
+
+                      {/* 상단 줌 안내 및 카운터 배지 */}
+                      <div className="absolute top-3 left-3 flex items-center gap-2 pointer-events-none">
+                        <span className="bg-black/75 border border-white/20 text-white px-2 py-0.5 text-[9px] font-mono rounded-sm">
+                          [ZOOM: 🔍 클릭하여 확대]
+                        </span>
+                        {imgUrls.length > 1 && (
+                          <span className="bg-black/75 border border-white/20 text-white px-2 py-0.5 text-[9px] font-mono rounded-sm">
+                            [{carouselIndex + 1} / {imgUrls.length}]
+                          </span>
+                        )}
+                      </div>
 
                       {/* 좌우 화살표 */}
                       {imgUrls.length > 1 && (
                         <>
                           <button
-                            onClick={() => {
+                            onClick={(e) => {
+                              e.stopPropagation();
                               playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
                               setCarouselIndex((prev) => (prev === 0 ? imgUrls.length - 1 : prev - 1));
                             }}
-                            className="absolute left-3 p-2.5 bg-slate-900/70 hover:bg-slate-900 text-white rounded-lg border border-white/10 active:scale-95 transition-all cursor-pointer flex items-center justify-center shadow-md"
+                            className="absolute left-3 p-2 bg-[#201d1d]/85 hover:bg-[#201d1d] text-white rounded-sm border border-white/20 active:scale-95 transition-all cursor-pointer flex items-center justify-center font-mono font-bold text-xs touch-target"
+                            title="Previous image"
+                            aria-label="Previous image"
                           >
-                            <ChevronLeft size={18} />
+                            [&lt;]
                           </button>
                           <button
-                            onClick={() => {
+                            onClick={(e) => {
+                              e.stopPropagation();
                               playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
                               setCarouselIndex((prev) => (prev === imgUrls.length - 1 ? 0 : prev + 1));
                             }}
-                            className="absolute right-3 p-2.5 bg-slate-900/70 hover:bg-slate-900 text-white rounded-lg border border-white/10 active:scale-95 transition-all cursor-pointer flex items-center justify-center shadow-md"
+                            className="absolute right-3 p-2 bg-[#201d1d]/85 hover:bg-[#201d1d] text-white rounded-sm border border-white/20 active:scale-95 transition-all cursor-pointer flex items-center justify-center font-mono font-bold text-xs touch-target"
+                            title="Next image"
+                            aria-label="Next image"
                           >
-                            <ChevronRight size={18} />
+                            [&gt;]
                           </button>
                         </>
                       )}
 
                       {/* 슬라이드 도트 인디케이터 */}
                       {imgUrls.length > 1 && (
-                        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+                        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10 bg-black/60 px-2 py-1 rounded-sm border border-white/10">
                           {imgUrls.map((_, dotIdx) => (
                             <button
                               key={dotIdx}
-                              onClick={() => {
+                              onClick={(e) => {
+                                e.stopPropagation();
                                 playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
                                 setCarouselIndex(dotIdx);
                               }}
                               className={cn(
-                                "w-1.5 h-1.5 rounded-full border border-slate-900/40 transition-all cursor-pointer",
-                                carouselIndex === dotIdx ? "bg-indigo-500 scale-125" : "bg-white/60"
+                                "w-4 h-1 rounded-none transition-all cursor-pointer border-none",
+                                carouselIndex === dotIdx ? "bg-white" : "bg-white/40 hover:bg-white/70"
                               )}
+                              title={`Image ${dotIdx + 1}`}
                             />
                           ))}
                         </div>
@@ -1501,13 +1879,18 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
             <div className="flex flex-col gap-3">
               {selectedPost.title && (
                 <h3 className="text-base font-bold text-slate-900 leading-snug">
-                  {selectedPost.title}
+                  <HighlightText text={selectedPost.title} query={searchQuery} />
                 </h3>
               )}
               <p className="text-sm font-semibold leading-relaxed whitespace-pre-wrap text-slate-700">
-                {translatedContents[selectedPost.id] && !translatedContents[selectedPost.id].isOriginal
-                  ? translatedContents[selectedPost.id].translated
-                  : selectedPost.content}
+                <HighlightText
+                  text={
+                    translatedContents[selectedPost.id] && !translatedContents[selectedPost.id].isOriginal
+                      ? translatedContents[selectedPost.id].translated
+                      : selectedPost.content
+                  }
+                  query={searchQuery}
+                />
               </p>
               
               {/* Translation Button */}
@@ -1568,21 +1951,17 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
               </div>
 
               <button
-                onClick={() => {
-                  playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                  const shareUrl = `${window.location.origin}/?view=community&postId=${selectedPost.id}`;
-                  navigator.clipboard.writeText(shareUrl).then(() => {
-                    setCustomModal({
-                      isOpen: true,
-                      title: t('link_copied_title', language),
-                      message: t('link_copied_desc', language),
-                      type: 'alert'
-                    });
-                  }).catch(err => {
-                    console.error('Failed to copy post link: ', err);
+                onClick={async () => {
+                  playCustomSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                  triggerHaptic('success');
+                  const result = await shareCommunityPost(selectedPost, () => {
+                    showShareToastMessage(t('link_copied_desc', language));
                   });
+                  if (result.success && result.method === 'clipboard') {
+                    showShareToastMessage(t('link_copied_desc', language));
+                  }
                 }}
-                className="flex items-center gap-1.5 px-3.5 py-1.5 border border-slate-200/80 rounded-lg font-bold text-xs bg-white hover:bg-slate-50 text-slate-700 shadow-xs cursor-pointer ml-auto hover:shadow-sm active:scale-98 transition-all"
+                className="flex items-center gap-1.5 px-3.5 py-1.5 border border-slate-200/80 rounded-lg font-bold text-xs bg-white hover:bg-slate-50 text-slate-700 shadow-xs cursor-pointer ml-auto hover:shadow-sm active:scale-98 transition-all touch-target"
                 title="Share Post Link"
               >
                 <Share2 size={15} />
@@ -1616,200 +1995,335 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
             )}
           </div>
 
-          {/* Comments and Nested Comments (Replies) Section */}
-          <footer className="border-t border-slate-100 bg-slate-50/20 flex flex-col">
-            <div className="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
-              <h5 className="font-bold text-xs uppercase tracking-wider text-slate-500">
-                {t('community_comments', language).replace('{count}', selectedPost.comments.length.toString())}
-              </h5>
+          {/* [Round 5] Comments and Nested Comments (Replies) Section - Monospace Flat Styling */}
+          <footer className="border-t border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] flex flex-col font-mono">
+            <div className="p-3.5 border-b border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-xs uppercase tracking-tight text-[#201d1d]">
+                  [COMMENTS: {selectedPost.comments.length}]
+                </span>
+              </div>
+              {selectedPost.comments.some(c => c.replies && c.replies.length > 0) && (
+                <button
+                  onClick={handleToggleAllReplies}
+                  className="px-2.5 py-1 text-[10px] font-bold font-mono text-[#201d1d] hover:bg-[#eae8e8] border border-[rgba(15,0,0,0.15)] rounded-sm active:scale-95 transition-all cursor-pointer"
+                >
+                  {allRepliesExpanded
+                    ? (language === 'ko' ? '[▲ 전체 대댓글 접기]' : '[▲ Collapse All]')
+                    : (language === 'ko' ? '[▼ 전체 대댓글 펼치기]' : '[▼ Expand All]')}
+                </button>
+              )}
             </div>
 
             {/* Comments List */}
             {selectedPost.comments.length > 0 ? (
-              <div className="p-4 flex flex-col gap-4.5 max-h-[400px] overflow-y-auto border-b border-slate-100 bg-white custom-scrollbar">
-                {selectedPost.comments.map((comment) => (
-                  <div key={comment.id} className="flex flex-col gap-2">
-                    {/* 부모 댓글 */}
-                    <div className="flex gap-3 items-start text-xs">
-                      <img
-                        src={formatAvatarUrl(comment.userAvatar, comment.userId)}
-                        alt={comment.userName}
-                        className="w-8 h-8 border border-slate-100 rounded-full object-cover shrink-0 bg-white"
-                      />
-                      <div className="bg-slate-50 p-3 rounded-lg border border-slate-150/70 flex-1 relative text-slate-700">
-                        <div className="flex justify-between items-start gap-2 mb-1">
-                          <div className="min-w-0">
-                            {(() => {
-                              const identity = getProfileIdentityMeta(comment.userEmoticonKey, comment.userBadgeKey, comment.userTitleKey);
-                              return (
-                                <>
-                                  <div className="flex flex-wrap items-center gap-1.5">
-                                    <span className="font-bold tracking-tight text-slate-900">{comment.userName}</span>
-                                    {identity.emoticon ? <span className="text-xs leading-none">{identity.emoticon.symbol}</span> : null}
-                                    {identity.badge ? (
-                                      <span className="rounded-full border border-amber-100 bg-amber-50 px-1.5 py-0.5 text-[8px] font-bold text-amber-700">
-                                        {identity.badge.symbol}
-                                      </span>
+              <div className="p-3.5 flex flex-col gap-3.5 max-h-[420px] overflow-y-auto border-b border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] custom-scrollbar">
+                {selectedPost.comments.map((comment) => {
+                  const isCommentOwner = activeUser && (comment.userId === activeUser.uid || activeUser.isAdmin);
+                  return (
+                    <div key={comment.id} className="flex flex-col gap-2">
+                      {/* 부모 댓글 */}
+                      <div className="flex gap-2.5 items-start text-xs">
+                        <img
+                          src={formatAvatarUrl(comment.userAvatar, comment.userId)}
+                          alt={comment.userName}
+                          className="w-7 h-7 border border-[rgba(15,0,0,0.12)] rounded-full object-cover shrink-0 bg-white"
+                        />
+                        <div className="bg-[#f8f7f7] p-3 rounded-none border border-[rgba(15,0,0,0.12)] flex-1 relative text-[#201d1d]">
+                          <div className="flex justify-between items-start gap-2 mb-1">
+                            <div className="min-w-0">
+                              {(() => {
+                                const identity = getProfileIdentityMeta(comment.userEmoticonKey, comment.userBadgeKey, comment.userTitleKey);
+                                return (
+                                  <>
+                                    <div className="flex flex-wrap items-center gap-1.5">
+                                      <span className="font-bold tracking-tight text-[#201d1d]">{comment.userName}</span>
+                                      {identity.emoticon ? <span className="text-xs leading-none">{identity.emoticon.symbol}</span> : null}
+                                      {identity.badge ? (
+                                        <span className="rounded-sm border border-amber-300 bg-amber-50 px-1 py-0.5 text-[8px] font-bold text-amber-800">
+                                          {identity.badge.symbol}
+                                        </span>
+                                      ) : null}
+                                    </div>
+                                    {identity.title ? (
+                                      <p className="mt-0.5 text-[8px] font-semibold text-[#666060]">{t(identity.title.labelKey, language)}</p>
                                     ) : null}
-                                  </div>
-                                  {identity.title ? (
-                                    <p className="mt-0.5 text-[9px] font-semibold text-slate-500">{t(identity.title.labelKey, language)}</p>
-                                  ) : null}
-                                </>
-                              );
-                            })()}
+                                  </>
+                                );
+                              })()}
+                            </div>
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-[8px] text-[#888282] font-semibold">
+                                {getRelativeTimeString(comment.createdAt)}
+                              </span>
+                              {isCommentOwner && (
+                                <button
+                                  onClick={() => handleDeleteComment(selectedPost.id, comment.id)}
+                                  className="text-[9px] text-rose-600 hover:text-rose-800 font-bold px-1 py-0.5 border border-rose-200 hover:bg-rose-50 rounded-sm cursor-pointer transition-all"
+                                  title="Delete Comment"
+                                >
+                                  [✕]
+                                </button>
+                              )}
+                            </div>
                           </div>
-                          <span className="text-[9px] text-slate-400 font-semibold">
-                            {getRelativeTimeString(comment.createdAt)}
-                          </span>
-                        </div>
-                        <p className="font-semibold leading-relaxed whitespace-pre-wrap">
-                          {translatedContents[comment.id] && !translatedContents[comment.id].isOriginal
-                            ? translatedContents[comment.id].translated
-                            : comment.content}
-                        </p>
-                        
-                        {/* 답글 달기 버튼 */}
-                        <div className="flex gap-3.5 mt-2 items-center">
-                          <button
-                            onClick={() => {
-                              playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
-                              setActiveReplyBox(activeReplyBox === comment.id ? null : comment.id);
-                            }}
-                            className="text-[10px] font-bold text-indigo-600 hover:text-indigo-700 cursor-pointer flex items-center gap-1"
-                          >
-                            <CornerDownRight size={12} />
-                            {t('community_comment_reply', language)}
-                          </button>
-                          <button
-                            onClick={() => handleTranslate(comment.id, comment.content)}
-                            disabled={translatedContents[comment.id]?.isLoading}
-                            className={cn(
-                              "text-[10px] font-bold ml-auto flex items-center gap-1 cursor-pointer",
-                              translatedContents[comment.id] && !translatedContents[comment.id].isOriginal ? "text-indigo-600" : "text-slate-400 hover:text-slate-600"
-                            )}
-                          >
-                            <Languages size={11} />
-                            {translatedContents[comment.id]?.isLoading ? '...' : translatedContents[comment.id] && !translatedContents[comment.id].isOriginal ? 'ORIGINAL' : 'A'}
-                          </button>
-
-                          {/* 대댓글 갯수 토글 아코디언 */}
-                          {comment.replies && comment.replies.length > 0 && (
+                          <p className="font-semibold leading-relaxed whitespace-pre-wrap text-xs text-[#332e2e]">
+                            {translatedContents[comment.id] && !translatedContents[comment.id].isOriginal
+                              ? translatedContents[comment.id].translated
+                              : comment.content}
+                          </p>
+                          
+                          {/* 액션 버튼 바 (답글 달기, 번역, 대댓글 개수 토글) */}
+                          <div className="flex flex-wrap gap-2.5 mt-2.5 pt-2 border-t border-[rgba(15,0,0,0.08)] items-center">
                             <button
                               onClick={() => {
                                 playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
-                                setOpenReplies(prev => ({ ...prev, [comment.id]: !prev[comment.id] }));
+                                const nextBox = activeReplyBox === comment.id ? null : comment.id;
+                                setActiveReplyBox(nextBox);
+                                if (nextBox && !replyInputs[comment.id]) {
+                                  setReplyInputs(prev => ({ ...prev, [comment.id]: `@${comment.userName} ` }));
+                                }
                               }}
-                              className="text-[10px] font-bold text-slate-500 hover:text-slate-655 cursor-pointer"
+                              className="text-[10px] font-bold font-mono text-[#201d1d] hover:underline cursor-pointer flex items-center gap-1"
                             >
-                              {t('community_comment_reply_count', language).replace('{count}', comment.replies.length.toString())} {openReplies[comment.id] ? '▲' : '▼'}
+                              <CornerDownRight size={11} />
+                              {t('community_comment_reply', language)}
                             </button>
-                          )}
+                            <button
+                              onClick={() => handleTranslate(comment.id, comment.content)}
+                              disabled={translatedContents[comment.id]?.isLoading}
+                              className={cn(
+                                "text-[9px] font-bold font-mono ml-auto flex items-center gap-1 cursor-pointer px-1.5 py-0.5 border border-[rgba(15,0,0,0.12)] rounded-sm bg-white",
+                                translatedContents[comment.id] && !translatedContents[comment.id].isOriginal ? "text-indigo-700 bg-indigo-50" : "text-[#666060] hover:text-[#201d1d]"
+                              )}
+                            >
+                              <Languages size={10} />
+                              {translatedContents[comment.id]?.isLoading ? '...' : translatedContents[comment.id] && !translatedContents[comment.id].isOriginal ? 'ORIGINAL' : 'A'}
+                            </button>
+
+                            {/* 대댓글 갯수 토글 아코디언 */}
+                            {comment.replies && comment.replies.length > 0 && (
+                              <button
+                                onClick={() => {
+                                  playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
+                                  setOpenReplies(prev => ({ ...prev, [comment.id]: !prev[comment.id] }));
+                                }}
+                                className="text-[10px] font-bold font-mono px-2 py-0.5 border border-[rgba(15,0,0,0.15)] rounded-sm bg-white hover:bg-[#eae8e8] text-[#201d1d] cursor-pointer"
+                              >
+                                {openReplies[comment.id] ? '▲' : '▼'} {comment.replies.length} {language === 'ko' ? '답글' : 'Replies'}
+                              </button>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    {/* 대댓글 리스트 (들여쓰기 적용) */}
-                    {comment.replies && comment.replies.length > 0 && openReplies[comment.id] && (
-                      <div className="pl-8 flex flex-col gap-2.5 border-l-2 border-slate-205 ml-4 mt-1">
-                        {comment.replies.map((reply) => (
-                          <div key={reply.id} className="flex gap-2.5 items-start text-[11px]">
-                            <img
-                              src={formatAvatarUrl(reply.userAvatar, reply.userId)}
-                              alt={reply.userName}
-                              className="w-6 h-6 border border-slate-100 rounded-full object-cover shrink-0 bg-white"
-                            />
-                            <div className="bg-slate-100/40 p-2.5 rounded-xl border border-slate-150/70 flex-1 text-slate-700">
-                              <div className="flex justify-between items-start gap-2 mb-1">
-                                <div className="min-w-0">
-                                  {(() => {
-                                    const identity = getProfileIdentityMeta(reply.userEmoticonKey, reply.userBadgeKey, reply.userTitleKey);
-                                    return (
-                                      <>
-                                        <div className="flex flex-wrap items-center gap-1">
-                                          <span className="font-bold tracking-tight text-slate-900">{reply.userName}</span>
-                                          {identity.emoticon ? <span className="text-[10px] leading-none">{identity.emoticon.symbol}</span> : null}
-                                          {identity.badge ? (
-                                            <span className="rounded-full border border-amber-100 bg-amber-50 px-1 py-0.5 text-[7px] font-bold text-amber-700">
-                                              {identity.badge.symbol}
-                                            </span>
-                                          ) : null}
-                                        </div>
-                                        {identity.title ? (
-                                          <p className="mt-0.5 text-[8px] font-semibold text-slate-500">{t(identity.title.labelKey, language)}</p>
-                                        ) : null}
-                                      </>
-                                    );
-                                  })()}
+                      {/* 대댓글 리스트 (들여쓰기 적용) */}
+                      {comment.replies && comment.replies.length > 0 && openReplies[comment.id] && (
+                        <div className="pl-6 ml-3.5 flex flex-col gap-2 border-l-2 border-[#201d1d]/30 mt-1">
+                          {comment.replies.map((reply) => {
+                            const isReplyOwner = activeUser && (reply.userId === activeUser.uid || activeUser.isAdmin);
+                            return (
+                              <div key={reply.id} className="flex gap-2 items-start text-[11px]">
+                                <img
+                                  src={formatAvatarUrl(reply.userAvatar, reply.userId)}
+                                  alt={reply.userName}
+                                  className="w-5 h-5 border border-[rgba(15,0,0,0.12)] rounded-full object-cover shrink-0 bg-white"
+                                />
+                                <div className="bg-[#f0eeee] p-2 rounded-none border border-[rgba(15,0,0,0.1)] flex-1 text-[#201d1d]">
+                                  <div className="flex justify-between items-start gap-2 mb-0.5">
+                                    <div className="min-w-0">
+                                      {(() => {
+                                        const identity = getProfileIdentityMeta(reply.userEmoticonKey, reply.userBadgeKey, reply.userTitleKey);
+                                        return (
+                                          <>
+                                            <div className="flex flex-wrap items-center gap-1">
+                                              <span className="font-bold tracking-tight text-[#201d1d]">{reply.userName}</span>
+                                              {identity.emoticon ? <span className="text-[10px] leading-none">{identity.emoticon.symbol}</span> : null}
+                                              {identity.badge ? (
+                                                <span className="rounded-sm border border-amber-300 bg-amber-50 px-1 py-0.2 text-[7px] font-bold text-amber-800">
+                                                  {identity.badge.symbol}
+                                                </span>
+                                              ) : null}
+                                            </div>
+                                            {identity.title ? (
+                                              <p className="mt-0.5 text-[8px] font-semibold text-[#666060]">{t(identity.title.labelKey, language)}</p>
+                                            ) : null}
+                                          </>
+                                        );
+                                      })()}
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                      <span className="text-[8px] text-[#888282] font-semibold">
+                                        {getRelativeTimeString(reply.createdAt)}
+                                      </span>
+                                      {isReplyOwner && (
+                                        <button
+                                          onClick={() => handleDeleteReply(selectedPost.id, comment.id, reply.id)}
+                                          className="text-[8px] text-rose-600 hover:text-rose-800 font-bold px-1 py-0.2 border border-rose-200 hover:bg-rose-50 rounded-sm cursor-pointer transition-all"
+                                          title="Delete Reply"
+                                        >
+                                          [✕]
+                                        </button>
+                                      )}
+                                    </div>
+                                  </div>
+                                  <p className="font-semibold leading-relaxed whitespace-pre-wrap text-xs text-[#332e2e]">{reply.content}</p>
                                 </div>
-                                <span className="text-[8px] text-slate-400 font-semibold">
-                                  {getRelativeTimeString(reply.createdAt)}
-                                </span>
                               </div>
-                              <p className="font-semibold leading-relaxed whitespace-pre-wrap">{reply.content}</p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                            );
+                          })}
+                        </div>
+                      )}
 
-                    {/* 대댓글 작성 박스 */}
-                    {activeReplyBox === comment.id && (
-                      <div className="pl-8 ml-4 mt-1 flex gap-2 items-center">
-                        <input
-                          type="text"
-                          placeholder={t('community_comment_reply_placeholder', language)}
-                          value={replyInputs[comment.id] || ''}
-                          onChange={(e) =>
-                            setReplyInputs((prev) => ({
-                              ...prev,
-                              [comment.id]: e.target.value
-                            }))
-                          }
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter') handleAddReply(selectedPost.id, comment.id);
-                          }}
-                          className="flex-1 p-2.5 bg-slate-50 border border-slate-200/80 focus:bg-white focus:border-indigo-500 rounded-xl font-semibold text-xs focus:outline-none transition-all"
-                        />
-                        <button
-                          onClick={() => handleAddReply(selectedPost.id, comment.id)}
-                          disabled={!(replyInputs[comment.id] || '').trim()}
-                          className="p-2.5 bg-slate-900 text-white hover:bg-slate-800 transition-all rounded-xl disabled:opacity-20 shrink-0 cursor-pointer shadow-xs active:scale-98 border-none flex items-center justify-center"
-                        >
-                          <Send size={12} />
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                ))}
+                      {/* 대댓글 작성 박스 */}
+                      {activeReplyBox === comment.id && (
+                        <div className="pl-6 ml-3.5 mt-1 flex gap-2 items-center">
+                          <input
+                            type="text"
+                            placeholder={t('community_comment_reply_placeholder', language)}
+                            value={replyInputs[comment.id] || ''}
+                            onChange={(e) =>
+                              setReplyInputs((prev) => ({
+                                ...prev,
+                                [comment.id]: e.target.value
+                              }))
+                            }
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') handleAddReply(selectedPost.id, comment.id);
+                            }}
+                            className="flex-1 p-2 bg-white border border-[rgba(15,0,0,0.18)] focus:border-[#201d1d] rounded-sm font-mono font-semibold text-xs focus:outline-none transition-all"
+                          />
+                          <button
+                            onClick={() => handleAddReply(selectedPost.id, comment.id)}
+                            disabled={!(replyInputs[comment.id] || '').trim()}
+                            className="px-3 py-2 bg-[#201d1d] hover:bg-[#3d3838] text-white transition-all rounded-sm disabled:opacity-30 shrink-0 cursor-pointer text-xs font-mono font-bold active:scale-95 border-none flex items-center justify-center gap-1"
+                          >
+                            <Send size={11} />
+                            <span>{language === 'ko' ? '등록' : 'Reply'}</span>
+                          </button>
+                          <button
+                            onClick={() => setActiveReplyBox(null)}
+                            className="p-2 text-[#666060] hover:text-[#201d1d] border border-[rgba(15,0,0,0.15)] rounded-sm hover:bg-[#eae8e8] text-xs font-mono cursor-pointer"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             ) : (
-              <div className="p-6 text-center text-xs font-bold text-slate-400 border-b border-slate-100 bg-white">
+              <div className="p-6 text-center text-xs font-bold text-[#888282] border-b border-[rgba(15,0,0,0.12)] bg-[#fdfcfc]">
                 {t('no_comments_yet', language)}
               </div>
             )}
 
+            {/* [Round 5] 댓글 작성 도구 바: 이모지 픽커 & 멘션(@) 원터치 칩 */}
+            <div className="px-3.5 pt-2.5 bg-[#f8f7f7] border-t border-[rgba(15,0,0,0.08)] flex flex-col gap-2">
+              <div className="flex items-center gap-2 overflow-x-auto custom-scrollbar pb-1">
+                <button
+                  type="button"
+                  onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                  className={cn(
+                    "flex items-center gap-1 px-2 py-1 border text-[10px] font-bold font-mono rounded-sm cursor-pointer transition-all active:scale-95 shrink-0",
+                    showEmojiPicker
+                      ? "bg-[#201d1d] text-white border-[#201d1d]"
+                      : "bg-white text-[#201d1d] border-[rgba(15,0,0,0.15)] hover:bg-[#eae8e8]"
+                  )}
+                >
+                  <Smile size={11} />
+                  <span>{language === 'ko' ? '이모티콘' : 'Emoji'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setShowMentionPicker(!showMentionPicker)}
+                  className={cn(
+                    "flex items-center gap-1 px-2 py-1 border text-[10px] font-bold font-mono rounded-sm cursor-pointer transition-all active:scale-95 shrink-0",
+                    showMentionPicker
+                      ? "bg-[#201d1d] text-white border-[#201d1d]"
+                      : "bg-white text-[#201d1d] border-[rgba(15,0,0,0.15)] hover:bg-[#eae8e8]"
+                  )}
+                >
+                  <AtSign size={11} />
+                  <span>{language === 'ko' ? '멘션' : 'Mention'}</span>
+                </button>
+
+                {/* 포스트 작성자 빠른 멘션 칩 */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
+                    setCommentInput(prev => `${prev.trim()} @${selectedPost.userName} `.trimStart());
+                  }}
+                  className="px-2 py-1 bg-white hover:bg-[#eae8e8] border border-[rgba(15,0,0,0.15)] rounded-sm text-[10px] font-bold font-mono text-[#201d1d] cursor-pointer shrink-0 active:scale-95 transition-all"
+                >
+                  @{selectedPost.userName}
+                </button>
+              </div>
+
+              {/* 빠른 이모티콘 선택 칩 트레이 */}
+              {showEmojiPicker && (
+                <div className="flex flex-wrap items-center gap-1.5 p-2 bg-white border border-[rgba(15,0,0,0.12)] rounded-sm">
+                  {['👍', '🔥', '❤️', '🎉', '😂', '🎴', '⚡', '👏', '🏆', '💎'].map((emoji) => (
+                    <button
+                      key={emoji}
+                      type="button"
+                      onClick={() => {
+                        playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
+                        setCommentInput(prev => prev + emoji);
+                      }}
+                      className="w-7 h-7 flex items-center justify-center text-sm border border-[rgba(15,0,0,0.1)] rounded-sm bg-[#fdfcfc] hover:bg-[#eae8e8] cursor-pointer active:scale-90 transition-all"
+                    >
+                      {emoji}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {/* 빠른 멘션 대상 칩 트레이 */}
+              {showMentionPicker && (
+                <div className="flex flex-wrap items-center gap-1.5 p-2 bg-white border border-[rgba(15,0,0,0.12)] rounded-sm">
+                  {Array.from(new Set([selectedPost.userName, ...selectedPost.comments.map(c => c.userName)])).map((name) => (
+                    <button
+                      key={name}
+                      type="button"
+                      onClick={() => {
+                        playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
+                        setCommentInput(prev => `${prev.trim()} @${name} `.trimStart());
+                        setShowMentionPicker(false);
+                      }}
+                      className="px-2 py-1 bg-[#fdfcfc] hover:bg-[#eae8e8] border border-[rgba(15,0,0,0.12)] rounded-sm text-[10px] font-bold font-mono text-[#201d1d] cursor-pointer active:scale-95 transition-all"
+                    >
+                      @{name}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
             {/* 댓글 작성 창 */}
-            <div className="p-3 bg-white flex items-center gap-2 border-t border-slate-100">
+            <div className="p-3.5 bg-[#f8f7f7] flex items-center gap-2">
               <div className="relative shrink-0">
                 <img
                   src={formatAvatarUrl(activeUser.photoURL || '', activeUser.uid)}
                   alt="Me"
-                  className="w-8 h-8 border border-slate-100 rounded-full object-cover shrink-0 bg-white"
+                  className="w-7 h-7 border border-[rgba(15,0,0,0.12)] rounded-full object-cover shrink-0 bg-white"
                 />
                 {activeUser ? (() => {
                   const petCardId = getLocalMonsterPetId(activeUser.uid, activeUser.photoURL || '');
                   return petCardId ? (
                     <MonsterPetBadge
                       cardId={petCardId}
-                      className="absolute -bottom-1 -right-1 z-10 border-emerald-200 bg-white px-0.5 py-0.5"
-                      imageClassName="h-4 w-4"
+                      className="absolute -bottom-1 -right-1 z-10 border-emerald-300 bg-white px-0.5 py-0.5"
+                      imageClassName="h-3.5 w-3.5"
                       label={t('monster_pet_badge', language)}
                     />
                   ) : null;
                 })() : null}
               </div>
-              <div className="flex-1 flex gap-2 border border-slate-200/80 rounded-2xl overflow-hidden px-3.5 py-2.5 bg-slate-50 focus-within:bg-white focus-within:border-indigo-550 transition-all items-center">
+              <div className="flex-1 flex gap-2 border border-[rgba(15,0,0,0.18)] rounded-sm overflow-hidden px-3 py-2 bg-white focus-within:border-[#201d1d] transition-all items-center">
                 <input
                   type="text"
                   placeholder={t('community_add_comment', language)}
@@ -1818,14 +2332,15 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') handleAddComment(selectedPost.id);
                   }}
-                  className="bg-transparent focus:outline-none flex-1 font-semibold text-xs text-slate-800"
+                  className="bg-transparent focus:outline-none flex-1 font-mono font-semibold text-xs text-[#201d1d]"
                 />
                 <button
                   onClick={() => handleAddComment(selectedPost.id)}
                   disabled={!commentInput.trim()}
-                  className="text-slate-600 hover:text-indigo-600 hover:scale-105 active:scale-95 disabled:opacity-20 transition-all shrink-0 cursor-pointer"
+                  className="px-3 py-1 bg-[#201d1d] text-white hover:bg-[#3d3838] disabled:opacity-30 transition-all shrink-0 cursor-pointer rounded-sm text-xs font-mono font-bold flex items-center gap-1 active:scale-95"
                 >
-                  <Send size={16} />
+                  <Send size={11} />
+                  <span>{language === 'ko' ? '작성' : 'Post'}</span>
                 </button>
               </div>
             </div>
@@ -2048,7 +2563,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
       ) : (
         // 3C. 미리보기 요약 리스트
         <div className="flex flex-col gap-6">
-          {/* 카테고리 정보 및 되돌아가기 헤더 */}
+          {/* 카테고리 정보 및 글쓰기 액션 바 (DESIGN.md Monospace Flat) */}
           <div className="flex items-center justify-between gap-2 px-1">
             <button
               onClick={() => {
@@ -2056,30 +2571,53 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                 setUploadCategory(selectedCategory);
                 setShowUploadModal(true);
               }}
-              className="inline-flex items-center gap-1.5 text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-2 rounded-xl shadow-sm transition-all active:scale-95 cursor-pointer"
+              className="inline-flex items-center gap-1.5 text-xs font-mono font-bold bg-[#201d1d] hover:bg-[#383333] text-white px-3.5 py-2 rounded-sm border border-[#201d1d] transition-all active:scale-95 cursor-pointer touch-target"
             >
-              <Plus size={14} />
-              <span>{language === 'ko' ? '이 게시판에 글쓰기' : 'Write in this board'}</span>
+              <span className="font-mono text-sm">[+]</span>
+              <span>{language === 'ko' ? '게시판 글쓰기' : 'Write Post'}</span>
             </button>
-            <span className="text-xs font-bold tracking-tight bg-indigo-50/50 text-indigo-650 px-3.5 py-2 rounded-xl border border-indigo-100 shadow-xs">
-              🎯 {t(`community_cat_${selectedCategory}` as any, language)}
+            <span className="text-xs font-mono font-bold tracking-tight bg-white text-[#201d1d] px-3.5 py-2 rounded-none border border-[rgba(15,0,0,0.15)]">
+              [{t(`community_cat_${selectedCategory}` as any, language)}]
             </span>
           </div>
 
           {/* Grid Preview List */}
           {loading ? (
-            <div className="flex flex-col items-center justify-center py-20 gap-4">
-              <div className="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
-              <span className="font-bold text-xs text-slate-400 tracking-wider">LOADING POSTS...</span>
+            <div className="flex flex-col items-center justify-center py-20 gap-3 border border-[rgba(15,0,0,0.10)] bg-white rounded-none">
+              <div className="w-8 h-8 border-2 border-[#201d1d] border-t-transparent rounded-full animate-spin" />
+              <span className="font-mono font-bold text-xs text-[#666060] tracking-wider">[LOADING POSTS...]</span>
             </div>
           ) : filteredPosts.length === 0 ? (
-            <div className="border border-slate-200/80 bg-white p-12 text-center rounded-3xl shadow-xl">
-              <span className="text-4xl block mb-4">📭</span>
-              <p className="font-bold text-sm text-slate-500">{t('community_empty', language)}</p>
+            <div className="border border-[rgba(15,0,0,0.12)] bg-white p-10 text-center rounded-none font-mono flex flex-col items-center justify-center gap-2.5">
+              <span className="text-3xl block font-mono">[Ø]</span>
+              <p className="font-bold text-sm text-[#504a4a]">
+                {searchQuery.trim()
+                  ? language === 'ko'
+                    ? `[ "${searchQuery}" 검색 결과가 없습니다 ]`
+                    : `[ No results found for "${searchQuery}" ]`
+                  : selectedFlairFilter !== 'all'
+                  ? language === 'ko'
+                    ? `[ "${FLAIR_META[selectedFlairFilter]?.label}" 태그 글이 없습니다 ]`
+                    : `[ No posts found for tag "${FLAIR_META[selectedFlairFilter]?.label}" ]`
+                  : t('community_empty', language)}
+              </p>
+              {(searchQuery || selectedFlairFilter !== 'all') && (
+                <button
+                  onClick={() => {
+                    playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+                    setSearchQuery('');
+                    setSelectedFlairFilter('all');
+                  }}
+                  className="mt-2 px-3 py-1.5 bg-[#201d1d] hover:bg-[#3d3838] text-white text-xs font-mono font-bold rounded-sm border border-[#201d1d] cursor-pointer touch-target active:scale-95 transition-all"
+                >
+                  {language === 'ko' ? '[검색/필터 초기화]' : '[Reset Filters]'}
+                </button>
+              )}
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {filteredPosts.map((post) => {
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {filteredPosts.slice(0, visiblePostsCount).map((post) => {
                 const imgUrls = post.imageUrls || (post.imageUrl ? [post.imageUrl] : []);
                 const hasLiked = activeUser && post.likes.includes(activeUser.uid);
                 
@@ -2092,7 +2630,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                       setSelectedPost(post);
                       window.history.pushState({}, '', `?view=community&postId=${post.id}`);
                     }}
-                    className="border border-slate-200/80 bg-white rounded-3xl overflow-hidden shadow-md hover:shadow-lg transition-all flex flex-col cursor-pointer hover:-translate-y-0.5"
+                    className="border border-[rgba(15,0,0,0.12)] bg-white rounded-none overflow-hidden transition-all flex flex-col cursor-pointer hover:border-[#201d1d] font-mono"
                   >
                     {/* 뽐내기(boast) 카드 덱 표시 또는 썸네일 이미지 */}
                     {post.category === 'boast' && post.deckData && post.deckData.length > 0 ? (
@@ -2104,37 +2642,39 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                         ))}
                       </div>
                     ) : post.videoUrl ? (
-                      <div className="border-b border-slate-100 bg-slate-950 aspect-video relative flex items-center justify-center overflow-hidden">
+                      <div className="border-b border-[rgba(15,0,0,0.12)] bg-[#151313] aspect-video relative flex items-center justify-center overflow-hidden">
                         {imgUrls.length > 0 && (
                           <img
                             src={imgUrls[0]}
                             alt="video thumb"
                             className="w-full h-full object-contain opacity-80"
+                            loading="lazy"
                           />
                         )}
-                        <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-                          <span className="p-3 bg-indigo-600/90 text-white rounded-full shadow-lg border border-white/20 active:scale-95 transition-all text-xs">
-                            🎬 VIDEO PLAY
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                          <span className="px-3 py-1.5 bg-[#201d1d] text-white rounded-sm border border-white/20 active:scale-95 transition-all text-xs font-mono font-bold">
+                            [▶ VIDEO PLAY]
                           </span>
                         </div>
-                        <div className="absolute top-2 right-2 bg-indigo-600 px-2 py-1 rounded-lg text-[8px] font-black text-white border border-white/10 uppercase tracking-widest">
-                          VIDEO
+                        <div className="absolute top-2 right-2 bg-[#201d1d] px-2 py-0.5 rounded-sm text-[8px] font-mono font-bold text-white border border-white/20 uppercase tracking-widest">
+                          [VIDEO]
                         </div>
                       </div>
                     ) : (
                       imgUrls.length > 0 && (
-                        <div className="border-b border-slate-100 bg-slate-950 aspect-video relative flex items-center justify-center overflow-hidden">
+                        <div className="border-b border-[rgba(15,0,0,0.12)] bg-[#151313] aspect-video relative flex items-center justify-center overflow-hidden">
                           <img
-                            src={imgUrls[0]}
+                            src={normalizeImageUrl(imgUrls[0])}
                             alt="post thumb"
                             className="w-full h-full object-contain"
+                            loading="lazy"
                             onError={(e) => {
                               (e.currentTarget.parentElement as HTMLElement)?.classList.add('hidden');
                             }}
                           />
                           {imgUrls.length > 1 && (
-                            <div className="absolute top-2 right-2 bg-slate-900/80 px-2 py-1 rounded-lg text-[8px] font-bold text-white border border-white/10">
-                              +{imgUrls.length - 1} IMGS
+                            <div className="absolute top-2 right-2 bg-black/80 px-2 py-0.5 rounded-sm text-[8px] font-mono font-bold text-white border border-white/20">
+                              [+{imgUrls.length - 1} IMGS]
                             </div>
                           )}
                         </div>
@@ -2167,7 +2707,9 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                           return (
                             <>
                               <div className="flex flex-wrap items-center gap-1">
-                                <h5 className="font-bold text-[10px] text-slate-800 truncate leading-none mb-0.5">{post.userName}</h5>
+                                <h5 className="font-bold text-[10px] text-slate-800 truncate leading-none mb-0.5">
+                                  <HighlightText text={post.userName} query={searchQuery} />
+                                </h5>
                                 {identity.emoticon ? <span className="text-[10px] leading-none">{identity.emoticon.symbol}</span> : null}
                                 {identity.badge ? (
                                   <span className="rounded-full border border-amber-100 bg-amber-50 px-1.5 py-0.5 text-[7px] font-bold text-amber-700">
@@ -2209,13 +2751,18 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                         <div>
                           {post.title && (
                             <h4 className="text-xs font-bold text-slate-900 line-clamp-1 mb-1">
-                              {post.title}
+                              <HighlightText text={post.title} query={searchQuery} />
                             </h4>
                           )}
                           <p className="text-xs font-semibold leading-relaxed line-clamp-3 text-slate-550 whitespace-pre-wrap">
-                            {translatedContents[post.id] && !translatedContents[post.id].isOriginal
-                              ? translatedContents[post.id].translated
-                              : post.content}
+                            <HighlightText
+                              text={
+                                translatedContents[post.id] && !translatedContents[post.id].isOriginal
+                                  ? translatedContents[post.id].translated
+                                  : post.content
+                              }
+                              query={searchQuery}
+                            />
                           </p>
                           <div className="mt-1 flex flex-wrap items-center gap-2">
                             {translatedContents[post.id] && !translatedContents[post.id].isOriginal && (
@@ -2241,16 +2788,16 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                           </div>
                         </div>
 
-                      {/* Footer 배지 */}
-                      <div className="flex gap-2 items-center justify-between text-[10px] font-bold mt-1 w-full">
+                      {/* Footer 배지 (DESIGN.md Flat Hairline) */}
+                      <div className="flex gap-2 items-center justify-between text-[10px] font-mono font-bold mt-1 w-full">
                         <div className="flex gap-2 items-center">
                           <span className={cn(
-                            "flex items-center gap-1 px-2.5 py-1 border border-slate-150 rounded-lg bg-slate-50/50 text-slate-500",
-                            hasLiked && "bg-rose-50 text-rose-605 border-rose-200"
+                            "flex items-center gap-1 px-2.5 py-1 border border-[rgba(15,0,0,0.12)] rounded-sm bg-white text-[#504a4a]",
+                            hasLiked && "bg-rose-50 text-rose-700 border-rose-300"
                           )}>
                             <Heart size={12} fill={hasLiked ? "currentColor" : "none"} /> {post.likes.length}
                           </span>
-                          <span className="flex items-center gap-1 px-2.5 py-1 border border-slate-150 rounded-lg bg-slate-50/50 text-slate-500">
+                          <span className="flex items-center gap-1 px-2.5 py-1 border border-[rgba(15,0,0,0.12)] rounded-sm bg-white text-[#504a4a]">
                             <MessageCircle size={12} /> {post.comments.length}
                           </span>
                         </div>
@@ -2270,9 +2817,9 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                                 }
                               });
                             }}
-                            className="px-3 py-1 bg-red-650 hover:bg-red-750 text-white rounded-lg text-[9px] font-black uppercase tracking-wider flex items-center gap-1 border-none shadow-sm shadow-red-200/50 active:scale-95 transition-all cursor-pointer z-10"
+                            className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded-sm text-[9px] font-mono font-bold uppercase tracking-wider flex items-center gap-1 border border-red-700 active:scale-95 transition-all cursor-pointer z-10 touch-target"
                           >
-                            ⚔️ ATTACK
+                            [⚔️ ATTACK]
                           </button>
                         )}
 
@@ -2338,102 +2885,47 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                 );
               })}
             </div>
+              {/* [Round 10] 배치 렌더링 & 더보기 버튼 */}
+              {filteredPosts.length > visiblePostsCount && (
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3 bg-white border border-[rgba(15,0,0,0.12)] rounded-none font-mono">
+                  <span className="text-xs text-[#504a4a]">
+                    [{language === 'ko' ? '표시 중' : 'Showing'} {Math.min(visiblePostsCount, filteredPosts.length)} / {filteredPosts.length}건]
+                  </span>
+                  <button
+                    onClick={() => {
+                      playCustomSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                      triggerHaptic('medium');
+                      setVisiblePostsCount((prev) => prev + 15);
+                    }}
+                    className="w-full sm:w-auto px-4 py-2 bg-[#201d1d] hover:bg-[#383333] text-white text-xs font-bold rounded-sm border border-[#201d1d] active:scale-95 transition-all cursor-pointer touch-target"
+                  >
+                    {language === 'ko' ? `[더 보기 (+15건)]` : `[Load More (+15)]`}
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
       )}
-      {/* ─── Official Community Channels Banner (doc/26) ─── */}
-      <div className="border border-indigo-100 bg-gradient-to-r from-indigo-50/50 to-violet-50/50 rounded-2xl p-4 shadow-sm mt-6 mb-6 space-y-3">
-        <div className="flex items-center gap-2">
-          <ExternalLink size={14} className="text-indigo-500" />
-          <h3 className="text-[11px] font-black text-indigo-700 uppercase tracking-wider">
-            {t('official_channels_community_banner_title', language)}
-          </h3>
-        </div>
-        <p className="text-[10px] font-semibold text-slate-600 leading-relaxed">
-          {t('official_channels_community_banner_desc', language)}
-        </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          {OFFICIAL_COMMUNITY_CHANNELS.map((channel) => {
-            const icon = getChannelIcon(channel.platform);
-            const purposeKey = getChannelPurposeKey(channel.purpose);
-            const isAvailable = isChannelAvailable(channel);
-            const hasClicked = (channelClickCounts[channel.id] ?? 0) > 0;
-
-            return (
-              <div
-                key={channel.id}
-                className="rounded-xl border border-indigo-100 bg-white/90 p-3 shadow-sm space-y-2"
-              >
-                <div className="flex items-start gap-2">
-                  <span className="mt-0.5 text-sm">{icon}</span>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-1.5">
-                      <span className="text-[10px] font-black text-slate-800 truncate">
-                        {t(channel.nameKey, language)}
-                      </span>
-                      {purposeKey && (
-                        <span className="px-1.5 py-0.5 rounded-md bg-indigo-50 text-indigo-700 text-[8px] font-bold uppercase tracking-wider">
-                          {t(purposeKey, language)}
-                        </span>
-                      )}
-                      {hasClicked && (
-                        <span className="px-1.5 py-0.5 rounded-md bg-emerald-50 text-emerald-600 text-[8px] font-bold uppercase tracking-wider">
-                          {t('official_channels_visited', language)}
-                        </span>
-                      )}
-                    </div>
-                    <p className="mt-1 text-[9px] font-medium text-slate-500 leading-relaxed">
-                      {t(channel.descKey, language)}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleOpenOfficialChannel(channel)}
-                    disabled={!isAvailable}
-                    className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border border-indigo-200 bg-white hover:bg-indigo-50 transition-all active:scale-95 cursor-pointer text-[10px] font-bold text-indigo-700 shadow-sm touch-target disabled:bg-slate-100 disabled:text-slate-400 disabled:border-slate-200 disabled:cursor-not-allowed"
-                  >
-                    <ExternalLink size={10} className="text-indigo-400" />
-                    <span>{t('official_channels_open_link', language)}</span>
-                  </button>
-                  <button
-                    onClick={() => {
-                      void handleCopyOfficialChannel(channel);
-                    }}
-                    disabled={!isAvailable || !navigator.clipboard}
-                    className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 transition-all active:scale-95 cursor-pointer text-[10px] font-bold text-slate-700 shadow-sm touch-target disabled:bg-slate-100 disabled:text-slate-400 disabled:border-slate-200 disabled:cursor-not-allowed"
-                  >
-                    <Copy size={10} className="text-slate-400" />
-                    <span>{t('official_channels_copy_link', language)}</span>
-                  </button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-        <div className="flex items-center gap-1 text-[9px] font-bold text-amber-600">
-          <AlertCircle size={10} />
-          <span>{t('official_channels_reward_pending', language)}</span>
-        </div>
-      </div>
     </div>
 
-      {/* 4. Upload Dialog Modal */}
+      {/* 4. Upload Dialog Modal (DESIGN.md Flat Monospace) */}
       <AnimatePresence>
         {showUploadModal && (
-          <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 pb-[calc(env(safe-area-inset-bottom)+1.5rem)] z-[20000]">
+          <div className="fixed inset-0 bg-black/75 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 pb-[calc(env(safe-area-inset-bottom)+1.5rem)] z-[20000] font-mono">
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-md max-h-[85dvh] sm:max-h-[88dvh] bg-white border border-slate-100 rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl relative flex flex-col text-slate-800 font-sans"
+              className="w-full max-w-md max-h-[85dvh] sm:max-h-[88dvh] bg-[#fdfcfc] border border-[rgba(15,0,0,0.2)] rounded-none overflow-hidden shadow-2xl relative flex flex-col text-[#201d1d]"
             >
               {/* Modal Header */}
-              <div className="shrink-0 p-4 sm:p-4.5 bg-slate-50/50 border-b border-slate-150/70 flex justify-between items-center">
-                <h3 className="font-bold text-base uppercase tracking-tight flex items-center gap-2 text-slate-800">
-                  ✍️ {t('community_new_post', language)}
+              <div className="shrink-0 p-3.5 sm:p-4 bg-white border-b border-[rgba(15,0,0,0.12)] flex justify-between items-center">
+                <h3 className="font-mono font-bold text-sm tracking-tight flex items-center gap-2 text-[#201d1d]">
+                  <span>[✍️ {t('community_new_post', language)}]</span>
                 </h3>
                 <button
+                  type="button"
                   onClick={() => {
                     playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
                     setShowUploadModal(false);
@@ -2441,24 +2933,39 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                     setImagePreviews([]);
                     setUploadFlair('');
                   }}
-                  className="p-1.5 hover:bg-slate-100 text-slate-400 rounded-full cursor-pointer border-none"
+                  className="px-2 py-1 border border-[rgba(15,0,0,0.15)] hover:border-[#201d1d] text-[#201d1d] text-xs font-mono font-bold rounded-sm cursor-pointer transition-colors"
+                  title="Close"
                 >
-                  <X size={18} />
+                  [✕]
                 </button>
               </div>
 
               {/* Modal Content */}
-              <form onSubmit={handleCreatePost} className="flex-1 min-h-0 flex flex-col overflow-hidden">
-                <div className="flex-1 min-h-0 p-4 sm:p-6 flex flex-col gap-4 overflow-y-auto custom-scrollbar">
+              <form onSubmit={handleCreatePost} className="flex-1 min-h-0 flex flex-col overflow-hidden font-mono">
+                <div className="flex-1 min-h-0 p-4 sm:p-5 flex flex-col gap-3.5 overflow-y-auto custom-scrollbar">
+                  {/* Draft Restored Banner */}
+                  {hasDraftRestored && (
+                    <div className="bg-amber-50 border border-amber-200 p-2.5 flex items-center justify-between text-xs font-mono text-amber-900 rounded-sm">
+                      <span>[💾 임시저장된 글이 복원되었습니다]</span>
+                      <button
+                        type="button"
+                        onClick={handleClearDraft}
+                        className="px-2 py-0.5 bg-amber-200/80 hover:bg-amber-300 text-amber-950 text-[10px] font-mono rounded-sm border border-amber-400 cursor-pointer"
+                      >
+                        [초기화]
+                      </button>
+                    </div>
+                  )}
+
                   {/* Category Select */}
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                      {t('category', language)}
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#666]">
+                      [CATEGORY]
                     </label>
                     <select
                       value={uploadCategory}
                       onChange={(e) => setUploadCategory(e.target.value as CommunityWritableCategory)}
-                      className="w-full p-3.5 bg-slate-50 border border-slate-200/80 rounded-xl font-semibold text-sm focus:outline-none focus:border-indigo-500 focus:bg-white transition-all text-slate-700"
+                      className="w-full p-2.5 bg-white border border-[rgba(15,0,0,0.15)] rounded-sm font-mono text-xs focus:outline-none focus:border-[#201d1d] transition-all text-[#201d1d]"
                     >
                       <option value="free">{t('community_cat_free', language)}</option>
                       <option value="qa">{t('community_cat_qa', language)}</option>
@@ -2474,15 +2981,15 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                     </select>
                   </div>
 
-                  {/* Doc 62: Flair Select */}
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                      🏷️ Flair
+                  {/* Flair Select */}
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#666]">
+                      [FLAIR TAG]
                     </label>
                     <select
                       value={uploadFlair}
                       onChange={(e) => setUploadFlair(e.target.value as PostFlair | '')}
-                      className="w-full p-3.5 bg-slate-50 border border-slate-200/80 rounded-xl font-semibold text-sm focus:outline-none focus:border-indigo-500 focus:bg-white transition-all text-slate-700"
+                      className="w-full p-2.5 bg-white border border-[rgba(15,0,0,0.15)] rounded-sm font-mono text-xs focus:outline-none focus:border-[#201d1d] transition-all text-[#201d1d]"
                     >
                       <option value="">{t('community_no_flair', language) || 'No flair'}</option>
                       {getFlairsForCategory(uploadCategory).map((flair) => (
@@ -2493,35 +3000,63 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                     </select>
                   </div>
 
-                  {/* Content Area */}
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                      {t('community_post_content', language)}
-                    </label>
+                  {/* Deck Attachment Toggle */}
+                  <label className="flex items-center gap-2 p-2 border border-[rgba(15,0,0,0.12)] bg-white rounded-sm cursor-pointer text-xs font-mono select-none">
+                    <input
+                      type="checkbox"
+                      checked={attachDeckToPost}
+                      onChange={(e) => setAttachDeckToPost(e.target.checked)}
+                      className="accent-[#201d1d] w-4 h-4 cursor-pointer"
+                    />
+                    <span className="text-[11px] font-semibold text-[#201d1d]">
+                      [🎴 {language === 'ko' ? '내 대표 덱 함께 첨부하기' : 'Attach My Battle Deck'}]
+                    </span>
+                  </label>
+
+                  {/* Content Area with Live Character Counter */}
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center justify-between">
+                      <label className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#666]">
+                        [CONTENT]
+                      </label>
+                      <span className={cn(
+                        "text-[10px] font-mono",
+                        content.length >= 280 ? "text-red-600 font-bold" : "text-[#888]"
+                      )}>
+                        [{content.length} / 300]
+                      </span>
+                    </div>
                     <textarea
                       rows={4}
                       value={content}
                       onChange={(e) => setContent(e.target.value)}
                       placeholder={t('community_post_placeholder', language)}
-                      className="w-full p-4 bg-slate-50 border border-slate-200/80 rounded-xl font-semibold text-sm focus:outline-none focus:border-indigo-500 focus:bg-white resize-none transition-all text-slate-700"
+                      className="w-full p-3 bg-white border border-[rgba(15,0,0,0.15)] rounded-sm font-mono text-xs focus:outline-none focus:border-[#201d1d] resize-none transition-all text-[#201d1d]"
                       maxLength={300}
                       required
                     />
                   </div>
 
-                  {/* 다중 파일 업로드 버튼 */}
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                      🏞️ {t('community_add_images', language)}
-                    </label>
+                  {/* 다중 파일 업로드 버튼 및 이미지 카운터 */}
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center justify-between">
+                      <label className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#666]">
+                        [IMAGES]
+                      </label>
+                      {imageFiles.length > 0 && (
+                        <span className="text-[10px] font-mono text-[#666]">
+                          [{imageFiles.length}장 / {(imageFiles.reduce((acc, f) => acc + f.size, 0) / 1024 / 1024).toFixed(1)}MB]
+                        </span>
+                      )}
+                    </div>
                     
                     <button
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
-                      className="w-full p-4 bg-slate-50 hover:bg-slate-100/80 border border-dashed border-slate-200 rounded-xl font-semibold text-xs flex items-center justify-center gap-2 cursor-pointer transition-all text-slate-500"
+                      className="w-full p-3 bg-white hover:bg-[#f5f2f2] border border-dashed border-[rgba(15,0,0,0.25)] rounded-sm font-mono text-xs flex items-center justify-center gap-2 cursor-pointer transition-all text-[#444] touch-target"
                     >
-                      <ImageIcon size={16} />
-                      <span>{t('choose_images_label', language)}</span>
+                      <ImageIcon size={14} />
+                      <span>[{t('choose_images_label', language)} (최대 5장)]</span>
                     </button>
 
                     <input
@@ -2538,7 +3073,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                   {imagePreviews.length > 0 && (
                     <div className="grid grid-cols-5 gap-2 mt-1">
                       {imagePreviews.map((previewUrl, index) => (
-                        <div key={index} className="aspect-square border border-slate-150 rounded-xl overflow-hidden relative bg-slate-950 flex items-center justify-center">
+                        <div key={index} className="aspect-square border border-[rgba(15,0,0,0.15)] rounded-none overflow-hidden relative bg-[#121010] flex items-center justify-center">
                           <img
                             src={previewUrl}
                             alt={`preview-${index}`}
@@ -2547,9 +3082,10 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                           <button
                             type="button"
                             onClick={() => handleRemoveImage(index)}
-                            className="absolute -top-1 -right-1 bg-rose-600 p-0.5 rounded-full text-white cursor-pointer hover:bg-rose-500 scale-90 border-none flex items-center justify-center"
+                            className="absolute top-0 right-0 bg-black/80 hover:bg-red-600 px-1 py-0.5 text-white text-[9px] font-mono font-bold cursor-pointer border-none flex items-center justify-center"
+                            title="Remove image"
                           >
-                            <X size={10} />
+                            [✕]
                           </button>
                         </div>
                       ))}
@@ -2558,16 +3094,16 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                 </div>
 
                 {/* Pinned Submit Action Footer */}
-                <div className="shrink-0 p-4 border-t border-slate-150 bg-slate-50/90">
+                <div className="shrink-0 p-3.5 border-t border-[rgba(15,0,0,0.12)] bg-white">
                   <button
                     type="submit"
                     disabled={isSubmitting}
                     className={cn(
-                      "w-full py-3.5 sm:py-4 bg-slate-900 text-white font-bold tracking-wider rounded-xl transition-all shadow-md hover:bg-slate-800 disabled:opacity-50 cursor-pointer active:scale-98 text-xs uppercase",
+                      "w-full py-3 bg-[#201d1d] hover:bg-[#383333] text-white font-mono font-bold tracking-wider rounded-sm transition-all border border-[#201d1d] disabled:opacity-50 cursor-pointer active:scale-98 text-xs uppercase touch-target",
                       isSubmitting && "animate-pulse"
                     )}
                   >
-                    {isSubmitting ? t('community_uploading_images', language) : t('community_upload', language)}
+                    {isSubmitting ? `[⏳ ${t('community_uploading_images', language)}]` : `[✓ ${t('community_upload', language)}]`}
                   </button>
                 </div>
               </form>
@@ -2707,7 +3243,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
         )}
       </AnimatePresence>
 
-      {/* Floating Write Post Button */}
+      {/* Floating Write Post Button (DESIGN.md Flat Monospace) */}
       <button
         onClick={() => {
           playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
@@ -2716,12 +3252,116 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
           }
           setShowUploadModal(true);
         }}
-        className="fixed bottom-[calc(env(safe-area-inset-bottom)+5.25rem)] right-4 sm:right-6 z-[10010] px-4 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-full shadow-2xl shadow-indigo-500/40 hover:shadow-indigo-400/50 active:scale-95 transition-all cursor-pointer border border-indigo-400/30 flex items-center gap-2"
+        className="fixed bottom-[calc(env(safe-area-inset-bottom)+5.25rem)] right-4 sm:right-6 z-[10010] px-3.5 py-2.5 bg-[#201d1d] hover:bg-[#332f2f] text-white font-mono font-bold rounded-sm shadow-xl active:scale-95 transition-all cursor-pointer border border-[rgba(255,255,255,0.2)] flex items-center gap-1.5 touch-target"
         aria-label={t('community_new_post', language)}
       >
-        <Plus size={20} className="shrink-0" />
-        <span className="text-xs font-bold tracking-wider">{language === 'ko' ? '글쓰기' : 'Write'}</span>
+        <span className="font-mono text-base leading-none">[+]</span>
+        <span className="text-xs tracking-wider">{language === 'ko' ? '글쓰기' : 'Write'}</span>
       </button>
+
+      {/* [Round 2] Full-screen Image Lightbox Modal */}
+      <AnimatePresence>
+        {lightbox && lightbox.isOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[20060] bg-black/95 backdrop-blur-md flex flex-col justify-between p-3 sm:p-6 font-mono text-white select-none"
+            onClick={() => setLightbox(null)}
+          >
+            {/* Top Toolbar */}
+            <div className="flex items-center justify-between z-10 w-full max-w-5xl mx-auto" onClick={(e) => e.stopPropagation()}>
+              <div className="flex items-center gap-2">
+                <span className="px-2.5 py-1 bg-white/10 border border-white/20 rounded-sm text-xs font-mono">
+                  [IMAGE {lightbox.index + 1} / {lightbox.images.length}]
+                </span>
+                <a
+                  href={lightbox.images[lightbox.index]}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-2.5 py-1 bg-white/10 hover:bg-white/20 border border-white/20 rounded-sm text-xs font-mono text-white/80 hover:text-white transition-colors"
+                >
+                  [🔗 {language === 'ko' ? '원본 보기' : 'Open Raw'}]
+                </a>
+              </div>
+              <button
+                onClick={() => setLightbox(null)}
+                className="px-3 py-1 bg-red-600/80 hover:bg-red-600 text-white rounded-sm border border-red-400 text-xs font-mono font-bold transition-all cursor-pointer active:scale-95"
+                title="Close (Esc)"
+              >
+                [✕ {language === 'ko' ? '닫기' : 'CLOSE'}]
+              </button>
+            </div>
+
+            {/* Center Image Container with Prev/Next Controls */}
+            <div className="relative flex-1 flex items-center justify-center p-2 my-2 overflow-hidden" onClick={(e) => e.stopPropagation()}>
+              {lightbox.images.length > 1 && (
+                <button
+                  onClick={() => {
+                    playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
+                    setLightbox((prev) => prev ? ({
+                      ...prev,
+                      index: (prev.index === 0 ? prev.images.length - 1 : prev.index - 1)
+                    }) : null);
+                  }}
+                  className="absolute left-2 sm:left-4 z-20 p-3 bg-black/75 hover:bg-black text-white border border-white/30 rounded-sm active:scale-95 transition-all cursor-pointer font-mono font-bold text-sm touch-target"
+                  title="Previous image"
+                >
+                  [&lt;]
+                </button>
+              )}
+
+              <motion.img
+                key={lightbox.index}
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.95, opacity: 0 }}
+                transition={{ duration: 0.15 }}
+                src={lightbox.images[lightbox.index]}
+                alt={`Expanded view ${lightbox.index + 1}`}
+                className="max-h-[72vh] max-w-full object-contain rounded-none border border-white/20 shadow-2xl"
+              />
+
+              {lightbox.images.length > 1 && (
+                <button
+                  onClick={() => {
+                    playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
+                    setLightbox((prev) => prev ? ({
+                      ...prev,
+                      index: (prev.index === prev.images.length - 1 ? 0 : prev.index + 1)
+                    }) : null);
+                  }}
+                  className="absolute right-2 sm:right-4 z-20 p-3 bg-black/75 hover:bg-black text-white border border-white/30 rounded-sm active:scale-95 transition-all cursor-pointer font-mono font-bold text-sm touch-target"
+                  title="Next image"
+                >
+                  [&gt;]
+                </button>
+              )}
+            </div>
+
+            {/* Bottom Thumbnail Strip */}
+            {lightbox.images.length > 1 && (
+              <div className="flex items-center justify-center gap-2 overflow-x-auto py-2 z-10 max-w-2xl mx-auto" onClick={(e) => e.stopPropagation()}>
+                {lightbox.images.map((img, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => {
+                      playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
+                      setLightbox((prev) => prev ? ({ ...prev, index: idx }) : null);
+                    }}
+                    className={cn(
+                      "w-12 h-12 rounded-none overflow-hidden border transition-all cursor-pointer shrink-0 bg-black",
+                      lightbox.index === idx ? "border-2 border-white scale-105" : "border-white/30 opacity-60 hover:opacity-100"
+                    )}
+                  >
+                    <img src={img} alt={`Thumb ${idx + 1}`} className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Help Popup */}
       <AnimatePresence>
@@ -2779,6 +3419,35 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                 </button>
               </div>
             </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── [Round 6] 좋아요 마이크로 파티클 ── */}
+      {likeParticles.map((particle) => (
+        <span
+          key={particle.id}
+          className="fixed z-50 pointer-events-none text-2xl animate-ping"
+          style={{
+            left: `calc(50% + ${particle.x}px)`,
+            top: '40%'
+          }}
+        >
+          {particle.emoji}
+        </span>
+      ))}
+
+      {/* ── [Round 7] 소셜 공유 / 딥링크 클립보드 토스트 ── */}
+      <AnimatePresence>
+        {shareToast && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-[#201d1d] text-white px-4 py-2.5 rounded-sm border border-white/20 text-xs font-mono font-bold shadow-xl flex items-center gap-2"
+          >
+            <Check size={14} className="text-emerald-400" />
+            <span>{shareToast}</span>
           </motion.div>
         )}
       </AnimatePresence>

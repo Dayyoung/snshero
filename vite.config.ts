@@ -107,6 +107,72 @@ export default defineConfig(({mode}) => {
                 return;
               }
 
+              // Community Image Upload endpoint (stores image in public/uploads/community for shared access)
+              if (decodedUrl === '/api/community/upload-image' && req.method === 'POST') {
+                let body = '';
+                req.on('data', chunk => { body += chunk; });
+                req.on('end', () => {
+                  try {
+                    let imageData = '';
+                    try {
+                      const parsed = JSON.parse(body);
+                      imageData = parsed.image || '';
+                    } catch {
+                      imageData = body;
+                    }
+
+                    if (!imageData || imageData.length < 20) {
+                      res.statusCode = 400;
+                      res.setHeader('Content-Type', 'application/json; charset=utf-8');
+                      res.end(JSON.stringify({ ok: false, error: 'Empty image data' }));
+                      return;
+                    }
+
+                    const cleanBase64 = imageData.replace(/^data:image\/[a-zA-Z0-9.+]+;base64,/, '');
+                    const buf = Buffer.from(cleanBase64, 'base64');
+                    const uploadDir = path.resolve(process.cwd(), 'public', 'uploads', 'community');
+                    if (!fs.existsSync(uploadDir)) {
+                      fs.mkdirSync(uploadDir, { recursive: true });
+                    }
+                    const filename = `img_${Date.now()}_${Math.random().toString(36).substring(2, 8)}.jpg`;
+                    const filePath = path.join(uploadDir, filename);
+                    fs.writeFileSync(filePath, buf);
+
+                    const publicUrl = `/uploads/community/${filename}`;
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json; charset=utf-8');
+                    res.setHeader('Access-Control-Allow-Origin', '*');
+                    res.end(JSON.stringify({ ok: true, id: filename, url: publicUrl }));
+                  } catch (uploadErr: any) {
+                    res.statusCode = 500;
+                    res.setHeader('Content-Type', 'application/json; charset=utf-8');
+                    res.setHeader('Access-Control-Allow-Origin', '*');
+                    res.end(JSON.stringify({ ok: false, error: uploadErr?.message }));
+                  }
+                });
+                return;
+              }
+
+              // Community Image Serving endpoint
+              if (decodedUrl.startsWith('/api/community/images/')) {
+                const filename = path.basename(decodedUrl);
+                const filePath = path.resolve(process.cwd(), 'public', 'uploads', 'community', filename);
+                if (fs.existsSync(filePath)) {
+                  const stat = fs.statSync(filePath);
+                  res.statusCode = 200;
+                  res.setHeader('Content-Type', 'image/jpeg');
+                  res.setHeader('Content-Length', stat.size);
+                  res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+                  res.setHeader('Access-Control-Allow-Origin', '*');
+                  fs.createReadStream(filePath).pipe(res);
+                  return;
+                } else {
+                  res.statusCode = 404;
+                  res.end('Image not found');
+                  return;
+                }
+              }
+
               // Shopify mock endpoints to prevent 404 console errors
               if (
                 decodedUrl.includes('sf_private_access_tokens') ||
