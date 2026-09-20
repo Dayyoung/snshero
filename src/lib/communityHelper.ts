@@ -494,7 +494,31 @@ export async function submitPostToGoogleForm(params: {
 
   let submitSuccess = false;
 
-  // 2. 브라우저 환경: 네이티브 히든 iframe 폼 제출 (CORS 및 서드파티 보호 100% 우회)
+  // 2. 내부 프록시 호출 시도 (Node.js 백그라운드 직접 전송으로 100% 신뢰성 보장)
+  const formData = new URLSearchParams();
+  for (const [k, v] of Object.entries(entries)) {
+    formData.append(k, v);
+  }
+  const formBodyStr = formData.toString();
+
+  if (typeof window !== 'undefined') {
+    try {
+      const proxyResp = await fetch('/api/community/submit-form', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: formBodyStr,
+      });
+      if (proxyResp.ok) {
+        submitSuccess = true;
+      }
+    } catch (proxyErr) {
+      console.warn('[GoogleForm] Proxy submit failed, falling back to direct iframe/fetch:', proxyErr);
+    }
+  }
+
+  // 3. 브라우저 환경: 네이티브 히든 iframe 폼 제출 (CORS 및 서드파티 보호 100% 우회)
   if (typeof document !== 'undefined') {
     try {
       submitViaHiddenIframe(GOOGLE_FORM_URL, entries);
@@ -504,19 +528,15 @@ export async function submitPostToGoogleForm(params: {
     }
   }
 
-  // 3. fetch(..., { mode: 'no-cors' }) 병렬/대체 전송
+  // 4. fetch(..., { mode: 'no-cors' }) 병렬/대체 전송
   try {
-    const formData = new URLSearchParams();
-    for (const [k, v] of Object.entries(entries)) {
-      formData.append(k, v);
-    }
     await fetch(GOOGLE_FORM_URL, {
       method: 'POST',
       mode: 'no-cors',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: formData.toString(),
+      body: formBodyStr,
     });
     submitSuccess = true;
   } catch (error) {
@@ -599,6 +619,26 @@ export function fetchSheetViaJsonp(url: string, timeoutMs: number = 7000): Promi
 }
 
 /**
+ * 렌더링 가능한 유효 이미지 URL 검사
+ * 깨진 base64 더미 문자열("base64 image", "AAAAAAAA...") 필터링
+ */
+export function isValidImageUrl(url: string | undefined | null): boolean {
+  if (!url || typeof url !== 'string') return false;
+  const trimmed = url.trim();
+  if (trimmed.length < 10) return false;
+  if (trimmed === 'base64 image' || trimmed.startsWith('base64 image')) return false;
+  if (trimmed.startsWith('http://') || trimmed.startsWith('https://') || trimmed.startsWith('/')) {
+    return true;
+  }
+  if (trimmed.startsWith('data:image/')) {
+    // AAAAA... 로 채워진 가짜/테스트 더미 base64 배제
+    if (trimmed.includes('AAAAAAAAAAAAAAAAAAAAAAAAAAAA')) return false;
+    return trimmed.length > 50;
+  }
+  return false;
+}
+
+/**
  * gviz JSON 데이터 객체를 CommunityPost 배열로 변환
  */
 export function parseGvizDataToPosts(data: any): CommunityPost[] {
@@ -629,7 +669,7 @@ export function parseGvizDataToPosts(data: any): CommunityPost[] {
       const cell = cells[imgIdx];
       if (cell && cell.v !== null && cell.v !== undefined) {
         const strVal = String(cell.v).trim();
-        if (strVal && strVal !== 'null' && strVal !== 'undefined') {
+        if (isValidImageUrl(strVal)) {
           images.push(strVal);
         }
       }
@@ -659,6 +699,8 @@ export function parseGvizDataToPosts(data: any): CommunityPost[] {
       userId: userId,
       userName: userName,
       userAvatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${userId}`,
+      title: rawLabel || undefined,
+      isFromSheet: true,
       imageUrl: images[0] || undefined,
       imageUrls: images.length > 0 ? images : undefined,
       content: content,
@@ -700,7 +742,10 @@ export function parseCsvRowsToPosts(rows: string[][]): CommunityPost[] {
     const images: string[] = [];
     for (let imgIdx = 4; imgIdx <= 8; imgIdx++) {
       if (row[imgIdx] && row[imgIdx].trim()) {
-        images.push(row[imgIdx].trim());
+        const strVal = row[imgIdx].trim();
+        if (isValidImageUrl(strVal)) {
+          images.push(strVal);
+        }
       }
     }
 
@@ -726,6 +771,8 @@ export function parseCsvRowsToPosts(rows: string[][]): CommunityPost[] {
       userId: userId,
       userName: userName,
       userAvatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${userId}`,
+      title: rawLabel || undefined,
+      isFromSheet: true,
       imageUrl: images[0] || undefined,
       imageUrls: images.length > 0 ? images : undefined,
       content: content,
@@ -748,10 +795,27 @@ export function parseCsvRowsToPosts(rows: string[][]): CommunityPost[] {
 
 /**
  * 구글 스프레드시트에서 게시글 목록을 실시간 조회
- * (JSONP 우선 시도 -> 브라우저 CORS 문제 원천 차단 -> Direct CSV fallback)
+ * (내부 Vite 프록시 우선 -> JSONP -> Direct CSV fallback 3단계 페일오버)
  */
 export async function fetchPostsFromGoogleSheet(): Promise<CommunityPost[]> {
-  // 1. JSONP 방식 시도 (브라우저 CORS 완전 우회)
+  // 1. 내부 프록시 우선 시도 (브라우저 CORS 원천 차단 및 고속 전송)
+  if (typeof window !== 'undefined') {
+    try {
+      const proxyResp = await fetch(`/api/community/sheet-posts?_t=${Date.now()}`);
+      if (proxyResp.ok) {
+        const csvText = await proxyResp.text();
+        const rows = parseCSV(csvText);
+        const parsed = parseCsvRowsToPosts(rows);
+        if (parsed.length > 0) {
+          return parsed;
+        }
+      }
+    } catch (proxyError) {
+      console.warn('[GoogleSheet] Proxy fetch failed, falling back to JSONP:', proxyError);
+    }
+  }
+
+  // 2. JSONP 방식 시도 (프록시 지원 없는 배포 환경에서도 브라우저 CORS 우회)
   if (typeof window !== 'undefined') {
     try {
       const gvizData = await fetchSheetViaJsonp(GOOGLE_SHEET_GVIZ_URL, 6000);
@@ -764,7 +828,7 @@ export async function fetchPostsFromGoogleSheet(): Promise<CommunityPost[]> {
     }
   }
 
-  // 2. Direct CSV fetch fallback (Node 환경 또는 프록시 지원 환경)
+  // 3. Direct CSV fetch fallback (Node 환경 또는 프록시/CORS 지원 환경)
   try {
     const response = await fetch(`${GOOGLE_SHEET_CSV_URL}&_t=${Date.now()}`, {
       headers: {
@@ -792,8 +856,13 @@ export async function getCommunityPosts(): Promise<CommunityPost[]> {
     const sheetPosts = await fetchPostsFromGoogleSheet();
     if (sheetPosts && sheetPosts.length > 0) {
       // 로컬 전용 추가 글(새로 작성한 로컬 글 중 아직 시트에 반영되지 않은 것들) 병합
+      // 더미 포스트(post_dummy_)는 구글 시트 글이 있을 때 완전히 배제하여 구글 시트 내용이 바로 드러나게 함
       const localPosts = getLocalPosts();
-      const nonSheetLocalPosts = localPosts.filter(p => !p.id.startsWith('gsheet_') && !sheetPosts.some(sp => sp.content === p.content && Math.abs(sp.createdAt - p.createdAt) < 60000));
+      const nonSheetLocalPosts = localPosts.filter(p => 
+        !p.id.startsWith('gsheet_') && 
+        !p.id.startsWith('post_dummy_') && 
+        !sheetPosts.some(sp => sp.content === p.content && Math.abs(sp.createdAt - p.createdAt) < 60000)
+      );
       
       const merged = [...nonSheetLocalPosts, ...sheetPosts];
       merged.sort((a, b) => b.createdAt - a.createdAt);

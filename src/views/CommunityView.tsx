@@ -1148,6 +1148,31 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
         </div>
       )}
 
+      {/* Google Sheets Realtime Sync Status Banner */}
+      <div className="flex items-center justify-between px-3.5 py-2 bg-emerald-50/80 border border-emerald-200/80 rounded-xl text-[11px] font-semibold text-emerald-800 shadow-xs">
+        <div className="flex items-center gap-2">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </span>
+          <span>
+            {language === 'ko'
+              ? `구글 스프레드시트 실시간 연동 (${posts.filter(p => p.isFromSheet).length}개 글 동기화)`
+              : `Google Sheet Live Synced (${posts.filter(p => p.isFromSheet).length} posts)`}
+          </span>
+        </div>
+        <button
+          onClick={() => {
+            playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
+            loadPosts();
+          }}
+          className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 hover:text-emerald-900 underline cursor-pointer bg-transparent border-none p-0"
+        >
+          <RotateCw size={11} className={loading ? "animate-spin" : ""} />
+          {language === 'ko' ? '새로고침' : 'Refresh'}
+        </button>
+      </div>
+
       {/* Sort & Filter Bar (Doc 62) */}
       {selectedCategory !== 'select' && (
         <div className="flex items-center justify-between border-b border-slate-200/80 pb-3 px-1 mt-4">
@@ -1269,6 +1294,12 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
 
               {/* Doc 62: Flair badge */}
               {renderFlairBadge(selectedPost.flair)}
+
+              {selectedPost.isFromSheet && (
+                <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200 text-[9px] font-bold">
+                  📊 G-Sheet
+                </span>
+              )}
 
               {/* Doc 62: Pinned indicator */}
               {selectedPost.isPinned && (
@@ -1468,6 +1499,11 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
           {/* Content / Body */}
           <div className="p-5 flex flex-col gap-4">
             <div className="flex flex-col gap-3">
+              {selectedPost.title && (
+                <h3 className="text-base font-bold text-slate-900 leading-snug">
+                  {selectedPost.title}
+                </h3>
+              )}
               <p className="text-sm font-semibold leading-relaxed whitespace-pre-wrap text-slate-700">
                 {translatedContents[selectedPost.id] && !translatedContents[selectedPost.id].isOriginal
                   ? translatedContents[selectedPost.id].translated
@@ -2092,6 +2128,9 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                             src={imgUrls[0]}
                             alt="post thumb"
                             className="w-full h-full object-contain"
+                            onError={(e) => {
+                              (e.currentTarget.parentElement as HTMLElement)?.classList.add('hidden');
+                            }}
                           />
                           {imgUrls.length > 1 && (
                             <div className="absolute top-2 right-2 bg-slate-900/80 px-2 py-1 rounded-lg text-[8px] font-bold text-white border border-white/10">
@@ -2149,6 +2188,11 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                     {/* Doc 62: Flair + Pinned/Weekly indicators in grid */}
                     <div className="px-3 pb-1 flex flex-wrap items-center gap-1.5">
                       {renderFlairBadge(post.flair)}
+                      {post.isFromSheet && (
+                        <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-emerald-50 text-emerald-600 border border-emerald-200 text-[8px] font-bold">
+                          📊 G-Sheet
+                        </span>
+                      )}
                       {post.isPinned && (
                         <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-amber-50 text-amber-600 border border-amber-200 text-[8px] font-bold">
                           <Pin size={9} /> Pinned
@@ -2163,6 +2207,11 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
 
                       <div className="flex-1 flex flex-col justify-between gap-1.5">
                         <div>
+                          {post.title && (
+                            <h4 className="text-xs font-bold text-slate-900 line-clamp-1 mb-1">
+                              {post.title}
+                            </h4>
+                          )}
                           <p className="text-xs font-semibold leading-relaxed line-clamp-3 text-slate-550 whitespace-pre-wrap">
                             {translatedContents[post.id] && !translatedContents[post.id].isOriginal
                               ? translatedContents[post.id].translated

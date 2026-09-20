@@ -449,6 +449,8 @@ export interface CommunityPost {
   userId: string;
   userName: string;
   userAvatar: string;
+  title?: string;
+  isFromSheet?: boolean;
   userEmoticonKey?: string;
   userBadgeKey?: string;
   userTitleKey?: string;

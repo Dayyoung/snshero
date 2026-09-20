@@ -56,6 +56,57 @@ export default defineConfig(({mode}) => {
               const rawUrl = req.url.split('?')[0];
               const decodedUrl = decodeURIComponent(rawUrl);
 
+              // Google Spreadsheet Community Posts proxy (bypasses browser CORS restrictions)
+              if (decodedUrl === '/api/community/sheet-posts') {
+                const sheetId = '1o8rwdG_O_-efkKHgf9oMpFaOUnAAVxMQVfDldFavbjg';
+                const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&_t=${Date.now()}`;
+                fetch(csvUrl)
+                  .then(async (resp) => {
+                    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                    const csv = await resp.text();
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+                    res.setHeader('Access-Control-Allow-Origin', '*');
+                    res.setHeader('Cache-Control', 'no-cache');
+                    res.end(csv);
+                  })
+                  .catch((err) => {
+                    res.statusCode = 502;
+                    res.setHeader('Content-Type', 'application/json; charset=utf-8');
+                    res.setHeader('Access-Control-Allow-Origin', '*');
+                    res.end(JSON.stringify({ error: err?.message || 'Failed to fetch spreadsheet' }));
+                  });
+                return;
+              }
+
+              // Google Form submission proxy
+              if (decodedUrl === '/api/community/submit-form' && req.method === 'POST') {
+                let body = '';
+                req.on('data', chunk => { body += chunk; });
+                req.on('end', async () => {
+                  try {
+                    const formUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSer0AqPbpduTxfSJNg3X8Pa1C8h2L5_Skmbt0NDdVZt6bS1GA/formResponse';
+                    const formResp = await fetch(formUrl, {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                      },
+                      body: body,
+                    });
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json; charset=utf-8');
+                    res.setHeader('Access-Control-Allow-Origin', '*');
+                    res.end(JSON.stringify({ ok: true, status: formResp.status }));
+                  } catch (err: any) {
+                    res.statusCode = 500;
+                    res.setHeader('Content-Type', 'application/json; charset=utf-8');
+                    res.setHeader('Access-Control-Allow-Origin', '*');
+                    res.end(JSON.stringify({ ok: false, error: err?.message }));
+                  }
+                });
+                return;
+              }
+
               // Shopify mock endpoints to prevent 404 console errors
               if (
                 decodedUrl.includes('sf_private_access_tokens') ||
