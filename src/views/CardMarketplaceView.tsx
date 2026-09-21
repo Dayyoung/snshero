@@ -10,10 +10,6 @@ import { PageHeader } from '../components/PageHeader';
 import { MarketplaceCardTradeModal } from '../components/MarketplaceCardTradeModal';
 import { MarketEscrowModal } from '../components/MarketEscrowModal';
 import { MarketSparkline } from '../components/MarketSparkline';
-import { AutoBuySniperModal } from '../components/AutoBuySniperModal';
-import { CardAppraisalMagnifier } from '../components/CardAppraisalMagnifier';
-import { BargainOfferSlider } from '../components/BargainOfferSlider';
-import { BlindBoxListingCard } from '../components/BlindBoxListingCard';
 import { t } from '../lib/i18n';
 import { cn } from '../lib/utils';
 import type { DatabaseCard, InventoryRecord, Language, Listing, Offer, TradeAuditLog, TradeStatus, ViewType } from '../types';
@@ -183,16 +179,6 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
   // ID 338: 3단계 안전 에스크로 확인 모달 상태
   const [escrowListing, setEscrowListing] = useState<Listing | null>(null);
   const [isEscrowModalOpen, setIsEscrowModalOpen] = useState(false);
-
-  // SCR-05-12: Auto Buy Sniper Modal State
-  const [isSniperModalOpen, setIsSniperModalOpen] = useState(false);
-
-  // SCR-05-14: 모바일 감정사 돋보기 & 원핸드 스마트 흥정
-  const [appraisalCard, setAppraisalCard] = useState<{ name: string; image: string } | null>(null);
-  const [bargainListing, setBargainListing] = useState<Listing | null>(null);
-
-  // SCR-05-15: 황금 블라인드 상자 및 수수료 세이프 박스
-  const [blindBoxReward, setBlindBoxReward] = useState<string | null>(null);
 
   // ID 383: 상하좌우 4방향 스탯 수치 슬라이더 필터 상태 (0~10)
   const [minStatUp, setMinStatUp] = useState<number>(0);
@@ -864,41 +850,6 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
       />
 
       <div className="max-w-5xl mx-auto px-4 py-5 space-y-5">
-        {/* SCR-05-12: 24H Auto Buy Sniper Bot Quick Bar */}
-        <div className="p-3 bg-gradient-to-r from-slate-900 via-zinc-900 to-stone-900 border border-amber-500/40 rounded-none text-white flex items-center justify-between shadow-xs select-none">
-          <div className="space-y-0.5">
-            <div className="text-xs font-mono font-black text-amber-400 flex items-center gap-1.5">
-              <span>🎯 [ 24시간 자동 매수 스나이퍼 봇 ]</span>
-            </div>
-            <p className="text-[10px] text-zinc-300">
-              {language === 'ko' ? '목표 카드와 상한가 지정 시 실시간 0.05초 즉시 자동 체결' : 'Set target card & max price for instant 0.05s automated sniping.'}
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={() => {
-              triggerHaptic('medium');
-              setIsSniperModalOpen(true);
-            }}
-            className="px-3 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-mono font-black text-xs uppercase tracking-tight rounded-sm active:scale-95 transition-all cursor-pointer shrink-0 shadow-sm"
-          >
-            {language === 'ko' ? '[ 스나이퍼 설정 ]' : '[ CONFIGURE ]'}
-          </button>
-        </div>
-
-        {/* SCR-05-15: 황금 블라인드 매물 상자 & 수수료 세이프 박스 */}
-        <BlindBoxListingCard
-          language={language}
-          onOpenBlindBox={() => {
-            triggerHaptic('heavy');
-            setBlindBoxReward(language === 'ko' ? 'SSR [골든 피닉스 엠퍼러 #077] 획득 성공!' : 'Acquired SSR [Golden Phoenix Emperor #077]!');
-          }}
-          onUnlockSafeBox={() => {
-            triggerHaptic('heavy');
-            setFeedbackText(language === 'ko' ? '황금 수수료 세이프 박스 180 SNS 인출 완료!' : 'Reclaimed 180 SNS from Fee Safe Box!');
-          }}
-        />
-
         {/* Row 1054 / ID 317: Watchlist Price Alert Toast Banner */}
         {priceAlertToast && (
           <div className="p-3 bg-amber-50 border-2 border-amber-400 text-amber-950 font-mono text-xs flex items-center justify-between shadow-sm animate-in fade-in slide-in-from-top-2">
@@ -1274,33 +1225,6 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
                           >
                             <TrendingUp size={13} className="text-indigo-600" />
                             <span className="hidden sm:inline">{language === 'ko' ? '시세' : 'Chart'}</span>
-                          </button>
-                          {/* SCR-05-14: 2.5x 감정사 돋보기 검수 */}
-                          <button
-                            type="button"
-                            onClick={() => {
-                              triggerHaptic('light');
-                              setAppraisalCard({
-                                name: getCardTitle(listing.cardId),
-                                image: CARD_DATABASE[listing.cardId]?.imageUrl || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&q=80',
-                              });
-                            }}
-                            className="min-h-9 px-2 rounded-lg border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs flex items-center gap-1 cursor-pointer"
-                            title={language === 'ko' ? '2.5x 돋보기 정밀 감정' : '2.5x Appraisal'}
-                          >
-                            <span>🔍</span>
-                          </button>
-                          {/* SCR-05-14: 원핸드 스마트 흥정 오퍼 */}
-                          <button
-                            type="button"
-                            onClick={() => {
-                              triggerHaptic('light');
-                              setBargainListing(listing);
-                            }}
-                            className="min-h-9 px-2 rounded-lg border border-amber-300 bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold text-xs flex items-center gap-1 cursor-pointer"
-                            title={language === 'ko' ? '원핸드 스마트 흥정' : '1-Hand Bargain'}
-                          >
-                            <span>🏷️</span>
                           </button>
                           <button
                             type="button"
@@ -1813,94 +1737,6 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
               type="button"
               onClick={() => setTradeSuccessModalListing(null)}
               className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-black text-xs cursor-pointer active:scale-95 transition-all shadow-xs"
-            >
-              {language === 'ko' ? '확인 완료' : 'Confirm'}
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* SCR-05-12: Auto Buy Sniper Bot Modal */}
-      <AutoBuySniperModal
-        isOpen={isSniperModalOpen}
-        onClose={() => setIsSniperModalOpen(false)}
-        userSns={user ? 9999 : 500}
-        onSnipeSuccess={(targetName, price) => {
-          triggerHaptic('heavy');
-          setFeedbackText(
-            language === 'ko'
-              ? `🎯 [스나이퍼 체결] [${targetName}] 카드를 ${price.toLocaleString()} SNS 목표가에 즉시 자동 매수했습니다!`
-              : `🎯 [Sniper Executed] Purchased [${targetName}] at ${price.toLocaleString()} SNS!`
-          );
-        }}
-      />
-
-      {/* SCR-05-14: 2.5x Card Appraisal Magnifier */}
-      <CardAppraisalMagnifier
-        isOpen={!!appraisalCard}
-        onClose={() => setAppraisalCard(null)}
-        cardName={appraisalCard?.name || ''}
-        cardImage={appraisalCard?.image || ''}
-        language={language}
-      />
-
-      {/* SCR-05-14: 1-Hand Bargain Offer Modal */}
-      {bargainListing && (
-        <div
-          onClick={() => setBargainListing(null)}
-          className="fixed inset-0 z-[10000] bg-black/80 backdrop-blur-xs flex items-center justify-center p-4 font-mono select-none"
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-sm bg-slate-900 border-2 border-amber-400 rounded-2xl p-4 text-white shadow-2xl relative"
-          >
-            <div className="flex items-center justify-between pb-2 border-b border-slate-700 mb-3">
-              <span className="font-black text-amber-300 text-xs">
-                🏷️ {getCardTitle(bargainListing.cardId)}
-              </span>
-              <button
-                type="button"
-                onClick={() => setBargainListing(null)}
-                className="text-slate-400 hover:text-white text-xs p-1 cursor-pointer"
-              >
-                ✕
-              </button>
-            </div>
-            <BargainOfferSlider
-              originalPrice={bargainListing.askPrice}
-              language={language}
-              onSendOffer={(offerPrice) => {
-                setBargainListing(null);
-                setFeedbackText(
-                  language === 'ko'
-                    ? `🏷️ [${getCardTitle(bargainListing.cardId)}] 판매자에게 ${offerPrice.toLocaleString()} SNS 할인 흥정 오퍼를 전송했습니다!`
-                    : `Sent ${offerPrice.toLocaleString()} SNS bargain offer!`
-                );
-              }}
-            />
-          </div>
-        </div>
-      )}
-
-      {/* SCR-05-15: 황금 블라인드 상자 보상 팝업 */}
-      {blindBoxReward && (
-        <div
-          onClick={() => setBlindBoxReward(null)}
-          className="fixed inset-0 z-[10000] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 font-mono select-none"
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-xs bg-gradient-to-b from-amber-500/30 via-slate-900 to-slate-950 border-2 border-amber-400 rounded-2xl p-5 text-white shadow-2xl text-center"
-          >
-            <div className="text-3xl mb-2 animate-bounce">🎁</div>
-            <h3 className="text-sm font-black text-amber-300 mb-2">
-              {language === 'ko' ? '블라인드 상자 개봉!' : 'Blind Box Opened!'}
-            </h3>
-            <p className="text-xs text-slate-200 mb-4">{blindBoxReward}</p>
-            <button
-              type="button"
-              onClick={() => setBlindBoxReward(null)}
-              className="w-full py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs rounded-sm cursor-pointer active:scale-95"
             >
               {language === 'ko' ? '확인 완료' : 'Confirm'}
             </button>

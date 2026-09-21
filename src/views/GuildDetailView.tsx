@@ -8,8 +8,6 @@ import { AttackResult } from "../lib/guildHelper";
 import { GuildRaidPanel } from "../components/GuildRaidPanel";
 import { FriendBattlePanel } from "../components/FriendBattlePanel";
 import { GuildContributionTrack } from "../components/GuildContributionTrack";
-import { GuildLandmarkFundingModal } from "../components/GuildLandmarkFundingModal";
-import { WeeklyBingoBoard } from "../components/WeeklyBingoBoard";
 import { motion, AnimatePresence } from "motion/react";
 import { triggerHaptic } from "../lib/haptic";
 import { StaminaPacingManager } from "../lib/staminaPacingManager";
@@ -88,12 +86,6 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
       return [];
     }
   });
-
-  // SCR-08-11: Guild Landmark Joint Crowdfunding Modal
-  const [isLandmarkModalOpen, setIsLandmarkModalOpen] = useState(false);
-
-  // SCR-08-12: Weekly Guild Mission 5x5 Bingo Board Modal
-  const [isBingoModalOpen, setIsBingoModalOpen] = useState(false);
 
   // ID 580: 연속 출석 버프
   const [attendanceStreak, setAttendanceStreak] = useState<number>(() => {
@@ -428,13 +420,6 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
       <div className="max-w-4xl mx-auto px-4 mt-2">
         <div className="flex items-center gap-2">
           <PageHeader title={t('guild_detail', language) || 'Guild Detail'} onBack={() => onNavigate('guild-list')} />
-          <button
-            type="button"
-            onClick={() => onNavigate('guild-house')}
-            className="px-2.5 py-1 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black rounded-lg flex items-center gap-1 cursor-pointer shrink-0 shadow-sm"
-          >
-            <span>아지트</span>
-          </button>
           <button
             onClick={() => { setShowHelp(true); setHelpStep(0); }}
             className="w-8 h-8 rounded-full border border-slate-300 flex items-center justify-center hover:bg-slate-100 transition-colors cursor-pointer shrink-0"
@@ -788,47 +773,6 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
                   if (type === 'sns') onUpdateSns(sns + amt);
                 }}
               />
-            )}
-
-            {/* SCR-08-11 & SCR-08-12: 길드 랜드마크 크라우드펀딩 & 주간 5x5 빙고 보드 퀵 바 */}
-            {!isOpponentMode && userGuild?.id === guild.id && (
-              <div className="grid grid-cols-2 gap-2 mt-2 select-none">
-                <button
-                  type="button"
-                  onClick={() => {
-                    triggerHaptic('medium');
-                    setIsLandmarkModalOpen(true);
-                  }}
-                  className="p-2.5 bg-amber-50 hover:bg-amber-100 border border-amber-300 rounded-none text-left flex items-center justify-between cursor-pointer font-mono"
-                >
-                  <div>
-                    <div className="text-xs font-black text-amber-900">
-                      🏛️ {language === 'ko' ? '[랜드마크 펀딩]' : '[Landmark Funding]'}
-                    </div>
-                    <div className="text-[9px] text-amber-800">
-                      {language === 'ko' ? '기부 시 영구 버프 해금' : 'Unlock permanent buffs'}
-                    </div>
-                  </div>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    triggerHaptic('medium');
-                    setIsBingoModalOpen(true);
-                  }}
-                  className="p-2.5 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-none text-left flex items-center justify-between cursor-pointer font-mono"
-                >
-                  <div>
-                    <div className="text-xs font-black text-indigo-900">
-                      🎯 {language === 'ko' ? '[주간 5x5 빙고]' : '[5x5 Bingo Board]'}
-                    </div>
-                    <div className="text-[9px] text-indigo-800">
-                      {language === 'ko' ? '협동 미션 & 대박 상자' : 'Co-op missions & loot'}
-                    </div>
-                  </div>
-                </button>
-              </div>
             )}
           </div>
         )}
@@ -1257,27 +1201,6 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* SCR-08-11: Guild Landmark Joint Crowdfunding Modal */}
-      <GuildLandmarkFundingModal
-        isOpen={isLandmarkModalOpen}
-        onClose={() => setIsLandmarkModalOpen(false)}
-        userSns={sns}
-        onContribute={(amt) => {
-          onUpdateSns(sns - amt);
-          triggerHaptic('heavy');
-        }}
-      />
-
-      {/* SCR-08-12: Weekly Guild Mission 5x5 Bingo Board Modal */}
-      <WeeklyBingoBoard
-        isOpen={isBingoModalOpen}
-        onClose={() => setIsBingoModalOpen(false)}
-        onClaimReward={(amt) => {
-          onUpdateSns(sns + amt);
-          triggerHaptic('heavy');
-        }}
-      />
       </div>
     </div>
   );

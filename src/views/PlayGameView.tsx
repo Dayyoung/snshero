@@ -176,14 +176,6 @@ import { SportsmanshipModal } from '../components/SportsmanshipModal';
 import { FriendRivalryModal } from '../components/FriendRivalryModal';
 import { SpectatorModal } from '../components/SpectatorModal';
 import { RevengeChanceModal } from '../components/RevengeChanceModal';
-import { CardSpringRig } from '../components/CardSpringRig';
-import { HandednessLayoutSwitcher } from '../components/HandednessLayoutSwitcher';
-import { UnitFieldInspector } from '../components/UnitFieldInspector';
-import { BattleFinisherCutin } from '../components/BattleFinisherCutin';
-import { FastForwardCatchup } from '../lib/FastForwardCatchup';
-import { GhostDamageCalculator } from '../components/GhostDamageCalculator';
-import { SwipeEndTurnBar } from '../components/SwipeEndTurnBar';
-import { BattleComboFeverOverlay } from '../components/BattleComboFeverOverlay';
 
 interface PlayGameViewProps {
   onStartMobileCardPlay?: (targetId?: number, oppDeck?: CardData[], oppName?: string, towerFloor?: number) => void;
@@ -3316,22 +3308,6 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   // SCR-02-03: 1-Point Margin Defeat Revenge Chance Modal & Active Buff
   const [showRevengeChanceModal, setShowRevengeChanceModal] = useState<boolean>(false);
   const [isRevengeBuffActive, setIsRevengeBuffActive] = useState<boolean>(false);
-
-  // SCR-02-14: 왼손/오른손잡이 레이아웃 미러링 상태
-  const [isLeftHanded, setIsLeftHanded] = useState<boolean>(() => {
-    try {
-      return localStorage.getItem('hero_left_handed_mode') === 'true';
-    } catch {
-      return false;
-    }
-  });
-
-  // SCR-02-14: 적 유닛 롱프레스 스마트 필드 인스펙터 상태
-  const [inspectedUnit, setInspectedUnit] = useState<CardData | null>(null);
-  const [isInspectorOpen, setIsInspectorOpen] = useState(false);
-
-  // SCR-02-15: 피니시 컷인 & 빅토리 더블업 티켓 모달 상태
-  const [isFinisherCutinOpen, setIsFinisherCutinOpen] = useState(false);
 
   // Row 51: Hand Card Long-Press Zoom Preview Modal
   const [longPressPreviewCard, setLongPressPreviewCard] = useState<CardData | null>(null);
@@ -7524,7 +7500,6 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               if (finalWinner === 'player') {
                 setAutoBattleStats(prev => ({ ...prev, wins: prev.wins + 1 }));
                 setWinner('player');
-                setIsFinisherCutinOpen(true);
                 playSfx('https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3'); // Victory
 
                 // ID 421, 457: Match MVP Showcase & ID 482: Perfect Domination (9-0)
@@ -13453,17 +13428,6 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 title={t('mode_select_title', language)} 
               />
             </div>
-            <HandednessLayoutSwitcher
-              isLeftHanded={isLeftHanded}
-              onToggle={() => {
-                const next = !isLeftHanded;
-                setIsLeftHanded(next);
-                try {
-                  localStorage.setItem('hero_left_handed_mode', next ? 'true' : 'false');
-                } catch {}
-              }}
-              language={language}
-            />
             <button
               onClick={() => {
                 playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
@@ -18685,38 +18649,6 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         opponentName={lastOpponent?.name}
         onClose={() => setShowRevengeChanceModal(false)}
         onActivateRevenge={handleActivateRevenge}
-      />
-
-      {/* SCR-02-14: 적 유닛 롱프레스 스마트 필드 인스펙터 */}
-      <UnitFieldInspector
-        unit={inspectedUnit}
-        isOpen={isInspectorOpen}
-        onClose={() => {
-          setIsInspectorOpen(false);
-          setInspectedUnit(null);
-        }}
-        language={language}
-      />
-
-      {/* SCR-02-15: 피니시 컷인 & 빅토리 더블업 티켓 */}
-      <BattleFinisherCutin
-        isOpen={isFinisherCutinOpen}
-        onClose={() => setIsFinisherCutinOpen(false)}
-        language={language}
-        baseRewardSns={rewardEarned || 20}
-        onDoubleRewardClaimed={(total) => {
-          updateSns?.(total, 'finisher_double_up', 'earned');
-          triggerHaptic('success');
-        }}
-      />
-
-      {/* SCR-02-18: 배틀 콤보 피버 오버레이 */}
-      <BattleComboFeverOverlay
-        comboCount={comboAnnounceData?.comboCount || 0}
-        onBuyOverchargeGem={() => {
-          updateSns?.(100, 'overcharge_gem', 'spent');
-          triggerHaptic('success');
-        }}
       />
 
       {renderCustomAlertModal()}

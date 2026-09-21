@@ -303,7 +303,7 @@ export interface RefundRequest {
   details?: string;
 }
 
-export type ViewType = 'game' | 'card-play' | 'home' | 'main' | 'mydeck' | 'play' | 'shop' | 'event' | 'setting' | 'ranking' | 'leaderboard' | 'quest-achievement' | 'setting-reward' | 'admin' | 'status' | 'companion' | 'profile' | 'skill' | 'wiki' | 'world-codex' | 'wiki-card' | 'wiki-item' | 'wiki-skill' | 'wiki-howtoplay' | 'wiki-tip' | 'god' | 'guild-list' | 'guild-detail' | 'guild-house' | 'community' | 'playground' | 'stock-market' | 'card-marketplace' | 'reward-qr' | 'reward-ar' | 'share' | 'prediction-market' | 'boost' | 'season-hub' | 'policy-center' | 'web3-landing' | 'referral' | 'creator' | 'webtoon' | 'novel' | 'anime' | 'movie' | 'modoo' | 'tool-grid' | 'tool-makegrid' | 'tool-checkgrid' | 'mall' | 'pacpik' | 'fusion';
+export type ViewType = 'game' | 'card-play' | 'home' | 'main' | 'mydeck' | 'play' | 'shop' | 'event' | 'setting' | 'ranking' | 'admin' | 'status' | 'companion' | 'profile' | 'skill' | 'wiki' | 'world-codex' | 'wiki-card' | 'wiki-item' | 'wiki-skill' | 'wiki-howtoplay' | 'wiki-tip' | 'god' | 'guild-list' | 'guild-detail' | 'community' | 'playground' | 'stock-market' | 'card-marketplace' | 'reward-qr' | 'reward-ar' | 'share' | 'prediction-market' | 'boost' | 'season-hub' | 'policy-center' | 'web3-landing' | 'referral' | 'creator' | 'webtoon' | 'novel' | 'anime' | 'movie' | 'modoo' | 'tool-grid' | 'tool-makegrid' | 'tool-checkgrid' | 'mall' | 'pacpik';
 
 export interface Skill {
   id: string;

@@ -156,11 +156,6 @@ const GridToolView = safeLazy(() => import('./views/GridToolView'), 'GridToolVie
 const GridCheckerView = safeLazy(() => import('./views/GridCheckerView'), 'GridCheckerView');
 const MallView = safeLazy(() => import('./views/MallView'), 'MallView');
 const PacpikView = safeLazy(() => import('./views/PacpikView'), 'PacpikView');
-const FusionLabView = safeLazy(() => import('./views/FusionLabView'), 'FusionLabView');
-const GuildHouseView = safeLazy(() => import('./views/GuildHouseView'), 'GuildHouseView');
-const LeaderboardView = safeLazy(() => import('./views/LeaderboardView'), 'LeaderboardView');
-const QuestAchievementView = safeLazy(() => import('./views/QuestAchievementView'), 'QuestAchievementView');
-const SettingRewardView = safeLazy(() => import('./views/SettingRewardView'), 'SettingRewardView');
 
 const getCardAvatarStyle = (avatar: string): React.CSSProperties => {
   const cardId = Number(avatar.split(':')[1]) || 1;
@@ -4929,21 +4924,6 @@ function AppContent() {
         );
       case 'pacpik':
         return <PacpikView />;
-      case 'fusion':
-        return (
-          <FusionLabView
-            language={language}
-            sns={sns}
-            updateSns={updateSns}
-            playSfx={playSfx}
-            inventory={inventory}
-            addCard={addCard}
-            setView={setView}
-            user={effectiveUser}
-            syncUserData={syncUserData}
-            currentSeason={currentSeason}
-          />
-        );
       case 'web3-landing':
         return (
           <Web3LandingView
@@ -5523,60 +5503,6 @@ function AppContent() {
             onStartFriendBattle={handleStartFriendBattle}
             totalPower={totalPower}
             season={currentSeason}
-          />
-        );
-      case 'guild-house':
-        return (
-          <GuildHouseView
-            language={language}
-            sns={sns}
-            updateSns={updateSns}
-            playSfx={playSfx}
-            onNavigate={setView}
-            currentUser={effectiveUser ? { uid: effectiveUser.uid, displayName: effectiveUser.displayName } : null}
-            guildName={userGuild?.name || '불사조 기사단'}
-          />
-        );
-      case 'leaderboard':
-        return (
-          <LeaderboardView
-            onBack={() => setView('home')}
-            language={language}
-            user={effectiveUser}
-            sns={sns}
-            updateSns={updateSns}
-            playSfx={playSfx}
-            onAttackUser={(opp) => {
-              setIsAutoBattle(true);
-              setIsPvpActive(true);
-              setPvpOpponent(opp);
-              setView('play');
-            }}
-            onNavigate={setView}
-          />
-        );
-      case 'quest-achievement':
-        return (
-          <QuestAchievementView
-            language={language}
-            sns={sns}
-            updateSns={updateSns}
-            playSfx={playSfx}
-            onNavigate={setView}
-          />
-        );
-      case 'setting-reward':
-        return (
-          <SettingRewardView
-            language={language}
-            onLanguageChange={setLanguage}
-            sns={sns}
-            updateSns={updateSns}
-            playSfx={playSfx}
-            onNavigate={setView}
-            lowSpecMode={lowSpecMode}
-            onToggleLowSpecMode={() => setLowSpecMode(!lowSpecMode)}
-            user={effectiveUser}
           />
         );
       case 'reward-qr':
