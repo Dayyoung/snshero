@@ -1,0 +1,1530 @@
+[001] SCR-01-01 | 홈 & 로비 (HomeView) | 사용성
+  문제점: 첫 진입 시 시즌 공지 모달, 튜토리얼 툴팁, 오토배틀 타이머 등 다중 오버레이가 중첩되어 모바일 100dvh 화면에서 시각적 피로도 및 엄지손가락 터치 동선 방해.
+  개선안: 모바일 뷰포트 기준 하단 Thumb Zone에 플로팅 '3초 즉시 배틀(Play Now)' 원터치 액션 버튼(FAB, 48px 이상) 고정 배치 및 모달 레이어 순차 노출 처리.
+  관련파일: src/views/HomeView.tsx, src/components/HomeHeader.tsx
+
+[002] SCR-01-02 | 홈 & 로비 (HomeView) | 과금전환
+  문제점: 홈 화면에 무료 코인 지급 안내만 존재하고, 신규 유저 유입 시 초기 과금을 유도하는 매력적인 소액 첫 결제 상품 노출 부재.
+  개선안: 홈 화면 상단에 '첫 충전 한정 1,000원 스타터 패키지 (SSR 확정 팩 + 3,000 SNS 코인 + AP 물약)' 한정 배너 및 원터치 다이렉트 결제 모달 연동.
+  관련파일: src/views/HomeView.tsx, src/views/ShopView.tsx
+
+[003] SCR-01-03 | 홈 & 로비 (HomeView) | 재미/도파민
+  문제점: 로비 중앙 대표 팩션 카드 5장이 정적이라 시각적 박진감과 초기 상호작용성 부족.
+  개선안: 로비 카드 터치/호버 시 RAF 기반 3D 틸트(Tilt) 반사광 효과, 팩션 고유 SFX 재생, 홀로그램 포일 이펙트를 적용하여 즉각적인 도파민 피드백 제공.
+  관련파일: src/views/HomeView.tsx, src/lib/sound.ts
+
+[004] SCR-02-01 | 배틀 아레나 (PlayGameView) | 재미/도파민
+  문제점: 연쇄 뒤집기 성공 시 사운드가 단조로워 역전의 쾌감이 반감되고, 9번째 턴 역전 승리 시 임팩트 있는 피니시 연출 부재.
+  개선안: 플립 연쇄 수에 따라 Web Audio 피치가 반음씩 상승하는 가속 SFX, Web Vibration 햅틱 진동, 9번째 턴 역전 승리 시 'COMEBACK FINISHER' 슬로우 줌인 및 화면 흔들림(Screen Shake) 효과 연동.
+  관련파일: src/views/PlayGameView.tsx, src/lib/BattleFXEngine.ts, src/lib/sound.ts
+
+[005] SCR-02-02 | 배틀 아레나 (PlayGameView) | 사용성
+  문제점: 모바일 한 손 플레이 시 손패 카드 선택 후 3x3 보드 빈칸에 착수할 때 뒤집을 수 있는 상대 카드 및 예상 뒤집기 수가 시각적으로 예고되지 않아 전략 오판 및 오터치 빈발.
+  개선안: 핸드 카드 탭 시 3x3 타일 빈칸에 44px 펄스 하이라이트를 표시하고 착수 시 뒤집을 수 있는 카드 위에 '+N FLIP' 예상 뱃지를 실시간 오버레이하여 원터치 조작 편의성 극대화.
+  관련파일: src/views/PlayGameView.tsx, src/components/BattleBoard.tsx
+
+[006] SCR-02-03 | 배틀 아레나 (PlayGameView) | 과금전환
+  문제점: 1장 차이(4:5) 아쉬운 패배 시 단순 패배 화면만 표시되어 유저 좌절 이탈이 발생하고, 즉각적인 재도전 및 소액 과금 전환 동선 부재.
+  개선안: 1장 차이 패배 판정 시 '리벤지 찬스' 팝업을 트리거하여 500원 초특가 '복수전 버프팩 (AP 완충 + 다음 판 전 속성 +1 영약)' 다이렉트 결제 및 1-클릭 즉시 재대결 버튼 제공.
+  관련파일: src/views/PlayGameView.tsx, src/components/BattleResultModal.tsx
+
+[007] SCR-03-01 | 마이덱 & 카드 관리 (MyDeckView) | 사용성
+  문제점: 모바일 웹에서 5장 덱 슬롯과 인벤토리 간 드래그 앤 드롭 조작 시 화면 스크롤과 제스처 충돌이 발생하고, 카드 교체가 번거로움.
+  개선안: 모바일 100dvh 특화 '원탭 장착/교체(Quick Tap Swap)' UX 적용, 상단 속성/등급별 원핸드 칩 필터 바 및 44px 이상 터치 타깃 보장, 5장 '원클릭 전투력 최강 덱 자동 편성' 기능 추가.
+  관련파일: src/views/MyDeckView.tsx, src/components/DeckManager.tsx
+
+[008] SCR-03-02 | 마이덱 & 카드 관리 (MyDeckView) | 재미/도파민
+  문제점: 카드 합성/레벨업 시 단순 수치만 변경되어 육성의 쾌감이 미미하고, 덱 5장 간의 속성/팩션 시너지 체감이 부족함.
+  개선안: 카드 강화 성공 시 골드 파티클 버스트 + 레벨업 팡파르 SFX + 총전투력 롤링 카운터 연출 추가, 덱 편성 시 동일 속성 3장 이상 장착 시 발동되는 '팩션 시너지 오라(Aura Glow)' 비주얼 이펙트 연동.
+  관련파일: src/views/MyDeckView.tsx, src/components/CardUpgradeModal.tsx, src/lib/sound.ts
+
+[009] SCR-03-03 | 마이덱 & 카드 관리 (MyDeckView) | 과금전환
+  문제점: 카드 한계돌파 또는 합성 재료가 부족할 때 상점으로 나가는 번거로운 동선 때문에 육성 흐름이 끊기고 결제 전환 기회 손실.
+  개선안: 재료 부족 시 강화 버튼 위치에 '부족한 재료 즉시 보충 팩(990원 한정 패키지)' 1-Tap 인앱 결제 팝업 다이렉트 트리거 연동.
+  관련파일: src/views/MyDeckView.tsx, src/views/ShopView.tsx
+
+[010] SCR-04-01 | 상점 & 가챠 (ShopView) | 재미/도파민
+  문제점: 팩 개봉 연출이 밋밋하고 카드가 일괄 팝업되어 가챠 특유의 기대감과 도파민 자극이 약하며, 스킵 기능이 불편함.
+  개선안: 팩 스와이프 개봉 인터랙션 + 등급별(SR 보라, SSR 무지개) 팩 빛 번쩍임 예고 연출 + Web Vibration 햅틱 + 카드 1장씩 스와이프 오픈(Flip to Reveal) 연출 적용 및 0ms 레이턴시 원터치 '전체 즉시 스킵(Fast Skip)' 버튼 구현.
+  관련파일: src/views/ShopView.tsx, src/components/GachaAnimation.tsx, src/lib/sound.ts
+
+[011] SCR-04-02 | 상점 & 가챠 (ShopView) | 과금전환
+  문제점: 가챠 천장(Pity) 수치와 첫 충전 2배 혜택이 직관적으로 보이지 않아 유저의 뽑기 구매 결단력이 떨어짐.
+  개선안: 뽑기 배너 하단에 'SSR 확정 천장 카운트다운 프로그레스 바(예: 30회 내 확정 - 남은 횟수 실시간 표시)' 노출, 첫 충전 상품 '첫 결제 시 코인 2배 + 스타터 SSR 교환권' 강조 배지 및 10연차 시 '1장 SR 이상 확정' 혜택 가시화.
+  관련파일: src/views/ShopView.tsx, src/components/GachaPityBar.tsx
+
+[012] SCR-04-03 | 상점 & 가챠 (ShopView) | 사용성
+  문제점: 모바일 100dvh 화면에서 상점 카테고리 탭(카드팩, 장비, 코인)과 하단 소환 버튼이 분산되어 엄지손가락 한 손 조작 시 오터치 및 스크롤 피로도 발생.
+  개선안: 하단 Thumb Zone에 '1회 소환(무료/할인 표기)'과 '10회 소환(보너스 표기)' 듀얼 CTA 버튼을 48px 규격으로 고정 배치하고, 상단 스와이프형 카테고리 칩 탭바로 100dvh 뷰포트에 밀착 정돈.
+  관련파일: src/views/ShopView.tsx, src/components/ShopCategoryTabs.tsx
+
+[013] SCR-05-01 | 카드 마켓플레이스 (CardMarketplaceView) | 사용성
+  문제점: 모바일에서 카드 판매가 등록 시 가상 키보드가 화면을 가려 100dvh 레이아웃이 깨지고, 호가창과 매물 목록의 가독성이 낮음.
+  개선안: 가격 입력 시 가상 키보드 의존을 줄이는 '최저가 자동 입력 / +100 / +1,000' 원터치 프리셋 퀵 버튼 바 제공 및 모바일 화면에 최적화된 2단 탭(실시간 호가 vs 전체 매물) 뷰포트 정돈.
+  관련파일: src/views/CardMarketplaceView.tsx, src/components/MarketplaceOrderPad.tsx
+
+[014] SCR-05-02 | 카드 마켓플레이스 (CardMarketplaceView) | 재미/도파민
+  문제점: 매물 체결 및 시세 차익 발생 시 알림이 텍스트로만 처리되어 트레이딩 성공의 쾌감과 도파민 체감이 부족함.
+  개선안: 실시간 매물 판매 체결 시 코인 샤워 파티클 + 카운팅 SFX + '시세 차익 +N SNS 달성' 승리 배너 연출 적용 및 최근 24시간 실시간 체결 티커(Live Ticker) 연동.
+  관련파일: src/views/CardMarketplaceView.tsx, src/components/LiveTradeTicker.tsx, src/lib/sound.ts
+
+[015] SCR-05-03 | 카드 마켓플레이스 (CardMarketplaceView) | 과금전환
+  문제점: 급매물 발견 시 보유 코인이 부족하면 상점으로 이탈하는 사이 매물이 품절되어 결제 이탈 발생.
+  개선안: 매수 잔액 부족 시 모달 내에서 즉시 차액만 결제 가능한 '1-Tap 즉시 코인 충전(Shortage Top-Up) 패키지' 팝업 연결 및 판매 등록 슬롯 확장권 판매 동선 구축.
+  관련파일: src/views/CardMarketplaceView.tsx, src/views/ShopView.tsx
+
+[016] SCR-06-01 | 가상 주식 거래소 (StockMarketView) | 재미/도파민
+  문제점: 캐릭터 주가 변동 및 배당금 지급이 정적 수치로만 갱신되어 주주로서의 성취감과 배당금 수령의 도파민 쾌감이 결여됨.
+  개선안: 보유 캐릭터 배틀 승리 시 실시간 배당금 입금 토스트 + 코인 차링 SFX + '배당금 전액 즉시 복리 재투자(Auto-Compound)' 1-클릭 버튼 구현 및 일일 수익률 +10% 초과 시 폭죽 파티클 축하 연출.
+  관련파일: src/views/StockMarketView.tsx, src/components/DividendNotification.tsx, src/lib/sound.ts
+
+[017] SCR-06-02 | 가상 주식 거래소 (StockMarketView) | 사용성
+  문제점: 모바일 100dvh 화면에서 복잡한 차트와 수량 입력창이 화면을 가득 채워 빠른 매수/매도 주문 시 스크롤 및 오터치 발생.
+  개선안: 모바일 뷰포트 최적화 반응형 미니 캔들/라인 차트 구성, 하단 고정형 주문 패널에 '10% / 25% / 50% / MAX' 원터치 슬라이더 칩 및 44px 이상 듀얼 '즉시 매수/매도' 버튼 정돈.
+  관련파일: src/views/StockMarketView.tsx, src/components/StockOrderSheet.tsx
+
+[018] SCR-06-03 | 가상 주식 거래소 (StockMarketView) | 과금전환
+  문제점: 캐릭터 주가 급등 시 추가 시드머니가 부족한 유저를 위한 즉시 과금 모델이 없고, 배당 혜택을 극대화하는 시즌 패스 상품 부재.
+  개선안: 잔고 부족 시 급등주 즉시 매수를 돕는 '스타터 시드머니 팩(1,200원 한정)' 팝업 연동 및 30일간 전 종목 배당률 +5% 및 거래 수수료 면제 혜택을 주는 '월간 VIP 주주 클럽권' 판매 상품 배치.
+  관련파일: src/views/StockMarketView.tsx, src/views/ShopView.tsx
+
+[019] SCR-07-01 | 승부 예측 시장 (PredictionMarketView) | 재미/도파민
+  문제점: 예측 경기 종료 후 적중 결과가 정적 텍스트로만 표시되어 베팅 성공 시의 성취감과 도파민 짜릿함이 미미함.
+  개선안: 예측 적중 시 풀스크린 'JACKPOT PREDICTION' 승리 팡파르 SFX + 골드 코인 버스트 파티클 + Web Vibration 리듬 햅틱 연동 및 획득 배당금 실시간 지갑 카운팅 애니메이션 구현.
+  관련파일: src/views/PredictionMarketView.tsx, src/components/PredictionJackpotModal.tsx, src/lib/sound.ts
+
+[020] SCR-07-02 | 승부 예측 시장 (PredictionMarketView) | 사용성
+  문제점: 모바일 100dvh에서 양 선수 덱 비교와 배당률 정보가 복잡하게 얽혀 있어 모바일 한 손 터치 조작 시 오터치와 베팅 실수 빈발.
+  개선안: 대진 카드 중앙에 실시간 배당률 VS 게이지(A배당 vs B배당) 직관화, 하단 Thumb Zone에 '100 / 500 / 1,000 / 올인' 원터치 베팅 칩 및 48px '베팅 확정' 슬라이드/원터치 버튼 정돈.
+  관련파일: src/views/PredictionMarketView.tsx, src/components/PredictionBetSlip.tsx
+
+[021] SCR-07-03 | 승부 예측 시장 (PredictionMarketView) | 과금전환
+  문제점: 빅매치 시작 직전 코인 잔액 부족 시 결제 이탈이 발생하고, 미적중 시 유저 좌절로 인한 이탈 방어 장치 부재.
+  개선안: 경기 시작 5분 전 잔액 부족 유저 대상 '빅매치 승부 패키지 (1,000원 = 3,000 코인 + 미적중 시 50% 페이백 보험 쿠폰)' 1-Tap 다이렉트 결제 모달 연동.
+  관련파일: src/views/PredictionMarketView.tsx, src/views/ShopView.tsx
+
+[022] SCR-08-01 | 시련의 탑 & 던전/레이드 (Tower / Dungeon / Boss Raid) | 재미/도파민
+  문제점: 층별 클리어 및 보스 격파 시 결과 화면이 단조로워 PVE 상위 층 돌파의 성취감과 보상 수령의 도파민 쾌감이 결여됨.
+  개선안: 보스 격파 순간 슬로우모션 줌인 + 'STAGE CLEARED' 팡파르 SFX + 보스 보물상자 터치 개봉 연출(황금 광원 + 장비/카드 쏟아짐) 및 10층 단위 마일스톤 돌파 시 전 서버 축하 티커 연동.
+  관련파일: src/views/TowerView.tsx, src/components/BossClearModal.tsx, src/lib/sound.ts
+
+[023] SCR-08-02 | 시련의 탑 & 던전/레이드 (Tower / Dungeon / Boss Raid) | 사용성
+  문제점: 100층 높이의 탑 UI 스크롤 시 모바일 100dvh 화면에서 끝없는 상하 스크롤 피로도가 발생하고 보스 기믹 정보가 사전에 직관적으로 보이지 않음.
+  개선안: 모바일 Thumb Zone에 '현재 최고 도전 층 즉시 이동(Quick Jump)' FAB 고정, 10층 단위 미니맵 앵커 탭 구축, 전투 전 보스 카드 탭 시 기믹 예고 뱃지(예: '화염 반사', '9턴 광폭화') 시각화.
+  관련파일: src/views/TowerView.tsx, src/components/TowerFloorNavigator.tsx
+
+[024] SCR-08-03 | 시련의 탑 & 던전/레이드 (Tower / Dungeon / Boss Raid) | 과금전환
+  문제점: 보스전 체력 극소량 잔여 패배 시 유저의 허탈감으로 인한 게임 종료가 잦고, 층별 클리어 보상을 두 배로 받는 성장 과금 모델 부재.
+  개선안: 보스전 10% 미만 잔여 패배 시 '라스트 스탠드 긴급 지원팩 (990원 = 보스 약점 폭탄 1회 + 즉시 부활)' 1-Tap 다이렉트 팝업 연동 및 10층마다 추가 정복 패스 판매 동선 배치.
+  관련파일: src/views/TowerView.tsx, src/views/ShopView.tsx
+
+[025] SCR-09-01 | 미션 게임 아레나 (Poki 110선 Canvas Games) | 사용성
+  문제점: 모바일 웹에서 캔버스 미니게임 조작 시 브라우저 기본 제스처(당겨서 새로고침, 뒤로가기 스와이프)가 간섭하여 조작감이 끊기고 화면이 흔들림.
+  개선안: 미니게임 캔버스 컨테이너에 touch-action: none 및 100dvh 뷰포트 완전 잠금 적용, 한 손 엄지 전용 원터치 일시정지/재도전 컨트롤러(44px 이상) 오버레이 제공.
+  관련파일: src/views/MiniGameArenaView.tsx, src/components/CanvasGameWrapper.tsx
+
+[026] SCR-09-02 | 미션 게임 아레나 (Poki 110선 Canvas Games) | 재미/도파민
+  문제점: 미니게임 플레이가 메인 배틀 TCG 코어 루프와 단절되어 단순 소모성 미니게임에 그치고 도파민 보상 피드백이 빈약함.
+  개선안: 미니게임 달성 스코어에 따라 메인 배틀 카드 육성 재화(경험치 물약, 가챠 티켓 조각)를 즉시 드랍하는 연계 보상 시스템 구축 및 신기록(NEW HIGH SCORE) 달성 시 골드 팡파르 SFX + 햅틱 진동 연동.
+  관련파일: src/views/MiniGameArenaView.tsx, src/lib/MiniGameRewardEngine.ts, src/lib/sound.ts
+
+[027] SCR-09-03 | 미션 게임 아레나 (Poki 110선 Canvas Games) | 과금전환
+  문제점: 최고 기록 갱신 직전 게임오버 시 아쉬운 상황을 만회할 즉각적인 이어하기 및 입장권 과금 모델 부재.
+  개선안: 게임오버 시 '3초 카운트다운 긴급 부활 티켓 (300원 또는 일일 1회 무료 광고)' 1-Tap 다이렉트 컨티뉴 팝업 및 하루 동안 110선 전 종목 보상 2배의 '아레나 프리미엄 자유이용권 (1,000원)' 배치.
+  관련파일: src/views/MiniGameArenaView.tsx, src/views/ShopView.tsx
+
+[028] SCR-10-01 | 소셜 & 길드 (Guild / Friend Battle / Community) | 재미/도파민
+  문제점: 길드전 및 친구 친선전 승리 후 보상 수령이 텍스트 로그에 그쳐 소셜 경쟁의 쾌감과 길드원 간 공유 도파민이 약함.
+  개선안: 친선전 승리 시 '실시간 세레머니 이모티콘 팝업' + 길드 레이드/길드전 보상 상자 공동 개봉 시 채팅방 황금 축하 배너 및 폭죽 SFX 연동.
+  관련파일: src/views/GuildView.tsx, src/components/GuildChat.tsx, src/lib/sound.ts
+
+[029] SCR-10-02 | 소셜 & 길드 (Guild / Friend Battle / Community) | 사용성
+  문제점: 모바일 100dvh 화면에서 길드원 목록, 채팅창, 친구 친선전 룸 생성이 분산되어 친구를 초대해 바로 배틀하기까지 동선이 복잡함.
+  개선안: 상단에 '1-Tap 친구 친선전 초대 링크 복사' 바 고정, 친구 목록 옆에 44px '즉시 대전 신청' 원터치 버튼 배치, 모바일 하단 플로팅 미니 길드 채팅 시트 정돈.
+  관련파일: src/views/GuildView.tsx, src/components/FriendMatchModal.tsx
+
+[030] SCR-10-03 | 소셜 & 길드 (Guild / Friend Battle / Community) | 과금전환
+  문제점: 친구 초대 바이럴 보상이 약하고, 길드 경쟁을 촉진하는 단체 버프 기부 상품 및 용병 대여 수익화 모델 부재.
+  개선안: 친구 초대 시 양측 모두에게 SSR 카드 팩을 주는 '친구 추천 리퍼럴 패스' 및 길드전 기간 길드원 전체 공격력 +5%를 지원하는 '길드 승리 응원 펀딩팩 (1,500원)' 상품 배치.
+  관련파일: src/views/GuildView.tsx, src/views/ShopView.tsx
+
+[031] SCR-11-01 | 웹소설·웹툰 미디어 허브 (NovelView / AnimeView / MovieView) | 사용성
+  문제점: 모바일 웹 뷰어에서 상하단 네비게이션이 본문을 가려 100dvh 몰입감이 저해되고, 웹툰 스크롤 시 잦은 끊김 및 UI 간섭 발생.
+  개선안: 스크롤 다운 시 상하단 UI 자동 숨김(Full Immersion), 뷰포트 중앙 탭 시 44px 이상 폰트/야간모드/목차 퀵 툴바 토글 오버레이 및 이미지 레이지 로딩 적용.
+  관련파일: src/views/NovelView.tsx, src/components/MediaViewer.tsx
+
+[032] SCR-11-02 | 웹소설·웹툰 미디어 허브 (NovelView / AnimeView / MovieView) | 재미/도파민
+  문제점: 미디어 감상이 단순 텍스트/이미지 열람으로 끝나며 메인 TCG 카드 수집 루프와의 유기적 보상 연계가 결여됨.
+  개선안: 매 에피소드 완독 시 골드 상자 팝업 + 팡파르 SFX + '스토리 연계 카드 소환권 조각 & 코인 즉시 수령' 연출 연동 및 카드 도감 내 숨겨진 로어(Lore) 해금 시스템 구축.
+  관련파일: src/views/NovelView.tsx, src/lib/LoreUnlockEngine.ts, src/lib/sound.ts
+
+[033] SCR-11-03 | 웹소설·웹툰 미디어 허브 (NovelView / AnimeView / MovieView) | 과금전환
+  문제점: 스토리 속 매력적인 주인공 카드가 등장해도 즉시 획득할 수 있는 경로가 단절되어 있어 IP 기반 구매 전환 기회 누락.
+  개선안: 뷰어 에피소드 하단에 등장 캐릭터 '주인공 한정 픽업 가챠 팩 (990원)' 1-Tap 인앱 결제 배너 배치 및 전편 무제한 열람 + SSR 확정권을 주는 '미디어 올인원 패스' 판매 동선 연계.
+  관련파일: src/views/NovelView.tsx, src/views/ShopView.tsx
+
+[034] SCR-12-01 | 설정 & 보상 센터 (SettingView / DailyMissions / Attendance) | 사용성
+  문제점: 일일 미션과 출석 보상을 각각 하나씩 터치해서 받아야 해 피로도가 높고, 모바일 100dvh 내 설정 옵션과 보상 탭의 동선이 분산됨.
+  개선안: 미션 센터 상단에 48px 대형 '원클릭 일괄 수령(Claim All)' 플로팅 버튼 배치, 출석 체크/일일 미션/환경 설정을 상단 원터치 칩 탭으로 통합 정돈.
+  관련파일: src/views/SettingView.tsx, src/components/DailyMissionCenter.tsx
+
+[035] SCR-12-02 | 설정 & 보상 센터 (SettingView / DailyMissions / Attendance) | 성능
+  문제점: 모바일 웹 장시간 플레이 시 파티클과 배경 렌더링으로 인한 스마트폰 발열 및 배터리 소모가 심함.
+  개선안: 설정 창에 '저전력 배터리 절약 모드(30fps 프레임 캡, 파티클 이펙트 경량화, 백그라운드 렌더링 일시 중지)' 원터치 토글 스위치 및 Web Vibration 햅틱 피드백 전역 전역 On/Off 제어 모듈 구현.
+  관련파일: src/views/SettingView.tsx, src/lib/BatterySaverEngine.ts
+
+[036] SCR-12-03 | 설정 & 보상 센터 (SettingView / DailyMissions / Attendance) | 과금전환
+  문제점: 출석 체크 보상이 무료 지급에만 머물러 있고 결석 시 리텐션이 끊어지며, 미션 완수 후 추가 결제 유도 모델 부재.
+  개선안: 30일간 매일 출석 보상을 2배로 지급하고 결석일 3회 무료 복구권을 제공하는 'VIP 2배 출석 패스 (1,500원)' 및 일일 미션 6개 완수 시 즉시 해금되는 '일일 올클리어 시크릿 특가 팩' 배치.
+  관련파일: src/views/SettingView.tsx, src/views/ShopView.tsx
+
+[037] SCR-01-04 | 홈 & 로비 (HomeView) | 재미/도파민
+  문제점: 로비 접속 시 방치 보상(AFK Patrol) 수확의 즉각적인 재미가 결여되어 있고, 연속 승리(Win Streak)의 시각적 위상이 로비에 반영되지 않음.
+  개선안: 로비 중앙 하단에 '24시간 오프라인 순찰 수확 상자'를 배치하여 원터치 수확 시 코인 폭발 파티클 + 팡파르 SFX 제공, 상단 프로필 옆에 'N연승 불꽃 뱃지'를 점화하여 승리 도파민 지속 연계.
+  관련파일: src/views/HomeView.tsx, src/components/AfkHarvestBox.tsx, src/lib/sound.ts
+
+[038] SCR-01-05 | 홈 & 로비 (HomeView) | 사용성
+  문제점: 로비 상단 헤더의 알림, 우편, 사운드, 드로어 아이콘이 모바일 화면에서 과밀하게 나열되어 오터치가 잦고 메인 아트 영역을 침범함.
+  개선안: 상단 분산된 아이콘을 단일 '스마트 퀵 허브(Smart Quick Hub)' 드롭다운(48px 규격)으로 통합하고, 읽지 않은 우편/알림을 원터치 일괄 확인하는 미니멀 헤더 구축.
+  관련파일: src/views/HomeView.tsx, src/components/HomeQuickHub.tsx
+
+[039] SCR-01-06 | 홈 & 로비 (HomeView) | 성능
+  문제점: 로비 화면이 백그라운드 탭으로 전환되거나 유저가 잠시 화면을 껐을 때도 오토배틀 인터벌과 렌더 루프가 계속 동작하여 불필요한 배터리/메모리 소모 유발.
+  개선안: document.visibilityState 및 requestAnimationFrame 생명주기를 감지하여 비활성 탭 진입 시 즉각 백그라운드 틱 정지 및 메모리 캐시 정리(Zero Background Overhead) 엔진 적용.
+  관련파일: src/views/HomeView.tsx, src/lib/LifecycleEngine.ts
+
+[040] SCR-02-04 | 배틀 아레나 (PlayGameView) | 성능
+  문제점: AI 난이도 연산 및 연쇄 플립 시뮬레이션이 메인 UI 스레드에서 실행되어 AI 턴마다 100~300ms 화면 프리징(Frame Drop) 발생.
+  개선안: AI 의사결정 및 보드 뒤집기 트리 탐색 알고리즘을 백그라운드 Web Worker(aiBattleWorker.ts)로 이관하여 메인 스레드 블로킹 제로화 및 무지연 60fps 렌더링 실현.
+  관련파일: src/views/PlayGameView.tsx, src/workers/aiBattleWorker.ts
+
+[041] SCR-02-05 | 배틀 아레나 (PlayGameView) | 재미/도파민
+  문제점: 턴 타이머 진행 시 시각적 긴장감이 부족하고, 제한 시간 임박 시의 몰입형 오디오/비주얼 도파민 연출이 결여됨.
+  개선안: 턴 잔여 시간 5초 이하 시 1초 단위 가속 심장박동(Heartbeat) SFX + 화면 테두리 레드 비네팅(Red Vignette) 펄스 이펙트 + 단말기 햅틱 카운트다운 진동 연 연동.
+  관련파일: src/views/PlayGameView.tsx, src/components/TurnCountdownVignette.tsx, src/lib/sound.ts
+
+[042] SCR-02-06 | 배틀 아레나 (PlayGameView) | 과금전환
+  문제점: 배틀 중 절체절명의 수세에 몰렸을 때 전세를 뒤집을 수 있는 인게임 변수 아이템 및 즉시 사용 가능한 소액 결제 모델 부재.
+  개선안: 보드 열세 상황(3점 이하 차이) 시 턴당 1회 한정 '매직 체인지 와일드 찬스(300원 = 손패 1장을 전 방향 파워 +2 와일드 조커 카드로 즉시 교체)' 1-Tap 트리거 버튼 배치.
+  관련파일: src/views/PlayGameView.tsx, src/components/MagicChanceButton.tsx
+
+[043] SCR-03-04 | 마이덱 & 카드 관리 (MyDeckView) | 재미/도파민
+  문제점: 카드가 단순 전투 수치 덩어리로만 취급되어 영웅과의 정서적 유대감 및 다마고치식 육성 돌봄(Companion Interaction) 재미가 결여됨.
+  개선안: 카드 상세 뷰에 '애정도(Affection) & 간식 주기' 다마고치 인터랙션 추가, 터치 시 애정도 하트 파티클 + 전용 음성 보이스 출력 및 친밀도 Max 달성 시 히든 전투 패시브(플립 방어 +5%) 해금 연동.
+  관련파일: src/views/MyDeckView.tsx, src/components/CompanionCareModal.tsx, src/lib/sound.ts
+
+[044] SCR-03-05 | 마이덱 & 카드 관리 (MyDeckView) | 사용성
+  문제점: PVP 대전, 보스 레이드, 시련의 탑 등 콘텐츠마다 상이한 속성 덱을 맞출 때 단일 덱 슬롯만 존재하여 매번 5장을 재편성하는 피로도 발생.
+  개선안: 상단 덱 영역에 '덱 1(PVP 공격) / 덱 2(방어) / 덱 3(타워 보스용)' 3구 프리셋 원터치 스위처 바 구축 및 덱 복사/이름 편집 기능 제공.
+  관련파일: src/views/MyDeckView.tsx, src/components/DeckPresetSwitcher.tsx
+
+[045] SCR-03-06 | 마이덱 & 카드 관리 (MyDeckView) | 과금전환
+  문제점: 카드의 장비 장착 및 룬 슬롯 해금 시 고등급 장비가 부족하여 유저의 성장 정체가 발생하고, 마이덱 내 장비 과금 유도선 부재.
+  개선안: 빈 장비 슬롯 탭 시 해당 슬롯 전용 'SSR 매직 링/아뮬렛 확정 스타터 팩 (1,200원)' 1-Tap 다이렉트 장비 인앱 결제 팝업 연결.
+  관련파일: src/views/MyDeckView.tsx, src/views/ShopView.tsx
+
+[046] SCR-04-04 | 상점 & 가챠 (ShopView) | 과금전환
+  문제점: 110종 카드 풀에서 원하는 카드를 얻기 어려워 뽑기 피로도가 누적되고, 과금 유저의 저격 소환 만족도가 낮음.
+  개선안: 유저가 원하는 SSR 카드 1장을 지정하여 해당 카드 획득 확률을 50%까지 상향하는 '위시리스트 픽업(Wishlist Focus)' 시스템 및 10연차 3회 진행 시 위시리스트 선택권 지급 프로모션 연동.
+  관련파일: src/views/ShopView.tsx, src/components/GachaWishlistModal.tsx
+
+[047] SCR-04-05 | 상점 & 가챠 (ShopView) | 재미/도파민
+  문제점: 상점 진입 시 전 서버 대박 당첨 현황이 보이지 않아 뽑기 분위기 조성(Social Proof)과 즉각적인 도파민 동기부여가 약함.
+  개선안: 상점 최상단에 실시간 SSR 획득 전광판 티커('OO님이 방금 블랙드래곤(SSR)을 소환했습니다!') 롤링 배너 구축 및 SSR 당첨자 축하 시 무료 코인 선물 상자 드랍 연계.
+  관련파일: src/views/ShopView.tsx, src/components/GachaJackpotTicker.tsx, src/lib/sound.ts
+
+[048] SCR-04-06 | 상점 & 가챠 (ShopView) | 사용성
+  문제점: 암호화폐(BTC, ETH, USDC) 및 일반 결제 시 결제 수단 선택 팝업이 복잡하여 모바일 100dvh에서 결제 이탈 발생.
+  개선안: 모바일 1-Tap 바텀시트 결제 UI 적용, '가상자산(Web3) vs 간편카드결제' 듀얼 탭 전환 및 QR코드 1초 스캔 결제 인터페이스 구현.
+  관련파일: src/views/ShopView.tsx, src/components/QuickPaymentSheet.tsx
+
+[049] SCR-05-04 | 카드 마켓플레이스 (CardMarketplaceView) | 재미/도파민
+  문제점: 특정 카드의 시세 변동을 지속 추적하기 어렵고, 목표가 도달 시 즉각적인 매수 기회를 놓쳐 트레이딩 몰입도가 저하됨.
+  개선안: 카드별 '관심 매물 등록(Watchlist)' 및 '목표 시세 알림(Price Target Ping)' 기능 구축, 목표가 도달 시 푸시 토스트 + 알림음 SFX 및 1-클릭 즉시 매수 팝업 연동.
+  관련파일: src/views/CardMarketplaceView.tsx, src/components/MarketplaceWatchlist.tsx, src/lib/sound.ts
+
+[050] SCR-05-05 | 카드 마켓플레이스 (CardMarketplaceView) | 사용성
+  문제점: 팩 개봉 후 누적된 다수의 잉여 중복 카드를 마켓에 판매할 때 한 장씩 등록해야 하는 번거로움과 조작 피로도 발생.
+  개선안: 모바일 100dvh 하단에 '중복 카드 시장 최저가 일괄 등록(Bulk Quick Listing)' 원터치 액션 바 배치 및 체크박스 멀티 셀렉트 모드 구축.
+  관련파일: src/views/CardMarketplaceView.tsx, src/components/BulkListingModal.tsx
+
+[051] SCR-05-06 | 카드 마켓플레이스 (CardMarketplaceView) | 과금전환
+  문제점: 기본 3개로 제한된 판매 슬롯 때문에 활발한 트레이딩이 제약되고, 거래 수수료(5%) 소각 외에 마켓플레이스 연계 수익화 모델 부재.
+  개선안: 판매 등록 슬롯을 10개로 확장하고 거래 수수료를 2.5%로 인하하며 마켓 최상단 '골드 스포트라이트 매물' 노출 혜택을 제공하는 '거래소 거상 VIP 멤버십 (1,500원)' 상품 판매 배치.
+  관련파일: src/views/CardMarketplaceView.tsx, src/views/ShopView.tsx
+
+[052] SCR-06-04 | 가상 주식 거래소 (StockMarketView) | 성능
+  문제점: 수십 개 캐릭터 종목의 실시간 시세 호가 웹소켓 갱신 시 전체 컴포넌트가 빈번히 리렌더링되어 모바일 저사양 환경에서 프레임 드랍(30fps 이하) 및 터치 인풋 지연 발생.
+  개선안: 웹소켓 시세 수신 데이터를 100ms 단위 requestAnimationFrame 버퍼로 묶어 일괄 배치 갱신하고, 뷰포트 기반 가상화 리스트(Virtual Windowing)를 적용하여 비가시 종목 렌더링을 차단함으로써 무지연 60fps 유지.
+  관련파일: src/views/StockMarketView.tsx, src/lib/StockSocketManager.ts, src/components/VirtualizedStockList.tsx
+
+[053] SCR-06-05 | 가상 주식 거래소 (StockMarketView) | 사용성
+  문제점: 신규 진입 유저에게 주식 호가 및 차트 인터페이스가 복잡하여 첫 매수까지의 진입 장벽(FTUE 이탈)이 높고, 모바일 100dvh 화면에서 한 손 탐색 동선이 미흡함.
+  개선안: 신규 유저 전용 '30초 원클릭 첫 주식 매수 인터랙티브 온보딩 가이드' 및 상단 Thumb Zone에 '오늘의 추천 급등 유망주 TOP 3' 44px 퀵 매수 카드 바를 배치하여 원터치 매수 동선 구축.
+  관련파일: src/views/StockMarketView.tsx, src/components/StockFtueGuide.tsx, src/components/TopPicksCarousel.tsx
+
+[054] SCR-06-06 | 가상 주식 거래소 (StockMarketView) | 재미/도파민
+  문제점: 주가 급등이나 상한가(+30%) 도달 시 시각적/청각적 축하 연출이 없고 주주들 간의 실시간 연대감이나 도파민을 자극하는 소셜 인터랙션 부재.
+  개선안: 상한가 달성 시 화면 전체 '황금 로켓 발사' 축하 애니메이션 + Web Vibration 햅틱 진동 + 팡파르 SFX를 출력하고, 보유 주주 전원 즉시 특별 보너스 배당 팝업 및 실시간 '주주 응원 이모지 연타' 기능 연동.
+  관련파일: src/views/StockMarketView.tsx, src/components/StockRocketCelebration.tsx, src/lib/sound.ts
+
+[055] SCR-07-04 | 승부 예측 시장 (PredictionMarketView) | 성능
+  문제점: 대규모 실시간 승부 예측 경기 진행 시 수천 건의 실시간 베팅 틱 및 배당률 실시간 변동 연산이 WebSocket으로 유입되며 메인 스레드 블로킹과 SVG 렌더링 병목(Frame Drop 25fps 이하) 발생.
+  개선안: 실시간 배당률 산출 및 베팅 집계 연산을 백그라운드 Web Worker(predictionOddsWorker.ts)로 분리하고, 캔버스 기반 마이크로 스파크라인(Sparkline) 차트로 전환하여 60fps 무지연 실시간 렌더링 파이프라인 구축.
+  관련파일: src/views/PredictionMarketView.tsx, src/workers/predictionOddsWorker.ts, src/components/OddsSparklineCanvas.tsx
+
+[056] SCR-07-05 | 승부 예측 시장 (PredictionMarketView) | FTUE/사용성
+  문제점: 신규 유저는 코인 부족 및 손실에 대한 심리적 저항감으로 인해 승부 예측에 참여하지 못하고 관망만 하다가 이탈(신규 참여율 18% 미만)하는 문제 발생.
+  개선안: 신규 가입 유저 전용 '리스크 제로(Zero-Risk) 1회차 무료 예측 티켓(적중 시 실제 코인 지급, 미적중 시 위로 보상 지급)' 및 '승부의 신 3연속 적중 챌린지(누적 배당 10배 이벤트)' 온보딩 퀘스트 도입.
+  관련파일: src/views/PredictionMarketView.tsx, src/components/FreePredictionTicketModal.tsx, src/lib/PredictionRewardEngine.ts
+
+[057] SCR-07-06 | 승부 예측 시장 (PredictionMarketView) | 사용성
+  문제점: 모바일 100dvh 화면에서 경기 시뮬레이션 관전 영역과 베팅 슬립이 상하로 길게 스크롤되어, 경기 중 긴급 실시간 라이브 베팅(인플레이 베팅) 타이밍을 놓치고 오터치 발생.
+  개선안: 100dvh 하단에 고정되는 '원핸드 피팅 라이브 인플레이 베팅 슬립(Live In-Play BottomSheet, 48px 이상 원터치 버튼)' 구축 및 베팅 직전 코인 부족 시 1-Tap 간편 소액 충전(500원 즉시 쾌속 베팅) 결제 모듈 일체화.
+  관련파일: src/views/PredictionMarketView.tsx, src/components/LiveBettingBottomSheet.tsx, src/views/ShopView.tsx
+
+[058] SCR-08-04 | 시련의 탑 & 던전/레이드 (Tower / Dungeon / Boss Raid) | 성능
+  문제점: 레이드 보스전 및 다중 몬스터 웨이브 시 보스의 광역 스킬 파티클(Canvas 2D/WebGL)과 배경 이펙트 렌더링이 중첩되어 모바일 저사양 기기에서 FPS가 20fps대까지 급락하고 턴 입력 지연 발생.
+  개선안: 보스 이펙트 및 파티클 렌더링을 OffscreenCanvas 및 WebGL 인스턴싱(Instanced Mesh Rendering) 파이프라인으로 최적화하고, 저사양 모바일 자동 감지 시 파티클 수를 60% 축소하는 다이내믹 LOD(Level of Detail) 렌더러 적용.
+  관련파일: src/views/TowerView.tsx, src/lib/BossParticleRenderer.ts, src/lib/PerformanceMonitor.ts
+
+[059] SCR-08-05 | 시련의 탑 & 던전/레이드 (Tower / Dungeon / Boss Raid) | 사용성
+  문제점: 이미 3별로 완파한 하위 층 파밍 시 매번 진입/전투/결과 확인 팝업을 거쳐야 해 모바일 100dvh 화면에서 반복 조작 피로도가 극심하고, 일일 AP(스태미나) 소진 동선이 길어짐.
+  개선안: 3성 클리어 층에 '원터치 쾌속 연속 소탕(Quick Sweep 1회 / 5회 / 최대)' 바텀시트 UI 구축, 하단 Thumb Zone에 48px '소탕 시작' 원버튼 배치 및 소탕 결과(경험치/골드/아이템) 1페이지 요약 모달 연동.
+  관련파일: src/views/TowerView.tsx, src/components/TowerSweepBottomSheet.tsx
+
+[060] SCR-08-06 | 시련의 탑 & 던전/레이드 (Tower / Dungeon / Boss Raid) | 과금전환
+  문제점: 보스방 직전 버프 카드(로그라이크 3선) 선택 시 상성이 맞지 않는 버프만 떴을 때 리롤 기회가 없어 불합리함을 느끼고, 50층/100층 대형 관문 정복 시의 성장 축하 패키지 트리거 부재.
+  개선안: 버프 선택창에 '황금 버프 리롤(일일 1회 무료 / 이후 100 코인 소액 결제)' 1-Tap 추가 및 50층·100층 돌파 즉시 1시간 한정 '정복자의 황금 룬 패키지(1,500원 = SSR 룬 확정 상자 + 타워 입장권 5장)' 깜짝 팝업 연동.
+  관련파일: src/views/TowerView.tsx, src/components/TowerBuffRerollModal.tsx, src/views/ShopView.tsx
+
+[061] SCR-09-04 | 미션 게임 아레나 (Poki 110선 Canvas Games) | 성능
+  문제점: 110종 미니게임 간 전환 시 이전 게임의 Canvas 2D 컨텍스트, 오디오 인스턴스, 스프라이트 텍스처 메모리가 브라우저 GC에 즉시 반환되지 않아 메모리 누수가 누적되고 연속 플레이 시 FPS 급락 및 크래시 발생.
+  개선안: 게임 종료/전환 시 강제 텍스처 언로드 및 오디오 버퍼 클리어 파이프라인(Canvas Lifecycle Manager) 구축, Object Pooling 기법 적용으로 프레임당 가비지 생성을 제로화하고 60fps 무지연 메모리 안정성 보장.
+  관련파일: src/views/MiniGameArenaView.tsx, src/lib/CanvasLifecycleManager.ts, src/lib/ObjectPool.ts
+
+[062] SCR-09-05 | 미션 게임 아레나 (Poki 110선 Canvas Games) | 사용성
+  문제점: 110개에 달하는 미니게임이 단순 그리드 스크롤 목록으로 나열되어 있어, 모바일 100dvh 뷰포트에서 원하는 장르 탐색 피로도가 높고 첫 플레이 진입까지 탐색 이탈률 발생.
+  개선안: 상단에 가로 스와이프 장르 태그 칩 바(인기 TOP 10, 1분 킬링타임, 퍼즐 등) 구축, 100dvh 하단 Thumb Zone에 '랜덤 즉시 시작(Shuffle Play, 48px)' 원터치 플로팅 액션 버튼 및 게임별 3초 숏폼 썸네일 GIF 프리뷰 카드 적용.
+  관련파일: src/views/MiniGameArenaView.tsx, src/components/MiniGameCategoryChips.tsx, src/components/MiniGamePreviewCard.tsx
+
+[063] SCR-09-06 | 미션 게임 아레나 (Poki 110선 Canvas Games) | 재미/도파민
+  문제점: 미니게임 최고 기록이 개인 기록에만 머물러 타 유저와의 실시간 경쟁 심리 및 상위 랭커 도전의 도파민 자극이 결여되어 있음.
+  개선안: 매주 종목이 변경되는 '주간 미니게임 챔피언십(Weekly Arena League)' 및 실시간 전광판 랭킹 티커 구축, 상위 1% 달성 시 황금 트로피 칭호 + 대량 SNS 코인 지급, '아레나 챔피언 2배 도전 티켓(500원)' 소액 결제 모델 연동.
+  관련파일: src/views/MiniGameArenaView.tsx, src/components/WeeklyArenaLeaderboard.tsx, src/views/ShopView.tsx
+
+[064] SCR-10-04 | 소셜 & 길드 (Guild / Friend Battle / Community) | 성능
+  문제점: 길드 활동 및 레이드 중 실시간 채팅, 기부/출석 로그, 전투 중계 틱이 동시 폭주할 때 React 전체 컴포넌트 리렌더링 및 모바일 가상 키보드 입력 시 심각한 인풋 렉(200ms 이상) 발생.
+  개선안: 길드 채팅 피드에 가상화 리스트(TanStack Virtual) 적용, WebSocket 수신 메시지 100ms 배치 렌더링 파이프라인 구축 및 입력창 상태와 메시지 뷰를 독립 컴포넌트로 격리하여 60fps 무지연 타이핑 보장.
+  관련파일: src/views/GuildView.tsx, src/components/GuildChatFeed.tsx, src/lib/GuildSocketBatcher.ts
+
+[065] SCR-10-05 | 소셜 & 길드 (Guild / Friend Battle / Community) | 사용성
+  문제점: 일일 길드 출석 체크, 길드 코인 기부, 길드 버프 수령이 각기 다른 서브 탭에 분산되어 있어 모바일 100dvh 화면에서 5회 이상의 번거로운 탭 전환 및 반복 터치 피로도 유발.
+  개선안: 길드 로비 최상단 Thumb Zone에 '일일 길드 활동 올인원 원터치(All-in-One Claim: 출석 + 3단 기부 + 버프 활성화)' 48px 스마트 액션 바를 배치하여 1-Tap 일괄 처리 완료 UX 구축.
+  관련파일: src/views/GuildView.tsx, src/components/GuildDailyQuickHub.tsx
+
+[066] SCR-10-06 | 소셜 & 길드 (Guild / Friend Battle / Community) | 과금전환
+  문제점: 고스펙 카드를 보유한 유저가 길드원에게 지원하며 혜택을 얻는 수단이 없고, 라이트 유저는 상위 레이드 돌파를 위한 에이스 카드가 부족하여 성장 정체 및 이탈 발생.
+  개선안: 길드 전용 '에이스 카드 용병 대여소(Mercenary Post)' 시스템 구축(대여 시 코인 지급), 용병 슬롯 3칸 확장권 판매 및 길드 레이드 랭킹 달성 시 길드 금고 수수료를 전원에게 배당하는 순환 경제 연계.
+  관련파일: src/views/GuildView.tsx, src/components/GuildMercenaryModal.tsx, src/views/ShopView.tsx
+
+[067] SCR-11-04 | 웹소설·웹툰 미디어 허브 (NovelView / AnimeView / MovieView) | 성능
+  문제점: 수십 장의 고해상도 웹툰 이미지를 연속 스크롤할 때 DOM 노드 비대화 및 이미지 메모리 누적으로 스크롤 프레임이 25fps 이하로 끊기고 브라우저 탭 크래시 발생.
+  개선안: IntersectionObserver 기반 화면 밖 이미지 자동 돔(DOM) 언마운트 및 WebP 압축 텍스처 캐싱 파이프라인(Virtual Infinite Image Scroller) 구현, GPU 디코딩을 활용하여 스크롤 60fps 무지연 렌더링 보장.
+  관련파일: src/views/NovelView.tsx, src/components/VirtualWebtoonScroller.tsx, src/lib/ImageCacheManager.ts
+
+[068] SCR-11-05 | 웹소설·웹툰 미디어 허브 (NovelView / AnimeView / MovieView) | 사용성
+  문제점: 대중교통 이동 중 한 손으로 모바일 100dvh 화면 조작 시 엄지손가락 스와이프 피로도가 누적되고, 회차 이동 및 북마크 버튼이 상단에 위치해 한 손 터치 불가능.
+  개선안: 뷰포트 하단 Thumb Zone에 플로팅 '원터치 무단변속 오토 스크롤(Auto-Scroll 1x~5x 조절 슬라이더)' 및 '원터치 다음 화 / 북마크 저장' 44px 반투명 원핸드 컨트롤 패널 오버레이 구축.
+  관련파일: src/views/NovelView.tsx, src/components/OneHandReadingController.tsx
+
+[069] SCR-11-06 | 웹소설·웹툰 미디어 허브 (NovelView / AnimeView / MovieView) | 과금전환
+  문제점: 다음 화 열람 대기 시간 동안 유저가 이탈하고, 몰입도가 최고조에 달한 클리프행어 회차에서 즉시 소액으로 다음 편을 결제할 수 있는 마이크로 결제 동선 부재.
+  개선안: 회차 말미에 '기다리면 무료 3초 쾌속 단축권 (300원 또는 일일 TCG 배틀 3승 퀘스트 달성권)' 1-Tap 트리거 배치 및 미공개 3화분 미리보기 '얼리액세스 패키지(500원 = 3화 사전열람 + 원작 한정 카드 조각)' 판매 연동.
+  관련파일: src/views/NovelView.tsx, src/components/FastPassModal.tsx, src/views/ShopView.tsx
+
+[070] SCR-12-04 | 설정 & 보상 센터 (SettingView / DailyMissions / Attendance) | 성능
+  문제점: 미션 진행도 갱신 시마다 매번 서버 REST API를 개별 동기 호출하여 네트워크 레이턴시가 발생하고, 일시적 네트워크 불안정 시 보상 수령 실패 및 300ms 이상 UI 프리징 유발.
+  개선안: IndexedDB 기반 로컬 옵티미스틱 업데이트 및 백그라운드 큐 동기화(Service Worker Sync) 파이프라인을 구축하여 보상 수령 클릭 즉시 0ms 반응 후 비동기 일괄 정산 처리.
+  관련파일: src/views/SettingView.tsx, src/lib/OfflineSyncQueue.ts, src/lib/IndexedDBStorage.ts
+
+[071] SCR-12-05 | 설정 & 보상 센터 (SettingView / DailyMissions / Attendance) | 재미/도파민
+  문제점: 일일/주간 미션 100% 달성 시 주간 마일스톤 최종 보상 수령이 단순 텍스트 수치 증가에 그쳐 완수 성취감과 도파민 자극이 결여됨.
+  개선안: 주간 업적 최종 달성 시 3D 골드 미믹 보물상자 흔들림 + 터치 탭 시 상자 개봉 빛기둥 파티클 버스트 + 팡파르 SFX + Web Vibration 심장박동 햅틱 진동 및 대량 SSR 조각/코인 롤링 카운팅 연출 구현.
+  관련파일: src/views/SettingView.tsx, src/components/WeeklyMilestoneChestModal.tsx, src/lib/sound.ts
+
+[072] SCR-12-06 | 설정 & 보상 센터 (SettingView / DailyMissions / Attendance) | 과금전환
+  문제점: 미접속 기간 동안 누적된 일일 미션 및 출석 미수령 보상이 소멸되어 복귀 유저의 박탈감과 이탈이 발생하며 복귀 유저 대상 리텐션 과금 상품 부재.
+  개선안: 미접속 3일 이상 복귀 유저 대상 지난 7일간 미수령 출석/미션 보상을 전액 소급 지급하는 '컴백 웰컴백 패키지(1,000원 = 미수령 전액 복구 + 복귀자 전용 SSR 선택권)' 팝업 연동 및 일일 미션 완수 시 당일 한정 '50% 할인 가챠 쿠폰' 보상 연계.
+  관련파일: src/views/SettingView.tsx, src/components/ComebackRewardModal.tsx, src/views/ShopView.tsx
+
+[073] SCR-01-07 | 홈 & 로비 (HomeView) | 성능
+  문제점: 홈 화면 첫 마운트 시 대표 카드 스프라이트, 배경 파티클, 폰트, 오디오 에셋의 동시 로딩으로 저사양 모바일에서 초기 LCP가 3.2초 이상 지연되고 첫 터치 시 150ms 버벅임 발생.
+  개선안: WebGL 셰이더 및 핵심 카드 텍스처를 우선순위 기반 청크 분할(Priority Preload) 처리하고, 캔버스 배경 파티클 렌더링을 지연 초기화(Idle Callback)하여 LCP를 1초 미만으로 단축하고 60fps 보장.
+  관련파일: src/views/HomeView.tsx, src/lib/ResourcePreloader.ts, src/components/LobbyParticleCanvas.tsx
+
+[074] SCR-01-08 | 홈 & 로비 (HomeView) | 사용성
+  문제점: 모바일 브라우저 가변 주소창 및 홈 인디케이터로 인해 100dvh 하단 글로벌 네비게이션 탭바가 가려지거나 오터치가 발생하고, 화면 간 전환 시 탭 클릭만 가능하여 제스처 편의성 부족.
+  개선안: CSS env(safe-area-inset-bottom) 완벽 대응 패딩 및 탭 높이 56px 최적화, 좌우 수평 스와이프(Horizontal Swipe Gesture)로 메인 탭(덱, 로비, 상점) 간 부드러운 전환이 가능한 제스처 인터랙션 엔진 연동.
+  관련파일: src/views/HomeView.tsx, src/components/GlobalNavigationBar.tsx, src/lib/GestureNavigator.ts
+
+[075] SCR-01-09 | 홈 & 로비 (HomeView) | 과금전환
+  문제점: 신규 가입 후 1~3일 차에 배틀 횟수가 증가해도 홈 화면에서 성장 달성감을 시각적으로 확인하고 소액 결제로 이어지는 지속적 성장 동기(Pass) 모델 부재.
+  개선안: 홈 화면 좌측에 '신규 영웅 7일 성장 로드맵 배틀패스(무료 패스 + 1,200원 프리미엄 패스)' 위젯 배치, 일일 배틀 승리 시마다 단계별 SSR 소환권 및 룬 재료가 언락되며 미수령 보상 알림 펄스 이펙트 제공.
+  관련파일: src/views/HomeView.tsx, src/components/GrowthPassWidget.tsx, src/views/ShopView.tsx
+
+[076] SCR-02-07 | 배틀 아레나 (PlayGameView) | 성능
+  문제점: 3장 이상 동시 뒤집기(연쇄 플립) 발생 시 CSS 3D 트랜스폼 및 DOM 노드 회전 애니메이션의 중첩으로 모바일 저사양 기기에서 200ms 이상 마이크로 스터터 및 프레임 드랍(35fps 이하) 발생.
+  개선안: 보드 카드 플립 및 충격파 파티클 이펙트를 WebGL 셰이더 기반 GPU 인스턴스 렌더링(Canvas Layer Separation)으로 전면 전환하고, CSS 리플로우를 0건으로 차단하여 60fps 무지연 플립 애니메이션 구현.
+  관련파일: src/views/PlayGameView.tsx, src/lib/BattleWebGLRenderer.ts, src/components/BattleBoard.tsx
+
+[077] SCR-02-08 | 배틀 아레나 (PlayGameView) | 사용성
+  문제점: 모바일 100dvh 화면 하단에 5장의 손패 카드가 좁게 일렬 배치되어 한 손 엄지 조작 시 인접 카드 오터치(오선택률 18%)가 발생하고 상하좌우 스탯 식별이 어려움.
+  개선안: 모바일 엄지 반경에 맞춘 '원핸드 부채꼴 덱 팬(Fan-out) 레이아웃' 적용, 카드 탭 시 상단 32px 팝업 및 4방향 숫자 확대 강조, 보드 빈칸 터치 시 1-Tap 즉시 착수되는 스마트 제스처 인터랙션 도입.
+  관련파일: src/views/PlayGameView.tsx, src/components/BattleHandFan.tsx, src/components/BattleCard.tsx
+
+[078] SCR-02-09 | 배틀 아레나 (PlayGameView) | 재미/도파민
+  문제점: 3연승 이상 달성 시에도 단순 연승 카운트만 증가하여 승리 도파민이 체감되고, 연승이 끊겼을 때의 허탈감으로 게임을 이탈하는 현상 발생.
+  개선안: 3·5·10연승 달성 즉시 '황금 잭팟 럭키 룰렛(대량 코인, 한정 이모티콘, SSR 카드 뽑기권)' 1회 무료 회전 도파민 연출 제공 및 연승 종료 위기 시 연승을 보존하는 '연승 쉴드 티켓(500원)' 즉시 구제 팝업 연동.
+  관련파일: src/views/PlayGameView.tsx, src/components/WinStreakJackpotModal.tsx, src/views/ShopView.tsx
+
+[079] SCR-03-07 | 마이덱 & 카드 관리 (MyDeckView) | 성능
+  문제점: 수백 장의 카드 인벤토리 목록 고속 스크롤 시 수백 개의 카드 DOM 노드와 홀로그램 포일 이펙트의 동시 렌더링으로 프레임이 25fps 이하로 급락하고 메모리 누수 발생.
+  개선안: 인벤토리 그리드에 TanStack Virtual 기반 2D 가상 스크롤(Virtual Windowing)을 적용하여 뷰포트 내 가시 카드만 렌더링하고, 비가시 카드 텍스처를 해제하는 WebP 썸네일 캐시 풀 파이프라인 구축.
+  관련파일: src/views/MyDeckView.tsx, src/components/VirtualizedCardGrid.tsx, src/lib/CardTexturePool.ts
+
+[080] SCR-03-08 | 마이덱 & 카드 관리 (MyDeckView) | 사용성
+  문제점: 특정 속성/등급 카드 탐색을 위한 필터 조작이 번거롭고, 카드 상세 정보 확인 시 전체 화면 모달로 전환되어 덱 편성 흐름과 맥락이 단절됨.
+  개선안: 100dvh 상단에 '원터치 핑거 스와이프 다중 속성/티어 칩 필터'를 상시 노출하고, 카드를 롱프레스 시 덱 화면을 유지한 채 하단 50% 높이로 올라오는 '하프 바텀시트 카드 스펙 프리뷰' 구축.
+  관련파일: src/views/MyDeckView.tsx, src/components/CardDetailBottomSheet.tsx, src/components/QuickFilterChips.tsx
+
+[081] SCR-03-09 | 마이덱 & 카드 관리 (MyDeckView) | 과금전환
+  문제점: 5장 덱 종합 전투력 특정 구간 도달 시 시각적 명예 보상과 다음 단계 도약을 자극하는 성장 과금 모델이 부재하여 중반 육성 정체 발생.
+  개선안: 덱 전투력 돌파 시 '전 서버 덱 파워 상위 N% 골드 훈장' 및 전용 프로필 테두리 지급, 목표 전투력(5천/1만/2만) 도달 즉시 2시간 한정 '덱 각성 스페셜 점핑팩 (1,500원 = 5성 각성석 5개 + 룬 3개)' 타임딜 팝업 연동.
+  관련파일: src/views/MyDeckView.tsx, src/components/DeckPowerMilestoneModal.tsx, src/views/ShopView.tsx
+
+[082] SCR-04-07 | 상점 & 가챠 (ShopView) | 성능
+  문제점: 10연속 카드 소환 시 10장의 고해상도 일러스트 및 홀로그램 포일 이펙트 동시 렌더링으로 저사양 모바일에서 GPU 메모리 스파이크 및 20fps 이하 프레임 드랍/화면 멈칫 발생.
+  개선안: 가챠 연출 전용 경량 WebGL Canvas 렌더러를 구축하여 텍스처 아틀라스 단일 드로우 콜로 일괄 렌더링하고, 연출 종료 즉시 텍스처 메모리를 수동 해제(Dispose)하는 60fps 무지연 파이프라인 구현.
+  관련파일: src/views/ShopView.tsx, src/components/GachaWebGLCanvas.tsx, src/lib/GachaTextureManager.ts
+
+[083] SCR-04-08 | 상점 & 가챠 (ShopView) | 사용성
+  문제점: 가챠 후 누적된 마일리지(소환 포인트)를 교환하려면 별도 상점 탭으로 이동해야 해 모바일 100dvh에서 불필요한 화면 전환 및 마일리지 인지 누락 발생.
+  개선안: 소환 메인 뷰 하단 Thumb Zone 바로 위에 '소환 마일리지 실시간 교환 바(44px)'를 상시 오버레이하고, 탭 시 현재 포인트로 즉시 교환 가능한 SSR 카드 목록이 펼쳐지는 하프 바텀시트 원터치 교환 UX 구축.
+  관련파일: src/views/ShopView.tsx, src/components/MileageQuickSheet.tsx
+
+[084] SCR-04-09 | 상점 & 가챠 (ShopView) | 과금전환
+  문제점: 고정 상품 위주의 진열로 매일 상점 방문 동기가 결여되어 있고, 무과금 유저의 첫 소액 결제를 촉진하는 즉시성 한정 타임딜 부재.
+  개선안: 매일 갱신되는 '오늘의 무료 1회 소환'으로 상점 일일 방문을 유도하고, 무료 소환 직후 15분 한정 70% 특가 '시크릿 게릴라 팩 (500원 = SSR 3배 팩 + 1,000 코인)' 깜짝 플래시 세일 팝업 연동.
+  관련파일: src/views/ShopView.tsx, src/components/DailyFreeGachaModal.tsx, src/components/FlashSalePopup.tsx
+
+[085] SCR-05-07 | 카드 마켓플레이스 (CardMarketplaceView) | 성능
+  문제점: 마켓 활성화 시간대 초당 수십 건의 매물/호가 웹소켓 틱 유입 시 React 주문서 컴포넌트 전체 리렌더링으로 30fps 이하 스크롤 저하 및 120ms 탭 전환 프리징 발생.
+  개선안: 웹소켓 체결/호가 스트림에 150ms 윈도우 RAF 배치 버퍼링을 적용하고, 실시간 호가 깊이와 체결 티커를 경량 2D Canvas 오버레이로 전환하여 DOM 조작을 배제한 60fps 무지연 파이프라인 구축.
+  관련파일: src/views/CardMarketplaceView.tsx, src/components/OrderBookCanvas.tsx, src/lib/MarketSocketBatcher.ts
+
+[086] SCR-05-08 | 카드 마켓플레이스 (CardMarketplaceView) | 사용성
+  문제점: 모바일 100dvh 화면에서 최근 시세 차트의 특정 시점 가격 확인 시 툴팁 정밀 터치가 어렵고 손가락 가림이 발생하며, 매수 완료까지 복잡한 팝업 단계 소요.
+  개선안: 엄지손가락 스와이프로 7일/30일 시세를 부드럽게 탐색하는 '원핸드 마그네틱 터치 슬라이더' 및 매물 탭 시 즉시 100dvh 하단에 뜨는 '48px 원터치 쾌속 매수(Quick Buy) 확정 슬라이드 버튼' 구축.
+  관련파일: src/views/CardMarketplaceView.tsx, src/components/MarketPriceScrubber.tsx, src/components/QuickBuyBottomSheet.tsx
+
+[087] SCR-05-09 | 카드 마켓플레이스 (CardMarketplaceView) | 과금전환
+  문제점: 일반 고정가 판매만 존재하여 초희귀 카드의 가치를 극대화하기 어렵고, 실시간 입찰 경쟁을 통한 유저 간 도파민 폭발 기전 부재.
+  개선안: 한정판/초희귀 카드를 24시간 실시간 호가 경쟁으로 낙찰받는 '라이브 옥션(경매장)' 모드 신설, 종료 1분 전 갱신 시 자동 연장(심장박동 SFX) 연동 및 입찰 코인 부족 시 '즉시 입찰 긴급 코인 팩(1,000원)' 결제 트리거 연계.
+  관련파일: src/views/CardMarketplaceView.tsx, src/components/LiveAuctionModal.tsx, src/views/ShopView.tsx
+
+[088] SCR-06-07 | 가상 주식 거래소 (StockMarketView) | 성능
+  문제점: 모바일에서 분봉/일봉 캔들 차트를 핀치줌/패닝 조작 시 SVG 기반 차트의 DOM 재계산 병목으로 20~30fps 끊김과 제스처 버벅임 발생.
+  개선안: 차트 렌더링 엔진을 OffscreenCanvas 및 WebGL 기반 고성능 경량 차트 파이프라인으로 전면 교체하고, 터치 제스처 시 메인 스레드 연산을 분리하여 핀치줌/패닝 시 60fps 무감속 반응성 보장.
+  관련파일: src/views/StockMarketView.tsx, src/components/StockCandleCanvas.tsx, src/lib/ChartGestureEngine.ts
+
+[089] SCR-06-08 | 가상 주식 거래소 (StockMarketView) | 사용성
+  문제점: 유저가 보유한 복수 캐릭터 주식의 자산 비중과 평가손익을 한눈에 보기 어렵고, 목표 매도가/손절가 설정을 위해 복잡한 메뉴를 찾아 들어가야 해 모바일 100dvh에서 조작 피로도 누적.
+  개선안: 100dvh 상단에 '원터치 인터랙티브 자산 배분 도넛 차트(탭 시 종목별 손익 토글)'를 배치하고, 하단 Thumb Zone에 '1-Tap 스마트 익절/손절(TP/SL) 자동 주문 바텀시트'를 48px 단일 버튼으로 구축.
+  관련파일: src/views/StockMarketView.tsx, src/components/PortfolioDonutCard.tsx, src/components/StockTpSlSheet.tsx
+
+[090] SCR-06-09 | 가상 주식 거래소 (StockMarketView) | 과금전환
+  문제점: 캐릭터 주식을 대량 보유해도 일반 배당금 수령 외에 게임 운영이나 메타에 개입할 수 있는 특별한 권한이 없어 주주로서의 몰입도와 대형 과금 유인책 부재.
+  개선안: 주간 배당금을 2배로 증폭 수령하는 7일 기간제 '골드 배당 레버리지 부스터(990원)' 소액 상품 연동 및 특정 캐릭터의 다음 시즌 밸런스/스킨 방향성에 투표하는 '주주총회 의결권(Vote Pass) 패키지 (2,000원)' 판매 동선 구축.
+  관련파일: src/views/StockMarketView.tsx, src/components/ShareholderVotingModal.tsx, src/views/ShopView.tsx
+
+[091] SCR-07-07 | 승부 예측 시장 (PredictionMarketView) | 성능
+  문제점: 주요 경기 마감 직전 배당률 급변 및 실시간 응원 채팅/베팅 로그 동시 유입 시 메인 스레드 락으로 터치 레이턴시(>200ms) 및 20fps 이하 프레임 드랍 발생.
+  개선안: 웹소켓 데이터 파싱 및 배당률 계산을 Web Worker로 격리 오프로딩하고, 실시간 베팅 피드에 경량 가상 윈도우잉과 16.6ms RAF 스케줄러를 적용하여 무지연 터치 응답성 보장.
+  관련파일: src/views/PredictionMarketView.tsx, src/workers/PredictionStreamWorker.ts, src/components/LiveBettingTicker.tsx
+
+[092] SCR-07-08 | 승부 예측 시장 (PredictionMarketView) | 사용성
+  문제점: 모바일 100dvh 화면에서 양팀 전력 비교 통계 확인을 위해 여러 탭을 오가야 하고, 금액 입력 시 가상 키보드가 올라와 경기 상황판을 가리는 UX 단절 발생.
+  개선안: 100dvh 하단 Thumb Zone에 키보드 팝업 없이 엄지 스와이프로 금액을 조절하는 '원핸드 마그네틱 햅틱 베팅 다이얼'을 구축하고, 상단에 양팀 전력 비교 AI 미니 레이더 차트 배치.
+  관련파일: src/views/PredictionMarketView.tsx, src/components/QuickBettingDial.tsx, src/components/MatchAiRadarChart.tsx
+
+[093] SCR-07-09 | 승부 예측 시장 (PredictionMarketView) | 과금전환
+  문제점: 단발성 베팅 위주로 진행되어 연속 참여 동기가 결여되고, 저배당 안전 경기에서 유저 베팅 재미와 소액 과금 유인책 부재.
+  개선안: 베팅 직전 특정 팀의 최종 환급 배당률을 +1.5배~3배로 즉시 부스팅해주는 소모형 '골든 오즈 부스터 티켓(700원)' 즉시 구매 연동 및 3·5·7회 연속 적중 시 누적 상금이 급증하는 '스트릭 챌린지 패스(1,500원)' 신설.
+  관련파일: src/views/PredictionMarketView.tsx, src/components/OddsBoosterModal.tsx, src/views/ShopView.tsx
+
+[094] SCR-08-07 | 소환 & 융합 연구소 (FusionLabView) | 성능
+  문제점: 대량의 저등급 재료 카드 일괄 융합(10연속/50연속) 시 연속 파티클 물리 시뮬레이션 및 DOM 생성으로 메인 스레드 300ms 블로킹 및 15fps 이하 멈춤 발생.
+  개선안: 일괄 융합 연산 및 확률 시뮬레이션을 Web Worker로 분리하고, 연속 융합 연출을 단일 OffscreenCanvas 인스턴스 렌더링 파이프라인으로 전환하여 60fps 무감속 배치 프로세싱 구현.
+  관련파일: src/views/FusionLabView.tsx, src/workers/BatchFusionWorker.ts, src/components/BatchFusionCanvas.tsx
+
+[095] SCR-08-08 | 소환 & 융합 연구소 (FusionLabView) | 사용성
+  문제점: 모바일 100dvh 화면에서 융합 재료용 중복/저등급 카드를 일일이 찾아 터치해야 하며, 주력 카드를 실수로 재료로 투입하는 사고 위험 및 복잡한 스크롤 피로도 발생.
+  개선안: 하단 Thumb Zone에 '1-Tap 스마트 중복 재료 자동 선별 필터(N등급 이하 자동 선택)' 및 '잠금 보호 안전 장치'를 탑재하고, 한 손 스와이프로 슬롯을 채우는 마그네틱 스와이프 도크 구축.
+  관련파일: src/views/FusionLabView.tsx, src/components/SmartMaterialPicker.tsx, src/components/CardLockIndicator.tsx
+
+[096] SCR-08-09 | 소환 & 융합 연구소 (FusionLabView) | 과금전환
+  문제점: 일반 융합 실패 시 투입 재료만 소멸되어 허탈감으로 인한 이탈이 발생하며, 상위 등급 카드를 확정 획득할 수 있는 안전장치 및 마이크로 과금 트리거 부재.
+  개선안: 융합 시도마다 게이지가 차오르는 '연금술 마일리지 천장(100% 충전 시 차상위 등급 100% 확정)' 시스템을 도입하고, 실패 시 '돌연변이 긴급 복구 젬 (600원 = 카드 1장 보존 + 성공률 +30%)' 타임딜 연동.
+  관련파일: src/views/FusionLabView.tsx, src/components/FusionPityGauge.tsx, src/views/ShopView.tsx
+
+[097] SCR-09-07 | 길드 & 소셜 하우스 (GuildHouseView) | 성능
+  문제점: 동시 접속 길드원(최대 50명) 로비 집결 시 아바타, 칭호, 말풍선 DOM 노드 중첩으로 25fps 이하 프레임 드랍 및 100ms 이상 터치 지연 발생.
+  개선안: 로비 아바타 렌더링을 WebGL 하드웨어 인스턴싱 및 쿼드트리 공간 분할 엔진으로 전환하여 단일 드로우 콜로 50개체 일괄 렌더링하는 60fps 파이프라인 구축.
+  관련파일: src/views/GuildHouseView.tsx, src/components/GuildLobbyCanvas.tsx, src/lib/QuadtreeSpatialEngine.ts
+
+[098] SCR-09-08 | 길드 & 소셜 하우스 (GuildHouseView) | 사용성
+  문제점: 길드 레이드 중 파티원 간 전술 신호 전달 시 채팅창 타이핑으로 조작 흐름이 끊기고 모바일 100dvh 하단이 키보드로 가려지는 UX 단절 발생.
+  개선안: 하단 Thumb Zone에 한 손 엄지 슬라이드로 핵심 전술 신호(돌격, 힐 등)를 전파하는 '원터치 햅틱 래디얼 핑 휠' 및 플로팅 파티 현황 미니 허브(44px) 구축.
+  관련파일: src/views/GuildHouseView.tsx, src/components/GuildRadialPingWheel.tsx, src/components/RaidPartyStatusHub.tsx
+
+[099] SCR-09-09 | 길드 & 소셜 하우스 (GuildHouseView) | 과금전환
+  문제점: 길드원 개인의 과금이 길드 전체의 혜택이나 유대감으로 확장되지 않아 커뮤니티 차원의 과금 시너지 및 상호 감사 문화 부재.
+  개선안: 개인의 패키지 구매 시 길드원 전원에게 보상 상자가 발송되는 '길드 행운의 선물 상자' 시스템을 연동하고, 10인 연속 개봉 시 전원 보너스 피버 타임 기전 구축.
+  관련파일: src/views/GuildHouseView.tsx, src/components/GuildLuckyGiftModal.tsx, src/views/ShopView.tsx
+
+[100] SCR-10-07 | 랭킹 & 명예의 전당 (LeaderboardView) | 성능
+  문제점: 시즌 마감 직전 실시간 점수 갱신으로 수십 명의 순위 동시 역전 시 리스트 항목 재배치로 60ms 이상 Layout Thrashing 및 20fps 스터터링 발생.
+  개선안: 리스트 항목 이동에 FLIP 애니메이션 및 GPU 가속(translate3d)을 적용하고, 500ms 윈도우 순위 변동 배치 큐를 구축하여 레이아웃 리플로우 없는 60fps 무감속 연출 구현.
+  관련파일: src/views/LeaderboardView.tsx, src/components/FlipLeaderboardList.tsx, src/lib/RankingBatchQueue.ts
+
+[101] SCR-10-08 | 랭킹 & 명예의 전당 (LeaderboardView) | 사용성
+  문제점: 상위 랭커들의 사용 덱과 스펙을 보려면 별도 프로필로 이동해야 해 모바일 100dvh에서 화면 전환 피로도가 높고, 해당 덱을 내 덱으로 즉시 복사하는 편의 기능 부재.
+  개선안: 랭킹 항목 스와이프 시 즉시 나타나는 '덱 미러링 프리뷰 하프 바텀시트' 및 보유 카드를 자동 매칭해 빈자리를 대체 카드로 추천해주는 '1-Tap 덱 카피' 원터치 버튼(48px) 구축.
+  관련파일: src/views/LeaderboardView.tsx, src/components/DeckMirroringSheet.tsx, src/components/DeckAutoCopyButton.tsx
+
+[102] SCR-10-09 | 랭킹 & 명예의 전당 (LeaderboardView) | 과금전환
+  문제점: 최근 나를 이기고 순위를 역전한 라이벌 유저에 대한 재도전 동기부여가 약하고, 상위 티어 진입 문턱에서 패배 시 좌절감으로 인한 랭킹전 이탈 발생.
+  개선안: 내 순위 침탈 유저에게 즉시 복수전을 신청하는 '라이벌 복수 챌린지(승리 시 랭킹 포인트 2배)' 및 승급전 위기 시 1회 무효화 '랭크 세이프 쉴드 티켓(800원)' 즉시 구제 팝업 연동.
+  관련파일: src/views/LeaderboardView.tsx, src/components/RivalRevengeModal.tsx, src/views/ShopView.tsx
+
+[103] SCR-11-07 | 퀘스트 & 업적 센터 (QuestAchievementView) | 성능
+  문제점: 보상 일괄 수령' 시 10~20개 항목의 상태 갱신, 플라잉 애니메이션, 재화 카운터 급증 동시 발생으로 메인 스레드 100ms 락 및 15fps 프레임 드랍 발생.
+  개선안: 보상 플라잉 연출을 WebGL/Canvas 하드웨어 가속 파티클 풀로 전환하고, 상태 업데이트를 RAF 단일 배치 사이클로 통합하여 60fps 무감속 연출 파이프라인 구축.
+  관련파일: src/views/QuestAchievementView.tsx, src/components/RewardFlyingCanvas.tsx, src/lib/RewardBatchController.ts
+
+[104] SCR-11-08 | 퀘스트 & 업적 센터 (QuestAchievementView) | 사용성
+  문제점: 퀘스트 수행을 위해 각 게임 모드로 이동 후 진행도 확인을 위해 반복 복귀해야 해 동선이 길고, 100dvh 화면에서 조작 동선 분산 발생.
+  개선안: 타 화면 플레이 중 모서리 스와이프로 펼쳐지는 '미니 퀘스트 플로팅 트래커 HUD(44px)' 구축 및 퀘스트 센터 내 탭(일일/주간/업적) 좌우 스와이프 제스처 전환 UX 구현.
+  관련파일: src/views/QuestAchievementView.tsx, src/components/FloatingQuestHUD.tsx, src/components/QuestTabSwipeView.tsx
+
+[105] SCR-11-09 | 퀘스트 & 업적 센터 (QuestAchievementView) | 과금전환
+  문제점: 퀘스트 마감 직전 미완료 항목이 남았을 때 유저가 포기하고 이탈하며, 마감 직전 긴장감과 보상 욕구를 자극하는 타임 세일 장치 부재.
+  개선안: 마감 2시간 전 미달성 퀘스트 경험치를 3배 증폭하는 '막판 스퍼트 골든 부스터(500원)' 팝업 및 올클리어 실패 시 '미완성 구제 럭키 박스(800원)' 즉시 구매 연동.
+  관련파일: src/views/QuestAchievementView.tsx, src/components/LastSpurtBoosterModal.tsx, src/views/ShopView.tsx
+
+[106] SCR-11-07 | 퀘스트 & 업적 센터 (QuestAchievementView) | 성능
+  문제점: 보상 일괄 수령' 시 10~20개 항목의 상태 갱신, 플라잉 애니메이션, 재화 카운터 급증 동시 발생으로 메인 스레드 100ms 락 및 15fps 프레임 드랍 발생.
+  개선안: 보상 플라잉 연출을 WebGL/Canvas 하드웨어 가속 파티클 풀로 전환하고, 상태 업데이트를 RAF 단일 배치 사이클로 통합하여 60fps 무감속 연출 파이프라인 구축.
+  관련파일: src/views/QuestAchievementView.tsx, src/components/RewardFlyingCanvas.tsx, src/lib/RewardBatchController.ts
+
+[107] SCR-11-08 | 퀘스트 & 업적 센터 (QuestAchievementView) | 사용성
+  문제점: 퀘스트 수행을 위해 각 게임 모드로 이동 후 진행도 확인을 위해 반복 복귀해야 해 동선이 길고, 100dvh 화면에서 조작 동선 분산 발생.
+  개선안: 타 화면 플레이 중 모서리 스와이프로 펼쳐지는 '미니 퀘스트 플로팅 트래커 HUD(44px)' 구축 및 퀘스트 센터 내 탭(일일/주간/업적) 좌우 스와이프 제스처 전환 UX 구현.
+  관련파일: src/views/QuestAchievementView.tsx, src/components/FloatingQuestHUD.tsx, src/components/QuestTabSwipeView.tsx
+
+[108] SCR-11-09 | 퀘스트 & 업적 센터 (QuestAchievementView) | 과금전환
+  문제점: 퀘스트 마감 직전 미완료 항목이 남았을 때 유저가 포기하고 이탈하며, 마감 직전 긴장감과 보상 욕구를 자극하는 타임 세일 장치 부재.
+  개선안: 마감 2시간 전 미달성 퀘스트 경험치를 3배 증폭하는 '막판 스퍼트 골든 부스터(500원)' 팝업 및 올클리어 실패 시 '미완성 구제 럭키 박스(800원)' 즉시 구매 연동.
+  관련파일: src/views/QuestAchievementView.tsx, src/components/LastSpurtBoosterModal.tsx, src/views/ShopView.tsx
+
+[109] SCR-12-07 | 환경설정 & 계정/보상 센터 (SettingRewardView) | 성능
+  문제점: 수동 그래픽 조절 한계로 저사양 기기에서 고사양 옵션 방치 시 지속적인 서멀 스로틀링, 기기 발열 및 20fps 프레임 저하 발생.
+  개선안: 설정 진입 시 1초 백그라운드 벤치마크로 최적 프리셋을 자동 적용하고, 발열 감지 시 실시간으로 이펙트를 1단계 낮추는 '스마트 에코 60fps 세이프가드' 구축.
+  관련파일: src/views/SettingRewardView.tsx, src/lib/DeviceBenchmarkEngine.ts, src/lib/AdaptivePerformanceManager.ts
+
+[110] SCR-12-08 | 환경설정 & 계정/보상 센터 (SettingRewardView) | 사용성
+  문제점: 배포된 복잡한 쿠폰 코드를 모바일 100dvh에서 일일이 붙여넣기 번거롭고, 사운드 볼륨 슬라이더가 얇아 엄지 오터치 빈번 발생.
+  개선안: 화면 진입 시 클립보드의 유효 쿠폰 코드를 자동 감지해 띄우는 '1-Tap 즉시 등록 팝업' 구축 및 엄지 손가락에 맞춘 48px 햅틱 사운드 슬라이더 제공.
+  관련파일: src/views/SettingRewardView.tsx, src/components/SmartCouponAutoInput.tsx, src/components/HapticVolumeSlider.tsx
+
+[111] SCR-12-09 | 환경설정 & 계정/보상 센터 (SettingRewardView) | 과금전환
+  문제점: 코어 유저가 개발사를 직접 후원하거나 명예를 얻을 수 있는 멤버십 통로 부재 및 장기 미접속 복귀 계정에 대한 정착 유도 상품 결여.
+  개선안: 영구 명예 골드 배지 및 크레딧 등재가 포함된 '파운더스 서포터즈 팩(4,900원)' 연동 및 14일 이상 미접속 복귀 계정 전용 80% 할인 '슈퍼 컴백 번들(1,200원)' 딜 제공.
+  관련파일: src/views/SettingRewardView.tsx, src/components/SupporterBadgeModal.tsx, src/views/ShopView.tsx
+
+[112] SCR-01-10 | 메인 로비 & 홈 (HomeView) | 성능
+  문제점: 모바일 네트워크 불안정 시 로비 진입 실패(화면 깜빡임) 및 매 방문마다 중복 에셋 핸드셰이크로 재진입 로딩 지연(>2.5초) 발생.
+  개선안: Workbox 기반 스마트 PWA Service Worker 프리캐싱 파이프라인 및 stale-while-revalidate 캐싱을 구축하여 네트워크 단절 시에도 즉시 오프라인 로비 셸 렌더링 구현.
+  관련파일: src/views/HomeView.tsx, src/serviceWorkerRegistration.ts, vite.config.ts
+
+[113] SCR-01-11 | 메인 로비 & 홈 (HomeView) | 사용성
+  문제점: 고정된 주간 배경 비주얼로 야간 플레이 시 눈 피로도가 높고, OS 시스템 다크 모드와 연동되지 않아 100dvh 화면에서 시각적 이질감 발생.
+  개선안: OS 시스템 다크 모드 자동 감지 테마 시스템 구축 및 사용자 현지 시간대(아침/낮/황혼/밤)에 따라 실시간 변화하는 '다이내믹 앰비언트 스카이박스' 및 OLED 딥블랙 UI 제공.
+  관련파일: src/views/HomeView.tsx, src/components/DynamicSkyboxCanvas.tsx, src/theme/ThemeProvider.tsx
+
+[114] SCR-01-12 | 메인 로비 & 홈 (HomeView) | 과금전환
+  문제점: 메인 로비가 단순 대기실 역할에 머물러 있어 로비 자체에 머무르는 재미와 특정 시간대 유저 접속 집결 동기 부재.
+  개선안: 매일 정오(12시)/자정(24시) 로비에 '황금 도둑 고블린'이 깜짝 등장해 연타 시 재화를 드랍하는 미니 이벤트 신설 및 도주 직전 3분 한정 '황금 그물 포획 패키지(990원)' 연동.
+  관련파일: src/views/HomeView.tsx, src/components/GoldenGoblinEvent.tsx, src/views/ShopView.tsx
+
+[115] SCR-02-10 | 배틀 아레나 (PlayGameView) | 성능
+  문제점: HTML5 오디오 태그 병목으로 모바일에서 타격 SFX 재생 시 80~120ms 레이턴시 발생 및 다중 타격 시 소리 끊김 현상 발생.
+  개선안: 저지연 Web Audio API 컨텍스트 전면 전환 및 사전 디코딩된 PCM 오디오 버퍼 풀링과 믹서 파이프라인을 구축하여 터치 즉시 무지연 타격 SFX 재생 보장.
+  관련파일: src/views/PlayGameView.tsx, src/lib/WebAudioEngine.ts, src/lib/SoundBufferPool.ts
+
+[116] SCR-02-11 | 배틀 아레나 (PlayGameView) | 사용성
+  문제점: 카드 발동 시 필드 슬롯까지 길게 드래그해야 해 손가락 가림이 발생하고, 흔들리는 이동 환경에서 드래그 미스 및 시간 초과 빈번 발생.
+  개선안: 카드를 위로 가볍게 튕겨내는 '원터치 플릭 제스처' 소환 및 엄지 터치 지속 시 적을 자동 조준하는 '스마트 타겟 조준선' 인터랙션 구축.
+  관련파일: src/views/PlayGameView.tsx, src/components/CardFlickGestureController.tsx, src/components/AutoTargetingRay.tsx
+
+[117] SCR-02-12 | 배틀 아레나 (PlayGameView) | 과금전환
+  문제점: 극적인 역전승/명장면 달성 시 외부에 자랑할 공유 수단이 없어 바이럴 유입이 차단되고, 배틀 승리 후 배틀 패스 추가 부스팅 유인 부족.
+  개선안: 승리 직후 15초 명장면을 9:16 숏폼 규격으로 1-클릭 공유하는 '리플레이 숏폼 생성기' 연동 및 승리 후 5분간 배틀 패스 별 3배 획득 '스타 부스터(600원)' 신설.
+  관련파일: src/views/PlayGameView.tsx, src/components/BattleShortsGenerator.tsx, src/views/ShopView.tsx
+
+[118] SCR-03-10 | 마이덱 & 카드 관리 (MyDeckView) | 성능
+  문제점: 덱 수정 시마다 서버 동기화 요청으로 200~400ms 지연 스피너 발생 및 네트워크 음영 구역에서 덱 열람/편성 불가.
+  개선안: 인벤토리 및 덱 메타데이터를 클라이언트 IndexedDB에 로컬 캐싱하고, 낙관적 업데이트와 백그라운드 동기화 큐를 구축하여 오프라인 편집 보장.
+  관련파일: src/views/MyDeckView.tsx, src/lib/DeckIndexedDB.ts, src/lib/DeckSyncQueue.ts
+
+[119] SCR-03-11 | 마이덱 & 카드 관리 (MyDeckView) | 사용성
+  문제점: 모바일 100dvh 화면에서 1번 덱과 2번 덱의 상성/시너지 스펙을 비교하려면 탭을 번갈아 눌러야 해 직관적 비교 불가.
+  개선안: 두 손가락 핀치 인 시 등록된 5개 덱을 한눈에 조망하는 '덱 버드뷰(Bird's-Eye View) 줌아웃 비교 모드' 및 덱 간 카드 원터치 드래그 스왑 인터랙션 구축.
+  관련파일: src/views/MyDeckView.tsx, src/components/DeckBirdEyeView.tsx, src/components/DeckPinchController.tsx
+
+[120] SCR-03-12 | 마이덱 & 카드 관리 (MyDeckView) | 과금전환
+  문제점: 카드 일러스트 외형을 커스텀할 수단이 없어 애정 카드에 대한 감성 과금 모델 부재 및 기본 덱 슬롯(5개) 제한으로 전략 실험 제약.
+  개선안: 테두리, 홀로그램 포일, 파티클을 직접 튜닝하는 '커스텀 홀로 스킨 제작소(스킨 재료팩 990원)' 연동 및 최대 10슬롯 '덱 마스터 프리미엄 패스(2,500원)' 판매 동선 구축.
+  관련파일: src/views/MyDeckView.tsx, src/components/HoloSkinCustomizer.tsx, src/views/ShopView.tsx
+
+[121] SCR-04-10 | 상점 & 가챠 (ShopView) | 성능
+  문제점: 결제 창 호출 및 복귀 시 웹뷰 리로드/재동기화로 2~3초간 화면 프리징 발생 및 토큰 검증 지연으로 유저 불안감 유발.
+  개선안: 결제 웹뷰 프로세스를 비동기 워커로 분리하고, 결제 승인 즉시 클라이언트에 선반영하는 낙관적 결제 핸들러 파이프라인 구축하여 복귀 시 0ms 렌더링 유지.
+  관련파일: src/views/ShopView.tsx, src/lib/PaymentBridge.ts, src/lib/OptimisticPurchaseHandler.ts
+
+[122] SCR-04-11 | 상점 & 가챠 (ShopView) | 사용성
+  문제점: 소환 결과가 정적 그리드로 단순 노출되어 개봉 기대감과 손맛이 결여되고, 100dvh 화면에서 개별 카드 확인 피로도 가중.
+  개선안: 미개봉 레어 카드를 손가락으로 문질러 확인하는 '모바일 햅틱 스크래치' 인터랙션 구축 및 기기 기울임에 반응하는 '자이로 3D 틸트' 반응형 뷰어 제공.
+  관련파일: src/views/ShopView.tsx, src/components/CardScratchReveal.tsx, src/components/GyroTiltCardViewer.tsx
+
+[123] SCR-04-12 | 상점 & 가챠 (ShopView) | 과금전환
+  문제점: 픽업 소환 시 특정 캐릭터 저격이 어렵고, 픽업 실패(비선호 카드 획득) 시 좌절감으로 후속 과금 시도 급격 위축.
+  개선안: 소환 전 원하는 SSR 3장을 지정하는 '커스텀 위시리스트' 시스템 도입 및 중복 카드 분해 재화로 즉시 교환하는 '연성 촉매 패키지(1,500원)' 타임딜 연동.
+  관련파일: src/views/ShopView.tsx, src/components/WishlistSelectorModal.tsx, src/components/StarFragmentExchangeSheet.tsx
+
+[124] SCR-05-10 | 카드 마켓플레이스 (CardMarketplaceView) | 성능
+  문제점: 수만 건의 매물 다중 복합 조건 필터링/정렬 시 메인 스레드 연산 병목으로 200ms 이상 UI 블로킹 및 타이핑 렉 발생.
+  개선안: 매물 인덱싱 및 다중 필터/정렬 연산을 백그라운드 Web Worker로 분리하고, 비트셋 기반 경량 인메모리 검색 엔진을 구축하여 0ms 인풋 지연 렌더링 보장.
+  관련파일: src/views/CardMarketplaceView.tsx, src/workers/MarketFilterWorker.ts, src/lib/MarketIndexEngine.ts
+
+[125] SCR-05-11 | 카드 마켓플레이스 (CardMarketplaceView) | 사용성
+  문제점: 비슷한 가격대 매물 2~3개 비교 시 상세 화면 왕복으로 쇼핑이 번거롭고, 관심 카드를 빠르게 스크랩하는 원핸드 제스처 부재.
+  개선안: 롱프레스 햅틱 원터치 마그네틱 찜(Wishlist) 인터랙션 탑재 및 찜한 카드 2장을 100dvh 상하로 분할 대조하는 '스플릿 비교 바텀시트(48px)' 구축.
+  관련파일: src/views/CardMarketplaceView.tsx, src/components/MarketSplitCompareSheet.tsx, src/components/QuickWishlistButton.tsx
+
+[126] SCR-05-12 | 카드 마켓플레이스 (CardMarketplaceView) | 과금전환
+  문제점: 24시간 모니터링 불가로 시세 대비 저렴한 급매물을 놓쳐 박탈감을 느끼며, 자동 거래 편의 기능 부재로 인한 과금 모델 한계.
+  개선안: 목표가 이하 등록 시 오프라인 자동 즉시 체결해주는 7일 기간제 '스마트 스나이퍼 봇 패스(1,500원)' 및 실시간 최저가 급매물 즉시 푸시 '골든 레이더 티켓(500원)' 연동.
+  관련파일: src/views/CardMarketplaceView.tsx, src/components/SniperBotConfigModal.tsx, src/views/ShopView.tsx
+
+[127] SCR-06-10 | 가상 주식 거래소 (StockMarketView) | 성능
+  문제점: 차트에 다중 보조지표(MACD/RSI/볼린저밴드) 동시 활성화 시 JS 부동소수점 반복 계산으로 80ms 이상 CPU 락 및 25fps 프레임 저하 발생.
+  개선안: 보조지표 계산을 C++/Rust 컴파일 기반 WebAssembly(Wasm) 및 SIMD 가속 엔진으로 전환하고 SharedArrayBuffer로 오프스크린 캔버스에 직결하는 60fps 파이프라인 구축.
+  관련파일: src/views/StockMarketView.tsx, src/wasm/TechnicalIndicators.wasm, src/lib/WasmIndicatorBridge.ts
+
+[128] SCR-06-11 | 가상 주식 거래소 (StockMarketView) | 사용성
+  문제점: 차트 조회 중 다른 급등 종목 이동 시 목록 복귀 재탐색으로 타이밍을 놓치고, 매수/매도 탭 전환 시 인풋 초기화로 주문 속도 저하.
+  개선안: 100dvh 상단에 실시간 급등락 TOP 3 종목 1-Tap 즉시 전환 '플로팅 핫 티커(40px)' 및 입력 수량을 보존한 채 매수↔매도를 0.1초 만에 전환하는 '1-Tap 리버스 스왑 토글' 구축.
+  관련파일: src/views/StockMarketView.tsx, src/components/HotStockTickerBar.tsx, src/components/OrderReverseSwapToggle.tsx
+
+[129] SCR-06-12 | 가상 주식 거래소 (StockMarketView) | 과금전환
+  문제점: 급격한 폭락장에서 패닉셀 자산 손실로 좌절하여 이탈하며, 시장 전체의 거시 변동성을 활용한 인게임 이벤트 및 과금 완충제 부재.
+  개선안: 종목 20% 급변 시 5분간 거래 정지 및 특별 퀴즈/선착순 보너스를 주는 '가상 서킷브레이커 이벤트' 신설 및 손실액의 최대 70%를 보전하는 '긴급 리스크 헤지 보험 팩(800원)' 연동.
+  관련파일: src/views/StockMarketView.tsx, src/components/CircuitBreakerModal.tsx, src/views/ShopView.tsx
+
+[130] SCR-07-10 | 승부 예측 시장 (PredictionMarketView) | 성능
+  문제점: 수천 명의 동시 집중 베팅 시 JSON 웹소켓 파싱 오버헤드로 100ms 이상 JS GC 스파이크 및 25fps 이하 프레임 저하 발생.
+  개선안: 배당률 및 베팅 풀 데이터를 바이너리 프로토콜(ArrayBuffer)로 압축 직렬화하고, Zero-Copy 디코딩 파이프라인을 구축하여 GC 프리징 없는 60fps 무지연 렌더링 보장.
+  관련파일: src/views/PredictionMarketView.tsx, src/lib/BinaryOddsDecoder.ts, src/workers/PredictionStreamWorker.ts
+
+[131] SCR-07-11 | 승부 예측 시장 (PredictionMarketView) | 사용성
+  문제점: 예측과 함께 경기 중계를 보려면 길게 스크롤해야 해 100dvh 화면에서 베팅 패널이 밀려나 실시간 대응 불가.
+  개선안: 100dvh 상단에 드래그 가능한 '플로팅 미니 경기 중계 PIP 창' 구축 및 하단에 베팅 팀을 향해 연타 이펙트를 날리는 '1-Tap 햅틱 라이브 치어링 바' 구축.
+  관련파일: src/views/PredictionMarketView.tsx, src/components/FloatingMatchPip.tsx, src/components/LiveCheeringBar.tsx
+
+[132] SCR-07-12 | 승부 예측 시장 (PredictionMarketView) | 과금전환
+  문제점: 적중 배당금 수령 후 다음 경기를 찾지 못해 세션을 종료하며, 고배당 적중 유저의 명예 과시 및 재투자 순환 기전 부재.
+  개선안: 적중 배당금을 다음 경기에 복리 베팅 시 보너스 배당률 +10%를 얹어주는 '스마트 롤오버 패스(990원)' 연동 및 로비에 1시간 응원 문구를 띄우는 '명예의 골든 스폰서 배너' 구축.
+  관련파일: src/views/PredictionMarketView.tsx, src/components/RolloverReinvestModal.tsx, src/views/ShopView.tsx
+
+[133] SCR-08-10 | 소환 & 융합 연구소 (FusionLabView) | 성능
+  문제점: 다중 합성 시 스탯 롤링 연산의 메인 스레드 반복으로 50ms 이상 지연 및 고해상도 결과 카드 텍스처 로딩으로 20fps 끊김 발생.
+  개선안: 스탯 계승 및 확률 시뮬레이션을 C++ 기반 WASM 모듈로 전환하고, 결과 카드 텍스처를 아틀라스 인스턴싱 풀에서 재사용하여 GC 없는 60fps 무감속 렌더링 구축.
+  관련파일: src/views/FusionLabView.tsx, src/wasm/FusionProbabilityEngine.wasm, src/lib/CardTexturePool.ts
+
+[134] SCR-08-11 | 소환 & 융합 연구소 (FusionLabView) | 사용성
+  문제점: 융합 후 재료 카드 대비 스탯 성장폭 대조가 어렵고, 결과 창에서 즉시 잠금(Lock)을 걸거나 덱에 편성하는 숏컷 부재.
+  개선안: 하프 바텀시트 '재료 vs 결과 스탯 성장 레이더 차트' 제공 및 위로 스와이프 시 '즉시 덱 장착', 아래로 스와이프 시 '잠금' 처리되는 1-Tap 햅틱 제스처 구축.
+  관련파일: src/views/FusionLabView.tsx, src/components/FusionResultCompareSheet.tsx, src/components/QuickDeckEquipGesture.tsx
+
+[135] SCR-08-12 | 소환 & 융합 연구소 (FusionLabView) | 과금전환
+  문제점: 융합 결과가 정해진 일반 풀에서만 나와 반복 시 지루함이 발생하며, 고가치 히든 카드 획득을 자극하는 단계별 프로그레시브 과금 모델 부재.
+  개선안: 1% 확률로 고유 스킬을 지닌 '샤이니 돌연변이 카드'가 탄생하는 연성 이벤트 신설 및 돌연변이 확률을 높여주는 '연금술 비전 촉매 3단계 패키지(500~2,500원)' 연동.
+  관련파일: src/views/FusionLabView.tsx, src/components/MutantFusionEventModal.tsx, src/views/ShopView.tsx
+
+[136] SCR-09-10 | 길드 & 소셜 하우스 (GuildHouseView) | 성능
+  문제점: 길드 레이드 음성 채팅 시 오디오 버퍼 지연(150~300ms)과 백그라운드 탭 전환 시 연결 끊김 및 CPU 스파이크(20% 이상) 발생.
+  개선안: WebRTC 저지연 P2P 오디오 채널 및 Web Audio 기반 3D 공간 음향 파이프라인 구축, 거리 기반 감쇄와 Opus 패킷 압축으로 50인 동시 접속 시 CPU 5% 미만 유지.
+  관련파일: src/views/GuildHouseView.tsx, src/lib/GuildWebRTCEngine.ts, src/lib/SpatialVoiceManager.ts
+
+[137] SCR-09-11 | 길드 & 소셜 하우스 (GuildHouseView) | 사용성
+  문제점: 길드원 지원(용병) 카드 빌리기 시 복잡한 게시판 목록 탐색으로 100dvh에서 터치 동선이 길고 대여/반납 맥락 단절 발생.
+  개선안: 100dvh 하단에 길드원 지원 카드를 좌우 스와이프로 넘겨보는 '마그네틱 렌탈 캐러셀 독(48px)' 및 탭 즉시 대여/반납 완료되는 1-Tap 바텀시트 UX 구축.
+  관련파일: src/views/GuildHouseView.tsx, src/components/GuildRentalCarousel.tsx, src/components/RentalQuickActionSheet.tsx
+
+[138] SCR-09-12 | 길드 & 소셜 하우스 (GuildHouseView) | 과금전환
+  문제점: 길드 성장이 단순 출석/기부에 머물러 길드원 전체가 함께 목표를 달성하는 성취감과 대규모 공동 투자 도파민 기전 부재.
+  개선안: 길드 로비에 영구 버프를 부여하는 랜드마크를 공동 완공하는 '길드 랜드마크 펀딩 시스템' 도입 및 기여도 1~3위 황금 동상 건립권 포함 '랜드마크 후원 펀딩팩(1,900원)' 연동.
+  관련파일: src/views/GuildHouseView.tsx, src/components/GuildLandmarkFundingModal.tsx, src/views/ShopView.tsx
+
+[139] SCR-10-10 | 랭킹 & 명예의 전당 (LeaderboardView) | 성능
+  문제점: 결산 직전 실시간 점수 변동 급증 시 전체 랭킹 재파싱 및 트리 재생성으로 70ms 이상 렌더링 지연 및 스크롤 버벅임 발생.
+  개선안: 변동 항목만 전송하는 바이너리 델타 디프(Delta Diff) 수신 엔진 및 인메모리 AVL 트리 구조를 적용하여 뷰포트 내 가시 영역만 부분 패치하는 60fps 파이프라인 구축.
+  관련파일: src/views/LeaderboardView.tsx, src/lib/RankingDeltaDiff.ts, src/lib/RankingAvlTree.ts
+
+[140] SCR-10-11 | 랭킹 & 명예의 전당 (LeaderboardView) | 사용성
+  문제점: 전 서버 전체 랭킹 위주 노출로 친구/길드원 범위 내 상대적 위치 파악이 어렵고, 최근 내 순위 변동 추세를 직관적으로 확인 불가.
+  개선안: 100dvh 상단에 '전체/친구/길드/동네' 원터치 마그네틱 필터 칩(44px) 배치 및 프로필 옆에 최근 7일간 순위 궤적을 보여주는 '실시간 스파크라인' UI 구축.
+  관련파일: src/views/LeaderboardView.tsx, src/components/RankingFilterChipBar.tsx, src/components/RankSparklineChart.tsx
+
+[141] SCR-10-12 | 랭킹 & 명예의 전당 (LeaderboardView) | 과금전환
+  문제점: 시즌 종료 후 기본 보상만 지급되어 최상위권 지속 경쟁 유인이 약화되고, 일반 유저가 명예의 전당 랭커를 지지/후원하는 인터랙션 부재.
+  개선안: TOP 10 랭커에게 전 서버 영구 전시 골든 칭호/오라 부여 및 일반 유저가 차기 챔피언을 후원하는 '명예 챔피언 펀드(응원 티켓 500원)' 지지 배당 과금 모델 구축.
+  관련파일: src/views/LeaderboardView.tsx, src/components/HallOfFameAuctionModal.tsx, src/views/ShopView.tsx
+
+[142] SCR-11-10 | 퀘스트 & 업적 센터 (QuestAchievementView) | 성능
+  문제점: 인게임 행동 시마다 수십 개 퀘스트 조건을 메인 루프에서 O(N) 전체 순회 평가하여 40ms 이상 프레임 드랍 및 이벤트 병목 발생.
+  개선안: 퀘스트 트리거를 이벤트 역방향 인덱스(Reverse Index) 맵으로 구조화하고 XState 상태 머신 및 IndexedDB 캐시를 구축하여 타겟 퀘스트만 O(1)로 증분 갱신하는 60fps 파이프라인 구현.
+  관련파일: src/views/QuestAchievementView.tsx, src/lib/QuestStateMachine.ts, src/lib/QuestReverseIndex.ts
+
+[143] SCR-11-11 | 퀘스트 & 업적 센터 (QuestAchievementView) | 사용성
+  문제점: 완료된 퀘스트가 중간중간 흩어져 있어 100dvh 화면을 길게 스크롤하며 찾아야 하고 수령 후 목록 시각적 리듬 단절 발생.
+  개선안: 화면을 아래로 당기는 Pull-down 제스처 시 완료 보상이 중앙으로 모여 한 번에 흡입되는 '마그네틱 풀(Magnetic Pull)' 수령 인터랙션 및 완료 항목 자동 접힘 아코디언 UX 구축.
+  관련파일: src/views/QuestAchievementView.tsx, src/components/MagneticPullReward.tsx, src/components/AutoCollapsingAccordion.tsx
+
+[144] SCR-11-12 | 퀘스트 & 업적 센터 (QuestAchievementView) | 과금전환
+  문제점: 단순 텍스트 체크리스트 형태의 나열로 달성 시의 게임적 성취감과 전략적인 완료 동기부여 부족.
+  개선안: 주간 퀘스트를 3x3 '골든 빙고(Bingo) 보드' 형태로 시각화하여 1줄 완성 시마다 미니 룰렛권을 지급하고, 올빙고 직전 1칸 남았을 때 즉시 채워주는 '황금 빙고 조커 티켓(800원)' 연동.
+  관련파일: src/views/QuestAchievementView.tsx, src/components/WeeklyBingoBoard.tsx, src/views/ShopView.tsx
+
+[145] SCR-12-10 | 환경설정 & 계정/보상 센터 (SettingRewardView) | 성능
+  문제점: 장기 플레이 시 브라우저 캐시 및 IndexedDB에 수백 MB 만료 에셋 누적으로 스토리지 부족 경고 및 I/O 지연 발생.
+  개선안: 설정 내 지난 시즌/만료 이벤트 에셋을 1-클릭 선별 정리하는 '스마트 디스크 가비지 컬렉터' 탑재 및 필수/캐시 격리 파티셔닝 파이프라인 구축.
+  관련파일: src/views/SettingRewardView.tsx, src/lib/StoragePartitionManager.ts, src/lib/SmartDiskCleaner.ts
+
+[146] SCR-12-11 | 환경설정 & 계정/보상 센터 (SettingRewardView) | 사용성
+  문제점: 소형 모바일 기기 및 야외 직사광선 환경에서 폰트 가독성이 떨어지며, 색약/저시력 유저를 위한 접근성 옵션 부재.
+  개선안: 하단 Thumb Zone에 엄지 스와이프로 폰트 크기(100~130%)를 조절하는 '텍스트 스케일러 휠(48px)' 및 WCAG AAA 고대비 모드, 색약 보정 필터 제공.
+  관련파일: src/views/SettingRewardView.tsx, src/components/AccessibilitySettingWheel.tsx, src/theme/HighContrastTheme.ts
+
+[147] SCR-12-12 | 환경설정 & 계정/보상 센터 (SettingRewardView) | 과금전환
+  문제점: 웹 푸시 알림 동의율이 낮아 에너지 완충/게릴라 등 리텐션 트리거 전달이 차단되어 있고 알림 유도 인센티브 부재.
+  개선안: 알림 켜기 동의 즉시 'SSR 소환권 1장 + 500 다이아' 즉시 증정 리워드 신설 및 매일 핫타임 쿠폰이 자동 발송되는 '스마트 VIP 푸시 알림 패스(990원)' 연동.
+  관련파일: src/views/SettingRewardView.tsx, src/components/PushPermissionModal.tsx, src/views/ShopView.tsx
+
+[148] SCR-01-13 | 메인 로비 & 홈 (HomeView) | 성능
+  문제점: 로비 방치 또는 백그라운드 전환 시에도 60fps 풀 가동으로 모바일 발열 및 배터리 과다 소모 발생.
+  개선안: Page Visibility 및 Battery API 연동으로 미조작 시 프레임을 단계적 다운클럭(30/15fps)하고 백그라운드 시 렌더 루프를 정지하는 스마트 배터리 세이버 렌더러 구축.
+  관련파일: src/views/HomeView.tsx, src/lib/BatterySaverManager.ts, src/lib/PixiRenderScheduler.ts
+
+[149] SCR-01-14 | 메인 로비 & 홈 (HomeView) | 사용성
+  문제점: 고정된 로비 배치로 자주 쓰는 기능 접근이 제한적이며, 캐릭터 일러스트를 감상하고 싶어도 버튼과 HUD가 화면을 가림.
+  개선안: 자주 쓰는 모드를 배치/정렬하는 '원핸드 모듈러 위젯 독' 구축 및 빈 화면 더블 탭 시 모든 UI가 숨겨지는 '1-Tap 클린 뷰(Clean View) 갤러리 모드' 제공.
+  관련파일: src/views/HomeView.tsx, src/components/ModularWidgetDock.tsx, src/components/CleanViewToggle.tsx
+
+[150] SCR-01-15 | 메인 로비 & 홈 (HomeView) | 과금전환
+  문제점: 출석 체크 후 로비에서 즉시 운을 시험하거나 소소한 재미를 느낄 수 있는 데일리 도파민 인터랙션 부재.
+  개선안: 매일 1회 무료로 동전을 던져 잭팟을 노리는 '소원의 분수대' 신설 및 투척 직후 10분 한정 '황금 분수 소원 패키지(700원 = 코인 5개 + 확률 3배)' 게릴라 타임딜 연동.
+  관련파일: src/views/HomeView.tsx, src/components/WishingFountainModal.tsx, src/views/ShopView.tsx
+
+[151] SCR-02-13 | 배틀 아레나 (PlayGameView) | 성능
+  문제점: 패에 든 카드를 들고 필드를 빠르게 휘두를 때 틸트/그림자 물리 연산 병목으로 35~45fps 저하 및 터치 인풋 렉 발생.
+  개선안: 카드 궤적 및 스프링 물리 시뮬레이션을 OffscreenCanvas 및 전용 Web Worker로 분리하고 Pointer Raw Update 파이프라인으로 직결하여 60fps 무감속 추적 구현.
+  관련파일: src/views/PlayGameView.tsx, src/workers/CardPhysicsWorker.ts, src/components/CardSpringRig.tsx
+
+[152] SCR-02-14 | 배틀 아레나 (PlayGameView) | 사용성
+  문제점: 왼손잡이나 대중교통 한 손 플레이 시 우측 편향 UI로 엄지가 닿지 않고, 적 후열 유닛의 버프 아이콘이 작아 100dvh에서 식별 불가.
+  개선안: 100dvh 하단에 '왼손/오른손 원터치 미러링 토글(44px)' 구축 및 적 유닛 롱프레스 시 버프/디버프 상태가 1.5배 확대되는 '스마트 필드 인스펙터' 돋보기 팝업 제공.
+  관련파일: src/views/PlayGameView.tsx, src/components/HandednessLayoutSwitcher.tsx, src/components/UnitFieldInspector.tsx
+
+[153] SCR-02-15 | 배틀 아레나 (PlayGameView) | 과금전환
+  문제점: 마지막 일격(피니시) 순간이 일반 타격과 동일해 승리의 절정감이 부족하고, 승리 후 기본 보상이 고정되어 성취감 증폭 상품 결여.
+  개선안: 상대 카드가 산산조각 나는 '피니시 이펙트 커스텀 스킨(1,200원)' 연동 및 승리 확정 직후 1분간 보상을 2배로 올려주는 '빅토리 더블업 티켓(400원)' 즉시 팝업 연계.
+  관련파일: src/views/PlayGameView.tsx, src/components/BattleFinisherCutin.tsx, src/views/ShopView.tsx
+
+[154] SCR-03-13 | 마이덱 & 카드 관리 (MyDeckView) | 성능
+  문제점: 수십~수백 장의 카드 일괄 분해/강화 시 메인 스레드 정산 병목으로 150ms 이상 UI 프리징 및 애니메이션 버벅임 발생.
+  개선안: 대량 분해 및 정산 로직을 백그라운드 Web Worker 트랜잭션으로 분리하고, 청크 단위(16.6ms 슬라이스) 점진 상태 반영 파이프라인 구축.
+  관련파일: src/views/MyDeckView.tsx, src/workers/InventoryBatchWorker.ts, src/lib/BatchTransactionQueue.ts
+
+[155] SCR-03-14 | 마이덱 & 카드 관리 (MyDeckView) | 사용성
+  문제점: 100dvh 화면의 작은 썸네일에서 스킬/룬 아이콘 식별이 어렵고 상세 팝업 오픈 시 인벤토리 탐색 맥락 단절 발생.
+  개선안: 스킬 영역 탭 시 마이크로 툴팁이 뜨는 '1-Tap 스마트 렌즈' 및 롱프레스 시 손가락 기울기에 반응하는 3D 홀로그램 틸트 프리뷰(48px 등록 버튼 연동) 구축.
+  관련파일: src/views/MyDeckView.tsx, src/components/CardSmartLensTooltip.tsx, src/components/CardHoloTiltPreview.tsx
+
+[156] SCR-03-15 | 마이덱 & 카드 관리 (MyDeckView) | 과금전환
+  문제점: 단순 공격력 합산 위주 편성으로 종족/속성 간 복합 시너지 콤보 조합의 재미가 부족하고 시너지 특화 과금 트리거 부재.
+  개선안: 3/5세트 완성 시 특수 효과가 발동하는 '시너지 콤보 마스터리' 트리 신설 및 조건 1장 부족을 완충하는 '만능 와일드카드 크리스털(990원)' 연동.
+  관련파일: src/views/MyDeckView.tsx, src/components/DeckSynergyMasteryModal.tsx, src/views/ShopView.tsx
+
+[157] SCR-04-13 | 상점 & 가챠 (ShopView) | 성능
+  문제점: 상점 진입 시 수십 종 상품 썸네일/배너/일러스트 일시 로딩으로 모바일 메모리 250MB 급증 및 120ms 프레임 프리징 발생.
+  개선안: 네트워크 대역폭 및 가용 RAM 감지 기반 3단계 해상도 스트리밍과 뷰포트 외 에셋을 즉각 회수하는 LRU 텍스처 풀 매니저 구축하여 60fps 무지연 보장.
+  관련파일: src/views/ShopView.tsx, src/lib/AdaptiveAssetStreamer.ts, src/lib/LruTexturePool.ts
+
+[158] SCR-04-14 | 상점 & 가챠 (ShopView) | 사용성
+  문제점: 상품 카테고리가 세로로 길게 나열되어 100dvh 화면에서 과도한 스크롤이 발생하고, 여러 소액 상품을 개별 결제해야 하는 피로도 발생.
+  개선안: 100dvh 상단 수평 스와이프 스냅 카테고리 캐러셀 배치 및 하단 Thumb Zone에 관심 상품을 모아 한 번에 결제하는 '1-Tap 스마트 번들 장바구니 독(48px)' 구축.
+  관련파일: src/views/ShopView.tsx, src/components/HorizontalProductCarousel.tsx, src/components/QuickBundleCartDock.tsx
+
+[159] SCR-04-15 | 상점 & 가챠 (ShopView) | 과금전환
+  문제점: 10연차 소환 시 버튼 클릭 후 결과만 수동적으로 기다리게 되어 유저가 결과에 개입한다는 통제감과 긴장감 결여.
+  개선안: 10연차 직전 2개 마법진 중 하나를 선택해 보너스(확률 1.5배 등)를 얻는 '운명 선택의 갈림길' 도입 및 폭망 시 80% 할인 '행운 역전 리벤지 팩(800원)' 타임딜 연동.
+  관련파일: src/views/ShopView.tsx, src/components/FateChoiceModal.tsx, src/views/ShopView.tsx
+
+[160] SCR-05-13 | 카드 마켓플레이스 (CardMarketplaceView) | 성능
+  문제점: 인기 급매물 동시 체결 실패 시 낙관적 UI 롤백 깜빡임 및 오더북 불일치로 100ms 이상 화면 프리징/재조회 병목 발생.
+  개선안: 오더북에 머클 트리(Merkle Tree) 기반 델타 해시 검증기를 탑재하여 불일치 틱만 1ms 내 마이크로 패치하고 실패 시 대체 매물 추천 큐를 연동한 60fps 파이프라인 구축.
+  관련파일: src/views/CardMarketplaceView.tsx, src/lib/OrderBookMerkleValidator.ts, src/lib/OptimisticTradeManager.ts
+
+[161] SCR-05-14 | 카드 마켓플레이스 (CardMarketplaceView) | 사용성
+  문제점: 한정판 카드의 시리얼 넘버/포일 상태를 100dvh 작은 화면에서 확대 검수하기 어렵고 판매자와의 가격 흥정 입력이 번거로움.
+  개선안: 카드 터치 시 2.5배 확대되어 미세 각인을 검수하는 '모바일 감정사 마이크로 돋보기 뷰어' 및 엄지 스와이프로 할인 가격을 즉시 오퍼하는 '원핸드 스마트 흥정 슬라이더(48px)' 구축.
+  관련파일: src/views/CardMarketplaceView.tsx, src/components/CardAppraisalMagnifier.tsx, src/components/BargainOfferSlider.tsx
+
+[162] SCR-05-15 | 카드 마켓플레이스 (CardMarketplaceView) | 과금전환
+  문제점: 단순 매수/매도 반복으로 거래소 탐색의 돌발적 재미가 부족하고, 거래 수수료 차감에 대한 심리적 저항감 완화 장치 부재.
+  개선안: 매시간 매물 목록에 랜덤 SSR이 숨겨진 '황금 블라인드 매물 상자' 게릴라 출현 및 거래 수수료의 50%를 적립해 즉시 인출하는 '황금 수수료 세이프 박스 열쇠(990원)' 연동.
+  관련파일: src/views/CardMarketplaceView.tsx, src/components/BlindBoxListingCard.tsx, src/views/ShopView.tsx
+
+[163] SCR-06-13 | 가상 주식 거래소 (StockMarketView) | 성능
+  문제점: 장시간 시세 관망 시 수만 개 틱 객체 누적으로 150MB 이상 메모리 릭 및 잦은 GC 실행으로 20fps 이하 스터터링 발생.
+  개선안: Float64Array 기반 순환 링 버퍼(Circular Ring Buffer)를 구축하여 객체 생성 없는 O(1) 덮어쓰기 및 제로 카피 차트 렌더링 파이프라인 구현.
+  관련파일: src/views/StockMarketView.tsx, src/lib/TimeSeriesRingBuffer.ts, src/components/StockCandleCanvas.tsx
+
+[164] SCR-06-14 | 가상 주식 거래소 (StockMarketView) | 사용성
+  문제점: 급변하는 장세에서 분할 매수/매도 진행 시 수량을 매번 재입력하고 팝업을 거쳐야 해 100dvh 화면에서 기동성 저하.
+  개선안: 100dvh 하단에 좌우 엄지로 25%씩 4단계 분할 매매를 0.2초 간격으로 연속 타격하는 '래피드 스플릿(Rapid Split) 4분할 바(48px)' 및 노-컨펌 햅틱 인터랙션 구축.
+  관련파일: src/views/StockMarketView.tsx, src/components/RapidSplitTradeBar.tsx, src/components/HapticTradeFeedback.tsx
+
+[165] SCR-06-15 | 가상 주식 거래소 (StockMarketView) | 과금전환
+  문제점: 상장 종목 가격 고착화 시 거래 동력이 감소하며, 신규 캐릭터 상장 시 축제 분위기 조성 및 상장 대박 도파민 기전 부재.
+  개선안: 신규 캐릭터 출시 시 3일간 공모하는 'IPO 청약 페스티벌' 신설 및 공모주 배정 경쟁률 5배 우대 '골든 IPO 청약 프리미엄 팩(1,500원)' 연동.
+  관련파일: src/views/StockMarketView.tsx, src/components/IpoSubscriptionModal.tsx, src/views/ShopView.tsx
+
+[166] SCR-07-13 | 승부 예측 시장 (PredictionMarketView) | 성능
+  문제점: SVG 기반 실시간 베팅 뎁스(Depth) 차트의 틱 업데이트 시 DOM 재계산으로 30fps 이하 프레임 저하 및 발열 유발.
+  개선안: 실시간 뎁스 차트를 WebGL 셰이더 기반 인스턴스 렌더링 및 GPU 가속 2D 히트맵 파이프라인으로 전환하여 16.6ms 단일 드로우 콜로 60fps 무감속 엔진 구현.
+  관련파일: src/views/PredictionMarketView.tsx, src/components/PredictionDepthCanvas.tsx, src/lib/GpuHeatmapShader.ts
+
+[167] SCR-07-14 | 승부 예측 시장 (PredictionMarketView) | 사용성
+  문제점: 여러 경기 탐색 시 텍스트 목록 스크롤로 100dvh 화면에서 탐색 피로도가 높고 첫 베팅 진입 장벽 존재.
+  개선안: 상하 스와이프로 경기 하이라이트와 전력을 5초 만에 확인하는 '100dvh 풀스크린 예측 쇼츠 피드' 및 좌우 스와이프로 1초 만에 승/패를 선택하는 '스마트 픽' 제스처 구축.
+  관련파일: src/views/PredictionMarketView.tsx, src/components/PredictionShortsFeed.tsx, src/components/SwipeToBetCard.tsx
+
+[168] SCR-07-15 | 승부 예측 시장 (PredictionMarketView) | 과금전환
+  문제점: 경기 시작 전 베팅만 가능해 진행 중 전세 역전을 즐길 수 없고, 패색이 짙어질 때 손실 방어 수단이 없어 이탈 발생.
+  개선안: 경기 진행 중 초단기 '라이브 인플레이 5분 퀵 예측' 모드 신설 및 패배 위기 시 경기 도중 베팅 원금 일부를 즉시 회수하는 '조기 정산(Cash-Out) 패스(500원)' 연동.
+  관련파일: src/views/PredictionMarketView.tsx, src/components/InPlayQuickBetModal.tsx, src/views/ShopView.tsx
+
+[169] SCR-08-13 | 소환 & 융합 연구소 (FusionLabView) | 성능
+  문제점: 융합 시 3D 마법 유체(Fluid) 시뮬레이션의 CPU 입자 연산 병목으로 20fps 이하 프레임 급락 및 GPU 메모리 스파이크 발생.
+  개선안: 유체 시뮬레이션을 WebGL 2.0 Transform Feedback 기반 GPGPU 파이프라인으로 전환하고 핑퐁 버퍼 스왑으로 CPU-GPU 전송을 제로화하여 60fps 무감속 연출 구현.
+  관련파일: src/views/FusionLabView.tsx, src/shaders/FluidSimulationShader.ts, src/lib/GpuParticleBuffer.ts
+
+[170] SCR-08-14 | 소환 & 융합 연구소 (FusionLabView) | 사용성
+  문제점: 목표 카드 제작에 필요한 조합식을 확인하러 도감을 오가야 하고, 인벤토리에서 재료를 수동 검색해야 하는 화면 전환 피로도 가중.
+  개선안: 100dvh 상단에 '목표 카드 연금 레시피 역추적 북' 모달 제공 및 보유 재료를 1초 만에 슬롯으로 자동 소환해 배치하는 '1-Tap 레시피 자동 장착 바텀시트(48px)' 구축.
+  관련파일: src/views/FusionLabView.tsx, src/components/RecipeReverseTrackerSheet.tsx, src/components/AutoEquipRecipeButton.tsx
+
+[171] SCR-08-15 | 소환 & 융합 연구소 (FusionLabView) | 과금전환
+  문제점: 융합 결과물이 1장만 나와 대박의 짜릿함이 제한적이며, 융합을 지속 즐기는 헤비 유저를 위한 장기 멤버십 및 전용 특권 상품 부재.
+  개선안: 대성공 시 5% 확률로 카드가 3장으로 복제되어 쏟아지는 '트리플 크리티컬 잭팟' 연출 도입 및 실패 시 재료 50% 보존/일일 촉매 지급 '월간 연금술 마스터 패스(2,200원)' 연동.
+  관련파일: src/views/FusionLabView.tsx, src/components/TripleJackpotModal.tsx, src/views/ShopView.tsx
+
+[172] SCR-09-13 | 길드 & 소셜 하우스 (GuildHouseView) | 성능
+  문제점: 50인 동시 활동 시 중앙 집중식 상태 브로드캐스트로 200~300ms 지연 및 위치 텔레포트(Rubber-banding)와 30fps 저하 발생.
+  개선안: 상태 동기화에 경량 CRDT 알고리즘을 도입하고 이동/상호작용 패킷을 델타 압축 바이너리로 P2P 브로드캐스트하여 60fps 부드러운 위치 보간 파이프라인 구축.
+  관련파일: src/views/GuildHouseView.tsx, src/lib/GuildCrdtSync.ts, src/lib/EntityInterpolationEngine.ts
+
+[173] SCR-09-14 | 길드 & 소셜 하우스 (GuildHouseView) | 사용성
+  문제점: 길드 아지트 가구/제단 배치 시 100dvh 화면에서 손가락이 가구를 가려 타일 배치가 어렵고 회전 버튼이 작아 오터치 빈번.
+  개선안: 하단 Thumb Zone에 48px 마그네틱 그리드 스냅 조이스틱 및 1-Tap 90도 회전 버튼 탑재, 손가락 위로 배치를 확인하는 '오프셋 터치 프리뷰' 구축.
+  관련파일: src/views/GuildHouseView.tsx, src/components/GuildRoomEditorDock.tsx, src/components/OffsetTouchPreview.tsx
+
+[174] SCR-09-15 | 길드 & 소셜 하우스 (GuildHouseView) | 과금전환
+  문제점: 길드 간 경쟁이 단순 레이드 점수 비교에 머물러 단합된 승부욕을 자극하는 실시간 대항전과 승리 후 도파민 폭발 기전 부재.
+  개선안: 주말마다 4개 길드가 거점 점령전을 벌이는 '주간 길드 영지 쟁탈전' 신설 및 최종 승리 시 샴페인 분수가 터지며 전원 재화를 지급하는 '길드 챔피언 축하 샴페인 파티팩(1,500원)' 연동.
+  관련파일: src/views/GuildHouseView.tsx, src/components/TerritoryWarLobbyModal.tsx, src/views/ShopView.tsx
+
+[175] SCR-10-13 | 랭킹 & 명예의 전당 (LeaderboardView) | 성능
+  문제점: 시즌 마감 직전 다량의 점수 역전 시 전체 순위 재정렬로 120ms 이상 UI 프리징 및 순위 점핑 깜빡임 발생.
+  개선안: 최근 점수 획득 추세 기반 순위 예측 경량 회귀 모델을 Web Worker로 실행하고 랭킹 포인트를 베지어 곡선으로 보간 렌더링하는 60fps 파이프라인 구축.
+  관련파일: src/views/LeaderboardView.tsx, src/workers/RankPredictionWorker.ts, src/lib/RankSmoothInterpolator.ts
+
+[176] SCR-10-14 | 랭킹 & 명예의 전당 (LeaderboardView) | 사용성
+  문제점: 최상위 랭커 외에 내 순위 바로 위아래의 '진짜 경쟁 라이벌' 3인을 한눈에 비교하고 즉시 대전을 신청하는 동선 복잡.
+  개선안: 100dvh 중앙에 내 순위 기준 라이벌 3인을 대조하는 '내 리그 라이벌 매치업 카드' 제공 및 카드를 위로 스와이프하면 즉시 대전 매칭으로 직행하는 원터치 제스처 구축.
+  관련파일: src/views/LeaderboardView.tsx, src/components/RivalMatchupCard.tsx, src/components/SwipeToChallengeGesture.tsx
+
+[177] SCR-10-15 | 랭킹 & 명예의 전당 (LeaderboardView) | 과금전환
+  문제점: 티어 승급 시 일회성 뱃지만 지급되어 승급 순간의 보상감이 부족하고 시즌 말 연패로 인한 티어 강등 시 유저 이탈 발생.
+  개선안: 상위 티어 승급 즉시 100% 당첨 '골든 티어 승급 잭팟 룰렛' 1회 무료 연출 및 시즌 종료까지 연패 강등을 3회 막아주는 '티어 세이프가드 패스(1,200원)' 연동.
+  관련파일: src/views/LeaderboardView.tsx, src/components/TierPromotionJackpotModal.tsx, src/views/ShopView.tsx
+
+[178] SCR-11-13 | 퀘스트 & 업적 센터 (QuestAchievementView) | 성능
+  문제점: 수십 개 퀘스트 카운트다운 타이머가 개별 setInterval로 동작해 1초마다 DOM 리렌더링 발생 및 스크롤 시 25fps 프레임 저하 발생.
+  개선안: 타이머 틱을 단일 Web Worker로 통합하고 Canvas 오버레이 및 텍스처 아틀라스 숫자 폰트로 일괄 렌더링하여 DOM 리렌더링을 제로화하는 60fps 파이프라인 구축.
+  관련파일: src/views/QuestAchievementView.tsx, src/workers/UnifiedTimerWorker.ts, src/components/TimerCanvasOverlay.tsx
+
+[179] SCR-11-14 | 퀘스트 & 업적 센터 (QuestAchievementView) | 사용성
+  문제점: 선행-후속 연계 퀘스트 진행 관계 파악이 어렵고, 이동 버튼 클릭 시 화면 전환이 딱딱하게 끊겨 모바일 100dvh 몰입도 저하.
+  개선안: 두 손가락 핀치 시 연계 퀘스트 트리를 별자리 마인드맵 형태로 조망하는 '퀘스트 컨스텔레이션 맵' 및 목표 콘텐츠로 부드럽게 줌인되는 '워프 트랜지션' 구축.
+  관련파일: src/views/QuestAchievementView.tsx, src/components/QuestConstellationMap.tsx, src/components/WarpTransitionOverlay.tsx
+
+[180] SCR-11-15 | 퀘스트 & 업적 센터 (QuestAchievementView) | 과금전환
+  문제점: 마일스톤 보상 상자 오픈 시 단순 정적 팝업만 떠서 도파민 쾌감이 부족하고 보상 배수 획득을 자극하는 즉각적 마이크로 과금 장치 결여.
+  개선안: 주간 100% 달성 시 10초간 제한 시간 내 손가락 연타로 재화를 주워 담는 '황금 피냐타' 미니게임 도입 및 타격당 재화 3배 '다이아몬드 배트 팩(990원)' 연동.
+  관련파일: src/views/QuestAchievementView.tsx, src/components/GoldenPinataModal.tsx, src/views/ShopView.tsx
+
+[181] SCR-12-13 | 환경설정 & 계정/보상 센터 (SettingRewardView) | 성능
+  문제점: 통신망(Wi-Fi/LTE) 전환 시 네트워크 핑 지연으로 재접속 스피너 및 렉이 발생하나 설정에서 진단/노드 변경 수단 부재.
+  개선안: Web Worker 기반 실시간 멀티 CDN 레이턴시 핑 진단기를 탑재하고 네트워크 지연 감지 시 0.1초 만에 최적 게이트웨이로 자동 스왑하는 스마트 라우팅 엔진 구현.
+  관련파일: src/views/SettingRewardView.tsx, src/workers/NetworkLatencyWorker.ts, src/lib/DynamicCdnRouter.ts
+
+[182] SCR-12-14 | 환경설정 & 계정/보상 센터 (SettingRewardView) | 사용성
+  문제점: 기기 크기/손가락 굵기/보호필름 차이로 카드 스와이프 오인식이 발생하나 감도를 조절하고 테스트할 UI 부재.
+  개선안: 100dvh 화면에서 직접 조작하며 스와이프 민감도, 롱프레스 인식 시간, 햅틱 세기를 즉시 테스트/조율하는 '인터랙티브 터치 캘리브레이션 패드' 구축.
+  관련파일: src/views/SettingRewardView.tsx, src/components/TouchCalibrationPad.tsx, src/lib/GestureSensitivityManager.ts
+
+[183] SCR-12-15 | 환경설정 & 계정/보상 센터 (SettingRewardView) | 과금전환
+  문제점: 계정 센터 방문 시 단순 정보 확인 외 지속 방문 동기가 부족하고, 장기 누적 플레이 유저의 충성도에 보답하는 특별 보상 기전 결여.
+  개선안: 누적 로그인/레벨에 따라 잠금 해제되는 '계정 비밀 금고(Secret Vault)' 신설 및 한정 3D 아바타/선택권 90% 특가 획득 '마스터 키 팩(1,900원)' 타임딜 연동.
+  관련파일: src/views/SettingRewardView.tsx, src/components/SecretVaultModal.tsx, src/views/ShopView.tsx
+
+[184] SCR-01-16 | 메인 로비 & 홈 (HomeView) | 성능
+  문제점: 대용량 한글 게임 폰트 다운로드 지연으로 FOIT 텍스트 깜빡임 발생 및 폰트 로드 시 너비 변화로 CLS(>0.15)와 50ms 렌더 렉 발생.
+  개선안: 인라인 WOFF2 유니코드 서브셋 폰트 사전 로딩 및 font-display: optional과 size-adjust 매트릭스 매칭으로 레이아웃 흔들림(CLS 0.000)을 차단하는 60fps 엔진 구축.
+  관련파일: src/views/HomeView.tsx, src/theme/FontSubsetting.css, vite.config.ts
+
+[185] SCR-01-17 | 메인 로비 & 홈 (HomeView) | 사용성
+  문제점: 접속 중인 친구/길드원을 확인하고 배틀/레이드를 하려면 소셜 메뉴로 이동해야 해 협동 진입 동선이 길고 즉시성 부족.
+  개선안: 로비 우측 가장자리에 실시간 접속 친구 미니 아바타가 떠다니는 '플로팅 소셜 버블(44px)' 구축 및 버블을 배틀 버튼으로 드래그 시 즉시 파티 초대가 발송되는 원핸드 UX 구축.
+  관련파일: src/views/HomeView.tsx, src/components/FloatingSocialBubbles.tsx, src/components/DragToInviteGesture.tsx
+
+[186] SCR-01-18 | 메인 로비 & 홈 (HomeView) | 과금전환
+  문제점: 유저의 현실 기상 환경(비/눈)과의 상호작용 요소가 없어 단절감이 느껴지며 기상 변화에 맞춘 감성적 타임 세일 장치 부재.
+  개선안: 현지 기상 API 연동으로 비/눈 올 때 로비에 빗소리/눈꽃 파티클과 함께 '감성 우천 핫타임(골드 +30%)' 발동 및 비 오는 날 한정 70% 특가 '레인 드롭 스킨 팩(990원)' 연동.
+  관련파일: src/views/HomeView.tsx, src/components/WeatherAtmosphereEffect.tsx, src/views/ShopView.tsx
+
+[187] SCR-02-16 | 배틀 아레나 (PlayGameView) | 성능
+  문제점: 전화 수신/알림 확인 등 1~2초 백그라운드 전환 후 복귀 시 타이머 중단으로 1초 이상 화면 프리징 및 패킷 폭풍 끊김 발생.
+  개선안: 턴 동기화를 WASM 고정 틱 파이프라인으로 이관하고 지연 이벤트를 0ms 내에 쾌속 압축 재생(Fast-Forward)하는 60fps 무지연 복구 엔진 구축.
+  관련파일: src/views/PlayGameView.tsx, src/wasm/TurnSyncEngine.wasm, src/lib/FastForwardCatchup.ts
+
+[188] SCR-02-17 | 배틀 아레나 (PlayGameView) | 사용성
+  문제점: 카드 발동 전 예상 데미지 계산이 어려워 제한 시간 내 암산 피로도가 높고, 우측 상단 턴 종료 버튼이 멀어 한 손 조작 불편.
+  개선안: 카드 홀드 즉시 적 체력에 예상 감쇄량을 보여주는 '스마트 데미지 고스트 게이지' 및 하단 Thumb Zone에 엄지 스와이프로 턴을 넘기는 '원핸드 턴 종료 바(48px)' 구축.
+  관련파일: src/views/PlayGameView.tsx, src/components/GhostDamageCalculator.tsx, src/components/SwipeEndTurnBar.tsx
+
+[189] SCR-02-18 | 배틀 아레나 (PlayGameView) | 과금전환
+  문제점: 한 턴에 카드를 3장 이상 연속 사용하는 콤보 플레이 시에도 개별 연출만 재생되어 연속 공격의 리드미컬한 쾌감(도파민) 결여.
+  개선안: 연속 발동 시 테두리가 불타오르며 배수가 증가하는 '배틀 피버 콤보 시스템' 신설 및 5연타 달성 시 마지막 공격력 2배 '마나 과충전 콤보 젬(400원)' 연동.
+  관련파일: src/views/PlayGameView.tsx, src/components/BattleComboFeverOverlay.tsx, src/views/ShopView.tsx
+
+[190] SCR-03-16 | 마이덱 & 카드 관리 (MyDeckView) | 성능
+  문제점: 500장 이상 일러스트 초고속 스크롤 시 메인 스레드 디코딩 병목으로 120ms 정체 및 VRAM 300MB 치솟아 브라우저 크래시 발생.
+  개선안: createImageBitmap 및 Worker 기반 비동기 하드웨어 디코딩을 구축하고 뷰포트 밖 텍스처를 50ms 내 VRAM에서 언바인드하는 동적 재활용 풀 구현.
+  관련파일: src/views/MyDeckView.tsx, src/workers/ImageDecoderWorker.ts, src/lib/GpuVramManager.ts
+
+[191] SCR-03-17 | 마이덱 & 카드 관리 (MyDeckView) | 사용성
+  문제점: 현재 메타 강적 덱에 대응하는 카운터 덱을 짤 때 상성을 일일이 계산해야 해 100dvh 환경에서 덱 편성 진입 장벽 존재.
+  개선안: 100dvh 하단에 최근 패배 덱을 분석해 내 인벤토리 기준 최적 카운터 카드를 1초 만에 꽂아주는 '1-Tap AI 카운터 빌더 바텀시트(48px)' 및 덱 퀵 클론 버튼 구축.
+  관련파일: src/views/MyDeckView.tsx, src/components/AiCounterDeckSheet.tsx, src/components/QuickDeckCloneButton.tsx
+
+[192] SCR-03-18 | 마이덱 & 카드 관리 (MyDeckView) | 과금전환
+  문제점: 동일 카드 5장 풀돌파 최고 레벨 도달 시에도 단순 수치만 상승해 최종 성장 단계에서의 감성적 만족감과 육성 종결 성취감 부족.
+  개선안: 5성 풀돌파 시 숨 쉬고 움직이는 '풀 애니메이션 Live2D 초월 각성 일러스트' 및 전용 음성 해금 및 달성 즉시 '초월 기념 축하 패키지(1,200원)' 플래시 세일 연동.
+  관련파일: src/views/MyDeckView.tsx, src/components/AwakeningLive2DViewer.tsx, src/views/ShopView.tsx
+
+[193] SCR-04-16 | 상점 & 가챠 (ShopView) | 성능
+  문제점: 10연속 소환 직후 10장 카드의 공중 분산 및 물리 회전 시 CPU 연산 병목으로 25fps 이하 프레임 드랍 및 화면 튐 발생.
+  개선안: 카드 충돌 및 회전 물리 연산을 Web Worker 기반 Verlet 적분 루프로 분리하고 WebGL 인스턴스 셰이더 단일 드로우 콜로 60fps 무감속 리얼 물리 연출 구현.
+  관련파일: src/views/ShopView.tsx, src/workers/CardPhysicsVerletWorker.ts, src/components/GachaPhysicsScatterCanvas.tsx
+
+[194] SCR-04-17 | 상점 & 가챠 (ShopView) | 사용성
+  문제점: 10장 카드를 일일이 탭해 뒤집는 조작이 피로하고, 단순 버튼식 '모두 열기'는 연출 감동 없이 그리드로 전환되어 허탈감 유발.
+  개선안: 두 손가락 핀치 아웃 제스처 시 10장의 카드가 일제히 빛나며 뒤집히는 '인터랙티브 핀치 플립' 연출 및 원하는 카드를 즉시 덱으로 보내는 48px '원터치 킵 바텀시트' 구축.
+  관련파일: src/views/ShopView.tsx, src/components/PinchFlipCardScatter.tsx, src/components/QuickKeepBottomSheet.tsx
+
+[195] SCR-04-18 | 상점 & 가챠 (ShopView) | 과금전환
+  문제점: 유저 개인의 소환 시도가 고립된 개인 행위로 끝나 전 서버적인 축제 분위기나 소셜 기대감 형성 부족.
+  개선안: 전 서버 소환 누적 시 차오르는 '황금 알 게이지' 100% 충전 시 1시간 무료 소환 및 확률 2배 피버 타임 발동, 피버 전용 '황금 알 폭발 특가팩(1,500원)' 연동.
+  관련파일: src/views/ShopView.tsx, src/components/GoldenEggFestivalModal.tsx, src/views/ShopView.tsx
+
+[196] SCR-05-16 | 카드 마켓플레이스 (CardMarketplaceView) | 성능
+  문제점: 초당 수백 건의 호가 변동 및 체결 틱 유입 시 React Props 오버헤드로 메인 스레드 80ms 블로킹 및 스크롤 버벅임 발생.
+  개선안: 호가창 및 체결 티커를 Canvas 2D WebGL 하이브리드 엔진으로 분리하고 SharedArrayBuffer 기반 제로 카피 큐로 동기화하여 60fps 무감속 렌더링 구현.
+  관련파일: src/views/CardMarketplaceView.tsx, src/components/OrderBookHybridCanvas.tsx, src/lib/SharedArrayBufferQueue.ts
+
+[197] SCR-05-17 | 카드 마켓플레이스 (CardMarketplaceView) | 사용성
+  문제점: 중복 카드 판매 시 시장 최저가를 일일이 조회하고 한 장씩 출품해야 해 100dvh 화면에서 출품 동선이 길고 가격 책정 피로도 누적.
+  개선안: 상단에 내 인벤토리 총 가치를 실시간 시세로 환산하는 '포트폴리오 트래커 HUD' 제공 및 중복 카드를 최저가 -1%로 즉시 등록하는 '1-Tap 스마트 일괄 출품 바텀시트(48px)' 구축.
+  관련파일: src/views/CardMarketplaceView.tsx, src/components/PortfolioValueTrackerHUD.tsx, src/components/QuickBatchListingSheet.tsx
+
+[198] SCR-05-18 | 카드 마켓플레이스 (CardMarketplaceView) | 과금전환
+  문제점: 고가치 카드를 매각하지 않고 급하게 재화를 마련하고 싶은 유저를 위한 단기 유동성 금융 기전 부재.
+  개선안: SSR 카드를 맡기고 시세의 70%를 즉시 대출받는 '카드 폰샵(전당포)' 신설 및 상환 기한 마감 시 담보 카드를 안전 회수하는 '긴급 담보 보호 리파이낸싱 패키지(990원)' 연동.
+  관련파일: src/views/CardMarketplaceView.tsx, src/components/CardPawnShopModal.tsx, src/views/ShopView.tsx
+
+[199] SCR-06-16 | 가상 주식 거래소 (StockMarketView) | 성능
+  문제점: 50개 이상 종목 리스트의 미니 차트가 개별 Canvas/SVG로 그려질 때 50회 이상 드로우 콜 및 DOM 리페인트로 25fps 이하 스크롤 렉 발생.
+  개선안: 전 종목 시세를 단일 2D 텍스처 아틀라스로 16.6ms 주기로 묶어 베이킹하고, WebGL 인스턴스 렌더링으로 1회 단일 드로우 콜 일괄 출력 파이프라인 구축.
+  관련파일: src/views/StockMarketView.tsx, src/components/MultiStockAtlasCanvas.tsx, src/lib/StockTextureBaker.ts
+
+[200] SCR-06-17 | 가상 주식 거래소 (StockMarketView) | 사용성
+  문제점: 100dvh 작은 차트에서 OHLC 정밀 조회 및 목표 알림가 지정 시 손가락에 시야가 가려져 조준이 어긋나고 수동 타이핑 번거로움.
+  개선안: 캔들 피크에 십자선이 자석처럼 붙는 '마그네틱 스냅 크로스헤어' 및 십자선 핀을 위아래로 끌어다 놓아 즉시 알림/주문을 등록하는 '드래그-앤-셋(48px)' 구축.
+  관련파일: src/views/StockMarketView.tsx, src/components/MagneticCrosshairOverlay.tsx, src/components/DragAlertPriceSetter.tsx
+
+[201] SCR-06-18 | 가상 주식 거래소 (StockMarketView) | 과금전환
+  문제점: 현물 등락폭(+30%~-30%)만으로는 고위험 고수익을 선호하는 헤비 트레이더 유저의 스릴과 폭발적 수익 도파민 충족 한계.
+  개선안: 상승/하락에 3배 베팅하는 '3X 불(Bull) & 베어(Bear) 토큰' 가상 파생상품 신설 및 청산 위기 시 24시간 포지션을 동결하는 '마진콜 프로텍션 실드(1,500원)' 연동.
+  관련파일: src/views/StockMarketView.tsx, src/components/LeverageTokenTradeModal.tsx, src/views/ShopView.tsx
+
+[202] SCR-07-16 | 승부 예측 시장 (PredictionMarketView) | 성능
+  문제점: 빅매치 실시간 응원 메시지 폭증 시 DOM 노드 누적으로 120ms 이상 Layout Thrashing 및 20fps 이하 프레임 급락 발생.
+  개선안: 채팅 피드를 고성능 2D Canvas 오버레이 티커로 전환하고 화면 밖 텍스처를 16.6ms 내에 즉각 메모리에서 비우는 '자동 디스포저블 캐시 풀' 구축.
+  관련파일: src/views/PredictionMarketView.tsx, src/components/LiveChatCanvasOverlay.tsx, src/lib/ChatTextureDisposablePool.ts
+
+[203] SCR-07-17 | 승부 예측 시장 (PredictionMarketView) | 사용성
+  문제점: 시간대별 승률/배당률 변화 대조가 어렵고, 여러 베팅 항목(승리, 첫 킬 등) 동시 복합 베팅 시 조작 동선 분산 발생.
+  개선안: 엄지 드래그로 중요 사건과 승률 변화를 탐색하는 '인터랙티브 타임라인 스크러버' 및 복수 항목에 금액을 한 번에 배분하는 '1-Tap 멀티 베팅 스플릿 슬라이더(48px)' 구축.
+  관련파일: src/views/PredictionMarketView.tsx, src/components/MatchTimelineScrubber.tsx, src/components/MultiBetSplitSlider.tsx
+
+[204] SCR-07-18 | 승부 예측 시장 (PredictionMarketView) | 과금전환
+  문제점: 적중률 높은 베테랑 유저의 인사이트가 휘발되어 유료화 기회가 부재하고 초보 유저는 베팅 판단에 막막함을 느낌.
+  개선안: 적중률 80% 이상 상위 1% 구루의 픽을 열람하고 자동 미러 베팅하는 '구루 VIP 인사이트 패스(1,200원)' 및 수수료 공유 크리에이터 이코노미 구축.
+  관련파일: src/views/PredictionMarketView.tsx, src/components/GuruInsightsModal.tsx, src/views/ShopView.tsx
+
+[205] SCR-08-16 | 소환 & 융합 연구소 (FusionLabView) | 성능
+  문제점: 수천 개 룬 문자/스파크 파티클의 비선형 궤적 연산이 메인 스레드에서 실행되어 80ms 이상 CPU 스파이크 및 20fps 저하 발생.
+  개선안: 파티클 물리 궤적 계산을 WASM SIMD 가속 Web Worker로 격리하고 WebGL 인스턴스 텍스처 버퍼에 다이렉트 매핑하여 60fps 무감속 파이프라인 구축.
+  관련파일: src/views/FusionLabView.tsx, src/workers/ParticleSimdWorker.ts, src/components/MagicCircleCanvas.tsx
+
+[206] SCR-08-17 | 소환 & 융합 연구소 (FusionLabView) | 사용성
+  문제점: 단순 버튼식 융합은 카드가 합쳐지는 물리적 결합 손맛이 부족하고, 동일 조건 연속 융합 시 재료를 다시 올려야 하는 번거로움 발생.
+  개선안: 양손 엄지로 재료 카드를 중앙으로 충돌시키는 '스매시(Smash) 제스처' 햅틱 융합 인터랙션 및 동일 등급 재료를 1초 만에 채우는 '1-Tap 재시도 독(48px)' 구축.
+  관련파일: src/views/FusionLabView.tsx, src/components/CardSmashGestureTrigger.tsx, src/components/QuickRetryFusionDock.tsx
+
+[207] SCR-08-18 | 소환 & 융합 연구소 (FusionLabView) | 과금전환
+  문제점: 1회 융합 후 결과 카드가 아쉬워도 이를 활용해 즉시 상위 등급으로 도약하는 연쇄 베팅(하이리스크 하이리턴) 기전 부재.
+  개선안: 성공 직후 결과 카드를 걸고 50% 확률로 상위 등급으로 진화시키는 '더블 오어 낫싱(Double or Nothing)' 룰렛 연동 및 실패 시 원상 복구하는 '안심 보험 젬(800원)' 연계.
+  관련파일: src/views/FusionLabView.tsx, src/components/DoubleOrNothingModal.tsx, src/views/ShopView.tsx
+
+[208] SCR-09-16 | 길드 & 소셜 하우스 (GuildHouseView) | 성능
+  문제점: 레이드 승리 시 50인 길드원의 실시간 이모티콘/폭죽 난사로 DOM 노드 폭증 및 100ms 이상 렉과 15fps 저하 발생.
+  개선안: 이모지 파티클을 단일 WebGL/Canvas 오버레이로 전환하고 수천 개 파티클 충돌/물리를 WASM SIMD 배치 파이프라인으로 연산하여 60fps 무감속 연출 구현.
+  관련파일: src/views/GuildHouseView.tsx, src/wasm/ParticleBurstEngine.wasm, src/components/GuildEmojiBurstCanvas.tsx
+
+[209] SCR-09-17 | 길드 & 소셜 하우스 (GuildHouseView) | 사용성
+  문제점: 로비 길드원 아바타 중첩 시 타겟팅이 어렵고 1:1 대화/친선전/선물 메뉴 진입까지 여러 번 탭해야 하는 조작 피로도 존재.
+  개선안: 아바타 터치 시 4개 퀵 액션이 원형으로 펼쳐지는 '스마트 인터랙션 링(48px)' 및 겹친 유저를 방사형으로 펼쳐 보여주는 '아바타 디스퍼절 포커스 UX' 구축.
+  관련파일: src/views/GuildHouseView.tsx, src/components/SmartInteractionRing.tsx, src/components/AvatarDispersalController.tsx
+
+[210] SCR-09-18 | 길드 & 소셜 하우스 (GuildHouseView) | 과금전환
+  문제점: 길드원이 모여도 함께 즐길 수 있는 공동 소환 콘텐츠가 없어 로비 몰입도가 떨어지고 길드 차원의 과금 시너지 부재.
+  개선안: 길드원 5명이 마법진에 모여 에너지를 투입해 최고 등급 SSR을 확정 연성하는 '길드 릴레이 합동 소환식' 신설 및 '길드 합동 연성 비약 패키지(1,500원)' 연동.
+  관련파일: src/views/GuildHouseView.tsx, src/components/GuildRelayGachaModal.tsx, src/views/ShopView.tsx
+
+[211] SCR-10-16 | 랭킹 & 명예의 전당 (LeaderboardView) | 성능
+  문제점: 랭킹 고속 스크롤 시 수천 명의 커스텀 아바타/테두리 디코딩 병목으로 100ms 이상 버벅임 및 25fps 이하 프레임 저하 발생.
+  개선안: 아바타 디코딩을 ImageBitmap 비동기 워커로 오프로딩하고 상하 20개 항목을 메모리에 상주시키는 LRU 텍스처 프리로딩 풀을 구축하여 60fps 무감속 스크롤 파이프라인 구현.
+  관련파일: src/views/LeaderboardView.tsx, src/workers/AvatarDecodeWorker.ts, src/lib/RankingTexturePool.ts
+
+[212] SCR-10-17 | 랭킹 & 명예의 전당 (LeaderboardView) | 사용성
+  문제점: 상위 랭커들의 승리 배틀 리플레이를 보려면 별도 메뉴로 이동해야 해 동선이 단절되고 경기 핵심 킬 장면 탐색 곤란.
+  개선안: 랭킹 항목 우측 스와이프 시 미니 플레이어가 열리는 '1-Tap 리플레이 팝오버' 및 역전 순간을 슬로우모션으로 돌려보는 '인터랙티브 리플레이 스크러버(48px)' 구축.
+  관련파일: src/views/LeaderboardView.tsx, src/components/QuickReplaySheet.tsx, src/components/ReplayScrubberSlider.tsx
+
+[213] SCR-10-18 | 랭킹 & 명예의 전당 (LeaderboardView) | 과금전환
+  문제점: 시즌 종료 시점에 상위 1~3위 랭커들이 독보적 업적을 전 서버에 각인하고 과시할 수 있는 상징적 럭셔리 명예 아이템 부재.
+  개선안: 시즌 종료 3일 전 TOP 10 랭커 독점 '시즌 챔피언 월계관 프로필 오라' 경매 신설 및 상위 100위 전용 70% 할인 '그랜드마스터 홀로그램 명예 팩(2,900원)' 연동.
+  관련파일: src/views/LeaderboardView.tsx, src/components/ChampionCrownAuctionModal.tsx, src/views/ShopView.tsx
+
+[214] SCR-11-16 | 퀘스트 & 업적 센터 (QuestAchievementView) | 성능
+  문제점: 네트워크 불안정 시 보상 수령 버튼 연타로 중복 요청 에러 발생 및 서버 응답 대기(300ms) 동안 수령 상태 미반영 딜레이 발생.
+  개선안: UUID 멱등성 키 트랜잭션 큐로 중복 요청을 차단하고, 터치 즉시 상태를 선반영(Optimistic Claim)한 뒤 백그라운드 대사하는 60fps 무지연 보상 엔진 구현.
+  관련파일: src/views/QuestAchievementView.tsx, src/lib/IdempotentClaimQueue.ts, src/lib/OptimisticRewardManager.ts
+
+[215] SCR-11-17 | 퀘스트 & 업적 센터 (QuestAchievementView) | 사용성
+  문제점: 어떤 퀘스트가 완료 직전인지 한눈에 보기 어렵고 스크롤을 길게 내려야 달성 임박 퀘스트를 찾을 수 있어 100dvh에서 선별 피로도 가중.
+  개선안: 100dvh 상단에 '달성 임박순(80% 이상 우선) / 보상 가치순' 원터치 정렬 퀵 필터 칩(44px) 배치 및 카드 좌측에 실시간 잔여 진척도를 보여주는 마이크로 도넛 링 구축.
+  관련파일: src/views/QuestAchievementView.tsx, src/components/QuestPriorityFilterBar.tsx, src/components/MicroDonutProgressRing.tsx
+
+[216] SCR-11-18 | 퀘스트 & 업적 센터 (QuestAchievementView) | 과금전환
+  문제점: 장기 누적 업적 달성 시 단순 칭호 하나만 지급되어 엔드 콘텐츠급 업적 달성 코어 유저의 성취감과 지속 동기부여 약화.
+  개선안: 상위 업적 달성 시 게임 여정이 3D 스토리북으로 펼쳐지는 '영웅의 연대기' 시네마틱 해금 및 상위 5% 독점 '업적 마스터 골든 트로피 패키지(2,500원)' 연동.
+  관련파일: src/views/QuestAchievementView.tsx, src/components/HeroChronicleStorybook.tsx, src/views/ShopView.tsx
+
+[217] SCR-12-16 | 환경설정 & 계정/보상 센터 (SettingRewardView) | 성능
+  문제점: 언어 변경 시 수 MB의 다국어 JSON을 일시에 파싱하고 전체 리액트 트리를 리렌더링하여 150ms 이상 화면 프리징 발생.
+  개선안: i18n 리소스를 뷰 단위로 청크 분할하고 ETag 기반 로컬 스토리지 캐싱을 적용하여 변경된 뷰의 텍스트 노드만 단일 프레임 내 마이크로 스왑하는 60fps 엔진 구축.
+  관련파일: src/views/SettingRewardView.tsx, src/i18n/LanguageChunkLoader.ts, src/lib/I18nCacheManager.ts
+
+[218] SCR-12-17 | 환경설정 & 계정/보상 센터 (SettingRewardView) | 사용성
+  문제점: 스마트폰과 PC/태블릿 간 기기 전환 시 매번 아이디/비밀번호 타이핑 및 2차 인증으로 100dvh 화면에서 로그인 피로도 가중.
+  개선안: 100dvh 하단에 '1-Tap 기기 연동 QR 코드 생성/스캐너' 바텀시트(48px)를 구축하여 화면을 비추면 0.1초 만에 계정 세션이 연동되는 인스턴트 핸드오프 UX 구현.
+  관련파일: src/views/SettingRewardView.tsx, src/components/QrCodeHandoffModal.tsx, src/lib/DeviceHandoffManager.ts
+
+[219] SCR-12-18 | 환경설정 & 계정/보상 센터 (SettingRewardView) | 과금전환
+  문제점: 설정 내 '크레딧' 탭이 정적 텍스트에 불과해 열람 유인이 없고, 열성 유저가 게임 역사에 이름을 남길 수 있는 명예 후원 모델 부재.
+  개선안: 닉네임과 대표 카드가 별자리로 반짝이는 '3D 인터랙티브 엔드 크레딧' 신설 및 크레딧 영구 등재와 골든 테두리를 주는 '파운더스 후원자 명예 패키지(3,300원)' 연동.
+  관련파일: src/views/SettingRewardView.tsx, src/components/InteractiveCreditsRoll.tsx, src/views/ShopView.tsx
+
+[220] SCR-01-19 | 메인 로비 & 홈 (HomeView) | 성능
+  문제점: 로비 진입 시 대용량 BGM(10MB) 일시 다운로드로 대역폭 점유 및 화면 전환 시 오디오 버퍼 락으로 50ms 프레임 저하 발생.
+  개선안: BGM을 2초 청크 단위로 스트리밍하는 AudioWorklet 스트리머를 구현하고 씬 전환 시 이퀄 파워 볼륨 크로스페이드를 적용하는 무중단 60fps 파이프라인 구축.
+  관련파일: src/views/HomeView.tsx, src/workers/AudioStreamWorklet.ts, src/lib/BgmCrossfadeManager.ts
+
+[221] SCR-01-20 | 메인 로비 & 홈 (HomeView) | 사용성
+  문제점: 12개 이상 화면과 방대한 콘텐츠(카드/주식 등) 탐색을 위해 여러 탭을 오가는 모바일 네비게이션 피로도 발생.
+  개선안: 100dvh 하단 스와이프 업 시 열리는 스포트라이트 '스마트 퀵 커맨드 런처(48px)' 구축 및 키워드 1글자 입력 시 즉시 딥링크 이동 원터치 UX 구현.
+  관련파일: src/views/HomeView.tsx, src/components/QuickCommandLauncher.tsx, src/lib/DeepLinkRouter.ts
+
+[222] SCR-01-21 | 메인 로비 & 홈 (HomeView) | 과금전환
+  문제점: 대표 캐릭터와의 인터랙션이 단순 대사 출력에 그쳐 지속적 애착 형성이 어렵고 감성 중심 유저층을 위한 과금 모델 부재.
+  개선안: 호감도 레벨 상승 시 전용 스토리와 일러스트가 해금되는 '비밀 데이트 에피소드' 시스템 도입 및 호감도 2배 '달콤 선물 박스(1,200원)' 타임딜 연동.
+  관련파일: src/views/HomeView.tsx, src/components/SecretDateEpisodeModal.tsx, src/views/ShopView.tsx
+
+[223] SCR-02-19 | 배틀 아레나 (PlayGameView) | 성능
+  문제점: 필드에 10장 이상 카드와 오라/룬/데미지 숫자 중첩 시 드로우 콜 60회 이상 발생으로 30fps 저하 및 발열 유발.
+  개선안: WebGL 2.0 Multi-Draw Indirect 스타일 GPU 인스턴스 배열 버퍼 파이프라인을 구축하여 전장의 모든 요소를 단일 드로우 콜로 디스패치하는 60fps 엔진 구현.
+  관련파일: src/views/PlayGameView.tsx, src/shaders/MultiDrawIndirectShader.ts, src/lib/BattleGpuBatcher.ts
+
+[224] SCR-02-20 | 배틀 아레나 (PlayGameView) | 사용성
+  문제점: 손패 카드가 드로우 순서로만 고정되어 콤보 카드를 모아보거나 정렬할 수 없어 100dvh 화면에서 턴 시간 내 조작 혼란 발생.
+  개선안: 손패 카드를 길게 눌러 좌우로 자유롭게 위치를 바꾸는 '핸드 드래그 리오더링' 및 손패 좌측 '마나순/공격력순 원터치 자동 정렬 칩(44px)' 구축.
+  관련파일: src/views/PlayGameView.tsx, src/components/HandCardReorder.tsx, src/components/HandSortFilterChips.tsx
+
+[225] SCR-02-21 | 배틀 아레나 (PlayGameView) | 과금전환
+  문제점: 다음 턴 패배가 확정된 벼랑 끝 상황에서 유저가 역전의 실마리를 찾지 못하고 허무하게 항복/이탈하는 심리적 붕괴 발생.
+  개선안: 치명타 피격 시 1턴간 체력 1로 생존하고 마나를 완충해 역전 기회를 주는 '서든데스 챌린지' 및 공격력 1.5배 '결사 각성 앰플(600원)' 연동.
+  관련파일: src/views/PlayGameView.tsx, src/components/SuddenDeathChallengeModal.tsx, src/views/ShopView.tsx
+
+[226] SCR-03-19 | 마이덱 & 카드 관리 (MyDeckView) | 성능
+  문제점: 카드 덱 배치 시 코스트/중복/속성 룰을 배열 순회 검사하여 잦은 임시 객체 생성 및 GC 스파이크(35ms)와 프레임 저하 발생.
+  개선안: 카드 스펙을 64비트 정수형 비트마스크(Bitmask)로 인코딩하고 1 CPU 사이클 비트 연산으로 덱 유효성을 O(1) 검증하는 제로-GC 파이프라인 구현.
+  관련파일: src/views/MyDeckView.tsx, src/lib/BitmaskDeckValidator.ts, src/lib/CardBitmaskEncoder.ts
+
+[227] SCR-03-20 | 마이덱 & 카드 관리 (MyDeckView) | 사용성
+  문제점: 분해/잠금할 여러 카드를 일일이 낱개 탭해야 해 100dvh 화면에서 수십 번의 반복 터치 피로도 극심.
+  개선안: 손가락으로 영역을 둘러싸면 카드가 한 번에 선택되는 '라쏘(Lasso) 올가미 터치 제스처' 및 일괄 잠금/분해를 실행하는 '플로팅 액션 바(48px)' 구축.
+  관련파일: src/views/MyDeckView.tsx, src/components/LassoSelectionOverlay.tsx, src/components/BatchCardActionBar.tsx
+
+[228] SCR-03-21 | 마이덱 & 카드 관리 (MyDeckView) | 과금전환
+  문제점: 카드의 기본 성장(레벨업/돌파) 완료 후 추가 커스텀 육성 루트가 닫혀 있어 코어 유저의 심화 빌드 다양화 부재.
+  개선안: 카드에 최대 3개 소켓을 뚫어 특수 패시브 룬을 장착하는 '신화 룬 소켓 각인' 시스템 신설 및 소켓 100% 확장 '황금 대장간 망치 팩(1,500원)' 연동.
+  관련파일: src/views/MyDeckView.tsx, src/components/RuneSocketEngravingModal.tsx, src/views/ShopView.tsx
+
+[229] SCR-04-19 | 상점 & 가챠 (ShopView) | 성능
+  문제점: 소환 버튼 클릭 첫 순간 3D 마법진 셰이더 컴파일 및 텍스처 밉맵 생성으로 100ms 이상 화면 프리징 및 15fps 드랍 발생.
+  개선안: 상점 진입 즉시 백그라운드에서 셰이더 프로그램을 미리 컴파일(Pre-warming)하고 OffscreenCanvas에서 밉맵을 사전 생성하는 60fps 파이프라인 구현.
+  관련파일: src/views/ShopView.tsx, src/shaders/SummonCircleShader.ts, src/lib/ShaderPrewarmer.ts
+
+[230] SCR-04-20 | 상점 & 가챠 (ShopView) | 사용성
+  문제점: 여러 픽업 배너를 평면 탭으로 넘겨 100dvh에서 구분이 어렵고, 확률표 확인 시 전체 화면 팝업으로 소환 흐름 단절 발생.
+  개선안: 픽업 배너를 3D 큐브 형태로 좌우 스와이프하는 '인터랙티브 3D 회전 캐러셀' 구축 및 44px 칩 탭 시 확률과 천장을 보여주는 하프 바텀시트 UX 제공.
+  관련파일: src/views/ShopView.tsx, src/components/CubeBannerCarousel.tsx, src/components/GachaRateBottomSheet.tsx
+
+[231] SCR-04-21 | 상점 & 가챠 (ShopView) | 과금전환
+  문제점: 10연차에서 중복/비선호 SSR 획득 시 기대감이 실망감으로 급변하며 후속 과금 흐름 단절 발생.
+  개선안: 10연차 시 '즉시 교환권'을 지급해 소환 직후 30분간 타 유저의 동급 SSR과 1:1 맞교환하는 '라이브 픽업 교환소' 개방 및 '익스체인지 팩(1,000원)' 팝업 연동.
+  관련파일: src/views/ShopView.tsx, src/components/LivePickupTradeModal.tsx, src/views/ShopView.tsx
+
+[232] SCR-05-19 | 카드 마켓플레이스 (CardMarketplaceView) | 성능
+  문제점: 가격대별 누적 거래량 매물대(Volume Profile) 집계 시 수만 건 틱의 메인 스레드 버킷팅 연산으로 60ms 이상 UI 블로킹 발생.
+  개선안: 볼륨 프로파일 히스토그램 연산을 Web Worker로 분리하고 WebGL 인스턴스 셰이더로 단일 프레임 알파 블렌딩 합성하는 60fps 차트 엔진 구현.
+  관련파일: src/views/CardMarketplaceView.tsx, src/workers/VolumeProfileWorker.ts, src/components/VolumeProfileCanvas.tsx
+
+[233] SCR-05-20 | 카드 마켓플레이스 (CardMarketplaceView) | 사용성
+  문제점: 가격 직접 타이핑 중 호가 변동으로 주문 실패/오입력 발생 및 미체결 주문 취소를 위해 별도 탭 이동 필요.
+  개선안: 100dvh 화면에 세로형 '호가 사다리(Price Ladder)'를 제공해 원하는 가격 칸 탭 즉시 주문 접수 및 내 주문 번호 롱터치 시 0.1초 취소 UX 구축.
+  관련파일: src/views/CardMarketplaceView.tsx, src/components/PriceLadderOrderBook.tsx, src/components/QuickCancelHapticButton.tsx
+
+[234] SCR-05-21 | 카드 마켓플레이스 (CardMarketplaceView) | 과금전환
+  문제점: 전문 카드 트레이더 유저들이 거래 수수료 부담으로 잦은 매매를 주저하며 거래 활성화에 따른 직접적 페이백 보상 결여.
+  개선안: 일일 거래액 달성 시 럭키 룰렛권을 지급하고 7일간 수수료 0% 및 거래액 1% 다이아 페이백 'VIP 트레이더 무제한 프리 패스(2,500원)' 연동.
+  관련파일: src/views/CardMarketplaceView.tsx, src/components/GoldbackPaybackModal.tsx, src/views/ShopView.tsx
+
+[235] SCR-06-19 | 가상 주식 거래소 (StockMarketView) | 성능
+  문제점: 기관/큰손 유저들의 실시간 대량 매수/매도 깊이(Heatmap Depth) 누적 시각화 시 CPU 연산 병목으로 70ms 이상 렉 및 20fps 저하 발생.
+  개선안: 오더북 깊이 데이터를 WebGL 텍스처로 직결하고 픽셀 셰이더 FBO 핑퐁 렌더링으로 실시간 히트맵을 연산하는 60fps GPU 가속 파이프라인 구축.
+  관련파일: src/views/StockMarketView.tsx, src/shaders/OrderbookHeatmapShader.ts, src/lib/FboHeatmapBuffer.ts
+
+[236] SCR-06-20 | 가상 주식 거래소 (StockMarketView) | 사용성
+  문제점: 급등락 시 호가 간격이 좁거나 넓어져 100dvh 화면에서 오입력이 발생하며, 급락 시 즉시 탈출하는 패닉 청산 버튼 부재.
+  개선안: 두 손가락으로 호가 틱 단위(1/5/10/50원)를 즉시 조절하는 '핀치 스프레드 줌' UX 및 하단 Thumb Zone에 48px '원터치 시장가 전량 긴급 청산 슬라이더' 구축.
+  관련파일: src/views/StockMarketView.tsx, src/components/PinchSpreadZoomController.tsx, src/components/EmergencyExitSlider.tsx
+
+[237] SCR-06-21 | 가상 주식 거래소 (StockMarketView) | 과금전환
+  문제점: 단순 매수 구조로 인해 하락장이나 횡보장에서 유저 거래 의욕이 꺾이고 거래소 시장 유동성이 급감함.
+  개선안: 주가 하락 시 수익을 내는 '가상 공매도(Short) 대주 거래' 신설 및 공매도 집중 종목 폭등 유도 '숏스퀴즈 잭팟 이벤트'와 '쇼트 트레이더 패스(1,500원)' 연동.
+  관련파일: src/views/StockMarketView.tsx, src/components/ShortSellingTradeModal.tsx, src/views/ShopView.tsx
+
+[238] SCR-07-19 | 승부 예측 시장 (PredictionMarketView) | 성능
+  문제점: 마감 직전 초당 수백 건 틱 유입 시 PostMessage 큐잉 지연(40ms)으로 수치 변경과 햅틱/사운드 싱크 불일치 및 인풋 렉 발생.
+  개선안: SharedArrayBuffer 기반 락-프리(Lock-Free) SPSC 원형 큐를 구축하여 0ms 메모리 읽기를 구현하고 오디오-비주얼 타임스탬프 동기화 60fps 파이프라인 구현.
+  관련파일: src/views/PredictionMarketView.tsx, src/lib/LockFreeSpscQueue.ts, src/lib/AudioVisualSyncEngine.ts
+
+[239] SCR-07-20 | 승부 예측 시장 (PredictionMarketView) | 사용성
+  문제점: 100dvh 화면에서 양팀 스쿼드 스펙/체력 확인을 위해 잦은 스와이프가 필요하고, 자주 쓰는 베팅 금액을 매번 수동 조작하는 번거로움 존재.
+  개선안: 양팀 스쿼드를 좌우 엄지 플릭으로 넘겨보는 '스쿼드 스펙 스위퍼 바' 및 사용자 지정 금액을 1-Tap으로 즉시 베팅하는 '커스텀 프리셋 칩(44px)' 구축.
+  관련파일: src/views/PredictionMarketView.tsx, src/components/SquadSpecSweeper.tsx, src/components/BettingPresetChips.tsx
+
+[240] SCR-07-21 | 승부 예측 시장 (PredictionMarketView) | 과금전환
+  문제점: 경기별 단순 환급 외에 유저 전체가 열광할 대규모 누적 상금(메가 잭팟) 기전이 없어 빅매치에서의 소셜 흥분감 및 과금 집결 요소 부재.
+  개선안: 실패 베팅 코인의 5%가 누적되는 '골든 슈퍼볼 메가 잭팟 풀' 신설 및 역배(5배 이상) 적중 시 상금을 3배로 불려주는 '언더독 미라클 부스터(990원)' 연동.
+  관련파일: src/views/PredictionMarketView.tsx, src/components/SuperBowlJackpotModal.tsx, src/views/ShopView.tsx
+
+[241] SCR-08-19 | 소환 & 융합 연구소 (FusionLabView) | 성능
+  문제점: 융합 폭발 순간 블룸(Bloom) 빛 번짐 연출 시 풀 해상도 가우스 블러 처리로 35ms 이상 병목 및 25fps 프레임 저하 발생.
+  개선안: 블룸 연출을 1/4 해상도 듀얼 가와세(Dual Kawase) 다운샘플링 핑퐁 패스로 전환하여 모바일 GPU 부하를 최소화하는 60fps 시네마틱 블룸 엔진 구현.
+  관련파일: src/views/FusionLabView.tsx, src/shaders/DualKawaseBloomShader.ts, src/lib/PostProcessingPipeline.ts
+
+[242] SCR-08-20 | 소환 & 융합 연구소 (FusionLabView) | 사용성
+  문제점: 재료 투입 시 성공/실패 확률과 계승 스킬이 작게 표기되어 100dvh에서 인지가 어렵고 실패 위험도 과소평가로 인한 오조작 사고 발생.
+  개선안: 슬롯 중앙에 실시간 확률 비중을 3색 원형 게이지로 보여주는 '확률 프리뷰 다이얼' 및 실패 위험 40% 이상 시 경고 햅틱 안전 잠금(48px 버튼) 구축.
+  관련파일: src/views/FusionLabView.tsx, src/components/ProbabilityDialGauge.tsx, src/components/SafetyConfirmModal.tsx
+
+[243] SCR-08-21 | 소환 & 융합 연구소 (FusionLabView) | 과금전환
+  문제점: 동일 종족 합성 위주로만 진행되어 이종족 간 파격적 변종 조합을 시도하는 매니아적 실험 욕구 제한 및 프리미엄 과금 모델 부재.
+  개선안: 서로 다른 3개 종족 합성 시 두 종족 특성을 겸비한 전설의 혼혈 카드를 탄생시키는 '키메라 연성식' 및 성공률 5배 '키메라 주문서 번들(1,900원)' 연동.
+  관련파일: src/views/FusionLabView.tsx, src/components/ChimeraFusionModal.tsx, src/views/ShopView.tsx
+
+[244] SCR-09-19 | 길드 & 소셜 하우스 (GuildHouseView) | 성능
+  문제점: 아지트에 다중 동적 조명 배치 시 CPU 광선 투사 연산으로 100ms 이상 지연 및 20fps 이하 프레임 저하 발생.
+  개선안: 정적 배경 섀도우맵을 OffscreenCanvas에 캐싱하고, 이동 아바타 그림자만 GPU 픽셀 셰이더 1D 텍스처 패스로 처리하여 60fps 앰비언트 라이팅 파이프라인 구현.
+  관련파일: src/views/GuildHouseView.tsx, src/shaders/DynamicShadow2DShader.ts, src/lib/ShadowmapBaker.ts
+
+[245] SCR-09-20 | 길드 & 소셜 하우스 (GuildHouseView) | 사용성
+  문제점: 길드 단체 사진 촬영 시 아바타 겹침/포즈 불일치로 스크린샷 캡처가 어렵고 UI 숨김 메뉴가 복잡함.
+  개선안: 100dvh 하단에 '1-Tap 단체 포토부스(48px)'를 제공해 길드원이 포디움에 자동 정렬되고 승리 포즈를 취하며 9:16 숏폼 사진을 생성하는 인터랙션 구축.
+  관련파일: src/views/GuildHouseView.tsx, src/components/GuildPhotoBoothModal.tsx, src/components/AutoPoseAligner.tsx
+
+[246] SCR-09-21 | 길드 & 소셜 하우스 (GuildHouseView) | 과금전환
+  문제점: 아지트 내 엔터테인먼트 시설이 부족해 즉석 도파민을 느낄 미니게임 및 소셜 버프 과금 모델 결여.
+  개선안: 매일 1회 무료로 칵테일을 주문해 잭팟 버프를 노리는 '럭키 바텐더 룰렛' 및 접속 길드원 전원에게 공격력 +20% 버프를 쏘는 '황금 럼주 골든 파티 샷(1,100원)' 연동.
+  관련파일: src/views/GuildHouseView.tsx, src/components/GuildTavernCocktailModal.tsx, src/views/ShopView.tsx
+
+[247] SCR-10-19 | 랭킹 & 명예의 전당 (LeaderboardView) | 성능
+  문제점: 랭킹전 진행 중 수백 명 ELO 변동 수치/순위 셔플 시 DOM 클래스 토글/스타일 갱신으로 70ms 렌더 락 및 20fps 저하 발생.
+  개선안: 순위 변동 트랜지션을 2D Canvas 오버레이 레이어로 분리하고 RAF 단일 배치 사이클 내에서 변동 파티클과 슬라이드를 일괄 처리하는 60fps 무감속 엔진 구현.
+  관련파일: src/views/LeaderboardView.tsx, src/components/RankingCanvasTransition.tsx, src/lib/EloAnimationBatcher.ts
+
+[248] SCR-10-20 | 랭킹 & 명예의 전당 (LeaderboardView) | 사용성
+  문제점: 다음 티어 승급선까지 남은 점수와 강등선 유저와의 격차를 100dvh 화면에서 한눈에 비교하기 어려워 반복 스크롤 피로도 발생.
+  개선안: 100dvh 화면에 승급선/강등선을 네온선으로 상시 표기하는 '컷오프 인디케이터' 및 목표 랭커를 화면 상단에 핀으로 고정해 점수차를 실시간 추적하는 '1-Tap 타겟 핀(48px)' 구축.
+  관련파일: src/views/LeaderboardView.tsx, src/components/CutoffIndicatorLine.tsx, src/components/PinnedTargetRankBar.tsx
+
+[249] SCR-10-21 | 랭킹 & 명예의 전당 (LeaderboardView) | 과금전환
+  문제점: 시즌 종료 24시간 전 막판 스퍼트 기간에 순위 고착화를 느낀 중위권 유저들이 랭킹전 도전을 포기하고 이탈 발생.
+  개선안: 시즌 종료 6시간 전 승점 2배 '골든 아워 피버 타임' 발동 및 패배 시 점수 하락 50% 방어/추가 승점 부여 '시즌 엔드 스퍼트 앰플(1,200원)' 타임딜 연동.
+  관련파일: src/views/LeaderboardView.tsx, src/components/FinalCountdownModal.tsx, src/views/ShopView.tsx
+
+[250] SCR-11-19 | 퀘스트 & 업적 센터 (QuestAchievementView) | 성능
+  문제점: 100개 이상 업적 뱃지의 메탈릭 광택/빛 반사 셰이더가 화면 밖 뱃지까지 연산되어 35fps 저하 및 GPU 발열 발생.
+  개선안: 가시 영역(Viewport) 내 뱃지만 선별 렌더링하는 '2D 프러스텀 가상 컬링' 및 인스턴스 버퍼 일괄 디스패치 60fps 파이프라인 구축.
+  관련파일: src/views/QuestAchievementView.tsx, src/shaders/MetallicBadgeShader.ts, src/lib/BadgeVirtualCulling.ts
+
+[251] SCR-11-20 | 퀘스트 & 업적 센터 (QuestAchievementView) | 사용성
+  문제점: 일일 퀘스트 올클리어 시 완료 텍스트만 바뀌어 완수 성취감이 약하고 내일의 퀘스트를 미리 확인하는 동선 부재.
+  개선안: 올클리어 즉시 'COMPLETED' 황금 스탬프가 쾅 찍히는 햅틱 임팩트 연출 및 내일의 주요 퀘스트/보상을 미리 엿보는 '익일 프리뷰 바텀시트(48px)' 구축.
+  관련파일: src/views/QuestAchievementView.tsx, src/components/HapticWaxStampAnimation.tsx, src/components/NextDayQuestPreviewSheet.tsx
+
+[252] SCR-11-21 | 퀘스트 & 업적 센터 (QuestAchievementView) | 과금전환
+  문제점: 마일스톤 달성 후 남는 잉여 퀘스트 포인트가 버려져 추가적인 도파민 파밍 및 소액 결제 연계 수단 결여.
+  개선안: 잉여 포인트 100점마다 대박을 뽑는 '미스터리 럭키 금고' 신설 및 금고 개봉 보상을 3배로 불려주는 '마법의 황금 열쇠 팩(990원)' 연동.
+  관련파일: src/views/QuestAchievementView.tsx, src/components/MysteryLuckyVaultModal.tsx, src/views/ShopView.tsx
+
+[253] SCR-12-19 | 환경설정 & 계정/보상 센터 (SettingRewardView) | 성능
+  문제점: 렉이나 프레임 저하 시 기기 병목(GPU, VRAM, 메모리 등)을 진단할 수 없어 맹목적 CS 문의 및 유저 이탈 발생.
+  개선안: 실시간 FPS, 힙 메모리, VRAM, 드로우 콜을 무부하로 측정하는 '성능 진단 프로파일러 HUD' 탑재 및 1-클릭 진단 리포트 비동기 전송 파이프라인 구축.
+  관련파일: src/views/SettingRewardView.tsx, src/components/ClientPerformanceProfilerHUD.tsx, src/lib/PerformanceDiagnosticLogger.ts
+
+[254] SCR-12-20 | 환경설정 & 계정/보상 센터 (SettingRewardView) | 사용성
+  문제점: 이어폰/헤드폰과 기기 스피커 환경 차이로 사운드 밸런스가 무너지며 단조로운 진동으로 햅틱 손맛 조절 불가.
+  개선안: 베이스 부스트/보컬 명료도/야간 모드'를 전환하는 '1-Tap 스마트 오디오 EQ 칩' 및 진동 리듬과 진폭을 직접 선택하는 '햅틱 리듬 커스터마이저(48px)' 구축.
+  관련파일: src/views/SettingRewardView.tsx, src/components/EqualizerPresetChips.tsx, src/components/HapticPatternCustomizer.tsx
+
+[255] SCR-12-21 | 환경설정 & 계정/보상 센터 (SettingRewardView) | 과금전환
+  문제점: 계정 생성 100일/1주년 등 마일스톤 날짜 도달 시 기념 연출이나 개인화된 축하가 없어 감성적 보상감 결여.
+  개선안: 기념일에 플레이 통계와 무료 SSR을 주는 '기념일 타임캡슐' 신설 및 24시간 한정 매달 다이아를 지급하는 '영구 VIP 라이프타임 패스(4,900원)' 연동.
+  관련파일: src/views/SettingRewardView.tsx, src/components/AnniversaryTimeCapsuleModal.tsx, src/views/ShopView.tsx
+
+[256] SCR-01-22 | 메인 로비 & 홈 (HomeView) | 성능
+  문제점: 로비 3D 대표 덱 5장 렌더링 시 저사양 기기에서 정밀 폴리곤/PBR 연산 병목으로 20fps 저하 및 발열 발생.
+  개선안: 기기 GPU 성능 실시간 벤치마킹 기반 3단계 '적응형 동적 LOD(Level of Detail) 렌더러' 적용 및 5장 지오메트리 단일 GPU 버퍼 인스턴싱 60fps 파이프라인 구축.
+  관련파일: src/views/HomeView.tsx, src/shaders/AdaptiveLodCardShader.ts, src/lib/DynamicLodManager.ts
+
+[257] SCR-01-23 | 메인 로비 & 홈 (HomeView) | 사용성
+  문제점: 100dvh 세로 뷰포트 시야각 한계로 광활한 월드 배경 랜드마크를 감상하기 어렵고 평면적 배경으로 인식됨.
+  개선안: 기기 기울임에 반응하는 '자이로스코프 360 파노라마 패닝' 구축 및 배경 속 경기장/상점 탭 시 카메라 줌인과 함께 즉시 이동하는 '랜드마크 퀵 포커스(48px)' 제공.
+  관련파일: src/views/HomeView.tsx, src/components/GyroscopeWorldPanorama.tsx, src/components/LandmarkFocusTrigger.tsx
+
+[258] SCR-01-24 | 메인 로비 & 홈 (HomeView) | 과금전환
+  문제점: 오프라인 시간 동안 유저 기대감을 유지하고 재접속을 강력히 유도하는 방치형 성장(Idle Progress) 기전 결여.
+  개선안: 24시간 후 부화하는 '신비의 드래곤 알 부화기' 배치 및 터치 시 시간 단축 도파민 연동, 부화 12시간 즉시 단축 '황금 모래시계 팩(800원)' 타임딜 연동.
+  관련파일: src/views/HomeView.tsx, src/components/DragonEggIncubatorModal.tsx, src/views/ShopView.tsx
+
+[259] SCR-02-22 | 배틀 아레나 (PlayGameView) | 성능
+  문제점: 광역기/연타 시 화면에 수십 개 데미지 숫자가 동시에 튈 때 DOM 생성 및 CSS 애니메이션 병목으로 50ms 렉 및 25fps 저하 발생.
+  개선안: 데미지 숫자를 Bitmap Font 아틀라스로 사전 래스터화하고 WebGL 인스턴스 버퍼에서 궤적을 연산하여 단일 드로우 콜로 출력하는 60fps 텍스트 렌더러 구현.
+  관련파일: src/views/PlayGameView.tsx, src/components/DamageTextAtlasRenderer.tsx, src/lib/BitmapFontBaker.ts
+
+[260] SCR-02-23 | 배틀 아레나 (PlayGameView) | 사용성
+  문제점: 흔들리는 이동 환경에서 카드 드래그 시 슬롯 경계선 오차로 소환 취소 또는 원치 않는 슬롯 배치 등 오조작 빈번.
+  개선안: 슬롯 반경 50px 접근 시 카드를 자석처럼 끌어당기는 '마그네틱 슬롯 스냅' 및 하단 Safe Area로 손가락을 내리면 즉시 복귀하는 '드롭다운 퀵 캔슬(48px)' 구축.
+  관련파일: src/views/PlayGameView.tsx, src/components/MagneticSlotDropzone.tsx, src/components/QuickCancelDropzone.tsx
+
+[261] SCR-02-24 | 배틀 아레나 (PlayGameView) | 과금전환
+  문제점: 배틀 승리 후 정산 화면에서 단순 보상 획득에 그쳐 승리 도파민이 빠르게 식고 연승을 유도할 소액 베팅 기전 부재.
+  개선안: 승리 직후 앞/뒷면을 맞춰 골드를 2~4배로 불리는 '빅토리 코인 토스 럭키 찬스' 무료 연출 및 연속 승리 시 골드 배당 3배 '연승 복리 부스터 티켓(500원)' 연동.
+  관련파일: src/views/PlayGameView.tsx, src/components/VictoryCoinTossModal.tsx, src/views/ShopView.tsx
+
+[262] SCR-03-22 | 마이덱 & 카드 관리 (MyDeckView) | 성능
+  문제점: 카드 교체 시 덱의 종합 턴당 DPS/생존력 모의 몬테카를로 연산 병목으로 80ms 이상 지연 및 카드 드래그 렉 발생.
+  개선안: 1,000회 모의 전투 몬테카를로 시뮬레이션을 C++ WASM SIMD 엔진으로 분리하고 디바운스 비동기 워커 파이프라인으로 60fps 무감속 반영 구현.
+  관련파일: src/views/MyDeckView.tsx, src/wasm/MonteCarloDeckSim.wasm, src/lib/DeckPowerWorkerBridge.ts
+
+[263] SCR-03-23 | 마이덱 & 카드 관리 (MyDeckView) | 사용성
+  문제점: 전열/중열/후열 진형 배치 조정 시 100dvh 화면에서 슬롯 간격이 좁아 손가락 드래그 시 순서가 꼬이거나 오배치 빈번.
+  개선안: 하단에 진형을 0.1초 만에 바꾸는 '포메이션 프리셋 독(48px)' 탑재 및 전후열 슬롯 접근 시 자리바꿈 애니메이션과 햅틱을 주는 '마그네틱 포지션 스왑' 구축.
+  관련파일: src/views/MyDeckView.tsx, src/components/FormationPresetDock.tsx, src/components/MagneticPositionSwap.tsx
+
+[264] SCR-03-24 | 마이덱 & 카드 관리 (MyDeckView) | 과금전환
+  문제점: 동일 카드로 수백 판 승리해도 숙련도를 증명할 시각적 타이틀이나 명예 요소가 부족해 장인 유저에 대한 보상감 결여.
+  개선안: 승리 횟수에 따라 프레임에 이펙트가 감기는 '카드 장인 마스터리 시스템' 신설 및 10레벨 달성 시 스킬 연출을 황금빛으로 교체하는 '골든 엠퍼러 스킨 팩(1,100원)' 연동.
+  관련파일: src/views/MyDeckView.tsx, src/components/CardMasteryLevelModal.tsx, src/views/ShopView.tsx
+
+[265] SCR-04-22 | 상점 & 가챠 (ShopView) | 성능
+  문제점: 최고 등급 등장 3D 시네마틱 비디오 로드 시 프레임 캡처 및 텍스처 업로드 병목으로 70ms 렉 및 오디오 싱크 밀림 발생.
+  개선안: WebCodecs API 기반 하드웨어 제로 카피 텍스처 바인딩으로 전환하고 OffscreenCanvas에서 파티클과 실시간 알파 블렌딩 합성하는 60fps 엔진 구현.
+  관련파일: src/views/ShopView.tsx, src/lib/WebCodecsVideoPlayer.ts, src/components/CinematicVideoTextureCanvas.tsx
+
+[266] SCR-04-23 | 상점 & 가챠 (ShopView) | 사용성
+  문제점: 단순 버튼식 결제 확인창으로 인한 고액 재화 오소진 불안감이 높고, 다음 천장까지 남은 소환 횟수 파악이 어려움.
+  개선안: 100dvh 하단에 오터치를 방지하는 '스와이프 투 컨펌 결제 슬라이더 바(48px)' 배치 및 상단에 잔여 횟수를 보여주는 '천장 마일스톤 카운트다운 허브' 구축.
+  관련파일: src/views/ShopView.tsx, src/components/SwipeToConfirmBar.tsx, src/components/PityMilestoneCountdownHub.tsx
+
+[267] SCR-04-24 | 상점 & 가챠 (ShopView) | 과금전환
+  문제점: 10연차 소환 종료 후 추가적인 미니게임이나 보너스 기회가 없어 다음 결제로 이어지는 연결 고리가 취약함.
+  개선안: 소환 즉시 3장 중 1장을 뽑아 보너스 재화를 최대 5배 환급받는 '행운의 블랙잭 미니 찬스' 무료 연출 및 결과를 역전시키는 '블랙잭 조커 팩(700원)' 연동.
+  관련파일: src/views/ShopView.tsx, src/components/LuckyBlackjackModal.tsx, src/views/ShopView.tsx
+
+[268] SCR-05-22 | 카드 마켓플레이스 (CardMarketplaceView) | 성능
+  문제점: 수천 장 매물 썸네일 무한 스크롤 시 개별 텍스처 바인딩 오버헤드로 80ms 이상 Jank 및 20fps 저하 발생.
+  개선안: WebGL 2.0 기반 가상 텍스처링(Virtual Texturing)을 구현하여 가시 영역만 타일 단위 동적 페이징하고 비가시 타일을 16.6ms 내 회수하는 60fps 엔진 구축.
+  관련파일: src/views/CardMarketplaceView.tsx, src/lib/VirtualTextureManager.ts, src/components/MarketplaceVirtualGrid.tsx
+
+[269] SCR-05-23 | 카드 마켓플레이스 (CardMarketplaceView) | 사용성
+  문제점: 시세 대비 저렴한 급매물 발견 시 매수 후 다시 인벤토리로 이동해 재출품해야 해 100dvh 환경에서 차익 거래 기동성 저하.
+  개선안: 평균가 대비 15% 이상 저렴한 매물을 실시간 알리는 '차익 레이더 바' 및 매수 즉시 추천 시장가로 자동 재출품되는 48px '1-Tap 플립(Flip) 버튼' 구축.
+  관련파일: src/views/CardMarketplaceView.tsx, src/components/ArbitrageRadarBar.tsx, src/components/OneTapFlipButton.tsx
+
+[270] SCR-05-24 | 카드 마켓플레이스 (CardMarketplaceView) | 과금전환
+  문제점: 24시간 동일한 거래소 환경으로 심야 시간대 접속률이 떨어지고 한정판 희귀 매물이 풀리는 이벤트성 기전 부재.
+  개선안: 매일 밤 23시 2시간 동안 초희귀 카드가 100 코인 시작가로 출품되는 '심야 도깨비 야시장' 신설 및 우선 입찰권 포함 '암시장 비밀 통행증(1,200원)' 연동.
+  관련파일: src/views/CardMarketplaceView.tsx, src/components/MidnightBlackMarketModal.tsx, src/views/ShopView.tsx
+
+[271] SCR-06-22 | 가상 주식 거래소 (StockMarketView) | 성능
+  문제점: 전체 시장 동향 2D 트리맵(Treemap) 렌더링 시 50개 이상 타일 배치가 DOM/SVG로 처리되어 틱마다 80ms 렉 및 20fps 저하 발생.
+  개선안: 스쿼리파이드 트리맵 분할 알고리즘을 Web Worker로 분리하고 단일 WebGL 인스턴스 쿼드 셰이더로 파이프라이닝하여 60fps 무감속 트리맵 렌더러 구현.
+  관련파일: src/views/StockMarketView.tsx, src/shaders/StockTreemapShader.ts, src/workers/TreemapLayoutWorker.ts
+
+[272] SCR-06-23 | 가상 주식 거래소 (StockMarketView) | 사용성
+  문제점: 실시간 배당금을 매번 수동 수령/재투자해야 해 100dvh 화면에서 반복 피로도가 높고 누적 수익률을 자랑할 소셜 공유 수단 부재.
+  개선안: 100dvh 상단에 '1-Tap 스마트 복리 저금통(자동 재투자 토글)' 상시 노출 및 총자산/수익률을 9:16 인스타용으로 생성하는 '골든 수익률 카드 공유(48px)' 구축.
+  관련파일: src/views/StockMarketView.tsx, src/components/AutoReinvestmentToggle.tsx, src/components/GoldenYieldCardShare.tsx
+
+[273] SCR-06-24 | 가상 주식 거래소 (StockMarketView) | 과금전환
+  문제점: 특정 종목 지분을 50% 이상 확보해도 거버넌스 권력이 없어 슈퍼 고래 유저들의 대규모 자금 투입 유인 부족.
+  개선안: 지분 51% 확보 시 배당률 2배 및 전용 골든 칭호를 독점하는 '적대적 M&A 지분 인수 레이스' 신설 및 장내 수수료 0% '골든 사모펀드 M&A 팩(3,300원)' 연동.
+  관련파일: src/views/StockMarketView.tsx, src/components/HostileTakeoverModal.tsx, src/views/ShopView.tsx
+
+[274] SCR-07-22 | 승부 예측 시장 (PredictionMarketView) | 성능
+  문제점: 골/킬 등 주요 경기 이벤트 시 실시간 승률 파형 그래프와 충격파 파티클 연산으로 60ms 렉 및 25fps 저하 발생.
+  개선안: 이벤트 데이터를 비동기 링 버퍼(Ring Buffer)로 처리하고 2D 파형 및 충격파 파티클을 WebGL 버텍스 셰이더 인스턴싱으로 60fps 무감속 렌더링 구현.
+  관련파일: src/views/PredictionMarketView.tsx, src/shaders/WaveformParticleShader.ts, src/lib/EventRingBuffer.ts
+
+[275] SCR-07-23 | 승부 예측 시장 (PredictionMarketView) | 사용성
+  문제점: 여러 경기를 묶어 고배당을 노리는 파를레이(콤보) 베팅 시 100dvh 화면에서 경기 간 이동 및 베팅 슬립 관리가 어려움.
+  개선안: 경기를 탭할 때마다 카드가 쌓이는 플로팅 '멀티 파를레이 베팅 슬립(48px)' 제공 및 위로 스와이프 시 합산 배당률이 즉시 계산/확정되는 원터치 제스처 구축.
+  관련파일: src/views/PredictionMarketView.tsx, src/components/ParlayBettingSlip.tsx, src/components/SwipeConfirmBetSheet.tsx
+
+[276] SCR-07-24 | 승부 예측 시장 (PredictionMarketView) | 과금전환
+  문제점: 경기 마감 직전 역상성 발각 등 결정적 정보가 나와도 베팅이 마감되어 수정할 수 없어 발을 구르는 상황 발생.
+  개선안: 마감 30초 카운트다운 구간에 베팅을 긴급 번복/추가하는 '골든 타임 브레이커 연장권(500원)' 및 올인 실패 시 50%를 환급하는 '올인 세이프티 번들(1,500원)' 연동.
+  관련파일: src/views/PredictionMarketView.tsx, src/components/TimeBreakerModal.tsx, src/views/ShopView.tsx
+
+[277] SCR-08-22 | 소환 & 융합 연구소 (FusionLabView) | 성능
+  문제점: 결과 카드 등장 시 초고해상도 홀로그램 셰이더 및 노멀맵 실시간 조명 계산으로 30ms 이상 병목 및 20fps 끊김 발생.
+  개선안: 노멀맵과 반사 텍스처를 압축 밉맵 포맷으로 최적화하고 광원 각도를 버텍스에서 보간하여 픽셀 셰이더 부하를 80% 줄이는 60fps 엔진 구현.
+  관련파일: src/views/FusionLabView.tsx, src/shaders/HoloFoilLightingShader.ts, src/lib/NormalMipmapOptimizer.ts
+
+[278] SCR-08-23 | 소환 & 융합 연구소 (FusionLabView) | 사용성
+  문제점: 재료 선택 시 고레벨 카드를 실수로 투입할 위험이 있고 목록에서 즉시 잠금을 걸거나 해제하는 원터치 조작 부재.
+  개선안: 재료 롱터치 시 햅틱과 함께 황금 자물쇠가 잠기는 '인스턴트 락(Lock) 토글' 및 고레벨 선택 시 붉은 파동으로 경고하는 '가치 보존 세이프티 가드(48px)' 구축.
+  관련파일: src/views/FusionLabView.tsx, src/components/InstantMaterialLock.tsx, src/components/ValueSafetyGuardAlert.tsx
+
+[279] SCR-08-24 | 소환 & 융합 연구소 (FusionLabView) | 과금전환
+  문제점: 융합 진화 시 기존 스킬 세트가 고정되어 파격적인 커스텀 스킬 빌드를 시도할 수 있는 도파민 기전 부재.
+  개선안: 융합 완료 시 10% 확률로 히든 패시브가 부여되는 '돌연변이 스킬 룰렛' 발동 및 출현율을 100% 확정해주는 '고대 연금술사의 각성 축복 앰플(1,200원)' 연동.
+  관련파일: src/views/FusionLabView.tsx, src/components/MutantSkillRouletteModal.tsx, src/views/ShopView.tsx
+
+[280] SCR-09-22 | 길드 & 소셜 하우스 (GuildHouseView) | 성능
+  문제점: 아지트 내 10개 이상 상호작용 가구 배치 시 다중 인원 충돌 연산으로 70ms 렌더 락 및 25fps 저하 발생.
+  개선안: 가구 충돌/물리 연산을 Web Worker 기반 BVH 트리로 분리하고 SharedArrayBuffer로 무복사 직결하는 60fps 상호작용 물리 파이프라인 구현.
+  관련파일: src/views/GuildHouseView.tsx, src/workers/FurniturePhysicsWorker.ts, src/lib/BvhSpatialIndex.ts
+
+[281] SCR-09-23 | 길드 & 소셜 하우스 (GuildHouseView) | 사용성
+  문제점: 길드 공지나 레이드 출참 투표 시 긴 텍스트와 팝업 탐색으로 100dvh에서 접근성이 떨어지고 참여율 저조.
+  개선안: 100dvh 상단 15초 음성 브리핑 '스마트 오디오 공지' 배치 및 좌우 스와이프로 1초 만에 의사를 표명하는 '틴더형 1-Tap 투표 바텀시트(48px)' 구축.
+  관련파일: src/views/GuildHouseView.tsx, src/components/GuildAudioNoticePlayer.tsx, src/components/SwipeVoteBottomSheet.tsx
+
+[282] SCR-09-24 | 길드 & 소셜 하우스 (GuildHouseView) | 과금전환
+  문제점: 길드원 전체가 매일 함께 돌보며 성장시키는 마스코트(길드 펫)가 없어 일상적인 방문 및 협동 동기 부족.
+  개선안: 매일 먹이를 주면 전원에게 다이아를 물어오는 '길드 아기 신수' 시스템 신설 및 즉시 최종 신수로 진화시키는 '신수의 골든 성수 펀딩팩(1,500원)' 연동.
+  관련파일: src/views/GuildHouseView.tsx, src/components/GuildGuardianPetModal.tsx, src/views/ShopView.tsx
+
+[283] SCR-10-22 | 랭킹 & 명예의 전당 (LeaderboardView) | 성능
+  문제점: 역대 우승자 3D 트로피 룸 진입 시 수만 폴리곤 메시 및 실시간 반사광 계산으로 70ms 지연 및 20fps 급락 발생.
+  개선안: 트로피 3D 지오메트리 연산 및 뎁스 프리패스를 Web Worker로 분리하고 반사 텍스처를 큐브맵 인라인 캐시로 사전 로딩하는 60fps 쇼케이스 파이프라인 구축.
+  관련파일: src/views/LeaderboardView.tsx, src/components/HallOfFame3DShowcase.tsx, src/workers/TrophyGeometryWorker.ts
+
+[284] SCR-10-23 | 랭킹 & 명예의 전당 (LeaderboardView) | 사용성
+  문제점: 랭커 탭 시 단순 승률 숫자만 보여 내 전력(평균 턴수, 속성별 승률 등)과의 세부 격차 분석 불가.
+  개선안: 랭커 탭 시 내 최근 20전 지표와 랭커 지표를 오버레이해 5각형 차트로 대조하는 '스마트 전력 레이더 바텀시트' 및 48px '원터치 벤치마킹 버튼' 구축.
+  관련파일: src/views/LeaderboardView.tsx, src/components/RadarSpecCompareSheet.tsx, src/components/BenchmarkAnalysisButton.tsx
+
+[285] SCR-10-24 | 랭킹 & 명예의 전당 (LeaderboardView) | 과금전환
+  문제점: 시즌 종료 후 챔피언 탄생 순간이 정적 공지로만 전달되어 전 서버 축제 분위기가 부족하고 일반 유저 축하 혜택 부재.
+  개선안: 시즌 1위 확정 즉시 전 서버에 황금 폭죽이 터지는 '챔피언 축하 페스티벌' 개방 및 챔피언 시그니처 카드가 포함된 '시즌 챔피언 헌정 팩(1,500원)' 연동.
+  관련파일: src/views/LeaderboardView.tsx, src/components/ChampionFestivalModal.tsx, src/views/ShopView.tsx
+
+[286] SCR-11-22 | 퀘스트 & 업적 센터 (QuestAchievementView) | 성능
+  문제점: 인게임 중 다중 퀘스트 동시 달성 시 여러 DOM 토스트 팝업의 연속 마운트로 60ms 렌더 락 및 프레임 드랍 발생.
+  개선안: 알림 팝업 요청을 Web Worker 우선순위 큐로 관리하고 상단 경량 2D Canvas 오버레이 HUD로 단일 드로우 콜 내에 슬라이딩하는 60fps 알림 엔진 구현.
+  관련파일: src/views/QuestAchievementView.tsx, src/workers/NotificationQueueWorker.ts, src/components/QuestToastCanvasHUD.tsx
+
+[287] SCR-11-23 | 퀘스트 & 업적 센터 (QuestAchievementView) | 사용성
+  문제점: 퀘스트 완료 및 보상 수령 후 다음 퀘스트 수행을 위해 퀘스트 센터로 반복 왕복해야 해 모바일 동선 피로도 누적.
+  개선안: 100dvh 하단에 다음 추천 퀘스트 바로가기와 보상 수령을 통합한 '1-Tap 연속 체인 점프 독(Chain Jump Dock, 48px)'을 상시 제공하는 원핸드 UX 구축.
+  관련파일: src/views/QuestAchievementView.tsx, src/components/ChainJumpDock.tsx, src/lib/QuestChainNavigator.ts
+
+[288] SCR-11-24 | 퀘스트 & 업적 센터 (QuestAchievementView) | 과금전환
+  문제점: 주간 퀘스트 완료 시 고정된 기본 상자만 주어져 올클리어 직후의 보상 기대감과 도파민 피크가 약함.
+  개선안: 주간 100% 달성 시 레버를 당겨 최대 777배 다이아를 노리는 '골든 스타 슬롯머신' 신설 및 잭팟 확률 3배 '주간 럭키 올패스 부스터(1,200원)' 연동.
+  관련파일: src/views/QuestAchievementView.tsx, src/components/GoldenStarSlotModal.tsx, src/views/ShopView.tsx
+
+[289] SCR-12-22 | 환경설정 & 계정/보상 센터 (SettingRewardView) | 성능
+  문제점: 로컬 저장 데이터 암호화 시 순수 JS 연산 병목으로 80ms 이상 메인 스레드 락 및 설정 화면 렌더 렉 발생.
+  개선안: 브라우저 네이티브 SubtleCrypto(Web Crypto API) 하드웨어 가속을 비동기 워커로 연동해 AES-GCM 256비트 암호화를 2ms 내 처리하는 60fps 엔진 구현.
+  관련파일: src/views/SettingRewardView.tsx, src/lib/WebCryptoVault.ts, src/workers/DataEncryptionWorker.ts
+
+[290] SCR-12-23 | 환경설정 & 계정/보상 센터 (SettingRewardView) | 사용성
+  문제점: 그래픽 옵션이 상/중/하 3단계로만 제한되어 파티클/텍스처/반사 효과를 개별 조율하려는 모바일 유저의 타협점 세팅 불가.
+  개선안: 파티클/텍스처/포일/블룸' 4개 항목을 5단계로 실시간 조절하는 48px '비주얼 매트릭스 슬라이더' 및 프레임 변화를 보여주는 미니 프리뷰 UX 구축.
+  관련파일: src/views/SettingRewardView.tsx, src/components/VisualMatrixSliderPanel.tsx, src/components/VisualEffectMiniPreview.tsx
+
+[291] SCR-12-24 | 환경설정 & 계정/보상 센터 (SettingRewardView) | 과금전환
+  문제점: 2단계 보안 인증이 번거롭게 인식되어 연동률이 저조하며, 해킹/분실 시 계정 복구를 위한 프리미엄 안심 서비스 부재.
+  개선안: 2단계 인증(2FA) 연동 시 '사이버 보안관 테두리 + 1,000 다이아' 즉시 증정 및 계정 분실 시 30일 내 1-클릭 복구 보장 '세이프티 케어 패스(990원)' 연동.
+  관련파일: src/views/SettingRewardView.tsx, src/components/TwoFactorAuthModal.tsx, src/views/ShopView.tsx
+
+[292] SCR-01-25 | 메인 로비 & 홈 (HomeView) | 성능
+  문제점: 로비 상단 롤링 공지 티커 갱신 시 DOM 리플로우(Reflow)로 30ms 이상 지연 및 35~45fps 프레임 출렁임 발생.
+  개선안: 공지 텍스트를 Canvas 비트맵으로 사전 베이킹하고 WebGL 버텍스 셰이더 UV 오프셋 이동으로 처리해 DOM 조작 없는 60fps 무감속 롤링 엔진 구현.
+  관련파일: src/views/HomeView.tsx, src/components/TickerCanvasScroller.tsx, src/shaders/TextUvScrollShader.ts
+
+[293] SCR-01-26 | 메인 로비 & 홈 (HomeView) | 사용성
+  문제점: 로비 캐릭터 터치 시 일방향 대사만 나와 유저 감정 전달 피드백이 부재하고 터치 손맛 제한적.
+  개선안: 캐릭터 롱프레스 시 5가지 감정(응원, 쓰다듬기, 하트 등)이 펼쳐지는 '원터치 햅틱 감정표현 링(48px)' 및 캐릭터 맞춤 반응 모션/홍조 파티클 UX 구현.
+  관련파일: src/views/HomeView.tsx, src/components/CharacterEmotionWheel.tsx, src/components/CharacterReactionMotion.tsx
+
+[294] SCR-01-27 | 메인 로비 & 홈 (HomeView) | 과금전환
+  문제점: 주말/기념일 저녁 시간대에 유저들이 로비에서 축제 분위기를 공유하고 즐길 시각적 이벤트 및 소셜 과금 모델 부재.
+  개선안: 주말 저녁 하늘에 폭죽을 쏘아 올리는 '골든 불꽃놀이 발사대' 신설 및 닉네임 불꽃과 전원 골드 +25% 버프를 부여하는 '명예의 축제 폭죽 팩(990원)' 연동.
+  관련파일: src/views/HomeView.tsx, src/components/FireworksLauncherModal.tsx, src/views/ShopView.tsx
+
+[295] SCR-02-25 | 배틀 아레나 (PlayGameView) | 성능
+  문제점: 10턴 이상 장기전 시 수십 건의 행동 로그 DOM 누적으로 턴 전환 시마다 60ms 렌더 렉 및 25fps 저하 발생.
+  개선안: 로그 텍스트 기록과 직렬화를 Web Worker 링 버퍼로 격리하고 미니 로그 창을 2D Canvas 비트맵 폰트 롤링 파이프라인으로 전환하여 60fps 무감속 연출 구현.
+  관련파일: src/views/PlayGameView.tsx, src/workers/BattleLogWorker.ts, src/components/BattleLogCanvasScroller.tsx
+
+[296] SCR-02-26 | 배틀 아레나 (PlayGameView) | 사용성
+  문제점: 필드에 5장 카드가 배치된 중후반부에서 공격 대상을 개별 드래그하는 조작이 30초 제한 시간 내에 조작 피로도 극심.
+  개선안: 화면 롱프레스 시 열리는 48px '원터치 총공격/점사 래디얼 커맨더 휠' 및 1턴간 최적 행동을 대행하는 '스마트 오토 브레인 핫키' 구축.
+  관련파일: src/views/PlayGameView.tsx, src/components/RadialCommanderWheel.tsx, src/components/SmartAutoTurnButton.tsx
+
+[297] SCR-02-27 | 배틀 아레나 (PlayGameView) | 과금전환
+  문제점: 승리 보상이 정형화된 점수와 소량 골드에 그쳐 반복 플레이 시 지루하며 승리 순간 성취감을 강화할 보상 증폭 기전 부재.
+  개선안: 승리 즉시 황금 슬롯이 회전해 보상 상자를 추가 드랍하는 '승리의 럭키 드랍' 연출 및 카드 파편/골드 3배 수령 '배틀 익스프레스 패스(700원)' 연동.
+  관련파일: src/views/PlayGameView.tsx, src/components/VictoryLuckyDropModal.tsx, src/views/ShopView.tsx
+
+[298] SCR-03-25 | 마이덱 & 카드 관리 (MyDeckView) | 성능
+  문제점: 덱 구성 공유 시 500자 이상 긴 JSON 문자열로 메신저 링크 깨짐 및 역직렬화 시 40ms 파싱 렉 발생.
+  개선안: 16바이트 압축 바이너리 바이트스트림을 인코딩하는 초경량 Base64URL WASM 코덱을 구축해 25자 단축 코드로 변환하고 0.1ms 내 로딩하는 60fps 파이프라인 구현.
+  관련파일: src/views/MyDeckView.tsx, src/wasm/DeckByteEncoder.wasm, src/lib/DeckCodeCompressor.ts
+
+[299] SCR-03-26 | 마이덱 & 카드 관리 (MyDeckView) | 사용성
+  문제점: 5장 덱의 5대 상성 속성 간 상호작용 및 방어 취약점이 한눈에 보이지 않아 100dvh 화면에서 덱 불균형 인지 불가.
+  개선안: 상단에 5개 속성 노드가 실시간 연결되는 '매직 서클 상성 다이어그램(48px 탭)' 및 취약점 발생 시 붉은 펄스 경고와 대체 카드를 제안하는 인스펙터 UX 구축.
+  관련파일: src/views/MyDeckView.tsx, src/components/MagicCircleSynergyVisualizer.tsx, src/components/DeckWeaknessInspector.tsx
+
+[300] SCR-03-27 | 마이덱 & 카드 관리 (MyDeckView) | 과금전환
+  문제점: 카드 진화 시 단순 수치만 표기되어 진화의 궁극적 도파민 쾌감이 부족하고 진화 직후 재료 부족으로 성장 정체 발생.
+  개선안: 진화 성공 시 전용 오라가 폭발하는 '진화의 제단 풀스크린 시네마틱 컷인' 연출 및 진화 직후 30분 한정 '신화 각성 축하 점핑 팩(1,500원)' 플래시 세일 연동.
+  관련파일: src/views/MyDeckView.tsx, src/components/AwakeningAltarCinematic.tsx, src/views/ShopView.tsx
+
+[301] SCR-04-25 | 상점 & 가챠 (ShopView) | 성능
+  문제점: 소환 응답 수신 후 10장 카드 메타데이터 및 마일리지 계산 병목으로 60ms 이상 UI 블로킹 및 연출 시작 지연 발생.
+  개선안: 결과 검증 및 전처리 연산을 Web Worker로 오프로딩하고 FlatBuffer 형태로 메인 스레드에 전달해 0ms 딜레이로 연출과 직결되는 파이프라인 구현.
+  관련파일: src/views/ShopView.tsx, src/workers/GachaPayloadWorker.ts, src/lib/GachaFlatBufferBridge.ts
+
+[302] SCR-04-26 | 상점 & 가챠 (ShopView) | 사용성
+  문제점: 10장 개봉 결과 화면에서 SSR/신규 카드 식별이 어렵고, 연속 소환 진행 시 상점 메인으로 돌아가야 해 동선 단절 발생.
+  개선안: SSR만 보기/신규만 보기' 펄스 필터 칩(44px)으로 비대상 카드 딤 처리 및 하단 Thumb Zone에 0.1초 만에 다음 10연차를 실행하는 '1-Tap 리롤 앵커 독(48px)' 구축.
+  관련파일: src/views/ShopView.tsx, src/components/GachaResultFilterChips.tsx, src/components/QuickReRollAnchorDock.tsx
+
+[303] SCR-04-27 | 상점 & 가챠 (ShopView) | 과금전환
+  문제점: SSR 2장 이상 초대박 소환 시에도 단순 전광판 알림에 그쳐 전 서버 축하 연대감과 추가 과금 자극 효과 미미.
+  개선안: SSR 2장 이상 시 전 서버에 10분간 황금비가 내리며 무료 다이아 복주머니를 선물하는 소셜 이벤트 도입 및 당첨자 전용 '잭팟 기념 슈퍼 리치 팩(2,200원)' 연동.
+  관련파일: src/views/ShopView.tsx, src/components/SuperJackpotGoldenShower.tsx, src/views/ShopView.tsx
+
+[304] SCR-05-25 | 카드 마켓플레이스 (CardMarketplaceView) | 성능
+  문제점: 마켓플레이스 실시간 시세 변동 및 수백 건의 등록 매물 목록을 WebSocket 브로드캐스트로 갱신할 때, 각 매물 카드의 렌더링 재계산과 DOM 패치로 인해 초당 프레임이 35fps까지 급락하고 스크롤 스터터링(stuttering) 발생.
+  개선안: WebSocket 수신 메시지 디바운싱(Debouncing 100ms) 및 Virtual Windowing 리스트 렌더러에 Delta Patching 기법을 적용하여 변경된 호가/수량 필드만 부분 업데이트(requestAnimationFrame 기반 배치 패치).
+  관련파일: src/views/CardMarketplaceView.tsx, src/components/MarketplaceVirtualList.tsx, src/services/MarketplaceSocketManager.ts
+
+[305] SCR-05-26 | 카드 마켓플레이스 (CardMarketplaceView) | 사용성
+  문제점: 모바일 100dvh 환경에서 매물 검색 및 필터링 시 복잡한 다중 드롭다운(속성, 등급, 가격대, 정렬)이 화면의 절반 이상을 가려 매물 비교 탐색이 불편하고, 한 손 터치 조작 범위(Thumb Zone)를 벗어남.
+  개선안: 하단 스와이프업 바텀시트 형태의 '원터치 스마트 필터 독(48px 터치 타깃)' 구축, 선택 빈도가 높은 '즉시 구매 가능 / 최근 7일 최저가' 원클릭 토글 칩 제공 및 매물 카드 좌우 스와이프 즉시 비교 모드 도입.
+  관련파일: src/views/CardMarketplaceView.tsx, src/components/MarketplaceFilterBottomSheet.tsx, src/components/MarketplaceSwipeComparator.tsx
+
+[306] SCR-05-27 | 카드 마켓플레이스 (CardMarketplaceView) | 과금전환
+  문제점: 단순 지정가 매매 방식에만 의존하여 유저 간의 거래 흥미도가 낮고, 시세보다 저렴한 급매물이 등록되어도 실시간 알림이나 경합 요소가 없어 거래 회전율 및 수수료 소모(재화 소진)가 정체됨.
+  개선안: 30분 카운트다운 제한시간 동안 실시간 호가 경쟁이 붙는 '플래시 블라인드/오픈 경매장(Flash Auction)' 시스템 도입 및 낙찰 시 축하 팡파르 연출 + 출품자/구매자 양측에 마켓 마일리지 리워드 지급.
+  관련파일: src/views/CardMarketplaceView.tsx, src/components/FlashAuctionCard.tsx, src/services/AuctionContractService.ts
+

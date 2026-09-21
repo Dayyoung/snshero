@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   TrendingUp, TrendingDown, RefreshCw, ShoppingCart,
@@ -11,6 +11,11 @@ import { CARD_DATABASE } from '../cardDatabase';
 import { t } from '../lib/i18n';
 import { cn } from '../lib/utils';
 import { PageHeader } from '../components/PageHeader';
+import { StockLeverageModal } from '../components/StockLeverageModal';
+import { TimeSeriesRingBuffer } from '../lib/TimeSeriesRingBuffer';
+import { RapidSplitTradeBar } from '../components/RapidSplitTradeBar';
+import { HapticTradeFeedback } from '../components/HapticTradeFeedback';
+import { IpoSubscriptionModal } from '../components/IpoSubscriptionModal';
 
 interface StockMarketViewProps {
   language: Language;
@@ -83,6 +88,7 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
   playSfx,
   inventory,
   addCard,
+  updateInventoryDirectly,
   setView,
   user,
   syncUserData,
@@ -101,6 +107,21 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
 
   // SCR-06: Mobile sub tab navigation ('market' | 'portfolio' | 'dividends' | 'volume')
   const [activeSubTab, setActiveSubTab] = useState<'market' | 'portfolio' | 'dividends' | 'volume'>('market');
+
+  // SCR-06-13: TimeSeries Ring Buffer instance (Zero-Allocation O(1) 틱 링 버퍼)
+  const ringBufferRef = useRef<TimeSeriesRingBuffer>(new TimeSeriesRingBuffer(500));
+
+  // SCR-06-14: Rapid Split Trade feedback state
+  const [rapidTradeFeedback, setRapidTradeFeedback] = useState<{
+    type: 'buy' | 'sell';
+    portion: number;
+    shares: number;
+    price: number;
+    symbol: string;
+  } | null>(null);
+
+  // SCR-06-15: IPO Subscription Modal State
+  const [isIpoModalOpen, setIsIpoModalOpen] = useState<boolean>(false);
 
   // SCR-06: First trade welcome bonus (+30 SNS)
   const [hasClaimedFirstTradeBonus, setHasClaimedFirstTradeBonus] = useState<boolean>(() => {
@@ -132,6 +153,9 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
 
   // ID 488: Slippage Tolerance State (0.5%, 1%, 2%)
   const [slippage, setSlippage] = useState<0.5 | 1 | 2>(1);
+
+  // SCR-06-11: High-Risk Leverage Trading (2x~10x Long/Short) Modal
+  const [isLeverageModalOpen, setIsLeverageModalOpen] = useState(false);
 
   // ID 568: 일일 거래량 마일스톤 & 15% 수수료 페이백 금고
   const todayStr = new Date().toISOString().slice(0, 10);
@@ -703,6 +727,51 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
               <span>{language === 'ko' ? '거래량 미션' : 'Milestone'}</span>
             </div>
             <span className="text-[9px] opacity-80 font-bold">{dailyVolume >= 1000 ? 'HOT' : `${Math.round(dailyVolume/1000)}k`}</span>
+          </button>
+        </div>
+
+        {/* SCR-06-11: 2x~10x High-Risk Leverage Trading Banner */}
+        <div className="p-3 bg-gradient-to-r from-purple-900 via-indigo-900 to-slate-900 border border-purple-500/40 rounded-none text-white flex items-center justify-between shadow-xs select-none">
+          <div className="space-y-0.5">
+            <div className="text-xs font-mono font-black text-amber-400 flex items-center gap-1.5">
+              <Sparkles size={14} className="text-amber-400 animate-spin" />
+              <span>[ ⚡ 2x ~ 10x 레버리지 트레이딩 ]</span>
+            </div>
+            <p className="text-[10px] text-purple-200">
+              {language === 'ko' ? '초단타 롱/숏 포지션 진입 및 실시간 증거금 청산 엔진' : 'High-risk margin trading with 2x~10x Long/Short contracts.'}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic('medium');
+              setIsLeverageModalOpen(true);
+            }}
+            className="px-3 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-mono font-black text-xs uppercase tracking-tight rounded-sm active:scale-95 transition-all cursor-pointer shrink-0 shadow-sm"
+          >
+            {language === 'ko' ? '[ 포지션 진입 ]' : '[ TRADE NOW ]'}
+          </button>
+        </div>
+
+        {/* SCR-06-15: IPO 청약 페스티벌 배너 */}
+        <div className="p-3 bg-gradient-to-r from-amber-950 via-slate-900 to-indigo-950 border border-amber-500/50 rounded-none text-white flex items-center justify-between shadow-xs select-none">
+          <div className="space-y-0.5">
+            <div className="text-xs font-mono font-black text-amber-300 flex items-center gap-1.5">
+              <span>🎉 [ 3일 한정 신규 캐릭터 IPO 청약 페스티벌 ]</span>
+            </div>
+            <p className="text-[10px] text-amber-200/80">
+              {language === 'ko' ? '공모가 120 SNS 확정 청약 및 골든 5배 우대 프리미엄 팩' : 'IPO Subscription at 120 SNS & 5x Golden Allotment Pass'}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic('medium');
+              setIsIpoModalOpen(true);
+            }}
+            className="px-3 py-2 bg-gradient-to-r from-amber-500 to-yellow-400 hover:brightness-110 text-slate-950 font-mono font-black text-xs uppercase tracking-tight rounded-sm active:scale-95 transition-all cursor-pointer shrink-0 shadow-sm"
+          >
+            {language === 'ko' ? '[ 청약 신청 ]' : '[ SUBSCRIBE ]'}
           </button>
         </div>
 
@@ -1350,6 +1419,53 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                   </div>
                 )}
 
+                {/* SCR-06-14: 래피드 스플릿 4분할 즉시 체결 바 (48px 노-컨펌) */}
+                <RapidSplitTradeBar
+                  currentPrice={getCardSnsPrice(selectedCardId)}
+                  availableSns={sns}
+                  holdingShares={inventory[selectedCardId]?.quantity || 0}
+                  language={language}
+                  onExecuteTrade={(type, portion, shares) => {
+                    const price = getCardSnsPrice(selectedCardId);
+                    const totalSns = price * shares;
+                    if (type === 'buy') {
+                      if (sns < totalSns) {
+                        setAlertMsg({ type: 'error', text: t('insufficient_sns', language) });
+                        return;
+                      }
+                      updateSns(-totalSns, `[래피드 스플릿 매수] ${getCardCoinPair(selectedCardId).symbol} ${shares}주`);
+                      addCard(CARD_DATABASE[selectedCardId]?.rarity as any, selectedCardId, true);
+                    } else {
+                      if ((inventory[selectedCardId]?.quantity || 0) < shares) {
+                        setAlertMsg({ type: 'error', text: language === 'ko' ? '보유 수량이 부족합니다.' : 'Insufficient shares.' });
+                        return;
+                      }
+                      updateSns(totalSns, `[래피드 스플릿 매도] ${getCardCoinPair(selectedCardId).symbol} ${shares}주`);
+                      if (updateInventoryDirectly) {
+                        const updated = { ...inventory };
+                        if (updated[selectedCardId]) {
+                          updated[selectedCardId] = {
+                            ...updated[selectedCardId],
+                            quantity: updated[selectedCardId].quantity - shares,
+                          };
+                          updateInventoryDirectly(updated);
+                        }
+                      }
+                    }
+
+                    // 링 버퍼에 O(1) 틱 추가 (SCR-06-13)
+                    ringBufferRef.current.push(Date.now(), price, price * 1.02, price * 0.98, price, shares);
+
+                    setRapidTradeFeedback({
+                      type,
+                      portion,
+                      shares,
+                      price,
+                      symbol: getCardCoinPair(selectedCardId).symbol,
+                    });
+                  }}
+                />
+
                 {/* Final transaction execution button */}
                 <button
                   onClick={handleTrade}
@@ -1521,6 +1637,53 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* SCR-06-11: High-Risk Leverage Trading Modal */}
+      <StockLeverageModal
+        isOpen={isLeverageModalOpen}
+        onClose={() => setIsLeverageModalOpen(false)}
+        userSns={sns}
+        onExecuteOrder={(position) => {
+          updateSns(-position.margin, 'leverage_margin_lock');
+          triggerHaptic('heavy');
+          playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+        }}
+        onSettlePosition={(pnl) => {
+          updateSns(pnl, 'leverage_pnl_settle');
+          triggerHaptic(pnl >= 0 ? 'heavy' : 'light');
+        }}
+      />
+
+      {/* SCR-06-14: Haptic Rapid Split Trade Feedback Toast */}
+      <HapticTradeFeedback
+        trade={rapidTradeFeedback}
+        onDismiss={() => setRapidTradeFeedback(null)}
+        language={language}
+      />
+
+      {/* SCR-06-15: IPO Subscription Festival Modal */}
+      <IpoSubscriptionModal
+        isOpen={isIpoModalOpen}
+        onClose={() => setIsIpoModalOpen(false)}
+        userSns={sns}
+        language={language}
+        onSubscribe={(shares, isPremium) => {
+          const totalCost = shares * 120;
+          if (sns < totalCost) {
+            setAlertMsg({ type: 'error', text: t('insufficient_sns', language) });
+            return;
+          }
+          updateSns(-totalCost, `[IPO 청약 신청] #042 성검의 계승자 아르카 ${shares}주${isPremium ? ' (골든 프리미엄 우대)' : ''}`);
+          triggerHaptic('heavy');
+          playSfx('https://assets.mixkit.co/active_storage/sfx/2020/2020-preview.mp3');
+          setAlertMsg({
+            type: 'success',
+            text: language === 'ko'
+              ? `🎉 [IPO 청약 완료] #042 아르카 ${shares}주 청약 신청 접수 완료! (경쟁률 42.8:1)`
+              : `🎉 [IPO Subscribed] Applied for ${shares} shares of #042 Arca!`,
+          });
+        }}
+      />
 
     </div>
   );

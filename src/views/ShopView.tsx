@@ -35,6 +35,14 @@ import { getGoodsSnsCost, getSpendShortfall, SNS_ECONOMY_COSTS } from '../conten
 import { useRefundRequests } from '../hooks/useRefundRequests';
 import { TokenExchangeModal } from '../components/TokenExchangeModal';
 import { ShortfallGuideModal } from '../components/ShortfallGuideModal';
+import { FirstPurchaseDoubleBonusModal } from '../components/FirstPurchaseDoubleBonusModal';
+import { HorizontalProductCarousel, ShopCategory } from '../components/HorizontalProductCarousel';
+import { QuickBundleCartDock, CartItem } from '../components/QuickBundleCartDock';
+import { FateChoiceModal, FateBuff } from '../components/FateChoiceModal';
+import { GachaPhysicsScatterCanvas } from '../components/GachaPhysicsScatterCanvas';
+import { PinchFlipCardScatter } from '../components/PinchFlipCardScatter';
+import { QuickKeepBottomSheet } from '../components/QuickKeepBottomSheet';
+import { GoldenEggFestivalModal } from '../components/GoldenEggFestivalModal';
 import { ArrowDownUp } from 'lucide-react';
 
 interface ShopViewProps {
@@ -350,6 +358,24 @@ export const ShopView: React.FC<ShopViewProps> = ({
   
   // Row 1050 / ID 313: Token Swap & Slippage Exchange Modal
   const [isTokenExchangeOpen, setIsTokenExchangeOpen] = useState(false);
+
+  // SCR-04-12: First Purchase 1+1 Double Bonus Modal State
+  const [isFirstPurchaseModalOpen, setIsFirstPurchaseModalOpen] = useState(false);
+  const [hasUsedFirstPurchase, setHasUsedFirstPurchase] = useState(() => localStorage.getItem('hero_first_purchase_used') === 'true');
+
+  // SCR-04-14: 상점 카테고리 수평 캐러셀 & 1-Tap 스마트 번들 장바구니
+  const [shopCategory, setShopCategory] = useState<string>('all');
+  const [bundleCart, setBundleCart] = useState<CartItem[]>([]);
+
+  // SCR-04-15: 운명 선택의 갈림길 모달
+  const [isFateChoiceOpen, setIsFateChoiceOpen] = useState<boolean>(false);
+  const [pending10xPack, setPending10xPack] = useState<{ count: number; packType: any } | null>(null);
+
+  // SCR-04-17 & SCR-04-18: 퀵 킵 바텀시트 & 황금 알 페스티벌
+  const [isQuickKeepOpen, setIsQuickKeepOpen] = useState(false);
+  const [isGoldenEggModalOpen, setIsGoldenEggModalOpen] = useState(false);
+  const [eggGauge, setEggGauge] = useState(84);
+  const [isEggFeverActive, setIsEggFeverActive] = useState(false);
 
   // ID 393: 재화 부족 무료 파밍 안내 숏컷 모달 상태
   const [isShortfallModalOpen, setIsShortfallModalOpen] = useState(false);
@@ -2606,6 +2632,22 @@ export const ShopView: React.FC<ShopViewProps> = ({
               </button>
             </div>
           </div>
+
+          {/* SCR-04-14: 100dvh 상단 수평 스와이프 스냅 카테고리 캐러셀 */}
+          <div className="px-4 sm:px-6 md:px-8 mb-3">
+            <HorizontalProductCarousel
+              categories={[
+                { id: 'all', nameKo: '전체', nameEn: 'All', icon: '🏪' },
+                { id: 'packs', nameKo: '카드 팩', nameEn: 'Card Packs', icon: '🎴' },
+                { id: 'items', nameKo: '소모품/강화', nameEn: 'Items', icon: '🧪' },
+                { id: 'sns', nameKo: 'SNS 충전', nameEn: 'SNS Refill', icon: '💎' },
+                { id: 'deals', nameKo: '특가/패키지', nameEn: 'Special Deals', icon: '🔥' },
+              ]}
+              activeCategoryId={shopCategory}
+              onSelectCategory={setShopCategory}
+              language={language}
+            />
+          </div>
           <div className="p-4 sm:p-6 md:p-8 pt-0 sm:pt-0 md:pt-0 flex flex-col gap-6 sm:gap-8 md:gap-10 w-full max-w-full overflow-x-hidden">
 
             <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
@@ -3971,6 +4013,16 @@ export const ShopView: React.FC<ShopViewProps> = ({
               className="px-3 py-1.5 bg-white dark:bg-[#1a1717] border border-slate-200 dark:border-white/15 text-slate-700 dark:text-slate-300 hover:border-slate-400 rounded-sm shrink-0 flex items-center gap-1 active:scale-95 transition-all cursor-pointer"
             >
               <span>🔄 {language === 'ko' ? '토큰 환전' : 'Token Swap'}</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                triggerHaptic('light');
+                setIsFirstPurchaseModalOpen(true);
+              }}
+              className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 border border-amber-600 text-white font-black rounded-sm shrink-0 flex items-center gap-1 active:scale-95 transition-all cursor-pointer shadow-xs"
+            >
+              <span>🎁 {language === 'ko' ? '1+1 더블 보너스' : '1+1 Double Bonus'}</span>
             </button>
           </div>
 
@@ -5929,10 +5981,13 @@ export const ShopView: React.FC<ShopViewProps> = ({
               </span>
             </button>
 
-            {/* 10회 소환 버튼 (48px 규격, SR+ 확정 보너스 표기) */}
+            {/* 10회 소환 버튼 (48px 규격, SR+ 확정 보너스 표기 및 SCR-04-15 운명 선택 연동) */}
             <button
               type="button"
-              onClick={() => buy10xPack(10, 'bronze')}
+              onClick={() => {
+                setPending10xPack({ count: 10, packType: 'bronze' });
+                setIsFateChoiceOpen(true);
+              }}
               className="min-h-[48px] h-12 rounded-sm border border-amber-500 bg-gradient-to-r from-amber-400 to-yellow-300 hover:brightness-110 text-slate-950 font-black px-3 flex flex-col items-center justify-center text-center transition-transform active:scale-95 cursor-pointer shadow-md relative overflow-hidden"
             >
               <div className="absolute top-0 right-1 px-1.5 py-0.2 bg-slate-950 text-amber-300 text-[7px] font-black rounded-b-xs tracking-wider uppercase">
@@ -5947,6 +6002,79 @@ export const ShopView: React.FC<ShopViewProps> = ({
             </button>
           </div>
         </div>
+
+        {/* SCR-04-12: First Purchase 1+1 Double Bonus Modal */}
+        <FirstPurchaseDoubleBonusModal
+          isOpen={isFirstPurchaseModalOpen}
+          onClose={() => setIsFirstPurchaseModalOpen(false)}
+          hasUsedFirstPurchase={hasUsedFirstPurchase}
+          onPurchase={() => {
+            updateSns(2000, 'first_purchase_double_bonus', 'purchased');
+            setHasUsedFirstPurchase(true);
+            try {
+              localStorage.setItem('hero_first_purchase_used', 'true');
+            } catch {}
+            triggerHaptic('heavy');
+            playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+          }}
+        />
+
+        {/* SCR-04-14: 1-Tap Quick Bundle Cart Dock */}
+        <QuickBundleCartDock
+          items={bundleCart}
+          onRemoveItem={(id) => setBundleCart(prev => prev.filter(item => item.id !== id))}
+          onClear={() => setBundleCart([])}
+          onCheckout={() => {
+            const total = bundleCart.reduce((sum, item) => sum + item.priceSns, 0);
+            updateSns(-total, 'bundle_cart_checkout', 'purchased');
+            setBundleCart([]);
+            triggerHaptic('heavy');
+          }}
+          language={language}
+          userSns={sns}
+        />
+
+        {/* SCR-04-15: 운명 선택의 갈림길 모달 */}
+        <FateChoiceModal
+          isOpen={isFateChoiceOpen}
+          onClose={() => setIsFateChoiceOpen(false)}
+          language={language}
+          onSelectFate={(buff) => {
+            if (pending10xPack) {
+              buy10xPack(pending10xPack.count, pending10xPack.packType);
+              setPending10xPack(null);
+            } else {
+              buy10xPack(10, 'bronze');
+            }
+          }}
+        />
+
+        {/* SCR-04-17: 소환 결과 퀵 킵 바텀시트 */}
+        <QuickKeepBottomSheet
+          isOpen={isQuickKeepOpen}
+          onClose={() => setIsQuickKeepOpen(false)}
+          selectedCards={[
+            { id: 1, name: '성스러운 기사', rarity: 'SSR' },
+            { id: 2, name: '아케인 메이지', rarity: 'SR' },
+          ]}
+          onKeepToDeck={(cardId) => {
+            triggerHaptic('success');
+            setIsQuickKeepOpen(false);
+          }}
+        />
+
+        {/* SCR-04-18: 전 서버 황금 알 페스티벌 모달 */}
+        <GoldenEggFestivalModal
+          isOpen={isGoldenEggModalOpen}
+          onClose={() => setIsGoldenEggModalOpen(false)}
+          eggGauge={eggGauge}
+          isFeverActive={isEggFeverActive}
+          feverTimeRemaining={1800}
+          onBuyFeverPack={() => {
+            updateSns(350, 'golden_egg_fever_pack', 'earned');
+            triggerHaptic('success');
+          }}
+        />
 
       </>
     </PayPalScriptProvider>

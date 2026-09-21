@@ -26,6 +26,13 @@ import { DailyMissions } from "../components/DailyMissions";
 import { DAILY_MISSIONS, loadDailyMissions, getClaimableCount, DailyMissionProgress } from "../lib/dailyMissions";
 import { HomeQuickHub } from "../components/HomeQuickHub";
 import { AfkHarvestBox } from "../components/AfkHarvestBox";
+import { GoldenGoblinEvent } from "../components/GoldenGoblinEvent";
+import { ModularWidgetDock } from "../components/ModularWidgetDock";
+import { CleanViewToggle } from "../components/CleanViewToggle";
+import { WishingFountainModal } from "../components/WishingFountainModal";
+import { FloatingSocialBubbles, OnlineFriend } from "../components/FloatingSocialBubbles";
+import { WeatherAtmosphereEffect } from "../components/WeatherAtmosphereEffect";
+import { BatterySaverManager } from "../lib/BatterySaverManager";
 import { LifecycleEngine } from "../lib/LifecycleEngine";
 import { Flame } from "lucide-react";
 
@@ -92,6 +99,13 @@ export const HomeView: React.FC<HomeViewProps> = ({
   const [isStarterPackPurchased, setIsStarterPackPurchased] = useState(() => localStorage.getItem('hero_starter_pack_purchased') === 'true');
   const [dailyMissionProgress, setDailyMissionProgress] = useState<DailyMissionProgress>(() => loadDailyMissions());
 
+  // SCR-01-17: 온라인 친구 목록
+  const [onlineFriends] = useState<OnlineFriend[]>([
+    { id: 'f1', name: '아케인기사', avatarEmoji: '⚔️', status: 'battle' },
+    { id: 'f2', name: '달빛사냥꾼', avatarEmoji: '🏹', status: 'lobby' },
+    { id: 'f3', name: '별빛소환사', avatarEmoji: '🔮', status: 'deck' },
+  ]);
+
   useEffect(() => {
     const handleStarterPackUpdate = () => {
       setIsStarterPackPurchased(localStorage.getItem('hero_starter_pack_purchased') === 'true');
@@ -149,6 +163,12 @@ export const HomeView: React.FC<HomeViewProps> = ({
     } catch {}
     return 3; // 기본값 3연승
   });
+
+  // SCR-01-14: Clean View Mode State (빈 화면 터치 시 UI 완전 숨김)
+  const [isCleanView, setIsCleanView] = useState(false);
+
+  // SCR-01-15: Wishing Fountain Modal State (소원의 분수대)
+  const [isWishingFountainOpen, setIsWishingFountainOpen] = useState(false);
 
   // SCR-01-06: Zero Background Overhead via LifecycleEngine
   useEffect(() => {
@@ -315,9 +335,41 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
 
   return (
-    <div className="flex flex-col gap-4 sm:gap-5 p-4 sm:p-6 md:p-8 pb-32 max-w-6xl mx-auto min-h-screen app-bg justify-start text-slate-800 font-sans">
+    <div className="flex flex-col gap-4 sm:gap-5 p-4 sm:p-6 md:p-8 pb-32 max-w-6xl mx-auto min-h-screen app-bg justify-start text-slate-800 font-sans relative">
+      {/* SCR-01-14: Clean View Mode Toggle */}
+      <CleanViewToggle
+        isCleanView={isCleanView}
+        onToggle={() => setIsCleanView(!isCleanView)}
+        language={language}
+      />
+
+      <div className={cn("flex flex-col gap-4 sm:gap-5 w-full transition-opacity duration-300", isCleanView && "opacity-0 pointer-events-none")}>
       {/* ── Header: Card Display + Title ── */}
       <header className="grid grid-cols-1 gap-4 sm:gap-6 items-stretch w-full pt-2">
+        {/* SCR-01-15: 소원의 분수대 데일리 인터랙션 배너 */}
+        <div className="w-full">
+          <div
+            onClick={() => {
+              triggerHaptic('medium');
+              setIsWishingFountainOpen(true);
+            }}
+            className="p-2.5 bg-gradient-to-r from-amber-500/20 via-yellow-500/20 to-emerald-500/20 border border-amber-400/60 rounded-none text-slate-900 font-mono text-xs flex items-center justify-between cursor-pointer hover:bg-amber-400/30 transition-all select-none shadow-xs"
+          >
+            <div className="flex items-center gap-2">
+              <span className="text-base">⛲</span>
+              <span className="font-black text-amber-950">
+                {language === 'ko' ? '[신비한 소원의 분수대]' : '[Mystic Wishing Fountain]'}
+              </span>
+              <span className="text-[10px] text-amber-800 hidden sm:inline">
+                {language === 'ko' ? '매일 1회 무료 동전 투척 & 대박 잭팟!' : 'Daily Free Coin Toss & Jackpots!'}
+              </span>
+            </div>
+            <span className="px-2 py-1 bg-amber-500 text-slate-950 font-black text-[10px] rounded-xs uppercase">
+              {language === 'ko' ? '동전 던지기' : 'Toss Coin'}
+            </span>
+          </div>
+        </div>
+
         {/* SCR-01-02: Top First Purchase Limited Deal Banner */}
         <div className="w-full">
           {!isStarterPackPurchased ? (
@@ -1103,6 +1155,17 @@ export const HomeView: React.FC<HomeViewProps> = ({
         }}
       />
 
+      {/* SCR-01-12: Surprise Golden Goblin Event */}
+      <GoldenGoblinEvent
+        onTapReward={(amt) => {
+          triggerHaptic('light');
+          playSfx('click');
+        }}
+        onOpenCapturePack={() => {
+          onNavigate('shop');
+        }}
+      />
+
       {/* SCR-01-01: Mobile Thumb-Zone Floating '3-Second Instant Battle' FAB */}
       <div className="fixed bottom-6 right-4 sm:bottom-8 sm:right-8 z-40 select-none">
         <button
@@ -1131,6 +1194,47 @@ export const HomeView: React.FC<HomeViewProps> = ({
           </span>
         </button>
       </div>
+      </div>
+
+      {/* SCR-01-14: 원핸드 모듈러 위젯 독 */}
+      {!isCleanView && (
+        <div className="fixed bottom-3 left-0 right-0 z-30 px-4">
+          <ModularWidgetDock language={language} onNavigate={onNavigate} />
+        </div>
+      )}
+
+      {/* SCR-01-17: 플로팅 소셜 버블 */}
+      {!isCleanView && (
+        <FloatingSocialBubbles
+          friends={onlineFriends}
+          onSelectFriend={(f) => {
+            playSfx('click');
+          }}
+          onDragFriendToBattle={(f) => {
+            playSfx('click');
+            if (onStartPlayNow) onStartPlayNow();
+            else onNavigate('game');
+          }}
+        />
+      )}
+
+      {/* SCR-01-18: 감성 우천 기상 효과 & 핫타임 */}
+      <WeatherAtmosphereEffect
+        weather="rain"
+        onBuySkinPack={() => {
+          playSfx('click');
+        }}
+      />
+
+      {/* SCR-01-15: 소원의 분수대 모달 */}
+      <WishingFountainModal
+        isOpen={isWishingFountainOpen}
+        onClose={() => setIsWishingFountainOpen(false)}
+        language={language}
+        onReward={(amt) => {
+          triggerHaptic('success');
+        }}
+      />
     </div>
   );
 };

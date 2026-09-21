@@ -58,6 +58,14 @@ import { DeckBalanceRadarChart } from '../components/DeckBalanceRadarChart';
 import { CardCompareModal } from '../components/CardCompareModal';
 import { MaterialDeficitModal } from '../components/MaterialDeficitModal';
 import { DeckCommandHub } from '../components/DeckCommandHub';
+import { AutoDeckBuilderSheet } from '../components/AutoDeckBuilderSheet';
+import { InventoryExpansionModal } from '../components/InventoryExpansionModal';
+import { CardSmartLensTooltip } from '../components/CardSmartLensTooltip';
+import { CardHoloTiltPreview } from '../components/CardHoloTiltPreview';
+import { DeckSynergyMasteryModal } from '../components/DeckSynergyMasteryModal';
+import { AiCounterDeckSheet, CounterRecommendation } from '../components/AiCounterDeckSheet';
+import { QuickDeckCloneButton } from '../components/QuickDeckCloneButton';
+import { AwakeningLive2DViewer } from '../components/AwakeningLive2DViewer';
 
 interface MyDeckViewProps {
   currentDeck: CardData[];
@@ -315,6 +323,32 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [helpStep, setHelpStep] = useState(0);
   const { isLocked } = useCardLock();
+
+  // SCR-03-11: 1-Tap Auto Deck Builder Sheet
+  const [isAutoBuilderOpen, setIsAutoBuilderOpen] = useState(false);
+
+  // SCR-03-17: AI 카운터 덱 빌더 & Live2D
+  const [isAiCounterOpen, setIsAiCounterOpen] = useState(false);
+  const [isAwakeningLive2DOpen, setIsAwakeningLive2DOpen] = useState(false);
+  const [awakeningCard, setAwakeningCard] = useState<CardData | null>(null);
+
+  // SCR-03-12: Inventory Expansion Modal & Capacity
+  const [isInventoryExpansionOpen, setIsInventoryExpansionOpen] = useState(false);
+  const [maxInventorySlots, setMaxInventorySlots] = useState(() => {
+    try {
+      const saved = localStorage.getItem('hero_max_inventory_slots');
+      return saved ? Number(saved) : 100;
+    } catch {
+      return 100;
+    }
+  });
+
+  // SCR-03-14: 1-Tap 스마트 렌즈 및 3D 홀로그램 틸트 프리뷰
+  const [smartLensInfo, setSmartLensInfo] = useState<{ title: string; desc: string; type?: 'skill' | 'rune' } | null>(null);
+  const [holoCard, setHoloCard] = useState<CardData | null>(null);
+
+  // SCR-03-15: 시너지 콤보 마스터리 모달
+  const [isSynergyMasteryOpen, setIsSynergyMasteryOpen] = useState(false);
 
   const kadanCard = CARD_DATABASE[41];
   const kadanName = kadanCard ? (language === 'ko' ? kadanCard.title : kadanCard.title_en) : 'Kadan';
@@ -1573,6 +1607,43 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
 
         </div>
         
+        {/* SCR-03-11 & SCR-03-12 & SCR-03-15: 1-Tap AI 덱 빌더 & 가방 확장 & 시너지 콤보 마스터리 */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 my-2 select-none">
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic('medium');
+              setIsAutoBuilderOpen(true);
+            }}
+            className="flex items-center justify-center gap-1.5 py-2 px-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:brightness-110 text-white font-mono font-black text-xs rounded-sm shadow-xs active:scale-98 cursor-pointer transition-all"
+          >
+            <Sparkles size={14} className="animate-spin text-yellow-200" />
+            <span>{language === 'ko' ? '[⚡ 1-Tap AI 덱]' : '[⚡ 1-Tap Deck]'}</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic('light');
+              setIsSynergyMasteryOpen(true);
+            }}
+            className="flex items-center justify-center gap-1.5 py-2 px-3 bg-indigo-900/80 hover:bg-indigo-800 text-indigo-200 font-mono font-bold text-xs rounded-sm border border-indigo-700 shadow-xs active:scale-98 cursor-pointer transition-all"
+          >
+            <Gem size={14} className="text-pink-400" />
+            <span>{language === 'ko' ? '[🔮 시너지 트리]' : '[🔮 Synergies]'}</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic('light');
+              setIsInventoryExpansionOpen(true);
+            }}
+            className="flex items-center justify-center gap-1.5 py-2 px-3 bg-[#201d1d] hover:bg-slate-800 text-white font-mono font-bold text-xs rounded-sm border border-[#201d1d] shadow-xs active:scale-98 cursor-pointer transition-all"
+          >
+            <Package size={14} className="text-amber-400" />
+            <span>{language === 'ko' ? `[🎒 가방: ${ownedCards.length}/${maxInventorySlots}]` : `[🎒 Slots: ${ownedCards.length}/${maxInventorySlots}]`}</span>
+          </button>
+        </div>
+
         {/* SCR-03: 통합 덱 커맨드 허브 (AI 편성, 인벤토리·육성, 프리셋·도구, 도감·상성) */}
         <DeckCommandHub
           language={language}
@@ -3647,6 +3718,102 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
           onNavigate('mission');
         }}
         language={language}
+      />
+
+      {/* SCR-03-11: 1-Tap Auto Deck Builder Sheet */}
+      <AutoDeckBuilderSheet
+        isOpen={isAutoBuilderOpen}
+        onClose={() => setIsAutoBuilderOpen(false)}
+        ownedCards={ownedCards}
+        currentDeck={currentDeck}
+        onApplyDeck={(newDeck) => {
+          updateDeck(newDeck);
+          triggerHaptic('heavy');
+        }}
+      />
+
+      {/* SCR-03-12: Inventory Expansion Modal */}
+      <InventoryExpansionModal
+        isOpen={isInventoryExpansionOpen}
+        onClose={() => setIsInventoryExpansionOpen(false)}
+        currentSlots={maxInventorySlots}
+        userSns={stats.sns || 0}
+        onExpand={(newCapacity) => {
+          setMaxInventorySlots(newCapacity);
+          try {
+            localStorage.setItem('hero_max_inventory_slots', String(newCapacity));
+          } catch {}
+          triggerHaptic('heavy');
+        }}
+      />
+
+      {/* SCR-03-14: 1-Tap Smart Lens Tooltip */}
+      <CardSmartLensTooltip
+        isOpen={!!smartLensInfo}
+        onClose={() => setSmartLensInfo(null)}
+        title={smartLensInfo?.title || ''}
+        description={smartLensInfo?.desc || ''}
+        type={smartLensInfo?.type}
+      />
+
+      {/* SCR-03-14: 3D Hologram Tilt Preview */}
+      <CardHoloTiltPreview
+        card={holoCard}
+        isOpen={!!holoCard}
+        onClose={() => setHoloCard(null)}
+        isInDeck={holoCard ? currentDeck.some(c => c.id === holoCard.id) : false}
+        onRegisterDeck={(c) => {
+          if (currentDeck.some(item => item.id === c.id)) {
+            updateDeck(currentDeck.filter(item => item.id !== c.id));
+          } else {
+            updateDeck([...currentDeck.slice(0, 4), c]);
+          }
+        }}
+        language={language}
+      />
+
+      {/* SCR-03-15: Deck Synergy Mastery Modal */}
+      <DeckSynergyMasteryModal
+        isOpen={isSynergyMasteryOpen}
+        onClose={() => setIsSynergyMasteryOpen(false)}
+        language={language}
+        wildcardCount={1}
+        onBuyWildcard={() => {
+          onNavigate('shop');
+        }}
+      />
+
+      {/* SCR-03-17: AI 카운터 덱 빌더 바텀시트 */}
+      <AiCounterDeckSheet
+        isOpen={isAiCounterOpen}
+        onClose={() => setIsAiCounterOpen(false)}
+        recommendations={[
+          {
+            slotIndex: 0,
+            currentCardName: currentDeck[0]?.name || '전사',
+            recommendedCardId: ownedCards[1]?.id || 2,
+            recommendedCardName: ownedCards[1]?.name || '빛의 수호자',
+            reason: '적 번개 덱 대응 상성 우위 속성',
+            winRateBoost: 18,
+          },
+        ]}
+        onApplyCounterDeck={() => {
+          if (ownedCards.length >= 5) {
+            updateDeck(ownedCards.slice(0, 5));
+          }
+        }}
+      />
+
+      {/* SCR-03-18: 5성 풀돌파 Live2D 초월 각성 뷰어 */}
+      <AwakeningLive2DViewer
+        isOpen={isAwakeningLive2DOpen}
+        onClose={() => setIsAwakeningLive2DOpen(false)}
+        cardName={awakeningCard?.name || '초월자 카단'}
+        cardImage={awakeningCard?.image || currentDeck[0]?.image || '/assets/cards/kadan.png'}
+        onBuyAwakeningPack={() => {
+          updateSns?.(300, 'awakening_celebration_pack', 'spent');
+          triggerHaptic('success');
+        }}
       />
 
     </div>

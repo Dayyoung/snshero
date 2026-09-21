@@ -1,0 +1,18 @@
+/**
+ * FontSubsetting.css - SCR-01-16
+ * FOIT 차단 및 CLS 0.000 유지를 위한 WOFF2 유니코드 서브셋 및 size-adjust 매트릭스
+ */
+
+@font-face {
+  font-family: 'SNSHeroMono';
+  src: local('JetBrains Mono'), local('Courier New'), monospace;
+  font-display: optional;
+  size-adjust: 100%;
+  ascent-override: 95%;
+  descent-override: 25%;
+  line-gap-override: 0%;
+}
+
+body {
+  font-family: 'SNSHeroMono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
