@@ -7,7 +7,6 @@ import { MinimalistMissionHUD } from './MinimalistMissionHUD';
 import { UniversalTutorialModal, TutorialStep } from './UniversalTutorialModal';
 import { VictoryRewardModal } from './VictoryRewardModal';
 import { calculateAndDepositMissionReward, RewardReceipt } from '../lib/standardizedRewardGateway';
-import { RainbowFlipEffect, triggerRainbowFlip } from './RainbowFlipEffect';
 
 interface CardFlipGameProps {
   deck: CardData[];
@@ -118,34 +117,6 @@ export const CardFlipGame: React.FC<CardFlipGameProps> = ({
 
     const nextMoves = moves + 1;
     setMoves(nextMoves);
-
-    // Calculate which tiles will flip
-    const row = Math.floor(index / size);
-    const col = index % size;
-    const flippedIndices: number[] = [index];
-    if (row > 0) flippedIndices.push(index - size);
-    if (row < size - 1) flippedIndices.push(index + size);
-    if (col > 0) flippedIndices.push(index - 1);
-    if (col < size - 1) flippedIndices.push(index + 1);
-
-    try {
-      const tileEls = document.querySelectorAll('.card-flip-tile');
-      const origins: { x: number; y: number }[] = [];
-      flippedIndices.forEach(idx => {
-        const el = tileEls[idx] as HTMLElement | undefined;
-        if (el) {
-          const r = el.getBoundingClientRect();
-          origins.push({ x: r.left + r.width / 2, y: r.top + r.height / 2 });
-        }
-      });
-      triggerRainbowFlip(
-        flippedIndices.length,
-        origins.length > 0 ? origins : undefined,
-        flippedIndices.length <= 1 ? 'Flip!' : 'Doble Flip!'
-      );
-    } catch {
-      triggerRainbowFlip(flippedIndices.length);
-    }
 
     setTiles(prev => {
       const next = prev.map(t => ({ ...t }));
@@ -289,7 +260,7 @@ export const CardFlipGame: React.FC<CardFlipGameProps> = ({
               onClick={() => toggleTile(tile.id)}
               disabled={isComplete || isPaused}
               className={cn(
-                'card-flip-tile aspect-square rounded-sm border transition-all duration-150 select-none outline-none relative overflow-hidden',
+                'aspect-square rounded-sm border transition-all duration-150 select-none outline-none relative overflow-hidden',
                 'cursor-pointer hover:opacity-90 active:scale-95 min-h-[36px]',
                 tile.active && 'border-[#201d1d] bg-[#0f0000]',
                 !tile.active && 'border-[rgba(15,0,0,0.15)] bg-[#f1eeee]',
@@ -348,9 +319,6 @@ export const CardFlipGame: React.FC<CardFlipGameProps> = ({
           onExit={onExit}
         />
       )}
-
-      {/* Rainbow Flip & Doble Flip Burst FX */}
-      <RainbowFlipEffect isFixed={true} />
     </div>
   );
 };

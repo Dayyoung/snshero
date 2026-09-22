@@ -1,11 +1,13 @@
-import React from 'react';
-import { ArrowLeft, ShoppingBag, Gift, Package, Sparkles } from 'lucide-react';
-import { Language, ViewType } from '../types';
+import React, { useEffect, useRef } from 'react';
+import { ShoppingBag, ExternalLink, RefreshCw } from 'lucide-react';
+import { PageHeader } from '../components/PageHeader';
+import { Language } from '../types';
+import { t } from '../lib/i18n';
 
-export interface MallViewProps {
+interface MallViewProps {
   language: Language;
-  onNavigate: (view: ViewType) => void;
-  playSfx: (url: string) => void;
+  onNavigate: (view: any) => void;
+  playSfx?: (url: string) => void;
 }
 
 export const MallView: React.FC<MallViewProps> = ({
@@ -13,61 +15,87 @@ export const MallView: React.FC<MallViewProps> = ({
   onNavigate,
   playSfx,
 }) => {
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  useEffect(() => {
+    const handleMallMessage = (event: MessageEvent) => {
+      if (event.data && event.data.type === 'SNSHERO_MALL_BUY') {
+        const { goodsType, quantity, size } = event.data;
+        if (playSfx) {
+          playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+        }
+        // Redirect to shop with query params
+        const qStr = new URLSearchParams({
+          goods: goodsType || 'tshirt',
+          qty: String(quantity || 1),
+          size: size || 'M',
+        }).toString();
+
+        window.history.pushState({}, '', `/shop?${qStr}`);
+        onNavigate('shop');
+      }
+    };
+
+    window.addEventListener('message', handleMallMessage);
+    return () => window.removeEventListener('message', handleMallMessage);
+  }, [onNavigate, playSfx]);
+
+  const handleRefresh = () => {
+    if (iframeRef.current) {
+      iframeRef.current.src = '/mall/index.html';
+    }
+  };
+
   return (
-    <div className="w-full max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-6 flex flex-col gap-5 text-[#201d1d]">
-      <div className="flex items-center justify-between border-b border-[rgba(15,0,0,0.12)] pb-3">
-        <button
-          onClick={() => onNavigate('home')}
-          className="flex items-center gap-1.5 text-xs font-mono border border-[rgba(15,0,0,0.15)] px-3 py-1.5 rounded-sm hover:bg-[#f1eeee] active:scale-95 cursor-pointer min-h-[36px]"
-        >
-          <ArrowLeft size={14} />
-          <span>{language === 'ko' ? '로비로 이동' : 'Back to Lobby'}</span>
-        </button>
-        <span className="font-mono font-bold text-sm sm:text-base">
-          {language === 'ko' ? '[ 공식 히어로 굿즈 몰 ]' : '[ Hero Official Goods Mall ]'}
-        </span>
-        <div className="w-16" />
+    <div className="flex flex-col h-screen w-full bg-[#fdfcfc] text-[#201d1d] overflow-hidden">
+      {/* ── Header ── */}
+      <div className="shrink-0 p-3 sm:p-4 border-b border-[rgba(15,0,0,0.12)] bg-white">
+        <PageHeader
+          title={language === 'ko' ? 'SNSHero 공식 굿즈 몰' : 'SNSHero Official Goods Mall'}
+          onBack={() => onNavigate('home')}
+          rightAction={
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={handleRefresh}
+                title="새로고침"
+                className="flex items-center gap-1 px-2.5 py-1.5 rounded-sm border border-[rgba(15,0,0,0.12)] bg-white text-xs font-bold text-[#201d1d] hover:bg-[#f8f7f7] transition cursor-pointer font-mono"
+              >
+                <RefreshCw size={13} />
+                <span className="hidden sm:inline">새로고침</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => onNavigate('shop')}
+                className="flex items-center gap-1 px-3 py-1.5 rounded-sm bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold font-mono transition cursor-pointer"
+              >
+                <ShoppingBag size={13} />
+                <span>인게임 상점</span>
+              </button>
+              <a
+                href="/mall/index.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="새 탭에서 전체화면으로 열기"
+                className="p-1.5 rounded-sm border border-[rgba(15,0,0,0.12)] bg-white text-[#201d1d] hover:bg-[#f8f7f7] transition"
+              >
+                <ExternalLink size={14} />
+              </a>
+            </div>
+          }
+        />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <div className="border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-4 rounded-none flex flex-col gap-3">
-          <div className="aspect-square bg-[#f1eeee] rounded-sm flex items-center justify-center">
-            <Package size={32} className="opacity-40" />
-          </div>
-          <div className="flex flex-col">
-            <span className="font-mono font-bold text-xs sm:text-sm">
-              {language === 'ko' ? '시즌 1 한정 아크릴 스탠드' : 'Season 1 Acrylic Stand'}
-            </span>
-            <span className="font-mono text-xs text-amber-700 font-bold">$18.99</span>
-          </div>
-        </div>
-
-        <div className="border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-4 rounded-none flex flex-col gap-3">
-          <div className="aspect-square bg-[#f1eeee] rounded-sm flex items-center justify-center">
-            <Gift size={32} className="opacity-40" />
-          </div>
-          <div className="flex flex-col">
-            <span className="font-mono font-bold text-xs sm:text-sm">
-              {language === 'ko' ? '오리지널 홀로그램 카드 팩' : 'Holographic Card Pack'}
-            </span>
-            <span className="font-mono text-xs text-amber-700 font-bold">$12.50</span>
-          </div>
-        </div>
-
-        <div className="border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-4 rounded-none flex flex-col gap-3">
-          <div className="aspect-square bg-[#f1eeee] rounded-sm flex items-center justify-center">
-            <ShoppingBag size={32} className="opacity-40" />
-          </div>
-          <div className="flex flex-col">
-            <span className="font-mono font-bold text-xs sm:text-sm">
-              {language === 'ko' ? '스마트 게이밍 장패드' : 'Gaming Desk Mat'}
-            </span>
-            <span className="font-mono text-xs text-amber-700 font-bold">$24.99</span>
-          </div>
-        </div>
+      {/* ── Mall Iframe ── */}
+      <div className="flex-1 w-full h-full relative bg-white">
+        <iframe
+          ref={iframeRef}
+          src="/mall/index.html"
+          title="SNSHero Mall"
+          className="w-full h-full border-0"
+          sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-modals"
+        />
       </div>
     </div>
   );
 };
-
-export default MallView;

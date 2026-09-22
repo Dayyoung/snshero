@@ -2,33 +2,6 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
-## [2026-09-21 12:10 KST] [전투 및 결과 정산 시스템 고도화: SCR-07-28~30 & SCR-08-28~30 완료]
-- **구현 티켓 목록**:
-  1. **SCR-07-28 (개발/성능 - Combat Canvas)**:
-     - `src/engine/SDFDamageFontRenderer.ts`: WebGL SDF(Signed Distance Field) 비트맵 폰트 기반 Instanced Quad 텍스처 렌더러 파이프라인 구축으로 30개 이상 다중 데미지 플로팅 텍스트 발생 시 60fps 완전 방어 및 Canvas 2D 텍스트 래스터화 병목 완전 해소.
-     - `src/engine/CombatCameraSystem.ts`: 버텍스 셰이더 및 60fps RAF 오프셋 기반 물리 카메라 트라우마(Trauma) 및 흔들림 단일 패스 처리.
-  2. **SCR-07-29 (디자인/사용성 - Combat Canvas)**:
-     - `src/components/CombatControlJogDial.tsx`: 100dvh 세로 화면 하단 Thumb Zone 좌측 52px 원터치 햅틱 조그 다이얼(1x/2x/3x) 및 위로 쓸어올리는 제스처 시 3x 즉시 전환 터보 모드 구현.
-     - `src/components/AutoBattleHapticToggle.tsx`: 원터치 햅틱 오토배틀 토글 스위치.
-  3. **SCR-07-30 (기획/도파민 - Combat Canvas)**:
-     - `src/engine/ExtremeCrushEffectManager.ts`: 치명타/약점 타격 시 0.05초 순간 암전 및 3D 산산조각(Screen Shatter) 충격파 연출.
-     - `src/services/SurpriseCombatMissionService.ts`: 전투 중 깜짝 '돌발 크러시 미션' 및 보상 지급 연동.
-     - `src/views/BattleView.tsx` & `src/views/MobileCardPlayScreen.tsx`: 조그 다이얼, 3x 터보, SDF 데미지, 크러시 셰이크 통합 탑재.
-  4. **SCR-08-28 (개발/성능 - BattleResultView)**:
-     - `src/engine/VictoryFanfareRenderer.ts`: 별점 도장 및 레벨업 팡파르 연출을 WebGL 단일 파티클 셰이더 및 60fps RAF 델타 루프로 일원화하여 브라우저 리플로우 제로화 및 60fps 고정.
-     - `src/components/StarStampEffect.tsx`: 3-Star 슬램 물리 연출 및 무거운 햅틱 피드백.
-  5. **SCR-08-29 (디자인/사용성 - BattleResultView)**:
-     - `src/components/SuperFastSkipHandler.tsx`: 화면 더블 탭 시 모든 연출을 0.2초 만에 스킵하고 최종 정산으로 즉시 전환하는 제스처 핸들러.
-     - `src/components/AutoRepeatToggleSwitch.tsx`: 하단 Thumb Zone 48px 자동 재도전 토글 스위치 (`hero_auto_repeat_battle` 로컬스토리지 영구 보존).
-  6. **SCR-08-30 (기획/과금전환 - BattleResultView)**:
-     - `src/services/FirstClearSpecialOfferService.ts`: 스테이지 최초 격파(`hero_first_clear_stages_v1`) 추적 및 60분 한정 타임딜 시스템.
-     - `src/components/FirstClearHallOfFameModal.tsx`: 전용 '히스토리컬 퍼스트 클리어' 명예 엠블럼 수여 및 '퍼스트 블러드 정복 번들(3,300원, SSR 장비 선택권 포함)' 타임딜 모달.
-     - `src/views/BattleResultView.tsx`: 전투 결과 및 보상 정산 화면 구축 완료.
-- **검증 결과**:
-  - `npm run lint` (`tsc --noEmit`): 통과 (오류 0건).
-  - `npm run build`: 성공.
-
-
 ## [2026-09-19 20:30 KST] [/schedule 커뮤니티 10라운드 혁신] [Round 5/10: 댓글 & 대댓글 인터랙션 고도화: 아코디언 접기/펼치기, 멘션(@) 및 이모티콘 픽커 완료]
 - **요청 사항**: 사용자 지시(`/schedule 10회에 걸친 커뮤니티 디자인/성능/사용성 개선 작업`) 중 Round 5 완료.
 - **Round 5 구현 및 고도화 내역**:

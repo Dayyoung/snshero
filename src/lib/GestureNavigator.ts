@@ -1,50 +1,67 @@
-export interface GestureNavigatorOptions {
+/**
+ * SNSHero Revolution - Gesture Navigator
+ * SCR-01-08: 모바일 좌우 수평 스와이프 제스처를 통한 화면 탭 빠른 전환 엔진
+ */
+
+export interface GestureNavOptions {
   onSwipeLeft?: () => void;
   onSwipeRight?: () => void;
-  threshold?: number;
+  thresholdPx?: number;
+  maxVerticalOffsetPx?: number;
 }
 
 export class GestureNavigator {
-  private options: GestureNavigatorOptions;
   private startX = 0;
   private startY = 0;
+  private isTracking = false;
+  private options: GestureNavOptions;
 
-  constructor(options: GestureNavigatorOptions) {
-    this.options = options;
+  constructor(options: GestureNavOptions) {
+    this.options = {
+      thresholdPx: 60,
+      maxVerticalOffsetPx: 50,
+      ...options,
+    };
   }
 
-  attach(target: HTMLElement | Window = window): () => void {
+  public attach(element: HTMLElement | Window = window): () => void {
     const handleTouchStart = (e: TouchEvent) => {
-      if (e.touches && e.touches.length === 1) {
-        this.startX = e.touches[0].clientX;
-        this.startY = e.touches[0].clientY;
-      }
+      if (e.touches.length !== 1) return;
+      const touch = e.touches[0];
+      this.startX = touch.clientX;
+      this.startY = touch.clientY;
+      this.isTracking = true;
     };
 
     const handleTouchEnd = (e: TouchEvent) => {
-      if (e.changedTouches && e.changedTouches.length === 1) {
-        const dx = e.changedTouches[0].clientX - this.startX;
-        const dy = e.changedTouches[0].clientY - this.startY;
-        const threshold = this.options.threshold || 50;
+      if (!this.isTracking || e.changedTouches.length !== 1) return;
+      this.isTracking = false;
 
-        if (Math.abs(dx) > threshold && Math.abs(dx) > Math.abs(dy) * 1.5) {
-          if (dx < 0) {
-            this.options.onSwipeLeft?.();
-          } else {
-            this.options.onSwipeRight?.();
-          }
-        }
+      const touch = e.changedTouches[0];
+      const deltaX = touch.clientX - this.startX;
+      const deltaY = touch.clientY - this.startY;
+
+      // 수직 이동이 너무 크면 스크롤이므로 스와이프 무시
+      if (Math.abs(deltaY) > (this.options.maxVerticalOffsetPx || 50)) {
+        return;
+      }
+
+      const threshold = this.options.thresholdPx || 60;
+      if (deltaX < -threshold) {
+        // 왼쪽으로 스와이프 (다음 탭)
+        this.options.onSwipeLeft?.();
+      } else if (deltaX > threshold) {
+        // 오른쪽으로 스와이프 (이전 탭)
+        this.options.onSwipeRight?.();
       }
     };
 
-    target.addEventListener('touchstart', handleTouchStart as any, { passive: true });
-    target.addEventListener('touchend', handleTouchEnd as any, { passive: true });
+    element.addEventListener('touchstart', handleTouchStart as EventListener, { passive: true });
+    element.addEventListener('touchend', handleTouchEnd as EventListener, { passive: true });
 
     return () => {
-      target.removeEventListener('touchstart', handleTouchStart as any);
-      target.removeEventListener('touchend', handleTouchEnd as any);
+      element.removeEventListener('touchstart', handleTouchStart as EventListener);
+      element.removeEventListener('touchend', handleTouchEnd as EventListener);
     };
   }
 }
-
-export default GestureNavigator;

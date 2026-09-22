@@ -1,6 +1,5 @@
 import { playSfx } from './sound';
 import { triggerHaptic } from './haptic';
-import { triggerRainbowFlipFX, RainbowFlipOptions } from './rainbowFlipFX';
 
 export type ElementType = 'FIRE' | 'WATER' | 'EARTH' | 'WIND' | 'HOLY' | 'DARK';
 
@@ -375,12 +374,5 @@ export class BattleFXEngine {
       boardEl.classList.remove('slow-mo-camera-zoom');
       flippedSlotElements.forEach((el) => el?.classList?.remove('golden-electrical-arc'));
     }, 200);
-  }
-
-  /**
-   * 🌈 카드가 뒤집힐 때 Flip! (1개) / Doble Flip! (2개 이상) 텍스트와 무지개색 터지는 파티클 표시
-   */
-  public triggerRainbowFlip(options: RainbowFlipOptions): void {
-    triggerRainbowFlipFX(options);
   }
 }

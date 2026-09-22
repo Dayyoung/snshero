@@ -29,9 +29,6 @@ import { HapticVibrationSettingsModal } from '../components/HapticVibrationSetti
 import { DailyMissions } from '../components/DailyMissions';
 import { loadDailyMissions, getClaimableCount } from '../lib/dailyMissions';
 import { StaminaPacingManager } from '../lib/staminaPacingManager';
-import { SmartCouponAutoInput } from '../components/SmartCouponAutoInput';
-import { SupporterBadgeModal } from '../components/SupporterBadgeModal';
-import { PushPermissionModal } from '../components/PushPermissionModal';
 
 
 interface SettingViewProps {
@@ -128,9 +125,6 @@ export const SettingView: React.FC<SettingViewProps> = ({
   const [isHapticModalOpen, setIsHapticModalOpen] = useState(false);
   const [isCheckingVersion, setIsCheckingVersion] = useState(false);
   const [versionCheckMsg, setVersionCheckMsg] = useState<string | null>(null);
-  const [isSupporterOpen, setIsSupporterOpen] = useState(false);
-  const [isPushModalOpen, setIsPushModalOpen] = useState(false);
-  const [isSupporter, setIsSupporter] = useState(() => localStorage.getItem('hero_is_supporter') === 'true');
 
   // SCR-12-01: 3대 통합 서브 탭 ('system' | 'missions' | 'attendance')
   const [activeSubTab, setActiveSubTab] = useState<'system' | 'missions' | 'attendance'>('system');
@@ -627,59 +621,6 @@ export const SettingView: React.FC<SettingViewProps> = ({
       {/* TAB 1: 기존 시스템 설정 */}
       {activeSubTab === 'system' && (
         <div className="space-y-8">
-
-        {/* SCR-12-08 & SCR-12-09 & SCR-12-12: Smart Coupon, Supporter Badge, Push Permission */}
-        <section className="space-y-3">
-          <SmartCouponAutoInput
-            onApplyCoupon={(code) => {
-              triggerHaptic('heavy');
-              playSfx('click');
-              setSystemNotice(language === 'ko' ? `쿠폰 [${code}]이 성공적으로 등록되었습니다! 보상이 지급되었습니다.` : `Coupon [${code}] applied successfully!`);
-            }}
-          />
-
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              type="button"
-              onClick={() => {
-                setIsSupporterOpen(true);
-                triggerHaptic('light');
-              }}
-              className="p-2.5 bg-amber-50 hover:bg-amber-100 border border-amber-300 rounded-none text-left flex items-center justify-between cursor-pointer font-mono select-none"
-            >
-              <div>
-                <div className="text-xs font-black text-amber-900 flex items-center gap-1">
-                  <Award size={13} className="text-amber-600" />
-                  <span>[파운더스 후원자]</span>
-                </div>
-                <div className="text-[9px] text-amber-800">
-                  {isSupporter ? '골드 명예 배지 보유중' : '영구 명예 배지 + 5,000 SNS'}
-                </div>
-              </div>
-              <ArrowRight size={14} className="text-amber-700" />
-            </button>
-
-            <button
-              type="button"
-              onClick={() => {
-                setIsPushModalOpen(true);
-                triggerHaptic('light');
-              }}
-              className="p-2.5 bg-zinc-50 hover:bg-zinc-100 border border-[rgba(15,0,0,0.12)] rounded-none text-left flex items-center justify-between cursor-pointer font-mono select-none"
-            >
-              <div>
-                <div className="text-xs font-black text-[#201d1d] flex items-center gap-1">
-                  <Sparkles size={13} className="text-amber-500" />
-                  <span>[푸시 알림 혜택]</span>
-                </div>
-                <div className="text-[9px] text-[#504a4a]">
-                  동의 즉시 SSR 소환권 증정
-                </div>
-              </div>
-              <ArrowRight size={14} className="text-zinc-500" />
-            </button>
-          </div>
-        </section>
 
         <section className="space-y-6">
           <div className="flex items-center gap-4">
@@ -2157,32 +2098,6 @@ export const SettingView: React.FC<SettingViewProps> = ({
       <HapticVibrationSettingsModal
         isOpen={isHapticModalOpen}
         onClose={() => setIsHapticModalOpen(false)}
-      />
-
-      <SupporterBadgeModal
-        isOpen={isSupporterOpen}
-        onClose={() => setIsSupporterOpen(false)}
-        isSupporter={isSupporter}
-        onPurchase={() => {
-          setIsSupporter(true);
-          try {
-            localStorage.setItem('hero_is_supporter', 'true');
-          } catch {}
-          triggerHaptic('heavy');
-          playSfx('click');
-        }}
-      />
-
-      <PushPermissionModal
-        isOpen={isPushModalOpen}
-        onClose={() => setIsPushModalOpen(false)}
-        onAccept={() => {
-          try {
-            localStorage.setItem('hero_push_enabled', 'true');
-          } catch {}
-          triggerHaptic('heavy');
-          playSfx('click');
-        }}
       />
     </div>
   );

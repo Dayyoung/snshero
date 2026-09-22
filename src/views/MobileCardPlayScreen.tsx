@@ -17,10 +17,6 @@ import {
 import { cn, getCardSpriteStyle } from '../lib/utils';
 import { AdSenseBanner } from '../components/AdSenseBanner';
 import { CardItem } from '../components/CardItem';
-import { RainbowFlipEffect, triggerRainbowFlip } from '../components/RainbowFlipEffect';
-import { RankMatchSearchOverlay } from '../components/RankMatchSearchOverlay';
-import { MissionDialogueIntro } from '../components/MissionDialogueIntro';
-import { RankOpponentInfo } from '../data/rankingOpponents';
 import { t } from '../lib/i18n';
 
 export interface MobileCardPlayScreenProps {
@@ -138,29 +134,17 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     return null;
   }, [targetCardId]);
 
-  // 랭킹대전 상대 및 오버레이 상태
-  const [activeRankOpponent, setActiveRankOpponent] = useState<RankOpponentInfo | null>(null);
-  const [isRankSearching, setIsRankSearching] = useState(false);
-  const [showMissionDialogue, setShowMissionDialogue] = useState(false);
-
-  // 대전 성격 판별: 미션 게임 vs 랭킹 대전
-  const isMissionGame = useMemo(() => targetCardId !== null && targetCardId !== undefined, [targetCardId]);
-  const isRankMatch = useMemo(() => {
-    return !isMissionGame && !isTutorialMode && !towerFloor;
-  }, [isMissionGame, isTutorialMode, towerFloor]);
-
   // Opponent name
   const effectiveOpponentName = useMemo(() => {
-    if (activeRankOpponent?.name) return activeRankOpponent.name;
     if (opponentName) return opponentName;
     if (missionCardData) {
       return language === 'ko' ? missionCardData.title : (missionCardData.title_en || missionCardData.title);
     }
     return generateAiName();
-  }, [activeRankOpponent, opponentName, missionCardData, language]);
+  }, [opponentName, missionCardData, language]);
 
   // Deck generation helper
-  const initMatchDecks = useCallback((newRankOpponent?: RankOpponentInfo) => {
+  const initMatchDecks = useCallback(() => {
     // 1. Player Deck (5 cards)
     let pCards: CardData[] = [];
     if (playerDeck && playerDeck.length >= 5) {
@@ -179,14 +163,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
 
     // 2. Opponent Deck (5 cards)
     let oCards: CardData[] = [];
-    if (newRankOpponent && newRankOpponent.deck && newRankOpponent.deck.length >= 5) {
-      setActiveRankOpponent(newRankOpponent);
-      oCards = newRankOpponent.deck.map((c, i) => syncCardWithDatabase({
-        ...c,
-        id: `opp-rank-${i}-${Date.now()}`,
-        owner: 'ai'
-      }));
-    } else if (opponentCustomDeck && opponentCustomDeck.length >= 5) {
+    if (opponentCustomDeck && opponentCustomDeck.length >= 5) {
       oCards = opponentCustomDeck.slice(0, 5).map((c, i) => syncCardWithDatabase({
         ...c,
         id: `opp-${i}-${Date.now()}`,
@@ -347,26 +324,6 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       setFlippedSlots(flippedIndices);
       playSound('flip');
       setTimeout(() => setFlippedSlots([]), 800);
-
-      // Rainbow Flip Effect: "Flip!" for 1, "Doble Flip!" for 2+ cards
-      try {
-        const origins: { x: number; y: number }[] = [];
-        const slots = document.querySelectorAll('#mobile-card-center-board .grid > div, [class*="board-slot-"]');
-        flippedIndices.forEach(idx => {
-          const el = slots[idx] as HTMLElement | undefined;
-          if (el) {
-            const r = el.getBoundingClientRect();
-            origins.push({ x: r.left + r.width / 2, y: r.top + r.height / 2 });
-          }
-        });
-        triggerRainbowFlip(
-          flippedIndices.length,
-          origins.length > 0 ? origins : undefined,
-          flippedIndices.length <= 1 ? 'Flip!' : 'Doble Flip!'
-        );
-      } catch {
-        triggerRainbowFlip(flippedIndices.length);
-      }
     }
 
     setBoard(updatedBoard);
@@ -731,27 +688,19 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     setRematchCountdown(3);
   }, [gameOver, winner, isTutorialMode, tutorialStep, autoCloseOnComplete, towerBossClearModal]);
 
-  // 3초 카운트다운 감소 및 0초 도달 시: 랭킹은 3초 검색, 미션은 3초 대사 후 시작!
+  // 3초 카운트다운 감소 및 0초 도달 시 자동 재대결
   useEffect(() => {
     if (rematchCountdown === null) return;
     if (rematchCountdown <= 0) {
       setRematchCountdown(null);
-      if (isRankMatch) {
-        // 랭킹대전: 즉시 재시작하지 않고 다시 3초 검색 시작
-        setIsRankSearching(true);
-      } else if (isMissionGame) {
-        // 미션 게임: 3초 대사 보여주고 시작
-        setShowMissionDialogue(true);
-      } else {
-        initMatchDecks();
-      }
+      initMatchDecks();
       return;
     }
     const timer = setTimeout(() => {
       setRematchCountdown(prev => (prev !== null ? prev - 1 : null));
     }, 1000);
     return () => clearTimeout(timer);
-  }, [rematchCountdown, isRankMatch, isMissionGame, initMatchDecks]);
+  }, [rematchCountdown, initMatchDecks]);
 
   // 튜토리얼 모드: 카운트다운 후 상점으로 이동
   useEffect(() => {
@@ -1262,19 +1211,9 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                   <div className="flex items-center gap-2 text-xs font-black text-emerald-400 tracking-wider">
                     <RotateCcw size={14} className="animate-spin text-emerald-400 shrink-0" />
                     <span>
-                      {isRankMatch ? (
-                        language === 'ko'
-                          ? `⏱️ [ ${rematchCountdown}초 ] 후 새로운 랭킹 상대 검색...`
-                          : `⏱️ Searching new rival in [ ${rematchCountdown}s ]...`
-                      ) : isMissionGame ? (
-                        language === 'ko'
-                          ? `⏱️ [ ${rematchCountdown}초 ] 후 수호자 대사 연출...`
-                          : `⏱️ Guardian dialogue in [ ${rematchCountdown}s ]...`
-                      ) : (
-                        language === 'ko'
-                          ? `⏱️ [ ${rematchCountdown}초 ] 후 다시 카드 플레이...`
-                          : `⏱️ Restarting in [ ${rematchCountdown}s ]...`
-                      )}
+                      {language === 'ko'
+                        ? `⏱️ [ ${rematchCountdown}초 ] 후 다시 카드 플레이...`
+                        : `⏱️ Restarting in [ ${rematchCountdown}s ]...`}
                     </span>
                   </div>
                   <div className="w-full bg-stone-900 h-1.5 rounded-full overflow-hidden border border-emerald-500/30">
@@ -1312,24 +1251,14 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                       onClick={() => {
                         playSound('tap');
                         setRematchCountdown(null);
-                        if (isRankMatch) {
-                          // 랭킹대전: 즉시 3초 검색 오버레이로 연결
-                          setIsRankSearching(true);
-                        } else if (isMissionGame) {
-                          // 미션 게임: 즉시 3초 대사 오버레이로 연결
-                          setShowMissionDialogue(true);
-                        } else {
-                          initMatchDecks();
-                        }
+                        initMatchDecks();
                       }}
                       className="flex-1 py-2 bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-black text-xs uppercase rounded-xs transition-transform active:scale-95 cursor-pointer flex items-center justify-center gap-1"
                     >
                       <RefreshCw size={13} />
                       <span>
-                        {isRankMatch
-                          ? (language === 'ko' ? '새 상대 검색 (3s)' : 'Find Rival (3s)')
-                          : isMissionGame
-                          ? (language === 'ko' ? '수호자 도전 (3s)' : 'Challenge (3s)')
+                        {rematchCountdown !== null
+                          ? (language === 'ko' ? `즉시 시작 (${rematchCountdown}s)` : `Play Now (${rematchCountdown}s)`)
                           : (language === 'ko' ? '재대결' : 'Rematch')}
                       </span>
                     </button>
@@ -1439,41 +1368,6 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Rainbow Flip & Doble Flip Burst Particles & Text Overlay */}
-      <RainbowFlipEffect isFixed={true} />
-
-      {/* 랭킹대전 3초 상대 검색 오버레이 */}
-      <RankMatchSearchOverlay
-        isOpen={isRankSearching}
-        language={language}
-        previousOpponentName={effectiveOpponentName}
-        onMatchFound={(newOpponent) => {
-          setIsRankSearching(false);
-          initMatchDecks(newOpponent);
-        }}
-        onCancel={() => {
-          setIsRankSearching(false);
-          handleExitGame();
-        }}
-      />
-
-      {/* 미션 게임 3초 수호자 대사 인트로 오버레이 */}
-      {targetCardId && (
-        <MissionDialogueIntro
-          isOpen={showMissionDialogue}
-          cardId={targetCardId}
-          language={language}
-          onComplete={() => {
-            setShowMissionDialogue(false);
-            initMatchDecks();
-          }}
-          onSkip={() => {
-            setShowMissionDialogue(false);
-            initMatchDecks();
-          }}
-        />
-      )}
     </div>
   );
 };
