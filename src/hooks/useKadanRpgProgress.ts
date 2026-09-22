@@ -1,241 +1,128 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { getSeasonItem, setSeasonItem } from '../lib/webtoonProgress';
-import { KADAN_RPG_EVENTS, getKadanRpgRegion, type KadanRpgTile } from '../content/kadanRpgStory';
+import { useState, useCallback, useMemo } from 'react';
+import { KADAN_RPG_EVENTS, KadanRpgEvent, KadanRpgTile } from '../content/kadanRpgStory';
 
-export const KADAN_RPG_PROGRESS_STORAGE_KEY = 'hero_kadan_rpg_progress';
-export const KADAN_RPG_AUTO_MODE_STORAGE_KEY = 'hero_kadan_rpg_auto_mode';
-
-export interface KadanRpgProgress {
-  season: string;
+export interface KadanRpgProgressState {
   currentRegionId: string;
-  currentChapterId: string;
-  completedChapterIds: string[];
+  completedEventIds: string[];
   clearedEncounterIds: string[];
   openedChestIds: string[];
-  metNpcIds: string[];
   claimedRewardIds: string[];
+  metNpcIds: string[];
   lastTile: KadanRpgTile;
-  autoMode: boolean;
   rebirthLevel: number;
-  lastAutoEventId?: string;
-  updatedAt: number;
+  autoMode: boolean;
 }
 
-const isRecord = (value: unknown): value is Record<string, unknown> => (
-  typeof value === 'object' && value !== null && !Array.isArray(value)
-);
-
-const stringArray = (value: unknown): string[] => (
-  Array.isArray(value)
-    ? Array.from(new Set(value.filter((item): item is string => typeof item === 'string' && item.trim().length > 0)))
-    : []
-);
-
-const tileOrFallback = (value: unknown, fallback: KadanRpgTile): KadanRpgTile => {
-  if (!isRecord(value)) return fallback;
-  const x = typeof value.x === 'number' && Number.isFinite(value.x) ? value.x : fallback.x;
-  const y = typeof value.y === 'number' && Number.isFinite(value.y) ? value.y : fallback.y;
-  return { x, y };
+const DEFAULT_PROGRESS: KadanRpgProgressState = {
+  currentRegionId: 'elwin-wildland',
+  completedEventIds: [],
+  clearedEncounterIds: [],
+  openedChestIds: [],
+  claimedRewardIds: [],
+  metNpcIds: [],
+  lastTile: { x: 1, y: 5 },
+  rebirthLevel: 0,
+  autoMode: false,
 };
 
-const createDefaultProgress = (season: string): KadanRpgProgress => {
-  const firstEvent = KADAN_RPG_EVENTS[0];
-  const firstRegion = getKadanRpgRegion(firstEvent.regionId);
-
-  return {
-    season,
-    currentRegionId: firstRegion.id,
-    currentChapterId: firstEvent.id,
-    completedChapterIds: [],
-    clearedEncounterIds: [],
-    openedChestIds: [],
-    metNpcIds: [],
-    claimedRewardIds: [],
-    lastTile: firstRegion.startTile,
-    autoMode: true,
-    rebirthLevel: 0,
-    updatedAt: Date.now(),
-  };
-};
-
-const normalizeProgress = (season: string, value: unknown): KadanRpgProgress => {
-  const fallback = createDefaultProgress(season);
-  if (!isRecord(value)) return fallback;
-
-  const currentChapterId = typeof value.currentChapterId === 'string'
-    && KADAN_RPG_EVENTS.some((event) => event.id === value.currentChapterId)
-    ? value.currentChapterId
-    : fallback.currentChapterId;
-
-  const currentEvent = KADAN_RPG_EVENTS.find((event) => event.id === currentChapterId) ?? KADAN_RPG_EVENTS[0];
-  const region = getKadanRpgRegion(
-    typeof value.currentRegionId === 'string' ? value.currentRegionId : currentEvent.regionId,
-  );
-
-  return {
-    season,
-    currentRegionId: region.id,
-    currentChapterId,
-    completedChapterIds: stringArray(value.completedChapterIds),
-    clearedEncounterIds: stringArray(value.clearedEncounterIds),
-    openedChestIds: stringArray(value.openedChestIds),
-    metNpcIds: stringArray(value.metNpcIds),
-    claimedRewardIds: stringArray(value.claimedRewardIds),
-    lastTile: tileOrFallback(value.lastTile, region.startTile),
-    autoMode: typeof value.autoMode === 'boolean' ? value.autoMode : true,
-    rebirthLevel: typeof value.rebirthLevel === 'number' && Number.isFinite(value.rebirthLevel)
-      ? Math.max(0, Math.floor(value.rebirthLevel))
-      : 0,
-    lastAutoEventId: typeof value.lastAutoEventId === 'string' ? value.lastAutoEventId : undefined,
-    updatedAt: typeof value.updatedAt === 'number' ? value.updatedAt : Date.now(),
-  };
-};
-
-export const loadKadanRpgProgress = (season: string): KadanRpgProgress => {
-  const raw = getSeasonItem(KADAN_RPG_PROGRESS_STORAGE_KEY, season);
-  const autoModeRaw = getSeasonItem(KADAN_RPG_AUTO_MODE_STORAGE_KEY, season);
-
-  if (!raw) {
-    const base = createDefaultProgress(season);
-    return {
-      ...base,
-      autoMode: autoModeRaw === null ? base.autoMode : autoModeRaw === 'true',
-    };
-  }
-
+export function getRebirthLevel(season: string = 'season1'): number {
   try {
-    const parsed = normalizeProgress(season, JSON.parse(raw) as unknown);
-    return {
-      ...parsed,
-      autoMode: autoModeRaw === null ? parsed.autoMode : autoModeRaw === 'true',
-    };
+    const raw = localStorage.getItem(`hero_kadan_rpg_progress_${season}`);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      return Number(parsed.rebirthLevel) || 0;
+    }
   } catch {
-    return createDefaultProgress(season);
+    // Ignore localStorage access issues
   }
-};
+  return 0;
+}
 
-export const saveKadanRpgProgress = (season: string, progress: KadanRpgProgress): KadanRpgProgress => {
-  const normalized = normalizeProgress(season, {
-    ...progress,
-    season,
-    updatedAt: Date.now(),
+export const useKadanRpgProgress = (currentSeason: string = 'season1') => {
+  const storageKey = `hero_kadan_rpg_progress_${currentSeason}`;
+
+  const [progress, setProgress] = useState<KadanRpgProgressState>(() => {
+    try {
+      const raw = localStorage.getItem(storageKey);
+      if (raw) {
+        return { ...DEFAULT_PROGRESS, ...JSON.parse(raw) };
+      }
+    } catch {
+      // Ignore localStorage access issues
+    }
+    return DEFAULT_PROGRESS;
   });
 
-  setSeasonItem(KADAN_RPG_PROGRESS_STORAGE_KEY, season, JSON.stringify(normalized));
-  setSeasonItem(KADAN_RPG_AUTO_MODE_STORAGE_KEY, season, normalized.autoMode ? 'true' : 'false');
-  return normalized;
-};
+  const saveProgress = useCallback((newProgress: KadanRpgProgressState) => {
+    setProgress(newProgress);
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(newProgress));
+    } catch {
+      // Ignore localStorage access issues
+    }
+  }, [storageKey]);
 
-export const getRebirthLevel = (season?: string): number => {
-  try {
-    if (typeof window === 'undefined') return 0;
-    const currentSeason = season || localStorage.getItem('hero_current_season') || 'season1';
-    const progress = loadKadanRpgProgress(currentSeason);
-    return progress?.rebirthLevel ?? 0;
-  } catch {
-    return 0;
-  }
-};
+  const nextEvent = useMemo<KadanRpgEvent | null>(() => {
+    return (
+      KADAN_RPG_EVENTS.find((event) => !progress.completedEventIds.includes(event.id)) || null
+    );
+  }, [progress.completedEventIds]);
 
-export const getNextKadanRpgEvent = (progress: KadanRpgProgress) => (
-  KADAN_RPG_EVENTS.find((event) => !progress.completedChapterIds.includes(event.id)) ?? null
-);
+  const setAutoMode = useCallback((auto: boolean) => {
+    saveProgress({ ...progress, autoMode: auto });
+  }, [progress, saveProgress]);
 
-export const useKadanRpgProgress = (season: string) => {
-  const [progress, setProgress] = useState<KadanRpgProgress>(() => loadKadanRpgProgress(season));
+  const setLastTile = useCallback((tile: KadanRpgTile) => {
+    saveProgress({ ...progress, lastTile: tile });
+  }, [progress, saveProgress]);
 
-  useEffect(() => {
-    setProgress(loadKadanRpgProgress(season));
-  }, [season]);
+  const markNpcMet = useCallback((id: string) => {
+    if (!progress.metNpcIds.includes(id)) {
+      saveProgress({ ...progress, metNpcIds: [...progress.metNpcIds, id] });
+    }
+  }, [progress, saveProgress]);
 
-  const persist = useCallback((updater: (previous: KadanRpgProgress) => KadanRpgProgress) => {
-    setProgress((previous) => {
-      const next = saveKadanRpgProgress(season, updater(previous));
-      return next;
-    });
-  }, [season]);
+  const markChestOpened = useCallback((id: string) => {
+    if (!progress.openedChestIds.includes(id)) {
+      saveProgress({ ...progress, openedChestIds: [...progress.openedChestIds, id] });
+    }
+  }, [progress, saveProgress]);
 
-  const nextEvent = useMemo(() => getNextKadanRpgEvent(progress), [progress]);
+  const markEncounterCleared = useCallback((id: string) => {
+    if (!progress.clearedEncounterIds.includes(id)) {
+      saveProgress({ ...progress, clearedEncounterIds: [...progress.clearedEncounterIds, id] });
+    }
+  }, [progress, saveProgress]);
 
-  const setAutoMode = useCallback((autoMode: boolean) => {
-    persist((previous) => ({ ...previous, autoMode }));
-  }, [persist]);
+  const markRewardClaimed = useCallback((id: string) => {
+    if (!progress.claimedRewardIds.includes(id)) {
+      saveProgress({ ...progress, claimedRewardIds: [...progress.claimedRewardIds, id] });
+    }
+  }, [progress, saveProgress]);
 
-  const setLastTile = useCallback((lastTile: KadanRpgTile) => {
-    persist((previous) => ({ ...previous, lastTile }));
-  }, [persist]);
-
-  const markNpcMet = useCallback((eventId: string) => {
-    persist((previous) => ({
-      ...previous,
-      metNpcIds: previous.metNpcIds.includes(eventId) ? previous.metNpcIds : [...previous.metNpcIds, eventId],
-    }));
-  }, [persist]);
-
-  const markChestOpened = useCallback((eventId: string) => {
-    persist((previous) => ({
-      ...previous,
-      openedChestIds: previous.openedChestIds.includes(eventId) ? previous.openedChestIds : [...previous.openedChestIds, eventId],
-    }));
-  }, [persist]);
-
-  const markEncounterCleared = useCallback((encounterId: string) => {
-    persist((previous) => ({
-      ...previous,
-      clearedEncounterIds: previous.clearedEncounterIds.includes(encounterId)
-        ? previous.clearedEncounterIds
-        : [...previous.clearedEncounterIds, encounterId],
-    }));
-  }, [persist]);
-
-  const markRewardClaimed = useCallback((rewardId: string) => {
-    persist((previous) => ({
-      ...previous,
-      claimedRewardIds: previous.claimedRewardIds.includes(rewardId)
-        ? previous.claimedRewardIds
-        : [...previous.claimedRewardIds, rewardId],
-    }));
-  }, [persist]);
-
-  const completeEvent = useCallback((eventId: string, tile: KadanRpgTile) => {
-    persist((previous) => {
-      const completedChapterIds = previous.completedChapterIds.includes(eventId)
-        ? previous.completedChapterIds
-        : [...previous.completedChapterIds, eventId];
-      const nextEvent = KADAN_RPG_EVENTS.find((event) => !completedChapterIds.includes(event.id));
-
-      return {
-        ...previous,
-        completedChapterIds,
-        currentChapterId: nextEvent?.id ?? eventId,
-        currentRegionId: nextEvent?.regionId ?? previous.currentRegionId,
-        lastTile: tile,
-        lastAutoEventId: eventId,
-      };
-    });
-  }, [persist]);
+  const completeEvent = useCallback((event: KadanRpgEvent) => {
+    if (!progress.completedEventIds.includes(event.id)) {
+      const nextCompleted = [...progress.completedEventIds, event.id];
+      saveProgress({
+        ...progress,
+        completedEventIds: nextCompleted,
+        lastTile: event.tile,
+      });
+    }
+  }, [progress, saveProgress]);
 
   const resetProgress = useCallback(() => {
-    const next = saveKadanRpgProgress(season, createDefaultProgress(season));
-    setProgress(next);
-  }, [season]);
+    saveProgress(DEFAULT_PROGRESS);
+  }, [saveProgress]);
 
   const reincarnateProgress = useCallback(() => {
-    setProgress((previous) => {
-      const base = createDefaultProgress(season);
-      const next = saveKadanRpgProgress(season, {
-        ...base,
-        rebirthLevel: previous.rebirthLevel + 1,
-        autoMode: previous.autoMode,
-      });
-      if (typeof window !== 'undefined') {
-        window.dispatchEvent(new CustomEvent('hero_reincarnation_updated', {
-          detail: { rebirthLevel: next.rebirthLevel }
-        }));
-      }
-      return next;
+    const nextRebirth = (progress.rebirthLevel || 0) + 1;
+    saveProgress({
+      ...DEFAULT_PROGRESS,
+      rebirthLevel: nextRebirth,
     });
-  }, [season]);
+    window.dispatchEvent(new CustomEvent('hero_reincarnation_updated'));
+  }, [progress, saveProgress]);
 
   return {
     progress,
@@ -251,3 +138,5 @@ export const useKadanRpgProgress = (season: string) => {
     reincarnateProgress,
   };
 };
+
+export default useKadanRpgProgress;

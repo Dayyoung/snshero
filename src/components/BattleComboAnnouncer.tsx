@@ -43,7 +43,7 @@ export const BattleComboAnnouncer: React.FC<BattleComboAnnouncerProps> = ({
       case 'TRIPLE':
         return 'TRIPLE FLIP!';
       case 'DOUBLE':
-        return 'DOUBLE FLIP!';
+        return 'Doble Flip!';
       case 'SAME':
         return 'SAME RULE MATCH!';
       case 'PLUS':

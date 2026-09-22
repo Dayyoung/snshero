@@ -18,6 +18,7 @@ import { ItemIcon } from '../components/ItemIcon';
 import { t } from '../lib/i18n';
 import { PageHeader } from '../components/PageHeader';
 import { TranslatedText } from '../components/TranslatedText';
+import { triggerRainbowFlipFX } from '../lib/rainbowFlipFX';
 import { analytics, logEvent, db } from '../lib/firebase';
 import { collection, query, orderBy, limit, getDocs, addDoc } from '../lib/firebaseMock';
 import { trackAnalytics, AnalyticsEvent } from '../lib/analyticsEvents';
@@ -2262,6 +2263,14 @@ export const ShopView: React.FC<ShopViewProps> = ({
       setGachaState(prev => ({ ...prev, cards: newCards }));    }
 
     playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+
+    // 🌈 ID Rainbow-Flip: 카드가 뒤집힐 때 Flip! 텍스트 및 무지개 파티클 표시
+    try {
+      const el = document.getElementById(`shop-gacha-card-${index}`);
+      triggerRainbowFlipFX({ targetEl: el, count: 1 });
+    } catch (err) {
+      console.warn('Rainbow Flip FX error:', err);
+    }
   };
 
   const handleCloseGacha = () => {
@@ -2884,6 +2893,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                             >
                               <div className="relative perspective-1000">
                                 <motion.div
+                                  id={`shop-gacha-card-${idx}`}
                                   className={cn(
                                     "relative w-[28vw] max-w-[140px] aspect-[5/7] transform-style-3d transition-all duration-700 cursor-pointer",
                                     isRevealed ? "rotate-y-180" : ""
@@ -2999,6 +3009,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                             >
                               <div className="relative perspective-1000">
                                 <motion.div
+                                  id={`shop-gacha-card-${idx}`}
                                   className={cn(
                                     "relative w-[28vw] max-w-[140px] aspect-[5/7] transform-style-3d transition-all duration-700 cursor-pointer",
                                     isRevealed ? "rotate-y-180" : ""

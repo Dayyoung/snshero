@@ -27,6 +27,8 @@ export const MissionEncounterModal: React.FC<MissionEncounterModalProps> = ({
   lowSpecMode = false
 }) => {
   const [countdown, setCountdown] = React.useState<number>(3);
+  const onStartBattleRef = React.useRef(onStartBattle);
+  onStartBattleRef.current = onStartBattle;
 
   // 3초 후 자동 배틀 시작 카운트다운 타이머
   useEffect(() => {
@@ -37,18 +39,19 @@ export const MissionEncounterModal: React.FC<MissionEncounterModalProps> = ({
 
     setCountdown(3);
     const interval = setInterval(() => {
-      setCountdown(prev => {
-        if (prev <= 1) {
-          clearInterval(interval);
-          onStartBattle();
-          return 0;
-        }
-        return prev - 1;
-      });
+      setCountdown(prev => Math.max(0, prev - 1));
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [isOpen, onStartBattle]);
+  }, [isOpen]);
+
+  // 카운트다운 완료 시 배틀 시작 (렌더링 외부 이펙트에서 안전하게 호출)
+  useEffect(() => {
+    if (!isOpen) return;
+    if (countdown === 0) {
+      onStartBattleRef.current();
+    }
+  }, [isOpen, countdown]);
 
   useEffect(() => {
     if (!isOpen) return;

@@ -58,11 +58,15 @@ import { ExpeditionModal } from '../components/ExpeditionModal';
 import { MonsterBeastariumModal } from '../components/MonsterBeastariumModal';
 import { TacticianMasteryModal } from '../components/TacticianMasteryModal';
 import { TowerOfTrialsModal } from '../components/TowerOfTrialsModal';
+import { RankMatchSearchOverlay } from '../components/RankMatchSearchOverlay';
+import { MissionDialogueIntro } from '../components/MissionDialogueIntro';
+import { RankOpponentInfo } from '../data/rankingOpponents';
 import { BattleGambitModal } from '../components/BattleGambitModal';
 import { VoxelMiningDefenseGame } from '../components/VoxelMiningDefenseGame';
 import { VoxelPixelStrikeArenaGame } from '../components/VoxelPixelStrikeArenaGame';
 import { VoxelSkyParkourGame } from '../components/VoxelSkyParkourGame';
 import { BattleComboAnnouncer } from '../components/BattleComboAnnouncer';
+import { RainbowFlipEffect, triggerRainbowFlip } from '../components/RainbowFlipEffect';
 import { SecretStampBookModal } from '../components/SecretStampBookModal';
 import { BattleSummaryModal, LastBattleSummaryData } from '../components/BattleSummaryModal';
 import { ElementAdvantageModal } from '../components/ElementAdvantageModal';
@@ -2720,6 +2724,12 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   const [activeMissionCardId, setActiveMissionCardId] = useState<number | null>(null);
   const [encounterOpponentCardId, setEncounterOpponentCardId] = useState<number | null>(null);
 
+  // 랭킹대전 3초 검색 & 미션 게임 3초 대사 상태
+  const [isRankSearching, setIsRankSearching] = useState(false);
+  const [showMissionDialogue, setShowMissionDialogue] = useState(false);
+  const [missionDialogueCardId, setMissionDialogueCardId] = useState<number | null>(null);
+  const [activeRankOpponent, setActiveRankOpponent] = useState<RankOpponentInfo | null>(null);
+
   const openMissionEncounter = (cardIndex: number) => {
     setEncounterOpponentCardId(cardIndex);
   };
@@ -5143,13 +5153,21 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       setRematchCountdown(null);
       setShowCardAcquisitionModal(false);
       setAcquiredMissionCard(null);
-      startMissionCardBattle(missionCardIdx);
+      // 미션 게임 재시작: 바로 시작하지 않고 3초 대사 보여주고 시작!
+      setMissionDialogueCardId(missionCardIdx);
+      setShowMissionDialogue(true);
       return;
     }
 
-    if (battleType === 'pvp_attack' && hasExhausted) {
+    if (battleType === 'pvp_attack') {
+      if (hasExhausted) {
+        setRematchCountdown(null);
+        setShowInsufficientPopup(true);
+        return;
+      }
+      // 랭킹대전 재시작: 바로 카드게임을 재시작 하지말고 다시 3초 검색하고 시작!
       setRematchCountdown(null);
-      setShowInsufficientPopup(true);
+      setIsRankSearching(true);
       return;
     }
 
@@ -5187,6 +5205,62 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     }, 800 * speedMultiplier);
   };
 
+  // 랭킹대전 3초 검색 완료 후 새 상대 매칭 핸들러
+  const handleRankMatchFound = (newOpponent: RankOpponentInfo) => {
+    setIsRankSearching(false);
+    setActiveRankOpponent(newOpponent);
+
+    if (onStartMobileCardPlay) {
+      onStartMobileCardPlay(undefined, newOpponent.deck, newOpponent.name, activeTowerFloor ?? undefined);
+      return;
+    }
+
+    const oppChar: Character = {
+      id: newOpponent.id,
+      name: newOpponent.name,
+      avatarUrl: `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${newOpponent.name}&backgroundColor=b6e3f4`,
+      type: 'user',
+      totalPower: newOpponent.totalPower,
+      deck: newOpponent.deck,
+      x: 50,
+      y: 50,
+      targetX: 50,
+      targetY: 50
+    };
+
+    setSelectedOpponent(oppChar);
+    setLastOpponent(oppChar);
+    setPreviewDeck(newOpponent.deck);
+    setOpponentDeck(newOpponent.deck);
+    setOpponentHand(newOpponent.deck);
+    setLastAiDeck(newOpponent.deck);
+    setBattleType('pvp_attack');
+
+    setGameOver(false);
+    setWinner(null);
+    setCheckingIdx(-1);
+    setIsEvaluating(false);
+    setShowOverwhelmingEffect(false);
+    setShowStreakEffect(false);
+    setCurrentWinStreakDisplay(0);
+
+    setIsCoinFlipping(true);
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+    setTimeout(() => {
+      const firstTurn = Math.random() > 0.5 ? 'player' : 'ai';
+      setCoinWinner(firstTurn);
+      setFirstTurn(firstTurn);
+
+      const delay = Math.max(800, 1200 * speedMultiplier);
+      setTimeout(() => {
+        setIsCoinFlipping(false);
+        setCoinWinner(null);
+        startGame(oppChar, firstTurn, false);
+        setGameState('playing');
+      }, delay);
+    }, 800 * speedMultiplier);
+  };
+
   // SCR-02-03: 리벤지 찬스 결제 및 즉시 재대결 핸들러
   const handleActivateRevenge = (method: 'cash' | 'sns') => {
     setShowRevengeChanceModal(false);
@@ -5215,7 +5289,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     handleRematch();
   };
 
+  // 미션 게임 진입: 실제 배틀 개시
   const startMissionCardBattle = (targetCardIndex: number) => {
+    executeActualMissionBattle(targetCardIndex);
+  };
+
+  // 실제 미션 게임 배틀 개시
+  const executeActualMissionBattle = (targetCardIndex: number) => {
     if (setIsAutoBattle) setIsAutoBattle(true);
     if (onStartMobileCardPlay) {
       onStartMobileCardPlay(targetCardIndex);
@@ -6026,6 +6106,26 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       setTimeout(() => {
         playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3'); // Capture/Flip Sound
       }, 150);
+
+      // Rainbow Flip Effect: "Flip!" with rainbow particles for 1 card, "Doble Flip!" with numerous particles for 2+ cards
+      try {
+        const origins: { x: number; y: number }[] = [];
+        const cells = document.querySelectorAll('.grid-cell');
+        flippedIndices.forEach(ni => {
+          const cellEl = cells[ni] as HTMLElement | undefined;
+          if (cellEl) {
+            const rect = cellEl.getBoundingClientRect();
+            origins.push({ x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 });
+          }
+        });
+        triggerRainbowFlip(
+          flippedIndices.length,
+          origins.length > 0 ? origins : undefined,
+          flippedIndices.length <= 1 ? 'Flip!' : 'Doble Flip!'
+        );
+      } catch {
+        triggerRainbowFlip(flippedIndices.length);
+      }
       
       if (flipDetails && flipDetails.length > 0) {
         flipDetails.forEach(detail => {
@@ -6115,7 +6215,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         // ID 381: 아나운서 음성/신스 피드백
         battleAudio.playAnnouncerStinger(flippedIndices.length, false);
         // ID 416: 콤보 플로팅 텍스트
-        setChainComboText(flippedIndices.length >= 3 ? '⚡ MEGA FLIP! ⚡' : '🔥 DOUBLE FLIP! 🔥');
+        setChainComboText(flippedIndices.length >= 3 ? '⚡ MEGA FLIP! ⚡' : '🔥 Doble Flip! 🔥');
         setTimeout(() => setChainComboText(null), 1500);
 
         // ID 411: 판정 수치 비교 툴팁 (400ms 노출)
@@ -16527,6 +16627,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                         />
                       )}
 
+                      {/* Rainbow Flip & Doble Flip Burst Particles & Text Overlay */}
+                      <RainbowFlipEffect isFixed={true} />
+
                       {/* Item 365: 1px Perimeter Ring Timer (BattleTurnRing) */}
                       <div className="absolute inset-0 pointer-events-none rounded-sm border border-slate-700/60 overflow-hidden z-[100]">
                         <div
@@ -18342,14 +18445,18 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       <RotateCcw size={15} />
                       <span>
                         {rematchCountdown !== null
-                          ? (battleType === 'pvp_attack' || activeMissionCardId !== null || activeMissionCardIdRef.current !== null
-                              ? (language === 'ko' ? `⚡ 반복 재전투 (${rematchCountdown}초)` : `⚡ Rematch (${rematchCountdown}s)`)
+                          ? (battleType === 'pvp_attack'
+                              ? (language === 'ko' ? `🔍 새 랭킹 상대 검색 (${rematchCountdown}초)` : `🔍 Find Rival (${rematchCountdown}s)`)
+                              : (activeMissionCardId !== null || activeMissionCardIdRef.current !== null)
+                              ? (language === 'ko' ? `💬 수호자 대사 연출 (${rematchCountdown}초)` : `💬 Dialogue Intro (${rematchCountdown}s)`)
                               : t('rematch_countdown', language)
                                   .replace('{seconds}', String(rematchCountdown))
                                   .replace('{text}', t('rematch', language)))
-                          : (battleType === 'pvp_attack' || activeMissionCardId !== null || activeMissionCardIdRef.current !== null
-                              ? (language === 'ko' ? '⚡ 즉시 재전투' : '⚡ Instant Rematch')
-                              : t('rematch', language))}
+                          : (battleType === 'pvp_attack'
+                              ? (language === 'ko' ? '🔍 새 랭킹 상대 검색 (3초)' : '🔍 Find Rival (3s)')
+                              : (activeMissionCardId !== null || activeMissionCardIdRef.current !== null)
+                              ? (language === 'ko' ? '💬 수호자 대사 후 시작' : '💬 Challenge Dialogue')
+                              : (language === 'ko' ? '⚡ 즉시 재전투' : '⚡ Instant Rematch'))}
                       </span>
                     </button>
                     {setView && winner !== 'player' && activeMissionCardId === null && activeMissionCardIdRef.current === null && (
@@ -18808,6 +18915,37 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         }}
         onClose={() => setShowSpectatorModal(false)}
       />
+
+      {/* 랭킹대전 승패 결정 후 3초 상대 검색 오버레이 */}
+      <RankMatchSearchOverlay
+        isOpen={isRankSearching}
+        language={language}
+        previousOpponentName={lastOpponent?.name}
+        onMatchFound={(newOpponent) => {
+          handleRankMatchFound(newOpponent);
+        }}
+        onCancel={() => {
+          setIsRankSearching(false);
+          handleExitMatch(false);
+        }}
+      />
+
+      {/* 미션 게임 3초 수호자 대사 인트로 오버레이 */}
+      {missionDialogueCardId && (
+        <MissionDialogueIntro
+          isOpen={showMissionDialogue}
+          cardId={missionDialogueCardId}
+          language={language}
+          onComplete={() => {
+            setShowMissionDialogue(false);
+            executeActualMissionBattle(missionDialogueCardId);
+          }}
+          onSkip={() => {
+            setShowMissionDialogue(false);
+            executeActualMissionBattle(missionDialogueCardId);
+          }}
+        />
+      )}
     </div>
   );
 

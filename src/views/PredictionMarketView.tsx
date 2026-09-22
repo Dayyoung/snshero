@@ -11,6 +11,12 @@ import { cn, getAssetUrl } from '../lib/utils';
 import { PageHeader } from '../components/PageHeader';
 import { usePredictionMarkets, Market, PredictionBet } from '../hooks/usePredictionMarkets';
 import { triggerHaptic } from '../lib/haptic';
+import { PredictionBetSlipSheet } from '../components/PredictionBetSlipSheet';
+import { UnderdogInsuranceModal } from '../components/UnderdogInsuranceModal';
+import { PredictionDepthCanvas } from '../components/PredictionDepthCanvas';
+import { PredictionShortsFeed } from '../components/PredictionShortsFeed';
+import { SwipeToBetCard } from '../components/SwipeToBetCard';
+import { InPlayQuickBetModal } from '../components/InPlayQuickBetModal';
 
 interface PredictionMarketViewProps {
   language: Language;
@@ -80,6 +86,18 @@ export const PredictionMarketView: React.FC<PredictionMarketViewProps> = ({
   const [betAmount, setBetAmount] = useState<number>(50);
   const [localAlert, setLocalAlert] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [activeTab, setActiveTab] = useState<'markets' | 'bets' | 'stats'>('markets');
+  
+  // SCR-11-11: Mobile Thumb-Zone Bet Slip Sheet State
+  const [isBetSlipOpen, setIsBetSlipOpen] = useState(false);
+
+  // SCR-11-12: Underdog Insurance Modal State
+  const [isInsuranceModalOpen, setIsInsuranceModalOpen] = useState(false);
+
+  // SCR-07-14: 100dvh Shorts Feed Modal State
+  const [isShortsFeedOpen, setIsShortsFeedOpen] = useState(false);
+
+  // SCR-07-15: In-Play Quick Bet & Cash-Out Modal State
+  const [isInPlayModalOpen, setIsInPlayModalOpen] = useState(false);
   
   // Dopamine Celebratory Modals
   const [betSuccessModal, setBetSuccessModal] = useState<{
@@ -507,6 +525,83 @@ export const PredictionMarketView: React.FC<PredictionMarketViewProps> = ({
           </div>
         </div>
 
+        {/* SCR-11-11 & SCR-11-12 & SCR-07-14 & SCR-07-15: 모바일 퀵 액션 그리드 */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 select-none font-mono">
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic('medium');
+              setIsBetSlipOpen(true);
+            }}
+            className="p-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-none text-left flex items-center justify-between cursor-pointer border border-slate-700 shadow-xs active:scale-[0.98] transition-all"
+          >
+            <div>
+              <div className="text-xs font-black text-amber-400">
+                📱 {language === 'ko' ? '[베팅 슬립]' : '[Bet Slip]'}
+              </div>
+              <div className="text-[9px] text-slate-300">
+                {language === 'ko' ? '원탭 금액 배분' : 'One-tap stakes'}
+              </div>
+            </div>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic('medium');
+              setIsInsuranceModalOpen(true);
+            }}
+            className="p-2.5 bg-amber-50 hover:bg-amber-100 text-amber-950 rounded-none text-left flex items-center justify-between cursor-pointer border border-amber-300 shadow-xs active:scale-[0.98] transition-all"
+          >
+            <div>
+              <div className="text-xs font-black text-amber-900">
+                🛡️ {language === 'ko' ? '[원금 보험]' : '[Insurance]'}
+              </div>
+              <div className="text-[9px] text-amber-800">
+                {language === 'ko' ? '역배 50% 페이백' : '50% refund'}
+              </div>
+            </div>
+          </button>
+
+          {/* SCR-07-14: 100dvh 풀스크린 예측 쇼츠 피드 */}
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic('medium');
+              setIsShortsFeedOpen(true);
+            }}
+            className="p-2.5 bg-indigo-950 hover:bg-indigo-900 text-indigo-100 rounded-none text-left flex items-center justify-between cursor-pointer border border-indigo-500/50 shadow-xs active:scale-[0.98] transition-all"
+          >
+            <div>
+              <div className="text-xs font-black text-indigo-300">
+                ⚡ {language === 'ko' ? '[5초 쇼츠]' : '[Shorts]'}
+              </div>
+              <div className="text-[9px] text-indigo-200/80">
+                {language === 'ko' ? '초간단 전력 확인' : '5s Quick Picks'}
+              </div>
+            </div>
+          </button>
+
+          {/* SCR-07-15: 라이브 5분 인플레이 퀵 베팅 */}
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic('medium');
+              setIsInPlayModalOpen(true);
+            }}
+            className="p-2.5 bg-rose-950 hover:bg-rose-900 text-rose-100 rounded-none text-left flex items-center justify-between cursor-pointer border border-rose-500/50 shadow-xs active:scale-[0.98] transition-all"
+          >
+            <div>
+              <div className="text-xs font-black text-rose-400">
+                🔴 {language === 'ko' ? '[5분 인플레이]' : '[In-Play]'}
+              </div>
+              <div className="text-[9px] text-rose-200/80">
+                {language === 'ko' ? '실시간 퀵 예측 & 조기 정산' : 'Live Bet & Cash-Out'}
+              </div>
+            </div>
+          </button>
+        </div>
+
         {/* SCR-07 모바일 원터치 서브 탭바 */}
         <div className="bg-slate-200/60 p-1 rounded-sm flex items-center gap-1 font-mono text-xs select-none">
           <button
@@ -604,6 +699,45 @@ export const PredictionMarketView: React.FC<PredictionMarketViewProps> = ({
                 </button>
               )}
             </div>
+
+            {/* SCR-07-13: WebGL 60fps GPU 가속 실시간 베팅 뎁스 차트 */}
+            <div className="mt-3">
+              <PredictionDepthCanvas
+                bids={[
+                  { price: 0.62, volume: 1540 },
+                  { price: 0.60, volume: 2200 },
+                  { price: 0.58, volume: 3100 },
+                  { price: 0.55, volume: 4500 },
+                  { price: 0.50, volume: 6200 },
+                ]}
+                asks={[
+                  { price: 0.65, volume: 1200 },
+                  { price: 0.68, volume: 1950 },
+                  { price: 0.70, volume: 2800 },
+                  { price: 0.75, volume: 3900 },
+                  { price: 0.80, volume: 5100 },
+                ]}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* SCR-07-14: 좌우 스와이프 스마트 픽 승부예측 카드 */}
+        {activeTab === 'markets' && hotMatch && (
+          <div className="my-2">
+            <SwipeToBetCard
+              id={hotMatch.id}
+              title={hotMatch.question}
+              category="SMART PICK 1초 스와이프"
+              homeTeam="YES (승리)"
+              awayTeam="NO (패배)"
+              homeOdds={hotMatch.outcomePrices[0] > 0 ? 1 / hotMatch.outcomePrices[0] : 1.85}
+              awayOdds={hotMatch.outcomePrices[1] > 0 ? 1 / hotMatch.outcomePrices[1] : 2.10}
+              language={language}
+              onBet={(choice) => {
+                handleOpenBetModal(hotMatch, choice === 'home' ? 'Yes' : 'No');
+              }}
+            />
           </div>
         )}
 
@@ -1572,6 +1706,96 @@ export const PredictionMarketView: React.FC<PredictionMarketViewProps> = ({
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* SCR-11-11: Mobile Thumb-Zone Bet Slip Sheet */}
+      <PredictionBetSlipSheet
+        isOpen={isBetSlipOpen}
+        onClose={() => setIsBetSlipOpen(false)}
+        selectedMarket={selectedMarket}
+        userSns={sns}
+        onConfirmBet={(marketId, outcome, amount) => {
+          placeBet(marketId, outcome, amount);
+          setIsBetSlipOpen(false);
+          triggerHaptic('heavy');
+        }}
+      />
+
+      {/* SCR-11-12: Underdog Insurance Modal */}
+      <UnderdogInsuranceModal
+        isOpen={isInsuranceModalOpen}
+        onClose={() => setIsInsuranceModalOpen(false)}
+        selectedMarket={selectedMarket}
+        onApplyInsurance={(coverageRate) => {
+          setIsInsuranceModalOpen(false);
+          triggerHaptic('heavy');
+          setLocalAlert({
+            type: 'success',
+            text: language === 'ko'
+              ? `🛡️ ${coverageRate}% 언더독 원금 보장 보험이 적용되었습니다!`
+              : `🛡️ ${coverageRate}% Underdog Insurance applied!`
+          });
+        }}
+      />
+
+      {/* SCR-07-14: 100dvh 풀스크린 예측 쇼츠 피드 */}
+      <PredictionShortsFeed
+        isOpen={isShortsFeedOpen}
+        onClose={() => setIsShortsFeedOpen(false)}
+        language={language}
+        matches={markets.slice(0, 5).map((m, idx) => ({
+          id: m.id,
+          title: m.question,
+          videoThumb: '',
+          keyPoint: '최근 5경기 4승 1패 상승세 유지, 주전 공격진 복귀로 공격력 극대화',
+          winRate: Math.round((m.outcomePrices[0] || 0.5) * 100),
+          aiPrediction: `${m.question.split('vs')[0] || 'HOME'} 팀 우세`,
+          homeTeam: 'YES',
+          awayTeam: 'NO',
+        }))}
+        onSelectBet={(matchId, choice) => {
+          const target = markets.find(m => m.id === matchId);
+          if (target) {
+            handleOpenBetModal(target, choice === 'home' ? 'Yes' : 'No');
+          }
+        }}
+      />
+
+      {/* SCR-07-15: 라이브 인플레이 5분 퀵 예측 & 조기 정산 (Cash-Out) 모달 */}
+      <InPlayQuickBetModal
+        isOpen={isInPlayModalOpen}
+        onClose={() => setIsInPlayModalOpen(false)}
+        matchTitle={hotMatch ? hotMatch.question : '전북 현대 vs 울산 HD (후반 72분)'}
+        currentScore="1 - 1"
+        activeBetAmount={betAmount}
+        language={language}
+        onQuickBet={(option, amount) => {
+          if (sns < amount) {
+            setLocalAlert({ type: 'error', text: t('insufficient_sns', language) });
+            return;
+          }
+          updateSns(-amount, `[인플레이 5분 퀵 예측] ${option} (${amount} SNS)`);
+          triggerHaptic('heavy');
+          playSfx('https://assets.mixkit.co/active_storage/sfx/2020/2020-preview.mp3');
+          setLocalAlert({
+            type: 'success',
+            text: language === 'ko'
+              ? `🔴 [인플레이 퀵 베팅 접수] 5분 내 '${option}'에 ${amount} SNS 베팅 완료!`
+              : `🔴 [In-Play Placed] Bet ${amount} SNS on '${option}'!`,
+          });
+          setIsInPlayModalOpen(false);
+        }}
+        onCashOut={(cashOutAmount) => {
+          updateSns(cashOutAmount, '[패배 위기 조기 정산 Cash-Out 환급]');
+          triggerHaptic('heavy');
+          playSfx('https://assets.mixkit.co/active_storage/sfx/2020/2020-preview.mp3');
+          setLocalAlert({
+            type: 'success',
+            text: language === 'ko'
+              ? `🛡️ [조기 정산 완료] 손실을 방어하고 ${cashOutAmount} SNS를 즉시 회수했습니다!`
+              : `🛡️ [Cash-Out Successful] Reclaimed ${cashOutAmount} SNS!`,
+          });
+        }}
+      />
     </div>
   );
 };

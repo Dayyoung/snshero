@@ -980,23 +980,23 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
       />
 
       {/* Season 1 Leaderboard Countdown & Rank Rewards Banner (Item 28) */}
-      <div className="mb-4 p-4 rounded-2xl bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-amber-500/10 border border-amber-400/30 backdrop-blur-xs flex flex-wrap items-center justify-between gap-3 shadow-md">
+      <div className="mb-4 p-3.5 rounded-none bg-[#201d1d]/5 dark:bg-white/5 border border-[rgba(15,0,0,0.12)] dark:border-white/10 flex flex-wrap items-center justify-between gap-3 font-mono">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-amber-500 text-slate-950 flex items-center justify-center shrink-0 shadow-sm">
-            <Clock size={22} className="animate-pulse" />
+          <div className="w-8 h-8 rounded-none bg-[#201d1d] text-[#fdfcfc] dark:bg-white dark:text-[#201d1d] flex items-center justify-center shrink-0 text-sm font-black">
+            <Clock size={16} />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-black uppercase text-amber-500 tracking-wider">
+              <span className="text-[11px] font-black uppercase text-[#201d1d] dark:text-amber-400 tracking-wider">
                 {language === 'ko' ? '시즌 1 라이브 랭킹' : 'SEASON 1 LIVE LEADERBOARD'}
               </span>
-              <span className="text-[10px] font-black px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-600 border border-amber-400/30">
-                OFFICIAL
+              <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-none bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/40">
+                [LIVE]
               </span>
             </div>
-            <p className="text-sm font-black text-slate-900 dark:text-amber-100 flex items-center gap-1.5 mt-0.5">
-              <span>{language === 'ko' ? '시즌 종료까지:' : 'Season Ends In:'}</span>
-              <span className="font-mono text-amber-600 dark:text-amber-300 tracking-tight">
+            <p className="text-xs font-bold text-[#201d1d] dark:text-stone-300 flex items-center gap-1.5 mt-0.5">
+              <span className="opacity-70">{language === 'ko' ? '종료까지:' : 'Ends In:'}</span>
+              <span className="font-black text-amber-700 dark:text-amber-400">
                 {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m {timeLeft.seconds}s
               </span>
             </p>
@@ -1008,10 +1008,10 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
             playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
             setShowRankRewardsModal(true);
           }}
-          className="px-4 py-2 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-black rounded-xl text-xs shadow-md shadow-amber-500/20 active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer shrink-0"
+          className="min-h-[36px] px-3 py-1.5 bg-[#201d1d] hover:bg-[#201d1d]/85 text-[#fdfcfc] dark:bg-white dark:text-[#201d1d] font-bold rounded-sm text-xs border border-transparent active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer shrink-0"
         >
-          <Crown size={15} />
-          <span>{language === 'ko' ? '시즌 보상 안내' : 'Rank Rewards'}</span>
+          <Crown size={14} />
+          <span>{language === 'ko' ? '[시즌 보상 안내]' : '[Rank Rewards]'}</span>
         </button>
       </div>
 
@@ -1056,128 +1056,149 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
         )}
       </div>
 
-      {/* Matching Controls */}
-      <div className="mb-6 font-sans space-y-3">
-        {/* 실시간 PvP 대전 — 메인 CTA */}
-        <button
-          onClick={handleRealTimePvp}
-          className="w-full bg-gradient-to-r from-red-600 to-rose-600 text-white font-bold py-4 rounded-xl shadow-lg shadow-red-500/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer hover:from-red-500 hover:to-rose-500 text-sm border border-red-500/30 touch-target"
-        >
-          <Zap size={18} className="shrink-0" />
-          <span>{t('pvp_matchmaking_title', language)}</span>
-        </button>
+      {/* Categorized Matching Control Hub (Progressive Disclosure & Flat Monospace) */}
+      <div className="mb-5 font-mono">
+        <div className="p-3 bg-white dark:bg-stone-900 border border-[rgba(15,0,0,0.12)] dark:border-white/10 rounded-none space-y-2.5">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-black uppercase text-[#201d1d] dark:text-white flex items-center gap-1.5">
+              <span>⚔️</span>
+              <span>{language === 'ko' ? '대전 매치메이킹' : 'Matchmaking Hub'}</span>
+            </span>
+            <span className="text-[10px] text-stone-500">
+              {language === 'ko' ? '원클릭 즉시 매칭' : 'One-Click Match'}
+            </span>
+          </div>
 
-        <div className="grid grid-cols-2 gap-3">
-          <button
-            onClick={handleOptimalBattle}
-            className="bg-indigo-600 text-white font-bold py-3.5 rounded-lg shadow-sm active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer hover:bg-indigo-500 text-xs sm:text-sm border border-indigo-500/20 touch-target"
-          >
-            <Swords size={16} />
-            <span>{t('optimal_battle', language)}</span>
-          </button>
-          <button
-            onClick={handleNearbyBattle}
-            className="bg-emerald-600 text-white font-bold py-3.5 rounded-lg shadow-sm active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer hover:bg-emerald-500 text-xs sm:text-sm border border-emerald-500/20 touch-target"
-          >
-            <Wifi size={16} />
-            <span>{t('nearby_battle', language)}</span>
-          </button>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            {/* 실시간 PvP 대전 */}
+            <button
+              onClick={handleRealTimePvp}
+              className="min-h-[44px] px-3 py-2 bg-[#201d1d] hover:bg-black text-[#fdfcfc] dark:bg-white dark:text-[#201d1d] font-black text-xs uppercase flex items-center justify-center gap-1.5 rounded-sm active:scale-95 transition-all cursor-pointer border border-transparent"
+            >
+              <Zap size={14} />
+              <span>{t('pvp_matchmaking_title', language)}</span>
+            </button>
+
+            {/* 최적 자동 대결 */}
+            <button
+              onClick={handleOptimalBattle}
+              className="min-h-[44px] px-3 py-2 bg-stone-100 hover:bg-stone-200 text-[#201d1d] dark:bg-stone-800 dark:hover:bg-stone-700 dark:text-stone-200 font-black text-xs uppercase flex items-center justify-center gap-1.5 rounded-sm border border-stone-300 dark:border-stone-700 active:scale-95 transition-all cursor-pointer"
+            >
+              <Swords size={14} />
+              <span>{t('optimal_battle', language)}</span>
+            </button>
+
+            {/* 근거리 대결 */}
+            <button
+              onClick={handleNearbyBattle}
+              className="min-h-[44px] px-3 py-2 bg-stone-100 hover:bg-stone-200 text-[#201d1d] dark:bg-stone-800 dark:hover:bg-stone-700 dark:text-stone-200 font-black text-xs uppercase flex items-center justify-center gap-1.5 rounded-sm border border-stone-300 dark:border-stone-700 active:scale-95 transition-all cursor-pointer"
+            >
+              <Wifi size={14} />
+              <span>{t('nearby_battle', language)}</span>
+            </button>
+          </div>
         </div>
       </div>
 
       {/* 내 순위 요약 헤더 */}
       {user && user.uid !== 'guest-id' && (
-        <div className="grid grid-cols-3 gap-3 mb-6 font-sans">
+        <div className="grid grid-cols-3 gap-2 mb-5 font-mono">
           <div className={cn(
-            "p-4 rounded-2xl shadow-md text-center hover:border-indigo-500/20 transition-all border",
+            "p-3 rounded-none text-center border",
             (theme === 'dark' || theme === 'metal') 
-              ? "bg-slate-800 border-white/10" 
-              : "bg-white border-slate-200/80"
+              ? "bg-slate-900 border-white/10" 
+              : "bg-white border-[rgba(15,0,0,0.12)]"
           )}>
-            <div className="text-[10px] font-bold text-slate-300 uppercase tracking-wider">{t('global', language)}</div>
-            <div className={cn("text-2xl font-extrabold mt-1", (theme === 'dark' || theme === 'metal') ? "text-white" : "text-slate-800")}>
+            <div className="text-[10px] font-bold text-stone-500 uppercase tracking-wider">{t('global', language)}</div>
+            <div className={cn("text-xl font-black mt-0.5", (theme === 'dark' || theme === 'metal') ? "text-white" : "text-slate-900")}>
               {myGlobalRank ? `#${myGlobalRank}` : t('out_of_50', language)}
             </div>
           </div>
           <div className={cn(
-            "p-4 rounded-2xl shadow-md text-center hover:border-indigo-500/20 transition-all border",
+            "p-3 rounded-none text-center border",
             (theme === 'dark' || theme === 'metal') 
-              ? "bg-slate-800 border-white/10" 
-              : "bg-white border-slate-200/80"
+              ? "bg-slate-900 border-white/10" 
+              : "bg-white border-[rgba(15,0,0,0.12)]"
           )}>
-            <div className="text-[10px] font-bold text-slate-300 uppercase tracking-wider">{t('weekly', language)}</div>
-            <div className="text-2xl font-extrabold text-blue-400 mt-1 drop-shadow-[0_0_8px_rgba(96,165,250,0.5)]">
+            <div className="text-[10px] font-bold text-stone-500 uppercase tracking-wider">{t('weekly', language)}</div>
+            <div className={cn("text-xl font-black mt-0.5", (theme === 'dark' || theme === 'metal') ? "text-sky-400" : "text-sky-700")}>
               {myWeeklyRank ? `#${myWeeklyRank}` : t('out_of_50', language)}
             </div>
           </div>
           <div className={cn(
-            "p-4 rounded-2xl shadow-md text-center hover:border-indigo-500/20 transition-all border",
+            "p-3 rounded-none text-center border",
             (theme === 'dark' || theme === 'metal') 
-              ? "bg-slate-800 border-white/10" 
-              : "bg-white border-slate-200/80"
+              ? "bg-slate-900 border-white/10" 
+              : "bg-white border-[rgba(15,0,0,0.12)]"
           )}>
-            <div className="text-[10px] font-bold text-slate-300 uppercase tracking-wider">{t('monthly', language)}</div>
-            <div className="text-2xl font-extrabold text-purple-400 mt-1 drop-shadow-[0_0_8px_rgba(192,132,252,0.5)]">
+            <div className="text-[10px] font-bold text-stone-500 uppercase tracking-wider">{t('monthly', language)}</div>
+            <div className={cn("text-xl font-black mt-0.5", (theme === 'dark' || theme === 'metal') ? "text-purple-400" : "text-purple-700")}>
               {myMonthlyRank ? `#${myMonthlyRank}` : t('out_of_50', language)}
             </div>
           </div>
         </div>
       )}
 
-      {/* Tabs for Ranking Type */}
+      {/* Unified Ranking Filter & Sort Control Hub (Merged for Clarity & Flat Monospace) */}
       <div className={cn(
-        "flex gap-1 mb-4 p-1 border rounded-xl font-sans",
-        (theme === 'dark' || theme === 'metal') ? "bg-slate-950 border-white/5" : "bg-slate-100 border-slate-200"
+        "mb-4 p-3 rounded-none border font-mono space-y-2.5",
+        (theme === 'dark' || theme === 'metal') ? "bg-slate-900 text-white border-white/10" : "bg-white text-slate-800 border-[rgba(15,0,0,0.12)]"
       )}>
-        {(['global', 'weekly', 'monthly'] as RankingType[]).map((type) => (
-          <button
-            key={type}
-            onClick={() => handleTypeChange(type)}
-            className={cn(
-              "flex-1 min-h-11 px-2 py-2 text-xs sm:text-sm font-bold rounded-lg transition-all cursor-pointer border touch-target",
-              rankingType === type 
-                ? ((theme === 'dark' || theme === 'metal') ? "bg-slate-800 text-white border-white/10 shadow-md" : "bg-white text-slate-850 border-slate-250/80 shadow-xs")
-                : ((theme === 'dark' || theme === 'metal') ? "text-slate-400 hover:bg-white/5 border-transparent" : "text-slate-500 hover:bg-white/50 border-transparent")
-            )}
-          >
-            {type === 'global' ? t('global', language) : (type === 'weekly' ? t('weekly', language) : t('monthly', language))}
-          </button>
-        ))}
-      </div>
+        {/* Row 1: Ranking Period Type */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <span className="text-[11px] font-black uppercase text-stone-500 shrink-0">
+            {language === 'ko' ? '[랭킹 기간]' : '[Period]'}
+          </span>
+          <div className="flex gap-1.5 overflow-x-auto no-scrollbar flex-1 sm:justify-end">
+            {(['global', 'weekly', 'monthly'] as RankingType[]).map((type) => (
+              <button
+                key={type}
+                onClick={() => handleTypeChange(type)}
+                className={cn(
+                  "min-h-[36px] px-3 py-1.5 text-xs font-bold rounded-sm transition-all cursor-pointer border whitespace-nowrap",
+                  rankingType === type 
+                    ? "bg-[#201d1d] text-[#fdfcfc] dark:bg-white dark:text-[#201d1d] border-transparent font-black"
+                    : "bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 border-stone-200 dark:border-stone-700 hover:border-stone-400"
+                )}
+              >
+                {type === 'global' ? t('global', language) : (type === 'weekly' ? t('weekly', language) : t('monthly', language))}
+              </button>
+            ))}
+          </div>
+        </div>
 
-      <div className={cn(
-        "ollama-panel mb-6 font-sans border",
-        (theme === 'dark' || theme === 'metal') ? "bg-slate-900 text-white border-none shadow-md" : "bg-white text-slate-800 border-slate-150 shadow-xs"
-      )}>
-        <div className="flex items-center gap-2 mb-3">
-          <Users size={16} className="text-blue-400" />
-          <h2 className={cn("text-xs sm:text-sm font-bold tracking-normal", (theme === 'dark' || theme === 'metal') ? "text-white" : "text-slate-800")}>{t('sort_criteria', language)}</h2>
+        {/* Row 2: Sort Criteria */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2 border-t border-[rgba(15,0,0,0.08)] dark:border-white/10">
+          <span className="text-[11px] font-black uppercase text-stone-500 shrink-0">
+            {language === 'ko' ? '[정렬 기준]' : '[Sort Criteria]'}
+          </span>
+          <div className="flex gap-1.5 flex-1 sm:justify-end">
+            <button 
+              onClick={() => handleSortChange('winRate')}
+              className={cn(
+                "min-h-[36px] flex-1 sm:flex-none px-3 py-1.5 text-xs font-bold rounded-sm border transition-all cursor-pointer",
+                sortBy === 'winRate' 
+                  ? "bg-[#201d1d] text-[#fdfcfc] dark:bg-white dark:text-[#201d1d] border-transparent font-black" 
+                  : "bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 border-stone-200 dark:border-stone-700 hover:border-stone-400"
+              )}
+            >
+              {t('win_rate', language)}
+            </button>
+            <button 
+              onClick={() => handleSortChange('wins')}
+              className={cn(
+                "min-h-[36px] flex-1 sm:flex-none px-3 py-1.5 text-xs font-bold rounded-sm border transition-all cursor-pointer",
+                sortBy === 'wins' 
+                  ? "bg-[#201d1d] text-[#fdfcfc] dark:bg-white dark:text-[#201d1d] border-transparent font-black" 
+                  : "bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 border-stone-200 dark:border-stone-700 hover:border-stone-400"
+              )}
+            >
+              {t('most_wins', language)}
+            </button>
+          </div>
         </div>
-        <div className="flex gap-2">
-          <button 
-            onClick={() => handleSortChange('winRate')}
-            className={cn(
-              "flex-1 min-h-11 px-2 py-2.5 text-xs sm:text-sm font-bold rounded-lg border transition-all cursor-pointer touch-target",
-              sortBy === 'winRate' 
-                ? "bg-blue-600 border-blue-500 text-white shadow-sm" 
-                : ((theme === 'dark' || theme === 'metal') ? "bg-slate-950 border-white/5 text-slate-400 hover:opacity-75" : "bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100")
-            )}
-          >
-            {t('win_rate', language)}
-          </button>
-          <button 
-            onClick={() => handleSortChange('wins')}
-            className={cn(
-              "flex-1 min-h-11 px-2 py-2.5 text-xs sm:text-sm font-bold rounded-xl border transition-all cursor-pointer touch-target",
-              sortBy === 'wins' 
-                ? "bg-blue-600 border-blue-400 text-white shadow-[0_0_15px_rgba(59,130,246,0.4)]" 
-                : ((theme === 'dark' || theme === 'metal') ? "bg-slate-950 border-white/5 text-slate-400 hover:opacity-75" : "bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100")
-            )}
-          >
-            {t('most_wins', language)}
-          </button>
-        </div>
-        <p className="text-[10px] mt-3 opacity-40 italic">
+
+        <p className="text-[10px] text-stone-400 dark:text-stone-500 italic pt-1">
           {t('guest_excluded', language)}
         </p>
       </div>
