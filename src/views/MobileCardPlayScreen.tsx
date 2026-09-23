@@ -18,6 +18,8 @@ import { cn, getCardSpriteStyle } from '../lib/utils';
 import { AdSenseBanner } from '../components/AdSenseBanner';
 import { CardItem } from '../components/CardItem';
 import { t } from '../lib/i18n';
+import { CardFlipParticleEffect, FlipEffectTrigger } from '../components/CardFlipParticleEffect';
+import { BattleIntermissionScreen } from '../components/BattleIntermissionScreen';
 
 export interface MobileCardPlayScreenProps {
   playerDeck?: CardData[];
@@ -44,6 +46,7 @@ export interface MobileCardPlayScreenProps {
   tutorialStep?: number;
   onTutorialToShop?: () => void;
   towerFloor?: number | null;
+  isRankingMatch?: boolean;
 }
 
 export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
@@ -69,7 +72,8 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
   isTutorialMode = false,
   tutorialStep = 0,
   onTutorialToShop,
-  towerFloor = null
+  towerFloor = null,
+  isRankingMatch
 }) => {
   // ─── Sound FX Helper ──────────────────────────────────────────────
   const [isMuted, setIsMuted] = useState(false);
@@ -103,6 +107,12 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
   const [matchResultReported, setMatchResultReported] = useState(false);
   const [rematchCountdown, setRematchCountdown] = useState<number | null>(null);
   const [tutorialShopCountdown, setTutorialShopCountdown] = useState<number | null>(null);
+
+  // 사용자 요청: Flip! & Doble Flip! 무지개색 파티클 이펙트
+  const [flipEffectTrigger, setFlipEffectTrigger] = useState<FlipEffectTrigger | null>(null);
+
+  // 사용자 요청: 랭킹대전 3초 검색 & 미션 게임 3초 대사 인터미션
+  const [intermissionMode, setIntermissionMode] = useState<'ranking_search' | 'mission_dialogue' | null>(null);
 
   // Auto Battle & Speed (시작 시 자동전투 시작)
   const [isAutoBattle, setIsAutoBattle] = useState(initialAutoBattle !== false);
@@ -142,6 +152,16 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     }
     return generateAiName();
   }, [opponentName, missionCardData, language]);
+
+  // 배틀 모드 판별: 미션 게임 vs 랭킹 대전
+  const isMissionBattle = useMemo(() => Boolean(targetCardId && targetCardId > 0), [targetCardId]);
+  const isRankingBattle = useMemo(() => {
+    if (isRankingMatch !== undefined) return isRankingMatch;
+    if (isMissionBattle) return false;
+    if (towerFloor !== null) return false;
+    if (opponentName && (opponentName.includes('스토리') || opponentName.includes('보스') || opponentName.includes('토너먼트'))) return false;
+    return Boolean(opponentCustomDeck || (opponentName && !opponentName.startsWith('Bot ')));
+  }, [isRankingMatch, isMissionBattle, towerFloor, opponentName, opponentCustomDeck]);
 
   // Deck generation helper
   const initMatchDecks = useCallback(() => {
@@ -323,7 +343,17 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     if (flippedIndices.length > 0) {
       setFlippedSlots(flippedIndices);
       playSound('flip');
+
+      // 사용자 요청: 카드가 뒤짚어 질때 Flip! 텍스트와 무지개색 터지는 파티클 표시. 1개 이상 뒤짚힐 경우 Doble Flip! 과 수많은 파티클 표시.
+      // 1개: Flip!, 2개 이상: Doble Flip!
+      setFlipEffectTrigger({
+        id: Date.now() + Math.random(),
+        count: flippedIndices.length,
+        slotIndices: flippedIndices,
+      });
+
       setTimeout(() => setFlippedSlots([]), 800);
+      setTimeout(() => setFlipEffectTrigger(null), 2000);
     }
 
     setBoard(updatedBoard);
@@ -688,19 +718,30 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     setRematchCountdown(3);
   }, [gameOver, winner, isTutorialMode, tutorialStep, autoCloseOnComplete, towerBossClearModal]);
 
-  // 3초 카운트다운 감소 및 0초 도달 시 자동 재대결
+  // 사용자 요청: 랭킹대전 승패 결정 시 바로 재시작하지 않고 다시 3초 검색하고 시작, 미션 게임도 3초 대사 보여주고 시작
+  const startNextBattleWithIntermission = useCallback(() => {
+    setRematchCountdown(null);
+    if (isRankingBattle) {
+      setIntermissionMode('ranking_search');
+    } else if (isMissionBattle) {
+      setIntermissionMode('mission_dialogue');
+    } else {
+      initMatchDecks();
+    }
+  }, [isRankingBattle, isMissionBattle, initMatchDecks]);
+
+  // 3초 카운트다운 감소 및 0초 도달 시 인터미션을 거쳐 시작
   useEffect(() => {
     if (rematchCountdown === null) return;
     if (rematchCountdown <= 0) {
-      setRematchCountdown(null);
-      initMatchDecks();
+      startNextBattleWithIntermission();
       return;
     }
     const timer = setTimeout(() => {
       setRematchCountdown(prev => (prev !== null ? prev - 1 : null));
     }, 1000);
     return () => clearTimeout(timer);
-  }, [rematchCountdown, initMatchDecks]);
+  }, [rematchCountdown, startNextBattleWithIntermission]);
 
   // 튜토리얼 모드: 카운트다운 후 상점으로 이동
   useEffect(() => {
@@ -898,6 +939,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
               return (
                 <div
                   key={`board-slot-${idx}`}
+                  id={`board-slot-${idx}`}
                   onClick={() => {
                     if (turn === 'player' && !isOccupied && isSelectedHand) {
                       handlePlaceCard(idx, isSelectedHand, true);
@@ -1205,15 +1247,23 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                 </div>
               )}
 
-              {/* 2) 일반/미션 모드: 3초 카운터 후에 다시 카드 플레이 */}
+              {/* 2) 일반/미션/랭킹 모드: 3초 카운터 후에 인터미션/재시작 안내 */}
               {!(isTutorialMode || (tutorialStep > 0 && tutorialStep <= 7)) && rematchCountdown !== null && rematchCountdown > 0 && (
                 <div className="w-full my-1.5 p-2 bg-emerald-950/80 border border-emerald-500/40 rounded-xs flex flex-col items-center justify-center gap-1.5 font-mono shadow-md">
                   <div className="flex items-center gap-2 text-xs font-black text-emerald-400 tracking-wider">
                     <RotateCcw size={14} className="animate-spin text-emerald-400 shrink-0" />
                     <span>
-                      {language === 'ko'
-                        ? `⏱️ [ ${rematchCountdown}초 ] 후 다시 카드 플레이...`
-                        : `⏱️ Restarting in [ ${rematchCountdown}s ]...`}
+                      {isRankingBattle
+                        ? (language === 'ko'
+                            ? `🔍 [ ${rematchCountdown}초 ] 후 3초 상대 검색 시작...`
+                            : `🔍 Starting 3s search in [ ${rematchCountdown}s ]...`)
+                        : isMissionBattle
+                        ? (language === 'ko'
+                            ? `💬 [ ${rematchCountdown}초 ] 후 3초 결투 대사 시작...`
+                            : `💬 Starting 3s dialogue in [ ${rematchCountdown}s ]...`)
+                        : (language === 'ko'
+                            ? `⏱️ [ ${rematchCountdown}초 ] 후 다시 카드 플레이...`
+                            : `⏱️ Restarting in [ ${rematchCountdown}s ]...`)}
                     </span>
                   </div>
                   <div className="w-full bg-stone-900 h-1.5 rounded-full overflow-hidden border border-emerald-500/30">
@@ -1250,15 +1300,16 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                       type="button"
                       onClick={() => {
                         playSound('tap');
-                        setRematchCountdown(null);
-                        initMatchDecks();
+                        startNextBattleWithIntermission();
                       }}
                       className="flex-1 py-2 bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-black text-xs uppercase rounded-xs transition-transform active:scale-95 cursor-pointer flex items-center justify-center gap-1"
                     >
                       <RefreshCw size={13} />
                       <span>
-                        {rematchCountdown !== null
-                          ? (language === 'ko' ? `즉시 시작 (${rematchCountdown}s)` : `Play Now (${rematchCountdown}s)`)
+                        {isRankingBattle 
+                          ? (language === 'ko' ? '검색 후 대전' : 'Search & Duel')
+                          : isMissionBattle 
+                          ? (language === 'ko' ? '대사 후 대전' : 'Dialogue & Duel')
                           : (language === 'ko' ? '재대결' : 'Rematch')}
                       </span>
                     </button>
@@ -1368,6 +1419,28 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
           </motion.div>
         )}
       </AnimatePresence>
+      {/* ─── Flip! & Doble Flip! 무지개색 파티클 이펙트 ─────────────── */}
+      <CardFlipParticleEffect trigger={flipEffectTrigger} />
+
+      {/* ─── 랭킹 3초 검색 & 미션 3초 대사 인터미션 오버레이 ─────────── */}
+      {intermissionMode && (
+        <BattleIntermissionScreen
+          mode={intermissionMode}
+          targetCard={missionCardData ? syncCardWithDatabase({ ...missionCardData, owner: 'ai' } as any) : (board.find(c => c !== null) ?? null)}
+          targetCardId={targetCardId}
+          opponentName={effectiveOpponentName}
+          lastResult={winner === 'player' ? 'win' : (winner === 'ai' ? 'loss' : 'draw')}
+          language={language}
+          onComplete={() => {
+            setIntermissionMode(null);
+            initMatchDecks();
+          }}
+          onCancel={() => {
+            setIntermissionMode(null);
+            handleExitGame();
+          }}
+        />
+      )}
     </div>
   );
 };

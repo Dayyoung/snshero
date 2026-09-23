@@ -27,12 +27,16 @@ export interface DeckCommandHubProps {
   onAutoFillOptimalSynergy: () => void;
   onCompareCards: () => void;
   onOpenSynergyModal: () => void;
+  onOpenAutoBuilder?: () => void;
+  onOpenSynergyMastery?: () => void;
   // Inventory & Growth Actions
   onOpenInventory: () => void;
   onOpenEquipment: () => void;
   onOpenCombine: () => void;
   onOpenHeroNurture: () => void;
   onOpenCardUpgrade?: () => void;
+  onOpenInventoryExpansion?: () => void;
+  maxInventorySlots?: number;
   // Presets & Tools Actions
   activeDeckPreset: number;
   onSwitchDeckPreset: (presetNum: number) => void;
@@ -55,11 +59,15 @@ export const DeckCommandHub: React.FC<DeckCommandHubProps> = ({
   onAutoFillOptimalSynergy,
   onCompareCards,
   onOpenSynergyModal,
+  onOpenAutoBuilder,
+  onOpenSynergyMastery,
   onOpenInventory,
   onOpenEquipment,
   onOpenCombine,
   onOpenHeroNurture,
   onOpenCardUpgrade,
+  onOpenInventoryExpansion,
+  maxInventorySlots,
   activeDeckPreset,
   onSwitchDeckPreset,
   onOpenPresetCode,
@@ -131,7 +139,7 @@ export const DeckCommandHub: React.FC<DeckCommandHubProps> = ({
       <div className="p-2 sm:p-3 bg-stone-900/90 min-h-[110px]">
         {/* TAB 1: AI Lineup */}
         {activeTab === 'ai' && (
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             <button
               type="button"
               onClick={onOptimizeDeck}
@@ -161,6 +169,40 @@ export const DeckCommandHub: React.FC<DeckCommandHubProps> = ({
                 {language === 'ko' ? '속성·팩션 공명' : 'Element Resonate'}
               </span>
             </button>
+
+            {onOpenAutoBuilder && (
+              <button
+                type="button"
+                onClick={onOpenAutoBuilder}
+                className="min-h-[48px] p-2 bg-amber-950/40 hover:bg-amber-900/50 text-amber-200 border border-amber-500/40 rounded-sm flex flex-col justify-center items-start text-left cursor-pointer transition-all active:scale-[0.98]"
+                title={language === 'ko' ? '1-Tap 원클릭 스마트 AI 덱 빌더' : '1-Tap AI Deck Builder'}
+              >
+                <div className="flex items-center gap-1.5 font-bold text-xs text-amber-300">
+                  <Sparkles size={14} className="text-amber-400" />
+                  <span>{language === 'ko' ? '1-Tap AI 덱' : '1-Tap AI Deck'}</span>
+                </div>
+                <span className="text-[10px] text-amber-400/70 mt-0.5">
+                  {language === 'ko' ? '원클릭 맞춤 덱' : 'Smart Builder'}
+                </span>
+              </button>
+            )}
+
+            {onOpenSynergyMastery && (
+              <button
+                type="button"
+                onClick={onOpenSynergyMastery}
+                className="min-h-[48px] p-2 bg-indigo-900/50 hover:bg-indigo-800/60 text-indigo-200 border border-indigo-600/50 rounded-sm flex flex-col justify-center items-start text-left cursor-pointer transition-all active:scale-[0.98]"
+                title={language === 'ko' ? '시너지 콤보 트리 및 마스터리' : 'Synergy Mastery Tree'}
+              >
+                <div className="flex items-center gap-1.5 font-bold text-xs text-indigo-200">
+                  <Flame size={14} className="text-pink-400" />
+                  <span>{language === 'ko' ? '시너지 트리' : 'Synergy Tree'}</span>
+                </div>
+                <span className="text-[10px] text-indigo-300/70 mt-0.5">
+                  {language === 'ko' ? '콤보 해금 & 마스터리' : 'Combos & Tree'}
+                </span>
+              </button>
+            )}
 
             <button
               type="button"
@@ -286,6 +328,25 @@ export const DeckCommandHub: React.FC<DeckCommandHubProps> = ({
                   {language === 'ko' ? '호감도 & 돌봄' : 'Bond & Training'}
                 </span>
               </button>
+
+              {onOpenInventoryExpansion && (
+                <button
+                  type="button"
+                  onClick={onOpenInventoryExpansion}
+                  className="col-span-2 sm:col-span-4 min-h-[44px] p-2 bg-stone-950/70 hover:bg-stone-800 text-stone-200 border border-stone-700 rounded-sm flex items-center justify-between cursor-pointer transition-all active:scale-[0.98]"
+                  title={language === 'ko' ? '카드 보관함 슬롯 용량 확장' : 'Expand Card Vault Slots'}
+                >
+                  <div className="flex items-center gap-2">
+                    <Package size={14} className="text-amber-400" />
+                    <span className="font-bold text-xs">
+                      {language === 'ko' ? '🎒 가방 용량 확장' : '🎒 Expand Vault Slots'}
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-amber-300 font-mono">
+                    {inventoryCount}/{maxInventorySlots || 200} SLOTS [+]
+                  </span>
+                </button>
+              )}
             </div>
           </div>
         )}

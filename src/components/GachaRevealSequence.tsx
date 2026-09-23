@@ -9,6 +9,7 @@ import { t } from '../lib/i18n';
 import { cn, getFormattedCardName } from '../lib/utils';
 import { triggerHaptic } from '../lib/haptic';
 import { isSfxMutedGlobal } from '../lib/sound';
+import { triggerRainbowFlipFX } from '../lib/rainbowFlipFX';
 import type { Language } from '../types';
 
 export interface GachaRevealCard {
@@ -319,6 +320,17 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
 
     triggerHaptic('light');
 
+    // 🌈 ID Rainbow-Flip: 카드 개별 뒤집기 시 Flip! 텍스트 및 무지개 파티클 연출
+    try {
+      const el = document.getElementById(`gacha-reveal-card-${index}`);
+      triggerRainbowFlipFX({
+        targetEl: el,
+        count: 1,
+      });
+    } catch (err) {
+      console.warn('Rainbow Flip FX error:', err);
+    }
+
     const card = cards[index];
     const newSet = new Set(revealedIds);
     newSet.add(index);
@@ -355,6 +367,10 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
 
   // 전체 한 번에 공개 (스킵)
   const handleRevealAll = () => {
+    const unrevealed = cards.length - revealedIds.size;
+    if (unrevealed > 1) {
+      triggerRainbowFlipFX({ count: unrevealed });
+    }
     handleFastSkip();
   };
 
@@ -826,6 +842,7 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
                       return (
                         <div key={card.id ?? `${card.imageIndex}-${index}`} className="flex flex-col items-center gap-1 sm:gap-2">
                           <motion.div
+                            id={`gacha-reveal-card-${index}`}
                             initial={instantMode ? undefined : { y: 20, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             transition={{ delay: index * 0.08 }}

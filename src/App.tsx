@@ -5181,6 +5181,7 @@ function AppContent() {
             opponentCustomDeck={mobileCardOppDeck}
             opponentName={mobileCardOppName}
             towerFloor={mobileCardTowerFloor}
+            isRankingMatch={Boolean(isPvpActive || pvpOpponent || cardPlayPreviousView === 'ranking' || (!mobileCardTargetId && !mobileCardTowerFloor && (mobileCardOppDeck || (mobileCardOppName && !mobileCardOppName.includes('스토리') && !mobileCardOppName.includes('보스')))))}
             onBack={() => {
               setMobileCardTargetId(null);
               setMobileCardOppDeck(undefined);
