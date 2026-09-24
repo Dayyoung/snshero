@@ -6,8 +6,6 @@ import { CardData, Language } from "../types";
 import { CARD_DATABASE } from "../cardDatabase";
 import { CardItem } from "../components/CardItem";
 import { PageHeader } from "../components/PageHeader";
-import { MutantFusionEventModal } from "../components/MutantFusionEventModal";
-import { triggerHaptic } from "../lib/haptic";
 import { t } from "../lib/i18n";
 import { getCardRarityRank } from "../lib/cardRarity";
 
@@ -44,7 +42,6 @@ export const PlaygroundView: React.FC<PlaygroundViewProps> = ({
   const [sortBy, setSortBy] = useState<"id" | "name" | "power" | "rarity">("id");
   const [selectedSlotIndex, setSelectedSlotIndex] = useState<number | null>(null);
   const [showHelp, setShowHelp] = useState(false);
-  const [isFusionModalOpen, setIsFusionModalOpen] = useState(false);
   // Dispatch global popup events so bottom nav hides while help is open
   useEffect(() => {
     if (showHelp) {
@@ -212,28 +209,6 @@ export const PlaygroundView: React.FC<PlaygroundViewProps> = ({
             </button>
           }
         />
-
-        {/* SCR-07-11: Mutant Fusion Event Banner */}
-        <div className="mb-4 p-3 bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 border border-emerald-500/40 rounded-none text-white flex items-center justify-between shadow-xs select-none">
-          <div className="space-y-0.5">
-            <div className="text-xs font-mono font-black text-emerald-400 flex items-center gap-1.5">
-              <span>🧬 [ 돌연변이 카드 융합소 ]</span>
-            </div>
-            <p className="text-[10px] text-emerald-200">
-              {language === 'ko' ? '동일 카드 3장 합성 시 랜덤 스킬/스탯 돌연변이 카드 생성' : 'Fuse 3 duplicate cards to generate a mutant card with special skills.'}
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={() => {
-              triggerHaptic('medium');
-              setIsFusionModalOpen(true);
-            }}
-            className="px-3 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-mono font-black text-xs uppercase tracking-tight rounded-sm active:scale-95 transition-all cursor-pointer shrink-0 shadow-sm"
-          >
-            {language === 'ko' ? '[ 융합 실험실 ]' : '[ FUSE CARDS ]'}
-          </button>
-        </div>
 
         {/* Playground Deck Section */}
         <div className="mb-6">
@@ -448,17 +423,6 @@ export const PlaygroundView: React.FC<PlaygroundViewProps> = ({
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* SCR-07-11: Mutant Card Fusion Event Modal */}
-      <MutantFusionEventModal
-        isOpen={isFusionModalOpen}
-        onClose={() => setIsFusionModalOpen(false)}
-        availableCards={playgroundDeck}
-        onMutantCrafted={(mutantCard) => {
-          setPlaygroundDeck((prev) => [mutantCard, ...prev.slice(0, 4)]);
-          triggerHaptic('heavy');
-        }}
-      />
     </div>
   );
 };

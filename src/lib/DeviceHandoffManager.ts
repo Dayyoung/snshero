@@ -1,14 +1,18 @@
 /**
  * DeviceHandoffManager.ts - SCR-12-17
- * 0.1초 만에 PC/모바일 간 계정 세션을 안전하게 연동하는 인스턴트 핸드오프 매니저
+ * 1-Tap 모바일/데스크톱 기기 간 계정 동기화 토큰 매니저
  */
 
 export class DeviceHandoffManager {
   public generateHandoffToken(): string {
-    return `handoff_${Math.random().toString(36).substring(2)}_${Date.now()}`;
+    const timestamp = Date.now().toString(36);
+    const randomSalt = Math.random().toString(36).substring(2, 8).toUpperCase();
+    return `SNSH-${timestamp}-${randomSalt}`;
   }
 
-  public verifyHandoffToken(token: string): boolean {
-    return token.startsWith('handoff_');
+  public verifyToken(token: string): boolean {
+    return token.startsWith('SNSH-') && token.length > 10;
   }
 }
+
+export default DeviceHandoffManager;

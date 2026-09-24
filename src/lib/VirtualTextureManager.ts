@@ -1,39 +1,37 @@
 /**
  * VirtualTextureManager.ts - SCR-05-22
- * 가시 영역 타일만 동적 페이징하고 비가시 타일을 16.6ms 내 회수하는 가상 텍스처링 매니저
+ * 마켓플레이스 가상 그리드 뷰포트 타일 캐시 및 비가시 영역 메모리 해제 매니저
  */
 
-export interface VirtualTile {
-  id: string;
-  url: string;
-  loaded: boolean;
-  texture?: unknown;
-}
-
 export class VirtualTextureManager {
-  private activeTiles: Map<string, VirtualTile> = new Map();
-  private maxCachedTiles = 24;
+  private activeTiles: Set<string> = new Set();
+  private tileCache: Map<string, unknown> = new Map();
 
-  public requestTile(id: string, url: string): VirtualTile {
-    let tile = this.activeTiles.get(id);
-    if (!tile) {
-      tile = { id, url, loaded: true };
-      this.activeTiles.set(id, tile);
-
-      // Cull oldest if exceeding cache
-      if (this.activeTiles.size > this.maxCachedTiles) {
-        const firstKey = this.activeTiles.keys().next().value;
-        if (firstKey) this.activeTiles.delete(firstKey);
-      }
-    }
-    return tile;
+  public registerTile(id: string, tileData: unknown): void {
+    this.activeTiles.add(id);
+    this.tileCache.set(id, tileData);
   }
 
-  public evictInvisibleTiles(visibleIds: Set<string>) {
-    for (const [id] of this.activeTiles) {
+  public evictInvisibleTiles(visibleIds: Set<string>): void {
+    for (const id of this.activeTiles) {
       if (!visibleIds.has(id)) {
+        this.tileCache.delete(id);
         this.activeTiles.delete(id);
       }
     }
+    for (const id of visibleIds) {
+      this.activeTiles.add(id);
+    }
+  }
+
+  public getTile(id: string): unknown | undefined {
+    return this.tileCache.get(id);
+  }
+
+  public clear(): void {
+    this.activeTiles.clear();
+    this.tileCache.clear();
   }
 }
+
+export default VirtualTextureManager;

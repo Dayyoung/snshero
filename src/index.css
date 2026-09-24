@@ -1,45 +1,1158 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700;800&display=swap');
 @import "tailwindcss";
 
+@theme {
+  --font-sans: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  --animate-spin-slow: spin 3s linear infinite;
+  --animate-pulse-slow: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-bounce-subtle: bounce-subtle 2s infinite;
+  --animate-shimmer: shimmer 2s infinite linear;
+
+  --color-yellow-450: #fbbf24;
+  --color-yellow-455: #f59e0b;
+}
+
+@keyframes bounce-subtle {
+  0%, 100% { transform: translateY(-5%); animation-timing-function: cubic-bezier(0.8,0,1,1); }
+  50% { transform: none; animation-timing-function: cubic-bezier(0,0,0.2,1); }
+}
+
+@keyframes shimmer {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
+
+/* Row 1053 / ID 316: 80ms Micro Screen Shake FX for Card Capture */
+@keyframes screen-shake {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-3px, 2px); }
+  40% { transform: translate(3px, -2px); }
+  60% { transform: translate(-2px, 1px); }
+  80% { transform: translate(2px, -1px); }
+  100% { transform: translate(0, 0); }
+}
+
+.animate-screen-shake {
+  animation: screen-shake 80ms ease-in-out;
+}
+
+/* Row 1061 / ID 324: Prevent default context callout & long press on mobile battle elements */
+.battle-touch-safe,
+.battle-board-slot,
+.card-tile-touch {
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+  -webkit-user-drag: none !important;
+}
+
+/* Row 1066 / ID 329: Modern Dynamic Viewport CSS Units (100dvh) with fallback */
+.h-screen-dynamic {
+  height: 100vh;
+  height: 100svh;
+  height: 100dvh;
+}
+
+.min-h-screen-dynamic {
+  min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
+}
+
+/* Row 1067 / ID 330: Dynamic Layer Promotion - strictly on active drag, reducing idle VRAM */
+.gpu-layer-dragging {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
 @layer base {
-  * {
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
+  html, body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "kern", "liga", "clig", "calt";
   }
 
   body {
-    background-color: #0f1117;
-    color: #f3f4f6;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
+    @apply bg-[#fdfcfc] text-[#201d1d] font-mono antialiased selection:bg-[#f1eeee];
+    -webkit-tap-highlight-color: transparent;
   }
+
+  /* 강제 전역 버튼 스타일 통일 (OpenCode 규격) */
+  button,
+  .btn,
+  .button,
+  [role="button"] {
+    font-family: "JetBrains Mono", monospace !important;
+  }
+
+  .btn-primary,
+  .ollama-button-primary {
+    background-color: #201d1d !important;
+    color: #fdfcfc !important;
+    border: 1px solid rgba(15,0,0,0.12) !important;
+    border-radius: 4px !important;
+    box-shadow: none !important;
+    background-image: none !important;
+  }
+
+  .btn-primary:hover,
+  .ollama-button-primary:hover {
+    background-color: #0f0000 !important;
+  }
+
+  .btn-secondary,
+  .ollama-button-secondary {
+    background-color: #fdfcfc !important;
+    color: #201d1d !important;
+    border: 1px solid #646262 !important;
+    border-radius: 4px !important;
+    box-shadow: none !important;
+    background-image: none !important;
+  }
+
+  .btn-secondary:hover,
+  .ollama-button-secondary:hover {
+    background-color: #f8f7f7 !important;
+  }
+
+  /* Input fields radius 강제 통일 */
+  input, textarea, select {
+    border-radius: 4px !important;
+    box-shadow: none !important;
+  }
+}
+
+@layer components {
+  .app-bg {
+    @apply bg-[#fdfcfc] min-h-screen text-[#201d1d] font-mono antialiased;
+  }
+
+  .ollama-panel {
+    @apply bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-sm p-4 sm:p-6 transition-all;
+    box-shadow: none !important;
+  }
+
+  .ollama-badge {
+    @apply inline-flex items-center px-3 py-1 rounded-sm text-[10px] sm:text-xs font-mono font-bold bg-[#f1eeee] text-[#646262] tracking-wide uppercase select-none;
+  }
+
+  .ollama-button-primary {
+    @apply bg-[#201d1d] text-[#fdfcfc] px-5 py-2.5 rounded-sm font-mono font-bold text-sm hover:bg-[#0f0000] active:scale-[0.98] transition-all cursor-pointer;
+    box-shadow: none !important;
+  }
+
+  .ollama-button-secondary {
+    @apply bg-[#fdfcfc] text-[#201d1d] border border-[#646262] px-5 py-2.5 rounded-sm font-mono font-bold text-sm hover:bg-[#f8f7f7] active:scale-[0.98] transition-all cursor-pointer;
+  }
+
+  .ollama-card {
+    @apply bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-sm p-4 sm:p-5 font-mono transition-all;
+    box-shadow: none !important;
+  }
+
+  .ollama-input {
+    @apply w-full bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-sm p-3.5 font-mono text-sm focus:outline-none focus:bg-[#fdfcfc] focus:border-[#201d1d] transition-all;
+  }
+
+  .neon-blue {
+    @apply ring-1 ring-[#007aff]/10 bg-[#007aff]/5;
+    box-shadow: none !important;
+  }
+
+  .neon-red {
+    @apply ring-1 ring-[#ff3b30]/10 bg-[#ff3b30]/5;
+    box-shadow: none !important;
+  }
+
+  .animated-rainbow {
+    background-size: 200% 200%;
+    animation: rainbow-shift 3s linear infinite;
+  }
+
+  /* Modern Styling Utilities */
+  .modern-shadow-sm {
+    box-shadow: none !important;
+  }
+  .modern-shadow-md {
+    box-shadow: none !important;
+  }
+  .modern-shadow-lg {
+    box-shadow: none !important;
+  }
+  .modern-border {
+    @apply border border-[rgba(15,0,0,0.12)];
+  }
+  .modern-card {
+    @apply bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-sm p-4 transition-all;
+    box-shadow: none !important;
+  }
+  .gradient-primary {
+    @apply bg-[#201d1d] text-[#fdfcfc];
+  }
+
+  /* Touch-friendly interactive elements */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  /* Responsive card grid helpers */
+  .card-grid {
+    @apply grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4;
+  }
+
+  /* Section spacing */
+  .section-gap {
+    @apply space-y-4 sm:space-y-6 md:space-y-8;
+  }
+
+  /* Mobile-optimized typography */
+  .heading-xl {
+    @apply text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tracking-tight font-mono;
+  }
+
+  .heading-lg {
+    @apply text-xl sm:text-2xl md:text-3xl font-bold tracking-tight font-mono;
+  }
+
+  .body-sm {
+    @apply text-xs sm:text-sm font-medium leading-relaxed font-mono;
+  }
+
+  .label-xs {
+    @apply text-[10px] sm:text-xs font-bold uppercase tracking-wider font-mono;
+  }
+}
+
+@keyframes rainbow-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
-  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #181b26;
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #374151;
-  border-radius: 3px;
+  background: #E5E7EB;
+  border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #4b5563;
+  background: #D1D5DB;
 }
 
-@keyframes pulseGlow {
+/* Hide Firebase Emulator Warning Banner */
+.firebase-emulator-warning {
+  display: none !important;
+}
+
+/* Card Flip 3D Styles */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+/* Battle Roar Flame Animations */
+@keyframes roar-glow {
   0%, 100% {
-    box-shadow: 0 0 15px rgba(234, 179, 8, 0.3);
+    box-shadow: 0 0 15px 3px rgba(239, 68, 68, 0.6), 0 0 30px 8px rgba(245, 158, 11, 0.4), inset 0 0 15px rgba(239, 68, 68, 0.4);
+    transform: scale(1.02);
   }
   50% {
-    box-shadow: 0 0 30px rgba(234, 179, 8, 0.7);
+    box-shadow: 0 0 25px 8px rgba(239, 68, 68, 0.9), 0 0 45px 15px rgba(245, 158, 11, 0.7), inset 0 0 25px rgba(245, 158, 11, 0.6);
+    transform: scale(1.06);
   }
 }
 
-.glow-ssr {
-  animation: pulseGlow 2.5s infinite ease-in-out;
+@keyframes text-fire-glow {
+  0%, 100% {
+    text-shadow: 0 0 4px #ef4444, 0 0 8px #f59e0b;
+    color: #fff;
+  }
+  50% {
+    text-shadow: 0 0 8px #ef4444, 0 0 16px #f59e0b, 0 0 24px #ffedd5;
+    color: #ffedd5;
+  }
 }
+
+.roar-flame-active {
+  animation: roar-glow 0.8s ease-in-out infinite;
+  border-color: #f59e0b !important;
+  z-index: 100 !important;
+}
+
+.text-fire-active {
+  animation: text-fire-glow 0.8s ease-in-out infinite;
+}
+
+/* Battle Roar Circle Wave Ripple */
+.animate-roar-ripple {
+  animation: roar-ripple 1.5s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
+}
+
+/* Card Damage Shake and Red Flash Animations */
+@keyframes card-damage-shake {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  15% { transform: translate(-6px, -2px) rotate(-3deg); }
+  30% { transform: translate(6px, 2px) rotate(3deg); }
+  45% { transform: translate(-5px, 2px) rotate(-2deg); }
+  60% { transform: translate(5px, -2px) rotate(2deg); }
+  75% { transform: translate(-3px, 1px) rotate(-1deg); }
+  90% { transform: translate(3px, -1px) rotate(1deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+@keyframes card-red-flash {
+  0% {
+    opacity: 0.95;
+    background-color: rgba(239, 68, 68, 0.75);
+    box-shadow: inset 0 0 24px rgba(239, 68, 68, 0.95), 0 0 30px rgba(239, 68, 68, 0.85);
+  }
+  50% {
+    opacity: 0.6;
+    background-color: rgba(220, 38, 38, 0.5);
+    box-shadow: inset 0 0 16px rgba(239, 68, 68, 0.7);
+  }
+  100% {
+    opacity: 0;
+    background-color: transparent;
+    box-shadow: none;
+  }
+}
+
+.animate-damage-shake {
+  animation: card-damage-shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both !important;
+}
+
+.animate-red-flash {
+  animation: card-red-flash 0.6s ease-out forwards !important;
+}
+
+@keyframes roar-ripple {
+  0% {
+    transform: scale(0.1);
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(8);
+    opacity: 0;
+  }
+}
+
+/* Custom Fire and Water Glow card stats */
+@keyframes fire-glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 10px #ef4444, 0 0 20px #f59e0b, inset 0 0 10px #ef4444;
+    transform: scale(1.02);
+  }
+  50% {
+    box-shadow: 0 0 20px #ef4444, 0 0 35px #f59e0b, inset 0 0 20px #f59e0b;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes water-glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 10px #3b82f6, 0 0 20px #06b6d4, inset 0 0 10px #3b82f6;
+    transform: scale(1.02);
+  }
+  50% {
+    box-shadow: 0 0 20px #3b82f6, 0 0 35px #06b6d4, inset 0 0 20px #06b6d4;
+    transform: scale(1.05);
+  }
+}
+
+.fire-glow-card {
+  animation: fire-glow-pulse 1s ease-in-out infinite;
+  border-color: #f97316 !important;
+}
+
+.fire-glow-card div[class*="bg-white/60"],
+.fire-glow-card div[class*="bg-white/80"] {
+  background: linear-gradient(135deg, #f97316, #ef4444) !important;
+  border-color: #ffedd5 !important;
+}
+
+.fire-glow-card div[class*="bg-white/60"] span,
+.fire-glow-card div[class*="bg-white/80"] span {
+  color: #ffffff !important;
+  text-shadow: 0 0 4px #ef4444, 0 0 8px #f59e0b !important;
+}
+
+.water-glow-card {
+  animation: water-glow-pulse 1s ease-in-out infinite;
+  border-color: #0ea5e9 !important;
+}
+
+.water-glow-card div[class*="bg-white/60"],
+.water-glow-card div[class*="bg-white/80"] {
+  background: linear-gradient(135deg, #0ea5e9, #3b82f6) !important;
+  border-color: #e0f2fe !important;
+}
+
+.water-glow-card div[class*="bg-white/60"] span,
+.water-glow-card div[class*="bg-white/80"] span {
+  color: #ffffff !important;
+  text-shadow: 0 0 4px #3b82f6, 0 0 8px #06b6d4 !important;
+}
+
+/* ==========================================
+   Dark Theme Overrides (Dark Cyber Theme)
+   ========================================== */
+.theme-dark {
+  background-color: #201d1d !important;
+  color: #fdfcfc !important;
+  font-family: "JetBrains Mono", monospace !important;
+}
+
+/* Override app-bg when theme-dark is active */
+.theme-dark.app-bg,
+.theme-dark .app-bg {
+  background-color: #201d1d !important;
+  color: #fdfcfc !important;
+}
+
+/* Panels (ollama-panel) overrides */
+.theme-dark .ollama-panel {
+  background-color: #302c2c !important;
+  border-color: rgba(253, 252, 252, 0.12) !important;
+  color: #fdfcfc !important;
+  backdrop-filter: none !important;
+  box-shadow: none !important;
+}
+.theme-dark .ollama-panel:hover {
+  border-color: rgba(253, 252, 252, 0.2) !important;
+}
+
+/* Cards (ollama-card, modern-card) overrides */
+.theme-dark .ollama-card,
+.theme-dark .modern-card {
+  background-color: #302c2c !important;
+  border-color: rgba(253, 252, 252, 0.12) !important;
+  color: #fdfcfc !important;
+  box-shadow: none !important;
+}
+.theme-dark .ollama-card:hover,
+.theme-dark .modern-card:hover {
+  border-color: rgba(253, 252, 252, 0.25) !important;
+  background-color: #302c2c !important;
+}
+
+/* Secondary Button overrides */
+.theme-dark .ollama-button-secondary {
+  background-color: #201d1d !important;
+  color: #fdfcfc !important;
+  border-color: #9a9898 !important;
+}
+.theme-dark .ollama-button-secondary:hover {
+  background-color: #302c2c !important;
+  border-color: #fdfcfc !important;
+}
+
+/* Input overrides */
+.theme-dark .ollama-input {
+  background-color: #302c2c !important;
+  border-color: rgba(253, 252, 252, 0.12) !important;
+  color: #fdfcfc !important;
+}
+
+/* Badges overrides */
+.theme-dark .ollama-badge {
+  background-color: #302c2c !important;
+  color: #9a9898 !important;
+  border-color: rgba(253, 252, 252, 0.12) !important;
+}
+.theme-dark .ollama-badge:hover {
+  background-color: #201d1d !important;
+}
+
+/* Adapt light elements to the dark cyber theme */
+.theme-dark h1,
+.theme-dark h2,
+.theme-dark h3,
+.theme-dark h4,
+.theme-dark p,
+.theme-dark span,
+.theme-dark label,
+.theme-dark a {
+  color: inherit;
+}
+
+.theme-dark .text-slate-850,
+.theme-dark .text-slate-800,
+.theme-dark .text-gray-900,
+.theme-dark .text-slate-700,
+.theme-dark .text-slate-650,
+.theme-dark .text-slate-600,
+.theme-dark .text-slate-500 {
+  color: #cbd5e1 !important;
+}
+
+.theme-dark .text-slate-400 {
+  color: #94a3b8 !important;
+}
+
+.theme-dark .text-slate-300 {
+  color: #64748b !important;
+}
+
+.theme-dark .bg-white {
+  background-color: #302c2c !important;
+  color: #fdfcfc !important;
+  border-color: rgba(253, 252, 252, 0.12) !important;
+}
+
+.theme-dark .border-slate-200,
+.theme-dark .border-slate-100 {
+  border-color: rgba(253, 252, 252, 0.12) !important;
+}
+
+.theme-dark .bg-slate-100,
+.theme-dark .bg-slate-50,
+.theme-dark .bg-slate-50\/50,
+.theme-dark .bg-slate-50\/30 {
+  background-color: #201d1d !important;
+}
+
+/* Nav header and footer border details */
+.theme-dark .border-slate-200\/40,
+.theme-dark .border-slate-100\/40,
+.theme-dark .border-t {
+  border-color: rgba(253, 252, 252, 0.12) !important;
+}
+
+/* Custom card flip container overrides */
+.theme-dark .card-grid {
+  background: transparent !important;
+}
+
+/* PageHeader dark mode overrides */
+.theme-dark .sticky.top-0,
+.theme-dark [id="wiki-nav"] + div,
+.theme-dark [id="leaderboard"] + div {
+  background-color: #201d1d !important;
+  border-color: rgba(253, 252, 252, 0.15) !important;
+  color: #ffffff !important;
+}
+
+.theme-dark .sticky.top-0 h1,
+.theme-dark [id="wiki-nav"] + div h1,
+.theme-dark [id="leaderboard"] + div h1 {
+  color: #ffffff !important;
+}
+
+/* ================================================================
+   METAL THEME - Gray-toned metallic design
+   ================================================================ */
+.theme-metal {
+  color-scheme: dark;
+}
+
+.theme-metal.app-bg,
+.theme-metal .app-bg {
+  background: linear-gradient(145deg, #1a1c22 0%, #22242e 40%, #1c1e26 100%) !important;
+}
+
+.theme-metal .ollama-panel {
+  background: linear-gradient(145deg, #2a2c35 0%, #353845 100%) !important;
+  border-color: #444650 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 4px 12px rgba(0,0,0,0.4) !important;
+}
+
+.theme-metal .bg-white {
+  background: linear-gradient(145deg, #282a34 0%, #30333e 100%) !important;
+  border-color: #404350 !important;
+  color: #d8d8e0 !important;
+}
+
+.theme-metal h1, .theme-metal h2, .theme-metal h3, .theme-metal h4,
+.theme-metal h5, .theme-metal h6 {
+  color: #e8e8f0 !important;
+}
+
+.theme-metal .text-slate-800, .theme-metal .text-slate-700 { color: #e8e8f0 !important; }
+.theme-metal .text-slate-600, .theme-metal .text-slate-650 { color: #d8d8e0 !important; }
+.theme-metal .text-slate-500 { color: #c8c8d0 !important; }
+.theme-metal .text-slate-400 { color: #a0a0b0 !important; }
+.theme-metal .text-slate-300 { color: #888898 !important; }
+.theme-metal .text-slate-200 { color: #787888 !important; }
+
+.theme-metal .sticky.top-0 h1,
+.theme-metal [id="wiki-nav"] + div h1,
+.theme-metal [id="leaderboard"] + div h1,
+.theme-metal .sticky.top-0 span,
+.theme-metal .sticky.top-0 p,
+.theme-metal .sticky.top-0 button,
+.theme-metal #community-dashboard span,
+.theme-metal #community-dashboard p,
+.theme-metal #community-dashboard h4 {
+  color: #0f172a !important;
+}
+
+/* Ensure active navbar button text remains white */
+.theme-metal nav button.text-white,
+.theme-metal nav button.text-white span,
+.theme-metal nav button.text-white svg {
+  color: #ffffff !important;
+}
+
+.theme-metal .text-white { color: #f0f0f5 !important; }
+
+/* Make semi-transparent black text bright under metal theme (e.g. for card status labels in mydeck) */
+.theme-metal .text-black\/40,
+.theme-metal .text-black\/50,
+.theme-metal .text-black\/60,
+.theme-metal [class*="text-black/"] {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.theme-metal .border-slate-200, .theme-metal .border-slate-100 {
+  border-color: #4a4a55 !important;
+}
+
+
+
+.theme-metal .bg-slate-100, .theme-metal .bg-slate-50,
+.theme-metal .bg-slate-50\/50, .theme-metal .bg-slate-50\/30 {
+  background: linear-gradient(135deg, #2a2a32 0%, #32323c 100%) !important;
+}
+
+.theme-metal button.bg-black {
+  background: linear-gradient(145deg, #4a4a55 0%, #3a3a44 100%) !important;
+  border-color: #5a5a65 !important;
+}
+
+.theme-metal .border-black {
+  border-color: #5a5a68 !important;
+}
+
+.theme-metal .shadow-md {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.03) !important;
+}
+
+.theme-metal .rounded-3xl {
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 4px 16px rgba(0,0,0,0.35) !important;
+}
+
+/* =========================================================================
+   [OPENCODE.AI DESIGN SYSTEM - GLOBAL OVERRIDES]
+   ========================================================================= */
+
+/* 1. border-radius 강제 통일 (인터랙티브 요소 4px, 그 외 컨테이너 0px) */
+.rounded-xl,
+.rounded-2xl,
+.rounded-3xl,
+.rounded-lg,
+.rounded-md {
+  border-radius: 4px !important;
+}
+
+.rounded-none {
+  border-radius: 0px !important;
+}
+
+/* 2. 그림자(shadow) 완전 배제 (평면 플랫 디자인 보장) */
+.shadow,
+.shadow-sm,
+.shadow-md,
+.shadow-lg,
+.shadow-xl,
+.shadow-2xl,
+.shadow-inner,
+[class*="shadow-"] {
+  box-shadow: none !important;
+}
+
+/* 3. 배경색 웜 크림 수렴 ( colors.canvas - #fdfcfc ) */
+/* 단, 다크 테마 및 특정 어두운 영역은 배제 */
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .bg-white,
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .bg-slate-50,
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .bg-gray-50,
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .bg-slate-50\/50,
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .bg-slate-50\/30 {
+  background-color: #fdfcfc !important;
+}
+
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .bg-slate-100,
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .bg-gray-100,
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .bg-slate-200\/50,
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .bg-slate-200\/30 {
+  background-color: #f1eeee !important; /* surface-card */
+}
+
+/* 4. 텍스트 및 경계선 잉크 톤 통일 */
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .text-slate-900,
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .text-slate-800,
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .text-gray-900,
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .text-slate-700 {
+  color: #201d1d !important;
+}
+
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .text-slate-650,
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .text-slate-600,
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .text-slate-500,
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .text-gray-600,
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .text-gray-500 {
+  color: #646262 !important;
+}
+
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .text-slate-400,
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .text-gray-400 {
+  color: #9a9898 !important;
+}
+
+/* 1px solid hairline 경계선 매핑 */
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .border-slate-100,
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .border-slate-200,
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .border-gray-150,
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .border-slate-200\/50,
+:not(.theme-dark):not(.theme-metal):not([class*="theme-dark"]) .border-slate-200\/70 {
+  border-color: rgba(15, 0, 0, 0.12) !important;
+}
+
+/* ID 341: 턴 임박 긴박한 붉은 펄스 전장 테두리 */
+@keyframes pulse-danger-vignette {
+  0%, 100% {
+    box-shadow: inset 0 0 15px rgba(225, 29, 72, 0.3), 0 0 10px rgba(225, 29, 72, 0.4);
+    border-color: rgba(244, 63, 94, 0.7);
+  }
+  50% {
+    box-shadow: inset 0 0 35px rgba(225, 29, 72, 0.7), 0 0 25px rgba(225, 29, 72, 0.9);
+    border-color: rgba(225, 29, 72, 1);
+  }
+}
+
+.border-pulse-danger {
+  animation: pulse-danger-vignette 0.8s ease-in-out infinite !important;
+}
+
+/* ID 366: 직전 턴 상대 착수 슬롯 골든 펄스 링 */
+@keyframes pulse-gold-ring {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.6);
+    border-color: rgba(234, 179, 8, 0.8);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(234, 179, 8, 0.2);
+    border-color: rgba(250, 204, 21, 1);
+  }
+}
+
+.border-pulse-accent {
+  animation: pulse-gold-ring 1.2s cubic-bezier(0.4, 0, 0.6, 1) infinite !important;
+}
+
+/* ID 414: 화면 좌우 16px 에지 스와이프 뒤로가기 방지 영역 */
+.battle-edge-swipe-guard-left {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 16px;
+  touch-action: none;
+  z-index: 99;
+  pointer-events: auto;
+}
+
+.battle-edge-swipe-guard-right {
+  position: fixed;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 16px;
+  touch-action: none;
+  z-index: 99;
+  pointer-events: auto;
+}
+
+/* ID 416: 콤보 플로팅 텍스트 애니메이션 */
+@keyframes combo-float-pop {
+  0% { transform: scale(0.5) translateY(10px); opacity: 0; }
+  25% { transform: scale(1.15) translateY(-5px); opacity: 1; }
+  75% { transform: scale(1.0) translateY(-10px); opacity: 1; }
+  100% { transform: scale(0.9) translateY(-20px); opacity: 0; }
+}
+
+.animate-combo-float {
+  animation: combo-float-pop 1.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+/* ID 343 & ID 369: 모바일 바운스 스크롤 방지 및 뷰포트 안정화 */
+html, body {
+  overscroll-behavior-y: contain;
+}
+
+.safe-viewport-lock {
+  height: 100dvh;
+  min-height: -webkit-fill-available;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ID 354: 모바일 롱프레스 및 선택 완벽 차단 */
+.prevent-touch-callout {
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+/* ID 400: 저사양 모드 가드 (low-spec-mode) 성능 최적화 오버라이드 */
+html.low-spec-mode *,
+html.low-spec-mode *::before,
+html.low-spec-mode *::after {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+html.low-spec-mode .animate-spin-slow,
+html.low-spec-mode .animate-pulse-slow,
+html.low-spec-mode .animate-shimmer {
+  animation: none !important;
+}
+
+/* ID 409: 다국어 번역 텍스트 말줄임 및 줄바꿈 안정화 */
+.text-overflow-safe {
+  overflow-wrap: break-word;
+  word-break: keep-all;
+  hyphens: auto;
+}
+
+/* ID 436: 최종 턴(Turn 9 / Final Move) 골든 보드 펄스 */
+@keyframes final-move-glow {
+  0%, 100% { border-color: rgba(245, 158, 11, 0.6); box-shadow: 0 0 10px rgba(245, 158, 11, 0.3); }
+  50% { border-color: rgba(245, 158, 11, 1); box-shadow: 0 0 20px rgba(245, 158, 11, 0.7); }
+}
+
+.final-move-pulse {
+  animation: final-move-glow 1.5s ease-in-out infinite !important;
+}
+
+/* ID 466: 패배 위기 상태 3x3 보드 외곽 테두리 1px 경고 */
+.board-critical-danger-border {
+  border-color: rgba(239, 68, 68, 0.8) !important;
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.5) !important;
+}
+
+/* ID 467: 3x3 그리드 중앙 슬롯(1,1) 전장 지배 보너스 실드 아우라 */
+.center-domain-aura {
+  position: relative;
+}
+.center-domain-aura::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border: 1px solid rgba(245, 158, 11, 0.6);
+  pointer-events: none;
+  border-radius: inherit;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* ID 487: 속성 융합 빙결 방어막 */
+.fusion-shield-active {
+  box-shadow: 0 0 16px rgba(56, 189, 248, 0.8) !important;
+  border-color: #38bdf8 !important;
+}
+
+/* ID 425: 정적 비애니메이션 UI 요소 GPU 강제 가속 해제 */
+.static-ui-no-gpu {
+  transform: none !important;
+  will-change: auto !important;
+  backface-visibility: visible !important;
+}
+
+/* ID 430: 저사양 기기 backdrop-filter 블러 대신 플랫 불투명 다크 배경 대체 */
+.low-spec-backdrop {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background-color: rgba(18, 16, 16, 0.95) !important;
+}
+
+/* ID 435: 저사양 기기 3x3 보드 동적 그림자 제거 및 정적 평면화 */
+.low-spec-no-shadow {
+  box-shadow: none !important;
+  text-shadow: none !important;
+  filter: none !important;
+}
+
+/* ID 449, 489: 대전 카드 드래그 레이아웃 격리 및 Reflow 방지 */
+.battle-drag-containment {
+  contain: layout paint style !important;
+  content-visibility: auto;
+}
+
+/* ID 454: 로비/상점 앰비언트 그라디언트 하드웨어 가속 CSS 고정 레이어 */
+.ambient-gradient-fixed {
+  will-change: transform;
+  transform: translateZ(0);
+  pointer-events: none;
+}
+
+/* ID 479: 카드 3D 틸트 및 시차 효과 저사양 기기 비활성화 */
+.no-3d-tilt {
+  transform: none !important;
+  perspective: none !important;
+  transform-style: flat !important;
+}
+
+/* Phase 1 (ID 497, 502, 522, 527, 547, 552, 557, 567, 572, 577, 582, 592) 배틀 FX 애니메이션 */
+@keyframes last-stand-pulse {
+  0%, 100% { box-shadow: 0 0 15px rgba(234, 179, 8, 0.4); border-color: rgba(234, 179, 8, 0.8); }
+  50% { box-shadow: 0 0 35px rgba(234, 179, 8, 0.9); border-color: #facc15; }
+}
+.last-stand-glow {
+  animation: last-stand-pulse 0.9s ease-in-out infinite !important;
+}
+
+.triple-flip-shockwave {
+  position: fixed;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 4px solid rgba(244, 63, 94, 0.8);
+  box-shadow: 0 0 25px rgba(168, 85, 247, 0.9);
+  pointer-events: none;
+  z-index: 9999;
+  animation: triple-shockwave-expand 0.65s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
+}
+@keyframes triple-shockwave-expand {
+  to {
+    width: 320px;
+    height: 320px;
+    opacity: 0;
+    border-width: 1px;
+  }
+}
+
+.barricade-linked {
+  position: relative;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.7) !important;
+  border-color: #38bdf8 !important;
+}
+
+.riposte-flash {
+  animation: riposte-camera-flash 0.45s ease-out;
+}
+@keyframes riposte-camera-flash {
+  0% { filter: brightness(2.5) contrast(1.5); }
+  100% { filter: none; }
+}
+
+.cross-slash-burst {
+  position: fixed;
+  transform: translate(-50%, -50%);
+  width: 140px;
+  height: 140px;
+  pointer-events: none;
+  z-index: 9999;
+  background: radial-gradient(circle, rgba(239,68,68,0.8) 0%, rgba(239,68,68,0) 70%);
+  animation: cross-slash-fade 0.55s ease-out forwards;
+}
+@keyframes cross-slash-fade {
+  0% { transform: translate(-50%, -50%) scale(0.3) rotate(0deg); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1.6) rotate(45deg); opacity: 0; }
+}
+
+.elemental-weather-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 40;
+  transition: opacity 0.5s ease;
+}
+.weather-fire { background: radial-gradient(circle, rgba(239, 68, 68, 0.08) 0%, transparent 80%); }
+.weather-water { background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 80%); }
+.weather-earth { background: radial-gradient(circle, rgba(234, 179, 8, 0.08) 0%, transparent 80%); }
+.weather-wind { background: radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, transparent 80%); }
+
+.pinch-reversal-spark {
+  animation: pinch-spark-shake 0.5s ease-in-out;
+}
+@keyframes pinch-spark-shake {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(-4px, 2px) scale(1.02); filter: drop-shadow(0 0 8px #f59e0b); }
+  75% { transform: translate(4px, -2px) scale(1.02); filter: drop-shadow(0 0 12px #ef4444); }
+}
+
+.clutch-victory-banner {
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10050;
+  padding: 12px 28px;
+  background: #201d1d;
+  color: #facc15;
+  border: 2px solid #facc15;
+  font-family: monospace;
+  font-weight: 900;
+  font-size: 18px;
+  letter-spacing: 2px;
+  box-shadow: 0 0 40px rgba(250, 204, 21, 0.6);
+  animation: clutch-banner-pop 1.8s ease-out forwards;
+}
+@keyframes clutch-banner-pop {
+  0% { transform: translate(-50%, -50%) scale(0.6); opacity: 0; }
+  20% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+  80% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  100% { transform: translate(-50%, -60%) scale(0.9); opacity: 0; }
+}
+
+.overwhelming-shatter {
+  animation: shatter-shake 0.7s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+@keyframes shatter-shake {
+  10%, 90% { transform: translate3d(-2px, 0, 0); }
+  20%, 80% { transform: translate3d(3px, 0, 0); filter: contrast(150%); }
+  30%, 50%, 70% { transform: translate3d(-5px, 0, 0); }
+  40%, 60% { transform: translate3d(5px, 0, 0); }
+}
+
+.cascade-counter-ring {
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.8), inset 0 0 10px rgba(6, 182, 212, 0.6) !important;
+  border-color: #06b6d4 !important;
+}
+
+.dominator-climax-text {
+  position: fixed;
+  top: 25%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10050;
+  padding: 10px 24px;
+  background: rgba(18, 16, 16, 0.95);
+  color: #facc15;
+  border: 2px solid #facc15;
+  font-family: monospace;
+  font-weight: 900;
+  font-size: 16px;
+  box-shadow: 0 0 30px rgba(250, 204, 21, 0.7);
+  animation: dominator-pop 2s ease-out forwards;
+}
+@keyframes dominator-pop {
+  0% { transform: translate(-50%, -50%) scale(0.7); opacity: 0; }
+  15% { transform: translate(-50%, -50%) scale(1.08); opacity: 1; }
+  85% { opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1.05); opacity: 0; }
+}
+
+.domino-reversal-lightning {
+  box-shadow: 0 0 25px #38bdf8 !important;
+  animation: lightning-flicker 0.6s ease-out;
+}
+@keyframes lightning-flicker {
+  0%, 100% { filter: none; }
+  25%, 75% { filter: brightness(2) drop-shadow(0 0 10px #38bdf8); }
+  50% { filter: brightness(0.7); }
+}
+
+/* ID 597 (Item 2): Domino Comeback Cinematic Finisher & Ambient Dim */
+.ambient-dim-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 8, 8, 0.75);
+  backdrop-filter: blur(2px);
+  z-index: 9998;
+  pointer-events: none;
+  animation: ambient-dim-fade 1.2s ease-out forwards;
+}
+@keyframes ambient-dim-fade {
+  0% { opacity: 0; }
+  15% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.golden-lightning-blade {
+  position: fixed;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, #fbbf24, #ffffff, #f59e0b, transparent);
+  box-shadow: 0 0 20px #fbbf24, 0 0 40px #f59e0b;
+  z-index: 10000;
+  pointer-events: none;
+  transform-origin: left center;
+  animation: lightning-blade-sweep 0.45s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+}
+@keyframes lightning-blade-sweep {
+  0% { transform: scaleX(0); opacity: 0.3; }
+  50% { transform: scaleX(1); opacity: 1; filter: brightness(2); }
+  100% { transform: scaleX(1.1); opacity: 0; }
+}
+
+/* ID 602 (Item 7): Cascade Comeback Dynamic Slow-Mo Zoom & Electrical Arcs */
+.slow-mo-camera-zoom {
+  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform: scale(1.05) !important;
+}
+
+.golden-electrical-arc {
+  position: relative;
+}
+.golden-electrical-arc::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border: 2px dashed #f59e0b;
+  border-radius: 4px;
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.8);
+  animation: arc-spark 0.35s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: 50;
+}
+@keyframes arc-spark {
+  0% { transform: scale(0.98); opacity: 0.6; filter: hue-rotate(0deg); }
+  100% { transform: scale(1.03); opacity: 1; filter: hue-rotate(20deg); }
+}
+
+/* ID 601 (Item 6): Tile Detail Inspection Long-Press Chip */
+.tile-inspect-chip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  background: rgba(18, 16, 16, 0.95);
+  color: #f8fafc;
+  border: 1px solid #f59e0b;
+  padding: 3px 8px;
+  border-radius: 2px;
+  font-family: monospace;
+  font-size: 10px;
+  font-weight: 800;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.8), 0 0 10px rgba(245, 158, 11, 0.4);
+  z-index: 10020;
+  pointer-events: none;
+  animation: chip-anchor-pop 0.15s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes chip-anchor-pop {
+  0% { opacity: 0; transform: translate(-50%, 4px) scale(0.92); }
+  100% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
+
+
+
+

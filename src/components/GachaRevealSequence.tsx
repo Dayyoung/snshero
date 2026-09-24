@@ -4,6 +4,7 @@ import { Gift, Info, Package2, Share2, SkipForward, Sparkles, Star, Trophy, X, Z
 import { CARD_DATABASE } from '../cardDatabase';
 import { CardItem } from './CardItem';
 import { PityGauge } from './PityGauge';
+import { RainbowFlipEffect } from './RainbowFlipEffect';
 import { GACHA_PACK_CONFIG, formatProbabilityRate, type GachaPackRarity } from '../content/gachaRates';
 import { t } from '../lib/i18n';
 import { cn, getFormattedCardName } from '../lib/utils';
@@ -399,6 +400,9 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
     >
       {/* 백그라운드 빛 빔 & 파티클 오라 */}
       <GachaAuraRays highestRarity={highestRarity} lowSpecMode={lowSpecMode} />
+
+      {/* 무지개 플립 텍스트 & 파티클 연출 오버레이 */}
+      <RainbowFlipEffect isFixed={true} />
 
       {/* 다시 뽑기 전용 초화려 마법진 소환 특수 연출 (Re-Summoning Ritual Overlay) */}
       <AnimatePresence>

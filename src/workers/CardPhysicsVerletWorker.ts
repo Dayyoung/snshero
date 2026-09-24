@@ -1,60 +1,42 @@
 /**
  * CardPhysicsVerletWorker.ts - SCR-04-16
- * 10연차 카드 분산 시 각 카드의 충돌 및 3D 회전을 Verlet 적분으로 초당 60fps 무감속 계산하는 물리 Web Worker
+ * 10연속 카드 소환 60fps 베를레 물리 시뮬레이션 인터페이스 및 타입 정의
  */
 
 export interface PhysicsCardPoint {
-  id: number;
   x: number;
   y: number;
-  oldX: number;
-  oldY: number;
   angle: number;
-  angleVel: number;
+  vx?: number;
+  vy?: number;
+  angularVelocity?: number;
+  id?: string | number;
 }
 
-let cards: PhysicsCardPoint[] = [];
-let animInterval: any = null;
+export class CardPhysicsVerletWorker {
+  public static simulateStep(points: PhysicsCardPoint[], bounds = { width: 400, height: 600 }): PhysicsCardPoint[] {
+    return points.map(p => {
+      const vx = (p.vx ?? 0) * 0.96;
+      const vy = (p.vy ?? 0) * 0.96 + 0.3; // gravity
+      const angle = p.angle + (p.angularVelocity ?? 0.02);
 
-self.onmessage = (e: MessageEvent<{ action: 'init' | 'step' | 'stop'; count?: number }>) => {
-  const { action, count = 10 } = e.data;
+      let newX = p.x + vx;
+      let newY = p.y + vy;
 
-  if (action === 'init') {
-    cards = Array.from({ length: count }, (_, i) => {
-      const angle = (i / count) * Math.PI * 2;
-      const speed = 8 + Math.random() * 6;
-      const x = 200;
-      const y = 300;
+      if (newX < 30 || newX > bounds.width - 30) {
+        newX = Math.max(30, Math.min(bounds.width - 30, newX));
+      }
+
       return {
-        id: i,
-        x,
-        y,
-        oldX: x - Math.cos(angle) * speed,
-        oldY: y - Math.sin(angle) * speed,
-        angle: Math.random() * Math.PI,
-        angleVel: (Math.random() - 0.5) * 0.2,
+        ...p,
+        x: newX,
+        y: newY,
+        vx,
+        vy,
+        angle,
       };
     });
-
-    if (animInterval) clearInterval(animInterval);
-    animInterval = setInterval(() => {
-      // Verlet integration step with damping
-      cards.forEach(c => {
-        const vx = (c.x - c.oldX) * 0.95;
-        const vy = (c.y - c.oldY) * 0.95 + 0.3; // Gravity
-        c.oldX = c.x;
-        c.oldY = c.y;
-        c.x += vx;
-        c.y += vy;
-        c.angle += c.angleVel;
-        c.angleVel *= 0.98;
-      });
-      self.postMessage(cards);
-    }, 16);
-  } else if (action === 'stop') {
-    if (animInterval) {
-      clearInterval(animInterval);
-      animInterval = null;
-    }
   }
-};
+}
+
+export default CardPhysicsVerletWorker;

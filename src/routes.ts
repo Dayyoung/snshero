@@ -115,14 +115,6 @@ export const VIEW_ROUTES: Record<ViewType, RouteMeta> = {
     descriptionKo: '길드원들과 협력하여 레이드에 도전하고 길드 버프를 누리세요.',
     descriptionEn: 'Manage your guild, participate in guild raids, and earn buffs.',
   },
-  'guild-house': {
-    path: '/guild/house',
-    aliases: ['/guild-house'],
-    titleKo: '길드 아지트 & 하우스 (Guild House) - SNS히어로',
-    titleEn: 'Guild House & Hall - SNSHero',
-    descriptionKo: '60fps CRDT 멀티 동기화 길드 하우스와 4대 영지 쟁탈전 아레나입니다.',
-    descriptionEn: 'Realtime CRDT multiplayer guild house, interior decorator, and territory wars.',
-  },
   community: {
     path: '/community',
     titleKo: '커뮤니티 (Community) - SNS히어로 소셜 피드',
@@ -379,36 +371,6 @@ export const VIEW_ROUTES: Record<ViewType, RouteMeta> = {
     titleEn: 'Arcade Mini Games - SNSHero',
     descriptionKo: '다양한 캐주얼 미니게임을 즐기고 추가 보상을 획득하세요.',
     descriptionEn: 'Play arcade mini-games and earn bonus rewards.',
-  },
-  fusion: {
-    path: '/fusion',
-    titleKo: '소환 & 융합 연구소 (Fusion Lab) - SNS히어로',
-    titleEn: 'Alchemy Fusion Lab - SNSHero',
-    descriptionKo: '초고속 WebGL 60fps 마법 유체 융합 & 연금술 레시피 역추적 연구소입니다.',
-    descriptionEn: 'GPGPU 60fps fluid simulation card fusion and alchemy recipes.',
-  },
-  leaderboard: {
-    path: '/leaderboard',
-    titleKo: '랭킹 & 명예의 전당 (Leaderboard) - SNS히어로',
-    titleEn: 'Leaderboard & Hall of Fame - SNSHero',
-    descriptionKo: '60fps 베지어 실시간 보간 랭킹 및 라이벌 즉시 매치업 시스템.',
-    descriptionEn: '60fps Bezier interpolated ranking and instant rival matchmaking.',
-  },
-  'quest-achievement': {
-    path: '/quest-achievement',
-    aliases: ['/quests'],
-    titleKo: '퀘스트 & 업적 센터 (Quests) - SNS히어로',
-    titleEn: 'Quest & Achievement Center - SNSHero',
-    descriptionKo: '60fps 캔버스 타이머 & 별자리 연계 퀘스트 맵 및 황금 피냐타 축제.',
-    descriptionEn: 'Unified timer worker, canvas overlays, and quest constellation map.',
-  },
-  'setting-reward': {
-    path: '/setting-reward',
-    aliases: ['/settings-center'],
-    titleKo: '환경설정 & 계정 센터 (Settings) - SNS히어로',
-    titleEn: 'Settings & Account Center - SNSHero',
-    descriptionKo: '초고속 멀티 CDN 자동 스왑 & 터치 감도 캘리브레이션 패드.',
-    descriptionEn: 'Dynamic CDN ping auto-swap and touch calibration pad.',
   },
 };
 

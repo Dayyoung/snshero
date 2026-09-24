@@ -1,39 +1,65 @@
 /**
  * HeartbeatAudioSynthesizer.ts - SCR-02-26
- * 긴박한 턴 종료 카운트다운을 위한 저주파 심장박동 오디오 신디사이저 (Web Audio API)
+ * 턴 종료 임박 5초 전 긴장감 조성 심장박동 저주파 펄스 오디오 합성기
  */
 
 export class HeartbeatAudioSynthesizer {
-  private static ctx: AudioContext | null = null;
+  private static audioCtx: AudioContext | null = null;
 
-  public static playHeartbeat() {
-    if (typeof window === 'undefined') return;
+  private static getContext(): AudioContext | null {
+    if (typeof window === 'undefined') return null;
+    if (!this.audioCtx) {
+      const AudioCtxClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      if (AudioCtxClass) {
+        this.audioCtx = new AudioCtxClass();
+      }
+    }
+    if (this.audioCtx && this.audioCtx.state === 'suspended') {
+      this.audioCtx.resume().catch(() => {});
+    }
+    return this.audioCtx;
+  }
+
+  public static playHeartbeat(): void {
+    const ctx = this.getContext();
+    if (!ctx) return;
+
     try {
-      if (!this.ctx) {
-        const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-        this.ctx = new AudioCtx();
-      }
-      if (this.ctx.state === 'suspended') {
-        this.ctx.resume();
-      }
+      const now = ctx.currentTime;
 
-      const osc = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
+      // Lub sound (lower frequency)
+      const osc1 = ctx.createOscillator();
+      const gain1 = ctx.createGain();
+      osc1.type = 'sine';
+      osc1.frequency.setValueAtTime(65, now);
+      osc1.frequency.exponentialRampToValueAtTime(40, now + 0.12);
 
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(60, this.ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(30, this.ctx.currentTime + 0.15);
+      gain1.gain.setValueAtTime(0.3, now);
+      gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
 
-      gain.gain.setValueAtTime(0.5, this.ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.15);
+      osc1.connect(gain1);
+      gain1.connect(ctx.destination);
+      osc1.start(now);
+      osc1.stop(now + 0.12);
 
-      osc.connect(gain);
-      gain.connect(this.ctx.destination);
+      // Dub sound (slightly higher frequency, delayed by 140ms)
+      const osc2 = ctx.createOscillator();
+      const gain2 = ctx.createGain();
+      osc2.type = 'sine';
+      osc2.frequency.setValueAtTime(80, now + 0.14);
+      osc2.frequency.exponentialRampToValueAtTime(45, now + 0.28);
 
-      osc.start();
-      osc.stop(this.ctx.currentTime + 0.15);
+      gain2.gain.setValueAtTime(0.35, now + 0.14);
+      gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+
+      osc2.connect(gain2);
+      gain2.connect(ctx.destination);
+      osc2.start(now + 0.14);
+      osc2.stop(now + 0.28);
     } catch {
-      // AudioContext unavailable
+      // Ignore audio failure
     }
   }
 }
+
+export default HeartbeatAudioSynthesizer;

@@ -1,38 +1,38 @@
 /**
  * SharedArrayBufferQueue.ts - SCR-05-16
- * 호가 변동 및 체결 틱을 고속 처리하는 링 버퍼 기반 제로 카피 큐
+ * 고빈도 호가 체결 틱 큐 및 타입 정의
  */
 
 export interface OrderTick {
-  id: number;
+  id?: string;
+  type: 'buy' | 'sell';
   price: number;
   amount: number;
-  type: 'buy' | 'sell';
-  timestamp: number;
+  timestamp?: number;
 }
 
 export class SharedArrayBufferQueue {
-  private buffer: OrderTick[] = [];
-  private maxSize: number;
+  private queue: OrderTick[] = [];
+  private maxCapacity: number;
 
-  constructor(maxSize = 200) {
-    this.maxSize = maxSize;
+  constructor(maxCapacity = 100) {
+    this.maxCapacity = maxCapacity;
   }
 
-  public enqueue(tick: OrderTick) {
-    if (this.buffer.length >= this.maxSize) {
-      this.buffer.shift();
+  public enqueue(tick: OrderTick): void {
+    this.queue.push(tick);
+    if (this.queue.length > this.maxCapacity) {
+      this.queue.shift();
     }
-    this.buffer.push(tick);
   }
 
-  public drain(): OrderTick[] {
-    const copy = [...this.buffer];
-    this.buffer = [];
-    return copy;
+  public getSnapshot(): OrderTick[] {
+    return [...this.queue];
   }
 
-  public peek(): OrderTick[] {
-    return this.buffer;
+  public clear(): void {
+    this.queue = [];
   }
 }
+
+export default SharedArrayBufferQueue;

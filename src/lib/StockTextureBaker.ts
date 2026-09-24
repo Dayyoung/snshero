@@ -1,12 +1,14 @@
 /**
  * StockTextureBaker.ts - SCR-06-16
- * 전 종목 시세(50개 이상)를 16.6ms 주기로 단일 텍스처 아틀라스로 일괄 베이킹하는 고성능 베이커
+ * 전 종목 미니차트 고속 아틀라스 텍스처 베이커
  */
 
 export interface StockMiniChartData {
+  id: string;
   symbol: string;
   prices: number[];
-  changePercent: number;
+  changePercent?: number;
+  isUp?: boolean;
 }
 
 export class StockTextureBaker {
@@ -27,37 +29,52 @@ export class StockTextureBaker {
     const h = this.canvas.height;
 
     ctx.clearRect(0, 0, w, h);
-    ctx.fillStyle = '#050811';
+    ctx.fillStyle = '#0f172a';
     ctx.fillRect(0, 0, w, h);
 
-    const cols = 8;
-    const rows = 8;
+    if (stocks.length === 0) return this.canvas;
+
+    const cols = 4;
+    const rows = Math.ceil(stocks.length / cols);
     const cellW = w / cols;
-    const cellH = h / rows;
+    const cellH = h / Math.max(1, rows);
 
-    stocks.slice(0, 64).forEach((stock, idx) => {
-      const c = idx % cols;
-      const r = Math.floor(idx / cols);
-      const x = c * cellW;
-      const y = r * cellH;
+    stocks.forEach((stock, idx) => {
+      const col = idx % cols;
+      const row = Math.floor(idx / cols);
+      const x = col * cellW;
+      const y = row * cellH;
 
-      const isUp = stock.changePercent >= 0;
-      ctx.strokeStyle = isUp ? '#10b981' : '#ef4444';
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
+      const isUp = stock.isUp ?? ((stock.prices[stock.prices.length - 1] ?? 0) >= (stock.prices[0] ?? 0));
+      const strokeColor = isUp ? '#10b981' : '#f43f5e';
 
-      const pLen = stock.prices.length;
-      if (pLen > 1) {
-        const minP = Math.min(...stock.prices);
-        const maxP = Math.max(...stock.prices);
+      // Cell Border
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+      ctx.strokeRect(x, y, cellW, cellH);
+
+      // Symbol
+      ctx.font = 'bold 10px monospace';
+      ctx.fillStyle = '#cbd5e1';
+      ctx.fillText(stock.symbol, x + 4, y + 14);
+
+      // Sparkline
+      const prices = stock.prices;
+      if (prices && prices.length > 1) {
+        const minP = Math.min(...prices);
+        const maxP = Math.max(...prices);
         const range = maxP - minP || 1;
 
-        stock.prices.forEach((p, pIdx) => {
-          const px = x + 4 + (pIdx / (pLen - 1)) * (cellW - 8);
-          const py = y + cellH - 4 - ((p - minP) / range) * (cellH - 8);
+        ctx.strokeStyle = strokeColor;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+
+        prices.forEach((p, pIdx) => {
+          const px = x + 4 + (pIdx / (prices.length - 1)) * (cellW - 8);
+          const py = y + cellH - 6 - ((p - minP) / range) * (cellH - 24);
           if (pIdx === 0) ctx.moveTo(px, py);
           else ctx.lineTo(px, py);
         });
+
         ctx.stroke();
       }
     });
@@ -65,3 +82,5 @@ export class StockTextureBaker {
     return this.canvas;
   }
 }
+
+export default StockTextureBaker;

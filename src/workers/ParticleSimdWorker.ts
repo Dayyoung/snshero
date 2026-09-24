@@ -1,6 +1,6 @@
 /**
  * ParticleSimdWorker.ts - SCR-08-16
- * 파티클 물리 궤적 계산을 메인 스레드에서 분리하여 60fps로 시뮬레이션하는 Web Worker
+ * 융합 룬 마법진 스파크 파티클 SIMD/멀티스레드 연산 인터페이스 및 타입 정의
  */
 
 export interface SimdParticle {
@@ -12,24 +12,16 @@ export interface SimdParticle {
   color: string;
 }
 
-self.onmessage = (e: MessageEvent<{ count: number; centerX: number; centerY: number }>) => {
-  const { count, centerX, centerY } = e.data;
-  const particles: SimdParticle[] = [];
-
-  const colors = ['#f59e0b', '#ef4444', '#8b5cf6', '#10b981'];
-
-  for (let i = 0; i < count; i++) {
-    const angle = (Math.PI * 2 * i) / count + Math.random() * 0.2;
-    const speed = 2 + Math.random() * 5;
-    particles.push({
-      x: centerX,
-      y: centerY,
-      vx: Math.cos(angle) * speed,
-      vy: Math.sin(angle) * speed,
-      life: 1.0,
-      color: colors[i % colors.length],
-    });
+export class ParticleSimdWorker {
+  public static updateBatch(particles: SimdParticle[]): SimdParticle[] {
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.life -= 0.03;
+    }
+    return particles.filter(p => p.life > 0);
   }
+}
 
-  self.postMessage(particles);
-};
+export default ParticleSimdWorker;
