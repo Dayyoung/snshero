@@ -19,9 +19,7 @@ interface RainbowParticle {
   color: string;
   alpha: number;
   decay: number;
-  rotation: number;
-  rotationSpeed: number;
-  shape: 'circle' | 'star' | 'diamond' | 'sparkle';
+  shape: 'circle' | 'diamond' | 'sparkle';
   gravity: number;
 }
 
@@ -51,8 +49,6 @@ const RAINBOW_COLORS = [
  */
 export function triggerRainbowFlip(count: number, origins?: { x: number; y: number }[], customText?: string) {
   if (typeof window === 'undefined') return;
-  // If count is 1: 'Flip!'
-  // If count >= 2 (or more than 1): 'Doble Flip!'
   const text = customText || (count <= 1 ? 'Flip!' : 'Doble Flip!');
   const event = new CustomEvent<RainbowFlipDetail>('snshero:rainbow-flip', {
     detail: {
@@ -83,19 +79,136 @@ export const RainbowFlipEffect: React.FC<RainbowFlipEffectProps> = ({
   const particlesRef = useRef<RainbowParticle[]>([]);
   const shockwavesRef = useRef<ShockwaveRing[]>([]);
   const animFrameRef = useRef<number | null>(null);
+  const isRenderingRef = useRef(false);
 
-  // Spawn bursting particles from one or more origins
+  // Sync canvas dimensions on resize (never inside RAF)
+  const syncCanvasSize = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width = w;
+      canvas.height = h;
+    }
+  }, []);
+
+  useEffect(() => {
+    syncCanvasSize();
+    window.addEventListener('resize', syncCanvasSize, { passive: true });
+    return () => {
+      window.removeEventListener('resize', syncCanvasSize);
+    };
+  }, [syncCanvasSize]);
+
+  // High-performance canvas animation loop (sleeps when idle, 0 CPU overhead)
+  const startAnimationLoop = useCallback(() => {
+    if (isRenderingRef.current) return;
+    isRenderingRef.current = true;
+
+    const render = () => {
+      const canvas = canvasRef.current;
+      if (!canvas) {
+        isRenderingRef.current = false;
+        return;
+      }
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        isRenderingRef.current = false;
+        return;
+      }
+
+      const shockwaves = shockwavesRef.current;
+      const particles = particlesRef.current;
+
+      // When everything has faded out, clear and stop loop
+      if (shockwaves.length === 0 && particles.length === 0) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        isRenderingRef.current = false;
+        return;
+      }
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // 1. Shockwaves (Simple fast stroke, no shadowBlur)
+      for (let i = shockwaves.length - 1; i >= 0; i--) {
+        const sw = shockwaves[i];
+        sw.radius += (sw.maxRadius - sw.radius) * 0.18 + 2;
+        sw.alpha -= 0.045;
+
+        if (sw.alpha <= 0 || sw.radius >= sw.maxRadius) {
+          shockwaves.splice(i, 1);
+          continue;
+        }
+
+        ctx.beginPath();
+        ctx.arc(sw.x, sw.y, sw.radius, 0, Math.PI * 2);
+        ctx.strokeStyle = sw.color;
+        ctx.lineWidth = sw.lineWidth;
+        ctx.globalAlpha = Math.max(0, sw.alpha);
+        ctx.stroke();
+      }
+
+      // 2. Particles (Fast hardware-friendly rendering, zero shadowBlur, zero save/restore per particle)
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+
+        // Physics step
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += p.gravity;
+        p.vx *= 0.94;
+        p.vy *= 0.94;
+        p.alpha -= p.decay;
+
+        if (p.alpha <= 0 || p.size <= 0.4) {
+          particles.splice(i, 1);
+          continue;
+        }
+
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = Math.max(0, p.alpha);
+
+        if (p.shape === 'circle') {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (p.shape === 'diamond') {
+          const s = p.size;
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y - s);
+          ctx.lineTo(p.x + s, p.y);
+          ctx.lineTo(p.x, p.y + s);
+          ctx.lineTo(p.x - s, p.y);
+          ctx.closePath();
+          ctx.fill();
+        } else {
+          // Fast Sparkle Cross
+          const s = p.size;
+          ctx.fillRect(p.x - s * 0.3, p.y - s, s * 0.6, s * 2);
+          ctx.fillRect(p.x - s, p.y - s * 0.3, s * 2, s * 0.6);
+        }
+      }
+
+      ctx.globalAlpha = 1;
+      animFrameRef.current = requestAnimationFrame(render);
+    };
+
+    animFrameRef.current = requestAnimationFrame(render);
+  }, []);
+
+  // Spawn bursting particles from one or more origins (performance tuned)
   const spawnBurst = useCallback((count: number, origins?: { x: number; y: number }[]) => {
+    syncCanvasSize();
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const rect = canvas.getBoundingClientRect();
-    const w = rect.width;
-    const h = rect.height;
+    const w = canvas.width || window.innerWidth;
+    const h = canvas.height || window.innerHeight;
 
     const isMulti = count >= 2;
-    // Single flip: ~60 rainbow particles. Multiple flips ("1개 이상"): 260+ massive particle burst
-    const particleAmount = isMulti ? 260 : 60;
+    // Single flip: 28 particles. Multiple flips: 64 particles (responsive, 60fps lightweight)
+    const particleAmount = isMulti ? 64 : 28;
 
     // Determine explosion centers
     let centerPoints: { x: number; y: number }[] = [];
@@ -114,51 +227,36 @@ export const RainbowFlipEffect: React.FC<RainbowFlipEffectProps> = ({
     centerPoints.forEach(center => {
       const perPointCount = Math.ceil(particleAmount / centerPoints.length);
 
-      // Add shockwave ring
+      // Fast single shockwave
       newShockwaves.push({
         x: center.x,
         y: center.y,
-        radius: 8,
-        maxRadius: isMulti ? 140 : 80,
+        radius: 6,
+        maxRadius: isMulti ? 90 : 60,
         color: isMulti ? '#FFD700' : '#00F0FF',
-        alpha: 0.9,
-        lineWidth: isMulti ? 4 : 2.5,
+        alpha: 0.8,
+        lineWidth: isMulti ? 3 : 2,
       });
 
-      if (isMulti) {
-        // Second rainbow shockwave for Doble Flip!
-        newShockwaves.push({
-          x: center.x,
-          y: center.y,
-          radius: 4,
-          maxRadius: 180,
-          color: '#EC4899',
-          alpha: 0.7,
-          lineWidth: 2,
-        });
-      }
-
       for (let i = 0; i < perPointCount; i++) {
-        const angle = (Math.PI * 2 * i) / perPointCount + (Math.random() - 0.5) * 0.4;
-        const speed = (isMulti ? 5 : 3.5) + Math.random() * (isMulti ? 13 : 9);
+        const angle = (Math.PI * 2 * i) / perPointCount + (Math.random() - 0.5) * 0.35;
+        const speed = (isMulti ? 4 : 3) + Math.random() * (isMulti ? 8 : 6);
         const color = RAINBOW_COLORS[Math.floor(Math.random() * RAINBOW_COLORS.length)];
         const shapeRand = Math.random();
-        const shape: 'circle' | 'star' | 'diamond' | 'sparkle' = 
-          shapeRand < 0.4 ? 'circle' : shapeRand < 0.7 ? 'star' : shapeRand < 0.85 ? 'diamond' : 'sparkle';
+        const shape: 'circle' | 'diamond' | 'sparkle' = 
+          shapeRand < 0.5 ? 'circle' : shapeRand < 0.8 ? 'diamond' : 'sparkle';
 
         newParticles.push({
-          x: center.x + (Math.random() - 0.5) * 10,
-          y: center.y + (Math.random() - 0.5) * 10,
+          x: center.x + (Math.random() - 0.5) * 8,
+          y: center.y + (Math.random() - 0.5) * 8,
           vx: Math.cos(angle) * speed,
           vy: Math.sin(angle) * speed - (Math.random() * 2),
-          size: (isMulti ? 4 : 3) + Math.random() * (isMulti ? 6 : 4),
+          size: (isMulti ? 3.5 : 2.8) + Math.random() * (isMulti ? 3.5 : 2.5),
           color,
           alpha: 1,
-          decay: 0.014 + Math.random() * (isMulti ? 0.018 : 0.024),
-          rotation: Math.random() * Math.PI * 2,
-          rotationSpeed: (Math.random() - 0.5) * 0.3,
+          decay: 0.026 + Math.random() * (isMulti ? 0.024 : 0.032), // Quick decay ~0.6s
           shape,
-          gravity: 0.22,
+          gravity: 0.18,
         });
       }
     });
@@ -174,122 +272,17 @@ export const RainbowFlipEffect: React.FC<RainbowFlipEffectProps> = ({
       playDopamineChime(1, false);
       triggerHaptic('medium');
     }
-  }, []);
 
-  // Animation Loop
+    startAnimationLoop();
+  }, [syncCanvasSize, startAnimationLoop]);
+
+  // Clean up RAF on unmount
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    let isRunning = true;
-
-    const render = () => {
-      if (!isRunning) return;
-
-      const rect = canvas.getBoundingClientRect();
-      if (canvas.width !== rect.width || canvas.height !== rect.height) {
-        canvas.width = rect.width;
-        canvas.height = rect.height;
-      }
-
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Render & update shockwaves
-      const shockwaves = shockwavesRef.current;
-      for (let i = shockwaves.length - 1; i >= 0; i--) {
-        const sw = shockwaves[i];
-        sw.radius += (sw.maxRadius - sw.radius) * 0.12 + 1.5;
-        sw.alpha -= 0.025;
-
-        if (sw.alpha <= 0 || sw.radius >= sw.maxRadius) {
-          shockwaves.splice(i, 1);
-          continue;
-        }
-
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(sw.x, sw.y, sw.radius, 0, Math.PI * 2);
-        ctx.strokeStyle = sw.color;
-        ctx.lineWidth = sw.lineWidth;
-        ctx.globalAlpha = Math.max(0, sw.alpha);
-        ctx.shadowColor = sw.color;
-        ctx.shadowBlur = 12;
-        ctx.stroke();
-        ctx.restore();
-      }
-
-      // Render & update particles
-      const particles = particlesRef.current;
-      for (let i = particles.length - 1; i >= 0; i--) {
-        const p = particles[i];
-
-        // Physics step
-        p.x += p.vx;
-        p.y += p.vy;
-        p.vy += p.gravity;
-        p.vx *= 0.96;
-        p.vy *= 0.96;
-        p.rotation += p.rotationSpeed;
-        p.alpha -= p.decay;
-
-        if (p.alpha <= 0 || p.size <= 0.5) {
-          particles.splice(i, 1);
-          continue;
-        }
-
-        ctx.save();
-        ctx.translate(p.x, p.y);
-        ctx.rotate(p.rotation);
-        ctx.globalAlpha = Math.max(0, p.alpha);
-        ctx.fillStyle = p.color;
-        ctx.shadowColor = p.color;
-        ctx.shadowBlur = p.size > 5 ? 10 : 4;
-
-        if (p.shape === 'circle') {
-          ctx.beginPath();
-          ctx.arc(0, 0, p.size, 0, Math.PI * 2);
-          ctx.fill();
-        } else if (p.shape === 'diamond') {
-          ctx.beginPath();
-          ctx.moveTo(0, -p.size * 1.3);
-          ctx.lineTo(p.size, 0);
-          ctx.lineTo(0, p.size * 1.3);
-          ctx.lineTo(-p.size, 0);
-          ctx.closePath();
-          ctx.fill();
-        } else if (p.shape === 'star') {
-          // 4-point sparkle star
-          const s = p.size * 1.2;
-          ctx.beginPath();
-          ctx.moveTo(0, -s);
-          ctx.quadraticCurveTo(0, 0, s, 0);
-          ctx.quadraticCurveTo(0, 0, 0, s);
-          ctx.quadraticCurveTo(0, 0, -s, 0);
-          ctx.quadraticCurveTo(0, 0, 0, -s);
-          ctx.closePath();
-          ctx.fill();
-        } else {
-          // Sparkle cross
-          const s = p.size;
-          ctx.fillRect(-s / 4, -s, s / 2, s * 2);
-          ctx.fillRect(-s, -s / 4, s * 2, s / 2);
-        }
-
-        ctx.restore();
-      }
-
-      animFrameRef.current = requestAnimationFrame(render);
-    };
-
-    animFrameRef.current = requestAnimationFrame(render);
-
     return () => {
-      isRunning = false;
       if (animFrameRef.current) {
         cancelAnimationFrame(animFrameRef.current);
       }
+      isRenderingRef.current = false;
     };
   }, []);
 
@@ -298,10 +291,11 @@ export const RainbowFlipEffect: React.FC<RainbowFlipEffectProps> = ({
     setActiveAnnouncement(detail);
     spawnBurst(detail.count, detail.origins);
 
+    // Crisp, fast notification (800ms) without lingering over cards
     const timer = setTimeout(() => {
       setActiveAnnouncement(prev => (prev?.id === detail.id ? null : prev));
       onFinished?.();
-    }, 1400);
+    }, 850);
 
     return () => clearTimeout(timer);
   }, [spawnBurst, onFinished]);
@@ -333,79 +327,69 @@ export const RainbowFlipEffect: React.FC<RainbowFlipEffectProps> = ({
   const displayText = activeAnnouncement?.text || (isMulti ? 'Doble Flip!' : 'Flip!');
 
   return (
-    <div className={`${isFixed ? 'fixed' : 'absolute'} inset-0 pointer-events-none z-[160] overflow-hidden select-none ${className}`}>
-      {/* 60fps Rainbow Canvas Particles Layer */}
+    <div className={`${isFixed ? 'fixed' : 'absolute'} inset-0 pointer-events-none z-[160] overflow-hidden select-none bg-transparent ${className}`}>
+      {/* High-Performance Canvas Particles Layer (0% idle CPU) */}
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 w-full h-full pointer-events-none"
+        className="absolute inset-0 w-full h-full pointer-events-none bg-transparent"
       />
 
-      {/* Floating Animated Flip Banner */}
+      {/* Floating Animated Flip Banner — 100% Transparent Background (카드 시야 가림 0%) */}
       <AnimatePresence>
         {activeAnnouncement && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none bg-transparent">
             <motion.div
               key={`flip-banner-${activeAnnouncement.id}`}
-              initial={{ scale: 0.2, opacity: 0, y: 25, rotate: -4 }}
+              initial={{ scale: 0.5, opacity: 0, y: 15 }}
               animate={{ 
-                scale: [0.2, isMulti ? 1.35 : 1.2, isMulti ? 1.15 : 1.05],
-                opacity: 1, 
-                y: [25, -12, -22],
-                rotate: [-4, 3, 0],
+                scale: [0.5, isMulti ? 1.25 : 1.1, 1.0],
+                opacity: [0, 1, 1], 
+                y: [15, -12, -24],
               }}
-              exit={{ scale: 1.3, opacity: 0, y: -45 }}
-              transition={{ duration: 0.45, ease: [0.175, 0.885, 0.32, 1.275] }}
-              className="relative flex flex-col items-center justify-center pointer-events-none"
+              exit={{ scale: 0.9, opacity: 0, y: -40, transition: { duration: 0.2 } }}
+              transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+              className="relative flex flex-col items-center justify-center pointer-events-none select-none bg-transparent"
             >
-              {/* Pulsing Rainbow Halo Background */}
-              <div 
-                className={`absolute -inset-4 rounded-xl blur-md opacity-80 animate-pulse pointer-events-none ${
-                  isMulti 
-                    ? 'bg-gradient-to-r from-red-500 via-amber-400 via-emerald-400 via-cyan-400 to-purple-600' 
-                    : 'bg-gradient-to-r from-cyan-400 via-amber-300 to-pink-500'
-                }`}
-              />
+              {/* Vibrant Text with Zero Background Box */}
+              <div className="flex items-center gap-1.5 bg-transparent pointer-events-none">
+                <span className="text-amber-300 text-lg sm:text-xl drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
+                  {isMulti ? '✨' : '⚡'}
+                </span>
 
-              {/* Main Badge Container */}
-              <div className={`relative px-5 py-2 sm:px-7 sm:py-2.5 rounded-sm border-2 backdrop-blur-md shadow-2xl flex flex-col items-center justify-center font-mono ${
-                isMulti
-                  ? 'bg-[#181124]/95 border-amber-400 shadow-[0_0_35px_rgba(255,215,0,0.8)]'
-                  : 'bg-[#0f172a]/90 border-cyan-400 shadow-[0_0_25px_rgba(6,182,212,0.7)]'
-              }`}>
-                {/* Rainbow Sparkle Accents */}
-                <div className="flex items-center gap-2">
-                  <span className="text-amber-300 text-lg sm:text-xl animate-spin-slow">
-                    {isMulti ? '✨🌈' : '⚡'}
-                  </span>
+                {/* High-Contrast Rainbow Text with Stroke Outline */}
+                <span 
+                  className={`font-black tracking-wider text-2xl sm:text-3xl md:text-4xl uppercase select-none bg-clip-text text-transparent ${
+                    isMulti
+                      ? 'bg-gradient-to-r from-amber-300 via-rose-400 via-cyan-300 to-fuchsia-400'
+                      : 'bg-gradient-to-r from-cyan-300 via-amber-200 to-rose-400'
+                  }`}
+                  style={{
+                    WebkitTextStroke: '1px rgba(0, 0, 0, 0.9)',
+                    filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.95))',
+                  }}
+                >
+                  {displayText}
+                </span>
 
-                  {/* High-Contrast Vibrant Rainbow Text */}
+                <span className="text-amber-300 text-lg sm:text-xl drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
+                  {isMulti ? '✨' : '⚡'}
+                </span>
+              </div>
+
+              {/* Subtitle combo count — Transparent Text */}
+              {isMulti && (
+                <div className="flex items-center gap-1 mt-0.5 bg-transparent">
                   <span 
-                    className={`font-black tracking-wider text-xl sm:text-2xl md:text-3xl uppercase drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)] bg-clip-text text-transparent ${
-                      isMulti
-                        ? 'bg-gradient-to-r from-red-400 via-amber-300 via-emerald-300 via-cyan-300 via-sky-400 to-fuchsia-400'
-                        : 'bg-gradient-to-r from-cyan-300 via-emerald-300 via-amber-200 to-pink-400'
-                    }`}
+                    className="text-[11px] sm:text-xs font-black text-amber-300 tracking-wider uppercase bg-transparent"
                     style={{
-                      textShadow: '0 0 1px rgba(255,255,255,0.4)',
+                      WebkitTextStroke: '0.6px rgba(0, 0, 0, 0.85)',
+                      filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.9))',
                     }}
                   >
-                    {displayText}
-                  </span>
-
-                  <span className="text-amber-300 text-lg sm:text-xl animate-spin-slow">
-                    {isMulti ? '🌈✨' : '⚡'}
+                    ⚡ x{activeAnnouncement.count} COMBO! ⚡
                   </span>
                 </div>
-
-                {/* Subtitle count indicator for Doble Flip! */}
-                {isMulti && (
-                  <div className="flex items-center gap-1.5 mt-1">
-                    <span className="text-[10px] sm:text-xs font-black text-amber-300 tracking-widest uppercase bg-amber-950/80 px-2 py-0.5 border border-amber-400/60 rounded-xs">
-                      ⚡ COMBO x{activeAnnouncement.count} FLIPS! ⚡
-                    </span>
-                  </div>
-                )}
-              </div>
+              )}
             </motion.div>
           </div>
         )}
