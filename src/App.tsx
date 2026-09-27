@@ -58,6 +58,7 @@ import { useAudioLifecycleGuard } from './hooks/useAudioLifecycleGuard';
 import { isSfxMutedGlobal, setGlobalSfxMuted } from './lib/sound';
 import { usePwaInstallGuard } from './hooks/usePwaInstallGuard';
 import { incrementMissionProgress } from './lib/dailyMissions';
+import { RainbowFlipEffect } from './components/RainbowFlipEffect';
 
 import { 
   Menu, 
@@ -6326,7 +6327,7 @@ function AppContent() {
           />
 
         {/* Global Chat Floating Button */}
-        {view !== 'landing' && view !== 'cartoonBook' && view !== 'novel' && view !== 'webtoon' && view !== 'card-play' && !isPlayingBattle && (view !== 'play' || playGameState === 'modeSelect') && (
+        {view !== 'landing' && view !== 'cartoonBook' && view !== 'novel' && view !== 'webtoon' && view !== 'card-play' && view !== 'play' && !isPlayingBattle && (
           <>
           <div className={cn(
             "fixed left-0 right-0 w-full max-w-[1024px] mx-auto z-[10000] pointer-events-none transition-all",
@@ -7552,6 +7553,9 @@ function AppContent() {
           </div>
         )}
       </AnimatePresence>
+
+      {/* Global Rainbow Particle Flip FX Overlay (Flip! & Doble Flip!) */}
+      <RainbowFlipEffect isFixed={true} />
 
       {isGlobalLoading && (
         <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md pointer-events-auto animate-fade-in">

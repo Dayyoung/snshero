@@ -18,6 +18,9 @@ import { cn, getCardSpriteStyle } from '../lib/utils';
 import { AdSenseBanner } from '../components/AdSenseBanner';
 import { CardItem } from '../components/CardItem';
 import { t } from '../lib/i18n';
+import { triggerRainbowFlip } from '../components/RainbowFlipEffect';
+import { MissionDialogueIntro } from '../components/MissionDialogueIntro';
+import { pickNewRankOpponent, RankOpponentInfo } from '../data/rankingOpponents';
 
 export interface MobileCardPlayScreenProps {
   playerDeck?: CardData[];
@@ -44,6 +47,7 @@ export interface MobileCardPlayScreenProps {
   tutorialStep?: number;
   onTutorialToShop?: () => void;
   towerFloor?: number | null;
+  isRankingMatch?: boolean;
 }
 
 export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
@@ -69,7 +73,8 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
   isTutorialMode = false,
   tutorialStep = 0,
   onTutorialToShop,
-  towerFloor = null
+  towerFloor = null,
+  isRankingMatch = false
 }) => {
   // ─── Sound FX Helper ──────────────────────────────────────────────
   const [isMuted, setIsMuted] = useState(false);
@@ -134,17 +139,25 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     return null;
   }, [targetCardId]);
 
+  // Ranking Match Opponent & 3s Search State
+  const [activeRankOpponent, setActiveRankOpponent] = useState<RankOpponentInfo | null>(null);
+  const [rankingSearchCountdown, setRankingSearchCountdown] = useState<number | null>(null);
+
+  // Mission Game 3s Dialogue Intro State
+  const [showMissionDialogue, setShowMissionDialogue] = useState<boolean>(Boolean(targetCardId));
+
   // Opponent name
   const effectiveOpponentName = useMemo(() => {
+    if (activeRankOpponent) return activeRankOpponent.name;
     if (opponentName) return opponentName;
     if (missionCardData) {
       return language === 'ko' ? missionCardData.title : (missionCardData.title_en || missionCardData.title);
     }
     return generateAiName();
-  }, [opponentName, missionCardData, language]);
+  }, [activeRankOpponent, opponentName, missionCardData, language]);
 
   // Deck generation helper
-  const initMatchDecks = useCallback(() => {
+  const initMatchDecks = useCallback((overrideDeck?: CardData[]) => {
     // 1. Player Deck (5 cards)
     let pCards: CardData[] = [];
     if (playerDeck && playerDeck.length >= 5) {
@@ -163,7 +176,25 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
 
     // 2. Opponent Deck (5 cards)
     let oCards: CardData[] = [];
-    if (opponentCustomDeck && opponentCustomDeck.length >= 5) {
+    if (overrideDeck && overrideDeck.length >= 5) {
+      oCards = overrideDeck.slice(0, 5).map((c, i) => syncCardWithDatabase({
+        ...c,
+        id: `opp-${i}-${Date.now()}`,
+        owner: 'ai'
+      }));
+    } else if (activeRankOpponent) {
+      const oppPower = activeRankOpponent.totalPower;
+      const rankDeck = generateUniqueDeck(5);
+      rankDeck.forEach(c => {
+        c.owner = 'ai';
+        c.level = Math.min(10, Math.max(1, Math.floor(oppPower / 1200)));
+      });
+      oCards = rankDeck.map((c, i) => syncCardWithDatabase({
+        ...c,
+        id: `rank-opp-${i}-${Date.now()}`,
+        owner: 'ai'
+      }));
+    } else if (opponentCustomDeck && opponentCustomDeck.length >= 5) {
       oCards = opponentCustomDeck.slice(0, 5).map((c, i) => syncCardWithDatabase({
         ...c,
         id: `opp-${i}-${Date.now()}`,
@@ -210,7 +241,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     setIsEvaluating(false);
     setActiveSkill(null);
     setSkillCharges({ power: 1, shield: 1, burst: 1 });
-  }, [playerDeck, opponentCustomDeck, targetCardId]);
+  }, [playerDeck, opponentCustomDeck, targetCardId, activeRankOpponent]);
 
   // Initial game setup
   useEffect(() => {
@@ -324,6 +355,19 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       setFlippedSlots(flippedIndices);
       playSound('flip');
       setTimeout(() => setFlippedSlots([]), 800);
+      try {
+        const origins: { x: number; y: number }[] = [];
+        flippedIndices.forEach(idx => {
+          const el = document.getElementById(`board-slot-${idx}`);
+          if (el) {
+            const r = el.getBoundingClientRect();
+            origins.push({ x: r.left + r.width / 2, y: r.top + r.height / 2 });
+          }
+        });
+        triggerRainbowFlip(flippedIndices.length, origins.length > 0 ? origins : undefined);
+      } catch {
+        triggerRainbowFlip(flippedIndices.length);
+      }
     }
 
     setBoard(updatedBoard);
@@ -507,7 +551,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
 
   // ─── AI Opponent / Auto Player Logic ───────────────────────────────
   useEffect(() => {
-    if (gameOver || isEvaluating) return;
+    if (gameOver || isEvaluating || rankingSearchCountdown !== null || showMissionDialogue) return;
 
     // 1. AI Opponent's Turn
     if (turn === 'ai') {
@@ -654,11 +698,12 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     };
   }, [handleExitGame]);
 
-  // 미션 및 카드 플레이: 승/패/무승부 처리 (튜토리얼 vs 일반 모드 분기)
+  // 미션 및 카드 플레이: 승/패/무승부 처리 (튜토리얼 vs 랭킹대전 vs 미션 게임 분기)
   useEffect(() => {
     if (!gameOver || !winner) {
       setRematchCountdown(null);
       setTutorialShopCountdown(null);
+      setRankingSearchCountdown(null);
       return;
     }
 
@@ -666,6 +711,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     if (towerBossClearModal) {
       setRematchCountdown(null);
       setTutorialShopCountdown(null);
+      setRankingSearchCountdown(null);
       return;
     }
 
@@ -683,16 +729,46 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       return;
     }
 
-    // 4) 일반/미션 모드: 승/패/무승부 상관없이 3초 카운터 후 다시 카드 플레이
-    setTutorialShopCountdown(null);
-    setRematchCountdown(3);
-  }, [gameOver, winner, isTutorialMode, tutorialStep, autoCloseOnComplete, towerBossClearModal]);
+    // 4) 랭킹대전인 경우: 승패 결정 시 바로 재시작하지 않고 1.2초 후 다시 3초 검색하고 시작!
+    if (isRankingMatch) {
+      setTutorialShopCountdown(null);
+      setRematchCountdown(null);
+      const searchTimer = setTimeout(() => {
+        const nextOpp = pickNewRankOpponent(activeRankOpponent?.name || effectiveOpponentName);
+        setActiveRankOpponent(nextOpp);
+        setRankingSearchCountdown(3);
+      }, 1200);
+      return () => clearTimeout(searchTimer);
+    }
 
-  // 3초 카운트다운 감소 및 0초 도달 시 자동 재대결
+    // 5) 미션 게임 또는 일반 모드: 2초 후 재대결
+    setTutorialShopCountdown(null);
+    setRematchCountdown(2);
+  }, [gameOver, winner, isTutorialMode, tutorialStep, autoCloseOnComplete, towerBossClearModal, isRankingMatch, activeRankOpponent?.name, effectiveOpponentName]);
+
+  // 랭킹대전: 3초 검색 카운트다운 후 새로운 상대와 매치 시작
+  useEffect(() => {
+    if (rankingSearchCountdown === null) return;
+    if (rankingSearchCountdown <= 0) {
+      setRankingSearchCountdown(null);
+      initMatchDecks();
+      return;
+    }
+    const timer = setTimeout(() => {
+      setRankingSearchCountdown(prev => (prev !== null ? prev - 1 : null));
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [rankingSearchCountdown, initMatchDecks]);
+
+  // 3초 카운트다운 감소 및 0초 도달 시 자동 재대결 (미션 게임은 3초 대사 보여주고 시작)
   useEffect(() => {
     if (rematchCountdown === null) return;
     if (rematchCountdown <= 0) {
       setRematchCountdown(null);
+      if (targetCardId) {
+        // 미션 게임: 3초 대사 보여주고 시작
+        setShowMissionDialogue(true);
+      }
       initMatchDecks();
       return;
     }
@@ -700,7 +776,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       setRematchCountdown(prev => (prev !== null ? prev - 1 : null));
     }, 1000);
     return () => clearTimeout(timer);
-  }, [rematchCountdown, initMatchDecks]);
+  }, [rematchCountdown, targetCardId, initMatchDecks]);
 
   // 튜토리얼 모드: 카운트다운 후 상점으로 이동
   useEffect(() => {
@@ -787,44 +863,46 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
         </div>
       </div>
 
-      {/* ─── 2. 상대 덱 (Opponent Deck: 5 cards, ~56px) ─────────────── */}
+      {/* ─── 2. 상대 덱 (Opponent Deck: 5 cards, 우리 카드와 동일 규격) ─────────────── */}
       <div 
         id="mobile-card-opponent-deck"
-        className="w-full px-2 py-1 bg-[#090d16] border-b border-stone-800/60 flex items-center justify-center gap-1.5 shrink-0"
+        className="w-full px-2 py-1.5 bg-[#090d16] border-b border-stone-800/80 flex flex-col items-center shrink-0"
       >
-        <div className="flex items-center gap-1.5 max-w-sm w-full justify-between">
-          <span className="text-[9px] font-bold text-rose-400 shrink-0 uppercase tracking-tight">
-            [OPP: {opponentHand.length}]
+        <div className="w-full max-w-sm flex items-center justify-between mb-1 text-[9px] text-stone-400">
+          <span className="font-bold text-rose-400">
+            {language === 'ko' ? '상대 카드 덱' : 'OPPONENT DECK'} ({opponentHand.length}/5)
           </span>
+          <span className="text-[8px] text-stone-500">
+            {turn === 'ai' 
+              ? (language === 'ko' ? '▶ 상대 턴 진행 중...' : '▶ Opponent thinking...') 
+              : (language === 'ko' ? '상대 패 대기 중' : 'Opponent waiting')}
+          </span>
+        </div>
 
-          <div className="flex items-center gap-1.5">
-            {Array.from({ length: 5 }).map((_, i) => {
-              const card = opponentHand[i];
-              const isRem = !!card;
-              return (
-                <div
-                  key={`opp-card-${i}`}
-                  className={cn(
-                    "w-[34px] sm:w-[38px] aspect-[5/7] rounded-xs relative transition-all overflow-hidden flex items-center justify-center",
-                    isRem
-                      ? "ring-1 ring-rose-500/80 shadow-xs shadow-rose-900/40"
-                      : "border border-stone-800/40 bg-stone-900/30 opacity-25"
-                  )}
-                >
-                  {isRem && card ? (
-                    <CardItem
-                      card={card}
-                      isLocked={true}
-                      language={language}
-                      className="w-full h-full pointer-events-none rounded-xs"
-                    />
-                  ) : (
-                    <span className="text-[8px] text-stone-600 font-mono">--</span>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+        <div className="flex items-center gap-1.5 w-full max-w-sm justify-center">
+          {opponentHand.map((card, i) => (
+            <div
+              key={`opp-card-${card.id || i}`}
+              className="flex-1 max-w-[64px] aspect-[5/7] rounded-xs relative transition-all overflow-hidden flex items-center justify-center ring-1 ring-rose-500/80 shadow-xs shadow-rose-900/40"
+            >
+              <CardItem
+                card={card}
+                isLocked={true}
+                language={language}
+                className="w-full h-full pointer-events-none rounded-xs"
+              />
+            </div>
+          ))}
+
+          {/* Placeholders for used opponent cards */}
+          {Array.from({ length: Math.max(0, 5 - opponentHand.length) }).map((_, idx) => (
+            <div
+              key={`empty-opp-hand-${idx}`}
+              className="flex-1 max-w-[64px] aspect-[5/7] rounded-xs border border-stone-800/40 bg-stone-950/40 opacity-30 flex items-center justify-center"
+            >
+              <span className="text-[8px] text-stone-600 font-bold">USED</span>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -898,8 +976,9 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
               return (
                 <div
                   key={`board-slot-${idx}`}
+                  id={`board-slot-${idx}`}
                   onClick={() => {
-                    if (turn === 'player' && !isOccupied && isSelectedHand) {
+                    if (turn === 'player' && !isOccupied && isSelectedHand && rankingSearchCountdown === null && !showMissionDialogue) {
                       handlePlaceCard(idx, isSelectedHand, true);
                     }
                   }}
@@ -1251,13 +1330,31 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                       onClick={() => {
                         playSound('tap');
                         setRematchCountdown(null);
-                        initMatchDecks();
+                        if (isRankingMatch) {
+                          const nextOpp = pickNewRankOpponent(activeRankOpponent?.name || effectiveOpponentName);
+                          setActiveRankOpponent(nextOpp);
+                          setRankingSearchCountdown(3);
+                        } else if (targetCardId) {
+                          setShowMissionDialogue(true);
+                          initMatchDecks();
+                        } else {
+                          initMatchDecks();
+                        }
                       }}
-                      className="flex-1 py-2 bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-black text-xs uppercase rounded-xs transition-transform active:scale-95 cursor-pointer flex items-center justify-center gap-1"
+                      className={cn(
+                        "flex-1 py-2 font-black text-xs uppercase rounded-xs transition-transform active:scale-95 cursor-pointer flex items-center justify-center gap-1",
+                        isRankingMatch
+                          ? "bg-amber-500 hover:bg-amber-400 text-stone-950 shadow-md shadow-amber-500/20"
+                          : "bg-emerald-500 hover:bg-emerald-400 text-stone-950"
+                      )}
                     >
                       <RefreshCw size={13} />
                       <span>
-                        {rematchCountdown !== null
+                        {isRankingMatch
+                          ? (language === 'ko' ? '새 상대 검색 (3초)' : 'Search Rival (3s)')
+                          : targetCardId
+                          ? (language === 'ko' ? '미션 재도전 (대사 3초)' : 'Mission Retry (3s)')
+                          : rematchCountdown !== null
                           ? (language === 'ko' ? `즉시 시작 (${rematchCountdown}s)` : `Play Now (${rematchCountdown}s)`)
                           : (language === 'ko' ? '재대결' : 'Rematch')}
                       </span>
@@ -1368,6 +1465,88 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* ─── 랭킹대전: 승패 결정 후 다시 3초 검색 오버레이 ────────── */}
+      <AnimatePresence>
+        {rankingSearchCountdown !== null && activeRankOpponent && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[220] bg-black/92 backdrop-blur-md flex flex-col items-center justify-center p-4 font-mono select-none"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 15 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 15 }}
+              className="w-full max-w-sm bg-[#0b1017] border-2 border-amber-500/90 p-5 rounded-none shadow-[0_0_50px_rgba(245,158,11,0.4)] flex flex-col items-center text-center relative overflow-hidden"
+            >
+              {/* Radar pulse effect */}
+              <div className="relative w-20 h-20 my-2 flex items-center justify-center">
+                <div className="absolute inset-0 rounded-full border-2 border-amber-400/40 animate-ping" />
+                <div className="absolute inset-2 rounded-full border border-amber-400/60 animate-pulse" />
+                <div className="w-14 h-14 rounded-full bg-amber-500/20 border border-amber-400 flex items-center justify-center text-2xl shadow-lg">
+                  {activeRankOpponent.avatar || '⚔️'}
+                </div>
+              </div>
+
+              <div className="text-[10px] font-black uppercase text-amber-400 tracking-wider mb-1">
+                {language === 'ko' ? '새로운 랭킹 대전 상대를 검색 중...' : 'SEARCHING FOR RANK RIVAL...'}
+              </div>
+
+              <h3 className="text-base font-black text-white">
+                {activeRankOpponent.name}
+              </h3>
+
+              <div className="flex items-center gap-2 mt-2 text-xs">
+                <span className="px-2 py-0.5 bg-amber-950/80 border border-amber-400/60 text-amber-300 font-bold rounded-xs">
+                  {activeRankOpponent.tier}
+                </span>
+                <span className="px-2 py-0.5 bg-stone-900 border border-stone-700 text-stone-300 font-bold rounded-xs">
+                  전투력 {activeRankOpponent.totalPower}
+                </span>
+              </div>
+
+              {/* Big 3s Countdown */}
+              <div className="text-5xl font-black text-amber-400 my-4 tracking-tighter drop-shadow-[0_0_15px_rgba(245,158,11,0.8)] animate-pulse">
+                {rankingSearchCountdown}s
+              </div>
+
+              <div className="w-full h-1.5 bg-stone-800 rounded-none overflow-hidden border border-amber-500/30">
+                <motion.div
+                  className="h-full bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-300"
+                  initial={{ width: '0%' }}
+                  animate={{ width: `${((3 - rankingSearchCountdown) / 3) * 100}%` }}
+                  transition={{ duration: 0.3 }}
+                />
+              </div>
+
+              <p className="text-[11px] text-stone-400 mt-3">
+                {language === 'ko' ? '3초 후 새로운 상대와 즉시 배틀이 시작됩니다.' : 'Battle begins in 3 seconds with new rival.'}
+              </p>
+
+              <button
+                type="button"
+                onClick={handleExitGame}
+                className="mt-4 w-full py-2 bg-stone-900 hover:bg-stone-800 text-stone-300 hover:text-white border border-stone-700 rounded-none font-bold text-xs uppercase cursor-pointer active:scale-95 transition-all"
+              >
+                {language === 'ko' ? '매칭 취소 및 나가기' : 'Cancel & Exit'}
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ─── 미션 게임 3초 대사 인트로 모달 ────────────────────────── */}
+      {targetCardId && (
+        <MissionDialogueIntro
+          isOpen={showMissionDialogue}
+          cardId={targetCardId}
+          language={language}
+          onComplete={() => setShowMissionDialogue(false)}
+          onSkip={() => setShowMissionDialogue(false)}
+        />
+      )}
     </div>
   );
 };

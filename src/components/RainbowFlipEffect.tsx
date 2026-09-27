@@ -94,8 +94,8 @@ export const RainbowFlipEffect: React.FC<RainbowFlipEffectProps> = ({
     const h = rect.height;
 
     const isMulti = count >= 2;
-    // Single flip: ~45 particles. Multiple flips ("1개 이상"): 140+ massive particle burst
-    const particleAmount = isMulti ? 150 : 45;
+    // Single flip: ~60 rainbow particles. Multiple flips ("1개 이상"): 260+ massive particle burst
+    const particleAmount = isMulti ? 260 : 60;
 
     // Determine explosion centers
     let centerPoints: { x: number; y: number }[] = [];

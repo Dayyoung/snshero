@@ -58,6 +58,7 @@ import { ExpeditionModal } from '../components/ExpeditionModal';
 import { MonsterBeastariumModal } from '../components/MonsterBeastariumModal';
 import { TacticianMasteryModal } from '../components/TacticianMasteryModal';
 import { TowerOfTrialsModal } from '../components/TowerOfTrialsModal';
+import { triggerRainbowFlip } from '../components/RainbowFlipEffect';
 import { BattleGambitModal } from '../components/BattleGambitModal';
 import { VoxelMiningDefenseGame } from '../components/VoxelMiningDefenseGame';
 import { VoxelPixelStrikeArenaGame } from '../components/VoxelPixelStrikeArenaGame';
@@ -619,7 +620,6 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   const [guideMode, setGuideMode] = useState<any>(null);
   const [sortBy, setSortBy] = useState<'default' | 'popular' | 'recent'>('default');
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<'all' | '3d' | 'battle' | 'arcade' | 'puzzle' | 'casual'>('all');
   const [selectedElementFilter, setSelectedElementFilter] = useState<'all' | 'fire' | 'water' | 'wind' | 'earth' | 'dragon' | 'undead'>('all');
   const [showUnownedOnly, setShowUnownedOnly] = useState(false);
   const [showDailyMissions, setShowDailyMissions] = useState(false);
@@ -6058,6 +6058,21 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       }
 
       if (flippedIndices.length > 0) {
+        // Rainbow particle flip FX: Flip! (1 card) or Doble Flip! (2+ cards)
+        try {
+          const origins: { x: number; y: number }[] = [];
+          flippedIndices.forEach(ni => {
+            const el = document.getElementById(`board-cell-${ni}`);
+            if (el) {
+              const r = el.getBoundingClientRect();
+              origins.push({ x: r.left + r.width / 2, y: r.top + r.height / 2 });
+            }
+          });
+          triggerRainbowFlip(flippedIndices.length, origins.length > 0 ? origins : undefined);
+        } catch {
+          triggerRainbowFlip(flippedIndices.length);
+        }
+
         // Row 1053 / ID 316: 80ms Micro Screen Shake on Card Capture
         playBattleSfx('card_capture');
         setIsScreenShaking(true);
@@ -13381,7 +13396,6 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
     const filteredModes = modes.filter((m, idx) => {
       if (showDailyMissions && !dailyMissionIds.includes(m.id)) return false;
-      if (selectedCategory !== 'all' && m.category !== selectedCategory) return false;
 
       const cardIndex = m.characterId || (idx + 1);
       const charCard = CARD_DATABASE[cardIndex] || CARD_DATABASE[((cardIndex - 1) % 110) + 1];
@@ -13481,374 +13495,31 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             </motion.div>
           )}
 
-          {/* SCR-08: Tower of Trials Quick Access Banner */}
-          <div className="w-full rounded-none border border-amber-500/50 bg-gradient-to-r from-amber-950/70 via-[#181515] to-amber-950/70 p-3 text-white font-mono flex items-center justify-between gap-3 shadow-md">
-            <div className="flex items-center gap-2.5">
-              <div className="w-10 h-10 bg-amber-500/20 border border-amber-400 text-amber-400 flex items-center justify-center text-xl shrink-0 font-bold">
-                🗼
-              </div>
-              <div>
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[9px] font-black uppercase text-amber-300 bg-amber-900/60 border border-amber-500/40 px-1 py-0.2">
-                    50F CHALLENGE
-                  </span>
-                  <span className="text-[11px] text-amber-200 font-bold">
-                    {language === 'ko' ? '시련의 탑 & 보스 레이드' : 'Tower of Trials & Boss Raid'}
-                  </span>
-                </div>
-                <p className="text-[10px] text-white/70 mt-0.5">
-                  {language === 'ko'
-                    ? '매 5층 보스 격파 시 한정 칭호 & 다이아 잭팟!'
-                    : 'Defeat 5F bosses for exclusive titles & gems!'}
-                </p>
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={() => {
-                playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                setIsTowerTrialsOpen(true);
-              }}
-              className="min-h-[44px] px-3 py-2 bg-amber-400 hover:bg-amber-300 text-[#181515] font-black text-xs uppercase flex items-center gap-1 transition-all cursor-pointer active:scale-95 shrink-0 shadow-md"
-            >
-              <span>{language === 'ko' ? '[탑 등반 도전]' : '[Enter Tower]'}</span>
-            </button>
-          </div>
-
-          {/* Hero Card Mission Matching Overview Banner */}
-          <div className="w-full rounded-sm border border-slate-800 bg-slate-950 p-3 sm:p-4 text-white shadow-xs font-mono">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-sm bg-amber-500/15 border border-amber-400/30 flex items-center justify-center text-amber-400 shrink-0 font-black text-xs">
-                  🎴
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-black uppercase tracking-wider text-amber-400 bg-amber-400/10 border border-amber-400/20 px-1.5 py-0.5 rounded-xs">
-                      HERO MISSION SYSTEM
-                    </span>
-                    <span className="text-[11px] text-slate-400">
-                      [ 1:1 AI CARD BATTLE ]
-                    </span>
-                  </div>
-                  <h3 className="text-xs sm:text-sm font-black text-white mt-0.5">
-                    {language === 'ko' 
-                      ? `총 ${modes.length}종의 히어로 카드 전담 AI 카드플레이 대결` 
-                      : `Total ${modes.length} Hero Cards 1:1 AI Card Battle Matches`}
-                  </h3>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-sm shrink-0 self-start sm:self-auto">
-                <span className="text-[11px] text-slate-400">{language === 'ko' ? '카드 연동률' : 'Card Linked'}</span>
-                <span className="text-xs font-black text-emerald-400 font-mono">100% ({modes.length}/{modes.length})</span>
-              </div>
-            </div>
-            <div className="text-[11px] text-slate-300 mt-2.5 leading-relaxed border-t border-slate-800/80 pt-2 flex flex-col gap-1">
-              <p className="font-bold text-amber-300">
-                {language === 'ko' ? '• 해당 카드와 카드플레이를 진행합니다.' : '• Play 1:1 card matches against this card.'}
-              </p>
-              <p className="text-slate-200">
-                {language === 'ko' 
-                  ? '• 해당 카드와 대결에서 승리하면 상점 획득 확률로 해당 카드를 획득할 수 있습니다.' 
-                  : '• Winning the match allows you to acquire the card at the shop drop rate.'}
-              </p>
-              <p className="text-slate-200">
-                {language === 'ko' 
-                  ? '• 승리했을때 해당 카드를 이미 보유 중이라면 해당 카드를 일정확률로 강화 할 수 있습니다.' 
-                  : '• If you already own the card upon winning, you can enhance it with a certain chance.'}
-              </p>
-            </div>
-          </div>
-
-          {/* SCR-09-01: Today's Recommended Target (Hot Challenge) & 110 Card Collection Progress HUD */}
-          {(() => {
-            const recOwnedCount = (inventory && inventory[recCardIndex]?.quantity) || (rawInv[recCardIndex]?.quantity || 0);
-            const isRecOwned = recOwnedCount > 0;
-            const recElem = (recCharCard?.element || 'neutral').toLowerCase();
-            const recElemBadgeStyle = 
-              recElem === 'water' ? 'bg-cyan-950/80 text-cyan-300 border-cyan-700/60' :
-              recElem === 'fire' ? 'bg-rose-950/80 text-rose-300 border-rose-700/60' :
-              recElem === 'air' || recElem === 'wind' ? 'bg-sky-950/80 text-sky-300 border-sky-700/60' :
-              recElem === 'earth' || recElem === 'land' ? 'bg-amber-950/80 text-amber-300 border-amber-700/60' :
-              recElem === 'dragon' || recElem === 'holy' ? 'bg-yellow-950/80 text-yellow-300 border-yellow-600/60' :
-              recElem === 'undead' || recElem === 'monster' ? 'bg-purple-950/80 text-purple-300 border-purple-700/60' :
-              'bg-slate-900 text-slate-300 border-slate-700';
-            const recElemIcon = 
-              recElem === 'water' ? '💧' :
-              recElem === 'fire' ? '🔥' :
-              recElem === 'air' || recElem === 'wind' ? '🌪️' :
-              recElem === 'earth' || recElem === 'land' ? '⛰️' :
-              recElem === 'dragon' || recElem === 'holy' ? '✦' :
-              recElem === 'undead' || recElem === 'monster' ? '💀' : '⚔️';
-
-            return (
-              <div className="w-full flex flex-col gap-3 font-mono">
-                {/* 1. 오늘의 추천 공략 타깃 (Hot Challenge Target) 1탭 배너 */}
-                <div className="w-full rounded-none border-2 border-amber-500/70 bg-gradient-to-r from-stone-950 via-[#1a1412] to-amber-950/60 p-3.5 sm:p-4 text-white shadow-lg relative overflow-hidden">
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 relative z-10">
-                    <div className="flex items-center gap-3.5">
-                      <div className="w-12 h-14 sm:w-14 sm:h-16 bg-stone-900 border-2 border-amber-400/80 rounded-xs flex flex-col items-center justify-center relative shrink-0 shadow-md">
-                        <span className="text-xl sm:text-2xl">{recElemIcon}</span>
-                        <span className="text-[9px] font-black text-amber-400 mt-0.5">#{String(recCardIndex).padStart(2, '0')}</span>
-                        {isRecOwned ? (
-                          <span className="absolute -top-1.5 -right-1.5 bg-emerald-500 text-stone-950 text-[8px] font-black px-1 py-0.2 rounded-xs border border-emerald-300">
-                            Lv+
-                          </span>
-                        ) : (
-                          <span className="absolute -top-1.5 -right-1.5 bg-rose-600 text-white text-[8px] font-black px-1 py-0.2 rounded-xs border border-rose-400">
-                            NEW
-                          </span>
-                        )}
-                      </div>
-
-                      <div className="flex flex-col">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span className="text-[9px] font-black uppercase tracking-wider text-amber-400 bg-amber-500/20 border border-amber-400/40 px-1.5 py-0.5">
-                            🎯 {language === 'ko' ? '오늘의 추천 공략 타깃' : 'HOT CHALLENGE TARGET'}
-                          </span>
-                          <span className={cn("text-[9px] font-black uppercase px-1.5 py-0.5 border", recElemBadgeStyle)}>
-                            {recElemIcon} {recElem.toUpperCase()}
-                          </span>
-                          <span className="text-[10px] text-amber-300/80 font-bold">
-                            ⚔️ {recCharCard?.power || 150} POWER
-                          </span>
-                        </div>
-                        <h4 className="text-sm sm:text-base font-black text-white mt-1 flex items-center gap-2">
-                          <span>{recCharName}</span>
-                          <span className="text-xs text-stone-400 font-normal">
-                            {isRecOwned 
-                              ? (language === 'ko' ? `[보유 ${recOwnedCount}장 · 승리 시 잠재력 강화!]` : `[Owned ${recOwnedCount} · Enhance on Win!]`) 
-                              : (language === 'ko' ? '[미보유 목표 · 승리 시 획득 기회!]' : '[Unowned Target · Drop Chance!]')}
-                          </span>
-                        </h4>
-                        <p className="text-[11px] text-stone-300 mt-0.5 line-clamp-1">
-                          {recommendedTargetMode?.guide || (language === 'ko' ? '1:1 AI 카드 배틀로 상점 확률 카드 획득 또는 잠재력 강화 도전!' : 'Challenge 1:1 AI card battle to obtain or enhance card!')}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* 1탭 즉시 대결 CTA & 모바일 전용 카드플레이 버튼 */}
-                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto shrink-0">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          playBattleSfx('button_tap');
-                          triggerHaptic('light');
-                          if (onStartMobileCardPlay) {
-                            onStartMobileCardPlay(recCardIndex);
-                          } else if (setView) {
-                            setView('card-play');
-                          }
-                        }}
-                        className="min-h-[44px] px-4 py-2.5 bg-cyan-400 hover:bg-cyan-300 text-stone-950 font-black text-xs uppercase flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-95 shadow-md rounded-xs"
-                      >
-                        <span className="text-base">📱</span>
-                        <span>{language === 'ko' ? '[모바일 전용 카드플레이]' : '[Mobile Card Play]'}</span>
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => {
-                          playBattleSfx('button_tap');
-                          triggerHaptic('light');
-                          if (recommendedTargetMode) {
-                            recordModePlay(recommendedTargetMode.id);
-                            openMissionEncounter(recCardIndex);
-                          }
-                        }}
-                        className="min-h-[44px] px-4 py-2.5 bg-amber-400 hover:bg-amber-300 text-stone-950 font-black text-xs uppercase flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-95 shadow-md rounded-xs"
-                      >
-                        <span className="text-base">🔥</span>
-                        <span>{language === 'ko' ? '[1탭 즉시 대결 도전]' : '[1-Tap Battle Challenge]'}</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* 2. 도감 수집율 HUD & 🎲 랜덤 1:1 대결 원터치 스타터 */}
-                <div className="w-full rounded-none border border-stone-800 bg-stone-900/90 p-3 text-white flex flex-col sm:flex-row items-center justify-between gap-3 shadow-sm">
-                  <div className="flex flex-col gap-1.5 w-full sm:w-auto flex-1">
-                    <div className="flex items-center justify-between text-xs">
-                      <div className="flex items-center gap-2">
-                        <span className="font-black text-amber-400">📖 {language === 'ko' ? '도감 수집율 HUD' : 'Card Collection HUD'}</span>
-                        <span className="text-[11px] text-stone-400">
-                          {ownedTotalCount} / {modes.length} ({collectionProgressPct}%)
-                        </span>
-                      </div>
-                      <span className="text-[11px] text-emerald-400 font-bold">
-                        {language === 'ko' ? `미보유 잔여: ${unownedTotalCount}장` : `Unowned: ${unownedTotalCount}`}
-                      </span>
-                    </div>
-                    {/* Progress Bar */}
-                    <div className="w-full h-2 bg-stone-800 rounded-none overflow-hidden border border-stone-700/50">
-                      <div
-                        className="h-full bg-gradient-to-r from-amber-500 to-emerald-400 transition-all duration-300"
-                        style={{ width: `${collectionProgressPct}%` }}
-                      />
-                    </div>
-                  </div>
-
-                  {/* 랜덤 1:1 대결 스타터 */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      playBattleSfx('button_tap');
-                      triggerHaptic('tap');
-                      const randMode = modes[Math.floor(Math.random() * modes.length)];
-                      const randCardIndex = randMode.characterId || 1;
-                      recordModePlay(randMode.id);
-                      openMissionEncounter(randCardIndex);
-                    }}
-                    className="w-full sm:w-auto min-h-[44px] px-3.5 py-2 bg-stone-800 hover:bg-stone-700 text-stone-200 hover:text-white border border-stone-600 rounded-none font-black text-xs uppercase flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95 shrink-0"
-                  >
-                    <span>🎲</span>
-                    <span>{language === 'ko' ? '[랜덤 1:1 대결]' : '[Random 1:1 Pick]'}</span>
-                  </button>
-                </div>
-              </div>
-            );
-          })()}
-
-          {/* Row 1055 / ID 318: Energy / AP Recovery Widget & Gold Rest & AP Potion Shortcut */}
-          {(() => {
-            const staminaMgr = StaminaPacingManager.getInstance();
-            const state = staminaMgr.getState();
-            const countdown = staminaMgr.getNextApCountdownSeconds();
-            const minutes = String(Math.floor(countdown / 60)).padStart(2, '0');
-            const seconds = String(countdown % 60).padStart(2, '0');
-            const remainingGoldRests = 2 - (state.dailyGoldRestsClaimed || 0);
-
-            const handleBuyApPotion = () => {
-              playBattleSfx('button_tap');
-              triggerHaptic('tap');
-              const currentSns = sns !== undefined ? sns : (userStats?.sns || 0);
-              if (currentSns < 25) {
-                triggerAlert(
-                  language === 'ko' ? 'SNS 포인트가 부족합니다. 상점으로 이동합니다.' : 'Not enough SNS points. Moving to shop.',
-                  language === 'ko' ? 'AP 물약 충전' : 'AP Potion'
-                );
-                setView?.('shop');
-                return;
-              }
-              // 25 SNS 차감 및 50 AP 회복
-              updateSns?.(-25, 'AP 물약 충전 (미션 아레나)', 'spent');
-              staminaMgr.gainAp(50);
-              playBattleSfx('badge_pop');
-              triggerHaptic('victory');
-              triggerAlert(
-                language === 'ko' ? '🧪 AP 물약을 사용하여 50 AP가 즉시 충전되었습니다! (-25 SNS)' : '🧪 Used AP Potion! Restored 50 AP! (-25 SNS)',
-                language === 'ko' ? 'AP 충전 완료' : 'AP Restored'
-              );
-            };
-
-            return (
-              <div className="w-full bg-[#111827] border border-slate-800 p-3 rounded-none font-mono flex flex-col md:flex-row items-center justify-between gap-3 text-xs shadow-sm">
-                <div className="flex items-center gap-3 w-full md:w-auto">
-                  <div className="p-2 bg-emerald-950/60 border border-emerald-500/40 text-emerald-400 rounded-none">
-                    <Zap size={16} />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-white">
-                        AP {state.currentAp} / {state.maxAp}
-                      </span>
-                      <span className="text-[10px] text-stone-400 bg-slate-800 px-1.5 py-0.5 rounded-none">
-                        {language === 'ko' ? `다음 AP까지 ${minutes}:${seconds}` : `Next AP in ${minutes}:${seconds}`}
-                      </span>
-                    </div>
-                    <div className="w-36 sm:w-44 h-1.5 bg-slate-800 rounded-none overflow-hidden mt-1">
-                      <div
-                        className="h-full bg-emerald-500 transition-all"
-                        style={{ width: `${(state.currentAp / state.maxAp) * 100}%` }}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2 w-full md:w-auto justify-end flex-wrap">
-                  {/* SCR-09-03: AP 물약 25 SNS 특가 충전 숏컷 */}
-                  <button
-                    type="button"
-                    onClick={handleBuyApPotion}
-                    className="min-h-[44px] py-1.5 px-3 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-400/50 rounded-none font-bold text-[11px] transition-all cursor-pointer flex items-center gap-1.5 active:scale-95"
-                    title="25 SNS로 50 AP 즉시 회복"
-                  >
-                    <span className="text-sm">🧪</span>
-                    <span>{language === 'ko' ? 'AP 물약 (25 SNS, +50 AP)' : 'AP Potion (25 SNS, +50 AP)'}</span>
-                  </button>
-
-                  {/* 골드로 휴식 */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const res = staminaMgr.restoreApWithGold(userStats?.gold || 15000);
-                      playBattleSfx(res.success ? 'badge_pop' : 'defeat');
-                      triggerAlert(language === 'ko' ? res.messageKo : res.messageEn, language === 'ko' ? '골드로 휴식' : 'Gold Rest');
-                    }}
-                    disabled={remainingGoldRests <= 0}
-                    className="min-h-[44px] py-1.5 px-3 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/40 rounded-none font-bold text-[11px] transition-all disabled:opacity-40 flex items-center gap-1.5 cursor-pointer active:scale-95"
-                    title="500 골드로 5 AP 회복 (일일 2회)"
-                  >
-                    <Coins size={12} className="text-amber-400" />
-                    <span>{language === 'ko' ? `골드로 휴식 (+5 AP, 잔여: ${remainingGoldRests}회)` : `Gold Rest (+5 AP, Left: ${remainingGoldRests})`}</span>
-                  </button>
-
-                  {/* 상점 숏컷 */}
-                  {setView && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        playBattleSfx('button_tap');
-                        triggerHaptic('tap');
-                        setView('shop');
-                      }}
-                      className="min-h-[44px] px-2.5 py-1.5 bg-stone-800 hover:bg-stone-700 text-stone-300 border border-stone-700 rounded-none text-[11px] font-bold transition-all cursor-pointer"
-                      title="상점으로 이동"
-                    >
-                      <span>🛒 {language === 'ko' ? '상점' : 'Shop'}</span>
-                    </button>
-                  )}
-                </div>
-              </div>
-            );
-          })()}
-
-          {/* Mode Search & Category Filter Tabs & SCR-09-02: Element Filter & Unowned Filter */}
+          {/* Card Play List Header & Quick Filter */}
           <div className="flex flex-col gap-2.5 w-full pt-1 font-mono">
-            {/* 1. 카테고리 탭 */}
-            <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs flex-1">
-                {[
-                  { id: 'all', labelKo: `전체 (${modes.length})`, labelEn: `All (${modes.length})` },
-                  { id: '3d', labelKo: `3D 복셀 (${modes.filter(m => m.category === '3d').length})`, labelEn: `3D Voxel (${modes.filter(m => m.category === '3d').length})` },
-                  { id: 'battle', labelKo: `배틀 (${modes.filter(m => m.category === 'battle').length})`, labelEn: `Battle (${modes.filter(m => m.category === 'battle').length})` },
-                  { id: 'arcade', labelKo: `아케이드 (${modes.filter(m => m.category === 'arcade').length})`, labelEn: `Arcade (${modes.filter(m => m.category === 'arcade').length})` },
-                  { id: 'puzzle', labelKo: `퍼즐 (${modes.filter(m => m.category === 'puzzle').length})`, labelEn: `Puzzle (${modes.filter(m => m.category === 'puzzle').length})` },
-                  { id: 'casual', labelKo: `캐주얼 (${modes.filter(m => m.category === 'casual').length})`, labelEn: `Casual (${modes.filter(m => m.category === 'casual').length})` }
-                ].map(cat => {
-                  const active = selectedCategory === cat.id;
-                  return (
-                    <button
-                      key={cat.id}
-                      onClick={() => {
-                        playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                        setSelectedCategory(cat.id as any);
-                      }}
-                      className={cn(
-                        "px-3 py-1.5 rounded-none whitespace-nowrap font-bold transition-all cursor-pointer border text-xs min-h-[36px] flex items-center justify-center",
-                        active
-                          ? "bg-slate-900 text-white border-slate-900 shadow-xs"
-                          : "bg-white text-slate-700 border-slate-200 hover:bg-slate-100"
-                      )}
-                    >
-                      {language === 'ko' ? cat.labelKo : cat.labelEn}
-                    </button>
-                  );
-                })}
+            {/* Header Title */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 border-b border-stone-800 pb-2">
+              <div className="flex items-center gap-2">
+                <span className="p-1 bg-amber-500/20 border border-amber-400 text-amber-400 text-xs font-bold">
+                  🎴
+                </span>
+                <div>
+                  <h3 className="text-sm sm:text-base font-black text-slate-900 dark:text-white flex items-center gap-2">
+                    <span>{language === 'ko' ? '오늘의 미션 / 카드 플레이 리스트' : 'Daily Missions & Card Play List'}</span>
+                    <span className="text-xs font-bold text-amber-500 font-mono">
+                      ({filteredModes.length} / {modes.length})
+                    </span>
+                  </h3>
+                  <p className="text-[11px] text-stone-500 dark:text-stone-400">
+                    {language === 'ko'
+                      ? '• 카드 터치 시 3초 수호자 대사 후 1:1 카드 배틀 시작 · 승리 시 카드 획득 & 잠재력 강화'
+                      : '• Tap card to start 1:1 card battle after 3s guardian dialogue · Win to obtain & enhance'}
+                  </p>
+                </div>
               </div>
             </div>
 
-            {/* 2. SCR-09-02: 6대 속성 필터 칩 & 미보유 목표 전용 토글 칩 */}
+            {/* 6대 속성 필터 칩 & 미보유 목표 전용 토글 칩 */}
             <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs">
               {[
                 { id: 'all', icon: '✦', labelKo: '전체 속성', labelEn: 'All Elements' },
@@ -14078,7 +13749,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
                       {/* Game Title & Mission Info Bar */}
                       <div className={cn(
-                        "p-1.5 sm:p-2.5 border-t flex flex-col gap-1 sm:gap-1.5",
+                        "p-1.5 sm:p-2 border-t flex flex-col gap-0.5 sm:gap-1",
                         isOwned ? "bg-[#0b241c] border-emerald-500/40" : "bg-slate-950 border-slate-800"
                       )}>
                         <div className="flex items-center justify-between gap-1">
@@ -14088,36 +13759,17 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                           )}>
                             {battleTitle}
                           </span>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                              setGuideMode(m);
-                            }}
-                            className={cn(
-                              "w-5 h-5 sm:w-6 sm:h-6 rounded-xs border transition-all flex items-center justify-center cursor-pointer text-[9px] sm:text-[10px] font-black shrink-0",
-                              isOwned 
-                                ? "bg-emerald-950 hover:bg-emerald-900 border-emerald-600/60 text-emerald-200" 
-                                : "bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300 hover:text-white"
-                            )}
-                            aria-label={language === 'ko' ? '설명 보기' : 'Show Description'}
-                          >
-                            ?
-                          </button>
                         </div>
                         <div className="flex items-center justify-between text-[9px] sm:text-[10px]">
                           <span className="truncate text-slate-400 text-[8px] sm:text-[9px]">
                             ✦ <strong className={isOwned ? "text-emerald-300 font-bold" : "text-slate-200 font-bold"}>{charName}</strong>
                           </span>
-                          {isOwned ? (
-                            <span className="text-emerald-300 font-black shrink-0 text-[8px] sm:text-[9px] flex items-center gap-0.5 bg-emerald-950/90 border border-emerald-500/60 px-1.5 py-0.5 rounded-xs shadow-xs">
-                              {language === 'ko' ? '잠재력 강화' : 'Enhance'} <ChevronRight size={10} className="inline text-emerald-400 group-hover:translate-x-0.5 transition-transform" />
-                            </span>
-                          ) : (
-                            <span className="text-amber-300 font-bold shrink-0 text-[8px] sm:text-[9px] flex items-center gap-0.5 bg-amber-950/80 border border-amber-500/50 px-1 py-0.2 rounded-xs">
-                              {language === 'ko' ? '카드 획득' : 'Obtain'} <ChevronRight size={10} className="inline text-amber-400 group-hover:translate-x-0.5 transition-transform" />
-                            </span>
-                          )}
+                          <span className={cn(
+                            "font-bold shrink-0 text-[8px] sm:text-[9px]",
+                            isOwned ? "text-emerald-400" : "text-amber-400"
+                          )}>
+                            {isOwned ? (language === 'ko' ? '잠재력 강화' : 'Enhance') : (language === 'ko' ? '카드 획득' : 'Obtain')}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -16693,6 +16345,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                         return (
                           <div
                             key={idx}
+                            id={`board-cell-${idx}`}
                             onClick={() => handleCellClick(idx)}
                             onTouchStart={() => handleTileTouchStart(idx)}
                             onTouchEnd={handleTileTouchEnd}
