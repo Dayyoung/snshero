@@ -138,20 +138,33 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     isWelcomeFirstBoss: boolean;
   } | null>(null);
 
+  // Resolve effective target card ID (prop or URL query parameter fallback: ?card=, ?id=, ?target=, ?cardId=)
+  const effectiveTargetCardId = useMemo(() => {
+    if (targetCardId && CARD_DATABASE[targetCardId]) return targetCardId;
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const q = params.get('card') || params.get('cardId') || params.get('target') || params.get('id');
+      if (q && !isNaN(Number(q)) && CARD_DATABASE[Number(q)]) {
+        return Number(q);
+      }
+    }
+    return targetCardId || null;
+  }, [targetCardId]);
+
   // Target card details (if launched from mission)
   const missionCardData = useMemo(() => {
-    if (targetCardId && CARD_DATABASE[targetCardId]) {
-      return CARD_DATABASE[targetCardId];
+    if (effectiveTargetCardId && CARD_DATABASE[effectiveTargetCardId]) {
+      return CARD_DATABASE[effectiveTargetCardId];
     }
     return null;
-  }, [targetCardId]);
+  }, [effectiveTargetCardId]);
 
   // Ranking Match Opponent & 3s Search State
   const [activeRankOpponent, setActiveRankOpponent] = useState<RankOpponentInfo | null>(null);
   const [rankingSearchCountdown, setRankingSearchCountdown] = useState<number | null>(null);
 
   // Mission Game 3s Dialogue Intro State
-  const [showMissionDialogue, setShowMissionDialogue] = useState<boolean>(Boolean(targetCardId));
+  const [showMissionDialogue, setShowMissionDialogue] = useState<boolean>(Boolean(effectiveTargetCardId));
 
   // Opponent name
   const effectiveOpponentName = useMemo(() => {
@@ -207,12 +220,12 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
         id: `opp-${i}-${Date.now()}`,
         owner: 'ai'
       }));
-    } else if (targetCardId && CARD_DATABASE[targetCardId]) {
+    } else if (effectiveTargetCardId && CARD_DATABASE[effectiveTargetCardId]) {
       // 5 identical target cards for mission battle as per AGENTS.md
-      const dbCard = CARD_DATABASE[targetCardId];
+      const dbCard = CARD_DATABASE[effectiveTargetCardId];
       oCards = Array(5).fill(null).map((_, i) => syncCardWithDatabase({
-        id: `mission-opp-${targetCardId}-${i}-${Date.now()}`,
-        imageIndex: targetCardId,
+        id: `mission-opp-${effectiveTargetCardId}-${i}-${Date.now()}`,
+        imageIndex: effectiveTargetCardId,
         title: dbCard.title,
         title_dis: dbCard.title_dis,
         title_en: dbCard.title_en,
@@ -248,7 +261,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     setIsEvaluating(false);
     setActiveSkill(null);
     setSkillCharges({ power: 1, shield: 1, burst: 1 });
-  }, [playerDeck, opponentCustomDeck, targetCardId, activeRankOpponent]);
+  }, [playerDeck, opponentCustomDeck, effectiveTargetCardId, activeRankOpponent]);
 
   // Initial game setup
   useEffect(() => {
@@ -426,18 +439,18 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
           if (onEarnXp) onEarnXp(50);
 
           // If mission battle target: handle drop or enhancement
-          if (targetCardId && addCard) {
-            const isOwned = inventory.some((item: any) => item.cardId === targetCardId || item.index === targetCardId);
-            const dbCard = CARD_DATABASE[targetCardId];
+          if (effectiveTargetCardId && addCard) {
+            const isOwned = inventory.some((item: any) => item.cardId === effectiveTargetCardId || item.index === effectiveTargetCardId);
+            const dbCard = CARD_DATABASE[effectiveTargetCardId];
             const cardRarity = (dbCard?.rarity || 'bronze') as CardRarity;
             if (!isOwned) {
-              addCard(cardRarity, targetCardId);
+              addCard(cardRarity, effectiveTargetCardId);
             } else {
               // 45% potential enhancement
               if (Math.random() < 0.45) {
-                addCard(cardRarity, targetCardId, true);
+                addCard(cardRarity, effectiveTargetCardId, true);
                 try {
-                  const key = `hero_card_enhancement_${targetCardId}`;
+                  const key = `hero_card_enhancement_${effectiveTargetCardId}`;
                   const currentLv = parseInt(localStorage.getItem(key) || '1', 10);
                   localStorage.setItem(key, String(currentLv + 1));
                 } catch {}
@@ -774,7 +787,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     if (rematchCountdown === null) return;
     if (rematchCountdown <= 0) {
       setRematchCountdown(null);
-      if (targetCardId) {
+      if (effectiveTargetCardId) {
         // 미션 게임: 3초 대사 보여주고 시작
         setShowMissionDialogue(true);
       }
@@ -785,7 +798,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       setRematchCountdown(prev => (prev !== null ? prev - 1 : null));
     }, 1000);
     return () => clearTimeout(timer);
-  }, [rematchCountdown, targetCardId, initMatchDecks]);
+  }, [rematchCountdown, effectiveTargetCardId, initMatchDecks]);
 
   // 튜토리얼 모드: 카운트다운 후 상점으로 이동
   useEffect(() => {
@@ -827,7 +840,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
               ? (towerFloor % 5 === 0
                   ? `👑 [${towerFloor}F BOSS] ${effectiveOpponentName}`
                   : `🗼 [${towerFloor}F] ${effectiveOpponentName}`)
-              : (targetCardId ? `🎯 No.${targetCardId} ${effectiveOpponentName}` : `⚔️ ${effectiveOpponentName}`)}
+              : (effectiveTargetCardId ? `🎯 No.${effectiveTargetCardId} ${effectiveOpponentName}` : `⚔️ ${effectiveOpponentName}`)}
           </span>
         </div>
 
@@ -1248,20 +1261,20 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                     +{winner === 'player' ? 30 : (winner === 'ai' ? 10 : 15)} SNS
                   </span>
                 </div>
-                {targetCardId && winner === 'player' && (
+                {effectiveTargetCardId && winner === 'player' && (
                   <div className="flex justify-between items-center text-emerald-400 font-bold border-t border-white/5 pt-1">
                     <span>{language === 'ko' ? '미션 카드 달성' : 'Mission Card'}:</span>
-                    <span>No.{targetCardId} {effectiveOpponentName}</span>
+                    <span>No.{effectiveTargetCardId} {effectiveOpponentName}</span>
                   </div>
                 )}
               </div>
 
               {/* Target Card Visual Reward Preview */}
-              {targetCardId && winner === 'player' && CARD_DATABASE[targetCardId] && (
+              {effectiveTargetCardId && winner === 'player' && CARD_DATABASE[effectiveTargetCardId] && (
                 <div className="flex flex-col items-center my-1 p-1.5 bg-black/60 rounded-xs border border-emerald-500/40 w-full">
                   <div className="w-[68px] aspect-[5/7] my-1 shadow-lg shadow-emerald-500/30">
                     <CardItem
-                      card={CARD_DATABASE[targetCardId]}
+                      card={CARD_DATABASE[effectiveTargetCardId]}
                       isLocked={true}
                       language={language}
                       className="w-full h-full pointer-events-none rounded-xs"
@@ -1343,7 +1356,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                           const nextOpp = pickNewRankOpponent(activeRankOpponent?.name || effectiveOpponentName);
                           setActiveRankOpponent(nextOpp);
                           setRankingSearchCountdown(3);
-                        } else if (targetCardId) {
+                        } else if (effectiveTargetCardId) {
                           setShowMissionDialogue(true);
                           initMatchDecks();
                         } else {
@@ -1361,7 +1374,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                       <span>
                         {isRankingMatch
                           ? (language === 'ko' ? '새 상대 검색 (3초)' : 'Search Rival (3s)')
-                          : targetCardId
+                          : effectiveTargetCardId
                           ? (language === 'ko' ? '미션 재도전 (대사 3초)' : 'Mission Retry (3s)')
                           : rematchCountdown !== null
                           ? (language === 'ko' ? `즉시 시작 (${rematchCountdown}s)` : `Play Now (${rematchCountdown}s)`)
@@ -1547,10 +1560,10 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       </AnimatePresence>
 
       {/* ─── 미션 게임 3초 대사 인트로 모달 ────────────────────────── */}
-      {targetCardId && (
+      {effectiveTargetCardId && (
         <MissionDialogueIntro
           isOpen={showMissionDialogue}
-          cardId={targetCardId}
+          cardId={effectiveTargetCardId}
           language={language}
           onComplete={() => setShowMissionDialogue(false)}
           onSkip={() => setShowMissionDialogue(false)}

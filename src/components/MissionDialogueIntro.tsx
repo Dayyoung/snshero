@@ -1,8 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Sparkles, Swords, MessageSquare, FastForward } from 'lucide-react';
 import { CARD_DATABASE } from '../cardDatabase';
 import { getMissionCardDialogue } from '../data/cardDialogues';
+import { CardItem } from './CardItem';
+import type { CardData } from '../types';
 
 interface MissionDialogueIntroProps {
   isOpen: boolean;
@@ -23,8 +25,25 @@ export const MissionDialogueIntro: React.FC<MissionDialogueIntroProps> = ({
   const onCompleteRef = useRef(onComplete);
   onCompleteRef.current = onComplete;
 
-  const card = CARD_DATABASE[cardId] || CARD_DATABASE[1];
-  const dialogue = getMissionCardDialogue(cardId, card?.element);
+  const safeCardId = CARD_DATABASE[cardId] ? cardId : 1;
+  const card = CARD_DATABASE[safeCardId] || CARD_DATABASE[1];
+  const dialogue = getMissionCardDialogue(safeCardId, card?.element);
+
+  const previewCard: CardData = useMemo(() => ({
+    id: `mission-intro-${safeCardId}`,
+    title: card.title,
+    title_dis: card.title_dis || card.title,
+    title_en: card.title_en || card.title,
+    stats: [...card.stats],
+    rarity: card.rarity || 'bronze',
+    owner: 'ai',
+    level: card.level || 1,
+    power: card.power || 10,
+    imageIndex: safeCardId,
+    imageUrl: card.imageUrl,
+    element: card.element,
+    skills: []
+  }), [safeCardId, card]);
 
   const cardTitle = language === 'ko' ? card.title : (card.title_en || card.title);
   const cardElem = (card.element || 'neutral').toLowerCase();
@@ -119,30 +138,24 @@ export const MissionDialogueIntro: React.FC<MissionDialogueIntroProps> = ({
 
           {/* Main Content: Card Art + Speech Bubble */}
           <div className="flex flex-col sm:flex-row items-center gap-4 relative z-10 my-2">
-            {/* Card Portrait Box */}
-            <div className="w-28 h-36 sm:w-32 sm:h-44 bg-gradient-to-b from-[#0e2a20] to-[#081512] border-2 border-emerald-400/80 rounded-none shrink-0 relative overflow-hidden shadow-lg flex flex-col items-center justify-between p-2">
-              <div className="w-full flex items-center justify-between text-[9px]">
-                <span className="text-emerald-300 font-black bg-black/70 px-1 py-0.2 border border-emerald-500/40">
-                  No.{String(cardId).padStart(3, '0')}
-                </span>
-                <span className={`px-1 py-0.2 border font-bold ${elemBadgeColor}`}>
-                  {elemIcon} {cardElem.toUpperCase()}
-                </span>
-              </div>
-
-              {/* Center Portrait Icon */}
-              <div className="flex-1 flex flex-col items-center justify-center my-1">
-                <div className="text-3xl sm:text-4xl drop-shadow-[0_0_12px_rgba(16,185,129,0.8)]">
-                  {elemIcon}
+            {/* Real Card Centerpiece */}
+            <div className="relative shrink-0 flex flex-col items-center justify-center">
+              <div className="relative rounded-xs shadow-[0_0_24px_rgba(16,185,129,0.4)] border-2 border-emerald-400/90 overflow-hidden bg-[#090d16]">
+                <CardItem
+                  card={previewCard}
+                  className="w-28 h-40 sm:w-32 sm:h-46 rounded-xs pointer-events-none"
+                  language={language}
+                />
+                <div className="absolute top-1 right-1 bg-black/85 text-amber-300 font-mono font-black text-[9px] px-1.5 py-0.5 rounded-xs border border-amber-400/60 shadow-md">
+                  P.{card.power || 10}
                 </div>
-                <span className="text-[10px] font-black text-white text-center mt-1 px-1 line-clamp-2">
-                  {cardTitle}
-                </span>
               </div>
-
-              <div className="w-full bg-black/80 border border-emerald-500/30 px-1.5 py-0.5 text-center">
-                <span className="text-[9px] text-amber-300 font-bold">
-                  PWR {card.power || 10}
+              <div className="mt-1.5 flex items-center gap-1.5">
+                <span className="text-[10px] font-black text-emerald-300 font-mono bg-black/80 px-1.5 py-0.5 border border-emerald-500/50 rounded-xs">
+                  No.{String(safeCardId).padStart(3, '0')}
+                </span>
+                <span className={`text-[9px] px-1.5 py-0.5 border font-bold rounded-xs ${elemBadgeColor}`}>
+                  {elemIcon} {cardElem.toUpperCase()}
                 </span>
               </div>
             </div>

@@ -1421,6 +1421,14 @@ function AppContent() {
         }
       }
 
+      if (targetView === 'card-play') {
+        const params = new URLSearchParams(window.location.search);
+        const q = params.get('card') || params.get('cardId') || params.get('target') || params.get('id');
+        if (q && !isNaN(Number(q)) && CARD_DATABASE[Number(q)]) {
+          setMobileCardTargetId(Number(q));
+        }
+      }
+
       setView(targetView);
     };
     
@@ -2932,7 +2940,16 @@ function AppContent() {
   const [activeFriendBattleRequestId, setActiveFriendBattleRequestId] = useState<string | null>(null);
   const [isPvpActive, setIsPvpActive] = useState<boolean>(false);
   const [isPvpBoardAttackActive, setIsPvpBoardAttackActive] = useState<boolean>(false);
-  const [mobileCardTargetId, setMobileCardTargetId] = useState<number | null>(null);
+  const [mobileCardTargetId, setMobileCardTargetId] = useState<number | null>(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const q = params.get('card') || params.get('cardId') || params.get('target') || params.get('id');
+      if (q && !isNaN(Number(q)) && CARD_DATABASE[Number(q)]) {
+        return Number(q);
+      }
+    }
+    return null;
+  });
   const [mobileCardOppDeck, setMobileCardOppDeck] = useState<CardData[] | undefined>(undefined);
   const [mobileCardOppName, setMobileCardOppName] = useState<string | undefined>(undefined);
   const [mobileCardTowerFloor, setMobileCardTowerFloor] = useState<number | null>(null);
