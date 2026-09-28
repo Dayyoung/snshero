@@ -2592,7 +2592,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
       components: "buttons"
     }}>
       <>
-        <div className="pb-44 w-full max-w-4xl mx-auto min-h-screen bg-transparent text-slate-900 font-sans selection:bg-indigo-500 selection:text-white overflow-x-hidden">
+        <div className="pb-[calc(11rem+env(safe-area-inset-bottom,0px))] sm:pb-[calc(12rem+env(safe-area-inset-bottom,0px))] w-full max-w-4xl mx-auto min-h-screen bg-transparent text-slate-900 font-sans selection:bg-indigo-500 selection:text-white overflow-x-hidden">
           <div className="flex items-center justify-between px-4 sm:px-6 md:px-8 pt-4 pb-2">
             <div className="flex items-center gap-2">
               <PageHeader title={t('shop', language)} />
@@ -5901,8 +5901,8 @@ export const ShopView: React.FC<ShopViewProps> = ({
           </div>
         </div>
 
-        {/* SCR-04-03: 하단 Thumb Zone 48px 규격 고정 듀얼 소환 CTA 바 (하단 내비게이션 바 위 안전 배치) */}
-        <div className="fixed bottom-16 sm:bottom-[72px] left-0 right-0 z-40 max-w-[1024px] mx-auto bg-[#fdfcfc]/95 dark:bg-[#111]/95 backdrop-blur-md border-t border-slate-200 dark:border-white/15 p-2 sm:p-2.5 shadow-[0_-4px_20px_rgba(0,0,0,0.15)] select-none">
+        {/* SCR-04-03: 하단 Thumb Zone 48px 규격 고정 듀얼 소환 CTA 바 (하단 내비게이션 바 위 및 safe-area-inset-bottom 안전 배치) */}
+        <div className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+4rem)] sm:bottom-[calc(env(safe-area-inset-bottom,0px)+4.5rem)] left-0 right-0 z-40 max-w-[1024px] mx-auto bg-[#fdfcfc]/95 dark:bg-[#111]/95 backdrop-blur-md border-t border-slate-200 dark:border-white/15 p-2 sm:p-2.5 shadow-[0_-4px_20px_rgba(0,0,0,0.15)] select-none">
           <div className="max-w-md mx-auto grid grid-cols-2 gap-2 font-mono">
             {/* 1회 소환 버튼 (48px 규격, 무료/할인 표기) */}
             <button
