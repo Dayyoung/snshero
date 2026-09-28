@@ -1,7 +1,12 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { triggerHaptic } from '../lib/haptic';
 import { playDopamineChime } from '../lib/combatDopamineEngine';
+
+// Global event deduplication to prevent double audio/particles if multiple instances exist
+let lastHandledEventId: number | null = null;
+let lastHandledTime = 0;
 
 export interface RainbowFlipDetail {
   id: number;
@@ -313,6 +318,12 @@ export const RainbowFlipEffect: React.FC<RainbowFlipEffectProps> = ({
     const handleCustomEvent = (e: Event) => {
       const customEvent = e as CustomEvent<RainbowFlipDetail>;
       if (customEvent.detail) {
+        const now = Date.now();
+        if (lastHandledEventId === customEvent.detail.id || (now - lastHandledTime < 50)) {
+          return;
+        }
+        lastHandledEventId = customEvent.detail.id;
+        lastHandledTime = now;
         executeTrigger(customEvent.detail);
       }
     };
@@ -326,8 +337,11 @@ export const RainbowFlipEffect: React.FC<RainbowFlipEffectProps> = ({
   const isMulti = (activeAnnouncement?.count ?? 0) >= 2;
   const displayText = activeAnnouncement?.text || (isMulti ? 'Doble Flip!' : 'Flip!');
 
-  return (
-    <div className={`${isFixed ? 'fixed' : 'absolute'} inset-0 pointer-events-none z-[160] overflow-hidden select-none bg-transparent ${className}`}>
+  const content = (
+    <div 
+      className={`${isFixed ? 'fixed' : 'absolute'} inset-0 pointer-events-none z-[999999] overflow-hidden select-none bg-transparent ${className}`}
+      style={{ zIndex: 999999 }}
+    >
       {/* High-Performance Canvas Particles Layer (0% idle CPU) */}
       <canvas
         ref={canvasRef}
@@ -396,6 +410,12 @@ export const RainbowFlipEffect: React.FC<RainbowFlipEffectProps> = ({
       </AnimatePresence>
     </div>
   );
+
+  if (isFixed && typeof document !== 'undefined') {
+    return createPortal(content, document.body);
+  }
+
+  return content;
 };
 
 export default RainbowFlipEffect;

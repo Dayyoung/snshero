@@ -18,7 +18,7 @@ import { cn, getCardSpriteStyle } from '../lib/utils';
 import { AdSenseBanner } from '../components/AdSenseBanner';
 import { CardItem } from '../components/CardItem';
 import { t } from '../lib/i18n';
-import { triggerRainbowFlip } from '../components/RainbowFlipEffect';
+import { triggerRainbowFlip, RainbowFlipEffect } from '../components/RainbowFlipEffect';
 import { MissionDialogueIntro } from '../components/MissionDialogueIntro';
 import { pickNewRankOpponent, RankOpponentInfo } from '../data/rankingOpponents';
 
@@ -112,6 +112,13 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
   // Auto Battle & Speed (시작 시 자동전투 시작)
   const [isAutoBattle, setIsAutoBattle] = useState(initialAutoBattle !== false);
   const [battleSpeed, setBattleSpeed] = useState<1 | 2>(1);
+
+  // Sync initialAutoBattle prop changes from parent view
+  useEffect(() => {
+    if (initialAutoBattle !== undefined) {
+      setIsAutoBattle(initialAutoBattle !== false);
+    }
+  }, [initialAutoBattle]);
 
   // Skills State
   const [activeSkill, setActiveSkill] = useState<'power' | 'shield' | null>(null);
@@ -553,6 +560,8 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
   useEffect(() => {
     if (gameOver || isEvaluating || rankingSearchCountdown !== null || showMissionDialogue) return;
 
+    const isFirstMove = board.every(c => c === null);
+
     // 1. AI Opponent's Turn
     if (turn === 'ai') {
       if (opponentHand.length === 0) return;
@@ -560,7 +569,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       const emptySlots = board.map((c, i) => (c === null ? i : -1)).filter(i => i !== -1);
       if (emptySlots.length === 0) return;
 
-      const delay = (700 / battleSpeed);
+      const delay = isFirstMove ? Math.round(350 / battleSpeed) : Math.round(700 / battleSpeed);
       const timer = setTimeout(() => {
         // Pick best card and slot (max flips or center/corners)
         let bestSlot = emptySlots[0];
@@ -592,7 +601,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       const emptySlots = board.map((c, i) => (c === null ? i : -1)).filter(i => i !== -1);
       if (emptySlots.length === 0) return;
 
-      const delay = (600 / battleSpeed);
+      const delay = isFirstMove ? Math.round(300 / battleSpeed) : Math.round(600 / battleSpeed);
       const timer = setTimeout(() => {
         let bestSlot = emptySlots[0];
         let bestCard = playerHand[0];
@@ -615,7 +624,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
 
       return () => clearTimeout(timer);
     }
-  }, [turn, isAutoBattle, gameOver, isEvaluating, opponentHand, playerHand, board, boardShields, battleSpeed, executeFlips, handlePlaceCard]);
+  }, [turn, isAutoBattle, gameOver, isEvaluating, rankingSearchCountdown, showMissionDialogue, opponentHand, playerHand, board, boardShields, battleSpeed, executeFlips, handlePlaceCard]);
 
   // ─── Interactive Skill Activations ─────────────────────────────────
   const handleUsePowerSkill = () => {
@@ -1547,6 +1556,9 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
           onSkip={() => setShowMissionDialogue(false)}
         />
       )}
+
+      {/* ─── 카드 뒤집기 무지개 파티클 이펙트 오버레이 ───────────────── */}
+      <RainbowFlipEffect isFixed={true} className="z-[999999]" />
     </div>
   );
 };
