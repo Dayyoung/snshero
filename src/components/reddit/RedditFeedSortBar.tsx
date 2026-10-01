@@ -1,6 +1,6 @@
 /**
  * RedditFeedSortBar.tsx
- * 오리지널 레딧 피드 정렬 바 및 뷰 모드(Card / Classic / Compact) 선택기
+ * 오리지널 레딧 피드 정렬 바 및 뷰 모드 선택기 (한국어 기본 지원)
  */
 
 import React, { useState, useRef, useEffect } from 'react';
@@ -22,6 +22,7 @@ interface RedditFeedSortBarProps {
   currentTimeFilter: TimeFilterType;
   currentViewMode: ViewModeType;
   isDark: boolean;
+  isKo?: boolean;
   onSelectSort: (sort: FeedSortType) => void;
   onSelectTimeFilter: (filter: TimeFilterType) => void;
   onSelectViewMode: (mode: ViewModeType) => void;
@@ -32,6 +33,7 @@ export const RedditFeedSortBar: React.FC<RedditFeedSortBarProps> = ({
   currentTimeFilter,
   currentViewMode,
   isDark,
+  isKo = true,
   onSelectSort,
   onSelectTimeFilter,
   onSelectViewMode,
@@ -55,21 +57,21 @@ export const RedditFeedSortBar: React.FC<RedditFeedSortBarProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const sortItems: { id: FeedSortType; label: string; icon: React.ElementType }[] = [
-    { id: 'hot', label: 'Hot', icon: Flame },
-    { id: 'new', label: 'New', icon: Sparkles },
-    { id: 'top', label: 'Top', icon: Trophy },
-    { id: 'best', label: 'Best', icon: Rocket },
-    { id: 'rising', label: 'Rising', icon: TrendingUp },
+  const sortItems: { id: FeedSortType; labelKo: string; labelEn: string; icon: React.ElementType }[] = [
+    { id: 'hot', labelKo: '인기순', labelEn: 'Hot', icon: Flame },
+    { id: 'new', labelKo: '최신순', labelEn: 'New', icon: Sparkles },
+    { id: 'top', labelKo: '추천순', labelEn: 'Top', icon: Trophy },
+    { id: 'best', labelKo: '최고', labelEn: 'Best', icon: Rocket },
+    { id: 'rising', labelKo: '상승 중', labelEn: 'Rising', icon: TrendingUp },
   ];
 
-  const timeFilters: { id: TimeFilterType; label: string }[] = [
-    { id: 'now', label: 'Now' },
-    { id: 'today', label: 'Today' },
-    { id: 'week', label: 'This Week' },
-    { id: 'month', label: 'This Month' },
-    { id: 'year', label: 'This Year' },
-    { id: 'all', label: 'All Time' },
+  const timeFilters: { id: TimeFilterType; labelKo: string; labelEn: string }[] = [
+    { id: 'now', labelKo: '지금', labelEn: 'Now' },
+    { id: 'today', labelKo: '오늘', labelEn: 'Today' },
+    { id: 'week', labelKo: '이번 주', labelEn: 'This Week' },
+    { id: 'month', labelKo: '이번 달', labelEn: 'This Month' },
+    { id: 'year', labelKo: '올해', labelEn: 'This Year' },
+    { id: 'all', labelKo: '전체 기간', labelEn: 'All Time' },
   ];
 
   return (
@@ -77,7 +79,7 @@ export const RedditFeedSortBar: React.FC<RedditFeedSortBarProps> = ({
       isDark ? 'bg-[#181C1F] border-[#22272B] text-gray-200' : 'bg-white border-gray-200 text-gray-800'
     }`}>
       {/* 1. 정렬 칩 목록 */}
-      <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto scrollbar-none py-0.5">
+      <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto scrollbar-none py-0.5">
         {sortItems.map((item) => {
           const Icon = item.icon;
           const isActive = currentSort === item.id;
@@ -102,12 +104,12 @@ export const RedditFeedSortBar: React.FC<RedditFeedSortBarProps> = ({
               }`}
             >
               <Icon className={`w-4 h-4 ${isActive ? 'text-[#FF4500]' : 'opacity-70'}`} />
-              <span>{item.label}</span>
+              <span>{isKo ? item.labelKo : item.labelEn}</span>
             </button>
           );
         })}
 
-        {/* Top 시간 필터 드롭다운 (Top이 활성화되었을 때) */}
+        {/* Top 시간 필터 드롭다운 */}
         {currentSort === 'top' && (
           <div className="relative" ref={topDropdownRef}>
             <button
@@ -117,7 +119,11 @@ export const RedditFeedSortBar: React.FC<RedditFeedSortBarProps> = ({
                 isDark ? 'bg-[#22272B] border-[#2E363E] text-gray-200' : 'bg-gray-100 border-gray-200 text-gray-800'
               }`}
             >
-              <span>{timeFilters.find((f) => f.id === currentTimeFilter)?.label || 'Today'}</span>
+              <span>
+                {isKo 
+                  ? timeFilters.find((f) => f.id === currentTimeFilter)?.labelKo || '오늘' 
+                  : timeFilters.find((f) => f.id === currentTimeFilter)?.labelEn || 'Today'}
+              </span>
               <ChevronDown className="w-3.5 h-3.5 opacity-60" />
             </button>
 
@@ -137,7 +143,7 @@ export const RedditFeedSortBar: React.FC<RedditFeedSortBarProps> = ({
                       currentTimeFilter === tf.id ? 'text-[#FF4500] font-bold' : ''
                     } ${isDark ? 'hover:bg-[#22272B]' : 'hover:bg-gray-100'}`}
                   >
-                    {tf.label}
+                    {isKo ? tf.labelKo : tf.labelEn}
                   </button>
                 ))}
               </div>
@@ -146,7 +152,7 @@ export const RedditFeedSortBar: React.FC<RedditFeedSortBarProps> = ({
         )}
       </div>
 
-      {/* 2. 뷰 모드 토글 (Card / Classic / Compact) */}
+      {/* 2. 뷰 모드 토글 */}
       <div className="relative flex-shrink-0" ref={viewDropdownRef}>
         <button
           type="button"
@@ -154,7 +160,7 @@ export const RedditFeedSortBar: React.FC<RedditFeedSortBarProps> = ({
           className={`p-2 rounded-full cursor-pointer transition-colors ${
             isDark ? 'hover:bg-[#22272B] text-gray-300' : 'hover:bg-gray-100 text-gray-700'
           }`}
-          title="Change View Mode"
+          title={isKo ? "보기 모드 변경" : "Change View Mode"}
         >
           {currentViewMode === 'card' && <Columns className="w-4 h-4" />}
           {currentViewMode === 'classic' && <LayoutList className="w-4 h-4" />}
@@ -162,13 +168,13 @@ export const RedditFeedSortBar: React.FC<RedditFeedSortBarProps> = ({
         </button>
 
         {isViewDropdownOpen && (
-          <div className={`absolute top-full right-0 mt-1.5 w-36 rounded-xl border shadow-xl py-1 z-30 text-xs overflow-hidden backdrop-blur-md ${
+          <div className={`absolute top-full right-0 mt-1.5 w-40 rounded-xl border shadow-xl py-1 z-30 text-xs overflow-hidden backdrop-blur-md ${
             isDark ? 'bg-[#181C1F] border-[#2E363E] text-gray-200' : 'bg-white border-gray-200 text-gray-800'
           }`}>
             {[
-              { id: 'card', label: 'Card View', icon: Columns },
-              { id: 'classic', label: 'Classic View', icon: LayoutList },
-              { id: 'compact', label: 'Compact View', icon: Menu },
+              { id: 'card', labelKo: '카드 보기', labelEn: 'Card View', icon: Columns },
+              { id: 'classic', labelKo: '클래식 보기', labelEn: 'Classic View', icon: LayoutList },
+              { id: 'compact', labelKo: '컴팩트 보기', labelEn: 'Compact View', icon: Menu },
             ].map((vm) => {
               const Icon = vm.icon;
               return (
@@ -184,7 +190,7 @@ export const RedditFeedSortBar: React.FC<RedditFeedSortBarProps> = ({
                   } ${isDark ? 'hover:bg-[#22272B]' : 'hover:bg-gray-100'}`}
                 >
                   <Icon className="w-3.5 h-3.5 opacity-70" />
-                  <span>{vm.label}</span>
+                  <span>{isKo ? vm.labelKo : vm.labelEn}</span>
                 </button>
               );
             })}

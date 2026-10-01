@@ -1,7 +1,6 @@
 /**
  * RedditSubmitPostModal.tsx
- * 오리지널 레딧 신규 포스트 작성(Submit Post) 모달
- * 서브레딧 선택, Post / Images / Link 탭, 플레어 선택 및 즉시 발행
+ * 오리지널 레딧 신규 포스트 작성 모달 (한국어 기본 지원)
  */
 
 import React, { useState } from 'react';
@@ -10,10 +9,6 @@ import {
   FileText, 
   Image as ImageIcon, 
   Link2, 
-  Bold, 
-  Italic, 
-  List, 
-  Sparkles, 
   ChevronDown 
 } from 'lucide-react';
 import { RedditPost, RedditUserDataState, PostFlair } from '../../lib/reddit/redditTypes';
@@ -27,24 +22,31 @@ interface RedditSubmitPostModalProps {
 }
 
 export const RedditSubmitPostModal: React.FC<RedditSubmitPostModalProps> = ({
-  initialSubreddit = 'gaming',
+  initialSubreddit = 'hanguk',
   userState,
   onClose,
   onSubmitPost,
 }) => {
   const isDark = userState.theme !== 'light';
+  const isKo = userState.language !== 'en';
 
   const [selectedSub, setSelectedSub] = useState(
-    ['popular', 'all', 'home'].includes(initialSubreddit.toLowerCase()) ? 'gaming' : initialSubreddit
+    ['popular', 'all', 'home'].includes(initialSubreddit.toLowerCase()) ? 'hanguk' : initialSubreddit
   );
   const [activeTab, setActiveTab] = useState<'text' | 'image' | 'link'>('text');
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [linkUrl, setLinkUrl] = useState('');
-  const [selectedFlair, setSelectedFlair] = useState<string>('Discussion');
+  const [selectedFlair, setSelectedFlair] = useState<string>(isKo ? '자유토론' : 'Discussion');
 
-  const flairs: PostFlair[] = [
+  const flairs: PostFlair[] = isKo ? [
+    { text: '자유토론', bgColor: '#0079D3', textColor: '#FFFFFF' },
+    { text: '뉴스 / 정보', bgColor: '#46D160', textColor: '#FFFFFF' },
+    { text: '개발일지', bgColor: '#FF4500', textColor: '#FFFFFF' },
+    { text: '질문 / Q&A', bgColor: '#FFB000', textColor: '#222222' },
+    { text: '유머 / 밈', bgColor: '#FF66AC', textColor: '#FFFFFF' },
+  ] : [
     { text: 'Discussion', bgColor: '#0079D3', textColor: '#FFFFFF' },
     { text: 'News', bgColor: '#46D160', textColor: '#FFFFFF' },
     { text: 'Showcase', bgColor: '#FF4500', textColor: '#FFFFFF' },
@@ -56,7 +58,7 @@ export const RedditSubmitPostModal: React.FC<RedditSubmitPostModalProps> = ({
     e.preventDefault();
     if (!title.trim()) return;
 
-    const flairObj = flairs.find((f) => f.text === selectedFlair);
+    const flairObj = flairs.find((f) => f.text === selectedFlair) || flairs[0];
 
     const newPost: RedditPost = {
       id: `post_user_${Date.now()}`,
@@ -94,7 +96,7 @@ export const RedditSubmitPostModal: React.FC<RedditSubmitPostModalProps> = ({
         {/* 모달 헤더 */}
         <div className="flex items-center justify-between p-4 border-b border-inherit/10">
           <div className="flex items-center gap-2">
-            <span className="font-extrabold text-base">Create a Post</span>
+            <span className="font-extrabold text-base">{isKo ? '게시물 작성' : 'Create a Post'}</span>
           </div>
           <button type="button" onClick={onClose} className="p-1 rounded-full hover:bg-black/10 cursor-pointer">
             <X className="w-5 h-5" />
@@ -104,7 +106,9 @@ export const RedditSubmitPostModal: React.FC<RedditSubmitPostModalProps> = ({
         <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4">
           {/* 서브레딧 선택 셀렉터 */}
           <div>
-            <label className="block text-xs font-bold uppercase opacity-60 mb-1.5">Choose a Community</label>
+            <label className="block text-xs font-bold uppercase opacity-60 mb-1.5">
+              {isKo ? '커뮤니티 선택' : 'Choose a Community'}
+            </label>
             <div className="relative inline-block w-full sm:w-64">
               <select
                 value={selectedSub}
@@ -123,7 +127,7 @@ export const RedditSubmitPostModal: React.FC<RedditSubmitPostModalProps> = ({
             </div>
           </div>
 
-          {/* 탭: Post (Text) / Image / Link */}
+          {/* 탭: Post / Image / Link */}
           <div className="flex border-b border-inherit/10 text-xs font-bold">
             <button
               type="button"
@@ -133,7 +137,7 @@ export const RedditSubmitPostModal: React.FC<RedditSubmitPostModalProps> = ({
               }`}
             >
               <FileText className="w-4 h-4" />
-              <span>Post</span>
+              <span>{isKo ? '게시글' : 'Post'}</span>
             </button>
             <button
               type="button"
@@ -143,7 +147,7 @@ export const RedditSubmitPostModal: React.FC<RedditSubmitPostModalProps> = ({
               }`}
             >
               <ImageIcon className="w-4 h-4" />
-              <span>Images</span>
+              <span>{isKo ? '이미지' : 'Images'}</span>
             </button>
             <button
               type="button"
@@ -153,7 +157,7 @@ export const RedditSubmitPostModal: React.FC<RedditSubmitPostModalProps> = ({
               }`}
             >
               <Link2 className="w-4 h-4" />
-              <span>Link</span>
+              <span>{isKo ? '링크' : 'Link'}</span>
             </button>
           </div>
 
@@ -164,17 +168,18 @@ export const RedditSubmitPostModal: React.FC<RedditSubmitPostModalProps> = ({
               required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Title (required)"
+              placeholder={isKo ? "제목 (필수 입력)" : "Title (required)"}
               className={`w-full px-3 py-2.5 rounded-xl border text-sm font-medium outline-none focus:ring-1 focus:ring-[#FF4500] ${
                 isDark ? 'bg-[#0E1113] border-[#2E363E]' : 'bg-gray-50 border-gray-300'
               }`}
             />
           </div>
 
-          {/* 탭별 추가 입력란 */}
           {activeTab === 'image' && (
             <div>
-              <label className="block text-xs font-medium opacity-70 mb-1">Image URL</label>
+              <label className="block text-xs font-medium opacity-70 mb-1">
+                {isKo ? '이미지 URL 링크' : 'Image URL'}
+              </label>
               <input
                 type="url"
                 value={imageUrl}
@@ -194,7 +199,9 @@ export const RedditSubmitPostModal: React.FC<RedditSubmitPostModalProps> = ({
 
           {activeTab === 'link' && (
             <div>
-              <label className="block text-xs font-medium opacity-70 mb-1">Destination URL</label>
+              <label className="block text-xs font-medium opacity-70 mb-1">
+                {isKo ? '연결할 외부 링크 URL' : 'Destination URL'}
+              </label>
               <input
                 type="url"
                 value={linkUrl}
@@ -213,16 +220,18 @@ export const RedditSubmitPostModal: React.FC<RedditSubmitPostModalProps> = ({
               rows={5}
               value={body}
               onChange={(e) => setBody(e.target.value)}
-              placeholder="Text (optional markdown supported)..."
+              placeholder={isKo ? "본문 내용 (마크다운 지원, 선택 사항)..." : "Text (optional markdown supported)..."}
               className={`w-full p-3 rounded-xl border text-xs sm:text-sm outline-none resize-none focus:ring-1 focus:ring-[#FF4500] font-sans ${
                 isDark ? 'bg-[#0E1113] border-[#2E363E]' : 'bg-gray-50 border-gray-300'
               }`}
             />
           </div>
 
-          {/* 플레어 선택 칩 */}
+          {/* 플레어 선택 */}
           <div>
-            <label className="block text-xs font-bold uppercase opacity-60 mb-1.5">Select Flair</label>
+            <label className="block text-xs font-bold uppercase opacity-60 mb-1.5">
+              {isKo ? '카테고리 플레어 선택' : 'Select Flair'}
+            </label>
             <div className="flex flex-wrap gap-2">
               {flairs.map((f) => (
                 <button
@@ -250,14 +259,14 @@ export const RedditSubmitPostModal: React.FC<RedditSubmitPostModalProps> = ({
               onClick={onClose}
               className="px-4 py-2 rounded-full font-bold text-xs opacity-70 hover:opacity-100 cursor-pointer"
             >
-              Cancel
+              {isKo ? '취소' : 'Cancel'}
             </button>
             <button
               type="submit"
               disabled={!title.trim()}
               className="px-6 py-2 rounded-full bg-[#FF4500] disabled:opacity-40 text-white font-extrabold text-xs cursor-pointer hover:bg-[#FF5414] shadow-md transition-all"
             >
-              Post
+              {isKo ? '게시하기' : 'Post'}
             </button>
           </div>
         </form>

@@ -103,6 +103,7 @@ export interface RedditUserDataState {
   userComments: RedditComment[];
   theme: 'dark' | 'light' | 'system';
   viewMode: ViewModeType;
+  language: 'ko' | 'en';
   lastSubreddit?: string;
 }
 

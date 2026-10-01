@@ -1,7 +1,7 @@
 /**
  * RedditCommunityView.tsx
  * 오리지널 레딧(Reddit) 100% 클론 커뮤니티 통합 뷰 허브 ('SNSHero Community')
- * 무비용 정적 페이지, Zero-DB 로컬스토리지 영구 저장, 구글 애드센스 수익화, GA/GEO/SEO/AEO 탑재
+ * 무비용 정적 페이지, Zero-DB 로컬스토리지 영구 저장, 구글 애드센스 수익화, GA/GEO/SEO/AEO 탑재 (한국어 기본 지원)
  */
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
@@ -18,7 +18,6 @@ import {
 import { RedditApiService } from '../lib/reddit/redditApiService';
 import { 
   loadRedditState, 
-  saveRedditState, 
   votePostOrComment, 
   toggleSavePost, 
   toggleHidePost, 
@@ -26,7 +25,8 @@ import {
   addUserPost, 
   addUserComment, 
   updateViewMode, 
-  updateTheme 
+  updateTheme,
+  updateLanguage
 } from '../lib/reddit/redditStorage';
 import { RedditSeoManager } from '../lib/reddit/redditSeoManager';
 
@@ -78,6 +78,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const isDark = userState.theme !== 'light';
+  const isKo = userState.language !== 'en'; // 한국어 기본
 
   // 서브레딧 메타데이터
   const currentSubredditInfo = useMemo(() => {
@@ -135,7 +136,6 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
       const { nextState } = votePostOrComment(prev, commentId, direction);
       return nextState;
     });
-    // activeComments 트리 즉시 업데이트
     setActiveComments((prev) => {
       const clone = JSON.parse(JSON.stringify(prev));
       const applyVote = (list: RedditComment[]) => {
@@ -250,6 +250,12 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
     setUserState((prev) => updateTheme(prev, nextTheme));
   }, [isDark]);
 
+  // 언어 토글 (한국어 / English)
+  const handleToggleLanguage = useCallback(() => {
+    const nextLang = isKo ? 'en' : 'ko';
+    setUserState((prev) => updateLanguage(prev, nextLang));
+  }, [isKo]);
+
   // 뷰 모드 변경
   const handleSelectViewMode = useCallback((mode: ViewModeType) => {
     setViewMode(mode);
@@ -257,7 +263,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
   }, []);
 
   return (
-    <div className={`min-h-screen flex flex-col font-sans transition-colors duration-150 ${
+    <div className={`min-h-screen w-full flex flex-col font-sans transition-colors duration-150 ${
       isDark ? 'bg-[#0E1113] text-[#D7DADC]' : 'bg-[#DAE0E6] text-[#1C1C1C]'
     }`}>
       {/* 1. 상단 글로벌 헤더 */}
@@ -268,13 +274,14 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
         onOpenSubmitModal={() => setIsSubmitModalOpen(true)}
         onToggleSidebar={() => setIsSidebarOpen((prev) => !prev)}
         onToggleTheme={handleToggleTheme}
+        onToggleLanguage={handleToggleLanguage}
         onSearch={handleSearch}
         onGoToGame={onNavigateHome}
         onOpenUserProfile={handleOpenUserProfile}
       />
 
       {/* 2. 메인 바디 컨테이너: 좌측 사이드바 + 중앙 피드 + 우측 사이드바 */}
-      <div className="flex-1 max-w-7xl w-full mx-auto flex justify-center">
+      <div className="flex-1 w-full max-w-[1440px] mx-auto flex justify-center">
         {/* 좌측 사이드바 / 드로어 */}
         <RedditSidebarLeft
           isOpen={isSidebarOpen}
@@ -323,6 +330,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
                 subreddit={currentSubredditInfo}
                 isJoined={userState.joinedSubreddits.some((s) => s.toLowerCase() === currentSubreddit.toLowerCase())}
                 isDark={isDark}
+                isKo={isKo}
                 activeTab={activeTab}
                 onToggleJoin={() => setUserState((prev) => toggleJoinSubreddit(prev, currentSubreddit))}
                 onSelectTab={setActiveTab}
@@ -336,6 +344,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
                     currentTimeFilter={currentTimeFilter}
                     currentViewMode={viewMode}
                     isDark={isDark}
+                    isKo={isKo}
                     onSelectSort={setCurrentSort}
                     onSelectTimeFilter={setCurrentTimeFilter}
                     onSelectViewMode={handleSelectViewMode}
@@ -348,13 +357,14 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
                         <React.Fragment key={post.id}>
                           {/* 4번째 포스트마다 구글 애드센스 인피드 광고 노출 */}
                           {idx > 0 && idx % 4 === 0 && (
-                            <RedditAdCard isDark={isDark} />
+                            <RedditAdCard isDark={isDark} isKo={isKo} />
                           )}
 
                           <RedditPostCard
                             post={post}
                             viewMode={viewMode}
                             isDark={isDark}
+                            isKo={isKo}
                             onVote={handleVotePost}
                             onOpenDetail={handleOpenDetail}
                             onSelectSubreddit={handleSelectSubreddit}
@@ -368,28 +378,30 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
                       <div className={`rounded-2xl border p-12 text-center text-xs opacity-50 ${
                         isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'
                       }`}>
-                        No posts in this feed yet. Be the first to create one!
+                        {isKo ? '피드에 표시할 게시물이 아직 없습니다. 첫 게시물을 작성해보세요!' : 'No posts in this feed yet. Be the first to create one!'}
                       </div>
                     )}
                   </div>
                 </>
               )}
 
-              {/* About 탭 (모바일에서 사이드바 내용 확인) */}
+              {/* About 탭 */}
               {activeTab === 'about' && (
                 <div className={`rounded-2xl border p-6 text-xs leading-relaxed space-y-4 ${
                   isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'
                 }`}>
-                  <h3 className="font-extrabold text-base">About r/{currentSubredditInfo.name}</h3>
+                  <h3 className="font-extrabold text-base">
+                    {isKo ? `r/${currentSubredditInfo.name} 소개` : `About r/${currentSubredditInfo.name}`}
+                  </h3>
                   <p>{currentSubredditInfo.description}</p>
                   <div className="grid grid-cols-2 gap-4 py-4 border-y border-inherit/10">
                     <div>
                       <div className="font-bold text-base">{currentSubredditInfo.subscribers.toLocaleString()}</div>
-                      <div className="opacity-60 text-[11px]">Members</div>
+                      <div className="opacity-60 text-[11px]">{isKo ? '멤버 수' : 'Members'}</div>
                     </div>
                     <div>
                       <div className="font-bold text-base text-emerald-400">{currentSubredditInfo.onlineCount.toLocaleString()}</div>
-                      <div className="opacity-60 text-[11px]">Online</div>
+                      <div className="opacity-60 text-[11px]">{isKo ? '현재 온라인' : 'Online'}</div>
                     </div>
                   </div>
                 </div>
@@ -400,7 +412,9 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
                 <div className={`rounded-2xl border p-6 text-xs space-y-3 ${
                   isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'
                 }`}>
-                  <h3 className="font-extrabold text-base mb-3">Community Rules</h3>
+                  <h3 className="font-extrabold text-base mb-3">
+                    {isKo ? '커뮤니티 규칙' : 'Community Rules'}
+                  </h3>
                   {currentSubredditInfo.rules.map((rule) => (
                     <div key={rule.number} className="p-3 rounded-xl border border-inherit/10">
                       <div className="font-bold text-xs mb-1">{rule.number}. {rule.title}</div>
@@ -456,7 +470,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
       )}
 
       {/* 5. 어느 화면에서나 항상 우측 하단에 고정 표시되는 플로팅 Play 버튼 */}
-      <RedditFloatingPlayButton onGoToGame={onNavigateHome} />
+      <RedditFloatingPlayButton onGoToGame={onNavigateHome} isKo={isKo} />
     </div>
   );
 };

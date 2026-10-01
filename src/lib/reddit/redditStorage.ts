@@ -13,11 +13,12 @@ const DEFAULT_STATE: RedditUserDataState = {
   scoreDeltas: {},
   savedPostIds: [],
   hiddenPostIds: [],
-  joinedSubreddits: ['gaming', 'technology', 'AskReddit', 'memes', 'CryptoCurrency'],
+  joinedSubreddits: ['hanguk', 'gaming', 'technology', 'AskReddit', 'memes', 'CryptoCurrency'],
   userPosts: [],
   userComments: [],
   theme: 'dark', // 레딧 모던 다크 테마 기본
   viewMode: 'card',
+  language: 'ko', // 한국 사용자 기본 언어
 };
 
 export function loadRedditState(): RedditUserDataState {
@@ -137,6 +138,12 @@ export function updateViewMode(state: RedditUserDataState, viewMode: ViewModeTyp
 
 export function updateTheme(state: RedditUserDataState, theme: 'dark' | 'light' | 'system'): RedditUserDataState {
   const nextState = { ...state, theme };
+  saveRedditState(nextState);
+  return nextState;
+}
+
+export function updateLanguage(state: RedditUserDataState, language: 'ko' | 'en'): RedditUserDataState {
+  const nextState = { ...state, language };
   saveRedditState(nextState);
   return nextState;
 }

@@ -1,7 +1,6 @@
 /**
  * RedditPostCard.tsx
- * 오리지널 레딧 포스트 카드 컴포넌트
- * Card, Classic, Compact 3가지 뷰 모드 지원 및 보팅, 공유, 북마크, 미디어 렌더링
+ * 오리지널 레딧 포스트 카드 컴포넌트 (한국어 기본 지원)
  */
 
 import React, { useState } from 'react';
@@ -14,8 +13,7 @@ import {
   MoreHorizontal, 
   EyeOff, 
   Check, 
-  ExternalLink,
-  Maximize2
+  ExternalLink 
 } from 'lucide-react';
 import { RedditPost, ViewModeType } from '../../lib/reddit/redditTypes';
 
@@ -23,6 +21,7 @@ interface RedditPostCardProps {
   post: RedditPost;
   viewMode: ViewModeType;
   isDark: boolean;
+  isKo?: boolean;
   onVote: (postId: string, direction: 'up' | 'down') => void;
   onOpenDetail: (post: RedditPost) => void;
   onSelectSubreddit: (subreddit: string) => void;
@@ -35,6 +34,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
   post,
   viewMode,
   isDark,
+  isKo = true,
   onVote,
   onOpenDetail,
   onSelectSubreddit,
@@ -49,14 +49,13 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
   const getRelativeTime = (timestamp: number) => {
     const diff = Math.max(0, Date.now() - timestamp);
     const mins = Math.floor(diff / 60000);
-    if (mins < 60) return `${mins || 1}m ago`;
+    if (mins < 60) return isKo ? `${mins || 1}분 전` : `${mins || 1}m ago`;
     const hours = Math.floor(mins / 60);
-    if (hours < 24) return `${hours}h ago`;
+    if (hours < 24) return isKo ? `${hours}시간 전` : `${hours}h ago`;
     const days = Math.floor(hours / 24);
-    return `${days}d ago`;
+    return isKo ? `${days}일 전` : `${days}d ago`;
   };
 
-  // 점수 포맷 (14.2k 등)
   const formatScore = (num: number) => {
     if (Math.abs(num) >= 1000) {
       return (num / 1000).toFixed(1) + 'k';
@@ -87,9 +86,8 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
             : 'bg-white hover:bg-gray-50 border-gray-100 text-gray-800'
         }`}
       >
-        <div className="flex items-center gap-2">
-          {/* 간이 보트 카운터 */}
-          <div className="flex items-center gap-1 font-bold w-12 text-center">
+        <div className="flex items-center gap-2 min-w-0">
+          <div className="flex items-center gap-1 font-bold w-12 text-center flex-shrink-0">
             <button
               type="button"
               onClick={(e) => { e.stopPropagation(); onVote(post.id, 'up'); }}
@@ -104,11 +102,11 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
 
           <span
             onClick={(e) => { e.stopPropagation(); onSelectSubreddit(post.subreddit); }}
-            className="font-bold hover:underline text-[#FF4500]"
+            className="font-bold hover:underline text-[#FF4500] flex-shrink-0"
           >
             r/{post.subreddit}
           </span>
-          <span className="font-medium truncate max-w-md sm:max-w-xl">{post.title}</span>
+          <span className="font-medium truncate">{post.title}</span>
         </div>
 
         <div className="flex items-center gap-3 opacity-60 flex-shrink-0 text-[11px]">
@@ -135,7 +133,6 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
             : 'bg-white hover:border-gray-300 border-gray-200 text-gray-800'
         }`}
       >
-        {/* 좌측 보팅 박스 */}
         <div className="flex flex-col items-center flex-shrink-0 py-1">
           <button
             type="button"
@@ -162,16 +159,14 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
           </button>
         </div>
 
-        {/* 썸네일 이미지 (있을 경우) */}
         {post.media?.url && (
           <div className="w-20 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-black/10">
             <img src={post.media.url} alt="" className="w-full h-full object-cover" />
           </div>
         )}
 
-        {/* 본문 정보 */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-1.5 text-[11px] opacity-60 mb-1">
+          <div className="flex items-center gap-1.5 text-[11px] opacity-60 mb-1 flex-wrap">
             <span
               onClick={(e) => { e.stopPropagation(); onSelectSubreddit(post.subreddit); }}
               className="font-bold opacity-100 hover:underline text-[#FF4500]"
@@ -179,7 +174,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
               r/{post.subreddit}
             </span>
             <span>•</span>
-            <span>Posted by</span>
+            <span>{isKo ? '게시자:' : 'Posted by'}</span>
             <span
               onClick={(e) => { e.stopPropagation(); onOpenUserProfile(post.author); }}
               className="hover:underline"
@@ -194,7 +189,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
           <div className="flex items-center gap-4 opacity-70 text-[11px]">
             <span className="flex items-center gap-1 font-semibold">
               <MessageSquare className="w-3.5 h-3.5" />
-              <span>{post.commentCount} Comments</span>
+              <span>{isKo ? `댓글 ${post.commentCount}개` : `${post.commentCount} Comments`}</span>
             </span>
             <button
               type="button"
@@ -202,7 +197,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
               className="flex items-center gap-1 hover:opacity-100 cursor-pointer"
             >
               <Share2 className="w-3.5 h-3.5" />
-              <span>{isCopied ? 'Copied!' : 'Share'}</span>
+              <span>{isCopied ? (isKo ? '복사됨!' : 'Copied!') : (isKo ? '공유' : 'Share')}</span>
             </button>
           </div>
         </div>
@@ -222,11 +217,10 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
           : 'bg-white hover:border-gray-300 border-gray-200 text-gray-800'
       }`}
     >
-      <div className="p-3 sm:p-4">
-        {/* 1. 헤더: 서브레딧 + 작성자 + 플레어 + 더보기 메뉴 */}
+      <div className="p-3.5 sm:p-4">
+        {/* 1. 헤더 */}
         <div className="flex items-center justify-between text-xs mb-2">
           <div className="flex items-center gap-1.5 flex-wrap">
-            {/* 서브레딧 이름 */}
             <button
               type="button"
               onClick={(e) => { e.stopPropagation(); onSelectSubreddit(post.subreddit); }}
@@ -236,7 +230,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
               <span>{post.subreddit}</span>
             </button>
             <span className="opacity-40">•</span>
-            <span className="opacity-60 text-[11px]">Posted by</span>
+            <span className="opacity-60 text-[11px]">{isKo ? '게시자:' : 'Posted by'}</span>
             <button
               type="button"
               onClick={(e) => { e.stopPropagation(); onOpenUserProfile(post.author); }}
@@ -247,7 +241,6 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
             <span className="opacity-40">•</span>
             <span className="opacity-60 text-[11px]">{getRelativeTime(post.createdAt)}</span>
 
-            {/* 플레어 뱃지 */}
             {post.flair && (
               <span
                 className="px-2 py-0.5 rounded-full text-[10px] font-bold tracking-tight shadow-sm ml-1"
@@ -286,7 +279,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
                   }`}
                 >
                   <Bookmark className="w-3.5 h-3.5" />
-                  <span>{post.isSaved ? 'Unsave Post' : 'Save Post'}</span>
+                  <span>{post.isSaved ? (isKo ? '저장 취소' : 'Unsave') : (isKo ? '게시물 저장' : 'Save Post')}</span>
                 </button>
                 <button
                   type="button"
@@ -296,7 +289,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
                   }`}
                 >
                   <EyeOff className="w-3.5 h-3.5" />
-                  <span>Hide Post</span>
+                  <span>{isKo ? '게시물 숨기기' : 'Hide Post'}</span>
                 </button>
               </div>
             )}
@@ -308,14 +301,14 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
           {post.title}
         </h2>
 
-        {/* 3. 본문 텍스트 (있는 경우) */}
+        {/* 3. 본문 텍스트 */}
         {post.body && (
           <div className="text-xs sm:text-sm leading-relaxed opacity-85 mb-3 line-clamp-3 whitespace-pre-line font-sans">
             {post.body}
           </div>
         )}
 
-        {/* 4. 고화질 미디어 렌더링 (이미지) */}
+        {/* 4. 고화질 미디어 */}
         {post.media?.url && (
           <div className="relative rounded-xl overflow-hidden mb-3 bg-black/20 flex items-center justify-center max-h-[500px] border border-inherit/10">
             <img
@@ -350,7 +343,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
                   ? 'text-[#FF4500]'
                   : 'opacity-70 hover:opacity-100 hover:text-[#FF4500]'
               }`}
-              title="Upvote"
+              title={isKo ? "추천" : "Upvote"}
             >
               <ArrowBigUp className="w-5 h-5 fill-current" />
             </button>
@@ -373,7 +366,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
                   ? 'text-[#7193FF]'
                   : 'opacity-70 hover:opacity-100 hover:text-[#7193FF]'
               }`}
-              title="Downvote"
+              title={isKo ? "비추천" : "Downvote"}
             >
               <ArrowBigDown className="w-5 h-5 fill-current" />
             </button>
@@ -390,7 +383,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
             }`}
           >
             <MessageSquare className="w-4 h-4 opacity-70" />
-            <span>{post.commentCount} Comments</span>
+            <span>{isKo ? `댓글 ${post.commentCount}개` : `${post.commentCount} Comments`}</span>
           </button>
 
           {/* 공유 버튼 */}
@@ -404,7 +397,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
             }`}
           >
             {isCopied ? <Check className="w-4 h-4 text-emerald-400" /> : <Share2 className="w-4 h-4 opacity-70" />}
-            <span>{isCopied ? 'Link Copied!' : 'Share'}</span>
+            <span>{isCopied ? (isKo ? '링크 복사됨!' : 'Link Copied!') : (isKo ? '공유' : 'Share')}</span>
           </button>
 
           {/* 북마크 저장 버튼 */}
@@ -420,7 +413,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
             }`}
           >
             <Bookmark className={`w-4 h-4 ${post.isSaved ? 'fill-current text-[#FF4500]' : 'opacity-70'}`} />
-            <span>{post.isSaved ? 'Saved' : 'Save'}</span>
+            <span>{post.isSaved ? (isKo ? '저장됨' : 'Saved') : (isKo ? '저장' : 'Save')}</span>
           </button>
         </div>
       </div>

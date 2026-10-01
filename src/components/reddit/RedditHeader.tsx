@@ -1,6 +1,6 @@
 /**
  * RedditHeader.tsx
- * 오리지널 레딧 최신 스타일 헤더
+ * 오리지널 레딧 최신 스타일 헤더 (한국어 기본 지원)
  * Reddit 마크와 단어는 모두 SNSHero 게임마크 및 SNSHero 로고로 변경
  */
 
@@ -19,7 +19,8 @@ import {
   TrendingUp, 
   Gamepad2,
   X,
-  Compass
+  Compass,
+  Languages
 } from 'lucide-react';
 import { RedditUserDataState } from '../../lib/reddit/redditTypes';
 import { SEED_SUBREDDITS } from '../../data/redditSeedData';
@@ -31,6 +32,7 @@ interface RedditHeaderProps {
   onOpenSubmitModal: () => void;
   onToggleSidebar: () => void;
   onToggleTheme: () => void;
+  onToggleLanguage: () => void;
   onSearch: (query: string) => void;
   onGoToGame: () => void;
   onOpenUserProfile: (username: string) => void;
@@ -43,6 +45,7 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
   onOpenSubmitModal,
   onToggleSidebar,
   onToggleTheme,
+  onToggleLanguage,
   onSearch,
   onGoToGame,
   onOpenUserProfile,
@@ -58,8 +61,8 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
   const communityDropdownRef = useRef<HTMLDivElement>(null);
 
   const isDark = userState.theme !== 'light';
+  const isKo = userState.language !== 'en'; // 한국어 기본
 
-  // 외부 클릭 감지
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (searchContainerRef.current && !searchContainerRef.current.contains(e.target as Node)) {
@@ -84,20 +87,29 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
     }
   };
 
-  const trendingSearches = ['Unreal Engine 5', 'Optical computing', 'Ethereum scaling', 'Cyberpunk setup', 'MAPPA anime'];
+  const trendingSearches = isKo
+    ? ['언리얼 엔진 5 1인 개발', '상온 광학 컴퓨팅', '전략적 4초 침묵', '사이버펑크 데스크셋업', '이더리움 ZK 롤업']
+    : ['Unreal Engine 5 indie', 'Optical computing', 'Strategic 4-second silence', 'Cyberpunk battlestation', 'Ethereum ZK'];
+
+  const getSubDisplayName = (name: string) => {
+    if (name.toLowerCase() === 'popular') return isKo ? '인기 피드' : 'Popular';
+    if (name.toLowerCase() === 'all') return isKo ? '전체 피드' : 'All';
+    if (name.toLowerCase() === 'home') return isKo ? '홈 피드' : 'Home';
+    return `r/${name}`;
+  };
 
   return (
-    <header className={`sticky top-0 z-40 h-14 border-b flex items-center justify-between px-3 sm:px-4 transition-colors duration-150 ${
+    <header className={`sticky top-0 z-40 h-14 border-b flex items-center justify-between px-3 sm:px-5 transition-colors duration-150 ${
       isDark 
         ? 'bg-[#0E1113] border-[#22272B] text-[#D7DADC]' 
         : 'bg-white border-gray-200 text-[#1C1C1C]'
     }`}>
-      {/* 1. 좌측: 햄버거 메뉴 + SNSHero 로고 + 커뮤니티 셀렉터 */}
+      {/* 1. 좌측: 햄버거 메뉴 + SNSHero 로고 + 커뮤니티 드롭다운 셀렉터 */}
       <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
         <button
           type="button"
           onClick={onToggleSidebar}
-          aria-label="Toggle menu"
+          aria-label={isKo ? '메뉴 토글' : 'Toggle menu'}
           className={`p-2 rounded-full cursor-pointer transition-colors ${
             isDark ? 'hover:bg-[#22272B] text-gray-300' : 'hover:bg-gray-100 text-gray-700'
           }`}
@@ -105,13 +117,13 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
           <Menu className="w-5 h-5" />
         </button>
 
-        {/* SNSHero 브랜드 로고 & 마크 (Reddit Snoo 자리 완벽 대체) */}
+        {/* SNSHero 브랜드 로고 & 마크 (Reddit Snoo 마크 자리 완벽 대체) */}
         <button
           type="button"
           onClick={() => onSelectSubreddit('popular')}
-          className="flex items-center gap-2 cursor-pointer group"
+          className="flex items-center gap-2.5 cursor-pointer group"
         >
-          <div className="relative w-8 h-8 rounded-full bg-gradient-to-tr from-[#FF4500] to-[#FF5722] flex items-center justify-center shadow-md overflow-hidden ring-2 ring-[#FF4500]/30 group-hover:scale-105 transition-transform">
+          <div className="relative w-8 h-8 rounded-full bg-gradient-to-tr from-[#FF4500] to-[#FF5414] flex items-center justify-center shadow-md overflow-hidden ring-2 ring-[#FF4500]/30 group-hover:scale-105 transition-transform">
             <Gamepad2 className="w-5 h-5 text-white" />
           </div>
           <div className="flex items-baseline">
@@ -133,41 +145,47 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
             }`}
           >
             <Compass className="w-3.5 h-3.5 text-[#FF4500]" />
-            <span className="max-w-[120px] truncate">
-              {['popular', 'all', 'home'].includes(currentSubreddit.toLowerCase())
-                ? currentSubreddit.toUpperCase()
-                : `r/${currentSubreddit}`}
+            <span className="max-w-[140px] truncate">
+              {getSubDisplayName(currentSubreddit)}
             </span>
             <ChevronDown className="w-3.5 h-3.5 opacity-60" />
           </button>
 
           {isCommunityDropdownOpen && (
-            <div className={`absolute top-full left-0 mt-2 w-56 rounded-xl border shadow-2xl py-2 z-50 text-xs overflow-hidden backdrop-blur-md ${
+            <div className={`absolute top-full left-0 mt-2 w-60 rounded-2xl border shadow-2xl py-2 z-50 text-xs overflow-hidden backdrop-blur-md ${
               isDark ? 'bg-[#181C1F] border-[#2E363E] text-gray-200' : 'bg-white border-gray-200 text-gray-800'
             }`}>
-              <div className="px-3 py-1 text-[10px] font-bold tracking-wider uppercase opacity-50">Feeds</div>
-              {['Home', 'Popular', 'All'].map((feed) => (
+              <div className="px-3.5 py-1 text-[10px] font-bold tracking-wider uppercase opacity-50">
+                {isKo ? '피드 목록' : 'Feeds'}
+              </div>
+              {[
+                { id: 'popular', label: isKo ? '인기 (Popular)' : 'Popular' },
+                { id: 'all', label: isKo ? '전체 (All)' : 'All' },
+                { id: 'home', label: isKo ? '홈 (Home)' : 'Home' },
+              ].map((feed) => (
                 <button
-                  key={feed}
+                  key={feed.id}
                   type="button"
                   onClick={() => {
-                    onSelectSubreddit(feed.toLowerCase());
+                    onSelectSubreddit(feed.id);
                     setIsCommunityDropdownOpen(false);
                   }}
-                  className={`w-full text-left px-3 py-2 cursor-pointer font-medium flex items-center justify-between ${
+                  className={`w-full text-left px-3.5 py-2 cursor-pointer font-medium flex items-center justify-between ${
                     isDark ? 'hover:bg-[#22272B]' : 'hover:bg-gray-100'
                   }`}
                 >
-                  <span>{feed}</span>
-                  {currentSubreddit.toLowerCase() === feed.toLowerCase() && (
+                  <span>{feed.label}</span>
+                  {currentSubreddit.toLowerCase() === feed.id && (
                     <span className="w-1.5 h-1.5 rounded-full bg-[#FF4500]" />
                   )}
                 </button>
               ))}
 
               <div className="my-1 border-t opacity-10" />
-              <div className="px-3 py-1 text-[10px] font-bold tracking-wider uppercase opacity-50">Popular Subreddits</div>
-              {Object.keys(SEED_SUBREDDITS).slice(0, 6).map((subKey) => (
+              <div className="px-3.5 py-1 text-[10px] font-bold tracking-wider uppercase opacity-50">
+                {isKo ? '추천 서브레딧' : 'Popular Subreddits'}
+              </div>
+              {Object.keys(SEED_SUBREDDITS).slice(0, 7).map((subKey) => (
                 <button
                   key={subKey}
                   type="button"
@@ -175,7 +193,7 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
                     onSelectSubreddit(subKey);
                     setIsCommunityDropdownOpen(false);
                   }}
-                  className={`w-full text-left px-3 py-2 cursor-pointer font-medium flex items-center gap-2 ${
+                  className={`w-full text-left px-3.5 py-2 cursor-pointer font-medium flex items-center gap-2 ${
                     isDark ? 'hover:bg-[#22272B]' : 'hover:bg-gray-100'
                   }`}
                 >
@@ -197,11 +215,11 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onFocus={() => setIsSearchFocused(true)}
-            placeholder="Search SNSHero..."
+            placeholder={isKo ? "SNSHero 검색..." : "Search SNSHero..."}
             className={`w-full h-9 sm:h-10 pl-10 pr-8 rounded-full text-xs sm:text-sm font-normal outline-none transition-all ${
               isDark
                 ? 'bg-[#181C1F] hover:bg-[#22272B] focus:bg-[#0E1113] focus:ring-1 focus:ring-[#FF4500] text-gray-100 border border-transparent focus:border-[#FF4500]'
-                : 'bg-gray-100 hover:bg-gray-200 focus:bg-white focus:ring-1 focus:ring-[#FF4500] text-gray-900 border border-transparent focus:border-[#FF4500]'
+                : 'bg-[#EAEDEF] hover:bg-gray-200 focus:bg-white focus:ring-1 focus:ring-[#FF4500] text-gray-900 border border-transparent focus:border-[#FF4500]'
             }`}
           />
           {searchQuery && (
@@ -215,14 +233,14 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
           )}
         </form>
 
-        {/* 검색 자동완성 & 트렌딩 검색어 드롭다운 */}
+        {/* 검색 자동완성 & 트렌딩 검색어 */}
         {isSearchFocused && (
           <div className={`absolute top-full left-0 right-0 mt-2 rounded-2xl border shadow-2xl py-3 z-50 overflow-hidden backdrop-blur-xl ${
             isDark ? 'bg-[#181C1F] border-[#2E363E] text-gray-200' : 'bg-white border-gray-200 text-gray-800'
           }`}>
             <div className="px-4 py-1 text-[11px] font-bold tracking-wider uppercase opacity-50 flex items-center gap-1.5">
               <TrendingUp className="w-3.5 h-3.5 text-[#FF4500]" />
-              <span>Trending on SNSHero</span>
+              <span>{isKo ? '실시간 인기 검색어' : 'Trending on SNSHero'}</span>
             </div>
             {trendingSearches.map((item) => (
               <button
@@ -241,7 +259,7 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
                   <Search className="w-3.5 h-3.5 opacity-40" />
                   <span>{item}</span>
                 </div>
-                <span className="text-[10px] opacity-40">Search</span>
+                <span className="text-[10px] opacity-40">{isKo ? '검색' : 'Search'}</span>
               </button>
             ))}
           </div>
@@ -250,11 +268,10 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
 
       {/* 3. 우측: 포스트 작성(+) + 채팅 + 알림 + 프로필 아바타 & 메뉴 */}
       <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
-        {/* 새 글 작성 (+) 버튼 */}
+        {/* 만들기 (+) 버튼 */}
         <button
           type="button"
           onClick={onOpenSubmitModal}
-          aria-label="Create Post"
           className={`flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-1.5 rounded-full text-xs font-semibold cursor-pointer transition-all ${
             isDark
               ? 'bg-[#22272B] hover:bg-[#2C3238] text-gray-100'
@@ -262,17 +279,17 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
           }`}
         >
           <Plus className="w-4 h-4 text-[#FF4500]" />
-          <span className="hidden sm:inline">Create</span>
+          <span className="hidden sm:inline">{isKo ? '만들기' : 'Create'}</span>
         </button>
 
         {/* 채팅 버튼 */}
         <button
           type="button"
-          aria-label="Chat"
+          aria-label={isKo ? '채팅' : 'Chat'}
           className={`p-2 rounded-full cursor-pointer transition-colors relative ${
             isDark ? 'hover:bg-[#22272B] text-gray-300' : 'hover:bg-gray-100 text-gray-700'
           }`}
-          onClick={() => alert('SNSHero Realtime Chat: Connecting to community channel...')}
+          onClick={() => alert(isKo ? 'SNSHero 실시간 커뮤니티 채팅 채널에 연결 중입니다...' : 'Connecting to community chat channel...')}
         >
           <MessageCircle className="w-5 h-5" />
         </button>
@@ -280,7 +297,7 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
         {/* 알림 버튼 */}
         <button
           type="button"
-          aria-label="Notifications"
+          aria-label={isKo ? '알림' : 'Notifications'}
           onClick={() => setHasUnreadNotif(false)}
           className={`p-2 rounded-full cursor-pointer transition-colors relative ${
             isDark ? 'hover:bg-[#22272B] text-gray-300' : 'hover:bg-gray-100 text-gray-700'
@@ -292,7 +309,7 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
           )}
         </button>
 
-        {/* 프로필 아바타 드롭다운 메뉴 */}
+        {/* 프로필 아바타 & 메뉴 */}
         <div className="relative" ref={profileMenuRef}>
           <button
             type="button"
@@ -310,7 +327,7 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
             <div className={`absolute top-full right-0 mt-2 w-64 rounded-2xl border shadow-2xl py-3 z-50 text-xs overflow-hidden backdrop-blur-xl ${
               isDark ? 'bg-[#181C1F] border-[#2E363E] text-gray-200' : 'bg-white border-gray-200 text-gray-800'
             }`}>
-              {/* 유저 정보 요약 헤더 */}
+              {/* 유저 정보 요약 */}
               <div className="px-4 py-2 border-b border-inherit/10">
                 <div className="flex items-center gap-2.5">
                   <div className="w-9 h-9 rounded-full bg-gradient-to-br from-amber-400 to-[#FF4500] flex items-center justify-center text-white font-bold">
@@ -320,7 +337,7 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
                     <div className="font-bold text-sm">u/SNSHeroPlayer</div>
                     <div className="text-[11px] opacity-60 flex items-center gap-1">
                       <Sparkles className="w-3 h-3 text-[#FF4500]" />
-                      <span>Karma: 4,820</span>
+                      <span>{isKo ? '카르마' : 'Karma'}: 4,820</span>
                     </div>
                   </div>
                 </div>
@@ -339,10 +356,10 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
                   }`}
                 >
                   <User className="w-4 h-4 text-sky-400" />
-                  <span>View Profile</span>
+                  <span>{isKo ? '프로필 보기' : 'View Profile'}</span>
                 </button>
 
-                {/* 다크 모드 / 라이트 모드 전환 토글 */}
+                {/* 다크 모드 토글 */}
                 <button
                   type="button"
                   onClick={onToggleTheme}
@@ -352,12 +369,29 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
                 >
                   <div className="flex items-center gap-2.5">
                     {isDark ? <Moon className="w-4 h-4 text-purple-400" /> : <Sun className="w-4 h-4 text-amber-500" />}
-                    <span>Dark Mode</span>
+                    <span>{isKo ? '다크 모드' : 'Dark Mode'}</span>
                   </div>
                   <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                     isDark ? 'bg-[#2E363E] text-[#FF4500]' : 'bg-gray-200 text-gray-700'
                   }`}>
                     {isDark ? 'ON' : 'OFF'}
+                  </span>
+                </button>
+
+                {/* 언어 설정 토글 (한국어 / English) */}
+                <button
+                  type="button"
+                  onClick={onToggleLanguage}
+                  className={`w-full text-left px-4 py-2.5 flex items-center justify-between cursor-pointer ${
+                    isDark ? 'hover:bg-[#22272B]' : 'hover:bg-gray-100'
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <Languages className="w-4 h-4 text-emerald-400" />
+                    <span>{isKo ? '언어 (Language)' : 'Language'}</span>
+                  </div>
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FF4500]/15 text-[#FF4500]`}>
+                    {isKo ? '한국어' : 'English'}
                   </span>
                 </button>
 
@@ -375,7 +409,7 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
                   }`}
                 >
                   <Gamepad2 className="w-4 h-4" />
-                  <span>SNSHero Game Lobby</span>
+                  <span>{isKo ? 'SNSHero 게임 플레이' : 'SNSHero Game Lobby'}</span>
                 </button>
               </div>
             </div>

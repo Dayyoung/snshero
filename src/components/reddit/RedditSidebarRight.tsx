@@ -1,7 +1,7 @@
 /**
  * RedditSidebarRight.tsx
- * 오리지널 레딧 우측 사이드바
- * 서브레딧 정보, 트렌딩 커뮤니티 및 구글 애드센스(Google AdSense) 광고 유닛 탑재
+ * 오리지널 레딧 우측 사이드바 (한국어 기본 지원)
+ * 커뮤니티 정보, 규칙, 트렌딩 순위 및 구글 애드센스 300x250 배너 탑재
  */
 
 import React, { useState } from 'react';
@@ -12,10 +12,8 @@ import {
   Plus, 
   ChevronDown, 
   ChevronUp, 
-  Sparkles, 
   ShieldCheck,
-  TrendingUp,
-  ExternalLink
+  TrendingUp
 } from 'lucide-react';
 import { RedditSubreddit, RedditUserDataState } from '../../lib/reddit/redditTypes';
 import { SEED_SUBREDDITS } from '../../data/redditSeedData';
@@ -37,26 +35,29 @@ export const RedditSidebarRight: React.FC<RedditSidebarRightProps> = ({
   onOpenSubmitModal,
 }) => {
   const isDark = userState.theme !== 'light';
+  const isKo = userState.language !== 'en';
   const [expandedRule, setExpandedRule] = useState<number | null>(null);
 
   const isJoined = userState.joinedSubreddits.some(
     (s) => s.toLowerCase() === subredditData.name.toLowerCase()
   );
 
-  const topCommunities = ['gaming', 'technology', 'AskReddit', 'memes', 'CryptoCurrency'];
+  const topCommunities = ['hanguk', 'gaming', 'technology', 'AskReddit', 'memes'];
 
   return (
     <aside className="w-80 flex-shrink-0 space-y-4 text-xs font-sans">
-      {/* 1. About Community 박스 */}
+      {/* 1. 커뮤니티 소개 박스 */}
       <div className={`rounded-2xl border p-4 shadow-sm ${
         isDark ? 'bg-[#181C1F] border-[#22272B] text-gray-200' : 'bg-white border-gray-200 text-gray-800'
       }`}>
         <div className="flex items-center justify-between pb-3 border-b border-inherit/10">
           <span className="font-bold text-sm tracking-tight">
-            About {['popular', 'all', 'home'].includes(subredditData.name.toLowerCase()) ? 'SNSHero' : `r/${subredditData.name}`}
+            {['popular', 'all', 'home'].includes(subredditData.name.toLowerCase()) 
+              ? (isKo ? 'SNSHero 커뮤니티' : 'About SNSHero') 
+              : `r/${subredditData.name}`}
           </span>
           <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FF4500]/10 text-[#FF4500]">
-            Community
+            {isKo ? '공식 커뮤니티' : 'Community'}
           </span>
         </div>
 
@@ -73,7 +74,7 @@ export const RedditSidebarRight: React.FC<RedditSidebarRightProps> = ({
             </div>
             <div className="text-[10px] opacity-60 flex items-center gap-1">
               <Users className="w-3 h-3" />
-              <span>Members</span>
+              <span>{isKo ? '멤버 수' : 'Members'}</span>
             </div>
           </div>
           <div>
@@ -81,14 +82,14 @@ export const RedditSidebarRight: React.FC<RedditSidebarRightProps> = ({
               <Circle className="w-2 h-2 fill-current animate-pulse" />
               <span>{subredditData.onlineCount.toLocaleString()}</span>
             </div>
-            <div className="text-[10px] opacity-60">Online</div>
+            <div className="text-[10px] opacity-60">{isKo ? '현재 온라인' : 'Online'}</div>
           </div>
         </div>
 
-        {/* 생성일 */}
+        {/* 개설일 */}
         <div className="mt-3 flex items-center gap-1.5 text-[11px] opacity-50">
           <Calendar className="w-3.5 h-3.5" />
-          <span>Created on {new Date(subredditData.createdAt).toLocaleDateString()}</span>
+          <span>{isKo ? '개설일:' : 'Created on'} {new Date(subredditData.createdAt).toLocaleDateString()}</span>
         </div>
 
         {/* Join / Create Post 액션 버튼 */}
@@ -105,7 +106,7 @@ export const RedditSidebarRight: React.FC<RedditSidebarRightProps> = ({
                   : 'bg-[#FF4500] hover:bg-[#FF5414] text-white shadow-md'
               }`}
             >
-              {isJoined ? 'Joined' : 'Join Community'}
+              {isJoined ? (isKo ? '가입됨' : 'Joined') : (isKo ? '커뮤니티 가입' : 'Join Community')}
             </button>
           )}
 
@@ -119,7 +120,7 @@ export const RedditSidebarRight: React.FC<RedditSidebarRightProps> = ({
             }`}
           >
             <Plus className="w-4 h-4 text-[#FF4500]" />
-            <span>Create Post</span>
+            <span>{isKo ? '게시물 작성' : 'Create Post'}</span>
           </button>
         </div>
       </div>
@@ -130,7 +131,7 @@ export const RedditSidebarRight: React.FC<RedditSidebarRightProps> = ({
       }`}>
         <div className="flex items-center justify-between mb-2">
           <span className="text-[10px] font-bold uppercase tracking-wider text-[#FF4500]">
-            Sponsored Advertisement
+            {isKo ? '스폰서 광고' : 'Sponsored Advertisement'}
           </span>
           <span className="text-[9px] opacity-40">Ad</span>
         </div>
@@ -150,7 +151,7 @@ export const RedditSidebarRight: React.FC<RedditSidebarRightProps> = ({
         }`}>
           <div className="font-bold text-sm tracking-tight mb-3 flex items-center gap-1.5">
             <ShieldCheck className="w-4 h-4 text-[#FF4500]" />
-            <span>r/{subredditData.name} Rules</span>
+            <span>r/{subredditData.name} {isKo ? '커뮤니티 규칙' : 'Rules'}</span>
           </div>
           <div className="space-y-1.5">
             {subredditData.rules.map((rule) => {
@@ -190,7 +191,7 @@ export const RedditSidebarRight: React.FC<RedditSidebarRightProps> = ({
       }`}>
         <div className="font-bold text-sm tracking-tight mb-3 flex items-center gap-1.5">
           <TrendingUp className="w-4 h-4 text-[#FF4500]" />
-          <span>Trending Communities</span>
+          <span>{isKo ? '실시간 인기 커뮤니티' : 'Trending Communities'}</span>
         </div>
         <div className="space-y-2.5">
           {topCommunities.map((subKey, idx) => {
@@ -212,7 +213,7 @@ export const RedditSidebarRight: React.FC<RedditSidebarRightProps> = ({
                       r/{subKey}
                     </div>
                     <div className="text-[10px] opacity-50">
-                      {sub?.subscribers ? `${(sub.subscribers / 1000000).toFixed(1)}M members` : ''}
+                      {sub?.subscribers ? `${(sub.subscribers / 1000000).toFixed(1)}M ${isKo ? '멤버' : 'members'}` : ''}
                     </div>
                   </div>
                 </button>
@@ -227,7 +228,7 @@ export const RedditSidebarRight: React.FC<RedditSidebarRightProps> = ({
                       : 'bg-[#FF4500] text-white hover:bg-[#FF5414]'
                   }`}
                 >
-                  {isSubJoined ? 'Joined' : 'Join'}
+                  {isSubJoined ? (isKo ? '가입됨' : 'Joined') : (isKo ? '가입' : 'Join')}
                 </button>
               </div>
             );
@@ -238,10 +239,9 @@ export const RedditSidebarRight: React.FC<RedditSidebarRightProps> = ({
       {/* 5. 정책 푸터 */}
       <div className="px-2 text-[11px] opacity-40 space-y-1">
         <div className="flex flex-wrap gap-x-3 gap-y-1">
-          <a href="#about" className="hover:underline">User Agreement</a>
-          <a href="#privacy" className="hover:underline">Privacy Policy</a>
-          <a href="#content" className="hover:underline">Content Policy</a>
-          <a href="#moderator" className="hover:underline">Moderator Code</a>
+          <a href="#about" className="hover:underline">{isKo ? '이용약관' : 'User Agreement'}</a>
+          <a href="#privacy" className="hover:underline">{isKo ? '개인정보처리방침' : 'Privacy Policy'}</a>
+          <a href="#content" className="hover:underline">{isKo ? '콘텐츠 정책' : 'Content Policy'}</a>
         </div>
         <div>SNSHero Community Inc. © 2026. All rights reserved.</div>
       </div>

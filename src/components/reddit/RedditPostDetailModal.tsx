@@ -1,7 +1,6 @@
 /**
  * RedditPostDetailModal.tsx
- * 오리지널 레딧 포스트 상세 뷰 및 모달
- * 고화질 미디어, 마크다운 본문, 구글 애드센스 배너, 풍부한 댓글 작성기 및 중첩 댓글 트리
+ * 오리지널 레딧 포스트 상세 뷰 및 모달 (한국어 기본 지원)
  */
 
 import React, { useState } from 'react';
@@ -12,7 +11,6 @@ import {
   MessageSquare, 
   Share2, 
   Bookmark, 
-  MoreHorizontal, 
   Bold, 
   Italic, 
   Link as LinkIcon, 
@@ -20,8 +18,7 @@ import {
   Quote, 
   List, 
   Check, 
-  ArrowLeft,
-  ExternalLink
+  ArrowLeft 
 } from 'lucide-react';
 import { RedditPost, RedditComment, RedditSubreddit, RedditUserDataState } from '../../lib/reddit/redditTypes';
 import { RedditCommentTree } from './RedditCommentTree';
@@ -62,17 +59,18 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
   onOpenSubmitModal,
 }) => {
   const isDark = userState.theme !== 'light';
+  const isKo = userState.language !== 'en';
   const [commentText, setCommentText] = useState('');
   const [isCopied, setIsCopied] = useState(false);
 
   const getRelativeTime = (timestamp: number) => {
     const diff = Math.max(0, Date.now() - timestamp);
     const mins = Math.floor(diff / 60000);
-    if (mins < 60) return `${mins || 1}m ago`;
+    if (mins < 60) return isKo ? `${mins || 1}분 전` : `${mins || 1}m ago`;
     const hours = Math.floor(mins / 60);
-    if (hours < 24) return `${hours}h ago`;
+    if (hours < 24) return isKo ? `${hours}시간 전` : `${hours}h ago`;
     const days = Math.floor(hours / 24);
-    return `${days}d ago`;
+    return isKo ? `${days}일 전` : `${days}d ago`;
   };
 
   const handleCommentSubmit = (e: React.FormEvent) => {
@@ -92,25 +90,21 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
     }
   };
 
-  // 마크다운 서식 툴바 도우미
   const insertFormatting = (prefix: string, suffix: string = '') => {
     setCommentText((prev) => `${prev}${prefix}${suffix}`);
   };
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black/75 backdrop-blur-sm flex justify-center py-0 sm:py-8 px-0 sm:px-4">
-      {/* 바깥 클릭 닫기 영역 */}
       <div className="fixed inset-0 -z-10" onClick={onClose} />
 
-      {/* 모달 컨테이너 (최대 폭 1280px) */}
       <div className={`relative w-full max-w-6xl min-h-screen sm:min-h-0 sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden transition-colors ${
         isDark ? 'bg-[#0E1113] text-gray-200' : 'bg-[#F6F7F8] text-gray-900'
       }`}>
-        {/* 상단 네비게이션 헤더 바 */}
+        {/* 상단 네비게이션 헤더 */}
         <div className={`sticky top-0 z-20 h-12 px-4 border-b flex items-center justify-between backdrop-blur-md ${
           isDark ? 'bg-[#0E1113]/90 border-[#22272B]' : 'bg-white/90 border-gray-200'
         }`}>
-          {/* 뒤로가기 & 서브레딧 태그 */}
           <div className="flex items-center gap-3">
             <button
               type="button"
@@ -118,7 +112,7 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
               className="p-1 rounded-full hover:bg-black/10 cursor-pointer flex items-center gap-1 text-xs font-bold"
             >
               <ArrowLeft className="w-4 h-4" />
-              <span>Back</span>
+              <span>{isKo ? '뒤로' : 'Back'}</span>
             </button>
             <span className="opacity-30">|</span>
             <button
@@ -131,7 +125,6 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
             </button>
           </div>
 
-          {/* 닫기 버튼 */}
           <button
             type="button"
             onClick={onClose}
@@ -142,11 +135,10 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
           </button>
         </div>
 
-        {/* 본문 레이아웃: 메인 컨텐츠(좌측) + 서브레딧 사이드바(우측) */}
+        {/* 본문 레이아웃 */}
         <div className="flex-1 flex flex-col lg:flex-row gap-6 p-4 sm:p-6 overflow-y-auto">
-          {/* 1. 포스트 및 댓글 메인 영역 */}
-          <main className="flex-1 max-w-4xl space-y-6">
-            {/* 포스트 메인 카드 */}
+          <main className="flex-1 max-w-4xl space-y-5">
+            {/* 포스트 카드 */}
             <article className={`rounded-2xl border p-4 sm:p-6 shadow-sm ${
               isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'
             }`}>
@@ -160,7 +152,7 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
                   r/{post.subreddit}
                 </button>
                 <span className="opacity-40">•</span>
-                <span className="opacity-60 text-[11px]">Posted by</span>
+                <span className="opacity-60 text-[11px]">{isKo ? '게시자:' : 'Posted by'}</span>
                 <button
                   type="button"
                   onClick={() => onOpenUserProfile(post.author)}
@@ -209,7 +201,6 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
 
               {/* 액션 바 */}
               <div className="flex items-center gap-2 sm:gap-3 pt-3 border-t border-inherit/10 text-xs font-semibold">
-                {/* 보팅 위젯 */}
                 <div className={`flex items-center rounded-full px-2 py-0.5 border ${
                   isDark ? 'bg-[#22272B] border-[#2A3238]' : 'bg-gray-100 border-gray-200'
                 }`}>
@@ -238,23 +229,20 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
                   </button>
                 </div>
 
-                {/* 댓글 수 */}
                 <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-inherit/10">
                   <MessageSquare className="w-4 h-4 opacity-70" />
-                  <span>{post.commentCount} Comments</span>
+                  <span>{isKo ? `댓글 ${post.commentCount}개` : `${post.commentCount} Comments`}</span>
                 </div>
 
-                {/* 공유 */}
                 <button
                   type="button"
                   onClick={handleShare}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-inherit/10 cursor-pointer hover:bg-black/5"
                 >
                   {isCopied ? <Check className="w-4 h-4 text-emerald-400" /> : <Share2 className="w-4 h-4 opacity-70" />}
-                  <span>{isCopied ? 'Link Copied!' : 'Share'}</span>
+                  <span>{isCopied ? (isKo ? '복사됨!' : 'Copied!') : (isKo ? '공유' : 'Share')}</span>
                 </button>
 
-                {/* 저장 */}
                 <button
                   type="button"
                   onClick={() => onToggleSave(post.id)}
@@ -263,17 +251,17 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
                   }`}
                 >
                   <Bookmark className={`w-4 h-4 ${post.isSaved ? 'fill-current' : 'opacity-70'}`} />
-                  <span>{post.isSaved ? 'Saved' : 'Save'}</span>
+                  <span>{post.isSaved ? (isKo ? '저장됨' : 'Saved') : (isKo ? '저장' : 'Save')}</span>
                 </button>
               </div>
             </article>
 
-            {/* 2. 구글 애드센스 (Google AdSense) 인피드 반응형 광고 */}
+            {/* 구글 애드센스 배너 */}
             <div className={`rounded-2xl border p-3 shadow-sm ${
               isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'
             }`}>
               <div className="flex items-center justify-between text-[10px] font-bold text-[#FF4500] uppercase tracking-wider mb-2">
-                <span>Discussion Sponsor</span>
+                <span>{isKo ? '스폰서 토론 광고' : 'Discussion Sponsor'}</span>
                 <span className="opacity-40">Ad</span>
               </div>
               <div className="min-h-[120px] rounded-xl overflow-hidden bg-black/5 flex items-center justify-center">
@@ -285,12 +273,12 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
               </div>
             </div>
 
-            {/* 3. 댓글 작성기 (Rich Markdown Editor) */}
-            <div className={`rounded-2xl border p-4 shadow-sm ${
+            {/* 댓글 작성기 */}
+            <div className={`rounded-2xl border p-4 sm:p-5 shadow-sm ${
               isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'
             }`}>
               <div className="text-xs font-semibold mb-2 opacity-80">
-                Comment as <span className="font-bold text-[#FF4500]">u/SNSHeroPlayer</span>
+                {isKo ? '댓글 작성자:' : 'Comment as'} <span className="font-bold text-[#FF4500]">u/SNSHeroPlayer</span>
               </div>
 
               <form onSubmit={handleCommentSubmit} className="space-y-3">
@@ -301,11 +289,10 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
                     rows={4}
                     value={commentText}
                     onChange={(e) => setCommentText(e.target.value)}
-                    placeholder="What are your thoughts?"
+                    placeholder={isKo ? "자유롭게 생각을 남겨보세요..." : "What are your thoughts?"}
                     className="w-full p-3 bg-transparent text-xs sm:text-sm outline-none resize-none font-sans"
                   />
 
-                  {/* 마크다운 툴바 */}
                   <div className={`flex items-center justify-between px-3 py-2 border-t text-xs ${
                     isDark ? 'bg-[#181C1F] border-[#2E363E]' : 'bg-gray-100 border-gray-200'
                   }`}>
@@ -323,41 +310,44 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
                       disabled={!commentText.trim()}
                       className="px-4 py-1.5 rounded-full bg-[#FF4500] disabled:opacity-40 text-white font-bold text-xs cursor-pointer hover:bg-[#FF5414] transition-all"
                     >
-                      Comment
+                      {isKo ? '댓글 등록' : 'Comment'}
                     </button>
                   </div>
                 </div>
               </form>
             </div>
 
-            {/* 4. 중첩 댓글 트리 리스트 */}
+            {/* 중첩 댓글 트리 */}
             <div className={`rounded-2xl border p-4 sm:p-6 shadow-sm ${
               isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'
             }`}>
               <div className="flex items-center justify-between pb-4 border-b border-inherit/10 mb-4">
                 <span className="font-extrabold text-sm sm:text-base">
-                  All Comments ({comments.length})
+                  {isKo ? `전체 댓글 (${comments.length})` : `All Comments (${comments.length})`}
                 </span>
-                <span className="text-xs opacity-60">Sorted by: <span className="font-bold">Top</span></span>
+                <span className="text-xs opacity-60">
+                  {isKo ? '정렬:' : 'Sorted by:'} <span className="font-bold">{isKo ? '추천순' : 'Top'}</span>
+                </span>
               </div>
 
               {comments.length > 0 ? (
                 <RedditCommentTree
                   comments={comments}
                   isDark={isDark}
+                  isKo={isKo}
                   onVoteComment={onVoteComment}
                   onAddReply={onAddReply}
                   onOpenUserProfile={onOpenUserProfile}
                 />
               ) : (
                 <div className="py-12 text-center opacity-50 text-xs">
-                  No comments yet. Be the first to start the discussion!
+                  {isKo ? '아직 댓글이 없습니다. 첫 번째로 토론을 시작해보세요!' : 'No comments yet. Be the first to start the discussion!'}
                 </div>
               )}
             </div>
           </main>
 
-          {/* 2. 우측 서브레딧 사이드바 (PC) */}
+          {/* 우측 사이드바 */}
           <div className="hidden lg:block">
             <RedditSidebarRight
               subredditData={subredditData}

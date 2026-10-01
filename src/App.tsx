@@ -5810,6 +5810,30 @@ function AppContent() {
     const showNavbar = (view !== 'reddit' && view !== 'admin' && view !== 'landing' && view !== 'cartoonBook' && view !== 'novel' && view !== 'webtoon' && view !== 'anime' && view !== 'movie' && view !== 'card-play' && !isPlayingBattle) && !isGlobalPopupOpen;
     const isMainTab = view === 'home' || view === 'mydeck' || view === 'shop' || view === 'play' || view === 'main';
     
+    if (view === 'reddit') {
+      const path = typeof window !== 'undefined' ? window.location.pathname : '/';
+      const subMatch = path.match(/^\/r\/([^/]+)/);
+      const postMatch = path.match(/^\/r\/[^/]+\/comments\/([^/]+)/);
+      const userMatch = path.match(/^\/u(?:ser)?\/([^/]+)/);
+
+      return (
+        <Suspense fallback={<ViewLoadingFallback view={view} language={language} />}>
+          <Meta view={view} language={language} />
+          <RedditCommunityView
+            initialSubreddit={subMatch ? subMatch[1] : 'popular'}
+            initialPostId={postMatch ? postMatch[1] : undefined}
+            initialUsername={userMatch ? userMatch[1] : undefined}
+            onNavigateHome={() => {
+              setView('home');
+              if (typeof window !== 'undefined') {
+                window.history.pushState(null, '', '/home');
+              }
+            }}
+          />
+        </Suspense>
+      );
+    }
+
     return (
       <div className={cn(
         "w-full app-bg text-slate-800 font-sans selection:bg-indigo-500 selection:text-white flex flex-col lg:flex-row justify-center items-start",

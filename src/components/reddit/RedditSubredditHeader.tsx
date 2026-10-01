@@ -1,16 +1,17 @@
 /**
  * RedditSubredditHeader.tsx
- * 서브레딧 상단 배너 및 커뮤니티 타이틀/Join 토글 헤더
+ * 서브레딧 상단 배너 및 커뮤니티 타이틀/Join 토글 헤더 (한국어 기본 지원)
  */
 
 import React from 'react';
-import { Bell, Sparkles } from 'lucide-react';
+import { Bell } from 'lucide-react';
 import { RedditSubreddit } from '../../lib/reddit/redditTypes';
 
 interface RedditSubredditHeaderProps {
   subreddit: RedditSubreddit;
   isJoined: boolean;
   isDark: boolean;
+  isKo?: boolean;
   activeTab: 'posts' | 'about' | 'rules';
   onToggleJoin: () => void;
   onSelectTab: (tab: 'posts' | 'about' | 'rules') => void;
@@ -20,6 +21,7 @@ export const RedditSubredditHeader: React.FC<RedditSubredditHeaderProps> = ({
   subreddit,
   isJoined,
   isDark,
+  isKo = true,
   activeTab,
   onToggleJoin,
   onSelectTab,
@@ -27,19 +29,39 @@ export const RedditSubredditHeader: React.FC<RedditSubredditHeaderProps> = ({
   const isFrontPage = ['popular', 'all', 'home'].includes(subreddit.name.toLowerCase());
 
   if (isFrontPage) {
+    const getFrontPageInfo = () => {
+      const name = subreddit.name.toLowerCase();
+      if (name === 'popular') {
+        return {
+          title: isKo ? '인기 피드' : 'Popular',
+          desc: isKo ? '현재 SNSHero 전역에서 가장 뜨겁게 화제가 되고 있는 게시물들입니다.' : 'The most active posts from across all of SNSHero right now.',
+        };
+      }
+      if (name === 'all') {
+        return {
+          title: isKo ? '전체 피드' : 'All',
+          desc: isKo ? 'SNSHero의 모든 커뮤니티에서 실시간으로 쏟아지는 전체 콘텐츠입니다.' : 'The complete firehose of community content.',
+        };
+      }
+      return {
+        title: isKo ? '홈 피드' : 'Home',
+        desc: isKo ? '내가 가입한 커뮤니티들의 소식을 모아보는 맞춤형 피드입니다.' : 'Your personalized feed from joined communities.',
+      };
+    };
+
+    const info = getFrontPageInfo();
+
     return (
-      <div className={`rounded-2xl border p-4 mb-4 shadow-sm flex items-center justify-between transition-colors ${
+      <div className={`rounded-2xl border p-4 sm:p-5 mb-4 shadow-sm flex items-center justify-between transition-colors ${
         isDark ? 'bg-[#181C1F] border-[#22272B] text-gray-200' : 'bg-white border-gray-200 text-gray-800'
       }`}>
         <div>
           <h1 className="text-xl sm:text-2xl font-extrabold capitalize tracking-tight flex items-center gap-2">
             <span className="text-[#FF4500]">r/</span>
-            <span>{subreddit.name}</span>
+            <span>{info.title}</span>
           </h1>
-          <p className="text-xs opacity-60 mt-0.5">
-            {subreddit.name.toLowerCase() === 'popular' && 'The most active posts from across all of SNSHero right now.'}
-            {subreddit.name.toLowerCase() === 'all' && 'The complete firehose of community content.'}
-            {subreddit.name.toLowerCase() === 'home' && 'Your personalized feed from joined communities.'}
+          <p className="text-xs opacity-65 mt-1 leading-relaxed">
+            {info.desc}
           </p>
         </div>
       </div>
@@ -65,7 +87,6 @@ export const RedditSubredditHeader: React.FC<RedditSubredditHeaderProps> = ({
       <div className="px-4 pb-3 sm:px-6 relative">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 -mt-8 sm:-mt-10 mb-3">
           <div className="flex items-end gap-3 sm:gap-4">
-            {/* 원형 아바타 */}
             <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full border-4 overflow-hidden flex-shrink-0 shadow-lg relative bg-white ${
               isDark ? 'border-[#181C1F]' : 'border-white'
             }`}>
@@ -78,7 +99,6 @@ export const RedditSubredditHeader: React.FC<RedditSubredditHeaderProps> = ({
               )}
             </div>
 
-            {/* 타이틀 및 네임스페이스 */}
             <div>
               <h1 className="text-lg sm:text-2xl font-extrabold tracking-tight">
                 {subreddit.title || subreddit.name}
@@ -89,7 +109,7 @@ export const RedditSubredditHeader: React.FC<RedditSubredditHeaderProps> = ({
             </div>
           </div>
 
-          {/* Join / Bell 액션 버튼 */}
+          {/* Join 버튼 */}
           <div className="flex items-center gap-2 self-start sm:self-auto">
             <button
               type="button"
@@ -102,7 +122,7 @@ export const RedditSubredditHeader: React.FC<RedditSubredditHeaderProps> = ({
                   : 'bg-[#FF4500] hover:bg-[#FF5414] text-white'
               }`}
             >
-              {isJoined ? 'Joined' : 'Join'}
+              {isJoined ? (isKo ? '가입됨' : 'Joined') : (isKo ? '커뮤니티 가입' : 'Join')}
             </button>
 
             {isJoined && (
@@ -111,7 +131,7 @@ export const RedditSubredditHeader: React.FC<RedditSubredditHeaderProps> = ({
                 className={`p-2 rounded-full border cursor-pointer transition-colors ${
                   isDark ? 'border-gray-700 hover:bg-[#22272B]' : 'border-gray-200 hover:bg-gray-100'
                 }`}
-                title="Community Notifications"
+                title={isKo ? "알림 설정" : "Community Notifications"}
               >
                 <Bell className="w-4 h-4 text-[#FF4500]" />
               </button>
@@ -121,19 +141,23 @@ export const RedditSubredditHeader: React.FC<RedditSubredditHeaderProps> = ({
 
         {/* 3. 탭 바: Posts, About, Rules */}
         <div className="flex items-center gap-4 border-t border-inherit/10 pt-2 text-xs font-bold">
-          {(['posts', 'about', 'rules'] as const).map((tab) => (
+          {[
+            { id: 'posts', label: isKo ? '게시물' : 'Posts' },
+            { id: 'about', label: isKo ? '소개' : 'About' },
+            { id: 'rules', label: isKo ? '규칙' : 'Rules' },
+          ].map((tab) => (
             <button
-              key={tab}
+              key={tab.id}
               type="button"
-              onClick={() => onSelectTab(tab)}
+              onClick={() => onSelectTab(tab.id as 'posts' | 'about' | 'rules')}
               className={`pb-1 cursor-pointer uppercase tracking-wider transition-colors relative ${
-                activeTab === tab
+                activeTab === tab.id
                   ? 'text-[#FF4500]'
                   : 'opacity-60 hover:opacity-100'
               }`}
             >
-              <span>{tab}</span>
-              {activeTab === tab && (
+              <span>{tab.label}</span>
+              {activeTab === tab.id && (
                 <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#FF4500] rounded-full" />
               )}
             </button>

@@ -1,15 +1,12 @@
 /**
  * RedditCommentTree.tsx
- * 오리지널 레딧 재귀형 중첩 댓글 트리 컴포넌트
- * 들여쓰기 스레드 접기/펼치기 선, 답글 인라인 작성, 보팅 지원
+ * 오리지널 레딧 재귀형 중첩 댓글 트리 컴포넌트 (한국어 기본 지원)
  */
 
 import React, { useState } from 'react';
 import { 
   ArrowBigUp, 
   ArrowBigDown, 
-  MessageSquare, 
-  MoreHorizontal, 
   User, 
   ChevronDown, 
   ChevronUp, 
@@ -20,6 +17,7 @@ import { RedditComment } from '../../lib/reddit/redditTypes';
 interface RedditCommentTreeProps {
   comments: RedditComment[];
   isDark: boolean;
+  isKo?: boolean;
   onVoteComment: (commentId: string, direction: 'up' | 'down') => void;
   onAddReply: (parentId: string, text: string) => void;
   onOpenUserProfile: (username: string) => void;
@@ -29,6 +27,7 @@ interface RedditCommentTreeProps {
 export const RedditCommentTree: React.FC<RedditCommentTreeProps> = ({
   comments,
   isDark,
+  isKo = true,
   onVoteComment,
   onAddReply,
   onOpenUserProfile,
@@ -45,6 +44,7 @@ export const RedditCommentTree: React.FC<RedditCommentTreeProps> = ({
           key={comment.id}
           comment={comment}
           isDark={isDark}
+          isKo={isKo}
           onVoteComment={onVoteComment}
           onAddReply={onAddReply}
           onOpenUserProfile={onOpenUserProfile}
@@ -58,6 +58,7 @@ export const RedditCommentTree: React.FC<RedditCommentTreeProps> = ({
 interface CommentItemProps {
   comment: RedditComment;
   isDark: boolean;
+  isKo: boolean;
   onVoteComment: (commentId: string, direction: 'up' | 'down') => void;
   onAddReply: (parentId: string, text: string) => void;
   onOpenUserProfile: (username: string) => void;
@@ -67,6 +68,7 @@ interface CommentItemProps {
 const CommentItem: React.FC<CommentItemProps> = ({
   comment,
   isDark,
+  isKo,
   onVoteComment,
   onAddReply,
   onOpenUserProfile,
@@ -79,11 +81,11 @@ const CommentItem: React.FC<CommentItemProps> = ({
   const getRelativeTime = (timestamp: number) => {
     const diff = Math.max(0, Date.now() - timestamp);
     const mins = Math.floor(diff / 60000);
-    if (mins < 60) return `${mins || 1}m ago`;
+    if (mins < 60) return isKo ? `${mins || 1}분 전` : `${mins || 1}m ago`;
     const hours = Math.floor(mins / 60);
-    if (hours < 24) return `${hours}h ago`;
+    if (hours < 24) return isKo ? `${hours}시간 전` : `${hours}h ago`;
     const days = Math.floor(hours / 24);
-    return `${days}d ago`;
+    return isKo ? `${days}일 전` : `${days}d ago`;
   };
 
   const handleReplySubmit = (e: React.FormEvent) => {
@@ -95,7 +97,6 @@ const CommentItem: React.FC<CommentItemProps> = ({
     }
   };
 
-  // 접힌 상태 렌더링
   if (isCollapsed) {
     return (
       <div className="text-xs opacity-50 py-1 flex items-center gap-2">
@@ -106,7 +107,9 @@ const CommentItem: React.FC<CommentItemProps> = ({
         >
           <ChevronDown className="w-3.5 h-3.5" />
           <span>[+] {comment.author}</span>
-          <span className="text-[10px] font-normal">({comment.score} points, {comment.replies?.length || 0} replies hidden)</span>
+          <span className="text-[10px] font-normal">
+            ({comment.score}점, {isKo ? `대댓글 ${comment.replies?.length || 0}개 접힘` : `${comment.replies?.length || 0} replies hidden`})
+          </span>
         </button>
       </div>
     );
@@ -114,9 +117,8 @@ const CommentItem: React.FC<CommentItemProps> = ({
 
   return (
     <div className="relative group text-xs font-sans">
-      {/* 1. 댓글 작성자 헤더 */}
-      <div className="flex items-center gap-2 mb-1.5">
-        {/* 아바타 */}
+      {/* 1. 작성자 헤더 */}
+      <div className="flex items-center gap-2 mb-1.5 flex-wrap">
         <div
           onClick={() => onOpenUserProfile(comment.author)}
           className="w-5 h-5 rounded-full overflow-hidden bg-gradient-to-tr from-sky-400 to-indigo-500 flex-shrink-0 cursor-pointer flex items-center justify-center text-[10px] text-white font-bold"
@@ -128,7 +130,6 @@ const CommentItem: React.FC<CommentItemProps> = ({
           )}
         </div>
 
-        {/* 닉네임 + OP 뱃지 */}
         <button
           type="button"
           onClick={() => onOpenUserProfile(comment.author)}
@@ -137,7 +138,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
           <span>{comment.author}</span>
           {comment.isAuthorOp && (
             <span className="px-1 py-0.2 rounded bg-sky-500/20 text-sky-400 text-[9px] font-extrabold uppercase">
-              OP
+              작성자
             </span>
           )}
         </button>
@@ -145,25 +146,23 @@ const CommentItem: React.FC<CommentItemProps> = ({
         <span className="opacity-40">•</span>
         <span className="opacity-60 text-[11px]">{getRelativeTime(comment.createdAt)}</span>
 
-        {/* 스레드 접기 버튼 [-] */}
         <button
           type="button"
           onClick={() => setIsCollapsed(true)}
           className="p-0.5 rounded opacity-40 hover:opacity-100 cursor-pointer"
-          title="Collapse thread"
+          title={isKo ? "스레드 접기" : "Collapse thread"}
         >
           <ChevronUp className="w-3 h-3" />
         </button>
       </div>
 
-      {/* 2. 본문 텍스트 */}
-      <div className="pl-7 text-xs sm:text-sm leading-relaxed whitespace-pre-line opacity-90 mb-2">
+      {/* 2. 본문 */}
+      <div className="pl-7 text-xs sm:text-sm leading-relaxed whitespace-pre-line opacity-90 mb-2 font-sans">
         {comment.body}
       </div>
 
-      {/* 3. 보팅 & 답글 바 */}
+      {/* 3. 보팅 & 답글 */}
       <div className="pl-7 flex items-center gap-3 text-xs font-semibold opacity-80">
-        {/* 보팅 */}
         <div className="flex items-center gap-1">
           <button
             type="button"
@@ -190,28 +189,27 @@ const CommentItem: React.FC<CommentItemProps> = ({
           </button>
         </div>
 
-        {/* 답글 (Reply) 버튼 */}
         <button
           type="button"
           onClick={() => setIsReplying(!isReplying)}
           className="flex items-center gap-1 hover:text-[#FF4500] cursor-pointer"
         >
           <CornerDownRight className="w-3.5 h-3.5" />
-          <span>Reply</span>
+          <span>{isKo ? '답글 달기' : 'Reply'}</span>
         </button>
       </div>
 
       {/* 4. 인라인 답글 입력 폼 */}
       {isReplying && (
         <form onSubmit={handleReplySubmit} className="mt-2.5 pl-7">
-          <div className={`p-2 rounded-xl border ${
+          <div className={`p-2.5 rounded-xl border ${
             isDark ? 'bg-[#0E1113] border-[#2E363E]' : 'bg-gray-50 border-gray-300'
           }`}>
             <textarea
               rows={2}
               value={replyText}
               onChange={(e) => setReplyText(e.target.value)}
-              placeholder={`Reply to u/${comment.author}...`}
+              placeholder={isKo ? `u/${comment.author} 님에게 답글 작성...` : `Reply to u/${comment.author}...`}
               className="w-full bg-transparent text-xs outline-none resize-none font-sans"
               autoFocus
             />
@@ -221,25 +219,26 @@ const CommentItem: React.FC<CommentItemProps> = ({
                 onClick={() => setIsReplying(false)}
                 className="px-3 py-1 rounded-full text-[11px] font-semibold opacity-70 hover:opacity-100 cursor-pointer"
               >
-                Cancel
+                {isKo ? '취소' : 'Cancel'}
               </button>
               <button
                 type="submit"
                 className="px-3.5 py-1 rounded-full bg-[#FF4500] text-white text-[11px] font-bold cursor-pointer hover:bg-[#FF5414]"
               >
-                Reply
+                {isKo ? '답글 등록' : 'Reply'}
               </button>
             </div>
           </div>
         </form>
       )}
 
-      {/* 5. 하위 대댓글 트리 재귀 호출 */}
+      {/* 5. 하위 대댓글 트리 */}
       {comment.replies && comment.replies.length > 0 && (
         <div className="mt-3">
           <RedditCommentTree
             comments={comment.replies}
             isDark={isDark}
+            isKo={isKo}
             onVoteComment={onVoteComment}
             onAddReply={onAddReply}
             onOpenUserProfile={onOpenUserProfile}

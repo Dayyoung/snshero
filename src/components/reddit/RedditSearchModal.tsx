@@ -1,12 +1,10 @@
 /**
  * RedditSearchModal.tsx
- * 오리지널 레딧 통합 검색 결과 뷰
- * Posts, Communities, People 탭 및 실시간 필터링
+ * 오리지널 레딧 통합 검색 결과 뷰 (한국어 기본 지원)
  */
 
 import React, { useState } from 'react';
 import { 
-  Search, 
   ArrowLeft, 
   Users, 
   FileText, 
@@ -43,6 +41,7 @@ export const RedditSearchModal: React.FC<RedditSearchModalProps> = ({
   onToggleJoin,
 }) => {
   const isDark = userState.theme !== 'light';
+  const isKo = userState.language !== 'en';
   const [activeTab, setActiveTab] = useState<'posts' | 'communities' | 'people'>('posts');
 
   return (
@@ -57,11 +56,11 @@ export const RedditSearchModal: React.FC<RedditSearchModalProps> = ({
           }`}
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Back to Feed</span>
+          <span>{isKo ? '피드로 돌아가기' : 'Back to Feed'}</span>
         </button>
 
         <div className="text-xs opacity-60">
-          Search results for <span className="font-bold text-[#FF4500]">"{query}"</span>
+          {isKo ? '검색어:' : 'Search results for'} <span className="font-bold text-[#FF4500]">"{query}"</span>
         </div>
       </div>
 
@@ -79,7 +78,7 @@ export const RedditSearchModal: React.FC<RedditSearchModalProps> = ({
           }`}
         >
           <FileText className="w-4 h-4" />
-          <span>Posts ({results.posts.length})</span>
+          <span>{isKo ? '게시글' : 'Posts'} ({results.posts.length})</span>
         </button>
 
         <button
@@ -92,7 +91,7 @@ export const RedditSearchModal: React.FC<RedditSearchModalProps> = ({
           }`}
         >
           <Globe className="w-4 h-4" />
-          <span>Communities ({results.subreddits.length})</span>
+          <span>{isKo ? '커뮤니티' : 'Communities'} ({results.subreddits.length})</span>
         </button>
 
         <button
@@ -105,7 +104,7 @@ export const RedditSearchModal: React.FC<RedditSearchModalProps> = ({
           }`}
         >
           <Users className="w-4 h-4" />
-          <span>People ({results.users.length})</span>
+          <span>{isKo ? '유저' : 'People'} ({results.users.length})</span>
         </button>
       </div>
 
@@ -119,6 +118,7 @@ export const RedditSearchModal: React.FC<RedditSearchModalProps> = ({
                 post={post}
                 viewMode="card"
                 isDark={isDark}
+                isKo={isKo}
                 onVote={onVote}
                 onOpenDetail={onOpenDetail}
                 onSelectSubreddit={onSelectSubreddit}
@@ -131,7 +131,7 @@ export const RedditSearchModal: React.FC<RedditSearchModalProps> = ({
             <div className={`rounded-2xl border p-12 text-center text-xs opacity-50 ${
               isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'
             }`}>
-              No posts found matching "{query}".
+              {isKo ? `"${query}"에 일치하는 게시물이 없습니다.` : `No posts found matching "${query}".`}
             </div>
           )
         )}
@@ -165,7 +165,7 @@ export const RedditSearchModal: React.FC<RedditSearchModalProps> = ({
                             r/{sub.name}
                           </div>
                           <div className="text-[10px] opacity-60">
-                            {sub.subscribers.toLocaleString()} members
+                            {sub.subscribers.toLocaleString()} {isKo ? '멤버' : 'members'}
                           </div>
                         </div>
                       </div>
@@ -183,7 +183,7 @@ export const RedditSearchModal: React.FC<RedditSearchModalProps> = ({
                           : 'bg-[#FF4500] text-white hover:bg-[#FF5414]'
                       }`}
                     >
-                      {isSubJoined ? 'Joined' : 'Join'}
+                      {isSubJoined ? (isKo ? '가입됨' : 'Joined') : (isKo ? '가입' : 'Join')}
                     </button>
                   </div>
                 );
@@ -193,7 +193,7 @@ export const RedditSearchModal: React.FC<RedditSearchModalProps> = ({
             <div className={`rounded-2xl border p-12 text-center text-xs opacity-50 ${
               isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'
             }`}>
-              No communities found matching "{query}".
+              {isKo ? `"${query}"에 일치하는 커뮤니티가 없습니다.` : `No communities found matching "${query}".`}
             </div>
           )
         )}
@@ -212,7 +212,7 @@ export const RedditSearchModal: React.FC<RedditSearchModalProps> = ({
                   <img src={u.avatarUrl} alt="" className="w-10 h-10 rounded-full object-cover" />
                   <div>
                     <div className="font-bold text-sm">u/{u.username}</div>
-                    <div className="text-[11px] opacity-60">Karma: {u.postKarma.toLocaleString()}</div>
+                    <div className="text-[11px] opacity-60">{isKo ? '카르마' : 'Karma'}: {u.postKarma.toLocaleString()}</div>
                   </div>
                 </div>
               ))}
@@ -221,7 +221,7 @@ export const RedditSearchModal: React.FC<RedditSearchModalProps> = ({
             <div className={`rounded-2xl border p-12 text-center text-xs opacity-50 ${
               isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'
             }`}>
-              No people found matching "{query}".
+              {isKo ? `"${query}"에 일치하는 유저가 없습니다.` : `No people found matching "${query}".`}
             </div>
           )
         )}

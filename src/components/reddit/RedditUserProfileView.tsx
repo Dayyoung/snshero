@@ -1,21 +1,19 @@
 /**
  * RedditUserProfileView.tsx
- * 오리지널 레딧 유저 프로필 페이지 컴포넌트
- * 아바타, 카르마, 가입일, 소개글 및 작성글/댓글/저장목록 탭
+ * 오리지널 레딧 유저 프로필 페이지 컴포넌트 (한국어 기본 지원)
  */
 
 import React, { useState } from 'react';
 import { 
   Sparkles, 
   Calendar, 
-  Award, 
   ArrowLeft, 
   MessageSquare, 
   User, 
   Share2, 
   Check 
 } from 'lucide-react';
-import { RedditUser, RedditPost, RedditUserDataState, ViewModeType } from '../../lib/reddit/redditTypes';
+import { RedditUser, RedditPost, RedditUserDataState } from '../../lib/reddit/redditTypes';
 import { RedditPostCard } from './RedditPostCard';
 
 interface RedditUserProfileViewProps {
@@ -42,7 +40,8 @@ export const RedditUserProfileView: React.FC<RedditUserProfileViewProps> = ({
   onToggleHide,
 }) => {
   const isDark = userState.theme !== 'light';
-  const [activeTab, setActiveTab] = useState<'overview' | 'posts' | 'comments' | 'saved'>('overview');
+  const isKo = userState.language !== 'en';
+  const [activeTab, setActiveTab] = useState<'overview' | 'posts' | 'saved'>('overview');
   const [isCopied, setIsCopied] = useState(false);
 
   const handleShareProfile = () => {
@@ -69,7 +68,7 @@ export const RedditUserProfileView: React.FC<RedditUserProfileViewProps> = ({
           }`}
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Back to Feed</span>
+          <span>{isKo ? '피드로 돌아가기' : 'Back to Feed'}</span>
         </button>
 
         <button
@@ -80,7 +79,7 @@ export const RedditUserProfileView: React.FC<RedditUserProfileViewProps> = ({
           }`}
         >
           {isCopied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Share2 className="w-3.5 h-3.5" />}
-          <span>{isCopied ? 'Link Copied!' : 'Share Profile'}</span>
+          <span>{isCopied ? (isKo ? '링크 복사됨!' : 'Copied!') : (isKo ? '프로필 공유' : 'Share Profile')}</span>
         </button>
       </div>
 
@@ -88,7 +87,6 @@ export const RedditUserProfileView: React.FC<RedditUserProfileViewProps> = ({
       <div className={`rounded-2xl border overflow-hidden shadow-sm ${
         isDark ? 'bg-[#181C1F] border-[#22272B] text-gray-200' : 'bg-white border-gray-200 text-gray-800'
       }`}>
-        {/* 커버 배너 */}
         <div className="h-24 sm:h-32 w-full bg-gradient-to-r from-sky-500 via-indigo-600 to-purple-600 relative">
           {user.bannerUrl && (
             <img src={user.bannerUrl} alt="" className="w-full h-full object-cover opacity-80" />
@@ -98,7 +96,6 @@ export const RedditUserProfileView: React.FC<RedditUserProfileViewProps> = ({
         <div className="p-4 sm:p-6 relative">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 -mt-12 sm:-mt-16 mb-4">
             <div className="flex items-end gap-3 sm:gap-4">
-              {/* 아바타 */}
               <div className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 overflow-hidden flex-shrink-0 shadow-lg bg-white ${
                 isDark ? 'border-[#181C1F]' : 'border-white'
               }`}>
@@ -114,13 +111,13 @@ export const RedditUserProfileView: React.FC<RedditUserProfileViewProps> = ({
                   u/{user.username}
                 </h1>
                 <p className="text-xs opacity-70 mt-0.5 max-w-lg">
-                  {user.about || 'A curious explorer in the SNSHero community.'}
+                  {user.about || (isKo ? 'SNSHero 커뮤니티의 활발한 멤버입니다.' : 'A curious explorer in the SNSHero community.')}
                 </p>
               </div>
             </div>
           </div>
 
-          {/* 카르마 및 가입일 통계 배지 */}
+          {/* 카르마 및 가입일 통계 */}
           <div className="grid grid-cols-3 gap-2 py-3 border-y border-inherit/10 text-xs">
             <div>
               <div className="font-extrabold text-sm sm:text-base text-[#FF4500]">
@@ -128,7 +125,7 @@ export const RedditUserProfileView: React.FC<RedditUserProfileViewProps> = ({
               </div>
               <div className="text-[10px] opacity-60 flex items-center gap-1">
                 <Sparkles className="w-3 h-3" />
-                <span>Post Karma</span>
+                <span>{isKo ? '게시물 카르마' : 'Post Karma'}</span>
               </div>
             </div>
             <div>
@@ -137,7 +134,7 @@ export const RedditUserProfileView: React.FC<RedditUserProfileViewProps> = ({
               </div>
               <div className="text-[10px] opacity-60 flex items-center gap-1">
                 <MessageSquare className="w-3 h-3" />
-                <span>Comment Karma</span>
+                <span>{isKo ? '댓글 카르마' : 'Comment Karma'}</span>
               </div>
             </div>
             <div>
@@ -146,24 +143,28 @@ export const RedditUserProfileView: React.FC<RedditUserProfileViewProps> = ({
               </div>
               <div className="text-[10px] opacity-60 flex items-center gap-1">
                 <Calendar className="w-3 h-3" />
-                <span>Cake Day</span>
+                <span>{isKo ? '가입일' : 'Cake Day'}</span>
               </div>
             </div>
           </div>
 
           {/* 탭 바 */}
           <div className="flex items-center gap-4 mt-3 pt-1 text-xs font-bold">
-            {(['overview', 'posts', 'saved'] as const).map((tab) => (
+            {[
+              { id: 'overview', label: isKo ? '한눈에 보기' : 'Overview' },
+              { id: 'posts', label: isKo ? '작성한 글' : 'Posts' },
+              { id: 'saved', label: isKo ? '저장한 글' : 'Saved' },
+            ].map((tab) => (
               <button
-                key={tab}
+                key={tab.id}
                 type="button"
-                onClick={() => setActiveTab(tab)}
+                onClick={() => setActiveTab(tab.id as 'overview' | 'posts' | 'saved')}
                 className={`pb-1 cursor-pointer uppercase tracking-wider transition-colors relative ${
-                  activeTab === tab ? 'text-[#FF4500]' : 'opacity-60 hover:opacity-100'
+                  activeTab === tab.id ? 'text-[#FF4500]' : 'opacity-60 hover:opacity-100'
                 }`}
               >
-                <span>{tab}</span>
-                {activeTab === tab && (
+                <span>{tab.label}</span>
+                {activeTab === tab.id && (
                   <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#FF4500] rounded-full" />
                 )}
               </button>
@@ -172,7 +173,7 @@ export const RedditUserProfileView: React.FC<RedditUserProfileViewProps> = ({
         </div>
       </div>
 
-      {/* 탭별 포스트 목록 */}
+      {/* 포스트 목록 */}
       <div className="space-y-3">
         {activeTab === 'posts' || activeTab === 'overview' ? (
           userPosts.length > 0 ? (
@@ -182,6 +183,7 @@ export const RedditUserProfileView: React.FC<RedditUserProfileViewProps> = ({
                 post={p}
                 viewMode="card"
                 isDark={isDark}
+                isKo={isKo}
                 onVote={onVote}
                 onOpenDetail={onOpenDetail}
                 onSelectSubreddit={onSelectSubreddit}
@@ -194,7 +196,7 @@ export const RedditUserProfileView: React.FC<RedditUserProfileViewProps> = ({
             <div className={`rounded-2xl border p-12 text-center text-xs opacity-50 ${
               isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'
             }`}>
-              u/{user.username} has not submitted any posts yet.
+              {isKo ? `u/${user.username} 님이 아직 작성한 게시물이 없습니다.` : `u/${user.username} has not submitted any posts yet.`}
             </div>
           )
         ) : (
@@ -205,6 +207,7 @@ export const RedditUserProfileView: React.FC<RedditUserProfileViewProps> = ({
                 post={p}
                 viewMode="card"
                 isDark={isDark}
+                isKo={isKo}
                 onVote={onVote}
                 onOpenDetail={onOpenDetail}
                 onSelectSubreddit={onSelectSubreddit}
@@ -217,7 +220,7 @@ export const RedditUserProfileView: React.FC<RedditUserProfileViewProps> = ({
             <div className={`rounded-2xl border p-12 text-center text-xs opacity-50 ${
               isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'
             }`}>
-              No saved posts found.
+              {isKo ? '저장된 게시물이 없습니다.' : 'No saved posts found.'}
             </div>
           )
         )}
