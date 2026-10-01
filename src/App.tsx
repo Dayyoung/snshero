@@ -103,6 +103,7 @@ import { ImageLazyLoader } from './lib/ImageLazyLoader';
 import { checkAndSyncAppVersion } from './lib/versionManager';
 import { safeLazy } from './lib/safeLazy';
 
+const RedditCommunityView = safeLazy(() => import('./views/RedditCommunityView'), 'RedditCommunityView');
 const HomeView = safeLazy(() => import('./views/HomeView'), 'HomeView');
 const KadanRpgView = safeLazy(() => import('./views/KadanRpgView'));
 const MyDeckView = safeLazy(() => import('./views/MyDeckView'), 'MyDeckView');
@@ -4811,6 +4812,26 @@ function AppContent() {
 
   const renderView = () => {
     switch (view) {
+      case 'reddit': {
+        const path = typeof window !== 'undefined' ? window.location.pathname : '/';
+        const subMatch = path.match(/^\/r\/([^/]+)/);
+        const postMatch = path.match(/^\/r\/[^/]+\/comments\/([^/]+)/);
+        const userMatch = path.match(/^\/u(?:ser)?\/([^/]+)/);
+
+        return (
+          <RedditCommunityView
+            initialSubreddit={subMatch ? subMatch[1] : 'popular'}
+            initialPostId={postMatch ? postMatch[1] : undefined}
+            initialUsername={userMatch ? userMatch[1] : undefined}
+            onNavigateHome={() => {
+              setView('home');
+              if (typeof window !== 'undefined') {
+                window.history.pushState(null, '', '/home');
+              }
+            }}
+          />
+        );
+      }
       case 'home':
         return (
           <HomeView 
@@ -5786,7 +5807,7 @@ function AppContent() {
   }
 
     const isPlayingBattle = (view === 'play' && (playGameState === 'playing' || playGameState === 'searching' || playGameState === 'preMatch')) || view === 'card-play' || (view === 'main' && isRpgInBattle);
-    const showNavbar = (view !== 'admin' && view !== 'landing' && view !== 'cartoonBook' && view !== 'novel' && view !== 'webtoon' && view !== 'anime' && view !== 'movie' && view !== 'card-play' && !isPlayingBattle) && !isGlobalPopupOpen;
+    const showNavbar = (view !== 'reddit' && view !== 'admin' && view !== 'landing' && view !== 'cartoonBook' && view !== 'novel' && view !== 'webtoon' && view !== 'anime' && view !== 'movie' && view !== 'card-play' && !isPlayingBattle) && !isGlobalPopupOpen;
     const isMainTab = view === 'home' || view === 'mydeck' || view === 'shop' || view === 'play' || view === 'main';
     
     return (
@@ -6344,7 +6365,7 @@ function AppContent() {
           />
 
         {/* Global Chat Floating Button */}
-        {view !== 'landing' && view !== 'cartoonBook' && view !== 'novel' && view !== 'webtoon' && view !== 'card-play' && view !== 'play' && !isPlayingBattle && (
+        {view !== 'reddit' && view !== 'landing' && view !== 'cartoonBook' && view !== 'novel' && view !== 'webtoon' && view !== 'card-play' && view !== 'play' && !isPlayingBattle && (
           <>
           <div className={cn(
             "fixed left-0 right-0 w-full max-w-[1024px] mx-auto z-[10000] pointer-events-none transition-all",

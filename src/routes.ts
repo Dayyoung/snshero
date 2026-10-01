@@ -10,9 +10,16 @@ export interface RouteMeta {
 }
 
 export const VIEW_ROUTES: Record<ViewType, RouteMeta> = {
+  reddit: {
+    path: '/',
+    aliases: ['/reddit', '/popular', '/all'],
+    titleKo: 'SNSHero 커뮤니티 - 인터넷의 모든 즐거움이 모이는 곳',
+    titleEn: 'SNSHero Community - Dive into anything',
+    descriptionKo: '게임, 테크, 유머, 지식 등 전 세계 최신 트렌드와 활발한 토론이 펼쳐지는 무비용 정적 커뮤니티 SNSHero입니다.',
+    descriptionEn: 'Discover breaking gaming news, discussions, memes, and vibrant communities on SNSHero.',
+  },
   home: {
     path: '/home',
-    aliases: ['/'],
     titleKo: 'SNS히어로 (SNSHero) - 원클릭 AI 웹 카드 게임',
     titleEn: 'SNSHero - One-Click AI Web Card Game',
     descriptionKo: '복잡한 가입 없이 클릭 한 번으로 시작하는 AI 웹 카드 게임 SNS히어로 로비입니다.',
@@ -406,6 +413,20 @@ export function getViewFromPath(pathname: string, search = ''): ViewType {
   if (cleanPath.startsWith('/novel/s1-')) return 'novel';
   if (cleanPath.startsWith('/gotest')) return 'home';
 
+  // 레딧 클론 커뮤니티 경로 매핑
+  if (
+    cleanPath === '/' ||
+    cleanPath === '/popular' ||
+    cleanPath === '/all' ||
+    cleanPath === '/search' ||
+    cleanPath === '/submit' ||
+    cleanPath.startsWith('/r/') ||
+    cleanPath.startsWith('/u/') ||
+    cleanPath.startsWith('/user/')
+  ) {
+    return 'reddit';
+  }
+
   // 3. 고유 경로 및 별칭(Aliases) 전수 검색
   for (const [v, meta] of Object.entries(VIEW_ROUTES) as [ViewType, RouteMeta][]) {
     if (meta.path.toLowerCase() === cleanPath) {
@@ -420,7 +441,7 @@ export function getViewFromPath(pathname: string, search = ''): ViewType {
     }
   }
 
-  // 4. Fallback: 로컬 스토리지에 저장된 마지막 뷰 또는 홈
+  // 4. Fallback: 로컬 스토리지에 저장된 마지막 뷰 또는 reddit (루트 기본)
   if (typeof window !== 'undefined') {
     const saved = localStorage.getItem('hero_current_view') as ViewType;
     if (saved && saved in VIEW_ROUTES) {
@@ -428,7 +449,7 @@ export function getViewFromPath(pathname: string, search = ''): ViewType {
     }
   }
 
-  return 'home';
+  return 'reddit';
 }
 
 /**
