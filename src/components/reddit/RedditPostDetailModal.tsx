@@ -25,6 +25,7 @@ import { RedditPost, RedditComment, RedditSubreddit, RedditUserDataState } from 
 import { RedditCommentTree } from './RedditCommentTree';
 import { RedditSidebarRight } from './RedditSidebarRight';
 import { AdSenseBanner } from '../AdSenseBanner';
+import { generateContextualCommentsForPost } from '../../lib/reddit/redditCommentGenerator';
 
 interface RedditPostDetailModalProps {
   post: RedditPost;
@@ -99,99 +100,18 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
     }
   };
 
-  // 실시간 더 많은 댓글 불러오기 핸들러
+  // 실시간 더 많은 댓글 불러오기 핸들러 (포스트 맥락 100% 반영)
   const handleLoadMoreComments = React.useCallback(() => {
     if (isLoadingMore) return;
     setIsLoadingMore(true);
     setTimeout(() => {
-      const now = Date.now();
       const currentCount = comments.length + extraComments.length;
-      const additionalComments: RedditComment[] = [
-        {
-          id: `c_more_${post.id}_${currentCount + 1}`,
-          postId: post.id,
-          parentId: null,
-          author: `GameDevFan_${currentCount + 1}`,
-          authorAvatar: `https://images.unsplash.com/photo-${1535713875002 + (currentCount % 10) * 1000}?auto=format&fit=crop&w=64&q=80`,
-          authorKarma: 14200 + currentCount * 500,
-          createdAt: now - 1000 * 60 * (15 + currentCount * 2),
-          score: Math.max(50, Math.floor(380 - currentCount * 12)),
-          body: isKo 
-            ? `물리 충돌 판정이랑 파티클 상호작용 이펙트가 진짜 예술이네요! 1인 개발 완성작 기다리겠습니다.` 
-            : `The physics and particle effects look amazing! Can't wait for the full release.`,
-          replies: [
-            {
-              id: `c_more_${post.id}_${currentCount + 1}_1`,
-              postId: post.id,
-              parentId: `c_more_${post.id}_${currentCount + 1}`,
-              author: post.author,
-              authorAvatar: post.authorAvatar,
-              authorKarma: 9850,
-              createdAt: now - 1000 * 60 * (10 + currentCount * 2),
-              score: Math.max(20, Math.floor(210 - currentCount * 8)),
-              isAuthorOp: true,
-              body: isKo ? `응원 감사합니다! 끝까지 완성도 높여서 보답하겠습니다 ㅎㅎ` : `Thank you for the support!`,
-            },
-          ],
-        },
-        {
-          id: `c_more_${post.id}_${currentCount + 2}`,
-          postId: post.id,
-          parentId: null,
-          author: `PixelCraftsman_${currentCount + 2}`,
-          authorAvatar: `https://images.unsplash.com/photo-${1507003211169 + (currentCount % 10) * 1000}?auto=format&fit=crop&w=64&q=80`,
-          authorKarma: 8900 + currentCount * 300,
-          createdAt: now - 1000 * 60 * (25 + currentCount * 3),
-          score: Math.max(30, Math.floor(290 - currentCount * 10)),
-          body: isKo 
-            ? `혹시 셰이더 그래프 작성하실 때 성능 프로파일링 팁이 있으신가요? C++ 직접 연동하셨는지 궁금합니다.` 
-            : `Any shader profiling tips? Did you use C++ directly?`,
-        },
-        {
-          id: `c_more_${post.id}_${currentCount + 3}`,
-          postId: post.id,
-          parentId: null,
-          author: `LoreSeeker_${currentCount + 3}`,
-          authorAvatar: `https://images.unsplash.com/photo-${1494790108377 + (currentCount % 10) * 1000}?auto=format&fit=crop&w=64&q=80`,
-          authorKarma: 25400 + currentCount * 400,
-          createdAt: now - 1000 * 60 * (35 + currentCount * 4),
-          score: Math.max(25, Math.floor(250 - currentCount * 9)),
-          body: isKo 
-            ? `세계관 설정이 궁금하네요! 마법 원소들 간의 상성 시스템(화염-빙결-번개)도 스토리와 연계되나요?` 
-            : `How is the world lore structured? Is the elemental interaction tied to the story?`,
-        },
-        {
-          id: `c_more_${post.id}_${currentCount + 4}`,
-          postId: post.id,
-          parentId: null,
-          author: `RoguelikeAddict_${currentCount + 4}`,
-          authorAvatar: `https://images.unsplash.com/photo-${1506794778202 + (currentCount % 10) * 1000}?auto=format&fit=crop&w=64&q=80`,
-          authorKarma: 18900 + currentCount * 250,
-          createdAt: now - 1000 * 60 * (45 + currentCount * 3),
-          score: Math.max(40, Math.floor(210 - currentCount * 7)),
-          body: isKo
-            ? `스킬 간 시너지 조합이 무궁무진해 보이네요. 랜덤 드롭 룬 시스템이나 유물 파밍 요소도 있나요?`
-            : `The skill synergies look endless! Are there rune drops or relic farming mechanics?`,
-        },
-        {
-          id: `c_more_${post.id}_${currentCount + 5}`,
-          postId: post.id,
-          parentId: null,
-          author: `ConsoleTester_${currentCount + 5}`,
-          authorAvatar: `https://images.unsplash.com/photo-${154400531394 + (currentCount % 10) * 1000}?auto=format&fit=crop&w=64&q=80`,
-          authorKarma: 11200 + currentCount * 180,
-          createdAt: now - 1000 * 60 * (55 + currentCount * 2),
-          score: Math.max(35, Math.floor(190 - currentCount * 6)),
-          body: isKo
-            ? `얼리액세스 로드맵 공유해주셔서 감사합니다. 데모 버전 공개 일정 나오면 꼭 레딧에 올려주세요!`
-            : `Thanks for sharing the roadmap! Please post on Reddit when the demo drops!`,
-        },
-      ];
+      const additionalComments = generateContextualCommentsForPost(post, 5, currentCount, isKo);
 
       setExtraComments((prev) => [...prev, ...additionalComments]);
       setIsLoadingMore(false);
     }, 350);
-  }, [isLoadingMore, comments.length, extraComments.length, post.id, post.author, post.authorAvatar, isKo]);
+  }, [isLoadingMore, comments.length, extraComments.length, post, isKo]);
 
   // 글을 끝까지 읽었을 때(바닥 센티넬 도달 시) 자동으로 실시간 더보기 트리거
   React.useEffect(() => {

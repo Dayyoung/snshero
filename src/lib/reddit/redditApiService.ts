@@ -17,6 +17,7 @@ import {
   RedditUserDataState 
 } from './redditTypes';
 import { RedditLiveFeedService } from './redditLiveFeedService';
+import { generateContextualCommentsForPost } from './redditCommentGenerator';
 
 export class RedditApiService {
   /**
@@ -215,45 +216,7 @@ export class RedditApiService {
    * 어떤 글이든 100% 풍성한 댓글과 대댓글을 읽을 수 있도록 자동 생성하는 지능형 댓글 백업 엔진
    */
   private static generateContextualComments(post: RedditPost): RedditComment[] {
-    const now = Date.now();
-    return [
-      {
-        id: `c_gen_${post.id}_1`,
-        postId: post.id,
-        parentId: null,
-        author: 'CommunityObserver',
-        authorAvatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=64&q=80',
-        authorKarma: 24500,
-        createdAt: now - 1000 * 60 * 30,
-        score: Math.max(12, Math.floor(post.score * 0.12)),
-        body: `이 주제에 대해 r/${post.subreddit}에서 이렇게 심도 깊게 다뤄진 건 오랜만이네요. 본문에 적어주신 내용 아주 인상 깊게 읽었습니다!`,
-        replies: [
-          {
-            id: `c_gen_${post.id}_1_1`,
-            postId: post.id,
-            parentId: `c_gen_${post.id}_1`,
-            author: post.author,
-            authorAvatar: post.authorAvatar || 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=64&q=80',
-            authorKarma: 18200,
-            createdAt: now - 1000 * 60 * 15,
-            score: Math.max(8, Math.floor(post.score * 0.08)),
-            isAuthorOp: true,
-            body: `좋게 봐주셔서 감사합니다! 커뮤니티 분들과 더 많은 피드백을 나누고 싶었습니다 ㅎㅎ`,
-          },
-        ],
-      },
-      {
-        id: `c_gen_${post.id}_2`,
-        postId: post.id,
-        parentId: null,
-        author: 'InsightfulDebater',
-        authorAvatar: 'https://images.unsplash.com/photo-1527980965255-d3b416303d12?auto=format&fit=crop&w=64&q=80',
-        authorKarma: 15800,
-        createdAt: now - 1000 * 60 * 20,
-        score: Math.max(9, Math.floor(post.score * 0.07)),
-        body: `공감합니다. 다음 업데이트나 후속 진행 상황도 꼭 공유해주세요. 업보트 누르고 갑니다!`,
-      },
-    ];
+    return generateContextualCommentsForPost(post, 3, 0, true);
   }
 
   private static insertReplyRecursive(list: RedditComment[], reply: RedditComment): boolean {
