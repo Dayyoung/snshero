@@ -287,9 +287,8 @@ export const SEED_POSTS: RedditPost[] = [
     isOriginalContent: true,
     upvoteRatio: 0.98,
     media: {
-      type: 'video',
-      url: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/f/f1/Sintel_movie_4K.webm/Sintel_movie_4K.webm.480p.vp9.webm',
-      previewUrl: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80',
+      type: 'image',
+      url: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80',
       aspectRatio: 16 / 9,
     },
     body: `안녕하세요 r/hanguk 여러분!
@@ -365,9 +364,8 @@ export const SEED_POSTS: RedditPost[] = [
     flair: { text: '데스크셋업 / Battlestation', bgColor: '#D9381E', textColor: '#FFFFFF' },
     upvoteRatio: 0.94,
     media: {
-      type: 'video',
-      url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4',
-      previewUrl: 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=1200&q=80',
+      type: 'image',
+      url: 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=1200&q=80',
       aspectRatio: 16 / 9,
     },
     body: `스펙:
@@ -391,10 +389,9 @@ export const SEED_POSTS: RedditPost[] = [
     flair: { text: '힐링 / Wholesome', bgColor: '#EA0027', textColor: '#FFFFFF' },
     upvoteRatio: 0.99,
     media: {
-      type: 'video',
-      url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-      previewUrl: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=1200&q=80',
-      aspectRatio: 16 / 9,
+      type: 'image',
+      url: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=1200&q=80',
+      aspectRatio: 4 / 3,
     },
     body: `이름은 '보리'라고 지었습니다. 처음엔 낯설어하더니 슬그머니 신발 냄새 맡고는 푹 잠드네요. 평생 행복하게 키우겠습니다!`,
   },
