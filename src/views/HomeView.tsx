@@ -947,7 +947,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
           <div className="relative w-full h-full md:max-w-6xl md:max-h-[92vh] bg-slate-950 md:rounded-2xl overflow-hidden shadow-2xl border border-slate-800 animate-in fade-in zoom-in-95 duration-150">
             {/* iframe */}
             <iframe
-              src="/snshero_part1.pdf"
+              src={language === 'ko' ? "/snshero_part1_ko.pdf" : "/snshero_part1.pdf"}
               title="SNSHero Part 1 PDF"
               className="w-full h-full border-none"
             />
