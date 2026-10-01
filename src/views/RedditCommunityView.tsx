@@ -77,7 +77,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
   const [activePost, setActivePost] = useState<RedditPost | null>(null);
   const [activeComments, setActiveComments] = useState<RedditComment[]>([]);
   const [activeUser, setActiveUser] = useState<RedditUser | null>(
-    initialUsername ? RedditApiService.getUserProfile(initialUsername) : null
+    initialUsername ? RedditApiService.getUserProfile(initialUsername, userState) : null
   );
   const [searchState, setSearchState] = useState<{ query: string; results: SearchResults } | null>(null);
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
@@ -180,7 +180,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
       }
 
       if (userMatch) {
-        const user = RedditApiService.getUserProfile(userMatch[1]);
+        const user = RedditApiService.getUserProfile(userMatch[1], userState);
         setActiveUser(user);
         return;
       } else {
@@ -374,12 +374,12 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
 
   // 유저 프로필 열기
   const handleOpenUserProfile = useCallback((username: string) => {
-    const user = RedditApiService.getUserProfile(username);
+    const user = RedditApiService.getUserProfile(username, userState);
     setActiveUser(user);
     setActivePost(null);
     setSearchState(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, []);
+  }, [userState]);
 
   // 다크모드 / 라이트모드 토글
   const handleToggleTheme = useCallback(() => {

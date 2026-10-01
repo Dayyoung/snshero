@@ -37,16 +37,23 @@ export const RedditCreateCommunityModal: React.FC<RedditCreateCommunityModalProp
     const newCommunity: RedditSubreddit = {
       name: cleanName,
       title: title.trim() || `r/${cleanName}`,
-      description: description.trim() || `Welcome to r/${cleanName}!`,
+      description: description.trim() || (isKo 
+        ? `r/${cleanName} 커뮤니티에 오신 것을 환영합니다! 자유롭게 이야기하고 소통해보세요.` 
+        : `Welcome to r/${cleanName}!`),
       bannerUrl: 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=1200&q=80',
       iconUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=128&q=80',
       subscribers: 1,
       onlineCount: 1,
       createdAt: Date.now(),
       isJoined: true,
-      rules: [
+      rules: isKo ? [
+        { number: 1, title: 'SNSHero 커뮤니티 가이드라인 준수', description: '상호 존중과 배려의 클린 토론 문화를 지켜주세요.' },
+        { number: 2, title: '주제에 맞는 게시물 작성', description: `r/${cleanName} 커뮤니티의 주제에 맞는 글을 작성해주세요.` },
+        { number: 3, title: '스팸 및 도배 금지', description: '광고성 도배는 즉시 삭제됩니다.' },
+      ] : [
         { number: 1, title: 'Follow SNSHero Guidelines', description: 'Be respectful to community members.' },
         { number: 2, title: 'Keep posts relevant', description: `All posts must be related to r/${cleanName}.` },
+        { number: 3, title: 'No spam', description: 'Spam will be removed.' },
       ],
       moderators: ['SNSHeroPlayer'],
     };

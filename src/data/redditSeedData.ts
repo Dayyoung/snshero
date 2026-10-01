@@ -7,6 +7,54 @@
 import { RedditSubreddit, RedditPost, RedditComment, RedditUser, RedditTrendingItem } from '../lib/reddit/redditTypes';
 
 export const SEED_SUBREDDITS: Record<string, RedditSubreddit> = {
+  popular: {
+    name: 'popular',
+    title: '실시간 인기 피드 (Popular)',
+    description: '현재 SNSHero 전역에서 가장 뜨겁게 화제가 되고 있는 인기 게시물들을 실시간으로 모아보는 공간입니다.',
+    bannerUrl: 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=1400&q=80',
+    iconUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=128&q=80',
+    subscribers: 52400000,
+    onlineCount: 89400,
+    createdAt: Date.now() - 1000 * 60 * 60 * 24 * 365 * 10,
+    themeColor: '#FF4500',
+    rules: [
+      { number: 1, title: 'SNSHero 커뮤니티 가이드라인 준수', description: '상호 존중하고 배려하며 깨끗한 토론 문화를 유지해주세요.' },
+      { number: 2, title: '도배 및 허위 정보 금지', description: '동일 내용의 반복 도배나 검증되지 않은 가짜 뉴스는 제한됩니다.' },
+      { number: 3, title: '클린 토론 및 예절 준수', description: '모든 멤버가 기분 좋게 소통할 수 있도록 기본 예절을 지켜주세요.' },
+    ],
+    moderators: ['AutoModerator', 'SNSHero_Admin'],
+  },
+  all: {
+    name: 'all',
+    title: '전체 피드 (All)',
+    description: 'SNSHero의 모든 커뮤니티에서 실시간으로 쏟아지는 방대한 전체 콘텐츠를 제한 없이 탐색하는 공간입니다.',
+    bannerUrl: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1400&q=80',
+    iconUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=128&q=80',
+    subscribers: 68100000,
+    onlineCount: 112000,
+    createdAt: Date.now() - 1000 * 60 * 60 * 24 * 365 * 10,
+    themeColor: '#0079D3',
+    rules: [
+      { number: 1, title: '커뮤니티 기본 운영 규정 준수', description: '모든 서브레딧의 자체 규칙과 SNSHero 표준 규정을 따릅니다.' },
+      { number: 2, title: '상호 존중 원칙', description: '비방과 혐오 표현 없이 건강한 대화를 나눠주세요.' },
+    ],
+    moderators: ['AutoModerator', 'spez'],
+  },
+  home: {
+    name: 'home',
+    title: '홈 맞춤 피드 (Home)',
+    description: '내가 가입한 관심 커뮤니티들의 최신 소식과 토론을 한눈에 모아보는 나만의 맞춤형 피드입니다.',
+    bannerUrl: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1400&q=80',
+    iconUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=128&q=80',
+    subscribers: 24500000,
+    onlineCount: 38200,
+    createdAt: Date.now() - 1000 * 60 * 60 * 24 * 365 * 10,
+    themeColor: '#46D160',
+    rules: [
+      { number: 1, title: '가입 커뮤니티 규칙 준수', description: '각 서브레딧의 규정을 확인하고 즐겁게 활동하세요.' },
+    ],
+    moderators: ['AutoModerator'],
+  },
   hanguk: {
     name: 'hanguk',
     title: '한국 레딧 커뮤니티 (Hanguk: Reddit in Korean)',

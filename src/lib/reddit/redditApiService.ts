@@ -298,20 +298,29 @@ export class RedditApiService {
       };
     }
 
-    // 미존재 서브레딧은 즉석에서 현실감 있는 메타데이터 생성
+    const isKo = userState ? userState.language !== 'en' : true;
+
+    // 미존재 서브레딧은 즉석에서 현실감 있는 한국어/영어 메타데이터 생성
     return {
       name,
-      title: `${name}: Community Hub`,
-      description: `Welcome to r/${name}! A dynamic community for discussion, news, and insights on ${name}.`,
+      title: isKo ? `r/${name}: 공식 커뮤니티 허브` : `${name}: Community Hub`,
+      description: isKo 
+        ? `r/${name} 커뮤니티에 오신 것을 환영합니다! ${name}에 관한 자유로운 토론, 실시간 뉴스, 그리고 다양한 인사이트를 나누는 소통 공간입니다.` 
+        : `Welcome to r/${name}! A dynamic community for discussion, news, and insights on ${name}.`,
       bannerUrl: 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=1400&q=80',
       iconUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=128&q=80',
       subscribers: 125000,
       onlineCount: 450,
       createdAt: Date.now() - 1000 * 60 * 60 * 24 * 365,
       isJoined,
-      rules: [
+      rules: isKo ? [
+        { number: 1, title: 'SNSHero 커뮤니티 가이드라인 준수', description: '상호 존중하고 배려하며 깨끗한 토론 문화를 유지해주세요.' },
+        { number: 2, title: '주제에 부합하는 게시물 작성', description: `모든 게시물은 r/${name} 커뮤니티의 주제와 연관되어야 합니다.` },
+        { number: 3, title: '스팸 및 무단 도배 금지', description: '상업적 광고나 무분별한 링크 도배는 즉시 제재됩니다.' },
+      ] : [
         { number: 1, title: 'Follow SNSHero Guidelines', description: 'Be kind, civil, and respect fellow members.' },
         { number: 2, title: 'On-topic submissions only', description: `Keep all posts relevant to ${name}.` },
+        { number: 3, title: 'No spam or self-promotion', description: 'Spam and repetitive links will be removed.' },
       ],
       moderators: ['AutoModerator', 'spez'],
     };
@@ -330,9 +339,11 @@ export class RedditApiService {
   /**
    * 유저 프로필 조회
    */
-  static getUserProfile(username: string): RedditUser {
+  static getUserProfile(username: string, userState?: RedditUserDataState): RedditUser {
     const existing = SEED_USERS[username];
     if (existing) return existing;
+
+    const isKo = userState ? userState.language !== 'en' : true;
 
     return {
       username,
@@ -341,7 +352,9 @@ export class RedditApiService {
       postKarma: 1420,
       commentKarma: 3840,
       cakeDay: Date.now() - 1000 * 60 * 60 * 24 * 400,
-      about: `Hey! I'm u/${username}. Passionate about gaming, tech, and lively online conversations.`,
+      about: isKo 
+        ? `안녕하세요! u/${username}입니다. 게임과 테크, 그리고 커뮤니티의 다양한 토론을 즐깁니다.` 
+        : `Hey! I'm u/${username}. Passionate about gaming, tech, and lively online conversations.`,
     };
   }
 
