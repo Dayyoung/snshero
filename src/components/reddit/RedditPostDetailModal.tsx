@@ -73,6 +73,7 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
   const [commentSort, setCommentSort] = useState<'top' | 'new' | 'old'>('top');
   const [extraComments, setExtraComments] = useState<RedditComment[]>([]);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [hasMoreComments, setHasMoreComments] = useState(true);
   const [showOriginal, setShowOriginal] = useState(false);
   const [translatedTitle, setTranslatedTitle] = useState<string | null>(null);
   const [translatedBody, setTranslatedBody] = useState<string | null>(null);
@@ -133,25 +134,34 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
     }
   };
 
-  // 실시간 더 많은 댓글 불러오기 핸들러 (포스트 맥락 100% 반영)
+  // 실시간 더 많은 고유 댓글 불러오기 핸들러 (중복 내용 100% 필터링)
   const handleLoadMoreComments = React.useCallback(() => {
-    if (isLoadingMore) return;
+    if (isLoadingMore || !hasMoreComments) return;
     setIsLoadingMore(true);
-    setTimeout(() => {
-      const currentCount = comments.length + extraComments.length;
-      const additionalComments = generateContextualCommentsForPost(post, 5, currentCount, isKo);
 
-      setExtraComments((prev) => [...prev, ...additionalComments]);
+    setTimeout(() => {
+      const allCurrent = [...comments, ...extraComments];
+      // 기존 댓글 본문 텍스트 Set 구성 (중복 차단)
+      const existingBodies = new Set<string>(allCurrent.map((c) => (c.body || '').trim()));
+
+      const currentCount = allCurrent.length;
+      const additionalComments = generateContextualCommentsForPost(post, 4, currentCount, isKo, existingBodies);
+
+      if (additionalComments.length === 0 || allCurrent.length >= 24) {
+        setHasMoreComments(false);
+      } else {
+        setExtraComments((prev) => [...prev, ...additionalComments]);
+      }
       setIsLoadingMore(false);
-    }, 350);
-  }, [isLoadingMore, comments.length, extraComments.length, post, isKo]);
+    }, 300);
+  }, [isLoadingMore, hasMoreComments, comments, extraComments, post, isKo]);
 
   // 글을 끝까지 읽었을 때(바닥 센티넬 도달 시) 자동으로 실시간 더보기 트리거
   React.useEffect(() => {
-    if (!loadMoreSentinelRef.current) return;
+    if (!loadMoreSentinelRef.current || !hasMoreComments) return;
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && !isLoadingMore) {
+        if (entries[0].isIntersecting && !isLoadingMore && hasMoreComments) {
           handleLoadMoreComments();
         }
       },
@@ -159,16 +169,16 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
     );
     observer.observe(loadMoreSentinelRef.current);
     return () => observer.disconnect();
-  }, [isLoadingMore, handleLoadMoreComments]);
+  }, [isLoadingMore, hasMoreComments, handleLoadMoreComments]);
 
   // 스크롤 이벤트 바닥 감지 (모바일 및 데스크톱 이중 감지)
   const handleContainerScroll = React.useCallback(() => {
-    if (!scrollContainerRef.current || isLoadingMore) return;
+    if (!scrollContainerRef.current || isLoadingMore || !hasMoreComments) return;
     const { scrollTop, scrollHeight, clientHeight } = scrollContainerRef.current;
-    if (scrollHeight - scrollTop - clientHeight < 450) {
+    if (scrollHeight - scrollTop - clientHeight < 400) {
       handleLoadMoreComments();
     }
-  }, [isLoadingMore, handleLoadMoreComments]);
+  }, [isLoadingMore, hasMoreComments, handleLoadMoreComments]);
 
   // 전체 댓글 병합 및 정렬
   const displayedComments = React.useMemo(() => {
@@ -537,14 +547,18 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
                         <span className="w-4 h-4 border-2 border-[#FF4500] border-t-transparent rounded-full animate-spin" />
                         <span>{isKo ? '실시간 추가 댓글 불러오는 중...' : 'Streaming more live comments...'}</span>
                       </div>
-                    ) : (
+                    ) : hasMoreComments ? (
                       <button
                         type="button"
                         onClick={handleLoadMoreComments}
                         className="px-6 py-2.5 rounded-full border border-inherit/20 font-bold text-xs hover:bg-[#FF4500] hover:text-white transition-all cursor-pointer shadow-sm flex items-center justify-center gap-2 mx-auto"
                       >
-                        <span>{isKo ? '댓글 더 불러오기 (+10개 더보기)' : 'Load More Comments (+10 more)'}</span>
+                        <span>{isKo ? '댓글 더 불러오기' : 'Load More Comments'}</span>
                       </button>
+                    ) : (
+                      <div className="py-2 text-xs font-semibold opacity-60">
+                        <span>{isKo ? '✓ 모든 활성 토론 댓글을 확인했습니다.' : "✓ You've caught up with all discussion comments."}</span>
+                      </div>
                     )}
                     <p className="text-[11px] opacity-50 mt-2">
                       {isKo 
