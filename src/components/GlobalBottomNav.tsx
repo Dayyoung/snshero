@@ -32,7 +32,7 @@ export const GlobalBottomNav: React.FC<GlobalBottomNavProps> = ({
     { key: 'mydeck', label: isKo ? '마이덱' : 'Deck', icon: Layers },
     { key: 'play', label: isKo ? '미션' : 'Play', icon: Gamepad2, badge: 'HOT' },
     { key: 'card-marketplace', label: isKo ? '마켓' : 'Market', icon: ShoppingBag },
-    { key: 'community', label: isKo ? '소셜' : 'Social', icon: MessageSquare },
+    { key: 'reddit', label: isKo ? '커뮤니티' : 'Community', icon: MessageSquare },
   ];
 
   return (

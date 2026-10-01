@@ -90,7 +90,8 @@ import {
   Grid3X3,
   Wrench,
   ChevronDown,
-  CheckCircle2
+  CheckCircle2,
+  MessageSquare
 } from 'lucide-react';
 
 import { Meta } from './components/Meta';
@@ -531,7 +532,12 @@ function AppContent() {
     const params = new URLSearchParams(window.location.search);
     const viewParam = params.get('view');
 
-    if (view === 'modoo') {
+    if (view === 'reddit') {
+      const p = window.location.pathname.toLowerCase();
+      if (p !== '/' && !p.startsWith('/r/') && !p.startsWith('/u/') && !p.startsWith('/user/') && p !== '/popular' && p !== '/all') {
+        window.history.pushState({}, '', '/');
+      }
+    } else if (view === 'modoo') {
       if (window.location.pathname !== '/modoo') {
         window.history.pushState({}, '', '/modoo');
       }
@@ -5906,6 +5912,31 @@ function AppContent() {
           {/* 광고 다음 줄에 정렬되는 전역 헤더 버튼 (음소거, 메뉴, 뒤로가기) */}
           {view !== 'landing' && view !== 'card-play' && (
             <>
+              {/* HUD Quick Community Button (루트 '/' SNSHero 커뮤니티로 즉시 이동) */}
+              {!isGlobalPopupOpen && (
+                <button
+                  onClick={() => {
+                    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                    setView('reddit');
+                    if (typeof window !== 'undefined') {
+                      window.history.pushState(null, '', '/');
+                    }
+                  }}
+                  id="hud-community-toggle"
+                  className={cn(
+                    "fixed right-[6.75rem] min-[1024px]:right-[calc(50vw-392px)] z-[9999] min-h-11 min-w-11 backdrop-blur-xl rounded-lg shadow-md active:scale-95 transition-all cursor-pointer flex items-center justify-center touch-target",
+                    (!isAdRemoved && view !== 'landing') ? "top-[78px] sm:top-[106px] lg:top-[10px]" : "top-[10px]",
+                    (theme === 'dark' || theme === 'metal')
+                      ? "bg-slate-900/90 border border-slate-800 text-orange-400 hover:bg-slate-850 hover:text-orange-300"
+                      : "bg-white/90 border border-slate-200/80 text-orange-500 hover:text-orange-600 hover:bg-white"
+                  )}
+                  title={language === 'ko' ? 'SNSHero 커뮤니티 (/)' : 'SNSHero Community (/)'}
+                  aria-label={language === 'ko' ? '커뮤니티 바로가기' : 'Go to Community'}
+                >
+                  <MessageSquare size={20} className="text-orange-500" />
+                </button>
+              )}
+
               {/* Dedicated HUD Quick Audio Mute / Unmute Button (광고 다음 줄에 배치 - 팝업 열림 시 닫기 버튼 가림 방지 위해 숨김) */}
               {!isGlobalPopupOpen && (
                 <button
@@ -6117,22 +6148,25 @@ function AppContent() {
                       </div>
                     )}
 
-                    {/* Community (Instagram style social feed) */}
+                    {/* Community (SNSHero Community - Reddit clone at '/') */}
                     <button
                       onClick={() => {
                         playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                         setIsMenuOpen(false);
-                        setView('community');
+                        setView('reddit');
+                        if (typeof window !== 'undefined') {
+                          window.history.pushState(null, '', '/');
+                        }
                       }}
                       className="w-full border border-slate-100 p-3.5 text-left transition-all relative flex items-center justify-between font-sans bg-white hover:bg-slate-50/80 active:scale-[0.98] shadow-xs hover:border-slate-200 cursor-pointer rounded-xl group"
                     >
                       <div className="flex items-center gap-3">
-                        <Camera size={20} className="text-slate-700 group-hover:text-indigo-600 transition-colors" />
-                        <span className="font-bold text-sm uppercase tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-pink-500 to-orange-500">
+                        <MessageSquare size={20} className="text-orange-500 group-hover:text-orange-600 transition-colors" />
+                        <span className="font-bold text-sm uppercase tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-amber-500 to-rose-500">
                           {t('community', language)}
                         </span>
                       </div>
-                      <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform text-pink-500 animate-pulse" />
+                      <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform text-orange-500 animate-pulse" />
                     </button>
 
                     {/* Guild Management */}

@@ -12,7 +12,7 @@ export interface RouteMeta {
 export const VIEW_ROUTES: Record<ViewType, RouteMeta> = {
   reddit: {
     path: '/',
-    aliases: ['/reddit', '/popular', '/all'],
+    aliases: ['/reddit', '/popular', '/all', '/community'],
     titleKo: 'SNSHero 커뮤니티 - 인터넷의 모든 즐거움이 모이는 곳',
     titleEn: 'SNSHero Community - Dive into anything',
     descriptionKo: '게임, 테크, 유머, 지식 등 전 세계 최신 트렌드와 활발한 토론이 펼쳐지는 무비용 정적 커뮤니티 SNSHero입니다.',
@@ -418,6 +418,7 @@ export function getViewFromPath(pathname: string, search = ''): ViewType {
     cleanPath === '/' ||
     cleanPath === '/popular' ||
     cleanPath === '/all' ||
+    cleanPath === '/community' ||
     cleanPath === '/search' ||
     cleanPath === '/submit' ||
     cleanPath.startsWith('/r/') ||
