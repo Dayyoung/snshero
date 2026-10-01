@@ -15,10 +15,12 @@ import {
   Check, 
   ExternalLink,
   Globe,
-  Languages
+  Languages,
+  Play
 } from 'lucide-react';
 import { RedditPost, ViewModeType } from '../../lib/reddit/redditTypes';
 import { translateTextWithGoogle, isNeedsTranslation } from '../../lib/reddit/redditTranslationService';
+import { RedditVideoPlayer } from './RedditVideoPlayer';
 
 interface RedditPostCardProps {
   post: RedditPost;
@@ -189,9 +191,20 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
           </button>
         </div>
 
-        {post.media?.url && (
-          <div className="w-20 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-black/10">
-            <img src={post.media.url} alt="" className="w-full h-full object-cover" />
+        {post.media && (post.media.url || post.media.previewUrl) && (
+          <div className="relative w-20 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-black/10">
+            <img 
+              src={post.media.previewUrl || post.media.url} 
+              alt="" 
+              className="w-full h-full object-cover" 
+            />
+            {post.media.type === 'video' && (
+              <div className="absolute inset-0 bg-black/35 flex items-center justify-center">
+                <div className="w-6 h-6 rounded-full bg-[#FF4500] text-white flex items-center justify-center shadow-md">
+                  <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -385,20 +398,16 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
                 </span>
               </a>
             ) : post.media.type === 'video' ? (
-              <div className="relative w-full flex items-center justify-center bg-black">
-                <video
+              <div className="w-full" onClick={(e) => e.stopPropagation()}>
+                <RedditVideoPlayer
                   src={post.media.url}
                   poster={post.media.previewUrl}
-                  controls
-                  playsInline
-                  preload="metadata"
-                  className="w-full max-h-[500px] object-contain rounded-xl"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <source src={post.media.url} type="video/webm" />
-                  <source src={post.media.url} type="video/mp4" />
-                  {isKo ? '브라우저가 비디오 재생을 지원하지 않습니다.' : 'Your browser does not support the video tag.'}
-                </video>
+                  title={post.title}
+                  isDark={isDark}
+                  isKo={isKo}
+                  domain={post.media.domain}
+                  externalUrl={post.media.domain === 'v.redd.it' ? `https://www.reddit.com/r/${post.subreddit}/comments/${post.id}` : post.media.url}
+                />
               </div>
             ) : (
               <img

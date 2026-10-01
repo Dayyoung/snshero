@@ -30,6 +30,7 @@ import { AdSenseBanner } from '../AdSenseBanner';
 import { SNSHeroGameBannerCard } from './SNSHeroGameBannerCard';
 import { generateContextualCommentsForPost } from '../../lib/reddit/redditCommentGenerator';
 import { translateTextWithGoogle, isNeedsTranslation } from '../../lib/reddit/redditTranslationService';
+import { RedditVideoPlayer } from './RedditVideoPlayer';
 
 interface RedditPostDetailModalProps {
   post: RedditPost;
@@ -336,20 +337,17 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
                       </span>
                     </a>
                   ) : post.media.type === 'video' ? (
-                    <div className="relative w-full flex items-center justify-center bg-black">
-                      <video
+                    <div className="w-full">
+                      <RedditVideoPlayer
                         src={post.media.url}
                         poster={post.media.previewUrl}
-                        controls
-                        autoPlay
-                        playsInline
-                        preload="auto"
-                        className="w-full max-h-[620px] object-contain rounded-xl shadow-lg"
-                      >
-                        <source src={post.media.url} type="video/webm" />
-                        <source src={post.media.url} type="video/mp4" />
-                        {isKo ? '브라우저가 비디오 재생을 지원하지 않습니다.' : 'Your browser does not support the video tag.'}
-                      </video>
+                        title={displayTitle}
+                        isDark={isDark}
+                        isKo={isKo}
+                        autoPlay={true}
+                        domain={post.media.domain}
+                        externalUrl={post.media.domain === 'v.redd.it' ? `https://www.reddit.com/r/${post.subreddit}/comments/${post.id}` : post.media.url}
+                      />
                     </div>
                   ) : (
                     <img
