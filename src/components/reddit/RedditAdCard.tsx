@@ -1,71 +1,119 @@
 /**
  * RedditAdCard.tsx
- * 오리지널 레딧 피드 내 Promoted(스폰서드) 포스트 스타일의 구글 애드센스(Google AdSense) 카드
+ * 오리지널 레딧 피드 내 Promoted(스폰서드) 포스트 스타일의 SNSHero 공식 게임 스폰서 카드
+ * 고화질 SNSHero 게임 대표 이미지 배너 제공 및 클릭 시 게임하기로 즉시 이동
  */
 
 import React from 'react';
-import { ExternalLink, Sparkles } from 'lucide-react';
+import { ExternalLink, Sparkles, Gamepad2, ArrowRight, Trophy } from 'lucide-react';
 import { AdSenseBanner } from '../AdSenseBanner';
 
 interface RedditAdCardProps {
   isDark: boolean;
   isKo?: boolean;
+  onGoToGame?: () => void;
 }
 
-export const RedditAdCard: React.FC<RedditAdCardProps> = ({ isDark, isKo = true }) => {
+export const RedditAdCard: React.FC<RedditAdCardProps> = ({ isDark, isKo = true, onGoToGame }) => {
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onGoToGame) {
+      onGoToGame();
+    } else {
+      window.location.href = '/home';
+    }
+  };
+
   return (
     <article
-      className={`rounded-2xl border p-4 mb-3.5 shadow-sm transition-all w-full max-w-full overflow-hidden break-words ${
-        isDark ? 'bg-[#181C1F] border-[#22272B] text-gray-200' : 'bg-white border-gray-200 text-gray-800'
+      onClick={handleClick}
+      className={`rounded-2xl border p-4 mb-3.5 shadow-sm hover:shadow-md cursor-pointer transition-all duration-200 w-full max-w-full overflow-hidden break-words group ${
+        isDark ? 'bg-[#181C1F] border-[#22272B] hover:border-[#FF4500]/40 text-gray-200' : 'bg-white border-gray-200 hover:border-[#FF4500]/40 text-gray-800'
       }`}
     >
-      {/* 헤더 */}
+      {/* 1. 상단 프로모션 헤더 */}
       <div className="flex items-center justify-between text-xs mb-2.5">
         <div className="flex items-center gap-2">
           <div className="w-5 h-5 rounded-full bg-gradient-to-tr from-amber-500 to-[#FF4500] flex items-center justify-center text-[10px] text-white font-extrabold shadow-sm">
             AD
           </div>
           <span className="font-bold text-xs opacity-90">
-            {isKo ? 'u/SNSHero_공식스폰서' : 'u/SNSHero_Sponsored'}
+            {isKo ? 'u/SNSHero_공식스폰서' : 'u/SNSHero_Official'}
           </span>
           <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FF4500]/10 text-[#FF4500] flex items-center gap-1">
             <Sparkles className="w-2.5 h-2.5" />
             <span>{isKo ? '프로모션' : 'Promoted'}</span>
           </span>
         </div>
-        <div className="text-[10px] opacity-40 flex items-center gap-1">
+        <div className="text-[10px] opacity-50 flex items-center gap-1">
           <span>{isKo ? '스폰서' : 'Sponsored'}</span>
           <ExternalLink className="w-3 h-3" />
         </div>
       </div>
 
-      {/* 광고 타이틀 */}
-      <h3 className="font-bold text-sm sm:text-base mb-3 leading-snug break-words">
+      {/* 2. 광고 타이틀 */}
+      <h3 className="font-bold text-sm sm:text-base mb-3 leading-snug break-words group-hover:text-[#FF4500] transition-colors">
         {isKo 
           ? 'SNSHero 차세대 웹 카드 배틀 아레나를 지금 바로 무료로 즐겨보세요! 설치 0초, 로딩 0초.' 
-          : 'Discover Next-Generation Gaming & Communities on SNSHero. 100% Free & Zero-Lag.'}
+          : 'Discover Next-Generation Gaming on SNSHero. 100% Free, Zero Install, Zero Lag.'}
       </h3>
 
-      {/* 구글 애드센스 인피드 반응형 광고 배너 렌더링 */}
-      <div className="w-full min-h-[140px] sm:min-h-[200px] rounded-xl overflow-hidden bg-black/5 flex items-center justify-center p-2 border border-inherit/10">
-        <AdSenseBanner
-          format="fluid"
-          responsive={true}
-          className="w-full flex justify-center"
+      {/* 3. SNSHero 공식 고화질 게임 대표 이미지 배너 */}
+      <div className="relative w-full h-44 sm:h-56 rounded-xl overflow-hidden mb-3 border border-inherit/10 bg-black/60 flex items-center justify-center">
+        <img
+          src="/minigame_ai_battle.png"
+          alt="SNSHero Card Battle Arena"
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = '/logo.png';
+          }}
         />
+
+        {/* 배너 내부 그라데이션 오버레이 & 게임 정보 태그 */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent flex flex-col justify-end p-3.5 sm:p-4">
+          <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+            <span className="px-2 py-0.5 rounded-full bg-[#FF4500] text-white text-[10px] font-extrabold tracking-wider uppercase shadow-md flex items-center gap-1">
+              <Gamepad2 className="w-3 h-3" />
+              <span>AI BATTLE ARENA</span>
+            </span>
+            <span className="px-2 py-0.5 rounded-full bg-emerald-500/80 text-white text-[10px] font-bold backdrop-blur-sm shadow-xs">
+              ✓ INSTALL 0s
+            </span>
+            <span className="px-2 py-0.5 rounded-full bg-amber-500/80 text-white text-[10px] font-bold backdrop-blur-sm shadow-xs flex items-center gap-1">
+              <Trophy className="w-2.5 h-2.5" />
+              <span>110+ Cards</span>
+            </span>
+          </div>
+          <p className="text-white text-xs sm:text-sm font-bold line-clamp-1 drop-shadow-md">
+            {isKo ? '실시간 원클릭 AI 카드 대결 & 나만의 최강 덱 빌딩' : 'Real-time AI Card Battle & Deck Strategy'}
+          </p>
+        </div>
+
+        {/* 구글 애드센스 백그라운드 슬롯 (승인 시 렌더링) */}
+        <div className="absolute inset-0 pointer-events-none opacity-0">
+          <AdSenseBanner
+            format="fluid"
+            responsive={true}
+            className="w-full flex justify-center"
+          />
+        </div>
       </div>
 
-      {/* 하단 CTA 바 */}
-      <div className="mt-3 flex items-center justify-between pt-2 border-t border-inherit/10 text-xs">
-        <span className="text-[11px] opacity-60">Google Certified Partner Ad Network</span>
-        <a
-          href="https://snshero.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="px-4 py-1.5 rounded-full bg-[#FF4500] text-white font-bold text-xs hover:bg-[#FF5414] transition-colors"
+      {/* 4. 하단 CTA 바 */}
+      <div className="mt-2 flex items-center justify-between pt-2 border-t border-inherit/10 text-xs">
+        <span className="text-[11px] opacity-60 flex items-center gap-1">
+          <Sparkles className="w-3 h-3 text-[#FF4500]" />
+          <span>{isKo ? 'SNSHero 공식 웹 게임' : 'SNSHero Official Web Game'}</span>
+        </span>
+        <button
+          type="button"
+          onClick={handleClick}
+          className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-gradient-to-r from-[#FF4500] to-[#FF6B00] hover:from-[#FF5414] hover:to-[#FF8500] text-white font-extrabold text-xs cursor-pointer shadow-md shadow-[#FF4500]/25 transition-all hover:scale-105 active:scale-95"
         >
-          {isKo ? '자세히 보기' : 'Learn More'}
-        </a>
+          <Gamepad2 className="w-3.5 h-3.5" />
+          <span>{isKo ? '자세히 보기 (게임하기)' : 'Play Game'}</span>
+          <ArrowRight className="w-3 h-3" />
+        </button>
       </div>
     </article>
   );

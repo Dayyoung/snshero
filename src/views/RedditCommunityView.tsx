@@ -598,7 +598,11 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
 
                             {/* 4번째 포스트마다 구글 애드센스 인피드 광고 노출 (게임 배너와 겹치지 않게 분리) */}
                             {idx > 0 && idx % 4 === 0 && idx % 10 !== 0 && (
-                              <RedditAdCard isDark={isDark} isKo={isKo} />
+                              <RedditAdCard 
+                                isDark={isDark} 
+                                isKo={isKo} 
+                                onGoToGame={onNavigateHome} 
+                              />
                             )}
 
                             <RedditPostCard
