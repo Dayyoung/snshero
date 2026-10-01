@@ -4,7 +4,7 @@
  * 무비용 정적 아키텍처, 브라우저 직접 파싱, 로컬스토리지 캐시 및 시드 포스트 스마트 병합
  */
 
-import { RedditPost } from './redditTypes';
+import { RedditPost, cleanRedditUrl } from './redditTypes';
 import { translateRedditPosts } from './redditTranslationService';
 
 const LIVE_CACHE_KEY = 'hero_reddit_live_posts_v1';
@@ -29,10 +29,16 @@ export class RedditLiveFeedService {
         if (Array.isArray(parsed) && parsed.length > 0) {
           const now = Date.now();
           const maxAge = 1000 * 60 * 60 * 48; // 48시간
-          const fresh = parsed.filter((p) => {
-            const age = now - (p.createdAt || 0);
-            return age < maxAge;
-          });
+          const fresh = parsed
+            .filter((p) => {
+              const age = now - (p.createdAt || 0);
+              return age < maxAge;
+            })
+            .map((p) => {
+              if (p.permalink) p.permalink = cleanRedditUrl(p.permalink);
+              if (p.media?.url) p.media.url = cleanRedditUrl(p.media.url);
+              return p;
+            });
           // 최신 시간순 정렬
           return fresh.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
         }
@@ -138,6 +144,11 @@ export class RedditLiveFeedService {
         const score = Math.floor(22000 + (entries.length - idx) * 1600 + Math.random() * 800);
         const commentCount = Math.floor(450 + (entries.length - idx) * 60 + Math.random() * 50);
 
+        // 원본 Reddit 포스트 링크 추출 (t3_ 접두사 없는 순수 공식 링크)
+        const linkEl = entry.querySelector('link');
+        const cleanPermalink = linkEl ? linkEl.getAttribute('href') || '' : '';
+        const redditDirectUrl = cleanPermalink || `https://www.reddit.com/r/${subName}/comments/${origId}/`;
+
         // 동영상 링크 및 비디오 타입 정밀 감지 (v.redd.it, mp4, youtube 등)
         const vRedditMatch = contentHtml.match(/https?:\/\/(?:v\.redd\.it|www\.reddit\.com\/r\/[^\/]+\/comments\/[^\/]+\/video\/)[^\s"'>]+/i);
         const youtubeMatch = contentHtml.match(/https?:\/\/(?:www\.youtube\.com\/watch\?v=|youtu\.be\/)[^\s"'>]+/i);
@@ -154,14 +165,15 @@ export class RedditLiveFeedService {
 
         let mediaObj: RedditPost['media'] = undefined;
         if (isVideoPost) {
-          // 해당 게시물 고유의 원본 비디오 링크 (엉뚱한 비디오 바꿔치기 원천 방지)
-          const originalVideoLink = vRedditMatch 
+          // 해당 게시물 고유의 원본 비디오 링크 (순수 ID 기반 공식 링크로 직결)
+          const rawVideoLink = vRedditMatch 
             ? vRedditMatch[0] 
             : (youtubeMatch 
                 ? youtubeMatch[0] 
                 : (videoExtMatch 
                     ? videoExtMatch[0] 
-                    : `https://www.reddit.com/r/${subName}/comments/${origId}`));
+                    : redditDirectUrl));
+          const originalVideoLink = cleanRedditUrl(rawVideoLink);
 
           mediaObj = {
             type: 'video',
@@ -189,6 +201,7 @@ export class RedditLiveFeedService {
           commentCount,
           body: body || undefined,
           media: mediaObj,
+          permalink: cleanRedditUrl(cleanPermalink || redditDirectUrl),
           flair: isVideoPost
             ? { text: '동영상 / Video', bgColor: '#FF4500', textColor: '#FFFFFF' }
             : { text: '실시간 Hot / Live', bgColor: '#FF4500', textColor: '#FFFFFF' },

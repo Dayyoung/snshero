@@ -16,6 +16,7 @@ import {
   ExternalLink,
   Film
 } from 'lucide-react';
+import { cleanRedditUrl } from '../../lib/reddit/redditTypes';
 
 interface RedditVideoPlayerProps {
   src: string;
@@ -62,7 +63,7 @@ export const RedditVideoPlayer: React.FC<RedditVideoPlayerProps> = ({
   const [showControls, setShowControls] = useState(false);
   const [hasError, setHasError] = useState(false);
 
-  const targetLink = externalUrl || src;
+  const targetLink = cleanRedditUrl(externalUrl || src);
 
   // src 변경 시 초기화
   useEffect(() => {

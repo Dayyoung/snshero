@@ -63,6 +63,7 @@ export interface RedditPost {
   originalTitle?: string;
   originalBody?: string;
   isTranslated?: boolean;
+  permalink?: string;
 }
 
 export interface SubredditRule {
@@ -125,5 +126,27 @@ export interface SearchResults {
   subreddits: RedditSubreddit[];
   comments: RedditComment[];
   users: RedditUser[];
+}
+
+/**
+ * Reddit URL에 내부 식별자 접두사(예: live_nextfuckinglevel_1wv90y5)가 포함된 경우
+ * Reddit 공식 URL 규격(1wv90y5)으로 정제
+ */
+export function cleanRedditUrl(url: string): string {
+  if (!url) return url;
+  return url.replace(/\/comments\/live_[^_]+_([a-zA-Z0-9]+)/, '/comments/$1');
+}
+
+/**
+ * RedditPost 객체로부터 100% 정상 작동하는 공식 Reddit 포스트 URL 반환
+ */
+export function getRedditExternalUrl(post: RedditPost): string {
+  if (post.permalink && post.permalink.startsWith('http')) {
+    return cleanRedditUrl(post.permalink);
+  }
+  // post.id에서 live_${sub}_${origId} 추출
+  const match = post.id.match(/^live_[^_]+_(.+)$/);
+  const realId = match ? match[1] : post.id;
+  return `https://www.reddit.com/r/${post.subreddit}/comments/${realId}/`;
 }
 

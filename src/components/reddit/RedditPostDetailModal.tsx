@@ -23,7 +23,7 @@ import {
   Globe,
   Languages
 } from 'lucide-react';
-import { RedditPost, RedditComment, RedditSubreddit, RedditUserDataState } from '../../lib/reddit/redditTypes';
+import { RedditPost, RedditComment, RedditSubreddit, RedditUserDataState, getRedditExternalUrl, cleanRedditUrl } from '../../lib/reddit/redditTypes';
 import { RedditCommentTree } from './RedditCommentTree';
 import { RedditSidebarRight } from './RedditSidebarRight';
 import { AdSenseBanner } from '../AdSenseBanner';
@@ -321,7 +321,7 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
                 <div className="rounded-xl overflow-hidden mb-5 flex items-center justify-center border border-inherit/10">
                   {post.media.type === 'link' ? (
                     <a
-                      href={post.media.url}
+                      href={cleanRedditUrl(post.media.url)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className={`w-full p-4 flex items-center justify-between gap-3 text-xs sm:text-sm font-semibold rounded-xl border transition-colors ${
@@ -330,7 +330,7 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
                     >
                       <div className="flex items-center gap-2 truncate">
                         <ExternalLink className="w-4 h-4 flex-shrink-0" />
-                        <span className="truncate">{post.media.url}</span>
+                        <span className="truncate">{cleanRedditUrl(post.media.url)}</span>
                       </div>
                       <span className="text-xs px-3 py-1 rounded-full bg-black/10 flex-shrink-0 opacity-80">
                         {post.media.domain || '외부 링크 열기'}
@@ -346,7 +346,11 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
                         isKo={isKo}
                         autoPlay={true}
                         domain={post.media.domain}
-                        externalUrl={post.media.domain === 'v.redd.it' ? `https://www.reddit.com/r/${post.subreddit}/comments/${post.id}` : post.media.url}
+                        externalUrl={
+                          post.media.domain === 'v.redd.it' || post.media.domain === 'reddit.com'
+                            ? getRedditExternalUrl(post)
+                            : (cleanRedditUrl(post.media.url) || getRedditExternalUrl(post))
+                        }
                       />
                     </div>
                   ) : (

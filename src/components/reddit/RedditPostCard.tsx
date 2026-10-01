@@ -18,7 +18,7 @@ import {
   Languages,
   Play
 } from 'lucide-react';
-import { RedditPost, ViewModeType } from '../../lib/reddit/redditTypes';
+import { RedditPost, ViewModeType, getRedditExternalUrl, cleanRedditUrl } from '../../lib/reddit/redditTypes';
 import { translateTextWithGoogle, isNeedsTranslation } from '../../lib/reddit/redditTranslationService';
 import { RedditVideoPlayer } from './RedditVideoPlayer';
 
@@ -381,7 +381,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
           >
             {post.media.type === 'link' ? (
               <a
-                href={post.media.url}
+                href={cleanRedditUrl(post.media.url)}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={(e) => e.stopPropagation()}
@@ -391,7 +391,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
               >
                 <div className="flex items-center gap-2 truncate">
                   <ExternalLink className="w-4 h-4 flex-shrink-0" />
-                  <span className="truncate">{post.media.url}</span>
+                  <span className="truncate">{cleanRedditUrl(post.media.url)}</span>
                 </div>
                 <span className="text-[10px] px-2.5 py-1 rounded-full bg-black/10 flex-shrink-0 opacity-80">
                   {post.media.domain || 'link'}
@@ -406,7 +406,11 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
                   isDark={isDark}
                   isKo={isKo}
                   domain={post.media.domain}
-                  externalUrl={post.media.domain === 'v.redd.it' ? `https://www.reddit.com/r/${post.subreddit}/comments/${post.id}` : post.media.url}
+                  externalUrl={
+                    post.media.domain === 'v.redd.it' || post.media.domain === 'reddit.com'
+                      ? getRedditExternalUrl(post)
+                      : (cleanRedditUrl(post.media.url) || getRedditExternalUrl(post))
+                  }
                 />
               </div>
             ) : (
