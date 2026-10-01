@@ -60,6 +60,9 @@ export interface RedditPost {
   userVote?: VoteState;
   isSaved?: boolean;
   isHidden?: boolean;
+  originalTitle?: string;
+  originalBody?: string;
+  isTranslated?: boolean;
 }
 
 export interface SubredditRule {

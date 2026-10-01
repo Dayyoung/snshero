@@ -17,6 +17,7 @@ import {
   SearchResults 
 } from '../lib/reddit/redditTypes';
 import { RedditApiService } from '../lib/reddit/redditApiService';
+import { translateRedditPosts, isNeedsTranslation } from '../lib/reddit/redditTranslationService';
 import { 
   loadRedditState, 
   votePostOrComment, 
@@ -98,14 +99,14 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
   const handleSyncLive = useCallback(async () => {
     setIsSyncingLive(true);
     try {
-      await RedditApiService.syncLivePosts(currentSubreddit);
+      await RedditApiService.syncLivePosts(currentSubreddit, userState.language || 'ko');
       setSyncTick((t) => t + 1);
     } catch (e) {
       console.warn('[Reddit] Live sync warning', e);
     } finally {
       setIsSyncingLive(false);
     }
-  }, [currentSubreddit]);
+  }, [currentSubreddit, userState.language]);
 
   // 마운트 및 서브레딧 변경 시 실시간 Reddit RSS 자동 동기화
   useEffect(() => {
@@ -121,6 +122,21 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
   const posts = useMemo(() => {
     return RedditApiService.getPosts(currentSubreddit, currentSort, currentTimeFilter, userState);
   }, [currentSubreddit, currentSort, currentTimeFilter, userState, syncTick]);
+
+  // 피드 포스트 중 영문 포스트 백그라운드 구글 번역 연동
+  useEffect(() => {
+    let isCancelled = false;
+    const targetLang = userState.language || 'ko';
+    const needsAny = posts.slice(0, 15).some((p) => isNeedsTranslation(p.title, targetLang));
+    if (needsAny) {
+      translateRedditPosts(posts.slice(0, 15), targetLang, 15).then(() => {
+        if (!isCancelled) {
+          setSyncTick((t) => t + 1);
+        }
+      });
+    }
+    return () => { isCancelled = true; };
+  }, [posts, userState.language]);
 
   // 피드 무한 스크롤 더보기 핸들러
   const handleLoadMorePosts = useCallback(() => {

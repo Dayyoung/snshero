@@ -23,8 +23,8 @@ export class RedditApiService {
   /**
    * 실시간 실제 reddit.com 피드 동기화
    */
-  static async syncLivePosts(subreddit: string = 'popular'): Promise<RedditPost[]> {
-    return RedditLiveFeedService.fetchRealtimePosts(subreddit);
+  static async syncLivePosts(subreddit: string = 'popular', targetLang: string = 'ko'): Promise<RedditPost[]> {
+    return RedditLiveFeedService.fetchRealtimePosts(subreddit, targetLang);
   }
 
   /**

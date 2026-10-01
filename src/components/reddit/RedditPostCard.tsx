@@ -3,7 +3,7 @@
  * 오리지널 레딧 포스트 카드 컴포넌트 (한국어 기본 지원)
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   ArrowBigUp, 
   ArrowBigDown, 
@@ -13,9 +13,12 @@ import {
   MoreHorizontal, 
   EyeOff, 
   Check, 
-  ExternalLink 
+  ExternalLink,
+  Globe,
+  Languages
 } from 'lucide-react';
 import { RedditPost, ViewModeType } from '../../lib/reddit/redditTypes';
+import { translateTextWithGoogle, isNeedsTranslation } from '../../lib/reddit/redditTranslationService';
 
 interface RedditPostCardProps {
   post: RedditPost;
@@ -44,6 +47,33 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
 }) => {
   const [isCopied, setIsCopied] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showOriginal, setShowOriginal] = useState(false);
+  const [translatedTitle, setTranslatedTitle] = useState<string | null>(null);
+  const [translatedBody, setTranslatedBody] = useState<string | null>(null);
+
+  const targetLang = isKo ? 'ko' : 'en';
+  const needsTrans = isNeedsTranslation(post.title, targetLang) || (post.body ? isNeedsTranslation(post.body, targetLang) : false);
+
+  useEffect(() => {
+    let isMounted = true;
+    if (needsTrans) {
+      if (isNeedsTranslation(post.title, targetLang)) {
+        translateTextWithGoogle(post.title, targetLang).then((res) => {
+          if (isMounted) setTranslatedTitle(res);
+        });
+      }
+      if (post.body && isNeedsTranslation(post.body, targetLang)) {
+        translateTextWithGoogle(post.body, targetLang).then((res) => {
+          if (isMounted) setTranslatedBody(res);
+        });
+      }
+    }
+    return () => { isMounted = false; };
+  }, [post.id, post.title, post.body, targetLang, needsTrans]);
+
+  const displayTitle = (!showOriginal && translatedTitle) ? translatedTitle : post.title;
+  const displayBody = (!showOriginal && translatedBody) ? translatedBody : post.body;
+  const isCurrentlyTranslated = !showOriginal && (Boolean(translatedTitle) || Boolean(translatedBody));
 
   // 시간 경과 포맷
   const getRelativeTime = (timestamp: number) => {
@@ -106,7 +136,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
           >
             r/{post.subreddit}
           </span>
-          <span className="font-medium truncate">{post.title}</span>
+          <span className="font-medium truncate">{displayTitle}</span>
         </div>
 
         <div className="flex items-center gap-3 opacity-60 flex-shrink-0 text-[11px]">
@@ -184,7 +214,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
             <span>{getRelativeTime(post.createdAt)}</span>
           </div>
 
-          <h2 className="font-bold text-sm leading-snug line-clamp-2 mb-2">{post.title}</h2>
+          <h2 className="font-bold text-sm leading-snug line-clamp-2 mb-2">{displayTitle}</h2>
 
           <div className="flex items-center gap-4 opacity-70 text-[11px]">
             <span className="flex items-center gap-1 font-semibold">
@@ -296,15 +326,35 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
           </div>
         </div>
 
+        {/* 번역 상태 표시줄 (원문이 다른 언어일 때 노출) */}
+        {needsTrans && (
+          <div className="flex items-center gap-2 mb-2 text-[11px]">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-500 font-semibold border border-blue-500/20">
+              <Globe className="w-3 h-3" />
+              {isCurrentlyTranslated ? (isKo ? 'Google 번역됨' : 'Google Translated') : (isKo ? '원문 표시 중' : 'Original')}
+            </span>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowOriginal(!showOriginal);
+              }}
+              className="opacity-75 hover:opacity-100 underline cursor-pointer text-[11px]"
+            >
+              {showOriginal ? (isKo ? '번역본 보기' : 'Show translation') : (isKo ? '원문 보기' : 'Show original')}
+            </button>
+          </div>
+        )}
+
         {/* 2. 타이틀 */}
         <h2 className="font-bold text-base sm:text-lg leading-snug mb-3">
-          {post.title}
+          {displayTitle}
         </h2>
 
         {/* 3. 본문 텍스트 */}
-        {post.body && (
+        {displayBody && (
           <div className="text-xs sm:text-sm leading-relaxed opacity-85 mb-3 line-clamp-3 whitespace-pre-line font-sans">
-            {post.body}
+            {displayBody}
           </div>
         )}
 

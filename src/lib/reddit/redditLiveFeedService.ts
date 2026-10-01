@@ -5,6 +5,7 @@
  */
 
 import { RedditPost } from './redditTypes';
+import { translateRedditPosts } from './redditTranslationService';
 
 const LIVE_CACHE_KEY = 'hero_reddit_live_posts_v1';
 const LIVE_SYNC_TIME_KEY = 'hero_reddit_live_sync_time';
@@ -50,7 +51,7 @@ export class RedditLiveFeedService {
   /**
    * 실제 reddit.com 실시간 RSS 피드 가져오기 및 파싱
    */
-  static async fetchRealtimePosts(subreddit: string = 'popular'): Promise<RedditPost[]> {
+  static async fetchRealtimePosts(subreddit: string = 'popular', targetLang: string = 'ko'): Promise<RedditPost[]> {
     const urlsToTry = [
       `/api/reddit/feed?sub=${encodeURIComponent(subreddit)}`,
       `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://www.reddit.com/r/${subreddit}/.rss`)}`,
@@ -157,9 +158,16 @@ export class RedditLiveFeedService {
       });
 
       if (livePosts.length > 0) {
-        localStorage.setItem(LIVE_CACHE_KEY, JSON.stringify(livePosts));
+        // 구글 번역을 통해 현재 설정된 언어로 실시간 자동 번역 적용
+        let finalPosts = livePosts;
+        try {
+          finalPosts = await translateRedditPosts(livePosts, targetLang, 15);
+        } catch {
+          // 번역 실패 시 원문 유지
+        }
+        localStorage.setItem(LIVE_CACHE_KEY, JSON.stringify(finalPosts));
         localStorage.setItem(LIVE_SYNC_TIME_KEY, Date.now().toString());
-        return livePosts;
+        return finalPosts;
       }
     } catch (parseErr) {
       console.warn('[RedditLiveFeed] XML parsing failed', parseErr);

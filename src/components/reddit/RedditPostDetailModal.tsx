@@ -19,13 +19,16 @@ import {
   List, 
   Check, 
   ArrowLeft,
-  ExternalLink
+  ExternalLink,
+  Globe,
+  Languages
 } from 'lucide-react';
 import { RedditPost, RedditComment, RedditSubreddit, RedditUserDataState } from '../../lib/reddit/redditTypes';
 import { RedditCommentTree } from './RedditCommentTree';
 import { RedditSidebarRight } from './RedditSidebarRight';
 import { AdSenseBanner } from '../AdSenseBanner';
 import { generateContextualCommentsForPost } from '../../lib/reddit/redditCommentGenerator';
+import { translateTextWithGoogle, isNeedsTranslation } from '../../lib/reddit/redditTranslationService';
 
 interface RedditPostDetailModalProps {
   post: RedditPost;
@@ -67,6 +70,33 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
   const [commentSort, setCommentSort] = useState<'top' | 'new' | 'old'>('top');
   const [extraComments, setExtraComments] = useState<RedditComment[]>([]);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [showOriginal, setShowOriginal] = useState(false);
+  const [translatedTitle, setTranslatedTitle] = useState<string | null>(null);
+  const [translatedBody, setTranslatedBody] = useState<string | null>(null);
+
+  const targetLang = isKo ? 'ko' : 'en';
+  const needsTrans = isNeedsTranslation(post.title, targetLang) || (post.body ? isNeedsTranslation(post.body, targetLang) : false);
+
+  useEffect(() => {
+    let isMounted = true;
+    if (needsTrans) {
+      if (isNeedsTranslation(post.title, targetLang)) {
+        translateTextWithGoogle(post.title, targetLang).then((res) => {
+          if (isMounted) setTranslatedTitle(res);
+        });
+      }
+      if (post.body && isNeedsTranslation(post.body, targetLang)) {
+        translateTextWithGoogle(post.body, targetLang).then((res) => {
+          if (isMounted) setTranslatedBody(res);
+        });
+      }
+    }
+    return () => { isMounted = false; };
+  }, [post.id, post.title, post.body, targetLang, needsTrans]);
+
+  const displayTitle = (!showOriginal && translatedTitle) ? translatedTitle : post.title;
+  const displayBody = (!showOriginal && translatedBody) ? translatedBody : post.body;
+  const isCurrentlyTranslated = !showOriginal && (Boolean(translatedTitle) || Boolean(translatedBody));
 
   const scrollContainerRef = React.useRef<HTMLDivElement>(null);
   const loadMoreSentinelRef = React.useRef<HTMLDivElement>(null);
@@ -250,9 +280,26 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
                 )}
               </div>
 
+              {/* 번역 상태 표시줄 (원문이 다른 언어일 때 노출) */}
+              {needsTrans && (
+                <div className="flex items-center gap-2 mb-3 text-xs">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-500 font-semibold border border-blue-500/20">
+                    <Globe className="w-3.5 h-3.5" />
+                    {isCurrentlyTranslated ? (isKo ? 'Google 번역 적용됨 (한국어)' : 'Google Translated') : (isKo ? '원문 표시 중' : 'Original Text')}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setShowOriginal(!showOriginal)}
+                    className="opacity-75 hover:opacity-100 underline cursor-pointer text-xs"
+                  >
+                    {showOriginal ? (isKo ? '번역본 보기' : 'Show translation') : (isKo ? '원문 보기' : 'Show original')}
+                  </button>
+                </div>
+              )}
+
               {/* 제목 */}
               <h1 className="font-extrabold text-lg sm:text-2xl leading-tight mb-4">
-                {post.title}
+                {displayTitle}
               </h1>
 
               {/* 고화질 미디어 (동영상 및 이미지, 링크 완벽 지원) */}
@@ -294,7 +341,7 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
                   ) : (
                     <img
                       src={post.media.url}
-                      alt={post.title}
+                      alt={displayTitle}
                       className="w-full h-auto max-h-[600px] object-contain bg-black"
                     />
                   )}
@@ -302,9 +349,9 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
               )}
 
               {/* 본문 전체 내용 */}
-              {post.body && (
+              {displayBody && (
                 <div className="text-sm sm:text-base leading-relaxed opacity-90 whitespace-pre-line mb-6 font-sans">
-                  {post.body}
+                  {displayBody}
                 </div>
               )}
 
