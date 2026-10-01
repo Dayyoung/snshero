@@ -95,15 +95,15 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/75 backdrop-blur-sm flex justify-center py-0 sm:py-8 px-0 sm:px-4">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-sm flex justify-center p-0 sm:p-4 md:py-8">
       <div className="fixed inset-0 -z-10" onClick={onClose} />
 
-      <div className={`relative w-full max-w-6xl min-h-screen sm:min-h-0 sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden transition-colors ${
+      <div className={`relative w-full max-w-6xl my-auto sm:my-0 rounded-none sm:rounded-2xl shadow-2xl flex flex-col transition-colors min-h-[85vh] pb-16 ${
         isDark ? 'bg-[#0E1113] text-gray-200' : 'bg-[#F6F7F8] text-gray-900'
       }`}>
         {/* 상단 네비게이션 헤더 */}
         <div className={`sticky top-0 z-20 h-12 px-4 border-b flex items-center justify-between backdrop-blur-md ${
-          isDark ? 'bg-[#0E1113]/90 border-[#22272B]' : 'bg-white/90 border-gray-200'
+          isDark ? 'bg-[#0E1113]/95 border-[#22272B]' : 'bg-white/95 border-gray-200'
         }`}>
           <div className="flex items-center gap-3">
             <button
@@ -135,8 +135,8 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
           </button>
         </div>
 
-        {/* 본문 레이아웃 */}
-        <div className="flex-1 flex flex-col lg:flex-row gap-6 p-4 sm:p-6 overflow-y-auto">
+        {/* 본문 레이아웃 (자연스러운 전체 스크롤) */}
+        <div className="flex-1 flex flex-col lg:flex-row gap-6 p-4 sm:p-6">
           <main className="flex-1 max-w-4xl space-y-5">
             {/* 포스트 카드 */}
             <article className={`rounded-2xl border p-4 sm:p-6 shadow-sm ${

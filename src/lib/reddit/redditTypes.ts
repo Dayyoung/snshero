@@ -107,9 +107,20 @@ export interface RedditUserDataState {
   lastSubreddit?: string;
 }
 
+export interface RedditTrendingItem {
+  id: string;
+  title: string;
+  description: string;
+  subreddit: string;
+  subredditIcon?: string;
+  imageUrl: string;
+  postId?: string;
+}
+
 export interface SearchResults {
   posts: RedditPost[];
   subreddits: RedditSubreddit[];
   comments: RedditComment[];
   users: RedditUser[];
 }
+

@@ -43,6 +43,9 @@ import { RedditUserProfileView } from '../components/reddit/RedditUserProfileVie
 import { RedditSubmitPostModal } from '../components/reddit/RedditSubmitPostModal';
 import { RedditSearchModal } from '../components/reddit/RedditSearchModal';
 import { RedditFloatingPlayButton } from '../components/reddit/RedditFloatingPlayButton';
+import { RedditTrendingCarousel } from '../components/reddit/RedditTrendingCarousel';
+import { RedditQuickCreatePostBar } from '../components/reddit/RedditQuickCreatePostBar';
+import { RedditTrendingItem } from '../lib/reddit/redditTypes';
 
 interface RedditCommunityViewProps {
   initialSubreddit?: string;
@@ -153,13 +156,40 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
     RedditSeoManager.trackEvent('reddit_vote', { target: 'comment', commentId, direction });
   }, []);
 
+  // 트렌딩 토픽 목록
+  const trendingItems = useMemo(() => {
+    return RedditApiService.getTrendingItems();
+  }, []);
+
   // 포스트 상세 열기
   const handleOpenDetail = useCallback((post: RedditPost) => {
     const { comments } = RedditApiService.getPostDetail(post.id, userState);
     setActivePost(post);
     setActiveComments(comments);
+    window.history.pushState(null, '', `/r/${post.subreddit}/comments/${post.id}`);
     RedditSeoManager.trackEvent('reddit_open_post', { postId: post.id, title: post.title });
   }, [userState]);
+
+  // 포스트 상세 닫기
+  const handleCloseDetail = useCallback(() => {
+    setActivePost(null);
+    const targetUrl = currentSubreddit === 'popular' ? '/' : `/r/${currentSubreddit}`;
+    window.history.pushState(null, '', targetUrl);
+  }, [currentSubreddit]);
+
+  // 트렌딩 아이템 클릭 시
+  const handleSelectTrending = useCallback((item: RedditTrendingItem) => {
+    if (item.postId) {
+      const { post, comments } = RedditApiService.getPostDetail(item.postId, userState);
+      if (post) {
+        setActivePost(post);
+        setActiveComments(comments);
+        window.history.pushState(null, '', `/r/${post.subreddit}/comments/${post.id}`);
+        return;
+      }
+    }
+    handleSelectSubreddit(item.subreddit);
+  }, [userState, handleSelectSubreddit]);
 
   // 새 글 등록
   const handleSubmitPost = useCallback((newPost: RedditPost) => {
@@ -325,19 +355,36 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
           ) : (
             /* 표준 서브레딧 / 메인 피드 모드 */
             <>
-              {/* 서브레딧 상단 배너 & 타이틀 */}
-              <RedditSubredditHeader
-                subreddit={currentSubredditInfo}
-                isJoined={userState.joinedSubreddits.some((s) => s.toLowerCase() === currentSubreddit.toLowerCase())}
-                isDark={isDark}
-                isKo={isKo}
-                activeTab={activeTab}
-                onToggleJoin={() => setUserState((prev) => toggleJoinSubreddit(prev, currentSubreddit))}
-                onSelectTab={setActiveTab}
-              />
+              {/* 메인 홈/인기 피드일 때는 상단 트렌딩 토픽 캐러셀 카드 4개 노출 (실제 reddit.com 100% 동일) */}
+              {['popular', 'all', 'home'].includes(currentSubreddit.toLowerCase()) ? (
+                <RedditTrendingCarousel
+                  trendingItems={trendingItems}
+                  isDark={isDark}
+                  isKo={isKo}
+                  onSelectTrending={handleSelectTrending}
+                />
+              ) : (
+                /* 특정 서브레딧일 때는 서브레딧 상단 배너 & 타이틀 */
+                <RedditSubredditHeader
+                  subreddit={currentSubredditInfo}
+                  isJoined={userState.joinedSubreddits.some((s) => s.toLowerCase() === currentSubreddit.toLowerCase())}
+                  isDark={isDark}
+                  isKo={isKo}
+                  activeTab={activeTab}
+                  onToggleJoin={() => setUserState((prev) => toggleJoinSubreddit(prev, currentSubreddit))}
+                  onSelectTab={setActiveTab}
+                />
+              )}
 
               {activeTab === 'posts' && (
                 <>
+                  {/* 빠른 게시물 작성 인풋 바 (실제 reddit.com 100% 동일) */}
+                  <RedditQuickCreatePostBar
+                    isDark={isDark}
+                    isKo={isKo}
+                    onOpenSubmitModal={() => setIsSubmitModalOpen(true)}
+                  />
+
                   {/* 피드 정렬 칩 및 뷰 모드 바 */}
                   <RedditFeedSortBar
                     currentSort={currentSort}
@@ -351,7 +398,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
                   />
 
                   {/* 피드 포스트 목록 + 구글 애드센스 인피드 광고 주기적 삽입 */}
-                  <div className="space-y-1">
+                  <div className="space-y-2">
                     {posts.length > 0 ? (
                       posts.map((post, idx) => (
                         <React.Fragment key={post.id}>
@@ -446,7 +493,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
           comments={activeComments}
           subredditData={currentSubredditInfo}
           userState={userState}
-          onClose={() => setActivePost(null)}
+          onClose={handleCloseDetail}
           onVotePost={handleVotePost}
           onVoteComment={handleVoteComment}
           onAddComment={handleAddComment}

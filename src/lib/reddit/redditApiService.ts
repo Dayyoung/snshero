@@ -4,12 +4,13 @@
  * 하이브리드 파이프라인: 시드 데이터뱅크 + 로컬 사용자 생성 데이터 + 실시간 확장
  */
 
-import { SEED_SUBREDDITS, SEED_POSTS, SEED_COMMENTS, SEED_USERS } from '../../data/redditSeedData';
+import { SEED_SUBREDDITS, SEED_POSTS, SEED_COMMENTS, SEED_USERS, SEED_TRENDING } from '../../data/redditSeedData';
 import { 
   RedditPost, 
   RedditComment, 
   RedditSubreddit, 
   RedditUser, 
+  RedditTrendingItem,
   FeedSortType, 
   TimeFilterType, 
   SearchResults,
@@ -152,6 +153,11 @@ export class RedditApiService {
     // 3. 댓글 트리 가져오기
     let comments: RedditComment[] = SEED_COMMENTS[postId] ? JSON.parse(JSON.stringify(SEED_COMMENTS[postId])) : [];
 
+    // 만약 시드 댓글이 없다면 포스트 맥락에 맞는 스마트 댓글 자동 생성 (어떤 글이든 100% 댓글 읽기 보장!)
+    if (comments.length === 0) {
+      comments = this.generateContextualComments(post);
+    }
+
     // 4. 사용자가 작성한 해당 포스트의 댓글 병합
     if (userState && userState.userComments.length > 0) {
       const postUserComments = userState.userComments.filter((c) => c.postId === postId);
@@ -170,6 +176,58 @@ export class RedditApiService {
     }
 
     return { post, comments };
+  }
+
+  /**
+   * 트렌딩 토픽 목록 조회 (실제 reddit.com 첫 화면 상단 캐러셀)
+   */
+  static getTrendingItems(): RedditTrendingItem[] {
+    return [...SEED_TRENDING];
+  }
+
+  /**
+   * 어떤 글이든 100% 풍성한 댓글과 대댓글을 읽을 수 있도록 자동 생성하는 지능형 댓글 백업 엔진
+   */
+  private static generateContextualComments(post: RedditPost): RedditComment[] {
+    const now = Date.now();
+    return [
+      {
+        id: `c_gen_${post.id}_1`,
+        postId: post.id,
+        parentId: null,
+        author: 'CommunityObserver',
+        authorAvatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=64&q=80',
+        authorKarma: 24500,
+        createdAt: now - 1000 * 60 * 30,
+        score: Math.max(12, Math.floor(post.score * 0.12)),
+        body: `이 주제에 대해 r/${post.subreddit}에서 이렇게 심도 깊게 다뤄진 건 오랜만이네요. 본문에 적어주신 내용 아주 인상 깊게 읽었습니다!`,
+        replies: [
+          {
+            id: `c_gen_${post.id}_1_1`,
+            postId: post.id,
+            parentId: `c_gen_${post.id}_1`,
+            author: post.author,
+            authorAvatar: post.authorAvatar || 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=64&q=80',
+            authorKarma: 18200,
+            createdAt: now - 1000 * 60 * 15,
+            score: Math.max(8, Math.floor(post.score * 0.08)),
+            isAuthorOp: true,
+            body: `좋게 봐주셔서 감사합니다! 커뮤니티 분들과 더 많은 피드백을 나누고 싶었습니다 ㅎㅎ`,
+          },
+        ],
+      },
+      {
+        id: `c_gen_${post.id}_2`,
+        postId: post.id,
+        parentId: null,
+        author: 'InsightfulDebater',
+        authorAvatar: 'https://images.unsplash.com/photo-1527980965255-d3b416303d12?auto=format&fit=crop&w=64&q=80',
+        authorKarma: 15800,
+        createdAt: now - 1000 * 60 * 20,
+        score: Math.max(9, Math.floor(post.score * 0.07)),
+        body: `공감합니다. 다음 업데이트나 후속 진행 상황도 꼭 공유해주세요. 업보트 누르고 갑니다!`,
+      },
+    ];
   }
 
   private static insertReplyRecursive(list: RedditComment[], reply: RedditComment): boolean {
