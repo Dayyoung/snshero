@@ -28,6 +28,57 @@ export class RedditApiService {
   }
 
   /**
+   * 번역된 포스트들을 인메모리 SEED_POSTS 및 로컬 라이브 캐시에 즉시 반영
+   */
+  static updatePostTranslations(translatedList: RedditPost[]): void {
+    if (!translatedList || translatedList.length === 0) return;
+    const transMap = new Map(translatedList.map((p) => [p.id, p]));
+
+    // 1. SEED_POSTS 원본 갱신
+    SEED_POSTS.forEach((seed, idx) => {
+      const match = transMap.get(seed.id);
+      if (match) {
+        SEED_POSTS[idx] = { 
+          ...seed, 
+          title: match.title, 
+          body: match.body, 
+          originalTitle: match.originalTitle, 
+          originalBody: match.originalBody, 
+          isTranslated: true 
+        };
+      }
+    });
+
+    // 2. livePosts 캐시 갱신
+    try {
+      const livePosts = RedditLiveFeedService.getCachedLivePosts();
+      if (livePosts.length > 0) {
+        let hasChange = false;
+        const updated = livePosts.map((lp) => {
+          const match = transMap.get(lp.id);
+          if (match) {
+            hasChange = true;
+            return { 
+              ...lp, 
+              title: match.title, 
+              body: match.body, 
+              originalTitle: match.originalTitle, 
+              originalBody: match.originalBody, 
+              isTranslated: true 
+            };
+          }
+          return lp;
+        });
+        if (hasChange) {
+          localStorage.setItem('hero_reddit_live_posts_v1', JSON.stringify(updated));
+        }
+      }
+    } catch (e) {
+      console.warn('[Reddit] Failed to update live posts cache', e);
+    }
+  }
+
+  /**
    * 서브레딧 또는 메인 피드 포스트 목록 반환 (실시간 글 + 시드 데이터 지능형 병합)
    */
   static getPosts(

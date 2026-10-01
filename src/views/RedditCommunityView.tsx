@@ -123,19 +123,38 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
     return RedditApiService.getPosts(currentSubreddit, currentSort, currentTimeFilter, userState);
   }, [currentSubreddit, currentSort, currentTimeFilter, userState, syncTick]);
 
-  // 피드 포스트 중 영문 포스트 백그라운드 구글 번역 연동
+  // 번역 완료/시도 포스트 ID 추적 세트 (중복 호출 및 무한 루프 원천 차단)
+  const translatedPostIdsRef = React.useRef<Set<string>>(new Set());
+
+  // 피드 포스트 중 영문 포스트 백그라운드 구글 번역 연동 (중복 방지 & 단 1회 실행 보장)
   useEffect(() => {
     let isCancelled = false;
     const targetLang = userState.language || 'ko';
-    const needsAny = posts.slice(0, 15).some((p) => isNeedsTranslation(p.title, targetLang));
-    if (needsAny) {
-      translateRedditPosts(posts.slice(0, 15), targetLang, 15).then(() => {
-        if (!isCancelled) {
+    
+    // 아직 번역 시도하지 않은 포스트 중 번역 필요한 후보 추출
+    const candidates = posts.slice(0, 15).filter(
+      (p) => !translatedPostIdsRef.current.has(p.id) && isNeedsTranslation(p.title, targetLang)
+    );
+
+    if (candidates.length === 0) return;
+
+    // 즉시 Set에 기록하여 재호출 및 무한 루프 원천 차단
+    candidates.forEach((p) => translatedPostIdsRef.current.add(p.id));
+
+    translateRedditPosts(candidates, targetLang, candidates.length)
+      .then((translated) => {
+        if (!isCancelled && translated && translated.length > 0) {
+          RedditApiService.updatePostTranslations(translated);
           setSyncTick((t) => t + 1);
         }
+      })
+      .catch((err) => {
+        console.warn('[Reddit] Translation background warning', err);
       });
-    }
-    return () => { isCancelled = true; };
+
+    return () => {
+      isCancelled = true;
+    };
   }, [posts, userState.language]);
 
   // 피드 무한 스크롤 더보기 핸들러
