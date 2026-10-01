@@ -52,7 +52,7 @@ export const RedditSubredditHeader: React.FC<RedditSubredditHeaderProps> = ({
     const info = getFrontPageInfo();
 
     return (
-      <div className={`rounded-2xl border p-4 sm:p-5 mb-4 shadow-sm flex items-center justify-between transition-colors ${
+      <div className={`rounded-2xl border p-4 sm:p-5 mb-4 shadow-sm flex items-center justify-between transition-colors w-full max-w-full overflow-hidden ${
         isDark ? 'bg-[#181C1F] border-[#22272B] text-gray-200' : 'bg-white border-gray-200 text-gray-800'
       }`}>
         <div>
@@ -69,7 +69,7 @@ export const RedditSubredditHeader: React.FC<RedditSubredditHeaderProps> = ({
   }
 
   return (
-    <div className={`rounded-2xl border mb-4 overflow-hidden shadow-sm transition-colors ${
+    <div className={`rounded-2xl border mb-4 w-full max-w-full overflow-hidden shadow-sm transition-colors ${
       isDark ? 'bg-[#181C1F] border-[#22272B] text-gray-200' : 'bg-white border-gray-200 text-gray-800'
     }`}>
       {/* 1. 커버 배너 이미지 */}

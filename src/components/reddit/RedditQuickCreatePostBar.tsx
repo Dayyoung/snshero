@@ -20,7 +20,7 @@ export const RedditQuickCreatePostBar: React.FC<RedditQuickCreatePostBarProps> =
   return (
     <div
       onClick={onOpenSubmitModal}
-      className={`rounded-2xl border p-2.5 sm:p-3 mb-3 flex items-center gap-3 cursor-pointer transition-colors shadow-sm ${
+      className={`rounded-2xl border p-2.5 sm:p-3 mb-3 w-full max-w-full overflow-hidden flex items-center gap-2 sm:gap-3 cursor-pointer transition-colors shadow-sm ${
         isDark
           ? 'bg-[#181C1F] hover:bg-[#1E2328] border-[#22272B]'
           : 'bg-white hover:bg-gray-50 border-gray-200'
@@ -35,7 +35,7 @@ export const RedditQuickCreatePostBar: React.FC<RedditQuickCreatePostBarProps> =
 
       {/* 가짜 인풋 창 */}
       <div
-        className={`flex-1 px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-colors ${
+        className={`flex-1 min-w-0 px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-colors truncate ${
           isDark
             ? 'bg-[#22272B] hover:bg-[#2A3238] text-gray-400'
             : 'bg-gray-100 hover:bg-gray-200 text-gray-500'

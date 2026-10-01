@@ -15,7 +15,7 @@ interface RedditAdCardProps {
 export const RedditAdCard: React.FC<RedditAdCardProps> = ({ isDark, isKo = true }) => {
   return (
     <article
-      className={`rounded-2xl border p-4 mb-3.5 shadow-sm transition-all ${
+      className={`rounded-2xl border p-4 mb-3.5 shadow-sm transition-all w-full max-w-full overflow-hidden break-words ${
         isDark ? 'bg-[#181C1F] border-[#22272B] text-gray-200' : 'bg-white border-gray-200 text-gray-800'
       }`}
     >
@@ -40,7 +40,7 @@ export const RedditAdCard: React.FC<RedditAdCardProps> = ({ isDark, isKo = true 
       </div>
 
       {/* 광고 타이틀 */}
-      <h3 className="font-bold text-sm sm:text-base mb-3 leading-snug">
+      <h3 className="font-bold text-sm sm:text-base mb-3 leading-snug break-words">
         {isKo 
           ? 'SNSHero 차세대 웹 카드 배틀 아레나를 지금 바로 무료로 즐겨보세요! 설치 0초, 로딩 0초.' 
           : 'Discover Next-Generation Gaming & Communities on SNSHero. 100% Free & Zero-Lag.'}

@@ -69,6 +69,10 @@
 
 @layer base {
   html, body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    overscroll-behavior-x: none;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -78,6 +82,17 @@
   body {
     @apply bg-[#fdfcfc] text-[#201d1d] font-mono antialiased selection:bg-[#f1eeee];
     -webkit-tap-highlight-color: transparent;
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+    overscroll-behavior-x: none;
+    position: relative;
+  }
+
+  #root {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
   }
 
   /* 강제 전역 버튼 스타일 통일 (OpenCode 규격) */

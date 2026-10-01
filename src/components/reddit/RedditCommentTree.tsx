@@ -34,7 +34,7 @@ export const RedditCommentTree: React.FC<RedditCommentTreeProps> = ({
   depth = 0,
 }) => {
   return (
-    <div className={`space-y-3 ${depth > 0 ? 'ml-2 sm:ml-4 pl-2 sm:pl-3 border-l-2' : ''} ${
+    <div className={`space-y-3 w-full max-w-full min-w-0 ${depth > 0 ? 'ml-1.5 sm:ml-4 pl-1.5 sm:pl-3 border-l-2' : ''} ${
       depth > 0 
         ? isDark ? 'border-[#2E363E] hover:border-gray-500' : 'border-gray-200 hover:border-gray-400' 
         : ''
@@ -116,7 +116,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
   }
 
   return (
-    <div className="relative group text-xs font-sans">
+    <div className="relative group text-xs font-sans w-full max-w-full overflow-hidden break-words">
       {/* 1. 작성자 헤더 */}
       <div className="flex items-center gap-2 mb-1.5 flex-wrap">
         <div
@@ -157,7 +157,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
       </div>
 
       {/* 2. 본문 */}
-      <div className="pl-7 text-xs sm:text-sm leading-relaxed whitespace-pre-line opacity-90 mb-2 font-sans">
+      <div className="pl-7 text-xs sm:text-sm leading-relaxed whitespace-pre-line opacity-90 mb-2 font-sans break-words">
         {comment.body}
       </div>
 
@@ -201,7 +201,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
 
       {/* 4. 인라인 답글 입력 폼 */}
       {isReplying && (
-        <form onSubmit={handleReplySubmit} className="mt-2.5 pl-7">
+        <form onSubmit={handleReplySubmit} className="mt-2.5 pl-3 sm:pl-7 w-full max-w-full">
           <div className={`p-2.5 rounded-xl border ${
             isDark ? 'bg-[#0E1113] border-[#2E363E]' : 'bg-gray-50 border-gray-300'
           }`}>

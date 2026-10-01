@@ -110,7 +110,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
     return (
       <article
         onClick={() => onOpenDetail(post)}
-        className={`px-3 py-2 border-b flex items-center justify-between gap-3 text-xs cursor-pointer transition-colors ${
+        className={`w-full max-w-full overflow-hidden break-words px-3 py-2 border-b flex items-center justify-between gap-3 text-xs cursor-pointer transition-colors ${
           isDark 
             ? 'bg-[#181C1F] hover:bg-[#22272B] border-[#22272B] text-gray-200' 
             : 'bg-white hover:bg-gray-50 border-gray-100 text-gray-800'
@@ -157,7 +157,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
     return (
       <article
         onClick={() => onOpenDetail(post)}
-        className={`p-3 rounded-xl border mb-2 flex items-start gap-3 text-xs cursor-pointer transition-colors shadow-sm ${
+        className={`w-full max-w-full overflow-hidden break-words p-3 rounded-xl border mb-2 flex items-start gap-3 text-xs cursor-pointer transition-colors shadow-sm ${
           isDark 
             ? 'bg-[#181C1F] hover:border-gray-600 border-[#22272B] text-gray-200' 
             : 'bg-white hover:border-gray-300 border-gray-200 text-gray-800'
@@ -241,7 +241,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
   return (
     <article
       onClick={() => onOpenDetail(post)}
-      className={`rounded-2xl border mb-3.5 shadow-sm cursor-pointer transition-all ${
+      className={`w-full max-w-full overflow-hidden break-words rounded-2xl border mb-3.5 shadow-sm cursor-pointer transition-all ${
         isDark 
           ? 'bg-[#181C1F] hover:border-gray-600 border-[#22272B] text-gray-200' 
           : 'bg-white hover:border-gray-300 border-gray-200 text-gray-800'
@@ -347,13 +347,13 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
         )}
 
         {/* 2. 타이틀 */}
-        <h2 className="font-bold text-base sm:text-lg leading-snug mb-3">
+        <h2 className="font-bold text-base sm:text-lg leading-snug mb-3 break-words">
           {displayTitle}
         </h2>
 
         {/* 3. 본문 텍스트 */}
         {displayBody && (
-          <div className="text-xs sm:text-sm leading-relaxed opacity-85 mb-3 line-clamp-3 whitespace-pre-line font-sans">
+          <div className="text-xs sm:text-sm leading-relaxed opacity-85 mb-3 line-clamp-3 whitespace-pre-line font-sans break-words">
             {displayBody}
           </div>
         )}
@@ -418,7 +418,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
         )}
 
         {/* 5. 액션 바: 보팅 카운터 + 댓글 + 공유 + 저장 */}
-        <div className="flex items-center gap-1.5 sm:gap-3 pt-1 text-xs font-semibold">
+        <div className="flex items-center gap-1.5 sm:gap-3 pt-1 text-xs font-semibold flex-wrap">
           {/* 보팅 위젯 캡슐 */}
           <div
             onClick={(e) => e.stopPropagation()}

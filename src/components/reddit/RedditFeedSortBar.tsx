@@ -75,11 +75,11 @@ export const RedditFeedSortBar: React.FC<RedditFeedSortBarProps> = ({
   ];
 
   return (
-    <div className={`rounded-2xl border p-2 mb-4 flex items-center justify-between shadow-sm transition-colors ${
+    <div className={`rounded-2xl border p-2 mb-4 w-full max-w-full overflow-hidden flex items-center justify-between shadow-sm transition-colors ${
       isDark ? 'bg-[#181C1F] border-[#22272B] text-gray-200' : 'bg-white border-gray-200 text-gray-800'
     }`}>
       {/* 1. 정렬 칩 목록 */}
-      <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto scrollbar-none py-0.5">
+      <div className="flex-1 min-w-0 flex items-center gap-1.5 sm:gap-2 overflow-x-auto scrollbar-none py-0.5 mr-2">
         {sortItems.map((item) => {
           const Icon = item.icon;
           const isActive = currentSort === item.id;

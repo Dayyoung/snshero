@@ -45,7 +45,7 @@ export const RedditSearchModal: React.FC<RedditSearchModalProps> = ({
   const [activeTab, setActiveTab] = useState<'posts' | 'communities' | 'people'>('posts');
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 w-full max-w-full overflow-hidden">
       {/* 헤더 & 뒤로가기 */}
       <div className="flex items-center justify-between">
         <button

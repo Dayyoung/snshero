@@ -244,7 +244,7 @@ export const RedditSidebarLeft: React.FC<RedditSidebarLeftProps> = ({
 
       {/* 모바일/태블릿 슬라이드 드로어 */}
       {isOpen && (
-        <div className="lg:hidden fixed inset-0 z-50 flex">
+        <div className="lg:hidden fixed inset-0 z-50 flex overflow-hidden">
           <div
             className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
             onClick={onClose}

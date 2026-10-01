@@ -22,7 +22,7 @@ export const RedditTrendingCarousel: React.FC<RedditTrendingCarouselProps> = ({
   if (!trendingItems || trendingItems.length === 0) return null;
 
   return (
-    <section className="mb-4">
+    <section className="mb-4 w-full max-w-full overflow-hidden">
       <div className="flex items-center justify-between mb-2 px-1">
         <h2 className="text-xs font-black tracking-wider uppercase opacity-70">
           {isKo ? '🔥 오늘의 트렌드 (Trending Today)' : '🔥 Trending Today'}

@@ -57,7 +57,7 @@ export const RedditUserProfileView: React.FC<RedditUserProfileViewProps> = ({
   const savedPosts = posts.filter((p) => userState.savedPostIds.includes(p.id));
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 w-full max-w-full overflow-hidden">
       {/* 뒤로가기 바 */}
       <div className="flex items-center justify-between">
         <button

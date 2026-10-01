@@ -17,7 +17,7 @@ export const RedditFloatingPlayButton: React.FC<RedditFloatingPlayButtonProps> =
   isKo = true,
 }) => {
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex items-center group">
+    <div className="fixed bottom-5 right-4 sm:bottom-6 sm:right-6 z-50 flex items-center group">
       {/* 툴팁 라벨 */}
       <div className="mr-3 px-3 py-1.5 rounded-full bg-black/90 text-white text-xs font-semibold tracking-wide shadow-xl backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none translate-x-2 group-hover:translate-x-0 hidden sm:flex items-center gap-1.5 border border-white/10">
         <Sparkles className="w-3.5 h-3.5 text-amber-400 animate-pulse" />

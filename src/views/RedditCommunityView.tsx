@@ -448,7 +448,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
   }, []);
 
   return (
-    <div className={`min-h-screen w-full flex flex-col font-sans transition-colors duration-150 ${
+    <div className={`min-h-screen w-full max-w-full overflow-x-hidden flex flex-col font-sans transition-colors duration-150 ${
       isDark ? 'bg-[#0E1113] text-[#D7DADC]' : 'bg-[#DAE0E6] text-[#1C1C1C]'
     }`}>
       {/* 1. 상단 글로벌 헤더 */}
@@ -466,7 +466,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
       />
 
       {/* 2. 메인 바디 컨테이너: 좌측 사이드바 + 중앙 피드 + 우측 사이드바 */}
-      <div className="flex-1 w-full max-w-[1440px] mx-auto flex justify-center">
+      <div className="flex-1 w-full max-w-[1440px] mx-auto flex justify-center overflow-x-hidden">
         {/* 좌측 사이드바 / 드로어 */}
         <RedditSidebarLeft
           isOpen={isSidebarOpen}
@@ -479,7 +479,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
         />
 
         {/* 중앙 메인 피드 & 콘텐츠 */}
-        <main className="flex-1 max-w-3xl min-w-0 p-3 sm:p-5">
+        <main className="flex-1 w-full max-w-3xl min-w-0 p-2.5 sm:p-5 overflow-x-hidden">
           {/* 유저 프로필 페이지 모드 */}
           {activeUser ? (
             <RedditUserProfileView
@@ -542,17 +542,17 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
                   />
 
                   {/* 실시간 Reddit 피드 연동 상태 바 및 수동 새로고침 버튼 */}
-                  <div className={`flex items-center justify-between px-3.5 py-2 mb-3 rounded-2xl text-[11px] font-semibold border shadow-sm transition-colors ${
+                  <div className={`flex items-center justify-between px-3 sm:px-3.5 py-2 mb-3 rounded-2xl text-[11px] font-semibold border shadow-sm transition-colors w-full max-w-full overflow-hidden ${
                     isDark ? 'bg-[#181C1F] border-[#22272B] text-gray-300' : 'bg-white border-gray-200 text-gray-700'
                   }`}>
-                    <div className="flex items-center gap-2">
-                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                      <span className="font-bold text-emerald-500">
-                        {isKo ? '실시간 Reddit 데이터 연동 중' : 'Live Reddit Stream'}
+                    <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 truncate">
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
+                      <span className="font-bold text-emerald-500 flex-shrink-0">
+                        {isKo ? '실시간 연동 중' : 'Live Stream'}
                       </span>
                       <span className="opacity-40">•</span>
-                      <span className="opacity-75 text-[11px]">
-                        {posts.length}{isKo ? '개 포스트 스트리밍' : ' posts'}
+                      <span className="opacity-75 text-[11px] truncate">
+                        {posts.length}{isKo ? '개 포스트' : ' posts'}
                       </span>
                     </div>
 
@@ -560,7 +560,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
                       type="button"
                       onClick={handleSyncLive}
                       disabled={isSyncingLive}
-                      className="flex items-center gap-1.5 px-3 py-1 rounded-full hover:bg-black/10 cursor-pointer disabled:opacity-50 transition-all font-bold text-[11px] text-[#FF4500]"
+                      className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full hover:bg-black/10 cursor-pointer disabled:opacity-50 transition-all font-bold text-[11px] text-[#FF4500] flex-shrink-0 ml-2"
                       title={isKo ? '실시간 데이터 새로고침' : 'Refresh Live Data'}
                     >
                       <RotateCw className={`w-3.5 h-3.5 ${isSyncingLive ? 'animate-spin' : ''}`} />

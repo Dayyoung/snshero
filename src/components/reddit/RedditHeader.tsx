@@ -107,7 +107,7 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
   };
 
   return (
-    <header className={`sticky top-0 z-40 h-14 border-b flex items-center justify-between px-3 sm:px-5 transition-colors duration-150 ${
+    <header className={`sticky top-0 z-40 h-14 w-full max-w-full overflow-hidden border-b flex items-center justify-between px-2 sm:px-5 transition-colors duration-150 ${
       isDark 
         ? 'bg-[#0E1113] border-[#22272B] text-[#D7DADC]' 
         : 'bg-white border-gray-200 text-[#1C1C1C]'
@@ -215,7 +215,7 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
       </div>
 
       {/* 2. 중앙: 글로벌 스마트 검색바 */}
-      <div className="flex-1 max-w-xl mx-2 sm:mx-6 relative" ref={searchContainerRef}>
+      <div className="flex-1 min-w-0 max-w-xl mx-1.5 sm:mx-6 relative" ref={searchContainerRef}>
         <form onSubmit={handleSearchSubmit} className="relative w-full">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 opacity-50" />
           <input
