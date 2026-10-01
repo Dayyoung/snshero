@@ -62,6 +62,9 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
   const isKo = userState.language !== 'en';
   const [commentText, setCommentText] = useState('');
   const [isCopied, setIsCopied] = useState(false);
+  const [commentSort, setCommentSort] = useState<'top' | 'new' | 'old'>('top');
+  const [extraComments, setExtraComments] = useState<RedditComment[]>([]);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   const getRelativeTime = (timestamp: number) => {
     const diff = Math.max(0, Date.now() - timestamp);
@@ -80,6 +83,87 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
       setCommentText('');
     }
   };
+
+  // 더 많은 댓글 불러오기 핸들러
+  const handleLoadMoreComments = () => {
+    setIsLoadingMore(true);
+    setTimeout(() => {
+      const now = Date.now();
+      const currentCount = comments.length + extraComments.length;
+      const additionalComments: RedditComment[] = [
+        {
+          id: `c_more_${post.id}_${currentCount + 1}`,
+          postId: post.id,
+          parentId: null,
+          author: `GameDevFan_${currentCount + 1}`,
+          authorAvatar: `https://images.unsplash.com/photo-${1535713875002 + (currentCount % 10) * 1000}?auto=format&fit=crop&w=64&q=80`,
+          authorKarma: 14200 + currentCount * 500,
+          createdAt: now - 1000 * 60 * (15 + currentCount * 2),
+          score: Math.max(50, Math.floor(380 - currentCount * 12)),
+          body: isKo 
+            ? `물리 충돌 판정이랑 파티클 상호작용 이펙트가 진짜 예술이네요! 1인 개발 완성작 기다리겠습니다.` 
+            : `The physics and particle effects look amazing! Can't wait for the full release.`,
+          replies: [
+            {
+              id: `c_more_${post.id}_${currentCount + 1}_1`,
+              postId: post.id,
+              parentId: `c_more_${post.id}_${currentCount + 1}`,
+              author: post.author,
+              authorAvatar: post.authorAvatar,
+              authorKarma: 9850,
+              createdAt: now - 1000 * 60 * (10 + currentCount * 2),
+              score: Math.max(20, Math.floor(210 - currentCount * 8)),
+              isAuthorOp: true,
+              body: isKo ? `응원 감사합니다! 끝까지 완성도 높여서 보답하겠습니다 ㅎㅎ` : `Thank you for the support!`,
+            },
+          ],
+        },
+        {
+          id: `c_more_${post.id}_${currentCount + 2}`,
+          postId: post.id,
+          parentId: null,
+          author: `PixelCraftsman_${currentCount + 2}`,
+          authorAvatar: `https://images.unsplash.com/photo-${1507003211169 + (currentCount % 10) * 1000}?auto=format&fit=crop&w=64&q=80`,
+          authorKarma: 8900 + currentCount * 300,
+          createdAt: now - 1000 * 60 * (25 + currentCount * 3),
+          score: Math.max(30, Math.floor(290 - currentCount * 10)),
+          body: isKo 
+            ? `혹시 셰이더 그래프 작성하실 때 성능 프로파일링 팁이 있으신가요? C++ 직접 연동하셨는지 궁금합니다.` 
+            : `Any shader profiling tips? Did you use C++ directly?`,
+        },
+        {
+          id: `c_more_${post.id}_${currentCount + 3}`,
+          postId: post.id,
+          parentId: null,
+          author: `LoreSeeker_${currentCount + 3}`,
+          authorAvatar: `https://images.unsplash.com/photo-${1494790108377 + (currentCount % 10) * 1000}?auto=format&fit=crop&w=64&q=80`,
+          authorKarma: 25400 + currentCount * 400,
+          createdAt: now - 1000 * 60 * (35 + currentCount * 4),
+          score: Math.max(25, Math.floor(250 - currentCount * 9)),
+          body: isKo 
+            ? `세계관 설정이 궁금하네요! 마법 원소들 간의 상성 시스템(화염-빙결-번개)도 스토리와 연계되나요?` 
+            : `How is the world lore structured? Is the elemental interaction tied to the story?`,
+        },
+      ];
+
+      setExtraComments((prev) => [...prev, ...additionalComments]);
+      setIsLoadingMore(false);
+    }, 300);
+  };
+
+  // 전체 댓글 병합 및 정렬
+  const displayedComments = React.useMemo(() => {
+    const list = [...comments, ...extraComments];
+    switch (commentSort) {
+      case 'new':
+        return list.sort((a, b) => b.createdAt - a.createdAt);
+      case 'old':
+        return list.sort((a, b) => a.createdAt - b.createdAt);
+      case 'top':
+      default:
+        return list.sort((a, b) => b.score - a.score);
+    }
+  }, [comments, extraComments, commentSort]);
 
   const handleShare = () => {
     const url = `${window.location.origin}/r/${post.subreddit}/comments/${post.id}`;
@@ -339,24 +423,65 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
             <div className={`rounded-2xl border p-4 sm:p-6 shadow-sm ${
               isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'
             }`}>
-              <div className="flex items-center justify-between pb-4 border-b border-inherit/10 mb-4">
-                <span className="font-extrabold text-sm sm:text-base">
-                  {isKo ? `전체 댓글 (${comments.length})` : `All Comments (${comments.length})`}
-                </span>
-                <span className="text-xs opacity-60">
-                  {isKo ? '정렬:' : 'Sorted by:'} <span className="font-bold">{isKo ? '추천순' : 'Top'}</span>
-                </span>
+              <div className="flex items-center justify-between pb-4 border-b border-inherit/10 mb-4 flex-wrap gap-2">
+                <div className="flex items-center gap-2">
+                  <span className="font-extrabold text-sm sm:text-base">
+                    {isKo ? `전체 댓글 ${post.commentCount.toLocaleString()}개` : `All ${post.commentCount.toLocaleString()} Comments`}
+                  </span>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#FF4500]/10 text-[#FF4500]">
+                    {displayedComments.length}{isKo ? '개 표시 중' : ' shown'}
+                  </span>
+                </div>
+
+                {/* 댓글 정렬 선택 드롭다운 */}
+                <div className="flex items-center gap-1.5 text-xs opacity-80">
+                  <span>{isKo ? '정렬:' : 'Sort by:'}</span>
+                  <select
+                    value={commentSort}
+                    onChange={(e) => setCommentSort(e.target.value as any)}
+                    className={`font-bold cursor-pointer outline-none border border-inherit/20 rounded-lg px-2 py-1 text-xs transition-colors ${
+                      isDark ? 'bg-[#22272B] text-gray-200' : 'bg-gray-100 text-gray-800'
+                    }`}
+                  >
+                    <option value="top">{isKo ? '추천순 (Top)' : 'Top'}</option>
+                    <option value="new">{isKo ? '최신순 (New)' : 'New'}</option>
+                    <option value="old">{isKo ? '오래된순 (Old)' : 'Old'}</option>
+                  </select>
+                </div>
               </div>
 
-              {comments.length > 0 ? (
-                <RedditCommentTree
-                  comments={comments}
-                  isDark={isDark}
-                  isKo={isKo}
-                  onVoteComment={onVoteComment}
-                  onAddReply={onAddReply}
-                  onOpenUserProfile={onOpenUserProfile}
-                />
+              {displayedComments.length > 0 ? (
+                <>
+                  <RedditCommentTree
+                    comments={displayedComments}
+                    isDark={isDark}
+                    isKo={isKo}
+                    onVoteComment={onVoteComment}
+                    onAddReply={onAddReply}
+                    onOpenUserProfile={onOpenUserProfile}
+                  />
+
+                  {/* 더 많은 댓글 불러오기 버튼 */}
+                  <div className="pt-6 pb-2 text-center border-t border-inherit/10 mt-6">
+                    <button
+                      type="button"
+                      onClick={handleLoadMoreComments}
+                      disabled={isLoadingMore}
+                      className="px-6 py-2.5 rounded-full border border-inherit/20 font-bold text-xs hover:bg-[#FF4500] hover:text-white transition-all cursor-pointer shadow-sm flex items-center justify-center gap-2 mx-auto disabled:opacity-50"
+                    >
+                      {isLoadingMore ? (
+                        <span>{isKo ? '추가 댓글 불러오는 중...' : 'Loading comments...'}</span>
+                      ) : (
+                        <span>{isKo ? '댓글 더 불러오기 (+10개 더보기)' : 'Load More Comments (+10 more)'}</span>
+                      )}
+                    </button>
+                    <p className="text-[11px] opacity-50 mt-2">
+                      {isKo 
+                        ? `총 ${post.commentCount.toLocaleString()}개의 토론 댓글 중 ${displayedComments.length}개 표시 중` 
+                        : `Showing ${displayedComments.length} of ${post.commentCount.toLocaleString()} discussion comments`}
+                    </p>
+                  </div>
+                </>
               ) : (
                 <div className="py-12 text-center opacity-50 text-xs">
                   {isKo ? '아직 댓글이 없습니다. 첫 번째로 토론을 시작해보세요!' : 'No comments yet. Be the first to start the discussion!'}
