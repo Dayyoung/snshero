@@ -58,36 +58,19 @@ export const RedditAdCard: React.FC<RedditAdCardProps> = ({ isDark, isKo = true,
           : 'Discover Next-Generation Gaming on SNSHero. 100% Free, Zero Install, Zero Lag.'}
       </h3>
 
-      {/* 3. SNSHero 공식 고화질 게임 대표 이미지 배너 */}
-      <div className="relative w-full h-44 sm:h-56 rounded-xl overflow-hidden mb-3 border border-inherit/10 bg-black/60 flex items-center justify-center">
+      {/* 3. SNSHero 공식 고화질 게임 대표 이미지 배너 (1024x552 원본 비율 100% 보존) */}
+      <div className="relative w-full aspect-[1024/552] rounded-xl overflow-hidden mb-3 border border-inherit/15 bg-black/90 flex items-center justify-center shadow-inner">
         <img
-          src="/minigame_ai_battle.png"
-          alt="SNSHero Card Battle Arena"
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          src="/banner_snshero_legend.jpg"
+          alt="SNSHero Complete Your Legend"
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.015]"
           onError={(e) => {
             (e.target as HTMLImageElement).src = '/logo.png';
           }}
         />
 
-        {/* 배너 내부 그라데이션 오버레이 & 게임 정보 태그 */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent flex flex-col justify-end p-3.5 sm:p-4">
-          <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-            <span className="px-2 py-0.5 rounded-full bg-[#FF4500] text-white text-[10px] font-extrabold tracking-wider uppercase shadow-md flex items-center gap-1">
-              <Gamepad2 className="w-3 h-3" />
-              <span>AI BATTLE ARENA</span>
-            </span>
-            <span className="px-2 py-0.5 rounded-full bg-emerald-500/80 text-white text-[10px] font-bold backdrop-blur-sm shadow-xs">
-              ✓ INSTALL 0s
-            </span>
-            <span className="px-2 py-0.5 rounded-full bg-amber-500/80 text-white text-[10px] font-bold backdrop-blur-sm shadow-xs flex items-center gap-1">
-              <Trophy className="w-2.5 h-2.5" />
-              <span>110+ Cards</span>
-            </span>
-          </div>
-          <p className="text-white text-xs sm:text-sm font-bold line-clamp-1 drop-shadow-md">
-            {isKo ? '실시간 원클릭 AI 카드 대결 & 나만의 최강 덱 빌딩' : 'Real-time AI Card Battle & Deck Strategy'}
-          </p>
-        </div>
+        {/* 미세한 호버 글로우 인터랙션 */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
         {/* 구글 애드센스 백그라운드 슬롯 (승인 시 렌더링) */}
         <div className="absolute inset-0 pointer-events-none opacity-0">

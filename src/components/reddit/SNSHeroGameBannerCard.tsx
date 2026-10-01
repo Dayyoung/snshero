@@ -52,7 +52,20 @@ export const SNSHeroGameBannerCard: React.FC<SNSHeroGameBannerCardProps> = ({
         </div>
       </div>
 
-      {/* 2. 중앙 메인 비주얼 & 타이틀 */}
+      {/* 2. 전설 완성 공식 배너 이미지 (1024x552 원본 비율 100% 보존) */}
+      <div className="relative z-10 w-full aspect-[1024/552] rounded-xl overflow-hidden mb-3.5 border border-inherit/20 bg-black/90 shadow-md">
+        <img
+          src="/banner_snshero_legend.jpg"
+          alt="SNSHero Complete Your Legend"
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.015]"
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = '/logo.png';
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+      </div>
+
+      {/* 3. 메인 타이틀 및 액션 */}
       <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1.5 flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
