@@ -83,6 +83,11 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
   const [isSyncingLive, setIsSyncingLive] = useState(false);
   const [syncTick, setSyncTick] = useState(0);
 
+  // 피드 무한 스크롤 상태
+  const [feedVisibleCount, setFeedVisibleCount] = useState(8);
+  const [isLoadingMorePosts, setIsLoadingMorePosts] = useState(false);
+  const feedSentinelRef = React.useRef<HTMLDivElement>(null);
+
   const isDark = userState.theme !== 'light';
   const isKo = userState.language !== 'en'; // 한국어 기본
 
@@ -114,6 +119,31 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
     return RedditApiService.getPosts(currentSubreddit, currentSort, currentTimeFilter, userState);
   }, [currentSubreddit, currentSort, currentTimeFilter, userState, syncTick]);
 
+  // 피드 무한 스크롤 더보기 핸들러
+  const handleLoadMorePosts = useCallback(() => {
+    if (isLoadingMorePosts) return;
+    setIsLoadingMorePosts(true);
+    setTimeout(() => {
+      setFeedVisibleCount((prev) => prev + 6);
+      setIsLoadingMorePosts(false);
+    }, 350);
+  }, [isLoadingMorePosts]);
+
+  // 피드 하단 도달 시 자동 무한 스크롤 관찰
+  useEffect(() => {
+    if (!feedSentinelRef.current) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !isLoadingMorePosts) {
+          handleLoadMorePosts();
+        }
+      },
+      { rootMargin: '500px' }
+    );
+    observer.observe(feedSentinelRef.current);
+    return () => observer.disconnect();
+  }, [isLoadingMorePosts, handleLoadMorePosts]);
+
   // URL 및 초기 props 반영
   useEffect(() => {
     if (initialPostId) {
@@ -143,6 +173,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
     setActiveUser(null);
     setSearchState(null);
     setActiveTab('posts');
+    setFeedVisibleCount(8);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
@@ -448,27 +479,43 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
                   {/* 피드 포스트 목록 + 구글 애드센스 인피드 광고 주기적 삽입 */}
                   <div className="space-y-2">
                     {posts.length > 0 ? (
-                      posts.map((post, idx) => (
-                        <React.Fragment key={post.id}>
-                          {/* 4번째 포스트마다 구글 애드센스 인피드 광고 노출 */}
-                          {idx > 0 && idx % 4 === 0 && (
-                            <RedditAdCard isDark={isDark} isKo={isKo} />
-                          )}
+                      <>
+                        {posts.slice(0, feedVisibleCount).map((post, idx) => (
+                          <React.Fragment key={post.id}>
+                            {/* 4번째 포스트마다 구글 애드센스 인피드 광고 노출 */}
+                            {idx > 0 && idx % 4 === 0 && (
+                              <RedditAdCard isDark={isDark} isKo={isKo} />
+                            )}
 
-                          <RedditPostCard
-                            post={post}
-                            viewMode={viewMode}
-                            isDark={isDark}
-                            isKo={isKo}
-                            onVote={handleVotePost}
-                            onOpenDetail={handleOpenDetail}
-                            onSelectSubreddit={handleSelectSubreddit}
-                            onOpenUserProfile={handleOpenUserProfile}
-                            onToggleSave={(id) => setUserState((prev) => toggleSavePost(prev, id))}
-                            onToggleHide={(id) => setUserState((prev) => toggleHidePost(prev, id))}
-                          />
-                        </React.Fragment>
-                      ))
+                            <RedditPostCard
+                              post={post}
+                              viewMode={viewMode}
+                              isDark={isDark}
+                              isKo={isKo}
+                              onVote={handleVotePost}
+                              onOpenDetail={handleOpenDetail}
+                              onSelectSubreddit={handleSelectSubreddit}
+                              onOpenUserProfile={handleOpenUserProfile}
+                              onToggleSave={(id) => setUserState((prev) => toggleSavePost(prev, id))}
+                              onToggleHide={(id) => setUserState((prev) => toggleHidePost(prev, id))}
+                            />
+                          </React.Fragment>
+                        ))}
+
+                        {/* 피드 실시간 무한 스크롤 센티넬 및 자동 더보기 */}
+                        <div ref={feedSentinelRef} className="py-6 text-center">
+                          {isLoadingMorePosts || feedVisibleCount < posts.length ? (
+                            <div className="flex items-center justify-center gap-2 text-xs font-bold text-[#FF4500] py-2">
+                              <span className="w-4 h-4 border-2 border-[#FF4500] border-t-transparent rounded-full animate-spin" />
+                              <span>{isKo ? '실시간 추가 피드 불러오는 중...' : 'Streaming more live posts...'}</span>
+                            </div>
+                          ) : (
+                            <div className="text-xs opacity-50 py-4 font-medium">
+                              {isKo ? '🎉 모든 최신 피드를 확인했습니다!' : "🎉 You've caught up with all posts!"}
+                            </div>
+                          )}
+                        </div>
+                      </>
                     ) : (
                       <div className={`rounded-2xl border p-12 text-center text-xs opacity-50 ${
                         isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'

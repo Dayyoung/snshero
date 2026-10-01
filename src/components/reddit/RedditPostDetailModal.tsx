@@ -66,6 +66,9 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
   const [extraComments, setExtraComments] = useState<RedditComment[]>([]);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
 
+  const scrollContainerRef = React.useRef<HTMLDivElement>(null);
+  const loadMoreSentinelRef = React.useRef<HTMLDivElement>(null);
+
   const getRelativeTime = (timestamp: number) => {
     const diff = Math.max(0, Date.now() - timestamp);
     const mins = Math.floor(diff / 60000);
@@ -84,8 +87,9 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
     }
   };
 
-  // 더 많은 댓글 불러오기 핸들러
-  const handleLoadMoreComments = () => {
+  // 실시간 더 많은 댓글 불러오기 핸들러
+  const handleLoadMoreComments = React.useCallback(() => {
+    if (isLoadingMore) return;
     setIsLoadingMore(true);
     setTimeout(() => {
       const now = Date.now();
@@ -144,12 +148,62 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
             ? `세계관 설정이 궁금하네요! 마법 원소들 간의 상성 시스템(화염-빙결-번개)도 스토리와 연계되나요?` 
             : `How is the world lore structured? Is the elemental interaction tied to the story?`,
         },
+        {
+          id: `c_more_${post.id}_${currentCount + 4}`,
+          postId: post.id,
+          parentId: null,
+          author: `RoguelikeAddict_${currentCount + 4}`,
+          authorAvatar: `https://images.unsplash.com/photo-${1506794778202 + (currentCount % 10) * 1000}?auto=format&fit=crop&w=64&q=80`,
+          authorKarma: 18900 + currentCount * 250,
+          createdAt: now - 1000 * 60 * (45 + currentCount * 3),
+          score: Math.max(40, Math.floor(210 - currentCount * 7)),
+          body: isKo
+            ? `스킬 간 시너지 조합이 무궁무진해 보이네요. 랜덤 드롭 룬 시스템이나 유물 파밍 요소도 있나요?`
+            : `The skill synergies look endless! Are there rune drops or relic farming mechanics?`,
+        },
+        {
+          id: `c_more_${post.id}_${currentCount + 5}`,
+          postId: post.id,
+          parentId: null,
+          author: `ConsoleTester_${currentCount + 5}`,
+          authorAvatar: `https://images.unsplash.com/photo-${154400531394 + (currentCount % 10) * 1000}?auto=format&fit=crop&w=64&q=80`,
+          authorKarma: 11200 + currentCount * 180,
+          createdAt: now - 1000 * 60 * (55 + currentCount * 2),
+          score: Math.max(35, Math.floor(190 - currentCount * 6)),
+          body: isKo
+            ? `얼리액세스 로드맵 공유해주셔서 감사합니다. 데모 버전 공개 일정 나오면 꼭 레딧에 올려주세요!`
+            : `Thanks for sharing the roadmap! Please post on Reddit when the demo drops!`,
+        },
       ];
 
       setExtraComments((prev) => [...prev, ...additionalComments]);
       setIsLoadingMore(false);
-    }, 300);
-  };
+    }, 350);
+  }, [isLoadingMore, comments.length, extraComments.length, post.id, post.author, post.authorAvatar, isKo]);
+
+  // 글을 끝까지 읽었을 때(바닥 센티넬 도달 시) 자동으로 실시간 더보기 트리거
+  React.useEffect(() => {
+    if (!loadMoreSentinelRef.current) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !isLoadingMore) {
+          handleLoadMoreComments();
+        }
+      },
+      { rootMargin: '400px' }
+    );
+    observer.observe(loadMoreSentinelRef.current);
+    return () => observer.disconnect();
+  }, [isLoadingMore, handleLoadMoreComments]);
+
+  // 스크롤 이벤트 바닥 감지 (모바일 및 데스크톱 이중 감지)
+  const handleContainerScroll = React.useCallback(() => {
+    if (!scrollContainerRef.current || isLoadingMore) return;
+    const { scrollTop, scrollHeight, clientHeight } = scrollContainerRef.current;
+    if (scrollHeight - scrollTop - clientHeight < 450) {
+      handleLoadMoreComments();
+    }
+  }, [isLoadingMore, handleLoadMoreComments]);
 
   // 전체 댓글 병합 및 정렬
   const displayedComments = React.useMemo(() => {
@@ -179,7 +233,11 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-sm flex justify-center p-0 sm:p-4 md:py-8">
+    <div 
+      ref={scrollContainerRef}
+      onScroll={handleContainerScroll}
+      className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-sm flex justify-center p-0 sm:p-4 md:py-8"
+    >
       <div className="fixed inset-0 -z-10" onClick={onClose} />
 
       <div className={`relative w-full max-w-6xl my-auto sm:my-0 rounded-none sm:rounded-2xl shadow-2xl flex flex-col transition-colors min-h-[85vh] pb-16 ${
@@ -461,24 +519,26 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
                     onOpenUserProfile={onOpenUserProfile}
                   />
 
-                  {/* 더 많은 댓글 불러오기 버튼 */}
-                  <div className="pt-6 pb-2 text-center border-t border-inherit/10 mt-6">
-                    <button
-                      type="button"
-                      onClick={handleLoadMoreComments}
-                      disabled={isLoadingMore}
-                      className="px-6 py-2.5 rounded-full border border-inherit/20 font-bold text-xs hover:bg-[#FF4500] hover:text-white transition-all cursor-pointer shadow-sm flex items-center justify-center gap-2 mx-auto disabled:opacity-50"
-                    >
-                      {isLoadingMore ? (
-                        <span>{isKo ? '추가 댓글 불러오는 중...' : 'Loading comments...'}</span>
-                      ) : (
+                  {/* 실시간 무한 스크롤 센티넬 & 더 불러오기 영역 */}
+                  <div ref={loadMoreSentinelRef} className="pt-6 pb-2 text-center border-t border-inherit/10 mt-6">
+                    {isLoadingMore ? (
+                      <div className="py-2 flex items-center justify-center gap-2 text-xs font-bold text-[#FF4500]">
+                        <span className="w-4 h-4 border-2 border-[#FF4500] border-t-transparent rounded-full animate-spin" />
+                        <span>{isKo ? '실시간 추가 댓글 불러오는 중...' : 'Streaming more live comments...'}</span>
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={handleLoadMoreComments}
+                        className="px-6 py-2.5 rounded-full border border-inherit/20 font-bold text-xs hover:bg-[#FF4500] hover:text-white transition-all cursor-pointer shadow-sm flex items-center justify-center gap-2 mx-auto"
+                      >
                         <span>{isKo ? '댓글 더 불러오기 (+10개 더보기)' : 'Load More Comments (+10 more)'}</span>
-                      )}
-                    </button>
+                      </button>
+                    )}
                     <p className="text-[11px] opacity-50 mt-2">
                       {isKo 
-                        ? `총 ${post.commentCount.toLocaleString()}개의 토론 댓글 중 ${displayedComments.length}개 표시 중` 
-                        : `Showing ${displayedComments.length} of ${post.commentCount.toLocaleString()} discussion comments`}
+                        ? `총 ${post.commentCount.toLocaleString()}개의 토론 댓글 중 ${displayedComments.length}개 표시 중 (스크롤 시 자동 로드)` 
+                        : `Showing ${displayedComments.length} of ${post.commentCount.toLocaleString()} discussion comments (Auto-loads on scroll)`}
                     </p>
                   </div>
                 </>
