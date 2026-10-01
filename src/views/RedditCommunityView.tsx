@@ -448,7 +448,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
   }, []);
 
   return (
-    <div className={`min-h-screen w-full max-w-full overflow-x-hidden flex flex-col font-sans transition-colors duration-150 ${
+    <div className={`min-h-screen w-full flex flex-col font-sans transition-colors duration-150 ${
       isDark ? 'bg-[#0E1113] text-[#D7DADC]' : 'bg-[#DAE0E6] text-[#1C1C1C]'
     }`}>
       {/* 1. 상단 글로벌 헤더 */}
@@ -466,7 +466,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
       />
 
       {/* 2. 메인 바디 컨테이너: 좌측 사이드바 + 중앙 피드 + 우측 사이드바 */}
-      <div className="flex-1 w-full max-w-[1440px] mx-auto flex justify-center overflow-x-hidden">
+      <div className="flex-1 w-full max-w-[1440px] mx-auto flex justify-center">
         {/* 좌측 사이드바 / 드로어 */}
         <RedditSidebarLeft
           isOpen={isSidebarOpen}
@@ -479,7 +479,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
         />
 
         {/* 중앙 메인 피드 & 콘텐츠 */}
-        <main className="flex-1 w-full max-w-3xl min-w-0 p-2.5 sm:p-5 overflow-x-hidden">
+        <main className="flex-1 w-full max-w-3xl min-w-0 p-2.5 sm:p-5">
           {/* 유저 프로필 페이지 모드 */}
           {activeUser ? (
             <RedditUserProfileView
