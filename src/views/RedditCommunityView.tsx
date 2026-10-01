@@ -46,7 +46,9 @@ import { RedditSearchModal } from '../components/reddit/RedditSearchModal';
 import { RedditFloatingPlayButton } from '../components/reddit/RedditFloatingPlayButton';
 import { RedditTrendingCarousel } from '../components/reddit/RedditTrendingCarousel';
 import { RedditQuickCreatePostBar } from '../components/reddit/RedditQuickCreatePostBar';
+import { RedditCreateCommunityModal } from '../components/reddit/RedditCreateCommunityModal';
 import { RedditTrendingItem } from '../lib/reddit/redditTypes';
+import { SEED_SUBREDDITS } from '../data/redditSeedData';
 
 interface RedditCommunityViewProps {
   initialSubreddit?: string;
@@ -79,6 +81,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
   );
   const [searchState, setSearchState] = useState<{ query: string; results: SearchResults } | null>(null);
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
+  const [isCreateCommunityOpen, setIsCreateCommunityOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isSyncingLive, setIsSyncingLive] = useState(false);
   const [syncTick, setSyncTick] = useState(0);
@@ -154,6 +157,58 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
       }
     }
   }, [initialPostId, userState, syncTick]);
+
+  // 브라우저 뒤로가기 / 앞으로가기 (popstate) 실시간 동기화
+  useEffect(() => {
+    const handlePopState = () => {
+      const path = window.location.pathname;
+      const postMatch = path.match(/^\/r\/[^/]+\/comments\/([^/]+)/);
+      const subMatch = path.match(/^\/r\/([^/]+)/);
+      const userMatch = path.match(/^\/u(?:ser)?\/([^/]+)/);
+
+      if (postMatch) {
+        const { post, comments } = RedditApiService.getPostDetail(postMatch[1], userState);
+        if (post) {
+          setActivePost(post);
+          setActiveComments(comments);
+          return;
+        }
+      }
+
+      if (activePost) {
+        setActivePost(null);
+      }
+
+      if (userMatch) {
+        const user = RedditApiService.getUserProfile(userMatch[1]);
+        setActiveUser(user);
+        return;
+      } else {
+        setActiveUser(null);
+      }
+
+      if (subMatch) {
+        setCurrentSubreddit(subMatch[1]);
+      } else if (path === '/' || path === '/popular') {
+        setCurrentSubreddit('popular');
+      } else if (path === '/all') {
+        setCurrentSubreddit('all');
+      } else if (path === '/home') {
+        setCurrentSubreddit('home');
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [activePost, userState]);
+
+  // 커뮤니티 신규 생성 핸들러
+  const handleCreateCommunity = useCallback((newCommunity: RedditSubreddit) => {
+    SEED_SUBREDDITS[newCommunity.name] = newCommunity;
+    setUserState((prev) => toggleJoinSubreddit(prev, newCommunity.name));
+    setCurrentSubreddit(newCommunity.name);
+    setFeedVisibleCount(8);
+  }, []);
 
   // SEO / AEO / GEO / GA 동적 업데이트
   useEffect(() => {
@@ -372,6 +427,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
           onSelectSubreddit={handleSelectSubreddit}
           onClose={() => setIsSidebarOpen(false)}
           onOpenSubmitModal={() => setIsSubmitModalOpen(true)}
+          onOpenCreateCommunity={() => setIsCreateCommunityOpen(true)}
         />
 
         {/* 중앙 메인 피드 & 콘텐츠 */}
@@ -611,7 +667,16 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
         />
       )}
 
-      {/* 5. 어느 화면에서나 항상 우측 하단에 고정 표시되는 플로팅 Play 버튼 */}
+      {/* 5. 새 커뮤니티(서브레딧) 만들기 모달 */}
+      <RedditCreateCommunityModal
+        isOpen={isCreateCommunityOpen}
+        isDark={isDark}
+        isKo={isKo}
+        onClose={() => setIsCreateCommunityOpen(false)}
+        onCreateCommunity={handleCreateCommunity}
+      />
+
+      {/* 6. 어느 화면에서나 항상 우측 하단에 고정 표시되는 플로팅 Play 버튼 */}
       <RedditFloatingPlayButton onGoToGame={onNavigateHome} isKo={isKo} />
     </div>
   );

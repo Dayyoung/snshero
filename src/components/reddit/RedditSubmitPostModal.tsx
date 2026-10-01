@@ -60,6 +60,31 @@ export const RedditSubmitPostModal: React.FC<RedditSubmitPostModalProps> = ({
 
     const flairObj = flairs.find((f) => f.text === selectedFlair) || flairs[0];
 
+    let mediaObj: RedditPost['media'] = undefined;
+
+    if (activeTab === 'image' && imageUrl.trim()) {
+      const trimmedUrl = imageUrl.trim();
+      const isVideo = /\.(mp4|webm|mov)($|\?)/i.test(trimmedUrl);
+      mediaObj = {
+        type: isVideo ? 'video' : 'image',
+        url: trimmedUrl,
+        aspectRatio: 16 / 9,
+      };
+    } else if (activeTab === 'link' && linkUrl.trim()) {
+      const trimmedUrl = linkUrl.trim();
+      let domain = 'external link';
+      try {
+        domain = new URL(trimmedUrl).hostname.replace(/^www\./, '');
+      } catch {
+        domain = 'link';
+      }
+      mediaObj = {
+        type: 'link',
+        url: trimmedUrl,
+        domain,
+      };
+    }
+
     const newPost: RedditPost = {
       id: `post_user_${Date.now()}`,
       subreddit: selectedSub,
@@ -70,13 +95,7 @@ export const RedditSubmitPostModal: React.FC<RedditSubmitPostModalProps> = ({
       score: 1,
       commentCount: 0,
       body: body.trim() || undefined,
-      media: imageUrl.trim()
-        ? {
-            type: 'image',
-            url: imageUrl.trim(),
-            aspectRatio: 16 / 9,
-          }
-        : undefined,
+      media: mediaObj,
       flair: flairObj,
       userVote: 'up',
       upvoteRatio: 1.0,

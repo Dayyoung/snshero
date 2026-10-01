@@ -3,7 +3,7 @@
  * 오리지널 레딧 포스트 상세 뷰 및 모달 (한국어 기본 지원)
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   X, 
   ArrowBigUp, 
@@ -18,7 +18,8 @@ import {
   Quote, 
   List, 
   Check, 
-  ArrowLeft 
+  ArrowLeft,
+  ExternalLink
 } from 'lucide-react';
 import { RedditPost, RedditComment, RedditSubreddit, RedditUserDataState } from '../../lib/reddit/redditTypes';
 import { RedditCommentTree } from './RedditCommentTree';
@@ -68,6 +69,17 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
 
   const scrollContainerRef = React.useRef<HTMLDivElement>(null);
   const loadMoreSentinelRef = React.useRef<HTMLDivElement>(null);
+
+  // ESC 키 누를 시 모달 닫기
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
 
   const getRelativeTime = (timestamp: number) => {
     const diff = Math.max(0, Date.now() - timestamp);
@@ -323,10 +335,27 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
                 {post.title}
               </h1>
 
-              {/* 고화질 미디어 (동영상 및 이미지 완벽 지원) */}
+              {/* 고화질 미디어 (동영상 및 이미지, 링크 완벽 지원) */}
               {post.media?.url && (
-                <div className="rounded-xl overflow-hidden mb-5 bg-black flex items-center justify-center border border-inherit/10">
-                  {post.media.type === 'video' ? (
+                <div className="rounded-xl overflow-hidden mb-5 flex items-center justify-center border border-inherit/10">
+                  {post.media.type === 'link' ? (
+                    <a
+                      href={post.media.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`w-full p-4 flex items-center justify-between gap-3 text-xs sm:text-sm font-semibold rounded-xl border transition-colors ${
+                        isDark ? 'bg-[#0E1113] hover:bg-[#181C1F] border-[#2E363E] text-sky-400' : 'bg-gray-50 hover:bg-gray-100 border-gray-200 text-sky-600'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2 truncate">
+                        <ExternalLink className="w-4 h-4 flex-shrink-0" />
+                        <span className="truncate">{post.media.url}</span>
+                      </div>
+                      <span className="text-xs px-3 py-1 rounded-full bg-black/10 flex-shrink-0 opacity-80">
+                        {post.media.domain || '외부 링크 열기'}
+                      </span>
+                    </a>
+                  ) : post.media.type === 'video' ? (
                     <div className="relative w-full flex items-center justify-center bg-black">
                       <video
                         src={post.media.url}
@@ -346,7 +375,7 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
                     <img
                       src={post.media.url}
                       alt={post.title}
-                      className="w-full h-auto max-h-[600px] object-contain"
+                      className="w-full h-auto max-h-[600px] object-contain bg-black"
                     />
                   )}
                 </div>

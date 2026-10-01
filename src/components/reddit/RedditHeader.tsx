@@ -24,6 +24,8 @@ import {
 } from 'lucide-react';
 import { RedditUserDataState } from '../../lib/reddit/redditTypes';
 import { SEED_SUBREDDITS } from '../../data/redditSeedData';
+import { RedditChatDrawer } from './RedditChatDrawer';
+import { RedditNotificationsDropdown, RedditNotificationItem } from './RedditNotificationsDropdown';
 
 interface RedditHeaderProps {
   currentSubreddit: string;
@@ -54,11 +56,14 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isCommunityDropdownOpen, setIsCommunityDropdownOpen] = useState(false);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const [hasUnreadNotif, setHasUnreadNotif] = useState(true);
 
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const profileMenuRef = useRef<HTMLDivElement>(null);
   const communityDropdownRef = useRef<HTMLDivElement>(null);
+  const notificationsRef = useRef<HTMLDivElement>(null);
 
   const isDark = userState.theme !== 'light';
   const isKo = userState.language !== 'en'; // 한국어 기본
@@ -73,6 +78,9 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
       }
       if (communityDropdownRef.current && !communityDropdownRef.current.contains(e.target as Node)) {
         setIsCommunityDropdownOpen(false);
+      }
+      if (notificationsRef.current && !notificationsRef.current.contains(e.target as Node)) {
+        setIsNotificationsOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -289,25 +297,43 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
           className={`p-2 rounded-full cursor-pointer transition-colors relative ${
             isDark ? 'hover:bg-[#22272B] text-gray-300' : 'hover:bg-gray-100 text-gray-700'
           }`}
-          onClick={() => alert(isKo ? 'SNSHero 실시간 커뮤니티 채팅 채널에 연결 중입니다...' : 'Connecting to community chat channel...')}
+          onClick={() => setIsChatOpen(true)}
         >
           <MessageCircle className="w-5 h-5" />
         </button>
 
-        {/* 알림 버튼 */}
-        <button
-          type="button"
-          aria-label={isKo ? '알림' : 'Notifications'}
-          onClick={() => setHasUnreadNotif(false)}
-          className={`p-2 rounded-full cursor-pointer transition-colors relative ${
-            isDark ? 'hover:bg-[#22272B] text-gray-300' : 'hover:bg-gray-100 text-gray-700'
-          }`}
-        >
-          <Bell className="w-5 h-5" />
-          {hasUnreadNotif && (
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#FF4500] ring-2 ring-[#0E1113]" />
+        {/* 알림 버튼 & 드롭다운 */}
+        <div className="relative" ref={notificationsRef}>
+          <button
+            type="button"
+            aria-label={isKo ? '알림' : 'Notifications'}
+            onClick={() => {
+              setIsNotificationsOpen(!isNotificationsOpen);
+              setHasUnreadNotif(false);
+            }}
+            className={`p-2 rounded-full cursor-pointer transition-colors relative ${
+              isDark ? 'hover:bg-[#22272B] text-gray-300' : 'hover:bg-gray-100 text-gray-700'
+            }`}
+          >
+            <Bell className="w-5 h-5" />
+            {hasUnreadNotif && (
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#FF4500] ring-2 ring-[#0E1113]" />
+            )}
+          </button>
+
+          {isNotificationsOpen && (
+            <RedditNotificationsDropdown
+              isDark={isDark}
+              isKo={isKo}
+              onClose={() => setIsNotificationsOpen(false)}
+              onSelectNotification={(item) => {
+                if (item.linkSubreddit) {
+                  onSelectSubreddit(item.linkSubreddit);
+                }
+              }}
+            />
           )}
-        </button>
+        </div>
 
         {/* 프로필 아바타 & 메뉴 */}
         <div className="relative" ref={profileMenuRef}>
@@ -416,6 +442,14 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
           )}
         </div>
       </div>
+
+      {/* 실시간 커뮤니티 채팅 드로어 */}
+      <RedditChatDrawer
+        isOpen={isChatOpen}
+        isDark={isDark}
+        isKo={isKo}
+        onClose={() => setIsChatOpen(false)}
+      />
     </header>
   );
 };

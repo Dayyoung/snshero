@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { RedditUserDataState } from '../../lib/reddit/redditTypes';
 import { SEED_SUBREDDITS } from '../../data/redditSeedData';
+import { RedditPolicyModal } from './RedditPolicyModal';
 
 interface RedditSidebarLeftProps {
   isOpen: boolean;
@@ -32,6 +33,7 @@ interface RedditSidebarLeftProps {
   onSelectSubreddit: (sub: string) => void;
   onClose: () => void;
   onOpenSubmitModal: () => void;
+  onOpenCreateCommunity?: () => void;
 }
 
 export const RedditSidebarLeft: React.FC<RedditSidebarLeftProps> = ({
@@ -41,7 +43,9 @@ export const RedditSidebarLeft: React.FC<RedditSidebarLeftProps> = ({
   onSelectSubreddit,
   onClose,
   onOpenSubmitModal,
+  onOpenCreateCommunity,
 }) => {
+  const [policyModalType, setPolicyModalType] = React.useState<'rules' | 'privacy' | null>(null);
   const isDark = userState.theme !== 'light';
   const isKo = userState.language !== 'en';
 
@@ -141,8 +145,8 @@ export const RedditSidebarLeft: React.FC<RedditSidebarLeftProps> = ({
             </span>
             <button
               type="button"
-              onClick={onOpenSubmitModal}
-              title={isKo ? '새 글 작성' : 'Create Post'}
+              onClick={onOpenCreateCommunity || onOpenSubmitModal}
+              title={isKo ? '새 커뮤니티 만들기' : 'Create Community'}
               className="p-1 rounded-full hover:bg-black/10 cursor-pointer text-[#FF4500]"
             >
               <Plus className="w-3.5 h-3.5" />
@@ -192,26 +196,26 @@ export const RedditSidebarLeft: React.FC<RedditSidebarLeftProps> = ({
             {isKo ? '안내 및 정책' : 'Resources'}
           </div>
           <div className="space-y-0.5">
-            <a
-              href="#rules"
-              onClick={(e) => { e.preventDefault(); alert(isKo ? 'SNSHero 커뮤니티 가이드라인: 100% 무료, 상호 존중 및 클린 토론 문화.' : 'SNSHero Guidelines'); }}
-              className={`flex items-center gap-2.5 px-3.5 py-2 rounded-xl cursor-pointer transition-colors ${
+            <button
+              type="button"
+              onClick={() => setPolicyModalType('rules')}
+              className={`w-full text-left flex items-center gap-2.5 px-3.5 py-2 rounded-xl cursor-pointer transition-colors ${
                 isDark ? 'hover:bg-[#181C1F] text-gray-400' : 'hover:bg-gray-100 text-gray-600'
               }`}
             >
               <ShieldCheck className="w-4 h-4 opacity-70" />
               <span>{isKo ? '커뮤니티 운영 규칙' : 'Community Rules'}</span>
-            </a>
-            <a
-              href="#privacy"
-              onClick={(e) => { e.preventDefault(); alert(isKo ? '개인정보 보호 정책: 모든 사용자 인터랙션은 브라우저 로컬스토리지에 안전하게 보관됩니다.' : 'Privacy Policy'); }}
-              className={`flex items-center gap-2.5 px-3.5 py-2 rounded-xl cursor-pointer transition-colors ${
+            </button>
+            <button
+              type="button"
+              onClick={() => setPolicyModalType('privacy')}
+              className={`w-full text-left flex items-center gap-2.5 px-3.5 py-2 rounded-xl cursor-pointer transition-colors ${
                 isDark ? 'hover:bg-[#181C1F] text-gray-400' : 'hover:bg-gray-100 text-gray-600'
               }`}
             >
               <FileText className="w-4 h-4 opacity-70" />
               <span>{isKo ? '개인정보처리방침' : 'Privacy & Terms'}</span>
-            </a>
+            </button>
           </div>
         </div>
       </div>
@@ -265,6 +269,16 @@ export const RedditSidebarLeft: React.FC<RedditSidebarLeftProps> = ({
             {content}
           </div>
         </div>
+      )}
+
+      {/* 커뮤니티 규칙 & 개인정보처리방침 안내 모달 */}
+      {policyModalType && (
+        <RedditPolicyModal
+          type={policyModalType}
+          isDark={isDark}
+          isKo={isKo}
+          onClose={() => setPolicyModalType(null)}
+        />
       )}
     </>
   );

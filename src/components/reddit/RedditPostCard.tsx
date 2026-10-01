@@ -316,7 +316,25 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
             }}
             className="relative rounded-xl overflow-hidden mb-3 bg-black flex items-center justify-center max-h-[500px] border border-inherit/10 group"
           >
-            {post.media.type === 'video' ? (
+            {post.media.type === 'link' ? (
+              <a
+                href={post.media.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className={`w-full p-4 flex items-center justify-between gap-3 text-xs font-semibold rounded-xl border transition-colors ${
+                  isDark ? 'bg-[#0E1113] hover:bg-[#181C1F] border-[#2E363E] text-sky-400' : 'bg-gray-50 hover:bg-gray-100 border-gray-200 text-sky-600'
+                }`}
+              >
+                <div className="flex items-center gap-2 truncate">
+                  <ExternalLink className="w-4 h-4 flex-shrink-0" />
+                  <span className="truncate">{post.media.url}</span>
+                </div>
+                <span className="text-[10px] px-2.5 py-1 rounded-full bg-black/10 flex-shrink-0 opacity-80">
+                  {post.media.domain || 'link'}
+                </span>
+              </a>
+            ) : post.media.type === 'video' ? (
               <div className="relative w-full flex items-center justify-center bg-black">
                 <video
                   src={post.media.url}
@@ -340,7 +358,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
                 className="w-full h-auto max-h-[500px] object-contain transition-transform duration-300 hover:scale-[1.01]"
               />
             )}
-            {post.media.domain && (
+            {post.media.type !== 'link' && post.media.domain && (
               <div className="absolute bottom-2 right-2 px-2 py-0.5 rounded-md bg-black/70 text-white text-[10px] font-semibold flex items-center gap-1 backdrop-blur-sm pointer-events-none">
                 <span>{post.media.domain}</span>
                 <ExternalLink className="w-2.5 h-2.5" />
