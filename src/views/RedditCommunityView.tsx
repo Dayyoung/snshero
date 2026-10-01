@@ -83,7 +83,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
   const [searchState, setSearchState] = useState<{ query: string; results: SearchResults } | null>(null);
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
   const [isCreateCommunityOpen, setIsCreateCommunityOpen] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSyncingLive, setIsSyncingLive] = useState(false);
   const [syncTick, setSyncTick] = useState(0);
 

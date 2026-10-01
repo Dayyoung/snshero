@@ -235,8 +235,8 @@ export const RedditSidebarLeft: React.FC<RedditSidebarLeftProps> = ({
     <>
       {/* PC 고정 사이드바 (lg: 이상) */}
       <aside
-        className={`hidden lg:block w-64 flex-shrink-0 h-[calc(100vh-3.5rem)] sticky top-14 border-r transition-all duration-200 z-30 ${
-          isOpen ? 'w-64 opacity-100' : 'w-0 opacity-0 overflow-hidden border-none'
+        className={`hidden lg:block flex-shrink-0 h-[calc(100vh-3.5rem)] sticky top-14 transition-all duration-200 z-30 ${
+          isOpen ? 'w-64 opacity-100 border-r' : 'w-0 opacity-0 overflow-hidden border-none'
         } ${isDark ? 'bg-[#0E1113] border-[#22272B]' : 'bg-white border-gray-200'}`}
       >
         {isOpen && content}
