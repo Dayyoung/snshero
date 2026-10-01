@@ -16,10 +16,18 @@ import {
   SearchResults,
   RedditUserDataState 
 } from './redditTypes';
+import { RedditLiveFeedService } from './redditLiveFeedService';
 
 export class RedditApiService {
   /**
-   * 서브레딧 또는 메인 피드 포스트 목록 반환
+   * 실시간 실제 reddit.com 피드 동기화
+   */
+  static async syncLivePosts(subreddit: string = 'popular'): Promise<RedditPost[]> {
+    return RedditLiveFeedService.fetchRealtimePosts(subreddit);
+  }
+
+  /**
+   * 서브레딧 또는 메인 피드 포스트 목록 반환 (실시간 글 + 시드 데이터 지능형 병합)
    */
   static getPosts(
     subreddit: string = 'popular',
@@ -29,8 +37,19 @@ export class RedditApiService {
   ): RedditPost[] {
     const isFrontPage = ['popular', 'all', 'home'].includes(subreddit.toLowerCase());
     
-    // 1. 기본 시드 포스트 풀 구성
-    let pool: RedditPost[] = [...SEED_POSTS];
+    // 1. 실시간 실제 reddit.com 캐시 포스트 로드
+    const livePosts = RedditLiveFeedService.getCachedLivePosts();
+
+    // 2. 기본 포스트 풀 구성: 실시간 최신 글 + 시드 포스트 풀
+    let pool: RedditPost[] = [];
+    if (livePosts.length > 0) {
+      // 중복 방지 병합
+      const liveIds = new Set(livePosts.map((p) => p.id));
+      const filteredSeeds = SEED_POSTS.filter((p) => !liveIds.has(p.id));
+      pool = [...livePosts, ...filteredSeeds];
+    } else {
+      pool = [...SEED_POSTS];
+    }
 
     // 2. 사용자가 직접 작성한 포스트 병합
     if (userState && userState.userPosts.length > 0) {
@@ -135,7 +154,14 @@ export class RedditApiService {
       if (foundUserPost) post = { ...foundUserPost };
     }
 
-    // 2. 시드 포스트에서 찾기
+    // 2. 실시간 피드 캐시 포스트에서 찾기
+    if (!post) {
+      const livePosts = RedditLiveFeedService.getCachedLivePosts();
+      const foundLive = livePosts.find((p) => p.id === postId);
+      if (foundLive) post = { ...foundLive };
+    }
+
+    // 3. 시드 포스트에서 찾기
     if (!post) {
       const foundSeed = SEED_POSTS.find((p) => p.id === postId);
       if (foundSeed) post = { ...foundSeed };

@@ -181,14 +181,32 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
                 {post.title}
               </h1>
 
-              {/* 고화질 미디어 */}
+              {/* 고화질 미디어 (동영상 및 이미지 완벽 지원) */}
               {post.media?.url && (
-                <div className="rounded-xl overflow-hidden mb-4 bg-black/20 flex items-center justify-center border border-inherit/10">
-                  <img
-                    src={post.media.url}
-                    alt={post.title}
-                    className="w-full h-auto max-h-[600px] object-contain"
-                  />
+                <div className="rounded-xl overflow-hidden mb-5 bg-black flex items-center justify-center border border-inherit/10">
+                  {post.media.type === 'video' ? (
+                    <div className="relative w-full flex items-center justify-center bg-black">
+                      <video
+                        src={post.media.url}
+                        poster={post.media.previewUrl}
+                        controls
+                        autoPlay
+                        playsInline
+                        preload="auto"
+                        className="w-full max-h-[620px] object-contain rounded-xl shadow-lg"
+                      >
+                        <source src={post.media.url} type="video/webm" />
+                        <source src={post.media.url} type="video/mp4" />
+                        {isKo ? '브라우저가 비디오 재생을 지원하지 않습니다.' : 'Your browser does not support the video tag.'}
+                      </video>
+                    </div>
+                  ) : (
+                    <img
+                      src={post.media.url}
+                      alt={post.title}
+                      className="w-full h-auto max-h-[600px] object-contain"
+                    />
+                  )}
                 </div>
               )}
 

@@ -308,17 +308,40 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
           </div>
         )}
 
-        {/* 4. 고화질 미디어 */}
+        {/* 4. 고화질 미디어 (동영상 및 이미지 완벽 지원) */}
         {post.media?.url && (
-          <div className="relative rounded-xl overflow-hidden mb-3 bg-black/20 flex items-center justify-center max-h-[500px] border border-inherit/10">
-            <img
-              src={post.media.url}
-              alt={post.title}
-              loading="lazy"
-              className="w-full h-auto max-h-[500px] object-contain transition-transform duration-300 hover:scale-[1.01]"
-            />
+          <div 
+            onClick={(e) => {
+              if (post.media?.type === 'video') e.stopPropagation();
+            }}
+            className="relative rounded-xl overflow-hidden mb-3 bg-black flex items-center justify-center max-h-[500px] border border-inherit/10 group"
+          >
+            {post.media.type === 'video' ? (
+              <div className="relative w-full flex items-center justify-center bg-black">
+                <video
+                  src={post.media.url}
+                  poster={post.media.previewUrl}
+                  controls
+                  playsInline
+                  preload="metadata"
+                  className="w-full max-h-[500px] object-contain rounded-xl"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <source src={post.media.url} type="video/webm" />
+                  <source src={post.media.url} type="video/mp4" />
+                  {isKo ? '브라우저가 비디오 재생을 지원하지 않습니다.' : 'Your browser does not support the video tag.'}
+                </video>
+              </div>
+            ) : (
+              <img
+                src={post.media.url}
+                alt={post.title}
+                loading="lazy"
+                className="w-full h-auto max-h-[500px] object-contain transition-transform duration-300 hover:scale-[1.01]"
+              />
+            )}
             {post.media.domain && (
-              <div className="absolute bottom-2 right-2 px-2 py-0.5 rounded-md bg-black/70 text-white text-[10px] font-semibold flex items-center gap-1 backdrop-blur-sm">
+              <div className="absolute bottom-2 right-2 px-2 py-0.5 rounded-md bg-black/70 text-white text-[10px] font-semibold flex items-center gap-1 backdrop-blur-sm pointer-events-none">
                 <span>{post.media.domain}</span>
                 <ExternalLink className="w-2.5 h-2.5" />
               </div>

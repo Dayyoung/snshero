@@ -56,6 +56,66 @@ export default defineConfig(({mode}) => {
               const rawUrl = req.url.split('?')[0];
               const decodedUrl = decodeURIComponent(rawUrl);
 
+              // Real-time Reddit RSS Feed proxy (fetches live posts from reddit.com with smart in-memory caching)
+              if (decodedUrl === '/api/reddit/feed') {
+                const urlObj = new URL(req.url || '', 'http://localhost');
+                const sub = urlObj.searchParams.get('sub') || 'popular';
+                const cacheKey = `sub_${sub}`;
+                const now = Date.now();
+
+                // 1. 메모리 캐시 확인 (5분 유효)
+                const cached = (global as any).__redditCache?.[cacheKey];
+                if (cached && now - cached.time < 300000) {
+                  res.statusCode = 200;
+                  res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+                  res.setHeader('Access-Control-Allow-Origin', '*');
+                  res.setHeader('X-Cache', 'HIT');
+                  res.end(cached.data);
+                  return;
+                }
+
+                const redditRssUrl = `https://www.reddit.com/r/${encodeURIComponent(sub)}/.rss`;
+
+                fetch(redditRssUrl, {
+                  headers: {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                    'Accept': 'application/rss+xml, application/xml, text/xml, */*',
+                  },
+                })
+                  .then(async (resp) => {
+                    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                    const xml = await resp.text();
+
+                    // 캐시 저장
+                    if (!(global as any).__redditCache) (global as any).__redditCache = {};
+                    (global as any).__redditCache[cacheKey] = { time: now, data: xml };
+
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+                    res.setHeader('Access-Control-Allow-Origin', '*');
+                    res.setHeader('Cache-Control', 'public, max-age=180');
+                    res.setHeader('X-Cache', 'MISS');
+                    res.end(xml);
+                  })
+                  .catch((err) => {
+                    // 에러 시 직전 캐시가 있으면 캐시 반환
+                    if (cached && cached.data) {
+                      res.statusCode = 200;
+                      res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+                      res.setHeader('Access-Control-Allow-Origin', '*');
+                      res.setHeader('X-Cache', 'STALE');
+                      res.end(cached.data);
+                      return;
+                    }
+
+                    res.statusCode = 502;
+                    res.setHeader('Content-Type', 'application/json; charset=utf-8');
+                    res.setHeader('Access-Control-Allow-Origin', '*');
+                    res.end(JSON.stringify({ error: err?.message || 'Failed to fetch Reddit RSS' }));
+                  });
+                return;
+              }
+
               // Google Spreadsheet Community Posts proxy (bypasses browser CORS restrictions)
               if (decodedUrl === '/api/community/sheet-posts') {
                 const sheetId = '1o8rwdG_O_-efkKHgf9oMpFaOUnAAVxMQVfDldFavbjg';

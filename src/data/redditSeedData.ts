@@ -239,9 +239,9 @@ export const SEED_POSTS: RedditPost[] = [
     isOriginalContent: true,
     upvoteRatio: 0.98,
     media: {
-      type: 'image',
-      url: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80',
-      previewUrl: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=600&q=80',
+      type: 'video',
+      url: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/f/f1/Sintel_movie_4K.webm/Sintel_movie_4K.webm.480p.vp9.webm',
+      previewUrl: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80',
       aspectRatio: 16 / 9,
     },
     body: `안녕하세요 r/hanguk 여러분!

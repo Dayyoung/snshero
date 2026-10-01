@@ -5,6 +5,7 @@
  */
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import { RotateCw } from 'lucide-react';
 import { 
   RedditPost, 
   RedditComment, 
@@ -79,19 +80,39 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
   const [searchState, setSearchState] = useState<{ query: string; results: SearchResults } | null>(null);
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSyncingLive, setIsSyncingLive] = useState(false);
+  const [syncTick, setSyncTick] = useState(0);
 
   const isDark = userState.theme !== 'light';
   const isKo = userState.language !== 'en'; // 한국어 기본
+
+  // 실시간 Reddit 피드 백그라운드 동기화 함수
+  const handleSyncLive = useCallback(async () => {
+    setIsSyncingLive(true);
+    try {
+      await RedditApiService.syncLivePosts(currentSubreddit);
+      setSyncTick((t) => t + 1);
+    } catch (e) {
+      console.warn('[Reddit] Live sync warning', e);
+    } finally {
+      setIsSyncingLive(false);
+    }
+  }, [currentSubreddit]);
+
+  // 마운트 및 서브레딧 변경 시 실시간 Reddit RSS 자동 동기화
+  useEffect(() => {
+    handleSyncLive();
+  }, [handleSyncLive]);
 
   // 서브레딧 메타데이터
   const currentSubredditInfo = useMemo(() => {
     return RedditApiService.getSubredditInfo(currentSubreddit, userState);
   }, [currentSubreddit, userState]);
 
-  // 피드 포스트 목록 (필터 및 정렬)
+  // 피드 포스트 목록 (필터, 정렬 및 실시간 업데이트 동기화)
   const posts = useMemo(() => {
     return RedditApiService.getPosts(currentSubreddit, currentSort, currentTimeFilter, userState);
-  }, [currentSubreddit, currentSort, currentTimeFilter, userState]);
+  }, [currentSubreddit, currentSort, currentTimeFilter, userState, syncTick]);
 
   // URL 및 초기 props 반영
   useEffect(() => {
@@ -102,7 +123,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
         setActiveComments(comments);
       }
     }
-  }, [initialPostId, userState]);
+  }, [initialPostId, userState, syncTick]);
 
   // SEO / AEO / GEO / GA 동적 업데이트
   useEffect(() => {
@@ -384,6 +405,33 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
                     isKo={isKo}
                     onOpenSubmitModal={() => setIsSubmitModalOpen(true)}
                   />
+
+                  {/* 실시간 Reddit 피드 연동 상태 바 및 수동 새로고침 버튼 */}
+                  <div className={`flex items-center justify-between px-3.5 py-2 mb-3 rounded-2xl text-[11px] font-semibold border shadow-sm transition-colors ${
+                    isDark ? 'bg-[#181C1F] border-[#22272B] text-gray-300' : 'bg-white border-gray-200 text-gray-700'
+                  }`}>
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                      <span className="font-bold text-emerald-500">
+                        {isKo ? '실시간 Reddit 데이터 연동 중' : 'Live Reddit Stream'}
+                      </span>
+                      <span className="opacity-40">•</span>
+                      <span className="opacity-75 text-[11px]">
+                        {posts.length}{isKo ? '개 포스트 스트리밍' : ' posts'}
+                      </span>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={handleSyncLive}
+                      disabled={isSyncingLive}
+                      className="flex items-center gap-1.5 px-3 py-1 rounded-full hover:bg-black/10 cursor-pointer disabled:opacity-50 transition-all font-bold text-[11px] text-[#FF4500]"
+                      title={isKo ? '실시간 데이터 새로고침' : 'Refresh Live Data'}
+                    >
+                      <RotateCw className={`w-3.5 h-3.5 ${isSyncingLive ? 'animate-spin' : ''}`} />
+                      <span>{isSyncingLive ? (isKo ? '동기화 중...' : 'Syncing...') : (isKo ? '실시간 갱신' : 'Refresh')}</span>
+                    </button>
+                  </div>
 
                   {/* 피드 정렬 칩 및 뷰 모드 바 */}
                   <RedditFeedSortBar
