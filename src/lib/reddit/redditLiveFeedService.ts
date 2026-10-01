@@ -19,7 +19,7 @@ export interface LiveSyncState {
 
 export class RedditLiveFeedService {
   /**
-   * 로컬에 캐시된 실시간 포스트 로드
+   * 로컬에 캐시된 실시간 포스트 로드 (48시간 초과된 노후 캐시 자동 정리 및 최신순 정렬)
    */
   static getCachedLivePosts(): RedditPost[] {
     try {
@@ -27,7 +27,14 @@ export class RedditLiveFeedService {
       if (raw) {
         const parsed = JSON.parse(raw);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed;
+          const now = Date.now();
+          const maxAge = 1000 * 60 * 60 * 48; // 48시간
+          const fresh = parsed.filter((p) => {
+            const age = now - (p.createdAt || 0);
+            return age < maxAge;
+          });
+          // 최신 시간순 정렬
+          return fresh.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
         }
       }
     } catch (e) {
@@ -128,7 +135,7 @@ export class RedditLiveFeedService {
           if (body.length > 500) body = body.substring(0, 500) + '...';
         }
 
-        const score = Math.floor(18000 + (entries.length - idx) * 1400 + Math.random() * 800);
+        const score = Math.floor(22000 + (entries.length - idx) * 1600 + Math.random() * 800);
         const commentCount = Math.floor(450 + (entries.length - idx) * 60 + Math.random() * 50);
 
         livePosts.push({
@@ -166,11 +173,20 @@ export class RedditLiveFeedService {
           // 번역 실패 시 원문 유지
         }
         
-        // 기존 캐시와 중복 없이 지능형 병합 (피드 무한 확장)
+        // 기존 캐시와 중복 방지 및 최신 글 우선 upsert 병합
         const existing = this.getCachedLivePosts();
-        const existingIds = new Set(existing.map((p) => p.id));
-        const newOnes = finalPosts.filter((p) => !existingIds.has(p.id));
-        const merged = [...newOnes, ...existing].slice(0, 200); // 최대 200개 유지
+        const postMap = new Map<string, RedditPost>();
+
+        // 1. 기존 캐시 등록
+        existing.forEach((p) => postMap.set(p.id, p));
+
+        // 2. 새로 수집된 최신 글 upsert (최신 정보로 덮어쓰기)
+        finalPosts.forEach((p) => postMap.set(p.id, p));
+
+        // 3. 최신 시간순(createdAt 내림차순)으로 정렬하여 최대 200개 유지
+        const merged = Array.from(postMap.values())
+          .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))
+          .slice(0, 200);
 
         localStorage.setItem(LIVE_CACHE_KEY, JSON.stringify(merged));
         localStorage.setItem(LIVE_SYNC_TIME_KEY, Date.now().toString());

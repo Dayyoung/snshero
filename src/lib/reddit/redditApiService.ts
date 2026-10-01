@@ -102,15 +102,21 @@ export class RedditApiService {
     // 2. 기본 포스트 풀 구성: 실시간 최신 글 + 시드 포스트 풀
     let pool: RedditPost[] = [];
     if (livePosts.length > 0) {
-      // 중복 방지 병합
+      // 중복 방지 병합 및 시드 데이터 아카이브 보정 (실시간 최신 글이 항상 상단을 선점하도록 보장)
       const liveIds = new Set(livePosts.map((p) => p.id));
-      const filteredSeeds = SEED_POSTS.filter((p) => !liveIds.has(p.id));
-      pool = [...livePosts, ...filteredSeeds];
+      const archivedSeeds = SEED_POSTS
+        .filter((p) => !liveIds.has(p.id))
+        .map((p) => ({
+          ...p,
+          // 실시간 글이 존재할 경우 시드 글은 3일 전 아카이브로 보정하여 최신글 노출 우선권 보장
+          createdAt: Math.min(p.createdAt, Date.now() - 1000 * 60 * 60 * 72),
+        }));
+      pool = [...livePosts, ...archivedSeeds];
     } else {
       pool = [...SEED_POSTS];
     }
 
-    // 2. 사용자가 직접 작성한 포스트 병합
+    // 2. 사용자가 직접 작성한 포스트 병합 (유저 작성 글은 최우선 배치)
     if (userState && userState.userPosts.length > 0) {
       pool = [...userState.userPosts, ...pool];
     }
@@ -154,7 +160,7 @@ export class RedditApiService {
   }
 
   /**
-   * 포스트 정렬 (Hot, New, Top, Best, Rising)
+   * 포스트 정렬 (Hot, New, Top, Best, Rising) - 실시간 최신 글 가중치 완벽 반영
    */
   static sortPosts(posts: RedditPost[], sort: FeedSortType): RedditPost[] {
     const list = [...posts];
@@ -185,14 +191,18 @@ export class RedditApiService {
 
       case 'hot':
       default:
-        // Reddit Hot 알고리즘 근사치 (Log10(Score) + Time Factor)
+        // Reddit Hot 알고리즘 개선 (실시간 최신 글 우선 부스트)
         return list.sort((a, b) => {
+          const isLiveA = a.id.startsWith('live_');
+          const isLiveB = b.id.startsWith('live_');
           const orderA = Math.log10(Math.max(1, Math.abs(a.score)));
           const orderB = Math.log10(Math.max(1, Math.abs(b.score)));
-          const ageHoursA = (now - a.createdAt) / 3600000;
-          const ageHoursB = (now - b.createdAt) / 3600000;
-          const hotA = orderA - ageHoursA / 12;
-          const hotB = orderB - ageHoursB / 12;
+          const ageHoursA = Math.max(0.1, (now - a.createdAt) / 3600000);
+          const ageHoursB = Math.max(0.1, (now - b.createdAt) / 3600000);
+          const liveBoostA = isLiveA ? 1.8 : 0;
+          const liveBoostB = isLiveB ? 1.8 : 0;
+          const hotA = orderA - ageHoursA / 18 + liveBoostA;
+          const hotB = orderB - ageHoursB / 18 + liveBoostB;
           return hotB - hotA;
         });
     }

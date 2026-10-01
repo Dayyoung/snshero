@@ -581,13 +581,20 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
                     onSelectViewMode={handleSelectViewMode}
                   />
 
-                  {/* 피드 포스트 목록 + 구글 애드센스 인피드 광고 및 SNSHero 게임 배너 주기적 삽입 */}
+                  {/* 피드 포스트 목록 + 모든 페이지 최상단 시작글은 SNSHero 공식 배너로 시작 */}
                   <div className="space-y-2">
+                    {/* [필수] 모든 페이지 및 서브레딧의 시작 글은 SNSHero 공식 게임 배너로 시작 */}
+                    <SNSHeroGameBannerCard
+                      isDark={isDark}
+                      isKo={isKo}
+                      onGoToGame={onNavigateHome}
+                    />
+
                     {posts.length > 0 ? (
                       <>
                         {posts.slice(0, feedVisibleCount).map((post, idx) => (
                           <React.Fragment key={post.id}>
-                            {/* 글 10개에 1번씩 SNShero.com 게임 배너 노출 (클릭 시 게임하기로 즉시 이동) */}
+                            {/* 글 10개에 1번씩 SNShero.com 게임 배너 주기적 노출 (클릭 시 게임하기로 즉시 이동) */}
                             {idx > 0 && idx % 10 === 0 && (
                               <SNSHeroGameBannerCard
                                 isDark={isDark}
