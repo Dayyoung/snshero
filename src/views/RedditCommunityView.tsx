@@ -39,6 +39,7 @@ import { RedditSidebarRight } from '../components/reddit/RedditSidebarRight';
 import { RedditFeedSortBar } from '../components/reddit/RedditFeedSortBar';
 import { RedditPostCard } from '../components/reddit/RedditPostCard';
 import { RedditAdCard } from '../components/reddit/RedditAdCard';
+import { SNSHeroGameBannerCard } from '../components/reddit/SNSHeroGameBannerCard';
 import { RedditPostDetailModal } from '../components/reddit/RedditPostDetailModal';
 import { RedditSubredditHeader } from '../components/reddit/RedditSubredditHeader';
 import { RedditUserProfileView } from '../components/reddit/RedditUserProfileView';
@@ -88,7 +89,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
   const [syncTick, setSyncTick] = useState(0);
 
   // 피드 무한 스크롤 상태
-  const [feedVisibleCount, setFeedVisibleCount] = useState(8);
+  const [feedVisibleCount, setFeedVisibleCount] = useState(12);
   const [isLoadingMorePosts, setIsLoadingMorePosts] = useState(false);
   const feedSentinelRef = React.useRef<HTMLDivElement>(null);
 
@@ -580,14 +581,23 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
                     onSelectViewMode={handleSelectViewMode}
                   />
 
-                  {/* 피드 포스트 목록 + 구글 애드센스 인피드 광고 주기적 삽입 */}
+                  {/* 피드 포스트 목록 + 구글 애드센스 인피드 광고 및 SNSHero 게임 배너 주기적 삽입 */}
                   <div className="space-y-2">
                     {posts.length > 0 ? (
                       <>
                         {posts.slice(0, feedVisibleCount).map((post, idx) => (
                           <React.Fragment key={post.id}>
-                            {/* 4번째 포스트마다 구글 애드센스 인피드 광고 노출 */}
-                            {idx > 0 && idx % 4 === 0 && (
+                            {/* 글 10개에 1번씩 SNShero.com 게임 배너 노출 (클릭 시 게임하기로 즉시 이동) */}
+                            {idx > 0 && idx % 10 === 0 && (
+                              <SNSHeroGameBannerCard
+                                isDark={isDark}
+                                isKo={isKo}
+                                onGoToGame={onNavigateHome}
+                              />
+                            )}
+
+                            {/* 4번째 포스트마다 구글 애드센스 인피드 광고 노출 (게임 배너와 겹치지 않게 분리) */}
+                            {idx > 0 && idx % 4 === 0 && idx % 10 !== 0 && (
                               <RedditAdCard isDark={isDark} isKo={isKo} />
                             )}
 
@@ -719,6 +729,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
           onToggleSave={(id) => setUserState((prev) => toggleSavePost(prev, id))}
           onToggleJoin={(sub) => setUserState((prev) => toggleJoinSubreddit(prev, sub))}
           onOpenSubmitModal={() => setIsSubmitModalOpen(true)}
+          onGoToGame={onNavigateHome}
         />
       )}
 

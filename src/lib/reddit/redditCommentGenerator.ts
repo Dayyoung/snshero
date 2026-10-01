@@ -1,261 +1,259 @@
 /**
  * redditCommentGenerator.ts
- * 포스트의 서브레딧, 제목 및 본문 맥락을 분석하여
- * 100% 주제에 부합하는 지능형 고품질 댓글/대댓글을 생성하는 엔진
+ * 포스트의 실제 제목, 본문, 서브레딧 및 미디어 맥락을 심층 분석하여
+ * 100% 해당 글의 주제를 직접 인용하고 토론하는 지능형 고품질 댓글/대댓글 엔진
  */
 
 import { RedditPost, RedditComment } from './redditTypes';
 
-export type PostTopic = 'game' | 'tech' | 'ask' | 'meme' | 'hardware' | 'crypto' | 'korea' | 'general';
+export type PostContentType = 'question' | 'media' | 'discussion' | 'opinion';
 
-export function detectPostTopic(post: RedditPost): PostTopic {
-  const sub = (post.subreddit || '').toLowerCase();
+/**
+ * 포스트 제목에서 군더더기 태그/괄호를 정리하고 자연스러운 핵심 토픽 구절을 추출
+ */
+export function extractPostCoreSubject(title: string): string {
+  if (!title) return '이 게시물';
+
+  // 1. [OC], [질문], TIL:, r/xxx 등 프리픽스 태그 제거
+  let clean = title
+    .replace(/^\[[^\]]+\]\s*/g, '')
+    .replace(/^\([^)]+\)\s*/g, '')
+    .replace(/^TIL:\s*/i, '')
+    .replace(/^AskReddit:\s*/i, '')
+    .trim();
+
+  // 2. 뒤쪽의 괄호 꼬리말 제거 (예: (인게임 플레이 영상), (35mm 무보정) 등)
+  clean = clean.replace(/\s*\([^)]*\)$/, '').trim();
+
+  // 3. 문장이 너무 길면 핵심 앞머리 40자 내외로 자연스럽게 정돈
+  if (clean.length > 45) {
+    // 쉼표, 마침표, 콜론 등 문장 분기점 탐색
+    const commaIdx = clean.indexOf(',');
+    const colonIdx = clean.indexOf(':');
+    if (colonIdx > 5 && colonIdx < 40) {
+      clean = clean.substring(0, colonIdx).trim();
+    } else if (commaIdx > 10 && commaIdx < 40) {
+      clean = clean.substring(0, commaIdx).trim();
+    } else {
+      clean = clean.substring(0, 42).trim() + '...';
+    }
+  }
+
+  return clean;
+}
+
+/**
+ * 포스트의 성격(질문 / 미디어시각화 / 심층토론 / 일상소감) 분석
+ */
+export function detectPostContentType(post: RedditPost): PostContentType {
   const title = (post.title || '').toLowerCase();
   const body = (post.body || '').toLowerCase();
-  const combined = `${sub} ${title} ${body}`;
+  const sub = (post.subreddit || '').toLowerCase();
+  const combined = `${title} ${body} ${sub}`;
 
-  if (sub === 'gaming' || /rpg|언리얼|인디\s*게임|스팀|steam|게임|플레이|play|game|닌텐도|ps5|xbox/i.test(combined)) {
-    return 'game';
-  }
-  if (sub === 'technology' || /ai|인공지능|컴퓨팅|광학|반도체|양자|quantum|chip|mit|코드|개발자|소프트웨어|tech/i.test(combined)) {
-    return 'tech';
-  }
-  if (sub === 'askreddit' || /질문|조언|침묵|경험|어떻게|방법|팁|인생|생각|ask|advice/i.test(combined)) {
-    return 'ask';
-  }
-  if (sub === 'memes' || /밈|meme|드립|유머|웃긴|레전드|짤|lol|funny/i.test(combined)) {
-    return 'meme';
-  }
-  if (sub === 'pcmasterrace' || /pc|데스크|셋업|battlestation|모니터|쿨러|gpu|rtx|케이블/i.test(combined)) {
-    return 'hardware';
-  }
-  if (sub === 'cryptocurrency' || /crypto|비트코인|이더리움|코인|zk|롤업|블록체인|web3/i.test(combined)) {
-    return 'crypto';
-  }
-  if (sub === 'hanguk' || /한국|서울|korea|hanguk/i.test(combined)) {
-    return 'korea';
+  // 질문형 글
+  if (
+    sub === 'askreddit' ||
+    /[?？]/g.test(combined) ||
+    /질문|궁금|있나요|어떻게|조언|팁|추천|방법|생각|후기|의견|평가|ask|question|how|why|what/i.test(combined)
+  ) {
+    return 'question';
   }
 
-  return 'general';
+  // 미디어/비주얼 중심 글
+  if (
+    post.media?.url ||
+    sub === 'memes' ||
+    sub === 'aww' ||
+    sub === 'pcmasterrace' ||
+    /사진|영상|스크린샷|인증|비주얼|아트|풍경|데스크셋업|댕댕이|고양이|그림|meme|photo|setup/i.test(combined)
+  ) {
+    return 'media';
+  }
+
+  // 심층 토론 및 뉴스/기술 분석 글
+  if (
+    sub === 'technology' ||
+    sub === 'worldnews' ||
+    sub === 'dataisbeautiful' ||
+    sub === 'cryptocurrency' ||
+    /기술|개발|연구|분석|뉴스|통계|출시|발표|시장|데이터|ai|칩|성능|차세대|플랜트/i.test(combined)
+  ) {
+    return 'discussion';
+  }
+
+  return 'opinion';
 }
 
-interface CommentTemplate {
+interface PersonaComment {
   author: string;
   avatarSeed: number;
-  bodyKo: string;
-  bodyEn: string;
-  replyKo?: string;
-  replyEn?: string;
-  replyAuthor?: string;
+  bodyKo: (subject: string, post: RedditPost) => string;
+  bodyEn: (subject: string, post: RedditPost) => string;
+  replyKo?: (subject: string, post: RedditPost) => string;
+  replyEn?: (subject: string, post: RedditPost) => string;
 }
 
-const TEMPLATES_BY_TOPIC: Record<PostTopic, CommentTemplate[]> = {
-  game: [
+const PERSONAS_BY_TYPE: Record<PostContentType, PersonaComment[]> = {
+  // 1. 질문 및 조언 요청형 글에 대한 답변 댓글
+  question: [
     {
-      author: 'ActionRPG_Lover',
+      author: 'WiseObserver',
       avatarSeed: 1535713875,
-      bodyKo: '타격감이랑 스킬 시각 효과가 시원시원하네요! 조작감이나 패드 진동 피드백도 잘 구현되었는지 궁금합니다.',
-      bodyEn: 'The impact and skill effects look satisfying! Does it support haptic gamepad feedback?',
-      replyKo: '게임패드 완전 대응 및 듀얼센스 햅틱 피드백 적용되어 있습니다! 피드백 감사합니다 ㅎㅎ',
-      replyEn: 'Full controller support with haptic feedback is included! Thanks!',
+      bodyKo: (subject) => `‘${subject}’ 관련해서 제 경험을 말씀드리자면, 처음엔 시행착오가 정말 많았는데 결국 본문에서 말씀하신 핵심 포인트가 정답이더라고요. 진솔한 질문 감사합니다.`,
+      bodyEn: (subject) => `Regarding '${subject}', speaking from my experience, the core point you mentioned is spot on. Thanks for asking!`,
+      replyKo: (subject) => `‘${subject}’ 글에 이렇게 정성스러운 경험담과 피드백을 남겨주셔서 큰 힘이 됩니다! 감사해요 ㅎㅎ`,
+      replyEn: (subject) => `Thank you so much for sharing your thoughtful insight on '${subject}'!`,
     },
     {
-      author: 'PixelCraftsman',
+      author: 'PracticalThinker',
       avatarSeed: 1507003211,
-      bodyKo: '1인 개발로 이 정도 퀄리티와 물리 액션을 뽑아내시다니 대단합니다. 스팀 위시리스트에 바로 담았습니다.',
-      bodyEn: 'Incredible physics action for a solo dev project. Added to my Steam wishlist!',
+      bodyKo: (subject) => `‘${subject}’에 대해 다른 분들의 생각도 궁금했는데, 댓글 반응들을 보니 다들 비슷한 고민을 하고 계셨네요. 개인적으로 아주 유익한 토론 주제라고 봅니다.`,
+      bodyEn: (subject) => `I was wondering about '${subject}' as well. Seeing everyone's thoughts here confirms it's a very helpful discussion.`,
     },
     {
-      author: 'LoreSeeker_99',
+      author: 'InsightExplorer',
       avatarSeed: 1494790108,
-      bodyKo: '보스전 패턴이 꽤 다채로워 보이네요. 난이도 조절이나 소울라이크 요소도 포함되어 있나요?',
-      bodyEn: 'Boss mechanics look diverse. Does it have difficulty settings or soulslike elements?',
-      replyKo: '이지/노멀/하드 난이도 분기와 함께 패링/회피 중심의 깊이 있는 전투 시스템을 지향했습니다!',
-      replyEn: 'It features difficulty options along with parry/dodge focused combat depth!',
+      bodyKo: (subject) => `‘${subject}’ 질문글 보고 머리를 한 대 맞은 느낌이네요. 평소에 무심코 지나쳤던 부분인데 오늘부터 꼭 의식하고 실천해봐야겠습니다. 추천 누르고 갑니다!`,
+      bodyEn: (subject) => `Seeing this post about '${subject}' really made me reflect. Saving this to apply in my daily life! Upvoted.`,
+      replyKo: (subject) => `도움이 되셨다니 작성자로서 정말 뿌듯합니다! 좋은 하루 보내세요!`,
+      replyEn: (subject) => `Glad it helped! Wishing you the best!`,
     },
     {
-      author: 'IndieGamer_KR',
+      author: 'DailyReflector',
       avatarSeed: 1506794778,
-      bodyKo: '사운드 디자인과 BGM 분위기가 게임 아트 스타일이랑 찰떡이네요. 얼리액세스 로드맵 응원합니다.',
-      bodyEn: 'The sound design and OST fit the art style perfectly. Best of luck on early access!',
+      bodyKo: (subject) => `‘${subject}’ 내용에 깊이 공감합니다. 특히 상황에 따라 유연하게 대처하는 태도가 가장 중요한 것 같아요.`,
+      bodyEn: (subject) => `Totally relate to '${subject}'. Staying adaptable to the situation is definitely key.`,
     },
     {
-      author: 'BenchMark_Tester',
+      author: 'CuriousMind_KR',
       avatarSeed: 1544005313,
-      bodyKo: '언리얼5 루멘/나나이트 최적화 프레임 방어는 어떤가요? 저사양 PC나 스팀덱 호환성도 기대됩니다.',
-      bodyEn: 'How is performance with UE5 Lumen/Nanite? Hope it runs well on Steam Deck too.',
-      replyKo: '스팀덱 60fps 타깃 최적화 프로파일링을 마쳤습니다. 안심하고 즐기실 수 있습니다!',
-      replyEn: 'We tested and optimized for 60fps on Steam Deck. Plays smoothly!',
-    },
-    {
-      author: 'ComboMaster',
-      avatarSeed: 1528894463,
-      bodyKo: '스킬 쿨타임 연계 콤보 시스템이 무궁무진해 보이네요. 정식 출시되면 바로 플레이 영상 찍어봐야겠습니다.',
-      bodyEn: 'Combo synergy looks endless. Will definitely stream this once released.',
+      bodyKo: (subject) => `혹시 ‘${subject}’ 관련해서 작성자님께서 겪으셨던 가장 인상적인 에피소드가 있다면 하나만 더 들려주실 수 있을까요? 흥미진진하네요!`,
+      bodyEn: (subject) => `Could you share more details about your experience with '${subject}'? Super interesting!`,
+      replyKo: (subject) => `관심 가져주셔서 감사합니다! 기회가 되면 추가 후기글로 정리해서 올려보겠습니다 ㅎㅎ`,
+      replyEn: (subject) => `Thanks for the interest! I'll write a follow-up post soon!`,
     },
   ],
-  tech: [
+
+  // 2. 미디어 / 이미지 / 영상 / 작업물 인증 글에 대한 댓글
+  media: [
     {
-      author: 'Quantum_Thinker',
+      author: 'PixelAesthetic',
       avatarSeed: 1534528741,
-      bodyKo: '기존 전자 소자의 열 발생 한계를 빛의 굴절과 간섭으로 돌파했다는 점이 정말 혁신적이네요. 논문 전문 읽어보는 중입니다.',
-      bodyEn: 'Overcoming thermal limitations using light interference is truly innovative. Reading the full paper.',
-      replyKo: '광학 컴퓨팅의 상용화 수율이 관건이었는데, 실리콘 포토닉스 공정 연계가 핵심 돌파구인 것 같습니다.',
-      replyEn: 'Silicon photonics manufacturing integration seems to be the key breakthrough.',
+      bodyKo: (subject) => `와, ‘${subject}’ 비주얼이랑 퀄리티 진짜 대박이네요! 디테일 하나하나 신경 쓰신 게 한눈에 보여서 감탄하고 갑니다.`,
+      bodyEn: (subject) => `Wow, the visual quality of '${subject}' looks stunning! The attention to detail is truly impressive.`,
+      replyKo: (subject) => `‘${subject}’ 알아봐 주시고 기분 좋은 칭찬 남겨주셔서 진심으로 감사드립니다! ㅠㅠ`,
+      replyEn: (subject) => `Thank you so much for appreciating the details on '${subject}'!`,
     },
     {
-      author: 'SiliconObserver',
-      avatarSeed: 1519389950,
-      bodyKo: '상온 작동이 가능하다는 게 가장 큰 메리트네요. 극저온 냉각 설비 없이 데이터센터에 바로 꽂을 수 있다면 전력 절감이 어마어마할 듯합니다.',
-      bodyEn: 'Room-temperature operation is huge. Eliminating cryogenic cooling will save massive power in data centers.',
-    },
-    {
-      author: 'CodeArchitect',
-      avatarSeed: 1500648767,
-      bodyKo: 'FPGA나 기존 PCIe 인터페이스와의 호환 레이어가 어떻게 구성되었는지 구체적인 아키텍처 다이어그램이 궁금합니다.',
-      bodyEn: 'Curious about how the interface layer connects with existing PCIe/FPGA architectures.',
-    },
-    {
-      author: 'AI_Researcher_Lee',
-      avatarSeed: 1517841905,
-      bodyKo: '대규모 트랜스포머 모델의 행렬 곱셈 연산(GEMM) 지연 시간을 수십 배 단축할 수 있는 잠재력이 있어 보입니다.',
-      bodyEn: 'This could significantly accelerate matrix multiplication latency in large Transformer models.',
-    },
-    {
-      author: 'TechAnalyst_Pro',
-      avatarSeed: 1524504388,
-      bodyKo: '기술 데모 이후 실제 파운드리 양산 단계까지의 타임라인이 기대됩니다. 좋은 소식 공유 감사합니다.',
-      bodyEn: 'Excited to see the timeline from lab demo to foundry mass production. Great share!',
-    },
-  ],
-  ask: [
-    {
-      author: 'WiseNegotiator',
-      avatarSeed: 1516321318,
-      bodyKo: '이거 진짜 실생활에서 써먹어봤는데 100% 효과 있습니다. 침묵이 흐르면 상대방이 불안해서 먼저 추가 혜택이나 양보안을 꺼내놓더군요.',
-      bodyEn: 'Tried this in real life and it 100% works. The silence makes the other side offer concessions first.',
-      replyKo: '맞습니다. 심리학에서 말하는 침묵의 공백 채우기 효과(Silence Void)죠. 특히 연봉 협상에서 위력적입니다.',
-      replyEn: 'Exactly. The conversational void compels people to speak and compromise.',
-    },
-    {
-      author: 'MindfulWalker',
-      avatarSeed: 1492562080,
-      bodyKo: '질문이나 반박을 듣고 바로 대답하지 않고 3~4초 숨을 고르는 것만으로도 훨씬 신중하고 카리스마 있어 보입니다.',
-      bodyEn: 'Pausing 3-4 seconds before responding makes you sound much more thoughtful and confident.',
-    },
-    {
-      author: 'OfficeVeteran',
-      avatarSeed: 1472099645,
-      bodyKo: '단, 상대방이 질문했을 때 멍때리는 표정보다는 온화하게 눈을 마주치며 고개를 끄덕이는 게 포인트입니다.',
-      bodyEn: 'Key tip: keep gentle eye contact while nodding so you do not look spaced out.',
-    },
-    {
-      author: 'CuriousSoul_42',
-      avatarSeed: 1535713875,
-      bodyKo: '회의에서 성급하게 말실수하는 버릇이 있었는데, 이 방법 오늘부터 바로 실천해봐야겠네요. 유용한 팁 감사합니다!',
-      bodyEn: 'I often spoke too fast in meetings. Will definitely practice this technique starting today!',
-    },
-  ],
-  meme: [
-    {
-      author: 'MemeConnoisseur',
-      avatarSeed: 1579783902,
-      bodyKo: '아 진짜 보다가 뿜었네 ㅋㅋㅋㅋ 표정 싱크로율 실화냐고요 ㅋㅋㅋㅋㅋ',
-      bodyEn: 'LMAO I spat out my coffee! The facial expression is way too accurate!',
-      replyKo: '월요일 아침 출근길 내 표정 그 자체임 ㅋㅋㅋㅋ',
-      replyEn: 'Literally my exact face on Monday morning commutes haha.',
-    },
-    {
-      author: 'DankLord_99',
-      avatarSeed: 1534447677,
-      bodyKo: '이 짤 만든 사람 최소 인생 2회차 ㅋㅋㅋㅋㅋ 저장하고 단톡방에 뿌렸습니다.',
-      bodyEn: 'Whoever made this meme is a genius. Saved and shared with my group chat.',
-    },
-    {
-      author: 'GiggleFactory',
-      avatarSeed: 1517841905,
-      bodyKo: '오늘 하루 종일 일 때문에 스트레스 받았는데 이거 보고 시원하게 웃고 갑니다 ㅋㅋㅋ',
-      bodyEn: 'Had a stressful work day, but this cheered me right up. Thanks!',
-    },
-  ],
-  hardware: [
-    {
-      author: 'CableManagementGod',
-      avatarSeed: 1587202372,
-      bodyKo: '후면 케이블 정리 상태가 거의 예술 작품이네요. 케이블 타이 어떤 규격 쓰셨나요?',
-      bodyEn: 'Cable management is an absolute work of art. What ties did you use?',
-      replyKo: '벨크로 스트랩이랑 알루미늄 케이블 가이드 트레이로 깔끔하게 정리했습니다 ㅎㅎ',
-      replyEn: 'Used velcro straps and aluminum routing trays! Thanks!',
-    },
-    {
-      author: 'RGB_Enthusiast',
-      avatarSeed: 1591488320,
-      bodyKo: '간접 앰비언트 라이트 조명 색온도 조절이 진짜 고급스럽네요. 눈도 안 아프고 집중 잘 될 듯합니다.',
-      bodyEn: 'The warm ambient backlighting looks super premium and easy on the eyes.',
-    },
-    {
-      author: 'SilentCoolingFan',
+      author: 'CraftEnthusiast',
       avatarSeed: 1528894463,
-      bodyKo: '풀로드 시 팬 소음이랑 GPU 온도는 몇 도 정도로 유지되나요? 케이스 흡기 배기 구조가 좋아 보입니다.',
-      bodyEn: 'What are the GPU temps under full load? Airflow looks very well optimized.',
+      bodyKo: (subject) => `‘${subject}’ 완성하시느라 시간과 정성 엄청 들이셨을 것 같아요. 결과물이 너무 완벽해서 보람차실 듯합니다. 업보트 드립니다!`,
+      bodyEn: (subject) => `Must have taken immense time and effort to finish '${subject}'. The result looks incredible!`,
+    },
+    {
+      author: 'VisualArtLover',
+      avatarSeed: 1500648767,
+      bodyKo: (subject) => `‘${subject}’ 현장감이 사진/영상 너머로 그대로 전해지네요. 분위기 자체가 너무 힐링되고 좋습니다 ㅎㅎ`,
+      bodyEn: (subject) => `The atmosphere in '${subject}' is so captivating. Feels really wholesome and satisfying!`,
+      replyKo: () => `좋게 감상해주셔서 기쁩니다! 앞으로도 종종 공유하겠습니다.`,
+      replyEn: () => `Happy you enjoyed it! Will share more in the future.`,
+    },
+    {
+      author: 'TechGeek_99',
+      avatarSeed: 1535713875,
+      bodyKo: (subject) => `‘${subject}’ 보면서 감탄했습니다. 혹시 제작(촬영) 과정에서 가장 까다로웠던 점은 무엇이었나요?`,
+      bodyEn: (subject) => `Astonishing work on '${subject}'. What was the most challenging part of putting this together?`,
+      replyKo: (subject) => `‘${subject}’ 작업하면서 마감과 디테일 잡는 데 가장 공을 들였습니다. 알아봐 주셔서 감사합니다!`,
+      replyEn: (subject) => `Polishing the finishing details took the longest! Thanks for noticing!`,
+    },
+    {
+      author: 'ShowcaseWatcher',
+      avatarSeed: 1507003211,
+      bodyKo: (subject) => `이건 레딧 메인 추천 피드 갈 만하네요. ‘${subject}’ 완성도 최고입니다. 저장해두고 두고두고 보겠습니다.`,
+      bodyEn: (subject) => `This totally deserves the front page. Amazing execution on '${subject}'. Saved!`,
     },
   ],
-  crypto: [
+
+  // 3. 기술 혁신 / 데이터 분석 / 뉴스 / 정책 토론 글에 대한 댓글
+  discussion: [
     {
-      author: 'ZK_Researcher',
+      author: 'TechAnalyst_KR',
       avatarSeed: 1518770660,
-      bodyKo: '영지식 증명(ZK-SNARK) 압축 알고리즘을 온체인 검증 비용과 어떻게 밸런싱했는지가 핵심이네요. 분석 잘 봤습니다.',
-      bodyEn: 'The trade-off between ZK-SNARK proving time and on-chain verification gas is the key highlight.',
+      bodyKo: (subject) => `‘${subject}’ 관련 분석 소식 아주 잘 봤습니다. 본문에서 언급하신 데이터와 기술적 지표들이 핵심을 정확히 찌르네요.`,
+      bodyEn: (subject) => `Great technical breakdown on '${subject}'. The data and benchmarks mentioned get straight to the point.`,
+      replyKo: (subject) => `‘${subject}’ 본문 분석을 꼼꼼하게 읽어주셔서 감사합니다. 추가 후속 데이터도 지속해서 모니터링해 보겠습니다!`,
+      replyEn: (subject) => `Thanks for reading through the analysis on '${subject}'! Will keep tracking the metrics.`,
     },
     {
-      author: 'OnChainAnalyst',
+      author: 'FutureTrendWatcher',
       avatarSeed: 1506703719,
-      bodyKo: 'L2 롤업 브릿지 유동성 락업(TVL) 추이를 보면 확실히 기술적 신뢰도가 높아진 게 체감됩니다.',
-      bodyEn: 'TVL growth across L2 rollup bridges clearly shows rising technical trust.',
+      bodyKo: (subject) => `‘${subject}’ 이슈가 앞으로 업계 생태계에 미칠 파급력이 상당할 것 같습니다. 빠른 최신 동향 공유 감사합니다.`,
+      bodyEn: (subject) => `The long-term impact of '${subject}' on the industry will be massive. Thanks for sharing this timely update.`,
     },
-  ],
-  korea: [
     {
-      author: 'Seoulite_Walker',
+      author: 'CriticalReviewer',
       avatarSeed: 1538485399,
-      bodyKo: '한국 커뮤니티에서 이런 양질의 정보와 토론을 볼 수 있어서 정말 유익하네요. 추천 누르고 갑니다!',
-      bodyEn: 'Great to see such high-quality discussion in the Korean community. Upvoted!',
-      replyKo: '함께 공감해주셔서 감사합니다! 앞으로도 좋은 글 많이 나누겠습니다.',
-      replyEn: 'Thank you for reading and sharing your thoughts!',
+      bodyKo: (subject) => `‘${subject}’에 대해 다양한 관점이 엇갈리는데, 작성자님께서 객관적인 근거를 중심으로 일목요연하게 짚어주셔서 이해가 쏙쏙 되네요.`,
+      bodyEn: (subject) => `There are multiple perspectives on '${subject}', but your objective breakdown makes it very clear to understand.`,
+      replyKo: (subject) => `서로 다른 시각을 존중하며 균형 있게 전달하고자 했는데 알아봐 주셔서 기쁩니다!`,
+      replyEn: (subject) => `Strived to provide a balanced overview on '${subject}', glad it was helpful!`,
     },
     {
-      author: 'HangukExplorer',
+      author: 'ResearchFellow',
       avatarSeed: 1546874177,
-      bodyKo: '자세한 경험담과 후기 공유해주셔서 큰 도움이 되었습니다. 다음 글도 기대할게요!',
-      bodyEn: 'Sharing your detailed experience helped a lot. Looking forward to your next post!',
+      bodyKo: (subject) => `‘${subject}’ 소식 기다리고 있었는데 드디어 구체적인 내용이 나왔군요. 링크 원문 자료도 함께 정독해보겠습니다.`,
+      bodyEn: (subject) => `Was waiting for updates regarding '${subject}'. Excited to read through the source reference as well!`,
+    },
+    {
+      author: 'GlobalObserver',
+      avatarSeed: 1527980965,
+      bodyKo: (subject) => `국내외를 막론하고 ‘${subject}’ 관련 논의가 본격화되는 흐름이네요. 양질의 정보 글엔 무조건 추천입니다!`,
+      bodyEn: (subject) => `Conversations around '${subject}' are gaining serious momentum globally. High quality post, upvoted!`,
     },
   ],
-  general: [
+
+  // 4. 일반 일상 / 소감 / 유머 / 커뮤니티 대화 글에 대한 댓글
+  opinion: [
     {
       author: 'CommunityThinker',
       avatarSeed: 1535713875,
-      bodyKo: '핵심을 찌르는 글이네요. 본문에서 언급하신 내용에 깊이 공감하며 배움을 얻고 갑니다.',
-      bodyEn: 'Spot-on post. Strongly agree with your points and learned something new.',
-      replyKo: '좋게 봐주셔서 감사합니다! 건설적인 피드백 언제나 환영합니다.',
-      replyEn: 'Thank you for the constructive feedback!',
+      bodyKo: (subject) => `‘${subject}’ 내용 보면서 무릎을 탁 쳤습니다 ㅋㅋㅋ 작성자님 글솜씨가 너무 좋으셔서 끝까지 몰입해서 읽었네요.`,
+      bodyEn: (subject) => `Loved reading this post about '${subject}'! Great storytelling and couldn't agree more.`,
+      replyKo: (subject) => `재밌게 읽어주셔서 정말 기쁩니다! 글 남겨주셔서 감사해요 ㅎㅎ`,
+      replyEn: (subject) => `So glad you enjoyed reading about '${subject}'! Thanks for the comment!`,
     },
     {
-      author: 'InsightSeeker',
+      author: 'WarmHearted_KR',
       avatarSeed: 1507003211,
-      bodyKo: '서로 다른 관점에서도 한 번 더 곱씹어보게 되는 좋은 토론 거리입니다. 업보트 드립니다.',
-      bodyEn: 'A thought-provoking topic from different perspectives. Have an upvote.',
+      bodyKo: (subject) => `‘${subject}’ 이야기 들으니 마음이 훈훈해지네요. 오늘 하루 종일 피곤했는데 좋은 글로 힐링하고 갑니다.`,
+      bodyEn: (subject) => `Reading about '${subject}' truly warmed my heart. Needed this wholesome moment today!`,
     },
     {
-      author: 'CuriousObserver',
+      author: 'CoffeeAndBrowse',
       avatarSeed: 1494790108,
-      bodyKo: '많은 분들이 이 글을 보고 함께 이야기 나눌 수 있으면 좋겠네요. 실시간 공유 감사합니다.',
-      bodyEn: 'Hope more people see this and join the conversation. Thanks for sharing!',
+      bodyKo: (subject) => `‘${subject}’ 진짜 공감 백배입니다. 저 같아도 똑같이 생각했을 것 같아요 ㅋㅋㅋ 추천 누르고 갑니다!`,
+      bodyEn: (subject) => `100% relate to '${subject}'. Would have felt the exact same way haha. Upvoted!`,
+      replyKo: (subject) => `저만 그런 게 아니었군요 ㅋㅋㅋ 함께 공감해주셔서 든든합니다!`,
+      replyEn: (subject) => `Glad to know I wasn't the only one! Thanks for the support!`,
+    },
+    {
+      author: 'CuriousSurfer',
+      avatarSeed: 1506794778,
+      bodyKo: (subject) => `‘${subject}’ 관련해서 앞으로의 후속 이야기나 다음 글도 꼭 올려주세요! 팔로우하고 기다리겠습니다.`,
+      bodyEn: (subject) => `Looking forward to any updates regarding '${subject}'. Definitely following for more!`,
+    },
+    {
+      author: 'MidnightReader',
+      avatarSeed: 1544005313,
+      bodyKo: (subject) => `‘${subject}’ 주제로 이렇게 많은 분들이 함께 이야기 나누는 모습이 보기 좋네요. 좋은 글 공유 감사합니다!`,
+      bodyEn: (subject) => `Great to see such an active and engaging thread on '${subject}'. Thanks for sharing!`,
     },
   ],
 };
 
 /**
- * 포스트의 맥락에 100% 부합하는 지능형 추가 댓글들을 생성
+ * 포스트의 실제 제목, 내용 및 미디어 맥락에 100% 부합하는 고품질 지능형 댓글 목록을 생성
  */
 export function generateContextualCommentsForPost(
   post: RedditPost,
@@ -263,44 +261,53 @@ export function generateContextualCommentsForPost(
   startIndex: number = 0,
   isKo: boolean = true
 ): RedditComment[] {
-  const topic = detectPostTopic(post);
-  const templates = TEMPLATES_BY_TOPIC[topic] || TEMPLATES_BY_TOPIC.general;
+  const subject = extractPostCoreSubject(post.title || '');
+  const contentType = detectPostContentType(post);
+  const personas = PERSONAS_BY_TYPE[contentType] || PERSONAS_BY_TYPE.opinion;
   const now = Date.now();
 
   const results: RedditComment[] = [];
 
   for (let i = 0; i < count; i++) {
-    const templateIdx = (startIndex + i) % templates.length;
-    const template = templates[templateIdx];
+    const pIdx = (startIndex + i) % personas.length;
+    const persona = personas[pIdx];
     const uniqueId = `c_smart_${post.id}_${startIndex + i + 1}`;
-    const commentScore = Math.max(15, Math.floor(post.score * 0.15) - i * 8);
+    const commentScore = Math.max(12, Math.floor((post.score || 100) * 0.12) - i * 6);
 
     const replies: RedditComment[] = [];
-    if (template.replyKo && (i % 2 === 0 || count <= 3)) {
+    if (persona.replyKo && (i % 2 === 0 || count <= 3)) {
+      const replyBody = isKo 
+        ? persona.replyKo(subject, post) 
+        : (persona.replyEn ? persona.replyEn(subject, post) : persona.replyKo(subject, post));
+
       replies.push({
         id: `${uniqueId}_r1`,
         postId: post.id,
         parentId: uniqueId,
-        author: template.replyAuthor || post.author,
-        authorAvatar: post.authorAvatar || `https://images.unsplash.com/photo-${template.avatarSeed}?auto=format&fit=crop&w=64&q=80`,
+        author: post.author || 'OP_Author',
+        authorAvatar: post.authorAvatar || `https://images.unsplash.com/photo-${persona.avatarSeed}?auto=format&fit=crop&w=64&q=80`,
         authorKarma: 12500,
-        createdAt: now - 1000 * 60 * (10 + (startIndex + i) * 3),
-        score: Math.max(8, Math.floor(commentScore * 0.6)),
+        createdAt: now - 1000 * 60 * (8 + (startIndex + i) * 3),
+        score: Math.max(7, Math.floor(commentScore * 0.55)),
         isAuthorOp: true,
-        body: isKo ? template.replyKo : (template.replyEn || template.replyKo),
+        body: replyBody,
       });
     }
+
+    const commentBody = isKo 
+      ? persona.bodyKo(subject, post) 
+      : persona.bodyEn(subject, post);
 
     results.push({
       id: uniqueId,
       postId: post.id,
       parentId: null,
-      author: `${template.author}_${(startIndex + i + 1)}`,
-      authorAvatar: `https://images.unsplash.com/photo-${template.avatarSeed}?auto=format&fit=crop&w=64&q=80`,
-      authorKarma: 15400 + (startIndex + i) * 450,
-      createdAt: now - 1000 * 60 * (20 + (startIndex + i) * 4),
+      author: `${persona.author}_${(startIndex + i + 1)}`,
+      authorAvatar: `https://images.unsplash.com/photo-${persona.avatarSeed}?auto=format&fit=crop&w=64&q=80`,
+      authorKarma: 14200 + (startIndex + i) * 380,
+      createdAt: now - 1000 * 60 * (18 + (startIndex + i) * 4),
       score: commentScore,
-      body: isKo ? template.bodyKo : template.bodyEn,
+      body: commentBody,
       replies,
     });
   }

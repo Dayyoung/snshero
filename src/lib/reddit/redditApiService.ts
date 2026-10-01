@@ -274,7 +274,7 @@ export class RedditApiService {
    * 어떤 글이든 100% 풍성한 댓글과 대댓글을 읽을 수 있도록 자동 생성하는 지능형 댓글 백업 엔진
    */
   private static generateContextualComments(post: RedditPost): RedditComment[] {
-    return generateContextualCommentsForPost(post, 3, 0, true);
+    return generateContextualCommentsForPost(post, 4, 0, true);
   }
 
   private static insertReplyRecursive(list: RedditComment[], reply: RedditComment): boolean {
