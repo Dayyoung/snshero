@@ -28,6 +28,13 @@ export class RedditApiService {
   }
 
   /**
+   * 실시간 추가 피드 확장 수집 (무한 스크롤 및 피드 확장용)
+   */
+  static async fetchMoreLivePosts(subreddit: string = 'popular', targetLang: string = 'ko'): Promise<RedditPost[]> {
+    return RedditLiveFeedService.fetchMoreLiveBatch(subreddit, targetLang);
+  }
+
+  /**
    * 번역된 포스트들을 인메모리 SEED_POSTS 및 로컬 라이브 캐시에 즉시 반영
    */
   static updatePostTranslations(translatedList: RedditPost[]): void {

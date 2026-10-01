@@ -165,14 +165,36 @@ export class RedditLiveFeedService {
         } catch {
           // 번역 실패 시 원문 유지
         }
-        localStorage.setItem(LIVE_CACHE_KEY, JSON.stringify(finalPosts));
+        
+        // 기존 캐시와 중복 없이 지능형 병합 (피드 무한 확장)
+        const existing = this.getCachedLivePosts();
+        const existingIds = new Set(existing.map((p) => p.id));
+        const newOnes = finalPosts.filter((p) => !existingIds.has(p.id));
+        const merged = [...newOnes, ...existing].slice(0, 200); // 최대 200개 유지
+
+        localStorage.setItem(LIVE_CACHE_KEY, JSON.stringify(merged));
         localStorage.setItem(LIVE_SYNC_TIME_KEY, Date.now().toString());
-        return finalPosts;
+        return merged;
       }
     } catch (parseErr) {
       console.warn('[RedditLiveFeed] XML parsing failed', parseErr);
     }
 
     return this.getCachedLivePosts();
+  }
+
+  /**
+   * 피드 하단 도달 시 추가 실시간 서브레딧 글 배치 수집
+   */
+  static async fetchMoreLiveBatch(currentSubreddit: string = 'popular', targetLang: string = 'ko'): Promise<RedditPost[]> {
+    const popularPool = ['gaming', 'technology', 'AskReddit', 'memes', 'todayilearned', 'worldnews', 'pcmasterrace', 'aww', 'mildlyinteresting', 'science'];
+    const cached = this.getCachedLivePosts();
+    const cachedSubs = new Set(cached.map((p) => p.subreddit.toLowerCase()));
+    
+    let nextSub = popularPool.find((s) => !cachedSubs.has(s.toLowerCase()));
+    if (!nextSub) {
+      nextSub = popularPool[Math.floor(Math.random() * popularPool.length)];
+    }
+    return this.fetchRealtimePosts(nextSub, targetLang);
   }
 }

@@ -157,15 +157,28 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
     };
   }, [posts, userState.language]);
 
-  // 피드 무한 스크롤 더보기 핸들러
-  const handleLoadMorePosts = useCallback(() => {
+  // 피드 무한 스크롤 더보기 핸들러 (실시간 추가 피드 수집 연동)
+  const handleLoadMorePosts = useCallback(async () => {
     if (isLoadingMorePosts) return;
     setIsLoadingMorePosts(true);
-    setTimeout(() => {
+
+    try {
+      // 1. 현재 표시 개수 확장
       setFeedVisibleCount((prev) => prev + 6);
-      setIsLoadingMorePosts(false);
-    }, 350);
-  }, [isLoadingMorePosts]);
+
+      // 2. 피드 남은 개수가 적거나 끝에 가까워지면 실시간 추가 피드 자동 수집
+      if (feedVisibleCount + 8 >= posts.length) {
+        await RedditApiService.fetchMoreLivePosts(currentSubreddit, userState.language || 'ko');
+        setSyncTick((t) => t + 1);
+      }
+    } catch (e) {
+      console.warn('[Reddit] Failed to load more live posts', e);
+    } finally {
+      setTimeout(() => {
+        setIsLoadingMorePosts(false);
+      }, 300);
+    }
+  }, [isLoadingMorePosts, feedVisibleCount, posts.length, currentSubreddit, userState.language]);
 
   // 피드 하단 도달 시 자동 무한 스크롤 관찰
   useEffect(() => {
@@ -595,14 +608,31 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
 
                         {/* 피드 실시간 무한 스크롤 센티넬 및 자동 더보기 */}
                         <div ref={feedSentinelRef} className="py-6 text-center">
-                          {isLoadingMorePosts || feedVisibleCount < posts.length ? (
-                            <div className="flex items-center justify-center gap-2 text-xs font-bold text-[#FF4500] py-2">
+                          {isLoadingMorePosts ? (
+                            <div className="flex items-center justify-center gap-2 text-xs font-bold text-[#FF4500] py-3">
                               <span className="w-4 h-4 border-2 border-[#FF4500] border-t-transparent rounded-full animate-spin" />
                               <span>{isKo ? '실시간 추가 피드 불러오는 중...' : 'Streaming more live posts...'}</span>
                             </div>
+                          ) : feedVisibleCount < posts.length ? (
+                            <div className="py-2 flex flex-col items-center gap-2">
+                              <button
+                                type="button"
+                                onClick={handleLoadMorePosts}
+                                className={`px-5 py-2 rounded-full border text-xs font-bold transition-all active:scale-95 cursor-pointer flex items-center gap-2 ${
+                                  isDark 
+                                    ? 'bg-[#22272B] hover:bg-[#2A3136] text-white border-white/10' 
+                                    : 'bg-white hover:bg-gray-100 text-[#1A1A1B] border-gray-300 shadow-xs'
+                                }`}
+                              >
+                                <RotateCw size={13} />
+                                <span>{isKo ? '실시간 피드 더 불러오기' : 'Load More Live Posts'}</span>
+                              </button>
+                              <span className="text-[11px] opacity-40">{isKo ? '스크롤 시 자동으로 더 불러옵니다' : 'Scroll down to load automatically'}</span>
+                            </div>
                           ) : (
-                            <div className="text-xs opacity-50 py-4 font-medium">
-                              {isKo ? '🎉 모든 최신 피드를 확인했습니다!' : "🎉 You've caught up with all posts!"}
+                            <div className="text-xs opacity-50 py-4 font-medium flex items-center justify-center gap-1.5">
+                              <span>🎉</span>
+                              <span>{isKo ? '모든 최신 피드를 확인했습니다!' : "You've caught up with all posts!"}</span>
                             </div>
                           )}
                         </div>

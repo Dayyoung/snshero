@@ -18465,3 +18465,5 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   );
 
 };
+
+export default PlayGameView;

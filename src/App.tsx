@@ -669,8 +669,8 @@ function AppContent() {
   useAdSenseAutoAds(view, isAdRemoved);
 
   const [user, setUser] = useState<any | null>(() => getStoredGuestProfile());
-  const [authInitialized, setAuthInitialized] = useState(false);
-  const [authProgress, setAuthProgress] = useState(0);
+  const [authInitialized, setAuthInitialized] = useState(true);
+  const [authProgress, setAuthProgress] = useState(100);
   const [targetProgress, setTargetProgress] = useState(10);
   const loadStartTimeRef = useRef(Date.now());
 
@@ -5771,71 +5771,6 @@ function AppContent() {
     );
   }
 
-  if (!authInitialized) {
-    const stageMessage = authProgress < 25
-      ? (language === 'ko' ? '[01/04] 게임 엔진 및 세션 동기화 중...' : '[01/04] Initializing engine & session...')
-      : authProgress < 55
-      ? (language === 'ko' ? '[02/04] 시즌 데이터 & 카드 정보 로드 중...' : '[02/04] Loading season data & cards...')
-      : authProgress < 85
-      ? (language === 'ko' ? '[03/04] 사용자 프로필 & 클라우드 상태 확인 중...' : '[03/04] Checking user profile & cloud state...')
-      : authProgress < 100
-      ? (language === 'ko' ? '[04/04] 로비 인터페이스 & 리소스 세팅 중...' : '[04/04] Finalizing UI & assets...')
-      : (language === 'ko' ? '[100%] 준비 완료! 게임 화면으로 진입합니다.' : '[100%] Game Ready! Entering game...');
-
-    return (
-      <div className="fixed inset-0 z-[999999] bg-[#fdfcfc] text-[#201d1d] font-mono flex flex-col items-center justify-center p-6 text-center select-none">
-        <div className="w-full max-w-sm bg-white border border-[#201d1d]/15 rounded-sm p-6 sm:p-8 shadow-sm">
-          {/* Header Badge */}
-          <div className="inline-block text-[11px] font-bold tracking-widest uppercase bg-[#201d1d] text-[#fdfcfc] px-2.5 py-1 rounded-sm mb-4">
-            [FAST LAUNCH]
-          </div>
-          
-          <h1 className="text-base sm:text-lg font-black tracking-tight text-[#201d1d] mb-1">
-            SNSHERO REVOLUTION
-          </h1>
-          <p className="text-xs text-[#201d1d]/60 mb-6 font-sans">
-            {language === 'ko' ? '원클릭 AI 카드 게임 시스템' : 'One-Click AI Card Game System'}
-          </p>
-
-          {/* Progress Bar Container */}
-          <div className="w-full bg-[#f0eded] h-3 rounded-sm border border-[#201d1d]/12 overflow-hidden mb-3 relative">
-            <div 
-              className="bg-[#201d1d] h-full rounded-none transition-all duration-150 ease-out" 
-              style={{ width: `${Math.max(5, authProgress)}%` }}
-            />
-          </div>
-
-          {/* Progress Percent & Stage text */}
-          <div className="flex items-center justify-between text-xs font-bold text-[#201d1d] mb-4">
-            <span className="text-[11px] text-[#201d1d]/70 font-mono tracking-tight">{stageMessage}</span>
-            <span className="font-mono font-black text-sm">{authProgress}%</span>
-          </div>
-
-          {/* Notice & Force Reset */}
-          <div className="mt-4 pt-4 border-t border-[#201d1d]/10 flex flex-col items-center gap-2">
-            <p className="text-[10px] text-[#201d1d]/50 leading-relaxed max-w-xs">
-              {t('session_corrupted_notice', language)}
-            </p>
-            <div className="flex items-center justify-center gap-2 mt-1">
-              <button
-                onClick={() => window.location.reload()}
-                className="px-3 py-1.5 bg-[#201d1d] hover:bg-black text-[#fdfcfc] text-[11px] font-bold rounded-sm transition-all active:scale-95 cursor-pointer flex items-center gap-1.5"
-              >
-                <RotateCw size={12} className="animate-spin-slow" />
-                {language === 'ko' ? '새로고침' : 'Refresh'}
-              </button>
-              <button
-                onClick={() => window.location.href = '/logout'}
-                className="px-3 py-1.5 bg-white text-[#201d1d] hover:bg-[#f0eded] text-[11px] font-bold rounded-sm border border-[#201d1d]/20 transition-all cursor-pointer"
-              >
-                {t('force_reset_session', language)}
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
     const isPlayingBattle = (view === 'play' && (playGameState === 'playing' || playGameState === 'searching' || playGameState === 'preMatch')) || view === 'card-play' || (view === 'main' && isRpgInBattle);
     const showNavbar = (view !== 'reddit' && view !== 'admin' && view !== 'landing' && view !== 'cartoonBook' && view !== 'novel' && view !== 'webtoon' && view !== 'anime' && view !== 'movie' && view !== 'card-play' && !isPlayingBattle) && !isGlobalPopupOpen;
