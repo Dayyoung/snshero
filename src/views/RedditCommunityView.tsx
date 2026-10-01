@@ -448,7 +448,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
   }, []);
 
   return (
-    <div className={`min-h-screen w-full flex flex-col font-sans transition-colors duration-150 ${
+    <div className={`min-h-screen w-full max-w-full overflow-x-clip flex flex-col font-sans transition-colors duration-150 ${
       isDark ? 'bg-[#0E1113] text-[#D7DADC]' : 'bg-[#DAE0E6] text-[#1C1C1C]'
     }`}>
       {/* 1. 상단 글로벌 헤더 */}

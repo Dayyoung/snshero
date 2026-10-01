@@ -69,9 +69,6 @@
 
 @layer base {
   html {
-    width: 100%;
-    max-width: 100%;
-    overflow-x: clip;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -81,18 +78,12 @@
   body {
     @apply bg-[#fdfcfc] text-[#201d1d] font-mono antialiased selection:bg-[#f1eeee];
     -webkit-tap-highlight-color: transparent;
-    width: 100%;
-    min-height: 100%;
-    overflow-x: clip;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    touch-action: pan-y;
     position: relative;
+    min-height: 100vh;
   }
 
   #root {
-    width: 100%;
-    min-height: 100%;
+    min-height: 100vh;
   }
 
   /* 강제 전역 버튼 스타일 통일 (OpenCode 규격) */
@@ -814,9 +805,6 @@
 }
 
 /* ID 343 & ID 369: 모바일 바운스 스크롤 방지 및 뷰포트 안정화 */
-html, body {
-  overscroll-behavior-y: contain;
-}
 
 .safe-viewport-lock {
   height: 100dvh;
