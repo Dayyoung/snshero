@@ -21,7 +21,8 @@ import {
   ArrowLeft,
   ExternalLink,
   Globe,
-  Languages
+  Languages,
+  RefreshCw
 } from 'lucide-react';
 import { RedditPost, RedditComment, RedditSubreddit, RedditUserDataState, getRedditExternalUrl, cleanRedditUrl } from '../../lib/reddit/redditTypes';
 import { RedditCommentTree } from './RedditCommentTree';
@@ -31,6 +32,7 @@ import { SNSHeroGameBannerCard } from './SNSHeroGameBannerCard';
 import { generateContextualCommentsForPost } from '../../lib/reddit/redditCommentGenerator';
 import { translateTextWithGoogle, isNeedsTranslation } from '../../lib/reddit/redditTranslationService';
 import { RedditVideoPlayer } from './RedditVideoPlayer';
+import { RedditRealCommentService } from '../../lib/reddit/redditRealCommentService';
 
 interface RedditPostDetailModalProps {
   post: RedditPost;
@@ -79,8 +81,43 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
   const [translatedTitle, setTranslatedTitle] = useState<string | null>(null);
   const [translatedBody, setTranslatedBody] = useState<string | null>(null);
 
+  // 실제 reddit.com 원본 댓글 상태
+  const [realComments, setRealComments] = useState<RedditComment[]>([]);
+  const [isLoadingRealComments, setIsLoadingRealComments] = useState(false);
+  const [isRealSynced, setIsRealSynced] = useState(false);
+
   const targetLang = isKo ? 'ko' : 'en';
   const needsTrans = isNeedsTranslation(post.title, targetLang) || (post.body ? isNeedsTranslation(post.body, targetLang) : false);
+
+  // 실제 reddit.com 원본 댓글 수집
+  const fetchActualComments = React.useCallback(async (force: boolean = false) => {
+    if (!post) return;
+    setIsLoadingRealComments(true);
+    try {
+      if (!force) {
+        const cached = RedditRealCommentService.getCachedRealComments(post.id);
+        if (cached && cached.length > 0) {
+          setRealComments(cached);
+          setIsRealSynced(true);
+          setIsLoadingRealComments(false);
+          return;
+        }
+      }
+      const fetched = await RedditRealCommentService.fetchRealComments(post, isKo ? 'ko' : 'en');
+      if (fetched && fetched.length > 0) {
+        setRealComments(fetched);
+        setIsRealSynced(true);
+      }
+    } catch (err) {
+      console.warn('[RedditModal] Failed to fetch actual comments', err);
+    } finally {
+      setIsLoadingRealComments(false);
+    }
+  }, [post, isKo]);
+
+  useEffect(() => {
+    fetchActualComments(false);
+  }, [fetchActualComments]);
 
   useEffect(() => {
     let isMounted = true;
@@ -130,7 +167,22 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
   const handleCommentSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (commentText.trim()) {
-      onAddComment(post.id, commentText.trim());
+      const text = commentText.trim();
+      onAddComment(post.id, text);
+      const newComment: RedditComment = {
+        id: `user_c_${Date.now()}`,
+        postId: post.id,
+        parentId: null,
+        author: userState.username || 'SNSHeroPlayer',
+        authorAvatar: userState.avatarUrl || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=64&q=80',
+        authorKarma: 100,
+        body: text,
+        createdAt: Date.now(),
+        score: 1,
+        userVote: 'up',
+        replies: [],
+      };
+      setRealComments((prev) => [newComment, ...prev]);
       setCommentText('');
     }
   };
@@ -141,7 +193,8 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
     setIsLoadingMore(true);
 
     setTimeout(() => {
-      const allCurrent = [...comments, ...extraComments];
+      const baseComments = realComments.length > 0 ? realComments : comments;
+      const allCurrent = [...baseComments, ...extraComments];
       // 기존 댓글 본문 텍스트 Set 구성 (중복 차단)
       const existingBodies = new Set<string>(allCurrent.map((c) => (c.body || '').trim()));
 
@@ -155,7 +208,7 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
       }
       setIsLoadingMore(false);
     }, 300);
-  }, [isLoadingMore, hasMoreComments, comments, extraComments, post, isKo]);
+  }, [isLoadingMore, hasMoreComments, realComments, comments, extraComments, post, isKo]);
 
   // 글을 끝까지 읽었을 때(바닥 센티넬 도달 시) 자동으로 실시간 더보기 트리거
   React.useEffect(() => {
@@ -181,9 +234,10 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
     }
   }, [isLoadingMore, hasMoreComments, handleLoadMoreComments]);
 
-  // 전체 댓글 병합 및 정렬
+  // 전체 댓글 병합 및 정렬 (실제 원본 댓글 우선 사용)
   const displayedComments = React.useMemo(() => {
-    const list = [...comments, ...extraComments];
+    const baseList = realComments.length > 0 ? realComments : comments;
+    const list = [...baseList, ...extraComments];
     switch (commentSort) {
       case 'new':
         return list.sort((a, b) => b.createdAt - a.createdAt);
@@ -193,7 +247,7 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
       default:
         return list.sort((a, b) => b.score - a.score);
     }
-  }, [comments, extraComments, commentSort]);
+  }, [realComments, comments, extraComments, commentSort]);
 
   const handleShare = () => {
     const url = `${window.location.origin}/r/${post.subreddit}/comments/${post.id}`;
@@ -505,13 +559,35 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
               isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'
             }`}>
               <div className="flex items-center justify-between pb-4 border-b border-inherit/10 mb-4 flex-wrap gap-2">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   <span className="font-extrabold text-sm sm:text-base">
                     {isKo ? `전체 댓글 ${post.commentCount.toLocaleString()}개` : `All ${post.commentCount.toLocaleString()} Comments`}
                   </span>
                   <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#FF4500]/10 text-[#FF4500]">
                     {displayedComments.length}{isKo ? '개 표시 중' : ' shown'}
                   </span>
+                  {isRealSynced && (
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-500 border border-emerald-500/20 flex items-center gap-1 shadow-sm">
+                      <Check className="w-3 h-3 text-emerald-500" />
+                      <span>{isKo ? 'Reddit 실제 원본 댓글' : 'Live Reddit Comments'}</span>
+                    </span>
+                  )}
+                  {isLoadingRealComments && (
+                    <span className="text-[10px] font-bold text-amber-500 animate-pulse flex items-center gap-1">
+                      <RefreshCw className="w-3 h-3 animate-spin" />
+                      <span>{isKo ? '실제 원본 댓글 동기화 중...' : 'Syncing real comments...'}</span>
+                    </span>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => fetchActualComments(true)}
+                    className={`p-1 rounded-full cursor-pointer transition-colors opacity-70 hover:opacity-100 ${
+                      isDark ? 'hover:bg-white/10' : 'hover:bg-black/5'
+                    }`}
+                    title={isKo ? '실제 원본 댓글 새로고침' : 'Refresh real comments'}
+                  >
+                    <RefreshCw className={`w-3.5 h-3.5 ${isLoadingRealComments ? 'animate-spin text-[#FF4500]' : ''}`} />
+                  </button>
                 </div>
 
                 {/* 댓글 정렬 선택 드롭다운 */}

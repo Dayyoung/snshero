@@ -116,6 +116,64 @@ export default defineConfig(({mode}) => {
                 return;
               }
 
+              // Real-time Reddit Comments RSS proxy (fetches real original comments from reddit.com)
+              if (decodedUrl === '/api/reddit/comments') {
+                const urlObj = new URL(req.url || '', 'http://localhost');
+                const sub = urlObj.searchParams.get('sub') || 'popular';
+                const id = urlObj.searchParams.get('id') || '';
+                const cacheKey = `comments_${sub}_${id}`;
+                const now = Date.now();
+
+                const cached = (global as any).__redditCache?.[cacheKey];
+                if (cached && now - cached.time < 300000) {
+                  res.statusCode = 200;
+                  res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+                  res.setHeader('Access-Control-Allow-Origin', '*');
+                  res.setHeader('X-Cache', 'HIT');
+                  res.end(cached.data);
+                  return;
+                }
+
+                const redditCommentsRssUrl = `https://www.reddit.com/r/${encodeURIComponent(sub)}/comments/${encodeURIComponent(id)}/.rss`;
+
+                fetch(redditCommentsRssUrl, {
+                  headers: {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                    'Accept': 'application/rss+xml, application/xml, text/xml, */*',
+                  },
+                })
+                  .then(async (resp) => {
+                    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                    const xml = await resp.text();
+
+                    if (!(global as any).__redditCache) (global as any).__redditCache = {};
+                    (global as any).__redditCache[cacheKey] = { time: now, data: xml };
+
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+                    res.setHeader('Access-Control-Allow-Origin', '*');
+                    res.setHeader('Cache-Control', 'public, max-age=180');
+                    res.setHeader('X-Cache', 'MISS');
+                    res.end(xml);
+                  })
+                  .catch((err) => {
+                    if (cached && cached.data) {
+                      res.statusCode = 200;
+                      res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+                      res.setHeader('Access-Control-Allow-Origin', '*');
+                      res.setHeader('X-Cache', 'STALE');
+                      res.end(cached.data);
+                      return;
+                    }
+
+                    res.statusCode = 502;
+                    res.setHeader('Content-Type', 'application/json; charset=utf-8');
+                    res.setHeader('Access-Control-Allow-Origin', '*');
+                    res.end(JSON.stringify({ error: err?.message || 'Failed to fetch Reddit comments' }));
+                  });
+                return;
+              }
+
               // Google Spreadsheet Community Posts proxy (bypasses browser CORS restrictions)
               if (decodedUrl === '/api/community/sheet-posts') {
                 const sheetId = '1o8rwdG_O_-efkKHgf9oMpFaOUnAAVxMQVfDldFavbjg';

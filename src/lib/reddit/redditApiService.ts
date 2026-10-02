@@ -19,6 +19,7 @@ import {
 import { RedditLiveFeedService } from './redditLiveFeedService';
 import { generateContextualCommentsForPost } from './redditCommentGenerator';
 import { RedditTrendingService } from './redditTrendingService';
+import { RedditRealCommentService } from './redditRealCommentService';
 
 export class RedditApiService {
   /**
@@ -246,10 +247,13 @@ export class RedditApiService {
       post.isSaved = userState.savedPostIds.includes(post.id);
     }
 
-    // 3. 댓글 트리 가져오기
-    let comments: RedditComment[] = SEED_COMMENTS[postId] ? JSON.parse(JSON.stringify(SEED_COMMENTS[postId])) : [];
+    // 3. 댓글 트리 가져오기 (1순위: 실제 Reddit 원본 캐시 댓글 -> 2순위: 시드 댓글 -> 3순위: 맥락 백업)
+    const cachedReal = RedditRealCommentService.getCachedRealComments(postId);
+    let comments: RedditComment[] = cachedReal
+      ? JSON.parse(JSON.stringify(cachedReal))
+      : (SEED_COMMENTS[postId] ? JSON.parse(JSON.stringify(SEED_COMMENTS[postId])) : []);
 
-    // 만약 시드 댓글이 없다면 포스트 맥락에 맞는 스마트 댓글 자동 생성 (어떤 글이든 100% 댓글 읽기 보장!)
+    // 만약 캐시나 시드가 없다면 임시 맥락 백업 댓글 생성 (실시간 댓글 fetch 전 폴백)
     if (comments.length === 0) {
       comments = this.generateContextualComments(post);
     }
