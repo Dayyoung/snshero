@@ -312,10 +312,16 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
     RedditSeoManager.trackEvent('reddit_vote', { target: 'comment', commentId, direction });
   }, []);
 
-  // 트렌딩 토픽 목록
+  // 트렌딩 토픽 목록 (실시간 피드 및 날짜 변경에 따라 자동 갱신)
   const trendingItems = useMemo(() => {
-    return RedditApiService.getTrendingItems();
-  }, []);
+    return RedditApiService.getTrendingItems(posts, userState);
+  }, [posts, userState, syncTick]);
+
+  // 오늘의 트렌드 강제 새로고침
+  const handleRefreshTrending = useCallback(() => {
+    RedditApiService.getTrendingItems(posts, userState, true);
+    setSyncTick((t) => t + 1);
+  }, [posts, userState]);
 
   // 포스트 상세 열기
   const handleOpenDetail = useCallback((post: RedditPost) => {
@@ -519,6 +525,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
                   isDark={isDark}
                   isKo={isKo}
                   onSelectTrending={handleSelectTrending}
+                  onRefreshTrending={handleRefreshTrending}
                 />
               ) : (
                 /* 특정 서브레딧일 때는 서브레딧 상단 배너 & 타이틀 */

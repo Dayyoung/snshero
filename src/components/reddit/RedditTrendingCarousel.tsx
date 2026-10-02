@@ -1,9 +1,11 @@
 /**
  * RedditTrendingCarousel.tsx
  * 실제 reddit.com 첫 화면 상단 "Trending Today" 4개 대형 캐러셀 카드
+ * 매일 및 실시간 자동 갱신, 수동 새로고침, 서브레딧 다각화 및 실시간 피드 직결
  */
 
-import React from 'react';
+import React, { useState } from 'react';
+import { RefreshCw, Flame } from 'lucide-react';
 import { RedditTrendingItem } from '../../lib/reddit/redditTypes';
 
 interface RedditTrendingCarouselProps {
@@ -11,6 +13,7 @@ interface RedditTrendingCarouselProps {
   isDark: boolean;
   isKo?: boolean;
   onSelectTrending: (item: RedditTrendingItem) => void;
+  onRefreshTrending?: () => void;
 }
 
 export const RedditTrendingCarousel: React.FC<RedditTrendingCarouselProps> = ({
@@ -18,15 +21,49 @@ export const RedditTrendingCarousel: React.FC<RedditTrendingCarouselProps> = ({
   isDark,
   isKo = true,
   onSelectTrending,
+  onRefreshTrending,
 }) => {
+  const [isRotating, setIsRotating] = useState(false);
+
   if (!trendingItems || trendingItems.length === 0) return null;
+
+  const handleRefreshClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onRefreshTrending) {
+      setIsRotating(true);
+      if (typeof navigator !== 'undefined' && navigator.vibrate) {
+        navigator.vibrate(30);
+      }
+      onRefreshTrending();
+      setTimeout(() => setIsRotating(false), 600);
+    }
+  };
 
   return (
     <section className="mb-4 w-full max-w-full overflow-hidden">
       <div className="flex items-center justify-between mb-2 px-1">
-        <h2 className="text-xs font-black tracking-wider uppercase opacity-70">
-          {isKo ? '🔥 오늘의 트렌드 (Trending Today)' : '🔥 Trending Today'}
-        </h2>
+        <div className="flex items-center gap-2">
+          <h2 className="text-xs font-black tracking-wider uppercase opacity-75 flex items-center gap-1.5">
+            <Flame className="w-3.5 h-3.5 text-[#FF4500] fill-current" />
+            <span>{isKo ? '오늘의 트렌드 (Trending Today)' : 'Trending Today'}</span>
+          </h2>
+          <span className="text-[10px] px-1.5 py-0.2 rounded font-mono font-bold bg-[#FF4500]/15 text-[#FF4500] border border-[#FF4500]/20">
+            DAILY
+          </span>
+        </div>
+
+        {onRefreshTrending && (
+          <button
+            type="button"
+            onClick={handleRefreshClick}
+            className={`p-1 rounded-full cursor-pointer transition-all duration-200 opacity-60 hover:opacity-100 ${
+              isDark ? 'hover:bg-white/10 text-gray-300' : 'hover:bg-black/5 text-gray-700'
+            }`}
+            title={isKo ? '트렌드 새로고침' : 'Refresh trending'}
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${isRotating ? 'animate-spin text-[#FF4500]' : ''}`} />
+          </button>
+        )}
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">

@@ -18,6 +18,7 @@ import {
 } from './redditTypes';
 import { RedditLiveFeedService } from './redditLiveFeedService';
 import { generateContextualCommentsForPost } from './redditCommentGenerator';
+import { RedditTrendingService } from './redditTrendingService';
 
 export class RedditApiService {
   /**
@@ -274,10 +275,15 @@ export class RedditApiService {
   }
 
   /**
-   * 트렌딩 토픽 목록 조회 (실제 reddit.com 첫 화면 상단 캐러셀)
+   * 트렌딩 토픽 목록 조회 (실제 reddit.com 첫 화면 상단 캐러셀, 매일/실시간 자동 갱신)
    */
-  static getTrendingItems(): RedditTrendingItem[] {
-    return [...SEED_TRENDING];
+  static getTrendingItems(
+    currentPosts?: RedditPost[],
+    userState?: RedditUserDataState,
+    forceRefresh?: boolean
+  ): RedditTrendingItem[] {
+    const lang = userState?.language || 'ko';
+    return RedditTrendingService.getDailyTrendingItems(currentPosts, lang, forceRefresh);
   }
 
   /**

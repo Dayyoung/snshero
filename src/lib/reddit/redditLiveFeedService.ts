@@ -235,6 +235,12 @@ export class RedditLiveFeedService {
 
         localStorage.setItem(LIVE_CACHE_KEY, JSON.stringify(merged));
         localStorage.setItem(LIVE_SYNC_TIME_KEY, Date.now().toString());
+        // 새로운 실시간 피드가 수집되었으므로 트렌드 캐시 자동 갱신 트리거
+        try {
+          localStorage.removeItem('hero_reddit_trending_date');
+        } catch {
+          // ignore
+        }
         return merged;
       }
     } catch (parseErr) {
