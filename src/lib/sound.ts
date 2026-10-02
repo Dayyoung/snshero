@@ -30,6 +30,9 @@ export const isSfxMutedGlobal = (): boolean => {
   try {
     if (typeof window === 'undefined') return true;
 
+    // 0. 커뮤니티 전용 무음 플래그 체크 (커뮤니티에서는 BGM/SFX 100% 제거)
+    if ((window as any).__snshero_community_mute) return true;
+
     // 1. hero_sfx_muted 체크
     if (localStorage.getItem('hero_sfx_muted') === 'true') return true;
 

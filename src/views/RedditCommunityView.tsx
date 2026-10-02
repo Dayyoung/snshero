@@ -109,6 +109,24 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
     }
   }, [currentSubreddit, userState.language]);
 
+  // 커뮤니티 화면에서는 배경음악과 효과음 100% 완전 제거
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      (window as any).__snshero_community_mute = true;
+      window.dispatchEvent(new CustomEvent('snshero_audio_settings_changed', {
+        detail: { isMuted: true }
+      }));
+    }
+    return () => {
+      if (typeof window !== 'undefined') {
+        (window as any).__snshero_community_mute = false;
+        window.dispatchEvent(new CustomEvent('snshero_audio_settings_changed', {
+          detail: { isMuted: false }
+        }));
+      }
+    };
+  }, []);
+
   // 마운트 및 서브레딧 변경 시 실시간 Reddit RSS 자동 동기화
   useEffect(() => {
     handleSyncLive();

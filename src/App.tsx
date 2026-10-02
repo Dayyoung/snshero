@@ -3084,12 +3084,18 @@ function AppContent() {
     return audio;
   });
 
+  // 커뮤니티(레딧 및 인게임 커뮤니티) 화면 여부: 커뮤니티에서는 BGM과 효과음 100% 완전 제거
+  const isCommunityView = view === 'reddit' || view === 'community';
+
   useEffect(() => {
     if (bgmAudio) {
       bgmAudio.volume = bgmVolume;
-      bgmAudio.muted = !bgmEnabled || bgmVolume === 0;
+      bgmAudio.muted = !bgmEnabled || bgmVolume === 0 || isCommunityView;
+      if (isCommunityView) {
+        bgmAudio.pause();
+      }
     }
-  }, [bgmVolume, bgmEnabled, bgmAudio]);
+  }, [bgmVolume, bgmEnabled, bgmAudio, isCommunityView]);
 
   const [audioStarted, setAudioStarted] = useState(false);
 
@@ -3097,29 +3103,29 @@ function AppContent() {
     localStorage.setItem('hero_bgm_track', bgmTrackId);
     const track = BGM_TRACKS.find(t => t.id === bgmTrackId);
     if (track && bgmAudio) {
-      const isPlaying = bgmEnabled && audioStarted && !bgmAudio.paused;
+      const isPlaying = bgmEnabled && audioStarted && !bgmAudio.paused && !isCommunityView;
       bgmAudio.src = track.url;
       bgmAudio.volume = bgmVolume;
-      bgmAudio.muted = !bgmEnabled || bgmVolume === 0;
+      bgmAudio.muted = !bgmEnabled || bgmVolume === 0 || isCommunityView;
       bgmAudio.load();
       bgmAudio.volume = bgmVolume;
-      bgmAudio.muted = !bgmEnabled || bgmVolume === 0;
+      bgmAudio.muted = !bgmEnabled || bgmVolume === 0 || isCommunityView;
       if (isPlaying) {
         bgmAudio.play().catch(e => console.warn("Audio play blocked", e));
       }
     }
-  }, [bgmTrackId, bgmAudio, bgmEnabled, audioStarted, bgmVolume]);
+  }, [bgmTrackId, bgmAudio, bgmEnabled, audioStarted, bgmVolume, isCommunityView]);
 
   const startAudio = useCallback(() => {
     if (audioStarted) return;
     setAudioStarted(true);
-    if (bgmEnabled) {
+    if (bgmEnabled && !isCommunityView) {
       bgmAudio.play().catch(e => console.warn("Audio play blocked", e));
     }
-  }, [audioStarted, bgmEnabled, bgmAudio]);
+  }, [audioStarted, bgmEnabled, bgmAudio, isCommunityView]);
 
   const playSfx = useCallback((url: string) => {
-    if (!sfxEnabled || sfxVolume === 0 || !url || isSfxMutedGlobal()) return;
+    if (!sfxEnabled || sfxVolume === 0 || !url || isSfxMutedGlobal() || isCommunityView) return;
     
     try {
       const audio = new Audio();
@@ -4392,14 +4398,24 @@ function AppContent() {
 
 
   useEffect(() => {
-    if (bgmEnabled && audioStarted) {
+    if (bgmEnabled && audioStarted && !isCommunityView) {
       bgmAudio.volume = bgmVolume;
       bgmAudio.muted = bgmVolume === 0;
       bgmAudio.play().catch(() => {});
     } else {
       bgmAudio.pause();
     }
-  }, [bgmEnabled, bgmAudio, audioStarted, bgmVolume]);
+  }, [bgmEnabled, bgmAudio, audioStarted, bgmVolume, isCommunityView]);
+
+  // 커뮤니티 진입 시 전역 효과음/스프라이트 사운드 차단 동기화
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      (window as any).__snshero_community_mute = isCommunityView;
+      window.dispatchEvent(new CustomEvent('snshero_audio_settings_changed', {
+        detail: { isMuted: isCommunityView, masterVolume: sfxVolume }
+      }));
+    }
+  }, [isCommunityView, sfxVolume]);
 
   useEffect(() => {
     const handleGlobalClick = () => {

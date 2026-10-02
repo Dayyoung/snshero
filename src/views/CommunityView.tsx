@@ -199,6 +199,24 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
   const [hasDraftRestored, setHasDraftRestored] = useState(false);
   const [attachDeckToPost, setAttachDeckToPost] = useState(true);
 
+  // 커뮤니티 화면에서는 배경음악과 효과음 100% 완전 제거
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      (window as any).__snshero_community_mute = true;
+      window.dispatchEvent(new CustomEvent('snshero_audio_settings_changed', {
+        detail: { isMuted: true }
+      }));
+    }
+    return () => {
+      if (typeof window !== 'undefined') {
+        (window as any).__snshero_community_mute = false;
+        window.dispatchEvent(new CustomEvent('snshero_audio_settings_changed', {
+          detail: { isMuted: false }
+        }));
+      }
+    };
+  }, []);
+
   // 모달이 열릴 때 임시저장된 draft 복원
   useEffect(() => {
     if (showUploadModal) {
