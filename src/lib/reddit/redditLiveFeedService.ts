@@ -7,6 +7,69 @@
 import { RedditPost, cleanRedditUrl, HUMOR_SUBREDDITS } from './redditTypes';
 import { translateRedditPosts } from './redditTranslationService';
 
+/**
+ * 이미지 URL에서 고유 파일 식별자(해시 ID)를 추출하여 동일 사진의 썸네일과 원본 중복을 정확히 감지
+ * 예: 
+ * - https://preview.redd.it/banl4w6jg4th1.jpeg?width=640... -> 'banl4w6jg4th1'
+ * - https://i.redd.it/banl4w6jg4th1.jpeg -> 'banl4w6jg4th1'
+ * - https://b.thumbs.redditmedia.com/xyz.jpg -> 'xyz'
+ */
+export function getImageFingerprint(url: string): string {
+  if (!url || typeof url !== 'string') return '';
+  const clean = url.replace(/&amp;/g, '&').split('?')[0].trim();
+  
+  // 1) Reddit 고유 파일 해시 (8자리 이상의 영숫자)
+  const redditHashMatch = clean.match(/([a-zA-Z0-9_-]{8,})\.(?:jpe?g|png|webp|gif)/i);
+  if (redditHashMatch) {
+    return redditHashMatch[1].toLowerCase();
+  }
+
+  // 2) 일반 URL의 경우 파일명(확장자 제외)
+  try {
+    const parsed = new URL(clean, 'http://localhost');
+    const segments = parsed.pathname.split('/').filter(Boolean);
+    const last = segments[segments.length - 1] || '';
+    const nameWithoutExt = last.replace(/\.[^/.]+$/, '');
+    if (nameWithoutExt.length >= 6) {
+      return nameWithoutExt.toLowerCase();
+    }
+    return (parsed.hostname + parsed.pathname).toLowerCase();
+  } catch {
+    return clean.toLowerCase();
+  }
+}
+
+/**
+ * 이미지 목록에서 동일 사진의 중복(동일 해시)을 완벽하게 제거하고 고화질 원본(i.redd.it)을 우선 채택
+ */
+export function deduplicateImageUrls(urls: string[]): string[] {
+  if (!urls || !Array.isArray(urls)) return [];
+  const map = new Map<string, string>(); // fingerprint -> bestUrl
+
+  for (const rawUrl of urls) {
+    if (!rawUrl || typeof rawUrl !== 'string') continue;
+    const cleanUrl = rawUrl.replace(/&amp;/g, '&').trim();
+    if (!cleanUrl || cleanUrl.includes('award') || cleanUrl.includes('emoji')) continue;
+
+    const fp = getImageFingerprint(cleanUrl);
+    if (!fp) continue;
+
+    const existing = map.get(fp);
+    if (!existing) {
+      map.set(fp, cleanUrl);
+    } else {
+      // 새 URL이 고화질 원본(i.redd.it 또는 쿼리스트링 없는 원본)이고 기존 것이 썸네일(preview.redd.it, thumbs 등)이면 교체
+      const isNewOriginal = cleanUrl.includes('i.redd.it') || (!cleanUrl.includes('thumb') && !cleanUrl.includes('width=140'));
+      const isOldThumbnail = existing.includes('thumb') || existing.includes('preview.redd.it') || existing.includes('width=140');
+      if (isNewOriginal && isOldThumbnail) {
+        map.set(fp, cleanUrl);
+      }
+    }
+  }
+
+  return Array.from(map.values());
+}
+
 const LIVE_CACHE_KEY = 'hero_reddit_live_posts_v1';
 const LIVE_SYNC_TIME_KEY = 'hero_reddit_live_sync_time';
 
@@ -37,6 +100,16 @@ export class RedditLiveFeedService {
             .map((p) => {
               if (p.permalink) p.permalink = cleanRedditUrl(p.permalink);
               if (p.media?.url) p.media.url = cleanRedditUrl(p.media.url);
+              if (p.media?.galleryUrls && p.media.galleryUrls.length > 0) {
+                const deduped = deduplicateImageUrls(p.media.galleryUrls);
+                if (deduped.length <= 1) {
+                  if (p.media.type === 'gallery') p.media.type = 'image';
+                  p.media.url = deduped[0] || p.media.url;
+                  p.media.galleryUrls = undefined;
+                } else {
+                  p.media.galleryUrls = deduped;
+                }
+              }
               return p;
             });
           // 최신 시간순 정렬
@@ -144,9 +217,9 @@ export class RedditLiveFeedService {
         const mediaThumb = entry.querySelector('thumbnail') || entry.querySelector('media\\:thumbnail, thumbnail');
         let initialThumbUrl = mediaThumb ? mediaThumb.getAttribute('url') : null;
 
-        const extractedImages: string[] = [];
+        const candidateImages: string[] = [];
         if (initialThumbUrl) {
-          extractedImages.push(initialThumbUrl.replace(/&amp;/g, '&'));
+          candidateImages.push(initialThumbUrl.replace(/&amp;/g, '&'));
         }
 
         if (contentHtml) {
@@ -154,10 +227,7 @@ export class RedditLiveFeedService {
           const imgMatches = contentHtml.matchAll(/<img[^>]+src="([^">]+)"/gi);
           for (const m of imgMatches) {
             if (m && m[1]) {
-              const url = m[1].replace(/&amp;/g, '&');
-              if (!url.includes('award') && !url.includes('emoji') && !extractedImages.includes(url)) {
-                extractedImages.push(url);
-              }
+              candidateImages.push(m[1].replace(/&amp;/g, '&'));
             }
           }
 
@@ -165,13 +235,13 @@ export class RedditLiveFeedService {
           const linkMatches = contentHtml.matchAll(/href="(https?:\/\/(?:i|preview)\.redd\.it\/[^\s"'>]+)"/gi);
           for (const m of linkMatches) {
             if (m && m[1]) {
-              const url = m[1].replace(/&amp;/g, '&');
-              if (!extractedImages.includes(url)) {
-                extractedImages.push(url);
-              }
+              candidateImages.push(m[1].replace(/&amp;/g, '&'));
             }
           }
         }
+
+        // 동일 사진(해시 중복) 완전 제거 및 고화질 원본(i.redd.it) 우선 채택
+        const extractedImages = deduplicateImageUrls(candidateImages);
 
         // HTML 태그 제거된 텍스트 요약
         let body = '';

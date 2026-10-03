@@ -6,6 +6,7 @@
 
 import React, { useState, useRef } from 'react';
 import { ChevronLeft, ChevronRight, Images, ZoomIn, X } from 'lucide-react';
+import { deduplicateImageUrls } from '../../lib/reddit/redditLiveFeedService';
 
 interface RedditGalleryViewerProps {
   images: string[];
@@ -33,10 +34,31 @@ export const RedditGalleryViewer: React.FC<RedditGalleryViewerProps> = ({
   const touchStartXRef = useRef<number | null>(null);
   const touchDeltaXRef = useRef<number>(0);
 
-  if (!images || images.length === 0) return null;
+  const sanitizedImages = deduplicateImageUrls(images);
+  if (!sanitizedImages || sanitizedImages.length === 0) return null;
 
-  const total = images.length;
-  const currentUrl = images[currentIndex] || images[0];
+  const total = sanitizedImages.length;
+  const currentUrl = sanitizedImages[currentIndex] || sanitizedImages[0];
+
+  // 사진이 1장뿐인 경우 일반 단일 이미지로 깔끔하게 렌더링
+  if (total === 1) {
+    return (
+      <div 
+        className={`relative w-full ${maxHeight} overflow-hidden rounded-xl bg-black/90 flex items-center justify-center cursor-pointer select-none`}
+        onClick={() => {
+          if (onImageClick) onImageClick(0);
+          else setIsLightboxOpen(true);
+        }}
+      >
+        <img
+          src={currentUrl}
+          alt={title}
+          className={`w-full ${maxHeight} object-contain transition-transform duration-200`}
+          loading="lazy"
+        />
+      </div>
+    );
+  }
 
   const handlePrev = (e?: React.MouseEvent) => {
     e?.stopPropagation();
@@ -147,7 +169,7 @@ export const RedditGalleryViewer: React.FC<RedditGalleryViewerProps> = ({
         {/* 4. 하단 도트(Dot) 인디케이터 (사진이 2장 이상일 때) */}
         {total > 1 && (
           <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/50 backdrop-blur-md">
-            {images.map((_, idx) => (
+            {sanitizedImages.map((_, idx) => (
               <button
                 key={idx}
                 type="button"
@@ -167,7 +189,7 @@ export const RedditGalleryViewer: React.FC<RedditGalleryViewerProps> = ({
       {/* 5. 썸네일 스트립 (상세 모달용 옵션) */}
       {showThumbnailStrip && total > 1 && (
         <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-3 scrollbar-thin">
-          {images.map((imgUrl, idx) => (
+          {sanitizedImages.map((imgUrl, idx) => (
             <button
               key={idx}
               type="button"
@@ -246,7 +268,7 @@ export const RedditGalleryViewer: React.FC<RedditGalleryViewerProps> = ({
               className="flex items-center gap-2 overflow-x-auto max-w-2xl px-4 py-2 rounded-2xl bg-black/50 backdrop-blur-md border border-white/10 z-10"
               onClick={(e) => e.stopPropagation()}
             >
-              {images.map((imgUrl, idx) => (
+              {sanitizedImages.map((imgUrl, idx) => (
                 <button
                   key={idx}
                   type="button"

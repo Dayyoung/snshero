@@ -23,6 +23,7 @@ import { RedditPost, ViewModeType, getRedditExternalUrl, cleanRedditUrl } from '
 import { translateTextWithGoogle, isNeedsTranslation } from '../../lib/reddit/redditTranslationService';
 import { RedditVideoPlayer } from './RedditVideoPlayer';
 import { RedditGalleryViewer } from './RedditGalleryViewer';
+import { deduplicateImageUrls } from '../../lib/reddit/redditLiveFeedService';
 
 interface RedditPostCardProps {
   post: RedditPost;
@@ -107,10 +108,11 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
     }
   };
 
-  const isGalleryPost = post.media?.type === 'gallery' || Boolean(post.media?.galleryUrls && post.media.galleryUrls.length > 1);
-  const galleryImages = post.media?.galleryUrls && post.media.galleryUrls.length > 0 
+  const rawGalleryImages = post.media?.galleryUrls && post.media.galleryUrls.length > 0 
     ? post.media.galleryUrls 
     : (post.media?.url ? [post.media.url] : []);
+  const galleryImages = deduplicateImageUrls(rawGalleryImages);
+  const isGalleryPost = (post.media?.type === 'gallery' || Boolean(post.media?.galleryUrls && post.media.galleryUrls.length > 1)) && galleryImages.length > 1;
 
   /* ========================================================
    * 1. COMPACT VIEW (단순 밀집 텍스트 뷰)

@@ -34,6 +34,7 @@ import { translateTextWithGoogle, isNeedsTranslation, translateCommentTree } fro
 import { RedditVideoPlayer } from './RedditVideoPlayer';
 import { RedditRealCommentService } from '../../lib/reddit/redditRealCommentService';
 import { RedditGalleryViewer } from './RedditGalleryViewer';
+import { deduplicateImageUrls } from '../../lib/reddit/redditLiveFeedService';
 
 interface RedditPostDetailModalProps {
   post: RedditPost;
@@ -90,10 +91,11 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
   const targetLang = isKo ? 'ko' : 'en';
   const needsTrans = isNeedsTranslation(post.title, targetLang) || (post.body ? isNeedsTranslation(post.body, targetLang) : false);
 
-  const isGalleryPost = post.media?.type === 'gallery' || Boolean(post.media?.galleryUrls && post.media.galleryUrls.length > 1);
-  const galleryImages = post.media?.galleryUrls && post.media.galleryUrls.length > 0
+  const rawGalleryImages = post.media?.galleryUrls && post.media.galleryUrls.length > 0
     ? post.media.galleryUrls
     : (post.media?.url ? [post.media.url] : []);
+  const galleryImages = deduplicateImageUrls(rawGalleryImages);
+  const isGalleryPost = (post.media?.type === 'gallery' || Boolean(post.media?.galleryUrls && post.media.galleryUrls.length > 1)) && galleryImages.length > 1;
 
   // 실제 reddit.com 원본 댓글 수집 및 설정된 언어로 번역
   const fetchActualComments = React.useCallback(async (force: boolean = false) => {
