@@ -46,11 +46,9 @@ export default defineConfig(({mode}) => {
     plugins: [
       react(), 
       tailwindcss(),
-      {
-        name: 'public-wildcard-static-plugin',
-        configureServer(server) {
-          server.middlewares.use((req, res, next) => {
-            if (!req.url) return next();
+      (() => {
+        const customApiMiddleware = (req: any, res: any, next: any) => {
+          if (!req.url) return next();
 
             try {
               const rawUrl = req.url.split('?')[0];
@@ -434,9 +432,18 @@ export default defineConfig(({mode}) => {
             }
 
             next();
-          });
-        }
-      }
+          };
+
+          return {
+            name: 'public-wildcard-static-plugin',
+            configureServer(server: any) {
+              server.middlewares.use(customApiMiddleware);
+            },
+            configurePreviewServer(server: any) {
+              server.middlewares.use(customApiMiddleware);
+            },
+          };
+        })(),
     ],
     base: process.env.VITE_BASE_PATH || './',
     build: {
@@ -512,6 +519,18 @@ export default defineConfig(({mode}) => {
       fs: {
         allow: ['.', 'public'],
       },
+      proxy: {
+        '/api-mlx': {
+          target: 'http://127.0.0.1:11234',
+          changeOrigin: true,
+          rewrite: (p) => p.replace(/^\/api-mlx/, ''),
+        }
+      }
+    },
+    preview: {
+      host: '0.0.0.0',
+      port: 3000,
+      allowedHosts: true,
       proxy: {
         '/api-mlx': {
           target: 'http://127.0.0.1:11234',
