@@ -47,7 +47,7 @@ export default defineConfig(({mode}) => {
       react(), 
       tailwindcss(),
       (() => {
-        const customApiMiddleware = (req: any, res: any, next: any) => {
+        const middleware = (req: any, res: any, next: any) => {
           if (!req.url) return next();
 
             try {
@@ -399,13 +399,15 @@ export default defineConfig(({mode}) => {
             }
 
             next();
-          });
-        }
-      },
-      {
-        name: 'api-endpoints-plugin',
-        configureServer(server) {
-          server.middlewares.use((req, res, next) => {
+          };
+          return {
+            name: 'public-wildcard-static-plugin',
+            configureServer(server: any) { server.middlewares.use(middleware); },
+            configurePreviewServer(server: any) { server.middlewares.use(middleware); },
+          };
+        })(),
+        (() => {
+          const middleware = (req: any, res: any, next: any) => {
             if (req.url === '/api/health' || req.url === '/health') {
               res.statusCode = 200;
               res.setHeader('Content-Type', 'application/json');
@@ -433,15 +435,10 @@ export default defineConfig(({mode}) => {
 
             next();
           };
-
           return {
-            name: 'public-wildcard-static-plugin',
-            configureServer(server: any) {
-              server.middlewares.use(customApiMiddleware);
-            },
-            configurePreviewServer(server: any) {
-              server.middlewares.use(customApiMiddleware);
-            },
+            name: 'api-endpoints-plugin',
+            configureServer(server: any) { server.middlewares.use(middleware); },
+            configurePreviewServer(server: any) { server.middlewares.use(middleware); },
           };
         })(),
     ],
