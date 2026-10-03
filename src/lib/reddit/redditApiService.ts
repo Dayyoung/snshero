@@ -14,7 +14,8 @@ import {
   FeedSortType, 
   TimeFilterType, 
   SearchResults,
-  RedditUserDataState 
+  RedditUserDataState,
+  HUMOR_SUBREDDITS
 } from './redditTypes';
 import { RedditLiveFeedService } from './redditLiveFeedService';
 import { generateContextualCommentsForPost } from './redditCommentGenerator';
@@ -123,20 +124,27 @@ export class RedditApiService {
       pool = [...userState.userPosts, ...pool];
     }
 
-    // 3. 서브레딧 필터링
+    // 3. 서브레딧 필터링 (메인화면인 경우 인기 유머글만 선별 노출)
     let filtered = pool;
     if (!isFrontPage) {
       filtered = pool.filter(
         (p) => p.subreddit.toLowerCase() === subreddit.toLowerCase()
       );
-    } else if (subreddit.toLowerCase() === 'home' && userState) {
-      // Home 피드는 사용자가 가입(Joined)한 서브레딧 위주
-      filtered = pool.filter((p) =>
-        userState.joinedSubreddits.some(
-          (j) => j.toLowerCase() === p.subreddit.toLowerCase()
-        )
-      );
-      if (filtered.length === 0) filtered = pool; // 없으면 전체
+    } else {
+      // 메인화면 (popular, all, home): 레딧 인기 유머글만 집중 표시
+      const humorSubsLower = new Set(HUMOR_SUBREDDITS.map((s) => s.toLowerCase()));
+      // 1) 사용자가 직접 작성한 포스트는 항상 포함
+      // 2) 그 외 포스트는 인기 유머 서브레딧 및 유머/밈 플레어를 지닌 게시물만 필터링
+      const humorOnly = pool.filter((p) => {
+        const isUserPost = userState && userState.userPosts.some((up) => up.id === p.id);
+        if (isUserPost) return true;
+        const subLower = p.subreddit.toLowerCase();
+        if (humorSubsLower.has(subLower)) return true;
+        const flairText = p.flair?.text?.toLowerCase() || '';
+        return flairText.includes('유머') || flairText.includes('humor') || flairText.includes('meme') || flairText.includes('짤');
+      });
+      // 유머글이 충분한 경우 유머글만 노출 (만약 부족하면 fallback으로 전체 풀 유지)
+      filtered = humorOnly.length >= 3 ? humorOnly : pool;
     }
 
     // 4. 숨긴 포스트(Hidden) 제외
@@ -157,8 +165,48 @@ export class RedditApiService {
       };
     });
 
-    // 6. 정렬 알고리즘 적용
-    return this.sortPosts(mapped, sort);
+    // 6. 정렬 알고리즘 적용 및 메인화면 새로고침 순환 노출 적용
+    const sorted = this.sortPosts(mapped, sort);
+    if (isFrontPage) {
+      return this.applyRefreshRotation(sorted);
+    }
+    return sorted;
+  }
+
+  /**
+   * 메인화면 새로고침 시마다 다른 유머 글들이 최상단에 로테이션되어 노출되도록 순환 시프트 적용
+   */
+  static applyRefreshRotation(posts: RedditPost[]): RedditPost[] {
+    if (posts.length <= 2) return posts;
+    try {
+      const rotKey = 'hero_reddit_feed_rot_seed';
+      let rotIdx = parseInt(sessionStorage.getItem(rotKey) || '0', 10);
+      if (isNaN(rotIdx) || rotIdx < 0) rotIdx = 0;
+      
+      // 최상위 유머글 풀(상위 min(24, posts.length)개) 내에서 순환 시프트
+      const topCount = Math.min(posts.length, 24);
+      const topSlice = posts.slice(0, topCount);
+      const remaining = posts.slice(topCount);
+      
+      const shift = rotIdx % topCount;
+      if (shift === 0) return posts;
+      
+      const rotated = [...topSlice.slice(shift), ...topSlice.slice(0, shift), ...remaining];
+      return rotated;
+    } catch {
+      return posts;
+    }
+  }
+
+  /**
+   * 새로고침/재방문 시 순환 오프셋을 증가시켜 다음 번 새로운 글들이 상단에 뜨도록 전진
+   */
+  static advanceRefreshRotation(): void {
+    try {
+      const rotKey = 'hero_reddit_feed_rot_seed';
+      const current = parseInt(sessionStorage.getItem(rotKey) || '0', 10);
+      sessionStorage.setItem(rotKey, (current + 1).toString());
+    } catch {}
   }
 
   /**

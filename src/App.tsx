@@ -4851,6 +4851,12 @@ function AppContent() {
                 window.history.pushState(null, '', '/home');
               }
             }}
+            onNavigateView={(targetView) => {
+              setView(targetView);
+              if (typeof window !== 'undefined') {
+                window.history.pushState(null, '', '/' + targetView);
+              }
+            }}
           />
         );
       }
@@ -5780,6 +5786,12 @@ function AppContent() {
             setView('home');
             if (typeof window !== 'undefined') {
               window.history.pushState(null, '', '/home');
+            }
+          }}
+          onNavigateView={(targetView) => {
+            setView(targetView);
+            if (typeof window !== 'undefined') {
+              window.history.pushState(null, '', '/' + targetView);
             }
           }}
         />

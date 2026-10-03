@@ -4,7 +4,7 @@
  * 무비용 정적 아키텍처, 브라우저 직접 파싱, 로컬스토리지 캐시 및 시드 포스트 스마트 병합
  */
 
-import { RedditPost, cleanRedditUrl } from './redditTypes';
+import { RedditPost, cleanRedditUrl, HUMOR_SUBREDDITS } from './redditTypes';
 import { translateRedditPosts } from './redditTranslationService';
 
 const LIVE_CACHE_KEY = 'hero_reddit_live_posts_v1';
@@ -62,12 +62,31 @@ export class RedditLiveFeedService {
   }
 
   /**
-   * 실제 reddit.com 실시간 RSS 피드 가져오기 및 파싱
+   * 새로고침마다 다른 유머 서브레딧의 최신 글을 수집할 수 있도록 순환 인덱스 반환
+   */
+  static getRotatingHumorSubreddit(): string {
+    try {
+      const key = 'hero_reddit_humor_rotation_idx';
+      const current = parseInt(localStorage.getItem(key) || '0', 10);
+      const next = (current + 1) % HUMOR_SUBREDDITS.length;
+      localStorage.setItem(key, next.toString());
+      return HUMOR_SUBREDDITS[current];
+    } catch {
+      return HUMOR_SUBREDDITS[Math.floor(Math.random() * HUMOR_SUBREDDITS.length)];
+    }
+  }
+
+  /**
+   * 실제 reddit.com 실시간 RSS 피드 가져오기 및 파싱 (메인 피드는 인기 유머 서브레딧 전담 수집)
    */
   static async fetchRealtimePosts(subreddit: string = 'popular', targetLang: string = 'ko'): Promise<RedditPost[]> {
+    const isFront = ['popular', 'all', 'home'].includes(subreddit.toLowerCase());
+    // 메인 피드 요청 시 레딧 글로벌 인기 유머글만 수집되도록 유머 풀에서 순환 선택
+    const targetSub = isFront ? this.getRotatingHumorSubreddit() : subreddit;
+
     const urlsToTry = [
-      `/api/reddit/feed?sub=${encodeURIComponent(subreddit)}`,
-      `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://www.reddit.com/r/${subreddit}/.rss`)}`,
+      `/api/reddit/feed?sub=${encodeURIComponent(targetSub)}`,
+      `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://www.reddit.com/r/${targetSub}/.rss`)}`,
     ];
 
     let xmlText = '';
@@ -251,10 +270,11 @@ export class RedditLiveFeedService {
   }
 
   /**
-   * 피드 하단 도달 시 추가 실시간 서브레딧 글 배치 수집
+   * 피드 하단 도달 시 추가 실시간 서브레딧 글 배치 수집 (메인 피드는 유머 풀 순환)
    */
   static async fetchMoreLiveBatch(currentSubreddit: string = 'popular', targetLang: string = 'ko'): Promise<RedditPost[]> {
-    const popularPool = ['gaming', 'technology', 'AskReddit', 'memes', 'todayilearned', 'worldnews', 'pcmasterrace', 'aww', 'mildlyinteresting', 'science'];
+    const isFront = ['popular', 'all', 'home'].includes(currentSubreddit.toLowerCase());
+    const popularPool = isFront ? [...HUMOR_SUBREDDITS] : [currentSubreddit];
     const cached = this.getCachedLivePosts();
     const cachedSubs = new Set(cached.map((p) => p.subreddit.toLowerCase()));
     

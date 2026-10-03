@@ -9,18 +9,21 @@ import {
   TrendingUp, 
   Globe, 
   Gamepad2, 
-  Cpu, 
-  HelpCircle, 
-  Smile, 
-  Coins, 
-  Monitor, 
-  Heart, 
+  Image, 
+  Film, 
+  BookOpen, 
+  Tv, 
+  Layers, 
+  Swords, 
+  Gift, 
+  Trophy, 
+  Award, 
   Plus, 
   FileText, 
   ShieldCheck, 
   X,
   Sparkles,
-  Compass
+  ExternalLink
 } from 'lucide-react';
 import { RedditUserDataState } from '../../lib/reddit/redditTypes';
 import { SEED_SUBREDDITS } from '../../data/redditSeedData';
@@ -34,6 +37,7 @@ interface RedditSidebarLeftProps {
   onClose: () => void;
   onOpenSubmitModal: () => void;
   onOpenCreateCommunity?: () => void;
+  onNavigateView?: (view: string) => void;
 }
 
 export const RedditSidebarLeft: React.FC<RedditSidebarLeftProps> = ({
@@ -44,21 +48,35 @@ export const RedditSidebarLeft: React.FC<RedditSidebarLeftProps> = ({
   onClose,
   onOpenSubmitModal,
   onOpenCreateCommunity,
+  onNavigateView,
 }) => {
   const [policyModalType, setPolicyModalType] = React.useState<'rules' | 'privacy' | null>(null);
   const isDark = userState.theme !== 'light';
   const isKo = userState.language !== 'en';
 
-  const topics = [
-    { name: 'hanguk', label: isKo ? '한국 커뮤니티' : 'Korea Community', icon: Compass },
-    { name: 'gaming', label: isKo ? '게임 아레나' : 'Gaming', icon: Gamepad2 },
-    { name: 'technology', label: isKo ? '테크 & AI' : 'Technology', icon: Cpu },
-    { name: 'AskReddit', label: isKo ? '무엇이든 질문' : 'Ask Reddit', icon: HelpCircle },
-    { name: 'memes', label: isKo ? '유머 & 밈' : 'Memes', icon: Smile },
-    { name: 'pcmasterrace', label: isKo ? '데스크셋업/PC' : 'PC Master Race', icon: Monitor },
-    { name: 'aww', label: isKo ? '귀여운 동물/힐링' : 'Aww Animals', icon: Heart },
-    { name: 'CryptoCurrency', label: isKo ? '암호화폐/Web3' : 'Crypto', icon: Coins },
+  // /home 화면에서 제공하는 핵심 컨텐츠 소개 링크 리스트
+  const homeContents = [
+    { view: 'play', label: isKo ? '게임 아레나 (110종)' : 'Game Arena (110)', badge: isKo ? '인기' : 'Hot', icon: Gamepad2, color: 'text-amber-500' },
+    { view: 'webtoon', label: isKo ? '공식 웹툰 라운지' : 'Official Webtoon', badge: isKo ? '무료' : 'Free', icon: Image, color: 'text-emerald-500' },
+    { view: 'movie', label: isKo ? '시네마틱 극장' : 'Cinematic Movie', badge: '4K', icon: Film, color: 'text-rose-500' },
+    { view: 'novel', label: isKo ? '인터랙티브 웹소설' : 'Interactive Novel', icon: BookOpen, color: 'text-indigo-500' },
+    { view: 'anime', label: isKo ? '숏 애니메이션' : 'Short Anime', icon: Tv, color: 'text-purple-500' },
+    { view: 'mydeck', label: isKo ? '카드 도감 & 마이덱' : 'Card Codex & Deck', badge: isKo ? '전략' : 'Meta', icon: Layers, color: 'text-violet-500' },
+    { view: 'main', label: isKo ? '카단 RPG 어드벤처' : 'Kadan RPG Adventure', icon: Swords, color: 'text-orange-500' },
+    { view: 'prediction-market', label: isKo ? '주식 & 스포츠 예측' : 'Prediction Market', icon: TrendingUp, color: 'text-sky-500' },
+    { view: 'shop', label: isKo ? '영웅 상점 & 무료소환' : 'Shop & Free Summon', badge: isKo ? '무료' : 'Free', icon: Gift, color: 'text-pink-500' },
+    { view: 'ranking', label: isKo ? '명예의 전당 (랭킹)' : 'Hall of Fame', icon: Trophy, color: 'text-amber-400' },
+    { view: 'season-hub', label: isKo ? '시즌 패스 허브' : 'Season Pass Hub', icon: Award, color: 'text-teal-500' },
   ];
+
+  const handleNavigateContent = (targetView: string) => {
+    if (onNavigateView) {
+      onNavigateView(targetView);
+      onClose();
+    } else {
+      window.location.href = '/' + targetView;
+    }
+  };
 
   const content = (
     <div className="h-full flex flex-col justify-between overflow-y-auto py-3 px-2 text-xs font-medium select-none scrollbar-thin">
@@ -70,9 +88,9 @@ export const RedditSidebarLeft: React.FC<RedditSidebarLeftProps> = ({
           </div>
           <div className="space-y-0.5">
             {[
-              { id: 'popular', label: isKo ? '인기 피드' : 'Popular', icon: TrendingUp },
+              { id: 'popular', label: isKo ? '인기 유머 피드' : 'Popular Humor', icon: TrendingUp },
               { id: 'all', label: isKo ? '전체 피드' : 'All', icon: Globe },
-              { id: 'home', label: isKo ? '홈 피드' : 'Home', icon: Home },
+              { id: 'home', label: isKo ? '홈 맞춤 피드' : 'Home', icon: Home },
             ].map((feed) => {
               const Icon = feed.icon;
               const isActive = currentSubreddit.toLowerCase() === feed.id;
@@ -102,35 +120,38 @@ export const RedditSidebarLeft: React.FC<RedditSidebarLeftProps> = ({
           </div>
         </div>
 
-        {/* 2. 주제별 서브레딧 섹션 */}
+        {/* 2. 기존 토픽 대체: /home 화면 핵심 컨텐츠 소개 링크 리스트 */}
         <div>
-          <div className="px-3.5 py-1.5 text-[10px] font-bold tracking-wider uppercase opacity-50">
-            {isKo ? '주제별 탐색 (Topics)' : 'Topics'}
+          <div className="px-3.5 py-1.5 text-[10px] font-bold tracking-wider uppercase opacity-50 flex items-center justify-between">
+            <span>{isKo ? 'SNSHero 컨텐츠 라운지' : 'Core Features'}</span>
+            <span className="text-[9px] px-1 py-0.2 rounded bg-[#FF4500]/15 text-[#FF4500] font-extrabold">HOME</span>
           </div>
           <div className="space-y-0.5">
-            {topics.map((t) => {
-              const Icon = t.icon;
-              const isActive = currentSubreddit.toLowerCase() === t.name.toLowerCase();
+            {homeContents.map((c) => {
+              const Icon = c.icon;
               return (
                 <button
-                  key={t.name}
+                  key={c.view}
                   type="button"
-                  onClick={() => {
-                    onSelectSubreddit(t.name);
-                    onClose();
-                  }}
-                  className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl cursor-pointer transition-colors ${
-                    isActive
-                      ? isDark
-                        ? 'bg-[#22272B] text-white font-bold'
-                        : 'bg-gray-200 text-gray-900 font-bold'
-                      : isDark
-                      ? 'hover:bg-[#181C1F] text-gray-300'
-                      : 'hover:bg-gray-100 text-gray-700'
+                  onClick={() => handleNavigateContent(c.view)}
+                  className={`w-full flex items-center justify-between px-3.5 py-2 rounded-xl cursor-pointer transition-colors group ${
+                    isDark
+                      ? 'hover:bg-[#181C1F] text-gray-300 hover:text-white'
+                      : 'hover:bg-gray-100 text-gray-700 hover:text-gray-900'
                   }`}
                 >
-                  <Icon className={`w-4 h-4 ${isActive ? 'text-[#FF4500]' : 'opacity-70'}`} />
-                  <span className="truncate">r/{t.label}</span>
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <Icon className={`w-4 h-4 flex-shrink-0 ${c.color} group-hover:scale-110 transition-transform`} />
+                    <span className="truncate">{c.label}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 flex-shrink-0">
+                    {c.badge && (
+                      <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-full bg-amber-500/15 text-amber-500 border border-amber-500/30">
+                        {c.badge}
+                      </span>
+                    )}
+                    <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-60 transition-opacity" />
+                  </div>
                 </button>
               );
             })}

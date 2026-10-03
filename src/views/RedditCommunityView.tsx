@@ -39,7 +39,7 @@ import { RedditSidebarRight } from '../components/reddit/RedditSidebarRight';
 import { RedditFeedSortBar } from '../components/reddit/RedditFeedSortBar';
 import { RedditPostCard } from '../components/reddit/RedditPostCard';
 import { RedditAdCard } from '../components/reddit/RedditAdCard';
-import { SNSHeroGameBannerCard } from '../components/reddit/SNSHeroGameBannerCard';
+import { SNSHeroNativeAdCard } from '../components/reddit/SNSHeroNativeAdCard';
 import { RedditPostDetailModal } from '../components/reddit/RedditPostDetailModal';
 import { RedditSubredditHeader } from '../components/reddit/RedditSubredditHeader';
 import { RedditUserProfileView } from '../components/reddit/RedditUserProfileView';
@@ -57,6 +57,7 @@ interface RedditCommunityViewProps {
   initialPostId?: string;
   initialUsername?: string;
   onNavigateHome: () => void;
+  onNavigateView?: (view: string) => void;
 }
 
 export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
@@ -64,6 +65,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
   initialPostId,
   initialUsername,
   onNavigateHome,
+  onNavigateView,
 }) => {
   // 1. 사용자 영구 상태
   const [userState, setUserState] = useState(() => loadRedditState());
@@ -96,9 +98,28 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
   const isDark = userState.theme !== 'light';
   const isKo = userState.language !== 'en'; // 한국어 기본
 
+  // 컨텐츠 라우팅 헬퍼
+  const handleNavigateView = useCallback((targetView: string) => {
+    if (onNavigateView) {
+      onNavigateView(targetView);
+    } else if (targetView === 'home') {
+      onNavigateHome();
+    } else if (typeof window !== 'undefined') {
+      window.history.pushState(null, '', '/' + targetView);
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    }
+  }, [onNavigateView, onNavigateHome]);
+
+  // 화면 진입 시 새로고침 순환 카운터 전진 (매번 새로운 글 상단 노출)
+  useEffect(() => {
+    RedditApiService.advanceRefreshRotation();
+  }, []);
+
   // 실시간 Reddit 피드 백그라운드 동기화 함수
   const handleSyncLive = useCallback(async () => {
     setIsSyncingLive(true);
+    // 새로고침 시 다음 유머 서브레딧 글 수집 및 순환 시프트 전진
+    RedditApiService.advanceRefreshRotation();
     try {
       await RedditApiService.syncLivePosts(currentSubreddit, userState.language || 'ko');
       setSyncTick((t) => t + 1);
@@ -501,6 +522,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
           onClose={() => setIsSidebarOpen(false)}
           onOpenSubmitModal={() => setIsSubmitModalOpen(true)}
           onOpenCreateCommunity={() => setIsCreateCommunityOpen(true)}
+          onNavigateView={handleNavigateView}
         />
 
         {/* 중앙 메인 피드 & 콘텐츠 */}
@@ -606,34 +628,36 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
                     onSelectViewMode={handleSelectViewMode}
                   />
 
-                  {/* 피드 포스트 목록 + 모든 페이지 최상단 시작글은 SNSHero 공식 배너로 시작 */}
+                  {/* 피드 포스트 목록 + 모든 페이지 최상단 시작글은 SNSHero 간접광고형 공식 쇼케이스로 시작 */}
                   <div className="space-y-2">
-                    {/* [필수] 모든 페이지 및 서브레딧의 시작 글은 SNSHero 공식 게임 배너로 시작 */}
-                    <SNSHeroGameBannerCard
+                    {/* [필수] 모든 페이지 및 서브레딧의 시작 글은 SNSHero 간접광고형 공식 쇼케이스 카드로 시작 (카드/웹툰/영화/소설/게임 로테이션) */}
+                    <SNSHeroNativeAdCard
                       isDark={isDark}
                       isKo={isKo}
-                      onGoToGame={onNavigateHome}
+                      adIndex={0}
+                      onNavigateView={handleNavigateView}
                     />
 
                     {posts.length > 0 ? (
                       <>
                         {posts.slice(0, feedVisibleCount).map((post, idx) => (
                           <React.Fragment key={post.id}>
-                            {/* 글 10개에 1번씩 SNShero.com 게임 배너 주기적 노출 (클릭 시 게임하기로 즉시 이동) */}
-                            {idx > 0 && idx % 10 === 0 && (
-                              <SNSHeroGameBannerCard
+                            {/* 글 8개에 1번씩 SNShero 핵심 컨텐츠 간접광고 쇼케이스 카드 주기적 노출 (카드, 웹툰, 영화, 소설 순환) */}
+                            {idx > 0 && idx % 8 === 0 && (
+                              <SNSHeroNativeAdCard
                                 isDark={isDark}
                                 isKo={isKo}
-                                onGoToGame={onNavigateHome}
+                                adIndex={Math.floor(idx / 8)}
+                                onNavigateView={handleNavigateView}
                               />
                             )}
 
-                            {/* 4번째 포스트마다 구글 애드센스 인피드 광고 노출 (게임 배너와 겹치지 않게 분리) */}
-                            {idx > 0 && idx % 4 === 0 && idx % 10 !== 0 && (
+                            {/* 4번째 포스트마다 구글 애드센스 인피드 광고 노출 (쇼케이스 카드와 겹치지 않게 분리) */}
+                            {idx > 0 && idx % 4 === 0 && idx % 8 !== 0 && (
                               <RedditAdCard 
                                 isDark={isDark} 
                                 isKo={isKo} 
-                                onGoToGame={onNavigateHome} 
+                                onGoToGame={() => handleNavigateView('home')} 
                               />
                             )}
 

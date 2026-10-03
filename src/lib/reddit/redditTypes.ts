@@ -8,6 +8,22 @@ export type TimeFilterType = 'now' | 'today' | 'week' | 'month' | 'year' | 'all'
 export type ViewModeType = 'card' | 'classic' | 'compact';
 export type VoteState = 'up' | 'down' | null;
 
+/**
+ * 메인 피드 집중 노출용 레딧 글로벌 대표 인기 유머 / 밈 서브레딧 풀
+ */
+export const HUMOR_SUBREDDITS = [
+  'memes',
+  'funny',
+  'dankmemes',
+  'wholesomememes',
+  'wholesomebpt',
+  'me_irl',
+  'AnimalsBeingDerps',
+  'mildlyamusing',
+  'humor',
+  'hanguk',
+] as const;
+
 export interface PostFlair {
   text: string;
   bgColor?: string;
