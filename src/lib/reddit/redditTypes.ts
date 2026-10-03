@@ -53,6 +53,9 @@ export interface RedditComment {
   isAuthorOp?: boolean;
   replies?: RedditComment[];
   collapsed?: boolean;
+  originalBody?: string;
+  translatedBody?: string;
+  isTranslated?: boolean;
 }
 
 export interface RedditPost {

@@ -16,11 +16,13 @@ import {
   ExternalLink,
   Globe,
   Languages,
-  Play
+  Play,
+  Images
 } from 'lucide-react';
 import { RedditPost, ViewModeType, getRedditExternalUrl, cleanRedditUrl } from '../../lib/reddit/redditTypes';
 import { translateTextWithGoogle, isNeedsTranslation } from '../../lib/reddit/redditTranslationService';
 import { RedditVideoPlayer } from './RedditVideoPlayer';
+import { RedditGalleryViewer } from './RedditGalleryViewer';
 
 interface RedditPostCardProps {
   post: RedditPost;
@@ -104,6 +106,11 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
       setTimeout(() => setIsCopied(false), 2000);
     }
   };
+
+  const isGalleryPost = post.media?.type === 'gallery' || Boolean(post.media?.galleryUrls && post.media.galleryUrls.length > 1);
+  const galleryImages = post.media?.galleryUrls && post.media.galleryUrls.length > 0 
+    ? post.media.galleryUrls 
+    : (post.media?.url ? [post.media.url] : []);
 
   /* ========================================================
    * 1. COMPACT VIEW (단순 밀집 텍스트 뷰)
@@ -198,13 +205,18 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
               alt="" 
               className="w-full h-full object-cover" 
             />
-            {post.media.type === 'video' && (
+            {post.media.type === 'video' ? (
               <div className="absolute inset-0 bg-black/35 flex items-center justify-center">
                 <div className="w-6 h-6 rounded-full bg-[#FF4500] text-white flex items-center justify-center shadow-md">
                   <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
                 </div>
               </div>
-            )}
+            ) : isGalleryPost ? (
+              <div className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded bg-black/75 text-white text-[9px] font-bold flex items-center gap-1 backdrop-blur-sm">
+                <Images className="w-2.5 h-2.5 text-amber-400" />
+                <span>{galleryImages.length}</span>
+              </div>
+            ) : null}
           </div>
         )}
 
@@ -411,6 +423,16 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
                       ? getRedditExternalUrl(post)
                       : (cleanRedditUrl(post.media.url) || getRedditExternalUrl(post))
                   }
+                />
+              </div>
+            ) : isGalleryPost ? (
+              <div className="w-full" onClick={(e) => e.stopPropagation()}>
+                <RedditGalleryViewer
+                  images={galleryImages}
+                  title={displayTitle}
+                  isDark={isDark}
+                  isKo={isKo}
+                  onImageClick={() => onOpenDetail(post)}
                 />
               </div>
             ) : (

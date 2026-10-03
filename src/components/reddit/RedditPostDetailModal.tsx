@@ -30,9 +30,10 @@ import { RedditSidebarRight } from './RedditSidebarRight';
 import { AdSenseBanner } from '../AdSenseBanner';
 import { SNSHeroGameBannerCard } from './SNSHeroGameBannerCard';
 import { generateContextualCommentsForPost } from '../../lib/reddit/redditCommentGenerator';
-import { translateTextWithGoogle, isNeedsTranslation } from '../../lib/reddit/redditTranslationService';
+import { translateTextWithGoogle, isNeedsTranslation, translateCommentTree } from '../../lib/reddit/redditTranslationService';
 import { RedditVideoPlayer } from './RedditVideoPlayer';
 import { RedditRealCommentService } from '../../lib/reddit/redditRealCommentService';
+import { RedditGalleryViewer } from './RedditGalleryViewer';
 
 interface RedditPostDetailModalProps {
   post: RedditPost;
@@ -89,23 +90,31 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
   const targetLang = isKo ? 'ko' : 'en';
   const needsTrans = isNeedsTranslation(post.title, targetLang) || (post.body ? isNeedsTranslation(post.body, targetLang) : false);
 
-  // 실제 reddit.com 원본 댓글 수집
+  const isGalleryPost = post.media?.type === 'gallery' || Boolean(post.media?.galleryUrls && post.media.galleryUrls.length > 1);
+  const galleryImages = post.media?.galleryUrls && post.media.galleryUrls.length > 0
+    ? post.media.galleryUrls
+    : (post.media?.url ? [post.media.url] : []);
+
+  // 실제 reddit.com 원본 댓글 수집 및 설정된 언어로 번역
   const fetchActualComments = React.useCallback(async (force: boolean = false) => {
     if (!post) return;
     setIsLoadingRealComments(true);
     try {
+      let fetched: RedditComment[] = [];
       if (!force) {
         const cached = RedditRealCommentService.getCachedRealComments(post.id);
         if (cached && cached.length > 0) {
-          setRealComments(cached);
-          setIsRealSynced(true);
-          setIsLoadingRealComments(false);
-          return;
+          fetched = cached;
         }
       }
-      const fetched = await RedditRealCommentService.fetchRealComments(post, isKo ? 'ko' : 'en');
+      if (fetched.length === 0) {
+        fetched = await RedditRealCommentService.fetchRealComments(post, isKo ? 'ko' : 'en');
+      }
+
       if (fetched && fetched.length > 0) {
-        setRealComments(fetched);
+        // 설정된 언어로 전체 댓글 번역 적용
+        const translated = await translateCommentTree(fetched, targetLang);
+        setRealComments(translated);
         setIsRealSynced(true);
       }
     } catch (err) {
@@ -113,7 +122,7 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
     } finally {
       setIsLoadingRealComments(false);
     }
-  }, [post, isKo]);
+  }, [post, isKo, targetLang]);
 
   useEffect(() => {
     fetchActualComments(false);
@@ -234,9 +243,23 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
     }
   }, [isLoadingMore, hasMoreComments, handleLoadMoreComments]);
 
+  // 전달받은 기본 댓글들도 현재 설정 언어로 번역
+  const [translatedPropComments, setTranslatedPropComments] = useState<RedditComment[]>(comments);
+  useEffect(() => {
+    let isMounted = true;
+    if (comments && comments.length > 0) {
+      translateCommentTree(comments, targetLang).then((res) => {
+        if (isMounted) setTranslatedPropComments(res);
+      });
+    } else {
+      setTranslatedPropComments([]);
+    }
+    return () => { isMounted = false; };
+  }, [comments, targetLang]);
+
   // 전체 댓글 병합 및 정렬 (실제 원본 댓글 우선 사용)
   const displayedComments = React.useMemo(() => {
-    const baseList = realComments.length > 0 ? realComments : comments;
+    const baseList = realComments.length > 0 ? realComments : translatedPropComments;
     const list = [...baseList, ...extraComments];
     switch (commentSort) {
       case 'new':
@@ -247,7 +270,7 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
       default:
         return list.sort((a, b) => b.score - a.score);
     }
-  }, [realComments, comments, extraComments, commentSort]);
+  }, [realComments, translatedPropComments, extraComments, commentSort]);
 
   const handleShare = () => {
     const url = `${window.location.origin}/r/${post.subreddit}/comments/${post.id}`;
@@ -405,6 +428,17 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
                             ? getRedditExternalUrl(post)
                             : (cleanRedditUrl(post.media.url) || getRedditExternalUrl(post))
                         }
+                      />
+                    </div>
+                  ) : isGalleryPost ? (
+                    <div className="w-full">
+                      <RedditGalleryViewer
+                        images={galleryImages}
+                        title={displayTitle}
+                        isDark={isDark}
+                        isKo={isKo}
+                        showThumbnailStrip={true}
+                        maxHeight="max-h-[650px]"
                       />
                     </div>
                   ) : (
@@ -572,6 +606,10 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
                       <span>{isKo ? 'Reddit 실제 원본 댓글' : 'Live Reddit Comments'}</span>
                     </span>
                   )}
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/15 text-blue-500 border border-blue-500/20 flex items-center gap-1 shadow-sm">
+                    <Globe className="w-3 h-3 text-blue-500" />
+                    <span>{isKo ? '한국어로 번역됨' : `Translated to ${targetLang}`}</span>
+                  </span>
                   {isLoadingRealComments && (
                     <span className="text-[10px] font-bold text-amber-500 animate-pulse flex items-center gap-1">
                       <RefreshCw className="w-3 h-3 animate-spin" />

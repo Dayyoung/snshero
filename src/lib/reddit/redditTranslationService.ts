@@ -6,7 +6,7 @@
  * - 한국어(ko) 및 12개 글로벌 언어 실시간 대응
  */
 
-import { RedditPost } from './redditTypes';
+import { RedditPost, RedditComment } from './redditTypes';
 
 const TRANSLATION_CACHE_KEY = 'hero_reddit_translation_cache_v1';
 
@@ -178,3 +178,65 @@ export async function translateRedditPosts(
 
   return [...translatedCandidates, ...rest];
 }
+
+/**
+ * 단일 RedditComment 및 그 대댓글(replies) 재귀 번역
+ */
+export async function translateRedditComment(
+  comment: RedditComment,
+  targetLang: string = 'ko',
+  signal?: AbortSignal
+): Promise<RedditComment> {
+  const needs = isNeedsTranslation(comment.body, targetLang);
+  let translatedBody = comment.body;
+
+  if (needs) {
+    try {
+      translatedBody = await translateTextWithGoogle(comment.body, targetLang, signal);
+    } catch {
+      translatedBody = comment.body;
+    }
+  }
+
+  let translatedReplies: RedditComment[] | undefined = undefined;
+  if (comment.replies && comment.replies.length > 0) {
+    translatedReplies = await Promise.all(
+      comment.replies.map((reply) => translateRedditComment(reply, targetLang, signal))
+    );
+  }
+
+  return {
+    ...comment,
+    body: translatedBody,
+    originalBody: comment.originalBody || (needs ? comment.body : undefined),
+    translatedBody: needs ? translatedBody : undefined,
+    isTranslated: needs && translatedBody !== comment.body,
+    replies: translatedReplies,
+  };
+}
+
+/**
+ * RedditComment 트리 목록 일괄 병렬 번역
+ */
+export async function translateCommentTree(
+  comments: RedditComment[],
+  targetLang: string = 'ko',
+  signal?: AbortSignal
+): Promise<RedditComment[]> {
+  if (!comments || comments.length === 0) return [];
+
+  // 청크 단위(5개씩) 병렬 번역
+  const chunkSize = 5;
+  const result: RedditComment[] = [];
+
+  for (let i = 0; i < comments.length; i += chunkSize) {
+    const chunk = comments.slice(i, i + chunkSize);
+    const chunkResults = await Promise.all(
+      chunk.map((c) => translateRedditComment(c, targetLang, signal))
+    );
+    result.push(...chunkResults);
+  }
+
+  return result;
+}
+

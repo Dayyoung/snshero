@@ -3,16 +3,18 @@
  * 오리지널 레딧 재귀형 중첩 댓글 트리 컴포넌트 (한국어 기본 지원)
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   ArrowBigUp, 
   ArrowBigDown, 
   User, 
   ChevronDown, 
   ChevronUp, 
-  CornerDownRight 
+  CornerDownRight,
+  Globe
 } from 'lucide-react';
 import { RedditComment } from '../../lib/reddit/redditTypes';
+import { translateTextWithGoogle, isNeedsTranslation } from '../../lib/reddit/redditTranslationService';
 
 interface RedditCommentTreeProps {
   comments: RedditComment[];
@@ -77,6 +79,30 @@ const CommentItem: React.FC<CommentItemProps> = ({
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isReplying, setIsReplying] = useState(false);
   const [replyText, setReplyText] = useState('');
+  const [showOriginal, setShowOriginal] = useState(false);
+  const [localTranslated, setLocalTranslated] = useState<string | null>(comment.translatedBody || null);
+
+  const targetLang = isKo ? 'ko' : 'en';
+
+  // 댓글 본문 자동 번역 (필요 시 구글 번역 호출)
+  useEffect(() => {
+    if (comment.translatedBody) {
+      setLocalTranslated(comment.translatedBody);
+      return;
+    }
+    if (isNeedsTranslation(comment.body, targetLang)) {
+      let isMounted = true;
+      translateTextWithGoogle(comment.body, targetLang).then((res) => {
+        if (isMounted && res && res !== comment.body) {
+          setLocalTranslated(res);
+        }
+      });
+      return () => { isMounted = false; };
+    }
+  }, [comment.id, comment.body, comment.translatedBody, targetLang]);
+
+  const hasTranslation = Boolean(localTranslated && localTranslated !== (comment.originalBody || comment.body));
+  const displayBody = (hasTranslation && !showOriginal) ? localTranslated! : comment.body;
 
   const getRelativeTime = (timestamp: number) => {
     const diff = Math.max(0, Date.now() - timestamp);
@@ -146,6 +172,19 @@ const CommentItem: React.FC<CommentItemProps> = ({
         <span className="opacity-40">•</span>
         <span className="opacity-60 text-[11px]">{getRelativeTime(comment.createdAt)}</span>
 
+        {/* 댓글 번역 상태 및 원문/번역 토글 */}
+        {hasTranslation && (
+          <button
+            type="button"
+            onClick={() => setShowOriginal(!showOriginal)}
+            className="inline-flex items-center gap-1 text-[10px] text-blue-500 font-semibold hover:underline cursor-pointer ml-1"
+            title={showOriginal ? (isKo ? '번역문 보기' : 'Show translation') : (isKo ? '원문 보기' : 'Show original')}
+          >
+            <Globe className="w-2.5 h-2.5" />
+            <span>{showOriginal ? (isKo ? '번역 보기' : 'Show translation') : (isKo ? '원문 보기' : 'Show original')}</span>
+          </button>
+        )}
+
         <button
           type="button"
           onClick={() => setIsCollapsed(true)}
@@ -156,9 +195,9 @@ const CommentItem: React.FC<CommentItemProps> = ({
         </button>
       </div>
 
-      {/* 2. 본문 */}
+      {/* 2. 본문 (설정된 언어로 번역된 텍스트 자동 반영) */}
       <div className="pl-7 text-xs sm:text-sm leading-relaxed whitespace-pre-line opacity-90 mb-2 font-sans break-words">
-        {comment.body}
+        {displayBody}
       </div>
 
       {/* 3. 보팅 & 답글 */}

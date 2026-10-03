@@ -137,17 +137,39 @@ export class RedditLiveFeedService {
         const createdAt = updatedEl?.textContent ? new Date(updatedEl.textContent).getTime() : (Date.now() - idx * 1000 * 60 * 15);
 
         // 썸네일 이미지 추출
-        const mediaThumb = entry.querySelector('thumbnail') || entry.querySelector('media\\:thumbnail, thumbnail');
-        let imageUrl = mediaThumb ? mediaThumb.getAttribute('url') : null;
-
-        // content 내부 img 추출
+        // 썸네일 및 본문 내 전체 이미지 URL 전수 추출 (갤러리 글 다중 사진 지원)
         const contentEl = entry.querySelector('content');
         const contentHtml = contentEl ? contentEl.textContent || '' : '';
 
-        if (!imageUrl && contentHtml) {
-          const imgMatch = contentHtml.match(/<img[^>]+src="([^">]+)"/);
-          if (imgMatch && imgMatch[1]) {
-            imageUrl = imgMatch[1].replace(/&amp;/g, '&');
+        const mediaThumb = entry.querySelector('thumbnail') || entry.querySelector('media\\:thumbnail, thumbnail');
+        let initialThumbUrl = mediaThumb ? mediaThumb.getAttribute('url') : null;
+
+        const extractedImages: string[] = [];
+        if (initialThumbUrl) {
+          extractedImages.push(initialThumbUrl.replace(/&amp;/g, '&'));
+        }
+
+        if (contentHtml) {
+          // 1) <img src="..."> 전체 추출
+          const imgMatches = contentHtml.matchAll(/<img[^>]+src="([^">]+)"/gi);
+          for (const m of imgMatches) {
+            if (m && m[1]) {
+              const url = m[1].replace(/&amp;/g, '&');
+              if (!url.includes('award') && !url.includes('emoji') && !extractedImages.includes(url)) {
+                extractedImages.push(url);
+              }
+            }
+          }
+
+          // 2) <a href="..."> 원본 고화질 이미지 링크 추출 (i.redd.it, preview.redd.it)
+          const linkMatches = contentHtml.matchAll(/href="(https?:\/\/(?:i|preview)\.redd\.it\/[^\s"'>]+)"/gi);
+          for (const m of linkMatches) {
+            if (m && m[1]) {
+              const url = m[1].replace(/&amp;/g, '&');
+              if (!extractedImages.includes(url)) {
+                extractedImages.push(url);
+              }
+            }
           }
         }
 
@@ -197,14 +219,23 @@ export class RedditLiveFeedService {
           mediaObj = {
             type: 'video',
             url: originalVideoLink,
-            previewUrl: imageUrl || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80',
+            previewUrl: extractedImages[0] || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80',
             domain: vRedditMatch ? 'v.redd.it' : (youtubeMatch ? 'youtube.com' : 'reddit.com'),
             aspectRatio: 16 / 9,
           };
-        } else if (imageUrl) {
+        } else if (extractedImages.length > 1) {
+          // 사진이 여러 장인 글: 갤러리(Gallery) 타입으로 등록 및 전체 이미지 보존
+          mediaObj = {
+            type: 'gallery',
+            url: extractedImages[0],
+            previewUrl: extractedImages[0],
+            galleryUrls: extractedImages,
+            aspectRatio: 4 / 3,
+          };
+        } else if (extractedImages.length === 1) {
           mediaObj = {
             type: 'image',
-            url: imageUrl,
+            url: extractedImages[0],
             aspectRatio: 16 / 9,
           };
         }
