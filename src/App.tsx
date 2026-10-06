@@ -1405,7 +1405,7 @@ function AppContent() {
         localStorage.clear();
         setUser(null);
         setView('home');
-        window.history.replaceState({}, '', '/home');
+        window.history.replaceState({}, '', '/');
         return;
       }
 
@@ -4848,7 +4848,7 @@ function AppContent() {
             onNavigateHome={() => {
               setView('home');
               if (typeof window !== 'undefined') {
-                window.history.pushState(null, '', '/home');
+                window.history.pushState(null, '', '/');
               }
             }}
             onNavigateView={(targetView) => {
@@ -5768,9 +5768,9 @@ function AppContent() {
     }
   };
 
-  // 루트('/') 레딧 클론 커뮤니티는 독립 정적 뷰이므로 게임 세션 동기화 대기 없이 즉시 렌더링
+  // '/reddit' 레딧 클론 커뮤니티는 독립 정적 뷰이므로 게임 세션 동기화 대기 없이 즉시 렌더링
   if (view === 'reddit') {
-    const path = typeof window !== 'undefined' ? window.location.pathname : '/';
+    const path = typeof window !== 'undefined' ? window.location.pathname : '/reddit';
     const subMatch = path.match(/^\/r\/([^/]+)/);
     const postMatch = path.match(/^\/r\/[^/]+\/comments\/([^/]+)/);
     const userMatch = path.match(/^\/u(?:ser)?\/([^/]+)/);
@@ -5785,7 +5785,7 @@ function AppContent() {
           onNavigateHome={() => {
             setView('home');
             if (typeof window !== 'undefined') {
-              window.history.pushState(null, '', '/home');
+              window.history.pushState(null, '', '/');
             }
           }}
           onNavigateView={(targetView) => {
@@ -5877,14 +5877,14 @@ function AppContent() {
           {/* 광고 다음 줄에 정렬되는 전역 헤더 버튼 (음소거, 메뉴, 뒤로가기) */}
           {view !== 'landing' && view !== 'card-play' && (
             <>
-              {/* HUD Quick Community Button (루트 '/' SNSHero 커뮤니티로 즉시 이동) */}
+              {/* HUD Quick Community Button ('/reddit' SNSHero 커뮤니티로 즉시 이동) */}
               {!isGlobalPopupOpen && (
                 <button
                   onClick={() => {
                     playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                     setView('reddit');
                     if (typeof window !== 'undefined') {
-                      window.history.pushState(null, '', '/');
+                      window.history.pushState(null, '', '/reddit');
                     }
                   }}
                   id="hud-community-toggle"
@@ -5895,7 +5895,7 @@ function AppContent() {
                       ? "bg-slate-900/90 border border-slate-800 text-orange-400 hover:bg-slate-850 hover:text-orange-300"
                       : "bg-white/90 border border-slate-200/80 text-orange-500 hover:text-orange-600 hover:bg-white"
                   )}
-                  title={language === 'ko' ? 'SNSHero 커뮤니티 (/)' : 'SNSHero Community (/)'}
+                  title={language === 'ko' ? 'SNSHero 커뮤니티 (/reddit)' : 'SNSHero Community (/reddit)'}
                   aria-label={language === 'ko' ? '커뮤니티 바로가기' : 'Go to Community'}
                 >
                   <MessageSquare size={20} className="text-orange-500" />
@@ -6113,14 +6113,14 @@ function AppContent() {
                       </div>
                     )}
 
-                    {/* Community (SNSHero Community - Reddit clone at '/') */}
+                    {/* Community (SNSHero Community - Reddit clone at '/reddit') */}
                     <button
                       onClick={() => {
                         playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                         setIsMenuOpen(false);
                         setView('reddit');
                         if (typeof window !== 'undefined') {
-                          window.history.pushState(null, '', '/');
+                          window.history.pushState(null, '', '/reddit');
                         }
                       }}
                       className="w-full border border-slate-100 p-3.5 text-left transition-all relative flex items-center justify-between font-sans bg-white hover:bg-slate-50/80 active:scale-[0.98] shadow-xs hover:border-slate-200 cursor-pointer rounded-xl group"

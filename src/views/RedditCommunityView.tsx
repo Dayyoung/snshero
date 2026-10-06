@@ -277,7 +277,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
 
       if (subMatch) {
         setCurrentSubreddit(subMatch[1]);
-      } else if (path === '/' || path === '/popular') {
+      } else if (path === '/reddit' || path === '/popular' || path === '/') {
         setCurrentSubreddit('popular');
       } else if (path === '/all') {
         setCurrentSubreddit('all');
@@ -374,7 +374,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
   // 포스트 상세 닫기
   const handleCloseDetail = useCallback(() => {
     setActivePost(null);
-    const targetUrl = currentSubreddit === 'popular' ? '/' : `/r/${currentSubreddit}`;
+    const targetUrl = currentSubreddit === 'popular' ? '/reddit' : `/r/${currentSubreddit}`;
     window.history.pushState(null, '', targetUrl);
   }, [currentSubreddit]);
 

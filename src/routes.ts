@@ -11,15 +11,16 @@ export interface RouteMeta {
 
 export const VIEW_ROUTES: Record<ViewType, RouteMeta> = {
   reddit: {
-    path: '/',
-    aliases: ['/reddit', '/popular', '/all', '/community'],
+    path: '/reddit',
+    aliases: ['/popular', '/all', '/community'],
     titleKo: 'SNSHero 커뮤니티 - 인터넷의 모든 즐거움이 모이는 곳',
     titleEn: 'SNSHero Community - Dive into anything',
     descriptionKo: '게임, 테크, 유머, 지식 등 전 세계 최신 트렌드와 활발한 토론이 펼쳐지는 무비용 정적 커뮤니티 SNSHero입니다.',
     descriptionEn: 'Discover breaking gaming news, discussions, memes, and vibrant communities on SNSHero.',
   },
   home: {
-    path: '/home',
+    path: '/',
+    aliases: ['/home'],
     titleKo: 'SNS히어로 (SNSHero) - 원클릭 AI 웹 카드 게임',
     titleEn: 'SNSHero - One-Click AI Web Card Game',
     descriptionKo: '복잡한 가입 없이 클릭 한 번으로 시작하는 AI 웹 카드 게임 SNS히어로 로비입니다.',
@@ -386,7 +387,7 @@ export const VIEW_ROUTES: Record<ViewType, RouteMeta> = {
  */
 export function getViewPath(view: ViewType): string {
   const route = VIEW_ROUTES[view];
-  return route ? route.path : '/home';
+  return route ? route.path : '/';
 }
 
 /**
@@ -413,9 +414,15 @@ export function getViewFromPath(pathname: string, search = ''): ViewType {
   if (cleanPath.startsWith('/novel/s1-')) return 'novel';
   if (cleanPath.startsWith('/gotest')) return 'home';
 
-  // 레딧 클론 커뮤니티 경로 매핑
+  // 홈 화면 매핑 (/ 또는 /home)
+  if (cleanPath === '/' || cleanPath === '/home') {
+    return 'home';
+  }
+
+  // 레딧 클론 커뮤니티 경로 매핑 (/reddit, /popular, /all, /community, /search, /submit, /r/*, /u/* 등)
   if (
-    cleanPath === '/' ||
+    cleanPath === '/reddit' ||
+    cleanPath.startsWith('/reddit/') ||
     cleanPath === '/popular' ||
     cleanPath === '/all' ||
     cleanPath === '/community' ||
@@ -442,7 +449,7 @@ export function getViewFromPath(pathname: string, search = ''): ViewType {
     }
   }
 
-  // 4. Fallback: 로컬 스토리지에 저장된 마지막 뷰 또는 reddit (루트 기본)
+  // 4. Fallback: 로컬 스토리지에 저장된 마지막 뷰 또는 home (루트 기본)
   if (typeof window !== 'undefined') {
     const saved = localStorage.getItem('hero_current_view') as ViewType;
     if (saved && saved in VIEW_ROUTES) {
@@ -450,7 +457,7 @@ export function getViewFromPath(pathname: string, search = ''): ViewType {
     }
   }
 
-  return 'reddit';
+  return 'home';
 }
 
 /**
