@@ -236,7 +236,26 @@ export const RedditSidebarRight: React.FC<RedditSidebarRightProps> = ({
         </div>
       </div>
 
-      {/* 5. 정책 푸터 */}
+      {/* 5. 스티키 Google AdSense 300x250 반응형 직사각형 디스플레이 광고 */}
+      <div className={`sticky top-20 rounded-2xl border p-3 shadow-sm overflow-hidden ${
+        isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'
+      }`}>
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-[#FF4500]">
+            {isKo ? '스폰서 광고' : 'Sponsored Advertisement'}
+          </span>
+          <span className="text-[9px] opacity-40">Ad</span>
+        </div>
+        <div className="min-h-[250px] w-full flex items-center justify-center rounded-xl bg-black/5 overflow-hidden">
+          <AdSenseBanner
+            format="rectangle"
+            responsive={true}
+            className="w-full flex justify-center"
+          />
+        </div>
+      </div>
+
+      {/* 6. 정책 푸터 */}
       <div className="px-2 text-[11px] opacity-40 space-y-1">
         <div className="flex flex-wrap gap-x-3 gap-y-1">
           <a href="#about" className="hover:underline">{isKo ? '이용약관' : 'User Agreement'}</a>

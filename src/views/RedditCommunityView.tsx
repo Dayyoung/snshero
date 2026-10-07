@@ -49,6 +49,8 @@ import { RedditFloatingPlayButton } from '../components/reddit/RedditFloatingPla
 import { RedditTrendingCarousel } from '../components/reddit/RedditTrendingCarousel';
 import { RedditQuickCreatePostBar } from '../components/reddit/RedditQuickCreatePostBar';
 import { RedditCreateCommunityModal } from '../components/reddit/RedditCreateCommunityModal';
+import { AdSenseBanner } from '../components/AdSenseBanner';
+import { useAdSenseAutoAds } from '../hooks/useAdSenseAutoAds';
 import { RedditTrendingItem } from '../lib/reddit/redditTypes';
 import { SEED_SUBREDDITS } from '../data/redditSeedData';
 
@@ -97,6 +99,9 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
 
   const isDark = userState.theme !== 'light';
   const isKo = userState.language !== 'en'; // 한국어 기본
+
+  // 구글 애드센스 자동광고 SPA 뷰/서브레딧 전환 재스캔 훅
+  useAdSenseAutoAds(`reddit_${currentSubreddit}_${activePost ? activePost.id : ''}`);
 
   // 컨텐츠 라우팅 헬퍼
   const handleNavigateView = useCallback((targetView: string) => {
@@ -628,6 +633,18 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
                     onSelectViewMode={handleSelectViewMode}
                   />
 
+                  {/* 상단 Google AdSense 공식 디스플레이 배너 */}
+                  <div className={`rounded-2xl border p-2.5 mb-3 shadow-xs overflow-hidden ${
+                    isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'
+                  }`}>
+                    <AdSenseBanner
+                      format="horizontal"
+                      responsive={true}
+                      showLabel={true}
+                      className="w-full flex justify-center"
+                    />
+                  </div>
+
                   {/* 피드 포스트 목록 + 모든 페이지 최상단 시작글은 SNSHero 간접광고형 공식 쇼케이스로 시작 */}
                   <div className="space-y-2">
                     {/* [필수] 모든 페이지 및 서브레딧의 시작 글은 SNSHero 간접광고형 공식 쇼케이스 카드로 시작 (카드/웹툰/영화/소설/게임 로테이션) */}
@@ -705,6 +722,18 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
                               <span>{isKo ? '모든 최신 피드를 확인했습니다!' : "You've caught up with all posts!"}</span>
                             </div>
                           )}
+                        </div>
+
+                        {/* 피드 하단 Google AdSense 공식 디스플레이 배너 */}
+                        <div className={`rounded-2xl border p-2.5 my-4 shadow-xs overflow-hidden ${
+                          isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'
+                        }`}>
+                          <AdSenseBanner
+                            format="horizontal"
+                            responsive={true}
+                            showLabel={true}
+                            className="w-full flex justify-center"
+                          />
                         </div>
                       </>
                     ) : (

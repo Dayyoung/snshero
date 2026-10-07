@@ -59,16 +59,28 @@ export const AdSenseBanner: React.FC<AdSenseBannerProps> = ({
     return () => clearTimeout(timer);
   }, []);
 
+  const getMinHeight = () => {
+    switch (format) {
+      case 'horizontal': return '90px';
+      case 'rectangle': return '250px';
+      case 'vertical': return '600px';
+      case 'fluid': return '120px';
+      default: return '90px';
+    }
+  };
+
   const mergedStyle: React.CSSProperties = {
     display: 'block',
-    ...(format === 'horizontal' ? { maxHeight: '90px', overflow: 'hidden' } : {}),
+    minHeight: (style as React.CSSProperties)?.minHeight || getMinHeight(),
+    width: '100%',
+    ...(format === 'horizontal' ? { maxHeight: '120px' } : {}),
     ...style,
   };
 
   return (
-    <div className={`adsense-container overflow-hidden text-center select-none ${className}`}>
+    <div className={`adsense-container overflow-hidden text-center select-none rounded-sm transition-all ${className}`}>
       {showLabel && (
-        <div className="flex items-center justify-between px-1 py-0.5 text-[9px] font-mono text-slate-400/80 uppercase tracking-wider">
+        <div className="flex items-center justify-between px-2 py-0.5 text-[9px] font-mono text-slate-400/80 uppercase tracking-wider bg-black/5 dark:bg-white/5 border-b border-inherit/10">
           <span>[AD]</span>
           <span>Google Ads</span>
         </div>

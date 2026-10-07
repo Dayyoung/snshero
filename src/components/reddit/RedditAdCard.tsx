@@ -58,28 +58,14 @@ export const RedditAdCard: React.FC<RedditAdCardProps> = ({ isDark, isKo = true,
           : 'Discover Next-Generation Gaming on SNSHero. 100% Free, Zero Install, Zero Lag.'}
       </h3>
 
-      {/* 3. SNSHero 공식 고화질 게임 대표 이미지 배너 (1024x552 원본 비율 100% 보존) */}
-      <div className="relative w-full aspect-[1024/552] rounded-xl overflow-hidden mb-3 border border-inherit/15 bg-black/90 flex items-center justify-center shadow-inner">
-        <img
-          src="/banner_snshero_legend.jpg"
-          alt="SNSHero Complete Your Legend"
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.015]"
-          onError={(e) => {
-            (e.target as HTMLImageElement).src = '/logo.png';
-          }}
+      {/* 3. 구글 애드센스 인피드 반응형 광고 슬롯 */}
+      <div className="w-full rounded-xl overflow-hidden mb-3 border border-inherit/15 bg-black/5 dark:bg-white/5 flex flex-col items-center justify-center p-2 min-h-[140px]">
+        <AdSenseBanner
+          format="fluid"
+          responsive={true}
+          showLabel={true}
+          className="w-full flex flex-col justify-center"
         />
-
-        {/* 미세한 호버 글로우 인터랙션 */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-
-        {/* 구글 애드센스 백그라운드 슬롯 (승인 시 렌더링) */}
-        <div className="absolute inset-0 pointer-events-none opacity-0">
-          <AdSenseBanner
-            format="fluid"
-            responsive={true}
-            className="w-full flex justify-center"
-          />
-        </div>
       </div>
 
       {/* 4. 하단 CTA 바 */}

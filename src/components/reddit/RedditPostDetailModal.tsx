@@ -658,6 +658,18 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
                     onOpenUserProfile={onOpenUserProfile}
                   />
 
+                  {/* 댓글 하단 Google AdSense 스폰서 배너 */}
+                  <div className={`rounded-xl border p-2.5 my-4 shadow-xs overflow-hidden ${
+                    isDark ? 'bg-[#0E1113] border-[#22272B]' : 'bg-gray-50 border-gray-200'
+                  }`}>
+                    <AdSenseBanner
+                      format="horizontal"
+                      responsive={true}
+                      showLabel={true}
+                      className="w-full flex justify-center"
+                    />
+                  </div>
+
                   {/* 실시간 무한 스크롤 센티넬 & 더 불러오기 영역 */}
                   <div ref={loadMoreSentinelRef} className="pt-6 pb-2 text-center border-t border-inherit/10 mt-6">
                     {isLoadingMore ? (
