@@ -61,7 +61,8 @@ export function votePostOrComment(
   targetId: string,
   direction: 'up' | 'down'
 ): { nextState: RedditUserDataState; newVote: VoteState; scoreDelta: number } {
-  const currentVote = state.votes[targetId] || null;
+  const cleanId = targetId.replace(/_dup_.*$/, '').replace(/_repeat_.*$/, '');
+  const currentVote = state.votes[cleanId] || state.votes[targetId] || null;
   let newVote: VoteState = null;
   let scoreDelta = 0;
 
@@ -79,9 +80,16 @@ export function votePostOrComment(
     scoreDelta = direction === 'up' ? 2 : -2;
   }
 
-  const nextVotes = { ...state.votes, [targetId]: newVote };
-  const currentDelta = state.scoreDeltas[targetId] || 0;
-  const nextScoreDeltas = { ...state.scoreDeltas, [targetId]: currentDelta + scoreDelta };
+  const nextVotes = { ...state.votes, [cleanId]: newVote };
+  if (cleanId !== targetId) {
+    nextVotes[targetId] = newVote;
+  }
+  const currentDelta = state.scoreDeltas[cleanId] || state.scoreDeltas[targetId] || 0;
+  const nextScoreDeltas = { 
+    ...state.scoreDeltas, 
+    [cleanId]: currentDelta + scoreDelta,
+    ...(cleanId !== targetId ? { [targetId]: currentDelta + scoreDelta } : {})
+  };
 
   const nextState: RedditUserDataState = {
     ...state,
@@ -94,10 +102,11 @@ export function votePostOrComment(
 }
 
 export function toggleSavePost(state: RedditUserDataState, postId: string): RedditUserDataState {
-  const isSaved = state.savedPostIds.includes(postId);
+  const cleanId = postId.replace(/_dup_.*$/, '').replace(/_repeat_.*$/, '');
+  const isSaved = state.savedPostIds.includes(cleanId) || state.savedPostIds.includes(postId);
   const nextSaved = isSaved
-    ? state.savedPostIds.filter((id) => id !== postId)
-    : [...state.savedPostIds, postId];
+    ? state.savedPostIds.filter((id) => id !== cleanId && id !== postId)
+    : [...state.savedPostIds, cleanId];
 
   const nextState = { ...state, savedPostIds: nextSaved };
   saveRedditState(nextState);
@@ -105,10 +114,11 @@ export function toggleSavePost(state: RedditUserDataState, postId: string): Redd
 }
 
 export function toggleHidePost(state: RedditUserDataState, postId: string): RedditUserDataState {
-  const isHidden = state.hiddenPostIds.includes(postId);
+  const cleanId = postId.replace(/_dup_.*$/, '').replace(/_repeat_.*$/, '');
+  const isHidden = state.hiddenPostIds.includes(cleanId) || state.hiddenPostIds.includes(postId);
   const nextHidden = isHidden
-    ? state.hiddenPostIds.filter((id) => id !== postId)
-    : [...state.hiddenPostIds, postId];
+    ? state.hiddenPostIds.filter((id) => id !== cleanId && id !== postId)
+    : [...state.hiddenPostIds, cleanId];
 
   const nextState = { ...state, hiddenPostIds: nextHidden };
   saveRedditState(nextState);

@@ -2,6 +2,28 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-10 11:30 KST] [Reddit 피드 구글글 & SNSHero글 전용 필터링 및 1:1 교차 노출 시스템 구축 완료]
+- **요청 사항**:
+  - Reddit 커뮤니티 피드에 일반/외부 목업 글을 전면 배제하고, 오직 **구글글**과 **SNSHero글**만 표시.
+  - 두 종류의 글이 연속으로 나오지 않고 **1:1 교차로(Alternating)** 번갈아 가며 배치되도록 구현.
+- **상세 구현 내역**:
+  1. `src/lib/reddit/redditApiService.ts`:
+     - **구글글 판별기 (`isGoogleNewsPost`)**: `gnews_*` ID, `r/news` 서브레딧, `GoogleNews_*` 작성자 및 구글 뉴스 공식 언론사 도메인 매핑.
+     - **SNSHero글 판별기 (`isSNSHeroPost`)**: 공식 계정(`SNSHero_Official`), 바이브코딩 강좌 5부작, 공식 리소스 글, 고정 공지 및 유저 작성 글 매핑.
+     - **엄격한 1:1 교차 배치 엔진 (`interleaveAlternating`)**:
+       - 고정 공지(바이브코딩 마스터 안내)를 1번으로 배치한 뒤, 구글 뉴스 1번 -> 바이브코딩 1강 -> 구글 뉴스 2번 -> 바이브코딩 2강 -> 구글 뉴스 3번 ... 형태로 끝까지 연속 없이 100% 교차 배치.
+       - 중복 key/id 방지를 위한 고유 슬롯 ID 처리 및 원본 매핑 지원.
+     - **포스트 상세 및 상호작용 정규화**:
+       - `getPostDetail(cleanId)`: 교차 슬롯 ID에서도 원본 포스트, 댓글 트리, 추천수가 정확히 매핑되도록 지원.
+  2. `src/lib/reddit/redditStorage.ts`:
+     - `votePostOrComment`, `toggleSavePost`, `toggleHidePost`에서 복제 슬롯 클릭 시에도 원본 글 ID로 투표 및 저장 상태가 안전하게 동기화되도록 정규화.
+  3. `src/views/RedditCommunityView.tsx`:
+     - 상세 모달 열기(`handleOpenDetail`) 시 원본 ID 기반으로 깔끔한 URL 라우팅 및 SEO 추적 수행.
+- **검증 결과**:
+  - `npx tsx` 단위 시뮬레이션: 24개 포스트 전수 `[SNSHero] -> [Google] -> [SNSHero] -> [Google] ...` 1:1 교차 검증 통과 (연속 노출 0건).
+  - `npx tsc --noEmit`: 0 오류 통과.
+  - `npm run build`: 성공 (43 static routes generation 완료).
+
 ## [2026-10-10 11:25 KST] [Reddit 커뮤니티 테마 기본값 밝은톤(라이트 모드) 전면 전환 완료]
 - **요청 사항**:
   - Reddit 커뮤니티의 기본 테마를 어두운 톤(다크 테마)에서 밝은 톤(라이트 테마)으로 기본 전환.

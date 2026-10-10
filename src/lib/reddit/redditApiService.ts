@@ -97,7 +97,97 @@ export class RedditApiService {
   }
 
   /**
-   * 서브레딧 또는 메인 피드 포스트 목록 반환 (실시간 글 + 시드 데이터 지능형 병합)
+   * 해당 포스트가 구글 뉴스 글인지 판별
+   */
+  static isGoogleNewsPost(post: RedditPost): boolean {
+    return (
+      post.id.startsWith('gnews_') ||
+      post.subreddit.toLowerCase() === 'news' ||
+      post.author.startsWith('GoogleNews_') ||
+      Boolean(
+        post.media?.domain &&
+          (post.media.domain.includes('google') ||
+            post.media.domain.includes('apnews') ||
+            post.media.domain.includes('cbsnews') ||
+            post.media.domain.includes('aljazeera') ||
+            post.media.domain.includes('theguardian') ||
+            post.media.domain.includes('axios') ||
+            post.media.domain.includes('foxnews'))
+      )
+    );
+  }
+
+  /**
+   * 해당 포스트가 SNSHero 공식 또는 바이브코딩 관련 글인지 판별
+   */
+  static isSNSHeroPost(post: RedditPost, userState?: RedditUserDataState): boolean {
+    const isUserPost = userState && userState.userPosts.some((up) => up.id === post.id);
+    if (isUserPost) return true;
+
+    return (
+      post.author === 'SNSHero_Official' ||
+      post.id.startsWith('post_vibecoding_') ||
+      post.id.startsWith('post_snshero_') ||
+      Boolean(post.isPinned) ||
+      Boolean(post.title && (post.title.includes('바이브코딩') || post.title.includes('SNSHero')))
+    );
+  }
+
+  /**
+   * 사용자 상호작용(투표, 북마크, 숨김) 매핑 헬퍼
+   */
+  private static mapUserInteractions(posts: RedditPost[], userState?: RedditUserDataState): RedditPost[] {
+    return posts
+      .filter((p) => {
+        const cleanId = p.id.replace(/_dup_.*$/, '').replace(/_repeat_.*$/, '');
+        return !(userState && (userState.hiddenPostIds.includes(cleanId) || userState.hiddenPostIds.includes(p.id)));
+      })
+      .map((p) => {
+        const cleanId = p.id.replace(/_dup_.*$/, '').replace(/_repeat_.*$/, '');
+        const userVote = userState ? userState.votes[cleanId] || userState.votes[p.id] || null : null;
+        const delta = userState ? userState.scoreDeltas[cleanId] || userState.scoreDeltas[p.id] || 0 : 0;
+        const isSaved = userState ? userState.savedPostIds.includes(cleanId) || userState.savedPostIds.includes(p.id) : false;
+        return {
+          ...p,
+          userVote,
+          score: p.score + delta,
+          isSaved,
+        };
+      });
+  }
+
+  /**
+   * 구글글과 SNSHero글을 연속 없이 1:1로 엄격하게 교차(Interleave) 배치
+   */
+  static interleaveAlternating(snsPosts: RedditPost[], googlePosts: RedditPost[]): RedditPost[] {
+    if (snsPosts.length === 0) return googlePosts;
+    if (googlePosts.length === 0) return snsPosts;
+
+    const result: RedditPost[] = [];
+    // 고정 공지(isPinned)가 있다면 최상단 0번에 위치하도록 정렬
+    const pinned = snsPosts.filter((p) => Boolean(p.isPinned));
+    const unpinned = snsPosts.filter((p) => !p.isPinned);
+    const orderedSns = [...pinned, ...unpinned];
+
+    const totalSlots = Math.max(orderedSns.length, googlePosts.length);
+
+    for (let i = 0; i < totalSlots; i++) {
+      // 1) SNSHero 글 배치
+      const snsItem = orderedSns[i % orderedSns.length];
+      const safeSns = i >= orderedSns.length ? { ...snsItem, id: `${snsItem.id}_dup_${i}` } : snsItem;
+      result.push(safeSns);
+
+      // 2) 구글 글 배치
+      const googleItem = googlePosts[i % googlePosts.length];
+      const safeGoogle = i >= googlePosts.length ? { ...googleItem, id: `${googleItem.id}_dup_${i}` } : googleItem;
+      result.push(safeGoogle);
+    }
+
+    return result;
+  }
+
+  /**
+   * 서브레딧 또는 메인 피드 포스트 목록 반환 (오직 구글글과 SNSHero글만 연속 없이 교차 표시)
    */
   static getPosts(
     subreddit: string = 'popular',
@@ -106,89 +196,51 @@ export class RedditApiService {
     userState?: RedditUserDataState
   ): RedditPost[] {
     const isFrontPage = ['popular', 'all', 'home'].includes(subreddit.toLowerCase());
-    
-    // 0. 실시간 구글 뉴스 스프레드시트 포스트 로드
-    const googleNewsPosts = GoogleNewsSheetService.getCachedGoogleNewsPosts();
 
-    // 1. 실시간 실제 reddit.com 캐시 포스트 로드
-    const livePosts = RedditLiveFeedService.getCachedLivePosts();
+    // 1. 실시간 구글 뉴스 스프레드시트 포스트 로드
+    const googleNewsPosts = GoogleNewsSheetService.getCachedGoogleNewsPosts(userState?.language || 'ko');
 
-    // 2. 기본 포스트 풀 구성: 구글 뉴스 + 실시간 최신 글 + 시드 포스트 풀
-    let pool: RedditPost[] = [];
-    const newsIds = new Set(googleNewsPosts.map((p) => p.id));
-    if (livePosts.length > 0) {
-      // 중복 방지 병합 및 시드 데이터 아카이브 보정 (실시간 최신 글이 상단을 선점하도록 보장하되, 고정 공지 및 공식 글은 최신 유지)
-      const liveIds = new Set(livePosts.map((p) => p.id));
-      const archivedSeeds = SEED_POSTS
-        .filter((p) => !liveIds.has(p.id) && !newsIds.has(p.id))
-        .map((p) => ({
-          ...p,
-          // 실시간 글이 존재할 경우 일반 시드 글은 3일 전 아카이브로 보정 (단 고정 공지 및 공식 글은 원래 최신 시각 보존)
-          createdAt: (p.isPinned || p.author === 'SNSHero_Official')
-            ? p.createdAt
-            : Math.min(p.createdAt, Date.now() - 1000 * 60 * 60 * 72),
-        }));
-      pool = [...googleNewsPosts, ...livePosts, ...archivedSeeds];
-    } else {
-      pool = [...googleNewsPosts, ...SEED_POSTS];
+    // 2. 기본 시드 포스트 중 SNSHero 공식 포스트들 로드
+    const snsHeroSeedPosts = SEED_POSTS.filter((p) => this.isSNSHeroPost(p, userState));
+
+    // 3. 사용자가 직접 작성한 포스트(userPosts)가 있다면 최상단에 포함
+    const userPosts = userState?.userPosts || [];
+    const snsHeroPool = [...userPosts, ...snsHeroSeedPosts];
+
+    // 4. 메인 피드 (popular, all, home): 구글글과 SNSHero글만 연속 없이 1:1 교차 노출
+    if (isFrontPage) {
+      const sortedSns = this.sortPosts(snsHeroPool, sort);
+      const sortedGoogle = this.sortPosts(googleNewsPosts, sort);
+
+      const mappedSns = this.mapUserInteractions(sortedSns, userState);
+      const mappedGoogle = this.mapUserInteractions(sortedGoogle, userState);
+
+      return this.interleaveAlternating(mappedSns, mappedGoogle);
     }
 
-    // 2. 사용자가 직접 작성한 포스트 병합 (유저 작성 글은 최우선 배치)
-    if (userState && userState.userPosts.length > 0) {
-      pool = [...userState.userPosts, ...pool];
+    // 5. 뉴스 서브레딧 (news): 구글 뉴스 글 전용
+    if (subreddit.toLowerCase() === 'news') {
+      const sortedGoogle = this.sortPosts(googleNewsPosts, sort);
+      return this.mapUserInteractions(sortedGoogle, userState);
     }
 
-    // 3. 서브레딧 필터링 (메인화면인 경우 인기 유머글만 선별 노출)
-    let filtered = pool;
-    if (!isFrontPage) {
-      filtered = pool.filter(
-        (p) => p.subreddit.toLowerCase() === subreddit.toLowerCase()
-      );
-    } else {
-      // 메인화면 (popular, all, home): 레딧 인기 유머글만 집중 표시
-      const humorSubsLower = new Set(HUMOR_SUBREDDITS.map((s) => s.toLowerCase()));
-      // 1) 사용자가 직접 작성한 포스트는 항상 포함
-      // 2) 고정 공지(isPinned) 또는 공식 게시글(SNSHero_Official)은 항상 포함
-      // 3) 그 외 포스트는 인기 유머 서브레딧 및 유머/밈 플레어를 지닌 게시물만 필터링
-      const humorOnly = pool.filter((p) => {
-        const isUserPost = userState && userState.userPosts.some((up) => up.id === p.id);
-        if (isUserPost) return true;
-        if (p.isPinned || p.author === 'SNSHero_Official') return true;
-        const subLower = p.subreddit.toLowerCase();
-        if (humorSubsLower.has(subLower)) return true;
-        const flairText = p.flair?.text?.toLowerCase() || '';
-        return flairText.includes('유머') || flairText.includes('humor') || flairText.includes('meme') || flairText.includes('짤');
-      });
-      // 유머글이 충분한 경우 유머글만 노출 (만약 부족하면 fallback으로 전체 풀 유지)
-      filtered = humorOnly.length >= 3 ? humorOnly : pool;
+    // 6. 특정 서브레딧 (hanguk, gaming, technology 등):
+    // 해당 서브레딧에 매핑된 글이 있으면 해당 글을 표시하고, 없으면 전체 SNSHero/구글 풀 교차 유지
+    const subPosts = [...snsHeroPool, ...googleNewsPosts].filter(
+      (p) => p.subreddit.toLowerCase() === subreddit.toLowerCase()
+    );
+
+    if (subPosts.length > 0) {
+      const sorted = this.sortPosts(subPosts, sort);
+      return this.mapUserInteractions(sorted, userState);
     }
 
-    // 4. 숨긴 포스트(Hidden) 제외
-    if (userState && userState.hiddenPostIds.length > 0) {
-      filtered = filtered.filter((p) => !userState.hiddenPostIds.includes(p.id));
-    }
-
-    // 5. 사용자의 투표 상태 및 북마크 상태 매핑
-    const mapped = filtered.map((p) => {
-      const userVote = userState ? userState.votes[p.id] || null : null;
-      const delta = userState ? userState.scoreDeltas[p.id] || 0 : 0;
-      const isSaved = userState ? userState.savedPostIds.includes(p.id) : false;
-      return {
-        ...p,
-        userVote,
-        score: p.score + delta,
-        isSaved,
-      };
-    });
-
-    // 6. 고정 공지(isPinned)는 항상 피드 최상단에 고정 유지하고, 나머지 글들만 정렬 및 로테이션
-    const pinnedPosts = mapped.filter((p) => Boolean(p.isPinned));
-    const unpinnedPosts = mapped.filter((p) => !p.isPinned);
-
-    const sortedUnpinned = this.sortPosts(unpinnedPosts, sort);
-    const finalUnpinned = isFrontPage ? this.applyRefreshRotation(sortedUnpinned) : sortedUnpinned;
-
-    return [...pinnedPosts, ...finalUnpinned];
+    // 서브레딧에 글이 없더라도 비-공식 mock 글을 노출하지 않고 SNSHero/구글 교차 피드 제공
+    const sortedSns = this.sortPosts(snsHeroPool, sort);
+    const sortedGoogle = this.sortPosts(googleNewsPosts, sort);
+    const mappedSns = this.mapUserInteractions(sortedSns, userState);
+    const mappedGoogle = this.mapUserInteractions(sortedGoogle, userState);
+    return this.interleaveAlternating(mappedSns, mappedGoogle);
   }
 
   /**
@@ -284,40 +336,41 @@ export class RedditApiService {
     userState?: RedditUserDataState
   ): { post: RedditPost | null; comments: RedditComment[] } {
     let post: RedditPost | null = null;
+    const cleanId = postId.replace(/_dup_.*$/, '').replace(/_repeat_.*$/, '');
 
     // 1. 사용자 작성 포스트에서 찾기
     if (userState && userState.userPosts.length > 0) {
-      const foundUserPost = userState.userPosts.find((p) => p.id === postId);
+      const foundUserPost = userState.userPosts.find((p) => p.id === cleanId || p.id === postId);
       if (foundUserPost) post = { ...foundUserPost };
     }
 
-    // 2. 실시간 피드 캐시 포스트에서 찾기
+    // 2. Google News 포스트에서 찾기
     if (!post) {
-      const livePosts = RedditLiveFeedService.getCachedLivePosts();
-      const foundLive = livePosts.find((p) => p.id === postId);
-      if (foundLive) post = { ...foundLive };
-    }
-
-    // 3. Google News 포스트에서 찾기
-    if (!post) {
-      const gnews = GoogleNewsSheetService.getCachedGoogleNewsPosts();
-      const foundNews = gnews.find((p) => p.id === postId);
+      const gnews = GoogleNewsSheetService.getCachedGoogleNewsPosts(userState?.language || 'ko');
+      const foundNews = gnews.find((p) => p.id === cleanId || p.id === postId);
       if (foundNews) post = { ...foundNews };
     }
 
-    // 4. 시드 포스트에서 찾기
+    // 3. 시드 포스트에서 찾기
     if (!post) {
-      const foundSeed = SEED_POSTS.find((p) => p.id === postId);
+      const foundSeed = SEED_POSTS.find((p) => p.id === cleanId || p.id === postId);
       if (foundSeed) post = { ...foundSeed };
+    }
+
+    // 4. 실시간 피드 캐시 포스트에서 찾기
+    if (!post) {
+      const livePosts = RedditLiveFeedService.getCachedLivePosts();
+      const foundLive = livePosts.find((p) => p.id === cleanId || p.id === postId);
+      if (foundLive) post = { ...foundLive };
     }
 
     if (!post) return { post: null, comments: [] };
 
     // 투표 & 북마크 상태 매핑
     if (userState) {
-      post.userVote = userState.votes[post.id] || null;
-      post.score += userState.scoreDeltas[post.id] || 0;
-      post.isSaved = userState.savedPostIds.includes(post.id);
+      post.userVote = userState.votes[cleanId] || userState.votes[post.id] || null;
+      post.score += userState.scoreDeltas[cleanId] || userState.scoreDeltas[post.id] || 0;
+      post.isSaved = userState.savedPostIds.includes(cleanId) || userState.savedPostIds.includes(post.id);
     }
 
     // 3. 댓글 트리 가져오기 (1순위: 실제 Reddit 원본 캐시 댓글 -> 2순위: 시드 댓글 -> 3순위: 맥락 백업)

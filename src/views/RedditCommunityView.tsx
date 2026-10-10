@@ -372,11 +372,13 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
 
   // 포스트 상세 열기
   const handleOpenDetail = useCallback((post: RedditPost) => {
-    const { comments } = RedditApiService.getPostDetail(post.id, userState);
-    setActivePost(post);
+    const cleanId = post.id.replace(/_dup_.*$/, '').replace(/_repeat_.*$/, '');
+    const { comments, post: cleanPost } = RedditApiService.getPostDetail(cleanId, userState);
+    const targetPost = cleanPost || post;
+    setActivePost(targetPost);
     setActiveComments(comments);
-    window.history.pushState(null, '', `/r/${post.subreddit}/comments/${post.id}`);
-    RedditSeoManager.trackEvent('reddit_open_post', { postId: post.id, title: post.title });
+    window.history.pushState(null, '', `/r/${targetPost.subreddit}/comments/${cleanId}`);
+    RedditSeoManager.trackEvent('reddit_open_post', { postId: cleanId, title: targetPost.title });
   }, [userState]);
 
   // 포스트 상세 닫기
