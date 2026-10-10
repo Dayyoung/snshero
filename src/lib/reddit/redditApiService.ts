@@ -21,6 +21,7 @@ import { RedditLiveFeedService } from './redditLiveFeedService';
 import { generateContextualCommentsForPost } from './redditCommentGenerator';
 import { RedditTrendingService } from './redditTrendingService';
 import { RedditRealCommentService } from './redditRealCommentService';
+import { GoogleNewsSheetService } from './googleNewsSheetService';
 
 export class RedditApiService {
   /**
@@ -28,6 +29,13 @@ export class RedditApiService {
    */
   static async syncLivePosts(subreddit: string = 'popular', targetLang: string = 'ko'): Promise<RedditPost[]> {
     return RedditLiveFeedService.fetchRealtimePosts(subreddit, targetLang);
+  }
+
+  /**
+   * 실시간 Google News 스프레드시트 피드 동기화 및 다국어 번역
+   */
+  static async syncGoogleNews(targetLang: string = 'ko'): Promise<RedditPost[]> {
+    return GoogleNewsSheetService.getGoogleNewsPosts(targetLang);
   }
 
   /**
@@ -99,16 +107,20 @@ export class RedditApiService {
   ): RedditPost[] {
     const isFrontPage = ['popular', 'all', 'home'].includes(subreddit.toLowerCase());
     
+    // 0. 실시간 구글 뉴스 스프레드시트 포스트 로드
+    const googleNewsPosts = GoogleNewsSheetService.getCachedGoogleNewsPosts();
+
     // 1. 실시간 실제 reddit.com 캐시 포스트 로드
     const livePosts = RedditLiveFeedService.getCachedLivePosts();
 
-    // 2. 기본 포스트 풀 구성: 실시간 최신 글 + 시드 포스트 풀
+    // 2. 기본 포스트 풀 구성: 구글 뉴스 + 실시간 최신 글 + 시드 포스트 풀
     let pool: RedditPost[] = [];
+    const newsIds = new Set(googleNewsPosts.map((p) => p.id));
     if (livePosts.length > 0) {
       // 중복 방지 병합 및 시드 데이터 아카이브 보정 (실시간 최신 글이 상단을 선점하도록 보장하되, 고정 공지 및 공식 글은 최신 유지)
       const liveIds = new Set(livePosts.map((p) => p.id));
       const archivedSeeds = SEED_POSTS
-        .filter((p) => !liveIds.has(p.id))
+        .filter((p) => !liveIds.has(p.id) && !newsIds.has(p.id))
         .map((p) => ({
           ...p,
           // 실시간 글이 존재할 경우 일반 시드 글은 3일 전 아카이브로 보정 (단 고정 공지 및 공식 글은 원래 최신 시각 보존)
@@ -116,9 +128,9 @@ export class RedditApiService {
             ? p.createdAt
             : Math.min(p.createdAt, Date.now() - 1000 * 60 * 60 * 72),
         }));
-      pool = [...livePosts, ...archivedSeeds];
+      pool = [...googleNewsPosts, ...livePosts, ...archivedSeeds];
     } else {
-      pool = [...SEED_POSTS];
+      pool = [...googleNewsPosts, ...SEED_POSTS];
     }
 
     // 2. 사용자가 직접 작성한 포스트 병합 (유저 작성 글은 최우선 배치)
@@ -286,7 +298,14 @@ export class RedditApiService {
       if (foundLive) post = { ...foundLive };
     }
 
-    // 3. 시드 포스트에서 찾기
+    // 3. Google News 포스트에서 찾기
+    if (!post) {
+      const gnews = GoogleNewsSheetService.getCachedGoogleNewsPosts();
+      const foundNews = gnews.find((p) => p.id === postId);
+      if (foundNews) post = { ...foundNews };
+    }
+
+    // 4. 시드 포스트에서 찾기
     if (!post) {
       const foundSeed = SEED_POSTS.find((p) => p.id === postId);
       if (foundSeed) post = { ...foundSeed };

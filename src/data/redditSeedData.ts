@@ -105,6 +105,22 @@ export const SEED_SUBREDDITS: Record<string, RedditSubreddit> = {
     ],
     moderators: ['AutoModerator', 'TechGuru', 'SiliconValleyWatcher'],
   },
+  news: {
+    name: 'news',
+    title: '글로벌 실시간 뉴스 & 속보 (Google News US Edition)',
+    description: '구글 뉴스(Google News) 실시간 피드와 연동되어 최신 국제 뉴스, 정치, 경제, 사회 속보를 실시간으로 전해드립니다.',
+    bannerUrl: 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1400&q=80',
+    iconUrl: 'https://www.gstatic.com/images/branding/googleg/1x/googleg_standard_color_48dp.png',
+    subscribers: 28400000,
+    onlineCount: 48900,
+    createdAt: Date.now() - 1000 * 60 * 60 * 24 * 365 * 10,
+    themeColor: '#4285F4',
+    rules: [
+      { number: 1, title: '검증된 언론사 출처 준수', description: 'Google News에 공식 집계된 주요 언론사 기사만 취급합니다.' },
+      { number: 2, title: '정치적 중립 및 사실 확인', description: '허위 왜곡 조작 보도를 금지합니다.' },
+    ],
+    moderators: ['AutoModerator', 'GoogleNewsBot', 'NewsAnchor_Prime'],
+  },
   AskReddit: {
     name: 'AskReddit',
     title: '무엇이든 물어보세요 (Ask Reddit)',

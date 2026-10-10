@@ -119,13 +119,17 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
     RedditApiService.advanceRefreshRotation();
   }, []);
 
-  // 실시간 Reddit 피드 백그라운드 동기화 함수
+  // 실시간 Reddit 피드 & Google News 스프레드시트 백그라운드 동기화 함수 (페이지 갱신마다 최신정보 표시 및 번역)
   const handleSyncLive = useCallback(async () => {
     setIsSyncingLive(true);
     // 새로고침 시 다음 유머 서브레딧 글 수집 및 순환 시프트 전진
     RedditApiService.advanceRefreshRotation();
     try {
-      await RedditApiService.syncLivePosts(currentSubreddit, userState.language || 'ko');
+      const targetLang = userState.language || 'ko';
+      await Promise.allSettled([
+        RedditApiService.syncLivePosts(currentSubreddit, targetLang),
+        RedditApiService.syncGoogleNews(targetLang),
+      ]);
       setSyncTick((t) => t + 1);
     } catch (e) {
       console.warn('[Reddit] Live sync warning', e);

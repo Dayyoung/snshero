@@ -22,6 +22,7 @@ export const HUMOR_SUBREDDITS = [
   'mildlyamusing',
   'humor',
   'hanguk',
+  'news',
 ] as const;
 
 export interface PostFlair {

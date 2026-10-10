@@ -23,7 +23,8 @@ import {
   ShieldCheck, 
   X,
   Sparkles,
-  ExternalLink
+  ExternalLink,
+  Newspaper
 } from 'lucide-react';
 import { RedditUserDataState } from '../../lib/reddit/redditTypes';
 import { SEED_SUBREDDITS } from '../../data/redditSeedData';
@@ -89,6 +90,7 @@ export const RedditSidebarLeft: React.FC<RedditSidebarLeftProps> = ({
           <div className="space-y-0.5">
             {[
               { id: 'popular', label: isKo ? '인기 유머 피드' : 'Popular Humor', icon: TrendingUp },
+              { id: 'news', label: isKo ? '실시간 구글 뉴스' : 'Google News', icon: Newspaper },
               { id: 'all', label: isKo ? '전체 피드' : 'All', icon: Globe },
               { id: 'home', label: isKo ? '홈 맞춤 피드' : 'Home', icon: Home },
             ].map((feed) => {

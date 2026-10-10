@@ -2,6 +2,36 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-10 11:20 KST] [Google News 실시간 스프레드시트 연동 및 자동 다국어 번역 시스템 구축 완료]
+- **요청 사항**:
+  - 구글 스프레드시트 (`https://docs.google.com/spreadsheets/d/1CT5Yy1-i6kkOfx3d-Yw1osOEYbN7fkk8IDiI8Vm82vM/edit?usp=drivesdk`)의 Google News US Edition 실시간 뉴스 피드 데이터를 Reddit 커뮤니티에 정규 포스트로 추가.
+  - 페이지 갱신(새로고침 / 실시간 동기화) 시마다 최신 뉴스 정보 반영.
+  - 영어 원문을 현재 언어 설정(기본 한국어)으로 자동 번역하여 표시하고, 원문/번역문 토글 지원.
+- **상세 구현 내역**:
+  1. `src/data/googleNewsSeedData.ts`:
+     - 구글 뉴스 스프레드시트 실데이터 매핑 인터페이스 `RawGoogleNewsItem` 및 `INITIAL_GOOGLE_NEWS` 시드 데이터 정의.
+     - `convertGoogleNewsToRedditPost` 변환 헬퍼 (포스트 ID `gnews_*`, `r/news` 서브레딧, 원문 링크, 썸네일 이미지, 시간 파싱 등) 구현.
+  2. `src/lib/reddit/googleNewsSheetService.ts`:
+     - CSV 따옴표/줄바꿈 완벽 지원 파서 (`parseCsv`) 탑재.
+     - 다계층 페치 아키텍처: Vite 프록시(`/api/reddit/google-news-sheet`) -> 정적 fallback(`/data/google-news.csv`) -> Direct GViz/Export -> LocalStorage 캐시(`hero_reddit_google_news_posts_v1`) -> 시드 데이터.
+     - 현재 활성 언어(`targetLang`)에 따른 자동 번역(`translateRedditPosts`) 및 캐싱.
+  3. `vite.config.ts`:
+     - CORS 우회용 `/api/reddit/google-news-sheet` 프록시 미들웨어 추가 및 로컬 백업 자동 서빙 처리.
+  4. `src/lib/reddit/redditApiService.ts` & `src/lib/reddit/redditTypes.ts`:
+     - 서브레딧 목록에 `news` 추가, `GoogleNewsSheetService.getCachedGoogleNewsPosts()` 피드 풀 병합.
+     - `syncGoogleNews(targetLang)` 비동기 실시간 동기화 인터페이스 연동.
+     - 포스트 상세 모달(`getPostDetail`)에서 `gnews_*` 게시글 즉시 조회 지원.
+  5. `src/views/RedditCommunityView.tsx` & `src/components/reddit/RedditSidebarLeft.tsx`:
+     - 페이지 갱신 및 새로고침 시 `syncGoogleNews(lang)` 자동 호출하여 항상 최신 뉴스로 갱신.
+     - 좌측 사이드바 피드 메뉴에 `실시간 구글 뉴스 (news)` 바로가기 추가.
+     - 영문 원문(`originalTitle`, `originalBody`)과 번역문 전환(`[Google 번역됨] / [원문 보기]`) 완벽 지원.
+  6. 정적 호스팅 완벽 대비:
+     - `public/data/google-news.csv` 백업 데이터 동기화로 모든 호스팅 환경에서 100% 정상 작동 보장.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 오류 통과.
+  - `npm run build`: 성공 (43 static routes generation 완료).
+  - `/api/reddit/google-news-sheet` 및 `/data/google-news.csv` 200 OK 응답 검증 완료.
+
 ## [2026-10-10 11:10 KST] [Reddit 커뮤니티 전 게시글 SEO / AEO / GEO 및 정적 라우트 프리렌더링 전면 강화 완료]
 - **요청 사항**: Reddit 커뮤니티의 모든 게시글이 검색엔진 최적화(SEO), 인공지능 답변 엔진 최적화(AEO), 생성형 AI 검색 최적화(GEO)를 철저히 고려하여 배포되는지 점검 및 완벽 보강.
 - **상세 구현 및 보강 내역**:
