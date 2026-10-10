@@ -22,7 +22,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
   return (
     <div
       className={cn(
-        "sticky top-0 z-50 px-3 py-2.5 sm:px-4 sm:py-3 flex items-center justify-between gap-2 shrink-0 bg-[#fdfcfc] border-b border-[#201d1d]/15 font-mono text-[#201d1d]",
+        "sticky top-0 z-50 px-3 pb-2.5 sm:px-4 sm:pb-3 pt-[calc(env(safe-area-inset-top,0px)+0.625rem)] flex items-center justify-between gap-2 shrink-0 bg-[#fdfcfc] border-b border-[#201d1d]/15 font-mono text-[#201d1d]",
         dark && "bg-[#201d1d] text-[#fdfcfc] border-b border-stone-800",
         transparent && "bg-transparent border-transparent shadow-none",
         className

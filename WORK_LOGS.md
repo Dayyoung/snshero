@@ -2,6 +2,31 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-10 17:48 KST] [PWA 실행 시 상단 안전영역(Safe Area) 설정버튼 및 헤더 겹침/터치불가 버그 수정 완료]
+- **요청 사항**:
+  - PWA 실행 시 상단 안전영역(노치/다이나믹 아일랜드/상태표시줄)에 설정버튼이 가려서 눌리지 않는 버그 해결.
+- **원인 분석**:
+  1. `App.tsx`의 전역 헤더 버튼(메뉴, 음소거, 커뮤니티, 뒤로가기)의 위치가 `top-[10px]`으로 고정되어 있어, PWA(standalone) 모드 실행 시 iOS/Android 상단 상태바 및 노치 영역(44px~59px) 안에 파묻혀 터치 이벤트가 차단됨.
+  2. 햄버거 메뉴 패널 내부 최상단 헤더의 설정 버튼(`<Settings size={18} />`) 컨테이너가 `pt-5`(20px)에 불과하여 노치/상태표시줄 뒤로 들어가 직접 터치되지 않음.
+  3. `PageHeader.tsx` 및 배틀/카드플레이 상단 헤더에 `env(safe-area-inset-top)` 미적용으로 서브 뷰 헤더 및 톱니바퀴 설정 버튼이 상태바에 겹침.
+- **상세 구현 내역**:
+  1. **전역 헤더 버튼 동적 안전영역 오프셋 적용** ([`App.tsx`](file:///Users/dayyoung/project/snshero/src/App.tsx)):
+     - 햄버거 메뉴, 음소거, 커뮤니티, 뒤로가기 버튼의 `top` 위치를 `top-[calc(env(safe-area-inset-top,0px)+10px)]` (광고 있을 시 `+78px` / `+106px`)로 동적 계산하여 PWA 상태바 아래로 안전하게 이격.
+     - 광고가 없거나 광고 제거 모드인 경우 모바일 PWA 상단 스페이서(`h-[env(safe-area-inset-top,0px)]`) 삽입.
+  2. **햄버거 메뉴 패널 상단 안전영역 패딩 및 터치타깃 보장** ([`App.tsx`](file:///Users/dayyoung/project/snshero/src/App.tsx)):
+     - 슬라이드 메뉴 컨테이너 상단에 `pt-[calc(env(safe-area-inset-top,0px)+1.25rem)]` 적용.
+     - 설정 버튼(`<Settings size={18} />`)에 `min-h-10 min-w-10 touch-manipulation` 부여로 44px+ 규격 터치 영역 확보.
+  3. **전역 서브 페이지 헤더 Safe Area 상단 패딩 적용** ([`PageHeader.tsx`](file:///Users/dayyoung/project/snshero/src/components/PageHeader.tsx)):
+     - `pt-[calc(env(safe-area-inset-top,0px)+0.625rem)]` 적용으로 `SettingView` 및 전체 하위 뷰의 상단 헤더, 뒤로가기, 액션 버튼이 노치 아래로 안전하게 배치.
+  4. **인게임 배틀 상단 HUD 및 헤더 안전영역 동기화** ([`BattleMinimalTopBar.tsx`](file:///Users/dayyoung/project/snshero/src/components/BattleMinimalTopBar.tsx), [`MobileCardPlayScreen.tsx`](file:///Users/dayyoung/project/snshero/src/views/MobileCardPlayScreen.tsx)):
+     - 배틀 1줄 HUD 및 ⚙️ 설정 드롭다운 버튼에 `pt-[env(safe-area-inset-top,0px)]` 적용.
+     - 카드 배틀 화면 상단 헤더 높이를 `h-[calc(env(safe-area-inset-top,0px)+2.25rem)] pt-[env(safe-area-inset-top,0px)]`로 확장.
+  5. **전역 PWA Safe-Area 유틸리티 클래스 정의** ([`index.css`](file:///Users/dayyoung/project/snshero/src/index.css)):
+     - `.safe-area-top`, `.safe-area-bottom`, `.safe-area-inset`, `.top-safe-offset` CSS 헬퍼 추가.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 오류 무결점 통과.
+  - `npm run build`: 프로덕션 번들링 정상 완료.
+
 ## [2026-10-10 14:55 KST] [설정 화면 웹푸시 알림받기 & iOS PWA 설치 가이드 모달 & 구글 시트 푸시 토큰 연동 및 관리자 전체 푸시 발송 파이프라인 구축]
 - **요청 사항**:
   1. 설정화면에 웹푸시 알림받기 버튼 제작.

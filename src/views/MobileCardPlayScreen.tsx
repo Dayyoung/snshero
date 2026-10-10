@@ -1050,8 +1050,8 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       id="mobile-card-play-viewport"
       className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#070a10] text-slate-100 flex flex-col justify-between font-mono z-[100]"
     >
-      {/* ─── Compact Header (36px) ─────────────────────────────────── */}
-      <header className="w-full h-9 px-2 bg-stone-950/90 border-b border-stone-800 flex items-center justify-between shrink-0 z-30">
+      {/* ─── Compact Header (36px + safe-area) ─────────────────────────────────── */}
+      <header className="w-full h-[calc(env(safe-area-inset-top,0px)+2.25rem)] pt-[env(safe-area-inset-top,0px)] px-2 bg-stone-950/90 border-b border-stone-800 flex items-center justify-between shrink-0 z-30">
         <button
           type="button"
           onClick={handleExitGame}

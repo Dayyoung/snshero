@@ -5919,7 +5919,7 @@ function AppContent() {
           {/* Top AdSense Banner (모바일에서는 상단 배너 표시, PC에서는 상단 배너 제거 후 좌우 배너로 표시) */}
           {!isAdRemoved && view !== 'landing' && view !== 'card-play' && (
             <div className={cn(
-              "block lg:hidden w-full px-2 py-1 shrink-0 select-none z-20 overflow-hidden",
+              "block lg:hidden w-full px-2 py-1 shrink-0 select-none z-20 overflow-hidden pt-[env(safe-area-inset-top,0px)]",
               isPlayingBattle
                 ? "bg-[#060a14]/95 border-b border-slate-800"
                 : "bg-[#fdfcfc]/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800"
@@ -5933,6 +5933,11 @@ function AppContent() {
                 />
               </div>
             </div>
+          )}
+
+          {/* 광고가 없을 때 모바일 PWA 상단 안전영역 스페이서 */}
+          {(isAdRemoved || view === 'landing') && (
+            <div className="block lg:hidden w-full h-[env(safe-area-inset-top,0px)] shrink-0 pointer-events-none" />
           )}
 
           {/* 광고 다음 줄에 정렬되는 전역 헤더 버튼 (음소거, 메뉴, 뒤로가기) */}
@@ -5951,7 +5956,9 @@ function AppContent() {
                   id="hud-community-toggle"
                   className={cn(
                     "fixed right-[6.75rem] min-[1024px]:right-[calc(50vw-392px)] z-[9999] min-h-11 min-w-11 backdrop-blur-xl rounded-lg shadow-md active:scale-95 transition-all cursor-pointer flex items-center justify-center touch-target",
-                    (!isAdRemoved && view !== 'landing') ? "top-[78px] sm:top-[106px] lg:top-[10px]" : "top-[10px]",
+                    (!isAdRemoved && view !== 'landing') 
+                      ? "top-[calc(env(safe-area-inset-top,0px)+78px)] sm:top-[calc(env(safe-area-inset-top,0px)+106px)] lg:top-[10px]" 
+                      : "top-[calc(env(safe-area-inset-top,0px)+10px)]",
                     (theme === 'dark' || theme === 'metal')
                       ? "bg-slate-900/90 border border-slate-800 text-orange-400 hover:bg-slate-850 hover:text-orange-300"
                       : "bg-white/90 border border-slate-200/80 text-orange-500 hover:text-orange-600 hover:bg-white"
@@ -5970,7 +5977,9 @@ function AppContent() {
                   id="hud-audio-toggle"
                   className={cn(
                     "fixed right-[3.75rem] min-[1024px]:right-[calc(50vw-444px)] z-[9999] min-h-11 min-w-11 backdrop-blur-xl rounded-lg shadow-md active:scale-95 transition-all cursor-pointer flex items-center justify-center touch-target",
-                    (!isAdRemoved && view !== 'landing') ? "top-[78px] sm:top-[106px] lg:top-[10px]" : "top-[10px]",
+                    (!isAdRemoved && view !== 'landing') 
+                      ? "top-[calc(env(safe-area-inset-top,0px)+78px)] sm:top-[calc(env(safe-area-inset-top,0px)+106px)] lg:top-[10px]" 
+                      : "top-[calc(env(safe-area-inset-top,0px)+10px)]",
                     isAudioMuted
                       ? "bg-rose-500/10 border border-rose-500/50 text-rose-500 hover:bg-rose-500/20"
                       : (theme === 'dark' || theme === 'metal')
@@ -5997,7 +6006,9 @@ function AppContent() {
                   }}
                   className={cn(
                     "fixed right-4 min-[1024px]:right-[calc(50vw-496px)] z-[9999] min-h-11 min-w-11 backdrop-blur-xl rounded-lg shadow-md active:scale-95 transition-all cursor-pointer flex items-center justify-center touch-target",
-                    (!isAdRemoved && view !== 'landing') ? "top-[78px] sm:top-[106px] lg:top-[10px]" : "top-[10px]",
+                    (!isAdRemoved && view !== 'landing') 
+                      ? "top-[calc(env(safe-area-inset-top,0px)+78px)] sm:top-[calc(env(safe-area-inset-top,0px)+106px)] lg:top-[10px]" 
+                      : "top-[calc(env(safe-area-inset-top,0px)+10px)]",
                     (theme === 'dark' || theme === 'metal')
                       ? "bg-slate-900/90 border border-slate-800 text-white hover:bg-slate-850 hover:text-indigo-400"
                       : "bg-white/90 border border-slate-200/80 text-slate-700 hover:text-indigo-600 hover:bg-white"
@@ -6016,7 +6027,9 @@ function AppContent() {
               id="global-header-back-btn"
               className={cn(
                 "fixed left-3 sm:left-4 min-[1024px]:left-[calc(50vw-496px)] z-[9999] min-h-12 min-w-12 h-12 px-3.5 rounded-xl shadow-2xl flex items-center justify-center gap-1.5 active:scale-95 transition-all cursor-pointer font-mono font-black select-none border-2",
-                (!isAdRemoved && view !== 'landing') ? "top-[78px] sm:top-[106px] lg:top-[10px]" : "top-[10px]",
+                (!isAdRemoved && view !== 'landing') 
+                  ? "top-[calc(env(safe-area-inset-top,0px)+78px)] sm:top-[calc(env(safe-area-inset-top,0px)+106px)] lg:top-[10px]" 
+                  : "top-[calc(env(safe-area-inset-top,0px)+10px)]",
                 "bg-[#141212] text-amber-300 border-amber-400 hover:bg-[#201d1d] hover:border-amber-300 hover:text-white shadow-[0_4px_20px_rgba(0,0,0,0.7)]"
               )}
               title={language === 'ko' ? '뒤로가기' : 'Back'}
@@ -6048,7 +6061,7 @@ function AppContent() {
                   animate={{ x: 0 }}
                   exit={{ x: '100%' }}
                   transition={{ type: 'spring', damping: 28, stiffness: 220 }}
-                  className="fixed top-0 right-0 h-full w-[280px] sm:w-[320px] bg-white/96 backdrop-blur-xl border-l border-slate-200/80 z-[50001] flex flex-col shadow-[-10px_0_30px_rgba(0,0,0,0.08)] font-sans text-slate-800 p-5 select-none overflow-y-auto"
+                  className="fixed top-0 right-0 h-full w-[280px] sm:w-[320px] bg-white/96 backdrop-blur-xl border-l border-slate-200/80 z-[50001] flex flex-col shadow-[-10px_0_30px_rgba(0,0,0,0.08)] font-sans text-slate-800 px-5 pb-5 pt-[calc(env(safe-area-inset-top,0px)+1.25rem)] select-none overflow-y-auto"
                 >
                   {/* Header */}
                   <div className="flex items-center justify-between border-b border-slate-100 pb-4 shrink-0 mb-6">
@@ -6062,8 +6075,9 @@ function AppContent() {
                           setIsMenuOpen(false);
                           setView('setting');
                         }}
-                        className="p-2 border border-slate-200 rounded-lg hover:bg-slate-50 hover:text-indigo-600 active:scale-95 transition-all cursor-pointer bg-white flex items-center justify-center text-slate-600 shadow-sm"
+                        className="min-h-10 min-w-10 p-2 border border-slate-200 rounded-lg hover:bg-slate-50 hover:text-indigo-600 active:scale-95 transition-all cursor-pointer bg-white flex items-center justify-center text-slate-600 shadow-sm touch-manipulation"
                         title={t('setting', language)}
+                        aria-label={t('setting', language)}
                       >
                         <Settings size={18} />
                       </button>

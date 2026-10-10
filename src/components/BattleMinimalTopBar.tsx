@@ -84,7 +84,7 @@ export const BattleMinimalTopBar: React.FC<BattleMinimalTopBarProps> = ({
   const isUrgent = turnSecondsRemaining <= 5;
 
   return (
-    <div className="w-full font-mono text-[10px] select-none space-y-1 relative z-30">
+    <div className="w-full font-mono text-[10px] select-none space-y-1 relative z-30 pt-[env(safe-area-inset-top,0px)]">
       {/* 1. Main 1-Line Status Row (ID 441, 526, 561, 501, 556, 506) */}
       <div className="flex items-center justify-between gap-1 bg-[#1a1717]/95 text-white border border-[#201d1d]/30 px-2 py-1 rounded-none shadow-xs backdrop-blur-xs">
         {/* Left: Hand & Deck & Graveyard Minimal Pill (ID 441, ID 506) */}
