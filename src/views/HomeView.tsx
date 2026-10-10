@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LogOut, Trophy, User, HelpCircle, BookOpen, Play, Newspaper, ArrowRight, X, ChevronLeft, ChevronRight, Tv, Mail, Bell, Volume2, VolumeX, Zap, Clock, Pause, PanelLeftClose, PanelLeftOpen, Layers, Image, Film, Github, Youtube, Gift } from "lucide-react";
+import { LogOut, Trophy, User, HelpCircle, BookOpen, Play, Newspaper, ArrowRight, X, ChevronLeft, ChevronRight, Tv, Mail, Bell, Volume2, VolumeX, Zap, Clock, Pause, PanelLeftClose, PanelLeftOpen, Layers, Image, Film, Github, Youtube, Gift, Smartphone } from "lucide-react";
 import { NotificationCenterModal } from "../components/NotificationCenterModal";
 import { getUnreadCount } from "../lib/notificationHelper";
 import { motion, AnimatePresence } from "motion/react";
@@ -18,6 +18,8 @@ import { NoticeModal } from "../components/NoticeModal";
 import { AfkPatrolModal } from "../components/AfkPatrolModal";
 import { Milestone600CelebrationModal } from "../components/Milestone600CelebrationModal";
 import { StarterPackModal } from "../components/StarterPackModal";
+import { PwaEventModal } from "../components/PwaEventModal";
+import { PwaRewardService } from "../lib/pwaRewardService";
 import { LobbyInteractiveCard } from "../components/LobbyInteractiveCard";
 import { PingIndicator } from "../components/PingIndicator";
 import { triggerHaptic } from "../lib/haptic";
@@ -91,6 +93,22 @@ export const HomeView: React.FC<HomeViewProps> = ({
   const [isStarterPackOpen, setIsStarterPackOpen] = useState(false);
   const [isStarterPackPurchased, setIsStarterPackPurchased] = useState(() => localStorage.getItem('hero_starter_pack_purchased') === 'true');
   const [dailyMissionProgress, setDailyMissionProgress] = useState<DailyMissionProgress>(() => loadDailyMissions());
+  // PWA 설치 & 알림 등록 이벤트 모달 상태
+  const [isPwaEventOpen, setIsPwaEventOpen] = useState(false);
+
+  // PWA 설치 & 알림 등록 이벤트 모달 자동 오픈 (오늘 하루 보지 않기 미적용 & 미수령 보상 존재 & 공지 닫힘 & Milestone 닫힘)
+  useEffect(() => {
+    if (isNoticeClosed && !isMilestone600Open) {
+      const isDismissed = PwaRewardService.isEventDismissedToday();
+      const allClaimed = PwaRewardService.areAllRewardsClaimed();
+      if (!isDismissed && !allClaimed) {
+        const timer = setTimeout(() => {
+          setIsPwaEventOpen(true);
+        }, 350);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [isNoticeClosed, isMilestone600Open]);
 
   useEffect(() => {
     const handleStarterPackUpdate = () => {
@@ -488,6 +506,23 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 >
                   <Gift size={13} className="text-[#201d1d] shrink-0" />
                   <span className="text-[11px] font-black tracking-tight">{language === 'ko' ? '[🎁 무료팩/특가]' : '[🎁 Free/Deals]'}</span>
+                </button>
+
+                {/* PWA 설치 & 알림 이벤트 버튼 (+200 SNS) */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic('selection');
+                    playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+                    setIsPwaEventOpen(true);
+                  }}
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-indigo-50 border border-indigo-400 text-indigo-950 font-bold text-xs cursor-pointer hover:bg-indigo-100 active:scale-95 transition-all"
+                  title={language === 'ko' ? 'PWA 앱 설치 & 웹푸시 알림 이벤트 (+200 SNS)' : 'PWA Install & Web Push Event (+200 SNS)'}
+                >
+                  <Smartphone size={13} className="text-indigo-700 shrink-0" />
+                  <span className="text-[11px] font-black tracking-tight">
+                    {language === 'ko' ? '[📱 PWA이벤트 +200]' : '[📱 PWA +200 SNS]'}
+                  </span>
                 </button>
 
                 {/* Ping Indicator */}
@@ -1101,6 +1136,15 @@ export const HomeView: React.FC<HomeViewProps> = ({
         onPurchased={() => {
           setIsStarterPackPurchased(true);
         }}
+      />
+
+      {/* PWA 설치 & 알림 등록 이벤트 모달 */}
+      <PwaEventModal
+        isOpen={isPwaEventOpen}
+        onClose={() => setIsPwaEventOpen(false)}
+        language={language}
+        playSfx={playSfx}
+        userDisplayName={user?.displayName}
       />
 
       {/* SCR-01-01: Mobile Thumb-Zone Floating '3-Second Instant Battle' FAB */}

@@ -253,3 +253,7 @@
 - `hero_stock_tpsl_orders_{season}`: 가상 주식 거래소 1-Tap 익절/손절(TP/SL) 자동 감시 예약 설정 저장
 - `hero_double_dividend_active`: 주식 거래소 주간 배당 2배 부스터(7일권) 활성화 상태 저장
 - `hero_shareholder_votes_{season}`: 주주총회 안건별 찬반 투표 기록 및 보너스 수령 상태 저장
+- `hero_pwa_install_reward_claimed`: PWA 앱 설치(홈 화면 추가) 보너스(+100 SNS) 수령 여부 저장
+- `hero_push_notification_reward_claimed`: 웹푸시 알림 등록 보너스(+100 SNS) 수령 여부 저장
+- `hero_pwa_event_modal_dismissed_at`: PWA/알림 이벤트 모달 24시간 오늘 하루 보지 않기 타임스탬프 저장
+

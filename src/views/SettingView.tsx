@@ -31,6 +31,8 @@ import { loadDailyMissions, getClaimableCount } from '../lib/dailyMissions';
 import { StaminaPacingManager } from '../lib/staminaPacingManager';
 import { WebPushService, type DevicePushStatus } from '../lib/webPushService';
 import { IosPwaInstallGuideModal } from '../components/IosPwaInstallGuideModal';
+import { useSns } from '../contexts/SnsContext';
+import { PwaRewardService } from '../lib/pwaRewardService';
 
 
 interface SettingViewProps {
@@ -104,6 +106,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
   testMode = false,
   localAiStatus
 }) => {
+  const { addSns } = useSns();
   const { language, setLanguage, lowSpecMode, setLowSpecMode, theme, setTheme, cardSkinTheme, setCardSkinTheme, targetFps, setTargetFps, batterySaver, setBatterySaver, hapticEnabled, setHapticEnabled } = useGameSettings();
   const [isJukeboxOpen, setIsJukeboxOpen] = useState(false);
   const perf = usePerformanceMode();
@@ -154,9 +157,13 @@ export const SettingView: React.FC<SettingViewProps> = ({
     try {
       const res = await WebPushService.registerWebPush(user?.displayName || undefined);
       if (res.success) {
+        const bonusClaimed = PwaRewardService.claimPushReward(addSns);
+        const bonusMsg = bonusClaimed 
+          ? (language === 'ko' ? ' (+100 SNS 이벤트 보너스 지급 완료!)' : ' (+100 SNS bonus claimed!)')
+          : '';
         setPushRegisterNotice(language === 'ko'
-          ? '✓ 웹푸시 등록 성공! 구글 시트에 토큰이 안전하게 저장되었습니다.'
-          : '✓ Web push registered! Token safely saved to Google Sheets.');
+          ? `✓ 웹푸시 등록 성공! 구글 시트에 토큰이 안전하게 저장되었습니다.${bonusMsg}`
+          : `✓ Web push registered! Token safely saved to Google Sheets.${bonusMsg}`);
       } else if (res.reason === 'ios_pwa_required') {
         setIsIosPwaGuideOpen(true);
       } else {
@@ -1697,7 +1704,11 @@ export const SettingView: React.FC<SettingViewProps> = ({
                 ) : (
                   <>
                     <Bell size={14} />
-                    <span>{language === 'ko' ? '[+] 웹푸시 알림받기 신청' : '[+] Opt-in Web Push Alerts'}</span>
+                    <span>
+                      {language === 'ko' 
+                        ? (!PwaRewardService.isPushRewardClaimed() ? '[+] 웹푸시 알림받기 (+100 SNS)' : '[+] 웹푸시 알림받기 신청') 
+                        : (!PwaRewardService.isPushRewardClaimed() ? '[+] Opt-in Web Push (+100 SNS)' : '[+] Opt-in Web Push Alerts')}
+                    </span>
                   </>
                 )}
               </button>
