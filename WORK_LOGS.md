@@ -2,6 +2,25 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-10 14:22 KST] [Google News 스프레드시트 실시간 갱신 파이프라인 고도화 & CORS/JSONP 우회 & 권한 상태 알림 구축]
+- **요청 사항**:
+  - 구글 뉴스 스프레드시트(`1CT5Yy1-i6kkOfx3d-Yw1osOEYbN7fkk8IDiI8Vm82vM`) 최신 뉴스가 실시간으로 갱신되지 않는 문제 해결.
+- **원인 규명**:
+  1. **스프레드시트 접근 권한 제한 (HTTP 401)**: 해당 구글 시트가 "비공개(소유자 계정 로그인 필요)" 상태로 설정되어 있어 외부 익명 HTTP 요청 시 Google 로그인 페이지(`accounts.google.com/ServiceLogin`)로 302 리디렉션 및 401 차단됨.
+  2. **브라우저 CORS 차단 취약성**: 일반적인 브라우저 `fetch()` 요청 시 CORS 정책으로 인해 구글 시트 응답이 원천 차단될 수 있는 파이프라인 구조.
+  3. **로컬 캐시 무효화 부재**: 기존 로컬스토리지 캐시(`hero_reddit_google_news_posts_v1`)로 인해 페이지 새로고침 시에도 기존 캐시 데이터가 우선 노출되는 현상.
+- **상세 구현 내역**:
+  1. **JSONP 및 다단계 CORS 우회 페일오버 풀 구축** ([`googleNewsSheetService.ts`](file:///Users/dayyoung/project/snshero/src/lib/reddit/googleNewsSheetService.ts)):
+     - 브라우저 스크립트 태그 기반 JSONP 통신(`fetchViaJsonp`) 엔진을 탑재하여 GViz 테이블 데이터를 CORS 제약 없이 직접 수신 및 파싱(`parseGvizTable`).
+     - Vite 프록시, JSONP, AllOrigins 프록시, Google Sheets gviz CSV, 웹 게시 CSV로 이어지는 5단계 페일오버 풀 구성.
+  2. **실시간 강제 새로고침(Force Refresh) 파이프라인 지원** ([`googleNewsSheetService.ts`](file:///Users/dayyoung/project/snshero/src/lib/reddit/googleNewsSheetService.ts), [`redditApiService.ts`](file:///Users/dayyoung/project/snshero/src/lib/reddit/redditApiService.ts)):
+     - `forceRefresh = true` 파라미터 지원: [실시간 갱신] 클릭 시 기존 로컬 캐시를 삭제하고 시트에서 최신 데이터를 즉시 강제 수신하도록 개선.
+  3. **권한 상태 실시간 감지 및 경고 UI 탑재** ([`RedditCommunityView.tsx`](file:///Users/dayyoung/project/snshero/src/views/RedditCommunityView.tsx)):
+     - HTTP 401/로그인 리디렉션 감지 시 `syncStatus: 'unauthorized'` 상태를 UI에 표시하고, 구글 시트 공유 권한("링크가 있는 모든 사용자 - 뷰어") 활성화 안내 뱃지 및 바로가기 링크 제공.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 오류 무결점 통과.
+  - `npm run build`: 정상 빌드 완료.
+
 ## [2026-10-10 13:48 KST] [Reddit 상단 구글광고 배너 1개 통일 & 가짜 댓글 전면 삭제 & 구글 시트 실시간 댓글 연동 시스템 구축 완료]
 - **요청 사항**:
   - 레딧 메인화면 상단 구글광고배너는 1개로 통일.

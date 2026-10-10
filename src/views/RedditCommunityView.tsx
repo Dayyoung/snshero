@@ -5,7 +5,7 @@
  */
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { RotateCw, Sparkles } from 'lucide-react';
+import { RotateCw, Sparkles, AlertCircle, ExternalLink } from 'lucide-react';
 import { 
   RedditPost, 
   RedditComment, 
@@ -17,6 +17,7 @@ import {
   SearchResults 
 } from '../lib/reddit/redditTypes';
 import { RedditApiService } from '../lib/reddit/redditApiService';
+import { GoogleNewsSheetService } from '../lib/reddit/googleNewsSheetService';
 import { translateRedditPosts, isNeedsTranslation } from '../lib/reddit/redditTranslationService';
 import { RedditGoogleSheetCommentService } from '../lib/reddit/redditGoogleSheetCommentService';
 import { 
@@ -125,7 +126,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
     try {
       const targetLang = userState.language || 'ko';
       await Promise.all([
-        RedditApiService.syncGoogleNews(targetLang),
+        RedditApiService.syncGoogleNews(targetLang, true),
         RedditGoogleSheetCommentService.fetchAllSheetComments(true),
       ]);
       setSyncTick((t) => t + 1);
@@ -604,30 +605,64 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
                   />
 
                   {/* 실시간 Reddit 피드 연동 상태 바 및 수동 새로고침 버튼 */}
-                  <div className={`flex items-center justify-between px-3 sm:px-3.5 py-2 mb-3 rounded-2xl text-[11px] font-semibold border shadow-sm transition-colors w-full max-w-full overflow-hidden ${
+                  <div className={`flex flex-col gap-1.5 px-3 sm:px-3.5 py-2 mb-3 rounded-2xl text-[11px] font-semibold border shadow-sm transition-colors w-full max-w-full overflow-hidden ${
                     isDark ? 'bg-[#181C1F] border-[#22272B] text-gray-300' : 'bg-white border-gray-200 text-gray-700'
                   }`}>
-                    <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 truncate">
-                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
-                      <span className="font-bold text-emerald-500 flex-shrink-0">
-                        {isKo ? '실시간 연동 중' : 'Live Stream'}
-                      </span>
-                      <span className="opacity-40">•</span>
-                      <span className="opacity-75 text-[11px] truncate">
-                        {posts.length}{isKo ? '개 포스트' : ' posts'}
-                      </span>
+                    <div className="flex items-center justify-between w-full">
+                      <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 truncate">
+                        <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${
+                          GoogleNewsSheetService.getSyncStatus() === 'unauthorized'
+                            ? 'bg-amber-500 animate-pulse'
+                            : 'bg-emerald-500 animate-pulse'
+                        }`} />
+                        <span className={`font-bold flex-shrink-0 ${
+                          GoogleNewsSheetService.getSyncStatus() === 'unauthorized'
+                            ? 'text-amber-500'
+                            : 'text-emerald-500'
+                        }`}>
+                          {GoogleNewsSheetService.getSyncStatus() === 'unauthorized'
+                            ? (isKo ? '구글시트 공유권한 확인 필요' : 'Sheet Auth Required')
+                            : (isKo ? '실시간 연동 중' : 'Live Stream')}
+                        </span>
+                        <span className="opacity-40">•</span>
+                        <span className="opacity-75 text-[11px] truncate">
+                          {posts.length}{isKo ? '개 포스트' : ' posts'}
+                        </span>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={handleSyncLive}
+                        disabled={isSyncingLive}
+                        className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full hover:bg-black/10 cursor-pointer disabled:opacity-50 transition-all font-bold text-[11px] text-[#FF4500] flex-shrink-0 ml-2"
+                        title={isKo ? '실시간 데이터 새로고침' : 'Refresh Live Data'}
+                      >
+                        <RotateCw className={`w-3.5 h-3.5 ${isSyncingLive ? 'animate-spin' : ''}`} />
+                        <span>{isSyncingLive ? (isKo ? '동기화 중...' : 'Syncing...') : (isKo ? '실시간 갱신' : 'Refresh')}</span>
+                      </button>
                     </div>
 
-                    <button
-                      type="button"
-                      onClick={handleSyncLive}
-                      disabled={isSyncingLive}
-                      className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full hover:bg-black/10 cursor-pointer disabled:opacity-50 transition-all font-bold text-[11px] text-[#FF4500] flex-shrink-0 ml-2"
-                      title={isKo ? '실시간 데이터 새로고침' : 'Refresh Live Data'}
-                    >
-                      <RotateCw className={`w-3.5 h-3.5 ${isSyncingLive ? 'animate-spin' : ''}`} />
-                      <span>{isSyncingLive ? (isKo ? '동기화 중...' : 'Syncing...') : (isKo ? '실시간 갱신' : 'Refresh')}</span>
-                    </button>
+                    {GoogleNewsSheetService.getSyncStatus() === 'unauthorized' && (
+                      <div className="flex items-center justify-between gap-2 pt-1.5 border-t border-amber-500/20 text-[10.5px] text-amber-500">
+                        <div className="flex items-center gap-1.5 truncate">
+                          <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
+                          <span className="truncate">
+                            {isKo 
+                              ? '구글 시트가 비공개(로그인 필요) 상태입니다. [공유 -> 링크가 있는 모든 사용자(뷰어)]로 설정 시 최신 뉴스가 실시간 반영됩니다.'
+                              : 'Spreadsheet is private. Set sharing to "Anyone with the link (Viewer)" to enable live updates.'}
+                          </span>
+                        </div>
+                        <a
+                          href="https://docs.google.com/spreadsheets/d/1CT5Yy1-i6kkOfx3d-Yw1osOEYbN7fkk8IDiI8Vm82vM/edit?usp=sharing"
+                          target="_blank"
+                          rel="noreferrer"
+                          className="flex items-center gap-1 underline font-bold flex-shrink-0 hover:text-amber-400"
+                        >
+                          <span>{isKo ? '시트 열기' : 'Open Sheet'}</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      </div>
+                    )}
                   </div>
 
                   {/* 피드 정렬 칩 및 뷰 모드 바 */}

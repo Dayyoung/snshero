@@ -33,8 +33,8 @@ export class RedditApiService {
   /**
    * 실시간 Google News 스프레드시트 피드 동기화 및 다국어 번역
    */
-  static async syncGoogleNews(targetLang: string = 'ko'): Promise<RedditPost[]> {
-    return GoogleNewsSheetService.getGoogleNewsPosts(targetLang);
+  static async syncGoogleNews(targetLang: string = 'ko', forceRefresh: boolean = false): Promise<RedditPost[]> {
+    return GoogleNewsSheetService.getGoogleNewsPosts(targetLang, forceRefresh);
   }
 
   /**
