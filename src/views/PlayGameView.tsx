@@ -5165,6 +5165,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     setWinner(null);
     setCheckingIdx(-1);
     setIsEvaluating(false);
+    hasRecordedResult.current = false;
     setShowOverwhelmingEffect(false);
     setShowStreakEffect(false);
     setCurrentWinStreakDisplay(0);

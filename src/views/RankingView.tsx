@@ -262,10 +262,6 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
   }, []);
 
   const myRanks = React.useMemo(() => {
-    if (!user || user.uid === 'guest-id' || rawUsers.length === 0) {
-      return { global: null, weekly: null, monthly: null, currentUserData: null };
-    }
-
     const sortField = sortBy === 'wins' ? 'wins' : 'totalPower';
     
     let basePool = [...rawUsers];
@@ -279,7 +275,8 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
     }
     basePool = basePool.slice(0, 50);
 
-    const globalIdx = basePool.findIndex(u => u.id === user.uid);
+    const isGuest = !user || user.uid === 'guest-id';
+    const globalIdx = (!isGuest && basePool.length > 0) ? basePool.findIndex(u => u.id === user.uid) : -1;
     const global = globalIdx !== -1 ? globalIdx + 1 : null;
 
     let weeklySorted = [...basePool].sort((a, b) => {
@@ -289,7 +286,7 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
       const bVal = b[sortField] + bOffset;
       return bVal - aVal;
     });
-    const weeklyIdx = weeklySorted.findIndex(u => u.id === user.uid);
+    const weeklyIdx = (!isGuest && weeklySorted.length > 0) ? weeklySorted.findIndex(u => u.id === user.uid) : -1;
     const weekly = weeklyIdx !== -1 ? weeklyIdx + 1 : null;
 
     let monthlySorted = [...basePool].sort((a, b) => {
@@ -299,14 +296,41 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
       const bVal = b[sortField] + bOffset;
       return bVal - aVal;
     });
-    const monthlyIdx = monthlySorted.findIndex(u => u.id === user.uid);
+    const monthlyIdx = (!isGuest && monthlySorted.length > 0) ? monthlySorted.findIndex(u => u.id === user.uid) : -1;
     const monthly = monthlyIdx !== -1 ? monthlyIdx + 1 : null;
 
-    const myIdx = basePool.findIndex(u => u.id === user.uid);
-    const myData = myIdx !== -1 ? basePool[myIdx] : null;
+    let myData = (!isGuest && basePool.length > 0) ? basePool.find(u => u.id === user.uid) || null : null;
+    
+    // 로컬스토리지 fallback: 게스트이거나 서버 동기화 이전이라도 내 실제 승/패/무 표시
+    if (!myData) {
+      try {
+        const rawStats = localStorage.getItem(`hero_stats_${currentSeason}`) || localStorage.getItem('hero_stats');
+        const parsedStats = rawStats ? JSON.parse(rawStats) : null;
+        const totalWins = parsedStats?.wins || 0;
+        const totalLosses = parsedStats?.losses || 0;
+        const totalDraws = parsedStats?.draws || 0;
+        const totalGames = totalWins + totalLosses + totalDraws;
+        const winRate = totalGames > 0 ? parseFloat(((totalWins / totalGames) * 100).toFixed(1)) : 0;
+        const myPower = parseInt(localStorage.getItem(`hero_totalPower_${currentSeason}`) || localStorage.getItem('hero_totalPower') || '1000', 10);
+        const mySns = parseInt(localStorage.getItem(`hero_sns_${currentSeason}`) || localStorage.getItem('hero_sns') || String(sns || 0), 10);
+        myData = {
+          id: user?.uid || 'guest-id',
+          name: user?.displayName || localStorage.getItem('hero_user_name') || (language === 'ko' ? '나 (Hunter)' : 'Me (Hunter)'),
+          wins: totalWins,
+          losses: totalLosses,
+          draws: totalDraws,
+          totalPower: myPower,
+          winRate: winRate,
+          sns: mySns,
+          language: language
+        };
+      } catch {
+        // ignore
+      }
+    }
 
     return { global, weekly, monthly, currentUserData: myData };
-  }, [rawUsers, user, sortBy, selectedLangFilter]);
+  }, [rawUsers, user, sortBy, selectedLangFilter, currentSeason, sns, language]);
 
   const { global: myGlobalRank, weekly: myWeeklyRank, monthly: myMonthlyRank, currentUserData } = myRanks;
 

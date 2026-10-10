@@ -4125,9 +4125,9 @@ function AppContent() {
 
       const newStatsObj = {
         ...prev,
-        wins: !isRobot && result === 'win' ? prev.wins + 1 : prev.wins,
-        losses: !isRobot && result === 'loss' ? prev.losses + 1 : prev.losses,
-        draws: !isRobot && result === 'draw' ? prev.draws + 1 : prev.draws,
+        wins: !isRobot && result === 'win' ? (prev.wins || 0) + 1 : (prev.wins || 0),
+        losses: !isRobot && result === 'loss' ? (prev.losses || 0) + 1 : (prev.losses || 0),
+        draws: !isRobot && result === 'draw' ? (prev.draws || 0) + 1 : (prev.draws || 0),
         winStreak: !isRobot && result === 'win' ? (prev.winStreak || 0) + 1 : 0,
         lossStreak: !isRobot && result === 'loss' ? (prev.lossStreak || 0) + 1 : 0,
         patterns: {
@@ -4138,8 +4138,49 @@ function AppContent() {
         }
       };
       newStats = newStatsObj;
+
+      // 단일 진실 공급원(Single Source of Truth): 즉시 LocalStorage 동기화
+      try {
+        localStorage.setItem('hero_stats', JSON.stringify(newStatsObj));
+        setSeasonItem('hero_stats', currentSeason, JSON.stringify(newStatsObj));
+        setSeasonItem('hero_stats_guest', currentSeason, JSON.stringify(newStatsObj));
+      } catch (err) {
+        console.error("Failed to persist hero_stats in recordMatchResult:", err);
+      }
+
       return newStatsObj;
     });
+
+    // 매치 히스토리(hero_match_history) 영구 보존
+    try {
+      const existingHistory = localStorage.getItem('hero_match_history');
+      const history = existingHistory ? JSON.parse(existingHistory) : [];
+      const oppName = opponentInfo?.name || (battleType === 'pvp_attack' ? '랭킹 라이벌' : 'AI Bot');
+      const oppId = opponentInfo?.id || `opp-${Date.now()}`;
+      const matchRecord = {
+        id: `match-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+        player1Id: effectiveUser?.uid || 'guest-id',
+        player1Name: effectiveUser?.displayName || '나',
+        player2Id: oppId,
+        player2Name: oppName,
+        winner: result === 'win' ? (effectiveUser?.uid || 'guest-id') : (result === 'loss' ? oppId : 'draw'),
+        winnerName: result === 'win' ? (effectiveUser?.displayName || '나') : (result === 'loss' ? oppName : '무승부'),
+        reward: reward,
+        timestamp: Date.now(),
+        battleType: battleType || 'pvp_attack'
+      };
+      const newHistory = [matchRecord, ...history].slice(0, 100);
+      localStorage.setItem('hero_match_history', JSON.stringify(newHistory));
+    } catch (err) {
+      console.error("Failed to persist hero_match_history:", err);
+    }
+
+    try {
+      window.dispatchEvent(new Event('snshero_stats_updated'));
+      window.dispatchEvent(new Event('snshero_match_history_updated'));
+    } catch {
+      // ignore
+    }
 
     // Update local SNS state immediately
     setSns(newSns);
@@ -5240,7 +5281,8 @@ function AppContent() {
             localAiStatus={localAiStatus}
           />
         );
-      case 'card-play':
+      case 'card-play': {
+        const isCurrentRankingMatch = Boolean(isPvpActive || pvpOpponent || cardPlayPreviousView === 'ranking' || (!mobileCardTargetId && !mobileCardTowerFloor && (mobileCardOppDeck || (mobileCardOppName && !mobileCardOppName.includes('스토리') && !mobileCardOppName.includes('보스')))));
         return (
           <MobileCardPlayScreen
             playerDeck={isPlaygroundMode ? playgroundDeck : currentDeck}
@@ -5248,7 +5290,7 @@ function AppContent() {
             opponentCustomDeck={mobileCardOppDeck}
             opponentName={mobileCardOppName}
             towerFloor={mobileCardTowerFloor}
-            isRankingMatch={Boolean(isPvpActive || pvpOpponent || cardPlayPreviousView === 'ranking' || (!mobileCardTargetId && !mobileCardTowerFloor && (mobileCardOppDeck || (mobileCardOppName && !mobileCardOppName.includes('스토리') && !mobileCardOppName.includes('보스')))))}
+            isRankingMatch={isCurrentRankingMatch}
             onBack={() => {
               setMobileCardTargetId(null);
               setMobileCardOppDeck(undefined);
@@ -5287,13 +5329,15 @@ function AppContent() {
             initialAutoBattle={isAutoBattle}
             onToggleAutoBattle={() => setIsAutoBattle(prev => !prev)}
             skills={getAggregatedSkills()}
-            recordMatchResult={(res) => {
+            recordMatchResult={(res, rewardOverride, patterns, battleTypeOverride, oppInfoOverride) => {
+              const finalBattleType = battleTypeOverride || (isCurrentRankingMatch || isPvpActive ? 'pvp_attack' : 'robot');
+              const finalOpp = oppInfoOverride || pvpOpponent || undefined;
               recordMatchResult(
                 res,
-                undefined,
-                undefined,
-                isPvpActive ? 'pvp_attack' : 'robot',
-                pvpOpponent || undefined
+                rewardOverride,
+                patterns,
+                finalBattleType,
+                finalOpp
               );
             }}
             onEarnXp={(amount: number) => {
@@ -5311,6 +5355,7 @@ function AppContent() {
             }}
           />
         );
+      }
       case 'play':
         return (
           <PlayGameView 

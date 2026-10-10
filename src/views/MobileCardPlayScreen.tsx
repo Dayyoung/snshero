@@ -41,7 +41,13 @@ export interface MobileCardPlayScreenProps {
   onToggleAutoBattle?: () => void;
   skills?: Skill[];
   onEarnXp?: (amount: number) => void;
-  recordMatchResult?: (result: 'win' | 'loss' | 'draw') => void;
+  recordMatchResult?: (
+    result: 'win' | 'loss' | 'draw',
+    rewardOverride?: number,
+    sessionPatterns?: any,
+    battleType?: 'robot' | 'user' | 'pvp_attack',
+    opponentInfo?: { id: string; name: string; sns?: number; wins?: number; losses?: number; draws?: number }
+  ) => void;
   autoCloseOnComplete?: boolean;
   isTutorialMode?: boolean;
   tutorialStep?: number;
@@ -421,8 +427,18 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
         setIsEvaluating(false);
 
         const calculatedResult: 'win' | 'loss' | 'draw' = winState === 'player' ? 'win' : (winState === 'ai' ? 'loss' : 'draw');
+        const currentBattleType: 'pvp_attack' | 'robot' = isRankingMatch ? 'pvp_attack' : 'robot';
+        const currentOppInfo = activeRankOpponent ? {
+          id: activeRankOpponent.id,
+          name: activeRankOpponent.name,
+          sns: activeRankOpponent.sns,
+          wins: activeRankOpponent.wins,
+          losses: activeRankOpponent.losses,
+          draws: activeRankOpponent.draws
+        } : (opponentName ? { id: `opp-${Date.now()}`, name: opponentName } : undefined);
+
         if (recordMatchResult && !matchResultReported) {
-          recordMatchResult(calculatedResult);
+          recordMatchResult(calculatedResult, undefined, undefined, currentBattleType, currentOppInfo);
           setMatchResultReported(true);
         }
 
@@ -430,7 +446,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
           playSound('win');
           const earnSns = 30;
           if (updateSns) updateSns(earnSns, 'battle_victory', 'earned');
-          if (updateStats) {
+          if (!recordMatchResult && updateStats) {
             updateStats({
               wins: (userStats?.wins || 0) + 1,
               winStreak: (userStats?.winStreak || 0) + 1
@@ -538,7 +554,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
           playSound('defeat');
           const earnSns = 10;
           if (updateSns) updateSns(earnSns, 'battle_defeat_reward', 'earned');
-          if (updateStats) {
+          if (!recordMatchResult && updateStats) {
             updateStats({
               losses: (userStats?.losses || 0) + 1,
               winStreak: 0
@@ -549,7 +565,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
           playSound('place');
           const earnSns = 15;
           if (updateSns) updateSns(earnSns, 'battle_draw', 'earned');
-          if (updateStats) {
+          if (!recordMatchResult && updateStats) {
             updateStats({ draws: (userStats?.draws || 0) + 1 });
           }
         }
@@ -682,13 +698,24 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     playSound('tap');
     setRematchCountdown(null);
     setTutorialShopCountdown(null);
+    setRankingSearchCountdown(null);
     if (gameOver && winner && recordMatchResult && !matchResultReported) {
       const calculatedResult: 'win' | 'loss' | 'draw' = winner === 'player' ? 'win' : (winner === 'ai' ? 'loss' : 'draw');
-      recordMatchResult(calculatedResult);
+      const currentBattleType: 'pvp_attack' | 'robot' = isRankingMatch ? 'pvp_attack' : 'robot';
+      const currentOppInfo = activeRankOpponent ? {
+        id: activeRankOpponent.id,
+        name: activeRankOpponent.name,
+        sns: activeRankOpponent.sns,
+        wins: activeRankOpponent.wins,
+        losses: activeRankOpponent.losses,
+        draws: activeRankOpponent.draws
+      } : (opponentName ? { id: `opp-${Date.now()}`, name: opponentName } : undefined);
+
+      recordMatchResult(calculatedResult, undefined, undefined, currentBattleType, currentOppInfo);
       setMatchResultReported(true);
     }
     onBack();
-  }, [gameOver, winner, recordMatchResult, matchResultReported, onBack, playSound]);
+  }, [gameOver, winner, recordMatchResult, matchResultReported, onBack, playSound, isRankingMatch, activeRankOpponent, opponentName]);
 
   useEffect(() => {
     if (!gameOver || !winner) return;
