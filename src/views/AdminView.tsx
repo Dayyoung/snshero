@@ -12,10 +12,11 @@ import { getUserCollectionName } from '../lib/utils';
 import { CARD_DATABASE } from '../cardDatabase';
 import { ITEM_DATABASE } from '../constants/itemDatabase';
 import { INITIAL_SKILLS, INITIAL_CARDS, syncCardWithDatabase } from '../constants';
-import { Zap, Search, Users, Cpu, BarChart3, LogOut, Save, Play, Calendar, Gauge, TrendingUp, HelpCircle, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Zap, Search, Users, Cpu, BarChart3, LogOut, Save, Play, Calendar, Gauge, TrendingUp, HelpCircle, X, ChevronLeft, ChevronRight, Bell, Radio, Send, CheckCircle2, RefreshCw } from 'lucide-react';
 import { ContentCalendarPanel } from '../components/admin/ContentCalendarPanel';
 import { ScaleupGateBoard } from '../components/admin/ScaleupGateBoard';
 import { AdminAnalyticsDashboard } from '../components/admin/AdminAnalyticsDashboard';
+import { WebPushService, type SheetPushSubscriber, type BroadcastLogItem } from '../lib/webPushService';
 
 interface AdminViewProps {
   language: Language;
@@ -88,7 +89,60 @@ export const AdminView: React.FC<AdminViewProps> = ({
   });
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [activeTab, setActiveTab] = useState<'users' | 'simulation' | 'status' | 'purchases' | 'calendar' | 'gates' | 'analytics'>('users');
+  const [activeTab, setActiveTab] = useState<'users' | 'simulation' | 'status' | 'purchases' | 'calendar' | 'gates' | 'analytics' | 'push'>('users');
+
+  // ─── 전체 웹푸시 발송 상태 (Google Sheets Push Broadcast) ───
+  const [sheetSubscribers, setSheetSubscribers] = useState<SheetPushSubscriber[]>([]);
+  const [isLoadingSubscribers, setIsLoadingSubscribers] = useState(false);
+  const [broadcastTitle, setBroadcastTitle] = useState('⚔️ [SNS히어로] 주말 시즌 랭킹 대전 & 보너스 오픈!');
+  const [broadcastBody, setBroadcastBody] = useState('지금 게임에 접속하여 일일 미션 보상과 한정판 SSR 카드팩을 획득하세요!');
+  const [broadcastUrl, setBroadcastUrl] = useState('/?view=card-play');
+  const [isBroadcasting, setIsBroadcasting] = useState(false);
+  const [broadcastResultMsg, setBroadcastResultMsg] = useState<string | null>(null);
+  const [broadcastLogs, setBroadcastLogs] = useState<BroadcastLogItem[]>(() => WebPushService.getBroadcastLogs());
+
+  const loadSheetSubscribers = useCallback(async () => {
+    setIsLoadingSubscribers(true);
+    try {
+      const list = await WebPushService.fetchRegisteredPushTokens();
+      setSheetSubscribers(list);
+    } catch (e) {
+      console.warn('Failed to load subscribers:', e);
+    } finally {
+      setIsLoadingSubscribers(false);
+    }
+  }, []);
+
+  const handleBroadcastPush = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!broadcastTitle.trim() || !broadcastBody.trim()) return;
+
+    setIsBroadcasting(true);
+    setBroadcastResultMsg(null);
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+
+    try {
+      const res = await WebPushService.broadcastPushMessage({
+        title: broadcastTitle.trim(),
+        body: broadcastBody.trim(),
+        url: broadcastUrl.trim() || '/',
+      });
+
+      if (res.success) {
+        setBroadcastResultMsg(
+          language === 'ko'
+            ? `✓ 구글 시트 등록 ${res.recipientCount}명의 기기에 전체 푸시 발송을 성공적으로 완료했습니다!`
+            : `✓ Broadcast push sent to ${res.recipientCount} registered devices successfully!`
+        );
+        setBroadcastLogs(WebPushService.getBroadcastLogs());
+      }
+    } catch (err: any) {
+      setBroadcastResultMsg(`❌ 발송 오류: ${err.message || '알 수 없는 오류'}`);
+    } finally {
+      setIsBroadcasting(false);
+    }
+  };
+
   const [showHelp, setShowHelp] = useState(false);
   // Dispatch global popup events so bottom nav hides while help is open
   useEffect(() => {
@@ -513,6 +567,17 @@ export const AdminView: React.FC<AdminViewProps> = ({
               >
                 <TrendingUp size={14} />
                 <span>{t('admin_menu_analytics', language)}</span>
+              </button>
+              <button
+                onClick={() => { setActiveTab('push'); loadSheetSubscribers(); }}
+                className={`w-full px-4 py-3 text-left text-xs font-bold uppercase tracking-wider rounded-2xl border transition-all flex items-center gap-3 active:scale-[0.98] cursor-pointer ${
+                  activeTab === 'push'
+                    ? 'border-indigo-500/50 text-white bg-indigo-600/10 shadow-[0_0_15px_rgba(79,70,229,0.15)]'
+                    : 'border-transparent text-slate-400 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                <Bell size={14} className="text-amber-400" />
+                <span>{language === 'ko' ? '전체 웹푸시 발송' : 'Web Push Broadcast'}</span>
               </button>
               
               <div className="mt-auto pt-4 border-t border-slate-800">
@@ -967,6 +1032,200 @@ export const AdminView: React.FC<AdminViewProps> = ({
               {/* Tab: Analytics KPI Dashboard */}
               {activeTab === 'analytics' && (
                 <AdminAnalyticsDashboard language={language} />
+              )}
+
+              {/* Tab: Web Push Broadcast (Google Sheets Synced) */}
+              {activeTab === 'push' && (
+                <div className="flex-1 space-y-6 font-mono text-slate-200">
+                  {/* 상단 통계 헤더 */}
+                  <div className="bg-slate-900/80 border border-slate-800 p-6 rounded-3xl space-y-4 shadow-xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="p-3 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-2xl">
+                          <Radio size={22} className="animate-pulse" />
+                        </div>
+                        <div>
+                          <h2 className="text-base font-extrabold text-white tracking-tight">
+                            {language === 'ko' ? '전체 웹푸시 발송 센터 (Google Sheets)' : 'WEB PUSH BROADCAST CENTER'}
+                          </h2>
+                          <p className="text-xs text-slate-400 mt-0.5">
+                            {language === 'ko'
+                              ? '설정화면에서 등록된 구글 시트의 푸시 토큰들을 조회하고 전체 브로드캐스트를 전송합니다.'
+                              : 'Broadcast push notifications to all users registered in Google Sheets.'}
+                          </p>
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={loadSheetSubscribers}
+                        disabled={isLoadingSubscribers}
+                        className="py-2 px-4 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold border border-slate-700 flex items-center gap-2 cursor-pointer transition-all self-start sm:self-auto"
+                      >
+                        <RefreshCw size={14} className={isLoadingSubscribers ? "animate-spin" : ""} />
+                        <span>{isLoadingSubscribers ? '시트 조회 중...' : '시트 실시간 새로고침'}</span>
+                      </button>
+                    </div>
+
+                    {/* 구독자 통계 그리드 */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                      <div className="p-4 bg-slate-950/60 border border-slate-800 rounded-2xl">
+                        <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">총 등록 구독자</span>
+                        <span className="text-2xl font-black text-amber-400 mt-1 block">
+                          {sheetSubscribers.length} <span className="text-xs text-slate-400 font-normal">명</span>
+                        </span>
+                      </div>
+                      <div className="p-4 bg-slate-950/60 border border-slate-800 rounded-2xl">
+                        <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">iOS (PWA) 기기</span>
+                        <span className="text-2xl font-black text-indigo-400 mt-1 block">
+                          {sheetSubscribers.filter(s => s.platform.toLowerCase().includes('ios')).length} <span className="text-xs text-slate-400 font-normal">명</span>
+                        </span>
+                      </div>
+                      <div className="p-4 bg-slate-950/60 border border-slate-800 rounded-2xl">
+                        <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Android 기기</span>
+                        <span className="text-2xl font-black text-emerald-400 mt-1 block">
+                          {sheetSubscribers.filter(s => s.platform.toLowerCase().includes('android')).length} <span className="text-xs text-slate-400 font-normal">명</span>
+                        </span>
+                      </div>
+                      <div className="p-4 bg-slate-950/60 border border-slate-800 rounded-2xl">
+                        <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">데스크톱 브라우저</span>
+                        <span className="text-2xl font-black text-cyan-400 mt-1 block">
+                          {sheetSubscribers.filter(s => !s.platform.toLowerCase().includes('ios') && !s.platform.toLowerCase().includes('android')).length} <span className="text-xs text-slate-400 font-normal">명</span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 푸시 메시지 발송 폼 */}
+                  <div className="bg-slate-900/80 border border-slate-800 p-6 rounded-3xl space-y-5 shadow-xl">
+                    <h3 className="text-sm font-black text-white uppercase tracking-wider flex items-center gap-2">
+                      <Send size={16} className="text-amber-400" />
+                      <span>{language === 'ko' ? '새 웹푸시 메시지 작성 및 전체 발송' : 'Compose & Send Broadcast Push'}</span>
+                    </h3>
+
+                    <form onSubmit={handleBroadcastPush} className="space-y-4">
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-bold text-slate-300">
+                          {language === 'ko' ? '푸시 알림 제목 (Title)' : 'Notification Title'}
+                        </label>
+                        <input
+                          type="text"
+                          value={broadcastTitle}
+                          onChange={(e) => setBroadcastTitle(e.target.value)}
+                          placeholder="⚔️ [SNS히어로] 공지 제목..."
+                          className="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-sm font-bold text-white outline-none focus:border-amber-500 transition-colors"
+                          required
+                        />
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-bold text-slate-300">
+                          {language === 'ko' ? '푸시 알림 본문 (Body)' : 'Notification Message'}
+                        </label>
+                        <textarea
+                          rows={3}
+                          value={broadcastBody}
+                          onChange={(e) => setBroadcastBody(e.target.value)}
+                          placeholder="알림 본문 내용을 입력하세요..."
+                          className="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-sm font-normal text-white outline-none focus:border-amber-500 transition-colors resize-none"
+                          required
+                        />
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-bold text-slate-300">
+                          {language === 'ko' ? '알림 클릭 시 이동 URL (Deep Link)' : 'Target Landing URL'}
+                        </label>
+                        <input
+                          type="text"
+                          value={broadcastUrl}
+                          onChange={(e) => setBroadcastUrl(e.target.value)}
+                          placeholder="/?view=card-play"
+                          className="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-sm font-mono text-slate-300 outline-none focus:border-amber-500 transition-colors"
+                        />
+                      </div>
+
+                      {broadcastResultMsg && (
+                        <div className="p-3 bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 rounded-xl text-xs font-bold flex items-center gap-2">
+                          <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
+                          <span>{broadcastResultMsg}</span>
+                        </div>
+                      )}
+
+                      <button
+                        type="submit"
+                        disabled={isBroadcasting || sheetSubscribers.length === 0}
+                        className="w-full py-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-sm uppercase rounded-2xl active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-amber-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {isBroadcasting ? (
+                          <>
+                            <RefreshCw size={18} className="animate-spin" />
+                            <span>전체 발송 진행 중...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Send size={18} />
+                            <span>
+                              {language === 'ko'
+                                ? `[🚀 구글 시트 등록 ${sheetSubscribers.length}명 전체 푸시 발송]`
+                                : `[🚀 Broadcast to ${sheetSubscribers.length} Subscribers]`}
+                            </span>
+                          </>
+                        )}
+                      </button>
+                    </form>
+                  </div>
+
+                  {/* 발송 히스토리 로그 테이블 */}
+                  <div className="bg-slate-900/80 border border-slate-800 p-6 rounded-3xl space-y-4 shadow-xl">
+                    <h3 className="text-sm font-black text-white uppercase tracking-wider">
+                      {language === 'ko' ? '최근 브로드캐스트 발송 히스토리' : 'Recent Broadcast Logs'}
+                    </h3>
+
+                    {broadcastLogs.length === 0 ? (
+                      <p className="text-xs text-slate-500 py-4 text-center">
+                        {language === 'ko' ? '아직 발송된 브로드캐스트 기록이 없습니다.' : 'No broadcast logs yet.'}
+                      </p>
+                    ) : (
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left text-xs border-collapse">
+                          <thead>
+                            <tr className="border-b border-slate-800 text-slate-400 text-[10px] uppercase">
+                              <th className="py-2 px-3">발송 일시</th>
+                              <th className="py-2 px-3">제목</th>
+                              <th className="py-2 px-3">본문</th>
+                              <th className="py-2 px-3">수신 대상</th>
+                              <th className="py-2 px-3">상태</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-slate-850">
+                            {broadcastLogs.map((log) => (
+                              <tr key={log.id} className="hover:bg-slate-800/40 text-slate-300">
+                                <td className="py-2.5 px-3 font-mono text-[10px] text-slate-400 whitespace-nowrap">
+                                  {new Date(log.sentAt).toLocaleString()}
+                                </td>
+                                <td className="py-2.5 px-3 font-bold text-white max-w-[160px] truncate">
+                                  {log.title}
+                                </td>
+                                <td className="py-2.5 px-3 text-slate-400 max-w-[220px] truncate">
+                                  {log.body}
+                                </td>
+                                <td className="py-2.5 px-3 font-mono text-amber-400 font-bold whitespace-nowrap">
+                                  {log.recipientCount}명
+                                </td>
+                                <td className="py-2.5 px-3">
+                                  <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-950 text-emerald-400 border border-emerald-500/40">
+                                    발송완료
+                                  </span>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                  </div>
+                </div>
               )}
 
             </div>

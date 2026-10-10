@@ -2,6 +2,41 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-10 14:55 KST] [설정 화면 웹푸시 알림받기 & iOS PWA 설치 가이드 모달 & 구글 시트 푸시 토큰 연동 및 관리자 전체 푸시 발송 파이프라인 구축]
+- **요청 사항**:
+  1. 설정화면에 웹푸시 알림받기 버튼 제작.
+  2. iOS인데 PWA(홈 화면 추가)가 아니면 설치해야 한다고 명확히 안내.
+  3. 웹푸시가 가능한 상황이면 구글 시트(`1o8rwdG_O_-efkKHgf9oMpFaOUnAAVxMQVfDldFavbjg`)에 해당 푸시 토큰 영구 저장.
+  4. 나중에 전체 푸시를 보낼 때 해당 구글 시트의 토큰 목록을 활용하여 발송할 수 있도록 구현.
+- **상세 구현 내역**:
+  1. **서비스 워커 웹푸시 이벤트 핸들러 장착** ([`sw.js`](file:///Users/dayyoung/project/snshero/public/sw.js)):
+     - 백그라운드 푸시 알림 수신(`push`) 이벤트 리스너 추가 (`showNotification`, 아이콘/뱃지/진동 옵션).
+     - 알림 클릭 시 활성 브라우저 창 포커스 또는 목표 URL로 새 탭 열기(`notificationclick`) 처리.
+  2. **웹푸시 통합 서비스 신설** ([`webPushService.ts`](file:///Users/dayyoung/project/snshero/src/lib/webPushService.ts)):
+     - 기기 및 브라우저 환경 실시간 진단 (`isIOS`, `isStandalone`, `needsIosPwaInstall`, `permission`, `hasRegisteredToken`).
+     - iOS 환경 감지: `iPad|iPhone|iPod` 또는 맥 패드 터치 환경 판별 및 PWA standalone 실행 여부 동시 확인.
+     - 권한 요청 및 푸시 토큰 생성 후 로컬스토리지(`hero_push_token`) 영구 저장.
+     - Google Form Response(`GOOGLE_FORM_PUSH_URL`)를 통해 구글 스프레드시트에 카테고리 `webpush_token`으로 토큰, 유저명, 플랫폼, 타임스탬프 비동기 영구 저장.
+     - 구글 시트 CSV(`GOOGLE_SHEET_PUSH_CSV_URL`)로부터 등록된 유효 토큰 목록 실시간 수집(`fetchRegisteredPushTokens`).
+     - 전체 브로드캐스트 푸시 발송(`broadcastPushMessage`) 및 내 기기 테스트 푸시 발송(`sendTestPushToSelf`).
+  3. **iOS 사파리 전용 PWA 설치 가이드 모달 구축** ([`IosPwaInstallGuideModal.tsx`](file:///Users/dayyoung/project/snshero/src/components/IosPwaInstallGuideModal.tsx)):
+     - OpenCode.ai 디자인 시스템(Monospace, Warm Cream/Ink, Flat Hairline) 준수.
+     - Apple iOS 정책(iOS 16.4+ 홈 화면 추가 필수) 안내 및 3단계 직관적 시각 가이드 (하단 공유 버튼 -> 홈 화면에 추가 -> 홈 화면 앱 아이콘 실행).
+  4. **설정 화면 웹푸시 UI 및 상호작용 탑재** ([`SettingView.tsx`](file:///Users/dayyoung/project/snshero/src/views/SettingView.tsx)):
+     - `[알림] 웹푸시 알림받기 설정` 섹션 추가.
+     - 디바이스 환경, 브라우저 권한, 구글 시트 연동 상태 실시간 대시보드 표시.
+     - `[+] 웹푸시 알림받기 신청` / `[+] 푸시 토큰 갱신 & 재등록` 버튼.
+     - iOS 브라우저 탭 실행 시 자동 감지하여 `IosPwaInstallGuideModal` 안내 팝업 실행.
+     - 등록 완료 시 `[테스트 알림 받기]` 원클릭 버튼 제공.
+  5. **관리자 화면 전체 웹푸시 발송 센터 신설** ([`AdminView.tsx`](file:///Users/dayyoung/project/snshero/src/views/AdminView.tsx)):
+     - 사이드바에 `[📢 전체 웹푸시 발송]` 탭 추가.
+     - 구글 시트에 저장된 푸시 토큰 실시간 조회 (총 등록자 수 및 iOS / Android / 데스크톱 디바이스별 통계).
+     - 푸시 알림 제목, 본문 내용, 이동 딥링크 URL 입력 폼.
+     - `[🚀 구글 시트 등록 전체 사용자에게 푸시 발송]` 버튼 및 실시간 발송 히스토리 로그 테이블 제공.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 오류 무결점 통과.
+  - `npm run build`: 정상 빌드 완료.
+
 ## [2026-10-10 14:50 KST] [자동 플레이 스마트 라이프사이클 구현 (전적 승패무 기록 정상화 & 상점 카드 뽑기 & 마이덱 자동 교체 강화 & 웹툰/동영상 기분전환 라운지)]
 - **요청 사항**:
   1. 자동 플레이 시 랭킹대전 승패무 전적이 기록되지 않던 버그 해결.

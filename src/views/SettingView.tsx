@@ -24,11 +24,13 @@ import { BgmJukeboxModal } from '../components/BgmJukeboxModal';
 import { triggerHaptic } from '../lib/haptic';
 import { checkAndSyncAppVersion, getLocalAppVersion, forcePurgeAndReload } from '../lib/versionManager';
 import { resetAllCaches } from '../lib/cacheManager';
-import { Smartphone, Music, RefreshCw, CheckCircle, ShieldCheck, SlidersHorizontal, CalendarCheck, Flame, Gift, ShoppingCart, Award, Sparkles } from 'lucide-react';
+import { Smartphone, Music, RefreshCw, CheckCircle, ShieldCheck, SlidersHorizontal, CalendarCheck, Flame, Gift, ShoppingCart, Award, Sparkles, Bell } from 'lucide-react';
 import { HapticVibrationSettingsModal } from '../components/HapticVibrationSettingsModal';
 import { DailyMissions } from '../components/DailyMissions';
 import { loadDailyMissions, getClaimableCount } from '../lib/dailyMissions';
 import { StaminaPacingManager } from '../lib/staminaPacingManager';
+import { WebPushService, type DevicePushStatus } from '../lib/webPushService';
+import { IosPwaInstallGuideModal } from '../components/IosPwaInstallGuideModal';
 
 
 interface SettingViewProps {
@@ -125,6 +127,59 @@ export const SettingView: React.FC<SettingViewProps> = ({
   const [isHapticModalOpen, setIsHapticModalOpen] = useState(false);
   const [isCheckingVersion, setIsCheckingVersion] = useState(false);
   const [versionCheckMsg, setVersionCheckMsg] = useState<string | null>(null);
+
+  // ─── 웹푸시 상태 및 모달 관리 ───
+  const [pushStatus, setPushStatus] = useState<DevicePushStatus>(() => WebPushService.getDeviceStatus());
+  const [isRegisteringPush, setIsRegisteringPush] = useState(false);
+  const [pushRegisterNotice, setPushRegisterNotice] = useState<string | null>(null);
+  const [isIosPwaGuideOpen, setIsIosPwaGuideOpen] = useState(false);
+  const [isSendingTestPush, setIsSendingTestPush] = useState(false);
+
+  useEffect(() => {
+    setPushStatus(WebPushService.getDeviceStatus());
+  }, []);
+
+  const handleRequestWebPush = async () => {
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+    const curStatus = WebPushService.getDeviceStatus();
+
+    // iOS인데 PWA가 아닌 경우: PWA 설치 안내 모달 표시
+    if (curStatus.needsIosPwaInstall) {
+      setIsIosPwaGuideOpen(true);
+      return;
+    }
+
+    setIsRegisteringPush(true);
+    setPushRegisterNotice(null);
+    try {
+      const res = await WebPushService.registerWebPush(user?.displayName || undefined);
+      if (res.success) {
+        setPushRegisterNotice(language === 'ko'
+          ? '✓ 웹푸시 등록 성공! 구글 시트에 토큰이 안전하게 저장되었습니다.'
+          : '✓ Web push registered! Token safely saved to Google Sheets.');
+      } else if (res.reason === 'ios_pwa_required') {
+        setIsIosPwaGuideOpen(true);
+      } else {
+        setPushRegisterNotice(res.message || (language === 'ko' ? '웹푸시 등록 실패' : 'Failed to register'));
+      }
+    } catch (e: any) {
+      setPushRegisterNotice(e.message || (language === 'ko' ? '등록 중 오류 발생' : 'Error occurred'));
+    } finally {
+      setIsRegisteringPush(false);
+      setPushStatus(WebPushService.getDeviceStatus());
+    }
+  };
+
+  const handleSendTestPush = async () => {
+    setIsSendingTestPush(true);
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+    try {
+      await WebPushService.sendTestPushToSelf();
+      setPushRegisterNotice(language === 'ko' ? '🔔 테스트 알림이 발송되었습니다.' : '🔔 Test alert dispatched.');
+    } finally {
+      setTimeout(() => setIsSendingTestPush(false), 800);
+    }
+  };
 
   // SCR-12-01: 3대 통합 서브 탭 ('system' | 'missions' | 'attendance')
   const [activeSubTab, setActiveSubTab] = useState<'system' | 'missions' | 'attendance'>('system');
@@ -1515,6 +1570,159 @@ export const SettingView: React.FC<SettingViewProps> = ({
 
 
 
+        {/* ─── Web Push Notification Settings (Google Sheets Synced) ─── */}
+        <section className="space-y-4 font-mono">
+          <div className="flex items-center justify-between border-b border-[#201d1d]/10 pb-3">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-[#201d1d] text-[#fdfcfc] rounded-xs">
+                <Bell size={18} />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold uppercase tracking-tight text-[#201d1d]">
+                  {language === 'ko' ? '[알림] 웹푸시 알림받기 설정' : '[PUSH] WEB PUSH NOTIFICATIONS'}
+                </h3>
+                <p className="text-[10px] text-[#201d1d]/60 font-medium">
+                  {language === 'ko'
+                    ? '새로운 이벤트, 시즌 랭킹 대전, 출석 보상을 실시간으로 수신합니다 (Google Sheets 영구 연동)'
+                    : 'Receive real-time alerts for events and rank battles (Google Sheets Synced)'}
+                </p>
+              </div>
+            </div>
+            {pushStatus.hasRegisteredToken ? (
+              <span className="px-2 py-0.5 bg-emerald-100 border border-emerald-500 text-emerald-800 text-[10px] font-bold">
+                {language === 'ko' ? '[✓ 등록됨]' : '[✓ REGISTERED]'}
+              </span>
+            ) : (
+              <span className="px-2 py-0.5 bg-amber-100 border border-amber-500 text-amber-800 text-[10px] font-bold">
+                {language === 'ko' ? '[미등록]' : '[INACTIVE]'}
+              </span>
+            )}
+          </div>
+
+          <div className="border border-[#201d1d]/15 bg-white p-4 space-y-3">
+            {/* 현재 상태 정보 그리드 */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-[11px]">
+              <div className="p-2 bg-[#fdfcfc] border border-[#201d1d]/10">
+                <span className="text-[#201d1d]/50 block text-[9px] uppercase">
+                  {language === 'ko' ? '디바이스 환경' : 'Platform'}
+                </span>
+                <span className="font-bold text-[#201d1d]">{pushStatus.platformName}</span>
+              </div>
+              <div className="p-2 bg-[#fdfcfc] border border-[#201d1d]/10">
+                <span className="text-[#201d1d]/50 block text-[9px] uppercase">
+                  {language === 'ko' ? '브라우저 권한' : 'Permission'}
+                </span>
+                <span className={cn(
+                  "font-bold uppercase",
+                  pushStatus.permission === 'granted' ? "text-emerald-700" : pushStatus.permission === 'denied' ? "text-rose-600" : "text-amber-600"
+                )}>
+                  {pushStatus.permission}
+                </span>
+              </div>
+              <div className="p-2 bg-[#fdfcfc] border border-[#201d1d]/10 col-span-2 sm:col-span-1">
+                <span className="text-[#201d1d]/50 block text-[9px] uppercase">
+                  {language === 'ko' ? '시트 저장 상태' : 'Sheet Status'}
+                </span>
+                <span className="font-bold text-indigo-700 truncate block">
+                  {pushStatus.hasRegisteredToken ? '✓ 구글 시트 영구 연동' : '대기 중 (미저장)'}
+                </span>
+              </div>
+            </div>
+
+            {/* 토큰 표시 (있을 때) */}
+            {pushStatus.token && (
+              <div className="p-2 bg-[#201d1d]/5 border border-[#201d1d]/10 text-[10px] flex items-center justify-between">
+                <span className="text-[#201d1d]/60 truncate max-w-[240px]">
+                  ID: <span className="text-[#201d1d] font-bold">{pushStatus.token}</span>
+                </span>
+                <span className="text-[9px] text-[#201d1d]/40">
+                  {pushStatus.registeredAt ? new Date(pushStatus.registeredAt).toLocaleDateString() : ''}
+                </span>
+              </div>
+            )}
+
+            {/* 알림 메시지 배너 */}
+            {pushRegisterNotice && (
+              <div className="p-2.5 bg-emerald-50 border border-emerald-300 text-emerald-900 text-xs font-bold flex items-center gap-1.5">
+                <CheckCircle2 size={14} className="shrink-0 text-emerald-600" />
+                <span>{pushRegisterNotice}</span>
+              </div>
+            )}
+
+            {/* iOS PWA 미설치 안내 배너 */}
+            {pushStatus.needsIosPwaInstall && (
+              <div className="p-2.5 bg-amber-50 border border-amber-300 text-amber-900 text-xs space-y-1">
+                <div className="flex items-center gap-1.5 font-bold">
+                  <AlertCircle size={14} className="text-amber-600" />
+                  <span>{language === 'ko' ? 'iOS PWA 홈 화면 추가 필요' : 'iOS PWA Install Required'}</span>
+                </div>
+                <p className="text-[11px] text-amber-800/90 leading-normal">
+                  {language === 'ko'
+                    ? 'Apple Safari 정책으로 인해, 홈 화면에 앱을 추가(PWA 설치)한 후에만 웹푸시를 수신할 수 있습니다.'
+                    : 'Safari policy requires adding this app to your Home Screen before receiving Web Push.'}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setIsIosPwaGuideOpen(true)}
+                  className="mt-1 text-[11px] underline font-bold text-amber-950 cursor-pointer block"
+                >
+                  {language === 'ko' ? '[▶ iOS 설치 가이드 확인하기]' : '[▶ View iOS Install Guide]'}
+                </button>
+              </div>
+            )}
+
+            {/* 조작 버튼 그룹 */}
+            <div className="flex flex-col sm:flex-row gap-2 pt-1">
+              <button
+                type="button"
+                onClick={handleRequestWebPush}
+                disabled={isRegisteringPush}
+                className={cn(
+                  "flex-1 min-h-[44px] py-2.5 px-4 font-bold text-xs uppercase transition-all flex items-center justify-center gap-2 cursor-pointer rounded-xs border",
+                  pushStatus.hasRegisteredToken
+                    ? "bg-white border-[#201d1d]/30 text-[#201d1d] hover:bg-slate-50"
+                    : "bg-[#201d1d] hover:bg-[#201d1d]/90 text-[#fdfcfc] border-[#201d1d] shadow-sm"
+                )}
+              >
+                {isRegisteringPush ? (
+                  <>
+                    <Loader2 size={14} className="animate-spin" />
+                    <span>{language === 'ko' ? '푸시 등록 및 시트 저장 중...' : 'Registering & Syncing...'}</span>
+                  </>
+                ) : pushStatus.hasRegisteredToken ? (
+                  <>
+                    <RefreshCw size={14} />
+                    <span>{language === 'ko' ? '[+] 푸시 토큰 갱신 & 재등록' : '[+] Refresh Push Token'}</span>
+                  </>
+                ) : (
+                  <>
+                    <Bell size={14} />
+                    <span>{language === 'ko' ? '[+] 웹푸시 알림받기 신청' : '[+] Opt-in Web Push Alerts'}</span>
+                  </>
+                )}
+              </button>
+
+              {pushStatus.hasRegisteredToken && (
+                <button
+                  type="button"
+                  onClick={handleSendTestPush}
+                  disabled={isSendingTestPush}
+                  className="min-h-[44px] py-2.5 px-4 bg-emerald-700 hover:bg-emerald-600 active:scale-[0.99] text-[#fdfcfc] font-bold text-xs uppercase cursor-pointer rounded-xs transition-all flex items-center justify-center gap-2 border border-emerald-800"
+                >
+                  <Send size={14} className={isSendingTestPush ? "animate-pulse" : ""} />
+                  <span>{language === 'ko' ? '[테스트 알림 받기]' : '[Send Test Alert]'}</span>
+                </button>
+              )}
+            </div>
+
+            <p className="text-[10px] text-[#201d1d]/50 leading-relaxed pt-1">
+              {language === 'ko'
+                ? '* 등록된 푸시 토큰은 Google Sheets(Form Response)에 안전하게 실시간 보관되며, 게임 공지 및 랭킹 대전 전체 푸시 발송 시 사용됩니다.'
+                : '* Registered tokens are stored in Google Sheets and utilized for game announcements and rank battle broadcasts.'}
+            </p>
+          </div>
+        </section>
+
         {/* ─── Policy & Trust Center (doc/29) ─── */}
         <section className="space-y-6">
           <div className="flex items-center gap-4">
@@ -2098,6 +2306,13 @@ export const SettingView: React.FC<SettingViewProps> = ({
       <HapticVibrationSettingsModal
         isOpen={isHapticModalOpen}
         onClose={() => setIsHapticModalOpen(false)}
+      />
+
+      {/* ─── iOS 웹푸시 PWA 설치 가이드 모달 ─── */}
+      <IosPwaInstallGuideModal
+        isOpen={isIosPwaGuideOpen}
+        onClose={() => setIsIosPwaGuideOpen(false)}
+        language={language}
       />
     </div>
   );
