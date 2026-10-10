@@ -107,10 +107,30 @@ export class GoogleNewsSheetService {
   /**
    * GViz DataTable JSON 구조를 RawGoogleNewsItem 배열로 변환
    */
+  /**
+   * GViz 응답 테이블을 파싱하여 RawGoogleNewsItem 배열로 변환 (스마트 컬럼 감지)
+   */
   private static parseGvizTable(data: any): RawGoogleNewsItem[] {
     if (!data || !data.table || !Array.isArray(data.table.rows)) {
       return [];
     }
+
+    const cols = Array.isArray(data.table.cols) ? data.table.cols : [];
+    let tsIdx = 0;
+    let titleIdx = 1;
+    let summaryIdx = 2;
+    let imgIdx = 3;
+    let srcIdx = 4;
+
+    // GViz cols 레이블 기반 스마트 인덱스 매핑
+    cols.forEach((c: any, idx: number) => {
+      const lbl = String(c?.label || '').toLowerCase();
+      if (lbl.includes('시간') || lbl.includes('일시') || lbl.includes('date') || lbl.includes('time') || lbl.includes('timestamp')) tsIdx = idx;
+      else if (lbl.includes('제목') || lbl.includes('title') || lbl.includes('headline')) titleIdx = idx;
+      else if (lbl.includes('요약') || lbl.includes('본문') || lbl.includes('summary') || lbl.includes('desc') || lbl.includes('content')) summaryIdx = idx;
+      else if (lbl.includes('이미지') || lbl.includes('image') || lbl.includes('photo') || lbl.includes('img')) imgIdx = idx;
+      else if (lbl.includes('링크') || lbl.includes('url') || lbl.includes('source') || lbl.includes('원문')) srcIdx = idx;
+    });
 
     const rows = data.table.rows;
     const items: RawGoogleNewsItem[] = [];
@@ -120,29 +140,28 @@ export class GoogleNewsSheetService {
       if (!r || !Array.isArray(r.c)) continue;
       const cells = r.c;
 
-      const timestamp = cells[0]?.f || cells[0]?.v ? String(cells[0]?.f || cells[0]?.v).trim() : '';
-      const title = cells[1]?.v ? String(cells[1].v).trim() : '';
-      const summary = cells[2]?.v ? String(cells[2].v).trim() : '';
-      const imageUrl = cells[3]?.v ? String(cells[3].v).trim() : '';
-      const sourceUrl = cells[4]?.v ? String(cells[4].v).trim() : '';
+      const title = cells[titleIdx]?.v ? String(cells[titleIdx].v).trim() : '';
+      if (!title || title === '제목' || title === 'Title') continue;
 
-      // 헤더 행("제목") 및 빈 제목 제외
-      if (title && title !== '제목' && title !== 'Title') {
-        items.push({
-          timestamp,
-          title,
-          summary,
-          imageUrl,
-          sourceUrl,
-        });
-      }
+      const timestamp = cells[tsIdx]?.f || cells[tsIdx]?.v ? String(cells[tsIdx]?.f || cells[tsIdx]?.v).trim() : '';
+      const summary = cells[summaryIdx]?.v ? String(cells[summaryIdx].v).trim() : '';
+      const imageUrl = cells[imgIdx]?.v ? String(cells[imgIdx].v).trim() : '';
+      const sourceUrl = cells[srcIdx]?.v ? String(cells[srcIdx].v).trim() : '';
+
+      items.push({
+        timestamp,
+        title,
+        summary,
+        imageUrl,
+        sourceUrl,
+      });
     }
 
     return items;
   }
 
   /**
-   * CSV 텍스트를 파싱하여 RawGoogleNewsItem 배열로 변환 (따옴표 및 줄바꿈 지원)
+   * CSV 텍스트를 파싱하여 RawGoogleNewsItem 배열로 변환 (스마트 헤더 분석 지원)
    */
   static parseCsv(csvText: string): RawGoogleNewsItem[] {
     const lines: string[] = [];
@@ -169,14 +188,11 @@ export class GoogleNewsSheetService {
 
     if (lines.length <= 1) return [];
 
-    const items: RawGoogleNewsItem[] = [];
-
-    for (let r = 1; r < lines.length; r++) {
-      const line = lines[r];
+    // 줄 파싱 헬퍼
+    const parseLineCols = (line: string): string[] => {
       const cols: string[] = [];
       let curCol = '';
       let inQuote = false;
-
       for (let c = 0; c < line.length; c++) {
         const ch = line[c];
         if (ch === '"') {
@@ -189,19 +205,45 @@ export class GoogleNewsSheetService {
         }
       }
       cols.push(curCol.trim());
+      return cols.map(c => c.replace(/^"|"$/g, '').replace(/""/g, '"').trim());
+    };
 
-      if (cols.length >= 2 && cols[1]) {
-        const title = (cols[1] || '').replace(/^"|"$/g, '').replace(/""/g, '"').trim();
-        if (title && title !== '제목' && title !== 'Title') {
-          items.push({
-            timestamp: (cols[0] || '').replace(/^"|"$/g, '').trim(),
-            title,
-            summary: (cols[2] || '').replace(/^"|"$/g, '').replace(/""/g, '"').trim(),
-            imageUrl: (cols[3] || '').replace(/^"|"$/g, '').trim(),
-            sourceUrl: (cols[4] || '').replace(/^"|"$/g, '').trim(),
-          });
-        }
-      }
+    // 헤더 행 분석
+    const headerCols = parseLineCols(lines[0]);
+    let tsIdx = 0;
+    let titleIdx = 1;
+    let summaryIdx = 2;
+    let imgIdx = 3;
+    let srcIdx = 4;
+
+    headerCols.forEach((col, idx) => {
+      const low = col.toLowerCase();
+      if (low.includes('시간') || low.includes('일시') || low.includes('date') || low.includes('time') || low.includes('timestamp') || low.includes('수집일시')) tsIdx = idx;
+      else if (low.includes('제목') || low.includes('title') || low.includes('headline')) titleIdx = idx;
+      else if (low.includes('요약') || low.includes('본문') || low.includes('summary') || low.includes('desc') || low.includes('내용')) summaryIdx = idx;
+      else if (low.includes('이미지') || low.includes('image') || low.includes('photo') || low.includes('사진') || low.includes('img')) imgIdx = idx;
+      else if (low.includes('링크') || low.includes('url') || low.includes('source') || low.includes('원문') || low.includes('출처')) srcIdx = idx;
+    });
+
+    const items: RawGoogleNewsItem[] = [];
+
+    for (let r = 1; r < lines.length; r++) {
+      const cols = parseLineCols(lines[r]);
+      const title = cols[titleIdx] || cols[1] || '';
+      if (!title || title === '제목' || title === 'Title') continue;
+
+      const timestamp = cols[tsIdx] || cols[0] || '';
+      const summary = cols[summaryIdx] || cols[2] || '';
+      const imageUrl = cols[imgIdx] || cols[3] || '';
+      const sourceUrl = cols[srcIdx] || cols[4] || '';
+
+      items.push({
+        timestamp,
+        title,
+        summary,
+        imageUrl,
+        sourceUrl,
+      });
     }
 
     return items;

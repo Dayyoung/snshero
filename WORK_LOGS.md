@@ -2,6 +2,21 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-10 23:56 KST] [Google News 스마트 헤더 감지 파서 탑재 & 모바일 드라이브 공유 권한 해제 안내 보강]
+- **요청 사항**:
+  - 구글 뉴스 스프레드시트(`1CT5Yy1-i6kkOfx3d-Yw1osOEYbN7fkk8IDiI8Vm82vM`) 최신 순으로 reddit에 표시.
+- **상세 구현 내역**:
+  1. **스마트 헤더 기반 동적 컬럼 파서 구축** ([`googleNewsSheetService.ts`](file:///Users/dayyoung/project/snshero/src/lib/reddit/googleNewsSheetService.ts)):
+     - CSV 및 GViz 파서에서 컬럼 위치 고정 대신 헤더 이름(일시/시간/timestamp, 제목/title/headline, 요약/본문/summary, 이미지/photo/img, 링크/url/source)을 자동 판별하여 동적으로 컬럼을 매핑하는 스마트 파싱 엔진 탑재.
+     - 시트의 컬럼 순서가 바뀌거나 추가 컬럼이 생겨도 제목, 일시, 본문, 이미지를 오차 없이 정확히 추출.
+  2. **밀리초 단위 타임스탬프 기반 최신순 엄격 정렬 유지**:
+     - `parseTimestampSafe`를 통해 수집 일시 기준 내림차순(`b.createdAt - a.createdAt`) 정렬 보장.
+  3. **모바일 Google Drive 앱(`usp=drivesdk`) 권한 해제 3단계 가이드 마련**:
+     - 사용자가 모바일 구글 드라이브 앱에서 링크를 복사 시 발생하는 401(제한됨) 권한 문제를 10초 만에 해결할 수 있도록 모바일 전용 안내 가이드 준비.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 오류 무결점 통과.
+  - `npm run build`: 성공 (43 static routes generation 정상 완료).
+
 ## [2026-10-10 23:42 KST] [Google News 스프레드시트 비공개(401) 차단 원인 해결 & 프록시 폴백 버그 수정 & 마운트 자동 동기화/폴링 구축]
 - **요청 사항**:
   - 구글 뉴스 시트는 업데이트되는데 레딧 뉴스는 갱신되지 않는 문제 원인 분석 및 해결.
