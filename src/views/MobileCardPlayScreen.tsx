@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   ArrowLeft, Zap, Shield, Flame, RotateCcw, Volume2, VolumeX, 
-  Sparkles, Check, Trophy, Award, Bot, RefreshCw, Star
+  Sparkles, Check, Trophy, Award, Bot, RefreshCw, Star,
+  Coffee, BookOpen, Film, Play, ShoppingBag, ArrowUpRight
 } from 'lucide-react';
 import { CardData, UserStats, Skill, Item, CardRarity } from '../types';
 import { CARD_DATABASE } from '../cardDatabase';
@@ -12,7 +13,8 @@ import {
   ensureUniqueDeck, 
   syncCardWithDatabase, 
   generateAiName, 
-  getCardPower 
+  getCardPower,
+  generateCard
 } from '../constants';
 import { cn, getCardSpriteStyle } from '../lib/utils';
 import { AdSenseBanner } from '../components/AdSenseBanner';
@@ -21,9 +23,12 @@ import { t } from '../lib/i18n';
 import { triggerRainbowFlip, RainbowFlipEffect } from '../components/RainbowFlipEffect';
 import { MissionDialogueIntro } from '../components/MissionDialogueIntro';
 import { pickNewRankOpponent, RankOpponentInfo } from '../data/rankingOpponents';
+import { WEBTOON_SEASONS } from '../content/webtoonEpisodes';
+import { MOVIE_EPISODES } from '../content/movieEpisodeMapping';
 
 export interface MobileCardPlayScreenProps {
   playerDeck?: CardData[];
+  onUpdateDeck?: (newDeck: CardData[]) => void;
   targetCardId?: number | null;
   opponentCustomDeck?: CardData[];
   opponentName?: string;
@@ -58,6 +63,7 @@ export interface MobileCardPlayScreenProps {
 
 export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
   playerDeck,
+  onUpdateDeck,
   targetCardId = null,
   opponentCustomDeck,
   opponentName,
@@ -169,6 +175,31 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
   const [activeRankOpponent, setActiveRankOpponent] = useState<RankOpponentInfo | null>(null);
   const [rankingSearchCountdown, setRankingSearchCountdown] = useState<number | null>(null);
 
+  // ─── 스마트 자동 라이프사이클 상태 (Auto LifeCycle Loop) ──────────
+  const [smartLifeCycleActive, setSmartLifeCycleActive] = useState<boolean>(true);
+  const [matchLoopCount, setMatchLoopCount] = useState<number>(0);
+  const [lifeCycleNotice, setLifeCycleNotice] = useState<{
+    text: string;
+    type: 'gacha' | 'upgrade' | 'break' | 'info';
+    timestamp: number;
+  } | null>(null);
+  const [showRefreshBreakModal, setShowRefreshBreakModal] = useState<boolean>(false);
+  const [refreshBreakType, setRefreshBreakType] = useState<'webtoon' | 'video'>('webtoon');
+  const [refreshBreakCountdown, setRefreshBreakCountdown] = useState<number | null>(null);
+  const [refreshEpisodeData, setRefreshEpisodeData] = useState<{
+    titleKo: string;
+    titleEn: string;
+    imageUrl?: string;
+    captionKo?: string;
+    captionEn?: string;
+    videoId?: string;
+  }>({
+    titleKo: '카단과 아케인의 메아리',
+    titleEn: 'Kadan & Arcane Echoes',
+    captionKo: '우직한 청년 카단의 모험이 아케인 대륙에서 펼쳐집니다.',
+    captionEn: 'The journey of young Kadan begins in the realm of Arcane.'
+  });
+
   // Mission Game 3s Dialogue Intro State
   const [showMissionDialogue, setShowMissionDialogue] = useState<boolean>(Boolean(effectiveTargetCardId));
 
@@ -273,6 +304,161 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
   useEffect(() => {
     initMatchDecks();
   }, [initMatchDecks]);
+
+  // ─── 스마트 자동 라이프사이클: 상점 뽑기 & 덱 자동 비교 교체 ───────
+  const triggerAutoGachaAndUpgrade = useCallback(() => {
+    const currentSns = sns || 0;
+    if (currentSns < 100) return null;
+
+    // 100 SNS 소모하여 상점 팩 뽑기
+    if (updateSns) {
+      updateSns(-100, 'auto_gacha_pack', 'spent');
+    }
+
+    // 카드 뽑기 (10% Gold, 30% Silver, 60% Bronze)
+    const roll = Math.random();
+    const rarity: CardRarity = roll < 0.10 ? 'gold' : (roll < 0.40 ? 'silver' : 'bronze');
+
+    const allDbCards = Object.values(CARD_DATABASE);
+    const pool = allDbCards.filter(c => (c.rarity || 'bronze').toLowerCase() === rarity.toLowerCase());
+    const pickedCard = pool.length > 0
+      ? pool[Math.floor(Math.random() * pool.length)]
+      : allDbCards[Math.floor(Math.random() * allDbCards.length)];
+
+    const cardId = pickedCard.id;
+    if (addCard) {
+      addCard(rarity, cardId, true);
+    }
+
+    const newCardData = syncCardWithDatabase({
+      ...pickedCard,
+      id: `auto-card-${cardId}-${Date.now()}`,
+      owner: 'player',
+      imageIndex: cardId
+    });
+
+    const newPower = getCardPower(newCardData);
+
+    // 현재 5장 덱과 파워 비교 (가장 약한 카드 탐색)
+    const curHand = playerHand.length === 5 ? playerHand : (playerDeck && playerDeck.length >= 5 ? playerDeck.slice(0, 5) : INITIAL_CARDS.slice(0, 5));
+    let minPowerIdx = 0;
+    let minPower = getCardPower(curHand[0]);
+
+    curHand.forEach((c, idx) => {
+      const p = getCardPower(c);
+      if (p < minPower) {
+        minPower = p;
+        minPowerIdx = idx;
+      }
+    });
+
+    const isUpgrade = newPower > minPower;
+    if (isUpgrade) {
+      const updatedDeck = [...curHand];
+      const replacedCard = updatedDeck[minPowerIdx];
+      updatedDeck[minPowerIdx] = syncCardWithDatabase({
+        ...newCardData,
+        id: `p-${minPowerIdx}-${Date.now()}`,
+        owner: 'player'
+      });
+
+      setPlayerHand(updatedDeck);
+      if (onUpdateDeck) {
+        onUpdateDeck(updatedDeck);
+      }
+
+      setLifeCycleNotice({
+        text: language === 'ko'
+          ? `⚡ [덱 자동 강화] #${cardId} ${pickedCard.title} (${newPower}PW) 장착! (기존 #${replacedCard.imageIndex ?? replacedCard.id} ${minPower}PW 교체)`
+          : `⚡ [Deck Auto-Upgraded] Equipped #${cardId} ${pickedCard.title_en || pickedCard.title} (${newPower}PW)!`,
+        type: 'upgrade',
+        timestamp: Date.now()
+      });
+      playSound('win');
+      return { card: newCardData, isUpgrade: true, replacedCard };
+    } else {
+      setLifeCycleNotice({
+        text: language === 'ko'
+          ? `🎁 [상점 뽑기 완료] #${cardId} ${pickedCard.title} (${newPower}PW) 획득! (현재 덱이 더 강력하여 보관)`
+          : `🎁 [Shop Draw] #${cardId} ${pickedCard.title_en || pickedCard.title} acquired (Existing deck is stronger).`,
+        type: 'gacha',
+        timestamp: Date.now()
+      });
+      playSound('tap');
+      return { card: newCardData, isUpgrade: false };
+    }
+  }, [sns, updateSns, addCard, playerHand, playerDeck, onUpdateDeck, language, playSound]);
+
+  // ─── 스마트 자동 라이프사이클: 웹툰/동영상 기분전환 라운지 ─────────
+  const triggerRefreshBreak = useCallback(() => {
+    // 50% 확률로 웹툰 or 비디오
+    const isWebtoon = Math.random() < 0.5;
+    const breakType: 'webtoon' | 'video' = isWebtoon ? 'webtoon' : 'video';
+    setRefreshBreakType(breakType);
+
+    if (isWebtoon) {
+      const s1 = WEBTOON_SEASONS[0];
+      const epCount = s1 ? s1.episodes.length : 1;
+      const randomEpIdx = Math.floor(Math.random() * Math.max(1, epCount));
+      const ep = s1?.episodes[randomEpIdx];
+      const panel = ep?.panels && ep.panels.length > 0 ? ep.panels[0] : null;
+      const pad = String(randomEpIdx + 1).padStart(2, '0');
+      const fallbackImg = `https://dayyoung.github.io/image/cartoon/episode_${pad}/00_SNSHERO_Episode_${pad}_title_card_202608311350.jpeg`;
+
+      setRefreshEpisodeData({
+        titleKo: ep ? `카단과 아케인의 메아리 제${ep.episodeNumber}화` : '카단과 아케인의 메아리',
+        titleEn: ep ? `Kadan & Arcane Echoes Ep.${ep.episodeNumber}` : 'Kadan & Arcane Echoes',
+        imageUrl: panel?.imageUrl || fallbackImg,
+        captionKo: panel?.narrationKo || '우직한 청년 카단의 모험이 아케인 대륙에서 펼쳐집니다.',
+        captionEn: panel?.narrationEn || 'The journey of young Kadan begins in the realm of Arcane.'
+      });
+    } else {
+      const epEntries = Object.entries(MOVIE_EPISODES);
+      const randomEntry = epEntries[Math.floor(Math.random() * epEntries.length)];
+      const epMeta = randomEntry ? randomEntry[1] : MOVIE_EPISODES[1];
+      setRefreshEpisodeData({
+        titleKo: `시즌 공식 애니메이션: ${epMeta.titleKo}`,
+        titleEn: `Official Anime: ${epMeta.titleEn}`,
+        videoId: epMeta.videoId || 'L01HUesRGvQ',
+        captionKo: `${epMeta.titleKo} — 화려한 영웅들의 시네마틱 컷씬`,
+        captionEn: `${epMeta.titleEn} — Cinematic highlight`
+      });
+    }
+
+    setRefreshBreakCountdown(4);
+    setShowRefreshBreakModal(true);
+    setLifeCycleNotice({
+      text: language === 'ko'
+        ? `☕ [기분전환 타임] ${isWebtoon ? '웹툰' : '동영상'} 감상으로 멘탈 충전 중... (+10 SNS 보너스)`
+        : `☕ [Refresh Break] Enjoying ${isWebtoon ? 'Webtoon' : 'Video'}... (+10 SNS Bonus)`,
+      type: 'break',
+      timestamp: Date.now()
+    });
+  }, [language]);
+
+  // 기분전환 4초 카운트다운 타이머 제어
+  useEffect(() => {
+    if (!showRefreshBreakModal || refreshBreakCountdown === null) return;
+    if (refreshBreakCountdown <= 0) {
+      setShowRefreshBreakModal(false);
+      setRefreshBreakCountdown(null);
+      // 힐링 보너스 +10 SNS 지급
+      if (updateSns) {
+        updateSns(10, 'mental_refresh_bonus', 'earned');
+      }
+      playSound('win');
+      // 다음 랭킹 상대 검색 시작
+      const nextOpp = pickNewRankOpponent(activeRankOpponent?.name || effectiveOpponentName);
+      setActiveRankOpponent(nextOpp);
+      setRankingSearchCountdown(3);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setRefreshBreakCountdown(prev => (prev !== null ? prev - 1 : null));
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [showRefreshBreakModal, refreshBreakCountdown, updateSns, playSound, activeRankOpponent?.name, effectiveOpponentName]);
 
   // ─── Score Computation ─────────────────────────────────────────────
   const score = useMemo(() => {
@@ -778,22 +964,36 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       return;
     }
 
-    // 4) 랭킹대전인 경우: 승패 결정 시 바로 재시작하지 않고 1.2초 후 다시 3초 검색하고 시작!
+    // 4) 랭킹대전인 경우: 스마트 자동 라이프사이클 (상점 뽑기 & 덱 강화, 기분전환 라운지, 다음 매치) 실행!
     if (isRankingMatch) {
       setTutorialShopCountdown(null);
       setRematchCountdown(null);
       const searchTimer = setTimeout(() => {
-        const nextOpp = pickNewRankOpponent(activeRankOpponent?.name || effectiveOpponentName);
-        setActiveRankOpponent(nextOpp);
-        setRankingSearchCountdown(3);
-      }, 1200);
+        // [1] 일정 수준 SNS(100+)가 모이면 상점 뽑기 진행 및 덱 자동 교체
+        if (smartLifeCycleActive && (sns || 0) >= 100) {
+          triggerAutoGachaAndUpgrade();
+        }
+
+        const nextCount = matchLoopCount + 1;
+        setMatchLoopCount(nextCount);
+
+        // [2] 매 4번째 경기 완료 시 가끔 웹툰/동영상 시청으로 기분전환 타임!
+        if (smartLifeCycleActive && nextCount > 0 && nextCount % 4 === 0) {
+          triggerRefreshBreak();
+        } else {
+          // [3] 일반 대전: 새로운 상대 검색 후 3초 뒤 매치 개시
+          const nextOpp = pickNewRankOpponent(activeRankOpponent?.name || effectiveOpponentName);
+          setActiveRankOpponent(nextOpp);
+          setRankingSearchCountdown(3);
+        }
+      }, 1400);
       return () => clearTimeout(searchTimer);
     }
 
     // 5) 미션 게임 또는 일반 모드: 2초 후 재대결
     setTutorialShopCountdown(null);
     setRematchCountdown(2);
-  }, [gameOver, winner, isTutorialMode, tutorialStep, autoCloseOnComplete, towerBossClearModal, isRankingMatch, activeRankOpponent?.name, effectiveOpponentName]);
+  }, [gameOver, winner, isTutorialMode, tutorialStep, autoCloseOnComplete, towerBossClearModal, isRankingMatch, activeRankOpponent?.name, effectiveOpponentName, smartLifeCycleActive, sns, triggerAutoGachaAndUpgrade, matchLoopCount, triggerRefreshBreak]);
 
   // 랭킹대전: 3초 검색 카운트다운 후 새로운 상대와 매치 시작
   useEffect(() => {
@@ -893,6 +1093,53 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
           </button>
         </div>
       </header>
+
+      {/* ─── 스마트 자동 라이프사이클 HUD 바 (Smart LifeCycle Bar) ───────── */}
+      {isRankingMatch && (
+        <div 
+          id="smart-lifecycle-hud"
+          className="w-full px-2 py-1 bg-[#0c101a] border-b border-stone-800 flex items-center justify-between shrink-0 text-[10px] text-stone-300 font-mono gap-1 z-20"
+        >
+          <div className="flex items-center gap-1.5 truncate">
+            <span className="px-1 py-0.2 bg-amber-500/20 text-amber-300 border border-amber-500/40 font-black rounded-xs text-[9px] shrink-0 flex items-center gap-0.5">
+              <Bot size={10} className="animate-spin text-amber-300" />
+              <span>LOOP</span>
+            </span>
+            <span className="font-bold text-stone-300 truncate">
+              ⚔️ {language === 'ko' ? `매치 (${matchLoopCount % 4}/4)` : `Match (${matchLoopCount % 4}/4)`}
+            </span>
+            <span className="text-amber-400 font-bold shrink-0">
+              🪙 {sns} SNS {sns >= 100 ? '🎁[뽑기대기]' : ''}
+            </span>
+            <span className="text-stone-400 shrink-0 hidden sm:inline">
+              ☕ {4 - (matchLoopCount % 4)}판 후 기분전환
+            </span>
+          </div>
+
+          <div className="flex items-center gap-1 shrink-0">
+            {lifeCycleNotice && (
+              <span className="px-1.5 py-0.5 bg-stone-900 border border-amber-500/40 text-amber-300 rounded-xs text-[9px] max-w-[130px] sm:max-w-[180px] truncate animate-pulse">
+                {lifeCycleNotice.text}
+              </span>
+            )}
+            <button
+              type="button"
+              onClick={() => {
+                setSmartLifeCycleActive(prev => !prev);
+                playSound('tap');
+              }}
+              className={cn(
+                "px-1.5 py-0.5 rounded-xs text-[9px] font-bold border transition-colors cursor-pointer",
+                smartLifeCycleActive 
+                  ? "bg-emerald-950 text-emerald-300 border-emerald-500/40" 
+                  : "bg-stone-900 text-stone-500 border-stone-700"
+              )}
+            >
+              {smartLifeCycleActive ? '루프:ON' : '루프:OFF'}
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* ─── 1. 상단 광고 (Top Ad Banner: max 48px) ────────────────── */}
       <div 
@@ -1580,6 +1827,126 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                 className="mt-4 w-full py-2 bg-stone-900 hover:bg-stone-800 text-stone-300 hover:text-white border border-stone-700 rounded-none font-bold text-xs uppercase cursor-pointer active:scale-95 transition-all"
               >
                 {language === 'ko' ? '매칭 취소 및 나가기' : 'Cancel & Exit'}
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ─── 스마트 자동 라이프사이클: 웹툰/동영상 기분전환 힐링 모달 ── */}
+      <AnimatePresence>
+        {showRefreshBreakModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[230] bg-black/92 backdrop-blur-md flex flex-col items-center justify-center p-4 font-mono select-none"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 15 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 15 }}
+              className="w-full max-w-sm bg-[#0b1017] border-2 border-emerald-500/80 p-5 rounded-none shadow-[0_0_40px_rgba(16,185,129,0.3)] flex flex-col items-center text-center relative overflow-hidden"
+            >
+              {/* 상단 뱃지 & 아이콘 */}
+              <div className="flex items-center gap-2 mb-2">
+                <span className="p-1.5 bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 rounded-xs">
+                  {refreshBreakType === 'webtoon' ? <BookOpen size={16} /> : <Film size={16} />}
+                </span>
+                <span className="text-xs font-black text-emerald-400 tracking-wider uppercase">
+                  {refreshBreakType === 'webtoon' ? '[☕ 웹툰 기분전환 라운지]' : '[🎬 시네마 힐링 라운지]'}
+                </span>
+              </div>
+
+              <h3 className="text-sm font-black text-white truncate max-w-full">
+                {language === 'ko' ? refreshEpisodeData.titleKo : refreshEpisodeData.titleEn}
+              </h3>
+
+              {/* 미디어 뷰 영역 */}
+              {refreshBreakType === 'webtoon' ? (
+                <div className="relative w-full h-44 bg-stone-900 border border-stone-800 rounded-none overflow-hidden my-3 flex items-center justify-center">
+                  {refreshEpisodeData.imageUrl ? (
+                    <img
+                      src={refreshEpisodeData.imageUrl}
+                      alt="Webtoon Panel"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex flex-col items-center text-stone-500">
+                      <BookOpen size={32} />
+                      <span className="text-xs mt-2">{language === 'ko' ? '웹툰 컷 로딩 중...' : 'Loading panel...'}</span>
+                    </div>
+                  )}
+                  <div className="absolute inset-x-0 bottom-0 bg-black/85 p-2 text-[10px] text-emerald-200 text-left line-clamp-2 border-t border-emerald-500/20">
+                    💬 {language === 'ko' ? refreshEpisodeData.captionKo : refreshEpisodeData.captionEn}
+                  </div>
+                </div>
+              ) : (
+                <div className="relative w-full h-44 bg-stone-900 border border-stone-800 rounded-none overflow-hidden my-3">
+                  {refreshEpisodeData.videoId ? (
+                    <iframe
+                      src={`https://www.youtube-nocookie.com/embed/${refreshEpisodeData.videoId}?autoplay=1&mute=1&controls=0&playsinline=1`}
+                      title="Episode Video"
+                      className="w-full h-full border-0 pointer-events-none"
+                      allow="autoplay; encrypted-media"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex flex-col items-center justify-center text-stone-500">
+                      <Film size={32} />
+                      <span className="text-xs mt-2">{language === 'ko' ? '영상 로딩 중...' : 'Loading video...'}</span>
+                    </div>
+                  )}
+                  <div className="absolute inset-x-0 bottom-0 bg-black/85 p-2 text-[10px] text-emerald-200 text-left line-clamp-1 border-t border-emerald-500/20">
+                    🎬 {language === 'ko' ? refreshEpisodeData.captionKo : refreshEpisodeData.captionEn}
+                  </div>
+                </div>
+              )}
+
+              {/* 보너스 및 카운트다운 */}
+              <div className="w-full bg-stone-900/80 border border-stone-800 p-2.5 rounded-none flex items-center justify-between text-xs">
+                <span className="text-stone-300 flex items-center gap-1.5">
+                  <Coffee size={14} className="text-amber-400" />
+                  <span>{language === 'ko' ? '기분전환 보너스' : 'Refresh Bonus'}</span>
+                </span>
+                <span className="font-bold text-amber-400 text-xs">
+                  +10 SNS 지급 완료
+                </span>
+              </div>
+
+              {/* 카운트다운 바 */}
+              <div className="w-full mt-3">
+                <div className="w-full bg-stone-800 h-1.5 overflow-hidden">
+                  <motion.div
+                    className="h-full bg-emerald-500"
+                    initial={{ width: '100%' }}
+                    animate={{ width: `${((refreshBreakCountdown ?? 4) / 4) * 100}%` }}
+                    transition={{ duration: 0.5 }}
+                  />
+                </div>
+                <p className="text-[11px] text-stone-400 mt-2">
+                  {language === 'ko'
+                    ? `${refreshBreakCountdown ?? 0}초 후 랭킹대전 자동 복귀`
+                    : `Returning to battle in ${refreshBreakCountdown ?? 0}s`}
+                </p>
+              </div>
+
+              {/* 즉시 복귀 버튼 */}
+              <button
+                type="button"
+                onClick={() => {
+                  playSound('tap');
+                  setShowRefreshBreakModal(false);
+                  setRefreshBreakCountdown(null);
+                  if (updateSns) {
+                    updateSns(10, 'mental_refresh_bonus', 'earned');
+                  }
+                  const nextOpp = pickNewRankOpponent(activeRankOpponent?.name || effectiveOpponentName);
+                  setActiveRankOpponent(nextOpp);
+                  setRankingSearchCountdown(3);
+                }}
+                className="mt-4 w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-stone-950 font-black text-xs uppercase cursor-pointer active:scale-95 transition-all rounded-xs shadow-md"
+              >
+                {language === 'ko' ? '⚡ 힐링 완료! 즉시 랭킹대전 복귀' : '⚡ Return to Battle Now'}
               </button>
             </motion.div>
           </motion.div>

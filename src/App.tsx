@@ -5291,6 +5291,22 @@ function AppContent() {
             opponentName={mobileCardOppName}
             towerFloor={mobileCardTowerFloor}
             isRankingMatch={isCurrentRankingMatch}
+            onUpdateDeck={(newDeck) => {
+              if (isPlaygroundMode) {
+                setPlaygroundDeck(newDeck);
+              } else {
+                setCurrentDeck(newDeck);
+              }
+              try {
+                const season = currentSeason || 'season1';
+                localStorage.setItem('hero_deck', JSON.stringify(newDeck));
+                setSeasonItem('hero_deck', season, JSON.stringify(newDeck));
+                setSeasonItem('hero_deck_guest', season, JSON.stringify(newDeck));
+                window.dispatchEvent(new Event('snshero_deck_updated'));
+              } catch (e) {
+                console.error("Failed to persist updated deck:", e);
+              }
+            }}
             onBack={() => {
               setMobileCardTargetId(null);
               setMobileCardOppDeck(undefined);
