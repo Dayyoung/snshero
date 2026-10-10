@@ -2,6 +2,33 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-10 14:50 KST] [자동 플레이 스마트 라이프사이클 구현 (전적 승패무 기록 정상화 & 상점 카드 뽑기 & 마이덱 자동 교체 강화 & 웹툰/동영상 기분전환 라운지)]
+- **요청 사항**:
+  1. 자동 플레이 시 랭킹대전 승패무 전적이 기록되지 않던 버그 해결.
+  2. 자동 플레이 시 너무 랭킹대전만 반복하여 단조롭던 플레이 경험 개선:
+     - 일정 수준 SNS(100 SNS) 도달 시 상점에서 카드팩 뽑기 자동 수행.
+     - 기존 덱보다 더 높은 파워의 카드를 획득한 경우 마이덱의 최저 파워 카드와 자동 교체/장착.
+     - 가끔(매 4회 배틀 주기) 웹툰 컷 감상 또는 애니메이션/영상 시청을 통한 기분전환(Mental Refresh) 휴식 후 랭킹대전 복귀.
+- **상세 구현 내역**:
+  1. **전적(승/패/무) 실시간 동기 기록 버그 수정** ([`App.tsx`](file:///Users/dayyoung/project/snshero/src/App.tsx), [`MobileCardPlayScreen.tsx`](file:///Users/dayyoung/project/snshero/src/views/MobileCardPlayScreen.tsx), [`PlayGameView.tsx`](file:///Users/dayyoung/project/snshero/src/views/PlayGameView.tsx)):
+     - `recordMatchResult`에서 승/무/패 스탯 증감 및 `hero_stats`, `hero_match_history` 로컬스토리지 영구 저장을 즉시 수행하고 커스텀 이벤트(`snshero_stats_updated`)를 디스패치하여 랭킹 및 프로필에 즉각 반영.
+     - 배틀 종료 시 구버전 클로저 기반 덮어쓰기 로직을 전면 제거하고 중앙 동기화 게이트웨이 호출로 통일.
+     - 연속 대전(Rematch) 시 중복 방지 플래그(`hasRecordedResult.current = false`) 리셋 추가.
+  2. **100 SNS 도달 시 상점 뽑기 & 마이덱 자동 강화 교체 엔진 탑재** ([`MobileCardPlayScreen.tsx`](file:///Users/dayyoung/project/snshero/src/views/MobileCardPlayScreen.tsx), [`App.tsx`](file:///Users/dayyoung/project/snshero/src/App.tsx)):
+     - 자동 랭킹 배틀 루프 중 보유 SNS가 100 이상이면 자동으로 상점 가차(`addCard`) 실행 (골드 10%, 실버 30%, 브론즈 60%).
+     - 획득한 카드의 파워와 현재 플레이어 덱 5장의 최소 파워 카드를 실시간 비교.
+     - 신규 카드가 더 우수한 경우, 즉시 슬롯을 교체 장착하고 `onUpdateDeck` 콜백을 통해 App 전역 덱 및 로컬스토리지(`hero_deck`)에 즉각 영구 동기화.
+     - 상단에 HUD 실시간 알림(`⚡ [덱 자동 강화]`, `🎁 [상점 뽑기 완료]`) 표시.
+  3. **웹툰 & 동영상 기분전환(Mental Refresh) 힐링 라운지 모달 구축** ([`MobileCardPlayScreen.tsx`](file:///Users/dayyoung/project/snshero/src/views/MobileCardPlayScreen.tsx)):
+     - 매 4회 배틀 루프마다 50% 확률로 웹툰 에피소드 패널 컷(`WEBTOON_SEASONS`) 또는 공식 애니메이션 영상(`MOVIE_EPISODES`)을 감상하는 힐링 라운지 진입.
+     - 4초 카운트다운 타이머와 함께 +10 SNS 멘탈 힐링 보너스 지급.
+     - 스마트폰 최적화 게이지 프로그레스 바 및 `[⚡ 힐링 완료! 즉시 랭킹대전 복귀]` 원터치 스킵 버튼 제공.
+  4. **스마트 자동 라이프사이클 HUD 바 제공**:
+     - 상단에 현재 배틀 카운트, 보유 SNS, 기분전환 카운트다운 알림 및 원클릭 `[루프:ON / OFF]` 토글 스위치 제공.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 오류 무결점 통과.
+  - `npm run build`: 정상 빌드 완료.
+
 ## [2026-10-10 14:30 KST] [Reddit 커뮤니티 기본 피드 정렬 최신순(New) 적용 & 날짜 파싱 고도화 완료]
 - **요청 사항**:
   - 레딧 기본 정렬을 최신순으로 표시.
