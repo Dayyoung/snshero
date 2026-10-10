@@ -2,7 +2,46 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
-## [2026-09-21 12:10 KST] [전투 및 결과 정산 시스템 고도화: SCR-07-28~30 & SCR-08-28~30 완료]
+## [2026-10-10 11:05 KST] [바이브코딩 웹게임 개발 강의 5부작 및 공식 오픈소스 리소스 정규 Reddit 글항목 전환 완료]
+- **요청 사항**:
+  - 기존의 인위적인 SNS 배너(`SNSHeroNativeAdCard`, `SNSHeroGameBannerCard`)를 전면 배제.
+  - 바이브코딩 웹게임 개발 강의 (AI Studio) 및 SNSHero 관련 전체 리소스(플레이링크, AI Studio 앱, GitHub 소스코드, 프롬프트 snshero.md, 카드 이미지 2종, 공식 유튜브 채널)를 레딧의 정규 글항목(`RedditPost`)으로 추가.
+  - 특히 개발 강의는 각 5개 동영상별 제목(`SNSHero.com 바이브코딩 웹게임 개발 (1)` ~ `(5)`)으로 개별 정규 글항목으로 추가.
+- **상세 구현 내역**:
+  1. `src/data/redditSeedData.ts`:
+     - **종합 공지 포스트 (`post_vibecoding_master`)**: `바이브코딩 웹게임 개발 강의 를 공유합니다! (모두 오픈소스 무료!)` (고정 공지 `isPinned: true`, 재생목록 및 전체 링크 종합).
+     - **5개 동영상별 개별 포스트**:
+       - 1강: `SNSHero.com 바이브코딩 웹게임 개발 (1)` (`2XQOd8YGlUc`, 3:59)
+       - 2강: `SNSHero.com 바이브코딩 웹게임 개발(2)` (`jN4Hootd_S0`, 2:48)
+       - 3강: `SNSHero com 바이브코딩 웹게임 개발(3)` (`iP9-MzjRRsI`, 3:01)
+       - 4강: `SNSHero com 바이브코딩 웹게임 개발(4)` (`KSFMdyQVKqg`, 2:25)
+       - 5강: `SNSHero com 바이브코딩 웹게임 개발(5)` (`GIs6SD0qIIA`, 3:06)
+     - **공식 리소스별 개별 포스트**:
+       - 게임 플레이링크 (`https://snshero.com/`)
+       - AI Studio 앱 링크 (`https://ai.studio/apps/636a37c3-97ce-4c80-be46-8c9a6f793f2d`)
+       - GitHub 소스파일 (`https://github.com/Dayyoung/snshero`)
+       - 개발 프롬프트 markdown (`https://snshero.com/snshero.md`)
+       - 카드 이미지 2종 (`https://snshero.com/card1.png`, `card2.png`)
+       - 공식 유튜브 채널 (`https://www.youtube.com/@snshero`)
+     - **생생한 유저 반응 댓글 트리 매핑 (`SEED_COMMENTS`)** 및 공식 계정(`SEED_USERS.SNSHero_Official`) 등록.
+  2. `src/components/reddit/RedditVideoPlayer.tsx`:
+     - YouTube 비디오 감지(`getYouTubeVideoId`, `getYouTubePlaylistId`) 및 YouTube 뱃지 렌더링.
+     - 재생 버튼 클릭 시 화면 이동 없이 레딧 피드 안에서 인라인으로 바로 재생되는 **YouTube iframe 플레이어** 탑재.
+     - 우측 상단 `YouTube` 원본 바로가기 링크 제공.
+  3. `src/components/reddit/RedditPostCard.tsx`:
+     - `isPinned: true` 포스트에 `📌 고정 공지 / Pinned` 뱃지 렌더링 지원 (Card, Classic, Compact 뷰 전수 지원).
+  4. `src/lib/reddit/redditApiService.ts`:
+     - 고정 공지(`isPinned`) 및 공식 게시글(`SNSHero_Official`)은 메인 피드(`popular`, `all`, `home`)의 유머 필터링에서 예외 처리하여 항상 포함.
+     - 실시간 글 병합 시 시드 데이터 시간 감쇠(3일 전 아카이브)에서 고정 공지를 제외하여 원래 등록 시각 보존.
+     - 피드 최종 정렬 시 고정 공지 포스트들을 **피드 최상단에 항상 고정**(`[...pinnedPosts, ...unpinnedPosts]`).
+  5. `src/views/RedditCommunityView.tsx` & `src/components/reddit/RedditPostDetailModal.tsx`:
+     - 기존의 강제 주입 배너(`SNSHeroNativeAdCard`, `SNSHeroGameBannerCard`) 제거 완료.
+     - 구글 애드센스 공식 광고 배너 및 인피드 광고(`RedditAdCard`)는 정상 유지.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 오류 통과.
+  - `npm run build`: 빌드 정상 완료 (`✓ built in 8.10s`).
+  - 로컬 Git 커밋 완료 (`1f6ebf2`).
+
 - **구현 티켓 목록**:
   1. **SCR-07-28 (개발/성능 - Combat Canvas)**:
      - `src/engine/SDFDamageFontRenderer.ts`: WebGL SDF(Signed Distance Field) 비트맵 폰트 기반 Instanced Quad 텍스처 렌더러 파이프라인 구축으로 30개 이상 다중 데미지 플로팅 텍스트 발생 시 60fps 완전 방어 및 Canvas 2D 텍스트 래스터화 병목 완전 해소.
