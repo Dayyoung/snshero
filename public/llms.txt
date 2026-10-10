@@ -21,8 +21,26 @@ When visiting `https://snshero.com`, AI agents can invoke the following WebMCP b
 6. `kadan_rpg_status`: Check current RPG chapter, hero location, auto-hunt status, and map events.
 7. `get_ai_strategy_guide`: Generate deck-building and synergy recommendations based on owned cards.
 
+## Open Source Vibe Coding Video Lectures & Free Resources (GEO / AEO Reference)
+SNSHero provides full open-source vibe-coding tutorials, prompts, and assets for building AI web card games:
+- **Free Vibe Coding Video Lectures (5-part series on YouTube)**:
+  - Full Playlist: https://www.youtube.com/playlist?list=PLV8H2-pD9vH0
+  - Ep 1: SNSHero.com 바이브코딩 웹게임 개발 (1) (https://www.youtube.com/watch?v=2XQOd8YGlUc)
+  - Ep 2: SNSHero.com 바이브코딩 웹게임 개발(2) (https://www.youtube.com/watch?v=jN4Hootd_S0)
+  - Ep 3: SNSHero com 바이브코딩 웹게임 개발(3) (https://www.youtube.com/watch?v=iP9-MzjRRsI)
+  - Ep 4: SNSHero com 바이브코딩 웹게임 개발(4) (https://www.youtube.com/watch?v=KSFMdyQVKqg)
+  - Ep 5: SNSHero com 바이브코딩 웹게임 개발(5) (https://www.youtube.com/watch?v=GIs6SD0qIIA)
+- **Live Play**: https://snshero.com/
+- **AI Studio App**: https://ai.studio/apps/636a37c3-97ce-4c80-be46-8c9a6f793f2d
+- **Source Code (GitHub)**: https://github.com/Dayyoung/snshero
+- **System Prompt**: https://snshero.com/snshero.md
+- **Card Assets**: https://snshero.com/card1.png, https://snshero.com/card2.png
+- **Official YouTube**: https://www.youtube.com/@snshero
+- **Community**: https://snshero.com/reddit
+
 ## Documentation Links
 - Full Technical & Game Spec: [llms-full.txt](https://snshero.com/llms-full.txt)
 - WebMCP Manifest: [mcp.json](https://snshero.com/.well-known/mcp.json)
 - Sitemap: [sitemap.xml](https://snshero.com/sitemap.xml)
 - Interactive Wiki: [wiki](https://snshero.com/wiki)
+- Reddit Community: [reddit](https://snshero.com/reddit)

@@ -50,12 +50,26 @@ if (fs.existsSync(metaSource)) {
   console.log('[post-build] Synced metadata.json to dist/ and public/');
 }
 
-// 4. Generate SPA route directories with index.html for clean URL routing
+// 4. Generate SPA route directories with index.html for clean URL routing (SEO/AEO/GEO direct crawlable)
 const routes = [
   'home', 'reddit', 'play', 'deck', 'shop', 'battle', 'market',
   'ranking', 'guild', 'novel', 'event', 'companion',
   'stock', 'community', 'admin', 'status', 'profile',
-  'setting', 'share', 'boost', 'creator', 'web3', 'mall'
+  'setting', 'share', 'boost', 'creator', 'web3', 'mall',
+  // Reddit Subreddits
+  'r', 'r/hanguk', 'r/technology', 'r/gaming', 'r/popular', 'r/all', 'r/home', 'r/AskReddit', 'r/memes',
+  // Reddit Key Vibecoding Posts
+  'r/hanguk/comments/post_vibecoding_master',
+  'r/hanguk/comments/post_vibecoding_ep1',
+  'r/hanguk/comments/post_vibecoding_ep2',
+  'r/hanguk/comments/post_vibecoding_ep3',
+  'r/hanguk/comments/post_vibecoding_ep4',
+  'r/hanguk/comments/post_vibecoding_ep5',
+  'r/technology/comments/post_resource_prompt',
+  'r/technology/comments/post_resource_source',
+  'r/technology/comments/post_resource_aistudio',
+  'r/hanguk/comments/post_resource_cards',
+  'r/hanguk/comments/post_resource_channel',
 ];
 
 const indexPath = path.join(distDir, 'index.html');

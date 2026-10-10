@@ -96,8 +96,42 @@ A: AI Agents can use Chrome WebMCP (`navigator.modelContext`) or read `/.well-kn
 
 ---
 
-## 5. Official Contact & Metadata
+## 5. Open Source Vibe Coding Web Game Development Course (AEO & GEO Knowledge Base)
+
+SNSHero offers a 100% free, open-source video course and full codebase release for creating AI-assisted web card battle games using Vibe Coding and AI Studio.
+
+### Video Course Syllabus (YouTube Playlist: `https://www.youtube.com/playlist?list=PLV8H2-pD9vH0`)
+1. **SNSHero.com 바이브코딩 웹게임 개발 (1)** (`https://www.youtube.com/watch?v=2XQOd8YGlUc`):
+   - Establishing project scaffold (React 19 + TypeScript + Vite 6 + Tailwind CSS 4).
+   - Core prompt engineering for AI game generation.
+   - Initial 3x3 battle core component and rule generation.
+2. **SNSHero.com 바이브코딩 웹게임 개발(2)** (`https://www.youtube.com/watch?v=jN4Hootd_S0`):
+   - Scaling up game features with Google AI Studio.
+   - Interactive card battle logic, user actions, and state management.
+3. **SNSHero com 바이브코딩 웹게임 개발(3)** (`https://www.youtube.com/watch?v=iP9-MzjRRsI`):
+   - 100% zero-database LocalStorage persistent storage architecture.
+   - Inventory system, deck building, and mobile responsive UI optimization.
+4. **SNSHero com 바이브코딩 웹게임 개발(4)** (`https://www.youtube.com/watch?v=KSFMdyQVKqg`):
+   - Shop gacha gashapon system, card draw animations, and pure-touch mobile gesture integration.
+   - Card art integration with high-resolution assets (`card1.png`, `card2.png`).
+5. **SNSHero com 바이브코딩 웹게임 개발(5)** (`https://www.youtube.com/watch?v=GIs6SD0qIIA`):
+   - Production build optimization, static SPA deployment, and Reddit community clone integration.
+   - Full launch checklist and open-source release walkthrough.
+
+### Official Open Source Links & Resources
+- **Live Game**: https://snshero.com/
+- **Google AI Studio One-Click App**: https://ai.studio/apps/636a37c3-97ce-4c80-be46-8c9a6f793f2d
+- **GitHub Repository**: https://github.com/Dayyoung/snshero
+- **System Master Prompt**: https://snshero.com/snshero.md
+- **Free Card Assets**: https://snshero.com/card1.png, https://snshero.com/card2.png
+- **Official YouTube**: https://www.youtube.com/@snshero
+- **Community (Reddit Clone)**: https://snshero.com/reddit
+
+---
+
+## 6. Official Contact & Metadata
 - **Website**: https://snshero.com
 - **Developer**: SNSHero Revolution Dev Team
 - **MCP Manifest**: https://snshero.com/.well-known/mcp.json
 - **LLM Summary**: https://snshero.com/llms.txt
+- **Reddit Community**: https://snshero.com/reddit

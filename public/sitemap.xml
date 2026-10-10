@@ -207,4 +207,126 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://snshero.com/wiki/tip"/>
   </url>
 
+  <!-- ======================================================== -->
+  <!-- SNSHero Reddit Community (SEO / AEO / GEO Optimized)     -->
+  <!-- ======================================================== -->
+  <url>
+    <loc>https://snshero.com/reddit</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/hanguk</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/technology</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/gaming</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <!-- Vibecoding Web Game Development Lectures (YouTube 5-part Course) -->
+  <url>
+    <loc>https://snshero.com/r/hanguk/comments/post_vibecoding_master</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://i.ytimg.com/vi/2XQOd8YGlUc/hqdefault.jpg</image:loc>
+      <image:title>바이브코딩 웹게임 개발 강의 (AI Studio) 전체 오픈소스 무료 공유</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/hanguk/comments/post_vibecoding_ep1</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://i.ytimg.com/vi/2XQOd8YGlUc/hqdefault.jpg</image:loc>
+      <image:title>SNSHero.com 바이브코딩 웹게임 개발 (1)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/hanguk/comments/post_vibecoding_ep2</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://i.ytimg.com/vi/jN4Hootd_S0/hqdefault.jpg</image:loc>
+      <image:title>SNSHero.com 바이브코딩 웹게임 개발(2)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/hanguk/comments/post_vibecoding_ep3</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://i.ytimg.com/vi/iP9-MzjRRsI/hqdefault.jpg</image:loc>
+      <image:title>SNSHero com 바이브코딩 웹게임 개발(3)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/hanguk/comments/post_vibecoding_ep4</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://i.ytimg.com/vi/KSFMdyQVKqg/hqdefault.jpg</image:loc>
+      <image:title>SNSHero com 바이브코딩 웹게임 개발(4)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/hanguk/comments/post_vibecoding_ep5</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://i.ytimg.com/vi/GIs6SD0qIIA/hqdefault.jpg</image:loc>
+      <image:title>SNSHero com 바이브코딩 웹게임 개발(5)</image:title>
+    </image:image>
+  </url>
+
+  <!-- Open Source Resources & Developer Links -->
+  <url>
+    <loc>https://snshero.com/r/technology/comments/post_resource_prompt</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/technology/comments/post_resource_source</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/technology/comments/post_resource_aistudio</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/hanguk/comments/post_resource_cards</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/hanguk/comments/post_resource_channel</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
 </urlset>

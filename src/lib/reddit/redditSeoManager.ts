@@ -103,8 +103,18 @@ export class RedditSeoManager {
     this.setMetaTag('name', 'twitter:description', desc);
     this.setMetaTag('name', 'twitter:image', imageUrl);
 
-    // Q&A 형태(AskReddit 등) 포스트는 AEO(Answer Engine Optimization) QAPage 적용
+    // 1) Q&A 형태(AskReddit 등 질문형) 포스트는 AEO(Answer Engine Optimization) QAPage 적용
     const isQnA = post.subreddit.toLowerCase() === 'askreddit' || post.title.trim().endsWith('?');
+    // 2) 유튜브 등 비디오 포스트는 VideoObject 및 미디어 메타데이터 추가
+    const isVideo = post.media?.type === 'video' && Boolean(post.media?.url);
+
+    if (isVideo && post.media?.url) {
+      this.setMetaTag('property', 'og:video', post.media.url);
+      this.setMetaTag('property', 'og:video:type', 'text/html');
+      this.setMetaTag('name', 'twitter:card', 'player');
+    } else {
+      this.setMetaTag('name', 'twitter:card', 'summary_large_image');
+    }
 
     let jsonLd: Record<string, unknown>;
 
@@ -122,6 +132,44 @@ export class RedditSeoManager {
           author: {
             '@type': 'Person',
             name: post.author,
+          },
+        },
+      };
+    } else if (isVideo && post.media?.url) {
+      // 비디오 포스트: Google Video Search & GEO 동영상 리치 스니펫 (VideoObject)
+      jsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'VideoObject',
+        name: post.title,
+        description: post.body ? post.body.slice(0, 300) : post.title,
+        thumbnailUrl: [post.media.previewUrl || imageUrl],
+        uploadDate: new Date(post.createdAt).toISOString(),
+        contentUrl: post.media.url,
+        embedUrl: post.media.url.includes('watch?v=')
+          ? post.media.url.replace('watch?v=', 'embed/')
+          : post.media.url,
+        interactionStatistic: [
+          {
+            '@type': 'InteractionCounter',
+            interactionType: 'https://schema.org/WatchAction',
+            userInteractionCount: post.score,
+          },
+          {
+            '@type': 'InteractionCounter',
+            interactionType: 'https://schema.org/CommentAction',
+            userInteractionCount: post.commentCount,
+          },
+        ],
+        author: {
+          '@type': 'Person',
+          name: post.author,
+        },
+        publisher: {
+          '@type': 'Organization',
+          name: 'SNSHero',
+          logo: {
+            '@type': 'ImageObject',
+            url: 'https://snshero.com/logo.jpg',
           },
         },
       };
