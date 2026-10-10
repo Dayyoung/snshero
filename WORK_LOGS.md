@@ -2,6 +2,25 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-10 11:10 KST] [Reddit 커뮤니티 전 게시글 SEO / AEO / GEO 및 정적 라우트 프리렌더링 전면 강화 완료]
+- **요청 사항**: Reddit 커뮤니티의 모든 게시글이 검색엔진 최적화(SEO), 인공지능 답변 엔진 최적화(AEO), 생성형 AI 검색 최적화(GEO)를 철저히 고려하여 배포되는지 점검 및 완벽 보강.
+- **상세 구현 및 보강 내역**:
+  1. **동적 메타데이터 & Schema.org 구조화 데이터 엔진 (`src/lib/reddit/redditSeoManager.ts`)**:
+     - **SEO (Search Engine Optimization)**: 글 제목, 본문 요약, 대표 이미지(`og:image`), 원본 URL(`og:url`), 트위터 카드(`twitter:card`, `twitter:title`, `twitter:description`, `twitter:image`), 표준 캐노니컬 동적 자동 주입.
+     - **AEO (Answer Engine Optimization)**: Q&A 형식(AskReddit 및 질문형 글)의 경우 Schema.org의 `QAPage` 및 `Question` 객체를 주입하여 ChatGPT, Perplexity, Claude, Gemini 등의 답변 엔진이 질문-답변-추천수를 완벽히 인식하도록 처리.
+     - **GEO (Generative Engine Optimization)**: 포럼 게시글에 대해 Schema.org `DiscussionForumPosting`과 상호작용 지표(`InteractionCounter`: LikeAction, CommentAction), 작성자(`Person`), 발행처(`Organization: SNSHero`)를 JSON-LD(`<script type="application/ld+json">`)로 실시간 주입.
+     - **VideoObject (동영상 리치 스니펫)**: 유튜브 강의 영상이 포함된 게시글에 대해 `VideoObject` 및 `og:video`, `twitter:card: player`를 추가 주입하여 구글 비디오 탭 및 AI 동영상 추천에서 즉시 노출되도록 보강.
+  2. **사이트맵 전면 반영 (`public/sitemap.xml`)**:
+     - 메인 `/reddit` 경로, 대표 서브레딧(`/r/hanguk`, `/r/technology`, `/r/gaming`), 그리고 바이브코딩 종합 안내 및 1~5강 개별 포스트 직결 URL 전수 등록 (1시간/일간 주기 및 0.9~1.0 우선순위 설정).
+  3. **LLM 및 AI 검색엔진 지식베이스 동기화 (`public/llms.txt`, `public/llms-full.txt`)**:
+     - Perplexity, ChatGPT, Claude 등 최신 AI 크롤러 전용 표준 파일에 바이브코딩 웹게임 개발 무료 강의 5부작, AI Studio 앱, GitHub 오픈소스, 시스템 프롬프트(snshero.md) 전체 링크 및 커리큘럼 명시.
+  4. **정적 SPA Fallback 디렉터리 생성 (`scripts/post-build.js`)**:
+     - 빌드 시 `/reddit`, `/r/hanguk`, `/r/technology`, `/r/gaming` 및 바이브코딩 주요 포스트 경로 총 43개 정적 라우트에 `index.html`을 물리적으로 생성하여 정적 배포 환경에서 크롤러가 직접 GET 요청 시 404 없이 즉시 200 OK로 인덱싱되도록 보장.
+- **검증 결과**:
+  - `npm run build`: 성공 (`[post-build] Generated 43 static SPA route fallback pages`).
+  - 로컬 커밋 완료 (`0aca257`).
+
+
 ## [2026-10-10 11:05 KST] [바이브코딩 웹게임 개발 강의 5부작 및 공식 오픈소스 리소스 정규 Reddit 글항목 전환 완료]
 - **요청 사항**:
   - 기존의 인위적인 SNS 배너(`SNSHeroNativeAdCard`, `SNSHeroGameBannerCard`)를 전면 배제.
