@@ -105,14 +105,16 @@ export class RedditApiService {
     // 2. 기본 포스트 풀 구성: 실시간 최신 글 + 시드 포스트 풀
     let pool: RedditPost[] = [];
     if (livePosts.length > 0) {
-      // 중복 방지 병합 및 시드 데이터 아카이브 보정 (실시간 최신 글이 항상 상단을 선점하도록 보장)
+      // 중복 방지 병합 및 시드 데이터 아카이브 보정 (실시간 최신 글이 상단을 선점하도록 보장하되, 고정 공지 및 공식 글은 최신 유지)
       const liveIds = new Set(livePosts.map((p) => p.id));
       const archivedSeeds = SEED_POSTS
         .filter((p) => !liveIds.has(p.id))
         .map((p) => ({
           ...p,
-          // 실시간 글이 존재할 경우 시드 글은 3일 전 아카이브로 보정하여 최신글 노출 우선권 보장
-          createdAt: Math.min(p.createdAt, Date.now() - 1000 * 60 * 60 * 72),
+          // 실시간 글이 존재할 경우 일반 시드 글은 3일 전 아카이브로 보정 (단 고정 공지 및 공식 글은 원래 최신 시각 보존)
+          createdAt: (p.isPinned || p.author === 'SNSHero_Official')
+            ? p.createdAt
+            : Math.min(p.createdAt, Date.now() - 1000 * 60 * 60 * 72),
         }));
       pool = [...livePosts, ...archivedSeeds];
     } else {
@@ -134,10 +136,12 @@ export class RedditApiService {
       // 메인화면 (popular, all, home): 레딧 인기 유머글만 집중 표시
       const humorSubsLower = new Set(HUMOR_SUBREDDITS.map((s) => s.toLowerCase()));
       // 1) 사용자가 직접 작성한 포스트는 항상 포함
-      // 2) 그 외 포스트는 인기 유머 서브레딧 및 유머/밈 플레어를 지닌 게시물만 필터링
+      // 2) 고정 공지(isPinned) 또는 공식 게시글(SNSHero_Official)은 항상 포함
+      // 3) 그 외 포스트는 인기 유머 서브레딧 및 유머/밈 플레어를 지닌 게시물만 필터링
       const humorOnly = pool.filter((p) => {
         const isUserPost = userState && userState.userPosts.some((up) => up.id === p.id);
         if (isUserPost) return true;
+        if (p.isPinned || p.author === 'SNSHero_Official') return true;
         const subLower = p.subreddit.toLowerCase();
         if (humorSubsLower.has(subLower)) return true;
         const flairText = p.flair?.text?.toLowerCase() || '';
@@ -165,12 +169,14 @@ export class RedditApiService {
       };
     });
 
-    // 6. 정렬 알고리즘 적용 및 메인화면 새로고침 순환 노출 적용
-    const sorted = this.sortPosts(mapped, sort);
-    if (isFrontPage) {
-      return this.applyRefreshRotation(sorted);
-    }
-    return sorted;
+    // 6. 고정 공지(isPinned)는 항상 피드 최상단에 고정 유지하고, 나머지 글들만 정렬 및 로테이션
+    const pinnedPosts = mapped.filter((p) => Boolean(p.isPinned));
+    const unpinnedPosts = mapped.filter((p) => !p.isPinned);
+
+    const sortedUnpinned = this.sortPosts(unpinnedPosts, sort);
+    const finalUnpinned = isFrontPage ? this.applyRefreshRotation(sortedUnpinned) : sortedUnpinned;
+
+    return [...pinnedPosts, ...finalUnpinned];
   }
 
   /**

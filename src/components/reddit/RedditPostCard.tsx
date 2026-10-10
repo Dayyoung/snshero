@@ -141,6 +141,11 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
             </span>
           </div>
 
+          {post.isPinned && (
+            <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-emerald-600 text-white flex-shrink-0">
+              📌 {isKo ? '고정' : 'Pinned'}
+            </span>
+          )}
           <span
             onClick={(e) => { e.stopPropagation(); onSelectSubreddit(post.subreddit); }}
             className="font-bold hover:underline text-[#FF4500] flex-shrink-0"
@@ -239,6 +244,11 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
               u/{post.author}
             </span>
             <span>{getRelativeTime(post.createdAt)}</span>
+            {post.isPinned && (
+              <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-emerald-600 text-white flex items-center gap-0.5">
+                📌 {isKo ? '고정 공지' : 'Pinned'}
+              </span>
+            )}
           </div>
 
           <h2 className="font-bold text-sm leading-snug line-clamp-2 mb-2">{displayTitle}</h2>
@@ -278,6 +288,11 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
         {/* 1. 헤더 */}
         <div className="flex items-center justify-between text-xs mb-2">
           <div className="flex items-center gap-1.5 flex-wrap">
+            {post.isPinned && (
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-600 text-white flex items-center gap-1 shadow-xs mr-0.5">
+                📌 {isKo ? '고정 공지' : 'Pinned'}
+              </span>
+            )}
             <button
               type="button"
               onClick={(e) => { e.stopPropagation(); onSelectSubreddit(post.subreddit); }}

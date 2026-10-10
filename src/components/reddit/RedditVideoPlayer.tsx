@@ -55,7 +55,27 @@ export const RedditVideoPlayer: React.FC<RedditVideoPlayerProps> = ({
     )
   );
 
+  const targetLink = cleanRedditUrl(externalUrl || src);
+
+  // YouTube 동영상 ID 및 재생목록 ID 추출
+  const youtubeVideoId = React.useMemo(() => {
+    if (!targetLink && !src) return null;
+    const url = targetLink || src;
+    const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+    return match ? match[1] : null;
+  }, [targetLink, src]);
+
+  const youtubePlaylistId = React.useMemo(() => {
+    if (!targetLink && !src) return null;
+    const url = targetLink || src;
+    const match = url.match(/[?&]list=([^#&]+)/);
+    return match ? match[1] : null;
+  }, [targetLink, src]);
+
+  const isYouTube = Boolean(youtubeVideoId || youtubePlaylistId || domain?.includes('youtube') || targetLink?.includes('youtube.com'));
+
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isYoutubeActive, setIsYoutubeActive] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [progress, setProgress] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
@@ -63,12 +83,11 @@ export const RedditVideoPlayer: React.FC<RedditVideoPlayerProps> = ({
   const [showControls, setShowControls] = useState(false);
   const [hasError, setHasError] = useState(false);
 
-  const targetLink = cleanRedditUrl(externalUrl || src);
-
   // src 변경 시 초기화
   useEffect(() => {
     setHasError(false);
     setIsPlaying(false);
+    setIsYoutubeActive(false);
     setProgress(0);
     setCurrentTime(0);
   }, [src]);
@@ -84,6 +103,12 @@ export const RedditVideoPlayer: React.FC<RedditVideoPlayerProps> = ({
   // 재생 / 일시정지 토글
   const togglePlay = (e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
+
+    // YouTube 영상인 경우: 인라인 iframe 플레이어로 즉시 전환
+    if (isYouTube && (youtubeVideoId || youtubePlaylistId)) {
+      setIsYoutubeActive(true);
+      return;
+    }
 
     // 직접 비디오 파일이 아니면 원본 링크로 바로 열기
     if (!isDirectVideo) {
@@ -164,8 +189,22 @@ export const RedditVideoPlayer: React.FC<RedditVideoPlayerProps> = ({
       onClick={togglePlay}
       className={`relative w-full max-h-[560px] bg-black rounded-xl overflow-hidden flex items-center justify-center select-none cursor-pointer group ${className}`}
     >
-      {/* 1. 직접 재생 가능한 비디오일 경우 HTML5 Video 태그 */}
-      {isDirectVideo && !hasError ? (
+      {/* 1. YouTube 영상 인라인 재생 활성화 시 iframe 렌더링 */}
+      {isYoutubeActive && (youtubeVideoId || youtubePlaylistId) ? (
+        <div className="relative w-full aspect-video max-h-[560px] bg-black">
+          <iframe
+            src={
+              youtubeVideoId 
+                ? `https://www.youtube-nocookie.com/embed/${youtubeVideoId}?autoplay=1&rel=0`
+                : `https://www.youtube-nocookie.com/embed/videoseries?list=${youtubePlaylistId}&autoplay=1`
+            }
+            title={title || 'YouTube Video'}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            className="w-full h-full border-0"
+          />
+        </div>
+      ) : isDirectVideo && !hasError ? (
         <video
           ref={videoRef}
           src={src}
@@ -205,8 +244,8 @@ export const RedditVideoPlayer: React.FC<RedditVideoPlayerProps> = ({
         className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-auto z-10"
       >
         <span className="px-2.5 py-1 rounded-full bg-black/75 backdrop-blur-md text-white text-[11px] font-extrabold flex items-center gap-1.5 shadow-md border border-white/10">
-          <Film className="w-3.5 h-3.5 text-[#FF4500]" />
-          <span>{isKo ? 'Reddit 동영상' : 'Reddit Video'}</span>
+          <Film className={`w-3.5 h-3.5 ${isYouTube ? 'text-red-500' : 'text-[#FF4500]'}`} />
+          <span>{isYouTube ? 'YouTube 동영상' : (isKo ? 'Reddit 동영상' : 'Reddit Video')}</span>
         </span>
 
         {targetLink && (
@@ -214,22 +253,22 @@ export const RedditVideoPlayer: React.FC<RedditVideoPlayerProps> = ({
             href={targetLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-2.5 py-1 rounded-full bg-black/75 hover:bg-black/90 backdrop-blur-md text-white text-[11px] font-bold flex items-center gap-1 transition-all shadow-md border border-white/10 hover:border-[#FF4500]/50"
+            className="px-2.5 py-1 rounded-full bg-black/75 hover:bg-black/90 backdrop-blur-md text-white text-[11px] font-bold flex items-center gap-1 transition-all shadow-md border border-white/10 hover:border-red-500/50"
             title={isKo ? '원본 동영상 페이지 열기' : 'Open original video page'}
           >
-            <span>{domain || 'v.redd.it'}</span>
-            <ExternalLink className="w-3 h-3 text-[#FF4500]" />
+            <span>{isYouTube ? 'YouTube' : (domain || 'v.redd.it')}</span>
+            <ExternalLink className={`w-3 h-3 ${isYouTube ? 'text-red-500' : 'text-[#FF4500]'}`} />
           </a>
         )}
       </div>
 
       {/* 4. 중앙 재생 버튼 & 원본 영상 직결 오버레이 */}
-      {(!isPlaying || !isDirectVideo || hasError) && (
+      {!isYoutubeActive && (!isPlaying || !isDirectVideo || hasError) && (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40 backdrop-blur-[2px] transition-all z-10 p-4 text-center">
           <button
             type="button"
             onClick={togglePlay}
-            className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#FF4500] hover:bg-[#FF5714] text-white flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all cursor-pointer border border-white/30 mb-2.5"
+            className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full ${isYouTube ? 'bg-[#FF0000] hover:bg-[#CC0000]' : 'bg-[#FF4500] hover:bg-[#FF5714]'} text-white flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all cursor-pointer border border-white/30 mb-2.5`}
             aria-label={isKo ? '동영상 재생' : 'Play Video'}
           >
             <Play className="w-8 h-8 sm:w-10 sm:h-10 ml-1 fill-white" />
@@ -237,8 +276,8 @@ export const RedditVideoPlayer: React.FC<RedditVideoPlayerProps> = ({
 
           {!isDirectVideo && (
             <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-black/80 backdrop-blur-md text-white text-xs font-bold border border-white/20 shadow-md">
-              <span>{isKo ? 'Reddit 원본 영상 바로보기' : 'Watch on Reddit'}</span>
-              <ExternalLink className="w-3 h-3 text-[#FF4500]" />
+              <span>{isYouTube ? (isKo ? '동영상 재생하기 (클릭)' : 'Play on YouTube') : (isKo ? 'Reddit 원본 영상 바로보기' : 'Watch on Reddit')}</span>
+              <ExternalLink className={`w-3 h-3 ${isYouTube ? 'text-red-400' : 'text-[#FF4500]'}`} />
             </span>
           )}
         </div>

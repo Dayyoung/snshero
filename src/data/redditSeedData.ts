@@ -335,6 +335,341 @@ export const SEED_TRENDING: RedditTrendingItem[] = [
  */
 export const SEED_POSTS: RedditPost[] = [
   {
+    id: 'post_vibecoding_master',
+    subreddit: 'hanguk',
+    title: '바이브코딩 웹게임 개발 강의 를 공유합니다! (모두 오픈소스 무료!)',
+    author: 'SNSHero_Official',
+    authorAvatar: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=64&q=80',
+    createdAt: Date.now() - 1000 * 60 * 10,
+    score: 99999,
+    commentCount: 142,
+    flair: { text: '공식 강의 / OpenSource', bgColor: '#10B981', textColor: '#FFFFFF' },
+    isPinned: true,
+    isOriginalContent: true,
+    upvoteRatio: 0.99,
+    media: {
+      type: 'video',
+      url: 'https://www.youtube.com/playlist?list=PLV8H2-pD9vH0',
+      previewUrl: 'https://i.ytimg.com/vi/2XQOd8YGlUc/hqdefault.jpg',
+      domain: 'youtube.com',
+      aspectRatio: 16 / 9,
+    },
+    body: `안녕하세요! SNSHero 개발팀입니다.
+AI와 함께 말하듯 코딩하는 **바이브코딩(Vibe Coding) 웹게임 개발 강의**와 **SNSHero.com 전체 리소스**를 오픈소스로 100% 무료 공유합니다!
+
+📺 바이브코딩 웹게임 개발 강의 (AI Studio) :
+https://www.youtube.com/playlist?list=PLV8H2-pD9vH0
+
+🎮 SNSHero.com 게임 플레이링크 :
+https://snshero.com/
+
+🤖 SNSHero.com AI Studio :
+https://ai.studio/apps/636a37c3-97ce-4c80-be46-8c9a6f793f2d
+
+💻 SNSHero.com 소스파일 (GitHub) :
+https://github.com/Dayyoung/snshero
+
+📝 SNSHero.com 개발 프롬프트 :
+https://snshero.com/snshero.md
+
+🎨 SNSHero.com 카드 이미지파일 :
+- https://snshero.com/card1.png
+- https://snshero.com/card2.png
+
+🔴 SNSHero.com 유튜브 채널 :
+https://www.youtube.com/@snshero
+
+누구나 자유롭게 복제, 학습, 커스터마이징하여 자신만의 웹게임을 완성하실 수 있습니다. 개발 관련 질문이나 피드백은 댓글로 편하게 남겨주세요!`,
+  },
+  {
+    id: 'post_vibecoding_ep1',
+    subreddit: 'hanguk',
+    title: 'SNSHero.com 바이브코딩 웹게임 개발 (1)',
+    author: 'SNSHero_Official',
+    authorAvatar: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=64&q=80',
+    createdAt: Date.now() - 1000 * 60 * 15,
+    score: 48200,
+    commentCount: 89,
+    flair: { text: '강의 1강 / Video', bgColor: '#FF4500', textColor: '#FFFFFF' },
+    isPinned: true,
+    isOriginalContent: true,
+    upvoteRatio: 0.99,
+    media: {
+      type: 'video',
+      url: 'https://www.youtube.com/watch?v=2XQOd8YGlUc',
+      previewUrl: 'https://i.ytimg.com/vi/2XQOd8YGlUc/hqdefault.jpg',
+      domain: 'youtube.com',
+      aspectRatio: 16 / 9,
+    },
+    body: `[SNSHero.com 바이브코딩 웹게임 개발 (1)]
+바이브코딩으로 웹 카드 배틀 게임의 기본 뼈대를 잡고 AI 프롬프팅으로 첫 번째 컴포넌트와 배틀 코어 로직을 생성하는 1강 영상입니다!
+
+▶️ 동영상 시청: https://www.youtube.com/watch?v=2XQOd8YGlUc
+⏱️ 러닝타임: 3분 59초
+📺 전체 재생목록: https://www.youtube.com/playlist?list=PLV8H2-pD9vH0
+💻 전체 소스코드: https://github.com/Dayyoung/snshero
+📝 개발 프롬프트: https://snshero.com/snshero.md`,
+  },
+  {
+    id: 'post_vibecoding_ep2',
+    subreddit: 'hanguk',
+    title: 'SNSHero.com 바이브코딩 웹게임 개발(2)',
+    author: 'SNSHero_Official',
+    authorAvatar: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=64&q=80',
+    createdAt: Date.now() - 1000 * 60 * 20,
+    score: 43500,
+    commentCount: 64,
+    flair: { text: '강의 2강 / Video', bgColor: '#FF4500', textColor: '#FFFFFF' },
+    isPinned: true,
+    isOriginalContent: true,
+    upvoteRatio: 0.98,
+    media: {
+      type: 'video',
+      url: 'https://www.youtube.com/watch?v=jN4Hootd_S0',
+      previewUrl: 'https://i.ytimg.com/vi/jN4Hootd_S0/hqdefault.jpg',
+      domain: 'youtube.com',
+      aspectRatio: 16 / 9,
+    },
+    body: `[SNSHero.com 바이브코딩 웹게임 개발(2)]
+AI Studio를 활용한 기능 확장과 카드 배틀 시스템 및 유저 상호작용 인터페이스 구현 2강 영상입니다!
+
+▶️ 동영상 시청: https://www.youtube.com/watch?v=jN4Hootd_S0
+⏱️ 러닝타임: 2분 48초
+🤖 AI Studio 앱 링크: https://ai.studio/apps/636a37c3-97ce-4c80-be46-8c9a6f793f2d
+📺 전체 재생목록: https://www.youtube.com/playlist?list=PLV8H2-pD9vH0`,
+  },
+  {
+    id: 'post_vibecoding_ep3',
+    subreddit: 'hanguk',
+    title: 'SNSHero com 바이브코딩 웹게임 개발(3)',
+    author: 'SNSHero_Official',
+    authorAvatar: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=64&q=80',
+    createdAt: Date.now() - 1000 * 60 * 25,
+    score: 41200,
+    commentCount: 52,
+    flair: { text: '강의 3강 / Video', bgColor: '#FF4500', textColor: '#FFFFFF' },
+    isPinned: true,
+    isOriginalContent: true,
+    upvoteRatio: 0.98,
+    media: {
+      type: 'video',
+      url: 'https://www.youtube.com/watch?v=iP9-MzjRRsI',
+      previewUrl: 'https://i.ytimg.com/vi/iP9-MzjRRsI/hqdefault.jpg',
+      domain: 'youtube.com',
+      aspectRatio: 16 / 9,
+    },
+    body: `[SNSHero com 바이브코딩 웹게임 개발(3)]
+100% 로컬스토리지 기반 무결점 영구 데이터 보존 아키텍처와 인벤토리 덱 빌딩 시스템을 완성하는 3강 영상입니다!
+
+▶️ 동영상 시청: https://www.youtube.com/watch?v=iP9-MzjRRsI
+⏱️ 러닝타임: 3분 01초
+🕹️ 게임 플레이: https://snshero.com/
+💻 전체 소스코드: https://github.com/Dayyoung/snshero`,
+  },
+  {
+    id: 'post_vibecoding_ep4',
+    subreddit: 'hanguk',
+    title: 'SNSHero com 바이브코딩 웹게임 개발(4)',
+    author: 'SNSHero_Official',
+    authorAvatar: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=64&q=80',
+    createdAt: Date.now() - 1000 * 60 * 30,
+    score: 39800,
+    commentCount: 47,
+    flair: { text: '강의 4강 / Video', bgColor: '#FF4500', textColor: '#FFFFFF' },
+    isPinned: true,
+    isOriginalContent: true,
+    upvoteRatio: 0.97,
+    media: {
+      type: 'video',
+      url: 'https://www.youtube.com/watch?v=KSFMdyQVKqg',
+      previewUrl: 'https://i.ytimg.com/vi/KSFMdyQVKqg/hqdefault.jpg',
+      domain: 'youtube.com',
+      aspectRatio: 16 / 9,
+    },
+    body: `[SNSHero com 바이브코딩 웹게임 개발(4)]
+상점 가챠 소환, 카드 드로우 애니메이션 및 모바일 퓨어 터치 최적화를 구축하는 4강 영상입니다!
+
+▶️ 동영상 시청: https://www.youtube.com/watch?v=KSFMdyQVKqg
+⏱️ 러닝타임: 2분 25초
+🎨 카드 이미지: https://snshero.com/card1.png
+📝 개발 프롬프트: https://snshero.com/snshero.md`,
+  },
+  {
+    id: 'post_vibecoding_ep5',
+    subreddit: 'hanguk',
+    title: 'SNSHero com 바이브코딩 웹게임 개발(5)',
+    author: 'SNSHero_Official',
+    authorAvatar: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=64&q=80',
+    createdAt: Date.now() - 1000 * 60 * 35,
+    score: 38400,
+    commentCount: 41,
+    flair: { text: '강의 5강 / Video', bgColor: '#FF4500', textColor: '#FFFFFF' },
+    isPinned: true,
+    isOriginalContent: true,
+    upvoteRatio: 0.98,
+    media: {
+      type: 'video',
+      url: 'https://www.youtube.com/watch?v=GIs6SD0qIIA',
+      previewUrl: 'https://i.ytimg.com/vi/GIs6SD0qIIA/hqdefault.jpg',
+      domain: 'youtube.com',
+      aspectRatio: 16 / 9,
+    },
+    body: `[SNSHero com 바이브코딩 웹게임 개발(5)]
+최종 배포, 커뮤니티 연동 및 완성된 웹 카드 배틀 게임의 서비스 런칭 실전 가이드 5강 영상입니다!
+
+▶️ 동영상 시청: https://www.youtube.com/watch?v=GIs6SD0qIIA
+⏱️ 러닝타임: 3분 06초
+📺 전체 재생목록: https://www.youtube.com/playlist?list=PLV8H2-pD9vH0
+🔴 공식 유튜브 채널: https://www.youtube.com/@snshero`,
+  },
+  {
+    id: 'post_resource_game',
+    subreddit: 'hanguk',
+    title: 'SNSHero.com 게임 플레이링크 (무설치 웹 브라우저 즉시 플레이)',
+    author: 'SNSHero_Official',
+    authorAvatar: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=64&q=80',
+    createdAt: Date.now() - 1000 * 60 * 40,
+    score: 35100,
+    commentCount: 38,
+    flair: { text: '게임 플레이 / Play', bgColor: '#4F46E5', textColor: '#FFFFFF' },
+    isPinned: true,
+    isOriginalContent: true,
+    upvoteRatio: 0.99,
+    media: {
+      type: 'link',
+      url: 'https://snshero.com/',
+      domain: 'snshero.com',
+    },
+    body: `별도의 앱 설치 없이 스마트폰과 PC 웹 브라우저에서 즉시 즐길 수 있는 AI 기반 원클릭 웹 카드 배틀 게임 SNSHero입니다!
+
+🕹️ 즉시 플레이하기: https://snshero.com/
+- 100% 로컬스토리지 기반 무결점 데이터 보존
+- 110개 미션 게임 및 카드 수집 / 성장 / 아레나 대전 지원`,
+  },
+  {
+    id: 'post_resource_aistudio',
+    subreddit: 'technology',
+    title: 'SNSHero.com AI Studio 원클릭 복제 & 앱 링크 공유',
+    author: 'SNSHero_Official',
+    authorAvatar: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=64&q=80',
+    createdAt: Date.now() - 1000 * 60 * 45,
+    score: 33400,
+    commentCount: 31,
+    flair: { text: 'AI Studio / NoCode', bgColor: '#0284C7', textColor: '#FFFFFF' },
+    isPinned: true,
+    isOriginalContent: true,
+    upvoteRatio: 0.98,
+    media: {
+      type: 'link',
+      url: 'https://ai.studio/apps/636a37c3-97ce-4c80-be46-8c9a6f793f2d',
+      domain: 'ai.studio',
+    },
+    body: `구글 AI Studio에서 SNSHero를 원클릭으로 열고 나만의 룰과 카드로 커스터마이징할 수 있는 공식 앱 링크입니다.
+
+🤖 AI Studio 바로가기: https://ai.studio/apps/636a37c3-97ce-4c80-be46-8c9a6f793f2d
+📺 바이브코딩 웹게임 개발 강의: https://www.youtube.com/playlist?list=PLV8H2-pD9vH0`,
+  },
+  {
+    id: 'post_resource_source',
+    subreddit: 'technology',
+    title: 'SNSHero.com 소스파일 (GitHub 전체 오픈소스 리포지토리)',
+    author: 'SNSHero_Official',
+    authorAvatar: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=64&q=80',
+    createdAt: Date.now() - 1000 * 60 * 50,
+    score: 32900,
+    commentCount: 29,
+    flair: { text: '오픈소스 / GitHub', bgColor: '#24292E', textColor: '#FFFFFF' },
+    isPinned: true,
+    isOriginalContent: true,
+    upvoteRatio: 0.99,
+    media: {
+      type: 'link',
+      url: 'https://github.com/Dayyoung/snshero',
+      domain: 'github.com',
+    },
+    body: `SNSHero 프로젝트의 전체 소스코드가 GitHub에 100% 무료 오픈소스로 공개되어 있습니다!
+
+💻 GitHub 저장소: https://github.com/Dayyoung/snshero
+- 기술 스택: React 19 + TypeScript + Vite 6 + Tailwind CSS 4
+- Star & Fork 환영합니다!`,
+  },
+  {
+    id: 'post_resource_prompt',
+    subreddit: 'technology',
+    title: 'SNSHero.com 개발 프롬프트 (바이브코딩 마스터 프롬프트 원본 snshero.md)',
+    author: 'SNSHero_Official',
+    authorAvatar: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=64&q=80',
+    createdAt: Date.now() - 1000 * 60 * 55,
+    score: 31200,
+    commentCount: 25,
+    flair: { text: 'AI 프롬프트 / Markdown', bgColor: '#8B5CF6', textColor: '#FFFFFF' },
+    isPinned: true,
+    isOriginalContent: true,
+    upvoteRatio: 0.98,
+    media: {
+      type: 'link',
+      url: 'https://snshero.com/snshero.md',
+      domain: 'snshero.com',
+    },
+    body: `SNSHero.com 개발 시 사용된 전체 시스템 및 아키텍처 설계 프롬프트 원본 파일입니다!
+
+📝 원본 프롬프트 확인: https://snshero.com/snshero.md
+AI에게 웹게임의 규칙, 카드 스키마, UI 테마를 전달할 때 그대로 활용하실 수 있습니다.`,
+  },
+  {
+    id: 'post_resource_cards',
+    subreddit: 'hanguk',
+    title: 'SNSHero.com 카드 이미지파일 (card1.png, card2.png 무료 에셋 배포)',
+    author: 'SNSHero_Official',
+    authorAvatar: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=64&q=80',
+    createdAt: Date.now() - 1000 * 60 * 60,
+    score: 29800,
+    commentCount: 22,
+    flair: { text: '카드 에셋 / Graphics', bgColor: '#EC4899', textColor: '#FFFFFF' },
+    isPinned: true,
+    isOriginalContent: true,
+    upvoteRatio: 0.98,
+    media: {
+      type: 'gallery',
+      url: 'https://snshero.com/card1.png',
+      galleryUrls: [
+        'https://snshero.com/card1.png',
+        'https://snshero.com/card2.png',
+      ],
+      aspectRatio: 3 / 4,
+    },
+    body: `SNSHero 카드 배틀 게임의 고해상도 카드 일러스트 이미지 에셋 2종을 무료 공유합니다!
+
+- 카드 1: https://snshero.com/card1.png
+- 카드 2: https://snshero.com/card2.png
+
+게임 프로토타이핑이나 그래픽 연습에 자유롭게 사용하세요!`,
+  },
+  {
+    id: 'post_resource_channel',
+    subreddit: 'hanguk',
+    title: 'SNSHero.com 유튜브 채널 (@snshero 공식 채널 개설 안내)',
+    author: 'SNSHero_Official',
+    authorAvatar: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=64&q=80',
+    createdAt: Date.now() - 1000 * 60 * 65,
+    score: 28700,
+    commentCount: 19,
+    flair: { text: '공식 채널 / YouTube', bgColor: '#DC2626', textColor: '#FFFFFF' },
+    isPinned: true,
+    isOriginalContent: true,
+    upvoteRatio: 0.99,
+    media: {
+      type: 'link',
+      url: 'https://www.youtube.com/@snshero',
+      domain: 'youtube.com',
+    },
+    body: `SNSHero의 공식 유튜브 채널입니다!
+웹게임 개발 강좌, 게임 플레이 팁, 업데이트 소식이 정기적으로 올라옵니다.
+
+🔴 유튜브 채널 바로가기: https://www.youtube.com/@snshero
+구독과 좋아요 부탁드립니다!`,
+  },
+  {
     id: 'post_ko_1',
     subreddit: 'hanguk',
     title: '4년 동안 대기업 때려치우고 언리얼엔진5로 1인 개발한 판타지 물리 액션 RPG 드디어 출시했습니다! (인게임 플레이 영상)',
@@ -730,6 +1065,143 @@ export const SEED_POSTS: RedditPost[] = [
  * 어떤 글을 클릭하든 100% 댓글이 즉시 풍성하게 표시됨!
  */
 export const SEED_COMMENTS: Record<string, RedditComment[]> = {
+  post_vibecoding_master: [
+    {
+      id: 'c_vc_m_1',
+      postId: 'post_vibecoding_master',
+      parentId: null,
+      author: 'IndieGamerFan',
+      authorAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=64&q=80',
+      authorKarma: 41200,
+      createdAt: Date.now() - 1000 * 60 * 8,
+      score: 1840,
+      body: `바이브코딩으로 웹 카드 배틀 게임 개발 전 과정을 100% 무료 오픈소스로 다 공개해주시다니 대박이네요! snshero.md 프롬프트 파일이랑 GitHub 소스코드 정독 중입니다. 최고입니다!`,
+      replies: [
+        {
+          id: 'c_vc_m_1_1',
+          postId: 'post_vibecoding_master',
+          parentId: 'c_vc_m_1',
+          author: 'SNSHero_Official',
+          authorAvatar: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=64&q=80',
+          authorKarma: 999999,
+          createdAt: Date.now() - 1000 * 60 * 5,
+          score: 950,
+          isAuthorOp: true,
+          body: `도움이 되셨다니 정말 기쁩니다! 소스코드나 프롬프트 커스터마이징 중 궁금한 점 있으시면 언제든 질문 남겨주세요. 멋진 나만의 게임 완성하시길 응원합니다!`,
+        },
+      ],
+    },
+    {
+      id: 'c_vc_m_2',
+      postId: 'post_vibecoding_master',
+      parentId: null,
+      author: 'CodeVibeCrafter',
+      authorAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=64&q=80',
+      authorKarma: 35100,
+      createdAt: Date.now() - 1000 * 60 * 7,
+      score: 1420,
+      body: `AI Studio 앱 링크로 바로 들어가서 환경설정이나 복잡한 빌드 없이 웹에서 바로 실행해볼 수 있어서 접근성이 너무 좋네요. 바로 유튜브 재생목록 정주행 달립니다!`,
+    },
+  ],
+
+  post_vibecoding_ep1: [
+    {
+      id: 'c_vc_1_1',
+      postId: 'post_vibecoding_ep1',
+      parentId: null,
+      author: 'WebGameDev_KR',
+      authorAvatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=64&q=80',
+      authorKarma: 28400,
+      createdAt: Date.now() - 1000 * 60 * 12,
+      score: 1120,
+      body: `1강 봤는데 AI한테 처음 웹게임 전체 뼈대와 카드 스키마를 요구할 때 프롬프트를 어떻게 쪼개서 줘야 하는지 명쾌하게 설명해주시네요. 2강 바로 갑니다!`,
+    },
+  ],
+
+  post_vibecoding_ep2: [
+    {
+      id: 'c_vc_2_1',
+      postId: 'post_vibecoding_ep2',
+      parentId: null,
+      author: 'PromptMaster_99',
+      authorAvatar: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=64&q=80',
+      authorKarma: 21900,
+      createdAt: Date.now() - 1000 * 60 * 18,
+      score: 980,
+      body: `AI Studio 원클릭 앱과 연계해서 기능 추가하는 테크닉이 진짜 실용적이네요. 바이브코딩 실전 강의로 강력 추천합니다.`,
+    },
+  ],
+
+  post_vibecoding_ep3: [
+    {
+      id: 'c_vc_3_1',
+      postId: 'post_vibecoding_ep3',
+      parentId: null,
+      author: 'FrontEndHero',
+      authorAvatar: 'https://images.unsplash.com/photo-1527980965255-d3b416303d12?auto=format&fit=crop&w=64&q=80',
+      authorKarma: 32000,
+      createdAt: Date.now() - 1000 * 60 * 22,
+      score: 870,
+      body: `100% 로컬스토리지 영구 보존 설계 꿀팁 감사합니다. 서버 없이도 완벽하게 덱과 카드 수량이 보존되는 원리가 깔끔하게 이해됐습니다!`,
+    },
+  ],
+
+  post_vibecoding_ep4: [
+    {
+      id: 'c_vc_4_1',
+      postId: 'post_vibecoding_ep4',
+      parentId: null,
+      author: 'GachaLover_Pro',
+      authorAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=64&q=80',
+      authorKarma: 19800,
+      createdAt: Date.now() - 1000 * 60 * 28,
+      score: 790,
+      body: `상점 뽑기 가챠 연출과 모바일 터치 제스처 구현이 마음에 쏙 듭니다. card1.png, card2.png 에셋도 바로 받아서 테스트해봤어요!`,
+    },
+  ],
+
+  post_vibecoding_ep5: [
+    {
+      id: 'c_vc_5_1',
+      postId: 'post_vibecoding_ep5',
+      parentId: null,
+      author: 'IndieLaunch_Ready',
+      authorAvatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=64&q=80',
+      authorKarma: 44200,
+      createdAt: Date.now() - 1000 * 60 * 32,
+      score: 950,
+      body: `5강까지 완강 완료했습니다! GitHub 소스 클론해서 저만의 테마로 카드 배틀 게임 런칭해보려고 합니다. 최고의 강의 감사합니다!`,
+    },
+  ],
+
+  post_resource_prompt: [
+    {
+      id: 'c_rp_1',
+      postId: 'post_resource_prompt',
+      parentId: null,
+      author: 'AIEngineer_Alpha',
+      authorAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=64&q=80',
+      authorKarma: 51200,
+      createdAt: Date.now() - 1000 * 60 * 50,
+      score: 1320,
+      body: `snshero.md 프롬프트 파일 구조가 정말 치밀하게 잘 짜여 있네요. 대규모 웹게임을 AI와 함께 바이브코딩할 때 시스템 아키텍처를 어떻게 잡아줘야 할지 큰 인사이트를 얻었습니다.`,
+    },
+  ],
+
+  post_resource_source: [
+    {
+      id: 'c_rs_1',
+      postId: 'post_resource_source',
+      parentId: null,
+      author: 'OpenSourceFanatic',
+      authorAvatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=64&q=80',
+      authorKarma: 62400,
+      createdAt: Date.now() - 1000 * 60 * 45,
+      score: 1680,
+      body: `GitHub 레포 바로 Star 누르고 포크했습니다! React 19 + TypeScript 5.8 + Tailwind CSS 4 구성이라 번들링도 빠르고 구조도 모듈화가 훌륭하네요.`,
+    },
+  ],
+
   post_ko_1: [
     {
       id: 'c_k1_1',
@@ -1390,5 +1862,14 @@ export const SEED_USERS: Record<string, RedditUser> = {
     commentKarma: 89400,
     cakeDay: Date.now() - 1000 * 60 * 60 * 24 * 365 * 6,
     about: '행동 심리학과 인간관계 관찰을 즐기는 연구원입니다.',
+  },
+  SNSHero_Official: {
+    username: 'SNSHero_Official',
+    avatarUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=128&q=80',
+    bannerUrl: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1200&q=80',
+    postKarma: 999999,
+    commentKarma: 520000,
+    cakeDay: Date.now() - 1000 * 60 * 60 * 24 * 365 * 3,
+    about: 'SNSHero.com 공식 개발팀 계정입니다. 바이브코딩 웹게임 개발 강의 및 오픈소스 리소스를 무료로 공유합니다.',
   },
 };

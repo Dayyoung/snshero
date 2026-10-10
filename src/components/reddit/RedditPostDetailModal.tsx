@@ -28,7 +28,6 @@ import { RedditPost, RedditComment, RedditSubreddit, RedditUserDataState, getRed
 import { RedditCommentTree } from './RedditCommentTree';
 import { RedditSidebarRight } from './RedditSidebarRight';
 import { AdSenseBanner } from '../AdSenseBanner';
-import { SNSHeroGameBannerCard } from './SNSHeroGameBannerCard';
 import { generateContextualCommentsForPost } from '../../lib/reddit/redditCommentGenerator';
 import { translateTextWithGoogle, isNeedsTranslation, translateCommentTree } from '../../lib/reddit/redditTranslationService';
 import { RedditVideoPlayer } from './RedditVideoPlayer';
@@ -533,18 +532,6 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
                 />
               </div>
             </div>
-
-            {/* SNSHero 게임 공식 프로모션 배너 (클릭 시 게임하기 로비로 이동) */}
-            {onGoToGame && (
-              <SNSHeroGameBannerCard
-                isDark={isDark}
-                isKo={isKo}
-                onGoToGame={() => {
-                  onClose();
-                  onGoToGame();
-                }}
-              />
-            )}
 
             {/* 댓글 작성기 */}
             <div className={`rounded-2xl border p-4 sm:p-5 shadow-sm ${

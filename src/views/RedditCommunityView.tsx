@@ -39,7 +39,6 @@ import { RedditSidebarRight } from '../components/reddit/RedditSidebarRight';
 import { RedditFeedSortBar } from '../components/reddit/RedditFeedSortBar';
 import { RedditPostCard } from '../components/reddit/RedditPostCard';
 import { RedditAdCard } from '../components/reddit/RedditAdCard';
-import { SNSHeroNativeAdCard } from '../components/reddit/SNSHeroNativeAdCard';
 import { RedditPostDetailModal } from '../components/reddit/RedditPostDetailModal';
 import { RedditSubredditHeader } from '../components/reddit/RedditSubredditHeader';
 import { RedditUserProfileView } from '../components/reddit/RedditUserProfileView';
@@ -645,32 +644,14 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
                     />
                   </div>
 
-                  {/* 피드 포스트 목록 + 모든 페이지 최상단 시작글은 SNSHero 간접광고형 공식 쇼케이스로 시작 */}
+                  {/* 피드 포스트 목록 */}
                   <div className="space-y-2">
-                    {/* [필수] 모든 페이지 및 서브레딧의 시작 글은 SNSHero 간접광고형 공식 쇼케이스 카드로 시작 (카드/웹툰/영화/소설/게임 로테이션) */}
-                    <SNSHeroNativeAdCard
-                      isDark={isDark}
-                      isKo={isKo}
-                      adIndex={0}
-                      onNavigateView={handleNavigateView}
-                    />
-
                     {posts.length > 0 ? (
                       <>
                         {posts.slice(0, feedVisibleCount).map((post, idx) => (
                           <React.Fragment key={post.id}>
-                            {/* 글 8개에 1번씩 SNShero 핵심 컨텐츠 간접광고 쇼케이스 카드 주기적 노출 (카드, 웹툰, 영화, 소설 순환) */}
-                            {idx > 0 && idx % 8 === 0 && (
-                              <SNSHeroNativeAdCard
-                                isDark={isDark}
-                                isKo={isKo}
-                                adIndex={Math.floor(idx / 8)}
-                                onNavigateView={handleNavigateView}
-                              />
-                            )}
-
-                            {/* 4번째 포스트마다 구글 애드센스 인피드 광고 노출 (쇼케이스 카드와 겹치지 않게 분리) */}
-                            {idx > 0 && idx % 4 === 0 && idx % 8 !== 0 && (
+                            {/* 4번째 포스트마다 구글 애드센스 인피드 광고 노출 */}
+                            {idx > 0 && idx % 4 === 0 && (
                               <RedditAdCard 
                                 isDark={isDark} 
                                 isKo={isKo} 
