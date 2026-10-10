@@ -28,10 +28,9 @@ import { RedditPost, RedditComment, RedditSubreddit, RedditUserDataState, getRed
 import { RedditCommentTree } from './RedditCommentTree';
 import { RedditSidebarRight } from './RedditSidebarRight';
 import { AdSenseBanner } from '../AdSenseBanner';
-import { generateContextualCommentsForPost } from '../../lib/reddit/redditCommentGenerator';
 import { translateTextWithGoogle, isNeedsTranslation, translateCommentTree } from '../../lib/reddit/redditTranslationService';
 import { RedditVideoPlayer } from './RedditVideoPlayer';
-import { RedditRealCommentService } from '../../lib/reddit/redditRealCommentService';
+import { RedditGoogleSheetCommentService } from '../../lib/reddit/redditGoogleSheetCommentService';
 import { RedditGalleryViewer } from './RedditGalleryViewer';
 import { deduplicateImageUrls } from '../../lib/reddit/redditLiveFeedService';
 
@@ -96,34 +95,22 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
   const galleryImages = deduplicateImageUrls(rawGalleryImages);
   const isGalleryPost = (post.media?.type === 'gallery' || Boolean(post.media?.galleryUrls && post.media.galleryUrls.length > 1)) && galleryImages.length > 1;
 
-  // 실제 reddit.com 원본 댓글 수집 및 설정된 언어로 번역
+  // 실제 구글 시트 댓글 수집 및 포스트 트리 구성
   const fetchActualComments = React.useCallback(async (force: boolean = false) => {
     if (!post) return;
     setIsLoadingRealComments(true);
     try {
-      let fetched: RedditComment[] = [];
-      if (!force) {
-        const cached = RedditRealCommentService.getCachedRealComments(post.id);
-        if (cached && cached.length > 0) {
-          fetched = cached;
-        }
-      }
-      if (fetched.length === 0) {
-        fetched = await RedditRealCommentService.fetchRealComments(post, isKo ? 'ko' : 'en');
-      }
-
-      if (fetched && fetched.length > 0) {
-        // 설정된 언어로 전체 댓글 번역 적용
-        const translated = await translateCommentTree(fetched, targetLang);
-        setRealComments(translated);
-        setIsRealSynced(true);
-      }
+      const cleanId = post.id.replace(/_dup_.*$/, '').replace(/_repeat_.*$/, '');
+      const allComments = await RedditGoogleSheetCommentService.fetchAllSheetComments(force);
+      const postComments = RedditGoogleSheetCommentService.getCommentsTreeForPost(cleanId, allComments);
+      setRealComments(postComments);
+      setIsRealSynced(true);
     } catch (err) {
-      console.warn('[RedditModal] Failed to fetch actual comments', err);
+      console.warn('[RedditModal] Failed to fetch sheet comments', err);
     } finally {
       setIsLoadingRealComments(false);
     }
-  }, [post, isKo, targetLang]);
+  }, [post]);
 
   useEffect(() => {
     fetchActualComments(false);
@@ -174,51 +161,71 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
     return isKo ? `${days}일 전` : `${days}d ago`;
   };
 
-  const handleCommentSubmit = (e: React.FormEvent) => {
+  const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (commentText.trim()) {
       const text = commentText.trim();
-      onAddComment(post.id, text);
-      const newComment: RedditComment = {
-        id: `user_c_${Date.now()}`,
-        postId: post.id,
+      const author = userState.username || 'SNSHeroPlayer';
+      const avatar = userState.avatarUrl || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(author)}`;
+      const cleanId = post.id.replace(/_dup_.*$/, '').replace(/_repeat_.*$/, '');
+      
+      onAddComment(cleanId, text);
+      const newComment = await RedditGoogleSheetCommentService.submitCommentToSheet({
+        postId: cleanId,
+        text,
+        author,
+        avatarUrl: avatar,
         parentId: null,
-        author: userState.username || 'SNSHeroPlayer',
-        authorAvatar: userState.avatarUrl || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=64&q=80',
-        authorKarma: 100,
-        body: text,
-        createdAt: Date.now(),
-        score: 1,
-        userVote: 'up',
-        replies: [],
-      };
+      });
+
       setRealComments((prev) => [newComment, ...prev]);
       setCommentText('');
     }
   };
 
-  // 실시간 더 많은 고유 댓글 불러오기 핸들러 (중복 내용 100% 필터링)
+  // 대댓글 등록 핸들러 (구글 시트 영구 등록)
+  const handleNestedReply = React.useCallback(async (parentId: string, text: string) => {
+    onAddReply(parentId, text);
+    const author = userState.username || 'SNSHeroPlayer';
+    const avatar = userState.avatarUrl || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(author)}`;
+    const cleanId = post.id.replace(/_dup_.*$/, '').replace(/_repeat_.*$/, '');
+    const newReply = await RedditGoogleSheetCommentService.submitCommentToSheet({
+      postId: cleanId,
+      text,
+      author,
+      avatarUrl: avatar,
+      parentId,
+    });
+
+    setRealComments((prev) => {
+      const clone = JSON.parse(JSON.stringify(prev));
+      const attach = (list: RedditComment[]): boolean => {
+        for (const c of list) {
+          if (c.id === parentId) {
+            c.replies = c.replies || [];
+            c.replies.unshift(newReply);
+            return true;
+          }
+          if (c.replies && c.replies.length > 0) {
+            if (attach(c.replies)) return true;
+          }
+        }
+        return false;
+      };
+      attach(clone);
+      return clone;
+    });
+  }, [post.id, onAddReply, userState.username, userState.avatarUrl]);
+
+  // 구글 시트 댓글 실시간 새로고침 핸들러
   const handleLoadMoreComments = React.useCallback(() => {
-    if (isLoadingMore || !hasMoreComments) return;
+    if (isLoadingMore) return;
     setIsLoadingMore(true);
-
-    setTimeout(() => {
-      const baseComments = realComments.length > 0 ? realComments : comments;
-      const allCurrent = [...baseComments, ...extraComments];
-      // 기존 댓글 본문 텍스트 Set 구성 (중복 차단)
-      const existingBodies = new Set<string>(allCurrent.map((c) => (c.body || '').trim()));
-
-      const currentCount = allCurrent.length;
-      const additionalComments = generateContextualCommentsForPost(post, 4, currentCount, isKo, existingBodies);
-
-      if (additionalComments.length === 0 || allCurrent.length >= 24) {
-        setHasMoreComments(false);
-      } else {
-        setExtraComments((prev) => [...prev, ...additionalComments]);
-      }
+    fetchActualComments(true).finally(() => {
       setIsLoadingMore(false);
-    }, 300);
-  }, [isLoadingMore, hasMoreComments, realComments, comments, extraComments, post, isKo]);
+      setHasMoreComments(false);
+    });
+  }, [isLoadingMore, fetchActualComments]);
 
   // 글을 끝까지 읽었을 때(바닥 센티넬 도달 시) 자동으로 실시간 더보기 트리거
   React.useEffect(() => {
@@ -641,7 +648,7 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
                     isDark={isDark}
                     isKo={isKo}
                     onVoteComment={onVoteComment}
-                    onAddReply={onAddReply}
+                    onAddReply={handleNestedReply}
                     onOpenUserProfile={onOpenUserProfile}
                   />
 
@@ -657,36 +664,36 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
                     />
                   </div>
 
-                  {/* 실시간 무한 스크롤 센티넬 & 더 불러오기 영역 */}
-                  <div ref={loadMoreSentinelRef} className="pt-6 pb-2 text-center border-t border-inherit/10 mt-6">
-                    {isLoadingMore ? (
-                      <div className="py-2 flex items-center justify-center gap-2 text-xs font-bold text-[#FF4500]">
-                        <span className="w-4 h-4 border-2 border-[#FF4500] border-t-transparent rounded-full animate-spin" />
-                        <span>{isKo ? '실시간 추가 댓글 불러오는 중...' : 'Streaming more live comments...'}</span>
-                      </div>
-                    ) : hasMoreComments ? (
+                  {/* 구글 시트 실시간 동기화 상태 바 & 수동 새로고침 영역 */}
+                  <div className="pt-4 pb-2 text-center border-t border-inherit/10 mt-4">
+                    <div className="flex items-center justify-center gap-2">
                       <button
                         type="button"
                         onClick={handleLoadMoreComments}
-                        className="px-6 py-2.5 rounded-full border border-inherit/20 font-bold text-xs hover:bg-[#FF4500] hover:text-white transition-all cursor-pointer shadow-sm flex items-center justify-center gap-2 mx-auto"
+                        disabled={isLoadingMore}
+                        className="px-4 py-1.5 rounded-full border border-inherit/20 font-bold text-xs hover:bg-[#FF4500] hover:text-white transition-all cursor-pointer shadow-sm flex items-center justify-center gap-1.5 disabled:opacity-50"
                       >
-                        <span>{isKo ? '댓글 더 불러오기' : 'Load More Comments'}</span>
+                        <RefreshCw className={`w-3.5 h-3.5 ${isLoadingMore ? 'animate-spin' : ''}`} />
+                        <span>{isLoadingMore ? (isKo ? '구글 시트 동기화 중...' : 'Syncing Sheet...') : (isKo ? '댓글 실시간 새로고침' : 'Refresh Comments')}</span>
                       </button>
-                    ) : (
-                      <div className="py-2 text-xs font-semibold opacity-60">
-                        <span>{isKo ? '✓ 모든 활성 토론 댓글을 확인했습니다.' : "✓ You've caught up with all discussion comments."}</span>
-                      </div>
-                    )}
-                    <p className="text-[11px] opacity-50 mt-2">
+                    </div>
+                    <p className="text-[11px] opacity-60 mt-2 font-medium">
                       {isKo 
-                        ? `총 ${post.commentCount.toLocaleString()}개의 토론 댓글 중 ${displayedComments.length}개 표시 중 (스크롤 시 자동 로드)` 
-                        : `Showing ${displayedComments.length} of ${post.commentCount.toLocaleString()} discussion comments (Auto-loads on scroll)`}
+                        ? `✓ 구글 시트 실시간 연동 (실제 댓글 ${displayedComments.length}개 표시 중 • 새 댓글 작성 시 전 세계 실시간 공유)` 
+                        : `✓ Google Sheets Live Sync (${displayedComments.length} comments shown • Shared globally in real-time)`}
                     </p>
                   </div>
                 </>
               ) : (
-                <div className="py-12 text-center opacity-50 text-xs">
-                  {isKo ? '아직 댓글이 없습니다. 첫 번째로 토론을 시작해보세요!' : 'No comments yet. Be the first to start the discussion!'}
+                <div className="py-12 text-center opacity-60 text-xs">
+                  <p className="font-bold text-sm mb-1 text-[#FF4500]">
+                    {isKo ? '아직 등록된 댓글이 없습니다.' : 'No comments yet.'}
+                  </p>
+                  <p className="opacity-80">
+                    {isKo 
+                      ? '첫 번째로 댓글을 작성해보세요! (작성 즉시 구글 시트에 등록되어 다른 사용자들도 볼 수 있습니다)' 
+                      : 'Be the first to share your thoughts! (Comments are saved to Google Sheets and shared globally)'}
+                  </p>
                 </div>
               )}
             </div>

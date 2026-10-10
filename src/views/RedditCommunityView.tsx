@@ -18,6 +18,7 @@ import {
 } from '../lib/reddit/redditTypes';
 import { RedditApiService } from '../lib/reddit/redditApiService';
 import { translateRedditPosts, isNeedsTranslation } from '../lib/reddit/redditTranslationService';
+import { RedditGoogleSheetCommentService } from '../lib/reddit/redditGoogleSheetCommentService';
 import { 
   loadRedditState, 
   votePostOrComment, 
@@ -112,17 +113,21 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
     }
   }, [onNavigateView, onNavigateHome]);
 
-  // 화면 진입 시 새로고침 순환 카운터 전진 (매번 새로운 글 상단 노출)
+  // 화면 진입 시 새로고침 순환 카운터 전진 및 구글 시트 실제 댓글 백그라운드 동기화
   useEffect(() => {
     RedditApiService.advanceRefreshRotation();
+    RedditGoogleSheetCommentService.fetchAllSheetComments().catch(() => {});
   }, []);
 
-  // 실시간 Google News 스프레드시트 백그라운드 동기화 함수 (페이지 갱신마다 최신 구글뉴스 표시 및 번역)
+  // 실시간 Google News 스프레드시트 및 구글 시트 댓글 백그라운드 동기화 함수
   const handleSyncLive = useCallback(async () => {
     setIsSyncingLive(true);
     try {
       const targetLang = userState.language || 'ko';
-      await RedditApiService.syncGoogleNews(targetLang);
+      await Promise.all([
+        RedditApiService.syncGoogleNews(targetLang),
+        RedditGoogleSheetCommentService.fetchAllSheetComments(true),
+      ]);
       setSyncTick((t) => t + 1);
     } catch (e) {
       console.warn('[Reddit] Google news live sync warning', e);
@@ -357,7 +362,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
     RedditSeoManager.trackEvent('reddit_vote', { target: 'comment', commentId, direction });
   }, []);
 
-  // 포스트 상세 열기
+  // 포스트 상세 열기 (구글 시트 댓글 실시간 동기화)
   const handleOpenDetail = useCallback((post: RedditPost) => {
     const cleanId = post.id.replace(/_dup_.*$/, '').replace(/_repeat_.*$/, '');
     const { comments, post: cleanPost } = RedditApiService.getPostDetail(cleanId, userState);
@@ -365,6 +370,13 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
     setActivePost(targetPost);
     setActiveComments(comments);
     window.history.pushState(null, '', `/r/${targetPost.subreddit}/comments/${cleanId}`);
+    // 백그라운드 구글 시트 최신 댓글 갱신
+    RedditGoogleSheetCommentService.fetchAllSheetComments().then((sheetComments) => {
+      const tree = RedditGoogleSheetCommentService.getCommentsTreeForPost(cleanId, sheetComments);
+      if (tree.length > 0) {
+        setActiveComments(tree);
+      }
+    }).catch(() => {});
     RedditSeoManager.trackEvent('reddit_open_post', { postId: cleanId, title: targetPost.title });
   }, [userState]);
 
@@ -384,16 +396,21 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
     RedditSeoManager.trackEvent('reddit_submit_post', { subreddit: newPost.subreddit, title: newPost.title });
   }, [handleOpenDetail]);
 
-  // 새 댓글 등록
+  // 새 댓글 등록 (구글 시트에 즉시 영구 등록)
   const handleAddComment = useCallback((postId: string, text: string) => {
+    const cleanId = postId.replace(/_dup_.*$/, '').replace(/_repeat_.*$/, '');
+    const author = userState.username || 'SNSHeroPlayer';
+    const avatarUrl = userState.avatarUrl || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(author)}`;
+    const now = Date.now();
+
     const newComment: RedditComment = {
-      id: `comment_user_${Date.now()}`,
-      postId,
+      id: `comment_user_${now}`,
+      postId: cleanId,
       parentId: null,
-      author: 'SNSHeroPlayer',
-      authorAvatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=64&q=80',
+      author,
+      authorAvatar: avatarUrl,
       authorKarma: 4820,
-      createdAt: Date.now(),
+      createdAt: now,
       score: 1,
       body: text,
       userVote: 'up',
@@ -401,20 +418,34 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
     };
     setUserState((prev) => addUserComment(prev, newComment));
     setActiveComments((prev) => [newComment, ...prev]);
-    RedditSeoManager.trackEvent('reddit_add_comment', { postId });
-  }, []);
 
-  // 대댓글 등록
+    // 구글 시트에 비동기 등록
+    RedditGoogleSheetCommentService.submitCommentToSheet({
+      postId: cleanId,
+      text,
+      author,
+      avatarUrl,
+      parentId: null,
+    });
+    RedditSeoManager.trackEvent('reddit_add_comment', { postId: cleanId });
+  }, [userState.username, userState.avatarUrl]);
+
+  // 대댓글 등록 (구글 시트에 즉시 영구 등록)
   const handleAddReply = useCallback((parentId: string, text: string) => {
     if (!activePost) return;
+    const cleanId = activePost.id.replace(/_dup_.*$/, '').replace(/_repeat_.*$/, '');
+    const author = userState.username || 'SNSHeroPlayer';
+    const avatarUrl = userState.avatarUrl || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(author)}`;
+    const now = Date.now();
+
     const newReply: RedditComment = {
-      id: `comment_user_${Date.now()}`,
-      postId: activePost.id,
+      id: `comment_user_${now}`,
+      postId: cleanId,
       parentId,
-      author: 'SNSHeroPlayer',
-      authorAvatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=64&q=80',
+      author,
+      authorAvatar: avatarUrl,
       authorKarma: 4820,
-      createdAt: Date.now(),
+      createdAt: now,
       score: 1,
       body: text,
       userVote: 'up',
@@ -437,8 +468,17 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
       attach(clone);
       return clone;
     });
-    RedditSeoManager.trackEvent('reddit_add_reply', { parentId });
-  }, [activePost]);
+
+    // 구글 시트에 비동기 등록
+    RedditGoogleSheetCommentService.submitCommentToSheet({
+      postId: cleanId,
+      text,
+      author,
+      avatarUrl,
+      parentId,
+    });
+    RedditSeoManager.trackEvent('reddit_add_reply', { postId: cleanId, parentId });
+  }, [activePost, userState.username, userState.avatarUrl]);
 
   // 검색 실행
   const handleSearch = useCallback((query: string) => {
@@ -619,9 +659,9 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
                     {posts.length > 0 ? (
                       <>
                         {posts.slice(0, feedVisibleCount).map((post, idx) => {
-                          // 구글 뉴스 2개마다 SNSHero 관련 글을 광고처럼 1개씩 중간중간 삽입
-                          const shouldInsertPromoted = idx % 2 === 1;
-                          const promoIdx = Math.floor(idx / 2) % (promotedPosts.length || 1);
+                          // 상단 2개 글 이후부터 SNSHero 프로모션을 4개 간격으로 자연스럽게 삽입 (상단부 광고 과밀 방지)
+                          const shouldInsertPromoted = idx >= 2 && idx % 4 === 2;
+                          const promoIdx = Math.floor(idx / 4) % (promotedPosts.length || 1);
                           const promotedPost = shouldInsertPromoted && promotedPosts.length > 0 ? promotedPosts[promoIdx] : null;
 
                           return (
@@ -640,7 +680,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
                                 onToggleHide={(id) => setUserState((prev) => toggleHidePost(prev, id))}
                               />
 
-                              {/* 2. SNSHero 관련 글: 광고처럼 중간중간 삽입 (스폰서드/프로모티드 카드) */}
+                              {/* 2. SNSHero 관련 글: 상단 이후부터 적절한 간격으로 광고처럼 삽입 (스폰서드/프로모티드 카드) */}
                               {promotedPost && (
                                 <div className="my-2.5">
                                   <div className={`px-3 py-1 rounded-t-xl text-[10px] font-extrabold uppercase tracking-wider flex items-center justify-between border-x border-t ${
@@ -680,8 +720,8 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
                                 </div>
                               )}
 
-                              {/* 3. 4번째 포스트마다 구글 애드센스 인피드 광고 노출 */}
-                              {idx > 0 && idx % 4 === 3 && (
+                              {/* 3. 상단 5개 포스트 이후부터 6개 간격으로 구글 애드센스 인피드 광고 노출 */}
+                              {idx >= 5 && (idx + 1) % 6 === 0 && (
                                 <RedditAdCard 
                                   isDark={isDark} 
                                   isKo={isKo} 

@@ -18,10 +18,9 @@ import {
   HUMOR_SUBREDDITS
 } from './redditTypes';
 import { RedditLiveFeedService } from './redditLiveFeedService';
-import { generateContextualCommentsForPost } from './redditCommentGenerator';
 import { RedditTrendingService } from './redditTrendingService';
-import { RedditRealCommentService } from './redditRealCommentService';
 import { GoogleNewsSheetService } from './googleNewsSheetService';
+import { RedditGoogleSheetCommentService } from './redditGoogleSheetCommentService';
 
 export class RedditApiService {
   /**
@@ -147,11 +146,13 @@ export class RedditApiService {
         const userVote = userState ? userState.votes[cleanId] || userState.votes[p.id] || null : null;
         const delta = userState ? userState.scoreDeltas[cleanId] || userState.scoreDeltas[p.id] || 0 : 0;
         const isSaved = userState ? userState.savedPostIds.includes(cleanId) || userState.savedPostIds.includes(p.id) : false;
+        const actualCommentCount = RedditGoogleSheetCommentService.getCommentCount(cleanId);
         return {
           ...p,
           userVote,
           score: p.score + delta,
           isSaved,
+          commentCount: actualCommentCount,
         };
       });
   }
@@ -320,25 +321,19 @@ export class RedditApiService {
       post.isSaved = userState.savedPostIds.includes(cleanId) || userState.savedPostIds.includes(post.id);
     }
 
-    // 3. 댓글 트리 가져오기 (1순위: 실제 Reddit 원본 캐시 댓글 -> 2순위: 시드 댓글 -> 3순위: 맥락 백업)
-    const cachedReal = RedditRealCommentService.getCachedRealComments(postId);
-    let comments: RedditComment[] = cachedReal
-      ? JSON.parse(JSON.stringify(cachedReal))
-      : (SEED_COMMENTS[postId] ? JSON.parse(JSON.stringify(SEED_COMMENTS[postId])) : []);
+    // 3. 댓글 트리 가져오기: 구글 시트 실제 댓글 서비스 연동 (가짜 목업/자동생성 댓글 100% 완전 배제)
+    let comments: RedditComment[] = RedditGoogleSheetCommentService.getCommentsTreeForPost(cleanId);
 
-    // 만약 캐시나 시드가 없다면 임시 맥락 백업 댓글 생성 (실시간 댓글 fetch 전 폴백)
-    if (comments.length === 0) {
-      comments = this.generateContextualComments(post);
-    }
-
-    // 4. 사용자가 작성한 해당 포스트의 댓글 병합
+    // 4. 사용자가 작성한 해당 포스트의 로컬 댓글 중 아직 구글 시트에 반영되지 않은 것 병합
     if (userState && userState.userComments.length > 0) {
-      const postUserComments = userState.userComments.filter((c) => c.postId === postId);
+      const postUserComments = userState.userComments.filter((c) => c.postId === postId || c.postId === cleanId);
       for (const uComment of postUserComments) {
-        if (!uComment.parentId) {
-          comments.unshift({ ...uComment });
-        } else {
-          this.insertReplyRecursive(comments, uComment);
+        if (!comments.some((c) => c.id === uComment.id || (c.body === uComment.body && Math.abs(c.createdAt - uComment.createdAt) < 60000))) {
+          if (!uComment.parentId) {
+            comments.unshift({ ...uComment });
+          } else {
+            this.insertReplyRecursive(comments, uComment);
+          }
         }
       }
     }
@@ -347,6 +342,8 @@ export class RedditApiService {
     if (userState) {
       this.mapCommentVotesRecursive(comments, userState);
     }
+
+    post.commentCount = comments.length;
 
     return { post, comments };
   }
@@ -364,10 +361,10 @@ export class RedditApiService {
   }
 
   /**
-   * 어떤 글이든 100% 풍성한 댓글과 대댓글을 읽을 수 있도록 자동 생성하는 지능형 댓글 백업 엔진
+   * 가짜 댓글 자동 생성 기능 완전 비활성화 (순수 빈 배열 반환)
    */
-  private static generateContextualComments(post: RedditPost): RedditComment[] {
-    return generateContextualCommentsForPost(post, 4, 0, true);
+  private static generateContextualComments(_post: RedditPost): RedditComment[] {
+    return [];
   }
 
   private static insertReplyRecursive(list: RedditComment[], reply: RedditComment): boolean {

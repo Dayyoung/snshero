@@ -2,6 +2,28 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-10 13:48 KST] [Reddit 상단 구글광고 배너 1개 통일 & 가짜 댓글 전면 삭제 & 구글 시트 실시간 댓글 연동 시스템 구축 완료]
+- **요청 사항**:
+  - 레딧 메인화면 상단 구글광고배너는 1개로 통일.
+  - 가짜 목업 댓글들은 전면 삭제.
+  - 대신 새 댓글을 쓰면 구글 스프레드시트에 영구 등록해서 다른 사용자들도 실시간으로 볼 수 있도록 연동.
+- **상세 구현 내역**:
+  1. **상단 구글 광고 배너 1개 통일 & 피드 광고 레이아웃 정돈** ([`RedditCommunityView.tsx`](file:///Users/dayyoung/project/snshero/src/views/RedditCommunityView.tsx)):
+     - 메인 피드 상단에 단 1개의 공식 수평 Google AdSense 디스플레이 배너(`AdSenseBanner`)만 깔끔하게 노출되도록 통일.
+     - 피드 상단부의 과밀을 방지하기 위해 첫 번째/두 번째 글 구간에는 순수 구글 뉴스 기사만 시원하게 노출하고, 스폰서 프로모션(SNSHero 글)은 3번째 글 이후 4개 간격, 인피드 애드센스 광고는 6번째 글 이후부터 분산 배치.
+  2. **가짜 목업 댓글 100% 완전 삭제**:
+     - `src/data/redditSeedData.ts`: 760여 줄에 달하던 `SEED_COMMENTS` 가짜 댓글 더미 데이터를 `{}` 빈 객체로 완전 삭제.
+     - `src/lib/reddit/redditApiService.ts`: `generateContextualComments` 가짜 댓글 자동 생성 엔진 비활성화 및 외부 레딧 크롤링 배제.
+     - `src/components/reddit/RedditPostDetailModal.tsx`: 무한 스크롤 시 자동 생성되던 가짜 맥락 댓글 로직 전면 제거, 등록된 댓글이 없을 때 깔끔한 빈 상태 UI("첫 번째 댓글을 남겨보세요!") 제공.
+  3. **구글 스프레드시트 실시간 댓글 양방향 연동 엔진 신설** ([`redditGoogleSheetCommentService.ts`](file:///Users/dayyoung/project/snshero/src/lib/reddit/redditGoogleSheetCommentService.ts)):
+     - **등록**: 사용자가 포스트 상세 모달에서 댓글 및 대댓글 작성 시, 구글 폼 엔드포인트(`GOOGLE_FORM_URL`)를 통해 구글 스프레드시트(`1o8rwdG_O_-efkKHgf9oMpFaOUnAAVxMQVfDldFavbjg`)에 `category=reddit_comment`, `label`, `text`, `image1`(메타데이터: postId, author, parentId, avatar)을 no-cors 비동기 전송하여 영구 등록.
+     - **조회**: 구글 스프레드시트 CSV / gviz를 통해 전 세계 사용자가 작성한 실제 댓글을 실시간 수집 및 포스트별 계층 트리(댓글 + 대댓글)로 온전히 파싱하여 모든 사용자에게 동기화.
+     - **댓글 수 동기화**: 메인 피드 포스트 카드의 댓글 수(`commentCount`)도 실제 구글 시트 등록 수치로 정밀 동기화.
+- **검증 결과**:
+  - 구글 폼 전송 및 구글 스프레드시트 CSV 등록 실제 호출 검증 완료 (`reddit_comment` 행 실시간 생성 확인).
+  - `npx tsc --noEmit`: 0 오류 무결점 통과.
+  - `npm run build`: 성공 (번들 45KB 경량화, 43 static routes generation 정상 완료).
+
 ## [2026-10-10 11:49 KST] [Reddit 페이지 상단 개/고양이 사진 트렌딩 배너 전면 제거 및 클린 피드화 완료]
 - **요청 사항**:
   - 레딧 페이지 상단에 노출되던 개, 고양이 사진 배너 및 레딧 관련 불필요한 배너 전면 제거.
