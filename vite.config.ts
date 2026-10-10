@@ -199,30 +199,27 @@ export default defineConfig(({mode}) => {
               if (decodedUrl === '/api/reddit/google-news-sheet') {
                 const sheetId = '1CT5Yy1-i6kkOfx3d-Yw1osOEYbN7fkk8IDiI8Vm82vM';
                 const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&_t=${Date.now()}`;
-                fetch(csvUrl)
+                fetch(csvUrl, { redirect: 'follow' })
                   .then(async (resp) => {
-                    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-                    const csv = await resp.text();
-                    if (!csv || csv.trim().startsWith('<!DOCTYPE html') || csv.includes('google-signin')) {
-                      throw new Error('Google Sheet returned HTML login page');
+                    const text = await resp.text();
+                    // 구글 로그인 리디렉션 또는 HTML 로그인 페이지 검사
+                    if (resp.status === 401 || resp.status === 403 || text.includes('ServiceLogin') || text.includes('Google 계정에 로그인하십시오') || text.trim().startsWith('<!DOCTYPE html')) {
+                      res.statusCode = 401;
+                      res.setHeader('Content-Type', 'application/json; charset=utf-8');
+                      res.setHeader('Access-Control-Allow-Origin', '*');
+                      res.end(JSON.stringify({ error: 'unauthorized', message: 'Google Sheet is private. Set sharing permissions to Anyone with the link.' }));
+                      return;
+                    }
+                    if (!resp.ok) {
+                      throw new Error(`HTTP ${resp.status}`);
                     }
                     res.statusCode = 200;
                     res.setHeader('Content-Type', 'text/csv; charset=utf-8');
                     res.setHeader('Access-Control-Allow-Origin', '*');
                     res.setHeader('Cache-Control', 'no-cache');
-                    res.end(csv);
+                    res.end(text);
                   })
                   .catch((err) => {
-                    const localBackup = path.resolve(process.cwd(), 'public', 'data', 'google-news.csv');
-                    if (fs.existsSync(localBackup)) {
-                      const csv = fs.readFileSync(localBackup, 'utf-8');
-                      res.statusCode = 200;
-                      res.setHeader('Content-Type', 'text/csv; charset=utf-8');
-                      res.setHeader('Access-Control-Allow-Origin', '*');
-                      res.setHeader('X-Fallback', 'local-backup');
-                      res.end(csv);
-                      return;
-                    }
                     res.statusCode = 502;
                     res.setHeader('Content-Type', 'application/json; charset=utf-8');
                     res.setHeader('Access-Control-Allow-Origin', '*');

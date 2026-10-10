@@ -20,6 +20,7 @@ export class GoogleNewsSheetService {
   private static lastLang: string = '';
   private static syncStatus: GoogleNewsSyncStatus = 'idle';
   private static syncErrorMessage: string = '';
+  private static listeners: Array<(status: GoogleNewsSyncStatus, lastFetch: number) => void> = [];
 
   static getSyncStatus(): GoogleNewsSyncStatus {
     return this.syncStatus;
@@ -27,6 +28,31 @@ export class GoogleNewsSheetService {
 
   static getSyncErrorMessage(): string {
     return this.syncErrorMessage;
+  }
+
+  static getLastFetchTime(): number {
+    try {
+      if (typeof window !== 'undefined') {
+        const stored = localStorage.getItem(LAST_FETCH_KEY);
+        return stored ? parseInt(stored, 10) : 0;
+      }
+    } catch {}
+    return 0;
+  }
+
+  static subscribe(fn: (status: GoogleNewsSyncStatus, lastFetch: number) => void): () => void {
+    this.listeners.push(fn);
+    fn(this.syncStatus, this.getLastFetchTime());
+    return () => {
+      this.listeners = this.listeners.filter(l => l !== fn);
+    };
+  }
+
+  private static notifyListeners(): void {
+    const lastFetch = this.getLastFetchTime();
+    this.listeners.forEach(fn => {
+      try { fn(this.syncStatus, lastFetch); } catch {}
+    });
   }
 
   /**
@@ -201,40 +227,44 @@ export class GoogleNewsSheetService {
 
   /**
    * 구글 시트에서 최신 구글 뉴스 실시간 fetch
-   * (JSONP -> Vite Dev Proxy -> CORS Proxy -> Direct CSV 다단계 페일오버)
+   * (JSONP -> Vite Dev Proxy -> CORS Proxy Pool -> Direct CSV 다단계 페일오버)
    */
   static async fetchLatestNewsFromSheet(): Promise<RawGoogleNewsItem[]> {
     this.syncStatus = 'syncing';
     this.syncErrorMessage = '';
+    this.notifyListeners();
 
     // 1단계: JSONP gviz API (브라우저 CORS 차단 원천 우회)
     if (typeof window !== 'undefined') {
       try {
         const gvizUrl = `https://docs.google.com/spreadsheets/d/${GOOGLE_NEWS_SPREADSHEET_ID}/gviz/tq`;
-        const gvizData = await this.fetchViaJsonp(gvizUrl, 5000);
+        const gvizData = await this.fetchViaJsonp(gvizUrl, 4500);
         const parsed = this.parseGvizTable(gvizData);
         if (parsed.length > 0) {
           this.syncStatus = 'ok';
           this.persistRawNews(parsed);
+          this.notifyListeners();
           return parsed;
         }
       } catch (jsonpErr) {
-        console.warn('[GoogleNewsSheetService] JSONP fetch failed, trying proxy fallbacks:', jsonpErr);
+        // continue
       }
     }
 
-    // 2단계: 엔드포인트 풀 시도
+    // 2단계: 다단계 프록시 및 엔드포인트 풀 시도
     const endpoints = [
-      // Vite 로컬 프록시 (Dev 환경)
+      // 1. Vite 로컬 프록시 (Dev 환경)
       `/api/reddit/google-news-sheet?_t=${Date.now()}`,
-      // AllOrigins CORS Proxy (배포 프로덕션 환경에서 브라우저 CORS 우회)
+      // 2. AllOrigins CORS Proxy (배포 프로덕션 환경에서 브라우저 CORS 우회)
       `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://docs.google.com/spreadsheets/d/${GOOGLE_NEWS_SPREADSHEET_ID}/gviz/tq?tqx=out:csv&_t=${Date.now()}`)}`,
-      // Google Sheets GViz CSV 직접 호출
-      `https://docs.google.com/spreadsheets/d/${GOOGLE_NEWS_SPREADSHEET_ID}/gviz/tq?tqx=out:csv&_t=${Date.now()}`,
-      // Google Sheets 웹 게시 export CSV
-      `https://docs.google.com/spreadsheets/d/${GOOGLE_NEWS_SPREADSHEET_ID}/export?format=csv&_t=${Date.now()}`,
-      // 로컬 정적 백업 CSV
-      `/data/google-news.csv?_t=${Date.now()}`,
+      // 3. CorsProxy.io Proxy
+      `https://corsproxy.io/?url=${encodeURIComponent(`https://docs.google.com/spreadsheets/d/${GOOGLE_NEWS_SPREADSHEET_ID}/gviz/tq?tqx=out:csv&_t=${Date.now()}`)}`,
+      // 4. Google Sheets GViz CSV 직접 호출 (gid=0 포함)
+      `https://docs.google.com/spreadsheets/d/${GOOGLE_NEWS_SPREADSHEET_ID}/gviz/tq?tqx=out:csv&gid=0&_t=${Date.now()}`,
+      // 5. Google Sheets 웹 게시 export CSV
+      `https://docs.google.com/spreadsheets/d/${GOOGLE_NEWS_SPREADSHEET_ID}/export?format=csv&gid=0&_t=${Date.now()}`,
+      // 6. Google Sheets pub CSV
+      `https://docs.google.com/spreadsheets/d/${GOOGLE_NEWS_SPREADSHEET_ID}/pub?output=csv&gid=0&_t=${Date.now()}`,
     ];
 
     let detectedUnauthorized = false;
@@ -242,7 +272,7 @@ export class GoogleNewsSheetService {
     for (const url of endpoints) {
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 4500);
+        const timeoutId = setTimeout(() => controller.abort(), 4000);
 
         const resp = await fetch(url, { signal: controller.signal });
         clearTimeout(timeoutId);
@@ -255,18 +285,26 @@ export class GoogleNewsSheetService {
         if (resp.ok) {
           const text = await resp.text();
 
-          // 구글 로그인 리디렉션 HTML 감지 (권한 없음 401/302 상태)
-          if (text.includes('ServiceLogin') || text.includes('accounts.google.com') || text.includes('Google 계정에 로그인하십시오')) {
+          // 구글 로그인 리디렉션 HTML 또는 JSON 401 감지
+          if (
+            text.includes('ServiceLogin') ||
+            text.includes('accounts.google.com') ||
+            text.includes('Google 계정에 로그인하십시오') ||
+            text.includes('"error":"unauthorized"') ||
+            text.trim().startsWith('<!DOCTYPE html')
+          ) {
             detectedUnauthorized = true;
             continue;
           }
 
-          // 정상적인 CSV 텍스트인지 검증
-          if (text.includes('수집일시') || text.includes('원문 링크') || text.includes('http') || text.split('\n').length >= 2) {
+          // 정상적인 CSV 텍스트인지 검증 (2줄 이상 + 쉼표 포함)
+          const lines = text.trim().split('\n');
+          if (lines.length >= 2 && lines[0].includes(',')) {
             const parsed = this.parseCsv(text);
             if (parsed.length > 0) {
               this.syncStatus = 'ok';
               this.persistRawNews(parsed);
+              this.notifyListeners();
               return parsed;
             }
           }
@@ -286,6 +324,7 @@ export class GoogleNewsSheetService {
       this.syncErrorMessage = '구글 뉴스 스프레드시트 데이터를 가져오지 못했습니다. 캐시된 뉴스를 표시합니다.';
     }
 
+    this.notifyListeners();
     // 실패 시 저장된 캐시 또는 기본 시드 반환
     return this.getStoredRawNews();
   }

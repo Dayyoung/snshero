@@ -17,7 +17,7 @@ import {
   SearchResults 
 } from '../lib/reddit/redditTypes';
 import { RedditApiService } from '../lib/reddit/redditApiService';
-import { GoogleNewsSheetService } from '../lib/reddit/googleNewsSheetService';
+import { GoogleNewsSheetService, GoogleNewsSyncStatus } from '../lib/reddit/googleNewsSheetService';
 import { translateRedditPosts, isNeedsTranslation } from '../lib/reddit/redditTranslationService';
 import { RedditGoogleSheetCommentService } from '../lib/reddit/redditGoogleSheetCommentService';
 import { 
@@ -90,6 +90,17 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSyncingLive, setIsSyncingLive] = useState(false);
   const [syncTick, setSyncTick] = useState(0);
+  const [syncStatus, setSyncStatus] = useState<GoogleNewsSyncStatus>(() => GoogleNewsSheetService.getSyncStatus());
+  const [lastSyncTime, setLastSyncTime] = useState<number>(() => GoogleNewsSheetService.getLastFetchTime());
+
+  // GoogleNewsSheetService 실시간 상태 동기화 구독
+  useEffect(() => {
+    const unsubscribe = GoogleNewsSheetService.subscribe((status, lastFetch) => {
+      setSyncStatus(status);
+      setLastSyncTime(lastFetch);
+    });
+    return () => unsubscribe();
+  }, []);
 
   // 피드 무한 스크롤 상태
   const [feedVisibleCount, setFeedVisibleCount] = useState(12);
@@ -114,12 +125,6 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
     }
   }, [onNavigateView, onNavigateHome]);
 
-  // 화면 진입 시 새로고침 순환 카운터 전진 및 구글 시트 실제 댓글 백그라운드 동기화
-  useEffect(() => {
-    RedditApiService.advanceRefreshRotation();
-    RedditGoogleSheetCommentService.fetchAllSheetComments().catch(() => {});
-  }, []);
-
   // 실시간 Google News 스프레드시트 및 구글 시트 댓글 백그라운드 동기화 함수
   const handleSyncLive = useCallback(async () => {
     setIsSyncingLive(true);
@@ -136,6 +141,22 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
       setIsSyncingLive(false);
     }
   }, [userState.language]);
+
+  // 화면 진입 시 새로고침 순환 카운터 전진, 구글 시트 댓글 동기화, 및 구글 뉴스 실시간 자동 갱신 트리거
+  useEffect(() => {
+    RedditApiService.advanceRefreshRotation();
+    RedditGoogleSheetCommentService.fetchAllSheetComments().catch(() => {});
+    
+    // 1. 화면 열릴 때 즉각 최신 뉴스 자동 동기화 1회 실행
+    handleSyncLive();
+
+    // 2. 60초 주기 백그라운드 자동 최신 동기화 폴링
+    const timer = setInterval(() => {
+      handleSyncLive();
+    }, 60000);
+
+    return () => clearInterval(timer);
+  }, [handleSyncLive]);
 
   // 커뮤니티 화면에서는 배경음악과 효과음 100% 완전 제거
   useEffect(() => {
@@ -611,23 +632,37 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
                     <div className="flex items-center justify-between w-full">
                       <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 truncate">
                         <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${
-                          GoogleNewsSheetService.getSyncStatus() === 'unauthorized'
+                          syncStatus === 'unauthorized'
                             ? 'bg-amber-500 animate-pulse'
-                            : 'bg-emerald-500 animate-pulse'
+                            : syncStatus === 'syncing'
+                              ? 'bg-blue-500 animate-ping'
+                              : 'bg-emerald-500 animate-pulse'
                         }`} />
                         <span className={`font-bold flex-shrink-0 ${
-                          GoogleNewsSheetService.getSyncStatus() === 'unauthorized'
+                          syncStatus === 'unauthorized'
                             ? 'text-amber-500'
-                            : 'text-emerald-500'
+                            : syncStatus === 'syncing'
+                              ? 'text-blue-500'
+                              : 'text-emerald-500'
                         }`}>
-                          {GoogleNewsSheetService.getSyncStatus() === 'unauthorized'
-                            ? (isKo ? '구글시트 공유권한 확인 필요' : 'Sheet Auth Required')
-                            : (isKo ? '실시간 연동 중' : 'Live Stream')}
+                          {syncStatus === 'unauthorized'
+                            ? (isKo ? '구글시트 공유권한 설정 필요' : 'Sheet Sharing Setup Required')
+                            : syncStatus === 'syncing'
+                              ? (isKo ? '실시간 뉴스 동기화 중...' : 'Syncing Live News...')
+                              : (isKo ? '실시간 연동 중' : 'Live Stream')}
                         </span>
                         <span className="opacity-40">•</span>
                         <span className="opacity-75 text-[11px] truncate">
-                          {posts.length}{isKo ? '개 포스트' : ' posts'}
+                          {posts.length}{isKo ? '개 뉴스 포스트' : ' news posts'}
                         </span>
+                        {lastSyncTime > 0 && (
+                          <>
+                            <span className="opacity-40 hidden sm:inline">•</span>
+                            <span className="opacity-60 text-[10.5px] truncate hidden sm:inline">
+                              {new Date(lastSyncTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                            </span>
+                          </>
+                        )}
                       </div>
 
                       <button
@@ -635,35 +670,63 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
                         onClick={handleSyncLive}
                         disabled={isSyncingLive}
                         className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full hover:bg-black/10 cursor-pointer disabled:opacity-50 transition-all font-bold text-[11px] text-[#FF4500] flex-shrink-0 ml-2"
-                        title={isKo ? '실시간 데이터 새로고침' : 'Refresh Live Data'}
+                        title={isKo ? '구글 시트 최신 뉴스 실시간 갱신' : 'Refresh Google News'}
                       >
                         <RotateCw className={`w-3.5 h-3.5 ${isSyncingLive ? 'animate-spin' : ''}`} />
                         <span>{isSyncingLive ? (isKo ? '동기화 중...' : 'Syncing...') : (isKo ? '실시간 갱신' : 'Refresh')}</span>
                       </button>
                     </div>
-
-                    {GoogleNewsSheetService.getSyncStatus() === 'unauthorized' && (
-                      <div className="flex items-center justify-between gap-2 pt-1.5 border-t border-amber-500/20 text-[10.5px] text-amber-500">
-                        <div className="flex items-center gap-1.5 truncate">
-                          <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span className="truncate">
-                            {isKo 
-                              ? '구글 시트가 비공개(로그인 필요) 상태입니다. [공유 -> 링크가 있는 모든 사용자(뷰어)]로 설정 시 최신 뉴스가 실시간 반영됩니다.'
-                              : 'Spreadsheet is private. Set sharing to "Anyone with the link (Viewer)" to enable live updates.'}
-                          </span>
-                        </div>
-                        <a
-                          href="https://docs.google.com/spreadsheets/d/1CT5Yy1-i6kkOfx3d-Yw1osOEYbN7fkk8IDiI8Vm82vM/edit?usp=sharing"
-                          target="_blank"
-                          rel="noreferrer"
-                          className="flex items-center gap-1 underline font-bold flex-shrink-0 hover:text-amber-400"
-                        >
-                          <span>{isKo ? '시트 열기' : 'Open Sheet'}</span>
-                          <ExternalLink className="w-3 h-3" />
-                        </a>
-                      </div>
-                    )}
                   </div>
+
+                  {/* 구글 시트 비공개(로그인 필요) 시 눈에 띄는 가이드 Alert 카드 */}
+                  {syncStatus === 'unauthorized' && (
+                    <div className={`p-3.5 mb-3 rounded-2xl border transition-all text-xs ${
+                      isDark ? 'bg-amber-950/25 border-amber-500/40 text-amber-200' : 'bg-amber-50 border-amber-300 text-amber-900'
+                    }`}>
+                      <div className="flex items-start gap-2.5">
+                        <AlertCircle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
+                        <div className="flex-1 min-w-0">
+                          <div className="font-bold text-sm mb-1 flex items-center justify-between flex-wrap gap-1">
+                            <span>{isKo ? '⚠️ 구글 뉴스 시트 공유 설정 필요 (HTTP 401 Unauthorized)' : '⚠️ Google Sheet Sharing Required'}</span>
+                            <span className="text-[10px] font-mono px-2 py-0.5 bg-amber-500/20 text-amber-600 dark:text-amber-400 font-bold rounded-full">
+                              {isKo ? '시트가 비공개 상태' : 'Sheet is Private'}
+                            </span>
+                          </div>
+                          <p className="text-[11.5px] leading-relaxed opacity-90 mb-2.5">
+                            {isKo
+                              ? '구글 스프레드시트가 현재 "비공개(구글 로그인 필요)"로 잠겨 있어, 웹 브라우저가 최신 뉴스를 받아오지 못하고 있습니다. 아래 3단계 안내에 따라 공유 설정을 "링크가 있는 모든 사용자"로 변경하시면 최신 뉴스가 실시간으로 자동 갱신됩니다.'
+                              : 'The Google Sheet is currently private (requires Google login). Change sharing settings to "Anyone with the link (Viewer)" to allow live sync.'}
+                          </p>
+                          <div className="bg-black/5 dark:bg-white/5 rounded-xl p-2.5 mb-3 text-[11px] leading-relaxed space-y-1">
+                            <div className="font-bold text-amber-700 dark:text-amber-300">{isKo ? '📋 설정 변경 방법 (10초 소요):' : 'How to fix:'}</div>
+                            <div>{isKo ? '1. 아래 [구글 시트 열기] 버튼 클릭' : '1. Click [Open Google Sheet] below'}</div>
+                            <div>{isKo ? '2. 시트 우측 상단 [공유] 클릭 ➔ 일반 액세스를 "링크가 있는 모든 사용자" (역할: 뷰어)로 변경 후 [완료]' : '2. Click top-right [Share] ➔ Change General Access to "Anyone with the link (Viewer)" ➔ Done'}</div>
+                            <div>{isKo ? '3. 아래 [지금 다시 동기화] 버튼을 누르면 실시간 뉴스가 즉시 로드됩니다.' : '3. Click [Try Sync Now] to load live news.'}</div>
+                          </div>
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <a
+                              href="https://docs.google.com/spreadsheets/d/1CT5Yy1-i6kkOfx3d-Yw1osOEYbN7fkk8IDiI8Vm82vM/edit?usp=sharing"
+                              target="_blank"
+                              rel="noreferrer"
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500 text-white font-bold hover:bg-amber-600 transition-colors cursor-pointer text-xs shadow-sm"
+                            >
+                              <span>{isKo ? '구글 시트 열기' : 'Open Google Sheet'}</span>
+                              <ExternalLink className="w-3.5 h-3.5" />
+                            </a>
+                            <button
+                              type="button"
+                              onClick={handleSyncLive}
+                              disabled={isSyncingLive}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-amber-500/50 font-bold hover:bg-amber-500/10 transition-colors cursor-pointer text-xs"
+                            >
+                              <RotateCw className={`w-3.5 h-3.5 ${isSyncingLive ? 'animate-spin' : ''}`} />
+                              <span>{isSyncingLive ? (isKo ? '확인 중...' : 'Checking...') : (isKo ? '지금 다시 동기화' : 'Try Sync Now')}</span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   {/* 피드 정렬 칩 및 뷰 모드 바 */}
                   <RedditFeedSortBar

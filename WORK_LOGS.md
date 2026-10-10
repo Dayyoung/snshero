@@ -2,6 +2,31 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-10 23:42 KST] [Google News 스프레드시트 비공개(401) 차단 원인 해결 & 프록시 폴백 버그 수정 & 마운트 자동 동기화/폴링 구축]
+- **요청 사항**:
+  - 구글 뉴스 시트는 업데이트되는데 레딧 뉴스는 갱신되지 않는 문제 원인 분석 및 해결.
+- **원인 규명**:
+  1. **구글 시트 비공개(로그인 필요) 상태에 따른 외부 차단 (근본 원인)**:
+     - 사용자 구글 드라이브 시트(`1CT5Yy1-i6kkOfx3d-Yw1osOEYbN7fkk8IDiI8Vm82vM`)가 '제한됨(비공개)'으로 설정되어 있음.
+     - 사용자는 본인 브라우저에 구글 계정이 로그인되어 있어 시트가 실시간으로 채워지는 것을 보지만, 웹 브라우저/익명 클라이언트의 외부 호출은 구글 서버가 `HTTP 401 Unauthorized / 302 ServiceLogin`으로 원천 차단함.
+  2. **Vite 프록시의 과거 백업 CSV 무조건 반환 버그 (착시 원인)**:
+     - `vite.config.ts`의 `/api/reddit/google-news-sheet` 프록시가 구글 시트 호출 실패 시 401 에러를 프론트에 알리지 않고, 과거 정적 백업(`google-news.csv`: 오전 10:45분 데이터)을 200 OK로 반환하여 프론트엔드가 '동기화 성공'으로 착각하고 과거 뉴스만 계속 노출했음.
+  3. **프론트엔드 화면 마운트 시 자동 동기화 미호출**:
+     - 레딧 페이지에 접속하거나 새로고침했을 때 `syncGoogleNews`가 자동으로 실행되지 않고 로컬 캐시만 읽고 있었음.
+- **상세 구현 내역**:
+  1. **Vite 프록시 401 Unauthorized 정직한 응답 반환** ([`vite.config.ts`](file:///Users/dayyoung/project/snshero/vite.config.ts)):
+     - 구글 시트가 302 리디렉션, HTML 로그인 페이지, 401을 반환할 때 과거 백업 CSV로 숨기지 않고 `401 Unauthorized`를 프론트에 명확히 반환하도록 수정.
+  2. **실시간 리스너 및 다단계 CORS 프록시 풀 확장** ([`googleNewsSheetService.ts`](file:///Users/dayyoung/project/snshero/src/lib/reddit/googleNewsSheetService.ts)):
+     - `GoogleNewsSheetService.subscribe(...)` 리스너 엔진을 탑재하여 `syncStatus`('syncing' | 'ok' | 'unauthorized' | 'error')와 `lastFetchTime`을 리액트 컴포넌트에 실시간 브로드캐스트.
+     - AllOrigins, CorsProxy.io, GViz CSV, export CSV, pub CSV 등 다단계 프록시 풀 보강.
+  3. **화면 마운트 즉시 자동 동기화 & 60초 주기 백그라운드 자동 갱신** ([`RedditCommunityView.tsx`](file:///Users/dayyoung/project/snshero/src/views/RedditCommunityView.tsx)):
+     - 레딧 화면 접속 시 `handleSyncLive()`를 즉시 자동 1회 실행하고, 60초 주기 타이머로 백그라운드 자동 갱신.
+  4. **시트 비공개(401) 감지 시 눈에 띄는 가이드 Alert 카드 탑재** ([`RedditCommunityView.tsx`](file:///Users/dayyoung/project/snshero/src/views/RedditCommunityView.tsx)):
+     - 401 감지 시 상단에 주황색 엠버 경고 박스를 띄우고, 구글 시트 공유 권한("링크가 있는 모든 사용자 - 뷰어") 3단계 변경 가이드 및 [시트 열기] / [지금 다시 동기화] 원클릭 버튼 제공.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 오류 무결점 통과.
+  - `npm run build`: 정상 빌드 완료.
+
 ## [2026-10-10 17:48 KST] [PWA 실행 시 상단 안전영역(Safe Area) 설정버튼 및 헤더 겹침/터치불가 버그 수정 완료]
 - **요청 사항**:
   - PWA 실행 시 상단 안전영역(노치/다이나믹 아일랜드/상태표시줄)에 설정버튼이 가려서 눌리지 않는 버그 해결.
