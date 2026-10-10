@@ -33,6 +33,16 @@ export function loadRedditState(): RedditUserDataState {
     const parsed = JSON.parse(raw);
     const loaded = { ...DEFAULT_STATE, ...parsed };
 
+    // 기존 외부 mock 레딧 포스트 캐시 1회성 완전 정리 (오직 구글 뉴스만 유지)
+    if (!localStorage.getItem('hero_reddit_purge_old_posts_v1')) {
+      try {
+        localStorage.removeItem('hero_reddit_live_posts_v1');
+        localStorage.removeItem('hero_reddit_trending_cache');
+        localStorage.removeItem('hero_reddit_feed_rot_seed');
+        localStorage.setItem('hero_reddit_purge_old_posts_v1', 'true');
+      } catch {}
+    }
+
     // 기존 사용자 최초 1회 밝은톤 기본값으로 자동 전환 마이그레이션
     const isMigrated = localStorage.getItem(THEME_MIGRATED_KEY);
     if (!isMigrated) {

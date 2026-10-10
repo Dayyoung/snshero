@@ -6,6 +6,7 @@
 
 import { RedditPost, RedditTrendingItem } from './redditTypes';
 import { RedditLiveFeedService } from './redditLiveFeedService';
+import { GoogleNewsSheetService } from './googleNewsSheetService';
 import { SEED_POSTS, SEED_TRENDING, SEED_SUBREDDITS } from '../../data/redditSeedData';
 
 const TRENDING_DATE_KEY = 'hero_reddit_trending_date';
@@ -90,24 +91,9 @@ export class RedditTrendingService {
       }
     }
 
-    // 2. 전체 후보 포스트 풀 통합 (실시간 캐시 + 현재 뷰 포스트 + 시드 포스트)
-    const postMap = new Map<string, RedditPost>();
-
-    // A. 실시간 캐시 포스트 (최우선)
-    const livePosts = RedditLiveFeedService.getCachedLivePosts();
-    livePosts.forEach((p) => postMap.set(p.id, p));
-
-    // B. 현재 뷰 포스트
-    currentPosts.forEach((p) => {
-      if (!postMap.has(p.id)) postMap.set(p.id, p);
-    });
-
-    // C. 시드 포스트 (백업)
-    SEED_POSTS.forEach((p) => {
-      if (!postMap.has(p.id)) postMap.set(p.id, p);
-    });
-
-    const candidates = Array.from(postMap.values());
+    // 2. 구글 뉴스 기사 풀 로드 (실시간 구글 뉴스로 100% 트렌딩 구성)
+    const googleNewsPosts = GoogleNewsSheetService.getCachedGoogleNewsPosts(language);
+    const candidates = googleNewsPosts.length > 0 ? googleNewsPosts : currentPosts;
 
     // 3. 고화질 이미지/미디어가 있는 포스트 필터링 (트렌드 카드는 큰 썸네일 필수)
     const visualPosts = candidates.filter((p) => {

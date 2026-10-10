@@ -5,7 +5,7 @@
  */
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { RotateCw } from 'lucide-react';
+import { RotateCw, Sparkles } from 'lucide-react';
 import { 
   RedditPost, 
   RedditComment, 
@@ -119,24 +119,19 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
     RedditApiService.advanceRefreshRotation();
   }, []);
 
-  // 실시간 Reddit 피드 & Google News 스프레드시트 백그라운드 동기화 함수 (페이지 갱신마다 최신정보 표시 및 번역)
+  // 실시간 Google News 스프레드시트 백그라운드 동기화 함수 (페이지 갱신마다 최신 구글뉴스 표시 및 번역)
   const handleSyncLive = useCallback(async () => {
     setIsSyncingLive(true);
-    // 새로고침 시 다음 유머 서브레딧 글 수집 및 순환 시프트 전진
-    RedditApiService.advanceRefreshRotation();
     try {
       const targetLang = userState.language || 'ko';
-      await Promise.allSettled([
-        RedditApiService.syncLivePosts(currentSubreddit, targetLang),
-        RedditApiService.syncGoogleNews(targetLang),
-      ]);
+      await RedditApiService.syncGoogleNews(targetLang);
       setSyncTick((t) => t + 1);
     } catch (e) {
-      console.warn('[Reddit] Live sync warning', e);
+      console.warn('[Reddit] Google news live sync warning', e);
     } finally {
       setIsSyncingLive(false);
     }
-  }, [currentSubreddit, userState.language]);
+  }, [userState.language]);
 
   // 커뮤니티 화면에서는 배경음악과 효과음 100% 완전 제거
   useEffect(() => {
@@ -156,7 +151,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
     };
   }, []);
 
-  // 마운트 및 서브레딧 변경 시 실시간 Reddit RSS 자동 동기화
+  // 마운트 시 실시간 구글 뉴스 자동 동기화
   useEffect(() => {
     handleSyncLive();
   }, [handleSyncLive]);
@@ -166,10 +161,15 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
     return RedditApiService.getSubredditInfo(currentSubreddit, userState);
   }, [currentSubreddit, userState]);
 
-  // 피드 포스트 목록 (필터, 정렬 및 실시간 업데이트 동기화)
+  // 피드 포스트 목록 (100% 오직 구글 뉴스만 표시)
   const posts = useMemo(() => {
     return RedditApiService.getPosts(currentSubreddit, currentSort, currentTimeFilter, userState);
   }, [currentSubreddit, currentSort, currentTimeFilter, userState, syncTick]);
+
+  // SNSHero 관련 글 목록 (구글 뉴스 사이에 광고처럼 중간중간 표시용)
+  const promotedPosts = useMemo(() => {
+    return RedditApiService.getSNSHeroPromotedPosts(userState);
+  }, [userState, syncTick]);
 
   // 번역 완료/시도 포스트 ID 추적 세트 (중복 호출 및 무한 루프 원천 차단)
   const translatedPostIdsRef = React.useRef<Set<string>>(new Set());
@@ -214,9 +214,9 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
       // 1. 현재 표시 개수 확장
       setFeedVisibleCount((prev) => prev + 6);
 
-      // 2. 피드 남은 개수가 적거나 끝에 가까워지면 실시간 추가 피드 자동 수집
+      // 2. 피드 남은 개수가 적거나 끝에 가까워지면 실시간 구글 뉴스 동기화 갱신
       if (feedVisibleCount + 8 >= posts.length) {
-        await RedditApiService.fetchMoreLivePosts(currentSubreddit, userState.language || 'ko');
+        await RedditApiService.syncGoogleNews(userState.language || 'ko');
         setSyncTick((t) => t + 1);
       }
     } catch (e) {
@@ -650,35 +650,83 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
                     />
                   </div>
 
-                  {/* 피드 포스트 목록 */}
+                  {/* 피드 포스트 목록: 오직 구글 뉴스만 표시되고, SNSHero 관련 글은 광고처럼 중간중간 표시 */}
                   <div className="space-y-2">
                     {posts.length > 0 ? (
                       <>
-                        {posts.slice(0, feedVisibleCount).map((post, idx) => (
-                          <React.Fragment key={post.id}>
-                            {/* 4번째 포스트마다 구글 애드센스 인피드 광고 노출 */}
-                            {idx > 0 && idx % 4 === 0 && (
-                              <RedditAdCard 
-                                isDark={isDark} 
-                                isKo={isKo} 
-                                onGoToGame={() => handleNavigateView('home')} 
-                              />
-                            )}
+                        {posts.slice(0, feedVisibleCount).map((post, idx) => {
+                          // 구글 뉴스 2개마다 SNSHero 관련 글을 광고처럼 1개씩 중간중간 삽입
+                          const shouldInsertPromoted = idx % 2 === 1;
+                          const promoIdx = Math.floor(idx / 2) % (promotedPosts.length || 1);
+                          const promotedPost = shouldInsertPromoted && promotedPosts.length > 0 ? promotedPosts[promoIdx] : null;
 
-                            <RedditPostCard
-                              post={post}
-                              viewMode={viewMode}
-                              isDark={isDark}
-                              isKo={isKo}
-                              onVote={handleVotePost}
-                              onOpenDetail={handleOpenDetail}
-                              onSelectSubreddit={handleSelectSubreddit}
-                              onOpenUserProfile={handleOpenUserProfile}
-                              onToggleSave={(id) => setUserState((prev) => toggleSavePost(prev, id))}
-                              onToggleHide={(id) => setUserState((prev) => toggleHidePost(prev, id))}
-                            />
-                          </React.Fragment>
-                        ))}
+                          return (
+                            <React.Fragment key={post.id}>
+                              {/* 1. 구글 뉴스 메인 포스트 */}
+                              <RedditPostCard
+                                post={post}
+                                viewMode={viewMode}
+                                isDark={isDark}
+                                isKo={isKo}
+                                onVote={handleVotePost}
+                                onOpenDetail={handleOpenDetail}
+                                onSelectSubreddit={handleSelectSubreddit}
+                                onOpenUserProfile={handleOpenUserProfile}
+                                onToggleSave={(id) => setUserState((prev) => toggleSavePost(prev, id))}
+                                onToggleHide={(id) => setUserState((prev) => toggleHidePost(prev, id))}
+                              />
+
+                              {/* 2. SNSHero 관련 글: 광고처럼 중간중간 삽입 (스폰서드/프로모티드 카드) */}
+                              {promotedPost && (
+                                <div className="my-2.5">
+                                  <div className={`px-3 py-1 rounded-t-xl text-[10px] font-extrabold uppercase tracking-wider flex items-center justify-between border-x border-t ${
+                                    isDark ? 'bg-[#181C1F] border-[#2A3136] text-amber-400' : 'bg-amber-50/80 border-amber-200 text-amber-800'
+                                  }`}>
+                                    <span className="flex items-center gap-1.5">
+                                      <Sparkles className="w-3 h-3 text-[#FF4500]" />
+                                      <span>{isKo ? '스폰서 프로모션 • SNSHero 공식' : 'Promoted by SNSHero Official'}</span>
+                                    </span>
+                                    <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${
+                                      isDark ? 'bg-amber-400/10 text-amber-400' : 'bg-amber-200 text-amber-900'
+                                    }`}>
+                                      {isKo ? '광고' : 'Promoted'}
+                                    </span>
+                                  </div>
+                                  <div className="rounded-b-2xl overflow-hidden border-x border-b border-inherit">
+                                    <RedditPostCard
+                                      post={{
+                                        ...promotedPost,
+                                        flair: {
+                                          text: isKo ? '스폰서 / SNSHero' : 'Sponsored',
+                                          bgColor: '#FF4500',
+                                          textColor: '#FFFFFF',
+                                        },
+                                      }}
+                                      viewMode={viewMode}
+                                      isDark={isDark}
+                                      isKo={isKo}
+                                      onVote={handleVotePost}
+                                      onOpenDetail={handleOpenDetail}
+                                      onSelectSubreddit={handleSelectSubreddit}
+                                      onOpenUserProfile={handleOpenUserProfile}
+                                      onToggleSave={(id) => setUserState((prev) => toggleSavePost(prev, id))}
+                                      onToggleHide={(id) => setUserState((prev) => toggleHidePost(prev, id))}
+                                    />
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* 3. 4번째 포스트마다 구글 애드센스 인피드 광고 노출 */}
+                              {idx > 0 && idx % 4 === 3 && (
+                                <RedditAdCard 
+                                  isDark={isDark} 
+                                  isKo={isKo} 
+                                  onGoToGame={() => handleNavigateView('home')} 
+                                />
+                              )}
+                            </React.Fragment>
+                          );
+                        })}
 
                         {/* 피드 실시간 무한 스크롤 센티넬 및 자동 더보기 */}
                         <div ref={feedSentinelRef} className="py-6 text-center">

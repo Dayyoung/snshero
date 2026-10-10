@@ -2,6 +2,29 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-10 11:38 KST] [Reddit 피드 100% 구글 뉴스 전용화 및 SNSHero 광고형 인피드 프로모션 전면 개편 완료]
+- **요청 사항**:
+  - 기존 레딧 mock 글 및 외부 크롤링 글 완전 제거.
+  - 피드 본문 포스트는 **오직 구글 뉴스(Google News)만** 표시.
+  - SNSHero 관련 글(바이브코딩 강의 5부작, 공식 리소스 등)은 피드에 일반 글이 아니라 **광고처럼 중간중간 표시(In-Feed Promoted Card)**.
+- **상세 구현 내역**:
+  1. `src/lib/reddit/redditApiService.ts`:
+     - `getPosts()`: 메인 피드 반환 포스트 풀을 100% 실시간 구글 뉴스(`GoogleNewsSheetService.getCachedGoogleNewsPosts`)로만 완전 한정. 기존 `SEED_POSTS`의 목업 글 및 외부 레딧 크롤링 캐시 일체 배제.
+     - `getSNSHeroPromotedPosts()`: SNSHero 공식 12개 포스트(바이브코딩 마스터 안내, 1~5편 유튜브 강의, 6대 공식 리소스)를 인피드 프로모션 전용으로 분리 공급.
+  2. `src/views/RedditCommunityView.tsx`:
+     - 피드 본문은 구글 뉴스 기사들로만 순차 렌더링.
+     - 구글 뉴스 기사 2개마다 SNSHero 공식 프로모션 카드를 **`[스폰서드 프로모션 • SNSHero 공식 (광고)]`** 스폰서 배너와 함께 광고처럼 중간중간 삽입.
+     - 4개마다 구글 애드센스 인피드 광고(`RedditAdCard`)도 함께 조화롭게 배치.
+     - `handleSyncLive` 및 `handleLoadMorePosts`: 외부 reddit.com 크롤링을 완전히 중단하고 오직 실시간 구글 뉴스 동기화(`syncGoogleNews`)만 수행.
+  3. `src/lib/reddit/redditTrendingService.ts`:
+     - 상단 트렌딩 캐러셀도 기존 mock 레딧 토픽 대신 100% 실시간 구글 뉴스 기사 헤드라인으로 채택.
+  4. `src/lib/reddit/redditStorage.ts`:
+     - 브라우저 로컬스토리지에 남아있던 예전 레딧 mock 글 캐시(`hero_reddit_live_posts_v1`)를 1회성 자동 완전 퍼지(Purge)하여 깨끗한 상태 보장.
+- **검증 결과**:
+  - `npx tsx` 단위 검증: 피드 포스트 100% 구글 뉴스 (기존 목업 0건), 프로모션 광고 12종 정상 생성 확인.
+  - `npx tsc --noEmit`: 0 오류 통과.
+  - `npm run build`: 성공 (43 static routes generation 완료).
+
 ## [2026-10-10 11:30 KST] [Reddit 피드 구글글 & SNSHero글 전용 필터링 및 1:1 교차 노출 시스템 구축 완료]
 - **요청 사항**:
   - Reddit 커뮤니티 피드에 일반/외부 목업 글을 전면 배제하고, 오직 **구글글**과 **SNSHero글**만 표시.

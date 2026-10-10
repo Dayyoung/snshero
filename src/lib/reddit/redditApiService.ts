@@ -157,37 +157,20 @@ export class RedditApiService {
   }
 
   /**
-   * 구글글과 SNSHero글을 연속 없이 1:1로 엄격하게 교차(Interleave) 배치
+   * SNSHero 공식 프로모션(광고형) 포스트 목록 반환
+   * 바이브코딩 종합 안내, 1~5편 유튜브 강의, 6대 공식 리소스
    */
-  static interleaveAlternating(snsPosts: RedditPost[], googlePosts: RedditPost[]): RedditPost[] {
-    if (snsPosts.length === 0) return googlePosts;
-    if (googlePosts.length === 0) return snsPosts;
-
-    const result: RedditPost[] = [];
-    // 고정 공지(isPinned)가 있다면 최상단 0번에 위치하도록 정렬
-    const pinned = snsPosts.filter((p) => Boolean(p.isPinned));
-    const unpinned = snsPosts.filter((p) => !p.isPinned);
-    const orderedSns = [...pinned, ...unpinned];
-
-    const totalSlots = Math.max(orderedSns.length, googlePosts.length);
-
-    for (let i = 0; i < totalSlots; i++) {
-      // 1) SNSHero 글 배치
-      const snsItem = orderedSns[i % orderedSns.length];
-      const safeSns = i >= orderedSns.length ? { ...snsItem, id: `${snsItem.id}_dup_${i}` } : snsItem;
-      result.push(safeSns);
-
-      // 2) 구글 글 배치
-      const googleItem = googlePosts[i % googlePosts.length];
-      const safeGoogle = i >= googlePosts.length ? { ...googleItem, id: `${googleItem.id}_dup_${i}` } : googleItem;
-      result.push(safeGoogle);
-    }
-
-    return result;
+  static getSNSHeroPromotedPosts(userState?: RedditUserDataState): RedditPost[] {
+    const rawSeeds = SEED_POSTS.filter((p) => this.isSNSHeroPost(p));
+    // 고정 공지를 맨 앞에 두고 번호 순으로 정렬
+    const pinned = rawSeeds.filter((p) => Boolean(p.isPinned));
+    const unpinned = rawSeeds.filter((p) => !p.isPinned);
+    const ordered = [...pinned, ...unpinned];
+    return this.mapUserInteractions(ordered, userState);
   }
 
   /**
-   * 서브레딧 또는 메인 피드 포스트 목록 반환 (오직 구글글과 SNSHero글만 연속 없이 교차 표시)
+   * 서브레딧 또는 메인 피드 포스트 목록 반환 (오직 100% 구글 뉴스만 반환)
    */
   static getPosts(
     subreddit: string = 'popular',
@@ -195,52 +178,16 @@ export class RedditApiService {
     timeFilter: TimeFilterType = 'today',
     userState?: RedditUserDataState
   ): RedditPost[] {
-    const isFrontPage = ['popular', 'all', 'home'].includes(subreddit.toLowerCase());
-
-    // 1. 실시간 구글 뉴스 스프레드시트 포스트 로드
+    // 1. 실시간 구글 뉴스 스프레드시트 포스트 로드 (오직 구글 뉴스만 채택)
     const googleNewsPosts = GoogleNewsSheetService.getCachedGoogleNewsPosts(userState?.language || 'ko');
 
-    // 2. 기본 시드 포스트 중 SNSHero 공식 포스트들 로드
-    const snsHeroSeedPosts = SEED_POSTS.filter((p) => this.isSNSHeroPost(p, userState));
-
-    // 3. 사용자가 직접 작성한 포스트(userPosts)가 있다면 최상단에 포함
+    // 2. 사용자가 직접 작성한 포스트가 있다면 상단 포함
     const userPosts = userState?.userPosts || [];
-    const snsHeroPool = [...userPosts, ...snsHeroSeedPosts];
+    const pool = [...userPosts, ...googleNewsPosts];
 
-    // 4. 메인 피드 (popular, all, home): 구글글과 SNSHero글만 연속 없이 1:1 교차 노출
-    if (isFrontPage) {
-      const sortedSns = this.sortPosts(snsHeroPool, sort);
-      const sortedGoogle = this.sortPosts(googleNewsPosts, sort);
-
-      const mappedSns = this.mapUserInteractions(sortedSns, userState);
-      const mappedGoogle = this.mapUserInteractions(sortedGoogle, userState);
-
-      return this.interleaveAlternating(mappedSns, mappedGoogle);
-    }
-
-    // 5. 뉴스 서브레딧 (news): 구글 뉴스 글 전용
-    if (subreddit.toLowerCase() === 'news') {
-      const sortedGoogle = this.sortPosts(googleNewsPosts, sort);
-      return this.mapUserInteractions(sortedGoogle, userState);
-    }
-
-    // 6. 특정 서브레딧 (hanguk, gaming, technology 등):
-    // 해당 서브레딧에 매핑된 글이 있으면 해당 글을 표시하고, 없으면 전체 SNSHero/구글 풀 교차 유지
-    const subPosts = [...snsHeroPool, ...googleNewsPosts].filter(
-      (p) => p.subreddit.toLowerCase() === subreddit.toLowerCase()
-    );
-
-    if (subPosts.length > 0) {
-      const sorted = this.sortPosts(subPosts, sort);
-      return this.mapUserInteractions(sorted, userState);
-    }
-
-    // 서브레딧에 글이 없더라도 비-공식 mock 글을 노출하지 않고 SNSHero/구글 교차 피드 제공
-    const sortedSns = this.sortPosts(snsHeroPool, sort);
-    const sortedGoogle = this.sortPosts(googleNewsPosts, sort);
-    const mappedSns = this.mapUserInteractions(sortedSns, userState);
-    const mappedGoogle = this.mapUserInteractions(sortedGoogle, userState);
-    return this.interleaveAlternating(mappedSns, mappedGoogle);
+    // 3. 정렬 및 사용자 상호작용(투표/북마크) 매핑
+    const sorted = this.sortPosts(pool, sort);
+    return this.mapUserInteractions(sorted, userState);
   }
 
   /**
