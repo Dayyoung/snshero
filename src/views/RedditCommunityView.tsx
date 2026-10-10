@@ -73,7 +73,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
 
   // 2. 피드 및 라우팅 상태
   const [currentSubreddit, setCurrentSubreddit] = useState(initialSubreddit);
-  const [currentSort, setCurrentSort] = useState<FeedSortType>('hot');
+  const [currentSort, setCurrentSort] = useState<FeedSortType>('new');
   const [currentTimeFilter, setCurrentTimeFilter] = useState<TimeFilterType>('today');
   const [viewMode, setViewMode] = useState<ViewModeType>(userState.viewMode || 'card');
   const [activeTab, setActiveTab] = useState<'posts' | 'about' | 'rules'>('posts');

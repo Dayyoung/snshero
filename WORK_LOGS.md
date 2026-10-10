@@ -2,6 +2,23 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-10 14:30 KST] [Reddit 커뮤니티 기본 피드 정렬 최신순(New) 적용 & 날짜 파싱 고도화 완료]
+- **요청 사항**:
+  - 레딧 기본 정렬을 최신순으로 표시.
+- **상세 구현 내역**:
+  1. **기본 정렬 상태 최신순(New) 전환** ([`RedditCommunityView.tsx`](file:///Users/dayyoung/project/snshero/src/views/RedditCommunityView.tsx)):
+     - 피드 기본 정렬 상태를 기존 `'hot'`(인기순)에서 `'new'`(최신순)으로 변경.
+     - 메인 진입 시 구글 뉴스 및 등록된 글들이 작성 일시 기준 최신순(`b.createdAt - a.createdAt`)으로 즉각 정렬되어 노출.
+  2. **정렬 탭 UI 순서 최적화** ([`RedditFeedSortBar.tsx`](file:///Users/dayyoung/project/snshero/src/components/reddit/RedditFeedSortBar.tsx)):
+     - 상단 정렬 칩에서 `[최신순 (New)]`을 1순위로 배치하여 기본 활성화 상태가 가장 직관적으로 확인되도록 UI 개편.
+  3. **API 기본값 및 SEO 정렬 동기화** ([`redditApiService.ts`](file:///Users/dayyoung/project/snshero/src/lib/reddit/redditApiService.ts), [`redditSeoManager.ts`](file:///Users/dayyoung/project/snshero/src/lib/reddit/redditSeoManager.ts)):
+     - `RedditApiService.getPosts` 및 `applySubredditSeo` 기본 정렬 파라미터를 `'new'`로 통일.
+  4. **구글 뉴스 날짜/시간 파싱 고도화** ([`googleNewsSeedData.ts`](file:///Users/dayyoung/project/snshero/src/data/googleNewsSeedData.ts)):
+     - `parseTimestampSafe` 헬퍼 함수를 도입하여 ISO, 공백 구분, 점/슬래시 구분 로컬 포맷 등 다양한 구글 시트 날짜 표기를 오차 없이 Unix 밀리초로 변환하여 최신순 정렬 정확도 극대화.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 오류 무결점 통과.
+  - `npm run build`: 성공 (43 static routes generation 정상 완료).
+
 ## [2026-10-10 14:22 KST] [Google News 스프레드시트 실시간 갱신 파이프라인 고도화 & CORS/JSONP 우회 & 권한 상태 알림 구축]
 - **요청 사항**:
   - 구글 뉴스 스프레드시트(`1CT5Yy1-i6kkOfx3d-Yw1osOEYbN7fkk8IDiI8Vm82vM`) 최신 뉴스가 실시간으로 갱신되지 않는 문제 해결.

@@ -175,7 +175,7 @@ export class RedditApiService {
    */
   static getPosts(
     subreddit: string = 'popular',
-    sort: FeedSortType = 'hot',
+    sort: FeedSortType = 'new',
     timeFilter: TimeFilterType = 'today',
     userState?: RedditUserDataState
   ): RedditPost[] {

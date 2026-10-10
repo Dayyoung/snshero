@@ -58,8 +58,8 @@ export const RedditFeedSortBar: React.FC<RedditFeedSortBarProps> = ({
   }, []);
 
   const sortItems: { id: FeedSortType; labelKo: string; labelEn: string; icon: React.ElementType }[] = [
-    { id: 'hot', labelKo: '인기순', labelEn: 'Hot', icon: Flame },
     { id: 'new', labelKo: '최신순', labelEn: 'New', icon: Sparkles },
+    { id: 'hot', labelKo: '인기순', labelEn: 'Hot', icon: Flame },
     { id: 'top', labelKo: '추천순', labelEn: 'Top', icon: Trophy },
     { id: 'best', labelKo: '최고', labelEn: 'Best', icon: Rocket },
     { id: 'rising', labelKo: '상승 중', labelEn: 'Rising', icon: TrendingUp },

@@ -41,7 +41,7 @@ export class RedditSeoManager {
   /**
    * 피드 및 서브레딧 페이지 메타 태그 & GEO/SEO 업데이트
    */
-  static applySubredditSeo(sub: RedditSubreddit, activeSort: string = 'hot'): void {
+  static applySubredditSeo(sub: RedditSubreddit, activeSort: string = 'new'): void {
     if (typeof document === 'undefined') return;
 
     const title = `r/${sub.name}: ${sub.title} - SNSHero`;

@@ -72,20 +72,41 @@ function extractDomain(url: string): string {
 }
 
 /**
+ * 다양한 날짜/시간 문자열(ISO, YYYY-MM-DD HH:mm, 점/슬래시 구분자 등)을 안전하게 Unix timestamp(ms)로 파싱
+ */
+function parseTimestampSafe(raw: string, fallbackIdx: number): number {
+  if (!raw || !raw.trim()) {
+    return Date.now() - (fallbackIdx + 1) * 1000 * 60 * 30;
+  }
+  const clean = raw.trim();
+
+  // 1. 표준 ISO / Date.parse 시도
+  let parsed = Date.parse(clean);
+  if (!isNaN(parsed) && parsed > 0) return parsed;
+
+  // 2. 공백을 'T'로 치환한 ISO 형식 시도 (예: "2026-10-10 10:45")
+  parsed = Date.parse(clean.replace(' ', 'T'));
+  if (!isNaN(parsed) && parsed > 0) return parsed;
+
+  // 3. 점/슬래시 구분자 정규화 후 시도 (예: "2026. 10. 10. 10:45")
+  const normalized = clean.replace(/\./g, '-').replace(/\//g, '-').replace(/\s+/g, ' ');
+  parsed = Date.parse(normalized);
+  if (!isNaN(parsed) && parsed > 0) return parsed;
+
+  parsed = Date.parse(normalized.replace(' ', 'T'));
+  if (!isNaN(parsed) && parsed > 0) return parsed;
+
+  return Date.now() - (fallbackIdx + 1) * 1000 * 60 * 30;
+}
+
+/**
  * RawGoogleNewsItem을 정규 RedditPost 모델로 변환
  */
 export function convertGoogleNewsToRedditPost(item: RawGoogleNewsItem, idx: number): RedditPost {
   const domain = extractDomain(item.sourceUrl);
   
-  // 타임스탬프 파싱
-  let createdAt = Date.now() - (idx + 1) * 1000 * 60 * 30;
-  try {
-    const parsed = new Date(item.timestamp.replace(' ', 'T')).getTime();
-    if (!isNaN(parsed) && parsed > 0) {
-      createdAt = parsed;
-    }
-  } catch {}
-
+  // 타임스탬프 파싱 (최신순 정렬의 기준)
+  const createdAt = parseTimestampSafe(item.timestamp, idx);
   const id = `gnews_${createdAt}_${idx}`;
 
   return {
