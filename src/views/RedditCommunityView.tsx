@@ -45,12 +45,10 @@ import { RedditUserProfileView } from '../components/reddit/RedditUserProfileVie
 import { RedditSubmitPostModal } from '../components/reddit/RedditSubmitPostModal';
 import { RedditSearchModal } from '../components/reddit/RedditSearchModal';
 import { RedditFloatingPlayButton } from '../components/reddit/RedditFloatingPlayButton';
-import { RedditTrendingCarousel } from '../components/reddit/RedditTrendingCarousel';
 import { RedditQuickCreatePostBar } from '../components/reddit/RedditQuickCreatePostBar';
 import { RedditCreateCommunityModal } from '../components/reddit/RedditCreateCommunityModal';
 import { AdSenseBanner } from '../components/AdSenseBanner';
 import { useAdSenseAutoAds } from '../hooks/useAdSenseAutoAds';
-import { RedditTrendingItem } from '../lib/reddit/redditTypes';
 import { SEED_SUBREDDITS } from '../data/redditSeedData';
 
 interface RedditCommunityViewProps {
@@ -359,17 +357,6 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
     RedditSeoManager.trackEvent('reddit_vote', { target: 'comment', commentId, direction });
   }, []);
 
-  // 트렌딩 토픽 목록 (실시간 피드 및 날짜 변경에 따라 자동 갱신)
-  const trendingItems = useMemo(() => {
-    return RedditApiService.getTrendingItems(posts, userState);
-  }, [posts, userState, syncTick]);
-
-  // 오늘의 트렌드 강제 새로고침
-  const handleRefreshTrending = useCallback(() => {
-    RedditApiService.getTrendingItems(posts, userState, true);
-    setSyncTick((t) => t + 1);
-  }, [posts, userState]);
-
   // 포스트 상세 열기
   const handleOpenDetail = useCallback((post: RedditPost) => {
     const cleanId = post.id.replace(/_dup_.*$/, '').replace(/_repeat_.*$/, '');
@@ -387,20 +374,6 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
     const targetUrl = currentSubreddit === 'popular' ? '/reddit' : `/r/${currentSubreddit}`;
     window.history.pushState(null, '', targetUrl);
   }, [currentSubreddit]);
-
-  // 트렌딩 아이템 클릭 시
-  const handleSelectTrending = useCallback((item: RedditTrendingItem) => {
-    if (item.postId) {
-      const { post, comments } = RedditApiService.getPostDetail(item.postId, userState);
-      if (post) {
-        setActivePost(post);
-        setActiveComments(comments);
-        window.history.pushState(null, '', `/r/${post.subreddit}/comments/${post.id}`);
-        return;
-      }
-    }
-    handleSelectSubreddit(item.subreddit);
-  }, [userState, handleSelectSubreddit]);
 
   // 새 글 등록
   const handleSubmitPost = useCallback((newPost: RedditPost) => {
@@ -568,17 +541,8 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
           ) : (
             /* 표준 서브레딧 / 메인 피드 모드 */
             <>
-              {/* 메인 홈/인기 피드일 때는 상단 트렌딩 토픽 캐러셀 카드 4개 노출 (실제 reddit.com 100% 동일) */}
-              {['popular', 'all', 'home'].includes(currentSubreddit.toLowerCase()) ? (
-                <RedditTrendingCarousel
-                  trendingItems={trendingItems}
-                  isDark={isDark}
-                  isKo={isKo}
-                  onSelectTrending={handleSelectTrending}
-                  onRefreshTrending={handleRefreshTrending}
-                />
-              ) : (
-                /* 특정 서브레딧일 때는 서브레딧 상단 배너 & 타이틀 */
+              {/* 특정 서브레딧일 때만 서브레딧 상단 배너 & 헤더 노출 (메인 피드는 상단 배너 제거) */}
+              {!['popular', 'all', 'home'].includes(currentSubreddit.toLowerCase()) && (
                 <RedditSubredditHeader
                   subreddit={currentSubredditInfo}
                   isJoined={userState.joinedSubreddits.some((s) => s.toLowerCase() === currentSubreddit.toLowerCase())}

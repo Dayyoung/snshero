@@ -2,6 +2,21 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-10 11:49 KST] [Reddit 페이지 상단 개/고양이 사진 트렌딩 배너 전면 제거 및 클린 피드화 완료]
+- **요청 사항**:
+  - 레딧 페이지 상단에 노출되던 개, 고양이 사진 배너 및 레딧 관련 불필요한 배너 전면 제거.
+- **상세 구현 내역**:
+  1. `src/views/RedditCommunityView.tsx`:
+     - 상단에 노출되던 `RedditTrendingCarousel` (Trending Today 캐러셀 배너: 고양이/강아지 사진 포함) 컴포넌트 렌더링 블록을 완전히 제거.
+     - 메인 피드(`popular`, `all`, `home`) 진입 시 상단에 불필요한 사진 배너 없이 즉시 구글 뉴스 피드와 빠른 작성바로 연결되도록 UI 정돈.
+     - 특정 개별 서브레딧 페이지(`r/:name`)에서만 필수적인 서브레딧 타이틀/정보 헤더(`RedditSubredditHeader`)가 노출되도록 조건부 렌더링 최적화.
+     - 사용되지 않게 된 `RedditTrendingCarousel`, `RedditTrendingItem` import 및 핸들러(`trendingItems`, `handleRefreshTrending`, `handleSelectTrending`) 정리.
+  2. `src/data/redditSeedData.ts`:
+     - `SEED_TRENDING` 내에 잔존하던 고양이/강아지 사진 URL 및 관련 밈 데이터를 글로벌 구글 AI 모델 및 테크 뉴스 헤드라인 데이터로 전면 교체.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 타입 오류 0건 통과.
+  - `npm run build`: 성공 (43 static routes generation 정상 완료).
+
 ## [2026-10-10 11:38 KST] [Reddit 피드 100% 구글 뉴스 전용화 및 SNSHero 광고형 인피드 프로모션 전면 개편 완료]
 - **요청 사항**:
   - 기존 레딧 mock 글 및 외부 크롤링 글 완전 제거.
