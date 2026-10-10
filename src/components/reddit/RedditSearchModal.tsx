@@ -41,7 +41,7 @@ export const RedditSearchModal: React.FC<RedditSearchModalProps> = ({
   onToggleHide,
   onToggleJoin,
 }) => {
-  const isDark = userState.theme !== 'light';
+  const isDark = userState.theme === 'dark';
   const isKo = userState.language !== 'en';
   const [activeTab, setActiveTab] = useState<'posts' | 'communities' | 'people'>('posts');
 

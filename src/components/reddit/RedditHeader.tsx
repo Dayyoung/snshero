@@ -65,7 +65,7 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
   const communityDropdownRef = useRef<HTMLDivElement>(null);
   const notificationsRef = useRef<HTMLDivElement>(null);
 
-  const isDark = userState.theme !== 'light';
+  const isDark = userState.theme === 'dark';
   const isKo = userState.language !== 'en'; // 한국어 기본
 
   useEffect(() => {

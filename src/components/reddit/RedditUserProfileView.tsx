@@ -40,7 +40,7 @@ export const RedditUserProfileView: React.FC<RedditUserProfileViewProps> = ({
   onToggleSave,
   onToggleHide,
 }) => {
-  const isDark = userState.theme !== 'light';
+  const isDark = userState.theme === 'dark';
   const isKo = userState.language !== 'en';
   const [activeTab, setActiveTab] = useState<'overview' | 'posts' | 'saved'>('overview');
   const [isCopied, setIsCopied] = useState(false);

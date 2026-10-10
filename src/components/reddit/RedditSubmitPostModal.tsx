@@ -28,7 +28,7 @@ export const RedditSubmitPostModal: React.FC<RedditSubmitPostModalProps> = ({
   onClose,
   onSubmitPost,
 }) => {
-  const isDark = userState.theme !== 'light';
+  const isDark = userState.theme === 'dark';
   const isKo = userState.language !== 'en';
 
   const [selectedSub, setSelectedSub] = useState(

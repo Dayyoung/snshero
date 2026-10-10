@@ -34,7 +34,7 @@ export const RedditVideoPlayer: React.FC<RedditVideoPlayerProps> = ({
   src,
   poster,
   title,
-  isDark = true,
+  isDark = false,
   isKo = true,
   domain,
   externalUrl,

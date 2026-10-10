@@ -7,6 +7,7 @@
 import { RedditUserDataState, VoteState, ViewModeType, RedditPost, RedditComment } from './redditTypes';
 
 const STORAGE_KEY = 'snshero_reddit_state_v1';
+const THEME_MIGRATED_KEY = 'snshero_reddit_light_theme_migrated_v2';
 
 const DEFAULT_STATE: RedditUserDataState = {
   votes: {},
@@ -16,7 +17,7 @@ const DEFAULT_STATE: RedditUserDataState = {
   joinedSubreddits: ['hanguk', 'gaming', 'technology', 'AskReddit', 'memes', 'CryptoCurrency'],
   userPosts: [],
   userComments: [],
-  theme: 'dark', // 레딧 모던 다크 테마 기본
+  theme: 'light', // 밝은톤(라이트 테마) 기본
   viewMode: 'card',
   language: 'ko', // 한국 사용자 기본 언어
 };
@@ -25,9 +26,22 @@ export function loadRedditState(): RedditUserDataState {
   if (typeof window === 'undefined') return DEFAULT_STATE;
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return DEFAULT_STATE;
+    if (!raw) {
+      localStorage.setItem(THEME_MIGRATED_KEY, 'true');
+      return DEFAULT_STATE;
+    }
     const parsed = JSON.parse(raw);
-    return { ...DEFAULT_STATE, ...parsed };
+    const loaded = { ...DEFAULT_STATE, ...parsed };
+
+    // 기존 사용자 최초 1회 밝은톤 기본값으로 자동 전환 마이그레이션
+    const isMigrated = localStorage.getItem(THEME_MIGRATED_KEY);
+    if (!isMigrated) {
+      loaded.theme = 'light';
+      localStorage.setItem(THEME_MIGRATED_KEY, 'true');
+      saveRedditState(loaded);
+    }
+
+    return loaded;
   } catch (e) {
     return DEFAULT_STATE;
   }
@@ -137,6 +151,9 @@ export function updateViewMode(state: RedditUserDataState, viewMode: ViewModeTyp
 }
 
 export function updateTheme(state: RedditUserDataState, theme: 'dark' | 'light' | 'system'): RedditUserDataState {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem(THEME_MIGRATED_KEY, 'true');
+  }
   const nextState = { ...state, theme };
   saveRedditState(nextState);
   return nextState;

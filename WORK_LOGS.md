@@ -2,6 +2,23 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-10 11:25 KST] [Reddit 커뮤니티 테마 기본값 밝은톤(라이트 모드) 전면 전환 완료]
+- **요청 사항**:
+  - Reddit 커뮤니티의 기본 테마를 어두운 톤(다크 테마)에서 밝은 톤(라이트 테마)으로 기본 전환.
+- **상세 구현 내역**:
+  1. `src/lib/reddit/redditStorage.ts`:
+     - `DEFAULT_STATE.theme`을 `'light'`로 변경하여 신규 방문자 및 기본값 100% 라이트 테마 보장.
+     - 기존 방문자용 1회성 마이그레이션 키(`snshero_reddit_light_theme_migrated_v2`)를 구현하여 기존에 'dark'로 캐시되어 있던 브라우저 환경도 최초 진입 시 즉시 밝은톤으로 자동 전환.
+     - 사용자가 상단 프로필 메뉴에서 수동으로 '다크 모드'를 켤 경우 마이그레이션 플래그를 영구 고정하여 사용자 선택 존중.
+  2. 컴포넌트 전수 `isDark` 판정 로직 정밀화:
+     - `RedditCommunityView.tsx`, `RedditHeader.tsx`, `RedditSidebarLeft.tsx`, `RedditSidebarRight.tsx`, `RedditPostDetailModal.tsx`, `RedditSubmitPostModal.tsx`, `RedditUserProfileView.tsx`, `RedditSearchModal.tsx`, `RedditVideoPlayer.tsx`
+     - 기존 `userState.theme !== 'light'` 대신 명시적 다크 테마인 경우만 감지하는 `userState.theme === 'dark'`로 전면 통일하여 기본값 및 예외 상황에서도 안전하게 밝은톤 유지.
+  3. UI 가시성 및 레딧 화이트 디자인 일체감 검증:
+     - 상단 헤더 (`bg-white border-gray-200 text-[#1C1C1C]`), 전체 피드 배경 (`bg-[#DAE0E6] text-[#1C1C1C]`), 피드 카드 (`bg-white border-gray-200 text-gray-800`), 좌/우 사이드바, 정렬 바, 댓글 상세 모달 전 영역에서 레딧 공식 라이트 모드 컬러 팔레트 완벽 조화 검증.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 오류 통과.
+  - `npm run build`: 성공 (43 static routes generation 완료).
+
 ## [2026-10-10 11:20 KST] [Google News 실시간 스프레드시트 연동 및 자동 다국어 번역 시스템 구축 완료]
 - **요청 사항**:
   - 구글 스프레드시트 (`https://docs.google.com/spreadsheets/d/1CT5Yy1-i6kkOfx3d-Yw1osOEYbN7fkk8IDiI8Vm82vM/edit?usp=drivesdk`)의 Google News US Edition 실시간 뉴스 피드 데이터를 Reddit 커뮤니티에 정규 포스트로 추가.

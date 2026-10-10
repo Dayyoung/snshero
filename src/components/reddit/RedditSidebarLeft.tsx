@@ -52,7 +52,7 @@ export const RedditSidebarLeft: React.FC<RedditSidebarLeftProps> = ({
   onNavigateView,
 }) => {
   const [policyModalType, setPolicyModalType] = React.useState<'rules' | 'privacy' | null>(null);
-  const isDark = userState.theme !== 'light';
+  const isDark = userState.theme === 'dark';
   const isKo = userState.language !== 'en';
 
   // /home 화면에서 제공하는 핵심 컨텐츠 소개 링크 리스트

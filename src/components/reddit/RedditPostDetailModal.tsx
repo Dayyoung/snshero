@@ -70,7 +70,7 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
   onOpenSubmitModal,
   onGoToGame,
 }) => {
-  const isDark = userState.theme !== 'light';
+  const isDark = userState.theme === 'dark';
   const isKo = userState.language !== 'en';
   const [commentText, setCommentText] = useState('');
   const [isCopied, setIsCopied] = useState(false);

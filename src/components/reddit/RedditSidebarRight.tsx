@@ -34,7 +34,7 @@ export const RedditSidebarRight: React.FC<RedditSidebarRightProps> = ({
   onToggleJoin,
   onOpenSubmitModal,
 }) => {
-  const isDark = userState.theme !== 'light';
+  const isDark = userState.theme === 'dark';
   const isKo = userState.language !== 'en';
   const [expandedRule, setExpandedRule] = useState<number | null>(null);
 

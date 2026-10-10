@@ -96,7 +96,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
   const [isLoadingMorePosts, setIsLoadingMorePosts] = useState(false);
   const feedSentinelRef = React.useRef<HTMLDivElement>(null);
 
-  const isDark = userState.theme !== 'light';
+  const isDark = userState.theme === 'dark';
   const isKo = userState.language !== 'en'; // 한국어 기본
 
   // 구글 애드센스 자동광고 SPA 뷰/서브레딧 전환 재스캔 훅
