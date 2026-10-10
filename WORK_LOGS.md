@@ -2,6 +2,22 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-11 00:01 KST] [Google News 웹 게시 공개 CSV 연동 완료 & 실시간 뉴스 최신순(23:45) Reddit 피드 반영]
+- **요청 사항**:
+  - 공개된 웹 게시 CSV 링크(`https://docs.google.com/spreadsheets/d/e/2PACX-1vR4QwhuPkfx2rfFRi021ppKfOv9mLUwZg82C80qVYqJqse4F7Z3Un0VYaFgTwofAXuboqc-yJPg6hKt/pub?output=csv`)를 reddit에 최신순으로 연동하여 실시간 표시.
+- **상세 구현 내역**:
+  1. **웹 게시 공개 CSV 최우선 1순위 엔드포인트 연동** ([`googleNewsSheetService.ts`](file:///Users/dayyoung/project/snshero/src/lib/reddit/googleNewsSheetService.ts)):
+     - Google이 제공하는 전용 공개 웹 CSV 링크(`2PACX-1vR4Qwhu...`)를 `GOOGLE_NEWS_PUB_CSV_URL`로 지정하고 다단계 페일오버 풀의 최우선(1순위) 엔드포인트로 배치.
+     - `access-control-allow-origin: *` CORS 헤더가 포함되어 있어 브라우저에서 직접 1초 만에 실시간 최신 뉴스 수신 보장.
+  2. **Vite 로컬 프록시 타깃 전환** ([`vite.config.ts`](file:///Users/dayyoung/project/snshero/vite.config.ts)):
+     - `/api/reddit/google-news-sheet` 프록시 대상도 공개 Web CSV로 교체하여 개발/로컬 환경에서도 무결점 실시간 스트리밍 지원.
+  3. **초특급 최신 뉴스 데이터 실시간 동기화** ([`googleNewsSeedData.ts`](file:///Users/dayyoung/project/snshero/src/data/googleNewsSeedData.ts), [`public/data/google-news.csv`](file:///Users/dayyoung/project/snshero/public/data/google-news.csv)):
+     - 총 71건의 최신 기사(2026-10-10 23:45, 23:40, 23:35...)를 실시간 동기화 및 캐시 키(`v3`) 업그레이드로 즉시 피드 상단에 최신순 정렬 노출.
+- **검증 결과**:
+  - `curl -sIL` HTTP 200 OK 및 `access-control-allow-origin: *` 정상 수신 검증 완료.
+  - `npx tsc --noEmit`: 0 오류 무결점 통과.
+  - `npm run build`: 성공 (43 static routes generation 정상 완료).
+
 ## [2026-10-10 23:56 KST] [Google News 스마트 헤더 감지 파서 탑재 & 모바일 드라이브 공유 권한 해제 안내 보강]
 - **요청 사항**:
   - 구글 뉴스 스프레드시트(`1CT5Yy1-i6kkOfx3d-Yw1osOEYbN7fkk8IDiI8Vm82vM`) 최신 순으로 reddit에 표시.

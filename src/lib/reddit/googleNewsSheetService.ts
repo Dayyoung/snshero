@@ -8,10 +8,11 @@ import { RedditPost } from './redditTypes';
 import { RawGoogleNewsItem, INITIAL_GOOGLE_NEWS, convertGoogleNewsToRedditPost } from '../../data/googleNewsSeedData';
 import { translateRedditPosts } from './redditTranslationService';
 
+export const GOOGLE_NEWS_PUB_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR4QwhuPkfx2rfFRi021ppKfOv9mLUwZg82C80qVYqJqse4F7Z3Un0VYaFgTwofAXuboqc-yJPg6hKt/pub?output=csv';
 export const GOOGLE_NEWS_SPREADSHEET_ID = '1CT5Yy1-i6kkOfx3d-Yw1osOEYbN7fkk8IDiI8Vm82vM';
-const CACHE_KEY = 'hero_reddit_google_news_posts_v2';
-const RAW_CACHE_KEY = 'hero_reddit_google_news_raw_v2';
-const LAST_FETCH_KEY = 'hero_reddit_google_news_last_fetch_v2';
+const CACHE_KEY = 'hero_reddit_google_news_posts_v3';
+const RAW_CACHE_KEY = 'hero_reddit_google_news_raw_v3';
+const LAST_FETCH_KEY = 'hero_reddit_google_news_last_fetch_v3';
 
 export type GoogleNewsSyncStatus = 'idle' | 'syncing' | 'ok' | 'unauthorized' | 'error';
 
@@ -293,20 +294,18 @@ export class GoogleNewsSheetService {
       }
     }
 
-    // 2단계: 다단계 프록시 및 엔드포인트 풀 시도
+    // 2단계: 다단계 프록시 및 엔드포인트 풀 시도 (공개 Web CSV 최우선 직접 fetch)
     const endpoints = [
-      // 1. Vite 로컬 프록시 (Dev 환경)
+      // 1. Google Sheets 웹 게시 공개 CSV 직접 호출 (CORS: * 지원됨)
+      `${GOOGLE_NEWS_PUB_CSV_URL}&_t=${Date.now()}`,
+      // 2. Vite 로컬 프록시 (Dev 환경)
       `/api/reddit/google-news-sheet?_t=${Date.now()}`,
-      // 2. AllOrigins CORS Proxy (배포 프로덕션 환경에서 브라우저 CORS 우회)
-      `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://docs.google.com/spreadsheets/d/${GOOGLE_NEWS_SPREADSHEET_ID}/gviz/tq?tqx=out:csv&_t=${Date.now()}`)}`,
-      // 3. CorsProxy.io Proxy
-      `https://corsproxy.io/?url=${encodeURIComponent(`https://docs.google.com/spreadsheets/d/${GOOGLE_NEWS_SPREADSHEET_ID}/gviz/tq?tqx=out:csv&_t=${Date.now()}`)}`,
-      // 4. Google Sheets GViz CSV 직접 호출 (gid=0 포함)
-      `https://docs.google.com/spreadsheets/d/${GOOGLE_NEWS_SPREADSHEET_ID}/gviz/tq?tqx=out:csv&gid=0&_t=${Date.now()}`,
-      // 5. Google Sheets 웹 게시 export CSV
-      `https://docs.google.com/spreadsheets/d/${GOOGLE_NEWS_SPREADSHEET_ID}/export?format=csv&gid=0&_t=${Date.now()}`,
-      // 6. Google Sheets pub CSV
-      `https://docs.google.com/spreadsheets/d/${GOOGLE_NEWS_SPREADSHEET_ID}/pub?output=csv&gid=0&_t=${Date.now()}`,
+      // 3. AllOrigins CORS Proxy (공개 CSV 우회)
+      `https://api.allorigins.win/raw?url=${encodeURIComponent(`${GOOGLE_NEWS_PUB_CSV_URL}&_t=${Date.now()}`)}`,
+      // 4. CorsProxy.io Proxy (공개 CSV 우회)
+      `https://corsproxy.io/?url=${encodeURIComponent(`${GOOGLE_NEWS_PUB_CSV_URL}&_t=${Date.now()}`)}`,
+      // 5. 로컬 정적 백업 CSV (최신 실시간 백업)
+      `/data/google-news.csv?_t=${Date.now()}`,
     ];
 
     let detectedUnauthorized = false;
