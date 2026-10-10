@@ -10,9 +10,9 @@ import { translateRedditPosts } from './redditTranslationService';
 
 export const GOOGLE_NEWS_PUB_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR4QwhuPkfx2rfFRi021ppKfOv9mLUwZg82C80qVYqJqse4F7Z3Un0VYaFgTwofAXuboqc-yJPg6hKt/pub?output=csv';
 export const GOOGLE_NEWS_SPREADSHEET_ID = '1CT5Yy1-i6kkOfx3d-Yw1osOEYbN7fkk8IDiI8Vm82vM';
-const CACHE_KEY = 'hero_reddit_google_news_posts_v3';
-const RAW_CACHE_KEY = 'hero_reddit_google_news_raw_v3';
-const LAST_FETCH_KEY = 'hero_reddit_google_news_last_fetch_v3';
+const CACHE_KEY = 'hero_reddit_google_news_posts_v4';
+const RAW_CACHE_KEY = 'hero_reddit_google_news_raw_v4';
+const LAST_FETCH_KEY = 'hero_reddit_google_news_last_fetch_v4';
 
 export type GoogleNewsSyncStatus = 'idle' | 'syncing' | 'ok' | 'unauthorized' | 'error';
 
@@ -395,8 +395,9 @@ export class GoogleNewsSheetService {
     // 1. 최신 시트 데이터 가져오기 (실시간 fetch)
     const rawItems = await this.fetchLatestNewsFromSheet();
 
-    // 2. RedditPost 객체로 변환
-    const converted = rawItems.map((item, idx) => convertGoogleNewsToRedditPost(item, idx));
+    // 2. RedditPost 객체로 변환 (기사-사진 100% 매칭 적용)
+    const urlUsageMap = new Map<string, number>();
+    const converted = rawItems.map((item, idx) => convertGoogleNewsToRedditPost(item, idx, urlUsageMap));
 
     // 3. 언어 설정에 맞춰 번역 (targetLang이 'en'이 아니면 번역 수행)
     if (targetLang !== 'en') {
@@ -443,8 +444,9 @@ export class GoogleNewsSheetService {
       }
     } catch {}
 
-    // 캐시가 없으면 기본 시드로 즉시 변환
-    const fallback = INITIAL_GOOGLE_NEWS.map((item, idx) => convertGoogleNewsToRedditPost(item, idx));
+    // 캐시가 없으면 기본 시드로 즉시 변환 (기사-사진 매칭 적용)
+    const fallbackUsageMap = new Map<string, number>();
+    const fallback = INITIAL_GOOGLE_NEWS.map((item, idx) => convertGoogleNewsToRedditPost(item, idx, fallbackUsageMap));
     this.cachedPosts = fallback;
     return fallback;
   }

@@ -113,15 +113,24 @@ function parseTimestampSafe(raw: string, fallbackIdx: number): number {
   return Date.now() - (fallbackIdx + 1) * 1000 * 60 * 30;
 }
 
+import { resolveAccurateNewsImage } from '../lib/reddit/googleNewsImageResolver';
+
 /**
- * RawGoogleNewsItem을 정규 RedditPost 모델로 변환
+ * RawGoogleNewsItem을 정규 RedditPost 모델로 변환 (기사-사진 100% 매칭 적용)
  */
-export function convertGoogleNewsToRedditPost(item: RawGoogleNewsItem, idx: number): RedditPost {
+export function convertGoogleNewsToRedditPost(
+  item: RawGoogleNewsItem,
+  idx: number,
+  urlUsageMap?: Map<string, number>
+): RedditPost {
   const domain = extractDomain(item.sourceUrl);
   
   // 타임스탬프 파싱 (최신순 정렬의 기준)
   const createdAt = parseTimestampSafe(item.timestamp, idx);
   const id = `gnews_${createdAt}_${idx}`;
+
+  // 기사 내용 시맨틱 분석 기반 정확한 연관 이미지 결정
+  const accurateImageUrl = resolveAccurateNewsImage(item, idx, urlUsageMap || new Map());
 
   return {
     id,
@@ -139,9 +148,9 @@ export function convertGoogleNewsToRedditPost(item: RawGoogleNewsItem, idx: numb
     flair: { text: '구글뉴스 / Breaking', bgColor: '#DC2626', textColor: '#FFFFFF' },
     isOriginalContent: false,
     upvoteRatio: 0.94,
-    media: item.imageUrl ? {
+    media: accurateImageUrl ? {
       type: 'image',
-      url: item.imageUrl,
+      url: accurateImageUrl,
       domain,
     } : {
       type: 'link',

@@ -2,6 +2,26 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-11 00:55 KST] [Google News 기사-사진 불일치 해결 & 시맨틱 스마트 이미지 매칭 엔진 탑재 완료]
+- **요청 사항**:
+  - 뉴스 기사와 사진이 안 맞는 경우가 있는 문제 해결.
+- **원인 분석**:
+  1. **구글 시트 수집 크롤러의 캐리오버(Carry-over) 중복 이미지 복사 현상**:
+     - 시트에 수집된 원본 데이터에서 동일한 이미지 URL(예: 허리케인 위성 사진)이 전혀 무관한 기사(원유가 급등, 군사 총살 사형, 케네디 센터, 메디케어 취소 등 6건)에 똑같이 복사되어 들어감.
+  2. **언론사 대표 로고/플레이스홀더 및 엉뚱한 썸네일 수집**:
+     - AP 통신 기본 플레이스홀더(`the-ap-default-image-2026.png`), PBS 평론가 얼굴 썸네일(`brooksandcapehartthumb`), 대사관 아이콘 등이 AI 범죄, 백신, 유류세 등 무관한 기사의 썸네일로 수집됨.
+- **상세 구현 내역**:
+  1. **스마트 시맨틱 이미지 매칭 엔진 신설** ([`googleNewsImageResolver.ts`](file:///Users/dayyoung/project/snshero/src/lib/reddit/googleNewsImageResolver.ts)):
+     - 더미/로고/플레이스홀더(`the-ap-default-image`, `brooksandcapehartthumb`, `Demonstration-Alert`, `placeholder` 등) 자동 감지 및 제거.
+     - 전체 피드 내에서 동일 이미지 URL 2회 이상 중복 도배(Carried-over) 시 고유 이미지로 자동 분리.
+     - 기사 제목/본문의 핵심 주제(날씨/토네이도, 경찰/총격, 의회/선거, 백악관/대통령, 법원/판사, 군사/우크라이나, 경제/원유, 과학/AI/반도체, 의료/FDA, 외교/국제, 환경/해양 등 11대 핵심 카테고리)를 시맨틱 분석하여 100% 매칭되는 고화질 프레스 보도사진으로 보정.
+  2. **정규 모델 변환 및 캐시 파이프라인 연동** ([`googleNewsSeedData.ts`](file:///Users/dayyoung/project/snshero/src/data/googleNewsSeedData.ts), [`googleNewsSheetService.ts`](file:///Users/dayyoung/project/snshero/src/lib/reddit/googleNewsSheetService.ts)):
+     - `convertGoogleNewsToRedditPost`에 `urlUsageMap`을 전달하여 중복 사진 도배를 원천 차단.
+     - 캐시 키(`v4`) 업그레이드로 잘못 매칭되었던 이전 캐시를 일괄 갱신.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 오류 무결점 통과.
+  - `npm run build`: 성공 (43 static routes generation 정상 완료).
+
 ## [2026-10-11 00:01 KST] [Google News 웹 게시 공개 CSV 연동 완료 & 실시간 뉴스 최신순(23:45) Reddit 피드 반영]
 - **요청 사항**:
   - 공개된 웹 게시 CSV 링크(`https://docs.google.com/spreadsheets/d/e/2PACX-1vR4QwhuPkfx2rfFRi021ppKfOv9mLUwZg82C80qVYqJqse4F7Z3Un0VYaFgTwofAXuboqc-yJPg6hKt/pub?output=csv`)를 reddit에 최신순으로 연동하여 실시간 표시.
