@@ -1026,6 +1026,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
         if (winner === 'player' && canDrawPack) {
           try {
             localStorage.setItem('hero_auto_loop_mode', 'gacha_start');
+            localStorage.setItem('hero_auto_loop_is_ranking', 'true');
           } catch {}
           if (onNavigate) {
             onNavigate('shop');

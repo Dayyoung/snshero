@@ -302,6 +302,26 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
   // ─── 스마트 루프: 상점 소환 후 덱 자동 강화 장착 ────────────────
   const [autoSwapBanner, setAutoSwapBanner] = useState<string | null>(null);
   const autoSwapHandledRef = useRef(false);
+  const autoSwapTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const autoSwapCountdownRef = useRef<NodeJS.Timeout | null>(null);
+
+  // 컴포넌트 언마운트 시에만 타이머 정리 (currentDeck 변경 등으로 조기 취소되는 현상 원천 방지)
+  useEffect(() => {
+    return () => {
+      if (autoSwapTimerRef.current) clearTimeout(autoSwapTimerRef.current);
+      if (autoSwapCountdownRef.current) clearInterval(autoSwapCountdownRef.current);
+    };
+  }, []);
+
+  const handleInstantReturnToBattle = useCallback(() => {
+    if (autoSwapCountdownRef.current) clearInterval(autoSwapCountdownRef.current);
+    if (autoSwapTimerRef.current) clearTimeout(autoSwapTimerRef.current);
+    setAutoSwapBanner(null);
+    try {
+      localStorage.setItem('hero_auto_loop_is_ranking', 'true');
+    } catch {}
+    onNavigate('card-play');
+  }, [onNavigate]);
 
   useEffect(() => {
     let mode: string | null = null;
@@ -314,6 +334,22 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
     if (mode !== 'deck_swap' || !rawCard || autoSwapHandledRef.current) return;
     autoSwapHandledRef.current = true;
 
+    // 팝업/모달 간섭 원천 차단: 모든 모달 강제 닫기
+    setIsPopupOpen(false);
+    setSelectedCardForDetail(null);
+    setIsItemModalOpen(false);
+    setShowOptimizeSuccessModal(false);
+    setIsSynergyModalOpen(false);
+    setIsEncyclopediaOpen(false);
+    setIsAchievementsModalOpen(false);
+    setIsCombineModalOpen(false);
+    setIs3DDeckViewerOpen(false);
+    setIsDisassembleModalOpen(false);
+    setIsElementAdvantageOpen(false);
+    setIsDeckPresetCodeModalOpen(false);
+    setIsCompareModalOpen(false);
+    setGlobalPopupOpen(false);
+
     try {
       const cardCandidate = JSON.parse(rawCard);
       const imgIdx = cardCandidate.imageIndex ?? cardCandidate.id;
@@ -321,6 +357,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
       const newCard = syncCardWithDatabase({
         ...dbCard,
         id: `card_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+        imageIndex: imgIdx,
         level: 1,
         hunger: 100,
         happiness: 100,
@@ -329,7 +366,14 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
       // 덱에서 최약체 카드 슬롯 찾기
       let minPower = 9999;
       let weakestSlot = 0;
-      currentDeck.forEach((c, idx) => {
+      const baseDeck = (currentDeck && currentDeck.length > 0) ? currentDeck : (() => {
+        try {
+          const raw = localStorage.getItem('hero_deck');
+          return raw ? JSON.parse(raw) : [];
+        } catch { return []; }
+      })();
+
+      baseDeck.forEach((c: CardData, idx: number) => {
         const p = getCardPower(c);
         if (p < minPower) {
           minPower = p;
@@ -337,7 +381,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
         }
       });
 
-      const updatedDeck = [...currentDeck];
+      const updatedDeck = [...baseDeck];
       const replacedCard = updatedDeck[weakestSlot];
       if (updatedDeck.length < 5) {
         updatedDeck.push(newCard);
@@ -345,36 +389,61 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
         updatedDeck[weakestSlot] = newCard;
       }
 
+      // 로컬스토리지 영구 동기화
+      try {
+        const season = currentSeason || 'season1';
+        localStorage.setItem('hero_deck', JSON.stringify(updatedDeck));
+        localStorage.setItem(`hero_deck_${season}`, JSON.stringify(updatedDeck));
+        localStorage.setItem(`hero_deck_guest_${season}`, JSON.stringify(updatedDeck));
+        localStorage.setItem('hero_auto_loop_is_ranking', 'true');
+        window.dispatchEvent(new Event('snshero_deck_updated'));
+      } catch {}
+
       updateDeck(updatedDeck);
       playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
       triggerHaptic('heavy');
-
-      const cardName = newCard.title || newCard.name;
-      const replacedName = replacedCard ? (replacedCard.title || replacedCard.name) : '';
-      setAutoSwapBanner(
-        language === 'ko'
-          ? `⚡ [덱 자동 강화] '${cardName}'(으)로 교체 장착 완료!\n(기존: ${replacedName}) 랭킹대전으로 복귀합니다...`
-          : `⚡ [Deck Auto-Upgraded] Equipped '${cardName}'!\n(Replaced: ${replacedName}) Returning to Rank Match...`
-      );
 
       try {
         localStorage.removeItem('hero_auto_loop_mode');
         localStorage.removeItem('hero_auto_loop_card');
       } catch {}
 
-      const timer = setTimeout(() => {
-        onNavigate('card-play');
-      }, 1800);
-      return () => clearTimeout(timer);
+      const cardName = newCard.title || newCard.name;
+      const replacedName = replacedCard ? (replacedCard.title || replacedCard.name) : '';
+
+      let remainingSec = 2;
+      const updateBanner = (sec: number) => {
+        setAutoSwapBanner(
+          language === 'ko'
+            ? `⚡ [덱 자동 강화 완료] '${cardName}'(으)로 교체 장착되었습니다!\n(기존: ${replacedName} 교체) 랭킹대전으로 자동 복귀합니다 (${sec}초)...`
+            : `⚡ [Deck Auto-Upgraded] Equipped '${cardName}'!\n(Replaced: ${replacedName}) Returning to Rank Match in ${sec}s...`
+        );
+      };
+
+      updateBanner(remainingSec);
+
+      autoSwapCountdownRef.current = setInterval(() => {
+        remainingSec -= 1;
+        if (remainingSec > 0) {
+          updateBanner(remainingSec);
+        } else {
+          if (autoSwapCountdownRef.current) clearInterval(autoSwapCountdownRef.current);
+        }
+      }, 1000);
+
+      autoSwapTimerRef.current = setTimeout(() => {
+        handleInstantReturnToBattle();
+      }, 2200);
     } catch (e) {
       console.error('Failed to auto swap deck card', e);
       try {
         localStorage.removeItem('hero_auto_loop_mode');
         localStorage.removeItem('hero_auto_loop_card');
+        localStorage.setItem('hero_auto_loop_is_ranking', 'true');
       } catch {}
-      onNavigate('card-play');
+      handleInstantReturnToBattle();
     }
-  }, [currentDeck, inventory, language, onNavigate, playSfx, updateDeck]);
+  }, [inventory, language, playSfx, updateDeck, currentSeason, handleInstantReturnToBattle]);
   const [selectedCardForDetail, setSelectedCardForDetail] = useState<CardData | null>(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
@@ -1376,10 +1445,17 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
             initial={{ opacity: 0, y: -30 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="fixed top-4 left-4 right-4 z-[9999] pointer-events-none flex justify-center"
+            className="fixed top-4 left-4 right-4 z-[999999] pointer-events-auto flex justify-center"
           >
-            <div className="bg-stone-900/95 border-2 border-emerald-400 text-emerald-200 px-5 py-3 rounded-xl shadow-2xl backdrop-blur-md max-w-md w-full text-center text-xs font-mono font-black whitespace-pre-line leading-relaxed">
-              {autoSwapBanner}
+            <div className="bg-stone-900/95 border-2 border-emerald-400 text-emerald-200 px-5 py-3 rounded-xl shadow-2xl backdrop-blur-md max-w-md w-full text-center text-xs font-mono font-black whitespace-pre-line leading-relaxed flex flex-col items-center gap-2">
+              <span>{autoSwapBanner}</span>
+              <button
+                type="button"
+                onClick={handleInstantReturnToBattle}
+                className="px-4 py-1.5 bg-gradient-to-r from-emerald-400 to-teal-300 text-slate-950 font-black rounded-lg text-xs hover:brightness-110 active:scale-95 transition-all cursor-pointer shadow-md"
+              >
+                {language === 'ko' ? '⚡ 즉시 랭킹대전 복귀' : '⚡ Return to Rank Match Now'}
+              </button>
             </div>
           </motion.div>
         )}

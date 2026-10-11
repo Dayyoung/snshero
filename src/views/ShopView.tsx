@@ -2300,7 +2300,17 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
   // ─── 스마트 루프: 랭킹대전 승리 후 자동 소환 & 덱 교체 흐름 ─────────
   const [smartLoopStatus, setSmartLoopStatus] = useState<string | null>(null);
+  const [smartLoopAction, setSmartLoopAction] = useState<{ label: string; onClick: () => void } | null>(null);
   const smartLoopHandledRef = useRef<boolean>(false);
+  const smartLoopNavTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const smartLoopIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (smartLoopNavTimerRef.current) clearTimeout(smartLoopNavTimerRef.current);
+      if (smartLoopIntervalRef.current) clearInterval(smartLoopIntervalRef.current);
+    };
+  }, []);
 
   useEffect(() => {
     let mode: string | null = null;
@@ -2313,7 +2323,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
     setSmartLoopStatus(
       language === 'ko'
-        ? '🤖 [스마트 루프] 랭킹대전 승리 보상으로 카드 소환을 진행합니다...'
+        ? '🤖 [스마트 루프] 랭킹대전 승리 보상으로 카드 소환을 시작합니다...'
         : '🤖 [Smart Loop] Summoning card pack with Rank Match reward...'
     );
 
@@ -2329,6 +2339,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
         );
         try {
           localStorage.removeItem('hero_auto_loop_mode');
+          localStorage.setItem('hero_auto_loop_is_ranking', 'true');
         } catch {}
         setTimeout(() => {
           onNavigate?.('card-play');
@@ -2342,12 +2353,25 @@ export const ShopView: React.FC<ShopViewProps> = ({
       if (!drawnCards || drawnCards.length === 0) {
         try {
           localStorage.removeItem('hero_auto_loop_mode');
+          localStorage.setItem('hero_auto_loop_is_ranking', 'true');
         } catch {}
         setTimeout(() => {
           onNavigate?.('card-play');
         }, 1500);
         return;
       }
+
+      // 🌟 핵심: 뽑힌 5장 카드를 즉시 오픈(isRevealed: true) 상태로 설정하여 GachaRevealSequence가 5장 결과 요약 화면을 즉각 눈앞에 시원하게 렌더링하도록 보장!
+      const revealedCards = drawnCards.map(c => ({ ...c, isRevealed: true }));
+      setGachaState({
+        isActive: true,
+        step: 0,
+        packType: packRarity,
+        isRevealed: true,
+        cards: revealedCards
+      });
+      playSfx('https://assets.mixkit.co/active_storage/sfx/2012/2012-preview.mp3');
+      triggerHaptic('success');
 
       // 뽑힌 카드 중 최고 파워 카드 탐색
       let bestDrawnCard: any = null;
@@ -2387,37 +2411,95 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
       if (isUpgrade && bestDrawnCard) {
         const cardTitle = bestDrawnCard.title || bestDrawnCard.name;
-        setSmartLoopStatus(
-          language === 'ko'
-            ? `🎉 더 강력한 카드 [${cardTitle}] 획득! (전투력 ${bestDrawnPower} > 기존최저 ${minDeckPower})\n마이덱으로 이동하여 자동 교체합니다...`
-            : `🎉 Stronger card [${cardTitle}] found! (Power ${bestDrawnPower} > Weakest ${minDeckPower})\nMoving to My Deck...`
-        );
         try {
           localStorage.setItem('hero_auto_loop_mode', 'deck_swap');
           localStorage.setItem('hero_auto_loop_card', JSON.stringify({ ...bestDrawnCard, targetSlot: weakestSlot }));
+          localStorage.setItem('hero_auto_loop_is_ranking', 'true');
         } catch {}
-        setTimeout(() => {
+
+        let remainingSec = 3;
+        const updateBannerText = (sec: number) => {
+          setSmartLoopStatus(
+            language === 'ko'
+              ? `🎉 [스마트 루프] 강력한 카드 [${cardTitle}] 획득! (전투력 ${bestDrawnPower} > 기존최저 ${minDeckPower})\n마이덱으로 이동하여 자동 교체 장착합니다 (${sec}초)...`
+              : `🎉 [Smart Loop] Stronger card [${cardTitle}] found! (Power ${bestDrawnPower} > Weakest ${minDeckPower})\nMoving to My Deck in ${sec}s...`
+          );
+        };
+        updateBannerText(remainingSec);
+
+        const proceedToDeck = () => {
+          if (smartLoopIntervalRef.current) clearInterval(smartLoopIntervalRef.current);
+          if (smartLoopNavTimerRef.current) clearTimeout(smartLoopNavTimerRef.current);
+          setSmartLoopStatus(null);
+          setSmartLoopAction(null);
           handleCloseGacha();
           onNavigate?.('mydeck');
-        }, 2200);
+        };
+
+        setSmartLoopAction({
+          label: language === 'ko' ? '⚡ 즉시 마이덱 이동' : '⚡ Go to My Deck Now',
+          onClick: proceedToDeck
+        });
+
+        smartLoopIntervalRef.current = setInterval(() => {
+          remainingSec -= 1;
+          if (remainingSec > 0) {
+            updateBannerText(remainingSec);
+          } else {
+            if (smartLoopIntervalRef.current) clearInterval(smartLoopIntervalRef.current);
+          }
+        }, 1000);
+
+        smartLoopNavTimerRef.current = setTimeout(() => {
+          proceedToDeck();
+        }, 3400);
       } else {
-        setSmartLoopStatus(
-          language === 'ko'
-            ? `📦 카드 소환 완료! (기존 덱이 더 강력함)\n랭킹대전으로 복귀합니다...`
-            : `📦 Summon complete! (Existing deck is stronger)\nReturning to Rank Match...`
-        );
         try {
           localStorage.removeItem('hero_auto_loop_mode');
+          localStorage.setItem('hero_auto_loop_is_ranking', 'true');
         } catch {}
-        setTimeout(() => {
+
+        let remainingSec = 3;
+        const updateBannerText = (sec: number) => {
+          setSmartLoopStatus(
+            language === 'ko'
+              ? `📦 [스마트 루프] 카드 소환 완료! (기존 덱 최강 유지)\n랭킹대전으로 자동 복귀합니다 (${sec}초)...`
+              : `📦 [Smart Loop] Summon complete! (Existing deck is stronger)\nReturning to Rank Match in ${sec}s...`
+          );
+        };
+        updateBannerText(remainingSec);
+
+        const proceedToBattle = () => {
+          if (smartLoopIntervalRef.current) clearInterval(smartLoopIntervalRef.current);
+          if (smartLoopNavTimerRef.current) clearTimeout(smartLoopNavTimerRef.current);
+          setSmartLoopStatus(null);
+          setSmartLoopAction(null);
           handleCloseGacha();
           onNavigate?.('card-play');
-        }, 2200);
+        };
+
+        setSmartLoopAction({
+          label: language === 'ko' ? '⚡ 즉시 랭킹대전 복귀' : '⚡ Return to Rank Match Now',
+          onClick: proceedToBattle
+        });
+
+        smartLoopIntervalRef.current = setInterval(() => {
+          remainingSec -= 1;
+          if (remainingSec > 0) {
+            updateBannerText(remainingSec);
+          } else {
+            if (smartLoopIntervalRef.current) clearInterval(smartLoopIntervalRef.current);
+          }
+        }, 1000);
+
+        smartLoopNavTimerRef.current = setTimeout(() => {
+          proceedToBattle();
+        }, 3400);
       }
-    }, 1200);
+    }, 700);
 
     return () => clearTimeout(pullTimer);
-  }, [sns, language, onNavigate, currentDeck]);
+  }, [sns, language, onNavigate, currentDeck, buyPack, handleCloseGacha]);
 
   useEffect(() => {
     if (
@@ -2791,10 +2873,19 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 initial={{ opacity: 0, y: -30 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="fixed top-4 left-4 right-4 z-[9999] pointer-events-none flex justify-center"
+                className="fixed top-4 left-4 right-4 z-[999999] pointer-events-auto flex justify-center"
               >
-                <div className="bg-stone-900/95 border-2 border-amber-400 text-amber-200 px-5 py-3 rounded-xl shadow-2xl backdrop-blur-md max-w-md w-full text-center text-xs font-mono font-black whitespace-pre-line leading-relaxed">
-                  {smartLoopStatus}
+                <div className="bg-stone-900/95 border-2 border-amber-400 text-amber-200 px-5 py-3 rounded-xl shadow-2xl backdrop-blur-md max-w-md w-full text-center text-xs font-mono font-black whitespace-pre-line leading-relaxed flex flex-col items-center gap-2">
+                  <span>{smartLoopStatus}</span>
+                  {smartLoopAction && (
+                    <button
+                      type="button"
+                      onClick={smartLoopAction.onClick}
+                      className="px-4 py-1.5 bg-gradient-to-r from-amber-400 to-yellow-300 text-slate-950 font-black rounded-lg text-xs hover:brightness-110 active:scale-95 transition-all cursor-pointer shadow-md"
+                    >
+                      {smartLoopAction.label}
+                    </button>
+                  )}
                 </div>
               </motion.div>
             )}
