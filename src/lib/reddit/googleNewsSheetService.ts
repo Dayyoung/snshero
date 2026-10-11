@@ -10,9 +10,9 @@ import { translateRedditPosts } from './redditTranslationService';
 
 export const GOOGLE_NEWS_PUB_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR4QwhuPkfx2rfFRi021ppKfOv9mLUwZg82C80qVYqJqse4F7Z3Un0VYaFgTwofAXuboqc-yJPg6hKt/pub?output=csv';
 export const GOOGLE_NEWS_SPREADSHEET_ID = '1CT5Yy1-i6kkOfx3d-Yw1osOEYbN7fkk8IDiI8Vm82vM';
-const CACHE_KEY = 'hero_reddit_google_news_posts_v4';
-const RAW_CACHE_KEY = 'hero_reddit_google_news_raw_v4';
-const LAST_FETCH_KEY = 'hero_reddit_google_news_last_fetch_v4';
+const CACHE_KEY = 'hero_reddit_google_news_posts_v5';
+const RAW_CACHE_KEY = 'hero_reddit_google_news_raw_v5';
+const LAST_FETCH_KEY = 'hero_reddit_google_news_last_fetch_v5';
 
 export type GoogleNewsSyncStatus = 'idle' | 'syncing' | 'ok' | 'unauthorized' | 'error';
 
