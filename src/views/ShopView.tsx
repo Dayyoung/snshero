@@ -36,6 +36,7 @@ import { useRefundRequests } from '../hooks/useRefundRequests';
 import { TokenExchangeModal } from '../components/TokenExchangeModal';
 import { ShortfallGuideModal } from '../components/ShortfallGuideModal';
 import { ArrowDownUp } from 'lucide-react';
+import { getCardPower } from '../constants';
 
 interface ShopViewProps {
   sns: number;
@@ -66,6 +67,7 @@ interface ShopViewProps {
   syncUserData?: (data: any) => Promise<void>;
   currentSeason?: string;
   ownedCards?: CardData[];
+  currentDeck?: CardData[];
 }
 
 
@@ -338,7 +340,8 @@ export const ShopView: React.FC<ShopViewProps> = ({
   userStats,
   syncUserData,
   currentSeason = 'season1',
-  ownedCards = []
+  ownedCards = [],
+  currentDeck
 }) => {
   const [showHistory, setShowHistory] = useState(false);
   const [historyList, setHistoryList] = useState<any[]>([]);
@@ -2096,7 +2099,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
     playSfx('https://assets.mixkit.co/active_storage/sfx/2012/2012-preview.mp3');
   };
 
-  const buyPack = (cost: number, packRarity: GachaPackRarity, packCount: number = 1) => {
+  const buyPack = (cost: number, packRarity: GachaPackRarity, packCount: number = 1): GachaCard[] | null => {
     const finalCost = (tutorialStep === 9) ? 0 : cost;
     if (sns >= finalCost) {
       stopAutoDraw();
@@ -2143,6 +2146,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
       }
 
       playSfx('https://assets.mixkit.co/active_storage/sfx/2012/2012-preview.mp3');
+      return newCards;
     } else {
       playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
       setErrorVisible(true);
@@ -2150,6 +2154,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
       // ID 393: 재화 부족 무료 파밍 숏컷 모달 노출
       setShortfallInfo({ req: finalCost, cur: sns });
       setIsShortfallModalOpen(true);
+      return null;
     }
   };
 
@@ -2292,6 +2297,127 @@ export const ShopView: React.FC<ShopViewProps> = ({
     window.addEventListener('global-back', handleGlobalBack);
     return () => window.removeEventListener('global-back', handleGlobalBack);
   }, [gachaState.isActive, handleCloseGacha]);
+
+  // ─── 스마트 루프: 랭킹대전 승리 후 자동 소환 & 덱 교체 흐름 ─────────
+  const [smartLoopStatus, setSmartLoopStatus] = useState<string | null>(null);
+  const smartLoopHandledRef = useRef<boolean>(false);
+
+  useEffect(() => {
+    let mode: string | null = null;
+    try {
+      mode = localStorage.getItem('hero_auto_loop_mode');
+    } catch {}
+
+    if (mode !== 'gacha_start' || smartLoopHandledRef.current) return;
+    smartLoopHandledRef.current = true;
+
+    setSmartLoopStatus(
+      language === 'ko'
+        ? '🤖 [스마트 루프] 랭킹대전 승리 보상으로 카드 소환을 진행합니다...'
+        : '🤖 [Smart Loop] Summoning card pack with Rank Match reward...'
+    );
+
+    const pullTimer = setTimeout(() => {
+      const packRarity: GachaPackRarity = (sns >= 100) ? 'silver' : (sns >= 10 ? 'bronze' : 'bronze');
+      const packCost = (packRarity === 'silver') ? 100 : 10;
+
+      if (sns < packCost) {
+        setSmartLoopStatus(
+          language === 'ko'
+            ? '⚠️ SNS 잔액이 부족하여 랭킹대전으로 바로 복귀합니다.'
+            : '⚠️ Insufficient SNS balance. Returning to Rank Match.'
+        );
+        try {
+          localStorage.removeItem('hero_auto_loop_mode');
+        } catch {}
+        setTimeout(() => {
+          onNavigate?.('card-play');
+        }, 1500);
+        return;
+      }
+
+      // 팩 구매 실행 및 획득 카드 목록 수신
+      const drawnCards = buyPack(packCost, packRarity);
+
+      if (!drawnCards || drawnCards.length === 0) {
+        try {
+          localStorage.removeItem('hero_auto_loop_mode');
+        } catch {}
+        setTimeout(() => {
+          onNavigate?.('card-play');
+        }, 1500);
+        return;
+      }
+
+      // 뽑힌 카드 중 최고 파워 카드 탐색
+      let bestDrawnCard: CardData | null = null;
+      let bestDrawnPower = -1;
+
+      for (const gc of drawnCards) {
+        const dbCard = CARD_DATABASE[gc.imageIndex];
+        if (dbCard) {
+          const power = getCardPower(dbCard);
+          if (power > bestDrawnPower) {
+            bestDrawnPower = power;
+            bestDrawnCard = dbCard;
+          }
+        }
+      }
+
+      // 기존 덱 로드 및 최약체 카드 탐색
+      let baseDeck: CardData[] = currentDeck || [];
+      if (!baseDeck || baseDeck.length === 0) {
+        try {
+          const rawDeck = localStorage.getItem('hero_deck');
+          if (rawDeck) baseDeck = JSON.parse(rawDeck);
+        } catch {}
+      }
+
+      let minDeckPower = 9999;
+      let weakestSlot = 0;
+      baseDeck.forEach((c, idx) => {
+        const p = getCardPower(c);
+        if (p < minDeckPower) {
+          minDeckPower = p;
+          weakestSlot = idx;
+        }
+      });
+
+      const isUpgrade = Boolean(bestDrawnCard && (baseDeck.length < 5 || bestDrawnPower > minDeckPower));
+
+      if (isUpgrade && bestDrawnCard) {
+        const cardTitle = bestDrawnCard.title || bestDrawnCard.name;
+        setSmartLoopStatus(
+          language === 'ko'
+            ? `🎉 더 강력한 카드 [${cardTitle}] 획득! (전투력 ${bestDrawnPower} > 기존최저 ${minDeckPower})\n마이덱으로 이동하여 자동 교체합니다...`
+            : `🎉 Stronger card [${cardTitle}] found! (Power ${bestDrawnPower} > Weakest ${minDeckPower})\nMoving to My Deck...`
+        );
+        try {
+          localStorage.setItem('hero_auto_loop_mode', 'deck_swap');
+          localStorage.setItem('hero_auto_loop_card', JSON.stringify({ ...bestDrawnCard, targetSlot: weakestSlot }));
+        } catch {}
+        setTimeout(() => {
+          handleCloseGacha();
+          onNavigate?.('mydeck');
+        }, 2200);
+      } else {
+        setSmartLoopStatus(
+          language === 'ko'
+            ? `📦 카드 소환 완료! (기존 덱이 더 강력함)\n랭킹대전으로 복귀합니다...`
+            : `📦 Summon complete! (Existing deck is stronger)\nReturning to Rank Match...`
+        );
+        try {
+          localStorage.removeItem('hero_auto_loop_mode');
+        } catch {}
+        setTimeout(() => {
+          handleCloseGacha();
+          onNavigate?.('card-play');
+        }, 2200);
+      }
+    }, 1200);
+
+    return () => clearTimeout(pullTimer);
+  }, [sns, language, onNavigate, currentDeck]);
 
   useEffect(() => {
     if (
@@ -2658,6 +2784,22 @@ export const ShopView: React.FC<ShopViewProps> = ({
               }}
               language={language}
             />
+          {/* Smart Loop Status Banner */}
+          <AnimatePresence>
+            {smartLoopStatus && (
+              <motion.div
+                initial={{ opacity: 0, y: -30 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="fixed top-4 left-4 right-4 z-[9999] pointer-events-none flex justify-center"
+              >
+                <div className="bg-stone-900/95 border-2 border-amber-400 text-amber-200 px-5 py-3 rounded-xl shadow-2xl backdrop-blur-md max-w-md w-full text-center text-xs font-mono font-black whitespace-pre-line leading-relaxed">
+                  {smartLoopStatus}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           {/* Toast Notification */}
           <AnimatePresence>
             {toastMessage && (

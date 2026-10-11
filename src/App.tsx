@@ -5177,6 +5177,7 @@ function AppContent() {
             syncUserData={syncUserData}
             currentSeason={currentSeason}
             ownedCards={ownedCards}
+            currentDeck={currentDeck}
           />
         );
       case 'event':
@@ -5282,7 +5283,14 @@ function AppContent() {
           />
         );
       case 'card-play': {
-        const isCurrentRankingMatch = Boolean(isPvpActive || pvpOpponent || cardPlayPreviousView === 'ranking' || (!mobileCardTargetId && !mobileCardTowerFloor && (mobileCardOppDeck || (mobileCardOppName && !mobileCardOppName.includes('스토리') && !mobileCardOppName.includes('보스')))));
+        const isAutoLoopRanking = (() => {
+          try {
+            return localStorage.getItem('hero_auto_loop_is_ranking') === 'true';
+          } catch {
+            return false;
+          }
+        })();
+        const isCurrentRankingMatch = Boolean(isAutoLoopRanking || isPvpActive || pvpOpponent || cardPlayPreviousView === 'ranking' || (!mobileCardTargetId && !mobileCardTowerFloor && (mobileCardOppDeck || (mobileCardOppName && !mobileCardOppName.includes('스토리') && !mobileCardOppName.includes('보스')))));
         return (
           <MobileCardPlayScreen
             playerDeck={isPlaygroundMode ? playgroundDeck : currentDeck}
@@ -5308,6 +5316,9 @@ function AppContent() {
               }
             }}
             onBack={() => {
+              try {
+                localStorage.removeItem('hero_auto_loop_is_ranking');
+              } catch {}
               setMobileCardTargetId(null);
               setMobileCardOppDeck(undefined);
               setMobileCardOppName(undefined);
@@ -5319,6 +5330,7 @@ function AppContent() {
               const targetBack = (cardPlayPreviousView && cardPlayPreviousView !== 'card-play') ? cardPlayPreviousView : 'home';
               setView(targetBack);
             }}
+            onNavigate={setView}
             isTutorialMode={isTutorialMode}
             tutorialStep={tutorialStep}
             onTutorialToShop={() => {

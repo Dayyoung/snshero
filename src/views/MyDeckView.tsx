@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import { triggerHaptic } from '../lib/haptic';
 import { UserStats, CardData, InventoryRecord, Language, ViewType, EquipmentSlot, AiStrategy } from '../types';
 import { 
@@ -298,6 +298,83 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
   showCustomAlert,
 }) => {
   const [cardDetailTab, setCardDetailTab] = useState<'stats' | 'skills' | 'lore'>('stats');
+
+  // ─── 스마트 루프: 상점 소환 후 덱 자동 강화 장착 ────────────────
+  const [autoSwapBanner, setAutoSwapBanner] = useState<string | null>(null);
+  const autoSwapHandledRef = useRef(false);
+
+  useEffect(() => {
+    let mode: string | null = null;
+    let rawCard: string | null = null;
+    try {
+      mode = localStorage.getItem('hero_auto_loop_mode');
+      rawCard = localStorage.getItem('hero_auto_loop_card');
+    } catch {}
+
+    if (mode !== 'deck_swap' || !rawCard || autoSwapHandledRef.current) return;
+    autoSwapHandledRef.current = true;
+
+    try {
+      const cardCandidate = JSON.parse(rawCard);
+      const imgIdx = cardCandidate.imageIndex ?? cardCandidate.id;
+      const dbCard = CARD_DATABASE[imgIdx] || cardCandidate;
+      const newCard = syncCardWithDatabase({
+        ...dbCard,
+        id: `card_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+        level: 1,
+        hunger: 100,
+        happiness: 100,
+      }, inventory);
+
+      // 덱에서 최약체 카드 슬롯 찾기
+      let minPower = 9999;
+      let weakestSlot = 0;
+      currentDeck.forEach((c, idx) => {
+        const p = getCardPower(c);
+        if (p < minPower) {
+          minPower = p;
+          weakestSlot = idx;
+        }
+      });
+
+      const updatedDeck = [...currentDeck];
+      const replacedCard = updatedDeck[weakestSlot];
+      if (updatedDeck.length < 5) {
+        updatedDeck.push(newCard);
+      } else {
+        updatedDeck[weakestSlot] = newCard;
+      }
+
+      updateDeck(updatedDeck);
+      playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+      triggerHaptic('heavy');
+
+      const cardName = newCard.title || newCard.name;
+      const replacedName = replacedCard ? (replacedCard.title || replacedCard.name) : '';
+      setAutoSwapBanner(
+        language === 'ko'
+          ? `⚡ [덱 자동 강화] '${cardName}'(으)로 교체 장착 완료!\n(기존: ${replacedName}) 랭킹대전으로 복귀합니다...`
+          : `⚡ [Deck Auto-Upgraded] Equipped '${cardName}'!\n(Replaced: ${replacedName}) Returning to Rank Match...`
+      );
+
+      try {
+        localStorage.removeItem('hero_auto_loop_mode');
+        localStorage.removeItem('hero_auto_loop_card');
+      } catch {}
+
+      const timer = setTimeout(() => {
+        onNavigate('card-play');
+      }, 1800);
+      return () => clearTimeout(timer);
+    } catch (e) {
+      console.error('Failed to auto swap deck card', e);
+      try {
+        localStorage.removeItem('hero_auto_loop_mode');
+        localStorage.removeItem('hero_auto_loop_card');
+      } catch {}
+      onNavigate('card-play');
+    }
+  }, [currentDeck, inventory, language, onNavigate, playSfx, updateDeck]);
   const [selectedCardForDetail, setSelectedCardForDetail] = useState<CardData | null>(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
@@ -1292,6 +1369,21 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
 
   return (
     <div className="p-3 sm:p-6 md:p-8 pb-48 flex flex-col gap-5 sm:gap-6 md:gap-10 max-w-4xl mx-auto min-h-screen w-full overflow-x-hidden app-bg text-slate-800 font-sans">
+      {/* Smart Loop Deck Swap Banner */}
+      <AnimatePresence>
+        {autoSwapBanner && (
+          <motion.div
+            initial={{ opacity: 0, y: -30 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed top-4 left-4 right-4 z-[9999] pointer-events-none flex justify-center"
+          >
+            <div className="bg-stone-900/95 border-2 border-emerald-400 text-emerald-200 px-5 py-3 rounded-xl shadow-2xl backdrop-blur-md max-w-md w-full text-center text-xs font-mono font-black whitespace-pre-line leading-relaxed">
+              {autoSwapBanner}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mb-2 w-full">
         <div className="flex items-center gap-2">
           <PageHeader title={t('mydeck', language)} />

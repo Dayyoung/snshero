@@ -60,6 +60,7 @@ export interface MobileCardPlayScreenProps {
   onTutorialToShop?: () => void;
   towerFloor?: number | null;
   isRankingMatch?: boolean;
+  onNavigate?: (view: any) => void;
 }
 
 export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
@@ -87,7 +88,8 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
   tutorialStep = 0,
   onTutorialToShop,
   towerFloor = null,
-  isRankingMatch = false
+  isRankingMatch = false,
+  onNavigate
 }) => {
   // ─── Sound FX Helper ──────────────────────────────────────────────
   const [isMuted, setIsMuted] = useState(false);
@@ -934,8 +936,19 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       recordMatchResult(calculatedResult, undefined, undefined, currentBattleType, currentOppInfo);
       setMatchResultReported(true);
     }
+    try {
+      localStorage.removeItem('hero_auto_loop_is_ranking');
+    } catch {}
     onBack();
   }, [gameOver, winner, recordMatchResult, matchResultReported, onBack, playSound, isRankingMatch, activeRankOpponent, opponentName]);
+
+  useEffect(() => {
+    if (isRankingMatch) {
+      try {
+        localStorage.setItem('hero_auto_loop_is_ranking', 'true');
+      } catch {}
+    }
+  }, [isRankingMatch]);
 
   useEffect(() => {
     if (!gameOver || !winner) return;
@@ -1002,10 +1015,24 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     if (isRankingMatch) {
       setTutorialShopCountdown(null);
       setRematchCountdown(null);
+
+      // 카드 뽑기 가능 여부 확인 (SNS 100 이상)
+      const canDrawPack = smartLifeCycleActive && (sns || 0) >= 100;
+      // 승리 팝업 및 획득 SNS를 유저가 명확히 인지할 수 있도록 승리 시 3.5초 대기
+      const delay = winner === 'player' ? 3500 : 2200;
+
       const searchTimer = setTimeout(() => {
-        // [1] 일정 수준 SNS(100+)가 모이면 상점 뽑기 진행 및 덱 자동 교체
-        if (smartLifeCycleActive && (sns || 0) >= 100) {
-          triggerAutoGachaAndUpgrade();
+        // [1] 승리 시 카드 뽑을 여유가 되면 즉시 상점으로 이동해서 뽑기 진행!
+        if (winner === 'player' && canDrawPack) {
+          try {
+            localStorage.setItem('hero_auto_loop_mode', 'gacha_start');
+          } catch {}
+          if (onNavigate) {
+            onNavigate('shop');
+          } else {
+            handleExitGame();
+          }
+          return;
         }
 
         const nextCount = matchLoopCount + 1;
@@ -1021,14 +1048,14 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
           setActiveRankOpponent(nextOpp);
           setRankingSearchCountdown(3);
         }
-      }, 1400);
+      }, delay);
       return () => clearTimeout(searchTimer);
     }
 
     // 5) 미션 게임 또는 일반 모드: 2초 후 재대결
     setTutorialShopCountdown(null);
     setRematchCountdown(2);
-  }, [gameOver, winner, isTutorialMode, tutorialStep, autoCloseOnComplete, towerBossClearModal, isRankingMatch, activeRankOpponent?.name, effectiveOpponentName, smartLifeCycleActive, sns, triggerAutoGachaAndUpgrade, matchLoopCount, triggerRefreshBreak]);
+  }, [gameOver, winner, isTutorialMode, tutorialStep, autoCloseOnComplete, towerBossClearModal, isRankingMatch, activeRankOpponent?.name, effectiveOpponentName, smartLifeCycleActive, sns, matchLoopCount, triggerRefreshBreak, onNavigate, playerTotalPower, handleExitGame]);
 
   // 랭킹대전: 3초 검색 카운트다운 후 새로운 상대와 매치 시작
   useEffect(() => {
@@ -1575,13 +1602,33 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
               </div>
 
               {/* Rewards Description */}
-              <div className="w-full bg-black/40 border border-white/5 rounded-xs p-2 my-2 text-[10px] text-stone-300 flex flex-col gap-1">
-                <div className="flex justify-between items-center">
-                  <span>SNS {language === 'ko' ? '보상' : 'Reward'}:</span>
-                  <span className="font-bold text-amber-400">
+              <div className="w-full bg-black/40 border border-white/5 rounded-xs p-2 my-2 text-[10px] text-stone-300 flex flex-col gap-1.5">
+                <div className="flex justify-between items-center text-xs">
+                  <span className="font-bold">{language === 'ko' ? '💰 획득 SNS 보상' : 'Earned SNS'}:</span>
+                  <span className="font-black text-amber-300 text-sm">
                     +{winner === 'player' ? 30 : (winner === 'ai' ? 10 : 15)} SNS
                   </span>
                 </div>
+
+                {/* 랭킹대전 전용 승리 혜택 및 스마트 루프 안내 */}
+                {isRankingMatch && winner === 'player' && (
+                  <div className="flex flex-col gap-1 border-t border-emerald-500/30 pt-1.5 mt-0.5 text-left">
+                    <div className="flex justify-between items-center text-[10px] text-emerald-300">
+                      <span>{language === 'ko' ? '현재 보유 SNS:' : 'Current SNS Balance:'}</span>
+                      <span className="font-black text-amber-300">🪙 {sns} SNS</span>
+                    </div>
+                    {smartLifeCycleActive && (sns || 0) >= 100 ? (
+                      <div className="mt-1 p-1.5 bg-amber-500/20 border border-amber-400/50 rounded-xs text-[10px] text-amber-200 font-bold text-center animate-pulse">
+                        🛒 {language === 'ko' ? '카드 뽑기 여유 충족! 상점으로 자동 이동합니다 (3초...)' : 'Card draw available! Moving to Shop (3s)...'}
+                      </div>
+                    ) : (
+                      <div className="mt-1 p-1 bg-emerald-500/10 border border-emerald-400/30 rounded-xs text-[9px] text-emerald-200 font-medium text-center">
+                        ⚔️ {language === 'ko' ? '다음 랭킹 라이벌 자동 매칭 중...' : 'Auto-matching next rank rival...'}
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {effectiveTargetCardId && winner === 'player' && (
                   <div className="flex justify-between items-center text-emerald-400 font-bold border-t border-white/5 pt-1">
                     <span>{language === 'ko' ? '미션 카드 달성' : 'Mission Card'}:</span>
