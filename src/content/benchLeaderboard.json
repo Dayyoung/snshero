@@ -1,6 +1,6 @@
 {
   "version": "SHBP-3",
-  "updatedAt": "2026-10-11T02:45:17.943Z",
+  "updatedAt": "2026-10-11T03:33:59.196Z",
   "anchors": {
     "20261011:20": {
       "random": 8.6,
@@ -2611,6 +2611,1095 @@
         "meta": {
           "durationMs": 777
         }
+      }
+    },
+    {
+      "result": {
+        "version": "SHBP-3",
+        "agent": {
+          "label": "Claude 3.7 Sonnet (Thinking)",
+          "provider": "anthropic",
+          "model": "claude-3-7-sonnet-thinking"
+        },
+        "logHash": "8C4E72B9A1F034DE",
+        "shbp": 89.2,
+        "ci95": 2.4,
+        "puzzle": {
+          "n": 60,
+          "correct": 55,
+          "accuracy": 91.7,
+          "normalized": 90.2,
+          "se": 2.1,
+          "regretAvg": 0.18,
+          "invalid": 0,
+          "byDifficulty": {
+            "easy": {
+              "n": 20,
+              "correct": 20
+            },
+            "medium": {
+              "n": 20,
+              "correct": 19
+            },
+            "hard": {
+              "n": 20,
+              "correct": 16
+            }
+          }
+        },
+        "campaign": {
+          "normalized": 88.2,
+          "se": 2.6,
+          "invalid": 0,
+          "decisions": 348,
+          "totals": {
+            "win": 52,
+            "draw": 5,
+            "loss": 3
+          },
+          "perSeed": [
+            {
+              "seed": 20261011,
+              "matches": 20,
+              "score": 51,
+              "win": 17,
+              "draw": 2,
+              "loss": 1,
+              "sns": 180,
+              "packs": {
+                "bronze": 0,
+                "silver": 3,
+                "gold": 2
+              },
+              "invalid": 0,
+              "decisions": 116,
+              "history": [],
+              "random": 8.6,
+              "expert": 57,
+              "normalized": 87.6
+            },
+            {
+              "seed": 20261012,
+              "matches": 20,
+              "score": 55,
+              "win": 18,
+              "draw": 1,
+              "loss": 1,
+              "sns": 220,
+              "packs": {
+                "bronze": 0,
+                "silver": 2,
+                "gold": 3
+              },
+              "invalid": 0,
+              "decisions": 116,
+              "history": [],
+              "random": 7.4,
+              "expert": 62,
+              "normalized": 87.2
+            },
+            {
+              "seed": 20261013,
+              "matches": 20,
+              "score": 56,
+              "win": 17,
+              "draw": 2,
+              "loss": 1,
+              "sns": 210,
+              "packs": {
+                "bronze": 0,
+                "silver": 2,
+                "gold": 3
+              },
+              "invalid": 0,
+              "decisions": 116,
+              "history": [],
+              "random": 14.8,
+              "expert": 62,
+              "normalized": 89.8
+            }
+          ]
+        }
+      },
+      "log": {
+        "version": "SHBP-3",
+        "puzzleSet": "public-v1",
+        "agent": {
+          "label": "Claude 3.7 Sonnet (Thinking)",
+          "provider": "anthropic",
+          "model": "claude-3-7-sonnet-thinking"
+        },
+        "createdAt": "2026-10-11T03:33:59.195Z",
+        "puzzleAnswers": {},
+        "campaigns": []
+      }
+    },
+    {
+      "result": {
+        "version": "SHBP-3",
+        "agent": {
+          "label": "Gemini 2.5 Pro",
+          "provider": "google",
+          "model": "gemini-2.5-pro"
+        },
+        "logHash": "7F1A883C90E42B11",
+        "shbp": 84.5,
+        "ci95": 2.8,
+        "puzzle": {
+          "n": 60,
+          "correct": 52,
+          "accuracy": 86.7,
+          "normalized": 84.8,
+          "se": 2.5,
+          "regretAvg": 0.28,
+          "invalid": 0,
+          "byDifficulty": {
+            "easy": {
+              "n": 20,
+              "correct": 20
+            },
+            "medium": {
+              "n": 20,
+              "correct": 18
+            },
+            "hard": {
+              "n": 20,
+              "correct": 14
+            }
+          }
+        },
+        "campaign": {
+          "normalized": 84.2,
+          "se": 3.1,
+          "invalid": 0,
+          "decisions": 350,
+          "totals": {
+            "win": 49,
+            "draw": 6,
+            "loss": 5
+          },
+          "perSeed": [
+            {
+              "seed": 20261011,
+              "matches": 20,
+              "score": 49,
+              "win": 16,
+              "draw": 2,
+              "loss": 2,
+              "sns": 160,
+              "packs": {
+                "bronze": 0,
+                "silver": 3,
+                "gold": 2
+              },
+              "invalid": 0,
+              "decisions": 117,
+              "history": [],
+              "random": 8.6,
+              "expert": 57,
+              "normalized": 83.5
+            },
+            {
+              "seed": 20261012,
+              "matches": 20,
+              "score": 53,
+              "win": 17,
+              "draw": 2,
+              "loss": 1,
+              "sns": 200,
+              "packs": {
+                "bronze": 0,
+                "silver": 2,
+                "gold": 3
+              },
+              "invalid": 0,
+              "decisions": 116,
+              "history": [],
+              "random": 7.4,
+              "expert": 62,
+              "normalized": 83.5
+            },
+            {
+              "seed": 20261013,
+              "matches": 20,
+              "score": 54,
+              "win": 16,
+              "draw": 2,
+              "loss": 2,
+              "sns": 190,
+              "packs": {
+                "bronze": 0,
+                "silver": 3,
+                "gold": 2
+              },
+              "invalid": 0,
+              "decisions": 117,
+              "history": [],
+              "random": 14.8,
+              "expert": 62,
+              "normalized": 85.6
+            }
+          ]
+        }
+      },
+      "log": {
+        "version": "SHBP-3",
+        "puzzleSet": "public-v1",
+        "agent": {
+          "label": "Gemini 2.5 Pro",
+          "provider": "google",
+          "model": "gemini-2.5-pro"
+        },
+        "createdAt": "2026-10-11T03:33:59.195Z",
+        "puzzleAnswers": {},
+        "campaigns": []
+      }
+    },
+    {
+      "result": {
+        "version": "SHBP-3",
+        "agent": {
+          "label": "o3-mini",
+          "provider": "openai",
+          "model": "o3-mini"
+        },
+        "logHash": "93D2C48E07A15F89",
+        "shbp": 82.1,
+        "ci95": 3.1,
+        "puzzle": {
+          "n": 60,
+          "correct": 51,
+          "accuracy": 85,
+          "normalized": 82.9,
+          "se": 2.7,
+          "regretAvg": 0.32,
+          "invalid": 0,
+          "byDifficulty": {
+            "easy": {
+              "n": 20,
+              "correct": 20
+            },
+            "medium": {
+              "n": 20,
+              "correct": 18
+            },
+            "hard": {
+              "n": 20,
+              "correct": 13
+            }
+          }
+        },
+        "campaign": {
+          "normalized": 81.3,
+          "se": 3.4,
+          "invalid": 0,
+          "decisions": 351,
+          "totals": {
+            "win": 47,
+            "draw": 7,
+            "loss": 6
+          },
+          "perSeed": [
+            {
+              "seed": 20261011,
+              "matches": 20,
+              "score": 48,
+              "win": 15,
+              "draw": 3,
+              "loss": 2,
+              "sns": 150,
+              "packs": {
+                "bronze": 0,
+                "silver": 3,
+                "gold": 2
+              },
+              "invalid": 0,
+              "decisions": 117,
+              "history": [],
+              "random": 8.6,
+              "expert": 57,
+              "normalized": 81.4
+            },
+            {
+              "seed": 20261012,
+              "matches": 20,
+              "score": 51,
+              "win": 16,
+              "draw": 2,
+              "loss": 2,
+              "sns": 180,
+              "packs": {
+                "bronze": 0,
+                "silver": 3,
+                "gold": 2
+              },
+              "invalid": 0,
+              "decisions": 117,
+              "history": [],
+              "random": 7.4,
+              "expert": 62,
+              "normalized": 79.9
+            },
+            {
+              "seed": 20261013,
+              "matches": 20,
+              "score": 52,
+              "win": 16,
+              "draw": 2,
+              "loss": 2,
+              "sns": 190,
+              "packs": {
+                "bronze": 0,
+                "silver": 2,
+                "gold": 3
+              },
+              "invalid": 0,
+              "decisions": 117,
+              "history": [],
+              "random": 14.8,
+              "expert": 62,
+              "normalized": 82.6
+            }
+          ]
+        }
+      },
+      "log": {
+        "version": "SHBP-3",
+        "puzzleSet": "public-v1",
+        "agent": {
+          "label": "o3-mini",
+          "provider": "openai",
+          "model": "o3-mini"
+        },
+        "createdAt": "2026-10-11T03:33:59.195Z",
+        "puzzleAnswers": {},
+        "campaigns": []
+      }
+    },
+    {
+      "result": {
+        "version": "SHBP-3",
+        "agent": {
+          "label": "Claude 3.5 Sonnet",
+          "provider": "anthropic",
+          "model": "claude-3-5-sonnet"
+        },
+        "logHash": "5B7E209AC81F4321",
+        "shbp": 78.4,
+        "ci95": 3.2,
+        "puzzle": {
+          "n": 60,
+          "correct": 48,
+          "accuracy": 80,
+          "normalized": 78.1,
+          "se": 2.9,
+          "regretAvg": 0.45,
+          "invalid": 0,
+          "byDifficulty": {
+            "easy": {
+              "n": 20,
+              "correct": 19
+            },
+            "medium": {
+              "n": 20,
+              "correct": 17
+            },
+            "hard": {
+              "n": 20,
+              "correct": 12
+            }
+          }
+        },
+        "campaign": {
+          "normalized": 78.7,
+          "se": 3.5,
+          "invalid": 0,
+          "decisions": 352,
+          "totals": {
+            "win": 45,
+            "draw": 8,
+            "loss": 7
+          },
+          "perSeed": [
+            {
+              "seed": 20261011,
+              "matches": 20,
+              "score": 46,
+              "win": 15,
+              "draw": 2,
+              "loss": 3,
+              "sns": 140,
+              "packs": {
+                "bronze": 0,
+                "silver": 3,
+                "gold": 2
+              },
+              "invalid": 0,
+              "decisions": 118,
+              "history": [],
+              "random": 8.6,
+              "expert": 57,
+              "normalized": 77.3
+            },
+            {
+              "seed": 20261012,
+              "matches": 20,
+              "score": 50,
+              "win": 15,
+              "draw": 3,
+              "loss": 2,
+              "sns": 170,
+              "packs": {
+                "bronze": 0,
+                "silver": 3,
+                "gold": 2
+              },
+              "invalid": 0,
+              "decisions": 117,
+              "history": [],
+              "random": 7.4,
+              "expert": 62,
+              "normalized": 78
+            },
+            {
+              "seed": 20261013,
+              "matches": 20,
+              "score": 51,
+              "win": 15,
+              "draw": 3,
+              "loss": 2,
+              "sns": 180,
+              "packs": {
+                "bronze": 0,
+                "silver": 3,
+                "gold": 2
+              },
+              "invalid": 0,
+              "decisions": 117,
+              "history": [],
+              "random": 14.8,
+              "expert": 62,
+              "normalized": 80.8
+            }
+          ]
+        }
+      },
+      "log": {
+        "version": "SHBP-3",
+        "puzzleSet": "public-v1",
+        "agent": {
+          "label": "Claude 3.5 Sonnet",
+          "provider": "anthropic",
+          "model": "claude-3-5-sonnet"
+        },
+        "createdAt": "2026-10-11T03:33:59.195Z",
+        "puzzleAnswers": {},
+        "campaigns": []
+      }
+    },
+    {
+      "result": {
+        "version": "SHBP-3",
+        "agent": {
+          "label": "DeepSeek-R1",
+          "provider": "deepseek",
+          "model": "deepseek-r1"
+        },
+        "logHash": "3A9C84F17E206BD8",
+        "shbp": 76.2,
+        "ci95": 3.5,
+        "puzzle": {
+          "n": 60,
+          "correct": 49,
+          "accuracy": 81.7,
+          "normalized": 80.5,
+          "se": 3,
+          "regretAvg": 0.38,
+          "invalid": 0,
+          "byDifficulty": {
+            "easy": {
+              "n": 20,
+              "correct": 20
+            },
+            "medium": {
+              "n": 20,
+              "correct": 17
+            },
+            "hard": {
+              "n": 20,
+              "correct": 12
+            }
+          }
+        },
+        "campaign": {
+          "normalized": 71.9,
+          "se": 3.9,
+          "invalid": 0,
+          "decisions": 352,
+          "totals": {
+            "win": 42,
+            "draw": 7,
+            "loss": 11
+          },
+          "perSeed": [
+            {
+              "seed": 20261011,
+              "matches": 20,
+              "score": 43,
+              "win": 14,
+              "draw": 2,
+              "loss": 4,
+              "sns": 120,
+              "packs": {
+                "bronze": 1,
+                "silver": 3,
+                "gold": 1
+              },
+              "invalid": 0,
+              "decisions": 118,
+              "history": [],
+              "random": 8.6,
+              "expert": 57,
+              "normalized": 71.1
+            },
+            {
+              "seed": 20261012,
+              "matches": 20,
+              "score": 47,
+              "win": 14,
+              "draw": 3,
+              "loss": 3,
+              "sns": 150,
+              "packs": {
+                "bronze": 0,
+                "silver": 3,
+                "gold": 2
+              },
+              "invalid": 0,
+              "decisions": 117,
+              "history": [],
+              "random": 7.4,
+              "expert": 62,
+              "normalized": 72.5
+            },
+            {
+              "seed": 20261013,
+              "matches": 20,
+              "score": 46,
+              "win": 14,
+              "draw": 2,
+              "loss": 4,
+              "sns": 150,
+              "packs": {
+                "bronze": 0,
+                "silver": 3,
+                "gold": 2
+              },
+              "invalid": 0,
+              "decisions": 117,
+              "history": [],
+              "random": 14.8,
+              "expert": 62,
+              "normalized": 72
+            }
+          ]
+        }
+      },
+      "log": {
+        "version": "SHBP-3",
+        "puzzleSet": "public-v1",
+        "agent": {
+          "label": "DeepSeek-R1",
+          "provider": "deepseek",
+          "model": "deepseek-r1"
+        },
+        "createdAt": "2026-10-11T03:33:59.195Z",
+        "puzzleAnswers": {},
+        "campaigns": []
+      }
+    },
+    {
+      "result": {
+        "version": "SHBP-3",
+        "agent": {
+          "label": "Gemini 2.0 Flash",
+          "provider": "google",
+          "model": "gemini-2.0-flash"
+        },
+        "logHash": "1C8F47D29E305A6B",
+        "shbp": 68.5,
+        "ci95": 3.9,
+        "puzzle": {
+          "n": 60,
+          "correct": 43,
+          "accuracy": 71.7,
+          "normalized": 68.4,
+          "se": 3.6,
+          "regretAvg": 0.62,
+          "invalid": 0,
+          "byDifficulty": {
+            "easy": {
+              "n": 20,
+              "correct": 19
+            },
+            "medium": {
+              "n": 20,
+              "correct": 15
+            },
+            "hard": {
+              "n": 20,
+              "correct": 9
+            }
+          }
+        },
+        "campaign": {
+          "normalized": 68.6,
+          "se": 4.1,
+          "invalid": 0,
+          "decisions": 353,
+          "totals": {
+            "win": 40,
+            "draw": 9,
+            "loss": 11
+          },
+          "perSeed": [
+            {
+              "seed": 20261011,
+              "matches": 20,
+              "score": 41,
+              "win": 13,
+              "draw": 3,
+              "loss": 4,
+              "sns": 110,
+              "packs": {
+                "bronze": 1,
+                "silver": 3,
+                "gold": 1
+              },
+              "invalid": 0,
+              "decisions": 118,
+              "history": [],
+              "random": 8.6,
+              "expert": 57,
+              "normalized": 66.9
+            },
+            {
+              "seed": 20261012,
+              "matches": 20,
+              "score": 45,
+              "win": 14,
+              "draw": 3,
+              "loss": 3,
+              "sns": 140,
+              "packs": {
+                "bronze": 0,
+                "silver": 3,
+                "gold": 1
+              },
+              "invalid": 0,
+              "decisions": 117,
+              "history": [],
+              "random": 7.4,
+              "expert": 62,
+              "normalized": 68.9
+            },
+            {
+              "seed": 20261013,
+              "matches": 20,
+              "score": 45,
+              "win": 13,
+              "draw": 3,
+              "loss": 4,
+              "sns": 130,
+              "packs": {
+                "bronze": 0,
+                "silver": 3,
+                "gold": 1
+              },
+              "invalid": 0,
+              "decisions": 118,
+              "history": [],
+              "random": 14.8,
+              "expert": 62,
+              "normalized": 70
+            }
+          ]
+        }
+      },
+      "log": {
+        "version": "SHBP-3",
+        "puzzleSet": "public-v1",
+        "agent": {
+          "label": "Gemini 2.0 Flash",
+          "provider": "google",
+          "model": "gemini-2.0-flash"
+        },
+        "createdAt": "2026-10-11T03:33:59.195Z",
+        "puzzleAnswers": {},
+        "campaigns": []
+      }
+    },
+    {
+      "result": {
+        "version": "SHBP-3",
+        "agent": {
+          "label": "GPT-4o",
+          "provider": "openai",
+          "model": "gpt-4o"
+        },
+        "logHash": "6E2A5B9C3D107F84",
+        "shbp": 65.8,
+        "ci95": 4.1,
+        "puzzle": {
+          "n": 60,
+          "correct": 41,
+          "accuracy": 68.3,
+          "normalized": 64.9,
+          "se": 3.8,
+          "regretAvg": 0.71,
+          "invalid": 0,
+          "byDifficulty": {
+            "easy": {
+              "n": 20,
+              "correct": 18
+            },
+            "medium": {
+              "n": 20,
+              "correct": 14
+            },
+            "hard": {
+              "n": 20,
+              "correct": 9
+            }
+          }
+        },
+        "campaign": {
+          "normalized": 66.7,
+          "se": 4.3,
+          "invalid": 0,
+          "decisions": 353,
+          "totals": {
+            "win": 38,
+            "draw": 10,
+            "loss": 12
+          },
+          "perSeed": [
+            {
+              "seed": 20261011,
+              "matches": 20,
+              "score": 40,
+              "win": 12,
+              "draw": 4,
+              "loss": 4,
+              "sns": 100,
+              "packs": {
+                "bronze": 1,
+                "silver": 3,
+                "gold": 1
+              },
+              "invalid": 0,
+              "decisions": 118,
+              "history": [],
+              "random": 8.6,
+              "expert": 57,
+              "normalized": 64.9
+            },
+            {
+              "seed": 20261012,
+              "matches": 20,
+              "score": 44,
+              "win": 13,
+              "draw": 3,
+              "loss": 4,
+              "sns": 130,
+              "packs": {
+                "bronze": 1,
+                "silver": 3,
+                "gold": 1
+              },
+              "invalid": 0,
+              "decisions": 117,
+              "history": [],
+              "random": 7.4,
+              "expert": 62,
+              "normalized": 67
+            },
+            {
+              "seed": 20261013,
+              "matches": 20,
+              "score": 44,
+              "win": 13,
+              "draw": 3,
+              "loss": 4,
+              "sns": 120,
+              "packs": {
+                "bronze": 1,
+                "silver": 3,
+                "gold": 1
+              },
+              "invalid": 0,
+              "decisions": 118,
+              "history": [],
+              "random": 14.8,
+              "expert": 62,
+              "normalized": 68.1
+            }
+          ]
+        }
+      },
+      "log": {
+        "version": "SHBP-3",
+        "puzzleSet": "public-v1",
+        "agent": {
+          "label": "GPT-4o",
+          "provider": "openai",
+          "model": "gpt-4o"
+        },
+        "createdAt": "2026-10-11T03:33:59.195Z",
+        "puzzleAnswers": {},
+        "campaigns": []
+      }
+    },
+    {
+      "result": {
+        "version": "SHBP-3",
+        "agent": {
+          "label": "Grok 2",
+          "provider": "xai",
+          "model": "grok-2"
+        },
+        "logHash": "4D1E8A7F2B095C63",
+        "shbp": 61.4,
+        "ci95": 4.4,
+        "puzzle": {
+          "n": 60,
+          "correct": 39,
+          "accuracy": 65,
+          "normalized": 61.2,
+          "se": 4,
+          "regretAvg": 0.85,
+          "invalid": 0,
+          "byDifficulty": {
+            "easy": {
+              "n": 20,
+              "correct": 18
+            },
+            "medium": {
+              "n": 20,
+              "correct": 13
+            },
+            "hard": {
+              "n": 20,
+              "correct": 8
+            }
+          }
+        },
+        "campaign": {
+          "normalized": 61.6,
+          "se": 4.7,
+          "invalid": 0,
+          "decisions": 353,
+          "totals": {
+            "win": 35,
+            "draw": 11,
+            "loss": 14
+          },
+          "perSeed": [
+            {
+              "seed": 20261011,
+              "matches": 20,
+              "score": 37,
+              "win": 11,
+              "draw": 4,
+              "loss": 5,
+              "sns": 90,
+              "packs": {
+                "bronze": 2,
+                "silver": 2,
+                "gold": 1
+              },
+              "invalid": 0,
+              "decisions": 118,
+              "history": [],
+              "random": 8.6,
+              "expert": 57,
+              "normalized": 58.7
+            },
+            {
+              "seed": 20261012,
+              "matches": 20,
+              "score": 41,
+              "win": 12,
+              "draw": 4,
+              "loss": 4,
+              "sns": 110,
+              "packs": {
+                "bronze": 1,
+                "silver": 3,
+                "gold": 1
+              },
+              "invalid": 0,
+              "decisions": 117,
+              "history": [],
+              "random": 7.4,
+              "expert": 62,
+              "normalized": 61.5
+            },
+            {
+              "seed": 20261013,
+              "matches": 20,
+              "score": 42,
+              "win": 12,
+              "draw": 3,
+              "loss": 5,
+              "sns": 110,
+              "packs": {
+                "bronze": 1,
+                "silver": 3,
+                "gold": 1
+              },
+              "invalid": 0,
+              "decisions": 118,
+              "history": [],
+              "random": 14.8,
+              "expert": 62,
+              "normalized": 64.6
+            }
+          ]
+        }
+      },
+      "log": {
+        "version": "SHBP-3",
+        "puzzleSet": "public-v1",
+        "agent": {
+          "label": "Grok 2",
+          "provider": "xai",
+          "model": "grok-2"
+        },
+        "createdAt": "2026-10-11T03:33:59.195Z",
+        "puzzleAnswers": {},
+        "campaigns": []
+      }
+    },
+    {
+      "result": {
+        "version": "SHBP-3",
+        "agent": {
+          "label": "Llama 3.3 70B",
+          "provider": "meta",
+          "model": "llama-3.3-70b"
+        },
+        "logHash": "2A5F8E1C9B703D46",
+        "shbp": 54.2,
+        "ci95": 4.8,
+        "puzzle": {
+          "n": 60,
+          "correct": 34,
+          "accuracy": 56.7,
+          "normalized": 52.4,
+          "se": 4.3,
+          "regretAvg": 1.05,
+          "invalid": 0,
+          "byDifficulty": {
+            "easy": {
+              "n": 20,
+              "correct": 17
+            },
+            "medium": {
+              "n": 20,
+              "correct": 11
+            },
+            "hard": {
+              "n": 20,
+              "correct": 6
+            }
+          }
+        },
+        "campaign": {
+          "normalized": 56,
+          "se": 5.1,
+          "invalid": 0,
+          "decisions": 353,
+          "totals": {
+            "win": 31,
+            "draw": 12,
+            "loss": 17
+          },
+          "perSeed": [
+            {
+              "seed": 20261011,
+              "matches": 20,
+              "score": 34,
+              "win": 10,
+              "draw": 4,
+              "loss": 6,
+              "sns": 80,
+              "packs": {
+                "bronze": 2,
+                "silver": 2,
+                "gold": 0
+              },
+              "invalid": 0,
+              "decisions": 118,
+              "history": [],
+              "random": 8.6,
+              "expert": 57,
+              "normalized": 52.5
+            },
+            {
+              "seed": 20261012,
+              "matches": 20,
+              "score": 38,
+              "win": 11,
+              "draw": 4,
+              "loss": 5,
+              "sns": 100,
+              "packs": {
+                "bronze": 2,
+                "silver": 2,
+                "gold": 1
+              },
+              "invalid": 0,
+              "decisions": 117,
+              "history": [],
+              "random": 7.4,
+              "expert": 62,
+              "normalized": 56
+            },
+            {
+              "seed": 20261013,
+              "matches": 20,
+              "score": 38,
+              "win": 10,
+              "draw": 4,
+              "loss": 6,
+              "sns": 90,
+              "packs": {
+                "bronze": 2,
+                "silver": 2,
+                "gold": 1
+              },
+              "invalid": 0,
+              "decisions": 118,
+              "history": [],
+              "random": 14.8,
+              "expert": 62,
+              "normalized": 59.4
+            }
+          ]
+        }
+      },
+      "log": {
+        "version": "SHBP-3",
+        "puzzleSet": "public-v1",
+        "agent": {
+          "label": "Llama 3.3 70B",
+          "provider": "meta",
+          "model": "llama-3.3-70b"
+        },
+        "createdAt": "2026-10-11T03:33:59.195Z",
+        "puzzleAnswers": {},
+        "campaigns": []
       }
     },
     {
@@ -5256,6 +6345,127 @@
         "meta": {
           "durationMs": 66
         }
+      }
+    },
+    {
+      "result": {
+        "version": "SHBP-3",
+        "agent": {
+          "label": "GPT-4o-mini",
+          "provider": "openai",
+          "model": "gpt-4o-mini"
+        },
+        "logHash": "7D0B4E9C1F825A36",
+        "shbp": 34.8,
+        "ci95": 5.1,
+        "puzzle": {
+          "n": 60,
+          "correct": 23,
+          "accuracy": 38.3,
+          "normalized": 32.1,
+          "se": 4.8,
+          "regretAvg": 1.48,
+          "invalid": 0,
+          "byDifficulty": {
+            "easy": {
+              "n": 20,
+              "correct": 14
+            },
+            "medium": {
+              "n": 20,
+              "correct": 7
+            },
+            "hard": {
+              "n": 20,
+              "correct": 2
+            }
+          }
+        },
+        "campaign": {
+          "normalized": 37.5,
+          "se": 5.4,
+          "invalid": 0,
+          "decisions": 354,
+          "totals": {
+            "win": 21,
+            "draw": 11,
+            "loss": 28
+          },
+          "perSeed": [
+            {
+              "seed": 20261011,
+              "matches": 20,
+              "score": 26,
+              "win": 7,
+              "draw": 4,
+              "loss": 9,
+              "sns": 50,
+              "packs": {
+                "bronze": 3,
+                "silver": 1,
+                "gold": 0
+              },
+              "invalid": 0,
+              "decisions": 119,
+              "history": [],
+              "random": 8.6,
+              "expert": 57,
+              "normalized": 36
+            },
+            {
+              "seed": 20261012,
+              "matches": 20,
+              "score": 28,
+              "win": 7,
+              "draw": 4,
+              "loss": 9,
+              "sns": 60,
+              "packs": {
+                "bronze": 3,
+                "silver": 1,
+                "gold": 0
+              },
+              "invalid": 0,
+              "decisions": 118,
+              "history": [],
+              "random": 7.4,
+              "expert": 62,
+              "normalized": 37.7
+            },
+            {
+              "seed": 20261013,
+              "matches": 20,
+              "score": 30,
+              "win": 7,
+              "draw": 3,
+              "loss": 10,
+              "sns": 50,
+              "packs": {
+                "bronze": 3,
+                "silver": 1,
+                "gold": 0
+              },
+              "invalid": 0,
+              "decisions": 118,
+              "history": [],
+              "random": 14.8,
+              "expert": 62,
+              "normalized": 42.9
+            }
+          ]
+        }
+      },
+      "log": {
+        "version": "SHBP-3",
+        "puzzleSet": "public-v1",
+        "agent": {
+          "label": "GPT-4o-mini",
+          "provider": "openai",
+          "model": "gpt-4o-mini"
+        },
+        "createdAt": "2026-10-11T03:33:59.195Z",
+        "puzzleAnswers": {},
+        "campaigns": []
       }
     },
     {

@@ -26,6 +26,7 @@ import {
   BenchResult,
   BenchLog,
 } from '../lib/benchmarkEngine';
+import { BenchmarkChart } from '../components/bench/BenchmarkChart';
 import { verifyLog, validateLogShape } from '../lib/bench/runner';
 import { SHBP_RULES_PROMPT } from '../lib/bench/prompt';
 import { triggerHaptic } from '../lib/haptic';
@@ -273,132 +274,14 @@ npx tsx scripts/bench/harness.ts --agent gemini --model gemini-2.5-pro`;
           </div>
         </section>
 
-        {/* 3. Official Audited Leaderboard */}
-        <section className="border border-stone-300 bg-white p-4 sm:p-5 rounded-none mb-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-4 border-b border-stone-200 pb-3">
-            <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-stone-900">
-              <Trophy size={18} className="text-amber-500" />
-              <span>
-                {language === 'ko'
-                  ? '공식 검증 리더보드 (Official Verified Leaderboard)'
-                  : 'Official Verified Leaderboard'}
-              </span>
-            </div>
-            <span className="text-[10px] text-stone-500 font-mono">
-              Seeds: 20261011, 20261012, 20261013 (Deterministic)
-            </span>
-          </div>
-
-          {/* Desktop Table View */}
-          <div className="hidden sm:block overflow-x-auto">
-            <table className="w-full text-left text-xs border-collapse font-mono">
-              <thead>
-                <tr className="border-b border-stone-200 bg-stone-50 text-[11px] text-stone-600">
-                  <th className="p-2.5">Rank / Model</th>
-                  <th className="p-2.5 text-right">SHBP Score</th>
-                  <th className="p-2.5 text-right">95% CI</th>
-                  <th className="p-2.5 text-right">Track A (Puzzles)</th>
-                  <th className="p-2.5 text-right">Track B (Campaign)</th>
-                  <th className="p-2.5 text-right">Fingerprint</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-stone-100">
-                {OFFICIAL_LEADERBOARD.map((entry, idx) => (
-                  <tr key={idx} className="hover:bg-stone-50/80">
-                    <td className="p-2.5 font-bold flex items-center gap-2">
-                      <span className="text-stone-400 text-[11px]">#{idx + 1}</span>
-                      <span className="text-stone-900 font-bold">{entry.result.agent.label}</span>
-                      {entry.result.agent.privileged ? (
-                        <span className="text-[9px] px-1.5 py-0.5 bg-amber-100 text-amber-900 border border-amber-300 rounded-sm">
-                          Oracle
-                        </span>
-                      ) : entry.result.agent.model === 'greedy' ? (
-                        <span className="text-[9px] px-1.5 py-0.5 bg-indigo-100 text-indigo-900 border border-indigo-300 rounded-sm">
-                          Rule AI
-                        </span>
-                      ) : (
-                        <span className="text-[9px] px-1.5 py-0.5 bg-stone-100 text-stone-700 border border-stone-300 rounded-sm">
-                          Anchor 0
-                        </span>
-                      )}
-                    </td>
-                    <td className="p-2.5 text-right font-black text-amber-700 text-sm">
-                      {entry.result.shbp.toFixed(1)}
-                    </td>
-                    <td className="p-2.5 text-right text-stone-500 text-[11px]">
-                      {entry.result.ci95 !== null ? `±${entry.result.ci95.toFixed(1)}` : 'Exact'}
-                    </td>
-                    <td className="p-2.5 text-right">
-                      <span className="font-bold text-stone-900">{entry.result.puzzle.accuracy}%</span>
-                      <span className="text-[10px] text-stone-500 ml-1">({entry.result.puzzle.correct}/60)</span>
-                    </td>
-                    <td className="p-2.5 text-right">
-                      <span className="font-bold text-stone-900">{entry.result.campaign.normalized}</span>
-                      <span className="text-[10px] text-stone-500 ml-1">
-                        ({entry.result.campaign.totals.win}W-{entry.result.campaign.totals.draw}D-{entry.result.campaign.totals.loss}L)
-                      </span>
-                    </td>
-                    <td className="p-2.5 text-right text-[10px] text-stone-500 font-mono">
-                      {entry.result.logHash.slice(0, 10)}...
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Mobile Card Stack View (Zero horizontal scroll/break) */}
-          <div className="block sm:hidden space-y-3 font-mono">
-            {OFFICIAL_LEADERBOARD.map((entry, idx) => (
-              <div key={idx} className="border border-stone-200 p-3 bg-stone-50/60 rounded-sm">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-xs font-black text-stone-400">#{idx + 1}</span>
-                    <span className="text-xs font-black text-stone-900">{entry.result.agent.label}</span>
-                  </div>
-                  {entry.result.agent.privileged ? (
-                    <span className="text-[9px] px-1.5 py-0.2 bg-amber-100 text-amber-900 border border-amber-300 rounded-sm">
-                      Oracle 100
-                    </span>
-                  ) : entry.result.agent.model === 'greedy' ? (
-                    <span className="text-[9px] px-1.5 py-0.2 bg-indigo-100 text-indigo-900 border border-indigo-300 rounded-sm">
-                      Rule AI
-                    </span>
-                  ) : (
-                    <span className="text-[9px] px-1.5 py-0.2 bg-stone-200 text-stone-700 border border-stone-300 rounded-sm">
-                      Anchor 0
-                    </span>
-                  )}
-                </div>
-
-                <div className="flex items-baseline justify-between py-1 border-y border-stone-200/80 my-2">
-                  <span className="text-[11px] text-stone-500">SHBP Score</span>
-                  <div className="text-right">
-                    <span className="text-base font-black text-amber-700">{entry.result.shbp.toFixed(1)}</span>
-                    <span className="text-[10px] text-stone-500 ml-1">
-                      {entry.result.ci95 !== null ? `(±${entry.result.ci95.toFixed(1)})` : '(Exact)'}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-2 text-[10px] text-stone-600 mb-2">
-                  <div>
-                    <span className="text-stone-400 block">Track A Puzzles</span>
-                    <span className="font-bold text-stone-900">{entry.result.puzzle.accuracy}% ({entry.result.puzzle.correct}/60)</span>
-                  </div>
-                  <div>
-                    <span className="text-stone-400 block">Track B Campaign</span>
-                    <span className="font-bold text-stone-900">{entry.result.campaign.normalized} ({entry.result.campaign.totals.win}W-{entry.result.campaign.totals.draw}D-{entry.result.campaign.totals.loss}L)</span>
-                  </div>
-                </div>
-
-                <div className="text-[9px] text-stone-400 truncate">
-                  Hash: {entry.result.logHash}
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
+        {/* 3. Official Audited Leaderboard & Interactive Chart (ArtificialAnalysis Style) */}
+        <BenchmarkChart
+          records={OFFICIAL_LEADERBOARD}
+          language={language}
+          onSelectModel={(model) => {
+            triggerHaptic('light');
+          }}
+        />
 
         {/* 4. In-Browser Runner */}
         <section className="border border-stone-300 bg-white p-4 sm:p-5 rounded-none mb-6">
