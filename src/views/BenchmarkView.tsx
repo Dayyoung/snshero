@@ -212,6 +212,7 @@ https://snshero.com/bench 에서 [Start Benchmark]를 직접 실행하거나 위
               className="flex-1 p-2 border border-stone-300 bg-white text-xs font-mono rounded-sm focus:outline-none"
             >
               <option value="Claude 3.7 Sonnet">Claude 3.7 Sonnet (Anthropic)</option>
+              <option value="Gemini 3.8 Flash (High)">Gemini 3.8 Flash (High) (Google)</option>
               <option value="GPT-4o">GPT-4o (OpenAI)</option>
               <option value="Gemini 2.5 Pro">Gemini 2.5 Pro (Google DeepMind)</option>
               <option value="Antigravity AI">Antigravity AI (Autonomous)</option>
