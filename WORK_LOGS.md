@@ -2,6 +2,41 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-12 07:56 KST] [모든 작업 완료 시 구글 폼 제출 의무화 규정 AGENTS.md 및 GEMINI.md 추가]
+- **요청 사항**:
+  - 어떤 작업이든 완료되면 해당 구글시트(`1nX6BFBJR4fTrv3PMqG8UamwSbqY2tJt_VvJoGAPItu8`)에 구글폼으로 제출하도록 의무화. AGENTS.md에 의무화 추가.
+- **상세 구현 내역**:
+  1. **`AGENTS.md` 지침 추가**:
+     - 상단에 `모든 작업 완료 시 구글 폼 제출 의무화 절대 원칙 (Mandatory Google Form Report Submission)` 섹션 신설.
+     - 기능 개발, 버그 수정, 설정 변경, 성능 최적화 등 에이전트가 수행하는 모든 작업 종료 시 연동 구글 폼(`https://docs.google.com/forms/d/e/1FAIpQLScrvcAqDF7vHHQndycr90ii-ujTi3Plw23eNrSyiJpOLrHbjg/formResponse`)으로 보고서 제출을 의무화.
+     - 작업 전/후 체크리스트에 구글 폼 보고서 제출 필수 검증 항목 추가.
+  2. **`GEMINI.md` 시스템 프롬프트 지침 동기화**:
+     - 5번 원칙으로 모든 작업 완료 시 구글 폼 보고서 제출 의무화 규정 추가.
+  3. **구글 폼 보고서 제출 완료**:
+     - Python 유틸리티(`skills/report-ex/scripts/submit_report.py`)를 통해 작업 완료 즉시 실시간 제출 완료.
+- **검증 결과**:
+  - 구글 폼 HTTP 200 성공 수신 (1건 제출 완료).
+
+## [2026-10-12 07:53 KST] [배틀 승리 팝업 미표시 및 조기 리셋 버그 원천 해결]
+- **요청 사항**:
+  - 승리해도 팝업이 표시 안 되고 바로 게임이 재시작되는 현상 수정.
+- **원인 분석**:
+  - 플레이어 승리(`winState === 'player'`) 시 `onEarnXp(50)`가 호출되어 부모 `App.tsx`의 `currentDeck` 배열 참조가 갱신됨.
+  - 이로 인해 자식 `MobileCardPlayScreen`의 `playerDeck` prop이 변경되면서 `initMatchDecks` 함수가 새로 생성되고 `useEffect(() => { initMatchDecks(); }, [initMatchDecks])`가 즉시(0ms) 트리거됨.
+  - 결국 승리 팝업이 렌더링되기도 전에 `setGameOver(false)`, `setWinner(null)`이 실행되어 게임판이 강제 리셋되고 즉시 재시작되었음.
+- **상세 구현 내역**:
+  1. **마운트 1회 가드 탑재 (`isInitialMountRef`)** ([`MobileCardPlayScreen.tsx`](file:///Users/dayyoung/project/snshero/src/views/MobileCardPlayScreen.tsx)):
+     - 초기 덱 세팅을 컴포넌트 마운트 시 1회만 실행하도록 격리하여 배틀 중/승리 후 prop 변경에 의한 보드 리셋을 원천 차단.
+  2. **Props Refs 안전 캐싱**:
+     - `playerDeckRef`, `activeRankOpponentRef`, `difficultyProfileRef` 등을 활용하여 불필요한 의존성 재생성 방지.
+  3. **승리 팝업 노출 시간 보장 및 게이지 비율 동기화**:
+     - 승리 시 자동 전투 카운트다운을 4초(수동 전투 5초)로 충분히 제공하여 승리 연출 및 +30 SNS 획득 모달을 감상할 수 있도록 보장.
+     - 즉시 다음으로 이동하고 싶은 유저를 위한 즉시 대전/상점 바로가기 버튼 제공.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 무결점 통과 (exit code 0).
+  - `npm run build`: 빌드 성공 (exit code 0).
+  - 구글 폼 보고서 제출 완료.
+
 ## [2026-10-11 00:55 KST] [Google News 기사-사진 불일치 해결 & 시맨틱 스마트 이미지 매칭 엔진 탑재 완료]
 - **요청 사항**:
   - 뉴스 기사와 사진이 안 맞는 경우가 있는 문제 해결.

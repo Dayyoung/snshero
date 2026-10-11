@@ -19,6 +19,26 @@
 - **데이터 무결성 및 리셋 방지**: 원격 인증 상태 변경, 오프라인 전환, 페이지 새로고침 등에 의해 로컬스토리지에 저장된 카드/재화 데이터가 기본값으로 초기화되거나 유실되는 일이 절대 없어야 합니다.
 - **즉시 동기화**: 상점 뽑기(단일팩, 10연차, 연속뽑기 등), 보상 수령, 덱 편집, 레벨업 등의 이벤트 발생 즉시 로컬스토리지에 동기적으로 기록합니다.
 
+## 모든 작업 완료 시 구글 폼 제출 의무화 절대 원칙 (Mandatory Google Form Report Submission)
+- **전수 작업 보고 의무화**: 기능 개발, 버그 수정, 성능 최적화, UI/UX 개선, 리팩토링, 스킬 실행 등 **에이전트가 수행하는 어떠한 작업이든 작업이 완료되면 예외 없이 반드시 연동된 구글 폼을 통해 작업 완료 보고서를 즉시 제출**해야 합니다.
+- **연동 구글 폼 엔드포인트**: `https://docs.google.com/forms/d/e/1FAIpQLScrvcAqDF7vHHQndycr90ii-ujTi3Plw23eNrSyiJpOLrHbjg/formResponse`
+- **반영 구글 스프레드시트**: `1nX6BFBJR4fTrv3PMqG8UamwSbqY2tJt_VvJoGAPItu8` (`/modoo` 모두의 상태 화면에서 실시간 45초마다 동기화)
+- **제출 방법**:
+  - **Python 스크립트 실행 (권장)**:
+    ```bash
+    python3 skills/report-ex/scripts/submit_report.py --dept "개발" --task "[작업명]" --status "작업완료" --details "[작업 상세 내용 및 검증 결과]"
+    ```
+  - **curl 실행**:
+    ```bash
+    curl -s -X POST "https://docs.google.com/forms/d/e/1FAIpQLScrvcAqDF7vHHQndycr90ii-ujTi3Plw23eNrSyiJpOLrHbjg/formResponse" \
+      --data-urlencode "emailAddress=developer@snshero.com" \
+      --data-urlencode "entry.1712635414=개발" \
+      --data-urlencode "entry.1651694192=[작업명]" \
+      --data-urlencode "entry.1282964596=작업완료" \
+      --data-urlencode "entry.1982035501=[작업 상세 내용 및 검증 결과]"
+    ```
+- **누적 기록**: 작업 완료 후 `WORK_LOGS.md` 파일에도 실행 일시, 작업 내역, 검증 결과 및 구글 폼 제출 완료 여부를 누적 기록합니다.
+
 ## 등록된 커스텀 스킬 및 명령어
 - **`/gemini-ex` (단축어: `/ge`)**: 공개 구글 스프레드시트 CSV(`2PACX-1vRF82ZJBHIhPsTzzjGm8DFutzw6PtAwqT_iyEB3MG5yKvZrEs354rKHy7YIFIO2zgqKSuRbo62uNyX_`)의 미작업 항목을 확인하고 소스코드에 반영 및 완료하는 스킬
 - **`/ge`**: `/gemini-ex`의 축약어/단축 명령어로 동일한 작업 수행
@@ -81,6 +101,7 @@
 - [ ] `DESIGN.md` 디자인 가이드 준수 여부 (Monospace 서체, 웜크림/잉크 테마, 플랫 디자인, 1px 헤어라인, 4px/0px 반경, 44px+ 터치 타깃)
 - [ ] 기존 코드 스타일(인덴트, 따옴표 등) 준수
 - [ ] 새로운 localStorage 키 추가 시 `AGENTS.md`에 문서화
+- [ ] **[필수] 작업 완료 후 연동 구글 폼 보고서 제출 완료 (`python3 skills/report-ex/scripts/submit_report.py --dept "개발" --task "[작업명]" --details "[내용]"`)**
 
 ## 중요 참고사항
 - **저사양 모드(`lowSpecMode`)**: 애니메이션/효과 추가 시 `lowSpecMode`가 `true`일 때는 복잡한 애니메이션을 비활성화해야 함.
