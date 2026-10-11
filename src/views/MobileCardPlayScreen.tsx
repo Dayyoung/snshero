@@ -236,6 +236,13 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
   // Mission Game 3s Dialogue Intro State
   const [showMissionDialogue, setShowMissionDialogue] = useState<boolean>(Boolean(effectiveTargetCardId));
 
+  // 무승부 덱 TP 비교 타이 브레이커 상태
+  const [tieBreakerInfo, setTieBreakerInfo] = useState<{
+    playerTp: number;
+    opponentTp: number;
+    winner: 'player' | 'ai' | 'draw';
+  } | null>(null);
+
   // Opponent name
   const effectiveOpponentName = useMemo(() => {
     if (activeRankOpponent) return activeRankOpponent.name;
@@ -347,6 +354,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     setSelectedHandIndex(0); // auto-select first card for 1-tap UX
     setGameOver(false);
     setWinner(null);
+    setTieBreakerInfo(null);
     setMatchResultReported(false);
     setRematchCountdown(null);
     setTutorialShopCountdown(null);
@@ -666,15 +674,54 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     if (filledCount >= 9 || (isPlayer ? playerHand.length <= 1 : opponentHand.length <= 1)) {
       // Game Over
       setTimeout(() => {
-        let pScore = 0;
-        let oScore = 0;
+        let pScore = isPlayer ? playerHand.filter(c => c.id !== card.id).length : playerHand.length;
+        let oScore = !isPlayer ? opponentHand.filter(c => c.id !== card.id).length : opponentHand.length;
         updatedBoard.forEach(c => {
           if (!c) return;
           if (c.owner === 'player') pScore += 1;
           else if (c.owner === 'ai') oScore += 1;
         });
 
-        const winState: 'player' | 'ai' | 'draw' = pScore > oScore ? 'player' : (pScore < oScore ? 'ai' : 'draw');
+        let winState: 'player' | 'ai' | 'draw' = pScore > oScore ? 'player' : (pScore < oScore ? 'ai' : 'draw');
+
+        // 무승부인 경우 서로의 덱 TP를 표시하여 비교하고 높은 사람을 승으로 처리 (승률 및 전적 반영)
+        if (winState === 'draw') {
+          const curPDeck = playerDeckRef.current;
+          let pTp = 0;
+          if (curPDeck && curPDeck.length > 0) {
+            pTp = curPDeck.slice(0, 5).reduce((acc, c) => acc + (c.power || getCardPower(c) || 100), 0);
+          } else {
+            pTp = playerTotalPower;
+          }
+
+          let oTp = 0;
+          if (activeRankOpponentRef.current?.totalPower) {
+            oTp = activeRankOpponentRef.current.totalPower;
+          } else if (opponentCustomDeckRef.current && opponentCustomDeckRef.current.length > 0) {
+            oTp = opponentCustomDeckRef.current.slice(0, 5).reduce((acc, c) => acc + (c.power || getCardPower(c) || 100), 0);
+          } else if (effectiveTargetCardIdRef.current && CARD_DATABASE[effectiveTargetCardIdRef.current]) {
+            oTp = (CARD_DATABASE[effectiveTargetCardIdRef.current].power || 10) * 5;
+          } else {
+            oTp = Math.round(pTp * 0.98);
+          }
+
+          if (pTp > oTp) {
+            winState = 'player';
+          } else if (pTp < oTp) {
+            winState = 'ai';
+          } else {
+            winState = 'draw';
+          }
+
+          setTieBreakerInfo({
+            playerTp: pTp,
+            opponentTp: oTp,
+            winner: winState,
+          });
+        } else {
+          setTieBreakerInfo(null);
+        }
+
         setWinner(winState);
         setGameOver(true);
         setIsEvaluating(false);
@@ -1048,21 +1095,20 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       return;
     }
 
-    // 4) 랭킹대전인 경우: 스마트 자동 라이프사이클 (상점 뽑기 & 덱 강화, 기분전환 라운지, 다음 매치) 실행!
+    // 4) 랭킹대전인 경우: 승패팝업 무조건 3초 표시 후 재시작
     if (isRankingMatch) {
       setTutorialShopCountdown(null);
       setRematchCountdown(null);
       setRankingSearchCountdown(null);
-      // 승리 시 유저가 승리 연출 및 획득 SNS 보상(+30)을 확인할 수 있도록 충분한 카운트다운(자동 4초, 수동 5초) 제공
-      const initialCountdown = isAutoBattle ? (winner === 'player' ? 4 : 2) : (winner === 'player' ? 5 : 3);
-      setRankingAutoLoopCountdown(initialCountdown);
+      // 승패팝업 무조건 3초 표시
+      setRankingAutoLoopCountdown(3);
       return;
     }
 
-    // 5) 미션 게임 또는 일반 모드: 승리 시 4초, 패배/무승부 시 3초 후 재대결
+    // 5) 미션 게임 또는 일반 모드: 무조건 3초 후 재대결
     setTutorialShopCountdown(null);
     setRankingAutoLoopCountdown(null);
-    setRematchCountdown(winner === 'player' ? 4 : 3);
+    setRematchCountdown(3);
   }, [gameOver, winner, isTutorialMode, tutorialStep, autoCloseOnComplete, towerBossClearModal, isRankingMatch, isAutoBattle]);
 
   // 랭킹대전 스마트 루프 카운트다운 감소 및 0초 도달 시 분기 실행
@@ -1097,26 +1143,22 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
         setGameOver(false);
         triggerRefreshBreak();
       } else {
-        // [3] 일반 대전: 결과 모달 닫고 새로운 라이벌 매칭
+        // [3] 일반 대전: 결과 모달 닫고 새로운 라이벌 매칭 후 즉시 랭킹플레이 재시작
         setGameOver(false);
+        setWinner(null);
+        setTieBreakerInfo(null);
         refreshDifficulty();
         const nextOpp = pickNewRankOpponent(activeRankOpponent?.name || effectiveOpponentName, playerTotalPower, getDynamicDifficultyProfile(playerTotalPower));
         setActiveRankOpponent(nextOpp);
-
-        // ★ 버그 방지: 자동 플레이 시에는 전체화면 검색창을 띄우지 않고 즉시 배틀 개시!
-        if (isAutoBattle) {
-          setRankingSearchCountdown(null);
-          setLifeCycleNotice({
-            text: language === 'ko'
-              ? `⚔️ [랭킹대전] 새로운 라이벌 [${nextOpp.name}] 매칭 완료!`
-              : `⚔️ [Rank Match] Matched with [${nextOpp.name}]!`,
-            type: 'info',
-            timestamp: Date.now()
-          });
-          initMatchDecks();
-        } else {
-          setRankingSearchCountdown(3);
-        }
+        setRankingSearchCountdown(null);
+        setLifeCycleNotice({
+          text: language === 'ko'
+            ? `⚔️ [랭킹대전] 새로운 라이벌 [${nextOpp.name}] 매칭 완료!`
+            : `⚔️ [Rank Match] Matched with [${nextOpp.name}]!`,
+          type: 'info',
+          timestamp: Date.now()
+        });
+        initMatchDecks();
       }
       return;
     }
@@ -1141,17 +1183,16 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
   };
 
   const handleImmediateNextRankBattle = () => {
+    playSound('tap');
     setRankingAutoLoopCountdown(null);
     setGameOver(false);
+    setWinner(null);
+    setTieBreakerInfo(null);
     refreshDifficulty();
     const nextOpp = pickNewRankOpponent(activeRankOpponent?.name || effectiveOpponentName, playerTotalPower, getDynamicDifficultyProfile(playerTotalPower));
     setActiveRankOpponent(nextOpp);
-    if (isAutoBattle) {
-      setRankingSearchCountdown(null);
-      initMatchDecks();
-    } else {
-      setRankingSearchCountdown(3);
-    }
+    setRankingSearchCountdown(null);
+    initMatchDecks();
   };
 
   // 랭킹대전: 3초 검색 카운트다운 후 새로운 상대와 매치 시작
@@ -1685,9 +1726,13 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                 winner === 'player' ? "text-emerald-300 drop-shadow-[0_0_10px_rgba(52,211,153,0.5)]" : winner === 'ai' ? "text-rose-400" : "text-amber-300"
               )}>
                 {winner === 'player' 
-                  ? (language === 'ko' ? '🎉 VICTORY! 배틀 승리' : '🎉 VICTORY!') 
+                  ? (tieBreakerInfo 
+                      ? (language === 'ko' ? '🎉 VICTORY! (덱 TP 판정 승리)' : '🎉 VICTORY! (Deck TP Win)')
+                      : (language === 'ko' ? '🎉 VICTORY! 배틀 승리' : '🎉 VICTORY!'))
                   : winner === 'ai' 
-                  ? (language === 'ko' ? '💀 DEFEAT 패배' : 'DEFEAT') 
+                  ? (tieBreakerInfo
+                      ? (language === 'ko' ? '💀 DEFEAT (덱 TP 판정 패배)' : '💀 DEFEAT (Deck TP Loss)')
+                      : (language === 'ko' ? '💀 DEFEAT 패배' : 'DEFEAT'))
                   : (language === 'ko' ? '🤝 DRAW 무승부' : 'DRAW')}
               </h2>
 
@@ -1697,6 +1742,42 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                 <span className="text-stone-500 font-bold">:</span>
                 <span className="text-2xl font-black text-rose-400">{score.opponent}</span>
               </div>
+
+              {/* 무승부 시 서로의 덱 TP 비교 시각화 카드 */}
+              {tieBreakerInfo && (
+                <div className="w-full my-2 p-2.5 bg-stone-900/90 border border-amber-400/60 rounded-xs flex flex-col gap-1.5 font-mono shadow-md text-left">
+                  <div className="flex items-center justify-between text-[11px] font-black text-amber-300 border-b border-amber-400/30 pb-1">
+                    <span className="flex items-center gap-1">
+                      <span>⚖️</span>
+                      <span>{language === 'ko' ? '무승부 동점 덱 TP 판정' : 'Tie-Breaker: Deck TP Comparison'}</span>
+                    </span>
+                    <span className={cn(
+                      "px-1.5 py-0.5 rounded-2xs text-[10px] font-black",
+                      tieBreakerInfo.winner === 'player' ? "bg-emerald-500/20 text-emerald-300 border border-emerald-400/40" : "bg-rose-500/20 text-rose-300 border border-rose-400/40"
+                    )}>
+                      {tieBreakerInfo.winner === 'player'
+                        ? (language === 'ko' ? '🏆 플레이어 TP 우세 승리' : '🏆 Player TP Win')
+                        : (language === 'ko' ? '💀 상대 TP 우세 패배' : '💀 Rival TP Win')}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs px-2 pt-1">
+                    <div className="flex flex-col items-center">
+                      <span className="text-[10px] text-stone-400">{language === 'ko' ? '내 덱 TP' : 'My Deck TP'}</span>
+                      <span className="text-sm font-black text-cyan-400 font-mono">{tieBreakerInfo.playerTp.toLocaleString()}</span>
+                    </div>
+                    <div className="text-amber-400 font-black text-xs px-2">VS</div>
+                    <div className="flex flex-col items-center">
+                      <span className="text-[10px] text-stone-400">{language === 'ko' ? '상대 덱 TP' : 'Rival Deck TP'}</span>
+                      <span className="text-sm font-black text-rose-400 font-mono">{tieBreakerInfo.opponentTp.toLocaleString()}</span>
+                    </div>
+                  </div>
+                  <div className="text-[10px] text-stone-300 text-center pt-1 border-t border-white/5">
+                    {tieBreakerInfo.winner === 'player'
+                      ? (language === 'ko' ? '✨ 내 덱 TP가 더 높아 승리로 판정되어 승률이 반영되었습니다!' : '✨ Win awarded due to higher Deck TP!')
+                      : (language === 'ko' ? '상대 덱 TP가 더 높아 아쉽게 패배로 판정되었습니다.' : 'Loss awarded due to lower Deck TP.')}
+                  </div>
+                </div>
+              )}
 
               {/* Rewards Description & Prominent SNS Notification */}
               <div className="w-full bg-black/60 border border-white/10 rounded-xs p-3 my-2 text-stone-200 flex flex-col gap-2">
@@ -1722,7 +1803,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                       <div className="p-2 bg-amber-500/20 border border-amber-400/60 rounded-xs text-[11px] text-amber-200 font-bold text-center">
                         🛒 {language === 'ko' ? '카드 뽑기 여유 충족 (100 SNS 이상)!' : 'Pack Draw Ready (100+ SNS)!'}
                         <div className="text-[10px] text-amber-300/80 mt-0.5">
-                          {language === 'ko' ? '상점으로 이동하여 새 카드를 소환합니다.' : 'Moving to Shop to summon cards.'}
+                          {language === 'ko' ? '상점으로 이동하여 새 카드를 소환할 수 있습니다.' : 'You can visit Shop to summon cards.'}
                         </div>
                       </div>
                     )}
@@ -1754,27 +1835,27 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                 </div>
               )}
 
-              {/* 1) 랭킹대전 스마트 루프 카운트다운 바 */}
+              {/* 1) 랭킹대전 스마트 루프 카운트다운 바 (무조건 3초) */}
               {isRankingMatch && rankingAutoLoopCountdown !== null && rankingAutoLoopCountdown > 0 && (
                 <div className="w-full my-1.5 p-2 bg-stone-900/90 border border-amber-500/40 rounded-xs flex flex-col items-center justify-center gap-1.5 font-mono shadow-md">
                   <div className="flex items-center gap-2 text-xs font-black tracking-wider text-amber-300">
                     <RotateCcw size={14} className="animate-spin text-amber-400 shrink-0" />
                     <span>
-                      {smartLifeCycleActive && (sns || 0) >= 100
-                        ? (language === 'ko' ? `🛒 [ ${rankingAutoLoopCountdown}초 ] 후 상점 뽑기로 이동...` : `🛒 Moving to Shop in [ ${rankingAutoLoopCountdown}s ]...`)
-                        : (language === 'ko' ? `⚔️ [ ${rankingAutoLoopCountdown}초 ] 후 다음 라이벌 대전...` : `⚔️ Next Match in [ ${rankingAutoLoopCountdown}s ]...`)}
+                      {language === 'ko'
+                        ? `⚔️ [ ${rankingAutoLoopCountdown}초 ] 후 랭킹플레이 재시작...`
+                        : `⚔️ Restarting Rank Play in [ ${rankingAutoLoopCountdown}s ]...`}
                     </span>
                   </div>
                   <div className="w-full bg-stone-950 h-1.5 rounded-full overflow-hidden border border-amber-500/30">
                     <div 
                       className="bg-gradient-to-r from-amber-500 to-yellow-300 h-full transition-all duration-1000 ease-linear"
-                      style={{ width: `${(rankingAutoLoopCountdown / (isAutoBattle ? (winner === 'player' ? 4 : 2) : (winner === 'player' ? 5 : 3))) * 100}%` }}
+                      style={{ width: `${(rankingAutoLoopCountdown / 3) * 100}%` }}
                     />
                   </div>
                 </div>
               )}
 
-              {/* 2) 일반/미션 모드: 3~4초 카운터 후에 다시 카드 플레이 */}
+              {/* 2) 일반/미션 모드: 3초 카운터 후에 다시 카드 플레이 */}
               {!(isTutorialMode || (tutorialStep > 0 && tutorialStep <= 7)) && !isRankingMatch && rematchCountdown !== null && rematchCountdown > 0 && (
                 <div className="w-full my-1.5 p-2 bg-emerald-950/80 border border-emerald-500/40 rounded-xs flex flex-col items-center justify-center gap-1.5 font-mono shadow-md">
                   <div className="flex items-center gap-2 text-xs font-black text-emerald-400 tracking-wider">
@@ -1788,7 +1869,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                   <div className="w-full bg-stone-900 h-1.5 rounded-full overflow-hidden border border-emerald-500/30">
                     <div 
                       className="bg-emerald-400 h-full transition-all duration-1000 ease-linear"
-                      style={{ width: `${(rematchCountdown / (winner === 'player' ? 4 : 3)) * 100}%` }}
+                      style={{ width: `${(rematchCountdown / 3) * 100}%` }}
                     />
                   </div>
                 </div>
@@ -1798,23 +1879,22 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
               <div className="flex flex-col sm:flex-row items-center gap-2 w-full mt-2">
                 {isRankingMatch ? (
                   <>
-                    {smartLifeCycleActive && (sns || 0) >= 100 ? (
+                    <button
+                      type="button"
+                      onClick={handleImmediateNextRankBattle}
+                      className="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-black text-xs uppercase rounded-xs transition-transform active:scale-95 cursor-pointer flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-500/30"
+                    >
+                      <span>⚔️</span>
+                      <span>{language === 'ko' ? '지금 바로 랭킹플레이 재시작' : 'Restart Rank Play Now'}</span>
+                    </button>
+                    {smartLifeCycleActive && (sns || 0) >= 100 && (
                       <button
                         type="button"
                         onClick={handleImmediateShopGo}
-                        className="w-full py-2.5 bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-stone-950 font-black text-xs uppercase rounded-xs transition-transform active:scale-95 cursor-pointer flex items-center justify-center gap-1.5 shadow-lg shadow-amber-500/30"
+                        className="w-full py-2 bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-stone-950 font-black text-xs uppercase rounded-xs transition-transform active:scale-95 cursor-pointer flex items-center justify-center gap-1.5 shadow-md shadow-amber-500/20"
                       >
                         <span>🛒</span>
-                        <span>{language === 'ko' ? '지금 상점에서 카드 뽑기' : 'Go to Shop Now'}</span>
-                      </button>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={handleImmediateNextRankBattle}
-                        className="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-black text-xs uppercase rounded-xs transition-transform active:scale-95 cursor-pointer flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-500/30"
-                      >
-                        <span>⚔️</span>
-                        <span>{language === 'ko' ? '지금 바로 다음 대전' : 'Next Battle Now'}</span>
+                        <span>{language === 'ko' ? '상점에서 카드 뽑기' : 'Go to Shop'}</span>
                       </button>
                     )}
                     <button
