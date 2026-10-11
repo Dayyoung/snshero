@@ -2351,28 +2351,32 @@ export const ShopView: React.FC<ShopViewProps> = ({
         smartLoopPullTimerRef.current = null;
       }
 
-      const currentSns = snsRef.current;
-      const packRarity: GachaPackRarity = (currentSns >= 100) ? 'silver' : (currentSns >= 10 ? 'bronze' : 'bronze');
-      const packCost = (packRarity === 'silver') ? 100 : 10;
-
-      if (currentSns < packCost) {
-        setSmartLoopStatus(
-          languageRef.current === 'ko'
-            ? '⚠️ SNS 잔액이 부족하여 랭킹대전으로 바로 복귀합니다.'
-            : '⚠️ Insufficient SNS balance. Returning to Rank Match.'
-        );
+      const localSns = (() => {
         try {
-          localStorage.removeItem('hero_auto_loop_mode');
-          localStorage.setItem('hero_auto_loop_is_ranking', 'true');
-        } catch {}
-        smartLoopNavTimerRef.current = setTimeout(() => {
-          onNavigateRef.current?.('card-play');
-        }, 1500);
-        return;
-      }
+          return parseInt(localStorage.getItem('hero_user_sns') || '0', 10);
+        } catch {
+          return 0;
+        }
+      })();
+      const currentSns = Math.max(localSns, snsRef.current || 0);
+      const packRarity: GachaPackRarity = (currentSns >= 100) ? 'silver' : 'bronze';
+      const rawCost = (packRarity === 'silver') ? 100 : 10;
+      const packCost = currentSns >= rawCost ? rawCost : 0; // 잔액 부족 시 승리 보상 무료 소환
 
-      // 팩 구매 실행 및 획득 카드 목록 수신
-      const drawnCards = buyPackRef.current(packCost, packRarity);
+      // 팩 구매 실행 및 획득 카드 목록 수신 (페일오버 완비)
+      let drawnCards = buyPackRef.current ? buyPackRef.current(packCost, packRarity) : null;
+
+      if (!drawnCards || drawnCards.length === 0) {
+        try {
+          drawnCards = createPackCards(packRarity);
+          if (addCard) {
+            drawnCards.forEach(c => {
+              const db = CARD_DATABASE[c.imageIndex];
+              if (db) addCard(db.rarity || 'bronze', c.imageIndex);
+            });
+          }
+        } catch {}
+      }
 
       if (!drawnCards || drawnCards.length === 0) {
         try {
@@ -2405,8 +2409,9 @@ export const ShopView: React.FC<ShopViewProps> = ({
         const dbCard = CARD_DATABASE[gc.imageIndex];
         if (dbCard) {
           const power = (dbCard.top ?? 0) + (dbCard.right ?? 0) + (dbCard.bottom ?? 0) + (dbCard.left ?? 0);
-          if (power > bestDrawnPower) {
-            bestDrawnPower = power;
+          const effectivePower = power > 0 ? power : (dbCard.power || 10);
+          if (effectivePower > bestDrawnPower) {
+            bestDrawnPower = effectivePower;
             bestDrawnCard = dbCard;
           }
         }
@@ -2424,7 +2429,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
       let minDeckPower = 9999;
       let weakestSlot = 0;
       baseDeck.forEach((c, idx) => {
-        const p = getCardPower(c);
+        const p = getCardPower(c) || c.power || 10;
         if (p < minDeckPower) {
           minDeckPower = p;
           weakestSlot = idx;

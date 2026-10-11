@@ -1116,10 +1116,19 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     if (rankingAutoLoopCountdown === null) return;
     if (rankingAutoLoopCountdown <= 0) {
       setRankingAutoLoopCountdown(null);
-      const canDrawPack = smartLifeCycleActive && (sns || 0) >= 100;
 
-      // [1] 일정 수준 SNS(100 이상)가 모이면 상점에서 카드 뽑기 진행! (승리/패배 불문)
-      if (canDrawPack) {
+      const curSns = (() => {
+        try {
+          const raw = parseInt(localStorage.getItem('hero_user_sns') || '0', 10);
+          return Math.max(raw, sns || 0);
+        } catch {
+          return sns || 0;
+        }
+      })();
+
+      // [1] 승리했거나, 보유 SNS가 10 이상인 경우 상점에서 카드 뽑기 및 덱 강화 진행!
+      const shouldDrawPack = smartLifeCycleActive && (winner === 'player' || curSns >= 10);
+      if (shouldDrawPack) {
         try {
           localStorage.setItem('hero_auto_loop_mode', 'gacha_start');
           localStorage.setItem('hero_auto_loop_is_ranking', 'true');
@@ -1841,9 +1850,13 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                   <div className="flex items-center gap-2 text-xs font-black tracking-wider text-amber-300">
                     <RotateCcw size={14} className="animate-spin text-amber-400 shrink-0" />
                     <span>
-                      {language === 'ko'
-                        ? `⚔️ [ ${rankingAutoLoopCountdown}초 ] 후 랭킹플레이 재시작...`
-                        : `⚔️ Restarting Rank Play in [ ${rankingAutoLoopCountdown}s ]...`}
+                      {winner === 'player'
+                        ? (language === 'ko'
+                            ? `🛒 [ ${rankingAutoLoopCountdown}초 ] 후 상점에서 카드 뽑기 및 덱 강화...`
+                            : `🛒 Summoning Cards in Shop in [ ${rankingAutoLoopCountdown}s ]...`)
+                        : (language === 'ko'
+                            ? `⚔️ [ ${rankingAutoLoopCountdown}초 ] 후 다음 라이벌 대전...`
+                            : `⚔️ Next Match in [ ${rankingAutoLoopCountdown}s ]...`)}
                     </span>
                   </div>
                   <div className="w-full bg-stone-950 h-1.5 rounded-full overflow-hidden border border-amber-500/30">
@@ -1879,22 +1892,33 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
               <div className="flex flex-col sm:flex-row items-center gap-2 w-full mt-2">
                 {isRankingMatch ? (
                   <>
-                    <button
-                      type="button"
-                      onClick={handleImmediateNextRankBattle}
-                      className="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-black text-xs uppercase rounded-xs transition-transform active:scale-95 cursor-pointer flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-500/30"
-                    >
-                      <span>⚔️</span>
-                      <span>{language === 'ko' ? '지금 바로 랭킹플레이 재시작' : 'Restart Rank Play Now'}</span>
-                    </button>
-                    {smartLifeCycleActive && (sns || 0) >= 100 && (
+                    {winner === 'player' ? (
+                      <>
+                        <button
+                          type="button"
+                          onClick={handleImmediateShopGo}
+                          className="w-full py-2.5 bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-stone-950 font-black text-xs uppercase rounded-xs transition-transform active:scale-95 cursor-pointer flex items-center justify-center gap-1.5 shadow-lg shadow-amber-500/30"
+                        >
+                          <span>🛒</span>
+                          <span>{language === 'ko' ? '지금 바로 상점에서 카드 뽑기' : 'Go to Shop Now'}</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={handleImmediateNextRankBattle}
+                          className="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-stone-950 font-black text-xs uppercase rounded-xs transition-transform active:scale-95 cursor-pointer flex items-center justify-center gap-1.5 shadow-md shadow-emerald-500/20"
+                        >
+                          <span>⚔️</span>
+                          <span>{language === 'ko' ? '상점 건너뛰고 다음 랭킹전' : 'Skip Shop & Next Battle'}</span>
+                        </button>
+                      </>
+                    ) : (
                       <button
                         type="button"
-                        onClick={handleImmediateShopGo}
-                        className="w-full py-2 bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-stone-950 font-black text-xs uppercase rounded-xs transition-transform active:scale-95 cursor-pointer flex items-center justify-center gap-1.5 shadow-md shadow-amber-500/20"
+                        onClick={handleImmediateNextRankBattle}
+                        className="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-black text-xs uppercase rounded-xs transition-transform active:scale-95 cursor-pointer flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-500/30"
                       >
-                        <span>🛒</span>
-                        <span>{language === 'ko' ? '상점에서 카드 뽑기' : 'Go to Shop'}</span>
+                        <span>⚔️</span>
+                        <span>{language === 'ko' ? '지금 바로 랭킹플레이 재시작' : 'Restart Rank Play Now'}</span>
                       </button>
                     )}
                     <button
