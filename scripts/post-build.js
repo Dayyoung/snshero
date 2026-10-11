@@ -127,11 +127,15 @@ if (fs.existsSync(indexPath)) {
 
     if (route === 'bench' || route === 'benchmark' || route === 'shbp') {
       fs.writeFileSync(path.join(routeDir, 'index.html'), benchCustomHtml, 'utf8');
+      fs.writeFileSync(path.join(distDir, `${route}.html`), benchCustomHtml, 'utf8');
     } else {
       fs.copyFileSync(indexPath, path.join(routeDir, 'index.html'));
+      if (!route.includes('/')) {
+        fs.copyFileSync(indexPath, path.join(distDir, `${route}.html`));
+      }
     }
   }
-  console.log(`[post-build] Generated ${routes.length} static SPA route fallback pages (with tailored SEO for /bench)`);
+  console.log(`[post-build] Generated ${routes.length} static SPA route fallback pages (including .html root clean URLs)`);
 }
 
 // 5. Ensure 404.html fallback

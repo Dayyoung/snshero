@@ -382,3 +382,6 @@ https://snshero.com/bench 에서 [Start Benchmark]를 직접 실행하거나 위
     </div>
   );
 };
+
+export default BenchmarkView;
+
