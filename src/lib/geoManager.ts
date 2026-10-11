@@ -593,44 +593,89 @@ export const GEO_CONFIGS: Record<string, GeoViewConfig> = {
 
   bench: {
     title: {
-      ko: 'SNSHero Bench Point (SHBP) AI 공식 벤치마크 - SNS히어로',
-      en: 'SNSHero Bench Point (SHBP) Official AI Benchmark - SNSHero',
-      gb: 'SNSHero Bench Point (SHBP) Official AI Benchmark - SNSHero',
-      ja: 'SNSHero Bench Point (SHBP) 公式AIベンチマーク - SNSヒーロー',
-      'zh-CN': 'SNSHero Bench Point (SHBP) 官方AI跑分基准测试 - SNS英雄',
-      'zh-TW': 'SNSHero Bench Point (SHBP) 官方AI跑分基準測試 - SNS英雄',
-      de: 'SNSHero Bench Point (SHBP) Offizieller KI-Benchmark - SNSHero',
-      es: 'SNSHero Bench Point (SHBP) Benchmark Oficial de IA - SNSHero',
-      fr: 'SNSHero Bench Point (SHBP) Benchmark IA Officiel - SNSHero',
-      id: 'SNSHero Bench Point (SHBP) Tolok Ukur AI Resmi - SNSHero',
-      ru: 'SNSHero Bench Point (SHBP) Официальный Бенчмарк ИИ - SNSHero',
-      th: 'SNSHero Bench Point (SHBP) เกณฑ์มาตรฐาน AI อย่างเป็นทางการ',
-      vi: 'SNSHero Bench Point (SHBP) Điểm Chuẩn AI Chính Thức - SNSHero'
+      ko: 'snshero bench - SNSHero Bench Point (SHBP) AI 1시간 공인 벤치마크 | SNS히어로',
+      en: 'snshero bench - SNSHero Bench Point (SHBP) Official 1-Hour AI Benchmark | SNSHero',
+      gb: 'snshero bench - SNSHero Bench Point (SHBP) Official 1-Hour AI Benchmark | SNSHero',
+      ja: 'snshero bench - SNSHero Bench Point (SHBP) 公式1時間AIベンチマーク | SNSヒーロー',
+      'zh-CN': 'snshero bench - SNSHero Bench Point (SHBP) 官方AI 1小时跑分基准测试 | SNS英雄',
+      'zh-TW': 'snshero bench - SNSHero Bench Point (SHBP) 官方AI 1小時跑分基準測試 | SNS英雄',
+      de: 'snshero bench - SNSHero Bench Point (SHBP) Offizieller 1-Stunden-KI-Benchmark | SNSHero',
+      es: 'snshero bench - SNSHero Bench Point (SHBP) Benchmark Oficial de IA de 1 Hora | SNSHero',
+      fr: 'snshero bench - SNSHero Bench Point (SHBP) Benchmark IA Officiel d\'une heure | SNSHero',
+      id: 'snshero bench - SNSHero Bench Point (SHBP) Tolok Ukur AI Resmi 1 Jam | SNSHero',
+      ru: 'snshero bench - SNSHero Bench Point (SHBP) Официальный 1-часовой бенчмарк ИИ | SNSHero',
+      th: 'snshero bench - SNSHero Bench Point (SHBP) เกณฑ์มาตรฐาน AI 1 ชั่วโมงอย่างเป็นทางการ | SNSHero',
+      vi: 'snshero bench - SNSHero Bench Point (SHBP) Điểm chuẩn AI 1 giờ chính thức | SNSHero'
     },
     description: {
-      ko: 'Claude, GPT, Gemini의 1시간 자율 플레이 역량을 측정하는 공인 벤치마크 환경. 256경기 기준 누적 SNSHero Bench Point(SHBP) 점수 및 검증 해시 제공.',
-      en: 'Official 1-hour autonomous gameplay benchmark for Claude, GPT, and Gemini. Measures the cumulative SNSHero Bench Point (SHBP) score with anti-cheat verification hash.',
-      gb: 'Official 1-hour autonomous gameplay benchmark for Claude, GPT, and Gemini. Measures the cumulative SNSHero Bench Point (SHBP) score with anti-cheat verification hash.',
-      ja: 'Claude, GPT, Geminiの自律プレイ能力を測定する1時間公式ベンチマーク。累積SHBPスコアと検証ハッシュを発行。',
-      'zh-CN': '衡量Claude、GPT和Gemini一小时自主游戏能力的官方跑分测试平台。提供累计SHBP得分与防作弊校验码。',
-      'zh-TW': '衡量Claude、GPT和Gemini一小時自主遊戲能力的官方跑分測試平台。提供累計SHBP得分與防作弊校驗碼。',
-      de: 'Offizieller 1-Stunden-KI-Gameplay-Benchmark für Claude, GPT und Gemini mit verifizierter SHBP-Punktzahl.',
-      es: 'Benchmark oficial de 1 hora de juego autónomo para Claude, GPT y Gemini con hash de verificación SHBP.',
-      fr: 'Benchmark officiel de jeu autonome d\'une heure pour Claude, GPT et Gemini avec score SHBP vérifié.',
-      id: 'Tolok ukur gameplay otonom 1 jam resmi untuk Claude, GPT, dan Gemini dengan skor SHBP terverifikasi.',
-      ru: 'Официальный 1-часовой бенчмарк автономного геймплея для Claude, GPT и Gemini с проверкой очков SHBP.',
-      th: 'เกณฑ์มาตรฐานการเล่นเกมอัตโนมัติ 1 ชั่วโมงสำหรับ Claude, GPT และ Gemini พร้อมคะแนน SHBP ที่ได้รับการตรวจสอบ',
-      vi: 'Điểm chuẩn chơi trò chơi tự động 1 giờ chính thức cho Claude, GPT và Gemini với điểm SHBP được xác minh.'
+      ko: 'snshero bench는 Claude, GPT, Gemini 등 첨단 AI 모델의 1시간 자율 플레이 성능을 측정하는 공인 벤치마크입니다. 256경기 기준 누적 SNSHero Bench Point(SHBP) 점수와 위변조 방지 검증 해시를 제공합니다.',
+      en: 'snshero bench is the official 1-hour autonomous gameplay benchmark evaluating Claude, GPT, and Gemini. Measures cumulative SNSHero Bench Point (SHBP) score across 256 games with verification hash.',
+      gb: 'snshero bench is the official 1-hour autonomous gameplay benchmark evaluating Claude, GPT, and Gemini. Measures cumulative SNSHero Bench Point (SHBP) score across 256 games with verification hash.',
+      ja: 'snshero benchは、Claude、GPT、Gemini等のAIが1時間自律プレイして達成するSNSHero Bench Point(SHBP)を測定する公式ベンチマークです。',
+      'zh-CN': 'snshero bench是评估Claude、GPT和Gemini一小时自主游戏能力的官方跑分基准测试。提供256场比赛累计SHBP得分与防作弊验证哈希。',
+      'zh-TW': 'snshero bench是評估Claude、GPT和Gemini一小時自主遊戲能力的官方跑分基準測試。提供256場比賽累計SHBP得分與防作弊驗證哈希。',
+      de: 'snshero bench ist der offizielle 1-Stunden-KI-Benchmark zur Bewertung von Claude, GPT und Gemini mit verifiziertem SHBP-Score.',
+      es: 'snshero bench es el benchmark oficial de 1 hora de juego autónomo para Claude, GPT y Gemini con puntuación SHBP y hash de verificación.',
+      fr: 'snshero bench est le benchmark officiel d\'une heure évaluant l\'autonomie de Claude, GPT et Gemini avec score SHBP certifié.',
+      id: 'snshero bench adalah tolok ukur gameplay otonom 1 jam resmi untuk mengevaluasi Claude, GPT, dan Gemini dengan skor SHBP terverifikasi.',
+      ru: 'snshero bench — официальный 1-часовой бенчмарк автономного геймплея для Claude, GPT и Gemini с проверкой очков SHBP.',
+      th: 'snshero bench เป็นเกณฑ์มาตรฐานอย่างเป็นทางการสำหรับวัดประสิทธิภาพการเล่นเกมของ Claude, GPT และ Gemini ในเวลา 1 ชั่วโมง',
+      vi: 'snshero bench là tiêu chuẩn chính thức đánh giá khả năng chơi game tự động 1 giờ của Claude, GPT và Gemini với điểm số SHBP.'
     },
     canonicalPath: '/bench',
     schemaType: 'SoftwareApplication',
     schemaGenerator: (lang) => ({
       '@context': 'https://schema.org',
-      '@type': ['SoftwareApplication', 'WebPage'],
-      name: 'SNSHero Bench Point (SHBP) AI Benchmark',
-      url: 'https://snshero.com/bench',
-      inLanguage: lang,
-      description: 'Standardized 1-hour AI gameplay benchmark measuring autonomous execution performance.'
+      '@graph': [
+        {
+          '@type': 'WebPage',
+          '@id': 'https://snshero.com/bench#webpage',
+          url: 'https://snshero.com/bench',
+          name: 'snshero bench - SNSHero Bench Point (SHBP) AI Official Benchmark',
+          description: 'Standardized 1-hour AI gameplay benchmark measuring autonomous execution performance across 256 matches.',
+          inLanguage: lang,
+          isPartOf: {
+            '@type': 'WebSite',
+            name: 'SNSHero',
+            url: 'https://snshero.com'
+          }
+        },
+        {
+          '@type': 'SoftwareApplication',
+          '@id': 'https://snshero.com/bench#app',
+          name: 'snshero bench',
+          alternateName: ['SNSHero Bench Point', 'SHBP AI Benchmark', 'SNSHero Benchmark'],
+          applicationCategory: 'BenchmarkApplication',
+          operatingSystem: 'Any (Web Browser)',
+          url: 'https://snshero.com/bench',
+          offers: {
+            '@type': 'Offer',
+            price: '0',
+            priceCurrency: 'USD'
+          }
+        },
+        {
+          '@type': 'FAQPage',
+          mainEntity: [
+            {
+              '@type': 'Question',
+              name: 'What is snshero bench?',
+              acceptedAnswer: {
+                '@type': 'Answer',
+                text: 'snshero bench is a standardized 1-hour autonomous gameplay benchmark measuring the cumulative SNSHero Bench Point (SHBP) earned by AI models like Claude, GPT, and Gemini under fair, non-cheating conditions.'
+              }
+            },
+            {
+              '@type': 'Question',
+              name: 'How is SNSHero Bench Point (SHBP) measured?',
+              acceptedAnswer: {
+                '@type': 'Answer',
+                text: 'Each AI model starts from scratch and autonomously executes 256 card matches within 1 hour. Total SNS gained minus penalties represents the official SHBP score, verified with an anti-tamper hash.'
+              }
+            }
+          ]
+        }
+      ]
     })
   }
 };

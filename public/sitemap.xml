@@ -144,6 +144,27 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://snshero.com/wiki"/>
   </url>
 
+  <!-- SNSHero Bench (SHBP Official AI Benchmark) -->
+  <url>
+    <loc>https://snshero.com/bench</loc>
+    <lastmod>2026-10-11</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://snshero.com/bench"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://snshero.com/bench?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://snshero.com/bench?lang=ja"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://snshero.com/bench?lang=zh-CN"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://snshero.com/bench?lang=zh-TW"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://snshero.com/bench?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://snshero.com/bench?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://snshero.com/bench?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://snshero.com/bench?lang=id"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://snshero.com/bench?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="th" href="https://snshero.com/bench?lang=th"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://snshero.com/bench?lang=vi"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://snshero.com/bench"/>
+  </url>
+
   <!-- Wiki - Card Encyclopedia -->
   <url>
     <loc>https://snshero.com/wiki/card</loc>
