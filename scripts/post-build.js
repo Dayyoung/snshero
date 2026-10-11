@@ -52,7 +52,7 @@ if (fs.existsSync(metaSource)) {
 
 // 4. Generate SPA route directories with index.html for clean URL routing (SEO/AEO/GEO direct crawlable)
 const routes = [
-  'home', 'bench', 'benchmark', 'shbp', 'reddit', 'play', 'deck', 'shop', 'battle', 'market',
+  'home', 'bench', 'benchmark', 'shbp', 'reddit', 'play', 'card-play', 'deck', 'mydeck', 'shop', 'battle', 'market',
   'ranking', 'guild', 'novel', 'event', 'companion',
   'stock', 'community', 'admin', 'status', 'profile',
   'setting', 'share', 'boost', 'creator', 'web3', 'mall',
