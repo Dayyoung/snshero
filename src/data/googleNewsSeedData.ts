@@ -158,5 +158,6 @@ export function convertGoogleNewsToRedditPost(
       domain,
     },
     permalink: `/r/news/comments/${id}`,
+    sourceUrl: item.sourceUrl,
   };
 }

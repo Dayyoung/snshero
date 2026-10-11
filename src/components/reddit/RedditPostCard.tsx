@@ -55,6 +55,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
   const [showOriginal, setShowOriginal] = useState(false);
   const [translatedTitle, setTranslatedTitle] = useState<string | null>(null);
   const [translatedBody, setTranslatedBody] = useState<string | null>(null);
+  const [isExpandedBody, setIsExpandedBody] = useState(false);
 
   const targetLang = isKo ? 'ko' : 'en';
   const needsTrans = isNeedsTranslation(post.title, targetLang) || (post.body ? isNeedsTranslation(post.body, targetLang) : false);
@@ -393,10 +394,48 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
           {displayTitle}
         </h2>
 
-        {/* 3. 본문 텍스트 */}
+        {/* 3. 본문 텍스트 & 기사 더보기 토글 */}
         {displayBody && (
-          <div className="text-xs sm:text-sm leading-relaxed opacity-85 mb-3 line-clamp-3 whitespace-pre-line font-sans break-words">
-            {displayBody}
+          <div className="mb-3">
+            <div
+              className={`text-xs sm:text-sm leading-relaxed opacity-85 whitespace-pre-line font-sans break-words ${
+                isExpandedBody ? '' : 'line-clamp-3'
+              }`}
+            >
+              {displayBody}
+            </div>
+            {displayBody.length > 90 && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsExpandedBody(!isExpandedBody);
+                }}
+                className="mt-1 text-xs font-bold text-[#FF4500] hover:underline cursor-pointer flex items-center gap-1 active:scale-95 transition-transform"
+              >
+                <span>{isExpandedBody ? (isKo ? '▲ 기사 요약 접기' : '▲ Show less') : (isKo ? '▼ 기사 본문 더보기...' : '▼ Read more...')}</span>
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* 3.1 언론사 원문 기사 전문 더보기 (구글 뉴스 원문 연동) */}
+        {post.sourceUrl && (
+          <div className="mb-3">
+            <a
+              href={post.sourceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-semibold transition-all hover:scale-102 active:scale-98 cursor-pointer ${
+                isDark 
+                  ? 'bg-[#22272B] hover:bg-[#2A3136] text-sky-400 border-white/10' 
+                  : 'bg-sky-50 hover:bg-sky-100 text-sky-700 border-sky-200'
+              }`}
+            >
+              <ExternalLink className="w-3.5 h-3.5" />
+              <span>{isKo ? '언론사 원문 기사 전문 더보기 ↗' : 'Read Full Original Article ↗'}</span>
+            </a>
           </div>
         )}
 

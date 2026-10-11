@@ -466,6 +466,25 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
                 </div>
               )}
 
+              {/* 언론사 원문 기사 전문 더보기 (새 창 열기) */}
+              {post.sourceUrl && (
+                <div className="mb-6">
+                  <a
+                    href={post.sourceUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl border text-xs sm:text-sm font-bold transition-all hover:scale-102 active:scale-98 shadow-sm cursor-pointer ${
+                      isDark 
+                        ? 'bg-[#22272B] hover:bg-[#2A3136] text-sky-400 border-white/10' 
+                        : 'bg-sky-50 hover:bg-sky-100 text-sky-700 border-sky-200'
+                    }`}
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    <span>{isKo ? '언론사 원문 기사 전문 더보기 (새 창 열기) ↗' : 'Read Full Original Article on Publisher Website ↗'}</span>
+                  </a>
+                </div>
+              )}
+
               {/* 액션 바 */}
               <div className="flex items-center gap-2 sm:gap-3 pt-3 border-t border-inherit/10 text-xs font-semibold flex-wrap">
                 <div className={`flex items-center rounded-full px-2 py-0.5 border ${

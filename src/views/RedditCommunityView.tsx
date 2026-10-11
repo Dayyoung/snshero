@@ -236,22 +236,23 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
     setIsLoadingMorePosts(true);
 
     try {
-      // 1. 현재 표시 개수 확장
-      setFeedVisibleCount((prev) => prev + 6);
+      // 1. 현재 표시 개수 12개씩 즉시 확장 (체감 반응속도 극대화)
+      setFeedVisibleCount((prev) => prev + 12);
 
-      // 2. 피드 남은 개수가 적거나 끝에 가까워지면 실시간 구글 뉴스 동기화 갱신
-      if (feedVisibleCount + 8 >= posts.length) {
-        await RedditApiService.syncGoogleNews(userState.language || 'ko');
-        setSyncTick((t) => t + 1);
+      // 2. 피드 전체 풀 끝에 다다랐을 때만 백그라운드로 최신 구글 뉴스 추가 동기화
+      if (feedVisibleCount + 12 >= posts.length) {
+        RedditApiService.syncGoogleNews(userState.language || 'ko')
+          .then(() => setSyncTick((t) => t + 1))
+          .catch((e) => console.warn('[Reddit] Sheet sync notice', e));
       }
     } catch (e) {
       console.warn('[Reddit] Failed to load more live posts', e);
     } finally {
       setTimeout(() => {
         setIsLoadingMorePosts(false);
-      }, 300);
+      }, 150);
     }
-  }, [isLoadingMorePosts, feedVisibleCount, posts.length, currentSubreddit, userState.language]);
+  }, [isLoadingMorePosts, feedVisibleCount, posts.length, userState.language]);
 
   // 피드 하단 도달 시 자동 무한 스크롤 관찰
   useEffect(() => {
@@ -262,7 +263,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
           handleLoadMorePosts();
         }
       },
-      { rootMargin: '500px' }
+      { rootMargin: '250px' }
     );
     observer.observe(feedSentinelRef.current);
     return () => observer.disconnect();
@@ -842,21 +843,21 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
                               <button
                                 type="button"
                                 onClick={handleLoadMorePosts}
-                                className={`px-5 py-2 rounded-full border text-xs font-bold transition-all active:scale-95 cursor-pointer flex items-center gap-2 ${
+                                className={`px-6 py-2.5 rounded-full border text-xs font-bold transition-all active:scale-95 cursor-pointer flex items-center gap-2 shadow-sm ${
                                   isDark 
                                     ? 'bg-[#22272B] hover:bg-[#2A3136] text-white border-white/10' 
                                     : 'bg-white hover:bg-gray-100 text-[#1A1A1B] border-gray-300 shadow-xs'
                                 }`}
                               >
-                                <RotateCw size={13} />
-                                <span>{isKo ? '실시간 피드 더 불러오기' : 'Load More Live Posts'}</span>
+                                <RotateCw size={14} className={isLoadingMorePosts ? 'animate-spin' : ''} />
+                                <span>{isKo ? `실시간 뉴스 기사 더보기 (${Math.min(feedVisibleCount, posts.length)} / ${posts.length}개)` : `Load More News Articles (${Math.min(feedVisibleCount, posts.length)} / ${posts.length})`}</span>
                               </button>
-                              <span className="text-[11px] opacity-40">{isKo ? '스크롤 시 자동으로 더 불러옵니다' : 'Scroll down to load automatically'}</span>
+                              <span className="text-[11px] opacity-50">{isKo ? '버튼을 클릭하거나 아래로 스크롤하면 다음 기사들을 불러옵니다' : 'Click or scroll down to load more articles'}</span>
                             </div>
                           ) : (
                             <div className="text-xs opacity-50 py-4 font-medium flex items-center justify-center gap-1.5">
                               <span>🎉</span>
-                              <span>{isKo ? '모든 최신 피드를 확인했습니다!' : "You've caught up with all posts!"}</span>
+                              <span>{isKo ? `전체 ${posts.length}개 최신 뉴스 기사를 모두 확인했습니다!` : `You've caught up with all ${posts.length} news articles!`}</span>
                             </div>
                           )}
                         </div>

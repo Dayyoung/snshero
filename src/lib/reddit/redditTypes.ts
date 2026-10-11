@@ -84,6 +84,7 @@ export interface RedditPost {
   originalBody?: string;
   isTranslated?: boolean;
   permalink?: string;
+  sourceUrl?: string; // 원문 기사 링크
 }
 
 export interface SubredditRule {
