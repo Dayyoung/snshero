@@ -2417,7 +2417,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
           localStorage.setItem('hero_auto_loop_is_ranking', 'true');
         } catch {}
 
-        let remainingSec = 3;
+        let remainingSec = 1;
         const updateBannerText = (sec: number) => {
           setSmartLoopStatus(
             language === 'ko'
@@ -2452,14 +2452,14 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
         smartLoopNavTimerRef.current = setTimeout(() => {
           proceedToDeck();
-        }, 3400);
+        }, 1500);
       } else {
         try {
           localStorage.removeItem('hero_auto_loop_mode');
           localStorage.setItem('hero_auto_loop_is_ranking', 'true');
         } catch {}
 
-        let remainingSec = 3;
+        let remainingSec = 1;
         const updateBannerText = (sec: number) => {
           setSmartLoopStatus(
             language === 'ko'
@@ -2494,7 +2494,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
         smartLoopNavTimerRef.current = setTimeout(() => {
           proceedToBattle();
-        }, 3400);
+        }, 1500);
       }
     }, 700);
 

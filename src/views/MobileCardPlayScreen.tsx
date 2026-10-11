@@ -203,7 +203,14 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
 
   // ─── 스마트 자동 라이프사이클 상태 (Auto LifeCycle Loop) ──────────
   const [smartLifeCycleActive, setSmartLifeCycleActive] = useState<boolean>(true);
-  const [matchLoopCount, setMatchLoopCount] = useState<number>(0);
+  const [matchLoopCount, setMatchLoopCount] = useState<number>(() => {
+    try {
+      const saved = localStorage.getItem('hero_auto_loop_match_count');
+      return saved ? parseInt(saved, 10) || 0 : 0;
+    } catch {
+      return 0;
+    }
+  });
   const [lifeCycleNotice, setLifeCycleNotice] = useState<{
     text: string;
     type: 'gacha' | 'upgrade' | 'break' | 'info';
@@ -483,7 +490,12 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       refreshDifficulty();
       const nextOpp = pickNewRankOpponent(activeRankOpponent?.name || effectiveOpponentName, playerTotalPower, getDynamicDifficultyProfile(playerTotalPower));
       setActiveRankOpponent(nextOpp);
-      setRankingSearchCountdown(3);
+      if (isAutoBattle) {
+        setRankingSearchCountdown(null);
+        initMatchDecks();
+      } else {
+        setRankingSearchCountdown(3);
+      }
       return;
     }
 
@@ -1019,8 +1031,8 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       setTutorialShopCountdown(null);
       setRematchCountdown(null);
       setRankingSearchCountdown(null);
-      // 승리 시 유저가 승리 팝업과 획득 SNS를 명확히 인지할 수 있도록 5초 카운트다운 시작
-      const initialCountdown = winner === 'player' ? 5 : 3;
+      // 자동 플레이 시에는 빠른 흐름(2초)으로 전환, 수동 플레이 시에는 5초 제공
+      const initialCountdown = isAutoBattle ? 2 : (winner === 'player' ? 5 : 3);
       setRankingAutoLoopCountdown(initialCountdown);
       return;
     }
@@ -1029,7 +1041,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     setTutorialShopCountdown(null);
     setRankingAutoLoopCountdown(null);
     setRematchCountdown(3);
-  }, [gameOver, winner, isTutorialMode, tutorialStep, autoCloseOnComplete, towerBossClearModal, isRankingMatch]);
+  }, [gameOver, winner, isTutorialMode, tutorialStep, autoCloseOnComplete, towerBossClearModal, isRankingMatch, isAutoBattle]);
 
   // 랭킹대전 스마트 루프 카운트다운 감소 및 0초 도달 시 분기 실행
   useEffect(() => {
@@ -1038,8 +1050,8 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       setRankingAutoLoopCountdown(null);
       const canDrawPack = smartLifeCycleActive && (sns || 0) >= 100;
 
-      // [1] 승리 시 카드 뽑을 여유가 되면 즉시 상점으로 이동해서 뽑기 진행!
-      if (winner === 'player' && canDrawPack) {
+      // [1] 일정 수준 SNS(100 이상)가 모이면 상점에서 카드 뽑기 진행! (승리/패배 불문)
+      if (canDrawPack) {
         try {
           localStorage.setItem('hero_auto_loop_mode', 'gacha_start');
           localStorage.setItem('hero_auto_loop_is_ranking', 'true');
@@ -1054,17 +1066,35 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
 
       const nextCount = matchLoopCount + 1;
       setMatchLoopCount(nextCount);
+      try {
+        localStorage.setItem('hero_auto_loop_match_count', String(nextCount));
+      } catch {}
 
-      // [2] 매 4번째 경기 완료 시 가끔 웹툰/동영상 시청으로 기분전환 타임!
-      if (smartLifeCycleActive && nextCount > 0 && nextCount % 4 === 0) {
+      // [2] 매 3번째 경기 완료 시 가끔 웹툰/동영상 시청으로 기분전환 타임!
+      if (smartLifeCycleActive && nextCount > 0 && nextCount % 3 === 0) {
+        setGameOver(false);
         triggerRefreshBreak();
       } else {
-        // [3] 일반 대전: 승리 모달 닫고 새로운 상대 검색 오버레이 개시 (전적 기반 DDA 반영)
+        // [3] 일반 대전: 결과 모달 닫고 새로운 라이벌 매칭
         setGameOver(false);
         refreshDifficulty();
         const nextOpp = pickNewRankOpponent(activeRankOpponent?.name || effectiveOpponentName, playerTotalPower, getDynamicDifficultyProfile(playerTotalPower));
         setActiveRankOpponent(nextOpp);
-        setRankingSearchCountdown(3);
+
+        // ★ 버그 방지: 자동 플레이 시에는 전체화면 검색창을 띄우지 않고 즉시 배틀 개시!
+        if (isAutoBattle) {
+          setRankingSearchCountdown(null);
+          setLifeCycleNotice({
+            text: language === 'ko'
+              ? `⚔️ [랭킹대전] 새로운 라이벌 [${nextOpp.name}] 매칭 완료!`
+              : `⚔️ [Rank Match] Matched with [${nextOpp.name}]!`,
+            type: 'info',
+            timestamp: Date.now()
+          });
+          initMatchDecks();
+        } else {
+          setRankingSearchCountdown(3);
+        }
       }
       return;
     }
@@ -1094,7 +1124,12 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     refreshDifficulty();
     const nextOpp = pickNewRankOpponent(activeRankOpponent?.name || effectiveOpponentName, playerTotalPower, getDynamicDifficultyProfile(playerTotalPower));
     setActiveRankOpponent(nextOpp);
-    setRankingSearchCountdown(3);
+    if (isAutoBattle) {
+      setRankingSearchCountdown(null);
+      initMatchDecks();
+    } else {
+      setRankingSearchCountdown(3);
+    }
   };
 
   // 랭킹대전: 3초 검색 카운트다운 후 새로운 상대와 매치 시작
@@ -1913,7 +1948,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
 
       {/* ─── 랭킹대전: 승패 결정 후 다시 3초 검색 오버레이 ────────── */}
       <AnimatePresence>
-        {rankingSearchCountdown !== null && !gameOver && activeRankOpponent && (
+        {rankingSearchCountdown !== null && !gameOver && !isAutoBattle && activeRankOpponent && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
