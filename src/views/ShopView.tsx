@@ -2302,11 +2302,28 @@ export const ShopView: React.FC<ShopViewProps> = ({
   const [smartLoopStatus, setSmartLoopStatus] = useState<string | null>(null);
   const [smartLoopAction, setSmartLoopAction] = useState<{ label: string; onClick: () => void } | null>(null);
   const smartLoopHandledRef = useRef<boolean>(false);
+  const smartLoopPullTimerRef = useRef<NodeJS.Timeout | null>(null);
   const smartLoopNavTimerRef = useRef<NodeJS.Timeout | null>(null);
   const smartLoopIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
+  // 최신 함수 및 상태를 안정적으로 참조하기 위한 Ref 동기화
+  const buyPackRef = useRef(buyPack);
+  buyPackRef.current = buyPack;
+  const handleCloseGachaRef = useRef(handleCloseGacha);
+  handleCloseGachaRef.current = handleCloseGacha;
+  const onNavigateRef = useRef(onNavigate);
+  onNavigateRef.current = onNavigate;
+  const currentDeckRef = useRef(currentDeck);
+  currentDeckRef.current = currentDeck;
+  const snsRef = useRef(sns);
+  snsRef.current = sns;
+  const languageRef = useRef(language);
+  languageRef.current = language;
+
+  // 컴포넌트 실제 언마운트 시에만 모든 타이머/인터벌 정리
   useEffect(() => {
     return () => {
+      if (smartLoopPullTimerRef.current) clearTimeout(smartLoopPullTimerRef.current);
       if (smartLoopNavTimerRef.current) clearTimeout(smartLoopNavTimerRef.current);
       if (smartLoopIntervalRef.current) clearInterval(smartLoopIntervalRef.current);
     };
@@ -2321,19 +2338,26 @@ export const ShopView: React.FC<ShopViewProps> = ({
     if (mode !== 'gacha_start' || smartLoopHandledRef.current) return;
     smartLoopHandledRef.current = true;
 
+    const lang = languageRef.current;
     setSmartLoopStatus(
-      language === 'ko'
+      lang === 'ko'
         ? '🤖 [스마트 루프] 랭킹대전 승리 보상으로 카드 소환을 시작합니다...'
         : '🤖 [Smart Loop] Summoning card pack with Rank Match reward...'
     );
 
-    const pullTimer = setTimeout(() => {
-      const packRarity: GachaPackRarity = (sns >= 100) ? 'silver' : (sns >= 10 ? 'bronze' : 'bronze');
+    const executeSummon = () => {
+      if (smartLoopPullTimerRef.current) {
+        clearTimeout(smartLoopPullTimerRef.current);
+        smartLoopPullTimerRef.current = null;
+      }
+
+      const currentSns = snsRef.current;
+      const packRarity: GachaPackRarity = (currentSns >= 100) ? 'silver' : (currentSns >= 10 ? 'bronze' : 'bronze');
       const packCost = (packRarity === 'silver') ? 100 : 10;
 
-      if (sns < packCost) {
+      if (currentSns < packCost) {
         setSmartLoopStatus(
-          language === 'ko'
+          languageRef.current === 'ko'
             ? '⚠️ SNS 잔액이 부족하여 랭킹대전으로 바로 복귀합니다.'
             : '⚠️ Insufficient SNS balance. Returning to Rank Match.'
         );
@@ -2341,22 +2365,22 @@ export const ShopView: React.FC<ShopViewProps> = ({
           localStorage.removeItem('hero_auto_loop_mode');
           localStorage.setItem('hero_auto_loop_is_ranking', 'true');
         } catch {}
-        setTimeout(() => {
-          onNavigate?.('card-play');
+        smartLoopNavTimerRef.current = setTimeout(() => {
+          onNavigateRef.current?.('card-play');
         }, 1500);
         return;
       }
 
       // 팩 구매 실행 및 획득 카드 목록 수신
-      const drawnCards = buyPack(packCost, packRarity);
+      const drawnCards = buyPackRef.current(packCost, packRarity);
 
       if (!drawnCards || drawnCards.length === 0) {
         try {
           localStorage.removeItem('hero_auto_loop_mode');
           localStorage.setItem('hero_auto_loop_is_ranking', 'true');
         } catch {}
-        setTimeout(() => {
-          onNavigate?.('card-play');
+        smartLoopNavTimerRef.current = setTimeout(() => {
+          onNavigateRef.current?.('card-play');
         }, 1500);
         return;
       }
@@ -2389,7 +2413,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
       }
 
       // 기존 덱 로드 및 최약체 카드 탐색
-      let baseDeck: CardData[] = currentDeck || [];
+      let baseDeck: CardData[] = currentDeckRef.current || [];
       if (!baseDeck || baseDeck.length === 0) {
         try {
           const rawDeck = localStorage.getItem('hero_deck');
@@ -2417,10 +2441,10 @@ export const ShopView: React.FC<ShopViewProps> = ({
           localStorage.setItem('hero_auto_loop_is_ranking', 'true');
         } catch {}
 
-        let remainingSec = 1;
+        let remainingSec = 3;
         const updateBannerText = (sec: number) => {
           setSmartLoopStatus(
-            language === 'ko'
+            languageRef.current === 'ko'
               ? `🎉 [스마트 루프] 강력한 카드 [${cardTitle}] 획득! (전투력 ${bestDrawnPower} > 기존최저 ${minDeckPower})\n마이덱으로 이동하여 자동 교체 장착합니다 (${sec}초)...`
               : `🎉 [Smart Loop] Stronger card [${cardTitle}] found! (Power ${bestDrawnPower} > Weakest ${minDeckPower})\nMoving to My Deck in ${sec}s...`
           );
@@ -2432,12 +2456,12 @@ export const ShopView: React.FC<ShopViewProps> = ({
           if (smartLoopNavTimerRef.current) clearTimeout(smartLoopNavTimerRef.current);
           setSmartLoopStatus(null);
           setSmartLoopAction(null);
-          handleCloseGacha();
-          onNavigate?.('mydeck');
+          handleCloseGachaRef.current();
+          onNavigateRef.current?.('mydeck');
         };
 
         setSmartLoopAction({
-          label: language === 'ko' ? '⚡ 즉시 마이덱 이동' : '⚡ Go to My Deck Now',
+          label: languageRef.current === 'ko' ? '⚡ 즉시 마이덱 이동' : '⚡ Go to My Deck Now',
           onClick: proceedToDeck
         });
 
@@ -2452,17 +2476,17 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
         smartLoopNavTimerRef.current = setTimeout(() => {
           proceedToDeck();
-        }, 1500);
+        }, 3400);
       } else {
         try {
           localStorage.removeItem('hero_auto_loop_mode');
           localStorage.setItem('hero_auto_loop_is_ranking', 'true');
         } catch {}
 
-        let remainingSec = 1;
+        let remainingSec = 3;
         const updateBannerText = (sec: number) => {
           setSmartLoopStatus(
-            language === 'ko'
+            languageRef.current === 'ko'
               ? `📦 [스마트 루프] 카드 소환 완료! (기존 덱 최강 유지)\n랭킹대전으로 자동 복귀합니다 (${sec}초)...`
               : `📦 [Smart Loop] Summon complete! (Existing deck is stronger)\nReturning to Rank Match in ${sec}s...`
           );
@@ -2474,12 +2498,12 @@ export const ShopView: React.FC<ShopViewProps> = ({
           if (smartLoopNavTimerRef.current) clearTimeout(smartLoopNavTimerRef.current);
           setSmartLoopStatus(null);
           setSmartLoopAction(null);
-          handleCloseGacha();
-          onNavigate?.('card-play');
+          handleCloseGachaRef.current();
+          onNavigateRef.current?.('card-play');
         };
 
         setSmartLoopAction({
-          label: language === 'ko' ? '⚡ 즉시 랭킹대전 복귀' : '⚡ Return to Rank Match Now',
+          label: languageRef.current === 'ko' ? '⚡ 즉시 랭킹대전 복귀' : '⚡ Return to Rank Match Now',
           onClick: proceedToBattle
         });
 
@@ -2494,12 +2518,21 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
         smartLoopNavTimerRef.current = setTimeout(() => {
           proceedToBattle();
-        }, 1500);
+        }, 3400);
       }
-    }, 700);
+    };
 
-    return () => clearTimeout(pullTimer);
-  }, [sns, language, onNavigate, currentDeck, buyPack, handleCloseGacha]);
+    // 소환 즉시 실행 액션 제공
+    setSmartLoopAction({
+      label: lang === 'ko' ? '⚡ 즉시 소환 실행' : '⚡ Summon Now',
+      onClick: () => executeSummon()
+    });
+
+    // 350ms 후 소환 자동 실행 (re-render에도 타이머 취소되지 않음)
+    smartLoopPullTimerRef.current = setTimeout(() => {
+      executeSummon();
+    }, 350);
+  }, []);
 
   useEffect(() => {
     if (
