@@ -246,12 +246,30 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     return generateAiName();
   }, [activeRankOpponent, opponentName, missionCardData, language]);
 
+  // Props refs to prevent accidental game resets on prop updates (e.g. XP earn on victory)
+  const playerDeckRef = useRef(playerDeck);
+  playerDeckRef.current = playerDeck;
+  const opponentCustomDeckRef = useRef(opponentCustomDeck);
+  opponentCustomDeckRef.current = opponentCustomDeck;
+  const activeRankOpponentRef = useRef(activeRankOpponent);
+  activeRankOpponentRef.current = activeRankOpponent;
+  const difficultyProfileRef = useRef(difficultyProfile);
+  difficultyProfileRef.current = difficultyProfile;
+  const effectiveTargetCardIdRef = useRef(effectiveTargetCardId);
+  effectiveTargetCardIdRef.current = effectiveTargetCardId;
+
   // Deck generation helper
   const initMatchDecks = useCallback((overrideDeck?: CardData[]) => {
+    const curPlayerDeck = playerDeckRef.current;
+    const curOppCustomDeck = opponentCustomDeckRef.current;
+    const curRankOpp = activeRankOpponentRef.current;
+    const curDiffProfile = difficultyProfileRef.current;
+    const curTargetCardId = effectiveTargetCardIdRef.current;
+
     // 1. Player Deck (5 cards)
     let pCards: CardData[] = [];
-    if (playerDeck && playerDeck.length >= 5) {
-      pCards = playerDeck.slice(0, 5).map((c, i) => syncCardWithDatabase({
+    if (curPlayerDeck && curPlayerDeck.length >= 5) {
+      pCards = curPlayerDeck.slice(0, 5).map((c, i) => syncCardWithDatabase({
         ...c,
         id: `p-${i}-${Date.now()}`,
         owner: 'player'
@@ -272,15 +290,15 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
         id: `opp-${i}-${Date.now()}`,
         owner: 'ai'
       }));
-    } else if (activeRankOpponent) {
-      const oppPower = activeRankOpponent.totalPower;
+    } else if (curRankOpp) {
+      const oppPower = curRankOpp.totalPower;
       const rankDeck = generateUniqueDeck(5);
-      const allowedLevel = Math.min(difficultyProfile.maxCardLevel, Math.max(1, Math.floor(oppPower / 1200)));
+      const allowedLevel = Math.min(curDiffProfile.maxCardLevel, Math.max(1, Math.floor(oppPower / 1200)));
       rankDeck.forEach(c => {
         c.owner = 'ai';
         c.level = allowedLevel;
         // DDA mercy(연패 구제)인 경우 상대 카드 능력치 소폭 완화
-        if (difficultyProfile.tier === 'mercy') {
+        if (curDiffProfile.tier === 'mercy') {
           c.stats = c.stats.map(s => Math.max(1, s - 1)) as [number, number, number, number];
         }
       });
@@ -289,18 +307,18 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
         id: `rank-opp-${i}-${Date.now()}`,
         owner: 'ai'
       }));
-    } else if (opponentCustomDeck && opponentCustomDeck.length >= 5) {
-      oCards = opponentCustomDeck.slice(0, 5).map((c, i) => syncCardWithDatabase({
+    } else if (curOppCustomDeck && curOppCustomDeck.length >= 5) {
+      oCards = curOppCustomDeck.slice(0, 5).map((c, i) => syncCardWithDatabase({
         ...c,
         id: `opp-${i}-${Date.now()}`,
         owner: 'ai'
       }));
-    } else if (effectiveTargetCardId && CARD_DATABASE[effectiveTargetCardId]) {
+    } else if (curTargetCardId && CARD_DATABASE[curTargetCardId]) {
       // 5 identical target cards for mission battle as per AGENTS.md
-      const dbCard = CARD_DATABASE[effectiveTargetCardId];
+      const dbCard = CARD_DATABASE[curTargetCardId];
       oCards = Array(5).fill(null).map((_, i) => syncCardWithDatabase({
-        id: `mission-opp-${effectiveTargetCardId}-${i}-${Date.now()}`,
-        imageIndex: effectiveTargetCardId,
+        id: `mission-opp-${curTargetCardId}-${i}-${Date.now()}`,
+        imageIndex: curTargetCardId,
         title: dbCard.title,
         title_dis: dbCard.title_dis,
         title_en: dbCard.title_en,
@@ -337,11 +355,15 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     setIsEvaluating(false);
     setActiveSkill(null);
     setSkillCharges({ power: 1, shield: 1, burst: 1 });
-  }, [playerDeck, opponentCustomDeck, effectiveTargetCardId, activeRankOpponent, difficultyProfile]);
+  }, []);
 
-  // Initial game setup
+  // Initial game setup: mount 1회만 초기화하여 승리/보상 갱신 시 보드 리셋 방지
+  const isInitialMountRef = useRef(false);
   useEffect(() => {
-    initMatchDecks();
+    if (!isInitialMountRef.current) {
+      isInitialMountRef.current = true;
+      initMatchDecks();
+    }
   }, [initMatchDecks]);
 
   // ─── 스마트 자동 라이프사이클: 상점 뽑기 & 덱 자동 비교 교체 ───────
@@ -1031,16 +1053,16 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       setTutorialShopCountdown(null);
       setRematchCountdown(null);
       setRankingSearchCountdown(null);
-      // 자동 플레이 시에는 빠른 흐름(2초)으로 전환, 수동 플레이 시에는 5초 제공
-      const initialCountdown = isAutoBattle ? 2 : (winner === 'player' ? 5 : 3);
+      // 승리 시 유저가 승리 연출 및 획득 SNS 보상(+30)을 확인할 수 있도록 충분한 카운트다운(자동 4초, 수동 5초) 제공
+      const initialCountdown = isAutoBattle ? (winner === 'player' ? 4 : 2) : (winner === 'player' ? 5 : 3);
       setRankingAutoLoopCountdown(initialCountdown);
       return;
     }
 
-    // 5) 미션 게임 또는 일반 모드: 3초 후 재대결
+    // 5) 미션 게임 또는 일반 모드: 승리 시 4초, 패배/무승부 시 3초 후 재대결
     setTutorialShopCountdown(null);
     setRankingAutoLoopCountdown(null);
-    setRematchCountdown(3);
+    setRematchCountdown(winner === 'player' ? 4 : 3);
   }, [gameOver, winner, isTutorialMode, tutorialStep, autoCloseOnComplete, towerBossClearModal, isRankingMatch, isAutoBattle]);
 
   // 랭킹대전 스마트 루프 카운트다운 감소 및 0초 도달 시 분기 실행
@@ -1746,13 +1768,13 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                   <div className="w-full bg-stone-950 h-1.5 rounded-full overflow-hidden border border-amber-500/30">
                     <div 
                       className="bg-gradient-to-r from-amber-500 to-yellow-300 h-full transition-all duration-1000 ease-linear"
-                      style={{ width: `${(rankingAutoLoopCountdown / (winner === 'player' ? 5 : 3)) * 100}%` }}
+                      style={{ width: `${(rankingAutoLoopCountdown / (isAutoBattle ? (winner === 'player' ? 4 : 2) : (winner === 'player' ? 5 : 3))) * 100}%` }}
                     />
                   </div>
                 </div>
               )}
 
-              {/* 2) 일반/미션 모드: 3초 카운터 후에 다시 카드 플레이 */}
+              {/* 2) 일반/미션 모드: 3~4초 카운터 후에 다시 카드 플레이 */}
               {!(isTutorialMode || (tutorialStep > 0 && tutorialStep <= 7)) && !isRankingMatch && rematchCountdown !== null && rematchCountdown > 0 && (
                 <div className="w-full my-1.5 p-2 bg-emerald-950/80 border border-emerald-500/40 rounded-xs flex flex-col items-center justify-center gap-1.5 font-mono shadow-md">
                   <div className="flex items-center gap-2 text-xs font-black text-emerald-400 tracking-wider">
@@ -1766,7 +1788,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                   <div className="w-full bg-stone-900 h-1.5 rounded-full overflow-hidden border border-emerald-500/30">
                     <div 
                       className="bg-emerald-400 h-full transition-all duration-1000 ease-linear"
-                      style={{ width: `${(rematchCountdown / 3) * 100}%` }}
+                      style={{ width: `${(rematchCountdown / (winner === 'player' ? 4 : 3)) * 100}%` }}
                     />
                   </div>
                 </div>
