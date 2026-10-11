@@ -2,6 +2,27 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-12 08:43 KST] [마이덱 카드 최적화 적용 시 카드 흔들림 애니메이션 효과 및 자동플레이 복귀 구현]
+- **요청 사항**:
+  - 마이덱에서 카드 최적화 팝업이 표시되고 적용을 누르면 적용된 카드를 흔들어서 카드가 적용된 것을 알리는 효과 추가.
+  - 자동플레이 시에는 해당 애니메이션 재생 후 다시 자동플레이(랭킹 대전)로 복귀 처리.
+- **상세 구현 내역**:
+  1. **카드 흔들림(Card Shake) 애니메이션 정의** ([`src/index.css`](file:///Users/dayyoung/project/snshero/src/index.css)):
+     - `@keyframes card-shake` (좌우 흔들림 및 회전 각도, 미세 스케일 조절) 및 `.animate-card-shake` 클래스 구현.
+  2. **마이덱 슬롯 흔들림 시각 효과 연출** ([`src/views/MyDeckView.tsx`](file:///Users/dayyoung/project/snshero/src/views/MyDeckView.tsx)):
+     - `SortableCardItemProps`에 `isShaking` 프롭 추가 및 장착 완료 시 `animate-card-shake`, 골드 링 테두리(`ring-4 ring-amber-400`), 황금빛 글로우 그림자, 상단 `[⚡ 장착 완료!]` 플로팅 배지 및 햅틱/효과음 발동.
+     - `shakingSlotIndices` 상태 및 `triggerCardShake(indices, andReturnToAutoLoop)` 헬퍼 함수 구현.
+  3. **최적화 팝업 적용 이벤트 수신 및 자동 복귀 파이프라인 구축**:
+     - `src/App.tsx`의 `DeckUpgradeModal`에서 `[지금 적용]` 클릭 시 변경 대상 슬롯 배열을 `snshero_deck_slots_upgraded` 커스텀 이벤트로 브로드캐스트.
+     - `MyDeckView`에서 이벤트를 수신하여 대상 슬롯 카드를 신나게 흔들고, 자동 플레이 루프(`hero_auto_loop_is_ranking === 'true'`) 상태일 경우 1.2~1.4초간 애니메이션을 감상한 후 즉시 `card-play`(랭킹 대전) 화면으로 자동 복귀.
+     - 수동 덱 최적화(`handleOptimizeDeck`, `handleAutoFillOptimalSynergy`) 및 상점 소환 후 자동 스왑(`deck_swap`) 시에도 동일한 흔들림 연출 및 복귀 로직 일관 적용.
+  4. **DeckUpgradeModal 스마트 루프 안내 배너 추가** ([`src/components/DeckUpgradeModal.tsx`](file:///Users/dayyoung/project/snshero/src/components/DeckUpgradeModal.tsx)):
+     - 자동 플레이 중일 경우 모달 상단에 `⚡ [스마트 루프] 적용 시 카드 장착 애니메이션 재생 후 랭킹 대전으로 자동 복귀합니다.` 실시간 알림 표시.
+- **검증 결과**:
+  - `npm run build`: 정상 빌드 완료 (exit code 0).
+  - Git 로컬 커밋 완료 (`b0a5034`).
+  - 구글 폼 작업 완료 보고서 제출 완료 (`Successfully submitted task`).
+
 ## [2026-10-12 08:33 KST] [승리 시 상점 카드 소환 및 마이덱 자동 강화 교체 연동 버그 수정]
 - **요청 사항**:
   - 승리했는데 상점에서 카드를 뽑고 좋은 게 있으면 마이덱으로 적용하는 로직이 실행 안 되는 문제 해결.
