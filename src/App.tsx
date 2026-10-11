@@ -5097,7 +5097,11 @@ function AppContent() {
               setIsAutoBattle(true);
               setIsPvpActive(true);
               setPvpOpponent(opp);
-              setView('play');
+              setMobileCardTargetId(null);
+              setMobileCardOppDeck(opp.deck);
+              setMobileCardOppName(opp.name);
+              setCardPlayPreviousView('share');
+              setView('card-play');
             }}
             showCustomAlert={showCustomAlert}
             updateSns={updateSns}
@@ -5530,7 +5534,14 @@ function AppContent() {
               setIsAutoBattle(true);
               setIsPvpActive(true);
               setPvpOpponent(opp);
-              setView('play');
+              setMobileCardTargetId(null);
+              setMobileCardOppDeck(opp.deck);
+              setMobileCardOppName(opp.name);
+              setCardPlayPreviousView('ranking');
+              try {
+                localStorage.setItem('hero_auto_loop_is_ranking', 'true');
+              } catch {}
+              setView('card-play');
             }}
             onLogin={handleLogin}
             setIsGlobalLoading={(loading: boolean, message?: string) => {

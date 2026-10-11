@@ -4531,7 +4531,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           setShowInsufficientPopup(true);
         } else {
           setDefeatExitCountdown(null);
-          setRematchCountdown(2);
+          setRematchCountdown(5);
         }
       } else if (isMissionBattle) {
         // 미션 카드게임: 승패(승리/패배/무승부)에 상관없이 종료하기 전까지 계속 무한 반복 수행

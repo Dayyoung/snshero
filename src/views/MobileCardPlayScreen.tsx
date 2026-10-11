@@ -123,6 +123,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
   const [matchResultReported, setMatchResultReported] = useState(false);
   const [rematchCountdown, setRematchCountdown] = useState<number | null>(null);
   const [tutorialShopCountdown, setTutorialShopCountdown] = useState<number | null>(null);
+  const [rankingAutoLoopCountdown, setRankingAutoLoopCountdown] = useState<number | null>(null);
 
   // Auto Battle & Speed (시작 시 자동전투 시작)
   const [isAutoBattle, setIsAutoBattle] = useState(initialAutoBattle !== false);
@@ -324,6 +325,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     setMatchResultReported(false);
     setRematchCountdown(null);
     setTutorialShopCountdown(null);
+    setRankingAutoLoopCountdown(null);
     setFlippedSlots([]);
     setIsEvaluating(false);
     setActiveSkill(null);
@@ -655,14 +657,15 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
         } : (opponentName ? { id: `opp-${Date.now()}`, name: opponentName } : undefined);
 
         if (recordMatchResult && !matchResultReported) {
-          recordMatchResult(calculatedResult, undefined, undefined, currentBattleType, currentOppInfo);
+          const rewardAmount = winState === 'player' ? 30 : (winState === 'draw' ? 15 : 10);
+          recordMatchResult(calculatedResult, rewardAmount, undefined, currentBattleType, currentOppInfo);
           setMatchResultReported(true);
         }
 
         if (winState === 'player') {
           playSound('win');
           const earnSns = 30;
-          if (updateSns) updateSns(earnSns, 'battle_victory', 'earned');
+          if (!recordMatchResult && updateSns) updateSns(earnSns, 'battle_victory', 'earned');
           if (!recordMatchResult && updateStats) {
             updateStats({
               wins: (userStats?.wins || 0) + 1,
@@ -1015,48 +1018,84 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     if (isRankingMatch) {
       setTutorialShopCountdown(null);
       setRematchCountdown(null);
-
-      // 카드 뽑기 가능 여부 확인 (SNS 100 이상)
-      const canDrawPack = smartLifeCycleActive && (sns || 0) >= 100;
-      // 승리 팝업 및 획득 SNS를 유저가 명확히 인지할 수 있도록 승리 시 3.5초 대기
-      const delay = winner === 'player' ? 3500 : 2200;
-
-      const searchTimer = setTimeout(() => {
-        // [1] 승리 시 카드 뽑을 여유가 되면 즉시 상점으로 이동해서 뽑기 진행!
-        if (winner === 'player' && canDrawPack) {
-          try {
-            localStorage.setItem('hero_auto_loop_mode', 'gacha_start');
-            localStorage.setItem('hero_auto_loop_is_ranking', 'true');
-          } catch {}
-          if (onNavigate) {
-            onNavigate('shop');
-          } else {
-            handleExitGame();
-          }
-          return;
-        }
-
-        const nextCount = matchLoopCount + 1;
-        setMatchLoopCount(nextCount);
-
-        // [2] 매 4번째 경기 완료 시 가끔 웹툰/동영상 시청으로 기분전환 타임!
-        if (smartLifeCycleActive && nextCount > 0 && nextCount % 4 === 0) {
-          triggerRefreshBreak();
-        } else {
-          // [3] 일반 대전: 새로운 상대 검색 후 3초 뒤 매치 개시 (전적 기반 DDA 반영)
-          refreshDifficulty();
-          const nextOpp = pickNewRankOpponent(activeRankOpponent?.name || effectiveOpponentName, playerTotalPower, getDynamicDifficultyProfile(playerTotalPower));
-          setActiveRankOpponent(nextOpp);
-          setRankingSearchCountdown(3);
-        }
-      }, delay);
-      return () => clearTimeout(searchTimer);
+      setRankingSearchCountdown(null);
+      // 승리 시 유저가 승리 팝업과 획득 SNS를 명확히 인지할 수 있도록 5초 카운트다운 시작
+      const initialCountdown = winner === 'player' ? 5 : 3;
+      setRankingAutoLoopCountdown(initialCountdown);
+      return;
     }
 
-    // 5) 미션 게임 또는 일반 모드: 2초 후 재대결
+    // 5) 미션 게임 또는 일반 모드: 3초 후 재대결
     setTutorialShopCountdown(null);
-    setRematchCountdown(2);
-  }, [gameOver, winner, isTutorialMode, tutorialStep, autoCloseOnComplete, towerBossClearModal, isRankingMatch, activeRankOpponent?.name, effectiveOpponentName, smartLifeCycleActive, sns, matchLoopCount, triggerRefreshBreak, onNavigate, playerTotalPower, handleExitGame]);
+    setRankingAutoLoopCountdown(null);
+    setRematchCountdown(3);
+  }, [gameOver, winner, isTutorialMode, tutorialStep, autoCloseOnComplete, towerBossClearModal, isRankingMatch]);
+
+  // 랭킹대전 스마트 루프 카운트다운 감소 및 0초 도달 시 분기 실행
+  useEffect(() => {
+    if (rankingAutoLoopCountdown === null) return;
+    if (rankingAutoLoopCountdown <= 0) {
+      setRankingAutoLoopCountdown(null);
+      const canDrawPack = smartLifeCycleActive && (sns || 0) >= 100;
+
+      // [1] 승리 시 카드 뽑을 여유가 되면 즉시 상점으로 이동해서 뽑기 진행!
+      if (winner === 'player' && canDrawPack) {
+        try {
+          localStorage.setItem('hero_auto_loop_mode', 'gacha_start');
+          localStorage.setItem('hero_auto_loop_is_ranking', 'true');
+        } catch {}
+        if (onNavigate) {
+          onNavigate('shop');
+        } else {
+          handleExitGame();
+        }
+        return;
+      }
+
+      const nextCount = matchLoopCount + 1;
+      setMatchLoopCount(nextCount);
+
+      // [2] 매 4번째 경기 완료 시 가끔 웹툰/동영상 시청으로 기분전환 타임!
+      if (smartLifeCycleActive && nextCount > 0 && nextCount % 4 === 0) {
+        triggerRefreshBreak();
+      } else {
+        // [3] 일반 대전: 승리 모달 닫고 새로운 상대 검색 오버레이 개시 (전적 기반 DDA 반영)
+        setGameOver(false);
+        refreshDifficulty();
+        const nextOpp = pickNewRankOpponent(activeRankOpponent?.name || effectiveOpponentName, playerTotalPower, getDynamicDifficultyProfile(playerTotalPower));
+        setActiveRankOpponent(nextOpp);
+        setRankingSearchCountdown(3);
+      }
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setRankingAutoLoopCountdown(prev => (prev !== null ? prev - 1 : null));
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [rankingAutoLoopCountdown, winner, smartLifeCycleActive, sns, onNavigate, handleExitGame, matchLoopCount, triggerRefreshBreak, playerTotalPower, activeRankOpponent?.name, effectiveOpponentName, refreshDifficulty, pickNewRankOpponent]);
+
+  const handleImmediateShopGo = () => {
+    setRankingAutoLoopCountdown(null);
+    try {
+      localStorage.setItem('hero_auto_loop_mode', 'gacha_start');
+      localStorage.setItem('hero_auto_loop_is_ranking', 'true');
+    } catch {}
+    if (onNavigate) {
+      onNavigate('shop');
+    } else {
+      handleExitGame();
+    }
+  };
+
+  const handleImmediateNextRankBattle = () => {
+    setRankingAutoLoopCountdown(null);
+    setGameOver(false);
+    refreshDifficulty();
+    const nextOpp = pickNewRankOpponent(activeRankOpponent?.name || effectiveOpponentName, playerTotalPower, getDynamicDifficultyProfile(playerTotalPower));
+    setActiveRankOpponent(nextOpp);
+    setRankingSearchCountdown(3);
+  };
 
   // 랭킹대전: 3초 검색 카운트다운 후 새로운 상대와 매치 시작
   useEffect(() => {
@@ -1552,26 +1591,26 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[200] bg-black/80 backdrop-blur-xs flex items-center justify-center p-3"
+            className="fixed inset-0 z-[250] bg-black/85 backdrop-blur-xs flex items-center justify-center p-3"
           >
             <motion.div
               initial={{ scale: 0.85, y: 15 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.85, y: 15 }}
               className={cn(
-                "w-full max-w-xs rounded-sm border p-4 flex flex-col items-center text-center shadow-2xl font-mono",
+                "w-full max-w-sm rounded-sm border p-4 sm:p-5 flex flex-col items-center text-center shadow-2xl font-mono",
                 winner === 'player'
-                  ? "bg-[#0b1b16] border-emerald-500 shadow-emerald-950/60"
+                  ? "bg-[#091512] border-2 border-emerald-400 shadow-emerald-500/40"
                   : winner === 'ai'
-                  ? "bg-[#1f0f13] border-rose-500 shadow-rose-950/60"
-                  : "bg-stone-900 border-amber-500 shadow-amber-950/60"
+                  ? "bg-[#1f0f13] border-2 border-rose-500 shadow-rose-950/60"
+                  : "bg-stone-900 border-2 border-amber-500 shadow-amber-950/60"
               )}
             >
               {/* Winner Icon & Header */}
               <div className="mb-2">
                 {winner === 'player' ? (
-                  <div className="w-12 h-12 rounded-full bg-emerald-500/20 border-2 border-emerald-400 flex items-center justify-center text-emerald-300 mx-auto animate-bounce">
-                    <Trophy size={24} />
+                  <div className="w-14 h-14 rounded-full bg-emerald-500/20 border-2 border-emerald-400 flex items-center justify-center text-emerald-300 mx-auto animate-bounce shadow-lg shadow-emerald-500/30">
+                    <Trophy size={28} className="text-amber-400" />
                   </div>
                 ) : winner === 'ai' ? (
                   <div className="w-12 h-12 rounded-full bg-rose-500/20 border-2 border-rose-400 flex items-center justify-center text-rose-300 mx-auto">
@@ -1585,53 +1624,56 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
               </div>
 
               <h2 className={cn(
-                "text-lg font-black tracking-wider uppercase",
-                winner === 'player' ? "text-emerald-300" : winner === 'ai' ? "text-rose-400" : "text-amber-300"
+                "text-xl font-black tracking-wider uppercase",
+                winner === 'player' ? "text-emerald-300 drop-shadow-[0_0_10px_rgba(52,211,153,0.5)]" : winner === 'ai' ? "text-rose-400" : "text-amber-300"
               )}>
                 {winner === 'player' 
-                  ? (language === 'ko' ? '🎉 승리 (VICTORY)' : 'VICTORY') 
+                  ? (language === 'ko' ? '🎉 VICTORY! 배틀 승리' : '🎉 VICTORY!') 
                   : winner === 'ai' 
-                  ? (language === 'ko' ? '💀 패배 (DEFEAT)' : 'DEFEAT') 
-                  : (language === 'ko' ? '🤝 무승부 (DRAW)' : 'DRAW')}
+                  ? (language === 'ko' ? '💀 DEFEAT 패배' : 'DEFEAT') 
+                  : (language === 'ko' ? '🤝 DRAW 무승부' : 'DRAW')}
               </h2>
 
               {/* Final Score */}
-              <div className="my-2 py-1 px-3 bg-black/60 border border-white/10 rounded-xs flex items-baseline gap-2">
-                <span className="text-xl font-black text-cyan-400">{score.player}</span>
+              <div className="my-2 py-1 px-4 bg-black/70 border border-white/10 rounded-xs flex items-baseline gap-2">
+                <span className="text-2xl font-black text-cyan-400">{score.player}</span>
                 <span className="text-stone-500 font-bold">:</span>
-                <span className="text-xl font-black text-rose-400">{score.opponent}</span>
+                <span className="text-2xl font-black text-rose-400">{score.opponent}</span>
               </div>
 
-              {/* Rewards Description */}
-              <div className="w-full bg-black/40 border border-white/5 rounded-xs p-2 my-2 text-[10px] text-stone-300 flex flex-col gap-1.5">
-                <div className="flex justify-between items-center text-xs">
-                  <span className="font-bold">{language === 'ko' ? '💰 획득 SNS 보상' : 'Earned SNS'}:</span>
-                  <span className="font-black text-amber-300 text-sm">
+              {/* Rewards Description & Prominent SNS Notification */}
+              <div className="w-full bg-black/60 border border-white/10 rounded-xs p-3 my-2 text-stone-200 flex flex-col gap-2">
+                <div className="flex justify-between items-center text-xs border-b border-white/10 pb-1.5">
+                  <span className="font-bold flex items-center gap-1">
+                    <span>💰</span>
+                    <span>{language === 'ko' ? '획득 SNS 보상' : 'Earned SNS'}</span>:
+                  </span>
+                  <span className="font-black text-amber-300 text-base font-mono flex items-center gap-1 animate-pulse">
                     +{winner === 'player' ? 30 : (winner === 'ai' ? 10 : 15)} SNS
                   </span>
                 </div>
 
                 {/* 랭킹대전 전용 승리 혜택 및 스마트 루프 안내 */}
-                {isRankingMatch && winner === 'player' && (
-                  <div className="flex flex-col gap-1 border-t border-emerald-500/30 pt-1.5 mt-0.5 text-left">
-                    <div className="flex justify-between items-center text-[10px] text-emerald-300">
-                      <span>{language === 'ko' ? '현재 보유 SNS:' : 'Current SNS Balance:'}</span>
-                      <span className="font-black text-amber-300">🪙 {sns} SNS</span>
+                {isRankingMatch && (
+                  <div className="flex flex-col gap-1.5 pt-0.5 text-left">
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="text-stone-400">{language === 'ko' ? '현재 보유 SNS 잔액:' : 'Current Balance:'}</span>
+                      <span className="font-black text-amber-300 font-mono text-sm">🪙 {sns} SNS</span>
                     </div>
-                    {smartLifeCycleActive && (sns || 0) >= 100 ? (
-                      <div className="mt-1 p-1.5 bg-amber-500/20 border border-amber-400/50 rounded-xs text-[10px] text-amber-200 font-bold text-center animate-pulse">
-                        🛒 {language === 'ko' ? '카드 뽑기 여유 충족! 상점으로 자동 이동합니다 (3초...)' : 'Card draw available! Moving to Shop (3s)...'}
-                      </div>
-                    ) : (
-                      <div className="mt-1 p-1 bg-emerald-500/10 border border-emerald-400/30 rounded-xs text-[9px] text-emerald-200 font-medium text-center">
-                        ⚔️ {language === 'ko' ? '다음 랭킹 라이벌 자동 매칭 중...' : 'Auto-matching next rank rival...'}
+
+                    {winner === 'player' && smartLifeCycleActive && (sns || 0) >= 100 && (
+                      <div className="p-2 bg-amber-500/20 border border-amber-400/60 rounded-xs text-[11px] text-amber-200 font-bold text-center">
+                        🛒 {language === 'ko' ? '카드 뽑기 여유 충족 (100 SNS 이상)!' : 'Pack Draw Ready (100+ SNS)!'}
+                        <div className="text-[10px] text-amber-300/80 mt-0.5">
+                          {language === 'ko' ? '상점으로 이동하여 새 카드를 소환합니다.' : 'Moving to Shop to summon cards.'}
+                        </div>
                       </div>
                     )}
                   </div>
                 )}
 
                 {effectiveTargetCardId && winner === 'player' && (
-                  <div className="flex justify-between items-center text-emerald-400 font-bold border-t border-white/5 pt-1">
+                  <div className="flex justify-between items-center text-emerald-400 font-bold border-t border-white/10 pt-1 text-xs">
                     <span>{language === 'ko' ? '미션 카드 달성' : 'Mission Card'}:</span>
                     <span>No.{effectiveTargetCardId} {effectiveOpponentName}</span>
                   </div>
@@ -1655,28 +1697,28 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                 </div>
               )}
 
-              {/* 1) 튜토리얼 모드: 상점으로 자동 이동 알림 */}
-              {(isTutorialMode || (tutorialStep > 0 && tutorialStep <= 7)) && (
-                <div className="w-full my-1.5 p-2 bg-amber-950/80 border border-amber-500/50 rounded-xs flex flex-col items-center justify-center gap-1.5 font-mono shadow-md">
-                  <div className="flex items-center gap-2 text-xs font-black text-amber-300 tracking-wider">
-                    <Sparkles size={14} className="animate-spin text-amber-400 shrink-0" />
+              {/* 1) 랭킹대전 스마트 루프 카운트다운 바 */}
+              {isRankingMatch && rankingAutoLoopCountdown !== null && rankingAutoLoopCountdown > 0 && (
+                <div className="w-full my-1.5 p-2 bg-stone-900/90 border border-amber-500/40 rounded-xs flex flex-col items-center justify-center gap-1.5 font-mono shadow-md">
+                  <div className="flex items-center gap-2 text-xs font-black tracking-wider text-amber-300">
+                    <RotateCcw size={14} className="animate-spin text-amber-400 shrink-0" />
                     <span>
-                      {language === 'ko'
-                        ? `🛒 튜토리얼 완료: ${tutorialShopCountdown ?? 2}초 후 상점으로 이동...`
-                        : `🛒 Tutorial: Moving to Shop in ${tutorialShopCountdown ?? 2}s...`}
+                      {smartLifeCycleActive && (sns || 0) >= 100
+                        ? (language === 'ko' ? `🛒 [ ${rankingAutoLoopCountdown}초 ] 후 상점 뽑기로 이동...` : `🛒 Moving to Shop in [ ${rankingAutoLoopCountdown}s ]...`)
+                        : (language === 'ko' ? `⚔️ [ ${rankingAutoLoopCountdown}초 ] 후 다음 라이벌 대전...` : `⚔️ Next Match in [ ${rankingAutoLoopCountdown}s ]...`)}
                     </span>
                   </div>
-                  <div className="w-full bg-stone-900 h-1.5 rounded-full overflow-hidden border border-amber-500/30">
+                  <div className="w-full bg-stone-950 h-1.5 rounded-full overflow-hidden border border-amber-500/30">
                     <div 
-                      className="bg-amber-400 h-full transition-all duration-1000 ease-linear"
-                      style={{ width: `${((tutorialShopCountdown ?? 2) / 2) * 100}%` }}
+                      className="bg-gradient-to-r from-amber-500 to-yellow-300 h-full transition-all duration-1000 ease-linear"
+                      style={{ width: `${(rankingAutoLoopCountdown / (winner === 'player' ? 5 : 3)) * 100}%` }}
                     />
                   </div>
                 </div>
               )}
 
               {/* 2) 일반/미션 모드: 3초 카운터 후에 다시 카드 플레이 */}
-              {!(isTutorialMode || (tutorialStep > 0 && tutorialStep <= 7)) && rematchCountdown !== null && rematchCountdown > 0 && (
+              {!(isTutorialMode || (tutorialStep > 0 && tutorialStep <= 7)) && !isRankingMatch && rematchCountdown !== null && rematchCountdown > 0 && (
                 <div className="w-full my-1.5 p-2 bg-emerald-950/80 border border-emerald-500/40 rounded-xs flex flex-col items-center justify-center gap-1.5 font-mono shadow-md">
                   <div className="flex items-center gap-2 text-xs font-black text-emerald-400 tracking-wider">
                     <RotateCcw size={14} className="animate-spin text-emerald-400 shrink-0" />
@@ -1696,8 +1738,37 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
               )}
 
               {/* Actions */}
-              <div className="flex items-center gap-2 w-full mt-2">
-                {(isTutorialMode || (tutorialStep > 0 && tutorialStep <= 7)) ? (
+              <div className="flex flex-col sm:flex-row items-center gap-2 w-full mt-2">
+                {isRankingMatch ? (
+                  <>
+                    {smartLifeCycleActive && (sns || 0) >= 100 ? (
+                      <button
+                        type="button"
+                        onClick={handleImmediateShopGo}
+                        className="w-full py-2.5 bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-stone-950 font-black text-xs uppercase rounded-xs transition-transform active:scale-95 cursor-pointer flex items-center justify-center gap-1.5 shadow-lg shadow-amber-500/30"
+                      >
+                        <span>🛒</span>
+                        <span>{language === 'ko' ? '지금 상점에서 카드 뽑기' : 'Go to Shop Now'}</span>
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={handleImmediateNextRankBattle}
+                        className="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-black text-xs uppercase rounded-xs transition-transform active:scale-95 cursor-pointer flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-500/30"
+                      >
+                        <span>⚔️</span>
+                        <span>{language === 'ko' ? '지금 바로 다음 대전' : 'Next Battle Now'}</span>
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={handleExitGame}
+                      className="w-full py-2 bg-stone-800 hover:bg-stone-700 text-stone-300 font-bold text-xs uppercase rounded-xs border border-stone-600 transition-transform active:scale-95 cursor-pointer"
+                    >
+                      {language === 'ko' ? '나가기' : 'Exit'}
+                    </button>
+                  </>
+                ) : (isTutorialMode || (tutorialStep > 0 && tutorialStep <= 7)) ? (
                   <button
                     type="button"
                     onClick={() => {
@@ -1721,35 +1792,17 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                       onClick={() => {
                         playSound('tap');
                         setRematchCountdown(null);
-                        if (isRankingMatch) {
-                          refreshDifficulty();
-                          const nextOpp = pickNewRankOpponent(activeRankOpponent?.name || effectiveOpponentName, playerTotalPower, getDynamicDifficultyProfile(playerTotalPower));
-                          setActiveRankOpponent(nextOpp);
-                          setRankingSearchCountdown(3);
-                        } else if (effectiveTargetCardId) {
+                        if (effectiveTargetCardId) {
                           setShowMissionDialogue(true);
                           initMatchDecks();
                         } else {
                           initMatchDecks();
                         }
                       }}
-                      className={cn(
-                        "flex-1 py-2 font-black text-xs uppercase rounded-xs transition-transform active:scale-95 cursor-pointer flex items-center justify-center gap-1",
-                        isRankingMatch
-                          ? "bg-amber-500 hover:bg-amber-400 text-stone-950 shadow-md shadow-amber-500/20"
-                          : "bg-emerald-500 hover:bg-emerald-400 text-stone-950"
-                      )}
+                      className="flex-1 py-2 font-black text-xs uppercase rounded-xs transition-transform active:scale-95 cursor-pointer flex items-center justify-center gap-1 bg-emerald-500 hover:bg-emerald-400 text-stone-950"
                     >
                       <RefreshCw size={13} />
-                      <span>
-                        {isRankingMatch
-                          ? (language === 'ko' ? '새 상대 검색 (3초)' : 'Search Rival (3s)')
-                          : effectiveTargetCardId
-                          ? (language === 'ko' ? '미션 재도전 (대사 3초)' : 'Mission Retry (3s)')
-                          : rematchCountdown !== null
-                          ? (language === 'ko' ? `즉시 시작 (${rematchCountdown}s)` : `Play Now (${rematchCountdown}s)`)
-                          : (language === 'ko' ? '재대결' : 'Rematch')}
-                      </span>
+                      <span>{language === 'ko' ? '재대결' : 'Rematch'}</span>
                     </button>
                     <button
                       type="button"
@@ -1860,7 +1913,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
 
       {/* ─── 랭킹대전: 승패 결정 후 다시 3초 검색 오버레이 ────────── */}
       <AnimatePresence>
-        {rankingSearchCountdown !== null && activeRankOpponent && (
+        {rankingSearchCountdown !== null && !gameOver && activeRankOpponent && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
