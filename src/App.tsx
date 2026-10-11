@@ -5896,9 +5896,27 @@ function AppContent() {
     );
   }
 
+  // '/bench' 공식 AI 벤치마크는 독립 웹 뷰이므로 게임 HUD/내비바/광고 중첩 없이 온전한 화면으로 즉시 렌더링
+  if (view === 'bench') {
+    return (
+      <Suspense fallback={<ViewLoadingFallback view={view} language={language} />}>
+        <Meta view={view} language={language} />
+        <BenchmarkView
+          language={language}
+          onNavigate={(targetView) => {
+            setView(targetView);
+            if (typeof window !== 'undefined') {
+              window.history.pushState(null, '', targetView === 'home' ? '/' : '/' + targetView);
+            }
+          }}
+          playSfx={playSfx}
+        />
+      </Suspense>
+    );
+  }
 
     const isPlayingBattle = (view === 'play' && (playGameState === 'playing' || playGameState === 'searching' || playGameState === 'preMatch')) || view === 'card-play' || (view === 'main' && isRpgInBattle);
-    const showNavbar = (view !== 'reddit' && view !== 'admin' && view !== 'landing' && view !== 'cartoonBook' && view !== 'novel' && view !== 'webtoon' && view !== 'anime' && view !== 'movie' && view !== 'card-play' && !isPlayingBattle) && !isGlobalPopupOpen;
+    const showNavbar = (view !== 'reddit' && view !== 'bench' && view !== 'admin' && view !== 'landing' && view !== 'cartoonBook' && view !== 'novel' && view !== 'webtoon' && view !== 'anime' && view !== 'movie' && view !== 'card-play' && !isPlayingBattle) && !isGlobalPopupOpen;
     const isMainTab = view === 'home' || view === 'mydeck' || view === 'shop' || view === 'play' || view === 'main';
     
 
