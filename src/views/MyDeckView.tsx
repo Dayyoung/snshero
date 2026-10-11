@@ -58,6 +58,7 @@ import { DeckBalanceRadarChart } from '../components/DeckBalanceRadarChart';
 import { CardCompareModal } from '../components/CardCompareModal';
 import { MaterialDeficitModal } from '../components/MaterialDeficitModal';
 import { DeckCommandHub } from '../components/DeckCommandHub';
+import { maybeTriggerTourOrProceedToBattle } from '../lib/smartLoopTourService';
 
 interface MyDeckViewProps {
   currentDeck: CardData[];
@@ -325,10 +326,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
     if (autoSwapCountdownRef.current) clearInterval(autoSwapCountdownRef.current);
     if (autoSwapTimerRef.current) clearTimeout(autoSwapTimerRef.current);
     setAutoSwapBanner(null);
-    try {
-      localStorage.setItem('hero_auto_loop_is_ranking', 'true');
-    } catch {}
-    onNavigate('card-play');
+    maybeTriggerTourOrProceedToBattle(onNavigate);
   }, [onNavigate]);
 
   // ─── 덱 최적화/강화 시 적용 슬롯 흔들림 애니메이션 (Card Shake FX) ───

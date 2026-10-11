@@ -33,6 +33,7 @@ import { GachaRevealSequence } from '../components/GachaRevealSequence';
 import { ShareTemplateCard } from '../components/ShareTemplateCard';
 import { getGoodsSnsCost, getSpendShortfall, SNS_ECONOMY_COSTS } from '../content/snsEconomy';
 import { useRefundRequests } from '../hooks/useRefundRequests';
+import { maybeTriggerTourOrProceedToBattle } from '../lib/smartLoopTourService';
 import { TokenExchangeModal } from '../components/TokenExchangeModal';
 import { ShortfallGuideModal } from '../components/ShortfallGuideModal';
 import { ArrowDownUp } from 'lucide-react';
@@ -2504,7 +2505,9 @@ export const ShopView: React.FC<ShopViewProps> = ({
           setSmartLoopStatus(null);
           setSmartLoopAction(null);
           handleCloseGachaRef.current();
-          onNavigateRef.current?.('card-play');
+          if (onNavigateRef.current) {
+            maybeTriggerTourOrProceedToBattle(onNavigateRef.current);
+          }
         };
 
         setSmartLoopAction({

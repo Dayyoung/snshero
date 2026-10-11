@@ -150,6 +150,7 @@ const SeasonHubView = safeLazy(() => import('./views/SeasonHubView'), 'SeasonHub
 const ReferralView = safeLazy(() => import('./views/ReferralView'), 'ReferralView');
 const CreatorLandingView = safeLazy(() => import('./views/CreatorLandingView'), 'CreatorLandingView');
 const DeckUpgradeModal = safeLazy(() => import('./components/DeckUpgradeModal'), 'DeckUpgradeModal');
+const SmartLoopTourHUD = safeLazy(() => import('./components/SmartLoopTourHUD').then(m => ({ default: m.SmartLoopTourHUD })), 'SmartLoopTourHUD');
 const SimulationOverlay = safeLazy(() => import('./components/SimulationOverlay'), 'SimulationOverlay');
 const QrReward = safeLazy(() => import('./components/QrReward'), 'QrReward');
 const PolicyCenterView = safeLazy(() => import('./views/PolicyCenterView'), 'PolicyCenterView');
@@ -3353,6 +3354,46 @@ function AppContent() {
       return () => clearTimeout(timer);
     }
   }, [view, currentDeck, inventory, ownedCards, currentSeason, recommendMode]);
+
+  // ─── 스마트 루프 기능 데모 투어 상태 관리 ───
+  const [isDemoTourActive, setIsDemoTourActive] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hero_auto_loop_mode') === 'demo_tour';
+    } catch {
+      return false;
+    }
+  });
+
+  useEffect(() => {
+    const handleTourStart = () => setIsDemoTourActive(true);
+    const handleTourEnd = () => setIsDemoTourActive(false);
+
+    window.addEventListener('snshero_demo_tour_start', handleTourStart);
+    window.addEventListener('snshero_demo_tour_end', handleTourEnd);
+
+    return () => {
+      window.removeEventListener('snshero_demo_tour_start', handleTourStart);
+      window.removeEventListener('snshero_demo_tour_end', handleTourEnd);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (view === 'card-play') {
+      setIsDemoTourActive(false);
+      try {
+        if (localStorage.getItem('hero_auto_loop_mode') === 'demo_tour') {
+          localStorage.removeItem('hero_auto_loop_mode');
+          localStorage.removeItem('hero_auto_loop_tour_view');
+        }
+      } catch {}
+    } else {
+      try {
+        if (localStorage.getItem('hero_auto_loop_mode') === 'demo_tour') {
+          setIsDemoTourActive(true);
+        }
+      } catch {}
+    }
+  }, [view]);
 
   const upgradePromptTimerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -7596,6 +7637,17 @@ function AppContent() {
             language={language}
             upgradedCards={upgradeDeckPrompt.upgradedCardsToApply}
             currentDeck={currentDeck}
+          />
+        </Suspense>
+      )}
+
+      {/* 스마트 루프 신규 화면 데모 투어 HUD */}
+      {isDemoTourActive && view !== 'card-play' && (
+        <Suspense fallback={null}>
+          <SmartLoopTourHUD
+            currentView={view}
+            onNavigate={setView}
+            language={language}
           />
         </Suspense>
       )}
