@@ -33,7 +33,6 @@ import { cn, sanitizeForFirestore, getUserCollectionName, getCardSpriteStyle } f
 import { trackAnalytics, AnalyticsEvent } from './lib/analyticsEvents';
 import { buildAdminHelpItems, isAdminSlashInput, parseAdminCommand, type ParsedAdminCommand } from './lib/adminCommands';
 import { getSkillResetCost, getSkillUpgradeCost, SNS_ECONOMY_EARNINGS } from './content/snsEconomy';
-import { updateGeoMetadata } from './lib/geoManager';
 import {
   DEFAULT_PROFILE_BADGE_KEY,
   DEFAULT_PROFILE_EMOTICON_KEY,
@@ -427,9 +426,38 @@ function AppContent() {
   // Phase 4: System Guards (ID 339, 340, 344, 370, 395, 400, 419, 420)
   const { quota } = useStorageQuotaGuard();
   useAudioLifecycleGuard();
-  // GEO (Generative Engine Optimization) - 화면 및 언어 전환 시 메타태그 & Schema.org JSON-LD 동적 갱신
+  // GEO (Generative Engine Optimization) - 화면 및 언어 전환 시 메타태그 & Document Title 동적 갱신 (AI Studio 호환 fail-safe)
   useEffect(() => {
-    updateGeoMetadata(view, language);
+    if (typeof document === 'undefined') return;
+    try {
+      const viewTitleMap: Record<string, string> = {
+        home: 'SNS히어로 (SNSHero) - 원클릭 AI 웹 카드 배틀',
+        mydeck: '마이덱 (My Deck) - 덱 편집 & 카드 육성',
+        shop: '상점 (Shop) - 카드 소환 & 굿즈 몰',
+        ranking: '랭킹대전 (Rank Match) - 명예의 전당',
+        'card-play': '카드 배틀 아레나 (Battle Arena)',
+        novel: '웹소설 라운지 (Web Novel)',
+        webtoon: '웹툰 스튜디오 (Webtoon Studio)',
+        'stock-market': 'SNS 주식 거래소 (Stock Market)',
+        'card-marketplace': '카드 P2P 거래소 (Marketplace)',
+        'prediction-market': '승부 예측 시장 (Prediction Market)',
+        'season-hub': '시즌 허브 (Season Hub)',
+        boost: '부스트 & 행운 복권 (Boost)',
+        god: '신전 판테온 (Pantheon)',
+        community: '히어로 커뮤니티 (Community)',
+        play: '110종 모바일 미션 게임 (Games)'
+      };
+      const title = viewTitleMap[view] || `SNSHero - ${view}`;
+      document.title = `${title} | SNSHero`;
+
+      let metaDesc = document.querySelector('meta[name="description"]');
+      if (!metaDesc) {
+        metaDesc = document.createElement('meta');
+        metaDesc.setAttribute('name', 'description');
+        document.head.appendChild(metaDesc);
+      }
+      metaDesc.setAttribute('content', `${title} - 원클릭 AI 웹 카드 배틀 & 110종 모바일 게임 SNS히어로`);
+    } catch {}
   }, [view, language]);
 
   // AI Agent Global Bridge navigation event listener
