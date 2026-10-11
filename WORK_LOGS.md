@@ -2,6 +2,39 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-12 08:48 KST] [자동플레이 시 SNSHero 10대 기능 화면 데모 투어 및 랭킹대전 자동 복귀 구현]
+- **요청 사항**:
+  - 자동플레이 시 랭킹대전 > 상점 > 마이덱만 단순 반복되어 지루함 해소 필요.
+  - SNSHero의 모든 기능을 데모할 수 있도록, 랭킹대전 복귀 전 낮은 확률로 신규 화면들을 소개하고 종료 후 다시 랭킹대전으로 자동 복귀하는 기능 구현.
+- **상세 구현 내역**:
+  1. **스마트 루프 데모 투어 서비스 구축** ([`src/lib/smartLoopTourService.ts`](file:///Users/dayyoung/project/snshero/src/lib/smartLoopTourService.ts)):
+     - SNSHero 10대 핵심 기능 화면 데모 풀 정의:
+       - `novel`: [📚 웹소설 라운지] AI 실시간 창작 웹소설 & 시즌 오리지널 스토리
+       - `webtoon`: [🎨 웹툰 스튜디오] 히어로 풀컬러 웹툰 & 에피소드 감상
+       - `stock-market`: [📈 SNS 주식 거래소] 히어로 팩션별 실시간 모의 주식 거래 & 배당
+       - `card-marketplace`: [💼 카드 P2P 거래소] 글로벌 유저 간 실시간 분산형 카드 마켓
+       - `prediction-market`: [🎯 승부 예측 시장] 스포츠 및 히어로 리그 실시간 베팅 마켓
+       - `season-hub`: [🌟 시즌 허브 & 패스] 시즌 퀘스트, 배틀패스 및 한정판 스킨
+       - `ranking`: [🏆 명예의 전당] 전 세계 상위 랭커 덱 분석 & 글로벌 리더보드
+       - `boost`: [⚡ 부스트 & 행운 복권] 매일 출석체크, 걸음수 보상 및 황금 복권
+       - `god`: [🌌 신전 (판테온)] 팩션 수호신들의 축복과 가호
+       - `community`: [💬 히어로 커뮤니티] 덱 자랑, 전략 토론 및 공략 라운지
+     - 랭킹대전 복귀 시 35% 확률(`TOUR_TRIGGER_PROBABILITY = 0.35`)로 발동 판단 로직(`shouldTriggerDemoTour`) 및 순환 선택(`getNextTourFeature`) 탑재.
+     - 통합 분기 헬퍼 `maybeTriggerTourOrProceedToBattle(onNavigate)` 및 종료 처리 `endDemoTour` 구현.
+  2. **모바일 최적화 데모 투어 HUD 배너 컴포넌트 신설** ([`src/components/SmartLoopTourHUD.tsx`](file:///Users/dayyoung/project/snshero/src/components/SmartLoopTourHUD.tsx)):
+     - 화면 상단 고정 플로팅 오버레이 (`fixed top-2 z-[99998]`, OpenCode 모노스페이스 디자인 규격 100% 준수).
+     - 현재 소개 화면 제목, 1줄 핵심 기능 소개, 카테고리 뱃지, 4초 실시간 잔여시간 카운트다운 게이지 프로그레스 바.
+     - `[⚔️ 지금 바로 랭킹대전 복귀]` 즉시 복귀 액션 및 `[✕ 머물기]` 데모 종료 액션 제공.
+     - 4초 만료 시 지체 없이 랭킹대전(`card-play`)으로 자동 복귀하여 경기 재개.
+  3. **App.tsx, ShopView.tsx, MyDeckView.tsx 전면 연동**:
+     - `App.tsx`: 최상단에 `SmartLoopTourHUD` 탑재 및 이벤트 수신 처리.
+     - `ShopView.tsx`: 카드 소환 후 랭킹대전 복귀 시 데모 투어 분기 연동.
+     - `MyDeckView.tsx`: 덱 교체/최적화 후 랭킹대전 복귀 시 데모 투어 분기 연동.
+- **검증 결과**:
+  - `npm run build`: 54.62초 정상 빌드 완료 (exit code 0).
+  - Git 로컬 커밋 완료 (`016d6b6`).
+  - 구글 폼 작업 완료 보고서 제출 완료 (`Successfully submitted task`).
+
 ## [2026-10-12 08:43 KST] [마이덱 카드 최적화 적용 시 카드 흔들림 애니메이션 효과 및 자동플레이 복귀 구현]
 - **요청 사항**:
   - 마이덱에서 카드 최적화 팝업이 표시되고 적용을 누르면 적용된 카드를 흔들어서 카드가 적용된 것을 알리는 효과 추가.
