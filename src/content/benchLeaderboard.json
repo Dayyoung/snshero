@@ -1,0 +1,7937 @@
+{
+  "version": "SHBP-3",
+  "updatedAt": "2026-10-11T02:45:17.943Z",
+  "anchors": {
+    "20261011:20": {
+      "random": 8.6,
+      "expert": 57
+    },
+    "20261012:20": {
+      "random": 7.4,
+      "expert": 62
+    },
+    "20261013:20": {
+      "random": 14.8,
+      "expert": 62
+    }
+  },
+  "records": [
+    {
+      "result": {
+        "version": "SHBP-3",
+        "agent": {
+          "label": "Expert Oracle (privileged)",
+          "provider": "baseline",
+          "model": "expert",
+          "privileged": true
+        },
+        "logHash": "4BED8E74BF07E8C5",
+        "shbp": 100,
+        "ci95": 0,
+        "puzzle": {
+          "n": 60,
+          "correct": 60,
+          "accuracy": 100,
+          "normalized": 100,
+          "se": 0,
+          "regretAvg": 0,
+          "invalid": 0,
+          "byDifficulty": {
+            "easy": {
+              "n": 20,
+              "correct": 20
+            },
+            "medium": {
+              "n": 20,
+              "correct": 20
+            },
+            "hard": {
+              "n": 20,
+              "correct": 20
+            }
+          }
+        },
+        "campaign": {
+          "normalized": 100,
+          "se": 0,
+          "invalid": 0,
+          "decisions": 348,
+          "totals": {
+            "win": 58,
+            "draw": 2,
+            "loss": 0
+          },
+          "perSeed": [
+            {
+              "seed": 20261011,
+              "matches": 20,
+              "score": 57,
+              "win": 18,
+              "draw": 2,
+              "loss": 0,
+              "sns": 140,
+              "packs": {
+                "bronze": 0,
+                "silver": 3,
+                "gold": 3
+              },
+              "invalid": 0,
+              "decisions": 116,
+              "history": [
+                {
+                  "match": 1,
+                  "result": "draw",
+                  "diff": 0,
+                  "deckPower": 88,
+                  "oppPower": 103
+                },
+                {
+                  "match": 2,
+                  "result": "win",
+                  "diff": 4,
+                  "deckPower": 102,
+                  "oppPower": 70
+                },
+                {
+                  "match": 3,
+                  "result": "win",
+                  "diff": 4,
+                  "deckPower": 108,
+                  "oppPower": 79
+                },
+                {
+                  "match": 4,
+                  "result": "win",
+                  "diff": 6,
+                  "deckPower": 108,
+                  "oppPower": 89
+                },
+                {
+                  "match": 5,
+                  "result": "win",
+                  "diff": 2,
+                  "deckPower": 113,
+                  "oppPower": 103
+                },
+                {
+                  "match": 6,
+                  "result": "win",
+                  "diff": 4,
+                  "deckPower": 113,
+                  "oppPower": 93
+                },
+                {
+                  "match": 7,
+                  "result": "win",
+                  "diff": 2,
+                  "deckPower": 113,
+                  "oppPower": 91
+                },
+                {
+                  "match": 8,
+                  "result": "win",
+                  "diff": 2,
+                  "deckPower": 113,
+                  "oppPower": 103
+                },
+                {
+                  "match": 9,
+                  "result": "win",
+                  "diff": 2,
+                  "deckPower": 127,
+                  "oppPower": 117
+                },
+                {
+                  "match": 10,
+                  "result": "win",
+                  "diff": 4,
+                  "deckPower": 127,
+                  "oppPower": 98
+                },
+                {
+                  "match": 11,
+                  "result": "win",
+                  "diff": 4,
+                  "deckPower": 127,
+                  "oppPower": 66
+                },
+                {
+                  "match": 12,
+                  "result": "win",
+                  "diff": 2,
+                  "deckPower": 127,
+                  "oppPower": 92
+                },
+                {
+                  "match": 13,
+                  "result": "draw",
+                  "diff": 0,
+                  "deckPower": 127,
+                  "oppPower": 104
+                },
+                {
+                  "match": 14,
+                  "result": "win",
+                  "diff": 2,
+                  "deckPower": 127,
+                  "oppPower": 118
+                },
+                {
+                  "match": 15,
+                  "result": "win",
+                  "diff": 4,
+                  "deckPower": 127,
+                  "oppPower": 102
+                },
+                {
+                  "match": 16,
+                  "result": "win",
+                  "diff": 4,
+                  "deckPower": 127,
+                  "oppPower": 113
+                },
+                {
+                  "match": 17,
+                  "result": "win",
+                  "diff": 6,
+                  "deckPower": 127,
+                  "oppPower": 112
+                },
+                {
+                  "match": 18,
+                  "result": "win",
+                  "diff": 2,
+                  "deckPower": 127,
+                  "oppPower": 131
+                },
+                {
+                  "match": 19,
+                  "result": "win",
+                  "diff": 6,
+                  "deckPower": 129,
+                  "oppPower": 112
+                },
+                {
+                  "match": 20,
+                  "result": "win",
+                  "diff": 6,
+                  "deckPower": 129,
+                  "oppPower": 114
+                }
+              ],
+              "random": 8.6,
+              "expert": 57,
+              "normalized": 100
+            },
+            {
+              "seed": 20261012,
+              "matches": 20,
+              "score": 62,
+              "win": 20,
+              "draw": 0,
+              "loss": 0,
+              "sns": 290,
+              "packs": {
+                "bronze": 0,
+                "silver": 2,
+                "gold": 3
+              },
+              "invalid": 0,
+              "decisions": 115,
+              "history": [
+                {
+                  "match": 1,
+                  "result": "win",
+                  "diff": 4,
+                  "deckPower": 89,
+                  "oppPower": 84
+                },
+                {
+                  "match": 2,
+                  "result": "win",
+                  "diff": 8,
+                  "deckPower": 116,
+                  "oppPower": 94
+                },
+                {
+                  "match": 3,
+                  "result": "win",
+                  "diff": 8,
+                  "deckPower": 121,
+                  "oppPower": 93
+                },
+                {
+                  "match": 4,
+                  "result": "win",
+                  "diff": 4,
+                  "deckPower": 121,
+                  "oppPower": 102
+                },
+                {
+                  "match": 5,
+                  "result": "win",
+                  "diff": 6,
+                  "deckPower": 121,
+                  "oppPower": 84
+                },
+                {
+                  "match": 6,
+                  "result": "win",
+                  "diff": 8,
+                  "deckPower": 121,
+                  "oppPower": 82
+                },
+                {
+                  "match": 7,
+                  "result": "win",
+                  "diff": 6,
+                  "deckPower": 129,
+                  "oppPower": 82
+                },
+                {
+                  "match": 8,
+                  "result": "win",
+                  "diff": 8,
+                  "deckPower": 129,
+                  "oppPower": 98
+                },
+                {
+                  "match": 9,
+                  "result": "win",
+                  "diff": 4,
+                  "deckPower": 129,
+                  "oppPower": 101
+                },
+                {
+                  "match": 10,
+                  "result": "win",
+                  "diff": 2,
+                  "deckPower": 129,
+                  "oppPower": 121
+                },
+                {
+                  "match": 11,
+                  "result": "win",
+                  "diff": 4,
+                  "deckPower": 132,
+                  "oppPower": 98
+                },
+                {
+                  "match": 12,
+                  "result": "win",
+                  "diff": 4,
+                  "deckPower": 132,
+                  "oppPower": 86
+                },
+                {
+                  "match": 13,
+                  "result": "win",
+                  "diff": 6,
+                  "deckPower": 132,
+                  "oppPower": 120
+                },
+                {
+                  "match": 14,
+                  "result": "win",
+                  "diff": 4,
+                  "deckPower": 132,
+                  "oppPower": 100
+                },
+                {
+                  "match": 15,
+                  "result": "win",
+                  "diff": 2,
+                  "deckPower": 132,
+                  "oppPower": 126
+                },
+                {
+                  "match": 16,
+                  "result": "win",
+                  "diff": 4,
+                  "deckPower": 132,
+                  "oppPower": 113
+                },
+                {
+                  "match": 17,
+                  "result": "win",
+                  "diff": 2,
+                  "deckPower": 132,
+                  "oppPower": 125
+                },
+                {
+                  "match": 18,
+                  "result": "win",
+                  "diff": 8,
+                  "deckPower": 132,
+                  "oppPower": 104
+                },
+                {
+                  "match": 19,
+                  "result": "win",
+                  "diff": 6,
+                  "deckPower": 132,
+                  "oppPower": 134
+                },
+                {
+                  "match": 20,
+                  "result": "win",
+                  "diff": 2,
+                  "deckPower": 132,
+                  "oppPower": 114
+                }
+              ],
+              "random": 7.4,
+              "expert": 62,
+              "normalized": 100
+            },
+            {
+              "seed": 20261013,
+              "matches": 20,
+              "score": 62,
+              "win": 20,
+              "draw": 0,
+              "loss": 0,
+              "sns": 210,
+              "packs": {
+                "bronze": 0,
+                "silver": 5,
+                "gold": 2
+              },
+              "invalid": 0,
+              "decisions": 117,
+              "history": [
+                {
+                  "match": 1,
+                  "result": "win",
+                  "diff": 8,
+                  "deckPower": 98,
+                  "oppPower": 67
+                },
+                {
+                  "match": 2,
+                  "result": "win",
+                  "diff": 8,
+                  "deckPower": 106,
+                  "oppPower": 87
+                },
+                {
+                  "match": 3,
+                  "result": "win",
+                  "diff": 2,
+                  "deckPower": 106,
+                  "oppPower": 87
+                },
+                {
+                  "match": 4,
+                  "result": "win",
+                  "diff": 6,
+                  "deckPower": 106,
+                  "oppPower": 87
+                },
+                {
+                  "match": 5,
+                  "result": "win",
+                  "diff": 4,
+                  "deckPower": 106,
+                  "oppPower": 81
+                },
+                {
+                  "match": 6,
+                  "result": "win",
+                  "diff": 6,
+                  "deckPower": 111,
+                  "oppPower": 88
+                },
+                {
+                  "match": 7,
+                  "result": "win",
+                  "diff": 4,
+                  "deckPower": 111,
+                  "oppPower": 84
+                },
+                {
+                  "match": 8,
+                  "result": "win",
+                  "diff": 4,
+                  "deckPower": 119,
+                  "oppPower": 105
+                },
+                {
+                  "match": 9,
+                  "result": "win",
+                  "diff": 2,
+                  "deckPower": 119,
+                  "oppPower": 102
+                },
+                {
+                  "match": 10,
+                  "result": "win",
+                  "diff": 8,
+                  "deckPower": 119,
+                  "oppPower": 97
+                },
+                {
+                  "match": 11,
+                  "result": "win",
+                  "diff": 6,
+                  "deckPower": 119,
+                  "oppPower": 105
+                },
+                {
+                  "match": 12,
+                  "result": "win",
+                  "diff": 4,
+                  "deckPower": 119,
+                  "oppPower": 98
+                },
+                {
+                  "match": 13,
+                  "result": "win",
+                  "diff": 4,
+                  "deckPower": 126,
+                  "oppPower": 121
+                },
+                {
+                  "match": 14,
+                  "result": "win",
+                  "diff": 6,
+                  "deckPower": 126,
+                  "oppPower": 121
+                },
+                {
+                  "match": 15,
+                  "result": "win",
+                  "diff": 6,
+                  "deckPower": 126,
+                  "oppPower": 124
+                },
+                {
+                  "match": 16,
+                  "result": "win",
+                  "diff": 8,
+                  "deckPower": 126,
+                  "oppPower": 106
+                },
+                {
+                  "match": 17,
+                  "result": "win",
+                  "diff": 4,
+                  "deckPower": 128,
+                  "oppPower": 106
+                },
+                {
+                  "match": 18,
+                  "result": "win",
+                  "diff": 2,
+                  "deckPower": 128,
+                  "oppPower": 128
+                },
+                {
+                  "match": 19,
+                  "result": "win",
+                  "diff": 2,
+                  "deckPower": 128,
+                  "oppPower": 113
+                },
+                {
+                  "match": 20,
+                  "result": "win",
+                  "diff": 2,
+                  "deckPower": 128,
+                  "oppPower": 112
+                }
+              ],
+              "random": 14.8,
+              "expert": 62,
+              "normalized": 100
+            }
+          ]
+        }
+      },
+      "log": {
+        "version": "SHBP-3",
+        "puzzleSet": "public-v1",
+        "agent": {
+          "label": "Expert Oracle (privileged)",
+          "provider": "baseline",
+          "model": "expert",
+          "privileged": true
+        },
+        "createdAt": "2026-10-11T02:45:17.024Z",
+        "puzzleAnswers": {
+          "E01": {
+            "card": 57,
+            "cell": 4
+          },
+          "E02": {
+            "card": 15,
+            "cell": 2
+          },
+          "E03": {
+            "card": 83,
+            "cell": 5
+          },
+          "E04": {
+            "card": 28,
+            "cell": 5
+          },
+          "E05": {
+            "card": 18,
+            "cell": 5
+          },
+          "E06": {
+            "card": 73,
+            "cell": 4
+          },
+          "E07": {
+            "card": 82,
+            "cell": 4
+          },
+          "E08": {
+            "card": 23,
+            "cell": 3
+          },
+          "E09": {
+            "card": 79,
+            "cell": 5
+          },
+          "E10": {
+            "card": 66,
+            "cell": 0
+          },
+          "E11": {
+            "card": 98,
+            "cell": 4
+          },
+          "E12": {
+            "card": 44,
+            "cell": 3
+          },
+          "E13": {
+            "card": 8,
+            "cell": 4
+          },
+          "E14": {
+            "card": 74,
+            "cell": 2
+          },
+          "E15": {
+            "card": 98,
+            "cell": 5
+          },
+          "E16": {
+            "card": 57,
+            "cell": 3
+          },
+          "E17": {
+            "card": 27,
+            "cell": 5
+          },
+          "E18": {
+            "card": 77,
+            "cell": 3
+          },
+          "E19": {
+            "card": 96,
+            "cell": 2
+          },
+          "E20": {
+            "card": 41,
+            "cell": 3
+          },
+          "M01": {
+            "card": 74,
+            "cell": 7
+          },
+          "M02": {
+            "card": 90,
+            "cell": 2
+          },
+          "M03": {
+            "card": 26,
+            "cell": 1
+          },
+          "M04": {
+            "card": 68,
+            "cell": 7
+          },
+          "M05": {
+            "card": 61,
+            "cell": 8
+          },
+          "M06": {
+            "card": 39,
+            "cell": 0
+          },
+          "M07": {
+            "card": 54,
+            "cell": 4
+          },
+          "M08": {
+            "card": 26,
+            "cell": 7
+          },
+          "M09": {
+            "card": 3,
+            "cell": 5
+          },
+          "M10": {
+            "card": 31,
+            "cell": 0
+          },
+          "M11": {
+            "card": 17,
+            "cell": 3
+          },
+          "M12": {
+            "card": 70,
+            "cell": 3
+          },
+          "M13": {
+            "card": 83,
+            "cell": 2
+          },
+          "M14": {
+            "card": 4,
+            "cell": 5
+          },
+          "M15": {
+            "card": 98,
+            "cell": 1
+          },
+          "M16": {
+            "card": 76,
+            "cell": 0
+          },
+          "M17": {
+            "card": 14,
+            "cell": 1
+          },
+          "M18": {
+            "card": 30,
+            "cell": 6
+          },
+          "M19": {
+            "card": 54,
+            "cell": 1
+          },
+          "M20": {
+            "card": 73,
+            "cell": 4
+          },
+          "H01": {
+            "card": 103,
+            "cell": 4
+          },
+          "H02": {
+            "card": 38,
+            "cell": 1
+          },
+          "H03": {
+            "card": 22,
+            "cell": 2
+          },
+          "H04": {
+            "card": 13,
+            "cell": 8
+          },
+          "H05": {
+            "card": 110,
+            "cell": 6
+          },
+          "H06": {
+            "card": 6,
+            "cell": 2
+          },
+          "H07": {
+            "card": 43,
+            "cell": 4
+          },
+          "H08": {
+            "card": 37,
+            "cell": 3
+          },
+          "H09": {
+            "card": 72,
+            "cell": 4
+          },
+          "H10": {
+            "card": 20,
+            "cell": 0
+          },
+          "H11": {
+            "card": 50,
+            "cell": 3
+          },
+          "H12": {
+            "card": 24,
+            "cell": 4
+          },
+          "H13": {
+            "card": 35,
+            "cell": 2
+          },
+          "H14": {
+            "card": 1,
+            "cell": 0
+          },
+          "H15": {
+            "card": 86,
+            "cell": 2
+          },
+          "H16": {
+            "card": 6,
+            "cell": 2
+          },
+          "H17": {
+            "card": 65,
+            "cell": 3
+          },
+          "H18": {
+            "card": 76,
+            "cell": 0
+          },
+          "H19": {
+            "card": 78,
+            "cell": 6
+          },
+          "H20": {
+            "card": 39,
+            "cell": 8
+          }
+        },
+        "campaigns": [
+          {
+            "seed": 20261011,
+            "matches": 20,
+            "actions": [
+              {
+                "t": "deck",
+                "cards": [
+                  14,
+                  57,
+                  84,
+                  45,
+                  81
+                ]
+              },
+              {
+                "t": "place",
+                "card": 81,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 45,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 57,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 84,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 14,
+                "cell": 2
+              },
+              {
+                "t": "shop",
+                "pack": "silver"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  68,
+                  14,
+                  57,
+                  84,
+                  45
+                ]
+              },
+              {
+                "t": "place",
+                "card": 57,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 45,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 84,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 14,
+                "cell": 7
+              },
+              {
+                "t": "shop",
+                "pack": "silver"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  68,
+                  58,
+                  14,
+                  57,
+                  84
+                ]
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 84,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 14,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 57,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 58,
+                "cell": 2
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 84,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 14,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 58,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 8
+              },
+              {
+                "t": "shop",
+                "pack": "silver"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  68,
+                  58,
+                  77,
+                  46,
+                  14
+                ]
+              },
+              {
+                "t": "place",
+                "card": 14,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 46,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 58,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 77,
+                "cell": 6
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 14,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 77,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 46,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 1
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 58,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 14,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 46,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 77,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 7
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 14,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 77,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 46,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 3
+              },
+              {
+                "t": "shop",
+                "pack": "gold"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  110,
+                  68,
+                  98,
+                  58,
+                  59
+                ]
+              },
+              {
+                "t": "place",
+                "card": 59,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 58,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 98,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 110,
+                "cell": 2
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 59,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 58,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 98,
+                "cell": 4
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 59,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 58,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 110,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 98,
+                "cell": 6
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 58,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 98,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 59,
+                "cell": 7
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 59,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 58,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 98,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 110,
+                "cell": 8
+              },
+              {
+                "t": "shop",
+                "pack": "gold"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  110,
+                  68,
+                  98,
+                  7,
+                  58
+                ]
+              },
+              {
+                "t": "place",
+                "card": 110,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 58,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 8
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 98,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 58,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 110,
+                "cell": 2
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 58,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 98,
+                "cell": 5
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 98,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 58,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 110,
+                "cell": 7
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 58,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 98,
+                "cell": 0
+              },
+              {
+                "t": "shop",
+                "pack": "gold"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  110,
+                  9,
+                  68,
+                  98,
+                  7
+                ]
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 98,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 110,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 9,
+                "cell": 0
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 98,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 9,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 0
+              }
+            ]
+          },
+          {
+            "seed": 20261012,
+            "matches": 20,
+            "actions": [
+              {
+                "t": "deck",
+                "cards": [
+                  25,
+                  94,
+                  4,
+                  33,
+                  43
+                ]
+              },
+              {
+                "t": "place",
+                "card": 43,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 4,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 33,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 94,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 25,
+                "cell": 3
+              },
+              {
+                "t": "shop",
+                "pack": "silver"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  48,
+                  37,
+                  68,
+                  25,
+                  94
+                ]
+              },
+              {
+                "t": "place",
+                "card": 94,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 48,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 25,
+                "cell": 1
+              },
+              {
+                "t": "shop",
+                "pack": "silver"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  48,
+                  37,
+                  68,
+                  17,
+                  25
+                ]
+              },
+              {
+                "t": "place",
+                "card": 25,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 17,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 48,
+                "cell": 7
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 25,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 17,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 1
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 25,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 17,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 48,
+                "cell": 7
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 25,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 17,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 48,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 6
+              },
+              {
+                "t": "shop",
+                "pack": "gold"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  10,
+                  39,
+                  48,
+                  37,
+                  68
+                ]
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 39,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 10,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 48,
+                "cell": 6
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 10,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 39,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 48,
+                "cell": 0
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 48,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 39,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 10,
+                "cell": 7
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 39,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 48,
+                "cell": 3
+              },
+              {
+                "t": "shop",
+                "pack": "gold"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  10,
+                  50,
+                  39,
+                  48,
+                  108
+                ]
+              },
+              {
+                "t": "place",
+                "card": 39,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 50,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 10,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 48,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 108,
+                "cell": 0
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 48,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 39,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 10,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 50,
+                "cell": 3
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 39,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 48,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 108,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 50,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 10,
+                "cell": 5
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 48,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 108,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 10,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 39,
+                "cell": 2
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 108,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 48,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 50,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 10,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 39,
+                "cell": 0
+              },
+              {
+                "t": "shop",
+                "pack": "gold"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  10,
+                  50,
+                  39,
+                  48,
+                  108
+                ]
+              },
+              {
+                "t": "place",
+                "card": 39,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 48,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 50,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 108,
+                "cell": 6
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 108,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 48,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 39,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 10,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 50,
+                "cell": 8
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 48,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 108,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 39,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 10,
+                "cell": 1
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 48,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 39,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 108,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 10,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 50,
+                "cell": 1
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 39,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 50,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 48,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 10,
+                "cell": 5
+              }
+            ]
+          },
+          {
+            "seed": 20261013,
+            "matches": 20,
+            "actions": [
+              {
+                "t": "deck",
+                "cards": [
+                  7,
+                  75,
+                  75,
+                  4,
+                  34
+                ]
+              },
+              {
+                "t": "place",
+                "card": 4,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 34,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 2
+              },
+              {
+                "t": "shop",
+                "pack": "silver"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  68,
+                  7,
+                  75,
+                  75,
+                  84
+                ]
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 84,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 1
+              },
+              {
+                "t": "shop",
+                "pack": "silver"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  68,
+                  7,
+                  75,
+                  75,
+                  84
+                ]
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 84,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 8
+              },
+              {
+                "t": "shop",
+                "pack": "silver"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  68,
+                  7,
+                  75,
+                  75,
+                  84
+                ]
+              },
+              {
+                "t": "place",
+                "card": 84,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 1
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 84,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 2
+              },
+              {
+                "t": "shop",
+                "pack": "silver"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  68,
+                  7,
+                  26,
+                  25,
+                  24
+                ]
+              },
+              {
+                "t": "place",
+                "card": 24,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 25,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 26,
+                "cell": 5
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 25,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 26,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 24,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 8
+              },
+              {
+                "t": "shop",
+                "pack": "silver"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  107,
+                  68,
+                  7,
+                  26,
+                  25
+                ]
+              },
+              {
+                "t": "place",
+                "card": 25,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 26,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 107,
+                "cell": 8
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 25,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 107,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 26,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 5
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 25,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 26,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 107,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 5
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 26,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 25,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 107,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 2
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 25,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 26,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 6
+              },
+              {
+                "t": "shop",
+                "pack": "gold"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  107,
+                  8,
+                  68,
+                  68,
+                  7
+                ]
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 107,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 8,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 7
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 8,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 0
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 107,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 8,
+                "cell": 8
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 8,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 107,
+                "cell": 7
+              },
+              {
+                "t": "shop",
+                "pack": "gold"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  107,
+                  80,
+                  8,
+                  68,
+                  68
+                ]
+              },
+              {
+                "t": "place",
+                "card": 8,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 107,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 80,
+                "cell": 2
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 8,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 107,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 8
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 8,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 80,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 107,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 0
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 8,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 107,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 0
+              }
+            ]
+          }
+        ],
+        "meta": {
+          "durationMs": 777
+        }
+      }
+    },
+    {
+      "result": {
+        "version": "SHBP-3",
+        "agent": {
+          "label": "Rule AI (greedy)",
+          "provider": "baseline",
+          "model": "greedy"
+        },
+        "logHash": "79131F0E2E0C808D",
+        "shbp": 38.6,
+        "ci95": 8.2,
+        "puzzle": {
+          "n": 60,
+          "correct": 20,
+          "accuracy": 33.3,
+          "normalized": 18.2,
+          "se": 7.7,
+          "regretAvg": 1.67,
+          "invalid": 0,
+          "byDifficulty": {
+            "easy": {
+              "n": 20,
+              "correct": 20
+            },
+            "medium": {
+              "n": 20,
+              "correct": 0
+            },
+            "hard": {
+              "n": 20,
+              "correct": 0
+            }
+          }
+        },
+        "campaign": {
+          "normalized": 59,
+          "se": 3.3,
+          "invalid": 0,
+          "decisions": 353,
+          "totals": {
+            "win": 37,
+            "draw": 6,
+            "loss": 17
+          },
+          "perSeed": [
+            {
+              "seed": 20261011,
+              "matches": 20,
+              "score": 39,
+              "win": 12,
+              "draw": 3,
+              "loss": 5,
+              "sns": 75,
+              "packs": {
+                "bronze": 0,
+                "silver": 8,
+                "gold": 0
+              },
+              "invalid": 0,
+              "decisions": 118,
+              "history": [
+                {
+                  "match": 1,
+                  "result": "win",
+                  "diff": 2,
+                  "deckPower": 88,
+                  "oppPower": 103
+                },
+                {
+                  "match": 2,
+                  "result": "win",
+                  "diff": 4,
+                  "deckPower": 102,
+                  "oppPower": 70
+                },
+                {
+                  "match": 3,
+                  "result": "loss",
+                  "diff": -4,
+                  "deckPower": 108,
+                  "oppPower": 79
+                },
+                {
+                  "match": 4,
+                  "result": "win",
+                  "diff": 6,
+                  "deckPower": 108,
+                  "oppPower": 89
+                },
+                {
+                  "match": 5,
+                  "result": "win",
+                  "diff": 6,
+                  "deckPower": 113,
+                  "oppPower": 103
+                },
+                {
+                  "match": 6,
+                  "result": "loss",
+                  "diff": -4,
+                  "deckPower": 113,
+                  "oppPower": 93
+                },
+                {
+                  "match": 7,
+                  "result": "win",
+                  "diff": 8,
+                  "deckPower": 113,
+                  "oppPower": 91
+                },
+                {
+                  "match": 8,
+                  "result": "win",
+                  "diff": 4,
+                  "deckPower": 118,
+                  "oppPower": 103
+                },
+                {
+                  "match": 9,
+                  "result": "win",
+                  "diff": 4,
+                  "deckPower": 118,
+                  "oppPower": 117
+                },
+                {
+                  "match": 10,
+                  "result": "win",
+                  "diff": 4,
+                  "deckPower": 121,
+                  "oppPower": 98
+                },
+                {
+                  "match": 11,
+                  "result": "win",
+                  "diff": 2,
+                  "deckPower": 121,
+                  "oppPower": 66
+                },
+                {
+                  "match": 12,
+                  "result": "loss",
+                  "diff": -2,
+                  "deckPower": 121,
+                  "oppPower": 92
+                },
+                {
+                  "match": 13,
+                  "result": "loss",
+                  "diff": -2,
+                  "deckPower": 121,
+                  "oppPower": 104
+                },
+                {
+                  "match": 14,
+                  "result": "loss",
+                  "diff": -4,
+                  "deckPower": 121,
+                  "oppPower": 118
+                },
+                {
+                  "match": 15,
+                  "result": "draw",
+                  "diff": 0,
+                  "deckPower": 121,
+                  "oppPower": 102
+                },
+                {
+                  "match": 16,
+                  "result": "win",
+                  "diff": 2,
+                  "deckPower": 121,
+                  "oppPower": 113
+                },
+                {
+                  "match": 17,
+                  "result": "draw",
+                  "diff": 0,
+                  "deckPower": 124,
+                  "oppPower": 112
+                },
+                {
+                  "match": 18,
+                  "result": "draw",
+                  "diff": 0,
+                  "deckPower": 124,
+                  "oppPower": 131
+                },
+                {
+                  "match": 19,
+                  "result": "win",
+                  "diff": 4,
+                  "deckPower": 124,
+                  "oppPower": 112
+                },
+                {
+                  "match": 20,
+                  "result": "win",
+                  "diff": 2,
+                  "deckPower": 124,
+                  "oppPower": 114
+                }
+              ],
+              "random": 8.6,
+              "expert": 57,
+              "normalized": 62.8
+            },
+            {
+              "seed": 20261012,
+              "matches": 20,
+              "score": 36,
+              "win": 11,
+              "draw": 2,
+              "loss": 7,
+              "sns": 120,
+              "packs": {
+                "bronze": 0,
+                "silver": 7,
+                "gold": 0
+              },
+              "invalid": 0,
+              "decisions": 117,
+              "history": [
+                {
+                  "match": 1,
+                  "result": "loss",
+                  "diff": -2,
+                  "deckPower": 89,
+                  "oppPower": 84
+                },
+                {
+                  "match": 2,
+                  "result": "win",
+                  "diff": 8,
+                  "deckPower": 116,
+                  "oppPower": 94
+                },
+                {
+                  "match": 3,
+                  "result": "win",
+                  "diff": 8,
+                  "deckPower": 121,
+                  "oppPower": 93
+                },
+                {
+                  "match": 4,
+                  "result": "win",
+                  "diff": 2,
+                  "deckPower": 121,
+                  "oppPower": 102
+                },
+                {
+                  "match": 5,
+                  "result": "win",
+                  "diff": 2,
+                  "deckPower": 124,
+                  "oppPower": 84
+                },
+                {
+                  "match": 6,
+                  "result": "win",
+                  "diff": 2,
+                  "deckPower": 124,
+                  "oppPower": 82
+                },
+                {
+                  "match": 7,
+                  "result": "loss",
+                  "diff": -2,
+                  "deckPower": 125,
+                  "oppPower": 82
+                },
+                {
+                  "match": 8,
+                  "result": "draw",
+                  "diff": 0,
+                  "deckPower": 125,
+                  "oppPower": 98
+                },
+                {
+                  "match": 9,
+                  "result": "win",
+                  "diff": 6,
+                  "deckPower": 125,
+                  "oppPower": 101
+                },
+                {
+                  "match": 10,
+                  "result": "loss",
+                  "diff": -4,
+                  "deckPower": 125,
+                  "oppPower": 121
+                },
+                {
+                  "match": 11,
+                  "result": "win",
+                  "diff": 8,
+                  "deckPower": 125,
+                  "oppPower": 98
+                },
+                {
+                  "match": 12,
+                  "result": "win",
+                  "diff": 4,
+                  "deckPower": 125,
+                  "oppPower": 86
+                },
+                {
+                  "match": 13,
+                  "result": "loss",
+                  "diff": -2,
+                  "deckPower": 125,
+                  "oppPower": 120
+                },
+                {
+                  "match": 14,
+                  "result": "win",
+                  "diff": 4,
+                  "deckPower": 125,
+                  "oppPower": 100
+                },
+                {
+                  "match": 15,
+                  "result": "loss",
+                  "diff": -6,
+                  "deckPower": 125,
+                  "oppPower": 126
+                },
+                {
+                  "match": 16,
+                  "result": "win",
+                  "diff": 6,
+                  "deckPower": 125,
+                  "oppPower": 113
+                },
+                {
+                  "match": 17,
+                  "result": "loss",
+                  "diff": -6,
+                  "deckPower": 125,
+                  "oppPower": 125
+                },
+                {
+                  "match": 18,
+                  "result": "draw",
+                  "diff": 0,
+                  "deckPower": 125,
+                  "oppPower": 104
+                },
+                {
+                  "match": 19,
+                  "result": "loss",
+                  "diff": -8,
+                  "deckPower": 125,
+                  "oppPower": 134
+                },
+                {
+                  "match": 20,
+                  "result": "win",
+                  "diff": 4,
+                  "deckPower": 125,
+                  "oppPower": 114
+                }
+              ],
+              "random": 7.4,
+              "expert": 62,
+              "normalized": 52.4
+            },
+            {
+              "seed": 20261013,
+              "matches": 20,
+              "score": 44,
+              "win": 14,
+              "draw": 1,
+              "loss": 5,
+              "sns": 125,
+              "packs": {
+                "bronze": 0,
+                "silver": 8,
+                "gold": 0
+              },
+              "invalid": 0,
+              "decisions": 118,
+              "history": [
+                {
+                  "match": 1,
+                  "result": "win",
+                  "diff": 6,
+                  "deckPower": 98,
+                  "oppPower": 67
+                },
+                {
+                  "match": 2,
+                  "result": "win",
+                  "diff": 4,
+                  "deckPower": 106,
+                  "oppPower": 87
+                },
+                {
+                  "match": 3,
+                  "result": "draw",
+                  "diff": 0,
+                  "deckPower": 106,
+                  "oppPower": 87
+                },
+                {
+                  "match": 4,
+                  "result": "loss",
+                  "diff": -6,
+                  "deckPower": 106,
+                  "oppPower": 87
+                },
+                {
+                  "match": 5,
+                  "result": "win",
+                  "diff": 2,
+                  "deckPower": 106,
+                  "oppPower": 81
+                },
+                {
+                  "match": 6,
+                  "result": "loss",
+                  "diff": -2,
+                  "deckPower": 106,
+                  "oppPower": 88
+                },
+                {
+                  "match": 7,
+                  "result": "loss",
+                  "diff": -2,
+                  "deckPower": 106,
+                  "oppPower": 84
+                },
+                {
+                  "match": 8,
+                  "result": "win",
+                  "diff": 2,
+                  "deckPower": 106,
+                  "oppPower": 105
+                },
+                {
+                  "match": 9,
+                  "result": "win",
+                  "diff": 4,
+                  "deckPower": 111,
+                  "oppPower": 102
+                },
+                {
+                  "match": 10,
+                  "result": "win",
+                  "diff": 6,
+                  "deckPower": 111,
+                  "oppPower": 97
+                },
+                {
+                  "match": 11,
+                  "result": "win",
+                  "diff": 2,
+                  "deckPower": 119,
+                  "oppPower": 105
+                },
+                {
+                  "match": 12,
+                  "result": "win",
+                  "diff": 4,
+                  "deckPower": 119,
+                  "oppPower": 98
+                },
+                {
+                  "match": 13,
+                  "result": "loss",
+                  "diff": -4,
+                  "deckPower": 123,
+                  "oppPower": 121
+                },
+                {
+                  "match": 14,
+                  "result": "win",
+                  "diff": 2,
+                  "deckPower": 123,
+                  "oppPower": 121
+                },
+                {
+                  "match": 15,
+                  "result": "win",
+                  "diff": 4,
+                  "deckPower": 123,
+                  "oppPower": 124
+                },
+                {
+                  "match": 16,
+                  "result": "win",
+                  "diff": 4,
+                  "deckPower": 127,
+                  "oppPower": 106
+                },
+                {
+                  "match": 17,
+                  "result": "win",
+                  "diff": 4,
+                  "deckPower": 127,
+                  "oppPower": 106
+                },
+                {
+                  "match": 18,
+                  "result": "win",
+                  "diff": 8,
+                  "deckPower": 132,
+                  "oppPower": 128
+                },
+                {
+                  "match": 19,
+                  "result": "loss",
+                  "diff": -8,
+                  "deckPower": 132,
+                  "oppPower": 113
+                },
+                {
+                  "match": 20,
+                  "result": "win",
+                  "diff": 2,
+                  "deckPower": 132,
+                  "oppPower": 112
+                }
+              ],
+              "random": 14.8,
+              "expert": 62,
+              "normalized": 61.9
+            }
+          ]
+        }
+      },
+      "log": {
+        "version": "SHBP-3",
+        "puzzleSet": "public-v1",
+        "agent": {
+          "label": "Rule AI (greedy)",
+          "provider": "baseline",
+          "model": "greedy"
+        },
+        "createdAt": "2026-10-11T02:45:17.805Z",
+        "puzzleAnswers": {
+          "E01": {
+            "card": 57,
+            "cell": 4
+          },
+          "E02": {
+            "card": 45,
+            "cell": 2
+          },
+          "E03": {
+            "card": 65,
+            "cell": 7
+          },
+          "E04": {
+            "card": 79,
+            "cell": 5
+          },
+          "E05": {
+            "card": 14,
+            "cell": 7
+          },
+          "E06": {
+            "card": 73,
+            "cell": 4
+          },
+          "E07": {
+            "card": 82,
+            "cell": 4
+          },
+          "E08": {
+            "card": 31,
+            "cell": 4
+          },
+          "E09": {
+            "card": 79,
+            "cell": 5
+          },
+          "E10": {
+            "card": 66,
+            "cell": 0
+          },
+          "E11": {
+            "card": 98,
+            "cell": 4
+          },
+          "E12": {
+            "card": 61,
+            "cell": 4
+          },
+          "E13": {
+            "card": 8,
+            "cell": 4
+          },
+          "E14": {
+            "card": 74,
+            "cell": 2
+          },
+          "E15": {
+            "card": 98,
+            "cell": 5
+          },
+          "E16": {
+            "card": 57,
+            "cell": 3
+          },
+          "E17": {
+            "card": 27,
+            "cell": 5
+          },
+          "E18": {
+            "card": 64,
+            "cell": 4
+          },
+          "E19": {
+            "card": 96,
+            "cell": 2
+          },
+          "E20": {
+            "card": 41,
+            "cell": 3
+          },
+          "M01": {
+            "card": 27,
+            "cell": 5
+          },
+          "M02": {
+            "card": 13,
+            "cell": 6
+          },
+          "M03": {
+            "card": 55,
+            "cell": 1
+          },
+          "M04": {
+            "card": 47,
+            "cell": 2
+          },
+          "M05": {
+            "card": 61,
+            "cell": 0
+          },
+          "M06": {
+            "card": 45,
+            "cell": 0
+          },
+          "M07": {
+            "card": 54,
+            "cell": 2
+          },
+          "M08": {
+            "card": 56,
+            "cell": 2
+          },
+          "M09": {
+            "card": 3,
+            "cell": 4
+          },
+          "M10": {
+            "card": 57,
+            "cell": 5
+          },
+          "M11": {
+            "card": 17,
+            "cell": 4
+          },
+          "M12": {
+            "card": 97,
+            "cell": 4
+          },
+          "M13": {
+            "card": 22,
+            "cell": 2
+          },
+          "M14": {
+            "card": 4,
+            "cell": 0
+          },
+          "M15": {
+            "card": 32,
+            "cell": 8
+          },
+          "M16": {
+            "card": 87,
+            "cell": 3
+          },
+          "M17": {
+            "card": 84,
+            "cell": 1
+          },
+          "M18": {
+            "card": 97,
+            "cell": 2
+          },
+          "M19": {
+            "card": 54,
+            "cell": 6
+          },
+          "M20": {
+            "card": 73,
+            "cell": 3
+          },
+          "H01": {
+            "card": 84,
+            "cell": 4
+          },
+          "H02": {
+            "card": 29,
+            "cell": 7
+          },
+          "H03": {
+            "card": 5,
+            "cell": 2
+          },
+          "H04": {
+            "card": 97,
+            "cell": 3
+          },
+          "H05": {
+            "card": 77,
+            "cell": 2
+          },
+          "H06": {
+            "card": 6,
+            "cell": 5
+          },
+          "H07": {
+            "card": 43,
+            "cell": 3
+          },
+          "H08": {
+            "card": 58,
+            "cell": 2
+          },
+          "H09": {
+            "card": 51,
+            "cell": 4
+          },
+          "H10": {
+            "card": 98,
+            "cell": 0
+          },
+          "H11": {
+            "card": 24,
+            "cell": 1
+          },
+          "H12": {
+            "card": 4,
+            "cell": 2
+          },
+          "H13": {
+            "card": 76,
+            "cell": 4
+          },
+          "H14": {
+            "card": 1,
+            "cell": 3
+          },
+          "H15": {
+            "card": 87,
+            "cell": 4
+          },
+          "H16": {
+            "card": 74,
+            "cell": 2
+          },
+          "H17": {
+            "card": 33,
+            "cell": 4
+          },
+          "H18": {
+            "card": 39,
+            "cell": 7
+          },
+          "H19": {
+            "card": 78,
+            "cell": 5
+          },
+          "H20": {
+            "card": 88,
+            "cell": 4
+          }
+        },
+        "campaigns": [
+          {
+            "seed": 20261011,
+            "matches": 20,
+            "actions": [
+              {
+                "t": "deck",
+                "cards": [
+                  14,
+                  57,
+                  84,
+                  45,
+                  81
+                ]
+              },
+              {
+                "t": "place",
+                "card": 81,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 45,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 84,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 57,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 14,
+                "cell": 8
+              },
+              {
+                "t": "shop",
+                "pack": "silver"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  68,
+                  14,
+                  57,
+                  84,
+                  45
+                ]
+              },
+              {
+                "t": "place",
+                "card": 57,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 45,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 84,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 14,
+                "cell": 7
+              },
+              {
+                "t": "shop",
+                "pack": "silver"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  68,
+                  58,
+                  14,
+                  57,
+                  84
+                ]
+              },
+              {
+                "t": "place",
+                "card": 84,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 14,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 57,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 58,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 2
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 84,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 14,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 58,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 8
+              },
+              {
+                "t": "shop",
+                "pack": "silver"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  68,
+                  58,
+                  77,
+                  46,
+                  14
+                ]
+              },
+              {
+                "t": "place",
+                "card": 14,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 46,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 58,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 77,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 8
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 14,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 77,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 46,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 58,
+                "cell": 1
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 14,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 46,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 58,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 77,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 7
+              },
+              {
+                "t": "shop",
+                "pack": "silver"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  68,
+                  102,
+                  58,
+                  77,
+                  46
+                ]
+              },
+              {
+                "t": "place",
+                "card": 46,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 102,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 77,
+                "cell": 0
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 46,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 77,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 102,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 58,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 6
+              },
+              {
+                "t": "shop",
+                "pack": "silver"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  68,
+                  102,
+                  7,
+                  58,
+                  77
+                ]
+              },
+              {
+                "t": "place",
+                "card": 77,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 102,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 58,
+                "cell": 2
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 77,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 58,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 102,
+                "cell": 7
+              },
+              {
+                "t": "shop",
+                "pack": "silver"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  68,
+                  102,
+                  7,
+                  58,
+                  77
+                ]
+              },
+              {
+                "t": "place",
+                "card": 77,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 58,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 102,
+                "cell": 6
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 77,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 58,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 102,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 6
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 77,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 58,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 2
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 77,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 58,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 102,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 6
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 77,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 58,
+                "cell": 6
+              },
+              {
+                "t": "shop",
+                "pack": "silver"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  8,
+                  18,
+                  68,
+                  102,
+                  7
+                ]
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 8,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 18,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 102,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 8
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 8,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 18,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 0
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 8,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 18,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 102,
+                "cell": 6
+              },
+              {
+                "t": "shop",
+                "pack": "silver"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  8,
+                  18,
+                  68,
+                  102,
+                  7
+                ]
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 8,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 18,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 102,
+                "cell": 3
+              }
+            ]
+          },
+          {
+            "seed": 20261012,
+            "matches": 20,
+            "actions": [
+              {
+                "t": "deck",
+                "cards": [
+                  25,
+                  94,
+                  4,
+                  33,
+                  43
+                ]
+              },
+              {
+                "t": "place",
+                "card": 43,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 33,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 94,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 25,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 4,
+                "cell": 8
+              },
+              {
+                "t": "shop",
+                "pack": "silver"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  48,
+                  37,
+                  68,
+                  25,
+                  94
+                ]
+              },
+              {
+                "t": "place",
+                "card": 94,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 48,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 25,
+                "cell": 1
+              },
+              {
+                "t": "shop",
+                "pack": "silver"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  48,
+                  37,
+                  68,
+                  17,
+                  25
+                ]
+              },
+              {
+                "t": "place",
+                "card": 25,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 17,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 48,
+                "cell": 7
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 25,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 17,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 3
+              },
+              {
+                "t": "shop",
+                "pack": "silver"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  48,
+                  37,
+                  68,
+                  7,
+                  17
+                ]
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 17,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 48,
+                "cell": 6
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 17,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 6
+              },
+              {
+                "t": "shop",
+                "pack": "silver"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  48,
+                  37,
+                  37,
+                  68,
+                  7
+                ]
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 48,
+                "cell": 8
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 48,
+                "cell": 2
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 48,
+                "cell": 7
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 2
+              },
+              {
+                "t": "shop",
+                "pack": "silver"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  48,
+                  37,
+                  37,
+                  68,
+                  7
+                ]
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 48,
+                "cell": 6
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 48,
+                "cell": 3
+              },
+              {
+                "t": "shop",
+                "pack": "silver"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  48,
+                  37,
+                  37,
+                  68,
+                  7
+                ]
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 48,
+                "cell": 8
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 5
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 48,
+                "cell": 6
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 6
+              },
+              {
+                "t": "shop",
+                "pack": "silver"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  48,
+                  37,
+                  37,
+                  68,
+                  7
+                ]
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 48,
+                "cell": 6
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 48,
+                "cell": 3
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 48,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 8
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 2
+              }
+            ]
+          },
+          {
+            "seed": 20261013,
+            "matches": 20,
+            "actions": [
+              {
+                "t": "deck",
+                "cards": [
+                  7,
+                  75,
+                  75,
+                  4,
+                  34
+                ]
+              },
+              {
+                "t": "place",
+                "card": 4,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 34,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 2
+              },
+              {
+                "t": "shop",
+                "pack": "silver"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  68,
+                  7,
+                  75,
+                  75,
+                  84
+                ]
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 84,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 1
+              },
+              {
+                "t": "shop",
+                "pack": "silver"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  68,
+                  7,
+                  75,
+                  75,
+                  84
+                ]
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 84,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 8
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 84,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 2
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 84,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 7
+              },
+              {
+                "t": "shop",
+                "pack": "silver"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  68,
+                  7,
+                  75,
+                  75,
+                  84
+                ]
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 84,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 5
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 84,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 8
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 84,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 5
+              },
+              {
+                "t": "shop",
+                "pack": "silver"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  68,
+                  7,
+                  26,
+                  25,
+                  24
+                ]
+              },
+              {
+                "t": "place",
+                "card": 24,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 26,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 25,
+                "cell": 5
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 24,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 26,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 5
+              },
+              {
+                "t": "shop",
+                "pack": "silver"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  107,
+                  68,
+                  7,
+                  26,
+                  25
+                ]
+              },
+              {
+                "t": "place",
+                "card": 25,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 26,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 107,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 5
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 25,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 26,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 6
+              },
+              {
+                "t": "shop",
+                "pack": "silver"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  107,
+                  68,
+                  68,
+                  7,
+                  26
+                ]
+              },
+              {
+                "t": "place",
+                "card": 26,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 107,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 8
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 26,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 107,
+                "cell": 2
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 26,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 107,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 8
+              },
+              {
+                "t": "shop",
+                "pack": "silver"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  107,
+                  80,
+                  68,
+                  68,
+                  7
+                ]
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 80,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 107,
+                "cell": 0
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 80,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 107,
+                "cell": 7
+              },
+              {
+                "t": "shop",
+                "pack": "silver"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  20,
+                  107,
+                  80,
+                  68,
+                  68
+                ]
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 80,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 20,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 107,
+                "cell": 6
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 80,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 20,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 107,
+                "cell": 6
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 80,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 107,
+                "cell": 1
+              }
+            ]
+          }
+        ],
+        "meta": {
+          "durationMs": 66
+        }
+      }
+    },
+    {
+      "result": {
+        "version": "SHBP-3",
+        "agent": {
+          "label": "Random Agent",
+          "provider": "baseline",
+          "model": "random"
+        },
+        "logHash": "C0B2CAD5C08F93CC",
+        "shbp": -0.5,
+        "ci95": 7.6,
+        "puzzle": {
+          "n": 60,
+          "correct": 11,
+          "accuracy": 18.3,
+          "normalized": 2.3,
+          "se": 6.2,
+          "regretAvg": 2.4,
+          "invalid": 0,
+          "byDifficulty": {
+            "easy": {
+              "n": 20,
+              "correct": 4
+            },
+            "medium": {
+              "n": 20,
+              "correct": 2
+            },
+            "hard": {
+              "n": 20,
+              "correct": 5
+            }
+          }
+        },
+        "campaign": {
+          "normalized": -3.4,
+          "se": 4.6,
+          "invalid": 0,
+          "decisions": 356,
+          "totals": {
+            "win": 6,
+            "draw": 8,
+            "loss": 46
+          },
+          "perSeed": [
+            {
+              "seed": 20261011,
+              "matches": 20,
+              "score": 10,
+              "win": 2,
+              "draw": 4,
+              "loss": 14,
+              "sns": 30,
+              "packs": {
+                "bronze": 9,
+                "silver": 1,
+                "gold": 0
+              },
+              "invalid": 0,
+              "decisions": 120,
+              "history": [
+                {
+                  "match": 1,
+                  "result": "loss",
+                  "diff": -2,
+                  "deckPower": 79,
+                  "oppPower": 103
+                },
+                {
+                  "match": 2,
+                  "result": "loss",
+                  "diff": -8,
+                  "deckPower": 79,
+                  "oppPower": 70
+                },
+                {
+                  "match": 3,
+                  "result": "draw",
+                  "diff": 0,
+                  "deckPower": 71,
+                  "oppPower": 79
+                },
+                {
+                  "match": 4,
+                  "result": "loss",
+                  "diff": -2,
+                  "deckPower": 83,
+                  "oppPower": 89
+                },
+                {
+                  "match": 5,
+                  "result": "draw",
+                  "diff": 0,
+                  "deckPower": 83,
+                  "oppPower": 103
+                },
+                {
+                  "match": 6,
+                  "result": "loss",
+                  "diff": -2,
+                  "deckPower": 83,
+                  "oppPower": 93
+                },
+                {
+                  "match": 7,
+                  "result": "win",
+                  "diff": 8,
+                  "deckPower": 80,
+                  "oppPower": 91
+                },
+                {
+                  "match": 8,
+                  "result": "loss",
+                  "diff": -4,
+                  "deckPower": 80,
+                  "oppPower": 103
+                },
+                {
+                  "match": 9,
+                  "result": "loss",
+                  "diff": -4,
+                  "deckPower": 80,
+                  "oppPower": 117
+                },
+                {
+                  "match": 10,
+                  "result": "loss",
+                  "diff": -2,
+                  "deckPower": 80,
+                  "oppPower": 98
+                },
+                {
+                  "match": 11,
+                  "result": "loss",
+                  "diff": -2,
+                  "deckPower": 87,
+                  "oppPower": 66
+                },
+                {
+                  "match": 12,
+                  "result": "win",
+                  "diff": 4,
+                  "deckPower": 84,
+                  "oppPower": 92
+                },
+                {
+                  "match": 13,
+                  "result": "loss",
+                  "diff": -6,
+                  "deckPower": 78,
+                  "oppPower": 104
+                },
+                {
+                  "match": 14,
+                  "result": "draw",
+                  "diff": 0,
+                  "deckPower": 83,
+                  "oppPower": 118
+                },
+                {
+                  "match": 15,
+                  "result": "loss",
+                  "diff": -4,
+                  "deckPower": 83,
+                  "oppPower": 102
+                },
+                {
+                  "match": 16,
+                  "result": "loss",
+                  "diff": -4,
+                  "deckPower": 75,
+                  "oppPower": 113
+                },
+                {
+                  "match": 17,
+                  "result": "loss",
+                  "diff": -4,
+                  "deckPower": 75,
+                  "oppPower": 112
+                },
+                {
+                  "match": 18,
+                  "result": "loss",
+                  "diff": -8,
+                  "deckPower": 75,
+                  "oppPower": 131
+                },
+                {
+                  "match": 19,
+                  "result": "draw",
+                  "diff": 0,
+                  "deckPower": 75,
+                  "oppPower": 112
+                },
+                {
+                  "match": 20,
+                  "result": "loss",
+                  "diff": -4,
+                  "deckPower": 85,
+                  "oppPower": 114
+                }
+              ],
+              "random": 8.6,
+              "expert": 57,
+              "normalized": 2.9
+            },
+            {
+              "seed": 20261012,
+              "matches": 20,
+              "score": 7,
+              "win": 1,
+              "draw": 4,
+              "loss": 15,
+              "sns": 70,
+              "packs": {
+                "bronze": 7,
+                "silver": 1,
+                "gold": 0
+              },
+              "invalid": 0,
+              "decisions": 118,
+              "history": [
+                {
+                  "match": 1,
+                  "result": "loss",
+                  "diff": -4,
+                  "deckPower": 80,
+                  "oppPower": 84
+                },
+                {
+                  "match": 2,
+                  "result": "loss",
+                  "diff": -6,
+                  "deckPower": 80,
+                  "oppPower": 94
+                },
+                {
+                  "match": 3,
+                  "result": "loss",
+                  "diff": -4,
+                  "deckPower": 104,
+                  "oppPower": 93
+                },
+                {
+                  "match": 4,
+                  "result": "loss",
+                  "diff": -4,
+                  "deckPower": 86,
+                  "oppPower": 102
+                },
+                {
+                  "match": 5,
+                  "result": "loss",
+                  "diff": -2,
+                  "deckPower": 86,
+                  "oppPower": 84
+                },
+                {
+                  "match": 6,
+                  "result": "draw",
+                  "diff": 0,
+                  "deckPower": 86,
+                  "oppPower": 82
+                },
+                {
+                  "match": 7,
+                  "result": "loss",
+                  "diff": -4,
+                  "deckPower": 86,
+                  "oppPower": 82
+                },
+                {
+                  "match": 8,
+                  "result": "loss",
+                  "diff": -4,
+                  "deckPower": 87,
+                  "oppPower": 98
+                },
+                {
+                  "match": 9,
+                  "result": "loss",
+                  "diff": -6,
+                  "deckPower": 92,
+                  "oppPower": 101
+                },
+                {
+                  "match": 10,
+                  "result": "win",
+                  "diff": 6,
+                  "deckPower": 92,
+                  "oppPower": 121
+                },
+                {
+                  "match": 11,
+                  "result": "loss",
+                  "diff": -6,
+                  "deckPower": 83,
+                  "oppPower": 98
+                },
+                {
+                  "match": 12,
+                  "result": "loss",
+                  "diff": -4,
+                  "deckPower": 95,
+                  "oppPower": 86
+                },
+                {
+                  "match": 13,
+                  "result": "loss",
+                  "diff": -4,
+                  "deckPower": 95,
+                  "oppPower": 120
+                },
+                {
+                  "match": 14,
+                  "result": "loss",
+                  "diff": -4,
+                  "deckPower": 95,
+                  "oppPower": 100
+                },
+                {
+                  "match": 15,
+                  "result": "draw",
+                  "diff": 0,
+                  "deckPower": 95,
+                  "oppPower": 126
+                },
+                {
+                  "match": 16,
+                  "result": "loss",
+                  "diff": -2,
+                  "deckPower": 95,
+                  "oppPower": 113
+                },
+                {
+                  "match": 17,
+                  "result": "draw",
+                  "diff": 0,
+                  "deckPower": 79,
+                  "oppPower": 125
+                },
+                {
+                  "match": 18,
+                  "result": "loss",
+                  "diff": -4,
+                  "deckPower": 74,
+                  "oppPower": 104
+                },
+                {
+                  "match": 19,
+                  "result": "loss",
+                  "diff": -6,
+                  "deckPower": 74,
+                  "oppPower": 134
+                },
+                {
+                  "match": 20,
+                  "result": "draw",
+                  "diff": 0,
+                  "deckPower": 74,
+                  "oppPower": 114
+                }
+              ],
+              "random": 7.4,
+              "expert": 62,
+              "normalized": -0.7
+            },
+            {
+              "seed": 20261013,
+              "matches": 20,
+              "score": 9,
+              "win": 3,
+              "draw": 0,
+              "loss": 17,
+              "sns": 30,
+              "packs": {
+                "bronze": 6,
+                "silver": 2,
+                "gold": 0
+              },
+              "invalid": 0,
+              "decisions": 118,
+              "history": [
+                {
+                  "match": 1,
+                  "result": "loss",
+                  "diff": -2,
+                  "deckPower": 89,
+                  "oppPower": 67
+                },
+                {
+                  "match": 2,
+                  "result": "loss",
+                  "diff": -6,
+                  "deckPower": 84,
+                  "oppPower": 87
+                },
+                {
+                  "match": 3,
+                  "result": "loss",
+                  "diff": -2,
+                  "deckPower": 84,
+                  "oppPower": 87
+                },
+                {
+                  "match": 4,
+                  "result": "loss",
+                  "diff": -4,
+                  "deckPower": 82,
+                  "oppPower": 87
+                },
+                {
+                  "match": 5,
+                  "result": "win",
+                  "diff": 6,
+                  "deckPower": 82,
+                  "oppPower": 81
+                },
+                {
+                  "match": 6,
+                  "result": "loss",
+                  "diff": -6,
+                  "deckPower": 78,
+                  "oppPower": 88
+                },
+                {
+                  "match": 7,
+                  "result": "loss",
+                  "diff": -6,
+                  "deckPower": 78,
+                  "oppPower": 84
+                },
+                {
+                  "match": 8,
+                  "result": "loss",
+                  "diff": -6,
+                  "deckPower": 78,
+                  "oppPower": 105
+                },
+                {
+                  "match": 9,
+                  "result": "loss",
+                  "diff": -2,
+                  "deckPower": 78,
+                  "oppPower": 102
+                },
+                {
+                  "match": 10,
+                  "result": "win",
+                  "diff": 2,
+                  "deckPower": 80,
+                  "oppPower": 97
+                },
+                {
+                  "match": 11,
+                  "result": "loss",
+                  "diff": -6,
+                  "deckPower": 101,
+                  "oppPower": 105
+                },
+                {
+                  "match": 12,
+                  "result": "loss",
+                  "diff": -6,
+                  "deckPower": 101,
+                  "oppPower": 98
+                },
+                {
+                  "match": 13,
+                  "result": "loss",
+                  "diff": -6,
+                  "deckPower": 101,
+                  "oppPower": 121
+                },
+                {
+                  "match": 14,
+                  "result": "loss",
+                  "diff": -6,
+                  "deckPower": 81,
+                  "oppPower": 121
+                },
+                {
+                  "match": 15,
+                  "result": "loss",
+                  "diff": -2,
+                  "deckPower": 81,
+                  "oppPower": 124
+                },
+                {
+                  "match": 16,
+                  "result": "loss",
+                  "diff": -6,
+                  "deckPower": 81,
+                  "oppPower": 106
+                },
+                {
+                  "match": 17,
+                  "result": "win",
+                  "diff": 6,
+                  "deckPower": 81,
+                  "oppPower": 106
+                },
+                {
+                  "match": 18,
+                  "result": "loss",
+                  "diff": -4,
+                  "deckPower": 81,
+                  "oppPower": 128
+                },
+                {
+                  "match": 19,
+                  "result": "loss",
+                  "diff": -4,
+                  "deckPower": 81,
+                  "oppPower": 113
+                },
+                {
+                  "match": 20,
+                  "result": "loss",
+                  "diff": -2,
+                  "deckPower": 87,
+                  "oppPower": 112
+                }
+              ],
+              "random": 14.8,
+              "expert": 62,
+              "normalized": -12.3
+            }
+          ]
+        }
+      },
+      "log": {
+        "version": "SHBP-3",
+        "puzzleSet": "public-v1",
+        "agent": {
+          "label": "Random Agent",
+          "provider": "baseline",
+          "model": "random"
+        },
+        "createdAt": "2026-10-11T02:45:17.873Z",
+        "puzzleAnswers": {
+          "E01": {
+            "card": 29,
+            "cell": 7
+          },
+          "E02": {
+            "card": 45,
+            "cell": 6
+          },
+          "E03": {
+            "card": 65,
+            "cell": 8
+          },
+          "E04": {
+            "card": 47,
+            "cell": 7
+          },
+          "E05": {
+            "card": 107,
+            "cell": 1
+          },
+          "E06": {
+            "card": 73,
+            "cell": 4
+          },
+          "E07": {
+            "card": 104,
+            "cell": 5
+          },
+          "E08": {
+            "card": 78,
+            "cell": 6
+          },
+          "E09": {
+            "card": 8,
+            "cell": 8
+          },
+          "E10": {
+            "card": 71,
+            "cell": 6
+          },
+          "E11": {
+            "card": 25,
+            "cell": 2
+          },
+          "E12": {
+            "card": 44,
+            "cell": 8
+          },
+          "E13": {
+            "card": 49,
+            "cell": 5
+          },
+          "E14": {
+            "card": 74,
+            "cell": 3
+          },
+          "E15": {
+            "card": 98,
+            "cell": 5
+          },
+          "E16": {
+            "card": 15,
+            "cell": 3
+          },
+          "E17": {
+            "card": 83,
+            "cell": 5
+          },
+          "E18": {
+            "card": 101,
+            "cell": 6
+          },
+          "E19": {
+            "card": 96,
+            "cell": 2
+          },
+          "E20": {
+            "card": 41,
+            "cell": 2
+          },
+          "M01": {
+            "card": 74,
+            "cell": 8
+          },
+          "M02": {
+            "card": 13,
+            "cell": 0
+          },
+          "M03": {
+            "card": 55,
+            "cell": 3
+          },
+          "M04": {
+            "card": 47,
+            "cell": 2
+          },
+          "M05": {
+            "card": 30,
+            "cell": 1
+          },
+          "M06": {
+            "card": 45,
+            "cell": 0
+          },
+          "M07": {
+            "card": 80,
+            "cell": 0
+          },
+          "M08": {
+            "card": 26,
+            "cell": 8
+          },
+          "M09": {
+            "card": 3,
+            "cell": 6
+          },
+          "M10": {
+            "card": 31,
+            "cell": 0
+          },
+          "M11": {
+            "card": 17,
+            "cell": 4
+          },
+          "M12": {
+            "card": 49,
+            "cell": 8
+          },
+          "M13": {
+            "card": 109,
+            "cell": 5
+          },
+          "M14": {
+            "card": 4,
+            "cell": 6
+          },
+          "M15": {
+            "card": 87,
+            "cell": 2
+          },
+          "M16": {
+            "card": 20,
+            "cell": 6
+          },
+          "M17": {
+            "card": 14,
+            "cell": 1
+          },
+          "M18": {
+            "card": 30,
+            "cell": 2
+          },
+          "M19": {
+            "card": 54,
+            "cell": 2
+          },
+          "M20": {
+            "card": 93,
+            "cell": 6
+          },
+          "H01": {
+            "card": 66,
+            "cell": 2
+          },
+          "H02": {
+            "card": 29,
+            "cell": 6
+          },
+          "H03": {
+            "card": 22,
+            "cell": 2
+          },
+          "H04": {
+            "card": 13,
+            "cell": 5
+          },
+          "H05": {
+            "card": 77,
+            "cell": 4
+          },
+          "H06": {
+            "card": 6,
+            "cell": 8
+          },
+          "H07": {
+            "card": 63,
+            "cell": 5
+          },
+          "H08": {
+            "card": 37,
+            "cell": 3
+          },
+          "H09": {
+            "card": 51,
+            "cell": 4
+          },
+          "H10": {
+            "card": 98,
+            "cell": 1
+          },
+          "H11": {
+            "card": 50,
+            "cell": 0
+          },
+          "H12": {
+            "card": 15,
+            "cell": 6
+          },
+          "H13": {
+            "card": 76,
+            "cell": 4
+          },
+          "H14": {
+            "card": 76,
+            "cell": 2
+          },
+          "H15": {
+            "card": 86,
+            "cell": 8
+          },
+          "H16": {
+            "card": 15,
+            "cell": 2
+          },
+          "H17": {
+            "card": 65,
+            "cell": 8
+          },
+          "H18": {
+            "card": 39,
+            "cell": 2
+          },
+          "H19": {
+            "card": 78,
+            "cell": 6
+          },
+          "H20": {
+            "card": 88,
+            "cell": 2
+          }
+        },
+        "campaigns": [
+          {
+            "seed": 20261011,
+            "matches": 20,
+            "actions": [
+              {
+                "t": "deck",
+                "cards": [
+                  81,
+                  45,
+                  57,
+                  61,
+                  14
+                ]
+              },
+              {
+                "t": "place",
+                "card": 61,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 14,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 81,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 57,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 45,
+                "cell": 4
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 14,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 81,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 57,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 61,
+                "cell": 7
+              },
+              {
+                "t": "shop",
+                "pack": "bronze"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  63,
+                  61,
+                  3,
+                  63,
+                  11
+                ]
+              },
+              {
+                "t": "place",
+                "card": 61,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 63,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 63,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 11,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 3,
+                "cell": 0
+              },
+              {
+                "t": "shop",
+                "pack": "bronze"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  81,
+                  63,
+                  54,
+                  57,
+                  45
+                ]
+              },
+              {
+                "t": "place",
+                "card": 63,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 45,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 81,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 57,
+                "cell": 3
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 81,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 54,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 45,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 63,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 57,
+                "cell": 4
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 54,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 57,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 63,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 81,
+                "cell": 8
+              },
+              {
+                "t": "shop",
+                "pack": "bronze"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  35,
+                  63,
+                  61,
+                  54,
+                  14
+                ]
+              },
+              {
+                "t": "place",
+                "card": 35,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 61,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 63,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 54,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 14,
+                "cell": 6
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 35,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 54,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 14,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 63,
+                "cell": 7
+              },
+              {
+                "t": "shop",
+                "pack": "bronze"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  61,
+                  57,
+                  71,
+                  3,
+                  14
+                ]
+              },
+              {
+                "t": "place",
+                "card": 71,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 61,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 14,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 3,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 57,
+                "cell": 8
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 71,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 14,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 61,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 57,
+                "cell": 8
+              },
+              {
+                "t": "shop",
+                "pack": "silver"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  7,
+                  61,
+                  63,
+                  3,
+                  75
+                ]
+              },
+              {
+                "t": "place",
+                "card": 61,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 63,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 3,
+                "cell": 0
+              },
+              {
+                "t": "shop",
+                "pack": "bronze"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  73,
+                  11,
+                  92,
+                  84,
+                  7
+                ]
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 73,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 11,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 92,
+                "cell": 3
+              },
+              {
+                "t": "shop",
+                "pack": "bronze"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  71,
+                  84,
+                  81,
+                  54,
+                  34
+                ]
+              },
+              {
+                "t": "place",
+                "card": 84,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 81,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 34,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 54,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 71,
+                "cell": 2
+              },
+              {
+                "t": "shop",
+                "pack": "bronze"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  73,
+                  22,
+                  54,
+                  13,
+                  45
+                ]
+              },
+              {
+                "t": "place",
+                "card": 45,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 13,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 22,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 73,
+                "cell": 4
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 45,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 22,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 73,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 13,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 54,
+                "cell": 0
+              },
+              {
+                "t": "shop",
+                "pack": "bronze"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  81,
+                  1,
+                  14,
+                  54,
+                  35
+                ]
+              },
+              {
+                "t": "place",
+                "card": 81,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 14,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 54,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 35,
+                "cell": 3
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 35,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 1,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 54,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 14,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 81,
+                "cell": 4
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 81,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 14,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 1,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 54,
+                "cell": 5
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 54,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 1,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 35,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 14,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 81,
+                "cell": 2
+              },
+              {
+                "t": "shop",
+                "pack": "bronze"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  18,
+                  84,
+                  65,
+                  71,
+                  61
+                ]
+              },
+              {
+                "t": "place",
+                "card": 18,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 65,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 61,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 84,
+                "cell": 2
+              }
+            ]
+          },
+          {
+            "seed": 20261012,
+            "matches": 20,
+            "actions": [
+              {
+                "t": "deck",
+                "cards": [
+                  25,
+                  91,
+                  4,
+                  33,
+                  32
+                ]
+              },
+              {
+                "t": "place",
+                "card": 91,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 32,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 4,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 25,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 33,
+                "cell": 0
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 25,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 33,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 4,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 32,
+                "cell": 0
+              },
+              {
+                "t": "shop",
+                "pack": "silver"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  32,
+                  37,
+                  94,
+                  68,
+                  25
+                ]
+              },
+              {
+                "t": "place",
+                "card": 94,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 25,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 32,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 2
+              },
+              {
+                "t": "shop",
+                "pack": "bronze"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  91,
+                  32,
+                  95,
+                  33,
+                  37
+                ]
+              },
+              {
+                "t": "place",
+                "card": 33,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 95,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 32,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 91,
+                "cell": 3
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 91,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 33,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 32,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 95,
+                "cell": 8
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 33,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 32,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 91,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 95,
+                "cell": 2
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 37,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 33,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 32,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 91,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 95,
+                "cell": 6
+              },
+              {
+                "t": "shop",
+                "pack": "bronze"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  4,
+                  81,
+                  12,
+                  48,
+                  94
+                ]
+              },
+              {
+                "t": "place",
+                "card": 94,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 12,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 81,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 48,
+                "cell": 0
+              },
+              {
+                "t": "shop",
+                "pack": "bronze"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  81,
+                  48,
+                  25,
+                  22,
+                  94
+                ]
+              },
+              {
+                "t": "place",
+                "card": 25,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 94,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 81,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 48,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 22,
+                "cell": 8
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 94,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 81,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 48,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 25,
+                "cell": 2
+              },
+              {
+                "t": "shop",
+                "pack": "bronze"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  32,
+                  91,
+                  43,
+                  97,
+                  95
+                ]
+              },
+              {
+                "t": "place",
+                "card": 91,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 95,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 32,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 97,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 43,
+                "cell": 0
+              },
+              {
+                "t": "shop",
+                "pack": "bronze"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  48,
+                  31,
+                  4,
+                  97,
+                  4
+                ]
+              },
+              {
+                "t": "place",
+                "card": 48,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 4,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 97,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 4,
+                "cell": 0
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 31,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 97,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 48,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 4,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 4,
+                "cell": 0
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 4,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 31,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 48,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 97,
+                "cell": 8
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 31,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 97,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 4,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 4,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 48,
+                "cell": 2
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 4,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 97,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 31,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 4,
+                "cell": 1
+              },
+              {
+                "t": "shop",
+                "pack": "bronze"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  2,
+                  93,
+                  94,
+                  95,
+                  81
+                ]
+              },
+              {
+                "t": "place",
+                "card": 81,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 94,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 95,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 93,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 2,
+                "cell": 6
+              },
+              {
+                "t": "shop",
+                "pack": "bronze"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  95,
+                  33,
+                  43,
+                  81,
+                  2
+                ]
+              },
+              {
+                "t": "place",
+                "card": 81,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 43,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 33,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 2,
+                "cell": 6
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 43,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 2,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 81,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 33,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 95,
+                "cell": 6
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 2,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 95,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 33,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 43,
+                "cell": 2
+              }
+            ]
+          },
+          {
+            "seed": 20261013,
+            "matches": 20,
+            "actions": [
+              {
+                "t": "deck",
+                "cards": [
+                  7,
+                  92,
+                  75,
+                  32,
+                  4
+                ]
+              },
+              {
+                "t": "place",
+                "card": 32,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 92,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 4,
+                "cell": 0
+              },
+              {
+                "t": "shop",
+                "pack": "silver"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  75,
+                  32,
+                  92,
+                  84,
+                  34
+                ]
+              },
+              {
+                "t": "place",
+                "card": 92,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 84,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 34,
+                "cell": 1
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 34,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 92,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 84,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 32,
+                "cell": 7
+              },
+              {
+                "t": "shop",
+                "pack": "bronze"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  92,
+                  4,
+                  2,
+                  75,
+                  84
+                ]
+              },
+              {
+                "t": "place",
+                "card": 4,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 92,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 2,
+                "cell": 6
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 92,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 84,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 4,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 2,
+                "cell": 1
+              },
+              {
+                "t": "shop",
+                "pack": "silver"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  34,
+                  4,
+                  54,
+                  51,
+                  32
+                ]
+              },
+              {
+                "t": "place",
+                "card": 4,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 32,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 54,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 51,
+                "cell": 2
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 34,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 4,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 54,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 32,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 51,
+                "cell": 2
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 4,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 51,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 34,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 54,
+                "cell": 6
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 34,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 32,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 54,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 51,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 4,
+                "cell": 2
+              },
+              {
+                "t": "shop",
+                "pack": "bronze"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  2,
+                  54,
+                  51,
+                  26,
+                  34
+                ]
+              },
+              {
+                "t": "place",
+                "card": 34,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 2,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 26,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 54,
+                "cell": 4
+              },
+              {
+                "t": "shop",
+                "pack": "bronze"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  34,
+                  25,
+                  24,
+                  34,
+                  68
+                ]
+              },
+              {
+                "t": "place",
+                "card": 34,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 34,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 25,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 24,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 8
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 24,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 25,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 34,
+                "cell": 0
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 25,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 24,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 68,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 34,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 34,
+                "cell": 1
+              },
+              {
+                "t": "shop",
+                "pack": "bronze"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  51,
+                  43,
+                  75,
+                  54,
+                  75
+                ]
+              },
+              {
+                "t": "place",
+                "card": 51,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 54,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 0
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 54,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 51,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 43,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 2
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 3
+              },
+              {
+                "t": "place",
+                "card": 43,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 51,
+                "cell": 0
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 2
+              },
+              {
+                "t": "place",
+                "card": 54,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 51,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 43,
+                "cell": 6
+              },
+              {
+                "t": "shop",
+                "pack": "skip"
+              },
+              {
+                "t": "place",
+                "card": 51,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 54,
+                "cell": 7
+              },
+              {
+                "t": "place",
+                "card": 43,
+                "cell": 0
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 2
+              },
+              {
+                "t": "shop",
+                "pack": "bronze"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  43,
+                  21,
+                  25,
+                  75,
+                  92
+                ]
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 5
+              },
+              {
+                "t": "place",
+                "card": 21,
+                "cell": 6
+              },
+              {
+                "t": "place",
+                "card": 43,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 25,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 92,
+                "cell": 2
+              },
+              {
+                "t": "shop",
+                "pack": "bronze"
+              },
+              {
+                "t": "deck",
+                "cards": [
+                  2,
+                  51,
+                  25,
+                  75,
+                  7
+                ]
+              },
+              {
+                "t": "place",
+                "card": 7,
+                "cell": 1
+              },
+              {
+                "t": "place",
+                "card": 25,
+                "cell": 4
+              },
+              {
+                "t": "place",
+                "card": 75,
+                "cell": 8
+              },
+              {
+                "t": "place",
+                "card": 51,
+                "cell": 5
+              }
+            ]
+          }
+        ],
+        "meta": {
+          "durationMs": 68
+        }
+      }
+    }
+  ]
+}
