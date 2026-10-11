@@ -38,6 +38,21 @@
   animation: screen-shake 80ms ease-in-out;
 }
 
+/* Card Equip Shake FX for Deck Optimization / Auto Replace */
+@keyframes card-shake {
+  0%, 100% { transform: translateX(0) rotate(0deg) scale(1); }
+  15% { transform: translateX(-6px) rotate(-3deg) scale(1.05); }
+  30% { transform: translateX(6px) rotate(3deg) scale(1.08); }
+  45% { transform: translateX(-5px) rotate(-2deg) scale(1.06); }
+  60% { transform: translateX(5px) rotate(2deg) scale(1.04); }
+  75% { transform: translateX(-3px) rotate(-1deg) scale(1.02); }
+  90% { transform: translateX(2px) rotate(1deg) scale(1.01); }
+}
+
+.animate-card-shake {
+  animation: card-shake 0.8s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
 /* Row 1061 / ID 324: Prevent default context callout & long press on mobile battle elements */
 .battle-touch-safe,
 .battle-board-slot,

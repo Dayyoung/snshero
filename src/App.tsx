@@ -7567,7 +7567,22 @@ function AppContent() {
             }}
             onConfirm={() => {
               if (upgradeDeckPrompt) {
+                const targetSlots = upgradeDeckPrompt.upgradedCardsToApply.map(item => item.idx);
                 applyDeckUpgrade(upgradeDeckPrompt.upgradedCardsToApply);
+                window.dispatchEvent(new CustomEvent('snshero_deck_slots_upgraded', {
+                  detail: { slots: targetSlots }
+                }));
+
+                // 자동 루프 랭킹 플레이 복귀 안전 백업
+                let isAutoLoopRanking = false;
+                try {
+                  isAutoLoopRanking = localStorage.getItem('hero_auto_loop_is_ranking') === 'true';
+                } catch {}
+                if (isAutoLoopRanking && view !== 'mydeck') {
+                  setTimeout(() => {
+                    setView('card-play');
+                  }, 1400);
+                }
               }
               const season = currentSeason || localStorage.getItem('hero_current_season') || 'season1';
               const newFingerprint = getCardStateFingerprint(currentDeck, inventory);

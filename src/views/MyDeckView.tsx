@@ -120,6 +120,7 @@ interface SortableCardItemProps {
   setCardDetailTab?: React.Dispatch<React.SetStateAction<'stats' | 'skills' | 'lore'>>;
   isSynergyActive?: boolean;
   synergyElement?: string;
+  isShaking?: boolean;
 }
 
 const SortableCardItem: React.FC<SortableCardItemProps> = ({
@@ -146,6 +147,7 @@ const SortableCardItem: React.FC<SortableCardItemProps> = ({
   setCardDetailTab,
   isSynergyActive,
   synergyElement,
+  isShaking,
 }) => {
   const {
     attributes,
@@ -159,7 +161,7 @@ const SortableCardItem: React.FC<SortableCardItemProps> = ({
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    zIndex: isDragging ? 10 : 1,
+    zIndex: isDragging ? 10 : isShaking ? 25 : 1,
     opacity: isDragging ? 0.4 : 1,
   };
 
@@ -179,9 +181,15 @@ const SortableCardItem: React.FC<SortableCardItemProps> = ({
       </div>
       <div className={cn(
         "relative overflow-hidden rounded-xl group/card transition-all",
-        isSynergyActive ? "ring-4 ring-amber-400 shadow-[0_0_16px_rgba(251,191,36,0.85)] scale-[1.02]" : ""
+        isShaking ? "animate-card-shake ring-4 ring-amber-400 shadow-[0_0_24px_rgba(251,191,36,0.9)] z-30 scale-105" : "",
+        isSynergyActive && !isShaking ? "ring-4 ring-amber-400 shadow-[0_0_16px_rgba(251,191,36,0.85)] scale-[1.02]" : ""
       )} {...attributes} {...listeners}>
-        {isSynergyActive && (
+        {isShaking && (
+          <div className="absolute top-1 left-1/2 -translate-x-1/2 z-30 px-2 py-0.5 bg-gradient-to-r from-amber-500 to-yellow-400 text-stone-950 font-black text-[9px] rounded-sm shadow-xl border border-amber-200 animate-bounce uppercase leading-none whitespace-nowrap">
+            {language === 'ko' ? '⚡ 장착 완료!' : '⚡ EQUIPPED!'}
+          </div>
+        )}
+        {isSynergyActive && !isShaking && (
           <div className="absolute top-1 left-1 z-20 px-1 py-0.2 bg-amber-500 text-stone-950 font-black text-[8px] rounded-xs shadow-md border border-amber-300 animate-pulse uppercase leading-none">
             ✨AURA
           </div>
@@ -323,6 +331,54 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
     onNavigate('card-play');
   }, [onNavigate]);
 
+  // ─── 덱 최적화/강화 시 적용 슬롯 흔들림 애니메이션 (Card Shake FX) ───
+  const [shakingSlotIndices, setShakingSlotIndices] = useState<number[]>([]);
+  const shakeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const autoReturnTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const triggerCardShake = useCallback((indices: number[], andReturnToAutoLoop = false) => {
+    if (!indices || indices.length === 0) return;
+    setShakingSlotIndices(indices);
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+    triggerHaptic('heavy');
+
+    if (shakeTimeoutRef.current) clearTimeout(shakeTimeoutRef.current);
+    shakeTimeoutRef.current = setTimeout(() => {
+      setShakingSlotIndices([]);
+    }, 1200);
+
+    // 자동 플레이 상태 확인: 애니메이션 재생 후 랭킹 대전으로 자동 복귀
+    let isAutoLoopRanking = false;
+    try {
+      isAutoLoopRanking = localStorage.getItem('hero_auto_loop_is_ranking') === 'true';
+    } catch {}
+
+    if (andReturnToAutoLoop || isAutoLoopRanking) {
+      if (autoReturnTimerRef.current) clearTimeout(autoReturnTimerRef.current);
+      autoReturnTimerRef.current = setTimeout(() => {
+        handleInstantReturnToBattle();
+      }, 1400);
+    }
+  }, [playSfx, handleInstantReturnToBattle]);
+
+  // 외부(DeckUpgradeModal 등)에서 덱 슬롯 업그레이드 이벤트 수신
+  useEffect(() => {
+    const handleDeckSlotsUpgraded = (e: Event) => {
+      const customEvent = e as CustomEvent<{ slots: number[] }>;
+      const slots = customEvent.detail?.slots || [];
+      if (slots.length > 0) {
+        triggerCardShake(slots, true);
+      }
+    };
+
+    window.addEventListener('snshero_deck_slots_upgraded', handleDeckSlotsUpgraded as EventListener);
+    return () => {
+      window.removeEventListener('snshero_deck_slots_upgraded', handleDeckSlotsUpgraded as EventListener);
+      if (shakeTimeoutRef.current) clearTimeout(shakeTimeoutRef.current);
+      if (autoReturnTimerRef.current) clearTimeout(autoReturnTimerRef.current);
+    };
+  }, [triggerCardShake]);
+
   useEffect(() => {
     let mode: string | null = null;
     let rawCard: string | null = null;
@@ -402,6 +458,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
       updateDeck(updatedDeck);
       playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
       triggerHaptic('heavy');
+      triggerCardShake([weakestSlot], false);
 
       try {
         localStorage.removeItem('hero_auto_loop_mode');
@@ -443,7 +500,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
       } catch {}
       handleInstantReturnToBattle();
     }
-  }, [inventory, language, playSfx, updateDeck, currentSeason, handleInstantReturnToBattle]);
+  }, [inventory, language, playSfx, updateDeck, currentSeason, handleInstantReturnToBattle, triggerCardShake]);
   const [selectedCardForDetail, setSelectedCardForDetail] = useState<CardData | null>(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
@@ -692,6 +749,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
     const optimalDeck = buildOptimalSynergyDeck(allAvailable as any[], 8);
     if (optimalDeck && optimalDeck.length > 0) {
       updateDeck(optimalDeck as CardData[]);
+      triggerCardShake([0, 1, 2, 3, 4].slice(0, optimalDeck.length), true);
       if (showCustomAlert) {
         showCustomAlert(
           language === 'ko' ? '✨ 최적 시너지 덱 편성 완료' : '✨ Optimal Synergy Deck Built',
@@ -918,9 +976,23 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
       }, inventory);
     });
 
+    // 변경된 카드 슬롯 인덱스 계산
+    const changedSlots: number[] = [];
+    bestCards.forEach((c, idx) => {
+      const prev = currentDeck[idx];
+      if (!prev || prev.imageIndex !== c.imageIndex || prev.id !== c.id) {
+        changedSlots.push(idx);
+      }
+    });
+
     updateDeck(bestCards);
     triggerHaptic('success');
     playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+
+    // 적용된 슬롯 카드 흔들기 효과 발동 (변경된 카드가 없더라도 전체 적용 슬롯 흔들림)
+    const targetsToShake = changedSlots.length > 0 ? changedSlots : [0, 1, 2, 3, 4].slice(0, bestCards.length);
+    triggerCardShake(targetsToShake, true);
+
     setShowOptimizeSuccessModal(true);
   };
 
@@ -1709,6 +1781,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                   setCardDetailTab={setCardDetailTab}
                   isSynergyActive={Boolean(factionSynergy && String((card as any)?.element || CARD_DATABASE[card?.imageIndex || 0]?.element || 'WATER').toUpperCase() === factionSynergy.element)}
                   synergyElement={factionSynergy?.element}
+                  isShaking={shakingSlotIndices.includes(idx)}
                 />
               ))}
             </SortableContext>
@@ -3405,7 +3478,16 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                 </p>
               </div>
               <button
-                onClick={() => setShowOptimizeSuccessModal(false)}
+                onClick={() => {
+                  setShowOptimizeSuccessModal(false);
+                  let isAutoLoopRanking = false;
+                  try {
+                    isAutoLoopRanking = localStorage.getItem('hero_auto_loop_is_ranking') === 'true';
+                  } catch {}
+                  if (isAutoLoopRanking) {
+                    handleInstantReturnToBattle();
+                  }
+                }}
                 className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-xl font-bold uppercase tracking-wider text-xs shadow-md active:scale-95 transition-all cursor-pointer"
               >
                 {language === 'ko' ? '확인' : 'OK'}

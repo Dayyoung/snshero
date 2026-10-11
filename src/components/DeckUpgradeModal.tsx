@@ -28,6 +28,14 @@ export const DeckUpgradeModal: React.FC<DeckUpgradeModalProps> = ({
 }) => {
   if (!isOpen || upgradedCards.length === 0) return null;
 
+  const isAutoLoopRanking = typeof window !== 'undefined' && (() => {
+    try {
+      return localStorage.getItem('hero_auto_loop_is_ranking') === 'true';
+    } catch {
+      return false;
+    }
+  })();
+
   return (
     <div className="fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs font-mono text-[#201d1d] animate-in fade-in duration-150">
       <div className="w-full max-w-md bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-none shadow-xl p-4 sm:p-5 flex flex-col gap-4">
@@ -48,6 +56,14 @@ export const DeckUpgradeModal: React.FC<DeckUpgradeModalProps> = ({
             [✕]
           </button>
         </div>
+
+        {/* Smart Loop Status Notice */}
+        {isAutoLoopRanking && (
+          <div className="px-3 py-1.5 bg-amber-50 border border-amber-300 rounded-sm text-[10px] font-bold text-amber-900 flex items-center gap-1.5 animate-pulse">
+            <span>⚡</span>
+            <span>{language === 'ko' ? '[스마트 루프] 적용 시 카드 장착 애니메이션 재생 후 랭킹 대전으로 자동 복귀합니다.' : '[Smart Loop] Returns to Rank Match after equip animation.'}</span>
+          </div>
+        )}
 
         {/* 1-line Summary Banner */}
         <div className="px-3 py-1.5 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-sm flex items-center justify-between text-[11px] font-bold">
