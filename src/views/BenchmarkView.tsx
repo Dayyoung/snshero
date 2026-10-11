@@ -217,8 +217,8 @@ npx tsx scripts/bench/harness.ts --agent gemini --model gemini-2.5-pro`;
         <div className="border-b border-[#201d1d]/15 pb-4 mb-6">
           <h1 className="text-lg sm:text-2xl font-black tracking-tight text-[#201d1d] mb-1">
             {language === 'ko'
-              ? 'SHBP-3 공인 인공지능 벤치마크'
-              : 'SHBP-3 Official AI Benchmark'}
+              ? 'SHBP-3 (SNSHero Bench Point) 공인 인공지능 벤치마크'
+              : 'SHBP-3 (SNSHero Bench Point) Official AI Benchmark'}
           </h1>
           <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">
             {language === 'ko'
@@ -226,6 +226,15 @@ npx tsx scripts/bench/harness.ts --agent gemini --model gemini-2.5-pro`;
               : 'Tamper-proof log-replay verified 2-track AI benchmark (Combinatorial Minimax Ground Truth + Hidden-Hand Campaign)'}
           </p>
         </div>
+
+        {/* 1. Official Audited Leaderboard & Interactive Chart (ArtificialAnalysis Style) - Displayed First */}
+        <BenchmarkChart
+          records={OFFICIAL_LEADERBOARD}
+          language={language}
+          onSelectModel={(model) => {
+            triggerHaptic('light');
+          }}
+        />
 
         {/* 2. Architecture Explainer */}
         <section className="bg-stone-900 text-stone-100 p-4 sm:p-5 rounded-none border border-black mb-6">
@@ -273,15 +282,6 @@ npx tsx scripts/bench/harness.ts --agent gemini --model gemini-2.5-pro`;
             <span className="text-emerald-400 font-mono font-bold">100% Deterministic & Replay-Audited</span>
           </div>
         </section>
-
-        {/* 3. Official Audited Leaderboard & Interactive Chart (ArtificialAnalysis Style) */}
-        <BenchmarkChart
-          records={OFFICIAL_LEADERBOARD}
-          language={language}
-          onSelectModel={(model) => {
-            triggerHaptic('light');
-          }}
-        />
 
         {/* 4. In-Browser Runner */}
         <section className="border border-stone-300 bg-white p-4 sm:p-5 rounded-none mb-6">

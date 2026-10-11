@@ -189,8 +189,8 @@ export const BenchmarkChart: React.FC<BenchmarkChartProps> = ({
               </span>
               <h2 className="text-sm sm:text-base font-black text-[#201d1d] tracking-tight uppercase">
                 {language === 'ko'
-                  ? '공인 모델별 성능 비교 그래프 (ArtificialAnalysis Style)'
-                  : 'AI Model Benchmark Comparison (ArtificialAnalysis Style)'}
+                  ? 'SHBP 모델별 성능 비교 그래프'
+                  : 'SHBP Model Benchmark Comparison'}
               </h2>
             </div>
             <p className="text-[11px] text-stone-500 mt-1 leading-relaxed">
