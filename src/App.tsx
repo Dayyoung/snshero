@@ -92,7 +92,8 @@ import {
   Wrench,
   ChevronDown,
   CheckCircle2,
-  MessageSquare
+  MessageSquare,
+  Trophy
 } from 'lucide-react';
 
 import { Meta } from './components/Meta';
@@ -416,6 +417,9 @@ function AppContent() {
   const [fromBackToRanking, setFromBackToRanking] = useState(false);
   const [view, setView] = useState<ViewType>(() => getViewFromPathAndUrl());
 
+  const { language, setLanguage, lowSpecMode, setLowSpecMode, theme, setTheme } = useGameSettings();
+  useLowSpecGuard(lowSpecMode);
+
   // Row 1056 / ID 319: Mobile Visual Viewport Lock for virtual keyboard stabilization
   useVisualViewportLock();
 
@@ -579,8 +583,6 @@ function AppContent() {
     }
   }, [view]);
 
-  const { language, setLanguage, lowSpecMode, setLowSpecMode, theme, setTheme } = useGameSettings();
-  useLowSpecGuard(lowSpecMode);
   const [recommendMode, setRecommendMode] = useState(() => {
     return typeof window !== 'undefined' ? localStorage.getItem('hero_recommend_mode') !== 'false' : true;
   });

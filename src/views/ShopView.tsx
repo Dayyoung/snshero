@@ -2350,13 +2350,13 @@ export const ShopView: React.FC<ShopViewProps> = ({
       }
 
       // 뽑힌 카드 중 최고 파워 카드 탐색
-      let bestDrawnCard: CardData | null = null;
+      let bestDrawnCard: any = null;
       let bestDrawnPower = -1;
 
       for (const gc of drawnCards) {
         const dbCard = CARD_DATABASE[gc.imageIndex];
         if (dbCard) {
-          const power = getCardPower(dbCard);
+          const power = (dbCard.top ?? 0) + (dbCard.right ?? 0) + (dbCard.bottom ?? 0) + (dbCard.left ?? 0);
           if (power > bestDrawnPower) {
             bestDrawnPower = power;
             bestDrawnCard = dbCard;

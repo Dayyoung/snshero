@@ -52,24 +52,26 @@ const toRarity = (r: string | undefined): BenchRarity => (r === 'silver' || r ==
 export const BENCH_CARDS: Record<number, BenchCard> = {};
 export const CARD_IDS_BY_RARITY: Record<BenchRarity, number[]> = { bronze: [], silver: [], gold: [] };
 
-Object.keys(CARD_DATABASE)
-  .map(Number)
-  .sort((a, b) => a - b)
-  .forEach((id) => {
-    const db = CARD_DATABASE[id];
-    if (!db) return;
-    const s = [...(db.stats || [1, 1, 1, 1])] as [number, number, number, number];
-    const card: BenchCard = {
-      id,
-      name: db.title_en || db.title_dis || db.title || `Card ${id}`,
-      s,
-      el: String(db.element || 'none'),
-      r: toRarity(db.rarity),
-      power: s[0] + s[1] + s[2] + s[3],
-    };
-    BENCH_CARDS[id] = card;
-    CARD_IDS_BY_RARITY[card.r].push(id);
-  });
+if (typeof CARD_DATABASE === 'object' && CARD_DATABASE !== null) {
+  Object.keys(CARD_DATABASE)
+    .map(Number)
+    .sort((a, b) => a - b)
+    .forEach((id) => {
+      const db = CARD_DATABASE[id];
+      if (!db) return;
+      const s = [...(db.stats || [1, 1, 1, 1])] as [number, number, number, number];
+      const card: BenchCard = {
+        id,
+        name: db.title_en || db.title_dis || db.title || `Card ${id}`,
+        s,
+        el: String(db.element || 'none'),
+        r: toRarity(db.rarity),
+        power: s[0] + s[1] + s[2] + s[3],
+      };
+      BENCH_CARDS[id] = card;
+      CARD_IDS_BY_RARITY[card.r].push(id);
+    });
+}
 
 export const ALL_CARD_IDS: number[] = Object.keys(BENCH_CARDS).map(Number);
 

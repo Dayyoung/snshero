@@ -119,6 +119,16 @@ if (fs.existsSync(indexPath)) {
     benchCustomHtml = benchCustomHtml.replace('<div id="root"></div>', `<div id="root"></div>\n${benchPrerenderArticle}`);
   }
 
+  // Ensure all asset references inside nested route HTMLs use absolute paths (/assets/ instead of ./assets/)
+  const ensureAbsoluteAssetPaths = (html) => {
+    return html
+      .replace(/(src|href)=["']\.\/assets\//g, '$1="/assets/')
+      .replace(/(src|href)=["']assets\//g, '$1="/assets/');
+  };
+
+  const cleanBenchHtml = ensureAbsoluteAssetPaths(benchCustomHtml);
+  const cleanBaseHtml = ensureAbsoluteAssetPaths(baseHtml);
+
   for (const route of routes) {
     const routeDir = path.join(distDir, route);
     if (!fs.existsSync(routeDir)) {
@@ -126,12 +136,12 @@ if (fs.existsSync(indexPath)) {
     }
 
     if (route === 'bench' || route === 'benchmark' || route === 'shbp') {
-      fs.writeFileSync(path.join(routeDir, 'index.html'), benchCustomHtml, 'utf8');
-      fs.writeFileSync(path.join(distDir, `${route}.html`), benchCustomHtml, 'utf8');
+      fs.writeFileSync(path.join(routeDir, 'index.html'), cleanBenchHtml, 'utf8');
+      fs.writeFileSync(path.join(distDir, `${route}.html`), cleanBenchHtml, 'utf8');
     } else {
-      fs.copyFileSync(indexPath, path.join(routeDir, 'index.html'));
+      fs.writeFileSync(path.join(routeDir, 'index.html'), cleanBaseHtml, 'utf8');
       if (!route.includes('/')) {
-        fs.copyFileSync(indexPath, path.join(distDir, `${route}.html`));
+        fs.writeFileSync(path.join(distDir, `${route}.html`), cleanBaseHtml, 'utf8');
       }
     }
   }

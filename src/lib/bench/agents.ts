@@ -25,7 +25,9 @@ export interface BenchAgent {
   decide(req: DecisionRequest, ctx: DecisionContext): Promise<BenchAction | null> | BenchAction | null;
 }
 
-export type SyncAgent = BenchAgent & { decide(req: DecisionRequest, ctx: DecisionContext): BenchAction | null };
+export interface SyncAgent extends Omit<BenchAgent, 'decide'> {
+  decide(req: DecisionRequest, ctx: DecisionContext): BenchAction | null;
+}
 
 const byPowerDesc = (a: number, b: number): number => getCard(b).power - getCard(a).power || a - b;
 const topDeck = (inventory: number[]): number[] => inventory.slice().sort(byPowerDesc).slice(0, DECK_SIZE);
@@ -41,7 +43,7 @@ export function createRandomAgent(seed = 7): SyncAgent {
     label: 'Random Agent',
     provider: 'baseline',
     model: 'random',
-    decide(req) {
+    decide(req): BenchAction | null {
       if (req.kind === 'puzzle' || req.kind === 'place') return place(pick(req.legal));
       if (req.kind === 'shop') return { t: 'shop', pack: pick(req.legal) };
       const inv = req.obs.inventory.map((c) => c.id);
@@ -75,7 +77,7 @@ export function createGreedyAgent(): SyncAgent {
     label: 'Rule AI (greedy)',
     provider: 'baseline',
     model: 'greedy',
-    decide(req) {
+    decide(req): BenchAction | null {
       if (req.kind === 'puzzle') return place(greedyPick(req, req.puzzle.board));
       if (req.kind === 'place') return place(greedyPick(req, req.obs.board));
       if (req.kind === 'shop') return { t: 'shop', pack: req.legal.includes('silver') ? 'silver' : 'skip' };
@@ -92,7 +94,7 @@ export function createExpertAgent(): SyncAgent {
     provider: 'baseline',
     model: 'expert',
     privileged: true,
-    decide(req, ctx) {
+    decide(req, ctx): BenchAction | null {
       if (req.kind === 'puzzle') {
         const p = ctx.puzzle;
         if (!p) return place(req.legal[0]);

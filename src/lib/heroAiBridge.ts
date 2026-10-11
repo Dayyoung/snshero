@@ -77,7 +77,7 @@ export function initHeroAiBridge() {
      * Query card database by filter
      */
     queryCards: (filter?: { element?: string; rarity?: string; search?: string }) => {
-      return CARD_DATABASE.filter(c => {
+      return Object.values(CARD_DATABASE).filter(c => {
         if (!c) return false;
         if (filter?.element && c.element?.toLowerCase() !== filter.element.toLowerCase()) return false;
         if (filter?.rarity && c.rarity?.toLowerCase() !== filter.rarity.toLowerCase()) return false;

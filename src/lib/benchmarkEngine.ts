@@ -33,7 +33,7 @@ export const OFFICIAL_PUZZLE_SET = puzzlesData as unknown as PuzzleSet;
 
 export const OFFICIAL_ANCHORS: AnchorTable = (leaderboardData as any).anchors || {};
 
-export const OFFICIAL_LEADERBOARD = (leaderboardData as any).records as Array<{
+export const OFFICIAL_LEADERBOARD = ((leaderboardData as any)?.records || []) as Array<{
   result: BenchResult;
   log: BenchLog;
 }>;
@@ -49,15 +49,19 @@ export interface LegacyLeaderboardEntry {
   hash: string;
 }
 
-export const OFFICIAL_LEADERBOARD_ENTRIES: LegacyLeaderboardEntry[] = OFFICIAL_LEADERBOARD.map((item) => ({
-  model: item.result.agent.label,
-  badge: item.result.agent.privileged ? 'Anchor 100' : item.result.agent.model === 'greedy' ? 'Rule AI' : 'Anchor 0',
-  shbpScore: item.result.shbp,
-  ci95: item.result.ci95 !== null ? `±${item.result.ci95}` : 'Exact',
-  puzzleAcc: item.result.puzzle.accuracy,
-  campaignNorm: item.result.campaign.normalized,
-  hash: item.result.logHash,
-}));
+export const getOfficialLeaderboardEntries = (): LegacyLeaderboardEntry[] => {
+  return (OFFICIAL_LEADERBOARD || []).map((item) => ({
+    model: item.result.agent.label,
+    badge: item.result.agent.privileged ? 'Anchor 100' : item.result.agent.model === 'greedy' ? 'Rule AI' : 'Anchor 0',
+    shbpScore: item.result.shbp,
+    ci95: item.result.ci95 !== null ? `±${item.result.ci95}` : 'Exact',
+    puzzleAcc: item.result.puzzle.accuracy,
+    campaignNorm: item.result.campaign.normalized,
+    hash: item.result.logHash,
+  }));
+};
+
+export const OFFICIAL_LEADERBOARD_ENTRIES: LegacyLeaderboardEntry[] = getOfficialLeaderboardEntries();
 
 /**
  * Runs a deterministic client-side benchmark for the chosen baseline agent.
