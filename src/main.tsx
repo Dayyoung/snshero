@@ -3,14 +3,16 @@ import {createRoot} from 'react-dom/client';
 import App from './App.tsx';
 import ErrorBoundary from './components/ErrorBoundary.tsx';
 import { initWebMcpService } from './lib/webMcpService.ts';
+import { initHeroAiBridge } from './lib/heroAiBridge.ts';
 import './index.css';
 
-// Initialize WebMCP (Web Model Context Protocol) for AI Agent interaction
+// Initialize WebMCP (Web Model Context Protocol) and HeroAI Bridge for AI Agent interaction
 if (typeof window !== 'undefined') {
   try {
     initWebMcpService();
+    initHeroAiBridge();
   } catch (e) {
-    console.warn('[WebMCP] Initialization warning:', e);
+    console.warn('[WebMCP/HeroAI] Initialization warning:', e);
   }
 }
 

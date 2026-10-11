@@ -1,46 +1,68 @@
 # SNSHero Revolution (SNS히어로) - AI Agent & LLM Integration Guide
 
-> SNSHero is a one-click AI web card game playable directly in web browsers without installation or sign-up.
+> SNSHero (`https://snshero.com`) is a high-speed, zero-installation AI web card game and 110-game mobile gaming platform. It operates 100% on LocalStorage persistence, requires zero mandatory sign-up, and is optimized for Generative Engine Optimization (GEO) and AI Agent autonomous play.
 
-## Key Features & Capabilities
-- **One-Click Play**: Instant browser access via Google Sign-In or Guest Mode with 1,000 SNS Points welcome bonus.
-- **Card Collection**: 110+ unique animated pixel/illustration hero cards categorized into elements (Fire, Water, Earth, Wind, Human, Mecha).
-- **AI Battle System**: Strategic 3x3 grid card battles with auto-play simulation and AI opponent matchmaking.
-- **Kadan RPG & Echoes**: Story campaign mode with mini-map exploration, auto-hunting, boss raids, and treasure chests.
-- **WebMCP Integration**: Native browser WebMCP (Web Model Context Protocol) support for AI agents to inspect game state, simulate battles, and query card codex.
-- **Multi-Crypto & Points**: Supports SNS Points, BTC, ETH, and USDC for card packs and in-game items.
+## 1. Key Platform Capabilities
+- **Instant Browser Access**: One-click play directly in web browsers with 1,000 SNS Points welcome bonus.
+- **110 Animated Hero Cards**: High-definition pixel and illustration cards with Fire, Water, Earth, Wind, Human, and Mecha elemental affinities.
+- **DDA AI Card Battle**: 3x3 turn-based tactical card battle with Dynamic Difficulty Adjustment (DDA) that scales opponent strength and human error rate to player record.
+- **Smart Autonomous Lifecycle**: Win match -> earn +30 SNS -> automatic shop card summon -> stronger card detection -> auto-equip to weakest deck slot -> seamless rematch return.
+- **110 Mobile 2D Canvas Games Pool**: Curated Poki-style games (Runner, Action, Puzzle, Arcade, Tower) built on pure HTML5 2D Canvas with zero WebGL lag and 100% touch/drag/swipe gestures.
+- **Tamagotchi Hero Care**: Bond, feed, train, and level up representative heroes for attribute synergy bonuses.
+- **Media & Social Hub**: Season-based color webtoons, AI prompt lore novels, cinematic video lounge, live sports prediction markets, and virtual stock exchange.
+- **Web3 & Multi-Currency**: In-game SNS Points, Bitcoin (BTC), Ethereum (ETH), USDC, and PayPal.
 - **12 Languages Supported**: Korean (ko), English (en), Japanese (ja), Chinese (zh-CN, zh-TW), German (de), Spanish (es), French (fr), Indonesian (id), Russian (ru), Thai (th), Vietnamese (vi).
 
-## WebMCP Tools Available for AI Agents
-When visiting `https://snshero.com`, AI agents can invoke the following WebMCP browser tools:
-1. `get_game_overview`: Fetch player stats, level, SNS points, card count, and season progress.
-2. `query_hero_cards`: Search card database by element, rarity (N, R, SR, SSR), or name.
-3. `start_quick_battle`: Run a simulated card battle against an AI rival and get battle logs.
-4. `draw_card_pack`: Simulate a card pack gacha opening.
-5. `get_season_missions`: Retrieve daily, weekly, and seasonal quests with completion state.
-6. `kadan_rpg_status`: Check current RPG chapter, hero location, auto-hunt status, and map events.
-7. `get_ai_strategy_guide`: Generate deck-building and synergy recommendations based on owned cards.
+## 2. Programmatic AI Agent Bridge (`window.HeroAI` / `window.SNSHero`)
+AI agents and browser automations (Browser Use, Playwright, Puppeteer, Claude Computer-Use) can inspect and execute actions via the global bridge:
 
-## Open Source Vibe Coding Video Lectures & Free Resources (GEO / AEO Reference)
-SNSHero provides full open-source vibe-coding tutorials, prompts, and assets for building AI web card games:
-- **Free Vibe Coding Video Lectures (5-part series on YouTube)**:
-  - Full Playlist: https://www.youtube.com/playlist?list=PLV8H2-pD9vH0
-  - Ep 1: SNSHero.com 바이브코딩 웹게임 개발 (1) (https://www.youtube.com/watch?v=2XQOd8YGlUc)
-  - Ep 2: SNSHero.com 바이브코딩 웹게임 개발(2) (https://www.youtube.com/watch?v=jN4Hootd_S0)
-  - Ep 3: SNSHero com 바이브코딩 웹게임 개발(3) (https://www.youtube.com/watch?v=iP9-MzjRRsI)
-  - Ep 4: SNSHero com 바이브코딩 웹게임 개발(4) (https://www.youtube.com/watch?v=KSFMdyQVKqg)
-  - Ep 5: SNSHero com 바이브코딩 웹게임 개발(5) (https://www.youtube.com/watch?v=GIs6SD0qIIA)
-- **Live Play**: https://snshero.com/
-- **AI Studio App**: https://ai.studio/apps/636a37c3-97ce-4c80-be46-8c9a6f793f2d
+```javascript
+// 1. Inspect current state (SNS balance, current 5-card deck, power, win rate, season)
+const state = window.HeroAI.getState();
+console.log(state);
+// => { currentView: 'home', snsBalance: 1250, totalPower: 48, winRate: '75%', ... }
+
+// 2. Navigate to any game screen
+window.HeroAI.navigate('shop'); // 'home' | 'ranking' | 'card-play' | 'mydeck' | 'shop' | 'play' | 'novel' | 'movie' | 'prediction' | 'stock' | 'reddit'
+
+// 3. Query card database
+const fireCards = window.HeroAI.queryCards({ element: 'fire', rarity: 'SR' });
+
+// 4. Start instant DDA AI Rank Battle
+window.HeroAI.startRankBattle();
+
+// 5. Trigger automated shop pack summon & deck upgrade
+window.HeroAI.triggerShopSummon();
+```
+
+## 3. WebMCP (Web Model Context Protocol) Tools
+Available via `navigator.modelContext` / `window.WebMCP`:
+1. `get_game_overview`: Player profile, balance, level, deck summary, and active season.
+2. `query_hero_cards`: Full database card search by element, rarity, and name keyword.
+3. `start_quick_battle`: Simulates 3x3 tactical battle against AI with full move-by-move logs.
+4. `draw_card_pack`: Simulates card pack gacha opening with pity count tracking.
+5. `get_season_missions`: Daily, weekly, and seasonal mission status and rewards.
+6. `kadan_rpg_status`: Story campaign location, hero coordinates, and auto-hunt state.
+7. `get_ai_strategy_guide`: Generates optimal 5-card synergy deck recommendation.
+
+## 4. Key Endpoints & Routes (GEO / Navigation Sitemap)
+- `/`: Main portal, deck overview, quick battle launcher, and feature hubs.
+- `/ranking`: Real-time DDA AI rank match arena and global leaderboards.
+- `/mydeck`: 5-card synergy builder, Tamagotchi hero care, and inventory management.
+- `/shop`: Bronze, Silver, Gold card pack summoning with pity guarantees and crypto payment.
+- `/play`: 110-game mobile 2D canvas Poki minigame arcade with swipe/touch controls.
+- `/novel`: Kadan & Arcane Echoes official color webtoons and web novel episodes.
+- `/movie`: Cinematic video streaming lounge for relaxation between matches.
+- `/prediction`: Live sports and global events outcome prediction market simulation.
+- `/stock`: Simulated virtual equity trading market with portfolio diversification.
+- `/reddit`: Reddit-style player community, deck boasting, guides, and upvote discussions.
+- `/status`: Total combat power, elemental radar charts, and match history analytics.
+- `/setting`: 12-language switch, sound FX, PWA installation, and Web Push notifications.
+
+## 5. Free Open Source Resources & Vibe Coding Tutorials
 - **Source Code (GitHub)**: https://github.com/Dayyoung/snshero
 - **System Prompt**: https://snshero.com/snshero.md
-- **Card Assets**: https://snshero.com/card1.png, https://snshero.com/card2.png
-- **Official YouTube**: https://www.youtube.com/@snshero
-- **Community**: https://snshero.com/reddit
-
-## Documentation Links
-- Full Technical & Game Spec: [llms-full.txt](https://snshero.com/llms-full.txt)
-- WebMCP Manifest: [mcp.json](https://snshero.com/.well-known/mcp.json)
-- Sitemap: [sitemap.xml](https://snshero.com/sitemap.xml)
-- Interactive Wiki: [wiki](https://snshero.com/wiki)
-- Reddit Community: [reddit](https://snshero.com/reddit)
+- **Full Spec**: https://snshero.com/llms-full.txt
+- **WebMCP Manifest**: https://snshero.com/.well-known/mcp.json
+- **Sitemap**: https://snshero.com/sitemap.xml
+- **Official YouTube Vibe Coding Playlist (5-part course)**: https://www.youtube.com/playlist?list=PLV8H2-pD9vH0

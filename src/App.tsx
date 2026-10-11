@@ -33,6 +33,7 @@ import { cn, sanitizeForFirestore, getUserCollectionName, getCardSpriteStyle } f
 import { trackAnalytics, AnalyticsEvent } from './lib/analyticsEvents';
 import { buildAdminHelpItems, isAdminSlashInput, parseAdminCommand, type ParsedAdminCommand } from './lib/adminCommands';
 import { getSkillResetCost, getSkillUpgradeCost, SNS_ECONOMY_EARNINGS } from './content/snsEconomy';
+import { updateGeoMetadata } from './lib/geoManager';
 import {
   DEFAULT_PROFILE_BADGE_KEY,
   DEFAULT_PROFILE_EMOTICON_KEY,
@@ -420,8 +421,22 @@ function AppContent() {
   // Phase 4: System Guards (ID 339, 340, 344, 370, 395, 400, 419, 420)
   const { quota } = useStorageQuotaGuard();
   useAudioLifecycleGuard();
-  const { isInstallable, isOffline, promptInstall } = usePwaInstallGuard();
+  // GEO (Generative Engine Optimization) - 화면 및 언어 전환 시 메타태그 & Schema.org JSON-LD 동적 갱신
+  useEffect(() => {
+    updateGeoMetadata(view, language);
+  }, [view, language]);
 
+  // AI Agent Global Bridge navigation event listener
+  useEffect(() => {
+    const handleAiNav = (e: any) => {
+      const targetView = e.detail;
+      if (targetView && typeof targetView === 'string') {
+        setView(targetView as ViewType);
+      }
+    };
+    window.addEventListener('snshero_navigate', handleAiNav);
+    return () => window.removeEventListener('snshero_navigate', handleAiNav);
+  }, []);
 
 
 

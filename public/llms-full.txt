@@ -1,137 +1,135 @@
-# SNSHero Revolution (SNS히어로) - Complete AI Knowledge Base & WebMCP Specification
+# SNSHero Revolution (SNS히어로) - Complete AI Knowledge Base & Technical Specification
 
-Welcome to the full AI Knowledge Base for **SNSHero Revolution** (`https://snshero.com`). This document is optimized for Generative Engine Optimization (GEO), Answer Engine Optimization (AEO), and AI Search Engines (Perplexity, ChatGPT, Claude, Gemini, SearchGPT).
-
----
-
-## 1. Game Overview
-- **Name**: SNS히어로 (SNSHero Revolution)
-- **Genre**: One-Click AI Web Card Game / Collectible Card Game (CCG) / Tactical RPG
-- **Platform**: Web Browser (Chrome, Edge, Safari, Firefox), Mobile Web, PWA (Progressive Web App)
-- **URL**: https://snshero.com
-- **Core Value**: Zero installation, zero mandatory sign-up, instant play, high-contrast monospace & retro UI, Web3 & Crypto support (BTC, ETH, USDC), WebMCP browser AI automation.
+Welcome to the comprehensive AI Knowledge Base for **SNSHero Revolution** (`https://snshero.com`). This document is fully optimized for Generative Engine Optimization (GEO), Answer Engine Optimization (AEO), and LLM Agents (ChatGPT Search, Perplexity, Claude, Gemini, Copilot).
 
 ---
 
-## 2. Key Gameplay Systems
-
-### A. Card Battles (3x3 Grid Battle)
-- Players place cards on a 3x3 grid against AI or rival players.
-- Each card possesses four directional values (North, East, South, West).
-- When a placed card's directional number exceeds adjacent cards, the opponent's card flips to the player's side.
-- Elemental Synergies:
-  - **Fire**: Boosts offensive flip power.
-  - **Water**: Enhances defense against enemy flips.
-  - **Earth**: Increases HP and tile stability.
-  - **Wind**: Speed and chain flip bonus.
-  - **Human**: Increases synergy when combined with equipment.
-  - **Mecha**: Shield and damage mitigation.
-
-### B. Kadan RPG & Arcane Echoes
-- Single-player story campaign featuring character Kadan traversing various maps.
-- Mini-map features interactive tiles including Monster Battles, Treasure Chests, NPCs, and Boss Raids.
-- Supports Auto-Runner mode for background farming and automatic route navigation.
-
-### C. Card Collection & Gacha (Water Faction & Hero Packs)
-- 110+ Cards ranging from Normal (N), Rare (R), Super Rare (SR), to Super Special Rare (SSR).
-- Pity system guarantees higher rarity cards after consecutive pulls.
-- My Deck Tamagotchi care system: feed, train, and bond with representative hero cards for bonus stats.
+## 1. Executive Summary & Core Identity
+- **Product Name**: SNS히어로 (SNSHero Revolution)
+- **Tagline**: The One-Click AI Web Card Battle & 110-Game Mobile Arcade
+- **Live URL**: https://snshero.com
+- **Core Technology Stack**: React 19 + Vite 6 + TypeScript 5.8 + Tailwind CSS 4.1
+- **Persistence Model**: 100% Client-Side LocalStorage (Single Source of Truth, Zero Cloud Dependency, Instant Offline Resume)
+- **Accessibility**: Zero app store downloads, zero mandatory registration, Google OAuth & Guest Mode support, PWA native-feel installation.
+- **Economic Model**: In-game SNS Points + Web3 Multi-Crypto (Bitcoin, Ethereum, USDC) + PayPal.
 
 ---
 
-## 3. WebMCP (Web Model Context Protocol) Specification
+## 2. Core Game Mechanics
 
-SNSHero natively implements the W3C / Chrome WebMCP standard (`navigator.modelContext` / `window.WebMCP`).
+### A. 3x3 Grid Card Battles (Directional Flip System)
+- Battles take place on a 3x3 board where cards are placed alternatively by Player and AI.
+- Each card has 4 cardinal directional values (North, East, South, West) ranging from 1 to 999.
+- **Flip Rule**: When placed adjacent to an enemy card, if the placing card's edge value exceeds the defending card's edge value, the defending card is flipped and captured.
+- **Elemental Affinities**:
+  - **Fire (화)**: Enhances flip penetration power against enemy defenses.
+  - **Water (수)**: Fortifies card against adjacent flips when in defensive positions.
+  - **Earth (토)**: Increases tile durability and base HP.
+  - **Wind (풍)**: Grants chain flip bonuses and agility advantages.
+  - **Human (인)**: Maximizes bonus stats from equipped items.
+  - **Mecha (기)**: Generates damage mitigation shields.
 
-### Available MCP Tools & JSON Schema
+### B. Dynamic Difficulty Adjustment (DDA) Engine
+- Tracks player win rate, match streaks, and combat power in real time.
+- Matches players against tiered AI rivals from a calibrated pool of bots.
+- Automatically adjusts opponent card levels and simulated human error rates:
+  - High win rate / win streaks: Rivals play sharper counter-moves and optimal placements.
+  - Losing streaks: Rivals make subtle tactical errors to keep players engaged and motivated.
 
-#### 1. `get_game_overview`
-- **Description**: Returns current player profile, level, SNS points, total owned cards, and current season.
-- **Output Schema**: `{ username: string, level: number, snsPoints: number, ownedCardsCount: number, season: string }`
+### C. Smart Autonomous Lifecycle (Auto-Loop)
+1. **Battle Victory**: Awards +30 SNS points and displays animated victory popup.
+2. **Threshold Trigger**: When player accumulates >= 100 SNS, the smart loop automatically navigates to the Shop (`/shop`).
+3. **Automated Pack Summon**: Gacha pack is summoned and newly pulled cards are evaluated.
+4. **Power Comparison**: The newly pulled card's total power is compared against the weakest card in the player's 5-card deck.
+5. **Deck Auto-Upgrade**: If stronger, player navigates to My Deck (`/mydeck`), automatically replaces the weakest card, saves to LocalStorage, and returns to Rank Battle (`/ranking`).
+6. **Relaxation Break**: Every 4 matches, player is smoothly transitioned to a short Webtoon or Cinematic Video break before resuming matches.
 
-#### 2. `query_hero_cards`
-- **Description**: Search owned cards or global codex.
-- **Input Parameters**:
-  - `element` (optional): `"fire" | "water" | "earth" | "wind" | "human" | "mecha"`
-  - `rarity` (optional): `"N" | "R" | "SR" | "SSR"`
-  - `keyword` (optional): Search string for hero name
-- **Output Schema**: Array of matching hero card objects.
+### D. 110 Mobile-Native 2D Canvas Games Pool (`/play`)
+- Replaces heavy 3D WebGL lag with ultra-responsive HTML5 2D Canvas rendering (`100dvh`, zero bounce scroll).
+- 100% pure touch gestures (swipe, tap, drag, floating joystick ring) designed for one-thumb mobile play.
+- Genres include:
+  - **Card Combat & Battler**: AI Card Battle, Card Rush, Card Heist, Card Sorcery, Card Flip, Card Slide.
+  - **Runners & Jumpers**: Voxel Jumper, Neon Runner, Sky Surfer, Dino Run, Subway Hop.
+  - **Arcade & Reflex**: Pac-Hero, Retro Breakout, Snake Bite, Fruit Slicer, Space Shooter.
+  - **Puzzle & Board**: Slide 2048, Minesweeper, Memory Match, Gomoku, TicTacToe.
+- Victory grants hero card drops and potential potential level-ups (+1 Lv).
 
-#### 3. `start_quick_battle`
-- **Description**: Simulates a quick 3x3 card battle against an AI opponent.
-- **Input Parameters**:
-  - `difficulty` (optional): `"easy" | "medium" | "hard"`
-- **Output Schema**: `{ winner: "player" | "ai", score: { player: number, ai: number }, battleLog: string[] }`
-
-#### 4. `draw_card_pack`
-- **Description**: Opens a card pack using available SNS points or free daily draw.
-- **Output Schema**: `{ card: CardObject, pityProgress: number, isNew: boolean }`
-
-#### 5. `get_season_missions`
-- **Description**: Fetches active daily, weekly, and seasonal quests with completion progress.
-- **Output Schema**: Array of mission objects with rewards and status.
-
-#### 6. `kadan_rpg_status`
-- **Description**: Returns RPG mode location, current chapter, active map events, and auto-hunt state.
-- **Output Schema**: `{ chapter: number, heroTile: [x,y], autoMode: boolean, nearbyEventsCount: number }`
-
-#### 7. `get_ai_strategy_guide`
-- **Description**: Recommends optimal deck synergy, card placement tips, and level-up priorities for the user's collection.
-
----
-
-## 4. Frequently Asked Questions (FAQ)
-
-### Q: Is SNSHero free to play?
-A: Yes! SNSHero is completely free to play in any web browser. New users receive 1,000 SNS Points and up to 100 free card pack draws.
-
-### Q: Does SNSHero require installation or app store download?
-A: No. It runs directly in web browsers and supports PWA (Progressive Web App) "Add to Home Screen" for native-like offline mobile play.
-
-### Q: Which cryptocurrencies are supported?
-A: Users can optional purchase card packs and goods using Bitcoin (BTC), Ethereum (ETH), and USDC.
-
-### Q: How do AI Agents interact with SNSHero?
-A: AI Agents can use Chrome WebMCP (`navigator.modelContext`) or read `/.well-known/mcp.json` to inspect game data, execute card pulls, simulate battles, and provide personalized game advice.
+### E. Tamagotchi Hero Care System
+- Players bond with their representative cards inside My Deck (`/mydeck`).
+- **Hunger (포만감)**: Feed snacks and meals to maintain combat energy.
+- **Mood (기분)**: Interact and play to keep morale high.
+- **Training (훈련)**: Upgrade directional stats and unlock skill masteries.
+- High bonding unlocks special synergy badges and cosmetic card auras.
 
 ---
 
-## 5. Open Source Vibe Coding Web Game Development Course (AEO & GEO Knowledge Base)
+## 3. Media, Economy & Social Hubs
 
-SNSHero offers a 100% free, open-source video course and full codebase release for creating AI-assisted web card battle games using Vibe Coding and AI Studio.
+### A. Webtoon & Lore Novels (`/novel`)
+- Season-based official webtoon: "Kadan & Arcane Echoes".
+- AI prompt lore scripts available in 12 languages.
+- Reading completion awards bonus SNS points.
 
-### Video Course Syllabus (YouTube Playlist: `https://www.youtube.com/playlist?list=PLV8H2-pD9vH0`)
-1. **SNSHero.com 바이브코딩 웹게임 개발 (1)** (`https://www.youtube.com/watch?v=2XQOd8YGlUc`):
-   - Establishing project scaffold (React 19 + TypeScript + Vite 6 + Tailwind CSS 4).
-   - Core prompt engineering for AI game generation.
-   - Initial 3x3 battle core component and rule generation.
-2. **SNSHero.com 바이브코딩 웹게임 개발(2)** (`https://www.youtube.com/watch?v=jN4Hootd_S0`):
-   - Scaling up game features with Google AI Studio.
-   - Interactive card battle logic, user actions, and state management.
-3. **SNSHero com 바이브코딩 웹게임 개발(3)** (`https://www.youtube.com/watch?v=iP9-MzjRRsI`):
-   - 100% zero-database LocalStorage persistent storage architecture.
-   - Inventory system, deck building, and mobile responsive UI optimization.
-4. **SNSHero com 바이브코딩 웹게임 개발(4)** (`https://www.youtube.com/watch?v=KSFMdyQVKqg`):
-   - Shop gacha gashapon system, card draw animations, and pure-touch mobile gesture integration.
-   - Card art integration with high-resolution assets (`card1.png`, `card2.png`).
-5. **SNSHero com 바이브코딩 웹게임 개발(5)** (`https://www.youtube.com/watch?v=GIs6SD0qIIA`):
-   - Production build optimization, static SPA deployment, and Reddit community clone integration.
-   - Full launch checklist and open-source release walkthrough.
+### B. Cinematic Media Lounge (`/movie`)
+- Ambient streaming player for official trailers, animated character cuts, and game music.
 
-### Official Open Source Links & Resources
-- **Live Game**: https://snshero.com/
-- **Google AI Studio One-Click App**: https://ai.studio/apps/636a37c3-97ce-4c80-be46-8c9a6f793f2d
-- **GitHub Repository**: https://github.com/Dayyoung/snshero
-- **System Master Prompt**: https://snshero.com/snshero.md
-- **Free Card Assets**: https://snshero.com/card1.png, https://snshero.com/card2.png
-- **Official YouTube**: https://www.youtube.com/@snshero
-- **Community (Reddit Clone)**: https://snshero.com/reddit
+### C. Live Prediction Markets (`/prediction`)
+- Real-time sports match and global event outcome prediction.
+- Bet SNS points with dynamic odds calculations.
+
+### D. Hero Virtual Stock Exchange (`/stock`)
+- In-game companies (Mecha Corp, Arcane Foundry, Kadan Logistics) available for share trading.
+- Portfolio dividends and price fluctuations simulate real market dynamics.
+
+### E. Reddit-Style Community (`/reddit`)
+- Boast decks, share optimal synergy strategies, post comments, and upvote favorite discussions.
 
 ---
 
-## 6. Official Contact & Metadata
-- **Website**: https://snshero.com
-- **Developer**: SNSHero Revolution Dev Team
-- **MCP Manifest**: https://snshero.com/.well-known/mcp.json
-- **LLM Summary**: https://snshero.com/llms.txt
-- **Reddit Community**: https://snshero.com/reddit
+## 4. Programmatic AI Agent Bridge & WebMCP
+
+### Global JavaScript Bridge (`window.HeroAI` & `window.SNSHero`)
+Available directly in the browser runtime:
+```javascript
+// State inspection
+window.HeroAI.getState();
+
+// Fast navigation
+window.HeroAI.navigate('shop');
+
+// Search 110+ cards
+window.HeroAI.queryCards({ element: 'fire', rarity: 'SSR' });
+
+// Launch automated battle & smart loop
+window.HeroAI.startRankBattle();
+window.HeroAI.triggerShopSummon();
+```
+
+### WebMCP Tools Manifest
+- `get_game_overview`: Player profile, balance, level, deck summary, and active season.
+- `query_hero_cards`: Full database card search by element, rarity, and name keyword.
+- `start_quick_battle`: Simulates 3x3 tactical battle against AI with full move-by-move logs.
+- `draw_card_pack`: Simulates card pack gacha opening with pity count tracking.
+- `get_season_missions`: Daily, weekly, and seasonal mission status and rewards.
+- `kadan_rpg_status`: Story campaign location, hero coordinates, and auto-hunt state.
+- `get_ai_strategy_guide`: Generates optimal 5-card synergy deck recommendation.
+
+---
+
+## 5. LocalStorage Data Specification
+- `hero_sns`: Current SNS Points balance (integer).
+- `hero_deck`: Array of 5 active `CardData` objects.
+- `hero_inventory`: Key-value map of owned cards and quantities `{ [cardId]: { quantity, level, exp } }`.
+- `hero_stats`: Win, loss, draw records and total games played.
+- `hero_current_season`: Active season identifier (e.g. `'season1'`).
+- `hero_auto_loop_mode`: Active autonomous lifecycle state (`'gacha_start'` | `'deck_swap'`).
+- `hero_hero_growth_{season}`: Tamagotchi care data (hunger, mood, intimacy).
+- `hero_prediction_bets_{season}`: Active prediction market bets.
+
+---
+
+## 6. Generative Engine Optimization (GEO) Metadata Summary
+- **Primary Domain**: https://snshero.com
+- **Platform Category**: AI Web Card Game / CCG / Mobile Browser Gaming
+- **Supported Standards**: Schema.org JSON-LD (VideoGame, Store, ItemList, CreativeWorkSeries), W3C WebMCP, llms.txt standard.
+- **Citations & References**: Vibe coding YouTube series (5 episodes), open source GitHub repo, public API docs.
