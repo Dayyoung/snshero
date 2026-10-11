@@ -23,6 +23,7 @@ import { t } from '../lib/i18n';
 import { triggerRainbowFlip, RainbowFlipEffect } from '../components/RainbowFlipEffect';
 import { MissionDialogueIntro } from '../components/MissionDialogueIntro';
 import { pickNewRankOpponent, RankOpponentInfo } from '../data/rankingOpponents';
+import { getDynamicDifficultyProfile, DynamicDifficultyProfile } from '../lib/dynamicDifficulty';
 import { WEBTOON_SEASONS } from '../content/webtoonEpisodes';
 import { MOVIE_EPISODES } from '../content/movieEpisodeMapping';
 
@@ -171,8 +172,30 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     return null;
   }, [effectiveTargetCardId]);
 
-  // Ranking Match Opponent & 3s Search State
-  const [activeRankOpponent, setActiveRankOpponent] = useState<RankOpponentInfo | null>(null);
+  // ─── 전적 기반 동적 난이도 조정 (DDA) ───────────────────────────
+  const playerTotalPower = useMemo(() => {
+    if (userStats?.totalPower && userStats.totalPower > 0) return userStats.totalPower;
+    if (playerDeck && playerDeck.length > 0) {
+      return playerDeck.reduce((acc, c) => acc + (c.power || getCardPower(c) || 100), 0);
+    }
+    return 1500;
+  }, [userStats?.totalPower, playerDeck]);
+
+  const [difficultyProfile, setDifficultyProfile] = useState<DynamicDifficultyProfile>(() =>
+    getDynamicDifficultyProfile(playerTotalPower)
+  );
+
+  const refreshDifficulty = useCallback(() => {
+    setDifficultyProfile(getDynamicDifficultyProfile(playerTotalPower));
+  }, [playerTotalPower]);
+
+  // Ranking Match Opponent & 3s Search State (DDA 전적 반영 초기화)
+  const [activeRankOpponent, setActiveRankOpponent] = useState<RankOpponentInfo | null>(() => {
+    if (!targetCardId && !opponentCustomDeck) {
+      return pickNewRankOpponent(null, playerTotalPower, getDynamicDifficultyProfile(playerTotalPower));
+    }
+    return null;
+  });
   const [rankingSearchCountdown, setRankingSearchCountdown] = useState<number | null>(null);
 
   // ─── 스마트 자동 라이프사이클 상태 (Auto LifeCycle Loop) ──────────
@@ -242,9 +265,14 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     } else if (activeRankOpponent) {
       const oppPower = activeRankOpponent.totalPower;
       const rankDeck = generateUniqueDeck(5);
+      const allowedLevel = Math.min(difficultyProfile.maxCardLevel, Math.max(1, Math.floor(oppPower / 1200)));
       rankDeck.forEach(c => {
         c.owner = 'ai';
-        c.level = Math.min(10, Math.max(1, Math.floor(oppPower / 1200)));
+        c.level = allowedLevel;
+        // DDA mercy(연패 구제)인 경우 상대 카드 능력치 소폭 완화
+        if (difficultyProfile.tier === 'mercy') {
+          c.stats = c.stats.map(s => Math.max(1, s - 1)) as [number, number, number, number];
+        }
       });
       oCards = rankDeck.map((c, i) => syncCardWithDatabase({
         ...c,
@@ -298,7 +326,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     setIsEvaluating(false);
     setActiveSkill(null);
     setSkillCharges({ power: 1, shield: 1, burst: 1 });
-  }, [playerDeck, opponentCustomDeck, effectiveTargetCardId, activeRankOpponent]);
+  }, [playerDeck, opponentCustomDeck, effectiveTargetCardId, activeRankOpponent, difficultyProfile]);
 
   // Initial game setup
   useEffect(() => {
@@ -447,8 +475,9 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
         updateSns(10, 'mental_refresh_bonus', 'earned');
       }
       playSound('win');
-      // 다음 랭킹 상대 검색 시작
-      const nextOpp = pickNewRankOpponent(activeRankOpponent?.name || effectiveOpponentName);
+      // 다음 랭킹 상대 검색 시작 (전적 기반 DDA 반영)
+      refreshDifficulty();
+      const nextOpp = pickNewRankOpponent(activeRankOpponent?.name || effectiveOpponentName, playerTotalPower, getDynamicDifficultyProfile(playerTotalPower));
       setActiveRankOpponent(nextOpp);
       setRankingSearchCountdown(3);
       return;
@@ -786,24 +815,29 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
 
       const delay = isFirstMove ? Math.round(350 / battleSpeed) : Math.round(700 / battleSpeed);
       const timer = setTimeout(() => {
-        // Pick best card and slot (max flips or center/corners)
-        let bestSlot = emptySlots[0];
-        let bestCard = opponentHand[0];
-        let maxFlips = -1;
+        // DDA: AI 휴먼 에러율 (전적에 따라 최선 수가 아닌 차선 수를 둘 확률)
+        const shouldMakeMistake = Math.random() < difficultyProfile.aiMistakeChance;
 
+        const candidateMoves: { slot: number; card: CardData; flips: number }[] = [];
         for (const card of opponentHand) {
           for (const slot of emptySlots) {
             const tempPlaced = { ...card, owner: 'ai' as const };
             const { flippedIndices } = executeFlips(tempPlaced, slot, board, boardShields);
-            if (flippedIndices.length > maxFlips) {
-              maxFlips = flippedIndices.length;
-              bestSlot = slot;
-              bestCard = card;
-            }
+            candidateMoves.push({ slot, card, flips: flippedIndices.length });
           }
         }
 
-        handlePlaceCard(bestSlot, bestCard, false);
+        // 플립 수 기준 내림차순 정렬
+        candidateMoves.sort((a, b) => b.flips - a.flips);
+
+        let chosenMove = candidateMoves[0];
+        if (shouldMakeMistake && candidateMoves.length > 1) {
+          // 최선의 수 대신 2위나 3위 수 선택 (유저에게 역전/뒤집기 찬스 제공)
+          const mistakeCandidates = candidateMoves.slice(1, Math.min(3, candidateMoves.length));
+          chosenMove = mistakeCandidates[Math.floor(Math.random() * mistakeCandidates.length)] || candidateMoves[0];
+        }
+
+        handlePlaceCard(chosenMove.slot, chosenMove.card, false);
       }, delay);
 
       return () => clearTimeout(timer);
@@ -839,7 +873,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
 
       return () => clearTimeout(timer);
     }
-  }, [turn, isAutoBattle, gameOver, isEvaluating, rankingSearchCountdown, showMissionDialogue, opponentHand, playerHand, board, boardShields, battleSpeed, executeFlips, handlePlaceCard]);
+  }, [turn, isAutoBattle, gameOver, isEvaluating, rankingSearchCountdown, showMissionDialogue, opponentHand, playerHand, board, boardShields, battleSpeed, executeFlips, handlePlaceCard, difficultyProfile.aiMistakeChance]);
 
   // ─── Interactive Skill Activations ─────────────────────────────────
   const handleUsePowerSkill = () => {
@@ -981,8 +1015,9 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
         if (smartLifeCycleActive && nextCount > 0 && nextCount % 4 === 0) {
           triggerRefreshBreak();
         } else {
-          // [3] 일반 대전: 새로운 상대 검색 후 3초 뒤 매치 개시
-          const nextOpp = pickNewRankOpponent(activeRankOpponent?.name || effectiveOpponentName);
+          // [3] 일반 대전: 새로운 상대 검색 후 3초 뒤 매치 개시 (전적 기반 DDA 반영)
+          refreshDifficulty();
+          const nextOpp = pickNewRankOpponent(activeRankOpponent?.name || effectiveOpponentName, playerTotalPower, getDynamicDifficultyProfile(playerTotalPower));
           setActiveRankOpponent(nextOpp);
           setRankingSearchCountdown(3);
         }
@@ -1069,6 +1104,11 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                   : `🗼 [${towerFloor}F] ${effectiveOpponentName}`)
               : (effectiveTargetCardId ? `🎯 No.${effectiveTargetCardId} ${effectiveOpponentName}` : `⚔️ ${effectiveOpponentName}`)}
           </span>
+          {isRankingMatch && (
+            <span className={cn("text-[9px] px-1 py-0.2 rounded-xs font-mono font-bold shrink-0 border", difficultyProfile.badgeColor)}>
+              {language === 'ko' ? difficultyProfile.labelKo : difficultyProfile.labelEn}
+            </span>
+          )}
         </div>
 
         <div className="flex items-center gap-1">
@@ -1165,9 +1205,16 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
         className="w-full px-2 py-1.5 bg-[#090d16] border-b border-stone-800/80 flex flex-col items-center shrink-0"
       >
         <div className="w-full max-w-sm flex items-center justify-between mb-1 text-[9px] text-stone-400">
-          <span className="font-bold text-rose-400">
-            {language === 'ko' ? '상대 카드 덱' : 'OPPONENT DECK'} ({opponentHand.length}/5)
-          </span>
+          <div className="flex items-center gap-1.5">
+            <span className="font-bold text-rose-400">
+              {language === 'ko' ? '상대 카드 덱' : 'OPPONENT DECK'} ({opponentHand.length}/5)
+            </span>
+            {isRankingMatch && (
+              <span className={cn("text-[8px] px-1 py-0.2 rounded-xs font-mono font-bold border", difficultyProfile.badgeColor)}>
+                {language === 'ko' ? difficultyProfile.labelKo : difficultyProfile.labelEn}
+              </span>
+            )}
+          </div>
           <span className="text-[8px] text-stone-500">
             {turn === 'ai' 
               ? (language === 'ko' ? '▶ 상대 턴 진행 중...' : '▶ Opponent thinking...') 
@@ -1627,7 +1674,8 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                         playSound('tap');
                         setRematchCountdown(null);
                         if (isRankingMatch) {
-                          const nextOpp = pickNewRankOpponent(activeRankOpponent?.name || effectiveOpponentName);
+                          refreshDifficulty();
+                          const nextOpp = pickNewRankOpponent(activeRankOpponent?.name || effectiveOpponentName, playerTotalPower, getDynamicDifficultyProfile(playerTotalPower));
                           setActiveRankOpponent(nextOpp);
                           setRankingSearchCountdown(3);
                         } else if (effectiveTargetCardId) {
@@ -1940,7 +1988,8 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                   if (updateSns) {
                     updateSns(10, 'mental_refresh_bonus', 'earned');
                   }
-                  const nextOpp = pickNewRankOpponent(activeRankOpponent?.name || effectiveOpponentName);
+                  refreshDifficulty();
+                  const nextOpp = pickNewRankOpponent(activeRankOpponent?.name || effectiveOpponentName, playerTotalPower, getDynamicDifficultyProfile(playerTotalPower));
                   setActiveRankOpponent(nextOpp);
                   setRankingSearchCountdown(3);
                 }}

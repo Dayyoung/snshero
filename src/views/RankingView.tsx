@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Trophy, ArrowUp, ArrowDown, Users, Gift, ShieldAlert, Swords, X, Bell, List, AlertCircle, Wifi, Bluetooth, Compass, Zap, Clock, HelpCircle, ChevronLeft, ChevronRight, Crown, Sparkles, ShoppingBag, Loader2 } from 'lucide-react';
 import { RankRewardsModal } from '../components/RankRewardsModal';
 import { MatchHistoryModal } from '../components/MatchHistoryModal';
@@ -17,6 +17,7 @@ import { joinMatchmaking, leaveMatchmaking, type MatchmakingState } from '../lib
 import { getProfileBadgeByKey, getProfileEmoticonByKey, getProfileTitleByKey } from '../content/profileEmoticons';
 import { MatchmakingQueueModal } from '../components/MatchmakingQueueModal';
 import { LeaderboardDeckInspectModal } from '../components/LeaderboardDeckInspectModal';
+import { getDynamicDifficultyProfile, DynamicDifficultyProfile } from '../lib/dynamicDifficulty';
 
 interface RankingUser {
   id: string;
@@ -82,17 +83,23 @@ const FLAG_MAP: Record<string, string> = {
   vi: '🇻🇳',
 };
 
-const generateMockOpponent = (myPower: number) => {
+const generateMockOpponent = (myPower: number, customProfile?: DynamicDifficultyProfile) => {
+  const profile = customProfile || getDynamicDifficultyProfile(myPower);
   const mockNames = [
     'SNS_Master', 'Card_Hero', 'AlphaZero', 'Neon_Blade', 
     'Cyber_Ghost', 'Shadow_Striker', 'Pixel_Hunter', 'Bit_Conqueror'
   ];
   const randName = mockNames[Math.floor(Math.random() * mockNames.length)] + '_' + Math.floor(Math.random() * 900 + 100);
-  const botPower = Math.ceil(myPower * (0.85 + Math.random() * 0.3)); // 85% ~ 115% of my power
   
+  // DDA 전적 난이도 반영 배수
+  const mult = profile.powerMultiplierMin + Math.random() * (profile.powerMultiplierMax - profile.powerMultiplierMin);
+  const botPower = Math.max(500, Math.ceil(myPower * mult));
+  
+  const tierPrefix = profile.tier === 'mercy' ? '[수습]' : (profile.tier === 'easy' ? '[안정]' : (profile.tier === 'challenging' ? '[정예]' : '[라이벌]'));
+
   return {
     id: `bot-optimal-${Date.now()}`,
-    name: `[AI] ${randName}`,
+    name: `${tierPrefix} ${randName}`,
     deck: [],
     totalPower: botPower,
     sns: Math.floor(botPower * (0.2 + Math.random() * 0.8)),
@@ -333,6 +340,11 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
   }, [rawUsers, user, sortBy, selectedLangFilter, currentSeason, sns, language]);
 
   const { global: myGlobalRank, weekly: myWeeklyRank, monthly: myMonthlyRank, currentUserData } = myRanks;
+
+  // DDA 전적 기반 난이도 프로필
+  const ddaProfile = useMemo(() => {
+    return getDynamicDifficultyProfile(currentUserData?.totalPower || 1500);
+  }, [currentUserData?.totalPower]);
 
   // Auto-Battle Countdown (Only when explicitly initiated)
   useEffect(() => {
@@ -656,7 +668,10 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
   };
 
   const startOptimalBattleNow = useCallback(() => {
-    const myPower = currentUserData?.totalPower || 0;
+    const myPower = currentUserData?.totalPower || 1500;
+    const dda = getDynamicDifficultyProfile(myPower);
+    const targetMult = dda.powerMultiplierMin + Math.random() * (dda.powerMultiplierMax - dda.powerMultiplierMin);
+    const targetPower = Math.max(500, Math.round(myPower * targetMult));
     
     // 1순위: 자기 자신 제외 + SNS 보유
     let candidates = users.filter(u => u.id !== user?.uid && u.sns !== undefined && u.sns > 0);
@@ -666,16 +681,29 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
       candidates = users.filter(u => u.id !== user?.uid);
     }
 
+    // 전적 난이도(mercy/easy)인 경우 플레이어보다 과도하게 강한 유저는 필터링
+    if (dda.tier === 'mercy' || dda.tier === 'easy') {
+      const balancedCandidates = candidates.filter(u => u.totalPower <= myPower * 1.05);
+      if (balancedCandidates.length > 0) {
+        candidates = balancedCandidates;
+      }
+    }
+
     let optimal: any = null;
     if (candidates.length === 0) {
-      // 3순위: 그마저도 없을 시 가상 AI 봇 생성
-      optimal = generateMockOpponent(myPower);
+      // 3순위: 그마저도 없을 시 DDA 맞춤형 가상 AI 봇 생성
+      optimal = generateMockOpponent(myPower, dda);
     } else {
       optimal = candidates.reduce((prev, curr) => {
-        const diffCurr = Math.abs(curr.totalPower - myPower);
-        const diffPrev = Math.abs(prev.totalPower - myPower);
+        const diffCurr = Math.abs(curr.totalPower - targetPower);
+        const diffPrev = Math.abs(prev.totalPower - targetPower);
         return diffCurr < diffPrev ? curr : prev;
       });
+
+      // 만약 선택된 상대가 너무 강하고 연패 중이라면 DDA 봇으로 안전 매칭
+      if (dda.tier === 'mercy' && optimal.totalPower > myPower * 1.1) {
+        optimal = generateMockOpponent(myPower, dda);
+      }
     }
 
     playSfx('https://assets.mixkit.co/active_storage/sfx/2018/2018-preview.mp3');
@@ -1625,8 +1653,16 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
               <div className="space-y-1">
                 <h3 className="text-xl font-bold uppercase tracking-tight text-slate-100">{language === 'ko' ? '자동 매칭' : 'AUTO MATCHING'}</h3>
                 <p className="text-sm font-semibold text-slate-400 leading-tight">
-                  {language === 'ko' ? '최적의 상대를 탐색하고 있습니다...' : 'Finding the optimal opponent...'}
+                  {language === 'ko' ? '전적 기반 맞춤 상대를 탐색하고 있습니다...' : 'Finding personalized opponent based on battle records...'}
                 </p>
+                <div className="pt-2">
+                  <span className={cn("inline-block text-[10px] px-2 py-0.5 rounded-sm font-mono font-bold border", ddaProfile.badgeColor)}>
+                    {language === 'ko' ? ddaProfile.labelKo : ddaProfile.labelEn}
+                  </span>
+                  <p className="text-[10px] text-slate-400 mt-1 leading-tight">
+                    {language === 'ko' ? ddaProfile.descriptionKo : ddaProfile.descriptionEn}
+                  </p>
+                </div>
               </div>
               <div className="text-5xl font-black text-blue-400 animate-pulse drop-shadow-[0_0_10px_rgba(96,165,250,0.5)]">
                 {autoBattleCountdown}
