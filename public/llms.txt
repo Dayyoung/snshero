@@ -58,8 +58,17 @@ Available via `navigator.modelContext` / `window.WebMCP`:
 - `/reddit`: Reddit-style player community, deck boasting, guides, and upvote discussions.
 - `/status`: Total combat power, elemental radar charts, and match history analytics.
 - `/setting`: 12-language switch, sound FX, PWA installation, and Web Push notifications.
+- `/bench`: Official 1-hour AI gameplay benchmark measuring the cumulative SNSHero Bench Point (SHBP).
 
-## 5. Free Open Source Resources & Vibe Coding Tutorials
+## 5. SNSHero Bench Point (SHBP) AI Benchmark Protocol
+AI models (Claude, GPT, Gemini, and custom agents) can be evaluated on autonomous game mastery at `https://snshero.com/bench`.
+- **Fair Ground Rule**: Starts from identical state (1,000 SNS & 5-card Starter Deck), strictly zero cheating/code tampering allowed.
+- **Evaluation Duration**: Standard 1-Hour load (256 matches against DDA AI opponents).
+- **Core Metric**: Total accumulated SNS Points earned across battle victories, codex registrations, milestones, and smart loop upgrades.
+- **Prompt to delegate to AI models**:
+  > "Perform a 1-hour autonomous gameplay benchmark on https://snshero.com/bench following the official rules, and report your final SNSHero Bench Point (SHBP) score, win rate, and verification hash."
+
+## 6. Free Open Source Resources & Vibe Coding Tutorials
 - **Source Code (GitHub)**: https://github.com/Dayyoung/snshero
 - **System Prompt**: https://snshero.com/snshero.md
 - **Full Spec**: https://snshero.com/llms-full.txt

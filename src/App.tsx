@@ -160,6 +160,7 @@ const GridToolView = safeLazy(() => import('./views/GridToolView'), 'GridToolVie
 const GridCheckerView = safeLazy(() => import('./views/GridCheckerView'), 'GridCheckerView');
 const MallView = safeLazy(() => import('./views/MallView'), 'MallView');
 const PacpikView = safeLazy(() => import('./views/PacpikView'), 'PacpikView');
+const BenchmarkView = safeLazy(() => import('./views/BenchmarkView'), 'BenchmarkView');
 
 const getCardAvatarStyle = (avatar: string): React.CSSProperties => {
   const cardId = Number(avatar.split(':')[1]) || 1;
@@ -5047,6 +5048,14 @@ function AppContent() {
         );
       case 'pacpik':
         return <PacpikView />;
+      case 'bench':
+        return (
+          <BenchmarkView
+            language={language}
+            onNavigate={setView}
+            playSfx={playSfx}
+          />
+        );
       case 'web3-landing':
         return (
           <Web3LandingView
@@ -6386,6 +6395,29 @@ function AppContent() {
                                 </div>
                               </div>
                               <span className="text-[10px] font-mono font-bold text-indigo-700 bg-indigo-100 px-1.5 py-0.5 rounded-xs">
+                                [→]
+                              </span>
+                            </button>
+
+                            {/* [3] SHBP AI Benchmark (/bench) */}
+                            <button
+                              onClick={() => {
+                                playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                                setIsMenuOpen(false);
+                                setView('bench');
+                              }}
+                              className="w-full p-2.5 bg-white hover:bg-amber-50 text-left border border-slate-200 hover:border-amber-300 rounded-lg flex items-center justify-between transition-all cursor-pointer group"
+                            >
+                              <div className="flex items-center gap-2.5">
+                                <Trophy size={17} className="text-amber-500 group-hover:scale-110 transition-transform" />
+                                <div className="flex flex-col">
+                                  <span className="font-bold text-xs text-slate-800 group-hover:text-amber-900 flex items-center gap-1.5">
+                                    <span>{language === 'ko' ? 'SHBP AI 벤치마크' : 'SHBP AI Benchmark'}</span>
+                                  </span>
+                                  <span className="text-[9px] text-slate-500 font-mono">/bench</span>
+                                </div>
+                              </div>
+                              <span className="text-[10px] font-mono font-bold text-amber-800 bg-amber-100 px-1.5 py-0.5 rounded-xs">
                                 [→]
                               </span>
                             </button>

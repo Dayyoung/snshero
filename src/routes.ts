@@ -380,6 +380,14 @@ export const VIEW_ROUTES: Record<ViewType, RouteMeta> = {
     descriptionKo: '다양한 캐주얼 미니게임을 즐기고 추가 보상을 획득하세요.',
     descriptionEn: 'Play arcade mini-games and earn bonus rewards.',
   },
+  bench: {
+    path: '/bench',
+    aliases: ['/benchmark', '/shbp'],
+    titleKo: 'SNSHero Bench Point (SHBP) AI 공식 벤치마크',
+    titleEn: 'SNSHero Bench Point (SHBP) Official AI Benchmark',
+    descriptionKo: 'Claude, GPT, Gemini의 1시간 자율 플레이 역량을 측정하는 공식 AI 벤치마크 환경입니다.',
+    descriptionEn: 'Standardized 1-hour autonomous gameplay benchmark for Claude, GPT, and Gemini models.',
+  },
 };
 
 /**
