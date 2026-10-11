@@ -554,8 +554,9 @@ function AppContent() {
 
     if (view === 'reddit') {
       const p = window.location.pathname.toLowerCase();
-      if (p !== '/' && !p.startsWith('/r/') && !p.startsWith('/u/') && !p.startsWith('/user/') && p !== '/popular' && p !== '/all') {
-        window.history.pushState({}, '', '/');
+      const isRedditPath = p === '/reddit' || p.startsWith('/reddit/') || p.startsWith('/r/') || p.startsWith('/u/') || p.startsWith('/user/') || p === '/popular' || p === '/all' || p === '/community' || p === '/search' || p === '/submit';
+      if (!isRedditPath) {
+        window.history.pushState({}, '', '/reddit');
       }
     } else if (view === 'modoo') {
       if (window.location.pathname !== '/modoo') {
@@ -1480,6 +1481,14 @@ function AppContent() {
       targetPath = `/creator/${creatorCode}`;
     } else if (view === 'novel') {
       targetPath = '/book';
+    } else if (view === 'reddit') {
+      const p = currentPath.toLowerCase();
+      const isRedditPath = p === '/reddit' || p.startsWith('/reddit/') || p.startsWith('/r/') || p.startsWith('/u/') || p.startsWith('/user/') || p === '/popular' || p === '/all' || p === '/community' || p === '/search' || p === '/submit';
+      if (isRedditPath) {
+        targetPath = currentPath;
+      } else {
+        targetPath = '/reddit';
+      }
     }
 
     // Preserve search params for specific views if present
