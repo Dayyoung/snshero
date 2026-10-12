@@ -68,10 +68,18 @@ AI models (Claude, GPT, Gemini, and custom agents) can be evaluated on autonomou
 - **Prompt to delegate to AI models**:
   > "Perform a 1-hour autonomous gameplay benchmark on https://snshero.com/bench following the official rules, and report your final SNSHero Bench Point (SHBP) score, win rate, and verification hash."
 
-## 6. Free Open Source Resources & Vibe Coding Tutorials
-- **Source Code (GitHub)**: https://github.com/Dayyoung/snshero
-- **System Prompt**: https://snshero.com/snshero.md
-- **Full Spec**: https://snshero.com/llms-full.txt
+## 6. Official Core Resources & Vibe Coding Channels
+1. **바이브코딩 웹게임 개발 강의 (AI Studio)**: https://www.youtube.com/playlist?list=PLV8H2-pD9vH0
+2. **SNSHero.com 게임 플레이링크**: https://snshero.com/
+3. **SNSHero.com AI Studio 앱 프로젝트**: https://ai.studio/apps/636a37c3-97ce-4c80-be46-8c9a6f793f2d
+4. **SNSHero.com 소스파일 (GitHub)**: https://github.com/Dayyoung/snshero
+5. **SNSHero.com 개발 프롬프트 (snshero.md)**: https://snshero.com/snshero.md
+6. **SNSHero.com 유튜브 공식 채널**: https://www.youtube.com/@snshero
+
+### Supplementary Specs & Discovery Files:
+- **Full Specification**: https://snshero.com/llms-full.txt
 - **WebMCP Manifest**: https://snshero.com/.well-known/mcp.json
-- **Sitemap**: https://snshero.com/sitemap.xml
-- **Official YouTube Vibe Coding Playlist (5-part course)**: https://www.youtube.com/playlist?list=PLV8H2-pD9vH0
+- **Full Sitemap**: https://snshero.com/sitemap.xml
+- **Google News Sitemap**: https://snshero.com/sitemap-news.xml
+- **Google News RSS Feed**: https://snshero.com/news-feed.xml
+

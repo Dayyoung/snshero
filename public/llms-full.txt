@@ -131,5 +131,36 @@ window.HeroAI.triggerShopSummon();
 ## 6. Generative Engine Optimization (GEO) Metadata Summary
 - **Primary Domain**: https://snshero.com
 - **Platform Category**: AI Web Card Game / CCG / Mobile Browser Gaming
-- **Supported Standards**: Schema.org JSON-LD (VideoGame, Store, ItemList, CreativeWorkSeries), W3C WebMCP, llms.txt standard.
-- **Citations & References**: Vibe coding YouTube series (5 episodes), open source GitHub repo, public API docs.
+- **Supported Standards**: Schema.org JSON-LD (Organization, VideoGame, SiteNavigationElement, ItemList, BreadcrumbList, FAQPage, NewsArticle), W3C WebMCP, llms.txt standard.
+
+---
+
+## 7. Official Core Resources & Sitelinks Directory
+1. **바이브코딩 웹게임 개발 강의 (AI Studio)**
+   - URL: https://www.youtube.com/playlist?list=PLV8H2-pD9vH0
+   - Description: Google AI Studio 기반 원클릭 웹게임 바이브코딩 실전 5강 강좌 플레이리스트
+2. **SNSHero.com 게임 플레이링크**
+   - URL: https://snshero.com/
+   - Description: 웹 브라우저 원클릭 즉시 접속 AI 웹 카드 배틀 게임 (1,000 SNS 환영 보너스)
+3. **SNSHero.com AI Studio 앱 프로젝트**
+   - URL: https://ai.studio/apps/636a37c3-97ce-4c80-be46-8c9a6f793f2d
+   - Description: Google AI Studio에서 직접 열람하고 수정할 수 있는 SNSHero 웹 앱 프로젝트 워크스페이스
+4. **SNSHero.com 소스파일 (GitHub)**
+   - URL: https://github.com/Dayyoung/snshero
+   - Description: React 19 + TypeScript + Vite 기반 오픈소스 전체 소스코드 저장소
+5. **SNSHero.com 개발 프롬프트 (snshero.md)**
+   - URL: https://snshero.com/snshero.md
+   - Description: AI 에이전트와 페어 프로그래밍을 위한 마스터 시스템 프롬프트 및 아키텍처 명세서
+6. **SNSHero.com 공식 유튜브 채널**
+   - URL: https://www.youtube.com/@snshero
+   - Description: 공식 개발 업데이트 브리핑, 팁, 플레이 영상 채널 (@snshero)
+
+### Screen-Specific Navigation Links (Internal Sitelinks):
+- **실시간 구글 뉴스룸 (Reddit)**: https://snshero.com/reddit
+- **마이덱 빌더 (My Deck)**: https://snshero.com/deck
+- **배틀 아레나 (Battle Lobby)**: https://snshero.com/play
+- **카드 상점 (Card Shop)**: https://snshero.com/shop
+- **SHBP AI 벤치마크 (SNSHero Bench)**: https://snshero.com/bench
+- **게임 가이드 백과사전 (Wiki)**: https://snshero.com/wiki
+- **시스템 설정 (Settings)**: https://snshero.com/setting
+

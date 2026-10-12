@@ -2,6 +2,28 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-13 08:58 KST] 구글 검색 화면별 하위목록(Sitelinks) 및 6대 공식 리소스 엔티티 최적화
+- **요청 사항**: "구글 검색했을때 SNSHero 관련 컨텐츠 들이 화면별로 정리되서 하위목록으로 표시되었으면 좋겠어. 특히 아래 요소들도 포함되었으면 좋겠어: 바이브코딩 웹게임 개발 강의 (AI Studio), SNSHero.com 게임 플레이링크, SNSHero.com AI Studio, SNSHero.com 소스파일, SNSHero.com 개발 프롬프트, SNSHero.com 유튜브 채널"
+- **적용 전략 및 메커니즘**:
+  1. **Schema.org `Organization` sameAs 공식 엔티티 연계**:
+     - 구글 지식 패널(Knowledge Graph)과 검색 봇이 6대 공식 링크를 SNSHero 브랜드의 공식 채널로 통합 인지할 수 있도록 `index.html` 내 `Organization`의 `sameAs` 배열에 유튜브 채널(`@snshero`), 바이브코딩 강의 플레이리스트(`PLV8H2-pD9vH0`), AI Studio 앱, GitHub 소스코드, 시스템 프롬프트(`snshero.md`) 전면 등록.
+  2. **Schema.org `SiteNavigationElement` 및 `ItemList` (구글 사이트링크 공식 스펙) 추가**:
+     - 구글 검색 결과 메인 블록 하단에 2단으로 출력되는 사이트링크(Sitelinks Rich Results) 후보로 채택되도록 6대 공식 리소스 및 5개 핵심 게임 화면(실시간 뉴스룸, 마이덱, 배틀 아레나, 카드 상점, SHBP AI 벤치마크)을 `SiteNavigationElement`와 `ItemList` 스키마로 명시적 선언.
+  3. **시맨틱 크롤러 탐색 전용 `<nav>` 영역 구조화**:
+     - 구글 봇이 렌더링 시 최우선 순위로 추출하는 앵커 텍스트(Anchor Text)를 보장하기 위해 `<nav aria-label="SNSHero 공식 사이트링크 및 하위 탐색 내비게이션">` 내부에 명확한 섹션별 `<h3>`, `<a href="...">`, `<p>` 구조로 6대 핵심 리소스 및 주요 화면 링크 완벽 마크업.
+  4. **`public/sitemap.xml` 및 사이트맵 자동 생성기 연동**:
+     - 개발 프롬프트 명세서(`https://snshero.com/snshero.md`)를 sitemap.xml 최상단(priority 0.9, weekly)에 추가하고 lastmod 최신화.
+  5. **AI 검색엔진 (GEO/AEO) 최적화 (`llms.txt`, `llms-full.txt`)**:
+     - ChatGPT Search, Perplexity, Google AI Overviews 등 AI 검색엔진이 "SNSHero" 질의 시 6대 핵심 리소스를 카드형/목차형 답변으로 즉시 인용하도록 6대 공식 채널 및 sitemap/spec 디렉토리 섹션 신설.
+  6. **UI 및 화면 푸터 연동 (`HomeView.tsx`)**:
+     - 게임 홈 화면 푸터에 GitHub, 바이브코딩 강의, 공식 유튜브 채널, AI Studio 앱, 개발 프롬프트 6대 핵심 링크를 직접 배치하여 사용자 접근성 및 DOM 크롤러 탐지력 강화.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 Errors (타입 무결점 통과).
+  - `npm run build`: Vite 6 프로덕션 번들 빌드 정상 완결 (index.html, dist/sitemap.xml, 정적 아티클 266개 무결점 동기화).
+  - 구글 폼 완료 보고서 제출 완료 (`submit_report.py`).
+  - 로컬 Git 커밋 및 원격 푸시(`git push origin main`) 배포 완결.
+
+
 ## [2026-10-13 08:52 KST] 카드 캐릭터 일러스트 배경상자에 등급별 색상(windowBg) 적용
 - **요청 사항**: "카드에 케릭터 배경상자 색도 등급색깔로 표시해주자."
 - **원인 분석**:

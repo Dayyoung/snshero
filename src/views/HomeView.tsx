@@ -679,13 +679,14 @@ export const HomeView: React.FC<HomeViewProps> = ({
         </div>
 
         <div className="w-full flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-[rgba(15,0,0,0.06)] text-xs text-[#646262]">
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2 md:gap-3">
             <a
               href="https://github.com/Dayyoung/snshero"
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3")}
               className="hover:text-[#201d1d] flex items-center gap-1 cursor-pointer transition-colors"
+              title="SNSHero GitHub 소스파일"
             >
               <Github size={13} />
               <span>GitHub</span>
@@ -697,9 +698,44 @@ export const HomeView: React.FC<HomeViewProps> = ({
               rel="noopener noreferrer"
               onClick={() => playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3")}
               className="hover:text-[#201d1d] flex items-center gap-1 cursor-pointer transition-colors"
+              title="바이브코딩 웹게임 개발 강의 (AI Studio)"
             >
               <Youtube size={13} />
-              <span>YouTube</span>
+              <span>바이브코딩 강의</span>
+            </a>
+            <span>•</span>
+            <a
+              href="https://www.youtube.com/@snshero"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3")}
+              className="hover:text-[#201d1d] flex items-center gap-1 cursor-pointer transition-colors"
+              title="SNSHero 공식 유튜브 채널"
+            >
+              <Youtube size={13} />
+              <span>공식 유튜브</span>
+            </a>
+            <span>•</span>
+            <a
+              href="https://ai.studio/apps/636a37c3-97ce-4c80-be46-8c9a6f793f2d"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3")}
+              className="hover:text-[#201d1d] flex items-center gap-1 cursor-pointer transition-colors"
+              title="SNSHero AI Studio 앱 프로젝트"
+            >
+              <span>AI Studio</span>
+            </a>
+            <span>•</span>
+            <a
+              href="/snshero.md"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3")}
+              className="hover:text-[#201d1d] flex items-center gap-1 cursor-pointer transition-colors"
+              title="SNSHero 개발 프롬프트 명세서"
+            >
+              <span>개발 프롬프트</span>
             </a>
           </div>
           <div>© ModooSoft. All rights reserved.</div>
