@@ -1416,24 +1416,28 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
 
       {/* Short, wide viewports dock the hands beside the board, never over it. */}
       <div className="flex-1 min-h-0 grid grid-cols-1 grid-rows-[auto_auto_minmax(144px,1fr)_auto_auto] gap-2 p-2 pb-[max(8px,env(safe-area-inset-bottom,0px))] [@media(max-height:500px)_and_(min-width:480px)]:grid-cols-[minmax(140px,1fr)_minmax(144px,1.4fr)_minmax(140px,1fr)] [@media(max-height:500px)_and_(min-width:480px)]:grid-rows-[48px_minmax(0,1fr)_48px]">
-      {/* ─── 2. 상대 덱 (Opponent Deck: 5 cards, 우리 카드와 동일 규격) ─────────────── */}
+      {/* ─── 2. 상대 덱 (Opponent Deck: 내 카드와 동등한 크기 + 빨간선 영역 표시) ─────────────── */}
       <div 
         id="mobile-card-opponent-deck"
-        className="row-start-1 min-w-0 flex items-center justify-between gap-2 border-b border-[#0f0000]/12 pb-2 [@media(max-height:500px)_and_(min-width:480px)]:col-start-1 [@media(max-height:500px)_and_(min-width:480px)]:row-start-2 [@media(max-height:500px)_and_(min-width:480px)]:flex-col [@media(max-height:500px)_and_(min-width:480px)]:justify-start [@media(max-height:500px)_and_(min-width:480px)]:border-0"
+        className="row-start-1 min-w-0 flex flex-col items-center gap-1.5 border-2 border-red-500 rounded-sm bg-red-50/20 p-1.5 shadow-xs [@media(max-height:500px)_and_(min-width:480px)]:col-start-1 [@media(max-height:500px)_and_(min-width:480px)]:row-start-2 [@media(max-height:500px)_and_(min-width:480px)]:overflow-y-auto"
       >
-        <div className="min-w-0 text-[10px] text-[#646262]">
-          <div className="flex items-center gap-1.5">
-            <span className="font-bold">
-              {t('opponent_deck', language)} [{opponentHand.length}/5]
-            </span>
-          </div>
+        <div className="w-full max-w-[420px] flex flex-wrap items-center justify-between gap-x-2 text-[10px]">
+          <span className="font-bold text-white bg-red-600 border border-red-700 px-2 py-0.5 rounded-xs flex items-center gap-1 shadow-xs">
+            <span className="w-2 h-2 rounded-full bg-white inline-block animate-pulse" />
+            {t('opponent_deck', language)} [{opponentHand.length}/5]
+          </span>
+          <span className="text-[10px] text-red-600 font-semibold" role="status">
+            {gameOver ? t('snake_game_over', language)
+              : turn === 'ai' ? (language === 'ko' ? '🔴 상대 턴 진행 중...' : '🔴 Opponent Turn')
+              : (language === 'ko' ? '상대 카드 대기' : 'Opponent Ready')}
+          </span>
         </div>
 
-        <div className="grid grid-cols-5 gap-1 w-[140px] shrink-0 [@media(max-height:500px)_and_(min-width:480px)]:w-full [@media(max-height:500px)_and_(min-width:480px)]:max-w-[220px]">
+        <div className="grid grid-cols-5 gap-1.5 w-full max-w-[420px] [@media(max-height:500px)_and_(min-width:480px)]:grid-cols-2 [@media(max-height:500px)_and_(min-width:560px)]:grid-cols-3">
           {opponentHand.map((card, i) => (
             <div
               key={`opp-card-${card.id || i}`}
-              className="aspect-[5/7] relative overflow-hidden border border-[#0f0000]/12"
+              className="h-[clamp(54px,11dvh,90px)] min-w-0 rounded-sm relative overflow-hidden border-2 border-red-400/90 bg-red-50/10 shadow-2xs [@media(max-height:500px)_and_(min-width:480px)]:h-[clamp(44px,24dvh,80px)]"
             >
               <CardItem
                 card={card}
@@ -1449,9 +1453,9 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
           {Array.from({ length: Math.max(0, 5 - opponentHand.length) }).map((_, idx) => (
             <div
               key={`empty-opp-hand-${idx}`}
-              className="aspect-[5/7] border border-dashed border-[#0f0000]/12 flex items-center justify-center"
+              className="h-[clamp(54px,11dvh,90px)] border-2 border-dashed border-red-300 bg-red-50/10 rounded-sm flex items-center justify-center text-red-400 font-mono [@media(max-height:500px)_and_(min-width:480px)]:h-[clamp(44px,24dvh,80px)]"
             >
-              <span className="text-[10px] text-[#9a9898]">-</span>
+              <span className="text-[11px] font-bold">[-]</span>
             </div>
           ))}
         </div>
@@ -1661,22 +1665,23 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
         </aside>
       </main>
 
-      {/* ─── 4. 내 카드 덱 (My Card Deck: 5 cards, ~76px) ───────────── */}
+      {/* ─── 4. 내 카드 덱 (My Card Deck: 상대 카드와 동등한 크기 + 파란선 영역 표시) ───────────── */}
       <footer 
         id="mobile-card-my-deck"
-        className="row-start-4 min-w-0 flex flex-col items-center gap-1.5 [@media(max-height:500px)_and_(min-width:480px)]:col-start-3 [@media(max-height:500px)_and_(min-width:480px)]:row-start-1 [@media(max-height:500px)_and_(min-width:480px)]:row-span-2 [@media(max-height:500px)_and_(min-width:480px)]:overflow-y-auto [@media(max-height:500px)_and_(min-width:480px)]:touch-pan-y"
+        className="row-start-4 min-w-0 flex flex-col items-center gap-1.5 border-2 border-blue-500 rounded-sm bg-blue-50/20 p-1.5 shadow-xs [@media(max-height:500px)_and_(min-width:480px)]:col-start-3 [@media(max-height:500px)_and_(min-width:480px)]:row-start-1 [@media(max-height:500px)_and_(min-width:480px)]:row-span-2 [@media(max-height:500px)_and_(min-width:480px)]:overflow-y-auto [@media(max-height:500px)_and_(min-width:480px)]:touch-pan-y"
       >
-        <div className="w-full max-w-[420px] flex flex-wrap items-center justify-between gap-x-2 text-[10px] text-[#646262]">
-          <span className="font-bold text-[#201d1d]">
+        <div className="w-full max-w-[420px] flex flex-wrap items-center justify-between gap-x-2 text-[10px]">
+          <span className="font-bold text-white bg-blue-600 border border-blue-700 px-2 py-0.5 rounded-xs flex items-center gap-1 shadow-xs">
+            <span className="w-2 h-2 rounded-full bg-white inline-block" />
             {t('my_deck_title', language)} [{playerHand.length}/5]
           </span>
-          <span className="text-[10px]" role="status">
+          <span className="text-[10px] text-blue-700 font-semibold" role="status">
             {gameOver ? t('snake_game_over', language)
               : turn === 'ai' ? t('opponent_turn', language)
               : isAutoBattle ? t('auto_battle', language)
               : selectedHandIndex !== null && playerHand[selectedHandIndex]
-              ? t('toast_select_empty_slot', language)
-              : t('select_card', language)}
+              ? (language === 'ko' ? '🔵 보드 빈칸을 터치하여 배치' : 'Tap board to place card')
+              : (language === 'ko' ? '내 카드 터치하여 선택' : t('select_card', language))}
           </span>
         </div>
 
@@ -1694,10 +1699,10 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                   setSelectedHandIndex(i);
                 }}
                 className={cn(
-                  "h-[clamp(60px,12dvh,100px)] min-w-0 rounded-sm relative overflow-hidden cursor-pointer border-2 [@media(max-height:500px)_and_(min-width:480px)]:h-[clamp(44px,24dvh,80px)]",
+                  "h-[clamp(54px,11dvh,90px)] min-w-0 rounded-sm relative overflow-hidden cursor-pointer border-2 transition-all [@media(max-height:500px)_and_(min-width:480px)]:h-[clamp(44px,24dvh,80px)]",
                   isSelected
-                    ? "border-[#201d1d] outline outline-1 outline-offset-1 outline-[#201d1d]"
-                    : "border-[#0f0000]/12 hover:border-[#646262]"
+                    ? "border-blue-600 ring-2 ring-blue-400 bg-blue-100/40 scale-102 shadow-md z-30"
+                    : "border-blue-400/90 hover:border-blue-600 bg-blue-50/10 shadow-2xs"
                 )}
               >
                 <CardItem
@@ -1711,8 +1716,8 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
 
                 {/* Selected Tag */}
                 {isSelected && (
-                  <div className="absolute bottom-0 inset-x-0 bg-[#201d1d] text-[#fdfcfc] text-[9px] py-0.5 z-40 flex items-center justify-center gap-1">
-                    <Check size={12} /><span className="sr-only">{t('pg_selected', language)}</span>
+                  <div className="absolute bottom-0 inset-x-0 bg-blue-600 text-white font-bold text-[8.5cqw] py-0.5 z-40 flex items-center justify-center gap-0.5 shadow-xs">
+                    <Check size={10} /><span className="leading-none">{language === 'ko' ? '선택됨' : t('pg_selected', language)}</span>
                   </div>
                 )}
               </button>
@@ -1723,9 +1728,9 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
           {Array.from({ length: Math.max(0, 5 - playerHand.length) }).map((_, idx) => (
             <div
               key={`empty-hand-${idx}`}
-              className="h-[clamp(60px,12dvh,100px)] border border-dashed border-[#0f0000]/12 flex items-center justify-center [@media(max-height:500px)_and_(min-width:480px)]:h-[clamp(44px,24dvh,80px)]"
+              className="h-[clamp(54px,11dvh,90px)] border-2 border-dashed border-blue-300 bg-blue-50/10 rounded-sm flex items-center justify-center text-blue-400 font-mono [@media(max-height:500px)_and_(min-width:480px)]:h-[clamp(44px,24dvh,80px)]"
             >
-              <span className="text-[11px] text-[#9a9898]">[-]</span>
+              <span className="text-[11px] font-bold">[-]</span>
             </div>
           ))}
         </div>
