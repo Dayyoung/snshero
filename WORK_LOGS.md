@@ -2,6 +2,19 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-12 13:33 KST] [Reddit 메인 피드 상단 및 하단 Google Ads 디스플레이 배너 완전 제거]
+- **요청 사항**:
+  - `/reddit`에서 `<div class="flex items-center justify-between px-2 py-0.5 text-[9px] font-mono text-slate-400/80 uppercase tracking-wider bg-black/5 dark:bg-white/5 border-b border-inherit/10"><span>[AD]</span><span>Google Ads</span></div>` 배너 제거.
+- **상세 구현 내역**:
+  - [`src/views/RedditCommunityView.tsx`](file:///Users/dayyoung/project/snshero/src/views/RedditCommunityView.tsx):
+    - 피드 최상단(정렬/뷰모드 컨트롤 바 하단)에 위치하던 `AdSenseBanner` 래퍼 컨테이너 박스 완전 제거.
+    - 피드 최하단(전체 기사 확인 완료 메시지 하단)에 위치하던 `AdSenseBanner` 래퍼 컨테이너 박스 완전 제거.
+    - 미사용 `AdSenseBanner` import 정리.
+- **검증 결과**:
+  - `npm run build`: 23.25초 만에 0에러로 성공적인 빌드 완결.
+  - 로컬 Git 커밋 완료 (`b750528`).
+  - 구글 폼 완료 보고서 제출 완료.
+
 ## [2026-10-12 13:24 KST] [AI Studio WebMcpActiveBadge import-analysis 오류 영구 차단 (Glob Loader 전면 전환) 및 깃 푸시 완료]
 - **요청 사항**:
   - `[plugin:vite:import-analysis] Failed to resolve import "./components/WebMcpActiveBadge" from "src/App.tsx". Does the file exist?` 오류 완전 해결.
