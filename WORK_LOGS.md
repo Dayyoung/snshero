@@ -2,7 +2,25 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
-## [2026-10-12 14:00 KST] [수익화 Phase 1: 하이브리드 보상형 광고 루프 및 VIP 1클릭 프리패스 구현]
+## [2026-10-12 14:10 KST] [구글 애즈(Google Ads) 전환 추적 태그 및 캠페인 어트리뷰션 인프라 구축]
+- **요청 사항**:
+  - Google Ads 광고 집행을 위한 전환 추적(gtag) 인프라 구축 및 인게임 퍼널 연동.
+- **상세 구현 내역**:
+  1. **Google Ads & GA4 전환 추적 모듈 구현 (`src/lib/googleAdsAnalytics.ts`)**:
+     - `window.gtag` 및 `dataLayer` 기반의 유연하고 안전한 전환 이벤트 디스패처 구현.
+     - URL 내 `utm_source` / `gclid` 캠페인 유입 자동 감지 및 로컬스토리지 어트리뷰션 보존 (`initCampaignAttribution`).
+  2. **4단계 핵심 전환 이벤트 연동**:
+     - `campaign_guest_start`: 구글 광고 유입 게스트 최초 접속 트래킹.
+     - `battle_victory`: 최초 배틀 승리 유저 소프트 전환 트래킹 (`VictoryRewardModal.tsx`).
+     - `rewarded_ad_watched`: 보상형 광고 시청 완료 수익 트래킹 (`rewardedAdService.ts`).
+     - `starter_pack_purchased`: 1,000원 스타터팩 결제 완료 핵심 IAP 전환 트래킹 (`StarterPackModal.tsx`).
+  3. **App.tsx 마운트 이펙트 연동**:
+     - 초기 앱 로드 시 비동기로 캠페인 파라미터를 감지하여 SPOF 없는 무결점 초기화 보장.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 Errors (전체 프로젝트 통과).
+  - `npm run build`: 16.57초 만에 0에러 프로덕션 번들 빌드 완결.
+  - 로컬 Git 커밋 완료 (`8496f3a`).
+  - 구글 폼 완료 보고서 제출 완료 (`https://docs.google.com/forms/d/e/1FAIpQLScrvcAqDF7vHHQndycr90ii-ujTi3Plw23eNrSyiJpOLrHbjg/formResponse`).
 - **요청 사항**:
   - SNSHero.com 수익화 마스터플랜 Phase 1(보상형 광고 루프 + 광고 제거 VIP 1클릭 프리패스) 구현 진행.
 - **상세 구현 내역**:
