@@ -105,6 +105,27 @@ import { ImageLazyLoader } from './lib/ImageLazyLoader';
 import { checkAndSyncAppVersion } from './lib/versionManager';
 import { safeLazy } from './lib/safeLazy';
 
+// Glob-based fail-safe view loader: Prevents Vite 'Failed to resolve import' errors in AI Studio/sandboxes when views are missing
+const lazyViewGlob = import.meta.glob('./views/*.tsx');
+
+const loadViewSafely = (name: string, fallbackComponent?: React.ComponentType<any>) => {
+  const targetPath = `./views/${name}.tsx`;
+  const importer = lazyViewGlob[targetPath];
+  if (!importer) {
+    return () => Promise.resolve({
+      default: fallbackComponent || (() => (
+        <div className="min-h-screen flex items-center justify-center p-6 font-mono text-center text-[#201d1d] bg-[#fdfcfc]">
+          <div className="max-w-md p-6 border border-[rgba(15,0,0,0.12)]">
+            <h2 className="text-sm font-black mb-2">[{name} View Module]</h2>
+            <p className="text-xs text-[#646262]">This view module is not available in current environment.</p>
+          </div>
+        </div>
+      ))
+    });
+  }
+  return importer;
+};
+
 const RedditCommunityView = safeLazy(() => import('./views/RedditCommunityView'), 'RedditCommunityView');
 const HomeView = safeLazy(() => import('./views/HomeView'), 'HomeView');
 const KadanRpgView = safeLazy(() => import('./views/KadanRpgView'));
@@ -159,9 +180,9 @@ const MovieView = safeLazy(() => import('./views/MovieView'), 'MovieView');
 const ModooView = safeLazy(() => import('./views/ModooView'), 'ModooView');
 const GridToolView = safeLazy(() => import('./views/GridToolView'), 'GridToolView');
 const GridCheckerView = safeLazy(() => import('./views/GridCheckerView'), 'GridCheckerView');
-const MallView = safeLazy(() => import('./views/MallView'), 'MallView');
-const PacpikView = safeLazy(() => import('./views/PacpikView'), 'PacpikView');
-const BenchmarkView = safeLazy(() => import('./views/BenchmarkView'), 'BenchmarkView');
+const MallView = safeLazy(loadViewSafely('MallView'), 'MallView');
+const PacpikView = safeLazy(loadViewSafely('PacpikView'), 'PacpikView');
+const BenchmarkView = safeLazy(loadViewSafely('BenchmarkView'), 'BenchmarkView');
 
 const getCardAvatarStyle = (avatar: string): React.CSSProperties => {
   const cardId = Number(avatar.split(':')[1]) || 1;
