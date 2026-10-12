@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { triggerHaptic } from '../lib/haptic';
 import { playDopamineChime } from '../lib/combatDopamineEngine';
+import { usePerformanceMode } from '../hooks/usePerformanceMode';
 
 // Global event deduplication to prevent double audio/particles if multiple instances exist
 let lastHandledEventId: number | null = null;
@@ -39,14 +40,9 @@ interface ShockwaveRing {
 }
 
 const RAINBOW_COLORS = [
-  '#FF1E56', // Crimson Red
-  '#FF7B00', // Electric Orange
-  '#FFD700', // Pure Gold / Yellow
-  '#00FF66', // Neon Green
-  '#00F0FF', // Cyan / Aqua
-  '#3B82F6', // Royal Blue
-  '#A855F7', // Violet Purple
-  '#EC4899', // Hot Pink
+  '#201d1d',
+  '#fdfcfc',
+  '#80602b',
 ];
 
 /**
@@ -79,12 +75,26 @@ export const RainbowFlipEffect: React.FC<RainbowFlipEffectProps> = ({
   className = '',
   isFixed = true,
 }) => {
+  const { reducedMotion } = usePerformanceMode();
+  const reducedMotionRef = useRef(reducedMotion);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [activeAnnouncement, setActiveAnnouncement] = useState<RainbowFlipDetail | null>(null);
   const particlesRef = useRef<RainbowParticle[]>([]);
   const shockwavesRef = useRef<ShockwaveRing[]>([]);
   const animFrameRef = useRef<number | null>(null);
   const isRenderingRef = useRef(false);
+
+  // Preference changes stop visuals without restarting the event's completion timer.
+  useEffect(() => {
+    reducedMotionRef.current = reducedMotion;
+    if (reducedMotion) {
+      if (animFrameRef.current !== null) cancelAnimationFrame(animFrameRef.current);
+      animFrameRef.current = null;
+      isRenderingRef.current = false;
+      particlesRef.current = [];
+      shockwavesRef.current = [];
+    }
+  }, [reducedMotion]);
 
   // Sync canvas dimensions on resize (never inside RAF)
   const syncCanvasSize = useCallback(() => {
@@ -99,19 +109,25 @@ export const RainbowFlipEffect: React.FC<RainbowFlipEffectProps> = ({
   }, []);
 
   useEffect(() => {
+    if (reducedMotion) return;
     syncCanvasSize();
     window.addEventListener('resize', syncCanvasSize, { passive: true });
     return () => {
       window.removeEventListener('resize', syncCanvasSize);
     };
-  }, [syncCanvasSize]);
+  }, [syncCanvasSize, reducedMotion]);
 
   // High-performance canvas animation loop (sleeps when idle, 0 CPU overhead)
   const startAnimationLoop = useCallback(() => {
-    if (isRenderingRef.current) return;
+    if (reducedMotionRef.current || isRenderingRef.current) return;
     isRenderingRef.current = true;
+    const startedAt = performance.now();
 
     const render = () => {
+      if (reducedMotionRef.current) {
+        isRenderingRef.current = false;
+        return;
+      }
       const canvas = canvasRef.current;
       if (!canvas) {
         isRenderingRef.current = false;
@@ -125,6 +141,10 @@ export const RainbowFlipEffect: React.FC<RainbowFlipEffectProps> = ({
 
       const shockwaves = shockwavesRef.current;
       const particles = particlesRef.current;
+      if (performance.now() - startedAt >= 450) {
+        shockwaves.length = 0;
+        particles.length = 0;
+      }
 
       // When everything has faded out, clear and stop loop
       if (shockwaves.length === 0 && particles.length === 0) {
@@ -204,6 +224,7 @@ export const RainbowFlipEffect: React.FC<RainbowFlipEffectProps> = ({
 
   // Spawn bursting particles from one or more origins (performance tuned)
   const spawnBurst = useCallback((count: number, origins?: { x: number; y: number }[]) => {
+    if (reducedMotionRef.current) return;
     syncCanvasSize();
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -212,13 +233,12 @@ export const RainbowFlipEffect: React.FC<RainbowFlipEffectProps> = ({
     const h = canvas.height || window.innerHeight;
 
     const isMulti = count >= 2;
-    // Single flip: 28 particles. Multiple flips: 64 particles (responsive, 60fps lightweight)
-    const particleAmount = isMulti ? 64 : 28;
+    const particleAmount = isMulti ? 16 : 8;
 
     // Determine explosion centers
     let centerPoints: { x: number; y: number }[] = [];
     if (origins && origins.length > 0) {
-      centerPoints = origins.map(o => ({
+      centerPoints = origins.slice(0, 2).map(o => ({
         x: Math.max(20, Math.min(w - 20, o.x)),
         y: Math.max(20, Math.min(h - 20, o.y)),
       }));
@@ -237,15 +257,15 @@ export const RainbowFlipEffect: React.FC<RainbowFlipEffectProps> = ({
         x: center.x,
         y: center.y,
         radius: 6,
-        maxRadius: isMulti ? 90 : 60,
-        color: isMulti ? '#FFD700' : '#00F0FF',
-        alpha: 0.8,
-        lineWidth: isMulti ? 3 : 2,
+        maxRadius: isMulti ? 36 : 24,
+        color: isMulti ? '#80602b' : '#201d1d',
+        alpha: 0.45,
+        lineWidth: 1,
       });
 
       for (let i = 0; i < perPointCount; i++) {
         const angle = (Math.PI * 2 * i) / perPointCount + (Math.random() - 0.5) * 0.35;
-        const speed = (isMulti ? 4 : 3) + Math.random() * (isMulti ? 8 : 6);
+        const speed = 1.5 + Math.random() * 2;
         const color = RAINBOW_COLORS[Math.floor(Math.random() * RAINBOW_COLORS.length)];
         const shapeRand = Math.random();
         const shape: 'circle' | 'diamond' | 'sparkle' = 
@@ -256,27 +276,18 @@ export const RainbowFlipEffect: React.FC<RainbowFlipEffectProps> = ({
           y: center.y + (Math.random() - 0.5) * 8,
           vx: Math.cos(angle) * speed,
           vy: Math.sin(angle) * speed - (Math.random() * 2),
-          size: (isMulti ? 3.5 : 2.8) + Math.random() * (isMulti ? 3.5 : 2.5),
+          size: 1 + Math.random() * 1.5,
           color,
           alpha: 1,
-          decay: 0.026 + Math.random() * (isMulti ? 0.024 : 0.032), // Quick decay ~0.6s
+          decay: 0.06 + Math.random() * 0.02,
           shape,
           gravity: 0.18,
         });
       }
     });
 
-    particlesRef.current.push(...newParticles);
-    shockwavesRef.current.push(...newShockwaves);
-
-    // Audio & Haptics
-    if (isMulti) {
-      playDopamineChime(Math.min(5, count), true);
-      triggerHaptic('heavy');
-    } else {
-      playDopamineChime(1, false);
-      triggerHaptic('medium');
-    }
+    particlesRef.current = [...particlesRef.current, ...newParticles].slice(-24);
+    shockwavesRef.current = [...shockwavesRef.current, ...newShockwaves].slice(-2);
 
     startAnimationLoop();
   }, [syncCanvasSize, startAnimationLoop]);
@@ -294,9 +305,17 @@ export const RainbowFlipEffect: React.FC<RainbowFlipEffectProps> = ({
   // Handle trigger from props or custom event
   const executeTrigger = useCallback((detail: RainbowFlipDetail) => {
     setActiveAnnouncement(detail);
+    // Sound and haptics remain event feedback even when visual motion is disabled.
+    if (detail.count >= 2) {
+      playDopamineChime(Math.min(5, detail.count), true);
+      triggerHaptic('heavy');
+    } else {
+      playDopamineChime(1, false);
+      triggerHaptic('medium');
+    }
     spawnBurst(detail.count, detail.origins);
 
-    // Crisp, fast notification (800ms) without lingering over cards
+    // Keep the existing 850ms announcement/completion contract.
     const timer = setTimeout(() => {
       setActiveAnnouncement(prev => (prev?.id === detail.id ? null : prev));
       onFinished?.();
@@ -343,62 +362,35 @@ export const RainbowFlipEffect: React.FC<RainbowFlipEffectProps> = ({
       style={{ zIndex: 999999 }}
     >
       {/* High-Performance Canvas Particles Layer (0% idle CPU) */}
-      <canvas
+      {!reducedMotion && <canvas
         ref={canvasRef}
         className="absolute inset-0 w-full h-full pointer-events-none bg-transparent"
-      />
+      />}
 
-      {/* Floating Animated Flip Banner — 100% Transparent Background (카드 시야 가림 0%) */}
+      {/* Brief, compact announcement with a solid surface for reliable contrast. */}
       <AnimatePresence>
         {activeAnnouncement && (
           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none bg-transparent">
             <motion.div
               key={`flip-banner-${activeAnnouncement.id}`}
-              initial={{ scale: 0.5, opacity: 0, y: 15 }}
-              animate={{ 
-                scale: [0.5, isMulti ? 1.25 : 1.1, 1.0],
-                opacity: [0, 1, 1], 
-                y: [15, -12, -24],
-              }}
-              exit={{ scale: 0.9, opacity: 0, y: -40, transition: { duration: 0.2 } }}
-              transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-              className="relative flex flex-col items-center justify-center pointer-events-none select-none bg-transparent"
+              initial={reducedMotion ? false : { opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={reducedMotion ? { opacity: 1 } : { opacity: 0 }}
+              transition={{ duration: reducedMotion ? 0 : 0.16, ease: 'easeOut' }}
+              className="relative max-w-[calc(100%-2rem)] flex flex-col items-center justify-center pointer-events-none select-none font-mono"
             >
-              {/* Vibrant Text with Zero Background Box */}
-              <div className="flex items-center gap-1.5 bg-transparent pointer-events-none">
-                <span className="text-amber-300 text-lg sm:text-xl drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
-                  {isMulti ? '✨' : '⚡'}
-                </span>
-
-                {/* High-Contrast Rainbow Text with Stroke Outline */}
+              <div className="px-4 py-2 bg-[#201d1d] border border-[#fdfcfc]/30 text-[#fdfcfc] text-center rounded-none">
                 <span 
-                  className={`font-black tracking-wider text-2xl sm:text-3xl md:text-4xl uppercase select-none bg-clip-text text-transparent ${
-                    isMulti
-                      ? 'bg-gradient-to-r from-amber-300 via-rose-400 via-cyan-300 to-fuchsia-400'
-                      : 'bg-gradient-to-r from-cyan-300 via-amber-200 to-rose-400'
-                  }`}
-                  style={{
-                    WebkitTextStroke: '1px rgba(0, 0, 0, 0.9)',
-                    filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.95))',
-                  }}
+                  className="font-bold text-lg sm:text-xl uppercase select-none break-words"
                 >
                   {displayText}
                 </span>
-
-                <span className="text-amber-300 text-lg sm:text-xl drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
-                  {isMulti ? '✨' : '⚡'}
-                </span>
               </div>
 
-              {/* Subtitle combo count — Transparent Text */}
               {isMulti && (
-                <div className="flex items-center gap-1 mt-0.5 bg-transparent">
+                <div className="mt-1 px-2 py-1 bg-[#fdfcfc] border border-[#0f0000]/12 text-[#201d1d]">
                   <span 
-                    className="text-[11px] sm:text-xs font-black text-amber-300 tracking-wider uppercase bg-transparent"
-                    style={{
-                      WebkitTextStroke: '0.6px rgba(0, 0, 0, 0.85)',
-                      filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.9))',
-                    }}
+                    className="text-[11px] sm:text-xs font-medium uppercase"
                   >
                     ⚡ x{activeAnnouncement.count} COMBO! ⚡
                   </span>

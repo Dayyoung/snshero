@@ -5,7 +5,7 @@ import {
   Sparkles, Check, Trophy, Award, Bot, RefreshCw, Star,
   Coffee, BookOpen, Film, Play, ShoppingBag, ArrowUpRight
 } from 'lucide-react';
-import { CardData, UserStats, Skill, Item, CardRarity } from '../types';
+import { CardData, UserStats, Skill, Item, CardRarity, Language } from '../types';
 import { CARD_DATABASE } from '../cardDatabase';
 import { 
   INITIAL_CARDS, 
@@ -20,7 +20,6 @@ import { cn, getCardSpriteStyle } from '../lib/utils';
 import { AdSenseBanner } from '../components/AdSenseBanner';
 import { CardItem } from '../components/CardItem';
 import { t } from '../lib/i18n';
-import { triggerRainbowFlip, RainbowFlipEffect } from '../components/RainbowFlipEffect';
 import { MissionDialogueIntro } from '../components/MissionDialogueIntro';
 import { pickNewRankOpponent, RankOpponentInfo } from '../data/rankingOpponents';
 import { getDynamicDifficultyProfile, DynamicDifficultyProfile } from '../lib/dynamicDifficulty';
@@ -74,7 +73,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
   opponentCustomDeck,
   opponentName,
   onBack,
-  language = 'ko',
+  language: requestedLanguage = 'ko',
   playSfx = (_url?: string) => {},
   userStats,
   updateStats,
@@ -95,6 +94,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
   isRankingMatch = false,
   onNavigate
 }) => {
+  const language = requestedLanguage as Language;
   const { lowSpecMode } = useGameSettings();
   const reducedMotion = useReducedMotion();
   const suppressMotion = lowSpecMode || Boolean(reducedMotion);
@@ -694,19 +694,6 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       setFlippedSlots(flippedIndices);
       playSound('flip');
       setTimeout(() => setFlippedSlots([]), 800);
-      if (!suppressMotion) try {
-        const origins: { x: number; y: number }[] = [];
-        flippedIndices.forEach(idx => {
-          const el = document.getElementById(`board-slot-${idx}`);
-          if (el) {
-            const r = el.getBoundingClientRect();
-            origins.push({ x: r.left + r.width / 2, y: r.top + r.height / 2 });
-          }
-        });
-        triggerRainbowFlip(flippedIndices.length, origins.length > 0 ? origins : undefined);
-      } catch {
-        triggerRainbowFlip(flippedIndices.length);
-      }
     }
 
     setBoard(updatedBoard);
@@ -936,7 +923,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
         setSelectedHandIndex(0);
       }
     }, 400 / battleSpeed);
-  }, [board, gameOver, isEvaluating, boardShields, activeSkill, executeFlips, playSound, battleSpeed, playerHand.length, opponentHand.length, updateSns, updateStats, userStats, onEarnXp, targetCardId, addCard, inventory, suppressMotion]);
+  }, [board, gameOver, isEvaluating, boardShields, activeSkill, executeFlips, playSound, battleSpeed, playerHand.length, opponentHand.length, updateSns, updateStats, userStats, onEarnXp, targetCardId, addCard, inventory]);
 
   // ─── AI Opponent / Auto Player Logic ───────────────────────────────
   useEffect(() => {
@@ -1308,31 +1295,33 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
   }, [tutorialShopCountdown, onTutorialToShop, handleExitGame]);
 
   return (
+    <MotionConfig reducedMotion={suppressMotion ? 'always' : 'never'} transition={suppressMotion ? { duration: 0 } : undefined}>
     <div 
       id="mobile-card-play-viewport"
-      className="fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#070a10] text-slate-100 flex flex-col justify-between font-mono z-[100]"
+      className={cn(
+        "fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#fdfcfc] text-[#201d1d] flex flex-col font-mono z-[100] [&_button]:min-h-11 [&_button]:min-w-11 [&_button]:focus-visible:outline-2 [&_button]:focus-visible:outline-offset-2 [&_button]:focus-visible:outline-[#201d1d]",
+        suppressMotion && "[&_*]:animate-none [&_*]:transition-none"
+      )}
     >
-      {/* ─── Compact Header (36px + safe-area) ─────────────────────────────────── */}
-      <header className="w-full h-[calc(env(safe-area-inset-top,0px)+2.25rem)] pt-[env(safe-area-inset-top,0px)] px-2 bg-stone-950/90 border-b border-stone-800 flex items-center justify-between shrink-0 z-30">
+      {/* Header actions retain 44px touch targets plus the top safe area. */}
+      <header className="w-full pt-[env(safe-area-inset-top,0px)] px-2 border-b border-[#0f0000]/12 flex items-center gap-2 shrink-0 z-30">
         <button
           type="button"
           onClick={handleExitGame}
-          className="h-7 px-2.5 bg-stone-900 hover:bg-stone-800 text-stone-300 hover:text-white border border-stone-700 rounded-sm text-[11px] font-bold flex items-center gap-1 active:scale-95 transition-transform cursor-pointer"
+          className="h-11 w-11 rounded-sm flex items-center justify-center hover:bg-[#f1eeee] shrink-0"
+          aria-label={t('exit_battle', language)}
         >
-          <ArrowLeft size={13} />
-          <span>{language === 'ko' ? '나가기' : 'Exit'}</span>
+          <ArrowLeft size={18} />
         </button>
 
-        <div className="flex items-center gap-1.5 truncate px-1">
-          <span className="text-[10px] text-amber-400 font-black tracking-wider uppercase truncate">
+        <div className="flex-1 min-w-0 flex flex-col justify-center gap-0.5">
+          <span className="text-[11px] font-bold truncate">
             {towerFloor
-              ? (towerFloor % 5 === 0
-                  ? `👑 [${towerFloor}F BOSS] ${effectiveOpponentName}`
-                  : `🗼 [${towerFloor}F] ${effectiveOpponentName}`)
-              : (effectiveTargetCardId ? `🎯 No.${effectiveTargetCardId} ${effectiveOpponentName}` : `⚔️ ${effectiveOpponentName}`)}
+              ? `[${towerFloor}F] ${effectiveOpponentName}`
+              : (effectiveTargetCardId ? `#${effectiveTargetCardId} ${effectiveOpponentName}` : effectiveOpponentName)}
           </span>
           {isRankingMatch && (
-            <span className={cn("text-[9px] px-1 py-0.2 rounded-xs font-mono font-bold shrink-0 border", difficultyProfile.badgeColor)}>
+            <span className="text-[10px] text-[#646262] truncate">
               {language === 'ko' ? difficultyProfile.labelKo : difficultyProfile.labelEn}
             </span>
           )}
@@ -1342,10 +1331,11 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
           <button
             type="button"
             onClick={() => setIsMuted(prev => !prev)}
-            className="w-7 h-7 bg-stone-900 hover:bg-stone-800 text-stone-300 border border-stone-700 rounded-sm flex items-center justify-center text-[10px] active:scale-95 cursor-pointer"
-            aria-label="Sound Toggle"
+             className="w-11 h-11 hover:bg-[#f1eeee] rounded-sm flex items-center justify-center"
+            aria-label={t(isMuted ? 'hud_audio_unmute' : 'hud_audio_mute', language)}
+            aria-pressed={isMuted}
           >
-            {isMuted ? <VolumeX size={13} /> : <Volume2 size={13} />}
+            {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
           </button>
           <button
             type="button"
@@ -1353,10 +1343,10 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
               playSound('tap');
               initMatchDecks();
             }}
-            className="w-7 h-7 bg-stone-900 hover:bg-stone-800 text-stone-300 border border-stone-700 rounded-sm flex items-center justify-center text-[10px] active:scale-95 cursor-pointer"
-            aria-label="Restart Match"
+            className="w-11 h-11 hover:bg-[#f1eeee] rounded-sm flex items-center justify-center"
+            aria-label={t('rematch', language)}
           >
-            <RotateCcw size={13} />
+            <RotateCcw size={18} />
           </button>
         </div>
       </header>
@@ -1365,44 +1355,43 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       {isRankingMatch && (
         <div 
           id="smart-lifecycle-hud"
-          className="w-full px-2 py-1 bg-[#0c101a] border-b border-stone-800 flex items-center justify-between shrink-0 text-[10px] text-stone-300 font-mono gap-1 z-20"
+          className="w-full px-3 border-b border-[#0f0000]/12 flex items-center justify-between shrink-0 text-[11px] gap-2 z-20 [@media(max-height:500px)]:hidden"
         >
           <div className="flex items-center gap-1.5 truncate">
-            <span className="px-1 py-0.2 bg-amber-500/20 text-amber-300 border border-amber-500/40 font-black rounded-xs text-[9px] shrink-0 flex items-center gap-0.5">
-              <Bot size={10} className="animate-spin text-amber-300" />
-              <span>LOOP</span>
+            <span className="shrink-0 flex items-center gap-1">
+              <Bot size={14} />
+              <span>{t('macro_loop_play', language)}</span>
             </span>
-            <span className="font-bold text-stone-300 truncate">
-              ⚔️ {language === 'ko' ? `매치 (${matchLoopCount % 4}/4)` : `Match (${matchLoopCount % 4}/4)`}
+            <span className="text-[#646262] truncate">
+              [{matchLoopCount % 4}/4]
             </span>
-            <span className="text-amber-400 font-bold shrink-0">
-              🪙 {sns} SNS {sns >= 100 ? '🎁[뽑기대기]' : ''}
-            </span>
-            <span className="text-stone-400 shrink-0 hidden sm:inline">
-              ☕ {4 - (matchLoopCount % 4)}판 후 기분전환
+            <span className="font-bold shrink-0">
+              {sns} SNS
             </span>
           </div>
 
           <div className="flex items-center gap-1 shrink-0">
             {lifeCycleNotice && (
-              <span className="px-1.5 py-0.5 bg-stone-900 border border-amber-500/40 text-amber-300 rounded-xs text-[9px] max-w-[130px] sm:max-w-[180px] truncate animate-pulse">
+              <span className="text-[#646262] text-[10px] max-w-[130px] truncate hidden sm:inline">
                 {lifeCycleNotice.text}
               </span>
             )}
             <button
               type="button"
+              aria-label={t('macro_loop_play', language)}
+              aria-pressed={smartLifeCycleActive}
               onClick={() => {
                 setSmartLifeCycleActive(prev => !prev);
                 playSound('tap');
               }}
               className={cn(
-                "px-1.5 py-0.5 rounded-xs text-[9px] font-bold border transition-colors cursor-pointer",
+                "px-2 rounded-sm text-[11px] font-bold border cursor-pointer",
                 smartLifeCycleActive 
-                  ? "bg-emerald-950 text-emerald-300 border-emerald-500/40" 
-                  : "bg-stone-900 text-stone-500 border-stone-700"
+                  ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
+                  : "border-[#0f0000]/12 text-[#646262]"
               )}
             >
-              {smartLifeCycleActive ? '루프:ON' : '루프:OFF'}
+              {smartLifeCycleActive ? '[+]' : '[-]'}
             </button>
           </div>
         </div>
@@ -1411,55 +1400,47 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       {/* ─── 1. 상단 광고 (Top Ad Banner: max 48px) ────────────────── */}
       <div 
         id="mobile-card-top-ad"
-        className="w-full h-11 max-h-11 bg-black/80 border-b border-stone-800/80 px-2 flex items-center justify-center relative overflow-hidden shrink-0"
+        className="w-full h-11 max-h-11 border-b border-[#0f0000]/12 px-2 flex items-center justify-center relative overflow-hidden shrink-0 [@media(max-height:700px)]:hidden"
       >
         <AdSenseBanner isAdRemoved={isAdRemoved} format="horizontal" className="w-full h-full max-h-11" />
         {/* Ad Fallback / Sponsor Banner */}
-        <div className="flex items-center justify-between w-full max-w-sm px-2 text-[10px] text-amber-300/90 font-mono tracking-tight pointer-events-none">
+        <div className="flex items-center justify-between w-full max-w-sm px-2 text-[10px] text-[#646262] tracking-tight pointer-events-none">
           <span className="flex items-center gap-1">
-            <Sparkles size={12} className="text-amber-400 animate-pulse" />
-            <strong className="text-white">SNSHERO REVOLUTION</strong>
+            <strong>SNSHERO REVOLUTION</strong>
           </span>
-          <span className="text-[9px] bg-amber-400/20 text-amber-300 border border-amber-400/40 px-1.5 py-0.2 rounded-xs">
-            {language === 'ko' ? '시즌1 카드 배틀' : 'Season 1'}
+          <span className="text-[10px] border border-[#0f0000]/12 px-1.5">
+            {t('opponent_deck', language)}
           </span>
         </div>
       </div>
 
+      {/* Short, wide viewports dock the hands beside the board, never over it. */}
+      <div className="flex-1 min-h-0 grid grid-cols-1 grid-rows-[auto_auto_minmax(144px,1fr)_auto_auto] gap-2 p-2 pb-[max(8px,env(safe-area-inset-bottom,0px))] [@media(max-height:500px)_and_(min-width:480px)]:grid-cols-[minmax(140px,1fr)_minmax(144px,1.4fr)_minmax(140px,1fr)] [@media(max-height:500px)_and_(min-width:480px)]:grid-rows-[48px_minmax(0,1fr)_48px]">
       {/* ─── 2. 상대 덱 (Opponent Deck: 5 cards, 우리 카드와 동일 규격) ─────────────── */}
       <div 
         id="mobile-card-opponent-deck"
-        className="w-full px-2 py-1.5 bg-[#090d16] border-b border-stone-800/80 flex flex-col items-center shrink-0"
+        className="row-start-1 min-w-0 flex items-center justify-between gap-2 border-b border-[#0f0000]/12 pb-2 [@media(max-height:500px)_and_(min-width:480px)]:col-start-1 [@media(max-height:500px)_and_(min-width:480px)]:row-start-2 [@media(max-height:500px)_and_(min-width:480px)]:flex-col [@media(max-height:500px)_and_(min-width:480px)]:justify-start [@media(max-height:500px)_and_(min-width:480px)]:border-0"
       >
-        <div className="w-full max-w-sm flex items-center justify-between mb-1 text-[9px] text-stone-400">
+        <div className="min-w-0 text-[10px] text-[#646262]">
           <div className="flex items-center gap-1.5">
-            <span className="font-bold text-rose-400">
-              {language === 'ko' ? '상대 카드 덱' : 'OPPONENT DECK'} ({opponentHand.length}/5)
+            <span className="font-bold">
+              {t('opponent_deck', language)} [{opponentHand.length}/5]
             </span>
-            {isRankingMatch && (
-              <span className={cn("text-[8px] px-1 py-0.2 rounded-xs font-mono font-bold border", difficultyProfile.badgeColor)}>
-                {language === 'ko' ? difficultyProfile.labelKo : difficultyProfile.labelEn}
-              </span>
-            )}
           </div>
-          <span className="text-[8px] text-stone-500">
-            {turn === 'ai' 
-              ? (language === 'ko' ? '▶ 상대 턴 진행 중...' : '▶ Opponent thinking...') 
-              : (language === 'ko' ? '상대 패 대기 중' : 'Opponent waiting')}
-          </span>
         </div>
 
-        <div className="flex items-center gap-1.5 w-full max-w-sm justify-center">
+        <div className="grid grid-cols-5 gap-1 w-[140px] shrink-0 [@media(max-height:500px)_and_(min-width:480px)]:w-full [@media(max-height:500px)_and_(min-width:480px)]:max-w-[220px]">
           {opponentHand.map((card, i) => (
             <div
               key={`opp-card-${card.id || i}`}
-              className="flex-1 max-w-[64px] aspect-[5/7] rounded-xs relative transition-all overflow-hidden flex items-center justify-center ring-1 ring-rose-500/80 shadow-xs shadow-rose-900/40"
+              className="aspect-[5/7] relative overflow-hidden border border-[#0f0000]/12"
             >
               <CardItem
                 card={card}
                 isLocked={true}
                 language={language}
-                className="w-full h-full pointer-events-none rounded-xs"
+                lowSpecMode={suppressMotion}
+                className="w-full h-full pointer-events-none rounded-none shadow-none"
               />
             </div>
           ))}
@@ -1468,53 +1449,47 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
           {Array.from({ length: Math.max(0, 5 - opponentHand.length) }).map((_, idx) => (
             <div
               key={`empty-opp-hand-${idx}`}
-              className="flex-1 max-w-[64px] aspect-[5/7] rounded-xs border border-stone-800/40 bg-stone-950/40 opacity-30 flex items-center justify-center"
+              className="aspect-[5/7] border border-dashed border-[#0f0000]/12 flex items-center justify-center"
             >
-              <span className="text-[8px] text-stone-600 font-bold">USED</span>
+              <span className="text-[10px] text-[#9a9898]">-</span>
             </div>
           ))}
         </div>
       </div>
 
       {/* ─── 3. 메인 전투 영역 (좌측 정보 + 카드판 + 우측 액션) ──────── */}
-      <main className="w-full flex-1 flex items-center justify-between px-1 sm:px-2 gap-1 overflow-hidden">
+      <main className="contents">
         {/* ── 좌측: 현재스코어 및 턴 ── */}
         <aside 
           id="mobile-card-left-panel"
-          className="w-14 sm:w-16 h-full flex flex-col justify-center items-center gap-2 py-1 shrink-0 z-10"
+          className="row-start-2 min-w-0 grid grid-cols-[1fr_1fr_44px] items-center gap-2 [@media(max-height:500px)_and_(min-width:480px)]:col-start-1 [@media(max-height:500px)_and_(min-width:480px)]:row-start-1 [@media(max-height:500px)_and_(min-width:480px)]:grid-cols-[1fr_44px]"
         >
           {/* 스코어 위젯 */}
-          <div className="w-full bg-stone-950/90 border border-stone-800 rounded-xs p-1 flex flex-col items-center shadow-md">
-            <span className="text-[8px] text-stone-400 font-bold tracking-wider">SCORE</span>
+          <div className="flex flex-col min-w-0 [@media(max-height:500px)_and_(min-width:480px)]:hidden">
+            <span className="text-[9px] text-[#646262] truncate">{t('my_score', language)} / {t('opp_score', language)}</span>
             <div className="flex items-baseline justify-center gap-1 my-0.5">
-              <span className="text-base sm:text-lg font-black text-cyan-400 leading-none">
+              <span className="text-2xl font-bold leading-none tabular-nums">
                 {score.player}
               </span>
-              <span className="text-[10px] text-stone-500 font-bold">:</span>
-              <span className="text-base sm:text-lg font-black text-rose-400 leading-none">
+              <span className="text-sm text-[#9a9898]">:</span>
+              <span className="text-2xl font-bold text-[#646262] leading-none tabular-nums">
                 {score.opponent}
               </span>
-            </div>
-            <div className="flex items-center justify-between w-full text-[7px] text-stone-500 px-0.5">
-              <span className="text-cyan-400/80">YOU</span>
-              <span className="text-rose-400/80">OPP</span>
             </div>
           </div>
 
           {/* 턴 위젯 */}
           <div className={cn(
-            "w-full rounded-xs p-1 flex flex-col items-center border transition-colors shadow-md",
+            "min-h-11 px-2 flex flex-col justify-center border text-[11px]",
             turn === 'player'
-              ? "bg-cyan-950/80 border-cyan-400 text-cyan-200 shadow-cyan-950/50"
-              : "bg-rose-950/80 border-rose-500 text-rose-200 shadow-rose-950/50"
+              ? "bg-[#201d1d] border-[#201d1d] text-[#fdfcfc]"
+              : "border-[#0f0000]/12 text-[#646262]"
           )}>
-            <span className="text-[8px] font-bold text-stone-400 uppercase">TURN</span>
-            <span className="text-[10px] font-black tracking-tight mt-0.5 flex items-center gap-0.5">
-              <span className={cn("w-1.5 h-1.5 rounded-full animate-ping", turn === 'player' ? "bg-cyan-400" : "bg-rose-400")} />
-              <span>{turn === 'player' ? (language === 'ko' ? '내 턴' : 'YOU') : (language === 'ko' ? '상대' : 'AI')}</span>
+            <span className="font-bold truncate" role="status">
+              {t(gameOver ? 'snake_game_over' : turn === 'player' ? 'your_turn' : 'opponent_turn', language)}
             </span>
-            <span className="text-[8px] font-mono text-stone-400 mt-0.5">
-              T{turnCount}/9
+            <span className="text-[10px] tabular-nums flex items-center justify-between gap-1">
+              [{turnCount}/9] <span aria-label={`${t('my_score', language)} ${score.player}, ${t('opp_score', language)} ${score.opponent}`} className="hidden font-bold text-base leading-none [@media(max-height:500px)_and_(min-width:480px)]:inline">{score.player}:{score.opponent}</span>
             </span>
           </div>
 
@@ -1525,45 +1500,51 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
               playSound('tap');
               setBattleSpeed(prev => (prev === 1 ? 2 : 1));
             }}
-            className="w-full py-1 bg-stone-900 hover:bg-stone-800 text-amber-300 border border-stone-700 rounded-xs text-[9px] font-black tracking-tight active:scale-95 cursor-pointer text-center"
+            className="h-11 border border-[#0f0000]/12 rounded-sm text-xs font-bold hover:bg-[#f1eeee] tabular-nums"
           >
-            {battleSpeed}x SPEED
+            {battleSpeed}x
           </button>
         </aside>
 
         {/* ── 중앙: 3x3 카드판 ── */}
         <div 
           id="mobile-card-center-board"
-          className="flex-1 h-full flex items-center justify-center p-0.5"
+          className="row-start-3 min-w-0 min-h-0 flex items-center justify-center [container-type:size] [@media(max-height:500px)_and_(min-width:480px)]:col-start-2 [@media(max-height:500px)_and_(min-width:480px)]:row-start-1 [@media(max-height:500px)_and_(min-width:480px)]:row-span-2"
         >
-          <div className="w-[min(264px,64vw)] h-[min(264px,64vw)] max-w-[280px] max-h-[280px] aspect-square grid grid-cols-3 grid-rows-3 gap-1 bg-[#0b0e17] border-2 border-stone-800/80 p-1 rounded-sm shadow-xl">
+          <div className="w-[min(100cqw,100cqh,420px)] aspect-square grid grid-cols-3 grid-rows-3 gap-1 bg-[#f1eeee] border border-[#0f0000]/12 p-1">
             {board.map((cell, idx) => {
               const isOccupied = cell !== null;
               const isFlipped = flippedSlots.includes(idx);
               const isSelectedHand = selectedHandIndex !== null && playerHand[selectedHandIndex];
               const isShielded = boardShields[idx];
+              const isPlayable = !isOccupied && Boolean(isSelectedHand) && turn === 'player' && !gameOver && !isEvaluating && rankingSearchCountdown === null && !showMissionDialogue;
 
               return (
-                <div
+                <button
+                  type="button"
                   key={`board-slot-${idx}`}
                   id={`board-slot-${idx}`}
+                  disabled={!isPlayable}
+                  aria-label={`${t(isOccupied ? cell.owner === 'player' ? 'my_deck_title' : 'opponent_deck' : 'toast_select_empty_slot', language)} ${idx + 1}${isOccupied ? `: ${language === 'ko' ? cell.title : cell.title_en || cell.title}` : ''}${isShielded ? `, ${t('ability_shield', language)}` : ''}`}
                   onClick={() => {
                     if (turn === 'player' && !isOccupied && isSelectedHand && rankingSearchCountdown === null && !showMissionDialogue) {
                       handlePlaceCard(idx, isSelectedHand, true);
                     }
                   }}
                   className={cn(
-                    "relative w-full h-full rounded-xs flex flex-col items-center justify-center transition-all cursor-pointer overflow-hidden",
-                    !isOccupied && isSelectedHand && turn === 'player' && "border-2 border-dashed border-cyan-400/80 bg-cyan-950/20 hover:bg-cyan-900/30 animate-pulse",
-                    !isOccupied && (!isSelectedHand || turn !== 'player') && "border border-stone-800/80 bg-stone-950/50 hover:border-stone-700",
-                    isOccupied && cell.owner === 'player' && "border-2 border-cyan-400 bg-cyan-950/90 shadow-sm shadow-cyan-500/20",
-                    isOccupied && cell.owner === 'ai' && "border-2 border-rose-500 bg-rose-950/90 shadow-sm shadow-rose-500/20"
+                    "relative w-full h-full min-w-0 rounded-sm flex flex-col items-center justify-center overflow-hidden",
+                    isPlayable && "border border-dashed border-[#201d1d] bg-[#fdfcfc] hover:bg-[#e5e1e1] cursor-pointer",
+                    !isOccupied && !isPlayable && "border border-[#0f0000]/12 bg-[#f8f7f7] text-[#9a9898]",
+                    isOccupied && cell.owner === 'player' && "border-2 border-[#201d1d]",
+                    isOccupied && cell.owner === 'ai' && "border-2 border-[#9a9898]",
+                    isFlipped && "outline outline-2 outline-offset-[-4px] outline-[#007aff]"
                   )}
                 >
                   {isOccupied && cell ? (
                     <motion.div
-                      animate={isFlipped ? { rotateY: [0, 180, 360], scale: [1, 1.08, 1] } : {}}
-                      transition={{ duration: 0.35 }}
+                      initial={suppressMotion ? false : { opacity: 0, scale: 0.94 }}
+                      animate={isFlipped && !suppressMotion ? { opacity: 1, scale: [1, 0.94, 1], x: [0, cell.owner === 'player' ? -3 : 3, 0] } : { opacity: 1, scale: 1, x: 0 }}
+                      transition={{ duration: suppressMotion ? 0 : 0.22, ease: 'easeOut' }}
                       className="w-full h-full relative p-0.5 flex items-center justify-center"
                     >
                       <CardItem
@@ -1571,26 +1552,26 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                         isOnBoard={true}
                         isLocked={true}
                         language={language}
+                        lowSpecMode={suppressMotion}
                         className={cn(
-                          "w-full h-full rounded-xs shadow-md pointer-events-none",
-                          cell.owner === 'player' ? "ring-1 ring-cyan-400" : "ring-1 ring-rose-500"
+                          "w-full h-full rounded-none shadow-none pointer-events-none"
                         )}
                       />
 
                       {/* Shield Indicator */}
                       {isShielded && (
-                        <div className="absolute top-0.5 right-0.5 z-30 bg-amber-400 text-stone-950 rounded-full p-0.5 shadow-md">
-                          <Shield size={10} className="fill-current" />
+                        <div className="absolute top-1 right-1 z-30 bg-[#fdfcfc] text-[#201d1d] border border-[#201d1d] rounded-sm p-1">
+                          <Shield size={12} />
                         </div>
                       )}
                     </motion.div>
                   ) : (
-                    <div className="flex flex-col items-center justify-center text-stone-700 pointer-events-none">
-                      <span className="text-[10px] font-bold">+</span>
-                      <span className="text-[7px] text-stone-600">#{idx + 1}</span>
+                    <div className="flex flex-col items-center justify-center pointer-events-none">
+                      <span className="text-lg font-bold">{isPlayable ? '[+]' : '+'}</span>
+                      <span className="text-[10px] text-[#646262]">{String(idx + 1).padStart(2, '0')}</span>
                     </div>
                   )}
-                </div>
+                </button>
               );
             })}
           </div>
@@ -1599,84 +1580,83 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
         {/* ── 우측: 사용할 스킬 과 자동전투여부 ── */}
         <aside 
           id="mobile-card-right-panel"
-          className="w-14 sm:w-16 h-full flex flex-col justify-center items-center gap-1.5 py-1 shrink-0 z-10"
+          className="row-start-5 grid grid-cols-[1fr_1fr_1fr_1.3fr] gap-1 border-t border-[#0f0000]/12 pt-2 [@media(max-height:500px)_and_(min-width:480px)]:col-start-1 [@media(max-height:500px)_and_(min-width:480px)]:col-span-3 [@media(max-height:500px)_and_(min-width:480px)]:row-start-3 [@media(max-height:500px)_and_(min-width:480px)]:pt-1"
         >
           {/* 스킬 1: 파워 부스트 (+2) */}
           <button
             type="button"
             onClick={handleUsePowerSkill}
-            disabled={turn !== 'player' || skillCharges.power <= 0}
+            disabled={turn !== 'player' || skillCharges.power <= 0 || gameOver || isEvaluating}
+            aria-pressed={activeSkill === 'power'}
+            aria-label={`${t('wiki_power', language)} +2 [${skillCharges.power}]`}
             className={cn(
-              "w-full py-1.5 px-0.5 rounded-xs border flex flex-col items-center justify-center transition-all cursor-pointer active:scale-95",
+              "min-w-0 px-1 rounded-sm border flex items-center justify-center gap-1 text-[11px] disabled:opacity-40",
               activeSkill === 'power'
-                ? "bg-amber-400 text-stone-950 border-amber-300 font-black shadow-md shadow-amber-400/40 animate-pulse"
+                ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d] font-bold"
                 : skillCharges.power > 0 && turn === 'player'
-                ? "bg-stone-900 hover:bg-stone-800 text-amber-300 border-amber-500/50"
-                : "bg-stone-950/60 text-stone-600 border-stone-800/80 cursor-not-allowed"
+                ? "border-[#0f0000]/12 hover:bg-[#f1eeee]"
+                : "border-[#0f0000]/12 text-[#646262]"
             )}
           >
-            <Zap size={13} />
-            <span className="text-[8px] font-black leading-tight mt-0.5">
-              {language === 'ko' ? '파워+2' : 'POW+2'}
-            </span>
-            <span className="text-[7px] text-stone-400 scale-90">[{skillCharges.power}]</span>
+            <Zap size={14} className="shrink-0" />
+            <span>+2</span><span className="text-[9px]">[{skillCharges.power}]</span>
           </button>
 
           {/* 스킬 2: 방어 실드 */}
           <button
             type="button"
             onClick={handleUseShieldSkill}
-            disabled={turn !== 'player' || skillCharges.shield <= 0}
+            disabled={turn !== 'player' || skillCharges.shield <= 0 || gameOver || isEvaluating}
+            aria-pressed={activeSkill === 'shield'}
+            aria-label={`${t('ability_shield', language)} [${skillCharges.shield}]`}
             className={cn(
-              "w-full py-1.5 px-0.5 rounded-xs border flex flex-col items-center justify-center transition-all cursor-pointer active:scale-95",
+              "min-w-0 px-1 rounded-sm border flex items-center justify-center gap-1 text-[11px] disabled:opacity-40",
               activeSkill === 'shield'
-                ? "bg-cyan-400 text-stone-950 border-cyan-300 font-black shadow-md shadow-cyan-400/40 animate-pulse"
+                ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d] font-bold"
                 : skillCharges.shield > 0 && turn === 'player'
-                ? "bg-stone-900 hover:bg-stone-800 text-cyan-300 border-cyan-500/50"
-                : "bg-stone-950/60 text-stone-600 border-stone-800/80 cursor-not-allowed"
+                ? "border-[#0f0000]/12 hover:bg-[#f1eeee]"
+                : "border-[#0f0000]/12 text-[#646262]"
             )}
           >
-            <Shield size={13} />
-            <span className="text-[8px] font-black leading-tight mt-0.5">
-              {language === 'ko' ? '가드실드' : 'SHIELD'}
-            </span>
-            <span className="text-[7px] text-stone-400 scale-90">[{skillCharges.shield}]</span>
+            <Shield size={14} className="shrink-0" />
+            <span className="text-[10px]">[{skillCharges.shield}]</span>
           </button>
 
           {/* 스킬 3: 원소 버스트 */}
           <button
             type="button"
             onClick={handleUseBurstSkill}
-            disabled={turn !== 'player' || skillCharges.burst <= 0}
+            disabled={turn !== 'player' || skillCharges.burst <= 0 || gameOver || isEvaluating}
+            aria-label={`${t('wiki_power', language)} +1 [${skillCharges.burst}]`}
             className={cn(
-              "w-full py-1.5 px-0.5 rounded-xs border flex flex-col items-center justify-center transition-all cursor-pointer active:scale-95",
+              "min-w-0 px-1 rounded-sm border flex items-center justify-center gap-1 text-[11px] disabled:opacity-40",
               skillCharges.burst > 0 && turn === 'player'
-                ? "bg-stone-900 hover:bg-stone-800 text-rose-300 border-rose-500/50"
-                : "bg-stone-950/60 text-stone-600 border-stone-800/80 cursor-not-allowed"
+                ? "border-[#0f0000]/12 hover:bg-[#f1eeee]"
+                : "border-[#0f0000]/12 text-[#646262]"
             )}
           >
-            <Flame size={13} />
-            <span className="text-[8px] font-black leading-tight mt-0.5">
-              {language === 'ko' ? '원소+1' : 'BURST'}
-            </span>
-            <span className="text-[7px] text-stone-400 scale-90">[{skillCharges.burst}]</span>
+            <Flame size={14} className="shrink-0" />
+            <span>+1</span><span className="text-[9px]">[{skillCharges.burst}]</span>
           </button>
 
           {/* 자동전투 토글 버튼 */}
           <button
             type="button"
             onClick={toggleAuto}
+            aria-label={t('auto_battle', language)}
+            aria-pressed={isAutoBattle}
             className={cn(
-              "w-full py-1.5 px-0.5 rounded-xs border flex flex-col items-center justify-center transition-all cursor-pointer mt-0.5 active:scale-95",
+              "min-w-0 px-1 rounded-sm border flex items-center justify-center gap-1 text-[10px] font-bold",
               isAutoBattle
-                ? "bg-emerald-500 text-stone-950 border-emerald-400 font-black shadow-md shadow-emerald-500/40 animate-pulse"
-                : "bg-stone-900 hover:bg-stone-800 text-stone-400 border-stone-700 font-bold"
+                ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
+                : "border-[#0f0000]/12 text-[#646262] hover:bg-[#f1eeee]"
             )}
           >
-            <Bot size={14} />
-            <span className="text-[8px] font-black tracking-tight leading-tight mt-0.5">
-              {isAutoBattle ? 'AUTO:ON' : 'AUTO:OFF'}
+            <Bot size={14} className="shrink-0" />
+            <span className="truncate">
+              {t('auto_battle', language)}
             </span>
+            <span>{isAutoBattle ? '[+]' : '[-]'}</span>
           </button>
         </aside>
       </main>
@@ -1684,34 +1664,40 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       {/* ─── 4. 내 카드 덱 (My Card Deck: 5 cards, ~76px) ───────────── */}
       <footer 
         id="mobile-card-my-deck"
-        className="w-full px-2 py-1.5 bg-[#090d16] border-t border-stone-800/80 flex flex-col items-center shrink-0"
+        className="row-start-4 min-w-0 flex flex-col items-center gap-1.5 [@media(max-height:500px)_and_(min-width:480px)]:col-start-3 [@media(max-height:500px)_and_(min-width:480px)]:row-start-1 [@media(max-height:500px)_and_(min-width:480px)]:row-span-2 [@media(max-height:500px)_and_(min-width:480px)]:overflow-y-auto [@media(max-height:500px)_and_(min-width:480px)]:touch-pan-y"
       >
-        <div className="w-full max-w-sm flex items-center justify-between mb-1 text-[9px] text-stone-400">
-          <span className="font-bold text-cyan-400">
-            {language === 'ko' ? '내 카드 덱' : 'MY DECK'} ({playerHand.length}/5)
+        <div className="w-full max-w-[420px] flex flex-wrap items-center justify-between gap-x-2 text-[10px] text-[#646262]">
+          <span className="font-bold text-[#201d1d]">
+            {t('my_deck_title', language)} [{playerHand.length}/5]
           </span>
-          <span className="text-[8px] text-stone-500">
-            {selectedHandIndex !== null && playerHand[selectedHandIndex] 
-              ? (language === 'ko' ? '▶ 보드의 빈 칸을 터치하세요' : '▶ Tap an empty board slot')
-              : (language === 'ko' ? '카드를 탭하여 선택' : 'Tap a card to select')}
+          <span className="text-[10px]" role="status">
+            {gameOver ? t('snake_game_over', language)
+              : turn === 'ai' ? t('opponent_turn', language)
+              : isAutoBattle ? t('auto_battle', language)
+              : selectedHandIndex !== null && playerHand[selectedHandIndex]
+              ? t('toast_select_empty_slot', language)
+              : t('select_card', language)}
           </span>
         </div>
 
-        <div className="flex items-center gap-1.5 w-full max-w-sm justify-center">
+        <div className="grid grid-cols-5 gap-1.5 w-full max-w-[420px] [@media(max-height:500px)_and_(min-width:480px)]:grid-cols-2 [@media(max-height:500px)_and_(min-width:560px)]:grid-cols-3">
           {playerHand.map((card, i) => {
             const isSelected = selectedHandIndex === i;
             return (
-              <div
+              <button
+                type="button"
                 key={card.id}
+                aria-pressed={isSelected}
+                aria-label={`${t('select_card', language)}: ${language === 'ko' ? card.title : card.title_en || card.title}`}
                 onClick={() => {
                   playSound('tap');
                   setSelectedHandIndex(i);
                 }}
                 className={cn(
-                  "flex-1 max-w-[64px] aspect-[5/7] rounded-xs relative transition-all cursor-pointer select-none",
+                  "h-[clamp(60px,12dvh,100px)] min-w-0 rounded-sm relative overflow-hidden cursor-pointer border-2 [@media(max-height:500px)_and_(min-width:480px)]:h-[clamp(44px,24dvh,80px)]",
                   isSelected
-                    ? "-translate-y-2 ring-2 ring-amber-400 shadow-[0_0_14px_rgba(251,191,36,0.7)] z-30 scale-105"
-                    : "hover:-translate-y-0.5 opacity-95 hover:opacity-100 ring-1 ring-white/10"
+                    ? "border-[#201d1d] outline outline-1 outline-offset-1 outline-[#201d1d]"
+                    : "border-[#0f0000]/12 hover:border-[#646262]"
                 )}
               >
                 <CardItem
@@ -1719,16 +1705,17 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                   isLocked={turn !== 'player'}
                   isSelected={isSelected}
                   language={language}
-                  className="w-full h-full pointer-events-none rounded-xs"
+                  lowSpecMode={suppressMotion}
+                  className="w-full h-full pointer-events-none rounded-none shadow-none"
                 />
 
                 {/* Selected Tag */}
                 {isSelected && (
-                  <div className="absolute -top-2 left-1/2 -translate-x-1/2 bg-amber-400 text-stone-950 font-black text-[7px] px-1.5 py-0.2 rounded-full shadow-sm whitespace-nowrap z-40 animate-bounce">
-                    PICK
+                  <div className="absolute bottom-0 inset-x-0 bg-[#201d1d] text-[#fdfcfc] text-[9px] py-0.5 z-40 flex items-center justify-center gap-1">
+                    <Check size={12} /><span className="sr-only">{t('pg_selected', language)}</span>
                   </div>
                 )}
-              </div>
+              </button>
             );
           })}
 
@@ -1736,57 +1723,48 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
           {Array.from({ length: Math.max(0, 5 - playerHand.length) }).map((_, idx) => (
             <div
               key={`empty-hand-${idx}`}
-              className="flex-1 max-w-[64px] aspect-[5/7] rounded-xs border border-stone-800/40 bg-stone-950/40 opacity-30 flex items-center justify-center"
+              className="h-[clamp(60px,12dvh,100px)] border border-dashed border-[#0f0000]/12 flex items-center justify-center [@media(max-height:500px)_and_(min-width:480px)]:h-[clamp(44px,24dvh,80px)]"
             >
-              <span className="text-[8px] text-stone-600 font-bold">USED</span>
+              <span className="text-[11px] text-[#9a9898]">[-]</span>
             </div>
           ))}
         </div>
       </footer>
+      </div>
 
       {/* ─── Game Over Result Modal ─────────────────────────────────── */}
       <AnimatePresence>
         {gameOver && (
           <motion.div
-            initial={{ opacity: 0 }}
+            initial={suppressMotion ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[250] bg-black/85 backdrop-blur-xs flex items-center justify-center p-3"
+            exit={suppressMotion ? undefined : { opacity: 0 }}
+            className="fixed inset-0 z-[250] bg-[#201d1d]/60 flex items-center justify-center p-3"
           >
             <motion.div
-              initial={{ scale: 0.85, y: 15 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.85, y: 15 }}
-              className={cn(
-                "w-full max-w-sm rounded-sm border p-4 sm:p-5 flex flex-col items-center text-center shadow-2xl font-mono",
-                winner === 'player'
-                  ? "bg-[#091512] border-2 border-emerald-400 shadow-emerald-500/40"
-                  : winner === 'ai'
-                  ? "bg-[#1f0f13] border-2 border-rose-500 shadow-rose-950/60"
-                  : "bg-stone-900 border-2 border-amber-500 shadow-amber-950/60"
-              )}
+              initial={suppressMotion ? false : { opacity: 0, y: 8 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={suppressMotion ? undefined : { opacity: 0, y: 8 }}
+              className="w-full max-w-sm max-h-[calc(100dvh-24px)] overflow-y-auto touch-pan-y overscroll-contain rounded-none border border-[#0f0000]/12 bg-[#fdfcfc] p-4 sm:p-5 flex flex-col items-center text-center font-mono shrink-0"
             >
               {/* Winner Icon & Header */}
               <div className="mb-2">
                 {winner === 'player' ? (
-                  <div className="w-14 h-14 rounded-full bg-emerald-500/20 border-2 border-emerald-400 flex items-center justify-center text-emerald-300 mx-auto animate-bounce shadow-lg shadow-emerald-500/30">
-                    <Trophy size={28} className="text-amber-400" />
+                  <div className="w-14 h-14 border border-[#0f0000]/12 flex items-center justify-center mx-auto">
+                    <Trophy size={28} />
                   </div>
                 ) : winner === 'ai' ? (
-                  <div className="w-12 h-12 rounded-full bg-rose-500/20 border-2 border-rose-400 flex items-center justify-center text-rose-300 mx-auto">
+                  <div className="w-12 h-12 border border-[#0f0000]/12 flex items-center justify-center mx-auto">
                     <Award size={24} />
                   </div>
                 ) : (
-                  <div className="w-12 h-12 rounded-full bg-amber-500/20 border-2 border-amber-400 flex items-center justify-center text-amber-300 mx-auto">
+                  <div className="w-12 h-12 border border-[#0f0000]/12 flex items-center justify-center mx-auto">
                     <RotateCcw size={24} />
                   </div>
                 )}
               </div>
 
-              <h2 className={cn(
-                "text-xl font-black tracking-wider uppercase",
-                winner === 'player' ? "text-emerald-300 drop-shadow-[0_0_10px_rgba(52,211,153,0.5)]" : winner === 'ai' ? "text-rose-400" : "text-amber-300"
-              )}>
+              <h2 className="text-xl font-bold tracking-tight uppercase">
                 {winner === 'player' 
                   ? (tieBreakerInfo 
                       ? (language === 'ko' ? '🎉 VICTORY! (덱 TP 판정 승리)' : '🎉 VICTORY! (Deck TP Win)')
@@ -1799,24 +1777,21 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
               </h2>
 
               {/* Final Score */}
-              <div className="my-2 py-1 px-4 bg-black/70 border border-white/10 rounded-xs flex items-baseline gap-2">
-                <span className="text-2xl font-black text-cyan-400">{score.player}</span>
-                <span className="text-stone-500 font-bold">:</span>
-                <span className="text-2xl font-black text-rose-400">{score.opponent}</span>
+              <div className="my-2 py-1 px-4 border border-[#0f0000]/12 flex items-baseline gap-2 tabular-nums">
+                <span className="text-2xl font-bold">{score.player}</span>
+                <span className="text-[#9a9898]">:</span>
+                <span className="text-2xl font-bold text-[#646262]">{score.opponent}</span>
               </div>
 
               {/* 무승부 시 서로의 덱 TP 비교 시각화 카드 */}
               {tieBreakerInfo && (
-                <div className="w-full my-2 p-2.5 bg-stone-900/90 border border-amber-400/60 rounded-xs flex flex-col gap-1.5 font-mono shadow-md text-left">
-                  <div className="flex items-center justify-between text-[11px] font-black text-amber-300 border-b border-amber-400/30 pb-1">
+                <div className="w-full my-2 p-2.5 border border-[#0f0000]/12 flex flex-col gap-1.5 text-left">
+                  <div className="flex flex-wrap items-center justify-between gap-1 text-[11px] font-bold border-b border-[#0f0000]/12 pb-1">
                     <span className="flex items-center gap-1">
                       <span>⚖️</span>
                       <span>{language === 'ko' ? '무승부 동점 덱 TP 판정' : 'Tie-Breaker: Deck TP Comparison'}</span>
                     </span>
-                    <span className={cn(
-                      "px-1.5 py-0.5 rounded-2xs text-[10px] font-black",
-                      tieBreakerInfo.winner === 'player' ? "bg-emerald-500/20 text-emerald-300 border border-emerald-400/40" : "bg-rose-500/20 text-rose-300 border border-rose-400/40"
-                    )}>
+                    <span className="px-1.5 py-0.5 text-[10px] font-bold border border-[#0f0000]/12">
                       {tieBreakerInfo.winner === 'player'
                         ? (language === 'ko' ? '🏆 플레이어 TP 우세 승리' : '🏆 Player TP Win')
                         : (language === 'ko' ? '💀 상대 TP 우세 패배' : '💀 Rival TP Win')}
@@ -1824,16 +1799,16 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                   </div>
                   <div className="flex items-center justify-between text-xs px-2 pt-1">
                     <div className="flex flex-col items-center">
-                      <span className="text-[10px] text-stone-400">{language === 'ko' ? '내 덱 TP' : 'My Deck TP'}</span>
-                      <span className="text-sm font-black text-cyan-400 font-mono">{tieBreakerInfo.playerTp.toLocaleString()}</span>
+                      <span className="text-[10px] text-[#646262]">{language === 'ko' ? '내 덱 TP' : 'My Deck TP'}</span>
+                      <span className="text-sm font-bold">{tieBreakerInfo.playerTp.toLocaleString()}</span>
                     </div>
-                    <div className="text-amber-400 font-black text-xs px-2">VS</div>
+                    <div className="text-[#9a9898] font-bold text-xs px-2">VS</div>
                     <div className="flex flex-col items-center">
-                      <span className="text-[10px] text-stone-400">{language === 'ko' ? '상대 덱 TP' : 'Rival Deck TP'}</span>
-                      <span className="text-sm font-black text-rose-400 font-mono">{tieBreakerInfo.opponentTp.toLocaleString()}</span>
+                      <span className="text-[10px] text-[#646262]">{language === 'ko' ? '상대 덱 TP' : 'Rival Deck TP'}</span>
+                      <span className="text-sm font-bold">{tieBreakerInfo.opponentTp.toLocaleString()}</span>
                     </div>
                   </div>
-                  <div className="text-[10px] text-stone-300 text-center pt-1 border-t border-white/5">
+                  <div className="text-[10px] text-[#646262] text-center pt-1 border-t border-[#0f0000]/12">
                     {tieBreakerInfo.winner === 'player'
                       ? (language === 'ko' ? '✨ 내 덱 TP가 더 높아 승리로 판정되어 승률이 반영되었습니다!' : '✨ Win awarded due to higher Deck TP!')
                       : (language === 'ko' ? '상대 덱 TP가 더 높아 아쉽게 패배로 판정되었습니다.' : 'Loss awarded due to lower Deck TP.')}
@@ -1842,13 +1817,13 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
               )}
 
               {/* Rewards Description & Prominent SNS Notification */}
-              <div className="w-full bg-black/60 border border-white/10 rounded-xs p-3 my-2 text-stone-200 flex flex-col gap-2">
-                <div className="flex justify-between items-center text-xs border-b border-white/10 pb-1.5">
+              <div className="w-full border border-[#0f0000]/12 p-3 my-2 flex flex-col gap-2">
+                <div className="flex justify-between items-center text-xs border-b border-[#0f0000]/12 pb-1.5">
                   <span className="font-bold flex items-center gap-1">
                     <span>💰</span>
                     <span>{language === 'ko' ? '획득 SNS 보상' : 'Earned SNS'}</span>:
                   </span>
-                  <span className="font-black text-amber-300 text-base font-mono flex items-center gap-1 animate-pulse">
+                  <span className="font-bold text-base flex items-center gap-1">
                     +{winner === 'player' ? 30 : (winner === 'ai' ? 10 : 15)} SNS
                   </span>
                 </div>
@@ -1857,7 +1832,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                 {winner === 'player' && (
                   <div className="my-1">
                     {isDoubleRewardClaimed ? (
-                      <div className="py-1 px-2.5 bg-emerald-500/20 border border-emerald-400/50 text-emerald-300 text-[10px] font-bold rounded-xs text-center flex items-center justify-center gap-1">
+                      <div className="py-1 px-2.5 border border-[#0f0000]/12 text-[10px] font-bold text-center flex items-center justify-center gap-1">
                         <span>✨</span>
                         <span>{language === 'ko' ? '보상 2배 수령 완료 (+30 SNS 추가 입금됨)' : '2x Reward Claimed (+30 SNS Added)'}</span>
                       </div>
@@ -1865,11 +1840,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                       <button
                         type="button"
                         onClick={() => setIsRewardedModalOpen(true)}
-                        className={`w-full py-2 px-3 text-[11px] font-black uppercase rounded-xs transition-transform active:scale-95 cursor-pointer flex items-center justify-center gap-1.5 shadow-md ${
-                          isVipUser
-                            ? 'bg-amber-400 hover:bg-amber-300 text-stone-950 border border-amber-300'
-                            : 'bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 text-stone-950'
-                        }`}
+                        className="w-full py-2 px-3 text-[11px] font-bold rounded-sm cursor-pointer flex items-center justify-center gap-1.5 bg-[#201d1d] text-[#fdfcfc]"
                       >
                         {isVipUser ? (
                           <>
@@ -1891,14 +1862,14 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                 {isRankingMatch && (
                   <div className="flex flex-col gap-1.5 pt-0.5 text-left">
                     <div className="flex justify-between items-center text-xs">
-                      <span className="text-stone-400">{language === 'ko' ? '현재 보유 SNS 잔액:' : 'Current Balance:'}</span>
-                      <span className="font-black text-amber-300 font-mono text-sm">🪙 {sns} SNS</span>
+                      <span className="text-[#646262]">{language === 'ko' ? '현재 보유 SNS 잔액:' : 'Current Balance:'}</span>
+                      <span className="font-bold text-sm">{sns} SNS</span>
                     </div>
 
                     {winner === 'player' && smartLifeCycleActive && (sns || 0) >= 100 && (
-                      <div className="p-2 bg-amber-500/20 border border-amber-400/60 rounded-xs text-[11px] text-amber-200 font-bold text-center">
+                      <div className="p-2 border border-[#0f0000]/12 text-[11px] font-bold text-center">
                         🛒 {language === 'ko' ? '카드 뽑기 여유 충족 (100 SNS 이상)!' : 'Pack Draw Ready (100+ SNS)!'}
-                        <div className="text-[10px] text-amber-300/80 mt-0.5">
+                        <div className="text-[10px] text-[#646262] mt-0.5">
                           {language === 'ko' ? '상점으로 이동하여 새 카드를 소환할 수 있습니다.' : 'You can visit Shop to summon cards.'}
                         </div>
                       </div>
@@ -1907,7 +1878,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                 )}
 
                 {effectiveTargetCardId && winner === 'player' && (
-                  <div className="flex justify-between items-center text-emerald-400 font-bold border-t border-white/10 pt-1 text-xs">
+                  <div className="flex flex-wrap justify-between items-center gap-1 font-bold border-t border-[#0f0000]/12 pt-1 text-xs">
                     <span>{language === 'ko' ? '미션 카드 달성' : 'Mission Card'}:</span>
                     <span>No.{effectiveTargetCardId} {effectiveOpponentName}</span>
                   </div>
@@ -1916,16 +1887,17 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
 
               {/* Target Card Visual Reward Preview */}
               {effectiveTargetCardId && winner === 'player' && CARD_DATABASE[effectiveTargetCardId] && (
-                <div className="flex flex-col items-center my-1 p-1.5 bg-black/60 rounded-xs border border-emerald-500/40 w-full">
-                  <div className="w-[68px] aspect-[5/7] my-1 shadow-lg shadow-emerald-500/30">
+                <div className="flex flex-col items-center my-1 p-1.5 border border-[#0f0000]/12 w-full">
+                  <div className="w-[68px] aspect-[5/7] my-1">
                     <CardItem
                       card={CARD_DATABASE[effectiveTargetCardId]}
                       isLocked={true}
                       language={language}
-                      className="w-full h-full pointer-events-none rounded-xs"
+                      lowSpecMode={suppressMotion}
+                      className="w-full h-full pointer-events-none rounded-none shadow-none"
                     />
                   </div>
-                  <span className="text-[10px] font-bold text-emerald-300">
+                  <span className="text-[10px] font-bold">
                     {effectiveOpponentName}
                   </span>
                 </div>
@@ -1933,9 +1905,9 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
 
               {/* 1) 랭킹대전 스마트 루프 카운트다운 바 (무조건 3초) */}
               {isRankingMatch && rankingAutoLoopCountdown !== null && rankingAutoLoopCountdown > 0 && (
-                <div className="w-full my-1.5 p-2 bg-stone-900/90 border border-amber-500/40 rounded-xs flex flex-col items-center justify-center gap-1.5 font-mono shadow-md">
-                  <div className="flex items-center gap-2 text-xs font-black tracking-wider text-amber-300">
-                    <RotateCcw size={14} className="animate-spin text-amber-400 shrink-0" />
+                <div className="w-full my-1.5 p-2 border border-[#0f0000]/12 flex flex-col items-center justify-center gap-1.5">
+                  <div className="flex items-center gap-2 text-xs font-bold">
+                    <RotateCcw size={14} className="shrink-0" />
                     <span>
                       {winner === 'player'
                         ? (language === 'ko'
@@ -1946,9 +1918,9 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                             : `⚔️ Next Match in [ ${rankingAutoLoopCountdown}s ]...`)}
                     </span>
                   </div>
-                  <div className="w-full bg-stone-950 h-1.5 rounded-full overflow-hidden border border-amber-500/30">
+                  <div className="w-full bg-[#f1eeee] h-1.5 overflow-hidden">
                     <div 
-                      className="bg-gradient-to-r from-amber-500 to-yellow-300 h-full transition-all duration-1000 ease-linear"
+                      className="bg-[#201d1d] h-full"
                       style={{ width: `${(rankingAutoLoopCountdown / 3) * 100}%` }}
                     />
                   </div>
@@ -1957,18 +1929,18 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
 
               {/* 2) 일반/미션 모드: 3초 카운터 후에 다시 카드 플레이 */}
               {!(isTutorialMode || (tutorialStep > 0 && tutorialStep <= 7)) && !isRankingMatch && rematchCountdown !== null && rematchCountdown > 0 && (
-                <div className="w-full my-1.5 p-2 bg-emerald-950/80 border border-emerald-500/40 rounded-xs flex flex-col items-center justify-center gap-1.5 font-mono shadow-md">
-                  <div className="flex items-center gap-2 text-xs font-black text-emerald-400 tracking-wider">
-                    <RotateCcw size={14} className="animate-spin text-emerald-400 shrink-0" />
+                <div className="w-full my-1.5 p-2 border border-[#0f0000]/12 flex flex-col items-center justify-center gap-1.5">
+                  <div className="flex items-center gap-2 text-xs font-bold">
+                    <RotateCcw size={14} className="shrink-0" />
                     <span>
                       {language === 'ko'
                         ? `⏱️ [ ${rematchCountdown}초 ] 후 다시 카드 플레이...`
                         : `⏱️ Restarting in [ ${rematchCountdown}s ]...`}
                     </span>
                   </div>
-                  <div className="w-full bg-stone-900 h-1.5 rounded-full overflow-hidden border border-emerald-500/30">
+                  <div className="w-full bg-[#f1eeee] h-1.5 overflow-hidden">
                     <div 
-                      className="bg-emerald-400 h-full transition-all duration-1000 ease-linear"
+                      className="bg-[#201d1d] h-full"
                       style={{ width: `${(rematchCountdown / 3) * 100}%` }}
                     />
                   </div>
@@ -1984,7 +1956,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                         <button
                           type="button"
                           onClick={handleImmediateShopGo}
-                          className="w-full py-2.5 bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-stone-950 font-black text-xs uppercase rounded-xs transition-transform active:scale-95 cursor-pointer flex items-center justify-center gap-1.5 shadow-lg shadow-amber-500/30"
+                          className="w-full py-2.5 bg-[#201d1d] text-[#fdfcfc] font-bold text-xs rounded-sm cursor-pointer flex items-center justify-center gap-1.5"
                         >
                           <span>🛒</span>
                           <span>{language === 'ko' ? '지금 바로 상점에서 카드 뽑기' : 'Go to Shop Now'}</span>
@@ -1992,7 +1964,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                         <button
                           type="button"
                           onClick={handleImmediateNextRankBattle}
-                          className="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-stone-950 font-black text-xs uppercase rounded-xs transition-transform active:scale-95 cursor-pointer flex items-center justify-center gap-1.5 shadow-md shadow-emerald-500/20"
+                          className="w-full py-2 border border-[#0f0000]/12 font-bold text-xs rounded-sm cursor-pointer flex items-center justify-center gap-1.5 hover:bg-[#f1eeee]"
                         >
                           <span>⚔️</span>
                           <span>{language === 'ko' ? '상점 건너뛰고 다음 랭킹전' : 'Skip Shop & Next Battle'}</span>
@@ -2002,7 +1974,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                       <button
                         type="button"
                         onClick={handleImmediateNextRankBattle}
-                        className="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-black text-xs uppercase rounded-xs transition-transform active:scale-95 cursor-pointer flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-500/30"
+                        className="w-full py-2.5 bg-[#201d1d] text-[#fdfcfc] font-bold text-xs rounded-sm cursor-pointer flex items-center justify-center gap-1.5"
                       >
                         <span>⚔️</span>
                         <span>{language === 'ko' ? '지금 바로 랭킹플레이 재시작' : 'Restart Rank Play Now'}</span>
@@ -2011,7 +1983,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                     <button
                       type="button"
                       onClick={handleExitGame}
-                      className="w-full py-2 bg-stone-800 hover:bg-stone-700 text-stone-300 font-bold text-xs uppercase rounded-xs border border-stone-600 transition-transform active:scale-95 cursor-pointer"
+                      className="w-full py-2 hover:bg-[#f1eeee] font-bold text-xs rounded-sm border border-[#0f0000]/12 cursor-pointer"
                     >
                       {language === 'ko' ? '나가기' : 'Exit'}
                     </button>
@@ -2028,7 +2000,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                         handleExitGame();
                       }
                     }}
-                    className="flex-1 py-2.5 bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-xs uppercase rounded-xs transition-transform active:scale-95 cursor-pointer flex items-center justify-center gap-1 shadow-lg shadow-amber-500/20"
+                    className="w-full py-2.5 bg-[#201d1d] text-[#fdfcfc] font-bold text-xs rounded-sm cursor-pointer flex items-center justify-center gap-1"
                   >
                     <span>🛒</span>
                     <span>{language === 'ko' ? '상점으로 이동' : 'Go to Shop'}</span>
@@ -2047,7 +2019,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                           initMatchDecks();
                         }
                       }}
-                      className="flex-1 py-2 font-black text-xs uppercase rounded-xs transition-transform active:scale-95 cursor-pointer flex items-center justify-center gap-1 bg-emerald-500 hover:bg-emerald-400 text-stone-950"
+                      className="w-full py-2 font-bold text-xs rounded-sm cursor-pointer flex items-center justify-center gap-1 bg-[#201d1d] text-[#fdfcfc]"
                     >
                       <RefreshCw size={13} />
                       <span>{language === 'ko' ? '재대결' : 'Rematch'}</span>
@@ -2055,7 +2027,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                     <button
                       type="button"
                       onClick={handleExitGame}
-                      className="flex-1 py-2 bg-stone-800 hover:bg-stone-700 text-stone-200 font-bold text-xs uppercase rounded-xs border border-stone-600 transition-transform active:scale-95 cursor-pointer"
+                      className="w-full py-2 hover:bg-[#f1eeee] font-bold text-xs rounded-sm border border-[#0f0000]/12 cursor-pointer"
                     >
                       {language === 'ko' ? '나가기' : 'Exit'}
                     </button>
@@ -2082,54 +2054,54 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       <AnimatePresence>
         {towerBossClearModal && (
           <motion.div
-            initial={{ opacity: 0 }}
+            initial={suppressMotion ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[120] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 font-mono select-none"
+            exit={suppressMotion ? undefined : { opacity: 0 }}
+            className="fixed inset-0 z-[120] bg-[#201d1d]/60 flex items-center justify-center p-4 font-mono select-none"
           >
             <motion.div
-              initial={{ scale: 0.85, opacity: 0, y: 20 }}
+              initial={suppressMotion ? false : { opacity: 0, y: 8 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 10 }}
-              className="w-full max-w-sm bg-stone-900 border-2 border-amber-400/80 rounded-sm p-5 shadow-[0_0_50px_rgba(245,158,11,0.3)] text-center space-y-4"
+              exit={suppressMotion ? undefined : { opacity: 0, y: 8 }}
+              className="w-full max-w-sm max-h-[calc(100dvh-32px)] overflow-y-auto touch-pan-y overscroll-contain bg-[#fdfcfc] border border-[#0f0000]/12 rounded-none p-5 text-center space-y-4"
             >
-              <div className="w-16 h-16 mx-auto rounded-full bg-amber-500/20 border-2 border-amber-400 flex items-center justify-center shadow-[0_0_25px_rgba(245,158,11,0.5)] animate-bounce">
-                <Trophy size={32} className="text-amber-400" />
+              <div className="w-16 h-16 mx-auto border border-[#0f0000]/12 flex items-center justify-center">
+                <Trophy size={32} />
               </div>
 
               <div>
-                <span className="text-[10px] font-black uppercase tracking-widest text-amber-400/90 bg-amber-500/10 px-2.5 py-0.5 border border-amber-400/30 rounded-xs">
+                <span className="text-[10px] font-bold px-2.5 py-0.5 border border-[#0f0000]/12">
                   {language === 'ko' ? `🗼 시련의 탑 ${towerBossClearModal.floor}층 클리어!` : `🗼 Tower of Trials Floor ${towerBossClearModal.floor} Cleared!`}
                 </span>
-                <h3 className="text-lg font-black text-white mt-1 uppercase tracking-tight">
+                <h3 className="text-lg font-bold mt-1 tracking-tight">
                   {language === 'ko' ? '👑 보스 격파 대승리!' : '👑 Boss Defeated!'}
                 </h3>
               </div>
 
-              <div className="bg-stone-950/80 border border-stone-800 rounded-xs p-3.5 space-y-2 text-left text-xs">
+              <div className="border border-[#0f0000]/12 p-3.5 space-y-2 text-left text-xs">
                 <div className="flex items-center justify-between">
-                  <span className="text-stone-400 flex items-center gap-1.5">
+                  <span className="text-[#646262] flex items-center gap-1.5">
                     <span>🪙</span>
                     <span>SNS {language === 'ko' ? '보상' : 'Reward'}</span>
                   </span>
-                  <span className="font-black text-amber-400">+{towerBossClearModal.snsReward} SNS</span>
+                  <span className="font-bold">+{towerBossClearModal.snsReward} SNS</span>
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-stone-400 flex items-center gap-1.5">
+                  <span className="text-[#646262] flex items-center gap-1.5">
                     <span>💎</span>
                     <span>{language === 'ko' ? '다이아몬드' : 'Diamonds'}</span>
                   </span>
-                  <span className="font-black text-cyan-400">+{towerBossClearModal.diamonds} Gems</span>
+                  <span className="font-bold">+{towerBossClearModal.diamonds} Gems</span>
                 </div>
 
                 {towerBossClearModal.title && (
-                  <div className="flex items-center justify-between pt-1 border-t border-stone-850">
-                    <span className="text-stone-400 flex items-center gap-1.5">
-                      <Award size={13} className="text-amber-400" />
+                  <div className="flex items-center justify-between pt-1 border-t border-[#0f0000]/12">
+                    <span className="text-[#646262] flex items-center gap-1.5">
+                      <Award size={13} />
                       <span>{language === 'ko' ? '획득 칭호' : 'Title'}</span>
                     </span>
-                    <span className="font-bold text-amber-300 text-[11px] truncate max-w-[150px]">
+                    <span className="font-bold text-[11px] truncate max-w-[150px]">
                       [{towerBossClearModal.title}]
                     </span>
                   </div>
@@ -2137,18 +2109,18 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
 
                 {towerBossClearModal.costume && (
                   <div className="flex items-center justify-between">
-                    <span className="text-stone-400 flex items-center gap-1.5">
-                      <Sparkles size={13} className="text-purple-400" />
+                    <span className="text-[#646262] flex items-center gap-1.5">
+                      <Sparkles size={13} />
                       <span>{language === 'ko' ? '획득 코스튬' : 'Costume'}</span>
                     </span>
-                    <span className="font-bold text-purple-300 text-[11px] truncate max-w-[150px]">
+                    <span className="font-bold text-[11px] truncate max-w-[150px]">
                       ✨ {towerBossClearModal.costume}
                     </span>
                   </div>
                 )}
 
                 {towerBossClearModal.isWelcomeFirstBoss && (
-                  <div className="p-2 bg-amber-500/10 border border-amber-500/30 rounded-xs text-[10px] text-amber-300 font-bold text-center">
+                  <div className="p-2 border border-[#0f0000]/12 text-[10px] font-bold text-center">
                     🎉 {language === 'ko' ? '첫 5층 보스 격파 기념 보너스 (+50 SNS, +20 Gems) 지급!' : 'First 5F Boss Victory Bonus (+50 SNS, +20 Gems) Granted!'}
                   </div>
                 )}
@@ -2161,7 +2133,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                   setTowerBossClearModal(null);
                   handleExitGame();
                 }}
-                className="w-full py-3 bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-xs uppercase rounded-xs transition-transform active:scale-95 cursor-pointer shadow-lg shadow-amber-500/20"
+                className="w-full py-3 bg-[#201d1d] text-[#fdfcfc] font-bold text-xs rounded-sm cursor-pointer"
               >
                 {language === 'ko' ? '보상 수령 및 탑으로 이동' : 'Claim Rewards & Return'}
               </button>
@@ -2174,65 +2146,62 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       <AnimatePresence>
         {rankingSearchCountdown !== null && !gameOver && !isAutoBattle && activeRankOpponent && (
           <motion.div
-            initial={{ opacity: 0 }}
+            initial={suppressMotion ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[220] bg-black/92 backdrop-blur-md flex flex-col items-center justify-center p-4 font-mono select-none"
+            exit={suppressMotion ? undefined : { opacity: 0 }}
+            className="fixed inset-0 z-[220] bg-[#201d1d]/60 flex flex-col items-center justify-center p-4 font-mono select-none"
           >
             <motion.div
-              initial={{ scale: 0.9, opacity: 0, y: 15 }}
+              initial={suppressMotion ? false : { opacity: 0, y: 8 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 15 }}
-              className="w-full max-w-sm bg-[#0b1017] border-2 border-amber-500/90 p-5 rounded-none shadow-[0_0_50px_rgba(245,158,11,0.4)] flex flex-col items-center text-center relative overflow-hidden"
+              exit={suppressMotion ? undefined : { opacity: 0, y: 8 }}
+              className="w-full max-w-sm max-h-[calc(100dvh-32px)] bg-[#fdfcfc] border border-[#0f0000]/12 p-5 rounded-none flex flex-col items-center text-center relative overflow-y-auto touch-pan-y overscroll-contain"
             >
-              {/* Radar pulse effect */}
-              <div className="relative w-20 h-20 my-2 flex items-center justify-center">
-                <div className="absolute inset-0 rounded-full border-2 border-amber-400/40 animate-ping" />
-                <div className="absolute inset-2 rounded-full border border-amber-400/60 animate-pulse" />
-                <div className="w-14 h-14 rounded-full bg-amber-500/20 border border-amber-400 flex items-center justify-center text-2xl shadow-lg">
+              <div className="relative w-20 h-20 my-2 flex items-center justify-center shrink-0">
+                <div className="w-14 h-14 border border-[#0f0000]/12 flex items-center justify-center text-2xl">
                   {activeRankOpponent.avatar || '⚔️'}
                 </div>
               </div>
 
-              <div className="text-[10px] font-black uppercase text-amber-400 tracking-wider mb-1">
+              <div className="text-[10px] font-bold text-[#646262] mb-1">
                 {language === 'ko' ? '새로운 랭킹 대전 상대를 검색 중...' : 'SEARCHING FOR RANK RIVAL...'}
               </div>
 
-              <h3 className="text-base font-black text-white">
+              <h3 className="text-base font-bold">
                 {activeRankOpponent.name}
               </h3>
 
               <div className="flex items-center gap-2 mt-2 text-xs">
-                <span className="px-2 py-0.5 bg-amber-950/80 border border-amber-400/60 text-amber-300 font-bold rounded-xs">
+                <span className="px-2 py-0.5 border border-[#0f0000]/12 font-bold">
                   {activeRankOpponent.tier}
                 </span>
-                <span className="px-2 py-0.5 bg-stone-900 border border-stone-700 text-stone-300 font-bold rounded-xs">
-                  전투력 {activeRankOpponent.totalPower}
+                <span className="px-2 py-0.5 border border-[#0f0000]/12 font-bold">
+                  {t('total_power', language)} {activeRankOpponent.totalPower}
                 </span>
               </div>
 
               {/* Big 3s Countdown */}
-              <div className="text-5xl font-black text-amber-400 my-4 tracking-tighter drop-shadow-[0_0_15px_rgba(245,158,11,0.8)] animate-pulse">
+              <div className="text-5xl font-bold my-4 tracking-tighter tabular-nums">
                 {rankingSearchCountdown}s
               </div>
 
-              <div className="w-full h-1.5 bg-stone-800 rounded-none overflow-hidden border border-amber-500/30">
+              <div className="w-full h-1.5 bg-[#f1eeee] overflow-hidden shrink-0">
                 <motion.div
-                  className="h-full bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-300"
-                  initial={{ width: '0%' }}
+                  className="h-full bg-[#201d1d]"
+                  initial={suppressMotion ? false : { width: '0%' }}
                   animate={{ width: `${((3 - rankingSearchCountdown) / 3) * 100}%` }}
-                  transition={{ duration: 0.3 }}
+                  transition={{ duration: suppressMotion ? 0 : 0.3 }}
                 />
               </div>
 
-              <p className="text-[11px] text-stone-400 mt-3">
+              <p className="text-[11px] text-[#646262] mt-3">
                 {language === 'ko' ? '3초 후 새로운 상대와 즉시 배틀이 시작됩니다.' : 'Battle begins in 3 seconds with new rival.'}
               </p>
 
               <button
                 type="button"
                 onClick={handleExitGame}
-                className="mt-4 w-full py-2 bg-stone-900 hover:bg-stone-800 text-stone-300 hover:text-white border border-stone-700 rounded-none font-bold text-xs uppercase cursor-pointer active:scale-95 transition-all"
+                className="mt-4 w-full py-2 bg-[#201d1d] text-[#fdfcfc] rounded-sm font-bold text-xs cursor-pointer shrink-0"
               >
                 {language === 'ko' ? '매칭 취소 및 나가기' : 'Cancel & Exit'}
               </button>
@@ -2245,34 +2214,34 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       <AnimatePresence>
         {showRefreshBreakModal && (
           <motion.div
-            initial={{ opacity: 0 }}
+            initial={suppressMotion ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[230] bg-black/92 backdrop-blur-md flex flex-col items-center justify-center p-4 font-mono select-none"
+            exit={suppressMotion ? undefined : { opacity: 0 }}
+            className="fixed inset-0 z-[230] bg-[#201d1d]/60 flex flex-col items-center justify-center p-4 font-mono select-none"
           >
             <motion.div
-              initial={{ scale: 0.9, opacity: 0, y: 15 }}
+              initial={suppressMotion ? false : { opacity: 0, y: 8 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 15 }}
-              className="w-full max-w-sm bg-[#0b1017] border-2 border-emerald-500/80 p-5 rounded-none shadow-[0_0_40px_rgba(16,185,129,0.3)] flex flex-col items-center text-center relative overflow-hidden"
+              exit={suppressMotion ? undefined : { opacity: 0, y: 8 }}
+              className="w-full max-w-sm max-h-[calc(100dvh-32px)] bg-[#fdfcfc] border border-[#0f0000]/12 p-5 rounded-none flex flex-col items-center text-center relative overflow-y-auto touch-pan-y overscroll-contain"
             >
               {/* 상단 뱃지 & 아이콘 */}
               <div className="flex items-center gap-2 mb-2">
-                <span className="p-1.5 bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 rounded-xs">
+                <span className="p-1.5 border border-[#0f0000]/12">
                   {refreshBreakType === 'webtoon' ? <BookOpen size={16} /> : <Film size={16} />}
                 </span>
-                <span className="text-xs font-black text-emerald-400 tracking-wider uppercase">
+                <span className="text-xs font-bold">
                   {refreshBreakType === 'webtoon' ? '[☕ 웹툰 기분전환 라운지]' : '[🎬 시네마 힐링 라운지]'}
                 </span>
               </div>
 
-              <h3 className="text-sm font-black text-white truncate max-w-full">
+              <h3 className="text-sm font-bold truncate max-w-full shrink-0">
                 {language === 'ko' ? refreshEpisodeData.titleKo : refreshEpisodeData.titleEn}
               </h3>
 
               {/* 미디어 뷰 영역 */}
               {refreshBreakType === 'webtoon' ? (
-                <div className="relative w-full h-44 bg-stone-900 border border-stone-800 rounded-none overflow-hidden my-3 flex items-center justify-center">
+                <div className="relative w-full h-44 bg-[#f1eeee] border border-[#0f0000]/12 overflow-hidden my-3 flex items-center justify-center shrink-0">
                   {refreshEpisodeData.imageUrl ? (
                     <img
                       src={refreshEpisodeData.imageUrl}
@@ -2280,17 +2249,17 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="flex flex-col items-center text-stone-500">
+                    <div className="flex flex-col items-center text-[#646262]">
                       <BookOpen size={32} />
                       <span className="text-xs mt-2">{language === 'ko' ? '웹툰 컷 로딩 중...' : 'Loading panel...'}</span>
                     </div>
                   )}
-                  <div className="absolute inset-x-0 bottom-0 bg-black/85 p-2 text-[10px] text-emerald-200 text-left line-clamp-2 border-t border-emerald-500/20">
+                  <div className="absolute inset-x-0 bottom-0 bg-[#201d1d] p-2 text-[10px] text-[#fdfcfc] text-left line-clamp-2">
                     💬 {language === 'ko' ? refreshEpisodeData.captionKo : refreshEpisodeData.captionEn}
                   </div>
                 </div>
               ) : (
-                <div className="relative w-full h-44 bg-stone-900 border border-stone-800 rounded-none overflow-hidden my-3">
+                <div className="relative w-full h-44 bg-[#f1eeee] border border-[#0f0000]/12 overflow-hidden my-3 shrink-0">
                   {refreshEpisodeData.videoId ? (
                     <iframe
                       src={`https://www.youtube-nocookie.com/embed/${refreshEpisodeData.videoId}?autoplay=1&mute=1&controls=0&playsinline=1`}
@@ -2299,39 +2268,39 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                       allow="autoplay; encrypted-media"
                     />
                   ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center text-stone-500">
+                    <div className="w-full h-full flex flex-col items-center justify-center text-[#646262]">
                       <Film size={32} />
                       <span className="text-xs mt-2">{language === 'ko' ? '영상 로딩 중...' : 'Loading video...'}</span>
                     </div>
                   )}
-                  <div className="absolute inset-x-0 bottom-0 bg-black/85 p-2 text-[10px] text-emerald-200 text-left line-clamp-1 border-t border-emerald-500/20">
+                  <div className="absolute inset-x-0 bottom-0 bg-[#201d1d] p-2 text-[10px] text-[#fdfcfc] text-left line-clamp-1">
                     🎬 {language === 'ko' ? refreshEpisodeData.captionKo : refreshEpisodeData.captionEn}
                   </div>
                 </div>
               )}
 
               {/* 보너스 및 카운트다운 */}
-              <div className="w-full bg-stone-900/80 border border-stone-800 p-2.5 rounded-none flex items-center justify-between text-xs">
-                <span className="text-stone-300 flex items-center gap-1.5">
-                  <Coffee size={14} className="text-amber-400" />
+              <div className="w-full border border-[#0f0000]/12 p-2.5 flex items-center justify-between text-xs">
+                <span className="flex items-center gap-1.5">
+                  <Coffee size={14} />
                   <span>{language === 'ko' ? '기분전환 보너스' : 'Refresh Bonus'}</span>
                 </span>
-                <span className="font-bold text-amber-400 text-xs">
+                <span className="font-bold text-xs">
                   +10 SNS 지급 완료
                 </span>
               </div>
 
               {/* 카운트다운 바 */}
               <div className="w-full mt-3">
-                <div className="w-full bg-stone-800 h-1.5 overflow-hidden">
+                <div className="w-full bg-[#f1eeee] h-1.5 overflow-hidden">
                   <motion.div
-                    className="h-full bg-emerald-500"
-                    initial={{ width: '100%' }}
+                    className="h-full bg-[#201d1d]"
+                    initial={suppressMotion ? false : { width: '100%' }}
                     animate={{ width: `${((refreshBreakCountdown ?? 4) / 4) * 100}%` }}
-                    transition={{ duration: 0.5 }}
+                    transition={{ duration: suppressMotion ? 0 : 0.3 }}
                   />
                 </div>
-                <p className="text-[11px] text-stone-400 mt-2">
+                <p className="text-[11px] text-[#646262] mt-2">
                   {language === 'ko'
                     ? `${refreshBreakCountdown ?? 0}초 후 랭킹대전 자동 복귀`
                     : `Returning to battle in ${refreshBreakCountdown ?? 0}s`}
@@ -2353,7 +2322,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                   setActiveRankOpponent(nextOpp);
                   setRankingSearchCountdown(3);
                 }}
-                className="mt-4 w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-stone-950 font-black text-xs uppercase cursor-pointer active:scale-95 transition-all rounded-xs shadow-md"
+                className="mt-4 w-full py-2.5 bg-[#201d1d] text-[#fdfcfc] font-bold text-xs cursor-pointer rounded-sm shrink-0"
               >
                 {language === 'ko' ? '⚡ 힐링 완료! 즉시 랭킹대전 복귀' : '⚡ Return to Battle Now'}
               </button>
@@ -2372,10 +2341,8 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
           onSkip={() => setShowMissionDialogue(false)}
         />
       )}
-
-      {/* ─── 카드 뒤집기 무지개 파티클 이펙트 오버레이 ───────────────── */}
-      <RainbowFlipEffect isFixed={true} className="z-[999999]" />
     </div>
+    </MotionConfig>
   );
 };
 

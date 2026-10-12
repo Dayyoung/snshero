@@ -91,7 +91,8 @@ const LOW_SPEC_PERFORMANCE: PerformanceMode = {
 };
 
 /**
- * Returns performance-mode policies based on the user's lowSpecMode setting.
+ * Returns policies based on lowSpecMode and the OS motion preference.
+ * Motion preferences do not lower image quality or change game-loop pacing.
  * Components that only need a boolean can use `perf.enabled`.
  * Components that need fine-grained control can use individual flags.
  */

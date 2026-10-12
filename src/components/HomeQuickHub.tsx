@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useId } from 'react';
+import React, { useState, useRef, useLayoutEffect, useId } from 'react';
 import { createPortal } from 'react-dom';
 import { Language, ViewType } from '../types';
 import { triggerHaptic } from '../lib/haptic';
@@ -35,7 +35,7 @@ export const HomeQuickHub: React.FC<HomeQuickHubProps> = ({
   const closeLabel = language === 'ko' ? '닫기' : 'Close';
   const actionClass = 'flex min-h-12 w-full items-center justify-between gap-3 rounded-sm border border-[rgba(15,0,0,0.12)] px-3 py-2 text-left text-sm hover:bg-[#f1eeee] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#201d1d] cursor-pointer';
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!isOpen) return;
     const updatePosition = () => {
       const rect = triggerRef.current?.getBoundingClientRect();

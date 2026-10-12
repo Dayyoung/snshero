@@ -1,5 +1,5 @@
 import React from 'react';
-import { CardData, EquipmentSlot } from '../types';
+import { CardData, EquipmentSlot, Language } from '../types';
 import { CardItem } from './CardItem';
 import { INITIAL_SKILLS } from '../constants';
 import { cn } from '../lib/utils';
@@ -11,12 +11,16 @@ interface LobbyInteractiveCardProps {
   index: number;
   totalCards: number;
   lowSpecMode: boolean;
+  language?: Language;
   onCardClick?: (card: CardData) => void;
 }
 
 export const LobbyInteractiveCard: React.FC<LobbyInteractiveCardProps> = ({
-  card, index, totalCards, lowSpecMode, onCardClick,
+  card, index, totalCards, lowSpecMode, language = 'en', onCardClick,
 }) => {
+  const displayName = language === 'ko'
+    ? card.title || card.title_dis || card.title_en || card.id
+    : card.title_en || card.title_dis || card.title || card.id;
   const handleClick = () => {
     const title = (card.title_dis || card.title || '').toLowerCase();
     const faction = title.includes('화염') || title.includes('불') || title.includes('fire') || card.imageIndex <= 20
@@ -36,7 +40,7 @@ export const LobbyInteractiveCard: React.FC<LobbyInteractiveCardProps> = ({
     <button
       type="button"
       onClick={handleClick}
-      aria-label={`${card.title_dis || card.title || card.id}, ${index + 1}/${totalCards}`}
+      aria-label={`${displayName}, ${index + 1}/${totalCards}`}
       className={cn(
         'group min-w-0 w-full rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-1 text-left font-mono text-[#201d1d] cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#201d1d]',
         !lowSpecMode && 'transition-colors hover:border-[#201d1d]',
@@ -44,9 +48,10 @@ export const LobbyInteractiveCard: React.FC<LobbyInteractiveCardProps> = ({
     >
       <div className="flex items-center justify-between gap-1 px-1 py-2 text-xs tabular-nums">
         <span>{String(index + 1).padStart(2, '0')} / {String(totalCards).padStart(2, '0')}</span>
-        <span className="font-bold">{card.rarity}</span>
+        <span className="text-[#646262]">#{String(card.imageIndex).padStart(3, '0')}</span>
       </div>
-      <CardItem card={card} className="aspect-[5/7] w-full h-auto rounded-none border-0 shadow-none pointer-events-none" />
+      <CardItem card={card} language={language} lowSpecMode={lowSpecMode} hideStats className="aspect-[5/7] w-full h-auto rounded-none border-0 shadow-none pointer-events-none" />
+      <div className="min-h-11 px-2 py-3 text-sm font-bold leading-snug break-words">{displayName}</div>
       <div className="grid grid-cols-4 divide-x divide-[rgba(15,0,0,0.12)] border-y border-[rgba(15,0,0,0.12)] py-2">
         {(['N', 'E', 'S', 'W'] as const).map((dir, statIdx) => (
           <div key={dir} className="flex flex-col items-center gap-1">

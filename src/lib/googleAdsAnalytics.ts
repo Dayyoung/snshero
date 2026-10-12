@@ -15,10 +15,13 @@ export type GoogleAdsConversionType =
   | 'gacha_summon'
   | 'campaign_guest_start';
 
+export const GOOGLE_ADS_CONVERSION_ID = 'AW-980426001';
+
 export interface ConversionPayload {
   value?: number;
   currency?: string;
   transaction_id?: string;
+  send_to?: string;
   [key: string]: unknown;
 }
 
@@ -34,7 +37,7 @@ export function trackGoogleAdsConversion(
   const gtag = (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag;
 
   const eventData: Record<string, unknown> = {
-    send_to: 'default',
+    send_to: payload.send_to || GOOGLE_ADS_CONVERSION_ID,
     ...payload,
   };
 

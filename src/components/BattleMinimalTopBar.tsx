@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Language } from '../types';
 import { triggerHaptic } from '../lib/haptic';
+import { usePerformanceMode } from '../hooks/usePerformanceMode';
 
 interface BattleMinimalTopBarProps {
   playerHandCount: number;
@@ -74,6 +75,7 @@ export const BattleMinimalTopBar: React.FC<BattleMinimalTopBarProps> = ({
   skipAnimation = false,
   onToggleSkipAnimation,
 }) => {
+  const { reducedMotion } = usePerformanceMode();
   const [showElementGuide, setShowElementGuide] = useState(false);
   const [showSettingsMenu, setShowSettingsMenu] = useState(false);
   const [showSurrenderConfirm, setShowSurrenderConfirm] = useState(false);
@@ -84,71 +86,72 @@ export const BattleMinimalTopBar: React.FC<BattleMinimalTopBarProps> = ({
   const isUrgent = turnSecondsRemaining <= 5;
 
   return (
-    <div className="w-full font-mono text-[10px] select-none space-y-1 relative z-30 pt-[env(safe-area-inset-top,0px)]">
+    <div className="w-full font-mono text-xs leading-5 text-[#201d1d] bg-[#fdfcfc] select-none space-y-1 relative z-30 pt-[env(safe-area-inset-top,0px)] [&_button]:min-h-11 [&_button]:min-w-11 [&_button]:rounded-sm [&_button]:cursor-pointer [&_button]:focus-visible:outline-2 [&_button]:focus-visible:outline-offset-2 [&_button]:focus-visible:outline-[#646262]">
       {/* 1. Main 1-Line Status Row (ID 441, 526, 561, 501, 556, 506) */}
-      <div className="flex items-center justify-between gap-1 bg-[#1a1717]/95 text-white border border-[#201d1d]/30 px-2 py-1 rounded-none shadow-xs backdrop-blur-xs">
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 bg-[#fdfcfc] text-[#201d1d] border border-[#0f0000]/12 px-2 py-1 rounded-none">
         {/* Left: Hand & Deck & Graveyard Minimal Pill (ID 441, ID 506) */}
         <div className="flex items-center gap-1 font-bold">
-          <span className="text-cyan-400">🃏 ME {playerHandCount}/5 (D:{playerDeckRemaining})</span>
+          <span>🃏 ME {playerHandCount}/5 (D:{playerDeckRemaining})</span>
           {graveyardCount > 0 && (
-            <span className="text-slate-400 bg-black/40 px-1 border border-slate-700 text-[9px]" title="묘지/퇴각 카드 수">
+            <span className="text-[#646262] bg-[#f1eeee] px-1 border border-[#0f0000]/12 text-[11px]" title="묘지/퇴각 카드 수">
               🪦 {graveyardCount}
             </span>
           )}
-          <span className="text-slate-500">vs</span>
-          <span className="text-rose-400">OPP {opponentHandCount}/5</span>
+          <span className="text-[#646262] font-normal">vs</span>
+          <span className="text-[#646262]">OPP {opponentHandCount}/5</span>
         </div>
 
         {/* Center: ID 596 (Item 1) Win Threshold Momentum Bar & Turn/Round (design.md) */}
-        <div className="flex items-center gap-1.5 font-bold">
-          <span className="text-amber-300 bg-amber-950/60 px-1 border border-amber-800 text-[9px] shrink-0">
+        <div className="flex flex-wrap items-center gap-1.5 font-bold">
+          <span className="text-[#646262] px-1 text-[11px] shrink-0">
             ⚔️ T{currentRound}/{maxRounds}
           </span>
-          <div className="flex items-center gap-1 bg-black/60 border border-slate-700/80 px-1.5 py-0.5 text-[9px]">
-            <span className="text-cyan-400">🔵 {playerScore}</span>
-            <span className="text-slate-400 text-[8px]">
+          <div className="flex items-center gap-1 bg-[#201d1d] text-[#fdfcfc] border border-[#0f0000]/12 px-2 py-1 text-sm">
+            <span>🔵 {playerScore}</span>
+            <span className="text-[#d5cece] text-[11px] font-normal">
               / {Math.max(0, 6 - playerScore) === 0 ? 'WIN' : `${Math.max(0, 6 - playerScore)} needed`}
             </span>
             {/* Integrated 2-color segmented momentum track with golden threshold marker */}
-            <div className="relative w-14 sm:w-16 h-2 bg-slate-900 border border-slate-700 overflow-hidden flex items-center mx-0.5">
+            <div className="relative w-14 sm:w-16 h-1.5 bg-[#302c2c] overflow-hidden flex items-center mx-0.5">
               <div
                 style={{ width: `${Math.min(100, (playerScore / 9) * 100)}%` }}
-                className="h-full bg-cyan-400 transition-all duration-300"
+                className={`h-full bg-[#add4e3] ${reducedMotion ? '' : 'transition-[width] duration-200'}`}
               />
               <div
                 style={{ width: `${Math.min(100, (opponentScore / 9) * 100)}%` }}
-                className="h-full bg-rose-500 ml-auto transition-all duration-300"
+                className={`h-full bg-[#efb1a3] ml-auto ${reducedMotion ? '' : 'transition-[width] duration-200'}`}
               />
               {/* Golden victory condition threshold tick (6/9 = 66.7%) */}
               <div
-                className="absolute top-0 bottom-0 w-0.5 bg-amber-400 shadow-[0_0_4px_#f59e0b] pointer-events-none z-10"
+                className="absolute top-0 bottom-0 w-px bg-[#fdfcfc] pointer-events-none z-10"
                 style={{ left: '66.7%' }}
                 title="6개 점유 시 승리 확정 임계점"
               />
             </div>
-            <span className="text-rose-400">{opponentScore} 🔴</span>
+            <span>{opponentScore} 🔴</span>
           </div>
           {scoreDelta && (
-            <span className="text-emerald-400 text-[9px] animate-pulse">
+            <span className="text-[#27613c] text-xs">
               [{scoreDelta}]
             </span>
           )}
         </div>
 
         {/* Right: Controls (AI Diff, Speed, Skip, Settings) (ID 501, 556, 481, 461) */}
-        <div className="flex items-center gap-1">
+        <div className="flex flex-wrap items-center gap-1 w-full border-t border-[#0f0000]/12 pt-1">
           {/* AI Difficulty Selector (ID 501) */}
           <div className="relative">
             <button
               type="button"
               onClick={() => setShowAiDiffPicker(!showAiDiffPicker)}
-              className="px-1 py-0.5 border border-slate-700 bg-slate-800 text-[8px] text-amber-300 font-bold hover:border-amber-500 active:scale-95"
+              className="px-2 border border-[#0f0000]/12 bg-[#f8f7f7] text-[11px] font-bold hover:bg-[#f1eeee]"
+              aria-expanded={showAiDiffPicker}
               title="AI 난이도"
             >
               🤖 {aiDifficulty.toUpperCase().slice(0, 3)} ▾
             </button>
             {showAiDiffPicker && (
-              <div className="absolute top-6 right-0 bg-[#201d1d] border border-amber-500 p-1 shadow-xl z-50 flex flex-col gap-1 w-20">
+              <div className="absolute top-full left-0 bg-[#fdfcfc] border border-[#0f0000]/12 p-1 z-50 flex flex-col gap-1 w-28">
                 {(['easy', 'normal', 'hard'] as const).map(diff => (
                   <button
                     key={diff}
@@ -157,8 +160,9 @@ export const BattleMinimalTopBar: React.FC<BattleMinimalTopBarProps> = ({
                       setShowAiDiffPicker(false);
                       triggerHaptic('light');
                     }}
-                    className={`px-1 py-0.5 text-left text-[9px] uppercase font-bold ${
-                      aiDifficulty === diff ? 'bg-amber-500 text-black' : 'text-slate-300 hover:bg-white/10'
+                    aria-pressed={aiDifficulty === diff}
+                    className={`px-2 text-left text-xs uppercase font-bold ${
+                      aiDifficulty === diff ? 'bg-[#201d1d] text-[#fdfcfc]' : 'text-[#201d1d] hover:bg-[#f1eeee]'
                     }`}
                   >
                     {diff}
@@ -172,7 +176,8 @@ export const BattleMinimalTopBar: React.FC<BattleMinimalTopBarProps> = ({
           <button
             type="button"
             onClick={() => setShowElementGuide(!showElementGuide)}
-            className="px-1 py-0.5 border border-slate-700 bg-slate-800 text-[8px] hover:border-slate-500 active:scale-95"
+            className="px-2 border border-[#0f0000]/12 bg-[#f8f7f7] text-[11px] hover:bg-[#f1eeee]"
+            aria-expanded={showElementGuide}
             title="속성 상성 가이드"
           >
             [💧&gt;🔥&gt;🌿]
@@ -186,10 +191,11 @@ export const BattleMinimalTopBar: React.FC<BattleMinimalTopBarProps> = ({
                 onToggleSkipAnimation();
                 triggerHaptic('light');
               }}
-              className={`px-1 py-0.5 text-[8px] font-bold border ${
+              aria-pressed={skipAnimation}
+              className={`px-2 text-xs font-bold border ${
                 skipAnimation
-                  ? 'border-emerald-500 bg-emerald-950 text-emerald-300'
-                  : 'border-slate-700 bg-slate-800 text-slate-400'
+                  ? 'border-[#201d1d] bg-[#201d1d] text-[#fdfcfc]'
+                  : 'border-[#0f0000]/12 bg-[#f8f7f7] text-[#646262]'
               }`}
               title="배틀 연출 스킵 토글"
             >
@@ -198,7 +204,7 @@ export const BattleMinimalTopBar: React.FC<BattleMinimalTopBarProps> = ({
           )}
 
           {/* Battle Speed Switcher (ID 481, ID 556) */}
-          <div className="flex items-center border border-slate-700 bg-slate-800">
+          <div className="flex items-center border border-[#0f0000]/12 bg-[#f8f7f7] rounded-sm">
             {([1, 1.5, 2] as const).map(s => (
               <button
                 key={s}
@@ -206,8 +212,9 @@ export const BattleMinimalTopBar: React.FC<BattleMinimalTopBarProps> = ({
                   onChangeSpeed(s);
                   triggerHaptic('light');
                 }}
-                className={`px-1 py-0.5 text-[8px] font-bold ${
-                  battleSpeed === s ? 'bg-amber-500 text-black' : 'text-slate-400'
+                aria-pressed={battleSpeed === s}
+                className={`px-2 text-xs font-bold ${
+                  battleSpeed === s ? 'bg-[#201d1d] text-[#fdfcfc]' : 'text-[#646262] hover:bg-[#f1eeee]'
                 }`}
               >
                 {s}x
@@ -219,7 +226,9 @@ export const BattleMinimalTopBar: React.FC<BattleMinimalTopBarProps> = ({
           <button
             type="button"
             onClick={() => setShowSettingsMenu(!showSettingsMenu)}
-            className="px-1 py-0.5 border border-slate-700 hover:bg-slate-700 active:scale-95 text-[9px]"
+            className="px-2 border border-[#0f0000]/12 hover:bg-[#f1eeee] text-xs ml-auto"
+            aria-label="대전 설정"
+            aria-expanded={showSettingsMenu}
           >
             ⚙️
           </button>
@@ -227,58 +236,58 @@ export const BattleMinimalTopBar: React.FC<BattleMinimalTopBarProps> = ({
       </div>
 
       {/* 2. Integrated 2px Turn Countdown Bar (ID 451, ID 531) */}
-      <div className="w-full h-1 bg-slate-800/80 overflow-hidden relative">
+      <div className="w-full h-1 bg-[#f1eeee] overflow-hidden relative">
         <div
-          className={`h-full transition-all duration-300 ${
-            isUrgent ? 'bg-red-500 animate-pulse' : 'bg-cyan-400'
+          className={`h-full ${reducedMotion ? '' : 'transition-[width] duration-200'} ${
+            isUrgent ? 'bg-[#a50011]' : 'bg-[#201d1d]'
           }`}
           style={{ width: `${countdownPercent}%` }}
         />
       </div>
 
       {/* 3. Sub-Row: Win Momentum, Deck Elements, Terrain & Synergy (ID 511, 541, 546, 571, 576) */}
-      <div className="flex items-center justify-between gap-1 px-1 text-[9px]">
+      <div className="flex flex-wrap items-center justify-between gap-2 px-2 py-1 text-[11px]">
         {/* Win Momentum Bar (ID 511) */}
         {winMomentum ? (
-          <div className="flex items-center gap-1 shrink-0 bg-slate-900 px-1 border border-slate-800">
-            <span className="text-cyan-400 text-[8px] font-bold">{winMomentum.bluePct}% B</span>
-            <div className="w-12 h-1 bg-slate-800 overflow-hidden flex">
-              <div style={{ width: `${winMomentum.bluePct}%` }} className="bg-cyan-400 h-full" />
-              <div style={{ width: `${winMomentum.redPct}%` }} className="bg-rose-500 h-full" />
+          <div className="flex items-center gap-1 shrink-0 px-1 border border-[#0f0000]/12">
+            <span className="text-[#24566b] text-[11px] font-bold">{winMomentum.bluePct}% B</span>
+            <div className="w-12 h-1 bg-[#f1eeee] overflow-hidden flex">
+              <div style={{ width: `${winMomentum.bluePct}%` }} className="bg-[#24566b] h-full" />
+              <div style={{ width: `${winMomentum.redPct}%` }} className="bg-[#963d36] h-full" />
             </div>
-            <span className="text-rose-400 text-[8px] font-bold">R {winMomentum.redPct}%</span>
+            <span className="text-[#963d36] text-[11px] font-bold">R {winMomentum.redPct}%</span>
           </div>
         ) : (
-          <div className="flex-1 flex h-1.5 rounded-none overflow-hidden bg-slate-900 border border-slate-800" title="속성 점유율">
-            <div style={{ width: `${elementDominance.water}%` }} className="bg-blue-500" />
-            <div style={{ width: `${elementDominance.fire}%` }} className="bg-red-500" />
-            <div style={{ width: `${elementDominance.earth}%` }} className="bg-amber-600" />
-            <div style={{ width: `${elementDominance.wind}%` }} className="bg-emerald-500" />
+          <div className="flex-1 min-w-16 flex h-1.5 rounded-none overflow-hidden bg-[#f1eeee]" title="속성 점유율">
+            <div style={{ width: `${elementDominance.water}%` }} className="bg-[#24566b]" />
+            <div style={{ width: `${elementDominance.fire}%` }} className="bg-[#963d36]" />
+            <div style={{ width: `${elementDominance.earth}%` }} className="bg-[#80602b]" />
+            <div style={{ width: `${elementDominance.wind}%` }} className="bg-[#27613c]" />
           </div>
         )}
 
         {/* Deck Element Composition Summary (ID 541) */}
         {deckElementSummary && (
-          <div className="flex items-center gap-0.5 text-[8px] text-slate-300 font-bold shrink-0 bg-black/40 px-1 border border-slate-800">
-            <span className="text-blue-400">💧{deckElementSummary.water}</span>
-            <span className="text-red-400">🔥{deckElementSummary.fire}</span>
-            <span className="text-amber-400">🌿{deckElementSummary.earth}</span>
-            <span className="text-emerald-400">💨{deckElementSummary.wind}</span>
+          <div className="flex items-center gap-1 text-[11px] font-bold shrink-0 px-1 border border-[#0f0000]/12">
+            <span className="text-[#24566b]">💧{deckElementSummary.water}</span>
+            <span className="text-[#963d36]">🔥{deckElementSummary.fire}</span>
+            <span className="text-[#80602b]">🌿{deckElementSummary.earth}</span>
+            <span className="text-[#27613c]">💨{deckElementSummary.wind}</span>
           </div>
         )}
 
         {/* Faction Synergy Badge (ID 571) */}
         {factionSynergy && (
-          <div className="text-[8px] text-amber-300 font-bold bg-amber-950/40 px-1 border border-amber-800/80 truncate max-w-[140px]">
+          <div className="text-[11px] text-[#80602b] font-bold px-1 border border-[#0f0000]/12 break-words max-w-full">
             🛡️ {factionSynergy}
           </div>
         )}
 
         {/* Terrain Modifier Badges (ID 486, ID 546) */}
         {terrainModifiers.length > 0 && (
-          <div className="flex items-center gap-1 text-[8px] text-amber-300 font-bold shrink-0">
+          <div className="flex flex-wrap items-center gap-1 text-[11px] text-[#80602b] font-bold">
             {terrainModifiers.slice(0, 2).map((tm, idx) => (
-              <span key={idx} className="bg-slate-800/80 px-1 border border-slate-700">
+              <span key={idx} className="px-1 border border-[#0f0000]/12">
                 #{tm.slot} {tm.element}+{tm.bonus}
               </span>
             ))}
@@ -289,7 +298,8 @@ export const BattleMinimalTopBar: React.FC<BattleMinimalTopBarProps> = ({
         {recentActionLog && (
           <button
             onClick={() => setShowActionLogPopover(!showActionLogPopover)}
-            className="text-[8px] text-slate-400 hover:text-white truncate max-w-[110px]"
+            className="px-2 text-[11px] text-[#646262] hover:text-[#201d1d] truncate max-w-[160px] border border-[#0f0000]/12"
+            aria-expanded={showActionLogPopover}
             title="최근 액션 로그"
           >
             📜 {recentActionLog}
@@ -299,20 +309,20 @@ export const BattleMinimalTopBar: React.FC<BattleMinimalTopBarProps> = ({
 
       {/* 4. Slot Hover/Touch Micro 1-Line Anchored Indicator Pill (ID 496, ID 536, ID 586) */}
       {(hoverCapturePreview || slotValidationMessage) && (
-        <div className="flex items-center justify-center gap-1.5 py-0.5 px-2 bg-black/85 border border-cyan-500/40 text-[9px] text-cyan-200 animate-fadeIn">
+        <div className="flex flex-wrap items-center justify-center gap-1.5 py-1 px-2 bg-[#201d1d] border border-[#0f0000]/12 text-xs text-[#fdfcfc]">
           {slotValidationMessage && (
-            <span className="font-bold text-amber-400">{slotValidationMessage}</span>
+            <span className="font-bold text-[#dfcba4]">{slotValidationMessage}</span>
           )}
           {hoverCapturePreview?.elementAdvantage && (
-            <span className="text-cyan-300 font-bold">[{hoverCapturePreview.elementAdvantage}]</span>
+            <span className="text-[#add4e3] font-bold">[{hoverCapturePreview.elementAdvantage}]</span>
           )}
           {hoverCapturePreview?.captureChance !== undefined && (
-            <span className="text-emerald-300 font-black">
+            <span className="text-[#c0d7bf] font-bold">
               {hoverCapturePreview.captureChance}% Capture Chance
             </span>
           )}
           {hoverCapturePreview?.statDelta && (
-            <span className="text-slate-300 text-[8px] border-l border-slate-700 pl-1">
+            <span className="text-[#d5cece] text-[11px] border-l border-[#fdfcfc]/20 pl-1">
               {hoverCapturePreview.statDelta}
             </span>
           )}
@@ -321,21 +331,21 @@ export const BattleMinimalTopBar: React.FC<BattleMinimalTopBarProps> = ({
 
       {/* 5. Micro 1.2s Toast Snackbar (ID 516) */}
       {toastMessage && (
-        <div className="fixed bottom-16 left-1/2 -translate-x-1/2 z-50 bg-[#1a1717] border border-cyan-500 text-cyan-200 px-3 py-1 text-[10px] font-bold shadow-xl animate-fadeIn">
+        <div className="fixed bottom-16 left-1/2 -translate-x-1/2 z-50 max-w-[calc(100%-2rem)] bg-[#201d1d] border border-[#fdfcfc]/20 text-[#fdfcfc] px-3 py-2 text-xs font-medium">
           {toastMessage}
         </div>
       )}
 
       {/* Element Guide Popover (ID 456, ID 521) */}
       {showElementGuide && (
-        <div className="absolute top-8 left-2 right-2 bg-[#201d1d] border border-amber-500 p-2.5 text-[10px] text-white z-40 shadow-xl flex justify-between items-center">
+        <div className="absolute top-full left-2 right-2 bg-[#fdfcfc] border border-[#0f0000]/12 p-3 text-xs text-[#201d1d] z-40 flex justify-between items-center gap-2">
           <div>
-            <div className="font-bold text-amber-400 mb-0.5">속성 상성 규칙 (+2 PWR 우위)</div>
+            <div className="font-bold mb-1">속성 상성 규칙 (+2 PWR 우위)</div>
             <div>💧 수 &gt; 🔥 화 &gt; 🌿 지 &gt; 💨 풍 &gt; 💧 수 | ✨ 신 ⇄ 🌑 암</div>
           </div>
           <button
             onClick={() => setShowElementGuide(false)}
-            className="px-2 py-1 bg-white/10 hover:bg-white/20 text-xs"
+            className="px-2 border border-[#0f0000]/12 hover:bg-[#f1eeee] text-xs shrink-0"
           >
             [X]
           </button>
@@ -344,12 +354,12 @@ export const BattleMinimalTopBar: React.FC<BattleMinimalTopBarProps> = ({
 
       {/* Action Log Detail Popover (ID 476, ID 576) */}
       {showActionLogPopover && recentActionLog && (
-        <div className="absolute top-8 right-2 max-w-xs w-full bg-[#201d1d] border border-slate-600 p-2 text-[10px] text-slate-200 z-40 shadow-xl flex justify-between items-center">
+        <div className="absolute top-full right-2 max-w-[calc(100%-1rem)] w-80 bg-[#fdfcfc] border border-[#0f0000]/12 p-3 text-xs text-[#201d1d] z-40 flex justify-between items-center gap-2">
           <div>
-            <span className="text-amber-400 font-bold">[RECENT ACTION]</span>
-            <div className="mt-1">{recentActionLog}</div>
+            <span className="text-[#646262] font-bold">[RECENT ACTION]</span>
+            <div className="mt-1 break-words">{recentActionLog}</div>
           </div>
-          <button onClick={() => setShowActionLogPopover(false)} className="px-2 py-0.5 bg-white/10">
+          <button onClick={() => setShowActionLogPopover(false)} className="px-2 border border-[#0f0000]/12 hover:bg-[#f1eeee] shrink-0">
             [X]
           </button>
         </div>
@@ -357,8 +367,8 @@ export const BattleMinimalTopBar: React.FC<BattleMinimalTopBarProps> = ({
 
       {/* Settings Dropdown with 2-Step Surrender (ID 461, ID 566, ID 581) */}
       {showSettingsMenu && (
-        <div className="absolute top-8 right-1 bg-[#1a1717] border border-slate-600 p-2 shadow-xl z-50 w-44 space-y-2">
-          <div className="text-[10px] font-bold text-slate-300 border-b border-slate-700 pb-1">
+        <div className="absolute top-full right-1 bg-[#fdfcfc] border border-[#0f0000]/12 p-3 z-50 w-52 space-y-2">
+          <div className="text-xs font-bold border-b border-[#0f0000]/12 pb-2">
             대전 설정
           </div>
           <button
@@ -366,14 +376,14 @@ export const BattleMinimalTopBar: React.FC<BattleMinimalTopBarProps> = ({
               setShowSettingsMenu(false);
               setShowSurrenderConfirm(true);
             }}
-            className="w-full py-1.5 px-2 bg-rose-950 hover:bg-rose-900 border border-rose-600 text-rose-200 text-left font-bold text-[10px] flex items-center justify-between"
+            className="w-full px-2 hover:bg-[#f1eeee] border border-[#0f0000]/12 text-[#a50011] text-left font-bold text-xs flex items-center justify-between"
           >
             <span>[🏳️ 기권하기]</span>
-            <span className="text-[8px] text-rose-400">몰수패</span>
+            <span className="text-[11px]">몰수패</span>
           </button>
           <button
             onClick={() => setShowSettingsMenu(false)}
-            className="w-full py-1 bg-slate-800 text-slate-300 text-center text-[9px]"
+            className="w-full bg-[#f1eeee] text-[#201d1d] text-center text-xs"
           >
             닫기
           </button>
@@ -383,17 +393,17 @@ export const BattleMinimalTopBar: React.FC<BattleMinimalTopBarProps> = ({
       {/* 2-Step Surrender Confirmation Modal (ID 461, ID 581) */}
       {showSurrenderConfirm && (
         <div className="fixed inset-0 z-[250] flex items-center justify-center bg-black/70 p-4">
-          <div className="bg-[#1a1717] border border-rose-500 p-4 max-w-xs w-full shadow-2xl text-center space-y-3">
-            <div className="text-rose-400 font-bold text-xs uppercase">
+          <div className="bg-[#fdfcfc] border border-[#0f0000]/12 p-4 max-w-xs w-full text-center space-y-3">
+            <div className="text-[#a50011] font-bold text-xs uppercase">
               ⚠️ [MATCH FORFEIT WARNING]
             </div>
-            <p className="text-[11px] text-slate-300">
+            <p className="text-xs leading-5 text-[#424245]">
               정말로 경기를 기권하시겠습니까? 기권 시 몰수패로 처리되며 레이팅이 감소합니다.
             </p>
             <div className="grid grid-cols-2 gap-2 pt-1">
               <button
                 onClick={() => setShowSurrenderConfirm(false)}
-                className="py-1.5 border border-slate-600 text-slate-300 text-xs font-bold"
+                className="px-2 border border-[#0f0000]/12 text-[#201d1d] text-xs font-bold hover:bg-[#f1eeee]"
               >
                 [계속하기]
               </button>
@@ -402,7 +412,7 @@ export const BattleMinimalTopBar: React.FC<BattleMinimalTopBarProps> = ({
                   setShowSurrenderConfirm(false);
                   onSurrender();
                 }}
-                className="py-1.5 bg-rose-600 hover:bg-rose-500 text-white text-xs font-black"
+                className="px-2 bg-[#a50011] hover:bg-[#84000e] text-[#fdfcfc] text-xs font-bold"
               >
                 [기권 확정]
               </button>

@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { LogOut, Trophy, User, HelpCircle, BookOpen, Play, Newspaper, ArrowRight, X, ChevronLeft, ChevronRight, Tv, Mail, Bell, Volume2, VolumeX, Zap, Clock, Pause, PanelLeftClose, PanelLeftOpen, Layers, Image, Film, Github, Youtube, Gift, Smartphone } from "lucide-react";
+import { LogOut, Trophy, User, BookOpen, Play, ArrowRight, X, ChevronLeft, ChevronRight, Tv, Zap, Clock, Layers, Image, Film, Github, Youtube } from "lucide-react";
 import { NotificationCenterModal } from "../components/NotificationCenterModal";
 import { getUnreadCount } from "../lib/notificationHelper";
 import { motion, AnimatePresence } from "motion/react";
 import { t } from "../lib/i18n";
 import { cn, getCardSpriteStyle } from "../lib/utils";
-import { CardData, Language, ViewType, EquipmentSlot } from "../types";
+import { CardData, Language, ViewType } from "../types";
 import { CARD_DATABASE } from "../cardDatabase";
-import { CardItem } from "../components/CardItem";
-import { INITIAL_SKILLS } from "../constants";
 import { useGameSettings } from "../contexts/GameSettingsContext";
 import { usePerformanceMode } from "../hooks/usePerformanceMode";
 import { MainLobbyBannerCarousel } from "../components/MainLobbyBannerCarousel";
@@ -24,7 +22,6 @@ import { LobbyInteractiveCard } from "../components/LobbyInteractiveCard";
 import { PingIndicator } from "../components/PingIndicator";
 import { triggerHaptic } from "../lib/haptic";
 import { useSns } from "../contexts/SnsContext";
-import { DailyMissions } from "../components/DailyMissions";
 import { DAILY_MISSIONS, loadDailyMissions, getClaimableCount, DailyMissionProgress } from "../lib/dailyMissions";
 import { HomeQuickHub } from "../components/HomeQuickHub";
 import { AfkHarvestBox } from "../components/AfkHarvestBox";
@@ -335,9 +332,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
     }
   };
 
-  const sectionMotionProps = lowSpecMode || perf.reducedMotion
-    ? {}
-    : { initial: { opacity: 0, y: 12 }, animate: { opacity: 1, y: 0 } };
   const buttonMotionProps = lowSpecMode || perf.reducedMotion
     ? {}
     : { initial: { opacity: 0, y: 8 }, animate: { opacity: 1, y: 0 } };
@@ -360,7 +354,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
               className="w-full min-h-14 cursor-pointer rounded-sm border border-[#201d1d] bg-[#201d1d] text-[#fdfcfc] p-4 text-left hover:bg-[#302c2c] select-none font-mono"
             >
               <div className="relative flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2 min-w-0">
+                  <div className="flex flex-wrap items-center gap-2 min-w-0">
                   <span className="px-2 py-1 border border-[#fdfcfc]/30 text-sm font-bold shrink-0 rounded-none">
                     {language === 'ko' ? '[첫 충전 93% OFF]' : '[1ST BUY 93% OFF]'}
                   </span>
@@ -377,15 +371,14 @@ export const HomeView: React.FC<HomeViewProps> = ({
               </div>
             </button>
           ) : (
-            <div className="flex items-center justify-between px-3 py-2 bg-white border border-[#201d1d]/15 text-[#201d1d] text-[11px] font-mono select-none rounded-none">
+            <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] text-[#201d1d] text-sm select-none rounded-none">
               <span className="font-bold flex items-center gap-1.5">
-                <span className="text-amber-500">👑</span>
                 {language === 'ko' ? '[첫 구매 혜택 완료] SSR 영웅 & 3,000 SNS 적용됨' : '[First Purchase Active] SSR Hero & 3,000 SNS Applied'}
               </span>
               <button
                 type="button"
                 onClick={() => onNavigate('shop')}
-                className="text-[10px] font-bold text-[#201d1d] border border-[#201d1d]/20 px-2 py-0.5 hover:bg-[#201d1d] hover:text-white transition-all cursor-pointer rounded-none"
+                className="min-h-11 text-sm font-bold text-[#201d1d] border border-[rgba(15,0,0,0.12)] px-3 py-2 hover:bg-[#201d1d] hover:text-[#fdfcfc] cursor-pointer rounded-sm"
               >
                 {language === 'ko' ? '[상점 가기 →]' : '[GO TO SHOP →]'}
               </button>
@@ -403,8 +396,8 @@ export const HomeView: React.FC<HomeViewProps> = ({
               <span className="text-sm text-[#646262]">{language === 'ko' ? '티어: BRONZE I' : 'TIER: BRONZE I'}</span>
             </div>
             {/* SCR-01: 대표 덱 종합 전투력(CP) 및 연승 불꽃 뱃지 HUD */}
-            <div className="w-full flex flex-wrap items-center justify-between gap-3 font-mono select-none">
-              <div className="flex flex-wrap items-center gap-3">
+            <div className="w-full flex items-start sm:items-center justify-between gap-3 font-mono select-none">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
                 <button
                   type="button"
                   onClick={() => {
@@ -443,8 +436,8 @@ export const HomeView: React.FC<HomeViewProps> = ({
               </div>
             </div>
 
-            {/* SCR-01-03: Interactive 3D Faction Cards Display */}
-            <div className="flex w-full gap-3 overflow-x-auto overscroll-x-contain snap-x snap-mandatory pb-2 pt-1 sm:grid sm:grid-cols-5 sm:gap-3 sm:overflow-visible select-none" role="group" aria-label={language === 'ko' ? '덱 미리보기' : 'Deck Preview'}>
+            {/* Collectible dossier: full artwork on desktop, swipeable cards on mobile. */}
+            <div className="flex w-full gap-3 overflow-x-auto overscroll-x-contain snap-x snap-mandatory pb-2 pt-1 sm:grid sm:grid-cols-5 lg:grid-cols-[1.35fr_repeat(4,minmax(0,1fr))] sm:items-end sm:gap-3 sm:overflow-visible select-none" role="group" aria-label={language === 'ko' ? '덱 미리보기' : 'Deck Preview'}>
               {deckPreview.map((item, index) => {
                 const isDatabaseId = typeof item === 'number';
                 const id = isDatabaseId ? item : (item as CardData).imageIndex;
@@ -462,13 +455,14 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 } : item as CardData;
 
                 return (
-                  <div key={displayCard.id} className="w-[min(62vw,240px)] shrink-0 snap-start sm:w-auto sm:min-w-0">
+                  <div key={displayCard.id} className="w-[min(52vw,220px)] shrink-0 snap-start sm:w-auto sm:min-w-0">
                   <LobbyInteractiveCard
                     key={displayCard.id}
                     card={displayCard}
                     index={index}
                     totalCards={deckPreview.length}
                     lowSpecMode={lowSpecMode || perf.reducedMotion}
+                    language={language}
                     onCardClick={() => {
                       onNavigate('mydeck');
                     }}
@@ -479,9 +473,59 @@ export const HomeView: React.FC<HomeViewProps> = ({
             </div>
 
             <div className="flex flex-col gap-4">
+              <motion.button
+                type="button"
+                {...buttonMotionProps}
+                onClick={() => {
+                  triggerHaptic('light');
+                  playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+                  if (onStartPlayNow) onStartPlayNow();
+                  else onNavigate('main');
+                }}
+                className="w-full min-h-16 px-5 py-4 bg-[#201d1d] text-[#fdfcfc] font-bold text-lg border border-[#201d1d] hover:bg-[#302c2c] cursor-pointer flex items-center justify-between gap-3 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4"
+              >
+                <Play size={22} className="shrink-0" />
+                <span>{language === 'ko' ? '[⚔️ 지금 플레이]' : '[⚔️ Play Now]'}</span>
+                <ArrowRight size={22} className="shrink-0" />
+              </motion.button>
+              <div className={cn(
+                'w-full flex flex-col sm:flex-row items-start sm:items-center justify-between border-t border-[rgba(15,0,0,0.12)] pt-4 text-sm gap-3',
+                autoStartCountdown <= 5 && !isAutoStartPaused ? 'bg-rose-50 text-rose-950' : 'text-[#201d1d]',
+              )}>
+                <div className="flex flex-wrap items-center gap-2 text-sm">
+                  <Clock size={16} className="shrink-0" />
+                  <span>{language === 'ko' ? '[⚡ 30초 대기 랭킹대전 자동 시작]:' : '[⚡ Auto Rank Battle in]:'}</span>
+                  <span className={cn('font-bold px-2 py-1 text-sm text-[#fdfcfc] tabular-nums', autoStartCountdown <= 5 && !isAutoStartPaused ? 'bg-rose-600' : 'bg-[#201d1d]')}>{autoStartCountdown}s</span>
+                </div>
+                <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsAutoStartPaused(!isAutoStartPaused);
+                      triggerHaptic('light');
+                      playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+                    }}
+                    className="min-h-11 px-3 py-2 bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] text-sm font-bold cursor-pointer rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2"
+                  >
+                    {isAutoStartPaused ? (language === 'ko' ? '[▶ 재개]' : '[▶ Resume]') : (language === 'ko' ? '[⏸️ 일시정지]' : '[⏸️ Pause]')}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      triggerHaptic('battle_start');
+                      playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+                      onNavigate('ranking');
+                    }}
+                    className="min-h-12 px-4 py-3 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] text-sm font-bold cursor-pointer flex items-center gap-2 border border-[#201d1d] rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2"
+                  >
+                    <Play size={16} />
+                    <span>{language === 'ko' ? '[ 1초 즉시 대전 시작 ]' : '[ QUICK BATTLE ]'}</span>
+                  </button>
+                </div>
+              </div>
 
               {/* SCR-01-05: Streamlined Quick Action Toolbar with HomeQuickHub */}
-              <div className="order-3 grid grid-cols-1 gap-3 font-mono">
+              <div className="grid grid-cols-1 gap-3 font-mono">
                 {/* SCR-01-05: Smart Quick Hub Trigger & Dropdown */}
                 <HomeQuickHub
                   language={language}
@@ -493,7 +537,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   onOpenMailbox={() => setIsMailboxOpen(true)}
                   onOpenNotifModal={() => setIsNotifModalOpen(true)}
                    onToggleMute={toggleQuickMute}
-                   onNavigate={onNavigate}
+                   onNavigate={(view) => {
+                     playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+                     onNavigate(view);
+                   }}
                   onToggleDrawer={() => setIsLobbyDrawerOpen(!isLobbyDrawerOpen)}
                   onOpenHelp={() => { setHelpOpen(true); setHelpStep(0); }}
                    onOpenPwa={() => {
@@ -503,73 +550,17 @@ export const HomeView: React.FC<HomeViewProps> = ({
                    }}
                 />
 
-                {/* ID SCR-01: Hot Deal / Free Pack Starter Badge */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    triggerHaptic('selection');
-                    playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
-                    onNavigate('shop');
-                  }}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-amber-400 border border-amber-600 text-[#201d1d] font-bold text-xs cursor-pointer hover:bg-amber-300 active:scale-95 transition-all"
-                  title={language === 'ko' ? '일일 무료 카드팩 & 80% 할인 스타터팩' : 'Daily Free Pack & 80% Off Starter Pack'}
-                >
-                  <Gift size={13} className="text-[#201d1d] shrink-0" />
-                  <span className="text-[11px] font-black tracking-tight">{language === 'ko' ? '[🎁 무료팩/특가]' : '[🎁 Free/Deals]'}</span>
-                </button>
-
-                {/* PWA 설치 & 알림 이벤트 버튼 (+200 SNS) */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    triggerHaptic('selection');
-                    playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
-                    setIsPwaEventOpen(true);
-                  }}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-indigo-50 border border-indigo-400 text-indigo-950 font-bold text-xs cursor-pointer hover:bg-indigo-100 active:scale-95 transition-all"
-                  title={language === 'ko' ? 'PWA 앱 설치 & 웹푸시 알림 이벤트 (+200 SNS)' : 'PWA Install & Web Push Event (+200 SNS)'}
-                >
-                  <Smartphone size={13} className="text-indigo-700 shrink-0" />
-                  <span className="text-[11px] font-black tracking-tight">
-                    {language === 'ko' ? '[📱 PWA이벤트 +200]' : '[📱 PWA +200 SNS]'}
-                  </span>
-                </button>
-
-                {/* Ping Indicator */}
-                <PingIndicator language={language} className="shrink-0" />
-
-                {/* Audio Mute Quick Toggle */}
-                <button
-                  type="button"
-                  onClick={toggleQuickMute}
-                  className="inline-flex items-center gap-1 px-2 py-1.5 border border-[#201d1d]/20 bg-white text-[#201d1d] hover:border-[#201d1d] hover:bg-slate-50 transition text-xs font-bold cursor-pointer"
-                  title={isAudioMuted ? (language === 'ko' ? '음소거 해제' : 'Unmute Audio') : (language === 'ko' ? '퀵 음소거' : 'Mute Audio')}
-                  aria-label="Quick Mute"
-                >
-                  {isAudioMuted ? <VolumeX size={13} className="text-rose-600" /> : <Volume2 size={13} className="text-emerald-600" />}
-                  <span className="text-[11px]">{isAudioMuted ? 'MUTE' : 'SFX'}</span>
-                </button>
-
-                {/* ID 86: Collapsible Sub-Widgets Drawer Toggle Button */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
-                    setIsLobbyDrawerOpen(!isLobbyDrawerOpen);
-                  }}
-                  className={cn(
-                    "inline-flex items-center gap-1 px-2 py-1.5 border transition text-xs font-bold cursor-pointer",
-                    isLobbyDrawerOpen 
-                      ? "bg-[#201d1d] border-[#201d1d] text-amber-300"
-                      : "bg-white border-[#201d1d]/20 text-[#201d1d] hover:border-[#201d1d]"
-                  )}
-                  title={language === 'ko' ? '서브 위젯 접기/펴기' : 'Toggle Sub-Widgets Drawer'}
-                >
-                  <Layers size={13} className={isLobbyDrawerOpen ? "text-amber-300" : "text-[#201d1d]/60"} />
-                  <span className="text-[11px]">{language === 'ko' ? '서랍' : 'Drawer'}</span>
-                </button>
               </div>
 
+              <details className="group border border-[rgba(15,0,0,0.12)] rounded-none">
+                <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 px-3 py-2 text-sm font-bold focus-visible:outline-2 focus-visible:outline-offset-2">
+                  <span>
+                    {language === 'ko' ? '오늘의 일일 미션:' : 'Today\'s Daily Missions:'}
+                    {getClaimableCount() > 0 && <span className="block pt-1 text-[#646262] font-normal">{language === 'ko' ? `${getClaimableCount()}개 수령 가능` : `${getClaimableCount()} Claimable`}</span>}
+                  </span>
+                  <span className="shrink-0 tabular-nums">{DAILY_MISSIONS.filter(m => dailyMissionProgress.missions[m.id]?.completed).length}/{DAILY_MISSIONS.length} <span className="group-open:hidden">[+]</span><span className="hidden group-open:inline">[-]</span></span>
+                </summary>
+                <div className="space-y-3 border-t border-[rgba(15,0,0,0.12)] p-3">
               {/* ID 79: Mini Daily Mission Progress Banner */}
               {(() => {
                 const totalMissions = DAILY_MISSIONS.length;
@@ -578,42 +569,43 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 const percent = Math.min(100, Math.round((completedMissions / Math.max(1, totalMissions)) * 100));
 
                 return (
-                  <div 
+                   <button
+                     type="button"
                     onClick={() => {
                       playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
                       const el = document.getElementById('daily-missions-section');
                       if (el) {
-                        el.scrollIntoView({ behavior: 'smooth' });
+                         el.scrollIntoView({ behavior: lowSpecMode || perf.reducedMotion ? 'instant' : 'smooth' });
                       } else {
                         onNavigate('season_hub');
                       }
                     }}
-                    className="w-full flex items-center justify-between bg-[#201d1d] border border-[rgba(15,0,0,0.12)] text-[#fdfcfc] rounded-sm px-3 py-1.5 text-xs font-mono cursor-pointer hover:border-amber-400 transition-all shadow-sm group"
+                     className="w-full min-h-12 flex flex-wrap items-center justify-between gap-3 bg-[#201d1d] border border-[#201d1d] text-[#fdfcfc] rounded-sm px-3 py-3 text-sm cursor-pointer"
                   >
                     <div className="flex items-center gap-2">
-                      <Trophy size={14} className={cn("text-amber-400", claimableCount > 0 ? "animate-bounce" : "")} />
-                      <span className="font-bold text-[11px] text-amber-300 group-hover:underline">
+                       <Trophy size={16} />
+                       <span className="font-bold text-sm group-hover:underline">
                         {language === 'ko' ? '오늘의 일일 미션:' : 'Today\'s Daily Missions:'}
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="w-16 sm:w-24 bg-slate-800 h-2 rounded-none overflow-hidden border border-white/10">
+                       <div className="w-16 sm:w-24 bg-[#646262] h-2 rounded-none overflow-hidden">
                         <div 
-                          className="bg-gradient-to-r from-amber-400 to-amber-500 h-full transition-all duration-300"
+                           className="bg-[#fdfcfc] h-full"
                           style={{ width: `${percent}%` }}
                         />
                       </div>
-                      <span className="text-[11px] font-black text-amber-400">
+                       <span className="text-sm font-bold tabular-nums">
                         {completedMissions}/{totalMissions}
                       </span>
                       {claimableCount > 0 && (
-                        <span className="bg-amber-500 text-[#201d1d] font-bold text-[10px] px-1.5 py-0.5 rounded-sm animate-pulse">
+                         <span className="bg-[#fdfcfc] text-[#201d1d] font-bold text-sm px-2 py-1 rounded-sm">
                           {language === 'ko' ? `${claimableCount}개 수령 가능` : `${claimableCount} Claimable`}
                         </span>
                       )}
-                      <ChevronRight size={14} className="text-slate-400 group-hover:text-amber-300 transition-colors" />
+                      <ChevronRight size={16} />
                     </div>
-                  </div>
+                   </button>
                 );
               })()}
 
@@ -625,78 +617,14 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 }}
                 playSfx={playSfx}
               />
-
-              {/* ── Auto-Start Ranking Battle Countdown Bar ── */}
-              <div className={cn(
-                "w-full flex flex-col sm:flex-row items-center justify-between border px-3 py-2 text-xs font-mono transition-all duration-300 gap-2 rounded-none",
-                autoStartCountdown <= 5 && !isAutoStartPaused
-                  ? "bg-rose-50 border-rose-500 text-rose-950"
-                  : "bg-white border-[#201d1d]/15 text-[#201d1d]"
-              )}>
-                <div className="flex items-center gap-2 font-bold text-xs">
-                  <Zap size={15} className={cn("shrink-0", autoStartCountdown <= 5 && !isAutoStartPaused ? "text-rose-600 animate-bounce" : "text-amber-500 animate-pulse")} />
-                  <span>
-                    {language === 'ko'
-                      ? '[⚡ 30초 대기 랭킹대전 자동 시작]:'
-                      : '[⚡ Auto Rank Battle in]:'}
-                  </span>
-                  <span className={cn(
-                    "font-mono font-black px-2 py-0.5 text-xs text-white",
-                    autoStartCountdown <= 5 && !isAutoStartPaused
-                      ? "bg-rose-600 animate-pulse"
-                      : "bg-[#201d1d]"
-                  )}>
-                    {autoStartCountdown}s
-                  </span>
                 </div>
-                <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsAutoStartPaused(!isAutoStartPaused);
-                      triggerHaptic('light');
-                      playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
-                    }}
-                    className="min-h-[40px] px-3 py-1 bg-white border border-[#201d1d]/20 hover:border-[#201d1d] text-xs font-bold text-[#201d1d] cursor-pointer transition active:scale-95 rounded-none"
-                  >
-                    {isAutoStartPaused
-                      ? (language === 'ko' ? '[▶ 재개]' : '[▶ Resume]')
-                      : (language === 'ko' ? '[⏸️ 일시정지]' : '[⏸️ Pause]')}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      triggerHaptic('battle_start');
-                      playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
-                      onNavigate('ranking');
-                    }}
-                    className="min-h-[40px] px-4 py-1.5 bg-[#201d1d] hover:bg-[#201d1d]/90 text-[#fdfcfc] text-xs font-black cursor-pointer transition active:scale-95 flex items-center gap-1.5 border border-[#201d1d] rounded-none"
-                  >
-                    <span className="text-amber-300">⚔️</span>
-                    <span>{language === 'ko' ? '[ 1초 즉시 대전 시작 ]' : '[ QUICK BATTLE ]'}</span>
-                  </button>
-                </div>
-              </div>
+              </details>
 
-              {/* ── Core Feature Main Buttons (Play Now / Random Play / Novel / Cartoon / Anime / Movie) ── */}
-              <div className="w-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 mt-1 mb-1 font-mono">
-                {/* 지금 플레이 */}
-                <motion.button
-                  {...buttonMotionProps}
-                  onClick={() => {
-                    triggerHaptic('light');
-                    playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
-                    if (onStartPlayNow) {
-                      onStartPlayNow();
-                    } else {
-                      onNavigate("main");
-                    }
-                  }}
-                  className="w-full min-h-[48px] px-3 py-2.5 bg-[#201d1d] text-[#fdfcfc] font-bold text-xs sm:text-sm border border-[#201d1d] hover:bg-[#201d1d]/90 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5 rounded-none group"
-                >
-                  <Play size={16} className="shrink-0 fill-current text-amber-300" />
-                  <span>{language === 'ko' ? '[⚔️ 지금 플레이]' : '[⚔️ Play Now]'}</span>
-                </motion.button>
+              <details className="group border border-[rgba(15,0,0,0.12)] rounded-none">
+                <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between px-3 py-2 text-sm font-bold focus-visible:outline-2 focus-visible:outline-offset-2">
+                  <span>{t('official_channels_purpose_media', language)}</span><span className="group-open:hidden">[+]</span><span className="hidden group-open:inline">[-]</span>
+                </summary>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 border-t border-[rgba(15,0,0,0.12)] p-3">
 
                 {/* 소설 읽기 */}
                 <motion.button
@@ -706,9 +634,9 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
                     onNavigate("novel");
                   }}
-                  className="w-full min-h-[48px] px-3 py-2.5 bg-white text-[#201d1d] font-bold text-xs sm:text-sm border border-[#201d1d]/20 hover:border-[#201d1d] hover:bg-slate-50 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5 rounded-none group"
+                  className="w-full min-h-12 px-3 py-3 bg-[#fdfcfc] text-[#201d1d] font-bold text-sm border border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee] cursor-pointer flex items-center justify-start gap-3 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2"
                 >
-                  <BookOpen size={16} className="shrink-0 text-indigo-600" />
+                  <BookOpen size={18} className="shrink-0" />
                   <span>{language === 'ko' ? '[📖 소설 읽기]' : '[📖 Novel]'}</span>
                 </motion.button>
 
@@ -720,9 +648,9 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
                     onNavigate("webtoon");
                   }}
-                  className="w-full min-h-[48px] px-3 py-2.5 bg-white text-[#201d1d] font-bold text-xs sm:text-sm border border-[#201d1d]/20 hover:border-[#201d1d] hover:bg-slate-50 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5 rounded-none group"
+                  className="w-full min-h-12 px-3 py-3 bg-[#fdfcfc] text-[#201d1d] font-bold text-sm border border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee] cursor-pointer flex items-center justify-start gap-3 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2"
                 >
-                  <Image size={16} className="shrink-0 text-emerald-600" />
+                  <Image size={18} className="shrink-0" />
                   <span>{language === 'ko' ? '[🎨 카툰 보기]' : '[🎨 Toon]'}</span>
                 </motion.button>
 
@@ -734,9 +662,9 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
                     onNavigate("anime");
                   }}
-                  className="w-full min-h-[48px] px-3 py-2.5 bg-white text-[#201d1d] font-bold text-xs sm:text-sm border border-[#201d1d]/20 hover:border-[#201d1d] hover:bg-slate-50 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5 rounded-none group"
+                  className="w-full min-h-12 px-3 py-3 bg-[#fdfcfc] text-[#201d1d] font-bold text-sm border border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee] cursor-pointer flex items-center justify-start gap-3 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2"
                 >
-                  <Tv size={16} className="shrink-0 text-purple-600" />
+                  <Tv size={18} className="shrink-0" />
                   <span>{language === 'ko' ? '[🎬 애니메이션]' : '[🎬 Anime]'}</span>
                 </motion.button>
 
@@ -748,12 +676,13 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
                     onNavigate("movie");
                   }}
-                  className="w-full min-h-[48px] px-3 py-2.5 bg-white text-[#201d1d] font-bold text-xs sm:text-sm border border-[#201d1d]/20 hover:border-[#201d1d] hover:bg-slate-50 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5 rounded-none group"
+                  className="w-full min-h-12 px-3 py-3 bg-[#fdfcfc] text-[#201d1d] font-bold text-sm border border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee] cursor-pointer flex items-center justify-start gap-3 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2"
                 >
-                  <Film size={16} className="shrink-0 text-rose-600" />
+                  <Film size={18} className="shrink-0" />
                   <span>{language === 'ko' ? '[🎥 영화 보기]' : '[🎥 Movie]'}</span>
                 </motion.button>
-              </div>
+                </div>
+              </details>
             </div>
           </div>
         </div>
@@ -762,20 +691,22 @@ export const HomeView: React.FC<HomeViewProps> = ({
         <AnimatePresence>
           {isLobbyDrawerOpen && (
             <motion.div
-              initial={{ opacity: 0, height: 0 }}
+              initial={lowSpecMode || perf.reducedMotion ? false : { opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="space-y-4 overflow-hidden"
+              exit={lowSpecMode || perf.reducedMotion ? undefined : { opacity: 0, height: 0 }}
+              transition={{ duration: lowSpecMode || perf.reducedMotion ? 0 : 0.2 }}
+              className="order-3 space-y-4 overflow-hidden"
             >
-              <div className="p-3 bg-slate-900 border border-slate-700 rounded-xl space-y-4 shadow-xl">
-                <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-                  <span className="font-mono text-xs font-bold text-amber-300 flex items-center gap-1.5">
+              <div className="p-4 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none space-y-4">
+                <div className="flex items-center justify-between gap-3 border-b border-[rgba(15,0,0,0.12)] pb-3">
+                  <span className="font-mono text-sm font-bold flex items-center gap-2">
                     <Layers size={14} />
                     {language === 'ko' ? '서브 서랍: 이벤트 배너 & 초보자 가이드' : 'Lobby Sub-Drawer Widgets'}
                   </span>
                   <button
                     onClick={() => setIsLobbyDrawerOpen(false)}
-                    className="p-1 rounded text-slate-400 hover:text-white"
+                    aria-label={language === 'ko' ? '닫기' : 'Close'}
+                    className="min-h-11 min-w-11 flex items-center justify-center rounded-sm border border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee]"
                   >
                     <X size={14} />
                   </button>
@@ -813,11 +744,11 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 onClick={onLoginClick}
                 disabled={isLoggingIn}
                 className={cn(
-                  "w-full h-14 sm:h-16 bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] p-3 sm:p-4 flex items-center justify-center gap-3 sm:gap-4 active:scale-[0.98] transition-all group touch-target rounded-sm cursor-pointer",
+                  "w-full h-14 sm:h-16 bg-[#fdfcfc] hover:bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] p-3 sm:p-4 flex items-center justify-center gap-3 sm:gap-4 touch-target rounded-sm cursor-pointer",
                   isLoggingIn && "opacity-50 cursor-not-allowed"
                 )}
               >
-                <svg viewBox="0 0 24 24" className="w-5 h-5 sm:w-6 sm:h-6 group-hover:scale-110 transition-transform shrink-0">
+                <svg viewBox="0 0 24 24" className="w-5 h-5 sm:w-6 sm:h-6 shrink-0">
                   <path
                     fill="#EA4335"
                     d="M12.48 10.92v3.28h7.84c-.24 1.84-.92 3.36-2.12 4.36-1.12.88-2.6 1.48-5.72 1.48-4.8 0-8.72-3.88-8.72-8.72s3.92-8.72 8.72-8.72c2.6 0 4.56 1.04 5.96 2.32l2.32-2.32c-2.12-2.04-4.92-3.2-8.28-3.2C5.36 0 0 5.36 0 12s5.36 12 12 12c3.56 0 6.24-1.16 8.36-3.32 2.12-2.12 2.84-5.2 2.84-7.76 0-.56-.04-1.12-.12-1.64h-10.6z"
@@ -835,12 +766,12 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   );
                   onNavigate("profile");
                 }}
-                className="w-full bg-[#201d1d] text-[#fdfcfc] p-4.5 flex items-center justify-between active:scale-[0.98] transition-all border border-[rgba(15,0,0,0.12)] group touch-target rounded-sm cursor-pointer"
+                className="w-full bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] p-4.5 flex items-center justify-between border border-[rgba(15,0,0,0.12)] touch-target rounded-sm cursor-pointer"
               >
                 <div className="flex items-center gap-3">
-                  <Trophy size={20} className="text-amber-400 shrink-0" />
+                  <Trophy size={20} className="shrink-0" />
                   <div className="text-left font-mono">
-                    <p className="text-xs sm:text-sm font-bold uppercase">
+                    <p className="text-sm font-bold uppercase">
                       {language === "ko"
                         ? "업적 및 프로필"
                         : "Achievements & Profile"}
@@ -848,7 +779,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-amber-400">
+                  <span className="text-sm font-bold tabular-nums">
                     {totalPower.toLocaleString()} P
                   </span>
                   <span className="text-lg sm:text-xl opacity-60">➔</span>
@@ -860,7 +791,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
               <div className="!p-4 border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-[#201d1d] flex items-center justify-between gap-3 rounded-none">
                 <button
                   type="button"
-                  className="flex min-w-0 flex-1 items-center justify-between gap-3 rounded-sm p-1 text-left transition-all group touch-target hover:bg-[#f8f7f7] active:scale-[0.99]"
+                  className="flex min-w-0 flex-1 items-center justify-between gap-3 rounded-sm p-1 text-left touch-target hover:bg-[#f8f7f7]"
                   onClick={() => {
                     playSfx(
                       "https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3",
@@ -869,7 +800,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   }}
                 >
                   <div className="flex min-w-0 items-center gap-3">
-                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden border border-white/10 bg-slate-800 flex-shrink-0">
+                    <div className="w-11 h-11 rounded-none overflow-hidden border border-[rgba(15,0,0,0.12)] bg-[#f1eeee] flex-shrink-0">
                       {user.photoURL?.startsWith('card:') ? (
                         <div className="w-full h-full scale-125" style={getCardAvatarStyle(user.photoURL)} />
                       ) : user.photoURL?.startsWith('preset:') ? (
@@ -891,7 +822,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                       )}
                     </div>
                     <div className="min-w-0 flex-1 font-mono">
-                      <p className="text-xs sm:text-sm font-bold truncate">
+                      <p className="text-sm font-bold truncate">
                         {user.displayName || user.email}
                       </p>
                     </div>
@@ -900,7 +831,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   <div className="mt-1 flex items-center justify-between pr-2 font-mono">
                     <div className="flex items-center gap-2 min-w-0">
                       <span
-                        className="text-xs sm:text-sm font-bold tracking-tight text-amber-400 truncate"
+                        className="text-sm font-bold tracking-tight text-[#201d1d] truncate"
                         title={totalPower.toLocaleString()}
                       >
                         {totalPower.toLocaleString()}
@@ -927,15 +858,15 @@ export const HomeView: React.FC<HomeViewProps> = ({
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3")}
-            className="w-full p-3.5 sm:p-4 bg-[#fdfcfc] hover:bg-[#f8f7f7] text-[#201d1d] border border-[rgba(15,0,0,0.12)] rounded-sm flex items-center justify-between transition-all group active:scale-[0.98] cursor-pointer"
+            className="w-full min-h-11 p-3.5 sm:p-4 bg-[#fdfcfc] hover:bg-[#f8f7f7] text-[#201d1d] border border-[rgba(15,0,0,0.12)] rounded-sm flex items-center justify-between group cursor-pointer"
           >
             <div className="flex items-center gap-3 font-mono">
-              <Github size={20} className="text-[#201d1d] group-hover:scale-110 transition-transform shrink-0" />
+              <Github size={20} className="text-[#201d1d] shrink-0" />
               <div className="text-left">
-                <div className="text-xs sm:text-sm font-bold uppercase tracking-tight">
+                <div className="text-sm font-bold uppercase tracking-tight">
                   {language === 'ko' ? '소스코드' : 'Source Code'}
                 </div>
-                <div className="text-[10px] text-[#646262] font-mono">GitHub Repository</div>
+                <div className="text-xs text-[#646262] font-mono">GitHub Repository</div>
               </div>
             </div>
             <span className="text-xs font-mono text-[#646262] group-hover:text-[#201d1d] font-bold">
@@ -948,15 +879,15 @@ export const HomeView: React.FC<HomeViewProps> = ({
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3")}
-            className="w-full p-3.5 sm:p-4 bg-[#fdfcfc] hover:bg-[#f8f7f7] text-[#201d1d] border border-[rgba(15,0,0,0.12)] rounded-sm flex items-center justify-between transition-all group active:scale-[0.98] cursor-pointer"
+            className="w-full min-h-11 p-3.5 sm:p-4 bg-[#fdfcfc] hover:bg-[#f8f7f7] text-[#201d1d] border border-[rgba(15,0,0,0.12)] rounded-sm flex items-center justify-between group cursor-pointer"
           >
             <div className="flex items-center gap-3 font-mono">
-              <Youtube size={20} className="text-rose-600 group-hover:scale-110 transition-transform shrink-0" />
+              <Youtube size={20} className="text-[#201d1d] shrink-0" />
               <div className="text-left">
-                <div className="text-xs sm:text-sm font-bold uppercase tracking-tight">
+                <div className="text-sm font-bold uppercase tracking-tight">
                   {language === 'ko' ? '개발동영상' : 'Dev Videos'}
                 </div>
-                <div className="text-[10px] text-[#646262] font-mono">YouTube Playlist</div>
+                <div className="text-xs text-[#646262] font-mono">YouTube Playlist</div>
               </div>
             </div>
             <span className="text-xs font-mono text-[#646262] group-hover:text-[#201d1d] font-bold">
@@ -967,29 +898,29 @@ export const HomeView: React.FC<HomeViewProps> = ({
       </section>
 
       {/* ── Footer: Build Version & Last Build Time & ModooSoft Copyright ── */}
-      <footer className="w-full mt-4 pt-4 border-t border-[rgba(15,0,0,0.12)] flex flex-col items-center justify-between text-[11px] font-mono text-[#646262] gap-2 select-none">
+      <footer className="w-full mt-4 pt-4 border-t border-[rgba(15,0,0,0.12)] flex flex-col items-center justify-between text-xs font-mono text-[#646262] gap-3 select-none">
         <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
             <span className="font-bold text-[#201d1d]">SNSHero Revolution</span>
+            <PingIndicator language={language} className="shrink-0" />
           </div>
           <div className="flex items-center gap-2 flex-wrap justify-center">
-            <span className="bg-[#201d1d] text-[#fdfcfc] px-2 py-0.5 rounded-sm text-[10px] font-bold font-mono">
+            <span className="bg-[#201d1d] text-[#fdfcfc] px-2 py-1 rounded-none text-xs font-bold font-mono">
               {BUILD_VERSION}
             </span>
-            <span className="text-[#646262] text-[10px] font-mono">
+            <span className="text-[#646262] text-xs font-mono">
               ({language === 'ko' ? '마지막 빌드 시각: ' : 'Build Time: '}{LAST_BUILD_TIME})
             </span>
           </div>
         </div>
-        <div className="text-center text-[10px] text-[#646262] font-mono pt-1">
+        <div className="text-center text-xs text-[#646262] font-mono pt-1">
           © ModooSoft. All rights reserved.
         </div>
       </footer>
 
       {showPdf && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 backdrop-blur-sm p-0 md:p-6 animate-in fade-in duration-200">
-          <div className="relative w-full h-full md:max-w-6xl md:max-h-[92vh] bg-slate-950 md:rounded-2xl overflow-hidden shadow-2xl border border-slate-800 animate-in fade-in zoom-in-95 duration-150">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#201d1d]/80 p-0 md:p-6">
+          <div className="relative w-full h-full md:max-w-6xl md:max-h-[92vh] bg-[#fdfcfc] rounded-none overflow-hidden border border-[rgba(15,0,0,0.12)]">
             {/* iframe */}
             <iframe
               src={language === 'ko' ? "/snshero_part1_ko.pdf" : "/snshero_part1.pdf"}
@@ -1004,7 +935,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 setShowPdf(false);
               }}
               aria-label={language === 'ko' ? "닫기" : "Close"}
-              className="absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-slate-900/90 hover:bg-slate-800 text-white flex items-center justify-center border border-slate-700 shadow-lg cursor-pointer transition-all active:scale-95 backdrop-blur-sm"
+              className="absolute top-4 right-4 z-20 min-w-11 min-h-11 rounded-sm bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] flex items-center justify-center border border-[#201d1d] cursor-pointer"
             >
               <X size={18} />
             </button>
@@ -1016,7 +947,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
                   setShowPdf(false);
                 }}
-                className="px-5 py-2.5 bg-slate-900/90 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow-lg border border-slate-700 cursor-pointer transition-all active:scale-95 touch-target flex items-center gap-1.5 backdrop-blur-sm"
+                className="min-h-11 px-5 py-3 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] font-bold text-sm rounded-sm border border-[#201d1d] cursor-pointer flex items-center gap-2"
               >
                 ✕ {language === 'ko' ? "닫기" : "Close"}
               </button>
@@ -1029,31 +960,33 @@ export const HomeView: React.FC<HomeViewProps> = ({
       <AnimatePresence>
         {helpOpen && (
           <motion.div
-            initial={{ opacity: 0 }}
+            initial={lowSpecMode || perf.reducedMotion ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[209] flex items-center justify-center bg-black/50 p-3 sm:p-4 backdrop-blur-sm"
+            exit={lowSpecMode || perf.reducedMotion ? undefined : { opacity: 0 }}
+            transition={{ duration: lowSpecMode || perf.reducedMotion ? 0 : 0.15 }}
+            className="fixed inset-0 z-[209] flex items-center justify-center bg-[#201d1d]/50 p-3 sm:p-4"
             onClick={() => setHelpOpen(false)}
           >
             <motion.div
-              initial={{ opacity: 0, y: 12, scale: 0.98 }}
+              initial={lowSpecMode || perf.reducedMotion ? false : { opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 12, scale: 0.98 }}
-              className="relative w-full max-w-lg max-h-[90dvh] flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white p-4 sm:p-5 shadow-2xl"
+              exit={lowSpecMode || perf.reducedMotion ? undefined : { opacity: 0, y: 12 }}
+              transition={{ duration: lowSpecMode || perf.reducedMotion ? 0 : 0.15 }}
+              className="relative w-full max-w-lg max-h-[90dvh] flex flex-col overflow-hidden rounded-none border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-4 sm:p-5"
               onClick={e => e.stopPropagation()}
             >
               <button
                 onClick={() => setHelpOpen(false)}
-                aria-label="닫기"
-                className="absolute top-4 right-4 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 hover:text-slate-700 hover:border-slate-300 transition shrink-0"
+                aria-label={language === 'ko' ? '닫기' : 'Close'}
+                className="absolute top-4 right-4 z-10 flex min-h-11 min-w-11 items-center justify-center rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-[#646262] hover:text-[#201d1d] shrink-0"
               >
                 <X size={18} />
               </button>
-              <div className="flex items-start gap-3 mb-3 pr-8 shrink-0">
-                <h3 className="text-lg font-black text-slate-900">{helpSlides[helpStep].title}</h3>
+              <div className="flex min-h-11 items-center gap-3 mb-3 pr-14 shrink-0">
+                <h3 className="text-lg font-bold text-[#201d1d]">{helpSlides[helpStep].title}</h3>
               </div>
               <div className="flex-1 min-h-0 overflow-y-auto mb-4 pr-1">
-                <p className="text-sm text-slate-600 leading-relaxed whitespace-pre-line">{helpSlides[helpStep].body}</p>
+                <p className="text-sm text-[#646262] leading-relaxed whitespace-pre-line">{helpSlides[helpStep].body}</p>
               </div>
               <div className="flex items-center justify-between shrink-0 pt-2 border-t border-slate-100">
                 <span className="text-xs text-slate-400">{helpStep + 1}/{helpSlides.length}</span>
@@ -1062,10 +995,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     disabled={helpStep === 0}
                     onClick={() => setHelpStep(s => s - 1)}
                     className={cn(
-                      "inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-bold transition",
+                      "inline-flex min-h-11 items-center gap-1 rounded-sm border border-[rgba(15,0,0,0.12)] px-3 py-2 text-sm font-bold",
                       helpStep === 0
                         ? "text-slate-300 cursor-not-allowed"
-                        : "text-slate-600 hover:bg-slate-50 active:scale-95"
+                        : "text-[#646262] hover:bg-[#f1eeee]"
                     )}
                   >
                     <ChevronLeft size={14} />
@@ -1074,7 +1007,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   {helpStep < helpSlides.length - 1 ? (
                     <button
                       onClick={() => setHelpStep(s => s + 1)}
-                      className="inline-flex items-center gap-1 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-indigo-700 active:scale-95 transition"
+                      className="inline-flex min-h-11 items-center gap-1 rounded-sm bg-[#201d1d] px-3 py-2 text-sm font-bold text-[#fdfcfc] hover:bg-[#302c2c]"
                     >
                       {language === 'ko' ? '다음' : 'Next'}
                       <ChevronRight size={14} />
@@ -1082,7 +1015,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   ) : (
                     <button
                       onClick={() => setHelpOpen(false)}
-                      className="inline-flex items-center gap-1 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-indigo-700 active:scale-95 transition"
+                      className="inline-flex min-h-11 items-center gap-1 rounded-sm bg-[#201d1d] px-3 py-2 text-sm font-bold text-[#fdfcfc] hover:bg-[#302c2c]"
                     >
                       {language === 'ko' ? '닫기' : 'Close'}
                     </button>
@@ -1158,7 +1091,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
       />
 
       {/* SCR-01-01: Mobile Thumb-Zone Floating '3-Second Instant Battle' FAB */}
-      <div className="fixed bottom-6 right-4 sm:bottom-8 sm:right-8 z-40 select-none">
+      <div className="fixed bottom-[calc(5.5rem+env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 z-40 select-none sm:hidden">
         <button
           onClick={() => {
             triggerHaptic('heavy');
@@ -1169,16 +1102,11 @@ export const HomeView: React.FC<HomeViewProps> = ({
               onNavigate('game');
             }
           }}
-          className="relative group flex items-center gap-2 px-4 py-3 sm:px-5 sm:py-3.5 bg-[#201d1d] hover:bg-slate-800 text-white font-mono font-black text-xs sm:text-sm rounded-full shadow-2xl border-2 border-indigo-500 active:scale-95 transition-all cursor-pointer"
+          className="flex min-h-12 items-center gap-2 px-3 py-3 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] font-mono font-bold text-sm whitespace-nowrap rounded-sm border border-[#fdfcfc] cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-4"
           title={language === 'ko' ? '3초 즉시 배틀 시작' : 'Play Now (3s Instant Match)'}
         >
-          {/* Animated Glow / Ping Wave */}
-          <span className="absolute -inset-0.5 rounded-full bg-gradient-to-r from-indigo-500 via-fuchsia-500 to-amber-500 opacity-60 blur-xs group-hover:opacity-100 transition-opacity animate-pulse pointer-events-none" />
-          
           <span className="relative flex items-center gap-2">
-            <span className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-gradient-to-tr from-amber-400 to-rose-500 flex items-center justify-center text-white shadow-xs">
-              <Zap size={15} className="fill-white" />
-            </span>
+            <Zap size={18} />
             <span className="tracking-tight">
               {language === 'ko' ? '[ 3초 즉시 배틀 ]' : '[ PLAY NOW ]'}
             </span>
