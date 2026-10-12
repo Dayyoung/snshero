@@ -133,9 +133,23 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
   const [tutorialShopCountdown, setTutorialShopCountdown] = useState<number | null>(null);
   const [rankingAutoLoopCountdown, setRankingAutoLoopCountdown] = useState<number | null>(null);
 
-  // Auto Battle & Speed (시작 시 자동전투 시작)
-  const [isAutoBattle, setIsAutoBattle] = useState(initialAutoBattle !== false);
+  // Auto Battle & Speed (시작 시 자동전투 시작 및 로컬스토리지 광고 차단 동기화)
+  const [isAutoBattle, setIsAutoBattle] = useState(() => {
+    if (typeof initialAutoBattle === 'boolean') return initialAutoBattle;
+    try {
+      const stored = localStorage.getItem('hero_auto_battle');
+      return stored !== null ? JSON.parse(stored) : true;
+    } catch {
+      return true;
+    }
+  });
   const [battleSpeed, setBattleSpeed] = useState<1 | 2>(1);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('hero_auto_battle', JSON.stringify(isAutoBattle));
+    } catch {}
+  }, [isAutoBattle]);
 
   // WebMCP (Chrome 149+ AI Model Context Protocol) Card Battle Tools Registration
   const battleMcpTools = useMemo(() => {
@@ -512,6 +526,9 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
 
   // ─── 스마트 자동 라이프사이클: 웹툰/동영상 기분전환 라운지 ─────────
   const triggerRefreshBreak = useCallback(() => {
+    // 자동플레이 모드 시 광고/외부 미디어 팝업 완전 차단 (민망함 방지)
+    if (isAutoBattle) return;
+
     // 50% 확률로 웹툰 or 비디오
     const isWebtoon = Math.random() < 0.5;
     const breakType: 'webtoon' | 'video' = isWebtoon ? 'webtoon' : 'video';
@@ -555,7 +572,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       type: 'break',
       timestamp: Date.now()
     });
-  }, [language]);
+  }, [language, isAutoBattle]);
 
   // 기분전환 4초 카운트다운 타이머 제어
   useEffect(() => {
@@ -1186,8 +1203,8 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
         localStorage.setItem('hero_auto_loop_match_count', String(nextCount));
       } catch {}
 
-      // [2] 매 3번째 경기 완료 시 가끔 웹툰/동영상 시청으로 기분전환 타임!
-      if (smartLifeCycleActive && nextCount > 0 && nextCount % 3 === 0) {
+      // [2] 매 3번째 경기 완료 시 웹툰/동영상 시청 기분전환 (자동플레이 모드에서는 100% 완전 차단)
+      if (!isAutoBattle && smartLifeCycleActive && nextCount > 0 && nextCount % 3 === 0) {
         setGameOver(false);
         triggerRefreshBreak();
       } else {
@@ -1397,22 +1414,24 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
         </div>
       )}
 
-      {/* ─── 1. 상단 광고 (Top Ad Banner: max 48px) ────────────────── */}
-      <div 
-        id="mobile-card-top-ad"
-        className="w-full h-11 max-h-11 border-b border-[#0f0000]/12 px-2 flex items-center justify-center relative overflow-hidden shrink-0 [@media(max-height:700px)]:hidden"
-      >
-        <AdSenseBanner isAdRemoved={isAdRemoved} format="horizontal" className="w-full h-full max-h-11" />
-        {/* Ad Fallback / Sponsor Banner */}
-        <div className="flex items-center justify-between w-full max-w-sm px-2 text-[10px] text-[#646262] tracking-tight pointer-events-none">
-          <span className="flex items-center gap-1">
-            <strong>SNSHERO REVOLUTION</strong>
-          </span>
-          <span className="text-[10px] border border-[#0f0000]/12 px-1.5">
-            {t('opponent_deck', language)}
-          </span>
+      {/* ─── 1. 상단 광고 (Top Ad Banner: 자동플레이 모드 또는 광고 제거 시 100% 완전 제거) ────────────────── */}
+      {!isAutoBattle && !isAdRemoved && (
+        <div 
+          id="mobile-card-top-ad"
+          className="w-full h-11 max-h-11 border-b border-[#0f0000]/12 px-2 flex items-center justify-center relative overflow-hidden shrink-0 [@media(max-height:700px)]:hidden"
+        >
+          <AdSenseBanner isAdRemoved={isAdRemoved || isAutoBattle} isAutoBattle={isAutoBattle} format="horizontal" className="w-full h-full max-h-11" />
+          {/* Ad Fallback / Sponsor Banner */}
+          <div className="flex items-center justify-between w-full max-w-sm px-2 text-[10px] text-[#646262] tracking-tight pointer-events-none">
+            <span className="flex items-center gap-1">
+              <strong>SNSHERO REVOLUTION</strong>
+            </span>
+            <span className="text-[10px] border border-[#0f0000]/12 px-1.5">
+              {t('opponent_deck', language)}
+            </span>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Short, wide viewports dock the hands beside the board, never over it. */}
       <div className="flex-1 min-h-0 grid grid-cols-1 grid-rows-[auto_auto_minmax(144px,1fr)_auto_auto] gap-2 p-2 pb-[max(8px,env(safe-area-inset-bottom,0px))] [@media(max-height:500px)_and_(min-width:480px)]:grid-cols-[minmax(140px,1fr)_minmax(144px,1.4fr)_minmax(140px,1fr)] [@media(max-height:500px)_and_(min-width:480px)]:grid-rows-[48px_minmax(0,1fr)_48px]">
@@ -1826,8 +1845,8 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                   </span>
                 </div>
 
-                {/* 3대 핵심 보상 루프 1: 배틀 승리 보상 2배 버튼 */}
-                {winner === 'player' && (
+                {/* 3대 핵심 보상 루프 1: 배틀 승리 보상 2배 버튼 (자동플레이 모드에서는 광고 버튼 완전 제거) */}
+                {winner === 'player' && !isAutoBattle && (
                   <div className="my-1">
                     {isDoubleRewardClaimed ? (
                       <div className="py-1 px-2.5 border border-[#0f0000]/12 text-[10px] font-bold text-center flex items-center justify-center gap-1">
@@ -2037,9 +2056,9 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
         )}
       </AnimatePresence>
 
-      {/* 보상형 광고 모달 (승리 보상 2배) */}
+      {/* 보상형 광고 모달 (승리 보상 2배, 자동플레이 시 완전 차단) */}
       <RewardedAdModal
-        isOpen={isRewardedModalOpen}
+        isOpen={isRewardedModalOpen && !isAutoBattle}
         type="victory_2x"
         title={language === 'ko' ? '배틀 승리 보상 2배 스폰서 광고' : '2x Victory Reward Sponsored Ad'}
         rewardDescription={language === 'ko' ? '+30 SNS 코인 추가 입금' : '+30 SNS Coin Bonus Deposit'}
@@ -2208,9 +2227,9 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
         )}
       </AnimatePresence>
 
-      {/* ─── 스마트 자동 라이프사이클: 웹툰/동영상 기분전환 힐링 모달 ── */}
+      {/* ─── 스마트 자동 라이프사이클: 웹툰/동영상 기분전환 힐링 모달 (자동플레이 모드 시 완전 차단) ── */}
       <AnimatePresence>
-        {showRefreshBreakModal && (
+        {showRefreshBreakModal && !isAutoBattle && (
           <motion.div
             initial={suppressMotion ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}

@@ -6128,8 +6128,8 @@ function AppContent() {
         )}
         <Meta view={view} language={language} />
 
-        {/* Desktop Left Skyscraper Ad Banner (lg: 1024px+ PC screens: 1066px 포함 완벽 지원) */}
-        {!isAdRemoved && view !== 'landing' && (
+        {/* Desktop Left Skyscraper Ad Banner (lg: 1024px+ PC screens: 1066px 포함 완벽 지원, 자동전투 시 광고 제거) */}
+        {!isAdRemoved && !isAutoBattle && view !== 'landing' && (
           <aside 
             aria-label="Google AdSense Left Wing"
             className="hidden lg:flex flex-col items-center w-[120px] xl:w-[160px] shrink-0 sticky top-6 mr-2 xl:mr-3 z-30 pointer-events-auto"
@@ -6153,8 +6153,8 @@ function AppContent() {
                 ? "bg-slate-900 border-slate-800/80 min-h-screen"
                 : "bg-slate-50/30 border-slate-200/80 min-h-screen")
         )}>
-          {/* Top AdSense Banner (모바일에서는 상단 배너 표시, PC에서는 상단 배너 제거 후 좌우 배너로 표시) */}
-          {!isAdRemoved && view !== 'landing' && view !== 'card-play' && (
+          {/* Top AdSense Banner (모바일에서는 상단 배너 표시, PC에서는 상단 배너 제거 후 좌우 배너로 표시, 자동전투 시 완전 제거) */}
+          {!isAdRemoved && !isAutoBattle && view !== 'landing' && view !== 'card-play' && (
             <div className={cn(
               "block lg:hidden w-full px-2 py-1 shrink-0 select-none z-20 overflow-hidden pt-[env(safe-area-inset-top,0px)]",
               isPlayingBattle
@@ -6173,7 +6173,7 @@ function AppContent() {
           )}
 
           {/* 광고가 없을 때 모바일 PWA 상단 안전영역 스페이서 */}
-          {(isAdRemoved || view === 'landing') && (
+          {(isAdRemoved || isAutoBattle || view === 'landing') && (
             <div className="block lg:hidden w-full h-[env(safe-area-inset-top,0px)] shrink-0 pointer-events-none" />
           )}
 
@@ -8003,8 +8003,8 @@ function AppContent() {
 
       </div>
 
-        {/* Desktop Right Skyscraper Ad Banner (lg: 1024px+ PC screens: 1066px 포함 완벽 지원) */}
-        {!isAdRemoved && view !== 'landing' && (
+        {/* Desktop Right Skyscraper Ad Banner (lg: 1024px+ PC screens: 1066px 포함 완벽 지원, 자동전투 시 광고 제거) */}
+        {!isAdRemoved && !isAutoBattle && view !== 'landing' && (
           <aside 
             aria-label="Google AdSense Right Wing"
             className="hidden lg:flex flex-col items-center w-[120px] xl:w-[160px] shrink-0 sticky top-6 ml-2 xl:ml-3 z-30 pointer-events-auto"

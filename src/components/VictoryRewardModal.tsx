@@ -274,8 +274,8 @@ export const VictoryRewardModal: React.FC<VictoryRewardModalProps> = ({
 
         {/* Action Buttons */}
         <div className="p-3 sm:p-4 border-t border-[#201d1d]/20 bg-[#fdfcfc] shrink-0 flex flex-col gap-2">
-          {/* 3대 핵심 보상 루프 1: 승리 보상 2배 (x2) 광고 시청 또는 VIP 즉시 수령 */}
-          {safeReceipt.isVictory && (
+          {/* 3대 핵심 보상 루프 1: 승리 보상 2배 (x2) 광고 시청 또는 VIP 즉시 수령 (자동배틀 시 광고 버튼 미노출) */}
+          {safeReceipt.isVictory && !(typeof window !== 'undefined' && localStorage.getItem('hero_auto_battle') === 'true') && (
             <div className="w-full">
               {isDoubleRewardClaimed ? (
                 <div className="w-full py-2 px-3 bg-emerald-50 border border-emerald-500/40 text-emerald-800 text-[11px] font-bold rounded-sm flex items-center justify-center gap-1.5">

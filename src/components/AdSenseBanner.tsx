@@ -13,6 +13,7 @@ interface AdSenseBannerProps {
   style?: React.CSSProperties;
   showLabel?: boolean;
   isAdRemoved?: boolean;
+  isAutoBattle?: boolean;
 }
 
 export const AdSenseBanner: React.FC<AdSenseBannerProps> = ({
@@ -23,8 +24,13 @@ export const AdSenseBanner: React.FC<AdSenseBannerProps> = ({
   style = {},
   showLabel = false,
   isAdRemoved = false,
+  isAutoBattle = false,
 }) => {
-  const isActuallyAdRemoved = isAdRemoved || (typeof window !== 'undefined' && localStorage.getItem('hero_ad_removed') === 'true');
+  const isAutoModeActive = isAutoBattle || (typeof window !== 'undefined' && (
+    localStorage.getItem('hero_auto_battle') === 'true' ||
+    localStorage.getItem('hero_auto_loop_mode') !== null
+  ));
+  const isActuallyAdRemoved = isAdRemoved || isAutoModeActive || (typeof window !== 'undefined' && localStorage.getItem('hero_ad_removed') === 'true');
   if (isActuallyAdRemoved) {
     return null;
   }
