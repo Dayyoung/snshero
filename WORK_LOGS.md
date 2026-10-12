@@ -2,6 +2,37 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-12 09:42 KST] [SNSHero 전 화면 WebMCP 표준 적용 및 AI 에이전트 자율 플레이 연동 완료]
+- **요청 사항**:
+  - SNSHero 게임 서비스의 모든 화면에 webMCP(Web Model Context Protocol)를 적용하여 사용자 가이드 없이도 AI가 게임 서비스를 이용할 수 있도록 구축 (`/goal`).
+  - Google Chrome WebMCP 표준 명세 준수 (`https://developer.chrome.com/docs/ai/webmcp?hl=ko`).
+- **상세 구현 내역**:
+  1. **Chrome 149+ W3C WICG 표준 WebMCP 아키텍처 및 폴리필 구현** ([`src/lib/webMcp/`](file:///Users/dayyoung/project/snshero/src/lib/webMcp/)):
+     - `types.ts`: WebMcpToolDefinition, WebMcpInputSchema, WebMcpAnnotations (`readOnlyHint`, `consequentialHint`, `untrustedContentHint`), ModelContext, ToolExecutionResult 등 표준 타입 명세 정의.
+     - `webMcpManager.ts`: 브라우저 내장 `document.modelContext` 감지 및 폴리필, `window.webMCP` 듀얼 브리지, 최근 50회 도구 실행 이력 저장, 이벤트 버스 싱글톤 구현.
+     - `useWebMcp.ts`: React 화면 생명주기에 동기화되는 `useWebMcpTools` 및 `useWebMcpState` 훅 구현 (`AbortController` 자동 정리).
+  2. **전역 도구 및 10대 핵심 화면별 31개 WebMCP 도구 카탈로그 구현**:
+     - **전역 상시 도구 (5종)** ([`globalTools.ts`](file:///Users/dayyoung/project/snshero/src/lib/webMcp/globalTools.ts)): `navigate_to_screen`, `get_game_state`, `get_available_screens`, `change_language`, `search_card_database`.
+     - **홈 화면 (3종)** ([`homeTools.ts`](file:///Users/dayyoung/project/snshero/src/lib/webMcp/screenTools/homeTools.ts), [`HomeView.tsx`](file:///Users/dayyoung/project/snshero/src/views/HomeView.tsx)): `home_claim_fountain_wish`, `home_claim_stamina_station`, `home_get_summary_status`.
+     - **랭킹 화면 (3종)** ([`rankingTools.ts`](file:///Users/dayyoung/project/snshero/src/lib/webMcp/screenTools/rankingTools.ts), [`RankingView.tsx`](file:///Users/dayyoung/project/snshero/src/views/RankingView.tsx)): `ranking_challenge_ranker`, `ranking_get_leaderboard`, `ranking_switch_tab`.
+     - **배틀 화면 (3종)** ([`battleTools.ts`](file:///Users/dayyoung/project/snshero/src/lib/webMcp/screenTools/battleTools.ts), [`MobileCardPlayScreen.tsx`](file:///Users/dayyoung/project/snshero/src/views/MobileCardPlayScreen.tsx)): `battle_play_card_move`, `battle_toggle_auto_play`, `battle_get_board_state`.
+     - **마이덱 화면 (3종)** ([`mydeckTools.ts`](file:///Users/dayyoung/project/snshero/src/lib/webMcp/screenTools/mydeckTools.ts), [`MyDeckView.tsx`](file:///Users/dayyoung/project/snshero/src/views/MyDeckView.tsx)): `deck_optimize_best_cards`, `deck_get_inventory_and_slots`, `deck_swap_card`.
+     - **상점 화면 (3종)** ([`shopTools.ts`](file:///Users/dayyoung/project/snshero/src/lib/webMcp/screenTools/shopTools.ts), [`ShopView.tsx`](file:///Users/dayyoung/project/snshero/src/views/ShopView.tsx)): `shop_summon_gacha_pack`, `shop_get_pity_and_catalog`, `shop_initiate_crypto_payment`.
+     - **미션 게임 화면 (3종)** ([`pokiGameTools.ts`](file:///Users/dayyoung/project/snshero/src/lib/webMcp/screenTools/pokiGameTools.ts), [`PlayGameView.tsx`](file:///Users/dayyoung/project/snshero/src/views/PlayGameView.tsx)): `game_launch_by_id`, `game_roll_random_dice`, `game_get_all_modes`.
+     - **주식/코인 거래소 화면 (3종)** ([`stockTools.ts`](file:///Users/dayyoung/project/snshero/src/lib/webMcp/screenTools/stockTools.ts), [`StockMarketView.tsx`](file:///Users/dayyoung/project/snshero/src/views/StockMarketView.tsx)): `stock_buy_shares`, `stock_sell_shares`, `stock_get_portfolio_and_prices`.
+     - **P2P 카드 마켓플레이스 화면 (3종)** ([`marketTools.ts`](file:///Users/dayyoung/project/snshero/src/lib/webMcp/screenTools/marketTools.ts), [`CardMarketplaceView.tsx`](file:///Users/dayyoung/project/snshero/src/views/CardMarketplaceView.tsx)): `market_buy_card_listing`, `market_list_card_for_sale`, `market_get_listings_and_offers`.
+     - **커뮤니티 화면 (2종)** ([`communityTools.ts`](file:///Users/dayyoung/project/snshero/src/lib/webMcp/screenTools/communityTools.ts), [`CommunityView.tsx`](file:///Users/dayyoung/project/snshero/src/views/CommunityView.tsx)): `community_create_post`, `community_get_feed_posts`.
+     - **보조/설정 화면 (3종)** ([`auxTools.ts`](file:///Users/dayyoung/project/snshero/src/lib/webMcp/screenTools/auxTools.ts), [`SettingView.tsx`](file:///Users/dayyoung/project/snshero/src/views/SettingView.tsx)): `companion_interact`, `skill_upgrade_node`, `season_hub_claim_tier`.
+  3. **실시간 WebMCP 비주얼 인스펙터 및 활성 상태 뱃지 구축** ([`src/components/`](file:///Users/dayyoung/project/snshero/src/components/)):
+     - `WebMcpActiveBadge.tsx`: 화면 좌측 하단에 상시 표시되는 `[⚡ WebMCP: {활성도구수}]` 모노스페이스 플로팅 뱃지.
+     - `WebMcpInspectorModal.tsx`: 현재 활성 도구 목록, 파라미터 JSON 실시간 입력 및 원클릭 테스트 실행, 실시간 실행 로그 타임라인, AI Agent 가이드 모달 제공.
+  4. **전체 표준 명세서 문서 작성** ([`docs/WEBMCP.md`](file:///Users/dayyoung/project/snshero/docs/WEBMCP.md)):
+     - Chrome WebMCP W3C 제안 규격, API 레퍼런스, 31종 전체 도구 스키마, AI 자율 플레이 시나리오, Puppeteer/Playwright 헤드리스 코드 예제 수록.
+- **검증 결과**:
+  - `npm run build`: 9.54초 만에 빌드 및 정적 SPA 라우트 폴백 정상 생성 완료 (0 에러).
+  - 로컬 Git 커밋 완료 (`83d5b56`).
+  - 연동 구글 폼 완료 보고서 제출 완료 (`Successfully submitted task`).
+
 ## [2026-10-12 09:22 KST] [상점 암호화폐(USDT/BTC/ETH) 결제 기능 복구 및 입금/체인 모달 연동 완료]
 - **요청 사항**:
   - 상점에 암호화폐 결제 기능 다시 복구.
