@@ -2,6 +2,23 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-12 19:13 KST] 카드 플레이 화면 UI 축소 방지 및 모바일 상하 스크롤 레이아웃 적용
+- **요청 사항**: 한 화면에 욱여넣느라 UI가 축소되는 것을 방지하고, 시원시원한 크기를 유지하며 차라리 상하 스크롤을 만들어 달라는 요청 반영.
+- **상세 구현 내역**:
+  1. **자연스러운 모바일 터치 상하 스크롤 제스처 활성화 (`MobileCardPlayScreen.tsx`)**:
+     - 뷰포트 컨테이너의 터치 차단(`touch-none`)을 `touch-pan-y`로 전환하여 세로 스와이프 제스처를 온전히 복원.
+     - 메인 배틀 뷰 컨테이너에 `overflow-y-auto touch-pan-y overscroll-y-contain flex flex-col items-center gap-3 pb-8`을 적용하여 화면 길이에 구애받지 않는 부드러운 스크롤 환경 구축.
+     - 상단 헤더(`sticky top-0 bg-[#fdfcfc]/95 backdrop-blur-xs z-40`)를 상단 고정하여 스크롤 중에도 언제든 뒤로가기, 볼륨, 재대결 조작 지원.
+  2. **카드 크기 대폭 확장 및 종횡비 무결점 복원**:
+     - 상대 덱 및 내 덱의 카드 높이를 기존 쥐어짜던 `clamp(54px, 11dvh, 90px)`에서 **`aspect-[2.8/4] min-h-[96px] sm:min-h-[115px] max-h-[135px]`**로 약 2배 가까이 전면 확장.
+     - 5열 그리드 안에서 카드가 납작해지거나 찌그러지지 않고 당당한 포켓몬 카드 정비율을 항상 유지.
+  3. **3x3 배틀 보드 정방형 크기 보장**:
+     - 기존 화면 높이 부족 시 144px로 찌그러지던 중앙 보드를 `w-full max-w-[440px] aspect-square min-h-[300px] sm:min-h-[360px]`로 큼직하게 확장하여, 보드 안의 슬롯과 배치된 카드의 시인성을 극대화.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 Errors (타입 무결점 통과).
+  - `npm run build`: Vite 6 프로덕션 번들 10.96초 빌드 완결.
+  - 구글 폼 완료 보고서 제출 완료 (`https://docs.google.com/forms/d/e/1FAIpQLScrvcAqDF7vHHQndycr90ii-ujTi3Plw23eNrSyiJpOLrHbjg/formResponse`).
+
 ## [2026-10-12 19:07 KST] 원격 저장소 푸시(git push origin main) 완료
 - **요청 사항**: 사용자 명시 요청에 따른 원격 저장소(`origin main`) 푸시 실행.
 - **반영 커밋 내역**:
