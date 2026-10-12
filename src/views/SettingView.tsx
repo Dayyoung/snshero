@@ -33,7 +33,7 @@ import { WebPushService, type DevicePushStatus } from '../lib/webPushService';
 import { IosPwaInstallGuideModal } from '../components/IosPwaInstallGuideModal';
 import { useSns } from '../contexts/SnsContext';
 import { PwaRewardService } from '../lib/pwaRewardService';
-import { createAuxWebMcpTools, useWebMcpTools } from '../lib/webMcp';
+import { createAuxWebMcpTools, useWebMcpTools } from '../lib/webMcp/index';
 
 interface SettingViewProps {
   bgmEnabled: boolean;

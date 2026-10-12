@@ -30,7 +30,7 @@ import { HomeQuickHub } from "../components/HomeQuickHub";
 import { AfkHarvestBox } from "../components/AfkHarvestBox";
 import { LifecycleEngine } from "../lib/LifecycleEngine";
 import { Flame } from "lucide-react";
-import { createHomeWebMcpTools, useWebMcpTools } from "../lib/webMcp";
+import { createHomeWebMcpTools, useWebMcpTools } from "../lib/webMcp/index";
 
 const getCardAvatarStyle = (avatar: string): React.CSSProperties => {
   const cardId = Number(avatar.split(':')[1]) || 1;

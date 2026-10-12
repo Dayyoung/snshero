@@ -39,7 +39,7 @@ import { getProfileBadgeByKey, getProfileEmoticonByKey, getProfileTitleByKey } f
 import { MonsterPetBadge } from '../components/MonsterPetBadge';
 import { useMonsterPet } from '../hooks/useMonsterPet';
 import { parseCardAvatarId } from '../lib/monsterPet';
-import { createCommunityWebMcpTools, useWebMcpTools } from '../lib/webMcp';
+import { createCommunityWebMcpTools, useWebMcpTools } from '../lib/webMcp/index';
 
 interface CommunityViewProps {
   onBack: () => void;

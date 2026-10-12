@@ -59,8 +59,6 @@ import { isSfxMutedGlobal, setGlobalSfxMuted } from './lib/sound';
 import { usePwaInstallGuard } from './hooks/usePwaInstallGuard';
 import { incrementMissionProgress } from './lib/dailyMissions';
 import { RainbowFlipEffect } from './components/RainbowFlipEffect';
-import { createGlobalWebMcpTools, useWebMcpTools } from './lib/webMcp';
-import { WebMcpActiveBadge } from './components/WebMcpActiveBadge';
 
 import { 
   Menu, 
@@ -185,6 +183,10 @@ const GridCheckerView = safeLazy(() => import('./views/GridCheckerView'), 'GridC
 const MallView = safeLazy(loadViewSafely('MallView'), 'MallView');
 const PacpikView = safeLazy(loadViewSafely('PacpikView'), 'PacpikView');
 const BenchmarkView = safeLazy(loadViewSafely('BenchmarkView'), 'BenchmarkView');
+const WebMcpActiveBadge = safeLazy(
+  () => import('./components/WebMcpActiveBadge').then(m => ({ default: m.WebMcpActiveBadge })),
+  'WebMcpActiveBadge'
+);
 
 const getCardAvatarStyle = (avatar: string): React.CSSProperties => {
   const cardId = Number(avatar.split(':')[1]) || 1;
@@ -3329,21 +3331,34 @@ function AppContent() {
     }
   }, [purchasedSns, earnedSns, effectiveUser, inventory, stats, currentDeck, itemInventory, totalPower, isAutoBattle, lowSpecMode, language, syncUserData]);
 
-  // WebMCP (Chrome 149+ AI Model Context Protocol) Global Tools Registration
-  const globalMcpTools = useMemo(() => {
-    return createGlobalWebMcpTools({
-      currentView: view,
-      onNavigate: setView,
-      language,
-      setLanguage,
-      lowSpecMode,
-      setLowSpecMode,
-      sns,
-      updateSns
-    });
-  }, [view, setView, language, setLanguage, lowSpecMode, setLowSpecMode, sns, updateSns]);
+  // WebMCP (Chrome 149+ AI Model Context Protocol) Global Tools Registration (Fail-Safe Dynamic Import for AI Studio)
+  useEffect(() => {
+    let cleanup: (() => void) | undefined;
+    import('./lib/webMcp/index')
+      .then(({ webMcpManager, createGlobalWebMcpTools }) => {
+        const tools = createGlobalWebMcpTools({
+          currentView: view,
+          onNavigate: setView,
+          language,
+          setLanguage,
+          lowSpecMode,
+          setLowSpecMode,
+          sns,
+          updateSns
+        });
+        const ac = new AbortController();
+        webMcpManager.registerTools(tools, { signal: ac.signal });
+        cleanup = () => ac.abort();
+      })
+      .catch((err) => {
+        // AI Studio 등 가상 샌드박스에서 모듈 미동기화 시에도 앱의 메인 기능에 영향 없도록 안전 무시
+        console.debug('WebMCP global tools skipped in sandbox:', err);
+      });
 
-  useWebMcpTools(globalMcpTools, [globalMcpTools]);
+    return () => {
+      if (cleanup) cleanup();
+    };
+  }, [view, setView, language, setLanguage, lowSpecMode, setLowSpecMode, sns, updateSns]);
 
   const applyDeckUpgrade = useCallback((upgradedCardsToApply: { idx: number; imgIdx: number }[]) => {
     setCurrentDeck(prevDeck => {

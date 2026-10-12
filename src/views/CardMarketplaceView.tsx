@@ -13,7 +13,7 @@ import { MarketSparkline } from '../components/MarketSparkline';
 import { t } from '../lib/i18n';
 import { cn } from '../lib/utils';
 import type { DatabaseCard, InventoryRecord, Language, Listing, Offer, TradeAuditLog, TradeStatus, ViewType } from '../types';
-import { createMarketWebMcpTools, useWebMcpTools } from '../lib/webMcp';
+import { createMarketWebMcpTools, useWebMcpTools } from '../lib/webMcp/index';
 
 interface CardMarketplaceViewProps {
   language: Language;

@@ -26,7 +26,7 @@ import { pickNewRankOpponent, RankOpponentInfo } from '../data/rankingOpponents'
 import { getDynamicDifficultyProfile, DynamicDifficultyProfile } from '../lib/dynamicDifficulty';
 import { WEBTOON_SEASONS } from '../content/webtoonEpisodes';
 import { MOVIE_EPISODES } from '../content/movieEpisodeMapping';
-import { createBattleWebMcpTools, useWebMcpTools } from '../lib/webMcp';
+import { createBattleWebMcpTools, useWebMcpTools } from '../lib/webMcp/index';
 
 export interface MobileCardPlayScreenProps {
   playerDeck?: CardData[];

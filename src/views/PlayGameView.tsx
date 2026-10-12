@@ -72,7 +72,7 @@ import { TurnOrderDeciderModal } from '../components/TurnOrderDeciderModal';
 import { BattleReplayShareButton } from '../components/BattleReplayShareButton';
 import { SceneExitOptimizer } from '../lib/SceneExitOptimizer';
 import { playBattleSfx } from '../lib/AudioSpriteService';
-import { createPokiGameWebMcpTools, useWebMcpTools } from '../lib/webMcp';
+import { createPokiGameWebMcpTools, useWebMcpTools } from '../lib/webMcp/index';
 import { StaminaPacingManager } from '../lib/staminaPacingManager';
 import { TreasureDartModal } from '../components/TreasureDartModal';
 import { GoldenPirateRouletteModal } from '../components/GoldenPirateRouletteModal';

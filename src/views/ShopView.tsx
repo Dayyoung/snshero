@@ -38,7 +38,7 @@ import { TokenExchangeModal } from '../components/TokenExchangeModal';
 import { ShortfallGuideModal } from '../components/ShortfallGuideModal';
 import { ArrowDownUp } from 'lucide-react';
 import { getCardPower } from '../constants';
-import { createShopWebMcpTools, useWebMcpTools } from '../lib/webMcp';
+import { createShopWebMcpTools, useWebMcpTools } from '../lib/webMcp/index';
 
 interface ShopViewProps {
   sns: number;

@@ -6,7 +6,7 @@
 
 import React, { useState } from 'react';
 import { X, Play, RefreshCw, Terminal, Layers, Shield, Clock, Check, AlertCircle } from 'lucide-react';
-import { useWebMcpState } from '../lib/webMcp';
+import { useWebMcpState } from '../lib/webMcp/index';
 import { cn } from '../lib/utils';
 
 interface WebMcpInspectorModalProps {

@@ -18,7 +18,7 @@ import { getProfileBadgeByKey, getProfileEmoticonByKey, getProfileTitleByKey } f
 import { MatchmakingQueueModal } from '../components/MatchmakingQueueModal';
 import { LeaderboardDeckInspectModal } from '../components/LeaderboardDeckInspectModal';
 import { getDynamicDifficultyProfile, DynamicDifficultyProfile } from '../lib/dynamicDifficulty';
-import { createRankingWebMcpTools, useWebMcpTools } from '../lib/webMcp';
+import { createRankingWebMcpTools, useWebMcpTools } from '../lib/webMcp/index';
 
 interface RankingUser {
   id: string;

@@ -5,7 +5,7 @@
  */
 
 import React, { useState } from 'react';
-import { useWebMcpState } from '../lib/webMcp';
+import { useWebMcpState } from '../lib/webMcp/index';
 import { WebMcpInspectorModal } from './WebMcpInspectorModal';
 
 interface WebMcpActiveBadgeProps {

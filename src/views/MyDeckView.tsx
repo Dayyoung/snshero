@@ -59,7 +59,7 @@ import { CardCompareModal } from '../components/CardCompareModal';
 import { MaterialDeficitModal } from '../components/MaterialDeficitModal';
 import { DeckCommandHub } from '../components/DeckCommandHub';
 import { maybeTriggerTourOrProceedToBattle } from '../lib/smartLoopTourService';
-import { createMyDeckWebMcpTools, useWebMcpTools } from '../lib/webMcp';
+import { createMyDeckWebMcpTools, useWebMcpTools } from '../lib/webMcp/index';
 
 interface MyDeckViewProps {
   currentDeck: CardData[];

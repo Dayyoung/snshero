@@ -11,7 +11,7 @@ import { CARD_DATABASE } from '../cardDatabase';
 import { t } from '../lib/i18n';
 import { cn } from '../lib/utils';
 import { PageHeader } from '../components/PageHeader';
-import { createStockWebMcpTools, useWebMcpTools } from '../lib/webMcp';
+import { createStockWebMcpTools, useWebMcpTools } from '../lib/webMcp/index';
 
 interface StockMarketViewProps {
   language: Language;
