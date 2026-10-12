@@ -304,7 +304,12 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
   const ownerLabel = owner === 'player' ? t('you', language) : owner === 'ai' ? t('opponent_deck', language) : '';
   const ownerAccent = owner === 'player' ? '#2563eb' : '#dc2626';
   const showOwnership = isOnBoard && !isMatgo && !!owner;
-  const typeSurface = pokemonTheme.surfaceBg;
+  const typeSurface = ({
+    water: 'bg-[#d9effc]', fire: 'bg-[#fce1ce]', wind: 'bg-[#e1f3ef]',
+    earth: 'bg-[#ebedc8]', land: 'bg-[#ebedc8]', human: 'bg-[#f6edcf]',
+    undead: 'bg-[#ece0f4]', elf: 'bg-[#e0efd6]', dwarf: 'bg-[#efe2d1]',
+    monster: 'bg-[#e5ead4]', robot: 'bg-[#e3e9ef]', dragon: 'bg-[#f1def0]',
+  } as Record<string, string>)[ipProfile?.faction || race || ''] || 'bg-[#f6edcf]';
   const abilityDescription = language === 'ko'
     ? activeCard.ability?.description_ko || activeCard.ability?.description_en
     : activeCard.ability?.description_en;
