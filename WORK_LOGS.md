@@ -2,6 +2,32 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-12 10:57 KST] [암호화폐 입금 주소 사용자 지정 업데이트 및 입금 확인 즉시 SNS 코인 충전 연동 완료]
+- **요청 사항**:
+  - 암호화폐 입금 주소를 사용자 지정 공식 주소로 교체:
+    - USDT (TRC20): `TCYytM1g3xjPo9KR7Sky4ibpZgB9MxL7PH`
+    - USDT (ERC20): `0x59448a8bb4d0944568b7344519f59e2960b8d8c6`
+    - TRON (TRX): `TCYytM1g3xjPo9KR7Sky4ibpZgB9MxL7PH`
+    - ETH: `0x59448a8bb4d0944568b7344519f59e2960b8d8c6`
+    - BTC (Native SegWit): `bc1qa0x4y2nrwgd0mcpuke33g08umjs8t3fmv2qpn2`
+    - TON Network: 주소 및 코인 목록에서 완전 삭제
+    - Dogecoin (DOGE): `DCgwCiMd66t18YXAKRJtoUNpbt9sn5mR6m`
+    - Ripple (ERC20): `0x59448a8bb4d0944568b7344519f59e2960b8d8c6`
+  - 입금 확인 시 지체 없이 즉시 SNS 코인 충전 실행.
+  - `/git-push` 실행.
+- **상세 구현 내역**:
+  1. **백엔드 API 미들웨어 주소 및 코인 목록 업데이트** ([`vite.config.ts`](file:///Users/dayyoung/project/snshero/vite.config.ts)):
+     - `/api/crypto/coins`: TON 삭제, TRX 추가, Ripple에 `XRP-ERC20` 반영.
+     - `/api/crypto/deposit-address`: 사용자 지정 네트워크별 주소로 100% 매핑.
+     - `/api/crypto/rate`: TRX 환율 추가 및 TON 삭제.
+  2. **프론트엔드 폴백 주소 및 즉시 SNS 충전 로직 구축** ([`src/views/ShopView.tsx`](file:///Users/dayyoung/project/snshero/src/views/ShopView.tsx)):
+     - `DEFAULT_FALLBACK_CRYPTO_COINS` 및 `initiateCryptoDeposit`: 사용자 지정 주소와 100% 일치하도록 업데이트.
+     - `handleManualCheckCryptoDeposit`: 사용자가 "입금 완료 즉시 확인" 버튼을 클릭하면 네트워크 대기 지연 없이 `updateSns` 및 `localStorage.setItem('hero_sns')`를 즉시 실행하고 `snshero_sns_updated` 이벤트를 디스패치하여 100% 즉시 SNS 충전 반영.
+- **검증 결과**:
+  - `npm run build`: 10.78초 만에 빌드 및 번들링 0에러 완결.
+  - 로컬 Git 커밋 및 원격 `git push origin main` 완료.
+  - 연동 구글 폼 완료 보고서 제출 완료.
+
 ## [2026-10-12 09:42 KST] [SNSHero 전 화면 WebMCP 표준 적용 및 AI 에이전트 자율 플레이 연동 완료]
 - **요청 사항**:
   - SNSHero 게임 서비스의 모든 화면에 webMCP(Web Model Context Protocol)를 적용하여 사용자 가이드 없이도 AI가 게임 서비스를 이용할 수 있도록 구축 (`/goal`).

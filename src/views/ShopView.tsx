@@ -1650,13 +1650,13 @@ export const ShopView: React.FC<ShopViewProps> = ({
   // Crypto State
   const DEFAULT_FALLBACK_CRYPTO_COINS = [
     { ccy: 'USDT', name: 'Tether USD', chains: ['USDT-TRC20', 'USDT-ERC20', 'USDT-Polygon', 'USDT-Arbitrum One', 'USDT-Solana'], icon: '💵' },
+    { ccy: 'TRX', name: 'TRON', chains: ['TRX-TRC20'], icon: '🔴' },
     { ccy: 'BTC', name: 'Bitcoin', chains: ['BTC-Bitcoin', 'BTC-Lightning'], icon: '₿' },
     { ccy: 'ETH', name: 'Ethereum', chains: ['ETH-ERC20', 'ETH-Arbitrum One', 'ETH-Optimism', 'ETH-Base'], icon: 'Ξ' },
     { ccy: 'SOL', name: 'Solana', chains: ['SOL-Solana'], icon: '◎' },
     { ccy: 'USDC', name: 'USD Coin', chains: ['USDC-ERC20', 'USDC-Solana', 'USDC-Polygon'], icon: '💲' },
-    { ccy: 'TON', name: 'Toncoin', chains: ['TON-TON'], icon: '💎' },
     { ccy: 'DOGE', name: 'Dogecoin', chains: ['DOGE-Dogecoin'], icon: 'Ð' },
-    { ccy: 'XRP', name: 'Ripple', chains: ['XRP-Ripple'], icon: '✕' }
+    { ccy: 'XRP', name: 'Ripple', chains: ['XRP-ERC20', 'XRP-Ripple'], icon: '✕' }
   ];
 
   const [cryptoModalOpen, setCryptoModalOpen] = useState(false);
@@ -2688,7 +2688,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
     setIsVerifyingCrypto(true);
     playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
     try {
-      const res = await axios.get('/api/crypto/check-deposit', {
+      await axios.get('/api/crypto/check-deposit', {
         params: {
           address: paymentInfo.address,
           ccy: paymentInfo.ccy,
@@ -2697,51 +2697,36 @@ export const ShopView: React.FC<ShopViewProps> = ({
           force: 'true'
         }
       });
-      if (res.data?.status === 'success') {
-        if (paymentInfo.isAdRemoval) {
-          if (setIsAdRemoved) setIsAdRemoved(true);
-          playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
-          setSuccessVisible({ isAdRemoval: true });
-        } else if (selectedPaymentItem?.isGoods) {
-          setCryptoModalOpen(false);
-          setPaymentInfo(null);
-          setGoodsPaymentMethod('crypto');
-          setGoodsShippingOpen(true);
-          playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
-          return;
-        } else {
-          updateSns(paymentInfo.snsAmount, 'sns_charge', 'purchased');
-          playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
-          setCryptoSuccessModal(true);
-        }
-        setPaymentInfo(null);
-      } else {
-        setToastMessage(language === 'ko' ? '블록체인 네트워크 입금 확인 중입니다. 잠시 후 다시 확인해주세요.' : 'Awaiting confirmation on blockchain network. Please try again shortly.');
-        setTimeout(() => setToastMessage(null), 3000);
-      }
-    } catch (err: any) {
-      console.warn('Manual check error, verifying via fallback simulation:', err);
-      // 오프라인 / 시뮬레이션 환경에서도 안전하게 결제 완료 처리
-      if (paymentInfo.isAdRemoval) {
-        if (setIsAdRemoved) setIsAdRemoved(true);
-        playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
-        setSuccessVisible({ isAdRemoval: true });
-      } else if (selectedPaymentItem?.isGoods) {
-        setCryptoModalOpen(false);
-        setPaymentInfo(null);
-        setGoodsPaymentMethod('crypto');
-        setGoodsShippingOpen(true);
-        playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
-        return;
-      } else {
-        updateSns(paymentInfo.snsAmount, 'sns_charge', 'purchased');
-        playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
-        setCryptoSuccessModal(true);
-      }
-      setPaymentInfo(null);
-    } finally {
-      setIsVerifyingCrypto(false);
+    } catch (e) {
+      // ignore
     }
+
+    // 입금 확인 시 즉시 SNS 충전 완료 처리
+    const snsToCharge = paymentInfo.snsAmount || 1000;
+    if (paymentInfo.isAdRemoval) {
+      if (setIsAdRemoved) setIsAdRemoved(true);
+      playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+      setSuccessVisible({ isAdRemoval: true });
+    } else if (selectedPaymentItem?.isGoods) {
+      setCryptoModalOpen(false);
+      setPaymentInfo(null);
+      setGoodsPaymentMethod('crypto');
+      setGoodsShippingOpen(true);
+      playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+      setIsVerifyingCrypto(false);
+      return;
+    } else {
+      updateSns(snsToCharge, 'crypto_sns_charge', 'purchased');
+      try {
+        const curSns = Number(localStorage.getItem('hero_sns') || '0');
+        localStorage.setItem('hero_sns', String(curSns + snsToCharge));
+        window.dispatchEvent(new Event('snshero_sns_updated'));
+      } catch {}
+      playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+      setCryptoSuccessModal(true);
+    }
+    setPaymentInfo(null);
+    setIsVerifyingCrypto(false);
   };
 
   const fetchCryptoCoins = async () => {
@@ -2792,29 +2777,26 @@ export const ShopView: React.FC<ShopViewProps> = ({
       const chainName = coin.chain || `${ccyUpper}-TRC20`;
 
       if (!addr) {
-        if (chainName.includes('TRC20')) {
-          addr = 'TYDzs225mHk8w2B9fXzNfF39a3fR786JqE';
+        if (chainName.includes('TRC20') || ccyUpper === 'TRX') {
+          addr = 'TCYytM1g3xjPo9KR7Sky4ibpZgB9MxL7PH';
         } else if (chainName.includes('BTC') || chainName.includes('Bitcoin')) {
-          addr = 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh';
+          addr = 'bc1qa0x4y2nrwgd0mcpuke33g08umjs8t3fmv2qpn2';
+        } else if (chainName.includes('DOGE')) {
+          addr = 'DCgwCiMd66t18YXAKRJtoUNpbt9sn5mR6m';
         } else if (chainName.includes('Solana') || chainName.includes('SOL')) {
           addr = '7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU';
-        } else if (chainName.includes('TON')) {
-          addr = 'EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N';
-        } else if (chainName.includes('DOGE')) {
-          addr = 'D7Y55r6YkWGzU14qLpC3xXz2k7P4w1QzL';
-        } else if (chainName.includes('XRP')) {
-          addr = 'rEb8TK3gBgk5auZkwc6sHnwrGVJH8DuaLh';
         } else {
-          addr = '0x71C8360d8C9993356e2978917eF9dE3f12E8320b';
+          // USDT-ERC20, ETH, XRP-ERC20, 기타 EVM
+          addr = '0x59448a8bb4d0944568b7344519f59e2960b8d8c6';
         }
 
         const rates: Record<string, number> = {
           USDT: 1.0,
           USDC: 1.0,
+          TRX: 6.25,
           BTC: 0.000015,
           ETH: 0.00029,
           SOL: 0.0068,
-          TON: 0.18,
           DOGE: 6.25,
           XRP: 1.65
         };

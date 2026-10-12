@@ -342,13 +342,13 @@ export default defineConfig(({mode}) => {
               if (decodedUrl === '/api/crypto/coins') {
                 const coinsList = [
                   { ccy: 'USDT', name: 'Tether USD', chains: ['USDT-TRC20', 'USDT-ERC20', 'USDT-Polygon', 'USDT-Arbitrum One', 'USDT-Solana'], icon: '💵' },
+                  { ccy: 'TRX', name: 'TRON', chains: ['TRX-TRC20'], icon: '🔴' },
                   { ccy: 'BTC', name: 'Bitcoin', chains: ['BTC-Bitcoin', 'BTC-Lightning'], icon: '₿' },
                   { ccy: 'ETH', name: 'Ethereum', chains: ['ETH-ERC20', 'ETH-Arbitrum One', 'ETH-Optimism', 'ETH-Base'], icon: 'Ξ' },
                   { ccy: 'SOL', name: 'Solana', chains: ['SOL-Solana'], icon: '◎' },
                   { ccy: 'USDC', name: 'USD Coin', chains: ['USDC-ERC20', 'USDC-Solana', 'USDC-Polygon'], icon: '💲' },
-                  { ccy: 'TON', name: 'Toncoin', chains: ['TON-TON'], icon: '💎' },
                   { ccy: 'DOGE', name: 'Dogecoin', chains: ['DOGE-Dogecoin'], icon: 'Ð' },
-                  { ccy: 'XRP', name: 'Ripple', chains: ['XRP-Ripple'], icon: '✕' }
+                  { ccy: 'XRP', name: 'Ripple', chains: ['XRP-ERC20', 'XRP-Ripple'], icon: '✕' }
                 ];
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json; charset=utf-8');
@@ -362,19 +362,19 @@ export default defineConfig(({mode}) => {
                 const ccy = (urlObj.searchParams.get('ccy') || 'USDT').toUpperCase();
                 const chain = urlObj.searchParams.get('chain') || `${ccy}-TRC20`;
 
-                let addr = '0x71C8360d8C9993356e2978917eF9dE3f12E8320b';
-                if (chain.includes('TRC20')) {
-                  addr = 'TYDzs225mHk8w2B9fXzNfF39a3fR786JqE';
+                // 사용자 지정 입금 주소 (EVM/ERC20, TRC20, BTC, DOGE, SOL)
+                let addr = '0x59448a8bb4d0944568b7344519f59e2960b8d8c6';
+                if (chain.includes('TRC20') || ccy === 'TRX') {
+                  addr = 'TCYytM1g3xjPo9KR7Sky4ibpZgB9MxL7PH';
                 } else if (chain.includes('BTC') || chain.includes('Bitcoin')) {
-                  addr = 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh';
+                  addr = 'bc1qa0x4y2nrwgd0mcpuke33g08umjs8t3fmv2qpn2';
+                } else if (chain.includes('DOGE')) {
+                  addr = 'DCgwCiMd66t18YXAKRJtoUNpbt9sn5mR6m';
                 } else if (chain.includes('Solana') || chain.includes('SOL')) {
                   addr = '7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU';
-                } else if (chain.includes('TON')) {
-                  addr = 'EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N';
-                } else if (chain.includes('DOGE')) {
-                  addr = 'D7Y55r6YkWGzU14qLpC3xXz2k7P4w1QzL';
-                } else if (chain.includes('XRP')) {
-                  addr = 'rEb8TK3gBgk5auZkwc6sHnwrGVJH8DuaLh';
+                } else {
+                  // USDT-ERC20, ETH, XRP-ERC20, 기타 EVM
+                  addr = '0x59448a8bb4d0944568b7344519f59e2960b8d8c6';
                 }
 
                 res.statusCode = 200;
@@ -395,10 +395,10 @@ export default defineConfig(({mode}) => {
                 const rates: Record<string, number> = {
                   USDT: 1.0,
                   USDC: 1.0,
+                  TRX: 6.25,
                   BTC: 0.000015,
                   ETH: 0.00029,
                   SOL: 0.0068,
-                  TON: 0.18,
                   DOGE: 6.25,
                   XRP: 1.65
                 };
