@@ -195,21 +195,107 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
     return { total, skillBonus, equipBonus: ignoreBonuses ? 0 : total - baseVal - skillBonus, base: baseVal };
   }), [activeCard, cellElement, ignoreBonuses]);
   const hasPowerBonus = !ignoreBonuses && (card.skills?.find(skill => skill.id === 'power_boost')?.level || 0) > 0;
+  const rarityGroup = useMemo((): 'bronze' | 'silver' | 'gold' | 'special' => {
+    const norm = (normalizedCardRarity || rarityTier || '').toLowerCase();
+    if (norm === 'silver' || norm === 'magic') return 'silver';
+    if (norm === 'gold' || norm === 'rare') return 'gold';
+    if (norm === 'platinum' || norm === 'diamond' || norm === 'legendary' || norm === 'epic' || norm === 'social') {
+      return 'special';
+    }
+    return 'bronze';
+  }, [normalizedCardRarity, rarityTier]);
+
+  const pokemonTheme = useMemo(() => {
+    switch (rarityGroup) {
+      case 'silver':
+        return {
+          groupName: 'SILVER',
+          symbol: '🥈',
+          outerBorder: 'border-[#94a3b8] ring-1 ring-[#64748b]/50',
+          outerBg: 'bg-[#cbd5e1]',
+          surfaceBg: 'bg-gradient-to-b from-[#ffffff] via-[#f1f5f9] to-[#e2e8f0]',
+          innerBorder: 'border-[#64748b]/40',
+          windowBorder: 'border-[#94a3b8]/60 shadow-[inset_0_0_6px_rgba(148,163,184,0.3)]',
+          badgeClass: 'bg-gradient-to-r from-[#64748b] to-[#475569] text-white border border-[#334155] shadow-xs',
+          badgeLabel: 'SILVER',
+          statBadge: 'border-[#94a3b8]/60 bg-[#f8fafc] text-[#201d1d] shadow-[0_1px_4px_rgba(148,163,184,0.35)]',
+          accentColor: '#64748b',
+          tagLabel: 'SNSHERO SILVER',
+          glowShadow: 'shadow-[0_2px_10px_rgba(148,163,184,0.35)]',
+          isHolo: false,
+          isGold: false,
+        };
+      case 'gold':
+        return {
+          groupName: 'GOLD',
+          symbol: '👑',
+          outerBorder: 'border-[#eab308] ring-1 ring-[#ca8a04]/70',
+          outerBg: 'bg-[#facc15]',
+          surfaceBg: 'bg-gradient-to-b from-[#fffef0] via-[#fef9c3] to-[#fde047]',
+          innerBorder: 'border-[#ca8a04]/50',
+          windowBorder: 'border-[#eab308] shadow-[inset_0_0_8px_rgba(234,179,8,0.3)]',
+          badgeClass: 'bg-gradient-to-r from-[#d97706] via-[#eab308] to-[#f59e0b] text-zinc-950 font-black border border-[#b45309] shadow-sm',
+          badgeLabel: 'GOLD',
+          statBadge: 'border-[#ca8a04]/70 bg-[#fffbeb] text-[#201d1d] shadow-[0_1px_5px_rgba(202,138,4,0.35)]',
+          accentColor: '#d97706',
+          tagLabel: 'SNSHERO ★ GOLD',
+          glowShadow: 'shadow-[0_0_14px_rgba(234,179,8,0.4)]',
+          isHolo: false,
+          isGold: true,
+        };
+      case 'special': {
+        const specialLabel = normalizedCardRarity === 'legendary'
+          ? '★ LEGEND'
+          : normalizedCardRarity === 'diamond'
+            ? '💎 DIAMOND'
+            : '✨ SPECIAL';
+        return {
+          groupName: 'SPECIAL',
+          symbol: '✨',
+          outerBorder: 'border-fuchsia-400 ring-1 ring-cyan-400',
+          outerBg: 'bg-gradient-to-br from-rose-400 via-purple-500 to-cyan-400',
+          surfaceBg: 'bg-gradient-to-b from-[#fdf2f8] via-[#f5f3ff] to-[#e0f2fe]',
+          innerBorder: 'border-purple-300/60',
+          windowBorder: 'border-purple-400/80 shadow-[0_0_8px_rgba(168,85,247,0.35)]',
+          badgeClass: 'bg-gradient-to-r from-rose-500 via-purple-500 to-cyan-500 text-white font-black border border-white/60 shadow-[0_0_8px_rgba(236,72,153,0.5)]',
+          badgeLabel: specialLabel,
+          statBadge: 'border-purple-400/70 bg-[#faf5ff] text-[#201d1d] shadow-[0_1px_6px_rgba(168,85,247,0.35)]',
+          accentColor: '#9333ea',
+          tagLabel: 'SNSHERO ★ ULTRA',
+          glowShadow: 'shadow-[0_0_16px_rgba(217,70,239,0.45)]',
+          isHolo: true,
+          isGold: false,
+        };
+      }
+      case 'bronze':
+      default:
+        return {
+          groupName: 'BRONZE',
+          symbol: '🥉',
+          outerBorder: 'border-[#8c5936] ring-1 ring-[#5c3a21]/50',
+          outerBg: 'bg-[#b87d54]',
+          surfaceBg: 'bg-gradient-to-b from-[#fcf7f1] via-[#f7ebe0] to-[#ebd7c2]',
+          innerBorder: 'border-[#713f1f]/35',
+          windowBorder: 'border-[#8c5936]/40 shadow-[inset_0_0_4px_rgba(140,89,54,0.2)]',
+          badgeClass: 'bg-gradient-to-r from-[#784421] to-[#5c3319] text-[#fff7ed] border border-[#3e210f] shadow-xs',
+          badgeLabel: 'BRONZE',
+          statBadge: 'border-[#8c5936]/50 bg-[#fffdfa] text-[#201d1d] shadow-[0_1px_4px_rgba(140,89,54,0.25)]',
+          accentColor: '#8c5936',
+          tagLabel: 'SNSHERO BRONZE',
+          glowShadow: 'shadow-[0_2px_8px_rgba(140,89,54,0.25)]',
+          isHolo: false,
+          isGold: false,
+        };
+    }
+  }, [rarityGroup, normalizedCardRarity]);
+
   const statDirections = ['N', 'E', 'S', 'W'];
-  const rarityAccent = ({
-    bronze: '#956746', silver: '#646262', gold: '#987322', platinum: '#557477',
-    diamond: '#426c87', legendary: '#705579',
-  } as Record<string, string>)[normalizedCardRarity] || '#956746';
+  const rarityAccent = pokemonTheme.accentColor;
   const owner = downloadMode ? (downloadMode === 'ally' ? 'player' : 'ai') : activeCard.owner;
   const ownerLabel = owner === 'player' ? t('you', language) : owner === 'ai' ? t('opponent_deck', language) : '';
   const ownerAccent = owner === 'player' ? '#2563eb' : '#dc2626';
   const showOwnership = isOnBoard && !isMatgo && !!owner;
-  const typeSurface = ({
-    water: 'bg-[#d9effc]', fire: 'bg-[#fce1ce]', wind: 'bg-[#e1f3ef]',
-    earth: 'bg-[#ebedc8]', land: 'bg-[#ebedc8]', human: 'bg-[#f6edcf]',
-    undead: 'bg-[#ece0f4]', elf: 'bg-[#e0efd6]', dwarf: 'bg-[#efe2d1]',
-    monster: 'bg-[#e5ead4]', robot: 'bg-[#e3e9ef]', dragon: 'bg-[#f1def0]',
-  } as Record<string, string>)[ipProfile?.faction || race || ''] || 'bg-[#f6edcf]';
+  const typeSurface = pokemonTheme.surfaceBg;
   const abilityDescription = language === 'ko'
     ? activeCard.ability?.description_ko || activeCard.ability?.description_en
     : activeCard.ability?.description_en;
@@ -219,24 +305,42 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
     const stat = statChanges[index];
     const delta = stat.total - stat.base;
     const highlighted = combatHighlights?.includes(index);
+    const direction = statDirections[index];
+
     return (
       <div
         className={cn(
-          'z-30 flex items-center justify-center gap-[1.5cqw] border border-[#201d1d]/25 bg-[#fff9e9] px-[1cqw] font-mono leading-none tabular-nums',
-          isOnBoard ? 'absolute h-[18cqw] min-w-[26cqw] rounded-sm' : 'relative h-[15cqw] min-w-0 rounded-sm',
-          highlighted && 'border-[#201d1d] bg-[#201d1d] text-[#fdfcfc]',
+          'z-30 flex items-center justify-center border font-mono leading-none tabular-nums select-none backdrop-blur-[0.5px]',
+          isOnBoard
+            ? 'absolute h-[16cqw] min-w-[22cqw] rounded-sm px-[1.2cqw] gap-[1cqw]'
+            : 'absolute h-[14cqw] min-w-[20cqw] rounded-sm px-[1cqw] gap-[0.8cqw]',
+          highlighted
+            ? 'border-red-500 bg-red-600 text-white shadow-[0_0_12px_rgba(239,68,68,0.9)] scale-110 z-40'
+            : pokemonTheme.statBadge,
           positionClass,
         )}
-        title={`${statDirections[index]} ${stat.total}${delta ? ` (${stat.base}${delta > 0 ? '+' : ''}${delta})` : ''}`}
+        title={`${direction} ${stat.total}${delta ? ` (${stat.base}${delta > 0 ? '+' : ''}${delta})` : ''}`}
       >
-        <span className={cn('text-[6cqw] font-medium', highlighted ? 'text-[#fdfcfc]' : 'text-[#646262]')}>{statDirections[index]}</span>
+        <span className={cn(
+          'text-[5.5cqw] font-black tracking-tighter',
+          highlighted ? 'text-white' : 'text-[#646262]'
+        )}>
+          {index === 0 && `▲${direction}`}
+          {index === 1 && `${direction}▶`}
+          {index === 2 && `▼${direction}`}
+          {index === 3 && `◀${direction}`}
+        </span>
         <span className={cn(
           'text-[11cqw] font-bold tracking-tight',
-          !highlighted && delta > 0 && 'text-[#245e47]',
-          !highlighted && delta < 0 && 'text-[#9a392e]',
-        )}>{stat.total}</span>
+          !highlighted && delta > 0 && 'text-[#16a34a]',
+          !highlighted && delta < 0 && 'text-[#dc2626]',
+        )}>
+          {stat.total}
+        </span>
         {(delta !== 0 || stat.skillBonus > 0 || stat.equipBonus !== 0) && (
-          <span className="absolute right-[1cqw] top-[0.5cqw] text-[5cqw] font-bold">{delta < 0 ? '-' : '+'}</span>
+          <span className="absolute -top-[1.5cqw] -right-[1.5cqw] flex h-[5.5cqw] min-w-[5.5cqw] items-center justify-center rounded-full bg-slate-900 px-[0.5cqw] text-[4cqw] font-bold text-white shadow-xs">
+            {delta < 0 ? '-' : '+'}
+          </span>
         )}
       </div>
     );
@@ -268,39 +372,78 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
         }
       } : undefined}
     >
+      {/* Outer pokemon border frame */}
       <div className={cn(
         'pointer-events-none absolute inset-0 z-0 rounded-sm border',
-        !shouldHideBg && !showOwnership && 'border-[#b38b22] bg-[#f8d34f]',
+        !shouldHideBg && !showOwnership && cn(pokemonTheme.outerBorder, pokemonTheme.outerBg, pokemonTheme.glowShadow),
         showOwnership && owner === 'player' && 'border-[#2563eb] bg-[#2563eb]',
         showOwnership && owner === 'ai' && 'border-[#dc2626] bg-[#dc2626]',
         shouldHideBg && !showOwnership && 'border-transparent',
       )} />
-      {!shouldHideBg && <div className={cn(
-        'pointer-events-none absolute inset-[4cqw] z-0 rounded-sm border border-[#201d1d]/25',
-        showOwnership ? owner === 'player' ? 'bg-[#dbeafe]' : 'bg-[#fee2e2]' : typeSurface,
-      )} />}
 
+      {/* Inner surface texture */}
+      {!shouldHideBg && (
+        <div className={cn(
+          'pointer-events-none absolute inset-[3cqw] z-0 rounded-sm border',
+          showOwnership ? (owner === 'player' ? 'bg-[#dbeafe] border-[#2563eb]/40' : 'bg-[#fee2e2] border-[#dc2626]/40') : cn(typeSurface, pokemonTheme.innerBorder),
+        )} />
+      )}
+
+      {/* Special Holographic Foil Rainbow Sheen */}
+      {pokemonTheme.isHolo && !performanceMode && !shouldHideBg && (
+        <div
+          className="pointer-events-none absolute inset-0 z-15 overflow-hidden rounded-[inherit] mix-blend-color-dodge opacity-50"
+          style={{
+            background: 'linear-gradient(115deg, transparent 20%, rgba(244,63,94,0.3) 35%, rgba(168,85,247,0.3) 50%, rgba(6,182,212,0.3) 65%, transparent 80%)',
+          }}
+        />
+      )}
+
+      {/* Gold Foil Metallic Sheen */}
+      {pokemonTheme.isGold && !performanceMode && !shouldHideBg && (
+        <div
+          className="pointer-events-none absolute inset-0 z-15 overflow-hidden rounded-[inherit] mix-blend-overlay opacity-40"
+          style={{
+            background: 'linear-gradient(135deg, transparent 30%, rgba(254,240,138,0.6) 50%, transparent 70%)',
+          }}
+        />
+      )}
+
+      {/* Top Header - Pokemon TCG format */}
       {!isOnBoard && (
-        <div className="absolute inset-x-[7cqw] top-[6cqw] z-20 flex h-[17cqw] flex-col justify-center gap-[2cqw] leading-none">
-          <div className="flex items-center justify-between gap-[2cqw] text-[5cqw]">
-            <span className="truncate font-bold uppercase" style={{ color: rarityAccent }}>{t(`rarity_${rarityTier}`, language)}</span>
-            <span className="shrink-0 tabular-nums">{t('level', language)} {activeCard.level}</span>
+        <div className="absolute inset-x-[5cqw] top-[4.5cqw] z-20 flex h-[16cqw] flex-col justify-between leading-none">
+          <div className="flex items-center justify-between gap-[1.5cqw]">
+            <div className="flex min-w-0 items-center gap-[1cqw]">
+              <span className={cn('truncate rounded-xs px-[1.5cqw] py-[0.5cqw] text-[4.8cqw] font-black uppercase tracking-wider', pokemonTheme.badgeClass)}>
+                {pokemonTheme.symbol} {pokemonTheme.badgeLabel}
+              </span>
+              <span className="shrink-0 text-[4.8cqw] font-bold text-[#646262] tabular-nums">
+                Lv.{activeCard.level}
+              </span>
+            </div>
+            <div className="flex shrink-0 items-center gap-[1cqw]" title={t('wiki_power', language)}>
+              <span className="text-[5cqw] font-black text-[#ca8a04]">⚡</span>
+              <span className="text-[8.5cqw] font-black tabular-nums">{powerScore}{hasPowerBonus && '+'}</span>
+              <FactionIcon className="h-[6.5cqw] w-[6.5cqw] rounded-full border border-[#201d1d]/30 bg-[#fdfcfc]/80 p-[0.8cqw]" />
+            </div>
           </div>
-          <div className="flex min-w-0 items-center justify-between gap-[2cqw]">
-            <span className="min-w-0 truncate text-[8cqw] font-bold" title={displayCardName}>{displayCardName}</span>
-            <span className="flex shrink-0 items-center gap-[1cqw]" title={t('wiki_power', language)}>
-              <Zap className="h-[6cqw] w-[6cqw]" />
-              <span className="text-[9cqw] font-bold tabular-nums">{powerScore}{hasPowerBonus && '+'}</span>
-              <FactionIcon className="h-[8cqw] w-[8cqw] rounded-full border border-[#201d1d]/30 p-[1cqw]" />
+          <div className="flex min-w-0 items-center justify-between gap-[1cqw] border-t border-[#201d1d]/15 pt-[1cqw]">
+            <span className="min-w-0 truncate text-[7.5cqw] font-black tracking-tight" title={displayCardName}>
+              {displayCardName}
+            </span>
+            <span className="shrink-0 text-[4.2cqw] font-bold uppercase text-[#646262]">
+              {t(`rarity_${rarityTier}`, language)}
             </span>
           </div>
         </div>
       )}
 
+      {/* Illustration window */}
       <div className={cn(
-        'pointer-events-none absolute z-10 overflow-hidden border border-[#201d1d]/30 [container-type:size]',
-        isOnBoard ? 'inset-x-[4cqw] bottom-[17cqw] top-[4cqw]' : 'inset-x-[8cqw] bottom-[49cqw] top-[26cqw]',
+        'pointer-events-none absolute z-10 overflow-hidden border [container-type:size]',
+        isOnBoard ? 'inset-x-[4cqw] bottom-[17cqw] top-[4cqw]' : 'inset-x-[5.5cqw] bottom-[26cqw] top-[22.5cqw]',
         !shouldHideBg && (showOwnership ? owner === 'player' ? 'bg-[#eff6ff]' : 'bg-[#fff1f2]' : 'bg-[#fff9e9]'),
+        pokemonTheme.windowBorder,
       )}>
         {currentImageSource ? (
           isSpriteSheet(currentImageSource) && visualCardId ? (
@@ -341,73 +484,83 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
         )}
       </div>
 
+      {/* Board view top-left power indicator */}
       {isOnBoard && <div className={cn(
         'absolute left-[3cqw] z-30 flex items-center gap-[1cqw] border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] px-[2cqw] py-[1.5cqw] leading-none',
-        isOnBoard ? 'top-[3cqw]' : 'top-[15cqw]',
+        'top-[3cqw]',
       )} title={t('wiki_power', language)}>
         <Zap className="h-[6cqw] w-[6cqw]" strokeWidth={1.5} />
         <span className="text-[8cqw] font-bold tabular-nums">{powerScore}</span>
         {hasPowerBonus && <span className="text-[5cqw] font-bold">+</span>}
       </div>}
 
-      {!hideStats && isOnBoard && (
+      {/* Direction stats: Always displayed in North / East / South / West layout (Cross Diamond HUD) */}
+      {!hideStats && (
         <>
-          {renderStatBadge(0, isOnBoard ? 'top-[3cqw] left-1/2 -translate-x-1/2' : 'top-[15cqw] left-1/2 -translate-x-1/2')}
-          {renderStatBadge(1, 'right-[3cqw] top-[46%] -translate-y-1/2')}
-          {renderStatBadge(2, isOnBoard ? 'bottom-[16cqw] left-1/2 -translate-x-1/2' : 'bottom-[33cqw] left-1/2 -translate-x-1/2')}
-          {renderStatBadge(3, 'left-[3cqw] top-[46%] -translate-y-1/2')}
+          {renderStatBadge(0, isOnBoard ? 'top-[2.5cqw] left-1/2 -translate-x-1/2' : 'top-[20cqw] left-1/2 -translate-x-1/2')}
+          {renderStatBadge(1, 'right-[2cqw] top-[46%] -translate-y-1/2')}
+          {renderStatBadge(2, isOnBoard ? 'bottom-[16cqw] left-1/2 -translate-x-1/2' : 'bottom-[23.5cqw] left-1/2 -translate-x-1/2')}
+          {renderStatBadge(3, 'left-[2cqw] top-[46%] -translate-y-1/2')}
         </>
       )}
 
+      {/* Bottom Info Footer - Pokemon TCG attack move / ability style */}
       <div className={cn(
         'absolute z-20 flex flex-col justify-center',
-        isOnBoard ? 'inset-x-[4cqw] bottom-[4cqw] h-[13cqw] px-[2cqw]' : 'inset-x-[8cqw] bottom-[6cqw] h-[42cqw] gap-[1.5cqw]',
+        isOnBoard ? 'inset-x-[4cqw] bottom-[4cqw] h-[13cqw] px-[2cqw]' : 'inset-x-[5.5cqw] bottom-[3.5cqw] h-[21cqw] gap-[1cqw]',
         showOwnership && 'text-white',
         showOwnership && (owner === 'player' ? 'bg-[#2563eb]' : 'bg-[#dc2626]'),
       )}>
-        {!isOnBoard && !hideStats && (
-          <div className="grid grid-cols-4 gap-[1cqw]">
-            {statDirections.map((direction, index) => <React.Fragment key={direction}>{renderStatBadge(index, '')}</React.Fragment>)}
+        {!isOnBoard && abilityDescription && (
+          <div className="flex items-center gap-[1.5cqw] border-b border-[#201d1d]/15 pb-[1cqw]">
+            <span className="shrink-0 text-[4.8cqw] font-black text-[#ca8a04]">
+              {activeCard.ability?.type === 'POWER_BOOST' && '[⚡BOOST]'}
+              {activeCard.ability?.type === 'WEAKEN' && '[🔻WEAK]'}
+              {activeCard.ability?.type === 'REINFORCE' && '[🛡️GUARD]'}
+              {activeCard.ability?.type === 'SHIELD' && '[🛡️SHIELD]'}
+              {activeCard.ability?.type === 'WALL' && '[🧱WALL]'}
+              {activeCard.ability?.type === 'PIERCE' && '[🎯PIERCE]'}
+              {activeCard.ability?.type === 'COUNTER' && '[⚔️COUNTER]'}
+              {activeCard.ability?.type === 'IMMUNITY' && '[✨IMMUNE]'}
+              {activeCard.ability?.type === 'TIME_WARP' && '[⏳WARP]'}
+              {activeCard.ability?.type === 'OMNIBOOST' && '[⭐OMNI]'}
+            </span>
+            <p className="truncate text-[4.8cqw] font-medium leading-[1.3] text-[#201d1d]" title={abilityDescription}>
+              {abilityDescription}
+            </p>
           </div>
         )}
-        {!isOnBoard && abilityDescription && (
-          <p className="truncate border-b border-[#201d1d]/20 pb-[1.5cqw] text-[5.5cqw] leading-[1.35]" title={abilityDescription}>{abilityDescription}</p>
-        )}
-        <div className="flex min-w-0 items-center justify-between gap-[2cqw] text-[6cqw] leading-none">
+        <div className="flex min-w-0 items-center justify-between gap-[2cqw] text-[5.5cqw] leading-none">
           <div className="flex min-w-0 items-center gap-[1.5cqw]">
-            {isSelected && <span className="font-bold" title={t('pg_selected', language)}>[x]</span>}
-            {isLocked && <Lock className="h-[7cqw] w-[7cqw] shrink-0" aria-label={t('profile_locked_label', language)} />}
+            {isSelected && <span className="font-bold text-[#b45309]" title={t('pg_selected', language)}>[x]</span>}
+            {isLocked && <Lock className="h-[6cqw] w-[6cqw] shrink-0 text-[#ca8a04]" aria-label={t('profile_locked_label', language)} />}
             {owner ? (
               <span className="flex min-w-0 items-center gap-[1cqw] font-bold" title={ownerLabel}>
-                {owner === 'player' ? <User className="h-[6cqw] w-[6cqw] shrink-0" /> : <Bot className="h-[6cqw] w-[6cqw] shrink-0" />}
+                {owner === 'player' ? <User className="h-[5.5cqw] w-[5.5cqw] shrink-0" /> : <Bot className="h-[5.5cqw] w-[5.5cqw] shrink-0" />}
                 <span className="truncate">{ownerLabel}</span>
               </span>
             ) : !isOnBoard && factionDef ? (
               <span className="flex min-w-0 items-center gap-[1cqw]" title={t(factionDef.nameKey, language)}>
-                <FactionIcon className="h-[6cqw] w-[6cqw] shrink-0" />
-                <span className="truncate">{t(factionDef.nameKey, language)}</span>
+                <FactionIcon className="h-[5.5cqw] w-[5.5cqw] shrink-0 text-[#646262]" />
+                <span className="truncate text-[#646262]">{t(factionDef.nameKey, language)}</span>
               </span>
-            ) : !isOnBoard && race ? <FactionIcon className="h-[6cqw] w-[6cqw] shrink-0" /> : null}
+            ) : !isOnBoard && race ? <FactionIcon className="h-[5.5cqw] w-[5.5cqw] shrink-0 text-[#646262]" /> : null}
           </div>
-          {!isOnBoard && activeCard.ability && (
-            <span className="shrink-0 text-[5cqw]" title={abilityDescription} aria-label={`${activeCard.ability.type} ${abilityDescription || ''}`}>
-              {activeCard.ability.type === 'POWER_BOOST' && '[⚡+1]'}
-              {activeCard.ability.type === 'WEAKEN' && '[🔻-1]'}
-              {activeCard.ability.type === 'REINFORCE' && '[🛡️+1]'}
-              {activeCard.ability.type === 'SHIELD' && '[🛡️SHD]'}
-              {activeCard.ability.type === 'WALL' && '[🧱WAL]'}
-              {activeCard.ability.type === 'PIERCE' && '[🎯PRC]'}
-              {activeCard.ability.type === 'COUNTER' && '[⚔️CTR]'}
-              {activeCard.ability.type === 'IMMUNITY' && '[✨IMM]'}
-              {activeCard.ability.type === 'TIME_WARP' && '[⏳TRN]'}
-              {activeCard.ability.type === 'OMNIBOOST' && '[⭐BST]'}
+          {!isOnBoard && !abilityDescription && (
+            <span className="shrink-0 text-[4.5cqw] text-[#646262] font-semibold">
+              {t('type_normal', language) || 'BASIC CARD'}
             </span>
           )}
         </div>
-        {!isOnBoard && <div className="flex items-center justify-between gap-[2cqw] border-t border-[#201d1d]/20 pt-[2cqw] text-[5cqw] leading-none">
-          <span className="truncate tabular-nums">#{String(visualCardId ?? activeCard.id).padStart(3, '0')}</span>
-          <span className="flex items-center gap-[1cqw] font-bold" style={{ color: rarityAccent }}><Star className="h-[5cqw] w-[5cqw]" fill={rarityAccent} />SNSHERO</span>
-        </div>}
+        {!isOnBoard && (
+          <div className="flex items-center justify-between gap-[2cqw] border-t border-[#201d1d]/15 pt-[1cqw] text-[4.5cqw] leading-none">
+            <span className="truncate tabular-nums text-[#646262]">#{String(visualCardId ?? activeCard.id).padStart(3, '0')}</span>
+            <span className="flex items-center gap-[1cqw] font-bold" style={{ color: rarityAccent }}>
+              <Star className="h-[4.5cqw] w-[4.5cqw]" fill={rarityAccent} />
+              {pokemonTheme.tagLabel}
+            </span>
+          </div>
+        )}
       </div>
 
       {!isOnBoard && resolvedSkin && !downloadMode && (

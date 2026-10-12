@@ -55,21 +55,29 @@ export const CardDetailBottomSheet: React.FC<CardDetailBottomSheetProps> = ({
             <div className="text-[11px] text-[#201d1d]/70">
               {isKo ? `레벨: Lv.${card.level || 1} • 각성: 0단계` : `Level: Lv.${card.level || 1}`}
             </div>
-            {/* 4방향 스탯 배지 */}
-            <div className="grid grid-cols-4 gap-1 text-center font-mono">
-              <div className="bg-rose-50 border border-rose-200 p-1 text-[10px] font-bold text-rose-800">
-                N {card.stats.N}
-              </div>
-              <div className="bg-emerald-50 border border-emerald-200 p-1 text-[10px] font-bold text-emerald-800">
-                E {card.stats.E}
-              </div>
-              <div className="bg-amber-50 border border-amber-200 p-1 text-[10px] font-bold text-amber-800">
-                S {card.stats.S}
-              </div>
-              <div className="bg-blue-50 border border-blue-200 p-1 text-[10px] font-bold text-blue-800">
-                W {card.stats.W}
-              </div>
-            </div>
+            {/* 4방향 스탯 배지 (동서남북) */}
+            {(() => {
+              const nStat = Array.isArray(card.stats) ? card.stats[0] : ((card.stats as unknown as { N?: number })?.N ?? 0);
+              const eStat = Array.isArray(card.stats) ? card.stats[1] : ((card.stats as unknown as { E?: number })?.E ?? 0);
+              const sStat = Array.isArray(card.stats) ? card.stats[2] : ((card.stats as unknown as { S?: number })?.S ?? 0);
+              const wStat = Array.isArray(card.stats) ? card.stats[3] : ((card.stats as unknown as { W?: number })?.W ?? 0);
+              return (
+                <div className="grid grid-cols-4 gap-1 text-center font-mono">
+                  <div className="bg-rose-50 border border-rose-200 p-1 text-[10px] font-bold text-rose-800">
+                    ▲N {nStat}
+                  </div>
+                  <div className="bg-emerald-50 border border-emerald-200 p-1 text-[10px] font-bold text-emerald-800">
+                    E▶ {eStat}
+                  </div>
+                  <div className="bg-amber-50 border border-amber-200 p-1 text-[10px] font-bold text-amber-800">
+                    ▼S {sStat}
+                  </div>
+                  <div className="bg-blue-50 border border-blue-200 p-1 text-[10px] font-bold text-blue-800">
+                    ◀W {wStat}
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         </div>
 
