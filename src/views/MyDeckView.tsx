@@ -172,7 +172,7 @@ const SortableCardItem: React.FC<SortableCardItemProps> = ({
       ref={setNodeRef} 
       style={style} 
       id={`deck-slot-${idx}`}
-      className={cn("flex flex-col items-center gap-2 group", className)}
+      className={cn("flex shrink-0 flex-col items-center gap-2 group", className)}
     >
       <div className="text-[10px] sm:text-xs font-black text-black/30 uppercase tracking-tighter">
         {card.customName ? (
@@ -182,9 +182,9 @@ const SortableCardItem: React.FC<SortableCardItemProps> = ({
         )}
       </div>
       <div className={cn(
-        "relative overflow-hidden rounded-xl group/card transition-all",
-        isShaking ? "animate-card-shake ring-4 ring-amber-400 shadow-[0_0_24px_rgba(251,191,36,0.9)] z-30 scale-105" : "",
-        isSynergyActive && !isShaking ? "ring-4 ring-amber-400 shadow-[0_0_16px_rgba(251,191,36,0.85)] scale-[1.02]" : ""
+        "relative rounded-none group/card border border-transparent transition-colors",
+        isShaking ? "border-[#201d1d] z-30" : "",
+        isSynergyActive && !isShaking ? "border-[#646262]" : ""
       )} {...attributes} {...listeners}>
         {isShaking && (
           <div className="absolute top-1 left-1/2 -translate-x-1/2 z-30 px-2 py-0.5 bg-gradient-to-r from-amber-500 to-yellow-400 text-stone-950 font-black text-[9px] rounded-sm shadow-xl border border-amber-200 animate-bounce uppercase leading-none whitespace-nowrap">
@@ -199,8 +199,9 @@ const SortableCardItem: React.FC<SortableCardItemProps> = ({
         <CardItem 
           card={card} 
           onClick={() => handleCardClick(idx)} 
-          className="w-[17.2vw] min-w-[3.4rem] max-w-[5.2rem] h-[24.5vw] min-h-[4.9rem] max-h-[7.5rem] sm:w-24 sm:h-32 md:w-32 md:h-44 cursor-grab active:cursor-grabbing hover:ring-4 hover:ring-blue-500 transition-all rounded-xl"
+          className="w-[28vw] min-w-[6rem] max-w-[8rem] h-[39vw] min-h-[8.5rem] max-h-[11rem] sm:w-24 sm:h-32 md:w-32 md:h-44 cursor-grab active:cursor-grabbing rounded-none"
           customImage={customCardImage}
+          language={language}
           />
         {representativeCardId === (card.imageIndex ?? null) && representativePetCardId ? (
           <MonsterPetBadge
@@ -211,17 +212,6 @@ const SortableCardItem: React.FC<SortableCardItemProps> = ({
           />
         ) : null}
 
-        {/* Stats Summary Overlay */}
-        <div className="absolute inset-x-0 bottom-0 bg-white/95 backdrop-blur-sm p-1 rounded-b-xl border-t border-slate-200 opacity-100 sm:opacity-0 sm:group-hover/card:opacity-100 transition-opacity">
-          <div className="grid grid-cols-4 gap-0.5">
-            {(['N', 'E', 'S', 'W'] as const).map((dir, statIdx) => (
-              <div key={dir} className="flex flex-col items-center rounded bg-slate-50 px-0.5 py-0.5 ring-1 ring-slate-200">
-                <span className="text-[5px] font-black text-slate-500 leading-none">{dir}</span>
-                <span className="text-[8px] font-black text-slate-950 leading-none mt-0.5">{card.stats[statIdx]}</span>
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
 
       {/* Equipment Dots */}
@@ -1532,7 +1522,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
   };
 
   return (
-    <div className="p-3 sm:p-6 md:p-8 pb-48 flex flex-col gap-5 sm:gap-6 md:gap-10 max-w-4xl mx-auto min-h-screen w-full overflow-x-hidden app-bg text-slate-800 font-sans">
+    <div className="p-4 sm:p-6 md:p-8 pb-48 flex flex-col gap-6 max-w-4xl mx-auto min-h-screen w-full overflow-x-hidden bg-[#fdfcfc] text-[#201d1d] font-mono">
       {/* Smart Loop Deck Swap Banner */}
       <AnimatePresence>
         {autoSwapBanner && (
@@ -1555,54 +1545,62 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
           </motion.div>
         )}
       </AnimatePresence>
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mb-2 w-full">
+      <div className="flex flex-col gap-5 border-b border-[#0f0000]/12 pb-5 w-full">
         <div className="flex items-center gap-2">
           <PageHeader title={t('mydeck', language)} />
           <button
             onClick={() => { setIsHelpOpen(true); setHelpStep(0); }}
-            className="w-8 h-8 rounded-full border border-slate-300 bg-white flex items-center justify-center hover:bg-slate-100 transition-colors cursor-pointer shrink-0"
+            className="min-w-11 min-h-11 rounded-sm border border-[#0f0000]/12 bg-[#fdfcfc] flex items-center justify-center hover:bg-[#f1eeee] transition-colors cursor-pointer shrink-0"
             aria-label="Help"
           >
             <HelpCircle size={16} className="text-slate-500" />
           </button>
         </div>
-        <div className="flex items-center justify-end gap-2">
-          <div className="px-3 py-1.5 bg-stone-900 text-amber-300 font-mono text-xs font-black rounded-sm border border-stone-800 flex items-center gap-1.5 shadow-xs">
-            <Zap size={13} className="fill-amber-400 text-amber-400" />
-            <span>{language === 'ko' ? '총 전투력' : 'TOTAL PWR'}:</span>
-            <span className="text-amber-200">{globalTotalPower.toLocaleString()}</span>
+        <div className="grid grid-cols-2 gap-px border border-[#0f0000]/12 bg-[#0f0000]/12">
+          <button type="button" onClick={() => setShowDeckPowerDetails(true)} className="min-h-24 min-w-0 bg-[#201d1d] p-4 text-left text-[#fdfcfc] hover:bg-[#302c2c]">
+            <span className="flex items-center gap-2 text-xs leading-relaxed">{t('deck_power', language)} <Info size={14} /></span>
+            <span className="mt-2 block break-all text-2xl sm:text-3xl font-bold tabular-nums">{deckPower.toLocaleString()}</span>
+          </button>
+          <div className="min-w-0 bg-[#f8f7f7] p-4">
+            <span className="text-xs leading-relaxed text-[#646262]">{t('total_power', language)}</span>
+            <span className="mt-2 block break-all text-2xl sm:text-3xl font-bold tabular-nums">{globalTotalPower.toLocaleString()}</span>
           </div>
         </div>
       </div>
 
       {/* Multi-Deck Presets Control Bar (Item 31 & ID 427, ID 447, ID 477) */}
-      <div className="bg-slate-900 text-white p-2.5 sm:p-3 rounded-2xl flex flex-col gap-2 shadow-lg font-mono">
+      <details className="group bg-[#f8f7f7] text-[#201d1d] border border-[#0f0000]/12 rounded-none font-mono">
+        <summary className="flex min-h-12 items-center justify-between gap-3 px-3 sm:px-4 cursor-pointer list-none text-sm font-bold">
+          <span>{t('ui_deck_presets', language)} / {getPresetName(activeDeckPreset)}</span>
+          <span aria-hidden="true" className="group-open:hidden">[+]</span><span aria-hidden="true" className="hidden group-open:inline">[-]</span>
+        </summary>
+        <div className="p-3 sm:p-4 border-t border-[#0f0000]/12 flex flex-col gap-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <Layers size={18} className="text-indigo-400 shrink-0" />
-            <span className="text-xs font-black uppercase tracking-wider text-slate-200">
+            <Layers size={18} className="text-[#646262] shrink-0" />
+            <span className="text-sm font-bold text-[#201d1d]">
               {language === 'ko' ? '멀티 덱 프리셋' : 'Deck Presets'}
             </span>
           </div>
 
           <div className="flex items-center gap-2">
 
-            <div className="flex items-center gap-1 bg-slate-800 p-1 rounded-xl">
+            <div className="flex flex-wrap items-center gap-1">
               {[1, 2, 3].map((presetNum) => (
                 <div key={presetNum} className="flex items-center">
                   <button
                     onClick={() => handleSwitchDeckPreset(presetNum)}
                     className={cn(
-                      "px-2.5 sm:px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-black uppercase transition-all flex items-center gap-1 cursor-pointer",
+                      "min-h-11 px-3 py-2 rounded-sm border text-xs font-bold transition-colors flex items-center gap-2 cursor-pointer",
                       activeDeckPreset === presetNum
-                        ? "bg-indigo-600 text-white shadow-xs"
-                        : "text-slate-400 hover:text-white hover:bg-slate-700"
+                        ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
+                        : "bg-[#fdfcfc] text-[#646262] border-[#0f0000]/12 hover:bg-[#f1eeee]"
                     )}
                   >
                     <span>{getPresetIcon(presetNum)}</span>
                     <span className="truncate max-w-[80px]">{getPresetName(presetNum)}</span>
                     {activeDeckPreset === presetNum && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse ml-0.5" />
+                      <span aria-hidden="true">*</span>
                     )}
                   </button>
 
@@ -1615,7 +1613,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                         setPresetNameEdit(getPresetName(presetNum));
                         setPresetIconEdit(getPresetIcon(presetNum));
                       }}
-                      className="p-1 text-slate-400 hover:text-amber-300 transition-colors ml-0.5"
+                      className="min-w-11 min-h-11 rounded-sm text-[#646262] hover:bg-[#f1eeee] transition-colors"
                       title="프리셋 이름/아이콘 수정"
                     >
                       ✏️
@@ -1628,16 +1626,16 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
         </div>
 
         {/* ID 477: Dynamic Deck Synergy & Weakness Advisory Tag */}
-        <div className="flex items-center justify-between text-[10px] bg-slate-950/60 px-2.5 py-1 rounded-lg border border-slate-800">
-          <div className="flex items-center gap-1.5 text-slate-300">
-            <span className="text-amber-400 font-bold">⚠️ [상성 점검]</span>
+        <div className="flex flex-wrap items-center justify-between gap-2 text-xs leading-relaxed px-1 py-2 border-t border-[#0f0000]/12">
+          <div className="flex flex-wrap items-center gap-1.5 text-[#646262]">
+            <span className="text-[#201d1d] font-bold">⚠️ [상성 점검]</span>
             <span>
               {currentDeck.some(c => c.element === 'WATER')
                 ? '밸런스 양호 (수/화/지/풍 포진)'
                 : '수속성 카드 부재: 화속성 덱 상대 시 취약할 수 있습니다.'}
             </span>
           </div>
-          <span className="text-indigo-400 font-bold">5장 시너지 풀</span>
+          <span className="text-[#646262] font-bold">5장 시너지 풀</span>
         </div>
 
         {/* ID 427: Inline Edit Modal / Drawer */}
@@ -1682,13 +1680,14 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
             </button>
           </div>
         )}
-      </div>
+        </div>
+      </details>
 
       <div className="flex flex-col gap-4 md:gap-6">
         <div className="flex flex-col items-center gap-3 sm:gap-4 w-full">
           {/* Active Deck Header Bar with Compact Synergy Button */}
           <div className="flex items-center justify-between flex-wrap gap-2 w-full max-w-4xl px-1 sm:px-2 pt-1 pb-1 font-mono">
-            <div 
+            <button type="button"
               onClick={() => {
                 playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                 triggerHaptic('light');
@@ -1697,7 +1696,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                 setSelectionContext('replace');
                 setIsPopupOpen(true);
               }}
-              className="flex items-center gap-2 cursor-pointer group select-none hover:opacity-90 active:scale-95 transition-all"
+              className="min-h-11 flex flex-wrap items-center gap-2 px-3 py-2 border border-[#0f0000]/12 rounded-sm bg-[#fdfcfc] cursor-pointer group select-none hover:bg-[#f1eeee] transition-colors text-left"
               title={language === 'ko' ? '출전 덱 첫 번째 카드 선택 리스트 열기' : 'Open Deck Card Selection List'}
             >
               <span className="text-xs sm:text-sm font-black uppercase tracking-wider text-slate-700 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
@@ -1709,7 +1708,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
               <span className="text-[10px] text-slate-400 hidden xs:inline">
                 {language === 'ko' ? '· 클릭하여 카드 선택' : '· Click to select card'}
               </span>
-            </div>
+            </button>
 
             {/* Compact Synergy Modal Trigger Button */}
             <button
@@ -1718,7 +1717,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                 setIsSynergyModalOpen(true);
                 playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
               }}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-sm border border-purple-200 dark:border-purple-800 bg-purple-50/80 dark:bg-purple-950/40 hover:bg-purple-100 dark:hover:bg-purple-900/60 text-purple-800 dark:text-purple-300 text-[11px] font-bold transition-all shadow-2xs active:scale-95 cursor-pointer touch-target font-mono"
+              className="min-h-11 inline-flex items-center gap-2 px-3 py-2 rounded-sm border border-[#0f0000]/12 bg-[#fdfcfc] hover:bg-[#f1eeee] text-[#201d1d] text-xs font-bold transition-colors cursor-pointer font-mono"
               title={language === 'ko' ? '덱 시너지 및 프리셋 팝업 열기' : 'Open Synergy & Presets Popup'}
             >
               <Sparkles size={12} className="text-purple-600 dark:text-purple-400 shrink-0" />
@@ -1729,7 +1728,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
 
           {/* Active Hero Bond Synergies Bar (Row 1045 / ID 553) */}
           {activeBonds.length > 0 && (
-            <div className="flex flex-wrap items-center gap-1.5 px-2 py-1 mb-2 bg-gradient-to-r from-purple-500/10 via-amber-500/10 to-transparent border border-purple-500/20 rounded-xs">
+            <div className="flex flex-wrap items-center gap-2 px-3 py-2 bg-[#f8f7f7] border border-[#0f0000]/12 rounded-none">
               <span className="text-[10px] font-black text-purple-700 dark:text-purple-300 flex items-center gap-1">
                 <span>🔗</span>
                 <span>{language === 'ko' ? '영웅 인연(Bond):' : 'Hero Bonds:'}</span>
@@ -1748,7 +1747,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
 
           {/* SCR-03-02: 팩션 시너지 오라 발동 배너 */}
           {factionSynergy && (
-            <div className="mx-auto w-full max-w-md mb-2 px-3 py-1.5 bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-yellow-500/20 border border-amber-400/60 rounded-xs flex items-center justify-between font-mono text-xs text-amber-900 dark:text-amber-300 shadow-sm animate-pulse">
+            <div className="mx-auto w-full px-3 py-3 bg-[#f1eeee] border border-[#0f0000]/12 rounded-none flex flex-wrap gap-2 items-center justify-between font-mono text-xs text-[#201d1d]">
               <div className="flex items-center gap-1.5 font-black">
                 <Flame size={14} className="text-orange-500 fill-current" />
                 <span>{language === 'ko' ? `[✨ ${factionSynergy.element} 3세트 팩션 시너지 오라 활성화!]` : `[✨ ${factionSynergy.element} Faction Synergy Aura Active!]`}</span>
@@ -1763,10 +1762,10 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
           <div 
             id="deck-list" 
             className={cn(
-              "mx-auto flex w-full max-w-full flex-nowrap sm:flex-wrap justify-center items-center gap-1 xs:gap-2 sm:gap-4 md:gap-6 px-1 py-2 transition-all duration-300 rounded-2xl",
+              "mx-auto flex w-full max-w-full flex-nowrap sm:flex-wrap justify-start sm:justify-center items-center gap-3 sm:gap-4 md:gap-6 px-3 py-4 border rounded-none overflow-x-auto overscroll-x-contain",
               (deckElementSynergyActive || factionSynergy) && !lowSpecMode
-                ? "ring-2 ring-amber-400/80 shadow-[0_0_24px_rgba(251,191,36,0.35)] bg-gradient-to-r from-amber-500/5 via-purple-500/5 to-amber-500/5"
-                : "bg-slate-50/50 border border-slate-200/80"
+                ? "border-[#646262] bg-[#f1eeee]"
+                : "bg-[#f8f7f7] border-[#0f0000]/12"
             )}
           >
           <DndContext 
@@ -1939,12 +1938,11 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
           playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
           onNavigate('ranking');
         }}
-        className="relative w-full overflow-hidden rounded-lg border border-slate-200 bg-slate-950 text-left shadow-sm transition-all hover:border-indigo-300 hover:shadow-md cursor-pointer"
+        className="relative w-full overflow-hidden rounded-sm border border-[#201d1d] bg-[#201d1d] text-left transition-colors hover:bg-[#302c2c] cursor-pointer"
         aria-label={t('mission_ranking_banner_cta', language)}
       >
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(56,189,248,0.24),transparent_32%),linear-gradient(135deg,rgba(15,23,42,0.96),rgba(67,56,202,0.92),rgba(14,165,233,0.70))]" />
         <div className="relative flex min-h-[132px] items-stretch gap-3 p-3 sm:min-h-[150px] sm:p-4">
-          <div className="w-[112px] shrink-0 overflow-hidden rounded-lg border border-white/20 bg-white/10 sm:w-[140px] flex items-center justify-center p-1">
+          <div className="w-[100px] shrink-0 overflow-hidden rounded-none border border-white/20 sm:w-[140px] flex items-center justify-center p-1">
             <div className="relative flex h-full w-full items-center justify-center p-0" title={kadanName}>
               <CardItem
                 card={kadanCardData}
@@ -1967,7 +1965,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                 {t('mission_ranking_banner_desc', language)}
               </p>
             </div>
-            <div className="inline-flex min-h-[36px] w-fit items-center gap-2 rounded-md bg-white px-3 py-2 text-xs font-black text-slate-950 shadow-sm">
+            <div className="inline-flex min-h-11 w-fit items-center gap-2 rounded-sm bg-[#fdfcfc] px-3 py-2 text-xs font-bold text-[#201d1d]">
               {t('mission_ranking_banner_cta', language)}
               <ChevronRight size={14} />
             </div>
@@ -1975,12 +1973,12 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
         </div>
       </button>
 
-      <div className="ollama-panel space-y-4 sm:space-y-6">
-        <h3 className="font-bold flex items-center gap-2 tracking-normal text-xs sm:text-sm underline decoration-2">
+      <div className="border border-[#0f0000]/12 rounded-none bg-[#f8f7f7] p-4 sm:p-5 space-y-4">
+        <h3 className="font-bold flex items-center gap-2 text-sm">
           <Package size={14} className="sm:w-4 sm:h-4" />
           {t('battle_stats', language)}
         </h3>
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-px bg-black border border-gray-300 rounded-xl overflow-hidden">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-px bg-[#0f0000]/12 border border-[#0f0000]/12 rounded-none overflow-hidden">
           <div 
             className="bg-white p-3 sm:p-5 md:p-6 cursor-pointer hover:bg-gray-50 transition-colors"
             onClick={() => setShowDeckPowerDetails(true)}
@@ -2376,7 +2374,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
               initial={{ scale: 0.95, y: 10 }}
               animate={{ scale: 1, y: 0 }}
               onClick={e => e.stopPropagation()}
-              className="bg-white dark:bg-[#141212] w-full max-w-5xl h-[92vh] rounded-2xl sm:rounded-3xl border-2 border-slate-200 dark:border-amber-400/40 flex flex-col overflow-hidden shadow-2xl font-sans relative cursor-default"
+              className="bg-[#fdfcfc] text-[#201d1d] w-full max-w-5xl h-[92dvh] rounded-none border border-[#0f0000]/12 flex flex-col overflow-hidden font-mono relative cursor-default"
             >
               {/* Top-Right High-Visibility Floating Close Button (항상 최상위 표시) */}
               <button
@@ -2387,14 +2385,14 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                   setSelectingIndex(null);
                   setSelectionContext('replace');
                 }}
-                className="absolute top-3 right-3 sm:top-4 sm:right-4 z-[999999] flex items-center justify-center min-w-[44px] min-h-[44px] w-11 h-11 rounded-full bg-[#141212] text-amber-300 hover:text-white hover:bg-[#201d1d] active:scale-95 shadow-[0_4px_25px_rgba(0,0,0,0.6)] border-2 border-amber-400 cursor-pointer touch-target transition-all"
+                className="absolute top-3 right-3 sm:top-4 sm:right-4 z-[999999] flex items-center justify-center w-11 h-11 rounded-sm bg-[#201d1d] text-[#fdfcfc] hover:bg-[#302c2c] cursor-pointer transition-colors"
                 aria-label="Close"
                 title={language === 'ko' ? '닫기' : 'Close'}
               >
-                <X size={24} strokeWidth={2.8} className="text-amber-300" />
+                <X size={24} />
               </button>
 
-              <div className="p-4 sm:p-6 border-b border-slate-200 dark:border-white/10 flex flex-col sm:flex-row gap-4 items-start bg-white dark:bg-[#181616] relative pr-16">
+              <div className="p-4 sm:p-6 border-b border-[#0f0000]/12 flex flex-col gap-4 items-start bg-[#fdfcfc] relative pr-16 max-h-[45dvh] overflow-y-auto shrink-0">
                 <div className="space-y-1 pr-8">
                   <h3 className="text-xl sm:text-2xl font-bold tracking-tight leading-none">
                     {selectionContext === 'upgrade' 
@@ -2418,7 +2416,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
 
                 <div className="flex flex-col sm:flex-row flex-wrap gap-4 w-full sm:w-auto mt-2 sm:mt-0">
                   {selectionContext !== 'upgrade' && selectionContext !== 'equipment' && (
-                    <label className="flex items-center gap-2 cursor-pointer bg-white border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-50 transition-all">
+                    <label className="min-h-11 flex items-center gap-3 cursor-pointer bg-[#fdfcfc] border border-[#0f0000]/12 px-3 py-2 rounded-sm hover:bg-[#f1eeee] transition-colors">
                       <input 
                         type="checkbox" 
                         checked={showOwnedOnly}
@@ -2429,7 +2427,9 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                     </label>
                   )}
 
-                  <div className="flex bg-gray-100 p-1 rounded-lg gap-1 overflow-x-auto scrollbar-hide">
+                  <details className="w-full min-w-0 rounded-none border border-[#0f0000]/12 bg-[#f8f7f7]">
+                    <summary className="min-h-11 px-3 py-3 text-xs font-bold cursor-pointer">{t('details', language)}</summary>
+                  <div className="flex flex-wrap p-2 gap-1">
                     {[
                       { id: 'recent', label: language === 'ko' ? '최근' : 'NEW' },
                       { id: 'index', label: 'ID' },
@@ -2450,8 +2450,8 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                           }
                         }}
                         className={cn(
-                          "px-2 py-1 text-[10px] font-black uppercase rounded transition-all whitespace-nowrap flex items-center gap-1",
-                          sortBy === opt.id ? "bg-black text-white shadow-sm" : "bg-transparent text-gray-500 hover:bg-gray-200"
+                          "min-h-11 min-w-11 px-3 py-2 text-xs font-bold rounded-sm transition-colors whitespace-nowrap flex items-center gap-1",
+                          sortBy === opt.id ? "bg-[#201d1d] text-[#fdfcfc]" : "bg-transparent text-[#646262] hover:bg-[#f1eeee]"
                         )}
                       >
                         {opt.label}
@@ -2462,28 +2462,28 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                     <div className="flex items-center gap-0.5 border-l border-gray-300 pl-1">
                       <button
                         onClick={() => { setSortBy('dir_up'); setSortOrder('desc'); }}
-                        className={cn("px-1.5 py-1 text-[10px] font-bold rounded cursor-pointer", sortBy === 'dir_up' ? "bg-indigo-600 text-white" : "bg-gray-200 text-gray-700")}
+                        className={cn("min-h-11 min-w-11 p-2 text-xs font-bold rounded-sm cursor-pointer", sortBy === 'dir_up' ? "bg-[#201d1d] text-[#fdfcfc]" : "bg-[#f1eeee] text-[#646262]")}
                         title="상단 스탯 높은순 정렬"
                       >
                         ▲
                       </button>
                       <button
                         onClick={() => { setSortBy('dir_right'); setSortOrder('desc'); }}
-                        className={cn("px-1.5 py-1 text-[10px] font-bold rounded cursor-pointer", sortBy === 'dir_right' ? "bg-indigo-600 text-white" : "bg-gray-200 text-gray-700")}
+                        className={cn("min-h-11 min-w-11 p-2 text-xs font-bold rounded-sm cursor-pointer", sortBy === 'dir_right' ? "bg-[#201d1d] text-[#fdfcfc]" : "bg-[#f1eeee] text-[#646262]")}
                         title="우측 스탯 높은순 정렬"
                       >
                         ▶
                       </button>
                       <button
                         onClick={() => { setSortBy('dir_down'); setSortOrder('desc'); }}
-                        className={cn("px-1.5 py-1 text-[10px] font-bold rounded cursor-pointer", sortBy === 'dir_down' ? "bg-indigo-600 text-white" : "bg-gray-200 text-gray-700")}
+                        className={cn("min-h-11 min-w-11 p-2 text-xs font-bold rounded-sm cursor-pointer", sortBy === 'dir_down' ? "bg-[#201d1d] text-[#fdfcfc]" : "bg-[#f1eeee] text-[#646262]")}
                         title="하단 스탯 높은순 정렬"
                       >
                         ▼
                       </button>
                       <button
                         onClick={() => { setSortBy('dir_left'); setSortOrder('desc'); }}
-                        className={cn("px-1.5 py-1 text-[10px] font-bold rounded cursor-pointer", sortBy === 'dir_left' ? "bg-indigo-600 text-white" : "bg-gray-200 text-gray-700")}
+                        className={cn("min-h-11 min-w-11 p-2 text-xs font-bold rounded-sm cursor-pointer", sortBy === 'dir_left' ? "bg-[#201d1d] text-[#fdfcfc]" : "bg-[#f1eeee] text-[#646262]")}
                         title="좌측 스탯 높은순 정렬"
                       >
                         ◀
@@ -2494,8 +2494,8 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                     <button
                       onClick={() => { setSortBy('meta_counter'); setSortOrder('desc'); }}
                       className={cn(
-                        "px-2 py-1 text-[10px] font-black uppercase rounded transition-all flex items-center gap-1 cursor-pointer",
-                        sortBy === 'meta_counter' ? "bg-emerald-600 text-white shadow-sm" : "bg-emerald-50 text-emerald-700 border border-emerald-300 hover:bg-emerald-100"
+                        "min-h-11 px-3 py-2 text-xs font-bold rounded-sm transition-colors flex items-center gap-2 cursor-pointer",
+                        sortBy === 'meta_counter' ? "bg-[#201d1d] text-[#fdfcfc]" : "bg-[#fdfcfc] text-[#646262] border border-[#0f0000]/12 hover:bg-[#f1eeee]"
                       )}
                       title="메타 상성 카운터 픽 추천"
                     >
@@ -2503,12 +2503,13 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                       <span>{language === 'ko' ? '카운터' : 'COUNTER'}</span>
                     </button>
                   </div>
+                  </details>
                 </div>
               </div>
 
               {/* ── Item 44: Card Search Bar & Element Filter Chips ── */}
-              <div className="px-4 sm:px-6 pt-2 pb-2 space-y-2 border-b border-gray-100 bg-gray-50/50">
-                <div className="flex flex-col sm:flex-row items-center gap-2">
+              <div className="px-4 sm:px-6 py-3 space-y-3 border-b border-[#0f0000]/12 bg-[#f8f7f7] max-h-[32dvh] overflow-y-auto shrink-0">
+                <div className="flex flex-col items-stretch gap-3">
                   <div className="relative flex-1 w-full">
                     <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                     <input
@@ -2516,12 +2517,12 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                       value={cardSearchQuery}
                       onChange={(e) => setCardSearchQuery(e.target.value)}
                       placeholder={language === 'ko' ? '카드 이름 또는 설명 검색...' : 'Search card name or lore...'}
-                      className="w-full pl-8 pr-8 py-1.5 bg-white border border-gray-200 rounded-lg text-xs font-bold text-gray-800 focus:outline-none focus:border-black transition-colors"
+                      className="min-h-11 w-full pl-9 pr-12 py-3 bg-[#fdfcfc] border border-[#0f0000]/12 rounded-sm text-sm text-[#201d1d] focus:outline-none focus:border-[#201d1d] transition-colors"
                     />
                     {cardSearchQuery && (
                       <button
                         onClick={() => setCardSearchQuery('')}
-                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                        className="absolute right-0 top-1/2 -translate-y-1/2 min-h-11 min-w-11 flex items-center justify-center text-[#646262] hover:text-[#201d1d]"
                       >
                         <X size={14} />
                       </button>
@@ -2529,7 +2530,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                   </div>
 
                   {/* Element Chips */}
-                  <div className="flex items-center gap-1 overflow-x-auto w-full sm:w-auto scrollbar-hide py-0.5">
+                  <div className="flex flex-wrap items-center gap-1.5 w-full">
                     {[
                       { id: 'ALL', labelKo: '전체', labelEn: 'ALL', color: 'bg-slate-800 text-white border-slate-700' },
                       { id: 'WATER', labelKo: '수(水)', labelEn: 'Water', color: 'bg-blue-500 text-white border-blue-600' },
@@ -2543,10 +2544,10 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                         key={chip.id}
                         onClick={() => setSelectedElementFilter(chip.id as any)}
                         className={cn(
-                          "px-2.5 py-1 text-[10px] font-black rounded-md border transition-all whitespace-nowrap shadow-xs cursor-pointer",
+                          "min-h-11 px-3 py-2 text-xs font-bold rounded-sm border transition-colors whitespace-nowrap cursor-pointer",
                           selectedElementFilter === chip.id
-                            ? `${chip.color} ring-2 ring-black/20 scale-105`
-                            : "bg-white text-gray-600 border-gray-200 hover:bg-gray-100"
+                            ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
+                            : "bg-[#fdfcfc] text-[#646262] border-[#0f0000]/12 hover:bg-[#f1eeee]"
                         )}
                       >
                         {language === 'ko' ? chip.labelKo : chip.labelEn}
@@ -2555,9 +2556,11 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                   </div>
 
                   {/* ID 352: 역할 & 희귀도 다중 교차 필터 칩 바 */}
-                  <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-gray-200/60 w-full text-[10px] font-mono">
+                  <details className="w-full border-t border-[#0f0000]/12 text-xs font-mono" open={selectedRoleFilter !== 'ALL' || selectedRarityFilter !== 'ALL' ? true : undefined}>
+                    <summary className="min-h-11 py-3 cursor-pointer font-bold">{t('details', language)}</summary>
+                  <div className="flex flex-wrap items-center gap-2 pb-2">
                     {/* 역할 필터 */}
-                    <div className="flex items-center gap-1 bg-white border border-gray-200 p-0.5 rounded-md">
+                    <div className="flex flex-wrap items-center gap-1 bg-[#fdfcfc] border border-[#0f0000]/12 p-1 rounded-none">
                       <span className="text-gray-400 pl-1">{language === 'ko' ? '역할:' : 'Role:'}</span>
                       {[
                         { id: 'ALL', label: 'ALL' },
@@ -2568,8 +2571,8 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                           key={r.id}
                           onClick={() => setSelectedRoleFilter(r.id as any)}
                           className={cn(
-                            "px-1.5 py-0.5 rounded font-bold cursor-pointer transition-colors",
-                            selectedRoleFilter === r.id ? "bg-indigo-600 text-white" : "text-gray-600 hover:bg-gray-100"
+                            "min-h-11 min-w-11 px-3 py-2 rounded-sm font-bold cursor-pointer transition-colors",
+                            selectedRoleFilter === r.id ? "bg-[#201d1d] text-[#fdfcfc]" : "text-[#646262] hover:bg-[#f1eeee]"
                           )}
                         >
                           {r.label}
@@ -2578,15 +2581,15 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                     </div>
 
                     {/* 희귀도 필터 */}
-                    <div className="flex items-center gap-1 bg-white border border-gray-200 p-0.5 rounded-md">
+                    <div className="flex flex-wrap items-center gap-1 bg-[#fdfcfc] border border-[#0f0000]/12 p-1 rounded-none">
                       <span className="text-gray-400 pl-1">{language === 'ko' ? '등급:' : 'Rarity:'}</span>
                       {['ALL', 'SSR', 'SR', 'R', 'N'].map((rar) => (
                         <button
                           key={rar}
                           onClick={() => setSelectedRarityFilter(rar as any)}
                           className={cn(
-                            "px-1.5 py-0.5 rounded font-bold cursor-pointer transition-colors",
-                            selectedRarityFilter === rar ? "bg-amber-600 text-white" : "text-gray-600 hover:bg-gray-100"
+                            "min-h-11 min-w-11 px-3 py-2 rounded-sm font-bold cursor-pointer transition-colors",
+                            selectedRarityFilter === rar ? "bg-[#201d1d] text-[#fdfcfc]" : "text-[#646262] hover:bg-[#f1eeee]"
                           )}
                         >
                           {rar}
@@ -2594,12 +2597,13 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                       ))}
                     </div>
                   </div>
+                  </details>
                 </div>
               </div>
 
               {/* ID 412: 인벤토리 자동 스크롤 타깃 ID */}
-              <div id="mydeck-card-inventory-grid" className="flex-1 overflow-y-auto p-4 sm:p-6 scrollbar-thin scrollbar-thumb-black">
-                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-3 sm:gap-4 justify-items-center">
+              <div id="mydeck-card-inventory-grid" className="min-h-0 flex-1 overflow-y-auto p-4 sm:p-6 scrollbar-thin scrollbar-thumb-black">
+                <div className="grid grid-cols-2 min-[380px]:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-x-3 gap-y-6 justify-items-center">
                   {processedCards.slice(0, visibleCardLimit).map((item) => {
                     const { idx, card, power, isOwned, isInDeck } = item;
                     const previewCard = card;
@@ -2613,7 +2617,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                     const slotTag = diff <= 2 ? '[Center]' : (u >= 6 && r >= 6 ? '[Corner]' : '[Edge]');
 
                     return (
-                      <div key={idx} className={cn("flex flex-col items-center gap-1 transition-all group/card", !isOwned && "opacity-20 grayscale")}>
+                      <div key={idx} className={cn("min-w-0 flex flex-col items-center gap-2 group/card", !isOwned && "opacity-60 grayscale")}>
                         {/* ID 392: 추천 포지션 가이드 태그 */}
                         <span className="text-[8px] font-mono text-slate-500 bg-slate-100 px-1 rounded-xs border border-slate-200">
                           {slotTag}
@@ -2683,8 +2687,8 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                             lowSpecMode={true}
                             />
                           {isInDeck && (
-                            <div className="absolute inset-0 bg-blue-600/20 border-4 border-blue-600 rounded-xl flex items-center justify-center pointer-events-none z-10">
-                              <div className="bg-blue-600 text-white text-[10px] font-black px-2 py-0.5 rounded uppercase shadow-lg">
+                            <div className="absolute inset-0 border-2 border-[#201d1d] rounded-sm flex items-end justify-center pointer-events-none z-10">
+                              <div className="bg-[#201d1d] text-[#fdfcfc] text-[10px] font-bold w-full text-center px-2 py-1">
                                 IN DECK
                               </div>
                             </div>
@@ -2710,18 +2714,18 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                           {/* Top Right: Quantity & Upgradeable Badges (Row 1064 / ID 327) */}
                           {isOwned && inventory[idx] && (
                             <div className="absolute -top-1 -right-1 flex flex-col items-end gap-0.5 z-30 pointer-events-none">
-                              <div className="bg-[#201d1d] text-[#fdfcfc] text-[10px] font-black px-1.5 min-w-[20px] h-[18px] flex items-center justify-center border border-white/80 rounded-full shadow-md">
+                              <div className="bg-[#201d1d] text-[#fdfcfc] text-xs font-bold px-1.5 min-w-6 h-6 flex items-center justify-center border border-[#fdfcfc] rounded-sm">
                                 x{inventory[idx].quantity}
                               </div>
                               {inventory[idx].quantity >= 2 && (
-                                <span className="px-1 py-0.2 text-[8px] font-bold bg-amber-400 text-amber-950 border border-amber-500 rounded-xs shadow-xs animate-pulse">
+                                <span className="px-1.5 py-1 text-[10px] font-bold bg-[#f1eeee] text-[#201d1d] border border-[#0f0000]/12 rounded-none">
                                   {language === 'ko' ? '승급가능' : 'Upgrade'}
                                 </span>
                               )}
                             </div>
                           )}
                         </div>
-                        <span className="text-xs sm:text-sm font-black text-black/80 truncate w-20 text-center tracking-tighter uppercase italic mt-1">
+                        <span className="text-xs font-bold text-[#201d1d] w-20 sm:w-24 md:w-28 text-center leading-relaxed break-words mt-1">
                           {CARD_DATABASE[idx]?.title_dis || `UNIT_${idx}`}
                         </span>
                       </div>
@@ -2734,7 +2738,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                   <div className="mt-6 flex justify-center">
                     <button
                       onClick={() => setVisibleCardLimit(prev => prev + 40)}
-                      className="px-6 py-2.5 rounded-full bg-slate-900 border border-slate-700 text-amber-300 font-mono text-xs font-bold hover:bg-slate-800 hover:border-amber-400 transition-all shadow-lg cursor-pointer"
+                      className="min-h-11 px-6 py-3 rounded-sm bg-[#201d1d] border border-[#201d1d] text-[#fdfcfc] font-mono text-xs font-bold hover:bg-[#302c2c] transition-colors cursor-pointer"
                     >
                       {language === 'ko' 
                         ? `카드 더 보기 (+40개) [${visibleCardLimit}/${processedCards.length}]` 

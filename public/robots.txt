@@ -15,6 +15,21 @@ Disallow: /test/
 Crawl-delay: 1
 
 # ------------------
+# Google News & Search & AdSense Specific Crawlers
+# ------------------
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-News
+Allow: /
+
+User-agent: Mediapartners-Google
+Allow: /
+
+User-agent: AdsBot-Google
+Allow: /
+
+# ------------------
 # AI / LLM Crawlers (GEO Optimization)
 # ------------------
 User-agent: GPTBot
@@ -72,6 +87,9 @@ Allow: /
 # Sitemaps & LLM Meta
 # ------------------
 Sitemap: https://snshero.com/sitemap.xml
+Sitemap: https://snshero.com/sitemap-news.xml
+Sitemap: https://snshero.com/news-feed.xml
+Sitemap: https://snshero.com/rss.xml
 Allow: /llms.txt
 Allow: /llms-full.txt
 Allow: /.well-known/mcp.json

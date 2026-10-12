@@ -112,7 +112,7 @@ export const HomeQuickHub: React.FC<HomeQuickHubProps> = ({
           id={panelId}
           role="dialog"
           aria-label={language === 'ko' ? '로비 스마트 퀵 메뉴' : 'LOBBY QUICK MENU'}
-          className="fixed z-[210] w-[min(360px,calc(100vw-32px))] overflow-y-auto overscroll-contain rounded-none border border-[#201d1d] bg-[#fdfcfc] p-3 font-mono text-[#201d1d]"
+          className="fixed z-[100100] w-[min(360px,calc(100vw-32px))] overflow-y-auto overscroll-contain rounded-none border border-[#201d1d] bg-[#fdfcfc] p-3 font-mono text-[#201d1d]"
           style={{ top: position.top, left: position.left, maxHeight: position.maxHeight }}
         >
           <div className="mb-3 flex items-center justify-between gap-2 border-b border-[rgba(15,0,0,0.12)] pb-2">

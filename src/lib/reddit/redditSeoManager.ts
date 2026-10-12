@@ -103,10 +103,20 @@ export class RedditSeoManager {
     this.setMetaTag('name', 'twitter:description', desc);
     this.setMetaTag('name', 'twitter:image', imageUrl);
 
-    // 1) Q&A 형태(AskReddit 등 질문형) 포스트는 AEO(Answer Engine Optimization) QAPage 적용
+    // 1) 구글 뉴스 (Google News / Top Stories / Discover) 전용 판별
+    const isNews = post.subreddit.toLowerCase() === 'news' || post.id.startsWith('gnews_');
+    // 2) Q&A 형태(AskReddit 등 질문형) 포스트는 AEO(Answer Engine Optimization) QAPage 적용
     const isQnA = post.subreddit.toLowerCase() === 'askreddit' || post.title.trim().endsWith('?');
-    // 2) 유튜브 등 비디오 포스트는 VideoObject 및 미디어 메타데이터 추가
+    // 3) 유튜브 등 비디오 포스트는 VideoObject 및 미디어 메타데이터 추가
     const isVideo = post.media?.type === 'video' && Boolean(post.media?.url);
+
+    // 구글 뉴스 및 디스커버 고화질 스니펫 메타 지시어
+    this.setMetaTag('name', 'robots', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
+    this.setCanonicalTag(url);
+
+    if (isNews) {
+      this.setMetaTag('name', 'news_keywords', `${post.title.split(' ').slice(0, 5).join(', ')}, Google News, Breaking News, World News, SNSHero`);
+    }
 
     if (isVideo && post.media?.url) {
       this.setMetaTag('property', 'og:video', post.media.url);
@@ -118,7 +128,52 @@ export class RedditSeoManager {
 
     let jsonLd: Record<string, unknown>;
 
-    if (isQnA) {
+    if (isNews) {
+      // Google News & Google Discover 최고 등급 구조화 데이터 (NewsArticle)
+      const pubDate = new Date(post.createdAt).toISOString();
+      jsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'NewsArticle',
+        mainEntityOfPage: {
+          '@type': 'WebPage',
+          '@id': url,
+        },
+        headline: post.title.slice(0, 110),
+        description: desc,
+        image: [
+          imageUrl,
+          imageUrl.includes('?') ? `${imageUrl}&w=1200` : `${imageUrl}?w=1200`,
+        ],
+        datePublished: pubDate,
+        dateModified: pubDate,
+        author: [
+          {
+            '@type': 'Person',
+            name: post.author,
+            url: 'https://snshero.com/r/news',
+          },
+        ],
+        publisher: {
+          '@type': 'NewsMediaOrganization',
+          name: 'SNSHero News',
+          url: 'https://snshero.com',
+          logo: {
+            '@type': 'ImageObject',
+            url: 'https://snshero.com/logo.jpg',
+            width: 600,
+            height: 60,
+          },
+        },
+        articleBody: post.body || post.title,
+        articleSection: 'World News',
+        keywords: [post.subreddit, 'Google News', 'Breaking News', 'World', 'SNSHero'],
+        isAccessibleForFree: true,
+        speakable: {
+          '@type': 'SpeakableSpecification',
+          cssSelector: ['.news-article-headline', '.news-article-body', 'h1', 'article'],
+        },
+      };
+    } else if (isQnA) {
       jsonLd = {
         '@context': 'https://schema.org',
         '@type': 'QAPage',
@@ -243,6 +298,17 @@ export class RedditSeoManager {
 
     this.injectJsonLd(jsonLd);
     this.trackPageView('/', title);
+  }
+
+  private static setCanonicalTag(url: string): void {
+    if (typeof document === 'undefined') return;
+    let el = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+    if (!el) {
+      el = document.createElement('link');
+      el.setAttribute('rel', 'canonical');
+      document.head.appendChild(el);
+    }
+    el.setAttribute('href', url);
   }
 
   private static setMetaTag(attrName: string, attrValue: string, content: string): void {

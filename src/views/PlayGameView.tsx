@@ -13468,10 +13468,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
 
     return (
-      <div className="w-full px-4 py-4 sm:py-6 md:py-8 pb-32 flex flex-col gap-6 md:gap-10 min-h-screen bg-slate-50/50 font-sans text-slate-800 overflow-y-auto relative">
-        <div className="max-w-4xl mx-auto w-full flex flex-col gap-6 md:gap-10">
+      <div className="w-full px-4 py-4 sm:py-6 md:py-8 pb-32 flex flex-col gap-6 min-h-screen bg-[#fdfcfc] font-mono text-[#201d1d] overflow-y-auto relative">
+        <div className="max-w-4xl mx-auto w-full flex flex-col gap-6">
           {/* Title with ? help button */}
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center justify-between gap-3 border-b border-[rgba(15,0,0,0.12)] pb-4">
             <div className="flex-1">
               <PageHeader 
                 title={t('mode_select_title', language)} 
@@ -13483,7 +13483,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 setHelpSlideIndex(0);
                 setShowHelpPopup(true);
               }}
-              className="min-w-[44px] min-h-[44px] rounded-full bg-slate-100 hover:bg-indigo-50 border border-slate-200 text-slate-400 hover:text-indigo-600 hover:border-indigo-200 shadow-xs transition-all flex items-center justify-center cursor-pointer shrink-0"
+              className="min-w-[44px] min-h-[44px] rounded-sm bg-[#fdfcfc] hover:bg-[#f1eeee] border border-[rgba(15,0,0,0.12)] text-[#201d1d] transition-colors flex items-center justify-center cursor-pointer shrink-0 focus-visible:outline-2 focus-visible:outline-offset-2"
               aria-label={language === 'ko' ? '도움말' : 'Help'}
             >
               <HelpCircle size={18} />
@@ -13531,21 +13531,21 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           )}
 
           {/* Card Play List Header & Quick Filter */}
-          <div className="flex flex-col gap-2.5 w-full pt-1 font-mono">
+          <div className="flex flex-col gap-4 w-full p-4 border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] font-mono">
             {/* Header Title */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 border-b border-stone-800 pb-2">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[rgba(15,0,0,0.12)] pb-4">
               <div className="flex items-center gap-2">
-                <span className="p-1 bg-amber-500/20 border border-amber-400 text-amber-400 text-xs font-bold">
+                <span className="p-2 bg-[#201d1d] text-[#fdfcfc] text-sm font-bold shrink-0">
                   🎴
                 </span>
                 <div>
-                  <h3 className="text-sm sm:text-base font-black text-slate-900 dark:text-white flex items-center gap-2">
+                  <h3 className="text-base font-bold text-[#201d1d] flex flex-wrap items-center gap-2">
                     <span>{language === 'ko' ? '오늘의 미션 / 카드 플레이 리스트' : 'Daily Missions & Card Play List'}</span>
-                    <span className="text-xs font-bold text-amber-500 font-mono">
+                    <span className="text-sm font-normal text-[#646262] font-mono tabular-nums">
                       ({filteredModes.length} / {modes.length})
                     </span>
                   </h3>
-                  <p className="text-[11px] text-stone-500 dark:text-stone-400">
+                  <p className="text-sm leading-relaxed text-[#646262] mt-2">
                     {language === 'ko'
                       ? '• 카드 터치 시 3초 수호자 대사 후 1:1 카드 배틀 시작 · 승리 시 카드 획득 & 잠재력 강화'
                       : '• Tap card to start 1:1 card battle after 3s guardian dialogue · Win to obtain & enhance'}
@@ -13555,7 +13555,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             </div>
 
             {/* 6대 속성 필터 칩 & 미보유 목표 전용 토글 칩 */}
-            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs">
+            <div className="flex flex-wrap items-center gap-2 text-sm">
               {[
                 { id: 'all', icon: '✦', labelKo: '전체 속성', labelEn: 'All Elements' },
                 { id: 'fire', icon: '🔥', labelKo: '불', labelEn: 'Fire' },
@@ -13568,17 +13568,19 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 const active = selectedElementFilter === elemItem.id;
                 return (
                   <button
+                    type="button"
                     key={elemItem.id}
+                    aria-pressed={active}
                     onClick={() => {
                       playBattleSfx('button_tap');
                       triggerHaptic('tap');
                       setSelectedElementFilter(elemItem.id);
                     }}
                     className={cn(
-                      "px-2.5 py-1.5 rounded-none whitespace-nowrap font-bold transition-all cursor-pointer border text-xs min-h-[36px] flex items-center gap-1 shrink-0",
+                      "px-3 py-2 rounded-sm whitespace-nowrap font-medium transition-colors cursor-pointer border text-sm min-h-[44px] flex items-center gap-2 shrink-0 focus-visible:outline-2 focus-visible:outline-offset-2",
                       active
-                        ? "bg-amber-400 text-stone-950 border-amber-400 font-black shadow-xs"
-                        : "bg-stone-900 text-stone-300 border-stone-800 hover:border-stone-600 hover:text-white"
+                        ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
+                        : "bg-[#fdfcfc] text-[#646262] border-[rgba(15,0,0,0.12)] hover:border-[#646262] hover:text-[#201d1d]"
                     )}
                   >
                     <span>{elemItem.icon}</span>
@@ -13590,16 +13592,17 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               {/* 미보유 목표만 토글 칩 */}
               <button
                 type="button"
+                aria-pressed={showUnownedOnly}
                 onClick={() => {
                   playBattleSfx('button_tap');
                   triggerHaptic('tap');
                   setShowUnownedOnly(prev => !prev);
                 }}
                 className={cn(
-                  "px-3 py-1.5 rounded-none whitespace-nowrap font-black transition-all cursor-pointer border text-xs min-h-[36px] flex items-center gap-1.5 ml-auto shrink-0",
+                  "px-3 py-2 rounded-sm whitespace-nowrap font-medium transition-colors cursor-pointer border text-sm min-h-[44px] flex items-center gap-2 shrink-0 focus-visible:outline-2 focus-visible:outline-offset-2",
                   showUnownedOnly
-                    ? "bg-emerald-500 text-stone-950 border-emerald-400 shadow-sm"
-                    : "bg-stone-900 text-emerald-400 border-emerald-500/50 hover:bg-emerald-950/40"
+                    ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
+                    : "bg-[#fdfcfc] text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:border-[#646262]"
                 )}
               >
                 <span>🎯</span>
@@ -13615,12 +13618,14 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={language === 'ko' ? '게임 모드 또는 히어로 이름 검색...' : 'Search game modes or hero names...'}
-                className="w-full pl-8 pr-8 py-2 bg-white border border-slate-200 rounded-none text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400 font-mono"
+                aria-label={t('mode_select_title', language)}
+                className="w-full min-h-[44px] pl-9 pr-12 py-3 bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-sm text-sm text-[#201d1d] placeholder-[#646262] focus:outline-2 focus:outline-offset-2 focus:outline-[#201d1d] font-mono"
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
+                  aria-label={t('close', language)}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 min-w-[44px] min-h-[44px] flex items-center justify-center text-[#646262] hover:text-[#201d1d] rounded-sm"
                 >
                   <X size={12} />
                 </button>
@@ -13628,9 +13633,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             </div>
           </div>
 
-          {/* Mode List Grid - Card Battle Theme Frame Style (3 cards per row) */}
+          {/* Responsive mission card list */}
           <main className="flex-1 px-0 pb-4 md:pb-8 pt-0 flex flex-col justify-start items-center w-full gap-3 md:gap-5 overflow-y-visible">
-            <div className="grid grid-cols-3 gap-2 sm:gap-3 md:gap-4 w-full py-3 sm:py-4 items-stretch font-mono">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-4 w-full items-stretch font-mono">
               {filteredModes.map((m, idx) => {
                 const IconComp = m.icon;
                 const cardIndex = m.characterId || (idx + 1);
@@ -13665,7 +13670,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 return (
                   <motion.div
                     key={m.id}
-                    initial={{ opacity: 0, y: 15 }}
+                    initial={lowSpecMode ? false : { opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: Math.min(idx * 0.03, 0.3) }}
                     whileHover={lowSpecMode ? {} : { y: -3, transition: { duration: 0.15 } }}
@@ -13685,29 +13690,21 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                         }
                       }}
                       className={cn(
-                        "w-full min-h-[185px] sm:min-h-[225px] rounded-sm transition-all flex flex-col overflow-hidden group cursor-pointer text-left relative",
+                        "w-full h-full min-h-[225px] rounded-sm transition-colors flex flex-col overflow-hidden group cursor-pointer text-left relative focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#201d1d]",
                         isOwned 
-                          ? "bg-gradient-to-b from-[#0a261c] via-[#111923] to-[#0d1620] border-2 border-emerald-400 shadow-[0_0_24px_rgba(16,185,129,0.5),inset_0_0_12px_rgba(16,185,129,0.2)] ring-2 ring-emerald-400/60 scale-[1.01]" 
-                          : "bg-[#12101b] border border-slate-800/80 opacity-75 hover:opacity-100 hover:border-amber-400/80 hover:shadow-md transition-opacity grayscale-[20%] hover:grayscale-0"
+                          ? "bg-[#fdfcfc] border border-emerald-600 hover:border-[#201d1d]"
+                          : "bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d]"
                       )}
                       aria-label={`${battleTitle} - No.${cardNumFormatted} ${charName} (${isOwned ? `보유 ${ownedCount}장` : '미보유'})`}
                     >
-                      {/* Prominent Floating Ribbon Badge for Owned Cards */}
-                      {isOwned && (
-                        <div className="absolute top-0 right-0 z-30 bg-gradient-to-l from-emerald-500 to-teal-500 text-slate-950 font-black text-[8px] sm:text-[9px] px-2 py-0.5 rounded-bl-sm shadow-md flex items-center gap-1 tracking-tight border-b border-l border-emerald-300">
-                          <Sparkles size={10} className="fill-current text-slate-950 animate-pulse" />
-                          <span>{language === 'ko' ? `보유 ${ownedCount}장` : `Own: ${ownedCount}`}</span>
-                        </div>
-                      )}
-
                       {/* TCG Card Header Bar */}
                       <div className={cn(
-                        "px-1.5 sm:px-2.5 py-1 sm:py-1.5 border-b flex items-center justify-between gap-1 text-[9px] sm:text-[10px] text-white",
-                        isOwned ? "bg-emerald-950/90 border-emerald-500/50" : "bg-slate-950/90 border-slate-800/90"
+                        "px-2.5 py-2 border-b flex flex-wrap items-center justify-between gap-2 text-sm text-[#fdfcfc]",
+                        "bg-[#201d1d] border-[rgba(15,0,0,0.12)]"
                       )}>
                         <div className="flex items-center gap-1 sm:gap-1.5 truncate">
                           <span className={cn(
-                            "font-black px-1 py-0.2 rounded-xs tracking-tight shrink-0 text-[8px] sm:text-[9px]",
+                            "font-medium px-1 py-0.5 rounded-sm shrink-0 text-sm",
                             isOwned 
                               ? "text-emerald-300 bg-emerald-400/20 border border-emerald-400/40" 
                               : "text-amber-400 bg-amber-400/10 border border-amber-400/25"
@@ -13715,13 +13712,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                             No.{cardNumFormatted}
                           </span>
                           <span className={cn(
-                            "text-[8px] sm:text-[9px] truncate",
+                            "text-sm truncate",
                             isOwned ? "text-emerald-100 font-bold" : "text-slate-400 font-semibold"
                           )}>
                             {charName}
                           </span>
                         </div>
-                        <div className={cn("flex items-center gap-0.5 sm:gap-1 shrink-0", isOwned ? "mr-16 sm:mr-20" : "")}>
+                        <div className="flex items-center gap-1 shrink-0">
                           {!isOwned && (
                             <span className="text-[7px] sm:text-[8px] font-bold text-amber-300 bg-amber-950/80 border border-amber-500/50 px-1 py-0.2 rounded-xs">
                               {language === 'ko' ? '도전 목표' : 'Target'}
@@ -13742,18 +13739,14 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       {/* Character Card Portrait Box */}
                       <div className={cn(
                         "flex-1 flex items-center justify-center p-1.5 sm:p-3 relative overflow-hidden h-32 sm:h-44 md:h-48 min-h-[120px] sm:min-h-[160px]",
-                        isOwned 
-                          ? "bg-gradient-to-b from-[#0a261c] via-[#0d1e22] to-[#071318]" 
-                          : "bg-gradient-to-b from-slate-900 via-[#131024] to-[#0a0814]"
+                        "bg-[#f1eeee]"
                       )}>
-                        {/* Background Subtle Ink Grid & Glow */}
-                        <div className={cn(
-                          "absolute inset-0 pointer-events-none",
-                          isOwned 
-                            ? "bg-[radial-gradient(circle_at_50%_40%,rgba(16,185,129,0.35),transparent_70%)]" 
-                            : "bg-[radial-gradient(circle_at_50%_40%,rgba(99,102,241,0.18),transparent_70%)]"
-                        )} />
-                        
+                        {isOwned && (
+                          <div className="absolute top-0 right-0 z-30 bg-[#201d1d] text-[#fdfcfc] font-medium text-sm px-2 py-1 flex items-center gap-1">
+                            <Sparkles size={12} />
+                            <span>{language === 'ko' ? `보유 ${ownedCount}장` : `Own: ${ownedCount}`}</span>
+                          </div>
+                        )}
                         {charCard ? (
                           <MissionCharacterPortrait cardId={charCard.id} name={charName} language={language} className="w-full h-full" />
                         ) : (
@@ -13783,26 +13776,17 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       </div>
 
                       {/* Game Title & Mission Info Bar */}
-                      <div className={cn(
-                        "p-1.5 sm:p-2 border-t flex flex-col gap-0.5 sm:gap-1",
-                        isOwned ? "bg-[#0b241c] border-emerald-500/40" : "bg-slate-950 border-slate-800"
-                      )}>
+                      <div className="p-3 border-t flex flex-col gap-2 bg-[#fdfcfc] border-[rgba(15,0,0,0.12)]">
                         <div className="flex items-center justify-between gap-1">
-                          <span className={cn(
-                            "flex-1 text-left font-black text-[10px] sm:text-xs truncate drop-shadow-xs",
-                            isOwned ? "text-emerald-200 font-extrabold" : "text-white"
-                          )}>
+                          <span className="flex-1 text-left font-bold text-sm leading-relaxed break-words text-[#201d1d]">
                             {battleTitle}
                           </span>
                         </div>
-                        <div className="flex items-center justify-between text-[9px] sm:text-[10px]">
-                          <span className="truncate text-slate-400 text-[8px] sm:text-[9px]">
-                            ✦ <strong className={isOwned ? "text-emerald-300 font-bold" : "text-slate-200 font-bold"}>{charName}</strong>
+                        <div className="flex flex-wrap items-center justify-between gap-1 text-sm">
+                          <span className="truncate text-[#646262] text-sm">
+                            ✦ <strong className="font-normal">{charName}</strong>
                           </span>
-                          <span className={cn(
-                            "font-bold shrink-0 text-[8px] sm:text-[9px]",
-                            isOwned ? "text-emerald-400" : "text-amber-400"
-                          )}>
+                          <span className="font-medium shrink-0 text-sm text-[#201d1d]">
                             {isOwned ? (language === 'ko' ? '잠재력 강화' : 'Enhance') : (language === 'ko' ? '카드 획득' : 'Obtain')}
                           </span>
                         </div>
@@ -14322,7 +14306,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
   if (gameState === 'lobby') {
     return (
-      <div className="flex-1 flex flex-col w-full bg-slate-950 text-slate-100 overflow-y-auto relative min-h-0">
+      <div className="flex-1 flex flex-col w-full bg-[#201d1d] text-[#fdfcfc] font-mono overflow-y-auto relative min-h-0">
         <AnimatePresence>
           {showRules && (
             <motion.div 
@@ -14467,64 +14451,16 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             </div>
           </div>
         ) : (
-          /* Lobby World - Bright Cyberpunk Night City Style */
+          /* Lobby encounter map */
           <div 
             ref={lobbyRef}
             onClick={handleLobbyClick}
-            className="flex-1 relative bg-[#1a1a2e] overflow-hidden cursor-crosshair"
-            style={{
-              backgroundImage: `radial-gradient(circle at 50% 50%, #2a2a4e 0%, #1a1a2e 100%)`,
-              boxShadow: 'inset 0 0 100px rgba(0, 255, 255, 0.25)'
-            }}
+            className="flex-1 relative bg-[#201d1d] overflow-hidden cursor-crosshair"
           >
-            {/* Brighter Cyber Grid Overlay */}
-            <div className="absolute inset-0 opacity-30 pointer-events-none" 
-                 style={{ 
-                   backgroundImage: `linear-gradient(#0ff 1px, transparent 1px), linear-gradient(90deg, #0ff 1px, transparent 1px)`,
-                   backgroundSize: '80px 80px',
-                   maskImage: 'radial-gradient(circle at 50% 50%, black 50%, transparent 95%)'
-                 }} 
-            />
-
-            {/* Space Objects - Fixed Top */}
-            <div className="absolute top-5 left-[15%] text-4xl opacity-60 animate-pulse">🛰️</div>
-            <div className="absolute top-8 right-[25%] text-5xl opacity-50 drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">🚀</div>
-            <div className="absolute top-12 left-[40%] text-2xl opacity-40">🌌</div>
-            <div className="absolute top-6 right-[10%] text-3xl opacity-50 animate-bounce-slow">🛰️</div>
-
-            {/* Dense Futuristic City Buildings */}
-            <div className="absolute top-1/4 left-10 text-7xl opacity-60 select-none pointer-events-none drop-shadow-[0_0_20px_rgba(0,255,255,0.8)]">🏙️</div>
-            <div className="absolute top-1/4 left-32 text-6xl opacity-40 select-none pointer-events-none drop-shadow-[0_0_15px_rgba(255,0,255,0.6)]">🏢</div>
-            <div className="absolute top-[30%] right-[15%] text-7xl opacity-50 select-none pointer-events-none drop-shadow-[0_0_20px_rgba(255,0,255,0.8)]">🗼</div>
-            <div className="absolute top-[35%] right-[5%] text-5xl opacity-40 select-none pointer-events-none drop-shadow-[0_0_15px_rgba(0,255,255,0.5)]">🏬</div>
-            <div className="absolute bottom-1/3 left-1/4 text-6xl opacity-40 select-none pointer-events-none drop-shadow-[0_0_15px_rgba(255,255,0,0.6)]">📡</div>
-            <div className="absolute bottom-1/4 right-[20%] text-7xl opacity-60 select-none pointer-events-none drop-shadow-[0_0_20px_rgba(0,255,255,0.8)]">🏙️</div>
-            <div className="absolute bottom-[30%] left-[5%] text-5xl opacity-30 select-none pointer-events-none">🏢</div>
-            <div className="absolute bottom-[15%] right-[40%] text-6xl opacity-50 select-none pointer-events-none drop-shadow-[0_0_15px_rgba(255,255,0,0.7)]">🏙️</div>
-            <div className="absolute top-[45%] left-[45%] text-4xl opacity-30 select-none pointer-events-none">🏬</div>
-            
-            <div className="absolute top-[15%] left-[40%] text-5xl opacity-40 select-none pointer-events-none">🔌</div>
-            <div className="absolute top-[20%] left-[45%] text-4xl opacity-30 select-none pointer-events-none">⚡</div>
-            
-            {/* Digital Scanner UI */}
-            <div className="absolute top-12 left-1/2 -translate-x-1/2 opacity-60 pointer-events-none select-none flex flex-col items-center">
-               <div className="w-28 h-28 border-2 border-[#0ff] rounded-full flex items-center justify-center relative animate-spin-slow">
-                  <div className="absolute inset-0 border-t-4 border-[#f0f] rounded-full" />
-                  <div className="w-1 h-32 bg-[#0ff]/40 absolute" />
-                  <div className="w-32 h-1 bg-[#0ff]/40 absolute" />
-                  <div className="text-[10px] font-black text-[#0ff] mt-16 tracking-widest uppercase bg-black/40 px-2 py-0.5 rounded">MAP_SCANNER_v2</div>
-               </div>
-            </div>
-
-            {/* District Labels */}
-            <div className="absolute top-[18%] right-[10%] text-[#f0f] text-[10px] font-black italic tracking-widest opacity-60 uppercase border-r-2 border-[#f0f] pr-2">Sector_01_Watson</div>
-            <div className="absolute bottom-[20%] left-[10%] text-[#0ff] text-[10px] font-black italic tracking-widest opacity-60 uppercase border-l-2 border-[#0ff] pl-2">Sector_04_Pacific</div>
-            <div className="absolute bottom-[40%] right-[30%] text-[#ff0] text-[10px] font-black italic tracking-widest opacity-60 uppercase border-b-2 border-[#ff0] pb-1">Night_City_Center</div>
-
             {/* Static Background Grid */}
             <div className="absolute inset-0 grid grid-cols-12 grid-rows-12 opacity-[0.1] pointer-events-none">
               {Array(144).fill(null).map((_, i) => (
-                <div key={`grid-${i}`} className="border border-gray-800" />
+                <div key={`grid-${i}`} className="border-r border-b border-[#fdfcfc]" />
               ))}
             </div>
 
@@ -14583,7 +14519,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   onClick={(e) => { e.stopPropagation(); setLobbyPage(p => Math.max(0, p - 1)); }}
                   disabled={lobbyPage === 0}
                   className={cn(
-                    "w-12 h-12 bg-slate-900/85 backdrop-blur-sm text-slate-200 rounded-full flex items-center justify-center pointer-events-auto border border-slate-800 shadow-lg transition-all hover:bg-slate-800/85 active:scale-90",
+                    "w-12 h-12 bg-[#fdfcfc] text-[#201d1d] rounded-sm flex items-center justify-center pointer-events-auto border border-[rgba(15,0,0,0.12)] transition-colors hover:bg-[#f1eeee]",
                     lobbyPage === 0 ? "opacity-0 invisible" : "visible"
                   )}
                 >
@@ -14593,7 +14529,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   onClick={(e) => { e.stopPropagation(); setLobbyPage(p => Math.min(totalPages - 1, p + 1)); }}
                   disabled={lobbyPage >= totalPages - 1}
                   className={cn(
-                    "w-12 h-12 bg-slate-900/85 backdrop-blur-sm text-slate-200 rounded-full flex items-center justify-center pointer-events-auto border border-slate-800 shadow-lg transition-all hover:bg-slate-800/85 active:scale-90",
+                    "w-12 h-12 bg-[#fdfcfc] text-[#201d1d] rounded-sm flex items-center justify-center pointer-events-auto border border-[rgba(15,0,0,0.12)] transition-colors hover:bg-[#f1eeee]",
                     lobbyPage >= totalPages - 1 ? "opacity-0 invisible" : "visible"
                   )}
                 >
@@ -14602,8 +14538,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             </div>
 
             <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-40">
-                <div className="bg-slate-900/85 backdrop-blur-sm text-slate-200 px-4 py-2 text-xs font-semibold border border-slate-800 rounded-2xl flex items-center gap-2 shadow-md">
-                   <Users size={16} className="text-indigo-400" />
+                <div className="bg-[#fdfcfc] text-[#201d1d] px-4 py-2 text-sm font-medium border border-[rgba(15,0,0,0.12)] rounded-none flex items-center gap-2">
+                   <Users size={16} />
                    <span>PAGE {lobbyPage + 1} / {Math.max(1, totalPages)}</span>
                 </div>
             </div>
@@ -14975,7 +14911,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     <div 
       id="game-board" 
       className={cn(
-        "flex-1 flex flex-col w-full max-w-[1024px] mx-auto bg-[#060a14] text-slate-100 min-h-full justify-start relative overflow-y-auto select-none touch-pan-y overscroll-contain h-full",
+        "flex-1 flex flex-col w-full max-w-[1024px] mx-auto bg-[#201d1d] text-[#fdfcfc] font-mono min-h-full justify-start relative overflow-y-auto select-none touch-pan-y overscroll-contain h-full",
         !isAdRemoved ? "pt-10 sm:pt-12" : "pt-11 sm:pt-12",
         "pb-6 sm:pb-8"
       )}
@@ -15810,8 +15746,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       <div id="primary-battle-arena" className="w-full flex-1 flex flex-col justify-start sm:justify-between items-center max-w-5xl mx-auto min-h-[580px] sm:min-h-[640px] relative z-10 gap-1.5 sm:gap-2 overflow-visible">
         {/* 1. 상대 덱/패 영역 (카드 높이에 맞춰 컴팩트 조정 및 최소높이 유지) */}
         <div id="opponent-hand-container" className={cn(
-        "h-auto min-h-[76px] sm:min-h-[88px] py-0.5 sm:py-1 md:py-1.5 relative flex items-center justify-center px-1 overflow-visible w-full bg-[#0f172a] bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:12px_12px] border-2 box-border bg-clip-padding rounded-2xl shadow-sm shrink-0",
-        turn === 'ai' && !gameOver ? "border-red-500/50 z-20" : "border-red-500/20 z-10"
+        "h-auto min-h-[76px] sm:min-h-[88px] py-0.5 sm:py-1 md:py-1.5 relative flex items-center justify-center px-1 overflow-visible w-full bg-[#302c2c] border box-border bg-clip-padding rounded-none shrink-0",
+        turn === 'ai' && !gameOver ? "border-[#fdfcfc]/70 z-20" : "border-[#fdfcfc]/15 z-10"
       )}>
         
         {/* Item 357: Opponent 1-Line Slim Monospace Tag (Visible on Mobile & Desktop) & Item 34: Mute Toggle */}
@@ -16125,6 +16061,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                         isLocked={true}
                         isOnBoard={true}
                         lowSpecMode={lowSpecMode}
+                        language={language}
                         isMatgo={battleType === 'matgo'}
                         className="w-full h-full"
                       />
@@ -16197,7 +16134,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               isClutchSlowMo && "scale-[1.02] filter contrast-125 transition-transform duration-300"
             )}>
                     <div className={cn(
-                      "grid grid-cols-3 gap-1 md:gap-2 w-fit relative p-1.5 rounded-sm transition-all battle-touch-safe",
+                      "grid grid-cols-3 gap-1.5 md:gap-2 w-fit relative p-2 md:p-3 rounded-none border border-[#fdfcfc]/30 bg-[#302c2c] transition-all battle-touch-safe",
                       isSuddenDeathOverclock && "border border-amber-500/50 shadow-[0_0_15px_rgba(245,158,11,0.25)] bg-amber-950/10",
                       isScreenShaking && "animate-screen-shake",
                       board.filter(c => c !== null).length === 8 && "final-move-pulse",
@@ -16215,13 +16152,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       )}
 
                       {/* Item 365: 1px Perimeter Ring Timer (BattleTurnRing) */}
-                      <div className="absolute inset-0 pointer-events-none rounded-sm border border-slate-700/60 overflow-hidden z-[100]">
+                      <div className="absolute inset-0 pointer-events-none rounded-none overflow-hidden z-[100]">
                         <div
                           className={cn(
                             "absolute inset-0 border transition-all duration-300 pointer-events-none",
                             turn === 'player'
-                              ? "border-cyan-400/80 shadow-[0_0_10px_rgba(34,211,238,0.35)]"
-                              : "border-rose-500/80 shadow-[0_0_10px_rgba(244,63,94,0.35)]"
+                              ? "border-[#fdfcfc]/80"
+                              : "border-[#9a9898]/60"
                           )}
                         />
                       </div>
@@ -16358,7 +16295,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                           return (
                             <div
                               key={idx}
-                              className="grid-cell w-[16vw] max-w-[58px] sm:max-w-[68px] md:max-w-[80px] lg:max-w-[88px] aspect-[5/7] flex items-center justify-center relative border border-amber-500 bg-amber-950/20 rounded-lg shadow-md overflow-visible cursor-default"
+                              className="grid-cell w-[24vw] max-w-[80px] sm:max-w-[100px] md:max-w-[112px] lg:max-w-[120px] aspect-[5/7] flex items-center justify-center relative border border-[#fdfcfc]/30 bg-[#201d1d] rounded-sm overflow-visible cursor-default"
                             >
                               <div className="absolute inset-0 p-0.5 rounded-lg overflow-hidden flex items-center justify-center bg-[#1e293b]/70 border border-slate-700">
                                 <img
@@ -16389,18 +16326,18 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                             onMouseEnter={() => handleMouseEnterCell(idx)}
                             onMouseLeave={handleMouseLeaveCell}
                             className={cn(
-                              "grid-cell group w-[16vw] max-w-[58px] sm:max-w-[68px] md:max-w-[80px] lg:max-w-[88px] aspect-[5/7] flex items-center justify-center relative transition-all overflow-visible rounded-lg font-mono shadow-none [transform:translate3d(0,0,0)] battle-touch-safe select-none",
+                              "grid-cell group w-[24vw] max-w-[80px] sm:max-w-[100px] md:max-w-[112px] lg:max-w-[120px] aspect-[5/7] flex items-center justify-center relative transition-all overflow-visible rounded-sm font-mono shadow-none [transform:translate3d(0,0,0)] battle-touch-safe select-none",
                               isDraggingCard && "gpu-layer-dragging",
                               card ? (
                                 selectedCardIdx !== null && selectedCardSide === 'player' && turn === 'player'
                                   ? "border border-rose-500/40 opacity-75 saturate-75 cursor-not-allowed"
-                                  : "border border-slate-750/70 cursor-pointer"
+                                  : "border border-[#fdfcfc]/30 cursor-pointer"
                               ) : (
                                 idx === goblinTileIndex && !goblinCaptured
                                   ? "border-2 border-yellow-400 bg-yellow-950/40 shadow-[0_0_12px_rgba(234,179,8,0.5)] animate-pulse cursor-pointer"
                                   : idx === manaSpringTileIndex && !manaSpringClaimed
                                     ? "border-2 border-cyan-400 bg-cyan-950/40 shadow-[0_0_12px_rgba(34,211,238,0.5)] animate-pulse cursor-pointer"
-                                    : "border border-dashed border-slate-700/60 bg-slate-950/40 hover:border-solid hover:border-cyan-400 hover:bg-cyan-950/20 cursor-pointer"
+                                    : "border border-dashed border-[#9a9898]/50 bg-[#201d1d] hover:border-solid hover:border-[#fdfcfc] hover:bg-[#424245] cursor-pointer"
                               ),
                               !card && boardTraps[idx] === 'purple' && "bg-purple-800/40 border-purple-400 border-2",
                               !card && boardTraps[idx] === 'red' && "bg-red-800/40 border-red-400 border-2",
@@ -16672,7 +16609,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                                     isOnBoard={true}
                                     isDamaged={Boolean(damagedCells[idx])}
                                     className={cn(
-                                      "w-full h-full z-10 rounded-lg", 
+                                      "w-full h-full z-10 rounded-sm",
                                       isRoarActive && "text-fire-active",
                                       fireGlowCells instanceof Set && fireGlowCells.has(idx) && "fire-glow-card",
                                       waterGlowCells instanceof Set && waterGlowCells.has(idx) && "water-glow-card"
@@ -16681,6 +16618,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                                     processedImage={processedImageForCell}
                                     combatHighlights={combatHighlights[idx]}
                                     lowSpecMode={lowSpecMode}
+                                    language={language}
                                     cellElement={elementalBoard[idx]}
                                     isMatgo={false}
                                   />
@@ -16992,8 +16930,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       <div 
         id="player-hand-container"
         className={cn(
-        "h-auto min-h-[82px] sm:min-h-[96px] py-0.5 sm:py-1 md:py-1.5 relative overflow-visible flex flex-col items-center justify-center p-0.5 sm:p-1 w-full bg-[#0f172a] bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:12px_12px] border-2 box-border bg-clip-padding rounded-2xl shadow-sm shrink-0 mb-3 sm:mb-4",
-        turn === 'player' && !gameOver ? "border-indigo-500/50 z-20" : "border-blue-500/20 z-10"
+        "h-auto min-h-[82px] sm:min-h-[96px] py-0.5 sm:py-1 md:py-1.5 relative overflow-visible flex flex-col items-center justify-center p-0.5 sm:p-1 w-full bg-[#302c2c] border box-border bg-clip-padding rounded-none shrink-0 mb-3 sm:mb-4",
+        turn === 'player' && !gameOver ? "border-[#fdfcfc]/70 z-20" : "border-[#fdfcfc]/15 z-10"
       )}>
         
         {/* Item 357: Player 1-Line Slim Monospace Tag (Visible on Mobile & Desktop) & Row 66: Hand/Deck Counter Badge */}

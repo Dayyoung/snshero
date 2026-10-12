@@ -2,6 +2,54 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-12 15:25 KST] 구글 뉴스(Google News) 검색 실전 노출 및 애드센스 고수익화 아키텍처 전면 구축
+- **요청 사항**:
+  - `https://snshero.com/reddit` 및 하위 뉴스 기사 페이지가 구글 뉴스 검색에 노출되어 애드센스 광고 수입을 극대화할 수 있도록 실전 노출 전략 적용 및 배포.
+  - 구글 정책 준수 한도 내에서 가장 공격적인 광고 수익화 전략 반영.
+- **상세 구현 내역**:
+  1. **구글 뉴스 전용 사이트맵 (`sitemap-news.xml`) 구축**:
+     - Google News 전용 네임스페이스(`xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"`)를 만족하는 `sitemap-news.xml` 자동 생성 파이프라인 구축.
+     - 48시간 이내 최신 기사별 `<news:publication>`, `<news:publication_date>`, `<news:title>` 자동 매핑.
+     - `public/robots.txt`에 `Googlebot-News`, `Googlebot`, `Mediapartners-Google` 허용 및 `Sitemap: https://snshero.com/sitemap-news.xml` 등록.
+  2. **Google Publisher Center 공식 RSS 2.0 뉴스 피드 (`news-feed.xml`, `rss.xml`) 구축**:
+     - 구글 뉴스 매체 등록 및 실시간 인덱싱을 위한 RSS 2.0 피드 생성.
+     - 1200px 이상 고해상도 보도사진 `<enclosure>`, `<media:content>`, 전체 기사 본문 `<content:encoded>`, 언론사 출처 제공.
+  3. **Schema.org 최고 등급 `NewsArticle` 구조화 데이터 및 디스커버 메타태그 적용**:
+     - `redditSeoManager.ts`: 뉴스 기사(`r/news` 및 `gnews_`) 대상 `NewsArticle` JSON-LD 자동 주입 (headline, 1200px image 배열, datePublished, dateModified, author, NewsMediaOrganization publisher, speakable 지원).
+     - `index.html` 및 기사 정적 페이지: `<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">` 적용 (구글 디스커버 및 구글 뉴스 카드 대형 썸네일 노출 필수 규격).
+  4. **SPA 인덱싱 한계 극복: 정적 기사 HTML 사전 렌더링 파이프라인 (`scripts/generate-news-seo.ts`)**:
+     - 자바스크립트를 비동기로 실행하지 않는 `Googlebot-News` 크롤러를 위해 29개 전체 구글 뉴스 기사별 독립 정적 HTML(`/r/news/comments/{id}/index.html` 및 `/reddit/comments/{id}/index.html`) 사전 렌더링.
+     - 메인 피드(`/reddit/index.html`, `/r/news/index.html`) 정적 HTML 생성 및 일반 `sitemap.xml` 자동 동기화.
+     - `post-build.js`에 빌드 자동화 스텝 통합 (`npm run build` 시 자동 갱신).
+  5. **구글 정책 준수 한계선까지 극대화한 공격적 애드센스 4단 수익화 배치**:
+     - 헤드라인 직후 First-Fold 디스플레이 반응형 광고 (`Above-The-Fold`)
+     - 기사 본문 직후 `In-Article` 네이티브 광고 슬롯 (기사 열람 시 최고 주목도)
+     - 기사 하단 `End-Of-Article` 멀티플렉스 디스플레이 광고
+     - 피드 목록 최상단 고수익 스폰서 배너 및 인피드 광고 노출 빈도 최적화 (4개 간격 배치)
+  6. **구글 뉴스 E-E-A-T 언론 윤리 & 저널리즘 투명성 페이지 구축**:
+     - `editorial-guidelines.html` 및 `about-news.html`: 팩트체크 기준, 정정보도 정책, 발행처 정보 명시.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 Errors 통과.
+  - `npm run build`: `dist/sitemap-news.xml`, `dist/news-feed.xml`, `dist/rss.xml`, 29개 기사별 정적 HTML 전수 생성 완료.
+  - 구글 폼 완료 보고서 제출 완료.
+
+## [2026-10-12 15:10 KST] TCG형 카드 디자인 및 빨강·파랑 전투 점유 복원
+- **요청 사항**: 포켓몬 카드 스타일의 수집형 카드 프레임, 전투 중앙판의 기존 빨강/파랑 점유 시각화 복원.
+- **구현**: 공통 `CardItem.tsx`에 노란 외곽 프레임, 속성별 파스텔 바탕, 상단 이름/레벨/전투력/속성 아이콘, 액자형 아트, 하단 방향 능력치/스킬/번호 적용. SNSHero 기존 아트·스킨·이미지 fallback·보너스 능력치 유지.
+- **점유 표시**: 중앙판의 내 카드는 파랑 `#2563eb`, 상대 카드는 빨강 `#dc2626`. 두꺼운 외곽 프레임, 소유 바와 옅은 바탕으로 구분하고 소유 변경 시 즉시 갱신. 모바일 슬롯 테두리·점수 및 공통 점유 막대도 동일 색상 적용. 맞고 특수 모드 처리 유지.
+- **검증**: `npx tsc --noEmit`, `npm run build`, `git diff --check` 통과. Chromium 카드 갤러리 일반/저사양/OS 모션 줄이기 3모드에서 빨강→파랑→빨강 재점유와 아트 프레임 내 배치 확인. 전투 9뷰포트(320×480, 568×280 포함)에서 화면 밖 패널/44px 미만 버튼/JS 예외 없음. 3모드 방어 스킬·자동전투 승리 및 기존 30 SNS 콜백 1회씩 검증.
+- **보존 및 보고**: AI/캡처 판정/보상/로컬 데이터 저장 구조 및 신규 키 변경 없음. 포트 3000용 최신 번들 갱신, 구글 폼 완료 보고 1건 제출 성공. 기존 큰 번들 경고 유지, 원격 푸시/운영 배포 없음.
+
+## [2026-10-12 14:55 KST] SNSHero 공통 UI·카드·주요 화면·전투 디자인 개선
+- **요청 사항**: 사용자 유입을 방해하는 시각적 혼잡을 줄이고 전체 공통 UI, 카드, 게임플레이 및 주요 진입 UX 개선.
+- **디자인 방향**: 기존 `DESIGN.md`의 웜크림/잉크, 모노스페이스, 플랫/헤어라인 규칙 안에서 카드 아트와 주요 행동을 강조. 기존 일러스트는 유지하며 카드 프레임/정보 위계 개선.
+- **구현 내역**: 공통 셸/헤더/내비/패널/포커스, 라이트 테마 스코프 및 메탈 플랫 테마, 홈 덱 캐러셀/퀵허브/미션·미디어 접기, 마이덱 전투력/프리셋/큰 출전 카드, 상점 팩/가격/수량/하단 소환 독, 게임 허브/목록/보드 정돈.
+- **전투 및 접근성**: 모바일 중앙 보드/점수 스트립/스킬 독/가로 레이아웃, 카드 방향 스탯/소유/선택 표시, 짧은 캡처·콤보·스킬 연출. 저사양 및 OS 동작 줄이기 설정 반영, 주요 조작 44px+, 퀵허브 키보드·초점 복귀, 가이드 다크 테마 대비 및 스크롤 개선.
+- **진입 UX**: 자동 매칭 기본 OFF, 기념/오프라인/PWA 보상 화면은 사용자 선택 진입, 튜토리얼 후 공지 표시. 보상 지급 함수/금액/인벤토리/덱/재화 저장 구조 변경 없음, 신규 localStorage 키 없음. 일반 게임 화면에서 개발 도구 배지 숨김.
+- **검증 결과**: `npx tsc --noEmit`, `npm run build`, `git diff --check` 통과. `npm run lint`는 기존 no-op 스크립트이므로 실제 타입 검사를 별도 수행. Chromium 주요 5개 화면 × 5조건 25조합(320/390/1440px, KO/EN, light/dark/metal)에서 문서 가로 넘침/신규 키 미번역/JavaScript 예외 없음. 모바일 전투 9뷰포트, 일반/저사양/모션 줄이기 전투 완료 및 수동 배치/상대 턴 확인.
+- **범위 및 잔여 사항**: 공통 디자인과 핵심 플레이 흐름 개선이며 개별 110개 미니게임/모든 레거시 모달의 전수 재디자인·실기기 Safari·유료 결제 검증은 수행하지 않음. 기존 큰 번들 경고, 외부 오디오 403, 직접 `/card-play` 경로의 호스팅 SPA fallback 문제는 후속 과제. 상세 문서: `docs/UI_REDESIGN_2026-10-12.md`.
+- **구글 폼 보고**: 홈/카드/모바일 전투/공통 전투 효과 하위 보고 4건 및 최종 통합 보고 1건, 총 5건 제출 완료. 원격 푸시 및 운영 배포 없음.
+
 ## [2026-10-12 14:22 KST] [구글 애즈 공식 태그 AW-980426001 설치 및 깃 푸시 완료]
 - **요청 사항**:
   - 사용자 제공 구글 애즈 공식 태그(`AW-980426001`) 설치 및 원격 저장소(`origin main`) `git push` 요청 처리.

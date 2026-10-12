@@ -115,11 +115,11 @@ export const BattleMinimalTopBar: React.FC<BattleMinimalTopBarProps> = ({
             <div className="relative w-14 sm:w-16 h-1.5 bg-[#302c2c] overflow-hidden flex items-center mx-0.5">
               <div
                 style={{ width: `${Math.min(100, (playerScore / 9) * 100)}%` }}
-                className={`h-full bg-[#add4e3] ${reducedMotion ? '' : 'transition-[width] duration-200'}`}
+                className={`h-full bg-[#2563eb] ${reducedMotion ? '' : 'transition-[width] duration-200'}`}
               />
               <div
                 style={{ width: `${Math.min(100, (opponentScore / 9) * 100)}%` }}
-                className={`h-full bg-[#efb1a3] ml-auto ${reducedMotion ? '' : 'transition-[width] duration-200'}`}
+                className={`h-full bg-[#dc2626] ml-auto ${reducedMotion ? '' : 'transition-[width] duration-200'}`}
               />
               {/* Golden victory condition threshold tick (6/9 = 66.7%) */}
               <div

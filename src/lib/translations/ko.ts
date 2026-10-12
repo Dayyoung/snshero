@@ -1,4 +1,11 @@
 export const ko = {
+    ui_lobby_patrol_rewards: '[+] 오프라인 탐색 보상',
+    ui_deck_presets: '덱 프리셋',
+    ui_lobby_auto_battle_off: '자동 매칭이 꺼져 있습니다',
+    ui_lobby_auto_battle_in: '자동 매칭까지',
+    ui_lobby_auto_battle_enable: '[자동 매칭 켜기]',
+    ui_lobby_auto_battle_pause: '[일시정지]',
+    ui_lobby_milestone_reward: '[+] 600 기념 한정 보상 받기',
     backup_data: '계정 데이터 백업 (애니메이션 QR)',
     restore_data: '계정 데이터 복원 (카메라 연속 스캔)',
     backup_modal_title: '데이터 백업 QR코드',

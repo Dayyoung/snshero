@@ -6104,11 +6104,12 @@ function AppContent() {
 
     return (
       <div className={cn(
-        "w-full app-bg text-slate-800 font-sans selection:bg-indigo-500 selection:text-white flex flex-col lg:flex-row justify-center items-start",
+        "w-full app-bg font-mono selection:bg-[#201d1d] selection:text-[#fdfcfc] flex flex-col lg:flex-row justify-center items-start",
         isPlayingBattle ? "bg-[#060a14] text-slate-100 h-[100dvh] max-h-[100dvh] overflow-hidden select-none touch-none overscroll-none" : "bg-slate-50/30 min-h-screen",
         simulationUser ? "pt-[36px]" : "",
         theme === 'dark' ? "theme-dark" : "",
-        theme === 'metal' ? "theme-metal" : ""
+        theme === 'metal' ? "theme-metal" : "",
+        theme === 'light' ? "theme-light" : ""
       )}>
         {simulationUser && (
           <div className="fixed top-0 left-0 right-0 z-[99999] bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-sans px-4 py-1.5 flex items-center justify-between text-[11px] md:text-xs font-bold shadow-md border-b border-white/10 select-none">
@@ -6145,7 +6146,7 @@ function AppContent() {
 
         {/* Main Content */}
         <div className={cn(
-          "flex-1 w-full max-w-[1024px] mx-auto relative flex flex-col shadow-2xl border-x transition-colors duration-200",
+          "flex-1 min-w-0 w-full max-w-[1024px] mx-auto relative flex flex-col border-x border-[var(--ui-line)] transition-colors duration-200",
           isPlayingBattle
             ? "bg-[#060a14] border-slate-800/80 h-[100dvh] max-h-[100dvh] overflow-hidden select-none touch-none overscroll-none"
             : (theme === 'dark' || theme === 'metal'
@@ -6191,18 +6192,18 @@ function AppContent() {
                   }}
                   id="hud-community-toggle"
                   className={cn(
-                    "fixed right-[6.75rem] min-[1024px]:right-[calc(50vw-392px)] z-[9999] min-h-11 min-w-11 backdrop-blur-xl rounded-lg shadow-md active:scale-95 transition-all cursor-pointer flex items-center justify-center touch-target",
+                    "fixed right-[6.75rem] min-[1024px]:right-[calc(50vw-392px)] z-[9999] min-h-11 min-w-11 rounded-sm transition-colors cursor-pointer flex items-center justify-center touch-target",
                     (!isAdRemoved && view !== 'landing') 
                       ? "top-[calc(env(safe-area-inset-top,0px)+78px)] sm:top-[calc(env(safe-area-inset-top,0px)+106px)] lg:top-[10px]" 
                       : "top-[calc(env(safe-area-inset-top,0px)+10px)]",
                     (theme === 'dark' || theme === 'metal')
                       ? "bg-slate-900/90 border border-slate-800 text-orange-400 hover:bg-slate-850 hover:text-orange-300"
-                      : "bg-white/90 border border-slate-200/80 text-orange-500 hover:text-orange-600 hover:bg-white"
+                       : "bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] text-[#646262] hover:text-[#201d1d] hover:bg-[#f8f7f7]"
                   )}
                   title={language === 'ko' ? 'SNSHero 커뮤니티 (/reddit)' : 'SNSHero Community (/reddit)'}
                   aria-label={language === 'ko' ? '커뮤니티 바로가기' : 'Go to Community'}
                 >
-                  <MessageSquare size={20} className="text-orange-500" />
+                  <MessageSquare size={20} />
                 </button>
               )}
 
@@ -6212,7 +6213,7 @@ function AppContent() {
                   onClick={toggleAudioMute}
                   id="hud-audio-toggle"
                   className={cn(
-                    "fixed right-[3.75rem] min-[1024px]:right-[calc(50vw-444px)] z-[9999] min-h-11 min-w-11 backdrop-blur-xl rounded-lg shadow-md active:scale-95 transition-all cursor-pointer flex items-center justify-center touch-target",
+                    "fixed right-[3.75rem] min-[1024px]:right-[calc(50vw-444px)] z-[9999] min-h-11 min-w-11 rounded-sm transition-colors cursor-pointer flex items-center justify-center touch-target",
                     (!isAdRemoved && view !== 'landing') 
                       ? "top-[calc(env(safe-area-inset-top,0px)+78px)] sm:top-[calc(env(safe-area-inset-top,0px)+106px)] lg:top-[10px]" 
                       : "top-[calc(env(safe-area-inset-top,0px)+10px)]",
@@ -6220,13 +6221,13 @@ function AppContent() {
                       ? "bg-rose-500/10 border border-rose-500/50 text-rose-500 hover:bg-rose-500/20"
                       : (theme === 'dark' || theme === 'metal')
                       ? "bg-slate-900/90 border border-slate-800 text-white hover:bg-slate-850 hover:text-indigo-400"
-                      : "bg-white/90 border border-slate-200/80 text-slate-700 hover:text-indigo-600 hover:bg-white"
+                       : "bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] text-[#646262] hover:text-[#201d1d] hover:bg-[#f8f7f7]"
                   )}
                   title={isAudioMuted ? t('hud_audio_unmute', language) : t('hud_audio_mute', language)}
                   aria-label={isAudioMuted ? t('hud_audio_unmute', language) : t('hud_audio_mute', language)}
                 >
                   {isAudioMuted ? (
-                    <VolumeX size={20} className="text-rose-500 animate-pulse" />
+                    <VolumeX size={20} className="text-rose-500" />
                   ) : (
                     <Volume2 size={20} />
                   )}
@@ -6241,15 +6242,16 @@ function AppContent() {
                     setIsMenuOpen(true);
                   }}
                   className={cn(
-                    "fixed right-4 min-[1024px]:right-[calc(50vw-496px)] z-[9999] min-h-11 min-w-11 backdrop-blur-xl rounded-lg shadow-md active:scale-95 transition-all cursor-pointer flex items-center justify-center touch-target",
+                    "fixed right-4 min-[1024px]:right-[calc(50vw-496px)] z-[9999] min-h-11 min-w-11 rounded-sm transition-colors cursor-pointer flex items-center justify-center touch-target",
                     (!isAdRemoved && view !== 'landing') 
                       ? "top-[calc(env(safe-area-inset-top,0px)+78px)] sm:top-[calc(env(safe-area-inset-top,0px)+106px)] lg:top-[10px]" 
                       : "top-[calc(env(safe-area-inset-top,0px)+10px)]",
                     (theme === 'dark' || theme === 'metal')
                       ? "bg-slate-900/90 border border-slate-800 text-white hover:bg-slate-850 hover:text-indigo-400"
-                      : "bg-white/90 border border-slate-200/80 text-slate-700 hover:text-indigo-600 hover:bg-white"
+                       : "bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] text-[#646262] hover:text-[#201d1d] hover:bg-[#f8f7f7]"
                   )}
                   title={t('menu_title', language)}
+                  aria-label={t('menu_title', language)}
                 >
                   <Menu size={20} />
                 </button>
@@ -6262,16 +6264,16 @@ function AppContent() {
               onClick={handleGlobalBack}
               id="global-header-back-btn"
               className={cn(
-                "fixed left-3 sm:left-4 min-[1024px]:left-[calc(50vw-496px)] z-[9999] min-h-12 min-w-12 h-12 px-3.5 rounded-xl shadow-2xl flex items-center justify-center gap-1.5 active:scale-95 transition-all cursor-pointer font-mono font-black select-none border-2",
+                "fixed left-3 sm:left-4 min-[1024px]:left-[calc(50vw-496px)] z-[9999] min-h-11 min-w-11 h-11 px-3 rounded-sm flex items-center justify-center gap-1.5 transition-colors cursor-pointer font-mono font-bold select-none border",
                 (!isAdRemoved && view !== 'landing') 
                   ? "top-[calc(env(safe-area-inset-top,0px)+78px)] sm:top-[calc(env(safe-area-inset-top,0px)+106px)] lg:top-[10px]" 
                   : "top-[calc(env(safe-area-inset-top,0px)+10px)]",
-                "bg-[#141212] text-amber-300 border-amber-400 hover:bg-[#201d1d] hover:border-amber-300 hover:text-white shadow-[0_4px_20px_rgba(0,0,0,0.7)]"
+                "bg-[var(--ui-canvas)] text-[var(--ui-ink)] border-[var(--ui-line)] hover:bg-[var(--ui-surface)]"
               )}
               title={language === 'ko' ? '뒤로가기' : 'Back'}
               aria-label={language === 'ko' ? '뒤로가기' : 'Back'}
             >
-              <ArrowLeft size={22} strokeWidth={2.8} className="text-amber-300 shrink-0" />
+              <ArrowLeft size={20} strokeWidth={2} className="shrink-0" />
               <span className="text-xs font-black tracking-wider uppercase">{language === 'ko' ? '뒤로' : 'BACK'}</span>
             </button>
           )}
@@ -6297,7 +6299,7 @@ function AppContent() {
                   animate={{ x: 0 }}
                   exit={{ x: '100%' }}
                   transition={{ type: 'spring', damping: 28, stiffness: 220 }}
-                  className="fixed top-0 right-0 h-full w-[280px] sm:w-[320px] bg-white/96 backdrop-blur-xl border-l border-slate-200/80 z-[50001] flex flex-col shadow-[-10px_0_30px_rgba(0,0,0,0.08)] font-sans text-slate-800 px-5 pb-5 pt-[calc(env(safe-area-inset-top,0px)+1.25rem)] select-none overflow-y-auto"
+                  className="fixed top-0 right-0 h-[100dvh] w-[min(90vw,360px)] bg-[var(--ui-canvas)] border-l border-[var(--ui-line)] z-[50001] flex flex-col font-mono text-[var(--ui-ink)] px-5 pb-5 pt-[calc(env(safe-area-inset-top,0px)+1.25rem)] select-none overflow-y-auto"
                 >
                   {/* Header */}
                   <div className="flex items-center justify-between border-b border-slate-100 pb-4 shrink-0 mb-6">
@@ -6657,7 +6659,7 @@ function AppContent() {
             "flex-1 flex flex-col min-h-0",
             isPlayingBattle ? "h-full overflow-hidden select-none touch-none overscroll-none" : "overflow-x-hidden",
             (view !== 'play' && view !== 'home' && view !== 'card-play') && ((!isAdRemoved && view !== 'landing') ? "pt-12 sm:pt-14 lg:pt-4" : "pt-4"),
-            showNavbar ? "pb-20" : "pb-0"
+            showNavbar ? "pb-[calc(5rem+env(safe-area-inset-bottom,0px))]" : "pb-0"
           )}>
             <AnimatePresence mode="wait">
               <motion.div
@@ -6722,11 +6724,13 @@ function AppContent() {
           />
 
         {/* Global Chat Floating Button */}
-        {view !== 'reddit' && view !== 'landing' && view !== 'cartoonBook' && view !== 'novel' && view !== 'webtoon' && view !== 'card-play' && view !== 'play' && !isPlayingBattle && (
+         {view !== 'reddit' && view !== 'landing' && view !== 'cartoonBook' && view !== 'novel' && view !== 'webtoon' && view !== 'card-play' && view !== 'play' && !isPlayingBattle && !isGlobalPopupOpen && (
           <>
           <div className={cn(
             "fixed left-0 right-0 w-full max-w-[1024px] mx-auto z-[10000] pointer-events-none transition-all",
-            !showNavbar
+            view === 'shop'
+              ? "bottom-[calc(env(safe-area-inset-bottom,0px)+9.5rem)]"
+              : !showNavbar
               ? "bottom-[calc(env(safe-area-inset-bottom)+0.75rem)]"
               : "bottom-[calc(env(safe-area-inset-bottom)+5rem)]"
           )}>
@@ -6735,19 +6739,18 @@ function AppContent() {
                    <button
                      id="global-ranking-battle-toggle-btn"
                      onClick={handleStartRankingBattle}
-                     className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center transition-all active:scale-95 relative shadow-2xl hover:scale-105 border-2 cursor-pointer touch-target bg-[#141212] border-amber-500/80 text-amber-300 shadow-[0_8px_28px_rgba(0,0,0,0.65),0_0_16px_rgba(245,158,11,0.35)] hover:bg-[#1f1b1b] hover:border-amber-400 hover:text-white hover:shadow-[0_0_25px_rgba(245,158,11,0.6)] group"
+                     className="w-11 h-11 rounded-sm flex items-center justify-center transition-colors relative border cursor-pointer touch-target bg-[var(--ui-canvas)] border-[var(--ui-line)] text-[var(--ui-ink)] hover:bg-[var(--ui-surface)] group"
                      aria-label={language === 'ko' ? '랭킹대전 시작 (PvP)' : 'Start Ranking Battle (PvP)'}
                      title={language === 'ko' ? '랭킹대전 시작 (PvP)' : 'Start Ranking Battle (PvP)'}
                    >
                      <div className="relative flex items-center justify-center">
-                       <Swords size={28} strokeWidth={2.4} className="text-amber-400 drop-shadow-[0_2px_8px_rgba(245,158,11,0.7)] group-hover:rotate-12 transition-transform duration-200" />
-                       <span className="absolute -bottom-1 -right-1 w-2.5 h-2.5 rounded-full bg-amber-400 ring-2 ring-[#141212] shadow-[0_0_8px_rgba(245,158,11,1)]" />
+                       <Swords size={22} strokeWidth={2} />
                      </div>
-                     <span className="absolute -top-2 -left-1 bg-gradient-to-r from-amber-600 to-red-600 text-amber-100 text-[9px] font-mono font-black px-1.5 py-0.5 rounded-full border border-amber-400/80 shadow-md">
+                     <span className="absolute -top-2 -left-1 bg-[#201d1d] text-[#fdfcfc] text-[9px] font-mono px-1 py-0.5 rounded-sm border border-[#646262]">
                        PVP
                      </span>
                    </button>
-                   <span className="text-[10px] font-mono font-black tracking-tight text-amber-400 bg-[#141212]/90 border border-amber-500/50 px-1.5 py-0.5 rounded shadow-md pointer-events-none whitespace-nowrap">
+                   <span className="text-[11px] font-mono text-[var(--ui-ink)] bg-[var(--ui-canvas)] px-1.5 py-0.5 pointer-events-none whitespace-nowrap">
                      {language === 'ko' ? '랭킹대전' : 'RANK PVP'}
                    </span>
                  </div>
@@ -6762,21 +6765,19 @@ function AppContent() {
                       if (!isChatOpen) setUnreadCount(0);
                     }}
                     className={cn(
-                      "w-13 h-13 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center transition-all active:scale-95 relative shadow-2xl hover:scale-105 border-2 cursor-pointer touch-target",
+                      "w-11 h-11 rounded-sm flex items-center justify-center transition-colors relative border cursor-pointer touch-target",
                       isChatOpen
-                        ? "bg-[#2b0e0e] border-rose-500/90 text-rose-300 shadow-[0_0_24px_rgba(244,63,94,0.55)] ring-2 ring-rose-400/40"
-                        : "bg-[#141212] border-cyan-400/80 text-cyan-300 shadow-[0_8px_28px_rgba(0,0,0,0.65),0_0_16px_rgba(6,182,212,0.35)] hover:bg-[#1f1b1b] hover:border-cyan-300 hover:text-white hover:shadow-[0_0_25px_rgba(6,182,212,0.6)]",
-                      (!isChatOpen && unreadCount > 0) && "ring-4 ring-yellow-400 ring-offset-2 ring-offset-slate-900 animate-bounce"
+                        ? "bg-[#201d1d] border-[#646262] text-[#fdfcfc]"
+                        : "bg-[var(--ui-canvas)] border-[var(--ui-line)] text-[var(--ui-ink)] hover:bg-[var(--ui-surface)]"
                     )}
                     aria-label={isChatOpen ? (language === 'ko' ? '채팅창 닫기' : 'Close Chat') : (language === 'ko' ? '실시간 통신망 채팅 열기' : 'Open Live Chat')}
                     title={isChatOpen ? (language === 'ko' ? '채팅창 닫기' : 'Close Chat') : (language === 'ko' ? '실시간 통신망 채팅 열기' : 'Open Live Chat')}
                   >
                     {isChatOpen ? (
-                      <X size={28} strokeWidth={2.8} className="text-rose-300 drop-shadow-[0_2px_8px_rgba(244,63,94,0.8)]" />
+                      <X size={22} strokeWidth={2} />
                     ) : (
                       <div className="relative flex items-center justify-center">
-                        <MessageCircle size={28} strokeWidth={2.5} className="text-cyan-300 fill-cyan-400/20 drop-shadow-[0_2px_8px_rgba(6,182,212,0.6)]" />
-                        <span className="absolute -bottom-1 -right-1 w-2.5 h-2.5 rounded-full bg-cyan-400 ring-2 ring-[#141212] shadow-[0_0_8px_rgba(6,182,212,1)]" />
+                        <MessageCircle size={22} strokeWidth={2} />
                       </div>
                     )}
                     <AnimatePresence>
@@ -6786,23 +6787,16 @@ function AppContent() {
                           initial={{ scale: 0, opacity: 0 }}
                           animate={{ scale: 1, opacity: 1 }}
                           exit={{ scale: 0, opacity: 0 }}
-                          className="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] font-black min-w-[22px] h-5.5 rounded-full flex items-center justify-center border-2 border-white px-1 shadow-lg animate-pulse z-10"
+                          className="absolute -top-2 -right-2 bg-[#9a392e] text-white text-[10px] font-bold min-w-[22px] h-5.5 rounded-sm flex items-center justify-center border border-white px-1 z-10"
                         >
                           {unreadCount > 99 ? '99+' : unreadCount}
                         </motion.span>
                       )}
                     </AnimatePresence>
                     
-                    {/* Visual glow when new messages are pending */}
-                    {!isChatOpen && unreadCount > 0 && (
-                      <div className="absolute inset-0 rounded-full animate-ping bg-yellow-400 opacity-20 pointer-events-none" />
-                    )}
                   </button>
                   <span className={cn(
-                    "text-[10px] font-mono font-black tracking-tight px-1.5 py-0.5 rounded shadow-md pointer-events-none whitespace-nowrap border",
-                    isChatOpen
-                      ? "text-rose-400 bg-[#2b0e0e]/90 border-rose-500/50"
-                      : "text-cyan-300 bg-[#141212]/90 border-cyan-500/50"
+                    "text-[11px] font-mono px-1.5 py-0.5 pointer-events-none whitespace-nowrap text-[var(--ui-ink)] bg-[var(--ui-canvas)]"
                   )}>
                     {isChatOpen
                       ? (language === 'ko' ? '닫기' : 'CLOSE')
@@ -8005,7 +7999,7 @@ function AppContent() {
       )}
 
       {/* Global WebMCP (Chrome 149+ AI Agent) Active Tool Status Badge */}
-      <WebMcpActiveBadge currentScreen={view} />
+      {(simulationUser || view === 'modoo' || view === 'admin') && <WebMcpActiveBadge currentScreen={view} />}
 
       </div>
 

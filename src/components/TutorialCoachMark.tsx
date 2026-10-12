@@ -1,5 +1,5 @@
 import React from 'react';
-import { AnimatePresence, motion } from 'motion/react';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { ArrowRight, Ban, Clock3, Compass, Check } from 'lucide-react';
 import { t } from '../lib/i18n';
 import type { Language } from '../types';
@@ -40,7 +40,8 @@ export const TutorialCoachMark: React.FC<TutorialCoachMarkProps> = ({
   onNeverShow,
 }) => {
   const isLastStep = stepIndex >= totalSteps - 1;
-  const motionProps = lowSpecMode
+  const reducedMotion = useReducedMotion();
+  const motionProps = lowSpecMode || reducedMotion
     ? {}
     : {
         initial: { opacity: 0, y: 16, scale: 0.98 },
@@ -55,23 +56,23 @@ export const TutorialCoachMark: React.FC<TutorialCoachMarkProps> = ({
         <div className={cn('fixed inset-0 z-[100100] pointer-events-none flex p-4 sm:p-6', placementClasses[placement])}>
           <motion.aside
             {...motionProps}
-            className="pointer-events-auto w-full max-w-md rounded-[24px] border border-slate-200/80 bg-white/95 p-5 shadow-[0_18px_48px_rgba(15,23,42,0.18)] backdrop-blur-xl"
+            className="pointer-events-auto w-full max-w-md max-h-[calc(100dvh-8rem)] overflow-y-auto rounded-none border border-[var(--ui-line)] bg-[var(--ui-canvas)] text-[var(--ui-ink)] p-5 font-mono"
             role="dialog"
-            aria-modal="true"
+            aria-modal="false"
             aria-live="polite"
             aria-label={t('contextual_tutorial_badge', language)}
           >
             <div className="flex items-start gap-3">
-              <div className="mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600">
+              <div className="mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-sm border border-[var(--ui-line)] bg-[var(--ui-surface)]">
                 <Compass size={20} />
               </div>
               <div className="min-w-0 flex-1 space-y-3">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
-                    <span className="inline-flex items-center rounded-full bg-indigo-50 px-2.5 py-1 text-[11px] font-bold tracking-wide text-indigo-700">
+                    <span className="inline-flex items-center text-xs font-bold tracking-wide">
                       {t('contextual_tutorial_badge', language)}
                     </span>
-                    <span className="text-xs font-semibold text-slate-500">
+                    <span className="text-xs text-[var(--ui-muted)]">
                       {t('contextual_tutorial_progress', language, {
                         current: stepIndex + 1,
                         total: totalSteps,
@@ -81,15 +82,15 @@ export const TutorialCoachMark: React.FC<TutorialCoachMarkProps> = ({
                   <button
                     type="button"
                     onClick={onNeverShow}
-                    className="p-1 text-slate-400 hover:text-slate-700 transition-colors"
+                    className="min-h-11 min-w-11 rounded-sm text-[var(--ui-muted)] hover:text-[var(--ui-ink)] transition-colors"
                     aria-label="Close guide"
                   >
                     [X]
                   </button>
                 </div>
                 <div className="space-y-1.5">
-                  <h3 className="text-base font-black text-slate-900 sm:text-lg">{title}</h3>
-                  <p className="text-sm leading-6 text-slate-600">{body}</p>
+                  <h3 className="text-base font-bold sm:text-lg">{title}</h3>
+                  <p className="text-sm leading-6 text-[var(--ui-muted)]">{body}</p>
                 </div>
               </div>
             </div>
@@ -98,7 +99,7 @@ export const TutorialCoachMark: React.FC<TutorialCoachMarkProps> = ({
               <button
                 type="button"
                 onClick={onLater}
-                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-600 transition hover:border-slate-300 hover:text-slate-900 active:scale-[0.98]"
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-sm border border-[var(--ui-line)] bg-[var(--ui-surface)] px-4 text-sm font-medium transition-colors hover:border-[var(--ui-muted)]"
               >
                 <Clock3 size={16} />
                 {t('contextual_tutorial_later', language)}
@@ -106,7 +107,7 @@ export const TutorialCoachMark: React.FC<TutorialCoachMarkProps> = ({
               <button
                 type="button"
                 onClick={onNeverShow}
-                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-600 transition hover:border-slate-300 hover:text-slate-900 active:scale-[0.98]"
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-sm border border-[var(--ui-line)] bg-[var(--ui-surface)] px-4 text-sm font-medium transition-colors hover:border-[var(--ui-muted)]"
               >
                 <Ban size={16} />
                 {t('contextual_tutorial_never', language)}
@@ -114,7 +115,7 @@ export const TutorialCoachMark: React.FC<TutorialCoachMarkProps> = ({
               <button
                 type="button"
                 onClick={onNext}
-                className="ml-auto inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-indigo-600 px-4 text-sm font-bold text-white transition hover:bg-indigo-500 active:scale-[0.98]"
+                className="ml-auto inline-flex min-h-11 items-center justify-center gap-2 rounded-sm border border-[var(--ui-muted)] bg-[#201d1d] px-4 text-sm font-bold text-[#fdfcfc] transition-colors hover:bg-[#302c2c]"
               >
                 {isLastStep ? <Check size={16} /> : <ArrowRight size={16} />}
                 {t(isLastStep ? 'contextual_tutorial_done' : 'contextual_tutorial_next', language)}

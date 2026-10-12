@@ -202,7 +202,14 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
   } as Record<string, string>)[normalizedCardRarity] || '#956746';
   const owner = downloadMode ? (downloadMode === 'ally' ? 'player' : 'ai') : activeCard.owner;
   const ownerLabel = owner === 'player' ? t('you', language) : owner === 'ai' ? t('opponent_deck', language) : '';
-  const ownerAccent = owner === 'player' ? '#426c87' : '#9a5148';
+  const ownerAccent = owner === 'player' ? '#2563eb' : '#dc2626';
+  const showOwnership = isOnBoard && !isMatgo && !!owner;
+  const typeSurface = ({
+    water: 'bg-[#d9effc]', fire: 'bg-[#fce1ce]', wind: 'bg-[#e1f3ef]',
+    earth: 'bg-[#ebedc8]', land: 'bg-[#ebedc8]', human: 'bg-[#f6edcf]',
+    undead: 'bg-[#ece0f4]', elf: 'bg-[#e0efd6]', dwarf: 'bg-[#efe2d1]',
+    monster: 'bg-[#e5ead4]', robot: 'bg-[#e3e9ef]', dragon: 'bg-[#f1def0]',
+  } as Record<string, string>)[ipProfile?.faction || race || ''] || 'bg-[#f6edcf]';
   const abilityDescription = language === 'ko'
     ? activeCard.ability?.description_ko || activeCard.ability?.description_en
     : activeCard.ability?.description_en;
@@ -215,7 +222,8 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
     return (
       <div
         className={cn(
-          'absolute z-30 flex h-[18cqw] min-w-[26cqw] items-center justify-center gap-[1.5cqw] rounded-none border border-[#646262] bg-[#fdfcfc] px-[2cqw] font-mono leading-none tabular-nums',
+          'z-30 flex items-center justify-center gap-[1.5cqw] border border-[#201d1d]/25 bg-[#fff9e9] px-[1cqw] font-mono leading-none tabular-nums',
+          isOnBoard ? 'absolute h-[18cqw] min-w-[26cqw] rounded-sm' : 'relative h-[15cqw] min-w-0 rounded-sm',
           highlighted && 'border-[#201d1d] bg-[#201d1d] text-[#fdfcfc]',
           positionClass,
         )}
@@ -244,13 +252,15 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
         !className?.includes('w-') && !className?.includes('h-') && 'h-28 w-20 sm:h-32 sm:w-24 md:h-44 md:w-32',
         onClick && 'cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#201d1d]',
         className,
-        'rounded-none font-mono shadow-none',
+        'rounded-sm font-mono shadow-none',
       )}
       onClick={onClick}
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
       aria-label={displayCardName}
       aria-pressed={onClick ? !!isSelected : undefined}
+      data-card-layout={isOnBoard ? 'board' : 'tcg'}
+      data-owner={owner || undefined}
       onKeyDown={onClick ? event => {
         if (event.key === 'Enter' || event.key === ' ') {
           event.preventDefault();
@@ -258,22 +268,39 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
         }
       } : undefined}
     >
-      <div className="pointer-events-none absolute inset-0 z-0 border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc]" />
-      {!shouldHideBg && (
-        <div className="pointer-events-none absolute inset-x-0 top-0 z-40 h-[2px]" style={{ backgroundColor: isOnBoard && !isMatgo && owner ? ownerAccent : rarityAccent }} />
-      )}
+      <div className={cn(
+        'pointer-events-none absolute inset-0 z-0 rounded-sm border',
+        !shouldHideBg && !showOwnership && 'border-[#b38b22] bg-[#f8d34f]',
+        showOwnership && owner === 'player' && 'border-[#2563eb] bg-[#2563eb]',
+        showOwnership && owner === 'ai' && 'border-[#dc2626] bg-[#dc2626]',
+        shouldHideBg && !showOwnership && 'border-transparent',
+      )} />
+      {!shouldHideBg && <div className={cn(
+        'pointer-events-none absolute inset-[4cqw] z-0 rounded-sm border border-[#201d1d]/25',
+        showOwnership ? owner === 'player' ? 'bg-[#dbeafe]' : 'bg-[#fee2e2]' : typeSurface,
+      )} />}
 
       {!isOnBoard && (
-        <div className="absolute inset-x-px top-px z-20 flex h-[12cqw] items-center justify-between gap-[2cqw] border-b border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] px-[4cqw] text-[5.5cqw] leading-none">
-          <span className="shrink-0 tabular-nums text-[#646262]">#{String(visualCardId ?? activeCard.id).padStart(3, '0')}</span>
-          <span className="truncate font-bold uppercase" title={t(`rarity_${rarityTier}`, language)}>{t(`rarity_${rarityTier}`, language)}</span>
+        <div className="absolute inset-x-[7cqw] top-[6cqw] z-20 flex h-[17cqw] flex-col justify-center gap-[2cqw] leading-none">
+          <div className="flex items-center justify-between gap-[2cqw] text-[5cqw]">
+            <span className="truncate font-bold uppercase" style={{ color: rarityAccent }}>{t(`rarity_${rarityTier}`, language)}</span>
+            <span className="shrink-0 tabular-nums">{t('level', language)} {activeCard.level}</span>
+          </div>
+          <div className="flex min-w-0 items-center justify-between gap-[2cqw]">
+            <span className="min-w-0 truncate text-[8cqw] font-bold" title={displayCardName}>{displayCardName}</span>
+            <span className="flex shrink-0 items-center gap-[1cqw]" title={t('wiki_power', language)}>
+              <Zap className="h-[6cqw] w-[6cqw]" />
+              <span className="text-[9cqw] font-bold tabular-nums">{powerScore}{hasPowerBonus && '+'}</span>
+              <FactionIcon className="h-[8cqw] w-[8cqw] rounded-full border border-[#201d1d]/30 p-[1cqw]" />
+            </span>
+          </div>
         </div>
       )}
 
       <div className={cn(
-        'pointer-events-none absolute inset-x-px z-10 overflow-hidden',
-        isOnBoard ? 'bottom-[13cqw] top-px' : 'bottom-[30cqw] top-[12cqw]',
-        !shouldHideBg && 'bg-[#f8f7f7]',
+        'pointer-events-none absolute z-10 overflow-hidden border border-[#201d1d]/30 [container-type:size]',
+        isOnBoard ? 'inset-x-[4cqw] bottom-[17cqw] top-[4cqw]' : 'inset-x-[8cqw] bottom-[49cqw] top-[26cqw]',
+        !shouldHideBg && (showOwnership ? owner === 'player' ? 'bg-[#eff6ff]' : 'bg-[#fff1f2]' : 'bg-[#fff9e9]'),
       )}>
         {currentImageSource ? (
           isSpriteSheet(currentImageSource) && visualCardId ? (
@@ -282,7 +309,7 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
               <div
                 role="img"
                 aria-label={displayCardName}
-                className="absolute left-1/2 top-1/2 w-[92%] -translate-x-1/2 -translate-y-1/2"
+                className="absolute left-1/2 top-1/2 w-[min(92cqw,87cqh)] -translate-x-1/2 -translate-y-1/2"
                 style={{ ...getSpritePosition(visualCardId, currentImageSource), aspectRatio: '19 / 20' }}
               />
             </>
@@ -314,16 +341,16 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
         )}
       </div>
 
-      <div className={cn(
+      {isOnBoard && <div className={cn(
         'absolute left-[3cqw] z-30 flex items-center gap-[1cqw] border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] px-[2cqw] py-[1.5cqw] leading-none',
         isOnBoard ? 'top-[3cqw]' : 'top-[15cqw]',
       )} title={t('wiki_power', language)}>
         <Zap className="h-[6cqw] w-[6cqw]" strokeWidth={1.5} />
         <span className="text-[8cqw] font-bold tabular-nums">{powerScore}</span>
         {hasPowerBonus && <span className="text-[5cqw] font-bold">+</span>}
-      </div>
+      </div>}
 
-      {!hideStats && (
+      {!hideStats && isOnBoard && (
         <>
           {renderStatBadge(0, isOnBoard ? 'top-[3cqw] left-1/2 -translate-x-1/2' : 'top-[15cqw] left-1/2 -translate-x-1/2')}
           {renderStatBadge(1, 'right-[3cqw] top-[46%] -translate-y-1/2')}
@@ -333,10 +360,19 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
       )}
 
       <div className={cn(
-        'absolute inset-x-px bottom-px z-20 flex flex-col justify-center border-t border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] px-[4cqw]',
-        isOnBoard ? 'h-[13cqw]' : 'h-[30cqw] gap-[2cqw]',
+        'absolute z-20 flex flex-col justify-center',
+        isOnBoard ? 'inset-x-[4cqw] bottom-[4cqw] h-[13cqw] px-[2cqw]' : 'inset-x-[8cqw] bottom-[6cqw] h-[42cqw] gap-[1.5cqw]',
+        showOwnership && 'text-white',
+        showOwnership && (owner === 'player' ? 'bg-[#2563eb]' : 'bg-[#dc2626]'),
       )}>
-        {!isOnBoard && <div className="truncate text-[8cqw] font-bold leading-tight" title={displayCardName}>{displayCardName}</div>}
+        {!isOnBoard && !hideStats && (
+          <div className="grid grid-cols-4 gap-[1cqw]">
+            {statDirections.map((direction, index) => <React.Fragment key={direction}>{renderStatBadge(index, '')}</React.Fragment>)}
+          </div>
+        )}
+        {!isOnBoard && abilityDescription && (
+          <p className="truncate border-b border-[#201d1d]/20 pb-[1.5cqw] text-[5.5cqw] leading-[1.35]" title={abilityDescription}>{abilityDescription}</p>
+        )}
         <div className="flex min-w-0 items-center justify-between gap-[2cqw] text-[6cqw] leading-none">
           <div className="flex min-w-0 items-center gap-[1.5cqw]">
             {isSelected && <span className="font-bold" title={t('pg_selected', language)}>[x]</span>}
@@ -347,7 +383,7 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
                 <span className="truncate">{ownerLabel}</span>
               </span>
             ) : !isOnBoard && factionDef ? (
-              <span className="flex min-w-0 items-center gap-[1cqw] text-[#646262]" title={t(factionDef.nameKey, language)}>
+              <span className="flex min-w-0 items-center gap-[1cqw]" title={t(factionDef.nameKey, language)}>
                 <FactionIcon className="h-[6cqw] w-[6cqw] shrink-0" />
                 <span className="truncate">{t(factionDef.nameKey, language)}</span>
               </span>
@@ -368,19 +404,23 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
             </span>
           )}
         </div>
+        {!isOnBoard && <div className="flex items-center justify-between gap-[2cqw] border-t border-[#201d1d]/20 pt-[2cqw] text-[5cqw] leading-none">
+          <span className="truncate tabular-nums">#{String(visualCardId ?? activeCard.id).padStart(3, '0')}</span>
+          <span className="flex items-center gap-[1cqw] font-bold" style={{ color: rarityAccent }}><Star className="h-[5cqw] w-[5cqw]" fill={rarityAccent} />SNSHERO</span>
+        </div>}
       </div>
 
       {!isOnBoard && resolvedSkin && !downloadMode && (
-        <div className="absolute right-[3cqw] top-[15cqw] z-30 flex max-w-[32cqw] items-center gap-[1cqw] border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] px-[1.5cqw] py-[1cqw] text-[5cqw] leading-none" title={t(resolvedSkin.nameKey, language)}>
+        <div className="absolute right-[9cqw] top-[28cqw] z-30 flex max-w-[32cqw] items-center gap-[1cqw] border border-[#201d1d]/25 bg-[#fff9e9] px-[1.5cqw] py-[1cqw] text-[5cqw] leading-none" title={t(resolvedSkin.nameKey, language)}>
           <span>{resolvedSkin.fallbackEmoji}</span>
           <span className="truncate">{t(resolvedSkin.nameKey, language)}</span>
         </div>
       )}
       {!isOnBoard && !resolvedSkin && isOriginalMechaTheme && themeVisual && (
-        <span className="absolute right-[3cqw] top-[15cqw] z-30 max-w-[30cqw] truncate border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] px-[1.5cqw] py-[1cqw] text-[5cqw]" title={t('card_skin_theme_mecha_badge', language)}>{themeVisual.serialCode}</span>
+        <span className="absolute right-[9cqw] top-[28cqw] z-30 max-w-[30cqw] truncate border border-[#201d1d]/25 bg-[#fff9e9] px-[1.5cqw] py-[1cqw] text-[5cqw]" title={t('card_skin_theme_mecha_badge', language)}>{themeVisual.serialCode}</span>
       )}
       {(activeCard.growth || 0) > 0 && !isOnBoard && (
-        <div className="absolute bottom-[57cqw] left-1/2 z-20 flex -translate-x-1/2 gap-[0.5cqw] border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] px-[1cqw] py-[0.5cqw]">
+        <div className="absolute bottom-[51cqw] left-1/2 z-20 flex -translate-x-1/2 gap-[0.5cqw] border border-[#201d1d]/25 bg-[#fff9e9] px-[1cqw] py-[0.5cqw]">
           {Array.from({ length: 5 }).map((_, i) => <Star key={i} className="h-[5cqw] w-[5cqw]" fill={i < (activeCard.growth || 0) ? '#201d1d' : 'none'} strokeWidth={1.5} />)}
         </div>
       )}

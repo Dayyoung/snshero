@@ -1,4 +1,11 @@
 export const en = {
+    ui_lobby_patrol_rewards: '[+] Offline patrol rewards',
+    ui_deck_presets: 'Deck presets',
+    ui_lobby_auto_battle_off: 'Auto matchmaking is off',
+    ui_lobby_auto_battle_in: 'Auto matchmaking in',
+    ui_lobby_auto_battle_enable: '[Enable auto match]',
+    ui_lobby_auto_battle_pause: '[Pause]',
+    ui_lobby_milestone_reward: '[+] Milestone 600: collect your limited rewards',
     backup_data: 'Backup Data (Animated QR)',
     restore_data: 'Restore Data (Camera Stream Scan)',
     backup_modal_title: 'Data Backup QR Code',

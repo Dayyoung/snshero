@@ -466,6 +466,23 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
                 </div>
               )}
 
+              {/* 본문 직후 고수익 In-Article 구글 애드센스 네이티브 광고 (CTR 극대화) */}
+              <div className={`my-4 p-2.5 rounded-xl border overflow-hidden ${
+                isDark ? 'bg-[#181C1F]/80 border-[#22272B]' : 'bg-gray-50 border-gray-200'
+              }`}>
+                <div className="flex items-center justify-between text-[10px] font-bold text-[#FF4500] uppercase tracking-wider mb-1.5 px-1">
+                  <span>{isKo ? '구글 뉴스 추천 스폰서' : 'News In-Article Sponsor'}</span>
+                  <span className="opacity-40">Ad</span>
+                </div>
+                <div className="min-h-[100px] flex items-center justify-center">
+                  <AdSenseBanner
+                    format="fluid"
+                    responsive={true}
+                    className="w-full flex justify-center"
+                  />
+                </div>
+              </div>
+
               {/* 언론사 원문 기사 전문 더보기 (새 창 열기) */}
               {post.sourceUrl && (
                 <div className="mb-6">

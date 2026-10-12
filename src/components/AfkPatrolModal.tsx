@@ -45,6 +45,8 @@ export const AfkPatrolModal: React.FC<AfkPatrolModalProps> = ({ language, onClai
       setElapsedHours(diffHours);
       setEarnedSns(sns);
       setIsOpen(true);
+    } else {
+      onClose?.();
     }
   }, [canShow]);
 
@@ -67,7 +69,7 @@ export const AfkPatrolModal: React.FC<AfkPatrolModalProps> = ({ language, onClai
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs font-mono">
+      <div className="fixed inset-0 z-[100100] flex items-center justify-center p-4 bg-black/60 font-mono">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -77,7 +79,8 @@ export const AfkPatrolModal: React.FC<AfkPatrolModalProps> = ({ language, onClai
           {/* Close Button */}
           <button
             onClick={handleClose}
-            className="absolute top-3 right-3 p-1.5 text-[#646262] hover:text-[#201d1d] rounded-sm hover:bg-[#f8f7f7] transition-colors cursor-pointer"
+            className="absolute top-3 right-3 min-w-11 min-h-11 flex items-center justify-center text-[#646262] hover:text-[#201d1d] rounded-sm hover:bg-[#f8f7f7] transition-colors cursor-pointer"
+            aria-label={language === 'ko' ? '닫기' : 'Close'}
           >
             <X size={18} />
           </button>

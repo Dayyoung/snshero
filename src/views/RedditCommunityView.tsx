@@ -50,6 +50,7 @@ import { RedditFloatingPlayButton } from '../components/reddit/RedditFloatingPla
 import { RedditQuickCreatePostBar } from '../components/reddit/RedditQuickCreatePostBar';
 import { RedditCreateCommunityModal } from '../components/reddit/RedditCreateCommunityModal';
 import { useAdSenseAutoAds } from '../hooks/useAdSenseAutoAds';
+import { AdSenseBanner } from '../components/AdSenseBanner';
 import { SEED_SUBREDDITS } from '../data/redditSeedData';
 
 interface RedditCommunityViewProps {
@@ -740,6 +741,23 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
                     onSelectViewMode={handleSelectViewMode}
                   />
 
+                  {/* 피드 최상단 고수익 구글 애드센스 디스플레이 스폰서 배너 (Above-The-Fold) */}
+                  <div className={`p-3 mb-3 rounded-2xl border transition-all overflow-hidden ${
+                    isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'
+                  }`}>
+                    <div className="flex items-center justify-between text-[10px] font-bold text-[#FF4500] uppercase tracking-wider mb-2">
+                      <span>{isKo ? '실시간 뉴스 스폰서' : 'News Live Sponsor'}</span>
+                      <span className="opacity-40">Ad</span>
+                    </div>
+                    <div className="min-h-[100px] flex items-center justify-center">
+                      <AdSenseBanner
+                        format="horizontal"
+                        responsive={true}
+                        className="w-full flex justify-center"
+                      />
+                    </div>
+                  </div>
+
                   {/* 피드 포스트 목록: 오직 구글 뉴스만 표시되고, SNSHero 관련 글은 광고처럼 중간중간 표시 */}
                   <div className="space-y-2">
                     {posts.length > 0 ? (
@@ -806,8 +824,8 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
                                 </div>
                               )}
 
-                              {/* 3. 상단 5개 포스트 이후부터 6개 간격으로 구글 애드센스 인피드 광고 노출 */}
-                              {idx >= 5 && (idx + 1) % 6 === 0 && (
+                              {/* 3. 상단 3개 포스트 이후부터 4개 간격으로 구글 애드센스 인피드 광고 노출 (수익 극대화) */}
+                              {idx >= 3 && (idx + 1) % 4 === 0 && (
                                 <RedditAdCard 
                                   isDark={isDark} 
                                   isKo={isKo} 

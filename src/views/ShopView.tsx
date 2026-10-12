@@ -2988,14 +2988,14 @@ export const ShopView: React.FC<ShopViewProps> = ({
       components: "buttons"
     }}>
       <>
-        <div className="pb-[calc(11rem+env(safe-area-inset-bottom,0px))] sm:pb-[calc(12rem+env(safe-area-inset-bottom,0px))] w-full max-w-4xl mx-auto min-h-screen bg-transparent text-slate-900 font-sans selection:bg-indigo-500 selection:text-white overflow-x-hidden">
+        <div className="pb-[calc(11rem+env(safe-area-inset-bottom,0px))] sm:pb-[calc(12rem+env(safe-area-inset-bottom,0px))] w-full max-w-4xl mx-auto min-h-screen bg-[#fdfcfc] text-[#201d1d] font-mono selection:bg-[#201d1d] selection:text-[#fdfcfc] overflow-x-hidden">
           <div className="flex items-center justify-between px-4 sm:px-6 md:px-8 pt-4 pb-2">
             <div className="flex items-center gap-2">
               <PageHeader title={t('shop', language)} />
               <button
                 type="button"
                 onClick={() => setHelpPopupState({ step: 0 })}
-                className="inline-flex min-h-[36px] min-w-[36px] items-center justify-center rounded-full border border-slate-300 bg-white text-slate-600 shadow-sm transition hover:border-slate-900 hover:bg-slate-50 hover:text-slate-900 active:scale-95 touch-target"
+                className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-sm border border-[#0f0000]/12 bg-[#fdfcfc] text-[#646262] transition-colors hover:bg-[#f1eeee] hover:text-[#201d1d]"
                 aria-label={language === 'ko' ? '도움말' : 'Help'}
               >
                 <HelpCircle size={18} />
@@ -3004,12 +3004,14 @@ export const ShopView: React.FC<ShopViewProps> = ({
           </div>
           <div className="p-4 sm:p-6 md:p-8 pt-0 sm:pt-0 md:pt-0 flex flex-col gap-6 sm:gap-8 md:gap-10 w-full max-w-full overflow-x-hidden">
 
-            <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <div className="rounded-none border border-[#0f0000]/12 bg-[#f8f7f7] p-4 sm:p-5">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div className="min-w-0">
-                  <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.18em] text-slate-500">
-                    <History size={14} className="shrink-0 text-slate-400" />
-                    <span>{t('sns_history', language)}</span>
+                  <div className="text-xs font-bold text-[#646262]">
+                    <span>{t('owned_coins', language)}</span>
+                  </div>
+                  <div className="mt-2 break-all text-2xl sm:text-3xl font-bold tabular-nums" title={`${sns.toLocaleString()} SNS`}>
+                    {sns.toLocaleString()} <span className="text-sm font-normal text-[#646262]">SNS</span>
                   </div>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
@@ -3020,7 +3022,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                       setIsTokenExchangeOpen(true);
                     }}
-                    className="inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-xl border border-amber-300 bg-amber-50 px-3.5 py-2.5 text-xs font-bold text-amber-950 transition-all hover:bg-amber-100 active:scale-95 cursor-pointer"
+                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-sm border border-[#0f0000]/12 bg-[#fdfcfc] px-4 py-3 text-xs font-bold text-[#201d1d] transition-colors hover:bg-[#f1eeee] cursor-pointer"
                   >
                     <ArrowDownUp size={14} className="text-amber-700" />
                     <span>{language === 'ko' ? '토큰 환전 (Swap)' : 'Token Swap'}</span>
@@ -3032,7 +3034,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                       setShowHistory(true);
                     }}
-                    className="inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 transition-all active:scale-95 hover:border-slate-400 hover:bg-slate-100 cursor-pointer touch-target sm:w-auto"
+                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-sm border border-[#0f0000]/12 bg-[#fdfcfc] px-4 py-3 text-xs font-bold text-[#201d1d] transition-colors hover:bg-[#f1eeee] cursor-pointer"
                     title={t('sns_history', language)}
                     aria-label={t('sns_history', language)}
                   >
@@ -4078,27 +4080,8 @@ export const ShopView: React.FC<ShopViewProps> = ({
           </AnimatePresence>
 
 
-          <div className="mb-2 flex justify-end">
-            <div
-              className={cn(
-                "min-w-[160px] rounded-xl border p-4 shadow-sm sm:min-w-[180px] sm:p-6 md:min-w-[200px]",
-                testMode ? "border-red-200 bg-red-50 text-red-600 animate-pulse" : "border-slate-100 bg-white text-slate-800"
-              )}
-            >
-              <div className="flex items-center gap-2 mb-1">
-                <Zap size={12} className="sm:w-3.5 sm:h-3.5 text-yellow-500 animate-pulse" />
-                <span className="text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-400">
-                  {t('owned_coins', language)}
-                </span>
-              </div>
-              <span className={cn("font-bold tracking-tighter truncate block text-slate-900", sns.toLocaleString().length > 8 ? "text-xl sm:text-2xl" : sns.toLocaleString().length > 5 ? "text-2xl sm:text-3xl" : "text-3xl sm:text-4xl")} title={`${sns.toLocaleString()} SNS`}>
-                {sns.toLocaleString()} <span className="text-xs sm:text-sm text-slate-400 tracking-widest font-normal">SNS</span>
-              </span>
-            </div>
-          </div>
-
           {/* ID 438: Live Lucky Drop Ticker Marquee */}
-          <div className="w-full bg-[#1a1717] border border-amber-500/40 text-amber-300 py-1.5 px-3 rounded-none font-mono text-[10px] overflow-hidden select-none mb-3 flex items-center justify-between gap-2 shadow-sm">
+          <div className="w-full bg-[#f8f7f7] border border-[#0f0000]/12 text-[#646262] py-3 px-4 rounded-none font-mono text-xs overflow-hidden select-none flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 truncate min-w-0 flex-1">
               <span className="bg-amber-500 text-black font-black px-1 py-0.2 uppercase text-[9px] shrink-0">LIVE</span>
               <span className="truncate min-w-0">
@@ -4115,7 +4098,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
             const goldPity = getGachaPityView(gachaPityState, 'gold');
             const goldPityPct = Math.min(100, Math.max(0, Math.round((goldPity.current / goldPity.threshold) * 100)));
             return (
-              <div className="w-full bg-white dark:bg-[#1a1717] border border-slate-200 dark:border-white/15 p-3 rounded-none font-mono text-xs mb-4 space-y-2.5 shadow-xs">
+              <div className="w-full bg-[#f8f7f7] border border-[#0f0000]/12 p-4 rounded-none font-mono text-xs space-y-3">
                 {/* Row 1: Daily Free Roulette Beacon & Free Summon Action */}
                 <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-white/10 pb-2">
                   <div className="flex items-center gap-2 flex-wrap">
@@ -4128,7 +4111,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       <button
                         type="button"
                         onClick={handleDailyFreeSummon}
-                        className="px-2.5 py-1 bg-emerald-500 hover:bg-emerald-400 text-black font-black text-[10px] rounded-sm transition-transform active:scale-95 flex items-center gap-1 animate-pulse cursor-pointer shadow-xs"
+                        className="min-h-11 px-4 py-3 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] font-bold text-xs rounded-sm transition-colors flex items-center gap-2 cursor-pointer"
                       >
                         <Sparkles size={11} className="shrink-0" />
                         <span>{language === 'ko' ? '🎁 일일 무료 소환 [READY]' : '🎁 Daily Free Summon [READY]'}</span>
@@ -4173,7 +4156,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   </div>
 
                   {/* ID 433: Instant Open (Skip Pack Animation) Toggle */}
-                  <label className="flex items-center gap-2 cursor-pointer select-none">
+                  <label className="min-h-11 flex items-center gap-3 cursor-pointer select-none">
                     <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400">
                       {language === 'ko' ? '⚡ 즉시 개봉 (연출 스킵)' : '⚡ Instant Open'}
                     </span>
@@ -4280,7 +4263,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
           )}
 
           {/* ID 413: 월간 과금 한도 및 누적 사용액 게이지 배너 */}
-          <div className="p-3 bg-white border border-slate-200 rounded-xl shadow-xs font-mono text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+          <div className="p-4 bg-[#f8f7f7] border border-[#0f0000]/12 rounded-none font-mono text-xs leading-relaxed flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <ShieldAlert size={16} className={monthlySpentSns >= monthlyLimitSns * 0.8 ? "text-rose-500 animate-pulse" : "text-slate-400"} />
               <div>
@@ -4300,58 +4283,60 @@ export const ShopView: React.FC<ShopViewProps> = ({
           </div>
 
           {/* Phase 3 상점 편의 기능 액션 바 (ID 518, ID 533, ID 548, ID 583) */}
-          <div id="shop-convenience-bar" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 mb-4 font-mono text-xs">
+          <details id="shop-convenience-bar" className="border border-[#0f0000]/12 bg-[#f8f7f7] rounded-none font-mono">
+            <summary className="min-h-11 p-4 text-sm font-bold cursor-pointer">{t('details', language)}</summary>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4 pt-0 font-mono text-xs">
             {/* ID 518: 일일 할인 50 AP 물약 */}
-            <div className="p-2.5 bg-cyan-950/40 border border-cyan-500/40 rounded-xl flex items-center justify-between text-cyan-200">
+            <div className="p-3 bg-[#fdfcfc] border border-[#0f0000]/12 rounded-none flex flex-wrap gap-3 items-center justify-between text-[#201d1d]">
               <div className="min-w-0">
                 <div className="font-bold text-[11px] truncate">🧪 50 AP 물약 (50% 할인)</div>
-                <div className="text-[10px] text-cyan-400">오늘 구매: {todayApPotionsBought}/2회</div>
+                <div className="text-xs text-[#646262] mt-1">오늘 구매: {todayApPotionsBought}/2회</div>
               </div>
               <button
                 type="button"
                 disabled={todayApPotionsBought >= 2}
                 onClick={handleBuyApPotion}
-                className="px-2 py-1 bg-cyan-600 hover:bg-cyan-500 disabled:bg-slate-800 disabled:text-slate-600 text-white font-black text-[10px] rounded-lg active:scale-95 transition-all cursor-pointer shadow-xs shrink-0"
+                className="min-h-11 px-3 py-2 bg-[#201d1d] hover:bg-[#302c2c] disabled:bg-[#f1eeee] disabled:text-[#646262] text-[#fdfcfc] font-bold text-xs rounded-sm transition-colors cursor-pointer shrink-0"
               >
                 {todayApPotionsBought >= 2 ? '[매진]' : '[25 SNS]'}
               </button>
             </div>
 
             {/* ID 548: 10연차 모의 뽑기 (Mock Pull) */}
-            <div className="p-2.5 bg-purple-950/40 border border-purple-500/40 rounded-xl flex items-center justify-between text-purple-200">
+            <div className="p-3 bg-[#fdfcfc] border border-[#0f0000]/12 rounded-none flex flex-wrap gap-3 items-center justify-between text-[#201d1d]">
               <div className="min-w-0">
                 <div className="font-bold text-[11px] truncate">🎲 10연차 모의 뽑기</div>
-                <div className="text-[10px] text-purple-400">재화 소모 0 (확률 체험)</div>
+                <div className="text-xs text-[#646262] mt-1">재화 소모 0 (확률 체험)</div>
               </div>
               <button
                 type="button"
                 onClick={handleMockPull}
-                className="px-2 py-1 bg-purple-600 hover:bg-purple-500 text-white font-black text-[10px] rounded-lg active:scale-95 transition-all cursor-pointer shadow-xs shrink-0"
+                className="min-h-11 px-3 py-2 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] font-bold text-xs rounded-sm transition-colors cursor-pointer shrink-0"
               >
                 [모의 실행]
               </button>
             </div>
 
             {/* ID 533: 중복 마일리지 로테이션 샵 */}
-            <div className="p-2.5 bg-amber-950/40 border border-amber-500/40 rounded-xl flex items-center justify-between text-amber-200">
+            <div className="p-3 bg-[#fdfcfc] border border-[#0f0000]/12 rounded-none flex flex-wrap gap-3 items-center justify-between text-[#201d1d]">
               <div className="min-w-0">
                 <div className="font-bold text-[11px] truncate">🔄 중복 마일리지 상점</div>
-                <div className="text-[10px] text-amber-400">보유: {dupeMileage} P</div>
+                <div className="text-xs text-[#646262] mt-1">보유: {dupeMileage} P</div>
               </div>
               <button
                 type="button"
                 onClick={() => setIsDupeMileageShopOpen(true)}
-                className="px-2 py-1 bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-[10px] rounded-lg active:scale-95 transition-all cursor-pointer shadow-xs shrink-0"
+                className="min-h-11 px-3 py-2 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] font-bold text-xs rounded-sm transition-colors cursor-pointer shrink-0"
               >
                 [교환소]
               </button>
             </div>
 
             {/* ID 583: 월간 누적 소환 마일리지 리워드 */}
-            <div className="p-2.5 bg-emerald-950/40 border border-emerald-500/40 rounded-xl flex items-center justify-between text-emerald-200">
+            <div className="p-3 bg-[#fdfcfc] border border-[#0f0000]/12 rounded-none flex flex-wrap gap-3 items-center justify-between text-[#201d1d]">
               <div className="min-w-0">
                 <div className="font-bold text-[11px] truncate">📈 월간 소환 {monthlyPullCount}/200회</div>
-                <div className="text-[10px] text-emerald-400">50/100/200회 마일스톤</div>
+                <div className="text-xs text-[#646262] mt-1">50/100/200회 마일스톤</div>
               </div>
               <div className="flex gap-1 shrink-0">
                 {[50, 100, 200].map(m => {
@@ -4364,12 +4349,12 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       type="button"
                       disabled={!canClaim && !isClaimed}
                       onClick={() => handleClaimMonthlyPullMilestone(m, reward)}
-                      className={`px-1 py-0.5 text-[8px] font-black rounded-xs ${
+                      className={`min-h-11 min-w-11 px-2 py-2 text-xs font-bold rounded-sm ${
                         isClaimed
-                          ? 'bg-slate-800 text-slate-500'
+                          ? 'bg-[#f1eeee] text-[#646262]'
                           : canClaim
-                            ? 'bg-emerald-400 text-stone-950 animate-bounce'
-                            : 'bg-emerald-900/40 text-emerald-500'
+                            ? 'bg-[#201d1d] text-[#fdfcfc]'
+                            : 'bg-[#f1eeee] text-[#646262]'
                       }`}
                     >
                       {isClaimed ? '✓' : `${m}`}
@@ -4379,38 +4364,43 @@ export const ShopView: React.FC<ShopViewProps> = ({
               </div>
             </div>
           </div>
+          </details>
 
           {/* SCR-04-03: 상단 스와이프형 카테고리 칩 탭바 (100dvh 뷰포트 밀착 정돈) */}
-          <div className="sticky top-0 z-20 w-full py-2 bg-[#fdfcfc]/95 dark:bg-[#111]/95 backdrop-blur-md border-b border-black/10 dark:border-white/10 flex items-center gap-1.5 overflow-x-auto scrollbar-none font-mono text-[11px] select-none mb-3">
+          <div className="sticky top-0 z-20 w-full py-3 bg-[#fdfcfc] border-y border-[#0f0000]/12 flex items-center gap-2 overflow-x-auto font-mono text-xs select-none">
             <a
               href="#shop-grid"
-              className="px-3 py-1.5 bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-black rounded-sm shrink-0 flex items-center gap-1 active:scale-95 transition-all shadow-xs cursor-pointer"
+              className="min-h-11 px-4 py-3 bg-[#201d1d] text-[#fdfcfc] font-bold rounded-sm shrink-0 flex items-center gap-2 cursor-pointer"
             >
               <span>🃏 {language === 'ko' ? '카드팩 가챠' : 'Card Packs'}</span>
             </a>
             <a
               href="#shop-pity-banner"
-              className="px-3 py-1.5 bg-amber-50 text-amber-950 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-300 font-bold rounded-sm shrink-0 flex items-center gap-1 active:scale-95 transition-all cursor-pointer"
+              className="min-h-11 px-4 py-3 bg-[#fdfcfc] text-[#201d1d] border border-[#0f0000]/12 font-bold rounded-sm shrink-0 flex items-center gap-2 hover:bg-[#f1eeee] cursor-pointer"
             >
               <span>👑 {language === 'ko' ? 'SSR 천장' : 'SSR Pity'}</span>
             </a>
             {!isStarterPackPurchased && (
               <a
                 href="#shop-starter-bundle"
-                className="px-3 py-1.5 bg-gradient-to-r from-amber-400 to-yellow-300 text-slate-950 font-black border border-amber-500 rounded-sm shrink-0 flex items-center gap-1 active:scale-95 transition-all cursor-pointer animate-pulse shadow-xs"
+                className="min-h-11 px-4 py-3 bg-[#fdfcfc] text-[#201d1d] border border-[#0f0000]/12 font-bold rounded-sm shrink-0 flex items-center gap-2 hover:bg-[#f1eeee] cursor-pointer"
               >
                 <span>⚡ {language === 'ko' ? '초심자 핫딜' : 'Starter Deal'}</span>
               </a>
             )}
             <a
               href="#shop-convenience-bar"
-              className="px-3 py-1.5 bg-white dark:bg-[#1a1717] border border-slate-200 dark:border-white/15 text-slate-700 dark:text-slate-300 hover:border-slate-400 rounded-sm shrink-0 flex items-center gap-1 active:scale-95 transition-all cursor-pointer"
+              onClick={() => {
+                const tools = document.getElementById('shop-convenience-bar');
+                if (tools instanceof HTMLDetailsElement) tools.open = true;
+              }}
+              className="min-h-11 px-4 py-3 bg-[#fdfcfc] text-[#201d1d] border border-[#0f0000]/12 font-bold rounded-sm shrink-0 flex items-center gap-2 hover:bg-[#f1eeee] cursor-pointer"
             >
               <span>🧪 {language === 'ko' ? '아이템·AP' : 'Items & AP'}</span>
             </a>
             <a
               href="#sns-charge-section"
-              className="px-3 py-1.5 bg-white dark:bg-[#1a1717] border border-slate-200 dark:border-white/15 text-slate-700 dark:text-slate-300 hover:border-slate-400 rounded-sm shrink-0 flex items-center gap-1 active:scale-95 transition-all cursor-pointer"
+              className="min-h-11 px-4 py-3 bg-[#fdfcfc] text-[#201d1d] border border-[#0f0000]/12 font-bold rounded-sm shrink-0 flex items-center gap-2 hover:bg-[#f1eeee] cursor-pointer"
             >
               <span>💎 {language === 'ko' ? 'SNS 충전' : 'SNS Currency'}</span>
             </a>
@@ -4420,7 +4410,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                 setIsTokenExchangeOpen(true);
               }}
-              className="px-3 py-1.5 bg-white dark:bg-[#1a1717] border border-slate-200 dark:border-white/15 text-slate-700 dark:text-slate-300 hover:border-slate-400 rounded-sm shrink-0 flex items-center gap-1 active:scale-95 transition-all cursor-pointer"
+              className="min-h-11 px-4 py-3 bg-[#fdfcfc] text-[#201d1d] border border-[#0f0000]/12 font-bold rounded-sm shrink-0 flex items-center gap-2 hover:bg-[#f1eeee] cursor-pointer"
             >
               <span>🔄 {language === 'ko' ? '토큰 환전' : 'Token Swap'}</span>
             </button>
@@ -4432,12 +4422,12 @@ export const ShopView: React.FC<ShopViewProps> = ({
               id="shop-starter-bundle"
               initial={lowSpecMode ? undefined : { opacity: 0, y: 10 }}
               animate={lowSpecMode ? undefined : { opacity: 1, y: 0 }}
-              className="relative overflow-hidden border-2 border-amber-500 bg-gradient-to-r from-amber-500/10 via-yellow-500/15 to-amber-600/10 p-4 sm:p-5 rounded-none mb-4 font-mono shadow-sm"
+              className="relative overflow-hidden border border-[#0f0000]/12 bg-[#f8f7f7] p-4 sm:p-5 rounded-none font-mono scroll-mt-24"
             >
               <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative z-10">
                 <div className="space-y-1.5">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="px-2 py-0.5 bg-amber-500 text-black font-black text-[10px] uppercase rounded-none animate-pulse">
+                    <span className="px-2 py-1 bg-[#201d1d] text-[#fdfcfc] font-bold text-xs rounded-none">
                       HOT DEAL · 1회 한정
                     </span>
                     <span className="text-[10px] text-amber-600 dark:text-amber-400 font-bold">
@@ -4463,7 +4453,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   <button
                     type="button"
                     onClick={buyStarterPack}
-                    className="w-full md:w-auto px-5 py-3 bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-xs uppercase tracking-wider rounded-sm shadow-md transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-2"
+                    className="min-h-11 w-full md:w-auto px-5 py-3 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] font-bold text-sm rounded-sm transition-colors cursor-pointer flex items-center justify-center gap-2"
                   >
                     <Sparkles size={14} />
                     <span>{language === 'ko' ? '[ 50 SNS로 스타터팩 구매 ]' : '[ BUY FOR 50 SNS ]'}</span>
@@ -4481,7 +4471,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
             const goldPity = getGachaPityView(gachaPityState, 'gold');
             const goldPityPct = Math.min(100, Math.max(0, Math.round((goldPity.current / goldPity.threshold) * 100)));
             return (
-              <div id="shop-pity-banner" className="w-full bg-gradient-to-r from-amber-500/15 via-yellow-400/20 to-amber-500/15 border-2 border-amber-400 p-3.5 sm:p-4 rounded-xl font-mono mb-4 shadow-sm">
+              <div id="shop-pity-banner" className="w-full bg-[#f8f7f7] border border-[#0f0000]/12 p-4 rounded-none font-mono scroll-mt-24">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
                   <div className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded-lg bg-amber-400 text-slate-950 flex items-center justify-center font-black shrink-0 shadow-xs text-sm">
@@ -4492,7 +4482,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                         <span className="font-black text-xs sm:text-sm text-slate-900 dark:text-white">
                           {language === 'ko' ? 'SSR 확정 천장 카운트다운' : 'SSR Guarantee Pity Countdown'}
                         </span>
-                        <span className="px-1.5 py-0.2 bg-amber-400 text-slate-950 font-black text-[9px] rounded-xs uppercase animate-pulse">
+                        <span className="px-2 py-1 bg-[#f1eeee] text-[#201d1d] font-bold text-xs rounded-none">
                           30회 확정
                         </span>
                       </div>
@@ -4516,9 +4506,9 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     <span>{language === 'ko' ? '진행도' : 'Progress'}: {goldPity.current} / {goldPity.threshold} 회</span>
                     <span className="text-amber-600 dark:text-amber-400 font-black">{goldPityPct}%</span>
                   </div>
-                  <div className="w-full h-3 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden border border-slate-300 dark:border-slate-700">
+                  <div className="w-full h-2 bg-[#f1eeee] overflow-hidden border border-[#0f0000]/12">
                     <div
-                      className="h-full bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 rounded-full transition-all duration-500 shadow-sm"
+                      className="h-full bg-[#201d1d] transition-[width] duration-300"
                       style={{ width: `${goldPityPct}%` }}
                     />
                   </div>
@@ -4532,50 +4522,17 @@ export const ShopView: React.FC<ShopViewProps> = ({
             <div className="h-[1px] flex-1 bg-slate-200" />
           </div>
 
-          <div id="shop-grid" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 md:gap-6 font-sans">
+          <div id="shop-grid" className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 font-mono scroll-mt-24">
             {cardPacks.map((pack) => {
-              const packTheme = pack.rarity === 'bronze'
-                ? {
-                    cardBorder: 'border-amber-100 hover:border-amber-200',
-                    glow: 'bg-amber-500/10 group-hover:bg-amber-500/20',
-                    badge: 'bg-amber-700 text-white',
-                    primaryButton: 'border-amber-700 bg-amber-700 hover:bg-amber-600 hover:border-amber-600',
-                  }
-                : pack.rarity === 'silver'
-                  ? {
-                      cardBorder: 'border-slate-200 hover:border-slate-300',
-                      glow: 'bg-slate-400/10 group-hover:bg-slate-400/20',
-                      badge: 'bg-slate-700 text-white',
-                      primaryButton: 'border-slate-900 bg-slate-900 hover:bg-slate-800 hover:border-slate-800',
-                    }
-                  : {
-                      cardBorder: 'border-yellow-200 hover:border-yellow-300',
-                      glow: 'bg-yellow-400/10 group-hover:bg-yellow-400/20',
-                      badge: 'bg-yellow-500 text-yellow-950',
-                      primaryButton: 'border-yellow-500 bg-yellow-500 text-yellow-950 hover:bg-yellow-400 hover:border-yellow-400',
-                    };
-
               return (
               <motion.div
                 key={pack.title}
                 id={`shop-pack-${pack.rarity}`}
-                whileHover={lowSpecMode ? undefined : { y: -4 }}
-                className={cn(
-                  'relative flex flex-col justify-between gap-4 overflow-hidden rounded-2xl border bg-white p-5 shadow-sm transition-all group sm:p-6 md:p-7 h-full',
-                  packTheme.cardBorder,
-                )}
+                className="relative flex flex-col justify-between gap-5 rounded-none border border-[#0f0000]/12 bg-[#fdfcfc] p-4 sm:p-5 h-full"
               >
-                <div className={cn('absolute -left-10 top-8 h-28 w-28 rounded-full blur-3xl transition-all duration-500', packTheme.glow)} />
-
-                <img
-                  src={`/background-${pack.rarity}.png`}
-                  alt={pack.rarity}
-                  className="pointer-events-none absolute left-4 top-14 z-0 h-16 w-16 object-contain opacity-25 transition-all duration-500 group-hover:scale-105 group-hover:opacity-45 sm:h-20 sm:w-20"
-                />
-
                 <div className="relative z-10 flex flex-col gap-4">
                   <div className="flex items-start justify-between gap-3">
-                    <div className={cn('rounded-lg px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest sm:text-[10px]', packTheme.badge)}>
+                    <div className="py-3 text-xs font-bold text-[#646262]">
                       {pack.title}
                     </div>
                     <div className="flex items-center gap-1.5">
@@ -4585,7 +4542,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                           setSelectedProbabilityPack(pack.rarity);
                           setProbabilityModalOpen(true);
                         }}
-                        className="flex items-center gap-1 rounded-md border border-amber-300/80 bg-amber-50/90 px-2 py-1 text-[10px] font-extrabold text-amber-900 hover:bg-amber-100 hover:border-amber-400 transition-colors shadow-2xs cursor-pointer"
+                        className="min-h-11 flex items-center gap-2 rounded-sm border border-[#0f0000]/12 bg-[#fdfcfc] px-3 py-2 text-xs font-bold text-[#201d1d] hover:bg-[#f1eeee] transition-colors cursor-pointer"
                         aria-label={t('shop_drop_rates_btn', language)}
                         title={t('shop_drop_rates_btn', language)}
                       >
@@ -4595,7 +4552,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       <button
                         type="button"
                         onClick={() => setPackGuideState({ packRarity: pack.rarity, step: 0 })}
-                        className={getGuideButtonClassName()}
+                        className="min-h-11 min-w-11 flex items-center justify-center rounded-sm border border-[#0f0000]/12 text-[#646262] hover:bg-[#f1eeee] cursor-pointer"
                         aria-label={t('shop_pack_guide_open', language)}
                         title={t('shop_pack_guide_open', language)}
                       >
@@ -4604,23 +4561,26 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     </div>
                   </div>
 
-                  <div className="pl-14 sm:pl-16">
-                    <h3 className="text-base font-bold tracking-tight text-slate-900 sm:text-lg">{pack.label}</h3>
+                  <div className="flex items-center justify-center border border-[#0f0000]/12 bg-[#f8f7f7] p-4">
+                    <img src={`/background-${pack.rarity}.png`} alt="" className="h-40 sm:h-48 w-full object-contain" loading="lazy" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold leading-relaxed text-[#201d1d]">{pack.label}</h3>
                   </div>
                 </div>
 
-                <div className="relative z-10 mt-auto pt-2 w-full flex flex-col gap-1.5">
+                <div className="relative z-10 mt-auto w-full flex flex-col gap-3">
                   {/* ID 398: 팩 수량 스텝퍼 (1x / 5x / 10x / MAX) */}
-                  <div className="flex items-center justify-between gap-1 py-1 border-t border-slate-100 text-[10px] font-mono">
-                    <span className="text-slate-400 font-bold">{language === 'ko' ? '수량 선택:' : 'Select Qty:'}</span>
-                    <div className="flex items-center gap-1">
+                  <div className="flex flex-col gap-2 pt-3 border-t border-[#0f0000]/12 text-xs font-mono">
+                    <span className="text-[#646262] font-bold">{language === 'ko' ? '수량 선택:' : 'Select Qty:'}</span>
+                    <div className="grid grid-cols-4 gap-2">
                       {[1, 5, 10].map((qty) => (
                         <button
                           key={qty}
                           type="button"
                           onClick={() => setPackQuantities(prev => ({ ...prev, [pack.rarity]: qty }))}
                           className={cn(
-                            "px-1.5 py-0.5 rounded-xs border text-[10px] font-bold cursor-pointer transition-colors relative",
+                            "min-h-11 px-2 py-2 rounded-sm border text-xs font-bold cursor-pointer transition-colors relative",
                             (packQuantities[pack.rarity] || 1) === qty
                               ? "bg-slate-900 text-white border-slate-900"
                               : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
@@ -4628,7 +4588,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                         >
                           {qty}x
                           {qty === 10 && (
-                            <span className="absolute -top-2 -right-1 px-1 py-0.1 bg-amber-400 text-slate-950 text-[7px] font-black rounded-xs shadow-xs animate-pulse">
+                            <span className="block text-[10px] leading-none mt-1">
                               SR+
                             </span>
                           )}
@@ -4641,10 +4601,10 @@ export const ShopView: React.FC<ShopViewProps> = ({
                           setPackQuantities(prev => ({ ...prev, [pack.rarity]: maxQ }));
                         }}
                         className={cn(
-                          "px-1.5 py-0.5 rounded-xs border text-[9px] font-black cursor-pointer transition-colors",
+                          "min-h-11 px-2 py-2 rounded-sm border text-xs font-bold cursor-pointer transition-colors",
                           (packQuantities[pack.rarity] || 1) > 10
-                            ? "bg-indigo-600 text-white border-indigo-700"
-                            : "bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100"
+                            ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
+                            : "bg-[#f8f7f7] text-[#646262] border-[#0f0000]/12 hover:bg-[#f1eeee]"
                         )}
                       >
                         MAX
@@ -4654,7 +4614,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
                   {/* SCR-04-02: 10연차 시 '1장 SR 이상 확정' 혜택 가시화 */}
                   {(packQuantities[pack.rarity] || 1) >= 10 && (
-                    <div className="flex items-center justify-center gap-1 py-0.5 px-2 bg-gradient-to-r from-amber-400/20 via-yellow-400/30 to-amber-400/20 border border-amber-300 rounded-sm text-[9px] font-black text-amber-800 dark:text-amber-300 animate-pulse">
+                    <div className="flex items-center gap-2 py-2 px-3 bg-[#f8f7f7] border border-[#0f0000]/12 rounded-none text-xs leading-relaxed font-bold text-[#201d1d]">
                       <Sparkles size={10} className="text-yellow-500 shrink-0" />
                       <span>{language === 'ko' ? '✨ 10연차 혜택: 1장 SR+ 100% 확정!' : '✨ 10x Pull: 1x SR+ Guaranteed!'}</span>
                     </div>
@@ -4670,16 +4630,13 @@ export const ShopView: React.FC<ShopViewProps> = ({
                         buyPack(pack.cost * qty, pack.rarity, qty);
                       }
                     }}
-                    className={cn(
-                      'min-h-[44px] h-auto w-full rounded-xl border px-3 py-2.5 text-left text-white shadow-sm transition-all active:scale-95 touch-target flex items-center justify-between gap-1 overflow-hidden cursor-pointer',
-                      packTheme.primaryButton,
-                    )}
+                    className="min-h-16 h-auto w-full rounded-sm border border-[#201d1d] bg-[#201d1d] hover:bg-[#302c2c] px-4 py-3 text-left text-[#fdfcfc] transition-colors flex items-center justify-between gap-3 cursor-pointer"
                   >
                     <span className="min-w-0 leading-tight flex-1">
-                      <span className="block text-[10px] uppercase tracking-[0.05em] text-white/80 truncate">
+                      <span className="block text-xs leading-relaxed text-[#fdfcfc]/80">
                         {language === 'ko' ? `카드팩 ${(packQuantities[pack.rarity] || 1)}개 개봉` : `Open ${(packQuantities[pack.rarity] || 1)}x Pack`}
                       </span>
-                      <span className="text-sm font-black truncate block">
+                      <span className="mt-1 text-xl font-bold break-all block tabular-nums">
                         {(pack.cost * (packQuantities[pack.rarity] || 1)).toLocaleString()} SNS
                       </span>
                     </span>
@@ -4693,21 +4650,19 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
             {/* Item Pack */}
             <motion.div
-              whileHover={lowSpecMode ? undefined : { y: -4 }}
-              className="relative flex flex-col justify-between gap-4 overflow-hidden rounded-2xl border border-purple-100 bg-white p-5 shadow-sm transition-all group sm:p-6 md:p-7 h-full"
+              className="relative flex flex-col justify-between gap-5 rounded-none border border-[#0f0000]/12 bg-[#fdfcfc] p-4 sm:p-5 h-full"
             >
-              <div className="absolute -left-10 top-8 h-28 w-28 rounded-full bg-purple-500/10 blur-3xl transition-all duration-500 group-hover:bg-purple-500/20" />
-              <Package className="pointer-events-none absolute left-4 top-14 z-0 h-16 w-16 text-purple-200 opacity-80 sm:h-20 sm:w-20" aria-hidden="true" />
+              <Package className="pointer-events-none absolute left-5 top-20 h-12 w-12 text-[#646262]" aria-hidden="true" />
 
               <div className="relative z-10 flex flex-col gap-3">
                 <div className="flex items-start justify-between gap-3">
-                  <div className="rounded-lg bg-purple-600 px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest text-white sm:text-[10px]">
+                  <div className="py-3 text-xs font-bold text-[#646262]">
                     {t('item_pack', language)}
                   </div>
                   <button
                     type="button"
                     onClick={() => setFeatureGuideState({ feature: 'item-pack', step: 0 })}
-                    className={cn(getGuideButtonClassName(), 'border-purple-200 bg-white/90 text-purple-700 hover:border-purple-300 hover:bg-purple-50')}
+                    className="min-h-11 min-w-11 flex items-center justify-center rounded-sm border border-[#0f0000]/12 text-[#646262] hover:bg-[#f1eeee] cursor-pointer"
                     aria-label={t('shop_feature_item_pack_guide_open', language)}
                     title={t('shop_feature_item_pack_guide_open', language)}
                   >
@@ -4738,11 +4693,11 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 <button
                   id="shop-pack-item-btn"
                   onClick={buyItemPack}
-                  className="min-h-[44px] h-auto w-full rounded-xl border border-purple-700 bg-purple-700 hover:bg-purple-600 px-3 py-2.5 text-left text-white shadow-sm transition-all active:scale-95 touch-target flex items-center justify-between gap-1 overflow-hidden cursor-pointer"
+                  className="min-h-16 w-full rounded-sm border border-[#201d1d] bg-[#201d1d] hover:bg-[#302c2c] px-4 py-3 text-left text-[#fdfcfc] transition-colors flex items-center justify-between gap-3 cursor-pointer"
                 >
                   <span className="min-w-0 leading-tight flex-1">
                     <span className="block text-[10px] uppercase tracking-[0.05em] text-white/80 truncate">{language === 'ko' ? '아이템 팩 구매' : 'Buy Item Pack'}</span>
-                    <span className="text-sm font-black truncate block">{itemPackCost} SNS</span>
+                    <span className="mt-1 text-xl font-bold break-all block tabular-nums">{itemPackCost} SNS</span>
                   </span>
                   <ArrowRight size={16} className="shrink-0 opacity-80 ml-1" />
                 </button>
@@ -6797,7 +6752,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
         </div>
 
         {/* SCR-04-03: 하단 Thumb Zone 48px 규격 고정 듀얼 소환 CTA 바 (하단 내비게이션 바 위 및 safe-area-inset-bottom 안전 배치) */}
-        <div className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+4rem)] sm:bottom-[calc(env(safe-area-inset-bottom,0px)+4.5rem)] left-0 right-0 z-40 max-w-[1024px] mx-auto bg-[#fdfcfc]/95 dark:bg-[#111]/95 backdrop-blur-md border-t border-slate-200 dark:border-white/15 p-2 sm:p-2.5 shadow-[0_-4px_20px_rgba(0,0,0,0.15)] select-none">
+        <div className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+4rem)] sm:bottom-[calc(env(safe-area-inset-bottom,0px)+4.5rem)] left-0 right-0 z-40 max-w-[1024px] mx-auto bg-[#fdfcfc] border-t border-[#201d1d]/15 p-2 sm:p-2.5 select-none">
           <div className="max-w-md mx-auto grid grid-cols-2 gap-2 font-mono">
             {/* 1회 소환 버튼 (48px 규격, 무료/할인 표기) */}
             <button
@@ -6810,16 +6765,16 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 }
               }}
               className={cn(
-                "min-h-[48px] h-12 rounded-sm border px-3 flex flex-col items-center justify-center text-center transition-transform active:scale-95 cursor-pointer shadow-xs",
+                "min-h-[48px] rounded-sm border px-3 py-2 flex flex-col items-center justify-center text-center transition-colors cursor-pointer",
                 !dailyFreeSummonClaimed
-                  ? "bg-emerald-500 hover:bg-emerald-400 border-emerald-600 text-black font-black animate-pulse"
-                  : "bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800 font-bold"
+                  ? "bg-[#f1eeee] hover:bg-[#f8f7f7] border-[#646262] text-[#201d1d] font-bold"
+                  : "bg-[#fdfcfc] border-[#201d1d]/15 text-[#201d1d] hover:bg-[#f8f7f7] font-bold"
               )}
             >
-              <span className="text-[9px] uppercase tracking-wider opacity-80 leading-none">
+              <span className="text-[11px] uppercase text-[#646262] leading-tight">
                 {!dailyFreeSummonClaimed ? '🎁 DAILY FREE' : '1X PULL'}
               </span>
-              <span className="text-xs font-black truncate leading-tight mt-0.5">
+              <span className="text-sm font-bold leading-tight mt-0.5">
                 {!dailyFreeSummonClaimed ? (language === 'ko' ? '1회 무료 소환' : 'Free Summon') : '10 SNS'}
               </span>
             </button>
@@ -6828,15 +6783,12 @@ export const ShopView: React.FC<ShopViewProps> = ({
             <button
               type="button"
               onClick={() => buy10xPack(10, 'bronze')}
-              className="min-h-[48px] h-12 rounded-sm border border-amber-500 bg-gradient-to-r from-amber-400 to-yellow-300 hover:brightness-110 text-slate-950 font-black px-3 flex flex-col items-center justify-center text-center transition-transform active:scale-95 cursor-pointer shadow-md relative overflow-hidden"
+              className="min-h-[48px] rounded-sm border border-[#201d1d] bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] font-bold px-3 py-2 flex flex-col items-center justify-center text-center transition-colors cursor-pointer relative"
             >
-              <div className="absolute top-0 right-1 px-1.5 py-0.2 bg-slate-950 text-amber-300 text-[7px] font-black rounded-b-xs tracking-wider uppercase">
-                SR+ GUARANTEE
-              </div>
-              <span className="text-[9px] uppercase tracking-wider text-slate-800 leading-none">
+              <span className="text-[11px] uppercase text-[#fdfcfc]/70 leading-tight">
                 10X MULTI PULL
               </span>
-              <span className="text-xs font-black truncate leading-tight mt-0.5">
+              <span className="text-sm font-bold leading-tight mt-0.5">
                 100 SNS {language === 'ko' ? '(SR+ 확정)' : '(SR+ Guaranteed)'}
               </span>
             </button>

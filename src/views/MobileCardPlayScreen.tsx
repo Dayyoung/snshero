@@ -1468,11 +1468,11 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
           <div className="flex flex-col min-w-0 [@media(max-height:500px)_and_(min-width:480px)]:hidden">
             <span className="text-[9px] text-[#646262] truncate">{t('my_score', language)} / {t('opp_score', language)}</span>
             <div className="flex items-baseline justify-center gap-1 my-0.5">
-              <span className="text-2xl font-bold leading-none tabular-nums">
+              <span className="text-2xl font-bold text-[#2563eb] leading-none tabular-nums">
                 {score.player}
               </span>
               <span className="text-sm text-[#9a9898]">:</span>
-              <span className="text-2xl font-bold text-[#646262] leading-none tabular-nums">
+              <span className="text-2xl font-bold text-[#dc2626] leading-none tabular-nums">
                 {score.opponent}
               </span>
             </div>
@@ -1535,9 +1535,9 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                     "relative w-full h-full min-w-0 rounded-sm flex flex-col items-center justify-center overflow-hidden",
                     isPlayable && "border border-dashed border-[#201d1d] bg-[#fdfcfc] hover:bg-[#e5e1e1] cursor-pointer",
                     !isOccupied && !isPlayable && "border border-[#0f0000]/12 bg-[#f8f7f7] text-[#9a9898]",
-                    isOccupied && cell.owner === 'player' && "border-2 border-[#201d1d]",
-                    isOccupied && cell.owner === 'ai' && "border-2 border-[#9a9898]",
-                    isFlipped && "outline outline-2 outline-offset-[-4px] outline-[#007aff]"
+                    isOccupied && cell.owner === 'player' && "border-2 border-[#2563eb] bg-[#2563eb]",
+                    isOccupied && cell.owner === 'ai' && "border-2 border-[#dc2626] bg-[#dc2626]",
+                    isFlipped && "outline outline-2 outline-offset-[-4px] outline-[#fdfcfc]"
                   )}
                 >
                   {isOccupied && cell ? (

@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { execSync } from 'child_process';
 
 const rootDir = process.cwd();
 const distDir = path.join(rootDir, 'dist');
@@ -153,6 +154,14 @@ const notFoundPath = path.join(distDir, '404.html');
 if (fs.existsSync(indexPath) && !fs.existsSync(notFoundPath)) {
   fs.copyFileSync(indexPath, notFoundPath);
   console.log('[post-build] Generated 404.html from index.html');
+}
+
+// 6. Run Google News SEO & AdSense Static Prerenderer
+try {
+  console.log('[post-build] Running Google News SEO & AdSense static generator...');
+  execSync('npx tsx scripts/generate-news-seo.ts', { stdio: 'inherit' });
+} catch (e) {
+  console.warn('[post-build] Warning: Google News SEO generator encountered an issue:', e.message);
 }
 
 console.log('[post-build] Post-build completed successfully.');

@@ -17,7 +17,6 @@ import { AfkPatrolModal } from "../components/AfkPatrolModal";
 import { Milestone600CelebrationModal } from "../components/Milestone600CelebrationModal";
 import { StarterPackModal } from "../components/StarterPackModal";
 import { PwaEventModal } from "../components/PwaEventModal";
-import { PwaRewardService } from "../lib/pwaRewardService";
 import { LobbyInteractiveCard } from "../components/LobbyInteractiveCard";
 import { PingIndicator } from "../components/PingIndicator";
 import { triggerHaptic } from "../lib/haptic";
@@ -78,15 +77,15 @@ export const HomeView: React.FC<HomeViewProps> = ({
 }) => {
   const { addSns } = useSns();
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [isAfkRewardOpen, setIsAfkRewardOpen] = useState(false);
   const [showPdf, setShowPdf] = useState(false);
   const [isMailboxOpen, setIsMailboxOpen] = useState(false);
   const [unreadMailCount, setUnreadMailCount] = useState(0);
   const [isNotifModalOpen, setIsNotifModalOpen] = useState(false);
   const [unreadNotifCount, setUnreadNotifCount] = useState(0);
   const [isLobbyDrawerOpen, setIsLobbyDrawerOpen] = useState(false);
-  const [isNoticeClosed, setIsNoticeClosed] = useState(false);
   // ID 600: Grand Strategist Milestone 600 Celebration
-  const [isMilestone600Open, setIsMilestone600Open] = useState(() => localStorage.getItem('hero_milestone_600_claimed') !== 'true');
+  const [isMilestone600Open, setIsMilestone600Open] = useState(false);
   // SCR-01-02: Starter Pack state
   const [isStarterPackOpen, setIsStarterPackOpen] = useState(false);
   const [isStarterPackPurchased, setIsStarterPackPurchased] = useState(() => localStorage.getItem('hero_starter_pack_purchased') === 'true');
@@ -103,20 +102,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
     });
   }, [onNavigate, addSns, playSfx]);
   useWebMcpTools(homeMcpTools, [homeMcpTools]);
-
-  // PWA 설치 & 알림 등록 이벤트 모달 자동 오픈 (오늘 하루 보지 않기 미적용 & 미수령 보상 존재 & 공지 닫힘 & Milestone 닫힘)
-  useEffect(() => {
-    if (isNoticeClosed && !isMilestone600Open) {
-      const isDismissed = PwaRewardService.isEventDismissedToday();
-      const allClaimed = PwaRewardService.areAllRewardsClaimed();
-      if (!isDismissed && !allClaimed) {
-        const timer = setTimeout(() => {
-          setIsPwaEventOpen(true);
-        }, 350);
-        return () => clearTimeout(timer);
-      }
-    }
-  }, [isNoticeClosed, isMilestone600Open]);
 
   useEffect(() => {
     const handleStarterPackUpdate = () => {
@@ -173,7 +158,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
         return streak;
       }
     } catch {}
-    return 3; // 기본값 3연승
+    return 0;
   });
 
   // SCR-01-06: Zero Background Overhead via LifecycleEngine
@@ -217,18 +202,22 @@ export const HomeView: React.FC<HomeViewProps> = ({
   const [helpOpen, setHelpOpen] = useState(false);
   // Dispatch global popup events so bottom nav hides while help is open
   useEffect(() => {
-    if (helpOpen) {
+    if (helpOpen || isAfkRewardOpen || isMilestone600Open || isPwaEventOpen || isStarterPackOpen || isMailboxOpen || isNotifModalOpen) {
       window.dispatchEvent(new Event('snshero-help-popup-open'));
     } else {
       window.dispatchEvent(new Event('snshero-help-popup-close'));
     }
-  }, [helpOpen]);
+    return () => {
+      window.dispatchEvent(new Event('snshero-help-popup-close'));
+    };
+  }, [helpOpen, isAfkRewardOpen, isMilestone600Open, isPwaEventOpen, isStarterPackOpen, isMailboxOpen, isNotifModalOpen]);
 
   const [helpStep, setHelpStep] = useState(0);
 
   // 30-Second Idle Auto-Start Ranking Battle Timer
   const [autoStartCountdown, setAutoStartCountdown] = useState<number>(30);
-  const [isAutoStartPaused, setIsAutoStartPaused] = useState<boolean>(false);
+  // Browsing the lobby must not start a battle without the player's consent.
+  const [isAutoStartPaused, setIsAutoStartPaused] = useState<boolean>(true);
 
   // User activity resets the 30s timer
   useEffect(() => {
@@ -251,7 +240,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
   // Interval timer for 30s countdown
   useEffect(() => {
-    if (isAutoStartPaused || helpOpen || isMailboxOpen || isNotifModalOpen || isLoggingIn || isMilestone600Open) {
+    if (isAutoStartPaused || helpOpen || isMailboxOpen || isNotifModalOpen || isLoggingIn || isMilestone600Open || isPwaEventOpen || isStarterPackOpen || (isTutorialMode && tutorialStep > 0)) {
       return;
     }
 
@@ -266,14 +255,14 @@ export const HomeView: React.FC<HomeViewProps> = ({
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [isAutoStartPaused, helpOpen, isMailboxOpen, isNotifModalOpen, isLoggingIn, isMilestone600Open]);
+  }, [isAutoStartPaused, helpOpen, isMailboxOpen, isNotifModalOpen, isLoggingIn, isMilestone600Open, isPwaEventOpen, isStarterPackOpen, isTutorialMode, tutorialStep]);
 
   useEffect(() => {
-    if (autoStartCountdown === 0 && !isAutoStartPaused && !helpOpen && !isMailboxOpen && !isNotifModalOpen && !isLoggingIn && !isMilestone600Open) {
+    if (autoStartCountdown === 0 && !isAutoStartPaused && !helpOpen && !isMailboxOpen && !isNotifModalOpen && !isLoggingIn && !isMilestone600Open && !isPwaEventOpen && !isStarterPackOpen && !(isTutorialMode && tutorialStep > 0)) {
       playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
       onNavigate('ranking');
     }
-  }, [autoStartCountdown, isAutoStartPaused, helpOpen, isMailboxOpen, isNotifModalOpen, isLoggingIn, isMilestone600Open, onNavigate, playSfx]);
+  }, [autoStartCountdown, isAutoStartPaused, helpOpen, isMailboxOpen, isNotifModalOpen, isLoggingIn, isMilestone600Open, isPwaEventOpen, isStarterPackOpen, isTutorialMode, tutorialStep, onNavigate, playSfx]);
 
   const helpSlides = React.useMemo(() => [
     {
@@ -340,7 +329,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
   return (
     <div className="flex flex-col gap-6 sm:gap-8 p-4 sm:p-6 md:p-8 pb-32 max-w-6xl mx-auto min-h-screen bg-[#fdfcfc] justify-start text-[#201d1d] font-mono">
       {/* ── Header: Card Display + Title ── */}
-      <header className="grid grid-cols-1 gap-4 sm:gap-6 items-stretch w-full pt-2">
+      <header className="grid grid-cols-1 gap-4 sm:gap-6 items-stretch w-full pt-12 lg:pt-2">
         {/* SCR-01-02: Top First Purchase Limited Deal Banner */}
         <div className={cn('w-full order-2', !isLobbyDrawerOpen && 'hidden')}>
           {!isStarterPackPurchased ? (
@@ -409,7 +398,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 >
                    <span className="text-sm text-[#646262]">{language === 'ko' ? '덱 전투력' : 'DECK CP'}</span>
                    <span className="text-2xl sm:text-3xl font-bold tabular-nums">
-                    {totalPower > 0 ? totalPower : 1420} CP
+                    {totalPower} CP
                   </span>
                 </button>
                 {winStreak > 0 && (
@@ -494,7 +483,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
               )}>
                 <div className="flex flex-wrap items-center gap-2 text-sm">
                   <Clock size={16} className="shrink-0" />
-                  <span>{language === 'ko' ? '[⚡ 30초 대기 랭킹대전 자동 시작]:' : '[⚡ Auto Rank Battle in]:'}</span>
+                  <span>{t(isAutoStartPaused ? 'ui_lobby_auto_battle_off' : 'ui_lobby_auto_battle_in', language)}</span>
                   <span className={cn('font-bold px-2 py-1 text-sm text-[#fdfcfc] tabular-nums', autoStartCountdown <= 5 && !isAutoStartPaused ? 'bg-rose-600' : 'bg-[#201d1d]')}>{autoStartCountdown}s</span>
                 </div>
                 <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
@@ -507,7 +496,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     }}
                     className="min-h-11 px-3 py-2 bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] text-sm font-bold cursor-pointer rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2"
                   >
-                    {isAutoStartPaused ? (language === 'ko' ? '[▶ 재개]' : '[▶ Resume]') : (language === 'ko' ? '[⏸️ 일시정지]' : '[⏸️ Pause]')}
+                    {t(isAutoStartPaused ? 'ui_lobby_auto_battle_enable' : 'ui_lobby_auto_battle_pause', language)}
                   </button>
                   <button
                     type="button"
@@ -560,7 +549,15 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   </span>
                   <span className="shrink-0 tabular-nums">{DAILY_MISSIONS.filter(m => dailyMissionProgress.missions[m.id]?.completed).length}/{DAILY_MISSIONS.length} <span className="group-open:hidden">[+]</span><span className="hidden group-open:inline">[-]</span></span>
                 </summary>
-                <div className="space-y-3 border-t border-[rgba(15,0,0,0.12)] p-3">
+                 <div className="space-y-3 border-t border-[rgba(15,0,0,0.12)] p-3">
+                  {localStorage.getItem('hero_milestone_600_claimed') !== 'true' && (
+                    <button type="button" onClick={() => setIsMilestone600Open(true)} className="w-full min-h-11 rounded-sm border border-[rgba(15,0,0,0.12)] px-3 py-2 text-left text-sm hover:bg-[#f1eeee]">
+                      {t('ui_lobby_milestone_reward', language)}
+                    </button>
+                  )}
+                  <button type="button" onClick={() => setIsAfkRewardOpen(true)} className="w-full min-h-11 rounded-sm border border-[rgba(15,0,0,0.12)] px-3 py-2 text-left text-sm hover:bg-[#f1eeee]">
+                    {t('ui_lobby_patrol_rewards', language)}
+                  </button>
               {/* ID 79: Mini Daily Mission Progress Banner */}
               {(() => {
                 const totalMissions = DAILY_MISSIONS.length;
@@ -1040,23 +1037,23 @@ export const HomeView: React.FC<HomeViewProps> = ({
       />
 
       {/* Notice Modal (Item 55) */}
-      <NoticeModal
+      {!(isTutorialMode && tutorialStep > 0) && <NoticeModal
         language={language}
         onNavigate={onNavigate}
-        onClose={() => setIsNoticeClosed(true)}
-      />
+      />}
 
-      {/* Milestone 600 Celebration Modal (Item 600) - Sequenced after Notice */}
+      {/* Optional rewards open only when selected in the daily hub. */}
       <Milestone600CelebrationModal
-        isOpen={isNoticeClosed && isMilestone600Open}
+        isOpen={isMilestone600Open}
         onClose={() => setIsMilestone600Open(false)}
         language={language}
       />
 
-      {/* AFK Patrol Rewards Modal (Item 64) - Sequenced after Milestone */}
+      {/* AFK Patrol Rewards Modal (Item 64) */}
       <AfkPatrolModal
         language={language}
-        canShow={isNoticeClosed && !isMilestone600Open}
+        canShow={isAfkRewardOpen}
+        onClose={() => setIsAfkRewardOpen(false)}
         onClaim={(gold, sns) => {
           if (sns > 0) {
             addSns(sns, 'afk_patrol_reward', 'earned');

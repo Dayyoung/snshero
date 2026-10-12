@@ -3,7 +3,7 @@ import { Home, Library, ShoppingBag, Gamepad2, Play } from 'lucide-react';
 import { ViewType, Language } from '../types';
 import { cn } from '../lib/utils';
 import { t } from '../lib/i18n';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { useGameSettings } from '../contexts/GameSettingsContext';
 import { getClaimableCount, getTodayStr, hasUnfinishedMissions } from '../lib/dailyMissions';
 import { getRebirthLevel } from '../hooks/useKadanRpgProgress';
@@ -20,7 +20,8 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ currentView, setView, setIsAutoBattle, playSfx, language }) => {
-  const { theme } = useGameSettings();
+  const { lowSpecMode } = useGameSettings();
+  const reducedMotion = useReducedMotion();
   const [hasMissionNotice, setHasMissionNotice] = useState<boolean>(false);
   const [hasShopReward, setHasShopReward] = useState<boolean>(false);
   const [rebirthLevel, setRebirthLevel] = useState<number>(() => getRebirthLevel());
@@ -100,7 +101,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setView, setIsAutoB
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 w-full bg-[#fdfcfc] border-t border-[rgba(15,0,0,0.12)] shadow-xl z-[10005] pointer-events-auto pb-[env(safe-area-inset-bottom)] font-mono">
+    <nav className="fixed bottom-0 left-0 right-0 w-full bg-[var(--ui-canvas)] text-[var(--ui-ink)] border-t border-[var(--ui-line)] z-[10005] pointer-events-auto pb-[env(safe-area-inset-bottom)] font-mono">
       <div className="max-w-[1024px] mx-auto w-full h-16 sm:h-[72px] flex items-stretch">
         {items.map((item) => {
         const isActive = currentView === item.id;
@@ -130,18 +131,20 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setView, setIsAutoB
               playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
             }}
             className={cn(
-              "flex-1 h-full flex flex-col items-center justify-center gap-1 sm:gap-1.5 py-1 px-0.5 transition-all relative group cursor-pointer select-none",
+              "flex-1 min-w-0 min-h-11 h-full flex flex-col items-center justify-center gap-1.5 py-1 px-0.5 transition-colors relative group cursor-pointer select-none focus-visible:z-30 focus-visible:outline-offset-[-4px]",
               isActive 
                 ? "text-[#fdfcfc]" 
-                : "text-[#646262] hover:text-[#201d1d] hover:bg-[#f8f7f7]"
+                : "text-[var(--ui-muted)] hover:text-[var(--ui-ink)] hover:bg-[var(--ui-surface)]"
             )}
             aria-label={item.label}
+            aria-current={isActive ? 'page' : undefined}
+            type="button"
           >
             {isActive && (
               <motion.div
-                layoutId="navbar-active"
+                layoutId={lowSpecMode || reducedMotion ? undefined : 'navbar-active'}
                 className="absolute inset-x-1 inset-y-1 bg-[#201d1d] rounded-sm"
-                transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                transition={{ duration: lowSpecMode || reducedMotion ? 0 : 0.16 }}
               />
             )}
             
@@ -153,33 +156,30 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setView, setIsAutoB
               />
               {item.hasRedDot && (
                 <span className="absolute -top-1 -right-1.5 z-20 flex h-2.5 w-2.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-600 border border-white"></span>
                 </span>
               )}
               {item.id === 'main' && (
                 <span
                   className={cn(
-                    "absolute -top-2 -right-4 z-20 px-1.5 py-0.5 rounded text-[8px] sm:text-[9px] font-black font-mono tracking-tight leading-none border shadow-xs select-none pointer-events-none",
+                    "absolute -top-2 -right-4 z-20 px-1 py-0.5 rounded-sm text-[9px] font-bold font-mono leading-none border select-none pointer-events-none",
                     rebirthLevel > 0
-                      ? "bg-amber-400 text-black border-amber-200 shadow-[0_0_8px_rgba(251,191,36,0.6)] animate-pulse"
-                      : (isActive ? "bg-white text-black border-slate-300" : "bg-slate-700 text-slate-200 border-slate-600")
+                      ? "bg-[#f1eeee] text-[#201d1d] border-[#646262]"
+                      : (isActive ? "bg-[#fdfcfc] text-[#201d1d] border-[#646262]" : "bg-[var(--ui-surface)] text-[var(--ui-muted)] border-[var(--ui-line)]")
                   )}
                   title={language === 'ko' ? `환생 횟수: ${rebirthLevel}회` : `Reincarnation Lv.${rebirthLevel}`}
                 >
                   {rebirthLevel > 0 ? (
                     <span className="flex items-center gap-0.5">
-                      <span className="text-[7px]">👑</span>
                       <span className="text-[9px] sm:text-[10px] font-black">{rebirthLevel}</span>
-                      <span>환</span>
                     </span>
                   ) : (
-                    `${rebirthLevel}환`
+                    rebirthLevel
                   )}
                 </span>
               )}
             </div>
-            <span className="max-w-full truncate px-0.5 text-[10px] sm:text-[11px] font-black tracking-wide uppercase relative z-10 font-mono leading-none">
+            <span className="max-w-full truncate px-0.5 text-[11px] sm:text-xs font-medium relative z-10 font-mono leading-tight">
               {item.label}
             </span>
           </button>
