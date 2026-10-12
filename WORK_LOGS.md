@@ -2,7 +2,32 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
-## [2026-10-12 13:44 KST] [AI Studio/Reddit 최신 뉴스 29선 동기화, 구형 캐시 자동 소거 및 깃 푸시 완료]
+## [2026-10-12 14:00 KST] [수익화 Phase 1: 하이브리드 보상형 광고 루프 및 VIP 1클릭 프리패스 구현]
+- **요청 사항**:
+  - SNSHero.com 수익화 마스터플랜 Phase 1(보상형 광고 루프 + 광고 제거 VIP 1클릭 프리패스) 구현 진행.
+- **상세 구현 내역**:
+  1. **보상형 광고 코어 서비스 구축 (`src/lib/rewardedAdService.ts`)**:
+     - Google AdSense H5 Games `adBreak({ type: 'reward', ... })` 공식 API 연동.
+     - 광고 제거 유저(`isAdRemoved`): 0초 대기 없이 즉시 승인(VIP 1-Click Skip).
+     - 광고 차단/미로드 환경 대비 3초 인터랙티브 Fallback 타이머 지원.
+     - 3대 핵심 보상 루프별 일일 한도(승리 2배 10회, 무료 가챠 3회, 부활 2회) 및 로컬스토리지 날짜별 카운터 트래킹.
+  2. **보상형 광고 모달 컴포넌트 신규 구현 (`src/components/RewardedAdModal.tsx`)**:
+     - 스폰서 광고 로딩 카운트다운 애니메이션, VIP 특권 안내, 팡파레 효과음/햅틱 진동 및 보상 지급 완료 연출.
+  3. **3대 핵심 보상 루프 1: 배틀 승리 보상 2배 (x2) 연동**:
+     - [`src/components/VictoryRewardModal.tsx`](file:///Users/dayyoung/project/snshero/src/components/VictoryRewardModal.tsx): 110종 미니게임 및 던전 승리 시 '광고 보고 승리 보상 2배 수령' / '👑 [VIP 스킵] 승리 보상 2배 즉시 받기' 버튼 연동.
+     - [`src/views/MobileCardPlayScreen.tsx`](file:///Users/dayyoung/project/snshero/src/views/MobileCardPlayScreen.tsx): 메인 카드 배틀 아레나 승리 결과 모달에 2배 보상 버튼 및 RewardedAdModal 마운트.
+  4. **3대 핵심 보상 루프 2: 일일 무료 가챠 추가 소환 연동**:
+     - [`src/views/ShopView.tsx`](file:///Users/dayyoung/project/snshero/src/views/ShopView.tsx): 1회 기본 무료 소환 후 '🎬 광고 보고 추가 소환 (3회 제한)' 및 VIP '👑 VIP 즉시 추가 소환' 버튼 연동.
+  5. **광고 제거 상품의 VIP 프리패스 가치 제안 업그레이드**:
+     - [`src/views/ShopView.tsx`](file:///Users/dayyoung/project/snshero/src/views/ShopView.tsx): 단순 배너 제거에서 '광고 제거 & VIP 프리패스(모든 보상형 광고 30초 대기 없이 1클릭 즉시 수령 특권)'로 혜택 및 설명 대폭 강화.
+  6. **기타 컴포넌트 타입 수정**:
+     - [`src/views/CardMarketplaceView.tsx`](file:///Users/dayyoung/project/snshero/src/views/CardMarketplaceView.tsx): `snsBalance` -> `userSns` 참조 오류 수정.
+     - [`src/views/CommunityView.tsx`](file:///Users/dayyoung/project/snshero/src/views/CommunityView.tsx): channel === 'strategy' -> 'tip' 카테고리 매핑 수정.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 Errors (전체 프로젝트 완벽 통과).
+  - `npm run build`: 14.78초 만에 0에러 프로덕션 번들 빌드 완결.
+  - 로컬 Git 커밋 완료 (`67c0521`).
+  - 구글 폼 완료 보고서 제출 완료 (`https://docs.google.com/forms/d/e/1FAIpQLScrvcAqDF7vHHQndycr90ii-ujTi3Plw23eNrSyiJpOLrHbjg/formResponse`).
 - **요청 사항**:
   - AI Studio 환경에서도 최신 뉴스(10월 12일 상원 디젤 법안 등)가 정상적으로 확인되도록 조치.
 - **원인 및 근본 해결책**:
