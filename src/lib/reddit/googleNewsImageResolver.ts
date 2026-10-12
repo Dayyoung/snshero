@@ -15,8 +15,8 @@
 import { RawGoogleNewsItem } from '../../data/googleNewsSeedData';
 
 // 크롤러의 캐리오버(복제 도배) 에러로 판명된 의심스러운 도메인 및 플레이스홀더 패턴
+// (참고: dims.apnews.com은 AP통신 정품 보도사진 CDN이므로 무조건 차단하지 않고 정상 보도사진으로 신뢰함)
 const UNRELIABLE_IMAGE_SIGNATURES = [
-  'dims.apnews.com',           // 특정 4~5개 AP 축구/농구 사진이 100여 개 기사에 무차별 복제 도배됨
   'googleusercontent.com',     // 28회 이상 중복 도배된 프록시/더미
   'cloudfront.net',            // 고정 논평 썸네일(brooksandcapehart 등)
   'the-ap-default-image',
@@ -318,8 +318,8 @@ export function resolveAccurateNewsImage(
   const usageCount = urlUsageMap.get(rawUrl) || 0;
   urlUsageMap.set(rawUrl, usageCount + 1);
 
-  if (usageCount >= 1) {
-    // 이미 1번 이상 등장한 이미지는 기사 간 사진 중복을 방지하기 위해 정밀 시맨틱 매칭
+  if (usageCount >= 2) {
+    // 2회 이상 과도하게 중복 재사용된 이미지는 크롤러 캐리오버 도배 방지를 위해 정밀 시맨틱 매칭
     return getContextualNewsImage(item.title, item.summary, itemIndex);
   }
 
