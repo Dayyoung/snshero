@@ -39,6 +39,7 @@ import { getProfileBadgeByKey, getProfileEmoticonByKey, getProfileTitleByKey } f
 import { MonsterPetBadge } from '../components/MonsterPetBadge';
 import { useMonsterPet } from '../hooks/useMonsterPet';
 import { parseCardAvatarId } from '../lib/monsterPet';
+import { createCommunityWebMcpTools, useWebMcpTools } from '../lib/webMcp';
 
 interface CommunityViewProps {
   onBack: () => void;
@@ -821,6 +822,41 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
       setIsSubmitting(false);
     }
   };
+
+  // WebMCP Screen Tools: AI Agent Community Posting & Feed Queries
+  const communityWebMcpTools = React.useMemo(() => {
+    return createCommunityWebMcpTools({
+      onCreatePost: async (title, postContent, channel) => {
+        const fullContent = title ? `[${title}]\n${postContent}` : postContent;
+        const validCategory: CommunityWritableCategory =
+          channel === 'boast' ? 'boast' : channel === 'strategy' ? 'strategy' : 'free';
+        try {
+          const newPost = await createCommunityPost(
+            fullContent,
+            undefined,
+            activeUser,
+            validCategory
+          );
+          setPosts((prev) => [newPost, ...prev.filter(p => p.id !== newPost.id)]);
+        } catch (err) {
+          console.error('WebMCP create post failed:', err);
+        }
+      },
+      getPosts: () => {
+        return posts.slice(0, 15).map(p => ({
+          id: p.id,
+          author: p.authorName,
+          category: p.category,
+          content: p.content,
+          likesCount: p.likes?.length || 0,
+          commentsCount: p.comments?.length || 0,
+          createdAt: p.createdAt
+        }));
+      }
+    });
+  }, [activeUser, posts]);
+
+  useWebMcpTools(communityWebMcpTools);
 
   // 좋아요 처리
   const handleLikeToggle = async (postId: string) => {

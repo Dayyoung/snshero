@@ -18,6 +18,7 @@ import { getProfileBadgeByKey, getProfileEmoticonByKey, getProfileTitleByKey } f
 import { MatchmakingQueueModal } from '../components/MatchmakingQueueModal';
 import { LeaderboardDeckInspectModal } from '../components/LeaderboardDeckInspectModal';
 import { getDynamicDifficultyProfile, DynamicDifficultyProfile } from '../lib/dynamicDifficulty';
+import { createRankingWebMcpTools, useWebMcpTools } from '../lib/webMcp';
 
 interface RankingUser {
   id: string;
@@ -128,6 +129,22 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
   const { theme } = useGameSettings();
   const [rawUsers, setRawUsers] = useState<(RankingUser & { deck?: any[] })[]>([]);
   
+  // WebMCP (Chrome 149+ AI Model Context Protocol) Ranking Tools Registration
+  const rankingMcpTools = useMemo(() => {
+    return createRankingWebMcpTools({
+      onStartBattle: () => {
+        if (rawUsers && rawUsers.length > 0 && onAttackUser) {
+          onAttackUser(rawUsers[0]);
+        } else if (setView) {
+          setView('card-play');
+        }
+      },
+      onNavigate: setView,
+      isAutoBattle
+    });
+  }, [rawUsers, onAttackUser, setView, isAutoBattle]);
+  useWebMcpTools(rankingMcpTools, [rankingMcpTools]);
+
   // Matchmaking State
   const [isSearching, setIsSearching] = useState(false);
   const [searchTimer, setSearchTimer] = useState(5);

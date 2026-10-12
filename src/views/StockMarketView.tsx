@@ -11,6 +11,7 @@ import { CARD_DATABASE } from '../cardDatabase';
 import { t } from '../lib/i18n';
 import { cn } from '../lib/utils';
 import { PageHeader } from '../components/PageHeader';
+import { createStockWebMcpTools, useWebMcpTools } from '../lib/webMcp';
 
 interface StockMarketViewProps {
   language: Language;
@@ -589,6 +590,68 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
     setTradeAmount(1);
     setSelectedCardId(null);
   };
+
+  // WebMCP Screen Tools: AI Agent Stock Trading & Portfolio Queries
+  const stockWebMcpTools = React.useMemo(() => {
+    return createStockWebMcpTools({
+      onBuyStock: (ticker, quantity = 1) => {
+        const cleanTicker = ticker.toUpperCase().trim();
+        const symIdx = COIN_SYMBOLS.indexOf(cleanTicker);
+        const cardId = symIdx !== -1 ? Math.max(1, 110 - symIdx) : 1;
+        const card = CARD_DATABASE[cardId];
+        if (!card) return;
+        const unitPrice = getCardSnsPrice(cardId);
+        const subtotal = unitPrice * quantity;
+        const fee = Math.max(1, Math.round(subtotal * 0.015));
+        const total = subtotal + fee;
+        if (sns >= total) {
+          updateSns(-total, `${card.title} X${quantity} 주식 매수 (Fee: ${fee} SNS)`);
+          for (let i = 0; i < quantity; i++) {
+            addCard(card.rarity as any, cardId, true);
+          }
+          triggerHaptic('success');
+        }
+      },
+      onSellStock: (ticker, quantity = 1) => {
+        const cleanTicker = ticker.toUpperCase().trim();
+        const symIdx = COIN_SYMBOLS.indexOf(cleanTicker);
+        const cardId = symIdx !== -1 ? Math.max(1, 110 - symIdx) : 1;
+        const card = CARD_DATABASE[cardId];
+        const ownedQty = inventory[cardId]?.quantity || 0;
+        if (!card || ownedQty < quantity) return;
+        const unitPrice = getCardSnsPrice(cardId);
+        const subtotal = unitPrice * quantity;
+        const fee = Math.max(1, Math.round(subtotal * 0.015));
+        const total = Math.max(1, subtotal - fee);
+        updateSns(total, `${card.title} X${quantity} 주식 매도 (Fee: ${fee} SNS)`);
+        const updatedInv = { ...inventory };
+        if (updatedInv[cardId]) {
+          updatedInv[cardId].quantity -= quantity;
+          if (user && user.uid !== 'guest-id') {
+            syncUserData({ sns: sns + total, inventory: updatedInv });
+          }
+        }
+        triggerHaptic('success');
+      },
+      getStockData: () => {
+        return {
+          snsBalance: sns,
+          tickers: COIN_SYMBOLS.slice(0, 20).map((sym, idx) => {
+            const cId = Math.max(1, 110 - idx);
+            return {
+              ticker: sym,
+              cardId: cId,
+              name: CARD_DATABASE[cId]?.title || `${sym} Token`,
+              price: getCardSnsPrice(cId),
+              owned: inventory[cId]?.quantity || 0
+            };
+          })
+        };
+      }
+    });
+  }, [addCard, inventory, sns, syncUserData, updateSns, user]);
+
+  useWebMcpTools(stockWebMcpTools);
 
   const helpSteps = HELP_STEPS(language);
 

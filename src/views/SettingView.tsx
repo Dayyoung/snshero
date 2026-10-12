@@ -33,7 +33,7 @@ import { WebPushService, type DevicePushStatus } from '../lib/webPushService';
 import { IosPwaInstallGuideModal } from '../components/IosPwaInstallGuideModal';
 import { useSns } from '../contexts/SnsContext';
 import { PwaRewardService } from '../lib/pwaRewardService';
-
+import { createAuxWebMcpTools, useWebMcpTools } from '../lib/webMcp';
 
 interface SettingViewProps {
   bgmEnabled: boolean;
@@ -141,6 +141,20 @@ export const SettingView: React.FC<SettingViewProps> = ({
   useEffect(() => {
     setPushStatus(WebPushService.getDeviceStatus());
   }, []);
+
+  // WebMCP Screen Tools: Auxiliary Screens (Companion, Skills, SeasonHub, Settings)
+  const auxWebMcpTools = React.useMemo(() => {
+    return createAuxWebMcpTools({
+      onNavigate: (view) => {
+        if (onNavigate) onNavigate(view);
+      },
+      updateSns: (amount, reason) => {
+        addSns(amount, reason);
+      }
+    });
+  }, [addSns, onNavigate]);
+
+  useWebMcpTools(auxWebMcpTools);
 
   const handleRequestWebPush = async () => {
     playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');

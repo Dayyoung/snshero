@@ -38,6 +38,7 @@ import { TokenExchangeModal } from '../components/TokenExchangeModal';
 import { ShortfallGuideModal } from '../components/ShortfallGuideModal';
 import { ArrowDownUp } from 'lucide-react';
 import { getCardPower } from '../constants';
+import { createShopWebMcpTools, useWebMcpTools } from '../lib/webMcp';
 
 interface ShopViewProps {
   sns: number;
@@ -2219,6 +2220,39 @@ export const ShopView: React.FC<ShopViewProps> = ({
       setIsShortfallModalOpen(true);
     }
   };
+
+  // WebMCP Screen Tools: AI Agent Card Summon & Shop Queries
+  const shopWebMcpTools = useMemo(() => {
+    const costMap: Record<string, number> = {
+      bronze: 10,
+      silver: 30,
+      gold: 60,
+      diamond: 100,
+      pickup: 50
+    };
+    return createShopWebMcpTools({
+      onSummonPack: (packType, isTenPull) => {
+        const rarity = (packType as GachaPackRarity) || 'bronze';
+        const cost = costMap[rarity] || 10;
+        if (isTenPull) {
+          buy10xPack(cost, rarity);
+        } else {
+          buyPack(cost, rarity, 1);
+        }
+      },
+      onInitiateCrypto: () => {
+        handleGoodsCryptoPayment();
+      },
+      getShopState: () => ({
+        currentSns: sns,
+        monthlyPullCount,
+        hasDailyFreeSummonAvailable: !dailyFreeSummonClaimed,
+        pityState: gachaPityState
+      })
+    });
+  }, [buy10xPack, buyPack, dailyFreeSummonClaimed, gachaPityState, monthlyPullCount, sns]);
+
+  useWebMcpTools(shopWebMcpTools);
 
   const buyPackUntilEmpty = (cost: number, packRarity: GachaPackRarity) => {
     if (cost <= 0) {

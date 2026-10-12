@@ -30,6 +30,7 @@ import { HomeQuickHub } from "../components/HomeQuickHub";
 import { AfkHarvestBox } from "../components/AfkHarvestBox";
 import { LifecycleEngine } from "../lib/LifecycleEngine";
 import { Flame } from "lucide-react";
+import { createHomeWebMcpTools, useWebMcpTools } from "../lib/webMcp";
 
 const getCardAvatarStyle = (avatar: string): React.CSSProperties => {
   const cardId = Number(avatar.split(':')[1]) || 1;
@@ -95,6 +96,16 @@ export const HomeView: React.FC<HomeViewProps> = ({
   const [dailyMissionProgress, setDailyMissionProgress] = useState<DailyMissionProgress>(() => loadDailyMissions());
   // PWA 설치 & 알림 등록 이벤트 모달 상태
   const [isPwaEventOpen, setIsPwaEventOpen] = useState(false);
+
+  // WebMCP (Chrome 149+ AI Model Context Protocol) Home Tools Registration
+  const homeMcpTools = React.useMemo(() => {
+    return createHomeWebMcpTools({
+      onNavigate,
+      updateSns: addSns,
+      playSfx
+    });
+  }, [onNavigate, addSns, playSfx]);
+  useWebMcpTools(homeMcpTools, [homeMcpTools]);
 
   // PWA 설치 & 알림 등록 이벤트 모달 자동 오픈 (오늘 하루 보지 않기 미적용 & 미수령 보상 존재 & 공지 닫힘 & Milestone 닫힘)
   useEffect(() => {

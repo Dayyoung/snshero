@@ -26,6 +26,7 @@ import { pickNewRankOpponent, RankOpponentInfo } from '../data/rankingOpponents'
 import { getDynamicDifficultyProfile, DynamicDifficultyProfile } from '../lib/dynamicDifficulty';
 import { WEBTOON_SEASONS } from '../content/webtoonEpisodes';
 import { MOVIE_EPISODES } from '../content/movieEpisodeMapping';
+import { createBattleWebMcpTools, useWebMcpTools } from '../lib/webMcp';
 
 export interface MobileCardPlayScreenProps {
   playerDeck?: CardData[];
@@ -128,6 +129,30 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
   // Auto Battle & Speed (시작 시 자동전투 시작)
   const [isAutoBattle, setIsAutoBattle] = useState(initialAutoBattle !== false);
   const [battleSpeed, setBattleSpeed] = useState<1 | 2>(1);
+
+  // WebMCP (Chrome 149+ AI Model Context Protocol) Card Battle Tools Registration
+  const battleMcpTools = useMemo(() => {
+    return createBattleWebMcpTools({
+      onPlayCard: (slotIndex) => {
+        if (playerHand && playerHand[slotIndex]) {
+          setSelectedHandIndex(slotIndex);
+        }
+      },
+      onEndTurn: () => {
+        setTurn('ai');
+      },
+      getBattleState: () => ({
+        turn,
+        turnCount,
+        gameOver,
+        winner,
+        playerHandCount: playerHand.length,
+        opponentHandCount: opponentHand.length,
+        isAutoBattle
+      })
+    });
+  }, [playerHand, opponentHand, turn, turnCount, gameOver, winner, isAutoBattle]);
+  useWebMcpTools(battleMcpTools, [battleMcpTools]);
 
   // Sync initialAutoBattle prop changes from parent view
   useEffect(() => {

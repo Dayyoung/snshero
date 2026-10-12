@@ -59,6 +59,7 @@ import { CardCompareModal } from '../components/CardCompareModal';
 import { MaterialDeficitModal } from '../components/MaterialDeficitModal';
 import { DeckCommandHub } from '../components/DeckCommandHub';
 import { maybeTriggerTourOrProceedToBattle } from '../lib/smartLoopTourService';
+import { createMyDeckWebMcpTools, useWebMcpTools } from '../lib/webMcp';
 
 interface MyDeckViewProps {
   currentDeck: CardData[];
@@ -1264,6 +1265,30 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
     setSelectingIndex(null);
     setSelectionContext('replace');
   };
+
+  // WebMCP Screen Tools: AI Agent Deck Optimization & Card Equipment
+  const myDeckTools = useMemo(() => {
+    return createMyDeckWebMcpTools({
+      onOptimizeDeck: handleOptimizeDeck,
+      onSwapCard: (slotIndex, cardId) => {
+        selectMasterCard(cardId, slotIndex);
+      },
+      getDeckInfo: () => ({
+        currentDeck: currentDeck.map((c, idx) => ({
+          slot: idx,
+          id: c.id,
+          name: c.name,
+          imageIndex: c.imageIndex,
+          power: getCardPower(c),
+          stats: c.stats
+        })),
+        totalDeckPower: currentDeck.reduce((acc, c) => acc + getCardPower(c), 0),
+        ownedCount: ownedCards.length
+      })
+    });
+  }, [currentDeck, handleOptimizeDeck, ownedCards.length]);
+
+  useWebMcpTools(myDeckTools);
 
   const [sortBy, setSortBy] = useState<'index' | 'level' | 'power' | 'name' | 'rarity' | 'stats_total' | 'recent' | 'dir_up' | 'dir_down' | 'dir_left' | 'dir_right' | 'meta_counter'>('recent');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');

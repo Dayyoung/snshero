@@ -72,6 +72,7 @@ import { TurnOrderDeciderModal } from '../components/TurnOrderDeciderModal';
 import { BattleReplayShareButton } from '../components/BattleReplayShareButton';
 import { SceneExitOptimizer } from '../lib/SceneExitOptimizer';
 import { playBattleSfx } from '../lib/AudioSpriteService';
+import { createPokiGameWebMcpTools, useWebMcpTools } from '../lib/webMcp';
 import { StaminaPacingManager } from '../lib/staminaPacingManager';
 import { TreasureDartModal } from '../components/TreasureDartModal';
 import { GoldenPirateRouletteModal } from '../components/GoldenPirateRouletteModal';
@@ -9840,6 +9841,39 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [randomPlayTrigger]);
+
+  // WebMCP Screen Tools: AI Agent Poki Game Selection & Random Dice Play
+  const pokiGameWebMcpTools = useMemo(() => {
+    return createPokiGameWebMcpTools({
+      onSelectGame: (gameId) => {
+        const idNum = Number(gameId);
+        const target = modes.find(m => m.characterId === idNum) || modes[idNum - 1] || modes[0];
+        if (target) {
+          recordModePlay(target.id);
+          openMissionEncounter(target.characterId || 1);
+        }
+      },
+      onRollRandom: () => {
+        if (modes.length === 0) return;
+        const randomMode = modes[Math.floor(Math.random() * modes.length)];
+        if (randomMode) {
+          recordModePlay(randomMode.id);
+          openMissionEncounter(randomMode.characterId || 1);
+        }
+      },
+      getGameList: () => {
+        return modes.map(m => ({
+          id: m.id,
+          characterId: m.characterId,
+          title: m.title,
+          category: m.category,
+          guide: m.guide
+        }));
+      }
+    });
+  }, [modes]);
+
+  useWebMcpTools(pokiGameWebMcpTools);
 
   // =========================================================================
   // GLOBAL BACK BUTTON CUSTOM EVENT INTERCEPTOR

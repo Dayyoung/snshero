@@ -13,6 +13,7 @@ import { MarketSparkline } from '../components/MarketSparkline';
 import { t } from '../lib/i18n';
 import { cn } from '../lib/utils';
 import type { DatabaseCard, InventoryRecord, Language, Listing, Offer, TradeAuditLog, TradeStatus, ViewType } from '../types';
+import { createMarketWebMcpTools, useWebMcpTools } from '../lib/webMcp';
 
 interface CardMarketplaceViewProps {
   language: Language;
@@ -722,6 +723,41 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
 
     setTradeSuccessModalListing(listing);
   };
+
+  // WebMCP Screen Tools: AI Agent P2P Marketplace Tools
+  const marketWebMcpTools = useMemo(() => {
+    return createMarketWebMcpTools({
+      onBuyCard: (listingId) => {
+        const target = marketState.listings.find(l => l.id === listingId);
+        if (target) {
+          handleExecutePurchase(target);
+        }
+      },
+      onListCard: (cardId, priceSns) => {
+        setSelectedCardId(cardId);
+        setListingPriceInput(String(priceSns));
+        setTimeout(() => {
+          handleCreateListing();
+        }, 50);
+      },
+      getMarketplaceData: () => {
+        return {
+          activeListings: marketState.listings.filter(l => l.status === 'active').map(l => ({
+            id: l.id,
+            cardId: l.cardId,
+            cardTitle: l.cardTitle,
+            askPrice: l.askPrice,
+            sellerName: l.sellerName,
+            rarity: l.rarity
+          })),
+          myOffers: marketState.offers.filter(o => o.buyerId === userId),
+          snsBalance: snsBalance
+        };
+      }
+    });
+  }, [handleExecutePurchase, handleCreateListing, marketState, snsBalance, userId]);
+
+  useWebMcpTools(marketWebMcpTools);
 
   const handleCancelListing = (listingId: string) => {
     const now = getNowIso();

@@ -59,6 +59,8 @@ import { isSfxMutedGlobal, setGlobalSfxMuted } from './lib/sound';
 import { usePwaInstallGuard } from './hooks/usePwaInstallGuard';
 import { incrementMissionProgress } from './lib/dailyMissions';
 import { RainbowFlipEffect } from './components/RainbowFlipEffect';
+import { createGlobalWebMcpTools, useWebMcpTools } from './lib/webMcp';
+import { WebMcpActiveBadge } from './components/WebMcpActiveBadge';
 
 import { 
   Menu, 
@@ -3326,6 +3328,22 @@ function AppContent() {
       });
     }
   }, [purchasedSns, earnedSns, effectiveUser, inventory, stats, currentDeck, itemInventory, totalPower, isAutoBattle, lowSpecMode, language, syncUserData]);
+
+  // WebMCP (Chrome 149+ AI Model Context Protocol) Global Tools Registration
+  const globalMcpTools = useMemo(() => {
+    return createGlobalWebMcpTools({
+      currentView: view,
+      onNavigate: setView,
+      language,
+      setLanguage,
+      lowSpecMode,
+      setLowSpecMode,
+      sns,
+      updateSns
+    });
+  }, [view, setView, language, setLanguage, lowSpecMode, setLowSpecMode, sns, updateSns]);
+
+  useWebMcpTools(globalMcpTools, [globalMcpTools]);
 
   const applyDeckUpgrade = useCallback((upgradedCardsToApply: { idx: number; imgIdx: number }[]) => {
     setCurrentDeck(prevDeck => {
@@ -7933,6 +7951,9 @@ function AppContent() {
           </div>
         </div>
       )}
+
+      {/* Global WebMCP (Chrome 149+ AI Agent) Active Tool Status Badge */}
+      <WebMcpActiveBadge currentScreen={view} />
 
       </div>
 
