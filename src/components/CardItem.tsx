@@ -312,8 +312,8 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
         className={cn(
           'z-30 flex items-center justify-center border font-mono leading-none tabular-nums select-none backdrop-blur-[0.5px]',
           isOnBoard
-            ? 'absolute h-[clamp(20px,26cqw,34px)] min-w-[clamp(26px,32cqw,44px)] rounded-sm px-[clamp(3px,1.5cqw,6px)] gap-[clamp(2px,1cqw,4px)]'
-            : 'absolute h-[clamp(18px,22cqw,28px)] min-w-[clamp(24px,28cqw,38px)] rounded-sm px-[clamp(2px,1.2cqw,5px)] gap-[clamp(1.5px,0.8cqw,3px)]',
+            ? 'absolute h-[clamp(20px,26cqw,34px)] min-w-[clamp(20px,26cqw,34px)] rounded-xs px-[clamp(2px,1.2cqw,4px)]'
+            : 'absolute h-[clamp(18px,22cqw,28px)] min-w-[clamp(18px,22cqw,28px)] rounded-xs px-[clamp(2px,1cqw,4px)]',
           highlighted
             ? 'border-red-500 bg-red-600 text-white shadow-[0_0_12px_rgba(239,68,68,0.9)] scale-110 z-40'
             : 'border-[#201d1d] bg-white/95 text-[#201d1d] shadow-[0_1.5px_5px_rgba(0,0,0,0.25)]',
@@ -322,16 +322,7 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
         title={`${direction} ${stat.total}${delta ? ` (${stat.base}${delta > 0 ? '+' : ''}${delta})` : ''}`}
       >
         <span className={cn(
-          'text-[clamp(8px,10cqw,13px)] font-black tracking-tighter shrink-0',
-          highlighted ? 'text-white' : 'text-[#646262]'
-        )}>
-          {index === 0 && `▲${direction}`}
-          {index === 1 && `${direction}▶`}
-          {index === 2 && `▼${direction}`}
-          {index === 3 && `◀${direction}`}
-        </span>
-        <span className={cn(
-          'text-[clamp(13px,20cqw,28px)] font-black tracking-tight leading-none',
+          'text-[clamp(13px,20cqw,28px)] font-black tracking-tight leading-none text-center',
           !highlighted && delta > 0 && 'text-[#16a34a]',
           !highlighted && delta < 0 && 'text-[#dc2626]',
         )}>
