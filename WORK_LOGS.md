@@ -2,6 +2,23 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-12 09:14 KST] [AI Studio BenchmarkView import-analysis 에러 방지 및 git push 완료]
+- **요청 사항**:
+  - `[plugin:vite:import-analysis] Failed to resolve import "./views/BenchmarkView" from "src/App.tsx". Does the file exist?` 오류 원천 차단 및 `git push` 실행.
+- **원인 분석**:
+  - `src/App.tsx`에서 `const BenchmarkView = safeLazy(() => import('./views/BenchmarkView'), 'BenchmarkView')`와 같이 정적 문자열로 동적 import 경로를 하드코딩한 경우, Vite의 `import-analysis` 플러그인이 파일 시스템에 해당 파일이 없는 샌드박스 환경(AI Studio 등)에서 번들링 정적 분석 에러를 발생시킴.
+- **상세 구현 내역**:
+  1. **Glob 기반 동적 폴백 로더 `loadViewSafely` 구현** ([`src/App.tsx`](file:///Users/dayyoung/project/snshero/src/App.tsx)):
+     - `import.meta.glob('./views/*.tsx')`를 활용하여 실제 파일시스템에 존재하는 뷰 모듈만 동적으로 맵핑.
+     - 파일이 없는 샌드박스 환경이라도 Vite의 `import-analysis` 정적 에러가 발생하지 않고, 안전한 폴백 뷰 컴포넌트를 반환하도록 보호.
+     - `BenchmarkView`, `PacpikView`, `MallView`에 전면 적용.
+  2. **빌드 검증 및 원격 푸시 완결**:
+     - `npm run build`: 10.65초 만에 정상 번들링 완료 (exit code 0).
+     - 원격 저장소 푸시 완료 (`ae56351..4b8931a main -> main`).
+- **검증 결과**:
+  - `git push origin main` 성공 완료.
+  - 구글 폼 작업 완료 보고서 제출 완료 (`Successfully submitted task`).
+
 ## [2026-10-12 08:52 KST] [AI Studio geoManager import 분석 오류 원천 방지 및 원격 저장소 푸시 완료]
 - **요청 사항**:
   - AI Studio에서 실행 시 발생하던 `[plugin:vite:import-analysis] Failed to resolve import "./lib/geoManager" from "src/App.tsx". Does the file exist?` 오류 원천 차단 및 `git push` 실행.
