@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LogOut, Trophy, User, BookOpen, Play, ArrowRight, X, ChevronLeft, ChevronRight, Tv, Zap, Clock, Layers, Image, Film, Github, Youtube } from "lucide-react";
+import { LogOut, Trophy, User, BookOpen, Play, ArrowRight, X, ChevronLeft, ChevronRight, ShoppingBag, Flame, Layers, Github, Youtube } from "lucide-react";
 import { NotificationCenterModal } from "../components/NotificationCenterModal";
 import { getUnreadCount } from "../lib/notificationHelper";
 import { motion, AnimatePresence } from "motion/react";
@@ -18,6 +18,7 @@ import { Milestone600CelebrationModal } from "../components/Milestone600Celebrat
 import { StarterPackModal } from "../components/StarterPackModal";
 import { PwaEventModal } from "../components/PwaEventModal";
 import { LobbyInteractiveCard } from "../components/LobbyInteractiveCard";
+import { CardLongPressPreviewModal } from "../components/CardLongPressPreviewModal";
 import { PingIndicator } from "../components/PingIndicator";
 import { triggerHaptic } from "../lib/haptic";
 import { useSns } from "../contexts/SnsContext";
@@ -25,7 +26,6 @@ import { DAILY_MISSIONS, loadDailyMissions, getClaimableCount, DailyMissionProgr
 import { HomeQuickHub } from "../components/HomeQuickHub";
 import { AfkHarvestBox } from "../components/AfkHarvestBox";
 import { LifecycleEngine } from "../lib/LifecycleEngine";
-import { Flame } from "lucide-react";
 import { createHomeWebMcpTools, useWebMcpTools } from "../lib/webMcp/index";
 
 const getCardAvatarStyle = (avatar: string): React.CSSProperties => {
@@ -92,6 +92,8 @@ export const HomeView: React.FC<HomeViewProps> = ({
   const [dailyMissionProgress, setDailyMissionProgress] = useState<DailyMissionProgress>(() => loadDailyMissions());
   // PWA 설치 & 알림 등록 이벤트 모달 상태
   const [isPwaEventOpen, setIsPwaEventOpen] = useState(false);
+  // 카드 터치 시 상세 정보를 팝업으로 표시할 상태 (마이덱 강제 이동 버그 해결)
+  const [selectedPreviewCard, setSelectedPreviewCard] = useState<CardData | null>(null);
 
   // WebMCP (Chrome 149+ AI Model Context Protocol) Home Tools Registration
   const homeMcpTools = React.useMemo(() => {
@@ -163,16 +165,8 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
   // SCR-01-06: Zero Background Overhead via LifecycleEngine
   useEffect(() => {
-    const unsubscribe = LifecycleEngine.subscribe((isVisible, hiddenDurationMs) => {
-      if (!isVisible) {
-        // 비활성 탭 진입 시 즉각 백그라운드 타이머 정지 (배터리/메모리 절감)
-        setIsAutoStartPaused(true);
-      } else {
-        // 포그라운드 복귀 시 장시간 경과된 경우 타이머 리셋
-        if (hiddenDurationMs > 3000) {
-          setAutoStartCountdown(30);
-        }
-      }
+    const unsubscribe = LifecycleEngine.subscribe(() => {
+      // Background memory optimization
     });
     return () => unsubscribe();
   }, []);
@@ -214,55 +208,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
   const [helpStep, setHelpStep] = useState(0);
 
-  // 30-Second Idle Auto-Start Ranking Battle Timer
-  const [autoStartCountdown, setAutoStartCountdown] = useState<number>(30);
-  // Browsing the lobby must not start a battle without the player's consent.
-  const [isAutoStartPaused, setIsAutoStartPaused] = useState<boolean>(true);
 
-  // User activity resets the 30s timer
-  useEffect(() => {
-    const handleUserActivity = () => {
-      setAutoStartCountdown(30);
-    };
-
-    window.addEventListener('mousemove', handleUserActivity, { passive: true });
-    window.addEventListener('touchstart', handleUserActivity, { passive: true });
-    window.addEventListener('keydown', handleUserActivity, { passive: true });
-    window.addEventListener('scroll', handleUserActivity, { passive: true });
-
-    return () => {
-      window.removeEventListener('mousemove', handleUserActivity);
-      window.removeEventListener('touchstart', handleUserActivity);
-      window.removeEventListener('keydown', handleUserActivity);
-      window.removeEventListener('scroll', handleUserActivity);
-    };
-  }, []);
-
-  // Interval timer for 30s countdown
-  useEffect(() => {
-    if (isAutoStartPaused || helpOpen || isMailboxOpen || isNotifModalOpen || isLoggingIn || isMilestone600Open || isPwaEventOpen || isStarterPackOpen || (isTutorialMode && tutorialStep > 0)) {
-      return;
-    }
-
-    const timer = setInterval(() => {
-      setAutoStartCountdown((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [isAutoStartPaused, helpOpen, isMailboxOpen, isNotifModalOpen, isLoggingIn, isMilestone600Open, isPwaEventOpen, isStarterPackOpen, isTutorialMode, tutorialStep]);
-
-  useEffect(() => {
-    if (autoStartCountdown === 0 && !isAutoStartPaused && !helpOpen && !isMailboxOpen && !isNotifModalOpen && !isLoggingIn && !isMilestone600Open && !isPwaEventOpen && !isStarterPackOpen && !(isTutorialMode && tutorialStep > 0)) {
-      playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
-      onNavigate('ranking');
-    }
-  }, [autoStartCountdown, isAutoStartPaused, helpOpen, isMailboxOpen, isNotifModalOpen, isLoggingIn, isMilestone600Open, isPwaEventOpen, isStarterPackOpen, isTutorialMode, tutorialStep, onNavigate, playSfx]);
 
   const helpSlides = React.useMemo(() => [
     {
@@ -453,7 +399,9 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     lowSpecMode={lowSpecMode || perf.reducedMotion}
                     language={language}
                     onCardClick={() => {
-                      onNavigate('mydeck');
+                      triggerHaptic('light');
+                      playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+                      setSelectedPreviewCard(displayCard);
                     }}
                   />
                   </div>
@@ -477,45 +425,51 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 <span>{language === 'ko' ? '[⚔️ 지금 플레이]' : '[⚔️ Play Now]'}</span>
                 <ArrowRight size={22} className="shrink-0" />
               </motion.button>
-              <div className={cn(
-                'w-full flex flex-col sm:flex-row items-start sm:items-center justify-between border-t border-[rgba(15,0,0,0.12)] pt-4 text-sm gap-3',
-                autoStartCountdown <= 5 && !isAutoStartPaused ? 'bg-rose-50 text-rose-950' : 'text-[#201d1d]',
-              )}>
-                <div className="flex flex-wrap items-center gap-2 text-sm">
-                  <Clock size={16} className="shrink-0" />
-                  <span>{t(isAutoStartPaused ? 'ui_lobby_auto_battle_off' : 'ui_lobby_auto_battle_in', language)}</span>
-                  <span className={cn('font-bold px-2 py-1 text-sm text-[#fdfcfc] tabular-nums', autoStartCountdown <= 5 && !isAutoStartPaused ? 'bg-rose-600' : 'bg-[#201d1d]')}>{autoStartCountdown}s</span>
-                </div>
-                <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsAutoStartPaused(!isAutoStartPaused);
-                      triggerHaptic('light');
-                      playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
-                    }}
-                    className="min-h-11 px-3 py-2 bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] text-sm font-bold cursor-pointer rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2"
-                  >
-                    {t(isAutoStartPaused ? 'ui_lobby_auto_battle_enable' : 'ui_lobby_auto_battle_pause', language)}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      triggerHaptic('battle_start');
-                      playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
-                      onNavigate('ranking');
-                    }}
-                    className="min-h-12 px-4 py-3 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] text-sm font-bold cursor-pointer flex items-center gap-2 border border-[#201d1d] rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2"
-                  >
-                    <Play size={16} />
-                    <span>{language === 'ko' ? '[ 1초 즉시 대전 시작 ]' : '[ QUICK BATTLE ]'}</span>
-                  </button>
-                </div>
-              </div>
+              {/* ── Core 4 Navigation Hub: 핵심 버튼 4개 (깔끔한 2x2 / 4열 그리드) ── */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 font-mono pt-1">
+                {/* 1. 상점 */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic('light');
+                    playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+                    onNavigate('shop');
+                  }}
+                  className="min-h-12 px-3 py-2.5 bg-[#fdfcfc] text-[#201d1d] font-bold text-sm border border-[rgba(15,0,0,0.12)] hover:bg-[#201d1d] hover:text-[#fdfcfc] transition-colors cursor-pointer flex items-center justify-center gap-2 rounded-sm"
+                >
+                  <ShoppingBag size={18} className="shrink-0" />
+                  <span>{language === 'ko' ? '[🏪 카드 상점]' : '[🏪 Shop]'}</span>
+                </button>
 
-              {/* SCR-01-05: Streamlined Quick Action Toolbar with HomeQuickHub */}
-              <div className="grid grid-cols-1 gap-3 font-mono">
-                {/* SCR-01-05: Smart Quick Hub Trigger & Dropdown */}
+                {/* 2. 랭킹 아레나 */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic('light');
+                    playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+                    onNavigate('ranking');
+                  }}
+                  className="min-h-12 px-3 py-2.5 bg-[#fdfcfc] text-[#201d1d] font-bold text-sm border border-[rgba(15,0,0,0.12)] hover:bg-[#201d1d] hover:text-[#fdfcfc] transition-colors cursor-pointer flex items-center justify-center gap-2 rounded-sm"
+                >
+                  <Trophy size={18} className="shrink-0" />
+                  <span>{language === 'ko' ? '[🏆 랭킹 아레나]' : '[🏆 Ranking]'}</span>
+                </button>
+
+                {/* 3. 미디어 라운지 */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic('light');
+                    playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+                    onNavigate('webtoon');
+                  }}
+                  className="min-h-12 px-3 py-2.5 bg-[#fdfcfc] text-[#201d1d] font-bold text-sm border border-[rgba(15,0,0,0.12)] hover:bg-[#201d1d] hover:text-[#fdfcfc] transition-colors cursor-pointer flex items-center justify-center gap-2 rounded-sm"
+                >
+                  <BookOpen size={18} className="shrink-0" />
+                  <span>{language === 'ko' ? '[📚 미디어 라운지]' : '[📚 Media]'}</span>
+                </button>
+
+                {/* 4. 스마트 퀵 허브 (우편함, 알림, 사운드, 가이드 등 모달 허브) */}
                 <HomeQuickHub
                   language={language}
                   unreadMailCount={unreadMailCount}
@@ -525,161 +479,20 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   isLobbyDrawerOpen={isLobbyDrawerOpen}
                   onOpenMailbox={() => setIsMailboxOpen(true)}
                   onOpenNotifModal={() => setIsNotifModalOpen(true)}
-                   onToggleMute={toggleQuickMute}
-                   onNavigate={(view) => {
-                     playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
-                     onNavigate(view);
-                   }}
+                  onToggleMute={toggleQuickMute}
+                  onNavigate={(view) => {
+                    playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+                    onNavigate(view);
+                  }}
                   onToggleDrawer={() => setIsLobbyDrawerOpen(!isLobbyDrawerOpen)}
                   onOpenHelp={() => { setHelpOpen(true); setHelpStep(0); }}
-                   onOpenPwa={() => {
-                     triggerHaptic('selection');
-                     playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
-                     setIsPwaEventOpen(true);
-                   }}
+                  onOpenPwa={() => {
+                    triggerHaptic('selection');
+                    playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+                    setIsPwaEventOpen(true);
+                  }}
                 />
-
               </div>
-
-              <details className="group border border-[rgba(15,0,0,0.12)] rounded-none">
-                <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 px-3 py-2 text-sm font-bold focus-visible:outline-2 focus-visible:outline-offset-2">
-                  <span>
-                    {language === 'ko' ? '오늘의 일일 미션:' : 'Today\'s Daily Missions:'}
-                    {getClaimableCount() > 0 && <span className="block pt-1 text-[#646262] font-normal">{language === 'ko' ? `${getClaimableCount()}개 수령 가능` : `${getClaimableCount()} Claimable`}</span>}
-                  </span>
-                  <span className="shrink-0 tabular-nums">{DAILY_MISSIONS.filter(m => dailyMissionProgress.missions[m.id]?.completed).length}/{DAILY_MISSIONS.length} <span className="group-open:hidden">[+]</span><span className="hidden group-open:inline">[-]</span></span>
-                </summary>
-                 <div className="space-y-3 border-t border-[rgba(15,0,0,0.12)] p-3">
-                  {localStorage.getItem('hero_milestone_600_claimed') !== 'true' && (
-                    <button type="button" onClick={() => setIsMilestone600Open(true)} className="w-full min-h-11 rounded-sm border border-[rgba(15,0,0,0.12)] px-3 py-2 text-left text-sm hover:bg-[#f1eeee]">
-                      {t('ui_lobby_milestone_reward', language)}
-                    </button>
-                  )}
-                  <button type="button" onClick={() => setIsAfkRewardOpen(true)} className="w-full min-h-11 rounded-sm border border-[rgba(15,0,0,0.12)] px-3 py-2 text-left text-sm hover:bg-[#f1eeee]">
-                    {t('ui_lobby_patrol_rewards', language)}
-                  </button>
-              {/* ID 79: Mini Daily Mission Progress Banner */}
-              {(() => {
-                const totalMissions = DAILY_MISSIONS.length;
-                const completedMissions = DAILY_MISSIONS.filter(m => dailyMissionProgress.missions[m.id]?.completed).length;
-                const claimableCount = getClaimableCount();
-                const percent = Math.min(100, Math.round((completedMissions / Math.max(1, totalMissions)) * 100));
-
-                return (
-                   <button
-                     type="button"
-                    onClick={() => {
-                      playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
-                      const el = document.getElementById('daily-missions-section');
-                      if (el) {
-                         el.scrollIntoView({ behavior: lowSpecMode || perf.reducedMotion ? 'instant' : 'smooth' });
-                      } else {
-                        onNavigate('season_hub');
-                      }
-                    }}
-                     className="w-full min-h-12 flex flex-wrap items-center justify-between gap-3 bg-[#201d1d] border border-[#201d1d] text-[#fdfcfc] rounded-sm px-3 py-3 text-sm cursor-pointer"
-                  >
-                    <div className="flex items-center gap-2">
-                       <Trophy size={16} />
-                       <span className="font-bold text-sm group-hover:underline">
-                        {language === 'ko' ? '오늘의 일일 미션:' : 'Today\'s Daily Missions:'}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                       <div className="w-16 sm:w-24 bg-[#646262] h-2 rounded-none overflow-hidden">
-                        <div 
-                           className="bg-[#fdfcfc] h-full"
-                          style={{ width: `${percent}%` }}
-                        />
-                      </div>
-                       <span className="text-sm font-bold tabular-nums">
-                        {completedMissions}/{totalMissions}
-                      </span>
-                      {claimableCount > 0 && (
-                         <span className="bg-[#fdfcfc] text-[#201d1d] font-bold text-sm px-2 py-1 rounded-sm">
-                          {language === 'ko' ? `${claimableCount}개 수령 가능` : `${claimableCount} Claimable`}
-                        </span>
-                      )}
-                      <ChevronRight size={16} />
-                    </div>
-                   </button>
-                );
-              })()}
-
-              {/* SCR-01-04: 24시간 오프라인 방치 순찰 수확 상자 (Zero Background Overhead & Instant Claim) */}
-              <AfkHarvestBox
-                language={language}
-                onClaimSns={(amount) => {
-                  addSns(amount, 'afk_patrol_harvest', 'earned');
-                }}
-                playSfx={playSfx}
-              />
-                </div>
-              </details>
-
-              <details className="group border border-[rgba(15,0,0,0.12)] rounded-none">
-                <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between px-3 py-2 text-sm font-bold focus-visible:outline-2 focus-visible:outline-offset-2">
-                  <span>{t('official_channels_purpose_media', language)}</span><span className="group-open:hidden">[+]</span><span className="hidden group-open:inline">[-]</span>
-                </summary>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 border-t border-[rgba(15,0,0,0.12)] p-3">
-
-                {/* 소설 읽기 */}
-                <motion.button
-                  {...buttonMotionProps}
-                  onClick={() => {
-                    triggerHaptic('light');
-                    playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
-                    onNavigate("novel");
-                  }}
-                  className="w-full min-h-12 px-3 py-3 bg-[#fdfcfc] text-[#201d1d] font-bold text-sm border border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee] cursor-pointer flex items-center justify-start gap-3 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2"
-                >
-                  <BookOpen size={18} className="shrink-0" />
-                  <span>{language === 'ko' ? '[📖 소설 읽기]' : '[📖 Novel]'}</span>
-                </motion.button>
-
-                {/* 카툰 보기 */}
-                <motion.button
-                  {...buttonMotionProps}
-                  onClick={() => {
-                    triggerHaptic('light');
-                    playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
-                    onNavigate("webtoon");
-                  }}
-                  className="w-full min-h-12 px-3 py-3 bg-[#fdfcfc] text-[#201d1d] font-bold text-sm border border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee] cursor-pointer flex items-center justify-start gap-3 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2"
-                >
-                  <Image size={18} className="shrink-0" />
-                  <span>{language === 'ko' ? '[🎨 카툰 보기]' : '[🎨 Toon]'}</span>
-                </motion.button>
-
-                {/* 애니메이션 보기 */}
-                <motion.button
-                  {...buttonMotionProps}
-                  onClick={() => {
-                    triggerHaptic('light');
-                    playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
-                    onNavigate("anime");
-                  }}
-                  className="w-full min-h-12 px-3 py-3 bg-[#fdfcfc] text-[#201d1d] font-bold text-sm border border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee] cursor-pointer flex items-center justify-start gap-3 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2"
-                >
-                  <Tv size={18} className="shrink-0" />
-                  <span>{language === 'ko' ? '[🎬 애니메이션]' : '[🎬 Anime]'}</span>
-                </motion.button>
-
-                {/* 영화 보기 */}
-                <motion.button
-                  {...buttonMotionProps}
-                  onClick={() => {
-                    triggerHaptic('light');
-                    playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
-                    onNavigate("movie");
-                  }}
-                  className="w-full min-h-12 px-3 py-3 bg-[#fdfcfc] text-[#201d1d] font-bold text-sm border border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee] cursor-pointer flex items-center justify-start gap-3 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2"
-                >
-                  <Film size={18} className="shrink-0" />
-                  <span>{language === 'ko' ? '[🎥 영화 보기]' : '[🎥 Movie]'}</span>
-                </motion.button>
-                </div>
-              </details>
             </div>
           </div>
         </div>
@@ -848,53 +661,9 @@ export const HomeView: React.FC<HomeViewProps> = ({
           )}
         </div>
 
-        {/* ── External Link Buttons: Source Code & Dev Playlist ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 pt-1">
-          <a
-            href="https://github.com/Dayyoung/snshero"
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3")}
-            className="w-full min-h-11 p-3.5 sm:p-4 bg-[#fdfcfc] hover:bg-[#f8f7f7] text-[#201d1d] border border-[rgba(15,0,0,0.12)] rounded-sm flex items-center justify-between group cursor-pointer"
-          >
-            <div className="flex items-center gap-3 font-mono">
-              <Github size={20} className="text-[#201d1d] shrink-0" />
-              <div className="text-left">
-                <div className="text-sm font-bold uppercase tracking-tight">
-                  {language === 'ko' ? '소스코드' : 'Source Code'}
-                </div>
-                <div className="text-xs text-[#646262] font-mono">GitHub Repository</div>
-              </div>
-            </div>
-            <span className="text-xs font-mono text-[#646262] group-hover:text-[#201d1d] font-bold">
-              [↗]
-            </span>
-          </a>
-
-          <a
-            href="https://www.youtube.com/playlist?list=PLV8H2-pD9vH0"
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3")}
-            className="w-full min-h-11 p-3.5 sm:p-4 bg-[#fdfcfc] hover:bg-[#f8f7f7] text-[#201d1d] border border-[rgba(15,0,0,0.12)] rounded-sm flex items-center justify-between group cursor-pointer"
-          >
-            <div className="flex items-center gap-3 font-mono">
-              <Youtube size={20} className="text-[#201d1d] shrink-0" />
-              <div className="text-left">
-                <div className="text-sm font-bold uppercase tracking-tight">
-                  {language === 'ko' ? '개발동영상' : 'Dev Videos'}
-                </div>
-                <div className="text-xs text-[#646262] font-mono">YouTube Playlist</div>
-              </div>
-            </div>
-            <span className="text-xs font-mono text-[#646262] group-hover:text-[#201d1d] font-bold">
-              [↗]
-            </span>
-          </a>
-        </div>
       </section>
 
-      {/* ── Footer: Build Version & Last Build Time & ModooSoft Copyright ── */}
+      {/* ── Footer: Build Version & Last Build Time & ModooSoft Copyright & Links ── */}
       <footer className="w-full mt-4 pt-4 border-t border-[rgba(15,0,0,0.12)] flex flex-col items-center justify-between text-xs font-mono text-[#646262] gap-3 select-none">
         <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-2">
           <div className="flex items-center gap-2">
@@ -910,8 +679,32 @@ export const HomeView: React.FC<HomeViewProps> = ({
             </span>
           </div>
         </div>
-        <div className="text-center text-xs text-[#646262] font-mono pt-1">
-          © ModooSoft. All rights reserved.
+
+        <div className="w-full flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-[rgba(15,0,0,0.06)] text-xs text-[#646262]">
+          <div className="flex items-center gap-3">
+            <a
+              href="https://github.com/Dayyoung/snshero"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3")}
+              className="hover:text-[#201d1d] flex items-center gap-1 cursor-pointer transition-colors"
+            >
+              <Github size={13} />
+              <span>GitHub</span>
+            </a>
+            <span>•</span>
+            <a
+              href="https://www.youtube.com/playlist?list=PLV8H2-pD9vH0"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3")}
+              className="hover:text-[#201d1d] flex items-center gap-1 cursor-pointer transition-colors"
+            >
+              <Youtube size={13} />
+              <span>YouTube</span>
+            </a>
+          </div>
+          <div>© ModooSoft. All rights reserved.</div>
         </div>
       </footer>
 
@@ -1087,29 +880,13 @@ export const HomeView: React.FC<HomeViewProps> = ({
         userDisplayName={user?.displayName}
       />
 
-      {/* SCR-01-01: Mobile Thumb-Zone Floating '3-Second Instant Battle' FAB */}
-      <div className="fixed bottom-[calc(5.5rem+env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 z-40 select-none sm:hidden">
-        <button
-          onClick={() => {
-            triggerHaptic('heavy');
-            playSfx('click');
-            if (onStartPlayNow) {
-              onStartPlayNow();
-            } else {
-              onNavigate('game');
-            }
-          }}
-          className="flex min-h-12 items-center gap-2 px-3 py-3 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] font-mono font-bold text-sm whitespace-nowrap rounded-sm border border-[#fdfcfc] cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-4"
-          title={language === 'ko' ? '3초 즉시 배틀 시작' : 'Play Now (3s Instant Match)'}
-        >
-          <span className="relative flex items-center gap-2">
-            <Zap size={18} />
-            <span className="tracking-tight">
-              {language === 'ko' ? '[ 3초 즉시 배틀 ]' : '[ PLAY NOW ]'}
-            </span>
-          </span>
-        </button>
-      </div>
+      {/* 카드 클릭 상세 프리뷰 모달 (마이덱 이동 버그 해결 및 상세 정보 제공) */}
+      <CardLongPressPreviewModal
+        card={selectedPreviewCard}
+        isOpen={Boolean(selectedPreviewCard)}
+        onClose={() => setSelectedPreviewCard(null)}
+        language={language}
+      />
     </div>
   );
 };
