@@ -2,6 +2,22 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-12 12:50 KST] [AI Studio WebMCP import-analysis 번들링 오류 완전 해결, SPOF 제거 및 깃 푸시 완료]
+- **요청 사항**:
+  - AI Studio 환경에서 `[plugin:vite:import-analysis] Failed to resolve import "./lib/webMcp" from "src/App.tsx". Does the file exist?` 오류가 다시 발생하지 않도록 근본 원인을 영구 차단.
+- **원인 및 근본 해결책**:
+  1. **App.tsx 최상단 정적 import 완전 제거 (SPOF 제거)**:
+     - `src/App.tsx` 최상단에서 `webMcp` 관련 정적 import(`createGlobalWebMcpTools`, `WebMcpActiveBadge`)를 완전히 제거.
+     - `WebMcpActiveBadge`는 `safeLazy` 동적 컴포넌트로 분리하고, 글로벌 도구 등록은 `useEffect` 내부에서 fail-safe dynamic import (`import('./lib/webMcp/index')`) 및 `.catch()` 핸들러로 보호하여 샌드박스 파일 지연 시에도 메인 게임에 영향이 전혀 없도록 방어.
+  2. **모든 하위 파일의 import 경로를 명시적 파일 경로로 통일**:
+     - `SettingView.tsx`, `ShopView.tsx`, `StockMarketView.tsx`, `WebMcpActiveBadge.tsx`, `WebMcpInspectorModal.tsx`를 포함한 총 12개 파일의 import 구문을 `../lib/webMcp/index`로 통일하여 번들러의 폴더 자동 해석 모호성을 100% 제거.
+  3. **단일 진입점 파일 보장**:
+     - 루트에 `src/lib/webMcp.ts`를 배치하여 어떤 빌드 환경에서도 단일 파일 import 해석 지원.
+- **검증 및 원격 반영**:
+  - `npm run build`: 11.23초 만에 0에러로 성공적인 빌드 완결.
+  - `git commit` 및 `git push origin main` 완료 (`bea89ce`).
+  - 구글 폼 보고서 제출 완료.
+
 ## [2026-10-12 11:27 KST] [AI Studio webMcp import-analysis 오류 원천 방지 및 AGENTS.md 지침 명시 완료]
 - **요청 사항**:
   - AI Studio에서 발생하던 `[plugin:vite:import-analysis] Failed to resolve import "./lib/webMcp" from "src/App.tsx". Does the file exist?` 오류 원천 차단.
