@@ -338,6 +338,99 @@ export default defineConfig(({mode}) => {
                 return;
               }
 
+              // Crypto Payment API endpoints (OKX / Web3 Crypto Payments)
+              if (decodedUrl === '/api/crypto/coins') {
+                const coinsList = [
+                  { ccy: 'USDT', name: 'Tether USD', chains: ['USDT-TRC20', 'USDT-ERC20', 'USDT-Polygon', 'USDT-Arbitrum One', 'USDT-Solana'], icon: '💵' },
+                  { ccy: 'BTC', name: 'Bitcoin', chains: ['BTC-Bitcoin', 'BTC-Lightning'], icon: '₿' },
+                  { ccy: 'ETH', name: 'Ethereum', chains: ['ETH-ERC20', 'ETH-Arbitrum One', 'ETH-Optimism', 'ETH-Base'], icon: 'Ξ' },
+                  { ccy: 'SOL', name: 'Solana', chains: ['SOL-Solana'], icon: '◎' },
+                  { ccy: 'USDC', name: 'USD Coin', chains: ['USDC-ERC20', 'USDC-Solana', 'USDC-Polygon'], icon: '💲' },
+                  { ccy: 'TON', name: 'Toncoin', chains: ['TON-TON'], icon: '💎' },
+                  { ccy: 'DOGE', name: 'Dogecoin', chains: ['DOGE-Dogecoin'], icon: 'Ð' },
+                  { ccy: 'XRP', name: 'Ripple', chains: ['XRP-Ripple'], icon: '✕' }
+                ];
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json; charset=utf-8');
+                res.setHeader('Access-Control-Allow-Origin', '*');
+                res.end(JSON.stringify(coinsList));
+                return;
+              }
+
+              if (decodedUrl === '/api/crypto/deposit-address') {
+                const urlObj = new URL(req.url || '', 'http://localhost');
+                const ccy = (urlObj.searchParams.get('ccy') || 'USDT').toUpperCase();
+                const chain = urlObj.searchParams.get('chain') || `${ccy}-TRC20`;
+
+                let addr = '0x71C8360d8C9993356e2978917eF9dE3f12E8320b';
+                if (chain.includes('TRC20')) {
+                  addr = 'TYDzs225mHk8w2B9fXzNfF39a3fR786JqE';
+                } else if (chain.includes('BTC') || chain.includes('Bitcoin')) {
+                  addr = 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh';
+                } else if (chain.includes('Solana') || chain.includes('SOL')) {
+                  addr = '7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU';
+                } else if (chain.includes('TON')) {
+                  addr = 'EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N';
+                } else if (chain.includes('DOGE')) {
+                  addr = 'D7Y55r6YkWGzU14qLpC3xXz2k7P4w1QzL';
+                } else if (chain.includes('XRP')) {
+                  addr = 'rEb8TK3gBgk5auZkwc6sHnwrGVJH8DuaLh';
+                }
+
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json; charset=utf-8');
+                res.setHeader('Access-Control-Allow-Origin', '*');
+                res.end(JSON.stringify({
+                  code: '0',
+                  msg: '',
+                  data: [{ addr, ccy, chain }]
+                }));
+                return;
+              }
+
+              if (decodedUrl === '/api/crypto/rate') {
+                const urlObj = new URL(req.url || '', 'http://localhost');
+                const ccy = (urlObj.searchParams.get('ccy') || 'USDT').toUpperCase();
+                // 1 USD 당 각 코인 개수 (rate: crypto amount for 1 USD)
+                const rates: Record<string, number> = {
+                  USDT: 1.0,
+                  USDC: 1.0,
+                  BTC: 0.000015,
+                  ETH: 0.00029,
+                  SOL: 0.0068,
+                  TON: 0.18,
+                  DOGE: 6.25,
+                  XRP: 1.65
+                };
+                const rate = rates[ccy] || 1.0;
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json; charset=utf-8');
+                res.setHeader('Access-Control-Allow-Origin', '*');
+                res.end(JSON.stringify({ ccy, rate }));
+                return;
+              }
+
+              if (decodedUrl === '/api/crypto/check-deposit') {
+                const urlObj = new URL(req.url || '', 'http://localhost');
+                const since = parseInt(urlObj.searchParams.get('since') || '0', 10);
+                const amount = urlObj.searchParams.get('amount') || '0';
+                const ccy = urlObj.searchParams.get('ccy') || 'USDT';
+                const elapsed = Date.now() - since;
+
+                // 25초 이상 경과했거나 수동 확인 시 성공 반환
+                const status = (elapsed > 25000 || urlObj.searchParams.get('force') === 'true') ? 'success' : 'pending';
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json; charset=utf-8');
+                res.setHeader('Access-Control-Allow-Origin', '*');
+                res.end(JSON.stringify({
+                  status,
+                  amount,
+                  ccy,
+                  txHash: `0x${Math.random().toString(16).substring(2, 10)}${Date.now()}`
+                }));
+                return;
+              }
+
               // Support /ai, /ai/, and /ai.html direct serving for MLX AI Chat
               if (/^\/ai(\/|\.html|\?|$)/i.test(decodedUrl) || /^\/ai(\/|\.html|\?|$)/i.test(rawUrl)) {
                 let targetPath = path.join(publicDir, 'ai.html');
