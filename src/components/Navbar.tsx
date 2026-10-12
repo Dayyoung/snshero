@@ -61,24 +61,29 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setView, setIsAutoB
     window.addEventListener('hero_daily_mission_completed', checkRedDots);
 
     // SCR-01-08: 모바일 수평 스와이프 제스처 네비게이터 연동
+    // 마이덱(mydeck) 화면에서는 카드 조작 및 슬롯 관리 중 원치 않는 화면 전환(플레이 등으로 이동)을 원천 차단하기 위해 스와이프 네비게이터 비활성화
     const mainTabs: ViewType[] = ['home', 'mydeck', 'main', 'play', 'shop'];
-    const gestureNav = new GestureNavigator({
-      onSwipeLeft: () => {
-        const curIdx = mainTabs.indexOf(currentView);
-        if (curIdx >= 0 && curIdx < mainTabs.length - 1) {
-          setView(mainTabs[curIdx + 1]);
-          playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-        }
-      },
-      onSwipeRight: () => {
-        const curIdx = mainTabs.indexOf(currentView);
-        if (curIdx > 0) {
-          setView(mainTabs[curIdx - 1]);
-          playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-        }
-      },
-    });
-    const detachGesture = gestureNav.attach(window);
+    let detachGesture = () => {};
+
+    if (currentView !== 'mydeck') {
+      const gestureNav = new GestureNavigator({
+        onSwipeLeft: () => {
+          const curIdx = mainTabs.indexOf(currentView);
+          if (curIdx >= 0 && curIdx < mainTabs.length - 1) {
+            setView(mainTabs[curIdx + 1]);
+            playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+          }
+        },
+        onSwipeRight: () => {
+          const curIdx = mainTabs.indexOf(currentView);
+          if (curIdx > 0) {
+            setView(mainTabs[curIdx - 1]);
+            playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+          }
+        },
+      });
+      detachGesture = gestureNav.attach(window);
+    }
 
     return () => {
       clearInterval(interval);

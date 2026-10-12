@@ -18,6 +18,7 @@ import {
   SortableContext,
   sortableKeyboardCoordinates,
   horizontalListSortingStrategy,
+  rectSortingStrategy,
   useSortable
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -199,7 +200,7 @@ const SortableCardItem: React.FC<SortableCardItemProps> = ({
         <CardItem 
           card={card} 
           onClick={() => handleCardClick(idx)} 
-          className="w-[28vw] min-w-[6rem] max-w-[8rem] h-[39vw] min-h-[8.5rem] max-h-[11rem] sm:w-24 sm:h-32 md:w-32 md:h-44 cursor-grab active:cursor-grabbing rounded-none"
+          className="w-[27vw] min-w-[5.8rem] max-w-[7.5rem] h-[38vw] min-h-[8.2rem] max-h-[10.5rem] sm:w-24 sm:h-32 md:w-32 md:h-44 cursor-grab active:cursor-grabbing rounded-none"
           customImage={customCardImage}
           language={language}
           />
@@ -1522,7 +1523,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
   };
 
   return (
-    <div className="p-4 sm:p-6 md:p-8 pb-48 flex flex-col gap-6 max-w-4xl mx-auto min-h-screen w-full overflow-x-hidden bg-[#fdfcfc] text-[#201d1d] font-mono">
+    <div className="p-4 sm:p-6 md:p-8 pb-48 flex flex-col gap-6 max-w-4xl mx-auto min-h-screen w-full overflow-x-hidden touch-pan-y overscroll-x-none bg-[#fdfcfc] text-[#201d1d] font-mono">
       {/* Smart Loop Deck Swap Banner */}
       <AnimatePresence>
         {autoSwapBanner && (
@@ -1758,11 +1759,11 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
             </div>
           )}
 
-          {/* SCR-03: 골든 시너지 아우라 & 덱 슬롯 컨테이너 */}
+          {/* SCR-03: 골든 시너지 아우라 & 덱 슬롯 컨테이너 (모바일 2줄 표시 및 좌우 슬라이드 완전 제거) */}
           <div 
             id="deck-list" 
             className={cn(
-              "mx-auto flex w-full max-w-full flex-nowrap sm:flex-wrap justify-start sm:justify-center items-center gap-3 sm:gap-4 md:gap-6 px-3 py-4 border rounded-none overflow-x-auto overscroll-x-contain",
+              "mx-auto flex w-full max-w-full flex-wrap justify-center items-center gap-2 sm:gap-4 md:gap-6 px-2 sm:px-3 py-4 border rounded-none overflow-x-hidden touch-pan-y overscroll-x-none",
               (deckElementSynergyActive || factionSynergy) && !lowSpecMode
                 ? "border-[#646262] bg-[#f1eeee]"
                 : "bg-[#f8f7f7] border-[#0f0000]/12"
@@ -1776,7 +1777,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
           >
             <SortableContext 
               items={currentDeckWithSkins.map(c => c.id)}
-              strategy={horizontalListSortingStrategy}
+              strategy={rectSortingStrategy}
             >
               {currentDeckWithSkins.map((card, idx) => (
                 <SortableCardItem 
@@ -2174,7 +2175,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
               </div>
 
               {/* Slot Tabs */}
-              <div className="flex gap-2 p-3 bg-gray-50 border-b border-gray-100 overflow-x-auto scrollbar-hide">
+              <div className="flex flex-wrap gap-2 p-3 bg-gray-50 border-b border-gray-100">
                 {(['necklace', 'ring1', 'ring2', 'boots'] as const).map(slot => (
                   <button
                     key={slot}
@@ -2770,7 +2771,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                       <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
                       <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 italic">Active_Combat_Formation</h4>
                     </div>
-                    <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                    <div className="flex flex-wrap gap-2 pb-2 justify-center">
                       {[0, 1, 2, 3, 4].map(idx => {
                         const card = currentDeck[idx];
                         return (
@@ -3558,7 +3559,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                 </button>
               </div>
 
-              <div className="flex gap-2 p-4 bg-slate-50 border-b border-slate-200 overflow-x-auto scrollbar-hide shrink-0">
+              <div className="flex flex-wrap gap-2 p-4 bg-slate-50 border-b border-slate-200 shrink-0">
                 {(['all', 'battle', 'collection', 'growth', 'special', 'social'] as const).map(cat => (
                   <button
                     key={cat}
