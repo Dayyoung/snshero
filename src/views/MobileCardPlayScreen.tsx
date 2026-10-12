@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, MotionConfig, useReducedMotion } from 'motion/react';
 import { 
   ArrowLeft, Zap, Shield, Flame, RotateCcw, Volume2, VolumeX, 
   Sparkles, Check, Trophy, Award, Bot, RefreshCw, Star,
@@ -29,6 +29,7 @@ import { MOVIE_EPISODES } from '../content/movieEpisodeMapping';
 import { createBattleWebMcpTools, useWebMcpTools } from '../lib/webMcp/index';
 import { RewardedAdModal } from '../components/RewardedAdModal';
 import { checkIsAdRemoved } from '../lib/rewardedAdService';
+import { useGameSettings } from '../contexts/GameSettingsContext';
 
 export interface MobileCardPlayScreenProps {
   playerDeck?: CardData[];
@@ -94,6 +95,10 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
   isRankingMatch = false,
   onNavigate
 }) => {
+  const { lowSpecMode } = useGameSettings();
+  const reducedMotion = useReducedMotion();
+  const suppressMotion = lowSpecMode || Boolean(reducedMotion);
+
   // ─── Sound FX Helper ──────────────────────────────────────────────
   const [isMuted, setIsMuted] = useState(false);
   const playSound = useCallback((type: 'place' | 'flip' | 'win' | 'defeat' | 'tap' | 'skill') => {
@@ -689,7 +694,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       setFlippedSlots(flippedIndices);
       playSound('flip');
       setTimeout(() => setFlippedSlots([]), 800);
-      try {
+      if (!suppressMotion) try {
         const origins: { x: number; y: number }[] = [];
         flippedIndices.forEach(idx => {
           const el = document.getElementById(`board-slot-${idx}`);
@@ -931,7 +936,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
         setSelectedHandIndex(0);
       }
     }, 400 / battleSpeed);
-  }, [board, gameOver, isEvaluating, boardShields, activeSkill, executeFlips, playSound, battleSpeed, playerHand.length, opponentHand.length, updateSns, updateStats, userStats, onEarnXp, targetCardId, addCard, inventory]);
+  }, [board, gameOver, isEvaluating, boardShields, activeSkill, executeFlips, playSound, battleSpeed, playerHand.length, opponentHand.length, updateSns, updateStats, userStats, onEarnXp, targetCardId, addCard, inventory, suppressMotion]);
 
   // ─── AI Opponent / Auto Player Logic ───────────────────────────────
   useEffect(() => {

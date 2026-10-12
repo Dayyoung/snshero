@@ -763,6 +763,15 @@ function AppContent() {
   // 구글 애드센스 자동광고(Auto Ads) SPA 화면 전환 재스캔 훅 (광고 제거 유저 완전 차단)
   useAdSenseAutoAds(view, isAdRemoved);
 
+  // 구글 애즈 캠페인 유입 어트리뷰션 및 첫 접속 전환 추적 초기화
+  useEffect(() => {
+    try {
+      import('./lib/googleAdsAnalytics').then(({ initCampaignAttribution }) => {
+        initCampaignAttribution();
+      });
+    } catch {}
+  }, []);
+
   const [user, setUser] = useState<any | null>(() => getStoredGuestProfile());
   const [authInitialized, setAuthInitialized] = useState(true);
   const [authProgress, setAuthProgress] = useState(100);

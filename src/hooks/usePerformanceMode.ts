@@ -17,6 +17,7 @@
  *   - disableBackdropBlur: remove backdrop-blur for GPU perf
  */
 import { useMemo } from 'react';
+import { useReducedMotion } from 'motion/react';
 import { useGameSettings } from '../contexts/GameSettingsContext';
 
 export interface PerformanceMode {
@@ -96,10 +97,18 @@ const LOW_SPEC_PERFORMANCE: PerformanceMode = {
  */
 export function usePerformanceMode(): PerformanceMode {
   const { lowSpecMode } = useGameSettings();
+  const prefersReducedMotion = useReducedMotion();
 
   const perf = useMemo<PerformanceMode>(
-    () => (lowSpecMode ? LOW_SPEC_PERFORMANCE : DEFAULT_PERFORMANCE),
-    [lowSpecMode],
+    () => lowSpecMode ? LOW_SPEC_PERFORMANCE : prefersReducedMotion ? {
+      ...DEFAULT_PERFORMANCE,
+      reducedMotion: true,
+      disableParticles: true,
+      disableHover: true,
+      disablePulse: true,
+      disableSpin: true,
+    } : DEFAULT_PERFORMANCE,
+    [lowSpecMode, prefersReducedMotion],
   );
 
   return perf;

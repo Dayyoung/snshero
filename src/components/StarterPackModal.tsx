@@ -63,6 +63,17 @@ export const StarterPackModal: React.FC<StarterPackModalProps> = ({
       localStorage.setItem('hero_starter_pack_purchased', 'true');
       window.dispatchEvent(new Event('hero_starter_pack_purchased_event'));
 
+      // 4. Google Ads 전환 추적: 스타터팩 결제 완료 (핵심 IAP 전환)
+      try {
+        import('../lib/googleAdsAnalytics').then(({ trackGoogleAdsConversion }) => {
+          trackGoogleAdsConversion('starter_pack_purchased', {
+            value: 1000,
+            currency: 'KRW',
+            item_name: 'Starter Pack 1,000 KRW',
+          });
+        });
+      } catch {}
+
       setIsProcessing(false);
       setIsSuccess(true);
       playSfx('reward');

@@ -70,6 +70,17 @@ export function recordRewardedAdView(type: RewardedAdType): void {
     
     // 글로벌 이벤트 디스패치
     window.dispatchEvent(new CustomEvent('hero_rewarded_ad_watched', { detail: { type } }));
+
+    // Google Ads 전환 추적: 보상형 광고 시청 완료 (수익 발생 이벤트)
+    try {
+      import('./googleAdsAnalytics').then(({ trackGoogleAdsConversion }) => {
+        trackGoogleAdsConversion('rewarded_ad_watched', {
+          value: 0.05,
+          currency: 'USD',
+          ad_type: type,
+        });
+      });
+    } catch {}
   } catch (err) {
     console.error('Failed to record rewarded ad view:', err);
   }

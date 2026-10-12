@@ -335,46 +335,47 @@ export const HomeView: React.FC<HomeViewProps> = ({
     }
   };
 
-  const sectionMotionProps = perf.reducedMotion
+  const sectionMotionProps = lowSpecMode || perf.reducedMotion
     ? {}
     : { initial: { opacity: 0, y: 12 }, animate: { opacity: 1, y: 0 } };
-  const buttonMotionProps = perf.reducedMotion
+  const buttonMotionProps = lowSpecMode || perf.reducedMotion
     ? {}
     : { initial: { opacity: 0, y: 8 }, animate: { opacity: 1, y: 0 } };
 
 
   return (
-    <div className="flex flex-col gap-4 sm:gap-5 p-4 sm:p-6 md:p-8 pb-32 max-w-6xl mx-auto min-h-screen app-bg justify-start text-slate-800 font-sans">
+    <div className="flex flex-col gap-6 sm:gap-8 p-4 sm:p-6 md:p-8 pb-32 max-w-6xl mx-auto min-h-screen bg-[#fdfcfc] justify-start text-[#201d1d] font-mono">
       {/* ── Header: Card Display + Title ── */}
       <header className="grid grid-cols-1 gap-4 sm:gap-6 items-stretch w-full pt-2">
         {/* SCR-01-02: Top First Purchase Limited Deal Banner */}
-        <div className="w-full">
+        <div className={cn('w-full order-2', !isLobbyDrawerOpen && 'hidden')}>
           {!isStarterPackPurchased ? (
-            <div
+            <button
+              type="button"
               onClick={() => {
                 triggerHaptic('heavy');
                 playSfx('click');
                 setIsStarterPackOpen(true);
               }}
-              className="relative overflow-hidden cursor-pointer group rounded-none border border-[#201d1d] bg-[#201d1d] text-[#fdfcfc] p-2.5 sm:p-3 hover:bg-[#201d1d]/90 active:scale-[0.99] transition-all select-none font-mono"
+              className="w-full min-h-14 cursor-pointer rounded-sm border border-[#201d1d] bg-[#201d1d] text-[#fdfcfc] p-4 text-left hover:bg-[#302c2c] select-none font-mono"
             >
               <div className="relative flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2 min-w-0">
-                  <span className="px-1.5 py-0.5 bg-amber-400 text-[#201d1d] text-[10px] font-black tracking-wider uppercase shrink-0 rounded-none">
+                  <span className="px-2 py-1 border border-[#fdfcfc]/30 text-sm font-bold shrink-0 rounded-none">
                     {language === 'ko' ? '[첫 충전 93% OFF]' : '[1ST BUY 93% OFF]'}
                   </span>
-                  <span className="text-xs sm:text-sm font-bold truncate">
+                  <span className="text-sm font-bold">
                     {language === 'ko'
                       ? '⚡ 1,000원 스타터팩: SSR 확정팩 + 3,000 SNS + AP 물약 5개!'
                       : '⚡ ₩1,000 Starter Pack: Guaranteed SSR + 3,000 SNS + AP Potions!'}
                   </span>
                 </div>
-                <div className="flex items-center gap-1 shrink-0 bg-white/10 px-2.5 py-1 text-[11px] font-bold text-amber-300 border border-white/20 rounded-none">
+                <div className="hidden sm:flex items-center gap-1 shrink-0 px-2.5 py-1 text-sm font-bold border border-white/20 rounded-none">
                   <span>₩1,000</span>
                   <ArrowRight size={12} />
                 </div>
               </div>
-            </div>
+            </button>
           ) : (
             <div className="flex items-center justify-between px-3 py-2 bg-white border border-[#201d1d]/15 text-[#201d1d] text-[11px] font-mono select-none rounded-none">
               <span className="font-bold flex items-center gap-1.5">
@@ -392,49 +393,50 @@ export const HomeView: React.FC<HomeViewProps> = ({
           )}
         </div>
 
-        <div className="relative min-h-[310px] sm:min-h-[360px] overflow-hidden rounded-none border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc]">
-          <div className="absolute inset-x-0 top-0 h-1 bg-[#201d1d]" />
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(15,0,0,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(15,0,0,0.02)_1px,transparent_1px)] bg-[size:28px_28px]" />
-          <div className="relative z-10 h-full flex flex-col items-center justify-center px-4 py-6 sm:p-8">
+        <div className="rounded-none border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc]">
+          <div className="flex flex-col gap-5 p-4 sm:gap-6 sm:p-6">
+            <div className="flex flex-wrap items-end justify-between gap-3 border-b border-[rgba(15,0,0,0.12)] pb-5">
+              <div>
+                <p className="mb-2 text-sm text-[#646262]">SNSHero Revolution / {language === 'ko' ? '덱 미리보기' : 'Deck Preview'}</p>
+                <h1 id="main-logo" className="text-3xl sm:text-5xl font-bold leading-tight tracking-tight">S&amp;SHERO<span className="text-base sm:text-xl font-normal text-[#646262]">.com</span></h1>
+              </div>
+              <span className="text-sm text-[#646262]">{language === 'ko' ? '티어: BRONZE I' : 'TIER: BRONZE I'}</span>
+            </div>
             {/* SCR-01: 대표 덱 종합 전투력(CP) 및 연승 불꽃 뱃지 HUD */}
-            <div className="w-full max-w-md flex items-center justify-between border-b border-[#201d1d]/10 pb-2 mb-3 font-mono text-xs select-none">
-              <div className="flex items-center gap-2">
+            <div className="w-full flex flex-wrap items-center justify-between gap-3 font-mono select-none">
+              <div className="flex flex-wrap items-center gap-3">
                 <button
                   type="button"
                   onClick={() => {
                     triggerHaptic('light');
                     onNavigate('mydeck');
                   }}
-                  className="font-bold text-[#201d1d] flex items-center gap-1.5 hover:underline cursor-pointer"
+                   className="min-h-11 rounded-sm text-[#201d1d] flex items-baseline gap-2 hover:underline cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-4"
                   title={language === 'ko' ? '마이덱 편집 바로가기' : 'Edit My Deck'}
                 >
-                  <span className="text-rose-600 font-black">⚔️</span>
-                  <span>{language === 'ko' ? '덱 전투력' : 'DECK CP'}:</span>
-                  <span className="text-sm font-black text-indigo-700 bg-indigo-50 px-1.5 py-0.5 border border-indigo-200">
+                   <span className="text-sm text-[#646262]">{language === 'ko' ? '덱 전투력' : 'DECK CP'}</span>
+                   <span className="text-2xl sm:text-3xl font-bold tabular-nums">
                     {totalPower > 0 ? totalPower : 1420} CP
                   </span>
                 </button>
                 {winStreak > 0 && (
                   <div 
-                    className="inline-flex items-center gap-1 bg-amber-500/10 border border-amber-500/30 px-1.5 py-0.5 text-amber-900 font-bold text-[10px] animate-pulse"
+                     className="inline-flex items-center gap-1 border border-[rgba(15,0,0,0.12)] px-2 py-1 text-[#646262] text-sm"
                     title={language === 'ko' ? `현재 ${winStreak}연승 질주 중!` : `${winStreak} Winning Streak!`}
                   >
-                    <Flame size={12} className="text-amber-600 fill-amber-500" />
+                     <Flame size={14} />
                     <span>{winStreak}{language === 'ko' ? '연승' : ' WINS'}</span>
                   </div>
                 )}
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-bold text-[#201d1d]/60 border border-[#201d1d]/15 px-1.5 py-0.5 bg-white">
-                  {language === 'ko' ? '티어: BRONZE I' : 'TIER: BRONZE I'}
-                </span>
                 <button
                   type="button"
                   onClick={() => {
                     triggerHaptic('light');
                     onNavigate('mydeck');
                   }}
-                  className="text-[10px] font-bold text-indigo-600 border border-indigo-200 bg-indigo-50/70 px-1.5 py-0.5 hover:bg-indigo-600 hover:text-white transition-all cursor-pointer"
+                   className="min-h-11 rounded-sm text-sm font-bold text-[#201d1d] border border-[rgba(15,0,0,0.12)] px-3 py-2 hover:bg-[#f1eeee] cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2"
                 >
                   {language === 'ko' ? '[덱 편집]' : '[EDIT]'}
                 </button>
@@ -442,7 +444,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
             </div>
 
             {/* SCR-01-03: Interactive 3D Faction Cards Display */}
-            <div className="relative h-36 sm:h-52 md:h-60 w-full flex items-center justify-center overflow-visible select-none">
+            <div className="flex w-full gap-3 overflow-x-auto overscroll-x-contain snap-x snap-mandatory pb-2 pt-1 sm:grid sm:grid-cols-5 sm:gap-3 sm:overflow-visible select-none" role="group" aria-label={language === 'ko' ? '덱 미리보기' : 'Deck Preview'}>
               {deckPreview.map((item, index) => {
                 const isDatabaseId = typeof item === 'number';
                 const id = isDatabaseId ? item : (item as CardData).imageIndex;
@@ -460,31 +462,26 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 } : item as CardData;
 
                 return (
+                  <div key={displayCard.id} className="w-[min(62vw,240px)] shrink-0 snap-start sm:w-auto sm:min-w-0">
                   <LobbyInteractiveCard
                     key={displayCard.id}
                     card={displayCard}
                     index={index}
                     totalCards={deckPreview.length}
-                    lowSpecMode={lowSpecMode}
+                    lowSpecMode={lowSpecMode || perf.reducedMotion}
                     onCardClick={() => {
                       onNavigate('mydeck');
                     }}
                   />
+                  </div>
                 );
               })}
             </div>
 
-            <div className="text-center overflow-visible px-2 flex flex-col items-center gap-3">
-              {/* Main Logo Title */}
-              <h1 id="main-logo" className="text-3xl sm:text-4xl md:text-5xl font-extrabold italic tracking-tight flex items-baseline justify-center select-none font-sans whitespace-nowrap">
-                <span className="bg-gradient-to-r from-indigo-600 via-fuchsia-600 to-rose-500 bg-clip-text text-transparent pr-1">
-                  S&amp;SHERO
-                </span>
-                <span className="text-slate-900 text-base sm:text-xl not-italic">.com</span>
-              </h1>
+            <div className="flex flex-col gap-4">
 
               {/* SCR-01-05: Streamlined Quick Action Toolbar with HomeQuickHub */}
-              <div className="flex items-center justify-center gap-1.5 sm:gap-2 flex-wrap bg-white border border-[#201d1d]/15 p-1.5 font-mono text-xs select-none relative z-30">
+              <div className="order-3 grid grid-cols-1 gap-3 font-mono">
                 {/* SCR-01-05: Smart Quick Hub Trigger & Dropdown */}
                 <HomeQuickHub
                   language={language}
@@ -495,13 +492,15 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   isLobbyDrawerOpen={isLobbyDrawerOpen}
                   onOpenMailbox={() => setIsMailboxOpen(true)}
                   onOpenNotifModal={() => setIsNotifModalOpen(true)}
-                  onToggleAudioMute={toggleQuickMute}
-                  onNavigateDeck={() => onNavigate('mydeck')}
+                   onToggleMute={toggleQuickMute}
+                   onNavigate={onNavigate}
                   onToggleDrawer={() => setIsLobbyDrawerOpen(!isLobbyDrawerOpen)}
                   onOpenHelp={() => { setHelpOpen(true); setHelpStep(0); }}
-                  onNavigateShop={() => onNavigate('shop')}
-                  playSfx={playSfx}
-                  triggerHaptic={triggerHaptic}
+                   onOpenPwa={() => {
+                     triggerHaptic('selection');
+                     playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+                     setIsPwaEventOpen(true);
+                   }}
                 />
 
                 {/* ID SCR-01: Hot Deal / Free Pack Starter Badge */}

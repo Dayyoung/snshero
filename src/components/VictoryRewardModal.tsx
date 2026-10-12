@@ -116,14 +116,23 @@ export const VictoryRewardModal: React.FC<VictoryRewardModalProps> = ({
     playSfx('fanfare');
   };
 
-  // 전투 패배(isVictory === false) 시 5초 후 자동으로 닫기
+  // 전투 패배(isVictory === false) 시 5초 후 자동으로 닫기 & 승리 시 Google Ads 전환 추적
   useEffect(() => {
     if (safeReceipt.isVictory === false) {
       setAutoCloseCountdown(5);
     } else {
       setAutoCloseCountdown(null);
+      // 승리 시 Google Ads 소프트 전환 이벤트 전송
+      try {
+        import('../lib/googleAdsAnalytics').then(({ trackGoogleAdsConversion }) => {
+          trackGoogleAdsConversion('battle_victory', {
+            game: safeReceipt.gameTitle,
+            reward_sns: safeReceipt.totalSns,
+          });
+        });
+      } catch {}
     }
-  }, [safeReceipt.isVictory]);
+  }, [safeReceipt.isVictory, safeReceipt.gameTitle, safeReceipt.totalSns]);
 
   useEffect(() => {
     if (autoCloseCountdown === null) return;
