@@ -2,6 +2,22 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-12 19:05 KST] 자동플레이 모드 활성화 시 광고 및 외부 미디어 팝업 100% 완전 차단
+- **요청 사항**: 자동플레이 모드에서는 광고를 제거할 것 (주변 시선/공공장소에서의 민망함 원천 방지).
+- **상세 구현 내역**:
+  1. **구글 애드센스 배너 자동모드 원천 차단 (`AdSenseBanner.tsx`, `App.tsx`, `MobileCardPlayScreen.tsx`)**:
+     - `AdSenseBanner`: `hero_auto_battle === 'true'` 또는 props `isAutoBattle` 활성화 시 DOM에 광고 스크립트를 삽입하지 않고 즉시 `null`을 반환하여 0% 노출 보장.
+     - `MobileCardPlayScreen`: 상단 광고 배너 컨테이너(`div#mobile-card-top-ad`)를 자동플레이 중에는 100% 완전 제거하여 보드 화면을 더 넓고 쾌적하게 확보.
+     - `App`: 데스크톱 좌/우측 스카이스크래퍼 배너 및 모바일 상단 배너 조건에 `!isAutoBattle`을 적용하여 자동 배틀 중 PC/모바일 양측 모두에서 광고 배너 전면 미노출.
+  2. **돌발 웹툰/유튜브 미디어 팝업 원천 차단 (`MobileCardPlayScreen.tsx`)**:
+     - 랭킹 자동 루프 3경기 주기마다 실행되던 웹툰 컷 및 애니메이션 유튜브 영상 팝업(`triggerRefreshBreak`, `showRefreshBreakModal`)을 `isAutoBattle` 활성화 시 완전 무효화.
+  3. **보상형 광고 모달 및 광고 시청 버튼 숨김 (`MobileCardPlayScreen.tsx`, `VictoryRewardModal.tsx`)**:
+     - 배틀 승리 결과창의 '광고 보고 승리 보상 2배 받기' 버튼 및 `RewardedAdModal`을 자동플레이 모드에서는 100% 숨김 처리하여 매끄러운 자동 진행 보장.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 Errors (타입 무결점 통과).
+  - `npm run build`: Vite 6 프로덕션 번들 11.05초 빌드 완결.
+  - 구글 폼 완료 보고서 제출 완료 (`https://docs.google.com/forms/d/e/1FAIpQLScrvcAqDF7vHHQndycr90ii-ujTi3Plw23eNrSyiJpOLrHbjg/formResponse`).
+
 ## [2026-10-12 18:56 KST] 동서남북 스탯 배지 카드 4면 끝으로 이동 및 캐릭터 일러스트 시인성 확보
 - **요청 사항**: 카드에 동서남북 숫자가 너무 가운데로 몰려 캐릭터가 가려지는 문제를 해결하기 위해, 각 숫자를 카드의 4면 바깥 가장자리 끝으로 완전히 이동시킬 것.
 - **상세 구현 내역**:
