@@ -1316,12 +1316,12 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     <div 
       id="mobile-card-play-viewport"
       className={cn(
-        "fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-none bg-[#fdfcfc] text-[#201d1d] flex flex-col font-mono z-[100] [&_button]:min-h-11 [&_button]:min-w-11 [&_button]:focus-visible:outline-2 [&_button]:focus-visible:outline-offset-2 [&_button]:focus-visible:outline-[#201d1d]",
+        "fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-pan-y bg-[#fdfcfc] text-[#201d1d] flex flex-col font-mono z-[100] [&_button]:min-h-11 [&_button]:min-w-11 [&_button]:focus-visible:outline-2 [&_button]:focus-visible:outline-offset-2 [&_button]:focus-visible:outline-[#201d1d]",
         suppressMotion && "[&_*]:animate-none [&_*]:transition-none"
       )}
     >
       {/* Header actions retain 44px touch targets plus the top safe area. */}
-      <header className="w-full pt-[env(safe-area-inset-top,0px)] px-2 border-b border-[#0f0000]/12 flex items-center gap-2 shrink-0 z-30">
+      <header className="sticky top-0 w-full pt-[env(safe-area-inset-top,0px)] px-2 border-b border-[#0f0000]/12 flex items-center gap-2 shrink-0 z-40 bg-[#fdfcfc]/95 backdrop-blur-xs">
         <button
           type="button"
           onClick={handleExitGame}
@@ -1433,30 +1433,30 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
         </div>
       )}
 
-      {/* Short, wide viewports dock the hands beside the board, never over it. */}
-      <div className="flex-1 min-h-0 grid grid-cols-1 grid-rows-[auto_auto_minmax(144px,1fr)_auto_auto] gap-2 p-2 pb-[max(8px,env(safe-area-inset-bottom,0px))] [@media(max-height:500px)_and_(min-width:480px)]:grid-cols-[minmax(140px,1fr)_minmax(144px,1.4fr)_minmax(140px,1fr)] [@media(max-height:500px)_and_(min-width:480px)]:grid-rows-[48px_minmax(0,1fr)_48px]">
+      {/* ─── 상하 스크롤 배틀 컨테이너 (UI 축소 원천 차단 및 시원한 크기 보장) ─── */}
+      <div className="flex-1 min-h-0 w-full overflow-y-auto overflow-x-hidden touch-pan-y overscroll-y-contain flex flex-col items-center gap-3 p-2.5 pb-[max(32px,env(safe-area-inset-bottom,0px))] [@media(max-height:500px)_and_(min-width:480px)]:grid [@media(max-height:500px)_and_(min-width:480px)]:grid-cols-[minmax(140px,1fr)_minmax(144px,1.4fr)_minmax(140px,1fr)] [@media(max-height:500px)_and_(min-width:480px)]:grid-rows-[48px_minmax(0,1fr)_48px] [@media(max-height:500px)_and_(min-width:480px)]:overflow-hidden">
       {/* ─── 2. 상대 덱 (Opponent Deck: 내 카드와 동등한 크기 + 빨간선 영역 표시) ─────────────── */}
       <div 
         id="mobile-card-opponent-deck"
-        className="row-start-1 min-w-0 flex flex-col items-center gap-1.5 border-2 border-red-500 rounded-sm bg-red-50/20 p-1.5 shadow-xs [@media(max-height:500px)_and_(min-width:480px)]:col-start-1 [@media(max-height:500px)_and_(min-width:480px)]:row-start-2 [@media(max-height:500px)_and_(min-width:480px)]:overflow-y-auto"
+        className="w-full max-w-[440px] shrink-0 flex flex-col items-center gap-1.5 border-2 border-red-500 rounded-sm bg-red-50/20 p-2 shadow-xs [@media(max-height:500px)_and_(min-width:480px)]:col-start-1 [@media(max-height:500px)_and_(min-width:480px)]:row-start-2 [@media(max-height:500px)_and_(min-width:480px)]:overflow-y-auto"
       >
-        <div className="w-full max-w-[420px] flex flex-wrap items-center justify-between gap-x-2 text-[10px]">
+        <div className="w-full flex flex-wrap items-center justify-between gap-x-2 text-[11px]">
           <span className="font-bold text-white bg-red-600 border border-red-700 px-2 py-0.5 rounded-xs flex items-center gap-1 shadow-xs">
             <span className="w-2 h-2 rounded-full bg-white inline-block animate-pulse" />
             {t('opponent_deck', language)} [{opponentHand.length}/5]
           </span>
-          <span className="text-[10px] text-red-600 font-semibold" role="status">
+          <span className="text-[11px] text-red-600 font-semibold" role="status">
             {gameOver ? t('snake_game_over', language)
               : turn === 'ai' ? (language === 'ko' ? '🔴 상대 턴 진행 중...' : '🔴 Opponent Turn')
               : (language === 'ko' ? '상대 카드 대기' : 'Opponent Ready')}
           </span>
         </div>
 
-        <div className="grid grid-cols-5 gap-1.5 w-full max-w-[420px] [@media(max-height:500px)_and_(min-width:480px)]:grid-cols-2 [@media(max-height:500px)_and_(min-width:560px)]:grid-cols-3">
+        <div className="grid grid-cols-5 gap-1.5 w-full [@media(max-height:500px)_and_(min-width:480px)]:grid-cols-2 [@media(max-height:500px)_and_(min-width:560px)]:grid-cols-3">
           {opponentHand.map((card, i) => (
             <div
               key={`opp-card-${card.id || i}`}
-              className="h-[clamp(54px,11dvh,90px)] min-w-0 rounded-sm relative overflow-hidden border-2 border-red-400/90 bg-red-50/10 shadow-2xs [@media(max-height:500px)_and_(min-width:480px)]:h-[clamp(44px,24dvh,80px)]"
+              className="aspect-[2.8/4] min-h-[96px] sm:min-h-[115px] max-h-[135px] rounded-sm relative overflow-hidden border-2 border-red-400/90 bg-red-50/10 shadow-2xs [@media(max-height:500px)_and_(min-width:480px)]:h-[clamp(44px,24dvh,80px)]"
             >
               <CardItem
                 card={card}
@@ -1472,7 +1472,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
           {Array.from({ length: Math.max(0, 5 - opponentHand.length) }).map((_, idx) => (
             <div
               key={`empty-opp-hand-${idx}`}
-              className="h-[clamp(54px,11dvh,90px)] border-2 border-dashed border-red-300 bg-red-50/10 rounded-sm flex items-center justify-center text-red-400 font-mono [@media(max-height:500px)_and_(min-width:480px)]:h-[clamp(44px,24dvh,80px)]"
+              className="aspect-[2.8/4] min-h-[96px] sm:min-h-[115px] max-h-[135px] border-2 border-dashed border-red-300 bg-red-50/10 rounded-sm flex items-center justify-center text-red-400 font-mono [@media(max-height:500px)_and_(min-width:480px)]:h-[clamp(44px,24dvh,80px)]"
             >
               <span className="text-[11px] font-bold">[-]</span>
             </div>
@@ -1481,16 +1481,16 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       </div>
 
       {/* ─── 3. 메인 전투 영역 (좌측 정보 + 카드판 + 우측 액션) ──────── */}
-      <main className="contents">
-        {/* ── 좌측: 현재스코어 및 턴 ── */}
+      <main className="w-full max-w-[440px] shrink-0 flex flex-col items-center gap-2.5 [@media(max-height:500px)_and_(min-width:480px)]:contents">
+        {/* ── 상단/좌측: 현재스코어 및 턴 정보 위젯 ── */}
         <aside 
           id="mobile-card-left-panel"
-          className="row-start-2 min-w-0 grid grid-cols-[1fr_1fr_44px] items-center gap-2 [@media(max-height:500px)_and_(min-width:480px)]:col-start-1 [@media(max-height:500px)_and_(min-width:480px)]:row-start-1 [@media(max-height:500px)_and_(min-width:480px)]:grid-cols-[1fr_44px]"
+          className="w-full shrink-0 grid grid-cols-[1fr_1fr_44px] items-center gap-2 [@media(max-height:500px)_and_(min-width:480px)]:col-start-1 [@media(max-height:500px)_and_(min-width:480px)]:row-start-1 [@media(max-height:500px)_and_(min-width:480px)]:grid-cols-[1fr_44px]"
         >
           {/* 스코어 위젯 */}
-          <div className="flex flex-col min-w-0 [@media(max-height:500px)_and_(min-width:480px)]:hidden">
-            <span className="text-[9px] text-[#646262] truncate">{t('my_score', language)} / {t('opp_score', language)}</span>
-            <div className="flex items-baseline justify-center gap-1 my-0.5">
+          <div className="flex flex-col min-w-0 border border-[#0f0000]/12 bg-[#fdfcfc] p-1 rounded-sm text-center [@media(max-height:500px)_and_(min-width:480px)]:hidden">
+            <span className="text-[10px] text-[#646262] truncate">{t('my_score', language)} / {t('opp_score', language)}</span>
+            <div className="flex items-baseline justify-center gap-1.5 my-0.5">
               <span className="text-2xl font-bold text-[#2563eb] leading-none tabular-nums">
                 {score.player}
               </span>
@@ -1503,7 +1503,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
 
           {/* 턴 위젯 */}
           <div className={cn(
-            "min-h-11 px-2 flex flex-col justify-center border text-[11px]",
+            "min-h-11 px-2.5 flex flex-col justify-center border text-[11px] rounded-sm",
             turn === 'player'
               ? "bg-[#201d1d] border-[#201d1d] text-[#fdfcfc]"
               : "border-[#0f0000]/12 text-[#646262]"
@@ -1529,12 +1529,12 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
           </button>
         </aside>
 
-        {/* ── 중앙: 3x3 카드판 ── */}
+        {/* ── 중앙: 3x3 카드판 (축소 없이 큼직하고 시원한 정방형 크기 보장) ── */}
         <div 
           id="mobile-card-center-board"
-          className="row-start-3 min-w-0 min-h-0 flex items-center justify-center [container-type:size] [@media(max-height:500px)_and_(min-width:480px)]:col-start-2 [@media(max-height:500px)_and_(min-width:480px)]:row-start-1 [@media(max-height:500px)_and_(min-width:480px)]:row-span-2"
+          className="w-full shrink-0 flex items-center justify-center my-0.5 [@media(max-height:500px)_and_(min-width:480px)]:col-start-2 [@media(max-height:500px)_and_(min-width:480px)]:row-start-1 [@media(max-height:500px)_and_(min-width:480px)]:row-span-2"
         >
-          <div className="w-[min(100cqw,100cqh,420px)] aspect-square grid grid-cols-3 grid-rows-3 gap-1 bg-[#f1eeee] border border-[#0f0000]/12 p-1">
+          <div className="w-full aspect-square min-h-[300px] sm:min-h-[360px] grid grid-cols-3 grid-rows-3 gap-1.5 bg-[#f1eeee] border border-[#0f0000]/12 p-1.5 rounded-sm shadow-xs">
             {board.map((cell, idx) => {
               const isOccupied = cell !== null;
               const isFlipped = flippedSlots.includes(idx);
@@ -1600,10 +1600,10 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
           </div>
         </div>
 
-        {/* ── 우측: 사용할 스킬 과 자동전투여부 ── */}
+        {/* ── 하단/우측: 사용할 스킬 과 자동전투 토글 바 ── */}
         <aside 
           id="mobile-card-right-panel"
-          className="row-start-5 grid grid-cols-[1fr_1fr_1fr_1.3fr] gap-1 border-t border-[#0f0000]/12 pt-2 [@media(max-height:500px)_and_(min-width:480px)]:col-start-1 [@media(max-height:500px)_and_(min-width:480px)]:col-span-3 [@media(max-height:500px)_and_(min-width:480px)]:row-start-3 [@media(max-height:500px)_and_(min-width:480px)]:pt-1"
+          className="w-full shrink-0 grid grid-cols-[1fr_1fr_1fr_1.3fr] gap-1.5 border-t border-[#0f0000]/12 pt-2 [@media(max-height:500px)_and_(min-width:480px)]:col-start-1 [@media(max-height:500px)_and_(min-width:480px)]:col-span-3 [@media(max-height:500px)_and_(min-width:480px)]:row-start-3 [@media(max-height:500px)_and_(min-width:480px)]:pt-1"
         >
           {/* 스킬 1: 파워 부스트 (+2) */}
           <button
@@ -1687,14 +1687,14 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       {/* ─── 4. 내 카드 덱 (My Card Deck: 상대 카드와 동등한 크기 + 파란선 영역 표시) ───────────── */}
       <footer 
         id="mobile-card-my-deck"
-        className="row-start-4 min-w-0 flex flex-col items-center gap-1.5 border-2 border-blue-500 rounded-sm bg-blue-50/20 p-1.5 shadow-xs [@media(max-height:500px)_and_(min-width:480px)]:col-start-3 [@media(max-height:500px)_and_(min-width:480px)]:row-start-1 [@media(max-height:500px)_and_(min-width:480px)]:row-span-2 [@media(max-height:500px)_and_(min-width:480px)]:overflow-y-auto [@media(max-height:500px)_and_(min-width:480px)]:touch-pan-y"
+        className="w-full max-w-[440px] shrink-0 flex flex-col items-center gap-1.5 border-2 border-blue-500 rounded-sm bg-blue-50/20 p-2 shadow-xs [@media(max-height:500px)_and_(min-width:480px)]:col-start-3 [@media(max-height:500px)_and_(min-width:480px)]:row-start-1 [@media(max-height:500px)_and_(min-width:480px)]:row-span-2 [@media(max-height:500px)_and_(min-width:480px)]:overflow-y-auto [@media(max-height:500px)_and_(min-width:480px)]:touch-pan-y"
       >
-        <div className="w-full max-w-[420px] flex flex-wrap items-center justify-between gap-x-2 text-[10px]">
+        <div className="w-full flex flex-wrap items-center justify-between gap-x-2 text-[11px]">
           <span className="font-bold text-white bg-blue-600 border border-blue-700 px-2 py-0.5 rounded-xs flex items-center gap-1 shadow-xs">
             <span className="w-2 h-2 rounded-full bg-white inline-block" />
             {t('my_deck_title', language)} [{playerHand.length}/5]
           </span>
-          <span className="text-[10px] text-blue-700 font-semibold" role="status">
+          <span className="text-[11px] text-blue-700 font-semibold" role="status">
             {gameOver ? t('snake_game_over', language)
               : turn === 'ai' ? t('opponent_turn', language)
               : isAutoBattle ? t('auto_battle', language)
@@ -1704,7 +1704,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
           </span>
         </div>
 
-        <div className="grid grid-cols-5 gap-1.5 w-full max-w-[420px] [@media(max-height:500px)_and_(min-width:480px)]:grid-cols-2 [@media(max-height:500px)_and_(min-width:560px)]:grid-cols-3">
+        <div className="grid grid-cols-5 gap-1.5 w-full [@media(max-height:500px)_and_(min-width:480px)]:grid-cols-2 [@media(max-height:500px)_and_(min-width:560px)]:grid-cols-3">
           {playerHand.map((card, i) => {
             const isSelected = selectedHandIndex === i;
             return (
@@ -1718,7 +1718,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                   setSelectedHandIndex(i);
                 }}
                 className={cn(
-                  "h-[clamp(54px,11dvh,90px)] min-w-0 rounded-sm relative overflow-hidden cursor-pointer border-2 transition-colors [@media(max-height:500px)_and_(min-width:480px)]:h-[clamp(44px,24dvh,80px)]",
+                  "aspect-[2.8/4] min-h-[96px] sm:min-h-[115px] max-h-[135px] rounded-sm relative overflow-hidden cursor-pointer border-2 transition-colors [@media(max-height:500px)_and_(min-width:480px)]:h-[clamp(44px,24dvh,80px)]",
                   isSelected
                     ? "border-blue-600 shadow-sm"
                     : "border-blue-400/80 hover:border-blue-500 bg-blue-50/10"
@@ -1740,7 +1740,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
           {Array.from({ length: Math.max(0, 5 - playerHand.length) }).map((_, idx) => (
             <div
               key={`empty-hand-${idx}`}
-              className="h-[clamp(54px,11dvh,90px)] border-2 border-dashed border-blue-300 bg-blue-50/10 rounded-sm flex items-center justify-center text-blue-400 font-mono [@media(max-height:500px)_and_(min-width:480px)]:h-[clamp(44px,24dvh,80px)]"
+              className="aspect-[2.8/4] min-h-[96px] sm:min-h-[115px] max-h-[135px] border-2 border-dashed border-blue-300 bg-blue-50/10 rounded-sm flex items-center justify-center text-blue-400 font-mono [@media(max-height:500px)_and_(min-width:480px)]:h-[clamp(44px,24dvh,80px)]"
             >
               <span className="text-[11px] font-bold">[-]</span>
             </div>
