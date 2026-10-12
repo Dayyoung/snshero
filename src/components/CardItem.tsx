@@ -497,10 +497,10 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
       {/* Direction stats: Always displayed in North / East / South / West layout (Cross Diamond HUD) */}
       {!hideStats && (
         <>
-          {renderStatBadge(0, isOnBoard ? 'top-[2.5cqw] left-1/2 -translate-x-1/2' : 'top-[20cqw] left-1/2 -translate-x-1/2')}
-          {renderStatBadge(1, 'right-[2cqw] top-[46%] -translate-y-1/2')}
-          {renderStatBadge(2, isOnBoard ? 'bottom-[16cqw] left-1/2 -translate-x-1/2' : 'bottom-[23.5cqw] left-1/2 -translate-x-1/2')}
-          {renderStatBadge(3, 'left-[2cqw] top-[46%] -translate-y-1/2')}
+          {renderStatBadge(0, isOnBoard ? 'top-[0.5cqw] left-1/2 -translate-x-1/2' : 'top-[1cqw] left-1/2 -translate-x-1/2')}
+          {renderStatBadge(1, isOnBoard ? 'right-[0.5cqw] top-1/2 -translate-y-1/2' : 'right-[1cqw] top-1/2 -translate-y-1/2')}
+          {renderStatBadge(2, isOnBoard ? 'bottom-[0.5cqw] left-1/2 -translate-x-1/2' : 'bottom-[1cqw] left-1/2 -translate-x-1/2')}
+          {renderStatBadge(3, isOnBoard ? 'left-[0.5cqw] top-1/2 -translate-y-1/2' : 'left-[1cqw] top-1/2 -translate-y-1/2')}
         </>
       )}
 
