@@ -216,6 +216,7 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
           surfaceBg: 'bg-gradient-to-b from-[#ffffff] via-[#f1f5f9] to-[#e2e8f0]',
           innerBorder: 'border-[#64748b]/40',
           windowBorder: 'border-[#94a3b8]/60 shadow-[inset_0_0_6px_rgba(148,163,184,0.3)]',
+          windowBg: 'bg-gradient-to-b from-[#f8fafc] via-[#f1f5f9] to-[#cbd5e1]',
           badgeClass: 'bg-gradient-to-r from-[#64748b] to-[#475569] text-white border border-[#334155] shadow-xs',
           badgeLabel: 'SILVER',
           statBadge: 'border-[#94a3b8]/60 bg-[#f8fafc] text-[#201d1d] shadow-[0_1px_4px_rgba(148,163,184,0.35)]',
@@ -234,6 +235,7 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
           surfaceBg: 'bg-gradient-to-b from-[#fffef0] via-[#fef9c3] to-[#fde047]',
           innerBorder: 'border-[#ca8a04]/50',
           windowBorder: 'border-[#eab308] shadow-[inset_0_0_8px_rgba(234,179,8,0.3)]',
+          windowBg: 'bg-gradient-to-b from-[#fffef0] via-[#fef9c3] to-[#fde047]',
           badgeClass: 'bg-gradient-to-r from-[#d97706] via-[#eab308] to-[#f59e0b] text-zinc-950 font-black border border-[#b45309] shadow-sm',
           badgeLabel: 'GOLD',
           statBadge: 'border-[#ca8a04]/70 bg-[#fffbeb] text-[#201d1d] shadow-[0_1px_5px_rgba(202,138,4,0.35)]',
@@ -249,6 +251,11 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
           : normalizedCardRarity === 'diamond'
             ? '💎 DIAMOND'
             : '✨ SPECIAL';
+        const specialWindowBg = normalizedCardRarity === 'diamond'
+          ? 'bg-gradient-to-b from-[#f0f9ff] via-[#e0f2fe] to-[#bae6fd]'
+          : normalizedCardRarity === 'legendary'
+            ? 'bg-gradient-to-b from-[#fdf4ff] via-[#f5f3ff] to-[#e9d5ff]'
+            : 'bg-gradient-to-b from-[#fdf2f8] via-[#f5f3ff] to-[#e0f2fe]';
         return {
           groupName: 'SPECIAL',
           symbol: '✨',
@@ -257,6 +264,7 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
           surfaceBg: 'bg-gradient-to-b from-[#fdf2f8] via-[#f5f3ff] to-[#e0f2fe]',
           innerBorder: 'border-purple-300/60',
           windowBorder: 'border-purple-400/80 shadow-[0_0_8px_rgba(168,85,247,0.35)]',
+          windowBg: specialWindowBg,
           badgeClass: 'bg-gradient-to-r from-rose-500 via-purple-500 to-cyan-500 text-white font-black border border-white/60 shadow-[0_0_8px_rgba(236,72,153,0.5)]',
           badgeLabel: specialLabel,
           statBadge: 'border-purple-400/70 bg-[#faf5ff] text-[#201d1d] shadow-[0_1px_6px_rgba(168,85,247,0.35)]',
@@ -277,6 +285,7 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
           surfaceBg: 'bg-gradient-to-b from-[#fcf7f1] via-[#f7ebe0] to-[#ebd7c2]',
           innerBorder: 'border-[#713f1f]/35',
           windowBorder: 'border-[#8c5936]/40 shadow-[inset_0_0_4px_rgba(140,89,54,0.2)]',
+          windowBg: 'bg-gradient-to-b from-[#fcf7f1] via-[#f7ebe0] to-[#ebd7c2]',
           badgeClass: 'bg-gradient-to-r from-[#784421] to-[#5c3319] text-[#fff7ed] border border-[#3e210f] shadow-xs',
           badgeLabel: 'BRONZE',
           statBadge: 'border-[#8c5936]/50 bg-[#fffdfa] text-[#201d1d] shadow-[0_1px_4px_rgba(140,89,54,0.25)]',
@@ -433,7 +442,11 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
       <div className={cn(
         'pointer-events-none absolute z-10 overflow-hidden border [container-type:size]',
         isOnBoard ? 'inset-x-[4cqw] bottom-[17cqw] top-[4cqw]' : 'inset-x-[5.5cqw] bottom-[26cqw] top-[22.5cqw]',
-        !shouldHideBg && (showOwnership ? owner === 'player' ? 'bg-[#eff6ff]' : 'bg-[#fff1f2]' : 'bg-[#fff9e9]'),
+        !shouldHideBg && (
+          showOwnership
+            ? cn(pokemonTheme.windowBg, owner === 'player' ? 'ring-1 ring-[#2563eb]/50' : 'ring-1 ring-[#dc2626]/50')
+            : pokemonTheme.windowBg
+        ),
         pokemonTheme.windowBorder,
       )}>
         {currentImageSource ? (
