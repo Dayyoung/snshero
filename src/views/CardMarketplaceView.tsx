@@ -751,11 +751,11 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
             rarity: l.rarity
           })),
           myOffers: marketState.offers.filter(o => o.buyerId === userId),
-          snsBalance: snsBalance
+          snsBalance: userSns
         };
       }
     });
-  }, [handleExecutePurchase, handleCreateListing, marketState, snsBalance, userId]);
+  }, [handleExecutePurchase, handleCreateListing, marketState, userSns, userId]);
 
   useWebMcpTools(marketWebMcpTools);
 

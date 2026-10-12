@@ -27,6 +27,8 @@ import { getDynamicDifficultyProfile, DynamicDifficultyProfile } from '../lib/dy
 import { WEBTOON_SEASONS } from '../content/webtoonEpisodes';
 import { MOVIE_EPISODES } from '../content/movieEpisodeMapping';
 import { createBattleWebMcpTools, useWebMcpTools } from '../lib/webMcp/index';
+import { RewardedAdModal } from '../components/RewardedAdModal';
+import { checkIsAdRemoved } from '../lib/rewardedAdService';
 
 export interface MobileCardPlayScreenProps {
   playerDeck?: CardData[];
@@ -267,6 +269,26 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     opponentTp: number;
     winner: 'player' | 'ai' | 'draw';
   } | null>(null);
+
+  // 3대 핵심 보상 루프 1: 승리 보상 2배 (x2) 상태
+  const [isDoubleRewardClaimed, setIsDoubleRewardClaimed] = useState<boolean>(false);
+  const [isRewardedModalOpen, setIsRewardedModalOpen] = useState<boolean>(false);
+  const isVipUser = checkIsAdRemoved();
+
+  const handleDoubleRewardGranted = () => {
+    setIsDoubleRewardClaimed(true);
+    const bonusSns = winner === 'player' ? 30 : 15;
+    if (updateSns) {
+      updateSns(bonusSns, 'battle_victory_2x_rewarded', 'earned');
+    } else {
+      try {
+        const cur = parseInt(localStorage.getItem('hero_sns') || '0', 10);
+        localStorage.setItem('hero_sns', String(cur + bonusSns));
+        window.dispatchEvent(new Event('hero_sns_updated'));
+      } catch {}
+    }
+    playSound('fanfare');
+  };
 
   // Opponent name
   const effectiveOpponentName = useMemo(() => {
@@ -1222,6 +1244,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     setGameOver(false);
     setWinner(null);
     setTieBreakerInfo(null);
+    setIsDoubleRewardClaimed(false);
     refreshDifficulty();
     const nextOpp = pickNewRankOpponent(activeRankOpponent?.name || effectiveOpponentName, playerTotalPower, getDynamicDifficultyProfile(playerTotalPower));
     setActiveRankOpponent(nextOpp);
@@ -1825,6 +1848,40 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                   </span>
                 </div>
 
+                {/* 3대 핵심 보상 루프 1: 배틀 승리 보상 2배 버튼 */}
+                {winner === 'player' && (
+                  <div className="my-1">
+                    {isDoubleRewardClaimed ? (
+                      <div className="py-1 px-2.5 bg-emerald-500/20 border border-emerald-400/50 text-emerald-300 text-[10px] font-bold rounded-xs text-center flex items-center justify-center gap-1">
+                        <span>✨</span>
+                        <span>{language === 'ko' ? '보상 2배 수령 완료 (+30 SNS 추가 입금됨)' : '2x Reward Claimed (+30 SNS Added)'}</span>
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => setIsRewardedModalOpen(true)}
+                        className={`w-full py-2 px-3 text-[11px] font-black uppercase rounded-xs transition-transform active:scale-95 cursor-pointer flex items-center justify-center gap-1.5 shadow-md ${
+                          isVipUser
+                            ? 'bg-amber-400 hover:bg-amber-300 text-stone-950 border border-amber-300'
+                            : 'bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 text-stone-950'
+                        }`}
+                      >
+                        {isVipUser ? (
+                          <>
+                            <span>👑</span>
+                            <span>{language === 'ko' ? 'VIP 원클릭 승리 보상 2배 받기 (+30 SNS)' : 'VIP 1-Click 2x Reward (+30 SNS)'}</span>
+                          </>
+                        ) : (
+                          <>
+                            <span>🎬</span>
+                            <span>{language === 'ko' ? '광고 보고 승리 보상 2배 받기 (+30 SNS)' : 'Watch Ad for 2x Reward (+30 SNS)'}</span>
+                          </>
+                        )}
+                      </button>
+                    )}
+                  </div>
+                )}
+
                 {/* 랭킹대전 전용 승리 혜택 및 스마트 루프 안내 */}
                 {isRankingMatch && (
                   <div className="flex flex-col gap-1.5 pt-0.5 text-left">
@@ -2004,6 +2061,17 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* 보상형 광고 모달 (승리 보상 2배) */}
+      <RewardedAdModal
+        isOpen={isRewardedModalOpen}
+        type="victory_2x"
+        title={language === 'ko' ? '배틀 승리 보상 2배 스폰서 광고' : '2x Victory Reward Sponsored Ad'}
+        rewardDescription={language === 'ko' ? '+30 SNS 코인 추가 입금' : '+30 SNS Coin Bonus Deposit'}
+        onRewardGranted={handleDoubleRewardGranted}
+        onClose={() => setIsRewardedModalOpen(false)}
+        language={language}
+      />
 
       {/* ─── Tower of Trials Boss Clear Dopamine Modal ─────────────── */}
       <AnimatePresence>

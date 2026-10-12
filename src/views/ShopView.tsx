@@ -36,9 +36,11 @@ import { useRefundRequests } from '../hooks/useRefundRequests';
 import { maybeTriggerTourOrProceedToBattle } from '../lib/smartLoopTourService';
 import { TokenExchangeModal } from '../components/TokenExchangeModal';
 import { ShortfallGuideModal } from '../components/ShortfallGuideModal';
-import { ArrowDownUp } from 'lucide-react';
+import { ArrowDownUp, Crown } from 'lucide-react';
 import { getCardPower } from '../constants';
 import { createShopWebMcpTools, useWebMcpTools } from '../lib/webMcp/index';
+import { RewardedAdModal } from '../components/RewardedAdModal';
+import { getRemainingRewardedCount, checkIsAdRemoved } from '../lib/rewardedAdService';
 
 interface ShopViewProps {
   sns: number;
@@ -446,6 +448,27 @@ export const ShopView: React.FC<ShopViewProps> = ({
     localStorage.setItem(`hero_daily_free_summon_${todayDateKey}`, 'true');
     setDailyFreeSummonClaimed(true);
 
+    const newCards = createPackCards('bronze');
+    recordGachaPity('bronze', newCards.map(c => c.rarity));
+
+    setGachaState({
+      isActive: true,
+      step: 0,
+      packType: 'bronze',
+      isRevealed: false,
+      cards: newCards,
+    });
+
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2012/2012-preview.mp3');
+    triggerHaptic('victory');
+  };
+
+  // 3대 핵심 보상 루프 2: 광고 시청 및 VIP 즉시 추가 무료 소환 상태 및 핸들러
+  const [isRewardedGachaModalOpen, setIsRewardedGachaModalOpen] = useState<boolean>(false);
+  const isVipShopUser = checkIsAdRemoved();
+  const rewardedGachaRemaining = getRemainingRewardedCount('free_gacha', isVipShopUser);
+
+  const handleDailyRewardedGachaGranted = () => {
     const newCards = createPackCards('bronze');
     recordGachaPity('bronze', newCards.map(c => c.rarity));
 
@@ -4111,10 +4134,41 @@ export const ShopView: React.FC<ShopViewProps> = ({
                         <span>{language === 'ko' ? '🎁 일일 무료 소환 [READY]' : '🎁 Daily Free Summon [READY]'}</span>
                       </button>
                     ) : (
-                      <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-bold text-[10px] rounded-sm flex items-center gap-1 border border-slate-200 dark:border-slate-700">
-                        <CheckCircle2 size={11} className="text-emerald-500" />
-                        <span>{language === 'ko' ? '오늘 무료 소환 완료 (자정 리셋)' : 'Daily Free Claimed'}</span>
-                      </span>
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-bold text-[10px] rounded-sm flex items-center gap-1 border border-slate-200 dark:border-slate-700">
+                          <CheckCircle2 size={11} className="text-emerald-500" />
+                          <span>{language === 'ko' ? '기본 무료 완료' : 'Free Claimed'}</span>
+                        </span>
+                        {/* 3대 핵심 보상 루프 2: 광고 시청 및 VIP 즉시 추가 무료 소환 버튼 */}
+                        {rewardedGachaRemaining > 0 ? (
+                          <button
+                            type="button"
+                            onClick={() => setIsRewardedGachaModalOpen(true)}
+                            className={cn(
+                              "px-2.5 py-1 font-black text-[10px] rounded-sm transition-transform active:scale-95 flex items-center gap-1 cursor-pointer shadow-xs",
+                              isVipShopUser
+                                ? "bg-amber-400 hover:bg-amber-300 text-stone-950 border border-amber-300"
+                                : "bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 text-white"
+                            )}
+                          >
+                            {isVipShopUser ? (
+                              <>
+                                <Crown size={11} className="shrink-0 text-stone-950" />
+                                <span>{language === 'ko' ? `👑 VIP 즉시 추가 소환 (${rewardedGachaRemaining}회)` : `👑 VIP Free Pull (${rewardedGachaRemaining})`}</span>
+                              </>
+                            ) : (
+                              <>
+                                <Film size={11} className="shrink-0 text-cyan-200" />
+                                <span>{language === 'ko' ? `🎬 광고 보고 추가 소환 (${rewardedGachaRemaining}/3)` : `🎬 Watch Ad Free Pull (${rewardedGachaRemaining}/3)`}</span>
+                              </>
+                            )}
+                          </button>
+                        ) : (
+                          <span className="text-[10px] text-stone-400">
+                            {language === 'ko' ? '(오늘 한도 소진)' : '(Limit Reached)'}
+                          </span>
+                        )}
+                      </div>
                     )}
                   </div>
 
@@ -4720,20 +4774,28 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 </div>
 
                 <div className="pl-14 sm:pl-16">
-                  <h3 className="text-base font-bold tracking-tight text-slate-900 sm:text-lg">{language === 'ko' ? '광고 제거 패키지' : 'Ad-Free Package'}</h3>
+                  <h3 className="text-base font-bold tracking-tight text-slate-900 sm:text-lg">
+                    {language === 'ko' ? '광고 제거 & VIP 프리패스' : 'Ad-Free VIP Pass'}
+                  </h3>
                   <p className="text-xs text-blue-700 font-bold mt-0.5">
-                    {isAdRemoved ? (language === 'ko' ? '영구 적용 완료' : 'Permanently Active') : (language === 'ko' ? '영구 무제한 광고 차단' : 'Permanent Ad Block')}
+                    {isAdRemoved 
+                      ? (language === 'ko' ? '👑 영구 VIP 특권 적용 중' : '👑 Permanent VIP Active') 
+                      : (language === 'ko' ? '광고 차단 + 보상형 1클릭 즉시 수령' : 'No Ads + 1-Click Rewarded Skip')}
                   </p>
                 </div>
 
                 <ul className="space-y-1.5 text-xs text-slate-600 border-t border-blue-100 pt-3 font-medium">
                   <li className="flex items-center gap-1.5">
                     <span className="text-blue-600 font-bold">✓</span>
-                    <span>{language === 'ko' ? '전투 및 미니게임 즉시 플레이' : 'Instant play without ads'}</span>
+                    <span>{language === 'ko' ? '모든 배너 및 전면 광고 영구 차단' : 'Permanent banner & interstitial ad removal'}</span>
+                  </li>
+                  <li className="flex items-center gap-1.5">
+                    <span className="text-amber-600 font-black">👑</span>
+                    <span className="font-bold text-slate-800">{language === 'ko' ? '무료 가챠·승리 2배 광고 "0초 즉시 수령" VIP 특권' : 'Instant 1-Click Free Gacha & 2x Rewards (0s Skip)'}</span>
                   </li>
                   <li className="flex items-center gap-1.5">
                     <span className="text-blue-600 font-bold">✓</span>
-                    <span>{language === 'ko' ? '모든 광고 보상 딜레이 없이 즉시 수령' : 'Direct reward claims'}</span>
+                    <span>{language === 'ko' ? '전투 및 110종 미니게임 즉시 로딩 플레이' : 'Zero-delay instant gameplay'}</span>
                   </li>
                 </ul>
               </div>
@@ -6780,6 +6842,17 @@ export const ShopView: React.FC<ShopViewProps> = ({
             </button>
           </div>
         </div>
+
+        {/* 3대 핵심 보상 루프 2: 추가 무료 소환 보상형 광고 모달 */}
+        <RewardedAdModal
+          isOpen={isRewardedGachaModalOpen}
+          type="free_gacha"
+          title={language === 'ko' ? '무료 카드 소환 스폰서 광고' : 'Free Summon Sponsored Ad'}
+          rewardDescription={language === 'ko' ? '브론즈 팩 무료 1회 소환권' : '1x Free Bronze Pack Summon'}
+          onRewardGranted={handleDailyRewardedGachaGranted}
+          onClose={() => setIsRewardedGachaModalOpen(false)}
+          language={language}
+        />
 
       </>
     </PayPalScriptProvider>

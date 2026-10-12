@@ -829,7 +829,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
       onCreatePost: async (title, postContent, channel) => {
         const fullContent = title ? `[${title}]\n${postContent}` : postContent;
         const validCategory: CommunityWritableCategory =
-          channel === 'boast' ? 'boast' : channel === 'strategy' ? 'strategy' : 'free';
+          channel === 'boast' ? 'boast' : channel === 'strategy' ? 'tip' : 'free';
         try {
           const newPost = await createCommunityPost(
             fullContent,

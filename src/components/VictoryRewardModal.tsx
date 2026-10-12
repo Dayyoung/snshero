@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Trophy, Sparkles, Coins, CheckCircle, RotateCcw, ArrowRight, Grid, Shield, Zap, Flame, X } from 'lucide-react';
+import { Trophy, Sparkles, Coins, CheckCircle, RotateCcw, ArrowRight, Grid, Shield, Zap, Flame, X, Crown, Film } from 'lucide-react';
 import { RewardReceipt } from '../lib/standardizedRewardGateway';
+import { RewardedAdModal } from './RewardedAdModal';
+import { checkIsAdRemoved } from '../lib/rewardedAdService';
+import { playSfx } from '../lib/sound';
+import { triggerHaptic } from '../lib/haptic';
 
 export interface VictoryRewardModalProps {
   receipt?: RewardReceipt | null;
@@ -84,6 +88,33 @@ export const VictoryRewardModal: React.FC<VictoryRewardModalProps> = ({
   const [animatedSns, setAnimatedSns] = useState<number>(0);
   const [isAnimationComplete, setIsAnimationComplete] = useState<boolean>(false);
   const [autoCloseCountdown, setAutoCloseCountdown] = useState<number | null>(null);
+  const [isDoubleRewardClaimed, setIsDoubleRewardClaimed] = useState<boolean>(false);
+  const [isRewardedModalOpen, setIsRewardedModalOpen] = useState<boolean>(false);
+  const isVip = checkIsAdRemoved();
+
+  const handleDoubleRewardGranted = () => {
+    setIsDoubleRewardClaimed(true);
+    const bonusSns = safeReceipt.totalSns;
+    try {
+      // 1. hero_sns 갱신
+      const curSns = parseInt(localStorage.getItem('hero_sns') || '0', 10);
+      const nextSns = curSns + bonusSns;
+      localStorage.setItem('hero_sns', String(nextSns));
+
+      // 2. hero_sns_points 갱신
+      const curPoints = parseInt(localStorage.getItem('hero_sns_points') || '0', 10);
+      localStorage.setItem('hero_sns_points', String(curPoints + bonusSns));
+
+      // 3. 글로벌 이벤트 디스패치
+      window.dispatchEvent(new Event('hero_sns_updated'));
+      window.dispatchEvent(new CustomEvent('hero_sns_deposit', { detail: { amount: bonusSns, source: 'rewarded_ad_2x' } }));
+    } catch (err) {
+      console.error('Failed to update 2x reward:', err);
+    }
+    setAnimatedSns(prev => prev + bonusSns);
+    triggerHaptic('heavy');
+    playSfx('fanfare');
+  };
 
   // 전투 패배(isVictory === false) 시 5초 후 자동으로 닫기
   useEffect(() => {
@@ -234,6 +265,40 @@ export const VictoryRewardModal: React.FC<VictoryRewardModalProps> = ({
 
         {/* Action Buttons */}
         <div className="p-3 sm:p-4 border-t border-[#201d1d]/20 bg-[#fdfcfc] shrink-0 flex flex-col gap-2">
+          {/* 3대 핵심 보상 루프 1: 승리 보상 2배 (x2) 광고 시청 또는 VIP 즉시 수령 */}
+          {safeReceipt.isVictory && (
+            <div className="w-full">
+              {isDoubleRewardClaimed ? (
+                <div className="w-full py-2 px-3 bg-emerald-50 border border-emerald-500/40 text-emerald-800 text-[11px] font-bold rounded-sm flex items-center justify-center gap-1.5">
+                  <CheckCircle size={14} className="text-emerald-600" />
+                  <span>{isKo ? `✨ 보상 2배 수령 완료 (+${safeReceipt.totalSns} SNS 추가 적립)` : `✨ 2x Reward Claimed (+${safeReceipt.totalSns} SNS Bonus)`}</span>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setIsRewardedModalOpen(true)}
+                  className={`w-full py-2.5 px-4 font-black text-xs uppercase rounded-sm cursor-pointer transition-all flex items-center justify-center gap-2 shadow-xs active:scale-98 ${
+                    isVip
+                      ? 'bg-amber-400 hover:bg-amber-300 text-[#201d1d] border-2 border-[#201d1d]'
+                      : 'bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-[#fdfcfc] border border-amber-600'
+                  }`}
+                >
+                  {isVip ? (
+                    <>
+                      <Crown size={15} className="text-[#201d1d]" />
+                      <span>{isKo ? `👑 [VIP 스킵] 승리 보상 2배 즉시 받기 (+${safeReceipt.totalSns} SNS)` : `👑 [VIP Skip] Claim 2x Reward (+${safeReceipt.totalSns} SNS)`}</span>
+                    </>
+                  ) : (
+                    <>
+                      <Film size={15} className="text-amber-200" />
+                      <span>{isKo ? `🎬 광고 보고 승리 보상 2배 받기 (+${safeReceipt.totalSns} SNS)` : `🎬 Watch Ad for 2x Reward (+${safeReceipt.totalSns} SNS)`}</span>
+                    </>
+                  )}
+                </button>
+              )}
+            </div>
+          )}
+
           {onNextMission && (
             <button
               type="button"
@@ -266,6 +331,17 @@ export const VictoryRewardModal: React.FC<VictoryRewardModalProps> = ({
           </div>
         </div>
       </div>
+
+      {/* 보상형 광고 모달 연동 */}
+      <RewardedAdModal
+        isOpen={isRewardedModalOpen}
+        type="victory_2x"
+        title={isKo ? '승리 보상 2배 스폰서 광고' : '2x Victory Reward Sponsored Ad'}
+        rewardDescription={isKo ? `승리 보상 +${safeReceipt.totalSns} SNS 추가 입금` : `+${safeReceipt.totalSns} SNS Bonus Deposit`}
+        onRewardGranted={handleDoubleRewardGranted}
+        onClose={() => setIsRewardedModalOpen(false)}
+        language={language}
+      />
     </div>
   );
 };
