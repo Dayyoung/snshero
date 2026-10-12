@@ -312,17 +312,17 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
         className={cn(
           'z-30 flex items-center justify-center border font-mono leading-none tabular-nums select-none backdrop-blur-[0.5px]',
           isOnBoard
-            ? 'absolute h-[16cqw] min-w-[22cqw] rounded-sm px-[1.2cqw] gap-[1cqw]'
-            : 'absolute h-[14cqw] min-w-[20cqw] rounded-sm px-[1cqw] gap-[0.8cqw]',
+            ? 'absolute h-[clamp(20px,26cqw,34px)] min-w-[clamp(26px,32cqw,44px)] rounded-sm px-[clamp(3px,1.5cqw,6px)] gap-[clamp(2px,1cqw,4px)]'
+            : 'absolute h-[clamp(18px,22cqw,28px)] min-w-[clamp(24px,28cqw,38px)] rounded-sm px-[clamp(2px,1.2cqw,5px)] gap-[clamp(1.5px,0.8cqw,3px)]',
           highlighted
             ? 'border-red-500 bg-red-600 text-white shadow-[0_0_12px_rgba(239,68,68,0.9)] scale-110 z-40'
-            : pokemonTheme.statBadge,
+            : 'border-[#201d1d] bg-white/95 text-[#201d1d] shadow-[0_1.5px_5px_rgba(0,0,0,0.25)]',
           positionClass,
         )}
         title={`${direction} ${stat.total}${delta ? ` (${stat.base}${delta > 0 ? '+' : ''}${delta})` : ''}`}
       >
         <span className={cn(
-          'text-[5.5cqw] font-black tracking-tighter',
+          'text-[clamp(8px,10cqw,13px)] font-black tracking-tighter shrink-0',
           highlighted ? 'text-white' : 'text-[#646262]'
         )}>
           {index === 0 && `▲${direction}`}
@@ -331,14 +331,14 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
           {index === 3 && `◀${direction}`}
         </span>
         <span className={cn(
-          'text-[11cqw] font-bold tracking-tight',
+          'text-[clamp(13px,20cqw,28px)] font-black tracking-tight leading-none',
           !highlighted && delta > 0 && 'text-[#16a34a]',
           !highlighted && delta < 0 && 'text-[#dc2626]',
         )}>
           {stat.total}
         </span>
         {(delta !== 0 || stat.skillBonus > 0 || stat.equipBonus !== 0) && (
-          <span className="absolute -top-[1.5cqw] -right-[1.5cqw] flex h-[5.5cqw] min-w-[5.5cqw] items-center justify-center rounded-full bg-slate-900 px-[0.5cqw] text-[4cqw] font-bold text-white shadow-xs">
+          <span className="absolute -top-[3px] -right-[3px] flex h-[clamp(10px,7cqw,14px)] min-w-[clamp(10px,7cqw,14px)] items-center justify-center rounded-full bg-slate-900 px-[1px] text-[clamp(7px,5cqw,10px)] font-black text-white shadow-xs">
             {delta < 0 ? '-' : '+'}
           </span>
         )}
@@ -532,7 +532,6 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
         )}
         <div className="flex min-w-0 items-center justify-between gap-[2cqw] text-[5.5cqw] leading-none">
           <div className="flex min-w-0 items-center gap-[1.5cqw]">
-            {isSelected && <span className="font-bold text-[#b45309]" title={t('pg_selected', language)}>[x]</span>}
             {isLocked && <Lock className="h-[6cqw] w-[6cqw] shrink-0 text-[#ca8a04]" aria-label={t('profile_locked_label', language)} />}
             {owner ? (
               <span className="flex min-w-0 items-center gap-[1cqw] font-bold" title={ownerLabel}>

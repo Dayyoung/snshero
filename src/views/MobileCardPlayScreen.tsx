@@ -1699,10 +1699,10 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                   setSelectedHandIndex(i);
                 }}
                 className={cn(
-                  "h-[clamp(54px,11dvh,90px)] min-w-0 rounded-sm relative overflow-hidden cursor-pointer border-2 transition-all [@media(max-height:500px)_and_(min-width:480px)]:h-[clamp(44px,24dvh,80px)]",
+                  "h-[clamp(54px,11dvh,90px)] min-w-0 rounded-sm relative overflow-hidden cursor-pointer border-2 transition-colors [@media(max-height:500px)_and_(min-width:480px)]:h-[clamp(44px,24dvh,80px)]",
                   isSelected
-                    ? "border-blue-600 ring-2 ring-blue-400 bg-blue-100/40 scale-102 shadow-md z-30"
-                    : "border-blue-400/90 hover:border-blue-600 bg-blue-50/10 shadow-2xs"
+                    ? "border-blue-600 shadow-sm"
+                    : "border-blue-400/80 hover:border-blue-500 bg-blue-50/10"
                 )}
               >
                 <CardItem
@@ -1713,13 +1713,6 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                   lowSpecMode={suppressMotion}
                   className="w-full h-full pointer-events-none rounded-none shadow-none"
                 />
-
-                {/* Selected Tag */}
-                {isSelected && (
-                  <div className="absolute bottom-0 inset-x-0 bg-blue-600 text-white font-bold text-[8.5cqw] py-0.5 z-40 flex items-center justify-center gap-0.5 shadow-xs">
-                    <Check size={10} /><span className="leading-none">{language === 'ko' ? '선택됨' : t('pg_selected', language)}</span>
-                  </div>
-                )}
               </button>
             );
           })}
