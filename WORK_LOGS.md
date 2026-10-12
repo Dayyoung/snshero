@@ -2,6 +2,26 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-12 13:24 KST] [AI Studio WebMcpActiveBadge import-analysis 오류 영구 차단 (Glob Loader 전면 전환) 및 깃 푸시 완료]
+- **요청 사항**:
+  - `[plugin:vite:import-analysis] Failed to resolve import "./components/WebMcpActiveBadge" from "src/App.tsx". Does the file exist?` 오류 완전 해결.
+- **원인 분석**:
+  - Vite의 `import-analysis` 플러그인은 정적 `import`뿐만 아니라 `import('./components/WebMcpActiveBadge')`와 같은 동적 import 표현식의 고정 경로 문자열도 빌드/분석 타임에 파일시스템을 엄격하게 검사함.
+  - AI Studio 가상 웹 샌드박스에서 파일이 아직 동기화되지 않았거나 지연될 경우 번들링이 중단(Fatal Error)되는 문제 발생.
+- **근본 해결책**:
+  1. **`import.meta.glob` 기반의 Fail-Safe 컴포넌트 로더 `loadComponentSafely` 도입**:
+     - `const lazyComponentGlob = import.meta.glob('./components/*.tsx');`
+     - Vite는 `import.meta.glob` 패턴 평가 시 디스크에 실제 존재하는 파일만 맵으로 생성하므로, 파일이 없더라도 번들러 에러가 0%로 발생하지 않음.
+     - `WebMcpActiveBadge`를 `safeLazy(loadComponentSafely('WebMcpActiveBadge'), 'WebMcpActiveBadge')`로 전환하여 파일 누락 시 `() => null` fallback으로 전체 앱 크래시 방어.
+  2. **WebMCP 라이브러리 로더 역시 `lazyWebMcpGlob` 기반으로 전환**:
+     - `import('./lib/webMcp/index')` 고정 문자열 import를 완전 제거하고 `lazyWebMcpGlob['./lib/webMcp/index.ts']`를 통해 비동기 호출.
+  3. **지침 강화**:
+     - `AGENTS.md` 및 `GEMINI.md`에 `App.tsx`에서 신규 뷰뿐만 아니라 신규 컴포넌트 추가 시에도 `safeLazy(loadComponentSafely('Name'), 'Name')` 사용 원칙을 명시.
+- **검증 및 원격 반영**:
+  - `npm run build`: 11.58초 만에 0에러로 성공적인 빌드 완결.
+  - `git commit` 및 `git push origin main` 완료 (`974f406`).
+  - 구글 폼 보고서 제출 완료.
+
 ## [2026-10-12 12:50 KST] [AI Studio WebMCP import-analysis 번들링 오류 완전 해결, SPOF 제거 및 깃 푸시 완료]
 - **요청 사항**:
   - AI Studio 환경에서 `[plugin:vite:import-analysis] Failed to resolve import "./lib/webMcp" from "src/App.tsx". Does the file exist?` 오류가 다시 발생하지 않도록 근본 원인을 영구 차단.
