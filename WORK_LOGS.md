@@ -2,6 +2,25 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-12 13:40 KST] [Reddit AP News 정품 보도사진 복원 및 dims.apnews.com 차단 해제]
+- **요청 사항**:
+  - `양당 상원 연합, 트럼프의 러시아 디젤 수입에 도전하는 2022년 법안 인용` 기사의 원본 이미지가 `https://dims.apnews.com/dims4/...`인데 다른 사진(Unsplash 대체 사진)이 표시되는 현상 수정.
+- **원인 분석**:
+  - `src/lib/reddit/googleNewsImageResolver.ts`의 `UNRELIABLE_IMAGE_SIGNATURES`에 `'dims.apnews.com'`이 포함되어 있어, AP통신의 모든 기사 사진이 무조건 신뢰할 수 없는 이미지로 분류되어 Unsplash 정유소 대체 사진으로 덮어써지고 있었음.
+- **상세 구현 내역**:
+  - [`src/lib/reddit/googleNewsImageResolver.ts`](file:///Users/dayyoung/project/snshero/src/lib/reddit/googleNewsImageResolver.ts):
+    - `UNRELIABLE_IMAGE_SIGNATURES`에서 `'dims.apnews.com'`을 제외하여 정품 AP 보도사진이 100% 온전히 유지되도록 수정.
+    - 중복 사용 허용 임계값을 2회 이상으로 조정하여 관련 기사 2개까지는 원본 보도사진을 보존하도록 개선.
+  - [`src/lib/reddit/googleNewsSheetService.ts`](file:///Users/dayyoung/project/snshero/src/lib/reddit/googleNewsSheetService.ts):
+    - 브라우저에 캐시되어 있던 이전 Unsplash 대체 이미지 캐시를 플러시하기 위해 캐시 버전을 `v6`로 업데이트.
+  - [`public/data/google-news.csv`](file:///Users/dayyoung/project/snshero/public/data/google-news.csv):
+    - 최신 구글 스프레드시트 데이터(261개 기사)로 로컬 정적 백업 CSV 동기화.
+- **검증 결과**:
+  - 해당 기사 이미지 리졸빙 테스트: 원본 이미지 URL(`https://dims.apnews.com/dims4/...8cd4a7c2520347879d49a52540dc5bc6`) 100% 일치 확인.
+  - `npm run build`: 18.05초 만에 0에러로 성공적인 빌드 완결.
+  - 로컬 Git 커밋 완료 (`ecedb50`).
+  - 구글 폼 완료 보고서 제출 완료.
+
 ## [2026-10-12 13:33 KST] [Reddit 메인 피드 상단 및 하단 Google Ads 디스플레이 배너 완전 제거]
 - **요청 사항**:
   - `/reddit`에서 `<div class="flex items-center justify-between px-2 py-0.5 text-[9px] font-mono text-slate-400/80 uppercase tracking-wider bg-black/5 dark:bg-white/5 border-b border-inherit/10"><span>[AD]</span><span>Google Ads</span></div>` 배너 제거.
