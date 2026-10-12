@@ -499,7 +499,7 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
         <>
           {renderStatBadge(0, isOnBoard ? 'top-[0.5cqw] left-1/2 -translate-x-1/2' : 'top-[1cqw] left-1/2 -translate-x-1/2')}
           {renderStatBadge(1, isOnBoard ? 'right-[0.5cqw] top-1/2 -translate-y-1/2' : 'right-[1cqw] top-1/2 -translate-y-1/2')}
-          {renderStatBadge(2, isOnBoard ? 'bottom-[0.5cqw] left-1/2 -translate-x-1/2' : 'bottom-[1cqw] left-1/2 -translate-x-1/2')}
+          {renderStatBadge(2, isOnBoard ? 'bottom-[0.5cqw] left-1/2 -translate-x-1/2' : 'bottom-[1.5cqw] left-1/2 -translate-x-1/2')}
           {renderStatBadge(3, isOnBoard ? 'left-[0.5cqw] top-1/2 -translate-y-1/2' : 'left-[1cqw] top-1/2 -translate-y-1/2')}
         </>
       )}

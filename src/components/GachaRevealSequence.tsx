@@ -884,14 +884,6 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
                               </div>
                             )}
 
-                            {/* ID 348: 중복 획득 시 조각 변환(+10) 및 승급 알림 배지 */}
-                            {isRevealed && isOwnedBefore && (
-                              <div className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 z-30 px-2 py-0.5 rounded-full bg-indigo-950/95 border border-indigo-400 text-indigo-200 text-[8px] font-black flex items-center gap-0.5 shadow-lg whitespace-nowrap animate-bounce">
-                                <Sparkles size={8} className="text-indigo-400 animate-spin" />
-                                <span>+10 {language === 'ko' ? '파편 변환' : 'Shards'}</span>
-                              </div>
-                            )}
-
                             {/* 3D Flip Container - 골드 조건 시 금빛 테두리 적용 */}
                             <motion.div
                               animate={{ rotateY: isRevealed ? 180 : 0 }}
@@ -935,7 +927,7 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
                                 </span>
                               </div>
 
-                              {/* 카드 앞면 (Revealed) */}
+                              {/* 카드 앞면 (Revealed: CardItem 자체에 스탯 4방향·이름·등급이 포켓몬 TCG 포맷으로 완벽 렌더링되므로 하단 오버레이 배제) */}
                               <div
                                 style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
                                 className="absolute inset-0 rounded-xl sm:rounded-2xl overflow-hidden bg-slate-950"
@@ -953,19 +945,24 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
                                   processedImage={card.imageIndex ? processedCardImages?.[card.imageIndex - 1] : undefined}
                                   lowSpecMode={lowSpecMode}
                                 />
-                                <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent p-1.5 sm:p-2.5 pt-4">
-                                  <div className="flex items-center justify-between gap-1">
-                                    <span className={cn('rounded-full border px-1.5 py-0.2 text-[7px] sm:text-[8px] font-black uppercase tracking-wider', rarityBadgeClass(card.rarity))}>
-                                      {card.rarity}
-                                    </span>
-                                    <span className="text-[8px] sm:text-[10px] font-black text-white truncate max-w-[65%]">
-                                      {getFormattedCardName(dbCard, language)}
-                                    </span>
-                                  </div>
-                                </div>
                               </div>
                             </motion.div>
                           </motion.div>
+
+                          {/* 카드 외부 캡션 및 조각 변환 배지: 카드 내부 남쪽 스탯 숫자에 0% 간섭 */}
+                          {isRevealed && (
+                            <div className="flex flex-col items-center gap-0.5 max-w-[120px] text-center px-0.5">
+                              <span className="text-[9px] sm:text-[10px] font-black text-white/90 truncate max-w-full font-mono">
+                                {getFormattedCardName(dbCard, language)}
+                              </span>
+                              {isOwnedBefore && (
+                                <span className="px-1.5 py-0.2 rounded-full bg-indigo-950/95 border border-indigo-400 text-indigo-200 text-[8px] font-black flex items-center gap-0.5 shadow-sm whitespace-nowrap">
+                                  <Sparkles size={8} className="text-indigo-400 animate-spin" />
+                                  <span>+10 {language === 'ko' ? '파편 변환' : 'Shards'}</span>
+                                </span>
+                              )}
+                            </div>
+                          )}
 
                           {/* ID 358: SSR/SR 획득 시 현재 덱에 즉시 교체/장착 원클릭 버튼 */}
                           {isRevealed && isCardGoldCondition && onEquipCardToDeck && (
