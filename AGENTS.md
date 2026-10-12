@@ -96,6 +96,19 @@
 - **Components**: 재사용 가능한 UI는 `src/components/ComponentName.tsx`에 배치.
 - **Types**: 공통 타입은 `src/types.ts`에 정의. View/Component 전용 타입은 해당 파일 내 `interface`로 정의 가능.
 
+## AI Studio 및 웹 샌드박스 환경 import-analysis 오류 방지 절대 원칙 (Fail-Safe Import & No SPOF)
+- **배경 및 문제점**:
+  - Google AI Studio, StackBlitz, CodeSandbox 등 웹 기반 샌드박스 환경에서는 파일 동기화 지연, 디렉토리 인덱스(`index.ts`) 자동 해석 미지원, 또는 가상 파일시스템 경로 탐색 이슈로 인해 `[plugin:vite:import-analysis] Failed to resolve import "./lib/xxx" from "src/App.tsx". Does the file exist?`와 같은 치명적 번들링 에러가 발생할 수 있습니다.
+- **필수 준수 규칙**:
+  1. **디렉토리 직접 import 금지 (Always Single-File Entrypoint)**:
+     - `import ... from './lib/webMcp'`와 같이 폴더 경로만으로 import하지 마십시오.
+     - 반드시 `src/lib/webMcp.ts`와 같이 루트에 명시적인 단일 진입점 파일을 두고 import하거나, `from './lib/webMcp/index'`처럼 명확한 파일 경로를 지정해야 합니다.
+  2. **App.tsx 정적 import 단일 장애점(SPOF) 방지**:
+     - `App.tsx`는 애플리케이션의 최상위 진입점이므로, 신규 라이브러리나 뷰를 추가할 때 최상단 정적 import로 인해 파일 누락 시 전체 앱이 다운되는 일이 없도록 하십시오.
+     - 신규 뷰는 반드시 `safeLazy(loadViewSafely('ViewName'), 'ViewName')`를 사용하여 파일 부재 시에도 fallback 컴포넌트가 렌더링되도록 보호하십시오.
+  3. **내장 기능 Fail-Safe Fallback 보장**:
+     - 외부 도구나 보조 기능(WebMCP, GEO 메타데이터 등)은 모듈이 로드되지 않더라도 앱의 메인 배틀/홈/덱 기능이 100% 정상 작동하도록 try-catch 또는 no-op 더미 함수로 우아한 성능 저하(Graceful Degradation)를 구현하십시오.
+
 ## 작업 전/후 체크리스트
 - [ ] `npm run lint` (tsc --noEmit) 통과 여부 확인
 - [ ] `DESIGN.md` 디자인 가이드 준수 여부 (Monospace 서체, 웜크림/잉크 테마, 플랫 디자인, 1px 헤어라인, 4px/0px 반경, 44px+ 터치 타깃)

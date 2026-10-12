@@ -41,3 +41,8 @@
   python3 skills/report-ex/scripts/submit_report.py --dept "개발" --task "[작업명]" --status "작업완료" --details "[작업 상세 내용 및 검증 결과]"
   ```
 
+## 6. AI Studio 및 웹 샌드박스 환경 import-analysis 오류 방지 절대 원칙
+- **디렉토리 직접 import 금지**: `from './lib/webMcp'`와 같이 폴더명만으로 import하지 마십시오. 반드시 `src/lib/webMcp.ts`와 같이 루트 단일 진입점 파일을 두고 import하거나, `from './lib/webMcp/index'`처럼 명확한 파일 경로를 지정하십시오.
+- **App.tsx 정적 import SPOF 방지**: `App.tsx` 최상단에 신규 모듈/뷰를 추가할 때 파일 누락으로 앱 전체가 Fatal Error(`Failed to resolve import`)로 다운되지 않도록 `safeLazy(loadViewSafely('ViewName'), 'ViewName')` 또는 안전한 fallback 래퍼를 사용하십시오.
+
+
