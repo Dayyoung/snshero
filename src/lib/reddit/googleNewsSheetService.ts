@@ -14,6 +14,17 @@ const CACHE_KEY = 'hero_reddit_google_news_posts_v6';
 const RAW_CACHE_KEY = 'hero_reddit_google_news_raw_v6';
 const LAST_FETCH_KEY = 'hero_reddit_google_news_last_fetch_v6';
 
+// AI Studio 및 브라우저 환경에서 이전 구형 캐시(v1~v5) 자동 정리
+if (typeof window !== 'undefined') {
+  try {
+    ['v1', 'v2', 'v3', 'v4', 'v5'].forEach((ver) => {
+      localStorage.removeItem(`hero_reddit_google_news_posts_${ver}`);
+      localStorage.removeItem(`hero_reddit_google_news_raw_${ver}`);
+      localStorage.removeItem(`hero_reddit_google_news_last_fetch_${ver}`);
+    });
+  } catch {}
+}
+
 export type GoogleNewsSyncStatus = 'idle' | 'syncing' | 'ok' | 'unauthorized' | 'error';
 
 export class GoogleNewsSheetService {
