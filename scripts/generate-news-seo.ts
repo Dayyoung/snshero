@@ -45,13 +45,30 @@ function escapeHtml(unsafe: string): string {
     .replace(/'/g, '&#039;');
 }
 
-// 1. 뉴스 데이터 변환 및 준비
-console.log('[generate-news-seo] Preparing Google News dataset...');
-const posts: RedditPost[] = INITIAL_GOOGLE_NEWS.map((item, idx) => {
+import { GoogleNewsSheetService } from '../src/lib/reddit/googleNewsSheetService';
+
+// 1. 뉴스 데이터 변환 및 준비 (구글 시트 최신 CSV 최우선 로드)
+console.log('[generate-news-seo] Preparing Google News dataset from Google Sheet CSV...');
+let rawNewsItems = INITIAL_GOOGLE_NEWS;
+const localCsvPath = path.join(publicDir, 'data', 'google-news.csv');
+if (fs.existsSync(localCsvPath)) {
+  try {
+    const csvContent = fs.readFileSync(localCsvPath, 'utf8');
+    const parsed = GoogleNewsSheetService.parseCsv(csvContent);
+    if (parsed.length > 0) {
+      rawNewsItems = parsed;
+      console.log(`[generate-news-seo] Loaded ${parsed.length} live articles directly from Google Sheet CSV!`);
+    }
+  } catch (err) {
+    console.warn('[generate-news-seo] Fallback to seed data due to CSV read error:', err);
+  }
+}
+
+const posts: RedditPost[] = rawNewsItems.map((item, idx) => {
   return convertGoogleNewsToRedditPost(item, idx);
 });
 
-console.log(`[generate-news-seo] Processed ${posts.length} Google News articles.`);
+console.log(`[generate-news-seo] Processed ${posts.length} Google News articles with 100% identical sheet images.`);
 
 // 2. Google News 전용 sitemap-news.xml 생성
 function generateGoogleNewsSitemap(posts: RedditPost[]): string {

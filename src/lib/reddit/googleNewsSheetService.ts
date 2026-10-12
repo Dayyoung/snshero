@@ -7,17 +7,18 @@
 import { RedditPost } from './redditTypes';
 import { RawGoogleNewsItem, INITIAL_GOOGLE_NEWS, convertGoogleNewsToRedditPost } from '../../data/googleNewsSeedData';
 import { translateRedditPosts } from './redditTranslationService';
+import { extractFirstValidImageUrl } from './googleNewsImageResolver';
 
 export const GOOGLE_NEWS_PUB_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR4QwhuPkfx2rfFRi021ppKfOv9mLUwZg82C80qVYqJqse4F7Z3Un0VYaFgTwofAXuboqc-yJPg6hKt/pub?output=csv';
 export const GOOGLE_NEWS_SPREADSHEET_ID = '1CT5Yy1-i6kkOfx3d-Yw1osOEYbN7fkk8IDiI8Vm82vM';
-const CACHE_KEY = 'hero_reddit_google_news_posts_v6';
-const RAW_CACHE_KEY = 'hero_reddit_google_news_raw_v6';
-const LAST_FETCH_KEY = 'hero_reddit_google_news_last_fetch_v6';
+const CACHE_KEY = 'hero_reddit_google_news_posts_v7';
+const RAW_CACHE_KEY = 'hero_reddit_google_news_raw_v7';
+const LAST_FETCH_KEY = 'hero_reddit_google_news_last_fetch_v7';
 
-// AI Studio 및 브라우저 환경에서 이전 구형 캐시(v1~v5) 자동 정리
+// AI Studio 및 브라우저 환경에서 이전 구형 캐시(v1~v6) 자동 정리
 if (typeof window !== 'undefined') {
   try {
-    ['v1', 'v2', 'v3', 'v4', 'v5'].forEach((ver) => {
+    ['v1', 'v2', 'v3', 'v4', 'v5', 'v6'].forEach((ver) => {
       localStorage.removeItem(`hero_reddit_google_news_posts_${ver}`);
       localStorage.removeItem(`hero_reddit_google_news_raw_${ver}`);
       localStorage.removeItem(`hero_reddit_google_news_last_fetch_${ver}`);
@@ -157,7 +158,7 @@ export class GoogleNewsSheetService {
 
       const timestamp = cells[tsIdx]?.f || cells[tsIdx]?.v ? String(cells[tsIdx]?.f || cells[tsIdx]?.v).trim() : '';
       const summary = cells[summaryIdx]?.v ? String(cells[summaryIdx].v).trim() : '';
-      const imageUrl = cells[imgIdx]?.v ? String(cells[imgIdx].v).trim() : '';
+      const imageUrl = extractFirstValidImageUrl(cells[imgIdx]?.v ? String(cells[imgIdx].v) : '');
       const sourceUrl = cells[srcIdx]?.v ? String(cells[srcIdx].v).trim() : '';
 
       items.push({
@@ -233,7 +234,7 @@ export class GoogleNewsSheetService {
       if (low.includes('시간') || low.includes('일시') || low.includes('date') || low.includes('time') || low.includes('timestamp') || low.includes('수집일시')) tsIdx = idx;
       else if (low.includes('제목') || low.includes('title') || low.includes('headline')) titleIdx = idx;
       else if (low.includes('요약') || low.includes('본문') || low.includes('summary') || low.includes('desc') || low.includes('내용')) summaryIdx = idx;
-      else if (low.includes('이미지') || low.includes('image') || low.includes('photo') || low.includes('사진') || low.includes('img')) imgIdx = idx;
+      else if (low.includes('이미지') || low.includes('image') || low.includes('photo') || low.includes('사진') || low.includes('img') || low.includes('리스트')) imgIdx = idx;
       else if (low.includes('링크') || low.includes('url') || low.includes('source') || low.includes('원문') || low.includes('출처')) srcIdx = idx;
     });
 
@@ -246,7 +247,7 @@ export class GoogleNewsSheetService {
 
       const timestamp = cols[tsIdx] || cols[0] || '';
       const summary = cols[summaryIdx] || cols[2] || '';
-      const imageUrl = cols[imgIdx] || cols[3] || '';
+      const imageUrl = extractFirstValidImageUrl(cols[imgIdx] || cols[3] || '');
       const sourceUrl = cols[srcIdx] || cols[4] || '';
 
       items.push({

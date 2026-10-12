@@ -293,36 +293,49 @@ export function getContextualNewsImage(title: string, summary: string, indexSeed
  * 기사의 기존 이미지 URL의 신뢰성을 엄격히 판정하고, 불일치 또는 도배 URL일 경우
  * 기사 실제 내용과 100% 매칭되는 고화질 프레스 사진으로 정밀 보정
  */
+/**
+ * 복수 URL(콤마/줄바꿈)이나 공백/따옴표가 포함된 문자열에서 첫 번째 유효한 URL 추출
+ */
+export function extractFirstValidImageUrl(raw: string): string {
+  if (!raw || typeof raw !== 'string') return '';
+  const trimmed = raw.trim();
+  if (!trimmed) return '';
+
+  // 1. 개행 또는 쉼표 구분자로 나눈 후 첫 번째 유효한 http/https 링크 탐색
+  const candidates = trimmed.split(/[\r\n,]+/).map((u) => u.trim().replace(/^["']|["']$/g, ''));
+  for (const cand of candidates) {
+    if (cand.startsWith('http://') || cand.startsWith('https://')) {
+      return cand;
+    }
+  }
+
+  // 2. 전체 문자열 내 정규식으로 http/https 링크 추출
+  const match = trimmed.match(/https?:\/\/[^\s"'<>,]+/);
+  if (match) {
+    return match[0];
+  }
+
+  return '';
+}
+
+/**
+ * 구글 시트 원본 이미지 100% 일치 반환 엔진
+ * 사용자의 요구에 따라 구글 시트에 기재된 이미지 링크를 임의 치환 없이 100% 그대로 반영
+ * (이미지 링크가 완전히 비어있는 경우에만 카테고리 시맨틱 사진 fallback)
+ */
 export function resolveAccurateNewsImage(
   item: RawGoogleNewsItem,
   itemIndex: number,
-  urlUsageMap: Map<string, number>
+  _urlUsageMap?: Map<string, number>
 ): string {
-  const rawUrl = (item.imageUrl || '').trim();
+  // 1. 구글 시트 원본 이미지 추출
+  const cleanSheetUrl = extractFirstValidImageUrl(item.imageUrl);
 
-  // 1. 이미지가 비어있거나 너무 짧은 경우 즉시 시맨틱 분석 적용
-  if (!rawUrl || rawUrl.length < 15) {
-    return getContextualNewsImage(item.title, item.summary, itemIndex);
+  // 2. 구글 시트에 이미지 링크가 유효하게 존재하면 100% 동일하게 그대로 반환
+  if (cleanSheetUrl && cleanSheetUrl.startsWith('http')) {
+    return cleanSheetUrl;
   }
 
-  // 2. 크롤러의 캐리오버 에러 도메인 또는 더미/플레이스홀더인 경우 즉시 시맨틱 매칭
-  // (스페인 축구, WNBA 농구 사진 등이 100여 개 기사에 도배되는 주원인 차단)
-  const isUnreliableSource = UNRELIABLE_IMAGE_SIGNATURES.some((sig) =>
-    rawUrl.toLowerCase().includes(sig.toLowerCase())
-  );
-  if (isUnreliableSource) {
-    return getContextualNewsImage(item.title, item.summary, itemIndex);
-  }
-
-  // 3. 다중 기사 중복 사용 검사
-  const usageCount = urlUsageMap.get(rawUrl) || 0;
-  urlUsageMap.set(rawUrl, usageCount + 1);
-
-  if (usageCount >= 2) {
-    // 2회 이상 과도하게 중복 재사용된 이미지는 크롤러 캐리오버 도배 방지를 위해 정밀 시맨틱 매칭
-    return getContextualNewsImage(item.title, item.summary, itemIndex);
-  }
-
-  // 4. 정상적인 단일 고유 정품 이미지인 경우 유지
-  return rawUrl;
+  // 3. 구글 시트에 이미지가 아예 없는 경우에만 기사 맥락 fallback 사진 적용
+  return getContextualNewsImage(item.title, item.summary, itemIndex);
 }

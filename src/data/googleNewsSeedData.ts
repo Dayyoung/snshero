@@ -16,6 +16,41 @@ export interface RawGoogleNewsItem {
 
 export const INITIAL_GOOGLE_NEWS: RawGoogleNewsItem[] = [
   {
+    "timestamp": "2026-10-12 14:24",
+    "title": "CFTC Proposes Expanding Swaps Definition to Include Prediction Markets and Event Contracts",
+    "summary": "미 상품선물거래위원회(CFTC)는 선거 및 금융 이벤트 예측 시장 거래 플랫폼(Kalshi 등)을 규제 스왑 계약 범주에 포함시키기 위한 새로운 규제안을 제안했습니다.",
+    "imageUrl": "https://dims.apnews.com/dims4/default/f8132f2/2147483647/strip/true/crop/6000x4000+0+0/resize/727x485!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2Ff0%2F20%2F7f279218dae6263be80c5fe177c6%2F8cd4a7c2520347879d49a52540dc5bc6",
+    "sourceUrl": "https://www.morningstar.com/news/dow-jones/2026101229/dow-jones-top-financial-services-headlines-at-12-am-et-cftc-proposes-to-expand-definition-of-swaps-to-include-prediction-markets-trading-kalshi"
+  },
+  {
+    "timestamp": "2026-10-12 14:24",
+    "title": "Providence Journal Announces Elimination of Daily Print Edition in Digital Shift",
+    "summary": "로드아일랜드주 최대 일간지 프로비던스 저널(Providence Journal)이 인쇄비 상승과 디지털 독자 전환에 따라 매일 인쇄하던 지면 신문 발행을 전격 중단한다고 발표했습니다.",
+    "imageUrl": "https://dims.apnews.com/dims4/default/1741a96/2147483647/strip/true/crop/6000x4000+0+0/resize/727x485!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2Fb7%2F7a%2F1bef7873cf806c83ea2beaca6f0f%2Fa85b6bf69df24da4997e6db1e009f468",
+    "sourceUrl": "https://www.golocalprov.com/news/big-news-stories-overnight-monday-october-12-2026"
+  },
+  {
+    "timestamp": "2026-10-12 14:24",
+    "title": "Mexican President Claudia Sheinbaum Urges Coastal Residents to Stay Indoors as Hurricane Simon Approaches",
+    "summary": "클라우디아 셰인바움 멕시코 대통령은 4등급 허리케인 사이먼이 태평양 연안으로 접근함에 따라 해안 지역 주민들에게 실내 대피령을 내리고 긴급 재난 대응 체계를 가동했습니다.",
+    "imageUrl": "https://dims.apnews.com/dims4/default/c47099e/2147483647/strip/true/crop/8243x5495+0+0/resize/727x485!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2F71%2F00%2F461c76108aee75c29da991ba2439%2F45c82a17a66f409198d8eed4bfff02e2",
+    "sourceUrl": "https://bworldonline.com/world/2026/10/12/786183/faa-tells-us-airlines-to-exercise-caution-in-saudi-arabia-flights-citing-safety-risks/"
+  },
+  {
+    "timestamp": "2026-10-12 14:24",
+    "title": "Second Houthi Missile Strike on Riyadh Airport Damages Infrastructure and Claims Lives",
+    "summary": "사우디 리야드 킹 칼리드 국제공항이 첫 공습 이틀 만에 후티 반군의 추가 미사일 피격을 받아 여객 터미널 인근에 화재가 발생하고 추가 사상자가 집계되었습니다.",
+    "imageUrl": "https://dims.apnews.com/dims4/default/b1831fd/2147483647/strip/true/crop/3118x1754+0+0/resize/727x409!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2F4a%2F8d%2F9e6af3392e6e335001fdcd4f7d6d%2Fb3aa7b3339ee488ab9c7ac1552b2cf05",
+    "sourceUrl": "https://www.timesofisrael.com/liveblog-october-12-2026/"
+  },
+  {
+    "timestamp": "2026-10-12 14:24",
+    "title": "Canadian Prime Minister Mark Carney Warns US-Russia Diesel Deal Compromises Ukraine Peace Process",
+    "summary": "마크 카니 캐나다 총리는 트럼프 행정부의 러시아산 디젤 수입 합의가 우크라이나의 주권과 서방의 평화 중재 노력을 훼손하는 심각한 후퇴라고 공식 우려를 표명했습니다.",
+    "imageUrl": "https://dims.apnews.com/dims4/default/893080f/2147483647/strip/true/crop/1200x792+0+0/resize/727x480!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2Fb8%2Fab%2Fccfb638a525420db636690b3b6a2%2Fcec657ef553943a6988f7d9b4d783021",
+    "sourceUrl": "https://theedgemalaysia.com/node/821408"
+  },
+  {
     "timestamp": "2026-10-12 13:28:00",
     "title": "Bipartisan Senate Coalition Cites 2022 Law to Challenge Trump's Russian Diesel Imports",
     "summary": "미 상원 여야 의원들은 2022년 제정된 대러시아 제재법을 근거로 트럼프 행정부의 러시아산 디젤 수입 허용 조치를 무효화하기 위한 입법 저지 절차에 착수했습니다.",
@@ -217,6 +252,13 @@ export const INITIAL_GOOGLE_NEWS: RawGoogleNewsItem[] = [
     "summary": "사우디 항공 당국은 리야드 공항 피격 사건의 사망자 12명 중 미국인 1명을 포함해 사우디, 방글라데시, 이집트 등 다국적 희생자들의 신원을 확인했으며 부상자가 309명으로 집계됐다고 밝혔습니다.",
     "imageUrl": "https://dims.apnews.com/dims4/default/b1831fd/2147483647/strip/true/crop/3118x1754+0+0/resize/727x409!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2F4a%2F8d%2F9e6af3392e6e335001fdcd4f7d6d%2Fb3aa7b3339ee488ab9c7ac1552b2cf05",
     "sourceUrl": "https://www.cbsnews.com/live-updates/iran-war-trump-us-elections-saudi-arabia-yemen-houthis/"
+  },
+  {
+    "timestamp": "2026-10-12 8:00",
+    "title": "Kremlin Says Putin Relayed Iran's Position on Resolving Middle East Conflict to Trump",
+    "summary": "러시아 크렘린궁은 블라디미르 푸틴 대통령이 도널드 트럼프 미국 대통령과의 최근 통화에서 호르무즈 해협 위기 완화 및 중동 사태 해결을 위한 이란 지도부의 공식 입장을 전달했다고 발표했습니다.",
+    "imageUrl": "https://dims.apnews.com/dims4/default/893080f/2147483647/strip/true/crop/1200x792+0+0/resize/727x480!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2Fb8%2Fab%2Fccfb638a525420db636690b3b6a2%2Fcec657ef553943a6988f7d9b4d783021",
+    "sourceUrl": "https://english.alarabiya.net/News/middle-east/2026/10/11/iran-says-us-response-to-its-proposal-to-reopen-strait-of-hormuz-was-insufficient-"
   }
 ];
 
@@ -260,10 +302,10 @@ function parseTimestampSafe(raw: string, fallbackIdx: number): number {
   return Date.now() - (fallbackIdx + 1) * 1000 * 60 * 30;
 }
 
-import { resolveAccurateNewsImage } from '../lib/reddit/googleNewsImageResolver';
+import { resolveAccurateNewsImage, extractFirstValidImageUrl } from '../lib/reddit/googleNewsImageResolver';
 
 /**
- * RawGoogleNewsItem을 정규 RedditPost 모델로 변환 (기사-사진 100% 매칭 적용)
+ * RawGoogleNewsItem을 정규 RedditPost 모델로 변환 (구글 시트 이미지 링크 100% 일치 적용)
  */
 export function convertGoogleNewsToRedditPost(
   item: RawGoogleNewsItem,
@@ -276,8 +318,9 @@ export function convertGoogleNewsToRedditPost(
   const createdAt = parseTimestampSafe(item.timestamp, idx);
   const id = `gnews_${createdAt}_${idx}`;
 
-  // 기사 내용 시맨틱 분석 기반 정확한 연관 이미지 결정
-  const accurateImageUrl = resolveAccurateNewsImage(item, idx, urlUsageMap || new Map());
+  // 구글 시트 원본 이미지 링크 100% 일치 최우선 적용
+  const sheetImage = extractFirstValidImageUrl(item.imageUrl);
+  const accurateImageUrl = sheetImage || resolveAccurateNewsImage(item, idx, urlUsageMap || new Map());
 
   return {
     id,

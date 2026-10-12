@@ -2,6 +2,29 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-12 15:35 KST] 구글 뉴스(r/news) 기사 이미지와 구글 스프레드시트 이미지 링크 100% 동일 일치화 완료
+- **요청 사항**:
+  - `https://snshero.com/reddit` 및 뉴스 상세 페이지에서 표시되는 이미지가 구글 시트의 이미지 링크("이미지 리스트" 열)와 동일하지 않고 Unsplash 등으로 대체되는 현상 원천 해결.
+- **원인 규명**:
+  1. `googleNewsImageResolver.ts`의 `resolveAccurateNewsImage` 함수에서 구글 시트에 동일 이미지가 2회 이상 중복되거나 특정 서명이 있는 경우 Unsplash 카테고리 사진으로 임의 치환하고 있었음.
+  2. `googleNewsSeedData.ts`의 `convertGoogleNewsToRedditPost`가 시트 원본 링크 대신 위 리졸버의 변환 결과를 media.url로 사용하고 있었음.
+  3. 로컬스토리지 `hero_reddit_google_news_posts_v6`에 과거 Unsplash 변환 데이터가 영구 캐시되어 새로고침 후에도 유지되었음.
+- **상세 구현 내역**:
+  1. **구글 시트 원본 이미지 100% 우선 적용 엔진 개편 (`googleNewsImageResolver.ts`)**:
+     - `extractFirstValidImageUrl` 구현: 콤마/줄바꿈/따옴표가 포함된 시트의 복수 이미지 링크에서 첫 번째 유효한 URL 안전 추출.
+     - `resolveAccurateNewsImage`: 시트에 원본 이미지가 존재할 경우 Unsplash 치환 로직을 완전 배제하고 구글 시트 링크를 100% 그대로 반환.
+  2. **`convertGoogleNewsToRedditPost` 직결 연결 (`googleNewsSeedData.ts`)**:
+     - 시트에 입력된 이미지 링크를 `post.media.url`에 100% 원본 그대로 직결 매핑.
+  3. **구글 시트 실시간 파서 보강 및 캐시 v7 갱신 (`googleNewsSheetService.ts`)**:
+     - `parseCsv` 및 `parseGvizTable`에서 `extractFirstValidImageUrl` 적용.
+     - 캐시 버전을 `hero_reddit_google_news_posts_v7`로 상향하고 이전 `v6` 캐시 자동 삭제.
+  4. **최신 시트 CSV 266개 기사 데이터 전수 반영 (`generate-news-seo.ts`)**:
+     - `public/data/google-news.csv` 최신 266개 기사 다운로드 및 정적 HTML 사전 렌더링 파이프라인 전수 반영.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 Errors 통과.
+  - `npm run build`: 266개 전체 뉴스 기사 및 피드에 구글 시트 원본 이미지 링크 100% 일치 확인.
+  - 구글 폼 완료 보고서 제출 완료.
+
 ## [2026-10-12 15:25 KST] 구글 뉴스(Google News) 검색 실전 노출 및 애드센스 고수익화 아키텍처 전면 구축
 - **요청 사항**:
   - `https://snshero.com/reddit` 및 하위 뉴스 기사 페이지가 구글 뉴스 검색에 노출되어 애드센스 광고 수입을 극대화할 수 있도록 실전 노출 전략 적용 및 배포.

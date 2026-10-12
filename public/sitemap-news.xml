@@ -2,7 +2,62 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1791779280000_0</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1791782640000_0</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-12T05:24:00.000Z</news:publication_date>
+      <news:title><![CDATA[CFTC Proposes Expanding Swaps Definition to Include Prediction Markets and Event Contracts]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791782640000_1</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-12T05:24:00.000Z</news:publication_date>
+      <news:title><![CDATA[Providence Journal Announces Elimination of Daily Print Edition in Digital Shift]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791782640000_2</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-12T05:24:00.000Z</news:publication_date>
+      <news:title><![CDATA[Mexican President Claudia Sheinbaum Urges Coastal Residents to Stay Indoors as Hurricane Simon Approaches]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791782640000_3</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-12T05:24:00.000Z</news:publication_date>
+      <news:title><![CDATA[Second Houthi Missile Strike on Riyadh Airport Damages Infrastructure and Claims Lives]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791782640000_4</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-12T05:24:00.000Z</news:publication_date>
+      <news:title><![CDATA[Canadian Prime Minister Mark Carney Warns US-Russia Diesel Deal Compromises Ukraine Peace Process]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791779280000_5</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -13,7 +68,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1791779280000_1</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1791779280000_6</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -24,7 +79,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1791779280000_2</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1791779280000_7</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -35,7 +90,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1791779280000_3</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1791779280000_8</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -46,7 +101,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1791779280000_4</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1791779280000_9</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -57,7 +112,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1791776400000_5</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1791776400000_10</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -68,7 +123,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1791776400000_6</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1791776400000_11</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -79,7 +134,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1791776400000_7</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1791776400000_12</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -90,7 +145,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1791776400000_8</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1791776400000_13</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -101,7 +156,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1791776400000_9</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1791776400000_14</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -112,7 +167,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1791773400000_10</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1791773400000_15</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -123,7 +178,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1791773400000_11</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1791773400000_16</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -134,7 +189,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1791773400000_12</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1791773400000_17</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -145,7 +200,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1791773400000_13</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1791773400000_18</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -156,7 +211,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1791773400000_14</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1791773400000_19</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -167,7 +222,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1791766800000_15</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1791766800000_20</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -178,7 +233,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1791766800000_16</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1791766800000_21</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -189,7 +244,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1791766800000_17</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1791766800000_22</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -200,7 +255,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1791766800000_18</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1791766800000_23</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -211,7 +266,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1791766800000_19</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1791766800000_24</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -222,7 +277,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1791764580000_20</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1791764580000_25</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -233,7 +288,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1791764580000_21</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1791764580000_26</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -244,7 +299,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1791764580000_22</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1791764580000_27</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -255,7 +310,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1791764580000_23</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1791764580000_28</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -266,7 +321,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1791764580000_24</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1791764580000_29</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -277,7 +332,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1791759600000_25</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1791759600000_30</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -288,7 +343,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1791759600000_26</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1791759600000_31</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -299,7 +354,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1791759600000_27</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1791759600000_32</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -310,7 +365,7 @@
     </news:news>
   </url>
   <url>
-    <loc>https://snshero.com/r/news/comments/gnews_1791759600000_28</loc>
+    <loc>https://snshero.com/r/news/comments/gnews_1791759600000_33</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
@@ -318,6 +373,2558 @@
       </news:publication>
       <news:publication_date>2026-10-11T23:00:00.000Z</news:publication_date>
       <news:title><![CDATA[Multi-National Victims of Riyadh Airport Missile Attack Identified as Injuries Reach 309]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791759600000_34</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T23:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Kremlin Says Putin Relayed Iran's Position on Resolving Middle East Conflict to Trump]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791756000000_35</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T22:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Ukraine Supports Energy Ceasefire with Russia While Demanding Security Guarantees]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791756000000_36</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T22:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Wall Street Braces for Big Bank Earnings and Key September Inflation Data]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791756000000_37</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T22:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Georgia Bulldogs Reclaim No. 1 Ranking in AP Top 25 College Football Poll]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791756000000_38</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T22:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Congressional Report Reveals US Aircraft Losses in Middle East Operations Reach 81]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791756000000_39</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T22:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Bipartisan Group of US Senators Demands Immediate Reversal of Russian Diesel Import Plan]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791754140000_40</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T21:29:00.000Z</news:publication_date>
+      <news:title><![CDATA[Former VP Mike Pence Calls Trump's Russian Diesel Deal a 'Betrayal' and Urges Reversal]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791754140000_41</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T21:29:00.000Z</news:publication_date>
+      <news:title><![CDATA[Canadian Ransomware Negotiator Arrested on Federal Hacking Conspiracy Charges in US]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791754140000_42</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T21:29:00.000Z</news:publication_date>
+      <news:title><![CDATA[CPSC Issues Nationwide Recall for Infant Bath Seats Sold on Amazon Over Drowning Risks]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791754140000_43</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T21:29:00.000Z</news:publication_date>
+      <news:title><![CDATA[Iran Rejects US Proposal on Reopening Strait of Hormuz as 'Insufficient']]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791754140000_44</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T21:29:00.000Z</news:publication_date>
+      <news:title><![CDATA[US Marine Expedition Heads to South Pacific in Renewed Hunt for Amelia Earhart's Aircraft]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791751800000_45</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T20:50:00.000Z</news:publication_date>
+      <news:title><![CDATA[Federal Prosecutors Indict Maryland Man in $50 Million Pandemic Loan Fraud Scheme]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791751800000_46</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T20:50:00.000Z</news:publication_date>
+      <news:title><![CDATA[Fatal E-Scooter Crash Involving D.C. Official Ignites Nationwide Road Safety Debate]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791751800000_47</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T20:50:00.000Z</news:publication_date>
+      <news:title><![CDATA[US Halloween Candy Prices Jump 8.1% Ahead of Peak Holiday Spending]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791751800000_48</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T20:50:00.000Z</news:publication_date>
+      <news:title><![CDATA[Homeland Security Warns of New Synthetic Opioid Crisis Surging in the US]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791751800000_49</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T20:50:00.000Z</news:publication_date>
+      <news:title><![CDATA[Two Strong Earthquakes and Aftershocks Strike Panama Canal Shipping Region]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791745200000_50</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T19:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Passenger Terminals at Riyadh Airport Struck Again as Middle East Air Crisis Deepens]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791745200000_51</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T19:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Commanders Quarterback Jayden Daniels Returns to Lead Offense Despite Elbow Concerns]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791745200000_52</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T19:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Florida Gators Suffer Significant Drop in Week 6 AP Top 25 College Football Rankings]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791745200000_53</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T19:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[SOHO International Film Festival to World Premiere 'Jesus Land' on Closing Night]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791745200000_54</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T19:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[UN Agency Reports Djibouti Migrant Boat Disaster Toll Rises to 139 with 84 Missing]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791743100000_55</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T18:25:00.000Z</news:publication_date>
+      <news:title><![CDATA[Starbucks Reportedly Exploring Acquisition of Chipotle Mexican Grill]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791743100000_56</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T18:25:00.000Z</news:publication_date>
+      <news:title><![CDATA[Trump Establishes Presidential Committee to Investigate Fed Governor Lisa Cook]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791743100000_57</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T18:25:00.000Z</news:publication_date>
+      <news:title><![CDATA[US Physicians Group Calls for Ban on Raw Milk Amid Avian Flu Concerns]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791743100000_58</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T18:25:00.000Z</news:publication_date>
+      <news:title><![CDATA[Home Prices Tumble Across 12 Major US Metropolitan Areas as Inventory Piles Up]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791743100000_59</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T18:25:00.000Z</news:publication_date>
+      <news:title><![CDATA[Goldman Sachs Leadership Set to Share $500 Million Executive Bonus Pool]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791741000000_60</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T17:50:00.000Z</news:publication_date>
+      <news:title><![CDATA[Ambassador Nominee Kimberly Guilfoyle Faces Scrutiny Over Foreign Business Quid Pro Quo Allegations]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791741000000_61</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T17:50:00.000Z</news:publication_date>
+      <news:title><![CDATA[Palantir CTO Shyam Sankar Details AI Military Deployment on 'Face the Nation']]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791741000000_62</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T17:50:00.000Z</news:publication_date>
+      <news:title><![CDATA[Sen. John Barrasso Addresses Russia-Ukraine Energy Deal and Global Oil Shock]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791741000000_63</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T17:50:00.000Z</news:publication_date>
+      <news:title><![CDATA[Skyrocketing Jet Fuel Prices Slash Delta Air Lines' Annual Profit Outlook]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791741000000_64</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T17:50:00.000Z</news:publication_date>
+      <news:title><![CDATA[Florida Schools and Online Learning Systems Resume Instruction Following Storm Cleanups]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791734400000_65</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T16:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[US President Announces Energy Infrastructure Ceasefire Between Russia and Ukraine]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791734400000_66</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T16:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[US Energy Department Authorizes Emergency Crude Oil Release from Strategic Reserves]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791734400000_67</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T16:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[President Trump Approves Federal Disaster Aid for Georgia Following Hurricane Damage]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791734400000_68</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T16:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Category 4 Hurricane Simon Threatens Pacific Coast with 150 Mph Winds]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791734400000_69</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T16:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Police Reveal Mental Health Background in Pennsylvania Mass Shooting Case]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791730800000_70</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T15:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Trump Administration Imposes Sanctions on International Criminal Court Over Arrest Warrants]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791730800000_71</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T15:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Philadelphia Eagles Face Jacksonville Jaguars in London International NFL Matchup]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791730800000_72</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T15:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Pennsylvania Governor Shapiro Pledges Comprehensive Support as Community Mourns Erie Shooting]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791730800000_73</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T15:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Florida Governor Warns State Remains in Hazardous Situation in Aftermath of Isaias]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791730800000_74</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T15:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Human Rights Jurist Navi Pillay Awarded 2026 Nobel Peace Prize Amid Global Debate]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791727200000_75</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T14:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Philadelphia Police Officer Killed and Another Critically Wounded in Shotgun Ambush]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791727200000_76</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T14:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Houthis Issue Dire Warning to Commercial Airlines and Passengers to Avoid Saudi Airports]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791727200000_77</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T14:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Hurricane Isaias Shuts Down 60% of Gulf Oil and Gas Production, 600K Left in Dark]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791727200000_78</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T14:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Trump Vows to Maintain Aggressive Tariffs Despite Midterm Voter Backlash]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791727200000_79</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T14:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Two Missing Children Found Deceased in Retention Pond in Daytona Beach Florida]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791723600000_80</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T13:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Vatican Announces Pope Leo XIV to Undergo Surgery to Remove Lung Nodule]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791723600000_81</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T13:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[FEMA Approves Major Disaster Declaration for Zuni Pueblo Flood Recovery]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791723600000_82</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T13:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Standing Rock Sioux Tribe Files New Federal Lawsuit Over Dakota Access Pipeline]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791723600000_83</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T13:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Over 100 Dead as Migrant Boat Capsizes off Djibouti on Red Sea Route]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791723600000_84</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T13:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[US Election Officials Expand Voting Machine Testing Ahead of November Midterms]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791720000000_85</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T12:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Trump's Trade Wars Sting US Manufacturers Ahead of Midterm Elections]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791720000000_86</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T12:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[NASA Artemis II Astronauts Witness Rare Meteor Impact Flashes on Lunar Surface]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791720000000_87</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T12:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Democratic Congressional Candidate Rebukes ICE Presence and Shooting in New York]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791720000000_88</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T12:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[At Least 4 Dead as Cyclone Isaias Pushes Inland Causing Flooding and Power Outages]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791720000000_89</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T12:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[International Flight Cancellations Surge Following Riyadh Airport Missile Strike]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791716400000_90</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T11:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Pentagon Raises Official Toll of US Troops Killed During Military Operations Against Iran to 21]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791716400000_91</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T11:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Trump Weighs Direct Military Action Against Yemen's Houthis Following Riyadh Airport Strike]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791716400000_92</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T11:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Hundreds Rally Outside US Capitol Demanding Arms Embargo Against Israel]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791716400000_93</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T11:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Severe Weather Threat and Tornado Watch Issued Across Virginia and the Carolinas]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791716400000_94</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T11:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Nova Scotia Alcohol Vending Company Expands Across Major American Sports and Entertainment Venues]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791712800000_95</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T10:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[US Forces Strike and Disable Cargo Ship Attempting to Run Iran Blockade in Gulf of Oman]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791712800000_96</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T10:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Secretary of State Rubio Condemns Deadly Strike on Riyadh Airport and Confirms US Casualty]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791712800000_97</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T10:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[DOJ Opens Antitrust Probe into Five Major TV Networks over Suspension of White House Pool Coverage]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791712800000_98</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T10:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Trump Suggests Ukraine Replace Zelenskyy Amid Tussle Over Russian Diesel Sanctions Relief]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791712800000_99</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T10:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[US Embassy in Riyadh Issues Urgent Security Alert Warning Citizens to Avoid Major Airports]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791708900000_100</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T08:55:00.000Z</news:publication_date>
+      <news:title><![CDATA[US Department of Justice Formally Launches Antitrust Investigation into Television Networks Over Campaign Broadcasts]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791708600000_101</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T08:50:00.000Z</news:publication_date>
+      <news:title><![CDATA[Five Family Members Dead in Apparent Murder-Suicide in Georgia Residential Home]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791708600000_102</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T08:50:00.000Z</news:publication_date>
+      <news:title><![CDATA[Bipartisan Coalition of Lawmakers Demands Pentagon Cancel Livestreamed Firing Squad Execution]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791708300000_103</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T08:45:00.000Z</news:publication_date>
+      <news:title><![CDATA[Indigenous and Conservation Groups Outraged After 200-Year-Old Historic Tree Toppled for Border Wall]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791708300000_104</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T08:45:00.000Z</news:publication_date>
+      <news:title><![CDATA[Presidential Message Commemorates Leif Erikson Day and Nordic-American Contributions]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791708000000_105</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T08:40:00.000Z</news:publication_date>
+      <news:title><![CDATA[New York Resident Shoots Off-Duty ICE Agent Following Alleged Altercation Involving Daughter]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791708000000_106</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T08:40:00.000Z</news:publication_date>
+      <news:title><![CDATA[Native Advocacy Coalition Calls Out Political PAC Over Confusion of Indigenous Candidates]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791707700000_107</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T08:35:00.000Z</news:publication_date>
+      <news:title><![CDATA[British Prime Minister and European Allies Declare Total Solidarity with President Zelensky]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791707700000_108</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T08:35:00.000Z</news:publication_date>
+      <news:title><![CDATA[Florida Coastal Homeowners Confront Mounting Insurance Hardships After Hurricane Isaias]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791707400000_109</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T08:30:00.000Z</news:publication_date>
+      <news:title><![CDATA[AP Analysis Explores High-Stakes Impact of 2026 Midterm Results on 2028 Presidential Contenders]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791704400000_110</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T07:40:00.000Z</news:publication_date>
+      <news:title><![CDATA[Major Television Networks Suspend White House Press Pool Coverage in Defiance of DOJ Inquiry]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791704100000_111</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T07:35:00.000Z</news:publication_date>
+      <news:title><![CDATA[White House Appoints Senior Strategist Katie Bailey to Direct Congressional Affairs]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791703800000_112</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T07:30:00.000Z</news:publication_date>
+      <news:title><![CDATA[Official Defense Casualty Registry Confirms 865 US Troops Wounded in Middle East Conflict]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791703500000_113</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T07:25:00.000Z</news:publication_date>
+      <news:title><![CDATA[Falling Tree Claims Life in Birmingham as Isaias Remnants Cause Extensive Urban Tree Damage]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791703200000_114</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T07:20:00.000Z</news:publication_date>
+      <news:title><![CDATA[Trump Schedules Emergency Diplomatic Call with Saudi Crown Prince Following Airport Strikes]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791699600000_115</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T06:20:00.000Z</news:publication_date>
+      <news:title><![CDATA[Standing Rock Sioux Tribe Files New Federal Lawsuit Over Dakota Access Pipeline Easement]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791699300000_116</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T06:15:00.000Z</news:publication_date>
+      <news:title><![CDATA[Riyadh Airport Attack Toll Rises to 12 Dead with Over 300 Injured as Global Condemnation Grows]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791699000000_117</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T06:10:00.000Z</news:publication_date>
+      <news:title><![CDATA[Hospitals in Yemen City of Taiz Near Total Collapse Amid Tightened Military Siege]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791698700000_118</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T06:05:00.000Z</news:publication_date>
+      <news:title><![CDATA[Michigan Senate Race Focuses on Native Rights as El-Sayed Champions Tribal Sovereignty]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791698400000_119</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T06:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Erie Community Holds Interfaith Vigils to Mourn Victims of Tragic Mass Shooting]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791697200000_120</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T05:40:00.000Z</news:publication_date>
+      <news:title><![CDATA[US Central Command Disables Cargo Vessel Attempting to Breach Gulf of Oman Blockade]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791696900000_121</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T05:35:00.000Z</news:publication_date>
+      <news:title><![CDATA[Department of Defense Updates Official US Casualty Figures in Middle East Conflict to 21]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791696600000_122</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T05:30:00.000Z</news:publication_date>
+      <news:title><![CDATA[Federal Subpoenas Issued to Harvard Yale and Seven Top Universities in J-1 Visa Probe]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791696300000_123</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T05:25:00.000Z</news:publication_date>
+      <news:title><![CDATA[Department of Justice Initiates Antitrust Investigation into Media Coverage Decisions]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791696000000_124</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T05:20:00.000Z</news:publication_date>
+      <news:title><![CDATA[Legal Objections and Civil Liberties Scrutiny Mount Over Scheduled Firing Squad Broadcast]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791691500000_125</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T04:05:00.000Z</news:publication_date>
+      <news:title><![CDATA[House Republican Introduces Legislation Invoking Reagan Doctrine to Block Russia Oil Deal]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791691200000_126</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T04:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Rare Tropical Storm Warning Issued for San Diego County as Storm Rachel Threatens Southern California]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791690900000_127</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T03:55:00.000Z</news:publication_date>
+      <news:title><![CDATA[US Envoys Steve Witkoff and Jared Kushner Reportedly Planning Moscow Peace Mission]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791690600000_128</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T03:50:00.000Z</news:publication_date>
+      <news:title><![CDATA[Federal Airport Security Union Condemns Removal of Seating for TSA Checkpoint Officers]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791690300000_129</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T03:45:00.000Z</news:publication_date>
+      <news:title><![CDATA[Front-Line Civilians in Occupied Ukrainian Town Brave Perilous Escape Route Amid Severe Starvation]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791688200000_130</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T03:10:00.000Z</news:publication_date>
+      <news:title><![CDATA[Justice Department Opens Federal Investigation into Five Television Networks Over Pool Reporting]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791687900000_131</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T03:05:00.000Z</news:publication_date>
+      <news:title><![CDATA[Trump Suggests Re-naming Major Surrounding Oceans as Ocean of the Americas]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791687600000_132</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T03:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Massive Protests and Transit Disruptions Erupt in New Delhi Over Electoral Commission Independence]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791687300000_133</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T02:55:00.000Z</news:publication_date>
+      <news:title><![CDATA[Fatal Motorcycle Collision Forces Emergency Closure of Highway Corridor on Eastern Shore]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791687000000_134</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T02:50:00.000Z</news:publication_date>
+      <news:title><![CDATA[Salisbury University Student Indicted Following Campus Dormitory Assault Investigation]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791684900000_135</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T02:15:00.000Z</news:publication_date>
+      <news:title><![CDATA[Post-Match Tactical Analysis of USWNT 0-2 Defeat Against Spain Ahead of 2027 World Cup Cycle]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791684600000_136</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T02:10:00.000Z</news:publication_date>
+      <news:title><![CDATA[British Lawmakers Push Emergency Legislation to Repeal Controversial Election Photo ID Mandates]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791684300000_137</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T02:05:00.000Z</news:publication_date>
+      <news:title><![CDATA[King Charles Delivers Address Warning of AI-Powered Cyber Warfare and Malicious Online Actors]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791684000000_138</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T02:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[WNBA Finals Feature Inspiring Ascent of Angel Reese as Women Basketball Viewership Soars]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791683700000_139</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T01:55:00.000Z</news:publication_date>
+      <news:title><![CDATA[Unconventional Municipal Election in Peru Concludes with Mayor Named Hitler Mussolini]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791681600000_140</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T01:20:00.000Z</news:publication_date>
+      <news:title><![CDATA[Secretary Rubio Pledges US Cooperation with Japanese Authorities in Okinawa Marine Homicide Probe]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791681300000_141</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T01:15:00.000Z</news:publication_date>
+      <news:title><![CDATA[World Health Organization Monitors Undetermined Pneumonia Outbreak in Russian Biological Lab]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791681000000_142</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T01:10:00.000Z</news:publication_date>
+      <news:title><![CDATA[Silicon Valley Tech Executives Endorse Proposals for Artificial Intelligence Industry Self-Policing]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791680700000_143</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T01:05:00.000Z</news:publication_date>
+      <news:title><![CDATA[State Department Authorizes 320M Dollars in Egypt Military Financing Citing Red Sea Operations]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791680400000_144</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T01:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Specialized Canine Therapy Units Dispatched to Assist Students Following Colorado High School Violence]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791678000000_145</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T00:20:00.000Z</news:publication_date>
+      <news:title><![CDATA[Death Toll in Erie Shooting Reaches Ten as Investigators Confirm Pregnant Woman and Children Among Victims]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791677700000_146</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T00:15:00.000Z</news:publication_date>
+      <news:title><![CDATA[White House Evaluates Direct Joint Strikes on Houthi Launch Sites After Saudi Airport Bombardment]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791677400000_147</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T00:10:00.000Z</news:publication_date>
+      <news:title><![CDATA[Cornell University Parents Organize National Campaign Addressing Campus Sexual Misconduct Reporting]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791677100000_148</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T00:05:00.000Z</news:publication_date>
+      <news:title><![CDATA[Florida Search and Rescue Missions Conclude as State Shifts to Long-Term Flood Recovery]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791676800000_149</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-11T00:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Biomedical Researchers Successfully Reprogram Elderly Donor Blood Cells for Cellular Therapeutics]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791673800000_150</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T23:10:00.000Z</news:publication_date>
+      <news:title><![CDATA[US Women National Soccer Team Defeated 2-0 by Spain in High-Profile Friendly Match]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791673500000_151</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T23:05:00.000Z</news:publication_date>
+      <news:title><![CDATA[Delaware Municipalities Impose Early Park Closures to Restrict Large-Scale Social Media Pop-Up Gatherings]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791673200000_152</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T23:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Delaware Police Apprehend Middle School Student Found in Possession of Loaded Handgun]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791672900000_153</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T22:55:00.000Z</news:publication_date>
+      <news:title><![CDATA[Florida Panhandle Commercial Districts Begin Damage Assessments as Flood Waters Recede]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791672600000_154</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T22:50:00.000Z</news:publication_date>
+      <news:title><![CDATA[Delaware Superior Court Sentences Milford Resident to Life Plus 21 Years in Violent Assault]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791672000000_155</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T22:40:00.000Z</news:publication_date>
+      <news:title><![CDATA[Florida Dengue Virus Outbreak Expands to Largest Recorded in a US State in Decades]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791671700000_156</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T22:35:00.000Z</news:publication_date>
+      <news:title><![CDATA[Lebanese Government Welcomes US Decision to Lift Commercial Aviation Restrictions]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791671400000_157</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T22:30:00.000Z</news:publication_date>
+      <news:title><![CDATA[Deadly Drone Strike Kills at Least 40 in Sudan Amid Deepening Humanitarian Crisis]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791671100000_158</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T22:25:00.000Z</news:publication_date>
+      <news:title><![CDATA[Providence Police Investigate Knifepoint Robbery of Student Outside Middle School]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791670800000_159</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T22:20:00.000Z</news:publication_date>
+      <news:title><![CDATA[Comprehensive Infrastructure Audit Identifies Lack of Maintenance Driving Rhode Island Repair Costs]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791667200000_160</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T21:20:00.000Z</news:publication_date>
+      <news:title><![CDATA[Hurricane Isaias Death Toll Rises to Four with Severe Storm Surges and Power Outages Across Three States]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791666900000_161</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T21:15:00.000Z</news:publication_date>
+      <news:title><![CDATA[Lawyers for Death Row Inmate Christa Pike Detail Botched Lethal Injection Attempt in Tennessee]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791666600000_162</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T21:10:00.000Z</news:publication_date>
+      <news:title><![CDATA[British Musician Geordie Greep Formally Denies Assault Allegations Raised During Vancouver Tour Stop]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791666300000_163</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T21:05:00.000Z</news:publication_date>
+      <news:title><![CDATA[International Art Crime Investigators Recover Two Stolen Renoir Masterpieces]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791666000000_164</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T21:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Mexican Investigative Journalist Murdered in Oaxaca Prompting International Press Freedom Outcry]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791664200000_165</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T20:30:00.000Z</news:publication_date>
+      <news:title><![CDATA[Hurricane Isaias Toll Rises to Two Dead with Over 800000 Left Without Power Across Southeast]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791663900000_166</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T20:25:00.000Z</news:publication_date>
+      <news:title><![CDATA[Dozens Wounded in Houthi Airport Strike in Riyadh as US Signals Potential Retaliatory Military Participation]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791663600000_167</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T20:20:00.000Z</news:publication_date>
+      <news:title><![CDATA[Midterm Battleground Polling Shows Republicans Trailing Despite Recent Energy and Fuel Actions]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791663300000_168</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T20:15:00.000Z</news:publication_date>
+      <news:title><![CDATA[Tennessee Death Row Inmate Christa Pike Discharged from Hospital After Emergency Treatment]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791663000000_169</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T20:10:00.000Z</news:publication_date>
+      <news:title><![CDATA[Florida Attorney General Warns Homeowners Against Post-Disaster Repair Scams Following Storm]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791660300000_170</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T19:25:00.000Z</news:publication_date>
+      <news:title><![CDATA[Trump Asserts Ukraine Needs Leadership Change Directly Blaming Zelensky for Fuel Prices]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791660000000_171</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T19:20:00.000Z</news:publication_date>
+      <news:title><![CDATA[Independent Alaska Fisherman Mounts Formidable Challenge Threatening GOP House Majority]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791659700000_172</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T19:15:00.000Z</news:publication_date>
+      <news:title><![CDATA[Marco Rubio Civilizational Rhetoric Draws Sharp Rebuttal and Condemnation from Tehran]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791659400000_173</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T19:10:00.000Z</news:publication_date>
+      <news:title><![CDATA[Constitutional Scholars Outline Narrow Legal Avenues to Challenge Military Execution Broadcast]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791659100000_174</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T19:05:00.000Z</news:publication_date>
+      <news:title><![CDATA[Remnants of Isaias Drench Alabama and Florida with Flash Floods as Winds Subside]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791657900000_175</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T18:45:00.000Z</news:publication_date>
+      <news:title><![CDATA[Pope Leo Declares Capital Punishment Inadmissible as US Plans First Livestreamed Execution]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791657600000_176</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T18:40:00.000Z</news:publication_date>
+      <news:title><![CDATA[Federal Medicaid Eligibility Policy Revisions Strip Health Coverage for Refugees and Immigrants]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791657300000_177</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T18:35:00.000Z</news:publication_date>
+      <news:title><![CDATA[Nationwide Journalism Initiative Expands Midterm Election Coverage Support to 200 Newsrooms]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791657000000_178</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T18:30:00.000Z</news:publication_date>
+      <news:title><![CDATA[Governor Shapiro and Erie Leadership Coordinate State Assistance in Aftermath of Mass Shooting]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791656700000_179</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T18:25:00.000Z</news:publication_date>
+      <news:title><![CDATA[Major Hurricane Simon Intensifies to Category 4 with 140 MPH Winds Nearing Southwestern Coastlines]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791654300000_180</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T17:45:00.000Z</news:publication_date>
+      <news:title><![CDATA[Nine Dead Including Children in Mass Shooting and Standoff in Erie Pennsylvania]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791654000000_181</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T17:40:00.000Z</news:publication_date>
+      <news:title><![CDATA[Mexican Court Convicts Three Men in Murder of American and Australian Surfers]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791653700000_182</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T17:35:00.000Z</news:publication_date>
+      <news:title><![CDATA[Dispute Over Dog Escalates Into Shootout Between Customer and Security Guard in Houston]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791653400000_183</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T17:30:00.000Z</news:publication_date>
+      <news:title><![CDATA[New Federal Regulatory Changes Projected to Spike Prescription Drug Import Costs for Millions]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791653100000_184</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T17:25:00.000Z</news:publication_date>
+      <news:title><![CDATA[Aircraft Carrier USS Abraham Lincoln Returns to San Diego Following Middle East Deployment]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791650400000_185</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T16:40:00.000Z</news:publication_date>
+      <news:title><![CDATA[Discovery of Seven Coffins Containing Human Remains Near North Dakota Governor Residence]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791650100000_186</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T16:35:00.000Z</news:publication_date>
+      <news:title><![CDATA[Federal Judge Blocks Administration Proposal to Reduce Disaster Agency Personnel Ahead of Hurricane Season]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791649800000_187</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T16:30:00.000Z</news:publication_date>
+      <news:title><![CDATA[Retrospective Analysis Details Unmet Objectives One Year Following US-Brokered Gaza Ceasefire]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791649500000_188</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T16:25:00.000Z</news:publication_date>
+      <news:title><![CDATA[Russian President Relays Iranian Framework and Conditions for De-escalation to Washington]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791649200000_189</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T16:20:00.000Z</news:publication_date>
+      <news:title><![CDATA[AP Analysis Reveals Impact of Proposed Federal Spending Cuts on Head Start Early Learning Centers]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791644400000_190</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T15:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Philadelphia Vigilante Gang Indicted for Extorting Online Targets to Fund Luxury Enterprise]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791644280000_191</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T14:58:00.000Z</news:publication_date>
+      <news:title><![CDATA[Vice President Vance Announces Interagency Task Force to Target Widespread H-1B Visa Fraud]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791644100000_192</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T14:55:00.000Z</news:publication_date>
+      <news:title><![CDATA[Major 7.7-Magnitude Earthquake Strikes Central America Triggering Regional Tsunami Warnings]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791643920000_193</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T14:52:00.000Z</news:publication_date>
+      <news:title><![CDATA[State Department Waives Statutory Human Rights Conditions on 300M Dollars in Foreign Military Aid]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791643800000_194</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T14:50:00.000Z</news:publication_date>
+      <news:title><![CDATA[Former Banking Representative Sentenced for Stealing Over 125000 Dollars from Elderly Customer]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791643500000_195</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T14:45:00.000Z</news:publication_date>
+      <news:title><![CDATA[National Weather Service Warns of Spinoff Tornadoes and Torrential Rainfall Across Southeast]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791643200000_196</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T14:40:00.000Z</news:publication_date>
+      <news:title><![CDATA[Newly Released Video Footage Shows New York ICE Shooting Incident with Child in Vehicle]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791642900000_197</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T14:35:00.000Z</news:publication_date>
+      <news:title><![CDATA[Veteran Congresswoman Marcy Kaptur Faces High-Stakes Ohio Re-election Fight Amid Culture Ad Clashes]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791642600000_198</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T14:30:00.000Z</news:publication_date>
+      <news:title><![CDATA[White House Science Office Outlines Federal Research Priorities at National Summit]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791642300000_199</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T14:25:00.000Z</news:publication_date>
+      <news:title><![CDATA[Philadelphia Law Enforcement Slams AI Developer Delay in Disclosing Fabricated Murder Tip]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791639900000_200</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T13:45:00.000Z</news:publication_date>
+      <news:title><![CDATA[FDA Regulatory Review Considers Allowing Food Additive Chemical Approvals Without Pre-Market Testing]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791639600000_201</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T13:40:00.000Z</news:publication_date>
+      <news:title><![CDATA[Military Execution Livestream Plan Reignites Debate on Century-Old US Ban on Public Executions]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791639300000_202</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T13:35:00.000Z</news:publication_date>
+      <news:title><![CDATA[Controversial Pediatric Vaccine Study Touted by RFK Jr Receives Green Light in West Africa]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791639000000_203</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T13:30:00.000Z</news:publication_date>
+      <news:title><![CDATA[Missouri Voters and Civil Rights Coalitions Protest Federal Court Ruling Upholding Redrawn Maps]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791638700000_204</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T13:25:00.000Z</news:publication_date>
+      <news:title><![CDATA[Marine Scientists Warn Coastal Erosion and Rising Sea Levels Threaten Popular US Surf Breaks]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791635100000_205</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T12:25:00.000Z</news:publication_date>
+      <news:title><![CDATA[Germany Reaffirms Strict Russia Sanctions Stance Following Trump Diesel Announcement]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791634800000_206</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T12:20:00.000Z</news:publication_date>
+      <news:title><![CDATA[Global Crude Oil Benchmarks Jump 5 Percent Driven by Middle East Escalation and Gulf Threat]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791634500000_207</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T12:15:00.000Z</news:publication_date>
+      <news:title><![CDATA[Justice Department Seeks Indictment of Former White House Aide Following Jan 6 Testimony]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791634200000_208</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T12:10:00.000Z</news:publication_date>
+      <news:title><![CDATA[Middle East Policy Analysis Questions Effectiveness of White House Board of Peace]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791633900000_209</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T12:05:00.000Z</news:publication_date>
+      <news:title><![CDATA[Curtis Flowers Exonerated After 22 Years on Death Row in Mississippi Passes Away at 56]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791631200000_210</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T11:20:00.000Z</news:publication_date>
+      <news:title><![CDATA[White House Rolls Out Direct Relief Checks and Targeted Tax Cuts in Final Sprint to Midterms]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791630900000_211</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T11:15:00.000Z</news:publication_date>
+      <news:title><![CDATA[Montana Senate Contest Tightens as Third-Party Candidate Threatens Party Vote Margins]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791630600000_212</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T11:10:00.000Z</news:publication_date>
+      <news:title><![CDATA[North Carolina Suspends State Gas Tax Through November to Combat Historic Fuel Price Surges]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791630300000_213</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T11:05:00.000Z</news:publication_date>
+      <news:title><![CDATA[Russian Missile Strikes Kill 15 in Ukraine as Washington Concludes Trilateral Diplomatic Sessions]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791630000000_214</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T11:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Japan Prime Minister Expresses Deep Concern to Washington Over ICC Executive Sanctions]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791627900000_215</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T10:25:00.000Z</news:publication_date>
+      <news:title><![CDATA[Hurricane Isaias Weakens to Tropical Storm Leaving Over 664000 Without Power Across Florida and Alabama]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791627600000_216</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T10:20:00.000Z</news:publication_date>
+      <news:title><![CDATA[Iran Rebukes Secretary Rubio Remarks Amid Escalating US-Middle East Tensions]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791627300000_217</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T10:15:00.000Z</news:publication_date>
+      <news:title><![CDATA[International Criminal Court President Condemns US Sanctions as Attack on Sovereignty]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791627000000_218</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T10:10:00.000Z</news:publication_date>
+      <news:title><![CDATA[Taiwan Announces Increased Defense Budget Allocation to Strengthen Deterrence Capabilities]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791626700000_219</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T10:05:00.000Z</news:publication_date>
+      <news:title><![CDATA[US Embassy Issues Travel Advisory for American Citizens Ahead of Major Overseas Protests]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791622800000_220</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T09:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Millions of Americans Lose Private Medicare Plans as Major Insurers Exit Markets for 2027]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791622500000_221</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T08:55:00.000Z</news:publication_date>
+      <news:title><![CDATA[Federal Judge Weighs Lawsuit by CNN MS NOW and Politico Over White House Press Access Bans]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791622200000_222</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T08:50:00.000Z</news:publication_date>
+      <news:title><![CDATA[US Japan and South Korea to Sign Trilateral Arctic Cooperation Pact to Boost Maritime Security]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791621900000_223</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T08:45:00.000Z</news:publication_date>
+      <news:title><![CDATA[Justice Department Asserts Kennedy Center Shielded from Inquiry Over Trump Role]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791621600000_224</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T08:40:00.000Z</news:publication_date>
+      <news:title><![CDATA[US Health Officials Issue Updated Guidance on 2026 Flu Season and Vaccine Match]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791620100000_225</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T08:15:00.000Z</news:publication_date>
+      <news:title><![CDATA[Florida Execution Halted as Governor DeSantis Withdraws Death Warrant for First Time]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791619800000_226</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T08:10:00.000Z</news:publication_date>
+      <news:title><![CDATA[US Treasury Lifts Sanctions on Myanmar Figure Following Reported Diplomatic Re-engagement]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791619500000_227</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T08:05:00.000Z</news:publication_date>
+      <news:title><![CDATA[Fatal Chain-Reaction Collision in New York City Leaves One Dead and Nine Injured]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791619200000_228</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T08:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Putin Informs Trump Peace Talks Unlikely in Near Term Citing Ukrainian Drone Strikes]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791618600000_229</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T07:50:00.000Z</news:publication_date>
+      <news:title><![CDATA[Texas State Rep James Talarico Reappears Publicly Following Speculation Over Flu Absence]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791616500000_230</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T07:15:00.000Z</news:publication_date>
+      <news:title><![CDATA[Zelensky Calls Trump Diesel Deal with Putin Not Fair and Not Honest Amid Ongoing War]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791616200000_231</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T07:10:00.000Z</news:publication_date>
+      <news:title><![CDATA[Vice President JD Vance Declares He Will Not Watch Livestream of Military Execution]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791615900000_232</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T07:05:00.000Z</news:publication_date>
+      <news:title><![CDATA[G7 Allies EU and United Nations Rally in Defense of ICC Following New US Sanctions]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791615600000_233</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T07:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Surge of Generative AI Deepfake Ads Across Midterm Races Triggers Voter Confusion]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791615300000_234</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T06:55:00.000Z</news:publication_date>
+      <news:title><![CDATA[Pentagon Monitors Beijing Gray-Zone Activity Across Strategic Island Chain Near Taiwan]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791613200000_235</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T06:20:00.000Z</news:publication_date>
+      <news:title><![CDATA[US Hosts Productive Trilateral Peace Talks Seeking Russia-Ukraine War Resolution Before Winter]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791612900000_236</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T06:15:00.000Z</news:publication_date>
+      <news:title><![CDATA[Severe Turbulence Diverts JFK-Bound Passenger Flight to Miami Leaving 8 Hospitalized]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791612600000_237</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T06:10:00.000Z</news:publication_date>
+      <news:title><![CDATA[Nearly a Dozen Crude Oil Tankers Struck in Strategic Strait Route as US-Iran Tensions Spike]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791612300000_238</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T06:05:00.000Z</news:publication_date>
+      <news:title><![CDATA[Anthropic AI Model Generates and Submits False Homicide Tip to Philadelphia Police Portal]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791612000000_239</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T06:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[US Diesel Fuel Prices Surge Past 6 Dollars a Gallon Intensifying Freight Strains]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791608400000_240</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T05:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Anthropic Security Breaches Prompt White House Mandatory AI Incident Reporting Rules]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791608100000_241</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T04:55:00.000Z</news:publication_date>
+      <news:title><![CDATA[Delta Air Lines Warns Annual Fuel Expenses Will Surge by 6 Billion Dollars]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791607800000_242</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T04:50:00.000Z</news:publication_date>
+      <news:title><![CDATA[Landmark SpaceX Direct-to-Cell Spectrum Agreement Unsettles US Telecom Rivals]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791607680000_243</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T04:48:00.000Z</news:publication_date>
+      <news:title><![CDATA[Trump Administration Criticizes Nobel Committee Decision Over Peace Prize Snub]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791607560000_244</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T04:46:00.000Z</news:publication_date>
+      <news:title><![CDATA[US Officials and Regional Leaders Say Midterm Politics Not Dictating Mideast Strategy]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791607500000_245</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T04:45:00.000Z</news:publication_date>
+      <news:title><![CDATA[US Surpasses 4000 Measles Cases Across 45 States in Widening Outbreak: CDC]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791607200000_246</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T04:40:00.000Z</news:publication_date>
+      <news:title><![CDATA[White House Establishes Special Committee to Investigate Fed Governor Lisa Cook]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791606900000_247</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T04:35:00.000Z</news:publication_date>
+      <news:title><![CDATA[NYC Lawmakers and Residents Demand Immediate Inquiry Following Marble Hill ICE Shooting]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791606600000_248</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T04:30:00.000Z</news:publication_date>
+      <news:title><![CDATA[Real Estate Market Analysis Identifies Major US Metros Where Starter Homes Remain Accessible]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791606300000_249</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T04:25:00.000Z</news:publication_date>
+      <news:title><![CDATA[New OpenAI Reasoning Model Release Triggers Widespread Academic Debate in Mathematics]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791603300000_250</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T03:35:00.000Z</news:publication_date>
+      <news:title><![CDATA[New Fed Data Reveals Top 18 Million US Households Reach Record Wealth Levels]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791603000000_251</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T03:30:00.000Z</news:publication_date>
+      <news:title><![CDATA[Major Hurricane Isaias Advances Inland Threatening Flash Flooding Across Southeast]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791602700000_252</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T03:25:00.000Z</news:publication_date>
+      <news:title><![CDATA[Fiery Senate Debates in Maine Michigan and Georgia Reshape Key Midterm Races]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791602400000_253</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T03:20:00.000Z</news:publication_date>
+      <news:title><![CDATA[CDC Report Warns of Rising Drug-Resistant Bacterial Infections Across Several States]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791602100000_254</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T03:15:00.000Z</news:publication_date>
+      <news:title><![CDATA[Defense Contractor Unveils Upgraded Patriot Interceptor for US Army Air Defense]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791598500000_255</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T02:15:00.000Z</news:publication_date>
+      <news:title><![CDATA[Hurricane Isaias Makes Landfall on Gulf Coast as Severe Flooding Threat Escalates]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791598200000_256</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T02:10:00.000Z</news:publication_date>
+      <news:title><![CDATA[Federal Judge Rules Trump Administration Use of Voter Data Unlawful]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791597900000_257</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T02:05:00.000Z</news:publication_date>
+      <news:title><![CDATA[US Lawmakers and Human Rights Groups Condemn Plan to Livestream Fort Hood Execution]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791597600000_258</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T02:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[Kremlin Says Trump Welcomed Russian Involvement in Iran Settlement Talks]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791597000000_259</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T01:50:00.000Z</news:publication_date>
+      <news:title><![CDATA[US State Department Issues Urgent Travel Notice Advising Immediate Departure]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791596700000_260</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T01:45:00.000Z</news:publication_date>
+      <news:title><![CDATA[Hurricane Isaias lashes the US Gulf Coast with wind and rain as it nears the Florida Panhandle]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791595800000_261</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T01:30:00.000Z</news:publication_date>
+      <news:title><![CDATA[US Imposes New Sanctions on International Criminal Court (ICC)]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791593100000_262</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T00:45:00.000Z</news:publication_date>
+      <news:title><![CDATA[Trump Announces Deal with Russia for Diesel Supply in Sharp Policy Reversal]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791590400000_263</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-10T00:00:00.000Z</news:publication_date>
+      <news:title><![CDATA[State Department Watchdog Probing Kimberly Guilfoyle Over Alleged Demand]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791588600000_264</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-09T23:30:00.000Z</news:publication_date>
+      <news:title><![CDATA[Katie Zacharia Picked as New White House Press Secretary]]></news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://snshero.com/r/news/comments/gnews_1791584100000_265</loc>
+    <news:news>
+      <news:publication>
+        <news:name>SNSHero News</news:name>
+        <news:language>ko</news:language>
+      </news:publication>
+      <news:publication_date>2026-10-09T22:15:00.000Z</news:publication_date>
+      <news:title><![CDATA[Strong Panama Earthquake Rocks Region Disrupting Power and Air Travel]]></news:title>
     </news:news>
   </url>
 </urlset>
