@@ -1759,11 +1759,11 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
             </div>
           )}
 
-          {/* SCR-03: 골든 시너지 아우라 & 덱 슬롯 컨테이너 (모바일 2줄 표시 및 좌우 슬라이드 완전 제거) */}
+          {/* SCR-03: 골든 시너지 아우라 & 덱 슬롯 컨테이너 (3/2 2줄 구조 및 좌우 슬라이드 100% 완전 배제) */}
           <div 
             id="deck-list" 
             className={cn(
-              "mx-auto flex w-full max-w-full flex-wrap justify-center items-center gap-2 sm:gap-4 md:gap-6 px-2 sm:px-3 py-4 border rounded-none overflow-x-hidden touch-pan-y overscroll-x-none",
+              "mx-auto flex flex-col items-center justify-center gap-2.5 sm:gap-4 md:gap-6 w-full max-w-full px-2 sm:px-3 py-4 border rounded-none overflow-x-hidden touch-pan-y overscroll-x-none",
               (deckElementSynergyActive || factionSynergy) && !lowSpecMode
                 ? "border-[#646262] bg-[#f1eeee]"
                 : "bg-[#f8f7f7] border-[#0f0000]/12"
@@ -1779,34 +1779,72 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
               items={currentDeckWithSkins.map(c => c.id)}
               strategy={rectSortingStrategy}
             >
-              {currentDeckWithSkins.map((card, idx) => (
-                <SortableCardItem 
-                  key={card.id}
-                  card={card}
-                  idx={idx}
-                  handleCardClick={handleCardClick}
-                  setItemManageIndex={setItemManageIndex}
-                  setIsItemModalOpen={setIsItemModalOpen}
-                  setEditingCardIndex={setEditingCardIndex}
-                  setEditName={setEditName}
-                  setEditNotes={setEditNotes}
-                  iconMap={iconMap}
-                  language={language}
-                  customCardImage={customCardImage}
-                  unequipItem={unequipItem}
-                  representativeCardId={representativeCardId}
-                  representativePetCardId={representativePetCardId}
-                  activeQuickSlot={activeQuickSlot}
-                  setActiveQuickSlot={setActiveQuickSlot}
-                  setSelectingIndex={setSelectingIndex}
-                  setIsPopupOpen={setIsPopupOpen}
-                  setSelectedCardForDetail={setSelectedCardForDetail}
-                  setCardDetailTab={setCardDetailTab}
-                  isSynergyActive={Boolean(factionSynergy && String((card as any)?.element || CARD_DATABASE[card?.imageIndex || 0]?.element || 'WATER').toUpperCase() === factionSynergy.element)}
-                  synergyElement={factionSynergy?.element}
-                  isShaking={shakingSlotIndices.includes(idx)}
-                />
-              ))}
+              {/* 상단 1행: 3장 (SLOT 1, 2, 3) */}
+              <div className="flex flex-nowrap justify-center items-center gap-2 sm:gap-4 md:gap-6 w-full">
+                {currentDeckWithSkins.slice(0, 3).map((card, idx) => (
+                  <SortableCardItem 
+                    key={card.id}
+                    card={card}
+                    idx={idx}
+                    handleCardClick={handleCardClick}
+                    setItemManageIndex={setItemManageIndex}
+                    setIsItemModalOpen={setIsItemModalOpen}
+                    setEditingCardIndex={setEditingCardIndex}
+                    setEditName={setEditName}
+                    setEditNotes={setEditNotes}
+                    iconMap={iconMap}
+                    language={language}
+                    customCardImage={customCardImage}
+                    unequipItem={unequipItem}
+                    representativeCardId={representativeCardId}
+                    representativePetCardId={representativePetCardId}
+                    activeQuickSlot={activeQuickSlot}
+                    setActiveQuickSlot={setActiveQuickSlot}
+                    setSelectingIndex={setSelectingIndex}
+                    setIsPopupOpen={setIsPopupOpen}
+                    setSelectedCardForDetail={setSelectedCardForDetail}
+                    setCardDetailTab={setCardDetailTab}
+                    isSynergyActive={Boolean(factionSynergy && String((card as any)?.element || CARD_DATABASE[card?.imageIndex || 0]?.element || 'WATER').toUpperCase() === factionSynergy.element)}
+                    synergyElement={factionSynergy?.element}
+                    isShaking={shakingSlotIndices.includes(idx)}
+                  />
+                ))}
+              </div>
+
+              {/* 하단 2행: 2장 (SLOT 4, 5) */}
+              <div className="flex flex-nowrap justify-center items-center gap-2 sm:gap-4 md:gap-6 w-full">
+                {currentDeckWithSkins.slice(3, 5).map((card, i) => {
+                  const idx = i + 3;
+                  return (
+                    <SortableCardItem 
+                      key={card.id}
+                      card={card}
+                      idx={idx}
+                      handleCardClick={handleCardClick}
+                      setItemManageIndex={setItemManageIndex}
+                      setIsItemModalOpen={setIsItemModalOpen}
+                      setEditingCardIndex={setEditingCardIndex}
+                      setEditName={setEditName}
+                      setEditNotes={setEditNotes}
+                      iconMap={iconMap}
+                      language={language}
+                      customCardImage={customCardImage}
+                      unequipItem={unequipItem}
+                      representativeCardId={representativeCardId}
+                      representativePetCardId={representativePetCardId}
+                      activeQuickSlot={activeQuickSlot}
+                      setActiveQuickSlot={setActiveQuickSlot}
+                      setSelectingIndex={setSelectingIndex}
+                      setIsPopupOpen={setIsPopupOpen}
+                      setSelectedCardForDetail={setSelectedCardForDetail}
+                      setCardDetailTab={setCardDetailTab}
+                      isSynergyActive={Boolean(factionSynergy && String((card as any)?.element || CARD_DATABASE[card?.imageIndex || 0]?.element || 'WATER').toUpperCase() === factionSynergy.element)}
+                      synergyElement={factionSynergy?.element}
+                      isShaking={shakingSlotIndices.includes(idx)}
+                    />
+                  );
+                })}
+              </div>
             </SortableContext>
 
             <DragOverlay dropAnimation={{
