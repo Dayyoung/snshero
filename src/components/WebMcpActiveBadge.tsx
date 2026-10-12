@@ -37,3 +37,5 @@ export const WebMcpActiveBadge: React.FC<WebMcpActiveBadgeProps> = ({ currentScr
     </>
   );
 };
+
+export default WebMcpActiveBadge;

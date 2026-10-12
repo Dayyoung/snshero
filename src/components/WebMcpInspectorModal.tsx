@@ -331,3 +331,5 @@ await document.modelContext.executeTool('ranking_start_pvp_battle');`}
     </div>
   );
 };
+
+export default WebMcpInspectorModal;

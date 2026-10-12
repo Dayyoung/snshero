@@ -43,6 +43,9 @@
 
 ## 6. AI Studio 및 웹 샌드박스 환경 import-analysis 오류 방지 절대 원칙
 - **디렉토리 직접 import 금지**: `from './lib/webMcp'`와 같이 폴더명만으로 import하지 마십시오. 반드시 `src/lib/webMcp.ts`와 같이 루트 단일 진입점 파일을 두고 import하거나, `from './lib/webMcp/index'`처럼 명확한 파일 경로를 지정하십시오.
-- **App.tsx 정적 import SPOF 방지**: `App.tsx` 최상단에 신규 모듈/뷰를 추가할 때 파일 누락으로 앱 전체가 Fatal Error(`Failed to resolve import`)로 다운되지 않도록 `safeLazy(loadViewSafely('ViewName'), 'ViewName')` 또는 안전한 fallback 래퍼를 사용하십시오.
+- **App.tsx 정적/동적 import SPOF 원천 차단 (Glob 로더 필수)**: `App.tsx`에서 신규 뷰나 컴포넌트를 추가할 때 `import('./...')` 고정 경로 문자열을 직접 쓰면 파일 누락 시 Vite `import-analysis` AST 분석 단계에서 전체 앱이 Fatal Error로 다운됩니다.
+  - 신규 뷰: 반드시 `safeLazy(loadViewSafely('ViewName'), 'ViewName')` (`import.meta.glob('./views/*.tsx')` 기반)
+  - 신규 컴포넌트: 반드시 `safeLazy(loadComponentSafely('ComponentName'), 'ComponentName')` (`import.meta.glob('./components/*.tsx')` 기반)
+  - 보조 라이브러리: `import.meta.glob` 또는 dynamic loader를 통해 파일 부재 시에도 0에러로 부드럽게 무시되도록 보호할 것.
 
 

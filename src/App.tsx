@@ -126,6 +126,28 @@ const loadViewSafely = (name: string, fallbackComponent?: React.ComponentType<an
   return importer;
 };
 
+// Glob-based fail-safe component loader: Prevents Vite 'Failed to resolve import' errors in AI Studio/sandboxes
+const lazyComponentGlob = import.meta.glob('./components/*.tsx');
+
+const loadComponentSafely = (name: string, fallbackComponent?: React.ComponentType<any>) => {
+  const targetPath = `./components/${name}.tsx`;
+  const importer = lazyComponentGlob[targetPath];
+  if (!importer) {
+    return () => Promise.resolve({
+      default: fallbackComponent || (() => null)
+    });
+  }
+  return () => (importer() as Promise<any>).then((m) => ({
+    default: m.default || (m as any)[name] || fallbackComponent || (() => null)
+  })).catch(() => ({
+    default: fallbackComponent || (() => null)
+  }));
+};
+
+// Glob-based fail-safe lib loader for WebMCP
+const lazyWebMcpGlob = import.meta.glob('./lib/webMcp/*.ts');
+
+
 const RedditCommunityView = safeLazy(() => import('./views/RedditCommunityView'), 'RedditCommunityView');
 const HomeView = safeLazy(() => import('./views/HomeView'), 'HomeView');
 const KadanRpgView = safeLazy(() => import('./views/KadanRpgView'));
@@ -184,7 +206,7 @@ const MallView = safeLazy(loadViewSafely('MallView'), 'MallView');
 const PacpikView = safeLazy(loadViewSafely('PacpikView'), 'PacpikView');
 const BenchmarkView = safeLazy(loadViewSafely('BenchmarkView'), 'BenchmarkView');
 const WebMcpActiveBadge = safeLazy(
-  () => import('./components/WebMcpActiveBadge').then(m => ({ default: m.WebMcpActiveBadge })),
+  loadComponentSafely('WebMcpActiveBadge'),
   'WebMcpActiveBadge'
 );
 
@@ -3331,29 +3353,35 @@ function AppContent() {
     }
   }, [purchasedSns, earnedSns, effectiveUser, inventory, stats, currentDeck, itemInventory, totalPower, isAutoBattle, lowSpecMode, language, syncUserData]);
 
-  // WebMCP (Chrome 149+ AI Model Context Protocol) Global Tools Registration (Fail-Safe Dynamic Import for AI Studio)
+  // WebMCP (Chrome 149+ AI Model Context Protocol) Global Tools Registration (Fail-Safe Glob Import for AI Studio)
   useEffect(() => {
     let cleanup: (() => void) | undefined;
-    import('./lib/webMcp/index')
-      .then(({ webMcpManager, createGlobalWebMcpTools }) => {
-        const tools = createGlobalWebMcpTools({
-          currentView: view,
-          onNavigate: setView,
-          language,
-          setLanguage,
-          lowSpecMode,
-          setLowSpecMode,
-          sns,
-          updateSns
+    const mcpLoader = lazyWebMcpGlob['./lib/webMcp/index.ts'] || lazyWebMcpGlob['./lib/webMcp/webMcpManager.ts'];
+    if (mcpLoader) {
+      (mcpLoader() as Promise<any>)
+        .then((mod) => {
+          const webMcpManager = mod.webMcpManager;
+          const createGlobalWebMcpTools = mod.createGlobalWebMcpTools;
+          if (!webMcpManager || !createGlobalWebMcpTools) return;
+          const tools = createGlobalWebMcpTools({
+            currentView: view,
+            onNavigate: setView,
+            language,
+            setLanguage,
+            lowSpecMode,
+            setLowSpecMode,
+            sns,
+            updateSns
+          });
+          const ac = new AbortController();
+          webMcpManager.registerTools(tools, { signal: ac.signal });
+          cleanup = () => ac.abort();
+        })
+        .catch((err) => {
+          // AI Studio 등 가상 샌드박스에서 모듈 미동기화 시에도 앱의 메인 기능에 영향 없도록 안전 무시
+          console.debug('WebMCP global tools skipped in sandbox:', err);
         });
-        const ac = new AbortController();
-        webMcpManager.registerTools(tools, { signal: ac.signal });
-        cleanup = () => ac.abort();
-      })
-      .catch((err) => {
-        // AI Studio 등 가상 샌드박스에서 모듈 미동기화 시에도 앱의 메인 기능에 영향 없도록 안전 무시
-        console.debug('WebMCP global tools skipped in sandbox:', err);
-      });
+    }
 
     return () => {
       if (cleanup) cleanup();

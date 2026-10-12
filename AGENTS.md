@@ -103,11 +103,13 @@
   1. **디렉토리 직접 import 금지 (Always Single-File Entrypoint)**:
      - `import ... from './lib/webMcp'`와 같이 폴더 경로만으로 import하지 마십시오.
      - 반드시 `src/lib/webMcp.ts`와 같이 루트에 명시적인 단일 진입점 파일을 두고 import하거나, `from './lib/webMcp/index'`처럼 명확한 파일 경로를 지정해야 합니다.
-  2. **App.tsx 정적 import 단일 장애점(SPOF) 방지**:
-     - `App.tsx`는 애플리케이션의 최상위 진입점이므로, 신규 라이브러리나 뷰를 추가할 때 최상단 정적 import로 인해 파일 누락 시 전체 앱이 다운되는 일이 없도록 하십시오.
-     - 신규 뷰는 반드시 `safeLazy(loadViewSafely('ViewName'), 'ViewName')`를 사용하여 파일 부재 시에도 fallback 컴포넌트가 렌더링되도록 보호하십시오.
+  2. **App.tsx 정적/동적 import 단일 장애점(SPOF) 원천 차단 (Glob 로더 필수)**:
+     - `App.tsx`는 애플리케이션의 최상위 진입점이므로, 신규 뷰나 컴포넌트를 추가할 때 `import('./...')` 고정 경로 문자열을 직접 쓰면 Vite의 `import-analysis` AST 분석 단계에서 파일 누락 시 전체 앱이 다운(Fatal Error)됩니다.
+     - 신규 뷰는 반드시 `safeLazy(loadViewSafely('ViewName'), 'ViewName')`를 사용하십시오 (`import.meta.glob('./views/*.tsx')` 기반).
+     - 신규 컴포넌트는 반드시 `safeLazy(loadComponentSafely('ComponentName'), 'ComponentName')`를 사용하십시오 (`import.meta.glob('./components/*.tsx')` 기반).
+     - 라이브러리 비동기 로딩 시에도 `lazyWebMcpGlob` 등 `import.meta.glob`을 통하여 파일 부재 시에도 번들러 에러 없이 안전하게 건너뛰도록(Graceful Degradation) 구성하십시오.
   3. **내장 기능 Fail-Safe Fallback 보장**:
-     - 외부 도구나 보조 기능(WebMCP, GEO 메타데이터 등)은 모듈이 로드되지 않더라도 앱의 메인 배틀/홈/덱 기능이 100% 정상 작동하도록 try-catch 또는 no-op 더미 함수로 우아한 성능 저하(Graceful Degradation)를 구현하십시오.
+     - 외부 도구나 보조 기능(WebMCP, GEO 메타데이터 등)은 모듈이 로드되지 않더라도 앱의 메인 배틀/홈/덱 기능이 100% 정상 작동하도록 try-catch 또는 no-op 더미 함수로 우아한 성능 저하를 구현하십시오.
 
 ## 작업 전/후 체크리스트
 - [ ] `npm run lint` (tsc --noEmit) 통과 여부 확인
