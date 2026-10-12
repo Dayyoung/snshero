@@ -371,8 +371,8 @@ export const HomeView: React.FC<HomeViewProps> = ({
               </div>
             </div>
 
-            {/* Collectible dossier: full artwork on desktop, swipeable cards on mobile. */}
-            <div className="flex w-full gap-3 overflow-x-auto overscroll-x-contain snap-x snap-mandatory pb-2 pt-1 sm:grid sm:grid-cols-5 lg:grid-cols-[1.35fr_repeat(4,minmax(0,1fr))] sm:items-end sm:gap-3 sm:overflow-visible select-none" role="group" aria-label={language === 'ko' ? '덱 미리보기' : 'Deck Preview'}>
+            {/* 5장 겹침 부채꼴 카드 덱 쇼케이스 (게임의 고유 아이덴티티) */}
+            <div className="relative h-48 sm:h-56 md:h-64 w-full flex items-center justify-center overflow-visible select-none my-2 sm:my-3" role="group" aria-label={language === 'ko' ? '덱 미리보기' : 'Deck Preview'}>
               {deckPreview.map((item, index) => {
                 const isDatabaseId = typeof item === 'number';
                 const id = isDatabaseId ? item : (item as CardData).imageIndex;
@@ -390,7 +390,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 } : item as CardData;
 
                 return (
-                  <div key={displayCard.id} className="w-[min(52vw,220px)] shrink-0 snap-start sm:w-auto sm:min-w-0">
                   <LobbyInteractiveCard
                     key={displayCard.id}
                     card={displayCard}
@@ -404,7 +403,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
                       setSelectedPreviewCard(displayCard);
                     }}
                   />
-                  </div>
                 );
               })}
             </div>
