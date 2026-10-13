@@ -603,13 +603,13 @@ export async function runGenerateNewsSeo(): Promise<void> {
   const sitemapPath = path.join(publicDir, 'sitemap.xml');
   if (fs.existsSync(sitemapPath)) {
     let sitemapContent = fs.readFileSync(sitemapPath, 'utf8');
-    // 기존 뉴스 기사 블록 제거 후 최신 뉴스 블록 주입
     const newsMarkerStart = '  <!-- [Google Realtime News Articles Prerendered] -->';
     const newsMarkerEnd = '  <!-- [/Google Realtime News Articles Prerendered] -->';
-    
-    if (sitemapContent.includes(newsMarkerStart)) {
-      const regex = new RegExp(`${newsMarkerStart}[\\s\\S]*?${newsMarkerEnd}\\n?`, 'g');
-      sitemapContent = sitemapContent.replace(regex, '');
+
+    // 기존 뉴스 기사 블록이 남아있다면 첫 마커 이전까지만 안전하게 절단
+    const firstStartIdx = sitemapContent.indexOf(newsMarkerStart);
+    if (firstStartIdx !== -1) {
+      sitemapContent = sitemapContent.slice(0, firstStartIdx).trimEnd() + '\n</urlset>';
     }
 
     const newsEntries = posts.map(p => `  <url>
@@ -619,7 +619,7 @@ export async function runGenerateNewsSeo(): Promise<void> {
     <priority>0.95</priority>
   </url>`).join('\n');
 
-    const newsBlock = `${newsMarkerStart}\n${newsEntries}\n${newsMarkerEnd}\n`;
+    const newsBlock = `\n${newsMarkerStart}\n${newsEntries}\n${newsMarkerEnd}\n`;
     sitemapContent = sitemapContent.replace('</urlset>', `${newsBlock}</urlset>`);
     
     fs.writeFileSync(sitemapPath, sitemapContent, 'utf8');
