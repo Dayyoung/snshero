@@ -191,12 +191,15 @@ export class WebPushService {
       if (reg && 'pushManager' in reg) {
         try {
           let subscription = await reg.pushManager.getSubscription();
-          if (!subscription) {
-            subscription = await reg.pushManager.subscribe({
-              userVisibleOnly: true,
-              applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
-            });
+          if (subscription) {
+            try {
+              await subscription.unsubscribe();
+            } catch {}
           }
+          subscription = await reg.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+          });
           if (subscription) {
             const subJson = subscription.toJSON();
             pushToken = JSON.stringify(subJson);
