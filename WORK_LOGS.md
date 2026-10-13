@@ -2,6 +2,36 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-13 11:30 KST] W3C Web Push VAPID 연동 및 구글시트 기반 실제 원격 브로드캐스트 발송 시스템 구축
+- **요청 사항**:
+  - "웹푸시가 등록된 모든 사용자들에게 푸시메세지를 보낼려면 어떻게 해야해" -> "푸시를 보냈는데 응답이 없어" -> "ㅇㅇ 실제 발송해야돼"
+- **원인 분석**:
+  - 기존 웹푸시는 브라우저 레벨의 모의(Mock) 식별자 토큰(`wp_...`)을 로컬스토리지 및 구글 시트에 단순 저장하고, 관리자 화면 발송 버튼 클릭 시 관리자 본인의 현재 브라우저에만 `showNotification`을 띄우는 프론트엔드 모의 발송 형태로 구현되어 있었음.
+  - 실제 인터넷을 통해 타인의 잠겨 있는 스마트폰이나 백그라운드 브라우저로 패킷을 전송하는 W3C Web Push 표준 VAPID 키페어 및 백엔드 발송 서버(`web-push`)가 부재했음.
+- **수정 및 개선 내역**:
+  1. **VAPID 키페어 생성 및 규격 정의 ([`vapidConfig.ts`](file:///Users/dayyoung/project/snshero/src/lib/vapidConfig.ts))**:
+     - W3C Push 표준 VAPID 공개키/개인키 생성 및 `urlBase64ToUint8Array` 변환 유틸리티 구현.
+  2. **클라이언트 실제 브라우저 구독 발급 ([`webPushService.ts`](file:///Users/dayyoung/project/snshero/src/lib/webPushService.ts))**:
+     - `registerWebPush` 시 `reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey })`를 호출하여 실제 FCM/APNs 엔드포인트가 담긴 `PushSubscription` JSON 객체를 발급받아 구글 시트에 영구 저장하도록 전면 업그레이드.
+     - `fetchRegisteredPushTokens`에서 실제 VAPID 엔드포인트 기기와 구버전 가상 토큰을 자동 분류 파싱.
+     - 로컬 푸시 디스패처 서버(`http://localhost:3001/api/push/broadcast`) 연동 및 결과 통계 수신.
+  3. **실제 Web Push 브로드캐스트 스크립트 구축 ([`broadcast_push.mjs`](file:///Users/dayyoung/project/snshero/scripts/broadcast_push.mjs))**:
+     - `web-push` 라이브러리를 통해 구글 시트 등록 토큰 중 유효한 `PushSubscription`을 자동 필터링하여 모든 원격 스마트폰/브라우저로 실제 백그라운드 푸시 전송.
+     - `npm run push:broadcast -- --title "제목" --body "본문"` CLI 지원.
+  4. **로컬 웹푸시 디스패처 서버 구축 ([`push_server.mjs`](file:///Users/dayyoung/project/snshero/scripts/push_server.mjs))**:
+     - 관리자 웹 브라우저 UI에서 원클릭으로 백엔드 전송을 수행할 수 있도록 포트 3001 디스패처 엔드포인트 제공 (`npm run push:server`).
+  5. **관리자 화면 UI 개선 ([`AdminView.tsx`](file:///Users/dayyoung/project/snshero/src/views/AdminView.tsx))**:
+     - 구독자 통계 그리드에 '실제 VAPID 푸시 기기' 카운터 분리 노출.
+     - 발송 결과 메시지 박스에 백엔드 실제 전송 결과 통계 표시.
+     - CLI 터미널 직접 발송 명령어 복사 박스 제공.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 Errors (타입 무결점 통과).
+  - `npm run push:broadcast`: 구글 시트 실시간 연동 및 발송 분기 로직 정상 검증 완료.
+  - `push_server.mjs`: 헬스체크 및 API 응답 정상 검증 완료.
+  - `npm run build`: Vite 6 프로덕션 번들 빌드 정상 완료.
+  - 구글 폼 완료 보고서 제출 완료 (`submit_report.py`).
+  - 로컬 Git 커밋 완료 (`dbbdf162`).
+
 ## [2026-10-13 10:04 KST] 9개 카드판 및 손패 속성 아이콘을 단색 Lucide 벡터와 OpenCode 모노스페이스 마커로 전면 정돈
 - **요청 사항**:
   - "9개 카드판에 표시되는 속성아이콘이 너무 허접하다. 기존에 단색으로 표시되던 멎진 속성아이콘이 있었는데."
