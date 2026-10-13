@@ -129,11 +129,13 @@ export const AdminView: React.FC<AdminViewProps> = ({
       });
 
       if (res.success) {
-        setBroadcastResultMsg(
-          language === 'ko'
-            ? `✓ 구글 시트 등록 ${res.recipientCount}명의 기기에 전체 푸시 발송을 성공적으로 완료했습니다!`
-            : `✓ Broadcast push sent to ${res.recipientCount} registered devices successfully!`
-        );
+        let msg = language === 'ko'
+          ? `✓ 구글 시트 등록 ${res.recipientCount}명 대상 푸시 발송 완료!`
+          : `✓ Broadcast push triggered for ${res.recipientCount} registered devices!`;
+        if (res.serverMessage) {
+          msg += `\n${res.serverMessage}`;
+        }
+        setBroadcastResultMsg(msg);
         setBroadcastLogs(WebPushService.getBroadcastLogs());
       }
     } catch (err: any) {
@@ -1068,11 +1070,17 @@ export const AdminView: React.FC<AdminViewProps> = ({
                     </div>
 
                     {/* 구독자 통계 그리드 */}
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
                       <div className="p-4 bg-slate-950/60 border border-slate-800 rounded-2xl">
                         <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">총 등록 구독자</span>
                         <span className="text-2xl font-black text-amber-400 mt-1 block">
                           {sheetSubscribers.length} <span className="text-xs text-slate-400 font-normal">명</span>
+                        </span>
+                      </div>
+                      <div className="p-4 bg-slate-950/60 border border-emerald-500/30 bg-emerald-950/20 rounded-2xl">
+                        <span className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider block">실제 VAPID 푸시</span>
+                        <span className="text-2xl font-black text-emerald-300 mt-1 block">
+                          {sheetSubscribers.filter(s => s.isRealVapidSubscription).length} <span className="text-xs text-slate-400 font-normal">대</span>
                         </span>
                       </div>
                       <div className="p-4 bg-slate-950/60 border border-slate-800 rounded-2xl">
@@ -1083,7 +1091,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                       </div>
                       <div className="p-4 bg-slate-950/60 border border-slate-800 rounded-2xl">
                         <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Android 기기</span>
-                        <span className="text-2xl font-black text-emerald-400 mt-1 block">
+                        <span className="text-2xl font-black text-teal-400 mt-1 block">
                           {sheetSubscribers.filter(s => s.platform.toLowerCase().includes('android')).length} <span className="text-xs text-slate-400 font-normal">명</span>
                         </span>
                       </div>
@@ -1146,8 +1154,8 @@ export const AdminView: React.FC<AdminViewProps> = ({
                       </div>
 
                       {broadcastResultMsg && (
-                        <div className="p-3 bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 rounded-xl text-xs font-bold flex items-center gap-2">
-                          <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
+                        <div className="p-3 bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 rounded-xl text-xs font-bold whitespace-pre-line flex items-start gap-2">
+                          <CheckCircle2 size={16} className="text-emerald-400 shrink-0 mt-0.5" />
                           <span>{broadcastResultMsg}</span>
                         </div>
                       )}
@@ -1173,6 +1181,20 @@ export const AdminView: React.FC<AdminViewProps> = ({
                           </>
                         )}
                       </button>
+
+                      {/* CLI 터미널 직접 발송 명령어 안내 */}
+                      <div className="p-3 bg-slate-950 border border-slate-800 rounded-xl space-y-1.5 font-mono text-[11px] text-slate-400">
+                        <div className="flex items-center justify-between text-slate-300 font-bold">
+                          <span>💻 실제 원격 스마트폰 일괄 발송 터미널 명령어:</span>
+                          <span className="text-[10px] text-amber-400 px-1.5 py-0.5 bg-amber-400/10 rounded">VAPID 표준</span>
+                        </div>
+                        <code className="block p-2 bg-slate-900 border border-slate-800 rounded text-amber-300 select-all overflow-x-auto text-[10px]">
+                          npm run push:broadcast -- --title &quot;{broadcastTitle}&quot; --body &quot;{broadcastBody}&quot;
+                        </code>
+                        <p className="text-[10px] text-slate-500">
+                          ※ 상시 디스패처 서버는 <code>npm run push:server</code> (포트 3001) 로 실행할 수 있습니다.
+                        </p>
+                      </div>
                     </form>
                   </div>
 

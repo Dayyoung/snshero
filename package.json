@@ -10,6 +10,8 @@
     "watch-build": "node scripts/watch-build.js",
     "preview:live": "node scripts/watch-build.js & vite preview --host 0.0.0.0 --port 3000",
     "start-server": "bash scripts/start-server.sh",
+    "push:broadcast": "node scripts/broadcast_push.mjs",
+    "push:server": "node scripts/push_server.mjs",
     "lint": "node -e \"process.exit(0)\""
   },
   "dependencies": {
@@ -42,13 +44,15 @@
     "tailwind-merge": "^3.5.0",
     "three": "^0.185.1",
     "tsx": "^4.21.0",
-    "vite": "^6.2.0"
+    "vite": "^6.2.0",
+    "web-push": "^3.6.7"
   },
   "devDependencies": {
     "@firebase/eslint-plugin-security-rules": "^0.0.2",
     "@types/leaflet": "^1.9.21",
     "@types/lz-string": "^1.5.0",
     "@types/node": "^22.14.0",
+    "@types/web-push": "^3.6.4",
     "autoprefixer": "^10.4.21",
     "tailwindcss": "^4.1.14",
     "typescript": "~5.8.2",

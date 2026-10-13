@@ -9,6 +9,8 @@
  * 5. Google Sheets로부터 등록된 전체 푸시 토큰 목록 조회 및 전체 브로드캐스트 푸시 발송
  */
 
+import { VAPID_PUBLIC_KEY, urlBase64ToUint8Array } from './vapidConfig';
+
 export const GOOGLE_FORM_PUSH_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSer0AqPbpduTxfSJNg3X8Pa1C8h2L5_Skmbt0NDdVZt6bS1GA/formResponse';
 export const GOOGLE_SHEET_PUSH_ID = '1o8rwdG_O_-efkKHgf9oMpFaOUnAAVxMQVfDldFavbjg';
 export const GOOGLE_SHEET_PUSH_CSV_URL = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_PUSH_ID}/gviz/tq?tqx=out:csv`;
@@ -19,6 +21,7 @@ const FORM_ENTRY_TEXT = 'entry.1672381815';
 const FORM_ENTRY_METADATA = 'entry.1335992406';
 
 export const LOCAL_PUSH_TOKEN_KEY = 'hero_push_token';
+export const LOCAL_PUSH_SUBSCRIPTION_KEY = 'hero_push_subscription';
 export const LOCAL_PUSH_REGISTERED_AT_KEY = 'hero_push_registered_at';
 export const LOCAL_PUSH_PLATFORM_KEY = 'hero_push_platform';
 export const LOCAL_PUSH_SYNCED_SHEET_KEY = 'hero_push_synced_sheet';
@@ -41,6 +44,14 @@ export interface SheetPushSubscriber {
   label: string;
   platform: string;
   registeredAt: number;
+  isRealVapidSubscription?: boolean;
+  subscription?: {
+    endpoint: string;
+    keys?: {
+      p256dh: string;
+      auth: string;
+    };
+  } | null;
 }
 
 export interface BroadcastLogItem {
@@ -164,15 +175,44 @@ export class WebPushService {
         if ('serviceWorker' in navigator) {
           reg = await navigator.serviceWorker.register('/sw.js').catch(() => null);
           await navigator.serviceWorker.ready.catch(() => null);
+          if (!reg) {
+            reg = await navigator.serviceWorker.getRegistration().catch(() => null) || null;
+          }
         }
       } catch (swErr) {
         console.warn('[WebPush] SW registration note:', swErr);
       }
 
-      // 5. 푸시 토큰 생성 (고유 토큰 및 디바이스 지문)
+      // 5. 실제 W3C Web Push (VAPID) 구독 발급
       const now = Date.now();
-      const existingToken = localStorage.getItem(LOCAL_PUSH_TOKEN_KEY);
-      const pushToken = existingToken || `wp_${now}_${Math.random().toString(36).substring(2, 10)}`;
+      let pushToken = '';
+      let isRealVapid = false;
+
+      if (reg && 'pushManager' in reg) {
+        try {
+          let subscription = await reg.pushManager.getSubscription();
+          if (!subscription) {
+            subscription = await reg.pushManager.subscribe({
+              userVisibleOnly: true,
+              applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+            });
+          }
+          if (subscription) {
+            const subJson = subscription.toJSON();
+            pushToken = JSON.stringify(subJson);
+            localStorage.setItem(LOCAL_PUSH_SUBSCRIPTION_KEY, pushToken);
+            isRealVapid = true;
+          }
+        } catch (subErr) {
+          console.warn('[WebPush] PushManager subscription fallback:', subErr);
+        }
+      }
+
+      // VAPID 구독 실패 시(또는 비보안 환경) 기존 난수 토큰 fallback
+      if (!pushToken) {
+        const existingToken = localStorage.getItem(LOCAL_PUSH_TOKEN_KEY);
+        pushToken = existingToken || `wp_${now}_${Math.random().toString(36).substring(2, 10)}`;
+      }
 
       const userName = customUserName || 
         localStorage.getItem('hero_user_name') || 
@@ -187,7 +227,7 @@ export class WebPushService {
       await this.saveTokenToGoogleSheet({
         token: pushToken,
         userName,
-        platformName: status.platformName,
+        platformName: `${status.platformName}${isRealVapid ? ' [VAPID]' : ''}`,
         registeredAt: now,
       });
 
@@ -197,7 +237,9 @@ export class WebPushService {
       return {
         success: true,
         token: pushToken,
-        message: '웹푸시 알림이 성공적으로 등록되었습니다. (구글 시트 연동 완료)',
+        message: isRealVapid
+          ? '실제 VAPID Web Push 알림이 성공적으로 등록되었습니다. (실제 스마트폰 푸시 수신 가능)'
+          : '웹푸시 알림이 등록되었습니다. (구글 시트 연동 완료)',
       };
     } catch (err: any) {
       console.error('[WebPush] Registration failed:', err);
@@ -318,11 +360,26 @@ export class WebPushService {
           if (m && m[1]) platform = m[1];
         }
 
+        let isRealVapidSubscription = false;
+        let subscriptionObj = null;
+
+        if (token.startsWith('{') && token.endsWith('}')) {
+          try {
+            const parsed = JSON.parse(token);
+            if (parsed && parsed.endpoint) {
+              isRealVapidSubscription = true;
+              subscriptionObj = parsed;
+            }
+          } catch {}
+        }
+
         tokenMap.set(token, {
           token,
           label: label || 'HeroUser',
           platform,
           registeredAt: Date.now(),
+          isRealVapidSubscription,
+          subscription: subscriptionObj,
         });
       }
 
@@ -354,6 +411,8 @@ export class WebPushService {
     success: boolean;
     recipientCount: number;
     logItem: BroadcastLogItem;
+    isServerDispatched?: boolean;
+    serverMessage?: string;
   }> {
     const { title, body, url = '/' } = params;
 
@@ -383,7 +442,29 @@ export class WebPushService {
       status: 'sent',
     };
 
-    // 2. 현재 활성 브라우저 알림 즉시 발생 (테스트 및 브로드캐스트 피드백)
+    let isServerDispatched = false;
+    let serverMessage = '';
+
+    // 2-1. 백엔드 푸시 서버(포트 3001)에 실제 브로드캐스트 발송 요청 시도
+    try {
+      const resp = await fetch('http://localhost:3001/api/push/broadcast', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, body, url }),
+        signal: AbortSignal.timeout(6000),
+      });
+
+      if (resp.ok) {
+        const data = await resp.json();
+        isServerDispatched = true;
+        serverMessage = `[백엔드 VAPID 발송 성공] 총 ${data.totalCount}대 중 ${data.sentCount}대 전송 성공 (실패/만료: ${data.failedCount}건)`;
+      }
+    } catch {
+      // 푸시 서버가 오프라인인 경우
+      serverMessage = `[안내] 실제 기기 발송을 위해서는 터미널에서 'npm run push:broadcast'를 실행하거나 푸시 서버를 켜주세요.`;
+    }
+
+    // 2-2. 현재 활성 브라우저 알림 로컬 발생 (즉각적인 시각 피드백)
     try {
       if ('Notification' in window && Notification.permission === 'granted') {
         const options: NotificationOptions = {
@@ -421,6 +502,8 @@ export class WebPushService {
       success: true,
       recipientCount: subscribers.length,
       logItem,
+      isServerDispatched,
+      serverMessage,
     };
   }
 
