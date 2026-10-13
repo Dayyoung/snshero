@@ -2,6 +2,29 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-14 08:05 KST] 랭킹 자동플레이 중 신규 카드 마이덱 적용 시 /main 또는 /play 전환 및 3연패 시 랭킹 복귀 시스템 구현
+- **요청 사항**:
+  - "랭킹 자동플레이 모드 진행 중 새로운 카드를 마이덱에 적용하는 이벤트가 발생하면 /main모드 또는 /play모드  , 중 한곳으로 이동하여 새로운 카드플레이를 시작해보자. 3회 연속으로 패배하는 경우 다시 랭킹플레이로 복귀. 아닌경우에는 해당 모드로 계속 진행"
+- **수정 및 개선 내역**:
+  1. **신규 전환 전담 서비스 모듈 구축 ([`src/lib/rankingDivertService.ts`](file:///Users/dayyoung/project/snshero/src/lib/rankingDivertService.ts))**:
+     - `hero_ranking_diverted_mode` ('main' | 'play'), `hero_diverted_consecutive_losses` (0~3) 상태 관리.
+     - `startRankingDivert()`: 50:50 무작위 확률로 `/main`(카단 RPG) 또는 `/play`(미션 & 아케이드) 모드 선택 후 알림과 함께 즉각 화면 이동.
+     - `handleDivertedMatchResult()`: 매치 결과 판정 시 승리하면 연속 패배 카운트를 0으로 초기화하고 모드 유지, 패배 시 카운트 증가. 3회 연속 패배 도달 시 알림 팝업 안내 후 랭킹플레이로 자동 복귀 (`setView('ranking')`).
+  2. **마이덱 신규 카드 장착 이벤트 연동 ([`src/views/MyDeckView.tsx`](file:///Users/dayyoung/project/snshero/src/views/MyDeckView.tsx))**:
+     - 스마트 루프 소환 후 새 카드로 슬롯 교체 완료 시(`autoSwapTimerRef`), 기존 랭킹 복귀 대신 `handleInstantReturnToBattle(true)`를 통해 `startRankingDivert`를 트리거하여 `/main` 또는 `/play`로 분기.
+     - 덱 최적화 모달 완료 시에도 랭킹 자동플레이 상태이면 신규 덱 검증 전환 모드로 연동.
+  3. **전역 승패 정산 및 3연패 랭킹 복귀 연동 ([`src/App.tsx`](file:///Users/dayyoung/project/snshero/src/App.tsx))**:
+     - `recordMatchResult`에서 `isRankingDiverted()` 상태 확인 후 승패 결과 즉각 처리.
+     - `isCurrentRankingMatch` 판단 시 전환 모드(`isRankingDiverted()`) 상태이면 랭킹 매칭 플래그를 배제하여 자유 대결 모드로 안전하게 동작하도록 보장.
+     - 덱 업그레이드 프롬프트 확인 시에도 자동 전환 모드 연동.
+  4. **모바일 카드 플레이 뷰 HUD 상태 표시 ([`src/views/MobileCardPlayScreen.tsx`](file:///Users/dayyoung/project/snshero/src/views/MobileCardPlayScreen.tsx))**:
+     - 상단 HUD 아래에 `[🎴 신규 덱 검증 모드: /main 또는 /play | 연속 패배: N/3]` 상태 바 실시간 표시.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 Errors (타입스크립트 타입 무결점 통과).
+  - `npm run build`: Vite 6 프로덕션 번들 0에러 완벽 빌드 성공 (`built in 13.72s`).
+  - 로컬 Git 커밋 완료 (`883b880a`).
+  - 연동 구글 폼 완료 보고서 제출 완료 (`submit_report.py`).
+
 ## [2026-10-14 08:00 KST] 전 화면 비필수 버튼 제거 및 계층형 모던 그리드 개편 & 자동 보상 팝업 시스템 구현
 - **요청 사항**:
   - "모든화면별로 필수기능 버튼이 아닌경우 제거해서 심플한 모던 디자인톤을 전반적으로 유지해줘."
