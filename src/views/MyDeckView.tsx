@@ -350,16 +350,11 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
       setShakingSlotIndices([]);
     }, 1200);
 
-    // 자동 플레이 상태 확인: 애니메이션 재생 후 랭킹 대전으로 자동 복귀
-    let isAutoLoopRanking = false;
-    try {
-      isAutoLoopRanking = localStorage.getItem('hero_auto_loop_is_ranking') === 'true';
-    } catch {}
-
-    if (andReturnToAutoLoop || isAutoLoopRanking) {
+    // 명시적으로 자동 복귀 플래그가 지정된 경우에만 애니메이션 재생 후 대전 복귀
+    if (andReturnToAutoLoop) {
       if (autoReturnTimerRef.current) clearTimeout(autoReturnTimerRef.current);
       autoReturnTimerRef.current = setTimeout(() => {
-        handleInstantReturnToBattle();
+        handleInstantReturnToBattle(true);
       }, 1400);
     }
   }, [playSfx, handleInstantReturnToBattle]);
@@ -992,9 +987,9 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
     triggerHaptic('success');
     playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
 
-    // 적용된 슬롯 카드 흔들기 효과 발동 (변경된 카드가 없더라도 전체 적용 슬롯 흔들림)
+    // 적용된 슬롯 카드 흔들기 효과 발동 (수동 최적화이므로 자동 대전 복귀 없이 마이덱 유지)
     const targetsToShake = changedSlots.length > 0 ? changedSlots : [0, 1, 2, 3, 4].slice(0, bestCards.length);
-    triggerCardShake(targetsToShake, true);
+    triggerCardShake(targetsToShake, false);
 
     setShowOptimizeSuccessModal(true);
   };
@@ -1550,10 +1545,10 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
               <span>{autoSwapBanner}</span>
               <button
                 type="button"
-                onClick={handleInstantReturnToBattle}
+                onClick={() => handleInstantReturnToBattle(true)}
                 className="px-4 py-1.5 bg-gradient-to-r from-emerald-400 to-teal-300 text-slate-950 font-black rounded-lg text-xs hover:brightness-110 active:scale-95 transition-all cursor-pointer shadow-md"
               >
-                {language === 'ko' ? '⚡ 즉시 랭킹대전 복귀' : '⚡ Return to Rank Match Now'}
+                {language === 'ko' ? '⚡ 즉시 새 모드로 출격' : '⚡ Start New Battle Now'}
               </button>
             </div>
           </motion.div>
@@ -3559,13 +3554,6 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
               <button
                 onClick={() => {
                   setShowOptimizeSuccessModal(false);
-                  let isAutoLoopRanking = false;
-                  try {
-                    isAutoLoopRanking = localStorage.getItem('hero_auto_loop_is_ranking') === 'true';
-                  } catch {}
-                  if (isAutoLoopRanking) {
-                    handleInstantReturnToBattle(true);
-                  }
                 }}
                 className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-xl font-bold uppercase tracking-wider text-xs shadow-md active:scale-95 transition-all cursor-pointer"
               >
