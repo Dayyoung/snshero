@@ -26,6 +26,7 @@ import { t } from '../lib/i18n';
 import { MissionDialogueIntro } from '../components/MissionDialogueIntro';
 import { pickNewRankOpponent, RankOpponentInfo } from '../data/rankingOpponents';
 import { getDynamicDifficultyProfile, DynamicDifficultyProfile } from '../lib/dynamicDifficulty';
+import { isRankingDiverted, getDivertedMode, getDivertedLossCount } from '../lib/rankingDivertService';
 
 export interface ElementDef {
   nameKo: string;
@@ -1424,6 +1425,30 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
           </button>
         </div>
       </header>
+
+      {/* ─── 랭킹 전환 모드 (/main 또는 /play 신규 덱 검증) HUD 바 ───────── */}
+      {isRankingDiverted() && (
+        <div 
+          id="ranking-diverted-hud"
+          className="w-full px-3 py-1 bg-amber-500/10 border-b border-amber-500/30 flex items-center justify-between shrink-0 text-[11px] gap-2 z-20 font-mono"
+        >
+          <div className="flex items-center gap-1.5 truncate">
+            <span className="font-bold text-amber-900 truncate">
+              🎴 {language === 'ko' ? `[신규 덱 검증] ${getDivertedMode() === 'main' ? '/main (카단 RPG)' : '/play (미션 게임)'}` : `[New Deck Trial] ${getDivertedMode() === 'main' ? '/main' : '/play'}`}
+            </span>
+          </div>
+          <div className="flex items-center gap-1.5 shrink-0">
+            <span className={cn(
+              "text-[10px] font-bold px-2 py-0.5 border",
+              getDivertedLossCount() >= 2
+                ? "bg-rose-500 text-white border-rose-600 animate-pulse"
+                : "bg-amber-500/20 text-amber-800 border-amber-500/40"
+            )}>
+              {language === 'ko' ? `연속 패배: ${getDivertedLossCount()}/3` : `Losses: ${getDivertedLossCount()}/3`}
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* ─── 스마트 자동 라이프사이클 HUD 바 (Smart LifeCycle Bar) ───────── */}
       {isRankingMatch && (

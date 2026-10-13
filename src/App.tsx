@@ -51,6 +51,7 @@ import { saveWebtoonProgress, type WebtoonProgressState } from './lib/webtoonPro
 import { BGM_TRACKS, DEFAULT_BGM_TRACK_ID } from './lib/audioConstants';
 import { getSeasonItem, setSeasonItem, removeSeasonItem } from './lib/seasonStorage';
 import { getDeckUpgradeRecommendation, getCardStateFingerprint } from './lib/deckUpgrade';
+import { isRankingDiverted, handleDivertedMatchResult, startRankingDivert } from './lib/rankingDivertService';
 import { VIEW_ROUTES, getViewPath, getViewFromPath, getRouteMeta } from './routes';
 import { useVisualViewportLock } from './hooks/useVisualViewportLock';
 import { useLowSpecGuard } from './hooks/useLowSpecGuard';
@@ -4484,6 +4485,11 @@ function AppContent() {
       }
     }
 
+    // 랭킹 자동플레이 중 신규 카드 덱 적용으로 /main 또는 /play로 전환된 상태일 때 승/패 처리 (3회 연속 패배 시 랭킹 자동 복귀)
+    if (isRankingDiverted()) {
+      handleDivertedMatchResult(result, setView, language, showCustomAlert);
+    }
+
     // Tutorial progression: After battle, go to shop and disable auto-battle
     if (tutorialStep === 3) {
       setIsAutoBattle(false);
@@ -5583,7 +5589,7 @@ function AppContent() {
             return false;
           }
         })();
-        const isCurrentRankingMatch = Boolean(isAutoLoopRanking || isPvpActive || pvpOpponent || cardPlayPreviousView === 'ranking' || (!mobileCardTargetId && !mobileCardTowerFloor && (mobileCardOppDeck || (mobileCardOppName && !mobileCardOppName.includes('스토리') && !mobileCardOppName.includes('보스')))));
+        const isCurrentRankingMatch = Boolean(!isRankingDiverted() && (isAutoLoopRanking || isPvpActive || pvpOpponent || cardPlayPreviousView === 'ranking' || (!mobileCardTargetId && !mobileCardTowerFloor && (mobileCardOppDeck || (mobileCardOppName && !mobileCardOppName.includes('스토리') && !mobileCardOppName.includes('보스'))))));
         return (
           <MobileCardPlayScreen
             playerDeck={isPlaygroundMode ? playgroundDeck : currentDeck}
@@ -7794,14 +7800,14 @@ function AppContent() {
                   detail: { slots: targetSlots }
                 }));
 
-                // 자동 루프 랭킹 플레이 복귀 안전 백업
+                // 자동 루프 랭킹 플레이 복귀 안전 백업 (신규 카드 마이덱 적용 시 /main 또는 /play 전환)
                 let isAutoLoopRanking = false;
                 try {
                   isAutoLoopRanking = localStorage.getItem('hero_auto_loop_is_ranking') === 'true';
                 } catch {}
-                if (isAutoLoopRanking && view !== 'mydeck') {
+                if (isAutoLoopRanking && view !== 'mydeck' && !isRankingDiverted()) {
                   setTimeout(() => {
-                    setView('card-play');
+                    startRankingDivert(setView, language, showCustomAlert);
                   }, 1400);
                 }
               }

@@ -60,6 +60,7 @@ import { CardCompareModal } from '../components/CardCompareModal';
 import { MaterialDeficitModal } from '../components/MaterialDeficitModal';
 import { DeckCommandHub } from '../components/DeckCommandHub';
 import { maybeTriggerTourOrProceedToBattle } from '../lib/smartLoopTourService';
+import { startRankingDivert } from '../lib/rankingDivertService';
 import { createMyDeckWebMcpTools, useWebMcpTools } from '../lib/webMcp/index';
 
 interface MyDeckViewProps {
@@ -314,12 +315,24 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
     };
   }, []);
 
-  const handleInstantReturnToBattle = useCallback(() => {
+  const handleInstantReturnToBattle = useCallback((isNewCardApplied = false) => {
     if (autoSwapCountdownRef.current) clearInterval(autoSwapCountdownRef.current);
     if (autoSwapTimerRef.current) clearTimeout(autoSwapTimerRef.current);
     setAutoSwapBanner(null);
+
+    let isAutoLoopRanking = false;
+    try {
+      isAutoLoopRanking = localStorage.getItem('hero_auto_loop_is_ranking') === 'true';
+    } catch {}
+
+    // 랭킹 자동 플레이 진행 중 신규 카드가 마이덱에 적용된 경우: /main 또는 /play 중 한곳으로 이동하여 새로운 카드플레이 시작
+    if (isNewCardApplied || isAutoLoopRanking) {
+      startRankingDivert(onNavigate, language);
+      return;
+    }
+
     maybeTriggerTourOrProceedToBattle(onNavigate);
-  }, [onNavigate]);
+  }, [onNavigate, language]);
 
   // ─── 덱 최적화/강화 시 적용 슬롯 흔들림 애니메이션 (Card Shake FX) ───
   const [shakingSlotIndices, setShakingSlotIndices] = useState<number[]>([]);
@@ -462,8 +475,8 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
       const updateBanner = (sec: number) => {
         setAutoSwapBanner(
           language === 'ko'
-            ? `⚡ [덱 자동 강화 완료] '${cardName}'(으)로 교체 장착되었습니다!\n(기존: ${replacedName} 교체) 랭킹대전으로 자동 복귀합니다 (${sec}초)...`
-            : `⚡ [Deck Auto-Upgraded] Equipped '${cardName}'!\n(Replaced: ${replacedName}) Returning to Rank Match in ${sec}s...`
+            ? `⚡ [신규 덱 장착 완료] '${cardName}'(으)로 교체 장착!\n/main 또는 /play 모드로 이동하여 새로운 카드플레이를 시작합니다 (${sec}초)... (3연패 시 랭킹 복귀)`
+            : `⚡ [New Deck Equipped] Equipped '${cardName}'!\nMoving to /main or /play for new card battle in ${sec}s... (Returns to Rank on 3 losses)`
         );
       };
 
@@ -479,7 +492,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
       }, 1000);
 
       autoSwapTimerRef.current = setTimeout(() => {
-        handleInstantReturnToBattle();
+        handleInstantReturnToBattle(true);
       }, 2200);
     } catch (e) {
       console.error('Failed to auto swap deck card', e);
@@ -3551,7 +3564,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                     isAutoLoopRanking = localStorage.getItem('hero_auto_loop_is_ranking') === 'true';
                   } catch {}
                   if (isAutoLoopRanking) {
-                    handleInstantReturnToBattle();
+                    handleInstantReturnToBattle(true);
                   }
                 }}
                 className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-xl font-bold uppercase tracking-wider text-xs shadow-md active:scale-95 transition-all cursor-pointer"
