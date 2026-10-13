@@ -2,6 +2,49 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-14 08:52 KST] 자동 플레이 중 1회 완독(완득) 보상 팝업 미종료 버그 수정
+- **요청 사항**:
+  - "자동 플레이 시 , 1회 완득 보상 팝업이 사라지지 않고 계속 표시되는 버그"
+- **원인 분석**:
+  1. 자동 플레이(스마트 루프) 기능 중 웹소설/웹툰(`NovelView.tsx`) 투어 라운지 진입 시, 제 1화 완독 보상이 즉각 자동 지급되면서 `showCustomAlert`("완독 보상 자동 획득! 제 1화 완독 보상 100 SNS 포인트가 자동으로 지급되었습니다!") 팝업이 호출됨.
+  2. 전역 커스텀 팝업(`App.tsx`의 `customPopup`)은 패배/버거운 상대 팝업을 제외하고는 기본 카운트다운 타이머가 없어 사용자가 직접 [확인]을 누르지 않으면 영원히 닫히지 않고 화면 중앙을 가로막음.
+  3. 스마트 루프가 1.5초 후 자동으로 다음 배틀/화면으로 넘어가더라도 전역 모달이 여전히 `isOpen: true` 상태로 잔류하여 플레이 화면 전체를 가리는 심각한 프리징 현상이 발생함.
+- **수정 및 개선 내역**:
+  1. **전역 `showCustomAlert` 자동 카운트다운 방어 로직 구현 ([`src/App.tsx`](file:///Users/dayyoung/project/snshero/src/App.tsx))**:
+     - 자동 플레이/스마트 루프(`hero_auto_loop_is_ranking`, `hero_auto_loop_mode`) 활성 상태 감지 시, `showCustomAlert`에 호출된 모든 alert 팝업에 **2초 자동 닫힘 타이머(`countdown: 2`)를 강제 부여**하여 화면 블로킹 원천 차단.
+     - 완독/시청/보상/지급/획득 키워드 감지 시, 수동 모드 플레이어에게도 3초 후 자동으로 닫히도록 편의성 개선.
+     - 화면 전환(`useEffect([view])`) 시 잔여 alert 모달을 즉시 청소하는 안전장치 추가.
+  2. **웹소설 완독 보상 호출부 개선 ([`src/views/NovelView.tsx`](file:///Users/dayyoung/project/snshero/src/views/NovelView.tsx))**:
+     - `handleClaimEpisodeReward`에서 자동 플레이 상태 감지 후 `showCustomAlert(..., ..., isAutoLoop ? 2 : 3)` 명시적 카운트다운 전달.
+     - 이미 수령된 회차 알림도 2초 후 자동 닫힘 적용.
+  3. **애니/영화/예측/상점 팝업 연동 ([`AnimeView.tsx`](file:///Users/dayyoung/project/snshero/src/views/AnimeView.tsx), [`MovieView.tsx`](file:///Users/dayyoung/project/snshero/src/views/MovieView.tsx), [`PredictionMarketView.tsx`](file:///Users/dayyoung/project/snshero/src/views/PredictionMarketView.tsx), [`ShopView.tsx`](file:///Users/dayyoung/project/snshero/src/views/ShopView.tsx))**:
+     - 시청 보상 및 예측 보상 alert에 `autoCloseSeconds` 전달.
+     - 상점 입장 시 매일 무료 50 SNS 지급 팝업은 자동 플레이 중일 때 팝업 생략 처리.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 Errors (타입 무결점 통과).
+  - `npm run build`: Vite 6 프로덕션 번들 정상 빌드 완료 (`built in 18.14s`, 52개 정적 SPA 라우트 및 뉴스 SEO 생성 완료).
+  - 로컬 Git 커밋 완료 (`ecbf4e56`).
+  - 연동 구글 폼 완료 보고서 제출 완료 (`submit_report.py`).
+- **요청 사항**:
+  - "마이덱 에서 최강 덱 자동편성 을 하고나면 최적화 팝업 뒤에 자동으로 카드 플레이가 되는 버그가 있어."
+- **원인 분석**:
+  1. [`src/views/MyDeckView.tsx`](file:///Users/dayyoung/project/snshero/src/views/MyDeckView.tsx)의 `handleOptimizeDeck`에서 슬롯 흔들림 애니메이션 호출 시 `triggerCardShake(targetsToShake, true)`로 호출되어 `andReturnToAutoLoop` 플래그가 `true`로 설정됨.
+  2. `triggerCardShake` 내부에서 `if (andReturnToAutoLoop || isAutoLoopRanking)` 조건으로 인해 로컬스토리지 잔여 플래그 감지 시 1.4초 후 자동으로 `handleInstantReturnToBattle()`이 실행됨.
+  3. `showOptimizeSuccessModal` 최적화 성공 팝업의 [확인] 버튼 핸들러에 `handleInstantReturnToBattle(true)` 호출이 포함되어 있어 팝업을 닫는 순간 대전으로 이동함.
+- **수정 및 개선 내역**:
+  1. **`handleOptimizeDeck` 플래그 수정**:
+     - `triggerCardShake(targetsToShake, false)`로 변경하여 수동 덱 최적화 시 자동 복귀 타이머가 작동하지 않도록 차단.
+  2. **`triggerCardShake` 복귀 조건 엄격화**:
+     - `if (andReturnToAutoLoop)`로 수정하여 오직 명시적으로 `true`가 전달된 시스템 자동 교체(스마트 루프 가챠 스왑 등)일 때만 자동 복귀가 실행되도록 분리.
+  3. **`showOptimizeSuccessModal` 확인 버튼 핸들러 정돈**:
+     - 확인 버튼 클릭 시 불필요한 대전 복귀 호출을 전면 제거하고 `setShowOptimizeSuccessModal(false)`만 순수하게 수행하여, 덱 최적화 후 사용자가 마이덱 화면에 온전히 머물면서 덱을 확인/편집할 수 있도록 정상화.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 Errors (타입 무결점 통과).
+  - `npm run build`: Vite 6 프로덕션 번들 정상 빌드 완료.
+  - 로컬 Git 커밋 완료 (`74ebfd0f`).
+  - 연동 구글 폼 완료 보고서 제출 완료 (`submit_report.py`).
+
+
 ## [2026-10-14 08:14 KST] /git-push 명령 실행: 원격 저장소(origin main) 푸시 완료
 - **요청 사항**:
   - `/git-push`
