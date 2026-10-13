@@ -3,7 +3,8 @@ import { motion, AnimatePresence, MotionConfig, useReducedMotion } from 'motion/
 import { 
   ArrowLeft, Zap, Shield, Flame, RotateCcw, Volume2, VolumeX, 
   Sparkles, Check, Trophy, Award, Bot, RefreshCw, Star,
-  Coffee, BookOpen, Film, Play, ShoppingBag, ArrowUpRight
+  Coffee, BookOpen, Film, Play, ShoppingBag, ArrowUpRight,
+  Waves, Wind, Mountain, User, Skull, Leaf, Hammer, Ghost
 } from 'lucide-react';
 import { CardData, UserStats, Skill, Item, CardRarity, Language } from '../types';
 import { CARD_DATABASE } from '../cardDatabase';
@@ -26,27 +27,28 @@ import { MissionDialogueIntro } from '../components/MissionDialogueIntro';
 import { pickNewRankOpponent, RankOpponentInfo } from '../data/rankingOpponents';
 import { getDynamicDifficultyProfile, DynamicDifficultyProfile } from '../lib/dynamicDifficulty';
 
-export const ELEMENT_META: Record<string, {
+export interface ElementDef {
   nameKo: string;
   nameEn: string;
-  emoji: string;
-  bg: string;
-  border: string;
-  text: string;
-  badgeBg: string;
-}> = {
-  water: { nameKo: '물', nameEn: 'Water', emoji: '💧', bg: 'bg-blue-500/15', border: 'border-blue-400', text: 'text-blue-600', badgeBg: 'bg-blue-600' },
-  fire: { nameKo: '불', nameEn: 'Fire', emoji: '🔥', bg: 'bg-red-500/15', border: 'border-red-400', text: 'text-red-600', badgeBg: 'bg-red-600' },
-  wind: { nameKo: '바람', nameEn: 'Wind', emoji: '🌪️', bg: 'bg-emerald-500/15', border: 'border-emerald-400', text: 'text-emerald-600', badgeBg: 'bg-emerald-600' },
-  land: { nameKo: '땅', nameEn: 'Earth', emoji: '🏔️', bg: 'bg-amber-600/15', border: 'border-amber-500', text: 'text-amber-700', badgeBg: 'bg-amber-700' },
-  human: { nameKo: '인간', nameEn: 'Human', emoji: '👤', bg: 'bg-sky-500/15', border: 'border-sky-400', text: 'text-sky-600', badgeBg: 'bg-sky-600' },
-  undead: { nameKo: '언데드', nameEn: 'Undead', emoji: '💀', bg: 'bg-purple-600/15', border: 'border-purple-400', text: 'text-purple-600', badgeBg: 'bg-purple-700' },
-  elf: { nameKo: '엘프', nameEn: 'Elf', emoji: '🍃', bg: 'bg-green-500/15', border: 'border-green-400', text: 'text-green-600', badgeBg: 'bg-green-600' },
-  dwarf: { nameKo: '드워프', nameEn: 'Dwarf', emoji: '🔨', bg: 'bg-zinc-500/15', border: 'border-zinc-400', text: 'text-zinc-600', badgeBg: 'bg-zinc-700' },
-  monster: { nameKo: '몬스터', nameEn: 'Monster', emoji: '👾', bg: 'bg-orange-500/15', border: 'border-orange-400', text: 'text-orange-600', badgeBg: 'bg-orange-600' },
-  robot: { nameKo: '로봇', nameEn: 'Robot', emoji: '🤖', bg: 'bg-slate-500/15', border: 'border-slate-400', text: 'text-slate-600', badgeBg: 'bg-slate-600' },
-  dragon: { nameKo: '드래곤', nameEn: 'Dragon', emoji: '⚡', bg: 'bg-rose-500/15', border: 'border-rose-400', text: 'text-rose-600', badgeBg: 'bg-rose-600' },
+  Icon: React.ComponentType<{ size?: number; className?: string; strokeWidth?: number }>;
+}
+
+export const ELEMENT_DEFINITIONS: Record<string, ElementDef> = {
+  water: { nameKo: '물', nameEn: 'WATER', Icon: Waves },
+  fire: { nameKo: '불', nameEn: 'FIRE', Icon: Flame },
+  wind: { nameKo: '바람', nameEn: 'WIND', Icon: Wind },
+  land: { nameKo: '대지', nameEn: 'EARTH', Icon: Mountain },
+  earth: { nameKo: '대지', nameEn: 'EARTH', Icon: Mountain },
+  human: { nameKo: '인간', nameEn: 'HUMAN', Icon: User },
+  undead: { nameKo: '언데드', nameEn: 'UNDEAD', Icon: Skull },
+  elf: { nameKo: '엘프', nameEn: 'ELF', Icon: Leaf },
+  dwarf: { nameKo: '드워프', nameEn: 'DWARF', Icon: Hammer },
+  monster: { nameKo: '몬스터', nameEn: 'MONSTER', Icon: Ghost },
+  robot: { nameKo: '로봇', nameEn: 'ROBOT', Icon: Bot },
+  dragon: { nameKo: '드래곤', nameEn: 'DRAGON', Icon: Zap },
 };
+
+export const ELEMENT_META = ELEMENT_DEFINITIONS;
 import { WEBTOON_SEASONS } from '../content/webtoonEpisodes';
 import { MOVIE_EPISODES } from '../content/movieEpisodeMapping';
 import { createBattleWebMcpTools, useWebMcpTools } from '../lib/webMcp/index';
@@ -1510,7 +1512,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
         <div className="grid grid-cols-5 gap-1.5 w-full [@media(max-height:500px)_and_(min-width:480px)]:grid-cols-2 [@media(max-height:500px)_and_(min-width:560px)]:grid-cols-3">
           {opponentHand.map((card, i) => {
             const oppEl = getNormalizedElement(card);
-            const oppMeta = oppEl ? ELEMENT_META[oppEl] : null;
+            const oppDef = oppEl ? ELEMENT_DEFINITIONS[oppEl] : null;
             return (
               <div
                 key={`opp-card-${card.id || i}`}
@@ -1523,16 +1525,13 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                   lowSpecMode={suppressMotion}
                   className="w-full h-full pointer-events-none rounded-none shadow-none"
                 />
-                {oppMeta && (
+                {oppDef && (
                   <div 
-                    className={cn(
-                      "absolute top-0.5 right-0.5 z-30 flex items-center gap-0.5 px-1 py-0.5 rounded-xs text-white border border-white/50 text-[7.5px] font-black leading-none shadow-xs pointer-events-none select-none",
-                      oppMeta.badgeBg
-                    )}
-                    title={`${language === 'ko' ? oppMeta.nameKo : oppMeta.nameEn} ${language === 'ko' ? '속성' : 'Element'}`}
+                    className="absolute top-0.5 right-0.5 z-30 flex items-center gap-0.5 px-1 py-0.5 rounded-xs bg-[#fdfcfc]/95 text-[#201d1d] border border-[#201d1d]/30 font-mono text-[7.5px] font-bold leading-none shadow-2xs pointer-events-none select-none"
+                    title={`${language === 'ko' ? oppDef.nameKo : oppDef.nameEn} ${language === 'ko' ? '속성' : 'Element'}`}
                   >
-                    <span>{oppMeta.emoji}</span>
-                    <span className="hidden sm:inline">{language === 'ko' ? oppMeta.nameKo : oppMeta.nameEn}</span>
+                    <oppDef.Icon size={8.5} strokeWidth={2} className="text-[#201d1d] shrink-0" />
+                    <span className="hidden sm:inline tracking-tight">[{language === 'ko' ? oppDef.nameKo : oppDef.nameEn}]</span>
                   </div>
                 )}
               </div>
@@ -1613,9 +1612,9 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
               const isShielded = boardShields[idx];
               const isPlayable = !isOccupied && Boolean(isSelectedHand) && turn === 'player' && !gameOver && !isEvaluating && rankingSearchCountdown === null && !showMissionDialogue;
               const tileEl = elementalBoard[idx];
-              const tileMeta = tileEl ? ELEMENT_META[tileEl] : null;
+              const tileDef = tileEl ? ELEMENT_DEFINITIONS[tileEl] : null;
               const cardEl = isOccupied && cell ? getNormalizedElement(cell) : null;
-              const cardMeta = cardEl ? ELEMENT_META[cardEl] : null;
+              const cardDef = cardEl ? ELEMENT_DEFINITIONS[cardEl] : null;
               const isSynergy = Boolean(isOccupied && cell && tileEl && cardEl && cardEl === (tileEl === 'air' ? 'wind' : tileEl === 'earth' ? 'land' : tileEl));
 
               return (
@@ -1633,10 +1632,10 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                   className={cn(
                     "relative w-full h-full min-w-0 rounded-sm flex flex-col items-center justify-center overflow-hidden transition-all select-none",
                     isPlayable && "border border-dashed border-[#201d1d] bg-[#fdfcfc] hover:bg-[#e5e1e1] cursor-pointer",
-                    !isOccupied && !isPlayable && (tileMeta ? cn("border", tileMeta.border, tileMeta.bg) : "border border-[#0f0000]/12 bg-[#f8f7f7] text-[#9a9898]"),
+                    !isOccupied && !isPlayable && (tileDef ? "border border-[#201d1d]/25 bg-[#f8f7f7] text-[#201d1d]" : "border border-[#0f0000]/12 bg-[#f8f7f7] text-[#9a9898]"),
                     isOccupied && cell.owner === 'player' && "border-2 border-[#2563eb] bg-[#2563eb]",
                     isOccupied && cell.owner === 'ai' && "border-2 border-[#dc2626] bg-[#dc2626]",
-                    isSynergy && "ring-2 ring-amber-400 shadow-[0_0_10px_rgba(251,191,36,0.65)]",
+                    isSynergy && "ring-2 ring-[#201d1d] shadow-[0_0_8px_rgba(32,29,29,0.35)]",
                     isFlipped && "outline outline-2 outline-offset-[-4px] outline-[#fdfcfc]"
                   )}
                 >
@@ -1660,24 +1659,21 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                       />
 
                       {/* 각 카드별 속성 배지 (우측 하단) */}
-                      {cardMeta && (
+                      {cardDef && (
                         <div 
-                          className={cn(
-                            "absolute bottom-0.5 right-0.5 z-30 flex items-center gap-0.5 px-1 py-0.5 rounded-xs text-white border border-white/60 text-[8px] font-black leading-none shadow-xs pointer-events-none select-none",
-                            cardMeta.badgeBg
-                          )}
-                          title={`${language === 'ko' ? cardMeta.nameKo : cardMeta.nameEn} ${language === 'ko' ? '속성' : 'Element'}`}
+                          className="absolute bottom-0.5 right-0.5 z-30 flex items-center gap-0.5 px-1 py-0.5 rounded-xs bg-[#fdfcfc]/95 text-[#201d1d] border border-[#201d1d]/30 font-mono text-[7.5px] font-bold leading-none shadow-2xs pointer-events-none select-none"
+                          title={`${language === 'ko' ? cardDef.nameKo : cardDef.nameEn} ${language === 'ko' ? '속성' : 'Element'}`}
                         >
-                          <span className="text-[9px]">{cardMeta.emoji}</span>
-                          <span className="tracking-tight">{language === 'ko' ? cardMeta.nameKo : cardMeta.nameEn}</span>
+                          <cardDef.Icon size={8.5} strokeWidth={2} className="text-[#201d1d] shrink-0" />
+                          <span className="tracking-tight uppercase">[{language === 'ko' ? cardDef.nameKo : cardDef.nameEn}]</span>
                         </div>
                       )}
 
                       {/* 타일 속성 일치 시 시너지 효과 배지 (좌측 상단) */}
                       {isSynergy && (
-                        <div className="absolute top-0.5 left-0.5 z-35 flex items-center gap-0.5 px-1 py-0.5 rounded-xs bg-amber-400 text-stone-950 font-mono text-[8.5px] font-black border border-amber-300 shadow-xs pointer-events-none animate-pulse">
-                          <span>⚡</span>
-                          <span>{language === 'ko' ? '시너지 +1' : 'SYNERGY +1'}</span>
+                        <div className="absolute top-0.5 left-0.5 z-35 flex items-center gap-0.5 px-1 py-0.5 rounded-xs bg-[#201d1d] text-[#fdfcfc] border border-[#201d1d] font-mono text-[8px] font-black shadow-xs pointer-events-none">
+                          <Sparkles size={8.5} strokeWidth={2} className="text-amber-300" />
+                          <span>[+1 SYNERGY]</span>
                         </div>
                       )}
 
@@ -1690,14 +1686,16 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                     </motion.div>
                   ) : (
                     <div className="flex flex-col items-center justify-center pointer-events-none select-none">
-                      {tileMeta ? (
-                        <div className="flex flex-col items-center justify-center gap-0.5">
-                          <span className="text-base sm:text-lg leading-none">{tileMeta.emoji}</span>
-                          <span className={cn("text-[9px] font-black uppercase tracking-tight leading-none", tileMeta.text)}>
-                            {language === 'ko' ? tileMeta.nameKo : tileMeta.nameEn}
+                      {tileDef ? (
+                        <div className="flex flex-col items-center justify-center gap-1 text-[#201d1d]">
+                          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-sm bg-[#fdfcfc] border border-[#201d1d]/25 flex items-center justify-center shadow-2xs">
+                            <tileDef.Icon size={19} strokeWidth={1.8} className="text-[#201d1d]" />
+                          </div>
+                          <span className="font-mono text-[9px] font-black uppercase tracking-wider text-[#201d1d] leading-none">
+                            [{language === 'ko' ? tileDef.nameKo : tileDef.nameEn}]
                           </span>
-                          <span className="text-[7.5px] font-bold bg-[#201d1d]/80 text-amber-300 px-1 py-0.2 rounded-xs leading-none">
-                            +1 PWR
+                          <span className="font-mono text-[7.5px] font-bold text-[#646262] leading-none tracking-tight">
+                            [+1 PWR]
                           </span>
                         </div>
                       ) : (
@@ -1822,7 +1820,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
           {playerHand.map((card, i) => {
             const isSelected = selectedHandIndex === i;
             const myEl = getNormalizedElement(card);
-            const myMeta = myEl ? ELEMENT_META[myEl] : null;
+            const myDef = myEl ? ELEMENT_DEFINITIONS[myEl] : null;
             return (
               <button
                 type="button"
@@ -1848,16 +1846,13 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                   lowSpecMode={suppressMotion}
                   className="w-full h-full pointer-events-none rounded-none shadow-none"
                 />
-                {myMeta && (
+                {myDef && (
                   <div 
-                    className={cn(
-                      "absolute top-0.5 right-0.5 z-30 flex items-center gap-0.5 px-1 py-0.5 rounded-xs text-white border border-white/50 text-[7.5px] font-black leading-none shadow-xs pointer-events-none select-none",
-                      myMeta.badgeBg
-                    )}
-                    title={`${language === 'ko' ? myMeta.nameKo : myMeta.nameEn} ${language === 'ko' ? '속성' : 'Element'}`}
+                    className="absolute top-0.5 right-0.5 z-30 flex items-center gap-0.5 px-1 py-0.5 rounded-xs bg-[#fdfcfc]/95 text-[#201d1d] border border-[#201d1d]/30 font-mono text-[7.5px] font-bold leading-none shadow-2xs pointer-events-none select-none"
+                    title={`${language === 'ko' ? myDef.nameKo : myDef.nameEn} ${language === 'ko' ? '속성' : 'Element'}`}
                   >
-                    <span>{myMeta.emoji}</span>
-                    <span className="hidden sm:inline">{language === 'ko' ? myMeta.nameKo : myMeta.nameEn}</span>
+                    <myDef.Icon size={8.5} strokeWidth={2} className="text-[#201d1d] shrink-0" />
+                    <span className="hidden sm:inline tracking-tight">[{language === 'ko' ? myDef.nameKo : myDef.nameEn}]</span>
                   </div>
                 )}
               </button>
