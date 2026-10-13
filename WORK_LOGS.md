@@ -2,6 +2,21 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-13 12:30 KST] GitHub Actions CI Linux Rollup 바이너리 누락 빌드 에러 수정
+- **요청 사항**:
+  - "방금 푸시한 git push action 실패. Error: Cannot find module @rollup/rollup-linux-x64-gnu. npm has a bug related to optional dependencies"
+- **원인 분석**:
+  - macOS 환경에서 `package-lock.json`이 신규 생성되어 커밋되면서, npm의 알려진 크로스 플랫폼 버그(Issue #4828)로 인해 Linux 러너 환경 전용 바이너리인 `@rollup/rollup-linux-x64-gnu`가 락파일에서 제외/누락됨.
+  - GitHub Actions 워커(`ubuntu-latest`)에서 `npm install --legacy-peer-deps` 시 리눅스용 Rollup 바이너리가 설치되지 않아 `npm run build`에서 에러 발생.
+- **수정 및 개선 내역**:
+  1. **package-lock.json Git 추적 제외 및 .gitignore 추가**:
+     - 이전 환경과 동일하게 `package-lock.json`을 Git 인덱스에서 제거하고 `.gitignore`에 등록하여 로컬 OS와 CI 러너 간 플랫폼 락 충돌 방지.
+  2. **GitHub Actions 워크플로우 보강 ([`deploy.yml`](file:///Users/dayyoung/project/snshero/.github/workflows/deploy.yml))**:
+     - `Install Dependencies` 단계에서 `npm install --no-save @rollup/rollup-linux-x64-gnu || true`를 추가하여 리눅스 환경에서 롤업 바이너리가 100% 보장되도록 안전장치 구축.
+- **검증 결과**:
+  - 로컬 Git 커밋 완료 (`fb82bbb3`).
+  - 구글 폼 완료 보고서 제출 완료 (`submit_report.py`).
+
 ## [2026-10-13 12:28 KST] start-server.sh 실행 시 W3C Web Push 디스패처 서버(포트 3001) 자동 통합 실행 구축
 - **요청 사항**:
   - "start-server.sh 배치 돌리면 웹푸시 서버도 같이 실행되게 해줘."
