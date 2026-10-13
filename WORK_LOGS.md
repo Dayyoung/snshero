@@ -2,6 +2,28 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-13 09:03 KST] 홈화면 미디어 라운지 하위 바이브코딩 강의 및 공식 개발/플레이 리소스 6종 메뉴 추가
+- **요청 사항**: "홈화면 미디어 라운지 하위에 이 메뉴들이 있었으면 좋겠어: 바이브코딩 웹게임 개발 강의 (AI Studio), SNSHero.com 게임 플레이링크, SNSHero.com AI Studio, SNSHero.com 소스파일, SNSHero.com 개발 프롬프트, SNSHero.com 유튜브 채널"
+- **적용 및 개선 내역**:
+  1. **`HomeCategoryHubModal.tsx` 미디어 허브 확장**:
+     - 기존 IP 미디어(웹소설, 웹툰, 애니, 영화, 도감)와 신규 6대 리소스를 명확히 분리하여 렌더링하도록 섹션 헤더(`🎬 오리지널 스토리 & IP 미디어`, `🚀 바이브코딩 & 개발자 공식 리소스`) 도입.
+     - 6종 외부 공식 리소스 버튼 추가:
+       1) 바이브코딩 웹게임 개발 강의 (AI Studio): `https://www.youtube.com/playlist?list=PLV8H2-pD9vH0`
+       2) SNSHero.com 게임 플레이링크: `https://snshero.com/`
+       3) SNSHero.com AI Studio: `https://ai.studio/apps/636a37c3-97ce-4c80-be46-8c9a6f793f2d`
+       4) SNSHero.com 소스파일: `https://github.com/Dayyoung/snshero`
+       5) SNSHero.com 개발 프롬프트: `https://snshero.com/snshero.md`
+       6) SNSHero.com 유튜브 채널: `https://www.youtube.com/@snshero`
+     - 외부 링크는 새 창(`_blank`, `noopener,noreferrer`) 열기 및 `[↗]` 뱃지 적용.
+  2. **`HomeView.tsx` 미디어 라운지 연동 개선**:
+     - 상단 단축 메뉴의 `[📚 미디어 라운지]` 버튼 클릭 시 단순 웹툰 이동 대신 `HomeCategoryHubModal (category="media")` 팝업을 호출하도록 연결하여 Progressive Disclosure 및 모바일 쾌적성 보장.
+  3. **`HomeCategoryHub.tsx` 카테고리 아코디언 메뉴 동기화**:
+     - 홈 화면 하단의 카테고리별 기능 메뉴 아코디언에서도 미디어 라운지 펼침 시 오리지널 IP 미디어 4종과 신규 6대 바이브코딩/개발자 리소스 버튼이 일목요연하게 2단 그리드로 제공되도록 구현.
+- **검증 결과**:
+  - `npm run build`: Vite 6 프로덕션 빌드 0에러 성공.
+  - 로컬 Git 커밋 (`9ddb5d5`) 및 원격 저장소 푸시(`git push origin main`) 완료 (AI Studio 실시간 반영 연동).
+  - 연동 구글 폼 완료 보고서 제출 완료 (`submit_report.py`).
+
 ## [2026-10-13 08:58 KST] 카드 텍스트 상자(내부 서피스) 배경색 예전 색상 유지 복원
 - **요청 사항**: "카드 텍스트 상자 색상은 예전 색상을 유지"
 - **원인 분석**:
