@@ -2,6 +2,37 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-13 15:10 KST] /reddit 페이지 구글 광고 노출을 지정된 3가지 배너 규격으로만 엄격 제한 및 자동/날개 광고 완전 차단
+- **요청 사항**:
+  - "/reddit 페이지에서는 다른화면들과 다르게 아래같이 배너 형태들에만 구글광고를 노출시켜줘."
+  - `<div class="min-h-[100px] flex items-center justify-center"></div>`
+  - `<div class="w-full rounded-xl overflow-hidden mb-3 border border-inherit/15 bg-black/5 dark:bg-white/5 flex flex-col items-center justify-center p-2 min-h-[140px]"></div>`
+  - `<div class="min-h-[250px] w-full flex items-center justify-center rounded-xl bg-black/5 overflow-hidden"></div>`
+- **수정 및 개선 내역**:
+  1. **오직 지정된 3개 배너 규격에만 구글 광고 렌더링 유지**:
+     - 형태 1 (`min-h-[100px] flex items-center justify-center`):
+       - `RedditCommunityView.tsx` (피드 상단 스폰서 디스플레이 배너)
+       - `RedditPostDetailModal.tsx` (포스트 상세 모달 본문 직후 In-Article 네이티브 배너)
+     - 형태 2 (`w-full rounded-xl overflow-hidden mb-3 border border-inherit/15 bg-black/5 dark:bg-white/5 flex flex-col items-center justify-center p-2 min-h-[140px]`):
+       - `RedditAdCard.tsx` (피드 중간 4개 간격으로 자연스럽게 삽입되는 인피드 스폰서 카드)
+     - 형태 3 (`min-h-[250px] w-full flex items-center justify-center rounded-xl bg-black/5 overflow-hidden`):
+       - `RedditSidebarRight.tsx` (우측 사이드바 300x250 반응형 직사각형 배너 2곳)
+  2. **App.tsx 전역 상단 배너 및 좌우 스카이스크래퍼 날개 배너 차단 ([`src/App.tsx`](file:///Users/dayyoung/project/snshero/src/App.tsx))**:
+     - `view === 'reddit'`일 때 상단 모바일 배너와 데스크톱 좌/우 날개 광고가 노출되지 않도록 `view !== 'reddit'` 조건을 전면 추가.
+  3. **구글 애드센스 자동 광고(Auto Ads) 완전 우회 및 주입 요소 자동 청소 ([`src/hooks/useAdSenseAutoAds.ts`](file:///Users/dayyoung/project/snshero/src/hooks/useAdSenseAutoAds.ts), [`src/views/RedditCommunityView.tsx`](file:///Users/dayyoung/project/snshero/src/views/RedditCommunityView.tsx))**:
+     - `currentView === 'reddit'`일 때 자동 광고(Auto Ads) 페이지뷰 스크립트 실행을 완전히 스킵.
+     - `removeAutoPlacedAds()` 함수를 통해 구글이 임의로 주입하는 앵커 배너(`google_ad_channel`, `.adsbygoogle-noab-wrap`, 모바일 전면광고, 플로팅 광고)를 실시간 감지하여 자동 삭제.
+  4. **모달 및 서브뷰 내 비표준 임의 광고 배너 전면 정리**:
+     - `RedditPostDetailModal.tsx`의 중복/비표준 배너(토론 스폰서, 댓글 하단 배너) 제거.
+     - `RedditSearchModal.tsx`, `RedditSubmitPostModal.tsx`, `RedditUserProfileView.tsx`의 비표준 광고 배너 및 불필요한 import 제거.
+  5. **정적 SEO HTML 빌더 연동 ([`scripts/generate-news-seo.ts`](file:///Users/dayyoung/project/snshero/scripts/generate-news-seo.ts))**:
+     - 정적 `/reddit` 메인 피드 상단 배너 컨테이너를 지정 규격인 `<div class="min-h-[100px] flex items-center justify-center">`로 정규화.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 Errors (타입 무결점 통과).
+  - `npm run build`: Vite 6 프로덕션 번들 정상 빌드 완료.
+  - 연동 구글 폼 완료 보고서 제출 완료 (`submit_report.py`).
+  - 로컬 Git 커밋 완료 (`c22c719f`).
+
 ## [2026-10-13 15:00 KST] 실제 브라우저 구글 계정 선택 로그인(Google Sign-In) 및 도메인 안내/직접 연동 폴백 시스템 구축
 - **요청 사항**:
   - "https://dayyoung-macbookpro.tail3717a4.ts.net/ 현재 구글 로그인 누르면 그냥 로그인 되는데 실제 현재 로그인된 구글아이디로 로그인 해주면 안돼?"
