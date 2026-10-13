@@ -2,6 +2,23 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-13 09:37 KST] news-feed.xml 및 rss.xml XML 엔티티 구문 오류(&amp; 미처리) 완벽 수정
+- **요청 사항**: 구글 서치 콘솔에서 `https://snshero.com/news-feed.xml` 제출 시 "오류 1개 / 사이트맵에 잘못된 형식 포함" 오류 발생 문제 해결.
+- **원인 분석**:
+  - `scripts/generate-news-seo.ts`의 RSS 2.0 피드 생성 함수(`generateNewsRssFeed`)에서 `<enclosure url="...">` 및 `<media:content url="...">` 태그에 이미지 URL을 삽입할 때, 쿼리 스트링에 포함된 앰퍼샌드(`&`, 예: `?width=465&dpr=1&s=none`)를 `escapeXml`하지 않고 날것의 URL로 속성에 직접 주입함.
+  - 이로 인해 XML 파서가 `&dpr=` 등을 세미콜론이 없는 잘못된 XML 엔티티 참조(`EntityRef: expecting ';'`)로 인식하여, 구글 서치 콘솔 및 모든 표준 XML 파서에서 치명적 구문 파싱 오류(오류 1개)가 발생함.
+- **수정 및 개선 내역**:
+  1. **`generate-news-seo.ts` 내 RSS XML 속성값 완벽 이스케이프**:
+     - `escapedImgUrl = escapeXml(imgUrl)` 및 `escapedLink = escapeXml(link)` 적용하여 `<enclosure url="...">`, `<media:content url="...">`, `<link>`, `<guid>` 내의 모든 특수문자(`&` -> `&amp;`)를 XML 1.0 표준에 맞게 철저히 이스케이프 처리.
+  2. **피드 파일 전수 재생성 및 검증**:
+     - `public/news-feed.xml`, `public/rss.xml`, `dist/news-feed.xml`, `dist/rss.xml` 재빌드.
+     - `xmllint --noout` 및 Python `xml.etree.ElementTree`로 266개 전수 기사 아이템 파싱 검증 완료 (구문 오류 0건, 100% 무결점 통과).
+- **검증 결과**:
+  - `npm run build`: Vite 6 프로덕션 번들 및 dist/ 정적 파일 정상 빌드 완료.
+  - 구글 폼 완료 보고서 제출 완료 (`submit_report.py`).
+  - 로컬 Git 커밋 및 원격 푸시(`git push origin main`) 배포 완결.
+
+
 ## [2026-10-13 09:35 KST] /reddit 최상단 게임 소개 및 플레이 가이드 상단 고정(Pinned) 게시물 구현
 - **요청 사항**: "/reddit 최상단에 https://snshero.com 게임 소개 및 플레이 방법에 대한 글을 개시하자. 게임 플레이 스크린샷을 활용해서 글을 쓰자. 해당 글은 신규글이 등록되도 넘어가지 않도록 상단 고정."
 - **수정 및 개선 내역**:

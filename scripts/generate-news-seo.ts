@@ -101,12 +101,13 @@ function generateNewsRssFeed(posts: RedditPost[]): string {
     const pubDateUtc = new Date(post.createdAt).toUTCString();
     const link = `${BASE_URL}/r/news/comments/${post.id}`;
     const imgUrl = post.media?.url || `${BASE_URL}/logo.jpg`;
-    const cleanBody = escapeXml(post.body || post.title);
+    const escapedImgUrl = escapeXml(imgUrl);
+    const escapedLink = escapeXml(link);
 
     return `    <item>
       <title><![CDATA[${post.title}]]></title>
-      <link>${link}</link>
-      <guid isPermaLink="true">${link}</guid>
+      <link>${escapedLink}</link>
+      <guid isPermaLink="true">${escapedLink}</guid>
       <pubDate>${pubDateUtc}</pubDate>
       <dc:creator><![CDATA[${post.author}]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -118,8 +119,8 @@ function generateNewsRssFeed(posts: RedditPost[]): string {
           <p><small>출처 및 원문: <a href="${post.sourceUrl || link}">${escapeXml(post.media?.domain || 'Google News')}</a> | 발행: SNSHero News</small></p>
         </article>
       ]]></content:encoded>
-      <enclosure url="${imgUrl}" length="240000" type="image/jpeg" />
-      <media:content url="${imgUrl}" medium="image" width="1200" height="675">
+      <enclosure url="${escapedImgUrl}" length="240000" type="image/jpeg" />
+      <media:content url="${escapedImgUrl}" medium="image" width="1200" height="675">
         <media:title><![CDATA[${post.title}]]></media:title>
       </media:content>
     </item>`;
