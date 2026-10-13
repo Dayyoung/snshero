@@ -88,19 +88,46 @@ self.addEventListener('push', (event) => {
     }
   }
 
+  // iOS(WebKit Safari PWA)는 actions 및 vibrate를 지원하지 않으며 포함 시 TypeError가 발생하여 알림이 취소됩니다.
+  const isIOS = typeof navigator !== 'undefined' && (/iPad|iPhone|iPod/.test(navigator.userAgent || '') || 
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
+
+  const origin = self.location ? self.location.origin : '';
+  const iconUrl = (data.icon && data.icon.startsWith('http')) ? data.icon : (origin + (data.icon || '/icon-192.png'));
+  const badgeUrl = (data.badge && data.badge.startsWith('http')) ? data.badge : (origin + (data.badge || '/icon-192.png'));
+
   const options = {
-    body: data.body,
-    icon: data.icon || '/icon-192.png',
-    badge: data.badge || '/icon-192.png',
-    vibrate: [100, 50, 100],
+    body: data.body || '',
+    icon: iconUrl,
+    badge: badgeUrl,
     data: data.data || { url: '/' },
-    actions: [
-      { action: 'open', title: '게임 접속하기' }
-    ]
+    tag: data.tag || ('snshero-' + Date.now()),
   };
 
+  // Android/데스크톱에서만 actions, vibrate 확장
+  if (!isIOS) {
+    options.vibrate = [100, 50, 100];
+    options.actions = [
+      { action: 'open', title: '게임 접속하기' }
+    ];
+  }
+
   event.waitUntil(
-    self.registration.showNotification(data.title, options)
+    (async () => {
+      try {
+        await self.registration.showNotification(data.title || 'SNS히어로', options);
+      } catch (err) {
+        // iOS WebKit TypeError 방어: 미지원 필드 전면 제거 후 최소 옵션으로 강제 표시
+        try {
+          await self.registration.showNotification(data.title || 'SNS히어로', {
+            body: data.body || '',
+            data: data.data || { url: '/' },
+          });
+        } catch (fallbackErr) {
+          console.error('[SW] Notification fallback error:', fallbackErr);
+        }
+      }
+    })()
   );
 });
 
