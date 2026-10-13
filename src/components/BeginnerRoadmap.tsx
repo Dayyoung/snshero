@@ -147,12 +147,30 @@ export const BeginnerRoadmap: React.FC<BeginnerRoadmapProps> = ({
   });
 
   const [isOpen, setIsOpen] = useState(false);
+  const [autoRewardNotice, setAutoRewardNotice] = useState<string | null>(null);
 
   useEffect(() => {
     localStorage.setItem('hero_beginner_roadmap_claimed', JSON.stringify(claimedSteps));
   }, [claimedSteps]);
 
   const isStepCompleted = (step: RoadmapStep) => step.checkCompleted(userStats);
+
+  // 미션 달성 시 즉시 자동 보상 지급 (보상 버튼 클릭 불필요)
+  useEffect(() => {
+    ROADMAP_STEPS.forEach(step => {
+      if (step.checkCompleted(userStats) && !claimedSteps.includes(step.id)) {
+        playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+        updateSns(step.rewardSns, `초보자 로드맵 ${step.id}단계 완료 보상`);
+        setClaimedSteps(prev => [...prev, step.id]);
+        setAutoRewardNotice(
+          language === 'ko'
+            ? `🎉 [초보자 로드맵 ${step.id}단계] 달성! +${step.rewardSns} SNS 보상이 자동으로 지급되었습니다!`
+            : `🎉 [Beginner Step ${step.id}] Cleared! +${step.rewardSns} SNS automatically awarded!`
+        );
+        setTimeout(() => setAutoRewardNotice(null), 3500);
+      }
+    });
+  }, [userStats, claimedSteps, language, playSfx, updateSns]);
 
   const handleClaim = (step: RoadmapStep) => {
     if (claimedSteps.includes(step.id)) return;
@@ -176,6 +194,19 @@ export const BeginnerRoadmap: React.FC<BeginnerRoadmapProps> = ({
 
   return (
     <div className="w-full bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] p-4 sm:p-5 font-mono my-2 shadow-sm relative overflow-hidden">
+      {/* Auto-Claim Notification Banner */}
+      {autoRewardNotice && (
+        <div className="mb-3 p-2.5 bg-amber-50 border border-amber-300 text-amber-950 font-bold text-xs flex items-center justify-between rounded-sm">
+          <div className="flex items-center gap-2">
+            <Sparkles size={14} className="text-amber-600 animate-pulse shrink-0" />
+            <span>{autoRewardNotice}</span>
+          </div>
+          <button onClick={() => setAutoRewardNotice(null)} className="text-amber-700 hover:text-amber-950 text-xs font-bold cursor-pointer">
+            [✕]
+          </button>
+        </div>
+      )}
+
       {/* Top Banner Header */}
       <div className="flex items-center justify-between pb-3 border-b border-[rgba(15,0,0,0.1)] mb-3">
         <div className="flex items-center gap-2">
@@ -260,21 +291,19 @@ export const BeginnerRoadmap: React.FC<BeginnerRoadmapProps> = ({
 
                 <div className="self-end sm:self-center shrink-0">
                   {claimed ? (
-                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-wider px-2 py-1 bg-gray-100 border border-gray-200 rounded-sm">
-                      {language === 'ko' ? '수령 완료' : 'Claimed'}
+                    <span className="text-[10px] font-black text-emerald-700 uppercase tracking-wider px-2 py-1 bg-emerald-50 border border-emerald-300 rounded-sm flex items-center gap-1">
+                      <CheckCircle2 size={12} className="text-emerald-600" />
+                      <span>{language === 'ko' ? '자동 수령 완료' : 'Claimed'}</span>
                     </span>
                   ) : completed ? (
-                    <button
-                      onClick={() => handleClaim(step)}
-                      className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-black font-black text-xs rounded-sm active:scale-95 transition-transform flex items-center gap-1 shadow-sm"
-                    >
-                      <Gift size={12} />
-                      <span>{language === 'ko' ? '보상 수령' : 'Claim'}</span>
-                    </button>
+                    <div className="px-2.5 py-1 bg-amber-400 text-stone-950 font-bold text-xs rounded-sm border border-amber-600 flex items-center gap-1 animate-pulse">
+                      <Sparkles size={12} />
+                      <span>{language === 'ko' ? '자동 보상 완료' : 'Auto Awarded'}</span>
+                    </div>
                   ) : (
                     <button
-                      onClick={() => handleClaim(step)}
-                      className="px-3 py-1.5 bg-[#201d1d] hover:bg-black text-white font-black text-xs rounded-sm active:scale-95 transition-transform flex items-center gap-1"
+                      onClick={() => onNavigate(step.targetView)}
+                      className="px-3 py-1.5 bg-[#201d1d] hover:bg-black text-white font-black text-xs rounded-sm active:scale-95 transition-transform flex items-center gap-1 cursor-pointer"
                     >
                       <span>{language === 'ko' ? '바로 가기' : 'Go'}</span>
                       <ChevronRight size={12} />

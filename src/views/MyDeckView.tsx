@@ -3643,19 +3643,10 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                             <span className="text-[9px] font-bold uppercase opacity-40 tracking-tighter">{achievement.rewardType}</span>
                           </div>
                              {isUnlocked ? (
-                               claimedAchievements.includes(achievement.id) ? (
-                                 <div className="text-[9px] font-bold bg-slate-100 text-slate-400 px-3 py-1.5 rounded-lg uppercase flex items-center gap-1">
-                                    <StarIcon size={8} />
-                                    {language === 'ko' ? '수령완료' : 'CLAIMED'}
-                                 </div>
-                               ) : (
-                                 <button 
-                                   onClick={() => claimAchievementReward?.(achievement.id)}
-                                   className="text-[9px] font-bold bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-3 py-1.5 rounded-lg shadow-sm hover:shadow-md hover:from-blue-700 hover:to-indigo-700 active:scale-95 transition-all uppercase cursor-pointer"
-                                 >
-                                    {language === 'ko' ? '획득하기' : 'CLAIM'}
-                                 </button>
-                               )
+                               <div className="text-[9px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-300 px-2.5 py-1.5 rounded-sm uppercase flex items-center gap-1 shadow-2xs">
+                                  <StarIcon size={8} className="text-emerald-600" />
+                                  <span>{language === 'ko' ? '자동 수령완료' : 'AUTO CLAIMED'}</span>
+                               </div>
                              ) : (
                                <div className="text-[9px] font-bold bg-slate-50 text-slate-300 px-3 py-1.5 rounded-lg uppercase">
                                   {language === 'ko' ? '미달성' : 'LOCKED'}

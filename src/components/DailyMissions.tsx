@@ -178,8 +178,8 @@ export const DailyMissions: React.FC = () => {
 
       const title = language === 'ko' ? result.title_ko : result.title_en;
       const msg = language === 'ko'
-        ? `🎁 [${title}] 보상이 지급되었습니다! (+${result.sns} SNS, +${result.xp} XP)`
-        : `🎁 [${title}] Reward claimed! (+${result.sns} SNS, +${result.xp} XP)`;
+        ? `🎁 [${title}] 완료 보상이 자동으로 지급되었습니다! (+${result.sns} SNS, +${result.xp} XP)`
+        : `🎁 [${title}] Reward auto-claimed! (+${result.sns} SNS, +${result.xp} XP)`;
       setNotificationMsg(msg);
       setShowUpgradeChip(true);
     }
@@ -198,13 +198,21 @@ export const DailyMissions: React.FC = () => {
       triggerFloatingReward(result.totalSns, result.totalXp);
 
       const msg = language === 'ko'
-        ? `🎉 완료된 ${result.count}개 미션 일괄 수령 완료! (+${result.totalSns} SNS, +${result.totalXp} XP)`
-        : `🎉 Claimed all ${result.count} missions! (+${result.totalSns} SNS, +${result.totalXp} XP)`;
+        ? `🎉 완료된 ${result.count}개 미션 보상 자동 수령 완료! (+${result.totalSns} SNS, +${result.totalXp} XP)`
+        : `🎉 Auto-claimed ${result.count} completed missions! (+${result.totalSns} SNS, +${result.totalXp} XP)`;
       setNotificationMsg(msg);
       setShowUpgradeChip(true);
     }
     setTimeout(() => setClaimingId(null), 500);
   }, [claimingId, addSns, addCompanionXp, language, refreshHistory]);
+
+  // 완료된 미션 감지 시 즉시 자동 보상 획득 (사용자 클릭 불필요)
+  useEffect(() => {
+    const claimable = getClaimableCount();
+    if (claimable > 0 && !claimingId) {
+      handleClaimAll();
+    }
+  }, [claimingId, handleClaimAll, missionData]);
 
   const handleClearHistory = () => {
     clearDailyMissionHistory();
@@ -481,21 +489,13 @@ export const DailyMissions: React.FC = () => {
               </span>
             </div>
 
-            {/* 우측 액션: 빠른 일괄 수령 버튼 & 접기/펼치기 버튼 */}
+            {/* 우측 액션: 자동 획득 알림 & 접기/펼치기 버튼 */}
             <div className="flex items-center gap-1.5 shrink-0">
               {claimableCount > 0 && (
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleClaimAll();
-                  }}
-                  disabled={claimingId !== null}
-                  className="text-[10px] font-bold bg-[#201d1d] text-[#fdfcfc] hover:bg-[#333030] px-2 py-0.5 rounded-sm cursor-pointer transition-all active:scale-95 border border-[rgba(15,0,0,0.12)] flex items-center gap-1"
-                  title={language === 'ko' ? '완료된 미션 보상 일괄 수령' : 'Claim all completed rewards'}
-                >
-                  <Gift size={10} className="text-amber-300" />
-                  <span>{language === 'ko' ? `수령 (${claimableCount})` : `Claim (${claimableCount})`}</span>
-                </button>
+                <div className="text-[10px] font-bold bg-amber-400 text-stone-950 px-2 py-0.5 rounded-sm flex items-center gap-1 animate-pulse">
+                  <Sparkles size={10} />
+                  <span>{language === 'ko' ? `자동 획득 (+${claimableRewardTotal})` : `Auto Claimed (+${claimableRewardTotal})`}</span>
+                </div>
               )}
 
               <div className="text-[10px] font-bold text-[#201d1d] bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] px-2 py-0.5 rounded-sm flex items-center gap-1">
@@ -568,17 +568,10 @@ export const DailyMissions: React.FC = () => {
                       </div>
 
                       {claimableCount > 0 && (
-                        <button
-                          onClick={handleClaimAll}
-                          disabled={claimingId !== null}
-                          className={cn(
-                            "text-[10px] font-bold bg-[#201d1d] text-[#fdfcfc] hover:bg-[#333030] px-2.5 py-0.5 rounded-sm cursor-pointer transition-all active:scale-95 border border-[rgba(15,0,0,0.12)] flex items-center gap-1",
-                            claimingId === 'all' && "opacity-70 cursor-wait"
-                          )}
-                        >
-                          <Gift size={10} className="text-amber-300" />
-                          <span>{language === 'ko' ? `일괄 수령 (${claimableCount})` : `Claim All (${claimableCount})`}</span>
-                        </button>
+                        <div className="text-[10px] font-bold bg-amber-400 text-[#201d1d] px-2.5 py-0.5 rounded-sm border border-amber-600 flex items-center gap-1 animate-pulse">
+                          <Sparkles size={10} className="text-amber-900" />
+                          <span>{language === 'ko' ? `자동 지급 완료 (+${claimableRewardTotal.toLocaleString()} SNS)` : `Auto Claimed (+${claimableRewardTotal.toLocaleString()} SNS)`}</span>
+                        </div>
                       )}
                     </div>
 
@@ -833,21 +826,12 @@ export const DailyMissions: React.FC = () => {
                               </button>
                             )}
 
-                            {/* 수령 버튼 */}
+                            {/* 수령 완료 및 자동 지급 표시 (보상 버튼 제거 및 자동 획득 팝업 처리) */}
                             {completed && !claimed && (
-                              <motion.button
-                                initial={{ scale: 0.9, opacity: 0 }}
-                                animate={{ scale: 1, opacity: 1 }}
-                                onClick={() => handleClaim(mission.id)}
-                                disabled={claimingId === mission.id}
-                                className={cn(
-                                  'shrink-0 px-3 py-1 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-bold rounded-sm border border-[rgba(15,0,0,0.12)]',
-                                  'hover:bg-[#333030] active:scale-95 transition-all cursor-pointer touch-target',
-                                  claimingId === mission.id && 'opacity-50'
-                                )}
-                              >
-                                {t('daily_missions_claim', language)}
-                              </motion.button>
+                              <div className="shrink-0 px-2.5 py-1 bg-amber-400 text-[#201d1d] text-[10px] font-bold rounded-sm border border-amber-600 flex items-center gap-1 animate-pulse">
+                                <Sparkles size={10} className="text-amber-900" />
+                                <span>{language === 'ko' ? '자동 지급됨' : 'Auto Claimed'}</span>
+                              </div>
                             )}
 
                             {/* 수령 완료 표시 */}

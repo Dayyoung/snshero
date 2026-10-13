@@ -689,11 +689,21 @@ export const NovelView: React.FC<NovelViewProps> = ({
     triggerHaptic('victory');
     if (showCustomAlert) {
       showCustomAlert(
-        language === 'ko' ? '완독 보상 수령!' : 'Chapter Complete Reward!',
-        language === 'ko' ? `제 ${epNum}화 완독 보상 100 SNS 포인트가 지급되었습니다!` : `Claimed 100 SNS points for completing Episode ${epNum}!`
+        language === 'ko' ? '완독 보상 자동 획득!' : 'Chapter Reward Auto-Claimed!',
+        language === 'ko' ? `제 ${epNum}화 완독 보상 100 SNS 포인트가 자동으로 지급되었습니다!` : `Automatically claimed 100 SNS points for completing Episode ${epNum}!`
       );
     }
   };
+
+  // 에피소드 열람 시 미수령 완독 보상 자동 지급 (수동 버튼 클릭 불필요)
+  useEffect(() => {
+    if (!claimedRewards[currentEpisodeNum]) {
+      const timer = setTimeout(() => {
+        handleClaimEpisodeReward(currentEpisodeNum);
+      }, 1200);
+      return () => clearTimeout(timer);
+    }
+  }, [currentEpisodeNum, claimedRewards]);
 
   // Theme styling helpers according to OpenCode.ai design guide
   const themeContainerClass =
@@ -1801,18 +1811,15 @@ export const NovelView: React.FC<NovelViewProps> = ({
           {/* SCR-11-03: Episode Complete Reward & Shop Shortcut */}
           <div className="mt-12 pt-6 border-t border-stone-300/60 flex flex-col items-center gap-3">
             {!claimedRewards[currentEpisodeNum] ? (
-              <button
-                onClick={() => handleClaimEpisodeReward(currentEpisodeNum)}
-                className="min-h-[48px] px-6 py-3 bg-amber-500 hover:bg-amber-600 text-stone-950 font-black text-xs uppercase tracking-wider rounded-none shadow-md active:scale-95 transition-all cursor-pointer flex items-center gap-2 border border-amber-600 animate-pulse"
-              >
-                <Gift size={18} />
-                <span>{language === 'ko' ? `제 ${currentEpisodeNum}화 완독 보상 (+100 SNS) 즉시 받기` : `Claim Episode ${currentEpisodeNum} Reward (+100 SNS)`}</span>
-              </button>
+              <div className="flex items-center gap-2 text-xs font-bold text-amber-800 bg-amber-50 px-4 py-2.5 border border-amber-300 rounded-none animate-pulse">
+                <Sparkles size={16} className="text-amber-600" />
+                <span>{language === 'ko' ? `제 ${currentEpisodeNum}화 완독 보상 (+100 SNS) 자동 지급 중...` : `Auto-awarding Episode ${currentEpisodeNum} Reward (+100 SNS)...`}</span>
+              </div>
             ) : (
               <div className="flex flex-col sm:flex-row items-center gap-3 w-full justify-center">
                 <div className="flex items-center gap-2 text-xs font-bold text-emerald-700 bg-emerald-50 px-4 py-2.5 border border-emerald-300 rounded-none">
                   <Award size={16} />
-                  <span>{t('novel_reward_already_claimed', language)} (+100 SNS 획득 완료)</span>
+                  <span>{t('novel_reward_already_claimed', language)} (+100 SNS 자동 지급 완료)</span>
                 </div>
                 {/* SCR-11-03: 상점 카드팩 소환 바로가기 숏컷 */}
                 <button

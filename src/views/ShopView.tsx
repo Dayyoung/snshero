@@ -587,6 +587,34 @@ export const ShopView: React.FC<ShopViewProps> = ({
     playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
   };
 
+  // 상점 입장 시 매일 무료 50 SNS 자동 지급 (버튼 클릭 불필요)
+  useEffect(() => {
+    const key = `hero_shop_free_sns_claimed_${todayDateKey}`;
+    if (localStorage.getItem(key) !== 'true') {
+      localStorage.setItem(key, 'true');
+      updateSns(50, 'daily_free_sns', '매일 무료 50 SNS 선물');
+      setTimeout(() => {
+        setCustomAlert({
+          isOpen: true,
+          title: language === 'ko' ? '🎁 매일 무료 50 SNS 자동 지급' : '🎁 Daily Free 50 SNS Auto-Claimed',
+          message: language === 'ko'
+            ? '상점 방문을 환영합니다! 오늘의 무료 50 SNS가 계정에 자동으로 입금되었습니다.'
+            : 'Welcome to the Shop! 50 free SNS has been automatically credited to your balance.'
+        });
+      }, 500);
+    }
+  }, [todayDateKey, language, updateSns]);
+
+  // 월간 소환 마일스톤 자동 달성 수령
+  useEffect(() => {
+    [50, 100, 200].forEach(m => {
+      const reward = m === 50 ? 300 : m === 100 ? 500 : 1000;
+      if (monthlyPullCount >= m && !claimedMonthlyPulls.includes(m)) {
+        handleClaimMonthlyPullMilestone(m, reward);
+      }
+    });
+  }, [monthlyPullCount, claimedMonthlyPulls]);
+
   // ID 358: SSR/SR 획득 시 전투 덱에 즉시 교체/장착 핸들러
   const handleEquipCardToDeck = (cardId: number) => {
     try {

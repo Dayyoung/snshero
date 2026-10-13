@@ -45,17 +45,18 @@ export const AfkPatrolModal: React.FC<AfkPatrolModalProps> = ({ language, onClai
       setElapsedHours(diffHours);
       setEarnedSns(sns);
       setIsOpen(true);
+      // Auto-claim immediately on open
+      triggerHaptic('victory');
+      localStorage.setItem(AFK_LAST_CLAIM_KEY, Date.now().toString());
+      if (onClaim) {
+        onClaim(0, sns);
+      }
     } else {
       onClose?.();
     }
   }, [canShow]);
 
   const handleClaim = () => {
-    triggerHaptic('victory');
-    localStorage.setItem(AFK_LAST_CLAIM_KEY, Date.now().toString());
-    if (onClaim) {
-      onClaim(0, earnedSns);
-    }
     setIsOpen(false);
     if (onClose) onClose();
   };
@@ -94,7 +95,7 @@ export const AfkPatrolModal: React.FC<AfkPatrolModalProps> = ({ language, onClai
             {language === 'ko' ? '[오프라인 자동 탐색 보상]' : '[AFK PATROL REWARD]'}
           </span>
           <h3 className="font-mono text-base font-extrabold text-[#201d1d] mt-1 mb-1">
-            {language === 'ko' ? '탐색 완료 보상 수령' : 'Collect Exploration Loot'}
+            {language === 'ko' ? '탐색 완료 보상 자동 획득' : 'Exploration Loot Auto-Claimed'}
           </h3>
 
           <p className="text-xs font-mono text-[#646262] mb-4 flex items-center justify-center gap-1.5">
@@ -109,7 +110,7 @@ export const AfkPatrolModal: React.FC<AfkPatrolModalProps> = ({ language, onClai
           {/* Rewards Box */}
           <div className="p-3.5 rounded-sm bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] mb-5 flex flex-col items-center">
             <span className="text-[10px] font-mono text-[#646262] uppercase font-bold tracking-wider">
-              {language === 'ko' ? '획득 보상 (SNS 포인트)' : 'EARNED SNS POINTS'}
+              {language === 'ko' ? '자동 지급된 SNS 포인트' : 'AUTO-CREDITED SNS POINTS'}
             </span>
             <span className="font-mono text-xl font-black text-[#201d1d] flex items-center gap-1.5 mt-1">
               <Sparkles size={18} className="text-indigo-600" />
@@ -117,13 +118,13 @@ export const AfkPatrolModal: React.FC<AfkPatrolModalProps> = ({ language, onClai
             </span>
           </div>
 
-          {/* Claim Button */}
+          {/* Confirmation Button */}
           <button
-            onClick={handleClaim}
+            onClick={handleClose}
             className="w-full py-3 rounded-sm bg-[#201d1d] hover:bg-[#383333] text-[#fdfcfc] font-mono text-sm font-extrabold transition-all cursor-pointer flex items-center justify-center gap-2 active:scale-[0.98]"
           >
             <ShieldCheck size={18} />
-            <span>{language === 'ko' ? '보상 일괄 수령' : 'Collect All Rewards'}</span>
+            <span>{language === 'ko' ? '자동 지급 완료 (확인)' : 'Auto-Claimed (Done)'}</span>
           </button>
         </motion.div>
       </div>

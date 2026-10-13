@@ -1125,31 +1125,43 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
         )}
       </div>
 
-      {/* Matching Controls */}
-      <div className="mb-6 font-sans space-y-3">
-        {/* 실시간 PvP 대전 — 메인 CTA */}
-        <button
-          onClick={handleRealTimePvp}
-          className="w-full bg-gradient-to-r from-red-600 to-rose-600 text-white font-bold py-4 rounded-xl shadow-lg shadow-red-500/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer hover:from-red-500 hover:to-rose-500 text-sm border border-red-500/30 touch-target"
-        >
-          <Zap size={18} className="shrink-0" />
-          <span>{t('pvp_matchmaking_title', language)}</span>
-        </button>
+      {/* Matching Controls: Hierarchical Modern Action Grid */}
+      <div className="mb-6 font-mono">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+          {/* 실시간 PvP 대전 — 메인 CTA */}
+          <button
+            onClick={handleRealTimePvp}
+            className="sm:col-span-1 bg-gradient-to-r from-red-600 to-rose-600 text-white font-bold py-3.5 px-3 rounded-none border border-red-500/40 shadow-xs active:scale-[0.98] transition-all flex sm:flex-col items-center justify-center gap-1.5 cursor-pointer hover:from-red-500 hover:to-rose-500 text-xs touch-target"
+          >
+            <div className="flex items-center gap-1.5">
+              <Zap size={16} className="shrink-0" />
+              <span className="font-extrabold uppercase tracking-wider">{t('pvp_matchmaking_title', language)}</span>
+            </div>
+            <span className="text-[10px] opacity-80 hidden sm:inline">[REALTIME PVP]</span>
+          </button>
 
-        <div className="grid grid-cols-2 gap-3">
+          {/* 최적 라이벌 대전 */}
           <button
             onClick={handleOptimalBattle}
-            className="bg-indigo-600 text-white font-bold py-3.5 rounded-lg shadow-sm active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer hover:bg-indigo-500 text-xs sm:text-sm border border-indigo-500/20 touch-target"
+            className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 px-3 rounded-none border border-indigo-500/30 shadow-xs active:scale-[0.98] transition-all flex sm:flex-col items-center justify-center gap-1.5 cursor-pointer text-xs touch-target"
           >
-            <Swords size={16} />
-            <span>{t('optimal_battle', language)}</span>
+            <div className="flex items-center gap-1.5">
+              <Swords size={15} className="shrink-0" />
+              <span className="font-bold uppercase tracking-wider">{t('optimal_battle', language)}</span>
+            </div>
+            <span className="text-[10px] opacity-80 hidden sm:inline">[DDA MATCH]</span>
           </button>
+
+          {/* 근거리 대전 */}
           <button
             onClick={handleNearbyBattle}
-            className="bg-emerald-600 text-white font-bold py-3.5 rounded-lg shadow-sm active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer hover:bg-emerald-500 text-xs sm:text-sm border border-emerald-500/20 touch-target"
+            className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-3 rounded-none border border-emerald-500/30 shadow-xs active:scale-[0.98] transition-all flex sm:flex-col items-center justify-center gap-1.5 cursor-pointer text-xs touch-target"
           >
-            <Wifi size={16} />
-            <span>{t('nearby_battle', language)}</span>
+            <div className="flex items-center gap-1.5">
+              <Wifi size={15} className="shrink-0" />
+              <span className="font-bold uppercase tracking-wider">{t('nearby_battle', language)}</span>
+            </div>
+            <span className="text-[10px] opacity-80 hidden sm:inline">[P2P LOCAL]</span>
           </button>
         </div>
       </div>

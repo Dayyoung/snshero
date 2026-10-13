@@ -424,6 +424,16 @@ export const MovieView: React.FC<MovieViewProps> = ({
   const currentRewardClaimed = Boolean(claimedRewards[currentEpisodeNum]);
   const isCurrentReleased = currentEpisodeNum <= releasedCount;
 
+  // 극장판 에피소드 시청 시 미수령 보상 자동 지급 (수동 버튼 클릭 불필요)
+  useEffect(() => {
+    if (!claimedRewards[currentEpisodeNum] && isCurrentReleased) {
+      const timer = setTimeout(() => {
+        handleClaimReward(currentEpisodeNum);
+      }, 1200);
+      return () => clearTimeout(timer);
+    }
+  }, [currentEpisodeNum, claimedRewards, isCurrentReleased]);
+
   // 에피소드 번호 기반 YouTube 임베드 URL (정확한 Video ID 우선, 없을 경우 0-based index 플레이리스트 폴백)
   const currentVideoId = getVideoId(currentEpisodeNum);
   const embedUrl = currentVideoId
@@ -620,31 +630,12 @@ export const MovieView: React.FC<MovieViewProps> = ({
               {currentEpisodeNum + 1 > releasedCount ? <Lock size={14} className="text-amber-600" /> : <ChevronRight size={16} />}
             </button>
 
-            {/* Reward Claim */}
+            {/* Reward Claim Status */}
             {isCurrentReleased && (
-              <button
-                type="button"
-                disabled={currentRewardClaimed}
-                onClick={() => handleClaimReward(currentEpisodeNum)}
-                className={cn(
-                  'flex items-center gap-1.5 px-3 py-1.5 rounded-sm font-mono text-xs font-bold transition cursor-pointer shrink-0',
-                  currentRewardClaimed
-                    ? 'bg-neutral-100 text-neutral-500 border border-neutral-200 cursor-default'
-                    : 'bg-rose-600 text-white hover:bg-rose-700 shadow-2xs active:scale-95'
-                )}
-              >
-                {currentRewardClaimed ? (
-                  <>
-                    <CheckCircle2 size={14} />
-                    <span>보상 완료</span>
-                  </>
-                ) : (
-                  <>
-                    <Gift size={14} />
-                    <span>시청 보상 (+100 SNS)</span>
-                  </>
-                )}
-              </button>
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-sm font-mono text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-300 shrink-0">
+                <CheckCircle2 size={14} className="text-emerald-600" />
+                <span>{language === 'ko' ? '시청 보상 100 SNS 자동 지급 완료' : '100 SNS Auto-Awarded'}</span>
+              </div>
             )}
           </div>
         </div>

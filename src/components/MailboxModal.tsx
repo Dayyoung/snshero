@@ -85,10 +85,45 @@ export const MailboxModal: React.FC<MailboxModalProps> = ({
 }) => {
   const [mails, setMails] = useState<MailItem[]>([]);
   const [selectedMail, setSelectedMail] = useState<MailItem | null>(null);
+  const [autoClaimNotice, setAutoClaimNotice] = useState<string | null>(null);
 
   useEffect(() => {
     if (isOpen) {
-      setMails(getMailboxItems());
+      const currentMails = getMailboxItems();
+      setMails(currentMails);
+
+      // 자동 일괄 보상 수령 로직
+      let totalSns = 0;
+      let hasReward = false;
+      const updated = currentMails.map(m => {
+        if ((m.rewardSns || m.rewardCardPack) && !m.isClaimed) {
+          hasReward = true;
+          if (m.rewardSns) totalSns += m.rewardSns;
+          return { ...m, isRead: true, isClaimed: true };
+        }
+        return m;
+      });
+
+      if (hasReward) {
+        setMails(updated);
+        try {
+          localStorage.setItem(MAILBOX_STORAGE_KEY, JSON.stringify(updated));
+          window.dispatchEvent(new Event('hero_mailbox_changed'));
+        } catch (e) {
+          console.error("Failed to save mailbox items:", e);
+        }
+        if (totalSns > 0) {
+          onClaimReward(totalSns);
+        }
+        playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+        setAutoClaimNotice(
+          language === 'ko'
+            ? `🎁 우편함 보상 +${totalSns.toLocaleString()} SNS 포인트가 자동으로 지급되었습니다!`
+            : `🎁 Mailbox rewards +${totalSns.toLocaleString()} SNS points automatically claimed!`
+        );
+      } else {
+        setAutoClaimNotice(null);
+      }
     }
   }, [isOpen]);
 
@@ -105,24 +140,6 @@ export const MailboxModal: React.FC<MailboxModalProps> = ({
   const unreadCount = useMemo(() => mails.filter(m => !m.isRead).length, [mails]);
   const unclaimedCount = useMemo(() => mails.filter(m => (m.rewardSns || m.rewardCardPack) && !m.isClaimed).length, [mails]);
 
-  // Batch Claim All Unclaimed Rewards (Item 29)
-  const handleBatchClaim = () => {
-    playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
-    let totalSns = 0;
-    const updated = mails.map(m => {
-      if ((m.rewardSns || m.rewardCardPack) && !m.isClaimed) {
-        if (m.rewardSns) totalSns += m.rewardSns;
-        return { ...m, isRead: true, isClaimed: true };
-      }
-      return m;
-    });
-
-    saveMails(updated);
-    if (totalSns > 0) {
-      onClaimReward(totalSns);
-    }
-  };
-
   // Delete Read Messages (Item 29)
   const handleDeleteRead = () => {
     playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
@@ -138,17 +155,6 @@ export const MailboxModal: React.FC<MailboxModalProps> = ({
       const updated = mails.map(m => m.id === mail.id ? { ...m, isRead: true } : m);
       saveMails(updated);
     }
-  };
-
-  const handleClaimSingle = (mail: MailItem) => {
-    if (mail.isClaimed) return;
-    playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
-    if (mail.rewardSns) {
-      onClaimReward(mail.rewardSns, mail.rewardCardPack);
-    }
-    const updated = mails.map(m => m.id === mail.id ? { ...m, isRead: true, isClaimed: true } : m);
-    saveMails(updated);
-    setSelectedMail(prev => prev ? { ...prev, isRead: true, isClaimed: true } : null);
   };
 
   if (!isOpen) return null;
@@ -178,7 +184,7 @@ export const MailboxModal: React.FC<MailboxModalProps> = ({
                   {language === 'ko' ? '시스템 우편함 (Mailbox)' : 'In-Game Mailbox'}
                 </h2>
                 <p className="text-xs text-slate-500 font-medium">
-                  {language === 'ko' ? '공지사항 및 시즌 보상을 확인하고 일괄 수령합니다.' : 'Claim daily rewards and system announcements.'}
+                  {language === 'ko' ? '공지사항 및 시즌 보상이 자동으로 안전하게 입금됩니다.' : 'Daily rewards and system announcements auto-claimed.'}
                 </p>
               </div>
             </div>
@@ -190,27 +196,28 @@ export const MailboxModal: React.FC<MailboxModalProps> = ({
             </button>
           </div>
 
+          {/* Auto Claim Notice Banner */}
+          {autoClaimNotice && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mx-4 mt-3 p-3 bg-emerald-50 border border-emerald-300 text-emerald-800 rounded-xl text-xs font-bold flex items-center gap-2 shadow-xs"
+            >
+              <Sparkles size={16} className="text-emerald-600 shrink-0" />
+              <span className="flex-1">{autoClaimNotice}</span>
+            </motion.div>
+          )}
+
           {/* Controls Bar (Item 29) */}
           <div className="p-3 bg-slate-100/60 border-b border-slate-200/80 flex flex-wrap items-center justify-between gap-2 text-xs">
-            <div className="text-slate-500 font-bold px-2">
-              {language === 'ko' ? `보관함 메일 ${mails.length}건` : `Total Mail: ${mails.length}`}
+            <div className="text-slate-500 font-bold px-2 flex items-center gap-2">
+              <span>{language === 'ko' ? `보관함 메일 ${mails.length}건` : `Total Mail: ${mails.length}`}</span>
+              <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full border border-emerald-200">
+                {language === 'ko' ? '✓ 자동 보상 활성' : '✓ Auto-Reward Active'}
+              </span>
             </div>
 
             <div className="flex items-center gap-2">
-              <button
-                disabled={unclaimedCount === 0}
-                onClick={handleBatchClaim}
-                className={cn(
-                  "px-3.5 py-1.5 rounded-xl font-black text-xs uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer active:scale-95",
-                  unclaimedCount > 0
-                    ? "bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-200"
-                    : "bg-slate-200 text-slate-400 cursor-not-allowed"
-                )}
-              >
-                <Sparkles size={14} />
-                <span>{language === 'ko' ? '모두 수령 (Batch Claim)' : 'Batch Claim All'}</span>
-              </button>
-
               <button
                 onClick={handleDeleteRead}
                 className="px-3 py-1.5 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 rounded-xl font-bold transition-all text-xs flex items-center gap-1 cursor-pointer"
@@ -282,21 +289,10 @@ export const MailboxModal: React.FC<MailboxModalProps> = ({
                     {/* Reward Badge */}
                     {hasReward && (
                       <div className="shrink-0 text-right">
-                        {item.isClaimed ? (
-                          <span className="px-2.5 py-1 rounded-lg bg-slate-100 border border-slate-200 text-[10px] font-bold text-slate-400">
-                            {language === 'ko' ? '수령 완료' : 'Claimed'}
-                          </span>
-                        ) : (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleClaimSingle(item);
-                            }}
-                            className="px-3 py-1 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black rounded-xl text-xs transition-all shadow-xs cursor-pointer"
-                          >
-                            +{item.rewardSns} SNS
-                          </button>
-                        )}
+                        <span className="px-2.5 py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-[10px] font-bold text-emerald-700 flex items-center gap-1">
+                          <span>✓</span>
+                          <span>+{item.rewardSns} SNS {language === 'ko' ? '(자동 지급됨)' : '(Auto Claimed)'}</span>
+                        </span>
                       </div>
                     )}
                   </div>
@@ -348,23 +344,14 @@ export const MailboxModal: React.FC<MailboxModalProps> = ({
                 </div>
 
                 {(selectedMail.rewardSns || selectedMail.rewardCardPack) && (
-                  <div className="p-3 bg-amber-50 border border-amber-200 rounded-2xl flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-xs font-black text-amber-900">
-                      <Gift size={16} className="text-amber-600" />
+                  <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-xs font-black text-emerald-900">
+                      <Gift size={16} className="text-emerald-600" />
                       <span>첨부 보상: +{selectedMail.rewardSns} SNS Points</span>
                     </div>
-                    {!selectedMail.isClaimed ? (
-                      <button
-                        onClick={() => handleClaimSingle(selectedMail)}
-                        className="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black rounded-xl text-xs shadow-xs"
-                      >
-                        {language === 'ko' ? '보상 수령' : 'Claim'}
-                      </button>
-                    ) : (
-                      <span className="text-xs font-bold text-slate-400">
-                        {language === 'ko' ? '수령 완료' : 'Claimed'}
-                      </span>
-                    )}
+                    <span className="text-xs font-bold text-emerald-700 px-2.5 py-1 bg-white rounded-lg border border-emerald-200">
+                      {language === 'ko' ? '✓ 자동 지급 완료' : '✓ Auto Claimed'}
+                    </span>
                   </div>
                 )}
 

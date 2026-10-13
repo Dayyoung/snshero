@@ -231,6 +231,16 @@ export const AnimeView: React.FC<AnimeViewProps> = ({
 
   const currentRewardClaimed = Boolean(claimedRewards[currentEpisodeNum]);
 
+  // 에피소드 시청 시 미수령 보상 자동 지급 (수동 버튼 클릭 불필요)
+  useEffect(() => {
+    if (!claimedRewards[currentEpisodeNum]) {
+      const timer = setTimeout(() => {
+        handleClaimReward(currentEpisodeNum);
+      }, 1200);
+      return () => clearTimeout(timer);
+    }
+  }, [currentEpisodeNum, claimedRewards]);
+
   // 에피소드 번호 기반 YouTube 임베드 URL (index=1이 1화)
   const embedUrl = `https://www.youtube-nocookie.com/embed?listType=playlist&list=${YOUTUBE_PLAYLIST_ID}&index=${currentEpisodeNum}&enablejsapi=1&rel=0`;
 
@@ -369,30 +379,11 @@ export const AnimeView: React.FC<AnimeViewProps> = ({
           </button>
         </div>
 
-        {/* 시청 보상 수령 버튼 */}
-        <button
-          type="button"
-          disabled={currentRewardClaimed}
-          onClick={() => handleClaimReward(currentEpisodeNum)}
-          className={cn(
-            "w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 rounded-sm font-bold text-xs transition-all touch-target cursor-pointer shadow-xs shrink-0",
-            currentRewardClaimed
-              ? "border border-emerald-300 bg-emerald-50 text-emerald-700 cursor-default"
-              : "bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:from-purple-700 hover:to-indigo-700 active:scale-95"
-          )}
-        >
-          {currentRewardClaimed ? (
-            <>
-              <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
-              <span>{t('anime_reward_claimed', language) || '보상 수령 완료'}</span>
-            </>
-          ) : (
-            <>
-              <Gift size={16} className="animate-bounce shrink-0" />
-              <span>{t('anime_reward_claim', language) || '시청 보상 수령 (+100 SNS)'}</span>
-            </>
-          )}
-        </button>
+        {/* 시청 보상 자동 지급 상태 배지 */}
+        <div className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-sm font-bold text-xs bg-emerald-50 border border-emerald-300 text-emerald-800 shrink-0">
+          <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
+          <span>{language === 'ko' ? '시청 보상 100 SNS 자동 지급 완료' : '100 SNS Auto-Claimed'}</span>
+        </div>
       </div>
 
       {/* ── 에피소드 전체 그리드 목록 (하단 카드 세션) ── */}

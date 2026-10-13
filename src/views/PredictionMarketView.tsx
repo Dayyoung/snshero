@@ -80,6 +80,16 @@ export const PredictionMarketView: React.FC<PredictionMarketViewProps> = ({
   const [betAmount, setBetAmount] = useState<number>(50);
   const [localAlert, setLocalAlert] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [activeTab, setActiveTab] = useState<'markets' | 'bets' | 'stats'>('markets');
+
+  // 미수령 승리 베팅 자동 정산 및 보상 지급 (버튼 클릭 불필요)
+  useEffect(() => {
+    const wonBets = bets.filter(b => b.status === 'won');
+    if (wonBets.length > 0) {
+      wonBets.forEach(b => {
+        handleClaimReward(b.betId);
+      });
+    }
+  }, [bets]);
   
   // Dopamine Celebratory Modals
   const [betSuccessModal, setBetSuccessModal] = useState<{
@@ -802,13 +812,10 @@ export const PredictionMarketView: React.FC<PredictionMarketViewProps> = ({
                             <Trophy size={10} />
                             {t('win', language)}
                           </span>
-                          <button
-                            onClick={() => handleClaimReward(bet.betId)}
-                            className="px-3.5 py-2 bg-gradient-to-r from-yellow-400 to-amber-400 text-amber-950 text-[10px] font-bold rounded-2xl active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer shadow-md"
-                          >
-                            <Gift size={10} />
-                            {t('claim_reward', language)}
-                          </button>
+                          <span className="text-[10px] text-emerald-700 bg-emerald-50 font-bold px-2.5 py-1 rounded-sm border border-emerald-300 flex items-center gap-1">
+                            <span>✓</span>
+                            <span>{language === 'ko' ? `+${bet.potentialPayout} SNS 자동 수령 완료` : `+${bet.potentialPayout} SNS Auto-Claimed`}</span>
+                          </span>
                         </div>
                       )}
 

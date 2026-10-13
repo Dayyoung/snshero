@@ -550,90 +550,66 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
           {isSaving ? t('processing', language) : t('save_changes', language)}
         </button>
 
-        {/* Battle stats */}
-        <div className="pt-8 border-t border-slate-100 space-y-4">
-          <div className="grid grid-cols-3 gap-2 sm:gap-4 truncate">
-            <div className="bg-slate-50 p-2 sm:p-4 rounded-lg border border-slate-100 flex flex-col items-center min-w-0 shadow-xs">
-              <span className="text-lg sm:text-xl font-bold text-slate-800 truncate max-w-full">{stats.wins}</span>
-              <span className="text-[10px] font-semibold text-slate-400 uppercase truncate w-full text-center">{language === 'ko' ? '승리' : 'Wins'}</span>
+        {/* Battle stats: Hierarchical Modern Stat Grid */}
+        <div className="pt-6 border-t border-slate-200/80 space-y-3 font-mono">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
+              {language === 'ko' ? '📊 배틀 전적 대시보드' : '📊 Battle Records'}
+            </span>
+            <span className="text-[10px] text-slate-400">
+              {language === 'ko' ? `총 ${stats.wins + stats.losses + stats.draws}전` : `Total ${stats.wins + stats.losses + stats.draws} Matches`}
+            </span>
+          </div>
+
+          {/* Primary Stats 4-Column Grid: W / L / D / WinRate */}
+          <div className="grid grid-cols-4 gap-2 text-center">
+            <div className="bg-slate-50 p-3 rounded-none border border-slate-200 shadow-2xs">
+              <span className="text-base sm:text-lg font-black text-emerald-600 block">{stats.wins}</span>
+              <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tight block mt-0.5">{language === 'ko' ? '승리' : 'Wins'}</span>
             </div>
-            <div className="bg-slate-50 p-2 sm:p-4 rounded-lg border border-slate-100 flex flex-col items-center min-w-0 shadow-xs">
-              <span className="text-lg sm:text-xl font-bold text-slate-800 truncate max-w-full">{stats.losses}</span>
-              <span className="text-[10px] font-semibold text-slate-400 uppercase truncate w-full text-center">{language === 'ko' ? '패배' : 'Losses'}</span>
+            <div className="bg-slate-50 p-3 rounded-none border border-slate-200 shadow-2xs">
+              <span className="text-base sm:text-lg font-black text-rose-600 block">{stats.losses}</span>
+              <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tight block mt-0.5">{language === 'ko' ? '패배' : 'Losses'}</span>
             </div>
-            <div className="bg-slate-50 p-2 sm:p-4 rounded-lg border border-slate-100 flex flex-col items-center min-w-0 shadow-xs">
-              <span className="text-lg sm:text-xl font-bold text-slate-800 truncate max-w-full">{stats.draws}</span>
-              <span className="text-[10px] font-semibold text-slate-400 uppercase truncate w-full text-center">{language === 'ko' ? '무승부' : 'Draws'}</span>
+            <div className="bg-slate-50 p-3 rounded-none border border-slate-200 shadow-2xs">
+              <span className="text-base sm:text-lg font-black text-slate-600 block">{stats.draws}</span>
+              <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tight block mt-0.5">{language === 'ko' ? '무승부' : 'Draws'}</span>
+            </div>
+            <div className="bg-indigo-50/70 p-3 rounded-none border border-indigo-200 shadow-2xs">
+              <span className="text-base sm:text-lg font-black text-indigo-700 block">
+                {(() => {
+                  const total = stats.wins + stats.losses + stats.draws;
+                  if (total === 0) return '0%';
+                  return Math.round((stats.wins / total) * 100) + '%';
+                })()}
+              </span>
+              <span className="text-[9px] font-bold text-indigo-500 uppercase tracking-tight block mt-0.5">{language === 'ko' ? '승률' : 'Win Rate'}</span>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          {/* Secondary Stats 2-Column Grid: Win Streak / Loss Streak */}
+          <div className="grid grid-cols-2 gap-2 text-center">
             <div className={cn(
-              'p-5 sm:p-6 rounded-lg border transition-all flex flex-col items-center justify-center gap-2 relative overflow-hidden',
-              stats.winStreak > 0
-                ? 'bg-orange-50 border-orange-200 shadow-sm'
-                : 'bg-slate-50 border-slate-100 opacity-50',
+              "p-3 rounded-none border flex items-center justify-center gap-2",
+              stats.winStreak > 0 ? "bg-orange-50 border-orange-200" : "bg-slate-50 border-slate-200 opacity-60"
             )}>
-              {stats.winStreak > 0 && (
-                <motion.div
-                  initial={{ scale: 0.5, opacity: 0 }}
-                  animate={{ scale: [1, 1.2, 1], opacity: 1 }}
-                  transition={{ repeat: Infinity, duration: 2 }}
-                  className="absolute top-1 right-1 text-orange-500 opacity-20"
-                >
-                  <Flame size={48} />
-                </motion.div>
-              )}
-              <div className="flex items-center gap-2 relative z-10">
-                <Flame className={cn(stats.winStreak > 0 ? 'text-orange-500' : 'text-slate-300')} size={24} />
-                <span className={cn('text-3xl font-bold', stats.winStreak > 0 ? 'text-orange-600' : 'text-slate-400')}>
-                  {stats.winStreak || 0}
-                </span>
+              <Flame size={16} className={stats.winStreak > 0 ? "text-orange-500" : "text-slate-400"} />
+              <div className="text-left">
+                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tight block">{language === 'ko' ? '현재 연승' : 'WIN STREAK'}</span>
+                <span className="text-sm font-black text-orange-600 block">{stats.winStreak || 0}</span>
               </div>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500 relative z-10">
-                {language === 'ko' ? '현재 연승' : 'WIN STREAK'}
-              </span>
             </div>
 
             <div className={cn(
-              'p-5 sm:p-6 rounded-lg border transition-all flex flex-col items-center justify-center gap-2 relative overflow-hidden',
-              stats.lossStreak > 0
-                ? 'bg-blue-50 border-blue-100 shadow-sm'
-                : 'bg-slate-50 border-slate-100 opacity-50',
+              "p-3 rounded-none border flex items-center justify-center gap-2",
+              stats.lossStreak > 0 ? "bg-blue-50 border-blue-200" : "bg-slate-50 border-slate-200 opacity-60"
             )}>
-              {stats.lossStreak > 0 && (
-                <motion.div
-                  initial={{ y: -5 }}
-                  animate={{ y: 5 }}
-                  transition={{ repeat: Infinity, duration: 3, repeatType: 'reverse' }}
-                  className="absolute top-1 right-1 text-blue-400 opacity-20"
-                >
-                  <CloudRain size={48} />
-                </motion.div>
-              )}
-              <div className="flex items-center gap-2 relative z-10">
-                <CloudRain className={cn(stats.lossStreak > 0 ? 'text-blue-500' : 'text-slate-300')} size={24} />
-                <span className={cn('text-3xl font-bold', stats.lossStreak > 0 ? 'text-blue-600' : 'text-slate-400')}>
-                  {stats.lossStreak || 0}
-                </span>
+              <CloudRain size={16} className={stats.lossStreak > 0 ? "text-blue-500" : "text-slate-400"} />
+              <div className="text-left">
+                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tight block">{language === 'ko' ? '현재 연패' : 'LOSS STREAK'}</span>
+                <span className="text-sm font-black text-blue-600 block">{stats.lossStreak || 0}</span>
               </div>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500 relative z-10">
-                {language === 'ko' ? '현재 연패' : 'LOSS STREAK'}
-              </span>
             </div>
-          </div>
-
-          <div className="flex justify-between items-center bg-indigo-50/50 p-4 rounded-lg border border-indigo-100 shadow-xs">
-            <span className="text-xs font-semibold text-indigo-700 uppercase tracking-wider">
-              {language === 'ko' ? '승률' : 'Win Rate'}
-            </span>
-            <span className="text-xl font-bold text-indigo-900">
-              {(() => {
-                const total = stats.wins + stats.losses + stats.draws;
-                if (total === 0) return '0%';
-                return Math.round((stats.wins / total) * 100) + '%';
-              })()}
-            </span>
           </div>
         </div>
 

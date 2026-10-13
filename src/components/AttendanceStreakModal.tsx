@@ -92,6 +92,29 @@ export const AttendanceStreakModal: React.FC<AttendanceStreakModalProps> = ({
 
   const currentDayIndex = Math.min(6, Math.max(0, state.currentStreak - 1));
   const todayReward = streakRewards[currentDayIndex];
+  const [autoRewardNotice, setAutoRewardNotice] = useState<string | null>(null);
+
+  // 모달 진입 시 당일 미출석 상태이면 자동으로 출석 보상 즉시 지급 (수동 클릭 불필요)
+  useEffect(() => {
+    if (!isCheckedToday) {
+      playBattleSfx('victory');
+      const nextStreak = state.currentStreak >= 7 ? 1 : state.currentStreak + 1;
+      const curReward = streakRewards[Math.min(6, Math.max(0, nextStreak - 1))];
+      const newState: AttendanceState = {
+        ...state,
+        lastCheckDate: todayStr,
+        currentStreak: nextStreak,
+      };
+      setState(newState);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(newState));
+      onClaimReward(curReward.points);
+      setAutoRewardNotice(
+        isKo
+          ? `🎉 [Day ${nextStreak} 출석 달성!] +${curReward.points} SNS 보상이 자동으로 지급되었습니다!`
+          : `🎉 [Day ${nextStreak} Login!] +${curReward.points} SNS automatically credited!`
+      );
+    }
+  }, [isCheckedToday]);
 
   const handleCheckIn = () => {
     if (isCheckedToday) return;
@@ -245,15 +268,13 @@ export const AttendanceStreakModal: React.FC<AttendanceStreakModalProps> = ({
           )}
         </div>
 
-        {/* 오늘 출석 완료 / 체크인 버튼 */}
+        {/* 오늘 출석 완료 상태 및 닫기 버튼 */}
         <button
-          onClick={handleCheckIn}
-          disabled={isCheckedToday}
-          className="w-full py-2.5 bg-[#201d1d] text-[#fdfcfc] font-bold text-xs border border-black hover:bg-black active:scale-[0.98] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+          onClick={onClose}
+          className="w-full py-2.5 bg-[#201d1d] hover:bg-black text-[#fdfcfc] font-bold text-xs border border-black active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-sm"
         >
-          {isCheckedToday
-            ? isKo ? '오늘 출석 완료 (수령됨)' : 'Already Checked In Today'
-            : isKo ? `오늘의 출석 보상 받기 (+${todayReward.points} SNS)` : `Claim Today's Bonus (+${todayReward.points} SNS)`}
+          <span className="text-emerald-400 font-black">✓</span>
+          <span>{isKo ? '오늘 출석 완료 (자동 수령됨) - 확인' : 'Login Bonus Auto-Claimed - Done'}</span>
         </button>
           </>
         ) : (
@@ -300,25 +321,15 @@ export const AttendanceStreakModal: React.FC<AttendanceStreakModalProps> = ({
               })}
             </div>
 
-            {/* 당일 복귀 보상 수령 버튼 */}
-            {(() => {
-              const curDay = returnUserState.currentDay;
-              const curReward = returnUserRewards.find(r => r.day === curDay);
-              const alreadyClaimedToday = returnUserState.lastClaimDate === todayStr;
-
-              return (
-                <button
-                  type="button"
-                  disabled={alreadyClaimedToday || !curReward}
-                  onClick={() => curReward && handleClaimReturnUserDay(curDay, curReward.reward)}
-                  className="w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-xs border border-amber-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-xs"
-                >
-                  {alreadyClaimedToday
-                    ? (isKo ? '오늘의 복귀 보상 수령 완료' : 'Claimed for Today')
-                    : (isKo ? `Day ${curDay} 복귀 보상 받기 (+${curReward?.reward} SNS)` : `Claim Day ${curDay} Reward (+${curReward?.reward} SNS)`)}
-                </button>
-              );
-            })()}
+            {/* 당일 복귀 보상 확인 및 닫기 버튼 */}
+            <button
+              type="button"
+              onClick={onClose}
+              className="w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-xs border border-amber-600 transition-all shadow-xs cursor-pointer flex items-center justify-center gap-1.5"
+            >
+              <span>🌟</span>
+              <span>{isKo ? '복귀 혜택 자동 적용 완료 - 확인' : 'Welcome Benefit Auto-Claimed - Done'}</span>
+            </button>
           </div>
         )}
       </div>

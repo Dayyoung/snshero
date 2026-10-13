@@ -3550,13 +3550,27 @@ function AppContent() {
 
       const newProgress = { ...currentProgress, [id]: value };
       const newUnlocked = [...(prev.unlockedAchievements || [])];
+      const newClaimed = [...(prev.claimedAchievements || [])];
       
       let newlyUnlocked = false;
       if (value >= achievement.targetValue && !isAlreadyUnlocked) {
         newUnlocked.push(id);
         newlyUnlocked = true;
         
-        // Notify unlock (don't award yet)
+        // Auto-award reward on unlock and show popup alert
+        if (achievement.rewardType === 'coins' && !newClaimed.includes(id)) {
+          newClaimed.push(id);
+          updateSns(achievement.rewardAmount);
+          setTimeout(() => {
+            showCustomAlert(
+              language === 'ko' ? '🏆 업적 달성 보상 자동 획득' : '🏆 Achievement Reward Auto-Claimed',
+              language === 'ko'
+                ? `[${achievement.title}] 달성!\n+${achievement.rewardAmount.toLocaleString()} SNS 보상이 자동으로 지급되었습니다.`
+                : `[${achievement.title}] Unlocked!\n+${achievement.rewardAmount.toLocaleString()} SNS has been automatically awarded!`,
+              4
+            );
+          }, 300);
+        }
         playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
       }
       
@@ -3565,10 +3579,11 @@ function AppContent() {
       return { 
         ...prev, 
         achievementProgress: newProgress,
-        unlockedAchievements: newUnlocked 
+        unlockedAchievements: newUnlocked,
+        claimedAchievements: newClaimed
       };
     });
-  }, [playSfx]);
+  }, [playSfx, updateSns, language]);
 
   const claimAchievementReward = useCallback((id: string) => {
     const achievement = ALL_ACHIEVEMENTS.find(a => a.id === id);
@@ -6259,33 +6274,6 @@ function AppContent() {
           {/* 광고 다음 줄에 정렬되는 전역 헤더 버튼 (음소거, 메뉴, 뒤로가기) */}
           {view !== 'landing' && view !== 'card-play' && (
             <>
-              {/* HUD Quick Community Button ('/reddit' SNSHero 커뮤니티로 즉시 이동) */}
-              {!isGlobalPopupOpen && (
-                <button
-                  onClick={() => {
-                    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                    setView('reddit');
-                    if (typeof window !== 'undefined') {
-                      window.history.pushState(null, '', '/reddit');
-                    }
-                  }}
-                  id="hud-community-toggle"
-                  className={cn(
-                    "fixed right-[6.75rem] min-[1024px]:right-[calc(50vw-392px)] z-[9999] min-h-11 min-w-11 rounded-sm transition-colors cursor-pointer flex items-center justify-center touch-target",
-                    (!isAdRemoved && view !== 'landing') 
-                      ? "top-[calc(env(safe-area-inset-top,0px)+78px)] sm:top-[calc(env(safe-area-inset-top,0px)+106px)] lg:top-[10px]" 
-                      : "top-[calc(env(safe-area-inset-top,0px)+10px)]",
-                    (theme === 'dark' || theme === 'metal')
-                      ? "bg-slate-900/90 border border-slate-800 text-orange-400 hover:bg-slate-850 hover:text-orange-300"
-                       : "bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] text-[#646262] hover:text-[#201d1d] hover:bg-[#f8f7f7]"
-                  )}
-                  title={language === 'ko' ? 'SNSHero 커뮤니티 (/reddit)' : 'SNSHero Community (/reddit)'}
-                  aria-label={language === 'ko' ? '커뮤니티 바로가기' : 'Go to Community'}
-                >
-                  <MessageSquare size={20} />
-                </button>
-              )}
-
               {/* Dedicated HUD Quick Audio Mute / Unmute Button (광고 다음 줄에 배치 - 팝업 열림 시 닫기 버튼 가림 방지 위해 숨김) */}
               {!isGlobalPopupOpen && (
                 <button
