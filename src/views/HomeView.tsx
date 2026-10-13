@@ -19,6 +19,7 @@ import { StarterPackModal } from "../components/StarterPackModal";
 import { PwaEventModal } from "../components/PwaEventModal";
 import { LobbyInteractiveCard } from "../components/LobbyInteractiveCard";
 import { CardLongPressPreviewModal } from "../components/CardLongPressPreviewModal";
+import { HomeCategoryHubModal } from "../components/HomeCategoryHubModal";
 import { PingIndicator } from "../components/PingIndicator";
 import { triggerHaptic } from "../lib/haptic";
 import { useSns } from "../contexts/SnsContext";
@@ -94,6 +95,8 @@ export const HomeView: React.FC<HomeViewProps> = ({
   const [isPwaEventOpen, setIsPwaEventOpen] = useState(false);
   // 카드 터치 시 상세 정보를 팝업으로 표시할 상태 (마이덱 강제 이동 버그 해결)
   const [selectedPreviewCard, setSelectedPreviewCard] = useState<CardData | null>(null);
+  // 미디어 라운지 카테고리 허브 모달 상태
+  const [isMediaModalOpen, setIsMediaModalOpen] = useState(false);
 
   // WebMCP (Chrome 149+ AI Model Context Protocol) Home Tools Registration
   const homeMcpTools = React.useMemo(() => {
@@ -459,7 +462,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   onClick={() => {
                     triggerHaptic('light');
                     playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
-                    onNavigate('webtoon');
+                    setIsMediaModalOpen(true);
                   }}
                   className="min-h-12 px-3 py-2.5 bg-[#fdfcfc] text-[#201d1d] font-bold text-sm border border-[rgba(15,0,0,0.12)] hover:bg-[#201d1d] hover:text-[#fdfcfc] transition-colors cursor-pointer flex items-center justify-center gap-2 rounded-sm"
                 >
@@ -914,12 +917,14 @@ export const HomeView: React.FC<HomeViewProps> = ({
         userDisplayName={user?.displayName}
       />
 
-      {/* 카드 클릭 상세 프리뷰 모달 (마이덱 이동 버그 해결 및 상세 정보 제공) */}
-      <CardLongPressPreviewModal
-        card={selectedPreviewCard}
-        isOpen={Boolean(selectedPreviewCard)}
-        onClose={() => setSelectedPreviewCard(null)}
+      {/* 미디어 라운지 카테고리 허브 모달 (웹소설, 웹툰, 애니, 영화, 바이브코딩 강의 등) */}
+      <HomeCategoryHubModal
+        isOpen={isMediaModalOpen}
+        onClose={() => setIsMediaModalOpen(false)}
+        category="media"
         language={language}
+        onNavigate={onNavigate}
+        playSfx={playSfx}
       />
     </div>
   );

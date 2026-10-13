@@ -14,7 +14,8 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   X, Swords, BookOpen, Image, Tv, Film, Compass, 
   ShoppingBag, ArrowLeftRight, TrendingUp, Users, MessageSquare, 
-  Mail, Bell, Volume2, VolumeX, HelpCircle, Map, Github, Youtube, Sparkles, Dices
+  Mail, Bell, Volume2, VolumeX, HelpCircle, Map, Github, Youtube, Sparkles, Dices,
+  Gamepad2, Cpu, FileText, ExternalLink, GraduationCap
 } from 'lucide-react';
 import { triggerHaptic } from '../lib/haptic';
 import { cn } from '../lib/utils';
@@ -33,6 +34,9 @@ interface HubItem {
   badgeEn?: string;
   badgeTone?: 'amber' | 'emerald' | 'rose' | 'indigo';
   action: () => void;
+  isExternal?: boolean;
+  sectionHeaderKo?: string;
+  sectionHeaderEn?: string;
 }
 
 interface HomeCategoryHubModalProps {
@@ -156,9 +160,10 @@ export const HomeCategoryHubModal: React.FC<HomeCategoryHubModalProps> = ({
     case 'media':
       title = isKo ? '[📚 IP 미디어 라운지]' : '[📚 IP Media Lounge]';
       subTitle = isKo 
-        ? 'SNS히어로 오리지널 웹소설, 웹툰, 애니, 영화 미디어 허브' 
-        : 'Official SNSHero Web Novel, Toon, Anime & Movie Library';
+        ? 'SNS히어로 오리지널 미디어와 개발자 공식 강의 & 플레이 리소스' 
+        : 'SNSHero Original Media, Developer Course & Official Play Resources';
       items = [
+        // ── 1. 오리지널 IP 스토리 미디어 ──
         {
           id: 'novel',
           icon: BookOpen,
@@ -169,6 +174,8 @@ export const HomeCategoryHubModal: React.FC<HomeCategoryHubModalProps> = ({
           badgeKo: '연재중',
           badgeEn: 'Series',
           badgeTone: 'indigo',
+          sectionHeaderKo: '🎬 오리지널 스토리 & IP 미디어',
+          sectionHeaderEn: '🎬 Original Story & IP Media',
           action: () => onNavigate('novel'),
         },
         {
@@ -209,6 +216,88 @@ export const HomeCategoryHubModal: React.FC<HomeCategoryHubModalProps> = ({
           descKo: '세력별 히어로 설정, 대사, 상성 정보 완벽 정리',
           descEn: 'Character factions, voice lines & universe archive',
           action: () => onNavigate('world-codex'),
+        },
+
+        // ── 2. 바이브코딩 & 공식 개발/플레이 리소스 (사용자 요청 6종) ──
+        {
+          id: 'vibecoding_lecture',
+          icon: GraduationCap,
+          titleKo: '바이브코딩 웹게임 개발 강의 (AI Studio)',
+          titleEn: 'VibeCoding Web Game Course (AI Studio)',
+          descKo: 'Google AI Studio 기반 실전 웹게임 개발 유튜브 재생목록',
+          descEn: 'Watch full game dev course playlist on YouTube',
+          badgeKo: '강의',
+          badgeEn: 'COURSE',
+          badgeTone: 'rose',
+          isExternal: true,
+          sectionHeaderKo: '🚀 바이브코딩 & 개발자 공식 리소스',
+          sectionHeaderEn: '🚀 VibeCoding & Developer Resources',
+          action: () => window.open('https://www.youtube.com/playlist?list=PLV8H2-pD9vH0', '_blank', 'noopener,noreferrer'),
+        },
+        {
+          id: 'game_play_link',
+          icon: Gamepad2,
+          titleKo: 'SNSHero.com 게임 플레이링크',
+          titleEn: 'SNSHero.com Game Play Link',
+          descKo: 'SNS히어로 레볼루션 공식 라이브 게임 바로가기',
+          descEn: 'Play live web card battle at snshero.com',
+          badgeKo: 'PLAY',
+          badgeEn: 'LIVE',
+          badgeTone: 'emerald',
+          isExternal: true,
+          action: () => window.open('https://snshero.com/', '_blank', 'noopener,noreferrer'),
+        },
+        {
+          id: 'aistudio_app',
+          icon: Cpu,
+          titleKo: 'SNSHero.com AI Studio',
+          titleEn: 'SNSHero.com AI Studio App',
+          descKo: 'Google AI Studio 공식 웹 앱 프로젝트 바로가기',
+          descEn: 'Open official Google AI Studio application',
+          badgeKo: 'AI STUDIO',
+          badgeEn: 'STUDIO',
+          badgeTone: 'indigo',
+          isExternal: true,
+          action: () => window.open('https://ai.studio/apps/636a37c3-97ce-4c80-be46-8c9a6f793f2d', '_blank', 'noopener,noreferrer'),
+        },
+        {
+          id: 'github_source',
+          icon: Github,
+          titleKo: 'SNSHero.com 소스파일',
+          titleEn: 'SNSHero.com Source Code (GitHub)',
+          descKo: 'GitHub 공식 오픈소스 리포지토리 및 실시간 커밋 내역',
+          descEn: 'Inspect full open-source code on GitHub',
+          badgeKo: 'GITHUB',
+          badgeEn: 'CODE',
+          badgeTone: 'amber',
+          isExternal: true,
+          action: () => window.open('https://github.com/Dayyoung/snshero', '_blank', 'noopener,noreferrer'),
+        },
+        {
+          id: 'dev_prompt',
+          icon: FileText,
+          titleKo: 'SNSHero.com 개발 프롬프트',
+          titleEn: 'SNSHero.com Dev Prompt Spec (Markdown)',
+          descKo: 'AI 에이전트 개발 지침서 및 프롬프트 명세서 원문 (snshero.md)',
+          descEn: 'Read full AI coding prompts & architectural guidelines',
+          badgeKo: 'PROMPT',
+          badgeEn: 'PROMPT',
+          badgeTone: 'amber',
+          isExternal: true,
+          action: () => window.open('https://snshero.com/snshero.md', '_blank', 'noopener,noreferrer'),
+        },
+        {
+          id: 'youtube_channel',
+          icon: Youtube,
+          titleKo: 'SNSHero.com 유튜브 채널',
+          titleEn: 'SNSHero.com YouTube Channel (@snshero)',
+          descKo: 'SNSHero 공식 유튜브 채널 구독 및 최신 개발 영상 시청',
+          descEn: 'Subscribe to official @snshero channel for updates',
+          badgeKo: '유튜브',
+          badgeEn: 'YOUTUBE',
+          badgeTone: 'rose',
+          isExternal: true,
+          action: () => window.open('https://www.youtube.com/@snshero', '_blank', 'noopener,noreferrer'),
         },
       ];
       break;
@@ -403,43 +492,49 @@ export const HomeCategoryHubModal: React.FC<HomeCategoryHubModalProps> = ({
             {items.map((item) => {
               const Icon = item.icon;
               return (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => handleItemClick(item.action)}
-                  className="w-full p-3 bg-white hover:bg-stone-50 border border-[#201d1d]/15 hover:border-[#201d1d] text-left transition-all active:scale-[0.99] flex items-center justify-between gap-3 group cursor-pointer rounded-sm"
-                >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-9 h-9 flex items-center justify-center bg-[#201d1d]/5 group-hover:bg-[#201d1d] group-hover:text-white border border-[#201d1d]/10 transition-colors shrink-0 rounded-sm">
-                      <Icon size={18} className="text-[#201d1d] group-hover:text-amber-300 transition-colors" />
+                <React.Fragment key={item.id}>
+                  {(item.sectionHeaderKo || item.sectionHeaderEn) && (
+                    <div className="pt-2 pb-1 border-b border-[rgba(15,0,0,0.12)] text-[11px] font-black uppercase text-[#201d1d] tracking-wider flex items-center gap-1.5">
+                      <span>{isKo ? item.sectionHeaderKo : item.sectionHeaderEn}</span>
                     </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs sm:text-sm font-black text-[#201d1d] truncate">
-                          {isKo ? item.titleKo : item.titleEn}
-                        </span>
-                        {(item.badgeKo || item.badgeEn) && (
-                          <span className={cn(
-                            "px-1.5 py-0.2 text-[9px] font-black uppercase rounded-xs shrink-0",
-                            item.badgeTone === 'amber' && "bg-amber-400 text-black",
-                            item.badgeTone === 'emerald' && "bg-emerald-500 text-white",
-                            item.badgeTone === 'rose' && "bg-rose-500 text-white",
-                            item.badgeTone === 'indigo' && "bg-indigo-600 text-white",
-                            !item.badgeTone && "bg-[#201d1d] text-white"
-                          )}>
-                            {isKo ? item.badgeKo : item.badgeEn}
-                          </span>
-                        )}
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => handleItemClick(item.action)}
+                    className="w-full p-3 bg-white hover:bg-stone-50 border border-[#201d1d]/15 hover:border-[#201d1d] text-left transition-all active:scale-[0.99] flex items-center justify-between gap-3 group cursor-pointer rounded-sm"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-9 h-9 flex items-center justify-center bg-[#201d1d]/5 group-hover:bg-[#201d1d] group-hover:text-white border border-[#201d1d]/10 transition-colors shrink-0 rounded-sm">
+                        <Icon size={18} className="text-[#201d1d] group-hover:text-amber-300 transition-colors" />
                       </div>
-                      <p className="text-[10px] text-[#646262] truncate mt-0.5 font-normal">
-                        {isKo ? item.descKo : item.descEn}
-                      </p>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs sm:text-sm font-black text-[#201d1d] truncate">
+                            {isKo ? item.titleKo : item.titleEn}
+                          </span>
+                          {(item.badgeKo || item.badgeEn) && (
+                            <span className={cn(
+                              "px-1.5 py-0.2 text-[9px] font-black uppercase rounded-xs shrink-0",
+                              item.badgeTone === 'amber' && "bg-amber-400 text-black",
+                              item.badgeTone === 'emerald' && "bg-emerald-500 text-white",
+                              item.badgeTone === 'rose' && "bg-rose-500 text-white",
+                              item.badgeTone === 'indigo' && "bg-indigo-600 text-white",
+                              !item.badgeTone && "bg-[#201d1d] text-white"
+                            )}>
+                              {isKo ? item.badgeKo : item.badgeEn}
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-[10px] text-[#646262] truncate mt-0.5 font-normal">
+                          {isKo ? item.descKo : item.descEn}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                  <span className="text-xs font-bold text-[#646262] group-hover:text-[#201d1d] group-hover:translate-x-0.5 transition-transform shrink-0">
-                    [➔]
-                  </span>
-                </button>
+                    <span className="text-xs font-bold text-[#646262] group-hover:text-[#201d1d] group-hover:translate-x-0.5 transition-transform shrink-0">
+                      {item.isExternal ? '[↗]' : '[➔]'}
+                    </span>
+                  </button>
+                </React.Fragment>
               );
             })}
           </div>
