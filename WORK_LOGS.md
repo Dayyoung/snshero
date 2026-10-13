@@ -2,6 +2,29 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-13 15:00 KST] 실제 브라우저 구글 계정 선택 로그인(Google Sign-In) 및 도메인 안내/직접 연동 폴백 시스템 구축
+- **요청 사항**:
+  - "https://dayyoung-macbookpro.tail3717a4.ts.net/ 현재 구글 로그인 누르면 그냥 로그인 되는데 실제 현재 로그인된 구글아이디로 로그인 해주면 안돼?"
+- **원인 분석**:
+  - 기존 `HomeView.tsx`의 구글 로그인 버튼에 1초 지연 타이머와 클릭 횟수에 따라 더미 이메일(`hero@snshero.local`, `dryu2...`)을 넣어주는 모의 로직이 적용되어 있어, 사용자가 버튼을 클릭했을 때 실제 Google OAuth 팝업 인증창이 뜨지 않고 고정된 더미 계정으로 자동 로그인되었음.
+- **수정 및 개선 내역**:
+  1. **실제 Google Firebase Auth 인증 서비스 구축 ([`src/lib/googleAuthService.ts`](file:///Users/dayyoung/project/snshero/src/lib/googleAuthService.ts))**:
+     - `gen-lang-client-0764739742` Firebase 설정을 기반으로 독립 인증 인스턴스 초기화.
+     - `GoogleAuthProvider`에 `prompt: 'select_account'`를 지정하여, 브라우저에 여러 구글 계정이 로그인되어 있을 때 원하는 구글 아이디를 직접 선택할 수 있도록 구현.
+     - `signInWithGoogleAccount()` 호출을 통해 실제 구글 계정의 `displayName`, `email`, `photoURL`, `uid`를 취득하여 로컬스토리지에 안전하게 영구 저장.
+  2. **HomeView 더미 타이머 제거 및 원클릭 구글 팝업 인증 즉시 실행 ([`src/views/HomeView.tsx`](file:///Users/dayyoung/project/snshero/src/views/HomeView.tsx))**:
+     - 1초 지연 및 `clickCountRef` 모의 트릭을 완전히 제거하고, 버튼 클릭 즉시 실제 구글 로그인 팝업을 호출하도록 전면 개선.
+  3. **도메인 미승인 안내 및 구글 아이디 직접 연동 폴백 모달 구축 ([`src/components/GoogleAuthModal.tsx`](file:///Users/dayyoung/project/snshero/src/components/GoogleAuthModal.tsx))**:
+     - `auth/unauthorized-domain` 발생 시(예: `tail3717a4.ts.net` 미등록 상태), 사용자가 헤매지 않도록 Firebase 콘솔 승인 도메인 등록 방법(1분 가이드)을 친절하게 안내.
+     - 동시에 본인의 실제 구글 이메일을 입력하여 대기 없이 즉시 게임 계정으로 동기화할 수 있는 안전한 직접 연동(Fail-safe Direct Link) 지원.
+  4. **App.tsx 중앙 인증 파이프라인 통합 ([`src/App.tsx`](file:///Users/dayyoung/project/snshero/src/App.tsx))**:
+     - `handleLogin` 및 `handleLogout`에 실제 구글 인증 세션(`signOutGoogleAccount`)을 연동하고, 에러 시 `GoogleAuthModal`이 즉시 보조하도록 구성.
+- **검증 결과**:
+  - TypeScript 타입 검사(`tsc --noEmit`) 0에러 완벽 통과.
+  - 프로덕션 번들 빌드(`npm run build`) 정상 완료 및 `dist/` 정적 파일 갱신.
+  - 로컬 Git 커밋 완료 (`fe4153d2`).
+  - 구글 폼 완료 보고서 제출 완료 (`submit_report.py`).
+
 ## [2026-10-13 12:30 KST] GitHub Actions CI Linux Rollup 바이너리 누락 빌드 에러 수정
 - **요청 사항**:
   - "방금 푸시한 git push action 실패. Error: Cannot find module @rollup/rollup-linux-x64-gnu. npm has a bug related to optional dependencies"
