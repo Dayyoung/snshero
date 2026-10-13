@@ -171,7 +171,8 @@ export class RedditApiService {
   }
 
   /**
-   * 서브레딧 또는 메인 피드 포스트 목록 반환 (오직 100% 구글 뉴스만 반환)
+   * 서브레딧 또는 메인 피드 포스트 목록 반환
+   * 공식 게임 소개 및 플레이 가이드 고정 게시물(isPinned: true)은 신규 글이 등록되거나 정렬이 바뀌어도 항상 최상단에 영구 고정!
    */
   static getPosts(
     subreddit: string = 'popular',
@@ -179,38 +180,45 @@ export class RedditApiService {
     timeFilter: TimeFilterType = 'today',
     userState?: RedditUserDataState
   ): RedditPost[] {
-    // 1. 실시간 구글 뉴스 스프레드시트 포스트 로드 (오직 구글 뉴스만 채택)
+    // 1. 공식 상단 고정(Pinned) 포스트: SNSHero 게임 소개 및 플레이 가이드
+    const officialPinnedPosts = SEED_POSTS.filter((p) => Boolean(p.isPinned && p.id === 'post_snshero_game_intro_guide'));
+
+    // 2. 실시간 구글 뉴스 스프레드시트 포스트 로드
     const googleNewsPosts = GoogleNewsSheetService.getCachedGoogleNewsPosts(userState?.language || 'ko');
 
-    // 2. 사용자가 직접 작성한 포스트가 있다면 상단 포함
+    // 3. 사용자가 직접 작성한 포스트가 있다면 상단 포함
     const userPosts = userState?.userPosts || [];
-    const pool = [...userPosts, ...googleNewsPosts];
+    const pool = [...officialPinnedPosts, ...userPosts, ...googleNewsPosts];
 
-    // 3. 정렬 및 사용자 상호작용(투표/북마크) 매핑
+    // 4. 정렬 및 사용자 상호작용(투표/북마크) 매핑 (isPinned는 무조건 최상단 0순위 고정)
     const sorted = this.sortPosts(pool, sort);
     return this.mapUserInteractions(sorted, userState);
   }
 
   /**
-   * 메인화면 새로고침 시마다 다른 유머 글들이 최상단에 로테이션되어 노출되도록 순환 시프트 적용
+   * 메인화면 새로고침 시마다 다른 유머 글들이 상단에 로테이션되어 노출되도록 순환 시프트 적용
+   * (고정 게시물 isPinned는 절대 순환되지 않고 영구 최상단 유지)
    */
   static applyRefreshRotation(posts: RedditPost[]): RedditPost[] {
-    if (posts.length <= 2) return posts;
+    const pinned = posts.filter((p) => Boolean(p.isPinned));
+    const unpinned = posts.filter((p) => !p.isPinned);
+    if (unpinned.length <= 2) return posts;
+
     try {
       const rotKey = 'hero_reddit_feed_rot_seed';
       let rotIdx = parseInt(sessionStorage.getItem(rotKey) || '0', 10);
       if (isNaN(rotIdx) || rotIdx < 0) rotIdx = 0;
       
-      // 최상위 유머글 풀(상위 min(24, posts.length)개) 내에서 순환 시프트
-      const topCount = Math.min(posts.length, 24);
-      const topSlice = posts.slice(0, topCount);
-      const remaining = posts.slice(topCount);
+      // 고정글을 제외한 일반 피드 상위 풀에서만 순환 시프트
+      const topCount = Math.min(unpinned.length, 24);
+      const topSlice = unpinned.slice(0, topCount);
+      const remaining = unpinned.slice(topCount);
       
       const shift = rotIdx % topCount;
       if (shift === 0) return posts;
       
-      const rotated = [...topSlice.slice(shift), ...topSlice.slice(0, shift), ...remaining];
-      return rotated;
+      const rotatedUnpinned = [...topSlice.slice(shift), ...topSlice.slice(0, shift), ...remaining];
+      return [...pinned, ...rotatedUnpinned];
     } catch {
       return posts;
     }
@@ -228,39 +236,51 @@ export class RedditApiService {
   }
 
   /**
-   * 포스트 정렬 (Hot, New, Top, Best, Rising) - 실시간 최신 글 가중치 완벽 반영
+   * 포스트 정렬 (Hot, New, Top, Best, Rising)
+   * 상단 고정 글(isPinned === true)은 신규 글이 등록되거나 정렬 옵션이 변경되어도 무조건 최상단 유지!
    */
   static sortPosts(posts: RedditPost[], sort: FeedSortType): RedditPost[] {
-    const list = [...posts];
+    const pinnedPosts = posts.filter((p) => Boolean(p.isPinned));
+    const unpinnedPosts = posts.filter((p) => !p.isPinned);
+
+    // 중복 고정 글 ID 정리
+    const uniquePinned = Array.from(new Map(pinnedPosts.map((p) => [p.id, p])).values());
+
+    const list = [...unpinnedPosts];
     const now = Date.now();
 
+    let sortedUnpinned: RedditPost[] = [];
     switch (sort) {
       case 'new':
-        return list.sort((a, b) => b.createdAt - a.createdAt);
+        sortedUnpinned = list.sort((a, b) => b.createdAt - a.createdAt);
+        break;
 
       case 'top':
-        return list.sort((a, b) => b.score - a.score);
+        sortedUnpinned = list.sort((a, b) => b.score - a.score);
+        break;
 
       case 'best':
         // Upvote Ratio 가중치
-        return list.sort((a, b) => {
+        sortedUnpinned = list.sort((a, b) => {
           const scoreA = a.score * (a.upvoteRatio || 0.9);
           const scoreB = b.score * (b.upvoteRatio || 0.9);
           return scoreB - scoreA;
         });
+        break;
 
       case 'rising':
         // 최근 생성된 포스트 중 시간당 추천수 가속도
-        return list.sort((a, b) => {
+        sortedUnpinned = list.sort((a, b) => {
           const ageHoursA = Math.max(0.1, (now - a.createdAt) / 3600000);
           const ageHoursB = Math.max(0.1, (now - b.createdAt) / 3600000);
           return b.score / ageHoursB - a.score / ageHoursA;
         });
+        break;
 
       case 'hot':
       default:
         // Reddit Hot 알고리즘 개선 (실시간 최신 글 우선 부스트)
-        return list.sort((a, b) => {
+        sortedUnpinned = list.sort((a, b) => {
           const isLiveA = a.id.startsWith('live_');
           const isLiveB = b.id.startsWith('live_');
           const orderA = Math.log10(Math.max(1, Math.abs(a.score)));
@@ -273,7 +293,10 @@ export class RedditApiService {
           const hotB = orderB - ageHoursB / 18 + liveBoostB;
           return hotB - hotA;
         });
+        break;
     }
+
+    return [...uniquePinned, ...sortedUnpinned];
   }
 
   /**
@@ -321,8 +344,11 @@ export class RedditApiService {
       post.isSaved = userState.savedPostIds.includes(cleanId) || userState.savedPostIds.includes(post.id);
     }
 
-    // 3. 댓글 트리 가져오기: 구글 시트 실제 댓글 서비스 연동 (가짜 목업/자동생성 댓글 100% 완전 배제)
+    // 3. 댓글 트리 가져오기: 구글 시트 실제 댓글 서비스 연동 (시드 댓글 fallback 지원)
     let comments: RedditComment[] = RedditGoogleSheetCommentService.getCommentsTreeForPost(cleanId);
+    if (comments.length === 0 && SEED_COMMENTS[cleanId]) {
+      comments = JSON.parse(JSON.stringify(SEED_COMMENTS[cleanId]));
+    }
 
     // 4. 사용자가 작성한 해당 포스트의 로컬 댓글 중 아직 구글 시트에 반영되지 않은 것 병합
     if (userState && userState.userComments.length > 0) {

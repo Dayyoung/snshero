@@ -280,9 +280,13 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
     <article
       onClick={() => onOpenDetail(post)}
       className={`w-full max-w-full overflow-hidden break-words rounded-2xl border mb-3.5 shadow-sm cursor-pointer transition-all ${
-        isDark 
-          ? 'bg-[#181C1F] hover:border-gray-600 border-[#22272B] text-gray-200' 
-          : 'bg-white hover:border-gray-300 border-gray-200 text-gray-800'
+        post.isPinned
+          ? isDark
+            ? 'bg-[#181C1F] border-emerald-500/50 hover:border-emerald-400 text-gray-200 ring-1 ring-emerald-500/20'
+            : 'bg-emerald-50/20 border-emerald-300 hover:border-emerald-400 text-gray-800 ring-1 ring-emerald-400/20'
+          : isDark 
+            ? 'bg-[#181C1F] hover:border-gray-600 border-[#22272B] text-gray-200' 
+            : 'bg-white hover:border-gray-300 border-gray-200 text-gray-800'
       }`}
     >
       <div className="p-3.5 sm:p-4">
@@ -402,7 +406,9 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
                 isExpandedBody ? '' : 'line-clamp-3'
               }`}
             >
-              {displayBody}
+              {isExpandedBody 
+                ? displayBody.replace(/!\[(.*?)\]\((.*?)\)/g, '📸 [$1]').trim()
+                : displayBody.replace(/!\[.*?\]\(.*?\)/g, '').trim()}
             </div>
             {displayBody.length > 90 && (
               <button

@@ -351,6 +351,106 @@ export const SEED_TRENDING: RedditTrendingItem[] = [
  */
 export const SEED_POSTS: RedditPost[] = [
   {
+    id: 'post_snshero_game_intro_guide',
+    subreddit: 'gaming',
+    title: '[공식] SNS히어로(SNSHero.com) 완벽 가이드: AI 원클릭 웹 카드 배틀 RPG 소개 및 필승 공략법 🎮 (플레이 스크린샷 수록)',
+    originalTitle: '[Official] SNSHero (https://snshero.com) Complete Guide: AI 1-Click Web Card Battle RPG Introduction & Strategy Guide 🎮 (Screenshots Included)',
+    author: 'SNSHero_Official',
+    authorAvatar: 'https://snshero.com/favicon.png',
+    createdAt: Date.now() - 1000 * 60 * 5,
+    score: 154200,
+    commentCount: 412,
+    flair: { text: '📌 공식 가이드 / Official Guide', bgColor: '#FF4500', textColor: '#FFFFFF' },
+    isPinned: true,
+    isOriginalContent: true,
+    upvoteRatio: 0.99,
+    media: {
+      type: 'gallery',
+      url: 'https://snshero.com/banner_snshero_legend.jpg',
+      previewUrl: 'https://snshero.com/banner_snshero_legend.jpg',
+      galleryUrls: [
+        'https://snshero.com/banner_snshero_legend.jpg',
+        'https://snshero.com/minigame_ai_battle.png',
+        'https://snshero.com/cards1-33.png',
+        'https://snshero.com/cards1.png',
+        'https://snshero.com/character_sheet_fire.png',
+      ],
+      domain: 'snshero.com',
+      aspectRatio: 16 / 9,
+    },
+    body: `안녕하세요, 게이머 여러분! **SNS히어로(SNSHero)** 공식 개발팀입니다.
+AI와 함께 진화하는 차세대 원클릭 웹 카드 배틀 RPG, **SNSHero.com**의 게임 소개와 초보자 필승 플레이 가이드를 상세히 안내해 드립니다!
+
+---
+
+### 🌐 SNS히어로(SNSHero) 핵심 바로가기 링크
+- 🎮 **공식 웹게임 즉시 플레이**: https://snshero.com/
+- 🤖 **Google AI Studio 프로젝트**: https://ai.studio/apps/636a37c3-97ce-4c80-be46-8c9a6f793f2d
+- 🐙 **오픈소스 GitHub 리포지토리**: https://github.com/Dayyoung/snshero
+- 📝 **AI 개발 프롬프트 명세서**: https://snshero.com/snshero.md
+- 📺 **바이브코딩 웹게임 개발 유튜브 강의**: https://www.youtube.com/playlist?list=PLV8H2-pD9vH0
+- 🔴 **공식 유튜브 채널**: https://www.youtube.com/@snshero
+
+---
+
+### 📸 실제 게임 플레이 스크린샷 & 주요 화면 미리보기
+
+#### 1. 대서사 카드 배틀 아레나 (전설의 영웅 집결)
+![SNSHero 전설의 영웅 아레나](https://snshero.com/banner_snshero_legend.jpg)
+*무설치·무과금으로 브라우저에서 즉시 실행되는 대서사 판타지 웹 카드 배틀의 세계관.*
+
+#### 2. 실시간 3x3 카드 플립 배틀 코어 플레이
+![AI 카드 배틀 플레이 화면](https://snshero.com/minigame_ai_battle.png)
+*9칸의 전장에서 벌어지는 상하좌우 전투력 대결과 상성 뒤집기(Flip)의 짜릿한 수싸움!*
+
+#### 3. 100종 히어로 카드 컬렉션 & 덱 빌딩
+![100종 히어로 카드 컬렉션](https://snshero.com/cards1-33.png)
+*물, 불, 바람, 땅의 4원소와 8대 종족(인간, 엘프, 드래곤, 언데드 등)의 다채로운 카드 조합.*
+
+#### 4. 정밀한 캐릭터 스탯 및 비주얼 카드 시트
+![캐릭터 카드 시트](https://snshero.com/character_sheet_fire.png)
+*등급별 고유 서피스와 일러스트, 4방향 전투력과 패시브 스킬을 갖춘 영웅 육성.*
+
+---
+
+### 🕹️ SNSHero 플레이 방법 완벽 정복 (How to Play)
+
+#### Step 1: 원클릭 접속 & 기본 덱 수령 (가입 불필요!)
+1. 스마트폰이나 PC 브라우저로 https://snshero.com 에 접속하세요.
+2. 회원가입이나 앱 다운로드 없이 **원클릭으로 즉시 게임이 시작**되며, 기본 영웅 카드 5장이 자동 지급됩니다.
+3. 모든 게임 데이터(보유 카드, 덱 세팅, SNS 재화, 전적)는 **100% 브라우저 LocalStorage에 안전하게 영구 보존**됩니다.
+
+#### Step 2: 3x3 카드 플립(Flip) 배틀 기본 규칙
+1. **전장 구조**: 3행 3열(총 9칸)의 그리드 전장에 플레이어와 AI 상대방이 번갈아가며 카드를 1장씩 배치합니다.
+2. **4방향 전투력 비교**: 각 카드는 상(Top), 하(Bottom), 좌(Left), 우(Right) 4개의 전투력 수치를 가집니다.
+3. **카드 뒤집기 (플립)**: 내가 놓은 카드가 이미 배치된 상대 카드와 맞닿을 때, 맞닿은 방향의 내 전투력이 상대보다 높으면 **상대 카드를 내 편으로 뒤집습니다!**
+4. **승리 조건**: 9칸이 모두 채워졌을 때 전장에 내 카드가 더 많으면 **VICTORY(승리)**를 달성합니다!
+
+#### Step 3: 속성 상성 및 종족 시너지 보너스
+- **4원소 순환 상성**: 물(Water) > 불(Fire) > 바람(Wind) > 땅(Earth) > 물(Water)
+  - 유리한 속성으로 공격 시 **전투력 +2 보너스**가 가산되어 역전의 발판이 됩니다.
+- **종족/속성 시너지**: 같은 속성이나 종족(엘프, 드래곤, 메카 등) 카드를 덱에 3장 이상 편성하면 강력한 팀 시너지 버프가 발동합니다.
+
+#### Step 4: 승리 보상 & 카드 무한 육성
+- 배틀 승리 시 **SNS 포인트**와 신규 카드 팩을 획득합니다.
+- 중복 카드는 **합성 및 잠재력 강화** 재료로 활용되어 기본 능력치와 레벨이 상승합니다.
+- 상점 뽑기(10연차), 스타터팩(₩1,000 파격 특가), 소원의 분수대에서 매일 무료 재화와 SSR 한정 카드를 획득하세요.
+
+#### Step 5: 110선 모바일 퓨어 터치 미션 아케이드
+- 가상 D-패드나 조이스틱 없이, 스마트폰 화면을 직접 탭하고 스와이프하는 **100% 모바일 퓨어 제스처 아케이드 110종** 수록!
+- 캐주얼 런, 퍼즐, 액션 아케이드 클리어 시 상시 보상 지급.
+
+#### Step 6: AI 승부 예측 시장 & 시련의 탑 50층
+- **AI 승부 예측 시장**: 실시간 AI 대전 결과를 예측 베팅하고 배당금을 획득하는 모의 경제 시스템.
+- **시련의 탑 50층**: 층마다 강해지는 AI 보스를 돌파하며 한정 칭호와 고급 장비를 파밍하세요!
+- **미디어 라운지**: 공식 웹소설, 웹툰, 숏폼 애니메이션, 극장판 영화를 즐기며 영웅들의 서사를 감상할 수 있습니다.
+
+---
+
+지금 바로 https://snshero.com 에 접속해 나만의 덱을 꾸리고 아레나의 최강자가 되어보세요!
+궁금한 점이나 공략 팁은 댓글로 편하게 질문해 주시면 개발팀이 실시간으로 답변해 드립니다! 🛡️⚔️`,
+  },
+  {
     id: 'post_vibecoding_master',
     subreddit: 'hanguk',
     title: '바이브코딩 웹게임 개발 강의 를 공유합니다! (모두 오픈소스 무료!)',
@@ -1080,7 +1180,49 @@ AI에게 웹게임의 규칙, 카드 스키마, UI 테마를 전달할 때 그�
  * 전 포스트 100% 매핑된 다단계 중첩 댓글 트리
  * 어떤 글을 클릭하든 100% 댓글이 즉시 풍성하게 표시됨!
  */
-export const SEED_COMMENTS: Record<string, RedditComment[]> = {};
+export const SEED_COMMENTS: Record<string, RedditComment[]> = {
+  post_snshero_game_intro_guide: [
+    {
+      id: 'comm_intro_1',
+      postId: 'post_snshero_game_intro_guide',
+      parentId: null,
+      author: 'CardMaster_99',
+      authorAvatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=64&q=80',
+      authorKarma: 14200,
+      body: '와 드디어 공식 완벽 가이드가 올라왔네요! 3x3 전장에서 카드 뒤집는 손맛이 진짜 중독성 있습니다. 특히 물>불>바람>땅 속성 상성 버프로 막판에 역전승할 때 짜릿해요 ㅎㅎ',
+      createdAt: Date.now() - 1000 * 60 * 3,
+      score: 428,
+      userVote: null,
+      replies: [
+        {
+          id: 'comm_intro_1_1',
+          postId: 'post_snshero_game_intro_guide',
+          parentId: 'comm_intro_1',
+          author: 'SNSHero_Official',
+          authorAvatar: 'https://snshero.com/favicon.png',
+          authorKarma: 999999,
+          body: '즐겁게 플레이해주셔서 정말 감사드립니다! 속성 상성(+2)과 종족 시너지 버프를 잘 배합하시면 상위 리그에서도 높은 승률을 유지하실 수 있습니다. 즐거운 게임 되세요!',
+          createdAt: Date.now() - 1000 * 60 * 2,
+          score: 215,
+          isAuthorOp: true,
+          userVote: null,
+        },
+      ],
+    },
+    {
+      id: 'comm_intro_2',
+      postId: 'post_snshero_game_intro_guide',
+      parentId: null,
+      author: 'PixelAdventurer',
+      authorAvatar: 'https://images.unsplash.com/photo-1527980965255-d3b416303d12?auto=format&fit=crop&w=64&q=80',
+      authorKarma: 8900,
+      body: '앱 설치 없이 브라우저에서 바로 켜지는 게 제일 편하네요. 데이터가 로컬스토리지에 영구 보존돼서 새로고침해도 안 날아가는 점도 안심됩니다. 미션 아케이드 110선도 쏠쏠하네요!',
+      createdAt: Date.now() - 1000 * 60 * 1,
+      score: 189,
+      userVote: null,
+    },
+  ],
+};
 
 export const SEED_USERS: Record<string, RedditUser> = {
   SoloDevKnight: {

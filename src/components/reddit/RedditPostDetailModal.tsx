@@ -52,6 +52,114 @@ interface RedditPostDetailModalProps {
   onGoToGame?: () => void;
 }
 
+// 마크다운 본문 (스크린샷 이미지, 링크, 제목, 볼드) 서식 지원 렌더러
+function renderInlineMarkdown(text: string): React.ReactNode[] {
+  const parts: React.ReactNode[] = [];
+  let remaining = text;
+  let keyIndex = 0;
+
+  while (remaining.length > 0) {
+    const linkMatch = remaining.match(/\[(.*?)\]\((https?:\/\/[^\s)]+)\)/);
+    const boldMatch = remaining.match(/\*\*(.*?)\*\*/);
+    const urlMatch = remaining.match(/(https?:\/\/[^\s)]+)/);
+
+    const candidates = [
+      linkMatch ? { type: 'link', index: linkMatch.index!, match: linkMatch } : null,
+      boldMatch ? { type: 'bold', index: boldMatch.index!, match: boldMatch } : null,
+      urlMatch ? { type: 'url', index: urlMatch.index!, match: urlMatch } : null,
+    ].filter(Boolean) as { type: string; index: number; match: RegExpMatchArray }[];
+
+    if (candidates.length === 0) {
+      parts.push(remaining);
+      break;
+    }
+
+    candidates.sort((a, b) => a.index - b.index);
+    const first = candidates[0];
+
+    if (first.index > 0) {
+      parts.push(remaining.substring(0, first.index));
+    }
+
+    if (first.type === 'link') {
+      const linkText = first.match[1];
+      const linkUrl = first.match[2];
+      parts.push(
+        <a key={keyIndex++} href={linkUrl} target="_blank" rel="noopener noreferrer" className="text-sky-500 hover:underline font-semibold">
+          {linkText}
+        </a>
+      );
+      remaining = remaining.substring(first.index + first.match[0].length);
+    } else if (first.type === 'bold') {
+      const boldText = first.match[1];
+      parts.push(<strong key={keyIndex++} className="font-bold">{boldText}</strong>);
+      remaining = remaining.substring(first.index + first.match[0].length);
+    } else if (first.type === 'url') {
+      const rawUrl = first.match[1];
+      parts.push(
+        <a key={keyIndex++} href={rawUrl} target="_blank" rel="noopener noreferrer" className="text-sky-500 hover:underline font-semibold break-all">
+          {rawUrl}
+        </a>
+      );
+      remaining = remaining.substring(first.index + first.match[0].length);
+    }
+  }
+
+  return parts;
+}
+
+function renderMarkdownBody(content: string): React.ReactNode {
+  const lines = content.split('\n');
+  return (
+    <div className="space-y-2.5 text-sm sm:text-base leading-relaxed opacity-95 font-sans break-words">
+      {lines.map((line, idx) => {
+        const trimmed = line.trim();
+
+        // 1. 이미지: ![alt](url)
+        const imgMatch = trimmed.match(/^!\[(.*?)\]\((.*?)\)$/);
+        if (imgMatch) {
+          const alt = imgMatch[1];
+          const src = imgMatch[2];
+          return (
+            <figure key={idx} className="my-3 rounded-xl overflow-hidden border border-inherit/15 bg-black/5 dark:bg-white/5 p-1">
+              <img src={src} alt={alt} className="w-full h-auto max-h-[520px] object-contain rounded-lg" loading="lazy" />
+              {alt && <figcaption className="text-xs text-center py-1.5 opacity-70 italic font-mono">{alt}</figcaption>}
+            </figure>
+          );
+        }
+
+        // 2. 제목
+        if (trimmed.startsWith('### ')) {
+          return <h3 key={idx} className="text-base sm:text-lg font-bold mt-4 mb-1 text-inherit">{trimmed.replace('### ', '')}</h3>;
+        }
+        if (trimmed.startsWith('## ')) {
+          return <h2 key={idx} className="text-lg sm:text-xl font-extrabold mt-5 mb-2 text-inherit border-b border-inherit/10 pb-1">{trimmed.replace('## ', '')}</h2>;
+        }
+        if (trimmed.startsWith('# ')) {
+          return <h1 key={idx} className="text-xl sm:text-2xl font-black mt-6 mb-2 text-inherit">{trimmed.replace('# ', '')}</h1>;
+        }
+
+        // 3. 수평선
+        if (trimmed === '---') {
+          return <hr key={idx} className="my-3 border-inherit/15" />;
+        }
+
+        // 4. 빈 줄
+        if (!trimmed) {
+          return <div key={idx} className="h-1" />;
+        }
+
+        // 5. 일반 문장
+        return (
+          <p key={idx} className="leading-relaxed">
+            {renderInlineMarkdown(line)}
+          </p>
+        );
+      })}
+    </div>
+  );
+}
+
 export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
   post,
   comments,
@@ -459,10 +567,10 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
                 </div>
               )}
 
-              {/* 본문 전체 내용 */}
+              {/* 본문 전체 내용 (마크다운 스크린샷 이미지, 링크, 제목 지원) */}
               {displayBody && (
-                <div className="text-sm sm:text-base leading-relaxed opacity-90 whitespace-pre-line mb-6 font-sans break-words">
-                  {displayBody}
+                <div className="mb-6">
+                  {renderMarkdownBody(displayBody)}
                 </div>
               )}
 
