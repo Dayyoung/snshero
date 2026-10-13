@@ -98,6 +98,19 @@ export const HomeCategoryHubModal: React.FC<HomeCategoryHubModalProps> = ({
         : 'Select game mode from 3x3 battle to Poki 110 arcade';
       items = [
         {
+          id: 'gwent_pc',
+          icon: Gamepad2,
+          titleKo: '궨트(Gwent) 클래식 웹게임 (PC전용)',
+          titleEn: 'Gwent Classic Card Game (PC Only)',
+          descKo: '더 위쳐 3 정통 궨트 100% 포팅 (1920x1080 데스크톱 최적화)',
+          descEn: 'Original The Witcher 3 Gwent browser game for PC desktop',
+          badgeKo: '신규출시',
+          badgeEn: 'NEW',
+          badgeTone: 'rose',
+          isExternal: true,
+          action: () => window.open('https://dayyoung.github.io/gwent/', '_blank', 'noopener,noreferrer'),
+        },
+        {
           id: 'quick_battle',
           icon: Swords,
           titleKo: '메인 스토리 3x3 카드 배틀',
@@ -246,6 +259,19 @@ export const HomeCategoryHubModal: React.FC<HomeCategoryHubModalProps> = ({
           badgeTone: 'emerald',
           isExternal: true,
           action: () => window.open('https://snshero.com/', '_blank', 'noopener,noreferrer'),
+        },
+        {
+          id: 'gwent_pc_link',
+          icon: Gamepad2,
+          titleKo: 'SNSHero.com 궨트게임 (PC전용)',
+          titleEn: 'SNSHero.com Gwent Classic (PC Only)',
+          descKo: '더 위쳐 3 정통 궨트 웹 브라우저 플레이 (1920x1080 데스크톱)',
+          descEn: 'Play The Witcher 3 classic Gwent in your PC browser',
+          badgeKo: 'PC전용',
+          badgeEn: 'PC ONLY',
+          badgeTone: 'rose',
+          isExternal: true,
+          action: () => window.open('https://dayyoung.github.io/gwent/', '_blank', 'noopener,noreferrer'),
         },
         {
           id: 'aistudio_app',

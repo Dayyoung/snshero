@@ -180,8 +180,10 @@ export class RedditApiService {
     timeFilter: TimeFilterType = 'today',
     userState?: RedditUserDataState
   ): RedditPost[] {
-    // 1. 공식 상단 고정(Pinned) 포스트: SNSHero 게임 소개 및 플레이 가이드
-    const officialPinnedPosts = SEED_POSTS.filter((p) => Boolean(p.isPinned && p.id === 'post_snshero_game_intro_guide'));
+    // 1. 공식 상단 고정(Pinned) 포스트: 궨트 게임 출시(PC전용) 최우선 고정 + SNSHero 게임 소개 및 가이드
+    const officialPinnedPosts = SEED_POSTS.filter((p) =>
+      Boolean(p.isPinned && (p.id === 'post_snshero_gwent_launch' || p.id === 'post_snshero_game_intro_guide'))
+    );
 
     // 2. 실시간 구글 뉴스 스프레드시트 포스트 로드
     const googleNewsPosts = GoogleNewsSheetService.getCachedGoogleNewsPosts(userState?.language || 'ko');

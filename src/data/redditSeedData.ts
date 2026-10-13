@@ -351,6 +351,82 @@ export const SEED_TRENDING: RedditTrendingItem[] = [
  */
 export const SEED_POSTS: RedditPost[] = [
   {
+    id: 'post_snshero_gwent_launch',
+    subreddit: 'gaming',
+    title: '[공식/출시] SNSHero.com 궨트게임 출시 (PC전용) ⚔️ - 더 위쳐 3 정통 오리지널 궨트 클래식 웹 브라우저 플레이!',
+    originalTitle: '[Official/Launch] SNSHero.com Gwent Classic Card Game Launched (PC Only) ⚔️ - Play Original Witcher 3 Gwent in Web Browser!',
+    author: 'SNSHero_Official',
+    authorAvatar: 'https://snshero.com/favicon.png',
+    createdAt: Date.now() - 1000 * 60 * 1,
+    score: 189400,
+    commentCount: 528,
+    flair: { text: '⚔️ 공식 출시 / Game Launch (PC Only)', bgColor: '#B91C1C', textColor: '#FFFFFF' },
+    isPinned: true,
+    isOriginalContent: true,
+    upvoteRatio: 0.99,
+    media: {
+      type: 'link',
+      url: 'https://dayyoung.github.io/gwent/',
+      previewUrl: 'https://snshero.com/banner_snshero_legend.jpg',
+      domain: 'dayyoung.github.io',
+      aspectRatio: 16 / 9,
+    },
+    body: `안녕하세요, 게이머 여러분! **SNS히어로(SNSHero)** 공식 개발팀입니다.
+전 세계 게이머들의 가슴을 뛰게 했던 전설의 미니게임, **더 위쳐 3(The Witcher 3: Wild Hunt) 오리지널 궨트(Gwent Classic)**가 SNSHero.com PC 전용 웹 브라우저 게임으로 공식 출시되었습니다! ⚔️
+
+---
+
+### 🌐 즉시 플레이 링크 (PC 웹 브라우저 전용)
+- 🎮 **궨트 게임 바로 플레이하기**: https://dayyoung.github.io/gwent/
+- 📱 **SNSHero 3x3 모바일 카드 배틀**: https://snshero.com/
+- 🐙 **오픈소스 GitHub 리포지토리**: https://github.com/Dayyoung/snshero
+- 📺 **바이브코딩 웹게임 개발 강의**: https://www.youtube.com/playlist?list=PLV8H2-pD9vH0
+
+---
+
+### 💻 PC 전용(PC Only) 플레이 안내 & 최적 환경
+- **화면 비율**: 16:9 가로 화면 (권장 해상도: **1920 × 1080** 이상 데스크톱 환경)
+- **조작 방식**: 마우스 클릭 & 드래그로 쾌적하게 조작 가능
+- **전체화면 추천**: 브라우저에서 \`F11\` 키를 눌러 전체화면 모드로 플레이하시면 위쳐 3 인게임 콘솔/PC 플레이 감각을 100% 동일하게 만끽하실 수 있습니다!
+- ⚠️ *모바일 기기에서는 16:9 와이드 비율 특성상 화면 크기가 축소되므로, PC 데스크톱 브라우저 접속을 강력히 권장합니다.*
+
+---
+
+### ⚔️ 주요 특징 및 게임 시스템 (Key Features)
+
+#### 1. 더 위쳐 3 오리지널 궨트 규칙 100% 완벽 구현!
+- **3개 라인 진형 배치**:
+  - 🗡️ **근접 전투 (Close Combat)**
+  - 🏹 **원거리 전투 (Ranged Combat)**
+  - 🏰 **공성 전투 (Siege Combat)**
+- **3판 2선승제 (Best of 3)**:
+  - 총 3번의 라운드 중 먼저 2승을 거두는 쪽이 최종 승리합니다.
+  - 패배할 것 같은 라운드는 과감하게 패스(Pass)하여 패를 아끼고, 다음 라운드에서 승부를 거는 **수싸움과 카드 어드밴티지(Card Advantage)**가 승부의 핵심입니다!
+
+#### 2. 하츠 오브 스톤 & 블러드 앤 와인 확장팩 카드 풀 전수 수록!
+- **Hearts of Stone** 및 **Blood & Wine** 확장팩의 추가 카드까지 모두 포함된 완전판 컬렉션!
+- **5대 진영 지원**: 북부 왕국(Northern Realms), 닐프가드(Nilfgaard), 스코이아'텔(Scoia'tael), 몬스터(Monsters), 스켈리게(Skellige) 진영
+- **진영별 리더 카드 스킬**: 전황을 한순간에 뒤집는 고유 리더 특수 능력 보유
+
+#### 3. 전세를 뒤집는 특수 카드 & 날씨 시스템
+- ❄️ **혹한(Biting Frost)**: 모든 근접 유닛의 전투력을 1로 고정
+- 🌫️ **안개(Impenetrable Fog)**: 모든 원거리 유닛의 전투력을 1로 고정
+- 🌧️ **폭우(Torrential Rain)**: 모든 공성 유닛의 전투력을 1로 고정
+- ☀️ **맑은 날씨(Clear Weather)**: 전장의 모든 날씨 효과 제거
+- 🕵️ **스파이(Spy)**: 상대 진형에 배치하고 내 덱에서 카드 2장을 새로 드로우!
+- 🎺 **지휘관의 뿔나팔(Commander's Horn)**: 해당 라인의 모든 카드 전투력 2배 증폭
+- ⚕️ **의무병(Medic)**: 무덤에서 아군 카드 1장을 즉시 부활
+
+#### 4. 무설치·무과금 웹 브라우저 원클릭 플레이
+- 별도의 클라이언트 설치나 회원가입 절차 없이, 링크 접속 즉시 대전이 시작됩니다.
+- 오리지널 위쳐 3의 웅장한 배경 음악(BGM)과 생생한 카드 효과음까지 브라우저에서 그대로 구현!
+
+---
+
+위쳐의 심장박동을 깨우는 카드 한 판의 여유! 지금 바로 브라우저를 켜고 첫 라운드를 시작해보세요! 🃏
+👉 **지금 즉시 플레이**: https://dayyoung.github.io/gwent/`,
+  },
+  {
     id: 'post_snshero_game_intro_guide',
     subreddit: 'gaming',
     title: '[공식] SNS히어로(SNSHero.com) 완벽 가이드: AI 원클릭 웹 카드 배틀 RPG 소개 및 필승 공략법 🎮 (플레이 스크린샷 수록)',
@@ -1181,6 +1257,59 @@ AI에게 웹게임의 규칙, 카드 스키마, UI 테마를 전달할 때 그�
  * 어떤 글을 클릭하든 100% 댓글이 즉시 풍성하게 표시됨!
  */
 export const SEED_COMMENTS: Record<string, RedditComment[]> = {
+  post_snshero_gwent_launch: [
+    {
+      id: 'comm_gwent_1',
+      postId: 'post_snshero_gwent_launch',
+      parentId: null,
+      author: 'GeraltOfRivia_KR',
+      authorAvatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=64&q=80',
+      authorKarma: 28400,
+      body: '"궨트나 한 판 하지." 위쳐 3 하면서 딸 찾는 건 잊어버리고 여관마다 돌아다니며 궨트만 하던 기억이 새록새록 나네요 ㅋㅋㅋ 웹 브라우저에서 바로 되니까 너무 신기하고 타격감 쥑입니다!',
+      createdAt: Date.now() - 1000 * 60 * 2,
+      score: 620,
+      userVote: null,
+      replies: [
+        {
+          id: 'comm_gwent_1_1',
+          postId: 'post_snshero_gwent_launch',
+          parentId: 'comm_gwent_1',
+          author: 'SNSHero_Official',
+          authorAvatar: 'https://snshero.com/favicon.png',
+          authorKarma: 999999,
+          body: '위쳐의 낭만을 기억해주셔서 감사합니다! F11 전체화면으로 플레이하시면 BGM과 효과음까지 몰입감 100%로 즐기실 수 있습니다. 즐거운 궨트 한 판 되세요! ⚔️',
+          createdAt: Date.now() - 1000 * 60 * 1,
+          score: 312,
+          isAuthorOp: true,
+          userVote: null,
+        },
+      ],
+    },
+    {
+      id: 'comm_gwent_2',
+      postId: 'post_snshero_gwent_launch',
+      parentId: null,
+      author: 'NilfgaardStrategist',
+      authorAvatar: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=64&q=80',
+      authorKarma: 15400,
+      body: '하츠 오브 스톤이랑 블러드 앤 와인 카드까지 다 들어있는 게 진짜 대박이네요. 닐프가드로 스파이 카드 4장 돌려서 패 14장 만들고 2, 3라운드 압살하는 맛이 최고입니다 ㅋㅋㅋ',
+      createdAt: Date.now() - 1000 * 60 * 1,
+      score: 284,
+      userVote: null,
+    },
+    {
+      id: 'comm_gwent_3',
+      postId: 'post_snshero_gwent_launch',
+      parentId: null,
+      author: 'PC_Gamer_Pro',
+      authorAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=64&q=80',
+      authorKarma: 9200,
+      body: 'PC 모니터 1920x1080 해상도에서 레이아웃 딱 떨어지네요. 설치 없이 즐기는 데스크톱 카드 게임으로 최고입니다.',
+      createdAt: Date.now() - 1000 * 30,
+      score: 195,
+      userVote: null,
+    },
+  ],
   post_snshero_game_intro_guide: [
     {
       id: 'comm_intro_1',
