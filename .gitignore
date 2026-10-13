@@ -9,3 +9,4 @@ coverage/
 functions/.env
 .env.example
 tmp/image_narrations_translation_cache.json
+package-lock.json

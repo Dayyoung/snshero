@@ -33,7 +33,9 @@ jobs:
           node-version: '22'
 
       - name: Install Dependencies
-        run: npm install --legacy-peer-deps
+        run: |
+          npm install --legacy-peer-deps
+          npm install --no-save @rollup/rollup-linux-x64-gnu || true
 
       - name: Build Application
         run: npm run build
