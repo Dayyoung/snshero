@@ -2,6 +2,32 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-13 17:05 KST] SNSHero.com 궨트게임 출시 (PC전용) /reddit 최상단 고정글 작성, 홈 허브 연동, 빌드 및 원격 푸시 완료
+- **요청 사항**:
+  - `https://dayyoung.github.io/gwent/`
+  - "SNSHero.com 권트게임 출시 (PC전용) 으로 최상단에 글하나 작성해줘."
+  - `/git-push`
+- **수정 및 개선 내역**:
+  1. **`/reddit` 커뮤니티 최상단 고정 공지 포스트 등록 ([`src/data/redditSeedData.ts`](file:///Users/dayyoung/project/snshero/src/data/redditSeedData.ts))**:
+     - `post_snshero_gwent_launch` 시드 포스트 생성 및 `SEED_POSTS` 최상단 1순위 배치 (`isPinned: true`).
+     - 제목: `[공식/출시] SNSHero.com 궨트게임 출시 (PC전용) ⚔️ - 더 위쳐 3 정통 오리지널 궨트 클래식 웹 브라우저 플레이!`.
+     - 작성자: `u/SNSHero_Official` (공식 배지 부여), 태그: `⚔️ 공식 출시 / Game Launch (PC Only)`.
+     - 내용: `https://dayyoung.github.io/gwent/` 즉시 플레이 링크, 1920×1080 16:9 와이드 PC 전용 브라우저 최적화 안내 (`F11` 전체화면 추천), 3개 라인(근접/원거리/공성) 진형 배치 및 3판 2선승 수싸움 룰, 하츠 오브 스톤 & 블러드 앤 와인 확장팩 카드 풀 전수 수록, 날씨 카드 및 특수 카드 시스템 완벽 안내.
+     - `SEED_COMMENTS['post_snshero_gwent_launch']`에 생생한 커뮤니티 토론 및 댓글 트리 추가.
+  2. **피드 최상단 고정 알고리즘 연동 ([`src/lib/reddit/redditApiService.ts`](file:///Users/dayyoung/project/snshero/src/lib/reddit/redditApiService.ts))**:
+     - `getPosts()`에서 `officialPinnedPosts` 목록에 `post_snshero_gwent_launch`를 최우선으로 등록하여 신규 글 등록이나 정렬 옵션(Hot, New, Top 등) 변경과 무관하게 무조건 피드 최상단 0순위에 영구 고정되도록 구현.
+  3. **정적 SEO 뉴스룸 HTML 피드 렌더러 연동 ([`scripts/generate-news-seo.ts`](file:///Users/dayyoung/project/snshero/scripts/generate-news-seo.ts))**:
+     - `buildRedditNewsIndexHtml()` 내 최상단 고정 기사 섹션에 궨트 게임 출시 안내 카드(레드 테마) 추가 및 정적 색인 HTML 파일 자동 생성.
+  4. **홈 화면 카테고리 허브 바로가기 추가 ([`src/components/HomeCategoryHubModal.tsx`](file:///Users/dayyoung/project/snshero/src/components/HomeCategoryHubModal.tsx))**:
+     - `[🎮 게임 아레나]` 탭 최상단에 `[궨트(Gwent) 클래식 웹게임 (PC전용)]` 버튼 추가.
+     - `[📚 미디어 라운지]` 탭 리소스 목록에 `[SNSHero.com 궨트게임 (PC전용)]` 버튼 추가.
+- **검증 결과**:
+  - `npm run build`: Vite 6 프로덕션 번들 0에러 완벽 빌드 성공 (`built in 14.48s`).
+  - 정적 HTML (`public/reddit/index.html`) 내 궨트 출시 카드 생성 확인.
+  - 로컬 Git 커밋 완료 (`1230d68e`).
+  - 원격 저장소 푸시 완료 (`git push origin main` -> `https://github.com/Dayyoung/snshero`).
+  - 연동 구글 폼 완료 보고서 제출 완료 (`submit_report.py`).
+
 ## [2026-10-13 15:10 KST] /reddit 페이지 구글 광고 노출을 지정된 3가지 배너 규격으로만 엄격 제한 및 자동/날개 광고 완전 차단
 - **요청 사항**:
   - "/reddit 페이지에서는 다른화면들과 다르게 아래같이 배너 형태들에만 구글광고를 노출시켜줘."
