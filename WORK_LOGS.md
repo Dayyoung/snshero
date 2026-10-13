@@ -2,6 +2,23 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-13 12:28 KST] start-server.sh 실행 시 W3C Web Push 디스패처 서버(포트 3001) 자동 통합 실행 구축
+- **요청 사항**:
+  - "start-server.sh 배치 돌리면 웹푸시 서버도 같이 실행되게 해줘."
+- **원인 분석**:
+  - 기존 `scripts/start-server.sh`는 포트 3000(Vite Preview)과 `watch-build.js`만 실행하여, 관리자 화면에서 원클릭 푸시 발송 시 필요한 백그라운드 웹푸시 디스패처 서버(`scripts/push_server.mjs`, 포트 3001)를 별도로 켜야 하는 번거로움이 있었음.
+- **수정 및 개선 내역**:
+  1. **포트 3001 프로세스 자동 감지 및 정리 ([`scripts/start-server.sh`](file:///Users/dayyoung/project/snshero/scripts/start-server.sh))**:
+     - 스크립트 시작 시 포트 3000뿐 아니라 포트 3001 점유 프로세스 및 기존 `push_server.mjs` 인스턴스를 자동 정리하도록 개선.
+  2. **Web Push 디스패처 서버 백그라운드 자동 가동**:
+     - `node scripts/push_server.mjs &`를 통합 실행하여 서버 시작과 동시에 포트 3001 디스패처가 함께 가동되도록 연동.
+  3. **수명주기 통합(Graceful Teardown)**:
+     - `start-server.sh` 종료(Ctrl+C 등) 시 trap을 통해 웹푸시 디스패처 서버도 함께 안전하게 자동 종료되도록 구성.
+- **검증 결과**:
+  - `start-server.sh` 권한 설정 및 스크립트 무결점 검증 완료.
+  - 로컬 Git 커밋 완료 (`21a2fa0f`).
+  - 구글 폼 완료 보고서 제출 완료 (`submit_report.py`).
+
 ## [2026-10-13 12:22 KST] iOS PWA WebKit 환경 Web Push 알림 미수신 버그 수정
 - **요청 사항**:
   - "웹푸시는 잘 전송이 되는데 pwa ios가 알림이 안와."
