@@ -2,6 +2,23 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-13 12:22 KST] iOS PWA WebKit 환경 Web Push 알림 미수신 버그 수정
+- **요청 사항**:
+  - "웹푸시는 잘 전송이 되는데 pwa ios가 알림이 안와."
+- **원인 분석**:
+  - iOS 16.4+ WebKit(Safari/PWA)은 W3C NotificationOptions 중 버튼 액션(`actions`) 및 진동(`vibrate`) 속성을 지원하지 않음.
+  - 기존 `public/sw.js`에서 이 속성들이 포함된 상태로 `self.registration.showNotification(title, options)`를 호출하여 WebKit 내부에서 `TypeError`가 발생, 알림 배너가 화면에 노출되지 않고 조용히 취소(Silent Failure)되었음.
+- **수정 및 개선 내역**:
+  1. **iOS WebKit 미지원 속성 필터링 ([`public/sw.js`](file:///Users/dayyoung/project/snshero/public/sw.js))**:
+     - `push` 이벤트 발생 시 iOS 기기 감지 로직 추가.
+     - iOS 환경에서는 `actions`와 `vibrate`를 제외하고, 아이콘 및 배지 URL을 풀 URL(`self.location.origin + ...`)로 안전하게 처리.
+  2. **showNotification Fallback 안전망 구축**:
+     - `showNotification`을 `try...catch`로 감싸고, 만약 WebKit에서 옵션 파싱 예외가 발생하더라도 최소 필드(`body`, `data`)만으로 강제 표시하도록 이중 방어 로직 구현.
+- **검증 결과**:
+  - `public/sw.js` 및 `dist/sw.js` 동기화 완료.
+  - 로컬 Git 커밋 완료 (`ce63a1ac`).
+  - 구글 폼 완료 보고서 제출 완료 (`submit_report.py`).
+
 ## [2026-10-13 11:30 KST] W3C Web Push VAPID 연동 및 구글시트 기반 실제 원격 브로드캐스트 발송 시스템 구축
 - **요청 사항**:
   - "웹푸시가 등록된 모든 사용자들에게 푸시메세지를 보낼려면 어떻게 해야해" -> "푸시를 보냈는데 응답이 없어" -> "ㅇㅇ 실제 발송해야돼"
