@@ -39,7 +39,7 @@
     </image:image>
   </url>
 
-  <!-- SNSHero Development System Prompt (GEO & AI Grounding) -->
+  <!-- SNSHero Development System Prompt (GEO and AI Grounding) -->
   <url>
     <loc>https://snshero.com/snshero.md</loc>
     <lastmod>2026-10-13</lastmod>
@@ -215,7 +215,7 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://snshero.com/wiki/howtoplay"/>
   </url>
 
-  <!-- Wiki - Tips & Strategies -->
+  <!-- Wiki - Tips and Strategies -->
   <url>
     <loc>https://snshero.com/wiki/tip</loc>
     <lastmod>2026-07-02</lastmod>
@@ -326,7 +326,7 @@
     </image:image>
   </url>
 
-  <!-- Open Source Resources & Developer Links -->
+  <!-- Open Source Resources and Developer Links -->
   <url>
     <loc>https://snshero.com/r/technology/comments/post_resource_prompt</loc>
     <lastmod>2026-10-10</lastmod>

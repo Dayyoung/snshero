@@ -57,6 +57,8 @@ const routes = [
   'ranking', 'guild', 'novel', 'event', 'companion',
   'stock', 'community', 'admin', 'status', 'profile',
   'setting', 'share', 'boost', 'creator', 'web3', 'mall',
+  // Wiki pages
+  'wiki', 'wiki/card', 'wiki/howtoplay', 'wiki/tip',
   // Reddit Subreddits
   'r', 'r/hanguk', 'r/technology', 'r/gaming', 'r/popular', 'r/all', 'r/home', 'r/AskReddit', 'r/memes',
   // Reddit Key Vibecoding Posts
