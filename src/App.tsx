@@ -6128,8 +6128,8 @@ function AppContent() {
         )}
         <Meta view={view} language={language} />
 
-        {/* Desktop Left Skyscraper Ad Banner (lg: 1024px+ PC screens: 1066px 포함 완벽 지원, 자동전투 시 광고 제거) */}
-        {!isAdRemoved && !isAutoBattle && view !== 'landing' && (
+        {/* Desktop Left Skyscraper Ad Banner (lg: 1024px+ PC screens: 1066px 포함 완벽 지원, 자동전투/배틀/카드플레이 시 광고 제거) */}
+        {!isAdRemoved && !isAutoBattle && view !== 'landing' && view !== 'card-play' && !isPlayingBattle && (
           <aside 
             aria-label="Google AdSense Left Wing"
             className="hidden lg:flex flex-col items-center w-[120px] xl:w-[160px] shrink-0 sticky top-6 mr-2 xl:mr-3 z-30 pointer-events-auto"
@@ -8003,8 +8003,8 @@ function AppContent() {
 
       </div>
 
-        {/* Desktop Right Skyscraper Ad Banner (lg: 1024px+ PC screens: 1066px 포함 완벽 지원, 자동전투 시 광고 제거) */}
-        {!isAdRemoved && !isAutoBattle && view !== 'landing' && (
+        {/* Desktop Right Skyscraper Ad Banner (lg: 1024px+ PC screens: 1066px 포함 완벽 지원, 자동전투/배틀/카드플레이 시 광고 제거) */}
+        {!isAdRemoved && !isAutoBattle && view !== 'landing' && view !== 'card-play' && !isPlayingBattle && (
           <aside 
             aria-label="Google AdSense Right Wing"
             className="hidden lg:flex flex-col items-center w-[120px] xl:w-[160px] shrink-0 sticky top-6 ml-2 xl:ml-3 z-30 pointer-events-auto"

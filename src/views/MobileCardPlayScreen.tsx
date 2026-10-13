@@ -14,7 +14,9 @@ import {
   syncCardWithDatabase, 
   generateAiName, 
   getCardPower,
-  generateCard
+  generateCard,
+  getNormalizedElement,
+  getCardStatWithBonus
 } from '../constants';
 import { cn, getCardSpriteStyle } from '../lib/utils';
 import { AdSenseBanner } from '../components/AdSenseBanner';
@@ -23,6 +25,28 @@ import { t } from '../lib/i18n';
 import { MissionDialogueIntro } from '../components/MissionDialogueIntro';
 import { pickNewRankOpponent, RankOpponentInfo } from '../data/rankingOpponents';
 import { getDynamicDifficultyProfile, DynamicDifficultyProfile } from '../lib/dynamicDifficulty';
+
+export const ELEMENT_META: Record<string, {
+  nameKo: string;
+  nameEn: string;
+  emoji: string;
+  bg: string;
+  border: string;
+  text: string;
+  badgeBg: string;
+}> = {
+  water: { nameKo: '물', nameEn: 'Water', emoji: '💧', bg: 'bg-blue-500/15', border: 'border-blue-400', text: 'text-blue-600', badgeBg: 'bg-blue-600' },
+  fire: { nameKo: '불', nameEn: 'Fire', emoji: '🔥', bg: 'bg-red-500/15', border: 'border-red-400', text: 'text-red-600', badgeBg: 'bg-red-600' },
+  wind: { nameKo: '바람', nameEn: 'Wind', emoji: '🌪️', bg: 'bg-emerald-500/15', border: 'border-emerald-400', text: 'text-emerald-600', badgeBg: 'bg-emerald-600' },
+  land: { nameKo: '땅', nameEn: 'Earth', emoji: '🏔️', bg: 'bg-amber-600/15', border: 'border-amber-500', text: 'text-amber-700', badgeBg: 'bg-amber-700' },
+  human: { nameKo: '인간', nameEn: 'Human', emoji: '👤', bg: 'bg-sky-500/15', border: 'border-sky-400', text: 'text-sky-600', badgeBg: 'bg-sky-600' },
+  undead: { nameKo: '언데드', nameEn: 'Undead', emoji: '💀', bg: 'bg-purple-600/15', border: 'border-purple-400', text: 'text-purple-600', badgeBg: 'bg-purple-700' },
+  elf: { nameKo: '엘프', nameEn: 'Elf', emoji: '🍃', bg: 'bg-green-500/15', border: 'border-green-400', text: 'text-green-600', badgeBg: 'bg-green-600' },
+  dwarf: { nameKo: '드워프', nameEn: 'Dwarf', emoji: '🔨', bg: 'bg-zinc-500/15', border: 'border-zinc-400', text: 'text-zinc-600', badgeBg: 'bg-zinc-700' },
+  monster: { nameKo: '몬스터', nameEn: 'Monster', emoji: '👾', bg: 'bg-orange-500/15', border: 'border-orange-400', text: 'text-orange-600', badgeBg: 'bg-orange-600' },
+  robot: { nameKo: '로봇', nameEn: 'Robot', emoji: '🤖', bg: 'bg-slate-500/15', border: 'border-slate-400', text: 'text-slate-600', badgeBg: 'bg-slate-600' },
+  dragon: { nameKo: '드래곤', nameEn: 'Dragon', emoji: '⚡', bg: 'bg-rose-500/15', border: 'border-rose-400', text: 'text-rose-600', badgeBg: 'bg-rose-600' },
+};
 import { WEBTOON_SEASONS } from '../content/webtoonEpisodes';
 import { MOVIE_EPISODES } from '../content/movieEpisodeMapping';
 import { createBattleWebMcpTools, useWebMcpTools } from '../lib/webMcp/index';
@@ -118,6 +142,16 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
 
   // ─── Game State Initialization ─────────────────────────────────────
   const [board, setBoard] = useState<(CardData | null)[]>(() => Array(9).fill(null));
+  const [elementalBoard, setElementalBoard] = useState<(string | null)[]>(() => {
+    const elements: (string | null)[] = Array(9).fill(null);
+    const possibleElements = ['water', 'fire', 'wind', 'land', 'human', 'undead', 'elf', 'monster', 'dragon'];
+    for (let i = 0; i < 9; i++) {
+      if (Math.random() < 0.45) {
+        elements[i] = possibleElements[Math.floor(Math.random() * possibleElements.length)];
+      }
+    }
+    return elements;
+  });
   const [boardShields, setBoardShields] = useState<boolean[]>(() => Array(9).fill(false));
   const [playerHand, setPlayerHand] = useState<CardData[]>([]);
   const [opponentHand, setOpponentHand] = useState<CardData[]>([]);
@@ -414,6 +448,15 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     setPlayerHand(pCards);
     setOpponentHand(oCards);
     setBoard(Array(9).fill(null));
+    // 3x3 보드 속성 타일 랜덤 생성 (시너지 전략 플레이)
+    const newElements: (string | null)[] = Array(9).fill(null);
+    const possibleElements = ['water', 'fire', 'wind', 'land', 'human', 'undead', 'elf', 'monster', 'dragon'];
+    for (let i = 0; i < 9; i++) {
+      if (Math.random() < 0.45) {
+        newElements[i] = possibleElements[Math.floor(Math.random() * possibleElements.length)];
+      }
+    }
+    setElementalBoard(newElements);
     setBoardShields(Array(9).fill(false));
     setTurn(Math.random() > 0.5 ? 'player' : 'ai');
     setTurnCount(1);
@@ -617,14 +660,20 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
   }, [playerHand, opponentHand, board]);
 
   // ─── Flip Adjacency Logic (Triple Triad) ───────────────────────────
-  const executeFlips = useCallback((placedCard: CardData, slotIdx: number, currentBoard: (CardData | null)[], currentShields: boolean[]) => {
+  const executeFlips = useCallback((placedCard: CardData, slotIdx: number, currentBoard: (CardData | null)[], currentShields: boolean[], currentElements: (string | null)[] = elementalBoard) => {
     const row = Math.floor(slotIdx / 3);
     const col = slotIdx % 3;
     const flips: number[] = [];
     const newBoard = [...currentBoard];
 
-    // [Top, Right, Bottom, Left]
-    const pStats = placedCard.stats || [5, 5, 5, 5];
+    // [Top, Right, Bottom, Left] with tile synergy calculation
+    const placedTile = currentElements?.[slotIdx] || null;
+    const pStats = [
+      getCardStatWithBonus(placedCard, 0, placedTile),
+      getCardStatWithBonus(placedCard, 1, placedTile),
+      getCardStatWithBonus(placedCard, 2, placedTile),
+      getCardStatWithBonus(placedCard, 3, placedTile),
+    ];
 
     // 1. Check Top (row > 0, neighbor is slotIdx - 3)
     if (row > 0) {
@@ -632,7 +681,8 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       const target = newBoard[topIdx];
       if (target && target.owner !== placedCard.owner && !currentShields[topIdx]) {
         const myStat = pStats[0]; // My Top
-        const targetStat = (target.stats || [5, 5, 5, 5])[2]; // Target's Bottom
+        const targetTile = currentElements?.[topIdx] || null;
+        const targetStat = getCardStatWithBonus(target, 2, targetTile); // Target's Bottom
         if (myStat > targetStat) flips.push(topIdx);
       }
     }
@@ -643,7 +693,8 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       const target = newBoard[rightIdx];
       if (target && target.owner !== placedCard.owner && !currentShields[rightIdx]) {
         const myStat = pStats[1]; // My Right
-        const targetStat = (target.stats || [5, 5, 5, 5])[3]; // Target's Left
+        const targetTile = currentElements?.[rightIdx] || null;
+        const targetStat = getCardStatWithBonus(target, 3, targetTile); // Target's Left
         if (myStat > targetStat) flips.push(rightIdx);
       }
     }
@@ -654,7 +705,8 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       const target = newBoard[bottomIdx];
       if (target && target.owner !== placedCard.owner && !currentShields[bottomIdx]) {
         const myStat = pStats[2]; // My Bottom
-        const targetStat = (target.stats || [5, 5, 5, 5])[0]; // Target's Top
+        const targetTile = currentElements?.[bottomIdx] || null;
+        const targetStat = getCardStatWithBonus(target, 0, targetTile); // Target's Top
         if (myStat > targetStat) flips.push(bottomIdx);
       }
     }
@@ -665,7 +717,8 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       const target = newBoard[leftIdx];
       if (target && target.owner !== placedCard.owner && !currentShields[leftIdx]) {
         const myStat = pStats[3]; // My Left
-        const targetStat = (target.stats || [5, 5, 5, 5])[1]; // Target's Right
+        const targetTile = currentElements?.[leftIdx] || null;
+        const targetStat = getCardStatWithBonus(target, 1, targetTile); // Target's Right
         if (myStat > targetStat) flips.push(leftIdx);
       }
     }
@@ -678,7 +731,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     });
 
     return { updatedBoard: newBoard, flippedIndices: flips };
-  }, []);
+  }, [elementalBoard]);
 
   // ─── Play Move on Board ─────────────────────────────────────────────
   const handlePlaceCard = useCallback((slotIdx: number, card: CardData, isPlayer: boolean) => {
@@ -704,8 +757,8 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     const tempBoard = [...board];
     tempBoard[slotIdx] = cardToPlace;
 
-    // Evaluate flips
-    const { updatedBoard, flippedIndices } = executeFlips(cardToPlace, slotIdx, tempBoard, nextShields);
+    // Evaluate flips with elementalBoard synergy
+    const { updatedBoard, flippedIndices } = executeFlips(cardToPlace, slotIdx, tempBoard, nextShields, elementalBoard);
 
     if (flippedIndices.length > 0) {
       setFlippedSlots(flippedIndices);
@@ -1320,15 +1373,17 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
         suppressMotion && "[&_*]:animate-none [&_*]:transition-none"
       )}
     >
-      {/* Header actions retain 44px touch targets plus the top safe area. */}
-      <header className="sticky top-0 w-full pt-[env(safe-area-inset-top,0px)] px-2 border-b border-[#0f0000]/12 flex items-center gap-2 shrink-0 z-40 bg-[#fdfcfc]/95 backdrop-blur-xs">
+      {/* Header actions retain 44px touch targets plus the top safe area - z-[9999] 최상위 우선순위 부여 */}
+      <header className="sticky top-0 w-full pt-[env(safe-area-inset-top,0px)] px-2 border-b border-[#0f0000]/12 flex items-center gap-2 shrink-0 z-[9999] bg-[#fdfcfc] shadow-2xs">
         <button
           type="button"
           onClick={handleExitGame}
-          className="h-11 w-11 rounded-sm flex items-center justify-center hover:bg-[#f1eeee] shrink-0"
+          className="h-11 px-3 rounded-sm flex items-center justify-center gap-1.5 border border-[#0f0000]/20 bg-[#fdfcfc] hover:bg-[#f1eeee] active:scale-95 shrink-0 z-[10000] cursor-pointer text-[#201d1d] font-bold select-none touch-manipulation shadow-2xs"
           aria-label={t('exit_battle', language)}
+          title={t('exit_battle', language)}
         >
-          <ArrowLeft size={18} />
+          <ArrowLeft size={18} strokeWidth={2.5} />
+          <span className="text-[11px] font-black tracking-tight">{language === 'ko' ? '종료' : 'EXIT'}</span>
         </button>
 
         <div className="flex-1 min-w-0 flex flex-col justify-center gap-0.5">
@@ -1453,20 +1508,36 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
         </div>
 
         <div className="grid grid-cols-5 gap-1.5 w-full [@media(max-height:500px)_and_(min-width:480px)]:grid-cols-2 [@media(max-height:500px)_and_(min-width:560px)]:grid-cols-3">
-          {opponentHand.map((card, i) => (
-            <div
-              key={`opp-card-${card.id || i}`}
-              className="aspect-[2.8/4] min-h-[96px] sm:min-h-[115px] max-h-[135px] rounded-sm relative overflow-hidden border-2 border-red-400/90 bg-red-50/10 shadow-2xs [@media(max-height:500px)_and_(min-width:480px)]:h-[clamp(44px,24dvh,80px)]"
-            >
-              <CardItem
-                card={card}
-                isLocked={true}
-                language={language}
-                lowSpecMode={suppressMotion}
-                className="w-full h-full pointer-events-none rounded-none shadow-none"
-              />
-            </div>
-          ))}
+          {opponentHand.map((card, i) => {
+            const oppEl = getNormalizedElement(card);
+            const oppMeta = oppEl ? ELEMENT_META[oppEl] : null;
+            return (
+              <div
+                key={`opp-card-${card.id || i}`}
+                className="aspect-[2.8/4] min-h-[96px] sm:min-h-[115px] max-h-[135px] rounded-sm relative overflow-hidden border-2 border-red-400/90 bg-red-50/10 shadow-2xs [@media(max-height:500px)_and_(min-width:480px)]:h-[clamp(44px,24dvh,80px)]"
+              >
+                <CardItem
+                  card={card}
+                  isLocked={true}
+                  language={language}
+                  lowSpecMode={suppressMotion}
+                  className="w-full h-full pointer-events-none rounded-none shadow-none"
+                />
+                {oppMeta && (
+                  <div 
+                    className={cn(
+                      "absolute top-0.5 right-0.5 z-30 flex items-center gap-0.5 px-1 py-0.5 rounded-xs text-white border border-white/50 text-[7.5px] font-black leading-none shadow-xs pointer-events-none select-none",
+                      oppMeta.badgeBg
+                    )}
+                    title={`${language === 'ko' ? oppMeta.nameKo : oppMeta.nameEn} ${language === 'ko' ? '속성' : 'Element'}`}
+                  >
+                    <span>{oppMeta.emoji}</span>
+                    <span className="hidden sm:inline">{language === 'ko' ? oppMeta.nameKo : oppMeta.nameEn}</span>
+                  </div>
+                )}
+              </div>
+            );
+          })}
 
           {/* Placeholders for used opponent cards */}
           {Array.from({ length: Math.max(0, 5 - opponentHand.length) }).map((_, idx) => (
@@ -1541,6 +1612,11 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
               const isSelectedHand = selectedHandIndex !== null && playerHand[selectedHandIndex];
               const isShielded = boardShields[idx];
               const isPlayable = !isOccupied && Boolean(isSelectedHand) && turn === 'player' && !gameOver && !isEvaluating && rankingSearchCountdown === null && !showMissionDialogue;
+              const tileEl = elementalBoard[idx];
+              const tileMeta = tileEl ? ELEMENT_META[tileEl] : null;
+              const cardEl = isOccupied && cell ? getNormalizedElement(cell) : null;
+              const cardMeta = cardEl ? ELEMENT_META[cardEl] : null;
+              const isSynergy = Boolean(isOccupied && cell && tileEl && cardEl && cardEl === (tileEl === 'air' ? 'wind' : tileEl === 'earth' ? 'land' : tileEl));
 
               return (
                 <button
@@ -1548,18 +1624,19 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                   key={`board-slot-${idx}`}
                   id={`board-slot-${idx}`}
                   disabled={!isPlayable}
-                  aria-label={`${t(isOccupied ? cell.owner === 'player' ? 'my_deck_title' : 'opponent_deck' : 'toast_select_empty_slot', language)} ${idx + 1}${isOccupied ? `: ${language === 'ko' ? cell.title : cell.title_en || cell.title}` : ''}${isShielded ? `, ${t('ability_shield', language)}` : ''}`}
+                  aria-label={`${t(isOccupied ? cell.owner === 'player' ? 'my_deck_title' : 'opponent_deck' : 'toast_select_empty_slot', language)} ${idx + 1}${isOccupied ? `: ${language === 'ko' ? cell.title : cell.title_en || cell.title}` : ''}${cardEl ? ` (${cardEl})` : ''}${isShielded ? `, ${t('ability_shield', language)}` : ''}`}
                   onClick={() => {
                     if (turn === 'player' && !isOccupied && isSelectedHand && rankingSearchCountdown === null && !showMissionDialogue) {
                       handlePlaceCard(idx, isSelectedHand, true);
                     }
                   }}
                   className={cn(
-                    "relative w-full h-full min-w-0 rounded-sm flex flex-col items-center justify-center overflow-hidden",
+                    "relative w-full h-full min-w-0 rounded-sm flex flex-col items-center justify-center overflow-hidden transition-all select-none",
                     isPlayable && "border border-dashed border-[#201d1d] bg-[#fdfcfc] hover:bg-[#e5e1e1] cursor-pointer",
-                    !isOccupied && !isPlayable && "border border-[#0f0000]/12 bg-[#f8f7f7] text-[#9a9898]",
+                    !isOccupied && !isPlayable && (tileMeta ? cn("border", tileMeta.border, tileMeta.bg) : "border border-[#0f0000]/12 bg-[#f8f7f7] text-[#9a9898]"),
                     isOccupied && cell.owner === 'player' && "border-2 border-[#2563eb] bg-[#2563eb]",
                     isOccupied && cell.owner === 'ai' && "border-2 border-[#dc2626] bg-[#dc2626]",
+                    isSynergy && "ring-2 ring-amber-400 shadow-[0_0_10px_rgba(251,191,36,0.65)]",
                     isFlipped && "outline outline-2 outline-offset-[-4px] outline-[#fdfcfc]"
                   )}
                 >
@@ -1576,22 +1653,59 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                         isLocked={true}
                         language={language}
                         lowSpecMode={suppressMotion}
+                        cellElement={tileEl}
                         className={cn(
                           "w-full h-full rounded-none shadow-none pointer-events-none"
                         )}
                       />
 
+                      {/* 각 카드별 속성 배지 (우측 하단) */}
+                      {cardMeta && (
+                        <div 
+                          className={cn(
+                            "absolute bottom-0.5 right-0.5 z-30 flex items-center gap-0.5 px-1 py-0.5 rounded-xs text-white border border-white/60 text-[8px] font-black leading-none shadow-xs pointer-events-none select-none",
+                            cardMeta.badgeBg
+                          )}
+                          title={`${language === 'ko' ? cardMeta.nameKo : cardMeta.nameEn} ${language === 'ko' ? '속성' : 'Element'}`}
+                        >
+                          <span className="text-[9px]">{cardMeta.emoji}</span>
+                          <span className="tracking-tight">{language === 'ko' ? cardMeta.nameKo : cardMeta.nameEn}</span>
+                        </div>
+                      )}
+
+                      {/* 타일 속성 일치 시 시너지 효과 배지 (좌측 상단) */}
+                      {isSynergy && (
+                        <div className="absolute top-0.5 left-0.5 z-35 flex items-center gap-0.5 px-1 py-0.5 rounded-xs bg-amber-400 text-stone-950 font-mono text-[8.5px] font-black border border-amber-300 shadow-xs pointer-events-none animate-pulse">
+                          <span>⚡</span>
+                          <span>{language === 'ko' ? '시너지 +1' : 'SYNERGY +1'}</span>
+                        </div>
+                      )}
+
                       {/* Shield Indicator */}
                       {isShielded && (
-                        <div className="absolute top-1 right-1 z-30 bg-[#fdfcfc] text-[#201d1d] border border-[#201d1d] rounded-sm p-1">
-                          <Shield size={12} />
+                        <div className="absolute top-0.5 right-0.5 z-35 bg-[#fdfcfc] text-[#201d1d] border border-[#201d1d] rounded-sm p-0.5">
+                          <Shield size={11} />
                         </div>
                       )}
                     </motion.div>
                   ) : (
-                    <div className="flex flex-col items-center justify-center pointer-events-none">
-                      <span className="text-lg font-bold">{isPlayable ? '[+]' : '+'}</span>
-                      <span className="text-[10px] text-[#646262]">{String(idx + 1).padStart(2, '0')}</span>
+                    <div className="flex flex-col items-center justify-center pointer-events-none select-none">
+                      {tileMeta ? (
+                        <div className="flex flex-col items-center justify-center gap-0.5">
+                          <span className="text-base sm:text-lg leading-none">{tileMeta.emoji}</span>
+                          <span className={cn("text-[9px] font-black uppercase tracking-tight leading-none", tileMeta.text)}>
+                            {language === 'ko' ? tileMeta.nameKo : tileMeta.nameEn}
+                          </span>
+                          <span className="text-[7.5px] font-bold bg-[#201d1d]/80 text-amber-300 px-1 py-0.2 rounded-xs leading-none">
+                            +1 PWR
+                          </span>
+                        </div>
+                      ) : (
+                        <>
+                          <span className="text-lg font-bold">{isPlayable ? '[+]' : '+'}</span>
+                          <span className="text-[10px] text-[#646262]">{String(idx + 1).padStart(2, '0')}</span>
+                        </>
+                      )}
                     </div>
                   )}
                 </button>
@@ -1707,18 +1821,20 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
         <div className="grid grid-cols-5 gap-1.5 w-full [@media(max-height:500px)_and_(min-width:480px)]:grid-cols-2 [@media(max-height:500px)_and_(min-width:560px)]:grid-cols-3">
           {playerHand.map((card, i) => {
             const isSelected = selectedHandIndex === i;
+            const myEl = getNormalizedElement(card);
+            const myMeta = myEl ? ELEMENT_META[myEl] : null;
             return (
               <button
                 type="button"
                 key={card.id}
                 aria-pressed={isSelected}
-                aria-label={`${t('select_card', language)}: ${language === 'ko' ? card.title : card.title_en || card.title}`}
+                aria-label={`${t('select_card', language)}: ${language === 'ko' ? card.title : card.title_en || card.title}${myEl ? ` (${myEl})` : ''}`}
                 onClick={() => {
                   playSound('tap');
                   setSelectedHandIndex(i);
                 }}
                 className={cn(
-                  "aspect-[2.8/4] min-h-[96px] sm:min-h-[115px] max-h-[135px] rounded-sm relative overflow-hidden cursor-pointer border-2 transition-colors [@media(max-height:500px)_and_(min-width:480px)]:h-[clamp(44px,24dvh,80px)]",
+                  "aspect-[2.8/4] min-h-[96px] sm:min-h-[115px] max-h-[135px] rounded-sm relative overflow-hidden cursor-pointer border-2 transition-colors select-none [@media(max-height:500px)_and_(min-width:480px)]:h-[clamp(44px,24dvh,80px)]",
                   isSelected
                     ? "border-blue-600 shadow-sm"
                     : "border-blue-400/80 hover:border-blue-500 bg-blue-50/10"
@@ -1732,6 +1848,18 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                   lowSpecMode={suppressMotion}
                   className="w-full h-full pointer-events-none rounded-none shadow-none"
                 />
+                {myMeta && (
+                  <div 
+                    className={cn(
+                      "absolute top-0.5 right-0.5 z-30 flex items-center gap-0.5 px-1 py-0.5 rounded-xs text-white border border-white/50 text-[7.5px] font-black leading-none shadow-xs pointer-events-none select-none",
+                      myMeta.badgeBg
+                    )}
+                    title={`${language === 'ko' ? myMeta.nameKo : myMeta.nameEn} ${language === 'ko' ? '속성' : 'Element'}`}
+                  >
+                    <span>{myMeta.emoji}</span>
+                    <span className="hidden sm:inline">{language === 'ko' ? myMeta.nameKo : myMeta.nameEn}</span>
+                  </div>
+                )}
               </button>
             );
           })}

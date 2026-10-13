@@ -503,6 +503,18 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
         {hasPowerBonus && <span className="text-[5cqw] font-bold">+</span>}
       </div>}
 
+      {/* Board view top-right element/faction indicator */}
+      {isOnBoard && (factionDef || race) && (
+        <div className={cn(
+          'absolute right-[3cqw] top-[3cqw] z-30 flex items-center gap-[1cqw] border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] px-[2cqw] py-[1.5cqw] leading-none'
+        )} title={factionDef ? t(factionDef.nameKey, language) : race || undefined}>
+          <FactionIcon className="h-[6cqw] w-[6cqw] shrink-0 text-[#201d1d]" />
+          <span className="text-[6.5cqw] font-black uppercase tabular-nums">
+            {factionDef ? t(factionDef.nameKey, language) : race}
+          </span>
+        </div>
+      )}
+
       {/* Direction stats: Always displayed in North / East / South / West layout (Cross Diamond HUD) */}
       {!hideStats && (
         <>
@@ -546,6 +558,9 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
               <span className="flex min-w-0 items-center gap-[1cqw] font-bold" title={ownerLabel}>
                 {owner === 'player' ? <User className="h-[5.5cqw] w-[5.5cqw] shrink-0" /> : <Bot className="h-[5.5cqw] w-[5.5cqw] shrink-0" />}
                 <span className="truncate">{ownerLabel}</span>
+                {(factionDef || race) && (
+                  <FactionIcon className="h-[4.8cqw] w-[4.8cqw] shrink-0 opacity-80" />
+                )}
               </span>
             ) : !isOnBoard && factionDef ? (
               <span className="flex min-w-0 items-center gap-[1cqw]" title={t(factionDef.nameKey, language)}>
