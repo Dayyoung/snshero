@@ -39,7 +39,7 @@ interface MovieViewProps {
   playSfx?: (url: string) => void;
   currentSeason?: string;
   updateSns?: (amount: number, reason?: string) => void;
-  showCustomAlert?: (title: string, message: string) => void;
+  showCustomAlert?: (title: string, message: string, autoCloseSeconds?: number) => void;
 }
 
 const TOTAL_EPISODES = 40;
@@ -412,11 +412,18 @@ export const MovieView: React.FC<MovieViewProps> = ({
     }
 
     if (showCustomAlert) {
+      let isAutoLoop = false;
+      try {
+        isAutoLoop = localStorage.getItem('hero_auto_loop_is_ranking') === 'true' ||
+                     localStorage.getItem('hero_auto_loop_mode') !== null;
+      } catch {}
+
       showCustomAlert(
         language === 'ko' ? '시청 보상 수령' : 'Reward Claimed',
         language === 'ko'
           ? `극장판 제 ${epNum}화 시청 완료 보상으로 100 SNS가 지급되었습니다!`
-          : `Received 100 SNS for watching Movie Episode ${epNum}!`
+          : `Received 100 SNS for watching Movie Episode ${epNum}!`,
+        isAutoLoop ? 2 : 3
       );
     }
   };

@@ -706,20 +706,47 @@ function AppContent() {
   });
 
   const showCustomAlert = (title: string, message: string, autoCloseSeconds?: number) => {
-    const isDefeatOrOverwhelmed = 
+    let isAutoLoop = false;
+    try {
+      isAutoLoop = localStorage.getItem('hero_auto_loop_is_ranking') === 'true' ||
+                   localStorage.getItem('hero_auto_loop_mode') !== null ||
+                   localStorage.getItem('hero_auto_start_pvp') === 'true';
+    } catch {}
+
+    const isRewardOrCompletion = 
+      message.includes('완독') ||
+      title.includes('완독') ||
+      message.includes('시청') ||
+      title.includes('시청') ||
+      message.includes('보상') ||
+      title.includes('보상') ||
+      message.includes('지급') ||
+      title.includes('지급') ||
+      message.includes('획득') ||
+      title.includes('획득') ||
+      message.includes('Claimed') ||
+      title.includes('Claimed') ||
+      message.includes('Reward') ||
+      title.includes('Reward');
+
+    const calculatedAutoClose = 
       autoCloseSeconds !== undefined 
         ? autoCloseSeconds 
-        : (message.includes('버겁') || title.includes('패배') || message.includes('difficult') || title.includes('Battle Lost'))
-          ? 3
-          : undefined;
+        : isAutoLoop
+          ? 2 // 자동 플레이 중일 때는 팝업이 화면을 멈추지 않도록 2초 후 무조건 자동 닫힘
+          : (message.includes('버겁') || title.includes('패배') || message.includes('difficult') || title.includes('Battle Lost'))
+            ? 3
+            : isRewardOrCompletion
+              ? 3 // 보상/완독 팝업은 수동 플레이 중에도 3초 후 자동 닫힘 (확인 버튼 클릭 불필요)
+              : undefined;
 
     setCustomPopup({
       isOpen: true,
       title,
       message,
       type: 'alert',
-      autoCloseSeconds: isDefeatOrOverwhelmed,
-      countdown: isDefeatOrOverwhelmed ?? null
+      autoCloseSeconds: calculatedAutoClose,
+      countdown: calculatedAutoClose ?? null
     });
   };
 
@@ -734,7 +761,7 @@ function AppContent() {
     });
   };
 
-  // 커스텀 팝업 자동 닫힘 카운트다운 타이머 (패배/버거운 상대 팝업 3초 자동 닫힘 지원)
+  // 커스텀 팝업 자동 닫힘 카운트다운 타이머 (패배/버거운 상대 및 자동플레이 보상 팝업 자동 닫힘 지원)
   useEffect(() => {
     if (!customPopup.isOpen || customPopup.countdown === undefined || customPopup.countdown === null) {
       return;
@@ -758,6 +785,23 @@ function AppContent() {
 
     return () => clearTimeout(timer);
   }, [customPopup.isOpen, customPopup.countdown]);
+
+  // 화면(view) 전환 시, 자동 플레이 중이거나 alert 타입 팝업이 잔류하는 경우 안전하게 자동 닫기 (화면 가림 버그 원천 방지)
+  useEffect(() => {
+    setCustomPopup(prev => {
+      if (prev.isOpen && prev.type === 'alert') {
+        let isAutoLoop = false;
+        try {
+          isAutoLoop = localStorage.getItem('hero_auto_loop_is_ranking') === 'true' ||
+                       localStorage.getItem('hero_auto_loop_mode') !== null;
+        } catch {}
+        if (isAutoLoop || prev.countdown !== null) {
+          return { ...prev, isOpen: false, countdown: null };
+        }
+      }
+      return prev;
+    });
+  }, [view]);
 
   useEffect(() => {
     localStorage.setItem('hero_ad_removed', String(isAdRemoved));

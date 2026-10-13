@@ -18,7 +18,7 @@ interface PredictionMarketViewProps {
   updateSns: (amount: number, reason?: string, type?: 'earned' | 'purchased') => void;
   playSfx: (url: string) => void;
   setView: (view: ViewType) => void;
-  showCustomAlert?: (title: string, message: string) => void;
+  showCustomAlert?: (title: string, message: string, autoCloseSeconds?: number) => void;
   user: any;
   syncUserData?: (data: any) => Promise<void>;
   currentSeason: string;
@@ -227,11 +227,21 @@ export const PredictionMarketView: React.FC<PredictionMarketViewProps> = ({
 
   // Trigger alert helper
   const triggerAlert = (type: 'success' | 'error', text: string) => {
+    let isAutoLoop = false;
+    try {
+      isAutoLoop = localStorage.getItem('hero_auto_loop_is_ranking') === 'true' ||
+                   localStorage.getItem('hero_auto_loop_mode') !== null;
+    } catch {}
+
     if (showCustomAlert) {
-      showCustomAlert(type === 'success' ? (language === 'ko' ? '성공' : 'SUCCESS') : (language === 'ko' ? '오류' : 'ERROR'), text);
+      showCustomAlert(
+        type === 'success' ? (language === 'ko' ? '성공' : 'SUCCESS') : (language === 'ko' ? '오류' : 'ERROR'),
+        text,
+        isAutoLoop ? 2 : (type === 'success' ? 3 : undefined)
+      );
     } else {
       setLocalAlert({ type, text });
-      setTimeout(() => setLocalAlert(null), 4000);
+      setTimeout(() => setLocalAlert(null), 3000);
     }
   };
 

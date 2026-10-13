@@ -593,15 +593,25 @@ export const ShopView: React.FC<ShopViewProps> = ({
     if (localStorage.getItem(key) !== 'true') {
       localStorage.setItem(key, 'true');
       updateSns(50, 'daily_free_sns', '매일 무료 50 SNS 선물');
-      setTimeout(() => {
-        setCustomAlert({
-          isOpen: true,
-          title: language === 'ko' ? '🎁 매일 무료 50 SNS 자동 지급' : '🎁 Daily Free 50 SNS Auto-Claimed',
-          message: language === 'ko'
-            ? '상점 방문을 환영합니다! 오늘의 무료 50 SNS가 계정에 자동으로 입금되었습니다.'
-            : 'Welcome to the Shop! 50 free SNS has been automatically credited to your balance.'
-        });
-      }, 500);
+      
+      let isAutoLoop = false;
+      try {
+        isAutoLoop = localStorage.getItem('hero_auto_loop_is_ranking') === 'true' ||
+                     localStorage.getItem('hero_auto_loop_mode') !== null;
+      } catch {}
+
+      // 자동 플레이/스마트 루프 중일 때는 팝업으로 흐름을 방해하지 않음
+      if (!isAutoLoop) {
+        setTimeout(() => {
+          setCustomAlert({
+            isOpen: true,
+            title: language === 'ko' ? '🎁 매일 무료 50 SNS 자동 지급' : '🎁 Daily Free 50 SNS Auto-Claimed',
+            message: language === 'ko'
+              ? '상점 방문을 환영합니다! 오늘의 무료 50 SNS가 계정에 자동으로 입금되었습니다.'
+              : 'Welcome to the Shop! 50 free SNS has been automatically credited to your balance.'
+          });
+        }, 500);
+      }
     }
   }, [todayDateKey, language, updateSns]);
 

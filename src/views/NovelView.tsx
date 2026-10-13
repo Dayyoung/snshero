@@ -53,7 +53,7 @@ interface NovelViewProps {
   currentSeason?: string;
   user?: { uid: string; displayName?: string | null } | null;
   updateSns?: (amount: number, reason?: string) => void;
-  showCustomAlert?: (title: string, message: string) => void;
+  showCustomAlert?: (title: string, message: string, autoCloseSeconds?: number) => void;
 }
 
 interface IndexEpisodeMeta {
@@ -671,7 +671,8 @@ export const NovelView: React.FC<NovelViewProps> = ({
       if (showCustomAlert) {
         showCustomAlert(
           language === 'ko' ? '알림' : 'Notice',
-          t('novel_reward_already_claimed', language)
+          t('novel_reward_already_claimed', language),
+          2
         );
       }
       return;
@@ -687,10 +688,18 @@ export const NovelView: React.FC<NovelViewProps> = ({
 
     if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
     triggerHaptic('victory');
+
+    let isAutoLoop = false;
+    try {
+      isAutoLoop = localStorage.getItem('hero_auto_loop_is_ranking') === 'true' ||
+                   localStorage.getItem('hero_auto_loop_mode') !== null;
+    } catch {}
+
     if (showCustomAlert) {
       showCustomAlert(
         language === 'ko' ? '완독 보상 자동 획득!' : 'Chapter Reward Auto-Claimed!',
-        language === 'ko' ? `제 ${epNum}화 완독 보상 100 SNS 포인트가 자동으로 지급되었습니다!` : `Automatically claimed 100 SNS points for completing Episode ${epNum}!`
+        language === 'ko' ? `제 ${epNum}화 완독 보상 100 SNS 포인트가 자동으로 지급되었습니다!` : `Automatically claimed 100 SNS points for completing Episode ${epNum}!`,
+        isAutoLoop ? 2 : 3
       );
     }
   };
