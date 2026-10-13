@@ -23,6 +23,7 @@ import { ITEM_DATABASE } from './constants/itemDatabase';
 import { CARD_DATABASE } from './cardDatabase';
 import { ALL_ACHIEVEMENTS } from './constants/achievements';
 import { auth, googleProvider, db, analytics, logEvent, setUserId, setUserProperties, currentDbMode } from './lib/firebase';
+import { signInWithGoogleAccount, signOutGoogleAccount } from './lib/googleAuthService';
 import { signInWithPopup, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, doc, getDoc, setDoc, updateDoc, serverTimestamp, collection, addDoc, onSnapshot, query, orderBy, limit, where, writeBatch, getDocs } from './lib/firebaseMock';
 import { t, translateText } from './lib/i18n';
 import { GameSettingsProvider, useGameSettings } from './contexts/GameSettingsContext';
@@ -208,6 +209,10 @@ const BenchmarkView = safeLazy(loadViewSafely('BenchmarkView'), 'BenchmarkView')
 const WebMcpActiveBadge = safeLazy(
   loadComponentSafely('WebMcpActiveBadge'),
   'WebMcpActiveBadge'
+);
+const GoogleAuthModal = safeLazy(
+  loadComponentSafely('GoogleAuthModal'),
+  'GoogleAuthModal'
 );
 
 const getCardAvatarStyle = (avatar: string): React.CSSProperties => {
@@ -773,6 +778,9 @@ function AppContent() {
   }, []);
 
   const [user, setUser] = useState<any | null>(() => getStoredGuestProfile());
+  const [isGoogleAuthModalOpen, setIsGoogleAuthModalOpen] = useState(false);
+  const [googleAuthModalErrorCode, setGoogleAuthModalErrorCode] = useState<string | null>(null);
+  const [googleAuthModalErrorMessage, setGoogleAuthModalErrorMessage] = useState<string | null>(null);
   const [authInitialized, setAuthInitialized] = useState(true);
   const [authProgress, setAuthProgress] = useState(100);
   const [targetProgress, setTargetProgress] = useState(10);
@@ -4900,32 +4908,102 @@ function AppContent() {
     setView('admin');
   }, []);
 
-  const handleLogin = async (emailOverride?: string) => {
+  const handleLogin = async (loginPayload?: string | { uid?: string; displayName?: string; email?: string; photoURL?: string }) => {
     setIsGlobalLoading(true);
     setGlobalLoadingMessage(t('logging_in', language));
     try {
-      const targetName = emailOverride ? emailOverride.split('@')[0] : 'Hero';
-      const localProfile = {
-        uid: 'local-hero-user',
-        displayName: targetName,
-        email: emailOverride || 'hero@snshero.local',
-        photoURL: 'https://api.dicebear.com/7.x/bottts/svg?seed=' + targetName,
-        isAnonymous: false,
-        activeEmoticonKey: DEFAULT_PROFILE_EMOTICON_KEY,
-        activeBadgeKey: DEFAULT_PROFILE_BADGE_KEY,
-        activeTitleKey: DEFAULT_PROFILE_TITLE_KEY,
-      };
-      localStorage.setItem('hero_user_profile', JSON.stringify(localProfile));
-      localStorage.setItem('hero_user_name', localProfile.displayName);
-      localStorage.setItem('hero_user_avatar', localProfile.photoURL);
-      setUser(localProfile);
-      trackAnalytics({ event: AnalyticsEvent.LOGIN, payload: { method: 'demo', uid: localProfile.uid } });
-      showCustomAlert(
-        language === 'ko' ? '로그인 완료' : 'Login Success',
-        language === 'ko' ? `${localProfile.displayName}님 환영합니다!` : `Welcome, ${localProfile.displayName}!`
-      );
-    } catch (error) {
+      // 1. 객체 형태로 프로필이 전달된 경우 (GoogleAuthModal 직접 연동 또는 커스텀 계정)
+      if (typeof loginPayload === 'object' && loginPayload !== null) {
+        const targetName = loginPayload.displayName || loginPayload.email?.split('@')[0] || 'Hero';
+        const localProfile = {
+          uid: loginPayload.uid || ('google-linked-' + Date.now()),
+          displayName: targetName,
+          email: loginPayload.email || 'hero@snshero.local',
+          photoURL: loginPayload.photoURL || ('https://api.dicebear.com/7.x/bottts/svg?seed=' + targetName),
+          isAnonymous: false,
+          activeEmoticonKey: DEFAULT_PROFILE_EMOTICON_KEY,
+          activeBadgeKey: DEFAULT_PROFILE_BADGE_KEY,
+          activeTitleKey: DEFAULT_PROFILE_TITLE_KEY,
+        };
+        localStorage.setItem('hero_user_profile', JSON.stringify(localProfile));
+        localStorage.setItem('hero_user_name', localProfile.displayName);
+        localStorage.setItem('hero_user_avatar', localProfile.photoURL);
+        setUser(localProfile);
+        setIsGoogleAuthModalOpen(false);
+        trackAnalytics({ event: AnalyticsEvent.LOGIN, payload: { method: 'google', uid: localProfile.uid } });
+        showCustomAlert(
+          language === 'ko' ? 'Google 로그인 완료' : 'Google Login Success',
+          language === 'ko' ? `${localProfile.displayName} (${localProfile.email})님 환영합니다!` : `Welcome, ${localProfile.displayName} (${localProfile.email})!`
+        );
+        return;
+      }
+
+      // 2. 이메일 문자열이 전달된 경우
+      if (typeof loginPayload === 'string' && loginPayload.trim()) {
+        const cleanEmail = loginPayload.trim();
+        const targetName = cleanEmail.split('@')[0] || 'Hero';
+        const localProfile = {
+          uid: 'google-linked-' + btoa(cleanEmail).replace(/=/g, '').toLowerCase(),
+          displayName: targetName,
+          email: cleanEmail,
+          photoURL: 'https://api.dicebear.com/7.x/bottts/svg?seed=' + targetName,
+          isAnonymous: false,
+          activeEmoticonKey: DEFAULT_PROFILE_EMOTICON_KEY,
+          activeBadgeKey: DEFAULT_PROFILE_BADGE_KEY,
+          activeTitleKey: DEFAULT_PROFILE_TITLE_KEY,
+        };
+        localStorage.setItem('hero_user_profile', JSON.stringify(localProfile));
+        localStorage.setItem('hero_user_name', localProfile.displayName);
+        localStorage.setItem('hero_user_avatar', localProfile.photoURL);
+        setUser(localProfile);
+        setIsGoogleAuthModalOpen(false);
+        trackAnalytics({ event: AnalyticsEvent.LOGIN, payload: { method: 'google', uid: localProfile.uid } });
+        showCustomAlert(
+          language === 'ko' ? 'Google 로그인 완료' : 'Google Login Success',
+          language === 'ko' ? `${localProfile.displayName} (${localProfile.email})님 환영합니다!` : `Welcome, ${localProfile.displayName} (${localProfile.email})!`
+        );
+        return;
+      }
+
+      // 3. 인자 없이 구글 로그인 버튼을 클릭한 경우: 실제 현재 로그인된 구글아이디 팝업 인증 시도!
+      const authResult = await signInWithGoogleAccount();
+      if (authResult.success && authResult.user) {
+        const realUser = authResult.user;
+        const localProfile = {
+          uid: realUser.uid,
+          displayName: realUser.displayName,
+          email: realUser.email,
+          photoURL: realUser.photoURL,
+          isAnonymous: false,
+          activeEmoticonKey: DEFAULT_PROFILE_EMOTICON_KEY,
+          activeBadgeKey: DEFAULT_PROFILE_BADGE_KEY,
+          activeTitleKey: DEFAULT_PROFILE_TITLE_KEY,
+        };
+        localStorage.setItem('hero_user_profile', JSON.stringify(localProfile));
+        localStorage.setItem('hero_user_name', localProfile.displayName);
+        localStorage.setItem('hero_user_avatar', localProfile.photoURL);
+        setUser(localProfile);
+        setIsGoogleAuthModalOpen(false);
+        trackAnalytics({ event: AnalyticsEvent.LOGIN, payload: { method: 'google', uid: localProfile.uid } });
+        showCustomAlert(
+          language === 'ko' ? 'Google 계정 로그인 성공' : 'Google Sign-in Success',
+          language === 'ko'
+            ? `${localProfile.displayName} (${localProfile.email}) 계정으로 정상 로그인되었습니다.`
+            : `Signed in as ${localProfile.displayName} (${localProfile.email}).`
+        );
+      } else if (authResult.isCancelled) {
+        // 사용자가 구글 팝업창을 닫거나 취소한 경우: 에러창 없이 조용히 복귀
+      } else {
+        // 도메인 미승인(auth/unauthorized-domain), 팝업 차단, 또는 설정 오류 등 발생 시 모달 오픈
+        setGoogleAuthModalErrorCode(authResult.errorCode || 'auth/unknown');
+        setGoogleAuthModalErrorMessage(authResult.errorMessage || null);
+        setIsGoogleAuthModalOpen(true);
+      }
+    } catch (error: any) {
       console.error("Login failed:", error);
+      setGoogleAuthModalErrorCode(error?.code || 'auth/unknown');
+      setGoogleAuthModalErrorMessage(error?.message || null);
+      setIsGoogleAuthModalOpen(true);
     } finally {
       setIsGlobalLoading(false);
       setGlobalLoadingMessage('');
@@ -4936,6 +5014,7 @@ function AppContent() {
     setIsGlobalLoading(true);
     setGlobalLoadingMessage(t('logging_out', language));
     try {
+      await signOutGoogleAccount();
       localStorage.removeItem('hero_user_profile');
       localStorage.setItem('hero_user_name', 'GUEST');
       localStorage.setItem('hero_user_avatar', 'preset:0');
@@ -7971,6 +8050,20 @@ function AppContent() {
 
       {/* Global Rainbow Particle Flip FX Overlay (Flip! & Doble Flip!) */}
       <RainbowFlipEffect isFixed={true} />
+
+      {/* Real Google Account Auth & Fallback Modal */}
+      <GoogleAuthModal
+        isOpen={isGoogleAuthModalOpen}
+        onClose={() => setIsGoogleAuthModalOpen(false)}
+        onSuccessLogin={(profile) => handleLogin(profile)}
+        onTriggerRealPopup={async () => {
+          await handleLogin();
+        }}
+        initialErrorCode={googleAuthModalErrorCode}
+        initialErrorMessage={googleAuthModalErrorMessage}
+        language={language}
+        isLoggingIn={isGlobalLoading}
+      />
 
       {isGlobalLoading && (
         <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md pointer-events-auto animate-fade-in">

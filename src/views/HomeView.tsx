@@ -53,7 +53,7 @@ interface HomeViewProps {
     email?: string | null;
     photoURL?: string | null;
   } | null;
-  handleLogin: (email?: string) => Promise<void>;
+  handleLogin: (email?: string | any) => Promise<void>;
   handleLogout: () => Promise<void>;
   showRulesBtn?: boolean;
   onStartTutorial?: () => void;
@@ -236,37 +236,20 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
   const deckPreview = currentDeck.length > 0 ? currentDeck : [1, 11, 31, 51, 101];
 
-  const clickCountRef = React.useRef(0);
-  const timerRef = React.useRef<NodeJS.Timeout | null>(null);
-
-  const onLoginClick = () => {
+  const onLoginClick = async () => {
     if (isLoggingIn) return;
     
     playSfx(
       "https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3",
     );
     
-    clickCountRef.current += 1;
-    
-    if (!timerRef.current) {
-      timerRef.current = setTimeout(async () => {
-        const finalCount = clickCountRef.current;
-        clickCountRef.current = 0;
-        timerRef.current = null;
-        
-        setIsLoggingIn(true);
-        try {
-          let email: string | undefined = undefined;
-          if (finalCount === 2) email = 'dryudryu2@gmail.com';
-          else if (finalCount >= 3) email = 'dryudryu3@gmail.com';
-          
-          await handleLogin(email);
-        } catch (e) {
-          console.error(e);
-        } finally {
-          setIsLoggingIn(false);
-        }
-      }, 1000);
+    setIsLoggingIn(true);
+    try {
+      await handleLogin();
+    } catch (e) {
+      console.error("Login attempt failed:", e);
+    } finally {
+      setIsLoggingIn(false);
     }
   };
 
