@@ -40,6 +40,29 @@ export function removeAllAdSenseElements(): void {
   }
 }
 
+export function removeAutoPlacedAds(): void {
+  if (typeof document === 'undefined') return;
+  try {
+    const autoSelectors = [
+      '.google-auto-placed',
+      '.adsbygoogle-noab-wrap',
+      'ins.adsbygoogle[data-anchor-status]',
+      'div[id*="aswift"][style*="position: fixed"]',
+      'iframe[name*="google_ads_top_frame"]',
+      'iframe[name*="google_ads_bottom_frame"]',
+    ];
+    document.querySelectorAll(autoSelectors.join(',')).forEach((el) => {
+      try {
+        el.remove();
+      } catch {
+        (el as HTMLElement).style.display = 'none';
+      }
+    });
+  } catch {
+    // safe catch
+  }
+}
+
 export function useAdSenseAutoAds(currentView: string, isAdRemoved = false): void {
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -48,6 +71,12 @@ export function useAdSenseAutoAds(currentView: string, isAdRemoved = false): voi
     if (isRemoved) {
       // 광고 제거 유저: 자동광고 스캔 중단 및 기존 주입 광고 DOM 즉시 청소
       removeAllAdSenseElements();
+      return;
+    }
+
+    // /reddit 페이지에서는 다른 화면과 달리 임의 자동 광고를 배제하고 오직 지정된 3개 배너 형태에만 광고 노출
+    if (currentView === 'reddit' || currentView.startsWith('reddit')) {
+      removeAutoPlacedAds();
       return;
     }
 

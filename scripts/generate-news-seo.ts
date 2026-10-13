@@ -455,12 +455,14 @@ function buildRedditNewsIndexHtml(baseHtmlTemplate: string, posts: RedditPost[])
       <!-- 상단 애드센스 광고 -->
       <section style="margin-bottom: 24px; padding: 12px; background: #F9FAFB; border-radius: 12px; border: 1px solid #E5E7EB; text-align: center;">
         <div style="font-size: 10px; color: #9CA3AF; text-transform: uppercase; margin-bottom: 6px; font-weight: 700;">SPONSORED</div>
-        <ins class="adsbygoogle"
-             style="display:block; min-height: 100px;"
-             data-ad-client="${GOOGLE_ADSENSE_CLIENT}"
-             data-ad-slot="auto"
-             data-ad-format="auto"
-             data-full-width-responsive="true"></ins>
+        <div class="min-h-[100px] flex items-center justify-center">
+          <ins class="adsbygoogle"
+               style="display:block; min-height: 100px; width: 100%;"
+               data-ad-client="${GOOGLE_ADSENSE_CLIENT}"
+               data-ad-slot="auto"
+               data-ad-format="auto"
+               data-full-width-responsive="true"></ins>
+        </div>
         <script>
           (adsbygoogle = window.adsbygoogle || []).push({});
         </script>

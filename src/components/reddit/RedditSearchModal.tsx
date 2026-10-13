@@ -12,7 +12,6 @@ import {
 } from 'lucide-react';
 import { SearchResults, RedditUserDataState, RedditPost } from '../../lib/reddit/redditTypes';
 import { RedditPostCard } from './RedditPostCard';
-import { AdSenseBanner } from '../AdSenseBanner';
 
 interface RedditSearchModalProps {
   query: string;
@@ -109,17 +108,7 @@ export const RedditSearchModal: React.FC<RedditSearchModalProps> = ({
         </button>
       </div>
 
-      {/* 검색 상단 Google AdSense 배너 */}
-      <div className={`rounded-2xl border p-2.5 shadow-xs overflow-hidden ${
-        isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'
-      }`}>
-        <AdSenseBanner
-          format="horizontal"
-          responsive={true}
-          showLabel={true}
-          className="w-full flex justify-center"
-        />
-      </div>
+
 
       {/* 탭별 결과 목록 */}
       <div className="space-y-3">
@@ -240,17 +229,7 @@ export const RedditSearchModal: React.FC<RedditSearchModalProps> = ({
         )}
       </div>
 
-      {/* 검색 하단 Google AdSense 배너 */}
-      <div className={`rounded-2xl border p-2.5 shadow-xs overflow-hidden ${
-        isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'
-      }`}>
-        <AdSenseBanner
-          format="horizontal"
-          responsive={true}
-          showLabel={true}
-          className="w-full flex justify-center"
-        />
-      </div>
+
     </div>
   );
 };

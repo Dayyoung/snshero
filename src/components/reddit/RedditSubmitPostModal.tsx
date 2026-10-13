@@ -13,7 +13,6 @@ import {
 } from 'lucide-react';
 import { RedditPost, RedditUserDataState, PostFlair } from '../../lib/reddit/redditTypes';
 import { SEED_SUBREDDITS } from '../../data/redditSeedData';
-import { AdSenseBanner } from '../AdSenseBanner';
 
 interface RedditSubmitPostModalProps {
   initialSubreddit?: string;
@@ -272,17 +271,7 @@ export const RedditSubmitPostModal: React.FC<RedditSubmitPostModalProps> = ({
             </div>
           </div>
 
-          {/* 게시글 작성 모달 Google AdSense 스폰서 배너 */}
-          <div className={`rounded-xl border p-2 shadow-xs overflow-hidden ${
-            isDark ? 'bg-[#0E1113] border-[#2E363E]' : 'bg-gray-50 border-gray-200'
-          }`}>
-            <AdSenseBanner
-              format="horizontal"
-              responsive={true}
-              showLabel={true}
-              className="w-full flex justify-center"
-            />
-          </div>
+
 
           {/* 하단 버튼 바 */}
           <div className="flex items-center justify-end gap-3 pt-3 border-t border-inherit/10">

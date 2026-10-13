@@ -15,7 +15,6 @@ import {
 } from 'lucide-react';
 import { RedditUser, RedditPost, RedditUserDataState } from '../../lib/reddit/redditTypes';
 import { RedditPostCard } from './RedditPostCard';
-import { AdSenseBanner } from '../AdSenseBanner';
 
 interface RedditUserProfileViewProps {
   user: RedditUser;
@@ -174,17 +173,7 @@ export const RedditUserProfileView: React.FC<RedditUserProfileViewProps> = ({
         </div>
       </div>
 
-      {/* 프로필 상단 Google AdSense 배너 */}
-      <div className={`rounded-2xl border p-2.5 shadow-xs overflow-hidden ${
-        isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'
-      }`}>
-        <AdSenseBanner
-          format="horizontal"
-          responsive={true}
-          showLabel={true}
-          className="w-full flex justify-center"
-        />
-      </div>
+
 
       {/* 포스트 목록 */}
       <div className="space-y-3">
@@ -239,17 +228,7 @@ export const RedditUserProfileView: React.FC<RedditUserProfileViewProps> = ({
         )}
       </div>
 
-      {/* 프로필 하단 Google AdSense 배너 */}
-      <div className={`rounded-2xl border p-2.5 shadow-xs overflow-hidden ${
-        isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'
-      }`}>
-        <AdSenseBanner
-          format="horizontal"
-          responsive={true}
-          showLabel={true}
-          className="w-full flex justify-center"
-        />
-      </div>
+
     </div>
   );
 };

@@ -667,22 +667,6 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
               </div>
             </article>
 
-            {/* 구글 애드센스 배너 */}
-            <div className={`rounded-2xl border p-3 shadow-sm ${
-              isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'
-            }`}>
-              <div className="flex items-center justify-between text-[10px] font-bold text-[#FF4500] uppercase tracking-wider mb-2">
-                <span>{isKo ? '스폰서 토론 광고' : 'Discussion Sponsor'}</span>
-                <span className="opacity-40">Ad</span>
-              </div>
-              <div className="min-h-[120px] rounded-xl overflow-hidden bg-black/5 flex items-center justify-center">
-                <AdSenseBanner
-                  format="horizontal"
-                  responsive={true}
-                  className="w-full flex justify-center"
-                />
-              </div>
-            </div>
 
             {/* 댓글 작성기 */}
             <div className={`rounded-2xl border p-4 sm:p-5 shadow-sm ${
@@ -796,17 +780,7 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
                     onOpenUserProfile={onOpenUserProfile}
                   />
 
-                  {/* 댓글 하단 Google AdSense 스폰서 배너 */}
-                  <div className={`rounded-xl border p-2.5 my-4 shadow-xs overflow-hidden ${
-                    isDark ? 'bg-[#0E1113] border-[#22272B]' : 'bg-gray-50 border-gray-200'
-                  }`}>
-                    <AdSenseBanner
-                      format="horizontal"
-                      responsive={true}
-                      showLabel={true}
-                      className="w-full flex justify-center"
-                    />
-                  </div>
+
 
                   {/* 구글 시트 실시간 동기화 상태 바 & 수동 새로고침 영역 */}
                   <div className="pt-4 pb-2 text-center border-t border-inherit/10 mt-4">

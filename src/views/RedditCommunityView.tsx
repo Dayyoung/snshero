@@ -49,7 +49,7 @@ import { RedditSearchModal } from '../components/reddit/RedditSearchModal';
 import { RedditFloatingPlayButton } from '../components/reddit/RedditFloatingPlayButton';
 import { RedditQuickCreatePostBar } from '../components/reddit/RedditQuickCreatePostBar';
 import { RedditCreateCommunityModal } from '../components/reddit/RedditCreateCommunityModal';
-import { useAdSenseAutoAds } from '../hooks/useAdSenseAutoAds';
+import { removeAutoPlacedAds } from '../hooks/useAdSenseAutoAds';
 import { AdSenseBanner } from '../components/AdSenseBanner';
 import { SEED_SUBREDDITS } from '../data/redditSeedData';
 
@@ -110,8 +110,10 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
   const isDark = userState.theme === 'dark';
   const isKo = userState.language !== 'en'; // 한국어 기본
 
-  // 구글 애드센스 자동광고 SPA 뷰/서브레딧 전환 재스캔 훅
-  useAdSenseAutoAds(`reddit_${currentSubreddit}_${activePost ? activePost.id : ''}`);
+  // /reddit 페이지에서는 자동 광고(Auto Ads)를 비활성화하고 오직 지정된 3개 배너 형태에만 광고 노출
+  useEffect(() => {
+    removeAutoPlacedAds();
+  }, [currentSubreddit, activePost]);
 
   // 컨텐츠 라우팅 헬퍼
   const handleNavigateView = useCallback((targetView: string) => {
