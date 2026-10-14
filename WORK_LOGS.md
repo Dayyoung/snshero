@@ -2,6 +2,22 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-15 08:22 KST] [광고/마케팅] Google Ads 공식 구매 전환 이벤트(AW-980426001/5pbgCI2H9ckcEJG6wNMD) 연동 및 검증 완료
+- **요청 사항**:
+  - Google Ads 구매 전환 추적 태그 2종(Google 기본 태그 및 이벤트 스니펫 `AW-980426001/5pbgCI2H9ckcEJG6wNMD`) 웹사이트 설치 및 연동 요청.
+- **분석 및 구현 전략**:
+  1. Google Ads 기본 태그(`AW-980426001`): `index.html`의 `<head>`에 이미 정상 설치 및 배포되어 작동 중.
+  2. SPA(Single Page Application) 특성 반영: 웹사이트 메인 페이지 접속 시 무조건 구매 전환 스니펫을 발화하면 일반 방문자가 구매자로 오집계되는 심각한 오류가 발생하므로, 유저가 실제 결제를 완료하는 시점에 동적으로 발화하도록 정밀 연동.
+  3. `src/lib/googleAdsAnalytics.ts`: 구매 전환 전용 `trackGoogleAdsPurchase(amount, currency, txId)` 함수 구현 (`send_to: AW-980426001/5pbgCI2H9ckcEJG6wNMD`).
+  4. `src/components/StarterPackModal.tsx`: 스타터팩(1,000 KRW) 결제 완료 시 즉시 구글 애즈 구매 전환 이벤트 트리거.
+  5. `src/views/ShopView.tsx`: 상점 광고제거(VIP 스킵) 및 재화 결제 완료 시 구글 애즈 구매 전환 이벤트 동적 발화.
+  6. `index.html`: 전역 함수 `gtag_report_conversion` 헬퍼 선언.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 Errors (TypeScript 컴파일 무결점 통과).
+  - `npm run build`: 프로덕션 정적 번들 빌드 성공.
+  - 로컬 Git 커밋 완료 (`41e4be50`).
+  - 구글 폼 완료 보고서 제출 완료 (`submit_report.py`).
+
 ## [2026-10-14 20:22 KST] [버그수정] 데모모드 /main 진입 시 자동 진행 멈춤 버그 해결
 - **요청 사항**:
   - "데모모드에서 /main 으로 진입했을때 자동으로 진행이 안되고 멈춰있는 버그 /git-push"
