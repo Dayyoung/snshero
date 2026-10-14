@@ -738,6 +738,55 @@ const CheckIcon = ({ className = 'w-5 h-5 text-emerald-400' }: { className?: str
   </svg>
 );
 
+const RefreshIcon = ({ className = 'w-5 h-5 text-cyan-400' }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="23 4 23 10 17 10" />
+    <polyline points="1 20 1 14 7 14" />
+    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+  </svg>
+);
+
+// Safe haptic vibration wrapper
+const triggerHaptic = (pattern: number | number[]) => {
+  try {
+    if (typeof window !== 'undefined' && 'navigator' in window && navigator.vibrate) {
+      navigator.vibrate(pattern);
+    }
+  } catch {}
+};
+
+export interface SsrOverdriveUnit {
+  id: string;
+  name: string;
+  rarity: string;
+  power: number;
+  weaponDesc: string;
+}
+
+export const SSR_REQUISITION_POOL: SsrOverdriveUnit[] = [
+  {
+    id: 'SH-101',
+    name: 'SH-101 // 소버린 (SOVEREIGN)',
+    rarity: 'SSR // 드레드노트',
+    power: 9850,
+    weaponDesc: '양자 충전 결합 궤도 함포 포격 시스템 완비',
+  },
+  {
+    id: 'SH-102',
+    name: 'SH-102 // 아발란체 (AVALANCHE)',
+    rarity: 'SSR // 크루저',
+    power: 9920,
+    weaponDesc: '초전도 입자 빔 개틀링 및 절대 영도 방벽 탑재',
+  },
+  {
+    id: 'SH-103',
+    name: 'SH-103 // 크로노스 (CHRONOS)',
+    rarity: 'SSR // 뱅가드',
+    power: 9880,
+    weaponDesc: '시공간 위상 왜곡 타키온 블레이드 장착',
+  },
+];
+
 // Safe gtag dispatcher
 const triggerFunnelEvent = (eventName: string, params: Record<string, unknown> = {}) => {
   if (typeof window !== 'undefined') {
@@ -776,6 +825,8 @@ export const FirstVisitOverdriveModal: React.FC<FirstVisitOverdriveModalProps> =
   const [overdriveEnergy] = useState<number>(100);
   const [timeLeftMs, setTimeLeftMs] = useState<number>(15000);
   const [isCriticalFlashing, setIsCriticalFlashing] = useState<boolean>(false);
+  const [currentUnitIndex, setCurrentUnitIndex] = useState<number>(0);
+  const [rerollsLeft, setRerollsLeft] = useState<number>(1);
   const countdownIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Initialize or reset when modal opens
@@ -785,6 +836,8 @@ export const FirstVisitOverdriveModal: React.FC<FirstVisitOverdriveModalProps> =
       setBossHpPercent(100);
       setTimeLeftMs(15000);
       setIsCriticalFlashing(false);
+      setCurrentUnitIndex(0);
+      setRerollsLeft(1);
     } else {
       if (countdownIntervalRef.current) {
         clearInterval(countdownIntervalRef.current);
@@ -830,15 +883,29 @@ export const FirstVisitOverdriveModal: React.FC<FirstVisitOverdriveModalProps> =
 
   // Stage 1 Action: Unseal Pack
   const handleUnsealPack = () => {
+    triggerHaptic([60, 40, 80]);
     triggerFunnelEvent('ftue_pack_open', {
       source: 'tactical_first_visit',
-      unit_id: 'SH-101',
+      unit_id: SSR_REQUISITION_POOL[currentUnitIndex].id,
     });
     setStage('CARD_REVEALED');
   };
 
+  // Stage 1 Reroll Action: 1-time Tactical Reroll
+  const handleRerollUnit = () => {
+    if (rerollsLeft <= 0) return;
+    triggerHaptic([40, 50]);
+    const nextIdx = (currentUnitIndex + 1) % SSR_REQUISITION_POOL.length;
+    setCurrentUnitIndex(nextIdx);
+    setRerollsLeft(0);
+    triggerFunnelEvent('ftue_unit_reroll', {
+      new_unit_id: SSR_REQUISITION_POOL[nextIdx].id,
+    });
+  };
+
   // Stage 1 Transition to Boss Battle
   const handleProceedToClimax = () => {
+    triggerHaptic([30, 30]);
     setStage('OVERDRIVE_CLIMAX');
   };
 
@@ -846,8 +913,9 @@ export const FirstVisitOverdriveModal: React.FC<FirstVisitOverdriveModalProps> =
   const handleEngageOverdrive = () => {
     if (stage !== 'OVERDRIVE_CLIMAX') return;
 
+    triggerHaptic([80, 50, 120]);
     triggerFunnelEvent('ftue_overdrive_engage', {
-      unit: 'SH-101 // SOVEREIGN',
+      unit: SSR_REQUISITION_POOL[currentUnitIndex].name,
       boss: 'APEX GOLIATH // MK-IV',
       damage: 999999,
     });
@@ -1016,16 +1084,16 @@ export const FirstVisitOverdriveModal: React.FC<FirstVisitOverdriveModalProps> =
               <div className="flex items-start justify-between">
                 <div>
                   <span className="inline-block px-1.5 py-0.5 bg-amber-500/20 border border-amber-500/40 font-mono tracking-wider uppercase text-[10px] text-amber-300 font-bold mb-1">
-                    {txt.unitRarity}
+                    {SSR_REQUISITION_POOL[currentUnitIndex].rarity}
                   </span>
                   <h3 className="text-lg sm:text-xl font-mono font-bold text-white tracking-wide">
-                    {txt.unitName}
+                    {SSR_REQUISITION_POOL[currentUnitIndex].name}
                   </h3>
                 </div>
                 <div className="text-right">
                   <div className="font-mono uppercase text-[10px] text-slate-400">{txt.combatPwrLabel}</div>
                   <div className="font-mono tracking-wider text-xl font-bold text-amber-400">
-                    9,850
+                    {SSR_REQUISITION_POOL[currentUnitIndex].power.toLocaleString()}
                   </div>
                 </div>
               </div>
@@ -1037,7 +1105,7 @@ export const FirstVisitOverdriveModal: React.FC<FirstVisitOverdriveModalProps> =
 
               <div className="flex items-center gap-2 text-xs font-mono text-slate-400">
                 <TacticalCoreIcon className="w-4 h-4 text-cyan-400 shrink-0" />
-                <span>{txt.weaponDesc}</span>
+                <span>{SSR_REQUISITION_POOL[currentUnitIndex].weaponDesc}</span>
               </div>
             </div>
 
@@ -1045,14 +1113,33 @@ export const FirstVisitOverdriveModal: React.FC<FirstVisitOverdriveModalProps> =
               {txt.urgentAlert}
             </div>
 
-            {/* CTA Button */}
-            <button
-              onClick={handleProceedToClimax}
-              className="w-full min-h-[48px] px-6 py-3 bg-amber-600 hover:bg-amber-500 active:bg-amber-700 text-white font-mono tracking-wider uppercase text-sm font-bold border border-amber-400/50 shadow-lg shadow-amber-950/60 transition-all flex items-center justify-center gap-2 rounded-sm cursor-pointer"
-            >
-              <VectorArrowIcon className="w-5 h-5 text-white" />
-              <span>{txt.deployBtn}</span>
-            </button>
+            {/* 2-Column Action Buttons: Reroll & Deploy */}
+            <div className="grid grid-cols-2 gap-2 mt-4">
+              <button
+                type="button"
+                disabled={rerollsLeft <= 0}
+                onClick={handleRerollUnit}
+                className={`min-h-[48px] px-3 py-3 font-mono tracking-wider uppercase text-xs font-bold border rounded-sm transition-all flex items-center justify-center gap-1.5 ${
+                  rerollsLeft > 0
+                    ? 'bg-cyan-950/40 hover:bg-cyan-900/50 border-cyan-500/60 text-cyan-300 shadow-[0_0_12px_rgba(34,211,238,0.25)] cursor-pointer'
+                    : 'bg-white/5 border-white/10 text-white/30 cursor-not-allowed opacity-50'
+                }`}
+              >
+                <RefreshIcon className={`w-4 h-4 ${rerollsLeft > 0 ? 'text-cyan-400' : 'text-white/30'}`} />
+                <span className="truncate">
+                  {effectiveLang === 'ko' ? `전술 리롤 [${rerollsLeft}/1]` : `RE-ROLL [${rerollsLeft}/1]`}
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleProceedToClimax}
+                className="min-h-[48px] px-3 py-3 bg-amber-600 hover:bg-amber-500 active:bg-amber-700 text-white font-mono tracking-wider uppercase text-xs font-bold border border-amber-400/50 shadow-lg shadow-amber-950/60 transition-all flex items-center justify-center gap-1.5 rounded-sm cursor-pointer"
+              >
+                <VectorArrowIcon className="w-4 h-4 text-white shrink-0" />
+                <span className="truncate">{txt.deployBtn}</span>
+              </button>
+            </div>
           </div>
         )}
 
