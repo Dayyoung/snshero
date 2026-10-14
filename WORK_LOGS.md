@@ -2,6 +2,23 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-14 17:05 KST] [다국어 지원] FirstVisitOverdriveModal 12개 언어 i18n 지원 및 한국어 기본 반영
+- **요청 사항**:
+  - "새로 추가한 화면들이 다 영문으로 나와. 다국적언어 가이드를 지키도록 해줘."
+- **수정 및 개선 내역**:
+  1. **12개 언어팩 사전 구현 ([`src/components/FirstVisitOverdriveModal.tsx`](file:///Users/dayyoung/project/snshero/src/components/FirstVisitOverdriveModal.tsx))**:
+     - 한국어(`ko`), 영어(`en`/`gb`), 일본어(`ja`), 중국어 간체(`zh-CN`), 중국어 번체(`zh-TW`), 스페인어(`es`), 프랑스어(`fr`), 독일어(`de`), 베트남어(`vi`), 태국어(`th`), 인도네시아어(`id`), 러시아어(`ru`) 등 12대 핵심 언어팩을 완벽하게 번역 탑재.
+     - 기본 언어로 한국어(`ko`) 우선 해석 및 Fallback을 적용하여 국내 사용자의 경우 모든 전술 프로토콜, 안내문구, 스펙, 액션 버튼이 선명한 한국어로 표시되도록 개선.
+     - Zero-Emoji 원칙 100% 지속 준수 (이모지 0건 검증 완료).
+  2. **`App.tsx` 연동 갱신 ([`src/App.tsx`](file:///Users/dayyoung/project/snshero/src/App.tsx))**:
+     - `FirstVisitOverdriveModal`에 `language={language}` prop을 전달하여 유저 설정 언어가 실시간으로 동기화되도록 연동.
+- **검증 결과**:
+  - Zero-Emoji 스크립트 검증: 통과 (0 Emojis).
+  - `npx tsc --noEmit`: 0 Errors (타입스크립트 컴파일 무결점 통과).
+  - `npm run build`: Vite 6 프로덕션 정적 번들 정상 빌드 완료 (`FirstVisitOverdriveModal` 46.33 kB).
+  - 로컬 Git 커밋 완료 (`3d88d103`).
+  - 구글 폼 완료 보고서 제출 완료.
+
 ## [2026-10-14 16:36 KST] [RSI-001] 첫 방문자 3초 도파민 온보딩 컴포넌트(FirstVisitOverdriveModal) 구현 및 연동
 - **요청 사항**:
   - 첫 방문자 3초 도파민 온보딩 컴포넌트(`FirstVisitOverdriveModal.tsx`)를 구현하고 `App.tsx`에 안전하게 연동.
