@@ -1,6 +1,44 @@
 # SNSHero 개발 및 개선 작업 로그 (WORK_LOGS.md)
 
-이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
+이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
+
+## [2026-10-14 10:00 KST] 전체 화면 정보표시형 라벨 및 불필요 배너 모던 디자인 전수 정돈
+- **요청 사항**:
+  - "이런 정보표시형 라벨들도 모던 디자인 화면에는 필요없는 정보들같아. 모든화면에 대해서 라벨들을 점검해주고 모던 디자인 목적에 맞게 버튼들과 마찬가지로 제거해줘."
+  - (제시 예시: 상점 상단 FREE SPIN READY/PITY 게이지/AP 물약 잔여 라벨 박스 및 월간 한도 안내 박스)
+- **수정 및 개선 내역 (총 9개 화면 622줄 시각적 노이즈 및 불필요 라벨 전수 제거)**:
+  1. **상점 화면 ([`src/views/ShopView.tsx`](file:///Users/dayyoung/project/snshero/src/views/ShopView.tsx))**:
+     - `Live Lucky Drop Ticker Marquee` (가짜 라이브 텍스트 티커 배너) 제거.
+     - `[ FREE SPIN READY ]`, `[ PITY: 0/10 ]` 프로그레스 게이지, `[ AP 물약: 2/2회 잔여 ]` 라벨 박스 제거 및 일일 무료 소환은 `details#shop-convenience-bar` 내 깔끔한 1개 카드로 정돈.
+     - `월간 게임 재화 과금/사용 한도 (청소년 보호 및 건전 과금)` 배너 박스 제거.
+     - `SSR 확정 천장 카운트다운` 게이지 배너 및 상단 카테고리 칩 내 `#shop-pity-banner` 링크 제거.
+     - 스타터 번들 내 `[ 88% 파격 혜택 ]` 등 요란한 뱃지 정돈.
+  2. **마이덱 화면 ([`src/views/MyDeckView.tsx`](file:///Users/dayyoung/project/snshero/src/views/MyDeckView.tsx))**:
+     - `[✨ ... 3세트 팩션 시너지 오라 활성화!]` 정보 배너 제거.
+     - 상단에 나열되어 있던 `🔗 영웅 인연(Bond):` 정보 라벨 바 제거.
+     - 마이덱 화면 중간에 자리잡고 있던 거대한 광고형 `랭킹대전 배너 버튼` 제거.
+  3. **카드 마켓플레이스 화면 ([`src/views/CardMarketplaceView.tsx`](file:///Users/dayyoung/project/snshero/src/views/CardMarketplaceView.tsx))**:
+     - `[HOT BARGAIN] [ 35% OFF 특가 ]` 급매물 하이라이트 배너 제거.
+     - 상단 잔액 HUD 영역의 `[첫 P2P 거래 시 +50 SNS 환급 보너스!]`, `수수료 5% · 가스비 100% 무료` 정보 라벨 제거하여 잔액과 충전 액션만 깔끔하게 표시.
+  4. **예측시장 화면 ([`src/views/PredictionMarketView.tsx`](file:///Users/dayyoung/project/snshero/src/views/PredictionMarketView.tsx))**:
+     - 상단 `[🔥 오늘의 추천 핫픽 승부처] HOT ODDS` 배너 박스 제거하여 경기 리스트가 상단부터 깔끔하게 노출되도록 개선.
+  5. **랭킹 아레나 화면 ([`src/views/RankingView.tsx`](file:///Users/dayyoung/project/snshero/src/views/RankingView.tsx))**:
+     - 상단 `[일일 첫 승 보너스] [보너스 대기중]/[획득 완료]` 배너 박스 제거.
+  6. **설정/출석 화면 ([`src/views/SettingView.tsx`](file:///Users/dayyoung/project/snshero/src/views/SettingView.tsx))**:
+     - 출석 탭 내 `상점 카드팩 소환 바로가기` 홍보 배너 제거.
+     - `스트릭 규칙 및 100% 로컬 영구 보존 안내` 텍스트 박스 제거.
+  7. **웹소설 뷰어 화면 ([`src/views/NovelView.tsx`](file:///Users/dayyoung/project/snshero/src/views/NovelView.tsx))**:
+     - 상단 거대 `완독 진행도 실시간 게이지 HUD` 및 `CONTINUE READING` 배너 제거.
+     - 본문 상단 `[ 프롬프트 모드 : ACTIVE ]` 정보 배너 제거.
+  8. **길드 상세 화면 ([`src/views/GuildDetailView.tsx`](file:///Users/dayyoung/project/snshero/src/views/GuildDetailView.tsx))**:
+     - 상단 2중 테두리 `비동기 친선전 & 친구 초대 링크 (GHOST BATTLE)` 배너 박스 제거.
+  9. **모바일 카드 배틀 화면 ([`src/views/MobileCardPlayScreen.tsx`](file:///Users/dayyoung/project/snshero/src/views/MobileCardPlayScreen.tsx))**:
+     - 승리 결과 모달 내 `카드 뽑기 여유 충족 (100 SNS 이상)!` 잔소리형 팁 라벨 제거.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 Errors (타입 무결점 통과).
+  - `npm run build`: Vite 6 프로덕션 번들 정상 빌드 완료 (`built in 12.05s`).
+  - 로컬 Git 커밋 완료 (`466d70a6`).
+  - 연동 구글 폼 완료 보고서 제출 완료 (`submit_report.py`).
 
 ## [2026-10-14 09:13 KST] /git-push 명령 실행: 원격 저장소(origin main) 푸시 완료
 - **요청 사항**:
