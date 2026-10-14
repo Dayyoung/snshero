@@ -2,6 +2,30 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-14 16:36 KST] [RSI-001] 첫 방문자 3초 도파민 온보딩 컴포넌트(FirstVisitOverdriveModal) 구현 및 연동
+- **요청 사항**:
+  - 첫 방문자 3초 도파민 온보딩 컴포넌트(`FirstVisitOverdriveModal.tsx`)를 구현하고 `App.tsx`에 안전하게 연동.
+  - Stage 1 (PACK_READY): 'UNSEAL SSR TACTICAL PACK' 클릭 시 SSR 유닛 `SH-101 // SOVEREIGN` (PWR 9,850) 카드 리빌.
+  - Stage 2 (OVERDRIVE_CLIMAX): 15초 보스전 클라이맥스 전술 화면으로 전환되어 보스 HP 게이지와 아군 전술 게이지(100%)를 보여주고, 'ENGAGE TACTICAL OVERDRIVE' 클릭 시 즉각적인 크리티컬 타격(999,999 DMG) 연출과 함께 승리 판정 출력.
+  - Stage 3 (REWARD_CLAIM): 승리 보상으로 10x PRIME SUMMON TICKET 및 SH-101 SOVEREIGN 24H COMMAND ACCESS를 지급하고, 'CLAIM & ENTER COMMAND DECK' 클릭 시 로컬스토리지(`snshero_ftue_overdrive_v1`)에 완료 상태 저장 후 메인 덱 화면(`mydeck`) 진입.
+  - 디자인 가드레일: Zero-Emoji 원칙 철저 준수, `strokeWidth="1.75"` 순수 인라인 SVG 컴포넌트 사용, `bg-[#090d16]/95 backdrop-blur-md`, `border border-white/15`, `font-mono tracking-wider uppercase text-xs`, 모바일(`100dvh`) 및 데스크톱 무결점 중앙 정렬, CTA `min-h-[48px]`.
+  - 아키텍처: 기존 SEO/GEO/WebMCP/AdSense 보존, strict 타입 정의, `window.gtag` 퍼널 이벤트(`ftue_pack_open`, `ftue_overdrive_engage`, `ftue_reward_claim`) 연동.
+- **구현 및 변경 내역**:
+  1. **신규 컴포넌트 생성 ([`src/components/FirstVisitOverdriveModal.tsx`](file:///Users/dayyoung/project/snshero/src/components/FirstVisitOverdriveModal.tsx))**:
+     - `TacticalCoreIcon`, `TargetCrosshairIcon`, `ShieldIcon`, `VectorArrowIcon`, `SupplyPackIcon`, `ImpactBoltIcon`, `CloseIcon`, `CheckIcon` 인라인 SVG(`strokeWidth="1.75"`) 작성.
+     - Zero-Emoji 유효성 검사 100% 통과 (유니코드 이모지 0건).
+     - Stage 1/2/3 상태 전이 및 15초 타이머 카운트다운, 크리티컬 플래시/데미지 연출, 로컬스토리지 보존(`hero_prime_summon_tickets`, `hero_sh101_sovereign_access_until`, `snshero_ftue_overdrive_v1`).
+  2. **`App.tsx` 안전한 연동 ([`src/App.tsx`](file:///Users/dayyoung/project/snshero/src/App.tsx))**:
+     - `safeLazy(loadComponentSafely('FirstVisitOverdriveModal'), 'FirstVisitOverdriveModal')` 기반 fail-safe 로더 등록.
+     - 0.5초 딜레이 자동 감지 훅(`useEffect`) 추가.
+     - 덱 화면 진입(`setView('mydeck')`) 핸들러 연동.
+- **검증 결과**:
+  - Zero-Emoji 스크립트 검증: 통과 (0 Emojis).
+  - `npx tsc --noEmit`: 0 Errors (타입스크립트 컴파일 무결점 통과).
+  - `npm run build`: Vite 6 프로덕션 정적 번들 정상 빌드 완료 (`FirstVisitOverdriveModal-DQE0gmWm.js` 17.07 kB).
+  - 로컬 Git 커밋 완료 (`fa81c25e`).
+  - 구글 폼 보고서 제출 완료 (`Successfully submitted task`).
+
 ## [2026-10-14 14:38 KST] /git-push 원격 저장소 푸시 완료
 - **요청 사항**:
   - "/git-push" (데모 플레이 미션 화면 자동 상대 매칭 시스템 구현 완료 후 원격 저장소 푸시)
