@@ -49,6 +49,7 @@ import { RedditSearchModal } from '../components/reddit/RedditSearchModal';
 import { RedditFloatingPlayButton } from '../components/reddit/RedditFloatingPlayButton';
 import { RedditQuickCreatePostBar } from '../components/reddit/RedditQuickCreatePostBar';
 import { RedditCreateCommunityModal } from '../components/reddit/RedditCreateCommunityModal';
+import { WildCardEncounterWidget } from '../components/media/WildCardEncounterWidget';
 import { removeAutoPlacedAds } from '../hooks/useAdSenseAutoAds';
 import { AdSenseBanner } from '../components/AdSenseBanner';
 import { SEED_SUBREDDITS } from '../data/redditSeedData';
@@ -976,6 +977,20 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
 
       {/* 6. 어느 화면에서나 항상 우측 하단에 고정 표시되는 플로팅 Play 버튼 */}
       <RedditFloatingPlayButton onGoToGame={onNavigateHome} isKo={isKo} />
+
+      {/* 7. /r/news 뉴스룸 및 미디어 콘텐츠 탐색 유저용 인카운터 브릿지 위젯 */}
+      <WildCardEncounterWidget
+        currentSubreddit={currentSubreddit}
+        articleId={activePost ? activePost.id : undefined}
+        language={userState.language || 'ko'}
+        onNavigateToCombat={(url) => {
+          if (onNavigateView) {
+            onNavigateView('play');
+          } else if (typeof window !== 'undefined') {
+            window.location.href = url;
+          }
+        }}
+      />
     </div>
   );
 };
