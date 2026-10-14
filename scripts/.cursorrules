@@ -1,0 +1,12 @@
+# SNSHero Vibe Coding Design System Guardrails
+
+1. **MANDATORY DESIGN SPEC CHECK (`design.md`)**:
+   - Before creating or modifying any UI component, ALWAYS read `design.md` in the repository root and strictly follow its color tokens, typography scale, spacing, border radius, and elevation rules.
+
+2. **ZERO EMOJI POLICY IN UI**:
+   - NEVER use Unicode emojis (e.g., 🎁, 🔥, ⚡, 🚀, 🃏, 👹, 🎉) in UI buttons, badges, headers, modals, or canvas renders.
+   - ALWAYS use crisp inline SVG icons (`strokeWidth="1.75"`), Lucide icons, or geometric vector emblems (`GrowthIcons.tsx`).
+
+3. **TACTICAL HUD AESTHETIC**:
+   - Use deep obsidian/slate surfaces (`#090d16`, `bg-black/85 backdrop-blur-xl`) with `1px` subtle structural borders (`border-white/10` to `border-white/15`) and restrained cyan/sky/amber tactical accents.
+   - Use `font-mono` for tactical metadata, unit codes, power ratings, and system logs.
