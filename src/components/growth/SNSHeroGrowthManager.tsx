@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import {
-  ChallengePayload,
+  type ChallengePayload,
   decodeChallengeDeck,
-  GrowthHeroCard,
-  GrowthRewardPayload,
+  type GrowthHeroCard,
+  type GrowthRewardPayload,
 } from './growthTypes';
 import { FtueOnboardingModal } from './FtueOnboardingModal';
 import {
@@ -86,16 +86,13 @@ export const SNSHeroGrowthManager: React.FC<SNSHeroGrowthManagerProps> = ({
         </div>
       )}
 
-      {/* [Module 4 & 5] 일일 10연차 보급품 & AI 전술 지시 & 미니게임 루프 */}
       <DailyRetentionAndArcadeLoop onClaimDailyReward={handleRewardGranted} />
 
-      {/* [Module 2] 뉴스룸/미디어 스크롤 시 야생의 히어로 카드 드랍 */}
       <WildCardEncounterWidget
         onClaimLoot={handleRewardGranted}
         onStartTrialBattle={() => setShowFtue(true)}
       />
 
-      {/* 우측 하단 플로팅 바이럴 챌린지 공유 버튼 */}
       <div className="fixed bottom-5 right-5 z-40 flex flex-col gap-2 items-end">
         <button
           onClick={() => setShowShareModal(true)}
@@ -105,7 +102,6 @@ export const SNSHeroGrowthManager: React.FC<SNSHeroGrowthManagerProps> = ({
         </button>
       </div>
 
-      {/* [Module 1] 3초 도파민 FTUE 온보딩 */}
       <FtueOnboardingModal
         isOpen={showFtue}
         onClose={() => setShowFtue(false)}
@@ -113,7 +109,6 @@ export const SNSHeroGrowthManager: React.FC<SNSHeroGrowthManagerProps> = ({
         onNavigate={onNavigateTab}
       />
 
-      {/* [Module 3-A] 무설치 도전자 즉시 배틀 모달 */}
       <InstantChallengeBattleModal
         challengeData={challengeData}
         onClose={clearChallengeQueryParam}
@@ -121,7 +116,6 @@ export const SNSHeroGrowthManager: React.FC<SNSHeroGrowthManagerProps> = ({
         onOpenShareMyDeck={() => setShowShareModal(true)}
       />
 
-      {/* [Module 3-B] 내 덱 챌린지 링크 & Canvas 공유 카드 생성기 */}
       <ViralDeckShareModal
         isOpen={showShareModal}
         onClose={() => setShowShareModal(false)}
