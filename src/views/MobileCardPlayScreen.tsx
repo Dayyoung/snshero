@@ -58,6 +58,8 @@ import { createBattleWebMcpTools, useWebMcpTools } from '../lib/webMcp/index';
 import { RewardedAdModal } from '../components/RewardedAdModal';
 import { checkIsAdRemoved } from '../lib/rewardedAdService';
 import { useGameSettings } from '../contexts/GameSettingsContext';
+import { TacticalCommandHUD, OverrideMode } from '../components/battle/TacticalCommandHUD';
+import { getTacticalAp, consumeTacticalAp } from '../utils/tacticalEnergyHelper';
 
 export interface MobileCardPlayScreenProps {
   playerDeck?: CardData[];
@@ -191,6 +193,84 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       localStorage.setItem('hero_auto_battle', JSON.stringify(isAutoBattle));
     } catch {}
   }, [isAutoBattle]);
+
+  // ─── Tactical Command Override (RSI-004) ───────────────────────────
+  const [tacticalAp, setTacticalAp] = useState<number>(() => getTacticalAp());
+  const [activeOverride, setActiveOverride] = useState<OverrideMode>(null);
+  const [overrideRemainingSeconds, setOverrideRemainingSeconds] = useState<number>(0);
+
+  // Sync AP from custom storage events (e.g. minigames)
+  useEffect(() => {
+    const handleApSync = (e: Event) => {
+      const custom = e as CustomEvent<{ ap: number }>;
+      if (custom.detail) {
+        setTacticalAp(custom.detail.ap);
+      }
+    };
+    window.addEventListener('snshero_tactical_ap_changed', handleApSync);
+    return () => window.removeEventListener('snshero_tactical_ap_changed', handleApSync);
+  }, []);
+
+  // Tactical Override 5-second countdown timer
+  useEffect(() => {
+    if (activeOverride === null || overrideRemainingSeconds <= 0) return;
+
+    const timer = setInterval(() => {
+      setOverrideRemainingSeconds(prev => {
+        if (prev <= 1) {
+          setActiveOverride(null);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [activeOverride, overrideRemainingSeconds]);
+
+  // Handle Trigger Tactical Overrides
+  const handleTriggerOverride = useCallback((mode: 'ASSAULT' | 'COUNTER' | 'SYNERGY') => {
+    const costMap: Record<'ASSAULT' | 'COUNTER' | 'SYNERGY', number> = {
+      ASSAULT: 30,
+      COUNTER: 30,
+      SYNERGY: 50,
+    };
+    const cost = costMap[mode];
+    if (tacticalAp < cost || activeOverride !== null || gameOver) return;
+
+    const success = consumeTacticalAp(cost);
+    if (!success) return;
+
+    playSound('skill');
+    try {
+      if (typeof navigator !== 'undefined' && navigator.vibrate) {
+        navigator.vibrate([40, 60, 40]);
+      }
+    } catch {}
+
+    setActiveOverride(mode);
+    setOverrideRemainingSeconds(5);
+
+    // Immediate action effects
+    if (mode === 'SYNERGY') {
+      // Re-fill interactive skill charges & boost all active player cards on board by +2
+      setSkillCharges(prev => ({
+        power: Math.min(3, prev.power + 1),
+        shield: Math.min(3, prev.shield + 1),
+        burst: Math.min(3, prev.burst + 1),
+      }));
+      setBoard(prev => prev.map(c => {
+        if (!c || c.owner !== 'player') return c;
+        return {
+          ...c,
+          top: Math.min(10, c.top + 2),
+          bottom: Math.min(10, c.bottom + 2),
+          left: Math.min(10, c.left + 2),
+          right: Math.min(10, c.right + 2),
+        };
+      }));
+    }
+  }, [tacticalAp, activeOverride, gameOver, playSound]);
 
   // WebMCP (Chrome 149+ AI Model Context Protocol) Card Battle Tools Registration
   const battleMcpTools = useMemo(() => {
@@ -751,6 +831,12 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     let cardToPlace = { ...card, owner: isPlayer ? ('player' as const) : ('ai' as const) };
     const nextShields = [...boardShields];
 
+    // Tactical Override: ASSAULT (공격력 +35% 버프)
+    if (isPlayer && activeOverride === 'ASSAULT') {
+      cardToPlace.stats = cardToPlace.stats.map(s => Math.max(s + 1, Math.round(s * 1.35))) as [number, number, number, number];
+      cardToPlace.bonusPower = (cardToPlace.bonusPower || 0) + 35;
+    }
+
     if (isPlayer && activeSkill === 'power') {
       // Power Boost: +2 to all 4 directional stats
       cardToPlace.stats = cardToPlace.stats.map(s => s + 2) as [number, number, number, number];
@@ -765,7 +851,25 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     tempBoard[slotIdx] = cardToPlace;
 
     // Evaluate flips with elementalBoard synergy
-    const { updatedBoard, flippedIndices } = executeFlips(cardToPlace, slotIdx, tempBoard, nextShields, elementalBoard);
+    let { updatedBoard, flippedIndices } = executeFlips(cardToPlace, slotIdx, tempBoard, nextShields, elementalBoard);
+
+    // Tactical Override: COUNTER (적 AI 공격 시 피해감소 40% 및 반사 25%)
+    if (!isPlayer && activeOverride === 'COUNTER') {
+      // 40% 확률로 피해 감소 (플립 무효화)
+      if (Math.random() < 0.4) {
+        flippedIndices.forEach(idx => {
+          if (updatedBoard[idx]) {
+            updatedBoard[idx] = { ...updatedBoard[idx]!, owner: 'player' };
+          }
+        });
+        flippedIndices = [];
+      }
+      // 25% 확률로 적의 공격 카드 자체를 반사하여 아군으로 탈환
+      if (Math.random() < 0.25 && updatedBoard[slotIdx]) {
+        updatedBoard[slotIdx] = { ...updatedBoard[slotIdx]!, owner: 'player' };
+        flippedIndices.push(slotIdx);
+      }
+    }
 
     if (flippedIndices.length > 0) {
       setFlippedSlots(flippedIndices);
@@ -1000,7 +1104,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
         setSelectedHandIndex(0);
       }
     }, 400 / battleSpeed);
-  }, [board, gameOver, isEvaluating, boardShields, activeSkill, executeFlips, playSound, battleSpeed, playerHand.length, opponentHand.length, updateSns, updateStats, userStats, onEarnXp, targetCardId, addCard, inventory]);
+  }, [board, gameOver, isEvaluating, boardShields, activeSkill, activeOverride, executeFlips, playSound, battleSpeed, playerHand.length, opponentHand.length, updateSns, updateStats, userStats, onEarnXp, targetCardId, addCard, inventory]);
 
   // ─── AI Opponent / Auto Player Logic ───────────────────────────────
   useEffect(() => {
@@ -1052,7 +1156,10 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       const emptySlots = board.map((c, i) => (c === null ? i : -1)).filter(i => i !== -1);
       if (emptySlots.length === 0) return;
 
-      const delay = isFirstMove ? Math.round(300 / battleSpeed) : Math.round(600 / battleSpeed);
+      // ASSAULT 오버라이드 활성 시 공격 주기 20% 단축
+      const baseDelay = isFirstMove ? 300 : 600;
+      const speedMultiplier = activeOverride === 'ASSAULT' ? 0.8 : 1.0;
+      const delay = Math.max(150, Math.round((baseDelay * speedMultiplier) / battleSpeed));
       const timer = setTimeout(() => {
         let bestSlot = emptySlots[0];
         let bestCard = playerHand[0];
@@ -1075,7 +1182,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
 
       return () => clearTimeout(timer);
     }
-  }, [turn, isAutoBattle, gameOver, isEvaluating, rankingSearchCountdown, showMissionDialogue, opponentHand, playerHand, board, boardShields, battleSpeed, executeFlips, handlePlaceCard, difficultyProfile.aiMistakeChance]);
+  }, [turn, isAutoBattle, activeOverride, gameOver, isEvaluating, rankingSearchCountdown, showMissionDialogue, opponentHand, playerHand, board, boardShields, battleSpeed, executeFlips, handlePlaceCard, difficultyProfile.aiMistakeChance]);
 
   // ─── Interactive Skill Activations ─────────────────────────────────
   const handleUsePowerSkill = () => {
@@ -1944,6 +2051,18 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
           ))}
         </div>
       </footer>
+
+      {/* ─── 5. 실시간 전술 지휘 HUD (RSI-004: Tactical Command HUD) ─────── */}
+      <TacticalCommandHUD
+        currentAp={tacticalAp}
+        activeOverride={activeOverride}
+        overrideRemainingSeconds={overrideRemainingSeconds}
+        onTriggerOverride={handleTriggerOverride}
+        disabled={gameOver}
+        language={language}
+        className="max-w-[440px] shrink-0 rounded-b-lg border-x border-b border-white/10"
+        onOpenMinigameLounge={() => onNavigate?.('play')}
+      />
       </div>
 
       {/* ─── Game Over Result Modal ─────────────────────────────────── */}

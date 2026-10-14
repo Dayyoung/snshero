@@ -43,6 +43,7 @@ import { incrementMissionProgress } from '../lib/dailyMissions';
 import { DailyMissions as DailyMissionsComponent } from '../components/DailyMissions';
 import { BattleResultPanel, LeveledUpCardInfo } from '../components/BattleResultPanel';
 import { useStoryProgress } from '../hooks/useStoryProgress';
+import { recordDailyMinigamePlay } from '../utils/tacticalEnergyHelper';
 import { useCardSkins } from '../hooks/useCardSkins';
 import { StoryBattleBanner } from '../components/StoryBattleBanner';
 import { StoryBattleResult } from '../components/StoryBattleResult';
@@ -994,6 +995,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       onEarnXp?.(xpAmount);
       // 일일 미션 진행도 업데이트 (미니게임 플레이)
       incrementMissionProgress('play_minigame', 1);
+      // 미니게임 연동 전술 AP 충전 (+20) 및 일일 3회 리텐션 팩 진행도 누적
+      try {
+        recordDailyMinigamePlay(20);
+      } catch {}
     }
   };
 
