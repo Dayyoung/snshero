@@ -2,6 +2,27 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-14 20:22 KST] [버그수정] 데모모드 /main 진입 시 자동 진행 멈춤 버그 해결
+- **요청 사항**:
+  - "데모모드에서 /main 으로 진입했을때 자동으로 진행이 안되고 멈춰있는 버그 /git-push"
+- **원인 분석**:
+  1. 데모모드(`isDemoPlayActive()`) 또는 랭킹분기(`isRankingDiverted()`) 상태에서 `/main` (`KadanRpgView`)으로 진입했을 때, 이전에 `autoMode`가 꺼져 있던 유저는 `progress.autoMode`가 `false`로 유지되어 자동 러너가 동작하지 않고 멈춤.
+  2. `hasBattle`과 `hasDialog`의 조건이 `Boolean(activeEvent && !battleEvent && !rewardEvent)`로 동일하게 설정되어 있어, 비전투 이벤트(보물상자, NPC 대화 등)에 도달했을 때도 무조건 전투 이벤트로 잘못 인식하여 멈추는 결함 존재.
+  3. 배틀 완료 핸들러(`handleBattleComplete`)에서 매치 결과 기록(`handleDivertedMatchResult`)이 호출되지 않아 3전 진행 후 랭킹대전으로 순환 복귀하지 못하던 현상.
+- **수정 및 개선 내역**:
+  1. [`src/views/KadanRpgView.tsx`](file:///Users/dayyoung/project/snshero/src/views/KadanRpgView.tsx):
+     - `isDemoPlayActive()` 또는 `isRankingDiverted()` 상태에서 `/main` 진입 시 `setAutoMode(true)`를 강제 활성화하여 즉시 자동 플레이 실행.
+     - `hasBattle`은 `activeEvent.nodeType === 'enemy'`일 때만, `hasDialog`는 `activeEvent.nodeType !== 'enemy'`일 때로 엄격히 분기.
+     - `onAdvanceDialog`에서 비전투 이벤트는 보상 수령 또는 이벤트 완료(`completeActiveEvent`)로 즉시 넘어가도록 처리.
+     - `handleBattleComplete`에서 `isRankingDiverted() || isDemoPlayActive()`일 때 `handleDivertedMatchResult`를 호출하여 3전 완료 시 랭킹대전으로 순환 복귀되도록 연동.
+     - 스토리 퀘스트가 모두 완료된(`isComplete`) 상태일 경우 2초 후 랭킹대전으로 자동 전환.
+     - 배틀 모달의 `autoCloseOnComplete`에 데모 및 분기 상태를 연동하여 배틀 종료 후 즉시 다음 단계 진행.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 Errors (TypeScript 컴파일 무결점 통과).
+  - `npm run build`: 프로덕션 정적 번들 빌드 성공.
+  - 로컬 Git 커밋 완료 (`edfd5233`).
+  - 구글 폼 완료 보고서 제출 완료.
+
 ## [2026-10-14 20:06 KST] [RSI-004] 미니게임 AP 연동 실시간 전술 지휘 HUD(TacticalCommandHUD) 및 일일 보급팩 구현
 - **요청 사항**:
   - 미니게임 에너지(Tactical AP)와 메인 TCG 자동배틀을 연동하는 실시간 전술 지휘 HUD(`TacticalCommandHUD.tsx`) 구현 및 배틀 화면 연동.
