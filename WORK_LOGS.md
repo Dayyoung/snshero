@@ -2,6 +2,31 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-14 12:23 KST] 자동 카드 플레이 시 신규 덱 실전 검증 성공 팝업 중복 및 차단 버그 수정
+- **요청 사항**:
+  - "자동 카드 플레이 시 [승리] 새로운 덱 실전 검증 성공 ! 팝업이 계속 표시되는 버브"
+- **원인 분석**:
+  1. **실전 검증 완료 플래그 부재**: 랭킹 자동 플레이 중 신규 카드가 장착되어 `/main` 또는 `/play`로 전환된 후, 승리(`win`)를 거두어도 검증 완료(`isDivertVerified`) 상태가 기록되지 않아 매 승리마다 `handleDivertedMatchResult`에서 승리 알림 코드가 무한 재실행됨.
+  2. **자동 카드 플레이 중 블로킹 팝업 호출**: 자동 카드 플레이(`isAutoBattle === true` 또는 `hero_auto_battle` 활성) 중임에도 모달 알림창(`showCustomAlert`)이 매 판 호출되어 자동 배틀 흐름을 가로막고 팝업이 화면에 계속 남아 누적되는 현상 발생.
+  3. **자동 루프 감지 미비**: 전환 시 랭킹 루프 키가 임시 삭제되어 `showCustomAlert` 내부에서 `isAutoLoop`가 false로 판정되면서 자동 닫힘 타이머가 작동하지 못함.
+- **수정 및 개선 내역**:
+  1. **신규 덱 실전 검증 완료 상태 관리 ([`src/lib/rankingDivertService.ts`](file:///Users/dayyoung/project/snshero/src/lib/rankingDivertService.ts))**:
+     - `STORAGE_KEY_DIVERT_VERIFIED` (`hero_diverted_verified`) 및 `isDivertVerified()` 헬퍼 함수 추가.
+     - `startRankingDivert` 및 `endRankingDivert` 호출 시 검증 완료 플래그 안전 초기화.
+     - `handleDivertedMatchResult`에서 승리 시 이미 검증 완료된 경우 불필요한 알림/팝업 없이 패배 카운트만 리셋하고 조용히 복귀.
+     - 최초 승리 시 검증 완료 플래그를 세팅하며, **자동 카드 플레이(`isAutoBattleMode` 또는 `hero_auto_battle === 'true'`) 중일 때는 모달 팝업(`showCustomAlert`)을 일체 호출하지 않음**.
+     - 수동 플레이 시에만 최초 1회 알럿을 띄우되, 3초 후 자동 닫히도록 개선.
+  2. **매치 결과 핸들러 연동 ([`src/App.tsx`](file:///Users/dayyoung/project/snshero/src/App.tsx))**:
+     - `handleBattleResult`에서 `handleDivertedMatchResult` 호출 시 현재 `isAutoBattle` 상태를 명시적으로 전달.
+     - `showCustomAlert` 내 `isAutoLoop` 판정 로직에 `localStorage.getItem('hero_auto_battle') === 'true'` 및 `isAutoBattle` 상태를 추가하여 자동 플레이 중 발생할 수 있는 팝업의 자동 닫힘 보장.
+  3. **상태바 HUD 연동 ([`src/views/MobileCardPlayScreen.tsx`](file:///Users/dayyoung/project/snshero/src/views/MobileCardPlayScreen.tsx))**:
+     - 상단 `ranking-diverted-hud`에서 `isDivertVerified()` 상태를 확인하여 검증 성공 시 초록색 `[신규 덱 검증 성공] ... 진행 중` 뱃지를 표시하도록 개선하여 팝업 없이도 한눈에 검증 결과를 인지 가능하도록 구현.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 Errors (타입스크립트 무결점 통과).
+  - 로컬 Git 커밋 완료 (`5538e513`).
+  - 구글 폼 완료 보고서 제출 완료.
+
+
 ## [2026-10-14 10:00 KST] 전체 화면 정보표시형 라벨 및 불필요 배너 모던 디자인 전수 정돈
 - **요청 사항**:
   - "이런 정보표시형 라벨들도 모던 디자인 화면에는 필요없는 정보들같아. 모든화면에 대해서 라벨들을 점검해주고 모던 디자인 목적에 맞게 버튼들과 마찬가지로 제거해줘."
