@@ -26,6 +26,8 @@ import type { KadanBattleResult } from '../lib/kadanRpgBattle';
 import { KADAN_RPG_NOVEL_SCRIPTS } from '../content/kadanRpgNovelScript';
 import { AdSenseBanner } from '../components/AdSenseBanner';
 import { MobileCardPlayScreen } from './MobileCardPlayScreen';
+import { isDemoPlayActive, setDemoPlayStep } from '../lib/demoPlayService';
+import { isRankingDiverted, handleDivertedMatchResult } from '../lib/rankingDivertService';
 
 interface KadanRpgViewProps {
   isAdRemoved?: boolean;
@@ -193,9 +195,29 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
   const isComplete = !nextEvent;
   const [isEndingDismissed, setIsEndingDismissed] = useState(false);
   const isAtTarget = sameTile(heroTile, nextEvent?.tile ?? null);
-  const hasDialog = Boolean(activeEvent && !battleEvent && !rewardEvent);
-  const hasBattle = Boolean(activeEvent && !battleEvent && !rewardEvent);
+  const hasDialog = Boolean(activeEvent && activeEvent.nodeType !== 'enemy' && !battleEvent && !rewardEvent);
+  const hasBattle = Boolean(activeEvent && activeEvent.nodeType === 'enemy' && !battleEvent && !rewardEvent);
   const hasReward = Boolean(rewardEvent && activeReward);
+
+  // 데모모드 또는 랭킹분기 상태에서 /main 진입 시 autoMode 자동 강제 활성화
+  useEffect(() => {
+    if ((isDemoPlayActive() || isRankingDiverted()) && !progress.autoMode) {
+      setAutoMode(true);
+    }
+  }, [progress.autoMode, setAutoMode]);
+
+  // 데모모드 또는 랭킹분기 상태에서 스토리 완료(isComplete) 시 랭킹대전으로 순환 복귀
+  useEffect(() => {
+    if ((isDemoPlayActive() || isRankingDiverted()) && isComplete) {
+      const timer = window.setTimeout(() => {
+        if (isDemoPlayActive()) {
+          setDemoPlayStep('ranking');
+        }
+        onNavigate('ranking');
+      }, 2000);
+      return () => window.clearTimeout(timer);
+    }
+  }, [isComplete, onNavigate]);
 
   // Auto mode setting is persisted in local storage and managed by user toggle
   useEffect(() => {
@@ -318,6 +340,11 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
     const encounter = getDynamicKadanEncounter(battleEvent, progress.rebirthLevel);
     if (!encounter) return;
 
+    // 랭킹 분기 또는 데모 모드일 때 매치 결과 기록 및 3전 완료 시 랭킹 자동 복귀 처리
+    if (isRankingDiverted() || isDemoPlayActive()) {
+      handleDivertedMatchResult(result, onNavigate, language, showCustomAlert, true);
+    }
+
     if (result === 'win' || result === 'draw' || encounter.allowLossProgress) {
       markEncounterCleared(encounter.id);
       setBattleEvent(null);
@@ -332,7 +359,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
     setBattleEvent(null);
     setActiveEvent(battleEvent);
     showCustomAlert(t('kadan_rpg_battle_loss_title', language), t('kadan_rpg_battle_loss_desc', language), 3);
-  }, [battleEvent, completeActiveEvent, language, markEncounterCleared, progress.claimedRewardIds, progress.rebirthLevel, showCustomAlert]);
+  }, [battleEvent, completeActiveEvent, language, markEncounterCleared, onNavigate, progress.claimedRewardIds, progress.rebirthLevel, showCustomAlert]);
 
   const autoRunner = useKadanRpgAutoRunner({
     enabled: progress.autoMode,
@@ -351,7 +378,13 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
     },
     onAdvanceDialog: () => {
       if (!activeEvent) return;
-      setBattleEvent(activeEvent);
+      if (activeEvent.nodeType === 'enemy') {
+        setBattleEvent(activeEvent);
+      } else if (activeEvent.rewardId && !progress.claimedRewardIds.includes(activeEvent.rewardId)) {
+        setRewardEvent(activeEvent);
+      } else {
+        completeActiveEvent(activeEvent);
+      }
     },
     onStartBattle: () => {
       if (activeEvent) setBattleEvent(activeEvent);
@@ -529,7 +562,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
                 opponentName={rpgOpponent.name}
                 language={language}
                 initialAutoBattle={true}
-                autoCloseOnComplete={progress.autoMode}
+                autoCloseOnComplete={progress.autoMode || isDemoPlayActive() || isRankingDiverted()}
                 onToggleAutoBattle={() => setAutoMode(!progress.autoMode)}
                 onBack={() => {
                   setBattleEvent(null);
