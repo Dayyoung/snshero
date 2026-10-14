@@ -1,3 +1,4 @@
+import { SNSHeroGrowthManager } from './components/growth/SNSHeroGrowthManager';
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
@@ -8157,6 +8158,7 @@ export default function App() {
   return (
     <GameSettingsProvider>
       <AppContent />
+      <SNSHeroGrowthManager />
     </GameSettingsProvider>
   );
 }
