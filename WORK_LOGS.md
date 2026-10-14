@@ -2,6 +2,34 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-14 19:35 KST] [RSI-003] 무설치 1클릭 덱 챌린지 모달 및 1200x630 Canvas 전술 시트 생성기 구현
+- **요청 사항**:
+  - 무설치 1클릭 바이럴 덱 챌린지 모달(`InstantChallengeBattleModal.tsx`)과 1200x630 Canvas 전술 시트 공유기(`challengeCanvasGenerator.ts`) 구현 및 App.tsx 연동.
+  - 진입 트리거: URL에 `?challenge={deckCode}` 파라미터가 포함되어 있을 경우 첫 진입 시 자동으로 `InstantChallengeBattleModal` 노출.
+  - 챌린지 인터랙션: 상대방 덱 요약(전투력, 대표 히어로, 승률) 확인 및 `ENGAGE CHALLENGE (1-CLICK BATTLE)` 클릭 시 즉시 30초 쾌속 자동전투 시뮬레이션 실행.
+  - 보상 및 온보딩 전환: 전투 종료 후 '도전 감사 보급품(500 크레딧 + 24시간 도전자 덱 히어로 대여권)' 지급 및 `BUILD MY COUNTER DECK` 클릭 시 메인 덱 빌더(`mydeck`) 이동.
+  - 발신자 바이럴 루프: 1200x630 전술 시트 이미지 생성 및 클립보드 복사(URL + 텍스트) 제공.
+  - 디자인 가드레일: Zero-Emoji 원칙 철저 준수, `strokeWidth="1.75"` 순수 인라인 SVG 벡터(교차 검, 타겟 스코프, 공유 화살표, 전술 칩셋) 렌더링, `bg-[#090d16]/95 border border-white/15 rounded-xl p-5 font-mono text-xs`, 액션 버튼 `bg-white/5 hover:bg-white/10 border border-emerald-500/30 text-emerald-400 font-bold min-h-[48px]`, Canvas 1200x630 순수 2D 그래픽 렌더링.
+  - 다국어: 한국어(`ko`) 기본 및 12개 주요 언어(`ko`, `en`, `ja`, `zh-CN`, `zh-TW`, `es`, `fr`, `de`, `vi`, `th`, `id`, `ru`) 완전 지원.
+- **구현 및 변경 내역**:
+  1. [`src/utils/challengeCanvasGenerator.ts`](file:///Users/dayyoung/project/snshero/src/utils/challengeCanvasGenerator.ts):
+     - HTML5 Canvas 2D 기반 1200x630 고해상도 OG 전술 시트 생성기 구현.
+     - `#090d16` 다크 그리드 배경, 전술 타겟 스코프 레티클, 도전자 덱 스펙, 보안 서명 워터마크, 공유 링크 복사 헬퍼 함수 완비.
+  2. [`src/components/viral/InstantChallengeBattleModal.tsx`](file:///Users/dayyoung/project/snshero/src/components/viral/InstantChallengeBattleModal.tsx):
+     - 3단계 전술 플로우(`PREVIEW` -> `BATTLING` -> `RESULT_REWARD`) 구현.
+     - 30초 쾌속 자동전투 시뮬레이션(로그 스트리밍 및 타격 연출) 및 500 크레딧 + 24H 대여권 지급.
+     - 12개 언어 i18n 번역 맵 및 Zero-Emoji 100% 준수.
+  3. [`src/components/InstantChallengeBattleModal.tsx`](file:///Users/dayyoung/project/snshero/src/components/InstantChallengeBattleModal.tsx):
+     - `loadComponentSafely` Glob 로더 호환용 진입점 re-export.
+  4. [`src/App.tsx`](file:///Users/dayyoung/project/snshero/src/App.tsx):
+     - `safeLazy` 기반 `InstantChallengeBattleModal` 등록 및 `?challenge={deckCode}` URL 쿼리 파라미터 파싱 연동.
+- **검증 결과**:
+  - `Zero-Emoji` 검사 통과 (이모지 0건).
+  - `npx tsc --noEmit`: 0 Errors (TypeScript 컴파일 무결점 통과).
+  - `npm run build`: 프로덕션 정적 번들 빌드 성공 (`InstantChallengeBattleModal-Bc-RurDz.js` 33.80 kB).
+  - 로컬 Git 커밋 완료 (`5c117a2f`).
+  - 구글 폼 완료 보고서 제출 완료 (`[개발] [RSI-003] 무설치 1클릭 덱 챌린지 모달 및 1200x630 전술 시트 Canvas 생성기 구현 -> 작업완료`).
+
 ## [2026-10-14 18:34 KST] /git-push 원격 저장소 푸시 완료
 - **요청 사항**:
   - "git push" (RSI-002 인카운터 브릿지 위젯 구현 및 12개 언어 다국어화 완료 후 원격 저장소 푸시)
