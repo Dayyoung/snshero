@@ -59,6 +59,7 @@ import { RewardedAdModal } from '../components/RewardedAdModal';
 import { checkIsAdRemoved } from '../lib/rewardedAdService';
 import { useGameSettings } from '../contexts/GameSettingsContext';
 import { TacticalCommandHUD, OverrideMode } from '../components/battle/TacticalCommandHUD';
+import { TacticalSynergyMatrix } from '../components/battle/TacticalSynergyMatrix';
 import { getTacticalAp, consumeTacticalAp } from '../utils/tacticalEnergyHelper';
 
 export interface MobileCardPlayScreenProps {
@@ -2051,6 +2052,13 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
           ))}
         </div>
       </footer>
+
+      {/* ─── RSI-009: 실시간 전술 시너지 매트릭스 ───────────────────────── */}
+      <TacticalSynergyMatrix
+        playerUnits={playerHand.map((c, i) => ({ id: c.id, name: c.name || `Unit ${i+1}`, classType: c.element || 'ASSAULT', isAlive: true }))}
+        language={language}
+        className="max-w-[440px] shrink-0 border-x border-t border-violet-500/20"
+      />
 
       {/* ─── 5. 실시간 전술 지휘 HUD (RSI-004: Tactical Command HUD) ─────── */}
       <TacticalCommandHUD
