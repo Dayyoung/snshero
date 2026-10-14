@@ -61,6 +61,7 @@ import { MaterialDeficitModal } from '../components/MaterialDeficitModal';
 import { DeckCommandHub } from '../components/DeckCommandHub';
 import { maybeTriggerTourOrProceedToBattle } from '../lib/smartLoopTourService';
 import { startRankingDivert } from '../lib/rankingDivertService';
+import { isDemoPlayActive } from '../lib/demoPlayService';
 import { createMyDeckWebMcpTools, useWebMcpTools } from '../lib/webMcp/index';
 
 interface MyDeckViewProps {
@@ -325,9 +326,10 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
       isAutoLoopRanking = localStorage.getItem('hero_auto_loop_is_ranking') === 'true';
     } catch {}
 
-    // 랭킹 자동 플레이 진행 중 신규 카드가 마이덱에 적용된 경우: /main 또는 /play 중 한곳으로 이동하여 새로운 카드플레이 시작
+    // 랭킹 자동 플레이 진행 중 신규 카드가 마이덱에 적용된 경우: 미션게임(/play)으로 이동하여 새로운 카드플레이 시작
     if (isNewCardApplied || isAutoLoopRanking) {
-      startRankingDivert(onNavigate, language);
+      const targetMode = isDemoPlayActive() ? 'play' : undefined;
+      startRankingDivert(onNavigate, language, undefined, targetMode);
       return;
     }
 

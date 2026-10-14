@@ -5,6 +5,7 @@
  */
 
 import { Language } from '../types';
+import { isDemoPlayActive, setDemoPlayStep } from './demoPlayService';
 
 export const STORAGE_KEY_DIVERTED_MODE = 'hero_ranking_diverted_mode';
 export const STORAGE_KEY_CONSECUTIVE_LOSSES = 'hero_diverted_consecutive_losses';
@@ -59,15 +60,19 @@ export function getDivertedLossCount(): number {
 
 /**
  * 랭킹 자동플레이 중 신규 카드가 마이덱에 적용되었을 때
- * /main 또는 /play 중 한 곳으로 50:50 무작위 이동하여 새 카드플레이 시작
+ * /main 또는 /play로 이동하여 새로운 카드플레이를 시작하고,
+ * [미션게임 3패 시 스토리모드] -> [스토리모드 3패 시 랭킹대전]으로 순환합니다.
  */
 export function startRankingDivert(
   onNavigate: (view: string) => void,
   language: Language = 'ko',
-  showCustomAlert?: (title: string, message: string, autoCloseSeconds?: number) => void
+  showCustomAlert?: (title: string, message: string, autoCloseSeconds?: number) => void,
+  targetMode?: DivertedMode
 ): DivertedMode {
-  // 50:50 무작위 선택: 'main' 또는 'play'
-  const chosenMode: DivertedMode = Math.random() < 0.5 ? 'main' : 'play';
+  // targetMode가 지정되어 있으면 우선 적용, 데모플레이 모드에서는 미션게임('play') 우선, 없으면 50:50 무작위 선택
+  const chosenMode: DivertedMode = targetMode 
+    ? targetMode 
+    : (isDemoPlayActive() ? 'play' : (Math.random() < 0.5 ? 'main' : 'play'));
 
   try {
     localStorage.setItem(STORAGE_KEY_DIVERTED_MODE, chosenMode);
@@ -77,6 +82,11 @@ export function startRankingDivert(
     localStorage.removeItem('hero_auto_loop_is_ranking');
     localStorage.removeItem('hero_auto_loop_mode');
 
+    // 데모플레이 단계 업데이트
+    if (isDemoPlayActive()) {
+      setDemoPlayStep(chosenMode === 'play' ? 'mission' : 'story');
+    }
+
     window.dispatchEvent(new CustomEvent('snshero_ranking_diverted', {
       detail: { mode: chosenMode, timestamp: Date.now() }
     }));
@@ -85,12 +95,12 @@ export function startRankingDivert(
   }
 
   const title = language === 'ko'
-    ? '🎴 [신규 덱 장착] 새로운 모드 카드플레이 시작!'
-    : '🎴 [New Deck Equipped] Starting New Card Play!';
+    ? (chosenMode === 'play' ? '🎮 [신규 덱 장착] 미션게임 실전 검증 시작!' : '📖 [신규 덱 장착] 스토리모드 실전 검증 시작!')
+    : `🎴 [New Deck Equipped] Starting ${chosenMode === 'play' ? 'Mission Game' : 'Story Mode'}!`;
 
   const message = language === 'ko'
-    ? `새로운 카드가 마이덱에 적용되었습니다!\n[${chosenMode === 'main' ? '/main (카단 RPG 메인)' : '/play (미션 & 아케이드)'}] 모드로 이동하여 실전 카드 대결을 시작합니다.\n(⚠️ 3회 연속 패배 시 자동으로 랭킹플레이로 복귀합니다.)`
-    : `A new card was applied to your deck!\nMoving to [${chosenMode === 'main' ? '/main (Kadan RPG)' : '/play (Mission & Arcade)'}] mode to battle with your new deck.\n(⚠️ Will return to Rank Match on 3 consecutive losses.)`;
+    ? `새로운 카드가 마이덱에 적용되었습니다!\n[${chosenMode === 'main' ? '/main (카단 RPG 메인)' : '/play (미션 & 아케이드)'}] 모드로 이동하여 실전 카드 대결을 시작합니다.\n(⚠️ 3회 연속 패배 시 다음 순환 모드로 자동 전환됩니다.)`
+    : `A new card was applied to your deck!\nMoving to [${chosenMode === 'main' ? '/main (Kadan RPG)' : '/play (Mission & Arcade)'}] mode to battle with your new deck.\n(⚠️ Will transition on 3 consecutive losses.)`;
 
   let isAuto = false;
   try {
@@ -111,7 +121,8 @@ export function startRankingDivert(
  * 전환 모드에서 매치 결과 발생 시 호출
  * - 승리 시: 연속 패배 카운트 리셋 (0) & 실전 검증 완료(최초 1회만 기록) & 계속 진행
  * - 패배 시: 연속 패배 카운트 +1
- *   - 3회 연속 패배 시: 랭킹 플레이 복귀
+ *   - 미션게임('play') 3회 연속 패배 시: 스토리모드('main')로 전환!
+ *   - 스토리모드('main') 3회 연속 패배 시: 랭킹대전('ranking')으로 순환 복귀!
  *   - 3회 미만: 해당 모드로 계속 진행
  */
 export function handleDivertedMatchResult(
@@ -179,30 +190,52 @@ export function handleDivertedMatchResult(
       localStorage.setItem(STORAGE_KEY_CONSECUTIVE_LOSSES, String(nextLosses));
     } catch {}
 
-    // 3회 연속 패배 도달 시 랭킹 플레이로 복귀!
+    // 3회 연속 패배 도달 시 순환 분기 처리!
     if (nextLosses >= MAX_CONSECUTIVE_LOSSES) {
+      // 1) 미션게임('play')에서 3패 시 -> 스토리모드('main')로 전환!
+      if (currentMode === 'play') {
+        const title = language === 'ko' ? '📖 [미션게임 3패] 스토리모드로 전환' : '📖 [3 Losses] Moving to Story Mode';
+        const message = language === 'ko'
+          ? '미션게임에서 3회 패배하여 전열을 가다듬기 위해 [스토리모드]로 전환합니다!'
+          : '3 losses in Mission Game. Moving to [Story Mode]!';
+
+        if (!isAuto && showCustomAlert) {
+          showCustomAlert(title, message, 3);
+        }
+
+        setTimeout(() => {
+          startRankingDivert(onNavigate, language, showCustomAlert, 'main');
+        }, 1200);
+
+        return { shouldReturnToRanking: false, consecutiveLosses: 0 };
+      }
+
+      // 2) 스토리모드('main')에서 3패 시 -> 랭킹대전('ranking')으로 순환 복귀!
       endRankingDivert(true);
+      if (isDemoPlayActive()) {
+        setDemoPlayStep('ranking');
+      }
 
-      const title = language === 'ko' ? '⚠️ [3회 연속 패배] 랭킹플레이 자동 복귀' : '⚠️ [3 Consecutive Losses] Returning to Rank';
+      const title = language === 'ko' ? '⚔️ [스토리모드 3패] 랭킹대전 자동 복귀' : '⚔️ [3 Losses] Returning to Rank Match';
       const message = language === 'ko'
-        ? `전환 모드에서 3회 연속으로 패배하였습니다.\n전열을 재정비하기 위해 다시 [랭킹 플레이]로 자동 복귀합니다!`
-        : `Suffered 3 consecutive losses in diverted mode.\nReturning to [Rank Match] to regroup and compete!`;
+        ? '스토리모드에서 3회 패배하였습니다. [랭킹대전]으로 순환 복귀하여 새로운 라이벌에 도전합니다!'
+        : '3 losses in Story Mode. Returning to [Rank Match] to challenge new rivals!';
 
-      if (showCustomAlert) {
+      if (!isAuto && showCustomAlert) {
         showCustomAlert(title, message, 3);
       }
 
       // 랭킹 뷰로 복귀
       setTimeout(() => {
         onNavigate('ranking');
-      }, 1500);
+      }, 1200);
 
       return { shouldReturnToRanking: true, consecutiveLosses: MAX_CONSECUTIVE_LOSSES };
     } else {
       // 3회 미만 패배: 계속 진행 (자동 카드 플레이 중이면 중간 패배 팝업도 띄우지 않음)
       const title = language === 'ko' ? `⚔️ [패배 ${nextLosses}/${MAX_CONSECUTIVE_LOSSES}] 모드 유지` : `⚔️ [Loss ${nextLosses}/${MAX_CONSECUTIVE_LOSSES}] Staying in Mode`;
       const message = language === 'ko'
-        ? `패배하였습니다 (연속 ${nextLosses}회 / 3회 도달 시 랭킹 복귀).\n[${currentMode === 'main' ? '/main' : '/play'}] 모드에서 도전을 계속 진행합니다!`
+        ? `패배하였습니다 (연속 ${nextLosses}회 / 3회 도달 시 모드 전환).\n[${currentMode === 'main' ? '/main (스토리)' : '/play (미션)'}] 모드에서 도전을 계속 진행합니다!`
         : `Defeated (${nextLosses}/3 consecutive losses).\nContinuing in [${currentMode === 'main' ? '/main' : '/play'}] mode!`;
 
       if (!isAuto && showCustomAlert) {

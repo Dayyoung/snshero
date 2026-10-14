@@ -28,6 +28,7 @@ import { MissionDialogueIntro } from '../components/MissionDialogueIntro';
 import { pickNewRankOpponent, RankOpponentInfo } from '../data/rankingOpponents';
 import { getDynamicDifficultyProfile, DynamicDifficultyProfile } from '../lib/dynamicDifficulty';
 import { isRankingDiverted, getDivertedMode, getDivertedLossCount, isDivertVerified } from '../lib/rankingDivertService';
+import { isDemoPlayActive, setDemoPlayStep } from '../lib/demoPlayService';
 
 export interface ElementDef {
   nameKo: string;
@@ -1241,9 +1242,13 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
         }
       })();
 
-      // [1] 승리했거나, 보유 SNS가 10 이상인 경우 상점에서 카드 뽑기 및 덱 강화 진행!
-      const shouldDrawPack = smartLifeCycleActive && (winner === 'player' || curSns >= 10);
+      // [1] 데모플레이 모드 승리 시 또는 스마트 루프 승리/보유 SNS 10 이상인 경우 상점에서 카드 뽑기 진행!
+      const isDemo = isDemoPlayActive();
+      const shouldDrawPack = (isDemo && winner === 'player') || (smartLifeCycleActive && (winner === 'player' || curSns >= 10));
       if (shouldDrawPack) {
+        if (isDemo) {
+          setDemoPlayStep('shop');
+        }
         try {
           localStorage.setItem('hero_auto_loop_mode', 'gacha_start');
           localStorage.setItem('hero_auto_loop_is_ranking', 'true');

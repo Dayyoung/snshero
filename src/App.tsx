@@ -195,6 +195,7 @@ const ReferralView = safeLazy(() => import('./views/ReferralView'), 'ReferralVie
 const CreatorLandingView = safeLazy(() => import('./views/CreatorLandingView'), 'CreatorLandingView');
 const DeckUpgradeModal = safeLazy(() => import('./components/DeckUpgradeModal'), 'DeckUpgradeModal');
 const SmartLoopTourHUD = safeLazy(() => import('./components/SmartLoopTourHUD').then(m => ({ default: m.SmartLoopTourHUD })), 'SmartLoopTourHUD');
+const DemoPlayHUD = safeLazy(() => import('./components/DemoPlayHUD').then(m => ({ default: m.DemoPlayHUD })), 'DemoPlayHUD');
 const SimulationOverlay = safeLazy(() => import('./components/SimulationOverlay'), 'SimulationOverlay');
 const QrReward = safeLazy(() => import('./components/QrReward'), 'QrReward');
 const PolicyCenterView = safeLazy(() => import('./views/PolicyCenterView'), 'PolicyCenterView');
@@ -3564,6 +3565,17 @@ function AppContent() {
       try {
         if (localStorage.getItem('hero_auto_loop_mode') === 'demo_tour') {
           setIsDemoTourActive(true);
+        }
+      } catch {}
+    }
+  }, [view]);
+
+  // 랭킹 뷰 진입 시 hero_auto_start_pvp 플래그 감지 및 자동 매칭 시작
+  useEffect(() => {
+    if (view === 'ranking') {
+      try {
+        if (localStorage.getItem('hero_auto_start_pvp') === 'true') {
+          setAutoStartPvp(true);
         }
       } catch {}
     }
@@ -7883,6 +7895,14 @@ function AppContent() {
           />
         </Suspense>
       )}
+
+      {/* 홈 30초 비조작 시 순환 데모플레이 HUD */}
+      <Suspense fallback={null}>
+        <DemoPlayHUD
+          onNavigate={setView}
+          language={language}
+        />
+      </Suspense>
 
       {/* GPS Permission Explanation Modal */}
       <AnimatePresence>

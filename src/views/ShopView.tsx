@@ -34,6 +34,7 @@ import { ShareTemplateCard } from '../components/ShareTemplateCard';
 import { getGoodsSnsCost, getSpendShortfall, SNS_ECONOMY_COSTS } from '../content/snsEconomy';
 import { useRefundRequests } from '../hooks/useRefundRequests';
 import { maybeTriggerTourOrProceedToBattle } from '../lib/smartLoopTourService';
+import { isDemoPlayActive, setDemoPlayStep } from '../lib/demoPlayService';
 import { TokenExchangeModal } from '../components/TokenExchangeModal';
 import { ShortfallGuideModal } from '../components/ShortfallGuideModal';
 import { ArrowDownUp, Crown } from 'lucide-react';
@@ -2545,9 +2546,13 @@ export const ShopView: React.FC<ShopViewProps> = ({
         }
       });
 
-      const isUpgrade = Boolean(bestDrawnCard && (baseDeck.length < 5 || bestDrawnPower > minDeckPower));
+      const isDemo = isDemoPlayActive();
+      const isUpgrade = Boolean(bestDrawnCard && (isDemo || baseDeck.length < 5 || bestDrawnPower > minDeckPower));
 
       if (isUpgrade && bestDrawnCard) {
+        if (isDemo) {
+          setDemoPlayStep('mydeck');
+        }
         const cardTitle = bestDrawnCard.title || bestDrawnCard.name;
         try {
           localStorage.setItem('hero_auto_loop_mode', 'deck_swap');

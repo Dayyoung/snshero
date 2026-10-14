@@ -28,6 +28,7 @@ import { HomeQuickHub } from "../components/HomeQuickHub";
 import { AfkHarvestBox } from "../components/AfkHarvestBox";
 import { LifecycleEngine } from "../lib/LifecycleEngine";
 import { createHomeWebMcpTools, useWebMcpTools } from "../lib/webMcp/index";
+import { startDemoPlay } from "../lib/demoPlayService";
 
 const getCardAvatarStyle = (avatar: string): React.CSSProperties => {
   const cardId = Number(avatar.split(':')[1]) || 1;
@@ -97,6 +98,36 @@ export const HomeView: React.FC<HomeViewProps> = ({
   const [selectedPreviewCard, setSelectedPreviewCard] = useState<CardData | null>(null);
   // 미디어 라운지 카테고리 허브 모달 상태
   const [isMediaModalOpen, setIsMediaModalOpen] = useState(false);
+
+  // ─── 30초 비조작(Idle) 시 데모플레이 모드 자동 실행 타이머 ───
+  const [idleSeconds, setIdleSeconds] = useState<number>(30);
+
+  useEffect(() => {
+    let timer = 30;
+    setIdleSeconds(30);
+
+    const intervalId = setInterval(() => {
+      timer -= 1;
+      setIdleSeconds(timer);
+      if (timer <= 0) {
+        clearInterval(intervalId);
+        startDemoPlay(onNavigate);
+      }
+    }, 1000);
+
+    const resetIdleTimer = () => {
+      timer = 30;
+      setIdleSeconds(30);
+    };
+
+    const events = ['mousedown', 'mousemove', 'touchstart', 'keydown', 'wheel', 'scroll'];
+    events.forEach(evt => window.addEventListener(evt, resetIdleTimer, { passive: true }));
+
+    return () => {
+      clearInterval(intervalId);
+      events.forEach(evt => window.removeEventListener(evt, resetIdleTimer));
+    };
+  }, [onNavigate]);
 
   // WebMCP (Chrome 149+ AI Model Context Protocol) Home Tools Registration
   const homeMcpTools = React.useMemo(() => {
@@ -646,6 +677,29 @@ export const HomeView: React.FC<HomeViewProps> = ({
         </div>
 
       </section>
+
+      {/* ─── 30초 비조작 시 데모플레이 자동 실행 인디케이터 바 ─── */}
+      <div className="w-full mt-4 p-2.5 bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-none flex items-center justify-between font-mono text-xs text-[#201d1d] select-none">
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="font-bold">
+            {language === 'ko' ? '데모플레이 대기' : 'Demo Play Idle'}
+          </span>
+          <span className="text-[#646262]">
+            ({language === 'ko' ? `30초 비조작 시 자동 실행: ${idleSeconds}초` : `Auto start on 30s idle: ${idleSeconds}s`})
+          </span>
+        </div>
+        <button
+          onClick={() => {
+            playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+            startDemoPlay(onNavigate);
+          }}
+          className="min-h-[32px] px-3 py-1 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] font-bold text-xs rounded-sm transition-all flex items-center gap-1 cursor-pointer"
+        >
+          <span>▶</span>
+          <span>{language === 'ko' ? '즉시 데모 시작' : 'Start Demo Now'}</span>
+        </button>
+      </div>
 
       {/* ── Footer: Build Version & Last Build Time & ModooSoft Copyright & Links ── */}
       <footer className="w-full mt-4 pt-4 border-t border-[rgba(15,0,0,0.12)] flex flex-col items-center justify-between text-xs font-mono text-[#646262] gap-3 select-none">
