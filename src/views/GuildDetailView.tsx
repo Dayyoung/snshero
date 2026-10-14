@@ -463,35 +463,7 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
         {/* SCR-10-01: 상단 비동기 도전장 링크 복사 & 친구 초대 배너 */}
         {!isOpponentMode && userGuild?.id === guild.id && (
           <div className="w-full flex flex-col gap-2.5 mb-4 font-mono">
-            {/* 1. 비동기 친선 대전 링크 복사 & 친구 초대 1탭 배너 */}
-            <div className="w-full rounded-none border-2 border-indigo-500/70 bg-gradient-to-r from-stone-950 via-[#121624] to-indigo-950/70 p-3.5 text-white shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-indigo-600/30 border border-indigo-400 text-indigo-300 flex items-center justify-center text-xl shrink-0">
-                  <Share2 size={20} />
-                </div>
-                <div>
-                  <div className="flex items-center gap-1.5 flex-wrap">
-                    <span className="text-[9px] font-black uppercase text-indigo-300 bg-indigo-900/60 border border-indigo-500/40 px-1 py-0.2">
-                      GHOST BATTLE
-                    </span>
-                    <span className="text-xs text-white font-black">
-                      {language === 'ko' ? '비동기 친선전 & 친구 초대 링크' : 'Ghost Battle & Friend Invite Link'}
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-stone-300 mt-0.5">
-                    {language === 'ko' ? '내 덱과 1:1 대결 가능한 링크 복사! 친구 초대 시 상호 +100 SNS 보너스' : 'Copy link to challenge your deck! Both get +100 SNS bonus'}
-                  </p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={handleCopyGhostLink}
-                className="w-full sm:w-auto min-h-[44px] px-3.5 py-2 bg-indigo-500 hover:bg-indigo-400 text-white font-black text-xs uppercase flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95 shrink-0 rounded-none shadow-sm"
-              >
-                <span>🔗</span>
-                <span>{language === 'ko' ? '[도전장 링크 복사]' : '[Copy Battle Link]'}</span>
-              </button>
-            </div>
+
 
             {/* 2. 일일 길드 미션 HUD: 3개 미션 실시간 게이지 */}
             <div className="w-full rounded-none border border-slate-200 bg-white p-3 text-slate-800 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">

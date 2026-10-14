@@ -970,62 +970,7 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
               <ArrowUpRight size={11} />
             </button>
           </div>
-
-          <div className="flex items-center gap-2 flex-wrap text-[10px]">
-            {!firstTradeRewardClaimed ? (
-              <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold flex items-center gap-1 animate-pulse">
-                <Gift size={11} />
-                <span>{language === 'ko' ? '첫 P2P 거래 시 +50 SNS 환급 보너스!' : 'First Trade +50 SNS Bonus!'}</span>
-              </span>
-            ) : (
-              <span className="px-2 py-0.5 bg-slate-100 text-slate-600 border border-slate-200 font-bold flex items-center gap-1">
-                <CheckCircle2 size={11} className="text-emerald-500" />
-                <span>{language === 'ko' ? '첫 거래 웰컴 보너스 완료' : 'First Trade Claimed'}</span>
-              </span>
-            )}
-            <span className="text-slate-300">|</span>
-            <span className="text-slate-600 font-bold">
-              {language === 'ko' ? '수수료 5% · 가스비 100% 무료' : 'Fee 5% · Gas Free'}
-            </span>
-          </div>
         </div>
-
-        {/* SCR-05 FTUE: 실시간 급매물 (Hot Bargain) 하이라이트 배너 */}
-        {hotBargainListing && (
-          <div className="p-3.5 bg-gradient-to-r from-amber-50 via-yellow-50 to-orange-50 border-2 border-amber-400 text-slate-900 font-mono text-xs rounded-none shadow-sm relative overflow-hidden">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-              <div className="space-y-1">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="px-2 py-0.5 bg-amber-500 text-black font-black text-[10px] flex items-center gap-1 animate-pulse">
-                    <Flame size={12} />
-                    <span>HOT BARGAIN</span>
-                  </span>
-                  <span className="font-black text-rose-600 text-xs">
-                    [ {hotBargainListing.discountPct}% OFF 특가 ]
-                  </span>
-                  <span className="text-[10px] text-slate-500">
-                    권장 시세 {hotBargainListing.recPrice.toLocaleString()} SNS 대비
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <h4 className="font-black text-sm text-slate-900">
-                    {getCardTitle(hotBargainListing.listing.cardId)}
-                  </h4>
-                  <span className="text-xs font-black text-indigo-700">
-                    {hotBargainListing.listing.askPrice.toLocaleString()} SNS
-                  </span>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => handleRequestPurchase(hotBargainListing.listing)}
-                className="w-full sm:w-auto px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-black text-xs rounded-sm active:scale-95 transition-all cursor-pointer shadow-sm flex items-center justify-center gap-1.5 shrink-0"
-              >
-                <span>{language === 'ko' ? '⚡ 급매물 즉시 구매' : '⚡ Buy Bargain'}</span>
-              </button>
-            </div>
-          </div>
-        )}
 
         {/* SCR-05 UX: 모바일 원터치 서브 탭바 (스크롤 피로도 해소) */}
         <div className="flex items-center gap-1 overflow-x-auto pb-1 scrollbar-none font-mono text-xs">

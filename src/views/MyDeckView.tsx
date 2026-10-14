@@ -1735,37 +1735,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
             </button>
           </div>
 
-          {/* Active Hero Bond Synergies Bar (Row 1045 / ID 553) */}
-          {activeBonds.length > 0 && (
-            <div className="flex flex-wrap items-center gap-2 px-3 py-2 bg-[#f8f7f7] border border-[#0f0000]/12 rounded-none">
-              <span className="text-[10px] font-black text-purple-700 dark:text-purple-300 flex items-center gap-1">
-                <span>🔗</span>
-                <span>{language === 'ko' ? '영웅 인연(Bond):' : 'Hero Bonds:'}</span>
-              </span>
-              {activeBonds.map((b) => (
-                <span
-                  key={b.bond.id}
-                  className="px-2 py-0.5 rounded-none text-[9px] font-bold border border-purple-400/40 bg-purple-950/20 text-purple-800 dark:text-purple-200"
-                  title={language === 'ko' ? b.bond.descKo : b.bond.descEn}
-                >
-                  {language === 'ko' ? b.bond.titleKo : b.bond.titleEn} ({b.bond.badge})
-                </span>
-              ))}
-            </div>
-          )}
 
-          {/* SCR-03-02: 팩션 시너지 오라 발동 배너 */}
-          {factionSynergy && (
-            <div className="mx-auto w-full px-3 py-3 bg-[#f1eeee] border border-[#0f0000]/12 rounded-none flex flex-wrap gap-2 items-center justify-between font-mono text-xs text-[#201d1d]">
-              <div className="flex items-center gap-1.5 font-black">
-                <Flame size={14} className="text-orange-500 fill-current" />
-                <span>{language === 'ko' ? `[✨ ${factionSynergy.element} 3세트 팩션 시너지 오라 활성화!]` : `[✨ ${factionSynergy.element} Faction Synergy Aura Active!]`}</span>
-              </div>
-              <span className="text-[10px] font-black bg-amber-500 text-stone-950 px-1.5 py-0.5 rounded-xs shadow-xs">
-                {language === 'ko' ? '전투력 +15% BUFF' : '+15% POWER BUFF'}
-              </span>
-            </div>
-          )}
 
           {/* SCR-03: 골든 시너지 아우라 & 덱 슬롯 컨테이너 (3/2 2줄 구조 및 좌우 슬라이드 100% 완전 배제) */}
           <div 
@@ -1979,46 +1949,6 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
         />
       )}
 
-      {/* 랭킹대전 배너 버튼 */}
-      <button
-        onClick={() => {
-          playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-          onNavigate('ranking');
-        }}
-        className="relative w-full overflow-hidden rounded-sm border border-[#201d1d] bg-[#201d1d] text-left transition-colors hover:bg-[#302c2c] cursor-pointer"
-        aria-label={t('mission_ranking_banner_cta', language)}
-      >
-        <div className="relative flex min-h-[132px] items-stretch gap-3 p-3 sm:min-h-[150px] sm:p-4">
-          <div className="w-[100px] shrink-0 overflow-hidden rounded-none border border-white/20 sm:w-[140px] flex items-center justify-center p-1">
-            <div className="relative flex h-full w-full items-center justify-center p-0" title={kadanName}>
-              <CardItem
-                card={kadanCardData}
-                className="w-24 h-34 sm:w-28 sm:h-38 rounded-lg shadow-lg pointer-events-none transform group-hover:scale-105 transition-transform duration-300"
-                language={language}
-                hideStats={false}
-              />
-            </div>
-          </div>
-          <div className="flex min-w-0 flex-1 flex-col justify-center gap-2 py-1 text-white">
-            <div className="inline-flex w-fit items-center gap-1.5 rounded-md border border-white/15 bg-white/10 px-2 py-1 text-[10px] font-black uppercase tracking-wider text-cyan-100">
-              <Swords size={12} />
-              {t('ranking_battle', language)}
-            </div>
-            <div>
-              <h2 className="text-lg font-black leading-tight sm:text-2xl">
-                {t('mission_ranking_banner_title', language)}
-              </h2>
-              <p className="mt-1 line-clamp-2 text-xs font-semibold leading-relaxed text-slate-100/85 sm:text-sm">
-                {t('mission_ranking_banner_desc', language)}
-              </p>
-            </div>
-            <div className="inline-flex min-h-11 w-fit items-center gap-2 rounded-sm bg-[#fdfcfc] px-3 py-2 text-xs font-bold text-[#201d1d]">
-              {t('mission_ranking_banner_cta', language)}
-              <ChevronRight size={14} />
-            </div>
-          </div>
-        </div>
-      </button>
 
       <div className="border border-[#0f0000]/12 rounded-none bg-[#f8f7f7] p-4 sm:p-5 space-y-4">
         <h3 className="font-bold flex items-center gap-2 text-sm">

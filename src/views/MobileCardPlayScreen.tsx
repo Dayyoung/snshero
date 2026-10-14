@@ -2057,15 +2057,6 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                       <span className="text-[#646262]">{language === 'ko' ? '현재 보유 SNS 잔액:' : 'Current Balance:'}</span>
                       <span className="font-bold text-sm">{sns} SNS</span>
                     </div>
-
-                    {winner === 'player' && smartLifeCycleActive && (sns || 0) >= 100 && (
-                      <div className="p-2 border border-[#0f0000]/12 text-[11px] font-bold text-center">
-                        🛒 {language === 'ko' ? '카드 뽑기 여유 충족 (100 SNS 이상)!' : 'Pack Draw Ready (100+ SNS)!'}
-                        <div className="text-[10px] text-[#646262] mt-0.5">
-                          {language === 'ko' ? '상점으로 이동하여 새 카드를 소환할 수 있습니다.' : 'You can visit Shop to summon cards.'}
-                        </div>
-                      </div>
-                    )}
                   </div>
                 )}
 

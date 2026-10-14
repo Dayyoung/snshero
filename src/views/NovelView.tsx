@@ -832,74 +832,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
         </div>
       )}
 
-      {/* SCR-11-01: 상단 완독 진행도 HUD & 최근 읽던 위치/추천 회차 1탭 배너 */}
-      <div className="w-full bg-[#fdfcfc] border-b border-stone-300 p-3 sm:px-6 font-mono space-y-2.5">
-        {/* 1. 완독 진행도 실시간 게이지 HUD */}
-        <div className="w-full bg-white border border-stone-300 p-3 rounded-none shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
-          <div className="flex-1 w-full">
-            <div className="flex items-center justify-between text-xs mb-1.5">
-              <div className="flex items-center gap-2">
-                <span className="font-black text-amber-900 flex items-center gap-1.5">
-                  <BookOpen size={14} className="text-amber-700" />
-                  <span>{language === 'ko' ? '📚 공식 웹소설 완독 HUD' : '📚 Web Novel Completion HUD'}</span>
-                </span>
-                <span className="text-[11px] font-bold text-stone-600">
-                  {claimedCount} / {TOTAL_EPISODES} {language === 'ko' ? '완독' : 'Completed'} ({claimedPct}%)
-                </span>
-              </div>
-              <span className="text-[10px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 border border-amber-300/60 rounded-xs">
-                {language === 'ko' ? `누적 보너스: +${claimedCount * 100} SNS` : `Total Earned: +${claimedCount * 100} SNS`}
-              </span>
-            </div>
-            {/* Realtime progress gauge */}
-            <div className="w-full h-2.5 bg-stone-100 rounded-none overflow-hidden border border-stone-300">
-              <div
-                className="h-full bg-gradient-to-r from-amber-500 via-amber-400 to-emerald-500 transition-all duration-300"
-                style={{ width: `${claimedPct}%` }}
-              />
-            </div>
-          </div>
-        </div>
 
-        {/* 2. 최근 읽던 회차 이어보기 & 오늘의 추천 회차 1탭 배너 */}
-        <div className="w-full bg-gradient-to-r from-stone-900 via-stone-800 to-amber-950 text-white p-3 rounded-none border border-stone-700 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-amber-500/20 border border-amber-400/50 text-amber-400 flex items-center justify-center text-lg shrink-0">
-              <Sparkles size={18} />
-            </div>
-            <div>
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-[9px] font-black uppercase text-amber-300 bg-amber-900/70 border border-amber-500/50 px-1 py-0.2">
-                  CONTINUE READING
-                </span>
-                <span className="text-xs text-white font-black">
-                  {savedScrollState && savedScrollState.progressPct > 0
-                    ? (language === 'ko' ? `제 ${currentEpisodeNum}화 읽던 위치 (${savedScrollState.progressPct}%) 이어보기` : `Resume Ep ${currentEpisodeNum} (${savedScrollState.progressPct}%)`)
-                    : (language === 'ko' ? `제 ${currentEpisodeNum}화 지금 바로 모험 시작하기` : `Start Episode ${currentEpisodeNum} Now`)}
-                </span>
-              </div>
-              <p className="text-[11px] text-stone-300 mt-0.5">
-                {language === 'ko' ? '40부작 에픽 스토리라인과 연계된 카드 캐릭터들의 숨겨진 비하인드' : 'Epic 40-episode storyline uncovering the secret origins of SNS Hero cards'}
-              </p>
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={() => {
-              triggerHaptic('tap');
-              if (savedScrollState && savedScrollState.scrollY > 200) {
-                handleResumeLastScroll();
-              } else {
-                window.scrollTo({ top: 400, behavior: 'smooth' });
-              }
-            }}
-            className="w-full sm:w-auto min-h-[44px] px-4 py-2 bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-xs uppercase flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95 shrink-0 rounded-none shadow-xs"
-          >
-            <span>📖</span>
-            <span>{language === 'ko' ? '[1탭 즉시 읽기]' : '[Read Now]'}</span>
-          </button>
-        </div>
-      </div>
 
       {/* Primary Reader View Mode Tabs (Novel Reader / Cartoon Viewer / Movie Hub / Prompt Mode) */}
       <div className="w-full bg-[#fdfcfc] border-b border-stone-300 py-2.5 px-4 flex items-center justify-center gap-2 font-mono flex-wrap">
@@ -1147,16 +1080,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
             )}
           </div>
 
-          {/* Prompt Mode Information Banner */}
-          {isPromptMode && (
-            <div className="mb-8 p-4 border border-amber-400 bg-amber-50/90 text-amber-950 rounded-sm text-xs leading-relaxed font-mono">
-              <div className="flex items-center gap-2 font-bold mb-1 text-amber-900">
-                <Sparkles size={16} className="text-amber-600" />
-                <span>[ {t('novel_prompt_mode_toggle', language)} : ACTIVE ]</span>
-              </div>
-              <p className="text-[11px] opacity-90">{t('novel_prompt_mode_desc', language)}</p>
-            </div>
-          )}
+
 
           {/* TTS Player Bar */}
           <div className="mb-8 p-3 border border-stone-300/60 bg-stone-100/60 rounded-sm flex items-center justify-between text-xs font-mono">

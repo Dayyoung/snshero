@@ -2023,42 +2023,6 @@ export const SettingView: React.FC<SettingViewProps> = ({
               )}
             </div>
           </div>
-
-          {/* 상점 카드팩 가챠 바로가기 배너 */}
-          <div className="border border-[#201d1d]/12 bg-[#201d1d]/5 p-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <div className="space-y-1 text-center sm:text-left">
-              <h4 className="font-bold text-xs text-[#201d1d] flex items-center justify-center sm:justify-start gap-1.5">
-                <ShoppingCart size={15} className="text-indigo-600" />
-                {language === 'ko' ? '[상점 카드팩 소환 & 가챠 연동]' : '[SHOP CARD PACK SUMMON & GACHA]'}
-              </h4>
-              <p className="text-[11px] text-[#201d1d]/70 leading-relaxed">
-                {language === 'ko'
-                  ? '출석 및 일일 미션으로 모은 SNS를 상점에서 즉시 강력한 SSR 영웅 카드팩 소환에 사용하세요!'
-                  : 'Use claimed SNS from attendance and daily missions to summon powerful SSR hero packs in the shop!'}
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => { triggerHaptic('light'); onNavigate('shop'); }}
-              className="min-h-[44px] px-4 py-2.5 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold border border-[#201d1d] hover:bg-[#201d1d]/90 active:scale-95 transition-all flex items-center gap-1.5 shrink-0 rounded-none cursor-pointer"
-            >
-              <Sparkles size={14} className="text-amber-300" />
-              <span>{language === 'ko' ? '상점 뽑기 바로가기 →' : 'Go to Shop Gacha →'}</span>
-            </button>
-          </div>
-
-          {/* 스트릭 규칙 & 안심 보호 안내 */}
-          <div className="border border-[#201d1d]/12 bg-white p-4 text-xs space-y-2">
-            <h5 className="font-bold text-[#201d1d] flex items-center gap-1.5 text-[11px]">
-              <ShieldCheck size={14} className="text-emerald-600" />
-              {language === 'ko' ? '[스트릭 규칙 및 100% 로컬 영구 보존 안내]' : '[STREAK RULES & 100% LOCAL SSOT]'}
-            </h5>
-            <ul className="text-[10px] text-[#201d1d]/70 space-y-1 list-disc list-inside leading-relaxed">
-              <li>{language === 'ko' ? '출석 기록과 획득 SNS는 100% 로컬스토리지(LocalStorage)에 영구 저장됩니다.' : 'Attendance progress and claimed SNS are 100% permanently stored in LocalStorage.'}</li>
-              <li>{language === 'ko' ? '7일차 보상 수령 시 8일차부터는 Day 1부터 새로운 7일 사이클이 시작됩니다.' : 'Upon claiming Day 7, a fresh 7-day cycle begins from Day 1 on Day 8.'}</li>
-              <li>{language === 'ko' ? '하루를 놓쳐도 매월 1회 스트릭 세이버가 자동 발동되어 연속 출석이 유지됩니다.' : 'Missing one day automatically triggers the monthly Streak Saver to preserve your streak.'}</li>
-            </ul>
-          </div>
         </div>
       )}
 

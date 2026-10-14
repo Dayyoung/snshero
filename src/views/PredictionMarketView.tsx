@@ -581,51 +581,7 @@ export const PredictionMarketView: React.FC<PredictionMarketViewProps> = ({
           </button>
         </div>
 
-        {/* SCR-07: 오늘의 하이라이트 핫픽 추천 매치 배너 (Hot Match Pick) */}
-        {activeTab === 'markets' && hotMatch && (
-          <div className="bg-gradient-to-r from-orange-500/10 via-amber-500/10 to-indigo-500/10 border border-orange-400/40 rounded-sm p-3.5 shadow-xs font-mono">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-1.5 text-xs font-black text-orange-950 dark:text-orange-300">
-                <Flame size={15} className="text-orange-500 fill-orange-500 animate-pulse" />
-                <span>{language === 'ko' ? '[🔥 오늘의 추천 핫픽 승부처]' : '[🔥 TODAY HOT MATCH PICK]'}</span>
-              </div>
-              <span className="text-[10px] font-black bg-orange-500 text-white px-1.5 py-0.5 rounded-xs">
-                HOT ODDS
-              </span>
-            </div>
-            
-            <p className="text-xs sm:text-sm font-bold text-slate-800 line-clamp-2 mb-3">
-              {hotMatch.question}
-            </p>
 
-            <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => handleOpenBetModal(hotMatch, 'Yes')}
-                  className="px-3 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black rounded-sm flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95 touch-target"
-                >
-                  <span>YES {formatProbabilityPercent(hotMatch.outcomePrices[0])}</span>
-                </button>
-                <button
-                  onClick={() => handleOpenBetModal(hotMatch, 'No')}
-                  className="px-3 py-2 bg-rose-600 hover:bg-rose-500 text-white text-xs font-black rounded-sm flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95 touch-target"
-                >
-                  <span>NO {formatProbabilityPercent(hotMatch.outcomePrices[1])}</span>
-                </button>
-              </div>
-
-              {hotMatch.liveUrl && (
-                <button
-                  onClick={() => handleOpenLiveMatch(hotMatch)}
-                  className="px-2.5 py-2 bg-slate-900 hover:bg-slate-800 text-white text-[11px] font-bold rounded-sm flex items-center gap-1 cursor-pointer active:scale-95 touch-target shrink-0"
-                >
-                  <Play size={11} className="fill-current" />
-                  <span>LIVE</span>
-                </button>
-              )}
-            </div>
-          </div>
-        )}
 
       {/* Main Content Area */}
       <div className="flex-1 p-4 md:p-6 w-full grid grid-cols-1 lg:grid-cols-3 gap-6">
