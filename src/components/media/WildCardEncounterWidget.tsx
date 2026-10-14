@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useGameSettings } from '../../contexts/GameSettingsContext';
 
 export interface HeroCard {
   id: string;
@@ -104,7 +105,7 @@ const triggerGtagEvent = (eventName: string, params: Record<string, unknown> = {
       try {
         gtag('event', eventName, params);
       } catch {
-        // fail-safe
+        // safe failover
       }
     }
   }
@@ -157,10 +158,164 @@ const TRANSLATIONS: Record<string, WidgetTranslations> = {
     dismissText: 'Dismiss',
     dailyDropQuota: 'DAILY DROP QUOTA: ',
   },
+  ja: {
+    encounterDetected: '戦術ヒーロー破片の探知',
+    encounterDesc: 'ニュースデータストリームから共鳴する未確認SSRヒーロー破片を捕捉しました。',
+    pwrLabel: '戦闘力',
+    classLabel: '突撃前鋒',
+    requisitionBtn: '24時間レンタルカードを徴集する',
+    claimedHeader: '戦術徴集承認 // カード獲得',
+    claimedTitle: 'SH-204 ヴァルキリーEX (24時間臨時配備)',
+    claimedDesc: '24時間の戦術認可が付与されました。9,420 PWRの火力を即座に模擬戦闘でテストできます。',
+    accessTime: '24時間有効',
+    authCode: '認可コード: AUTH-TK-204-EX',
+    deployBtn: 'テストデッキ模擬戦闘へ出撃',
+    dismissText: '探知を無視',
+    dailyDropQuota: '本日の戦術ドロップ残数: ',
+  },
+  'zh-CN': {
+    encounterDetected: '侦测到战术英雄碎片',
+    encounterDesc: '在新闻数据流中捕获到产生共鸣的未确认SSR战术英雄碎片。',
+    pwrLabel: '战斗力',
+    classLabel: '突击前锋',
+    requisitionBtn: '征调24小时试用卡牌',
+    claimedHeader: '战术征调批准 // 获得卡牌',
+    claimedTitle: 'SH-204 女武神-EX (24小时临时部署)',
+    claimedDesc: '已授予24小时战术权限。可立即在模拟对战中测试9,420战力输出。' ,
+    accessTime: '24小时有效',
+    authCode: '授权码: AUTH-TK-204-EX',
+    deployBtn: '测试卡组出击模拟战',
+    dismissText: '忽略侦测',
+    dailyDropQuota: '本日战术掉落剩余: ',
+  },
+  'zh-TW': {
+    encounterDetected: '偵測到戰術英雄碎片',
+    encounterDesc: '在新聞數據流中捕獲到產生共振的未確認SSR戰術英雄碎片。',
+    pwrLabel: '戰鬥力',
+    classLabel: '突擊前鋒',
+    requisitionBtn: '徵調24小時試用卡牌',
+    claimedHeader: '戰術徵調核准 // 獲得卡牌',
+    claimedTitle: 'SH-204 女武神-EX (24小時臨時部署)',
+    claimedDesc: '已授予24小時戰術權限。可立即在模擬戰鬥中測試9,420戰力輸出。',
+    accessTime: '24小時有效',
+    authCode: '授權碼: AUTH-TK-204-EX',
+    deployBtn: '測試牌組出擊模擬戰',
+    dismissText: '忽略偵測',
+    dailyDropQuota: '本日戰術掉落剩餘: ',
+  },
+  es: {
+    encounterDetected: 'FRAGMENTO HEROICO TACTICO DETECTADO',
+    encounterDesc: 'Se ha interceptado un fragmento SSR tactico en el flujo de datos del articulo.',
+    pwrLabel: 'PODER COMBATE',
+    classLabel: 'VANGUARDIA ASALTO',
+    requisitionBtn: 'SOLICITAR CARTA DE PRUEBA 24H',
+    claimedHeader: 'SOLICITUD AUTORIZADA // CARTA OBTENIDA',
+    claimedTitle: 'SH-204 VALQUIRIA-EX (ACCESO TEMPORAL 24H)',
+    claimedDesc: 'Autorizacion tactica de 24 horas concedida. Pruebe 9,420 PWR en combates de prueba inmediatamente.',
+    accessTime: '24:00:00 RESTANTE',
+    authCode: 'CODIGO DE AUTORIZACION: AUTH-TK-204-EX',
+    deployBtn: 'DESPLEGAR A COMBATE DE PRUEBA',
+    dismissText: 'Descartar',
+    dailyDropQuota: 'CUOTA DIARIA RESTANTE: ',
+  },
+  fr: {
+    encounterDetected: 'FRAGMENT HEROIQUE TACTIQUE DETECTE',
+    encounterDesc: 'Un fragment tactique SSR non identifie a ete capte dans le flux d articles.',
+    pwrLabel: 'PUISSANCE COMBAT',
+    classLabel: 'AVANT-GARDE ASSAUT',
+    requisitionBtn: 'REQUISITIONNER LA CARTE D ESSAI 24H',
+    claimedHeader: 'REQUISITION VALIDEE // CARTE OBTENUE',
+    claimedTitle: 'SH-204 VALKYRIE-EX (ACCES TEMPORAIRE 24H)',
+    claimedDesc: 'Autorisation tactique de 24 heures accordee. Testez la puissance de 9,420 en simulation.',
+    accessTime: '24:00:00 RESTANT',
+    authCode: 'CODE D AUTORISATION: AUTH-TK-204-EX',
+    deployBtn: 'DEPLOYER EN COMBAT D ESSAI',
+    dismissText: 'Ignorer',
+    dailyDropQuota: 'QUOTA DU JOUR RESTANT: ',
+  },
+  de: {
+    encounterDetected: 'TAKTIK-HELDENFRAGMENT ENTDECKT',
+    encounterDesc: 'Ein nicht identifiziertes SSR-Taktikfragment wurde im Artikel-Datenstrom abgefangen.',
+    pwrLabel: 'KAMPFKRAFT',
+    classLabel: 'STURMVANGUARD',
+    requisitionBtn: '24H-TESTKARTE ANFORDERN',
+    claimedHeader: 'ANFORDERUNG GENEHMIGT // KARTE ERHALTEN',
+    claimedTitle: 'SH-204 VALKYRIE-EX (24H TEMPORARER ZUGANG)',
+    claimedDesc: '24-stundige Taktikfreigabe erteilt. Testen Sie 9,420 Kampfkraft direkt in Probeschlachten.',
+    accessTime: '24:00:00 VERBLEIBEND',
+    authCode: 'AUTH-CODE: AUTH-TK-204-EX',
+    deployBtn: 'ZUM PROBEKAMPF VERLEGEN',
+    dismissText: 'Verwerfen',
+    dailyDropQuota: 'TAGLICHES KONTINGENT: ',
+  },
+  vi: {
+    encounterDetected: 'PHAT HIEN MANH CHIEN THUAT ANH HUNG',
+    encounterDesc: 'Mot manh SSR chua xac dinh da duoc thu nhan trong dong du lieu tin tuc.',
+    pwrLabel: 'LUC CHIEN',
+    classLabel: 'TIEN PHONG DOT KICH',
+    requisitionBtn: 'TRUNG DUNG THE THU NGHIEM 24H',
+    claimedHeader: 'PHE DUYET TRUNG DUNG // NHAN THE',
+    claimedTitle: 'SH-204 VALKYRIE-EX (TAM THOI 24H)',
+    claimedDesc: 'Quyen chien thuat 24 gio da cap. Kiem tra ngay hoa luc 9,420 PWR trong mo phong chien dau.',
+    accessTime: 'CON LAI 24 GIO',
+    authCode: 'MA XAC THUC: AUTH-TK-204-EX',
+    deployBtn: 'XUAT TRAN THU NGHIEM',
+    dismissText: 'Bo qua',
+    dailyDropQuota: 'SO LUONG RHOI TRONG NGAY: ',
+  },
+  th: {
+    encounterDetected: 'ตรวจพบชิ้นส่วนฮีโร่ยุทธวิธี',
+    encounterDesc: 'ตรวจจับสัญญาณชิ้นส่วนฮีโร่ SSR ไม่ทราบฝ่ายได้จากสตรีมข้อมูลข่าวสาร',
+    pwrLabel: 'พลังรบ',
+    classLabel: 'กองหน้าจู่โจม',
+    requisitionBtn: 'เกณฑ์การ์ดทดลองใช้งาน 24 ชม.',
+    claimedHeader: 'อนุมัติการเกณฑ์พล // ได้รับการ์ด',
+    claimedTitle: 'SH-204 VALKYRIE-EX (ประจำการชั่วคราว 24 ชม.)',
+    claimedDesc: 'ได้รับสิทธิ์ยุทธวิธีชั่วคราว 24 ชั่วโมง ทดสอบพลังทำลาย 9,420 ในการจำลองรบทันที',
+    accessTime: 'เหลือเวลา 24 ชม.',
+    authCode: 'รหัสอนุมัติ: AUTH-TK-204-EX',
+    deployBtn: 'ออกรบทดสอบเด็คทันที',
+    dismissText: 'ละเว้น',
+    dailyDropQuota: 'โควตาการดรอปวันนี้: ',
+  },
+  id: {
+    encounterDetected: 'FRAGMEN HERO TAKTIS TERDETEKSI',
+    encounterDesc: 'Fragmen taktis SSR tak dikenal terdeteksi di dalam arus data artikel.',
+    pwrLabel: 'DAYA TEMPUR',
+    classLabel: 'GARDA DEPAN PENYERANG',
+    requisitionBtn: 'REKUISISI KARTU UJI COBA 24 JAM',
+    claimedHeader: 'REKUISISI DISETUJUI // KARTU DIDAPAT',
+    claimedTitle: 'SH-204 VALKYRIE-EX (AKSES SEMENTARA 24H)',
+    claimedDesc: 'Izin taktis 24 jam diberikan. Uji kekuatan 9,420 PWR langsung dalam simulasi tempur.',
+    accessTime: 'SISA 24:00:00',
+    authCode: 'KODE OTORISASI: AUTH-TK-204-EX',
+    deployBtn: 'KERAHKAN KE SIMULASI PERTEMPURAN',
+    dismissText: 'Abaikan',
+    dailyDropQuota: 'SISA KUOTA DROP HARI INI: ',
+  },
+  ru: {
+    encounterDetected: 'ОБНАРУЖЕН ТАКТИЧЕСКИЙ ФРАГМЕНТ ГЕРОЯ',
+    encounterDesc: 'В потоке данных статей перехвачен неопознанный тактический SSR фрагмент.',
+    pwrLabel: 'БОЕВАЯ МОЩЬ',
+    classLabel: 'ШТУРМОВОЙ АВАНГАРД',
+    requisitionBtn: 'РЕКВИЗИРОВАТЬ ПРОБНУЮ КАРТУ НА 24Ч',
+    claimedHeader: 'РЕКВИЗИЦИЯ ОДОБРЕНА // КАРТА ПОЛУЧЕНА',
+    claimedTitle: 'SH-204 ВАЛЬКИРИЯ-EX (ВРЕМЕННЫЙ ДОСТУП 24Ч)',
+    claimedDesc: 'Предоставлен 24-часовой тактический допуск. Испытайте 9,420 PWR в учебном бою.',
+    accessTime: 'ОСТАЛОСЬ 24:00:00',
+    authCode: 'КОД ДОПУСКА: AUTH-TK-204-EX',
+    deployBtn: 'ОТПРАВИТЬСЯ В ТЕСТОВЫЙ БОЙ' ,
+    dismissText: 'Закрыть',
+    dailyDropQuota: 'ОСТАТОК ДНЕВНОГО ЛИМИТА: ',
+  },
 };
 
-const getWidgetText = (lang?: string): WidgetTranslations => {
-  if (lang && lang.startsWith('en')) return TRANSLATIONS.en;
+const getWidgetText = (langCode?: string): WidgetTranslations => {
+  if (!langCode) return TRANSLATIONS.ko;
+  if (TRANSLATIONS[langCode]) return TRANSLATIONS[langCode];
+  if (langCode === 'gb' || langCode === 'en-GB') return TRANSLATIONS.en;
+  const prefix = langCode.split('-')[0];
+  if (TRANSLATIONS[prefix]) return TRANSLATIONS[prefix];
   return TRANSLATIONS.ko;
 };
 
@@ -169,12 +324,24 @@ export const WildCardEncounterWidget: React.FC<WildCardEncounterWidgetProps> = (
   currentSubreddit,
   articleId,
   onNavigateToCombat,
-  language = 'ko',
+  language: propLanguage,
 }) => {
+  let contextLang = 'ko';
+  try {
+    const settings = useGameSettings();
+    if (settings && settings.language) {
+      contextLang = settings.language;
+    }
+  } catch {
+    // safe context failover
+  }
+
+  const effectiveLang = propLanguage || contextLang || 'ko';
+  const txt = getWidgetText(effectiveLang);
+
   const [stage, setStage] = useState<EncounterState['stage']>('IDLE');
   const [dailyCount, setDailyCount] = useState<number>(0);
   const hasTriggeredRef = useRef<boolean>(false);
-  const txt = getWidgetText(language);
 
   // Initialize daily count from sessionStorage
   useEffect(() => {
