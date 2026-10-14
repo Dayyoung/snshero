@@ -9,16 +9,44 @@
 
 export const STORAGE_KEY_DEMO_PLAY_ACTIVE = 'hero_demo_play_active';
 export const STORAGE_KEY_DEMO_PLAY_STEP = 'hero_demo_play_step';
+export const STORAGE_KEY_DEMO_RANKING_MATCH_COUNT = 'hero_demo_ranking_match_count';
 
 export type DemoPlayStep = 'ranking' | 'shop' | 'mydeck' | 'mission' | 'story';
 
 export const DEMO_PLAY_STEPS: { id: DemoPlayStep; labelKo: string; labelEn: string; icon: string }[] = [
-  { id: 'ranking', labelKo: '1.랭킹대전', labelEn: '1.Rank Match', icon: '⚔️' },
+  { id: 'ranking', labelKo: '1.랭킹대전(최대3전)', labelEn: '1.Rank Match', icon: '⚔️' },
   { id: 'shop', labelKo: '2.상점소환', labelEn: '2.Card Summon', icon: '🎁' },
   { id: 'mydeck', labelKo: '3.마이덱', labelEn: '3.My Deck', icon: '🎴' },
-  { id: 'mission', labelKo: '4.미션게임(3패시)', labelEn: '4.Mission Game', icon: '🎮' },
-  { id: 'story', labelKo: '5.스토리모드(3패시)', labelEn: '5.Story Mode', icon: '📖' },
+  { id: 'mission', labelKo: '4.미션게임(3전)', labelEn: '4.Mission Game(3x)', icon: '🎮' },
+  { id: 'story', labelKo: '5.스토리(3전)', labelEn: '5.Story Mode(3x)', icon: '📖' },
 ];
+
+/** 데모 랭킹대전 누적 진행 경기 수 가져오기 */
+export function getDemoRankingMatchCount(): number {
+  if (typeof window === 'undefined') return 0;
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY_DEMO_RANKING_MATCH_COUNT);
+    return raw ? parseInt(raw, 10) || 0 : 0;
+  } catch {
+    return 0;
+  }
+}
+
+/** 데모 랭킹대전 누적 경기 수 +1 증가 */
+export function incrementDemoRankingMatchCount(): number {
+  const current = getDemoRankingMatchCount() + 1;
+  try {
+    localStorage.setItem(STORAGE_KEY_DEMO_RANKING_MATCH_COUNT, String(current));
+  } catch {}
+  return current;
+}
+
+/** 데모 랭킹대전 누적 경기 수 초기화 */
+export function resetDemoRankingMatchCount(): void {
+  try {
+    localStorage.removeItem(STORAGE_KEY_DEMO_RANKING_MATCH_COUNT);
+  } catch {}
+}
 
 /** 현재 데모플레이 모드가 활성 상태인지 확인 */
 export function isDemoPlayActive(): boolean {
@@ -83,6 +111,7 @@ export function stopDemoPlay(onNavigate?: (view: string) => void): void {
   try {
     localStorage.removeItem(STORAGE_KEY_DEMO_PLAY_ACTIVE);
     localStorage.removeItem(STORAGE_KEY_DEMO_PLAY_STEP);
+    localStorage.removeItem(STORAGE_KEY_DEMO_RANKING_MATCH_COUNT);
     localStorage.removeItem('hero_auto_loop_mode');
     localStorage.removeItem('hero_auto_loop_is_ranking');
     localStorage.removeItem('hero_auto_start_pvp');

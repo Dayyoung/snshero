@@ -27,8 +27,8 @@ import { t } from '../lib/i18n';
 import { MissionDialogueIntro } from '../components/MissionDialogueIntro';
 import { pickNewRankOpponent, RankOpponentInfo } from '../data/rankingOpponents';
 import { getDynamicDifficultyProfile, DynamicDifficultyProfile } from '../lib/dynamicDifficulty';
-import { isRankingDiverted, getDivertedMode, getDivertedLossCount, isDivertVerified } from '../lib/rankingDivertService';
-import { isDemoPlayActive, setDemoPlayStep } from '../lib/demoPlayService';
+import { isRankingDiverted, getDivertedMode, getDivertedLossCount, getDivertedMatchCount, isDivertVerified } from '../lib/rankingDivertService';
+import { isDemoPlayActive, setDemoPlayStep, getDemoRankingMatchCount, incrementDemoRankingMatchCount, resetDemoRankingMatchCount } from '../lib/demoPlayService';
 
 export interface ElementDef {
   nameKo: string;
@@ -1242,11 +1242,14 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
         }
       })();
 
-      // [1] 데모플레이 모드 승리 시 또는 스마트 루프 승리/보유 SNS 10 이상인 경우 상점에서 카드 뽑기 진행!
+      // [1] 데모플레이 모드: 승리 시 또는 3연속 대전 도달 시 상점으로 무조건 이동!
       const isDemo = isDemoPlayActive();
-      const shouldDrawPack = (isDemo && winner === 'player') || (smartLifeCycleActive && (winner === 'player' || curSns >= 10));
+      const demoMatches = isDemo ? incrementDemoRankingMatchCount() : 0;
+      const shouldDrawPack = (isDemo && (winner === 'player' || demoMatches >= 3)) || 
+                             (smartLifeCycleActive && (winner === 'player' || curSns >= 10));
       if (shouldDrawPack) {
         if (isDemo) {
+          resetDemoRankingMatchCount();
           setDemoPlayStep('shop');
         }
         try {
@@ -1460,13 +1463,13 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
           <div className="flex items-center gap-1.5 shrink-0">
             <span className={cn(
               "text-[10px] font-bold px-2 py-0.5 border",
-              getDivertedLossCount() >= 2
-                ? "bg-rose-500 text-white border-rose-600 animate-pulse"
+              getDivertedMatchCount() >= 2
+                ? "bg-amber-600 text-white border-amber-700 animate-pulse"
                 : isDivertVerified()
                   ? "bg-emerald-500/20 text-emerald-800 border-emerald-500/40"
                   : "bg-amber-500/20 text-amber-800 border-amber-500/40"
             )}>
-              {language === 'ko' ? `연속 패배: ${getDivertedLossCount()}/3` : `Losses: ${getDivertedLossCount()}/3`}
+              {language === 'ko' ? `대전 진행: ${getDivertedMatchCount()}/3` : `Matches: ${getDivertedMatchCount()}/3`}
             </span>
           </div>
         </div>

@@ -387,7 +387,20 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
       rawCard = localStorage.getItem('hero_auto_loop_card');
     } catch {}
 
-    if (mode !== 'deck_swap' || !rawCard || autoSwapHandledRef.current) return;
+    if (mode !== 'deck_swap' || !rawCard || autoSwapHandledRef.current) {
+      if (isDemoPlayActive() && !autoSwapHandledRef.current) {
+        autoSwapHandledRef.current = true;
+        setAutoSwapBanner(
+          language === 'ko'
+            ? '⚡ [데모플레이] 마이덱 구성 확인 완료. 미션게임(/play)으로 이동합니다 (1.5초)...'
+            : '⚡ [Demo Play] My Deck verified. Moving to Mission Game (/play) in 1.5s...'
+        );
+        autoSwapTimerRef.current = setTimeout(() => {
+          startRankingDivert(onNavigate, language, undefined, 'play');
+        }, 1500);
+      }
+      return;
+    }
     autoSwapHandledRef.current = true;
 
     // 팝업/모달 간섭 원천 차단: 모든 모달 강제 닫기

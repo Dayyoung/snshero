@@ -2445,14 +2445,28 @@ export const ShopView: React.FC<ShopViewProps> = ({
       mode = localStorage.getItem('hero_auto_loop_mode');
     } catch {}
 
-    if (mode !== 'gacha_start' || smartLoopHandledRef.current) return;
+    if (mode !== 'gacha_start' || smartLoopHandledRef.current) {
+      if (isDemoPlayActive() && !smartLoopHandledRef.current) {
+        smartLoopHandledRef.current = true;
+        setSmartLoopStatus(
+          languageRef.current === 'ko'
+            ? '🛍️ [데모플레이] 상점 화면 확인 완료. 마이덱으로 이동합니다 (1.5초)...'
+            : '🛍️ [Demo Play] Shop view verified. Moving to My Deck in 1.5s...'
+        );
+        smartLoopNavTimerRef.current = setTimeout(() => {
+          setDemoPlayStep('mydeck');
+          onNavigateRef.current?.('mydeck');
+        }, 1500);
+      }
+      return;
+    }
     smartLoopHandledRef.current = true;
 
     const lang = languageRef.current;
     setSmartLoopStatus(
       lang === 'ko'
-        ? '🤖 [스마트 루프] 랭킹대전 승리 보상으로 카드 소환을 시작합니다...'
-        : '🤖 [Smart Loop] Summoning card pack with Rank Match reward...'
+        ? (isDemoPlayActive() ? '🎁 [데모플레이] 상점 카드팩 소환을 시작합니다...' : '🤖 [스마트 루프] 랭킹대전 승리 보상으로 카드 소환을 시작합니다...')
+        : (isDemoPlayActive() ? '🎁 [Demo Play] Summoning card pack in Shop...' : '🤖 [Smart Loop] Summoning card pack with Rank Match reward...')
     );
 
     const executeSummon = () => {
@@ -2597,6 +2611,23 @@ export const ShopView: React.FC<ShopViewProps> = ({
           proceedToDeck();
         }, 3400);
       } else {
+        // 데모플레이 모드일 때는 신규 카드가 발생하지 않았더라도 상점 화면 표시 후 다음 단계인 마이덱으로 이동!
+        if (isDemoPlayActive()) {
+          setDemoPlayStep('mydeck');
+          setSmartLoopStatus(
+            languageRef.current === 'ko'
+              ? '📦 [데모플레이] 카드 소환 완료 (기존 덱 유지). 마이덱으로 이동합니다 (1.5초)...'
+              : '📦 [Demo Play] Summon complete. Moving to My Deck in 1.5s...'
+          );
+          smartLoopNavTimerRef.current = setTimeout(() => {
+            setSmartLoopStatus(null);
+            setSmartLoopAction(null);
+            handleCloseGachaRef.current();
+            onNavigateRef.current?.('mydeck');
+          }, 1500);
+          return;
+        }
+
         try {
           localStorage.removeItem('hero_auto_loop_mode');
           localStorage.setItem('hero_auto_loop_is_ranking', 'true');
