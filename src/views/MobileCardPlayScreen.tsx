@@ -4,7 +4,8 @@ import {
   ArrowLeft, Zap, Shield, Flame, RotateCcw, Volume2, VolumeX, 
   Sparkles, Check, Trophy, Award, Bot, RefreshCw, Star,
   Coffee, BookOpen, Film, Play, ShoppingBag, ArrowUpRight,
-  Waves, Wind, Mountain, User, Skull, Leaf, Hammer, Ghost
+  Waves, Wind, Mountain, User, Skull, Leaf, Hammer, Ghost,
+  ChevronDown, ChevronUp
 } from 'lucide-react';
 import { CardData, UserStats, Skill, Item, CardRarity, Language } from '../types';
 import { CARD_DATABASE } from '../cardDatabase';
@@ -158,6 +159,8 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
   const [boardShields, setBoardShields] = useState<boolean[]>(() => Array(9).fill(false));
   const [playerHand, setPlayerHand] = useState<CardData[]>([]);
   const [opponentHand, setOpponentHand] = useState<CardData[]>([]);
+  // 상대 카드덱 접기/펼치기 상태 (기본은 접은 상태: false)
+  const [isOpponentDeckExpanded, setIsOpponentDeckExpanded] = useState<boolean>(false);
   const [turn, setTurn] = useState<'player' | 'ai'>('player');
   const [turnCount, setTurnCount] = useState(1);
   const [selectedHandIndex, setSelectedHandIndex] = useState<number | null>(null);
@@ -1517,62 +1520,86 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
 
       {/* ─── 상하 스크롤 배틀 컨테이너 (UI 축소 원천 차단 및 시원한 크기 보장) ─── */}
       <div className="flex-1 min-h-0 w-full overflow-y-auto overflow-x-hidden touch-pan-y overscroll-y-contain flex flex-col items-center gap-3 p-2.5 pb-[max(32px,env(safe-area-inset-bottom,0px))] [@media(max-height:500px)_and_(min-width:480px)]:grid [@media(max-height:500px)_and_(min-width:480px)]:grid-cols-[minmax(140px,1fr)_minmax(144px,1.4fr)_minmax(140px,1fr)] [@media(max-height:500px)_and_(min-width:480px)]:grid-rows-[48px_minmax(0,1fr)_48px] [@media(max-height:500px)_and_(min-width:480px)]:overflow-hidden">
-      {/* ─── 2. 상대 덱 (Opponent Deck: 내 카드와 동등한 크기 + 빨간선 영역 표시) ─────────────── */}
+      {/* ─── 2. 상대 덱 (Opponent Deck: 접기 가능 홀더 바 & 기본 접힌 상태) ─────────────── */}
       <div 
         id="mobile-card-opponent-deck"
-        className="w-full max-w-[440px] shrink-0 flex flex-col items-center gap-1.5 border-2 border-red-500 rounded-sm bg-red-50/20 p-2 shadow-xs [@media(max-height:500px)_and_(min-width:480px)]:col-start-1 [@media(max-height:500px)_and_(min-width:480px)]:row-start-2 [@media(max-height:500px)_and_(min-width:480px)]:overflow-y-auto"
+        className="w-full max-w-[440px] shrink-0 flex flex-col border border-red-500/70 rounded-sm bg-red-50/20 shadow-xs overflow-hidden transition-all duration-200 [@media(max-height:500px)_and_(min-width:480px)]:col-start-1 [@media(max-height:500px)_and_(min-width:480px)]:row-start-2 [@media(max-height:500px)_and_(min-width:480px)]:overflow-y-auto"
       >
-        <div className="w-full flex flex-wrap items-center justify-between gap-x-2 text-[11px]">
-          <span className="font-bold text-white bg-red-600 border border-red-700 px-2 py-0.5 rounded-xs flex items-center gap-1 shadow-xs">
-            <span className="w-2 h-2 rounded-full bg-white inline-block animate-pulse" />
-            {t('opponent_deck', language)} [{opponentHand.length}/5]
-          </span>
-          <span className="text-[11px] text-red-600 font-semibold" role="status">
-            {gameOver ? t('snake_game_over', language)
-              : turn === 'ai' ? (language === 'ko' ? '🔴 상대 턴 진행 중...' : '🔴 Opponent Turn')
-              : (language === 'ko' ? '상대 카드 대기' : 'Opponent Ready')}
-          </span>
-        </div>
+        {/* 접기/펼치기 홀더 바 (기본: 접은 상태) */}
+        <button
+          type="button"
+          onClick={() => {
+            playSound('tap');
+            setIsOpponentDeckExpanded(prev => !prev);
+          }}
+          className="w-full min-h-[44px] px-2.5 py-1.5 flex items-center justify-between gap-2 cursor-pointer hover:bg-red-100/40 active:bg-red-100/60 transition-colors select-none touch-manipulation"
+          aria-expanded={isOpponentDeckExpanded}
+          aria-controls="mobile-card-opponent-deck-content"
+          title={isOpponentDeckExpanded ? (language === 'ko' ? '상대 카드덱 접기' : 'Collapse Opponent Deck') : (language === 'ko' ? '상대 카드덱 펼치기' : 'Expand Opponent Deck')}
+        >
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="font-bold text-white bg-red-600 border border-red-700 px-2 py-0.5 rounded-xs flex items-center gap-1 shadow-2xs text-[11px] shrink-0">
+              <span className="w-2 h-2 rounded-full bg-white inline-block animate-pulse" />
+              {t('opponent_deck', language)} [{opponentHand.length}/5]
+            </span>
+            <span className="text-[11px] text-red-600 font-semibold truncate" role="status">
+              {gameOver ? t('snake_game_over', language)
+                : turn === 'ai' ? (language === 'ko' ? '🔴 상대 턴 진행 중...' : '🔴 Opponent Turn')
+                : (language === 'ko' ? '상대 카드 대기' : 'Opponent Ready')}
+            </span>
+          </div>
 
-        <div className="grid grid-cols-5 gap-1.5 w-full [@media(max-height:500px)_and_(min-width:480px)]:grid-cols-2 [@media(max-height:500px)_and_(min-width:560px)]:grid-cols-3">
-          {opponentHand.map((card, i) => {
-            const oppEl = getNormalizedElement(card);
-            const oppDef = oppEl ? ELEMENT_DEFINITIONS[oppEl] : null;
-            return (
+          <div className="flex items-center gap-1 shrink-0 px-2 py-1 text-[11px] font-bold text-red-700 bg-white/90 border border-red-300 rounded-xs shadow-2xs">
+            <span>{isOpponentDeckExpanded ? (language === 'ko' ? '접기' : 'Hide') : (language === 'ko' ? '펼치기' : 'Show')}</span>
+            {isOpponentDeckExpanded ? <ChevronUp size={13} strokeWidth={2.5} /> : <ChevronDown size={13} strokeWidth={2.5} />}
+          </div>
+        </button>
+
+        {/* 접기 홀더를 누르면 표시되는 상대 5장 카드 그리드 */}
+        {isOpponentDeckExpanded && (
+          <div 
+            id="mobile-card-opponent-deck-content"
+            className="p-2 pt-1.5 border-t border-red-200/80 grid grid-cols-5 gap-1.5 w-full [@media(max-height:500px)_and_(min-width:480px)]:grid-cols-2 [@media(max-height:500px)_and_(min-width:560px)]:grid-cols-3"
+          >
+            {opponentHand.map((card, i) => {
+              const oppEl = getNormalizedElement(card);
+              const oppDef = oppEl ? ELEMENT_DEFINITIONS[oppEl] : null;
+              return (
+                <div
+                  key={`opp-card-${card.id || i}`}
+                  className="aspect-[2.8/4] min-h-[96px] sm:min-h-[115px] max-h-[135px] rounded-sm relative overflow-hidden border-2 border-red-400/90 bg-red-50/10 shadow-2xs [@media(max-height:500px)_and_(min-width:480px)]:h-[clamp(44px,24dvh,80px)]"
+                >
+                  <CardItem
+                    card={card}
+                    isLocked={true}
+                    language={language}
+                    lowSpecMode={suppressMotion}
+                    className="w-full h-full pointer-events-none rounded-none shadow-none"
+                  />
+                  {oppDef && (
+                    <div 
+                      className="absolute top-0.5 right-0.5 z-30 flex items-center gap-0.5 px-1 py-0.5 rounded-xs bg-[#fdfcfc]/95 text-[#201d1d] border border-[#201d1d]/30 font-mono text-[7.5px] font-bold leading-none shadow-2xs pointer-events-none select-none"
+                      title={`${language === 'ko' ? oppDef.nameKo : oppDef.nameEn} ${language === 'ko' ? '속성' : 'Element'}`}
+                    >
+                      <oppDef.Icon size={8.5} strokeWidth={2} className="text-[#201d1d] shrink-0" />
+                      <span className="hidden sm:inline tracking-tight">[{language === 'ko' ? oppDef.nameKo : oppDef.nameEn}]</span>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+
+            {/* Placeholders for used opponent cards */}
+            {Array.from({ length: Math.max(0, 5 - opponentHand.length) }).map((_, idx) => (
               <div
-                key={`opp-card-${card.id || i}`}
-                className="aspect-[2.8/4] min-h-[96px] sm:min-h-[115px] max-h-[135px] rounded-sm relative overflow-hidden border-2 border-red-400/90 bg-red-50/10 shadow-2xs [@media(max-height:500px)_and_(min-width:480px)]:h-[clamp(44px,24dvh,80px)]"
+                key={`empty-opp-hand-${idx}`}
+                className="aspect-[2.8/4] min-h-[96px] sm:min-h-[115px] max-h-[135px] border-2 border-dashed border-red-300 bg-red-50/10 rounded-sm flex items-center justify-center text-red-400 font-mono [@media(max-height:500px)_and_(min-width:480px)]:h-[clamp(44px,24dvh,80px)]"
               >
-                <CardItem
-                  card={card}
-                  isLocked={true}
-                  language={language}
-                  lowSpecMode={suppressMotion}
-                  className="w-full h-full pointer-events-none rounded-none shadow-none"
-                />
-                {oppDef && (
-                  <div 
-                    className="absolute top-0.5 right-0.5 z-30 flex items-center gap-0.5 px-1 py-0.5 rounded-xs bg-[#fdfcfc]/95 text-[#201d1d] border border-[#201d1d]/30 font-mono text-[7.5px] font-bold leading-none shadow-2xs pointer-events-none select-none"
-                    title={`${language === 'ko' ? oppDef.nameKo : oppDef.nameEn} ${language === 'ko' ? '속성' : 'Element'}`}
-                  >
-                    <oppDef.Icon size={8.5} strokeWidth={2} className="text-[#201d1d] shrink-0" />
-                    <span className="hidden sm:inline tracking-tight">[{language === 'ko' ? oppDef.nameKo : oppDef.nameEn}]</span>
-                  </div>
-                )}
+                <span className="text-[11px] font-bold">[-]</span>
               </div>
-            );
-          })}
-
-          {/* Placeholders for used opponent cards */}
-          {Array.from({ length: Math.max(0, 5 - opponentHand.length) }).map((_, idx) => (
-            <div
-              key={`empty-opp-hand-${idx}`}
-              className="aspect-[2.8/4] min-h-[96px] sm:min-h-[115px] max-h-[135px] border-2 border-dashed border-red-300 bg-red-50/10 rounded-sm flex items-center justify-center text-red-400 font-mono [@media(max-height:500px)_and_(min-width:480px)]:h-[clamp(44px,24dvh,80px)]"
-            >
-              <span className="text-[11px] font-bold">[-]</span>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* ─── 3. 메인 전투 영역 (좌측 정보 + 카드판 + 우측 액션) ──────── */}
