@@ -224,6 +224,10 @@ const InstantChallengeBattleModal = safeLazy(
   loadComponentSafely('InstantChallengeBattleModal'),
   'InstantChallengeBattleModal'
 );
+const DailyRequisitionModal = safeLazy(
+  loadComponentSafely('DailyRequisitionModal'),
+  'DailyRequisitionModal'
+);
 
 const getCardAvatarStyle = (avatar: string): React.CSSProperties => {
   const cardId = Number(avatar.split(':')[1]) || 1;
@@ -492,6 +496,7 @@ function AppContent() {
     }
   }, []);
 
+  // RSI-005: Daily Free 10x Requisition Modal State & Trigger
   // Viral Instant Challenge Deck Modal (?challenge={deckCode})
   const [challengeDeckCode, setChallengeDeckCode] = useState<string | null>(() => {
     if (typeof window === 'undefined') return null;
@@ -502,6 +507,28 @@ function AppContent() {
       return null;
     }
   });
+
+  // RSI-005: Daily Free 10x Requisition Modal State & Trigger
+  const [showDailyRequisition, setShowDailyRequisition] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (view === 'home' && !showFtueOverdrive && !challengeDeckCode) {
+      try {
+        const claimedDate = localStorage.getItem('snshero_daily_requisition_date');
+        const now = new Date();
+        const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+        const kst = new Date(utc + 9 * 3600000);
+        const kstKey = `${kst.getFullYear()}-${String(kst.getMonth() + 1).padStart(2, '0')}-${String(kst.getDate()).padStart(2, '0')}`;
+        if (claimedDate !== kstKey) {
+          const timer = setTimeout(() => {
+            setShowDailyRequisition(true);
+          }, 1000);
+          return () => clearTimeout(timer);
+        }
+      } catch {}
+    }
+  }, [view, showFtueOverdrive, challengeDeckCode]);
 
   const { language, setLanguage, lowSpecMode, setLowSpecMode, theme, setTheme } = useGameSettings();
   useLowSpecGuard(lowSpecMode);
@@ -8181,6 +8208,20 @@ function AppContent() {
           language={language}
         />
       )}
+
+      {/* RSI-005: Daily Free 10x Requisition Modal */}
+      <DailyRequisitionModal
+        isOpen={showDailyRequisition}
+        onClose={() => setShowDailyRequisition(false)}
+        onEquipAndPlay={(acquiredCards) => {
+          acquiredCards.forEach(card => {
+            addCard(card.rarity || 'bronze', card.id, false);
+          });
+          setShowDailyRequisition(false);
+          setView('play');
+        }}
+        language={language}
+      />
 
       {isGlobalLoading && (
         <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md pointer-events-auto animate-fade-in">
