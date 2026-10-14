@@ -2,6 +2,30 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-14 17:30 KST] [RSI-002] 미디어 유입 인카운터 브릿지 위젯(WildCardEncounterWidget) 구현 및 /r/news 연동
+- **요청 사항**:
+  - 미디어 콘텐츠 소비 유저를 게임으로 유입시키는 인카운터 브릿지 위젯(`WildCardEncounterWidget.tsx`) 구현 및 `/r/news` 뷰 연동.
+  - 트리거: 기사 스크롤 50% 이상 도달 또는 5초 이상 뷰포트 노출 시 슬라이드업 인카운터 배너 활성화.
+  - 행동 및 보상: '전술 히어로 파편 탐지' 알림 -> 유저가 `REQUISITION 24H TRIAL CARD` 클릭 시 즉시 24시간 대여 카드 획득 모달 노출 -> `DEPLOY TO QUICK TEST COMBAT` 클릭 시 테스트 덱 전투 화면(`/play?trial=SH-204`)으로 즉시 이동.
+  - 세션 제어: `sessionStorage.getItem('snshero_encounter_daily_count')`로 하루 최대 3회 드랍 제한.
+  - 디자인 가드레일: Zero-Emoji 원칙 철저 준수, `strokeWidth="1.75"` 순수 인라인 SVG 벡터(레이더 펄스, 전술 조준선, 암호화 칩셋, 화살표) 렌더링, `bg-[#090d16]/95 border border-white/10 rounded-lg p-4 font-mono text-xs`, 액션 버튼 `bg-white/5 hover:bg-white/10 border border-cyan-500/30 text-cyan-400 font-bold min-h-[44px]`, 모바일 100dvh 반응형 렌더링.
+  - 개발 명세: TypeScript 인터페이스(`HeroCard`, `EncounterState`) 완벽 정의, 기존 AdSense, SEO/GEO 메타태그, llms.txt, 결제 모듈 100% 보존.
+- **구현 및 변경 내역**:
+  1. **신규 컴포넌트 생성 ([`src/components/media/WildCardEncounterWidget.tsx`](file:///Users/dayyoung/project/snshero/src/components/media/WildCardEncounterWidget.tsx))**:
+     - `HeroCard`, `EncounterState`, `WildCardEncounterWidgetProps` 인터페이스 정의.
+     - `RadarPulseIcon`, `TacticalCrosshairIcon`, `CryptoChipsetIcon`, `VectorArrowIcon`, `CloseIcon`, `CheckBadgeIcon` 인라인 SVG(`strokeWidth="1.75"`) 구현.
+     - 50% 스크롤 감지 및 5초 체류 타이머 연동, `sessionStorage` 기반 일일 3회 드랍 제한 및 로컬스토리지 24시간 대여 카드 등록.
+     - Zero-Emoji 원칙 100% 준수 및 다국어 지원.
+  2. **뉴스룸 및 기사 상세 모달 연동 ([`src/views/RedditCommunityView.tsx`](file:///Users/dayyoung/project/snshero/src/views/RedditCommunityView.tsx), [`src/components/reddit/RedditPostDetailModal.tsx`](file:///Users/dayyoung/project/snshero/src/components/reddit/RedditPostDetailModal.tsx))**:
+     - `/r/news` 뉴스룸 피드 및 기사 상세 읽기 모달 내부 스크롤 컨테이너에 `WildCardEncounterWidget` 배치.
+     - 출격 시 `/play?trial=SH-204` 파라미터 전달 및 내비게이션 연동.
+- **검증 결과**:
+  - Zero-Emoji 스크립트 검증: 통과 (0 Emojis).
+  - `npx tsc --noEmit`: 0 Errors (타입스크립트 컴파일 무결점 통과).
+  - `npm run build`: Vite 6 프로덕션 정적 번들 정상 빌드 완료.
+  - 로컬 Git 커밋 완료 (`be4a548b`).
+  - 구글 폼 완료 보고서 제출 완료.
+
 ## [2026-10-14 17:05 KST] [다국어 지원] FirstVisitOverdriveModal 12개 언어 i18n 지원 및 한국어 기본 반영
 - **요청 사항**:
   - "새로 추가한 화면들이 다 영문으로 나와. 다국적언어 가이드를 지키도록 해줘."
