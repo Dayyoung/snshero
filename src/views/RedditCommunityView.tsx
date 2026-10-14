@@ -50,6 +50,7 @@ import { RedditFloatingPlayButton } from '../components/reddit/RedditFloatingPla
 import { RedditQuickCreatePostBar } from '../components/reddit/RedditQuickCreatePostBar';
 import { RedditCreateCommunityModal } from '../components/reddit/RedditCreateCommunityModal';
 import { WildCardEncounterWidget } from '../components/media/WildCardEncounterWidget';
+import { BreakingNewsExpeditionWidget } from '../components/media/BreakingNewsExpeditionWidget';
 import { removeAutoPlacedAds } from '../hooks/useAdSenseAutoAds';
 import { AdSenseBanner } from '../components/AdSenseBanner';
 import { SEED_SUBREDDITS } from '../data/redditSeedData';
@@ -990,6 +991,13 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
             window.location.href = url;
           }
         }}
+      />
+
+      {/* 8. RSI-012: 실시간 뉴스룸 속보 키워드 기반 동적 히어로 전술 파견 위젯 */}
+      <BreakingNewsExpeditionWidget
+        currentSubreddit={currentSubreddit}
+        language={userState.language || 'ko'}
+        onNavigateView={onNavigateView}
       />
     </div>
   );
