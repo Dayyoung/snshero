@@ -8,6 +8,7 @@ import { Language } from '../types';
 
 export const STORAGE_KEY_DIVERTED_MODE = 'hero_ranking_diverted_mode';
 export const STORAGE_KEY_CONSECUTIVE_LOSSES = 'hero_diverted_consecutive_losses';
+export const STORAGE_KEY_DIVERT_VERIFIED = 'hero_diverted_verified';
 export const MAX_CONSECUTIVE_LOSSES = 3;
 
 export type DivertedMode = 'main' | 'play';
@@ -18,6 +19,16 @@ export function isRankingDiverted(): boolean {
   try {
     const mode = localStorage.getItem(STORAGE_KEY_DIVERTED_MODE);
     return mode === 'main' || mode === 'play';
+  } catch {
+    return false;
+  }
+}
+
+/** 신규 덱 실전 검증 승리를 이미 1회 이상 달성했는지 여부 확인 */
+export function isDivertVerified(): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    return localStorage.getItem(STORAGE_KEY_DIVERT_VERIFIED) === 'true';
   } catch {
     return false;
   }
@@ -53,7 +64,7 @@ export function getDivertedLossCount(): number {
 export function startRankingDivert(
   onNavigate: (view: string) => void,
   language: Language = 'ko',
-  showCustomAlert?: (title: string, message: string) => void
+  showCustomAlert?: (title: string, message: string, autoCloseSeconds?: number) => void
 ): DivertedMode {
   // 50:50 무작위 선택: 'main' 또는 'play'
   const chosenMode: DivertedMode = Math.random() < 0.5 ? 'main' : 'play';
@@ -61,6 +72,7 @@ export function startRankingDivert(
   try {
     localStorage.setItem(STORAGE_KEY_DIVERTED_MODE, chosenMode);
     localStorage.setItem(STORAGE_KEY_CONSECUTIVE_LOSSES, '0');
+    localStorage.removeItem(STORAGE_KEY_DIVERT_VERIFIED);
     // 전환 중에는 랭킹 루프 플래그 일시 해제
     localStorage.removeItem('hero_auto_loop_is_ranking');
     localStorage.removeItem('hero_auto_loop_mode');
@@ -80,8 +92,14 @@ export function startRankingDivert(
     ? `새로운 카드가 마이덱에 적용되었습니다!\n[${chosenMode === 'main' ? '/main (카단 RPG 메인)' : '/play (미션 & 아케이드)'}] 모드로 이동하여 실전 카드 대결을 시작합니다.\n(⚠️ 3회 연속 패배 시 자동으로 랭킹플레이로 복귀합니다.)`
     : `A new card was applied to your deck!\nMoving to [${chosenMode === 'main' ? '/main (Kadan RPG)' : '/play (Mission & Arcade)'}] mode to battle with your new deck.\n(⚠️ Will return to Rank Match on 3 consecutive losses.)`;
 
-  if (showCustomAlert) {
-    showCustomAlert(title, message);
+  let isAuto = false;
+  try {
+    isAuto = localStorage.getItem('hero_auto_battle') === 'true';
+  } catch {}
+
+  // 자동 카드 플레이 중이 아닐 때만 전환 안내 모달을 띄움
+  if (!isAuto && showCustomAlert) {
+    showCustomAlert(title, message, 3);
   }
 
   // 모드별 화면으로 이동
@@ -91,7 +109,7 @@ export function startRankingDivert(
 
 /**
  * 전환 모드에서 매치 결과 발생 시 호출
- * - 승리 시: 연속 패배 카운트 리셋 (0) & 계속 진행
+ * - 승리 시: 연속 패배 카운트 리셋 (0) & 실전 검증 완료(최초 1회만 기록) & 계속 진행
  * - 패배 시: 연속 패배 카운트 +1
  *   - 3회 연속 패배 시: 랭킹 플레이 복귀
  *   - 3회 미만: 해당 모드로 계속 진행
@@ -100,7 +118,8 @@ export function handleDivertedMatchResult(
   result: 'win' | 'loss' | 'draw',
   onNavigate: (view: string) => void,
   language: Language = 'ko',
-  showCustomAlert?: (title: string, message: string) => void
+  showCustomAlert?: (title: string, message: string, autoCloseSeconds?: number) => void,
+  isAutoBattleMode?: boolean
 ): { shouldReturnToRanking: boolean; consecutiveLosses: number } {
   if (!isRankingDiverted()) {
     return { shouldReturnToRanking: false, consecutiveLosses: 0 };
@@ -108,6 +127,19 @@ export function handleDivertedMatchResult(
 
   const currentMode = getDivertedMode() || 'main';
   const currentLosses = getDivertedLossCount();
+  const alreadyVerified = isDivertVerified();
+
+  // 자동 카드 플레이 여부 확인 (파라미터 우선, 없으면 로컬스토리지 확인)
+  let isAuto = isAutoBattleMode;
+  if (typeof isAuto !== 'boolean') {
+    try {
+      isAuto = localStorage.getItem('hero_auto_battle') === 'true' ||
+               localStorage.getItem('hero_auto_loop_mode') !== null ||
+               localStorage.getItem('hero_auto_start_pvp') === 'true';
+    } catch {
+      isAuto = false;
+    }
+  }
 
   if (result === 'win') {
     // 승리 시 연속 패배 리셋
@@ -115,13 +147,27 @@ export function handleDivertedMatchResult(
       localStorage.setItem(STORAGE_KEY_CONSECUTIVE_LOSSES, '0');
     } catch {}
 
+    // 이미 이번 전환에서 검증 승리를 달성했다면 더 이상 중복 팝업/알림을 띄우지 않고 조용히 리턴
+    if (alreadyVerified) {
+      return { shouldReturnToRanking: false, consecutiveLosses: 0 };
+    }
+
+    // 최초 1회 실전 검증 성공 영구 마킹
+    try {
+      localStorage.setItem(STORAGE_KEY_DIVERT_VERIFIED, 'true');
+      window.dispatchEvent(new CustomEvent('snshero_divert_verified', {
+        detail: { mode: currentMode, timestamp: Date.now() }
+      }));
+    } catch {}
+
     const title = language === 'ko' ? '🎉 [승리] 새로운 덱 실전 검증 성공!' : '🎉 [Victory] New Deck Verified!';
     const message = language === 'ko'
       ? `신규 카드가 적용된 덱으로 승리를 거두었습니다!\n[${currentMode === 'main' ? '/main' : '/play'}] 모드로 계속 카드플레이를 진행합니다.`
       : `Victory with the new deck!\nContinuing card play in [${currentMode === 'main' ? '/main' : '/play'}] mode.`;
 
-    if (showCustomAlert) {
-      showCustomAlert(title, message);
+    // 자동 카드 플레이 중일 때는 게임 흐름을 막는 모달 팝업(showCustomAlert)을 절대 띄우지 않음!
+    if (!isAuto && showCustomAlert) {
+      showCustomAlert(title, message, 3);
     }
 
     return { shouldReturnToRanking: false, consecutiveLosses: 0 };
@@ -143,7 +189,7 @@ export function handleDivertedMatchResult(
         : `Suffered 3 consecutive losses in diverted mode.\nReturning to [Rank Match] to regroup and compete!`;
 
       if (showCustomAlert) {
-        showCustomAlert(title, message);
+        showCustomAlert(title, message, 3);
       }
 
       // 랭킹 뷰로 복귀
@@ -153,14 +199,14 @@ export function handleDivertedMatchResult(
 
       return { shouldReturnToRanking: true, consecutiveLosses: MAX_CONSECUTIVE_LOSSES };
     } else {
-      // 3회 미만 패배: 계속 진행
+      // 3회 미만 패배: 계속 진행 (자동 카드 플레이 중이면 중간 패배 팝업도 띄우지 않음)
       const title = language === 'ko' ? `⚔️ [패배 ${nextLosses}/${MAX_CONSECUTIVE_LOSSES}] 모드 유지` : `⚔️ [Loss ${nextLosses}/${MAX_CONSECUTIVE_LOSSES}] Staying in Mode`;
       const message = language === 'ko'
         ? `패배하였습니다 (연속 ${nextLosses}회 / 3회 도달 시 랭킹 복귀).\n[${currentMode === 'main' ? '/main' : '/play'}] 모드에서 도전을 계속 진행합니다!`
         : `Defeated (${nextLosses}/3 consecutive losses).\nContinuing in [${currentMode === 'main' ? '/main' : '/play'}] mode!`;
 
-      if (showCustomAlert) {
-        showCustomAlert(title, message);
+      if (!isAuto && showCustomAlert) {
+        showCustomAlert(title, message, 3);
       }
 
       return { shouldReturnToRanking: false, consecutiveLosses: nextLosses };
@@ -176,6 +222,7 @@ export function endRankingDivert(returnToRanking: boolean = false): void {
   try {
     localStorage.removeItem(STORAGE_KEY_DIVERTED_MODE);
     localStorage.removeItem(STORAGE_KEY_CONSECUTIVE_LOSSES);
+    localStorage.removeItem(STORAGE_KEY_DIVERT_VERIFIED);
     if (returnToRanking) {
       localStorage.setItem('hero_auto_loop_is_ranking', 'true');
       localStorage.setItem('hero_auto_start_pvp', 'true');

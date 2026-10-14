@@ -27,7 +27,7 @@ import { t } from '../lib/i18n';
 import { MissionDialogueIntro } from '../components/MissionDialogueIntro';
 import { pickNewRankOpponent, RankOpponentInfo } from '../data/rankingOpponents';
 import { getDynamicDifficultyProfile, DynamicDifficultyProfile } from '../lib/dynamicDifficulty';
-import { isRankingDiverted, getDivertedMode, getDivertedLossCount } from '../lib/rankingDivertService';
+import { isRankingDiverted, getDivertedMode, getDivertedLossCount, isDivertVerified } from '../lib/rankingDivertService';
 
 export interface ElementDef {
   nameKo: string;
@@ -1433,11 +1433,23 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       {isRankingDiverted() && (
         <div 
           id="ranking-diverted-hud"
-          className="w-full px-3 py-1 bg-amber-500/10 border-b border-amber-500/30 flex items-center justify-between shrink-0 text-[11px] gap-2 z-20 font-mono"
+          className={cn(
+            "w-full px-3 py-1 border-b flex items-center justify-between shrink-0 text-[11px] gap-2 z-20 font-mono",
+            isDivertVerified()
+              ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-900"
+              : "bg-amber-500/10 border-amber-500/30 text-amber-900"
+          )}
         >
           <div className="flex items-center gap-1.5 truncate">
-            <span className="font-bold text-amber-900 truncate">
-              🎴 {language === 'ko' ? `[신규 덱 검증] ${getDivertedMode() === 'main' ? '/main (카단 RPG)' : '/play (미션 게임)'}` : `[New Deck Trial] ${getDivertedMode() === 'main' ? '/main' : '/play'}`}
+            <span className="font-bold truncate">
+              {isDivertVerified() ? '✅ ' : '🎴 '}
+              {language === 'ko' 
+                ? (isDivertVerified() 
+                    ? `[신규 덱 검증 성공] ${getDivertedMode() === 'main' ? '/main (카단 RPG)' : '/play (미션 게임)'} 진행 중` 
+                    : `[신규 덱 검증 중] ${getDivertedMode() === 'main' ? '/main' : '/play'}`)
+                : (isDivertVerified()
+                    ? `[Deck Verified] ${getDivertedMode() === 'main' ? '/main' : '/play'} in progress`
+                    : `[New Deck Trial] ${getDivertedMode() === 'main' ? '/main' : '/play'}`)}
             </span>
           </div>
           <div className="flex items-center gap-1.5 shrink-0">
@@ -1445,7 +1457,9 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
               "text-[10px] font-bold px-2 py-0.5 border",
               getDivertedLossCount() >= 2
                 ? "bg-rose-500 text-white border-rose-600 animate-pulse"
-                : "bg-amber-500/20 text-amber-800 border-amber-500/40"
+                : isDivertVerified()
+                  ? "bg-emerald-500/20 text-emerald-800 border-emerald-500/40"
+                  : "bg-amber-500/20 text-amber-800 border-amber-500/40"
             )}>
               {language === 'ko' ? `연속 패배: ${getDivertedLossCount()}/3` : `Losses: ${getDivertedLossCount()}/3`}
             </span>

@@ -710,7 +710,9 @@ function AppContent() {
     try {
       isAutoLoop = localStorage.getItem('hero_auto_loop_is_ranking') === 'true' ||
                    localStorage.getItem('hero_auto_loop_mode') !== null ||
-                   localStorage.getItem('hero_auto_start_pvp') === 'true';
+                   localStorage.getItem('hero_auto_start_pvp') === 'true' ||
+                   localStorage.getItem('hero_auto_battle') === 'true' ||
+                   isAutoBattle;
     } catch {}
 
     const isRewardOrCompletion = 
@@ -4531,7 +4533,7 @@ function AppContent() {
 
     // 랭킹 자동플레이 중 신규 카드 덱 적용으로 /main 또는 /play로 전환된 상태일 때 승/패 처리 (3회 연속 패배 시 랭킹 자동 복귀)
     if (isRankingDiverted()) {
-      handleDivertedMatchResult(result, setView, language, showCustomAlert);
+      handleDivertedMatchResult(result, setView, language, showCustomAlert, isAutoBattle);
     }
 
     // Tutorial progression: After battle, go to shop and disable auto-battle
