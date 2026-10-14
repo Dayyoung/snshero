@@ -2,6 +2,41 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-14 20:06 KST] [RSI-004] 미니게임 AP 연동 실시간 전술 지휘 HUD(TacticalCommandHUD) 및 일일 보급팩 구현
+- **요청 사항**:
+  - 미니게임 에너지(Tactical AP)와 메인 TCG 자동배틀을 연동하는 실시간 전술 지휘 HUD(`TacticalCommandHUD.tsx`) 구현 및 배틀 화면 연동.
+  - 미니게임 연동 루프: `/play` 110종 미니게임 플레이 시 획득하는 AP(Tactical Energy)를 `localStorage`에 저장 및 동기화 (+20 AP).
+  - 배틀 개입(오버라이드): 메인 TCG 자동배틀 진행 중 하단에 3대 전술 지휘 버튼(`ASSAULT`, `COUNTER`, `SYNERGY`) 제공.
+    - `ASSAULT` (소모 AP 30): 5초간 전 유닛 공격력 +35%, 공격 주기 20% 단축
+    - `COUNTER` (소모 AP 30): 5초간 전 유닛 피해 감소 40% 및 공격 반사율 25% 적용
+    - `SYNERGY` (소모 AP 50): 즉시 아군 궁극기 게이지 50% 충전 및 디버프 전체 해제
+  - 리텐션 훅: 일일 미니게임 3회 완료 시 'TACTICAL OVERRIDE PACK (티켓 1장 + 배틀 부스터 + 40 AP)' 보상 팝업 트리거 및 수령 처리.
+  - 디자인 가드레일: Zero-Emoji 원칙 철저 준수, `strokeWidth="1.75"` 순수 인라인 SVG 벡터(번개 볼트, 육각 쉴드, 연계 궤도, AP 배터리, 보급 상자) 렌더링, `bg-[#090d16]/95 border-t border-white/15 backdrop-blur-md p-3`, 버튼 `border border-white/10 rounded-lg font-mono text-xs font-bold min-h-[48px]`, 활성화 시 네온 컬러 펄스 발광, 모바일 엄지 영역(Thumb Zone) 하단 3분할 그리드 배치.
+  - 다국어: 한국어(`ko`) 기본 및 12개 주요 언어(`ko`, `en`, `ja`, `zh-CN`, `zh-TW`, `es`, `fr`, `de`, `vi`, `th`, `id`, `ru`) 완전 지원.
+- **구현 및 변경 내역**:
+  1. [`src/utils/tacticalEnergyHelper.ts`](file:///Users/dayyoung/project/snshero/src/utils/tacticalEnergyHelper.ts):
+     - AP 관리 헬퍼: `hero_tactical_ap` 로컬스토리지 영구 보존 및 커스텀 동기화 이벤트 송수신.
+     - 일일 미니게임 카운트 및 'TACTICAL OVERRIDE PACK' 수령 자격/지급 헬퍼 완비.
+  2. [`src/components/battle/TacticalCommandHUD.tsx`](file:///Users/dayyoung/project/snshero/src/components/battle/TacticalCommandHUD.tsx):
+     - 3대 전술 지휘 버튼(`ASSAULT`, `COUNTER`, `SYNERGY`) 및 AP 게이지, 일일 미니게임 진행도 `[3/3]` 통합 HUD.
+     - 활성화 상태(Active Pulse) 타이머(5초 카운트다운 게이지) 및 테두리 네온 발광.
+     - 보급 팩 모달 팝업 및 12개 언어 i18n 내장.
+  3. [`src/components/TacticalCommandHUD.tsx`](file:///Users/dayyoung/project/snshero/src/components/TacticalCommandHUD.tsx):
+     - `loadComponentSafely` Glob 로더 호환용 진입점 re-export.
+  4. [`src/views/PlayGameView.tsx`](file:///Users/dayyoung/project/snshero/src/views/PlayGameView.tsx):
+     - `handleMinigameReward`에 `recordDailyMinigamePlay(20)` 연동하여 110종 미니게임 플레이 시 AP 충전 및 일일 횟수 동기화.
+  5. [`src/views/MobileCardPlayScreen.tsx`](file:///Users/dayyoung/project/snshero/src/views/MobileCardPlayScreen.tsx):
+     - 하단 엄지 영역에 `TacticalCommandHUD` 마운트.
+     - `ASSAULT` 발동 시 아군 공격력 +35% 버프 및 턴 딜레이 20% 단축 반영.
+     - `COUNTER` 발동 시 상대 AI 공격 40% 피해 감소/방어 및 25% 반사 탈환 반영.
+     - `SYNERGY` 발동 시 전 유닛 능력치 +2 및 스킬 차지 즉시 보충 반영.
+- **검증 결과**:
+  - `Zero-Emoji` 검사 통과 (이모지 0건).
+  - `npx tsc --noEmit`: 0 Errors (TypeScript 컴파일 무결점 통과).
+  - `npm run build`: 프로덕션 정적 번들 빌드 성공 (`TacticalCommandHUD-BrQ6wQJ7-v1791975921882.js` 22.50 kB).
+  - 로컬 Git 커밋 완료 (`0f243c02`).
+  - 구글 폼 완료 보고서 제출 완료 (`[개발] [RSI-004] 미니게임 AP 연동 실시간 전술 지휘 HUD(TacticalCommandHUD) 및 일일 보급팩 구현 -> 작업완료`).
+
 ## [2026-10-14 19:35 KST] [RSI-003] 무설치 1클릭 덱 챌린지 모달 및 1200x630 Canvas 전술 시트 생성기 구현
 - **요청 사항**:
   - 무설치 1클릭 바이럴 덱 챌린지 모달(`InstantChallengeBattleModal.tsx`)과 1200x630 Canvas 전술 시트 공유기(`challengeCanvasGenerator.ts`) 구현 및 App.tsx 연동.
