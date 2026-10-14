@@ -2,6 +2,40 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-14 13:10 KST] 홈 화면 30초 비조작 시 순환 데모플레이 모드 자동 실행 및 5단계 루프 구현
+- **요청 사항**:
+  - "홈화면에서 30초가 지나면 데모플레이 모드 실행되게 해줘. 랭킹대전 > 승리 시 상점 카드뽑기 > 신규카드 시 마이덱 > 마이덱 변경 시 미션게임 > 미션게임 3패 시 스토리모드 > 스토리모드 3패시 랭킹대전 이런식으로 순환하면서 데모플레이"
+- **기능 설계 및 순환 흐름**:
+  1. **홈 화면 30초 비조작(Idle) 감지**: 홈 화면 머문 후 30초 동안 사용자 입력(클릭, 터치, 스크롤, 키보드)이 없으면 데모플레이 모드 자동 진입. (사용자 조작 시 타이머 리셋).
+  2. **1단계 [랭킹대전]**: PVP 랭킹 대전 자동 시작 및 자동 배틀 플레이.
+  3. **2단계 [승리 시 상점 카드뽑기]**: 랭킹대전 승리(`winner === 'player'`) 시 즉시 상점으로 이동 후 카드팩 자동 소환.
+  4. **3단계 [신규카드 시 마이덱]**: 소환된 카드 중 최고 파워 카드를 덱 최약체와 자동 교체하기 위해 마이덱으로 자동 이동.
+  5. **4단계 [마이덱 변경 시 미션게임]**: 마이덱에서 카드 장착 및 애니메이션 완료 후 미션게임(`/play`)으로 직행하여 실전 검증 시작.
+  6. **5단계 [미션게임 3패 시 스토리모드]**: 미션게임 3회 연속 패배 도달 시 카단 RPG 스토리모드(`/main`)로 순환 전환.
+  7. **순환 복귀 [스토리모드 3패 시 랭킹대전]**: 스토리모드 3회 연속 패배 도달 시 다시 1단계 랭킹대전으로 복귀하여 무한 순환 루프 완성.
+  8. **유저 개입 및 중단 편의**: 상단에 실시간 진행 단계 표시 및 `[중지 ✕]` 버튼이 포함된 `DemoPlayHUD` 제공, 언제든지 유저가 중지 버튼을 누르면 즉시 홈으로 안전 복귀.
+- **수정 및 개발 파일**:
+  1. **데모플레이 서비스 생성 ([`src/lib/demoPlayService.ts`](file:///Users/dayyoung/project/snshero/src/lib/demoPlayService.ts))**:
+     - `hero_demo_play_active`, `hero_demo_play_step` 상태 머신 관리, `startDemoPlay`, `stopDemoPlay` 라이프사이클 함수 구현.
+  2. **데모플레이 상단 HUD 컴포넌트 ([`src/components/DemoPlayHUD.tsx`](file:///Users/dayyoung/project/snshero/src/components/DemoPlayHUD.tsx))**:
+     - OpenCode.ai 모노스페이스 서체, 웜크림/잉크 팔레트, 1px 보더 기반 5단계 트랙 시각화 및 중지 액션 제공.
+  3. **분기 순환 서비스 개선 ([`src/lib/rankingDivertService.ts`](file:///Users/dayyoung/project/snshero/src/lib/rankingDivertService.ts))**:
+     - `startRankingDivert`에 `targetMode` 파라미터 지원 및 미션게임 3패 시 스토리모드 전환, 스토리모드 3패 시 랭킹대전 복귀 로직 구현.
+  4. **홈 화면 30초 유휴 타이머 ([`src/views/HomeView.tsx`](file:///Users/dayyoung/project/snshero/src/views/HomeView.tsx))**:
+     - 30초 카운트다운 타이머, 유저 인터랙션 감지 리셋 및 하단 데모플레이 대기/즉시 시작 인디케이터 바 추가.
+  5. **상점 및 마이덱 연동 ([`src/views/ShopView.tsx`](file:///Users/dayyoung/project/snshero/src/views/ShopView.tsx), [`src/views/MyDeckView.tsx`](file:///Users/dayyoung/project/snshero/src/views/MyDeckView.tsx))**:
+     - 상점 카드 소환 후 마이덱 이동 보장, 마이덱 변경 후 미션게임(`play`) 모드로 정확한 순서 분기 처리.
+  6. **배틀 승리 연동 ([`src/views/MobileCardPlayScreen.tsx`](file:///Users/dayyoung/project/snshero/src/views/MobileCardPlayScreen.tsx))**:
+     - 랭킹대전 승리 시 상점 자동 이동 및 단계 갱신 연동.
+  7. **전역 뷰 HUD 연동 ([`src/App.tsx`](file:///Users/dayyoung/project/snshero/src/App.tsx))**:
+     - `DemoPlayHUD` Fail-Safe safeLazy 등록 및 렌더링, `ranking` 뷰 진입 시 `autoStartPvp` 감지 이펙트 추가.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 Errors (타입스크립트 컴파일 무결점 통과).
+  - `npm run build`: Vite 6 프로덕션 정적 번들 정상 빌드 완료 (`built in 12.40s`).
+  - 로컬 Git 커밋 완료 (`73076b82`).
+  - 연동 구글 폼 완료 보고서 제출 완료.
+
+
 ## [2026-10-14 12:23 KST] 자동 카드 플레이 시 신규 덱 실전 검증 성공 팝업 중복 및 차단 버그 수정
 - **요청 사항**:
   - "자동 카드 플레이 시 [승리] 새로운 덱 실전 검증 성공 ! 팝업이 계속 표시되는 버브"
