@@ -216,6 +216,10 @@ const GoogleAuthModal = safeLazy(
   loadComponentSafely('GoogleAuthModal'),
   'GoogleAuthModal'
 );
+const FirstVisitOverdriveModal = safeLazy(
+  loadComponentSafely('FirstVisitOverdriveModal'),
+  'FirstVisitOverdriveModal'
+);
 
 const getCardAvatarStyle = (avatar: string): React.CSSProperties => {
   const cardId = Number(avatar.split(':')[1]) || 1;
@@ -470,6 +474,19 @@ function AppContent() {
   const [autoStartPvp, setAutoStartPvp] = useState(false);
   const [fromBackToRanking, setFromBackToRanking] = useState(false);
   const [view, setView] = useState<ViewType>(() => getViewFromPathAndUrl());
+  // FTUE Tactical Overdrive Modal (First-time visitor 0.5s auto-trigger)
+  const [showFtueOverdrive, setShowFtueOverdrive] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const ftueDone = localStorage.getItem('snshero_ftue_overdrive_v1');
+    if (!ftueDone) {
+      const timer = setTimeout(() => {
+        setShowFtueOverdrive(true);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   const { language, setLanguage, lowSpecMode, setLowSpecMode, theme, setTheme } = useGameSettings();
   useLowSpecGuard(lowSpecMode);
@@ -8123,6 +8140,16 @@ function AppContent() {
         initialErrorMessage={googleAuthModalErrorMessage}
         language={language}
         isLoggingIn={isGlobalLoading}
+      />
+
+      {/* Tactical First-Visit Overdrive Onboarding Modal */}
+      <FirstVisitOverdriveModal
+        isOpen={showFtueOverdrive}
+        onClose={() => setShowFtueOverdrive(false)}
+        onEnterDeck={() => {
+          setShowFtueOverdrive(false);
+          setView('mydeck');
+        }}
       />
 
       {isGlobalLoading && (
