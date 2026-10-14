@@ -228,6 +228,10 @@ const DailyRequisitionModal = safeLazy(
   loadComponentSafely('DailyRequisitionModal'),
   'DailyRequisitionModal'
 );
+const SevenDayStreakModal = safeLazy(
+  loadComponentSafely('SevenDayStreakModal'),
+  'SevenDayStreakModal'
+);
 
 const getCardAvatarStyle = (avatar: string): React.CSSProperties => {
   const cardId = Number(avatar.split(':')[1]) || 1;
@@ -529,6 +533,26 @@ function AppContent() {
       } catch {}
     }
   }, [view, showFtueOverdrive, challengeDeckCode]);
+
+  // RSI-010: 7-Day Streak Retention Protocol Modal State & Trigger
+  const [showSevenDayStreak, setShowSevenDayStreak] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (view === 'home' && !showFtueOverdrive && !challengeDeckCode && !showDailyRequisition) {
+      try {
+        const lastDate = localStorage.getItem('hero_last_streak_view_date');
+        const today = new Date().toISOString().split('T')[0];
+        if (lastDate !== today) {
+          const timer = setTimeout(() => {
+            setShowSevenDayStreak(true);
+            localStorage.setItem('hero_last_streak_view_date', today);
+          }, 2000);
+          return () => clearTimeout(timer);
+        }
+      } catch {}
+    }
+  }, [view, showFtueOverdrive, challengeDeckCode, showDailyRequisition]);
 
   const { language, setLanguage, lowSpecMode, setLowSpecMode, theme, setTheme } = useGameSettings();
   useLowSpecGuard(lowSpecMode);
@@ -8220,6 +8244,14 @@ function AppContent() {
           setShowDailyRequisition(false);
           setView('play');
         }}
+        language={language}
+      />
+
+      {/* RSI-010: 7-Day Streak Retention Protocol Modal */}
+      <SevenDayStreakModal
+        isOpen={showSevenDayStreak}
+        onClose={() => setShowSevenDayStreak(false)}
+        onNavigateMinigame={() => setView('play')}
         language={language}
       />
 
