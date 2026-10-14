@@ -7,6 +7,7 @@
  */
 
 export type GoogleAdsConversionType =
+  | 'conversion'
   | 'battle_victory'
   | 'rewarded_ad_watched'
   | 'starter_pack_purchased'
@@ -16,6 +17,8 @@ export type GoogleAdsConversionType =
   | 'campaign_guest_start';
 
 export const GOOGLE_ADS_CONVERSION_ID = 'AW-980426001';
+export const GOOGLE_ADS_PURCHASE_LABEL = '5pbgCI2H9ckcEJG6wNMD';
+export const GOOGLE_ADS_PURCHASE_SEND_TO = `${GOOGLE_ADS_CONVERSION_ID}/${GOOGLE_ADS_PURCHASE_LABEL}`;
 
 export interface ConversionPayload {
   value?: number;
@@ -74,6 +77,60 @@ export function trackGoogleAdsConversion(
 }
 
 /**
+ * 구글 애즈 공식 '구매 (conversion)' 이벤트 전송
+ * 라벨: 5pbgCI2H9ckcEJG6wNMD
+ * send_to: AW-980426001/5pbgCI2H9ckcEJG6wNMD
+ */
+export function trackGoogleAdsPurchase(
+  value = 1000,
+  currency = 'KRW',
+  transactionId?: string
+): void {
+  if (typeof window === 'undefined') return;
+
+  const txId = transactionId || `tx_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+  const gtag = (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag;
+
+  const purchasePayload = {
+    send_to: GOOGLE_ADS_PURCHASE_SEND_TO,
+    value,
+    currency,
+    transaction_id: txId,
+  };
+
+  // 1. Google Ads 공식 구매 전환 이벤트: 'conversion'
+  if (typeof gtag === 'function') {
+    try {
+      gtag('event', 'conversion', purchasePayload);
+    } catch (err) {
+      console.warn('[GoogleAds] Failed to track purchase conversion:', err);
+    }
+  }
+
+  // 2. GTM dataLayer push
+  const dataLayer = (window as unknown as { dataLayer?: Array<unknown> }).dataLayer;
+  if (Array.isArray(dataLayer)) {
+    dataLayer.push({
+      event: 'conversion',
+      ...purchasePayload,
+      timestamp: Date.now(),
+    });
+  }
+
+  // 3. GA4 purchase 이벤트도 함께 기록
+  trackGoogleAdsConversion('starter_pack_purchased', {
+    value,
+    currency,
+    transaction_id: txId,
+  });
+}
+
+// 전역 윈도우 객체에 노출 (디버깅 및 테스트 지원)
+if (typeof window !== 'undefined') {
+  (window as unknown as { trackGoogleAdsPurchase?: typeof trackGoogleAdsPurchase }).trackGoogleAdsPurchase = trackGoogleAdsPurchase;
+}
+
+/**
  * 광고 유입 UTM 파라미터 감지 및 로컬스토리지 보존
  */
 export function initCampaignAttribution(): { isCampaignTraffic: boolean; utmSource?: string; utmCampaign?: string } {
@@ -81,7 +138,7 @@ export function initCampaignAttribution(): { isCampaignTraffic: boolean; utmSour
 
   try {
     const urlParams = new URLSearchParams(window.location.search);
-    const utmSource = urlParams.get('utm_source') || urlParams.get('gclid') ? 'google_ads' : undefined;
+    const utmSource = urlParams.get('utm_source') || (urlParams.get('gclid') ? 'google_ads' : undefined);
     const utmCampaign = urlParams.get('utm_campaign') || undefined;
 
     if (utmSource) {

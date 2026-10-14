@@ -1876,6 +1876,17 @@ export const ShopView: React.FC<ShopViewProps> = ({
   const [successVisible, setSuccessVisible] = useState<{ amount?: number; isAdRemoval?: boolean } | null>(null);
   const [autoDrawState, setAutoDrawState] = useState<AutoDrawState | null>(null);
 
+  // Google Ads 공식 구매 전환 추적: 상점 결제 완료 (AW-980426001/5pbgCI2H9ckcEJG6wNMD)
+  useEffect(() => {
+    if (!successVisible) return;
+    try {
+      import('../lib/googleAdsAnalytics').then(({ trackGoogleAdsPurchase }) => {
+        const amountKrw = successVisible.isAdRemoval ? 4000 : Math.round((successVisible.amount || 1000) * 1.4);
+        trackGoogleAdsPurchase(amountKrw, 'KRW', `shop_${Date.now()}`);
+      });
+    } catch {}
+  }, [successVisible]);
+
   useEffect(() => {
     detectAppEnvironment().then((env) => {
       if (env.isApp) {
