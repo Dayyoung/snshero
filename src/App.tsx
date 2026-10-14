@@ -232,6 +232,10 @@ const SevenDayStreakModal = safeLazy(
   loadComponentSafely('SevenDayStreakModal'),
   'SevenDayStreakModal'
 );
+const PersonalizedStarterDeckModal = safeLazy(
+  loadComponentSafely('PersonalizedStarterDeckModal'),
+  'PersonalizedStarterDeckModal'
+);
 
 const getCardAvatarStyle = (avatar: string): React.CSSProperties => {
   const cardId = Number(avatar.split(':')[1]) || 1;
@@ -553,6 +557,9 @@ function AppContent() {
       } catch {}
     }
   }, [view, showFtueOverdrive, challengeDeckCode, showDailyRequisition]);
+
+  // RSI-011: Personalized Starter Deck Modal State
+  const [showPersonalizedStarter, setShowPersonalizedStarter] = useState(false);
 
   const { language, setLanguage, lowSpecMode, setLowSpecMode, theme, setTheme } = useGameSettings();
   useLowSpecGuard(lowSpecMode);
@@ -8214,7 +8221,18 @@ function AppContent() {
         onClose={() => setShowFtueOverdrive(false)}
         onEnterDeck={() => {
           setShowFtueOverdrive(false);
-          setView('mydeck');
+          setShowPersonalizedStarter(true);
+        }}
+        language={language}
+      />
+
+      {/* RSI-011: Personalized Starter Deck Modal */}
+      <PersonalizedStarterDeckModal
+        isOpen={showPersonalizedStarter}
+        onClose={() => setShowPersonalizedStarter(false)}
+        onDeployToBattle={(deck) => {
+          setShowPersonalizedStarter(false);
+          setView('play');
         }}
         language={language}
       />
