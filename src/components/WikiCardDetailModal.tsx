@@ -15,6 +15,7 @@ import { resolveCardImage } from '../content/cardImageVariants';
 import { useGameSettings } from '../contexts/GameSettingsContext';
 import { CardItem } from './CardItem';
 import { ElementCounterSimulator } from './ElementCounterSimulator';
+import { SecretArtifactDecryptionModal } from './media/SecretArtifactDecryptionModal';
 import type { CardSkin } from '../content/cardSkins';
 import type { DatabaseCard, Language, ViewType, CardData } from '../types';
 
@@ -116,6 +117,7 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
   const [activeTab, setActiveTab] = useState<DetailTab>(initialTab);
   const [storyExpanded, setStoryExpanded] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [showArtifactModal, setShowArtifactModal] = useState(false);
 
   const { cardSkinTheme } = useGameSettings();
   const resolvedImg = useMemo(
@@ -644,6 +646,25 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
                         <ExternalLink size={12} />
                       </button>
                     </div>
+
+                    {/* RSI-007: Secret Artifact Cipher Card */}
+                    <div className="flex items-center justify-between p-2.5 rounded-2xl border border-cyan-500/30 bg-cyan-950/20 text-cyan-400">
+                      <div>
+                        <span className="font-bold text-cyan-300 block text-xs">
+                          {language === 'ko' ? '기밀 전술 아티팩트 파편 감지' : 'Classified Tactical Artifact Cipher'}
+                        </span>
+                        <span className="text-[10px] text-cyan-500/80 font-mono">
+                          {language === 'ko' ? '2초 고속 해독 후 전술 소환 티켓 획득' : 'Fast 2s decryption grants summon ticket'}
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setShowArtifactModal(true)}
+                        className="px-3 py-1.5 bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/50 text-cyan-200 font-mono font-bold text-[10px] rounded-xl flex items-center gap-1 transition-all active:scale-95 cursor-pointer"
+                      >
+                        <span>{language === 'ko' ? '아티팩트 해독' : 'Decrypt'}</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
 
@@ -1078,6 +1099,16 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
           </div>
         </div>
       </motion.div>
+
+      {/* RSI-007: Secret Artifact Decryption Modal */}
+      <SecretArtifactDecryptionModal
+        isOpen={showArtifactModal}
+        onClose={() => setShowArtifactModal(false)}
+        onNavigate={onNavigate}
+        articleId={`wiki_${selectedCard.id}`}
+        sourceTitle={`Wiki Codex #${selectedCard.id} - ${cardName}`}
+        language={language}
+      />
     </motion.div>
   );
 };

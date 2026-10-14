@@ -19,6 +19,7 @@ import {
   EpisodeScrollData
 } from '../lib/webtoonProgress';
 import { WikiCardDetailModal } from '../components/WikiCardDetailModal';
+import { SecretArtifactDecryptionModal } from '../components/media/SecretArtifactDecryptionModal';
 import { useGameSettings } from '../contexts/GameSettingsContext';
 import { useCardSkins } from '../hooks/useCardSkins';
 import { getCharacterArtPrompt } from '../content/characterArtPrompts';
@@ -281,6 +282,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
   const [savedScrollState, setSavedScrollState] = useState<EpisodeScrollData | null>(null);
   const [showResumeBanner, setShowResumeBanner] = useState<boolean>(false);
   const [currentVisibleScene, setCurrentVisibleScene] = useState<number>(1);
+  const [showArtifactModal, setShowArtifactModal] = useState<boolean>(false);
   const scrollDebounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Load saved scroll state on episode or tab switch
@@ -304,6 +306,18 @@ export const NovelView: React.FC<NovelViewProps> = ({
       const pct = Math.min(100, Math.max(0, Math.round((scrollY / totalScrollable) * 100)));
       
       setScrollProgressPct(pct);
+
+      // Trigger Secret Artifact Decryption Modal when reaching end of episode
+      if (pct >= 95) {
+        const artifactKey = `snshero_artifact_decrypted_novel_${currentEpisodeNum}`;
+        try {
+          if (!sessionStorage.getItem(artifactKey)) {
+            setShowArtifactModal(true);
+          }
+        } catch {
+          // ignore
+        }
+      }
 
       // Hide resume banner once user scrolls past 400px
       if (scrollY > 400) {
@@ -2163,6 +2177,16 @@ export const NovelView: React.FC<NovelViewProps> = ({
           </div>
         </div>
       )}
+
+      {/* RSI-007: Secret Artifact Decryption Modal */}
+      <SecretArtifactDecryptionModal
+        isOpen={showArtifactModal}
+        onClose={() => setShowArtifactModal(false)}
+        onNavigate={onNavigate}
+        articleId={`novel_${currentEpisodeNum}`}
+        sourceTitle={`Novel Ep.${currentEpisodeNum} - ${parsedContent.title || ''}`}
+        language={language}
+      />
 
       {/* SCR-11-02: Sticky Bottom Floating Episode Navigation Dock (DESIGN.md 준수, 44px+ 터치 타깃) */}
       <aside aria-label="Episode Navigation Dock" className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 bg-[#201d1d]/95 backdrop-blur-xs text-stone-100 p-1.5 rounded-none border border-stone-700 shadow-xl flex items-center gap-1.5 font-mono text-xs max-w-[95vw]">
