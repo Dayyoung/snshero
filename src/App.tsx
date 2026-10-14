@@ -8150,6 +8150,7 @@ function AppContent() {
           setShowFtueOverdrive(false);
           setView('mydeck');
         }}
+        language={language}
       />
 
       {isGlobalLoading && (
