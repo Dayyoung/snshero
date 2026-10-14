@@ -2,6 +2,29 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-14 13:46 KST] 데모플레이 3연속 대전 시 자동 다음 단계 전환 및 무소환/미교체 시 화면 시연 후 넘김 구현
+- **요청 사항**:
+  - "지금 3연속 패배를 안하면 해당 스텝에서 계속 진행되는 문제가 있다. 그냥 3연속 대전을 진행하면 다음과정으로 넘어가자. 대신 SNS 부족 이나 신규카드가 발생안한경우 해당 화면만 표시하고 그냥 넘어가자."
+- **문제 원인 분석**:
+  1. **3연패 대기 정체**: 플레이어 덱 전투력이 높으면 랭킹/미션/스토리에서 연승하여 3연패가 발생하지 않아 해당 스텝에 갇히는 문제 발생.
+  2. **상점/마이덱 정체**: SNS 재화 부족으로 뽑기를 못하거나, 뽑았더라도 기존 덱보다 높은 파워의 신규 카드가 나오지 않을 경우 마이덱 교체 및 미션게임 전환이 중단되는 문제.
+- **수정 및 개선 내역**:
+  1. **3연속 대전(3 matches) 진행 시 무조건 다음 단계 전환 ([`src/lib/rankingDivertService.ts`](file:///Users/dayyoung/project/snshero/src/lib/rankingDivertService.ts), [`src/lib/demoPlayService.ts`](file:///Users/dayyoung/project/snshero/src/lib/demoPlayService.ts))**:
+     - `STORAGE_KEY_DIVERTED_MATCH_COUNT` (`hero_diverted_match_count`) 및 `STORAGE_KEY_DEMO_RANKING_MATCH_COUNT` 키 신설.
+     - `handleDivertedMatchResult`: 승패(승/패/무)와 관계없이 매 경기마다 경기 카운트(`nextMatches`)를 누적하여 3회 도달 시 무조건 다음 단계(미션 3전 후 스토리모드, 스토리 3전 후 랭킹대전)로 전환.
+     - 랭킹대전 단계에서도 데모플레이 중일 경우 승리하거나 3전 진행 시 즉시 상점 단계로 자동 이동.
+  2. **SNS 부족/신규 카드 미발생 시에도 화면 시연 후 자동 진행 ([`src/views/ShopView.tsx`](file:///Users/dayyoung/project/snshero/src/views/ShopView.tsx), [`src/views/MyDeckView.tsx`](file:///Users/dayyoung/project/snshero/src/views/MyDeckView.tsx))**:
+     - `ShopView`: SNS 재화 부족 등으로 뽑기를 시작하지 못하더라도 상점 화면을 1.5초간 시연 노출 후 마이덱으로 자동 이동. 소환 후 신규 카드가 없더라도 안내 배너 표시 후 1.5초 뒤 마이덱으로 자동 진행.
+     - `MyDeckView`: 신규 카드 장착 대상이 없더라도 마이덱 화면을 1.5초간 시연 노출 후 미션게임(`/play`)으로 자동 진행.
+  3. **HUD 및 단계 표시 텍스트 갱신 ([`src/lib/demoPlayService.ts`](file:///Users/dayyoung/project/snshero/src/lib/demoPlayService.ts), [`src/views/MobileCardPlayScreen.tsx`](file:///Users/dayyoung/project/snshero/src/views/MobileCardPlayScreen.tsx))**:
+     - 단계명을 `4.미션게임(3전)`, `5.스토리(3전)`으로 직관적으로 변경.
+     - 인게임 상단 HUD 뱃지를 `대전 진행: N/3`으로 갱신.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 Errors (타입스크립트 컴파일 무결점 통과).
+  - `npm run build`: Vite 6 프로덕션 정적 번들 정상 빌드 완료.
+  - 로컬 Git 커밋 완료 (`8e030dcf`).
+  - 연동 구글 폼 완료 보고서 제출 완료.
+
 ## [2026-10-14 13:10 KST] 홈 화면 30초 비조작 시 순환 데모플레이 모드 자동 실행 및 5단계 루프 구현
 - **요청 사항**:
   - "홈화면에서 30초가 지나면 데모플레이 모드 실행되게 해줘. 랭킹대전 > 승리 시 상점 카드뽑기 > 신규카드 시 마이덱 > 마이덱 변경 시 미션게임 > 미션게임 3패 시 스토리모드 > 스토리모드 3패시 랭킹대전 이런식으로 순환하면서 데모플레이"
