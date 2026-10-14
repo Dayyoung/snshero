@@ -220,6 +220,10 @@ const FirstVisitOverdriveModal = safeLazy(
   loadComponentSafely('FirstVisitOverdriveModal'),
   'FirstVisitOverdriveModal'
 );
+const InstantChallengeBattleModal = safeLazy(
+  loadComponentSafely('InstantChallengeBattleModal'),
+  'InstantChallengeBattleModal'
+);
 
 const getCardAvatarStyle = (avatar: string): React.CSSProperties => {
   const cardId = Number(avatar.split(':')[1]) || 1;
@@ -487,6 +491,17 @@ function AppContent() {
       return () => clearTimeout(timer);
     }
   }, []);
+
+  // Viral Instant Challenge Deck Modal (?challenge={deckCode})
+  const [challengeDeckCode, setChallengeDeckCode] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return null;
+    try {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('challenge');
+    } catch {
+      return null;
+    }
+  });
 
   const { language, setLanguage, lowSpecMode, setLowSpecMode, theme, setTheme } = useGameSettings();
   useLowSpecGuard(lowSpecMode);
@@ -8152,6 +8167,20 @@ function AppContent() {
         }}
         language={language}
       />
+
+      {/* 1-Click Viral Instant Challenge Battle Modal (?challenge={deckCode}) */}
+      {challengeDeckCode && (
+        <InstantChallengeBattleModal
+          isOpen={Boolean(challengeDeckCode)}
+          deckCode={challengeDeckCode}
+          onClose={() => setChallengeDeckCode(null)}
+          onNavigateDeck={() => {
+            setChallengeDeckCode(null);
+            setView('mydeck');
+          }}
+          language={language}
+        />
+      )}
 
       {isGlobalLoading && (
         <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md pointer-events-auto animate-fade-in">
