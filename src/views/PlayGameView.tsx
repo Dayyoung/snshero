@@ -58,6 +58,8 @@ import { ExpeditionModal } from '../components/ExpeditionModal';
 import { MonsterBeastariumModal } from '../components/MonsterBeastariumModal';
 import { TacticianMasteryModal } from '../components/TacticianMasteryModal';
 import { TowerOfTrialsModal } from '../components/TowerOfTrialsModal';
+import { isDemoPlayActive } from '../lib/demoPlayService';
+import { isRankingDiverted, getDivertedMode } from '../lib/rankingDivertService';
 import { triggerRainbowFlip } from '../components/RainbowFlipEffect';
 import { BattleGambitModal } from '../components/BattleGambitModal';
 import { VoxelMiningDefenseGame } from '../components/VoxelMiningDefenseGame';
@@ -5310,6 +5312,84 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       }, delay);
     }, 800 * speedMultiplier);
   };
+
+  // ─── 데모 플레이 / 랭킹 전환 미션 모드: 미션 화면 자동 상대 매칭 시스템 ───
+  const [demoAutoMatchCountdown, setDemoAutoMatchCountdown] = useState<number | null>(null);
+  const [demoTargetCardId, setDemoTargetCardId] = useState<number | null>(null);
+  const demoAutoMatchTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // 대상 타깃 카드 선정 (미보유 카드 우선 선별)
+  const getDemoTargetCardIndex = useCallback((): number => {
+    try {
+      const rawInv = JSON.parse(localStorage.getItem('hero_inventory') || '{}');
+      const unowned: number[] = [];
+      for (let i = 1; i <= 110; i++) {
+        if (!rawInv[i] || (rawInv[i].quantity || 0) <= 0) {
+          unowned.push(i);
+        }
+      }
+      if (unowned.length > 0) {
+        return unowned[Math.floor(Math.random() * unowned.length)];
+      }
+    } catch {}
+    return Math.floor(Math.random() * 110) + 1;
+  }, []);
+
+  // gameState가 'modeSelect'이고 데모플레이 또는 랭킹 전환 모드일 때 자동 상대 선택 가동
+  useEffect(() => {
+    if (gameState !== 'modeSelect') {
+      if (demoAutoMatchTimerRef.current) {
+        clearInterval(demoAutoMatchTimerRef.current);
+        demoAutoMatchTimerRef.current = null;
+      }
+      setDemoAutoMatchCountdown(null);
+      return;
+    }
+
+    const isDemo = isDemoPlayActive();
+    const isDivertedPlay = isRankingDiverted() && getDivertedMode() === 'play';
+    const isAutoLoop = (() => {
+      try {
+        return localStorage.getItem('hero_auto_loop_is_ranking') === 'true' ||
+               localStorage.getItem('hero_auto_loop_mode') !== null;
+      } catch {
+        return false;
+      }
+    })();
+
+    if (!isDemo && !isDivertedPlay && !isAutoLoop) {
+      setDemoAutoMatchCountdown(null);
+      return;
+    }
+
+    // 타깃 카드 미리 선정
+    const targetCardId = getDemoTargetCardIndex();
+    setDemoTargetCardId(targetCardId);
+    setDemoAutoMatchCountdown(2); // 2초 카운트다운
+
+    if (demoAutoMatchTimerRef.current) {
+      clearInterval(demoAutoMatchTimerRef.current);
+    }
+
+    let remaining = 2;
+    const interval = setInterval(() => {
+      remaining -= 1;
+      setDemoAutoMatchCountdown(remaining);
+      if (remaining <= 0) {
+        clearInterval(interval);
+        demoAutoMatchTimerRef.current = null;
+        setDemoAutoMatchCountdown(null);
+        startMissionCardBattle(targetCardId);
+      }
+    }, 1000);
+
+    demoAutoMatchTimerRef.current = interval;
+
+    return () => {
+      clearInterval(interval);
+      demoAutoMatchTimerRef.current = null;
+    };
+  }, [gameState, getDemoTargetCardIndex]);
 
   const startMatgoGame = () => {
     const firstTurn: 'player' | 'ai' = Math.random() < 0.5 ? 'player' : 'ai';
@@ -13489,6 +13569,68 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               <HelpCircle size={18} />
             </button>
           </div>
+
+          {/* 데모 플레이 / 랭킹 전환 실전 검증: 2초 자동 상대 선택 HUD 바 */}
+          {demoAutoMatchCountdown !== null && demoTargetCardId !== null && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="w-full rounded-sm border border-amber-500/50 bg-amber-500/10 p-3 sm:p-4 text-amber-950 font-mono flex flex-col gap-2 shadow-xs"
+            >
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className="text-lg animate-pulse shrink-0">🎮</span>
+                  <div className="min-w-0">
+                    <div className="text-[10px] font-black uppercase tracking-wider text-amber-800">
+                      {language === 'ko' ? '[ 데모 플레이 자동 매칭 ]' : '[ DEMO PLAY AUTO-MATCH ]'}
+                    </div>
+                    <div className="text-xs sm:text-sm font-bold text-amber-950 truncate mt-0.5">
+                      {language === 'ko'
+                        ? `${demoAutoMatchCountdown}초 후 추천 상대 [No.${demoTargetCardId} ${CARD_DATABASE[demoTargetCardId]?.title || ''}]와(과)의 실전 대전을 자동 시작합니다!`
+                        : `Auto-starting match against [No.${demoTargetCardId} ${CARD_DATABASE[demoTargetCardId]?.title_en || ''}] in ${demoAutoMatchCountdown}s!`}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                      setDemoAutoMatchCountdown(null);
+                      startMissionCardBattle(demoTargetCardId);
+                    }}
+                    className="min-h-[38px] px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-xs rounded-xs border border-amber-600 transition-all cursor-pointer shadow-xs active:scale-95 flex items-center gap-1"
+                  >
+                    <span>⚡</span>
+                    <span>{language === 'ko' ? '지금 바로 대전' : 'Start Now'}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (demoAutoMatchTimerRef.current) {
+                        clearInterval(demoAutoMatchTimerRef.current);
+                        demoAutoMatchTimerRef.current = null;
+                      }
+                      setDemoAutoMatchCountdown(null);
+                    }}
+                    className="min-h-[38px] px-2.5 py-1.5 bg-[#fdfcfc] hover:bg-[#f1eeee] text-[#201d1d] font-bold text-xs rounded-xs border border-[rgba(15,0,0,0.12)] transition-colors cursor-pointer"
+                    title={language === 'ko' ? '자동 매칭 취소' : 'Cancel Auto Match'}
+                  >
+                    {language === 'ko' ? '직접 선택' : 'Manual'}
+                  </button>
+                </div>
+              </div>
+
+              {/* 카운트다운 프로그레스 바 */}
+              <div className="w-full bg-amber-200/60 h-1.5 overflow-hidden rounded-none">
+                <div
+                  className="bg-amber-600 h-full transition-all duration-1000 ease-linear"
+                  style={{ width: `${(demoAutoMatchCountdown / 2) * 100}%` }}
+                />
+              </div>
+            </motion.div>
+          )}
 
           {/* Daily Missions Component */}
           <DailyMissionsComponent />
