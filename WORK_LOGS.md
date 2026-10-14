@@ -2,6 +2,23 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-14 14:36 KST] 데모 플레이 미션 화면 자동 상대 매칭 시스템 구현 및 멈춤 버그 해결
+- **요청 사항**:
+  - "데모 플레이 중에 미션 화면에서 상대를 선택하지 않고 멈춰있는 경우가 있어. /git-push"
+- **문제 원인 분석**:
+  - 데모 플레이(스마트 루프) 중 마이덱 덱 교체 후 4단계 미션 게임(`/play` - `PlayGameView.tsx`)에 진입했을 때, 상태가 `gameState === 'modeSelect'`에 머물러 있으나 상대를 자동으로 선택하고 대전을 시작하는 로직이 전혀 없어 사용자의 수동 터치 전까지 무한 대기하는 정체 현상 발생.
+- **수정 및 개선 내역**:
+  1. **데모 플레이 자동 상대 매칭 시스템 구현 ([`src/views/PlayGameView.tsx`](file:///Users/dayyoung/project/snshero/src/views/PlayGameView.tsx))**:
+     - `isDemoPlayActive()`, `isRankingDiverted()`, `getDivertedMode()` 상태 연동.
+     - `gameState === 'modeSelect'` 감지 시 미보유 카드 우선 선별 헬퍼(`getDemoTargetCardIndex`)를 통해 도전할 추천 타깃 카드를 자동 선정.
+     - 2초 카운트다운 타이머(`demoAutoMatchCountdown`) 가동 및 0초 도달 시 `startMissionCardBattle(targetCardId)`를 자동 호출하여 모바일 카드 대전(`MobileCardPlayScreen.tsx`)으로 매끄럽게 진입.
+     - 미션 선택 화면 상단에 실시간 카운트다운 게이지 및 `[지금 바로 대전]`, `[직접 선택]` 버튼이 포함된 OpenCode.ai 모노스페이스 HUD 배너 추가.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 Errors (타입스크립트 컴파일 무결점 통과).
+  - `npm run build`: Vite 6 프로덕션 정적 번들 정상 빌드 완료.
+  - 로컬 Git 커밋 완료 (`ff4cad12`).
+  - 연동 구글 폼 완료 보고서 제출 완료.
+
 ## [2026-10-14 13:46 KST] 데모플레이 3연속 대전 시 자동 다음 단계 전환 및 무소환/미교체 시 화면 시연 후 넘김 구현
 - **요청 사항**:
   - "지금 3연속 패배를 안하면 해당 스텝에서 계속 진행되는 문제가 있다. 그냥 3연속 대전을 진행하면 다음과정으로 넘어가자. 대신 SNS 부족 이나 신규카드가 발생안한경우 해당 화면만 표시하고 그냥 넘어가자."
