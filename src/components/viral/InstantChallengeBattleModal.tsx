@@ -5,7 +5,9 @@ import {
   generateTacticalChallengeDataUrl,
   downloadTacticalChallengeImage,
   copyChallengeToClipboard,
+  shareChallengeViaWebShare,
 } from '../../utils/challengeCanvasGenerator';
+import { InstantRevengeModal } from './InstantRevengeModal';
 
 export interface BattleResult {
   winner: 'player' | 'challenger';
@@ -456,6 +458,7 @@ export const InstantChallengeBattleModal: React.FC<InstantChallengeBattleModalPr
   const [challengerHp, setChallengerHp] = useState<number>(100);
   const [battleLog, setBattleLog] = useState<string>('COMBAT MATRIX INITIALIZED');
   const [copiedSuccess, setCopiedSuccess] = useState<boolean>(false);
+  const [showRevengeModal, setShowRevengeModal] = useState<boolean>(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Parse or mock challenger profile from deckCode
@@ -561,7 +564,7 @@ export const InstantChallengeBattleModal: React.FC<InstantChallengeBattleModalPr
   };
 
   const handleShareClick = async () => {
-    const success = await copyChallengeToClipboard(challengerPayload);
+    const success = await shareChallengeViaWebShare(challengerPayload);
     if (success) {
       setCopiedSuccess(true);
       setTimeout(() => setCopiedSuccess(false), 3000);
@@ -794,6 +797,17 @@ export const InstantChallengeBattleModal: React.FC<InstantChallengeBattleModalPr
                 <span>{txt.buildDeckBtn}</span>
               </button>
 
+              {/* RSI-008: Tactical Revenge Match (+20% Overclock Buff) */}
+              <button
+                onClick={() => setShowRevengeModal(true)}
+                className="w-full min-h-[44px] px-4 py-2.5 bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/50 text-rose-300 font-bold font-mono tracking-wider uppercase text-xs rounded-sm transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]"
+              >
+                <svg className="w-4 h-4 text-rose-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                </svg>
+                <span>{effectiveLang === 'ko' ? '전술 리벤지 재대결 (+20% 버프)' : 'TACTICAL REVENGE REMATCH (+20% BUFF)'}</span>
+              </button>
+
               {/* Share & Download Row */}
               <div className="grid grid-cols-2 gap-2">
                 <button
@@ -816,6 +830,15 @@ export const InstantChallengeBattleModal: React.FC<InstantChallengeBattleModalPr
           </div>
         )}
       </div>
+
+      {/* RSI-008: Instant Revenge Combat Modal */}
+      <InstantRevengeModal
+        isOpen={showRevengeModal}
+        deckCode={deckCode}
+        challengerPayload={challengerPayload}
+        onClose={() => setShowRevengeModal(false)}
+        language={effectiveLang}
+      />
     </div>
   );
 };

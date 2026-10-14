@@ -272,3 +272,26 @@ export async function copyChallengeToClipboard(payload: ChallengePayload): Promi
     return false;
   }
 }
+
+export async function shareChallengeViaWebShare(payload: ChallengePayload): Promise<boolean> {
+  const challengeUrl = `https://snshero.com/?challenge=${encodeURIComponent(payload.deckCode)}`;
+  const shareTitle = `SNSHero Tactical Deck Challenge: ${payload.commanderName}`;
+  const shareText = `[SNSHero Tactical Challenge] Commander ${payload.commanderName} has issued a combat challenge with Deck [${payload.deckCode}] (PWR: ${payload.totalPwr.toLocaleString()})! Click to engage 1-click instant simulation: ${challengeUrl}`;
+
+  if (typeof navigator !== 'undefined' && typeof navigator.share === 'function') {
+    try {
+      await navigator.share({
+        title: shareTitle,
+        text: shareText,
+        url: challengeUrl,
+      });
+      return true;
+    } catch (e: unknown) {
+      if ((e as { name?: string })?.name === 'AbortError') {
+        return true;
+      }
+    }
+  }
+  return copyChallengeToClipboard(payload);
+}
+
