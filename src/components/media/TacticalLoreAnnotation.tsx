@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
   LoreClue,
-  TACTICAL_LORE_CLUES,
   getCollectedClueIds,
   collectClue,
   isHeroClaimed,
@@ -26,7 +25,7 @@ export const TacticalLoreDock: React.FC<TacticalLoreAnnotationProps> = ({
   const refreshState = () => {
     const list = getCollectedClueIds();
     setCollectedIds(list);
-    setClaimed(isHeroClaimed(4));
+    setClaimed(isHeroClaimed(41));
   };
 
   useEffect(() => {
@@ -55,12 +54,12 @@ export const TacticalLoreDock: React.FC<TacticalLoreAnnotationProps> = ({
 
   const handleClaimAndDeploy = () => {
     triggerHaptic('victory');
-    claimRecruitedHero(4);
+    claimRecruitedHero(41);
     setClaimed(true);
     setIsContractModalOpen(false);
     if (typeof window !== 'undefined' && (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag) {
       (window as unknown as { gtag: (...args: unknown[]) => void }).gtag('event', 'lore_battle_deploy_click', {
-        hero_id: 4,
+        hero_id: 41,
       });
     }
     if (onDeployToBattle) {
@@ -70,32 +69,29 @@ export const TacticalLoreDock: React.FC<TacticalLoreAnnotationProps> = ({
 
   return (
     <>
-      {/* 하단 슬라이딩 미니 독 (독서 방해 없는 인텔 트래커) */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 bg-[#090d16]/95 border-t border-white/10 backdrop-blur-md px-4 py-2.5 font-mono text-xs select-none">
-        <div className="max-w-3xl mx-auto flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2 min-w-0">
-            {/* 레이더 안테나 벡터 아이콘 */}
-            <div className="relative w-7 h-7 rounded border border-emerald-500/30 bg-emerald-950/20 flex items-center justify-center shrink-0">
-              <svg className="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-                <path d="M12 2a10 10 0 1 0 10 10" />
-                <path d="M12 6a6 6 0 1 0 6 6" />
-                <path d="M12 10a2 2 0 1 0 2 2" />
-                <path d="M12 12l5 -5" />
+      {/* 하단 슬림 도킹 바 (OpenCode.ai 모노스페이스 플랫 디자인) */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 bg-[#141212] border-t border-stone-800 text-stone-200 font-mono text-xs select-none">
+        <div className="max-w-4xl mx-auto px-4 py-2 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5 min-w-0">
+            {/* 고대 나침반/룬 인라인 SVG */}
+            <div className="w-7 h-7 rounded-none border border-stone-700 bg-stone-900 flex items-center justify-center shrink-0">
+              <svg className="w-3.5 h-3.5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+                <circle cx="12" cy="12" r="9" />
+                <polygon points="12 4 14.5 9.5 20 12 14.5 14.5 12 20 9.5 14.5 4 12 9.5 9.5 12 4" />
               </svg>
-              <div className="absolute top-0 right-0 w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></div>
             </div>
 
             <div className="min-w-0 truncate">
-              <div className="text-[10px] uppercase tracking-wider text-slate-400 truncate">
-                {language === 'ko' ? '전술 기밀 주석 트래커' : 'TACTICAL INTEL TRACKER'}
+              <div className="text-[10px] text-stone-400 uppercase tracking-wider truncate">
+                {language === 'ko' ? '[카단 연대기 고대 유물 서약]' : '[KADAN CHRONICLES ANCIENT VOW]'}
               </div>
               <div className="text-white font-bold flex items-center gap-1.5 text-xs truncate">
-                <span>{language === 'ko' ? '단서 수집' : 'Intel Clues'}:</span>
-                <span className="text-emerald-400 font-extrabold">{totalCollected} / 3</span>
-                <span className="text-[10px] text-slate-500">
+                <span>{language === 'ko' ? '기록 수집' : 'Lore Fragments'}:</span>
+                <span className="text-amber-400 font-extrabold">{totalCollected} / 3</span>
+                <span className="text-[10px] text-stone-500 hidden sm:inline">
                   {isUnlocked
-                    ? language === 'ko' ? '(해독 완료)' : '(DECRYPTED)'
-                    : language === 'ko' ? '(본문 녹색 밑줄 단어 탭)' : '(Tap green keywords)'}
+                    ? (language === 'ko' ? '[서약 완결]' : '[VOW COMPLETED]')
+                    : (language === 'ko' ? '(소설 속 고유명사 단서 수집)' : '(Collect lore clues in text)')}
                 </span>
               </div>
             </div>
@@ -105,22 +101,22 @@ export const TacticalLoreDock: React.FC<TacticalLoreAnnotationProps> = ({
             {isUnlocked ? (
               <button
                 onClick={() => setIsContractModalOpen(true)}
-                className="px-3 min-h-[44px] rounded border border-emerald-400 bg-emerald-500/20 text-emerald-300 font-bold text-xs flex items-center gap-1.5 hover:bg-emerald-500/30 active:scale-95 transition-all shadow-[0_0_12px_rgba(16,185,129,0.3)]"
+                className="px-3 min-h-[44px] rounded-sm border border-amber-500 bg-amber-500/10 text-amber-300 font-bold text-xs flex items-center gap-1.5 hover:bg-amber-500/20 active:scale-95 transition-all"
               >
-                <svg className="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+                <svg className="w-3.5 h-3.5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
                   <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                 </svg>
-                <span>{claimed ? (language === 'ko' ? '배틀 배치' : 'DEPLOY') : (language === 'ko' ? '히어로 계약' : 'CONTRACT')}</span>
+                <span>{claimed ? (language === 'ko' ? '[설원 배틀 출격]' : '[DEPLOY TO DUEL]') : (language === 'ko' ? '[영웅 서약 확인]' : '[HERO VOW]')}</span>
               </button>
             ) : (
               <div className="flex items-center gap-1">
                 {[0, 1, 2].map((idx) => (
                   <div
                     key={idx}
-                    className={`w-6 h-6 rounded border flex items-center justify-center text-[10px] font-mono transition-all ${
+                    className={`w-6 h-6 rounded-none border flex items-center justify-center text-[10px] font-mono ${
                       idx < totalCollected
-                        ? 'border-emerald-500/80 bg-emerald-950/40 text-emerald-400 font-bold'
-                        : 'border-white/10 bg-black/40 text-slate-600'
+                        ? 'border-amber-500/80 bg-amber-950/30 text-amber-400 font-bold'
+                        : 'border-stone-800 bg-stone-900/50 text-stone-600'
                     }`}
                   >
                     {idx < totalCollected ? '✓' : idx + 1}
@@ -132,14 +128,13 @@ export const TacticalLoreDock: React.FC<TacticalLoreAnnotationProps> = ({
         </div>
       </div>
 
-      {/* 단서 상세 팝오버 모달 */}
+      {/* 단서 상세 팝오버 모달 (OpenCode.ai 모노스페이스 플랫) */}
       {selectedClue && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in font-mono text-xs">
-          <div className="w-full max-w-sm rounded-xl border border-white/15 bg-[#090d16] p-5 shadow-2xl relative text-slate-200">
-            {/* 닫기 버튼 */}
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 font-mono text-xs animate-fade-in">
+          <div className="w-full max-w-sm rounded-none border border-stone-800 bg-[#181616] p-5 text-stone-200 relative">
             <button
               onClick={() => setSelectedClue(null)}
-              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white"
+              className="absolute top-4 right-4 p-1 text-stone-500 hover:text-white"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
                 <line x1="18" y1="6" x2="6" y2="18" />
@@ -148,41 +143,32 @@ export const TacticalLoreDock: React.FC<TacticalLoreAnnotationProps> = ({
             </button>
 
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-6 h-6 rounded border border-cyan-500/40 bg-cyan-950/20 flex items-center justify-center text-cyan-400">
-                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                  <polyline points="14 2 14 8 20 8" />
-                  <line x1="16" y1="13" x2="8" y2="13" />
-                  <line x1="16" y1="17" x2="8" y2="17" />
-                  <polyline points="10 9 9 9 8 9" />
-                </svg>
-              </div>
-              <span className="text-[10px] text-cyan-400 tracking-wider uppercase font-bold">
-                {language === 'ko' ? '기밀 아카이브 단서' : 'CLASSIFIED INTEL ARCHIVE'}
+              <span className="text-amber-400 text-[10px] font-bold uppercase tracking-wider">
+                {language === 'ko' ? '[카단 연대기 고대 유물]' : '[KADAN CHRONICLES RELIC]'}
               </span>
             </div>
 
-            <div className="text-base font-bold text-white mb-1">{selectedClue.title}</div>
-            <div className="text-[11px] text-slate-400 mb-3 flex items-center gap-1.5">
-              <span>{language === 'ko' ? '키워드' : 'KEYWORD'}:</span>
-              <span className="text-emerald-400 font-bold">[{selectedClue.keyword}]</span>
+            <div className="text-sm font-bold text-white mb-1.5">{selectedClue.title}</div>
+            <div className="text-[11px] text-stone-400 mb-3">
+              <span className="text-stone-500">{language === 'ko' ? '키워드: ' : 'Keyword: '}</span>
+              <span className="text-amber-400 font-bold">[{selectedClue.keyword}]</span>
             </div>
 
-            <div className="bg-black/50 border border-white/10 rounded-lg p-3 text-slate-300 leading-relaxed text-xs mb-4">
+            <div className="bg-stone-900/90 border border-stone-800 rounded-none p-3 text-stone-300 leading-relaxed text-xs mb-4">
               {selectedClue.secretBrief}
             </div>
 
-            <div className="text-[11px] text-slate-400 mb-4 flex items-center justify-between">
-              <span>{language === 'ko' ? '연관 히어로' : 'Target Unit'}:</span>
+            <div className="text-[11px] text-stone-400 mb-4 flex items-center justify-between">
+              <span className="text-stone-500">{language === 'ko' ? '연관 인물' : 'Related Hero'}:</span>
               <span className="text-white font-bold">{selectedClue.relatedHeroName}</span>
             </div>
 
             <div className="flex gap-2">
               <button
                 onClick={() => setSelectedClue(null)}
-                className="flex-1 min-h-[44px] rounded border border-white/15 bg-white/5 hover:bg-white/10 text-slate-300 font-bold"
+                className="flex-1 min-h-[44px] rounded-sm border border-stone-700 bg-stone-800 hover:bg-stone-700 text-stone-300 font-bold"
               >
-                {language === 'ko' ? '닫기' : 'CLOSE'}
+                {language === 'ko' ? '[닫기]' : '[CLOSE]'}
               </button>
               <button
                 onClick={() => {
@@ -190,19 +176,16 @@ export const TacticalLoreDock: React.FC<TacticalLoreAnnotationProps> = ({
                   setSelectedClue(null);
                 }}
                 disabled={collectedIds.includes(selectedClue.id)}
-                className={`flex-1 min-h-[44px] rounded border font-bold flex items-center justify-center gap-1.5 transition-all ${
+                className={`flex-1 min-h-[44px] rounded-sm border font-bold flex items-center justify-center gap-1.5 transition-all ${
                   collectedIds.includes(selectedClue.id)
-                    ? 'border-white/10 bg-white/5 text-slate-500 cursor-not-allowed'
-                    : 'border-emerald-500/50 bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30'
+                    ? 'border-stone-800 bg-stone-900 text-stone-600 cursor-not-allowed'
+                    : 'border-amber-500 bg-amber-500/20 text-amber-300 hover:bg-amber-500/30'
                 }`}
               >
-                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
                 <span>
                   {collectedIds.includes(selectedClue.id)
-                    ? (language === 'ko' ? '수집 완료' : 'COLLECTED')
-                    : (language === 'ko' ? '단서 수집' : 'COLLECT INTEL')}
+                    ? (language === 'ko' ? '[수집 완료]' : '[COLLECTED]')
+                    : (language === 'ko' ? '[기록 각인]' : '[IMPRINT LORE]')}
                 </span>
               </button>
             </div>
@@ -210,60 +193,60 @@ export const TacticalLoreDock: React.FC<TacticalLoreAnnotationProps> = ({
         </div>
       )}
 
-      {/* 3개 수집 완료 히어로 계약서 해독 모달 */}
+      {/* 3개 수집 완료 영웅 서약 해독 모달 (플랫 1px 보더) */}
       {isContractModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in font-mono text-xs">
-          <div className="w-full max-w-sm rounded-xl border border-emerald-500/40 bg-[#090d16] p-6 shadow-[0_0_30px_rgba(16,185,129,0.2)] relative text-slate-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 font-mono text-xs animate-fade-in">
+          <div className="w-full max-w-sm rounded-none border border-stone-700 bg-[#181616] p-6 text-stone-200 relative">
             <div className="flex items-center justify-center mb-3">
-              <div className="w-12 h-12 rounded-xl border border-emerald-500/60 bg-emerald-950/40 flex items-center justify-center text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.3)]">
-                <svg className="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+              <div className="w-12 h-12 rounded-none border border-amber-500/60 bg-amber-950/20 flex items-center justify-center text-amber-400">
+                <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
                   <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                 </svg>
               </div>
             </div>
 
-            <div className="text-center mb-1">
-              <div className="text-[10px] tracking-widest uppercase text-emerald-400 font-bold">
-                INTEL DECRYPTED // HERO CONTRACT ACQUIRED
+            <div className="text-center mb-2">
+              <div className="text-[10px] tracking-wider uppercase text-amber-400 font-bold">
+                [VOW FULFILLED // HERO RECRUITED]
               </div>
-              <div className="text-lg font-extrabold text-white mt-1">
-                {language === 'ko' ? '기밀 계약 해독 성공' : 'HERO CONTRACT UNLOCKED'}
+              <div className="text-base font-bold text-white mt-1">
+                {language === 'ko' ? '카단 연대기 서약 성취' : 'KADAN HERO VOW UNLOCKED'}
               </div>
             </div>
 
-            <div className="bg-emerald-950/20 border border-emerald-500/30 rounded-lg p-3 text-center my-4">
-              <div className="text-white font-bold text-sm">
-                [SSR] 섀도우 블레이드 (Shadow Blade)
+            <div className="bg-stone-900/80 border border-stone-800 rounded-none p-3 text-center my-4">
+              <div className="text-amber-300 font-bold text-sm">
+                #041 [SSR] 카단 (Kadan)
               </div>
-              <div className="text-[11px] text-slate-300 mt-1">
+              <div className="text-[11px] text-stone-400 mt-1 leading-relaxed">
                 {language === 'ko'
-                  ? '3대 전술 기밀 단서 해독을 완료하여 전속 히어로 계약이 체결되었습니다.'
-                  : 'All 3 intel fragments decrypted. Tactical Hero recruited into your main inventory.'}
+                  ? '헤르쿨의 단검, 알렉산다르의 검집, 발리안의 창끝이 가리키는 진실을 모았습니다. 주인공 카단이 덱으로 합류합니다.'
+                  : 'All 3 relic vows gathered. Protagonist Kadan joins your permanent hero pool.'}
               </div>
             </div>
 
             <div className="space-y-2">
               <button
                 onClick={handleClaimAndDeploy}
-                className="w-full min-h-[48px] rounded border border-emerald-400 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 font-bold flex items-center justify-center gap-2 active:scale-95 transition-all shadow-[0_0_15px_rgba(16,185,129,0.25)]"
+                className="w-full min-h-[44px] rounded-sm border border-amber-500 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-bold flex items-center justify-center gap-2 active:scale-95 transition-all"
               >
-                <svg className="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+                <svg className="w-4 h-4 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
                   <polygon points="5 3 19 12 5 21 5 3" />
                 </svg>
-                <span>{language === 'ko' ? '1클릭 TCG 메인 배틀 출격' : 'DEPLOY TO MAIN TCG BATTLE'}</span>
+                <span>{language === 'ko' ? '[카단과 함께 엘윈 설원 출격]' : '[DEPLOY WITH KADAN]'}</span>
               </button>
 
               <button
                 onClick={() => {
                   if (!claimed) {
-                    claimRecruitedHero(4);
+                    claimRecruitedHero(41);
                     setClaimed(true);
                   }
                   setIsContractModalOpen(false);
                 }}
-                className="w-full min-h-[44px] rounded border border-white/10 bg-white/5 hover:bg-white/10 text-slate-400 font-bold"
+                className="w-full min-h-[44px] rounded-sm border border-stone-800 bg-stone-900/60 hover:bg-stone-800 text-stone-400 font-bold"
               >
-                {language === 'ko' ? '인벤토리에 보관' : 'SAVE TO INVENTORY'}
+                {language === 'ko' ? '[인벤토리에 영웅 보관]' : '[KEEP IN INVENTORY]'}
               </button>
             </div>
           </div>

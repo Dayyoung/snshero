@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Gift, Sparkles } from 'lucide-react';
+import { X, Gift } from 'lucide-react';
 import { Language } from '../types';
 import { triggerHaptic } from '../lib/haptic';
 
@@ -38,56 +38,66 @@ export const DailyFreeGachaModal: React.FC<DailyFreeGachaModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-[#201d1d]/80 backdrop-blur-xs font-mono select-none">
-      <div className="relative w-full max-w-sm bg-[#fdfcfc] text-[#201d1d] border border-[#201d1d]/30 rounded-none shadow-2xl p-5 text-center overflow-hidden">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-[#201d1d]/85 font-mono select-none animate-fade-in">
+      <div className="relative w-full max-w-sm bg-[#fdfcfc] text-[#201d1d] border border-[#201d1d]/30 rounded-none p-5 text-center overflow-hidden">
+        {/* 상단 헤더 */}
         <div className="flex justify-between items-center border-b border-[#201d1d]/15 pb-2 mb-3">
           <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider">
-            <Gift size={14} className="text-amber-500" />
-            <span>{isKo ? '[오늘의 무료 1회 소환]' : '[DAILY FREE SUMMON]'}</span>
+            <Gift size={14} className="text-amber-600" />
+            <span>{isKo ? '[카단 연대기 일일 영웅 보급]' : '[DAILY HERO REQUISITION]'}</span>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="p-1 hover:bg-[#201d1d]/10 rounded-xs cursor-pointer"
+            className="p-1 hover:bg-[#201d1d]/10 rounded-sm cursor-pointer"
           >
             <X size={14} />
           </button>
         </div>
 
+        {/* 보급 상자 SVG (Zero-Emoji) */}
         <div className="py-4 space-y-3">
-          <div className="w-16 h-16 bg-amber-100 border border-amber-400 rounded-sm mx-auto flex items-center justify-center text-3xl animate-bounce">
-            🎁
+          <div className="w-14 h-14 bg-amber-50 border border-amber-400 rounded-none mx-auto flex items-center justify-center text-amber-700">
+            <svg className="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+              <rect x="2" y="7" width="20" height="14" rx="0" />
+              <path d="M12 7v14" />
+              <path d="M2 12h20" />
+              <path d="M7 7a2.5 2.5 0 0 1 0-5c2 0 5 5 5 5s3-5 5-5a2.5 2.5 0 0 1 0 5" />
+            </svg>
           </div>
-          <h3 className="text-sm font-black text-[#201d1d]">
-            {isKo ? '매일 1회 무료 행운 소환권이 도착했습니다!' : 'Daily Free Summon is Ready!'}
+          <h3 className="text-sm font-bold text-[#201d1d]">
+            {isKo ? '엘윈 원정대 일일 무료 영웅 보급이 도착했습니다!' : 'Daily Free Hero Supply is Ready!'}
           </h3>
-          <p className="text-[11px] text-[#201d1d]/60 leading-relaxed">
+          <p className="text-[11px] text-[#201d1d]/70 leading-relaxed">
             {isKo
-              ? '수수료 없이 즉시 무료로 카드를 뽑고 오늘 하루의 행운을 점쳐보세요.'
-              : 'Pull your free daily hero card now with 0 cost!'}
+              ? '매일 1회 수수료 없이 원정 보급 상자를 열고 새로운 영웅 카드를 영입하세요.'
+              : 'Pull your free daily snow hero card now with 0 cost!'}
           </p>
         </div>
 
-        <div className="pt-2 border-t border-[#201d1d]/10 space-y-2">
+        {/* 하단 버튼 */}
+        <div className="flex gap-2 pt-2">
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex-1 min-h-[44px] rounded-sm border border-[#201d1d]/20 bg-transparent hover:bg-[#201d1d]/5 text-xs font-bold"
+          >
+            {isKo ? '[닫기]' : '[CLOSE]'}
+          </button>
           <button
             type="button"
             onClick={handleClaim}
             disabled={isOpening}
-            className="w-full py-2.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-xs cursor-pointer shadow-xs active:scale-[0.99] transition-all"
+            className="flex-2 min-h-[44px] rounded-sm bg-[#201d1d] hover:bg-[#0f0000] text-[#fdfcfc] text-xs font-bold active:scale-95 transition-all"
           >
             {isOpening
-              ? (isKo ? '소환 진행 중...' : 'Summoning...')
-              : (isKo ? '[ 무료 1회 소환권 개봉하기 ]' : '[ OPEN FREE SUMMON ]')}
-          </button>
-          <button
-            type="button"
-            onClick={onClose}
-            className="text-[11px] text-[#201d1d]/50 hover:text-[#201d1d] cursor-pointer"
-          >
-            {isKo ? '다음에 하기' : 'Later'}
+              ? (isKo ? '[영웅 소환 중...]' : '[SUMMONING...]')
+              : (isKo ? '[영웅 보급 상자 개봉]' : '[OPEN HERO SUPPLY]')}
           </button>
         </div>
       </div>
     </div>
   );
 };
+
+export default DailyFreeGachaModal;

@@ -2,6 +2,40 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-15 09:35 KST] [RPG/디자인 개편] 신규 팝업/글귀/HUD 웹툰·소설(눈히어로 카단 전설) 서사 전면 반영 및 DESIGN.md 모노스페이스 플랫 일치화
+- **요청 사항**:
+  - "신규로 적용한 팝업/글귀/텍스트 가 현재 게임의 RPG요소를 고려하지 못하는것 같아. 웹툰 소설을 분석해서 신규 추가요소들에 내용에 반영해줘. 신규 추가요소 UI도 디자인가이드에서 벚어나는것 같아. 어울리게 수정해줘."
+  - `/start-server`: 포트 3000 고속 프리뷰 및 라이브 워처 가동.
+- **세계관 분석 및 RPG 서사 반영 내역**:
+  - `public/book/README.md` 및 `episode_01.md` ~ `40.md`의 눈히어로 카단 서사시, `kadanRpgStory.ts` 전면 분석.
+  - 카단(#41, "끝까지 버티는 방패"), 대장 알렉산다르(#50), 성기사 발리안(#43), 치유사 실리아(#62), 화염 마도사 이그니스(#11), 순례자 헤르쿨(#49), 천마 페가수스(#90), 드워프 공학자 아이언포지(#80), 아르투스(#60) 및 엘윈 설원, 붉은 절벽, 서리 궁전 공식 무대와 일치.
+  1. `src/utils/loreRecruitmentStore.ts`: 헤르쿨의 룬 단검, 알렉산다르의 검집, 발리안의 아케인 창 고대 단서 수집 및 카단(#41) 서약 영입.
+  2. `src/components/media/TacticalLoreAnnotation.tsx`: 고대 유물 서약 트래커 및 룬 각인 주석 UI.
+  3. `src/components/growth/TacticalQuickStrikeModal.tsx`: 엘윈 설원 카단 검술 수련, 목각 인형 붉은 룬 약점 타격, 견습 기사단 임명(`KNIGHT-XXXX`).
+  4. `src/components/battle/TacticalCommandHUD.tsx`: [화염 강타//이그니스], [수호 결계//실리아], [눈보라 각성//카단], 전술 정령 마나 게이지 및 플랫 UI.
+  5. `src/components/retention/TacticalSeasonPassModal.tsx`: [눈히어로 시즌 1: 혹한의 성전 로드맵], 견습 기사단 무료 트랙 vs 성기사단 골드 트랙.
+  6. `src/components/battle/TacticalPassivePerksModal.tsx` & `src/utils/perkSystem.ts`: 카단의 서리 참격, 페가수스 신속 돌파, 알렉산다르 수호 방패, 실리아의 축복, 이그니스의 업화 등 소설 캐릭터 영혼 각인 패시브 퍽 5종.
+  7. `src/components/viral/SpectatorBettingWidget.tsx`: 엘윈 투기장 대륙 영웅 결투 관전 및 승부 예측.
+  8. `src/components/media/BreakingNewsExpeditionWidget.tsx`: 라이트헤븐 전령소 대륙 속보 정찰 원정 (엘윈 설원, 붉은 절벽, 서리 궁전 파견).
+  9. `src/components/growth/PersonalizedStarterDeckModal.tsx`: 카단 돌격 유파(#41, #50, #49, #42, #90), 성기사 수호 유파(#43, #62, #80, #1, #2), 이그니스 화염 유파(#11, #13, #23, #25, #99) 공식 판타지 카드 5장 편성.
+  10. `src/components/growth/SevenDayStreakModal.tsx`: 7일간의 설원 원정 서약 (7일차 SSR 페가수스 지급).
+  11. `src/components/battle/TacticalSynergyMatrix.tsx`: 삼위일체 원소 공명 (FROST / FLAME / HOLY 비트마스크 시너지).
+  12. `src/components/media/SecretArtifactDecryptionModal.tsx`: 소설 챕터 완독 시 설원 고대 서약 유물 룬 봉인 해제.
+  13. `src/components/FirstVisitOverdriveModal.tsx`: 엘윈 다리 사수전, 카단(#41) 각성 및 눈보라 서리 참격 연출.
+  14. `src/components/viral/InstantChallengeBattleModal.tsx` & `InstantRevengeModal.tsx`: 영웅 결투 서약 및 설원의 설욕전.
+  15. `src/components/DailyFreeGachaModal.tsx`: 설원 일일 영웅 보급소 및 🎁 이모지 제거.
+- **DESIGN.md 가이드라인 100% 일치화**:
+  - OpenCode.ai Monospace 서체, 웜크림/잉크 팔레트, 1px solid hairline (`border-stone-800` / `border-white/10`).
+  - 모서리 반경: 인터랙티브 요소 `rounded-sm`(4px), 컨테이너/창 `rounded-none`(0px).
+  - 그림자(shadow) 및 과도한 네온 그라데이션 완전 제거.
+  - Zero-Emoji 100% 준수 (유니코드 이모지 제거, `strokeWidth="1.75"` 순수 벡터 아이콘 사용).
+- **서버 및 빌드 검증**:
+  - `npx tsc --noEmit`: 0 Errors (TypeScript 컴파일 무결점 통과).
+  - `npm run build`: Vite 6 프로덕션 번들 정상 빌드 완료 (`built in 13.97s`).
+  - 포트 3000 고속 프리뷰 및 라이브 워처 가동 완료 (`curl -I http://localhost:3000/` HTTP 200 OK 확인).
+  - 로컬 Git 커밋 완료 (원격 푸시는 `/git-push` 대기).
+  - 연동 구글 폼 완료 보고서 제출 완료.
+
 ## [2026-10-15 09:12 KST] [/rsi-snshero] 스프레드시트 바이브코딩 프롬프트 RSI-001 ~ RSI-017 전수 구현 완료 (17건, 100.0%)
 - **연동 스프레드시트 (공개 CSV)**: `https://docs.google.com/spreadsheets/d/e/2PACX-1vRAmjkvOjw27HDOuBu4w_WXIdAw1pRQz0vRi2AOOK53HxVT_uO2RLcMnVTxXAg18C6HdU5_huyandLn/pub?output=csv`
 - **구현 및 개선 완료 내역**:

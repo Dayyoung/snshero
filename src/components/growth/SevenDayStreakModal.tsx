@@ -24,272 +24,160 @@ interface StreakDayInfo {
 }
 
 const STREAK_DAYS: StreakDayInfo[] = [
-  { day: 1, rewardName: '200 Credits', rewardType: 'credits', value: '+200' },
-  { day: 2, rewardName: '1x Standard Key', rewardType: 'key', value: 'KEY x1' },
-  { day: 3, rewardName: '300 Credits + 50 AP', rewardType: 'ap', value: '+300 / 50AP' },
-  { day: 4, rewardName: '1x Upgrade Matrix', rewardType: 'key', value: 'MATRIX x1' },
-  { day: 5, rewardName: '500 Credits + 100 AP', rewardType: 'ap', value: '+500 / 100AP' },
-  { day: 6, rewardName: '1x Elite Key', rewardType: 'key', value: 'ELITE x1' },
-  { day: 7, rewardName: 'GUARANTEED SSR CORE (SH-101)', rewardType: 'ssr', value: 'SSR SOVEREIGN', isSsr: true }
+  { day: 1, rewardName: '200 SNS 원정 보급', rewardType: 'credits', value: '+200 SNS' },
+  { day: 2, rewardName: '엘윈 설원 수호 열쇠 x1', rewardType: 'key', value: '수호 열쇠' },
+  { day: 3, rewardName: '300 SNS + 정령 마나 50', rewardType: 'ap', value: '+300 / 50 마나' },
+  { day: 4, rewardName: '알렉산다르의 검술 비급 x1', rewardType: 'key', value: '검술 비급' },
+  { day: 5, rewardName: '500 SNS + 정령 마나 100', rewardType: 'ap', value: '+500 / 100 마나' },
+  { day: 6, rewardName: '성기사단 순례 열쇠 x1', rewardType: 'key', value: '순례 열쇠' },
+  { day: 7, rewardName: '[SSR] 전설의 천마 페가수스', rewardType: 'ssr', value: 'SSR 페가수스', isSsr: true }
 ];
 
 const STREAK_I18N: Record<string, Record<string, string>> = {
   ko: {
-    modalTitle: '7일 연속 출석 작전 프로토콜',
-    subtitle: '매일 보급 작전 수행 시 7일차 SSR 코어 확정 인가',
-    dayLabel: 'DAY',
-    claimed: '수령 완료',
-    claimNow: '오늘 보급품 수령',
-    readyToClaim: '수령 대기',
-    locked: '잠김',
-    repairTitle: '스트릭 복구 프로토콜',
+    modalTitle: '[카단 연대기: 7일간의 설원 원정 서약 // EXPEDITION VOW]',
+    subtitle: '매일 원정 기록을 남기면 7일차 전설의 천마 [SSR] 페가수스 확정 합류!',
+    dayLabel: '일차',
+    claimed: '[수령 완료]',
+    claimNow: '[오늘의 원정 보급품 수령]',
+    readyToClaim: '[수령 대기]',
+    locked: '[잠김]',
+    repairTitle: '[서약 복구: 설원 미니게임 수련]',
     repairDesc: '놓친 출석일은 미니게임 2회 승리로 무료 복구 가능합니다.',
-    repairBtn: '미니게임 플레이로 복구 (0/2)',
-    notifBtn: '자정 전 스트릭 방어 알림 설정',
-    notifGranted: '스트릭 방어 알림 활성화됨',
-    closeBtn: '확인'
+    repairBtn: '[미니게임 수련으로 서약 복구 (0/2)]',
+    notifBtn: '[일일 원정 알림 설정]',
+    notifGranted: '[원정 알림 활성화됨]',
+    closeBtn: '[확인]'
   },
   en: {
-    modalTitle: '7-DAY STREAK PROTOCOL',
-    subtitle: 'DAILY CHECK-IN GRANTS GUARANTEED DAY 7 SSR CORE',
+    modalTitle: '[KADAN CHRONICLES: 7-DAY FROST EXPEDITION VOW]',
+    subtitle: 'Check in daily to recruit guaranteed SSR Pegasus on Day 7!',
     dayLabel: 'DAY',
-    claimed: 'CLAIMED',
-    claimNow: 'CLAIM SUPPLIES NOW',
-    readyToClaim: 'READY',
-    locked: 'LOCKED',
-    repairTitle: 'STREAK REPAIR PROTOCOL',
-    repairDesc: 'Missed a day? Repair yesterday for free by winning 2 minigames.',
-    repairBtn: 'PLAY MINIGAMES TO REPAIR (0/2)',
-    notifBtn: 'ENABLE MIDNIGHT DEFENDER ALERTS',
-    notifGranted: 'MIDNIGHT DEFENDER ACTIVE',
-    closeBtn: 'ACKNOWLEDGE'
-  },
-  ja: {
-    modalTitle: '7日連続出席作戦プロトコル',
-    subtitle: 'デイリーログインで7日目にSSRコア確定支給',
-    dayLabel: 'DAY',
-    claimed: '受取済',
-    claimNow: '本日の補給を受取',
-    readyToClaim: '受取可能',
-    locked: 'ロック',
-    repairTitle: 'ストリーク復旧プロトコル',
-    repairDesc: '見逃した日はミニゲーム2回勝利で無料復旧できます。',
-    repairBtn: 'ミニゲームで復旧 (0/2)',
-    notifBtn: '深夜前ストリーク防衛通知を設定',
-    notifGranted: 'ストリーク防衛通知が有効です',
-    closeBtn: '確認'
-  },
-  'zh-CN': {
-    modalTitle: '7天连续签到作战协议',
-    subtitle: '每日补给报到，第7天必定获得SSR战术核心',
-    dayLabel: 'DAY',
-    claimed: '已领取',
-    claimNow: '立即领取今日补给',
-    readyToClaim: '可领取',
-    locked: '未解锁',
-    repairTitle: '签到补签修复协议',
-    repairDesc: '漏签时可通过完成2次小游戏胜利免费补签修复。',
-    repairBtn: '前往小游戏补签 (0/2)',
-    notifBtn: '开启午夜防断签浏览器提醒',
-    notifGranted: '防断签提醒已激活',
-    closeBtn: '确认'
-  },
-  'zh-TW': {
-    modalTitle: '7天連續簽到作戰協議',
-    subtitle: '每日補給報到，第7天必定獲得SSR戰術核心',
-    dayLabel: 'DAY',
-    claimed: '已領取',
-    claimNow: '立即領取今日補給',
-    readyToClaim: '可領取',
-    locked: '未解鎖',
-    repairTitle: '簽到補簽修復協議',
-    repairDesc: '漏簽時可透過完成2次小遊戲勝利免費補簽修復。',
-    repairBtn: '前往小遊戲補簽 (0/2)',
-    notifBtn: '開啟午夜防斷簽瀏覽器提醒',
-    notifGranted: '防斷簽提醒已啟用',
-    closeBtn: '確認'
-  },
-  de: {
-    modalTitle: '7-TAGE-STREAK-PROTOKOLL',
-    subtitle: 'TÄGLICHER LOGIN GARANTIERT AM TAG 7 EINEN SSR-KERN',
-    dayLabel: 'TAG',
-    claimed: 'ERHALTEN',
-    claimNow: 'JETZT BEANSPRUCHEN',
-    readyToClaim: 'BEREIT',
-    locked: 'GESPERRT',
-    repairTitle: 'STREAK-REPARATUR-PROTOKOLL',
-    repairDesc: 'Einen Tag verpasst? Mit 2 Minispiel-Siegen kostenlos reparieren.',
-    repairBtn: 'MINISPIEL SPIELEN (0/2)',
-    notifBtn: 'MITTERNACHTS-BENACHRICHTIGUNG AKTIVIEREN',
-    notifGranted: 'BENACHRICHTIGUNG AKTIV',
-    closeBtn: 'BESTÄTIGEN'
-  },
-  es: {
-    modalTitle: 'PROTOCOLO DE RACHA DE 7 DÍAS',
-    subtitle: 'INICIO DIARIO OTORGA NÚCLEO SSR GARANTIZADO EN DÍA 7',
-    dayLabel: 'DÍA',
-    claimed: 'RECLAMADO',
-    claimNow: 'RECLAMAR SUMINISTROS HOY',
-    readyToClaim: 'LISTO',
-    locked: 'BLOQUEADO',
-    repairTitle: 'PROTOCOLO DE REPARACIÓN DE RACHA',
-    repairDesc: '¿Perdiste un día? Repáralo gratis ganando 2 minijuegos.',
-    repairBtn: 'JUGAR MINIJUEGOS (0/2)',
-    notifBtn: 'ACTIVAR ALERTA DE MEDIANOCHE',
-    notifGranted: 'ALERTA DE RACHA ACTIVADA',
-    closeBtn: 'ENTENDIDO'
-  },
-  fr: {
-    modalTitle: 'PROTOCOLE DE SÉRIE DE 7 JOURS',
-    subtitle: 'CONNEXION QUOTIDIENNE DONNE UN CŒUR SSR AU JOUR 7',
-    dayLabel: 'JOUR',
-    claimed: 'RÉCUPÉRÉ',
-    claimNow: 'RÉCLAMER LES RESSOURCES',
-    readyToClaim: 'PRÊT',
-    locked: 'VERROUILLÉ',
-    repairTitle: 'RÉPARATION DE SÉRIE',
-    repairDesc: 'Un jour manqué ? Réparez-le gratuitement en gagnant 2 mini-jeux.',
-    repairBtn: 'JOUER AUX MINI-JEUX (0/2)',
-    notifBtn: 'ACTIVER RAPPEL DE MINUIT',
-    notifGranted: 'RAPPEL DE MINUIT ACTIF',
-    closeBtn: 'VALIDER'
-  },
-  id: {
-    modalTitle: 'PROTOKOL STREAK 7-HARI',
-    subtitle: 'CHECK-IN HARIAN MENJAMIN INTI SSR DI HARI KE-7',
-    dayLabel: 'HARI',
-    claimed: 'DIKLAIM',
-    claimNow: 'KLAIM PASOKAN HARI INI',
-    readyToClaim: 'SIAP',
-    locked: 'TERKUNCI',
-    repairTitle: 'PROTOKOL PERBAIKAN STREAK',
-    repairDesc: 'Ketinggalan sehari? Perbaiki gratis dengan memenangkan 2 minigame.',
-    repairBtn: 'MAIN MINIGAME (0/2)',
-    notifBtn: 'AKTIFKAN PENGINGAT TENGAH MALAM',
-    notifGranted: 'PENGINGAT DIAKTIFKAN',
-    closeBtn: 'SELESAI'
-  },
-  ru: {
-    modalTitle: '7-ДНЕВНЫЙ ПРОТОКОЛ СЕРИИ',
-    subtitle: 'ЕЖЕДНЕВНЫЙ ВХОД ГАРАНТИРУЕТ SSR ЯДРО НА 7 ДЕНЬ',
-    dayLabel: 'ДЕНЬ',
-    claimed: 'ПОЛУЧЕНО',
-    claimNow: 'ПОЛУЧИТЬ СЕГОДНЯ',
-    readyToClaim: 'ГОТОВО',
-    locked: 'ЗАКРЫТО',
-    repairTitle: 'ПРОТОКОЛ ВОССТАНОВЛЕНИЯ СЕРИИ',
-    repairDesc: 'Пропустили день? Восстановите бесплатно за 2 победы в мини-играх.',
-    repairBtn: 'ИГРАТЬ В МИНИ-ИГРЫ (0/2)',
-    notifBtn: 'ВКЛЮЧИТЬ НАПОМИНАНИЯ В ПОЛНОЧЬ',
-    notifGranted: 'НАПОМИНАНИЯ ВКЛЮЧЕНЫ',
-    closeBtn: 'ПОНЯТНО'
-  },
-  th: {
-    modalTitle: 'โปรโตคอลการเช็คชื่อต่อเนื่อง 7 วัน',
-    subtitle: 'เช็คชื่อทุกวันรับแกน SSR การันตีในวันที่ 7',
-    dayLabel: 'วัน',
-    claimed: 'รับแล้ว',
-    claimNow: 'รับเสบียงวันนี้',
-    readyToClaim: 'พร้อมรับ',
-    locked: 'ล็อค',
-    repairTitle: 'โปรโตคอลซ่อมแซมการเช็คชื่อ',
-    repairDesc: 'พลาดไปหนึ่งวัน? ซ่อมแซมได้ฟรีด้วยการชนะมินิเกม 2 ครั้ง',
-    repairBtn: 'เล่นมินิเกมเพื่อซ่อม (0/2)',
-    notifBtn: 'เปิดการแจ้งเตือนป้องกันก่อนเที่ยงคืน',
-    notifGranted: 'เปิดการแจ้งเตือนแล้ว',
-    closeBtn: 'รับทราบ'
-  },
-  vi: {
-    modalTitle: 'GIAO THỨC ĐIỂM DANH 7 NGÀY LIÊN TIẾP',
-    subtitle: 'ĐIỂM DANH MỖI NGÀY NHẬN LÕI SSR ĐẢM BẢO VÀO NGÀY 7',
-    dayLabel: 'NGÀY',
-    claimed: 'ĐÃ NHẬN',
-    claimNow: 'NHẬN TIẾP TẾ HÔM NAY',
-    readyToClaim: 'SẴN SÀNG',
-    locked: 'ĐÃ KHÓA',
-    repairTitle: 'GIAO THỨC KHÔI PHỤC ĐIỂM DANH',
-    repairDesc: 'Bỏ lỡ một ngày? Khôi phục miễn phí bằng cách thắng 2 trận mini-game.',
-    repairBtn: 'CHƠI MINI-GAME (0/2)',
-    notifBtn: 'BẬT NHẮC NHỞ TRƯỚC NỬA ĐÊM',
-    notifGranted: 'ĐÃ BẬT NHẮC NHỞ',
-    closeBtn: 'XÁC NHẬN'
+    claimed: '[CLAIMED]',
+    claimNow: '[CLAIM EXPEDITION SUPPLY]',
+    readyToClaim: '[READY]',
+    locked: '[LOCKED]',
+    repairTitle: '[VOW REPAIR // MINIGAME TRAINING]',
+    repairDesc: 'Missed a day? Win 2 minigames to restore yesterday for free.',
+    repairBtn: '[TRAIN IN MINIGAMES (0/2)]',
+    notifBtn: '[ENABLE EXPEDITION REMINDER]',
+    notifGranted: '[REMINDER ACTIVE]',
+    closeBtn: '[CONFIRM]'
   }
 };
+
+const STORAGE_KEY = 'snshero_streak_days_v1';
+const STORAGE_LAST_CLAIM = 'snshero_streak_last_claim_v1';
 
 export const SevenDayStreakModal: React.FC<SevenDayStreakModalProps> = ({
   isOpen,
   onClose,
   onNavigateMinigame,
-  language: propLang
+  language = 'ko'
 }) => {
-  const { language: contextLang } = useGameSettings();
-  const currentLang = propLang || contextLang || 'ko';
-  const tr = STREAK_I18N[currentLang] || STREAK_I18N.ko;
-
-  const [currentStreak, setCurrentStreak] = useState(1);
+  const { theme } = useGameSettings();
+  const [currentDay, setCurrentDay] = useState<number>(1);
   const [claimedDays, setClaimedDays] = useState<number[]>([]);
-  const [notifGranted, setNotifGranted] = useState(false);
+  const [canClaimToday, setCanClaimToday] = useState<boolean>(true);
+  const [notifGranted, setNotifGranted] = useState<boolean>(false);
+
+  const t = STREAK_I18N[language] || STREAK_I18N.ko;
 
   useEffect(() => {
-    if (isOpen) {
+    if (!isOpen) return;
+
+    if (typeof window !== 'undefined') {
       try {
-        const savedStreak = parseInt(localStorage.getItem('hero_streak_days') || '1', 10);
-        setCurrentStreak(Math.min(7, Math.max(1, savedStreak)));
+        const savedDays = localStorage.getItem(STORAGE_KEY);
+        const parsedDays: number[] = savedDays ? JSON.parse(savedDays) : [];
+        setClaimedDays(parsedDays);
 
-        const savedClaimed = JSON.parse(localStorage.getItem('hero_streak_claimed_days') || '[]');
-        setClaimedDays(Array.isArray(savedClaimed) ? savedClaimed : []);
+        const lastClaimStr = localStorage.getItem(STORAGE_LAST_CLAIM);
+        if (lastClaimStr) {
+          const lastClaimDate = new Date(parseInt(lastClaimStr, 10)).toDateString();
+          const today = new Date().toDateString();
+          if (lastClaimDate === today) {
+            setCanClaimToday(false);
+          } else {
+            setCanClaimToday(true);
+          }
+        } else {
+          setCanClaimToday(true);
+        }
 
-        setNotifGranted(getNotificationPermission() === 'granted');
+        const nextDay = Math.min(7, (parsedDays.length % 7) + 1);
+        setCurrentDay(nextDay);
       } catch {
         // ignore
       }
+
+      setNotifGranted(getNotificationPermission() === 'granted');
     }
   }, [isOpen]);
 
-  const handleClaimToday = () => {
-    triggerHaptic('success');
-    const newClaimed = [...claimedDays, currentStreak];
-    setClaimedDays(newClaimed);
+  if (!isOpen) return null;
+
+  const handleClaim = () => {
+    if (!canClaimToday) return;
+    triggerHaptic('victory');
+
+    const updated = [...claimedDays, currentDay];
+    setClaimedDays(updated);
+    setCanClaimToday(false);
 
     try {
-      localStorage.setItem('hero_streak_claimed_days', JSON.stringify(newClaimed));
-      // Give credits
-      const curCredits = parseInt(localStorage.getItem('hero_user_credits') || '0', 10);
-      localStorage.setItem('hero_user_credits', (curCredits + 300).toString());
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+      localStorage.setItem(STORAGE_LAST_CLAIM, String(Date.now()));
 
-      if (currentStreak === 7) {
-        localStorage.setItem('hero_ssr_core_guaranteed_claimed', 'true');
+      // 7일차 SSR 페가수스 지급
+      if (currentDay === 7) {
+        const currentSeason = localStorage.getItem('hero_current_season') || 'season1';
+        const invKey = `hero_inventory_${currentSeason}`;
+        const invRaw = localStorage.getItem(invKey);
+        const inv: Array<{ id: number; level: number; exp: number; count: number }> = invRaw ? JSON.parse(invRaw) : [];
+        const existing = inv.find(c => c.id === 90);
+        if (existing) existing.count = (existing.count || 1) + 1;
+        else inv.push({ id: 90, level: 1, exp: 0, count: 1 });
+        localStorage.setItem(invKey, JSON.stringify(inv));
       }
     } catch {
       // ignore
     }
   };
 
-  const handleEnableNotif = async () => {
+  const handleRequestNotif = async () => {
     triggerHaptic('tap');
-    const perm = await requestNotificationPermission();
-    if (perm === 'granted') {
-      setNotifGranted(true);
-      showTacticalNotification('SNSHero Tactical Defender', 'Daily 7-Day Streak reminder enabled! Report daily before midnight.');
+    const granted = await requestNotificationPermission();
+    setNotifGranted(granted);
+    if (granted) {
+      showTacticalNotification(
+        '엘윈 원정대 서약 알림',
+        '매일 자정 전 엘윈 원정 서약을 잊지 말고 완수하세요!'
+      );
     }
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md select-none font-mono">
-      <div className="relative w-full max-w-lg bg-[#090d16]/95 border border-white/15 rounded-xl p-5 sm:p-6 text-white shadow-2xl space-y-4">
-        {/* Top Header */}
-        <div className="flex items-center justify-between border-b border-white/10 pb-3">
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-[11px] font-bold tracking-wider text-emerald-400 uppercase">
-              {tr.modalTitle}
-            </span>
+    <div
+      role="dialog"
+      aria-modal="true"
+      className="fixed inset-0 z-[250] bg-black/85 flex items-center justify-center p-3 font-mono text-xs select-none animate-fade-in"
+    >
+      <div className="w-full max-w-lg bg-[#141212] border border-stone-800 rounded-none text-stone-200 flex flex-col relative overflow-hidden">
+        {/* 헤더 */}
+        <div className="p-4 border-b border-stone-800 flex items-center justify-between shrink-0 bg-[#181616]">
+          <div>
+            <div className="text-[10px] text-amber-400 font-bold uppercase tracking-wider mb-0.5">
+              [엘윈 설원 순찰 기록]
+            </div>
+            <h2 className="text-sm font-bold text-white tracking-wide">
+              {t.modalTitle}
+            </h2>
           </div>
           <button
+            type="button"
             onClick={onClose}
-            className="p-1 text-gray-400 hover:text-white rounded border border-transparent hover:border-white/10"
+            className="p-1.5 text-stone-500 hover:text-white"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
               <line x1="18" y1="6" x2="6" y2="18" />
@@ -298,120 +186,101 @@ export const SevenDayStreakModal: React.FC<SevenDayStreakModalProps> = ({
           </button>
         </div>
 
-        <p className="text-xs text-gray-300">
-          {tr.subtitle}
-        </p>
-
-        {/* 7-Day Matrix Grid */}
-        <div className="grid grid-cols-4 sm:grid-cols-7 gap-1.5 pt-1">
-          {STREAK_DAYS.map((item) => {
-            const isClaimed = claimedDays.includes(item.day);
-            const isToday = item.day === currentStreak;
-            const isLocked = item.day > currentStreak;
-
-            return (
-              <div
-                key={item.day}
-                className={`p-2 rounded-lg border flex flex-col items-center justify-between text-center relative ${
-                  item.isSsr
-                    ? 'col-span-2 sm:col-span-1 bg-amber-950/40 border-amber-500/60 text-amber-300 shadow-md shadow-amber-950/30'
-                    : isToday
-                    ? 'bg-emerald-950/40 border-emerald-400 text-emerald-300 shadow-sm'
-                    : isClaimed
-                    ? 'bg-black/60 border-emerald-500/30 text-gray-400'
-                    : 'bg-black/40 border-white/10 text-gray-500'
-                }`}
-              >
-                <span className="text-[9px] font-bold">{tr.dayLabel} 0{item.day}</span>
-                <div className="my-1.5">
-                  {item.isSsr ? (
-                    <svg className="w-5 h-5 text-amber-400 mx-auto animate-bounce" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                    </svg>
-                  ) : isClaimed ? (
-                    <svg className="w-5 h-5 text-emerald-400 mx-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                  ) : (
-                    <svg className="w-5 h-5 text-gray-400 mx-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                      <line x1="16" y1="2" x2="16" y2="6" />
-                      <line x1="8" y1="2" x2="8" y2="6" />
-                      <line x1="3" y1="10" x2="21" y2="10" />
-                    </svg>
-                  )}
-                </div>
-                <span className="text-[9px] font-bold leading-tight">{item.value}</span>
-                <span className="text-[8px] uppercase mt-1">
-                  {isClaimed ? tr.claimed : isToday ? tr.readyToClaim : tr.locked}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Claim Today CTA */}
-        {!claimedDays.includes(currentStreak) ? (
-          <button
-            onClick={handleClaimToday}
-            className="w-full min-h-[48px] bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/50 text-emerald-300 font-bold rounded-lg text-xs flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
-          >
-            <svg className="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-              <polyline points="22 4 12 14.01 9 11.01" />
-            </svg>
-            {tr.claimNow} (DAY 0{currentStreak})
-          </button>
-        ) : (
-          <div className="p-3 bg-emerald-950/30 border border-emerald-500/30 rounded-lg text-center text-xs text-emerald-300 font-bold">
-            {tr.claimed} - DAY 0{currentStreak}
-          </div>
-        )}
-
-        {/* Streak Repair Hook & Notification Banner */}
-        <div className="p-3 bg-black/60 border border-white/10 rounded-lg space-y-2 text-xs">
-          <div className="flex items-center justify-between">
-            <span className="font-bold text-gray-300">{tr.repairTitle}</span>
-            <button
-              onClick={() => {
-                onClose();
-                if (onNavigateMinigame) onNavigateMinigame();
-              }}
-              className="text-[10px] text-cyan-400 hover:text-cyan-300 underline"
-            >
-              {tr.repairBtn}
-            </button>
-          </div>
-          <p className="text-[10px] text-gray-400">
-            {tr.repairDesc}
+        {/* 7일 그리드 (OpenCode.ai 모노스페이스 플랫) */}
+        <div className="p-4 space-y-4 overflow-y-auto">
+          <p className="text-xs text-stone-400">
+            {t.subtitle}
           </p>
 
-          {isNotificationSupported() && (
-            <div className="pt-2 border-t border-white/10 flex items-center justify-between">
-              <span className="text-[10px] text-gray-400">
-                {notifGranted ? tr.notifGranted : tr.notifBtn}
-              </span>
-              {!notifGranted ? (
-                <button
-                  onClick={handleEnableNotif}
-                  className="px-2.5 py-1 bg-white/5 hover:bg-white/10 border border-emerald-500/40 text-emerald-300 rounded text-[10px] font-bold"
+          <div className="grid grid-cols-4 sm:grid-cols-7 gap-1.5">
+            {STREAK_DAYS.map((sd) => {
+              const isClaimed = claimedDays.includes(sd.day);
+              const isToday = currentDay === sd.day && canClaimToday;
+
+              return (
+                <div
+                  key={sd.day}
+                  className={`p-2 border rounded-none flex flex-col items-center justify-between min-h-[90px] text-center transition-all ${
+                    sd.isSsr
+                      ? 'border-amber-500 bg-amber-950/20 text-amber-300 font-bold'
+                      : isClaimed
+                      ? 'border-stone-800 bg-stone-900/40 text-stone-600'
+                      : isToday
+                      ? 'border-amber-400 bg-stone-900 text-white ring-1 ring-amber-400'
+                      : 'border-stone-800 bg-stone-950/60 text-stone-400'
+                  }`}
                 >
-                  ENABLE
-                </button>
-              ) : (
-                <span className="text-[10px] text-emerald-400 font-bold">ACTIVE</span>
-              )}
-            </div>
+                  <span className="text-[10px] font-bold uppercase text-stone-500">
+                    {sd.day}{t.dayLabel}
+                  </span>
+
+                  <div className="my-1">
+                    <span className="text-[10px] block font-bold leading-tight">
+                      {sd.value}
+                    </span>
+                  </div>
+
+                  {isClaimed ? (
+                    <span className="text-[9px] text-stone-500 font-bold">{t.claimed}</span>
+                  ) : isToday ? (
+                    <span className="text-[9px] text-amber-400 font-bold animate-pulse">{t.readyToClaim}</span>
+                  ) : (
+                    <span className="text-[9px] text-stone-700">{t.locked}</span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* 오늘 수령 버튼 */}
+          {canClaimToday && (
+            <button
+              type="button"
+              onClick={handleClaim}
+              className="w-full min-h-[44px] rounded-sm border border-amber-500 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-bold text-xs active:scale-95 transition-all"
+            >
+              {t.claimNow} ({currentDay}{t.dayLabel})
+            </button>
           )}
+
+          {/* 스트릭 복구 훅 (미니게임 연동) */}
+          <div className="p-3 bg-stone-900 border border-stone-800 rounded-none flex items-center justify-between gap-2">
+            <div>
+              <div className="text-xs font-bold text-stone-300">{t.repairTitle}</div>
+              <p className="text-[11px] text-stone-400 mt-0.5">{t.repairDesc}</p>
+            </div>
+            {onNavigateMinigame && (
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  onNavigateMinigame();
+                }}
+                className="px-2.5 py-1.5 bg-stone-800 hover:bg-stone-700 border border-stone-700 text-stone-200 font-bold rounded-sm text-[10px] shrink-0"
+              >
+                {t.repairBtn}
+              </button>
+            )}
+          </div>
         </div>
 
-        {/* Footer Close */}
-        <button
-          onClick={onClose}
-          className="w-full min-h-[44px] bg-white/5 hover:bg-white/10 border border-white/15 text-gray-300 rounded-lg text-xs font-bold transition-colors"
-        >
-          {tr.closeBtn}
-        </button>
+        {/* 하단 알림 및 닫기 */}
+        <div className="p-3 border-t border-stone-800 bg-[#181616] flex items-center justify-between shrink-0">
+          <button
+            type="button"
+            onClick={handleRequestNotif}
+            className="text-[11px] text-stone-400 hover:text-white underline cursor-pointer"
+          >
+            {notifGranted ? t.notifGranted : t.notifBtn}
+          </button>
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-4 min-h-[44px] rounded-sm border border-stone-700 bg-stone-800 hover:bg-stone-700 text-stone-200 font-bold text-xs"
+          >
+            {t.closeBtn}
+          </button>
+        </div>
       </div>
     </div>
   );

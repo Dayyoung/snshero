@@ -142,56 +142,56 @@ const CrosshairIcon: React.FC<{ className?: string; size?: number }> = ({ classN
 // ─── 12-Language i18n Dictionary ───────────────────────────────────────
 const I18N_TACTICAL: Record<string, Record<string, string>> = {
   ko: {
-    hud_title: '전술 지휘 콘솔 // TACTICAL OVERRIDE',
-    ap_label: '전술 AP',
-    ap_recharge_hint: '미니게임 플레이 시 AP 충전 (+20)',
-    assault_name: '돌격 // ASSAULT',
-    assault_cost: '30 AP',
-    assault_desc: '공격력 +35% · 속도 +20% (5초)',
-    counter_name: '요격 // COUNTER',
-    counter_cost: '30 AP',
-    counter_desc: '피해 감소 40% · 반사 25% (5초)',
-    synergy_name: '연계 // SYNERGY',
-    synergy_cost: '50 AP',
-    synergy_desc: '궁극기 +50% · 디버프 전체 해제',
-    active_badge: '작동 중',
-    not_enough_ap: 'AP 부족',
-    daily_minigames: '일일 미니게임',
-    claim_pack: '보급 팩 수령',
-    pack_claimed: '보급 완료',
-    pack_modal_title: '전술 오버라이드 보급 팩 획득',
-    pack_modal_desc: '일일 미니게임 3회 완료 보급품이 도착했습니다.',
-    pack_reward_ticket: '프라임 소환 티켓 1장',
-    pack_reward_booster: '전술 배틀 부스터 토큰 1개',
-    pack_reward_ap: '전술 AP +40 충전',
-    pack_claim_btn: '보급품 확인 및 장착',
-    close: '닫기',
+    hud_title: '[카단 원정대 전술 지휘 // KADAN BATTLE HUD]',
+    ap_label: '정령 마나',
+    ap_recharge_hint: '미니게임 플레이 시 정령 마나 충전 (+20)',
+    assault_name: '[화염 강타 // 이그니스]',
+    assault_cost: '30 마나',
+    assault_desc: '이그니스의 화염 폭발 · 공격력 +35% · 속도 +20% (5초)',
+    counter_name: '[수호 결계 // 실리아]',
+    counter_cost: '30 마나',
+    counter_desc: '실리아의 수호 결계 · 피해 감소 40% · 반사 25% (5초)',
+    synergy_name: '[눈보라 각성 // 카단]',
+    synergy_cost: '50 마나',
+    synergy_desc: '카단의 서리 참격 · 궁극기 +50% · 디버프 정화',
+    active_badge: '[작동 중]',
+    not_enough_ap: '마나 부족',
+    daily_minigames: '일일 미니게임 수련',
+    claim_pack: '[보급 수령]',
+    pack_claimed: '[수령 완료]',
+    pack_modal_title: '[엘윈 원정대 일일 보급 획득]',
+    pack_modal_desc: '일일 미니게임 3회 수련 완료 보급품이 도착했습니다.',
+    pack_reward_ticket: '영웅 소환 티켓 1장',
+    pack_reward_booster: '엘윈 설원 전투 축복 1개',
+    pack_reward_ap: '정령 마나 +40 충전',
+    pack_claim_btn: '[보급품 확인 및 장착]',
+    close: '[닫기]',
   },
   en: {
-    hud_title: 'TACTICAL COMMAND CONSOLE // OVERRIDE',
-    ap_label: 'TACTICAL AP',
-    ap_recharge_hint: 'Earn AP via Minigames (+20 AP)',
-    assault_name: 'ASSAULT',
-    assault_cost: '30 AP',
-    assault_desc: 'ATK +35% · Speed +20% (5s)',
-    counter_name: 'COUNTER',
-    counter_cost: '30 AP',
-    counter_desc: 'DMG -40% · Reflect 25% (5s)',
-    synergy_name: 'SYNERGY',
-    synergy_cost: '50 AP',
-    synergy_desc: 'Ult +50% · Cleanse All Debuffs',
-    active_badge: 'ACTIVE',
-    not_enough_ap: 'LOW AP',
-    daily_minigames: 'Daily Games',
-    claim_pack: 'CLAIM PACK',
-    pack_claimed: 'CLAIMED',
-    pack_modal_title: 'TACTICAL OVERRIDE PACK UNLOCKED',
-    pack_modal_desc: 'Daily 3x minigame operation supplies have arrived.',
-    pack_reward_ticket: '1x Prime Summon Ticket',
-    pack_reward_booster: '1x Tactical Battle Booster',
-    pack_reward_ap: '+40 AP Refilled',
-    pack_claim_btn: 'ACCEPT REQUISITION',
-    close: 'CLOSE',
+    hud_title: '[KADAN EXPEDITION TACTICAL HUD]',
+    ap_label: 'SPIRIT MANA',
+    ap_recharge_hint: 'Recharge mana via Minigames (+20)',
+    assault_name: '[IGNIS STRIKE]',
+    assault_cost: '30 MANA',
+    assault_desc: 'Flame Burst · ATK +35% · Speed +20% (5s)',
+    counter_name: '[CILIA WARD]',
+    counter_cost: '30 MANA',
+    counter_desc: 'Holy Shield · DMG -40% · Reflect 25% (5s)',
+    synergy_name: '[KADAN AWAKEN]',
+    synergy_cost: '50 MANA',
+    synergy_desc: 'Frost Surge · Ultimate +50% · Cleanse debuffs',
+    active_badge: '[ACTIVE]',
+    not_enough_ap: 'LOW MANA',
+    daily_minigames: 'Daily Training',
+    claim_pack: '[CLAIM SUPPLY]',
+    pack_claimed: '[CLAIMED]',
+    pack_modal_title: '[EXPEDITION DAILY SUPPLY]',
+    pack_modal_desc: 'Granted for completing 3 daily minigame training sessions.',
+    pack_reward_ticket: 'Hero Summon Ticket 1x',
+    pack_reward_booster: 'Elwin Frost Blessing 1x',
+    pack_reward_ap: 'Spirit Mana +40',
+    pack_claim_btn: '[EQUIP SUPPLIES]',
+    close: '[CLOSE]',
   },
   ja: {
     hud_title: '戦術指揮コンソール // TACTICAL OVERRIDE',
@@ -513,37 +513,37 @@ export const TacticalCommandHUD: React.FC<TacticalHUDProps> = ({
   return (
     <>
       <div
-        className={`w-full bg-[#090d16]/95 border-t border-white/15 backdrop-blur-md p-3 font-mono text-xs select-none ${className}`}
+        className={`w-full bg-[#141212] border-t border-stone-800 p-2.5 font-mono text-xs select-none ${className}`}
       >
-        {/* HUD Top Bar: AP Gauge & Daily Minigame Progress */}
+        {/* HUD Top Bar: Mana Gauge & Daily Training Progress */}
         <div className="flex items-center justify-between mb-2 gap-2 text-[11px]">
-          {/* AP Battery Gauge */}
+          {/* Mana Gauge */}
           <div className="flex items-center gap-1.5 min-w-0">
-            <BatteryCoreIcon className="text-cyan-400 shrink-0" size={14} />
-            <span className="text-white/60 uppercase tracking-wider text-[10px] hidden sm:inline">
+            <BatteryCoreIcon className="text-amber-400 shrink-0" size={14} />
+            <span className="text-stone-400 uppercase tracking-wider text-[10px] hidden sm:inline">
               {t('ap_label')}
             </span>
-            <div className="w-24 sm:w-32 h-2.5 bg-black/60 border border-white/15 rounded-xs overflow-hidden relative">
+            <div className="w-24 sm:w-32 h-2.5 bg-stone-900 border border-stone-800 rounded-none overflow-hidden relative">
               <div
-                className="h-full bg-gradient-to-r from-cyan-600 to-cyan-400 transition-all duration-300"
+                className="h-full bg-amber-500 transition-all duration-300"
                 style={{ width: `${apPercentage}%` }}
               />
             </div>
-            <span className="text-cyan-300 font-bold text-[10px] tracking-tight">
+            <span className="text-amber-300 font-bold text-[10px] tracking-tight">
               {currentAp}/{maxAp}
             </span>
           </div>
 
           {/* Daily Retention Minigame Hook */}
           <div className="flex items-center gap-1.5 shrink-0">
-            <span className="text-white/40 text-[10px]">
+            <span className="text-stone-500 text-[10px]">
               {t('daily_minigames')}:
             </span>
             <span
-              className={`font-bold text-[10px] px-1 py-0.2 rounded-xs border ${
+              className={`font-bold text-[10px] px-1 py-0.2 rounded-none border ${
                 dailyCount >= 3
-                  ? 'bg-emerald-950/60 text-emerald-400 border-emerald-500/40'
-                  : 'bg-white/5 text-white/70 border-white/10'
+                  ? 'bg-amber-950/40 text-amber-300 border-amber-500/50'
+                  : 'bg-stone-900 text-stone-400 border-stone-800'
               }`}
             >
               [{Math.min(3, dailyCount)}/3]
@@ -553,7 +553,7 @@ export const TacticalCommandHUD: React.FC<TacticalHUDProps> = ({
               <button
                 type="button"
                 onClick={() => setShowPackModal(true)}
-                className="flex items-center gap-1 px-1.5 py-0.5 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/50 text-amber-300 rounded-xs text-[10px] font-bold animate-pulse cursor-pointer"
+                className="flex items-center gap-1 px-1.5 py-0.5 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500 text-amber-300 rounded-sm text-[10px] font-bold cursor-pointer"
                 title={t('claim_pack')}
               >
                 <SupplyCrateIcon size={12} />
@@ -565,10 +565,10 @@ export const TacticalCommandHUD: React.FC<TacticalHUDProps> = ({
               <button
                 type="button"
                 onClick={onOpenMinigameLounge}
-                className="text-[10px] text-white/50 hover:text-white/90 underline cursor-pointer hidden md:inline"
+                className="text-[10px] text-stone-400 hover:text-white underline cursor-pointer hidden md:inline"
                 title={t('ap_recharge_hint')}
               >
-                [+] AP
+                [+ MANA]
               </button>
             )}
           </div>
@@ -581,29 +581,29 @@ export const TacticalCommandHUD: React.FC<TacticalHUDProps> = ({
             type="button"
             disabled={disabled || currentAp < 30 || activeOverride !== null}
             onClick={() => onTriggerOverride('ASSAULT')}
-            className={`flex flex-col items-center justify-center p-2 rounded-lg border font-mono min-h-[48px] transition-all cursor-pointer select-none text-left relative overflow-hidden ${
+            className={`flex flex-col items-center justify-center p-2 rounded-sm border font-mono min-h-[44px] transition-all cursor-pointer select-none text-left relative ${
               activeOverride === 'ASSAULT'
-                ? 'bg-red-950/50 border-red-500 text-red-300 shadow-[0_0_15px_rgba(239,68,68,0.5)] ring-1 ring-red-400'
+                ? 'bg-red-950/40 border-red-500 text-red-300'
                 : currentAp < 30 || disabled
-                ? 'bg-white/5 border-white/10 text-white/30 cursor-not-allowed opacity-60'
-                : 'bg-white/5 hover:bg-red-950/20 border-red-500/30 hover:border-red-500/60 text-red-400'
+                ? 'bg-stone-900/50 border-stone-800 text-stone-600 cursor-not-allowed opacity-60'
+                : 'bg-stone-900/80 hover:bg-stone-800 border-stone-700 text-red-400'
             }`}
           >
             {activeOverride === 'ASSAULT' && (
-              <span className="absolute top-1 right-1 text-[9px] font-bold px-1 bg-red-600 text-white rounded-xs animate-pulse">
+              <span className="absolute top-1 right-1 text-[9px] font-bold px-1 bg-red-600 text-white rounded-none">
                 {overrideRemainingSeconds}s
               </span>
             )}
             <div className="flex items-center gap-1 w-full justify-between">
               <div className="flex items-center gap-1 font-bold text-xs truncate">
-                <LightningBoltIcon size={14} className={activeOverride === 'ASSAULT' ? 'text-red-400 animate-bounce' : 'text-red-400'} />
+                <LightningBoltIcon size={14} className="text-red-400" />
                 <span className="truncate">{t('assault_name')}</span>
               </div>
               <span className="text-[10px] opacity-80 shrink-0 font-normal">
                 {t('assault_cost')}
               </span>
             </div>
-            <p className="text-[9.5px] opacity-75 mt-0.5 line-clamp-1 w-full text-white/70">
+            <p className="text-[9.5px] opacity-75 mt-0.5 line-clamp-1 w-full text-stone-300">
               {t('assault_desc')}
             </p>
           </button>
@@ -613,29 +613,29 @@ export const TacticalCommandHUD: React.FC<TacticalHUDProps> = ({
             type="button"
             disabled={disabled || currentAp < 30 || activeOverride !== null}
             onClick={() => onTriggerOverride('COUNTER')}
-            className={`flex flex-col items-center justify-center p-2 rounded-lg border font-mono min-h-[48px] transition-all cursor-pointer select-none text-left relative overflow-hidden ${
+            className={`flex flex-col items-center justify-center p-2 rounded-sm border font-mono min-h-[44px] transition-all cursor-pointer select-none text-left relative ${
               activeOverride === 'COUNTER'
-                ? 'bg-cyan-950/50 border-cyan-400 text-cyan-300 shadow-[0_0_15px_rgba(34,211,238,0.5)] ring-1 ring-cyan-300'
+                ? 'bg-cyan-950/40 border-cyan-500 text-cyan-300'
                 : currentAp < 30 || disabled
-                ? 'bg-white/5 border-white/10 text-white/30 cursor-not-allowed opacity-60'
-                : 'bg-white/5 hover:bg-cyan-950/20 border-cyan-500/30 hover:border-cyan-500/60 text-cyan-400'
+                ? 'bg-stone-900/50 border-stone-800 text-stone-600 cursor-not-allowed opacity-60'
+                : 'bg-stone-900/80 hover:bg-stone-800 border-stone-700 text-cyan-400'
             }`}
           >
             {activeOverride === 'COUNTER' && (
-              <span className="absolute top-1 right-1 text-[9px] font-bold px-1 bg-cyan-600 text-white rounded-xs animate-pulse">
+              <span className="absolute top-1 right-1 text-[9px] font-bold px-1 bg-cyan-600 text-white rounded-none">
                 {overrideRemainingSeconds}s
               </span>
             )}
             <div className="flex items-center gap-1 w-full justify-between">
               <div className="flex items-center gap-1 font-bold text-xs truncate">
-                <HexagonShieldIcon size={14} className={activeOverride === 'COUNTER' ? 'text-cyan-400 animate-pulse' : 'text-cyan-400'} />
+                <HexagonShieldIcon size={14} className="text-cyan-400" />
                 <span className="truncate">{t('counter_name')}</span>
               </div>
               <span className="text-[10px] opacity-80 shrink-0 font-normal">
                 {t('counter_cost')}
               </span>
             </div>
-            <p className="text-[9.5px] opacity-75 mt-0.5 line-clamp-1 w-full text-white/70">
+            <p className="text-[9.5px] opacity-75 mt-0.5 line-clamp-1 w-full text-stone-300">
               {t('counter_desc')}
             </p>
           </button>
@@ -645,29 +645,29 @@ export const TacticalCommandHUD: React.FC<TacticalHUDProps> = ({
             type="button"
             disabled={disabled || currentAp < 50 || activeOverride !== null}
             onClick={() => onTriggerOverride('SYNERGY')}
-            className={`flex flex-col items-center justify-center p-2 rounded-lg border font-mono min-h-[48px] transition-all cursor-pointer select-none text-left relative overflow-hidden ${
+            className={`flex flex-col items-center justify-center p-2 rounded-sm border font-mono min-h-[44px] transition-all cursor-pointer select-none text-left relative ${
               activeOverride === 'SYNERGY'
-                ? 'bg-purple-950/50 border-purple-400 text-purple-300 shadow-[0_0_15px_rgba(192,132,252,0.5)] ring-1 ring-purple-300'
+                ? 'bg-amber-950/40 border-amber-500 text-amber-300'
                 : currentAp < 50 || disabled
-                ? 'bg-white/5 border-white/10 text-white/30 cursor-not-allowed opacity-60'
-                : 'bg-white/5 hover:bg-purple-950/20 border-purple-500/30 hover:border-purple-500/60 text-purple-400'
+                ? 'bg-stone-900/50 border-stone-800 text-stone-600 cursor-not-allowed opacity-60'
+                : 'bg-stone-900/80 hover:bg-stone-800 border-stone-700 text-amber-400'
             }`}
           >
             {activeOverride === 'SYNERGY' && (
-              <span className="absolute top-1 right-1 text-[9px] font-bold px-1 bg-purple-600 text-white rounded-xs animate-pulse">
+              <span className="absolute top-1 right-1 text-[9px] font-bold px-1 bg-amber-600 text-white rounded-none">
                 {overrideRemainingSeconds}s
               </span>
             )}
             <div className="flex items-center gap-1 w-full justify-between">
               <div className="flex items-center gap-1 font-bold text-xs truncate">
-                <SynergyOrbitIcon size={14} className={activeOverride === 'SYNERGY' ? 'text-purple-400 animate-spin' : 'text-purple-400'} />
+                <SynergyOrbitIcon size={14} className="text-amber-400" />
                 <span className="truncate">{t('synergy_name')}</span>
               </div>
               <span className="text-[10px] opacity-80 shrink-0 font-normal">
                 {t('synergy_cost')}
               </span>
             </div>
-            <p className="text-[9.5px] opacity-75 mt-0.5 line-clamp-1 w-full text-white/70">
+            <p className="text-[9.5px] opacity-75 mt-0.5 line-clamp-1 w-full text-stone-300">
               {t('synergy_desc')}
             </p>
           </button>
@@ -679,47 +679,55 @@ export const TacticalCommandHUD: React.FC<TacticalHUDProps> = ({
         <div
           role="dialog"
           aria-modal="true"
-          className="fixed inset-0 z-[260] bg-black/80 backdrop-blur-md flex items-center justify-center p-4 font-mono select-none"
+          className="fixed inset-0 z-[260] bg-black/80 flex items-center justify-center p-4 font-mono select-none"
         >
-          <div className="w-full max-w-sm bg-[#090d16] border border-amber-500/40 rounded-xl p-5 text-white flex flex-col items-center text-center shadow-2xl relative">
-            <div className="w-12 h-12 rounded-lg bg-amber-500/20 border border-amber-500/50 flex items-center justify-center text-amber-400 mb-3">
+          <div className="w-full max-w-sm bg-[#181616] border border-stone-800 rounded-none p-5 text-stone-200 flex flex-col items-center text-center relative">
+            <div className="w-12 h-12 rounded-none bg-amber-950/30 border border-amber-500/50 flex items-center justify-center text-amber-400 mb-3">
               <SupplyCrateIcon size={24} />
             </div>
 
             <div className="text-[10px] text-amber-400 uppercase tracking-widest font-bold mb-1">
-              [TACTICAL LOGISTICS // MISSION COMPLETE]
+              [EXPEDITION LOGISTICS // COMPLETE]
             </div>
             <h3 className="text-base font-bold text-white mb-2">
               {t('pack_modal_title')}
             </h3>
-            <p className="text-xs text-white/70 mb-4 leading-relaxed">
+            <p className="text-xs text-stone-400 mb-4 leading-relaxed">
               {t('pack_modal_desc')}
             </p>
 
             {/* Reward Requisition List */}
-            <div className="w-full bg-white/5 border border-white/10 rounded-lg p-3 mb-4 flex flex-col gap-2 text-left text-xs">
-              <div className="flex items-center gap-2 text-emerald-400">
+            <div className="w-full bg-stone-900 border border-stone-800 rounded-none p-3 mb-4 flex flex-col gap-2 text-left text-xs">
+              <div className="flex items-center gap-2 text-amber-300">
                 <CrosshairIcon size={14} />
                 <span>{t('pack_reward_ticket')}</span>
               </div>
-              <div className="flex items-center gap-2 text-cyan-400">
+              <div className="flex items-center gap-2 text-amber-400">
                 <CrosshairIcon size={14} />
                 <span>{t('pack_reward_booster')}</span>
               </div>
-              <div className="flex items-center gap-2 text-amber-400">
+              <div className="flex items-center gap-2 text-amber-500">
                 <BatteryCoreIcon size={14} />
                 <span>{t('pack_reward_ap')}</span>
               </div>
             </div>
 
-            <button
-              type="button"
-              onClick={handleClaimPack}
-              className="w-full py-3 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/60 text-amber-300 font-bold rounded-lg text-xs cursor-pointer min-h-[48px] flex items-center justify-center gap-2"
-            >
-              <SupplyCrateIcon size={16} />
-              <span>{t('pack_claim_btn')}</span>
-            </button>
+            <div className="w-full flex gap-2">
+              <button
+                type="button"
+                onClick={() => setShowPackModal(false)}
+                className="flex-1 min-h-[44px] rounded-sm border border-stone-700 bg-stone-800 hover:bg-stone-700 text-stone-300 font-bold"
+              >
+                {t('close')}
+              </button>
+              <button
+                type="button"
+                onClick={handleClaimPack}
+                className="flex-1 min-h-[44px] rounded-sm border border-amber-500 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-bold"
+              >
+                {t('pack_claim_btn')}
+              </button>
+            </div>
           </div>
         </div>
       )}
