@@ -37,7 +37,7 @@ export const ElementalTempestWidget: React.FC<ElementalTempestWidgetProps> = ({
   }, []);
 
   const handleCast = (spell: TempestSpellInfo) => {
-    triggerHaptic('impact');
+    triggerHaptic('heavy');
     const success = castTempestSpell(spell);
     if (success) {
       setCores(getElementalCores());

@@ -1,6 +1,6 @@
 import React, { lazy, Suspense, useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Clock, Sparkles, Zap, Gift, Star, ChevronRight, X, TreePine, Dice5, Gamepad2, Lock, AlertCircle, Camera, BookOpen, Swords, Share2, Check, CheckCircle2, Flame, Hash, FileText, HelpCircle, ChevronLeft } from 'lucide-react';
+import { Clock, Sparkles, Zap, Gift, Star, ChevronRight, X, TreePine, Dice5, Gamepad2, Lock, AlertCircle, Camera, BookOpen, Swords, Share2, Check, CheckCircle2, Flame, Hash, FileText, HelpCircle, ChevronLeft, Search, Trophy } from 'lucide-react';
 import { ChallengeEventSection } from '../components/ChallengeEventSection';
 import { SAMPLE_PATCH_NOTES } from '../content/patchNotes';
 import { Language, CardData, Item, ItemRarity, InventoryRecord, CardRarity } from '../types';
@@ -21,6 +21,8 @@ import { QrReward } from '../components/QrReward';
 import { ArReward } from '../components/ArReward';
 import { ArCardViewer } from '../components/ArCardViewer';
 import { PatchNoteList } from '../components/PatchNoteList';
+import { HeroNineSlotModal } from '../components/HeroNineSlotModal';
+import { DailyHiddenHeroModal } from '../components/DailyHiddenHeroModal';
 
 interface EventViewProps {
   language: Language;
@@ -40,7 +42,7 @@ interface EventViewProps {
   inventory?: Record<number, InventoryRecord>;
 }
 
-type EventModal = 'none' | 'tree' | 'roulette' | 'claw' | 'ar-view-select' | 'ar-viewer' | 'patchnote';
+type EventModal = 'none' | 'tree' | 'roulette' | 'claw' | 'ar-view-select' | 'ar-viewer' | 'patchnote' | 'nine-slot' | 'daily-hidden';
 
 interface EventCardBadge {
   label: string;
@@ -140,6 +142,10 @@ export const EventView: React.FC<EventViewProps> = ({
   const [lastQrClaim, setLastQrClaim] = useState<number>(0);
   const [lastArClaim, setLastArClaim] = useState<number>(0);
 
+  // 일일 숨은그림 찾기 완료 여부
+  const todayDateStr = new Date().toISOString().split('T')[0];
+  const [dailyHiddenCleared, setDailyHiddenCleared] = useState<boolean>(false);
+
   const storyProgress = useStoryProgress({ season: currentSeason });
   const weeklyWebtoon = storyProgress.weeklyWebtoon;
   const storyProgressLabel = `${storyProgress.storyProgressCount}/${storyProgress.totalStoryEpisodes}`;
@@ -184,7 +190,10 @@ export const EventView: React.FC<EventViewProps> = ({
     if (storedAr) {
       setLastArClaim(parseInt(storedAr) || 0);
     }
-  }, [activeModal]);
+    // 숨은그림 찾기 완료 여부 확인
+    const isHiddenCleared = localStorage.getItem(`hero_daily_hidden_cleared_${todayDateStr}`) === 'true';
+    setDailyHiddenCleared(isHiddenCleared);
+  }, [activeModal, todayDateStr]);
 
   // Tree timer
   useEffect(() => {
@@ -301,9 +310,30 @@ export const EventView: React.FC<EventViewProps> = ({
     colorClass: string;
     onClick: () => void;
     rightExtra?: string;
+    isNew?: boolean;
   }
 
   const quickLinks: QuickLink[] = [
+    {
+      id: 'nine-slot',
+      icon: Dice5,
+      label: language === 'ko' ? '9구 히어로 슬롯머신' : 'Hero 9-Reel Slot',
+      colorClass: 'bg-amber-500',
+      onClick: () => setActiveModal('nine-slot'),
+      rightExtra: language === 'ko' ? '1회 100 SNS' : '100 SNS / Spin',
+      isNew: true,
+    },
+    {
+      id: 'daily-hidden',
+      icon: Search,
+      label: language === 'ko' ? '일일 숨은그림 찾기' : 'Daily Hidden Hero',
+      colorClass: 'bg-cyan-500',
+      onClick: () => setActiveModal('daily-hidden'),
+      rightExtra: dailyHiddenCleared
+        ? (language === 'ko' ? '완료 ✓' : 'Done ✓')
+        : (language === 'ko' ? '+1,500 SNS' : '+1,500 SNS'),
+      isNew: true,
+    },
     {
       id: 'story-hub',
       icon: Sparkles,
@@ -462,6 +492,119 @@ export const EventView: React.FC<EventViewProps> = ({
         </motion.div>
 
         <main className="flex-1 p-4 md:p-8 w-full">
+          {/* ── 최상위 NEW 피처드 이벤트 배너 (슬롯머신 & 일일 숨은그림 찾기) ── */}
+          <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-3.5">
+            {/* 배너 1: 9구 히어로 슬롯 머신 */}
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="relative p-4 rounded-xl border border-amber-300/80 bg-gradient-to-br from-amber-500/10 via-amber-100/30 to-amber-500/5 shadow-sm overflow-hidden flex flex-col justify-between"
+            >
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center text-white shadow-md shrink-0">
+                    <span className="text-xl">🎰</span>
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h4 className="text-sm font-black text-slate-900 tracking-tight">
+                        {language === 'ko' ? '9구 히어로 슬롯머신' : 'Hero 9-Reel Slot'}
+                      </h4>
+                      <span className="inline-flex items-center px-1.5 py-0.5 text-[9px] font-black bg-rose-600 text-white rounded-full animate-pulse shadow-xs">
+                        NEW
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-slate-600 mt-0.5 font-medium line-clamp-1">
+                      {language === 'ko'
+                        ? '3x3 룰렛 캐릭터 3개 완성 시 최대 10,000 SNS 잭팟!'
+                        : 'Match 3 characters for up to 10,000 SNS Jackpot!'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-3.5 pt-3 border-t border-amber-200/60 flex items-center justify-between">
+                <div className="flex items-center gap-1.5 text-[11px] font-bold text-amber-800">
+                  <Zap size={13} className="text-amber-600" />
+                  <span>1회 100 SNS</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                    setActiveModal('nine-slot');
+                  }}
+                  className="px-3.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 active:scale-95 text-slate-950 font-black text-xs shadow-sm transition-all flex items-center gap-1"
+                >
+                  <span>{language === 'ko' ? '슬롯 플레이' : 'PLAY SLOT'}</span>
+                  <ChevronRight size={14} />
+                </button>
+              </div>
+            </motion.div>
+
+            {/* 배너 2: 일일 숨은그림 찾기 */}
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.05 }}
+              className="relative p-4 rounded-xl border border-cyan-300/80 bg-gradient-to-br from-cyan-500/10 via-cyan-100/30 to-blue-500/5 shadow-sm overflow-hidden flex flex-col justify-between"
+            >
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white shadow-md shrink-0">
+                    <Search size={20} />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h4 className="text-sm font-black text-slate-900 tracking-tight">
+                        {language === 'ko' ? '일일 숨은그림 찾기' : 'Daily Hidden Hero'}
+                      </h4>
+                      <span className="inline-flex items-center px-1.5 py-0.5 text-[9px] font-black bg-rose-600 text-white rounded-full animate-pulse shadow-xs">
+                        NEW
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-slate-600 mt-0.5 font-medium line-clamp-1">
+                      {language === 'ko'
+                        ? '매일 바뀌는 신비의 그림 속 초미니 영웅 4명을 찾아라!'
+                        : 'Discover 4 tiny hidden heroes in daily artwork!'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-3.5 pt-3 border-t border-cyan-200/60 flex items-center justify-between">
+                <div className="flex items-center gap-1.5 text-[11px] font-bold text-cyan-800">
+                  <Gift size={13} className="text-cyan-600" />
+                  <span>
+                    {dailyHiddenCleared
+                      ? (language === 'ko' ? '오늘 보상 완료' : 'Claimed')
+                      : '+1,500 SNS 보상'}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                    setActiveModal('daily-hidden');
+                  }}
+                  className={cn(
+                    'px-3.5 py-1.5 rounded-lg active:scale-95 font-black text-xs shadow-sm transition-all flex items-center gap-1',
+                    dailyHiddenCleared
+                      ? 'bg-slate-200 text-slate-700 hover:bg-slate-300'
+                      : 'bg-cyan-500 hover:bg-cyan-600 text-white'
+                  )}
+                >
+                  <span>
+                    {dailyHiddenCleared
+                      ? (language === 'ko' ? '다시보기' : 'VIEW')
+                      : (language === 'ko' ? '탐색 시작' : 'START HUNT')}
+                  </span>
+                  <ChevronRight size={14} />
+                </button>
+              </div>
+            </motion.div>
+          </div>
+
           {/* ── Quick-link list ── */}
           <div className="space-y-2 mb-6">
             {quickLinks.map((link, idx) => {
@@ -471,7 +614,7 @@ export const EventView: React.FC<EventViewProps> = ({
                   key={link.id}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.04 }}
+                  transition={{ delay: idx * 0.03 }}
                   onClick={() => {
                     playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                     link.onClick();
@@ -481,9 +624,16 @@ export const EventView: React.FC<EventViewProps> = ({
                   <div className={`w-9 h-9 rounded-lg ${link.colorClass} flex items-center justify-center shrink-0`}>
                     <IconComp size={16} className="text-white" />
                   </div>
-                  <span className="flex-1 text-left text-sm font-bold text-slate-800">
-                    {link.label}
-                  </span>
+                  <div className="flex-1 flex items-center gap-2 text-left">
+                    <span className="text-sm font-bold text-slate-800">
+                      {link.label}
+                    </span>
+                    {link.isNew && (
+                      <span className="px-1.5 py-0.5 text-[9px] font-black bg-rose-600 text-white rounded-full animate-pulse shadow-xs">
+                        NEW
+                      </span>
+                    )}
+                  </div>
                   {link.rightExtra && (
                     <span className="text-[10px] font-semibold text-slate-400 shrink-0">
                       {link.rightExtra}
@@ -515,6 +665,31 @@ export const EventView: React.FC<EventViewProps> = ({
           </div>
         }
       >
+        {/* Hero 9-Reel Slot Modal */}
+        {activeModal === 'nine-slot' && (
+          <HeroNineSlotModal
+            isOpen={activeModal === 'nine-slot'}
+            onClose={() => setActiveModal('none')}
+            sns={sns}
+            updateSns={updateSns}
+            playSfx={playSfx}
+            language={language}
+            addCard={addCard}
+            addItem={addItem}
+          />
+        )}
+
+        {/* Daily Hidden Hero Hunt Modal */}
+        {activeModal === 'daily-hidden' && (
+          <DailyHiddenHeroModal
+            isOpen={activeModal === 'daily-hidden'}
+            onClose={() => setActiveModal('none')}
+            updateSns={updateSns}
+            playSfx={playSfx}
+            language={language}
+          />
+        )}
+
         {/* Lucky Roulette Modal */}
         {activeModal === 'roulette' && (
           <LuckyRoulette

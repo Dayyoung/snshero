@@ -82,12 +82,12 @@ export function parseDuelMirrorParams(): { rankerName: string; rank: number; car
   const cardIds = cardIdsStr.split(',').map(s => parseInt(s.trim(), 10)).filter(n => !isNaN(n));
 
   const cards: CardData[] = cardIds.map(id => {
-    return CARD_DATABASE[id] || {
-      id,
+    return (CARD_DATABASE[id] as unknown as CardData) || ({
+      id: String(id),
       name: `Hero #${id}`,
       power: 8,
       element: 'FIRE'
-    } as unknown as CardData;
+    } as unknown as CardData);
   });
 
   if (cards.length === 0) return null;
