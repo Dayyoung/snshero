@@ -353,42 +353,41 @@ export const SEED_POSTS: RedditPost[] = [
   {
     id: 'post_snshero_gwent_launch',
     subreddit: 'gaming',
-    title: '[공식/출시] SNSHero.com 궨트게임 출시 (PC전용) ⚔️ - 더 위쳐 3 정통 오리지널 궨트 클래식 웹 브라우저 플레이!',
-    originalTitle: '[Official/Launch] SNSHero.com Gwent Classic Card Game Launched (PC Only) ⚔️ - Play Original Witcher 3 Gwent in Web Browser!',
+    title: '[공식/출시] SNSHero.com 궨트게임 출시 ⚔️ - 더 위쳐 3 정통 오리지널 궨트 클래식 웹 브라우저 플레이!',
+    originalTitle: '[Official/Launch] SNSHero.com Gwent Classic Card Game Launched ⚔️ - Play Original Witcher 3 Gwent in Web Browser!',
     author: 'SNSHero_Official',
     authorAvatar: 'https://snshero.com/favicon.png',
     createdAt: Date.now() - 1000 * 60 * 1,
     score: 189400,
     commentCount: 528,
-    flair: { text: '⚔️ 공식 출시 / Game Launch (PC Only)', bgColor: '#B91C1C', textColor: '#FFFFFF' },
+    flair: { text: '⚔️ 공식 출시 / Game Launch', bgColor: '#B91C1C', textColor: '#FFFFFF' },
     isPinned: true,
     isOriginalContent: true,
     upvoteRatio: 0.99,
     media: {
       type: 'link',
-      url: 'https://dayyoung.github.io/gwent/',
+      url: 'https://snshero.com/gwent',
       previewUrl: 'https://snshero.com/banner_snshero_legend.jpg',
-      domain: 'dayyoung.github.io',
+      domain: 'snshero.com',
       aspectRatio: 16 / 9,
     },
     body: `안녕하세요, 게이머 여러분! **SNS히어로(SNSHero)** 공식 개발팀입니다.
-전 세계 게이머들의 가슴을 뛰게 했던 전설의 미니게임, **더 위쳐 3(The Witcher 3: Wild Hunt) 오리지널 궨트(Gwent Classic)**가 SNSHero.com PC 전용 웹 브라우저 게임으로 공식 출시되었습니다! ⚔️
+전 세계 게이머들의 가슴을 뛰게 했던 전설의 미니게임, **더 위쳐 3(The Witcher 3: Wild Hunt) 오리지널 궨트(Gwent Classic)**가 SNSHero.com 웹 브라우저 게임으로 공식 출시되었습니다! ⚔️
 
 ---
 
-### 🌐 즉시 플레이 링크 (PC 웹 브라우저 전용)
-- 🎮 **궨트 게임 바로 플레이하기**: https://dayyoung.github.io/gwent/
+### 🌐 즉시 플레이 링크
+- 🎮 **궨트 게임 바로 플레이하기**: https://snshero.com/gwent
 - 📱 **SNSHero 3x3 모바일 카드 배틀**: https://snshero.com/
 - 🐙 **오픈소스 GitHub 리포지토리**: https://github.com/Dayyoung/snshero
 - 📺 **바이브코딩 웹게임 개발 강의**: https://www.youtube.com/playlist?list=PLV8H2-pD9vH0
 
 ---
 
-### 💻 PC 전용(PC Only) 플레이 안내 & 최적 환경
-- **화면 비율**: 16:9 가로 화면 (권장 해상도: **1920 × 1080** 이상 데스크톱 환경)
-- **조작 방식**: 마우스 클릭 & 드래그로 쾌적하게 조작 가능
+### 💻 플레이 안내 & 최적 환경
+- **화면 비율**: 16:9 가로 화면 (권장 해상도: **1920 × 1080**)
+- **조작 방식**: 터치 & 마우스 클릭으로 간편하게 조작 가능
 - **전체화면 추천**: 브라우저에서 \`F11\` 키를 눌러 전체화면 모드로 플레이하시면 위쳐 3 인게임 콘솔/PC 플레이 감각을 100% 동일하게 만끽하실 수 있습니다!
-- ⚠️ *모바일 기기에서는 16:9 와이드 비율 특성상 화면 크기가 축소되므로, PC 데스크톱 브라우저 접속을 강력히 권장합니다.*
 
 ---
 
@@ -424,7 +423,7 @@ export const SEED_POSTS: RedditPost[] = [
 ---
 
 위쳐의 심장박동을 깨우는 카드 한 판의 여유! 지금 바로 브라우저를 켜고 첫 라운드를 시작해보세요! 🃏
-👉 **지금 즉시 플레이**: https://dayyoung.github.io/gwent/`,
+👉 **지금 즉시 플레이**: https://snshero.com/gwent`,
   },
   {
     id: 'post_snshero_game_intro_guide',

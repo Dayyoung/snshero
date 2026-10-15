@@ -2,7 +2,31 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
-## [2026-10-15 11:35 KST] [기능연동] /gwent 더 위쳐 3 카드 배틀 서빙 연동 및 /public 디렉토리 전체 와일드카드 정적 서빙 지원 완료
+## [2026-10-15 11:41 KST] [Reddit/출시] 궨트게임 출시 글 (PC전용) 문구 제거 및 snshero.com/gwent 링크 변경 반영 완료
+- **요청 사항**:
+  - `[공식/출시] SNSHero.com 궨트게임 출시 (PC전용) ⚔️ - 더 위쳐 3 정통 오리지널 궨트 클래식 웹 브라우저 플레이!`
+  - `(PC전용)` 단어 제거하고 링크를 아래 링크로 변경: `https://snshero.com/gwent`
+  - `/git-push`
+- **수정 및 개선 내역**:
+  1. **`/reddit` 커뮤니티 최상단 고정 공지 포스트 갱신 ([`src/data/redditSeedData.ts`](file:///Users/dayyoung/project/snshero/src/data/redditSeedData.ts))**:
+     - 제목: `[공식/출시] SNSHero.com 궨트게임 출시 ⚔️ - 더 위쳐 3 정통 오리지널 궨트 클래식 웹 브라우저 플레이!` (`(PC전용)` 문구 제거).
+     - 태그: `⚔️ 공식 출시 / Game Launch` (`(PC Only)` 제거).
+     - 링크: `https://dayyoung.github.io/gwent/` ➔ `https://snshero.com/gwent` 로 전면 변경 (본문 내 바로가기 링크 및 media url 동기화).
+     - 본문 설명 문구 정돈 (PC 전용 제약을 제거하고 브라우저 지원 최적화 안내로 개선).
+  2. **정적 SEO 뉴스룸 피드 렌더러 연동 ([`scripts/generate-news-seo.ts`](file:///Users/dayyoung/project/snshero/scripts/generate-news-seo.ts))**:
+     - `/reddit` 정적 색인 페이지 상단 궨트 카드 컴포넌트에서 `(PC전용)` 배지 및 문구 제거.
+     - 즉시 플레이 링크를 `https://snshero.com/gwent` 로 변경.
+  3. **홈 카테고리 허브 모달 바로가기 갱신 ([`src/components/HomeCategoryHubModal.tsx`](file:///Users/dayyoung/project/snshero/src/components/HomeCategoryHubModal.tsx))**:
+     - `[🎮 게임 아레나]` 모달: `[궨트(Gwent) 클래식 웹게임]`으로 타이틀 변경 및 링크를 `https://snshero.com/gwent`로 연결.
+     - `[📚 미디어 라운지]` 모달: `[SNSHero.com 궨트게임]`으로 타이틀 변경 및 링크를 `https://snshero.com/gwent`로 연결.
+  4. **빌드 및 배포 검증**:
+     - `npx tsc --noEmit` & `npm run build` 통과.
+     - `public/reddit/index.html` 및 `public/r/news/index.html` 내 링크 및 문구 갱신 확인.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 Errors (TypeScript 컴파일 무결점 통과).
+  - `npm run build`: Vite 6 프로덕션 번들 정상 빌드 완료 (`Post-build completed successfully`).
+  - 로컬 Git 커밋 및 원격 저장소(`origin main`) 푸시 완료 (`/git-push`).
+  - 연동 구글 폼 완료 보고서 제출 완료 (`submit_report.py`).
 - **요청 사항**:
   - "/public/gwent 게임을 넣어두었어. /gwent 로 접속하면 플레이 하게 해줘. /public 폴더에 존재하는 파일/폴더들은 와일드카드로 다 접근 가능하게 해줘."
 - **수정 및 개선 내역**:

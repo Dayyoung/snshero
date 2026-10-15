@@ -180,7 +180,7 @@ export class RedditApiService {
     timeFilter: TimeFilterType = 'today',
     userState?: RedditUserDataState
   ): RedditPost[] {
-    // 1. 공식 상단 고정(Pinned) 포스트: 궨트 게임 출시(PC전용) 최우선 고정 + SNSHero 게임 소개 및 가이드
+    // 1. 공식 상단 고정(Pinned) 포스트: 궨트 게임 출시 최우선 고정 + SNSHero 게임 소개 및 가이드
     const officialPinnedPosts = SEED_POSTS.filter((p) =>
       Boolean(p.isPinned && (p.id === 'post_snshero_gwent_launch' || p.id === 'post_snshero_game_intro_guide'))
     );
