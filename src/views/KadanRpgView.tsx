@@ -26,8 +26,8 @@ import type { KadanBattleResult } from '../lib/kadanRpgBattle';
 import { KADAN_RPG_NOVEL_SCRIPTS } from '../content/kadanRpgNovelScript';
 import { AdSenseBanner } from '../components/AdSenseBanner';
 import { MobileCardPlayScreen } from './MobileCardPlayScreen';
-import { isDemoPlayActive, setDemoPlayStep } from '../lib/demoPlayService';
-import { isRankingDiverted, handleDivertedMatchResult } from '../lib/rankingDivertService';
+import { isDemoPlayActive, setDemoPlayStep, stopDemoPlay } from '../lib/demoPlayService';
+import { isRankingDiverted, handleDivertedMatchResult, endRankingDivert } from '../lib/rankingDivertService';
 
 interface KadanRpgViewProps {
   isAdRemoved?: boolean;
@@ -194,6 +194,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
 
   const isComplete = !nextEvent;
   const [isEndingDismissed, setIsEndingDismissed] = useState(false);
+  const [dismissedEventId, setDismissedEventId] = useState<string | null>(null);
   const isAtTarget = sameTile(heroTile, nextEvent?.tile ?? null);
   const hasDialog = Boolean(activeEvent && activeEvent.nodeType !== 'enemy' && !battleEvent && !rewardEvent);
   const hasBattle = Boolean(activeEvent && activeEvent.nodeType === 'enemy' && !battleEvent && !rewardEvent);
@@ -224,6 +225,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
     const region = getKadanRpgRegion(nextEvent?.regionId ?? progress.currentRegionId);
     setHeroTile(clampTile(progress.lastTile, region.width, region.height));
     setTargetTile(nextEvent?.tile ?? null);
+    setDismissedEventId(null);
   }, [nextEvent, progress.currentChapterId, progress.currentRegionId, progress.rebirthLevel]);
 
   useEffect(() => {
@@ -268,13 +270,18 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
 
     const arrivedEvent = regionEvents.find((event) => sameTile(event.tile, targetTile));
     if (arrivedEvent) {
+      if (dismissedEventId === arrivedEvent.id) {
+        setTargetTile(null);
+        return;
+      }
       openEvent(arrivedEvent);
       setTargetTile(null);
     }
-  }, [activeEvent, battleEvent, heroTile, isMoving, openEvent, regionEvents, rewardEvent, targetTile]);
+  }, [activeEvent, battleEvent, dismissedEventId, heroTile, isMoving, openEvent, regionEvents, rewardEvent, targetTile]);
 
   const handleEventPress = useCallback((event: KadanRpgEvent) => {
     pauseForManualInput();
+    setDismissedEventId(null);
     if (sameTile(heroTile, event.tile)) {
       openEvent(event);
       setTargetTile(null);
@@ -285,6 +292,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
 
   const handleTilePress = useCallback((tile: KadanRpgTile) => {
     pauseForManualInput();
+    setDismissedEventId(null);
     setTargetTile(clampTile(tile, currentRegion.width, currentRegion.height));
   }, [currentRegion.height, currentRegion.width, pauseForManualInput]);
 
@@ -374,7 +382,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
       if (nextEvent) moveToEvent(nextEvent);
     },
     onInteractTarget: () => {
-      if (nextEvent) openEvent(nextEvent);
+      if (nextEvent && dismissedEventId !== nextEvent.id) openEvent(nextEvent);
     },
     onAdvanceDialog: () => {
       if (!activeEvent) return;
@@ -413,10 +421,19 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
     ];
 
   const handleCloseDialog = useCallback(() => {
+    if (activeEvent) {
+      setDismissedEventId(activeEvent.id);
+    }
     setActiveEvent(null);
     setTargetTile(null);
     setAutoMode(false);
-  }, [setAutoMode]);
+    if (isDemoPlayActive()) {
+      stopDemoPlay();
+    }
+    if (isRankingDiverted()) {
+      endRankingDivert(false);
+    }
+  }, [activeEvent, setAutoMode]);
 
   const handleReincarnate = useCallback(() => {
     setIsEndingDismissed(false);
@@ -550,6 +567,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
               onComplete={() => completeActiveEvent(activeEvent)}
               onClose={handleCloseDialog}
               onToggleAutoMode={() => setAutoMode(!progress.autoMode)}
+              onNavigate={onNavigate}
             />
           )}
 

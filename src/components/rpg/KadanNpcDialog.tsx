@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Bot, Box, CheckCircle2, FastForward, MessageCircle, Pause, Sparkles, Swords } from 'lucide-react';
+import { ArrowLeft, Bot, Box, CheckCircle2, FastForward, Home, MessageCircle, Pause, Sparkles, Swords, X } from 'lucide-react';
 import { cn, getAssetUrl, getCardSpriteStyle } from '../../lib/utils';
 import { t } from '../../lib/i18n';
 import { CARD_DATABASE } from '../../cardDatabase';
-import type { Language } from '../../types';
+import type { Language, ViewType } from '../../types';
 import type { KadanRpgEvent } from '../../content/kadanRpgStory';
 import { KADAN_RPG_NOVEL_SCRIPTS } from '../../content/kadanRpgNovelScript';
 
@@ -19,6 +19,7 @@ interface KadanNpcDialogProps {
   onClaimReward: () => void;
   onComplete: () => void;
   onClose: () => void;
+  onNavigate?: (view: ViewType) => void;
   onToggleAutoMode?: () => void;
 }
 
@@ -47,6 +48,7 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
   onClaimReward,
   onComplete,
   onClose,
+  onNavigate,
   onToggleAutoMode,
 }) => {
   const Icon = iconByType[event.nodeType];
@@ -204,9 +206,20 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
               </span>
             )}
           </div>
-          <span className="text-[10px] font-mono text-slate-400 font-bold tracking-widest uppercase hidden sm:inline-block">
-            [STORY DIALOGUE]
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-mono text-slate-400 font-bold tracking-widest uppercase hidden sm:inline-block">
+              [STORY DIALOGUE]
+            </span>
+            <button
+              type="button"
+              onClick={onClose}
+              className="min-h-[44px] min-w-[44px] flex items-center justify-center p-1.5 rounded-sm hover:bg-slate-800 text-slate-400 hover:text-white transition-colors cursor-pointer"
+              aria-label={t('kadan_rpg_close', language) || 'Close'}
+              title={t('kadan_rpg_close', language) || 'Close'}
+            >
+              <X size={18} />
+            </button>
+          </div>
         </div>
 
         {/* 대사 본문 & 팝업 내부 캐릭터 포트레이트 */}
@@ -313,12 +326,26 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
           </div>
 
           <div className="flex items-center gap-2">
+            {onNavigate && (
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  onNavigate('home');
+                }}
+                className="min-h-10 rounded-lg border border-slate-700 bg-slate-800/80 hover:bg-slate-700 px-3 py-2 text-xs font-bold text-slate-300 transition-all hover:text-white active:scale-95 cursor-pointer flex items-center gap-1.5"
+                title={language === 'ko' ? '로비(홈)로 나가기' : 'Exit to Home'}
+              >
+                <Home size={14} className="text-indigo-400" />
+                <span>{language === 'ko' ? '로비로 나가기' : 'Exit to Home'}</span>
+              </button>
+            )}
             <button
               type="button"
               onClick={onClose}
-              className="min-h-10 rounded-lg border border-slate-700 bg-slate-800 px-4 py-2 text-xs font-bold text-slate-300 transition-all hover:bg-slate-700 active:scale-95 cursor-pointer"
+              className="min-h-10 rounded-lg border border-slate-700 bg-slate-800 px-3.5 py-2 text-xs font-bold text-slate-300 transition-all hover:bg-slate-700 active:scale-95 cursor-pointer flex items-center gap-1"
             >
-              {t('kadan_rpg_close', language)}
+              <span>{t('kadan_rpg_close', language)}</span>
             </button>
             <button
               type="button"
