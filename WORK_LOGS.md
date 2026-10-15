@@ -2,6 +2,30 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-15 09:07 KST] [GoogleNews] 최신 정리된 구글 뉴스 스프레드시트(2PACX-1vQkHP5pQDdSMrx3f0GyUz...) 연동 및 캐시/빌드 갱신
+- **요청 사항**:
+  - `https://docs.google.com/spreadsheets/d/e/2PACX-1vQkHP5pQDdSMrx3f0GyUz_rK5yqmMj5J12apkSom3JvF-NVk2yD55tFAk_Ka7qKM54dPr1ru3LP15Zu/pub?output=csv`
+  - "구글뉴스는 이 정리된 문서로 변경해줘."
+- **수정 및 개선 내역**:
+  1. **구글 뉴스 공개 CSV 엔드포인트 변경 ([`src/lib/reddit/googleNewsSheetService.ts`](file:///Users/dayyoung/project/snshero/src/lib/reddit/googleNewsSheetService.ts))**:
+     - `GOOGLE_NEWS_PUB_CSV_URL`을 새 스프레드시트 CSV 링크로 변경.
+     - 캐시 키 버전을 `v8`로 업그레이드하고 브라우저 로컬스토리지 내 구버전 캐시(v1~v7) 자동 정리 로직 추가.
+     - `parseCsv()`에 7개 컬럼 스마트 헤더 감지(수집일시, 카테고리, 키워드, 제목, 본문 요약, 이미지 URL, 원문 링크) 완벽 지원.
+  2. **Vite 개발 서버 프록시 동기화 ([`vite.config.ts`](file:///Users/dayyoung/project/snshero/vite.config.ts))**:
+     - `/api/reddit/google-news-sheet` 프록시 대상 URL을 새 스프레드시트 CSV로 일치시킴.
+  3. **초기 시드 데이터 및 모델 확장 ([`src/data/googleNewsSeedData.ts`](file:///Users/dayyoung/project/snshero/src/data/googleNewsSeedData.ts))**:
+     - `RawGoogleNewsItem`에 `category?: string; keywords?: string;` 필드 추가.
+     - `convertGoogleNewsToRedditPost()`에서 기사 카테고리를 flair 뱃지에 반영.
+     - `INITIAL_GOOGLE_NEWS`를 새 스프레드시트의 2026-10-15 최신 AI/SI 기사 30건으로 교체.
+  4. **로컬 정적 백업 및 SEO 정적 색인 빌더 갱신 ([`public/data/google-news.csv`](file:///Users/dayyoung/project/snshero/public/data/google-news.csv), [`scripts/generate-news-seo.ts`](file:///Users/dayyoung/project/snshero/scripts/generate-news-seo.ts))**:
+     - `public/data/google-news.csv`에 새 스프레드시트의 100건 데이터 전수 다운로드 및 저장.
+     - `scripts/generate-news-seo.ts`를 실행하여 `sitemap-news.xml`, `news-feed.xml`, `rss.xml`, 100건 기사별 정적 HTML(`/r/news/comments/...`) 및 `/reddit` 메인 피드 정적 HTML 전면 재생성.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 Errors (TypeScript 컴파일 무결점 통과).
+  - `npm run build`: Vite 6 프로덕션 번들 정상 빌드 완료 (`built in 11.80s`, post-build SEO 100건 생성 확인).
+  - 로컬 Git 커밋 완료.
+  - 연동 구글 폼 완료 보고서 제출 완료 (`submit_report.py`).
+
 ## [2026-10-15 08:22 KST] [광고/마케팅] Google Ads 공식 구매 전환 이벤트(AW-980426001/5pbgCI2H9ckcEJG6wNMD) 연동 및 검증 완료
 - **요청 사항**:
   - Google Ads 구매 전환 추적 태그 2종(Google 기본 태그 및 이벤트 스니펫 `AW-980426001/5pbgCI2H9ckcEJG6wNMD`) 웹사이트 설치 및 연동 요청.

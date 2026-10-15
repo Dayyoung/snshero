@@ -197,7 +197,7 @@ export default defineConfig(({mode}) => {
 
               // Google News Spreadsheet proxy (bypasses browser CORS restrictions)
               if (decodedUrl === '/api/reddit/google-news-sheet') {
-                const pubCsvUrl = `https://docs.google.com/spreadsheets/d/e/2PACX-1vR4QwhuPkfx2rfFRi021ppKfOv9mLUwZg82C80qVYqJqse4F7Z3Un0VYaFgTwofAXuboqc-yJPg6hKt/pub?output=csv&_t=${Date.now()}`;
+                const pubCsvUrl = `https://docs.google.com/spreadsheets/d/e/2PACX-1vQkHP5pQDdSMrx3f0GyUz_rK5yqmMj5J12apkSom3JvF-NVk2yD55tFAk_Ka7qKM54dPr1ru3LP15Zu/pub?output=csv&_t=${Date.now()}`;
                 fetch(pubCsvUrl, { redirect: 'follow' })
                   .then(async (resp) => {
                     if (!resp.ok) {

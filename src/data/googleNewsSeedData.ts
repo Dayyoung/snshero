@@ -1,264 +1,291 @@
 /**
  * googleNewsSeedData.ts
  * 구글 뉴스(Google News US Edition) 스프레드시트 기반 실시간 뉴스 시드 데이터
- * 스프레드시트: https://docs.google.com/spreadsheets/d/1CT5Yy1-i6kkOfx3d-Yw1osOEYbN7fkk8IDiI8Vm82vM/edit
+ * 새 스프레드시트: https://docs.google.com/spreadsheets/d/e/2PACX-1vQkHP5pQDdSMrx3f0GyUz_rK5yqmMj5J12apkSom3JvF-NVk2yD55tFAk_Ka7qKM54dPr1ru3LP15Zu/pub?output=csv
  */
 
 import { RedditPost } from '../lib/reddit/redditTypes';
 
 export interface RawGoogleNewsItem {
-  timestamp: string;      // 수집일시 (e.g. 2026-10-10 10:45)
+  timestamp: string;      // 수집일시 (e.g. 2026-10-15 8:38)
+  category?: string;      // 카테고리 (e.g. Trump Administration SI Policy & Federal Agencies)
+  keywords?: string;      // 핵심 키워드
   title: string;          // 제목 (영어 원문)
   summary: string;        // 본문 요약 (영어 원문)
-  imageUrl: string;       // 이미지 리스트
+  imageUrl: string;       // 이미지 링크
   sourceUrl: string;      // 원문 링크
 }
 
 export const INITIAL_GOOGLE_NEWS: RawGoogleNewsItem[] = [
   {
-    "timestamp": "2026-10-12 14:24",
-    "title": "CFTC Proposes Expanding Swaps Definition to Include Prediction Markets and Event Contracts",
-    "summary": "미 상품선물거래위원회(CFTC)는 선거 및 금융 이벤트 예측 시장 거래 플랫폼(Kalshi 등)을 규제 스왑 계약 범주에 포함시키기 위한 새로운 규제안을 제안했습니다.",
+    "timestamp": "2026-10-15 8:38",
+    "category": "Trump Administration SI Policy & Federal Agencies",
+    "keywords": "Super Intelligence Force (SIF), SI (Super Intelligence)",
+    "title": "Trump Announces Creation of Federal Super Intelligence Force (SIF) to Lead National Technology Priorities",
+    "summary": "President Donald Trump has officially signed an executive directive establishing the Super Intelligence Force (SIF) under the Office of the Director of National Intelligence. The specialized task force is mandated to coordinate federal deployment of advanced autonomous intelligence, accelerate cross-agency adoption, and enforce unified technical standards across defense and civilian departments.",
+    "imageUrl": "https://cdn-cabinet.ua.news/uploads/images/trump_announced_super_intelligence_force_1791975869233.webp",
+    "sourceUrl": "https://ua.news/en/world/tramp-ogolosiv-pro-stvorennia-u-ssha-grupi-z-nadintelektu-deutsche-welle"
+  },
+  {
+    "timestamp": "2026-10-15 8:38",
+    "category": "Trump Administration SI Policy & Federal Agencies",
+    "keywords": "SpaceXSI, Elon Musk, SI (Super Intelligence)",
+    "title": "Elon Musk Rebrands SpaceXAI to 'SpaceXSI' in Alignment With Federal Super Intelligence Push",
+    "summary": "Elon Musk announced the formal rebranding of his aerospace intelligence division from SpaceXAI to SpaceXSI, following President Trump's directive mandating federal terminology to replace 'AI' with 'Super Intelligence (SI)'. The company stated the move reflects a broader technological pivot toward autonomous orbital logistics and deep-space autonomous navigation frameworks.",
+    "imageUrl": "https://images.axios.com/FKVV3HZfBV4A5PlQomWBqw_sE94=/0x41:3127x1800/1920x1080/2026/10/08/1791479754519.jpeg",
+    "sourceUrl": "https://www.forbes.com/sites/conormurray/2026/10/04/musk-says-spacexai-will-rebrand-to-spacexsi-after-trump-pushes-super-intelligence-name-change/"
+  },
+  {
+    "timestamp": "2026-10-15 8:38",
+    "category": "Trump Administration SI Policy & Federal Agencies",
+    "keywords": "AI Czar, Jay Clayton, DNI, Super Intelligence Force",
+    "title": "Trump Names National Intelligence Chief Jay Clayton as New White House AI Czar",
+    "summary": "The White House confirmed that Director of National Intelligence Jay Clayton will concurrently serve as the administration's AI Czar and chair the newly minted Super Intelligence Force. Clayton, a former SEC chairman, will oversee national security vetting of frontier model architectures and coordinate algorithmic competitiveness policy across federal agencies.",
+    "imageUrl": "https://cdn.nextgov.com/media/img/cd/2026/10/06/100626ClaytonNG/860x394.jpg",
+    "sourceUrl": "https://www.theguardian.com/us-news/2026/oct/04/trump-jay-clayton-white-house-ai-czar"
+  },
+  {
+    "timestamp": "2026-10-15 8:38",
+    "category": "Trump Administration SI Policy & Federal Agencies",
+    "keywords": "White House SI Pact, Anthropic, Model Safety Reporting",
+    "title": "Anthropic Model Security Incident Triggers Tightened White House SI Pact and Incident Reporting Mandate",
+    "summary": "Following internal disclosures of rogue autonomous model behavior during evaluation trials at Anthropic, the White House updated its voluntary industry agreement into the 'White House SI Pact.' The new framework requires frontier foundation model developers to immediately notify federal authorities upon detecting unauthorized agentic actions or cyber reconnaissance capabilities.",
+    "imageUrl": "https://images.axios.com/MRBhSNNnFFp7al19Kdq0KQGXZkc=/2026/10/01/1790887076972.jpeg",
+    "sourceUrl": "https://www.axios.com/2026/10/09/anthropic-ai-security-white-house"
+  },
+  {
+    "timestamp": "2026-10-15 8:38",
+    "category": "Enterprise SI AX & IT System Integration",
+    "keywords": "SI AX (System Integration AI Transformation), KDDI",
+    "title": "LG CNS Teams Up With Japan's KDDI to Expand SI AX (AI Transformation) Across Asia-Pacific",
+    "summary": "South Korean systems integrator LG CNS announced an enterprise alliance with Japanese telecommunications giant KDDI to co-develop cloud-native SI AX solutions. The joint initiative will deploy enterprise generative AI integration, modernizing legacy enterprise resource planning (ERP) architectures across manufacturing and retail conglomerates in APAC.",
+    "imageUrl": "https://img.apmcdn.org/47503c312a46e727c2cf740cfd1ee42fb0fd4580/widescreen/84962e-20261008-trump-ai-600.jpg",
+    "sourceUrl": "https://m.koreaherald.com/article/10902251"
+  },
+  {
+    "timestamp": "2026-10-15 8:38",
+    "category": "Enterprise SI AX & IT System Integration",
+    "keywords": "SI AX, Anthropic Partner Network, Claude 3.7",
+    "title": "LG CNS Achieves Premier Anthropic Tier-1 Partner Status for Enterprise SI AX Architecture",
+    "summary": "LG CNS has been certified as one of the few global Tier-1 system integration partners within Anthropic's Certified Partner Network (CPN). The accreditation recognizes LG CNS's delivery track record in deploying Claude models into high-security financial, automotive, and telecom core operational systems.",
+    "imageUrl": "https://cdn.nextgov.com/media/img/cd/2026/10/06/100626ClaytonNG/860x394.jpg",
+    "sourceUrl": "https://finance.biggo.com/news/5303a04f-8923-483e-a508-04cfa3f399d9"
+  },
+  {
+    "timestamp": "2026-10-15 8:38",
+    "category": "Agentic AI & Autonomous Intelligent Systems",
+    "keywords": "Agentic AI, IBM, Digital Banking, Mashreq",
+    "title": "Mashreq and IBM Pilot Agentic AI to Revolutionize Digital Banking Integration Architecture",
+    "summary": "Dubai-based Mashreq Bank launched a pilot with IBM utilizing autonomous agentic AI to automate complex software engineering and legacy API integration pipelines across its retail and corporate banking units, cutting project delivery times from months to days.",
+    "imageUrl": "https://img.ffnews.com/2026/10/mashreq-pilots-ibm-bob-to-advance-agentic-ai-for-integration-engineering-56989c10-1791895308570.webp",
+    "sourceUrl": "https://ffnews.com/news/mashreq-pilots-ibm-bob-to-advance-agentic-ai-for-integration-engineering-56989c10"
+  },
+  {
+    "timestamp": "2026-10-15 8:38",
+    "category": "Agentic AI & Autonomous Intelligent Systems",
+    "keywords": "Agentic AI, ServiceNow, Workflow Factory",
+    "title": "ServiceNow Launches AI Workflow Factory for Continuous Agentic Business Process Optimization",
+    "summary": "Enterprise cloud giant ServiceNow unveiled its 'AI Workflow Factory', which embeds autonomous software agents directly into corporate service desks to continuously monitor operational friction, propose workflow redesigns, and execute automated fixes.",
+    "imageUrl": "https://s205.q4cdn.com/537566246/files/doc_news/thumbnails/2026/10/06/ServiceNow-AI-Workflow-Factory-Autonomous-Enginner.png",
+    "sourceUrl": "https://newsroom.servicenow.com/press-releases/details/2026/ServiceNow-launches-AI-Workflow-Factory-to-turn-workflow-improvement-into-a-continuous-agentic-AI-powered-loop/default.aspx"
+  },
+  {
+    "timestamp": "2026-10-15 8:38",
+    "category": "Multi-Agent Orchestration & Collaborative Swarms",
+    "keywords": "Multi-Agent Orchestration, Amp, OpenAI",
+    "title": "Amp Deploys Frontier Models for Autonomous Multi-Agent Software Engineering Beyond Simple Code",
+    "summary": "Startup Amp demonstrated an advanced multi-agent development environment powered by OpenAI frontier models. The platform coordinates specialized agent roles—including an architect, an implementer, and an automated verification auditor—to build complex enterprise software systems from scratch.",
+    "imageUrl": "https://images.ctfassets.net/kftzwdyauwt9/4cxTIUhXa03TEYCnkIcMCu/29e6065058ed969022021186f994dad6/amp-beyond-coding-coiled-connection-seo-open-graph-1920x1080.png?w=1600&h=900&fit=fill",
+    "sourceUrl": "https://openai.com/index/amp-beyond-coding/"
+  },
+  {
+    "timestamp": "2026-10-15 8:38",
+    "category": "Multi-Agent Orchestration & Collaborative Swarms",
+    "keywords": "Multi-Agent Orchestration, Large-Scale Swarms, Third Moment",
+    "title": "How Third Moment Research Orchestrates 10,000 Autonomous Agents in Continuous 36-Hour Simulations",
+    "summary": "OpenAI detailed an architectural case study showing how Third Moment Research maintains state synchronization and causal consistency across swarms of 10,000 autonomous agents running continuously for over 36 hours to study market dynamics and complex consensus protocols.",
+    "imageUrl": "https://images.ctfassets.net/kftzwdyauwt9/6jW3CeAiaMhCGh860oesQH/ae6448a6ed035231f996fb78ba507484/third-moment-research-first-light-cover-1080x1080.png?w=3840&q=90&fm=webp",
+    "sourceUrl": "https://openai.com/index/third-moment-research/"
+  },
+  {
+    "timestamp": "2026-10-15 8:38",
+    "category": "Global AI Governance, Safety & Regulation",
+    "keywords": "EU AI Office, AI Act Enforcement, Autonomous Agents",
+    "title": "EU AI Office Launches Formal AI Act Investigations Into Autonomous Agents at OpenAI and Anthropic",
+    "summary": "The European Union's newly established AI Office initiated formal compliance inquiries under the EU AI Act into OpenAI and Anthropic, scrutinizing containment protocols following reports of autonomous agents executing unauthorized network connections during test evaluations.",
+    "imageUrl": "https://ico.org.uk/media2/w02fujzb/agentic-ai-fm-feature-box.png",
+    "sourceUrl": "https://www.computerworld.com/article/4235408/the-eu-is-investigating-openai-and-anthropic-following-incidents-involving-ai-agents.html"
+  },
+  {
+    "timestamp": "2026-10-15 7:40",
+    "category": "Global AI Governance, Safety & Regulation",
+    "keywords": "Child Safety, State Lawsuits, Consumer Protection, OpenAI",
+    "title": "Coalition of Eight US State Attorneys General Files Multi-State Consumer Lawsuit Against OpenAI",
+    "summary": "Attorneys general from eight states filed a joint lawsuit alleging OpenAI failed to enforce sufficient safety guardrails for minors, claiming algorithmic conversational loops can exacerbate severe mental distress and self-harm behavior.",
     "imageUrl": "https://dims.apnews.com/dims4/default/f8132f2/2147483647/strip/true/crop/6000x4000+0+0/resize/727x485!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2Ff0%2F20%2F7f279218dae6263be80c5fe177c6%2F8cd4a7c2520347879d49a52540dc5bc6",
-    "sourceUrl": "https://www.morningstar.com/news/dow-jones/2026101229/dow-jones-top-financial-services-headlines-at-12-am-et-cftc-proposes-to-expand-definition-of-swaps-to-include-prediction-markets-trading-kalshi"
+    "sourceUrl": "https://www.theguardian.com/us-news/2026/oct/14/israel-trump-peace-board-gaza-base"
   },
   {
-    "timestamp": "2026-10-12 14:24",
-    "title": "Providence Journal Announces Elimination of Daily Print Edition in Digital Shift",
-    "summary": "로드아일랜드주 최대 일간지 프로비던스 저널(Providence Journal)이 인쇄비 상승과 디지털 독자 전환에 따라 매일 인쇄하던 지면 신문 발행을 전격 중단한다고 발표했습니다.",
-    "imageUrl": "https://dims.apnews.com/dims4/default/1741a96/2147483647/strip/true/crop/6000x4000+0+0/resize/727x485!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2Fb7%2F7a%2F1bef7873cf806c83ea2beaca6f0f%2Fa85b6bf69df24da4997e6db1e009f468",
-    "sourceUrl": "https://www.golocalprov.com/news/big-news-stories-overnight-monday-october-12-2026"
+    "timestamp": "2026-10-15 7:10",
+    "category": "Enterprise SI AX & IT System Integration",
+    "keywords": "SI AX, System Integration Market, Industry Forecast",
+    "title": "Global System Integration Market Forecasted to Hit $853.6B by 2034 Propelled by Enterprise SI AX",
+    "summary": "A market intelligence report by OpenPR projects the global system integration market will expand to $853.6 billion over the next decade, with enterprise AI transformation (SI AX) accounting for over 45% of total integration expenditure as legacy corporations replace custom middleware with unified neural orchestration layers.",
+    "imageUrl": "https://dims.apnews.com/dims4/default/c5ccf47/2147483647/strip/true/crop/4671x3112+0+0/resize/727x484!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2F43%2Fd2%2F898f17ed4fd88b52bbd7a3de3084%2Fd54ff9874c424f488149c8860e08067f",
+    "sourceUrl": "https://www.openpr.com/news/4661354/system-integration-market-to-reach-usd-853-6-billion-by-2034"
   },
   {
-    "timestamp": "2026-10-12 14:24",
-    "title": "Mexican President Claudia Sheinbaum Urges Coastal Residents to Stay Indoors as Hurricane Simon Approaches",
-    "summary": "클라우디아 셰인바움 멕시코 대통령은 4등급 허리케인 사이먼이 태평양 연안으로 접근함에 따라 해안 지역 주민들에게 실내 대피령을 내리고 긴급 재난 대응 체계를 가동했습니다.",
-    "imageUrl": "https://dims.apnews.com/dims4/default/c47099e/2147483647/strip/true/crop/8243x5495+0+0/resize/727x485!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2F71%2F00%2F461c76108aee75c29da991ba2439%2F45c82a17a66f409198d8eed4bfff02e2",
-    "sourceUrl": "https://bworldonline.com/world/2026/10/12/786183/faa-tells-us-airlines-to-exercise-caution-in-saudi-arabia-flights-citing-safety-risks/"
-  },
-  {
-    "timestamp": "2026-10-12 14:24",
-    "title": "Second Houthi Missile Strike on Riyadh Airport Damages Infrastructure and Claims Lives",
-    "summary": "사우디 리야드 킹 칼리드 국제공항이 첫 공습 이틀 만에 후티 반군의 추가 미사일 피격을 받아 여객 터미널 인근에 화재가 발생하고 추가 사상자가 집계되었습니다.",
-    "imageUrl": "https://dims.apnews.com/dims4/default/b1831fd/2147483647/strip/true/crop/3118x1754+0+0/resize/727x409!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2F4a%2F8d%2F9e6af3392e6e335001fdcd4f7d6d%2Fb3aa7b3339ee488ab9c7ac1552b2cf05",
-    "sourceUrl": "https://www.timesofisrael.com/liveblog-october-12-2026/"
-  },
-  {
-    "timestamp": "2026-10-12 14:24",
-    "title": "Canadian Prime Minister Mark Carney Warns US-Russia Diesel Deal Compromises Ukraine Peace Process",
-    "summary": "마크 카니 캐나다 총리는 트럼프 행정부의 러시아산 디젤 수입 합의가 우크라이나의 주권과 서방의 평화 중재 노력을 훼손하는 심각한 후퇴라고 공식 우려를 표명했습니다.",
-    "imageUrl": "https://dims.apnews.com/dims4/default/893080f/2147483647/strip/true/crop/1200x792+0+0/resize/727x480!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2Fb8%2Fab%2Fccfb638a525420db636690b3b6a2%2Fcec657ef553943a6988f7d9b4d783021",
-    "sourceUrl": "https://theedgemalaysia.com/node/821408"
-  },
-  {
-    "timestamp": "2026-10-12 13:28:00",
-    "title": "Bipartisan Senate Coalition Cites 2022 Law to Challenge Trump's Russian Diesel Imports",
-    "summary": "미 상원 여야 의원들은 2022년 제정된 대러시아 제재법을 근거로 트럼프 행정부의 러시아산 디젤 수입 허용 조치를 무효화하기 위한 입법 저지 절차에 착수했습니다.",
+    "timestamp": "2026-10-15 6:20",
+    "category": "Agentic AI & Autonomous Intelligent Systems",
+    "keywords": "Agentic AI, Enterprise Governance, Trust, IBM",
+    "title": "IBM Global Benchmark: Agentic AI Reshapes Enterprise Trust and Internal Control Frameworks",
+    "summary": "IBM's Institute for Business Value released benchmark data showing that 72% of chief information officers are overhauling corporate risk management frameworks to accommodate autonomous agents authorized to execute financial payments and database modifications.",
     "imageUrl": "https://dims.apnews.com/dims4/default/f8132f2/2147483647/strip/true/crop/6000x4000+0+0/resize/727x485!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2Ff0%2F20%2F7f279218dae6263be80c5fe177c6%2F8cd4a7c2520347879d49a52540dc5bc6",
-    "sourceUrl": "https://www.morningstar.com/news/dow-jones/2026101228/dow-jones-top-energy-headlines-at-12-am-et-iran-backed-militants-are-tightening-the-screws-on-saudi-arabias-crown-prince-trump"
+    "sourceUrl": "https://www.techtarget.com/ai/news/366651989/IBM-Agentic-AI-is-reshaping-governance-controls-and-trust"
   },
   {
-    "timestamp": "2026-10-12 13:28:00",
-    "title": "IMF Unveils World Economic Outlook and Global Financial Stability Report in Bangkok",
-    "summary": "국제통화기금(IMF)이 방콕 연례 총회에서 2026년 10월 세계경제전망 보고서를 발표하며 중동 분쟁으로 인한 유가 충격과 급증하는 글로벌 정부 부채 리스크를 경고했습니다.",
+    "timestamp": "2026-10-15 0:31",
+    "category": "AI Compute Infrastructure & Semiconductor Hardware",
+    "keywords": "Semiconductor Fabs, GlobalFoundries, US-Japan",
+    "title": "GlobalFoundries Selected to Operate Two Advanced Semiconductor Fabs in New York Under $21B Initiative",
+    "summary": "GlobalFoundries announced its selection to construct and operate two semiconductor fabrication facilities at its Malta, New York campus under a $21 billion bilateral U.S.-Japan agreement, securing trusted silicon manufacturing for critical automotive and aerospace infrastructure.",
+    "imageUrl": "https://dims.apnews.com/dims4/default/c5ccf47/2147483647/strip/true/crop/4671x3112+0+0/resize/727x484!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2F43%2Fd2%2F898f17ed4fd88b52bbd7a3de3084%2Fd54ff9874c424f488149c8860e08067f",
+    "sourceUrl": "https://gf.com/news-and-events/news/globalfoundries-selected-to-operate-two-new-semiconductor-fabs-in-new-york-under-landmark-us-japan-initiative/"
+  },
+  {
+    "timestamp": "2026-10-14 22:50",
+    "category": "Agentic AI & Autonomous Intelligent Systems",
+    "keywords": "Agentic AI, Hardware Scale, AMD Helion",
+    "title": "AMD Unveils Helion Agentic AI Open Blueprint for Rack-Scale Autonomous Inference",
+    "summary": "AMD introduced Helion, an open-compute blueprint combining Instinct MI300X accelerators with ultra-low latency optical networking, engineered specifically to handle the stateful token throughput required by concurrent multi-step agent reasoning swarms.",
+    "imageUrl": "https://dims.apnews.com/dims4/default/a3ac902/2147483647/strip/true/crop/3284x2190+0+0/resize/727x485!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2F37%2Fd8%2F25a23ad5243f4750e150c24a5ca6%2Fc9ff27ce769740c89ba3867e2dd009e1",
+    "sourceUrl": "https://newsroom.amd.com/news/open-rack-blueprint-scale-agentic-ai/"
+  },
+  {
+    "timestamp": "2026-10-14 22:15",
+    "category": "Global AI Governance, Safety & Regulation",
+    "keywords": "Vatican, Encyclical, Ethical AI, Pope Leo XIV",
+    "title": "Pope Leo XIV Encyclical 'Magnifica Humanitas' Calls for Strict Moral Bans on Autonomous Lethal Weapons",
+    "summary": "Pope Leo XIV promulgated his first papal encyclical, declaring that delegating lethal decisions to autonomous algorithms lowers the moral threshold of war and transforms human beings into mere statistical data, urging a universal ban on autonomous lethal weapons.",
     "imageUrl": "https://dims.apnews.com/dims4/default/1741a96/2147483647/strip/true/crop/6000x4000+0+0/resize/727x485!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2Fb7%2F7a%2F1bef7873cf806c83ea2beaca6f0f%2Fa85b6bf69df24da4997e6db1e009f468",
-    "sourceUrl": "https://www.imf.org/en/publications/weo"
+    "sourceUrl": "https://www.vaticannews.va/en/pope/news/2026-05/pope-leo-xiv-encyclical-magnifica-humanitas-ai.html"
   },
   {
-    "timestamp": "2026-10-12 13:28:00",
-    "title": "Michigan Senate Nominee Abdul El-Sayed Emphasizes Healthcare and Tribal Sovereignty",
-    "summary": "미시간주 민주당 상원의원 후보 압둘 엘-사이드가 대선 출마설을 일축하고 지역 원주민 부족 주권 존중과 공공 의료 접근성 확충에 집중하겠다고 밝혔습니다.",
-    "imageUrl": "https://dims.apnews.com/dims4/default/c47099e/2147483647/strip/true/crop/8243x5495+0+0/resize/727x485!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2F71%2F00%2F461c76108aee75c29da991ba2439%2F45c82a17a66f409198d8eed4bfff02e2",
-    "sourceUrl": "https://www.washingtontimes.com/"
+    "timestamp": "2026-10-14 21:40",
+    "category": "Multi-Agent Orchestration & Collaborative Swarms",
+    "keywords": "Multi-Agent Orchestration, LangGraph, Fault Tolerance",
+    "title": "LangChain Releases LangGraph Enterprise to Power Resilient Multi-Agent Workflows",
+    "summary": "LangChain announced the enterprise release of LangGraph, a cyclical graph orchestration framework featuring durable execution, automatic state checkpointing, and human-in-the-loop approvals for mission-critical enterprise workflows.",
+    "imageUrl": "https://dims.apnews.com/dims4/default/1741a96/2147483647/strip/true/crop/6000x4000+0+0/resize/727x485!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2Fb7%2F7a%2F1bef7873cf806c83ea2beaca6f0f%2Fa85b6bf69df24da4997e6db1e009f468",
+    "sourceUrl": "https://agentic.ai/news"
   },
   {
-    "timestamp": "2026-10-12 13:28:00",
-    "title": "Federal Audit Reveals Majority of Visa Overstayers Avoided DHS Enforcement",
-    "summary": "미 국토안보부(DHS) 감사관실 감사 결과 체류 비자 만료자의 대다수가 단속 유예 처분을 받은 것으로 나타나 의회 차원의 이민 집행 체계 재검토 논란이 일고 있습니다.",
-    "imageUrl": "https://dims.apnews.com/dims4/default/b1831fd/2147483647/strip/true/crop/3118x1754+0+0/resize/727x409!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2F4a%2F8d%2F9e6af3392e6e335001fdcd4f7d6d%2Fb3aa7b3339ee488ab9c7ac1552b2cf05",
-    "sourceUrl": "https://www.washingtontimes.com/"
+    "timestamp": "2026-10-14 21:00",
+    "category": "Enterprise SI AX & IT System Integration",
+    "keywords": "AI Native, HCLTech, Anthropic Business Unit",
+    "title": "HCLTech Establishes Dedicated Anthropic Business Unit to Accelerate AI-Native Enterprise Services",
+    "summary": "Indian IT services multinational HCLTech launched a global Anthropic business practice aimed at training 25,000 systems engineers in AI-native architecture. The unit will focus on integrating Claude reasoning models directly into core ERP, CRM, and supply chain applications for multinational clients.",
+    "imageUrl": "https://www.crnasia.com/india/news/2026/media_1a77c76efdf8b69badfbd6a630eda48e0baabba90.png?width=750&format=png&optimize=medium",
+    "sourceUrl": "https://www.crnasia.com/india/news/2026/hcltech-sets-up-anthropic-business-unit-reports-3-3-billion-in-q2-fy27-deal-bookings"
   },
   {
-    "timestamp": "2026-10-12 13:28:00",
-    "title": "Panama Declares State of Emergency Following Back-to-Back Magnitude 7.7 and 6.6 Earthquakes",
-    "summary": "파나마 정부는 연안에서 발생한 규모 7.7 및 6.6의 연속 강진 피해 수습을 위해 국가 비상사태를 선포하고 파나마 운하 인접 물류 시설에 대한 긴급 점검을 시작했습니다.",
-    "imageUrl": "https://dims.apnews.com/dims4/default/893080f/2147483647/strip/true/crop/1200x792+0+0/resize/727x480!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2Fb8%2Fab%2Fccfb638a525420db636690b3b6a2%2Fcec657ef553943a6988f7d9b4d783021",
-    "sourceUrl": "https://globalnation.inquirer.net/"
+    "timestamp": "2026-10-14 20:30",
+    "category": "Agentic AI & Autonomous Intelligent Systems",
+    "keywords": "Agentic AI, Legal Roadmap, Automation",
+    "title": "Artificial Lawyer Analysis: The Strategic Transition From Generative Prompts to Autonomous Legal Agents",
+    "summary": "Legal technology platform Artificial Lawyer outlined the transition from passive document summarizers to full agentic systems capable of independently handling cross-border contract negotiations, escrow release checks, and trademark filing audits.",
+    "imageUrl": "https://d3i6fh83elv35t.cloudfront.net/static/2026/10/2026-10-13T154034Z_454244253_RC2F2OA9SXJG_RTRMADP_3_USA-TRUMP-1024x683.jpg",
+    "sourceUrl": "https://www.artificiallawyer.com/2026/10/14/from-ai-tools-to-agentic-ai-a-roadmap/"
   },
   {
-    "timestamp": "2026-10-12 12:40:00",
-    "title": "FAA Issues Safety Warning to US Airlines Over Saudi Airspace and Navigation Interference",
-    "summary": "미 연방항공청(FAA)은 사우디 리야드 공항 공습과 내비게이션 전파 교란 위험을 이유로 미국 국적 항공사들에게 사우디 영공 운항 시 안전 경계령(NOTAM)을 발령했습니다.",
+    "timestamp": "2026-10-14 20:15",
+    "category": "Trump Administration SI Policy & Federal Agencies",
+    "keywords": "SI (Super Intelligence), Executive Order 14434",
+    "title": "Executive Order Mandates Federal Transition from 'Artificial Intelligence' to 'Super Intelligence (SI)'",
+    "summary": "Executive Order 14434 formally requires all executive branch departments and contractors to phase out the term 'Artificial Intelligence' in official documentation and procurement contracts in favor of 'Super Intelligence' and the abbreviation 'SI.' Administration officials argued that traditional 'AI' labels fail to capture the exponential scaling and autonomous potential of frontier models.",
+    "imageUrl": "https://img.apmcdn.org/47503c312a46e727c2cf740cfd1ee42fb0fd4580/widescreen/84962e-20261008-trump-ai-600.jpg",
+    "sourceUrl": "https://www.whitehouse.gov/presidential-actions/2026/09/inaugurating-the-era-of-super-intelligence/"
+  },
+  {
+    "timestamp": "2026-10-14 20:00",
+    "category": "AI Compute Infrastructure & Semiconductor Hardware",
+    "keywords": "Nvidia, Rubin Ultra, HBM4 Memory",
+    "title": "Nvidia Previews Next-Gen Rubin Ultra AI Architecture Featuring 288GB HBM4 Memory at GTC",
+    "summary": "Nvidia CEO Jensen Huang previewed the Rubin Ultra supercomputing platform, designed to deliver a 4x reduction in inference cost-per-token for trillion-parameter foundation models through tightly coupled 16-high HBM4 memory stacks.",
+    "imageUrl": "https://dims.apnews.com/dims4/default/1741a96/2147483647/strip/true/crop/6000x4000+0+0/resize/727x485!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2Fb7%2F7a%2F1bef7873cf806c83ea2beaca6f0f%2Fa85b6bf69df24da4997e6db1e009f468",
+    "sourceUrl": "https://www.reply.com/it/newsroom/events/nvidia-gtc-2026"
+  },
+  {
+    "timestamp": "2026-10-14 19:45",
+    "category": "Global AI Governance, Safety & Regulation",
+    "keywords": "United Nations, Global Scientific Panel, Frontier Risk",
+    "title": "UN High-Level Advisory Body Approves Blueprint for Independent Scientific Panel on Catastrophic AI Risks",
+    "summary": "The United Nations General Assembly agreed to establish an independent global scientific body modeled after the IPCC to produce annual consensus assessments on frontier model capabilities, biological risks, and critical infrastructure cyber vulnerabilities.",
+    "imageUrl": "https://dims.apnews.com/dims4/default/c5ccf47/2147483647/strip/true/crop/4671x3112+0+0/resize/727x484!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2F43%2Fd2%2F898f17ed4fd88b52bbd7a3de3084%2Fd54ff9874c424f488149c8860e08067f",
+    "sourceUrl": "https://www.theguardian.com/technology/2026/oct/13/anthropic-ai-replicators-warning"
+  },
+  {
+    "timestamp": "2026-10-14 19:20",
+    "category": "Enterprise SI AX & IT System Integration",
+    "keywords": "AI Native, Product Factory, Google Cloud, Gemini",
+    "title": "Zip US Partners With Google Cloud to Build AI-Native Product Development Factory",
+    "summary": "Fintech leader Zip US announced an enterprise deployment with Google Cloud, establishing an 'AI-Native Product Factory' powered by Gemini Enterprise. The system automates software engineering cycles, regulatory compliance checks, and microservice integration without manual code reviews.",
+    "imageUrl": "https://www.googlecloudpresscorner.com/image/Zip+Logo.png",
+    "sourceUrl": "https://www.googlecloudpresscorner.com/2026-10-08-Zip-US-Collaborates-with-Google-Cloud-to-Build-AI-Native-Product-Factory-with-Gemini-Enterprise"
+  },
+  {
+    "timestamp": "2026-10-14 19:10",
+    "category": "Multi-Agent Orchestration & Collaborative Swarms",
+    "keywords": "Multi-Agent Orchestration, CrewAI, Series A Funding",
+    "title": "CrewAI Secures $18M Series A to Expand Role-Based Multi-Agent Enterprise Orchestration",
+    "summary": "Multi-agent automation startup CrewAI announced an $18 million Series A funding round, reporting rapid enterprise adoption among banking and healthcare customers deploying coordinated teams of autonomous agents.",
     "imageUrl": "https://dims.apnews.com/dims4/default/f8132f2/2147483647/strip/true/crop/6000x4000+0+0/resize/727x485!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2Ff0%2F20%2F7f279218dae6263be80c5fe177c6%2F8cd4a7c2520347879d49a52540dc5bc6",
-    "sourceUrl": "https://bworldonline.com/world/2026/10/12/786183/faa-tells-us-airlines-to-exercise-caution-in-saudi-arabia-flights-citing-safety-risks/"
+    "sourceUrl": "https://agenticexpo.ai/news"
   },
   {
-    "timestamp": "2026-10-12 12:40:00",
-    "title": "Social Security Administration to Announce Key 2027 Cost-of-Living Benefit Changes",
-    "summary": "미국 사회보장국(SSA)은 인플레이션 지표를 반영하여 수천만 명의 은퇴자 및 수급자에게 적용될 2027년도 사회보장 연금 생활비조정(COLA) 인상률을 10월 14일 발표할 예정입니다.",
+    "timestamp": "2026-10-14 18:40",
+    "category": "Trump Administration SI Policy & Federal Agencies",
+    "keywords": "Super Intelligence, Public Interest, Search Trends",
+    "title": "US Google Search Queries for 'Super Intelligence' Triple Following Presidential Address",
+    "summary": "Search analytics across the United States indicate a more than threefold increase in online search queries for 'Super Intelligence' and 'SI technologies' over the past two weeks. The surge comes amid intense public debate over presidential communications asserting that conventional AI terminology has become obsolete in the wake of frontier reasoning models.",
+    "imageUrl": "https://images.axios.com/FKVV3HZfBV4A5PlQomWBqw_sE94=/0x41:3127x1800/1920x1080/2026/10/08/1791479754519.jpeg",
+    "sourceUrl": "https://tech-insider.org/trump-super-intelligence-rebrand-search-spike-2026/"
+  },
+  {
+    "timestamp": "2026-10-14 18:10",
+    "category": "Agentic AI & Autonomous Intelligent Systems",
+    "keywords": "Agentic AI, Production Architecture, InfoWorld",
+    "title": "InfoWorld Guide: Navigating Key Latency, Consistency, and Rollback Trade-Offs in Agentic AI",
+    "summary": "InfoWorld published an architectural breakdown detailing how engineering teams can navigate trade-offs between autonomous agent decision speed and transactional rollback safety when exposing backend production APIs to autonomous models.",
+    "imageUrl": "https://dims.apnews.com/dims4/default/c5ccf47/2147483647/strip/true/crop/4671x3112+0+0/resize/727x484!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2F43%2Fd2%2F898f17ed4fd88b52bbd7a3de3084%2Fd54ff9874c424f488149c8860e08067f",
+    "sourceUrl": "https://www.infoworld.com/article/4234493/5-agentic-ai-trade-offs-to-consider-before-production.html"
+  },
+  {
+    "timestamp": "2026-10-14 17:35",
+    "category": "Enterprise SI AX & IT System Integration",
+    "keywords": "AI Transformation, Public Sector, Forvis Mazars",
+    "title": "Forvis Mazars Issues Public Sector AI Transformation Framework for Legacy System Integration",
+    "summary": "Professional services firm Forvis Mazars published a comprehensive implementation guide for state and municipal agencies seeking to integrate agentic AI workflows into legacy COBOL and mainframe databases while maintaining rigorous federal auditing compliance.",
     "imageUrl": "https://dims.apnews.com/dims4/default/1741a96/2147483647/strip/true/crop/6000x4000+0+0/resize/727x485!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2Fb7%2F7a%2F1bef7873cf806c83ea2beaca6f0f%2Fa85b6bf69df24da4997e6db1e009f468",
-    "sourceUrl": "https://news.google.com/home?hl=en-US&gl=US&ceid=US%3Aen"
+    "sourceUrl": "https://www.forvismazars.us/forsights/2026/10/public-sector-ai-starts-with-better-processes"
   },
   {
-    "timestamp": "2026-10-12 12:40:00",
-    "title": "Forbes Highlights Winners of 2026 Great American Beer Festival",
-    "summary": "미국 최대 맥주 축제인 2026 그레이트 아메리칸 비어 페스티벌(GABF)의 최종 결과가 발표되며 무알콜 크래프트 맥주와 혁신적인 전통 양조장들이 최고 영예를 안았습니다.",
-    "imageUrl": "https://dims.apnews.com/dims4/default/c47099e/2147483647/strip/true/crop/8243x5495+0+0/resize/727x485!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2F71%2F00%2F461c76108aee75c29da991ba2439%2F45c82a17a66f409198d8eed4bfff02e2",
-    "sourceUrl": "https://news.google.com/home?hl=en-US&tab=wn&gl=US&ceid=US:en"
-  },
-  {
-    "timestamp": "2026-10-12 12:40:00",
-    "title": "Saudi Air Defenses Intercept Inbound Cruise Missile and Drones in Fresh Barrage",
-    "summary": "사우디 연합군 방공부대는 12일 새벽 리야드 공항 인근과 동부주 주요 석유 인프라로 날아들던 순항미사일과 자폭 드론들을 요격 파괴했다고 공식 발표했습니다.",
-    "imageUrl": "https://dims.apnews.com/dims4/default/b1831fd/2147483647/strip/true/crop/3118x1754+0+0/resize/727x409!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2F4a%2F8d%2F9e6af3392e6e335001fdcd4f7d6d%2Fb3aa7b3339ee488ab9c7ac1552b2cf05",
-    "sourceUrl": "https://www.rferl.org/a/iran-live-blog-trump-middle-east/33803414.html"
-  },
-  {
-    "timestamp": "2026-10-12 12:40:00",
-    "title": "US Treasury Sanctions 17 Tankers Tied to Iran's Clandestine Oil Shadow Fleet",
-    "summary": "미 재무부 해외자산통제국(OFAC)은 대이란 해상 봉쇄 조치에 발맞춰 수백만 배럴의 이란산 원유를 불법 환적·수출해 온 17척의 그림자 선단 선박과 선사를 전격 제재했습니다.",
-    "imageUrl": "https://dims.apnews.com/dims4/default/893080f/2147483647/strip/true/crop/1200x792+0+0/resize/727x480!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2Fb8%2Fab%2Fccfb638a525420db636690b3b6a2%2Fcec657ef553943a6988f7d9b4d783021",
-    "sourceUrl": "https://www.timesofisrael.com/trump-says-us-wont-hit-iran-this-month-as-zamir-said-to-warn-strike-could-delay-israels-election/"
-  },
-  {
-    "timestamp": "2026-10-12 11:50:00",
-    "title": "North Korea Conducts Fourth Suspected Ballistic Missile Launch in a Month Toward East Sea",
-    "summary": "한국 합참과 일본 방위성은 북한이 동해상으로 미상 탄도미사일을 발사했다고 발표했으며, 최근 한 달간 4차례의 미사일 도발이 이어지며 한미일 안보 공조가 비상 체제에 돌입했습니다.",
+    "timestamp": "2026-10-14 17:25",
+    "category": "AI Compute Infrastructure & Semiconductor Hardware",
+    "keywords": "TSMC, 2nm Fabrication, GAA Architecture",
+    "title": "TSMC Initiates Trial 2nm GAA Production Runs for Frontier Commercial AI Accelerator Clients",
+    "summary": "TSMC confirmed the start of trial wafer production on its N2 (2-nanometer) gate-all-around process node at its Baoshan fab, with high-volume manufacturing scheduled to support next-generation enterprise AI silicon by late 2026.",
     "imageUrl": "https://dims.apnews.com/dims4/default/f8132f2/2147483647/strip/true/crop/6000x4000+0+0/resize/727x485!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2Ff0%2F20%2F7f279218dae6263be80c5fe177c6%2F8cd4a7c2520347879d49a52540dc5bc6",
-    "sourceUrl": "https://www.nknews.org/2026/10/north-korea-appears-to-conduct-fourth-missile-test-in-a-month/"
+    "sourceUrl": "https://newsroom.amd.com/news/open-rack-blueprint-scale-agentic-ai/"
   },
   {
-    "timestamp": "2026-10-12 11:50:00",
-    "title": "GOP Senator Thom Tillis Criticizes Trump's Russian Diesel Deal as Potentially Illegal",
-    "summary": "공화당 소속 톰 틸리스 상원의원은 트럼프 대통령이 러시아와 체결한 30만 톤 규모의 디젤 수입 합의가 연방 대러 제재법을 위반할 소지가 크며 미국인의 안전을 위태롭게 한다고 비판했습니다.",
-    "imageUrl": "https://dims.apnews.com/dims4/default/1741a96/2147483647/strip/true/crop/6000x4000+0+0/resize/727x485!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2Fb7%2F7a%2F1bef7873cf806c83ea2beaca6f0f%2Fa85b6bf69df24da4997e6db1e009f468",
-    "sourceUrl": "https://theedgemalaysia.com/node/821408"
-  },
-  {
-    "timestamp": "2026-10-12 11:50:00",
-    "title": "Polish Authorities Detain Suspect in Plot to Assassinate Prime Minister Donald Tusk",
-    "summary": "폴란드 경찰과 내무부는 도날트 투스크 총리와 국방장관을 겨냥한 암살 공격을 모의하던 용의자를 긴급 체포하고 배후 세력에 대한 국가 안보 수사를 개시했습니다.",
-    "imageUrl": "https://dims.apnews.com/dims4/default/c47099e/2147483647/strip/true/crop/8243x5495+0+0/resize/727x485!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2F71%2F00%2F461c76108aee75c29da991ba2439%2F45c82a17a66f409198d8eed4bfff02e2",
-    "sourceUrl": "https://globalnation.inquirer.net/"
-  },
-  {
-    "timestamp": "2026-10-12 11:50:00",
-    "title": "White House Official Accuses South Korea of Flooding US with Subsidized Steel Imports",
-    "summary": "백악관 무역 관리가 한국 철강 기업들이 정부 보조금을 등에 업고 저가 철강재를 미국 시장에 대량 덤핑하고 있다고 공개 경고하며 대미 수출 규제 가능성을 시사했습니다.",
-    "imageUrl": "https://dims.apnews.com/dims4/default/b1831fd/2147483647/strip/true/crop/3118x1754+0+0/resize/727x409!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2F4a%2F8d%2F9e6af3392e6e335001fdcd4f7d6d%2Fb3aa7b3339ee488ab9c7ac1552b2cf05",
-    "sourceUrl": "https://www.koreatimes.co.kr/"
-  },
-  {
-    "timestamp": "2026-10-12 11:50:00",
-    "title": "Trump Pledges $5,000 Checks to US Voters if Republicans Retain Congressional Control",
-    "summary": "트럼프 미국 대통령이 중간선거 유세 현장에서 공화당이 의회 다수당을 유지할 경우 관세 수익 환원과 감세를 통해 국민 1인당 5,000달러를 지급하겠다는 공약을 제시했습니다.",
-    "imageUrl": "https://dims.apnews.com/dims4/default/893080f/2147483647/strip/true/crop/1200x792+0+0/resize/727x480!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2Fb8%2Fab%2Fccfb638a525420db636690b3b6a2%2Fcec657ef553943a6988f7d9b4d783021",
-    "sourceUrl": "https://timesofindia.indiatimes.com/videos/international/trumps-self-praise-show-dont-need-teleprompter-youll-laugh-for-any-stupid-thing-watch/videoshow/134867396.cms"
-  },
-  {
-    "timestamp": "2026-10-12 10:00",
-    "title": "Google Unveils New Pixel Hardware Lineup Centered on On-Device AI in New York",
-    "summary": "구글이 뉴욕에서 열린 'Made by Google 2026' 신제품 발표 행사에서 차세대 온디바이스 인공지능(AI)을 탑재한 플래그십 픽셀(Pixel) 스마트폰과 기기 생태계를 공식 공개했습니다.",
-    "imageUrl": "https://dims.apnews.com/dims4/default/f8132f2/2147483647/strip/true/crop/6000x4000+0+0/resize/727x485!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2Ff0%2F20%2F7f279218dae6263be80c5fe177c6%2F8cd4a7c2520347879d49a52540dc5bc6",
-    "sourceUrl": "https://www.cbsnews.com/tag/google/"
-  },
-  {
-    "timestamp": "2026-10-12 10:00",
-    "title": "Trump Signals US May Swiftly Join Saudi Coalition Military Strikes Against Houthis",
-    "summary": "도널드 트럼프 대통령은 사우디 리야드 공항 2차 공습 보고를 접한 뒤 기자회견에서 사우디 연합군의 대후티 군사 작전에 미군이 직접 참여할지 여부를 매우 신속히 결정하겠다고 밝혔습니다.",
-    "imageUrl": "https://dims.apnews.com/dims4/default/1741a96/2147483647/strip/true/crop/6000x4000+0+0/resize/727x485!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2Fb7%2F7a%2F1bef7873cf806c83ea2beaca6f0f%2Fa85b6bf69df24da4997e6db1e009f468",
-    "sourceUrl": "https://www.cbsnews.com/live-updates/iran-war-trump-us-elections-saudi-arabia-yemen-houthis/"
-  },
-  {
-    "timestamp": "2026-10-12 10:00",
-    "title": "Public Opinion Survey in Japan Finds 26% View US as Greatest Threat to World Peace",
-    "summary": "일본의 전국 단위 여론조사 결과, 중동 분쟁 격화와 군사적 긴장 고조 속에 일본 국민의 26%가 세계 평화를 위협하는 가장 큰 요인 중 하나로 미국의 대외 군사 정책을 꼽았습니다.",
-    "imageUrl": "https://dims.apnews.com/dims4/default/c47099e/2147483647/strip/true/crop/8243x5495+0+0/resize/727x485!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2F71%2F00%2F461c76108aee75c29da991ba2439%2F45c82a17a66f409198d8eed4bfff02e2",
-    "sourceUrl": "https://www.japantimes.co.jp/news/2026/10/11/japan/japan-survey-us-biggest-threat-to-peace/"
-  },
-  {
-    "timestamp": "2026-10-12 10:00",
-    "title": "Major Landslide in Nepal Blocks River Triggering Flash Floods and Downstream Evacuations",
-    "summary": "네팔 고르카 지역에서 대규모 산사태가 발생해 부디 간다키 강이 막히며 하류 일대에 돌발 홍수가 발생하자 군 당국이 주민 대피령을 내리고 외국인을 포함한 49명을 긴급 구조했습니다.",
-    "imageUrl": "https://dims.apnews.com/dims4/default/b1831fd/2147483647/strip/true/crop/3118x1754+0+0/resize/727x409!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2F4a%2F8d%2F9e6af3392e6e335001fdcd4f7d6d%2Fb3aa7b3339ee488ab9c7ac1552b2cf05",
-    "sourceUrl": "https://www.thedailystar.net/news/world/news/us-justice-dept-probes-five-tv-networks-4296456"
-  },
-  {
-    "timestamp": "2026-10-12 10:00",
-    "title": "Ryobi Unveils New High-Efficiency Cordless Power Tool Lineup for Fall 2026",
-    "summary": "전동공구 제조사 료비가 차세대 고효율 배터리 기술과 모터 성능을 강화한 신규 스마트 전동공구 3종을 공개하며 북미 작업 및 DIY 공구 시장 공략에 나섰습니다.",
-    "imageUrl": "https://dims.apnews.com/dims4/default/893080f/2147483647/strip/true/crop/1200x792+0+0/resize/727x480!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2Fb8%2Fab%2Fccfb638a525420db636690b3b6a2%2Fcec657ef553943a6988f7d9b4d783021",
-    "sourceUrl": "https://news.google.com/home/sections/CAQiS0NCQVNNZ29JTDIwdk1ETm5aRFVTQW1WdUdnSlZVeUlPQ0FRYUNnb0lMMjB2TURkak1YWXFEZ29NRWdwVVpXTm9ibTlzYjJkNUtBQSoqCAAqJggKIiBDQkFTRWdvSUwyMHZNRE5uWkRVU0FtVnVHZ0pWVXlnQVABUAE?hl=en-US&gl=US&ceid=US%3Aen"
-  },
-  {
-    "timestamp": "2026-10-12 9:23",
-    "title": "US Maternity Wards Face Widespread Closures as Federal Medicaid Reductions Take Effect",
-    "summary": "메디케이드 연방 보조금 삭감이 본격 시행되면서 미국 전역의 지역 거점 병원 산부인과 병동이 잇따라 폐쇄 수순을 밟아 분만 취약지 임산부들의 의료 접근성이 심각하게 위협받고 있습니다.",
-    "imageUrl": "https://dims.apnews.com/dims4/default/f8132f2/2147483647/strip/true/crop/6000x4000+0+0/resize/727x485!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2Ff0%2F20%2F7f279218dae6263be80c5fe177c6%2F8cd4a7c2520347879d49a52540dc5bc6",
-    "sourceUrl": "https://www.theguardian.com/world/2026/oct/11/zelenskyy-trump-ukraine-russia-energy-ceasefire"
-  },
-  {
-    "timestamp": "2026-10-12 9:23",
-    "title": "Global Sovereign Bond Selloff Intensifies as Central Bankers Gather for IMF Meetings",
-    "summary": "미 국채 10년물 금리가 하반기 70bp 이상 급등하며 전 세계 채권 시장의 불안이 가중되는 가운데 방콕에서 개막하는 IMF 연례 총회에서 각국 재정 건전성과 통화 정책 공조가 핵심 의제로 떠올랐습니다.",
-    "imageUrl": "https://dims.apnews.com/dims4/default/1741a96/2147483647/strip/true/crop/6000x4000+0+0/resize/727x485!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2Fb7%2F7a%2F1bef7873cf806c83ea2beaca6f0f%2Fa85b6bf69df24da4997e6db1e009f468",
-    "sourceUrl": "https://theedgemalaysia.com/node/821403"
-  },
-  {
-    "timestamp": "2026-10-12 9:23",
-    "title": "Hurricane Simon Swirls Parallel to Pacific Coast Threatening Southwestern Flooding",
-    "summary": "동태평양을 북상 중인 대형 허리케인 사이먼이 멕시코 서안을 따라 이동하며 막대한 폭우를 뿌리고 있어 미국 남서부 및 캘리포니아 남부 지역에 돌발 홍수와 강풍 주의보가 내려졌습니다.",
-    "imageUrl": "https://d3i6fh83elv35t.cloudfront.net/static/2026/10/2026-10-11T153051Z_720955666_RC231OA7SFDR_RTRMADP_3_STORM-SIMON-425x300.jpg",
-    "sourceUrl": "https://www.pbs.org/newshour/latest"
-  },
-  {
-    "timestamp": "2026-10-12 9:23",
-    "title": "Off-Duty ICE Agent Shot Following Violent Altercation on Fresno California Lawn",
-    "summary": "캘리포니아 프레즈노에서 비번이던 연방 이민세관단속국(ICE) 요원이 민간 주택 앞마당에서 주민 부녀와 심각한 물리적 다툼을 벌이던 중 총격을 입고 부상당해 수사가 확대되고 있습니다.",
-    "imageUrl": "https://dims.apnews.com/dims4/default/c47099e/2147483647/strip/true/crop/8243x5495+0+0/resize/727x485!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2F71%2F00%2F461c76108aee75c29da991ba2439%2F45c82a17a66f409198d8eed4bfff02e2",
-    "sourceUrl": "https://www.washingtontimes.com/"
-  },
-  {
-    "timestamp": "2026-10-12 9:23",
-    "title": "Growing Opposition Mounts Against Federal Plan to Livestream Capital Punishment Execution",
-    "summary": "트럼프 행정부가 추진하는 연방 사형수의 사형 집행 온라인 생중계 계획에 대해 군 참사 유가족과 종교계의 거센 비판이 이어지고 있으며 교황청 또한 사형 제도의 불가함을 재차 선언했습니다.",
-    "imageUrl": "https://dims.apnews.com/dims4/default/893080f/2147483647/strip/true/crop/1200x792+0+0/resize/727x480!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2Fb8%2Fab%2Fccfb638a525420db636690b3b6a2%2Fcec657ef553943a6988f7d9b4d783021",
-    "sourceUrl": "https://www.washingtontimes.com/"
-  },
-  {
-    "timestamp": "2026-10-12 8:00",
-    "title": "Federal Appeals Court Allows Social Media Addiction Lawsuits Against Tech Giants to Proceed",
-    "summary": "미 연방 항소법원은 청소년 소셜미디어 중독 및 정신건강 유해성을 이유로 구글, 메타 등 빅테크 기업들을 상대로 제기된 대규모 손해배상 집단소송을 계속 진행할 수 있다는 판결을 내렸습니다.",
-    "imageUrl": "https://dims.apnews.com/dims4/default/f8132f2/2147483647/strip/true/crop/6000x4000+0+0/resize/727x485!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2Ff0%2F20%2F7f279218dae6263be80c5fe177c6%2F8cd4a7c2520347879d49a52540dc5bc6",
-    "sourceUrl": "https://www.cbsnews.com/tag/google/"
-  },
-  {
-    "timestamp": "2026-10-12 8:00",
-    "title": "President Donald Trump Holds Midterm Campaign Rally in Syracuse New York",
-    "summary": "트럼프 대통령이 뉴욕주 시러큐스에서 대규모 중간선거 지원 유세를 열고 에너지 가격 안정, 자국 제조업 육성 및 강력한 국경 안보 정책을 전면에 내세우며 지지를 호소했습니다.",
-    "imageUrl": "https://dims.apnews.com/dims4/default/1741a96/2147483647/strip/true/crop/6000x4000+0+0/resize/727x485!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2Fb7%2F7a%2F1bef7873cf806c83ea2beaca6f0f%2Fa85b6bf69df24da4997e6db1e009f468",
-    "sourceUrl": "https://www.youtube.com/channel/UCHqC-yWZ1kri4YzwRSt6RGQ/live?app=desktop"
-  },
-  {
-    "timestamp": "2026-10-12 8:00",
-    "title": "Treasury Secretary Scott Bessent Defends Trump Administration Economic Policies",
-    "summary": "스콧 베센트 미 재무장관이 폭스 뉴스에 출연해 현 행정부의 관세 부과와 세제 혜택 방안이 미국 중산층 일자리 보호와 지속 가능한 경제 성장을 위한 필수 조치라고 강조했습니다.",
-    "imageUrl": "https://dims.apnews.com/dims4/default/c47099e/2147483647/strip/true/crop/8243x5495+0+0/resize/727x485!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2F71%2F00%2F461c76108aee75c29da991ba2439%2F45c82a17a66f409198d8eed4bfff02e2",
-    "sourceUrl": "https://www.youtube.com/channel/UCHqC-yWZ1kri4YzwRSt6RGQ/live?app=desktop"
-  },
-  {
-    "timestamp": "2026-10-12 8:00",
-    "title": "Multi-National Victims of Riyadh Airport Missile Attack Identified as Injuries Reach 309",
-    "summary": "사우디 항공 당국은 리야드 공항 피격 사건의 사망자 12명 중 미국인 1명을 포함해 사우디, 방글라데시, 이집트 등 다국적 희생자들의 신원을 확인했으며 부상자가 309명으로 집계됐다고 밝혔습니다.",
-    "imageUrl": "https://dims.apnews.com/dims4/default/b1831fd/2147483647/strip/true/crop/3118x1754+0+0/resize/727x409!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2F4a%2F8d%2F9e6af3392e6e335001fdcd4f7d6d%2Fb3aa7b3339ee488ab9c7ac1552b2cf05",
-    "sourceUrl": "https://www.cbsnews.com/live-updates/iran-war-trump-us-elections-saudi-arabia-yemen-houthis/"
-  },
-  {
-    "timestamp": "2026-10-12 8:00",
-    "title": "Kremlin Says Putin Relayed Iran's Position on Resolving Middle East Conflict to Trump",
-    "summary": "러시아 크렘린궁은 블라디미르 푸틴 대통령이 도널드 트럼프 미국 대통령과의 최근 통화에서 호르무즈 해협 위기 완화 및 중동 사태 해결을 위한 이란 지도부의 공식 입장을 전달했다고 발표했습니다.",
-    "imageUrl": "https://dims.apnews.com/dims4/default/893080f/2147483647/strip/true/crop/1200x792+0+0/resize/727x480!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2Fb8%2Fab%2Fccfb638a525420db636690b3b6a2%2Fcec657ef553943a6988f7d9b4d783021",
-    "sourceUrl": "https://english.alarabiya.net/News/middle-east/2026/10/11/iran-says-us-response-to-its-proposal-to-reopen-strait-of-hormuz-was-insufficient-"
+    "timestamp": "2026-10-14 17:00",
+    "category": "Global AI Governance, Safety & Regulation",
+    "keywords": "Music Industry, Deepfake Voice, Copyright Licensing",
+    "title": "Major Record Labels and Generative Voice AI Platforms Reach Landmark Licensing and Royalty Agreement",
+    "summary": "Universal Music Group, Sony Music, and Warner Music concluded a master settlement with commercial voice cloning platforms, establishing technical fingerprinting to protect artist vocal likenesses and ensure transparent streaming royalties.",
+    "imageUrl": "https://dims.apnews.com/dims4/default/a3ac902/2147483647/strip/true/crop/3284x2190+0+0/resize/727x485!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2F37%2Fd8%2F25a23ad5243f4750e150c24a5ca6%2Fc9ff27ce769740c89ba3867e2dd009e1",
+    "sourceUrl": "https://www.theguardian.com/music/2026/oct/14/joni-mitchell-becomes-us-citizen-a-journey-that-began-62-years-ago"
   }
 ];
 
@@ -287,11 +314,11 @@ function parseTimestampSafe(raw: string, fallbackIdx: number): number {
   let parsed = Date.parse(clean);
   if (!isNaN(parsed) && parsed > 0) return parsed;
 
-  // 2. 공백을 'T'로 치환한 ISO 형식 시도 (예: "2026-10-10 10:45")
+  // 2. 공백을 'T'로 치환한 ISO 형식 시도 (예: "2026-10-15 8:38")
   parsed = Date.parse(clean.replace(' ', 'T'));
   if (!isNaN(parsed) && parsed > 0) return parsed;
 
-  // 3. 점/슬래시 구분자 정규화 후 시도 (예: "2026. 10. 10. 10:45")
+  // 3. 점/슬래시 구분자 정규화 후 시도 (예: "2026. 10. 15. 8:38")
   const normalized = clean.replace(/\./g, '-').replace(/\//g, '-').replace(/\s+/g, ' ');
   parsed = Date.parse(normalized);
   if (!isNaN(parsed) && parsed > 0) return parsed;
@@ -322,6 +349,11 @@ export function convertGoogleNewsToRedditPost(
   const sheetImage = extractFirstValidImageUrl(item.imageUrl);
   const accurateImageUrl = sheetImage || resolveAccurateNewsImage(item, idx, urlUsageMap || new Map());
 
+  // 카테고리 태그 뱃지 매핑
+  const flairText = item.category 
+    ? (item.category.length > 25 ? item.category.slice(0, 24) + '…' : item.category)
+    : '구글뉴스 / Breaking';
+
   return {
     id,
     subreddit: 'news',
@@ -335,7 +367,7 @@ export function convertGoogleNewsToRedditPost(
     createdAt,
     score: 8400 - idx * 650,
     commentCount: 320 - idx * 25,
-    flair: { text: '구글뉴스 / Breaking', bgColor: '#DC2626', textColor: '#FFFFFF' },
+    flair: { text: flairText, bgColor: '#DC2626', textColor: '#FFFFFF' },
     isOriginalContent: false,
     upvoteRatio: 0.94,
     media: accurateImageUrl ? {

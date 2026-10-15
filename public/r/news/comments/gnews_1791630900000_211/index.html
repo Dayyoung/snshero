@@ -10,6 +10,26 @@
       gtag('config', 'G-MT60DTV1KJ');
       gtag('config', 'AW-980426001');
     </script>
+    <!-- Event snippet for 구매 conversion page (Google Ads) -->
+    <script>
+      function gtag_report_conversion(url, transaction_id, value, currency) {
+        var callback = function () {
+          if (typeof(url) != 'undefined') {
+            window.location = url;
+          }
+        };
+        if (typeof gtag === 'function') {
+          gtag('event', 'conversion', {
+              'send_to': 'AW-980426001/5pbgCI2H9ckcEJG6wNMD',
+              'value': value || 1000.0,
+              'currency': currency || 'KRW',
+              'transaction_id': transaction_id || '',
+              'event_callback': callback
+          });
+        }
+        return false;
+      }
+    </script>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0, post-check=0, pre-check=0" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
@@ -602,14 +622,14 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6937094123258335" crossorigin="anonymous"></script>
     <!-- Leaflet CSS for Running Battle Map -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script type="module" crossorigin src="/assets/index-D46I7884-v1791976840321.js"></script>
-    <link rel="modulepreload" crossorigin href="/assets/vendor-react-DjkHO9yN-v1791976840321.js">
-    <link rel="modulepreload" crossorigin href="/assets/vendor-misc-BDxVfkay-v1791976840321.js">
-    <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-C83fOnR4-v1791976840321.js">
-    <link rel="modulepreload" crossorigin href="/assets/vendor-motion-BF1eeuzB-v1791976840321.js">
-    <link rel="modulepreload" crossorigin href="/assets/vendor-icons-CIEG1xH0-v1791976840321.js">
-    <link rel="stylesheet" crossorigin href="/assets/vendor-misc-CIGW-MKW-v1791976840321.css">
-    <link rel="stylesheet" crossorigin href="/assets/index-D-BxrYta-v1791976840321.css">
+    <script type="module" crossorigin src="/assets/index-CleB_0BA-v1792021300164.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/vendor-react-DjkHO9yN-v1792021300164.js">
+    <link rel="modulepreload" crossorigin href="/assets/vendor-misc-CH52b8bU-v1792021300164.js">
+    <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-CwqYNDps-v1792021300164.js">
+    <link rel="modulepreload" crossorigin href="/assets/vendor-motion-CntQXGL5-v1792021300164.js">
+    <link rel="modulepreload" crossorigin href="/assets/vendor-icons-D-A_stJC-v1792021300164.js">
+    <link rel="stylesheet" crossorigin href="/assets/vendor-misc-CIGW-MKW-v1792021300164.css">
+    <link rel="stylesheet" crossorigin href="/assets/index-B86qLyFT-v1792021300164.css">
     <script type="application/ld+json">
   {
   "@context": "https://schema.org",
