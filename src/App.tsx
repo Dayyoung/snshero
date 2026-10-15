@@ -599,20 +599,24 @@ function AppContent() {
     }
   }, [view, showFtueOverdrive, challengeDeckCode]);
 
-  // RSI-010: 7-Day Streak Retention Protocol Modal State & Trigger
+  // RSI-010: 7-Day Streak Retention Protocol Modal State & Trigger (스마트 디퍼링: 연속 자동 팝업 방지)
   const [showSevenDayStreak, setShowSevenDayStreak] = useState(false);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
+    // 일일 10연차가 아직 미처리되었거나 다른 모달이 열려있을 때는 자동 팝업을 띄우지 않고 사용성을 최우선으로 보호
     if (view === 'home' && !showFtueOverdrive && !challengeDeckCode && !showDailyRequisition) {
       try {
         const lastDate = localStorage.getItem('hero_last_streak_view_date');
+        const claimedRequisition = localStorage.getItem('snshero_daily_requisition_date');
         const today = new Date().toISOString().split('T')[0];
-        if (lastDate !== today) {
+        
+        // 10연차를 오늘 이미 수령 완료한 상태에서만, 그리고 하루 1회만 부드럽게 출석부 노출
+        if (lastDate !== today && claimedRequisition) {
           const timer = setTimeout(() => {
             setShowSevenDayStreak(true);
             localStorage.setItem('hero_last_streak_view_date', today);
-          }, 2000);
+          }, 1500);
           return () => clearTimeout(timer);
         }
       } catch {}
@@ -8461,10 +8465,10 @@ function AppContent() {
         }}
       />
 
-      {/* RSI-019: Star Breathing Ultimate Widget (Active in Battle & Play) */}
-      {(view === 'card-play' || view === 'play' || view === 'main') && (
+      {/* RSI-019: Star Breathing Ultimate Widget (Active in Tactical Card Battle) */}
+      {(view === 'card-play' || view === 'main') && (
         <StarBreathingUltimateWidget
-          isBattleActive={view === 'card-play' || view === 'main'}
+          isBattleActive={true}
           onCastUltimate={() => {
             showCustomAlert(
               language === 'ko' ? '오의 발동' : 'ULTIMATE ACTIVATED',

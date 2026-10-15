@@ -29,20 +29,20 @@ export const GwentView: React.FC<GwentViewProps> = ({ onBackToHome }) => {
 
   return (
     <div className="fixed inset-0 w-full h-[100dvh] bg-[#090d16] overflow-hidden select-none font-mono flex flex-col z-40">
-      {/* Top Floating Control Bar */}
-      <div className="h-10 bg-[#090d16]/95 border-b border-white/10 px-3 flex items-center justify-between text-xs text-stone-300 z-50 shrink-0">
+      {/* Top Monospace Control Bar (44px mobile touch target) */}
+      <div className="h-11 bg-[#201d1d] border-b border-[#646262]/30 px-3 flex items-center justify-between text-xs text-stone-200 z-50 shrink-0">
         <div className="flex items-center space-x-2">
           <button
             onClick={handleBack}
-            className="flex items-center space-x-1.5 px-2.5 py-1 bg-stone-900 hover:bg-stone-800 text-stone-200 border border-stone-700 rounded-sm transition-all"
+            className="flex items-center space-x-1.5 px-3 py-1.5 bg-[#090d16] hover:bg-stone-900 text-stone-200 border border-stone-700 rounded-sm transition-colors min-h-[36px]"
           >
-            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+            <svg className="w-3.5 h-3.5 text-stone-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
               <polyline points="15 18 9 12 15 6"></polyline>
             </svg>
-            <span>[홈으로]</span>
+            <span className="font-bold">[홈으로]</span>
           </button>
           <span className="text-[11px] text-amber-400 font-bold hidden sm:inline">
-            [THE WITCHER 3 // GWENT CLASSIC CARD BATTLE]
+            [GWENT // THE WITCHER 3 CLASSIC]
           </span>
         </div>
 
@@ -52,14 +52,14 @@ export const GwentView: React.FC<GwentViewProps> = ({ onBackToHome }) => {
               const iframe = document.getElementById('gwent-iframe') as HTMLIFrameElement;
               if (iframe) iframe.src = '/gwent/index.html';
             }}
-            className="px-2 py-1 bg-stone-900 hover:bg-stone-800 text-stone-300 border border-stone-700 rounded-sm text-[11px] transition-all"
+            className="px-2.5 py-1.5 bg-[#090d16] hover:bg-stone-900 text-stone-300 border border-stone-700 rounded-sm text-xs transition-colors min-h-[36px]"
             title="Reload game"
           >
             [새로고침]
           </button>
           <button
             onClick={toggleFullscreen}
-            className="px-2 py-1 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-sm text-[11px] transition-all"
+            className="px-2.5 py-1.5 bg-stone-900 hover:bg-stone-800 text-amber-300 border border-stone-700 rounded-sm text-xs transition-colors min-h-[36px]"
           >
             {isFullscreen ? '[전체화면 해제]' : '[전체화면]'}
           </button>

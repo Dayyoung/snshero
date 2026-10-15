@@ -157,13 +157,13 @@ export const TacticalQuickStrikeModal: React.FC<TacticalQuickStrikeModalProps> =
                 </svg>
               </div>
 
-              {/* 붉은 약점 표식 버튼 */}
+              {/* 붉은 약점 표식 버튼: DESIGN.md 4px 사각 타겟 스타일 */}
               <button
                 onClick={handleStrike}
                 disabled={isStriking}
-                className="relative z-10 w-24 h-24 rounded-full border border-red-500/80 bg-red-950/40 hover:bg-red-900/50 flex flex-col items-center justify-center text-red-400 cursor-pointer active:scale-95 transition-all"
+                className="relative z-10 w-28 h-28 rounded-sm border border-red-500/80 bg-stone-900 hover:bg-red-950/40 flex flex-col items-center justify-center text-red-400 cursor-pointer active:bg-red-950/60 transition-colors"
               >
-                <div className="absolute inset-0 rounded-full border border-red-500 animate-ping opacity-30"></div>
+                <div className="absolute top-1 right-1 text-[8px] text-red-400/80 font-bold">[WEAKNESS]</div>
                 <svg className="w-8 h-8 text-red-400 mb-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
                   <circle cx="12" cy="12" r="10" />
                   <line x1="22" y1="12" x2="18" y2="12" />

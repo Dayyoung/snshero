@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
   getStarBreathingState,
-  chargeAstralResonance,
   consumeAstralUltimate,
   STAGE_TITLES,
   STAGE_REQUIREMENTS,
@@ -21,6 +20,7 @@ export const StarBreathingUltimateWidget: React.FC<StarBreathingUltimateWidgetPr
 }) => {
   const [state, setState] = useState<StarBreathingState>(getStarBreathingState());
   const [showDetail, setShowDetail] = useState<boolean>(false);
+  const [isMinimized, setIsMinimized] = useState<boolean>(false);
   const [isCastingAnimation, setIsCastingAnimation] = useState<boolean>(false);
 
   useEffect(() => {
@@ -65,7 +65,7 @@ export const StarBreathingUltimateWidget: React.FC<StarBreathingUltimateWidgetPr
 
     setIsCastingAnimation(true);
     if (navigator.vibrate) {
-      navigator.vibrate([40, 60, 100]);
+      navigator.vibrate([30, 40, 80]);
     }
 
     if (onCastUltimate) {
@@ -75,101 +75,129 @@ export const StarBreathingUltimateWidget: React.FC<StarBreathingUltimateWidgetPr
     setTimeout(() => {
       setIsCastingAnimation(false);
       setState(getStarBreathingState());
-    }, 2000);
+    }, 1800);
   };
 
   return (
     <>
-      {/* Floating 58px Ultimate Orb Button */}
-      <div className={`fixed bottom-20 right-4 z-40 select-none font-mono ${className}`}>
-        <div className="relative flex flex-col items-end">
-          {/* Status Tooltip Pill */}
+      {/* Tactical Flat Monospace HUD Widget (Top-Right or Floating Safe Zone) */}
+      <div className={`fixed top-14 right-3 z-40 select-none font-mono ${className}`}>
+        {isMinimized ? (
+          /* Minimized Edge Badge: Zero intrusion on gameplay */
           <button
-            onClick={() => setShowDetail(!showDetail)}
-            className="mb-1.5 px-2 py-0.5 text-[9px] bg-[#090d16]/90 border border-amber-500/30 text-amber-300 rounded-sm flex items-center space-x-1 backdrop-blur-sm shadow-sm"
+            onClick={() => setIsMinimized(false)}
+            className="flex items-center space-x-1.5 px-2.5 py-1 bg-[#090d16]/95 hover:bg-[#201d1d] text-stone-300 border border-[#646262]/30 rounded-sm shadow-sm transition-all"
+            title="Expand Star Breathing HUD"
           >
-            <span>[EP.06 성진호흡 {state.stage}성]</span>
-            <span className="text-stone-400">({Math.floor(state.astralResonance)}%)</span>
-          </button>
-
-          {/* 58px Action Orb */}
-          <div className="relative">
-            {/* Pulsing ring when 100% ready */}
+            <span className="text-amber-400 text-xs">★</span>
+            <span className="text-[11px] font-bold">
+              [성진호흡 {state.stage}성: {Math.floor(state.astralResonance)}%]
+            </span>
             {isReady && (
-              <span className="absolute -inset-1 rounded-full bg-cyan-500/40 animate-ping pointer-events-none" />
+              <span className="text-[9px] px-1 bg-cyan-950 text-cyan-300 border border-cyan-500/40 rounded-xs font-bold">
+                READY
+              </span>
             )}
+          </button>
+        ) : (
+          /* Clean Monospace Tactical Bar */
+          <div className="bg-[#090d16]/95 border border-[#646262]/30 text-stone-200 rounded-none p-2 shadow-lg backdrop-blur-xs flex flex-col space-y-1.5 min-w-[210px] max-w-[250px]">
+            {/* Top Bar: Title & Minimize Toggle */}
+            <div className="flex items-center justify-between text-[10px] border-b border-white/10 pb-1">
+              <button
+                onClick={() => setShowDetail(true)}
+                className="flex items-center space-x-1 text-amber-400 hover:text-amber-300 font-bold transition-colors"
+              >
+                <span>[EP.06 성진호흡 {state.stage}성]</span>
+                <span className="text-stone-400 font-normal">?</span>
+              </button>
+              <button
+                onClick={() => setIsMinimized(true)}
+                className="text-stone-500 hover:text-stone-300 px-1 py-0.5 rounded-xs"
+                title="Minimize HUD"
+              >
+                [—]
+              </button>
+            </div>
 
+            {/* Gauge Row */}
+            <div className="space-y-1">
+              <div className="flex items-center justify-between text-[10px] text-stone-400">
+                <span>영기 충전도</span>
+                <span className={isReady ? 'text-cyan-400 font-bold' : 'text-stone-300 font-bold'}>
+                  {Math.floor(state.astralResonance)} / 100%
+                </span>
+              </div>
+              <div className="w-full h-1.5 bg-stone-900 border border-stone-800 rounded-none overflow-hidden">
+                <div
+                  className={`h-full transition-all duration-300 ${
+                    isReady ? 'bg-cyan-400' : 'bg-amber-500/80'
+                  }`}
+                  style={{ width: `${Math.min(100, state.astralResonance)}%` }}
+                />
+              </div>
+            </div>
+
+            {/* Action Button: Flat 4px Button adhering to DESIGN.md button-primary */}
             <button
               onClick={handleCast}
               disabled={!isReady || isCastingAnimation}
-              aria-label="Cast Star Breathing Ultimate"
-              className={`relative w-[58px] h-[58px] rounded-full border-2 flex flex-col items-center justify-center transition-all duration-300 shadow-xl ${
+              className={`w-full py-1.5 px-2 text-xs font-bold rounded-sm border transition-all flex items-center justify-center space-x-1.5 ${
                 isReady
-                  ? 'bg-gradient-to-br from-indigo-950 via-cyan-950 to-[#090d16] border-cyan-400 text-cyan-300 hover:scale-105 active:scale-95 cursor-pointer shadow-cyan-500/20'
-                  : 'bg-[#090d16]/95 border-stone-700 text-stone-500 cursor-not-allowed opacity-85'
+                  ? 'bg-cyan-950/80 hover:bg-cyan-900 border-cyan-400 text-cyan-200 cursor-pointer shadow-sm active:bg-cyan-950'
+                  : 'bg-stone-900 border-stone-800 text-stone-500 cursor-not-allowed opacity-75'
               }`}
             >
-              {/* Star Constellation Rune Icon */}
-              <svg className={`w-6 h-6 ${isReady ? 'animate-pulse text-cyan-300' : 'text-stone-600'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+              <svg className={`w-3.5 h-3.5 ${isReady ? 'text-cyan-300' : 'text-stone-600'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
               </svg>
-              <span className="text-[8px] font-extrabold tracking-tighter mt-0.5">
-                {isReady ? '오의개방' : `${Math.floor(state.astralResonance)}%`}
-              </span>
+              <span>{isReady ? '[오의 발동: 별빛 성역]' : '[영기 충전 대기]'}</span>
             </button>
           </div>
-        </div>
+        )}
       </div>
 
-      {/* Casting Flash FX Overlay */}
+      {/* Casting Notice: Flat Terminal Banner adhering to OpenCode TUI style */}
       {isCastingAnimation && (
-        <div className="fixed inset-0 z-50 pointer-events-none flex items-center justify-center bg-cyan-950/40 backdrop-blur-xs font-mono">
-          <div className="text-center p-6 bg-[#090d16]/95 border border-cyan-400 text-white rounded-none shadow-2xl animate-bounce">
-            <div className="text-cyan-400 text-xs font-bold tracking-widest uppercase mb-1">
-              [EPISODE 06 // THE ART OF BREATHING STARS]
+        <div className="fixed inset-x-0 top-16 z-50 pointer-events-none flex items-center justify-center font-mono px-4">
+          <div className="w-full max-w-md p-3 bg-[#090d16]/98 border border-cyan-400 text-white rounded-none shadow-xl text-center">
+            <div className="text-[10px] text-cyan-400 font-bold uppercase tracking-widest mb-0.5">
+              [SYSTEM // ASTRAL SANCTUARY ENGAGED]
             </div>
-            <div className="text-xl font-black text-amber-300 mb-2">
-              성진호흡 제{state.stage}성: 별빛 성역 전개!
-            </div>
-            <div className="text-xs text-stone-300">
-              전장 타일 정화 완료 // 인접 적 카드 캡처 발동
+            <div className="text-sm font-bold text-amber-300">
+              성진호흡 제{state.stage}성 오의 발동: 전장 타일 정화 & 적 카드 캡처
             </div>
           </div>
         </div>
       )}
 
-      {/* Star Breathing Detail Dialog */}
+      {/* Star Breathing Detail Modal */}
       {showDetail && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs font-mono select-none">
-          <div className="relative w-full max-w-sm bg-[#090d16] border border-cyan-500/40 rounded-none p-5 text-stone-200 shadow-2xl">
+          <div className="relative w-full max-w-sm bg-[#090d16] border border-[#646262]/40 rounded-none p-5 text-stone-200 shadow-2xl">
             <div className="flex items-center justify-between border-b border-white/10 pb-2 mb-3">
-              <div className="flex items-center space-x-1.5 text-xs text-cyan-400 font-bold">
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                </svg>
+              <div className="flex items-center space-x-1.5 text-xs text-amber-400 font-bold">
                 <span>[소설 비전 // 성진호흡법 수련기]</span>
               </div>
               <button
                 onClick={() => setShowDetail(false)}
-                className="text-stone-400 hover:text-white p-1"
+                className="text-stone-400 hover:text-white p-1 rounded-sm"
+                aria-label="Close"
               >
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-                  <line x1="18" y1="6" x2="6" y2="18"></line>
-                  <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
+                [x]
               </button>
             </div>
 
             <div className="space-y-3 text-xs">
-              <div className="p-2.5 bg-black/60 border border-white/10 rounded-sm">
-                <div className="text-amber-400 font-bold mb-1">
+              <div className="p-2.5 bg-black/60 border border-white/10 rounded-none">
+                <div className="text-amber-400 font-bold mb-0.5">
                   {stageInfo.nameKo}
                 </div>
-                <div className="text-[11px] text-stone-400 mb-2">
+                <div className="text-[11px] text-stone-400 mb-1.5">
                   {stageInfo.nameEn}
                 </div>
                 <div className="text-[11px] text-cyan-300">
-                  특성: {stageInfo.perkKo}
+                  고유 특성: {stageInfo.perkKo}
                 </div>
               </div>
 
@@ -177,23 +205,23 @@ export const StarBreathingUltimateWidget: React.FC<StarBreathingUltimateWidgetPr
               <div>
                 <div className="flex justify-between text-[11px] text-stone-400 mb-1">
                   <span>다음 성좌 승급 수련도</span>
-                  <span>{state.starShards} / {nextRequired} 파편</span>
+                  <span className="font-bold text-stone-200">{state.starShards} / {nextRequired} 파편</span>
                 </div>
-                <div className="w-full h-2 bg-stone-900 border border-stone-700 rounded-xs overflow-hidden">
+                <div className="w-full h-1.5 bg-stone-900 border border-stone-800 rounded-none overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-indigo-500 to-cyan-400"
+                    className="h-full bg-amber-400"
                     style={{ width: `${Math.min(100, (state.starShards / nextRequired) * 100)}%` }}
                   />
                 </div>
               </div>
 
-              <div className="p-2 bg-white/5 border border-white/10 rounded-sm text-[11px] text-stone-400 leading-relaxed">
-                110종 미니게임을 완료할 때마다 성진의 파편을 획득하며, 3x3 배틀 중 성진 게이지가 100% 충전되면 전장의 적 카드를 정화 캡처하는 오의를 시전할 수 있습니다.
+              <div className="p-2 bg-white/5 border border-white/10 rounded-none text-[11px] text-stone-400 leading-relaxed">
+                110종 미니게임을 승리할 때마다 성진의 파편을 획득하며, 3x3 배틀 중 게이지가 100% 충전되면 전장의 적 카드를 정화 캡처하는 오의를 시전할 수 있습니다.
               </div>
 
               <button
                 onClick={() => setShowDetail(false)}
-                className="w-full py-2 bg-stone-800 hover:bg-stone-700 text-white font-bold text-xs rounded-sm border border-stone-600"
+                className="w-full py-2 bg-stone-900 hover:bg-stone-800 text-stone-200 font-bold text-xs rounded-sm border border-stone-700 transition-colors"
               >
                 [확인 완료]
               </button>
@@ -204,3 +232,5 @@ export const StarBreathingUltimateWidget: React.FC<StarBreathingUltimateWidgetPr
     </>
   );
 };
+
+export default StarBreathingUltimateWidget;

@@ -282,61 +282,58 @@ export const InstantRevengeModal: React.FC<InstantRevengeModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md select-none font-mono">
-      <div className="relative w-full max-w-lg bg-[#090d16]/95 border border-rose-500/30 rounded-xl p-5 sm:p-6 text-white shadow-2xl space-y-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-xs select-none font-mono">
+      <div className="relative w-full max-w-lg bg-[#090d16] border border-[#646262]/40 rounded-none p-5 sm:p-6 text-white shadow-2xl space-y-4">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-rose-500/20 pb-3">
+        <div className="flex items-center justify-between border-b border-white/10 pb-3">
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse" />
-            <span className="text-[11px] font-bold tracking-wider text-rose-400 uppercase">
+            <span className="text-[10px] text-rose-400 font-bold">[REVENGE]</span>
+            <span className="text-xs font-bold tracking-wider text-rose-300 uppercase">
               {tr.modalTitle}
             </span>
           </div>
           <button
             onClick={onClose}
-            className="p-1 text-gray-400 hover:text-white rounded border border-transparent hover:border-white/10"
+            className="p-1 text-stone-400 hover:text-white rounded-sm border border-transparent hover:border-stone-700"
           >
-            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
+            [x]
           </button>
         </div>
 
         {/* Buff Alert Banner */}
-        <div className="p-3 bg-rose-950/40 border border-rose-500/40 rounded-lg flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-rose-900/60 border border-rose-400/50 flex items-center justify-center text-rose-300 shrink-0">
+        <div className="p-3 bg-stone-950 border border-stone-800 rounded-none flex items-center gap-3">
+          <div className="w-8 h-8 rounded-none bg-stone-900 border border-stone-700 flex items-center justify-center text-rose-300 shrink-0">
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
               <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
             </svg>
           </div>
           <div>
             <div className="text-xs font-bold text-rose-300">{tr.buffBadge}</div>
-            <div className="text-[10px] text-gray-400">{tr.subtitle}</div>
+            <div className="text-[10px] text-stone-400">{tr.subtitle}</div>
           </div>
         </div>
 
         {/* READY STAGE */}
         {stage === 'READY' && (
           <div className="space-y-4 py-2">
-            <div className="bg-black/60 border border-white/10 rounded-lg p-3 space-y-2 text-xs">
-              <div className="flex justify-between text-gray-400">
+            <div className="bg-stone-950 border border-stone-800 rounded-none p-3 space-y-2 text-xs">
+              <div className="flex justify-between text-stone-400">
                 <span>TARGET DECK CODE:</span>
                 <span className="text-rose-400 font-bold">{deckCode}</span>
               </div>
-              <div className="flex justify-between text-gray-400">
+              <div className="flex justify-between text-stone-400">
                 <span>TARGET COMMANDER:</span>
                 <span className="text-white">{challengerPayload.commanderName}</span>
               </div>
-              <div className="flex justify-between text-gray-400">
+              <div className="flex justify-between text-stone-400">
                 <span>OVERCLOCK PWR BUFF:</span>
-                <span className="text-emerald-400 font-bold">{(challengerPayload.totalPwr * 1.2).toLocaleString()} (+20%)</span>
+                <span className="text-amber-400 font-bold">{(challengerPayload.totalPwr * 1.2).toLocaleString()} (+20%)</span>
               </div>
             </div>
 
             <button
               onClick={handleStartRevenge}
-              className="w-full min-h-[48px] bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/50 text-rose-300 font-bold rounded-lg text-xs flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
+              className="w-full min-h-[44px] bg-[#201d1d] hover:bg-stone-800 border border-rose-500/60 text-rose-300 font-bold rounded-sm text-xs flex items-center justify-center gap-2 transition-colors"
             >
               <svg className="w-4 h-4 text-rose-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
                 <polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5" />
@@ -352,7 +349,7 @@ export const InstantRevengeModal: React.FC<InstantRevengeModalProps> = ({
         {/* BATTLING STAGE (60fps animation) */}
         {stage === 'BATTLING' && (
           <div className="space-y-4 py-3">
-            <div className="flex justify-between text-xs text-rose-400">
+            <div className="flex justify-between text-xs text-rose-400 font-bold">
               <span>{tr.simulatingTitle}</span>
               <span>TICK #{combatTick}</span>
             </div>
@@ -360,23 +357,23 @@ export const InstantRevengeModal: React.FC<InstantRevengeModalProps> = ({
             {/* Health Bars */}
             <div className="space-y-2">
               <div className="flex justify-between text-[11px]">
-                <span className="text-emerald-400 font-bold">MY OVERCLOCKED FORCE</span>
+                <span className="text-stone-300 font-bold">MY FORCE</span>
                 <span className="text-white font-bold">{playerHp}%</span>
               </div>
-              <div className="w-full h-2.5 bg-black/80 rounded-full overflow-hidden border border-emerald-500/30">
-                <div className="h-full bg-emerald-400 transition-all duration-75" style={{ width: `${playerHp}%` }} />
+              <div className="w-full h-2 bg-stone-900 rounded-none overflow-hidden border border-stone-700">
+                <div className="h-full bg-cyan-400 transition-all duration-75" style={{ width: `${playerHp}%` }} />
               </div>
 
               <div className="flex justify-between text-[11px] pt-2">
                 <span className="text-rose-400 font-bold">{challengerPayload.commanderName}</span>
                 <span className="text-white font-bold">{enemyHp}%</span>
               </div>
-              <div className="w-full h-2.5 bg-black/80 rounded-full overflow-hidden border border-rose-500/30">
+              <div className="w-full h-2 bg-stone-900 rounded-none overflow-hidden border border-stone-700">
                 <div className="h-full bg-rose-500 transition-all duration-75" style={{ width: `${enemyHp}%` }} />
               </div>
             </div>
 
-            <div className="p-2.5 bg-black/60 border border-white/10 rounded text-center text-[10px] text-gray-300 animate-pulse">
+            <div className="p-2.5 bg-stone-950 border border-stone-800 rounded-none text-center text-[10px] text-stone-300">
               &gt; {tr.combatLog}
             </div>
           </div>
@@ -385,26 +382,26 @@ export const InstantRevengeModal: React.FC<InstantRevengeModalProps> = ({
         {/* VICTORY STAGE */}
         {stage === 'VICTORY' && (
           <div className="space-y-4 py-2">
-            <div className="p-3 bg-emerald-950/40 border border-emerald-500/50 rounded-lg flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-emerald-900/60 border border-emerald-400/50 flex items-center justify-center text-emerald-300 shrink-0">
+            <div className="p-3 bg-stone-950 border border-stone-800 rounded-none flex items-center gap-3">
+              <div className="w-10 h-10 rounded-none bg-stone-900 border border-stone-700 flex items-center justify-center text-amber-300 shrink-0">
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
                   <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
                   <polyline points="22 4 12 14.01 9 11.01" />
                 </svg>
               </div>
               <div>
-                <div className="text-xs font-bold text-emerald-300">{tr.victoryTitle}</div>
-                <div className="text-[10px] text-gray-400">{tr.victoryDesc}</div>
+                <div className="text-xs font-bold text-amber-300">{tr.victoryTitle}</div>
+                <div className="text-[10px] text-stone-400">{tr.victoryDesc}</div>
               </div>
             </div>
 
-            <div className="p-3 bg-black/60 border border-white/10 rounded-lg text-xs space-y-1">
-              <div className="text-gray-400">MISSION REWARDS:</div>
-              <div className="text-emerald-400 font-bold">{tr.bonusReward}</div>
+            <div className="p-3 bg-stone-950 border border-stone-800 rounded-none text-xs space-y-1">
+              <div className="text-stone-400">MISSION REWARDS:</div>
+              <div className="text-amber-300 font-bold">{tr.bonusReward}</div>
             </div>
 
             {toastVisible && (
-              <div className="p-2 bg-emerald-950/80 border border-emerald-500/60 text-emerald-300 text-center text-[10px] rounded">
+              <div className="p-2 bg-stone-900 border border-amber-400 text-amber-300 text-center text-[10px] rounded-none">
                 {tr.copiedToast}
               </div>
             )}
@@ -412,9 +409,9 @@ export const InstantRevengeModal: React.FC<InstantRevengeModalProps> = ({
             <div className="grid grid-cols-2 gap-2">
               <button
                 onClick={handleShare}
-                className="min-h-[44px] bg-white/5 hover:bg-white/10 border border-white/15 text-gray-300 font-bold rounded-lg text-xs flex items-center justify-center gap-1.5 transition-colors"
+                className="min-h-[44px] bg-stone-900 hover:bg-stone-800 border border-stone-700 text-stone-200 font-bold rounded-sm text-xs flex items-center justify-center gap-1.5 transition-colors"
               >
-                <svg className="w-4 h-4 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+                <svg className="w-4 h-4 text-stone-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
                   <circle cx="18" cy="5" r="3" />
                   <circle cx="6" cy="12" r="3" />
                   <circle cx="18" cy="19" r="3" />
@@ -425,7 +422,7 @@ export const InstantRevengeModal: React.FC<InstantRevengeModalProps> = ({
               </button>
               <button
                 onClick={onClose}
-                className="min-h-[44px] bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/50 text-emerald-300 font-bold rounded-lg text-xs flex items-center justify-center transition-all active:scale-[0.98]"
+                className="min-h-[44px] bg-[#201d1d] hover:bg-stone-800 border border-stone-700 text-white font-bold rounded-sm text-xs flex items-center justify-center transition-colors"
               >
                 {tr.closeBtn}
               </button>

@@ -598,22 +598,22 @@ export const InstantChallengeBattleModal: React.FC<InstantChallengeBattleModalPr
       aria-labelledby="challenge-modal-title"
       className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 min-h-[100dvh] max-h-[100dvh] overflow-y-auto bg-black/85 backdrop-blur-md select-none animate-fade-in"
     >
-      <div className="relative w-full max-w-lg bg-[#090d16]/95 border border-white/15 rounded-xl p-5 sm:p-6 font-mono text-xs text-white shadow-2xl space-y-4">
+      <div className="relative w-full max-w-lg bg-[#090d16] border border-[#646262]/40 rounded-none p-5 sm:p-6 font-mono text-xs text-white shadow-2xl space-y-4">
         {/* Top Header Row with System Identifiers & Close */}
         <div className="flex items-center justify-between border-b border-white/10 pb-3">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-            <span className="font-mono tracking-wider uppercase text-[11px] font-bold text-emerald-400">
+            <span className="text-[10px] text-amber-400 font-bold">[CHALLENGE]</span>
+            <span className="font-mono tracking-wider uppercase text-[11px] font-bold text-stone-200">
               {txt.modalHeader}
             </span>
           </div>
 
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-white p-1 rounded-sm border border-transparent hover:border-white/15 cursor-pointer"
+            className="text-stone-400 hover:text-white p-1 rounded-sm border border-transparent hover:border-stone-700 cursor-pointer"
             aria-label={txt.dismissText}
           >
-            <CloseIcon className="w-4 h-4" />
+            [x]
           </button>
         </div>
 
@@ -621,16 +621,16 @@ export const InstantChallengeBattleModal: React.FC<InstantChallengeBattleModalPr
         {stage === 'PREVIEW' && (
           <div className="space-y-4 animate-fade-in">
             <div>
-              <h2 id="challenge-modal-title" className="text-lg sm:text-xl font-bold font-mono text-white tracking-wide">
+              <h2 id="challenge-modal-title" className="text-base sm:text-lg font-bold font-mono text-white tracking-wide">
                 {txt.challengerTitle}
               </h2>
-              <p className="mt-1 text-slate-300 text-[11px] leading-relaxed">
+              <p className="mt-1 text-stone-400 text-[11px] leading-relaxed">
                 {txt.challengerDesc}
               </p>
             </div>
 
             {/* Challenger Profile Card */}
-            <div className="p-3.5 bg-black/60 border border-emerald-500/30 rounded-lg space-y-3">
+            <div className="p-3.5 bg-stone-950 border border-stone-800 rounded-none space-y-3">
               <div className="flex items-center justify-between border-b border-white/10 pb-2">
                 <div>
                   <div className="text-[10px] uppercase text-slate-400">{txt.deckCodeLabel}</div>
@@ -788,24 +788,24 @@ export const InstantChallengeBattleModal: React.FC<InstantChallengeBattleModalPr
 
             {/* Actions */}
             <div className="space-y-2 pt-2">
-              {/* Build Counter Deck CTA */}
+              {/* Build Counter Deck CTA: DESIGN.md button-primary */}
               <button
                 onClick={handleGoToDeckBuilder}
-                className="w-full min-h-[48px] px-5 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 active:from-emerald-700 active:to-teal-700 text-white font-bold font-mono tracking-wider uppercase text-xs rounded-sm shadow-xl shadow-emerald-950/60 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full min-h-[44px] px-5 py-3 bg-[#201d1d] hover:bg-stone-800 active:bg-[#0f0000] border border-stone-700 text-stone-100 font-bold font-mono tracking-wider uppercase text-xs rounded-sm transition-colors flex items-center justify-center gap-2 cursor-pointer"
               >
-                <CrossedSwordsIcon className="w-4 h-4 text-white" />
+                <CrossedSwordsIcon className="w-4 h-4 text-amber-400" />
                 <span>{txt.buildDeckBtn}</span>
               </button>
 
               {/* RSI-008: Tactical Revenge Match (+20% Overclock Buff) */}
               <button
                 onClick={() => setShowRevengeModal(true)}
-                className="w-full min-h-[44px] px-4 py-2.5 bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/50 text-rose-300 font-bold font-mono tracking-wider uppercase text-xs rounded-sm transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]"
+                className="w-full min-h-[44px] px-4 py-2.5 bg-stone-900 hover:bg-stone-800 border border-rose-500/60 text-rose-300 font-bold font-mono tracking-wider uppercase text-xs rounded-sm transition-colors flex items-center justify-center gap-2 cursor-pointer"
               >
                 <svg className="w-4 h-4 text-rose-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
                   <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
                 </svg>
-                <span>{effectiveLang === 'ko' ? '전술 리벤지 재대결 (+20% 버프)' : 'TACTICAL REVENGE REMATCH (+20% BUFF)'}</span>
+                <span>{effectiveLang === 'ko' ? '설욕전 결투 재도전 (+20% 버프)' : 'TACTICAL REVENGE REMATCH (+20% BUFF)'}</span>
               </button>
 
               {/* Share & Download Row */}

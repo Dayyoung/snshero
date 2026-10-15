@@ -1224,13 +1224,13 @@ export const FirstVisitOverdriveModal: React.FC<FirstVisitOverdriveModalProps> =
             <button
               onClick={handleEngageOverdrive}
               disabled={stage === 'OVERDRIVE_IMPACT'}
-              className={`w-full min-h-[48px] px-6 py-3 font-mono tracking-wider uppercase text-sm font-bold border transition-all flex items-center justify-center gap-2 rounded-sm cursor-pointer ${
+              className={`w-full min-h-[44px] px-6 py-3 font-mono tracking-wider uppercase text-xs font-bold border transition-colors flex items-center justify-center gap-2 rounded-sm cursor-pointer ${
                 stage === 'OVERDRIVE_IMPACT'
-                  ? 'bg-rose-700 text-white border-rose-400 opacity-90'
-                  : 'bg-gradient-to-r from-rose-600 via-red-600 to-amber-600 hover:from-rose-500 hover:to-amber-500 text-white border-rose-400/60 shadow-xl shadow-rose-950/80 active:scale-[0.99]'
+                  ? 'bg-stone-900 text-stone-500 border-stone-800 cursor-not-allowed'
+                  : 'bg-[#201d1d] hover:bg-stone-800 text-white border-stone-700 active:bg-black'
               }`}
             >
-              <ImpactBoltIcon className="w-5 h-5 text-white" />
+              <ImpactBoltIcon className="w-4 h-4 text-amber-400" />
               <span>{stage === 'OVERDRIVE_IMPACT' ? txt.engagingBtn : txt.engageBtn}</span>
             </button>
           </div>
@@ -1240,14 +1240,14 @@ export const FirstVisitOverdriveModal: React.FC<FirstVisitOverdriveModalProps> =
         {stage === 'REWARD_CLAIM' && (
           <div className="space-y-4 animate-fade-in text-center">
             <div>
-              <div className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 font-mono tracking-wider uppercase text-[10px] font-bold mb-1">
-                <CheckIcon className="w-3.5 h-3.5 text-emerald-400" />
+              <div className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-stone-900 border border-stone-700 text-amber-400 font-mono tracking-wider uppercase text-[10px] font-bold mb-1">
+                <CheckIcon className="w-3.5 h-3.5 text-amber-400" />
                 <span>{txt.victoryConfirmed}</span>
               </div>
-              <h2 className="text-xl sm:text-2xl font-bold font-mono tracking-wide text-white">
+              <h2 className="text-lg sm:text-xl font-bold font-mono tracking-wide text-white">
                 {txt.rewardTitle}
               </h2>
-              <p className="mt-1 text-xs font-mono text-slate-300">
+              <p className="mt-1 text-xs font-mono text-stone-300">
                 {txt.rewardDesc}
               </p>
             </div>
@@ -1255,9 +1255,9 @@ export const FirstVisitOverdriveModal: React.FC<FirstVisitOverdriveModalProps> =
             {/* Rewards Display Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
               {/* Reward 1: 10x Prime Summon Ticket */}
-              <div className="border border-indigo-500/40 bg-indigo-950/20 p-3">
+              <div className="border border-stone-800 bg-stone-950 p-3">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="font-mono uppercase text-[10px] text-indigo-400 font-semibold">
+                  <span className="font-mono uppercase text-[10px] text-stone-400 font-semibold">
                     {txt.currencyDropBadge}
                   </span>
                   <span className="font-mono tracking-wider uppercase text-xs font-bold text-amber-400">
@@ -1267,34 +1267,34 @@ export const FirstVisitOverdriveModal: React.FC<FirstVisitOverdriveModalProps> =
                 <div className="font-mono font-bold text-sm text-white">
                   {txt.ticketTitle}
                 </div>
-                <div className="mt-1 text-[11px] font-mono text-slate-400">
+                <div className="mt-1 text-[11px] font-mono text-stone-400">
                   {txt.ticketDesc}
                 </div>
               </div>
 
               {/* Reward 2: SH-101 Sovereign 24H Command Access */}
-              <div className="border border-cyan-500/40 bg-cyan-950/20 p-3">
+              <div className="border border-stone-800 bg-stone-950 p-3">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="font-mono uppercase text-[10px] text-cyan-400 font-semibold">
+                  <span className="font-mono uppercase text-[10px] text-stone-400 font-semibold">
                     {txt.accessBadge}
                   </span>
-                  <span className="font-mono tracking-wider uppercase text-xs font-bold text-cyan-300">
+                  <span className="font-mono tracking-wider uppercase text-xs font-bold text-stone-200">
                     24:00:00
                   </span>
                 </div>
                 <div className="font-mono font-bold text-sm text-white">
                   {txt.sovereignTitle}
                 </div>
-                <div className="mt-1 text-[11px] font-mono text-slate-400">
+                <div className="mt-1 text-[11px] font-mono text-stone-400">
                   {txt.sovereignDesc}
                 </div>
               </div>
             </div>
 
             {/* Security Notice */}
-            <div className="p-2.5 bg-black/40 border border-white/10 text-left flex items-start gap-2">
-              <ShieldIcon className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-              <div className="text-[11px] font-mono text-slate-300 leading-tight">
+            <div className="p-2.5 bg-stone-950 border border-stone-800 text-left flex items-start gap-2">
+              <ShieldIcon className="w-4 h-4 text-stone-400 shrink-0 mt-0.5" />
+              <div className="text-[11px] font-mono text-stone-400 leading-tight">
                 {txt.persistenceNotice}
               </div>
             </div>
@@ -1302,9 +1302,9 @@ export const FirstVisitOverdriveModal: React.FC<FirstVisitOverdriveModalProps> =
             {/* CTA Button: Claim & Enter Command Deck */}
             <button
               onClick={handleClaimAndEnterDeck}
-              className="w-full min-h-[48px] px-6 py-3 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-mono tracking-wider uppercase text-sm font-bold border border-emerald-400/50 shadow-lg shadow-emerald-950/60 transition-all flex items-center justify-center gap-2 rounded-sm cursor-pointer"
+              className="w-full min-h-[44px] px-6 py-3 bg-[#201d1d] hover:bg-stone-800 active:bg-black text-white font-mono tracking-wider uppercase text-xs font-bold border border-stone-700 transition-colors flex items-center justify-center gap-2 rounded-sm cursor-pointer"
             >
-              <VectorArrowIcon className="w-5 h-5 text-white" />
+              <VectorArrowIcon className="w-4 h-4 text-amber-400" />
               <span>{txt.claimBtn}</span>
             </button>
           </div>

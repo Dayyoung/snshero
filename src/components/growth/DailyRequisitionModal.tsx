@@ -407,7 +407,7 @@ export const DailyRequisitionModal: React.FC<DailyRequisitionModalProps> = ({
       className="fixed inset-0 z-[250] bg-black/85 backdrop-blur-md flex items-center justify-center p-3 select-none touch-none font-mono"
     >
       <div
-        className={`w-full max-w-lg bg-[#090d16] border border-emerald-500/40 rounded-xl p-4 sm:p-5 text-white flex flex-col shadow-2xl relative max-h-[92dvh] overflow-y-auto ${className}`}
+        className={`w-full max-w-lg bg-[#090d16] border border-[#646262]/40 rounded-none p-4 sm:p-5 text-white flex flex-col shadow-2xl relative max-h-[92dvh] overflow-y-auto ${className}`}
       >
         {/* Close Button */}
         <button
@@ -421,8 +421,8 @@ export const DailyRequisitionModal: React.FC<DailyRequisitionModalProps> = ({
 
         {/* Top Header */}
         <div className="flex items-center gap-2 mb-2">
-          <SupplyCrateIcon size={16} className="text-emerald-400 shrink-0" />
-          <span className="text-[10px] tracking-wider text-emerald-400 font-bold uppercase">
+          <SupplyCrateIcon size={16} className="text-stone-400 shrink-0" />
+          <span className="text-[10px] tracking-wider text-amber-400 font-bold uppercase">
             [{t('header_badge')}]
           </span>
         </div>
@@ -430,21 +430,21 @@ export const DailyRequisitionModal: React.FC<DailyRequisitionModalProps> = ({
         <h2 className="text-base sm:text-lg font-bold text-white mb-1">
           {t('title')}
         </h2>
-        <p className="text-xs text-white/60 mb-4">
+        <p className="text-xs text-stone-400 mb-4">
           {t('subtitle')}
         </p>
 
         {/* Status Badge */}
-        <div className="flex items-center justify-between bg-white/5 border border-white/10 rounded-lg p-2.5 mb-4 text-xs">
-          <div className="flex items-center gap-2">
-            <CheckShieldIcon size={16} className="text-emerald-400" />
+        <div className="flex items-center justify-between bg-stone-950 border border-stone-800 rounded-none p-2.5 mb-4 text-xs">
+          <div className="flex items-center gap-2 text-stone-400">
+            <CheckShieldIcon size={16} className="text-stone-300" />
             <span>KST 00:00 - 23:59</span>
           </div>
           <span
-            className={`px-2 py-0.5 rounded-xs font-bold text-[10px] border ${
+            className={`px-2 py-0.5 rounded-sm font-bold text-[10px] border ${
               isClaimedToday && step === 'READY'
-                ? 'bg-white/10 text-white/50 border-white/20'
-                : 'bg-emerald-950/60 text-emerald-300 border-emerald-500/50 animate-pulse'
+                ? 'bg-stone-900 text-stone-500 border-stone-800'
+                : 'bg-stone-900 text-amber-300 border-amber-500/50'
             }`}
           >
             {isClaimedToday && step === 'READY' ? t('claimed_badge') : t('ready_badge')}
@@ -454,20 +454,20 @@ export const DailyRequisitionModal: React.FC<DailyRequisitionModalProps> = ({
         {/* Content Stages */}
         {step === 'READY' && (
           <div className="flex flex-col items-center justify-center py-6 text-center">
-            <div className="w-16 h-16 rounded-xl bg-emerald-500/10 border border-emerald-500/40 flex items-center justify-center text-emerald-400 mb-4 animate-pulse">
+            <div className="w-16 h-16 rounded-none bg-stone-900 border border-stone-700 flex items-center justify-center text-amber-400 mb-4">
               <SupplyCrateIcon size={32} />
             </div>
-            <p className="text-xs text-white/80 max-w-xs mb-5">
+            <p className="text-xs text-stone-300 max-w-xs mb-5">
               10개의 암호화 전술 보급 팩이 도킹되었습니다. 개봉 시 최소 1장 이상의 고위 전술 유닛이 보장됩니다.
             </p>
             <button
               type="button"
               disabled={isClaimedToday}
               onClick={handleUnseal}
-              className={`w-full py-3.5 rounded-lg font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer transition-all min-h-[48px] ${
+              className={`w-full py-3.5 rounded-sm font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer transition-colors min-h-[48px] ${
                 isClaimedToday
-                  ? 'bg-white/5 border border-white/10 text-white/30 cursor-not-allowed'
-                  : 'bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/60 text-emerald-300 shadow-[0_0_20px_rgba(16,185,129,0.3)]'
+                  ? 'bg-stone-900 border border-stone-800 text-stone-600 cursor-not-allowed'
+                  : 'bg-[#201d1d] hover:bg-stone-800 border border-amber-500/60 text-amber-300'
               }`}
             >
               <SupplyCrateIcon size={16} />
@@ -478,10 +478,10 @@ export const DailyRequisitionModal: React.FC<DailyRequisitionModalProps> = ({
 
         {step === 'OPENING' && (
           <div className="flex flex-col items-center justify-center py-12 text-center">
-            <div className="w-16 h-16 rounded-xl bg-emerald-500/20 border border-emerald-400 flex items-center justify-center text-emerald-300 mb-4 animate-spin">
+            <div className="w-16 h-16 rounded-none bg-stone-900 border border-amber-400 flex items-center justify-center text-amber-300 mb-4 animate-spin">
               <RadarScanIcon size={32} />
             </div>
-            <span className="text-xs font-bold text-emerald-400 animate-pulse">
+            <span className="text-xs font-bold text-amber-400">
               {t('scanning_text')}
             </span>
           </div>
@@ -497,16 +497,16 @@ export const DailyRequisitionModal: React.FC<DailyRequisitionModalProps> = ({
                 return (
                   <div
                     key={`${c.id}-${idx}`}
-                    className={`aspect-[3/4] rounded-sm p-1.5 flex flex-col justify-between border text-[9px] relative overflow-hidden transition-all ${
+                    className={`aspect-[3/4] rounded-none p-1.5 flex flex-col justify-between border text-[9px] relative overflow-hidden transition-colors ${
                       isSsr
-                        ? 'bg-amber-950/40 border-amber-400 shadow-[0_0_12px_rgba(251,191,36,0.6)] ring-1 ring-amber-300/80 animate-pulse'
+                        ? 'bg-stone-900 border-amber-400 text-amber-300'
                         : isSr
-                        ? 'bg-cyan-950/30 border-cyan-400/80'
-                        : 'bg-white/5 border-white/15 text-white/70'
+                        ? 'bg-stone-900 border-stone-600 text-stone-200'
+                        : 'bg-stone-950 border-stone-800 text-stone-400'
                     }`}
                   >
                     <div className="flex items-center justify-between text-[8px] font-bold">
-                      <span className={isSsr ? 'text-amber-300 font-extrabold' : isSr ? 'text-cyan-300' : 'text-white/50'}>
+                      <span className={isSsr ? 'text-amber-300 font-extrabold' : isSr ? 'text-stone-300' : 'text-stone-500'}>
                         {isSsr ? 'SSR' : isSr ? 'SR' : 'R'}
                       </span>
                       <CrosshairTargetIcon size={9} className="opacity-60" />
@@ -533,7 +533,7 @@ export const DailyRequisitionModal: React.FC<DailyRequisitionModalProps> = ({
             <button
               type="button"
               onClick={handleEquipAndDeploy}
-              className="w-full py-3.5 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/60 text-emerald-300 font-bold rounded-lg text-xs cursor-pointer min-h-[48px] flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(16,185,129,0.3)] uppercase tracking-wider"
+              className="w-full py-3.5 bg-[#201d1d] hover:bg-stone-800 border border-stone-700 text-stone-100 font-bold rounded-sm text-xs cursor-pointer min-h-[48px] flex items-center justify-center gap-2 uppercase tracking-wider transition-colors"
             >
               <CheckShieldIcon size={16} />
               <span>{t('btn_equip_and_go')}</span>

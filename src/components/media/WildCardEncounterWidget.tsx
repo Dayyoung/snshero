@@ -501,22 +501,22 @@ export const WildCardEncounterWidget: React.FC<WildCardEncounterWidgetProps> = (
           aria-label={txt.encounterDetected}
           className="fixed bottom-3 left-3 right-3 sm:bottom-5 sm:right-5 sm:left-auto sm:max-w-md z-50 animate-fade-in select-none"
         >
-          <div className="bg-[#090d16]/95 border border-white/10 rounded-lg p-4 font-mono text-xs shadow-2xl backdrop-blur-md text-white space-y-3 relative overflow-hidden">
+          <div className="bg-[#090d16] border border-[#646262]/40 rounded-none p-4 font-mono text-xs shadow-2xl backdrop-blur-xs text-white space-y-3 relative overflow-hidden">
             {/* Top Tactical Signal Indicator & Close Button */}
             <div className="flex items-center justify-between border-b border-white/10 pb-2">
               <div className="flex items-center gap-2">
-                <RadarPulseIcon className="w-4 h-4 text-cyan-400 animate-pulse" />
+                <RadarPulseIcon className="w-4 h-4 text-cyan-400" />
                 <span className="font-mono tracking-wider uppercase text-[11px] font-bold text-cyan-400">
                   {txt.encounterDetected}
                 </span>
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-[10px] text-slate-400 font-mono">
+                <span className="text-[10px] text-stone-400 font-mono">
                   {txt.dailyDropQuota}{quotaRemaining}/{MAX_DAILY_ENCOUNTERS}
                 </span>
                 <button
                   onClick={handleDismiss}
-                  className="text-slate-400 hover:text-white transition-colors p-1 rounded-sm border border-transparent hover:border-white/15"
+                  className="text-stone-400 hover:text-white transition-colors p-1 rounded-sm border border-transparent hover:border-stone-700"
                   aria-label={txt.dismissText}
                 >
                   <CloseIcon className="w-3.5 h-3.5" />
@@ -525,26 +525,26 @@ export const WildCardEncounterWidget: React.FC<WildCardEncounterWidgetProps> = (
             </div>
 
             {/* Signal Description */}
-            <p className="text-[11px] text-slate-300 leading-relaxed font-mono">
+            <p className="text-[11px] text-stone-300 leading-relaxed font-mono">
               {txt.encounterDesc}
             </p>
 
             {/* Intercepted Fragment Profile */}
-            <div className="p-2.5 bg-black/50 border border-cyan-500/30 rounded-sm flex items-center justify-between">
+            <div className="p-2.5 bg-stone-950 border border-stone-800 rounded-none flex items-center justify-between">
               <div className="flex items-center gap-2.5">
                 <CryptoChipsetIcon className="w-6 h-6 text-amber-400 shrink-0" />
                 <div>
                   <div className="font-mono tracking-wider font-bold text-white text-xs">
                     {DEFAULT_TRIAL_CARD.code} // {DEFAULT_TRIAL_CARD.name}
                   </div>
-                  <div className="text-[10px] text-slate-400 font-mono">
+                  <div className="text-[10px] text-stone-400 font-mono">
                     {DEFAULT_TRIAL_CARD.rarity} // {txt.classLabel}
                   </div>
                 </div>
               </div>
 
               <div className="text-right">
-                <div className="text-[9px] uppercase text-slate-400 font-mono">{txt.pwrLabel}</div>
+                <div className="text-[9px] uppercase text-stone-400 font-mono">{txt.pwrLabel}</div>
                 <div className="font-mono tracking-wider text-amber-400 font-bold text-sm">
                   {DEFAULT_TRIAL_CARD.pwr.toLocaleString()}
                 </div>
@@ -554,7 +554,7 @@ export const WildCardEncounterWidget: React.FC<WildCardEncounterWidgetProps> = (
             {/* Requisition Action CTA Button (min-h-[44px] as required) */}
             <button
               onClick={handleRequisition}
-              className="w-full min-h-[44px] px-4 py-2.5 bg-white/5 hover:bg-white/10 active:bg-white/15 border border-cyan-500/30 hover:border-cyan-400 text-cyan-400 font-bold font-mono tracking-wider uppercase text-xs rounded-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md shadow-cyan-950/40"
+              className="w-full min-h-[44px] px-4 py-2.5 bg-[#201d1d] hover:bg-stone-800 active:bg-stone-900 border border-stone-700 text-cyan-300 font-bold font-mono tracking-wider uppercase text-xs rounded-sm transition-colors flex items-center justify-center gap-2 cursor-pointer"
             >
               <TacticalCrosshairIcon className="w-4 h-4 text-cyan-400" />
               <span>{txt.requisitionBtn}</span>
@@ -569,14 +569,14 @@ export const WildCardEncounterWidget: React.FC<WildCardEncounterWidgetProps> = (
           role="dialog"
           aria-modal="true"
           aria-labelledby="trial-claim-title"
-          className="fixed inset-0 z-60 flex items-center justify-center p-3 sm:p-4 min-h-[100dvh] max-h-[100dvh] overflow-y-auto bg-black/80 backdrop-blur-md select-none animate-fade-in"
+          className="fixed inset-0 z-60 flex items-center justify-center p-3 sm:p-4 min-h-[100dvh] max-h-[100dvh] overflow-y-auto bg-black/85 backdrop-blur-xs select-none animate-fade-in"
         >
-          <div className="relative w-full max-w-md bg-[#090d16]/95 border border-cyan-500/40 rounded-lg p-5 sm:p-6 text-white font-mono shadow-2xl space-y-4">
+          <div className="relative w-full max-w-md bg-[#090d16] border border-[#646262]/40 rounded-none p-5 sm:p-6 text-white font-mono shadow-2xl space-y-4">
             {/* Modal Header */}
             <div className="flex items-center justify-between border-b border-white/10 pb-3">
               <div className="flex items-center gap-2">
-                <CheckBadgeIcon className="w-5 h-5 text-emerald-400" />
-                <span className="font-mono tracking-wider uppercase text-xs text-emerald-400 font-bold">
+                <CheckBadgeIcon className="w-5 h-5 text-amber-400" />
+                <span className="font-mono tracking-wider uppercase text-xs text-amber-300 font-bold">
                   {txt.claimedHeader}
                 </span>
               </div>
