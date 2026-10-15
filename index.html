@@ -10,6 +10,26 @@
       gtag('config', 'G-MT60DTV1KJ');
       gtag('config', 'AW-980426001');
     </script>
+    <!-- Event snippet for 구매 conversion page (Google Ads) -->
+    <script>
+      function gtag_report_conversion(url, transaction_id, value, currency) {
+        var callback = function () {
+          if (typeof(url) != 'undefined') {
+            window.location = url;
+          }
+        };
+        if (typeof gtag === 'function') {
+          gtag('event', 'conversion', {
+              'send_to': 'AW-980426001/5pbgCI2H9ckcEJG6wNMD',
+              'value': value || 1000.0,
+              'currency': currency || 'KRW',
+              'transaction_id': transaction_id || '',
+              'event_callback': callback
+          });
+        }
+        return false;
+      }
+    </script>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0, post-check=0, pre-check=0" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
