@@ -2,6 +2,25 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-15 11:27 KST] [/rsi-snshero] 신규 스프레드시트 연동 및 RSI-018 ~ RSI-021 전수 구현 완료 (21건 / 21건 100.0%)
+- **신규 연동 스프레드시트 (공개 CSV)**: `https://docs.google.com/spreadsheets/d/e/2PACX-1vTJLidMIGaaE_tsui-CydxadPU2vesb4cCF_iQIfuq7mFILYrCxgdcSbgRHxUi8--D6oq1ii-TEPIKC/pub?output=csv`
+- **신규 구현 및 개선 완료 내역**:
+  1. **RSI-018**: 소설 속 명장면 스토리 라이벌 결투 챌린지 모달 및 덱 프리셋 (`StoryRivalDuelModal.tsx`, `storyDeckPresets.ts`, EP8 바르가스 vs 일곱 추적자, EP1 아르투스 vs 카단 등 4대 명장면 덱 프리셋, `?story_duel=` URL 파라미터 감지 및 Web Share API 지원).
+  2. **RSI-019**: 소설 EP6 성진호흡법 연계 미니게임 마력 수련 & 3x3 배틀 오의 개방 위젯 (`StarBreathingUltimateWidget.tsx`, `starBreathingStore.ts`, 110종 미니게임 완료 시 성진의 파편 누적 1~7성 승급, 배틀 중 58px 플로팅 오의 버튼 1탭으로 별빛 성역 전개 및 적 카드 정화 캡처).
+  3. **RSI-020**: 모험가 길드 의뢰 게시판 및 주간 보스 토벌 모달 (`GuildBountyBoardModal.tsx`, `guildBountyStore.ts`, 자정 리셋 3대 의뢰(배틀 2승/미니게임 1회/카드 강화 1회), 주간 토벌 인장 5개 달성 시 주말 네임드 마수 토벌전 해금 및 3,000 SNS 지급, `LobbyBountyBadge` 연동).
+  4. **RSI-021**: 초회 3x3 배틀 '운명의 속성 역상성 파훼' 인터랙티브 튜토리얼 스킵 & 3초 캡처 승리 연출 (`ElementalCounterStrikeTutorial.tsx`, 3x3 배틀 첫 진입 시 화염 보스 vs 수류 영웅 상성 하이라이트, 중앙 B2 슬롯 1탭 시 3초 수류 룬 폭발 카드 플립 캡처 승리, 상단 우측 [SKIP TUTORIAL] 상시 배치, 승리 시 1,500 SNS 및 [SSR] 설원의 성검 지급).
+- **디자인 및 품질 가드레일**:
+  - 유니코드 이모지 0건 (Zero-Emoji 원칙 100% 준수, 순수 `strokeWidth="1.75"` 인라인 SVG 벡터 사용).
+  - OpenCode.ai Monospace 서체, 웜크림/잉크 팔레트, 1px solid hairline 보더, 0px 컨테이너/4px 버튼 반경 엄수.
+  - Zero-DB 100% 로컬스토리지 영구 보존.
+  - Google AdSense, SEO/GEO 메타태그, llms.txt, 결제 모듈 무손실 보존.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 Errors (TypeScript 컴파일 무결점 통과).
+  - `npm run build`: Vite 6 프로덕션 번들 정상 빌드 완료 (`built in 20.63s`, Google News SEO & AdSense 정적 자산 100% 생성).
+  - 포트 3000 고속 프리뷰 정상 가동 중 (`HTTP/1.1 200 OK`).
+  - 로컬 Git 커밋 전수 완료 (원격 푸시는 `/git-push` 대기).
+  - 연동 구글 폼 보고서 제출 완료.
+
 ## [2026-10-15 09:35 KST] [RPG/디자인 개편] 신규 팝업/글귀/HUD 웹툰·소설(눈히어로 카단 전설) 서사 전면 반영 및 DESIGN.md 모노스페이스 플랫 일치화
 - **요청 사항**:
   - "신규로 적용한 팝업/글귀/텍스트 가 현재 게임의 RPG요소를 고려하지 못하는것 같아. 웹툰 소설을 분석해서 신규 추가요소들에 내용에 반영해줘. 신규 추가요소 UI도 디자인가이드에서 벚어나는것 같아. 어울리게 수정해줘."

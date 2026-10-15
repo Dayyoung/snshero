@@ -129,11 +129,11 @@ const loadViewSafely = (name: string, fallbackComponent?: React.ComponentType<an
 };
 
 // Glob-based fail-safe component loader: Prevents Vite 'Failed to resolve import' errors in AI Studio/sandboxes
-const lazyComponentGlob = import.meta.glob('./components/*.tsx');
+const lazyComponentGlob = import.meta.glob(['./components/*.tsx', './components/**/*.tsx']);
 
 const loadComponentSafely = (name: string, fallbackComponent?: React.ComponentType<any>) => {
-  const targetPath = `./components/${name}.tsx`;
-  const importer = lazyComponentGlob[targetPath];
+  const matchingKey = Object.keys(lazyComponentGlob).find((k) => k.endsWith(`/${name}.tsx`));
+  const importer = matchingKey ? lazyComponentGlob[matchingKey] : undefined;
   if (!importer) {
     return () => Promise.resolve({
       default: fallbackComponent || (() => null)
@@ -247,6 +247,22 @@ const TacticalSeasonPassModal = safeLazy(
 const TacticalQuickStrikeModal = safeLazy(
   loadComponentSafely('TacticalQuickStrikeModal'),
   'TacticalQuickStrikeModal'
+);
+const StoryRivalDuelModal = safeLazy(
+  loadComponentSafely('StoryRivalDuelModal'),
+  'StoryRivalDuelModal'
+);
+const StarBreathingUltimateWidget = safeLazy(
+  loadComponentSafely('StarBreathingUltimateWidget'),
+  'StarBreathingUltimateWidget'
+);
+const GuildBountyBoardModal = safeLazy(
+  loadComponentSafely('GuildBountyBoardModal'),
+  'GuildBountyBoardModal'
+);
+const ElementalCounterStrikeTutorial = safeLazy(
+  loadComponentSafely('ElementalCounterStrikeTutorial'),
+  'ElementalCounterStrikeTutorial'
 );
 
 const getCardAvatarStyle = (avatar: string): React.CSSProperties => {
@@ -548,6 +564,18 @@ function AppContent() {
     }
   });
 
+  // RSI-018: Story Rival Duel Challenge (?story_duel={presetId})
+  const [storyDuelParam, setStoryDuelParam] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return null;
+    try {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('story_duel');
+    } catch {
+      return null;
+    }
+  });
+  const [showStoryDuelModal, setShowStoryDuelModal] = useState<boolean>(() => Boolean(storyDuelParam));
+
   // RSI-005: Daily Free 10x Requisition Modal State & Trigger
   const [showDailyRequisition, setShowDailyRequisition] = useState(false);
 
@@ -598,6 +626,39 @@ function AppContent() {
 
   // RSI-016: Tactical Quick Strike & Guest Callsign Auto-Grant Modal State
   const [showQuickStrikeModal, setShowQuickStrikeModal] = useState(false);
+
+  // RSI-020: Guild Bounty Board & Weekly Raid Modal State
+  const [showGuildBountyModal, setShowGuildBountyModal] = useState(false);
+
+  // RSI-021: FTUE Elemental Counter Strike Tutorial State
+  const [showFtueCounterStrike, setShowFtueCounterStrike] = useState(false);
+
+  useEffect(() => {
+    if (view === 'card-play') {
+      try {
+        const cleared = localStorage.getItem('snshero_ftue_battle_cleared');
+        if (!cleared) {
+          setShowFtueCounterStrike(true);
+        }
+      } catch {}
+    }
+  }, [view]);
+
+  // Global listeners to trigger modals from any view
+  useEffect(() => {
+    const handleOpenBounties = () => setShowGuildBountyModal(true);
+    const handleOpenStoryDuel = (e: Event) => {
+      const custom = e as CustomEvent<{ presetId?: string }>;
+      if (custom.detail?.presetId) setStoryDuelParam(custom.detail.presetId);
+      setShowStoryDuelModal(true);
+    };
+    window.addEventListener('snshero_open_guild_bounties', handleOpenBounties);
+    window.addEventListener('snshero_open_story_duel', handleOpenStoryDuel);
+    return () => {
+      window.removeEventListener('snshero_open_guild_bounties', handleOpenBounties);
+      window.removeEventListener('snshero_open_story_duel', handleOpenStoryDuel);
+    };
+  }, []);
 
   const { language, setLanguage, lowSpecMode, setLowSpecMode, theme, setTheme } = useGameSettings();
   useLowSpecGuard(lowSpecMode);
@@ -8362,6 +8423,64 @@ function AppContent() {
           );
         }}
         language={language}
+      />
+
+      {/* RSI-018: Novel Rival Duel Challenge Modal */}
+      <StoryRivalDuelModal
+        isOpen={showStoryDuelModal}
+        presetId={storyDuelParam || 'ep08'}
+        onClose={() => setShowStoryDuelModal(false)}
+        onStartBattle={(preset) => {
+          setShowStoryDuelModal(false);
+          setView('card-play');
+          showCustomAlert(
+            language === 'ko' ? '운명의 결투 개시' : 'DUEL OF DESTINY',
+            language === 'ko' ? `${preset.titleKo} 모의전투에 진입합니다!` : `Entering ${preset.titleEn}!`,
+            3
+          );
+        }}
+      />
+
+      {/* RSI-019: Star Breathing Ultimate Widget (Active in Battle & Play) */}
+      {(view === 'card-play' || view === 'play' || view === 'main') && (
+        <StarBreathingUltimateWidget
+          isBattleActive={view === 'card-play' || view === 'main'}
+          onCastUltimate={() => {
+            showCustomAlert(
+              language === 'ko' ? '오의 발동' : 'ULTIMATE ACTIVATED',
+              language === 'ko' ? '성진호흡 별빛 성역 전개! 적 카드가 정화 캡처되었습니다.' : 'Star Sanctuary deployed! Enemy card purified & captured.',
+              3
+            );
+          }}
+        />
+      )}
+
+      {/* RSI-020: Adventurer Guild Bounty Board Modal */}
+      <GuildBountyBoardModal
+        isOpen={showGuildBountyModal}
+        onClose={() => setShowGuildBountyModal(false)}
+        onRewardClaimed={(gold) => {
+          setSns((prev) => prev + gold);
+        }}
+        onStartRaidBattle={() => {
+          setShowGuildBountyModal(false);
+          setView('card-play');
+        }}
+      />
+
+      {/* RSI-021: FTUE Elemental Counter Strike Interactive Tutorial */}
+      <ElementalCounterStrikeTutorial
+        isOpen={showFtueCounterStrike}
+        onSkip={() => setShowFtueCounterStrike(false)}
+        onComplete={(rewardGold) => {
+          setShowFtueCounterStrike(false);
+          setSns((prev) => prev + rewardGold);
+          showCustomAlert(
+            language === 'ko' ? '상성 마스터 달성' : 'COUNTER MASTER',
+            language === 'ko' ? `+${rewardGold} SNS와 [SSR] 설원의 성검이 지급되었습니다!` : `+${rewardGold} SNS and [SSR] Frost Blade acquired!`,
+            3
+          );
+        }}
       />
 
       {isGlobalLoading && (

@@ -6,8 +6,8 @@
 - **최종 업데이트 일시**: 2026-09-20 18:45 (KST)
 
 ## RSI-SNSHero 바이브코딩 프롬프트 스프레드시트 진행 상태 (`/rsi-snshero`)
-- **현재 연동 스프레드시트 (공개 CSV)**: `https://docs.google.com/spreadsheets/d/e/2PACX-1vRAmjkvOjw27HDOuBu4w_WXIdAw1pRQz0vRi2AOOK53HxVT_uO2RLcMnVTxXAg18C6HdU5_huyandLn/pub?output=csv`
-- **마지막 수정 완료 항목 ID**: `[RSI-001 ~ RSI-017 전수 구현 완료 (17/17개, 100.0%)]`
+- **현재 연동 스프레드시트 (공개 CSV)**: `https://docs.google.com/spreadsheets/d/e/2PACX-1vTJLidMIGaaE_tsui-CydxadPU2vesb4cCF_iQIfuq7mFILYrCxgdcSbgRHxUi8--D6oq1ii-TEPIKC/pub?output=csv`
+- **마지막 수정 완료 항목 ID**: `[RSI-001 ~ RSI-021 전수 구현 완료 (21/21개, 100.0%)]`
   - RSI-001: 첫 방문 3초 도파민 온보딩 (`FirstVisitOverdriveModal.tsx`)
   - RSI-002: 데모모드 `/main` 무한 멈춤 현상 해소 및 덱 빌더 자동 안내 (`App.tsx`)
   - RSI-003: 무설치 1클릭 바이럴 덱 챌린지 및 1200x630 전술 시트 (`InstantChallengeBattleModal.tsx`, `challengeCanvasGenerator.ts`)
@@ -25,8 +25,12 @@
   - RSI-015: 30일 전술 시즌 패스 로드맵 및 2X 캐치업 부스터 (`TacticalSeasonPassModal.tsx`, `seasonPassStore.ts`)
   - RSI-016: 게스트 제로-프릭션 전술 콜사인 자동 인가 및 3초 고속 약점 타격 온보딩 (`TacticalQuickStrikeModal.tsx`)
   - RSI-017: 소설·위키·뉴스룸 인라인 전술 주석 단서 수집기 및 테마 히어로 즉시 영입 작전 (`TacticalLoreAnnotation.tsx`, `loreRecruitmentStore.ts`)
-- **최종 업데이트 일시**: 2026-10-15 09:10 (KST)
-- **다음 작업 안내**: 구글 스프레드시트에 신규 RSI 항목이 추가되면 RSI-018부터 즉시 순차 착수합니다.
+  - RSI-018: 소설 속 명장면 라이벌 결투 챌린지 모달 및 덱 프리셋 (`StoryRivalDuelModal.tsx`, `storyDeckPresets.ts`)
+  - RSI-019: 소설 EP6 성진호흡법 연계 미니게임 마력 수련 & 3x3 배틀 오의 개방 위젯 (`StarBreathingUltimateWidget.tsx`, `starBreathingStore.ts`)
+  - RSI-020: 모험가 길드 의뢰 게시판 및 주간 보스 토벌 모달 (`GuildBountyBoardModal.tsx`, `guildBountyStore.ts`)
+  - RSI-021: 초회 3x3 배틀 '운명의 속성 역상성 파훼' 인터랙티브 튜토리얼 스킵 & 3초 캡처 승리 연출 (`ElementalCounterStrikeTutorial.tsx`)
+- **최종 업데이트 일시**: 2026-10-15 11:26 (KST)
+- **다음 작업 안내**: 구글 스프레드시트에 신규 RSI 항목이 추가되면 RSI-022부터 즉시 순차 착수합니다.
 
 - **전수 일괄 완료 및 신규 항목 직행 원칙 (Complete All Remaining Tasks)**: `/gemini-ex` 또는 `/ge` 실행 시 현재 스프레드시트에 남아 있는 **모든 미완료 항목을 중간에 멈추지 않고 끝까지 전수 완료**합니다. 모든 항목 완료 후 이후 스프레드시트에 새로 추가되는 신규 항목이 발견되면, 마지막 완료 항목 바로 다음의 **신규 미작업 항목**부터 즉시 이어서 착수합니다.
 - **무작업 시 침묵 원칙 (Silent if No-op)**: 크론 작업 실행 시 신규로 개선할 미작업 항목이 없으면 사용자에게 별도의 알림 메시지를 보내지 않고 조용히 대기합니다.
