@@ -244,6 +244,10 @@ const TacticalSeasonPassModal = safeLazy(
   loadComponentSafely('TacticalSeasonPassModal'),
   'TacticalSeasonPassModal'
 );
+const TacticalQuickStrikeModal = safeLazy(
+  loadComponentSafely('TacticalQuickStrikeModal'),
+  'TacticalQuickStrikeModal'
+);
 
 const getCardAvatarStyle = (avatar: string): React.CSSProperties => {
   const cardId = Number(avatar.split(':')[1]) || 1;
@@ -509,6 +513,15 @@ function AppContent() {
         setShowFtueOverdrive(true);
       }, 500);
       return () => clearTimeout(timer);
+    } else {
+      // RSI-016: Trigger Tactical Quick Strike if callsign not yet granted
+      const callsignGranted = localStorage.getItem('hero_guest_callsign_granted');
+      if (!callsignGranted) {
+        const timer = setTimeout(() => {
+          setShowQuickStrikeModal(true);
+        }, 1200);
+        return () => clearTimeout(timer);
+      }
     }
   }, []);
 
@@ -582,6 +595,9 @@ function AppContent() {
 
   // RSI-015: 30-Day Tactical Season Pass Roadmap Modal State
   const [showSeasonPassModal, setShowSeasonPassModal] = useState(false);
+
+  // RSI-016: Tactical Quick Strike & Guest Callsign Auto-Grant Modal State
+  const [showQuickStrikeModal, setShowQuickStrikeModal] = useState(false);
 
   const { language, setLanguage, lowSpecMode, setLowSpecMode, theme, setTheme } = useGameSettings();
   useLowSpecGuard(lowSpecMode);
@@ -8251,10 +8267,19 @@ function AppContent() {
       {/* RSI-011: Personalized Starter Deck Modal */}
       <PersonalizedStarterDeckModal
         isOpen={showPersonalizedStarter}
-        onClose={() => setShowPersonalizedStarter(false)}
+        onClose={() => {
+          setShowPersonalizedStarter(false);
+          if (!localStorage.getItem('hero_guest_callsign_granted')) {
+            setShowQuickStrikeModal(true);
+          }
+        }}
         onDeployToBattle={(deck) => {
           setShowPersonalizedStarter(false);
-          setView('play');
+          if (!localStorage.getItem('hero_guest_callsign_granted')) {
+            setShowQuickStrikeModal(true);
+          } else {
+            setView('play');
+          }
         }}
         language={language}
       />
@@ -8319,6 +8344,22 @@ function AppContent() {
         onClose={() => {
           setShowSeasonPassModal(false);
           if (view === 'season-hub') setView('home');
+        }}
+        language={language}
+      />
+
+      {/* RSI-016: Tactical Quick Strike & Guest Callsign Auto-Grant Modal */}
+      <TacticalQuickStrikeModal
+        isOpen={showQuickStrikeModal}
+        onClose={() => setShowQuickStrikeModal(false)}
+        onCompleteStrike={(reward) => {
+          setShowQuickStrikeModal(false);
+          setSns((prev) => prev + reward);
+          showCustomAlert(
+            language === 'ko' ? '작전 성공' : 'MISSION CLEAR',
+            language === 'ko' ? `+${reward} SNS 보급품이 지급되었습니다!` : `+${reward} SNS tactical supply acquired!`,
+            3
+          );
         }}
         language={language}
       />
