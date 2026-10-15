@@ -2,6 +2,28 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-16 07:15 KST] [버그수정] 카단 RPG(/main) 대사 닫기 시 무한 재오픈 버그 수정 및 화면 이동 UX 개선
+- **요청 사항**:
+  - `https://dayyoung-macbookpro.tail3717a4.ts.net/main` (/main 화면)에서 사용자 대사를 닫으면 다시 자동으로 열리는 버그 해결 (사용자가 닫으면 다른 화면으로 이동하려는 의도임).
+- **원인 분석**:
+  1. `KadanNpcDialog`를 닫을 때 `setActiveEvent(null); setTargetTile(null); setAutoMode(false);`가 수행되지만, 플레이어의 영웅 타일(`heroTile`)이 이미 해당 이벤트 타일 위에 위치하고 있어 다음 렌더링 프레임의 `arrivedEvent` 감지 로직에 의해 즉시 동일 이벤트 대사가 재오픈됨.
+  2. `useKadanRpgAutoRunner` 역시 `hasTarget && isAtTarget` 상태일 때 `onInteractTarget`을 재트리거함.
+  3. 데모 플레이 모드(`isDemoPlayActive`) 또는 랭킹 전환 분기(`isRankingDiverted`)가 켜져 있는 경우, 사용자가 대사를 닫으려고 `setAutoMode(false)`를 호출해도 `useEffect`에서 즉시 `setAutoMode(true)`로 강제 재활성화되는 루프가 발생함.
+- **수정 및 개선 내역**:
+  1. **대사 닫기 억제 상태 관리 ([`src/views/KadanRpgView.tsx`](file:///Users/dayyoung/project/snshero/src/views/KadanRpgView.tsx))**:
+     - `dismissedEventId` 상태를 도입하여 사용자가 대사를 닫았을 때 해당 이벤트 ID를 기록하고, 플레이어가 동일 타일에 머무르고 있어도 자동으로 다시 열리지 않도록 차단.
+     - `handleTilePress` 또는 `handleEventPress`로 사용자가 직접 타일을 누르거나 새 퀘스트로 전환될 때만 `dismissedEventId`를 안전하게 초기화.
+     - `autoRunner.onInteractTarget`에서도 `dismissedEventId !== nextEvent.id` 조건을 적용하여 자동 상호작용 루프 차단.
+     - `handleCloseDialog` 호출 시 데모 모드(`stopDemoPlay`) 및 랭킹 분기(`endRankingDivert(false)`)를 완전히 종료하여 강제 autoMode 재활성화 루프 원천 차단.
+  2. **대사 모달 UX 개선 및 화면 이동 지원 ([`src/components/rpg/KadanNpcDialog.tsx`](file:///Users/dayyoung/project/snshero/src/components/rpg/KadanNpcDialog.tsx))**:
+     - 상단 헤더 우측에 `min-h-[44px]` 터치 규격의 명확한 `[X]` 닫기 버튼 추가.
+     - 하단 액션 버튼 바에 `[로비로 나가기 (Exit to Home)]` 버튼을 추가하여 대사를 닫고 즉시 홈 화면으로 자연스럽게 복귀할 수 있도록 개선.
+     - `KadanRpgView`에서 `KadanNpcDialog`로 `onNavigate={onNavigate}` 전달 연동.
+- **검증 결과**:
+  - `npx tsc --noEmit` & `npm run build`: 0 Errors로 타입 및 프로덕션 번들 빌드 무결점 통과.
+  - 로컬 Git 커밋 완료 (`fix(rpg): prevent auto reopening dialog on close and support navigating out`).
+  - 구글 폼 완료 보고서 제출 완료 (`submit_report.py`).
+
 ## [2026-10-15 17:20 KST] [이벤트] 9구 히어로 슬롯머신 및 일일 숨은그림 찾기 신규 이벤트 구현 및 최상단 NEW 노출 완료
 - **요청 사항**:
   1. 이벤트 화면에 슬롯 머신 이벤트 추가 (1회 시 SNS 소진, 총 9개 룰렛에서 캐릭터 3개 맞추면 등급에 따라 보상 지급)
