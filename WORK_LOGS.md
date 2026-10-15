@@ -2,6 +2,28 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-16 08:57 KST] [/rsi & UA Growth] 사용자 유입(UA) 그로스 마스터플랜 수립, 매시 정각(0 * * * *) 데몬 크론 등록 및 [SCR-09] 미션 아레나 Round 2 혁신 완료
+- **요청 사항**:
+  - `https://snshero.com/` 서비스의 사용자 유입 부진 원인 진단 및 큰 그림(Big Picture) 마스터플랜 수립
+  - 매시 정각(`0 * * * *`) 스케줄을 등록하여 종료 전까지 RSI(Rolling Screen Innovation) 형태로 지속 개선
+- **수정 및 개선 내역**:
+  1. **그로스 마스터플랜 수립 (`snshero_growth_masterplan.md`) & 매시 정각(`0 * * * *`) RSI 데몬 스케줄 등록**:
+     - Acquisition(동적 SEO/OG/Canonical 태그) ➔ Activation(첫 3초 내 1탭 대결 진입 및 도감 수집 HUD) ➔ Viral(1클릭 도전장 링크 공유 +50 SNS 보상 루프) ➔ Retention & BM(모험 AP/SNS 실시간 노출 및 50% 특가 AP 물약/상점 브릿지)의 4대 퍼널 로드맵 수립.
+     - `schedule` 도구로 `0 * * * *` (`IsDaemon: true`) 크론 스케줄 등록 완료.
+  2. **동적 SEO / GEO / Open Graph 메타태그 엔진 고도화 ([`src/components/Meta.tsx`](file:///Users/dayyoung/project/snshero/src/components/Meta.tsx))**:
+     - 라우트 전환 시 `document.title`뿐만 아니라 `meta[name="description"]`, `link[rel="canonical"]`, `og:title`, `og:description`, `og:url`, `twitter:*` 태그를 실시간 동적 갱신하여 검색엔진 색인 및 소셜 공유 CTR 극대화.
+  3. **[SCR-09] 미션 캔버스 아레나 (`modeSelect`) Round 2 그로스 & UX 혁신 ([`src/views/PlayGameView.tsx`](file:///Users/dayyoung/project/snshero/src/views/PlayGameView.tsx))**:
+     - 상단 `[CODEX HUD] 도감 수집율: {owned}/110장 ({pct}%)` 프로그레스 바 및 실시간 `[모험 AP] / [보유 SNS]` 상태 표시.
+     - 상단 `[추천 타깃] No.XX {카드명}` 배너 및 `[1초 즉시 공략]` 1탭 배틀 직행 버튼 탑재.
+     - 3대 원핸드 그로스 액션 바: `[랜덤 1:1 즉시 대결]`, `[AP 물약 +50 (25 SNS 특가)]`, `[도전장 링크 공유 (+50 SNS)]` (클릭 시 대표 덱 도전장 URL 클립보드 복사 및 일일 +50 SNS 즉시 지급).
+     - 도움말 모달(`showHelpPopup`)을 `DESIGN.md` 플랫 모노스페이스(`rounded-none`, 44px+ 터치 타깃)로 전면 정돈.
+  4. **수호자 조우 모달 `DESIGN.md` 플랫 모노스페이스 정돈 ([`src/components/MissionEncounterModal.tsx`](file:///Users/dayyoung/project/snshero/src/components/MissionEncounterModal.tsx))**:
+     - 레거시 다색 그라데이션 및 네온 드롭 섀도우를 제거하고 `#fdfcfc`/`#201d1d` 플랫 서피스, `rounded-none` 프레임, 상단 `[건너뛰기 (SKIP)]` 및 44px+ 액션 버튼 적용.
+- **검증 결과**:
+  - `npx tsc --noEmit` & `npm run build`: 0 Errors 통과 (`PlayGameView-BKVHpZpM-v1792108577975.js`, 31.68s).
+  - `docs/screen_audits/SCR-09_MISSION_GAMES.md` 분석 및 구현 보고서 갱신 완료.
+  - 로컬 Git 커밋 및 구글 폼 완료 보고서 제출 완료 (`submit_report.py`).
+
 ## [2026-10-16 07:15 KST] [버그수정] 카단 RPG(/main) 대사 닫기 시 무한 재오픈 버그 수정 및 화면 이동 UX 개선
 - **요청 사항**:
   - `https://dayyoung-macbookpro.tail3717a4.ts.net/main` (/main 화면)에서 사용자 대사를 닫으면 다시 자동으로 열리는 버그 해결 (사용자가 닫으면 다른 화면으로 이동하려는 의도임).

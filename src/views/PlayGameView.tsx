@@ -629,6 +629,22 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   const [showDailyMissions, setShowDailyMissions] = useState(false);
   const [modePlayData, setModePlayData] = useState<Record<string, { count: number; lastPlayed: number }>>({});
   const [showHelpPopup, setShowHelpPopup] = useState(false);
+  const [staminaState, setStaminaState] = useState(() => StaminaPacingManager.getInstance().getState());
+  const [viralShareCopied, setViralShareCopied] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const syncStamina = () => {
+      setStaminaState(StaminaPacingManager.getInstance().getState());
+    };
+    window.addEventListener('hero_stamina_pacing_updated', syncStamina);
+    window.addEventListener('storage', syncStamina);
+    return () => {
+      window.removeEventListener('hero_stamina_pacing_updated', syncStamina);
+      window.removeEventListener('storage', syncStamina);
+    };
+  }, []);
+
   // Dispatch global popup events so bottom nav hides while help is open
   useEffect(() => {
     if (showHelpPopup) {
@@ -13678,24 +13694,222 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           )}
 
           {/* Card Play List Header & Quick Filter */}
-          <div className="flex flex-col gap-4 w-full p-4 border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] font-mono">
+          <div className="flex flex-col gap-4 w-full p-4 border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] rounded-none font-mono">
+            {/* 1. 도감 수집 진행도 HUD & AP 스태미나 / 퀵 액션 툴바 */}
+            <div className="flex flex-col gap-3 border-b border-[rgba(15,0,0,0.12)] pb-4">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <span className="px-2 py-1 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-none">
+                    [CODEX HUD]
+                  </span>
+                  <span className="text-sm font-bold text-[#201d1d]">
+                    {language === 'ko'
+                      ? `도감 수집율: ${ownedTotalCount} / ${modes.length}장 (${collectionProgressPct}%)`
+                      : `Collection: ${ownedTotalCount} / ${modes.length} (${collectionProgressPct}%)`}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 text-xs font-bold text-[#646262]">
+                  <span>
+                    {language === 'ko'
+                      ? `[모험 AP: ${staminaState.currentAp}/${staminaState.maxAp}]`
+                      : `[AP: ${staminaState.currentAp}/${staminaState.maxAp}]`}
+                  </span>
+                  <span>|</span>
+                  <span>
+                    {language === 'ko'
+                      ? `[보유 SNS: ${snsBalance.toLocaleString()}]`
+                      : `[SNS: ${snsBalance.toLocaleString()}]`}
+                  </span>
+                </div>
+              </div>
+
+              {/* 수집율 프로그레스 바 */}
+              <div className="w-full h-2 bg-[#e6e3e3] border border-[rgba(15,0,0,0.12)] rounded-none overflow-hidden">
+                <div
+                  className="h-full bg-[#201d1d] transition-all duration-300"
+                  style={{ width: `${collectionProgressPct}%` }}
+                />
+              </div>
+
+              {/* 오늘의 추천 공략 타깃 (Hot Challenge Target) 1탭 배너 */}
+              {recommendedTargetMode && (
+                <div className="w-full p-3 bg-[#fdfcfc] border border-[#201d1d] rounded-none flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex items-start sm:items-center gap-2.5 min-w-0">
+                    <span className="px-2 py-1 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold shrink-0 rounded-none">
+                      {language === 'ko' ? '[추천 타깃]' : '[HOT TARGET]'}
+                    </span>
+                    <div className="min-w-0">
+                      <div className="text-sm font-bold text-[#201d1d] truncate">
+                        {language === 'ko'
+                          ? `No.${String(recCardIndex).padStart(2, '0')} ${recCharName} (P.${recCharCard?.power || 10})`
+                          : `No.${String(recCardIndex).padStart(2, '0')} ${recCharName} (P.${recCharCard?.power || 10})`}
+                      </div>
+                      <p className="text-xs text-[#646262] truncate mt-0.5">
+                        {language === 'ko'
+                          ? '미보유 도전 목표 · 승리 시 해당 카드 획득 확률 및 +30 SNS 보상'
+                          : 'Unowned Target · Win to obtain hero card & +30 SNS reward'}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      triggerHaptic('light');
+                      playBattleSfx('button_tap');
+                      recordModePlay(recommendedTargetMode.id);
+                      startMissionCardBattle(recCardIndex);
+                    }}
+                    className="min-h-[44px] px-4 py-2 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] text-xs sm:text-sm font-bold rounded-sm border border-[#201d1d] cursor-pointer shrink-0 flex items-center justify-center gap-1.5"
+                  >
+                    <Swords size={15} className="shrink-0" />
+                    <span>{language === 'ko' ? '[1초 즉시 공략]' : '[1-TAP BATTLE]'}</span>
+                  </button>
+                </div>
+              )}
+
+              {/* 3대 원핸드 그로스/과금/바이럴 퀵 액션 버튼 바 */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
+                {/* 1) 랜덤 1:1 대결 */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic('light');
+                    playBattleSfx('button_tap');
+                    const randomIdx = Math.floor(Math.random() * modes.length);
+                    const picked = modes[randomIdx] || modes[0];
+                    const targetId = picked?.characterId || (randomIdx + 1);
+                    if (picked) recordModePlay(picked.id);
+                    startMissionCardBattle(targetId);
+                  }}
+                  className="min-h-[44px] px-3 py-2 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] text-xs font-bold rounded-sm border border-[#201d1d] cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                  <Dices size={15} className="shrink-0" />
+                  <span>{language === 'ko' ? '[랜덤 1:1 즉시 대결]' : '[Random 1:1 Battle]'}</span>
+                </button>
+
+                {/* 2) 50% 특가 AP 물약 충전 (25 SNS -> +50 AP) */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic('light');
+                    playBattleSfx('button_tap');
+                    if (snsBalance < 25) {
+                      if (setView) setView('shop');
+                      return;
+                    }
+                    const nextSns = Math.max(0, snsBalance - 25);
+                    setSnsBalance(nextSns);
+                    if (updateSns) {
+                      updateSns(-25, 'ap_potion_50_sale', 'spent');
+                    } else {
+                      try {
+                        localStorage.setItem('hero_sns', String(nextSns));
+                        window.dispatchEvent(new Event('snshero_sns_updated'));
+                      } catch {}
+                    }
+                    StaminaPacingManager.getInstance().addAp(50);
+                    setStaminaState(StaminaPacingManager.getInstance().getState());
+                    setMissionBattleFeedback({
+                      success: true,
+                      type: 'enhance',
+                      cardName: 'AP Potion',
+                      cardId: 1,
+                      message: language === 'ko'
+                        ? '50% 특가 AP 물약 사용 완료! (-25 SNS / +50 AP 즉시 회복)'
+                        : '50% Sale AP Potion used! (-25 SNS / +50 AP restored)',
+                    });
+                  }}
+                  className="min-h-[44px] px-3 py-2 bg-[#fdfcfc] hover:bg-[#201d1d] text-[#201d1d] hover:text-[#fdfcfc] text-xs font-bold rounded-sm border border-[rgba(15,0,0,0.12)] transition-colors cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                  <Zap size={15} className="shrink-0" />
+                  <span>
+                    {language === 'ko'
+                      ? '[AP 물약 +50 (25 SNS 특가)]'
+                      : '[+50 AP Potion (25 SNS)]'}
+                  </span>
+                </button>
+
+                {/* 3) 바이럴 1클릭 도전장 링크 복사 (+50 SNS 일일 보상) */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic('light');
+                    playBattleSfx('button_tap');
+                    const deckIds = (playerDeck && playerDeck.length > 0)
+                      ? playerDeck.slice(0, 5).map(c => c.imageIndex || 1).join('-')
+                      : '1-11-31-51-101';
+                    const shareUrl = `https://snshero.com/?challenge=${encodeURIComponent(deckIds)}`;
+                    try {
+                      if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(shareUrl);
+                      }
+                    } catch {}
+                    setViralShareCopied(true);
+                    setTimeout(() => setViralShareCopied(false), 3000);
+
+                    const todayKey = `hero_mission_viral_share_${new Date().toISOString().slice(0, 10)}`;
+                    if (!localStorage.getItem(todayKey)) {
+                      localStorage.setItem(todayKey, 'true');
+                      const nextSns = snsBalance + 50;
+                      setSnsBalance(nextSns);
+                      if (updateSns) {
+                        updateSns(50, 'daily_challenge_link_share', 'earned');
+                      } else {
+                        try {
+                          localStorage.setItem('hero_sns', String(nextSns));
+                          window.dispatchEvent(new Event('snshero_sns_updated'));
+                        } catch {}
+                      }
+                      setMissionBattleFeedback({
+                        success: true,
+                        type: 'obtain',
+                        cardName: 'Viral Challenge',
+                        cardId: 1,
+                        message: language === 'ko'
+                          ? '내 덱 도전장 URL 복사 완료! 일일 공유 보너스 +50 SNS가 즉시 지급되었습니다.'
+                          : 'Challenge URL copied! Daily share bonus +50 SNS granted.',
+                      });
+                    } else {
+                      setMissionBattleFeedback({
+                        success: true,
+                        type: 'obtain',
+                        cardName: 'Viral Challenge',
+                        cardId: 1,
+                        message: language === 'ko'
+                          ? `내 덱 도전장 링크가 클립보드에 복사되었습니다: ${shareUrl}`
+                          : `Challenge link copied to clipboard: ${shareUrl}`,
+                      });
+                    }
+                  }}
+                  className="min-h-[44px] px-3 py-2 bg-[#fdfcfc] hover:bg-[#201d1d] text-[#201d1d] hover:text-[#fdfcfc] text-xs font-bold rounded-sm border border-[rgba(15,0,0,0.12)] transition-colors cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                  <Share2 size={15} className="shrink-0" />
+                  <span>
+                    {viralShareCopied
+                      ? (language === 'ko' ? '[복사됨! 친구에게 붙여넣기]' : '[Copied! Share Link]')
+                      : (language === 'ko' ? '[도전장 링크 공유 (+50 SNS)]' : '[Share Challenge (+50 SNS)]')}
+                  </span>
+                </button>
+              </div>
+            </div>
+
             {/* Header Title */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[rgba(15,0,0,0.12)] pb-4">
               <div className="flex items-center gap-2">
-                <span className="p-2 bg-[#201d1d] text-[#fdfcfc] text-sm font-bold shrink-0">
-                  🎴
+                <span className="p-2 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold shrink-0">
+                  [110]
                 </span>
                 <div>
                   <h3 className="text-base font-bold text-[#201d1d] flex flex-wrap items-center gap-2">
-                    <span>{language === 'ko' ? '오늘의 미션 / 카드 플레이 리스트' : 'Daily Missions & Card Play List'}</span>
+                    <span>{language === 'ko' ? '오늘의 미션 / 110종 수호자 카드 대결' : '110 Guardian Card Battle List'}</span>
                     <span className="text-sm font-normal text-[#646262] font-mono tabular-nums">
                       ({filteredModes.length} / {modes.length})
                     </span>
                   </h3>
-                  <p className="text-sm leading-relaxed text-[#646262] mt-2">
+                  <p className="text-xs sm:text-sm leading-relaxed text-[#646262] mt-1">
                     {language === 'ko'
-                      ? '• 카드 터치 시 3초 수호자 대사 후 1:1 카드 배틀 시작 · 승리 시 카드 획득 & 잠재력 강화'
-                      : '• Tap card to start 1:1 card battle after 3s guardian dialogue · Win to obtain & enhance'}
+                      ? '• 카드 선택 시 해당 카드 5장 덱과 1:1 대결 · 승리 시 미보유 카드 획득 또는 보유 카드 잠재력 강화'
+                      : '• Select any card to battle its 5-card AI deck · Win to obtain unowned card or enhance potential'}
                   </p>
                 </div>
               </div>
@@ -13952,82 +14166,76 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 z-[209] flex items-center justify-center p-4"
+                className="fixed inset-0 z-[209] flex items-center justify-center p-4 font-mono"
               >
                 <div
-                  className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+                  className="absolute inset-0 bg-[#201d1d]/60"
                   onClick={() => setShowHelpPopup(false)}
                 />
                 <motion.div
-                  initial={{ scale: 0.9, y: 20 }}
-                  animate={{ scale: 1, y: 0 }}
-                  exit={{ scale: 0.9, y: 20 }}
-                  className="rounded-3xl border border-slate-200 bg-white p-5 shadow-2xl max-w-lg w-full relative z-[210] font-sans"
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 12 }}
+                  className="rounded-none border border-[#201d1d] bg-[#fdfcfc] p-5 max-w-lg w-full relative z-[210] font-mono text-[#201d1d]"
                 >
-                  <div className="flex items-center justify-between mb-4 sticky top-0 z-10 bg-white pt-2">
-                    <h3 className="text-base font-extrabold text-slate-800">
+                  <div className="flex items-center justify-between mb-4 border-b border-[rgba(15,0,0,0.12)] pb-3">
+                    <h3 className="text-base font-bold text-[#201d1d]">
                       {helpSlideIndex === 0
-                        ? (language === 'ko' ? '게임 모드 선택' : 'Game Mode Selection')
+                        ? (language === 'ko' ? '[1/3] 110종 수호자 미션 선택' : '[1/3] 110 Guardian Missions')
                         : helpSlideIndex === 1
-                        ? (language === 'ko' ? '모드 카드' : 'Mode Cards')
-                        : (language === 'ko' ? '보상' : 'Rewards')}
+                        ? (language === 'ko' ? '[2/3] 수호자 1:1 카드 대결' : '[2/3] 1:1 Guardian Card Battle')
+                        : (language === 'ko' ? '[3/3] 카드 획득 & 잠재력 강화' : '[3/3] Card Obtain & Enhance')}
                     </h3>
                     <button
                       onClick={() => setShowHelpPopup(false)}
-                      className="min-w-[36px] min-h-[36px] rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center cursor-pointer transition-colors"
+                      aria-label={language === 'ko' ? '닫기' : 'Close'}
+                      className="min-w-[44px] min-h-[44px] rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] hover:bg-[#f1eeee] flex items-center justify-center cursor-pointer transition-colors"
                     >
-                      <X size={16} className="text-slate-500" />
+                      <X size={16} className="text-[#201d1d]" />
                     </button>
                   </div>
-                  <p className="text-sm text-slate-600 leading-relaxed mb-5">
+                  <p className="text-sm text-[#646262] leading-relaxed mb-5">
                     {helpSlideIndex === 0
                       ? (language === 'ko'
-                        ? '다양한 배틀 모드와 미니게임 중에서 원하는 모드를 선택하세요. 각 모드는 고유한 게임 플레이와 SNS 보상을 제공합니다.'
-                        : 'Choose from various battle modes and minigames. Each mode offers unique gameplay and SNS rewards.')
+                        ? '110종의 히어로 카드를 직접 지키는 수호자와 1:1 대결을 펼칠 수 있습니다. 상단 [추천 타깃] 또는 [미보유만] 필터를 눌러 도감을 빠르게 완성하세요.'
+                        : 'Challenge the guardians of all 110 hero cards in 1:1 battles. Use the [HOT TARGET] or [Unowned] filter to complete your codex.')
                       : helpSlideIndex === 1
                       ? (language === 'ko'
-                        ? '각 카드를 탭하면 해당 게임 모드로 바로 진입합니다. 카드 우측의 ? 버튼을 누르면 상세 설명을 볼 수 있습니다.'
-                        : 'Tap any card to enter that game mode. Use the ? button on each card for detailed instructions.')
+                        ? '카드를 탭하면 웹소설 명대사와 함께 수호자가 등장하며, [즉시 대결 시작] 또는 [건너뛰기]로 지체 없이 전투에 진입합니다.'
+                        : 'Tap any card to encounter the guardian with their official web novel quote, or press [SKIP] to jump straight into battle.')
                       : (language === 'ko'
-                        ? '배틀 승리와 미니게임 완료 시 SNS 코인과 카드 경험치를 획득할 수 있습니다.'
-                        : 'Winning battles and completing minigames earns you SNS coins and card XP.')}
+                        ? '승리 시 미보유 카드는 획득 확률에 따라 인벤토리에 영구 추가되며, 이미 보유한 카드는 잠재력 강화(Lv+1) 및 SNS 보상을 받습니다.'
+                        : 'Win to obtain unowned cards into your localStorage inventory, or upgrade existing cards (Lv+1) and earn SNS rewards.')}
                   </p>
-                  <div className="flex items-center justify-between">
-                    <div className="flex gap-1.5">
-                      {[0, 1, 2].map((i) => (
-                        <div
-                          key={i}
-                          className={cn(
-                            'w-2 h-2 rounded-full transition-colors',
-                            i === helpSlideIndex ? 'bg-indigo-600' : 'bg-slate-200'
-                          )}
-                        />
-                      ))}
-                    </div>
+                  <div className="flex items-center justify-between pt-2 border-t border-[rgba(15,0,0,0.12)]">
+                    <span className="text-xs font-bold text-[#646262]">
+                      {helpSlideIndex + 1} / 3
+                    </span>
                     <div className="flex gap-2">
                       {helpSlideIndex > 0 && (
                         <button
                           onClick={() => setHelpSlideIndex(prev => prev - 1)}
-                          className="min-w-[40px] min-h-[40px] rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center cursor-pointer transition-colors"
+                          className="min-w-[44px] min-h-[44px] px-3 rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] hover:bg-[#f1eeee] flex items-center justify-center cursor-pointer transition-colors text-xs font-bold"
                           aria-label="Previous"
                         >
-                          <ChevronLeft size={16} className="text-slate-600" />
+                          <ChevronLeft size={16} />
                         </button>
                       )}
                       {helpSlideIndex < 2 ? (
                         <button
                           onClick={() => setHelpSlideIndex(prev => prev + 1)}
-                          className="min-w-[40px] min-h-[40px] rounded-full bg-indigo-600 hover:bg-indigo-500 text-white flex items-center justify-center cursor-pointer transition-colors"
+                          className="min-h-[44px] px-4 rounded-sm bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] flex items-center justify-center gap-1 cursor-pointer transition-colors text-xs font-bold"
                           aria-label="Next"
                         >
+                          <span>{language === 'ko' ? '[다음]' : '[NEXT]'}</span>
                           <ChevronRight size={16} />
                         </button>
                       ) : (
                         <button
                           onClick={() => setShowHelpPopup(false)}
-                          className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold text-sm cursor-pointer transition-colors"
+                          className="min-h-[44px] px-4 py-2 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] rounded-sm font-bold text-xs cursor-pointer transition-colors"
                         >
-                          {language === 'ko' ? '완료' : 'Done'}
+                          {language === 'ko' ? '[닫기]' : '[DONE]'}
                         </button>
                       )}
                     </div>
