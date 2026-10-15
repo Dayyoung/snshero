@@ -240,6 +240,10 @@ const SpectatorBettingWidget = safeLazy(
   loadComponentSafely('SpectatorBettingWidget'),
   'SpectatorBettingWidget'
 );
+const TacticalSeasonPassModal = safeLazy(
+  loadComponentSafely('TacticalSeasonPassModal'),
+  'TacticalSeasonPassModal'
+);
 
 const getCardAvatarStyle = (avatar: string): React.CSSProperties => {
   const cardId = Number(avatar.split(':')[1]) || 1;
@@ -575,6 +579,9 @@ function AppContent() {
 
   // RSI-011: Personalized Starter Deck Modal State
   const [showPersonalizedStarter, setShowPersonalizedStarter] = useState(false);
+
+  // RSI-015: 30-Day Tactical Season Pass Roadmap Modal State
+  const [showSeasonPassModal, setShowSeasonPassModal] = useState(false);
 
   const { language, setLanguage, lowSpecMode, setLowSpecMode, theme, setTheme } = useGameSettings();
   useLowSpecGuard(lowSpecMode);
@@ -8303,6 +8310,16 @@ function AppContent() {
         isOpen={showSevenDayStreak}
         onClose={() => setShowSevenDayStreak(false)}
         onNavigateMinigame={() => setView('play')}
+        language={language}
+      />
+
+      {/* RSI-015: 30-Day Tactical Season Pass Roadmap Modal */}
+      <TacticalSeasonPassModal
+        isOpen={showSeasonPassModal || view === 'season-hub'}
+        onClose={() => {
+          setShowSeasonPassModal(false);
+          if (view === 'season-hub') setView('home');
+        }}
         language={language}
       />
 
