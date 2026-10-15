@@ -58,6 +58,7 @@ import { DeckPresetCodeModal } from '../components/DeckPresetCodeModal';
 import { DeckBalanceRadarChart } from '../components/DeckBalanceRadarChart';
 import { CardCompareModal } from '../components/CardCompareModal';
 import { MaterialDeficitModal } from '../components/MaterialDeficitModal';
+import { TacticalPassivePerksModal } from '../components/battle/TacticalPassivePerksModal';
 import { DeckCommandHub } from '../components/DeckCommandHub';
 import { maybeTriggerTourOrProceedToBattle } from '../lib/smartLoopTourService';
 import { startRankingDivert } from '../lib/rankingDivertService';
@@ -516,6 +517,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
   }, [inventory, language, playSfx, updateDeck, currentSeason, handleInstantReturnToBattle, triggerCardShake]);
   const [selectedCardForDetail, setSelectedCardForDetail] = useState<CardData | null>(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [showPerksModal, setShowPerksModal] = useState(false);
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
   const [editingCardIndex, setEditingCardIndex] = useState<number | null>(null);
   const [selectingIndex, setSelectingIndex] = useState<number | null>(null);
@@ -3441,6 +3443,19 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                       {t('equip', language) || 'Equip'}
                     </button>
                  </div>
+                 {/* RSI-014: Tactical Passive Perks Button */}
+                 <div className="mt-2 shrink-0">
+                   <button
+                     onClick={() => {
+                       triggerHaptic('tap');
+                       setShowPerksModal(true);
+                     }}
+                     className="w-full py-3 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/50 text-amber-300 rounded-2xl font-mono font-bold uppercase tracking-wider text-xs transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+                   >
+                     <Sparkles size={16} className="text-amber-400" />
+                     <span>{language === 'ko' ? '전술 패시브 특성 소켓 (미니게임 배지)' : 'TACTICAL PASSIVE PERK SOCKETS'}</span>
+                   </button>
+                 </div>
                  <div className="mt-3 grid grid-cols-2 gap-3 shrink-0">
                    <button
                      onClick={() => {
@@ -3902,6 +3917,16 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
         language={language}
       />
 
+      {/* RSI-014: Tactical Passive Perks Modal */}
+      {selectedCardForDetail && (
+        <TacticalPassivePerksModal
+          isOpen={showPerksModal}
+          heroId={selectedCardForDetail.id}
+          heroName={selectedCardForDetail.title || selectedCardForDetail.title_dis}
+          onClose={() => setShowPerksModal(false)}
+          language={language}
+        />
+      )}
     </div>
   );
 };
