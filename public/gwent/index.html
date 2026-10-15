@@ -1,0 +1,424 @@
+<!doctype html>
+
+<html lang="en-US">
+
+<head>
+	<title>Gwent Classic from The Witcher 3: Wild Hunt</title>
+	<meta charset="utf-8" />
+	<meta name="author" content="Arun Sundaram" />
+	<meta name="description" content="Play the original Gwent minigame from The Witcher 3 in your browser! Includes cards from Hearts of Stone and Blood & Wine!" />
+	<meta name="keywords" content="arun, sundaram, programmer, gwent, tw3, witcher, card, game, gamedev, play" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.5, maximum-scale=3.0, user-scalable=yes, viewport-fit=cover" />
+	<link rel="stylesheet" type="text/css" href="style.css" />
+	<link rel="stylesheet" type="text/css" href="cards.css" />
+	<link rel="stylesheet" type="text/css" href="gallery.css" />
+	<link rel="stylesheet" type="text/css" href="responsive.css" />
+</head>
+
+<body>
+
+<div id="dimensions" style="position:fixed;width:100vw;height:calc(100vw * 1080 / 1920);pointer-events:none;"></div>
+
+<div id="youtube"></div>
+
+<main>
+
+	<section id="click-background" class="noclick"></section>
+
+	<section id="panel-left" class="panel">
+
+		<div id="exit-game" data-title="Exit game"></div>
+	
+		<div id="leader-op" class="leader-box">
+			<div class="leader-container center" data-title="View leader"> 
+			</div>
+			<div class="leader-active">
+				<div></div>
+			</div>
+		</div>
+		
+		<section id="stats-op" class="stats">
+			<div class="profile-img">
+				<div><div></div></div>
+			</div>
+			
+			<div id="name-op" class="name">Opponent</div>
+			<div id="deck-name-op" class="deck-name"></div>
+			
+			<div id="hand-count-op" class="hand-count">6</div>
+			
+			<div id="gem1-op" class="gem gem-on bg-contain"></div>
+			<div id="gem2-op" class="gem gem-on bg-contain"></div>
+			
+			<div id="score-total-op" class="score-total"><div class="center">0</div></div>
+			
+			<div id="passed-op">Passed</div>
+			
+		</section>
+		
+		<div id="weather" class="card-container">
+		</div>
+		
+		<section id="stats-me" class="stats">
+			<div class="profile-img">
+				<div><div></div></div>
+			</div>
+			<div id="passed-me">Passed</div>
+			<div id="hand-count-me" class="hand-count">5</div>
+			
+			<div id="gem1-me" class="gem gem-on bg-contain"></div>
+			<div id="gem2-me" class="gem gem-on bg-contain"></div>
+			
+			<div id="name-me" class="name"></div>
+			<div id="deck-name-me" class="deck-name"></div>
+			
+			<div id="score-total-me" class="score-total"><div class="center">0</div></div>
+			
+			
+		</section>
+		
+		<div id="leader-me" class="leader-box">
+			<div class="leader-container center" data-title="Play leader"></div>
+			<div class="leader-active">
+				<div></div>
+			</div>
+		</div>
+		
+		<div id="pass-button" class="center" data-title="Pass round">Pass</div>
+		
+	</section>
+	
+	<section id="panel-mid" class="panel">
+		<section id="field-op" class="field">
+			<div class="field-row" data-row="siege">
+				<div class="row-score center">12</div>
+				<div class="row-special card-container"></div>
+				<div class="row-cards card-container"></div>
+				<div class="row-weather"></div>
+			</div>
+			<div class="field-row" data-row="ranged">
+				<div class="row-score center">0</div>
+				<div class="row-special card-container"></div>
+				<div class="row-cards card-container"></div>
+				<div class="row-weather"></div>
+			</div>
+			<div class="field-row" data-row="close">
+				<div class="row-score center">0</div>
+				<div class="row-special card-container"></div>
+				<div class="row-cards card-container"></div>
+				<div class="row-weather"></div>
+			</div>
+		</section>
+		
+		<section id="field-me" class="field">
+			<div class="field-row" data-row="close">
+				<div class="row-score center">0</div>
+				<div class="row-special card-container"></div>
+				<div class="row-cards card-container"></div>
+				<div class="row-weather"></div>
+			</div>
+			<div class="field-row" data-row="ranged">
+				<div class="row-score center">0</div>
+				<div class="row-special card-container"></div>
+				<div class="row-cards card-container"></div>
+				<div class="row-weather"></div>
+			</div>
+			<div class="field-row" data-row="siege">
+				<div class="row-score center">0</div>
+				<div class="row-special card-container"></div>
+				<div class="row-cards card-container"></div>
+				<div class="row-weather"></div>
+			</div>
+		</section>
+		
+		<section id="field-hand">
+			<div id="hand-row" class="card-container card-selectable">
+			</div>
+		</section>
+	</section>
+	
+	<section id="panel-right" class="panel">
+		<div id="grave-op" class="grave cardpile" data-title="View discards">
+		</div>
+		<div id="deck-op" class="cardpile">
+		
+		</div>
+		<div id="grave-me" class="grave cardpile" data-title="View discards">
+		</div>
+		<div id="deck-me" class="cardpile">
+		</div>
+	</section>
+	
+	<div id="hand-op"></div>
+	
+	<section class="card-preview hide">
+		<div class="card-lg"></div>
+		<div class="card-description">
+			<div></div>
+			<h1></h1>
+			<p></p>
+		</div>
+	</section>
+	
+	<section id="carousel" class="hide">
+		<div>
+			<div class="card-lg" onclick="Carousel.curr.shift(event,-2)" onmouseover="Carousel.curr?.nudge(-2)"></div>
+			<div class="card-lg" onclick="Carousel.curr.shift(event,-1)" onmouseover="Carousel.curr?.nudge(-1)"></div>
+			<div class="card-lg" onclick="Carousel.curr.select(event)"   onmouseover="Carousel.curr?.nudge( 0)"></div>
+			<div class="card-lg" onclick="Carousel.curr.shift(event, 1)" onmouseover="Carousel.curr?.nudge( 1)"></div>
+			<div class="card-lg" onclick="Carousel.curr.shift(event, 2)" onmouseover="Carousel.curr?.nudge( 2)"></div>
+		</div>
+		<div class="card-description">
+			<div></div>
+			<h1></h1>
+			<p></p>
+		</div>
+		<div></div>
+	</section>
+	
+	
+	<section id="popup" class="center hide">
+		<div>
+			<h3></h3>
+			<p></p>
+			<div>
+				<button onclick="Popup.curr.selectYes()"></button>
+				<button onclick="Popup.curr.selectNo()"></button>
+			</div>
+		</div>
+	</section>
+	
+	
+	<section id="notification-bar" class="hide">
+		<div></div>
+	</section>
+	
+	<section id="end-screen" class="hide">
+		<div></div>
+		<table>
+			<colgroup>
+				<col span="3" />
+				<col span="1" />
+				<col span="1" />
+				<col span="1" />
+			</colgroup>
+			<tbody>
+				<tr>
+					<th colspan="2"></th>
+					<th>Round 1</th>
+					<th>Round 2</th>
+					<th>Round 3</th>
+				</tr>
+				<tr>
+					<th colspan="2">Geralt</th>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+				</tr>
+				<tr>
+					<th colspan="2">Opponent</th>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+				</tr>
+			</tbody>
+		</table>
+		<p class="hide">The battle cannot end in a draw. You can play a rematch using the same decks or surrender.</p>
+		<button>Customize</button>
+		<button>Rematch</button>
+		<button>New Game</button>
+	</section>
+	
+	<section id="deck-selector">
+		
+	</section>
+	
+
+</main>
+
+<section id="deck-customization">
+	<div id="faction-title" class="center">
+		<h1 id="game-brand-title">SNSHero.com - G-went</h1>
+	</div>
+	<p id="faction-description"></p>
+	
+	<div id="deck-options-container">
+		<label id="upload-deck" class="deck-options">
+			<input type="file" id="add-file" value="Import" style="display:none;"/>
+			Upload Deck
+		</label>
+		<a id="change-faction" class="deck-options">Change Faction</a>
+		<a id="download-deck" class="deck-options">Download Deck</a>
+		<a id="download-json" style="display:none;"></a>
+		<a id="open-how-to-play" class="deck-options">❖ 플레이 방법 (Rules)</a>
+		<a id="open-gallery" class="deck-options">❖ 카드 도감 (Gallery)</a>
+		<a id="toggle-language" class="deck-options">🌐 언어: 한국어</a>
+	</div>
+	
+	<!-- Mobile Deckbuilder Tab Switcher -->
+	<div id="mobile-deck-tabs" class="mobile-only">
+		<button id="mobile-tab-bank" class="mobile-tab-btn active">
+			<span id="mobile-tab-bank-text">보유 카드 컬렉션</span>
+			<span id="mobile-tab-bank-count" class="tab-badge">0</span>
+		</button>
+		<button id="mobile-tab-deck" class="mobile-tab-btn">
+			<span id="mobile-tab-deck-text">덱 편성 카드</span>
+			<span id="mobile-tab-deck-count" class="tab-badge">0</span>
+		</button>
+	</div>
+
+	<h2 id="card-bank-title" class="card-contianer-title">Card Collection</h2>
+	<h2 id="card-deck-title" class="card-contianer-title">Cards in Deck</h2>
+	<div id="card-bank" class="card-array">
+	</div>
+	<div id="card-deck" class="card-array">
+	</div>
+	<div id="leader-faction-wrapper" class="center">
+		<h1 id="leader-faction-title" style="background-image: url('img/icons/deck_shield_realms.png');">Northern Realms</h1>
+	</div>
+	<div id="card-leader">
+		<p>Leader</p>
+		<div></div>
+	</div>
+	<div id="deck-stats">
+		<p>Total cards in deck</p>
+		<p>0</p>
+		<p>Number of Unit Cards</p>
+		<p>0</p>
+		<p>Special Cards</p>
+		<p>0/10</p>
+		<p>Total Unit Card Strength</p>
+		<p>0</p>
+		<p>Hero Cards</p>
+		<p>0</p>
+	</div>
+	<button id="start-game">Start game</button>
+	<div id="opponent-preview" class="center">
+		<div>
+			<p>Oponent's Deck</p>
+		</div>
+		<div class="center">
+			<button id="op-preview-open" class="hide" data-title="View opponent"></button>
+			<div id="op-preview-faction" class="hide"></div>
+			<label id="op-preview-leader" for="add-opponent" data-title="Upload opponent">
+				<input type="file" id="add-opponent" style="display:none;"/>
+				<p>Random</p>
+			</label>
+			<button id="op-preview-clear" class="hide" data-title="Clear opponent"></button>
+		</div>
+	</div>
+</section>
+
+<div data-title="Toggle music" id="toggle-music" class="center deck-menu settings-button"><img src="svg/music.svg"></img></div>
+<div data-title="Toggle sound effects" id="toggle-sfx" class="center deck-menu settings-button"><img src="svg/sfx.svg"></img></div>
+<div data-title="Toggle game messages" id="toggle-notifications" class="center deck-menu settings-button"><img src="svg/notification.svg"></img></div>
+
+<!-- 216 CARDS ENCYCLOPEDIA (GALLERY) MODAL -->
+<section id="card-gallery-modal" class="hide">
+	<div class="gallery-header">
+		<div class="gallery-title-box">
+			<h2>❖ 궨트 전체 카드 도감 (216 Cards Library)</h2>
+			<span id="gallery-count-badge" class="gallery-badge">표시 중: 216 / 216장</span>
+		</div>
+		<div class="gallery-filters">
+			<button class="filter-btn active" data-filter="all">전체 (216)</button>
+			<button class="filter-btn" data-filter="sheet1_2">Sheet 1·2 유닛 (185)</button>
+			<button class="filter-btn" data-filter="sheet3">Sheet 3 리더/특수 (31)</button>
+			<button class="filter-btn" data-filter="realms">북부 왕국</button>
+			<button class="filter-btn" data-filter="nilfgaard">닐프가드</button>
+			<button class="filter-btn" data-filter="monsters">괴물</button>
+			<button class="filter-btn" data-filter="scoiatael">스코이아'텔</button>
+			<button class="filter-btn" data-filter="skellige">스켈리게</button>
+			<button class="filter-btn" data-filter="neutral_special">중립·특수·날씨</button>
+		</div>
+		<button id="close-gallery-btn" class="close-gallery-btn">✕ 닫기</button>
+	</div>
+	<div class="gallery-content-area" id="gallery-card-grid-container">
+		<!-- Injected dynamically by gallery.js -->
+	</div>
+</section>
+
+<!-- CARD DETAIL MODAL -->
+<section id="gallery-detail-modal" class="hide">
+	<div class="detail-modal-body">
+		<button id="detail-close-btn" class="detail-close-btn">✕</button>
+		<div id="detail-card-img" class="detail-card-img-box"></div>
+		<div class="detail-info-box">
+			<h1 id="detail-title-ko">카드 이름</h1>
+			<div id="detail-title-en" class="detail-eng-name">English Name</div>
+			<div id="detail-meta-tags" class="detail-meta-row"></div>
+			<div id="detail-lore" class="detail-lore-box"></div>
+		</div>
+	</div>
+</section>
+
+<!-- HOW TO PLAY (RULES) MODAL -->
+<section id="how-to-play-modal" class="hide">
+	<div class="rules-modal-dialog">
+		<div class="rules-header">
+			<div class="rules-title-box">
+				<h2 id="rules-modal-title">❖ 궨트 플레이 방법 & 게임 규칙 (How to Play)</h2>
+				<span class="rules-subtitle" id="rules-modal-sub">전술적 카드 배치와 두뇌 심리전 가이드</span>
+			</div>
+			<button id="close-rules-btn" class="close-rules-btn">✕ 닫기</button>
+		</div>
+		<div class="rules-content-area">
+			<div class="rule-card-section">
+				<h3 id="rules-sec1-title">1. 게임 목표 및 승리 조건 (Objective)</h3>
+				<div id="rules-sec1-body" class="rule-section-body"></div>
+			</div>
+			<div class="rule-card-section">
+				<h3 id="rules-sec2-title">2. 턴 진행 방식과 '패스(Pass)'의 미학 (Turns & Passing)</h3>
+				<div id="rules-sec2-body" class="rule-section-body"></div>
+			</div>
+			<div class="rule-card-section">
+				<h3 id="rules-sec3-title">3. 전장의 3대 전선과 카드 분류 (Battlefield Rows & Types)</h3>
+				<div id="rules-sec3-body" class="rule-section-body"></div>
+			</div>
+			<div class="rule-card-section">
+				<h3 id="rules-sec4-title">4. 전세를 뒤집는 특수 & 날씨 카드 (Special & Weather)</h3>
+				<div id="rules-sec4-body" class="rule-section-body"></div>
+			</div>
+			<div class="rule-card-section">
+				<h3 id="rules-sec5-title">5. 5대 진영 고유 특성 (Faction Perks)</h3>
+				<div id="rules-sec5-body" class="rule-section-body"></div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- Rotate Device Prompt (Mobile Portrait in-game) -->
+<div id="rotate-device-overlay" class="hide">
+	<div class="rotate-device-backdrop"></div>
+	<div class="rotate-device-modal">
+		<div class="rotate-device-icon">🔄</div>
+		<h2 id="rotate-prompt-title">화면을 가로로 돌려주세요</h2>
+		<p id="rotate-prompt-desc">궨트는 가로 모드(Landscape)에서 전장과 손패가 가장 넓고 선명하게 표시됩니다.</p>
+		<button id="rotate-dismiss-btn">세로 모드로 계속하기</button>
+	</div>
+</div>
+
+<!-- Mobile In-game Touch Zoom Controls & Hint Toast -->
+<div id="board-zoom-controls" class="mobile-only hide">
+	<button id="btn-zoom-in" class="zoom-btn" title="확대">+</button>
+	<button id="btn-zoom-reset" class="zoom-btn zoom-btn-indicator" title="원위치 리셋">1.0x</button>
+	<button id="btn-zoom-out" class="zoom-btn" title="축소">−</button>
+</div>
+<div id="board-zoom-toast" class="mobile-only hide">
+	<span id="board-zoom-toast-text">💡 두 손가락으로 전장을 확대/축소하거나 이동할 수 있습니다.</span>
+</div>
+
+<script type="text/javascript" src="i18n.js"></script>
+<script type="text/javascript" src="common.js"></script>
+<script type="text/javascript" src="cards.js"></script>
+<script type="text/javascript" src="decks.js"></script>
+<script type="text/javascript" src="abilities.js"></script>
+<script type="text/javascript" src="factions.js"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
+<script type="text/javascript" src="gwent.js"></script>
+<script type="text/javascript" src="gallery.js"></script>
+<script type="text/javascript" src="responsive.js"></script>
+</body>
+
+</html>
+

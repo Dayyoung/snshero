@@ -1,0 +1,1683 @@
+/* ==========================================================================
+   GWENT REIMAGINED - ALL 216 CARDS UNIFIED SYSTEM
+   Sprite Coordinates for Sheets 1, 2, 3 & Card Enhancements
+   ========================================================================== */
+
+/* Character Sprite Definitions */
+.card-sprite-1 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 0.0000% 0.0000%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-2 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 11.1111% 0.0000%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-3 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 22.2222% 0.0000%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-4 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 33.3333% 0.0000%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-5 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 44.4444% 0.0000%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-6 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 55.5555% 0.0000%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-7 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 66.6666% 0.0000%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-8 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 77.7777% 0.0000%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-9 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 88.8888% 0.0000%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-10 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 99.9999% 0.0000%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-11 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 0.0000% 11.1111%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-12 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 11.1111% 11.1111%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-13 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 22.2222% 11.1111%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-14 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 33.3333% 11.1111%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-15 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 44.4444% 11.1111%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-16 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 55.5555% 11.1111%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-17 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 66.6666% 11.1111%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-18 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 77.7777% 11.1111%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-19 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 88.8888% 11.1111%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-20 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 99.9999% 11.1111%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-21 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 0.0000% 22.2222%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-22 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 11.1111% 22.2222%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-23 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 22.2222% 22.2222%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-24 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 33.3333% 22.2222%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-25 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 44.4444% 22.2222%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-26 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 55.5555% 22.2222%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-27 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 66.6666% 22.2222%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-28 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 77.7777% 22.2222%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-29 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 88.8888% 22.2222%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-30 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 99.9999% 22.2222%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-31 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 0.0000% 33.3333%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-32 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 11.1111% 33.3333%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-33 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 22.2222% 33.3333%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-34 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 33.3333% 33.3333%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-35 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 44.4444% 33.3333%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-36 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 55.5555% 33.3333%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-37 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 66.6666% 33.3333%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-38 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 77.7777% 33.3333%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-39 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 88.8888% 33.3333%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-40 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 99.9999% 33.3333%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-41 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 0.0000% 44.4444%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-42 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 11.1111% 44.4444%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-43 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 22.2222% 44.4444%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-44 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 33.3333% 44.4444%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-45 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 44.4444% 44.4444%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-46 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 55.5555% 44.4444%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-47 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 66.6666% 44.4444%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-48 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 77.7777% 44.4444%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-49 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 88.8888% 44.4444%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-50 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 99.9999% 44.4444%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-51 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 0.0000% 55.5555%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-52 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 11.1111% 55.5555%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-53 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 22.2222% 55.5555%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-54 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 33.3333% 55.5555%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-55 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 44.4444% 55.5555%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-56 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 55.5555% 55.5555%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-57 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 66.6666% 55.5555%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-58 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 77.7777% 55.5555%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-59 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 88.8888% 55.5555%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-60 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 99.9999% 55.5555%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-61 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 0.0000% 66.6666%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-62 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 11.1111% 66.6666%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-63 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 22.2222% 66.6666%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-64 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 33.3333% 66.6666%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-65 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 44.4444% 66.6666%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-66 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 55.5555% 66.6666%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-67 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 66.6666% 66.6666%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-68 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 77.7777% 66.6666%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-69 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 88.8888% 66.6666%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-70 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 99.9999% 66.6666%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-71 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 0.0000% 77.7777%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-72 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 11.1111% 77.7777%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-73 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 22.2222% 77.7777%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-74 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 33.3333% 77.7777%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-75 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 44.4444% 77.7777%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-76 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 55.5555% 77.7777%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-77 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 66.6666% 77.7777%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-78 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 77.7777% 77.7777%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-79 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 88.8888% 77.7777%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-80 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 99.9999% 77.7777%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-81 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 0.0000% 88.8888%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-82 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 11.1111% 88.8888%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-83 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 22.2222% 88.8888%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-84 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 33.3333% 88.8888%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-85 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 44.4444% 88.8888%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-86 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 55.5555% 88.8888%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-87 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 66.6666% 88.8888%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-88 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 77.7777% 88.8888%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-89 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 88.8888% 88.8888%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-90 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 99.9999% 88.8888%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-91 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 0.0000% 99.9999%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-92 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 11.1111% 99.9999%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-93 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 22.2222% 99.9999%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-94 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 33.3333% 99.9999%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-95 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 44.4444% 99.9999%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-96 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 55.5555% 99.9999%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-97 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 66.6666% 99.9999%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-98 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 77.7777% 99.9999%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-99 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 88.8888% 99.9999%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-100 {
+  background-image: url('img/cards1.png');
+  background-size: 1000% 1000%;
+  background-position: 99.9999% 99.9999%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-101 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 0.0000% 0.0000%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-102 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 11.1111% 0.0000%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-103 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 22.2222% 0.0000%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-104 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 33.3333% 0.0000%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-105 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 44.4444% 0.0000%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-106 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 55.5555% 0.0000%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-107 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 66.6666% 0.0000%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-108 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 77.7777% 0.0000%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-109 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 88.8888% 0.0000%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-110 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 99.9999% 0.0000%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-111 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 0.0000% 11.1111%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-112 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 11.1111% 11.1111%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-113 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 22.2222% 11.1111%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-114 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 33.3333% 11.1111%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-115 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 44.4444% 11.1111%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-116 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 55.5555% 11.1111%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-117 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 66.6666% 11.1111%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-118 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 77.7777% 11.1111%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-119 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 88.8888% 11.1111%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-120 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 99.9999% 11.1111%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-121 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 0.0000% 22.2222%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-122 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 11.1111% 22.2222%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-123 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 22.2222% 22.2222%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-124 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 33.3333% 22.2222%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-125 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 44.4444% 22.2222%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-126 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 55.5555% 22.2222%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-127 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 66.6666% 22.2222%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-128 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 77.7777% 22.2222%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-129 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 88.8888% 22.2222%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-130 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 99.9999% 22.2222%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-131 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 0.0000% 33.3333%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-132 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 11.1111% 33.3333%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-133 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 22.2222% 33.3333%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-134 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 33.3333% 33.3333%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-135 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 44.4444% 33.3333%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-136 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 55.5555% 33.3333%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-137 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 66.6666% 33.3333%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-138 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 77.7777% 33.3333%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-139 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 88.8888% 33.3333%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-140 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 99.9999% 33.3333%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-141 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 0.0000% 44.4444%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-142 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 11.1111% 44.4444%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-143 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 22.2222% 44.4444%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-144 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 33.3333% 44.4444%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-145 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 44.4444% 44.4444%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-146 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 55.5555% 44.4444%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-147 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 66.6666% 44.4444%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-148 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 77.7777% 44.4444%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-149 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 88.8888% 44.4444%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-150 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 99.9999% 44.4444%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-151 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 0.0000% 55.5555%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-152 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 11.1111% 55.5555%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-153 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 22.2222% 55.5555%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-154 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 33.3333% 55.5555%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-155 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 44.4444% 55.5555%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-156 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 55.5555% 55.5555%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-157 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 66.6666% 55.5555%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-158 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 77.7777% 55.5555%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-159 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 88.8888% 55.5555%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-160 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 99.9999% 55.5555%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-161 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 0.0000% 66.6666%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-162 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 11.1111% 66.6666%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-163 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 22.2222% 66.6666%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-164 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 33.3333% 66.6666%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-165 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 44.4444% 66.6666%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-166 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 55.5555% 66.6666%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-167 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 66.6666% 66.6666%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-168 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 77.7777% 66.6666%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-169 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 88.8888% 66.6666%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-170 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 99.9999% 66.6666%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-171 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 0.0000% 77.7777%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-172 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 11.1111% 77.7777%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-173 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 22.2222% 77.7777%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-174 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 33.3333% 77.7777%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-175 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 44.4444% 77.7777%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-176 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 55.5555% 77.7777%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-177 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 66.6666% 77.7777%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-178 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 77.7777% 77.7777%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-179 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 88.8888% 77.7777%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-180 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 99.9999% 77.7777%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-181 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 0.0000% 88.8888%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-182 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 11.1111% 88.8888%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-183 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 22.2222% 88.8888%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-184 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 33.3333% 88.8888%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-185 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 44.4444% 88.8888%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-186 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 55.5555% 88.8888%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-187 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 66.6666% 88.8888%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-188 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 77.7777% 88.8888%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-189 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 88.8888% 88.8888%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-190 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 99.9999% 88.8888%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-191 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 0.0000% 99.9999%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-192 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 11.1111% 99.9999%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-193 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 22.2222% 99.9999%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-194 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 33.3333% 99.9999%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-195 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 44.4444% 99.9999%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-196 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 55.5555% 99.9999%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-197 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 66.6666% 99.9999%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-198 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 77.7777% 99.9999%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-199 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 88.8888% 99.9999%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-200 {
+  background-image: url('img/cards2.png');
+  background-size: 1000% 1000%;
+  background-position: 99.9999% 99.9999%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-201 {
+  background-image: url('img/cards3.png');
+  background-size: 1000% 1000%;
+  background-position: 0.0000% 0.0000%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-202 {
+  background-image: url('img/cards3.png');
+  background-size: 1000% 1000%;
+  background-position: 33.3333% 0.0000%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-203 {
+  background-image: url('img/cards3.png');
+  background-size: 1000% 1000%;
+  background-position: 33.3333% 11.1111%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-204 {
+  background-image: url('img/cards3.png');
+  background-size: 1000% 1000%;
+  background-position: 88.8888% 33.3333%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-205 {
+  background-image: url('img/cards3.png');
+  background-size: 1000% 1000%;
+  background-position: 88.8888% 44.4444%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-206 {
+  background-image: url('img/cards3.png');
+  background-size: 1000% 1000%;
+  background-position: 77.7777% 0.0000%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-207 {
+  background-image: url('img/cards3.png');
+  background-size: 1000% 1000%;
+  background-position: 77.7777% 11.1111%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-208 {
+  background-image: url('img/cards3.png');
+  background-size: 1000% 1000%;
+  background-position: 88.8888% 0.0000%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-209 {
+  background-image: url('img/cards3.png');
+  background-size: 1000% 1000%;
+  background-position: 77.7777% 22.2222%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-210 {
+  background-image: url('img/cards3.png');
+  background-size: 1000% 1000%;
+  background-position: 88.8888% 11.1111%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-211 {
+  background-image: url('img/cards3.png');
+  background-size: 1000% 1000%;
+  background-position: 0.0000% 88.8888%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-212 {
+  background-image: url('img/cards3.png');
+  background-size: 1000% 1000%;
+  background-position: 11.1111% 88.8888%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-213 {
+  background-image: url('img/cards3.png');
+  background-size: 1000% 1000%;
+  background-position: 0.0000% 99.9999%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-214 {
+  background-image: url('img/cards3.png');
+  background-size: 1000% 1000%;
+  background-position: 11.1111% 99.9999%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-215 {
+  background-image: url('img/cards3.png');
+  background-size: 1000% 1000%;
+  background-position: 44.4444% 33.3333%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-216 {
+  background-image: url('img/cards3.png');
+  background-size: 1000% 1000%;
+  background-position: 66.6666% 0.0000%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-217 {
+  background-image: url('img/cards3.png');
+  background-size: 1000% 1000%;
+  background-position: 66.6666% 11.1111%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-218 {
+  background-image: url('img/cards3.png');
+  background-size: 1000% 1000%;
+  background-position: 66.6666% 22.2222%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-219 {
+  background-image: url('img/cards3.png');
+  background-size: 1000% 1000%;
+  background-position: 11.1111% 0.0000%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-220 {
+  background-image: url('img/cards3.png');
+  background-size: 1000% 1000%;
+  background-position: 11.1111% 11.1111%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-221 {
+  background-image: url('img/cards3.png');
+  background-size: 1000% 1000%;
+  background-position: 44.4444% 0.0000%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-222 {
+  background-image: url('img/cards3.png');
+  background-size: 1000% 1000%;
+  background-position: 0.0000% 11.1111%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-223 {
+  background-image: url('img/cards3.png');
+  background-size: 1000% 1000%;
+  background-position: 77.7777% 66.6666%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-224 {
+  background-image: url('img/cards3.png');
+  background-size: 1000% 1000%;
+  background-position: 66.6666% 66.6666%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-225 {
+  background-image: url('img/cards3.png');
+  background-size: 1000% 1000%;
+  background-position: 88.8888% 66.6666%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-226 {
+  background-image: url('img/cards3.png');
+  background-size: 1000% 1000%;
+  background-position: 99.9999% 66.6666%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-227 {
+  background-image: url('img/cards3.png');
+  background-size: 1000% 1000%;
+  background-position: 0.0000% 66.6666%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-228 {
+  background-image: url('img/cards3.png');
+  background-size: 1000% 1000%;
+  background-position: 44.4444% 66.6666%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-229 {
+  background-image: url('img/cards3.png');
+  background-size: 1000% 1000%;
+  background-position: 11.1111% 66.6666%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-230 {
+  background-image: url('img/cards3.png');
+  background-size: 1000% 1000%;
+  background-position: 22.2222% 66.6666%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+.card-sprite-231 {
+  background-image: url('img/cards3.png');
+  background-size: 1000% 1000%;
+  background-position: 55.5555% 66.6666%;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+}
+
+/* Enhanced Card Visuals */
+.card {
+  background-size: contain !important;
+  border-radius: 0.35vw;
+  box-shadow: 0 0.15vw 0.5vw rgba(0, 0, 0, 0.6);
+  transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.18s ease;
+}
+
+.card:hover {
+  transform: translateY(-0.25vw) scale(1.04);
+  box-shadow: 0 0.5vw 1.2vw rgba(0, 0, 0, 0.85), 0 0 0.8vw rgba(212, 175, 55, 0.4);
+  z-index: 100 !important;
+}
+
+/* Hero Shimmer Effect */
+.card.hero {
+  box-shadow: 0 0 0.6vw rgba(255, 215, 0, 0.5), 0 0.2vw 0.8vw rgba(0, 0, 0, 0.7);
+}
+
+.card.hero:hover {
+  box-shadow: 0 0 1.2vw rgba(255, 215, 0, 0.85), 0 0.6vw 1.5vw rgba(0, 0, 0, 0.9);
+}
+
+/* Leader Card Glowing Frame */
+.card[data-title*="지도자"], .card[data-title*="폴테스트"], .card[data-title*="에미르"], .card[data-title*="에레딘"], .card[data-title*="프란체스카"], .card[data-title*="크라크"], .card[data-title*="브란"] {
+  box-shadow: 0 0 0.7vw rgba(255, 215, 0, 0.6), 0 0.2vw 0.8vw rgba(0, 0, 0, 0.8);
+}
+
+/* Card Tooltip Enhancements */
+.card::after {
+  font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  font-weight: bold;
+  letter-spacing: 0.02em;
+}
+
+/* Large Card Preview */
+.card-lg {
+  border-radius: 1.2vw;
+  box-shadow: 0 0.5vw 2vw rgba(0, 0, 0, 0.85);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card-lg.hide,
+.card-lg.empty {
+  box-shadow: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  border: none !important;
+  pointer-events: none !important;
+}
+
+.card-description {
+  font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+}
+
+.card-description > h1 {
+  font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  letter-spacing: 0.03em;
+}

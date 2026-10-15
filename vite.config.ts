@@ -449,6 +449,43 @@ export default defineConfig(({mode}) => {
                 }
               }
 
+              // Support /gwent and /gwent/* direct static serving for The Witcher 3 Gwent Classic game
+              if (/^\/gwent(\/|$)/i.test(decodedUrl) || /^\/gwent(\/|$)/i.test(rawUrl)) {
+                // If requested without trailing slash (/gwent), redirect to /gwent/ for correct relative asset paths
+                if (decodedUrl.toLowerCase() === '/gwent') {
+                  const search = req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : '';
+                  res.statusCode = 301;
+                  res.setHeader('Location', `/gwent/${search}`);
+                  res.end();
+                  return;
+                }
+
+                let gwentRel = decodedUrl.replace(/^\/gwent\/?/i, '');
+                let targetPath = path.join(publicDir, 'gwent', gwentRel);
+
+                if (!gwentRel || (fs.existsSync(targetPath) && fs.statSync(targetPath).isDirectory())) {
+                  targetPath = path.join(targetPath, 'index.html');
+                } else if (!fs.existsSync(targetPath) && fs.existsSync(targetPath + '.html')) {
+                  targetPath = targetPath + '.html';
+                }
+
+                if (fs.existsSync(targetPath)) {
+                  const stat = fs.statSync(targetPath);
+                  if (stat.isFile()) {
+                    const ext = path.extname(targetPath).toLowerCase();
+                    const contentType = MIME_TYPES[ext] || 'text/html; charset=utf-8';
+
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', contentType);
+                    res.setHeader('Content-Length', stat.size);
+                    res.setHeader('Cache-Control', 'no-cache');
+                    res.setHeader('Access-Control-Allow-Origin', '*');
+                    fs.createReadStream(targetPath).pipe(res);
+                    return;
+                  }
+                }
+              }
+
               // Support /mall and /mall/* direct static serving
               if (/^\/mall(\/|$)/i.test(decodedUrl) || /^\/mall(\/|$)/i.test(rawUrl)) {
                 let mallRelPath = decodedUrl.replace(/^\/mall(\/)?/i, '');
@@ -460,7 +497,6 @@ export default defineConfig(({mode}) => {
                   if (fs.existsSync(targetPath + '.html')) {
                     targetPath = targetPath + '.html';
                   } else {
-                    // Try with rawUrl un-decoded path if different
                     const rawRel = rawUrl.replace(/^\/mall(\/)?/i, '');
                     const rawTarget = path.join(publicDir, 'mall', rawRel);
                     if (fs.existsSync(rawTarget)) {
@@ -488,35 +524,60 @@ export default defineConfig(({mode}) => {
                 }
               }
 
-              // Support case-insensitive wildcard paths for /public/*, /Public/*, /PUBLIC/*
+              // Comprehensive Wildcard Serving for /public/* and any file/folder inside /public
               let relativePath = '';
               if (/^\/public(\/|$)/i.test(decodedUrl)) {
                 relativePath = decodedUrl.replace(/^\/public(\/)?/i, '');
+              } else if (
+                !decodedUrl.startsWith('/api/') &&
+                !decodedUrl.startsWith('/@') &&
+                !decodedUrl.startsWith('/src/') &&
+                !decodedUrl.startsWith('/node_modules/') &&
+                !decodedUrl.startsWith('/assets/') &&
+                decodedUrl !== '/' &&
+                decodedUrl !== '/index.html'
+              ) {
+                // If path directly matches a file or folder in public/
+                const candidate = decodedUrl.replace(/^\//, '');
+                const directTest = path.join(publicDir, candidate);
+                if (directTest !== publicDir && fs.existsSync(directTest)) {
+                  relativePath = candidate;
+                }
               }
 
               if (relativePath) {
-                const targetPath = path.join(publicDir, relativePath);
+                let targetPath = path.join(publicDir, relativePath);
 
                 // Security check to prevent directory traversal
-                if (!targetPath.startsWith(publicDir)) {
-                  res.statusCode = 403;
-                  res.end('Forbidden');
-                  return;
-                }
+                if (targetPath.startsWith(publicDir)) {
+                  // If target is a directory, redirect with trailing slash if needed, then serve index.html
+                  if (fs.existsSync(targetPath) && fs.statSync(targetPath).isDirectory()) {
+                    if (!decodedUrl.endsWith('/')) {
+                      const search = req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : '';
+                      res.statusCode = 301;
+                      res.setHeader('Location', `${decodedUrl}/${search}`);
+                      res.end();
+                      return;
+                    }
+                    targetPath = path.join(targetPath, 'index.html');
+                  } else if (!fs.existsSync(targetPath) && fs.existsSync(targetPath + '.html')) {
+                    targetPath = targetPath + '.html';
+                  }
 
-                if (fs.existsSync(targetPath)) {
-                  const stat = fs.statSync(targetPath);
-                  if (stat.isFile()) {
-                    const ext = path.extname(targetPath).toLowerCase();
-                    const contentType = MIME_TYPES[ext] || 'application/octet-stream';
+                  if (fs.existsSync(targetPath)) {
+                    const stat = fs.statSync(targetPath);
+                    if (stat.isFile()) {
+                      const ext = path.extname(targetPath).toLowerCase();
+                      const contentType = MIME_TYPES[ext] || 'application/octet-stream';
 
-                    res.statusCode = 200;
-                    res.setHeader('Content-Type', contentType);
-                    res.setHeader('Content-Length', stat.size);
-                    res.setHeader('Cache-Control', 'public, max-age=3600');
-                    res.setHeader('Access-Control-Allow-Origin', '*');
-                    fs.createReadStream(targetPath).pipe(res);
-                    return;
+                      res.statusCode = 200;
+                      res.setHeader('Content-Type', contentType);
+                      res.setHeader('Content-Length', stat.size);
+                      res.setHeader('Cache-Control', 'public, max-age=3600');
+                      res.setHeader('Access-Control-Allow-Origin', '*');
+                      fs.createReadStream(targetPath).pipe(res);
+                      return;
+                    }
                   }
                 }
               }

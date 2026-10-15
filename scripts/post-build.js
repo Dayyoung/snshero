@@ -133,6 +133,12 @@ if (fs.existsSync(indexPath)) {
   const cleanBaseHtml = ensureAbsoluteAssetPaths(baseHtml);
 
   for (const route of routes) {
+    const publicStaticIndex = path.join(publicDir, route, 'index.html');
+    if (fs.existsSync(publicStaticIndex)) {
+      // Do not overwrite real static games/pages that already exist in public/
+      continue;
+    }
+
     const routeDir = path.join(distDir, route);
     if (!fs.existsSync(routeDir)) {
       fs.mkdirSync(routeDir, { recursive: true });
@@ -149,6 +155,14 @@ if (fs.existsSync(indexPath)) {
     }
   }
   console.log(`[post-build] Generated ${routes.length} static SPA route fallback pages (including .html root clean URLs)`);
+}
+
+// 4.1 Ensure public/gwent is copied to dist/gwent
+const publicGwentDir = path.join(publicDir, 'gwent');
+const distGwentDir = path.join(distDir, 'gwent');
+if (fs.existsSync(publicGwentDir) && !fs.existsSync(path.join(distGwentDir, 'index.html'))) {
+  fs.cpSync(publicGwentDir, distGwentDir, { recursive: true });
+  console.log('[post-build] Synced public/gwent to dist/gwent');
 }
 
 // 5. Ensure 404.html fallback

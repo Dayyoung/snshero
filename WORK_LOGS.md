@@ -2,6 +2,32 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-15 11:35 KST] [기능연동] /gwent 더 위쳐 3 카드 배틀 서빙 연동 및 /public 디렉토리 전체 와일드카드 정적 서빙 지원 완료
+- **요청 사항**:
+  - "/public/gwent 게임을 넣어두었어. /gwent 로 접속하면 플레이 하게 해줘. /public 폴더에 존재하는 파일/폴더들은 와일드카드로 다 접근 가능하게 해줘."
+- **수정 및 개선 내역**:
+  1. **`/gwent` 직접 서빙 & 상대경로 보정 ([`vite.config.ts`](file:///Users/dayyoung/project/snshero/vite.config.ts))**:
+     - `/gwent` 요청 시 상대경로(`style.css`, `cards.css`, `gwent.js`, `img/*`, `sfx/*`) 파싱 깨짐 방지를 위해 `/gwent/`로 자동 301 리다이렉트 처리.
+     - `/gwent/` 또는 `/gwent/index.html` 접속 시 `public/gwent/index.html`을 200 OK로 직접 서빙.
+     - 하위 스크립트, 스타일, 이미지, 사운드 파일 올바른 MIME Type으로 무손실 서빙.
+  2. **SPA 내부 GwentView 연동 ([`src/views/GwentView.tsx`](file:///Users/dayyoung/project/snshero/src/views/GwentView.tsx), [`src/routes.ts`](file:///Users/dayyoung/project/snshero/src/routes.ts), [`src/App.tsx`](file:///Users/dayyoung/project/snshero/src/App.tsx))**:
+     - 풀스크린 iframe 기반의 독립 게임 뷰 `GwentView.tsx` 구현 (상단 미니 컨트롤 바: [홈으로], [새로고침], [전체화면]).
+     - `src/types.ts` 및 `src/routes.ts`에 `'gwent'` 뷰타입 및 라우트 등록.
+     - `App.tsx`에서 HUD/내비바 중첩 없이 100dvh 전체화면으로 독립 렌더링하도록 연동.
+  3. **`/public` 전체 와일드카드 정적 서빙 강화 ([`vite.config.ts`](file:///Users/dayyoung/project/snshero/vite.config.ts))**:
+     - `/public/*` 경로뿐만 아니라, `public/` 디렉토리에 존재하는 임의의 파일/폴더(예: `/gwent`, `/robots.txt`, `/data/google-news.csv`, `/uploads`, `/sfx` 등)에 대한 루트 경로 직접 접근 시에도 자동으로 탐색하여 서빙하는 완전한 와일드카드 정적 매핑 구현.
+     - 디렉토리 요청 시 `index.html` 자동 매핑 및 trailing slash 301 리다이렉트 보장.
+  4. **빌드 동기화 및 덮어쓰기 방지 ([`scripts/post-build.js`](file:///Users/dayyoung/project/snshero/scripts/post-build.js))**:
+     - `public/`에 이미 실제 정적 index.html이 존재하는 디렉토리는 SPA 더미 index.html로 덮어쓰지 않도록 가드 추가.
+     - `dist/gwent`로의 전체 게임 정적 자산 무손실 동기화 완료.
+- **검증 결과**:
+  - `curl -I http://localhost:3000/gwent/` ➔ **HTTP 200 OK** 확인.
+  - `curl -I http://localhost:3000/public/gwent/index.html` ➔ **HTTP 200 OK** 확인.
+  - `curl -I http://localhost:3000/gwent/gwent.js` ➔ **HTTP 200 OK** 확인.
+  - `curl -I http://localhost:3000/public/data/google-news.csv` ➔ **HTTP 200 OK** 확인.
+  - `npx tsc --noEmit` 0 Errors & `npm run build` 통과 완료.
+  - 로컬 Git 커밋 및 연동 구글 폼 완료 보고서 제출 완료.
+
 ## [2026-10-15 11:27 KST] [/rsi-snshero] 신규 스프레드시트 연동 및 RSI-018 ~ RSI-021 전수 구현 완료 (21건 / 21건 100.0%)
 - **신규 연동 스프레드시트 (공개 CSV)**: `https://docs.google.com/spreadsheets/d/e/2PACX-1vTJLidMIGaaE_tsui-CydxadPU2vesb4cCF_iQIfuq7mFILYrCxgdcSbgRHxUi8--D6oq1ii-TEPIKC/pub?output=csv`
 - **신규 구현 및 개선 완료 내역**:

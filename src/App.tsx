@@ -208,6 +208,7 @@ const GridCheckerView = safeLazy(() => import('./views/GridCheckerView'), 'GridC
 const MallView = safeLazy(loadViewSafely('MallView'), 'MallView');
 const PacpikView = safeLazy(loadViewSafely('PacpikView'), 'PacpikView');
 const BenchmarkView = safeLazy(loadViewSafely('BenchmarkView'), 'BenchmarkView');
+const GwentView = safeLazy(loadViewSafely('GwentView'), 'GwentView');
 const WebMcpActiveBadge = safeLazy(
   loadComponentSafely('WebMcpActiveBadge'),
   'WebMcpActiveBadge'
@@ -5574,6 +5575,8 @@ function AppContent() {
             playSfx={playSfx}
           />
         );
+      case 'gwent':
+        return <GwentView onBackToHome={() => setView('home')} />;
       case 'web3-landing':
         return (
           <Web3LandingView
@@ -6444,8 +6447,25 @@ function AppContent() {
     );
   }
 
+  // '/gwent' 더 위쳐 3 궨트 클래식 독립 웹 뷰
+  if (view === 'gwent') {
+    return (
+      <Suspense fallback={<ViewLoadingFallback view={view} language={language} />}>
+        <Meta view={view} language={language} />
+        <GwentView
+          onBackToHome={() => {
+            setView('home');
+            if (typeof window !== 'undefined') {
+              window.history.pushState(null, '', '/');
+            }
+          }}
+        />
+      </Suspense>
+    );
+  }
+
     const isPlayingBattle = (view === 'play' && (playGameState === 'playing' || playGameState === 'searching' || playGameState === 'preMatch')) || view === 'card-play' || (view === 'main' && isRpgInBattle);
-    const showNavbar = (view !== 'reddit' && view !== 'bench' && view !== 'admin' && view !== 'landing' && view !== 'cartoonBook' && view !== 'novel' && view !== 'webtoon' && view !== 'anime' && view !== 'movie' && view !== 'card-play' && !isPlayingBattle) && !isGlobalPopupOpen;
+    const showNavbar = (view !== 'reddit' && view !== 'bench' && view !== 'gwent' && view !== 'admin' && view !== 'landing' && view !== 'cartoonBook' && view !== 'novel' && view !== 'webtoon' && view !== 'anime' && view !== 'movie' && view !== 'card-play' && !isPlayingBattle) && !isGlobalPopupOpen;
     const isMainTab = view === 'home' || view === 'mydeck' || view === 'shop' || view === 'play' || view === 'main';
     
 

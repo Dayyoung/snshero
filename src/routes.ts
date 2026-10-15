@@ -388,6 +388,14 @@ export const VIEW_ROUTES: Record<ViewType, RouteMeta> = {
     descriptionKo: 'Claude, GPT, Gemini의 1시간 자율 플레이 역량을 측정하는 공식 AI 벤치마크 환경입니다.',
     descriptionEn: 'Standardized 1-hour autonomous gameplay benchmark for Claude, GPT, and Gemini models.',
   },
+  gwent: {
+    path: '/gwent',
+    aliases: ['/gwent/', '/witcher-gwent', '/card-gwent'],
+    titleKo: '더 위쳐 3 궨트 클래식 (The Witcher 3 Gwent Classic)',
+    titleEn: 'The Witcher 3 Gwent Classic Card Battle',
+    descriptionKo: '더 위쳐 3: 와일드 헌트 오리지널 궨트 카드 배틀을 브라우저에서 바로 플레이하세요.',
+    descriptionEn: 'Play the original Gwent minigame from The Witcher 3 directly in your browser!',
+  },
 };
 
 /**
@@ -421,6 +429,7 @@ export function getViewFromPath(pathname: string, search = ''): ViewType {
   if (cleanPath.startsWith('/creator/')) return 'creator';
   if (cleanPath.startsWith('/novel/s1-')) return 'novel';
   if (cleanPath.startsWith('/gotest')) return 'home';
+  if (cleanPath === '/gwent' || cleanPath.startsWith('/gwent/')) return 'gwent';
 
   // 홈 화면 매핑 (/ 또는 /home)
   if (cleanPath === '/' || cleanPath === '/home') {

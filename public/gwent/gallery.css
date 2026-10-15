@@ -1,0 +1,677 @@
+/* ==========================================================================
+   GWENT REIMAGINED - ALL 216 CARDS ENCYCLOPEDIA & GALLERY
+   ========================================================================== */
+
+/* Top Options Bar Button Positioning & Styling */
+#upload-deck {
+  left: 17%;
+  cursor: pointer;
+}
+
+#change-faction {
+  left: 28%;
+  cursor: pointer;
+}
+
+#upload-deck {
+  left: 8.5%;
+}
+
+#change-faction {
+  left: 19.5%;
+}
+
+#download-deck {
+  left: 29.5%;
+  cursor: pointer;
+}
+
+#open-how-to-play {
+  left: 60.5%;
+  padding: 0.25vw 0.75vw;
+  background: linear-gradient(180deg, rgba(30, 160, 120, 0.3), rgba(12, 28, 22, 0.85));
+  border: 1px solid rgba(40, 200, 150, 0.75);
+  border-radius: 0.35vw;
+  cursor: pointer;
+  color: #5cf2bd;
+  font-weight: bold;
+  letter-spacing: 0.02em;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 0.5vw rgba(40, 200, 150, 0.25);
+  text-decoration: none;
+}
+
+#open-how-to-play:hover {
+  background: linear-gradient(180deg, rgba(40, 210, 160, 0.5), rgba(20, 48, 38, 0.95));
+  border-color: #5cf2bd;
+  box-shadow: 0 0 1vw rgba(40, 210, 160, 0.55);
+  transform: translateY(-0.1vw);
+}
+
+#open-gallery {
+  left: 73.5%;
+  padding: 0.25vw 0.75vw;
+  background: linear-gradient(180deg, rgba(212, 175, 55, 0.3), rgba(24, 18, 10, 0.85));
+  border: 1px solid rgba(212, 175, 55, 0.8);
+  border-radius: 0.35vw;
+  cursor: pointer;
+  color: #ffd700;
+  font-weight: bold;
+  letter-spacing: 0.02em;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 0.5vw rgba(212, 175, 55, 0.3);
+  text-decoration: none;
+}
+
+#open-gallery:hover {
+  background: linear-gradient(180deg, rgba(255, 215, 0, 0.5), rgba(45, 35, 15, 0.95));
+  border-color: #ffd700;
+  box-shadow: 0 0 1vw rgba(255, 215, 0, 0.6);
+  transform: translateY(-0.1vw);
+}
+
+#toggle-language {
+  left: 86.0%;
+  padding: 0.25vw 0.75vw;
+  background: linear-gradient(180deg, rgba(80, 140, 230, 0.3), rgba(16, 24, 45, 0.85));
+  border: 1px solid rgba(100, 170, 255, 0.8);
+  border-radius: 0.35vw;
+  cursor: pointer;
+  color: #8ac4ff;
+  font-weight: bold;
+  letter-spacing: 0.02em;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 0.5vw rgba(100, 170, 255, 0.25);
+  text-decoration: none;
+}
+
+#toggle-language:hover {
+  background: linear-gradient(180deg, rgba(110, 185, 255, 0.5), rgba(24, 40, 75, 0.95));
+  border-color: #aadcff;
+  box-shadow: 0 0 1vw rgba(110, 185, 255, 0.55);
+  transform: translateY(-0.1vw);
+}
+
+/* Modal Overlay */
+#card-gallery-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(5, 8, 15, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  color: #eee;
+  font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  user-select: none;
+}
+
+#card-gallery-modal.hide {
+  display: none !important;
+}
+
+/* Header */
+.gallery-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.2vh 2.5vw;
+  background: linear-gradient(180deg, rgba(20, 25, 40, 0.95), rgba(10, 15, 25, 0.9));
+  border-bottom: 2px solid rgba(212, 175, 55, 0.4);
+  box-shadow: 0 0.4vw 1.5vw rgba(0, 0, 0, 0.7);
+}
+
+.gallery-title-box {
+  display: flex;
+  align-items: center;
+  gap: 1vw;
+}
+
+.gallery-title-box h2 {
+  font-size: 1.4vw;
+  margin: 0;
+  color: #ffd700;
+  letter-spacing: 0.05em;
+  text-shadow: 0 0 0.8vw rgba(255, 215, 0, 0.4);
+}
+
+.gallery-badge {
+  font-size: 0.8vw;
+  background: rgba(212, 175, 55, 0.15);
+  border: 1px solid rgba(212, 175, 55, 0.5);
+  color: #f0e6d2;
+  padding: 0.2vw 0.6vw;
+  border-radius: 0.3vw;
+}
+
+/* Filter Bar */
+.gallery-filters {
+  display: flex;
+  align-items: center;
+  gap: 0.5vw;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  background: rgba(25, 35, 55, 0.7);
+  border: 1px solid rgba(100, 130, 180, 0.3);
+  color: #cbd5e1;
+  font-size: 0.8vw;
+  padding: 0.35vw 0.75vw;
+  border-radius: 0.3vw;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.filter-btn:hover {
+  background: rgba(45, 65, 100, 0.85);
+  border-color: rgba(212, 175, 55, 0.6);
+  color: #fff;
+}
+
+.filter-btn.active {
+  background: linear-gradient(180deg, rgba(212, 175, 55, 0.3), rgba(160, 120, 30, 0.5));
+  border-color: #ffd700;
+  color: #ffd700;
+  font-weight: bold;
+  box-shadow: 0 0 0.8vw rgba(212, 175, 55, 0.3);
+}
+
+.close-gallery-btn {
+  background: rgba(200, 50, 50, 0.2);
+  border: 1px solid rgba(255, 100, 100, 0.5);
+  color: #ff9999;
+  font-size: 1.1vw;
+  padding: 0.3vw 0.9vw;
+  border-radius: 0.3vw;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+.close-gallery-btn:hover {
+  background: rgba(220, 40, 40, 0.8);
+  color: #fff;
+  border-color: #ff4444;
+}
+
+/* Content Area */
+.gallery-content-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5vw 2.5vw 3vw 2.5vw;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(212, 175, 55, 0.5) rgba(15, 20, 30, 0.5);
+}
+
+.gallery-content-area::-webkit-scrollbar {
+  width: 8px;
+}
+.gallery-content-area::-webkit-scrollbar-track {
+  background: rgba(15, 20, 30, 0.5);
+}
+.gallery-content-area::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.5);
+  border-radius: 4px;
+}
+
+/* Section Header Divider */
+.sheet-section-divider {
+  display: flex;
+  align-items: center;
+  gap: 1vw;
+  margin: 1.8vw 0 1vw 0;
+  padding: 0.6vw 1.2vw;
+  background: linear-gradient(90deg, rgba(30, 40, 65, 0.85), rgba(15, 20, 35, 0.3));
+  border-left: 4px solid #ffd700;
+  border-radius: 0 0.4vw 0.4vw 0;
+}
+
+.sheet-section-divider.sheet3 {
+  border-left-color: #ff7788;
+  background: linear-gradient(90deg, rgba(65, 30, 45, 0.85), rgba(20, 15, 25, 0.3));
+}
+
+.sheet-section-divider h3 {
+  margin: 0;
+  font-size: 1.15vw;
+  color: #ffd700;
+  letter-spacing: 0.04em;
+}
+
+.sheet-section-divider.sheet3 h3 {
+  color: #ff99aa;
+}
+
+.sheet-section-divider span {
+  font-size: 0.85vw;
+  color: #94a3b8;
+}
+
+/* Card Grid */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(8.5vw, 1fr));
+  gap: 1vw;
+}
+
+.gallery-card-item {
+  display: flex;
+  flex-direction: column;
+  background: rgba(20, 26, 40, 0.85);
+  border: 1px solid rgba(100, 130, 180, 0.25);
+  border-radius: 0.5vw;
+  padding: 0.5vw;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: 0 0.3vw 0.8vw rgba(0, 0, 0, 0.6);
+  position: relative;
+}
+
+.gallery-card-item:hover {
+  transform: translateY(-0.4vw) scale(1.04);
+  border-color: #ffd700;
+  box-shadow: 0 0.8vw 1.6vw rgba(0, 0, 0, 0.85), 0 0 1vw rgba(212, 175, 55, 0.45);
+  z-index: 10;
+}
+
+.gallery-card-item.leader-item {
+  border-color: rgba(255, 215, 0, 0.5);
+  background: rgba(35, 30, 20, 0.85);
+}
+
+.gallery-card-thumb {
+  width: 100%;
+  aspect-ratio: 309 / 444;
+  border-radius: 0.35vw;
+  background-size: cover;
+  background-position: center;
+  box-shadow: inset 0 0 0.5vw rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+
+.gallery-cid-badge {
+  position: absolute;
+  top: 0.3vw;
+  right: 0.3vw;
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(255, 215, 0, 0.6);
+  color: #ffd700;
+  font-size: 0.65vw;
+  font-weight: bold;
+  padding: 0.1vw 0.35vw;
+  border-radius: 0.25vw;
+}
+
+.gallery-card-info {
+  margin-top: 0.4vw;
+  text-align: center;
+}
+
+.gallery-card-name {
+  font-size: 0.78vw;
+  font-weight: bold;
+  color: #f1f5f9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gallery-card-sub {
+  font-size: 0.65vw;
+  color: #94a3b8;
+  margin-top: 0.15vw;
+}
+
+/* Detail Popup Modal */
+#gallery-detail-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#gallery-detail-modal.hide {
+  display: none !important;
+}
+
+.detail-modal-body {
+  display: flex;
+  gap: 2vw;
+  background: linear-gradient(135deg, rgba(20, 28, 48, 0.98), rgba(10, 14, 25, 0.98));
+  border: 2px solid rgba(212, 175, 55, 0.8);
+  border-radius: 0.8vw;
+  padding: 2vw;
+  max-width: 55vw;
+  box-shadow: 0 1vw 3vw rgba(0, 0, 0, 0.9), 0 0 2vw rgba(212, 175, 55, 0.35);
+  position: relative;
+}
+
+.detail-card-img-box {
+  width: 17vw;
+  aspect-ratio: 410 / 775;
+  border-radius: 0.6vw;
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 0.8vw 2vw rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(212, 175, 55, 0.5);
+  flex-shrink: 0;
+}
+
+.detail-info-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #f1f5f9;
+  max-width: 28vw;
+}
+
+.detail-info-box h1 {
+  font-size: 1.6vw;
+  color: #ffd700;
+  margin: 0 0 0.3vw 0;
+}
+
+.detail-info-box .detail-eng-name {
+  font-size: 1vw;
+  color: #94a3b8;
+  margin-bottom: 1.2vw;
+}
+
+.detail-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6vw;
+  margin-bottom: 1.2vw;
+}
+
+.detail-tag {
+  font-size: 0.8vw;
+  background: rgba(30, 45, 75, 0.8);
+  border: 1px solid rgba(100, 150, 220, 0.4);
+  padding: 0.25vw 0.6vw;
+  border-radius: 0.3vw;
+  color: #cbd5e1;
+}
+
+.detail-tag.gold {
+  border-color: #ffd700;
+  color: #ffd700;
+  background: rgba(212, 175, 55, 0.15);
+}
+
+.detail-lore-box {
+  background: rgba(0, 0, 0, 0.4);
+  border-left: 3px solid #ffd700;
+  padding: 0.8vw 1vw;
+  font-size: 0.9vw;
+  line-height: 1.6;
+  color: #e2e8f0;
+  border-radius: 0 0.3vw 0.3vw 0;
+}
+
+.detail-close-btn {
+  position: absolute;
+  top: 1vw;
+  right: 1.2vw;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 1.5vw;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.detail-close-btn:hover {
+  color: #ff5555;
+}
+
+/* ==========================================================================
+   HOW TO PLAY (RULES) MODAL STYLING
+   ========================================================================== */
+#how-to-play-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(6, 10, 18, 0.92);
+  backdrop-filter: blur(8px);
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeInModal 0.25s ease-out;
+}
+
+#how-to-play-modal.hide {
+  display: none !important;
+}
+
+.rules-modal-dialog {
+  background: linear-gradient(180deg, #161c28 0%, #0d121c 100%);
+  border: 2px solid rgba(40, 200, 150, 0.75);
+  border-radius: 0.8vw;
+  box-shadow: 0 1vw 3vw rgba(0, 0, 0, 0.95), 0 0 1.5vw rgba(40, 200, 150, 0.3);
+  width: 90vw;
+  max-width: 65vw;
+  height: 86vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+}
+
+.rules-header {
+  padding: 1.2vw 1.8vw;
+  background: linear-gradient(90deg, rgba(30, 160, 120, 0.25) 0%, rgba(15, 23, 42, 0.9) 100%);
+  border-bottom: 1px solid rgba(40, 200, 150, 0.4);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rules-title-box h2 {
+  margin: 0;
+  font-size: 1.4vw;
+  color: #5cf2bd;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-shadow: 0 0.15vw 0.5vw rgba(40, 200, 150, 0.4);
+}
+
+.rules-subtitle {
+  font-size: 0.85vw;
+  color: #94a3b8;
+  margin-top: 0.3vw;
+  display: block;
+}
+
+.close-rules-btn {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.6);
+  color: #fca5a5;
+  padding: 0.4vw 1vw;
+  border-radius: 0.35vw;
+  font-size: 0.9vw;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.close-rules-btn:hover {
+  background: rgba(239, 68, 68, 0.4);
+  color: #ffffff;
+  border-color: #ef4444;
+  box-shadow: 0 0 0.8vw rgba(239, 68, 68, 0.5);
+}
+
+.rules-content-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5vw 2vw;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2vw;
+}
+
+.rule-card-section {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(71, 85, 105, 0.5);
+  border-radius: 0.6vw;
+  padding: 1.2vw 1.5vw;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.rule-card-section:hover {
+  border-color: rgba(40, 200, 150, 0.6);
+  box-shadow: 0 0.3vw 1vw rgba(0, 0, 0, 0.6);
+}
+
+.rule-card-section h3 {
+  margin: 0 0 0.8vw 0;
+  font-size: 1.15vw;
+  color: #ffd700;
+  font-weight: 700;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+  padding-bottom: 0.4vw;
+}
+
+.rule-section-body {
+  font-size: 0.92vw;
+  line-height: 1.7;
+  color: #e2e8f0;
+}
+
+.rule-section-body ul {
+  margin: 0;
+  padding-left: 1.2vw;
+}
+
+.rule-section-body li {
+  margin-bottom: 0.5vw;
+}
+
+.rule-section-body strong {
+  color: #38bdf8;
+  font-weight: 700;
+}
+
+.rule-section-body em {
+  color: #f43f5e;
+  font-style: normal;
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   CARD TEXT & UI HIGH-READABILITY ENHANCEMENTS
+   ========================================================================== */
+
+/* In-Game Card Preview Description Box */
+.card-description {
+  background: linear-gradient(180deg, rgba(16, 22, 34, 0.96) 0%, rgba(8, 12, 18, 0.98) 100%) !important;
+  border: 1.5px solid rgba(212, 175, 55, 0.75) !important;
+  border-radius: 0.45vw !important;
+  box-shadow: 0 0.5vw 1.5vw rgba(0, 0, 0, 0.9), 0 0 0.8vw rgba(212, 175, 55, 0.3) !important;
+  color: #f8fafc !important;
+  text-align: left !important;
+  padding: 0.5vw 1vw !important;
+  box-sizing: border-box !important;
+}
+
+.card-description > h1 {
+  font-size: 1.25vw !important;
+  font-weight: 800 !important;
+  color: #ffd700 !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.95), 0 0 6px rgba(255, 215, 0, 0.4) !important;
+  letter-spacing: 0.02em !important;
+  margin: 0 0 0.3vw 0 !important;
+  left: 3vw !important;
+  top: 0.6vw !important;
+}
+
+.card-description > p {
+  font-size: 1.0vw !important;
+  font-weight: 600 !important;
+  color: #f1f5f9 !important;
+  line-height: 1.45 !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9) !important;
+  left: 0.5vw !important;
+  top: 36% !important;
+}
+
+/* Card Hover Tooltip Enhancements */
+.card::after {
+  font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif !important;
+  font-size: 0.95vw !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.02em !important;
+  color: #ffffff !important;
+  background: rgba(10, 15, 25, 0.96) !important;
+  border: 1px solid rgba(212, 175, 55, 0.8) !important;
+  padding: 0.35vw 0.7vw !important;
+  border-radius: 0.35vw !important;
+  box-shadow: 0 0.4vw 1vw rgba(0, 0, 0, 0.85) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9) !important;
+}
+
+/* Card Board Power Badge Numbers */
+.card .power, .card > div:nth-child(3) {
+  font-weight: 900 !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9) !important;
+}
+
+/* Gallery Card Typography */
+.gallery-card-title {
+  font-size: 0.85vw !important;
+  font-weight: 800 !important;
+  color: #ffffff !important;
+  letter-spacing: 0.02em !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+}
+
+.gallery-card-sub {
+  font-size: 0.72vw !important;
+  font-weight: 600 !important;
+  color: #93c5fd !important;
+}
+
+/* Gallery Detail Modal Typography */
+.detail-info-box h1 {
+  font-size: 1.8vw !important;
+  font-weight: 800 !important;
+  color: #ffd700 !important;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8) !important;
+}
+
+.detail-eng-name {
+  font-size: 1.05vw !important;
+  font-weight: 600 !important;
+  color: #93c5fd !important;
+}
+
+.detail-tag {
+  font-size: 0.85vw !important;
+  font-weight: 700 !important;
+}
+
+.detail-lore-box {
+  font-size: 1.05vw !important;
+  font-weight: 500 !important;
+  line-height: 1.75 !important;
+  color: #f8fafc !important;
+  background: rgba(10, 15, 25, 0.75) !important;
+  border-left: 4px solid #ffd700 !important;
+  box-shadow: inset 0 0 1vw rgba(0, 0, 0, 0.5) !important;
+}
