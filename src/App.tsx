@@ -236,6 +236,10 @@ const PersonalizedStarterDeckModal = safeLazy(
   loadComponentSafely('PersonalizedStarterDeckModal'),
   'PersonalizedStarterDeckModal'
 );
+const SpectatorBettingWidget = safeLazy(
+  loadComponentSafely('SpectatorBettingWidget'),
+  'SpectatorBettingWidget'
+);
 
 const getCardAvatarStyle = (avatar: string): React.CSSProperties => {
   const cardId = Number(avatar.split(':')[1]) || 1;
@@ -513,6 +517,17 @@ function AppContent() {
       return params.get('challenge');
     } catch {
       return null;
+    }
+  });
+
+  // RSI-013: Spectator Betting Mode (?challenge={deckCode}&mode=spectate)
+  const [isSpectateMode, setIsSpectateMode] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    try {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('mode') === 'spectate';
+    } catch {
+      return false;
     }
   });
 
@@ -8238,12 +8253,30 @@ function AppContent() {
       />
 
       {/* 1-Click Viral Instant Challenge Battle Modal (?challenge={deckCode}) */}
-      {challengeDeckCode && (
+      {challengeDeckCode && !isSpectateMode && (
         <InstantChallengeBattleModal
-          isOpen={Boolean(challengeDeckCode)}
+          isOpen={Boolean(challengeDeckCode) && !isSpectateMode}
           deckCode={challengeDeckCode}
           onClose={() => setChallengeDeckCode(null)}
           onNavigateDeck={() => {
+            setChallengeDeckCode(null);
+            setView('mydeck');
+          }}
+          language={language}
+        />
+      )}
+
+      {/* RSI-013: Spectator Betting Widget (?challenge={code}&mode=spectate) */}
+      {challengeDeckCode && isSpectateMode && (
+        <SpectatorBettingWidget
+          deckCode={challengeDeckCode}
+          isOpen={isSpectateMode}
+          onClose={() => {
+            setIsSpectateMode(false);
+            setChallengeDeckCode(null);
+          }}
+          onDeckClone={() => {
+            setIsSpectateMode(false);
             setChallengeDeckCode(null);
             setView('mydeck');
           }}
