@@ -51,6 +51,7 @@ import { RedditQuickCreatePostBar } from '../components/reddit/RedditQuickCreate
 import { RedditCreateCommunityModal } from '../components/reddit/RedditCreateCommunityModal';
 import { WildCardEncounterWidget } from '../components/media/WildCardEncounterWidget';
 import { BreakingNewsExpeditionWidget } from '../components/media/BreakingNewsExpeditionWidget';
+import { TacticalLoreDock } from '../components/media/TacticalLoreAnnotation';
 import { removeAutoPlacedAds } from '../hooks/useAdSenseAutoAds';
 import { AdSenseBanner } from '../components/AdSenseBanner';
 import { SEED_SUBREDDITS } from '../data/redditSeedData';
@@ -998,6 +999,14 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
         currentSubreddit={currentSubreddit}
         language={userState.language || 'ko'}
         onNavigateView={onNavigateView}
+      />
+
+      {/* 9. RSI-017: 소설·위키·뉴스룸 인라인 전술 주석 단서 수집기 및 영입 브릿지 */}
+      <TacticalLoreDock
+        language={userState.language || 'ko'}
+        onDeployToBattle={() => {
+          if (onNavigateView) onNavigateView('play');
+        }}
       />
     </div>
   );

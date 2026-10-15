@@ -20,6 +20,7 @@ import {
 } from '../lib/webtoonProgress';
 import { WikiCardDetailModal } from '../components/WikiCardDetailModal';
 import { SecretArtifactDecryptionModal } from '../components/media/SecretArtifactDecryptionModal';
+import { TacticalLoreDock } from '../components/media/TacticalLoreAnnotation';
 import { useGameSettings } from '../contexts/GameSettingsContext';
 import { useCardSkins } from '../hooks/useCardSkins';
 import { getCharacterArtPrompt } from '../content/characterArtPrompts';
@@ -2256,6 +2257,12 @@ export const NovelView: React.FC<NovelViewProps> = ({
           <span className="text-[8px] font-bold">TOP</span>
         </button>
       </aside>
+
+      {/* RSI-017: Tactical Lore Clue Annotation & Recruitment Dock */}
+      <TacticalLoreDock
+        language={language}
+        onDeployToBattle={() => onNavigate('play')}
+      />
     </div>
   );
 };
