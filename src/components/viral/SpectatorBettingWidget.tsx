@@ -241,3 +241,4 @@ export const SpectatorBettingWidget: React.FC<SpectatorBettingWidgetProps> = ({
 };
 
 export default SpectatorBettingWidget;
+export const ColosseumSpectatorWidget = SpectatorBettingWidget;

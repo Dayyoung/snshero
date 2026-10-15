@@ -287,3 +287,4 @@ export const SevenDayStreakModal: React.FC<SevenDayStreakModalProps> = ({
 };
 
 export default SevenDayStreakModal;
+export const SevenDayExpeditionModal = SevenDayStreakModal;

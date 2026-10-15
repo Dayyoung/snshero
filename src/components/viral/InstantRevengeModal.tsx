@@ -436,3 +436,6 @@ export const InstantRevengeModal: React.FC<InstantRevengeModalProps> = ({
     </div>
   );
 };
+
+export default InstantRevengeModal;
+export const InstantRevengeDuelModal = InstantRevengeModal;

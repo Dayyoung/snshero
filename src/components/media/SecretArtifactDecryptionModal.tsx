@@ -192,3 +192,4 @@ export const SecretArtifactDecryptionModal: React.FC<SecretArtifactDecryptionMod
 };
 
 export default SecretArtifactDecryptionModal;
+export const StoryArtifactUnsealModal = SecretArtifactDecryptionModal;

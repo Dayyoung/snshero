@@ -271,3 +271,4 @@ export const BreakingNewsExpeditionWidget: React.FC<BreakingNewsExpeditionWidget
 };
 
 export default BreakingNewsExpeditionWidget;
+export const GuildBountyExpeditionWidget = BreakingNewsExpeditionWidget;

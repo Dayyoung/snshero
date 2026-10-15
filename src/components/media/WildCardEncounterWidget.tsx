@@ -635,3 +635,4 @@ export const WildCardEncounterWidget: React.FC<WildCardEncounterWidgetProps> = (
 };
 
 export default WildCardEncounterWidget;
+export const WildHeroEncounterWidget = WildCardEncounterWidget;

@@ -247,3 +247,4 @@ export const PersonalizedStarterDeckModal: React.FC<PersonalizedStarterDeckModal
 };
 
 export default PersonalizedStarterDeckModal;
+export const AdventurerStarterPartyModal = PersonalizedStarterDeckModal;

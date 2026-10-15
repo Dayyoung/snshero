@@ -844,3 +844,4 @@ export const InstantChallengeBattleModal: React.FC<InstantChallengeBattleModalPr
 };
 
 export default InstantChallengeBattleModal;
+export const InstantDuelBattleModal = InstantChallengeBattleModal;

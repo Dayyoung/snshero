@@ -101,3 +101,4 @@ export const DailyFreeGachaModal: React.FC<DailyFreeGachaModalProps> = ({
 };
 
 export default DailyFreeGachaModal;
+export const DailyGuildSummonModal = DailyFreeGachaModal;

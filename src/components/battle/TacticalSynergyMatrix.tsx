@@ -179,3 +179,4 @@ export const TacticalSynergyMatrix: React.FC<TacticalSynergyMatrixProps> = ({
 };
 
 export default TacticalSynergyMatrix;
+export const ElementalResonanceMatrix = TacticalSynergyMatrix;

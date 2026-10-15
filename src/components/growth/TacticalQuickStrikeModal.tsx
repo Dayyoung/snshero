@@ -215,3 +215,4 @@ export const TacticalQuickStrikeModal: React.FC<TacticalQuickStrikeModalProps> =
 };
 
 export default TacticalQuickStrikeModal;
+export const GuestAdventurerLicenseModal = TacticalQuickStrikeModal;

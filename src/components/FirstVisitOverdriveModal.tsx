@@ -1322,3 +1322,5 @@ export const FirstVisitOverdriveModal: React.FC<FirstVisitOverdriveModalProps> =
 };
 
 export default FirstVisitOverdriveModal;
+export const SoulBurstModal = FirstVisitOverdriveModal;
+export const FateRerollModal = FirstVisitOverdriveModal;

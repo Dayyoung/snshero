@@ -298,3 +298,4 @@ export const TacticalPassivePerksModal: React.FC<TacticalPassivePerksModalProps>
 };
 
 export default TacticalPassivePerksModal;
+export const HeroRuneEngravingModal = TacticalPassivePerksModal;

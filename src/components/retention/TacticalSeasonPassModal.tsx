@@ -309,3 +309,4 @@ export const TacticalSeasonPassModal: React.FC<TacticalSeasonPassModalProps> = (
 };
 
 export default TacticalSeasonPassModal;
+export const KingdomHeroPassModal = TacticalSeasonPassModal;

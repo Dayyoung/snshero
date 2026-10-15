@@ -257,3 +257,4 @@ export const TacticalLoreDock: React.FC<TacticalLoreAnnotationProps> = ({
 };
 
 export default TacticalLoreDock;
+export const AncientRuneAnnotation = TacticalLoreDock;
