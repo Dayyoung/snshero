@@ -6,8 +6,8 @@
 - **최종 업데이트 일시**: 2026-09-20 18:45 (KST)
 
 ## RSI-SNSHero 바이브코딩 프롬프트 스프레드시트 진행 상태 (`/rsi-snshero`)
-- **현재 연동 스프레드시트 (공개 CSV)**: `https://docs.google.com/spreadsheets/d/e/2PACX-1vTJLidMIGaaE_tsui-CydxadPU2vesb4cCF_iQIfuq7mFILYrCxgdcSbgRHxUi8--D6oq1ii-TEPIKC/pub?output=csv`
-- **마지막 수정 완료 항목 ID**: `[RSI-001 ~ RSI-021 전수 구현 완료 (21/21개, 100.0%)]`
+- **현재 연동 스프레드시트 (공개 CSV)**: `https://docs.google.com/spreadsheets/d/e/2PACX-1vRMzW-MBD2QmqWD2GZ4KVoKSzO0UdewPXt7Qvsx-z8hpjv3gnT35o4Kgkbxz6CNw4ABnioVkEywSVCv/pub?output=csv`
+- **마지막 수정 완료 항목 ID**: `[RSI-001 ~ RSI-025 전수 구현 완료 (25/25개, 100.0%)]`
   - RSI-001: 첫 방문자 3초 SSR 전설 영웅 소환 및 15초 심연 보스전 '소울 버스트(Soul Burst)' 각성 모달 (`FirstVisitOverdriveModal.tsx`, `SoulBurstModal`)
   - RSI-002: 웹소설·뉴스룸 탐색 중 '필드 몬스터 조우 & 방랑 영웅 계약(WildHeroEncounterWidget)' 인카운터 및 24시간 용병 루프 (`WildCardEncounterWidget.tsx`, `WildHeroEncounterWidget`)
   - RSI-003: ?challenge= 결투장 URL 기반 무설치 즉시 대결(InstantDuelBattleModal) 및 양피지 문장(Crest) 전술 공유기 (`InstantChallengeBattleModal.tsx`, `InstantDuelBattleModal`, `challengeCanvasGenerator.ts`)
@@ -29,8 +29,12 @@
   - RSI-019: 소설 속 비전 '성진호흡법(StarBreathing)' 연계 미니게임 마력 수련 및 3x3 전장 오의 개방 HUD(StarBreathingUltimateWidget) (`StarBreathingUltimateWidget.tsx`, `starBreathingStore.ts`)
   - RSI-020: 모험가 길드 의뢰 게시판(GuildBountyBoardModal) 일일 3대 의뢰 및 주간 네임드 보스 토벌 레이드 리텐션 루프 (`GuildBountyBoardModal.tsx`, `guildBountyStore.ts`)
   - RSI-021: 초회 3x3 배틀 '운명의 속성 역상성 파훼(ElementalCounterStrike)' 인터랙티브 튜토리얼 스킵 및 3초 캡처 승리 쾌감 연출 (`ElementalCounterStrikeTutorial.tsx`)
-- **최종 업데이트 일시**: 2026-10-15 16:10 (KST)
-- **다음 작업 안내**: 구글 스프레드시트에 신규 RSI 항목이 추가되면 RSI-022부터 즉시 순차 착수합니다.
+  - RSI-022: 소설 EP8 '적갈기의 기수' 연계 명마 길들이기 QTE 위젯 및 선공권 +1 영구 버프 (`CrimsonManeTamingWidget.tsx`, `mountSystemStore.ts`)
+  - RSI-023: 모험가 명예의 전당 랭커 덱 1클릭 복제 시뮬레이션 및 바이럴 공유기 (`RankerDeckMirrorModal.tsx`, `rankerDeckStore.ts`)
+  - RSI-024: 미니게임 보스 전리품 연계 3x3 전장 원소 폭풍(Elemental Tempest) 연쇄 스펠 위젯 (`ElementalTempestWidget.tsx`, `elementalTempestStore.ts`)
+  - RSI-025: 모험가 길드 명예 칭호 계급장 승급 의식 및 주간 랭킹 정산 리텐션 퍼널 (`GuildRankPromotionModal.tsx`, `guildRankStore.ts`)
+- **최종 업데이트 일시**: 2026-10-15 16:16 (KST)
+- **다음 작업 안내**: 구글 스프레드시트에 신규 RSI 항목이 추가되면 RSI-026부터 즉시 순차 착수합니다.
 
 ### RSI-SNSHero 디자인 가이드 준수 및 사용자 경험(UX) 개선 절대 원칙
 1. **DESIGN.md 터미널 플랫 미학 100% 준수**:

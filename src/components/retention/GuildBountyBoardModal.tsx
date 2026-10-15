@@ -5,6 +5,7 @@ import {
   claimBountyReward,
   clearWeeklyRaidBoss,
 } from '../../utils/guildBountyStore';
+import { GuildRankPromotionModal } from './GuildRankPromotionModal';
 
 interface GuildBountyBoardModalProps {
   isOpen: boolean;
@@ -21,6 +22,7 @@ export const GuildBountyBoardModal: React.FC<GuildBountyBoardModalProps> = ({
 }) => {
   const [state, setState] = useState<GuildBountyState>(getGuildBountyState());
   const [claimToast, setClaimToast] = useState<string | null>(null);
+  const [showPromotionModal, setShowPromotionModal] = useState<boolean>(false);
 
   useEffect(() => {
     const handleUpdate = (e: Event) => {
@@ -237,14 +239,33 @@ export const GuildBountyBoardModal: React.FC<GuildBountyBoardModalProps> = ({
           </button>
         </div>
 
-        {/* Footer Close Button */}
-        <button
-          onClick={onClose}
-          className="w-full py-2.5 bg-stone-900 hover:bg-stone-800 text-stone-300 font-bold text-xs rounded-sm border border-stone-700 transition-colors min-h-[44px]"
-        >
-          [게시판 닫기]
-        </button>
+        {/* Footer Actions (RSI-025 계급장 승급 연동) */}
+        <div className="space-y-2">
+          <button
+            onClick={() => setShowPromotionModal(true)}
+            className="w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-xs rounded-sm border border-amber-600 transition-colors min-h-[44px] cursor-pointer flex items-center justify-center gap-1.5"
+          >
+            <span>[길드 계급장 승급 의식 & 주간 배당금]</span>
+          </button>
+
+          <button
+            onClick={onClose}
+            className="w-full py-2 bg-stone-900 hover:bg-stone-800 text-stone-300 font-bold text-xs rounded-sm border border-stone-700 transition-colors min-h-[44px]"
+          >
+            [게시판 닫기]
+          </button>
+        </div>
       </div>
+
+      {showPromotionModal && (
+        <GuildRankPromotionModal
+          isOpen={showPromotionModal}
+          onClose={() => setShowPromotionModal(false)}
+          onRewardReceived={(amount) => {
+            if (onRewardClaimed) onRewardClaimed(amount);
+          }}
+        />
+      )}
     </div>
   );
 };

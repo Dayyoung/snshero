@@ -21,6 +21,7 @@ import {
 import { WikiCardDetailModal } from '../components/WikiCardDetailModal';
 import { SecretArtifactDecryptionModal } from '../components/media/SecretArtifactDecryptionModal';
 import { TacticalLoreDock } from '../components/media/TacticalLoreAnnotation';
+import { CrimsonManeTamingWidget } from '../components/media/CrimsonManeTamingWidget';
 import { useGameSettings } from '../contexts/GameSettingsContext';
 import { useCardSkins } from '../hooks/useCardSkins';
 import { getCharacterArtPrompt } from '../content/characterArtPrompts';
@@ -2262,6 +2263,14 @@ export const NovelView: React.FC<NovelViewProps> = ({
       <TacticalLoreDock
         language={language}
         onDeployToBattle={() => onNavigate('play')}
+      />
+
+      {/* RSI-022: 소설 EP8 '적갈기의 기수' 연계 명마 길들이기 QTE 위젯 */}
+      <CrimsonManeTamingWidget
+        currentEpisode={currentEpisodeNum}
+        scrollProgress={scrollProgressPct}
+        language={language}
+        onEquipMount={() => onNavigate('play')}
       />
     </div>
   );

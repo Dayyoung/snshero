@@ -11,7 +11,7 @@ description: 공개 구글 스프레드시트 CSV(2PACX-1vTJLidMIGaaE_tsui-Cydxa
 `AGENTS.md`에 진행 과정을 기록하여 다음 실행 시 마지막 완료 항목 이후부터 중단 없이 이어서 진행하는 순환 혁신 스킬입니다.
 
 ## 스프레드시트 연동 정보
-- **공개 CSV URL**: `https://docs.google.com/spreadsheets/d/e/2PACX-1vTJLidMIGaaE_tsui-CydxadPU2vesb4cCF_iQIfuq7mFILYrCxgdcSbgRHxUi8--D6oq1ii-TEPIKC/pub?output=csv`
+- **공개 CSV URL**: `https://docs.google.com/spreadsheets/d/e/2PACX-1vRMzW-MBD2QmqWD2GZ4KVoKSzO0UdewPXt7Qvsx-z8hpjv3gnT35o4Kgkbxz6CNw4ABnioVkEywSVCv/pub?output=csv`
 - **기록 파일**: `AGENTS.md`, `WORK_LOGS.md`
 
 ## 필수 수행 원칙

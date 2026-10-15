@@ -5,9 +5,10 @@
  */
 
 import React from 'react';
-import { Shield, Swords, Sparkles, X, Trophy } from 'lucide-react';
+import { Shield, Swords, Sparkles, X, Trophy, Copy, Share2 } from 'lucide-react';
 import { CardData } from '../types';
 import { CARD_DATABASE } from '../cardDatabase';
+import { RankerDeckMirrorModal } from './viral/RankerDeckMirrorModal';
 
 interface LeaderboardDeckInspectModalProps {
   isOpen: boolean;
@@ -31,6 +32,7 @@ export const LeaderboardDeckInspectModal: React.FC<LeaderboardDeckInspectModalPr
   language = 'ko',
 }) => {
   if (!isOpen) return null;
+  const [showMirrorModal, setShowMirrorModal] = React.useState(false);
   const isKo = language === 'ko';
 
   // 덱이 주어지지 않은 경우 DB 기반 상위 5장 자동 생성
@@ -114,14 +116,36 @@ export const LeaderboardDeckInspectModal: React.FC<LeaderboardDeckInspectModalPr
           </p>
         </div>
 
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="w-full py-2 bg-[#201d1d] text-[#fdfcfc] dark:bg-white dark:text-[#201d1d] font-bold text-xs cursor-pointer hover:opacity-90 active:scale-98"
-        >
-          {isKo ? '닫기' : 'Close'}
-        </button>
+        {/* Actions (RSI-023: 1클릭 덱 복제 및 공유) */}
+        <div className="grid grid-cols-2 gap-2 pt-1">
+          <button
+            onClick={() => setShowMirrorModal(true)}
+            className="min-h-[44px] py-2 px-3 bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-xs rounded-sm cursor-pointer active:scale-98 flex items-center justify-center gap-1.5 border border-amber-600"
+          >
+            <Copy size={13} />
+            <span>{isKo ? '1클릭 덱 복제' : 'Mirror Deck'}</span>
+          </button>
+          <button
+            onClick={onClose}
+            className="min-h-[44px] py-2 px-3 bg-[#201d1d] text-[#fdfcfc] dark:bg-white dark:text-[#201d1d] font-bold text-xs rounded-sm cursor-pointer hover:opacity-90 active:scale-98"
+          >
+            {isKo ? '닫기' : 'Close'}
+          </button>
+        </div>
       </div>
+
+      {showMirrorModal && (
+        <RankerDeckMirrorModal
+          isOpen={showMirrorModal}
+          onClose={() => setShowMirrorModal(false)}
+          rankerName={rankerName}
+          rank={rank}
+          totalPower={totalPower}
+          winRate={winRate}
+          deck={displayDeck}
+          language={language}
+        />
+      )}
     </div>
   );
 };
