@@ -8,29 +8,41 @@
 ## RSI-SNSHero 바이브코딩 프롬프트 스프레드시트 진행 상태 (`/rsi-snshero`)
 - **현재 연동 스프레드시트 (공개 CSV)**: `https://docs.google.com/spreadsheets/d/e/2PACX-1vTJLidMIGaaE_tsui-CydxadPU2vesb4cCF_iQIfuq7mFILYrCxgdcSbgRHxUi8--D6oq1ii-TEPIKC/pub?output=csv`
 - **마지막 수정 완료 항목 ID**: `[RSI-001 ~ RSI-021 전수 구현 완료 (21/21개, 100.0%)]`
-  - RSI-001: 첫 방문 3초 도파민 온보딩 (`FirstVisitOverdriveModal.tsx`)
-  - RSI-002: 데모모드 `/main` 무한 멈춤 현상 해소 및 덱 빌더 자동 안내 (`App.tsx`)
-  - RSI-003: 무설치 1클릭 바이럴 덱 챌린지 및 1200x630 전술 시트 (`InstantChallengeBattleModal.tsx`, `challengeCanvasGenerator.ts`)
-  - RSI-004: TCG 실시간 전술 지휘 HUD (`TacticalCommandHUD.tsx`)
-  - RSI-005: 매일 1회 무료 10연차 전술 보급 작전 (`DailyFreeGachaModal.tsx`)
-  - RSI-006: 첫 방문자 3초 도파민 온보딩 2차 고도화 (`FirstVisitOverdriveModal.tsx` 리롤 및 햅틱 강화)
-  - RSI-007: 웹소설/위키 미디어 챕터 완독 시 시크릿 아티팩트 해독 (`SecretArtifactDecryptionModal.tsx`)
-  - RSI-008: 무설치 바이럴 덱 챌린지 2차 고도화 (`InstantRevengeModal.tsx`, Web Share API)
-  - RSI-009: AI 배틀 시너지 콤보 매트릭스 (`TacticalSynergyMatrix.tsx`)
-  - RSI-010: 7일 연속 출석 작전 프로토콜 (`SevenDayStreakModal.tsx`, `localNotifications.ts`)
-  - RSI-011: 초개인화 전술 스타터 덱 큐레이션 (`PersonalizedStarterDeckModal.tsx`)
-  - RSI-012: 실시간 뉴스룸 속보 키워드 기반 동적 히어로 전술 파견 (`BreakingNewsExpeditionWidget.tsx`)
-  - RSI-013: 챌린지 실시간 관전 및 승부 예측 위젯 (`SpectatorBettingWidget.tsx`)
-  - RSI-014: 110종 미니게임 업적 배지 패시브 특성 시스템 (`TacticalPassivePerksModal.tsx`, `perkSystem.ts`)
-  - RSI-015: 30일 전술 시즌 패스 로드맵 및 2X 캐치업 부스터 (`TacticalSeasonPassModal.tsx`, `seasonPassStore.ts`)
-  - RSI-016: 게스트 제로-프릭션 전술 콜사인 자동 인가 및 3초 고속 약점 타격 온보딩 (`TacticalQuickStrikeModal.tsx`)
-  - RSI-017: 소설·위키·뉴스룸 인라인 전술 주석 단서 수집기 및 테마 히어로 즉시 영입 작전 (`TacticalLoreAnnotation.tsx`, `loreRecruitmentStore.ts`)
-  - RSI-018: 소설 속 명장면 라이벌 결투 챌린지 모달 및 덱 프리셋 (`StoryRivalDuelModal.tsx`, `storyDeckPresets.ts`)
-  - RSI-019: 소설 EP6 성진호흡법 연계 미니게임 마력 수련 & 3x3 배틀 오의 개방 위젯 (`StarBreathingUltimateWidget.tsx`, `starBreathingStore.ts`)
-  - RSI-020: 모험가 길드 의뢰 게시판 및 주간 보스 토벌 모달 (`GuildBountyBoardModal.tsx`, `guildBountyStore.ts`)
-  - RSI-021: 초회 3x3 배틀 '운명의 속성 역상성 파훼' 인터랙티브 튜토리얼 스킵 & 3초 캡처 승리 연출 (`ElementalCounterStrikeTutorial.tsx`)
-- **최종 업데이트 일시**: 2026-10-15 11:26 (KST)
+  - RSI-001: 첫 방문자 3초 SSR 전설 영웅 소환 및 15초 심연 보스전 '소울 버스트(Soul Burst)' 각성 모달 (`FirstVisitOverdriveModal.tsx`, `SoulBurstModal`)
+  - RSI-002: 웹소설·뉴스룸 탐색 중 '필드 몬스터 조우 & 방랑 영웅 계약(WildHeroEncounterWidget)' 인카운터 및 24시간 용병 루프 (`WildCardEncounterWidget.tsx`, `WildHeroEncounterWidget`)
+  - RSI-003: ?challenge= 결투장 URL 기반 무설치 즉시 대결(InstantDuelBattleModal) 및 양피지 문장(Crest) 전술 공유기 (`InstantChallengeBattleModal.tsx`, `InstantDuelBattleModal`, `challengeCanvasGenerator.ts`)
+  - RSI-004: 110종 미니게임 마나/스태미나 연동 및 실시간 영웅 전술 지휘 HUD (맹공 돌격 / 결계 수호 / 비전 원소합일) (`TacticalCommandHUD.tsx`)
+  - RSI-005: 모험가 길드의 매일 무료 10연속 영웅 소환 룬 의식(DailyGuildSummonModal) 및 퀘스트 완주 마이크로 퍼널 트래킹 (`DailyFreeGachaModal.tsx`, `DailyGuildSummonModal`)
+  - RSI-006: 태초의 영웅 소환 시 룬 진동 촉각 피드백 및 운명의 재배열(운명의 룬 1회 리롤, FateRerollModal) (`FirstVisitOverdriveModal.tsx`, `FateRerollModal`)
+  - RSI-007: 판타지 웹소설 챕터 완독 시 '고대 봉인 성물 발굴 및 에피소드 보스 레이드 진입로 해금(StoryArtifactUnsealModal)' (`SecretArtifactDecryptionModal.tsx`, `StoryArtifactUnsealModal`)
+  - RSI-008: 길드 척살령/결투 패배 시 즉시 명예 회복 복수전(InstantRevengeDuelModal) 및 모험가 명예 엠블럼 공유 루프 (`InstantRevengeModal.tsx`, `InstantRevengeDuelModal`, Web Share API)
+  - RSI-009: 영웅 5인 속성 공명 시너지 매트릭스(ElementalResonanceMatrix) 및 미니게임 고득점 영기(靈氣) 폭주 마력 각성 연출 (`TacticalSynergyMatrix.tsx`, `ElementalResonanceMatrix`)
+  - RSI-010: 7일간의 왕국 원정 일지 출석 의식(SevenDayExpeditionModal) 및 길드 전서구(로컬 알림) 연동 (`SevenDayStreakModal.tsx`, `SevenDayExpeditionModal`, `localNotifications.ts`)
+  - RSI-011: 초보 모험가 성향 맞춤형 직업군(맹렬한 기사 vs 원소 마도사 vs 은밀한 로그) 스타터 영웅 파티 3초 즉시 편성(AdventurerStarterPartyModal) (`PersonalizedStarterDeckModal.tsx`, `AdventurerStarterPartyModal`)
+  - RSI-012: 영지 외곽 마물 출몰 긴급 퀘스트 기반 모험가 파티 원정 파견(GuildBountyExpeditionWidget) 및 방치형 전리품 루프 (`BreakingNewsExpeditionWidget.tsx`, `GuildBountyExpeditionWidget`)
+  - RSI-013: 콜로세움 명예 투기장 결투 관전 및 승부 예측 응원 위젯(ColosseumSpectatorWidget)을 통한 관전자 유입 루프 (`SpectatorBettingWidget.tsx`, `ColosseumSpectatorWidget`)
+  - RSI-014: 110종 미니게임 시련 달성 칭호 기반 영웅 고유 패시브 룬 각인 시스템(HeroRuneEngravingModal) (`TacticalPassivePerksModal.tsx`, `HeroRuneEngravingModal`, `perkSystem.ts`)
+  - RSI-015: 30일 왕국 수호 영웅 배틀 패스 로드맵(KingdomHeroPassModal) 및 방랑 복귀 영웅 환영 2배 영기 부스터 연동 (`TacticalSeasonPassModal.tsx`, `KingdomHeroPassModal`, `seasonPassStore.ts`)
+  - RSI-016: 제로-프릭션 모험가 면허증 자동 발급(GuestAdventurerLicenseModal) 및 3초 고속 심연 마수 약점 일격 연출 (`TacticalQuickStrikeModal.tsx`, `GuestAdventurerLicenseModal`)
+  - RSI-017: 판타지 웹소설 본문 내 '고대 룬어 주석 해독기(AncientRuneAnnotation)' 및 소설 속 전설 영웅 직접 계약 연동 (`TacticalLoreAnnotation.tsx`, `AncientRuneAnnotation`, `loreRecruitmentStore.ts`)
+  - RSI-018: 소설 속 명장면 재현 '전설의 라이벌 결투 챌린지(StoryRivalDuelModal)' 및 1클릭 모험가 도전장 생성기 (`StoryRivalDuelModal.tsx`, `storyDeckPresets.ts`)
+  - RSI-019: 소설 속 비전 '성진호흡법(StarBreathing)' 연계 미니게임 마력 수련 및 3x3 전장 오의 개방 HUD(StarBreathingUltimateWidget) (`StarBreathingUltimateWidget.tsx`, `starBreathingStore.ts`)
+  - RSI-020: 모험가 길드 의뢰 게시판(GuildBountyBoardModal) 일일 3대 의뢰 및 주간 네임드 보스 토벌 레이드 리텐션 루프 (`GuildBountyBoardModal.tsx`, `guildBountyStore.ts`)
+  - RSI-021: 초회 3x3 배틀 '운명의 속성 역상성 파훼(ElementalCounterStrike)' 인터랙티브 튜토리얼 스킵 및 3초 캡처 승리 쾌감 연출 (`ElementalCounterStrikeTutorial.tsx`)
+- **최종 업데이트 일시**: 2026-10-15 16:10 (KST)
 - **다음 작업 안내**: 구글 스프레드시트에 신규 RSI 항목이 추가되면 RSI-022부터 즉시 순차 착수합니다.
+
+### RSI-SNSHero 디자인 가이드 준수 및 사용자 경험(UX) 개선 절대 원칙
+1. **DESIGN.md 터미널 플랫 미학 100% 준수**:
+   - **서체 통일**: 모든 텍스트, 라벨, 수치, 버튼 캡션은 `font-mono`로 일관되게 렌더링 (비-모노스페이스 서체 금지).
+   - **모서리 반경 2단계**: 모달/컨테이너/프레임은 반드시 `rounded-none` (0px), 버튼/인풋/배지는 최대 `rounded-sm` (4px). `rounded-lg/xl/2xl/full` 등 둥근 모서리 일체 사용 금지.
+   - **단일 플랫 서피스**: 다색 그라데이션(`bg-gradient-to-...`), 네온 발광, 핑/바운스 애니메이션, 드롭 섀도우를 배제하고 웜크림(`bg-[#fdfcfc]`) 또는 잉크 다크(`bg-[#201d1d]`, `#090d16`) 단일 서피스와 1px hairline 보더(`border border-[#646262]/30`, `border-stone-800`, `border-white/10`)를 적용.
+   - **표준 버튼 규격**: `button-primary` (배경 `#201d1d`, 텍스트 `#fdfcfc`, 1px hairline, 4px 모서리, 최소 높이 44px).
+2. **사용자 경험(UX) 및 화면 미니멀리즘 절대 원칙 (Progressive Disclosure)**:
+   - **플레이어 시야/조작부 침범 원천 차단 (Zero Intrusion)**: 플로팅 버튼이나 HUD가 배틀 보드, 3x3 슬롯, 카드 핸드, 미니게임 터치 조작부를 가로막지 않도록 라우트 격리 및 상시 `[—]` 최소화 접기 토글을 제공.
+   - **연속 팝업 폭탄 방지 (스마트 디퍼링)**: 홈 화면 진입 시 여러 팝업이 연쇄적으로 연속 튀어나오지 않도록 세션/일일 우선순위 1개만 부드럽게 노출하고 나머지는 유예(defer).
+   - **사용자 제어권 및 이탈 방지**: 모든 튜토리얼/모달에 최상위 레이어의 `[건너뛰기 (SKIP)]` 및 `[x]` 닫기 버튼을 상시 명확히 제공.
+   - **모바일 원핸드 44px+ 터치 타깃**: 스마트폰 한 손 조작 편의를 위해 모든 터치 타깃을 최소 44px 이상으로 보장.
 
 - **전수 일괄 완료 및 신규 항목 직행 원칙 (Complete All Remaining Tasks)**: `/gemini-ex` 또는 `/ge` 실행 시 현재 스프레드시트에 남아 있는 **모든 미완료 항목을 중간에 멈추지 않고 끝까지 전수 완료**합니다. 모든 항목 완료 후 이후 스프레드시트에 새로 추가되는 신규 항목이 발견되면, 마지막 완료 항목 바로 다음의 **신규 미작업 항목**부터 즉시 이어서 착수합니다.
 - **무작업 시 침묵 원칙 (Silent if No-op)**: 크론 작업 실행 시 신규로 개선할 미작업 항목이 없으면 사용자에게 별도의 알림 메시지를 보내지 않고 조용히 대기합니다.
