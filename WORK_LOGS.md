@@ -2,6 +2,38 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-15 09:12 KST] [/rsi-snshero] 스프레드시트 바이브코딩 프롬프트 RSI-001 ~ RSI-017 전수 구현 완료 (17건, 100.0%)
+- **연동 스프레드시트 (공개 CSV)**: `https://docs.google.com/spreadsheets/d/e/2PACX-1vRAmjkvOjw27HDOuBu4w_WXIdAw1pRQz0vRi2AOOK53HxVT_uO2RLcMnVTxXAg18C6HdU5_huyandLn/pub?output=csv`
+- **구현 및 개선 완료 내역**:
+  1. **RSI-001**: 첫 방문 3초 도파민 온보딩 (`FirstVisitOverdriveModal.tsx`, SSR 3단 연출 및 즉시 전투 진입).
+  2. **RSI-002**: 데모모드 `/main` 무한 멈춤 현상 해소 및 덱 빌더 자동 안내 (`App.tsx` 데모 가드).
+  3. **RSI-003**: 무설치 1클릭 바이럴 덱 챌린지 및 1200x630 전술 시트 (`InstantChallengeBattleModal.tsx`, `challengeCanvasGenerator.ts`).
+  4. **RSI-004**: TCG 실시간 전술 지휘 HUD (`TacticalCommandHUD.tsx`, 미니게임 연동 AP 소비 작전 3종 발동).
+  5. **RSI-005**: 매일 1회 무료 10연차 전술 보급 작전 (`DailyFreeGachaModal.tsx`, 24시간 리셋 및 500 크레딧 획득).
+  6. **RSI-006**: 첫 방문자 3초 도파민 온보딩 2차 고도화 (`FirstVisitOverdriveModal.tsx`, 1회 전술 리롤 및 햅틱 진동).
+  7. **RSI-007**: 웹소설/위키 미디어 챕터 완독 시 시크릿 아티팩트 해독 (`SecretArtifactDecryptionModal.tsx`, 80% 스크롤 시 해독 연출).
+  8. **RSI-008**: 무설치 바이럴 덱 챌린지 2차 고도화 (`InstantRevengeModal.tsx`, 패배 시 복수전 모달 및 Web Share API 연동).
+  9. **RSI-009**: AI 배틀 시너지 콤보 매트릭스 (`TacticalSynergyMatrix.tsx`, 60fps 비트마스크 시너지 및 미니게임 오버클럭 2배 보너스).
+  10. **RSI-010**: 7일 연속 출석 작전 프로토콜 (`SevenDayStreakModal.tsx`, `localNotifications.ts`, Local Notifications API 푸시 예약).
+  11. **RSI-011**: 초개인화 전술 스타터 덱 큐레이션 (`PersonalizedStarterDeckModal.tsx`, 20초 맞춤 덱 생성).
+  12. **RSI-012**: 실시간 뉴스룸 속보 키워드 기반 동적 히어로 전술 파견 (`BreakingNewsExpeditionWidget.tsx`, 30분 파견 타이머 및 SNS 크레딧 수확).
+  13. **RSI-013**: 챌린지 실시간 관전 및 승부 예측 위젯 (`SpectatorBettingWidget.tsx`, `mode=spectate` 배팅 및 1.85x 배당).
+  14. **RSI-014**: 110종 미니게임 업적 배지 패시브 특성 시스템 (`TacticalPassivePerksModal.tsx`, `perkSystem.ts`, 4대 전술 퍽 TCG 전투력 상시 적용).
+  15. **RSI-015**: 30일 전술 시즌 패스 로드맵 및 2X 캐치업 부스터 (`TacticalSeasonPassModal.tsx`, `seasonPassStore.ts`, 30개 티어 및 프리미엄 트랙).
+  16. **RSI-016**: 게스트 제로-프릭션 전술 콜사인 자동 인가 및 3초 고속 약점 타격 온보딩 (`TacticalQuickStrikeModal.tsx`, 300 SNS 보급).
+  17. **RSI-017**: 소설·위키·뉴스룸 인라인 전술 주석 단서 수집기 및 테마 히어로 즉시 영입 작전 (`TacticalLoreAnnotation.tsx`, `loreRecruitmentStore.ts`, [SSR] 섀도우 블레이드 지급 및 TCG 출격 연동).
+- **디자인 및 품질 가드레일**:
+  - 유니코드 이모지 0건 (Zero-Emoji 원칙 100% 준수, 순수 `strokeWidth="1.75"` 인라인 SVG 벡터 사용).
+  - OpenCode.ai Monospace 서체, 웜크림/잉크 팔레트, 1px hairline 보더, 0px/4px 모서리 반경 엄수.
+  - 12개 언어 다국어화(i18n) 완비.
+  - Zero-DB 100% 로컬스토리지 영구 보존.
+  - Google AdSense, SEO/GEO 메타태그, llms.txt, 결제 모듈 무손실 보존.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 Errors (TypeScript 컴파일 무결점 통과).
+  - `npm run build`: Vite 6 프로덕션 번들 정상 빌드 완료 (`built in 11.55s`, Google News SEO & AdSense 정적 자산 100% 생성).
+  - 로컬 Git 커밋 전수 완료 (원격 푸시는 `/git-push` 대기).
+  - 연동 구글 폼 보고서 RSI-001 ~ RSI-017 전수 제출 완료.
+
 ## [2026-10-15 09:07 KST] [GoogleNews] 최신 정리된 구글 뉴스 스프레드시트(2PACX-1vQkHP5pQDdSMrx3f0GyUz...) 연동 및 캐시/빌드 갱신
 - **요청 사항**:
   - `https://docs.google.com/spreadsheets/d/e/2PACX-1vQkHP5pQDdSMrx3f0GyUz_rK5yqmMj5J12apkSom3JvF-NVk2yD55tFAk_Ka7qKM54dPr1ru3LP15Zu/pub?output=csv`

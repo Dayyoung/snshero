@@ -1,0 +1,87 @@
+{
+  "RSI-001": {
+    "title": "첫 방문자 3초 SSR 전술 팩 오프닝 및 15초 Tactical Overdrive 클라이맥스 개입 모달",
+    "prompt": "[VIBE CODING PROMPT - RSI-001]당신은 SNSHero(https://snshero.com)의 수석 프론트엔드 아키텍트이자 택티컬 UI 디자이너입니다. 다음 기획·디자인·개발 명세를 엄격히 준수하여 첫 방문자 3초 도파민 온보딩 컴포넌트(FirstVisitOverdriveModal.tsx)를 구현하고 App.tsx에 안전하게 연동하세요.1. 목표 및 유저 플로우:- 첫 방문 유저(localStorage.getItem('snshero_ftue_overdrive_v1') 미존재 시)에게 진입 0.5초 내 전술 보급 팩 오프닝 모달 표시- Stage 1 (PACK_READY): 'UNSEAL SSR TACTICAL PACK' 클릭 시 SSR 유닛 SH-101 // SOVEREIGN (PWR 9,850) 리빌- Stage 2 (OVERDRIVE_CLIMAX): 15초 보스전 클라이맥스 전술 화면 전환 -> ENGAGE TACTICAL OVERDRIVE 클릭 시 크리티컬 승리 연출- Stage 3 (REWARD_CLAIM): 10x PRIME SUMMON TICKET 및 24H COMMAND ACCESS 수령 후 메인 덱 진입2. 디자인 가드레일 (design.md & Zero-Emoji 필수 준수):- 유니코드 이모지 절대 금지, strokeWidth=\"1.75\" 인라인 SVG 벡터 사용- bg-[#090d16]/95, border border-white/15, font-mono 타이포그래피, 모바일 100dvh 대응3. 개발 명세:- 기존 SEO/GEO/AEO, llms.txt, Web MCP, AdSense 슬롯, 결제 모듈 보존- TypeScript strict 타입 선언 및 window.gtag 퍼널 이벤트 연동",
+    "kpi": "신규 방문자 첫 15초 이탈률 35% 감소, FTUE 완료 후 메인 로비 정착 전환율 2.4배 향상"
+  },
+  "RSI-002": {
+    "title": "/r/news 실시간 뉴스룸 및 미디어 페이지 내 'WildCardEncounterWidget' 인카운터 드랍 및 24시간 히어로 대여 루프",
+    "prompt": "[VIBE CODING PROMPT - RSI-002]당신은 SNSHero(https://snshero.com)의 수석 풀스택 프론트엔드 엔지니어이자 택티컬 인터페이스 디자이너입니다. 다음 기획·디자인·개발 명세를 엄격히 준수하여 미디어 콘텐츠 소비 유저를 게임으로 유입시키는 인카운터 브릿지 위젯(WildCardEncounterWidget.tsx)을 구현하고 /r/news 뷰에 연동하세요.1. 기획 명세: 뉴스룸 스크롤 50% 또는 5초 체류 시 슬라이드업 -> 24H TRIAL CARD 획득 모달 -> QUICK TEST COMBAT 전투 연동2. 디자인 가드레일: Zero-Emoji, strokeWidth=\"1.75\" 인라인 SVG, bg-[#090d16]/95, border-cyan-500/30, 모바일 100dvh3. 개발 명세: src/components/media/WildCardEncounterWidget.tsx 생성 및 /r/news 연동, 기존 AdSense/SEO/결제 모듈 보존",
+    "kpi": "뉴스룸 방문자의 TCG 코어 게임 진입 전환율 18% 달성, 일일 활성 카드 대여 유저 1,200명 증가"
+  },
+  "RSI-003": {
+    "title": "?challenge= URL 파라미터 기반 무설치 즉시 대결(InstantChallengeBattleModal) 및 1200x630 Canvas 전술 시트 공유기",
+    "prompt": "[VIBE CODING PROMPT - RSI-003]당신은 SNSHero(https://snshero.com)의 수석 바이럴 그로스 엔지니어이자 택티컬 인터페이스 디자이너입니다. 다음 기획·디자인·개발 명세를 엄격히 준수하여 무설치 1클릭 바이럴 덱 챌린지 모달(InstantChallengeBattleModal.tsx)과 1200x630 Canvas 전술 시트 공유기(challengeCanvasGenerator.ts)를 구현하고 App.tsx에 연동하세요.1. 기획 명세: ?challenge= 쿼리 파라미터 감지 -> 상대 덱 1-CLICK BATTLE -> 500 크레딧 + 24H 대여 보상 지급2. 디자인 가드레일: Zero-Emoji, 1200x630 HTML5 Canvas 2D 렌더링, strokeWidth=\"1.75\" 인라인 SVG, border-emerald-500/303. 개발 명세: InstantChallengeBattleModal.tsx 및 challengeCanvasGenerator.ts 신규 생성, OpenGraph/AdSense/결제 보존",
+    "kpi": "유저 1인당 덱 챌린지 공유율 24% 달성, 공유 링크를 통한 무설치 신규/복귀 유입 전환율 31% 향상"
+  },
+  "RSI-004": {
+    "title": "110종 미니게임 에너지 연동 및 실시간 전술 지휘 오버라이드 HUD(ASSAULT / COUNTER / SYNERGY)",
+    "prompt": "[VIBE CODING PROMPT - RSI-004]당신은 SNSHero(https://snshero.com)의 수석 게임플레이 시스템 엔지니어이자 택티컬 인터페이스 디자이너입니다. 다음 기획·디자인·개발 명세를 엄격히 준수하여 미니게임 에너지와 메인 TCG 자동배틀을 연동하는 실시간 전술 지휘 HUD(TacticalCommandHUD.tsx)를 구현하고 배틀 화면에 연동하세요.1. 기획 명세: 미니게임 AP 연동 -> 배틀 중 ASSAULT(공격력 +35%), COUNTER(피해감소 40%), SYNERGY(궁극기 충전) 전술 오버라이드 버튼 제공2. 디자인 가드레일: Zero-Emoji, strokeWidth=\"1.75\" 인라인 SVG, bg-[#090d16]/95, border-t border-white/15, 모바일 100dvh 3분할 그리드3. 개발 명세: src/components/battle/TacticalCommandHUD.tsx 생성, 60fps tick 엔진 변조, 기존 AdSense/SEO/결제 모듈 보존",
+    "kpi": "자동배틀 중 유저 능동 개입률(Engagement Rate) 62% 달성, 미니게임-TCG 상호 교차 플레이 세션 시간 45% 증가"
+  },
+  "RSI-005": {
+    "title": "일일 무료 10연차 전술 보급품 수령 UI 및 GA4 퍼널 마이크로 이벤트 트래킹 모듈",
+    "prompt": "[VIBE CODING PROMPT - RSI-005]당신은 SNSHero(https://snshero.com)의 수석 리텐션 그로스 엔지니어이자 택티컬 인터페이스 디자이너입니다. 다음 기획·디자인·개발 명세를 엄격히 준수하여 일일 무료 10연차 보급품 수령 컴포넌트(DailyRequisitionModal.tsx)와 GA4 퍼널 마이크로 이벤트 트래킹 모듈(analytics.ts)을 구현하고 메인 로비에 연동하세요.1. 기획 명세: 자정 기준 일일 10연차 무료 소환 -> 획득 유닛 덱 편성 및 일일 퀘스트 이동 -> GA4 마이크로 이벤트 추적2. 디자인 가드레일: Zero-Emoji, strokeWidth=\"1.75\" 인라인 SVG, bg-[#090d16]/95, border-emerald-500/40, 2x5 카드 그리드3. 개발 명세: DailyRequisitionModal.tsx 및 analytics.ts 생성, window.gtag 예외 안전 래퍼, 기존 AdSense/결제 보존",
+    "kpi": "D1 리텐션율 22% -> 38% 향상, 일일 활성 유저(DAU)의 퀘스트 진입률 54% 증가, 퍼널 이탈 병목 구간 실시간 가시화"
+  },
+  "RSI-006": {
+    "title": "첫 방문자 3초 도파민 온보딩 2차 고도화: SSR 팩 개봉 시 촉각 햅틱 진동 피드백 및 논스톱 쾌속 스킵/리롤 1회 제공 연출",
+    "prompt": "[VIBE CODING PROMPT - RSI-006]당신은 SNSHero(https://snshero.com)의 수석 인터랙션 엔지니어이자 택티컬 UI 디자이너입니다. 다음 기획·디자인·개발 명세를 엄격히 준수하여 첫 방문자 3초 온보딩 모달(FirstVisitOverdriveModal.tsx)에 햅틱 진동 피드백 및 1회 한정 전술 리롤 기능을 고도화하세요.1. 기획 명세: 팩 언실 및 리빌 순간 navigator.vibrate 연동 -> TACTICAL RE-ROLL [1/1] 버튼으로 불만족 캐릭터 1회 즉시 재추첨2. 디자인 가드레일: Zero-Emoji, strokeWidth=\"1.75\" 인라인 SVG, 사이언 리롤 버튼 & 골드 앰버 확정 버튼 2열 그리드3. 개발 명세: FirstVisitOverdriveModal.tsx 상태 확장, navigator.vibrate 안전 래퍼, 대체 SSR 프리로드 풀 연동",
+    "kpi": "첫 방문 팩 개봉 후 15초 이탈률 추가 18% 감소, FTUE 전체 완주율 84% 달성, 초기 덱 만족도 95% 기록"
+  },
+  "RSI-007": {
+    "title": "웹소설/위키/무비 미디어 챕터 완독 시 '시크릿 아티팩트 해독(SecretArtifactDecryptionModal)' 및 TCG 유닛 연계 소환 브릿지",
+    "prompt": "[VIBE CODING PROMPT - RSI-007]당신은 SNSHero(https://snshero.com)의 수석 인터랙션 엔지니어이자 택티컬 UI 디자이너입니다. 다음 기획·디자인·개발 명세를 엄격히 준수하여 웹소설/위키/미디어 챕터 완독 시 TCG 소환소로 연결하는 시크릿 아티팩트 해독 모달(SecretArtifactDecryptionModal.tsx)을 구현하고 미디어 리더 화면에 연동하세요.1. 기획 명세: 웹소설/위키 스크롤 100% 도달 시 아티팩트 발견 배너 노출 -> 2초 해독 인터랙션 -> 전용 소환 티켓 지급 및 소환소 라우팅2. 디자인 가드레일: Zero-Emoji, strokeWidth=\"1.75\" 인라인 SVG, border-cyan-500/30, font-mono 타이포그래피, 모바일 100dvh3. 개발 명세: SecretArtifactDecryptionModal.tsx 생성 및 NovelReader/WikiArticle 연동, sessionStorage 중복 방지, 기존 AdSense/SEO 보존",
+    "kpi": "미디어 콘텐츠 독자의 TCG 소환소 유입 전환율 26% 달성, 스토리 테마 히어로 보유율 42% 증가"
+  },
+  "RSI-008": {
+    "title": "무설치 1클릭 바이럴 덱 챌린지 2차 고도화: Web Share API 연동 및 패배 시 즉시 역전 리벤지 매치(InstantRevengeModal) 재대결 루프",
+    "prompt": "[VIBE CODING PROMPT - RSI-008]당신은 SNSHero(https://snshero.com)의 수석 바이럴 인터랙션 엔지니어이자 택티컬 UI 디자이너입니다. 다음 기획·디자인·개발 명세를 엄격히 준수하여 무설치 바이럴 챌린지 모달에 네이티브 Web Share API 및 패배 시 즉시 역전 리벤지 매치 루프(InstantRevengeModal.tsx)를 구현하세요.1. 기획 명세: 모바일 navigator.share 네이티브 공유창 연동 -> 모의전투 패배 시 TACTICAL REVENGE(버프 +20%) 1회 재대결 버튼 제공2. 디자인 가드레일: Zero-Emoji, strokeWidth=\"1.75\" 인라인 SVG, border-rose-500/30 크림슨 네온 테두리, 모바일 100dvh 피팅3. 개발 명세: InstantRevengeModal.tsx 구현, shareChallenge fallback 유틸, 60fps 로컬 리벤지 배틀, 기존 AdSense/SEO 보존",
+    "kpi": "챌린지 배틀 패배 유저의 즉각 이탈률 48% 방어, 리벤지 매치 완주율 76% 달성, 모바일 네이티브 공유 도달률 1.8배 향상"
+  },
+  "RSI-009": {
+    "title": "AI 배틀 시너지 콤보 매트릭스(TacticalSynergyMatrix) 및 미니게임 고득점 연계 크리티컬 오버클럭 연출",
+    "prompt": "[VIBE CODING PROMPT - RSI-009]당신은 SNSHero(https://snshero.com)의 수석 전투 시스템 엔지니어이자 택티컬 UI 디자이너입니다. 다음 기획·디자인·개발 명세를 엄격히 준수하여 AI 자동배틀 시너지 콤보 매트릭스(TacticalSynergyMatrix.tsx)와 미니게임 연계 오버클럭 연출을 구현하고 배틀 화면에 연동하세요.1. 기획 명세: 미니게임 고득점 콤보 획득 코어 -> 배틀 덱 3대 유닛 클래스(CYBERNETIC/ASSAULT/CHRONO) 동시 생존 시 '트리플 시너지 버스트' 발동2. 디자인 가드레일: Zero-Emoji, strokeWidth=\"1.75\" 인라인 SVG, border-violet-500/30, 바이올렛/사이언 펄스 웨이브, 모바일 100dvh 컴팩트 토글3. 개발 명세: TacticalSynergyMatrix.tsx 신규 생성, 비트마스크 기반 60fps 고속 시너지 판정, 기존 AdSense/SEO/결제 모듈 보존",
+    "kpi": "미니게임-배틀 연계 플레이 세션 시간 55% 증가, 덱 빌딩 시너지 다양성 지수 3.2배 확대"
+  },
+  "RSI-010": {
+    "title": "7일 연속 출석 작전 프로토콜(SevenDayStreakModal) 및 이탈 방지 브라우저 로컬 알림 연동 UI",
+    "prompt": "[VIBE CODING PROMPT - RSI-010]당신은 SNSHero(https://snshero.com)의 수석 리텐션 그로스 엔지니어이자 택티컬 UI 디자이너입니다. 다음 기획·디자인·개발 명세를 엄격히 준수하여 7일 연속 출석 작전 프로토콜(SevenDayStreakModal.tsx)과 브라우저 로컬 알림 연동 모듈(localNotifications.ts)을 구현하고 홈 로비에 연동하세요.1. 기획 명세: 7일 출석 스트릭 -> 7일차 SSR 코어 확정 -> 놓쳤을 시 '미니게임 2회 승리'로 어제 출석 1회 무료 복구 지원 -> 자정 전 알림 권한 요청2. 디자인 가드레일: Zero-Emoji, strokeWidth=\"1.75\" 인라인 SVG, bg-[#090d16]/95, border border-white/15, 에메랄드 네온, 모바일 100dvh 7등분 그리드3. 개발 명세: SevenDayStreakModal.tsx 및 localNotifications.ts 생성, Web Notification API 안전 래퍼, 기존 AdSense/SEO/결제 모듈 보존",
+    "kpi": "D7 리텐션 19% -> 34% 도약, 스트릭 복구 기능을 통한 중도 이탈자 재활성화율 41% 달성, 브라우저 알림 동의율 28% 확보"
+  },
+  "RSI-011": {
+    "title": "첫 방문자 플레이 스타일 성향 분석 기반 초개인화 전술 스타터 덱(PersonalizedStarterDeck) 자동 큐레이션 및 3초 원터치 장착 연출",
+    "prompt": "[VIBE CODING PROMPT - RSI-011]당신은 SNSHero(https://snshero.com)의 수석 온보딩 아키텍트이자 택티컬 UI 디자이너입니다. 다음 기획·디자인·개발 명세를 엄격히 준수하여 첫 방문자를 위한 초개인화 전술 스타터 덱 자동 큐레이션 모달(PersonalizedStarterDeckModal.tsx)을 구현하고 온보딩 플로우에 연동하세요.1. 기획 명세 및 유저 플로우: 첫 방문자 FTUE 보상 수령 직후 3대 전술 성향(속공/반격/제어) 선택 -> 1탭 즉시 5인 시너지 덱 장착 -> 실전 배틀 직행2. 디자인 가드레일: Zero-Emoji, strokeWidth=\"1.75\" 인라인 SVG, bg-[#090d16]/95, 성향별 네온 테두리, 모바일 100dvh 3분할 그리드(min-h-[52px])3. 개발 명세: PersonalizedStarterDeckModal.tsx 생성, STARTER_DECK_PRESETS 기반 0ms 로컬 덱 저장, 기존 AdSense/SEO/결제 모듈 보존",
+    "kpi": "신규 유저 첫 덱 구성 포기 이탈률 68% 감소, 온보딩 후 첫 실전 배틀 진입 전환율 91% 달성"
+  },
+  "RSI-012": {
+    "title": "실시간 뉴스룸(/r/news) 속보 키워드 기반 동적 히어로 전술 파견(BreakingNewsExpedition) 및 방치형 보상 루프",
+    "prompt": "[VIBE CODING PROMPT - RSI-012]당신은 SNSHero(https://snshero.com)의 수석 풀스택 엔지니어이자 택티컬 인터페이스 디자이너입니다. 다음 기획·디자인·개발 명세를 엄격히 준수하여 실시간 뉴스룸 속보 키워드 기반 동적 히어로 전술 파견 위젯(BreakingNewsExpeditionWidget.tsx)을 구현하고 /r/news 화면에 연동하세요.1. 기획 명세: 뉴스룸 섹터 감지 -> 히어로 1~3인 1클릭 파견 -> 1~4시간 방치형 타이머 -> 재방문 시 450 크레딧 + 데이터 로그 수령2. 디자인 가드레일: Zero-Emoji, strokeWidth=\"1.75\" 인라인 SVG, bg-[#090d16]/95, border-white/10, 사이언 브리딩 펄스, 모바일 100dvh 슬라이딩 드로어3. 개발 명세: BreakingNewsExpeditionWidget.tsx 생성, localStorage 타임스탬프 기반 오프라인 계산, 기존 AdSense/SEO/결제 모듈 보존",
+    "kpi": "뉴스룸 방문자의 일일 TCG 재방문율(D1 Return Rate) 38% 증가, 뉴스-게임 상호 교차 세션 시간 42% 확대"
+  },
+  "RSI-013": {
+    "title": "챌린지 링크 기반 실시간 관전 배틀 및 투표 베팅 위젯(SpectatorBettingWidget) 바이럴 커뮤니티 확장",
+    "prompt": "[VIBE CODING PROMPT - RSI-013]당신은 SNSHero(https://snshero.com)의 수석 바이럴 시스템 엔지니어이자 택티컬 UI 디자이너입니다. 다음 기획·디자인·개발 명세를 엄격히 준수하여 챌린지 링크 기반 실시간 관전 및 승부 예측 위젯(SpectatorBettingWidget.tsx)을 구현하고 배틀 챌린지 뷰에 연동하세요.1. 기획 명세: ?challenge={code}&mode=spectate 감지 시 관전 모드 자동 실행 -> 블루 vs 레드 승자 1탭 투표 -> 예측 적중 시 200 크레딧 + 덱 복제권 지급2. 디자인 가드레일: Zero-Emoji, strokeWidth=\"1.75\" 인라인 SVG, bg-[#090d16]/95, 배당률 바, 모바일 100dvh 하단 미니 독 (min-h-[48px])3. 개발 명세: SpectatorBettingWidget.tsx 생성, URL 해시 기반 PRNG Seed 결정론적 60fps 배틀 관람, 기존 AdSense/SEO/결제 모듈 보존",
+    "kpi": "커뮤니티(디스코드/X) 챌린지 클릭률(CTR) 52% 증가, 비게이머 관전자의 게임 플레이 전환율 33% 달성"
+  },
+  "RSI-014": {
+    "title": "110종 미니게임 업적 배지 기반 메인 TCG 히어로 패시브 전술 특성(TacticalPassivePerks) 인핸스먼트 시스템",
+    "prompt": "[VIBE CODING PROMPT - RSI-014]당신은 SNSHero(https://snshero.com)의 수석 전투 시스템 아키텍트이자 택티컬 UI 디자이너입니다. 다음 기획·디자인·개발 명세를 엄격히 준수하여 미니게임 업적과 연동되는 히어로 패시브 전술 특성 소켓 시스템(TacticalPassivePerksModal.tsx)을 구현하고 덱 빌더에 연동하세요.1. 기획 명세 및 유저 플로우: 미니게임 마일스톤 달성 시 영구 전술 배지(Perk) 자동 해금 -> 덱 빌더 내 히어로당 최대 3개 전술 퍽 소켓 제공 -> 치명타 +8%, 쿨다운 -10%, 실드 +12% 고유 패시브 부여2. 디자인 가드레일: Zero-Emoji, strokeWidth=\"1.75\" 인라인 SVG, bg-[#090d16]/95, 골드/사이언 네온 소켓, 모바일 100dvh 하단 스와이프 드로어 (min-h-[48px])3. 개발 명세: TacticalPassivePerksModal.tsx 및 perkSystem.ts 생성, 배틀 틱 60fps 패시브 가중치 연산, 기존 AdSense/SEO/결제 모듈 보존",
+    "kpi": "미니게임 다회차 플레이 유저 비율 47% 증가, 메인 TCG 덱 평균 전투력 만족도 38% 상승"
+  },
+  "RSI-015": {
+    "title": "30일 전술 시즌 패스 로드맵(TacticalSeasonPassRoadmap) 및 복귀 유저 코호트 캐치업 부스터 연동",
+    "prompt": "[VIBE CODING PROMPT - RSI-015]당신은 SNSHero(https://snshero.com)의 수석 리텐션 아키텍트이자 택티컬 HUD 디자이너입니다. 다음 기획·디자인·개발 명세를 엄격히 준수하여 30일 전술 시즌 패스 로드맵 모달(TacticalSeasonPassModal.tsx) 및 복귀 유저 캐치업 부스터 시스템(seasonPassStore.ts)을 구현하고 메인 네비게이션/로비에 연동하세요.1. 기획 명세 및 유저 플로우:- 메인 로비 상단 'SEASON 01 // TACTICAL PASS' 배너 또는 네비게이션 탭 클릭 시 모달 오픈- 30일 시즌 주기, 30개 티어로 구성: 일일 퀘스트/미니게임/배틀 클리어 시 시즌 EXP 지급 (티어당 500 EXP)- 듀얼 트랙 시스템: 상단 Free Standard 트랙 vs 하단 Gold BlackOps 트랙- 7일 이상 미접속 복귀 유저 감지 시 'RETURN PROTOCOL: 2X EXP CATCH-UP BOOSTER [48:00:00]' 자동 발동- 'CLAIM ALL AVAILABLE' 1클릭 보상 일괄 수령 및 레벨업 시 홀로그래픽 축하 연출2. 디자인 가드레일 (design.md & Zero-Emoji 필수 준수):- 모든 유니코드 이모지 완전 배제 (0개). 모든 아이콘은 strokeWidth=\"1.75\" SVG 인라인 컴포넌트로 직접 렌더링- 배경: #090d16/95 블러 백드롭, border-white/10 마이크로 보더, 코너 크로스헤어(+), font-mono 타이포그래피- 트랙 구성: Free 트랙(border-white/15, 슬레이트) / BlackOps 트랙(border-amber-500/40, 골드 앰버 네온 그라데이션)- 모바일 100dvh 대응 가로 스크롤 스냅 뷰포트 (카드 min-h-[56px], 터치 버튼 min-h-[48px])3. 개발 명세:- 파일 생성: src/components/retention/TacticalSeasonPassModal.tsx, src/utils/seasonPassStore.ts- localStorage('snshero_season_pass_v1') 기반 영속화 및 리액트 훅(useSeasonPass) 제공- GA4 이벤트 연동: season_pass_view, season_pass_tier_claim, season_pass_upgrade_click, return_catchup_triggered- 기존 SEO/GEO/AEO 메타태그, llms.txt, Web MCP, Google AdSense 광고 슬롯, 결제 모듈 절대 보존",
+    "kpi": "D30 장기 유저 리텐션 12% -> 26% 달성, 일일 세션 참여 빈도 35% 증대, 복귀 유저 7일 내 재이탈률 40% 감소"
+  },
+  "RSI-016": {
+    "title": "게스트 제로-프릭션 전술 콜사인 자동 인가(GuestCallsignAutoGrant) 및 3초 고속 약점 타격 인터랙티브 온보딩(TacticalQuickStrikeOnboarding)",
+    "prompt": "[VIBE CODING PROMPT - RSI-016]당신은 SNSHero(https://snshero.com)의 수석 FTUE 온보딩 아키텍트이자 택티컬 인터페이스 디자이너입니다. 다음 기획·디자인·개발 명세를 엄격히 준수하여 게스트 제로-프릭션 콜사인 자동 인가 및 3초 고속 약점 타격 온보딩 모달(TacticalQuickStrikeModal.tsx)을 구현하고 메인 진입점에 연동하세요.1. 기획 명세 및 유저 플로우:- 첫 방문 감지 시 회원가입/닉네임 입력 단계 생략하고 즉시 임시 군용 콜사인(예: OPERATOR #7429) 자동 부여- 보스 중앙의 점멸하는 약점 헥사곤 타겟 1탭 터치 유도 -> 3초 크리티컬 폭발 연출(9,999 DMG)- 'COMMISSION CONFIRMED // REWARD GRANTED' 팝업과 함께 500 크레딧 + SSR 지원 드론 지급 후 메인 로비 진입2. 디자인 가드레일 (design.md & Zero-Emoji 필수 준수):- 모든 유니코드 이모지 완전 금지 (0개). strokeWidth=\"1.75\" 인라인 SVG 벡터 아이콘만 사용- bg-[#090d16]/95 딥 다크 배경, border-white/10 마이크로 보더, 사이언/에메랄드 네온 스캔라인, font-mono 타이포그래피- 모바일 100dvh 대응, 중앙 하단 엄지 조작 최적화 원형 약점 타겟 (min-w-[64px], min-h-[64px])3. 개발 명세:- 파일 생성: src/components/growth/TacticalQuickStrikeModal.tsx- localStorage('snshero_guest_profile') 기반 0ms 콜사인 생성 및 ProfileStore 자동 바인딩- GA4 이벤트 연동: guest_callsign_assigned, quick_strike_tap, first_combat_cleared- 기존 SEO/GEO/AEO 메타태그, llms.txt, Web MCP, Google AdSense 광고 슬롯, 결제 모듈 절대 보존",
+    "kpi": "신규 유저 첫 진입 이탈률 55% 감소, 첫 상호작용 도달률 94% 달성, 게스트 유저의 D1 리텐션 42% 확보"
+  },
+  "RSI-017": {
+    "title": "소설·위키·뉴스룸 인라인 전술 주석 단서 수집기(TacticalLoreAnnotation) 및 테마 히어로 즉시 영입 작전(LoreRecruitmentBridge)",
+    "prompt": "[VIBE CODING PROMPT - RSI-017]당신은 SNSHero(https://snshero.com)의 수석 인터랙티브 미디어 엔지니어이자 택티컬 UI 디자이너입니다. 다음 기획·디자인·개발 명세를 엄격히 준수하여 소설·위키·뉴스룸 인라인 전술 주석 및 히어로 영입 컴포넌트(TacticalLoreAnnotation.tsx, loreRecruitmentStore.ts)를 구현하고 미디어 리더 화면에 연동하세요.1. 기획 명세 및 유저 플로우:- 본문 텍스트 내 특정 키워드에 에메랄드 점선 언더라인 주석 자동 바인딩- 주석 1탭 시 군사 기밀 단서 팝오버 표시 -> 'COLLECT INTEL' 클릭 시 1/3, 2/3, 3/3 카운트 누적- 3개 단서 수집 완료 시 'INTEL DECRYPTED // HERO CONTRACT ACQUIRED' 연출 -> 테마 히어로 즉시 지급 -> 'DEPLOY TO BATTLE' 1클릭으로 TCG 메인 배틀 직행2. 디자인 가드레일 (design.md & Zero-Emoji 필수 준수):- 모든 유니코드 이모지 완전 배제 (0개). strokeWidth=\"1.75\" 인라인 SVG 벡터 아이콘만 사용- bg-[#090d16]/95 딥 다크 배경, border-white/10 마이크로 보더, 에메랄드/사이언 네온 액센트, font-mono 타이포그래피- 모바일 100dvh 대응, 독서 흐름을 방해하지 않는 하단 슬라이딩 미니 독 (터치 버튼 min-h-[44px], CLS 0 유지)3. 개발 명세:- 파일 생성: src/components/media/TacticalLoreAnnotation.tsx, src/utils/loreRecruitmentStore.ts- localStorage('snshero_lore_clues') 기반 단서 영속화 및 HeroStore 유닛 획득 바인딩- GA4 이벤트 연동: lore_annotation_click, lore_clue_collected, lore_hero_recruited, lore_battle_deploy_click- 기존 SEO/GEO/AEO 마크업 구조, llms.txt, Web MCP, Google AdSense 광고 슬롯, 결제 모듈 절대 보존",
+    "kpi": "콘텐츠 독자의 TCG 배틀 전환율 46% 증가, 챕터 완독 체류 시간 38% 상승, 콘텐츠 발 인게임 신규 덱 편성율 41% 달성"
+  }
+}
