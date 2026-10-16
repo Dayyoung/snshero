@@ -28,7 +28,16 @@ import { MissionDialogueIntro } from '../components/MissionDialogueIntro';
 import { pickNewRankOpponent, RankOpponentInfo } from '../data/rankingOpponents';
 import { getDynamicDifficultyProfile, DynamicDifficultyProfile } from '../lib/dynamicDifficulty';
 import { isRankingDiverted, getDivertedMode, getDivertedLossCount, getDivertedMatchCount, isDivertVerified } from '../lib/rankingDivertService';
-import { isDemoPlayActive, setDemoPlayStep, getDemoRankingMatchCount, incrementDemoRankingMatchCount, resetDemoRankingMatchCount } from '../lib/demoPlayService';
+import { 
+  isDemoPlayActive, 
+  setDemoPlayStep, 
+  getDemoRankingMatchCount, 
+  incrementDemoRankingMatchCount, 
+  resetDemoRankingMatchCount,
+  DEMO_PLAY_STEPS,
+  getDemoPlayStep,
+  type DemoPlayStep
+} from '../lib/demoPlayService';
 
 export interface ElementDef {
   nameKo: string;
@@ -189,6 +198,15 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     }
   });
   const [battleSpeed, setBattleSpeed] = useState<1 | 2>(1);
+
+  // ─── Current Demo / Diverted Play Step Tracker ──────────────────────
+  const activeDivertedMode = isRankingDiverted() ? getDivertedMode() : null;
+  const currentDemoStep: DemoPlayStep = useMemo(() => {
+    if (activeDivertedMode === 'play') return 'mission';
+    if (activeDivertedMode === 'main') return 'story';
+    if (isDemoPlayActive()) return getDemoPlayStep();
+    return 'ranking';
+  }, [activeDivertedMode]);
 
   useEffect(() => {
     try {
@@ -1546,32 +1564,60 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
         </div>
       </header>
 
-      {/* ─── 랭킹 전환 모드 (/main 또는 /play 신규 덱 검증) HUD 바 ───────── */}
-      {isRankingDiverted() && (
+      {/* ─── 랭킹 전환 모드 (/main 또는 /play 신규 덱 검증) & 데모플레이 HUD 바 ───────── */}
+      {(isRankingDiverted() || isDemoPlayActive()) && (
         <div 
           id="ranking-diverted-hud"
           className={cn(
-            "w-full px-3 py-1 border-b flex items-center justify-between shrink-0 text-[11px] gap-2 z-20 font-mono",
+            "w-full px-2 sm:px-3 py-1 border-b flex items-center justify-between shrink-0 text-[11px] gap-2 z-20 font-mono",
             isDivertVerified()
-              ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-900"
-              : "bg-amber-500/10 border-amber-500/30 text-amber-900"
+              ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-950"
+              : "bg-amber-500/10 border-amber-500/30 text-amber-950"
           )}
         >
-          <div className="flex items-center gap-1.5 truncate">
-            <span className="font-bold truncate">
-              {isDivertVerified() ? '✅ ' : '🎴 '}
-              {language === 'ko' 
-                ? (isDivertVerified() 
-                    ? `[신규 덱 검증 성공] ${getDivertedMode() === 'main' ? '/main (카단 RPG)' : '/play (미션 게임)'} 진행 중` 
-                    : `[신규 덱 검증 중] ${getDivertedMode() === 'main' ? '/main' : '/play'}`)
-                : (isDivertVerified()
-                    ? `[Deck Verified] ${getDivertedMode() === 'main' ? '/main' : '/play'} in progress`
-                    : `[New Deck Trial] ${getDivertedMode() === 'main' ? '/main' : '/play'}`)}
+          {/* 반복되는 모든 데모화면 트랙 */}
+          <div className="flex items-center gap-1 sm:gap-1.5 overflow-x-auto no-scrollbar shrink min-w-0 py-0.5">
+            <span className="shrink-0 font-bold bg-[#201d1d] text-[#fdfcfc] px-1.5 py-0.5 rounded-sm tracking-wider uppercase flex items-center gap-1 text-[10px]">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              DEMO
             </span>
+
+            <nav className="flex items-center gap-1 shrink-0 text-[10px] sm:text-[11px]" aria-label="Demo steps loop">
+              {DEMO_PLAY_STEPS.map((s, idx) => {
+                const isCurrent = currentDemoStep === s.id;
+                return (
+                  <React.Fragment key={s.id}>
+                    <span 
+                      className={cn(
+                        "px-1.5 py-0.5 rounded-sm transition-all whitespace-nowrap",
+                        isCurrent
+                          ? "bg-emerald-600 text-white font-bold border border-emerald-700 shadow-xs"
+                          : "bg-black/5 dark:bg-white/5 text-[#201d1d]/60 font-medium"
+                      )}
+                      title={language === 'ko' ? s.labelKo : s.labelEn}
+                    >
+                      <span className="sm:hidden">{language === 'ko' ? s.shortKo : s.shortEn}</span>
+                      <span className="hidden sm:inline">{language === 'ko' ? s.labelKo : s.labelEn}</span>
+                    </span>
+                    {idx < DEMO_PLAY_STEPS.length - 1 && (
+                      <span className="text-[#201d1d]/30 text-[9px] shrink-0">➔</span>
+                    )}
+                  </React.Fragment>
+                );
+              })}
+              <span className="text-[#201d1d]/40 text-[10px] shrink-0 ml-0.5 font-bold" title={language === 'ko' ? '무한 순환 루프' : 'Infinite loop'}>➔ 🔄</span>
+            </nav>
           </div>
+
+          {/* 우측: 신규 덱 검증 여부 및 대전 진행 카운트 */}
           <div className="flex items-center gap-1.5 shrink-0">
+            {isDivertVerified() && (
+              <span className="hidden md:inline-block text-[10px] font-bold px-1.5 py-0.5 rounded-sm bg-emerald-600 text-white border border-emerald-700 shadow-xs">
+                ✅ {language === 'ko' ? '검증 성공' : 'Verified'}
+              </span>
+            )}
             <span className={cn(
-              "text-[10px] font-bold px-2 py-0.5 border",
+              "text-[10px] font-bold px-2 py-0.5 border rounded-sm",
               getDivertedMatchCount() >= 2
                 ? "bg-amber-600 text-white border-amber-700 animate-pulse"
                 : isDivertVerified()

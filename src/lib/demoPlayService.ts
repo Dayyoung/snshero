@@ -13,12 +13,19 @@ export const STORAGE_KEY_DEMO_RANKING_MATCH_COUNT = 'hero_demo_ranking_match_cou
 
 export type DemoPlayStep = 'ranking' | 'shop' | 'mydeck' | 'mission' | 'story';
 
-export const DEMO_PLAY_STEPS: { id: DemoPlayStep; labelKo: string; labelEn: string; icon: string }[] = [
-  { id: 'ranking', labelKo: '1.랭킹대전(최대3전)', labelEn: '1.Rank Match', icon: '⚔️' },
-  { id: 'shop', labelKo: '2.상점소환', labelEn: '2.Card Summon', icon: '🎁' },
-  { id: 'mydeck', labelKo: '3.마이덱', labelEn: '3.My Deck', icon: '🎴' },
-  { id: 'mission', labelKo: '4.미션게임(3전)', labelEn: '4.Mission Game(3x)', icon: '🎮' },
-  { id: 'story', labelKo: '5.스토리(3전)', labelEn: '5.Story Mode(3x)', icon: '📖' },
+export const DEMO_PLAY_STEPS: { 
+  id: DemoPlayStep; 
+  labelKo: string; 
+  labelEn: string; 
+  shortKo: string; 
+  shortEn: string; 
+  icon: string 
+}[] = [
+  { id: 'ranking', labelKo: '1.랭킹대전(최대3전)', labelEn: '1.Rank Match', shortKo: '1.랭킹', shortEn: '1.Rank', icon: '⚔️' },
+  { id: 'shop', labelKo: '2.상점소환', labelEn: '2.Card Summon', shortKo: '2.상점', shortEn: '2.Shop', icon: '🎁' },
+  { id: 'mydeck', labelKo: '3.마이덱', labelEn: '3.My Deck', shortKo: '3.마이덱', shortEn: '3.Deck', icon: '🎴' },
+  { id: 'mission', labelKo: '4.미션게임(3전)', labelEn: '4.Mission Game(3x)', shortKo: '4.미션', shortEn: '4.Mission', icon: '🎮' },
+  { id: 'story', labelKo: '5.스토리(3전)', labelEn: '5.Story Mode(3x)', shortKo: '5.스토리', shortEn: '5.Story', icon: '📖' },
 ];
 
 /** 데모 랭킹대전 누적 진행 경기 수 가져오기 */

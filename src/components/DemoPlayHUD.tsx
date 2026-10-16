@@ -71,9 +71,9 @@ export const DemoPlayHUD: React.FC<DemoPlayHUDProps> = ({
               return (
                 <React.Fragment key={s.id}>
                   <span 
-                    className={`px-1.5 py-0.5 transition-colors duration-150 ${
+                    className={`px-1.5 py-0.5 transition-colors duration-150 rounded-sm ${
                       isCurrent
-                        ? 'bg-amber-500/20 text-amber-950 font-bold border border-amber-500/40 rounded-sm'
+                        ? 'bg-emerald-600 text-white font-bold border border-emerald-700 shadow-xs'
                         : 'text-[#201d1d]/60 font-medium'
                     }`}
                   >

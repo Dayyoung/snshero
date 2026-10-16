@@ -3811,15 +3811,28 @@ function AppContent() {
         newlyUnlocked = true;
         
         // Auto-award reward on unlock and show popup alert
-        if (achievement.rewardType === 'coins' && !newClaimed.includes(id)) {
+        if (!newClaimed.includes(id)) {
           newClaimed.push(id);
-          updateSns(achievement.rewardAmount);
+          if (achievement.rewardType === 'coins') {
+            updateSns(achievement.rewardAmount);
+          }
+          const achievementTitle = typeof achievement.title === 'string'
+            ? achievement.title
+            : (achievement.title?.[language] || achievement.title?.['ko'] || achievement.title?.['en'] || '업적');
           setTimeout(() => {
+            const rewardDesc = achievement.rewardType === 'coins'
+              ? (language === 'ko'
+                  ? `+${achievement.rewardAmount.toLocaleString()} SNS 보상이 자동으로 지급되었습니다.`
+                  : `+${achievement.rewardAmount.toLocaleString()} SNS has been automatically awarded!`)
+              : (language === 'ko'
+                  ? `+${achievement.rewardAmount.toLocaleString()} 포인트 보상을 획득했습니다!`
+                  : `+${achievement.rewardAmount.toLocaleString()} points awarded!`);
+
             showCustomAlert(
               language === 'ko' ? '🏆 업적 달성 보상 자동 획득' : '🏆 Achievement Reward Auto-Claimed',
               language === 'ko'
-                ? `[${achievement.title}] 달성!\n+${achievement.rewardAmount.toLocaleString()} SNS 보상이 자동으로 지급되었습니다.`
-                : `[${achievement.title}] Unlocked!\n+${achievement.rewardAmount.toLocaleString()} SNS has been automatically awarded!`,
+                ? `[${achievementTitle}] 달성!\n${rewardDesc}`
+                : `[${achievementTitle}] Unlocked!\n${rewardDesc}`,
               4
             );
           }, 300);
