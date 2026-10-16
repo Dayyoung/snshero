@@ -52,6 +52,8 @@ export function removeAutoPlacedAds(): void {
       'iframe[name*="google_ads_bottom_frame"]',
     ];
     document.querySelectorAll(autoSelectors.join(',')).forEach((el) => {
+      // 수동 지정된 광고 컨테이너(.adsense-container) 내부의 요소는 보호
+      if (el.closest('.adsense-container')) return;
       try {
         el.remove();
       } catch {

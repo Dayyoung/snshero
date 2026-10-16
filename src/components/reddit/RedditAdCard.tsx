@@ -61,9 +61,10 @@ export const RedditAdCard: React.FC<RedditAdCardProps> = ({ isDark, isKo = true,
       {/* 3. 구글 애드센스 인피드 반응형 광고 슬롯 */}
       <div className="w-full rounded-xl overflow-hidden mb-3 border border-inherit/15 bg-black/5 dark:bg-white/5 flex flex-col items-center justify-center p-2 min-h-[140px]">
         <AdSenseBanner
-          format="fluid"
+          format="auto"
           responsive={true}
-          showLabel={true}
+          forceShow={true}
+          showLabel={false}
           className="w-full flex flex-col justify-center"
         />
       </div>

@@ -2,6 +2,33 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-16 14:10 KST] [/reddit 광고판 정상화 및 하단 인카운터 위젯 제거]
+- **요청 사항**:
+  1. `/reddit` 페이지 내 광고판 컨테이너(피드 상단/상세 In-Article 배너, 사이드바 300x250 배너, 피드 스폰서 카드)에 구글 광고가 정상 노출되지 않고 비어있는 현상 해결.
+  2. 하단 고정 플로팅 위젯인 '전술 히어로 파편 탐지'(`WildCardEncounterWidget`) 제거.
+- **원인 분석**:
+  - `AdSenseBanner.tsx`에서 자동 사냥 모드(`hero_auto_battle`, `hero_auto_loop_mode`) 또는 광고 제거(`hero_ad_removed`) 플래그가 켜져 있을 때 `return null;`되어 컨테이너가 빈 `<div></div>`로 남는 문제.
+  - `useAdSenseAutoAds.ts`의 `removeAutoPlacedAds()`가 2초마다 돌며 수동 광고 유닛 내부의 래퍼 클래스인 `.adsbygoogle-noab-wrap`까지 통째로 삭제하던 문제.
+  - 슬롯 번호 없는 `format="fluid"`가 AdSense `TagError`를 일으켜 렌더링이 실패하던 문제.
+- **수행 내역**:
+  1. **수동 광고 배너 보호 및 forceShow 파라미터 구현 ([`src/components/AdSenseBanner.tsx`](file:///Users/dayyoung/project/snshero/src/components/AdSenseBanner.tsx))**:
+     - `forceShow?: boolean;` 프로퍼티 추가 및 우선 적용 보장.
+     - slot 없는 `format="fluid"` 전달 시 `auto`로 안전 매핑하여 `TagError` 원천 방지.
+     - 전역 `window.adsbygoogle` push 큐 정상 등록 및 컨테이너 `minWidth: 250px` 보장.
+  2. **수동 광고 DOM 삭제 방어 ([`src/hooks/useAdSenseAutoAds.ts`](file:///Users/dayyoung/project/snshero/src/hooks/useAdSenseAutoAds.ts))**:
+     - `removeAutoPlacedAds()`에서 `.adsense-container` 내부 요소는 제거하지 않도록 방어 조건 추가.
+  3. **3대 광고판 슬롯 forceShow 및 format 최적화**:
+     - [`src/views/RedditCommunityView.tsx`](file:///Users/dayyoung/project/snshero/src/views/RedditCommunityView.tsx): 피드 상단 배너에 `forceShow={true}` 적용.
+     - [`src/components/reddit/RedditPostDetailModal.tsx`](file:///Users/dayyoung/project/snshero/src/components/reddit/RedditPostDetailModal.tsx): 기사 본문 하단 배너에 `format="auto"`, `forceShow={true}` 적용.
+     - [`src/components/reddit/RedditSidebarRight.tsx`](file:///Users/dayyoung/project/snshero/src/components/reddit/RedditSidebarRight.tsx): 우측 사이드바 300x250 직사각형 배너 2곳에 `forceShow={true}` 적용.
+     - [`src/components/reddit/RedditAdCard.tsx`](file:///Users/dayyoung/project/snshero/src/components/reddit/RedditAdCard.tsx): 피드 인피드 스폰서 카드에 `format="auto"`, `forceShow={true}`, `showLabel={false}` 적용.
+  4. **하단 '전술 히어로 파편 탐지' 위젯 전면 제거**:
+     - `RedditCommunityView.tsx` 및 `RedditPostDetailModal.tsx`에서 `WildCardEncounterWidget` 컴포넌트 호출 및 import 완전 제거.
+- **검증 결과**:
+  - `npm run build` 성공 (0 에러, 정적 SEO 및 AdSense 에셋 정상 생성).
+  - 로컬 Git 커밋 및 연동 구글 폼 완료 보고서 제출 완료.
+
+
 ## [2026-10-16 13:56 KST] [UI/UX 정돈] 마이덱·미션·상점 화면 불필요 정보 라벨 및 비필수 항목 전수 제거 완료
 - **요청 사항**:
   - 마이덱, 미션, 상점 화면에 여전히 존재하는 불필요한 정보 라벨들 및 게임에 꼭 필요없는 항목들 전면 제거.

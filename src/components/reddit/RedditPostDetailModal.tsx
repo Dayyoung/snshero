@@ -33,7 +33,6 @@ import { RedditVideoPlayer } from './RedditVideoPlayer';
 import { RedditGoogleSheetCommentService } from '../../lib/reddit/redditGoogleSheetCommentService';
 import { RedditGalleryViewer } from './RedditGalleryViewer';
 import { deduplicateImageUrls } from '../../lib/reddit/redditLiveFeedService';
-import { WildCardEncounterWidget } from '../media/WildCardEncounterWidget';
 
 interface RedditPostDetailModalProps {
   post: RedditPost;
@@ -585,8 +584,9 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
                 </div>
                 <div className="min-h-[100px] flex items-center justify-center">
                   <AdSenseBanner
-                    format="fluid"
+                    format="auto"
                     responsive={true}
+                    forceShow={true}
                     className="w-full flex justify-center"
                   />
                 </div>
@@ -830,20 +830,6 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
           </div>
         </div>
 
-        {/* /r/news 뉴스룸 및 미디어 콘텐츠 탐색 유저용 인카운터 브릿지 위젯 */}
-        <WildCardEncounterWidget
-          scrollContainerRef={scrollContainerRef}
-          currentSubreddit={subredditData.name}
-          articleId={post.id}
-          language={userState.language || 'ko'}
-          onNavigateToCombat={() => {
-            if (onGoToGame) {
-              onGoToGame();
-            } else if (typeof window !== 'undefined') {
-              window.location.href = '/play?trial=SH-204';
-            }
-          }}
-        />
       </div>
     </div>
   );

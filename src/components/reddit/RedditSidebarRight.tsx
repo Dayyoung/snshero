@@ -139,6 +139,7 @@ export const RedditSidebarRight: React.FC<RedditSidebarRightProps> = ({
           <AdSenseBanner
             format="rectangle"
             responsive={true}
+            forceShow={true}
             className="w-full flex justify-center"
           />
         </div>
@@ -250,6 +251,7 @@ export const RedditSidebarRight: React.FC<RedditSidebarRightProps> = ({
           <AdSenseBanner
             format="rectangle"
             responsive={true}
+            forceShow={true}
             className="w-full flex justify-center"
           />
         </div>
