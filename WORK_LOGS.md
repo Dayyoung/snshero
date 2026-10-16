@@ -2,6 +2,34 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-16 13:50 KST] [UI/UX 미니멀라이즈] 필수 기능 중심 화면 미니멀라이즈 및 전역 버튼 UX 경험 통일 완료
+- **요청 사항**:
+  - 잡다한 기능 추가로 인한 정신없음 해소, 필수 기능만 표시하고 모든 버튼 UX 경험 통일, 모든 화면에 미니멀라이즈 최소화 정책 적용.
+- **수행 내역**:
+  1. **글로벌 자동 팝업 연쇄(Cascade) 차단 & 플로팅 침범 제거 ([`src/App.tsx`](file:///Users/dayyoung/project/snshero/src/App.tsx))**:
+     - 페이지 접속 시 연속으로 뜨던 자동 팝업(`showDailyRequisition`, `showSevenDayStreak`, `showQuickStrikeModal`, `showFtueOverdrive`)의 무분별한 타이머 자동 실행을 전면 차단하고 사용자가 원할 때 수동 호출하도록 전환.
+     - 하단 바 및 화면을 가리던 좌측 플로팅 PVP 버튼, 우측 플로팅 채팅 버튼 제거 (상단 바 및 네비게이션에서 정갈하게 접근).
+     - 화면에 무단 노출되던 `DemoPlayHUD`, `SmartLoopTourHUD`, 배틀 중 `StarBreathingUltimateWidget` 제거.
+  2. **홈 화면([`src/views/HomeView.tsx`](file:///Users/dayyoung/project/snshero/src/views/HomeView.tsx)) 극단적 미니멀라이즈**:
+     - 상단 중복 TUI 목업 박스(3초 배틀, 도전장 공유, 벤치마크, 특가상점 등 4개 중복 버튼) 전면 제거.
+     - 30초 비조작 시 화면을 강제 전환시키던 유휴 데모플레이 타이머 및 하단 인디케이터 완전 제거.
+     - **단 하나의 직관적인 핵심 액션** `[⚔️ 배틀 시작]`(START BATTLE, 52px 고대비 에디토리얼 버튼)과 **3대 핵심 서브 버튼** `[덱 편성]`, `[상점]`, `[랭킹]`(1행 3열 그리드), 하단 스마트 퀵 허브로 화면을 군더더기 없이 정돈.
+  3. **전체 화면 상단 침범 바이럴 배너 일괄 정리**:
+     - `MyDeckView`: `[MY DECK CHALLENGE & SYNERGY HUD]` 배너 제거하여 진입 즉시 5장 덱 편성에 집중.
+     - `CardMarketplaceView`: `[P2P MARKET & DEAL SHARE HUD]` 제거하여 호가창과 서브탭 직결.
+     - `StockMarketView`: `[HERO EQUITY & DIVIDEND HUD]` 배너 제거.
+     - `PredictionMarketView`: `[VIRAL PREDICTION]` 배너 제거.
+     - `GuildDetailView`: `[VIRAL INVITE]` 배너 제거.
+     - `NovelView` & `MovieView`: 상단 `[STORY BRIDGE]`, `[MEDIA REWARD]` 배너 제거하여 순수 감상에 집중.
+     - `SettingView`: `[VIRAL SHARE]` 배너 제거.
+     - `PlayGameView`: 아레나 퀵 액션을 2개 핵심 버튼(`랜덤 1:1`, `AP 물약 충전`)으로 슬림화.
+     - `BattleResultPanel`: 중복되던 2개의 결과 공유 버튼을 단일 `[대결 결과 & 도전장 공유 (+50 SNS)]` 버튼으로 통합.
+  4. **전역 버튼 UX 규격 통일 ([`src/index.css`](file:///Users/dayyoung/project/snshero/src/index.css))**:
+     - `font-mono`, `min-h-[44px]`, `rounded-sm`(4px 모서리), 1px hairline 보더, 0 그림자, 단일 플랫 컬러 시스템(`button-primary`, `button-secondary`) 전면 확립.
+- **검증 결과**:
+  - `npx tsc --noEmit && npm run build`: 0 오류 통과 (`built in 14.00s`).
+  - 로컬 Git 커밋(`0acf1277`) 및 연동 구글 폼 완료 보고서 제출 완료.
+
 ## [2026-10-16 13:16 KST] [Git Push] 원격 저장소 최신 커밋 푸시 완료 (origin main)
 - **요청 사항**:
   - `git push` 요청 실행.
