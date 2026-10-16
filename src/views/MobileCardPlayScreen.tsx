@@ -69,7 +69,6 @@ import { checkIsAdRemoved } from '../lib/rewardedAdService';
 import { useGameSettings } from '../contexts/GameSettingsContext';
 import { TacticalCommandHUD, OverrideMode } from '../components/battle/TacticalCommandHUD';
 import { TacticalSynergyMatrix } from '../components/battle/TacticalSynergyMatrix';
-import { ElementalTempestWidget } from '../components/battle/ElementalTempestWidget';
 import { getTacticalAp, consumeTacticalAp } from '../utils/tacticalEnergyHelper';
 
 export interface MobileCardPlayScreenProps {
@@ -2117,12 +2116,6 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
         language={language}
         className="max-w-[440px] shrink-0 rounded-b-lg border-x border-b border-white/10"
         onOpenMinigameLounge={() => onNavigate?.('play')}
-      />
-
-      {/* ─── RSI-024: 3x3 전장 원소 폭풍 연쇄 스펠 위젯 ────────────────── */}
-      <ElementalTempestWidget
-        language={language}
-        isBattleActive={!gameOver}
       />
       </div>
 

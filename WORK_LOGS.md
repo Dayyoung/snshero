@@ -2,6 +2,16 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-16 13:00 KST] [UI/UX 개선] 배틀 화면 원소 폭풍 연쇄 스킬 버튼(ElementalTempestWidget) 제거
+- **요청 사항**:
+  - 원소 폭풍 연쇄 스킬 버튼 제거 요청 반영.
+- **수정 및 개선 내역**:
+  - [`src/views/MobileCardPlayScreen.tsx`](file:///Users/dayyoung/project/snshero/src/views/MobileCardPlayScreen.tsx)에서 `ElementalTempestWidget` import 및 3x3 배틀 하단 렌더링 코드(`<ElementalTempestWidget ... />`) 완전 제거.
+  - 배틀 시야를 가리는 하단 위젯을 정리하여 보다 깔끔하고 집중도 높은 3x3 카드 배틀 UX 확보.
+- **검증 결과**:
+  - `npx tsc --noEmit && npm run build`: 0 Errors 통과.
+  - 로컬 Git 커밋 및 연동 구글 폼 완료 보고서(`submit_report.py`) 전송 완료.
+
 ## [2026-10-16 12:40 KST] [/goal 전수 감사] 전체 12대 게임화면 DESIGN.md 프로페셔널 에디토리얼 디자인 & UA·바이럴(?challenge=)·BM 전수 혁신 완료
 - **요청 사항**:
   - `/goal` 모드로 전체 게임화면에 대해 전면 점검하고, `DESIGN.md` 기존 디자인 가이드 준수 및 프로페셔널한 에디토리얼 디자인, 유입(UA)·바이럴 공유(`?challenge=`)·과금(BM) 브릿지를 12대 전체 화면에 모두 적용할 것.
