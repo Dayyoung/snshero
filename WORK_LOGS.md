@@ -2,6 +2,27 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-16 19:24 KST] [UI/UX 극단적 미니멀라이즈] 마이덱·미션·상점 화면 비필수 정보 라벨 및 중복 UI 과감한 전면 제거 완료
+- **요청 사항**:
+  - 마이덱/미션/상점 화면에 여전히 존재하는 불필요한 정보 라벨들 및 게임에 꼭 필요없는 항목들을 좀더 과감하게 제거하고 /git-push 완료.
+- **수행 내역**:
+  1. **마이덱 ([`src/views/MyDeckView.tsx`](file:///Users/dayyoung/project/snshero/src/views/MyDeckView.tsx))**:
+     - 상단 중복 드롭다운인 `Multi-Deck Presets Control Bar`(`<details>`) 완전 제거 (슬롯 바로 아래 `DeckCommandHub`에서 모든 프리셋 전환/관리가 이미 제공됨).
+     - 슬롯 위 `SLOT_1`, `SLOT_2`, ... 텍스트 라벨 제거하여 카드 자체에 시선 집중.
+     - 하단의 무겁고 번잡하던 `Package battle_stats` 박스(승률, 연승, 무승부, 매직찬스) 및 도감/웹툰/상점 바로가기 링크 버튼 3종을 전면 제거하여 **[전투력 헤더 -> 5장 덱 편성 -> 덱 커맨드 허브]**로 이어지는 초미니멀 단일 플로우 완성.
+  2. **미션 ([`src/views/PlayGameView.tsx`](file:///Users/dayyoung/project/snshero/src/views/PlayGameView.tsx))**:
+     - 미션 선택 헤더 위에 어울리지 않게 붙어 있던 `[AP 물약 +50 (25 SNS 특가)]` 과금 버튼 제거.
+     - 헤더의 `[110]` 사각 뱃지 및 불필요한 장문의 안내 불릿 텍스트 제거 -> 심플한 `110종 수호자 미션 (N / 110)`으로 통일.
+     - 각 미션 카드의 영문 속성 텍스트 라벨(`WATER`, `FIRE`, `EARTH` 등) 제거하고 순수 속성 아이콘만 단정하게 표시.
+  3. **상점 ([`src/views/ShopView.tsx`](file:///Users/dayyoung/project/snshero/src/views/ShopView.tsx))**:
+     - 상단 보유 재화 박스에서 중복된 `토큰 환전 (Swap)` 버튼 제거 (하단 탭바/허브에서 제공).
+     - 카드팩 헤더의 중복된 `HelpCircle` 버튼 제거하고 `[확률 정보]` 버튼으로 단일화.
+     - 수량 선택 스텝퍼 버튼에서 번잡한 `SR+` 텍스트 라벨 제거 (깔끔한 1x, 5x, 10x, MAX 유지).
+- **검증 결과**:
+  - `npx tsc --noEmit && npm run build`: 0 오류 통과 (`built in 14.29s`).
+  - Git 로컬 커밋 및 원격 저장소 푸시(`git push origin main`) 완료.
+  - 연동 구글 폼 보고서 제출 완료 (`submit_report.py`).
+
 ## [2026-10-16 14:26 KST] [구글 뉴스 스프레드시트 갱신] 신규 스프레드시트 최신 뉴스 실시간 연동 및 /git-push 완료
 - **요청 사항**:
   - `https://docs.google.com/spreadsheets/d/e/2PACX-1vT4vdpKAEI0UaFM6tW-dXVCQoLDq-ncnl06jX80SBL7Y1ZHCzwvzvRGuuduuTu-k5nb6akrqCbr57Oi/pub?output=csv` 구글 시트에서 항상 최신 뉴스를 가져와서 표시 및 원격 푸시(/git-push).

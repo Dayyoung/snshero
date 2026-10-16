@@ -13787,70 +13787,17 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   <span>{language === 'ko' ? '[랜덤 1:1 즉시 대결]' : '[Random 1:1 Battle]'}</span>
                 </button>
 
-                {/* 2) 50% 특가 AP 물약 충전 (25 SNS -> +50 AP) */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    triggerHaptic('light');
-                    playBattleSfx('button_tap');
-                    if (snsBalance < 25) {
-                      if (setView) setView('shop');
-                      return;
-                    }
-                    const nextSns = Math.max(0, snsBalance - 25);
-                    setSnsBalance(nextSns);
-                    if (updateSns) {
-                      updateSns(-25, 'ap_potion_50_sale', 'spent');
-                    } else {
-                      try {
-                        localStorage.setItem('hero_sns', String(nextSns));
-                        window.dispatchEvent(new Event('snshero_sns_updated'));
-                      } catch {}
-                    }
-                    StaminaPacingManager.getInstance().addAp(50);
-                    setStaminaState(StaminaPacingManager.getInstance().getState());
-                    setMissionBattleFeedback({
-                      success: true,
-                      type: 'enhance',
-                      cardName: 'AP Potion',
-                      cardId: 1,
-                      message: language === 'ko'
-                        ? '50% 특가 AP 물약 사용 완료! (-25 SNS / +50 AP 즉시 회복)'
-                        : '50% Sale AP Potion used! (-25 SNS / +50 AP restored)',
-                    });
-                  }}
-                  className="min-h-[44px] px-3 py-2 bg-[#fdfcfc] hover:bg-[#201d1d] text-[#201d1d] hover:text-[#fdfcfc] text-xs font-bold rounded-sm border border-[rgba(15,0,0,0.12)] transition-colors cursor-pointer flex items-center justify-center gap-1.5"
-                >
-                  <Zap size={15} className="shrink-0" />
-                  <span>
-                    {language === 'ko'
-                      ? '[AP 물약 +50 (25 SNS 특가)]'
-                      : '[+50 AP Potion (25 SNS)]'}
-                  </span>
-                </button>
               </div>
             </div>
 
             {/* Header Title */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[rgba(15,0,0,0.12)] pb-4">
-              <div className="flex items-center gap-2">
-                <span className="p-2 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold shrink-0">
-                  [110]
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[rgba(15,0,0,0.12)] pb-3">
+              <h3 className="text-base font-bold text-[#201d1d] flex items-center gap-2">
+                <span>{language === 'ko' ? '110종 수호자 미션' : 'Guardian Missions'}</span>
+                <span className="text-sm font-normal text-[#646262] font-mono tabular-nums">
+                  ({filteredModes.length} / {modes.length})
                 </span>
-                <div>
-                  <h3 className="text-base font-bold text-[#201d1d] flex flex-wrap items-center gap-2">
-                    <span>{language === 'ko' ? '오늘의 미션 / 110종 수호자 카드 대결' : '110 Guardian Card Battle List'}</span>
-                    <span className="text-sm font-normal text-[#646262] font-mono tabular-nums">
-                      ({filteredModes.length} / {modes.length})
-                    </span>
-                  </h3>
-                  <p className="text-xs sm:text-sm leading-relaxed text-[#646262] mt-1">
-                    {language === 'ko'
-                      ? '• 카드 선택 시 해당 카드 5장 덱과 1:1 대결 · 승리 시 미보유 카드 획득 또는 보유 카드 잠재력 강화'
-                      : '• Select any card to battle its 5-card AI deck · Win to obtain unowned card or enhance potential'}
-                  </p>
-                </div>
-              </div>
+              </h3>
             </div>
 
             {/* 6대 속성 필터 칩 & 미보유 목표 전용 토글 칩 */}
@@ -14018,9 +13965,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                           </span>
                         </div>
                         <div className="flex items-center gap-1 shrink-0">
-                          <span className={cn("text-[8px] sm:text-[9px] px-1 py-0.2 rounded-xs border font-black flex items-center gap-0.5", elemBadgeStyle)}>
+                          <span className={cn("text-[8px] sm:text-[9px] px-1 py-0.2 rounded-xs border font-black flex items-center", elemBadgeStyle)}>
                             <span>{elemIcon}</span>
-                            <span className="uppercase text-[7px] sm:text-[8px] hidden min-[400px]:inline">{elem}</span>
                           </span>
                           {charCard?.power && (
                             <span className="text-[8px] sm:text-[9px] text-amber-300 font-bold bg-amber-950/40 border border-amber-800/40 px-1 py-0.2 rounded-xs">

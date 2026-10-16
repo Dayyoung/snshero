@@ -3100,19 +3100,6 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   </div>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
-                  {/* Row 1050 / ID 313: Token Swap Button */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                      setIsTokenExchangeOpen(true);
-                    }}
-                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-sm border border-[#0f0000]/12 bg-[#fdfcfc] px-4 py-3 text-xs font-bold text-[#201d1d] transition-colors hover:bg-[#f1eeee] cursor-pointer"
-                  >
-                    <ArrowDownUp size={14} className="text-amber-700" />
-                    <span>{language === 'ko' ? '토큰 환전 (Swap)' : 'Token Swap'}</span>
-                  </button>
-
                   <button
                     type="button"
                     onClick={() => {
@@ -4377,15 +4364,6 @@ export const ShopView: React.FC<ShopViewProps> = ({
                         <Activity size={12} className="text-amber-700 shrink-0" />
                         <span>{t('shop_drop_rates_btn', language)}</span>
                       </button>
-                      <button
-                        type="button"
-                        onClick={() => setPackGuideState({ packRarity: pack.rarity, step: 0 })}
-                        className="min-h-11 min-w-11 flex items-center justify-center rounded-sm border border-[#0f0000]/12 text-[#646262] hover:bg-[#f1eeee] cursor-pointer"
-                        aria-label={t('shop_pack_guide_open', language)}
-                        title={t('shop_pack_guide_open', language)}
-                      >
-                        <HelpCircle size={16} />
-                      </button>
                     </div>
                   </div>
 
@@ -4415,11 +4393,6 @@ export const ShopView: React.FC<ShopViewProps> = ({
                           )}
                         >
                           {qty}x
-                          {qty === 10 && (
-                            <span className="block text-[10px] leading-none mt-1">
-                              SR+
-                            </span>
-                          )}
                         </button>
                       ))}
                       <button
