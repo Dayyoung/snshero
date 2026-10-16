@@ -2,6 +2,17 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-16 09:11 KST] [기획/디자인] 그로스 마스터플랜·/rsi 스킬·매시 정각 크론 스케줄에 DESIGN.md 프로페셔널 에디토리얼 디자인 원칙 전면 내재화 완료
+- **요청 사항**:
+  - 작업 계획에 디자인에 대한 고려를 대폭 강화하고, 기존 디자인 가이드(`DESIGN.md`) 준수 및 프로페셔널한 디자인을 매번 작업할 때마다 항상 적용할 것.
+- **수정 및 개선 내역**:
+  1. **그로스 마스터플랜([`snshero_growth_masterplan.md`](file:///Users/dayyoung/.gemini/antigravity/brain/9e638f3a-0960-4a19-b99c-10f2b56a5ba6/snshero_growth_masterplan.md)) 전면 보강**:
+     - `1. 프로페셔널 디자인 아키텍처 & DESIGN.md 절대 원칙 (Design Craftsmanship)` 섹션을 최상단에 신설하여 타이포그래피 위계(`100% Monospace`, `display-xl`~`caption-md`, ASCII 브래킷 마커), 서피스/컬러 토큰(`#fdfcfc` / `#f8f7f7` / `#f1eeee` / `#201d1d`, 4단계 그레이 스케일, 1px hairline `rgba(15,0,0,0.12)`), 2-Tier 모서리(`rounded-none` / `rounded-sm`), 점진적 공개(Progressive Disclosure) 및 12대 화면별 디자인 개편 과제를 명문화.
+  2. **`/rsi` 스킬 지침서([`.agents/skills/rsi/SKILL.md`](file:///Users/dayyoung/project/snshero/.agents/skills/rsi/SKILL.md)) 고도화**:
+     - 평가 지표를 6대 축으로 확장하여 1순위 지표로 **`1. 프로페셔널 에디토리얼 디자인 & DESIGN.md 100% 준수`**를 강제화.
+  3. **매시 정각(`0 * * * *`) 데몬 크론 스케줄 프롬프트 갱신**:
+     - 매시 정각 자동 실행 시 `DESIGN.md` 프로페셔널 디자인 감사·적용과 유입(UA)·리텐션·BM 개선을 반드시 동시에 수행하도록 프롬프트 업데이트.
+
 ## [2026-10-16 09:05 KST] [/rsi & UA Growth] [SCR-10] 소셜·친구 친선전·길드 (`GuildDetailView.tsx`) Round 2 바이럴 유입 & DESIGN.md 혁신 완료
 - **요청 사항**:
   - 매시 정각 실행되는 `/rsi` 및 사용자 유입·리텐션·과금 전환 고도화 스케줄 (09:00 KST 트리거)
