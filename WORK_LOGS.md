@@ -2,6 +2,30 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-16 13:56 KST] [UI/UX 정돈] 마이덱·미션·상점 화면 불필요 정보 라벨 및 비필수 항목 전수 제거 완료
+- **요청 사항**:
+  - 마이덱, 미션, 상점 화면에 여전히 존재하는 불필요한 정보 라벨들 및 게임에 꼭 필요없는 항목들 전면 제거.
+- **수행 내역**:
+  1. **마이덱 화면 ([`src/views/MyDeckView.tsx`](file:///Users/dayyoung/project/snshero/src/views/MyDeckView.tsx))**:
+     - 상단 노이즈 배너인 `autoSwapBanner` (Smart Loop Deck Swap Banner) 완전 제거.
+     - 프리셋 바 내부의 `⚠️ [상성 점검]` 가이드 및 `5장 시너지 풀` 안내 라벨 제거.
+     - 출전 덱 헤더 버튼 내 중복 텍스트(`· 클릭하여 카드 선택`, `[카드 선택]`) 제거하여 깔끔한 `출전 덱 (5장)` 및 `[시너지 효과]`로 일원화.
+     - 슬롯 내 `✨AURA` 텍스트 배지 라벨 제거 (테두리 하이라이트로 충분히 시각 피드백 전달).
+     - 카드 인벤토리 그리드에서 카드마다 머리 위에 붙어 있던 `[Center]`, `[Corner]`, `[Edge]` 추천 포지션 가이드 태그(`slotTag`) 완전 제거.
+     - 전투 통계 박스 아래의 잡다한 가이드 주석 라벨(`* {t('deck_tp_guide')}`, `* {t('all_cards_tp_guide')}`, `* {t('types_owned_guide')}`, `* {t('all_duplicates_guide')}`) 및 디버그 수식 계산 라벨(`Base Magic Chance: 20% + Item Bonus: ... + Skill Bonus: ...`) 전면 제거하고 최종 수치만 깔끔하게 노출.
+  2. **미션 화면 ([`src/views/PlayGameView.tsx`](file:///Users/dayyoung/project/snshero/src/views/PlayGameView.tsx))**:
+     - 110개 미션 카드 리스트에서 카드 일러스트를 가리고 시야를 어지럽히던 카드 아트 내부 하단 오버레이(`#{cardNumFormatted} {charName}`, `✓ 보유 N장`, 레거시 `badgeText` 등) 전면 제거.
+     - 카드 헤더의 중복 `도전 목표` 배지 제거.
+     - 카드 하단의 3중 중복 텍스트(`battleTitle` "슬라임 와 대결" + `✦ 슬라임` + "잠재력 강화/카드 획득")를 정리하고, 직관적인 상태 라벨과 모바일 터치 최적화 `[대결]` 버튼으로 통일.
+  3. **상점 화면 ([`src/views/ShopView.tsx`](file:///Users/dayyoung/project/snshero/src/views/ShopView.tsx))**:
+     - 상단 불필요 팝업 배너인 `smartLoopStatus` ("Smart Loop Status Banner") 완전 제거.
+     - 결제 충전 헤더에 노출되던 개발용 디버그 라벨 `(PAYPAL_API)` 제거.
+     - 첫 결제 2배 섹션의 과도하고 자극적인 중복 배지들(`FIRST PURCHASE 2X`, `[ 2X BONUS ACTIVE ]`, 각 카드의 `첫 결제 2배` 펄스 리본)을 1개의 정갈한 에디토리얼 프로모션 텍스트로 정돈.
+     - 현금 충전 카드의 비규격 둥근 모서리(`rounded-2xl`) 및 그림자를 `DESIGN.md` 단일 플랫 규격(`rounded-none`, 1px hairline 보더, `font-mono`, `min-h-[44px]` 버튼)으로 정돈.
+- **검증 결과**:
+  - `npx tsc --noEmit && npm run build`: 0 오류 통과 (`built in 13.17s`).
+  - 로컬 Git 커밋(`42ab894f`) 및 연동 구글 폼 완료 보고서 제출 완료.
+
 ## [2026-10-16 13:50 KST] [UI/UX 미니멀라이즈] 필수 기능 중심 화면 미니멀라이즈 및 전역 버튼 UX 경험 통일 완료
 - **요청 사항**:
   - 잡다한 기능 추가로 인한 정신없음 해소, 필수 기능만 표시하고 모든 버튼 UX 경험 통일, 모든 화면에 미니멀라이즈 최소화 정책 적용.
