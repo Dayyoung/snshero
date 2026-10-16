@@ -2,6 +2,27 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-16 09:43 KST] [버그수정/UI] 업적 달성 팝업 [object Object] 텍스트 수정 및 데모 순환 HUD 전체 화면 표시
+- **요청 사항**:
+  1. 반복되는 모든 데모화면을 표시하고 현재 진행중인 화면은 진하게 초록색으로 표시
+  2. 업적 보상 달성 팝업에서 일부 텍스트가 [object object]로 표시되는 버그 수정
+- **원인 분석**:
+  - `src/App.tsx`의 `triggerAchievement`에서 업적 달성 팝업(`showCustomAlert`)을 띄울 때, 다국어 객체(`Record<string, string>`)인 `achievement.title`을 템플릿 리터럴 `[${achievement.title}]`에 직접 주입하여 브라우저에서 `[[object Object]]` 문자열로 출력됨.
+  - 배틀 대전 화면 상단 HUD(`ranking-diverted-hud`)에서 신규 덱 검증 시 현재 진행 화면만 단편적으로 표시되어 전체 데모 순환 흐름을 파악하기 어려웠음.
+- **수정 및 개선 내역**:
+  1. **업적 달성 팝업 다국어 텍스트 정상화 ([`src/App.tsx`](file:///Users/dayyoung/project/snshero/src/App.tsx))**:
+     - `achievementTitle`을 `achievement.title?.[language] || achievement.title?.['ko'] || achievement.title?.['en']`로 안전하게 추출하여 `[${achievementTitle}] 달성!`으로 정상 노출되도록 수정.
+     - `coins` 보상뿐만 아니라 `points` 등 모든 업적 보상 타입에 대해 자동 수령 및 알림 텍스트 분기 처리.
+  2. **데모 순환 HUD 전체 트랙 표시 및 현재 화면 진한 초록색 강조 ([`src/views/MobileCardPlayScreen.tsx`](file:///Users/dayyoung/project/snshero/src/views/MobileCardPlayScreen.tsx), [`src/components/DemoPlayHUD.tsx`](file:///Users/dayyoung/project/snshero/src/components/DemoPlayHUD.tsx), [`src/lib/demoPlayService.ts`](file:///Users/dayyoung/project/snshero/src/lib/demoPlayService.ts))**:
+     - `ranking-diverted-hud`에 반복되는 5대 데모화면 전체 트랙 (`1.랭킹 ➔ 2.상점 ➔ 3.마이덱 ➔ 4.미션 ➔ 5.스토리 ➔ 🔄`)을 나열.
+     - 현재 진행 중인 화면을 **진한 초록색**(`bg-emerald-600 text-white font-bold border border-emerald-700 shadow-xs`)으로 선명하게 강조 표시.
+     - 모바일 반응형 라벨(`shortKo`, `shortEn`) 지원으로 좁은 스마트폰 화면에서도 줄바꿈/깨짐 없이 자연스럽게 표시.
+     - 우측에 대전 진행 카운트(`대전 진행: 2/3`) 및 검증 성공 배지(`✅ 검증 성공`) 유지.
+- **검증 결과**:
+  - `npx tsc --noEmit` & `npm run build`: 0 Errors로 타입 및 프로덕션 번들 빌드 무결점 통과.
+  - 로컬 Git 커밋 완료 (`fix: resolve [object Object] in achievement popup and display all demo loop screens in HUD`).
+  - 구글 폼 완료 보고서 제출 완료 (`submit_report.py`).
+
 ## [2026-10-16 09:11 KST] [기획/디자인] 그로스 마스터플랜·/rsi 스킬·매시 정각 크론 스케줄에 DESIGN.md 프로페셔널 에디토리얼 디자인 원칙 전면 내재화 완료
 - **요청 사항**:
   - 작업 계획에 디자인에 대한 고려를 대폭 강화하고, 기존 디자인 가이드(`DESIGN.md`) 준수 및 프로페셔널한 디자인을 매번 작업할 때마다 항상 적용할 것.
