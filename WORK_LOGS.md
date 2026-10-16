@@ -2,6 +2,24 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-16 09:05 KST] [/rsi & UA Growth] [SCR-10] 소셜·친구 친선전·길드 (`GuildDetailView.tsx`) Round 2 바이럴 유입 & DESIGN.md 혁신 완료
+- **요청 사항**:
+  - 매시 정각 실행되는 `/rsi` 및 사용자 유입·리텐션·과금 전환 고도화 스케줄 (09:00 KST 트리거)
+  - 대상 화면: `[SCR-10] 소셜, 친구 친선전 & 길드` ([`src/views/GuildDetailView.tsx`](file:///Users/dayyoung/project/snshero/src/views/GuildDetailView.tsx))
+- **수정 및 개선 내역**:
+  1. **상단 `[VIRAL INVITE]` 무설치 비동기 도전장 링크(`?challenge=`) 1탭 공유 배너 복원 및 고도화**:
+     - 기존 UI에서 누락되어 있던 비동기 친선 도전장 링크 복사 배너를 길드 화면 최상단에 복원 배치.
+     - 복사 URL을 `https://snshero.com/?challenge=1-11-31-51-101&ghost_battle={uid}&name={name}` 포맷으로 구성하여 외부 메신저/SNS에서 링크 클릭 시 무설치 3초 즉시 대결 모달과 직결.
+     - 일일 첫 공유 시 **+50 SNS 즉시 보상(`hero_guild_viral_share_{todayStr}`)** 및 일일 길드 미션 `[v] 친선전/공유` 자동 달성 처리.
+  2. **용병 대여(`handleBorrowMercenary`) 전투력 시너지 및 상점 브릿지 연동**:
+     - 용병 대여 시 `sns < 20` 잔액 검증 및 부족 시 상점(`onNavigate('shop')`) 즉시 이동 브릿지 추가.
+     - 대여 완료 시 `localStorage`의 `hero_mercenary_active_card`에 `{ memberUid, memberName, date, bonusPowerPercent: 5 }`를 영구 보존하여 실질적인 배틀 시너지 제공.
+  3. **`DESIGN.md` 플랫 모노스페이스 & 44px+ 터치 타깃 100% 개편**:
+     - `GuildDetailView.tsx` 전 구간(출석 버프 HUD, MVP 3인 배너, 길드 기부, 용병 대여, 길드 특가 보급소, 조각 교환소, 길드전 승부 예측, 배틀 결과/알림/도움말 모달)에서 `rounded-3xl`, `rounded-2xl`, `rounded-full`, `shadow-2xl`, `min-h-[36px]`를 전수 제거하고 `#fdfcfc`/`#201d1d` 1px hairline 보더, `rounded-none` 컨테이너, `rounded-sm` 버튼, `min-h-[44px]` 터치 타깃 적용.
+- **검증 결과**:
+  - [`docs/screen_audits/SCR-10_GUILD.md`](file:///Users/dayyoung/project/snshero/docs/screen_audits/SCR-10_GUILD.md) Round 2 분석 및 구현 보고서 갱신 완료.
+  - `npx tsc --noEmit` & `npm run build` 검증, 로컬 Git 커밋 및 구글 폼 완료 보고서 제출(`submit_report.py`).
+
 ## [2026-10-16 08:57 KST] [/rsi & UA Growth] 사용자 유입(UA) 그로스 마스터플랜 수립, 매시 정각(0 * * * *) 데몬 크론 등록 및 [SCR-09] 미션 아레나 Round 2 혁신 완료
 - **요청 사항**:
   - `https://snshero.com/` 서비스의 사용자 유입 부진 원인 진단 및 큰 그림(Big Picture) 마스터플랜 수립

@@ -172,16 +172,34 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
       );
       return;
     }
+    if (sns < 20) {
+      setAlertMsg(
+        language === 'ko'
+          ? '용병 대여에 필요한 SNS(20 SNS)가 부족합니다. 상점으로 이동합니다.'
+          : 'Not enough SNS (20 SNS required) to hire mercenary. Moving to Shop.'
+      );
+      onNavigate('shop');
+      return;
+    }
     setBorrowedMercenary(memberName);
     triggerHaptic('victory');
     try {
       localStorage.setItem(`hero_guild_mercenary_borrowed_${todayStr}`, memberName);
+      localStorage.setItem(
+        'hero_mercenary_active_card',
+        JSON.stringify({
+          memberUid,
+          memberName,
+          date: todayStr,
+          bonusPowerPercent: 5,
+        })
+      );
       onUpdateSns(sns - 20);
     } catch {}
     setAlertMsg(
       language === 'ko'
-        ? `[용병 대여 완료] ${memberName}님의 시그니처 카드를 오늘 하루 배틀에서 자유롭게 사용할 수 있습니다!`
-        : `Hired ${memberName}'s signature card for battle today!`
+        ? `[용병 대여 완료] ${memberName}님의 시그니처 카드를 대여했습니다! 오늘 하루 배틀 전투력 +5% 용병 시너지가 적용됩니다.`
+        : `Hired ${memberName}'s signature card! +5% Mercenary Battle Power active today.`
     );
   };
 
@@ -229,21 +247,42 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
     );
   };
 
-  // SCR-10-01: 비동기 친선전 링크 복사 & 친구 초대
+  // SCR-10-01: 비동기 친선전 링크 복사 & 친구 초대 (+50 SNS 일일 바이럴 보상)
+  const [ghostLinkCopied, setGhostLinkCopied] = useState(false);
   const handleCopyGhostLink = async () => {
-    if (!currentUser) return;
-    const ghostUrl = `${window.location.origin}${window.location.pathname}?ghost_battle=${encodeURIComponent(currentUser.uid)}&name=${encodeURIComponent(currentUser.displayName)}`;
+    const uid = currentUser?.uid || 'guest-id';
+    const name = currentUser?.displayName || 'Hunter';
+    const ghostUrl = `https://snshero.com/?challenge=1-11-31-51-101&ghost_battle=${encodeURIComponent(uid)}&name=${encodeURIComponent(name)}`;
     try {
-      await navigator.clipboard.writeText(ghostUrl);
-      triggerHaptic('success');
-      setAlertMsg(
-        language === 'ko'
-          ? '🔗 [비동기 도전장 링크 복사 완료] 내 덱과 1:1 대결할 수 있는 링크가 복사되었습니다! SNS나 메신저에 공유하세요!'
-          : '🔗 Ghost Battle link copied to clipboard! Share with friends to challenge your deck!'
-      );
-    } catch {
-      setAlertMsg(ghostUrl);
-    }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(ghostUrl);
+      }
+    } catch {}
+    setGhostLinkCopied(true);
+    setTimeout(() => setGhostLinkCopied(false), 3000);
+    triggerHaptic('success');
+
+    const shareRewardKey = `hero_guild_viral_share_${todayStr}`;
+    let rewardGranted = false;
+    try {
+      if (!localStorage.getItem(shareRewardKey)) {
+        localStorage.setItem(shareRewardKey, 'true');
+        localStorage.setItem(`hero_guild_friend_battle_${todayStr}`, 'true');
+        setFriendBattlePlayedToday(true);
+        onUpdateSns(sns + 50);
+        rewardGranted = true;
+      }
+    } catch {}
+
+    setAlertMsg(
+      rewardGranted
+        ? (language === 'ko'
+            ? `[비동기 도전장 링크 복사 완료] 내 덱 1:1 도전장 URL이 복사되었으며 일일 공유 보너스 +50 SNS 및 친선전 미션이 달성되었습니다!`
+            : `[Ghost Battle Link Copied] Challenge URL copied! Earned +50 SNS daily viral bonus & completed Friend Battle mission!`)
+        : (language === 'ko'
+            ? `[비동기 도전장 링크 복사 완료] 메신저나 커뮤니티에 붙여넣어 친구와 대결하세요: ${ghostUrl}`
+            : `[Ghost Battle Link Copied] Paste and share with friends: ${ghostUrl}`)
+    );
   };
 
   // 4대 서브 탭 상태: info(길드정보/기부/멤버), raid(레이드), exchange(조각/승부예측/보급소), friends(친구 친선전)
@@ -296,10 +335,9 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
 
   if (loading) {
     return (
-      <div className="min-h-screen app-bg flex items-center justify-center font-sans">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-650 mx-auto mb-4" />
-          <p className="text-xs font-bold uppercase tracking-widest text-slate-500">Loading Guild Database...</p>
+      <div className="min-h-screen bg-[#fdfcfc] text-[#201d1d] flex items-center justify-center font-mono">
+        <div className="text-center p-6 border border-[rgba(15,0,0,0.12)] rounded-none">
+          <p className="text-xs font-bold uppercase tracking-widest text-[#646262]">[LOADING GUILD DATABASE...]</p>
         </div>
       </div>
     );
@@ -307,16 +345,16 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
 
   if (!guild) {
     return (
-      <div className="min-h-screen app-bg flex items-center justify-center font-sans p-4">
-        <div className="bg-white border border-slate-200/80 rounded-3xl p-8 max-w-md text-center shadow-2xl">
-          <AlertTriangle size={48} className="text-rose-500 mx-auto mb-4" />
-          <h2 className="text-xl font-bold uppercase tracking-tight mb-2 text-slate-800">Guild Not Found</h2>
-          <p className="text-xs opacity-60 mb-6 text-slate-500 font-bold">{t("guild_not_found", language)}</p>
+      <div className="min-h-screen bg-[#fdfcfc] text-[#201d1d] flex items-center justify-center font-mono p-4">
+        <div className="bg-[#fdfcfc] border border-[#201d1d] rounded-none p-8 max-w-md w-full text-center">
+          <AlertTriangle size={36} className="text-[#201d1d] mx-auto mb-4" />
+          <h2 className="text-lg font-bold uppercase tracking-tight mb-2 text-[#201d1d]">[GUILD NOT FOUND]</h2>
+          <p className="text-xs mb-6 text-[#646262] font-bold">{t("guild_not_found", language)}</p>
           <button
             onClick={() => onNavigate("guild-list")}
-            className="w-full bg-slate-900 hover:bg-slate-800 active:scale-98 text-white py-3 rounded-2xl text-xs font-bold uppercase tracking-wider transition-all shadow-md cursor-pointer"
+            className="w-full min-h-[44px] bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] py-3 rounded-sm text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
           >
-            {t("guild_back_to_list", language)}
+            [{t("guild_back_to_list", language)}]
           </button>
         </div>
       </div>
@@ -416,42 +454,45 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
   };
 
   return (
-    <div className="min-h-screen app-bg text-slate-800 font-sans pb-32 overflow-x-hidden">
+    <div className="min-h-screen bg-[#fdfcfc] text-[#201d1d] font-mono pb-32 overflow-x-hidden">
       <div className="max-w-4xl mx-auto px-4 mt-2">
-        <div className="flex items-center gap-2">
-          <PageHeader title={t('guild_detail', language) || 'Guild Detail'} onBack={() => onNavigate('guild-list')} />
+        <div className="flex items-center justify-between gap-2 border-b border-[rgba(15,0,0,0.12)] pb-3 mb-4">
+          <div className="flex-1">
+            <PageHeader title={t('guild_detail', language) || 'Guild Detail'} onBack={() => onNavigate('guild-list')} />
+          </div>
           <button
             onClick={() => { setShowHelp(true); setHelpStep(0); }}
-            className="w-8 h-8 rounded-full border border-slate-300 flex items-center justify-center hover:bg-slate-100 transition-colors cursor-pointer shrink-0"
+            aria-label={language === 'ko' ? '도움말' : 'Help'}
+            className="min-w-[44px] min-h-[44px] rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] flex items-center justify-center hover:bg-[#f1eeee] transition-colors cursor-pointer shrink-0"
           >
-            <HelpCircle size={16} className="text-slate-500" />
+            <HelpCircle size={18} className="text-[#201d1d]" />
           </button>
         </div>
         {/* Main Guild Card */}
-        <div className="bg-white border border-slate-200/80 rounded-none p-5 mb-4 shadow-sm relative overflow-hidden font-mono">
+        <div className="bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-none p-5 mb-4 relative overflow-hidden font-mono">
           <div className="flex flex-col md:flex-row items-center md:items-start gap-4">
-            <div className="w-20 h-20 rounded-none bg-slate-50 border border-slate-200 flex items-center justify-center text-5xl shadow-xs shrink-0">
+            <div className="w-20 h-20 rounded-none bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] flex items-center justify-center text-4xl shrink-0">
               {guild.mark}
             </div>
 
             <div className="flex-1 text-center md:text-left w-full">
               <div className="flex flex-col md:flex-row items-center gap-2 mb-1.5 justify-center md:justify-start flex-wrap">
-                <h1 className="text-2xl font-black tracking-tight text-slate-800">
+                <h1 className="text-2xl font-bold tracking-tight text-[#201d1d]">
                   {guild.name}
                 </h1>
-                <span className="px-2 py-0.5 bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-black rounded-none">
-                  LV.{guild.level}
+                <span className="px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-none">
+                  [LV.{guild.level}]
                 </span>
-                <span className="text-xs text-slate-500 font-bold">
+                <span className="text-xs text-[#646262] font-bold">
                   ({guild.members.length} MEMBERS)
                 </span>
               </div>
 
               {/* Progress to next level */}
               {guild.level < 10 && (
-                <div className="w-full h-2 bg-slate-100 rounded-none overflow-hidden border border-slate-200 mt-2">
+                <div className="w-full h-2 bg-[#e6e3e3] rounded-none overflow-hidden border border-[rgba(15,0,0,0.12)] mt-2">
                   <div
-                    className="h-full bg-indigo-600 transition-all duration-500"
+                    className="h-full bg-[#201d1d] transition-all duration-500"
                     style={{ width: `${expPercentage}%` }}
                   />
                 </div>
@@ -460,39 +501,68 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
           </div>
         </div>
 
-        {/* SCR-10-01: 상단 비동기 도전장 링크 복사 & 친구 초대 배너 */}
+        {/* SCR-10-01: 상단 비동기 도전장 링크 복사 & 일일 길드 미션 HUD */}
         {!isOpponentMode && userGuild?.id === guild.id && (
-          <div className="w-full flex flex-col gap-2.5 mb-4 font-mono">
-
+          <div className="w-full flex flex-col gap-3 mb-4 font-mono">
+            {/* 1. 비동기 친선 대전 링크 복사 & 친구 초대 1탭 배너 */}
+            <div className="w-full rounded-none border border-[#201d1d] bg-[#f8f7f7] p-3.5 text-[#201d1d] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-none">
+                    [VIRAL INVITE]
+                  </span>
+                  <span className="text-xs sm:text-sm font-bold text-[#201d1d]">
+                    {language === 'ko' ? '비동기 친선 도전장 URL 공유 & 친구 초대' : 'Share Ghost Duel Link & Invite Friends'}
+                  </span>
+                </div>
+                <p className="text-xs text-[#646262] mt-1">
+                  {language === 'ko'
+                    ? '링크만 보내면 친구가 무설치로 내 덱과 즉시 1:1 대결 · 일일 첫 공유 시 +50 SNS 즉시 지급'
+                    : 'Friends battle your deck with 1 click without install · +50 SNS daily bonus'}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={handleCopyGhostLink}
+                className="w-full sm:w-auto min-h-[44px] px-4 py-2 rounded-sm bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer shrink-0"
+              >
+                <Share2 size={15} className="shrink-0" />
+                <span>
+                  {ghostLinkCopied
+                    ? (language === 'ko' ? '[복사 완료! 친구에게 전송]' : '[Copied! Send to Friend]')
+                    : (language === 'ko' ? '[도전장 링크 복사 (+50 SNS)]' : '[Copy Duel Link (+50 SNS)]')}
+                </span>
+              </button>
+            </div>
 
             {/* 2. 일일 길드 미션 HUD: 3개 미션 실시간 게이지 */}
-            <div className="w-full rounded-none border border-slate-200 bg-white p-3 text-slate-800 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div className="w-full rounded-none border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-3.5 text-[#201d1d] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
               <div className="flex-1 w-full">
-                <div className="flex items-center justify-between text-xs mb-1.5">
+                <div className="flex flex-wrap items-center justify-between gap-2 text-xs mb-2">
                   <div className="flex items-center gap-2">
-                    <span className="font-black text-indigo-600">📋 {language === 'ko' ? '일일 길드 미션 HUD' : 'Daily Guild Missions'}</span>
-                    <span className="text-[11px] text-slate-500 font-bold">
-                      {missionCompletedCount}/3 {language === 'ko' ? '완료' : 'Done'}
+                    <span className="px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] font-bold rounded-none">
+                      [GUILD MISSIONS]
+                    </span>
+                    <span className="text-xs text-[#201d1d] font-bold">
+                      {missionCompletedCount} / 3 {language === 'ko' ? '완료' : 'Done'}
                     </span>
                   </div>
-                  <div className="flex items-center gap-1.5 text-[10px] font-bold">
-                    <span className={attendedToday ? "text-emerald-600" : "text-slate-400"}>
-                      {attendedToday ? "✓ 출석" : "○ 출석"}
+                  <div className="flex items-center gap-2 text-xs font-bold">
+                    <span className={attendedToday ? "text-[#201d1d]" : "text-[#646262]"}>
+                      {attendedToday ? "[v] 출석" : "[ ] 출석"}
                     </span>
-                    <span>·</span>
-                    <span className={donatedShardToday ? "text-emerald-600" : "text-slate-400"}>
-                      {donatedShardToday ? "✓ 조각지원" : "○ 조각지원"}
+                    <span className={donatedShardToday ? "text-[#201d1d]" : "text-[#646262]"}>
+                      {donatedShardToday ? "[v] 조각지원" : "[ ] 조각지원"}
                     </span>
-                    <span>·</span>
-                    <span className={friendBattlePlayedToday ? "text-emerald-600" : "text-slate-400"}>
-                      {friendBattlePlayedToday ? "✓ 친선전" : "○ 친선전"}
+                    <span className={friendBattlePlayedToday ? "text-[#201d1d]" : "text-[#646262]"}>
+                      {friendBattlePlayedToday ? "[v] 친선전/공유" : "[ ] 친선전/공유"}
                     </span>
                   </div>
                 </div>
                 {/* Gauge */}
-                <div className="w-full h-2 bg-slate-100 rounded-none overflow-hidden border border-slate-200">
+                <div className="w-full h-2 bg-[#e6e3e3] rounded-none overflow-hidden border border-[rgba(15,0,0,0.12)]">
                   <div
-                    className="h-full bg-gradient-to-r from-indigo-500 to-emerald-500 transition-all duration-300"
+                    className="h-full bg-[#201d1d] transition-all duration-300"
                     style={{ width: `${(missionCompletedCount / 3) * 100}%` }}
                   />
                 </div>
@@ -504,19 +574,18 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
                 disabled={!isAllMissionsDone || dailyMissionsClaimed}
                 onClick={handleClaimDailyMissions}
                 className={cn(
-                  "w-full sm:w-auto min-h-[44px] px-3 py-2 rounded-none font-black text-xs uppercase flex items-center justify-center gap-1.5 transition-all cursor-pointer shrink-0 border",
+                  "w-full sm:w-auto min-h-[44px] px-3.5 py-2 rounded-sm font-bold text-xs uppercase flex items-center justify-center gap-1.5 transition-colors cursor-pointer shrink-0 border",
                   dailyMissionsClaimed
-                    ? "bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed"
+                    ? "bg-[#f1eeee] text-[#646262] border-[rgba(15,0,0,0.12)] cursor-not-allowed"
                     : isAllMissionsDone
-                    ? "bg-amber-400 hover:bg-amber-300 text-stone-950 border-amber-500 shadow-sm animate-pulse"
-                    : "bg-slate-50 text-slate-400 border-slate-200 opacity-60 cursor-not-allowed"
+                    ? "bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] border-[#201d1d]"
+                    : "bg-[#f8f7f7] text-[#646262] border-[rgba(15,0,0,0.12)] opacity-60 cursor-not-allowed"
                 )}
               >
-                <span>🏆</span>
                 <span>
                   {dailyMissionsClaimed
-                    ? (language === 'ko' ? '[수령 완료]' : '[Claimed]')
-                    : (language === 'ko' ? '[올클리어 보너스 +50 SNS]' : '[All Clear +50 SNS]')}
+                    ? (language === 'ko' ? '[수령 완료]' : '[CLAIMED]')
+                    : (language === 'ko' ? '[올클리어 보너스 +50 SNS]' : '[CLAIM +50 SNS]')}
                 </span>
               </button>
             </div>
@@ -525,12 +594,12 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
 
         {/* SCR-10-02: 4대 모바일 서브 탭바 (내 길드일 때 표시) */}
         {!isOpponentMode && userGuild?.id === guild.id && (
-          <div className="grid grid-cols-4 gap-1 mb-4 bg-slate-100 p-1 rounded-none border border-slate-200 font-mono text-xs">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 mb-4 bg-[#f8f7f7] p-1.5 rounded-none border border-[rgba(15,0,0,0.12)] font-mono text-xs">
             {[
-              { id: 'info', icon: '🛡️', labelKo: '길드 정보', labelEn: 'Info' },
-              { id: 'raid', icon: '⚔️', labelKo: '길드 레이드', labelEn: 'Raid' },
-              { id: 'exchange', icon: '🧩', labelKo: '조각·승부', labelEn: 'Exchange' },
-              { id: 'friends', icon: '👥', labelKo: '친구 친선전', labelEn: 'Friends' },
+              { id: 'info', labelKo: '[1] 길드 정보', labelEn: '[1] Info' },
+              { id: 'raid', labelKo: '[2] 길드 레이드', labelEn: '[2] Raid' },
+              { id: 'exchange', labelKo: '[3] 조각·승부예측', labelEn: '[3] Exchange' },
+              { id: 'friends', labelKo: '[4] 친구 친선전', labelEn: '[4] Friends' },
             ].map((tab) => {
               const active = activeTab === tab.id;
               return (
@@ -541,13 +610,12 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
                     setActiveTab(tab.id as any);
                   }}
                   className={cn(
-                    "min-h-[44px] py-2 px-1 rounded-none font-bold text-[11px] sm:text-xs transition-all flex flex-col sm:flex-row items-center justify-center gap-1 cursor-pointer",
+                    "min-h-[44px] py-2 px-2 rounded-sm font-bold text-xs transition-colors flex items-center justify-center gap-1 cursor-pointer border",
                     active
-                      ? "bg-slate-900 text-white font-black shadow-xs"
-                      : "bg-transparent text-slate-600 hover:bg-slate-200/70"
+                      ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
+                      : "bg-[#fdfcfc] text-[#646262] border-[rgba(15,0,0,0.12)] hover:text-[#201d1d]"
                   )}
                 >
-                  <span className="text-sm">{tab.icon}</span>
                   <span className="truncate">{language === 'ko' ? tab.labelKo : tab.labelEn}</span>
                 </button>
               );
@@ -560,15 +628,17 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
           <div className="space-y-4 font-mono">
             {/* ID 580: 길드 출석 보너스 & 연속 출석 버프 HUD */}
             {!isOpponentMode && userGuild?.id === guild.id && (
-              <div className="flex flex-wrap items-center justify-between gap-2 p-3 bg-emerald-50 border border-emerald-300 rounded-none text-xs shadow-xs">
+              <div className="flex flex-wrap items-center justify-between gap-2 p-3.5 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none text-xs">
                 <div className="flex items-center gap-2.5">
-                  <span className="text-2xl">📅</span>
+                  <span className="px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] font-bold rounded-none">
+                    [STREAK]
+                  </span>
                   <div>
-                    <div className="font-black text-emerald-900">
-                      {language === 'ko' ? `[길드 출석 버프] 연속 ${attendanceStreak}일 출석 중!` : `Guild Streak: Day ${attendanceStreak}`}
+                    <div className="font-bold text-[#201d1d]">
+                      {language === 'ko' ? `길드 연속 ${attendanceStreak}일 출석 중` : `Guild Streak: Day ${attendanceStreak}`}
                     </div>
-                    <div className="text-[10px] text-emerald-700">
-                      {language === 'ko' ? '⚡ 전체 길드원 AP 자연 회복 속도 +10% 가속 적용 중' : '⚡ +10% Guild-wide AP Recovery Active'}
+                    <div className="text-xs text-[#646262] mt-0.5">
+                      {language === 'ko' ? '전체 길드원 AP 자연 회복 속도 +10% 가속 적용 중' : '+10% Guild-wide AP Recovery Active'}
                     </div>
                   </div>
                 </div>
@@ -576,11 +646,16 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
                   type="button"
                   disabled={attendedToday}
                   onClick={handleAttendGuild}
-                  className="min-h-[44px] px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-none text-xs font-black transition-all disabled:opacity-50 cursor-pointer shadow-xs"
+                  className={cn(
+                    "min-h-[44px] px-3.5 py-2 rounded-sm text-xs font-bold transition-colors cursor-pointer border",
+                    attendedToday
+                      ? "bg-[#f1eeee] text-[#646262] border-[rgba(15,0,0,0.12)] cursor-not-allowed"
+                      : "bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] border-[#201d1d]"
+                  )}
                 >
                   {attendedToday
-                    ? (language === 'ko' ? '오늘 출석 완료' : 'Attended Today')
-                    : (language === 'ko' ? '[ 일일 출석체크 (+50 SNS) ]' : '[ Check Attendance (+50 SNS) ]')}
+                    ? (language === 'ko' ? '[오늘 출석 완료]' : '[Attended Today]')
+                    : (language === 'ko' ? '[일일 출석체크 (+50 SNS)]' : '[Check Attendance (+50 SNS)]')}
                 </button>
               </div>
             )}
@@ -588,59 +663,59 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
             {/* ID 550: 길드 명예의 전당 시즌 MVP 3인 뱃지 배너 */}
             <div className="grid grid-cols-3 gap-2 text-xs">
               {[
-                { role: language === 'ko' ? '👑 공격왕' : '👑 War MVP', name: guild.members[0]?.displayName || 'Ace Hunter', score: '38W 4L' },
-                { role: language === 'ko' ? '💰 기부왕' : '💰 Top Donor', name: guild.members[1]?.displayName || 'Gold Dragon', score: '25,000 SNS' },
-                { role: language === 'ko' ? '⚔️ 레이드왕' : '⚔️ Raid Titan', name: guild.members[2]?.displayName || 'Raid Slayer', score: '184K DMG' },
+                { role: language === 'ko' ? '[WAR MVP]' : '[WAR MVP]', name: guild.members[0]?.displayName || 'Ace Hunter', score: '38W 4L' },
+                { role: language === 'ko' ? '[TOP DONOR]' : '[TOP DONOR]', name: guild.members[1]?.displayName || 'Gold Dragon', score: '25,000 SNS' },
+                { role: language === 'ko' ? '[RAID TITAN]' : '[RAID TITAN]', name: guild.members[2]?.displayName || 'Raid Slayer', score: '184K DMG' },
               ].map((mvp, idx) => (
-                <div key={idx} className="bg-white border border-slate-200 rounded-none p-2.5 text-center shadow-xs">
-                  <div className="text-[10px] font-black text-amber-600 uppercase">{mvp.role}</div>
-                  <div className="font-bold text-slate-800 truncate text-xs mt-0.5">{mvp.name}</div>
-                  <div className="text-[9px] text-slate-400 mt-0.5">{mvp.score}</div>
+                <div key={idx} className="bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-none p-2.5 text-center">
+                  <div className="text-xs font-bold text-[#646262] uppercase">{mvp.role}</div>
+                  <div className="font-bold text-[#201d1d] truncate text-xs mt-0.5">{mvp.name}</div>
+                  <div className="text-xs text-[#646262] mt-0.5">{mvp.score}</div>
                 </div>
               ))}
             </div>
 
             {/* Battle Effects Card */}
-            <div className="bg-white border border-slate-200 rounded-none p-4 shadow-xs">
+            <div className="bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-none p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">GUILD BUFF STATUS</span>
-                  <div className="text-sm font-black text-indigo-700 mt-0.5">
+                  <span className="text-xs text-[#646262] font-bold uppercase tracking-wider">[GUILD BUFF STATUS]</span>
+                  <div className="text-sm font-bold text-[#201d1d] mt-1">
                     {t("guild_current_bonus_value", language, { power: currentBuff.powerPercent, stat: currentBuff.statBonus })}
                   </div>
                 </div>
-                <div className="w-10 h-10 rounded-none bg-indigo-50 border border-indigo-200 flex items-center justify-center text-xl">
-                  ⚔️
+                <div className="w-10 h-10 rounded-none bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] flex items-center justify-center text-xs font-bold text-[#201d1d]">
+                  +BUFF
                 </div>
               </div>
             </div>
 
             {/* Actions Section: 기부 또는 공격 */}
             {isOpponentMode ? (
-              <div className="bg-rose-50/40 border border-rose-200 rounded-none p-5 text-center shadow-sm">
+              <div className="bg-[#f8f7f7] border border-[#201d1d] rounded-none p-5 text-center">
                 <button
                   onClick={handleAttack}
                   disabled={isFighting}
-                  className="w-full min-h-[48px] bg-rose-600 hover:bg-rose-700 text-white py-3.5 rounded-none font-black uppercase tracking-wider text-xs flex items-center justify-center gap-2 transition-all active:scale-98 disabled:opacity-50 shadow-sm cursor-pointer"
+                  className="w-full min-h-[48px] bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] py-3.5 rounded-sm font-bold uppercase tracking-wider text-xs flex items-center justify-center gap-2 transition-colors disabled:opacity-50 cursor-pointer"
                 >
                   <Swords size={18} />
                   {isFighting ? t("guild_attack_in_progress", language) : t("guild_attack_start", language)}
                 </button>
               </div>
             ) : userGuild?.id === guild.id ? (
-              <div className="bg-white border border-slate-200 rounded-none p-4 shadow-xs">
-                <div className="flex items-center justify-between mb-3 border-b border-slate-100 pb-2">
-                  <div className="flex items-center gap-1.5 font-black text-xs text-slate-800">
-                    <Gift size={15} className="text-indigo-600" />
-                    <span>{language === 'ko' ? '길드 기부 & 경험치 기여' : 'Guild Donation'}</span>
+              <div className="bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-none p-4">
+                <div className="flex items-center justify-between mb-3 border-b border-[rgba(15,0,0,0.12)] pb-2">
+                  <div className="flex items-center gap-1.5 font-bold text-xs text-[#201d1d]">
+                    <Gift size={15} className="text-[#201d1d]" />
+                    <span>{language === 'ko' ? '[길드 기부 & 경험치 기여]' : '[Guild Donation]'}</span>
                   </div>
                   {/* 상점 바로가기 숏컷 */}
                   <button
                     type="button"
                     onClick={() => onNavigate('shop')}
-                    className="text-[11px] text-indigo-600 hover:text-indigo-800 font-bold cursor-pointer"
+                    className="min-h-[44px] px-2.5 text-xs text-[#201d1d] hover:bg-[#f1eeee] border border-[rgba(15,0,0,0.12)] rounded-sm font-bold cursor-pointer flex items-center gap-1"
                   >
-                    🛒 {language === 'ko' ? 'SNS 코인 충전' : 'Get SNS Coins'}
+                    <span>[{language === 'ko' ? 'SNS 코인 충전' : 'Get SNS Coins'}]</span>
                   </button>
                 </div>
 
@@ -651,10 +726,10 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
                       type="button"
                       onClick={() => setDonateAmount(amt)}
                       className={cn(
-                        "min-h-[44px] px-2 py-2 rounded-none border text-xs font-black transition-all cursor-pointer whitespace-nowrap",
+                        "min-h-[44px] px-2 py-2 rounded-sm border text-xs font-bold transition-colors cursor-pointer whitespace-nowrap",
                         donateAmount === amt
-                          ? "border-indigo-700 bg-indigo-600 text-white shadow-xs"
-                          : "border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700"
+                          ? "border-[#201d1d] bg-[#201d1d] text-[#fdfcfc]"
+                          : "border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] hover:bg-[#f1eeee] text-[#201d1d]"
                       )}
                     >
                       {amt.toLocaleString()} SNS
@@ -665,17 +740,17 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
                 <button
                   onClick={handleDonate}
                   disabled={sns < donateAmount}
-                  className="w-full min-h-[46px] bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-3 rounded-none font-black uppercase tracking-wide text-xs flex items-center justify-center gap-2 transition-all active:scale-98 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed shadow-xs cursor-pointer"
+                  className="w-full min-h-[46px] bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] px-4 py-3 rounded-sm font-bold uppercase tracking-wide text-xs flex items-center justify-center gap-2 transition-colors disabled:bg-[#f1eeee] disabled:text-[#646262] disabled:cursor-not-allowed cursor-pointer"
                 >
                   <Gift size={16} />
                   {t("guild_donate_btn", language, { amount: donateAmount.toLocaleString() })}
                 </button>
               </div>
             ) : !userGuild ? (
-              <div className="bg-amber-50 border border-amber-200 rounded-none p-5 text-center shadow-sm">
+              <div className="bg-[#f8f7f7] border border-[#201d1d] rounded-none p-5 text-center">
                 <button
                   onClick={handleJoinGuild}
-                  className="w-full min-h-[48px] bg-amber-400 hover:bg-amber-300 text-stone-950 py-3.5 rounded-none font-black uppercase tracking-wider text-xs flex items-center justify-center gap-2 transition-all active:scale-98 shadow-sm cursor-pointer"
+                  className="w-full min-h-[48px] bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] py-3.5 rounded-sm font-bold uppercase tracking-wider text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer"
                 >
                   <Shield size={18} />
                   {t("guild_join", language)}
@@ -684,28 +759,28 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
             ) : null}
 
             {/* Member List & 용병 대여 */}
-            <div className="bg-white border border-slate-200 rounded-none p-4 shadow-xs">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-2 mb-2">
-                <span className="font-black text-xs text-slate-800">
-                  {language === 'ko' ? `길드원 목록 (${guild.members.length}명)` : `Guild Members (${guild.members.length})`}
+            <div className="bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-none p-4">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[rgba(15,0,0,0.12)] pb-2 mb-2">
+                <span className="font-bold text-xs text-[#201d1d]">
+                  {language === 'ko' ? `[길드원 목록 (${guild.members.length}명)]` : `[Guild Members (${guild.members.length})]`}
                 </span>
-                <span className="text-[10px] text-slate-400 font-bold">
-                  {language === 'ko' ? '시그니처 카드 용병 대여 (20 SNS)' : 'Mercenary Card Hire (20 SNS)'}
+                <span className="text-xs text-[#646262] font-bold">
+                  {language === 'ko' ? '시그니처 카드 용병 대여 (20 SNS · 전투력 +5%)' : 'Mercenary Card Hire (20 SNS · +5% Power)'}
                 </span>
               </div>
-              <div className="divide-y divide-slate-100 max-h-72 overflow-y-auto pr-1">
+              <div className="divide-y divide-[rgba(15,0,0,0.12)] max-h-80 overflow-y-auto pr-1">
                 {guild.members.map((member) => (
                   <div key={member.uid} className="py-2.5 flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-none bg-slate-100 border border-slate-200 flex items-center justify-center font-black text-xs uppercase text-slate-600">
+                      <div className="w-9 h-9 rounded-none bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] flex items-center justify-center font-bold text-xs uppercase text-[#201d1d]">
                         {member.displayName.substring(0, 2)}
                       </div>
                       <div>
-                        <div className="text-xs font-black text-slate-800">
+                        <div className="text-xs font-bold text-[#201d1d]">
                           {member.displayName}
                         </div>
-                        <div className="text-[10px] text-slate-400">
-                          {currentUser?.uid === member.uid ? (language === 'ko' ? '[나]' : '[You]') : 'Level 10+'}
+                        <div className="text-xs text-[#646262]">
+                          {currentUser?.uid === member.uid ? (language === 'ko' ? '[나]' : '[You]') : 'LV.10+'}
                         </div>
                       </div>
                     </div>
@@ -715,20 +790,19 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
                           type="button"
                           disabled={borrowedMercenary === member.displayName}
                           onClick={() => handleBorrowMercenary(member.uid, member.displayName)}
-                          className="min-h-[36px] px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-700 text-[11px] font-bold rounded-none transition-all cursor-pointer flex items-center gap-1 disabled:opacity-40"
+                          className="min-h-[44px] px-3 py-1.5 bg-[#f8f7f7] hover:bg-[#f1eeee] border border-[rgba(15,0,0,0.12)] text-[#201d1d] text-xs font-bold rounded-sm transition-colors cursor-pointer flex items-center gap-1 disabled:opacity-40"
                           title="일일 1회 용병 시그니처 카드 대여 (20 SNS)"
                         >
-                          <span>🤝</span>
-                          <span>{borrowedMercenary === member.displayName ? (language === 'ko' ? '대여중' : 'Hired') : (language === 'ko' ? '용병 대여' : 'Hire')}</span>
+                          <span>{borrowedMercenary === member.displayName ? (language === 'ko' ? '[대여중]' : '[Hired]') : (language === 'ko' ? '[용병 대여]' : '[Hire]')}</span>
                         </button>
                       )}
                       {isOpponentMode && currentUser?.uid !== member.uid && (
                         <button
                           onClick={() => onAttackMember?.(member.uid, member.displayName)}
-                          className="min-h-[36px] px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-bold rounded-none active:scale-98 transition-all flex items-center gap-1 cursor-pointer shadow-xs"
+                          className="min-h-[44px] px-3 py-1.5 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] text-xs font-bold rounded-sm transition-colors flex items-center gap-1 cursor-pointer"
                         >
                           <Swords size={12} />
-                          {t("attack", language)}
+                          <span>[{t("attack", language)}]</span>
                         </button>
                       )}
                     </div>
@@ -771,33 +845,32 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
         {!isOpponentMode && userGuild?.id === guild.id && activeTab === 'exchange' && (
           <div className="space-y-4 font-mono">
             {/* SCR-10-03: 길드 특가 보급소 (Guild Supply Depot) */}
-            <div className="bg-[#111827] border border-slate-800 p-4 rounded-none text-white shadow-sm">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-2 mb-3">
+            <div className="bg-[#f8f7f7] border border-[#201d1d] p-4 rounded-none text-[#201d1d]">
+              <div className="flex items-center justify-between border-b border-[rgba(15,0,0,0.12)] pb-2 mb-3">
                 <div className="flex items-center gap-2">
-                  <span className="text-xl">🏆</span>
+                  <span className="px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-none">
+                    [50% SALE]
+                  </span>
                   <div>
-                    <h3 className="text-xs font-black text-amber-400">
+                    <h3 className="text-xs font-bold text-[#201d1d]">
                       {language === 'ko' ? '길드 특가 보급소 (Guild Supply Depot)' : 'Guild Supply Depot'}
                     </h3>
-                    <p className="text-[10px] text-stone-400">
+                    <p className="text-xs text-[#646262]">
                       {language === 'ko' ? '길드원 전용 50% 할인 AP 물약 & 보급품' : '50% Off AP Potions & Guild Supplies'}
                     </p>
                   </div>
                 </div>
-                <span className="text-[10px] font-black text-emerald-400 bg-emerald-950 border border-emerald-500/40 px-1.5 py-0.5">
-                  50% SALE
-                </span>
               </div>
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-900/80 p-3 border border-slate-800">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#fdfcfc] p-3 border border-[rgba(15,0,0,0.12)]">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-emerald-500/20 border border-emerald-400/50 flex items-center justify-center text-xl text-emerald-400">
-                    <Zap size={20} />
+                  <div className="w-10 h-10 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] flex items-center justify-center text-[#201d1d]">
+                    <Zap size={18} />
                   </div>
                   <div>
-                    <div className="text-xs font-black text-white">
+                    <div className="text-xs font-bold text-[#201d1d]">
                       {language === 'ko' ? '길드 전술 AP 물약 (+50 AP)' : 'Guild Tactical AP Potion (+50 AP)'}
                     </div>
-                    <div className="text-[10px] text-stone-400">
+                    <div className="text-xs text-[#646262]">
                       {language === 'ko' ? '레이드 & 친선전 즉시 투입 가능' : 'Immediate replenishment for battle'}
                     </div>
                   </div>
@@ -805,20 +878,18 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
                 <button
                   type="button"
                   onClick={handleBuyGuildApPotion}
-                  className="w-full sm:w-auto min-h-[44px] px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-black text-xs uppercase flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 transition-all shadow-xs"
+                  className="w-full sm:w-auto min-h-[44px] px-4 py-2 rounded-sm bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] font-bold text-xs uppercase flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
                 >
-                  <span className="text-sm">🧪</span>
-                  <span>{language === 'ko' ? '25 SNS로 충전 (+50 AP)' : 'Buy for 25 SNS (+50 AP)'}</span>
+                  <span>{language === 'ko' ? '[25 SNS로 충전 (+50 AP)]' : '[Buy for 25 SNS (+50 AP)]'}</span>
                 </button>
               </div>
             </div>
 
             {/* ID 570: 길드 카드 조각 상호 기부 & 요청 시스템 */}
-            <div className="bg-white border border-slate-200 rounded-none p-4 text-xs shadow-xs">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-2 mb-3">
-                <div className="flex items-center gap-1.5 font-black text-slate-800">
-                  <span>🧩</span>
-                  <span>{language === 'ko' ? '길드 카드 조각 교환소 (Piece Request)' : 'Card Shard Exchange'}</span>
+            <div className="bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-none p-4 text-xs">
+              <div className="flex items-center justify-between border-b border-[rgba(15,0,0,0.12)] pb-2 mb-3">
+                <div className="flex items-center gap-1.5 font-bold text-[#201d1d]">
+                  <span>{language === 'ko' ? '[길드 카드 조각 교환소]' : '[Card Shard Exchange]'}</span>
                 </div>
                 <button
                   type="button"
@@ -837,22 +908,22 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
                         : 'Card shard request posted to guild!'
                     );
                   }}
-                  className="min-h-[36px] px-2.5 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-none text-[11px] font-black cursor-pointer transition-colors"
+                  className="min-h-[44px] px-3 py-1.5 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] rounded-sm text-xs font-bold cursor-pointer transition-colors"
                 >
-                  {language === 'ko' ? '+ 새 조각 요청' : '+ Request Shard'}
+                  {language === 'ko' ? '[+ 새 조각 요청]' : '[+ Request Shard]'}
                 </button>
               </div>
 
               <div className="space-y-2">
                 {shardRequests.map((req) => (
-                  <div key={req.id} className="flex items-center justify-between p-2 bg-slate-50 border border-slate-200 rounded-none">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-indigo-100 text-indigo-700 font-black flex items-center justify-center rounded-none text-xs">
+                  <div key={req.id} className="flex items-center justify-between p-2.5 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-9 h-9 bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] text-[#201d1d] font-bold flex items-center justify-center rounded-none text-xs">
                         #{req.cardId}
                       </div>
                       <div>
-                        <div className="font-black text-slate-800">{req.requesterName}</div>
-                        <div className="text-[10px] text-slate-400">
+                        <div className="font-bold text-[#201d1d]">{req.requesterName}</div>
+                        <div className="text-xs text-[#646262]">
                           {language === 'ko' ? `지원 현황: ${req.count}/5개` : `Progress: ${req.count}/5`}
                         </div>
                       </div>
@@ -860,9 +931,9 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
                     <button
                       type="button"
                       onClick={() => handleDonateShard(req.id, req.cardId)}
-                      className="min-h-[36px] px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-none text-xs cursor-pointer transition-colors"
+                      className="min-h-[44px] px-3 py-1.5 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] font-bold rounded-sm text-xs cursor-pointer transition-colors"
                     >
-                      {language === 'ko' ? '조각 지원 (+25 SNS)' : 'Donate (+25 SNS)'}
+                      {language === 'ko' ? '[조각 지원 (+25 SNS)]' : '[Donate (+25 SNS)]'}
                     </button>
                   </div>
                 ))}
@@ -870,14 +941,13 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
             </div>
 
             {/* ID 500: 길드전 일일 3개 매치업 실시간 승부 예측 & 배당금 */}
-            <div className="bg-white border border-slate-200 rounded-none p-4 text-xs shadow-xs">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-2 mb-3">
-                <div className="flex items-center gap-1.5 font-black text-slate-800">
-                  <span>⚔️</span>
-                  <span>{language === 'ko' ? '길드전 일일 승부 예측 & 적중 배당' : 'Guild War Matchups'}</span>
+            <div className="bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-none p-4 text-xs">
+              <div className="flex items-center justify-between border-b border-[rgba(15,0,0,0.12)] pb-2 mb-3">
+                <div className="flex items-center gap-1.5 font-bold text-[#201d1d]">
+                  <span>{language === 'ko' ? '[길드전 일일 승부 예측]' : '[Guild War Matchups]'}</span>
                 </div>
-                <span className="text-[10px] text-amber-600 font-black bg-amber-50 border border-amber-200 px-1.5 py-0.5">
-                  {language === 'ko' ? '적중 시 2.5배 배당' : '2.5x Payout'}
+                <span className="text-xs text-[#201d1d] font-bold bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] px-2 py-0.5">
+                  {language === 'ko' ? '[적중 시 2.5배 배당]' : '[2.5x Payout]'}
                 </span>
               </div>
 
@@ -889,8 +959,8 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
                 ].map((match) => {
                   const myPick = guildBets[match.matchId];
                   return (
-                    <div key={match.matchId} className="p-2.5 bg-slate-50 border border-slate-200 rounded-none space-y-1.5">
-                      <div className="flex justify-between text-[10px] text-slate-400 font-black">
+                    <div key={match.matchId} className="p-2.5 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none space-y-1.5">
+                      <div className="flex justify-between text-xs text-[#646262] font-bold">
                         <span>MATCH #{match.matchId}</span>
                         <span>{myPick ? (language === 'ko' ? `예측 완료: [${myPick}]` : `Picked: [${myPick}]`) : (language === 'ko' ? '예측 가능' : 'Open')}</span>
                       </div>
@@ -907,21 +977,21 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
                             } catch {}
                             setAlertMsg(
                               language === 'ko'
-                                ? `[승부 예측 완료] ${match.teamA} 승리에 50 SNS 베팅 완료! (적중 시 배당 지급)`
+                                ? `[승부 예측 완료] ${match.teamA} 승리에 예측 참여 완료! (+10 SNS 참여 보너스 지급)`
                                 : `Predicted ${match.teamA} victory! (+10 SNS participation bonus)`
                             );
                           }}
                           className={cn(
-                            "flex-1 min-h-[40px] py-1.5 px-2.5 rounded-none border text-xs font-black transition-all cursor-pointer flex justify-between items-center",
+                            "flex-1 min-h-[44px] py-2 px-2.5 rounded-sm border text-xs font-bold transition-colors cursor-pointer flex justify-between items-center",
                             myPick === match.teamA
-                              ? "bg-indigo-600 text-white border-indigo-700 shadow-xs"
-                              : "bg-white text-slate-700 border-slate-300 hover:bg-slate-100"
+                              ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
+                              : "bg-[#fdfcfc] text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee]"
                           )}
                         >
                           <span className="truncate">{match.teamA}</span>
-                          <span className="text-[10px] opacity-80">{match.oddsA}x</span>
+                          <span className="text-xs opacity-80">{match.oddsA}x</span>
                         </button>
-                        <span className="self-center text-slate-400 font-black text-xs">VS</span>
+                        <span className="self-center text-[#646262] font-bold text-xs">VS</span>
                         <button
                           type="button"
                           onClick={() => {
@@ -934,19 +1004,19 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
                             } catch {}
                             setAlertMsg(
                               language === 'ko'
-                                ? `[승부 예측 완료] ${match.teamB} 승리에 50 SNS 베팅 완료! (적중 시 배당 지급)`
+                                ? `[승부 예측 완료] ${match.teamB} 승리에 예측 참여 완료! (+10 SNS 참여 보너스 지급)`
                                 : `Predicted ${match.teamB} victory! (+10 SNS participation bonus)`
                             );
                           }}
                           className={cn(
-                            "flex-1 min-h-[40px] py-1.5 px-2.5 rounded-none border text-xs font-black transition-all cursor-pointer flex justify-between items-center",
+                            "flex-1 min-h-[44px] py-2 px-2.5 rounded-sm border text-xs font-bold transition-colors cursor-pointer flex justify-between items-center",
                             myPick === match.teamB
-                              ? "bg-indigo-600 text-white border-indigo-700 shadow-xs"
-                              : "bg-white text-slate-700 border-slate-300 hover:bg-slate-100"
+                              ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
+                              : "bg-[#fdfcfc] text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee]"
                           )}
                         >
                           <span className="truncate">{match.teamB}</span>
-                          <span className="text-[10px] opacity-80">{match.oddsB}x</span>
+                          <span className="text-xs opacity-80">{match.oddsB}x</span>
                         </button>
                       </div>
                     </div>
@@ -975,19 +1045,19 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
       {/* Battle Simulation Overlay Modal */}
       <AnimatePresence>
         {isFighting && (
-          <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-            <div className="text-center text-white max-w-md w-full">
-              <Swords size={80} className="mx-auto mb-6 text-rose-55 animate-[spin_3s_linear_infinite]" />
-              <h2 className="text-2xl font-extrabold tracking-tight mb-2 text-white uppercase">
-                {t("guild_invasion_commenced", language)}
+          <div className="fixed inset-0 bg-[#131010]/85 z-50 flex items-center justify-center p-4 font-mono">
+            <div className="text-center text-[#fdfcfc] bg-[#201d1d] border border-[rgba(255,255,255,0.2)] rounded-none p-6 max-w-md w-full">
+              <Swords size={48} className="mx-auto mb-4 text-[#fdfcfc]" />
+              <h2 className="text-xl font-bold tracking-tight mb-2 text-[#fdfcfc] uppercase">
+                [{t("guild_invasion_commenced", language)}]
               </h2>
-              <p className="text-[10px] tracking-wider opacity-60 uppercase mb-8">TACTICAL INTERCEPT IN PROGRESS...</p>
+              <p className="text-xs tracking-wider text-[#b7b1b1] uppercase mb-6">TACTICAL INTERCEPT IN PROGRESS...</p>
               
               {/* Loading Indicator */}
-              <div className="w-full bg-white/10 h-2 rounded-full overflow-hidden">
-                <div className="h-full bg-rose-500 animate-[pulse_1.5s_infinite] w-full" />
+              <div className="w-full bg-[#131010] h-2 rounded-none overflow-hidden border border-[rgba(255,255,255,0.2)]">
+                <div className="h-full bg-[#fdfcfc] w-full" />
               </div>
-              <p className="text-xs font-medium mt-3 text-rose-455">
+              <p className="text-xs font-bold mt-3 text-[#fdfcfc]">
                 {t("comparing_combat_power", language)}
               </p>
             </div>
@@ -998,51 +1068,51 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
       {/* Battle Result Modal */}
       <AnimatePresence>
         {battleResult && (
-          <div className="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4 overflow-y-auto">
+          <div className="fixed inset-0 bg-[#131010]/85 z-50 flex items-center justify-center p-4 overflow-y-auto font-mono">
             <motion.div
-              initial={{ scale: 0.95, y: 15 }}
+              initial={{ scale: 0.98, y: 10 }}
               animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.95, y: 15 }}
-              className="bg-white border border-slate-100 rounded-3xl p-6 w-full max-w-xl shadow-2xl my-8 relative"
+              exit={{ scale: 0.98, y: 10 }}
+              className="bg-[#fdfcfc] border border-[#201d1d] rounded-none p-6 w-full max-w-xl my-8 relative"
             >
               <div className="text-center mb-6">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900 text-white text-[10px] font-bold uppercase tracking-wider mb-4 shadow-sm">
-                  Combat Result Decided
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-none bg-[#201d1d] text-[#fdfcfc] text-xs font-bold uppercase tracking-wider mb-4">
+                  [COMBAT RESULT DECIDED]
                 </div>
 
                 {battleResult.winnerId === userGuild?.id ? (
                   <div>
-                    <h2 className="text-4xl font-extrabold tracking-tight text-emerald-600 mb-2 uppercase">
-                      VICTORY!
+                    <h2 className="text-3xl font-bold tracking-tight text-[#201d1d] mb-2 uppercase">
+                      [VICTORY!]
                     </h2>
-                    <p className="text-xs font-bold text-emerald-800">
+                    <p className="text-xs font-bold text-[#646262]">
                       {t("invasion_victory_desc", language)}
                     </p>
-                    <div className="mt-4 bg-emerald-50/50 border border-emerald-250 rounded-2xl p-4 inline-block shadow-sm">
-                      <div className="text-[10px] font-bold uppercase text-emerald-700 tracking-wider">
+                    <div className="mt-4 bg-[#f8f7f7] border border-[#201d1d] rounded-none p-4 inline-block">
+                      <div className="text-xs font-bold uppercase text-[#646262] tracking-wider">
                         {t("rewards_claimed", language)}
                       </div>
-                      <div className="text-xl font-extrabold text-emerald-900 mt-1">
+                      <div className="text-xl font-bold text-[#201d1d] mt-1">
                         +1,500 SNS{t("victory_loot_plundered", language)}
                       </div>
-                      <div className="text-[9px] text-emerald-700 mt-1 font-semibold">
+                      <div className="text-xs text-[#646262] mt-1 font-bold">
                         {t("guild_exp_granted", language)}
                       </div>
                     </div>
                   </div>
                 ) : (
                   <div>
-                    <h2 className="text-4xl font-extrabold tracking-tight text-rose-500 mb-2 uppercase">
-                      DEFEAT...
+                    <h2 className="text-3xl font-bold tracking-tight text-[#201d1d] mb-2 uppercase">
+                      [DEFEAT...]
                     </h2>
-                    <p className="text-xs font-bold text-rose-700">
+                    <p className="text-xs font-bold text-[#646262]">
                       {t("invasion_defeat_desc", language)}
                     </p>
-                    <div className="mt-4 bg-rose-50/50 border border-rose-250 rounded-2xl p-4 inline-block shadow-sm">
-                      <div className="text-[10px] font-bold uppercase text-rose-700 tracking-wider">
+                    <div className="mt-4 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none p-4 inline-block">
+                      <div className="text-xs font-bold uppercase text-[#646262] tracking-wider">
                         {t("consolation_reward", language)}
                       </div>
-                      <div className="text-xl font-extrabold text-rose-900 mt-1">
+                      <div className="text-xl font-bold text-[#201d1d] mt-1">
                         +300 SNS
                       </div>
                     </div>
@@ -1051,10 +1121,10 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
               </div>
 
               {/* Combat Log */}
-              <div className="bg-slate-950 text-slate-300 p-4.5 rounded-2xl text-[11px] leading-relaxed max-h-60 overflow-y-auto mb-6 border border-slate-800 shadow-inner">
-                <div className="text-[9px] text-slate-500 uppercase font-bold tracking-wider border-b border-slate-800/80 pb-2 mb-2 flex items-center justify-between">
-                  <span>COMBAT LOG STREAM</span>
-                  <span className="animate-pulse text-emerald-500">● LIVE</span>
+              <div className="bg-[#201d1d] text-[#fdfcfc] p-4 rounded-none text-xs leading-relaxed max-h-60 overflow-y-auto mb-6 border border-[#201d1d]">
+                <div className="text-xs text-[#b7b1b1] uppercase font-bold tracking-wider border-b border-[rgba(255,255,255,0.15)] pb-2 mb-2 flex items-center justify-between">
+                  <span>[COMBAT LOG STREAM]</span>
+                  <span className="text-[#fdfcfc]">[LIVE]</span>
                 </div>
                 <div className="space-y-1">
                   {battleResult.log.map((line: string, idx: number) => (
@@ -1068,9 +1138,9 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
                   setBattleResult(null);
                   onNavigate("guild-list");
                 }}
-                className="w-full bg-slate-900 hover:bg-slate-800 active:scale-98 text-white py-4 rounded-2xl text-xs font-bold uppercase tracking-wider transition-all shadow-md cursor-pointer"
+                className="w-full min-h-[46px] bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] py-3 rounded-sm text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
               >
-                {t("confirm_return", language)}
+                [{t("confirm_return", language)}]
               </button>
             </motion.div>
           </div>
@@ -1080,23 +1150,23 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
       {/* Custom Alert/Error Toast Popup */}
       <AnimatePresence>
         {alertMsg && (
-          <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
+          <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-[#131010]/70 font-mono">
             <motion.div
-              initial={{ scale: 0.95 }}
+              initial={{ scale: 0.98 }}
               animate={{ scale: 1 }}
-              exit={{ scale: 0.95 }}
-              className="bg-white border border-slate-100 rounded-3xl p-6 w-full max-w-sm text-center shadow-2xl relative animate-in"
+              exit={{ scale: 0.98 }}
+              className="bg-[#fdfcfc] border border-[#201d1d] rounded-none p-6 w-full max-w-sm text-center relative"
             >
-              <div className="w-12 h-12 bg-rose-50 border border-rose-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <AlertCircle className="text-rose-500" size={24} />
+              <div className="w-11 h-11 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none flex items-center justify-center mx-auto mb-4">
+                <AlertCircle className="text-[#201d1d]" size={22} />
               </div>
-              <h4 className="text-sm font-bold text-slate-800 mb-2">Notification</h4>
-              <p className="text-xs text-slate-500 leading-relaxed mb-5">{alertMsg}</p>
+              <h4 className="text-sm font-bold text-[#201d1d] uppercase mb-2">[NOTIFICATION]</h4>
+              <p className="text-xs text-[#646262] font-bold leading-relaxed mb-5 break-words">{alertMsg}</p>
               <button
                 onClick={() => setAlertMsg(null)}
-                className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl transition-colors active:scale-98 shadow-sm cursor-pointer"
+                className="w-full min-h-[44px] py-2.5 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] font-bold text-xs uppercase rounded-sm transition-colors cursor-pointer"
               >
-                Close
+                [CLOSE]
               </button>
             </motion.div>
           </div>
@@ -1110,63 +1180,64 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[209] flex items-center justify-center p-4"
+            className="fixed inset-0 z-[209] flex items-center justify-center p-4 font-mono"
           >
-            <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowHelp(false)} />
+            <div className="absolute inset-0 bg-[#131010]/70" onClick={() => setShowHelp(false)} />
             <motion.div
-              initial={{ scale: 0.9, y: 20 }}
+              initial={{ scale: 0.98, y: 10 }}
               animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              className="bg-white border border-slate-200 rounded-3xl p-6 w-full max-w-sm shadow-2xl relative z-10"
+              exit={{ scale: 0.98, y: 10 }}
+              className="bg-[#fdfcfc] border border-[#201d1d] rounded-none p-6 w-full max-w-sm relative z-10"
             >
-              <div className="flex items-center justify-between mb-4 sticky top-0 z-10 bg-white pt-2">
-                <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider">
-                  {t('guild_detail', language)}
+              <div className="flex items-center justify-between mb-4 border-b border-[rgba(15,0,0,0.12)] pb-2">
+                <h3 className="text-sm font-bold text-[#201d1d] uppercase tracking-wider">
+                  [{t('guild_detail', language)}]
                 </h3>
                 <button
                   onClick={() => setShowHelp(false)}
-                  className="p-1 hover:bg-slate-100 rounded-full transition-colors cursor-pointer"
+                  aria-label="Close"
+                  className="min-w-[44px] min-h-[44px] flex items-center justify-center hover:bg-[#f1eeee] rounded-sm border border-[rgba(15,0,0,0.12)] transition-colors cursor-pointer"
                 >
-                  <X size={18} className="text-slate-500" />
+                  <X size={18} className="text-[#201d1d]" />
                 </button>
               </div>
 
               <div className="min-h-[120px] flex flex-col justify-center text-center py-4">
                 {helpStep === 0 && (
                   <div className="space-y-2">
-                    <p className="text-xs font-bold text-slate-700">{language === 'ko' ? '길드 상세 정보를 확인하세요.' : 'View detailed guild information.'}</p>
-                    <p className="text-[10px] text-slate-500">{language === 'ko' ? '길드 레벨, 멤버, 전투 버프를 한눈에 볼 수 있습니다.' : 'See guild level, members, and battle buffs at a glance.'}</p>
+                    <p className="text-xs font-bold text-[#201d1d]">{language === 'ko' ? '길드 상세 정보를 확인하세요.' : 'View detailed guild information.'}</p>
+                    <p className="text-xs text-[#646262]">{language === 'ko' ? '길드 레벨, 멤버, 전투 버프를 한눈에 볼 수 있습니다.' : 'See guild level, members, and battle buffs at a glance.'}</p>
                   </div>
                 )}
                 {helpStep === 1 && (
                   <div className="space-y-2">
-                    <p className="text-xs font-bold text-slate-700">{language === 'ko' ? '기부로 길드를 성장시키세요.' : 'Grow your guild through donations.'}</p>
-                    <p className="text-[10px] text-slate-500">{language === 'ko' ? 'SNS 코인을 기부하면 길드 경험치가 올라가고 레벨업 시 전투 버프가 강화됩니다.' : 'Donate SNS coins to increase guild EXP and strengthen battle buffs on level up.'}</p>
+                    <p className="text-xs font-bold text-[#201d1d]">{language === 'ko' ? '기부로 길드를 성장시키세요.' : 'Grow your guild through donations.'}</p>
+                    <p className="text-xs text-[#646262]">{language === 'ko' ? 'SNS 코인을 기부하면 길드 경험치가 올라가고 레벨업 시 전투 버프가 강화됩니다.' : 'Donate SNS coins to increase guild EXP and strengthen battle buffs on level up.'}</p>
                   </div>
                 )}
                 {helpStep === 2 && (
                   <div className="space-y-2">
-                    <p className="text-xs font-bold text-slate-700">{language === 'ko' ? '레이드와 친구 대전을 즐기세요.' : 'Enjoy raids and friend battles.'}</p>
-                    <p className="text-[10px] text-slate-500">{language === 'ko' ? '길드 레이드에 참여하고 친구와 대전하여 더 많은 보상을 획득하세요.' : 'Participate in guild raids and battle friends for more rewards.'}</p>
+                    <p className="text-xs font-bold text-[#201d1d]">{language === 'ko' ? '레이드와 친구 대전을 즐기세요.' : 'Enjoy raids and friend battles.'}</p>
+                    <p className="text-xs text-[#646262]">{language === 'ko' ? '길드 레이드에 참여하고 친구와 대전하여 더 많은 보상을 획득하세요.' : 'Participate in guild raids and battle friends for more rewards.'}</p>
                   </div>
                 )}
               </div>
 
-              <div className="flex items-center justify-between mt-4 pt-3 border-t border-slate-100">
+              <div className="flex items-center justify-between mt-4 pt-3 border-t border-[rgba(15,0,0,0.12)]">
                 <button
                   onClick={() => setHelpStep(prev => Math.max(0, prev - 1))}
                   disabled={helpStep === 0}
-                  className="p-2 rounded-full hover:bg-slate-100 transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-default"
+                  className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-sm border border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee] transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-default"
                 >
-                  <ChevronLeft size={18} className="text-slate-600" />
+                  <ChevronLeft size={18} className="text-[#201d1d]" />
                 </button>
-                <span className="text-[10px] font-bold text-slate-400">{helpStep + 1} / 3</span>
+                <span className="text-xs font-bold text-[#646262]">{helpStep + 1} / 3</span>
                 <button
                   onClick={() => setHelpStep(prev => Math.min(2, prev + 1))}
                   disabled={helpStep === 2}
-                  className="p-2 rounded-full hover:bg-slate-100 transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-default"
+                  className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-sm border border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee] transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-default"
                 >
-                  <ChevronRight size={18} className="text-slate-600" />
+                  <ChevronRight size={18} className="text-[#201d1d]" />
                 </button>
               </div>
             </motion.div>
