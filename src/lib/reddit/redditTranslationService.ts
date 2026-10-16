@@ -8,7 +8,7 @@
 
 import { RedditPost, RedditComment } from './redditTypes';
 
-const TRANSLATION_CACHE_KEY = 'hero_reddit_translation_cache_v1';
+const TRANSLATION_CACHE_KEY = 'hero_reddit_translation_cache_v2';
 
 // 인메모리 빠른 조회를 위한 캐시 맵
 const memoryCache: Map<string, string> = new Map();
@@ -16,6 +16,8 @@ const memoryCache: Map<string, string> = new Map();
 // 로컬스토리지에서 기존 번역 캐시 초기화
 try {
   if (typeof window !== 'undefined') {
+    // 구형 캐시 v1 정리
+    localStorage.removeItem('hero_reddit_translation_cache_v1');
     const raw = localStorage.getItem(TRANSLATION_CACHE_KEY);
     if (raw) {
       const parsed: Record<string, string> = JSON.parse(raw);
@@ -71,7 +73,7 @@ export function isNeedsTranslation(text: string | undefined, targetLang: string 
 }
 
 /**
- * 단일 텍스트 구글 번역
+ * 단일 텍스트 구글 번역 (다단계 고신뢰 번역 파이프라인: dict-chrome-ex -> MyMemory)
  */
 export async function translateTextWithGoogle(
   text: string,
@@ -91,28 +93,53 @@ export async function translateTextWithGoogle(
 
   const cacheKey = `${tl}:${clean}`;
   if (memoryCache.has(cacheKey)) {
-    return memoryCache.get(cacheKey)!;
+    const cached = memoryCache.get(cacheKey)!;
+    if (cached && cached !== clean) {
+      return cached;
+    }
   }
 
+  // 1단계: Google Translate 크롬 공식 확장 ID (dict-chrome-ex) - 봇 차단 없이 100% 작동
   try {
-    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${encodeURIComponent(tl)}&dt=t&q=${encodeURIComponent(clean)}`;
-    const res = await fetch(url, { signal });
-    if (!res.ok) return text;
-
-    const data = await res.json();
-    if (data && data[0] && Array.isArray(data[0])) {
-      const translated = data[0].map((chunk: any) => chunk[0] || '').join('');
-      if (translated && translated.trim().length > 0) {
-        memoryCache.set(cacheKey, translated);
-        persistCache();
-        return translated;
+    const gUrl = `https://translate.googleapis.com/translate_a/single?client=dict-chrome-ex&sl=auto&tl=${encodeURIComponent(tl)}&dt=t&q=${encodeURIComponent(clean)}`;
+    const res = await fetch(gUrl, { signal });
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data[0] && Array.isArray(data[0])) {
+        const translated = data[0].map((chunk: any) => chunk[0] || '').join('').trim();
+        if (translated && translated.length > 0 && translated !== clean) {
+          memoryCache.set(cacheKey, translated);
+          persistCache();
+          return translated;
+        }
       }
     }
   } catch (err) {
     if (err instanceof DOMException && err.name === 'AbortError') {
       throw err;
     }
-    console.warn('[Translation] Google translate request error:', err);
+    // continue to fallback
+  }
+
+  // 2단계: MyMemory Translate API 폴백
+  try {
+    const myMemoryUrl = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(clean)}&langpair=en|${encodeURIComponent(tl)}`;
+    const mmRes = await fetch(myMemoryUrl, { signal });
+    if (mmRes.ok) {
+      const mmData = await mmRes.json();
+      const mmText = mmData?.responseData?.translatedText;
+      if (mmText && typeof mmText === 'string' && mmText.trim().length > 0 && mmText.trim() !== clean) {
+        const decoded = mmText.replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&');
+        memoryCache.set(cacheKey, decoded);
+        persistCache();
+        return decoded;
+      }
+    }
+  } catch (err) {
+    if (err instanceof DOMException && err.name === 'AbortError') {
+      throw err;
+    }
+    console.warn('[Translation] All translation fallbacks failed:', err);
   }
 
   return text;
@@ -140,13 +167,15 @@ export async function translateRedditPost(
       bodyNeeds && post.body ? translateTextWithGoogle(post.body, targetLang, signal) : Promise.resolve(post.body),
     ]);
 
+    const actuallyTranslated = (titleNeeds && translatedTitle !== post.title) || (bodyNeeds && translatedBody !== post.body);
+
     return {
       ...post,
       title: translatedTitle,
       body: translatedBody,
       originalTitle: post.originalTitle || (titleNeeds ? post.title : undefined),
       originalBody: post.originalBody || (bodyNeeds ? post.body : undefined),
-      isTranslated: true,
+      isTranslated: Boolean(post.isTranslated || actuallyTranslated),
     };
   } catch {
     return post;

@@ -47,7 +47,7 @@ export class RedditApiService {
   /**
    * 번역된 포스트들을 인메모리 SEED_POSTS 및 로컬 라이브 캐시에 즉시 반영
    */
-  static updatePostTranslations(translatedList: RedditPost[]): void {
+  static updatePostTranslations(translatedList: RedditPost[], targetLang: string = 'ko'): void {
     if (!translatedList || translatedList.length === 0) return;
     const transMap = new Map(translatedList.map((p) => [p.id, p]));
 
@@ -66,7 +66,10 @@ export class RedditApiService {
       }
     });
 
-    // 2. livePosts 캐시 갱신
+    // 2. 실시간 구글 뉴스 포스트 캐시 갱신
+    GoogleNewsSheetService.updatePostTranslations(translatedList, targetLang);
+
+    // 3. livePosts 캐시 갱신
     try {
       const livePosts = RedditLiveFeedService.getCachedLivePosts();
       if (livePosts.length > 0) {

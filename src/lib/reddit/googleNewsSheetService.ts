@@ -11,14 +11,14 @@ import { extractFirstValidImageUrl } from './googleNewsImageResolver';
 
 export const GOOGLE_NEWS_PUB_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT4vdpKAEI0UaFM6tW-dXVCQoLDq-ncnl06jX80SBL7Y1ZHCzwvzvRGuuduuTu-k5nb6akrqCbr57Oi/pub?output=csv';
 export const GOOGLE_NEWS_SPREADSHEET_ID = '1CT5Yy1-i6kkOfx3d-Yw1osOEYbN7fkk8IDiI8Vm82vM';
-const CACHE_KEY = 'hero_reddit_google_news_posts_v9';
-const RAW_CACHE_KEY = 'hero_reddit_google_news_raw_v9';
-const LAST_FETCH_KEY = 'hero_reddit_google_news_last_fetch_v9';
+export const getPostCacheKey = (lang: string = 'ko') => `hero_reddit_google_news_posts_v10_${lang}`;
+const RAW_CACHE_KEY = 'hero_reddit_google_news_raw_v10';
+const LAST_FETCH_KEY = 'hero_reddit_google_news_last_fetch_v10';
 
-// AI Studio 및 브라우저 환경에서 이전 구형 캐시(v1~v8) 자동 정리
+// AI Studio 및 브라우저 환경에서 이전 구형 캐시(v1~v9) 자동 정리
 if (typeof window !== 'undefined') {
   try {
-    ['v1', 'v2', 'v3', 'v4', 'v5', 'v6', 'v7', 'v8'].forEach((ver) => {
+    ['v1', 'v2', 'v3', 'v4', 'v5', 'v6', 'v7', 'v8', 'v9'].forEach((ver) => {
       localStorage.removeItem(`hero_reddit_google_news_posts_${ver}`);
       localStorage.removeItem(`hero_reddit_google_news_raw_${ver}`);
       localStorage.removeItem(`hero_reddit_google_news_last_fetch_${ver}`);
@@ -383,15 +383,49 @@ export class GoogleNewsSheetService {
   }
 
   /**
+   * 번역된 구글 뉴스 포스트를 인메모리 및 언어별 로컬스토리지 캐시에 즉시 반영
+   */
+  static updatePostTranslations(translatedList: RedditPost[], targetLang: string = 'ko'): void {
+    if (!translatedList || translatedList.length === 0) return;
+    const transMap = new Map(translatedList.map((p) => [p.id, p]));
+    let hasChange = false;
+
+    if (this.cachedPosts.length > 0) {
+      this.cachedPosts = this.cachedPosts.map((post) => {
+        const match = transMap.get(post.id);
+        if (match && (match.title !== post.title || match.body !== post.body || match.isTranslated)) {
+          hasChange = true;
+          return {
+            ...post,
+            title: match.title,
+            body: match.body,
+            originalTitle: match.originalTitle || post.originalTitle || post.title,
+            originalBody: match.originalBody || post.originalBody || post.body,
+            isTranslated: true,
+          };
+        }
+        return post;
+      });
+    }
+
+    if (hasChange && typeof window !== 'undefined') {
+      try {
+        localStorage.setItem(getPostCacheKey(targetLang), JSON.stringify(this.cachedPosts));
+      } catch {}
+    }
+  }
+
+  /**
    * 구글 뉴스를 RedditPost 목록으로 변환하고 현재 언어로 번역하여 반환
    * @param targetLang 현재 언어 설정 (예: 'ko', 'en', 'ja' 등)
    * @param forceRefresh 강제 갱신 여부
    */
   static async getGoogleNewsPosts(targetLang: string = 'ko', forceRefresh: boolean = false): Promise<RedditPost[]> {
+    const cacheKey = getPostCacheKey(targetLang);
     if (forceRefresh) {
       this.cachedPosts = [];
       if (typeof window !== 'undefined') {
-        localStorage.removeItem(CACHE_KEY);
+        localStorage.removeItem(cacheKey);
       }
     }
 
@@ -405,11 +439,12 @@ export class GoogleNewsSheetService {
     // 3. 언어 설정에 맞춰 번역 (targetLang이 'en'이 아니면 번역 수행)
     if (targetLang !== 'en') {
       try {
-        const translated = await translateRedditPosts(converted, targetLang);
+        // 첫 페이지 노출용 상위 35개 기사 우선 병렬 번역
+        const translated = await translateRedditPosts(converted, targetLang, 35);
         this.cachedPosts = translated;
         this.lastLang = targetLang;
         if (typeof window !== 'undefined') {
-          localStorage.setItem(CACHE_KEY, JSON.stringify(translated));
+          localStorage.setItem(cacheKey, JSON.stringify(translated));
         }
         return translated;
       } catch (err) {
@@ -420,7 +455,7 @@ export class GoogleNewsSheetService {
     this.cachedPosts = converted;
     this.lastLang = targetLang;
     if (typeof window !== 'undefined') {
-      localStorage.setItem(CACHE_KEY, JSON.stringify(converted));
+      localStorage.setItem(cacheKey, JSON.stringify(converted));
     }
     return converted;
   }
@@ -433,9 +468,10 @@ export class GoogleNewsSheetService {
       return this.cachedPosts;
     }
 
+    const cacheKey = getPostCacheKey(targetLang);
     try {
       if (typeof window !== 'undefined') {
-        const stored = localStorage.getItem(CACHE_KEY);
+        const stored = localStorage.getItem(cacheKey);
         if (stored) {
           const parsed: RedditPost[] = JSON.parse(stored);
           if (Array.isArray(parsed) && parsed.length > 0) {
@@ -451,6 +487,7 @@ export class GoogleNewsSheetService {
     const fallbackUsageMap = new Map<string, number>();
     const fallback = INITIAL_GOOGLE_NEWS.map((item, idx) => convertGoogleNewsToRedditPost(item, idx, fallbackUsageMap));
     this.cachedPosts = fallback;
+    this.lastLang = targetLang;
     return fallback;
   }
 }

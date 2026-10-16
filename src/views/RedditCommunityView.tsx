@@ -202,37 +202,49 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
 
   // 번역 완료/시도 포스트 ID 추적 세트 (중복 호출 및 무한 루프 원천 차단)
   const translatedPostIdsRef = React.useRef<Set<string>>(new Set());
+  const lastProcessedLangRef = React.useRef<string>('');
 
-  // 피드 포스트 중 영문 포스트 백그라운드 구글 번역 연동 (중복 방지 & 단 1회 실행 보장)
+  // 피드 포스트 중 영문 포스트 백그라운드 구글 번역 연동 (중복 방지 & 실시간 다국어 지원)
   useEffect(() => {
     let isCancelled = false;
     const targetLang = userState.language || 'ko';
     
-    // 아직 번역 시도하지 않은 포스트 중 번역 필요한 후보 추출
-    const candidates = posts.slice(0, 15).filter(
+    // 언어 설정이 바뀌면 추적 Set 초기화
+    if (lastProcessedLangRef.current !== targetLang) {
+      translatedPostIdsRef.current.clear();
+      lastProcessedLangRef.current = targetLang;
+    }
+
+    if (targetLang === 'en') return;
+
+    // 현재 화면에 노출되는 피드 수량(최소 25개) 내에서 번역이 필요한 포스트 추출
+    const limit = Math.max(feedVisibleCount, 25);
+    const candidates = posts.slice(0, limit).filter(
       (p) => !translatedPostIdsRef.current.has(p.id) && isNeedsTranslation(p.title, targetLang)
     );
 
     if (candidates.length === 0) return;
 
-    // 즉시 Set에 기록하여 재호출 및 무한 루프 원천 차단
+    // 진행 중 중복 호출 방지를 위해 임시 마킹
     candidates.forEach((p) => translatedPostIdsRef.current.add(p.id));
 
     translateRedditPosts(candidates, targetLang, candidates.length)
       .then((translated) => {
         if (!isCancelled && translated && translated.length > 0) {
-          RedditApiService.updatePostTranslations(translated);
+          RedditApiService.updatePostTranslations(translated, targetLang);
           setSyncTick((t) => t + 1);
         }
       })
       .catch((err) => {
         console.warn('[Reddit] Translation background warning', err);
+        // 실패한 경우 다음 기회에 재시도할 수 있도록 Set에서 제거
+        candidates.forEach((p) => translatedPostIdsRef.current.delete(p.id));
       });
 
     return () => {
       isCancelled = true;
     };
-  }, [posts, userState.language]);
+  }, [posts, userState.language, feedVisibleCount]);
 
   // 피드 무한 스크롤 더보기 핸들러 (실시간 추가 피드 수집 연동)
   const handleLoadMorePosts = useCallback(async () => {

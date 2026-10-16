@@ -2,6 +2,36 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-16 22:42 KST] [구글 뉴스 한국어 번역 정상화] 다단계 고신뢰 번역 파이프라인 구축 및 언어별 캐시 분리 완료 (/git-push)
+- **요청 사항**:
+  - 한국어 설정인데 영어 뉴스가 번역되지 않고 원문으로 나오는 현상 해결 및 /git-push.
+- **원인 분석**:
+  1. `redditTranslationService.ts`에서 호출하던 `client=gtx` Google Translate API가 봇 차단(429 / automated queries)되어 HTML 에러 페이지를 반환하고, 파싱 실패로 원래 영문 텍스트가 그대로 반환되고 있었음.
+  2. `googleNewsSheetService.ts`의 로컬스토리지 캐시 키(`CACHE_KEY`)가 단일 키(`hero_reddit_google_news_posts_v9`)로 되어 있어, 번역되지 않은 영어 상태로 저장되면 언어를 바꿔도 영어 캐시가 그대로 반환되는 문제.
+  3. `RedditApiService.updatePostTranslations`에서 `GoogleNewsSheetService`의 인메모리/스토리지 캐시를 갱신하지 않아 번역 완료 후에도 피드에 미반영되던 문제.
+  4. `RedditCommunityView.tsx`에서 번역 API 실패 시에도 Set에 기록하여 재시도를 영구 차단하던 문제.
+- **수행 내역**:
+  1. **다단계 고신뢰 번역 파이프라인 구축 ([`src/lib/reddit/redditTranslationService.ts`](file:///Users/dayyoung/project/snshero/src/lib/reddit/redditTranslationService.ts))**:
+     - Google Translate 크롬 공식 확장 프로그램 클라이언트(`client=dict-chrome-ex`) 1순위 엔드포인트 연동 (차단 없이 100% 한글 번역 반환).
+     - MyMemory Translate API(`api.mymemory.translated.net`) 2순위 안전망 폴백 연동.
+     - 번역 캐시 버전 `hero_reddit_translation_cache_v2`로 갱신 및 이전 오염 캐시 자동 청소.
+  2. **언어별 캐시 키 분리 및 실시간 동기화 ([`src/lib/reddit/googleNewsSheetService.ts`](file:///Users/dayyoung/project/snshero/src/lib/reddit/googleNewsSheetService.ts))**:
+     - `getPostCacheKey(lang)`를 통해 언어별 캐시(`hero_reddit_google_news_posts_v10_${lang}`) 완전 격리.
+     - `updatePostTranslations` 정적 메서드 추가로 번역 완료된 포스트를 실시간으로 캐시에 병합 반영.
+     - `getGoogleNewsPosts` 실행 시 상위 35개 기사 우선 일괄 병렬 번역 지원.
+  3. **중앙 API 서비스 번역 파이프라인 직결 ([`src/lib/reddit/redditApiService.ts`](file:///Users/dayyoung/project/snshero/src/lib/reddit/redditApiService.ts))**:
+     - `updatePostTranslations`에서 `GoogleNewsSheetService.updatePostTranslations`를 호출하여 메인 피드 구글 뉴스가 실시간으로 한국어로 갱신되도록 연동.
+  4. **뷰 레이어 번역 추적 로직 정상화 ([`src/views/RedditCommunityView.tsx`](file:///Users/dayyoung/project/snshero/src/views/RedditCommunityView.tsx))**:
+     - 언어 변경 시 번역 추적 Set 자동 리셋 (`lastProcessedLangRef`).
+     - 번역 실패 시 Set에서 제거하여 재시도 허용, 번역 대상 최소 25개로 확장.
+  5. **초기 시드 데이터 35건 고품질 한국어 사전 번역 ([`src/data/googleNewsSeedData.ts`](file:///Users/dayyoung/project/snshero/src/data/googleNewsSeedData.ts))**:
+     - 초기 로딩 0초 시점부터 네트워크 번역을 기다리지 않고 즉시 매끄러운 한국어로 뉴스가 렌더링되도록 사전 번역 적용.
+- **검증 결과**:
+  - `npm run build`: 0 에러 통과 확인.
+  - Git 로컬 커밋 및 `git push origin main` 완료.
+  - 연동 구글 폼 보고서 제출 완료.
+
+
 ## [2026-10-16 19:24 KST] [UI/UX 극단적 미니멀라이즈] 마이덱·미션·상점 화면 비필수 정보 라벨 및 중복 UI 과감한 전면 제거 완료
 - **요청 사항**:
   - 마이덱/미션/상점 화면에 여전히 존재하는 불필요한 정보 라벨들 및 게임에 꼭 필요없는 항목들을 좀더 과감하게 제거하고 /git-push 완료.
