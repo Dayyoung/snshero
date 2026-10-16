@@ -747,53 +747,7 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
           </button>
         </div>
 
-        {/* SCR-06: [HERO EQUITY & DIVIDEND HUD] (Financial Terminal Style + Viral Share) */}
-        <div className="p-3.5 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none font-mono space-y-2.5">
-          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[rgba(15,0,0,0.12)] pb-2">
-            <div className="flex items-center gap-2">
-              <PieChart size={14} className="text-[#201d1d] shrink-0" />
-              <span className="text-xs font-black uppercase tracking-wider text-[#201d1d]">
-                [HERO EQUITY &amp; DIVIDEND HUD]
-              </span>
-            </div>
-            <div className="flex items-center gap-2 text-[11px]">
-              <span className="text-[#646262]">
-                {language === 'ko' ? '평가자산:' : 'Equity:'}{' '}
-                <strong className="text-[#201d1d]">{portfolioStats.totalStockAssetSns.toLocaleString()} SNS</strong>
-              </span>
-              <span className="text-[#646262]">|</span>
-              <span className="text-[#646262]">
-                {language === 'ko' ? '일일배당:' : 'Daily Div:'}{' '}
-                <strong className="text-emerald-700">+{portfolioStats.estimatedDailyDividends.toLocaleString()} SNS</strong>
-              </span>
-            </div>
-          </div>
 
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2">
-            <button
-              type="button"
-              onClick={handleSharePortfolioYield}
-              className="flex-1 min-h-[44px] px-3 py-2 bg-[#201d1d] hover:bg-[#333030] text-[#fdfcfc] border border-[#201d1d] rounded-sm text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
-            >
-              <Sparkles size={14} className="text-amber-400 shrink-0" />
-              <span>
-                {stockViralShared
-                  ? (language === 'ko' ? '[포트폴리오 수익률 공유 (오늘 수령완료)]' : '[Share Portfolio Yield (Claimed)]')
-                  : (language === 'ko' ? '[포트폴리오 수익률 공유 (+50 SNS)]' : '[Share Portfolio Yield (+50 SNS)]')}
-              </span>
-            </button>
-            {dividendAvailable > 0 && (
-              <button
-                type="button"
-                onClick={handleClaimDividends}
-                className="min-h-[44px] px-3 py-2 bg-[#fdfcfc] hover:bg-[#eae8e8] text-[#201d1d] border border-[#201d1d] rounded-sm text-xs font-black flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
-              >
-                <Wallet size={14} />
-                <span>[{language === 'ko' ? `배당금 수령 (+${dividendAvailable} SNS)` : `Claim Div (+${dividendAvailable} SNS)`}]</span>
-              </button>
-            )}
-          </div>
-        </div>
 
         {/* SCR-06: Mobile 4-Segment Sub Tab Navigation (44px+ Pure Touch) */}
         <div className="grid grid-cols-4 gap-1 p-1 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none select-none">

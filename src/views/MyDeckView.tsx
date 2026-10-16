@@ -1643,62 +1643,6 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
             <span className="mt-2 block break-all text-2xl sm:text-3xl font-bold tabular-nums">{globalTotalPower.toLocaleString()}</span>
           </div>
         </div>
-
-        {/* SCR-03: [MY DECK CHALLENGE & SYNERGY HUD] Editorial Bar */}
-        <div className="border border-[#0f0000]/12 bg-[#f8f7f7] p-3.5 sm:p-4 rounded-none font-mono flex flex-col gap-3">
-          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#0f0000]/12 pb-2.5">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-bold rounded-none uppercase tracking-wider">
-                MY DECK CHALLENGE & SYNERGY HUD
-              </span>
-              <span className="text-xs font-bold text-[#646262]">
-                {language === 'ko'
-                  ? `덱 ID: [${currentDeck.map(c => c?.imageIndex || Number(c?.id) || 1).join('-') || '1-11-31-51-101'}]`
-                  : `DECK ID: [${currentDeck.map(c => c?.imageIndex || Number(c?.id) || 1).join('-') || '1-11-31-51-101'}]`}
-              </span>
-            </div>
-            <span className="text-xs font-bold text-[#201d1d]">
-              {currentDeck.some(c => String(c?.element || '').toUpperCase() === 'WATER')
-                ? (language === 'ko' ? '✓ 속성 시너지 안정' : '✓ Balanced Synergy')
-                : (language === 'ko' ? '⚠️ 부족 속성·전력 표적 소환 권장' : '⚠️ Target Summon Recommended')}
-            </span>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            <button
-              type="button"
-              onClick={handleShareMyDeckChallenge}
-              className="min-h-[44px] px-3.5 py-2.5 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] border border-[#201d1d] rounded-sm text-xs font-bold flex items-center justify-between gap-2 transition-colors cursor-pointer"
-            >
-              <span className="flex items-center gap-2 truncate">
-                <Share2 size={14} className="shrink-0" />
-                <span className="truncate">
-                  {challengeLinkCopied
-                    ? (language === 'ko' ? '[도전장 링크 복사됨!]' : '[Challenge Link Copied!]')
-                    : myDeckViralClaimed
-                      ? (language === 'ko' ? '[내 덱 도전장 링크 복사 (오늘 보상 완료)]' : '[Copy Deck Challenge URL (Claimed)]')
-                      : (language === 'ko' ? '[내 덱 도전장 링크 복사 (+50 SNS)]' : '[Copy Deck Challenge URL (+50 SNS)]')}
-                </span>
-              </span>
-              <ArrowRight size={14} className="shrink-0 opacity-80" />
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                onNavigate('shop');
-              }}
-              className="min-h-[44px] px-3.5 py-2.5 bg-[#fdfcfc] hover:bg-[#f1eeee] text-[#201d1d] border border-[#0f0000]/12 rounded-sm text-xs font-bold flex items-center justify-between gap-2 transition-colors cursor-pointer"
-            >
-              <span className="flex items-center gap-2 truncate">
-                <Package size={14} className="shrink-0" />
-                <span className="truncate">
-                  {language === 'ko' ? '[상점 표적 소환 바로가기]' : '[Go to Target Summon Shop]'}
-                </span>
-              </span>
-              <ArrowRight size={14} className="shrink-0 opacity-70" />
-            </button>
-          </div>
-        </div>
       </div>
 
       {/* Multi-Deck Presets Control Bar (Item 31 & ID 427, ID 447, ID 477) */}

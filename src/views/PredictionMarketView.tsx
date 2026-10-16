@@ -528,31 +528,7 @@ export const PredictionMarketView: React.FC<PredictionMarketViewProps> = ({
           </div>
         </div>
 
-        {/* SCR-07 Viral Challenge Share Banner */}
-        <div className="w-full border border-[#201d1d] bg-[#f8f7f7] p-3 text-[#201d1d] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-mono">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-none">
-                [VIRAL PREDICTION]
-              </span>
-              <span className="text-xs font-bold text-[#201d1d]">
-                {language === 'ko' ? '승부 예측 티켓 & 덱 1:1 도전장 공유' : 'Share Prediction Ticket & 1:1 Duel'}
-              </span>
-            </div>
-            <p className="text-[11px] text-[#646262] mt-0.5">
-              {language === 'ko' ? '친구와 승부 예측 겨루기 · 매일 첫 공유 시 +50 SNS 즉시 지급' : 'Challenge friends on predictions · +50 SNS daily reward'}
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={handleSharePredictionChallenge}
-            className="w-full sm:w-auto min-h-[44px] px-4 py-2 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] text-xs font-bold rounded-sm cursor-pointer transition-colors shrink-0"
-          >
-            {viralSharedToday
-              ? (language === 'ko' ? '[도전장 링크 복사]' : '[COPY DUEL LINK]')
-              : (language === 'ko' ? '[도전장 공유 (+50 SNS)]' : '[SHARE DUEL (+50 SNS)]')}
-          </button>
-        </div>
+
 
         {/* SCR-07 FTUE: 내 예측 베팅 포트폴리오 요약 HUD */}
         <div className="bg-white border border-slate-200/80 rounded-sm p-3.5 shadow-xs font-mono">

@@ -1024,77 +1024,7 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
           </div>
         )}
 
-        {/* SCR-05: [P2P MARKET & DEAL SHARE HUD] (UA · Viral · BM Hub) */}
-        <div className="w-full bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] p-3.5 rounded-none font-mono text-xs space-y-3">
-          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[rgba(15,0,0,0.12)] pb-2.5">
-            <div className="flex items-center gap-2">
-              <Flame size={14} className="text-amber-600 shrink-0" />
-              <span className="font-black text-[#201d1d] uppercase tracking-wider">
-                [P2P MARKET &amp; DEAL SHARE HUD]
-              </span>
-              {!firstTradeRewardClaimed && (
-                <span className="px-1.5 py-0.5 bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-sm text-[10px] font-bold text-amber-800">
-                  {language === 'ko' ? '첫 거래 +50 SNS 캐시백' : 'First Trade +50 SNS'}
-                </span>
-              )}
-            </div>
-            <div className="flex items-center gap-2">
-              <Zap size={13} className="text-amber-600" />
-              <span className="text-[#646262] text-[11px]">{language === 'ko' ? '보유 잔액:' : 'Balance:'}</span>
-              <span className="font-black text-[#201d1d] text-sm">[{userSns.toLocaleString()} SNS]</span>
-            </div>
-          </div>
 
-          {hotBargainListing && (
-            <div className="p-2.5 bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-none flex flex-wrap items-center justify-between gap-2">
-              <div className="flex items-center gap-2 min-w-0">
-                <span className="px-1.5 py-0.5 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-black rounded-sm shrink-0">
-                  HOT -{hotBargainListing.discountPct}%
-                </span>
-                <span className="font-black text-[#201d1d] truncate">
-                  {getCardTitle(hotBargainListing.listing.cardId)}
-                </span>
-                <span className="text-[11px] font-bold text-emerald-700">
-                  {hotBargainListing.listing.askPrice.toLocaleString()} SNS
-                </span>
-                <span className="text-[10px] text-[#646262] line-through">
-                  {hotBargainListing.recPrice.toLocaleString()} SNS
-                </span>
-              </div>
-              <button
-                type="button"
-                onClick={() => handleRequestPurchase(hotBargainListing.listing)}
-                className="min-h-[36px] px-2.5 py-1 bg-[#201d1d] text-[#fdfcfc] hover:bg-[#333030] text-[10px] font-bold rounded-sm cursor-pointer shrink-0"
-              >
-                [{language === 'ko' ? '급매물 즉시 매수' : 'Buy Bargain'}]
-              </button>
-            </div>
-          )}
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            <button
-              type="button"
-              onClick={handleShareMarketDeal}
-              className="min-h-[44px] px-3 py-2 bg-[#201d1d] hover:bg-[#333030] text-[#fdfcfc] border border-[#201d1d] rounded-sm font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
-            >
-              <Gift size={14} className="text-amber-400 shrink-0" />
-              <span>
-                {marketViralShared
-                  ? (language === 'ko' ? '[특가 매물 & 도전장 링크 공유 (오늘 수령완료)]' : '[Share Deal & Challenge Link (Claimed)]')
-                  : (language === 'ko' ? '[특가 매물 & 도전장 링크 공유 (+50 SNS)]' : '[Share Deal & Challenge Link (+50 SNS)]')}
-              </span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setView('shop')}
-              className="min-h-[44px] px-3 py-2 bg-[#fdfcfc] hover:bg-[#eae8e8] text-[#201d1d] border border-[#201d1d] rounded-sm font-black text-xs flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
-            >
-              <span>[💎 {language === 'ko' ? '상점 SNS 충전' : 'Top-up SNS at Shop'}]</span>
-              <ArrowUpRight size={14} />
-            </button>
-          </div>
-        </div>
 
         {/* SCR-05 UX: 모바일 원터치 서브 탭바 (스크롤 피로도 해소) */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 p-1 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none font-mono text-xs">

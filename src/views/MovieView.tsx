@@ -535,70 +535,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
         }
       />
 
-      {/* ── [MEDIA REWARD & SHARE (+50 SNS)] Editorial Bridge ── */}
-      <section className="mb-4 p-4 rounded-none border border-[#201d1d] bg-[#f8f7f7] font-mono space-y-3">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[rgba(15,0,0,0.12)] pb-2.5">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-bold rounded-sm">
-              [MEDIA REWARD &amp; SHARE (+50 SNS)]
-            </span>
-            <span className="text-xs font-bold text-[#201d1d]">
-              {language === 'ko'
-                ? `극장판 시청 보상: 회차당 +100 SNS 자동 지급 · 공유 보너스 +50 SNS`
-                : `Movie Watch Bonus: +100 SNS/Ep Auto · Share Bonus +50 SNS`}
-            </span>
-          </div>
-          <span className="text-[11px] font-bold text-[#646262]">
-            {currentRewardClaimed
-              ? (language === 'ko' ? `[v] EP.${String(currentEpisodeNum).padStart(2, '0')} +100 SNS 완료` : `[v] EP.${String(currentEpisodeNum).padStart(2, '0')} +100 SNS Claimed`)
-              : (language === 'ko' ? `[+] 시청 시 +100 SNS 자동 지급` : `[+] Auto +100 SNS on watch`)}
-          </span>
-        </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-          <button
-            type="button"
-            onClick={handleShareMovieChallenge}
-            className={cn(
-              "min-h-[44px] px-3 py-2 border rounded-sm text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-colors",
-              viralSharedToday
-                ? "bg-[#fdfcfc] text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee]"
-                : "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d] hover:bg-[#201d1d]/90"
-            )}
-          >
-            <Copy size={14} />
-            <span>
-              {viralSharedToday
-                ? (language === 'ko' ? '[v] 영화 & 도전장 링크 복사됨' : '[v] Movie & Duel Link Copied')
-                : (language === 'ko' ? '[영화 & 도전장 링크 공유 (+50 SNS)]' : '[Share Movie & Duel Link (+50 SNS)]')}
-            </span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => {
-              triggerHaptic('tap');
-              onNavigate('novel');
-            }}
-            className="min-h-[44px] px-3 py-2 border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] hover:bg-[#f1eeee] text-[#201d1d] rounded-sm text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
-          >
-            <BookOpen size={14} />
-            <span>{language === 'ko' ? '[+] 원작 웹소설·카툰 허브 이동' : '[+] Read Original Novel & Webtoon'}</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => {
-              triggerHaptic('tap');
-              onNavigate('shop');
-            }}
-            className="min-h-[44px] px-3 py-2 border border-[#201d1d] bg-[#201d1d] hover:bg-[#201d1d]/90 text-[#fdfcfc] rounded-sm text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
-          >
-            <ShoppingCart size={14} />
-            <span>{language === 'ko' ? '[+] 극장판 영웅 상점 표적 소환' : '[+] Summon Movie Heroes in Shop'}</span>
-          </button>
-        </div>
-      </section>
 
       {/* ── Movie Banner Info Header ── */}
       <div className="mb-4 sm:mb-6 p-4 rounded-none border border-[#201d1d] bg-[#201d1d] text-[#fdfcfc]">

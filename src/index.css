@@ -191,13 +191,18 @@
     @apply inline-flex items-center px-2 py-1 rounded-sm text-xs font-mono font-medium bg-[#f1eeee] text-[#646262] tracking-wide uppercase select-none;
   }
 
+  .button-primary,
+  .btn-primary,
   .ollama-button-primary {
-    @apply min-h-11 bg-[#201d1d] text-[#fdfcfc] px-5 py-2.5 rounded-sm font-mono font-bold text-sm hover:bg-[#0f0000] active:scale-[0.98] transition-colors cursor-pointer;
+    @apply min-h-[44px] bg-[#201d1d] text-[#fdfcfc] hover:bg-[#333] border border-[#201d1d] rounded-sm font-mono font-bold text-sm px-4 py-2.5 transition-colors cursor-pointer select-none active:scale-[0.98];
     box-shadow: none !important;
   }
 
+  .button-secondary,
+  .btn-secondary,
   .ollama-button-secondary {
-    @apply min-h-11 bg-[#fdfcfc] text-[#201d1d] border border-[#646262] px-5 py-2.5 rounded-sm font-mono font-bold text-sm hover:bg-[#f8f7f7] active:scale-[0.98] transition-colors cursor-pointer;
+    @apply min-h-[44px] bg-[#fdfcfc] text-[#201d1d] hover:bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-sm font-mono font-bold text-sm px-4 py-2.5 transition-colors cursor-pointer select-none active:scale-[0.98];
+    box-shadow: none !important;
   }
 
   .ollama-card {

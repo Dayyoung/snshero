@@ -519,30 +519,10 @@ function AppContent() {
   const [autoStartPvp, setAutoStartPvp] = useState(false);
   const [fromBackToRanking, setFromBackToRanking] = useState(false);
   const [view, setView] = useState<ViewType>(() => getViewFromPathAndUrl());
-  // FTUE Tactical Overdrive Modal (First-time visitor 0.5s auto-trigger)
+  // FTUE Tactical Overdrive Modal (Disabled auto-popup to enforce zero-intrusion minimalism)
   const [showFtueOverdrive, setShowFtueOverdrive] = useState(false);
 
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const ftueDone = localStorage.getItem('snshero_ftue_overdrive_v1');
-    if (!ftueDone) {
-      const timer = setTimeout(() => {
-        setShowFtueOverdrive(true);
-      }, 500);
-      return () => clearTimeout(timer);
-    } else {
-      // RSI-016: Trigger Tactical Quick Strike if callsign not yet granted
-      const callsignGranted = localStorage.getItem('hero_guest_callsign_granted');
-      if (!callsignGranted) {
-        const timer = setTimeout(() => {
-          setShowQuickStrikeModal(true);
-        }, 1200);
-        return () => clearTimeout(timer);
-      }
-    }
-  }, []);
-
-  // RSI-005: Daily Free 10x Requisition Modal State & Trigger
+  // RSI-005: Daily Free 10x Requisition Modal State (Available on-demand via event, no auto-popup)
   // Viral Instant Challenge Deck Modal (?challenge={deckCode})
   const [challengeDeckCode, setChallengeDeckCode] = useState<string | null>(() => {
     if (typeof window === 'undefined') return null;
@@ -577,51 +557,11 @@ function AppContent() {
   });
   const [showStoryDuelModal, setShowStoryDuelModal] = useState<boolean>(() => Boolean(storyDuelParam));
 
-  // RSI-005: Daily Free 10x Requisition Modal State & Trigger
+  // RSI-005: Daily Free 10x Requisition Modal State (Manual trigger only)
   const [showDailyRequisition, setShowDailyRequisition] = useState(false);
 
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    if (view === 'home' && !showFtueOverdrive && !challengeDeckCode) {
-      try {
-        const claimedDate = localStorage.getItem('snshero_daily_requisition_date');
-        const now = new Date();
-        const utc = now.getTime() + now.getTimezoneOffset() * 60000;
-        const kst = new Date(utc + 9 * 3600000);
-        const kstKey = `${kst.getFullYear()}-${String(kst.getMonth() + 1).padStart(2, '0')}-${String(kst.getDate()).padStart(2, '0')}`;
-        if (claimedDate !== kstKey) {
-          const timer = setTimeout(() => {
-            setShowDailyRequisition(true);
-          }, 1000);
-          return () => clearTimeout(timer);
-        }
-      } catch {}
-    }
-  }, [view, showFtueOverdrive, challengeDeckCode]);
-
-  // RSI-010: 7-Day Streak Retention Protocol Modal State & Trigger (스마트 디퍼링: 연속 자동 팝업 방지)
+  // RSI-010: 7-Day Streak Retention Protocol Modal State (Manual trigger only)
   const [showSevenDayStreak, setShowSevenDayStreak] = useState(false);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    // 일일 10연차가 아직 미처리되었거나 다른 모달이 열려있을 때는 자동 팝업을 띄우지 않고 사용성을 최우선으로 보호
-    if (view === 'home' && !showFtueOverdrive && !challengeDeckCode && !showDailyRequisition) {
-      try {
-        const lastDate = localStorage.getItem('hero_last_streak_view_date');
-        const claimedRequisition = localStorage.getItem('snshero_daily_requisition_date');
-        const today = new Date().toISOString().split('T')[0];
-        
-        // 10연차를 오늘 이미 수령 완료한 상태에서만, 그리고 하루 1회만 부드럽게 출석부 노출
-        if (lastDate !== today && claimedRequisition) {
-          const timer = setTimeout(() => {
-            setShowSevenDayStreak(true);
-            localStorage.setItem('hero_last_streak_view_date', today);
-          }, 1500);
-          return () => clearTimeout(timer);
-        }
-      } catch {}
-    }
-  }, [view, showFtueOverdrive, challengeDeckCode, showDailyRequisition]);
 
   // RSI-011: Personalized Starter Deck Modal State
   const [showPersonalizedStarter, setShowPersonalizedStarter] = useState(false);
@@ -7083,84 +7023,6 @@ function AppContent() {
         {/* Global Chat Floating Button */}
          {view !== 'reddit' && view !== 'landing' && view !== 'cartoonBook' && view !== 'novel' && view !== 'webtoon' && view !== 'card-play' && view !== 'play' && !isPlayingBattle && !isGlobalPopupOpen && (
           <>
-          <div className={cn(
-            "fixed left-0 right-0 w-full max-w-[1024px] mx-auto z-[10000] pointer-events-none transition-all",
-            view === 'shop'
-              ? "bottom-[calc(env(safe-area-inset-bottom,0px)+9.5rem)]"
-              : !showNavbar
-              ? "bottom-[calc(env(safe-area-inset-bottom)+0.75rem)]"
-              : "bottom-[calc(env(safe-area-inset-bottom)+5rem)]"
-          )}>
-                 {/* Ranking Battle Floating Button — left side */}
-                 <div className="absolute left-4 bottom-0 flex flex-col items-center pointer-events-auto gap-1">
-                   <button
-                     id="global-ranking-battle-toggle-btn"
-                     onClick={handleStartRankingBattle}
-                     className="w-11 h-11 rounded-sm flex items-center justify-center transition-colors relative border cursor-pointer touch-target bg-[var(--ui-canvas)] border-[var(--ui-line)] text-[var(--ui-ink)] hover:bg-[var(--ui-surface)] group"
-                     aria-label={language === 'ko' ? '랭킹대전 시작 (PvP)' : 'Start Ranking Battle (PvP)'}
-                     title={language === 'ko' ? '랭킹대전 시작 (PvP)' : 'Start Ranking Battle (PvP)'}
-                   >
-                     <div className="relative flex items-center justify-center">
-                       <Swords size={22} strokeWidth={2} />
-                     </div>
-                     <span className="absolute -top-2 -left-1 bg-[#201d1d] text-[#fdfcfc] text-[9px] font-mono px-1 py-0.5 rounded-sm border border-[#646262]">
-                       PVP
-                     </span>
-                   </button>
-                   <span className="text-[11px] font-mono text-[var(--ui-ink)] bg-[var(--ui-canvas)] px-1.5 py-0.5 pointer-events-none whitespace-nowrap">
-                     {language === 'ko' ? '랭킹대전' : 'RANK PVP'}
-                   </span>
-                 </div>
-
-                 {/* Chat + Auto Battle Buttons — right side */}
-                 <div className="absolute right-4 bottom-0 flex flex-col items-center pointer-events-auto gap-1">
-                   {/* Chat Toggle */}
-                   <button
-                     id="global-chat-toggle-btn"
-                    onClick={() => {
-                      setIsChatOpen(!isChatOpen);
-                      if (!isChatOpen) setUnreadCount(0);
-                    }}
-                    className={cn(
-                      "w-11 h-11 rounded-sm flex items-center justify-center transition-colors relative border cursor-pointer touch-target",
-                      isChatOpen
-                        ? "bg-[#201d1d] border-[#646262] text-[#fdfcfc]"
-                        : "bg-[var(--ui-canvas)] border-[var(--ui-line)] text-[var(--ui-ink)] hover:bg-[var(--ui-surface)]"
-                    )}
-                    aria-label={isChatOpen ? (language === 'ko' ? '채팅창 닫기' : 'Close Chat') : (language === 'ko' ? '실시간 통신망 채팅 열기' : 'Open Live Chat')}
-                    title={isChatOpen ? (language === 'ko' ? '채팅창 닫기' : 'Close Chat') : (language === 'ko' ? '실시간 통신망 채팅 열기' : 'Open Live Chat')}
-                  >
-                    {isChatOpen ? (
-                      <X size={22} strokeWidth={2} />
-                    ) : (
-                      <div className="relative flex items-center justify-center">
-                        <MessageCircle size={22} strokeWidth={2} />
-                      </div>
-                    )}
-                    <AnimatePresence>
-                      {!isChatOpen && unreadCount > 0 && (
-                        <motion.span 
-                          key="unread-badge"
-                          initial={{ scale: 0, opacity: 0 }}
-                          animate={{ scale: 1, opacity: 1 }}
-                          exit={{ scale: 0, opacity: 0 }}
-                          className="absolute -top-2 -right-2 bg-[#9a392e] text-white text-[10px] font-bold min-w-[22px] h-5.5 rounded-sm flex items-center justify-center border border-white px-1 z-10"
-                        >
-                          {unreadCount > 99 ? '99+' : unreadCount}
-                        </motion.span>
-                      )}
-                    </AnimatePresence>
-                    
-                  </button>
-                  <span className={cn(
-                    "text-[11px] font-mono px-1.5 py-0.5 pointer-events-none whitespace-nowrap text-[var(--ui-ink)] bg-[var(--ui-canvas)]"
-                  )}>
-                    {isChatOpen
-                      ? (language === 'ko' ? '닫기' : 'CLOSE')
-                      : (language === 'ko' ? '채팅하기' : 'CHAT')}
-                  </span>
-                </div>
-             </div>
 
           <AnimatePresence>
             {isChatOpen && (
@@ -8111,24 +7973,7 @@ function AppContent() {
         </Suspense>
       )}
 
-      {/* 스마트 루프 신규 화면 데모 투어 HUD */}
-      {isDemoTourActive && view !== 'card-play' && (
-        <Suspense fallback={null}>
-          <SmartLoopTourHUD
-            currentView={view}
-            onNavigate={setView}
-            language={language}
-          />
-        </Suspense>
-      )}
 
-      {/* 홈 30초 비조작 시 순환 데모플레이 HUD */}
-      <Suspense fallback={null}>
-        <DemoPlayHUD
-          onNavigate={setView}
-          language={language}
-        />
-      </Suspense>
 
       {/* GPS Permission Explanation Modal */}
       <AnimatePresence>
@@ -8478,19 +8323,7 @@ function AppContent() {
         }}
       />
 
-      {/* RSI-019: Star Breathing Ultimate Widget (Active in Tactical Card Battle) */}
-      {(view === 'card-play' || view === 'main') && (
-        <StarBreathingUltimateWidget
-          isBattleActive={true}
-          onCastUltimate={() => {
-            showCustomAlert(
-              language === 'ko' ? '오의 발동' : 'ULTIMATE ACTIVATED',
-              language === 'ko' ? '성진호흡 별빛 성역 전개! 적 카드가 정화 캡처되었습니다.' : 'Star Sanctuary deployed! Enemy card purified & captured.',
-              3
-            );
-          }}
-        />
-      )}
+
 
       {/* RSI-020: Adventurer Guild Bounty Board Modal */}
       <GuildBountyBoardModal

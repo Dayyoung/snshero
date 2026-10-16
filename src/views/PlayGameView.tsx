@@ -13767,8 +13767,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 </div>
               )}
 
-              {/* 3대 원핸드 그로스/과금/바이럴 퀵 액션 버튼 바 */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
+              {/* 원핸드 아레나 퀵 액션 버튼 바 */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
                 {/* 1) 랜덤 1:1 대결 */}
                 <button
                   type="button"
@@ -13781,7 +13781,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     if (picked) recordModePlay(picked.id);
                     startMissionCardBattle(targetId);
                   }}
-                  className="min-h-[44px] px-3 py-2 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] text-xs font-bold rounded-sm border border-[#201d1d] cursor-pointer flex items-center justify-center gap-1.5"
+                  className="min-h-[44px] px-3 py-2 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] text-xs font-bold rounded-sm border border-[#201d1d] cursor-pointer flex items-center justify-center gap-1.5 transition-colors"
                 >
                   <Dices size={15} className="shrink-0" />
                   <span>{language === 'ko' ? '[랜덤 1:1 즉시 대결]' : '[Random 1:1 Battle]'}</span>
@@ -13826,68 +13826,6 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     {language === 'ko'
                       ? '[AP 물약 +50 (25 SNS 특가)]'
                       : '[+50 AP Potion (25 SNS)]'}
-                  </span>
-                </button>
-
-                {/* 3) 바이럴 1클릭 도전장 링크 복사 (+50 SNS 일일 보상) */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    triggerHaptic('light');
-                    playBattleSfx('button_tap');
-                    const deckIds = (playerDeck && playerDeck.length > 0)
-                      ? playerDeck.slice(0, 5).map(c => c.imageIndex || 1).join('-')
-                      : '1-11-31-51-101';
-                    const shareUrl = `https://snshero.com/?challenge=${encodeURIComponent(deckIds)}`;
-                    try {
-                      if (navigator.clipboard && navigator.clipboard.writeText) {
-                        navigator.clipboard.writeText(shareUrl);
-                      }
-                    } catch {}
-                    setViralShareCopied(true);
-                    setTimeout(() => setViralShareCopied(false), 3000);
-
-                    const todayKey = `hero_mission_viral_share_${new Date().toISOString().slice(0, 10)}`;
-                    if (!localStorage.getItem(todayKey)) {
-                      localStorage.setItem(todayKey, 'true');
-                      const nextSns = snsBalance + 50;
-                      setSnsBalance(nextSns);
-                      if (updateSns) {
-                        updateSns(50, 'daily_challenge_link_share', 'earned');
-                      } else {
-                        try {
-                          localStorage.setItem('hero_sns', String(nextSns));
-                          window.dispatchEvent(new Event('snshero_sns_updated'));
-                        } catch {}
-                      }
-                      setMissionBattleFeedback({
-                        success: true,
-                        type: 'obtain',
-                        cardName: 'Viral Challenge',
-                        cardId: 1,
-                        message: language === 'ko'
-                          ? '내 덱 도전장 URL 복사 완료! 일일 공유 보너스 +50 SNS가 즉시 지급되었습니다.'
-                          : 'Challenge URL copied! Daily share bonus +50 SNS granted.',
-                      });
-                    } else {
-                      setMissionBattleFeedback({
-                        success: true,
-                        type: 'obtain',
-                        cardName: 'Viral Challenge',
-                        cardId: 1,
-                        message: language === 'ko'
-                          ? `내 덱 도전장 링크가 클립보드에 복사되었습니다: ${shareUrl}`
-                          : `Challenge link copied to clipboard: ${shareUrl}`,
-                      });
-                    }
-                  }}
-                  className="min-h-[44px] px-3 py-2 bg-[#fdfcfc] hover:bg-[#201d1d] text-[#201d1d] hover:text-[#fdfcfc] text-xs font-bold rounded-sm border border-[rgba(15,0,0,0.12)] transition-colors cursor-pointer flex items-center justify-center gap-1.5"
-                >
-                  <Share2 size={15} className="shrink-0" />
-                  <span>
-                    {viralShareCopied
-                      ? (language === 'ko' ? '[복사됨! 친구에게 붙여넣기]' : '[Copied! Share Link]')
-                      : (language === 'ko' ? '[도전장 링크 공유 (+50 SNS)]' : '[Share Challenge (+50 SNS)]')}
                   </span>
                 </button>
               </div>

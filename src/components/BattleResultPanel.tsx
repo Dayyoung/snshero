@@ -480,23 +480,25 @@ export const BattleResultPanel: React.FC<BattleResultPanelProps> = ({
         </div>
       )}
 
-      {/* Action Buttons: Viral Challenge URL Share (+50 SNS), Deep Battle Summary & Share to Community */}
+      {/* Action Buttons: Unified Battle Result & Challenge Share */}
       <div className="pt-1 space-y-2">
-        {/* [이 대결 도전장 URL 공유 (+50 SNS)] 원터치 바이럴 버튼 */}
         <button
           type="button"
-          onClick={handleShareChallengeUrl}
+          onClick={() => {
+            handleShareChallengeUrl();
+            handleShareClick();
+          }}
           className="w-full min-h-[44px] py-2.5 px-4 rounded-sm text-xs sm:text-sm font-bold uppercase tracking-tight flex items-center justify-between gap-2 transition-colors cursor-pointer border bg-[#201d1d] hover:bg-[#302c2c] border-[#201d1d] text-[#fdfcfc]"
         >
           <span className="flex items-center gap-2">
             <Share2 size={14} className="shrink-0" />
             <span>
               {isKo
-                ? (hasClaimedBattleShare ? '[✓ 이 대결 도전장 URL 재복사 (일일 보상 완료)]' : '[이 대결 도전장 URL 공유 (+50 SNS)]')
-                : (hasClaimedBattleShare ? '[✓ Copy Match Challenge URL Again]' : '[Share This Match Challenge URL (+50 SNS)]')}
+                ? (hasClaimedBattleShare ? '[✓ 대결 결과 & 도전장 링크 복사됨]' : '[대결 결과 & 도전장 공유 (+50 SNS)]')
+                : (hasClaimedBattleShare ? '[✓ Battle Result & Challenge Link Copied]' : '[Share Battle Result & Challenge (+50 SNS)]')}
             </span>
           </span>
-          <span className="text-xs text-[#9a9898] shrink-0">[+50 SNS]</span>
+          <span className="text-xs text-[#9a9898] shrink-0">[+50]</span>
         </button>
 
         {challengeShareNotice && (
@@ -512,31 +514,9 @@ export const BattleResultPanel: React.FC<BattleResultPanelProps> = ({
             className="w-full min-h-[44px] py-2.5 px-4 rounded-sm text-xs font-bold uppercase tracking-tight flex items-center justify-center gap-2 transition-colors cursor-pointer border bg-[#fdfcfc] hover:bg-[#f8f7f7] border-[#201d1d] text-[#201d1d]"
           >
             <BarChart3 size={14} />
-            <span>{isKo ? '[전투 상세 사후 분석 (Post-Battle Summary)]' : '[Post-Battle Deep Summary]'}</span>
+            <span>{isKo ? '[전투 상세 사후 분석]' : '[Post-Battle Summary]'}</span>
           </button>
         )}
-
-        <button
-          type="button"
-          onClick={handleShareClick}
-          className={`w-full min-h-[44px] py-2.5 px-4 rounded-sm text-xs font-bold uppercase tracking-tight flex items-center justify-center gap-2 transition-colors cursor-pointer border ${
-            shared
-              ? 'bg-[#f1eeee] border-[#201d1d] text-[#201d1d]'
-              : 'bg-[#fdfcfc] hover:bg-[#f8f7f7] border-[rgba(15,0,0,0.12)] text-[#201d1d]'
-          }`}
-        >
-          {shared ? (
-            <>
-              <Check size={14} />
-              <span>{isKo ? '[✓ 커뮤니티 피드에 공유 완료]' : '[✓ Shared to Community Feed]'}</span>
-            </>
-          ) : (
-            <>
-              <Share2 size={14} />
-              <span>{isKo ? '[커뮤니티 피드에 결과 공유]' : '[Share Result to Community Feed]'}</span>
-            </>
-          )}
-        </button>
       </div>
 
       {/* Collapsible View Rewards Detail Button (ID 99) */}

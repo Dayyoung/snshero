@@ -558,31 +558,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
         }
       />
 
-      {/* SCR-12 Viral Challenge Share Banner */}
-      <div className="w-full border border-[#201d1d] bg-[#f8f7f7] p-3 text-[#201d1d] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-mono">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-none">
-              [VIRAL SHARE]
-            </span>
-            <span className="text-xs font-bold text-[#201d1d]">
-              {language === 'ko' ? '친구 초대 & 덱 1:1 도전장 링크 공유' : 'Invite Friends & Share 1:1 Challenge'}
-            </span>
-          </div>
-          <p className="text-[11px] text-[#646262] mt-0.5">
-            {language === 'ko' ? '공유 시 무설치 즉시 대결 · 매일 첫 공유 시 +50 SNS 즉시 지급' : 'Instant no-install battle · +50 SNS daily reward'}
-          </p>
-        </div>
-        <button
-          type="button"
-          onClick={handleShareSettingChallenge}
-          className="w-full sm:w-auto min-h-[44px] px-4 py-2 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] text-xs font-bold rounded-sm cursor-pointer transition-colors shrink-0"
-        >
-          {viralSharedToday
-            ? (language === 'ko' ? '[도전장 링크 복사]' : '[COPY DUEL LINK]')
-            : (language === 'ko' ? '[도전장 공유 (+50 SNS)]' : '[SHARE DUEL (+50 SNS)]')}
-        </button>
-      </div>
+
 
       {/* SCR-12-01: 상단 일일 보상 요약 HUD */}
       <section className="border border-[#201d1d]/12 bg-white p-4 font-mono">

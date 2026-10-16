@@ -971,79 +971,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
         </button>
       </div>
 
-      {/* [STORY -> BATTLE & SUMMON BRIDGE] Editorial Banner */}
-      <section className="w-full max-w-4xl mx-auto px-4 pt-5 font-mono">
-        <div className="w-full border border-[#201d1d] bg-[#f8f7f7] rounded-none p-4 space-y-3">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[rgba(15,0,0,0.12)] pb-2.5">
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-bold rounded-sm">
-                [STORY -&gt; BATTLE &amp; SUMMON BRIDGE]
-              </span>
-              <span className="text-xs font-bold text-[#201d1d]">
-                {language === 'ko'
-                  ? `완독 진행률: ${claimedCount}/${TOTAL_EPISODES}화 (${claimedPct}%) · 누적 보너스 +${claimedCount * 100} SNS`
-                  : `Progress: ${claimedCount}/${TOTAL_EPISODES} (${claimedPct}%) · Total Bonus +${claimedCount * 100} SNS`}
-              </span>
-            </div>
-            <span className="text-[11px] font-bold text-[#646262]">
-              {claimedRewards[currentEpisodeNum]
-                ? (language === 'ko' ? `[v] 제${currentEpisodeNum}화 +100 SNS 지급 완료` : `[v] Ep.${currentEpisodeNum} +100 SNS Claimed`)
-                : (language === 'ko' ? `[+] 열람 시 +100 SNS 즉시 지급` : `[+] Auto +100 SNS on read`)}
-            </span>
-          </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-            {/* 1. Viral Challenge Share (+50 SNS) */}
-            <button
-              type="button"
-              onClick={handleShareNovelChallenge}
-              className={cn(
-                "min-h-[44px] px-3 py-2 border rounded-sm text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-colors",
-                viralSharedToday
-                  ? "bg-[#fdfcfc] text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee]"
-                  : "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d] hover:bg-[#201d1d]/90"
-              )}
-            >
-              <Copy size={14} />
-              <span>
-                {viralSharedToday
-                  ? (language === 'ko' ? '[v] 에피소드 & 도전장 링크 복사됨' : '[v] Challenge Link Copied')
-                  : (language === 'ko' ? '[에피소드 & 도전장 링크 공유 (+50 SNS)]' : '[Share Episode & Duel Link (+50 SNS)]')}
-              </span>
-            </button>
-
-            {/* 2. Featured Hero 1:1 Trial Battle */}
-            <button
-              type="button"
-              onClick={() => {
-                triggerHaptic('tap');
-                onNavigate('play');
-              }}
-              className="min-h-[44px] px-3 py-2 border border-[#201d1d] bg-[#fdfcfc] hover:bg-[#f1eeee] text-[#201d1d] rounded-sm text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
-            >
-              <Play size={14} />
-              <span>
-                {language === 'ko' ? '[+] 등장 영웅 즉시 1:1 체험 배틀' : '[+] 1:1 Trial Battle w/ Story Heroes'}
-              </span>
-            </button>
-
-            {/* 3. Target Hero Summon in Shop */}
-            <button
-              type="button"
-              onClick={() => {
-                triggerHaptic('tap');
-                onNavigate('shop');
-              }}
-              className="min-h-[44px] px-3 py-2 border border-[#201d1d] bg-[#201d1d] hover:bg-[#201d1d]/90 text-[#fdfcfc] rounded-sm text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
-            >
-              <ShoppingCart size={14} />
-              <span>
-                {language === 'ko' ? '[+] 소설 영웅 상점 표적 소환' : '[+] Target Summon in Shop'}
-              </span>
-            </button>
-          </div>
-        </div>
-      </section>
 
       {/* Reader Settings Dropdown Panel */}
       {showSettings && (

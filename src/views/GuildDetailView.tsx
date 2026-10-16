@@ -504,36 +504,7 @@ export const GuildDetailView: React.FC<GuildDetailViewProps> = ({
         {/* SCR-10-01: 상단 비동기 도전장 링크 복사 & 일일 길드 미션 HUD */}
         {!isOpponentMode && userGuild?.id === guild.id && (
           <div className="w-full flex flex-col gap-3 mb-4 font-mono">
-            {/* 1. 비동기 친선 대전 링크 복사 & 친구 초대 1탭 배너 */}
-            <div className="w-full rounded-none border border-[#201d1d] bg-[#f8f7f7] p-3.5 text-[#201d1d] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-              <div className="min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-none">
-                    [VIRAL INVITE]
-                  </span>
-                  <span className="text-xs sm:text-sm font-bold text-[#201d1d]">
-                    {language === 'ko' ? '비동기 친선 도전장 URL 공유 & 친구 초대' : 'Share Ghost Duel Link & Invite Friends'}
-                  </span>
-                </div>
-                <p className="text-xs text-[#646262] mt-1">
-                  {language === 'ko'
-                    ? '링크만 보내면 친구가 무설치로 내 덱과 즉시 1:1 대결 · 일일 첫 공유 시 +50 SNS 즉시 지급'
-                    : 'Friends battle your deck with 1 click without install · +50 SNS daily bonus'}
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={handleCopyGhostLink}
-                className="w-full sm:w-auto min-h-[44px] px-4 py-2 rounded-sm bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer shrink-0"
-              >
-                <Share2 size={15} className="shrink-0" />
-                <span>
-                  {ghostLinkCopied
-                    ? (language === 'ko' ? '[복사 완료! 친구에게 전송]' : '[Copied! Send to Friend]')
-                    : (language === 'ko' ? '[도전장 링크 복사 (+50 SNS)]' : '[Copy Duel Link (+50 SNS)]')}
-                </span>
-              </button>
-            </div>
+
 
             {/* 2. 일일 길드 미션 HUD: 3개 미션 실시간 게이지 */}
             <div className="w-full rounded-none border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-3.5 text-[#201d1d] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
