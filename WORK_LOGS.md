@@ -2,6 +2,27 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-16 14:26 KST] [구글 뉴스 스프레드시트 갱신] 신규 스프레드시트 최신 뉴스 실시간 연동 및 /git-push 완료
+- **요청 사항**:
+  - `https://docs.google.com/spreadsheets/d/e/2PACX-1vT4vdpKAEI0UaFM6tW-dXVCQoLDq-ncnl06jX80SBL7Y1ZHCzwvzvRGuuduuTu-k5nb6akrqCbr57Oi/pub?output=csv` 구글 시트에서 항상 최신 뉴스를 가져와서 표시 및 원격 푸시(/git-push).
+- **수행 내역**:
+  1. **구글 뉴스 공개 CSV 엔드포인트 변경 ([`src/lib/reddit/googleNewsSheetService.ts`](file:///Users/dayyoung/project/snshero/src/lib/reddit/googleNewsSheetService.ts))**:
+     - `GOOGLE_NEWS_PUB_CSV_URL`을 새 링크(`2PACX-1vT4vdpKAEI0UaFM6tW-dXVCQoLDq-ncnl06jX80SBL7Y1ZHCzwvzvRGuuduuTu-k5nb6akrqCbr57Oi`)로 변경.
+     - 브라우저 로컬스토리지 캐시 버전을 `v9`로 상향하고 구형 캐시(`v1`~`v8`) 자동 정리 루틴 적용.
+     - 웹 게시 공개 CSV(CORS: *)를 1단계 최우선으로 fetch하도록 파이프라인 최적화하여 딜레이 없는 실시간 동기화 구현.
+  2. **Vite 개발 서버 프록시 갱신 ([`vite.config.ts`](file:///Users/dayyoung/project/snshero/vite.config.ts))**:
+     - `/api/reddit/google-news-sheet` 대상 URL을 새 웹 게시 CSV 링크로 업데이트.
+  3. **실시간 시드 데이터 및 로컬 백업 CSV 갱신 ([`src/data/googleNewsSeedData.ts`](file:///Users/dayyoung/project/snshero/src/data/googleNewsSeedData.ts), [`public/data/google-news.csv`](file:///Users/dayyoung/project/snshero/public/data/google-news.csv))**:
+     - 새 스프레드시트의 390개 최신 뉴스 기사를 `public/data/google-news.csv`에 다운로드하여 완벽 동기화.
+     - `INITIAL_GOOGLE_NEWS`를 최신 35개 기사로 즉시 반영하여 네트워크 요청 이전에도 최신 뉴스가 즉시 표시되도록 보장.
+  4. **정적 SEO 및 기사 페이지 390건 재생성 ([`scripts/generate-news-seo.ts`](file:///Users/dayyoung/project/snshero/scripts/generate-news-seo.ts))**:
+     - `sitemap-news.xml`, `news-feed.xml`, `rss.xml` 및 390개 기사 정적 HTML 생성 완료.
+- **검증 결과**:
+  - `npm run build` 성공 (0 에러, 정적 SEO 및 빌드 번들 무결점 생성).
+  - Git 로컬 커밋 및 `git push origin main` 완료.
+  - 연동 구글 폼 보고서 제출 완료.
+
+
 ## [2026-10-16 14:10 KST] [/reddit 광고판 정상화 및 하단 인카운터 위젯 제거]
 - **요청 사항**:
   1. `/reddit` 페이지 내 광고판 컨테이너(피드 상단/상세 In-Article 배너, 사이드바 300x250 배너, 피드 스폰서 카드)에 구글 광고가 정상 노출되지 않고 비어있는 현상 해결.

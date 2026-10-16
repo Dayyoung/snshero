@@ -9,16 +9,16 @@ import { RawGoogleNewsItem, INITIAL_GOOGLE_NEWS, convertGoogleNewsToRedditPost }
 import { translateRedditPosts } from './redditTranslationService';
 import { extractFirstValidImageUrl } from './googleNewsImageResolver';
 
-export const GOOGLE_NEWS_PUB_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQkHP5pQDdSMrx3f0GyUz_rK5yqmMj5J12apkSom3JvF-NVk2yD55tFAk_Ka7qKM54dPr1ru3LP15Zu/pub?output=csv';
+export const GOOGLE_NEWS_PUB_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT4vdpKAEI0UaFM6tW-dXVCQoLDq-ncnl06jX80SBL7Y1ZHCzwvzvRGuuduuTu-k5nb6akrqCbr57Oi/pub?output=csv';
 export const GOOGLE_NEWS_SPREADSHEET_ID = '1CT5Yy1-i6kkOfx3d-Yw1osOEYbN7fkk8IDiI8Vm82vM';
-const CACHE_KEY = 'hero_reddit_google_news_posts_v8';
-const RAW_CACHE_KEY = 'hero_reddit_google_news_raw_v8';
-const LAST_FETCH_KEY = 'hero_reddit_google_news_last_fetch_v8';
+const CACHE_KEY = 'hero_reddit_google_news_posts_v9';
+const RAW_CACHE_KEY = 'hero_reddit_google_news_raw_v9';
+const LAST_FETCH_KEY = 'hero_reddit_google_news_last_fetch_v9';
 
-// AI Studio 및 브라우저 환경에서 이전 구형 캐시(v1~v7) 자동 정리
+// AI Studio 및 브라우저 환경에서 이전 구형 캐시(v1~v8) 자동 정리
 if (typeof window !== 'undefined') {
   try {
-    ['v1', 'v2', 'v3', 'v4', 'v5', 'v6', 'v7'].forEach((ver) => {
+    ['v1', 'v2', 'v3', 'v4', 'v5', 'v6', 'v7', 'v8'].forEach((ver) => {
       localStorage.removeItem(`hero_reddit_google_news_posts_${ver}`);
       localStorage.removeItem(`hero_reddit_google_news_raw_${ver}`);
       localStorage.removeItem(`hero_reddit_google_news_last_fetch_${ver}`);
@@ -297,35 +297,18 @@ export class GoogleNewsSheetService {
     this.syncErrorMessage = '';
     this.notifyListeners();
 
-    // 1단계: JSONP gviz API (브라우저 CORS 차단 원천 우회)
-    if (typeof window !== 'undefined') {
-      try {
-        const gvizUrl = `https://docs.google.com/spreadsheets/d/${GOOGLE_NEWS_SPREADSHEET_ID}/gviz/tq`;
-        const gvizData = await this.fetchViaJsonp(gvizUrl, 4500);
-        const parsed = this.parseGvizTable(gvizData);
-        if (parsed.length > 0) {
-          this.syncStatus = 'ok';
-          this.persistRawNews(parsed);
-          this.notifyListeners();
-          return parsed;
-        }
-      } catch (jsonpErr) {
-        // continue
-      }
-    }
-
-    // 2단계: 다단계 프록시 및 엔드포인트 풀 시도 (공개 Web CSV 최우선 직접 fetch)
+    // 1단계: 다단계 프록시 및 엔드포인트 풀 시도 (공개 Web CSV 최우선 직접 fetch - CORS: * 지원)
     const endpoints = [
-      // 1. Google Sheets 웹 게시 공개 CSV 직접 호출 (CORS: * 지원됨)
+      // 1. Google Sheets 웹 게시 공개 CSV 직접 호출 (CORS: * 브라우저 직접 지원)
       `${GOOGLE_NEWS_PUB_CSV_URL}&_t=${Date.now()}`,
       // 2. Vite 로컬 프록시 (Dev 환경)
       `/api/reddit/google-news-sheet?_t=${Date.now()}`,
-      // 3. AllOrigins CORS Proxy (공개 CSV 우회)
-      `https://api.allorigins.win/raw?url=${encodeURIComponent(`${GOOGLE_NEWS_PUB_CSV_URL}&_t=${Date.now()}`)}`,
-      // 4. CorsProxy.io Proxy (공개 CSV 우회)
-      `https://corsproxy.io/?url=${encodeURIComponent(`${GOOGLE_NEWS_PUB_CSV_URL}&_t=${Date.now()}`)}`,
-      // 5. 로컬 정적 백업 CSV (최신 실시간 백업)
+      // 3. 로컬 정적 백업 CSV (최신 실시간 백업)
       `/data/google-news.csv?_t=${Date.now()}`,
+      // 4. AllOrigins CORS Proxy (공개 CSV 우회)
+      `https://api.allorigins.win/raw?url=${encodeURIComponent(`${GOOGLE_NEWS_PUB_CSV_URL}&_t=${Date.now()}`)}`,
+      // 5. CorsProxy.io Proxy (공개 CSV 우회)
+      `https://corsproxy.io/?url=${encodeURIComponent(`${GOOGLE_NEWS_PUB_CSV_URL}&_t=${Date.now()}`)}`,
     ];
 
     let detectedUnauthorized = false;
