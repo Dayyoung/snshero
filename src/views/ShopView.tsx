@@ -3141,31 +3141,6 @@ export const ShopView: React.FC<ShopViewProps> = ({
               }}
               language={language}
             />
-          {/* Smart Loop Status Banner */}
-          <AnimatePresence>
-            {smartLoopStatus && (
-              <motion.div
-                initial={{ opacity: 0, y: -30 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="fixed top-4 left-4 right-4 z-[999999] pointer-events-auto flex justify-center"
-              >
-                <div className="bg-stone-900/95 border-2 border-amber-400 text-amber-200 px-5 py-3 rounded-xl shadow-2xl backdrop-blur-md max-w-md w-full text-center text-xs font-mono font-black whitespace-pre-line leading-relaxed flex flex-col items-center gap-2">
-                  <span>{smartLoopStatus}</span>
-                  {smartLoopAction && (
-                    <button
-                      type="button"
-                      onClick={smartLoopAction.onClick}
-                      className="px-4 py-1.5 bg-gradient-to-r from-amber-400 to-yellow-300 text-slate-950 font-black rounded-lg text-xs hover:brightness-110 active:scale-95 transition-all cursor-pointer shadow-md"
-                    >
-                      {smartLoopAction.label}
-                    </button>
-                  )}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
           {/* Toast Notification */}
           <AnimatePresence>
             {toastMessage && (
@@ -4785,38 +4760,30 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
           </div>
           {/* 현금 충전 구분선 */}
-          <div id="sns-charge-section" className="space-y-6 sm:space-y-8 pt-4 sm:pt-6 md:pt-8 border-t border-slate-200 mt-4 sm:mt-6 md:mt-8">
-            <div className="flex items-center gap-4 sm:gap-6">
-              <div className="bg-slate-200 text-slate-600 px-2.5 py-1 rounded-lg text-[10px] sm:text-xs font-bold uppercase tracking-widest flex items-center gap-1.5">
-                <ShoppingBag size={12} className="shrink-0" />
-                {t('coin_recharge', language)} (PAYPAL_API)
+          <div id="sns-charge-section" className="space-y-4 pt-6 border-t border-[#0f0000]/12 mt-6 font-mono">
+            <div className="flex items-center gap-3">
+              <div className="bg-[#201d1d] text-[#fdfcfc] px-3 py-1.5 rounded-none text-xs font-bold uppercase tracking-wider flex items-center gap-1.5">
+                <ShoppingBag size={14} className="shrink-0" />
+                {t('coin_recharge', language)}
               </div>
-              <div className="h-[1px] flex-1 bg-black/10" />
+              <div className="h-[1px] flex-1 bg-[#0f0000]/12" />
             </div>
 
-            {/* SCR-04-02: 첫 충전 상품 '첫 결제 시 코인 2배 + 스타터 SSR 교환권' 강조 배너 */}
-            <div className="w-full bg-gradient-to-r from-rose-500/15 via-amber-500/20 to-orange-500/15 border-2 border-rose-400 p-3.5 sm:p-4 rounded-xl font-mono text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm">
+            {/* 첫 충전 안내 배너 */}
+            <div className="w-full bg-[#f8f7f7] border border-[#0f0000]/12 p-3.5 sm:p-4 rounded-none font-mono text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
               <div className="space-y-1">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="px-2 py-0.5 bg-rose-500 text-white font-black text-[10px] rounded-xs animate-pulse">
-                    FIRST PURCHASE 2X
-                  </span>
-                  <span className="text-xs font-black text-rose-600 dark:text-rose-400">
-                    🔥 {language === 'ko' ? '첫 결제 시 코인 2배 + 스타터 SSR 교환권 증정!' : '2x Coins on First Purchase + Starter SSR Ticket!'}
-                  </span>
-                </div>
-                <p className="text-[10px] text-slate-600 dark:text-slate-300">
+                <span className="text-xs font-bold text-[#201d1d]">
+                  🔥 {language === 'ko' ? '첫 결제 시 2배 지급 + 스타터 SSR 교환권' : '2x Coins on First Purchase + Starter SSR Ticket'}
+                </span>
+                <p className="text-[10px] text-[#646262]">
                   {language === 'ko'
                     ? '첫 충전 시 결제한 SNS 코인을 2배(100% 보너스)로 즉시 지급하며 최고 등급 스타터 SSR 선택권이 인벤토리에 동봉됩니다.'
                     : 'Get 2x SNS Coins on your very first recharge plus an instant Starter SSR Selection Ticket.'}
                 </p>
               </div>
-              <span className="px-2.5 py-1 bg-amber-400 text-slate-950 font-black text-[10px] rounded-sm shrink-0 whitespace-nowrap border border-amber-500 shadow-xs">
-                [ 2X BONUS ACTIVE ]
-              </span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 font-mono">
               {[
                 { amount: 1000, price: "1.00", krwPrice: "1500", label: "1,000 P (SNS)", sku: "snshero_points_1000" },
                 { amount: 3000, price: "2.99", krwPrice: "4000", label: "3,000 P (SNS)", sku: "snshero_points_3000" },
@@ -4829,30 +4796,21 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   <div
                     key={item.label}
                     className={cn(
-                      "p-5 sm:p-6 md:p-8 flex flex-col justify-between gap-5 sm:gap-6 md:gap-8 border transition-all shadow-sm rounded-2xl h-full relative",
-                      isOwnedAdRemoval ? "bg-slate-50 border-slate-200" : "bg-white border-slate-100 hover:border-slate-200 hover:shadow-md"
+                      "p-4 sm:p-5 flex flex-col justify-between gap-4 border rounded-none h-full relative font-mono",
+                      isOwnedAdRemoval ? "bg-[#f8f7f7] border-[#0f0000]/12" : "bg-[#fdfcfc] border-[#0f0000]/12 hover:border-[#201d1d]"
                     )}
                   >
-                    {/* 첫 결제 2배 리본 */}
-                    {!item.isAdRemoval && (
-                      <div className="absolute top-2 right-2 px-1.5 py-0.5 bg-rose-600 text-white text-[8px] font-black rounded-xs shadow-xs uppercase tracking-wider animate-pulse">
-                        {language === 'ko' ? '첫 결제 2배' : 'First: 2X'}
-                      </div>
-                    )}
-                    <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-3">
                       <div className="flex justify-between items-start">
-                        <Zap size={20} className={cn("sm:w-6 sm:h-6", isOwnedAdRemoval ? "text-slate-400" : "text-yellow-500 animate-pulse")} />
+                        <Zap size={18} className={cn(isOwnedAdRemoval ? "text-[#646262]" : "text-[#201d1d]")} />
                         <div className="text-right">
-                          <p className="text-[9px] sm:text-[10px] font-bold text-slate-400 tracking-widest uppercase mb-1">
-                            {t('unit_price', language)}
-                          </p>
-                          <p className="text-xl sm:text-2xl font-bold tracking-tighter text-slate-800 font-mono">${item.price} USD</p>
+                          <p className="text-lg sm:text-xl font-bold tracking-tight text-[#201d1d] font-mono">${item.price} USD</p>
                         </div>
                       </div>
 
                       <div className="space-y-1">
-                        <h4 className="font-bold text-base sm:text-lg tracking-tight text-slate-800">{item.label}</h4>
-                        <p className="text-[9px] sm:text-[10px] text-slate-500 font-semibold tracking-widest uppercase whitespace-pre-line leading-relaxed font-mono">
+                        <h4 className="font-bold text-sm sm:text-base tracking-tight text-[#201d1d]">{item.label}</h4>
+                        <p className="text-[10px] text-[#646262] font-medium leading-relaxed font-mono">
                           {item.isAdRemoval 
                             ? (isOwnedAdRemoval
                                 ? (language === 'ko' ? '광고 영구 제거 적용 완료 (재구매 불가)' : 'PERMANENT AD REMOVAL (OWNED)')
@@ -4873,14 +4831,14 @@ export const ShopView: React.FC<ShopViewProps> = ({
                           playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                         }}
                         className={cn(
-                          "w-full font-bold uppercase tracking-wider text-sm transition-all font-sans min-h-[52px] sm:min-h-[56px] h-auto py-3 rounded-xl flex items-center justify-center shadow-xs touch-target",
+                          "w-full font-bold uppercase tracking-wider text-xs transition-colors min-h-[44px] h-auto py-2.5 rounded-sm flex items-center justify-center cursor-pointer border",
                           isOwnedAdRemoval
-                            ? "bg-slate-100 border border-slate-200 text-slate-400 cursor-not-allowed pointer-events-none opacity-80"
-                            : "bg-slate-900 text-white hover:bg-slate-800 cursor-pointer active:scale-95"
+                            ? "bg-[#f1eeee] border-[#0f0000]/12 text-[#646262] cursor-not-allowed pointer-events-none opacity-80"
+                            : "bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] border-[#201d1d] active:scale-95"
                         )}
                       >
                         {isOwnedAdRemoval
-                          ? (language === 'ko' ? '구매 완료 (적용 중)' : 'OWNED (ACTIVE)')
+                          ? (language === 'ko' ? '구매 완료' : 'OWNED')
                           : t('buy', language)}
                       </button>
                     </div>

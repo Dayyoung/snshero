@@ -14018,11 +14018,6 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                           </span>
                         </div>
                         <div className="flex items-center gap-1 shrink-0">
-                          {!isOwned && (
-                            <span className="text-[7px] sm:text-[8px] font-bold text-amber-300 bg-amber-950/80 border border-amber-500/50 px-1 py-0.2 rounded-xs">
-                              {language === 'ko' ? '도전 목표' : 'Target'}
-                            </span>
-                          )}
                           <span className={cn("text-[8px] sm:text-[9px] px-1 py-0.2 rounded-xs border font-black flex items-center gap-0.5", elemBadgeStyle)}>
                             <span>{elemIcon}</span>
                             <span className="uppercase text-[7px] sm:text-[8px] hidden min-[400px]:inline">{elem}</span>
@@ -14041,9 +14036,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                         "bg-[#f1eeee]"
                       )}>
                         {isOwned && (
-                          <div className="absolute top-0 right-0 z-30 bg-[#201d1d] text-[#fdfcfc] font-medium text-sm px-2 py-1 flex items-center gap-1">
-                            <Sparkles size={12} />
-                            <span>{language === 'ko' ? `보유 ${ownedCount}장` : `Own: ${ownedCount}`}</span>
+                          <div className="absolute top-0 right-0 z-30 bg-[#201d1d] text-[#fdfcfc] font-medium text-xs px-2 py-0.5 flex items-center gap-1">
+                            <Sparkles size={11} />
+                            <span>{language === 'ko' ? `보유 ${ownedCount}` : `Own: ${ownedCount}`}</span>
                           </div>
                         )}
                         {charCard ? (
@@ -14051,44 +14046,16 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                         ) : (
                           <IconComp size={36} className="text-white/80 drop-shadow-lg my-4" />
                         )}
-
-                        {/* Bottom Overlay Label inside Card Art */}
-                        <div className="absolute bottom-1 left-1 right-1 flex items-center justify-between pointer-events-none z-30 gap-1">
-                          <div className={cn(
-                            "backdrop-blur-xs border px-1 py-0.5 rounded-xs text-[8px] sm:text-[9px] font-bold truncate max-w-[70%] shadow-sm",
-                            isOwned 
-                              ? "bg-black/90 border-emerald-500/50 text-emerald-200" 
-                              : "bg-black/85 border-white/15 text-white"
-                          )}>
-                            #{cardNumFormatted} {charName}
-                          </div>
-                          {isOwned ? (
-                            <div className="bg-emerald-400 text-slate-950 font-black px-1.5 py-0.5 rounded-xs text-[7px] sm:text-[8px] uppercase tracking-wider shadow-sm shrink-0 flex items-center gap-0.5">
-                              ✓ {language === 'ko' ? `보유 ${ownedCount}장` : `Owned (${ownedCount})`}
-                            </div>
-                          ) : m.badgeText ? (
-                            <div className="bg-amber-400 text-slate-950 font-black px-1 py-0.5 rounded-xs text-[7px] sm:text-[8px] uppercase tracking-wider shadow-sm shrink-0">
-                              {m.badgeText}
-                            </div>
-                          ) : null}
-                        </div>
                       </div>
 
-                      {/* Game Title & Mission Info Bar */}
-                      <div className="p-3 border-t flex flex-col gap-2 bg-[#fdfcfc] border-[rgba(15,0,0,0.12)]">
-                        <div className="flex items-center justify-between gap-1">
-                          <span className="flex-1 text-left font-bold text-sm leading-relaxed break-words text-[#201d1d]">
-                            {battleTitle}
-                          </span>
-                        </div>
-                        <div className="flex flex-wrap items-center justify-between gap-1 text-sm">
-                          <span className="truncate text-[#646262] text-sm">
-                            ✦ <strong className="font-normal">{charName}</strong>
-                          </span>
-                          <span className="font-medium shrink-0 text-sm text-[#201d1d]">
-                            {isOwned ? (language === 'ko' ? '잠재력 강화' : 'Enhance') : (language === 'ko' ? '카드 획득' : 'Obtain')}
-                          </span>
-                        </div>
+                      {/* Action Bar */}
+                      <div className="p-2.5 sm:p-3 border-t flex items-center justify-between gap-2 bg-[#fdfcfc] border-[rgba(15,0,0,0.12)]">
+                        <span className="text-xs font-bold text-[#201d1d] truncate">
+                          {isOwned ? (language === 'ko' ? '⚡ 잠재력 강화' : '⚡ Enhance') : (language === 'ko' ? '🎯 카드 획득' : '🎯 Obtain')}
+                        </span>
+                        <span className="min-h-[32px] px-2.5 py-1 bg-[#201d1d] group-hover:bg-[#302c2c] text-[#fdfcfc] text-xs font-bold rounded-sm flex items-center justify-center shrink-0 transition-colors">
+                          {language === 'ko' ? '대결' : 'Battle'}
+                        </span>
                       </div>
                     </div>
                   </motion.div>

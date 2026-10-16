@@ -195,11 +195,6 @@ const SortableCardItem: React.FC<SortableCardItemProps> = ({
             {language === 'ko' ? '⚡ 장착 완료!' : '⚡ EQUIPPED!'}
           </div>
         )}
-        {isSynergyActive && !isShaking && (
-          <div className="absolute top-1 left-1 z-20 px-1 py-0.5 bg-[#201d1d] text-[#fdfcfc] font-bold text-[8px] rounded-sm border border-[#646262] uppercase leading-none">
-            ✨AURA
-          </div>
-        )}
         <CardItem 
           card={card} 
           onClick={() => handleCardClick(idx)} 
@@ -1600,28 +1595,6 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
 
   return (
     <div className="p-4 sm:p-6 md:p-8 pb-48 flex flex-col gap-6 max-w-4xl mx-auto min-h-screen w-full overflow-x-hidden touch-pan-y overscroll-x-none bg-[#fdfcfc] text-[#201d1d] font-mono">
-      {/* Smart Loop Deck Swap Banner */}
-      <AnimatePresence>
-        {autoSwapBanner && (
-          <motion.div
-            initial={{ opacity: 0, y: -30 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="fixed top-4 left-4 right-4 z-[999999] pointer-events-auto flex justify-center"
-          >
-            <div className="bg-[#201d1d] border border-[#646262] text-[#fdfcfc] px-5 py-3 rounded-none max-w-md w-full text-center text-xs font-mono font-bold whitespace-pre-line leading-relaxed flex flex-col items-center gap-2">
-              <span>{autoSwapBanner}</span>
-              <button
-                type="button"
-                onClick={() => handleInstantReturnToBattle(true)}
-                className="min-h-[44px] px-4 py-2 bg-[#fdfcfc] text-[#201d1d] font-bold rounded-sm text-xs hover:bg-[#f1eeee] transition-colors cursor-pointer border border-[#201d1d]"
-              >
-                {language === 'ko' ? '⚡ 즉시 새 모드로 출격' : '⚡ Start New Battle Now'}
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
       <div className="flex flex-col gap-5 border-b border-[#0f0000]/12 pb-5 w-full">
         <div className="flex items-center gap-2">
           <PageHeader title={t('mydeck', language)} />
@@ -1702,19 +1675,6 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
           </div>
         </div>
 
-        {/* ID 477: Dynamic Deck Synergy & Weakness Advisory Tag */}
-        <div className="flex flex-wrap items-center justify-between gap-2 text-xs leading-relaxed px-1 py-2 border-t border-[#0f0000]/12">
-          <div className="flex flex-wrap items-center gap-1.5 text-[#646262]">
-            <span className="text-[#201d1d] font-bold">⚠️ [상성 점검]</span>
-            <span>
-              {currentDeck.some(c => c.element === 'WATER')
-                ? '밸런스 양호 (수/화/지/풍 포진)'
-                : '수속성 카드 부재: 화속성 덱 상대 시 취약할 수 있습니다.'}
-            </span>
-          </div>
-          <span className="text-[#646262] font-bold">5장 시너지 풀</span>
-        </div>
-
         {/* ID 427: Inline Edit Modal / Drawer */}
         {editingPresetNum !== null && (
           <div className="p-3 bg-[#fdfcfc] rounded-none border border-[#0f0000]/12 flex flex-wrap items-center gap-2 mt-1">
@@ -1778,12 +1738,6 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
             >
               <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#201d1d]">
                 {language === 'ko' ? '출전 덱 (5장)' : 'Active Deck (5 Cards)'}
-              </span>
-              <span className="text-[10px] font-bold text-[#201d1d] bg-[#f8f7f7] px-1.5 py-0.5 rounded-sm border border-[#0f0000]/12">
-                {language === 'ko' ? '[카드 선택]' : '[SELECT]'}
-              </span>
-              <span className="text-[10px] text-[#646262] hidden xs:inline">
-                {language === 'ko' ? '· 클릭하여 카드 선택' : '· Click to select card'}
               </span>
             </button>
 
@@ -2035,9 +1989,6 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
             <span className={cn("font-bold tracking-tight truncate block", String(deckPower.toLocaleString()).length > 8 ? "text-lg sm:text-xl" : String(deckPower.toLocaleString()).length > 5 ? "text-xl sm:text-2xl" : "text-2xl sm:text-3xl")} title={deckPower.toLocaleString()}>
               {deckPower.toLocaleString()}
             </span>
-            <div className="text-[9px] sm:text-[10px] text-[#646262] mt-1.5 sm:mt-2">
-              * {t('deck_tp_guide', language)}
-            </div>
           </div>
           <div 
             className="bg-[#fdfcfc] p-3 sm:p-5 md:p-6 cursor-pointer hover:bg-[#f1eeee] transition-colors"
@@ -2050,25 +2001,16 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
             <span className={cn("font-bold tracking-tight truncate block", String(calculatedTotalPower.toLocaleString()).length > 8 ? "text-lg sm:text-xl" : String(calculatedTotalPower.toLocaleString()).length > 5 ? "text-xl sm:text-2xl" : "text-2xl sm:text-3xl")} title={calculatedTotalPower.toLocaleString()}>
               {calculatedTotalPower.toLocaleString()}
             </span>
-            <div className="text-[9px] sm:text-[10px] text-[#646262] mt-1.5 sm:mt-2">
-              * {t('all_cards_tp_guide', language)}
-            </div>
           </div>
 
           <div className="bg-[#fdfcfc] p-3 sm:p-5 md:p-6">
             <span className="text-[#646262] block text-xs sm:text-sm font-bold mb-1.5 sm:mb-2">{t('unique_cards', language)}</span>
             <span className={cn("font-bold tracking-tight truncate block", String(uniqueCount).length > 8 ? "text-lg sm:text-xl" : String(uniqueCount).length > 5 ? "text-xl sm:text-2xl" : "text-2xl sm:text-3xl")} title={String(uniqueCount)}>{uniqueCount}</span>
-            <div className="text-[9px] sm:text-[10px] text-[#646262] mt-1.5 sm:mt-2">
-              * {t('types_owned_guide', language)}
-            </div>
           </div>
 
           <div className="bg-[#fdfcfc] p-3 sm:p-5 md:p-6">
             <span className="text-[#646262] block text-xs sm:text-sm font-bold mb-1.5 sm:mb-2">{t('total_cards', language)}</span>
             <span className={cn("font-bold tracking-tight truncate block", String(totalCount).length > 8 ? "text-lg sm:text-xl" : String(totalCount).length > 5 ? "text-xl sm:text-2xl" : "text-2xl sm:text-3xl")} title={String(totalCount)}>{totalCount}</span>
-            <div className="text-[9px] sm:text-[10px] text-[#646262] mt-1.5 sm:mt-2">
-              * {t('all_duplicates_guide', language)}
-            </div>
           </div>
 
           <div className="bg-[#fdfcfc] p-3 sm:p-5 md:p-6 flex flex-col justify-between">
@@ -2116,23 +2058,13 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
             <div>
               <span className="text-[#646262] block text-xs sm:text-sm font-bold mb-1.5 sm:mb-2">{t('magic_chance', language)}</span>
               <span className="text-lg sm:text-xl md:text-2xl font-bold tracking-tight text-[#201d1d] block">
-                Total: {(20 + itemMagicChanceBonus + (currentDeck.reduce((acc, card) => {
+                {(20 + itemMagicChanceBonus + (currentDeck.reduce((acc, card) => {
                   if (!card) return acc;
                   const s = card.skills?.find(skill => skill.effect.type === 'special');
                   if (!s) return acc;
                   return acc + (s.effect.value * Math.floor((s.level + 1) / 6));
                 }, 0) * 100)).toFixed(0)}%
               </span>
-            </div>
-            <div className="text-[9px] sm:text-[10px] text-[#646262] mt-2 sm:mt-4 font-bold">
-              Base {t('magic_chance', language)}: 20%<br />
-              + Item Bonus: {itemMagicChanceBonus.toFixed(0)}%<br />
-              + Skill Bonus: {(currentDeck.reduce((acc, card) => {
-                if (!card) return acc;
-                const s = card.skills?.find(skill => skill.effect.type === 'special');
-                if (!s) return acc;
-                return acc + (s.effect.value * Math.floor((s.level + 1) / 6));
-              }, 0) * 100).toFixed(0)}% (Lucky Draw)
             </div>
           </div>
         </div>
@@ -2632,10 +2564,6 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
 
                     return (
                       <div key={idx} className={cn("min-w-0 flex flex-col items-center gap-2 group/card", !isOwned && "opacity-60 grayscale")}>
-                        {/* ID 392: 추천 포지션 가이드 태그 */}
-                        <span className="text-[8px] font-mono text-[#646262] bg-[#f8f7f7] px-1 rounded-none border border-[#0f0000]/12">
-                          {slotTag}
-                        </span>
                         <div className="relative">
                           <CardItem 
                             card={previewCard}
