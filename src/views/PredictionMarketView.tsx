@@ -444,50 +444,114 @@ export const PredictionMarketView: React.FC<PredictionMarketViewProps> = ({
     return markets.filter(m => m.subCategory === selectedSportsCategory);
   }, [markets, selectedSportsCategory]);
 
+  // SCR-07 Viral Challenge Share State
+  const todayDateStr = new Date().toISOString().split('T')[0];
+  const [viralSharedToday, setViralSharedToday] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem(`hero_prediction_viral_share_${todayDateStr}`) === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  const handleSharePredictionChallenge = () => {
+    triggerHaptic('tap');
+    const shareUrl = 'https://snshero.com/?challenge=1-11-31-51-101&ref=prediction';
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(shareUrl).catch(() => {});
+    }
+    const shareKey = `hero_prediction_viral_share_${todayDateStr}`;
+    let alreadyShared = false;
+    try {
+      alreadyShared = localStorage.getItem(shareKey) === 'true';
+    } catch {}
+
+    if (!alreadyShared) {
+      try {
+        localStorage.setItem(shareKey, 'true');
+        const cur = parseInt(localStorage.getItem('hero_sns') || '500', 10);
+        localStorage.setItem('hero_sns', String(cur + 50));
+        window.dispatchEvent(new Event('hero_sns_updated'));
+      } catch {}
+      setViralSharedToday(true);
+      triggerHaptic('victory');
+      triggerAlert('success', language === 'ko' ? '도전장 링크 복사 완료! 일일 보너스 +50 SNS가 지급되었습니다.' : 'Challenge Link Copied! Claimed +50 SNS bonus.');
+    } else {
+      triggerAlert('success', language === 'ko' ? '도전장 링크가 클립보드에 복사되었습니다.' : 'Challenge Link Copied to clipboard.');
+    }
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+  };
+
   return (
-    <div className="flex-1 flex flex-col w-full bg-slate-50/50 text-slate-800 font-sans overflow-y-auto pb-32">
+    <div className="flex-1 flex flex-col w-full bg-[#fdfcfc] text-[#201d1d] font-mono overflow-y-auto pb-32">
       <div className="max-w-4xl mx-auto w-full px-4 flex flex-col gap-4 pt-2">
         {/* Top Header Bar with Balance HUD */}
-        <div className="flex items-center justify-between gap-2 border-b border-slate-200/80 pb-3">
+        <div className="flex items-center justify-between gap-2 border-b border-[rgba(15,0,0,0.12)] pb-3">
           <div className="flex items-center gap-2 min-w-0">
             <PageHeader title={t('prediction_market', language)} />
             <button
               onClick={() => { setShowHelp(true); setHelpStep(0); }}
-              className="w-8 h-8 rounded-full border border-slate-300 flex items-center justify-center hover:bg-slate-100 transition-colors cursor-pointer shrink-0"
+              className="min-h-[44px] min-w-[44px] rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] flex items-center justify-center hover:bg-[#f8f7f7] transition-colors cursor-pointer shrink-0"
               title="Help"
             >
-              <HelpCircle size={16} className="text-slate-500" />
+              <HelpCircle size={16} className="text-[#201d1d]" />
             </button>
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
             {/* Realtime SNS Balance HUD */}
-            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/10 border border-amber-400/40 rounded-sm font-mono text-xs text-amber-900 font-bold shadow-2xs">
-              <Coins size={14} className="text-amber-500 fill-amber-400" />
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-sm font-mono text-xs text-[#201d1d] font-bold">
+              <Coins size={14} className="text-[#201d1d]" />
               <span>{sns.toLocaleString()} SNS</span>
             </div>
 
             {/* Shop Shortcut */}
             <button
               onClick={() => setView('shop')}
-              className="px-2.5 py-1.5 bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-600 hover:to-yellow-500 text-stone-950 font-mono text-xs font-black rounded-sm flex items-center gap-1 cursor-pointer shadow-xs active:scale-95 border border-amber-300"
+              className="min-h-[44px] px-3 py-1.5 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] font-mono text-xs font-bold rounded-sm flex items-center gap-1 cursor-pointer transition-colors"
               title="상점으로 이동하여 SNS 코인 충전"
             >
               <Zap size={13} className="fill-current" />
-              <span className="hidden xs:inline">{language === 'ko' ? '충전' : 'Shop'}</span>
+              <span className="hidden xs:inline">[{language === 'ko' ? '충전' : 'Shop'}]</span>
               <ArrowUpRight size={13} />
             </button>
 
             {/* Refresh Markets */}
             <button 
               onClick={fetchMarkets}
-              className="w-9 h-9 bg-slate-900 hover:bg-slate-800 text-white rounded-sm active:scale-95 transition-all cursor-pointer shadow-xs flex items-center justify-center"
+              className="min-h-[44px] min-w-[44px] bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] rounded-sm transition-colors cursor-pointer flex items-center justify-center"
               title={t('refresh', language)}
               aria-label={t('refresh', language)}
             >
               <RefreshCw size={13} className={loading ? "animate-spin" : ""} />
             </button>
           </div>
+        </div>
+
+        {/* SCR-07 Viral Challenge Share Banner */}
+        <div className="w-full border border-[#201d1d] bg-[#f8f7f7] p-3 text-[#201d1d] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-mono">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-none">
+                [VIRAL PREDICTION]
+              </span>
+              <span className="text-xs font-bold text-[#201d1d]">
+                {language === 'ko' ? '승부 예측 티켓 & 덱 1:1 도전장 공유' : 'Share Prediction Ticket & 1:1 Duel'}
+              </span>
+            </div>
+            <p className="text-[11px] text-[#646262] mt-0.5">
+              {language === 'ko' ? '친구와 승부 예측 겨루기 · 매일 첫 공유 시 +50 SNS 즉시 지급' : 'Challenge friends on predictions · +50 SNS daily reward'}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={handleSharePredictionChallenge}
+            className="w-full sm:w-auto min-h-[44px] px-4 py-2 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] text-xs font-bold rounded-sm cursor-pointer transition-colors shrink-0"
+          >
+            {viralSharedToday
+              ? (language === 'ko' ? '[도전장 링크 복사]' : '[COPY DUEL LINK]')
+              : (language === 'ko' ? '[도전장 공유 (+50 SNS)]' : '[SHARE DUEL (+50 SNS)]')}
+          </button>
         </div>
 
         {/* SCR-07 FTUE: 내 예측 베팅 포트폴리오 요약 HUD */}

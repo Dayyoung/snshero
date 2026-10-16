@@ -245,6 +245,61 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
   const [firstTradeBonusToast, setFirstTradeBonusToast] = useState<boolean>(false);
   const [tradeSuccessModalListing, setTradeSuccessModalListing] = useState<Listing | null>(null);
 
+  // SCR-05 UA & Viral: 일일 1회 특가 매물 & 도전장 링크 공유 (+50 SNS)
+  const todayStr = new Date().toISOString().slice(0, 10);
+  const [marketViralShared, setMarketViralShared] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem(`hero_market_viral_share_${todayStr}`) === 'true';
+  });
+  const [viralShareNotice, setViralShareNotice] = useState<string | null>(null);
+
+  const handleShareMarketDeal = async () => {
+    triggerHaptic('selection');
+    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://snshero.com';
+    const shareUrl = `${origin}/?challenge=1-11-31-51-101&ref=market`;
+    const dealName = hotBargainListing ? getCardTitle(hotBargainListing.listing.cardId) : 'SSR Legend Card';
+    const shareText = language === 'ko'
+      ? `[SNSHero P2P 마켓 특가] ${dealName} 급매물 발견! 지금 무설치 3초 결투장 대결하고 특가 카드를 획득하세요: ${shareUrl}`
+      : `[SNSHero P2P Market Deal] ${dealName} spotted! Join the instant 3s duel and claim the deal: ${shareUrl}`;
+
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: 'SNSHero P2P Market Deal', text: shareText, url: shareUrl });
+      } else if (navigator.clipboard) {
+        await navigator.clipboard.writeText(shareText);
+      }
+    } catch {
+      try {
+        await navigator.clipboard?.writeText(shareUrl);
+      } catch {}
+    }
+
+    if (!marketViralShared) {
+      try {
+        localStorage.setItem(`hero_market_viral_share_${todayStr}`, 'true');
+        const curSns = Number(localStorage.getItem('hero_sns') || localStorage.getItem('hero_sns_points') || '0');
+        const nextSns = curSns + 50;
+        localStorage.setItem('hero_sns', String(nextSns));
+        setUserSns(nextSns);
+        setMarketViralShared(true);
+        window.dispatchEvent(new Event('snshero_currency_updated'));
+        window.dispatchEvent(new Event('snshero_sns_updated'));
+      } catch {}
+      setViralShareNotice(
+        language === 'ko'
+          ? '[바이럴 보상 지급] 특가 매물 & 도전장 링크가 복사되었으며 +50 SNS가 지급되었습니다!'
+          : '[Viral Bonus] Deal & challenge link copied! +50 SNS credited!'
+      );
+    } else {
+      setViralShareNotice(
+        language === 'ko'
+          ? '[링크 복사 완료] 특가 매물 & 도전장 링크(?challenge=)가 클립보드에 복사되었습니다.'
+          : '[Link Copied] Deal & challenge link (?challenge=) copied to clipboard.'
+      );
+    }
+    setTimeout(() => setViralShareNotice(null), 4000);
+  };
+
   const saveAutoBuyOrder = (cardId: number, targetPrice: number) => {
     setAutoBuyOrders((prev) => {
       const next = { ...prev, [cardId]: targetPrice };
@@ -870,7 +925,7 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
   };
 
   return (
-    <div className="flex-1 bg-slate-50 text-slate-900 font-sans pb-36">
+    <div className="flex-1 bg-[#fdfcfc] text-[#201d1d] font-mono pb-36">
       <PageHeader
         title={t('marketplace_title', language)}
         onBack={() => setView('shop')}
@@ -878,33 +933,49 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
           <button
             type="button"
             onClick={() => { setHelpOpen(true); setHelpStep(0); }}
-            className="w-8 h-8 rounded-full border border-slate-300 flex items-center justify-center text-slate-500 hover:bg-slate-100 transition-colors"
+            className="min-h-[44px] min-w-[44px] rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] flex items-center justify-center text-[#646262] hover:text-[#201d1d] hover:bg-[#f8f7f7] transition-colors cursor-pointer"
           >
             <HelpCircle size={16} />
           </button>
         }
       />
 
-      <div className="max-w-5xl mx-auto px-4 py-5 space-y-5">
+      <div className="max-w-5xl mx-auto px-4 py-4 space-y-4">
         {/* Row 1054 / ID 317: Watchlist Price Alert Toast Banner */}
         {priceAlertToast && (
-          <div className="p-3 bg-amber-50 border-2 border-amber-400 text-amber-950 font-mono text-xs flex items-center justify-between shadow-sm animate-in fade-in slide-in-from-top-2">
+          <div className="p-3 bg-[#f8f7f7] border border-[#201d1d] rounded-none text-[#201d1d] font-mono text-xs flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Bell size={16} className="text-amber-600 shrink-0 animate-bounce" />
+              <Bell size={16} className="text-amber-600 shrink-0" />
               <span className="font-bold">{priceAlertToast}</span>
             </div>
             <button
               onClick={() => setPriceAlertToast(null)}
-              className="text-amber-800 hover:text-black font-black text-xs px-1.5 py-0.5"
+              className="text-[#646262] hover:text-[#201d1d] font-black text-xs px-2 py-1 rounded-sm cursor-pointer"
             >
-              ✕
+              [x]
+            </button>
+          </div>
+        )}
+
+        {/* Viral Share Notice Toast */}
+        {viralShareNotice && (
+          <div className="p-3 bg-[#f8f7f7] border border-[#201d1d] rounded-none text-[#201d1d] font-mono text-xs flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
+              <span className="font-bold">{viralShareNotice}</span>
+            </div>
+            <button
+              onClick={() => setViralShareNotice(null)}
+              className="text-[#646262] hover:text-[#201d1d] font-black text-xs px-2 py-1 rounded-sm cursor-pointer"
+            >
+              [x]
             </button>
           </div>
         )}
 
         {/* ID 558: P2P 카드 거래 가스비 100% SNS 토큰 캐시백 안내 */}
         {gasRebateNotice && (
-          <div className="p-3 bg-emerald-50 border-2 border-emerald-500 text-emerald-950 font-mono text-xs flex items-center justify-between shadow-sm animate-in fade-in slide-in-from-top-2">
+          <div className="p-3 bg-[#f8f7f7] border border-emerald-600 rounded-none text-emerald-950 font-mono text-xs flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="text-base">⛽</span>
               <span className="font-bold">
@@ -915,32 +986,32 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
             </div>
             <button
               onClick={() => setGasRebateNotice(null)}
-              className="text-emerald-800 hover:text-black font-black text-xs px-1.5 py-0.5"
+              className="text-emerald-800 hover:text-[#201d1d] font-black text-xs px-2 py-1 rounded-sm cursor-pointer"
             >
-              ✕
+              [x]
             </button>
           </div>
         )}
 
         {/* ID 523: Auto-Buy Limit Alert / Success Banner */}
         {autoBuySuccessMsg && (
-          <div className="p-3 bg-indigo-50 border-2 border-indigo-500 text-indigo-950 font-mono text-xs flex items-center justify-between shadow-sm animate-in fade-in slide-in-from-top-2">
+          <div className="p-3 bg-[#f8f7f7] border border-[#201d1d] rounded-none text-[#201d1d] font-mono text-xs flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="text-base">🎯</span>
               <span className="font-bold">{autoBuySuccessMsg}</span>
             </div>
             <button
               onClick={() => setAutoBuySuccessMsg(null)}
-              className="text-indigo-800 hover:text-black font-black text-xs px-1.5 py-0.5"
+              className="text-[#646262] hover:text-[#201d1d] font-black text-xs px-2 py-1 rounded-sm cursor-pointer"
             >
-              ✕
+              [x]
             </button>
           </div>
         )}
 
         {/* SCR-05 FTUE: 첫 거래 웰컴 캐시백 토스트 */}
         {firstTradeBonusToast && (
-          <div className="p-3 bg-amber-50 border-2 border-amber-500 text-amber-950 font-mono text-xs flex items-center justify-between shadow-sm animate-in fade-in slide-in-from-top-2">
+          <div className="p-3 bg-[#f8f7f7] border border-[#201d1d] rounded-none text-[#201d1d] font-mono text-xs flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="text-base">🎉</span>
               <span className="font-bold">
@@ -949,44 +1020,97 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
                   : `[First Trade Welcome] +50 SNS bonus has been credited for your first P2P trade!`}
               </span>
             </div>
-            <button onClick={() => setFirstTradeBonusToast(false)} className="text-amber-800 hover:text-black font-black text-xs px-1.5 py-0.5">✕</button>
+            <button onClick={() => setFirstTradeBonusToast(false)} className="text-[#646262] hover:text-[#201d1d] font-black text-xs px-2 py-1 rounded-sm cursor-pointer">[x]</button>
           </div>
         )}
 
-        {/* SCR-05 Monetization & FTUE: 상단 잔액 HUD 및 첫 거래 보너스 가이드 */}
-        <div className="w-full bg-white border border-slate-200 p-3 rounded-none font-mono text-xs flex flex-wrap items-center justify-between gap-3 shadow-xs">
-          <div className="flex items-center gap-3 flex-wrap">
-            <div className="flex items-center gap-1.5">
-              <Zap size={14} className="text-amber-500" />
-              <span className="text-slate-500 text-[11px]">{language === 'ko' ? '보유 잔액:' : 'Balance:'}</span>
-              <span className="font-black text-slate-900 text-sm">{userSns.toLocaleString()} SNS</span>
+        {/* SCR-05: [P2P MARKET & DEAL SHARE HUD] (UA · Viral · BM Hub) */}
+        <div className="w-full bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] p-3.5 rounded-none font-mono text-xs space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[rgba(15,0,0,0.12)] pb-2.5">
+            <div className="flex items-center gap-2">
+              <Flame size={14} className="text-amber-600 shrink-0" />
+              <span className="font-black text-[#201d1d] uppercase tracking-wider">
+                [P2P MARKET &amp; DEAL SHARE HUD]
+              </span>
+              {!firstTradeRewardClaimed && (
+                <span className="px-1.5 py-0.5 bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-sm text-[10px] font-bold text-amber-800">
+                  {language === 'ko' ? '첫 거래 +50 SNS 캐시백' : 'First Trade +50 SNS'}
+                </span>
+              )}
             </div>
+            <div className="flex items-center gap-2">
+              <Zap size={13} className="text-amber-600" />
+              <span className="text-[#646262] text-[11px]">{language === 'ko' ? '보유 잔액:' : 'Balance:'}</span>
+              <span className="font-black text-[#201d1d] text-sm">[{userSns.toLocaleString()} SNS]</span>
+            </div>
+          </div>
+
+          {hotBargainListing && (
+            <div className="p-2.5 bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-none flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="px-1.5 py-0.5 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-black rounded-sm shrink-0">
+                  HOT -{hotBargainListing.discountPct}%
+                </span>
+                <span className="font-black text-[#201d1d] truncate">
+                  {getCardTitle(hotBargainListing.listing.cardId)}
+                </span>
+                <span className="text-[11px] font-bold text-emerald-700">
+                  {hotBargainListing.listing.askPrice.toLocaleString()} SNS
+                </span>
+                <span className="text-[10px] text-[#646262] line-through">
+                  {hotBargainListing.recPrice.toLocaleString()} SNS
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => handleRequestPurchase(hotBargainListing.listing)}
+                className="min-h-[36px] px-2.5 py-1 bg-[#201d1d] text-[#fdfcfc] hover:bg-[#333030] text-[10px] font-bold rounded-sm cursor-pointer shrink-0"
+              >
+                [{language === 'ko' ? '급매물 즉시 매수' : 'Buy Bargain'}]
+              </button>
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={handleShareMarketDeal}
+              className="min-h-[44px] px-3 py-2 bg-[#201d1d] hover:bg-[#333030] text-[#fdfcfc] border border-[#201d1d] rounded-sm font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+            >
+              <Gift size={14} className="text-amber-400 shrink-0" />
+              <span>
+                {marketViralShared
+                  ? (language === 'ko' ? '[특가 매물 & 도전장 링크 공유 (오늘 수령완료)]' : '[Share Deal & Challenge Link (Claimed)]')
+                  : (language === 'ko' ? '[특가 매물 & 도전장 링크 공유 (+50 SNS)]' : '[Share Deal & Challenge Link (+50 SNS)]')}
+              </span>
+            </button>
+
             <button
               type="button"
               onClick={() => setView('shop')}
-              className="px-2.5 py-1 bg-amber-500 hover:bg-amber-400 text-black font-black text-[10px] rounded-xs active:scale-95 transition-all cursor-pointer flex items-center gap-1 shadow-xs"
+              className="min-h-[44px] px-3 py-2 bg-[#fdfcfc] hover:bg-[#eae8e8] text-[#201d1d] border border-[#201d1d] rounded-sm font-black text-xs flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
             >
-              <span>💎 {language === 'ko' ? 'SNS 충전' : 'Get SNS'}</span>
-              <ArrowUpRight size={11} />
+              <span>[💎 {language === 'ko' ? '상점 SNS 충전' : 'Top-up SNS at Shop'}]</span>
+              <ArrowUpRight size={14} />
             </button>
           </div>
         </div>
 
         {/* SCR-05 UX: 모바일 원터치 서브 탭바 (스크롤 피로도 해소) */}
-        <div className="flex items-center gap-1 overflow-x-auto pb-1 scrollbar-none font-mono text-xs">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 p-1 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none font-mono text-xs">
           <button
             type="button"
             onClick={() => setActiveSubTab('browse')}
             className={cn(
-              "px-3 py-2 rounded-sm font-bold flex items-center gap-1.5 transition-all shrink-0 cursor-pointer min-h-[44px]",
+              "px-3 py-2 rounded-sm font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer min-h-[44px]",
               activeSubTab === 'browse'
-                ? "bg-slate-900 text-white shadow-xs"
-                : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-100"
+                ? "bg-[#201d1d] text-[#fdfcfc]"
+                : "bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] text-[#646262] hover:text-[#201d1d]"
             )}
           >
             <span>🛒</span>
             <span>{language === 'ko' ? '매물 탐색' : 'Browse'}</span>
-            <span className="px-1 py-0.2 text-[9px] bg-slate-800 text-slate-200 rounded-none">
+            <span className="px-1 py-0.5 text-[9px] border border-current rounded-sm">
               {filteredListings.length}
             </span>
           </button>
@@ -995,10 +1119,10 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
             type="button"
             onClick={() => setActiveSubTab('create')}
             className={cn(
-              "px-3 py-2 rounded-sm font-bold flex items-center gap-1.5 transition-all shrink-0 cursor-pointer min-h-[44px]",
+              "px-3 py-2 rounded-sm font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer min-h-[44px]",
               activeSubTab === 'create'
-                ? "bg-slate-900 text-white shadow-xs"
-                : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-100"
+                ? "bg-[#201d1d] text-[#fdfcfc]"
+                : "bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] text-[#646262] hover:text-[#201d1d]"
             )}
           >
             <span>➕</span>
@@ -1009,16 +1133,16 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
             type="button"
             onClick={() => setActiveSubTab('my_listings')}
             className={cn(
-              "px-3 py-2 rounded-sm font-bold flex items-center gap-1.5 transition-all shrink-0 cursor-pointer min-h-[44px]",
+              "px-3 py-2 rounded-sm font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer min-h-[44px]",
               activeSubTab === 'my_listings'
-                ? "bg-slate-900 text-white shadow-xs"
-                : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-100"
+                ? "bg-[#201d1d] text-[#fdfcfc]"
+                : "bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] text-[#646262] hover:text-[#201d1d]"
             )}
           >
             <span>📦</span>
             <span>{language === 'ko' ? '내 매물 / 체결' : 'My Listings'}</span>
             {totalClaimableSns > 0 && (
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+              <span className="px-1 py-0.5 text-[9px] bg-emerald-700 text-white rounded-sm">!</span>
             )}
           </button>
 
@@ -1026,16 +1150,16 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
             type="button"
             onClick={() => setActiveSubTab('auto_buy')}
             className={cn(
-              "px-3 py-2 rounded-sm font-bold flex items-center gap-1.5 transition-all shrink-0 cursor-pointer min-h-[44px]",
+              "px-3 py-2 rounded-sm font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer min-h-[44px]",
               activeSubTab === 'auto_buy'
-                ? "bg-slate-900 text-white shadow-xs"
-                : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-100"
+                ? "bg-[#201d1d] text-[#fdfcfc]"
+                : "bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] text-[#646262] hover:text-[#201d1d]"
             )}
           >
             <span>🎯</span>
             <span>{language === 'ko' ? '자동 매수 예약' : 'Auto-Buy'}</span>
             {Object.keys(autoBuyOrders).length > 0 && (
-              <span className="px-1 py-0.2 text-[9px] bg-indigo-600 text-white rounded-none">
+              <span className="px-1 py-0.5 text-[9px] border border-current rounded-sm">
                 {Object.keys(autoBuyOrders).length}
               </span>
             )}
@@ -1044,41 +1168,41 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
 
         {/* Browse + Create */}
         <section className={cn(
-          "grid lg:grid-cols-[1.1fr_0.9fr] gap-5",
+          "grid lg:grid-cols-[1.1fr_0.9fr] gap-4",
           (activeSubTab === 'my_listings' || activeSubTab === 'auto_buy') && "hidden lg:grid"
         )}>
           {/* Browse Listings */}
           <div className={cn(
-            "rounded-2xl border border-slate-200 bg-white shadow-sm p-4 space-y-3",
+            "rounded-none border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-4 space-y-3",
             activeSubTab === 'create' && "hidden lg:block"
           )}>
             <div className="flex items-center justify-between gap-2 flex-wrap">
-              <h2 className="text-base font-black text-slate-900">{t('marketplace_browse_title', language)}</h2>
-              <div className="flex flex-wrap gap-1">
-                <div className="inline-flex rounded-lg border border-slate-200 bg-slate-50 p-0.5">
+              <h2 className="text-sm font-black uppercase text-[#201d1d]">[{t('marketplace_browse_title', language)}]</h2>
+              <div className="flex flex-wrap gap-1.5">
+                <div className="inline-flex rounded-none border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] p-0.5 gap-0.5">
                   {(['all', 'bronze', 'silver', 'gold'] as const).map((filter) => (
                     <button
                       key={filter}
                       type="button"
                       onClick={() => setRarityFilter(filter)}
                       className={cn(
-                        'min-h-8 px-2.5 rounded-md text-[10px] font-bold uppercase transition-colors',
-                        rarityFilter === filter ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-white',
+                        'min-h-[36px] px-2.5 rounded-sm text-[10px] font-bold uppercase transition-colors cursor-pointer',
+                        rarityFilter === filter ? 'bg-[#201d1d] text-[#fdfcfc]' : 'text-[#646262] hover:text-[#201d1d] hover:bg-[#fdfcfc]',
                       )}
                     >
                       {t(`marketplace_filter_${filter}`, language)}
                     </button>
                   ))}
                 </div>
-                <div className="inline-flex rounded-lg border border-slate-200 bg-slate-50 p-0.5">
+                <div className="inline-flex rounded-none border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] p-0.5 gap-0.5 flex-wrap">
                   {BUILD_FOCUS_FILTERS.map((filter) => (
                     <button
                       key={filter}
                       type="button"
                       onClick={() => setBuildFocusFilter(filter)}
                       className={cn(
-                        'min-h-8 px-2 rounded-md text-[10px] font-bold uppercase transition-colors',
-                        buildFocusFilter === filter ? 'bg-indigo-600 text-white' : 'text-slate-600 hover:bg-white',
+                        'min-h-[36px] px-2 rounded-sm text-[10px] font-bold uppercase transition-colors cursor-pointer',
+                        buildFocusFilter === filter ? 'bg-[#201d1d] text-[#fdfcfc]' : 'text-[#646262] hover:text-[#201d1d] hover:bg-[#fdfcfc]',
                       )}
                     >
                       {t(`marketplace_build_${filter}`, language)}
@@ -1089,58 +1213,54 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
             </div>
 
             {/* ID 383: 4방향 스탯 슬라이더 필터 토글 바 */}
-            <div className="flex items-center justify-between pt-1 border-t border-slate-100">
+            <div className="flex items-center justify-between pt-2 border-t border-[rgba(15,0,0,0.12)]">
               <button
                 type="button"
                 onClick={() => setShowDirectionSliders((prev) => !prev)}
-                className="text-[10px] font-bold text-slate-500 hover:text-slate-800 flex items-center gap-1 cursor-pointer"
+                className="min-h-[36px] text-[11px] font-bold text-[#646262] hover:text-[#201d1d] flex items-center gap-1.5 cursor-pointer"
               >
-                <SlidersHorizontal size={11} className="text-indigo-600" />
-                <span>{language === 'ko' ? '방향별 최소 스탯 필터 (0~10)' : 'Min Directional Stats (0-10)'}</span>
-                {(minStatUp > 0 || minStatRight > 0 || minStatDown > 0 || minStatLeft > 0) && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-600 animate-pulse" />
-                )}
+                <SlidersHorizontal size={12} className="text-[#201d1d]" />
+                <span>{language === 'ko' ? '[방향별 최소 스탯 필터 (0~10)]' : '[Min Directional Stats (0-10)]'}</span>
               </button>
               {(minStatUp > 0 || minStatRight > 0 || minStatDown > 0 || minStatLeft > 0) && (
                 <button
                   type="button"
                   onClick={() => { setMinStatUp(0); setMinStatRight(0); setMinStatDown(0); setMinStatLeft(0); }}
-                  className="text-[9px] text-rose-500 font-bold hover:underline cursor-pointer"
+                  className="min-h-[36px] px-2 text-[10px] text-rose-700 font-bold hover:underline cursor-pointer"
                 >
-                  {language === 'ko' ? '필터 리셋' : 'Reset'}
+                  [{language === 'ko' ? '필터 리셋' : 'Reset'}]
                 </button>
               )}
             </div>
 
             {showDirectionSliders && (
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 p-2 bg-slate-50 rounded-lg border border-slate-200 text-[10px] font-mono animate-fade-in">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 p-2.5 bg-[#f8f7f7] rounded-none border border-[rgba(15,0,0,0.12)] text-[10px] font-mono">
                 <div>
-                  <div className="flex justify-between text-slate-500"><span>▲ 상단</span><span className="font-bold text-indigo-600">≥ {minStatUp}</span></div>
-                  <input type="range" min={0} max={10} value={minStatUp} onChange={(e) => setMinStatUp(Number(e.target.value))} className="w-full accent-indigo-600 cursor-pointer" />
+                  <div className="flex justify-between text-[#646262]"><span>▲ 상단</span><span className="font-bold text-[#201d1d]">≥ {minStatUp}</span></div>
+                  <input type="range" min={0} max={10} value={minStatUp} onChange={(e) => setMinStatUp(Number(e.target.value))} className="w-full accent-[#201d1d] cursor-pointer" />
                 </div>
                 <div>
-                  <div className="flex justify-between text-slate-500"><span>▶ 우측</span><span className="font-bold text-indigo-600">≥ {minStatRight}</span></div>
-                  <input type="range" min={0} max={10} value={minStatRight} onChange={(e) => setMinStatRight(Number(e.target.value))} className="w-full accent-indigo-600 cursor-pointer" />
+                  <div className="flex justify-between text-[#646262]"><span>▶ 우측</span><span className="font-bold text-[#201d1d]">≥ {minStatRight}</span></div>
+                  <input type="range" min={0} max={10} value={minStatRight} onChange={(e) => setMinStatRight(Number(e.target.value))} className="w-full accent-[#201d1d] cursor-pointer" />
                 </div>
                 <div>
-                  <div className="flex justify-between text-slate-500"><span>▼ 하단</span><span className="font-bold text-indigo-600">≥ {minStatDown}</span></div>
-                  <input type="range" min={0} max={10} value={minStatDown} onChange={(e) => setMinStatDown(Number(e.target.value))} className="w-full accent-indigo-600 cursor-pointer" />
+                  <div className="flex justify-between text-[#646262]"><span>▼ 하단</span><span className="font-bold text-[#201d1d]">≥ {minStatDown}</span></div>
+                  <input type="range" min={0} max={10} value={minStatDown} onChange={(e) => setMinStatDown(Number(e.target.value))} className="w-full accent-[#201d1d] cursor-pointer" />
                 </div>
                 <div>
-                  <div className="flex justify-between text-slate-500"><span>◀ 좌측</span><span className="font-bold text-indigo-600">≥ {minStatLeft}</span></div>
-                  <input type="range" min={0} max={10} value={minStatLeft} onChange={(e) => setMinStatLeft(Number(e.target.value))} className="w-full accent-indigo-600 cursor-pointer" />
+                  <div className="flex justify-between text-[#646262]"><span>◀ 좌측</span><span className="font-bold text-[#201d1d]">≥ {minStatLeft}</span></div>
+                  <input type="range" min={0} max={10} value={minStatLeft} onChange={(e) => setMinStatLeft(Number(e.target.value))} className="w-full accent-[#201d1d] cursor-pointer" />
                 </div>
               </div>
             )}
 
             <div className="space-y-2">
               {filteredListings.length === 0 ? (
-                <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center text-xs text-slate-400">
+                <div className="rounded-none border border-dashed border-[rgba(15,0,0,0.2)] bg-[#f8f7f7] px-4 py-6 text-center text-xs text-[#646262]">
                   {t('marketplace_empty_listings', language)}
                 </div>
               ) : (
                 filteredListings.map((listing) => {
-                  const settlement = calculateMarketplaceSettlement(listing.askPrice, currentSeason);
                   const isMine = listing.sellerId === userId;
                   const hasOpenOffer = marketState.offers.some(
                     (offer) =>
@@ -1153,30 +1273,27 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
                     <div
                       key={listing.id}
                       onClick={() => setTradeModalListing(listing)}
-                      className="rounded-xl border border-slate-200 bg-slate-50 hover:bg-white hover:border-indigo-300 p-3 transition-all cursor-pointer shadow-xs"
+                      className="rounded-none border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] hover:bg-[#fdfcfc] hover:border-[#201d1d] p-3 transition-colors cursor-pointer"
                     >
-                      <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center justify-between gap-3 flex-wrap">
                         <div className="min-w-0 flex items-center gap-2.5">
-                          <div className="w-8 h-8 rounded-lg bg-indigo-50 border border-indigo-100 flex items-center justify-center text-xs font-black shrink-0">
+                          <div className="w-9 h-9 rounded-sm bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] flex items-center justify-center text-xs font-black shrink-0">
                             {String(CARD_DATABASE[listing.cardId]?.element || '').toLowerCase() === 'fire' ? '🔥' : String(CARD_DATABASE[listing.cardId]?.element || '').toLowerCase() === 'water' ? '💧' : String(CARD_DATABASE[listing.cardId]?.element || '').toLowerCase() === 'earth' ? '🌿' : '⚡'}
                           </div>
                           <div className="min-w-0">
                             <div className="flex items-center gap-1.5 flex-wrap">
-                              <h3 className="text-sm font-black text-slate-900 truncate">{getCardTitle(listing.cardId)}</h3>
-                              {/* ID 373: 수수료 및 가스비 배지 */}
-                              <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-xs bg-cyan-50 border border-cyan-200 text-cyan-800">
-                                {language === 'ko' ? '수수료 5% · L2 가스 0' : 'Fee 5% · Gas Free'}
+                              <h3 className="text-xs font-black text-[#201d1d] truncate">{getCardTitle(listing.cardId)}</h3>
+                              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-sm bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] text-[#646262]">
+                                {language === 'ko' ? '수수료 5% · 가스 0' : 'Fee 5% · Gas Free'}
                               </span>
                             </div>
-                            <div className="flex items-center gap-3 mt-0.5">
-                              <span className="text-xs font-black text-indigo-700">{listing.askPrice.toLocaleString()} SNS</span>
-                              {/* ID 408: 7일 시세 변동 스파크라인 HUD */}
+                            <div className="flex items-center gap-3 mt-1">
+                              <span className="text-xs font-black text-[#201d1d]">{listing.askPrice.toLocaleString()} SNS</span>
                               <MarketSparkline cardId={listing.cardId} currentPrice={listing.askPrice} width={50} height={18} />
                             </div>
                           </div>
                         </div>
                         <div className="flex items-center gap-1.5 shrink-0" onClick={(e) => e.stopPropagation()}>
-                          {/* ID 523: Auto-Buy Order Button */}
                           <button
                             type="button"
                             onClick={() => {
@@ -1184,10 +1301,10 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
                               setAutoBuyTargetPrice(Math.round(listing.askPrice * 0.9));
                             }}
                             className={cn(
-                              "min-h-9 px-2 rounded-lg border text-xs font-bold flex items-center gap-1 cursor-pointer transition-colors",
+                              "min-h-[44px] px-2.5 rounded-sm border text-xs font-bold flex items-center gap-1 cursor-pointer transition-colors",
                               autoBuyOrders[listing.cardId]
-                                ? "border-indigo-500 bg-indigo-50 text-indigo-700"
-                                : "border-slate-300 bg-white hover:bg-slate-50 text-slate-600"
+                                ? "border-[#201d1d] bg-[#201d1d] text-[#fdfcfc]"
+                                : "border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] hover:bg-[#eae8e8] text-[#201d1d]"
                             )}
                             title={language === 'ko' ? '희망 매수가 예약 (Auto-Buy)' : 'Auto-Buy Limit Order'}
                           >
@@ -1201,10 +1318,10 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
                           <button
                             type="button"
                             onClick={() => setTradeModalListing(listing)}
-                            className="min-h-9 px-2.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs flex items-center gap-1 cursor-pointer"
+                            className="min-h-[44px] px-2.5 rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] hover:bg-[#eae8e8] text-[#201d1d] font-bold text-xs flex items-center gap-1 cursor-pointer"
                             title={language === 'ko' ? '실시간 시세 차트 및 상세' : 'Price Chart & Details'}
                           >
-                            <TrendingUp size={13} className="text-indigo-600" />
+                            <TrendingUp size={13} />
                             <span className="hidden sm:inline">{language === 'ko' ? '시세' : 'Chart'}</span>
                           </button>
                           <button
@@ -1212,10 +1329,10 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
                             onClick={() => handleRequestPurchase(listing)}
                             disabled={isMine || hasOpenOffer || listing.status !== 'active' || isGuest || isOfflineMode}
                             className={cn(
-                              'min-h-9 px-3.5 rounded-lg font-bold text-xs transition-all shrink-0',
+                              'min-h-[44px] px-3.5 rounded-sm font-bold text-xs transition-colors shrink-0 border',
                               isMine || hasOpenOffer || listing.status !== 'active' || isGuest || isOfflineMode
-                                ? 'bg-slate-200 text-slate-500 cursor-not-allowed'
-                                : 'bg-slate-900 text-white hover:bg-slate-800 cursor-pointer',
+                                ? 'bg-[#f8f7f7] text-[#646262] border-[rgba(15,0,0,0.12)] cursor-not-allowed'
+                                : 'bg-[#201d1d] text-[#fdfcfc] border-[#201d1d] hover:bg-[#333030] cursor-pointer',
                             )}
                           >
                             {isMine
@@ -1235,13 +1352,13 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
 
           {/* Create Listing */}
           <div className={cn(
-            "rounded-2xl border border-slate-200 bg-white shadow-sm p-4 space-y-3",
+            "rounded-none border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-4 space-y-3",
             activeSubTab === 'browse' && "hidden lg:block"
           )}>
-            <h2 className="text-base font-black text-slate-900">{t('marketplace_create_title', language)}</h2>
+            <h2 className="text-sm font-black uppercase text-[#201d1d]">[{t('marketplace_create_title', language)}]</h2>
 
             {feedbackKey && (
-              <div className="p-2.5 text-xs font-bold bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700 text-amber-900 dark:text-amber-200 rounded-lg">
+              <div className="p-2.5 text-xs font-bold bg-[#f8f7f7] border border-[#201d1d] text-[#201d1d] rounded-none">
                 {feedbackText || (t(feedbackKey as any, language) !== feedbackKey ? t(feedbackKey as any, language) : feedbackKey)}
               </div>
             )}
@@ -1250,7 +1367,7 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
               value={selectedCardId ?? ''}
               onChange={(event) => setSelectedCardId(Number(event.target.value))}
               disabled={listableCards.length === 0 || isGuest || isOfflineMode}
-              className="w-full min-h-9 rounded-lg border border-slate-200 bg-slate-50 px-3 text-xs text-slate-900 outline-none focus:border-indigo-400"
+              className="w-full min-h-[44px] rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] px-3 text-xs text-[#201d1d] outline-none focus:border-[#201d1d]"
             >
               {listableCards.length === 0 ? (
                 <option value="">{t('marketplace_no_listable_cards', language)}</option>
@@ -1271,19 +1388,18 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
               onChange={(event) => setListingPriceInput(event.target.value)}
               disabled={isGuest || isOfflineMode}
               placeholder={t('marketplace_ask_price', language)}
-              className="w-full min-h-9 rounded-lg border border-slate-200 bg-slate-50 px-3 text-xs text-slate-900 outline-none focus:border-indigo-400"
+              className="w-full min-h-[44px] rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] px-3 text-xs text-[#201d1d] outline-none focus:border-[#201d1d]"
             />
 
             {selectedCardId && (
-              <div className="text-[10px] text-slate-500 flex items-center justify-between px-1">
+              <div className="text-[10px] text-[#646262] flex items-center justify-between px-1">
                 <span>{language === 'ko' ? '공정 가격 밴드 (±30%):' : 'Fair Price Band (±30%):'}</span>
-                <span className="font-bold text-indigo-600">
+                <span className="font-bold text-[#201d1d]">
                   {MarketplacePriceBand.getInstance().evaluatePriceBand(selectedCardId, 0).minAllowedPrice.toLocaleString()} ~ {MarketplacePriceBand.getInstance().evaluatePriceBand(selectedCardId, 0).maxAllowedPrice.toLocaleString()} SNS
                 </span>
               </div>
             )}
 
-            {/* Row 1060 / ID 323: Suggested Market Price Guidance Chip */}
             {selectedCardId && (() => {
               const band = MarketplacePriceBand.getInstance().evaluatePriceBand(selectedCardId, 0);
               const suggested = band.recommendedPrice;
@@ -1291,11 +1407,11 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
                 <button
                   type="button"
                   onClick={() => setListingPriceInput(String(suggested))}
-                  className="w-full py-1.5 px-2 bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-950 rounded-lg text-[11px] font-mono font-bold flex items-center justify-between transition-colors"
+                  className="w-full min-h-[44px] py-2 px-3 bg-[#f8f7f7] hover:bg-[#eae8e8] border border-[rgba(15,0,0,0.12)] text-[#201d1d] rounded-sm text-[11px] font-mono font-bold flex items-center justify-between transition-colors cursor-pointer"
                   title={language === 'ko' ? '클릭 시 권장가로 자동 입력' : 'Click to auto-fill suggested price'}
                 >
                   <span>💡 {language === 'ko' ? '적정 시장 권장가:' : 'Suggested Price:'}</span>
-                  <span className="underline font-black">{suggested.toLocaleString()} SNS (자동입력)</span>
+                  <span className="underline font-black">[{suggested.toLocaleString()} SNS 자동입력]</span>
                 </button>
               );
             })()}
@@ -1305,37 +1421,39 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
               onClick={handleCreateListing}
               disabled={listableCards.length === 0}
               className={cn(
-                'w-full min-h-9 rounded-lg font-bold text-xs transition-all',
-                listableCards.length === 0 ? 'bg-slate-200 text-slate-500 cursor-not-allowed' : 'bg-indigo-600 text-white hover:bg-indigo-500',
+                'w-full min-h-[44px] rounded-sm font-bold text-xs transition-colors border',
+                listableCards.length === 0
+                  ? 'bg-[#f8f7f7] text-[#646262] border-[rgba(15,0,0,0.12)] cursor-not-allowed'
+                  : 'bg-[#201d1d] text-[#fdfcfc] border-[#201d1d] hover:bg-[#333030] cursor-pointer',
               )}
             >
-              {t('marketplace_create_listing', language)}
+              [{t('marketplace_create_listing', language)}]
             </button>
           </div>
         </section>
 
         {/* SCR-05 UX: Auto-Buy 자동 매수 예약 관리 패널 */}
         {activeSubTab === 'auto_buy' && (
-          <div className="rounded-2xl border border-indigo-200 bg-white shadow-sm p-4 space-y-4 font-mono">
-            <div className="flex items-center justify-between pb-2 border-b border-slate-100 flex-wrap gap-2">
+          <div className="rounded-none border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-4 space-y-4 font-mono">
+            <div className="flex items-center justify-between pb-2 border-b border-[rgba(15,0,0,0.12)] flex-wrap gap-2">
               <div className="flex items-center gap-2">
-                <span className="text-lg">🎯</span>
-                <h2 className="text-base font-black text-slate-900">
-                  {language === 'ko' ? '희망 매수가 자동 매수 예약 목록' : 'Auto-Buy Limit Orders'}
+                <span>🎯</span>
+                <h2 className="text-sm font-black uppercase text-[#201d1d]">
+                  [{language === 'ko' ? '희망 매수가 자동 매수 예약 목록' : 'Auto-Buy Limit Orders'}]
                 </h2>
               </div>
-              <span className="text-xs text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded-sm">
+              <span className="text-xs text-[#201d1d] font-bold bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] px-2 py-0.5 rounded-sm">
                 {Object.keys(autoBuyOrders).length} {language === 'ko' ? '건 활성 대기' : 'Active Orders'}
               </span>
             </div>
 
             {Object.keys(autoBuyOrders).length === 0 ? (
-              <div className="p-8 text-center text-slate-400 text-xs border border-dashed border-slate-200 rounded-xl space-y-2">
-                <div className="text-2xl">🎯</div>
-                <div className="font-bold text-slate-600">
+              <div className="p-8 text-center text-[#646262] text-xs border border-dashed border-[rgba(15,0,0,0.2)] rounded-none space-y-2 bg-[#f8f7f7]">
+                <div className="text-xl">🎯</div>
+                <div className="font-bold text-[#201d1d]">
                   {language === 'ko' ? '등록된 자동 매수 주문이 없습니다.' : 'No active Auto-Buy limit orders.'}
                 </div>
-                <div className="text-[11px] text-slate-500 max-w-sm mx-auto">
+                <div className="text-[11px] text-[#646262] max-w-sm mx-auto">
                   {language === 'ko'
                     ? '매물 탐색(Browse) 탭에서 원하는 카드의 [🎯 예약] 버튼을 누르면 목표 매수가 이하 등록 시 즉시 알림 및 자동 체결을 준비합니다.'
                     : 'Click the [🎯 Auto] button on any card in the Browse tab to set your target maximum price.'}
@@ -1346,19 +1464,19 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
                 {Object.entries(autoBuyOrders).map(([cardIdStr, limitPrice]) => {
                   const cId = Number(cardIdStr);
                   return (
-                    <div key={cId} className="p-3 bg-indigo-50/60 border border-indigo-200 rounded-xl flex items-center justify-between gap-2 shadow-2xs">
+                    <div key={cId} className="p-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none flex items-center justify-between gap-2">
                       <div className="min-w-0">
-                        <div className="font-black text-sm text-slate-900 truncate">{getCardTitle(cId)}</div>
-                        <div className="text-xs text-indigo-700 font-bold mt-0.5">
+                        <div className="font-black text-xs text-[#201d1d] truncate">{getCardTitle(cId)}</div>
+                        <div className="text-xs text-[#646262] font-bold mt-0.5">
                           {language === 'ko' ? `희망 목표가: ≤ ${limitPrice.toLocaleString()} SNS` : `Limit: ≤ ${limitPrice.toLocaleString()} SNS`}
                         </div>
                       </div>
                       <button
                         type="button"
                         onClick={() => removeAutoBuyOrder(cId)}
-                        className="px-2.5 py-1 text-xs bg-white border border-rose-200 hover:bg-rose-50 text-rose-600 font-bold rounded-lg cursor-pointer shrink-0 transition-colors"
+                        className="min-h-[44px] px-3 text-xs bg-[#fdfcfc] border border-rose-700 hover:bg-rose-50 text-rose-700 font-bold rounded-sm cursor-pointer shrink-0 transition-colors"
                       >
-                        {language === 'ko' ? '주문 취소' : 'Cancel'}
+                        [{language === 'ko' ? '주문 취소' : 'Cancel'}]
                       </button>
                     </div>
                   );
@@ -1370,75 +1488,72 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
 
         {/* My Listings + My Requests */}
         <section className={cn(
-          "grid lg:grid-cols-2 gap-5",
+          "grid lg:grid-cols-2 gap-4",
           activeSubTab !== 'my_listings' && "hidden lg:grid"
         )}>
           {/* My Listings */}
-          <div className="rounded-2xl border border-slate-200 bg-white shadow-sm p-4 space-y-2">
-            <div className="flex items-center justify-between gap-2 flex-wrap pb-1 border-b border-slate-100">
-              <h2 className="text-base font-black text-slate-900">{t('marketplace_my_listings', language)}</h2>
+          <div className="rounded-none border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-4 space-y-2">
+            <div className="flex items-center justify-between gap-2 flex-wrap pb-2 border-b border-[rgba(15,0,0,0.12)]">
+              <h2 className="text-sm font-black uppercase text-[#201d1d]">[{t('marketplace_my_listings', language)}]</h2>
               <div className="flex items-center gap-1.5 flex-wrap">
-                {/* ID 353: 1-클릭 판매 대금 일괄 수령 (Claim All) 버튼 */}
                 {totalClaimableSns > 0 && (
                   <button
                     type="button"
                     onClick={handleClaimAllSettlements}
-                    className="px-2.5 py-1 rounded-sm bg-emerald-600 hover:bg-emerald-500 text-white font-black text-[11px] flex items-center gap-1 shadow-sm cursor-pointer transition-all animate-bounce"
+                    className="min-h-[44px] px-3 py-1 rounded-sm bg-emerald-700 hover:bg-emerald-800 text-white font-black text-[11px] flex items-center gap-1 cursor-pointer transition-colors"
                   >
                     <Sparkles size={12} />
-                    <span>{language === 'ko' ? `판매 대금 일괄 수령 (+${totalClaimableSns.toLocaleString()} SNS)` : `Claim All (+${totalClaimableSns.toLocaleString()} SNS)`}</span>
+                    <span>[{language === 'ko' ? `판매 대금 일괄 수령 (+${totalClaimableSns.toLocaleString()} SNS)` : `Claim All (+${totalClaimableSns.toLocaleString()} SNS)`}]</span>
                   </button>
                 )}
-                {/* ID 403: 만료 임박 매물 1-클릭 일괄 재등록 버튼 */}
                 {myListings.length > 0 && (
                   <button
                     type="button"
                     onClick={handleRelistExpiringListings}
-                    className="px-2.5 py-1 rounded-sm border border-slate-300 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[10px] flex items-center gap-1 cursor-pointer transition-colors"
+                    className="min-h-[44px] px-3 py-1 rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] hover:bg-[#eae8e8] text-[#201d1d] font-bold text-[10px] flex items-center gap-1 cursor-pointer transition-colors"
                     title={language === 'ko' ? '등록 유효기간 갱신 및 상단 재노출' : 'Refresh listing expiration'}
                   >
-                    <span>{language === 'ko' ? '만료 임박 일괄 재등록' : 'Re-list All'}</span>
+                    <span>[{language === 'ko' ? '만료 임박 일괄 재등록' : 'Re-list All'}]</span>
                   </button>
                 )}
               </div>
             </div>
             {myListings.length === 0 ? (
-              <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center text-xs text-slate-400">
+              <div className="rounded-none border border-dashed border-[rgba(15,0,0,0.2)] bg-[#f8f7f7] px-4 py-6 text-center text-xs text-[#646262]">
                 {t('marketplace_empty_my_listings', language)}
               </div>
             ) : (
               myListings.map((listing) => (
-                <div key={listing.id} className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                <div key={listing.id} className="rounded-none border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] p-3">
                   <div className="flex items-center justify-between gap-3">
                     <div className="min-w-0">
                       <div className="flex items-center gap-1.5">
-                        <span className="font-black text-sm text-slate-900 truncate">{getCardTitle(listing.cardId)}</span>
-                        {/* ID 403: 만료 임박 뱃지 */}
+                        <span className="font-black text-xs text-[#201d1d] truncate">{getCardTitle(listing.cardId)}</span>
                         {listing.status === 'active' && (
-                          <span className="text-[8px] font-bold px-1 py-0.2 rounded-xs bg-amber-100 text-amber-900 border border-amber-300">
+                          <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-sm bg-[#fdfcfc] text-amber-900 border border-[rgba(15,0,0,0.12)]">
                             {language === 'ko' ? '만료 임박' : 'Expiring'}
                           </span>
                         )}
                       </div>
-                      <div className="text-xs text-slate-500">{listing.askPrice.toLocaleString()} SNS</div>
+                      <div className="text-xs text-[#646262]">{listing.askPrice.toLocaleString()} SNS</div>
                     </div>
                     <div className="flex gap-1.5 shrink-0">
                       {(listing.status === 'active' || listing.status === 'pending' || listing.status === 'escrow') && (
                         <button
                           type="button"
                           onClick={() => handleCancelListing(listing.id)}
-                          className="min-h-8 px-3 rounded-lg border border-rose-200 bg-white text-rose-700 font-bold text-[10px] hover:bg-rose-50 transition-colors"
+                          className="min-h-[44px] px-3 rounded-sm border border-rose-700 bg-[#fdfcfc] text-rose-700 font-bold text-[10px] hover:bg-rose-50 transition-colors cursor-pointer"
                         >
-                          {t('marketplace_cancel_listing', language)}
+                          [{t('marketplace_cancel_listing', language)}]
                         </button>
                       )}
                       {listing.status === 'pending' && listing.requestedByOfferId && (
                         <button
                           type="button"
                           onClick={() => handleStartEscrow(listing.id)}
-                          className="min-h-8 px-3 rounded-lg bg-violet-600 text-white font-bold text-[10px] hover:bg-violet-500 transition-colors"
+                          className="min-h-[44px] px-3 rounded-sm bg-[#201d1d] text-[#fdfcfc] font-bold text-[10px] hover:bg-[#333030] transition-colors cursor-pointer"
                         >
-                          {t('marketplace_move_to_escrow', language)}
+                          [{t('marketplace_move_to_escrow', language)}]
                         </button>
                       )}
                     </div>
@@ -1449,19 +1564,19 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
           </div>
 
           {/* My Requests */}
-          <div className="rounded-2xl border border-slate-200 bg-white shadow-sm p-4 space-y-2">
-            <h2 className="text-base font-black text-slate-900">{t('marketplace_my_requests', language)}</h2>
+          <div className="rounded-none border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-4 space-y-2">
+            <h2 className="text-sm font-black uppercase text-[#201d1d] pb-2 border-b border-[rgba(15,0,0,0.12)]">[{t('marketplace_my_requests', language)}]</h2>
             {myOffers.length === 0 ? (
-              <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center text-xs text-slate-400">
+              <div className="rounded-none border border-dashed border-[rgba(15,0,0,0.2)] bg-[#f8f7f7] px-4 py-6 text-center text-xs text-[#646262]">
                 {t('marketplace_empty_my_requests', language)}
               </div>
             ) : (
               myOffers.map((offer) => (
-                <div key={offer.id} className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                <div key={offer.id} className="rounded-none border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] p-3">
                   <div className="flex items-center justify-between gap-3">
                     <div className="min-w-0">
-                      <div className="font-black text-sm text-slate-900 truncate">{getCardTitle(offer.cardId)}</div>
-                      <div className="text-xs text-slate-500">
+                      <div className="font-black text-xs text-[#201d1d] truncate">{getCardTitle(offer.cardId)}</div>
+                      <div className="text-xs text-[#646262]">
                         {offer.buyerTotal.toLocaleString()} SNS
                       </div>
                     </div>
@@ -1469,9 +1584,9 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
                       <button
                         type="button"
                         onClick={() => handleCancelOffer(offer.id)}
-                        className="min-h-8 px-3 rounded-lg border border-slate-200 bg-white text-slate-700 font-bold text-[10px] hover:bg-slate-100 transition-colors shrink-0"
+                        className="min-h-[44px] px-3 rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-[#201d1d] font-bold text-[10px] hover:bg-[#eae8e8] transition-colors shrink-0 cursor-pointer"
                       >
-                        {t('marketplace_cancel_request', language)}
+                        [{t('marketplace_cancel_request', language)}]
                       </button>
                     )}
                   </div>
@@ -1490,28 +1605,28 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[209] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+            className="fixed inset-0 z-[209] flex items-center justify-center p-4 bg-black/60 font-mono"
           >
             <motion.div
               initial={{ scale: 0.95, y: 10 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 10 }}
-              className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl relative"
+              className="bg-[#fdfcfc] border border-[#201d1d] rounded-none p-5 max-w-sm w-full relative"
             >
               <button
                 type="button"
                 onClick={() => setHelpOpen(false)}
-                className="absolute top-3 right-3 w-7 h-7 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-colors"
+                className="absolute top-3 right-3 min-h-[36px] px-2 rounded-sm border border-[rgba(15,0,0,0.12)] flex items-center justify-center text-[#646262] hover:text-[#201d1d] hover:bg-[#f8f7f7] transition-colors cursor-pointer"
               >
-                <X size={14} />
+                [x]
               </button>
 
-              <div className="text-center mb-5">
-                <HelpCircle size={24} className="mx-auto text-indigo-500 mb-2" />
-                <h3 className="text-sm font-black text-slate-900">
+              <div className="text-center mb-5 pt-2">
+                <HelpCircle size={22} className="mx-auto text-[#201d1d] mb-2" />
+                <h3 className="text-sm font-black text-[#201d1d]">
                   {t(HELP_STEPS[helpStep].titleKey, language)}
                 </h3>
-                <p className="text-xs text-slate-500 mt-1.5 leading-relaxed">
+                <p className="text-xs text-[#646262] mt-1.5 leading-relaxed">
                   {t(HELP_STEPS[helpStep].descKey, language)}
                 </p>
               </div>
@@ -1521,26 +1636,18 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
                   type="button"
                   onClick={() => setHelpStep((s) => Math.max(0, s - 1))}
                   disabled={helpStep === 0}
-                  className="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-50 disabled:opacity-30 transition-colors"
+                  className="min-h-[44px] min-w-[44px] rounded-sm border border-[rgba(15,0,0,0.12)] flex items-center justify-center text-[#201d1d] hover:bg-[#f8f7f7] disabled:opacity-30 transition-colors cursor-pointer"
                 >
                   <ChevronLeft size={16} />
                 </button>
-                <div className="flex gap-1.5">
-                  {HELP_STEPS.map((_, i) => (
-                    <div
-                      key={i}
-                      className={cn(
-                        'w-1.5 h-1.5 rounded-full transition-colors',
-                        i === helpStep ? 'bg-indigo-500' : 'bg-slate-200',
-                      )}
-                    />
-                  ))}
+                <div className="text-xs font-bold text-[#646262]">
+                  {helpStep + 1} / {HELP_STEPS.length}
                 </div>
                 <button
                   type="button"
                   onClick={() => setHelpStep((s) => Math.min(HELP_STEPS.length - 1, s + 1))}
                   disabled={helpStep === HELP_STEPS.length - 1}
-                  className="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-50 disabled:opacity-30 transition-colors"
+                  className="min-h-[44px] min-w-[44px] rounded-sm border border-[rgba(15,0,0,0.12)] flex items-center justify-center text-[#201d1d] hover:bg-[#f8f7f7] disabled:opacity-30 transition-colors cursor-pointer"
                 >
                   <ChevronRight size={16} />
                 </button>
@@ -1551,10 +1658,10 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
       </AnimatePresence>
 
       {/* Sticky Ergonomic Bottom 1-Line Slim Filter Bar (Row 656 / ID 553) */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 bg-[#fdfcfc]/95 backdrop-blur-md border-t border-black/15 px-3 py-2 select-none font-mono shadow-md">
+      <div className="fixed bottom-0 left-0 right-0 z-40 bg-[#fdfcfc] border-t border-[rgba(15,0,0,0.12)] px-3 py-2 select-none font-mono">
         <div className="max-w-5xl mx-auto flex items-center justify-between gap-2 overflow-x-auto no-scrollbar">
           <div className="flex items-center gap-1 shrink-0">
-            <span className="text-[10px] font-black text-black/60 uppercase px-1">
+            <span className="text-[10px] font-black text-[#646262] uppercase px-1">
               [FILTER]
             </span>
             {(['all', 'instant', 'auction'] as const).map((mode) => (
@@ -1562,10 +1669,10 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
                 key={mode}
                 onClick={() => setTradeTypeFilter(mode)}
                 className={cn(
-                  "px-2.5 py-1 text-[11px] font-bold rounded-sm border transition-all cursor-pointer whitespace-nowrap",
+                  "min-h-[36px] px-2.5 py-1 text-[11px] font-bold rounded-sm border transition-colors cursor-pointer whitespace-nowrap",
                   tradeTypeFilter === mode
                     ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
-                    : "bg-white text-black/70 border-black/15 hover:bg-black/5"
+                    : "bg-[#f8f7f7] text-[#646262] border-[rgba(15,0,0,0.12)] hover:text-[#201d1d]"
                 )}
               >
                 {mode === 'all'
@@ -1583,10 +1690,10 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
                 key={elem}
                 onClick={() => setElementFilter(elem)}
                 className={cn(
-                  "px-2 py-1 text-[11px] font-bold rounded-sm border transition-all cursor-pointer whitespace-nowrap flex items-center gap-1",
+                  "min-h-[36px] px-2 py-1 text-[11px] font-bold rounded-sm border transition-colors cursor-pointer whitespace-nowrap flex items-center gap-1",
                   elementFilter === elem
-                    ? "bg-blue-600 text-white border-blue-700 font-black"
-                    : "bg-white text-black/70 border-black/15 hover:bg-black/5"
+                    ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d] font-black"
+                    : "bg-[#f8f7f7] text-[#646262] border-[rgba(15,0,0,0.12)] hover:text-[#201d1d]"
                 )}
               >
                 <span>{elem === 'all' ? (language === 'ko' ? '전체속성' : 'All Elem') : elem === 'FIRE' ? '🔥' : elem === 'WATER' ? '💧' : elem === 'EARTH' ? '🌿' : '⚡'}</span>
@@ -1625,33 +1732,33 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
 
       {/* ID 523: Auto-Buy Limit Order Modal */}
       {autoBuyModalCardId && (
-        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 backdrop-blur-xs animate-in fade-in">
-          <div className="w-full max-w-sm bg-white border-2 border-black p-5 space-y-4 shadow-[4px_4px_0px_rgba(0,0,0,1)] font-mono">
-            <div className="flex items-center justify-between border-b border-black pb-2">
-              <h3 className="text-sm font-black flex items-center gap-1.5">
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 font-mono">
+          <div className="w-full max-w-sm bg-[#fdfcfc] border border-[#201d1d] rounded-none p-5 space-y-4">
+            <div className="flex items-center justify-between border-b border-[rgba(15,0,0,0.12)] pb-2">
+              <h3 className="text-sm font-black flex items-center gap-1.5 text-[#201d1d]">
                 <span>🎯</span>
                 <span>{language === 'ko' ? '희망 매수가 예약 (Auto-Buy)' : 'Auto-Buy Limit Order'}</span>
               </h3>
               <button
                 onClick={() => setAutoBuyModalCardId(null)}
-                className="text-xs font-bold text-slate-500 hover:text-black"
+                className="text-xs font-bold text-[#646262] hover:text-[#201d1d] cursor-pointer"
               >
-                ✕
+                [x]
               </button>
             </div>
 
             <div className="space-y-2 text-xs">
-              <div className="font-bold text-slate-800">
+              <div className="font-bold text-[#201d1d]">
                 {CARD_DATABASE[autoBuyModalCardId]?.title_dis || `Card #${autoBuyModalCardId}`}
               </div>
-              <p className="text-[11px] text-slate-500">
+              <p className="text-[11px] text-[#646262]">
                 {language === 'ko'
                   ? '해당 카드에 설정한 희망가 이하의 매물이 마켓에 등록되면 자동 알림 및 구매를 진행합니다.'
                   : 'Receive alerts or auto-execute purchases when this card is listed at or below your target price.'}
               </p>
 
               <div className="space-y-1">
-                <label className="text-[11px] font-bold text-slate-700">
+                <label className="text-[11px] font-bold text-[#201d1d]">
                   {language === 'ko' ? '희망 최대 매수가 (SNS):' : 'Max Target Price (SNS):'}
                 </label>
                 <input
@@ -1660,7 +1767,7 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
                   min={100}
                   value={autoBuyTargetPrice}
                   onChange={(e) => setAutoBuyTargetPrice(Math.max(100, Number(e.target.value)))}
-                  className="w-full min-h-9 px-3 border border-black rounded-none text-xs font-mono"
+                  className="w-full min-h-[44px] px-3 border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] rounded-sm text-xs font-mono text-[#201d1d]"
                 />
               </div>
             </div>
@@ -1673,17 +1780,17 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
                     removeAutoBuyOrder(autoBuyModalCardId);
                     setAutoBuyModalCardId(null);
                   }}
-                  className="flex-1 py-2 border border-rose-500 text-rose-600 font-bold text-xs hover:bg-rose-50 cursor-pointer"
+                  className="flex-1 min-h-[44px] py-2 border border-rose-700 text-rose-700 rounded-sm font-bold text-xs hover:bg-rose-50 cursor-pointer"
                 >
-                  {language === 'ko' ? '예약 취소' : 'Cancel Limit'}
+                  [{language === 'ko' ? '예약 취소' : 'Cancel Limit'}]
                 </button>
               )}
               <button
                 type="button"
                 onClick={() => saveAutoBuyOrder(autoBuyModalCardId, autoBuyTargetPrice)}
-                className="flex-1 py-2 bg-black text-white font-bold text-xs hover:bg-slate-800 cursor-pointer"
+                className="flex-1 min-h-[44px] py-2 bg-[#201d1d] text-[#fdfcfc] rounded-sm font-bold text-xs hover:bg-[#333030] cursor-pointer"
               >
-                {language === 'ko' ? '희망가 저장' : 'Set Auto-Buy'}
+                [{language === 'ko' ? '희망가 저장' : 'Set Auto-Buy'}]
               </button>
             </div>
           </div>
@@ -1692,24 +1799,24 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
 
       {/* SCR-05 Dopamine: P2P 거래 체결 성공 축하 팝업 모달 */}
       {tradeSuccessModalListing && (
-        <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4 backdrop-blur-xs animate-in fade-in">
-          <div className="w-full max-w-sm bg-white border-2 border-amber-400 p-6 space-y-4 shadow-[4px_4px_0px_rgba(251,191,36,1)] font-mono text-center">
-            <div className="text-4xl animate-bounce">🎉</div>
-            <h3 className="text-base font-black text-slate-900">
+        <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4 font-mono">
+          <div className="w-full max-w-sm bg-[#fdfcfc] border border-[#201d1d] rounded-none p-6 space-y-4 text-center">
+            <div className="text-3xl">🎉</div>
+            <h3 className="text-base font-black text-[#201d1d]">
               {language === 'ko' ? 'P2P 거래 체결 완료!' : 'P2P Deal Executed!'}
             </h3>
-            <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-slate-700 space-y-1">
-              <div className="font-bold text-slate-900">
+            <div className="p-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none text-xs text-[#646262] space-y-1">
+              <div className="font-bold text-[#201d1d]">
                 [{getCardTitle(tradeSuccessModalListing.cardId)}]
               </div>
-              <div className="text-indigo-700 font-black">
+              <div className="text-[#201d1d] font-black">
                 {tradeSuccessModalListing.askPrice.toLocaleString()} SNS
               </div>
               <div className="text-[10px] text-emerald-700 font-bold pt-1">
                 ✓ {language === 'ko' ? '가스비 100% 무료 환급 완료 (+15 SNS)' : 'Gas Fee 100% Rebated (+15 SNS)'}
               </div>
             </div>
-            <p className="text-[11px] text-slate-500">
+            <p className="text-[11px] text-[#646262]">
               {language === 'ko'
                 ? '구매 요청이 안전하게 등록되었습니다. 에스크로 확인 후 인벤토리로 카드가 지급됩니다.'
                 : 'Purchase request safely recorded. Card will be delivered upon escrow confirmation.'}
@@ -1717,9 +1824,9 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
             <button
               type="button"
               onClick={() => setTradeSuccessModalListing(null)}
-              className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-black text-xs cursor-pointer active:scale-95 transition-all shadow-xs"
+              className="w-full min-h-[44px] py-2.5 bg-[#201d1d] hover:bg-[#333030] text-[#fdfcfc] rounded-sm font-black text-xs cursor-pointer transition-colors"
             >
-              {language === 'ko' ? '확인 완료' : 'Confirm'}
+              [{language === 'ko' ? '확인 완료' : 'Confirm'}]
             </button>
           </div>
         </div>

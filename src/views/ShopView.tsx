@@ -2945,16 +2945,16 @@ export const ShopView: React.FC<ShopViewProps> = ({
           className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4"
         >
           <motion.div
-            initial={{ scale: 0.9, y: 20 }}
+            initial={{ scale: 0.95, y: 10 }}
             animate={{ scale: 1, y: 0 }}
-            exit={{ scale: 0.9, y: 20 }}
-            className="bg-white border border-slate-100 p-6.5 rounded-3xl shadow-2xl w-full max-w-lg space-y-4 max-h-[85vh] flex flex-col text-slate-800 font-sans"
+            exit={{ scale: 0.95, y: 10 }}
+            className="bg-[#fdfcfc] border border-[#201d1d] p-6 rounded-none w-full max-w-lg space-y-4 max-h-[85vh] flex flex-col text-[#201d1d] font-mono"
           >
-            <div className="flex justify-between items-center border-b border-slate-100 pb-3">
+            <div className="flex justify-between items-center border-b border-[rgba(15,0,0,0.12)] pb-3">
               <div className="flex items-center gap-2">
-                <History className="text-indigo-600 animate-spin-slow" size={22} />
-                <h3 className="text-md font-bold tracking-tight text-slate-800 uppercase leading-none">
-                  {t('history_title', language)}
+                <History className="text-[#201d1d]" size={20} />
+                <h3 className="text-sm font-bold tracking-tight text-[#201d1d] uppercase leading-none">
+                  [{t('history_title', language)}]
                 </h3>
               </div>
               <button
@@ -2962,7 +2962,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                   setShowHistory(false);
                 }}
-                className="p-1.5 hover:bg-slate-50 border border-slate-200 rounded-lg text-slate-400 hover:text-red-500 active:scale-95 transition-all cursor-pointer"
+                className="min-h-[44px] min-w-[44px] flex items-center justify-center hover:bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-sm text-[#201d1d] transition-colors cursor-pointer"
               >
                 <X size={16} />
               </button>
@@ -3220,23 +3220,23 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 }}
               >
                 <div 
-                  className="bg-white border border-slate-100 rounded-2xl p-6 sm:p-8 max-w-sm w-full text-center space-y-4 sm:space-y-6 cursor-default shadow-xl"
+                  className="bg-[#fdfcfc] border border-[#201d1d] rounded-none p-6 sm:p-8 max-w-sm w-full text-center space-y-4 sm:space-y-6 cursor-default font-mono"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <div className="flex justify-center">
-                    <div className="w-14 h-14 sm:w-16 sm:h-16 bg-amber-100 text-amber-500 rounded-full flex items-center justify-center animate-bounce">
-                      <Zap size={28} className="sm:w-8 sm:h-8" />
+                    <div className="w-12 h-12 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] text-[#201d1d] rounded-none flex items-center justify-center">
+                      <Zap size={24} />
                     </div>
                   </div>
                   <div className="space-y-1 sm:space-y-2">
-                    <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-800">
+                    <h3 className="text-lg sm:text-xl font-bold tracking-tight text-[#201d1d] uppercase">
                       {successVisible.isAdRemoval
-                        ? (language === 'ko' ? '광고 제거 완료' : 'Ad-Free Activated')
+                        ? (language === 'ko' ? '[광고 제거 완료]' : '[AD-FREE ACTIVATED]')
                         : tutorialStep === 8
-                        ? (language === 'ko' ? '첫 카드팩 선물' : 'First Pack Gift')
-                        : t('recharge_complete', language)}
+                        ? (language === 'ko' ? '[첫 카드팩 선물]' : '[FIRST PACK GIFT]')
+                        : `[${t('recharge_complete', language)}]`}
                     </h3>
-                    <p className="text-xs sm:text-sm font-semibold text-slate-500 tracking-normal leading-relaxed">
+                    <p className="text-xs font-medium text-[#646262] leading-relaxed">
                       {successVisible.isAdRemoval
                         ? (language === 'ko' ? '모든 게임 화면에서 구글 애드센스 광고가 영구적으로 제거되었습니다!' : 'Google AdSense ads have been permanently removed from all screens!')
                         : tutorialStep === 8
@@ -3252,9 +3252,9 @@ export const ShopView: React.FC<ShopViewProps> = ({
                         setTutorialStep(9);
                       }
                     }}
-                    className="w-full h-12 sm:h-14 bg-slate-900 hover:bg-slate-800 text-white font-bold uppercase tracking-widest transition-all rounded-xl cursor-pointer active:scale-95 shadow-sm"
+                    className="w-full min-h-[44px] bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] font-bold uppercase tracking-widest transition-colors rounded-sm cursor-pointer"
                   >
-                    OK
+                    [OK]
                   </button>
                 </div>
               </motion.div>

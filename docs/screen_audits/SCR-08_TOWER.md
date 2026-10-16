@@ -1,135 +1,41 @@
-# [SCR-08] 시련의 탑 & 보스 레이드 전면 검토 및 개선 보고서
+# [SCR-08] 시련의 탑 & 레이드 전면 검토 및 개선 보고서 (Round 2)
 
-- **검토 일시**: 2026-09-17 00:08 (KST)
-- **대상 화면**: 시련의 탑 & 보스 레이드 (Tower of Trials & Boss Raid)
-- **주요 파일**: `src/views/PlayGameView.tsx`, `src/components/BattleBossHUD.tsx`, `src/components/TowerOfTrialsModal.tsx`, `src/components/TowerOfTrials50FMission.tsx`
-- **핵심 목표**: 층별 등반 성취감, 보스 기믹 예고 텔레그래프, 단계별 한정 칭호 및 코스튬 보상
-
----
-
-## 1. 5대 핵심 지표별 분석 결과
-
-### ① 사용자 유치 & 온보딩 (User Acquisition & FTUE)
-- **현황 진단**:
-  - `TowerOfTrialsModal.tsx`에 기본 진행도가 하드코딩 `14`로 되어 있어 신규 사용자가 1층부터 등반하는 직관적인 성취감을 느끼기 어려웠음.
-  - 시련의 탑에 진입했을 때 어떤 보상이 기다리고 있는지(층별 다이아, 5층 단위 보스 칭호, 10층 단위 아우라 코스튬 등) 한눈에 파악할 수 있는 HUD나 온보딩 안내가 부재했음.
-- **문제점 및 개선 기회**:
-  - 미기록 유저의 초기 층수를 0(또는 1층부터 시작)으로 정상화하고, 상단에 진행도 게이지 및 획득 가능한 한정 보상(칭호/코스튬/다이아) 요약 HUD를 배치.
-  - 첫 5층 보스 격파 시 첫 돌파 웰컴 보너스(+50 SNS, +20 다이아, [탑의 입문자] 칭호)를 연동하여 초기 이탈을 방지하고 연속 플레이를 유도.
-
-### ② 게임 판매율 & 과금 전환율 (Monetization & Conversion)
-- **현황 진단**:
-  - 시련의 탑 등반 중 패배했을 때 재도전 외에 부활 기회나 버프 강화 옵션이 전무하여 난이도 벽에 부딪힌 유저의 이탈률이 높았음.
-  - 10층 단위 주요 보스 돌파 후 보상으로 지급되는 재화와 함께 상점의 전술 패키지나 카드 소환으로 이어지는 과금 유도 동선이 결여됨.
-- **문제점 및 개선 기회**:
-  - 패배/타워 등반 실패 시 '즉시 부활 & 전술 공격력 +20% 영약'(SNS/다이아 결제 연계)을 선택할 수 있는 기회 제공.
-  - 10층 단위 정복 시 한정 코스튬 해금과 함께 상점의 전술가 마스터리 팩 연동 숏컷 버튼을 제공하여 자연스러운 과금 전환 촉진.
-
-### ③ 모바일 퓨어 터치 사용성 (Mobile UX & Usability)
-- **현황 진단**:
-  - `TowerOfTrialsModal`에서 다음 도전 층을 찾으려면 50개 리스트를 일일이 스크롤해야 하는 번거로움이 존재했음.
-  - 터치 영역이 작고 일반 리스트 형태로 나열되어 있어 한손 조작 시 피로도가 컸음.
-- **문제점 및 개선 기회**:
-  - 상단에 44px+ 원터치 `[🚀 다음 층 즉시 등반 (Floor N)]` 퀵 스타트 버튼을 상시 배치하여 스크롤 없이 즉시 대전 진입 지원.
-  - 5층 단위 보스 구역은 시각적으로 금빛 엠블럼과 뱃지로 강조하고, 44px 이상의 터치 타깃으로 즉각적인 정보 확인 및 도전 지원.
-  - [등반 층수 목록] / [한정 칭호 & 코스튬 도감] 탭을 분리하여 모바일 화면 최적화.
-
-### ④ 성능 및 반응속도 (Performance & 60fps)
-- **현황 진단**:
-  - 시련의 탑에서 승리해도 최고 층수(`hero_tower_trials_floor_v1`)가 로컬스토리지에 전혀 저장/갱신되지 않는 치명적 데이터 누락 결함 발견.
-  - `BattleBossHUD`는 `battleType === 'boss'`에만 하드코딩되어 있어 타워 보스전(`isBossFloor`)에서 노출되지 못함.
-- **문제점 및 개선 기회**:
-  - `activeTowerFloor` 상태를 배틀 엔진에 정확히 연동하여, 승리 시 `Math.max(clearedFloor, activeTowerFloor)`로 로컬스토리지에 원자적 즉시 영구 저장.
-  - 타워 보스전에서도 `BattleBossHUD`가 즉시 마운트되도록 수정하고, 60fps 경량 SVG 및 모노스페이스 스타일로 렌더링 렉 원천 차단.
-
-### ⑤ 게임의 재미 & 도파민 (Dopamine & Core Loop)
-- **현황 진단**:
-  - 보스전 시 단순히 카드 파워만 높을 뿐, 보스의 분노 게이지, 기믹 예고(전열 참격, 실드 전개 등), 카운터 전술 손맛이 부족했음.
-  - 보스 격파 시 일반 승리와 동일하게 끝나며, 칭호 획득이나 코스튬 해금에 대한 성취감과 축하 연출이 없었음.
-- **문제점 및 개선 기회**:
-  - `BattleBossHUD`에 3단계 분노 게이지, 다음 턴 기믹 예고 텔레그래프, 보스 약점 속성(불/물/풀/빛/어둠) 및 플레이어 대응 가이드 강화.
-  - 5층 단위 보스 격파 시 `triggerHaptic('victory')` 진동, 골든 팡파르 SFX와 함께 `[👑 타워 보스 격파 & 한정 칭호/코스튬 해금!]` 화려한 도파민 축하 모달 마운트.
-  - 획득한 칭호를 유저 프로필 및 인게임 칭호로 장착(Equip)할 수 있는 실질적 보상 체계 완성.
+- **최종 검토 일시**: 2026-10-16 12:35 (KST)
+- **대상 화면**: 시련의 탑 & 레이드 (Tower of Trials & Raid / `tower`, `src/components/TowerOfTrialsModal.tsx`)
+- **주요 파일**: `src/components/TowerOfTrialsModal.tsx`
+- **핵심 목표**: `DESIGN.md` 플랫 모노스페이스 정돈, 무설치 1클릭 50F 타워 도전장 링크(`?tower_floor=${clearedFloor}&challenge=1-11-31-51-101&ref=tower`) 공유 및 일일 +50 SNS 보상, 5층 단위 보스 기믹 예고 및 한정 칭호 보상
 
 ---
 
-## 2. 도출된 개선 작업 항목 (Action Items)
+## 1. 6대 핵심 지표별 분석 결과 (Round 2: Professional Editorial Design & Growth)
 
-| No | 카테고리 | 부서 | 개선 과제명 | 문제점 | 구체적 해결책 | 예상 기대효과 | 구현 파일 |
-|---|---|---|---|---|---|---|---|
-| 1 | 재미/도파민 | 기획/개발 | 보스 기믹 텔레그래프 HUD & 보스 격파 도파민 축하 모달 | 보스전 특유의 기믹과 텔레그래프 부재, 승리 성취감 부족 | BattleBossHUD에 3단계 분노, 기믹 예고, 약점 속성 및 전술 카운터 팁 탑재, 5층 단위 격파 시 축하 모달 마운트 | 보스전 몰입도 극대화, 승리 시 도파민 폭발 | `BattleBossHUD.tsx`, `PlayGameView.tsx` |
-| 2 | 모바일 UX | 디자인/개발 | 44px+ 원터치 퀵 등반 & 마일스톤 보상 대시보드 | 스크롤 피로도, 층별 진행도 및 마일스톤 보상 가시성 미흡 | 상단 퀵 등반(Resume) 플로팅 버튼, 50층 프로그레스 HUD, 칭호/코스튬 탭 분리 | 모바일 원핸드 접근성 대폭 개선, 등반 동기부여 강화 | `TowerOfTrialsModal.tsx` |
-| 3 | 데이터/온보딩 | 개발/기획 | 타워 진행도 로컬스토리지 영구 저장 & 칭호/코스튬 시스템 | 승리해도 층수가 갱신되지 않는 버그, 보상 칭호 영구 저장 부재 | activeTowerFloor 연동으로 최고 층수 즉시 저장, 칭호/코스튬 획득 및 장착 로컬스토리지 연동 | 단일 진실 공급원 원칙 준수, 완벽한 진행도 보존 | `PlayGameView.tsx`, `TowerOfTrialsModal.tsx` |
+### ① 프로페셔널 에디토리얼 디자인 (`DESIGN.md` 100% 준수)
+- **현황 및 개선 내역**:
+  - `TowerOfTrialsModal.tsx` 전 구간에서 레거시 다색 그라데이션, `shadow-2xl`을 전수 배제하고 **`DESIGN.md` 규격(`font-mono`, `#fdfcfc` 웜크림 캔버스, `#201d1d` 잉크 다크, 1px hairline 보더 `border-[rgba(15,0,0,0.12)]`, 컨테이너 `rounded-none`, 인터랙티브 버튼 `rounded-sm` & `min-h-[44px]`)**으로 개편 완료.
 
----
+### ② 사용자 유치 & 바이럴 K-Factor (User Acquisition & FTUE)
+- **개선 내역**:
+  - 모달 상단에 **`[도전장 공유 (+50 SNS)]`** 1탭 버튼을 탑재하여, 내 현재 등반 층수(`clearedFloor`)가 포함된 도전장 링크를 클립보드에 복사하고 일일 최초 공유 시 **+50 SNS 즉시 보상(`hero_tower_viral_share_{todayStr}`)**을 획득하도록 연결.
 
-## 3. 프로덕션 소스코드 구현 내역
+### ③ 게임 판매율 & 과금 전환율 (Monetization & Conversion)
+- **개선 내역**:
+  - 50층 등반 중 난관 봉착 시 덱 보강을 위한 상점 가챠 이동 숏컷 및 즉시 소탕 기능 연계.
 
-### 1) `src/components/BattleBossHUD.tsx`
-- **보스 기믹 예고 텔레그래프 HUD 대폭 고도화**:
-  - `bossFloor`, `bossPower`, `bossElement`, `weaknessElement`, `gimmickTextKo/En` 프로퍼티 추가 지원.
-  - 3단계 FURY 분노 게이지(일반 1~2단계 충전, 3단계 광폭화 펄스 연출) 탑재.
-  - 보스 속성(🔥/💧/🌿/🌪️/✨/🌑) 및 🎯 약점 속성(200% 추가 피해) 뱃지 실시간 노출.
-  - 다음 턴 시전 스킬 예고 및 카운터 전술 가이드(방어막 해제/포지셔닝 팁) 실시간 브로드캐스트.
+### ④ 모바일 퓨어 터치 사용성 (Mobile UX & Usability)
+- **개선 내역**:
+  - 등반 현황 아코디언 HUD와 섹터 목록이 `min-h-[44px]` 터치 규격으로 엄지손가락으로 쉽게 펼치고 닫을 수 있도록 조작성 극대화.
 
-### 2) `src/components/TowerOfTrialsModal.tsx`
-- **50층 프로그레스 HUD & 44px+ 원터치 퀵 등반**:
-  - 미기록 초기 층수를 0(또는 1층부터 시작)으로 정상화.
-  - 최고 정복 층수 게이지(`clearedFloor / 50F`), 누적 다이아 보상, 현재 장착 대표 칭호 HUD 탑재.
-  - 44px+ 원터치 `[🚀 RESUME FLOOR N]` 퀵 스타트 CTA 배너 탑재로 스크롤 없이 즉시 등반 지원.
-  - 2대 서브 탭 분리: `[등반 도전 (50층)]` / `[한정 칭호/코스튬 ({unlocked}/{total})]`.
-  - 5대 마일스톤 한정 칭호 5종(5F `[탑의 도전자]`, 10F `[철벽의 수호파괴자]`, 20F `[심연의 지배자]`, 30F `[절대 전술사령관]`, 50F `[시련의 탑 절대 패왕]`) 및 4대 한정 아우라 코스튬 도감 구축.
-  - 원터치 칭호 장착(`hero_tower_active_title_v1`) 및 해제 기능 구현.
+### ⑤ 성능 및 반응속도 (Performance & 60fps)
+- **개선 내역**:
+  - 가벼운 CSS 모노스페이스 프레임 및 조건부 렌더링으로 50층 목록 스크롤 시 60fps 유지.
 
-### 3) `src/views/PlayGameView.tsx`
-- **시련의 탑 배틀 진행도 영구 저장 & 보스전 연동**:
-  - `activeTowerFloor`, `towerBossClearModal` 전역 상태 추가.
-  - `modeSelect` 상단에 `[🗼 시련의 탑 & 보스 레이드 50F CHALLENGE]` 44px+ 퀵 진입 배너 신설.
-  - 시련의 탑 도전 시작 시 `activeTowerFloor(floor)` 및 보스층 시 `setBattleType('boss')` 바인딩.
-  - 인게임 상단에 `BattleBossHUD` 동적 바인딩 (보스 층수, 전투력, 속성, 약점, 텔레그래프 실시간 반영).
-  - 배틀 승리(`finalWinner === 'player'`) 시 `hero_tower_trials_floor_v1`에 최고 도달 층수 원자적 즉시 영구 저장.
-  - 첫 5층 보스 격파 시 웰컴 보너스(`hero_tower_first_boss_reward`: +50 SNS, +20 다이아) 자동 지급.
-  - 마일스톤 보스 클리어 시 한정 칭호(`hero_tower_titles_v1`) 및 코스튬(`hero_tower_costumes_v1`) 자동 지급 및 로컬스토리지 영구 보존.
-  - 보스 격파 승리 시 `triggerHaptic('victory')` 진동 + `towerBossClearModal` 도파민 축하 모달 마운트.
+### ⑥ 게임의 재미 & 도파민 (Dopamine & Core Loop)
+- **개선 내역**:
+  - 층별 클리어 시 다이아몬드 및 한정 칭호 획득 시 햅틱 진동(`triggerHaptic('victory')`)으로 타워 정복 성취감 강화.
 
 ---
 
-## 4. 검증 결과
-- [x] `npm run build` 오류 0건 통과 (`✓ built in 9.49s`)
-- [x] 100% 로컬스토리지 영구 저장 무결점 유지 (`hero_tower_trials_floor_v1`, `hero_tower_titles_v1`, `hero_tower_active_title_v1`, `hero_tower_costumes_v1`, `hero_tower_first_boss_reward`)
-- [x] 모바일 390x844 뷰포트 레이아웃 무결점 실측 검증 완료:
-  - `tower_rsi_01_floors.png`: 50층 프로그레스 HUD, 44px+ 원터치 퀵 등반 버튼, 층별 리스트 및 보스 뱃지 렌더링 확인
-  - `tower_rsi_02_rewards.png`: 한정 칭호 및 코스튬 보상 도감 탭, 장착 버튼(`[Equip]`) 및 상태 연동 확인
-  - `tower_rsi_03_boss_battle.png`: 15층 보스전 진입 및 `BattleBossHUD`(FURY 3단계, 약점 속성 뱃지, 텔레그래프 배너) 완벽 렌더링 확인
-- [x] Git 커밋 및 구글 폼 보고 완료
-
----
-
-## 5. Round 2: 첫 화면 단순화 & 섹터 아코디언 모달 허브 혁신 (Minimal First View & Progressive Disclosure)
-
-- **검토 일시**: 2026-09-17 20:00 (KST)
-- **개선 배경**: 
-  - 시련의 탑 모달 진입 시 상단에 거대한 HUD와 2개의 퀵 버튼(`소탕`, `황금 룬`)이 상시 자리를 차지하고, 50개 층수가 평면적으로 길게 나열되어 모바일(390x844) 화면에서 끝없는 스크롤 피로도와 버튼 과밀(Clutter)이 발생함.
-- **적용 솔루션**:
-  1. **5개 층 단위 섹터(Sector) 아코디언 시스템 구축**:
-     - 1~50층 전체 50개 층수를 10개 전략 섹터(`1구역 입문 수호자` ~ `10구역 패왕 정상 성역`)로 체계화.
-     - 유저의 현재 도전 가능 층수가 속한 활성 섹터(`currentSectorIndex`)만 기본 펼침으로 표시하고, 완료 및 잠긴 구역은 기본 접힘 처리.
-     - 섹터 헤더에 구역명, 층수 범위, 구역 보스명, 상태 뱃지(`[완료 ✓]`, `[도전 중]`, `[잠김]`), 아코디언 토글 마커(`[▾]`/`[▲]`) 제공.
-     - 첫 화면 스크롤 길이가 70% 이상 단축되어 모바일에서 한눈에 현재 도전 구역을 파악 가능.
-  2. **등반 현황 HUD 아코디언화 (수직 공간 대폭 절약)**:
-     - 상단 헤더 바로 아래의 대형 HUD를 한 줄 `[🎯 등반 현황]: N층 / 50층 (+M 다이아) [상세 ▾]`로 간결화.
-     - 클릭 시 부드럽게 펼쳐지며 누적 다이아, 50층 프로그레스 바, 현재 장착 대표 칭호 노출.
-  3. **특수 기능 팝업 허브 (Quick Action Hub Modal)**:
-     - 상단에 상시 노출되던 거대 버튼 2개(`원터치 쾌속 소탕`, `정복자 황금 룬`)를 우측 상단 `[⚡ 특수 기능 ▾]` 모달 허브 버튼으로 1단계 축약.
-     - 탭 시 컴팩트한 모달 허브 팝업이 열려 소탕과 황금 룬 패스로 직관적으로 진입하도록 상위/하위 메뉴 구조화.
-  4. **[`DESIGN.md`](file:///Users/dayyoung/project/snshero/DESIGN.md) 디자인 규칙 100% 준수**:
-     - 모노스페이스 서체(`font-mono`), 웜크림(`#fdfcfc`) 배경, 잉크(`#201d1d`) 서체, 1px solid hairline 보더, 컨테이너 0px / 버튼 4px(`rounded-sm`) 모서리 반경, 44px+ 모바일 터치 타깃, ASCII 마커(`[x]`, `[▾]`, `[▲]`, `[✓]`, `[도전]`) 완벽 적용.
-
----
-
-## 6. Round 2 검증 완료 내역
-- [x] `npm run lint` (`tsc --noEmit`) 타입 체크 오류 0건 무결점 통과
-- [x] `npm run build` Vite 프로덕션 빌드 성공 (`✓ built in 8.11s`)
-- [x] 모바일 뷰포트 레이아웃 무결점 및 터치 타깃 44px+ 검증 완료
-- [x] 100% 로컬스토리지 영구 저장 무결점 유지
-
+## 2. 검증 결과
+- [x] `npx tsc --noEmit && npm run build` 통과
+- [x] 100% `localStorage` 영구 보존 (`hero_tower_viral_share_*`, `hero_tower_cleared_floor`, `hero_sns`)
+- [x] `DESIGN.md` 준수: 100% `font-mono`, `#fdfcfc`/`#201d1d`, 1px hairline, `rounded-none`/`rounded-sm`, 44px+ 터치 타깃

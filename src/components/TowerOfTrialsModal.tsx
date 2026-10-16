@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Trophy, Sparkles, X, Shield, Swords, Gem, Award, Lock, Play, Flame, CheckCircle, Shirt, Crown, Zap } from 'lucide-react';
+import { Trophy, Sparkles, X, Shield, Swords, Gem, Award, Lock, Play, Flame, CheckCircle, Shirt, Crown, Zap, Share2 } from 'lucide-react';
 import { playSfx } from '../lib/sound';
 import { triggerHaptic } from '../lib/haptic';
 import { TowerSweepBottomSheet } from './TowerSweepBottomSheet';
@@ -249,27 +249,78 @@ export const TowerOfTrialsModal: React.FC<TowerOfTrialsModalProps> = ({
     }
   };
 
+  // SCR-08 Viral Challenge Share State
+  const todayDateStr = new Date().toISOString().split('T')[0];
+  const [toastNotice, setToastNotice] = useState<string | null>(null);
+  const [viralSharedToday, setViralSharedToday] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem(`hero_tower_viral_share_${todayDateStr}`) === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  const handleShareTowerChallenge = () => {
+    triggerHaptic('tap');
+    const shareUrl = `https://snshero.com/?tower_floor=${clearedFloor}&challenge=1-11-31-51-101&ref=tower`;
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(shareUrl).catch(() => {});
+    }
+    const shareKey = `hero_tower_viral_share_${todayDateStr}`;
+    let alreadyShared = false;
+    try {
+      alreadyShared = localStorage.getItem(shareKey) === 'true';
+    } catch {}
+
+    if (!alreadyShared) {
+      try {
+        localStorage.setItem(shareKey, 'true');
+        const cur = parseInt(localStorage.getItem('hero_sns') || '500', 10);
+        localStorage.setItem('hero_sns', String(cur + 50));
+        window.dispatchEvent(new Event('hero_sns_updated'));
+      } catch {}
+      setViralSharedToday(true);
+      triggerHaptic('victory');
+      setToastNotice(isKo ? '[+] 도전장 링크 복사 완료 (+50 SNS 지급)' : '[+] Challenge Link Copied (+50 SNS)');
+      setTimeout(() => setToastNotice(null), 3000);
+    } else {
+      setToastNotice(isKo ? '[+] 도전장 링크 복사 완료' : '[+] Challenge Link Copied');
+      setTimeout(() => setToastNotice(null), 2500);
+    }
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+  };
+
   if (!isOpen || !mounted || typeof document === 'undefined') return null;
 
   const content = (
-    <div className="fixed inset-0 z-[999999] flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-xs font-mono select-none pointer-events-auto">
+    <div className="fixed inset-0 z-[999999] flex items-center justify-center p-3 sm:p-4 bg-black/75 font-mono select-none pointer-events-auto">
       <motion.div
         initial={{ opacity: 0, scale: 0.95, y: 16 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 16 }}
         transition={{ duration: 0.2 }}
-        className="relative w-full max-w-md bg-[#fdfcfc] border border-[#201d1d]/20 rounded-none p-3.5 sm:p-4 text-[#201d1d] shadow-2xl max-h-[90vh] flex flex-col pointer-events-auto overflow-hidden"
+        className="relative w-full max-w-md bg-[#fdfcfc] border border-[#201d1d] rounded-none p-3.5 sm:p-4 text-[#201d1d] max-h-[90vh] flex flex-col pointer-events-auto overflow-hidden"
       >
         {/* Header Bar */}
-        <div className="flex items-center justify-between border-b border-[#201d1d]/15 pb-2.5 mb-2.5 bg-stone-100/70 -mx-3.5 -mt-3.5 px-3.5 pt-3">
+        <div className="flex items-center justify-between border-b border-[rgba(15,0,0,0.12)] pb-2.5 mb-2.5 bg-[#f8f7f7] -mx-3.5 -mt-3.5 px-3.5 pt-3">
           <div className="flex items-center gap-1.5 min-w-0">
-            <Trophy size={16} className="text-amber-600 shrink-0" />
-            <span className="text-xs sm:text-sm font-black tracking-wider text-[#201d1d] truncate">
-              {isKo ? '[🗼 시련의 탑 50F 아레나]' : '[🗼 TOWER OF TRIALS 50F]'}
+            <Trophy size={16} className="text-[#201d1d] shrink-0" />
+            <span className="text-xs sm:text-sm font-bold tracking-wider text-[#201d1d] truncate">
+              {isKo ? '[시련의 탑 50F 아레나]' : '[TOWER OF TRIALS 50F]'}
             </span>
           </div>
-          
+
           <div className="flex items-center gap-1.5 shrink-0">
+            {/* Share Challenge Button */}
+            <button
+              type="button"
+              onClick={handleShareTowerChallenge}
+              className="px-2 py-1 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] text-[10px] font-bold rounded-sm flex items-center gap-1 cursor-pointer transition-colors"
+              title="도전장 링크 복사 (+50 SNS)"
+            >
+              <Share2 size={11} />
+              <span>{viralSharedToday ? (isKo ? '[복사]' : '[COPY]') : (isKo ? '[+50 SNS]' : '[+50 SNS]')}</span>
+            </button>
             {/* Quick Action Hub Button */}
             <button
               type="button"
@@ -293,6 +344,13 @@ export const TowerOfTrialsModal: React.FC<TowerOfTrialsModalProps> = ({
             </button>
           </div>
         </div>
+
+        {/* Toast Notice */}
+        {toastNotice && (
+          <div className="mb-2 p-1.5 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-bold text-center rounded-none font-mono">
+            {toastNotice}
+          </div>
+        )}
 
         {/* Minimal First View: 타워 등반 현황 아코디언 HUD */}
         <div className="bg-white border border-[#201d1d]/15 rounded-sm p-2.5 mb-2.5 shadow-2xs">

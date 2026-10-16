@@ -730,13 +730,59 @@ export const NovelView: React.FC<NovelViewProps> = ({
     }
   }, [currentEpisodeNum, claimedRewards]);
 
+  // Viral share state (hero_novel_viral_share_${todayStr})
+  const todayStr = new Date().toISOString().split('T')[0];
+  const [viralSharedToday, setViralSharedToday] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem(`hero_novel_viral_share_${todayStr}`) === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  const handleShareNovelChallenge = () => {
+    triggerHaptic('tap');
+    const shareUrl = 'https://snshero.com/?novel_ep=1&challenge=1-11-31-51-101';
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(shareUrl).catch(() => {});
+    }
+    const shareKey = `hero_novel_viral_share_${todayStr}`;
+    let alreadyShared = false;
+    try {
+      alreadyShared = localStorage.getItem(shareKey) === 'true';
+    } catch {}
+
+    if (!alreadyShared) {
+      try {
+        localStorage.setItem(shareKey, 'true');
+      } catch {}
+      setViralSharedToday(true);
+      if (updateSns) {
+        updateSns(50, language === 'ko' ? '웹소설 에피소드 & 도전장 링크 공유 보상' : 'Novel & Challenge Link Share Bonus');
+      } else {
+        try {
+          const cur = parseInt(localStorage.getItem('hero_sns') || '500', 10);
+          localStorage.setItem('hero_sns', String(cur + 50));
+          window.dispatchEvent(new Event('hero_sns_updated'));
+        } catch {}
+      }
+      triggerHaptic('victory');
+      setCopyToast(language === 'ko' ? '에피소드 & 도전장 링크 복사 (+50 SNS 지급 완료)' : 'Challenge Link Copied (+50 SNS Claimed)');
+      setTimeout(() => setCopyToast(null), 2800);
+    } else {
+      setCopyToast(language === 'ko' ? '에피소드 & 도전장 링크 클립보드 복사 완료' : 'Episode & Challenge Link Copied');
+      setTimeout(() => setCopyToast(null), 2500);
+    }
+    if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+  };
+
   // Theme styling helpers according to OpenCode.ai design guide
   const themeContainerClass =
     readerTheme === 'cream'
-      ? 'bg-[#fdfcfc] text-[#201d1d] border-stone-300'
+      ? 'bg-[#fdfcfc] text-[#201d1d] border-[rgba(15,0,0,0.12)]'
       : readerTheme === 'dark'
-      ? 'bg-slate-900 text-slate-100 border-slate-800'
-      : 'bg-white text-slate-900 border-slate-200';
+      ? 'bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]'
+      : 'bg-[#f8f7f7] text-[#201d1d] border-[rgba(15,0,0,0.12)]';
 
   const fontClass =
     fontSize === 'sm'
@@ -748,55 +794,55 @@ export const NovelView: React.FC<NovelViewProps> = ({
       : 'text-xl leading-loose';
 
   return (
-    <div className="min-h-screen w-full bg-[#fdfcfc] text-[#201d1d] font-mono flex flex-col justify-between selection:bg-amber-200">
+    <div className="min-h-screen w-full bg-[#fdfcfc] text-[#201d1d] font-mono flex flex-col justify-between selection:bg-[#f1eeee]">
       {/* Copy Toast Feedback */}
       {copyToast && (
-        <div className="fixed top-14 left-1/2 -translate-x-1/2 z-[100000] bg-slate-900 text-amber-300 text-xs px-4 py-2 rounded-sm border border-amber-500/40 shadow-xl flex items-center gap-2 font-mono">
-          <Check size={14} className="text-amber-400" />
+        <div className="fixed top-14 left-1/2 -translate-x-1/2 z-[100000] bg-[#201d1d] text-[#fdfcfc] text-xs px-4 py-2.5 rounded-none border border-[#201d1d] flex items-center gap-2 font-mono">
+          <Check size={14} className="text-emerald-400" />
           <span>[{copyToast}] {t('novel_prompt_copy_success', language)}</span>
         </div>
       )}
 
       {/* Header bar */}
-      <header className="w-full border-b border-stone-300 bg-[#fdfcfc] px-4 py-3 sticky top-0 z-40 flex items-center justify-between">
+      <header className="w-full border-b border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] px-4 py-2.5 sticky top-0 z-40 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <button
             onClick={() => {
               if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
               onNavigate('home');
             }}
-            className="p-1.5 border border-stone-300 rounded-sm hover:bg-stone-100 text-[#201d1d] active:scale-95 transition-all cursor-pointer flex items-center gap-1 text-xs font-bold"
+            className="min-h-[44px] px-3 py-1.5 border border-[rgba(15,0,0,0.12)] rounded-sm hover:bg-[#f8f7f7] text-[#201d1d] transition-colors cursor-pointer flex items-center gap-1.5 text-xs font-bold"
             title={language === 'ko' ? '홈으로 돌아가기' : 'Back to Home'}
           >
             <ArrowLeft size={16} />
-            <span className="hidden sm:inline">[ HOME ]</span>
+            <span className="hidden sm:inline">[HOME]</span>
           </button>
-          <div className="h-4 w-[1px] bg-stone-300 mx-1" />
+          <div className="h-4 w-[1px] bg-[rgba(15,0,0,0.12)] mx-1" />
           <span className="font-bold text-xs sm:text-sm tracking-tight text-[#201d1d]">
-            [ 📖 {language === 'ko' ? '눈히어로 웹소설: /public/book 40부작' : 'SNSHero Web Novel: 40 Episodes'} ]
+            [ NOVEL ARCHIVE : 40 EPISODES ({claimedCount}/40 · {claimedPct}%) ]
           </span>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           {/* Prompt mode toggle button */}
           <button
             onClick={handleTogglePromptMode}
             className={cn(
-              "px-2.5 py-1 text-xs font-bold border rounded-sm transition-all cursor-pointer flex items-center gap-1.5",
+              "min-h-[44px] px-3 py-1.5 text-xs font-bold border rounded-sm transition-colors cursor-pointer flex items-center gap-1.5",
               isPromptMode
-                ? "bg-amber-100 border-amber-500 text-amber-900"
-                : "bg-white border-stone-300 text-stone-700 hover:bg-stone-100"
+                ? "bg-[#201d1d] border-[#201d1d] text-[#fdfcfc]"
+                : "bg-[#fdfcfc] border-[rgba(15,0,0,0.12)] text-[#201d1d] hover:bg-[#f8f7f7]"
             )}
             title={t('novel_prompt_mode_toggle', language)}
           >
-            <Sparkles size={14} className={isPromptMode ? "text-amber-600 animate-pulse" : "text-stone-400"} />
+            <Sparkles size={14} />
             <span>{isPromptMode ? t('novel_prompt_on', language) : t('novel_prompt_off', language)}</span>
           </button>
 
           {/* Chapter Drawer Toggle */}
           <button
             onClick={() => setShowChapterDrawer(!showChapterDrawer)}
-            className="p-1.5 border border-stone-300 rounded-sm hover:bg-stone-100 text-[#201d1d] active:scale-95 transition-all cursor-pointer"
+            className="min-h-[44px] min-w-[44px] p-2 border border-[rgba(15,0,0,0.12)] rounded-sm hover:bg-[#f8f7f7] text-[#201d1d] transition-colors cursor-pointer flex items-center justify-center"
             title={language === 'ko' ? '목차' : 'Chapters'}
           >
             <List size={18} />
@@ -805,7 +851,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
           {/* Reader Settings Toggle */}
           <button
             onClick={() => setShowSettings(!showSettings)}
-            className="p-1.5 border border-stone-300 rounded-sm hover:bg-stone-100 text-[#201d1d] active:scale-95 transition-all cursor-pointer"
+            className="min-h-[44px] min-w-[44px] p-2 border border-[rgba(15,0,0,0.12)] rounded-sm hover:bg-[#f8f7f7] text-[#201d1d] transition-colors cursor-pointer flex items-center justify-center"
             title={language === 'ko' ? '설정' : 'Settings'}
           >
             <Settings size={18} />
@@ -814,17 +860,17 @@ export const NovelView: React.FC<NovelViewProps> = ({
       </header>
 
       {/* Sticky Top Reading Progress Bar */}
-      <div className="sticky top-[49px] z-40 w-full bg-stone-200 h-[3px]">
+      <div className="sticky top-[65px] z-40 w-full bg-[#f1eeee] h-[2px]">
         <div
-          className="h-full bg-amber-500 transition-all duration-150 ease-out"
+          className="h-full bg-[#201d1d] transition-all duration-150 ease-out"
           style={{ width: `${scrollProgressPct}%` }}
         />
       </div>
 
       {/* Resume Last Read Position Floating Banner */}
       {showResumeBanner && savedScrollState && (
-        <div className="fixed top-16 right-4 z-40 bg-[#201d1d] text-amber-300 text-xs px-3.5 py-2 rounded-sm border border-amber-500/50 shadow-lg flex items-center gap-2.5 font-mono animate-in fade-in slide-in-from-top-2 duration-200">
-          <MapPin size={14} className="text-amber-400 shrink-0 animate-bounce" />
+        <div className="fixed top-20 right-4 z-40 bg-[#201d1d] text-[#fdfcfc] text-xs px-3.5 py-2.5 rounded-none border border-[#201d1d] flex items-center gap-2.5 font-mono">
+          <MapPin size={14} className="text-amber-300 shrink-0" />
           <div className="flex items-center gap-2">
             <span>
               {language === 'ko'
@@ -833,14 +879,14 @@ export const NovelView: React.FC<NovelViewProps> = ({
             </span>
             <button
               onClick={handleResumeLastScroll}
-              className="px-2 py-0.5 bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold rounded-xs cursor-pointer transition-colors text-[11px]"
+              className="min-h-[32px] px-2.5 py-1 bg-[#fdfcfc] hover:bg-[#f1eeee] text-[#201d1d] font-bold rounded-sm cursor-pointer transition-colors text-[11px]"
             >
               [ {language === 'ko' ? '이동' : 'Resume'} ]
             </button>
           </div>
           <button
             onClick={() => setShowResumeBanner(false)}
-            className="text-stone-400 hover:text-white cursor-pointer ml-1"
+            className="min-h-[32px] min-w-[32px] flex items-center justify-center text-[#fdfcfc]/70 hover:text-[#fdfcfc] cursor-pointer ml-1"
             title="Dismiss"
           >
             <X size={13} />
@@ -848,10 +894,8 @@ export const NovelView: React.FC<NovelViewProps> = ({
         </div>
       )}
 
-
-
       {/* Primary Reader View Mode Tabs (Novel Reader / Cartoon Viewer / Movie Hub / Prompt Mode) */}
-      <div className="w-full bg-[#fdfcfc] border-b border-stone-300 py-2.5 px-4 flex items-center justify-center gap-2 font-mono flex-wrap">
+      <div className="w-full bg-[#f8f7f7] border-b border-[rgba(15,0,0,0.12)] py-2.5 px-4 flex items-center justify-center gap-2 font-mono flex-wrap">
         <button
           onClick={() => {
             triggerHaptic('tap');
@@ -860,14 +904,14 @@ export const NovelView: React.FC<NovelViewProps> = ({
             if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
           }}
           className={cn(
-            "min-h-[44px] px-3.5 py-1.5 border rounded-none font-bold text-xs sm:text-sm flex items-center gap-1.5 cursor-pointer transition-all",
+            "min-h-[44px] px-3.5 py-1.5 border rounded-sm font-bold text-xs sm:text-sm flex items-center gap-1.5 cursor-pointer transition-colors",
             readerTab === 'novel' && !isPromptMode
-              ? "bg-[#201d1d] text-white border-[#201d1d] shadow-xs font-black"
-              : "bg-white text-stone-700 border-stone-300 hover:bg-stone-100"
+              ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
+              : "bg-[#fdfcfc] text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee]"
           )}
         >
           <BookOpen size={15} />
-          <span>{language === 'ko' ? '📖 소설 읽기' : '📖 Read Novel'}</span>
+          <span>{language === 'ko' ? '[소설 읽기]' : '[Read Novel]'}</span>
         </button>
 
         <button
@@ -878,15 +922,15 @@ export const NovelView: React.FC<NovelViewProps> = ({
             if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
           }}
           className={cn(
-            "min-h-[44px] px-3.5 py-1.5 border rounded-none font-bold text-xs sm:text-sm flex items-center gap-1.5 cursor-pointer transition-all",
+            "min-h-[44px] px-3.5 py-1.5 border rounded-sm font-bold text-xs sm:text-sm flex items-center gap-1.5 cursor-pointer transition-colors",
             readerTab === 'cartoon' && !isPromptMode
-              ? "bg-amber-600 text-white border-amber-700 shadow-xs font-black"
-              : "bg-amber-50 text-amber-950 border-amber-300 hover:bg-amber-100"
+              ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
+              : "bg-[#fdfcfc] text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee]"
           )}
         >
           <Image size={15} />
-          <span>{language === 'ko' ? '🎨 카툰 보기' : '🎨 View Cartoon'}</span>
-          <span className="text-[10px] bg-amber-900 text-amber-100 px-1 py-0.2 rounded-xs font-mono ml-0.5">
+          <span>{language === 'ko' ? '[카툰 보기]' : '[View Cartoon]'}</span>
+          <span className="text-[10px] bg-[#201d1d] text-[#fdfcfc] px-1.5 py-0.5 rounded-sm font-mono ml-0.5">
             WEBTOON
           </span>
         </button>
@@ -898,12 +942,12 @@ export const NovelView: React.FC<NovelViewProps> = ({
             if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
             onNavigate('movie');
           }}
-          className="min-h-[44px] px-3.5 py-1.5 border border-purple-300 bg-purple-50 hover:bg-purple-100 text-purple-900 rounded-none font-bold text-xs sm:text-sm flex items-center gap-1.5 cursor-pointer transition-all"
+          className="min-h-[44px] px-3.5 py-1.5 border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] hover:bg-[#f1eeee] text-[#201d1d] rounded-sm font-bold text-xs sm:text-sm flex items-center gap-1.5 cursor-pointer transition-colors"
           title={language === 'ko' ? '공식 유튜브 영화/애니메이션 감상' : 'Watch Official Movie & Anime'}
         >
-          <Film size={15} className="text-purple-600" />
-          <span>{language === 'ko' ? '🎬 영화·애니' : '🎬 Movie/Anime'}</span>
-          <span className="text-[10px] bg-purple-800 text-purple-100 px-1 py-0.2 rounded-xs font-mono ml-0.5">
+          <Film size={15} />
+          <span>{language === 'ko' ? '[영화·애니]' : '[Movie/Anime]'}</span>
+          <span className="text-[10px] bg-[#201d1d] text-[#fdfcfc] px-1.5 py-0.5 rounded-sm font-mono ml-0.5">
             YOUTUBE
           </span>
         </button>
@@ -916,29 +960,103 @@ export const NovelView: React.FC<NovelViewProps> = ({
             if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
           }}
           className={cn(
-            "min-h-[44px] px-3.5 py-1.5 border rounded-none font-bold text-xs sm:text-sm flex items-center gap-1.5 cursor-pointer transition-all",
+            "min-h-[44px] px-3.5 py-1.5 border rounded-sm font-bold text-xs sm:text-sm flex items-center gap-1.5 cursor-pointer transition-colors",
             isPromptMode || readerTab === 'prompt'
-              ? "bg-purple-700 text-white border-purple-800 shadow-xs font-black"
-              : "bg-white text-stone-700 border-stone-300 hover:bg-stone-100"
+              ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
+              : "bg-[#fdfcfc] text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee]"
           )}
         >
-          <Sparkles size={15} className={isPromptMode ? "text-amber-300 animate-pulse" : "text-purple-600"} />
-          <span>{language === 'ko' ? '✨ 프롬프트 모드' : '✨ Prompt Mode'}</span>
+          <Sparkles size={15} />
+          <span>{language === 'ko' ? '[프롬프트 모드]' : '[Prompt Mode]'}</span>
         </button>
       </div>
 
+      {/* [STORY -> BATTLE & SUMMON BRIDGE] Editorial Banner */}
+      <section className="w-full max-w-4xl mx-auto px-4 pt-5 font-mono">
+        <div className="w-full border border-[#201d1d] bg-[#f8f7f7] rounded-none p-4 space-y-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[rgba(15,0,0,0.12)] pb-2.5">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-bold rounded-sm">
+                [STORY -&gt; BATTLE &amp; SUMMON BRIDGE]
+              </span>
+              <span className="text-xs font-bold text-[#201d1d]">
+                {language === 'ko'
+                  ? `완독 진행률: ${claimedCount}/${TOTAL_EPISODES}화 (${claimedPct}%) · 누적 보너스 +${claimedCount * 100} SNS`
+                  : `Progress: ${claimedCount}/${TOTAL_EPISODES} (${claimedPct}%) · Total Bonus +${claimedCount * 100} SNS`}
+              </span>
+            </div>
+            <span className="text-[11px] font-bold text-[#646262]">
+              {claimedRewards[currentEpisodeNum]
+                ? (language === 'ko' ? `[v] 제${currentEpisodeNum}화 +100 SNS 지급 완료` : `[v] Ep.${currentEpisodeNum} +100 SNS Claimed`)
+                : (language === 'ko' ? `[+] 열람 시 +100 SNS 즉시 지급` : `[+] Auto +100 SNS on read`)}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            {/* 1. Viral Challenge Share (+50 SNS) */}
+            <button
+              type="button"
+              onClick={handleShareNovelChallenge}
+              className={cn(
+                "min-h-[44px] px-3 py-2 border rounded-sm text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-colors",
+                viralSharedToday
+                  ? "bg-[#fdfcfc] text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee]"
+                  : "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d] hover:bg-[#201d1d]/90"
+              )}
+            >
+              <Copy size={14} />
+              <span>
+                {viralSharedToday
+                  ? (language === 'ko' ? '[v] 에피소드 & 도전장 링크 복사됨' : '[v] Challenge Link Copied')
+                  : (language === 'ko' ? '[에피소드 & 도전장 링크 공유 (+50 SNS)]' : '[Share Episode & Duel Link (+50 SNS)]')}
+              </span>
+            </button>
+
+            {/* 2. Featured Hero 1:1 Trial Battle */}
+            <button
+              type="button"
+              onClick={() => {
+                triggerHaptic('tap');
+                onNavigate('play');
+              }}
+              className="min-h-[44px] px-3 py-2 border border-[#201d1d] bg-[#fdfcfc] hover:bg-[#f1eeee] text-[#201d1d] rounded-sm text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+            >
+              <Play size={14} />
+              <span>
+                {language === 'ko' ? '[+] 등장 영웅 즉시 1:1 체험 배틀' : '[+] 1:1 Trial Battle w/ Story Heroes'}
+              </span>
+            </button>
+
+            {/* 3. Target Hero Summon in Shop */}
+            <button
+              type="button"
+              onClick={() => {
+                triggerHaptic('tap');
+                onNavigate('shop');
+              }}
+              className="min-h-[44px] px-3 py-2 border border-[#201d1d] bg-[#201d1d] hover:bg-[#201d1d]/90 text-[#fdfcfc] rounded-sm text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+            >
+              <ShoppingCart size={14} />
+              <span>
+                {language === 'ko' ? '[+] 소설 영웅 상점 표적 소환' : '[+] Target Summon in Shop'}
+              </span>
+            </button>
+          </div>
+        </div>
+      </section>
+
       {/* Reader Settings Dropdown Panel */}
       {showSettings && (
-        <div className="w-full border-b border-stone-300 bg-stone-50 p-4 font-mono text-xs flex flex-wrap items-center justify-between gap-4">
+        <div className="w-full border-b border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] p-4 font-mono text-xs flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <span className="font-bold text-stone-600">[ FONT SIZE ]</span>
+            <span className="font-bold text-[#646262]">[ FONT SIZE ]</span>
             {(['sm', 'base', 'lg', 'xl'] as const).map(size => (
               <button
                 key={size}
                 onClick={() => setFontSize(size)}
                 className={cn(
-                  "px-2 py-0.5 border rounded-sm font-bold cursor-pointer uppercase",
-                  fontSize === size ? "bg-[#201d1d] text-white border-[#201d1d]" : "bg-white text-stone-700 border-stone-300 hover:bg-stone-100"
+                  "min-h-[44px] min-w-[44px] px-2.5 py-1 border rounded-sm font-bold cursor-pointer uppercase",
+                  fontSize === size ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]" : "bg-[#fdfcfc] text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee]"
                 )}
               >
                 {size}
@@ -947,12 +1065,12 @@ export const NovelView: React.FC<NovelViewProps> = ({
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="font-bold text-stone-600">[ THEME ]</span>
+            <span className="font-bold text-[#646262]">[ THEME ]</span>
             <button
               onClick={() => setReaderTheme('cream')}
               className={cn(
-                "px-2.5 py-0.5 border rounded-sm font-bold cursor-pointer flex items-center gap-1",
-                readerTheme === 'cream' ? "bg-amber-100 text-amber-900 border-amber-400" : "bg-white text-stone-700 border-stone-300"
+                "min-h-[44px] px-3 py-1 border rounded-sm font-bold cursor-pointer flex items-center gap-1",
+                readerTheme === 'cream' ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]" : "bg-[#fdfcfc] text-[#201d1d] border-[rgba(15,0,0,0.12)]"
               )}
             >
               <Sun size={12} /> Cream
@@ -960,8 +1078,8 @@ export const NovelView: React.FC<NovelViewProps> = ({
             <button
               onClick={() => setReaderTheme('light')}
               className={cn(
-                "px-2.5 py-0.5 border rounded-sm font-bold cursor-pointer flex items-center gap-1",
-                readerTheme === 'light' ? "bg-slate-200 text-slate-900 border-slate-400" : "bg-white text-stone-700 border-stone-300"
+                "min-h-[44px] px-3 py-1 border rounded-sm font-bold cursor-pointer flex items-center gap-1",
+                readerTheme === 'light' ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]" : "bg-[#fdfcfc] text-[#201d1d] border-[rgba(15,0,0,0.12)]"
               )}
             >
               Light
@@ -969,8 +1087,8 @@ export const NovelView: React.FC<NovelViewProps> = ({
             <button
               onClick={() => setReaderTheme('dark')}
               className={cn(
-                "px-2.5 py-0.5 border rounded-sm font-bold cursor-pointer flex items-center gap-1",
-                readerTheme === 'dark' ? "bg-slate-900 text-amber-300 border-slate-700" : "bg-white text-stone-700 border-stone-300"
+                "min-h-[44px] px-3 py-1 border rounded-sm font-bold cursor-pointer flex items-center gap-1",
+                readerTheme === 'dark' ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]" : "bg-[#fdfcfc] text-[#201d1d] border-[rgba(15,0,0,0.12)]"
               )}
             >
               <Moon size={12} /> Dark
@@ -1035,10 +1153,10 @@ export const NovelView: React.FC<NovelViewProps> = ({
 
       {/* Main Content Reader Canvas */}
       <main className="flex-1 w-full max-w-4xl mx-auto px-4 py-8 flex flex-col items-center">
-        <div className={cn("w-full border p-6 sm:p-10 rounded-sm shadow-xs transition-colors duration-200", themeContainerClass)}>
+        <div className={cn("w-full border p-6 sm:p-10 rounded-none transition-colors duration-200", themeContainerClass)}>
           
           {/* Episode Header */}
-          <div className="border-b border-stone-300/40 pb-6 mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="border-b border-[rgba(15,0,0,0.12)] pb-6 mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <div className="flex items-center gap-2 mb-2 flex-wrap">
                 <button
@@ -1046,20 +1164,20 @@ export const NovelView: React.FC<NovelViewProps> = ({
                     setShowEpisodeModal(true);
                     if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                   }}
-                  className="text-xs font-bold uppercase tracking-widest text-amber-800 px-2 py-0.5 border border-amber-400/50 bg-amber-50/70 hover:bg-amber-100 rounded-sm flex items-center gap-1 cursor-pointer transition-all active:scale-95 shadow-2xs group"
+                  className="min-h-[36px] text-xs font-bold uppercase tracking-widest text-[#201d1d] px-2.5 py-1 border border-[#201d1d] bg-[#f8f7f7] hover:bg-[#f1eeee] rounded-sm flex items-center gap-1 cursor-pointer transition-colors group"
                   title={t('novel_select_episode_hint', language)}
                 >
-                  <BookOpen size={11} className="text-amber-700 group-hover:scale-110 transition-transform" />
+                  <BookOpen size={11} />
                   <span>EPISODE {currentEpisodeNum} / {TOTAL_EPISODES}</span>
-                  <ChevronDown size={11} className="text-amber-600" />
+                  <ChevronDown size={11} />
                 </button>
                 {parsedContent.sourceRange && (
-                  <span className="text-xs font-bold text-stone-600 px-2 py-0.5 border border-stone-300 rounded-sm bg-stone-100">
+                  <span className="text-xs font-bold text-[#646262] px-2 py-0.5 border border-[rgba(15,0,0,0.12)] rounded-sm bg-[#f8f7f7]">
                     {parsedContent.sourceRange}
                   </span>
                 )}
                 {claimedRewards[currentEpisodeNum] && (
-                  <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 border border-emerald-300 rounded-sm flex items-center gap-1">
+                  <span className="text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 border border-emerald-300 rounded-sm flex items-center gap-1">
                     <Check size={10} /> {language === 'ko' ? '완독 보상 획득' : 'Completed'}
                   </span>
                 )}
@@ -1072,22 +1190,22 @@ export const NovelView: React.FC<NovelViewProps> = ({
             {/* Featured Characters in this episode */}
             {episodeCharacters.length > 0 && (
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-[10px] font-bold text-stone-500 block w-full sm:w-auto">[ 등장 캐릭터 ]</span>
+                <span className="text-[10px] font-bold text-[#646262] block w-full sm:w-auto">[ 등장 캐릭터 ]</span>
                 <div className="flex items-center gap-1.5 flex-wrap">
                   {episodeCharacters.map(char => {
                     return (
                       <button
                         key={char.cardId}
                         onClick={() => setSelectedWikiCardId(char.cardId)}
-                        className="flex items-center gap-1 px-2 py-1 border border-stone-300 rounded-sm bg-white/80 hover:bg-amber-100/60 transition-all cursor-pointer text-xs font-bold"
+                        className="min-h-[36px] flex items-center gap-1.5 px-2.5 py-1 border border-[rgba(15,0,0,0.12)] rounded-sm bg-[#fdfcfc] hover:bg-[#f8f7f7] transition-colors cursor-pointer text-xs font-bold text-[#201d1d]"
                         title={language === 'ko' ? `${char.cardName} 카드 위키 보기` : `View Card Wiki for ${char.cardName}`}
                       >
                         <div
-                          className="w-4 h-4 rounded-full border border-stone-400 shrink-0 overflow-hidden"
+                          className="w-4 h-4 rounded-none border border-[#201d1d] shrink-0 overflow-hidden"
                           style={getCardSpriteStyle(char.cardId)}
                         />
                         <span>{char.cardName}</span>
-                        <ExternalLink size={10} className="text-stone-400 ml-0.5" />
+                        <ExternalLink size={10} className="text-[#646262] ml-0.5" />
                       </button>
                     );
                   })}
@@ -1096,15 +1214,13 @@ export const NovelView: React.FC<NovelViewProps> = ({
             )}
           </div>
 
-
-
           {/* TTS Player Bar */}
-          <div className="mb-8 p-3 border border-stone-300/60 bg-stone-100/60 rounded-sm flex items-center justify-between text-xs font-mono">
+          <div className="mb-8 p-3 border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] rounded-none flex items-center justify-between text-xs font-mono">
             <div className="flex items-center gap-2">
-              <Volume2 size={16} className="text-stone-600" />
-              <span className="font-bold">TTS Voice Reader</span>
+              <Volume2 size={16} className="text-[#201d1d]" />
+              <span className="font-bold text-[#201d1d]">TTS Voice Reader</span>
               {ttsParagraphIndex !== null && (
-                <span className="text-[10px] text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded-sm">
+                <span className="text-[10px] text-[#201d1d] bg-[#f1eeee] px-1.5 py-0.5 rounded-sm border border-[rgba(15,0,0,0.12)]">
                   {language === 'ko' ? `문단 ${ttsParagraphIndex + 1}` : `Paragraph ${ttsParagraphIndex + 1}`}
                 </span>
               )}
@@ -1114,7 +1230,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
               {!isTtsPlaying && !isTtsPaused && (
                 <button
                   onClick={() => startTtsFromParagraph(0)}
-                  className="px-3 py-1 bg-[#201d1d] text-white text-xs font-bold rounded-sm hover:bg-stone-800 transition-all cursor-pointer flex items-center gap-1"
+                  className="min-h-[36px] px-3 py-1 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm hover:bg-[#201d1d]/90 transition-colors cursor-pointer flex items-center gap-1"
                 >
                   <Play size={12} /> {t('novel_tts_play', language)}
                 </button>
@@ -1123,7 +1239,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
               {isTtsPlaying && (
                 <button
                   onClick={pauseTts}
-                  className="px-3 py-1 bg-amber-600 text-white text-xs font-bold rounded-sm hover:bg-amber-700 transition-all cursor-pointer flex items-center gap-1"
+                  className="min-h-[36px] px-3 py-1 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm hover:bg-[#201d1d]/90 transition-colors cursor-pointer flex items-center gap-1"
                 >
                   <Pause size={12} /> {t('novel_tts_pause', language)}
                 </button>
@@ -1132,7 +1248,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
               {isTtsPaused && (
                 <button
                   onClick={resumeTts}
-                  className="px-3 py-1 bg-emerald-600 text-white text-xs font-bold rounded-sm hover:bg-emerald-700 transition-all cursor-pointer flex items-center gap-1"
+                  className="min-h-[36px] px-3 py-1 bg-emerald-700 text-[#fdfcfc] text-xs font-bold rounded-sm hover:bg-emerald-800 transition-colors cursor-pointer flex items-center gap-1"
                 >
                   <Play size={12} /> {language === 'ko' ? '이어서 재생' : 'Resume'}
                 </button>
@@ -1141,7 +1257,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
               {(isTtsPlaying || isTtsPaused) && (
                 <button
                   onClick={stopTts}
-                  className="px-2.5 py-1 bg-stone-300 text-stone-800 text-xs font-bold rounded-sm hover:bg-stone-400 transition-all cursor-pointer flex items-center gap-1"
+                  className="min-h-[36px] px-2.5 py-1 bg-[#f1eeee] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm hover:bg-[#fdfcfc] transition-colors cursor-pointer flex items-center gap-1"
                 >
                   <Square size={12} /> Stop
                 </button>
@@ -1152,17 +1268,17 @@ export const NovelView: React.FC<NovelViewProps> = ({
           {/* Loading Indicator */}
           {isLoading ? (
             <div className="py-20 flex flex-col items-center justify-center font-mono">
-              <div className="w-8 h-8 border-2 border-stone-300 border-t-[#201d1d] rounded-full animate-spin mb-4" />
-              <p className="text-xs text-stone-500 font-bold">[ LOADING NOVEL EPISODE FROM /public/book... ]</p>
+              <div className="w-8 h-8 border-2 border-[rgba(15,0,0,0.12)] border-t-[#201d1d] rounded-none animate-spin mb-4" />
+              <p className="text-xs text-[#646262] font-bold">[ LOADING NOVEL EPISODE FROM /public/book... ]</p>
             </div>
           ) : isPromptMode && narrationData?.scenes ? (
             /* ── PROMPT MODE: SCENE NARRATIONS & AI VIDEO PROMPTS ── */
             <div className="space-y-8 font-mono">
               {/* 1. 20문장 스토리 요약 (20-Sentence Story Summary) */}
-              <div className="border border-stone-300 p-5 rounded-sm bg-white/80 space-y-4 shadow-2xs">
-                <div className="flex items-center justify-between border-b border-stone-200 pb-2 flex-wrap gap-2">
-                  <span className="font-bold text-xs uppercase tracking-wider text-amber-900 flex items-center gap-2">
-                    <Bookmark size={15} className="text-amber-700" />
+              <div className="border border-[rgba(15,0,0,0.12)] p-5 rounded-none bg-[#fdfcfc] space-y-4">
+                <div className="flex items-center justify-between border-b border-[rgba(15,0,0,0.12)] pb-2 flex-wrap gap-2">
+                  <span className="font-bold text-xs uppercase tracking-wider text-[#201d1d] flex items-center gap-2">
+                    <Bookmark size={15} />
                     [ {t('novel_prompt_summary_label', language)} ({narrationData.scenes.length}) ]
                   </span>
                   <button
@@ -1172,17 +1288,17 @@ export const NovelView: React.FC<NovelViewProps> = ({
                         t('novel_prompt_copy_20_summary', language)
                       )
                     }
-                    className="px-2.5 py-1 text-[11px] font-bold border border-amber-300 rounded-sm bg-amber-50 hover:bg-amber-100 text-amber-950 cursor-pointer flex items-center gap-1.5 transition-all shadow-2xs active:scale-95"
+                    className="min-h-[36px] px-3 py-1 text-[11px] font-bold border border-[#201d1d] rounded-sm bg-[#f8f7f7] hover:bg-[#f1eeee] text-[#201d1d] cursor-pointer flex items-center gap-1.5 transition-colors"
                   >
                     <Copy size={12} />
                     <span>{t('novel_prompt_copy_20_summary', language)}</span>
                   </button>
                 </div>
-                <div className="space-y-3 text-xs leading-relaxed text-stone-800">
+                <div className="space-y-3 text-xs leading-relaxed text-[#201d1d]">
                   {narrationData.scenes.map((sc) => (
-                    <div key={sc.sceneNumber} className="border-l-2 border-amber-400 pl-3 py-0.5 flex items-start justify-between gap-2 group hover:bg-amber-50/50 transition-colors rounded-r-xs">
+                    <div key={sc.sceneNumber} className="border-l-2 border-[#201d1d] pl-3 py-0.5 flex items-start justify-between gap-2 group hover:bg-[#f8f7f7] transition-colors">
                       <p className="flex-1">
-                        <span className="font-bold text-amber-900 mr-2">#{sc.sceneNumber}</span>
+                        <span className="font-bold text-[#201d1d] mr-2">#{sc.sceneNumber}</span>
                         {language === 'ko' ? sc.narrationKo : sc.narrationEn}
                       </p>
                       <button
@@ -1192,7 +1308,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
                             `Scene #${sc.sceneNumber} Story Summary`
                           )
                         }
-                        className="opacity-0 group-hover:opacity-100 transition-opacity p-1 text-[10px] text-stone-500 hover:text-stone-900 border border-stone-200 hover:border-stone-400 rounded-xs bg-white cursor-pointer shrink-0"
+                        className="opacity-0 group-hover:opacity-100 transition-opacity p-1 text-[10px] text-[#646262] hover:text-[#201d1d] border border-[rgba(15,0,0,0.12)] rounded-sm bg-[#fdfcfc] cursor-pointer shrink-0"
                         title={language === 'ko' ? '이 문장 복사' : 'Copy line'}
                       >
                         <Copy size={11} />
@@ -1203,17 +1319,17 @@ export const NovelView: React.FC<NovelViewProps> = ({
               </div>
 
               {/* 2. 10문장 나레이션 (10-Sentence Narration - 8s Fast Pace 20 Lines) */}
-              <div className="border border-stone-300 p-5 rounded-sm bg-white/90 space-y-4 shadow-2xs">
-                <div className="flex items-center justify-between border-b border-stone-200 pb-2 flex-wrap gap-2">
+              <div className="border border-[rgba(15,0,0,0.12)] p-5 rounded-none bg-[#fdfcfc] space-y-4">
+                <div className="flex items-center justify-between border-b border-[rgba(15,0,0,0.12)] pb-2 flex-wrap gap-2">
                   <div>
-                    <span className="font-bold text-xs uppercase tracking-wider text-purple-900 flex items-center gap-2">
-                      <Volume2 size={15} className="text-purple-700" />
+                    <span className="font-bold text-xs uppercase tracking-wider text-[#201d1d] flex items-center gap-2">
+                      <Volume2 size={15} />
                       [ {t('novel_prompt_short_narration_label', language)} ]
-                      <span className="text-[10px] bg-purple-100 text-purple-800 px-1.5 py-0.2 rounded-xs border border-purple-300 font-mono">
-                        ⏱️ ~8s / line ({narrationData.scenes.length})
+                      <span className="text-[10px] bg-[#f8f7f7] text-[#201d1d] px-1.5 py-0.5 rounded-sm border border-[rgba(15,0,0,0.12)] font-mono">
+                        ~8s / line ({narrationData.scenes.length})
                       </span>
                     </span>
-                    <p className="text-[11px] text-stone-500 mt-1 font-sans">
+                    <p className="text-[11px] text-[#646262] mt-1 font-mono">
                       {t('novel_prompt_short_narration_desc', language)}
                     </p>
                   </div>
@@ -1225,39 +1341,39 @@ export const NovelView: React.FC<NovelViewProps> = ({
                       }).join('\n');
                       handleCopyText(allShort, t('novel_prompt_copy_short_narration', language));
                     }}
-                    className="px-2.5 py-1 text-[11px] font-bold border border-purple-300 rounded-sm bg-purple-50 hover:bg-purple-100 text-purple-950 cursor-pointer flex items-center gap-1.5 transition-all shadow-2xs active:scale-95"
+                    className="min-h-[36px] px-3 py-1 text-[11px] font-bold border border-[#201d1d] rounded-sm bg-[#f8f7f7] hover:bg-[#f1eeee] text-[#201d1d] cursor-pointer flex items-center gap-1.5 transition-colors"
                   >
                     <Copy size={12} />
                     <span>{t('novel_prompt_copy_short_narration', language)}</span>
                   </button>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs text-stone-800">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs text-[#201d1d]">
                   {narrationData.scenes.map((sc) => {
                     const shortNarration = get8SecShortNarration(language === 'ko' ? sc.narrationKo : sc.narrationEn, language);
                     return (
                       <div
                         key={`short-${sc.sceneNumber}`}
-                        className="border border-purple-100 bg-purple-50/40 p-2.5 rounded-sm flex flex-col justify-between hover:border-purple-300 hover:bg-purple-50 transition-all group"
+                        className="border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] p-2.5 rounded-none flex flex-col justify-between hover:border-[#201d1d] transition-colors group"
                       >
-                        <div className="flex items-center justify-between mb-1.5 text-[10px] text-purple-800 font-bold border-b border-purple-200/50 pb-1">
+                        <div className="flex items-center justify-between mb-1.5 text-[10px] text-[#201d1d] font-bold border-b border-[rgba(15,0,0,0.12)] pb-1">
                           <span className="flex items-center gap-1">
-                            <span className="bg-purple-200 text-purple-900 px-1 py-0.2 rounded-xs font-mono">
+                            <span className="bg-[#201d1d] text-[#fdfcfc] px-1 py-0.2 rounded-sm font-mono">
                               #{String(sc.sceneNumber).padStart(2, '0')}
                             </span>
                             <span>{language === 'ko' ? '나레이션' : 'Narration'}</span>
                           </span>
-                          <span className="text-[10px] text-stone-400 font-mono flex items-center gap-0.5">
+                          <span className="text-[10px] text-[#646262] font-mono flex items-center gap-0.5">
                             <Clock size={10} /> ~8s
                           </span>
                         </div>
-                        <p className="text-xs leading-relaxed text-stone-900 font-sans my-1">
+                        <p className="text-xs leading-relaxed text-[#201d1d] font-mono my-1">
                           "{shortNarration}"
                         </p>
-                        <div className="mt-2 pt-1 border-t border-purple-200/40 flex items-center justify-end">
+                        <div className="mt-2 pt-1 border-t border-[rgba(15,0,0,0.12)] flex items-center justify-end">
                           <button
                             onClick={() => handleCopyText(shortNarration, `Scene #${sc.sceneNumber} 8s Narration`)}
-                            className="text-[10px] font-mono text-purple-700 hover:text-purple-900 flex items-center gap-1 cursor-pointer px-1.5 py-0.5 rounded-xs hover:bg-purple-100 transition-colors"
+                            className="text-[10px] font-mono text-[#201d1d] hover:underline flex items-center gap-1 cursor-pointer px-1.5 py-0.5 rounded-sm"
                           >
                             <Copy size={10} />
                             <span>[COPY]</span>
@@ -1270,10 +1386,10 @@ export const NovelView: React.FC<NovelViewProps> = ({
               </div>
 
               {/* Featured Characters Image Generation Prompts Section */}
-              <div className="border border-stone-300 p-5 rounded-sm bg-white/90 space-y-4 shadow-2xs">
-                <div className="flex items-center justify-between border-b border-stone-200 pb-3 flex-wrap gap-2">
-                  <span className="font-bold text-xs uppercase tracking-wider text-amber-900 flex items-center gap-2">
-                    <User size={15} className="text-amber-700" />
+              <div className="border border-[rgba(15,0,0,0.12)] p-5 rounded-none bg-[#fdfcfc] space-y-4">
+                <div className="flex items-center justify-between border-b border-[rgba(15,0,0,0.12)] pb-3 flex-wrap gap-2">
+                  <span className="font-bold text-xs uppercase tracking-wider text-[#201d1d] flex items-center gap-2">
+                    <User size={15} />
                     [ {language === 'ko' ? '등장 캐릭터 이미지 생성 프롬프트' : 'Featured Characters Image Prompts'} ({promptCharacters.length}) ]
                   </span>
                   <button
@@ -1284,7 +1400,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
                       }).join('\n\n---\n\n');
                       handleCopyText(fullPromptText, language === 'ko' ? '전체 캐릭터 프롬프트' : 'All Character Prompts');
                     }}
-                    className="px-2.5 py-1 text-[11px] font-bold border border-amber-400 rounded-sm bg-amber-50 hover:bg-amber-100 text-amber-950 cursor-pointer flex items-center gap-1.5 transition-all shadow-2xs"
+                    className="min-h-[36px] px-3 py-1 text-[11px] font-bold border border-[#201d1d] rounded-sm bg-[#f8f7f7] hover:bg-[#f1eeee] text-[#201d1d] cursor-pointer flex items-center gap-1.5 transition-colors"
                   >
                     <Copy size={12} />
                     <span>{language === 'ko' ? '모든 캐릭터 프롬프트 복사' : 'Copy All Character Prompts'}</span>
@@ -1297,19 +1413,19 @@ export const NovelView: React.FC<NovelViewProps> = ({
                     const paddedId = String(char.cardId).padStart(3, '0');
 
                     return (
-                      <div key={char.cardId} className="border border-stone-200 p-4 rounded-sm bg-stone-50/70 hover:border-amber-400 transition-colors">
+                      <div key={char.cardId} className="border border-[rgba(15,0,0,0.12)] p-4 rounded-none bg-[#f8f7f7] hover:border-[#201d1d] transition-colors">
                         {/* Character Header */}
-                        <div className="flex items-center justify-between mb-3 border-b border-stone-200/80 pb-2 flex-wrap gap-2">
+                        <div className="flex items-center justify-between mb-3 border-b border-[rgba(15,0,0,0.12)] pb-2 flex-wrap gap-2">
                           <div className="flex items-center gap-2">
                             <div
-                              className="w-7 h-7 rounded-full border border-stone-400 shrink-0 overflow-hidden shadow-xs"
+                              className="w-7 h-7 rounded-none border border-[#201d1d] shrink-0 overflow-hidden"
                               style={getCardSpriteStyle(char.cardId)}
                             />
                             <div>
-                              <span className="font-bold text-xs text-stone-900 mr-2">
-                                {p.cardNameKo} <span className="text-stone-500 font-normal text-[11px]">({p.cardNameEn})</span>
+                              <span className="font-bold text-xs text-[#201d1d] mr-2">
+                                {p.cardNameKo} <span className="text-[#646262] font-normal text-[11px]">({p.cardNameEn})</span>
                               </span>
-                              <span className="text-[10px] font-bold text-amber-800 bg-amber-100 px-1.5 py-0.5 rounded-sm uppercase">
+                              <span className="text-[10px] font-bold text-[#fdfcfc] bg-[#201d1d] px-1.5 py-0.5 rounded-sm uppercase">
                                 #{paddedId} · {p.faction} · {p.rarityTier}
                               </span>
                             </div>
@@ -1318,7 +1434,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
                           <div className="flex items-center gap-1.5">
                             <button
                               onClick={() => setSelectedWikiCardId(char.cardId)}
-                              className="px-2 py-0.5 text-[10px] font-bold border border-stone-300 text-stone-700 bg-white hover:bg-stone-100 rounded-sm cursor-pointer flex items-center gap-1"
+                              className="min-h-[32px] px-2.5 py-1 text-[10px] font-bold border border-[rgba(15,0,0,0.12)] text-[#201d1d] bg-[#fdfcfc] hover:bg-[#f1eeee] rounded-sm cursor-pointer flex items-center gap-1"
                               title={language === 'ko' ? '카드 위키' : 'Card Wiki'}
                             >
                               <ExternalLink size={10} />
@@ -1329,7 +1445,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
                                 triggerHaptic('tap');
                                 onNavigate('shop');
                               }}
-                              className="px-2 py-0.5 text-[10px] font-bold border border-indigo-300 text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-sm cursor-pointer flex items-center gap-1"
+                              className="min-h-[32px] px-2.5 py-1 text-[10px] font-bold border border-[#201d1d] text-[#fdfcfc] bg-[#201d1d] hover:bg-[#201d1d]/90 rounded-sm cursor-pointer flex items-center gap-1"
                               title={language === 'ko' ? '상점에서 카드 뽑기' : 'Summon Card in Shop'}
                             >
                               <ShoppingCart size={10} />
@@ -1340,7 +1456,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
                                 const singleText = `[Character Art Prompt: ${p.cardNameKo} / ${p.cardNameEn}]\nPrompt: ${p.positivePromptEn}\nNegative: ${p.negativePrompt}\nWebtoon Panel: ${p.webtoonPanelPrompt}`;
                                 handleCopyText(singleText, p.cardNameKo);
                               }}
-                              className="px-2 py-0.5 text-[10px] font-bold border border-amber-300 text-amber-900 bg-amber-50 hover:bg-amber-100 rounded-sm cursor-pointer flex items-center gap-1"
+                              className="min-h-[32px] px-2.5 py-1 text-[10px] font-bold border border-[rgba(15,0,0,0.12)] text-[#201d1d] bg-[#fdfcfc] hover:bg-[#f1eeee] rounded-sm cursor-pointer flex items-center gap-1"
                             >
                               <Copy size={10} />
                               <span>{language === 'ko' ? '프롬프트 복사' : 'Copy Prompt'}</span>
@@ -1351,9 +1467,9 @@ export const NovelView: React.FC<NovelViewProps> = ({
                         {/* Visual Keywords */}
                         {p.visualKeywords.length > 0 && (
                           <div className="flex items-center gap-1 flex-wrap mb-2">
-                            <span className="text-[10px] text-stone-400 font-bold mr-1">[KEYWORDS]:</span>
+                            <span className="text-[10px] text-[#646262] font-bold mr-1">[KEYWORDS]:</span>
                             {p.visualKeywords.map((kw, idx) => (
-                              <span key={idx} className="text-[10px] font-mono bg-stone-200/70 text-stone-700 px-1.5 py-0.2 rounded-xs">
+                              <span key={idx} className="text-[10px] font-mono bg-[#f1eeee] text-[#201d1d] px-1.5 py-0.5 rounded-sm border border-[rgba(15,0,0,0.12)]">
                                 #{kw}
                               </span>
                             ))}
@@ -1363,42 +1479,42 @@ export const NovelView: React.FC<NovelViewProps> = ({
                         {/* Prompts Details Box */}
                         <div className="space-y-2 text-xs">
                           {/* Positive Prompt (EN) */}
-                          <div className="bg-white p-2.5 border border-stone-200 rounded-sm font-mono text-stone-800">
+                          <div className="bg-[#fdfcfc] p-2.5 border border-[rgba(15,0,0,0.12)] rounded-none font-mono text-[#201d1d]">
                             <div className="flex items-center justify-between mb-1">
-                              <span className="text-[10px] text-amber-800 font-bold">[POSITIVE IMAGE PROMPT (EN)]:</span>
+                              <span className="text-[10px] text-[#201d1d] font-bold">[POSITIVE IMAGE PROMPT (EN)]:</span>
                               <button
                                 onClick={() => handleCopyText(p.positivePromptEn, `${p.cardNameKo} (EN Prompt)`)}
-                                className="text-[10px] text-stone-500 hover:text-stone-900 font-bold cursor-pointer"
+                                className="text-[10px] text-[#646262] hover:text-[#201d1d] font-bold cursor-pointer"
                               >
                                 [COPY]
                               </button>
                             </div>
-                            <p className="text-[11px] leading-relaxed text-stone-800 selection:bg-amber-200">{p.positivePromptEn}</p>
+                            <p className="text-[11px] leading-relaxed text-[#201d1d]">{p.positivePromptEn}</p>
                           </div>
 
                           {/* Positive Prompt (KO) */}
-                          <div className="bg-white/80 p-2 border border-stone-200 rounded-sm font-mono text-stone-700">
+                          <div className="bg-[#fdfcfc] p-2 border border-[rgba(15,0,0,0.12)] rounded-none font-mono text-[#201d1d]">
                             <div className="flex items-center justify-between mb-1">
-                              <span className="text-[10px] text-stone-500 font-bold">[이미지 생성 프롬프트 설명 (KO)]:</span>
+                              <span className="text-[10px] text-[#646262] font-bold">[이미지 생성 프롬프트 설명 (KO)]:</span>
                               <button
                                 onClick={() => handleCopyText(p.positivePromptKo, `${p.cardNameKo} (KO Prompt)`)}
-                                className="text-[10px] text-stone-500 hover:text-stone-900 font-bold cursor-pointer"
+                                className="text-[10px] text-[#646262] hover:text-[#201d1d] font-bold cursor-pointer"
                               >
                                 [COPY]
                               </button>
                             </div>
-                            <p className="text-[11px] leading-relaxed text-stone-700">{p.positivePromptKo}</p>
+                            <p className="text-[11px] leading-relaxed text-[#201d1d]">{p.positivePromptKo}</p>
                           </div>
 
                           {/* Webtoon Panel & Negative Prompt Grid */}
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
-                            <div className="bg-stone-100/80 p-2 border border-stone-200 rounded-sm">
-                              <span className="text-[10px] text-stone-500 font-bold block mb-0.5">[WEBTOON PANEL PROMPT]:</span>
-                              <p className="text-stone-700 text-[10px] line-clamp-3">{p.webtoonPanelPrompt}</p>
+                            <div className="bg-[#f1eeee] p-2 border border-[rgba(15,0,0,0.12)] rounded-none">
+                              <span className="text-[10px] text-[#646262] font-bold block mb-0.5">[WEBTOON PANEL PROMPT]:</span>
+                              <p className="text-[#201d1d] text-[10px] line-clamp-3">{p.webtoonPanelPrompt}</p>
                             </div>
-                            <div className="bg-stone-100/80 p-2 border border-stone-200 rounded-sm">
-                              <span className="text-[10px] text-stone-500 font-bold block mb-0.5">[NEGATIVE PROMPT]:</span>
-                              <p className="text-stone-500 text-[10px] truncate">{p.negativePrompt}</p>
+                            <div className="bg-[#f1eeee] p-2 border border-[rgba(15,0,0,0.12)] rounded-none">
+                              <span className="text-[10px] text-[#646262] font-bold block mb-0.5">[NEGATIVE PROMPT]:</span>
+                              <p className="text-[#646262] text-[10px] truncate">{p.negativePrompt}</p>
                             </div>
                           </div>
                         </div>
@@ -1410,9 +1526,9 @@ export const NovelView: React.FC<NovelViewProps> = ({
 
               {/* Scene & Character AI Prompts (Pure English 20 Continuous Prompts) */}
               <div className="space-y-4">
-                <div className="flex items-center justify-between border-b border-stone-300 pb-3 flex-wrap gap-2">
-                  <h3 className="font-bold text-xs uppercase tracking-wider text-stone-800 flex items-center gap-2">
-                    <Sparkles size={14} className="text-amber-700" />
+                <div className="flex items-center justify-between border-b border-[rgba(15,0,0,0.12)] pb-3 flex-wrap gap-2">
+                  <h3 className="font-bold text-xs uppercase tracking-wider text-[#201d1d] flex items-center gap-2">
+                    <Sparkles size={14} />
                     [ {language === 'ko' ? '장면별 AI 동영상 및 캐릭터 생성 프롬프트' : 'Scene AI Video & Character Prompts'} (20) ]
                   </h3>
                   <button
@@ -1420,7 +1536,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
                       const full20Text = continuous20Prompts.join('\n\n');
                       handleCopyText(full20Text, language === 'ko' ? '20개 프롬프트 전체 복사' : 'Copy All 20 Prompts');
                     }}
-                    className="px-2.5 py-1 text-[11px] font-bold border border-amber-400 rounded-sm bg-amber-50 hover:bg-amber-100 text-amber-950 cursor-pointer flex items-center gap-1.5 transition-all shadow-2xs"
+                    className="min-h-[36px] px-3 py-1 text-[11px] font-bold border border-[#201d1d] rounded-sm bg-[#f8f7f7] hover:bg-[#f1eeee] text-[#201d1d] cursor-pointer flex items-center gap-1.5 transition-colors"
                   >
                     <Copy size={12} />
                     <span>{language === 'ko' ? '20개 프롬프트 한 번에 복사' : 'Copy All 20 Prompts'}</span>
@@ -1428,18 +1544,18 @@ export const NovelView: React.FC<NovelViewProps> = ({
                 </div>
 
                 {/* Continuous 20 English Prompts Display Box */}
-                <div className="bg-white border border-stone-300 p-4 rounded-sm font-mono text-xs text-stone-900 leading-relaxed shadow-2xs space-y-3">
+                <div className="bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] p-4 rounded-none font-mono text-xs text-[#201d1d] leading-relaxed space-y-3">
                   {continuous20Prompts.map((promptText, idx) => (
-                    <div key={idx} className="pb-3 border-b border-stone-100 last:border-b-0 last:pb-0 flex items-start gap-2.5">
-                      <span className="text-[10px] text-amber-800 font-bold shrink-0 pt-0.5 select-none">
+                    <div key={idx} className="pb-3 border-b border-[rgba(15,0,0,0.12)] last:border-b-0 last:pb-0 flex items-start gap-2.5">
+                      <span className="text-[10px] text-[#201d1d] font-bold shrink-0 pt-0.5 select-none">
                         [{String(idx + 1).padStart(2, '0')}]
                       </span>
-                      <p className="grow text-stone-800 text-[11px] leading-relaxed selection:bg-amber-200 select-all">
+                      <p className="grow text-[#201d1d] text-[11px] leading-relaxed select-all">
                         {promptText}
                       </p>
                       <button
                         onClick={() => handleCopyText(promptText, `Prompt #${idx + 1}`)}
-                        className="text-[10px] text-stone-400 hover:text-amber-900 font-bold shrink-0 cursor-pointer px-1.5 py-0.5 border border-stone-200 hover:border-amber-300 rounded-xs bg-stone-50 hover:bg-amber-50 transition-colors"
+                        className="text-[10px] text-[#646262] hover:text-[#201d1d] font-bold shrink-0 cursor-pointer px-1.5 py-0.5 border border-[rgba(15,0,0,0.12)] rounded-sm bg-[#f8f7f7] hover:bg-[#f1eeee] transition-colors"
                         title="Copy single prompt"
                       >
                         [COPY]
@@ -1453,10 +1569,10 @@ export const NovelView: React.FC<NovelViewProps> = ({
             /* ── CARTOON WEBTOON VIEWER (IMAGE SCENE PANELS) ── */
             <div className="w-full space-y-6 font-mono">
               {/* Cartoon Subheader & Display Mode Controls */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 border border-stone-300 bg-stone-50 rounded-sm text-xs">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] rounded-none text-xs">
                 <div className="flex items-center gap-2">
-                  <Image size={18} className="text-amber-800" />
-                  <span className="font-bold text-stone-900">
+                  <Image size={18} className="text-[#201d1d]" />
+                  <span className="font-bold text-[#201d1d]">
                     [ {language === 'ko' ? `제 ${currentEpisodeNum}화 카툰 웹툰` : `Episode ${currentEpisodeNum} Webtoon`} ]
                   </span>
                 </div>
@@ -1467,10 +1583,10 @@ export const NovelView: React.FC<NovelViewProps> = ({
                       if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                       onNavigate('anime');
                     }}
-                    className="px-2.5 py-1 text-xs font-bold border border-purple-300 bg-purple-50 hover:bg-purple-100 text-purple-700 rounded-sm transition-all cursor-pointer flex items-center gap-1"
+                    className="min-h-[36px] px-2.5 py-1 text-xs font-bold border border-[#201d1d] bg-[#fdfcfc] hover:bg-[#f1eeee] text-[#201d1d] rounded-sm transition-colors cursor-pointer flex items-center gap-1"
                     title={language === 'ko' ? '공식 영상 애니메이션 감상하기' : 'Watch Official Anime Video'}
                   >
-                    <Play size={13} className="text-purple-600 fill-current" />
+                    <Play size={13} />
                     <span>{language === 'ko' ? '영상 보기' : 'Watch Video'}</span>
                   </button>
                   <a
@@ -1480,20 +1596,20 @@ export const NovelView: React.FC<NovelViewProps> = ({
                     onClick={() => {
                       if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                     }}
-                    className="px-2.5 py-1 text-xs font-bold border border-stone-300 bg-white hover:bg-stone-100 text-stone-700 rounded-sm transition-all cursor-pointer flex items-center gap-1"
+                    className="min-h-[36px] px-2.5 py-1 text-xs font-bold border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] hover:bg-[#f1eeee] text-[#201d1d] rounded-sm transition-colors cursor-pointer flex items-center gap-1"
                     title="YouTube Playlist"
                   >
                     <ExternalLink size={13} />
                     <span>YouTube</span>
                   </a>
-                  <span className="text-[10px] text-stone-500 font-bold hidden sm:inline ml-1">[ VIEW MODE ]:</span>
+                  <span className="text-[10px] text-[#646262] font-bold hidden sm:inline ml-1">[ VIEW MODE ]:</span>
                   <button
                     onClick={() => setCartoonDisplayMode('scroll')}
                     className={cn(
-                      "px-2.5 py-1 text-xs font-bold border rounded-sm transition-all cursor-pointer flex items-center gap-1",
+                      "min-h-[36px] px-2.5 py-1 text-xs font-bold border rounded-sm transition-colors cursor-pointer flex items-center gap-1",
                       cartoonDisplayMode === 'scroll'
-                        ? "bg-[#201d1d] text-white border-[#201d1d]"
-                        : "bg-white text-stone-700 border-stone-300 hover:bg-stone-100"
+                        ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
+                        : "bg-[#fdfcfc] text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee]"
                     )}
                   >
                     <Layers size={13} />
@@ -1502,10 +1618,10 @@ export const NovelView: React.FC<NovelViewProps> = ({
                   <button
                     onClick={() => setCartoonDisplayMode('slides')}
                     className={cn(
-                      "px-2.5 py-1 text-xs font-bold border rounded-sm transition-all cursor-pointer flex items-center gap-1",
+                      "min-h-[36px] px-2.5 py-1 text-xs font-bold border rounded-sm transition-colors cursor-pointer flex items-center gap-1",
                       cartoonDisplayMode === 'slides'
-                        ? "bg-[#201d1d] text-white border-[#201d1d]"
-                        : "bg-white text-stone-700 border-stone-300 hover:bg-stone-100"
+                        ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
+                        : "bg-[#fdfcfc] text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee]"
                     )}
                   >
                     <Film size={13} />
@@ -1529,16 +1645,16 @@ export const NovelView: React.FC<NovelViewProps> = ({
                           : '');
 
                     return (
-                      <div key={scNum} className="border border-stone-300 rounded-sm bg-white overflow-hidden shadow-xs hover:border-amber-400 transition-all">
+                      <div key={scNum} className="border border-[rgba(15,0,0,0.12)] rounded-none bg-[#fdfcfc] overflow-hidden hover:border-[#201d1d] transition-colors">
                         {/* Scene Card Header */}
-                        <div className="bg-stone-100 border-b border-stone-200 px-4 py-2 flex items-center justify-between text-xs font-mono">
-                          <span className="font-bold text-amber-900 flex items-center gap-1.5">
-                            <span className={cn("w-2 h-2 rounded-full inline-block", scNum === 0 ? "bg-stone-800" : "bg-amber-500")} />
+                        <div className="bg-[#f8f7f7] border-b border-[rgba(15,0,0,0.12)] px-4 py-2 flex items-center justify-between text-xs font-mono">
+                          <span className="font-bold text-[#201d1d] flex items-center gap-1.5">
+                            <span className="w-2 h-2 rounded-none inline-block bg-[#201d1d]" />
                             {scNum === 0 ? `[ TITLE CARD ]` : `SCENE ${pad2(scNum)} / 20`}
                           </span>
                           <button
                             onClick={() => setLightboxSceneIndex(scNum)}
-                            className="px-2 py-0.5 border border-stone-300 rounded-xs bg-white hover:bg-amber-50 text-stone-700 text-[11px] font-bold cursor-pointer flex items-center gap-1"
+                            className="px-2 py-0.5 border border-[rgba(15,0,0,0.12)] rounded-sm bg-[#fdfcfc] hover:bg-[#f1eeee] text-[#201d1d] text-[11px] font-bold cursor-pointer flex items-center gap-1"
                             title={language === 'ko' ? '크게 보기' : 'Fullscreen'}
                           >
                             <Maximize2 size={12} />
@@ -1548,7 +1664,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
 
                         {/* Scene Image Area */}
                         <div
-                          className="relative w-full bg-stone-900 flex items-center justify-center min-h-[280px] sm:min-h-[420px] group cursor-pointer"
+                          className="relative w-full bg-[#201d1d] flex items-center justify-center min-h-[280px] sm:min-h-[420px] group cursor-pointer"
                           onClick={() => setLightboxSceneIndex(scNum)}
                         >
                           {!isFailedAll ? (
@@ -1570,16 +1686,16 @@ export const NovelView: React.FC<NovelViewProps> = ({
                                   [`${currentEpisodeNum}_${scNum}`]: (prev[`${currentEpisodeNum}_${scNum}`] || 0) + 1
                                 }));
                               }}
-                              className="w-full h-auto max-h-[850px] object-contain transition-transform duration-300 group-hover:scale-[1.003]"
+                              className="w-full h-auto max-h-[850px] object-contain"
                             />
                           ) : (
                             /* Fallback Character Card Panel */
-                            <div className="w-full py-12 px-6 flex flex-col items-center justify-center text-center font-mono bg-stone-900 text-stone-200">
+                            <div className="w-full py-12 px-6 flex flex-col items-center justify-center text-center font-mono bg-[#201d1d] text-[#fdfcfc]">
                               <div
                                 style={getCardSpriteStyle(((currentEpisodeNum * 5 + scNum) % 110) + 1)}
-                                className="w-28 h-28 rounded-lg mb-3 border border-stone-700 bg-stone-950 drop-shadow-md"
+                                className="w-28 h-28 rounded-none mb-3 border border-[rgba(255,255,255,0.2)] bg-black"
                               />
-                              <span className="text-xs font-bold text-amber-300 uppercase tracking-widest">
+                              <span className="text-xs font-bold text-[#fdfcfc] uppercase tracking-widest">
                                 [ EPISODE {currentEpisodeNum} · {scNum === 0 ? 'TITLE' : `SCENE ${pad2(scNum)}`} ]
                               </span>
                             </div>
@@ -1587,7 +1703,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
 
                           {/* Hover Zoom Prompt Badge */}
                           <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
-                            <span className="bg-black/80 text-white text-xs px-3 py-1.5 rounded-sm font-bold flex items-center gap-1.5 border border-amber-400/50">
+                            <span className="bg-[#201d1d] text-[#fdfcfc] text-xs px-3 py-1.5 rounded-sm font-bold flex items-center gap-1.5 border border-[#fdfcfc]">
                               <Maximize2 size={14} />
                               {language === 'ko' ? '클릭하여 큰 화면으로 감상' : 'Click to View Lightbox'}
                             </span>
@@ -1596,12 +1712,12 @@ export const NovelView: React.FC<NovelViewProps> = ({
 
                         {/* Scene Bottom Novel Sentence Card */}
                         {sentenceText && (
-                          <div className="bg-stone-50 border-t border-stone-200 px-4 py-3.5 sm:px-5 sm:py-4 font-mono">
+                          <div className="bg-[#f8f7f7] border-t border-[rgba(15,0,0,0.12)] px-4 py-3.5 sm:px-5 sm:py-4 font-mono">
                             <div className="flex items-start gap-2.5">
-                              <span className="text-amber-700 font-bold text-[11px] bg-amber-100 border border-amber-300/80 px-2 py-0.5 rounded-xs mt-0.5 shrink-0 select-none">
+                              <span className="text-[#fdfcfc] font-bold text-[11px] bg-[#201d1d] px-2 py-0.5 rounded-sm mt-0.5 shrink-0 select-none">
                                 {scNum === 0 ? 'TITLE' : `#${pad2(scNum)}`}
                               </span>
-                              <p className="text-xs sm:text-[13px] leading-relaxed text-stone-800 font-medium select-text">
+                              <p className="text-xs sm:text-[13px] leading-relaxed text-[#201d1d] font-medium select-text">
                                 {sentenceText}
                               </p>
                             </div>
@@ -1613,7 +1729,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
                 </div>
               ) : (
                 /* Single Slide Mode View */
-                <div className="border border-stone-300 rounded-sm bg-white overflow-hidden shadow-xs p-4 sm:p-6 space-y-4">
+                <div className="border border-[rgba(15,0,0,0.12)] rounded-none bg-[#fdfcfc] overflow-hidden p-4 sm:p-6 space-y-4">
                   {(() => {
                     const scNum = activeSlideIndex;
                     const attempt = sceneImgAttempts[`${currentEpisodeNum}_${scNum}`] || 0;
@@ -1629,8 +1745,8 @@ export const NovelView: React.FC<NovelViewProps> = ({
                     return (
                       <div className="space-y-4 font-mono">
                         {/* Slide Navigation Header */}
-                        <div className="flex items-center justify-between border-b border-stone-200 pb-3 text-xs flex-wrap gap-2">
-                          <span className="font-bold text-amber-900">
+                        <div className="flex items-center justify-between border-b border-[rgba(15,0,0,0.12)] pb-3 text-xs flex-wrap gap-2">
+                          <span className="font-bold text-[#201d1d]">
                             {scNum === 0 ? `[ TITLE CARD ]` : `SCENE ${pad2(scNum)} / 20`}
                           </span>
                           <div className="flex items-center gap-1 overflow-x-auto max-w-full pb-1">
@@ -1639,10 +1755,10 @@ export const NovelView: React.FC<NovelViewProps> = ({
                                 key={n}
                                 onClick={() => setActiveSlideIndex(n)}
                                 className={cn(
-                                  "w-6 h-6 rounded-xs text-[10px] font-bold cursor-pointer transition-all border shrink-0",
+                                  "w-7 h-7 rounded-sm text-[10px] font-bold cursor-pointer transition-colors border shrink-0",
                                   activeSlideIndex === n
-                                    ? "bg-amber-600 text-white border-amber-700"
-                                    : "bg-stone-100 text-stone-700 border-stone-300 hover:bg-stone-200"
+                                    ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
+                                    : "bg-[#f8f7f7] text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee]"
                                 )}
                               >
                                 {n === 0 ? 'T' : n}
@@ -1653,7 +1769,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
 
                         {/* Active Slide Image */}
                         <div
-                          className="relative w-full bg-stone-900 flex items-center justify-center min-h-[320px] sm:min-h-[480px] cursor-pointer group rounded-sm overflow-hidden"
+                          className="relative w-full bg-[#201d1d] flex items-center justify-center min-h-[320px] sm:min-h-[480px] cursor-pointer group rounded-none overflow-hidden"
                           onClick={() => setLightboxSceneIndex(scNum)}
                         >
                           {!isFailedAll ? (
@@ -1672,12 +1788,12 @@ export const NovelView: React.FC<NovelViewProps> = ({
                               className="w-full h-auto max-h-[720px] object-contain"
                             />
                           ) : (
-                            <div className="w-full py-16 px-6 flex flex-col items-center justify-center text-center font-mono bg-stone-900 text-stone-200">
+                            <div className="w-full py-16 px-6 flex flex-col items-center justify-center text-center font-mono bg-[#201d1d] text-[#fdfcfc]">
                               <div
                                 style={getCardSpriteStyle(((currentEpisodeNum * 5 + scNum) % 110) + 1)}
-                                className="w-32 h-32 rounded-lg mb-3 border border-stone-700 bg-stone-950 drop-shadow-md"
+                                className="w-32 h-32 rounded-none mb-3 border border-[rgba(255,255,255,0.2)] bg-black"
                               />
-                              <span className="text-xs font-bold text-amber-300 uppercase tracking-widest">
+                              <span className="text-xs font-bold text-[#fdfcfc] uppercase tracking-widest">
                                 [ {scNum === 0 ? 'TITLE' : `SCENE ${pad2(scNum)}`} ]
                               </span>
                             </div>
@@ -1686,12 +1802,12 @@ export const NovelView: React.FC<NovelViewProps> = ({
 
                         {/* Slide Bottom Novel Sentence Card */}
                         {sentenceText && (
-                          <div className="bg-stone-50 border border-stone-200 p-4 rounded-sm">
+                          <div className="bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] p-4 rounded-none">
                             <div className="flex items-start gap-2.5">
-                              <span className="text-amber-700 font-bold text-[11px] bg-amber-100 border border-amber-300/80 px-2 py-0.5 rounded-xs mt-0.5 shrink-0 select-none">
+                              <span className="text-[#fdfcfc] font-bold text-[11px] bg-[#201d1d] px-2 py-0.5 rounded-sm mt-0.5 shrink-0 select-none">
                                 {scNum === 0 ? 'TITLE' : `#${pad2(scNum)}`}
                               </span>
-                              <p className="text-xs sm:text-[13px] leading-relaxed text-stone-800 font-medium select-text">
+                              <p className="text-xs sm:text-[13px] leading-relaxed text-[#201d1d] font-medium select-text">
                                 {sentenceText}
                               </p>
                             </div>
@@ -1704,22 +1820,22 @@ export const NovelView: React.FC<NovelViewProps> = ({
                             onClick={() => setActiveSlideIndex(prev => Math.max(0, prev - 1))}
                             disabled={activeSlideIndex <= 0}
                             className={cn(
-                              "px-3 py-1.5 border rounded-sm font-bold text-xs flex items-center gap-1 cursor-pointer transition-all",
-                              activeSlideIndex <= 0 ? "opacity-50 cursor-not-allowed bg-stone-100" : "bg-white hover:bg-stone-100"
+                              "min-h-[44px] px-3 py-1.5 border rounded-sm font-bold text-xs flex items-center gap-1 cursor-pointer transition-colors",
+                              activeSlideIndex <= 0 ? "opacity-50 cursor-not-allowed bg-[#f1eeee] border-[rgba(15,0,0,0.12)]" : "bg-[#fdfcfc] border-[rgba(15,0,0,0.12)] hover:bg-[#f8f7f7]"
                             )}
                           >
                             <ChevronLeft size={14} />
                             <span>{language === 'ko' ? '이전 장면' : 'Prev'}</span>
                           </button>
-                          <span className="text-xs text-stone-500 font-bold">
+                          <span className="text-xs text-[#646262] font-bold">
                             {activeSlideIndex === 0 ? 'TITLE (00/20)' : `${activeSlideIndex} / 20`}
                           </span>
                           <button
                             onClick={() => setActiveSlideIndex(prev => Math.min(20, prev + 1))}
                             disabled={activeSlideIndex >= 20}
                             className={cn(
-                              "px-3 py-1.5 border rounded-sm font-bold text-xs flex items-center gap-1 cursor-pointer transition-all",
-                              activeSlideIndex >= 20 ? "opacity-50 cursor-not-allowed bg-stone-100" : "bg-white hover:bg-stone-100"
+                              "min-h-[44px] px-3 py-1.5 border rounded-sm font-bold text-xs flex items-center gap-1 cursor-pointer transition-colors",
+                              activeSlideIndex >= 20 ? "opacity-50 cursor-not-allowed bg-[#f1eeee] border-[rgba(15,0,0,0.12)]" : "bg-[#fdfcfc] border-[rgba(15,0,0,0.12)] hover:bg-[#f8f7f7]"
                             )}
                           >
                             <span>{language === 'ko' ? '다음 장면' : 'Next'}</span>
@@ -1743,10 +1859,10 @@ export const NovelView: React.FC<NovelViewProps> = ({
                     key={index}
                     onClick={() => startTtsFromParagraph(index)}
                     className={cn(
-                      "transition-all cursor-pointer p-2 rounded-sm relative group border-l-2",
+                      "transition-colors cursor-pointer p-2 rounded-none relative group border-l-2",
                       isSpeaking
-                        ? "border-amber-500 bg-amber-100/60 font-medium"
-                        : "border-transparent hover:border-stone-300 hover:bg-stone-100/40"
+                        ? "border-[#201d1d] bg-[#f8f7f7] font-medium"
+                        : "border-transparent hover:border-[rgba(15,0,0,0.12)] hover:bg-[#f8f7f7]"
                     )}
                     title={t('novel_tts_start_here', language)}
                   >
@@ -1758,15 +1874,15 @@ export const NovelView: React.FC<NovelViewProps> = ({
           )}
 
           {/* SCR-11-03: Episode Complete Reward & Shop Shortcut */}
-          <div className="mt-12 pt-6 border-t border-stone-300/60 flex flex-col items-center gap-3">
+          <div className="mt-12 pt-6 border-t border-[rgba(15,0,0,0.12)] flex flex-col items-center gap-3">
             {!claimedRewards[currentEpisodeNum] ? (
-              <div className="flex items-center gap-2 text-xs font-bold text-amber-800 bg-amber-50 px-4 py-2.5 border border-amber-300 rounded-none animate-pulse">
-                <Sparkles size={16} className="text-amber-600" />
+              <div className="flex items-center gap-2 text-xs font-bold text-[#201d1d] bg-[#f8f7f7] px-4 py-2.5 border border-[#201d1d] rounded-none">
+                <Sparkles size={16} />
                 <span>{language === 'ko' ? `제 ${currentEpisodeNum}화 완독 보상 (+100 SNS) 자동 지급 중...` : `Auto-awarding Episode ${currentEpisodeNum} Reward (+100 SNS)...`}</span>
               </div>
             ) : (
               <div className="flex flex-col sm:flex-row items-center gap-3 w-full justify-center">
-                <div className="flex items-center gap-2 text-xs font-bold text-emerald-700 bg-emerald-50 px-4 py-2.5 border border-emerald-300 rounded-none">
+                <div className="flex items-center gap-2 text-xs font-bold text-emerald-800 bg-emerald-50 px-4 py-2.5 border border-emerald-500 rounded-none min-h-[44px]">
                   <Award size={16} />
                   <span>{t('novel_reward_already_claimed', language)} (+100 SNS 자동 지급 완료)</span>
                 </div>
@@ -1776,10 +1892,10 @@ export const NovelView: React.FC<NovelViewProps> = ({
                     triggerHaptic('tap');
                     onNavigate('shop');
                   }}
-                  className="min-h-[44px] px-4 py-2.5 bg-[#201d1d] hover:bg-stone-800 text-amber-300 border border-stone-700 font-black text-xs uppercase flex items-center gap-2 rounded-none cursor-pointer shadow-xs active:scale-95 transition-all"
+                  className="min-h-[44px] px-4 py-2.5 bg-[#201d1d] hover:bg-[#201d1d]/90 text-[#fdfcfc] border border-[#201d1d] font-bold text-xs uppercase flex items-center gap-2 rounded-sm cursor-pointer transition-colors"
                 >
                   <ShoppingCart size={15} />
-                  <span>{language === 'ko' ? '🛒 100 SNS로 카드팩 뽑으러 가기' : '🛒 Summon Card Pack in Shop'}</span>
+                  <span>{language === 'ko' ? '[+] 100 SNS로 카드팩 뽑으러 가기' : '[+] Summon Card Pack in Shop'}</span>
                 </button>
               </div>
             )}
@@ -1787,16 +1903,16 @@ export const NovelView: React.FC<NovelViewProps> = ({
 
           {/* Next Episode Teaser & Quick Advance Card */}
           {currentEpisodeNum < TOTAL_EPISODES ? (
-            <div className="mt-8 p-4 sm:p-5 border-2 border-dashed border-amber-300 bg-amber-50/50 rounded-sm flex flex-col sm:flex-row items-center justify-between gap-4 font-mono">
+            <div className="mt-8 p-4 sm:p-5 border border-[#201d1d] bg-[#f8f7f7] rounded-none flex flex-col sm:flex-row items-center justify-between gap-4 font-mono">
               <div className="space-y-1 text-center sm:text-left">
-                <div className="flex items-center justify-center sm:justify-start gap-2 text-xs font-bold text-amber-900">
-                  <BookmarkCheck size={16} className="text-amber-600" />
+                <div className="flex items-center justify-center sm:justify-start gap-2 text-xs font-bold text-[#201d1d]">
+                  <BookmarkCheck size={16} />
                   <span>[ {t('webtoon_next_ep_teaser', language)} ]</span>
-                  <span className="bg-amber-200 text-amber-950 px-1.5 py-0.2 text-[10px] rounded-xs font-bold">
+                  <span className="bg-[#201d1d] text-[#fdfcfc] px-1.5 py-0.5 text-[10px] rounded-sm font-bold">
                     EP {pad2(currentEpisodeNum + 1)}
                   </span>
                 </div>
-                <p className="text-sm font-bold text-stone-900">
+                <p className="text-sm font-bold text-[#201d1d]">
                   {(() => {
                     const nextMeta = indexData?.episodes.find(e => e.episodeNumber === currentEpisodeNum + 1);
                     if (language === 'ko') {
@@ -1805,7 +1921,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
                     return ENGLISH_NOVEL_MAP[currentEpisodeNum + 1]?.titleEn || (nextMeta ? nextMeta.titleKo : `Episode ${currentEpisodeNum + 1}`);
                   })()}
                 </p>
-                <p className="text-xs text-stone-600 line-clamp-1">
+                <p className="text-xs text-[#646262] line-clamp-1">
                   {language === 'ko'
                     ? `제 ${currentEpisodeNum + 1}화로 바로 넘어가 다음 스토리를 계속 읽어보세요!`
                     : `Jump straight into Episode ${currentEpisodeNum + 1} and continue the adventure!`}
@@ -1814,15 +1930,15 @@ export const NovelView: React.FC<NovelViewProps> = ({
 
               <button
                 onClick={goToNextEpisode}
-                className="px-5 py-2.5 bg-[#201d1d] hover:bg-stone-800 text-white font-bold text-xs rounded-sm shrink-0 flex items-center gap-2 cursor-pointer shadow-xs active:scale-95 transition-all group"
+                className="min-h-[44px] px-5 py-2.5 bg-[#201d1d] hover:bg-[#201d1d]/90 text-[#fdfcfc] font-bold text-xs rounded-sm shrink-0 flex items-center gap-2 cursor-pointer transition-colors group"
               >
                 <span>{t('webtoon_next_ep_btn', language)}</span>
-                <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+                <ArrowRight size={14} />
               </button>
             </div>
           ) : (
-            <div className="mt-8 p-4 border border-emerald-300 bg-emerald-50 text-emerald-900 rounded-sm text-center text-xs font-bold font-mono">
-              🎉 {t('webtoon_last_ep_reached', language)}
+            <div className="mt-8 p-4 border border-emerald-500 bg-emerald-50 text-emerald-900 rounded-none text-center text-xs font-bold font-mono">
+              [v] {t('webtoon_last_ep_reached', language)}
             </div>
           )}
         </div>
@@ -1833,10 +1949,10 @@ export const NovelView: React.FC<NovelViewProps> = ({
             onClick={goToPrevEpisode}
             disabled={currentEpisodeNum <= 1}
             className={cn(
-              "px-4 py-2 border rounded-sm font-bold flex items-center gap-2 transition-all cursor-pointer",
+              "min-h-[44px] px-4 py-2 border rounded-sm font-bold flex items-center gap-2 transition-colors cursor-pointer",
               currentEpisodeNum <= 1
-                ? "bg-stone-100 text-stone-400 border-stone-200 cursor-not-allowed"
-                : "bg-white text-stone-800 border-stone-300 hover:bg-stone-100 active:scale-95"
+                ? "bg-[#f1eeee] text-[#646262] border-[rgba(15,0,0,0.12)] cursor-not-allowed"
+                : "bg-[#fdfcfc] text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#f8f7f7]"
             )}
           >
             <ChevronLeft size={16} />
@@ -1850,22 +1966,22 @@ export const NovelView: React.FC<NovelViewProps> = ({
               setShowEpisodeModal(true);
               if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
             }}
-            className="px-4 py-2 border border-stone-300 hover:border-[#201d1d] bg-white hover:bg-stone-100 rounded-sm font-bold text-stone-800 flex items-center gap-2 transition-all cursor-pointer shadow-2xs active:scale-95 group"
+            className="min-h-[44px] px-4 py-2 border border-[#201d1d] bg-[#fdfcfc] hover:bg-[#f8f7f7] rounded-sm font-bold text-[#201d1d] flex items-center gap-2 transition-colors cursor-pointer group"
             title={t('novel_select_episode_hint', language)}
           >
-            <BookOpen size={14} className="text-amber-700 group-hover:scale-110 transition-transform" />
+            <BookOpen size={14} />
             <span className="text-sm font-bold text-[#201d1d]">{currentEpisodeNum} / {TOTAL_EPISODES}</span>
-            <ChevronDown size={13} className="text-stone-400 group-hover:text-stone-700" />
+            <ChevronDown size={13} className="text-[#646262]" />
           </button>
 
           <button
             onClick={goToNextEpisode}
             disabled={currentEpisodeNum >= TOTAL_EPISODES}
             className={cn(
-              "px-4 py-2 border rounded-sm font-bold flex items-center gap-2 transition-all cursor-pointer",
+              "min-h-[44px] px-4 py-2 border rounded-sm font-bold flex items-center gap-2 transition-colors cursor-pointer",
               currentEpisodeNum >= TOTAL_EPISODES
-                ? "bg-stone-100 text-stone-400 border-stone-200 cursor-not-allowed"
-                : "bg-white text-stone-800 border-stone-300 hover:bg-stone-100 active:scale-95"
+                ? "bg-[#f1eeee] text-[#646262] border-[rgba(15,0,0,0.12)] cursor-not-allowed"
+                : "bg-[#fdfcfc] text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#f8f7f7]"
             )}
           >
             <span>[ {language === 'ko' ? '다음 회차' : 'NEXT EP'} ]</span>
@@ -1875,31 +1991,31 @@ export const NovelView: React.FC<NovelViewProps> = ({
       </main>
 
       {/* Footer info */}
-      <footer className="w-full border-t border-stone-300 bg-[#fdfcfc] py-4 text-center font-mono text-[11px] text-stone-500">
+      <footer className="w-full border-t border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] py-4 text-center font-mono text-[11px] text-[#646262]">
         <p>© 2026 SNSHero Revolution — Official Web Novel /public/book (40 Episodes)</p>
       </footer>
 
       {/* ── EPISODE SELECTOR MODAL ── */}
       {showEpisodeModal && (
         <div
-          className="fixed inset-0 z-[10000] bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 font-mono"
+          className="fixed inset-0 z-[10000] bg-black/70 flex items-center justify-center p-3 sm:p-4 font-mono"
           onClick={() => setShowEpisodeModal(false)}
         >
           <div
-            className="bg-[#fdfcfc] text-[#201d1d] w-full max-w-2xl max-h-[85vh] rounded-none border border-stone-400 shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150"
+            className="bg-[#fdfcfc] text-[#201d1d] w-full max-w-2xl max-h-[85vh] rounded-none border border-[#201d1d] flex flex-col overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="p-4 border-b border-stone-300 bg-stone-100 flex items-center justify-between shrink-0">
+            <div className="p-4 border-b border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] flex items-center justify-between shrink-0">
               <div className="flex items-center gap-2">
-                <BookOpen size={18} className="text-amber-700" />
+                <BookOpen size={18} />
                 <h3 className="font-bold text-sm sm:text-base text-[#201d1d]">
                   [ {t('novel_select_episode_modal_title', language)} ]
                 </h3>
               </div>
               <button
                 onClick={() => setShowEpisodeModal(false)}
-                className="p-1 border border-stone-300 rounded-sm hover:bg-stone-200 text-stone-700 cursor-pointer transition-colors"
+                className="min-h-[44px] min-w-[44px] p-1 border border-[rgba(15,0,0,0.12)] rounded-sm hover:bg-[#f1eeee] text-[#201d1d] cursor-pointer transition-colors flex items-center justify-center"
                 title="Close"
               >
                 <X size={16} />
@@ -1907,7 +2023,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
             </div>
 
             {/* Modal Search & Filter Tabs */}
-            <div className="p-3 border-b border-stone-200 bg-white/70 space-y-2 shrink-0">
+            <div className="p-3 border-b border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] space-y-2 shrink-0">
               {/* Range Filter Tabs */}
               <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs scrollbar-none">
                 {[
@@ -1924,10 +2040,10 @@ export const NovelView: React.FC<NovelViewProps> = ({
                       if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                     }}
                     className={cn(
-                      "px-3 py-1.5 border rounded-sm font-bold whitespace-nowrap cursor-pointer transition-all min-h-[36px] flex items-center justify-center",
+                      "px-3 py-1.5 border rounded-sm font-bold whitespace-nowrap cursor-pointer transition-colors min-h-[44px] flex items-center justify-center",
                       episodeModalFilter === tab.id
-                        ? "bg-[#201d1d] text-white border-[#201d1d] shadow-2xs"
-                        : "bg-white text-stone-700 border-stone-300 hover:bg-stone-100"
+                        ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
+                        : "bg-[#fdfcfc] text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#f8f7f7]"
                     )}
                   >
                     [ {language === 'ko' ? tab.labelKo : tab.labelEn} ]
@@ -1937,18 +2053,18 @@ export const NovelView: React.FC<NovelViewProps> = ({
 
               {/* Search input */}
               <div className="relative">
-                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
+                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#646262]" />
                 <input
                   type="text"
                   value={episodeModalSearch}
                   onChange={(e) => setEpisodeModalSearch(e.target.value)}
                   placeholder={language === 'ko' ? '회차 번호 또는 소설 제목 검색 (예: 5, 카단, 각성...)' : 'Search episode number or title...'}
-                  className="w-full pl-9 pr-8 py-1.5 text-xs bg-white border border-stone-300 rounded-sm focus:outline-hidden focus:border-[#201d1d]"
+                  className="w-full min-h-[44px] pl-9 pr-8 py-2 text-xs bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-sm focus:outline-hidden focus:border-[#201d1d]"
                 />
                 {episodeModalSearch && (
                   <button
                     onClick={() => setEpisodeModalSearch('')}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-700 cursor-pointer"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#646262] hover:text-[#201d1d] cursor-pointer"
                   >
                     <X size={12} />
                   </button>
@@ -1961,13 +2077,11 @@ export const NovelView: React.FC<NovelViewProps> = ({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {Array.from({ length: TOTAL_EPISODES }, (_, i) => i + 1)
                   .filter((epNum) => {
-                    // Range filter
                     if (episodeModalFilter === '1-10' && (epNum < 1 || epNum > 10)) return false;
                     if (episodeModalFilter === '11-20' && (epNum < 11 || epNum > 20)) return false;
                     if (episodeModalFilter === '21-30' && (epNum < 21 || epNum > 30)) return false;
                     if (episodeModalFilter === '31-40' && (epNum < 31 || epNum > 40)) return false;
 
-                    // Search keyword filter
                     if (episodeModalSearch.trim()) {
                       const q = episodeModalSearch.trim().toLowerCase();
                       const meta = indexData?.episodes.find(e => e.episodeNumber === epNum);
@@ -1996,28 +2110,28 @@ export const NovelView: React.FC<NovelViewProps> = ({
                           window.scrollTo({ top: 0, behavior: 'smooth' });
                         }}
                         className={cn(
-                          "p-2.5 border rounded-sm text-left transition-all cursor-pointer flex items-center justify-between gap-2 group",
+                          "min-h-[48px] p-2.5 border rounded-sm text-left transition-colors cursor-pointer flex items-center justify-between gap-2 group",
                           isCurrent
-                            ? "bg-[#201d1d] text-white border-[#201d1d] shadow-sm ring-1 ring-amber-400"
-                            : "bg-white text-stone-800 border-stone-200 hover:border-amber-400 hover:bg-amber-50/50"
+                            ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
+                            : "bg-[#fdfcfc] text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] hover:bg-[#f8f7f7]"
                         )}
                       >
                         <div className="flex items-center gap-2.5 min-w-0 flex-1">
                           <span
                             className={cn(
-                              "text-xs font-mono font-bold px-1.5 py-0.5 rounded-xs shrink-0",
+                              "text-xs font-mono font-bold px-1.5 py-0.5 rounded-sm shrink-0",
                               isCurrent
-                                ? "bg-amber-400 text-stone-900"
-                                : "bg-stone-100 text-stone-700 group-hover:bg-amber-100 group-hover:text-amber-900"
+                                ? "bg-[#fdfcfc] text-[#201d1d]"
+                                : "bg-[#f1eeee] text-[#201d1d]"
                             )}
                           >
                             #{String(epNum).padStart(2, '0')}
                           </span>
                           <div className="min-w-0 flex-1">
-                            <p className={cn("text-xs font-bold truncate", isCurrent ? "text-white" : "text-stone-900")}>
+                            <p className={cn("text-xs font-bold truncate", isCurrent ? "text-[#fdfcfc]" : "text-[#201d1d]")}>
                               {language === 'ko' ? epTitleKo : epTitleEn}
                             </p>
-                            <p className={cn("text-[10px] truncate opacity-70", isCurrent ? "text-amber-200" : "text-stone-500")}>
+                            <p className={cn("text-[10px] truncate opacity-70", isCurrent ? "text-[#fdfcfc]/70" : "text-[#646262]")}>
                               {language === 'ko' ? epTitleEn : epTitleKo}
                             </p>
                           </div>
@@ -2030,19 +2144,19 @@ export const NovelView: React.FC<NovelViewProps> = ({
                             return (
                               <>
                                 {isCurrent ? (
-                                  <span className="text-[10px] font-bold bg-amber-400/20 text-amber-300 border border-amber-400/40 px-1.5 py-0.2 rounded-xs">
+                                  <span className="text-[10px] font-bold bg-[#fdfcfc]/20 text-[#fdfcfc] border border-[#fdfcfc]/40 px-1.5 py-0.5 rounded-sm">
                                     {language === 'ko' ? '읽는 중' : 'Reading'}
                                   </span>
                                 ) : isClaimed ? (
-                                  <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 rounded-xs flex items-center gap-0.5">
+                                  <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-sm flex items-center gap-0.5">
                                     <Check size={10} /> 100 SNS
                                   </span>
                                 ) : maxPct > 0 ? (
-                                  <span className="text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-300 px-1.5 py-0.2 rounded-xs">
+                                  <span className="text-[10px] font-bold text-[#201d1d] bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] px-1.5 py-0.5 rounded-sm">
                                     {maxPct}%
                                   </span>
                                 ) : (
-                                  <span className="text-[10px] text-stone-400 border border-stone-200 px-1.5 py-0.2 rounded-xs">
+                                  <span className="text-[10px] text-[#646262] border border-[rgba(15,0,0,0.12)] px-1.5 py-0.5 rounded-sm">
                                     {language === 'ko' ? '미완독' : 'Unread'}
                                   </span>
                                 )}
@@ -2057,11 +2171,11 @@ export const NovelView: React.FC<NovelViewProps> = ({
             </div>
 
             {/* Modal Footer */}
-            <div className="p-3 border-t border-stone-300 bg-stone-50 flex items-center justify-between text-xs text-stone-500 shrink-0">
+            <div className="p-3 border-t border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] flex items-center justify-between text-xs text-[#646262] shrink-0">
               <span>{language === 'ko' ? `총 ${TOTAL_EPISODES}개 회차 중 ${Object.keys(claimedRewards).length}개 완독` : `${Object.keys(claimedRewards).length} / ${TOTAL_EPISODES} Episodes Read`}</span>
               <button
                 onClick={() => setShowEpisodeModal(false)}
-                className="px-3 py-1 bg-stone-200 hover:bg-stone-300 text-stone-800 font-bold rounded-sm cursor-pointer transition-colors"
+                className="min-h-[44px] px-4 py-1.5 bg-[#201d1d] hover:bg-[#201d1d]/90 text-[#fdfcfc] font-bold rounded-sm cursor-pointer transition-colors"
               >
                 [ {language === 'ko' ? '닫기' : 'Close'} ]
               </button>
@@ -2098,23 +2212,23 @@ export const NovelView: React.FC<NovelViewProps> = ({
       {/* Lightbox Fullscreen Cartoon Modal */}
       {lightboxSceneIndex !== null && (
         <div
-          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-xs flex flex-col items-center justify-between p-4 sm:p-6 font-mono select-none animate-fadeIn"
+          className="fixed inset-0 z-50 bg-black/95 flex flex-col items-center justify-between p-4 sm:p-6 font-mono select-none"
           onClick={() => setLightboxSceneIndex(null)}
         >
           {/* Lightbox Header */}
-          <div className="w-full max-w-5xl flex items-center justify-between text-white border-b border-stone-800 pb-3" onClick={e => e.stopPropagation()}>
+          <div className="w-full max-w-5xl flex items-center justify-between text-[#fdfcfc] border-b border-[rgba(255,255,255,0.2)] pb-3" onClick={e => e.stopPropagation()}>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-bold text-amber-400 bg-amber-950/80 px-2.5 py-0.5 border border-amber-800/80 rounded-sm uppercase">
+              <span className="text-xs font-bold text-[#fdfcfc] bg-[#201d1d] px-2.5 py-0.5 border border-[rgba(255,255,255,0.2)] rounded-sm uppercase">
                 {lightboxSceneIndex === 0 ? `EPISODE ${currentEpisodeNum} · [ TITLE CARD ]` : `EPISODE ${currentEpisodeNum} · SCENE ${pad2(lightboxSceneIndex)} / 20`}
               </span>
-              <span className="text-xs text-stone-300 font-bold hidden sm:inline">
+              <span className="text-xs text-[#fdfcfc]/80 font-bold hidden sm:inline">
                 {parsedContent.title}
               </span>
             </div>
 
             <button
               onClick={() => setLightboxSceneIndex(null)}
-              className="p-1.5 bg-stone-800 hover:bg-stone-700 text-stone-200 rounded-sm transition-all cursor-pointer flex items-center gap-1 text-xs font-bold border border-stone-700"
+              className="min-h-[44px] px-3 py-1.5 bg-[#201d1d] hover:bg-[#201d1d]/80 text-[#fdfcfc] rounded-sm transition-colors cursor-pointer flex items-center gap-1 text-xs font-bold border border-[rgba(255,255,255,0.2)]"
             >
               <X size={18} />
               <span>[ CLOSE ]</span>
@@ -2129,7 +2243,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
               loading="lazy"
               decoding="async"
               referrerPolicy="no-referrer"
-              className="max-w-full max-h-[75vh] object-contain rounded-sm shadow-2xl border border-stone-800"
+              className="max-w-full max-h-[75vh] object-contain rounded-none border border-[rgba(255,255,255,0.2)]"
               onError={() => {
                 const key = `${currentEpisodeNum}_${lightboxSceneIndex}`;
                 setSceneImgAttempts(prev => ({
@@ -2142,7 +2256,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
             {/* Prev Scene Arrow */}
             <button
               onClick={() => setLightboxSceneIndex(prev => (prev !== null && prev > 0 ? prev - 1 : 20))}
-              className="absolute left-2 top-1/2 -translate-y-1/2 p-3 bg-black/70 hover:bg-black/90 text-white rounded-full border border-stone-700 cursor-pointer transition-all hover:scale-105"
+              className="min-h-[44px] min-w-[44px] absolute left-2 top-1/2 -translate-y-1/2 p-3 bg-[#201d1d] hover:bg-black text-[#fdfcfc] rounded-sm border border-[rgba(255,255,255,0.2)] cursor-pointer transition-colors flex items-center justify-center"
               title="Previous Scene"
             >
               <ChevronLeft size={24} />
@@ -2151,7 +2265,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
             {/* Next Scene Arrow */}
             <button
               onClick={() => setLightboxSceneIndex(prev => (prev !== null && prev < 20 ? prev + 1 : 0))}
-              className="absolute right-2 top-1/2 -translate-y-1/2 p-3 bg-black/70 hover:bg-black/90 text-white rounded-full border border-stone-700 cursor-pointer transition-all hover:scale-105"
+              className="min-h-[44px] min-w-[44px] absolute right-2 top-1/2 -translate-y-1/2 p-3 bg-[#201d1d] hover:bg-black text-[#fdfcfc] rounded-sm border border-[rgba(255,255,255,0.2)] cursor-pointer transition-colors flex items-center justify-center"
               title="Next Scene"
             >
               <ChevronRight size={24} />
@@ -2159,7 +2273,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
           </div>
 
           {/* Lightbox Footer Caption */}
-          <div className="w-full max-w-3xl bg-stone-900/90 border border-stone-800 p-3.5 rounded-sm text-center text-xs text-stone-200 leading-relaxed font-mono select-text" onClick={e => e.stopPropagation()}>
+          <div className="w-full max-w-3xl bg-[#201d1d] border border-[rgba(255,255,255,0.2)] p-3.5 rounded-none text-center text-xs text-[#fdfcfc] leading-relaxed font-mono select-text" onClick={e => e.stopPropagation()}>
             {(() => {
               const imgInfo = getCartoonImageInfo(currentEpisodeNum, lightboxSceneIndex);
               const txt = imgInfo
@@ -2169,7 +2283,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
                     : '');
               return txt ? (
                 <p>
-                  <span className="text-amber-400 font-bold mr-1.5">{lightboxSceneIndex === 0 ? '[TITLE]' : `#${pad2(lightboxSceneIndex)}`}</span>
+                  <span className="font-bold mr-1.5">{lightboxSceneIndex === 0 ? '[TITLE]' : `#${pad2(lightboxSceneIndex)}`}</span>
                   {txt}
                 </p>
               ) : (
@@ -2191,16 +2305,16 @@ export const NovelView: React.FC<NovelViewProps> = ({
       />
 
       {/* SCR-11-02: Sticky Bottom Floating Episode Navigation Dock (DESIGN.md 준수, 44px+ 터치 타깃) */}
-      <aside aria-label="Episode Navigation Dock" className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 bg-[#201d1d]/95 backdrop-blur-xs text-stone-100 p-1.5 rounded-none border border-stone-700 shadow-xl flex items-center gap-1.5 font-mono text-xs max-w-[95vw]">
+      <aside aria-label="Episode Navigation Dock" className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 bg-[#201d1d] text-[#fdfcfc] p-1.5 rounded-none border border-[#201d1d] flex items-center gap-1.5 font-mono text-xs max-w-[95vw]">
         {/* Previous Episode Button */}
         <button
           onClick={goToPrevEpisode}
           disabled={currentEpisodeNum <= 1}
           className={cn(
-            "min-h-[44px] px-3 py-2 border rounded-none font-bold flex items-center gap-1 transition-all text-xs",
+            "min-h-[44px] px-3 py-2 border rounded-sm font-bold flex items-center gap-1 transition-colors text-xs",
             currentEpisodeNum <= 1
-              ? "opacity-30 cursor-not-allowed border-stone-800 bg-stone-900 text-stone-500"
-              : "border-stone-600 bg-stone-800 hover:bg-stone-700 text-white cursor-pointer active:scale-95"
+              ? "opacity-30 cursor-not-allowed border-[rgba(255,255,255,0.2)] bg-[#201d1d] text-[#fdfcfc]/50"
+              : "border-[rgba(255,255,255,0.2)] bg-[#201d1d] hover:bg-black text-[#fdfcfc] cursor-pointer"
           )}
           title={t('webtoon_nav_prev_ep', language)}
         >
@@ -2215,27 +2329,27 @@ export const NovelView: React.FC<NovelViewProps> = ({
             setShowEpisodeModal(true);
             if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
           }}
-          className="min-h-[44px] px-3.5 py-2 bg-stone-900 hover:bg-stone-800 border border-stone-700 hover:border-amber-400/60 rounded-none font-bold text-amber-300 flex items-center gap-2 cursor-pointer transition-all active:scale-95"
+          className="min-h-[44px] px-3.5 py-2 bg-[#201d1d] hover:bg-black border border-[rgba(255,255,255,0.2)] rounded-sm font-bold text-[#fdfcfc] flex items-center gap-2 cursor-pointer transition-colors"
           title={t('novel_select_episode_hint', language)}
         >
-          <BookOpen size={14} className="text-amber-400" />
-          <span className="font-mono font-black">{currentEpisodeNum} / {TOTAL_EPISODES}</span>
-          <span className="text-[10px] px-1.5 py-0.5 bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-none font-mono font-bold">
+          <BookOpen size={14} />
+          <span className="font-mono font-bold">{currentEpisodeNum} / {TOTAL_EPISODES}</span>
+          <span className="text-[10px] px-1.5 py-0.5 bg-[#fdfcfc] text-[#201d1d] rounded-sm font-mono font-bold">
             {scrollProgressPct}%
           </span>
         </button>
 
-        {/* Next Episode Button (with subtle highlight if scroll >= 80%) */}
+        {/* Next Episode Button */}
         <button
           onClick={goToNextEpisode}
           disabled={currentEpisodeNum >= TOTAL_EPISODES}
           className={cn(
-            "min-h-[44px] px-3 py-2 border rounded-none font-bold flex items-center gap-1 transition-all text-xs",
+            "min-h-[44px] px-3 py-2 border rounded-sm font-bold flex items-center gap-1 transition-colors text-xs",
             currentEpisodeNum >= TOTAL_EPISODES
-              ? "opacity-30 cursor-not-allowed border-stone-800 bg-stone-900 text-stone-500"
+              ? "opacity-30 cursor-not-allowed border-[rgba(255,255,255,0.2)] bg-[#201d1d] text-[#fdfcfc]/50"
               : scrollProgressPct >= 80
-              ? "border-amber-500 bg-amber-500 hover:bg-amber-400 text-stone-950 font-black shadow-xs cursor-pointer active:scale-95 animate-pulse"
-              : "border-stone-600 bg-stone-800 hover:bg-stone-700 text-white cursor-pointer active:scale-95"
+              ? "border-[#fdfcfc] bg-[#fdfcfc] hover:bg-[#f1eeee] text-[#201d1d] font-bold cursor-pointer"
+              : "border-[rgba(255,255,255,0.2)] bg-[#201d1d] hover:bg-black text-[#fdfcfc] cursor-pointer"
           )}
           title={t('webtoon_nav_next_ep', language)}
         >
@@ -2243,7 +2357,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
           <ChevronRight size={16} />
         </button>
 
-        <div className="h-6 w-[1px] bg-stone-700 mx-0.5 hidden sm:block" />
+        <div className="h-6 w-[1px] bg-[rgba(255,255,255,0.2)] mx-0.5 hidden sm:block" />
 
         {/* Scroll to Top Button */}
         <button
@@ -2251,7 +2365,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
             triggerHaptic('tap');
             scrollToTop();
           }}
-          className="min-h-[44px] min-w-[44px] flex flex-col items-center justify-center border border-stone-700 bg-stone-800 hover:bg-stone-700 text-stone-300 hover:text-white rounded-none transition-all cursor-pointer active:scale-95"
+          className="min-h-[44px] min-w-[44px] flex flex-col items-center justify-center border border-[rgba(255,255,255,0.2)] bg-[#201d1d] hover:bg-black text-[#fdfcfc] rounded-sm transition-colors cursor-pointer"
           title={t('webtoon_nav_scroll_to_top', language)}
         >
           <ArrowUp size={16} />

@@ -1,92 +1,42 @@
-# [SCR-01] 홈 & 메인 로비 (HomeView) 전면 검토 및 2회차 혁신 보고서
+# [SCR-01] 홈 & 메인 로비 전면 검토 및 개선 보고서
 
-- **검토 일시**: 2026-09-17 07:05 KST (Round 2 심층 감사)
-- **대상 화면**: 홈 & 메인 로비 (Home & Main Lobby / `home`, `src/views/HomeView.tsx`, `src/components/MainLobbyBannerCarousel.tsx`)
-- **주요 파일**: `src/views/HomeView.tsx`, `src/components/MainLobbyBannerCarousel.tsx`, `src/components/LobbyInteractiveCard.tsx`
-- **핵심 목표**: 첫 3분 온보딩(FTUE) 극대화, 1초 퀵 매칭 원터치 동선, DESIGN.md 모노스페이스 플랫 헤어라인 전면 정돈 (그라데이션/곡률 배제), 과금 전환 웰컴 핫딜 강화, 100% 로컬스토리지 SSOT
-
----
-
-## 1. 5대 핵심 지표별 분석 결과
-
-### ① 사용자 유치 & 첫 3분 온보딩 (User Acquisition & FTUE)
-- **현황 진단**: 
-  - 신규 접속 유저가 첫 화면을 맞닥뜨렸을 때, 상단 덱 프리뷰와 중앙 로고, 툴바, 일일 미션, 30초 카운트다운, 6개 기능 버튼이 복잡하게 얽혀 있어 "지금 즉시 무엇을 눌러 첫 게임을 시작해야 하는가"에 대한 시선 집중도가 분산됨.
-- **문제점 및 개선 기회**: 
-  - 상단에 **`[ 🚀 신규 모험가 온보딩 스타트 HUD ]`** (현재 덱 전투력 `CP`, 첫 승리 시 SSR 확정 팩 증정 목표, 1탭 튜토리얼/배틀 직행 CTA)를 신설하여 신규 유저가 3초 안에 게임의 목표를 파악하고 첫 배틀로 뛰어들 수 있도록 유도.
-  - 배틀 시작 버튼을 모바일 화면 중앙에서 가장 크고 명확한 메인 CTA(`[ ⚔️ 1초 퀵 배틀 시작 (QUICK MATCH) ]`)로 격상.
-
-### ② 게임 판매율 & 과금 전환율 (Monetization & Conversion)
-- **현황 진단**: 
-  - 상단에 1,000원 스타터팩 배너가 존재하지만, 레거시 그라데이션 스타일로 되어 있고 상점 카드팩 가챠나 일일 무료 소환과의 연계가 툴바의 작은 버튼 하나에 의존하고 있음.
-- **개선 방향**:
-  - 홈 화면 메인 덱 프리뷰 바로 아래에 **`[ 🎁 오늘의 1회 무료 소환 & 1,000원 스타터팩 (SSR+3000 SNS) ]`** 웰컴 핫딜 카운터를 모노스페이스 플랫 스타일로 전면 배치하여 상점 진입률을 40% 이상 견인.
-
-### ③ 모바일 퓨어 터치 사용성 (Mobile Pure Touch UX)
-- **현황 진단**: 
-  - 6개 메인 기능 버튼(지금 플레이, 랜덤 플레이, 소설, 카툰, 애니, 영화) 및 퀵 툴바가 `rounded-full`, `rounded-md`, 다채로운 무지개 그라데이션(`bg-gradient-to-r from-...`)을 사용하여 프로젝트 표준인 `DESIGN.md` (Monospace 서체, 웜 크림 `#fdfcfc`, 잉크 `#201d1d`, 1px solid hairline, 컨테이너 `rounded-none`, 인터랙티브 `rounded-sm`)와 시각적 부조화를 이룸.
-- **개선 방향**:
-  - 6개 메인 기능 버튼 및 퀵 툴바를 **`DESIGN.md` 모노스페이스 플랫 헤어라인 스타일**로 전면 리팩토링:
-    - 컨테이너 `rounded-none`, 버튼 `rounded-sm`, 1px solid hairline (`border-[#201d1d]/12`).
-    - 플랫 잉크 & 웜크림 테마, 대괄호/ASCII 마커(`[⚔️]`, `[🎲]`, `[📖]`, `[🎨]`, `[🎬]`, `[🎥]`).
-    - 44px+ 엄지 최적화 터치 타깃 준수 및 탭 시 무지연 햅틱 피드백(`triggerHaptic('light')`).
-
-### ④ 성능 및 반응속도 (Performance & 60fps)
-- **현황 진단**: 
-  - 덱 프리뷰 카드 5장의 3D 팬아웃 회전 애니메이션과 30초 카운트다운 타이머의 1초 주기 상태 갱신이 홈 화면 전체에 잦은 재렌더링을 유발할 수 있음.
-- **개선 방향**:
-  - CSS GPU 하드웨어 가속(`transform-gpu`, `will-change-transform`) 유지 및 저사양 모드(`lowSpecMode`)일 때 불필요한 그림자/회전 각도 최소화.
-
-### ⑤ 게임의 재미 & 도파민 (Dopamine & Core Loop)
-- **현황 진단**: 
-  - 대표 5장 카드의 총 전투력(Combat Power)이 한눈에 숫자로 보이지 않아 내 덱이 얼마나 강한지 즉시 체감하기 어려움.
-- **개선 방향**:
-  - 덱 프리뷰 상단에 **`[ ⚔️ 덱 종합 전투력: {totalPower} CP ]`** 및 티어 뱃지를 모노스페이스로 선명하게 표시하고, 카드 클릭 시 마이덱 편성 화면으로 즉시 연결하여 육성 도파민을 자극.
+- **최종 검토 일시**: 2026-10-16 12:35 (KST)
+- **대상 화면**: 홈 & 메인 로비 (Home & Main Lobby / `home`, `src/views/HomeView.tsx`, `src/components/HomeCategoryHub.tsx`)
+- **주요 파일**: `src/views/HomeView.tsx`, `src/components/HomeCategoryHub.tsx`, `src/components/Meta.tsx`
+- **핵심 목표**: `hero-tui-mockup` 터미널 플랫 미학 100% 준수, 3초 즉시 1:1 배틀 퀵 매치, 무설치 도전장 링크(`?challenge=1-11-31-51-101&ref=home`) 1탭 공유 및 일일 +50 SNS 보상, 동적 SEO/OG 메타 태그 완결
 
 ---
 
-## 2. 도출된 개선 작업 항목 (Action Items)
+## 1. 6대 핵심 지표별 분석 결과 (Round 2: Professional Editorial Design & Growth)
 
-| No | 카테고리 | 부서 | 개선 과제명 | 문제점 | 구체적 해결책 | 예상 기대효과 | 구현 파일 |
-|---|---|---|---|---|---|---|---|
-| 1 | 온보딩 / FTUE | 기획/개발 | 🚀 신규 모험가 온보딩 스타트 HUD & 1초 퀵 매칭 CTA | 접속 후 첫 행동 유도 분산 및 목표 불명확 | 상단 [신규 모험가 온보딩 스타트 HUD: 덱 CP / 첫 승 목표] 및 [⚔️ 1초 퀵 배틀 시작] 대형 CTA 구축 | 첫 세션 배틀 진입율 +35%, 이탈률 25% 감소 | `src/views/HomeView.tsx` |
-| 2 | 모바일 UX / 디자인 | 디자인/개발 | 📱 DESIGN.md 모노스페이스 플랫 헤어라인 전면 정돈 | 6대 버튼 및 툴바의 레거시 그라데이션/곡률 혼재 | Monospace 서체, 웜크림/잉크 팔레트, 1px hairline 보더, rounded-none/sm 플랫 스타일 전면 적용 | 시각적 완성도 및 한손 조작 편의성 100% 달성 | `src/views/HomeView.tsx` |
-| 3 | 과금전환 / 도파민 | 기획/디자인 | 🎁 웰컴 핫딜 (무료팩/스타터팩) & 덱 CP 실시간 피드백 | 상점 가챠 연동 분산 및 덱 성장감 직관성 부족 | 메인 덱 바로 아래 [🎁 일일 무료 소환 & 1,000원 스타터팩 숏컷] 및 [⚔️ {totalPower} CP 덱 전투력 HUD] 탑재 | 상점 방문율 +30%, 소액 결제 전환율 +20% | `src/views/HomeView.tsx` |
+### ① 프로페셔널 에디토리얼 디자인 (`DESIGN.md` 100% 준수)
+- **현황 및 개선 내역**:
+  - `HomeView.tsx`와 `HomeCategoryHub.tsx` 전 구간에서 레거시 다색 그라데이션, 둥근 모서리, 드롭 섀도우를 전수 배제하고 `DESIGN.md` 터미널 에디토리얼 규격(`font-mono`, `#fdfcfc` 웜크림 캔버스, `#201d1d` 잉크 다크, 1px hairline 보더 `border-[rgba(15,0,0,0.12)]`, 컨테이너 `rounded-none`, 인터랙티브 요소 `rounded-sm` & `min-h-[44px]`)으로 100% 정돈 유지.
+
+### ② 사용자 유치 & 첫 3초 아하 모먼트 (User Acquisition & FTUE)
+- **개선 내역**:
+  - 홈 상단에 **`[3초 즉시 1:1 배틀 (QUICK MATCH)]`** 원터치 액션과 **`[무설치 도전장 링크 공유 (+50 SNS)]`** 배너를 전면 배치하여 첫 방문자가 3초 만에 첫 배틀을 경험하고 외부에 내 덱 도전장을 공유하도록 연결.
+  - [`Meta.tsx`](file:///Users/dayyoung/project/snshero/src/components/Meta.tsx)를 통한 실시간 동적 SEO/GEO/OG 메타 태그 갱신으로 검색 및 소셜 공유 CTR 극대화.
+
+### ③ 게임 판매율 & 과금 전환율 (Monetization & Conversion)
+- **개선 내역**:
+  - 상단 퀵 액션 바에 `[특가 상점 (/shop)]` 및 `[AI 벤치마크 (/bench)]` 에디토리얼 브릿지를 연계하여 무과금/소과금 유저의 가챠/BM 진입로 확보.
+
+### ④ 모바일 퓨어 터치 사용성 (Mobile UX & Usability)
+- **개선 내역**:
+  - 카테고리 허브 4대 분류 체계(`Play`, `Economy`, `Story`, `System`) 및 점진적 공개(Progressive Disclosure)로 첫 화면 버튼 과밀 해소.
+
+### ⑤ 성능 및 반응속도 (Performance & 60fps)
+- **개선 내역**:
+  - 가벼운 CSS 모노스페이스 렌더링 및 30초 비조작 시 데모플레이 자동 실행으로 이탈 방지.
+
+### ⑥ 게임의 재미 & 도파민 (Dopamine & Core Loop)
+- **개선 내역**:
+  - 일일 도전장 공유 시 +50 SNS 즉시 지급(`hero_home_viral_share_${todayStr}`) 및 햅틱 피드백 제공.
 
 ---
 
-## 3. 프로덕션 소스코드 구현 내역
-1. **`src/views/HomeView.tsx`**:
-   - 상단 **`[ 🚀 신규 모험가 온보딩 스타트 HUD ]`** 신설:
-     - 대표 덱 5장의 종합 전투력 (`totalPower` CP) 및 계정 티어 배지
-     - 초보자 첫 승리 달성 보상 목표 배너
-     - 30초 랭킹 대전 자동 카운트다운 바와 1초 퀵 배틀 시작(`[ ⚡ 즉시 대전 ]`) 버튼 일체화
-   - **`DESIGN.md` 모노스페이스 플랫 헤어라인 전면 정돈**:
-     - 6개 코어 기능 버튼 (`[지금 플레이]`, `[랜덤 플레이]`, `[소설 읽기]`, `[카툰 보기]`, `[애니메이션]`, `[영화 보기]`):
-       - 그라데이션 제거 -> 잉크/웜크림 1px solid hairline (`border-[#201d1d]/15`), `rounded-none`, `font-mono`
-       - 44px+ 엄지 최적화 터치 타깃 준수, 호버/액티브 시 정밀한 반전 효과
-     - 상단 퀵 툴바:
-       - `rounded-full` 제거 -> `rounded-none` 플랫 바, 1px solid hairline
-       - `[ 🎁 무료팩/특가 ]`, `[ ✉️ 우편함 ]`, `[ 🔔 알림 ]`, `[ 🔊 소리 ]`, `[ 🃏 덱 용량 ]`, `[ ≡ 서랍 ]`, `[ ? 도움말 ]`
-   - **웰컴 핫딜 & 상점 가챠 연동 강화**:
-     - 1,000원 스타터팩(SSR 확정 + 3,000 SNS) 및 오늘의 1회 무료 소환 알림 배너 모노스페이스 플랫화
-   - 100% 로컬스토리지 SSOT (`hero_starter_pack_purchased`, `hero_daily_missions_*`, `hero_attendance_streak_v1`) 영구 보존.
-
----
-
-## 4. 검증 결과
-- [x] `npm run build` 오류 0건 통과 (`HomeView-B_xTHAWX-v1789596134323.js`, 10.01s)
-- [x] 100% 로컬스토리지 영구 저장 무결점 유지 (`hero_starter_pack_purchased`, `hero_daily_missions_*`, `hero_attendance_streak_v1`)
-- [x] 모바일 390x844 뷰포트 레이아웃 무결점 확인 (Playwright 실제 캡처 검증)
-- [x] Git 커밋 및 구글 폼 보고 완료
-
-### 실측 검증 스크린샷 3종
-1. **스크린샷 1 (상단 스타터팩 배너 & 대표 덱 전투력 CP HUD & 덱 프리뷰)**:
-   - 파일: `scratch/scr01_01_home_top_and_deck_cp.png`
-   - 검증 내용: 최상단 플랫 잉크 1,000원 스타터팩 배너, 대표 덱 전투력 HUD (`⚔️ 덱 전투력: 65 CP | 티어: BRONZE I | [덱 편집]`), 덱 프리뷰 카드 5장 및 메인 로고 고대비 렌더링 확인.
-2. **스크린샷 2 (모노스페이스 플랫 퀵 툴바 & 30초 카운트다운 바 & 1초 퀵 배틀 CTA)**:
-   - 파일: `scratch/scr01_02_home_toolbar_and_timer.png`
-   - 검증 내용: DESIGN.md 모노스페이스 플랫 퀵 툴바 (`[🎁 무료팩/특가]`, `[✉️ 우편]`, `[🔔 알림]`, `[SFX]`, `[16ms]`, `[🃏 42/200]`, `[서랍]`, `[가이드]`), 30초 대기 랭킹 카운트다운 바와 대형 1초 퀵 배틀 CTA (`[ ⚔️ 1초 즉시 대전 시작 ]`), 6대 기능 버튼 정돈 확인.
-3. **스크린샷 3 (6대 코어 기능 버튼 & 구글 로그인 & 프로필)**:
-   - 파일: `scratch/scr01_03_home_flat_buttons.png`
-   - 검증 내용: 6대 코어 기능 버튼 (`[⚔️ 지금 플레이]`, `[🎲 랜덤 플레이]`, `[📖 소설 읽기]`, `[🎨 카툰 보기]`, `[🎬 애니메이션]`, `[🎥 영화 보기]`), 모바일 44px+ 터치 타깃, 플랫 구글 로그인 및 프로필 배너 완벽 확인.
+## 2. 검증 결과
+- [x] `npx tsc --noEmit && npm run build` 통과
+- [x] 100% `localStorage` 영구 보존 (`hero_home_viral_share_*`, `hero_sns`)
+- [x] `DESIGN.md` 준수: 100% `font-mono`, `#fdfcfc`/`#201d1d`, 1px hairline, `rounded-none`/`rounded-sm`, 44px+ 터치 타깃

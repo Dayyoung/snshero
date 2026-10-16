@@ -2,6 +2,39 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-16 12:40 KST] [/goal 전수 감사] 전체 12대 게임화면 DESIGN.md 프로페셔널 에디토리얼 디자인 & UA·바이럴(?challenge=)·BM 전수 혁신 완료
+- **요청 사항**:
+  - `/goal` 모드로 전체 게임화면에 대해 전면 점검하고, `DESIGN.md` 기존 디자인 가이드 준수 및 프로페셔널한 에디토리얼 디자인, 유입(UA)·바이럴 공유(`?challenge=`)·과금(BM) 브릿지를 12대 전체 화면에 모두 적용할 것.
+- **점검 및 개선 내역**:
+  1. **SCR-01 (홈 & 메인 로비, [`HomeView.tsx`](file:///Users/dayyoung/project/snshero/src/views/HomeView.tsx), [`HomeCategoryHub.tsx`](file:///Users/dayyoung/project/snshero/src/components/HomeCategoryHub.tsx))**:
+     - `hero-tui-mockup` 다크 센터피스, 3초 즉시 1:1 배틀 퀵 매치, 무설치 도전장 링크(`?challenge=1-11-31-51-101&ref=home`) 1탭 공유 및 일일 +50 SNS 보상 연동.
+  2. **SCR-02 (배틀 결과 & 요약 패널, [`BattleResultPanel.tsx`](file:///Users/dayyoung/project/snshero/src/components/BattleResultPanel.tsx))**:
+     - 승리/패배 결과 패널 플랫 모노스페이스 정돈, 대결 도전장 링크 1탭 공유(+50 SNS) 및 즉시 복수전 브릿지 완결.
+  3. **SCR-03 (마이덱 & 카드 돌봄, [`MyDeckView.tsx`](file:///Users/dayyoung/project/snshero/src/views/MyDeckView.tsx))**:
+     - 내 5장 덱 파라미터 기반 도전장 URL 공유(`?challenge=${deckParam}&ref=mydeck` +50 SNS) 및 속성/전투력 보강 상점 표적 소환 숏컷 연계.
+  4. **SCR-04 (상점 & 카드팩 가챠, [`ShopView.tsx`](file:///Users/dayyoung/project/snshero/src/views/ShopView.tsx))**:
+     - 30회 SSR 확정 천장(Pity) 실시간 카운트다운 게이지, 구매 이력/충전 모달 `DESIGN.md` 플랫 정돈, 상점 일일 공유 보급(+50 SNS) 완결.
+  5. **SCR-05 (카드 P2P 마켓, [`CardMarketplaceView.tsx`](file:///Users/dayyoung/project/snshero/src/views/CardMarketplaceView.tsx))**:
+     - 터미널 호가창 스타일, 원터치 빠른 정렬 바텀시트, 첫 거래 웰컴 보너스(+50 SNS) 및 1,900원 황금 특가 패스 연계.
+  6. **SCR-06 (가상 주식 거래소, [`StockMarketView.tsx`](file:///Users/dayyoung/project/snshero/src/views/StockMarketView.tsx))**:
+     - 110종 영웅 지분 금융 터미널 시세 차트, 1탭 배당금 복리 재투자 및 포트폴리오 수익률 공유 루프.
+  7. **SCR-07 (승부 예측 시장, [`PredictionMarketView.tsx`](file:///Users/dayyoung/project/snshero/src/views/PredictionMarketView.tsx))**:
+     - `bg-slate-50/50` 및 레거시 둥근 모서리 전수 제거, `#fdfcfc`/`#201d1d` `font-mono` 전환, 승부 예측 티켓 & 도전장 공유(+50 SNS) 1탭 배너 탑재.
+  8. **SCR-08 (시련의 탑 & 레이드, [`TowerOfTrialsModal.tsx`](file:///Users/dayyoung/project/snshero/src/components/TowerOfTrialsModal.tsx))**:
+     - 시련의 탑 모달 플랫 모노스페이스 정돈, 50F 등반 현황 도전장 링크(`?tower_floor=${clearedFloor}&challenge=...` +50 SNS) 공유 배너 신설.
+  9. **SCR-09 (미션 캔버스 아레나, [`PlayGameView.tsx`](file:///Users/dayyoung/project/snshero/src/views/PlayGameView.tsx))**:
+     - 도감 수집 HUD(`{owned}/110`), 추천 타깃 1탭 대결, 랜덤 1:1 대결, 50% 특가 AP 물약 및 도전장 공유(+50 SNS) 연동.
+  10. **SCR-10 (소셜·길드, [`GuildDetailView.tsx`](file:///Users/dayyoung/project/snshero/src/views/GuildDetailView.tsx))**:
+      - 상단 `[VIRAL INVITE]` 무설치 도전장 링크 공유 배너, 용병 대여 전투력 +5% 시너지, 모달/서브탭 `DESIGN.md` 전면 개편.
+  11. **SCR-11 (웹소설·웹툰 미디어 허브, [`NovelView.tsx`](file:///Users/dayyoung/project/snshero/src/views/NovelView.tsx), [`MovieView.tsx`](file:///Users/dayyoung/project/snshero/src/views/MovieView.tsx))**:
+      - 에디토리얼 이북 리더기 레이아웃, 에피소드 & 도전장 링크 공유(+50 SNS), 등장 영웅 상점 표적 소환 브릿지 연계.
+  12. **SCR-12 (설정 & 보상 센터, [`SettingView.tsx`](file:///Users/dayyoung/project/snshero/src/views/SettingView.tsx))**:
+      - `font-sans` 전수 제거 및 `font-mono` `#fdfcfc`/`#201d1d` 전환, 친구 초대 & 덱 도전장 공유(+50 SNS) 배너 신설, PWA/알림 리워드(+300 SNS) 허브 정돈.
+- **검증 결과**:
+  - `docs/screen_audits/SCR-01_HOME.md` ~ `SCR-12_SETTING.md` 12개 화면 분석 및 구현 보고서 전수 갱신 완료.
+  - `npx tsc --noEmit && npm run build`: 0 Errors 완벽 통과.
+  - 로컬 Git 커밋 및 연동 구글 폼 완료 보고서(`submit_report.py`) 전송 완료.
+
 ## [2026-10-16 09:43 KST] [버그수정/UI] 업적 달성 팝업 [object Object] 텍스트 수정 및 데모 순환 HUD 전체 화면 표시
 - **요청 사항**:
   1. 반복되는 모든 데모화면을 표시하고 현재 진행중인 화면은 진하게 초록색으로 표시

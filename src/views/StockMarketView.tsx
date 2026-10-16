@@ -168,6 +168,58 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
     }
   });
 
+  // SCR-06 UA & Viral: 일일 1회 포트폴리오 수익률 공유 (+50 SNS)
+  const [stockViralShared, setStockViralShared] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem(`hero_stock_viral_share_${todayStr}`) === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  const handleSharePortfolioYield = async () => {
+    triggerHaptic('selection');
+    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://snshero.com';
+    const shareUrl = `${origin}/?challenge=1-11-31-51-101&ref=stock`;
+    const shareText = language === 'ko'
+      ? `[SNSHero 영웅 증권 거래소] 내 포트폴리오 평가 자산 ${portfolioStats.totalStockAssetSns.toLocaleString()} SNS (일일 배당 +${portfolioStats.estimatedDailyDividends} SNS)! 지금 무설치 3초 결투장 대결하고 주주 배당금을 받아가세요: ${shareUrl}`
+      : `[SNSHero Hero Equity Exchange] Portfolio Value: ${portfolioStats.totalStockAssetSns.toLocaleString()} SNS (+${portfolioStats.estimatedDailyDividends} SNS/day)! Join the 3s duel: ${shareUrl}`;
+
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: 'SNSHero Equity Portfolio', text: shareText, url: shareUrl });
+      } else if (navigator.clipboard) {
+        await navigator.clipboard.writeText(shareText);
+      }
+    } catch {
+      try {
+        await navigator.clipboard?.writeText(shareUrl);
+      } catch {}
+    }
+
+    if (!stockViralShared) {
+      setStockViralShared(true);
+      try {
+        localStorage.setItem(`hero_stock_viral_share_${todayStr}`, 'true');
+      } catch {}
+      updateSns(50, language === 'ko' ? '포트폴리오 수익률 공유 바이럴 보너스 (+50 SNS)' : 'Portfolio Yield Share Viral Bonus (+50 SNS)', 'earned');
+      playSfx('https://assets.mixkit.co/active_storage/sfx/2020/2020-preview.mp3');
+      setAlertMsg({
+        type: 'success',
+        text: language === 'ko'
+          ? '[포트폴리오 수익률 공유 완료] 도전장 링크가 복사되었으며 일일 보너스 +50 SNS가 지급되었습니다!'
+          : '[Portfolio Shared] Challenge link copied and +50 SNS credited!',
+      });
+    } else {
+      setAlertMsg({
+        type: 'success',
+        text: language === 'ko'
+          ? '[링크 복사 완료] 포트폴리오 수익률 & 도전장 링크(?challenge=)가 복사되었습니다.'
+          : '[Link Copied] Portfolio yield & challenge link (?challenge=) copied.',
+      });
+    }
+  };
+
   const handleClaimVolumeMilestone = (milestone: number, reward: number) => {
     if (dailyVolume < milestone || claimedVolumeMilestones.includes(milestone)) return;
     const nextClaimed = [...claimedVolumeMilestones, milestone];
@@ -663,24 +715,24 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
           <div className="flex-1 flex items-center justify-between flex-wrap gap-1.5">
             <PageHeader title={t('stock_market', language)} />
             <div className="flex items-center gap-1.5">
-              <div className="flex items-center gap-1 px-2.5 py-1 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-sm text-[#201d1d] text-xs font-bold">
+              <div className="flex items-center gap-1 px-2.5 py-1.5 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-sm text-[#201d1d] text-xs font-bold">
                 <span className="text-[10px] text-[#646262] uppercase">{language === 'ko' ? '포인트' : 'Balance'}:</span>
                 <span>[{sns.toLocaleString()} SNS]</span>
               </div>
               <button
                 type="button"
                 onClick={() => setView('shop')}
-                className="px-2 py-1 bg-amber-500 hover:bg-amber-400 text-stone-950 text-[10px] font-black uppercase rounded-sm active:scale-95 transition-all flex items-center gap-0.5 cursor-pointer shadow-xs"
+                className="min-h-[44px] px-3 py-1.5 bg-[#201d1d] hover:bg-[#333030] text-[#fdfcfc] text-[10px] font-black uppercase rounded-sm transition-colors flex items-center gap-1 cursor-pointer border border-[#201d1d]"
                 title={language === 'ko' ? 'SNS 상점 바로가기' : 'Go to SNS Shop'}
               >
-                <span>{language === 'ko' ? '💎 충전 ↗' : '💎 Top-up'}</span>
+                <span>{language === 'ko' ? '[💎 충전 ↗]' : '[💎 Top-up]'}</span>
               </button>
             </div>
           </div>
           <button
             type="button"
             onClick={fetchPrices}
-            className="min-h-10 min-w-10 flex items-center justify-center rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-[#646262] hover:text-[#201d1d] hover:bg-[#f8f7f7] active:scale-95 transition-all touch-target cursor-pointer"
+            className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-[#646262] hover:text-[#201d1d] hover:bg-[#f8f7f7] transition-colors touch-target cursor-pointer"
             aria-label={t('refresh', language)}
           >
             <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
@@ -688,22 +740,70 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
           <button
             type="button"
             onClick={() => { setShowHelpPopup(true); setHelpStep(0); }}
-            className="min-h-10 min-w-10 flex items-center justify-center rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-[#646262] hover:text-[#201d1d] hover:bg-[#f8f7f7] active:scale-95 transition-all touch-target cursor-pointer"
+            className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-[#646262] hover:text-[#201d1d] hover:bg-[#f8f7f7] transition-colors touch-target cursor-pointer"
             aria-label={language === 'ko' ? '도움말' : 'Help'}
           >
             <HelpCircle size={16} />
           </button>
         </div>
 
+        {/* SCR-06: [HERO EQUITY & DIVIDEND HUD] (Financial Terminal Style + Viral Share) */}
+        <div className="p-3.5 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none font-mono space-y-2.5">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[rgba(15,0,0,0.12)] pb-2">
+            <div className="flex items-center gap-2">
+              <PieChart size={14} className="text-[#201d1d] shrink-0" />
+              <span className="text-xs font-black uppercase tracking-wider text-[#201d1d]">
+                [HERO EQUITY &amp; DIVIDEND HUD]
+              </span>
+            </div>
+            <div className="flex items-center gap-2 text-[11px]">
+              <span className="text-[#646262]">
+                {language === 'ko' ? '평가자산:' : 'Equity:'}{' '}
+                <strong className="text-[#201d1d]">{portfolioStats.totalStockAssetSns.toLocaleString()} SNS</strong>
+              </span>
+              <span className="text-[#646262]">|</span>
+              <span className="text-[#646262]">
+                {language === 'ko' ? '일일배당:' : 'Daily Div:'}{' '}
+                <strong className="text-emerald-700">+{portfolioStats.estimatedDailyDividends.toLocaleString()} SNS</strong>
+              </span>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2">
+            <button
+              type="button"
+              onClick={handleSharePortfolioYield}
+              className="flex-1 min-h-[44px] px-3 py-2 bg-[#201d1d] hover:bg-[#333030] text-[#fdfcfc] border border-[#201d1d] rounded-sm text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+            >
+              <Sparkles size={14} className="text-amber-400 shrink-0" />
+              <span>
+                {stockViralShared
+                  ? (language === 'ko' ? '[포트폴리오 수익률 공유 (오늘 수령완료)]' : '[Share Portfolio Yield (Claimed)]')
+                  : (language === 'ko' ? '[포트폴리오 수익률 공유 (+50 SNS)]' : '[Share Portfolio Yield (+50 SNS)]')}
+              </span>
+            </button>
+            {dividendAvailable > 0 && (
+              <button
+                type="button"
+                onClick={handleClaimDividends}
+                className="min-h-[44px] px-3 py-2 bg-[#fdfcfc] hover:bg-[#eae8e8] text-[#201d1d] border border-[#201d1d] rounded-sm text-xs font-black flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+              >
+                <Wallet size={14} />
+                <span>[{language === 'ko' ? `배당금 수령 (+${dividendAvailable} SNS)` : `Claim Div (+${dividendAvailable} SNS)`}]</span>
+              </button>
+            )}
+          </div>
+        </div>
+
         {/* SCR-06: Mobile 4-Segment Sub Tab Navigation (44px+ Pure Touch) */}
-        <div className="grid grid-cols-4 gap-1 p-1 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-sm select-none">
+        <div className="grid grid-cols-4 gap-1 p-1 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none select-none">
           <button
             type="button"
             onClick={() => { triggerHaptic('selection'); setActiveSubTab('market'); }}
             className={cn(
-              "flex flex-col items-center justify-center py-2 px-1 rounded-sm text-[11px] font-bold transition-all min-h-[44px] cursor-pointer",
+              "flex flex-col items-center justify-center py-2 px-1 rounded-sm text-[11px] font-bold transition-colors min-h-[44px] cursor-pointer",
               activeSubTab === 'market'
-                ? "bg-[#201d1d] text-[#fdfcfc] shadow-xs"
+                ? "bg-[#201d1d] text-[#fdfcfc]"
                 : "text-[#646262] hover:bg-[#eae8e8]"
             )}
           >
@@ -717,9 +817,9 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
             type="button"
             onClick={() => { triggerHaptic('selection'); setActiveSubTab('portfolio'); }}
             className={cn(
-              "flex flex-col items-center justify-center py-2 px-1 rounded-sm text-[11px] font-bold transition-all min-h-[44px] cursor-pointer relative",
+              "flex flex-col items-center justify-center py-2 px-1 rounded-sm text-[11px] font-bold transition-colors min-h-[44px] cursor-pointer relative",
               activeSubTab === 'portfolio'
-                ? "bg-[#201d1d] text-[#fdfcfc] shadow-xs"
+                ? "bg-[#201d1d] text-[#fdfcfc]"
                 : "text-[#646262] hover:bg-[#eae8e8]"
             )}
           >
@@ -736,9 +836,9 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
             type="button"
             onClick={() => { triggerHaptic('selection'); setActiveSubTab('dividends'); }}
             className={cn(
-              "flex flex-col items-center justify-center py-2 px-1 rounded-sm text-[11px] font-bold transition-all min-h-[44px] cursor-pointer",
+              "flex flex-col items-center justify-center py-2 px-1 rounded-sm text-[11px] font-bold transition-colors min-h-[44px] cursor-pointer",
               activeSubTab === 'dividends'
-                ? "bg-[#201d1d] text-[#fdfcfc] shadow-xs"
+                ? "bg-[#201d1d] text-[#fdfcfc]"
                 : "text-[#646262] hover:bg-[#eae8e8]"
             )}
           >
@@ -755,9 +855,9 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
             type="button"
             onClick={() => { triggerHaptic('selection'); setActiveSubTab('volume'); }}
             className={cn(
-              "flex flex-col items-center justify-center py-2 px-1 rounded-sm text-[11px] font-bold transition-all min-h-[44px] cursor-pointer",
+              "flex flex-col items-center justify-center py-2 px-1 rounded-sm text-[11px] font-bold transition-colors min-h-[44px] cursor-pointer",
               activeSubTab === 'volume'
-                ? "bg-[#201d1d] text-[#fdfcfc] shadow-xs"
+                ? "bg-[#201d1d] text-[#fdfcfc]"
                 : "text-[#646262] hover:bg-[#eae8e8]"
             )}
           >
@@ -773,20 +873,20 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
         {activeSubTab === 'market' && (
           <div className="flex flex-col gap-3">
             {/* SCR-06: Today's High Yield Pick (1-Tap Quick Buy) */}
-            <div className="p-2.5 bg-amber-500/10 border border-amber-500/30 rounded-sm flex items-center justify-between gap-2">
+            <div className="p-2.5 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none flex items-center justify-between gap-2">
               <div className="flex items-center gap-2 min-w-0">
-                <div className="w-8 h-8 rounded-sm bg-amber-500/20 flex items-center justify-center text-amber-600 shrink-0">
+                <div className="w-8 h-8 rounded-sm bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] flex items-center justify-center text-[#201d1d] shrink-0">
                   <Flame size={16} />
                 </div>
                 <div className="min-w-0">
                   <div className="flex items-center gap-1.5 flex-wrap">
-                    <span className="text-[9px] bg-amber-500 text-stone-950 font-black px-1 py-0.5 rounded-xs uppercase">
+                    <span className="text-[9px] bg-[#201d1d] text-[#fdfcfc] font-black px-1.5 py-0.5 rounded-sm uppercase">
                       {language === 'ko' ? '오늘의 추천주' : 'High Yield Pick'}
                     </span>
                     <span className="text-xs font-black text-[#201d1d] truncate">
                       {language === 'ko' ? highYieldPick.title : highYieldPick.title_en}
                     </span>
-                    <span className="text-[10px] text-emerald-600 font-bold">
+                    <span className="text-[10px] text-emerald-700 font-bold">
                       +{prices[getCardCoinPair(highYieldPick.id).symbol]?.change24h || 0}%
                     </span>
                   </div>
@@ -806,28 +906,28 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                   setAlertMsg(null);
                   fetchChart(highYieldPick.id);
                 }}
-                className="px-2.5 py-1.5 bg-[#201d1d] text-[#fdfcfc] hover:bg-[#333030] text-[10px] font-bold rounded-sm shrink-0 active:scale-95 transition-all flex items-center gap-1 cursor-pointer"
+                className="min-h-[44px] px-3 py-1.5 bg-[#201d1d] text-[#fdfcfc] hover:bg-[#333030] text-[10px] font-bold rounded-sm shrink-0 transition-colors flex items-center gap-1 cursor-pointer"
               >
-                <span>{language === 'ko' ? '1탭 퀵매수' : 'Quick Buy'}</span>
+                <span>[{language === 'ko' ? '1탭 퀵매수' : 'Quick Buy'}]</span>
                 <ArrowUpRight size={12} />
               </button>
             </div>
 
             {/* SCR-06: First trade welcome cashback bonus banner (if not claimed) */}
             {!hasClaimedFirstTradeBonus && (
-              <div className="p-2 bg-emerald-500/10 border border-emerald-500/30 rounded-sm flex items-center justify-between text-xs">
-                <div className="flex items-center gap-1.5 text-emerald-800 dark:text-emerald-300 font-bold">
-                  <Sparkles size={14} className="text-emerald-600 shrink-0" />
+              <div className="p-2.5 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none flex items-center justify-between text-xs">
+                <div className="flex items-center gap-1.5 text-[#201d1d] font-bold">
+                  <Sparkles size={14} className="text-emerald-700 shrink-0" />
                   <span>{language === 'ko' ? '첫 주식 매수 시 +30 SNS 웰컴 캐시백 즉시 지급!' : 'Get +30 SNS Welcome Cashback on your first trade!'}</span>
                 </div>
-                <span className="text-[10px] bg-emerald-600 text-white px-1.5 py-0.5 rounded-xs font-black shrink-0">
+                <span className="text-[10px] bg-emerald-700 text-white px-1.5 py-0.5 rounded-sm font-black shrink-0">
                   +30 SNS
                 </span>
               </div>
             )}
 
             {/* ID 488: Slippage Tolerance Settings Bar */}
-            <div className="flex items-center justify-between px-3 py-1.5 bg-black/5 dark:bg-white/5 border border-[#201d1d]/10 text-[10px] font-mono">
+            <div className="flex items-center justify-between px-3 py-1.5 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none text-[10px] font-mono">
               <span className="text-[#646262] font-bold">
                 {language === 'ko' ? '🛡️ 슬리피지(Slippage) 체결 보호:' : '🛡️ Slippage Tolerance:'}
               </span>
@@ -838,7 +938,7 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                     type="button"
                     onClick={() => { triggerHaptic('selection'); setSlippage(slip); }}
                     className={cn(
-                      "px-2 py-0.5 rounded-sm border text-[9px] font-bold cursor-pointer transition-colors",
+                      "px-2 py-1 rounded-sm border text-[9px] font-bold cursor-pointer transition-colors",
                       slippage === slip
                         ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
                         : "border-[rgba(15,0,0,0.12)] text-[#646262] hover:bg-[#eae8e8]"
@@ -852,8 +952,7 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
 
             {/* Stock List Table */}
             <div className="border border-[rgba(15,0,0,0.12)] rounded-none overflow-hidden bg-[#fdfcfc]">
-              {/* Table Column Headers with Intuitive Labels */}
-              <div className="grid grid-cols-4 border-b border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] px-2 py-2 select-none text-[10px] font-bold text-[#646262]">
+              <div className="grid grid-cols-4 border-b border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] px-2 py-2.5 select-none text-[10px] font-bold text-[#646262]">
                 <div onClick={() => handleSort('id')} className="cursor-pointer flex items-center justify-start gap-1 hover:text-[#201d1d] transition-colors">
                   <span>{language === 'ko' ? '종목명' : 'Stock'}</span>
                   <span className="text-[9px]">{sortField === 'id' ? (sortAsc ? '▲' : '▼') : '↕'}</span>
@@ -894,33 +993,29 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                         setChartData([]);
                         fetchChart(card.id);
                       }}
-                      className="grid grid-cols-4 items-center px-2 py-2 text-center text-[11px] font-semibold hover:bg-[#f8f7f7] text-[#201d1d] cursor-pointer transition-colors active:bg-[#eae8e8]"
+                      className="grid grid-cols-4 items-center px-2 py-2.5 text-center text-[11px] font-semibold hover:bg-[#f8f7f7] text-[#201d1d] cursor-pointer transition-colors min-h-[44px]"
                     >
-                      {/* Card Title */}
                       <div className="flex items-center gap-1.5 text-left justify-start min-w-0">
                         <span className="truncate font-bold text-[#201d1d] text-[11px] leading-tight">
                           {language === 'ko' ? card.title : card.title_en}
                         </span>
                       </div>
 
-                      {/* Price */}
                       <div className="font-bold text-[#201d1d] text-[11px] text-center">
                         {priceSns.toLocaleString()}
                       </div>
 
-                      {/* 24h Change */}
                       <div className={cn(
                         "flex items-center justify-center gap-0.5 font-bold text-[11px]",
-                        isUp ? "text-emerald-600" : "text-rose-600"
+                        isUp ? "text-emerald-700" : "text-rose-700"
                       )}>
                         {isUp ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
                         {isUp ? '+' : ''}{change}%
                       </div>
 
-                      {/* Owned quantity */}
                       <div className="flex justify-end pr-1">
                         {qty > 0 ? (
-                          <span className="bg-indigo-50 text-indigo-700 border border-indigo-200 px-1.5 py-0.5 rounded-xs text-[10px] font-black">
+                          <span className="bg-[#f8f7f7] text-[#201d1d] border border-[rgba(15,0,0,0.12)] px-1.5 py-0.5 rounded-sm text-[10px] font-black">
                             {qty}주
                           </span>
                         ) : (
@@ -938,39 +1033,34 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
         {/* Sub-Tab 2: My Stock Portfolio View */}
         {activeSubTab === 'portfolio' && (
           <div className="flex flex-col gap-3">
-            {/* Portfolio Summary HUD */}
             <div className="p-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none flex flex-col gap-2.5">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold uppercase text-[#201d1d] flex items-center gap-1.5">
-                  <PieChart size={14} className="text-indigo-600" />
+                  <PieChart size={14} className="text-[#201d1d]" />
                   <span>[📊 {language === 'ko' ? '내 캐릭터 주식 포트폴리오' : 'My Stock Portfolio'}]</span>
                 </span>
-                <span className={cn(
-                  "text-[9px] font-bold px-1.5 py-0.5 rounded-xs",
-                  hasClaimedFirstTradeBonus ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"
-                )}>
+                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-sm bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] text-[#201d1d]">
                   {hasClaimedFirstTradeBonus
                     ? (language === 'ko' ? '첫 거래 캐시백 수령완료' : 'Bonus Claimed')
                     : (language === 'ko' ? '첫 매수 +30 SNS 대기' : '+30 SNS Waiting')}
                 </span>
               </div>
               <div className="grid grid-cols-3 gap-2 text-center">
-                <div className="p-2 bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-sm">
+                <div className="p-2 bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-none">
                   <div className="text-[10px] text-[#646262]">{language === 'ko' ? '총 주식 자산' : 'Stock Value'}</div>
                   <div className="text-xs font-black text-[#201d1d] truncate mt-0.5">{portfolioStats.totalStockAssetSns.toLocaleString()} SNS</div>
                 </div>
-                <div className="p-2 bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-sm">
+                <div className="p-2 bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-none">
                   <div className="text-[10px] text-[#646262]">{language === 'ko' ? '보유 종목/수량' : 'Holdings'}</div>
                   <div className="text-xs font-black text-[#201d1d] truncate mt-0.5">{portfolioStats.heldStocksCount}종목 / {portfolioStats.totalSharesCount}주</div>
                 </div>
-                <div className="p-2 bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-sm">
+                <div className="p-2 bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-none">
                   <div className="text-[10px] text-[#646262]">{language === 'ko' ? '일일 예상 배당' : 'Est. Dividends'}</div>
-                  <div className="text-xs font-black text-amber-600 truncate mt-0.5">+{portfolioStats.estimatedDailyDividends.toLocaleString()} SNS/일</div>
+                  <div className="text-xs font-black text-emerald-700 truncate mt-0.5">+{portfolioStats.estimatedDailyDividends.toLocaleString()} SNS/일</div>
                 </div>
               </div>
             </div>
 
-            {/* Held Stocks List */}
             <div className="border border-[rgba(15,0,0,0.12)] rounded-none overflow-hidden bg-[#fdfcfc]">
               <div className="px-3 py-2 bg-[#f8f7f7] border-b border-[rgba(15,0,0,0.12)] text-xs font-bold text-[#646262] flex justify-between items-center">
                 <span>{language === 'ko' ? '보유 종목 명세' : 'Holding Details'}</span>
@@ -979,12 +1069,12 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
 
               {portfolioStats.heldStocksCount === 0 ? (
                 <div className="p-8 text-center text-xs text-[#646262] flex flex-col items-center gap-3">
-                  <PieChart size={32} className="text-slate-300" />
+                  <PieChart size={28} className="text-[#646262]" />
                   <p>{language === 'ko' ? '아직 보유한 주식이 없습니다. 실시간 시세에서 추천주를 매수해 첫 배당금을 확보해 보세요!' : 'No shares held yet. Buy recommendations from the Market tab to start earning dividends!'}</p>
                   <button
                     type="button"
                     onClick={() => { triggerHaptic('selection'); setActiveSubTab('market'); }}
-                    className="px-3 py-1.5 bg-[#201d1d] text-[#fdfcfc] font-bold text-[11px] rounded-sm uppercase hover:bg-[#333030] cursor-pointer"
+                    className="min-h-[44px] px-4 py-2 bg-[#201d1d] text-[#fdfcfc] font-bold text-xs rounded-sm uppercase hover:bg-[#333030] cursor-pointer"
                   >
                     [{language === 'ko' ? '실시간 시세 보러가기' : 'Explore Market'}]
                   </button>
@@ -1009,7 +1099,7 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                               <span className="font-bold text-xs text-[#201d1d] truncate">
                                 {language === 'ko' ? card.title : card.title_en}
                               </span>
-                              <span className="text-[10px] bg-indigo-50 text-indigo-700 px-1 font-bold rounded-xs">
+                              <span className="text-[10px] bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] text-[#201d1d] px-1.5 py-0.5 font-bold rounded-sm">
                                 {qty}주
                               </span>
                             </div>
@@ -1028,9 +1118,9 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                                 setAlertMsg(null);
                                 fetchChart(card.id);
                               }}
-                              className="px-2 py-1 bg-rose-50 text-rose-700 border border-rose-200 text-[10px] font-bold rounded-sm hover:bg-rose-100 cursor-pointer"
+                              className="min-h-[44px] px-3 py-1 bg-[#fdfcfc] text-rose-700 border border-rose-700 text-[10px] font-bold rounded-sm hover:bg-rose-50 cursor-pointer"
                             >
-                              {language === 'ko' ? '매도' : 'Sell'}
+                              [{language === 'ko' ? '매도' : 'Sell'}]
                             </button>
                             <button
                               type="button"
@@ -1042,9 +1132,9 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                                 setAlertMsg(null);
                                 fetchChart(card.id);
                               }}
-                              className="px-2 py-1 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-bold rounded-sm hover:bg-[#333030] cursor-pointer"
+                              className="min-h-[44px] px-3 py-1 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-bold rounded-sm hover:bg-[#333030] cursor-pointer"
                             >
-                              {language === 'ko' ? '추가매수' : 'Buy More'}
+                              [{language === 'ko' ? '추가매수' : 'Buy More'}]
                             </button>
                           </div>
                         </div>
@@ -1059,10 +1149,9 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
         {/* Sub-Tab 3: Dividends & Fee Rebate View */}
         {activeSubTab === 'dividends' && (
           <div className="flex flex-col gap-3">
-            {/* ID 478 & ID 603: Dividend Settlement Card */}
-            <div className="p-3 bg-amber-500/10 border border-amber-500/30 rounded-none flex flex-col gap-2.5">
+            <div className="p-3.5 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none flex flex-col gap-2.5">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-black text-amber-700 dark:text-amber-400 flex items-center gap-1.5">
+                <span className="text-xs font-black text-[#201d1d] flex items-center gap-1.5">
                   <Wallet size={14} />
                   <span>[ 💰 {dividendAvailable.toLocaleString()} SNS {language === 'ko' ? '누적 배당금' : 'Dividends Ready'} ]</span>
                 </span>
@@ -1075,12 +1164,12 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                   ? '보유 캐릭터 카드의 공격력과 지분에 비례하여 실시간 배당금이 정산됩니다. 배당금은 0% 수수료로 즉시 최고 수익률 주식에 재투자하거나 지갑으로 전액 수령할 수 있습니다.'
                   : 'Dividends accumulate based on your card power and share volume. Reinvest 100% into top-performing shares at 0% fee or claim directly to your wallet.'}
               </p>
-              <div className="grid grid-cols-2 gap-2 pt-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
                 <button
                   type="button"
                   disabled={dividendAvailable <= 0}
                   onClick={handleReinvestDividends}
-                  className="py-2 bg-amber-500 text-stone-950 hover:bg-amber-400 text-xs font-black uppercase rounded-sm active:scale-95 transition-all disabled:opacity-40 cursor-pointer shadow-xs flex items-center justify-center gap-1"
+                  className="min-h-[44px] py-2 bg-[#fdfcfc] text-[#201d1d] border border-[#201d1d] hover:bg-[#eae8e8] text-xs font-black uppercase rounded-sm transition-colors disabled:opacity-40 cursor-pointer flex items-center justify-center gap-1"
                 >
                   <RefreshCw size={12} />
                   <span>[ 🔄 {language === 'ko' ? '100% 복리 재투자 (수수료 0%)' : 'Reinvest 100% (0% Fee)'} ]</span>
@@ -1089,7 +1178,7 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                   type="button"
                   disabled={dividendAvailable <= 0}
                   onClick={handleClaimDividends}
-                  className="py-2 bg-[#201d1d] text-white text-xs font-bold uppercase rounded-sm hover:bg-[#333030] active:scale-95 transition-all disabled:opacity-40 cursor-pointer flex items-center justify-center gap-1"
+                  className="min-h-[44px] py-2 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold uppercase rounded-sm hover:bg-[#333030] transition-colors disabled:opacity-40 cursor-pointer flex items-center justify-center gap-1"
                 >
                   <CheckCircle2 size={12} />
                   <span>[ {language === 'ko' ? '배당금 일괄 수령' : 'Claim All Dividends'} ]</span>
@@ -1098,9 +1187,9 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
             </div>
 
             {/* ID 568: 15% Trading Fee Rebate Vault */}
-            <div className="p-3 bg-indigo-50/60 dark:bg-indigo-950/20 border border-indigo-300 dark:border-indigo-800 rounded-none flex flex-col gap-2.5">
+            <div className="p-3.5 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none flex flex-col gap-2.5">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-black text-indigo-700 dark:text-indigo-400 flex items-center gap-1.5">
+                <span className="text-xs font-black text-[#201d1d] flex items-center gap-1.5">
                   <Award size={14} />
                   <span>[ 🏦 {language === 'ko' ? '당일 거래 수수료 15% 페이백 금고' : '15% Fee Rebate Vault'} ]</span>
                 </span>
@@ -1114,14 +1203,14 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                   : 'Rebate 15% of all trading gas fees paid today directly into your wallet.'}
               </p>
               <div className="flex items-center justify-between pt-1">
-                <div className="text-xs font-bold text-indigo-900">
-                  {language === 'ko' ? '환급 가능액' : 'Rebate Available'}: <span className="text-amber-600 font-black">+{Math.max(1, Math.round(accumulatedFees * 0.15))} SNS</span>
+                <div className="text-xs font-bold text-[#201d1d]">
+                  {language === 'ko' ? '환급 가능액' : 'Rebate Available'}: <span className="text-emerald-700 font-black">+{Math.max(1, Math.round(accumulatedFees * 0.15))} SNS</span>
                 </div>
                 <button
                   type="button"
                   disabled={rebateClaimed || accumulatedFees <= 0}
                   onClick={handleClaimFeeRebate}
-                  className="px-3 py-1.5 bg-indigo-700 text-white text-xs font-bold rounded-sm hover:bg-indigo-800 disabled:opacity-40 transition-all cursor-pointer"
+                  className="min-h-[44px] px-3 py-1.5 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm hover:bg-[#333030] disabled:opacity-40 transition-colors cursor-pointer"
                 >
                   {rebateClaimed
                     ? (language === 'ko' ? '[ 15% 페이백 환급완료 ]' : '[ 15% Rebated ]')
@@ -1134,26 +1223,24 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
 
         {/* Sub-Tab 4: Volume Milestone Track View */}
         {activeSubTab === 'volume' && (
-          <div className="p-3 bg-indigo-50/60 dark:bg-indigo-950/20 border border-indigo-300 dark:border-indigo-800 rounded-none flex flex-col gap-3">
+          <div className="p-3.5 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none flex flex-col gap-3">
             <div className="flex items-center justify-between flex-wrap gap-1">
-              <span className="text-xs font-black text-indigo-700 dark:text-indigo-400 flex items-center gap-1.5">
+              <span className="text-xs font-black text-[#201d1d] flex items-center gap-1.5">
                 <Award size={14} />
                 <span>[ 📈 {language === 'ko' ? '일일 거래량 마일스톤' : 'Daily Turnover Milestone'}: {dailyVolume.toLocaleString()} / 10,000 SNS ]</span>
               </span>
-              <span className="text-[10px] text-slate-500 font-bold">
+              <span className="text-[10px] text-[#646262] font-bold">
                 ({language === 'ko' ? '지불 수수료' : 'Fees Paid'}: {accumulatedFees.toLocaleString()} SNS)
               </span>
             </div>
 
-            {/* Progress Bar */}
-            <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+            <div className="w-full bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] h-2 rounded-none overflow-hidden">
               <div
-                className="bg-indigo-600 h-full transition-all duration-300"
+                className="bg-[#201d1d] h-full transition-all duration-300"
                 style={{ width: `${Math.min(100, (dailyVolume / 10000) * 100)}%` }}
               />
             </div>
 
-            {/* 3 Milestone Steps Track */}
             <div className="grid grid-cols-3 gap-2 pt-1">
               {[
                 { milestone: 1000, reward: 50, label: '1K SNS' },
@@ -1166,30 +1253,30 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                   <div
                     key={step.milestone}
                     className={cn(
-                      "flex flex-col items-center justify-between p-2 border text-center text-xs",
+                      "flex flex-col items-center justify-between p-2.5 border rounded-none text-center text-xs",
                       claimed
-                        ? "border-emerald-500 bg-emerald-50 text-emerald-800"
+                        ? "border-emerald-700 bg-[#fdfcfc] text-emerald-800"
                         : achieved
-                        ? "border-indigo-500 bg-white font-bold"
-                        : "border-slate-200 bg-slate-50/50 text-slate-400"
+                        ? "border-[#201d1d] bg-[#fdfcfc] font-bold text-[#201d1d]"
+                        : "border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-[#646262]"
                     )}
                   >
                     <div className="font-bold text-[11px]">{step.label}</div>
-                    <div className="text-[10px] text-amber-600 font-black mt-0.5">+{step.reward} SNS</div>
+                    <div className="text-[10px] text-emerald-700 font-black mt-0.5">+{step.reward} SNS</div>
                     <button
                       type="button"
                       disabled={!achieved || claimed}
                       onClick={() => handleClaimVolumeMilestone(step.milestone, step.reward)}
                       className={cn(
-                        "mt-2 px-2 py-1 text-[10px] w-full rounded-xs font-bold transition-all",
+                        "mt-2 min-h-[44px] px-2 py-1 text-[10px] w-full rounded-sm font-bold transition-colors",
                         claimed
-                          ? "bg-emerald-600 text-white cursor-default"
+                          ? "bg-emerald-700 text-white cursor-default"
                           : achieved
-                          ? "bg-[#201d1d] text-white hover:bg-indigo-700 cursor-pointer animate-pulse"
-                          : "bg-slate-200 text-slate-400 cursor-not-allowed"
+                          ? "bg-[#201d1d] text-[#fdfcfc] hover:bg-[#333030] cursor-pointer"
+                          : "bg-[#f8f7f7] text-[#646262] border border-[rgba(15,0,0,0.12)] cursor-not-allowed"
                       )}
                     >
-                      {claimed ? (language === 'ko' ? '수령완료' : 'Claimed') : achieved ? (language === 'ko' ? '보너스 수령' : 'Claim') : (language === 'ko' ? '미달성' : 'Locked')}
+                      {claimed ? (language === 'ko' ? '[수령완료]' : '[Claimed]') : achieved ? (language === 'ko' ? '[보너스 수령]' : '[Claim]') : (language === 'ko' ? '[미달성]' : '[Locked]')}
                     </button>
                   </div>
                 );
@@ -1206,7 +1293,7 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs"
+            className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/60 font-mono"
           >
             <div className="absolute inset-0" onClick={() => setSelectedCardId(null)} />
 
@@ -1214,46 +1301,44 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
               initial={{ scale: 0.95, y: 15 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 15 }}
-              className="bg-white border border-slate-100 w-full max-w-sm rounded-3xl overflow-hidden shadow-2xl relative z-10 font-sans"
+              className="bg-[#fdfcfc] border border-[#201d1d] w-full max-w-sm rounded-none overflow-hidden relative z-10 font-mono"
             >
               {/* Modal Header */}
-              <div className="bg-gradient-to-r from-slate-900 to-slate-950 text-white p-5 flex items-center justify-between border-b border-slate-800">
+              <div className="bg-[#201d1d] text-[#fdfcfc] p-4 flex items-center justify-between border-b border-[rgba(15,0,0,0.12)]">
                 <div className="flex items-center gap-2 min-w-0">
-                  <ShoppingCart size={18} className="text-yellow-400 shrink-0" />
+                  <ShoppingCart size={16} className="text-amber-400 shrink-0" />
                   <span className="font-bold uppercase tracking-wider text-xs truncate">
                     {language === 'ko' ? CARD_DATABASE[selectedCardId]?.title : CARD_DATABASE[selectedCardId]?.title_en}
                   </span>
                 </div>
                 <button
                   onClick={() => setSelectedCardId(null)}
-                  className="text-slate-400 hover:text-white transition-colors shrink-0"
+                  className="text-[#fdfcfc] hover:opacity-80 text-xs font-bold px-2 py-1 border border-white/20 rounded-sm cursor-pointer shrink-0"
                 >
-                  <X size={20} />
+                  [x]
                 </button>
               </div>
 
               {/* Modal Body */}
-              <div className="p-6 space-y-5">
-                {/* Card profile summary — minimal */}
-                <div className="flex items-center justify-between border border-slate-100 p-4 bg-slate-50/70 rounded-2xl text-slate-800">
+              <div className="p-5 space-y-4">
+                <div className="flex items-center justify-between border border-[rgba(15,0,0,0.12)] p-3 bg-[#f8f7f7] rounded-none text-[#201d1d]">
                   <div>
-                    <h3 className="font-bold text-slate-800 text-sm">
+                    <h3 className="font-bold text-[#201d1d] text-xs">
                       {getCardCoinPair(selectedCardId).symbol}
                     </h3>
                   </div>
                   <div className="text-right">
-                    <span className="font-extrabold text-slate-800 text-base">
-                      {inventory[selectedCardId]?.quantity || 0}
+                    <span className="font-black text-[#201d1d] text-sm">
+                      {inventory[selectedCardId]?.quantity || 0} EA
                     </span>
                   </div>
                 </div>
 
                 {/* Coin Price Chart */}
                 {selectedCardId !== null && (
-                  <div className="border border-[rgba(15,0,0,0.12)] rounded-sm p-2.5 bg-[#f8f7f7]">
+                  <div className="border border-[rgba(15,0,0,0.12)] rounded-none p-2.5 bg-[#f8f7f7]">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-[10px] font-bold text-[#646262] uppercase">[Price Trend]</span>
-                      {/* Segmented Pill Controller (ID 273) */}
                       <div className="flex border border-[rgba(15,0,0,0.12)] rounded-sm overflow-hidden bg-[#fdfcfc]">
                         {(['24H', '1M', '1Y'] as const).map(tf => (
                           <button
@@ -1265,7 +1350,7 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                               fetchChart(selectedCardId, tf);
                             }}
                             className={cn(
-                              "px-2 py-0.5 text-[9px] font-bold transition-all cursor-pointer",
+                              "px-2 py-0.5 text-[9px] font-bold transition-colors cursor-pointer",
                               chartTimeframe === tf ? "bg-[#201d1d] text-[#fdfcfc]" : "text-[#646262] hover:bg-[#f8f7f7]"
                             )}
                           >
@@ -1275,8 +1360,8 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                       </div>
                     </div>
                     {chartLoading ? (
-                      <div className="h-[80px] flex items-center justify-center">
-                        <div className="w-4 h-4 border-2 border-slate-300 border-t-[#201d1d] rounded-full animate-spin" />
+                      <div className="h-[80px] flex items-center justify-center text-xs text-[#646262]">
+                        Loading...
                       </div>
                     ) : chartData.length > 0 ? (
                       <svg viewBox={`0 0 240 80`} className="w-full h-[80px]" preserveAspectRatio="none">
@@ -1319,7 +1404,7 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                         setTradeAmount(1);
                       }}
                       className={cn(
-                        "flex-1 py-2 rounded-sm font-bold uppercase text-xs tracking-wider transition-all active:scale-98 border",
+                        "flex-1 min-h-[44px] py-2 rounded-sm font-bold uppercase text-xs tracking-wider transition-colors border cursor-pointer",
                         tradeMode === m
                           ? "bg-[#201d1d] border-[#201d1d] text-[#fdfcfc]"
                           : "bg-[#fdfcfc] border-[rgba(15,0,0,0.12)] text-[#646262] hover:bg-[#f8f7f7]"
@@ -1337,7 +1422,7 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                       playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
                       setTradeAmount(prev => Math.max(1, prev - 1));
                     }}
-                    className="px-4 py-2 bg-[#f8f7f7] border-r border-[rgba(15,0,0,0.12)] hover:bg-[#e2e0e0] font-bold cursor-pointer transition-colors text-[#201d1d]"
+                    className="min-h-[44px] px-4 py-2 bg-[#f8f7f7] border-r border-[rgba(15,0,0,0.12)] hover:bg-[#e2e0e0] font-bold cursor-pointer transition-colors text-[#201d1d]"
                   >
                     [-]
                   </button>
@@ -1347,7 +1432,7 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                       playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                       setTradeAmount(prev => prev + 1);
                     }}
-                    className="px-4 py-2 bg-[#f8f7f7] border-l border-[rgba(15,0,0,0.12)] hover:bg-[#e2e0e0] font-bold cursor-pointer transition-colors text-[#201d1d]"
+                    className="min-h-[44px] px-4 py-2 bg-[#f8f7f7] border-l border-[rgba(15,0,0,0.12)] hover:bg-[#e2e0e0] font-bold cursor-pointer transition-colors text-[#201d1d]"
                   >
                     [+]
                   </button>
@@ -1361,7 +1446,7 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                   const netTotal = tradeMode === 'buy' ? (subtotal + fee) : Math.max(1, subtotal - fee);
 
                   return (
-                    <div className="space-y-1.5 border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] p-2.5 rounded-sm text-xs font-mono">
+                    <div className="space-y-1.5 border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] p-2.5 rounded-none text-xs font-mono">
                       <div className="flex justify-between items-center text-[#646262]">
                         <span>{language === 'ko' ? '기본 단가 (Base Unit Price)' : 'Base Unit Price'}:</span>
                         <span className="font-bold text-[#201d1d]">{unitPrice.toLocaleString()} SNS</span>
@@ -1376,7 +1461,7 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                       </div>
                       <div className="flex justify-between items-center text-[#646262]">
                         <span>{language === 'ko' ? '거래 수수료 (Fee 1.5%)' : 'Trading Fee (1.5%)'}:</span>
-                        <span className="font-bold text-amber-700">
+                        <span className="font-bold text-amber-800">
                           {tradeMode === 'buy' ? `+${fee.toLocaleString()}` : `-${fee.toLocaleString()}`} SNS
                         </span>
                       </div>
@@ -1397,15 +1482,15 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                 {/* Action feedback */}
                 {alertMsg && (
                   <div className={cn(
-                    "p-2 rounded-sm border text-xs font-bold text-center",
-                    alertMsg.type === 'success' ? "bg-emerald-50 border-emerald-300 text-emerald-800" : "bg-rose-50 border-rose-300 text-rose-800"
+                    "p-2 rounded-none border text-xs font-bold text-center",
+                    alertMsg.type === 'success' ? "bg-[#f8f7f7] border-emerald-700 text-emerald-800" : "bg-[#f8f7f7] border-rose-700 text-rose-800"
                   )}>
                     <div>{alertMsg.text}</div>
                     {alertMsg.type === 'error' && alertMsg.text === t('insufficient_sns', language) && (
                       <button
                         type="button"
                         onClick={() => { setSelectedCardId(null); setView('shop'); }}
-                        className="mt-1 px-2 py-0.5 bg-amber-500 hover:bg-amber-400 text-stone-950 text-[10px] font-black rounded-xs inline-flex items-center gap-1 cursor-pointer"
+                        className="mt-1.5 min-h-[36px] px-2.5 py-1 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-black rounded-sm inline-flex items-center gap-1 cursor-pointer"
                       >
                         <span>[💎 {language === 'ko' ? 'SNS 상점 충전 바로가기 ↗' : 'Top up SNS at Shop ↗'}]</span>
                       </button>
@@ -1416,7 +1501,7 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                 {/* Final transaction execution button */}
                 <button
                   onClick={handleTrade}
-                  className="w-full py-2.5 bg-[#201d1d] hover:bg-[#333030] text-[#fdfcfc] font-bold uppercase rounded-sm active:scale-98 transition-all text-xs cursor-pointer border border-[#201d1d]"
+                  className="w-full min-h-[44px] py-2.5 bg-[#201d1d] hover:bg-[#333030] text-[#fdfcfc] font-bold uppercase rounded-sm transition-colors text-xs cursor-pointer border border-[#201d1d]"
                 >
                   [{t(tradeMode, language)} {tradeAmount} {language === 'ko' ? '개 거래 확정' : 'Confirm Trade'}]
                 </button>
@@ -1434,17 +1519,17 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[11000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs font-mono"
+            className="fixed inset-0 z-[11000] flex items-center justify-center p-4 bg-black/60 font-mono"
           >
             <motion.div
               initial={{ scale: 0.9, y: 15 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 15 }}
-              className="bg-[#fdfcfc] border-2 border-[#201d1d] w-full max-w-sm p-5 rounded-none shadow-2xl space-y-4"
+              className="bg-[#fdfcfc] border border-[#201d1d] w-full max-w-sm p-5 rounded-none space-y-4"
             >
               <div className="flex items-center justify-between border-b border-[rgba(15,0,0,0.12)] pb-2.5">
                 <div className="flex items-center gap-1.5 text-[#201d1d] font-black text-sm uppercase">
-                  <CheckCircle2 size={18} className="text-emerald-600 shrink-0" />
+                  <CheckCircle2 size={18} className="text-emerald-700 shrink-0" />
                   <span>
                     {tradeSuccessModalInfo.mode === 'reinvest'
                       ? (language === 'ko' ? '복리 재투자 체결 완료' : 'Reinvestment Complete')
@@ -1455,13 +1540,13 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                 </div>
                 <button
                   onClick={() => setTradeSuccessModalInfo(null)}
-                  className="text-[#646262] hover:text-[#201d1d] cursor-pointer"
+                  className="text-[#646262] hover:text-[#201d1d] text-xs font-bold cursor-pointer"
                 >
-                  <X size={18} />
+                  [x]
                 </button>
               </div>
 
-              <div className="p-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] space-y-2 text-xs">
+              <div className="p-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none space-y-2 text-xs">
                 <div className="flex justify-between items-center text-[#646262]">
                   <span>{language === 'ko' ? '체결 종목' : 'Stock'}:</span>
                   <span className="font-bold text-[#201d1d]">{tradeSuccessModalInfo.cardTitle}</span>
@@ -1472,13 +1557,13 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                 </div>
                 <div className="flex justify-between items-center text-[#646262]">
                   <span>{tradeSuccessModalInfo.mode === 'sell' ? (language === 'ko' ? '정산 입금액' : 'Payout') : (language === 'ko' ? '총 결제액' : 'Total Cost')}:</span>
-                  <span className="font-black text-amber-600">{tradeSuccessModalInfo.totalSns.toLocaleString()} SNS</span>
+                  <span className="font-black text-[#201d1d]">{tradeSuccessModalInfo.totalSns.toLocaleString()} SNS</span>
                 </div>
               </div>
 
               {tradeSuccessModalInfo.firstTradeBonus && (
-                <div className="p-2.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 text-xs font-bold flex items-center gap-2">
-                  <Sparkles size={16} className="text-emerald-600 shrink-0" />
+                <div className="p-2.5 bg-[#f8f7f7] border border-emerald-700 text-emerald-800 text-xs font-bold flex items-center gap-2 rounded-none">
+                  <Sparkles size={16} className="text-emerald-700 shrink-0" />
                   <span>{language === 'ko' ? '🎉 첫 주식 거래 축하! 웰컴 캐시백 +30 SNS가 지갑에 즉시 지급되었습니다!' : '🎉 First Trade Welcome! +30 SNS bonus credited to wallet!'}</span>
                 </div>
               )}
@@ -1488,7 +1573,7 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                   triggerHaptic('selection');
                   setTradeSuccessModalInfo(null);
                 }}
-                className="w-full py-2.5 bg-[#201d1d] text-[#fdfcfc] font-bold text-xs uppercase hover:bg-[#333030] cursor-pointer active:scale-98 transition-all"
+                className="w-full min-h-[44px] py-2.5 bg-[#201d1d] text-[#fdfcfc] rounded-sm font-bold text-xs uppercase hover:bg-[#333030] cursor-pointer transition-colors"
               >
                 [{language === 'ko' ? '체결 확인' : 'Confirm'}]
               </button>
@@ -1504,42 +1589,42 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[209] flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
+            className="fixed inset-0 z-[209] flex items-center justify-center bg-black/60 p-4 font-mono"
             onClick={() => setShowHelpPopup(false)}
           >
             <motion.div
               initial={{ opacity: 0, y: 12, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 12, scale: 0.98 }}
-              className="relative w-full max-w-lg rounded-3xl border border-slate-200 bg-white p-5 shadow-2xl"
+              className="relative w-full max-w-lg rounded-none border border-[#201d1d] bg-[#fdfcfc] p-5"
               onClick={(event) => event.stopPropagation()}
             >
-              <div className="flex items-start justify-between gap-3 sticky top-0 z-10 bg-white pt-2">
-                <div className="space-y-2">
-                  <span className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
+              <div className="flex items-start justify-between gap-3 sticky top-0 z-10 bg-[#fdfcfc] pt-1">
+                <div className="space-y-1.5">
+                  <span className="inline-flex rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-[#646262]">
                     {t('stock_market', language)}
                   </span>
-                  <h3 className="text-lg font-black tracking-tight text-slate-900">
+                  <h3 className="text-sm font-black tracking-tight text-[#201d1d]">
                     {helpSteps[helpStep].title}
                   </h3>
                 </div>
                 <button
                   type="button"
                   onClick={() => setShowHelpPopup(false)}
-                  className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-slate-900 active:scale-95 touch-target"
+                  className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-[#646262] transition hover:bg-[#f8f7f7] hover:text-[#201d1d] cursor-pointer"
                   aria-label={language === 'ko' ? '닫기' : 'Close'}
                 >
-                  <X size={18} />
+                  [x]
                 </button>
               </div>
 
-              <div className="mt-4 rounded-2xl border border-indigo-100 bg-indigo-50/50 px-4 py-3">
-                <p className="text-sm font-semibold leading-relaxed whitespace-pre-line text-slate-700">
+              <div className="mt-4 rounded-none border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] px-4 py-3">
+                <p className="text-xs font-semibold leading-relaxed whitespace-pre-line text-[#201d1d]">
                   {helpSteps[helpStep].body}
                 </p>
               </div>
 
-              <div className="mt-4 flex items-center justify-between gap-3 text-xs font-bold uppercase tracking-[0.2em] text-slate-400">
+              <div className="mt-4 flex items-center justify-between gap-3 text-xs font-bold uppercase tracking-wider text-[#646262]">
                 <span>{helpStep + 1} / {helpSteps.length}</span>
               </div>
 
@@ -1549,10 +1634,10 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                   onClick={() => setHelpStep((prev) => Math.max(prev - 1, 0))}
                   disabled={helpStep === 0}
                   className={cn(
-                    'min-h-11 rounded-2xl border px-3 py-2 text-sm font-bold transition touch-target',
+                    'min-h-[44px] rounded-sm border px-3 py-2 text-xs font-bold transition cursor-pointer',
                     helpStep === 0
-                      ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-400'
-                      : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-50 active:scale-95'
+                      ? 'cursor-not-allowed border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] text-[#646262]/40'
+                      : 'border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-[#201d1d] hover:bg-[#f8f7f7]'
                   )}
                 >
                   <ChevronLeft size={16} className="mx-auto" />
@@ -1560,9 +1645,9 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                 <button
                   type="button"
                   onClick={() => setShowHelpPopup(false)}
-                  className="min-h-11 rounded-2xl border border-slate-300 bg-white px-3 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-50 active:scale-95 touch-target"
+                  className="min-h-[44px] rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] px-3 py-2 text-xs font-bold text-[#201d1d] transition hover:bg-[#f8f7f7] cursor-pointer"
                 >
-                  {language === 'ko' ? '닫기' : 'Close'}
+                  [{language === 'ko' ? '닫기' : 'Close'}]
                 </button>
                 <button
                   type="button"
@@ -1573,10 +1658,10 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                     }
                     setHelpStep((prev) => Math.min(prev + 1, helpSteps.length - 1));
                   }}
-                  className="min-h-11 rounded-2xl border border-slate-900 bg-slate-900 px-3 py-2 text-sm font-bold text-white transition hover:bg-slate-800 active:scale-95 touch-target"
+                  className="min-h-[44px] rounded-sm border border-[#201d1d] bg-[#201d1d] px-3 py-2 text-xs font-bold text-[#fdfcfc] transition hover:bg-[#333030] cursor-pointer"
                 >
                   {helpStep === helpSteps.length - 1
-                    ? (language === 'ko' ? '완료' : 'Done')
+                    ? (language === 'ko' ? '[완료]' : '[Done]')
                     : <ChevronRight size={16} className="mx-auto" />}
                 </button>
               </div>

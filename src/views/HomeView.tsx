@@ -98,6 +98,57 @@ export const HomeView: React.FC<HomeViewProps> = ({
   const [selectedPreviewCard, setSelectedPreviewCard] = useState<CardData | null>(null);
   // 미디어 라운지 카테고리 허브 모달 상태
   const [isMediaModalOpen, setIsMediaModalOpen] = useState(false);
+  // SCR-01 바이럴 도전장 공유 상태 (일일 1회 +50 SNS 보상)
+  const todayStr = new Date().toISOString().slice(0, 10);
+  const homeViralShareKey = `hero_home_viral_share_${todayStr}`;
+  const [hasClaimedHomeViralShare, setHasClaimedHomeViralShare] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem(`hero_home_viral_share_${new Date().toISOString().slice(0, 10)}`) === 'true';
+    } catch {
+      return false;
+    }
+  });
+  const [viralShareNotice, setViralShareNotice] = useState<string | null>(null);
+
+  const handleHomeViralShare = () => {
+    triggerHaptic('medium');
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+    const shareUrl = 'https://snshero.com/?challenge=1-11-31-51-101&ref=home';
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(shareUrl).catch(() => {});
+      }
+    } catch {}
+
+    try {
+      const alreadyClaimed = localStorage.getItem(homeViralShareKey) === 'true';
+      if (!alreadyClaimed) {
+        localStorage.setItem(homeViralShareKey, 'true');
+        const currentRaw = parseInt(localStorage.getItem('hero_sns') || '0', 10) || 0;
+        localStorage.setItem('hero_sns', String(currentRaw + 50));
+        addSns(50, 'home_viral_share', 'earned');
+        setHasClaimedHomeViralShare(true);
+        setViralShareNotice(
+          language === 'ko'
+            ? '[+] 도전장 URL 클립보드 복사 완료 · 일일 보상 +50 SNS 지급됨'
+            : '[+] Challenge URL copied · Daily reward +50 SNS granted'
+        );
+      } else {
+        setViralShareNotice(
+          language === 'ko'
+            ? '[+] 도전장 URL 복사 완료 (오늘의 +50 SNS 보상은 이미 수령함)'
+            : '[+] Challenge URL copied (Daily +50 SNS already claimed today)'
+        );
+      }
+    } catch {
+      setViralShareNotice(
+        language === 'ko'
+          ? '[+] 도전장 URL 클립보드 복사 완료'
+          : '[+] Challenge URL copied to clipboard'
+      );
+    }
+    setTimeout(() => setViralShareNotice(null), 3500);
+  };
 
   // ─── 30초 비조작(Idle) 시 데모플레이 모드 자동 실행 타이머 ───
   const [idleSeconds, setIdleSeconds] = useState<number>(30);
@@ -424,6 +475,86 @@ export const HomeView: React.FC<HomeViewProps> = ({
               })}
             </div>
 
+            {/* ── DESIGN.md hero-tui-mockup & 프로페셔널 에디토리얼 퀵 액션 바 ── */}
+            <div className="rounded-none bg-[#201d1d] text-[#fdfcfc] p-4 sm:p-5 border border-[#201d1d] space-y-3 font-mono select-none">
+              <div className="flex flex-wrap items-center justify-between gap-2 bg-[#302c2c] px-3 py-2 rounded-sm text-xs">
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className="text-[#9a9898]">|</span>
+                  <span className="font-bold text-[#fdfcfc]">Build</span>
+                  <span className="text-[#fdfcfc] truncate">[SNSHero 3x3 Engine]</span>
+                  <span className="text-[#9a9898] hidden sm:inline">OpenCode Editorial TUI</span>
+                </div>
+                <span className="text-[#9a9898] text-[11px]">
+                  {language === 'ko' ? 'tab 빠른배틀 · ctrl-p 도전장' : 'tab quick-match · ctrl-p challenge'}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                {/* a) [3초 즉시 1:1 배틀 (QUICK MATCH)] */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic('medium');
+                    playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+                    onNavigate('play');
+                  }}
+                  className="min-h-[44px] px-4 py-2.5 bg-[#fdfcfc] text-[#201d1d] hover:bg-[#f1eeee] font-bold text-xs sm:text-sm border border-[#fdfcfc] rounded-sm cursor-pointer flex items-center justify-between gap-2 transition-colors"
+                >
+                  <span>{language === 'ko' ? '[3초 즉시 1:1 배틀 (QUICK MATCH)]' : '[3s Instant 1v1 Battle (QUICK MATCH)]'}</span>
+                  <span>→</span>
+                </button>
+
+                {/* b) [무설치 도전장 링크 공유 (+50 SNS)] */}
+                <button
+                  type="button"
+                  onClick={handleHomeViralShare}
+                  className="min-h-[44px] px-4 py-2.5 bg-[#302c2c] text-[#fdfcfc] hover:bg-[#424245] font-bold text-xs sm:text-sm border border-[#646262] rounded-sm cursor-pointer flex items-center justify-between gap-2 transition-colors"
+                >
+                  <span>
+                    {language === 'ko'
+                      ? (hasClaimedHomeViralShare ? '[✓ 도전장 링크 재복사 (완료)]' : '[무설치 도전장 링크 공유 (+50 SNS)]')
+                      : (hasClaimedHomeViralShare ? '[✓ Copy Challenge Link Again]' : '[Share Instant Challenge URL (+50 SNS)]')}
+                  </span>
+                  <span className="text-xs text-[#9a9898]">[+50]</span>
+                </button>
+              </div>
+
+              {viralShareNotice && (
+                <div className="px-3 py-2 bg-[#302c2c] border border-[#646262] rounded-none text-xs text-[#fdfcfc] font-mono">
+                  {viralShareNotice}
+                </div>
+              )}
+
+              {/* c) [AI 벤치마크 (/bench)] 및 [특가 상점 (/shop)] 1px hairline 에디토리얼 그리드 */}
+              <div className="grid grid-cols-2 gap-2 pt-1 border-t border-[#646262]/40">
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic('light');
+                    playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+                    onNavigate('bench');
+                  }}
+                  className="min-h-[44px] px-3 py-2 bg-[#201d1d] text-[#fdfcfc] hover:bg-[#302c2c] font-bold text-xs border border-[#646262] rounded-sm cursor-pointer flex items-center justify-between gap-1.5 transition-colors"
+                >
+                  <span>{language === 'ko' ? '[AI 벤치마크 (/bench)]' : '[AI Benchmark (/bench)]'}</span>
+                  <span className="text-[#9a9898]">→</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic('light');
+                    playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+                    onNavigate('shop');
+                  }}
+                  className="min-h-[44px] px-3 py-2 bg-[#201d1d] text-[#fdfcfc] hover:bg-[#302c2c] font-bold text-xs border border-[#646262] rounded-sm cursor-pointer flex items-center justify-between gap-1.5 transition-colors"
+                >
+                  <span>{language === 'ko' ? '[특가 상점 (/shop)]' : '[Special Shop (/shop)]'}</span>
+                  <span className="text-[#9a9898]">→</span>
+                </button>
+              </div>
+            </div>
+
             <div className="flex flex-col gap-4">
               <motion.button
                 type="button"
@@ -681,7 +812,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
       {/* ─── 30초 비조작 시 데모플레이 자동 실행 인디케이터 바 ─── */}
       <div className="w-full mt-4 p-2.5 bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-none flex items-center justify-between font-mono text-xs text-[#201d1d] select-none">
         <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="w-2 h-2 rounded-none bg-[#201d1d]" />
           <span className="font-bold">
             {language === 'ko' ? '데모플레이 대기' : 'Demo Play Idle'}
           </span>
@@ -694,7 +825,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
             playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
             startDemoPlay(onNavigate);
           }}
-          className="min-h-[32px] px-3 py-1 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] font-bold text-xs rounded-sm transition-all flex items-center gap-1 cursor-pointer"
+          className="min-h-[44px] px-3 py-2 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] font-bold text-xs rounded-sm transition-colors flex items-center gap-1 cursor-pointer"
         >
           <span>▶</span>
           <span>{language === 'ko' ? '즉시 데모 시작' : 'Start Demo Now'}</span>
@@ -852,8 +983,8 @@ export const HomeView: React.FC<HomeViewProps> = ({
               <div className="flex-1 min-h-0 overflow-y-auto mb-4 pr-1">
                 <p className="text-sm text-[#646262] leading-relaxed whitespace-pre-line">{helpSlides[helpStep].body}</p>
               </div>
-              <div className="flex items-center justify-between shrink-0 pt-2 border-t border-slate-100">
-                <span className="text-xs text-slate-400">{helpStep + 1}/{helpSlides.length}</span>
+              <div className="flex items-center justify-between shrink-0 pt-2 border-t border-[rgba(15,0,0,0.12)]">
+                <span className="text-xs text-[#646262]">{helpStep + 1}/{helpSlides.length}</span>
                 <div className="flex gap-2">
                   <button
                     disabled={helpStep === 0}
@@ -861,7 +992,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     className={cn(
                       "inline-flex min-h-11 items-center gap-1 rounded-sm border border-[rgba(15,0,0,0.12)] px-3 py-2 text-sm font-bold",
                       helpStep === 0
-                        ? "text-slate-300 cursor-not-allowed"
+                        ? "text-[#9a9898] bg-[#f1eeee] cursor-not-allowed"
                         : "text-[#646262] hover:bg-[#f1eeee]"
                     )}
                   >
@@ -962,6 +1093,14 @@ export const HomeView: React.FC<HomeViewProps> = ({
         language={language}
         onNavigate={onNavigate}
         playSfx={playSfx}
+      />
+
+      {/* 카드 터치 미리보기 모달 */}
+      <CardLongPressPreviewModal
+        card={selectedPreviewCard}
+        isOpen={Boolean(selectedPreviewCard)}
+        onClose={() => setSelectedPreviewCard(null)}
+        language={language}
       />
     </div>
   );

@@ -104,7 +104,7 @@ export const HomeCategoryHub: React.FC<HomeCategoryHubProps> = ({
       <div className="border-b border-[rgba(15,0,0,0.12)] pb-2 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="w-2.5 h-2.5 bg-[#201d1d] rounded-none" />
-          <h2 className="text-xs sm:text-sm font-black uppercase tracking-tight text-[#201d1d]">
+          <h2 className="text-xs sm:text-sm font-bold uppercase tracking-tight text-[#201d1d]">
             {language === 'ko' ? '[ 카테고리별 기능 메뉴 ]' : '[ CATEGORY HUBS ]'}
           </h2>
         </div>
@@ -116,12 +116,12 @@ export const HomeCategoryHub: React.FC<HomeCategoryHubProps> = ({
               triggerHaptic('light');
               setOpenedCategory(null);
             }}
-            className="text-[10px] font-bold text-[#646262] hover:text-[#201d1d] px-2 py-0.5 border border-[rgba(15,0,0,0.12)] bg-white hover:bg-slate-50 cursor-pointer rounded-sm transition-all"
+            className="min-h-[44px] text-xs font-bold text-[#646262] hover:text-[#201d1d] px-3 py-1.5 border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] hover:bg-[#f8f7f7] cursor-pointer rounded-sm transition-colors"
           >
             {language === 'ko' ? '[모두 접기]' : '[Fold All]'}
           </button>
         ) : (
-          <span className="text-[10px] text-[#646262]">
+          <span className="text-xs text-[#646262]">
             {language === 'ko' ? '카테고리를 탭하여 메뉴 열기' : 'Tap category to open'}
           </span>
         )}
@@ -136,10 +136,10 @@ export const HomeCategoryHub: React.FC<HomeCategoryHubProps> = ({
             <div
               key={cat.id}
               className={cn(
-                "border transition-all duration-200 rounded-none overflow-hidden",
+                "border transition-colors rounded-none overflow-hidden",
                 isOpen
-                  ? "border-[#201d1d] bg-[#fdfcfc] shadow-sm"
-                  : "border-[rgba(15,0,0,0.12)] bg-white hover:border-[#201d1d]/40"
+                  ? "border-[#201d1d] bg-[#fdfcfc]"
+                  : "border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] hover:border-[#201d1d]"
               )}
             >
               {/* 아코디언 헤더 버튼 (1줄 심플) */}
@@ -147,8 +147,8 @@ export const HomeCategoryHub: React.FC<HomeCategoryHubProps> = ({
                 type="button"
                 onClick={() => toggleCategory(cat.id)}
                 className={cn(
-                  "w-full min-h-[48px] px-3 sm:px-4 py-2.5 flex items-center justify-between text-left cursor-pointer transition-colors select-none",
-                  isOpen ? "bg-[#f8f7f7] border-b border-[rgba(15,0,0,0.08)]" : "bg-white hover:bg-[#fdfcfc]"
+                  "w-full min-h-[48px] px-3 sm:px-4 py-2.5 flex items-center justify-between text-left cursor-pointer transition-colors select-none rounded-none",
+                  isOpen ? "bg-[#f8f7f7] border-b border-[rgba(15,0,0,0.12)]" : "bg-[#fdfcfc] hover:bg-[#f8f7f7]"
                 )}
               >
                 <div className="flex items-center gap-2.5 min-w-0">
@@ -159,24 +159,24 @@ export const HomeCategoryHub: React.FC<HomeCategoryHubProps> = ({
                         {language === 'ko' ? cat.titleKo : cat.titleEn}
                       </span>
                       {cat.hasAlert && (
-                        <span className="px-1.5 py-0.2 bg-amber-400 text-[#201d1d] text-[9px] font-black animate-pulse rounded-sm">
+                        <span className="px-1.5 py-0.5 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-bold rounded-sm">
                           {cat.badge}
                         </span>
                       )}
                     </div>
-                    <p className="text-[10px] text-[#646262] truncate">
+                    <p className="text-xs text-[#646262] truncate">
                       {language === 'ko' ? cat.descKo : cat.descEn}
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2 shrink-0 pl-2">
-                  <span className="text-[10px] font-mono font-bold text-[#646262] hidden sm:inline">
+                  <span className="text-xs font-mono font-bold text-[#646262] hidden sm:inline">
                     {isOpen ? (language === 'ko' ? '[접기]' : '[Fold]') : (language === 'ko' ? '[열기]' : '[Open]')}
                   </span>
                   <span className={cn(
-                    "text-xs font-mono font-bold px-1.5 py-0.5 rounded-sm transition-transform duration-200",
-                    isOpen ? "bg-[#201d1d] text-white" : "border border-[rgba(15,0,0,0.12)] text-[#201d1d]"
+                    "text-xs font-mono font-bold px-2 py-1 rounded-sm",
+                    isOpen ? "bg-[#201d1d] text-[#fdfcfc]" : "border border-[rgba(15,0,0,0.12)] text-[#201d1d]"
                   )}>
                     {isOpen ? '[-]' : '[+]'}
                   </span>
@@ -190,7 +190,7 @@ export const HomeCategoryHub: React.FC<HomeCategoryHubProps> = ({
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: 'auto', opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.22, ease: 'easeOut' }}
+                    transition={{ duration: 0.2, ease: 'easeOut' }}
                     className="overflow-hidden"
                   >
                     <div className="p-3 sm:p-4 space-y-3 bg-[#fdfcfc]">
@@ -198,23 +198,20 @@ export const HomeCategoryHub: React.FC<HomeCategoryHubProps> = ({
                       {cat.id === 'arena' && (
                         <div className="space-y-3">
                           {/* 자동 랭킹대전 상태 & 컨트롤 */}
-                          <div className="bg-white border border-[rgba(15,0,0,0.12)] p-2.5 rounded-none flex items-center justify-between">
+                          <div className="bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] p-2.5 rounded-none flex items-center justify-between">
                             <div className="flex items-center gap-2 font-bold text-xs text-[#201d1d]">
-                              <Zap size={14} className={cn(autoStartCountdown <= 5 && !isAutoStartPaused ? "text-rose-600 animate-bounce" : "text-amber-500")} />
+                              <Zap size={14} className="text-[#201d1d]" />
                               <span>{language === 'ko' ? '자동 랭킹대전 대기:' : 'Auto Rank:'}</span>
-                              <span className={cn(
-                                "px-1.5 py-0.5 text-[10px] font-black text-white rounded-none",
-                                autoStartCountdown <= 5 && !isAutoStartPaused ? "bg-rose-600 animate-pulse" : "bg-[#201d1d]"
-                              )}>
+                              <span className="px-2 py-0.5 text-xs font-bold text-[#fdfcfc] bg-[#201d1d] rounded-none">
                                 {autoStartCountdown}s
                               </span>
                             </div>
                             <button
                               type="button"
                               onClick={onToggleAutoStart}
-                              className="px-2 py-1 border border-[rgba(15,0,0,0.12)] text-[10px] font-bold hover:border-[#201d1d] cursor-pointer rounded-sm bg-[#f8f7f7]"
+                              className="min-h-[44px] px-3 py-1.5 border border-[rgba(15,0,0,0.12)] text-xs font-bold text-[#201d1d] hover:border-[#201d1d] cursor-pointer rounded-sm bg-[#fdfcfc]"
                             >
-                              {isAutoStartPaused ? (language === 'ko' ? '재개' : 'Resume') : (language === 'ko' ? '일시정지' : 'Pause')}
+                              {isAutoStartPaused ? (language === 'ko' ? '[재개]' : '[Resume]') : (language === 'ko' ? '[일시정지]' : '[Pause]')}
                             </button>
                           </div>
 
@@ -223,10 +220,10 @@ export const HomeCategoryHub: React.FC<HomeCategoryHubProps> = ({
                             <button
                               type="button"
                               onClick={onQuickBattle}
-                              className="min-h-[46px] p-2.5 bg-[#201d1d] text-[#fdfcfc] hover:bg-[#201d1d]/90 font-bold text-xs rounded-sm border border-[#201d1d] flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98] transition-all"
+                              className="min-h-[48px] p-2.5 bg-[#201d1d] text-[#fdfcfc] hover:bg-[#302c2c] font-bold text-xs rounded-sm border border-[#201d1d] flex items-center justify-center gap-2 cursor-pointer transition-colors"
                             >
-                              <Swords size={15} className="text-amber-300 shrink-0" />
-                              <span>{language === 'ko' ? '1초 즉시 대전' : 'Instant Match'}</span>
+                              <Swords size={15} className="shrink-0" />
+                              <span>{language === 'ko' ? '[3초 즉시 1:1 배틀]' : '[Instant 1v1 Match]'}</span>
                             </button>
 
                             <button
@@ -237,10 +234,10 @@ export const HomeCategoryHub: React.FC<HomeCategoryHubProps> = ({
                                 if (onStartPlayNow) onStartPlayNow();
                                 else onNavigate('main');
                               }}
-                              className="min-h-[46px] p-2.5 bg-white text-[#201d1d] hover:bg-slate-50 font-bold text-xs rounded-sm border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98] transition-all"
+                              className="min-h-[48px] p-2.5 bg-[#fdfcfc] text-[#201d1d] hover:bg-[#f8f7f7] font-bold text-xs rounded-sm border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] flex items-center justify-center gap-2 cursor-pointer transition-colors"
                             >
-                              <Compass size={15} className="text-indigo-600 shrink-0" />
-                              <span>{language === 'ko' ? '카단 RPG 모험' : 'RPG Adventure'}</span>
+                              <Compass size={15} className="shrink-0" />
+                              <span>{language === 'ko' ? '[카단 RPG 모험]' : '[RPG Adventure]'}</span>
                             </button>
 
                             <button
@@ -250,13 +247,13 @@ export const HomeCategoryHub: React.FC<HomeCategoryHubProps> = ({
                                 playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                                 onNavigate('play');
                               }}
-                              className="p-2.5 bg-white hover:bg-slate-50 border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] text-left rounded-sm cursor-pointer transition-all flex items-center justify-between group"
+                              className="min-h-[48px] p-2.5 bg-[#fdfcfc] hover:bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] text-left rounded-sm cursor-pointer transition-colors flex items-center justify-between group"
                             >
                               <div>
                                 <div className="text-xs font-bold text-[#201d1d] group-hover:underline">
-                                  {language === 'ko' ? '🕹️ 훈련장 & 미션' : '🕹️ Training Ground'}
+                                  {language === 'ko' ? '[훈련장 & 미션]' : '[Training Ground]'}
                                 </div>
-                                <div className="text-[10px] text-[#646262]">110개 미션 게임</div>
+                                <div className="text-[11px] text-[#646262]">110개 미션 게임</div>
                               </div>
                               <ArrowRight size={12} className="text-[#646262]" />
                             </button>
@@ -268,13 +265,13 @@ export const HomeCategoryHub: React.FC<HomeCategoryHubProps> = ({
                                 playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                                 onNavigate('mydeck');
                               }}
-                              className="p-2.5 bg-white hover:bg-slate-50 border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] text-left rounded-sm cursor-pointer transition-all flex items-center justify-between group"
+                              className="min-h-[48px] p-2.5 bg-[#fdfcfc] hover:bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] text-left rounded-sm cursor-pointer transition-colors flex items-center justify-between group"
                             >
                               <div>
                                 <div className="text-xs font-bold text-[#201d1d] group-hover:underline">
-                                  {language === 'ko' ? '🃏 마이덱 & 시너지' : '🃏 My Deck & Synergy'}
+                                  {language === 'ko' ? '[마이덱 & 시너지]' : '[My Deck & Synergy]'}
                                 </div>
-                                <div className="text-[10px] text-[#646262]">덱 구성 & 육성</div>
+                                <div className="text-[11px] text-[#646262]">덱 구성 & 육성</div>
                               </div>
                               <ArrowRight size={12} className="text-[#646262]" />
                             </button>
@@ -287,8 +284,8 @@ export const HomeCategoryHub: React.FC<HomeCategoryHubProps> = ({
                         <div className="space-y-3">
                           {/* 1) 오리지널 IP 미디어 */}
                           <div>
-                            <div className="text-[10px] font-bold text-[#646262] uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-                              <span className="w-1.5 h-1.5 bg-indigo-500 rounded-none inline-block" />
+                            <div className="text-xs font-bold text-[#646262] uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                              <span className="w-1.5 h-1.5 bg-[#201d1d] rounded-none inline-block" />
                               <span>{language === 'ko' ? '오리지널 스토리 & IP 미디어' : 'Original Story & IP Media'}</span>
                             </div>
                             <div className="grid grid-cols-2 gap-2">
@@ -299,15 +296,15 @@ export const HomeCategoryHub: React.FC<HomeCategoryHubProps> = ({
                                   playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                                   onNavigate('novel');
                                 }}
-                                className="p-2.5 bg-white hover:bg-slate-50 border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] text-left rounded-sm cursor-pointer transition-all flex items-center justify-between group"
+                                className="min-h-[48px] p-2.5 bg-[#fdfcfc] hover:bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] text-left rounded-sm cursor-pointer transition-colors flex items-center justify-between group"
                               >
                                 <div className="flex items-center gap-2">
-                                  <BookOpen size={16} className="text-indigo-600 shrink-0" />
+                                  <BookOpen size={16} className="text-[#201d1d] shrink-0" />
                                   <div>
                                     <div className="text-xs font-bold text-[#201d1d] group-hover:underline">
                                       {language === 'ko' ? '웹소설' : 'Web Novel'}
                                     </div>
-                                    <div className="text-[10px] text-[#646262]">시즌 공식 스토리</div>
+                                    <div className="text-[11px] text-[#646262]">시즌 공식 스토리</div>
                                   </div>
                                 </div>
                                 <ArrowRight size={12} className="text-[#646262]" />
@@ -320,15 +317,15 @@ export const HomeCategoryHub: React.FC<HomeCategoryHubProps> = ({
                                   playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                                   onNavigate('webtoon');
                                 }}
-                                className="p-2.5 bg-white hover:bg-slate-50 border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] text-left rounded-sm cursor-pointer transition-all flex items-center justify-between group"
+                                className="min-h-[48px] p-2.5 bg-[#fdfcfc] hover:bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] text-left rounded-sm cursor-pointer transition-colors flex items-center justify-between group"
                               >
                                 <div className="flex items-center gap-2">
-                                  <Image size={16} className="text-emerald-600 shrink-0" />
+                                  <Image size={16} className="text-[#201d1d] shrink-0" />
                                   <div>
                                     <div className="text-xs font-bold text-[#201d1d] group-hover:underline">
                                       {language === 'ko' ? '웹툰' : 'Webtoon'}
                                     </div>
-                                    <div className="text-[10px] text-[#646262]">영웅 풀컬러 카툰</div>
+                                    <div className="text-[11px] text-[#646262]">영웅 풀컬러 카툰</div>
                                   </div>
                                 </div>
                                 <ArrowRight size={12} className="text-[#646262]" />
@@ -341,15 +338,15 @@ export const HomeCategoryHub: React.FC<HomeCategoryHubProps> = ({
                                   playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                                   onNavigate('anime');
                                 }}
-                                className="p-2.5 bg-white hover:bg-slate-50 border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] text-left rounded-sm cursor-pointer transition-all flex items-center justify-between group"
+                                className="min-h-[48px] p-2.5 bg-[#fdfcfc] hover:bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] text-left rounded-sm cursor-pointer transition-colors flex items-center justify-between group"
                               >
                                 <div className="flex items-center gap-2">
-                                  <Tv size={16} className="text-purple-600 shrink-0" />
+                                  <Tv size={16} className="text-[#201d1d] shrink-0" />
                                   <div>
                                     <div className="text-xs font-bold text-[#201d1d] group-hover:underline">
                                       {language === 'ko' ? '애니메이션' : 'Animation'}
                                     </div>
-                                    <div className="text-[10px] text-[#646262]">숏폼 애니</div>
+                                    <div className="text-[11px] text-[#646262]">숏폼 애니</div>
                                   </div>
                                 </div>
                                 <ArrowRight size={12} className="text-[#646262]" />
@@ -362,15 +359,15 @@ export const HomeCategoryHub: React.FC<HomeCategoryHubProps> = ({
                                   playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                                   onNavigate('movie');
                                 }}
-                                className="p-2.5 bg-white hover:bg-slate-50 border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] text-left rounded-sm cursor-pointer transition-all flex items-center justify-between group"
+                                className="min-h-[48px] p-2.5 bg-[#fdfcfc] hover:bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] text-left rounded-sm cursor-pointer transition-colors flex items-center justify-between group"
                               >
                                 <div className="flex items-center gap-2">
-                                  <Film size={16} className="text-rose-600 shrink-0" />
+                                  <Film size={16} className="text-[#201d1d] shrink-0" />
                                   <div>
                                     <div className="text-xs font-bold text-[#201d1d] group-hover:underline">
                                       {language === 'ko' ? '시네마틱 영화' : 'Movie'}
                                     </div>
-                                    <div className="text-[10px] text-[#646262]">극장판 시네마틱</div>
+                                    <div className="text-[11px] text-[#646262]">극장판 시네마틱</div>
                                   </div>
                                 </div>
                                 <ArrowRight size={12} className="text-[#646262]" />
@@ -379,13 +376,13 @@ export const HomeCategoryHub: React.FC<HomeCategoryHubProps> = ({
                           </div>
 
                           {/* 2) 바이브코딩 & 개발자 공식 리소스 (6종) */}
-                          <div className="pt-2 border-t border-[rgba(15,0,0,0.08)]">
-                            <div className="text-[10px] font-bold text-[#646262] uppercase tracking-wider mb-1.5 flex items-center justify-between">
+                          <div className="pt-2 border-t border-[rgba(15,0,0,0.12)]">
+                            <div className="text-xs font-bold text-[#646262] uppercase tracking-wider mb-1.5 flex items-center justify-between">
                               <div className="flex items-center gap-1.5">
-                                <span className="w-1.5 h-1.5 bg-amber-500 rounded-none inline-block" />
+                                <span className="w-1.5 h-1.5 bg-[#201d1d] rounded-none inline-block" />
                                 <span>{language === 'ko' ? '바이브코딩 & 공식 개발 리소스' : 'VibeCoding & Dev Resources'}</span>
                               </div>
-                              <span className="text-[9px] text-[#8e8b8b] font-mono">6 LINKS [↗]</span>
+                              <span className="text-[11px] text-[#646262] font-mono">6 LINKS [↗]</span>
                             </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                               {/* 1. 강의 */}
@@ -396,15 +393,15 @@ export const HomeCategoryHub: React.FC<HomeCategoryHubProps> = ({
                                   playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                                   window.open('https://www.youtube.com/playlist?list=PLV8H2-pD9vH0', '_blank', 'noopener,noreferrer');
                                 }}
-                                className="p-2.5 bg-white hover:bg-slate-50 border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] text-left rounded-sm cursor-pointer transition-all flex items-center justify-between group"
+                                className="min-h-[48px] p-2.5 bg-[#fdfcfc] hover:bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] text-left rounded-sm cursor-pointer transition-colors flex items-center justify-between group"
                               >
                                 <div className="flex items-center gap-2 min-w-0">
-                                  <GraduationCap size={16} className="text-rose-600 shrink-0" />
+                                  <GraduationCap size={16} className="text-[#201d1d] shrink-0" />
                                   <div className="min-w-0">
                                     <div className="text-xs font-bold text-[#201d1d] group-hover:underline truncate">
                                       {language === 'ko' ? '바이브코딩 개발 강의' : 'VibeCoding Course'}
                                     </div>
-                                    <div className="text-[10px] text-[#646262] truncate">AI Studio 웹게임 제작</div>
+                                    <div className="text-[11px] text-[#646262] truncate">AI Studio 웹게임 제작</div>
                                   </div>
                                 </div>
                                 <ExternalLink size={12} className="text-[#646262] shrink-0 ml-1.5" />
@@ -418,15 +415,15 @@ export const HomeCategoryHub: React.FC<HomeCategoryHubProps> = ({
                                   playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                                   window.open('https://snshero.com/', '_blank', 'noopener,noreferrer');
                                 }}
-                                className="p-2.5 bg-white hover:bg-slate-50 border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] text-left rounded-sm cursor-pointer transition-all flex items-center justify-between group"
+                                className="min-h-[48px] p-2.5 bg-[#fdfcfc] hover:bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] text-left rounded-sm cursor-pointer transition-colors flex items-center justify-between group"
                               >
                                 <div className="flex items-center gap-2 min-w-0">
-                                  <Gamepad2 size={16} className="text-emerald-600 shrink-0" />
+                                  <Gamepad2 size={16} className="text-[#201d1d] shrink-0" />
                                   <div className="min-w-0">
                                     <div className="text-xs font-bold text-[#201d1d] group-hover:underline truncate">
                                       {language === 'ko' ? '게임 플레이링크' : 'Play Live Game'}
                                     </div>
-                                    <div className="text-[10px] text-[#646262] truncate">snshero.com 공식 서버</div>
+                                    <div className="text-[11px] text-[#646262] truncate">snshero.com 공식 서버</div>
                                   </div>
                                 </div>
                                 <ExternalLink size={12} className="text-[#646262] shrink-0 ml-1.5" />
@@ -440,15 +437,15 @@ export const HomeCategoryHub: React.FC<HomeCategoryHubProps> = ({
                                   playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                                   window.open('https://ai.studio/apps/636a37c3-97ce-4c80-be46-8c9a6f793f2d', '_blank', 'noopener,noreferrer');
                                 }}
-                                className="p-2.5 bg-white hover:bg-slate-50 border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] text-left rounded-sm cursor-pointer transition-all flex items-center justify-between group"
+                                className="min-h-[48px] p-2.5 bg-[#fdfcfc] hover:bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] text-left rounded-sm cursor-pointer transition-colors flex items-center justify-between group"
                               >
                                 <div className="flex items-center gap-2 min-w-0">
-                                  <Cpu size={16} className="text-indigo-600 shrink-0" />
+                                  <Cpu size={16} className="text-[#201d1d] shrink-0" />
                                   <div className="min-w-0">
                                     <div className="text-xs font-bold text-[#201d1d] group-hover:underline truncate">
                                       {language === 'ko' ? 'AI Studio 앱 바로가기' : 'AI Studio App'}
                                     </div>
-                                    <div className="text-[10px] text-[#646262] truncate">Google AI Studio 공식</div>
+                                    <div className="text-[11px] text-[#646262] truncate">Google AI Studio 공식</div>
                                   </div>
                                 </div>
                                 <ExternalLink size={12} className="text-[#646262] shrink-0 ml-1.5" />
@@ -462,7 +459,7 @@ export const HomeCategoryHub: React.FC<HomeCategoryHubProps> = ({
                                   playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                                   window.open('https://github.com/Dayyoung/snshero', '_blank', 'noopener,noreferrer');
                                 }}
-                                className="p-2.5 bg-white hover:bg-slate-50 border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] text-left rounded-sm cursor-pointer transition-all flex items-center justify-between group"
+                                className="min-h-[48px] p-2.5 bg-[#fdfcfc] hover:bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] text-left rounded-sm cursor-pointer transition-colors flex items-center justify-between group"
                               >
                                 <div className="flex items-center gap-2 min-w-0">
                                   <Github size={16} className="text-[#201d1d] shrink-0" />
@@ -470,7 +467,7 @@ export const HomeCategoryHub: React.FC<HomeCategoryHubProps> = ({
                                     <div className="text-xs font-bold text-[#201d1d] group-hover:underline truncate">
                                       {language === 'ko' ? '공식 GitHub 소스파일' : 'GitHub Source Code'}
                                     </div>
-                                    <div className="text-[10px] text-[#646262] truncate">오픈소스 리포지토리</div>
+                                    <div className="text-[11px] text-[#646262] truncate">오픈소스 리포지토리</div>
                                   </div>
                                 </div>
                                 <ExternalLink size={12} className="text-[#646262] shrink-0 ml-1.5" />
@@ -484,15 +481,15 @@ export const HomeCategoryHub: React.FC<HomeCategoryHubProps> = ({
                                   playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                                   window.open('https://snshero.com/snshero.md', '_blank', 'noopener,noreferrer');
                                 }}
-                                className="p-2.5 bg-white hover:bg-slate-50 border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] text-left rounded-sm cursor-pointer transition-all flex items-center justify-between group"
+                                className="min-h-[48px] p-2.5 bg-[#fdfcfc] hover:bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] text-left rounded-sm cursor-pointer transition-colors flex items-center justify-between group"
                               >
                                 <div className="flex items-center gap-2 min-w-0">
-                                  <FileText size={16} className="text-amber-600 shrink-0" />
+                                  <FileText size={16} className="text-[#201d1d] shrink-0" />
                                   <div className="min-w-0">
                                     <div className="text-xs font-bold text-[#201d1d] group-hover:underline truncate">
                                       {language === 'ko' ? '개발 프롬프트 명세' : 'Dev Prompt Spec'}
                                     </div>
-                                    <div className="text-[10px] text-[#646262] truncate">snshero.md 지침서</div>
+                                    <div className="text-[11px] text-[#646262] truncate">snshero.md 지침서</div>
                                   </div>
                                 </div>
                                 <ExternalLink size={12} className="text-[#646262] shrink-0 ml-1.5" />
@@ -506,15 +503,15 @@ export const HomeCategoryHub: React.FC<HomeCategoryHubProps> = ({
                                   playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                                   window.open('https://www.youtube.com/@snshero', '_blank', 'noopener,noreferrer');
                                 }}
-                                className="p-2.5 bg-white hover:bg-slate-50 border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] text-left rounded-sm cursor-pointer transition-all flex items-center justify-between group"
+                                className="min-h-[48px] p-2.5 bg-[#fdfcfc] hover:bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] text-left rounded-sm cursor-pointer transition-colors flex items-center justify-between group"
                               >
                                 <div className="flex items-center gap-2 min-w-0">
-                                  <Youtube size={16} className="text-rose-600 shrink-0" />
+                                  <Youtube size={16} className="text-[#201d1d] shrink-0" />
                                   <div className="min-w-0">
                                     <div className="text-xs font-bold text-[#201d1d] group-hover:underline truncate">
                                       {language === 'ko' ? '유튜브 공식 채널' : 'YouTube Channel'}
                                     </div>
-                                    <div className="text-[10px] text-[#646262] truncate">@snshero 채널 구독</div>
+                                    <div className="text-[11px] text-[#646262] truncate">@snshero 채널 구독</div>
                                   </div>
                                 </div>
                                 <ExternalLink size={12} className="text-[#646262] shrink-0 ml-1.5" />
@@ -527,33 +524,35 @@ export const HomeCategoryHub: React.FC<HomeCategoryHubProps> = ({
                       {/* 3. 마켓 & 상점 세부 메뉴 */}
                       {cat.id === 'market' && (
                         <div className="space-y-2">
-                          <div
+                          <button
+                            type="button"
                             onClick={onOpenStarterPack}
-                            className="p-2.5 bg-white border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] rounded-sm cursor-pointer transition-all flex items-center justify-between group"
+                            className="w-full min-h-[48px] p-2.5 bg-[#fdfcfc] hover:bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] rounded-sm cursor-pointer transition-colors flex items-center justify-between group text-left"
                           >
                             <div className="flex items-center gap-2">
-                              <span className="px-1.5 py-0.5 bg-amber-400 text-[#201d1d] text-[10px] font-black rounded-none">
+                              <span className="px-1.5 py-0.5 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-bold rounded-none">
                                 {isStarterPackPurchased ? 'ACTIVE' : '93% OFF'}
                               </span>
                               <div>
                                 <div className="text-xs font-bold text-[#201d1d] group-hover:underline">
                                   {language === 'ko' ? '⚡ ₩1,000 스타터팩' : '⚡ ₩1,000 Starter Pack'}
                                 </div>
-                                <div className="text-[10px] text-[#646262]">
+                                <div className="text-[11px] text-[#646262]">
                                   {isStarterPackPurchased
                                     ? (language === 'ko' ? 'SSR 영웅 & 3,000 SNS 지급됨' : 'SSR Hero & 3,000 SNS Active')
                                     : (language === 'ko' ? 'SSR 확정 + 3,000 SNS' : 'Guaranteed SSR + 3,000 SNS')}
                                 </div>
                               </div>
                             </div>
-                            <span className="text-xs font-bold text-amber-600 font-mono">
+                            <span className="text-xs font-bold text-[#201d1d] font-mono">
                               {isStarterPackPurchased ? '완료' : '₩1,000 →'}
                             </span>
-                          </div>
+                          </button>
 
-                          <div
+                          <button
+                            type="button"
                             onClick={onOpenWishingFountain}
-                            className="p-2.5 bg-white border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] rounded-sm cursor-pointer transition-all flex items-center justify-between group"
+                            className="w-full min-h-[48px] p-2.5 bg-[#fdfcfc] hover:bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] rounded-sm cursor-pointer transition-colors flex items-center justify-between group text-left"
                           >
                             <div className="flex items-center gap-2">
                               <span className="text-base">⛲</span>
@@ -561,15 +560,15 @@ export const HomeCategoryHub: React.FC<HomeCategoryHubProps> = ({
                                 <div className="text-xs font-bold text-[#201d1d] group-hover:underline">
                                   {language === 'ko' ? '소원의 분수대' : 'Wishing Fountain'}
                                 </div>
-                                <div className="text-[10px] text-[#646262]">
+                                <div className="text-[11px] text-[#646262]">
                                   {language === 'ko' ? '매일 1회 무료 동전 투척 & 잭팟' : 'Daily Free Coin & Jackpots'}
                                 </div>
                               </div>
                             </div>
-                            <span className="text-[10px] font-bold px-2 py-1 bg-amber-500 text-slate-950 rounded-sm">
-                              {language === 'ko' ? '던지기' : 'Toss'}
+                            <span className="text-xs font-bold px-2 py-1 bg-[#201d1d] text-[#fdfcfc] rounded-sm">
+                              {language === 'ko' ? '[던지기]' : '[Toss]'}
                             </span>
-                          </div>
+                          </button>
 
                           <div className="grid grid-cols-2 gap-2 pt-1">
                             <button
@@ -579,10 +578,10 @@ export const HomeCategoryHub: React.FC<HomeCategoryHubProps> = ({
                                 playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                                 onNavigate('shop');
                               }}
-                              className="p-2.5 bg-white hover:bg-slate-50 border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] text-left rounded-sm cursor-pointer transition-all flex items-center justify-between group"
+                              className="min-h-[48px] p-2.5 bg-[#fdfcfc] hover:bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] text-left rounded-sm cursor-pointer transition-colors flex items-center justify-between group"
                             >
                               <div className="flex items-center gap-1.5">
-                                <ShoppingBag size={15} className="text-amber-600" />
+                                <ShoppingBag size={15} className="text-[#201d1d]" />
                                 <span className="text-xs font-bold text-[#201d1d] group-hover:underline">
                                   {language === 'ko' ? '카드팩 상점' : 'Card Shop'}
                                 </span>
@@ -597,10 +596,10 @@ export const HomeCategoryHub: React.FC<HomeCategoryHubProps> = ({
                                 playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                                 onNavigate('mall');
                               }}
-                              className="p-2.5 bg-white hover:bg-slate-50 border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] text-left rounded-sm cursor-pointer transition-all flex items-center justify-between group"
+                              className="min-h-[48px] p-2.5 bg-[#fdfcfc] hover:bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] text-left rounded-sm cursor-pointer transition-colors flex items-center justify-between group"
                             >
                               <div className="flex items-center gap-1.5">
-                                <Gift size={15} className="text-rose-600" />
+                                <Gift size={15} className="text-[#201d1d]" />
                                 <span className="text-xs font-bold text-[#201d1d] group-hover:underline">
                                   {language === 'ko' ? '공식 굿즈몰' : 'Merch Mall'}
                                 </span>
@@ -614,13 +613,14 @@ export const HomeCategoryHub: React.FC<HomeCategoryHubProps> = ({
                       {/* 4. 시즌 & 미션 세부 메뉴 */}
                       {cat.id === 'season' && (
                         <div className="space-y-2">
-                          <div
+                          <button
+                            type="button"
                             onClick={onOpenDailyMissions}
-                            className="p-2.5 bg-white border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] rounded-sm cursor-pointer transition-all space-y-2 group"
+                            className="w-full min-h-[48px] p-2.5 bg-[#fdfcfc] hover:bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] rounded-sm cursor-pointer transition-colors space-y-2 group text-left"
                           >
                             <div className="flex items-center justify-between text-xs font-bold text-[#201d1d]">
                               <div className="flex items-center gap-1.5">
-                                <Trophy size={14} className={cn("text-amber-500", dailyClaimableCount > 0 && "animate-bounce")} />
+                                <Trophy size={14} className="text-[#201d1d]" />
                                 <span className="group-hover:underline">
                                   {language === 'ko' ? '오늘의 일일 미션' : "Today's Daily Quests"}
                                 </span>
@@ -630,19 +630,19 @@ export const HomeCategoryHub: React.FC<HomeCategoryHubProps> = ({
                                   {dailyCompletedMissions}/{dailyTotalMissions}
                                 </span>
                                 {dailyClaimableCount > 0 && (
-                                  <span className="bg-amber-400 text-[#201d1d] text-[10px] font-bold px-1.5 py-0.5 rounded-sm animate-pulse">
+                                  <span className="bg-[#201d1d] text-[#fdfcfc] text-[10px] font-bold px-1.5 py-0.5 rounded-sm">
                                     {language === 'ko' ? `${dailyClaimableCount}개 수령` : `${dailyClaimableCount} Claim`}
                                   </span>
                                 )}
                               </div>
                             </div>
-                            <div className="w-full bg-slate-100 h-2 rounded-none overflow-hidden border border-[rgba(15,0,0,0.08)]">
+                            <div className="w-full bg-[#f1eeee] h-2 rounded-none overflow-hidden border border-[rgba(15,0,0,0.12)]">
                               <div
                                 className="bg-[#201d1d] h-full transition-all duration-300"
                                 style={{ width: `${missionPercent}%` }}
                               />
                             </div>
-                          </div>
+                          </button>
 
                           <div className="grid grid-cols-2 gap-2 pt-1">
                             <button
@@ -650,15 +650,15 @@ export const HomeCategoryHub: React.FC<HomeCategoryHubProps> = ({
                               onClick={() => {
                                 triggerHaptic('light');
                                 playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                                onNavigate('season_hub');
+                                onNavigate('season-hub');
                               }}
-                              className="p-2.5 bg-white hover:bg-slate-50 border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] text-left rounded-sm cursor-pointer transition-all flex items-center justify-between group"
+                              className="min-h-[48px] p-2.5 bg-[#fdfcfc] hover:bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] text-left rounded-sm cursor-pointer transition-colors flex items-center justify-between group"
                             >
                               <div>
                                 <div className="text-xs font-bold text-[#201d1d] group-hover:underline">
-                                  {language === 'ko' ? '🎪 시즌 허브' : '🎪 Season Hub'}
+                                  {language === 'ko' ? '[시즌 허브]' : '[Season Hub]'}
                                 </div>
-                                <div className="text-[10px] text-[#646262]">패스 & 티어 보상</div>
+                                <div className="text-[11px] text-[#646262]">패스 & 티어 보상</div>
                               </div>
                               <ArrowRight size={12} className="text-[#646262]" />
                             </button>
@@ -670,13 +670,13 @@ export const HomeCategoryHub: React.FC<HomeCategoryHubProps> = ({
                                 playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                                 onNavigate('ranking');
                               }}
-                              className="p-2.5 bg-white hover:bg-slate-50 border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] text-left rounded-sm cursor-pointer transition-all flex items-center justify-between group"
+                              className="min-h-[48px] p-2.5 bg-[#fdfcfc] hover:bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] text-left rounded-sm cursor-pointer transition-colors flex items-center justify-between group"
                             >
                               <div>
                                 <div className="text-xs font-bold text-[#201d1d] group-hover:underline">
-                                  {language === 'ko' ? '👑 명예의 전당' : '👑 Hall of Fame'}
+                                  {language === 'ko' ? '[명예의 전당]' : '[Hall of Fame]'}
                                 </div>
-                                <div className="text-[10px] text-[#646262]">실시간 랭킹 순위</div>
+                                <div className="text-[11px] text-[#646262]">실시간 랭킹 순위</div>
                               </div>
                               <ArrowRight size={12} className="text-[#646262]" />
                             </button>

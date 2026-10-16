@@ -17,11 +17,15 @@ import {
   Info,
   Maximize,
   Minimize,
-  RefreshCw
+  RefreshCw,
+  Copy,
+  ShoppingCart,
+  BookOpen
 } from 'lucide-react';
 import { Language, ViewType } from '../types';
 import { t } from '../lib/i18n';
 import { cn } from '../lib/utils';
+import { triggerHaptic } from '../lib/haptic';
 import { PageHeader } from '../components/PageHeader';
 import { getSeasonItem, setSeasonItem } from '../lib/webtoonProgress';
 import { MOVIE_EPISODES } from '../content/movieEpisodeMapping';
@@ -431,6 +435,53 @@ export const MovieView: React.FC<MovieViewProps> = ({
   const currentRewardClaimed = Boolean(claimedRewards[currentEpisodeNum]);
   const isCurrentReleased = currentEpisodeNum <= releasedCount;
 
+  // Viral share state (hero_movie_viral_share_${todayStr})
+  const todayStr = new Date().toISOString().split('T')[0];
+  const [viralSharedToday, setViralSharedToday] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem(`hero_movie_viral_share_${todayStr}`) === 'true';
+    } catch {
+      return false;
+    }
+  });
+  const [shareToast, setShareToast] = useState<string | null>(null);
+
+  const handleShareMovieChallenge = () => {
+    triggerHaptic('tap');
+    const shareUrl = `https://snshero.com/?ep=${currentEpisodeNum}&challenge=1-11-31-51-101`;
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(shareUrl).catch(() => {});
+    }
+    const shareKey = `hero_movie_viral_share_${todayStr}`;
+    let alreadyShared = false;
+    try {
+      alreadyShared = localStorage.getItem(shareKey) === 'true';
+    } catch {}
+
+    if (!alreadyShared) {
+      try {
+        localStorage.setItem(shareKey, 'true');
+      } catch {}
+      setViralSharedToday(true);
+      if (updateSns) {
+        updateSns(50, language === 'ko' ? '극장판 영화 & 도전장 링크 공유 보상' : 'Movie & Challenge Link Share Reward');
+      } else {
+        try {
+          const cur = parseInt(localStorage.getItem('hero_sns') || '500', 10);
+          localStorage.setItem('hero_sns', String(cur + 50));
+          window.dispatchEvent(new Event('hero_sns_updated'));
+        } catch {}
+      }
+      triggerHaptic('victory');
+      setShareToast(language === 'ko' ? '[v] 영화 & 도전장 링크 복사 완료 (+50 SNS 지급!)' : '[v] Movie & Duel Link Copied (+50 SNS!)');
+      setTimeout(() => setShareToast(null), 2800);
+    } else {
+      setShareToast(language === 'ko' ? '[v] 영화 & 도전장 링크 복사 완료' : '[v] Movie & Duel Link Copied');
+      setTimeout(() => setShareToast(null), 2400);
+    }
+    if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+  };
+
   // 극장판 에피소드 시청 시 미수령 보상 자동 지급 (수동 버튼 클릭 불필요)
   useEffect(() => {
     if (!claimedRewards[currentEpisodeNum] && isCurrentReleased) {
@@ -448,7 +499,14 @@ export const MovieView: React.FC<MovieViewProps> = ({
     : `https://www.youtube-nocookie.com/embed?listType=playlist&list=${YOUTUBE_PLAYLIST_ID}&index=${currentEpisodeNum - 1}&autoplay=1&rel=0&enablejsapi=1`;
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#fdfcfc] text-[#201d1d] font-sans p-3 sm:p-4 md:p-8 pb-32 max-w-5xl mx-auto w-full overflow-x-hidden">
+    <div className="flex flex-col min-h-screen bg-[#fdfcfc] text-[#201d1d] font-mono p-3 sm:p-4 md:p-8 pb-32 max-w-5xl mx-auto w-full overflow-x-hidden">
+      {shareToast && (
+        <div className="fixed top-14 left-1/2 -translate-x-1/2 z-[100000] bg-[#201d1d] text-[#fdfcfc] text-xs px-4 py-2.5 rounded-none border border-[#201d1d] flex items-center gap-2 font-mono">
+          <CheckCircle2 size={14} className="text-emerald-400" />
+          <span>{shareToast}</span>
+        </div>
+      )}
+
       {/* ── Page Header ── */}
       <PageHeader
         title={t('movie_title', language) || 'SNSHero 공식 영화 (극장판)'}
@@ -460,45 +518,110 @@ export const MovieView: React.FC<MovieViewProps> = ({
               onClick={() => fetchLatestPlaylistStatus(false)}
               disabled={isCheckingPlaylist}
               title="YouTube 최신 회차 동기화"
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-sm border border-[rgba(15,0,0,0.12)] bg-white text-xs font-bold text-[#201d1d] hover:bg-[#f8f7f7] disabled:opacity-50 transition-colors cursor-pointer touch-target shrink-0 font-mono"
+              className="min-h-[44px] flex items-center gap-1 px-3 py-1.5 rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-xs font-bold text-[#201d1d] hover:bg-[#f8f7f7] disabled:opacity-50 transition-colors cursor-pointer shrink-0 font-mono"
             >
-              <RefreshCw size={14} className={cn(isCheckingPlaylist && 'animate-spin text-rose-600')} />
-              <span className="hidden sm:inline">동기화</span>
+              <RefreshCw size={14} className={cn(isCheckingPlaylist && 'animate-spin')} />
+              <span className="hidden sm:inline">[동기화]</span>
             </button>
             <button
               type="button"
               onClick={() => setShowDrawer(true)}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-sm border border-[rgba(15,0,0,0.12)] bg-white text-xs font-bold text-[#201d1d] hover:bg-[#f8f7f7] transition-colors cursor-pointer touch-target shrink-0"
+              className="min-h-[44px] flex items-center gap-1.5 px-3 py-1.5 rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-xs font-bold text-[#201d1d] hover:bg-[#f8f7f7] transition-colors cursor-pointer shrink-0 font-mono"
             >
               <List size={16} />
-              <span className="hidden sm:inline">{t('movie_list', language) || '영화 회차 목록'}</span>
+              <span className="hidden sm:inline">[{t('movie_list', language) || '영화 회차 목록'}]</span>
             </button>
           </div>
         }
       />
 
+      {/* ── [MEDIA REWARD & SHARE (+50 SNS)] Editorial Bridge ── */}
+      <section className="mb-4 p-4 rounded-none border border-[#201d1d] bg-[#f8f7f7] font-mono space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[rgba(15,0,0,0.12)] pb-2.5">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-bold rounded-sm">
+              [MEDIA REWARD &amp; SHARE (+50 SNS)]
+            </span>
+            <span className="text-xs font-bold text-[#201d1d]">
+              {language === 'ko'
+                ? `극장판 시청 보상: 회차당 +100 SNS 자동 지급 · 공유 보너스 +50 SNS`
+                : `Movie Watch Bonus: +100 SNS/Ep Auto · Share Bonus +50 SNS`}
+            </span>
+          </div>
+          <span className="text-[11px] font-bold text-[#646262]">
+            {currentRewardClaimed
+              ? (language === 'ko' ? `[v] EP.${String(currentEpisodeNum).padStart(2, '0')} +100 SNS 완료` : `[v] EP.${String(currentEpisodeNum).padStart(2, '0')} +100 SNS Claimed`)
+              : (language === 'ko' ? `[+] 시청 시 +100 SNS 자동 지급` : `[+] Auto +100 SNS on watch`)}
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <button
+            type="button"
+            onClick={handleShareMovieChallenge}
+            className={cn(
+              "min-h-[44px] px-3 py-2 border rounded-sm text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-colors",
+              viralSharedToday
+                ? "bg-[#fdfcfc] text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee]"
+                : "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d] hover:bg-[#201d1d]/90"
+            )}
+          >
+            <Copy size={14} />
+            <span>
+              {viralSharedToday
+                ? (language === 'ko' ? '[v] 영화 & 도전장 링크 복사됨' : '[v] Movie & Duel Link Copied')
+                : (language === 'ko' ? '[영화 & 도전장 링크 공유 (+50 SNS)]' : '[Share Movie & Duel Link (+50 SNS)]')}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic('tap');
+              onNavigate('novel');
+            }}
+            className="min-h-[44px] px-3 py-2 border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] hover:bg-[#f1eeee] text-[#201d1d] rounded-sm text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+          >
+            <BookOpen size={14} />
+            <span>{language === 'ko' ? '[+] 원작 웹소설·카툰 허브 이동' : '[+] Read Original Novel & Webtoon'}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic('tap');
+              onNavigate('shop');
+            }}
+            className="min-h-[44px] px-3 py-2 border border-[#201d1d] bg-[#201d1d] hover:bg-[#201d1d]/90 text-[#fdfcfc] rounded-sm text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+          >
+            <ShoppingCart size={14} />
+            <span>{language === 'ko' ? '[+] 극장판 영웅 상점 표적 소환' : '[+] Summon Movie Heroes in Shop'}</span>
+          </button>
+        </div>
+      </section>
+
       {/* ── Movie Banner Info Header ── */}
-      <div className="mb-4 sm:mb-6 p-3 sm:p-4 rounded-sm border border-[rgba(15,0,0,0.12)] bg-gradient-to-r from-red-950 via-rose-950 to-neutral-900 text-white shadow-sm">
+      <div className="mb-4 sm:mb-6 p-4 rounded-none border border-[#201d1d] bg-[#201d1d] text-[#fdfcfc]">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div className="flex items-start gap-2.5">
-            <div className="p-2 rounded bg-rose-600/30 border border-rose-500/40 text-rose-300 shrink-0 mt-0.5">
+            <div className="p-2 rounded-sm bg-[#fdfcfc]/10 border border-[#fdfcfc]/20 text-[#fdfcfc] shrink-0 mt-0.5">
               <Film size={22} />
             </div>
             <div>
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-mono text-xs font-bold tracking-wider text-rose-400 uppercase">
-                  SNSHERO THE MOVIE
+                <span className="font-mono text-xs font-bold tracking-wider text-[#fdfcfc] uppercase">
+                  [SNSHERO THE MOVIE]
                 </span>
-                <span className="px-1.5 py-0.5 rounded-xs bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold font-mono">
+                <span className="px-1.5 py-0.5 rounded-sm bg-[#fdfcfc] text-[#201d1d] text-[10px] font-bold font-mono">
                   {releasedCount}화 공개 중
                 </span>
                 {isCheckingPlaylist && (
-                  <span className="text-[10px] text-rose-300 animate-pulse font-mono">
+                  <span className="text-[10px] text-[#fdfcfc]/80 font-mono">
                     (YouTube 최신 목록 확인 중...)
                   </span>
                 )}
               </div>
-              <h2 className="text-sm sm:text-base font-extrabold mt-0.5 text-neutral-100">
+              <h2 className="text-sm sm:text-base font-bold mt-1 text-[#fdfcfc]">
                 {t('movie_subtitle', language) || '스펙터클한 SNSHero 극장판 영화 시리즈를 오피셜 플레이리스트로 감상하세요.'}
               </h2>
             </div>
@@ -509,29 +632,29 @@ export const MovieView: React.FC<MovieViewProps> = ({
               type="button"
               onClick={() => fetchLatestPlaylistStatus(false)}
               disabled={isCheckingPlaylist}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-sm bg-white/10 hover:bg-white/20 border border-white/20 text-white font-mono text-xs font-bold transition active:scale-95 shrink-0 cursor-pointer"
+              className="min-h-[44px] flex items-center gap-1.5 px-3 py-1.5 rounded-sm bg-[#201d1d] hover:bg-black border border-[#fdfcfc]/30 text-[#fdfcfc] font-mono text-xs font-bold transition-colors shrink-0 cursor-pointer"
             >
               <RefreshCw size={13} className={cn(isCheckingPlaylist && 'animate-spin')} />
-              <span>{isCheckingPlaylist ? '동기화 중...' : '최신 회차 동기화'}</span>
+              <span>{isCheckingPlaylist ? '동기화 중...' : '[최신 회차 동기화]'}</span>
             </button>
             <a
               href={getDirectYouTubeWatchUrl(currentEpisodeNum)}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-sm bg-rose-600 hover:bg-rose-700 text-white font-mono text-xs font-bold transition active:scale-95 shrink-0 shadow-xs"
+              className="min-h-[44px] flex items-center gap-1.5 px-3 py-1.5 rounded-sm bg-[#fdfcfc] hover:bg-[#f1eeee] text-[#201d1d] font-mono text-xs font-bold transition-colors shrink-0"
               title={`YouTube에서 제 ${currentEpisodeNum}화 직접 시청하기`}
             >
               <ExternalLink size={14} />
-              <span>YouTube 제{currentEpisodeNum}화 바로보기</span>
+              <span>[YouTube 제{currentEpisodeNum}화 바로보기]</span>
             </a>
             <a
               href={YOUTUBE_PLAYLIST_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-sm bg-neutral-800 hover:bg-neutral-700 text-neutral-200 border border-neutral-700 font-mono text-xs font-bold transition active:scale-95 shrink-0"
+              className="min-h-[44px] flex items-center gap-1.5 px-3 py-1.5 rounded-sm bg-[#201d1d] hover:bg-black text-[#fdfcfc] border border-[#fdfcfc]/30 font-mono text-xs font-bold transition-colors shrink-0"
             >
               <List size={13} />
-              <span>전체 재생목록</span>
+              <span>[전체 재생목록]</span>
             </a>
           </div>
         </div>
@@ -542,7 +665,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
         <div
           ref={playerContainerRef}
           className={cn(
-            'relative w-full rounded-sm overflow-hidden bg-black border border-[rgba(15,0,0,0.12)] shadow-md transition-all',
+            'relative w-full rounded-none overflow-hidden bg-black border border-[#201d1d] transition-colors',
             isFullscreen ? 'fixed inset-0 z-50 rounded-none border-none max-w-none' : 'aspect-video'
           )}
         >
@@ -557,11 +680,11 @@ export const MovieView: React.FC<MovieViewProps> = ({
           />
 
           {/* Fullscreen Overlay Controls */}
-          <div className="absolute top-3 right-3 flex items-center gap-2 z-10 opacity-80 hover:opacity-100 transition-opacity">
+          <div className="absolute top-3 right-3 flex items-center gap-2 z-10">
             <button
               type="button"
               onClick={toggleFullscreen}
-              className="p-1.5 rounded bg-black/60 hover:bg-black/80 text-white backdrop-blur-xs transition cursor-pointer"
+              className="min-h-[44px] min-w-[44px] p-2 rounded-sm bg-[#201d1d] hover:bg-black text-[#fdfcfc] border border-[#fdfcfc]/30 transition-colors cursor-pointer flex items-center justify-center"
               title={isFullscreen ? '전체화면 종료' : '전체화면'}
             >
               {isFullscreen ? <Minimize size={18} /> : <Maximize size={18} />}
@@ -570,26 +693,26 @@ export const MovieView: React.FC<MovieViewProps> = ({
         </div>
 
         {/* Player Controls & Episode Info Bar */}
-        <div className="p-3 sm:p-4 rounded-sm border border-[rgba(15,0,0,0.12)] bg-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div className="p-3 sm:p-4 rounded-none border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-mono text-xs font-extrabold px-2 py-1 rounded bg-rose-100 text-rose-800 border border-rose-200">
+            <span className="font-mono text-xs font-bold px-2 py-1 rounded-sm bg-[#201d1d] text-[#fdfcfc]">
               극장판 EP.{String(currentEpisodeNum).padStart(2, '0')}
             </span>
             {isCurrentReleased ? (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[11px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-300">
                 <CheckCircle2 size={12} />
-                공개 완료
+                [v] 공개 완료
               </span>
             ) : (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[11px] font-bold bg-amber-50 text-amber-900 border border-amber-300">
                 <Clock size={12} />
-                공개예정
+                [공개예정]
               </span>
             )}
             <span className="text-xs font-bold text-[#201d1d] font-mono">
               {getEpisodeTitle(currentEpisodeNum).main}
               {getEpisodeTitle(currentEpisodeNum).sub && (
-                <span className="text-[11px] text-stone-500 ml-1.5 font-normal">
+                <span className="text-[11px] text-[#646262] ml-1.5 font-normal">
                   ({getEpisodeTitle(currentEpisodeNum).sub})
                 </span>
               )}
@@ -602,7 +725,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
               href={getDirectYouTubeWatchUrl(currentEpisodeNum)}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-sm border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-800 text-xs font-bold font-mono transition cursor-pointer"
+              className="min-h-[44px] flex items-center gap-1 px-3 py-1.5 rounded-sm border border-[#201d1d] bg-[#fdfcfc] hover:bg-[#f1eeee] text-[#201d1d] text-xs font-bold font-mono transition-colors cursor-pointer"
               title={`YouTube 앱/웹에서 제 ${currentEpisodeNum}화 직접 열기`}
             >
               <ExternalLink size={13} />
@@ -615,7 +738,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
               type="button"
               disabled={currentEpisodeNum <= 1}
               onClick={() => handleSelectEpisode(currentEpisodeNum - 1)}
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-sm border border-[rgba(15,0,0,0.12)] bg-white hover:bg-[#f8f7f7] disabled:opacity-40 disabled:pointer-events-none text-xs font-bold font-mono transition cursor-pointer"
+              className="min-h-[44px] flex items-center gap-1 px-3 py-1.5 rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] hover:bg-[#f1eeee] disabled:opacity-40 disabled:pointer-events-none text-xs font-bold font-mono transition-colors cursor-pointer"
             >
               <ChevronLeft size={16} />
               <span>이전 화</span>
@@ -627,21 +750,21 @@ export const MovieView: React.FC<MovieViewProps> = ({
               disabled={currentEpisodeNum >= TOTAL_EPISODES}
               onClick={() => handleSelectEpisode(currentEpisodeNum + 1)}
               className={cn(
-                "flex items-center gap-1 px-2.5 py-1.5 rounded-sm border border-[rgba(15,0,0,0.12)] text-xs font-bold font-mono transition cursor-pointer",
+                "min-h-[44px] flex items-center gap-1 px-3 py-1.5 rounded-sm border text-xs font-bold font-mono transition-colors cursor-pointer",
                 currentEpisodeNum + 1 > releasedCount
-                  ? "bg-amber-50 text-amber-900 border-amber-300 hover:bg-amber-100"
-                  : "bg-white hover:bg-[#f8f7f7]"
+                  ? "bg-[#f1eeee] text-[#646262] border-[rgba(15,0,0,0.12)]"
+                  : "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d] hover:bg-[#201d1d]/90"
               )}
             >
               <span>다음 화</span>
-              {currentEpisodeNum + 1 > releasedCount ? <Lock size={14} className="text-amber-600" /> : <ChevronRight size={16} />}
+              {currentEpisodeNum + 1 > releasedCount ? <Lock size={14} /> : <ChevronRight size={16} />}
             </button>
 
             {/* Reward Claim Status */}
             {isCurrentReleased && (
-              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-sm font-mono text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-300 shrink-0">
+              <div className="min-h-[44px] flex items-center gap-1.5 px-3 py-1.5 rounded-sm font-mono text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-300 shrink-0">
                 <CheckCircle2 size={14} className="text-emerald-600" />
-                <span>{language === 'ko' ? '시청 보상 100 SNS 자동 지급 완료' : '100 SNS Auto-Awarded'}</span>
+                <span>{language === 'ko' ? '[v] 시청 보상 100 SNS 자동 지급 완료' : '[v] 100 SNS Auto-Awarded'}</span>
               </div>
             )}
           </div>
@@ -650,38 +773,38 @@ export const MovieView: React.FC<MovieViewProps> = ({
 
       {/* ── Episode Grid View (1 ~ 40화) ── */}
       <div className="space-y-3">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center gap-2">
-            <h3 className="font-mono text-sm font-extrabold text-[#201d1d]">
-              전체 에피소드 ({TOTAL_EPISODES}부작)
+            <h3 className="font-mono text-sm font-bold text-[#201d1d]">
+              [ 전체 에피소드 ({TOTAL_EPISODES}부작) ]
             </h3>
-            <span className="text-xs text-neutral-500 font-mono">
+            <span className="text-xs text-[#646262] font-mono">
               (공개 {releasedCount} / 예정 {TOTAL_EPISODES - releasedCount})
             </span>
           </div>
 
           {/* Filter Tabs */}
-          <div className="flex items-center gap-1 bg-neutral-100 p-0.5 rounded border border-[rgba(15,0,0,0.12)] text-xs font-mono">
+          <div className="flex items-center gap-1 bg-[#f8f7f7] p-1 rounded-none border border-[rgba(15,0,0,0.12)] text-xs font-mono">
             <button
               type="button"
               onClick={() => setFilterMode('all')}
-              className={cn('px-2 py-0.5 rounded transition cursor-pointer', filterMode === 'all' && 'bg-white font-bold shadow-2xs')}
+              className={cn('min-h-[36px] px-2.5 py-1 rounded-sm transition-colors cursor-pointer', filterMode === 'all' ? 'bg-[#201d1d] text-[#fdfcfc] font-bold' : 'text-[#201d1d] hover:bg-[#f1eeee]')}
             >
-              전체
+              [전체]
             </button>
             <button
               type="button"
               onClick={() => setFilterMode('released')}
-              className={cn('px-2 py-0.5 rounded transition cursor-pointer', filterMode === 'released' && 'bg-white font-bold text-emerald-700 shadow-2xs')}
+              className={cn('min-h-[36px] px-2.5 py-1 rounded-sm transition-colors cursor-pointer', filterMode === 'released' ? 'bg-[#201d1d] text-[#fdfcfc] font-bold' : 'text-[#201d1d] hover:bg-[#f1eeee]')}
             >
-              공개 완료 ({releasedCount})
+              [공개 완료 ({releasedCount})]
             </button>
             <button
               type="button"
               onClick={() => setFilterMode('upcoming')}
-              className={cn('px-2 py-0.5 rounded transition cursor-pointer', filterMode === 'upcoming' && 'bg-white font-bold text-amber-700 shadow-2xs')}
+              className={cn('min-h-[36px] px-2.5 py-1 rounded-sm transition-colors cursor-pointer', filterMode === 'upcoming' ? 'bg-[#201d1d] text-[#fdfcfc] font-bold' : 'text-[#201d1d] hover:bg-[#f1eeee]')}
             >
-              공개예정 ({TOTAL_EPISODES - releasedCount})
+              [공개예정 ({TOTAL_EPISODES - releasedCount})]
             </button>
           </div>
         </div>
@@ -704,12 +827,12 @@ export const MovieView: React.FC<MovieViewProps> = ({
                   type="button"
                   onClick={() => handleSelectEpisode(ep)}
                   className={cn(
-                    'relative flex flex-col items-center justify-center p-2.5 rounded-sm border transition text-left cursor-pointer font-mono group',
+                    'min-h-[64px] relative flex flex-col items-center justify-center p-2.5 rounded-none border transition-colors text-left cursor-pointer font-mono group',
                     isSelected && isReleased
-                      ? 'border-rose-600 bg-rose-50 text-rose-950 font-extrabold ring-1 ring-rose-500'
+                      ? 'border-[#201d1d] bg-[#201d1d] text-[#fdfcfc] font-bold'
                       : isReleased
-                      ? 'border-[rgba(15,0,0,0.12)] bg-white hover:border-rose-300 hover:bg-rose-50/50 text-[#201d1d]'
-                      : 'border-neutral-200 bg-neutral-100/80 text-neutral-400 hover:bg-neutral-100 hover:border-amber-300'
+                      ? 'border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] hover:border-[#201d1d] hover:bg-[#f8f7f7] text-[#201d1d]'
+                      : 'border-[rgba(15,0,0,0.12)] bg-[#f1eeee] text-[#646262]'
                   )}
                 >
                   <div className="flex items-center justify-between w-full mb-1">
@@ -717,26 +840,29 @@ export const MovieView: React.FC<MovieViewProps> = ({
                       EP.{String(ep).padStart(2, '0')}
                     </span>
                     {isReleased ? (
-                      <Play size={12} className={cn(isSelected ? 'text-rose-600 fill-current' : 'text-neutral-400 group-hover:text-rose-600')} />
+                      <Play size={12} className={cn(isSelected ? 'text-[#fdfcfc] fill-current' : 'text-[#646262] group-hover:text-[#201d1d]')} />
                     ) : (
-                      <Lock size={12} className="text-amber-500" />
+                      <Lock size={12} className="text-[#646262]" />
                     )}
                   </div>
 
                   <div className="w-full text-center">
                     {isReleased ? (
-                      <span className="inline-block px-1.5 py-0.5 rounded text-[9px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200/60">
+                      <span className={cn(
+                        "inline-block px-1.5 py-0.5 rounded-sm text-[9px] font-bold border",
+                        isSelected ? "bg-[#fdfcfc] text-[#201d1d] border-[#fdfcfc]" : "bg-emerald-50 text-emerald-800 border-emerald-200"
+                      )}>
                         공개 완료
                       </span>
                     ) : (
-                      <span className="inline-block px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-100 text-amber-800 border border-amber-200/60">
+                      <span className="inline-block px-1.5 py-0.5 rounded-sm text-[9px] font-bold bg-[#fdfcfc] text-[#646262] border border-[rgba(15,0,0,0.12)]">
                         공개예정
                       </span>
                     )}
                   </div>
 
                   {isClaimed && (
-                    <span className="absolute top-1 right-1 text-emerald-600">
+                    <span className={cn("absolute top-1 right-1", isSelected ? "text-emerald-300" : "text-emerald-600")}>
                       <CheckCircle2 size={10} />
                     </span>
                   )}
@@ -749,25 +875,25 @@ export const MovieView: React.FC<MovieViewProps> = ({
       {/* ── Slide Drawer: Episode List ── */}
       <AnimatePresence>
         {showDrawer && (
-          <div className="fixed inset-0 z-50 flex justify-end bg-black/50 backdrop-blur-xs">
+          <div className="fixed inset-0 z-50 flex justify-end bg-black/60">
             <motion.div
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="w-full max-w-md h-full bg-[#fdfcfc] border-l border-[rgba(15,0,0,0.12)] p-4 flex flex-col shadow-2xl"
+              className="w-full max-w-md h-full bg-[#fdfcfc] border-l border-[#201d1d] p-4 flex flex-col rounded-none"
             >
               <div className="flex items-center justify-between pb-3 border-b border-[rgba(15,0,0,0.12)] mb-3">
                 <div className="flex items-center gap-2">
-                  <Film size={18} className="text-rose-600" />
-                  <h3 className="font-mono text-base font-extrabold text-[#201d1d]">
-                    영화 회차 목록 (40부작)
+                  <Film size={18} className="text-[#201d1d]" />
+                  <h3 className="font-mono text-base font-bold text-[#201d1d]">
+                    [ 영화 회차 목록 (40부작) ]
                   </h3>
                 </div>
                 <button
                   type="button"
                   onClick={() => setShowDrawer(false)}
-                  className="p-1 rounded-sm hover:bg-[#f1eeee] text-[#201d1d] transition cursor-pointer"
+                  className="min-h-[44px] min-w-[44px] p-1 rounded-sm border border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee] text-[#201d1d] transition-colors cursor-pointer flex items-center justify-center"
                 >
                   <X size={18} />
                 </button>
@@ -785,12 +911,12 @@ export const MovieView: React.FC<MovieViewProps> = ({
                       type="button"
                       onClick={() => handleSelectEpisode(ep)}
                       className={cn(
-                        'w-full p-3 rounded-sm border text-left flex items-center justify-between transition cursor-pointer font-mono',
+                        'min-h-[48px] w-full p-3 rounded-sm border text-left flex items-center justify-between transition-colors cursor-pointer font-mono',
                         isSelected && isReleased
-                          ? 'border-rose-600 bg-rose-50 text-rose-950 font-bold ring-1 ring-rose-500'
+                          ? 'border-[#201d1d] bg-[#201d1d] text-[#fdfcfc] font-bold'
                           : isReleased
-                          ? 'border-[rgba(15,0,0,0.12)] bg-white hover:bg-rose-50/40 text-[#201d1d]'
-                          : 'border-neutral-200 bg-neutral-100 text-neutral-400 hover:bg-neutral-150'
+                          ? 'border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] hover:bg-[#f8f7f7] text-[#201d1d]'
+                          : 'border-[rgba(15,0,0,0.12)] bg-[#f1eeee] text-[#646262]'
                       )}
                     >
                       <div className="flex items-center gap-2.5 overflow-hidden">
@@ -802,7 +928,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
                             {getEpisodeTitle(ep).main}
                           </span>
                           {getEpisodeTitle(ep).sub && (
-                            <span className="text-[10px] text-stone-400 truncate font-normal">
+                            <span className={cn("text-[10px] truncate font-normal", isSelected ? "text-[#fdfcfc]/70" : "text-[#646262]")}>
                               {getEpisodeTitle(ep).sub}
                             </span>
                           )}
@@ -818,21 +944,24 @@ export const MovieView: React.FC<MovieViewProps> = ({
                               rel="noopener noreferrer"
                               onClick={(e) => e.stopPropagation()}
                               title={`YouTube에서 제 ${ep}화 직접 시청하기`}
-                              className="p-1 rounded hover:bg-rose-100 text-rose-600 transition"
+                              className={cn("p-1 rounded-sm transition-colors", isSelected ? "text-[#fdfcfc]" : "text-[#201d1d] hover:bg-[#f1eeee]")}
                             >
                               <ExternalLink size={12} />
                             </a>
-                            <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                            <span className={cn(
+                              "px-1.5 py-0.5 rounded-sm text-[10px] font-bold border",
+                              isSelected ? "bg-[#fdfcfc] text-[#201d1d] border-[#fdfcfc]" : "bg-emerald-50 text-emerald-800 border-emerald-200"
+                            )}>
                               공개 완료
                             </span>
                           </>
                         ) : (
-                          <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200 flex items-center gap-1">
+                          <span className="px-1.5 py-0.5 rounded-sm text-[10px] font-bold bg-[#fdfcfc] text-[#646262] border border-[rgba(15,0,0,0.12)] flex items-center gap-1">
                             <Lock size={10} />
                             공개예정
                           </span>
                         )}
-                        {isClaimed && <CheckCircle2 size={14} className="text-emerald-600" />}
+                        {isClaimed && <CheckCircle2 size={14} className={isSelected ? "text-emerald-300" : "text-emerald-600"} />}
                       </div>
                     </button>
                   );

@@ -504,13 +504,52 @@ export const SettingView: React.FC<SettingViewProps> = ({
       ? 'border-amber-200 bg-amber-50 text-amber-700'
       : 'border-slate-200 bg-slate-100 text-slate-600';
 
+  // Viral Challenge Share State
+  const [viralSharedToday, setViralSharedToday] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem(`hero_setting_viral_share_${todayDateStr}`) === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  const handleShareSettingChallenge = () => {
+    triggerHaptic('tap');
+    const shareUrl = 'https://snshero.com/?challenge=1-11-31-51-101&ref=setting';
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(shareUrl).catch(() => {});
+    }
+    const shareKey = `hero_setting_viral_share_${todayDateStr}`;
+    let alreadyShared = false;
+    try {
+      alreadyShared = localStorage.getItem(shareKey) === 'true';
+    } catch {}
+
+    if (!alreadyShared) {
+      try {
+        localStorage.setItem(shareKey, 'true');
+        const cur = parseInt(localStorage.getItem('hero_sns') || '500', 10);
+        localStorage.setItem('hero_sns', String(cur + 50));
+        window.dispatchEvent(new Event('hero_sns_updated'));
+      } catch {}
+      setViralSharedToday(true);
+      triggerHaptic('victory');
+      setSystemNotice(language === 'ko' ? '도전장 링크 복사 완료! 일일 보너스 +50 SNS가 지급되었습니다.' : 'Challenge Link Copied! Claimed +50 SNS bonus.');
+      setTimeout(() => setSystemNotice(null), 3000);
+    } else {
+      setSystemNotice(language === 'ko' ? '도전장 링크가 클립보드에 복사되었습니다.' : 'Challenge Link Copied to clipboard.');
+      setTimeout(() => setSystemNotice(null), 2500);
+    }
+    playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+  };
+
   return (
-    <div id="settings-panel" className="p-4 sm:p-6 md:p-8 pb-32 flex flex-col gap-6 max-w-4xl mx-auto min-h-screen bg-slate-50/50 text-slate-800 font-sans">
+    <div id="settings-panel" className="p-4 sm:p-6 md:p-8 pb-32 flex flex-col gap-6 max-w-4xl mx-auto min-h-screen bg-[#fdfcfc] text-[#201d1d] font-mono">
       <PageHeader title={t('setting', language)}
         rightAction={
           <button
             onClick={() => { setShowHelp(true); setHelpSlide(0); playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3'); }}
-            className="inline-flex min-h-9 min-w-9 items-center justify-center rounded-full border border-slate-300 bg-white/80 text-slate-600 transition-all hover:border-slate-400 hover:bg-white hover:text-slate-800 active:scale-95"
+            className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-[#201d1d] hover:bg-[#f8f7f7] transition-colors cursor-pointer"
             title="Help"
             aria-label="Help"
           >
@@ -518,34 +557,32 @@ export const SettingView: React.FC<SettingViewProps> = ({
           </button>
         }
       />
-      <PageSubHeader
-        badge={t('setting', language)}
-        title={t('setting', language)}
-        description=""
-        actionButton={
-          <button
-            onClick={onStartTutorial}
-            className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white shadow-sm transition-all hover:border-white/30 hover:bg-white/20 active:scale-95 touch-target"
-            title={t('menu_tutorial', language)}
-            aria-label={t('menu_tutorial', language)}
-          >
-            <HelpCircle size={16} className="shrink-0" />
-          </button>
-        }
-      />
 
-      <AnimatePresence>
-        {systemNotice && (
-          <motion.div
-            initial={{ y: -8, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -8, opacity: 0 }}
-            className="border border-amber-200 bg-amber-50 text-amber-900 rounded-lg p-4 text-xs font-bold leading-relaxed shadow-sm"
-          >
-            {systemNotice}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* SCR-12 Viral Challenge Share Banner */}
+      <div className="w-full border border-[#201d1d] bg-[#f8f7f7] p-3 text-[#201d1d] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-mono">
+        <div>
+          <div className="flex items-center gap-2">
+            <span className="px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-none">
+              [VIRAL SHARE]
+            </span>
+            <span className="text-xs font-bold text-[#201d1d]">
+              {language === 'ko' ? '친구 초대 & 덱 1:1 도전장 링크 공유' : 'Invite Friends & Share 1:1 Challenge'}
+            </span>
+          </div>
+          <p className="text-[11px] text-[#646262] mt-0.5">
+            {language === 'ko' ? '공유 시 무설치 즉시 대결 · 매일 첫 공유 시 +50 SNS 즉시 지급' : 'Instant no-install battle · +50 SNS daily reward'}
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={handleShareSettingChallenge}
+          className="w-full sm:w-auto min-h-[44px] px-4 py-2 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] text-xs font-bold rounded-sm cursor-pointer transition-colors shrink-0"
+        >
+          {viralSharedToday
+            ? (language === 'ko' ? '[도전장 링크 복사]' : '[COPY DUEL LINK]')
+            : (language === 'ko' ? '[도전장 공유 (+50 SNS)]' : '[SHARE DUEL (+50 SNS)]')}
+        </button>
+      </div>
 
       {/* SCR-12-01: 상단 일일 보상 요약 HUD */}
       <section className="border border-[#201d1d]/12 bg-white p-4 font-mono">
