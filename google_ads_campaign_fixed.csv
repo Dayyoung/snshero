@@ -1,0 +1,14 @@
+Action,Campaign,Budget,Budget type,Bid strategy type,EU political ads,Campaign Type,Campaign Status,Ad Group,Ad Group Status,Max CPC,Keyword,Match Type,Ad type,Headline 1,Headline 2,Headline 3,Headline 4,Headline 5,Description 1,Description 2,Final URL,Path 1,Path 2
+Add,SNSHero_검색_고효율_KR,10000,Daily,Maximize clicks,No,Search,Enabled,,,,,,,,,,,,,,,,
+Add,SNSHero_검색_고효율_KR,,,,,,,카드배틀_핵심키워드,Enabled,180,,,,,,,,,,,,,
+Add,SNSHero_검색_고효율_KR,,,,,,,카드배틀_핵심키워드,,,무료 카드게임,Phrase,,,,,,,,,,,
+Add,SNSHero_검색_고효율_KR,,,,,,,카드배틀_핵심키워드,,,웹 카드 배틀,Phrase,,,,,,,,,,,
+Add,SNSHero_검색_고효율_KR,,,,,,,카드배틀_핵심키워드,,,설치없는 웹게임,Phrase,,,,,,,,,,,
+Add,SNSHero_검색_고효율_KR,,,,,,,카드배틀_핵심키워드,,,무료 TCG,Phrase,,,,,,,,,,,
+Add,SNSHero_검색_고효율_KR,,,,,,,카드배틀_핵심키워드,,,덱빌딩 카드게임,Phrase,,,,,,,,,,,
+Add,SNSHero_검색_고효율_KR,,,,,,,카드배틀_핵심키워드,,,심심할때 하는 게임,Phrase,,,,,,,,,,,
+Add,SNSHero_검색_고효율_KR,,,,,,,카드배틀_핵심키워드,,,무료 웹게임,Phrase,,,,,,,,,,,
+Add,SNSHero_검색_고효율_KR,,,,,,,카드배틀_핵심키워드,,,웹 카드게임,Exact,,,,,,,,,,,
+Add,SNSHero_검색_고효율_KR,,,,,,,카드배틀_핵심키워드,,,설치없는 게임,Exact,,,,,,,,,,,
+Add,SNSHero_검색_고효율_KR,,,,,,,카드배틀_핵심키워드,,,모바일 웹게임,Exact,,,,,,,,,,,
+Add,SNSHero_검색_고효율_KR,,,,,,,카드배틀_핵심키워드,,,,,Responsive search ad,SNSHero | 1초 즉시 접속 카드 배틀,설치 0초! 브라우저 웹 TCG,접속 즉시 무료 SSR 카드 지급,AI 전략 덱빌딩 & 110종 미니게임,다운로드 없이 스마트폰 원클릭 플레이,복잡한 클라이언트 설치 없이 브라우저에서 바로 즐기는 인공지능 웹 카드 배틀! 지금 100회 무료 뽑기 혜택을 받아보세요.,1초 만에 승부가 갈리는 전략 아레나! 110여 종의 영웅 카드를 수집하고 당신만의 최강 덱을 완성하세요.,https://snshero.com/?utm_source=google_ads&utm_medium=cpc,카드배틀,무료소환
