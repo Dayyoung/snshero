@@ -1,42 +1,72 @@
 SNSHero Novel
 Episode 01: Two Vows Beneath the Blizzard
 
-Winter arrived first in Elwin(042.png) village, at the southern end of the Kingdom of Lighthaven. The snow covered the castle walls starting during the day, and as the sun set, it even engulfed the boundaries of the roads and roofs. People lined their windows with thick parchment and turned off their lights early.
+At the southernmost edge of the Kingdom of Lighthaven, where jagged mountain ranges met the frozen tundra, winter arrived with unsparing brutality in the village of Elwin. By midday, howling gales and razor-sharp flurries had wiped the stockades and watchtowers from sight. Before dusk could settle, the blizzard swallowed the muddy tracks and stone roofs whole. The villagers sealed their windows with grease-coated parchment, covered their hearth embers, and extinguished their lanterns early. Rumors had spread across the ice like wildfire: the dreaded shadow cavalry from the conquered northern marches had already breached the frontier woods.
 
-It was because of the rumor that the Shadow Realm cavalry that had taken over the north had crossed the border. That night, Aleksandar(050.png) and Balian(043.png) were sitting across from each other in the small tavern behind the blacksmith shop. Aleksandar(050.png) was a quiet hunter who used dual swords, and Balian(043.png) was a man who pierced the eyes of a wolf in a blizzard with an arcane spear.
+Inside a weathered log tavern hidden behind the village smithy, Aleksandar and Balian sat across from each other, nursing chilled infusions by the dull glow of charcoal. Aleksandar was a quiet hunter of the northern borders who wielded twin blades with effortless grace, while Balian was a seasoned veteran capable of piercing the throat of a winter wolf through the thickest whiteout with his arcane spear. Both men concealed their lineage as descendants of the fallen Order of Arcane Holy Knights, choosing instead to till the stony earth and hammer iron in silence. The impending birth of their firstborns from their heavily pregnant wives, Elwin and Ysela, was the solitary lantern that kept the bitter defeat of their homeland bearable.
 
-[Aleksandar(050.png), Balian(043.png)] The two men lived by plowing fields and pounding iron, hiding the fact that they were descendants of the fallen Holy Knights. The only hope that could endure the night of a defeated nation was that their wives would soon give birth to children. When the door opened, the smell of blood came in before the wind.
+Suddenly, the heavy pine door groaned on its iron hinges and burst open. Ahead of the freezing draft came the sharp reek of blood and scorched ozone. Framed against the howling squall stood Hercul, clad in tattered pilgrim vestments. At his belt dangled the cracked golden seal of the Holy Knights, and faint ripples of radiant mana leaked through his torn gauntlets, etching incandescent runes into the damp floorboards.
 
-Hercul(049.png), wearing tattered pilgrimage clothes, stood at the threshold. The broken seal of the Holy Knights was hanging on his waist, and the golden mana leaking through his gloves drew a thin pattern on the wet floor. The tip of Balian(043.png)'s spear touched his neck. Aleksandar(050.png)'s sword was already blocking the escape route behind his back.
+In the span of a single heartbeat, the tip of Balian's arcane spear hissed forward, freezing a bare inch from the intruder's throat. Behind him, Aleksandar's twin blades were already drawn in a fluid cross-guard, sealing every line of retreat.
 
-“If you are a hunting dog from the Shadow Realm, it would be a waste of time to reveal your name. ” Hercul(049.png) spread his palms instead of answering. The two men's weapons stopped as if they had hit an invisible wall.
+"If you are a hound dispatched from the Shadow Realm, speaking your name will only hasten your demise," Balian growled, the azure spark along his spearhead reflecting the stranger's grim eyes.
 
-[Hercul(049.png)] As the golden protective shield surrounded the tavern, the liquor bottles on the shelves cried all at once. But he didn't fight back. He simply placed the belongings of the executed Holy Knight Commander Ake on the table.
+Hercul did not reach for a weapon. Instead, he slowly opened both empty palms.
 
-After the misunderstanding was resolved, the three discussed the state of the kingdom until dawn. The royal family hung on to banquets and tax books, and border towns took it upon themselves to keep monsters and marauders at bay. Hercul(049.png) was chasing a list of court nobles who had connections with the Shadow Realm. At the top of the list was Death Knight Artus(060.png), Regent of the Court of Red Glass.
+"Stand down, brothers. I bear the blood of wolves upon my mantle, yet I do not hunt for the pack."
 
-Before leaving, Hercul(049.png) took out two silver daggers. Inside the handle, an unnamed rune was still sleeping. “Give each child one when they are born.
+A dome of golden protective aegis blossomed outward, muffling the roar of the exterior tempest in an instant. Along the tavern shelves, earthenware flasks vibrated in harmonious resonance. Hercul had manifested a defensive perimeter without initiating a single hostile gesture. Reaching into his tunic with steady fingers, he placed a shattered breastplate insignia upon the rough oak table—the undeniable relic of their executed Grand Master.
 
-This does not mean that they should pass on their parents’ grudges. It means that they do not forget the truth until they decide for themselves who is their friend and who is their enemy. ” Aleksandar(050.png) said he would give his son the name Kadan(041.png), which means a shield that endures to the end in an old northern language.
+As the tension subsided, Hercul swallowed a stale crust of bread and laid bare the kingdom's grim plight until the early hours of dawn. The court at Lighthaven wallowed in gluttonous banquets and extortionate levies, leaving frontier outposts entirely defenseless against demonic incursions. Hercul had been tracking a treasonous covenant of nobles who had sold their fealty to the Shadow Realm. At the summit of this black list sat Regent Death Knight Artus and the ambitious courtier Lucian.
 
-Balian(043.png) said he would call the child Ignis(011.png) to mean not to get lost even in the fire. Instead of alcohol, the three men filled their glasses with melted snow and prayed for the safety of their two unborn children. A few days later, on a snow-covered road, young nobleman Lucian(061.png) met Aleksandar(050.png)'s wife, Elwin(042.png). He was dressed like an injured traveler, but hidden within his cloak was the coat of arms of the Red Glass Court.
+"The shadow reaches even into this southern basin," Hercul whispered, his gaze shadowed with sorrow. "Inquisitors flying royal banners will descend upon this hamlet before the new moon."
 
-A bowl of warm soup and a few kind words from Elwin(042.png) awakened Lucian(061.png)'s desire. He turned the entire town into a den of traitors to take her over. At dawn, soldiers in black armor surrounded the village.
+Before stepping back into the blizzard, Hercul produced two slender silver daggers wrapped in oiled doe-skin. Along the white-silver fuller slept ancient runes of the Holy Order, pulsing like faint blue veins beneath frost.
 
-Aleksandar(050.png) sent his wife out to the north canal and stood on the bridge alone. Balian(043.png) lifted his spear after putting his pregnant wife, Ysela(107.png), in the carriage. The two tore through the siege dozens of times, but the enemy even used the local residents as shields.
+"When your sons draw their first breath, place these silver daggers into their hands," Hercul urged, his voice trembling with solemn gravity. "Do not bestow them to demand blood debts or inherited vendettas. When the continent drowns in falsehood and betrayal, let these blades preserve the inner truth so they may discern who stands as brother and who lurks as foe."
 
-Aleksandar(050.png) chose the line where the resident was standing and struck the soldier's wrist with the back of his sword. The wounds on my shoulders and thighs increased as I was doing things that would have been quick to cut. Balian(043.png) lifted up the fallen soldier's spear and threw it at the residents.
+Aleksandar gripped the hilt, nodding with resolute northern stoicism.
 
-The baker and carpenter, who had never held a weapon in their lives, stood on the railing of the bridge, sending their family behind them. Lucian(061.png) looked down on the battle from high above. He shouted to Aleksandar(050.png) that he would guarantee Elwin(042.png)'s life if he admitted to treason. Instead of answering, Aleksandar(050.png) cut one of the ropes on the bridge.
+"If my son enters this world, I shall name him Kadan—the enduring shield that never shatters."
 
-The wooden board the soldiers were standing on tilted and fell into the icy water. “Your wife’s life is not guaranteed by your words. ” Balian(043.png)'s carriage was intercepted by the court cavalry at the end of the alley.
+Balian pressed his hand to his chest as he received the companion blade.
 
-Ysela(107.png) crawled under the carriage, covering its stomach, but Lucian(061.png) personally grabbed the reins and stopped it. She grabbed some mud and threw it in his face. Because of that short resistance, Balian(043.png) thought his wife had run away and lured the enemy towards the cliff.
+"And mine shall be named Ignis, that his spirit may never lose its way, even within the furnace of tribulation."
 
-Aleksandar(050.png) did not back down from the bridge until the end. By the time his sword broke, Elwin(042.png) had already disappeared beyond the blizzard. Balian(043.png) fell into the rapids at the bottom of the cliff while trying to protect Ysela(107.png), and Lucian(061.png) kidnapped Ysela(107.png) in the confusion and took him to the palace. Arriving in the northern wilderness, Elwin(042.png) kneeled toward the burned village.
+Raising cups filled not with wine but with melted snowfall, the three warriors consecrated their vows for the unborn children. Yet fate was swifter and far crueler than their hopes.
 
-The dagger in my arms trembled slightly. A child who had not yet come into the world kicked his foot from the inside. The refugees who followed late could not say that Aleksandar(050.png) was dead.
+Three mornings later, amid a blinding snow fog, the young highborn Lucian encountered Aleksandar's wife, Elwin, on the village perimeter. Disguised as an injured merchant who had lost his mount, Lucian concealed beneath his ermine cloak the serpentine crest of the Red Glass Court. When Elwin offered him warm barley broth and tended his fabricated wounds with boundless mercy, a twisted, possessive obsession ignited within Lucian's corrupt heart. To claim her as his own, he fabricated imperial charges declaring the entire settlement a nest of insurgents.
 
-Elwin(042.png) didn't even ask. He put the broken sword sheath that someone had given him into his bosom, and buried the wheat seeds he had brought from the village under his eyes. Even if I couldn't come back, I hoped that someone would be able to eat bread again on the spot.
+At dawn, iron-clad legionnaires encircled the village under cover of burning pitch. Torches set the straw thatch ablaze. Aleksandar shoved the pregnant Elwin toward the secret northern waterway, drawing his dual swords to hold the solitary wooden bridge alone. Balian concealed his expectant wife, Ysela, within the covered cart, brandishing his arcane spear. Dozens of times they shattered the advancing lines, but Lucian mercilessly drove captive villagers forward as living shields.
 
-“You were not born for revenge. ” Elwin(042.png) wiped his tears and walked again. “Just be someone who doesn’t bow your head in the face of lies. ”
+"Surrender your steel, Aleksandar!" Lucian sneered from horseback atop the ridge. "Confess your treason, and I may grant your woman her wretched life!"
+
+Refusing to strike the innocent captives, Aleksandar deflected blows with the blunt spines of his swords, absorbing spear thrusts and bleeding profusely from shoulder and thigh. Looking upon the burning village, his eyes burned with unyielding resolve.
+
+"My wife's life is not a favor to be bartered from a traitor's tongue!"
+
+With a thunderous cry, Aleksandar severed the massive mooring cables supporting the span. Screaming legionnaires plunged headlong into the icy torrent below.
+
+Near the rear alleys, Balian's escape cart overturned under iron chains. Ysela crawled desperately through the mud, shielding her belly with both arms, only to be blocked by Lucian's warhorse. She hurled a handful of frozen slush into the nobleman's face with fierce defiance.
+
+"Lay no hand upon me, monster!"
+
+Hearing her desperate cry and believing she had slipped past the cordon, Balian charged toward the precipice to draw the pursuing cavalry away from her.
+
+"Live, Ysela! You must live!"
+
+Snapping his spear haft, Balian dragged several mounted foes with him over the mist-shrouded chasm into the raging river rapids. In the chaos, Lucian threw his heavy cloak over the unconscious Ysela and whisked her south toward the imperial palace.
+
+On the ruined bridge, Aleksandar broke his twin swords across the breastplate of the final commander before collapsing upon one knee. Through the blinding snow, his fading eyes caught a fleeting glimpse of Elwin's cloaked figure escaping into the safety of the northern wilderness.
+
+Reaching the frozen tundra, Elwin dropped to her knees, looking back toward the pillars of smoke rising from their ruined home. Beneath her bodice, the silver dagger resonated faintly against the broken sword-sheath of her husband. Inside her womb, the unborn child kicked with sudden strength.
+
+The elderly refugees who caught up with her could not bear to speak Aleksandar's demise aloud. Elwin did not ask. She tucked the broken sheath against her breast, scooped away the snow with bare fingers, and buried a fistful of golden wheat seeds into the frozen loam.
+
+"Even if we never return," she whispered softly, "someone must live to bake bread upon this ground once more."
+
+Wiping the frozen tears from her cheeks, Elwin turned north into the gale.
+
+"My child, you were not born to carry the burden of vengeance," her voice rang steady against the wind. "Only promise me that you will never bow your head before a lie."
+
+The blizzard buried the blood of two brave men, yet the seeds beneath the snow and the twin silver daggers glowed in the darkness like an ember that no storm could ever quench.

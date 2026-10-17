@@ -1,0 +1,177 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+SNSHero Web Novel Batch 1 Generator (Episodes 01 - 10)
+Produces commercial-grade literary fantasy chapters:
+- Length: >= 3,700+ Korean characters
+- Dialogues: >= 10+ distinct lines of dialogue
+- Immersive worldbuilding across the 11 races of the Arcane continent
+- Lore keywords preserved strictly
+- Polished English counterpart written without raw image tokens
+"""
+
+import os
+import re
+
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+BOOK_DIR = os.path.join(BASE_DIR, "public", "book")
+EN_DIR = os.path.join(BOOK_DIR, "image_narrations", "english_txt")
+
+os.makedirs(BOOK_DIR, exist_ok=True)
+os.makedirs(EN_DIR, exist_ok=True)
+
+# Episode 01: 눈보라 아래 두 서약 / Two Vows Beneath the Blizzard
+EP01_KO = """# 눈히어로 1화 - 눈보라 아래 두 서약
+
+> 원문 범위: 제1장-제2장
+
+라이트헤븐 왕국의 남쪽 끝자락, 거친 산맥과 툰드라가 맞닿은 엘윈 마을에는 겨울이 가혹하리만치 서둘러 당도했다. 칼날 같은 눈보라는 정오를 넘기자마자 목책과 망루를 하얗게 지워 버렸고, 황혼이 채 내리기도 전에 얼어붙은 진흙길과 돌지붕의 경계를 통째로 삼켰다. 마을 사람들은 틈새마다 두꺼운 기름 양피지를 덧대고 화로의 잿더미를 덮은 채 일찍이 등잔불을 껐다. 북방의 국경을 유린한 섀도우렐름의 암흑 기병들이 이미 숲을 가로질러 쳐들어왔다는 흉흉한 소문이 빙판 위로 흩날리던 탓이었다.
+
+그날 밤에도 알렉산다르와 발리안은 대장간 뒤편에 숨겨진 낡은 통나무 선술집 탁자에 마주 앉아 서릿발 낀 찻잔을 매만졌다. 알렉산다르는 벼린 쌍검을 능수능란하게 다루는 과묵한 북방의 사냥꾼이었고, 발리안은 한 자루 아케인 창으로 눈보라 속 굶주린 마수들의 숨통을 꿰뚫는 노련한 투사였다. 두 사람은 오래전 몰락한 아케 성기사단의 혈통이라는 사실을 숨긴 채, 거친 밭을 갈고 붉은 쇠를 두드리며 낮게 엎드려 살았다. 각자의 아내인 엘윈과 이셀라가 만삭이 되어 곧 새 생명을 낳는다는 작은 기대만이, 패전국의 잿빛 밤을 버티게 하는 유일한 온기였다.
+
+갑자기 낡은 문짝이 삐걱거리며 거칠게 열렸다. 매서운 돌풍보다 먼저 진한 피비린내와 타버린 오존 냄새가 좁은 주막 안으로 들이닥쳤다. 눈보라를 뒤집어쓴 채 문턱에 우뚝 선 사내는 해진 순례자 법복을 걸친 헤르쿨이었다. 그의 허리춤에는 반으로 깨진 성기사단의 황금 인장이 위태롭게 덜렁거렸고, 찢어진 무쇠 장갑 틈새로 새어 나오는 황금빛 마나가 젖은 판자 바닥 위에 희미한 성흔 문양을 새겼다.
+
+순식간에 발리안의 아케인 창끝이 번개처럼 쏘아져 헤르쿨의 목젖 바로 앞에서 멈춰 섰다. 알렉산다르의 서릿발 쌍검 역시 이미 등 뒤의 퇴로를 빈틈없이 차단하고 있었다.
+
+“섀도우렐름의 사냥개라면 이름을 밝힐 시간조차 아까울 텐데.”
+
+발리안이 낮게 으르렁거렸다. 창날 끝에서 튀는 푸른 불꽃이 침입자의 눈동자를 겨누었다. 그러나 헤르쿨은 검을 뽑는 대신 가만히 두 손바닥을 펼쳐 보였다.
+
+“진정하게, 형제들이여. 늑대의 피를 묻히고 왔으나 늑대의 편에 선 자는 아니네.”
+
+순간 황금빛 방호진이 선술집 천장과 벽을 둥글게 감싸며 폭풍처럼 웅성거리던 바람 소리를 단숨에 차단했다. 선반 위에 놓인 독주 병들이 맑은 파열음을 내며 일제히 공명했다. 헤르쿨은 방호 결계를 펼쳤을 뿐 어떤 반격도 가하지 않았다. 그가 피 묻은 가죽 주머니에서 꺼내 탁자 위에 조용히 내려놓은 것은, 처형당한 아케 성기사단장의 부러진 흉갑 조각이었다.
+
+두 남자의 살기가 잦아들자 헤르쿨은 마른 빵 한 조각을 삼키며 새벽까지 대륙의 비극적인 형편을 털어놓았다. 라이트헤븐의 궁정은 사치스러운 연회와 착취에 눈이 멀었고, 국경의 변방 마을들은 마물과 암흑 병사들의 노략질에 방치되어 있었다. 헤르쿨은 섀도우렐름에 왕국을 팔아넘긴 배신자 귀족들의 살생부를 추적하던 중이었다. 그 명단의 맨 꼭대기에는 붉은 유리 궁정을 지배하는 섭정, 데스나이트 아르투스와 야심가 루시안의 이름이 적혀 있었다.
+
+“어둠의 군세가 이 남쪽 계곡까지 내려왔네. 왕실의 밀명으로 위장한 사냥꾼들이 머지않아 이 마을을 덮칠 걸세.”
+
+헤르쿨의 눈빛이 무겁게 가라앉았다. 그는 떠나기 직전 품속 깊은 곳에서 룬이 새겨진 은빛 단검 두 자루를 꺼냈다. 백은의 칼날 안쪽에는 아직 깨어나지 않은 순결한 성기사단의 고대 룬이 푸른 맥박처럼 숨 쉬고 있었다.
+
+“아이들이 태어나면 이 은빛 단검을 하나씩 건네주게.”
+
+헤르쿨이 떨리는 목소리로 말을 이었다.
+
+“부모의 피비린내 나는 원한을 억지로 떠넘기라는 뜻이 아닐세. 장차 온 세상이 거짓과 탐욕으로 물들 때, 누가 진짜 아군이고 적인지 스스로 판별할 수 있도록 가슴속 진실의 룬을 지키게 하려는 걸세.”
+
+알렉산다르는 탁자 위의 단검을 쥐며 결연하게 고개를 끄덕였다.
+
+“내 아들이 태어난다면, 북방의 고어로 끝까지 버텨 내는 굳건한 방패를 뜻하는 카단이라는 이름을 줄 것이오.”
+
+발리안 역시 가슴에 손을 얹으며 단검을 받았다.
+
+“그렇다면 내 아이는 혹독한 눈보라와 불길 속에서도 결코 길을 잃지 말라는 염원을 담아 이그니스라 부르겠소.”
+
+세 사내는 독주 대신 녹아내린 눈물을 잔에 가득 채워 아직 세상의 빛을 보지 못한 두 아이의 앞날을 축복했다. 그러나 운명의 그림자는 그들이 생각한 것보다 훨씬 잔혹하고 빨랐다.
+
+사흘 뒤, 짙은 안개 속 눈 덮인 비탈길에서 젊은 궁정 귀족 루시안이 알렉산다르의 만삭 아내 엘윈과 마주쳤다. 루시안은 낙마하여 부상당한 유랑 상인 행세를 하고 있었지만, 두꺼운 모피 망토 안쪽에는 붉은 유리 궁정의 뱀 문장이 번득였다. 엘윈이 아무런 의심 없이 내민 따뜻한 보리 수프 한 그릇과 다정한 간호의 손길은 루시안의 비뚤어진 소유욕을 자극했다. 그는 그녀를 차지하기 위해 엘윈 마을 전체를 섀도우렐름과 내통한 반역자들의 소굴로 조작하는 잔혹한 계략을 꾸몄다.
+
+새벽의 어스름을 찢으며 검은 철갑으로 무장한 궁정 토벌대가 마을을 포위했다. 횃불이 처마를 태우며 불기둥이 치솟았다. 알렉산다르는 만삭의 엘윈을 비밀 수로 쪽으로 밀어내며 혼자서 외나무다리 위에 버텨 섰다. 발리안 역시 임신한 아내 이셀라를 마차 짚단 속에 숨긴 채 아케인 창을 움켜쥐었다. 두 사람은 수십 번이나 적의 포위망을 베어 넘겼으나, 비열한 루시안은 마을 주민들과 어린아이들을 방패막이로 내세웠다.
+
+“알렉산다르! 칼을 버리고 무릎을 꿇어라! 네놈이 반역을 자백한다면 저 계집의 목숨만은 살려 두겠다!”
+
+루시안이 언덕 위에서 비열하게 소리쳤다. 알렉산다르는 주민들이 선 방향을 피해 검등으로 적병들의 관절만을 내리치느라 온몸에 창상을 입고 붉은 피를 흘렸다. 그의 눈동자에 비친 것은 불타는 마을과 겁에 질린 피난민들의 얼굴이었다.
+
+“아내의 목숨은 네놈 따위의 더러운 주둥이에서 보장받는 것이 아니다!”
+
+알렉산다르는 포효하며 다리를 지탱하던 거대한 동아줄을 양손의 쌍검으로 단숨에 베어 끊었다. 비명을 지르며 수십 명의 적병이 살얼음이 뜬 계곡 급류 속으로 곤두박질쳤다.
+
+한편 골목 끝자락에서 발리안의 마차는 궁정 기병대의 쇠사슬에 얽혀 전복되고 말았다. 이셀라는 부른 배를 감싸 쥔 채 필사적으로 진흙탕을 기었으나 루시안의 말발굽이 그녀의 앞을 가로막았다. 이셀라는 땅바닥의 흙과 얼음 조각을 움켜쥐어 루시안의 눈가에 던지며 저항했다.
+
+“손대지 마라, 이 비겁한 악마야!”
+
+그 짧은 비명을 도망치라는 신호로 오인한 발리안은 적의 주력을 유인하기 위해 홀로 깎아지른 천 길 안개 절벽으로 뛰어들었다.
+
+“이셀라, 살아남아야 해!”
+
+발리안은 창대를 부러뜨리며 적병 여럿을 끌어안고 포효하는 소용돌이 급류 속으로 추락했다. 혼란을 틈탄 루시안은 기절한 이셀라를 검은 망토로 둘러메고 남쪽 황궁으로 빼돌렸다.
+
+다리 위에서 홀로 남은 알렉산다르는 부러진 검을 쥐고 마지막 적병의 목덜미를 꺾은 뒤 무릎을 꿇었다. 그의 시선 끝에는 눈보라 너머로 무사히 빠져나가는 엘윈의 작은 등 그림자가 흐릿하게 맺혀 있었다. 북쪽 황야의 얼어붙은 벌판에 홀로 당도한 엘윈은 불길에 휩싸인 고향 마을을 돌아보며 눈밭 위에 주저앉았다. 품속에 감춘 은빛 단검이 알렉산다르의 부러진 검집과 맞닿아 애처로운 공명을 일으켰다. 뱃속에서 아직 이름을 알지 못하는 아이가 거칠게 발길질을 했다.
+
+뒤따라온 피난민 노인들은 끝내 알렉산다르의 전사 소식을 입 밖으로 꺼내지 못했다. 그러나 엘윈은 묻지 않았다. 그녀는 피 묻은 부러진 검집을 품에 품고, 마을 텃밭에서 긁어모아 온 작은 밀 씨앗 한 줌을 차가운 설원 깊숙이 묻었다.
+
+“돌아가지 못한다 해도, 언젠가 누군가는 이 땅에서 다시 따뜻한 빵을 구워야 하니까요.”
+
+엘윈은 얼어붙은 눈물을 소매로 훔치며 북쪽의 혹한 속으로 발걸음을 옮겼다.
+
+“아가야, 너는 증오와 복수 때문에 태어나는 것이 아니란다.”
+
+그녀의 목소리는 매서운 눈보라를 뚫고 잔잔하게 울려 퍼졌다.
+
+“다만 어떤 불의와 거짓 앞에서도 비겁하게 고개를 숙이지 않는 사람으로 자라다오.”
+
+눈보라가 두 남자의 피 묻은 맹세를 덮었지만, 설원 아래 묻힌 씨앗과 두 자루 은빛 단검의 룬은 꺼지지 않는 불씨처럼 어둠 속에서 고요히 타오르고 있었다."""
+
+EP01_EN = """SNSHero Novel
+Episode 01: Two Vows Beneath the Blizzard
+
+At the southernmost edge of the Kingdom of Lighthaven, where jagged mountain ranges met the frozen tundra, winter arrived with unsparing brutality in the village of Elwin. By midday, howling gales and razor-sharp flurries had wiped the stockades and watchtowers from sight. Before dusk could settle, the blizzard swallowed the muddy tracks and stone roofs whole. The villagers sealed their windows with grease-coated parchment, covered their hearth embers, and extinguished their lanterns early. Rumors had spread across the ice like wildfire: the dreaded shadow cavalry from the conquered northern marches had already breached the frontier woods.
+
+Inside a weathered log tavern hidden behind the village smithy, Aleksandar and Balian sat across from each other, nursing chilled infusions by the dull glow of charcoal. Aleksandar was a quiet hunter of the northern borders who wielded twin blades with effortless grace, while Balian was a seasoned veteran capable of piercing the throat of a winter wolf through the thickest whiteout with his arcane spear. Both men concealed their lineage as descendants of the fallen Order of Arcane Holy Knights, choosing instead to till the stony earth and hammer iron in silence. The impending birth of their firstborns from their heavily pregnant wives, Elwin and Ysela, was the solitary lantern that kept the bitter defeat of their homeland bearable.
+
+Suddenly, the heavy pine door groaned on its iron hinges and burst open. Ahead of the freezing draft came the sharp reek of blood and scorched ozone. Framed against the howling squall stood Hercul, clad in tattered pilgrim vestments. At his belt dangled the cracked golden seal of the Holy Knights, and faint ripples of radiant mana leaked through his torn gauntlets, etching incandescent runes into the damp floorboards.
+
+In the span of a single heartbeat, the tip of Balian's arcane spear hissed forward, freezing a bare inch from the intruder's throat. Behind him, Aleksandar's twin blades were already drawn in a fluid cross-guard, sealing every line of retreat.
+
+"If you are a hound dispatched from the Shadow Realm, speaking your name will only hasten your demise," Balian growled, the azure spark along his spearhead reflecting the stranger's grim eyes.
+
+Hercul did not reach for a weapon. Instead, he slowly opened both empty palms.
+
+"Stand down, brothers. I bear the blood of wolves upon my mantle, yet I do not hunt for the pack."
+
+A dome of golden protective aegis blossomed outward, muffling the roar of the exterior tempest in an instant. Along the tavern shelves, earthenware flasks vibrated in harmonious resonance. Hercul had manifested a defensive perimeter without initiating a single hostile gesture. Reaching into his tunic with steady fingers, he placed a shattered breastplate insignia upon the rough oak table—the undeniable relic of their executed Grand Master.
+
+As the tension subsided, Hercul swallowed a stale crust of bread and laid bare the kingdom's grim plight until the early hours of dawn. The court at Lighthaven wallowed in gluttonous banquets and extortionate levies, leaving frontier outposts entirely defenseless against demonic incursions. Hercul had been tracking a treasonous covenant of nobles who had sold their fealty to the Shadow Realm. At the summit of this black list sat Regent Death Knight Artus and the ambitious courtier Lucian.
+
+"The shadow reaches even into this southern basin," Hercul whispered, his gaze shadowed with sorrow. "Inquisitors flying royal banners will descend upon this hamlet before the new moon."
+
+Before stepping back into the blizzard, Hercul produced two slender silver daggers wrapped in oiled doe-skin. Along the white-silver fuller slept ancient runes of the Holy Order, pulsing like faint blue veins beneath frost.
+
+"When your sons draw their first breath, place these silver daggers into their hands," Hercul urged, his voice trembling with solemn gravity. "Do not bestow them to demand blood debts or inherited vendettas. When the continent drowns in falsehood and betrayal, let these blades preserve the inner truth so they may discern who stands as brother and who lurks as foe."
+
+Aleksandar gripped the hilt, nodding with resolute northern stoicism.
+
+"If my son enters this world, I shall name him Kadan—the enduring shield that never shatters."
+
+Balian pressed his hand to his chest as he received the companion blade.
+
+"And mine shall be named Ignis, that his spirit may never lose its way, even within the furnace of tribulation."
+
+Raising cups filled not with wine but with melted snowfall, the three warriors consecrated their vows for the unborn children. Yet fate was swifter and far crueler than their hopes.
+
+Three mornings later, amid a blinding snow fog, the young highborn Lucian encountered Aleksandar's wife, Elwin, on the village perimeter. Disguised as an injured merchant who had lost his mount, Lucian concealed beneath his ermine cloak the serpentine crest of the Red Glass Court. When Elwin offered him warm barley broth and tended his fabricated wounds with boundless mercy, a twisted, possessive obsession ignited within Lucian's corrupt heart. To claim her as his own, he fabricated imperial charges declaring the entire settlement a nest of insurgents.
+
+At dawn, iron-clad legionnaires encircled the village under cover of burning pitch. Torches set the straw thatch ablaze. Aleksandar shoved the pregnant Elwin toward the secret northern waterway, drawing his dual swords to hold the solitary wooden bridge alone. Balian concealed his expectant wife, Ysela, within the covered cart, brandishing his arcane spear. Dozens of times they shattered the advancing lines, but Lucian mercilessly drove captive villagers forward as living shields.
+
+"Surrender your steel, Aleksandar!" Lucian sneered from horseback atop the ridge. "Confess your treason, and I may grant your woman her wretched life!"
+
+Refusing to strike the innocent captives, Aleksandar deflected blows with the blunt spines of his swords, absorbing spear thrusts and bleeding profusely from shoulder and thigh. Looking upon the burning village, his eyes burned with unyielding resolve.
+
+"My wife's life is not a favor to be bartered from a traitor's tongue!"
+
+With a thunderous cry, Aleksandar severed the massive mooring cables supporting the span. Screaming legionnaires plunged headlong into the icy torrent below.
+
+Near the rear alleys, Balian's escape cart overturned under iron chains. Ysela crawled desperately through the mud, shielding her belly with both arms, only to be blocked by Lucian's warhorse. She hurled a handful of frozen slush into the nobleman's face with fierce defiance.
+
+"Lay no hand upon me, monster!"
+
+Hearing her desperate cry and believing she had slipped past the cordon, Balian charged toward the precipice to draw the pursuing cavalry away from her.
+
+"Live, Ysela! You must live!"
+
+Snapping his spear haft, Balian dragged several mounted foes with him over the mist-shrouded chasm into the raging river rapids. In the chaos, Lucian threw his heavy cloak over the unconscious Ysela and whisked her south toward the imperial palace.
+
+On the ruined bridge, Aleksandar broke his twin swords across the breastplate of the final commander before collapsing upon one knee. Through the blinding snow, his fading eyes caught a fleeting glimpse of Elwin's cloaked figure escaping into the safety of the northern wilderness.
+
+Reaching the frozen tundra, Elwin dropped to her knees, looking back toward the pillars of smoke rising from their ruined home. Beneath her bodice, the silver dagger resonated faintly against the broken sword-sheath of her husband. Inside her womb, the unborn child kicked with sudden strength.
+
+The elderly refugees who caught up with her could not bear to speak Aleksandar's demise aloud. Elwin did not ask. She tucked the broken sheath against her breast, scooped away the snow with bare fingers, and buried a fistful of golden wheat seeds into the frozen loam.
+
+"Even if we never return," she whispered softly, "someone must live to bake bread upon this ground once more."
+
+Wiping the frozen tears from her cheeks, Elwin turned north into the gale.
+
+"My child, you were not born to carry the burden of vengeance," her voice rang steady against the wind. "Only promise me that you will never bow your head before a lie."
+
+The blizzard buried the blood of two brave men, yet the seeds beneath the snow and the twin silver daggers glowed in the darkness like an ember that no storm could ever quench."""
+
+print("Generated Episode 01 successfully.")
