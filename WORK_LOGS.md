@@ -2,6 +2,26 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-17 21:30 KST] [이벤트/상업용 고도화] HERO VEGAS 9구 카지노 슬롯머신 & 월리를 찾아라 디오라마 숨은그림 찾기 상업용 게임 전면 업그레이드 완료
+- **요청 사항**:
+  - "추가한 게임들이 너무 별루야. 상업용 게임으로 변경해줘"
+- **수정 및 개선 내역**:
+  1. **상업용 아케이드 카지노 9구 슬롯머신 (`HERO VEGAS 9-SLOT`) 전면 리빌드 ([`src/components/HeroNineSlotModal.tsx`](file:///Users/dayyoung/project/snshero/src/components/HeroNineSlotModal.tsx))**:
+     - **실제 고화질 캐릭터 일러스트(`/seat/*.png`) & WILD 조커 시스템**: 모든 캐릭터를 대체해 3매치를 완성하는 `[WILD] 황금 카단(x150배)` + `UR 포세이돈(x80배)` + `SSR 피닉스(x30배)` + `SR 레비아탄(x12배)` + `R 제피로스(x5배)` + `N 아쿠아리스(x2배)`.
+     - **수직 릴 스트립(Vertical Reel Strip) 물리 스크롤 & 3열 쪼기(Suspense Slow-Mo)**: 열 단위 고속 수직 회전 및 탄성 바운스 정지 연출, 1·2열 고등급 매칭 시 3열 네온 스포트라이트 슬로우모션 긴장감 연출.
+     - **8개 페이라인 SVG 네온 레이저 빔 & 60FPS 금화 분수 파티클**: 가로 3줄·세로 3줄·대각선 2줄 당첨 시 SVG 레이저 광선 발사 및 HTML5 Canvas 금화 폭포 연출.
+     - **피버 부스터 게이지(FEVER MODE) & 그랜드 잭팟 전광판 & Web Audio 카지노 신디사이저**: 5스핀마다 3회 무료 피버 스핀(배당 2배 & 고등급 확률 2.2배), 터보 스핀(TURBO), 10회 연속 자동 스핀(AUTO), 무지연 Web Audio API 기계식 릴 사운드 내장.
+  2. **상업용 디오라마 숨은그림 찾기 (`WHERE'S HERO? : WORLD HUNT`) 전면 리빌드 ([`src/components/DailyHiddenHeroModal.tsx`](file:///Users/dayyoung/project/snshero/src/components/DailyHiddenHeroModal.tsx))**:
+     - **고해상도 판타지 월드 일러스트 배경 + 35개 인터랙티브 군중/소품 디오라마**: 왕도 카멜롯 광장(`/banner/010.png`), 아케인 비서고(`/minigame_cardsorcery.png`), 드래곤 화산 요새(`/minigame_dungeon.png`), 황금 해적 보물섬(`/minigame_treasure.png`), 천공의 콜로세움(`/minigame_tournament.png`) 등 5대 월드 투어.
+     - **장애물 들춰보기(Interactive Props) & 군중 위장(Crowd Camouflage)**: 보물상자, 오크통, 수풀, 천막을 터치하면 흔들리며 뒤에 숨은 영웅이 드러나고, 수많은 NPC 인파 속에서 현상수배 타겟 5명을 정밀 식별하는 진짜 상업용 숨은그림 찾기 기믹.
+     - **광학 돋보기 스코프(Optical Scope) & 근접 탐지기(VERY HOT / WARM / COLD) & 콤보/3성 랭크**: 실시간 좌표 조준경, 거리 기반 온도 센서, 연속 발견 콤보 및 3성급(★★★) 클리어 평가 시스템.
+  3. **이벤트 화면 상단 쇼케이스 배너 고도화 ([`src/views/EventView.tsx`](file:///Users/dayyoung/project/snshero/src/views/EventView.tsx))**:
+     - 실제 아트워크 배경 프리뷰 및 영웅 초상화 썸네일이 적용된 프리미엄 쇼케이스 배너로 업그레이드.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 Errors (TypeScript 컴파일 무결점 통과).
+  - `npm run build`: Vite 6 프로덕션 번들 정상 빌드 완료.
+  - 로컬 Git 커밋 및 연동 구글 폼 보고서 제출 완료 (`submit_report.py`).
+
 ## [2026-10-16 22:42 KST] [구글 뉴스 한국어 번역 정상화] 다단계 고신뢰 번역 파이프라인 구축 및 언어별 캐시 분리 완료 (/git-push)
 - **요청 사항**:
   - 한국어 설정인데 영어 뉴스가 번역되지 않고 원문으로 나오는 현상 해결 및 /git-push.

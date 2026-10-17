@@ -492,115 +492,120 @@ export const EventView: React.FC<EventViewProps> = ({
         </motion.div>
 
         <main className="flex-1 p-4 md:p-8 w-full">
-          {/* ── 최상위 NEW 피처드 이벤트 배너 (슬롯머신 & 일일 숨은그림 찾기) ── */}
+          {/* ── 최상위 NEW 피처드 상업용 이벤트 배너 (베가스 9구 슬롯 & 월리를 찾아라 디오라마 수색) ── */}
           <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-3.5">
-            {/* 배너 1: 9구 히어로 슬롯 머신 */}
+            {/* 배너 1: HERO VEGAS 9구 슬롯머신 */}
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              className="relative p-4 rounded-xl border border-amber-300/80 bg-gradient-to-br from-amber-500/10 via-amber-100/30 to-amber-500/5 shadow-sm overflow-hidden flex flex-col justify-between"
+              onClick={() => {
+                playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                setActiveModal('nine-slot');
+              }}
+              className="group relative p-4 rounded-xl border-2 border-amber-400/80 bg-[#14101d] text-white shadow-md hover:shadow-xl overflow-hidden flex flex-col justify-between cursor-pointer transition-all"
             >
-              <div className="flex items-start justify-between gap-2">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center text-white shadow-md shrink-0">
-                    <span className="text-xl">🎰</span>
+              <img
+                src="/minigame_cardslot.png"
+                alt="slot background"
+                className="absolute inset-0 w-full h-full object-cover opacity-25 group-hover:scale-105 transition-transform duration-500 pointer-events-none"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-[#120d1d]/95 via-[#120d1d]/80 to-transparent pointer-events-none" />
+
+              <div className="relative z-10 flex items-start justify-between gap-2">
+                <div className="flex items-center gap-3">
+                  <div className="relative w-12 h-12 rounded-lg overflow-hidden border-2 border-yellow-300 shadow-[0_0_15px_rgba(250,204,21,0.5)] shrink-0 bg-black">
+                    <img src="/seat/Kadan.png" alt="Kadan Wild" className="w-full h-full object-cover" />
+                    <span className="absolute bottom-0 inset-x-0 bg-yellow-400 text-black text-[8px] font-black text-center leading-tight">
+                      WILD x150
+                    </span>
                   </div>
                   <div>
-                    <div className="flex items-center gap-2">
-                      <h4 className="text-sm font-black text-slate-900 tracking-tight">
-                        {language === 'ko' ? '9구 히어로 슬롯머신' : 'Hero 9-Reel Slot'}
+                    <div className="flex items-center gap-1.5">
+                      <h4 className="text-sm font-black text-amber-300 tracking-tight">
+                        {language === 'ko' ? 'HERO VEGAS 9구 슬롯' : 'HERO VEGAS 9-SLOT'}
                       </h4>
-                      <span className="inline-flex items-center px-1.5 py-0.5 text-[9px] font-black bg-rose-600 text-white rounded-full animate-pulse shadow-xs">
+                      <span className="inline-flex items-center px-1.5 py-0.5 text-[9px] font-black bg-rose-600 text-white rounded-xs animate-pulse shadow-xs">
                         NEW
                       </span>
                     </div>
-                    <p className="text-[11px] text-slate-600 mt-0.5 font-medium line-clamp-1">
+                    <p className="text-[11px] text-stone-300 mt-0.5 font-medium line-clamp-1">
                       {language === 'ko'
-                        ? '3x3 룰렛 캐릭터 3개 완성 시 최대 10,000 SNS 잭팟!'
-                        : 'Match 3 characters for up to 10,000 SNS Jackpot!'}
+                        ? '8라인 레이저·와일드 조커·피버 2배 무료스핀·최대 150배 잭팟!'
+                        : '8 Paylines · Wild Joker · 2x Fever Spins · 150x Jackpot!'}
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div className="mt-3.5 pt-3 border-t border-amber-200/60 flex items-center justify-between">
-                <div className="flex items-center gap-1.5 text-[11px] font-bold text-amber-800">
-                  <Zap size={13} className="text-amber-600" />
-                  <span>1회 100 SNS</span>
+              <div className="relative z-10 mt-3.5 pt-2.5 border-t border-amber-400/30 flex items-center justify-between">
+                <div className="flex items-center gap-1.5 text-[11px] font-black text-yellow-300">
+                  <Zap size={13} className="text-yellow-400" />
+                  <span>{language === 'ko' ? '1회 100 SNS · 피버 무료스핀' : '100 SNS · Fever Free Spins'}</span>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                    setActiveModal('nine-slot');
-                  }}
-                  className="px-3.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 active:scale-95 text-slate-950 font-black text-xs shadow-sm transition-all flex items-center gap-1"
-                >
-                  <span>{language === 'ko' ? '슬롯 플레이' : 'PLAY SLOT'}</span>
+                <span className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 font-black text-xs shadow-md flex items-center gap-1">
+                  <span>{language === 'ko' ? '슬롯 입장' : 'PLAY SLOT'}</span>
                   <ChevronRight size={14} />
-                </button>
+                </span>
               </div>
             </motion.div>
 
-            {/* 배너 2: 일일 숨은그림 찾기 */}
+            {/* 배너 2: 월리를 찾아라 디오라마 숨은 히어로 대수색 */}
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.05 }}
-              className="relative p-4 rounded-xl border border-cyan-300/80 bg-gradient-to-br from-cyan-500/10 via-cyan-100/30 to-blue-500/5 shadow-sm overflow-hidden flex flex-col justify-between"
+              onClick={() => {
+                playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                setActiveModal('daily-hidden');
+              }}
+              className="group relative p-4 rounded-xl border-2 border-cyan-400/80 bg-[#0d1622] text-white shadow-md hover:shadow-xl overflow-hidden flex flex-col justify-between cursor-pointer transition-all"
             >
-              <div className="flex items-start justify-between gap-2">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white shadow-md shrink-0">
-                    <Search size={20} />
+              <img
+                src="/banner/010.png"
+                alt="hidden hero world"
+                className="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:scale-105 transition-transform duration-500 pointer-events-none"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-[#0b131e]/95 via-[#0b131e]/80 to-transparent pointer-events-none" />
+
+              <div className="relative z-10 flex items-start justify-between gap-2">
+                <div className="flex items-center gap-3">
+                  <div className="relative w-12 h-12 rounded-lg overflow-hidden border-2 border-cyan-300 shadow-[0_0_15px_rgba(34,211,238,0.5)] shrink-0 bg-black">
+                    <img src="/seat/Poseidon.png" alt="Hidden Hero" className="w-full h-full object-cover" />
+                    <span className="absolute bottom-0 inset-x-0 bg-cyan-400 text-slate-950 text-[8px] font-black text-center leading-tight">
+                      5 TARGETS
+                    </span>
                   </div>
                   <div>
-                    <div className="flex items-center gap-2">
-                      <h4 className="text-sm font-black text-slate-900 tracking-tight">
-                        {language === 'ko' ? '일일 숨은그림 찾기' : 'Daily Hidden Hero'}
+                    <div className="flex items-center gap-1.5">
+                      <h4 className="text-sm font-black text-cyan-300 tracking-tight">
+                        {language === 'ko' ? '월리를 찾아라: 히어로 대수색' : "WHERE'S HERO? : WORLD HUNT"}
                       </h4>
-                      <span className="inline-flex items-center px-1.5 py-0.5 text-[9px] font-black bg-rose-600 text-white rounded-full animate-pulse shadow-xs">
+                      <span className="inline-flex items-center px-1.5 py-0.5 text-[9px] font-black bg-rose-600 text-white rounded-xs animate-pulse shadow-xs">
                         NEW
                       </span>
                     </div>
-                    <p className="text-[11px] text-slate-600 mt-0.5 font-medium line-clamp-1">
+                    <p className="text-[11px] text-stone-300 mt-0.5 font-medium line-clamp-1">
                       {language === 'ko'
-                        ? '매일 바뀌는 신비의 그림 속 초미니 영웅 4명을 찾아라!'
-                        : 'Discover 4 tiny hidden heroes in daily artwork!'}
+                        ? '상자·수풀 들춰보기 & 광학 스코프로 군중 속 영웅 5명 색출!'
+                        : 'Peek behind props & use optical scope to spot 5 heroes!'}
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div className="mt-3.5 pt-3 border-t border-cyan-200/60 flex items-center justify-between">
-                <div className="flex items-center gap-1.5 text-[11px] font-bold text-cyan-800">
-                  <Gift size={13} className="text-cyan-600" />
+              <div className="relative z-10 mt-3.5 pt-2.5 border-t border-cyan-400/30 flex items-center justify-between">
+                <div className="flex items-center gap-1.5 text-[11px] font-black text-cyan-300">
+                  <Gift size={13} className="text-cyan-400" />
                   <span>
                     {dailyHiddenCleared
-                      ? (language === 'ko' ? '오늘 보상 완료' : 'Claimed')
-                      : '+1,500 SNS 보상'}
+                      ? (language === 'ko' ? '오늘 보상 완료 ✓ (자유 투어)' : 'Claimed ✓ (Free Tour)')
+                      : '+1,500 SNS 일일 보상'}
                   </span>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                    setActiveModal('daily-hidden');
-                  }}
-                  className={cn(
-                    'px-3.5 py-1.5 rounded-lg active:scale-95 font-black text-xs shadow-sm transition-all flex items-center gap-1',
-                    dailyHiddenCleared
-                      ? 'bg-slate-200 text-slate-700 hover:bg-slate-300'
-                      : 'bg-cyan-500 hover:bg-cyan-600 text-white'
-                  )}
-                >
-                  <span>
-                    {dailyHiddenCleared
-                      ? (language === 'ko' ? '다시보기' : 'VIEW')
-                      : (language === 'ko' ? '탐색 시작' : 'START HUNT')}
-                  </span>
+                <span className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-950 font-black text-xs shadow-md flex items-center gap-1">
+                  <span>{language === 'ko' ? '월드 수색' : 'START HUNT'}</span>
                   <ChevronRight size={14} />
-                </button>
+                </span>
               </div>
             </motion.div>
           </div>

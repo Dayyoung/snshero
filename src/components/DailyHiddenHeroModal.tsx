@@ -1,17 +1,36 @@
 /**
  * DailyHiddenHeroModal.tsx
- * 이벤트 화면 전용 일일 숨은그림 찾기 이벤트 (Daily Hidden Hero Hunt)
- * - 매일 자정/날짜(YYYY-MM-DD)마다 배경 일러스트와 숨겨진 캐릭터들이 변경됨
- * - 랜덤한 판타지 그림 속에 아주 작게(22~26px) 캐릭터들이 교묘하게 숨겨져 있음
- * - 줌/돋보기 모드(1x, 1.5x, 2x) & 드래그 탐색 지원
- * - 4명의 숨은 영웅을 모두 찾으면 1,500 SNS 보상 지급 (하루 1회 완료)
- * - 로컬스토리지 영구 저장 및 다국어 지원
+ * 상업용 디오라마 숨은그림 찾기 게임 ("WHERE'S HERO? : DAILY CHRONICLES")
+ * - 실제 고해상도 판타지 월드 일러스트 배경 + 35개 이상의 인터랙티브 사물/군중 디오라마 레이어
+ * - 상업용 게임 기믹:
+ *   1) 장애물 들춰보기(Interactive Props): 보물상자, 오크통, 수풀, 천막을 터치하면 흔들리며 뒤에 숨은 영웅 노출
+ *   2) 군중 위장(Crowd Camouflage): 수많은 모험가/몬스터 NPC 인파 속에서 타겟 영웅 5명 정밀 식별
+ *   3) 광학 돋보기 스코프(Magnifier Loupe) & 1x / 1.8x / 2.5x 정밀 줌/패닝 + 근접 레이더(HOT/WARM/COLD)
+ *   4) 무작위 연타 방지 오클릭 페널티(쿨다운/감점) + 연속 발견 콤보(COMBO) & 3성급(★★★) 랭크 평가
+ *   5) 매일 날짜(YYYY-MM-DD) 시드로 자동 변경되는 오늘의 스테이지 (1,500 SNS 보상) + 7대 월드 자유 투어 지원
  */
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Search, Sparkles, CheckCircle2, Compass, ZoomIn, ZoomOut, Trophy, Zap, Clock, RefreshCw } from 'lucide-react';
-import { cn, getCardSpriteStyle } from '../lib/utils';
+import {
+  X,
+  Search,
+  Sparkles,
+  CheckCircle2,
+  Compass,
+  ZoomIn,
+  ZoomOut,
+  Trophy,
+  Zap,
+  Eye,
+  Star,
+  AlertTriangle,
+  MapPin,
+  Volume2,
+  VolumeX,
+  RotateCcw,
+} from 'lucide-react';
+import { cn, getAssetUrl } from '../lib/utils';
 import { Language } from '../types';
 import { triggerHaptic } from '../lib/haptic';
 
@@ -23,213 +42,244 @@ interface DailyHiddenHeroModalProps {
   language: Language;
 }
 
-// 숨겨질 수 있는 캐릭터 후보군 (영웅 10종)
-export interface HiddenHeroTarget {
+export interface HeroCharacterDef {
   id: number;
   nameKo: string;
   nameEn: string;
-  titleKo: string;
-  titleEn: string;
+  roleKo: string;
+  roleEn: string;
+  image: string;
+  rarityBadge: string;
 }
 
-export const HERO_TARGET_CANDIDATES: HiddenHeroTarget[] = [
-  { id: 1, nameKo: '아쿠아리스', nameEn: 'Aquaris', titleKo: '물의 정령', titleEn: 'Water Spirit' },
-  { id: 11, nameKo: '이그니스', nameEn: 'Ignis', titleKo: '불꽃 정령', titleEn: 'Flame Sprite' },
-  { id: 21, nameKo: '제피로스', nameEn: 'Zephyros', titleKo: '바람 정령', titleEn: 'Wind Fairy' },
-  { id: 31, nameKo: '가이아', nameEn: 'Gaia', titleKo: '대지 정령', titleEn: 'Earth Golem' },
-  { id: 10, nameKo: '포세이돈', nameEn: 'Poseidon', titleKo: '바다의 주신', titleEn: 'Sea Sovereign' },
-  { id: 19, nameKo: '피닉스', nameEn: 'Phoenix', titleKo: '불사조', titleEn: 'Immortal Bird' },
-  { id: 29, nameKo: '뇌신', nameEn: 'Raijin', titleKo: '번개의 신', titleEn: 'Thunder God' },
-  { id: 3, nameKo: '운디네', nameEn: 'Undine', titleKo: '물의 요정', titleEn: 'Water Nymph' },
-  { id: 12, nameKo: '샐러맨더', nameEn: 'Salamander', titleKo: '화염룡', titleEn: 'Fire Drake' },
-  { id: 23, nameKo: '실피드', nameEn: 'Sylphid', titleKo: '바람 요정', titleEn: 'Sylphid Nymph' },
+export const HIDDEN_HERO_POOL: HeroCharacterDef[] = [
+  { id: 105, nameKo: '카단', nameEn: 'Kadan', roleKo: '심연의 검사', roleEn: 'Abyssal Knight', image: '/seat/Kadan.png', rarityBadge: 'UR' },
+  { id: 10, nameKo: '포세이돈', nameEn: 'Poseidon', roleKo: '해왕', roleEn: 'Sea God', image: '/seat/Poseidon.png', rarityBadge: 'UR' },
+  { id: 19, nameKo: '피닉스', nameEn: 'Phoenix', roleKo: '불사조', roleEn: 'Firebird', image: '/seat/Phoenix.png', rarityBadge: 'SSR' },
+  { id: 9, nameKo: '크라켄', nameEn: 'Kraken', roleKo: '심해 군주', roleEn: 'Deep Titan', image: '/seat/Kraken.png', rarityBadge: 'SSR' },
+  { id: 20, nameKo: '이그니시우스', nameEn: 'Ignisius', roleKo: '태양신', roleEn: 'Solar Lord', image: '/seat/Ignisius.png', rarityBadge: 'UR' },
+  { id: 29, nameKo: '뇌신', nameEn: 'Raijin', roleKo: '번개 수호신', roleEn: 'Thunder God', image: '/seat/Raijin.png', rarityBadge: 'SSR' },
+  { id: 1, nameKo: '아쿠아리스', nameEn: 'Aquaris', roleKo: '물의 정령', roleEn: 'Water Spirit', image: '/seat/Aquaris.png', rarityBadge: 'R' },
+  { id: 11, nameKo: '이그니스', nameEn: 'Ignis', roleKo: '불꽃 정령', roleEn: 'Flame Sprite', image: '/seat/Ignis.png', rarityBadge: 'R' },
+  { id: 21, nameKo: '제피로스', nameEn: 'Zephyros', roleKo: '바람 정령', roleEn: 'Wind Spirit', image: '/seat/Zephyros.png', rarityBadge: 'R' },
+  { id: 31, nameKo: '가이아', nameEn: 'Gaia', roleKo: '대지 여신', roleEn: 'Earth Mother', image: '/seat/Gaia.png', rarityBadge: 'SR' },
+  { id: 23, nameKo: '실피드', nameEn: 'Sylphid', roleKo: '숲의 요정', roleEn: 'Wind Nymph', image: '/seat/Sylphid.png', rarityBadge: 'SR' },
+  { id: 6, nameKo: '레비아탄', nameEn: 'Leviathan', roleKo: '해양 거룡', roleEn: 'Sea Dragon', image: '/seat/Leviathan.png', rarityBadge: 'SR' },
 ];
 
-// 7가지 판타지 테마 스테이지 배경
-export interface HiddenSceneTheme {
-  themeId: string;
+// 군중 위장용 NPC 초상화 풀 (타겟과 섞여 헷갈리게 만드는 상업용 월리 기믹)
+const DECOY_CROWD_IMAGES = [
+  '/seat/Balbo.png',
+  '/seat/Gnome.png',
+  '/seat/Ghoul.png',
+  '/seat/Harpy.png',
+  '/seat/Kelpie.png',
+  '/seat/Pyro.png',
+  '/seat/Sylph.png',
+  '/seat/Undine.png',
+  '/seat/Walker.png',
+  '/seat/Spiderbot.png',
+];
+
+export interface WorldStageTheme {
+  id: string;
   titleKo: string;
   titleEn: string;
-  descKo: string;
-  descEn: string;
-  bgGradient: string;
-  primaryColor: string;
-  // 각 테마의 시각적 랜드마크 요소들
-  landmarks: {
-    type: 'building' | 'tree' | 'crystal' | 'cavern' | 'monument' | 'tent' | 'pipe';
-    x: number; // % (0~100)
-    y: number; // % (0~100)
-    w: number;
-    h: number;
-    color: string;
-    opacity: number;
+  subtitleKo: string;
+  subtitleEn: string;
+  bgImage: string;
+  ambientOverlay: string;
+  propIcons: string[];
+  spots: {
+    x: number;
+    y: number;
+    clueKo: string;
+    clueEn: string;
+    coverEmoji?: string; // 위에 덮여있는 장애물 (터치하여 치우기 가능)
   }[];
-  // 5개의 고정 은신 명당 좌표 (x%, y%)
-  hidingSpots: { x: number; y: number; descKo: string; descEn: string }[];
 }
 
-export const SCENE_THEMES: HiddenSceneTheme[] = [
+export const COMMERCIAL_WORLD_STAGES: WorldStageTheme[] = [
   {
-    themeId: 'plaza',
-    titleKo: '아르카디아 왕국 대광장',
-    titleEn: 'Arcadia Grand Plaza',
-    descKo: '화려한 분수대와 가판대, 축제 깃발 사이에 영웅들이 숨어있습니다.',
-    descEn: 'Heroes hide among festive banners, fountain sprays, and bazaar tents.',
-    bgGradient: 'from-amber-950 via-slate-900 to-indigo-950',
-    primaryColor: '#f59e0b',
-    landmarks: [
-      { type: 'monument', x: 50, y: 55, w: 90, h: 90, color: '#0284c7', opacity: 0.35 },
-      { type: 'building', x: 15, y: 30, w: 100, h: 140, color: '#b45309', opacity: 0.4 },
-      { type: 'building', x: 85, y: 32, w: 90, h: 130, color: '#b45309', opacity: 0.4 },
-      { type: 'tent', x: 30, y: 70, w: 75, h: 55, color: '#e11d48', opacity: 0.45 },
-      { type: 'tent', x: 72, y: 72, w: 80, h: 60, color: '#8b5cf6', opacity: 0.45 },
-    ],
-    hidingSpots: [
-      { x: 18, y: 22, descKo: '시계탑 지붕 난간', descEn: 'Clocktower Balcony' },
-      { x: 48, y: 53, descKo: '중앙 분수대 조각상 뒤', descEn: 'Behind Grand Fountain' },
-      { x: 32, y: 68, descKo: '붉은 서커스 천막 처마', descEn: 'Red Circus Tent Eaves' },
-      { x: 75, y: 75, descKo: '보라색 마법약 가판대 상자', descEn: 'Purple Potion Stall Crate' },
-      { x: 88, y: 28, descKo: '영주 저택 테라스 그늘', descEn: 'Mansion Terrace Shade' },
+    id: 'stage_citadel',
+    titleKo: '제1장: 왕도 카멜롯 대축제 광장',
+    titleEn: 'Ch.1: Camelot Festival Plaza',
+    subtitleKo: '수많은 시장 천막과 보물상자, 왕국 기사단 인파 속에 숨은 영웅 5명을 찾으세요!',
+    subtitleEn: 'Spot 5 hidden heroes amidst bazaar stalls, chests, and royal crowds!',
+    bgImage: '/banner/010.png',
+    ambientOverlay: 'from-amber-950/35 via-transparent to-slate-950/65',
+    propIcons: ['⛺', '🛢️', '📦', '🛡️', '🚩', '🏮', '⛲', '⚔️'],
+    spots: [
+      { x: 16, y: 26, clueKo: '좌측 상단 성벽 망루 깃발 뒤편', clueEn: 'Behind the upper-left watchtower banner', coverEmoji: '🚩' },
+      { x: 79, y: 23, clueKo: '우측 상단 첨탑 발코니 난간', clueEn: 'Upper-right spire balcony railing' },
+      { x: 48, y: 52, clueKo: '중앙 광장 황금 보물상자 속', clueEn: 'Inside the central plaza treasure chest', coverEmoji: '🧰' },
+      { x: 24, y: 74, clueKo: '좌측 하단 오크통 더미 뒤', clueEn: 'Behind the lower-left wooden barrels', coverEmoji: '🛢️' },
+      { x: 82, y: 71, clueKo: '우측 하단 마법 상점 천막 그늘', clueEn: 'Under the right-side merchant tent', coverEmoji: '⛺' },
+      { x: 63, y: 38, clueKo: '광장 동상 오른쪽 어깨 뒤', clueEn: 'Behind the plaza statue shoulder' },
+      { x: 35, y: 42, clueKo: '분수대 아치 기둥 틈새', clueEn: 'Between the fountain arch pillars' },
     ],
   },
   {
-    themeId: 'library',
-    titleKo: '대현자의 마법 비서고',
-    titleEn: 'Grand Archmage Library',
-    descKo: '천장까지 닿는 거대한 서가와 부유하는 마법서 사이에 은신했습니다.',
-    descEn: 'Concealed between sky-high bookshelves and floating arcane grimoires.',
-    bgGradient: 'from-indigo-950 via-purple-950 to-slate-950',
-    primaryColor: '#a855f7',
-    landmarks: [
-      { type: 'crystal', x: 50, y: 40, w: 70, h: 100, color: '#c084fc', opacity: 0.4 },
-      { type: 'building', x: 20, y: 45, w: 110, h: 160, color: '#4338ca', opacity: 0.45 },
-      { type: 'building', x: 80, y: 45, w: 110, h: 160, color: '#4338ca', opacity: 0.45 },
-      { type: 'monument', x: 50, y: 80, w: 120, h: 40, color: '#312e81', opacity: 0.5 },
-    ],
-    hidingSpots: [
-      { x: 22, y: 35, descKo: '금지된 마도서 서가 3층', descEn: 'Forbidden Grimoire Shelf 3F' },
-      { x: 51, y: 38, descKo: '공중 부유 룬 수정구 위', descEn: 'Aloft Floating Rune Orb' },
-      { x: 82, y: 55, descKo: '고대 양피지 보관함 틈새', descEn: 'Ancient Parchment Niche' },
-      { x: 45, y: 82, descKo: '대현자 독서대 그림자', descEn: 'Archmage Lectern Shadow' },
-      { x: 15, y: 72, descKo: '나선형 계단 난간 뒤', descEn: 'Spiral Staircase Railing' },
+    id: 'stage_sorcery',
+    titleKo: '제2장: 대현자의 아케인 비서고',
+    titleEn: 'Ch.2: Grand Arcane Sanctum',
+    subtitleKo: '고대 마도서 책장과 연금술 실험대, 마력 수정 사이에 몸을 숨겼습니다!',
+    subtitleEn: 'Hidden among ancient grimoires, alchemy tables, and mana crystals!',
+    bgImage: '/minigame_cardsorcery.png',
+    ambientOverlay: 'from-purple-950/40 via-transparent to-indigo-950/65',
+    propIcons: ['📚', '🔮', '🕯️', '⚗️', '📜', '💎', '🦉', '🗝️'],
+    spots: [
+      { x: 21, y: 24, clueKo: '좌측 상단 고대 마도서 책장 꼭대기', clueEn: 'Top of the upper-left bookshelf', coverEmoji: '📚' },
+      { x: 77, y: 28, clueKo: '우측 상단 부유하는 보라색 수정 뒤', clueEn: 'Behind the floating purple crystal', coverEmoji: '🔮' },
+      { x: 52, y: 48, clueKo: '중앙 마법진 제단 두루마리 더미', clueEn: 'Central magic circle scroll pile', coverEmoji: '📜' },
+      { x: 19, y: 73, clueKo: '좌측 하단 연금술 플라스크 실험대', clueEn: 'Lower-left alchemy flask table', coverEmoji: '⚗️' },
+      { x: 83, y: 76, clueKo: '우측 하단 황금 촛대 그림자', clueEn: 'Shadow of the lower-right candelabra' },
+      { x: 38, y: 61, clueKo: '중앙 계단 난간 올빼미 횃대 옆', clueEn: 'Next to the owl perch on the stairs' },
+      { x: 66, y: 57, clueKo: '우측 서가 비밀 열쇠 구멍 근처', clueEn: 'Near the secret keyhole on the right shelf' },
     ],
   },
   {
-    themeId: 'ruins',
-    titleKo: '태초의 거신 타이탄 유적',
-    titleEn: 'Primordial Titan Ruins',
-    descKo: '거대 석상과 덩굴 식물, 고대 마법진의 틈바구니에 몸을 숨겼습니다.',
-    descEn: 'Tucked into titanic mossy monoliths and ancient glowing glyphs.',
-    bgGradient: 'from-stone-950 via-emerald-950 to-stone-900',
-    primaryColor: '#10b981',
-    landmarks: [
-      { type: 'monument', x: 50, y: 45, w: 130, h: 140, color: '#047857', opacity: 0.35 },
-      { type: 'tree', x: 18, y: 50, w: 90, h: 130, color: '#065f46', opacity: 0.5 },
-      { type: 'tree', x: 82, y: 50, w: 90, h: 130, color: '#065f46', opacity: 0.5 },
-      { type: 'crystal', x: 50, y: 75, w: 60, h: 50, color: '#34d399', opacity: 0.4 },
-    ],
-    hidingSpots: [
-      { x: 48, y: 32, descKo: '거신 석상 이마의 보석 홈', descEn: 'Titan Crown Jewel Socket' },
-      { x: 16, y: 42, descKo: '고대 덩굴 거목 줄기 사이', descEn: 'Ancient Vine Tree Hollow' },
-      { x: 84, y: 62, descKo: '무너진 원형 열주 파편 뒤', descEn: 'Broken Pillar Rubble' },
-      { x: 53, y: 76, descKo: '에메랄드 비석 제단 아래', descEn: 'Emerald Altar Pedestal' },
-      { x: 30, y: 82, descKo: '이끼 낀 판석 틈새', descEn: 'Mossy Flagstone Gap' },
+    id: 'stage_dungeon',
+    titleKo: '제3장: 심연의 드래곤 화산 요새',
+    titleEn: 'Ch.3: Abyssal Dragon Stronghold',
+    subtitleKo: '타오르는 용암 협곡과 흑요석 기둥, 해골 제단 틈새를 수색하세요!',
+    subtitleEn: 'Search the lava chasm, obsidian pillars, and ancient skull altars!',
+    bgImage: '/minigame_dungeon.png',
+    ambientOverlay: 'from-red-950/40 via-transparent to-stone-950/70',
+    propIcons: ['🔥', '🪨', '💀', '⛓️', '🌋', '🗡️', '🛡️', '💎'],
+    spots: [
+      { x: 18, y: 27, clueKo: '좌측 상단 흑요석 종유석 뒤편', clueEn: 'Behind the upper-left obsidian stalactite' },
+      { x: 81, y: 25, clueKo: '우측 상단 화룡의 둥지 화염 속', clueEn: 'Inside the upper-right dragon nest flames', coverEmoji: '🔥' },
+      { x: 49, y: 44, clueKo: '중앙 용암 다리 부서진 바위 뒤', clueEn: 'Behind the broken rock on the lava bridge', coverEmoji: '🪨' },
+      { x: 25, y: 75, clueKo: '좌측 하단 고대 유골 상자 속', clueEn: 'Inside the lower-left ancient bone crate', coverEmoji: '💀' },
+      { x: 78, y: 72, clueKo: '우측 하단 쇠사슬 감옥 기둥', clueEn: 'Lower-right chained prison pillar' },
+      { x: 36, y: 35, clueKo: '좌측 화산 분화구 가장자리', clueEn: 'Edge of the left volcanic crater' },
+      { x: 64, y: 62, clueKo: '우측 용암 폭포 아래 바위 틈', clueEn: 'Rock crevice beneath the right lava fall' },
     ],
   },
   {
-    themeId: 'volcano',
-    titleKo: '심연의 화룡 마그마 동굴',
-    titleEn: 'Abyssal Dragon Magma Cavern',
-    descKo: '펄펄 끓는 용암 폭포와 흑요석 바위 뒤편에 영웅들이 숨었습니다.',
-    descEn: 'Lurking behind boiling lava cataracts and obsidian dragon nests.',
-    bgGradient: 'from-orange-950 via-red-950 to-stone-950',
-    primaryColor: '#ef4444',
-    landmarks: [
-      { type: 'cavern', x: 50, y: 40, w: 140, h: 120, color: '#dc2626', opacity: 0.4 },
-      { type: 'crystal', x: 25, y: 65, w: 70, h: 80, color: '#f97316', opacity: 0.45 },
-      { type: 'crystal', x: 75, y: 65, w: 70, h: 80, color: '#f97316', opacity: 0.45 },
-    ],
-    hidingSpots: [
-      { x: 49, y: 28, descKo: '용암 폭포 중앙 흑요석 징검다리', descEn: 'Obsidian Stepping Stone' },
-      { x: 23, y: 60, descKo: '불타는 마그마 수정 둥치', descEn: 'Burning Magma Crystal Hive' },
-      { x: 77, y: 62, descKo: '화룡의 둥지 붉은 알 틈새', descEn: 'Dragon Nest Egg Crevice' },
-      { x: 35, y: 80, descKo: '식어가는 현무암 균열', descEn: 'Basalt Cooling Crack' },
-      { x: 68, y: 78, descKo: '화염 증기 분출구 옆 바위', descEn: 'Thermal Geyser Rocks' },
+    id: 'stage_treasure',
+    titleKo: '제4장: 황금 해적단 비밀 보물섬',
+    titleEn: 'Ch.4: Golden Pirate Treasure Cove',
+    subtitleKo: '산더미처럼 쌓인 금화와 난파선 갑판, 야자수 수풀 속을 조사하세요!',
+    subtitleEn: 'Inspect the mountains of gold coins, shipwreck decks, and palm bushes!',
+    bgImage: '/minigame_treasure.png',
+    ambientOverlay: 'from-amber-950/30 via-transparent to-teal-950/65',
+    propIcons: ['🌴', '⚓', '🪙', '🦜', '🗺️', '🛢️', '🦀', '💎'],
+    spots: [
+      { x: 17, y: 22, clueKo: '좌측 상단 야자수 잎사귀 그늘', clueEn: 'Shade of the upper-left palm leaves', coverEmoji: '🌴' },
+      { x: 83, y: 27, clueKo: '우측 상단 난파선 돛대 망원경 옆', clueEn: 'Next to the shipwreck mast spyglass' },
+      { x: 51, y: 54, clueKo: '중앙 대왕 보물상자 금화 더미', clueEn: 'Central giant chest gold coin pile', coverEmoji: '🪙' },
+      { x: 23, y: 77, clueKo: '좌측 하단 녹슨 닻 뒤편', clueEn: 'Behind the lower-left rusty anchor', coverEmoji: '⚓' },
+      { x: 76, y: 74, clueKo: '우측 하단 해적 화약통 속', clueEn: 'Inside the lower-right powder keg', coverEmoji: '🛢️' },
+      { x: 39, y: 40, clueKo: '동굴 입구 석상 눈동자 부근', clueEn: 'Near the cave entrance statue eye' },
+      { x: 67, y: 46, clueKo: '우측 산호초 바위 게 옆', clueEn: 'Beside the crab on the coral rock' },
     ],
   },
   {
-    themeId: 'worldtree',
-    titleKo: '세계수의 신성한 정령 호수',
-    titleEn: 'World Tree Sacred Lake',
-    descKo: '푸른 빛을 뿜는 거대 거목과 발광 버섯, 수련 잎에 숨어있습니다.',
-    descEn: 'Hidden atop glowing azure mushrooms and colossal lotus leaves.',
-    bgGradient: 'from-cyan-950 via-teal-950 to-slate-950',
-    primaryColor: '#06b6d4',
-    landmarks: [
-      { type: 'tree', x: 50, y: 35, w: 160, h: 140, color: '#0891b2', opacity: 0.4 },
-      { type: 'crystal', x: 20, y: 65, w: 80, h: 70, color: '#22d3ee', opacity: 0.4 },
-      { type: 'crystal', x: 80, y: 65, w: 80, h: 70, color: '#22d3ee', opacity: 0.4 },
-    ],
-    hidingSpots: [
-      { x: 50, y: 25, descKo: '세계수 가지 위 요정의 둥지', descEn: 'Fairy Tree Branch Bower' },
-      { x: 21, y: 62, descKo: '발광 시안 버섯 갓 아래', descEn: 'Luminescent Cyan Cap' },
-      { x: 81, y: 66, descKo: '호수 중앙 부유하는 거대 연잎', descEn: 'Floating Lotus Raft' },
-      { x: 38, y: 76, descKo: '푸른 반딧불이 풀숲', descEn: 'Azure Firefly Thicket' },
-      { x: 65, y: 78, descKo: '정령의 샘 수호석 그늘', descEn: 'Spirit Well Boundary Stone' },
-    ],
-  },
-  {
-    themeId: 'cyber',
-    titleKo: '사이퍼펑크 네온 슬럼가',
-    titleEn: 'Cyberpunk Neon Underbelly',
-    descKo: '홀로그램 전광판과 파이프라인, 네온 간판 틈새에 숨었습니다.',
-    descEn: 'Stashed inside tangled power conduits and flicker neon signs.',
-    bgGradient: 'from-fuchsia-950 via-purple-950 to-slate-950',
-    primaryColor: '#d946ef',
-    landmarks: [
-      { type: 'pipe', x: 50, y: 30, w: 180, h: 50, color: '#c026d3', opacity: 0.4 },
-      { type: 'building', x: 20, y: 55, w: 90, h: 120, color: '#701a75', opacity: 0.45 },
-      { type: 'building', x: 80, y: 55, w: 90, h: 120, color: '#701a75', opacity: 0.45 },
-    ],
-    hidingSpots: [
-      { x: 19, y: 48, descKo: '네온 라면 포장마차 처마', descEn: 'Neon Noodle Stand Awning' },
-      { x: 52, y: 28, descKo: '중앙 홀로그램 스크린 뒤', descEn: 'Central Hologram Rig' },
-      { x: 82, y: 50, descKo: '고전압 데이터 케이블 뭉치', descEn: 'High-Voltage Cable Bundle' },
-      { x: 36, y: 76, descKo: '골목 쓰레기통 옆 환풍기', descEn: 'Alley Ventilation Grate' },
-      { x: 67, y: 78, descKo: '메카 정비소 부품 더미', descEn: 'Mecha Scrapyard Caches' },
-    ],
-  },
-  {
-    themeId: 'skyisle',
-    titleKo: '천공의 부유 성채',
-    titleEn: 'Celestial Sky Citadel',
-    descKo: '구름 바다 위 비행선과 황금빛 종탑 사이에 숨어있습니다.',
-    descEn: 'Sheltered among golden bell towers and cloud-surfing airships.',
-    bgGradient: 'from-sky-950 via-blue-950 to-slate-950',
-    primaryColor: '#38bdf8',
-    landmarks: [
-      { type: 'building', x: 50, y: 40, w: 120, h: 140, color: '#0284c7', opacity: 0.4 },
-      { type: 'monument', x: 22, y: 60, w: 80, h: 90, color: '#0369a1', opacity: 0.4 },
-      { type: 'monument', x: 78, y: 60, w: 80, h: 90, color: '#0369a1', opacity: 0.4 },
-    ],
-    hidingSpots: [
-      { x: 50, y: 30, descKo: '천공 성채 첨탑 황금 풍향계', descEn: 'Citadel Spire Weathervane' },
-      { x: 20, y: 55, descKo: '소형 증기 비행선 날개 밑', descEn: 'Steam Skyship Wing Strut' },
-      { x: 79, y: 58, descKo: '빛의 인도등 등대 테라스', descEn: 'Beacon Lighthouse Balcony' },
-      { x: 35, y: 78, descKo: '하늘 징검다리 닻줄 고리', descEn: 'Sky-bridge Anchor Ring' },
-      { x: 66, y: 76, descKo: '태양 전지판 각도 조절판', descEn: 'Solar Panel Joint Crevice' },
+    id: 'stage_colosseum',
+    titleKo: '제5장: 천공의 콜로세움 챔피언십',
+    titleEn: 'Ch.5: Celestial Colosseum Arena',
+    subtitleKo: '열광하는 관중석과 투기장 무기 거치대, 전차 뒤에 은신해 있습니다!',
+    subtitleEn: 'Concealed among cheering stands, weapon racks, and war chariots!',
+    bgImage: '/minigame_tournament.png',
+    ambientOverlay: 'from-sky-950/35 via-transparent to-slate-950/65',
+    propIcons: ['🏛️', '⚔️', '🛡️', '🚩', '🎺', '🏆', '🦁', '👑'],
+    spots: [
+      { x: 19, y: 26, clueKo: '좌측 상단 귀빈석 황금 휘장 뒤', clueEn: 'Behind the VIP box golden drapery', coverEmoji: '🚩' },
+      { x: 80, y: 24, clueKo: '우측 상단 승리의 나팔수 동상 옆', clueEn: 'Beside the victory trumpeter statue' },
+      { x: 50, y: 50, clueKo: '투기장 중앙 대형 방패 뒤편', clueEn: 'Behind the grand shield in center arena', coverEmoji: '🛡️' },
+      { x: 26, y: 73, clueKo: '좌측 하단 검투사 무기 거치대', clueEn: 'Lower-left gladiator weapon rack', coverEmoji: '⚔️' },
+      { x: 79, y: 75, clueKo: '우측 하단 사자 철창 문틈', clueEn: 'Lower-right lion gate bars' },
+      { x: 35, y: 60, clueKo: '좌측 전차 바퀴 그림자 속', clueEn: 'In the shadow of the left chariot wheel' },
+      { x: 65, y: 39, clueKo: '우측 관중석 2층 아치 통로', clueEn: 'Right-side 2F spectator arch passage' },
     ],
   },
 ];
 
-// 간단한 문자열 해시 함수
-function stringHash(str: string): number {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash = (hash << 5) - hash + str.charCodeAt(i);
-    hash |= 0;
+// Web Audio API 사운드 효과 합성기
+class HiddenAudioSynth {
+  private ctx: AudioContext | null = null;
+  public muted: boolean = false;
+
+  private init() {
+    if (!this.ctx && typeof window !== 'undefined') {
+      const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      if (AudioCtx) this.ctx = new AudioCtx();
+    }
+    if (this.ctx && this.ctx.state === 'suspended') {
+      this.ctx.resume().catch(() => {});
+    }
   }
-  return Math.abs(hash);
+
+  playPropRustle() {
+    if (this.muted) return;
+    this.init();
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(190, now);
+    osc.frequency.exponentialRampToValueAtTime(95, now + 0.09);
+    gain.gain.setValueAtTime(0.12, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.1);
+  }
+
+  playHeroFound(combo: number) {
+    if (this.muted) return;
+    this.init();
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    const base = 523.25 + Math.min(combo, 5) * 65;
+    [base, base * 1.25, base * 1.5].forEach((f, idx) => {
+      if (!this.ctx) return;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sine';
+      const st = now + idx * 0.06;
+      osc.frequency.setValueAtTime(f, st);
+      gain.gain.setValueAtTime(0.16, st);
+      gain.gain.exponentialRampToValueAtTime(0.008, st + 0.25);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(st);
+      osc.stop(st + 0.25);
+    });
+  }
+
+  playMissBuzz() {
+    if (this.muted) return;
+    this.init();
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(140, now);
+    osc.frequency.linearRampToValueAtTime(95, now + 0.16);
+    gain.gain.setValueAtTime(0.1, now);
+    gain.gain.exponentialRampToValueAtTime(0.008, now + 0.18);
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.18);
+  }
+}
+
+const hiddenSynth = new HiddenAudioSynth();
+
+function hashSeed(str: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return Math.abs(h);
 }
 
 export const DailyHiddenHeroModal: React.FC<DailyHiddenHeroModalProps> = ({
@@ -239,479 +289,781 @@ export const DailyHiddenHeroModal: React.FC<DailyHiddenHeroModalProps> = ({
   playSfx,
   language,
 }) => {
-  // 오늘 날짜 문자열 (YYYY-MM-DD)
+  const isKo = language === 'ko';
   const todayStr = useMemo(() => new Date().toISOString().split('T')[0], []);
-  const todayHash = useMemo(() => stringHash(todayStr), [todayStr]);
+  const dailySeed = useMemo(() => hashSeed(todayStr), [todayStr]);
 
-  // 오늘 날짜에 따른 테마 선택 (7개 중 1개)
-  const currentTheme = useMemo(() => {
-    const themeIndex = todayHash % SCENE_THEMES.length;
-    return SCENE_THEMES[themeIndex];
-  }, [todayHash]);
+  // 오늘의 기본 월드 인덱스 + 자유 스테이지 전환 지원
+  const [selectedStageIdx, setSelectedStageIdx] = useState<number>(
+    () => dailySeed % COMMERCIAL_WORLD_STAGES.length
+  );
 
-  // 오늘 찾아야 할 4명의 영웅 및 숨겨진 좌표 생성 (결정론적)
-  const hiddenHeroes = useMemo(() => {
-    // 5개의 명당 중 4개 선택
-    const spots = [...currentTheme.hidingSpots];
-    // Fisher-Yates shuffle with seed
-    for (let i = spots.length - 1; i > 0; i--) {
-      const j = (todayHash + i * 17) % (i + 1);
-      [spots[i], spots[j]] = [spots[j], spots[i]];
+  const activeStage = COMMERCIAL_WORLD_STAGES[selectedStageIdx];
+  const stageSeed = useMemo(
+    () => hashSeed(`${todayStr}_stage_${activeStage.id}`),
+    [todayStr, activeStage.id]
+  );
+
+  // 이번 스테이지에 숨겨진 5명의 타겟 영웅 & 위치 생성
+  const stageTargets = useMemo(() => {
+    const spotsCopy = [...activeStage.spots];
+    for (let i = spotsCopy.length - 1; i > 0; i--) {
+      const j = (stageSeed + i * 29) % (i + 1);
+      [spotsCopy[i], spotsCopy[j]] = [spotsCopy[j], spotsCopy[i]];
     }
-    const chosenSpots = spots.slice(0, 4);
+    const chosenSpots = spotsCopy.slice(0, 5);
 
-    // 10명의 후보군 중 4명 선택
-    const candidates = [...HERO_TARGET_CANDIDATES];
-    for (let i = candidates.length - 1; i > 0; i--) {
-      const j = (todayHash + i * 31) % (i + 1);
-      [candidates[i], candidates[j]] = [candidates[j], candidates[i]];
+    const poolCopy = [...HIDDEN_HERO_POOL];
+    for (let i = poolCopy.length - 1; i > 0; i--) {
+      const j = (stageSeed + i * 43) % (i + 1);
+      [poolCopy[i], poolCopy[j]] = [poolCopy[j], poolCopy[i]];
     }
-    const chosenHeroes = candidates.slice(0, 4);
+    const chosenHeroes = poolCopy.slice(0, 5);
 
     return chosenHeroes.map((hero, idx) => ({
       ...hero,
       spot: chosenSpots[idx],
-      instanceId: `target_${idx}_${hero.id}`,
+       camouflageAngle: ((stageSeed + idx * 13) % 18) - 9,
     }));
-  }, [currentTheme, todayHash]);
+  }, [activeStage, stageSeed]);
 
-  // 찾은 영웅 ID 세트 (오늘 날짜 기준 로컬스토리지 동기화)
-  const [foundSet, setFoundSet] = useState<Set<number>>(new Set());
-  const [isRewardClaimed, setIsRewardClaimed] = useState<boolean>(false);
-  const [showVictoryModal, setShowVictoryModal] = useState<boolean>(false);
+  // 배경을 풍성하게 채우는 22개의 인터랙티브 디오라마 소품 & 군중 NPC 생성
+  const dioramaCrowdAndProps = useMemo(() => {
+    const items: {
+      id: string;
+      type: 'npc' | 'prop';
+      x: number;
+      y: number;
+      image?: string;
+      emoji?: string;
+      scale: number;
+    }[] = [];
 
-  // 줌 레벨 (1x, 1.5x, 2x)
-  const [zoomLevel, setZoomLevel] = useState<number>(1);
-  const [hintActiveHeroId, setHintActiveHeroId] = useState<number | null>(null);
-  const [hintCooldown, setHintCooldown] = useState<number>(0);
+    for (let i = 0; i < 22; i++) {
+      const rx = 8 + ((stageSeed * (i + 3) * 17) % 84);
+      const ry = 14 + ((stageSeed * (i + 7) * 23) % 74);
 
-  // 오클릭 리플 이펙트 좌표
-  const [clickRipple, setClickRipple] = useState<{ x: number; y: number } | null>(null);
+      // 타겟 영웅 위치와 너무 겹치지 않도록 미세 조정
+      const tooClose = stageTargets.some(
+        (t) => Math.hypot(t.spot.x - rx, t.spot.y - ry) < 8
+      );
+      const finalX = tooClose ? ((rx + 14) % 84) + 8 : rx;
+      const finalY = tooClose ? ((ry + 12) % 72) + 14 : ry;
 
-  // 로컬스토리지 로드
-  useEffect(() => {
-    if (isOpen) {
-      const storageKey = `hero_daily_hidden_cleared_${todayStr}`;
-      const savedCleared = localStorage.getItem(storageKey);
-      if (savedCleared === 'true') {
-        setIsRewardClaimed(true);
-        // 이미 클리어된 경우 모든 영웅 발견 처리
-        setFoundSet(new Set(hiddenHeroes.map((h) => h.id)));
+      if (i % 2 === 0) {
+        items.push({
+          id: `npc_${i}`,
+          type: 'npc',
+          x: finalX,
+          y: finalY,
+          image: DECOY_CROWD_IMAGES[i % DECOY_CROWD_IMAGES.length],
+          scale: 0.85 + (i % 3) * 0.1,
+        });
       } else {
-        const progressKey = `hero_daily_hidden_progress_${todayStr}`;
-        const savedProgress = localStorage.getItem(progressKey);
-        if (savedProgress) {
-          try {
-            const arr = JSON.parse(savedProgress);
-            setFoundSet(new Set(arr));
-          } catch (e) {
-            console.error(e);
-          }
-        }
+        items.push({
+          id: `prop_${i}`,
+          type: 'prop',
+          x: finalX,
+          y: finalY,
+          emoji: activeStage.propIcons[i % activeStage.propIcons.length],
+          scale: 0.9 + (i % 3) * 0.15,
+        });
       }
     }
-  }, [isOpen, todayStr, hiddenHeroes]);
+    return items;
+  }, [stageSeed, activeStage, stageTargets]);
 
-  // 힌트 쿨다운 타이머
+  // 상태 관리
+  const [foundIds, setFoundIds] = useState<Set<number>>(new Set());
+  const [openedCovers, setOpenedCovers] = useState<Set<number>>(new Set());
+  const [openedDecoys, setOpenedDecoys] = useState<Set<string>>(new Set());
+  const [isDailyRewardClaimed, setIsDailyRewardClaimed] = useState<boolean>(false);
+  const [showClearBanner, setShowClearBanner] = useState<boolean>(false);
+
+  // 돋보기 스코프 & 줌 배율 & 레이더
+  const [zoomScale, setZoomScale] = useState<number>(1.35);
+  const [loupeEnabled, setLoupeEnabled] = useState<boolean>(true);
+  const [pointerPos, setPointerPos] = useState<{ x: number; y: number }>({ x: 50, y: 50 });
+  const [selectedTargetHintId, setSelectedTargetHintId] = useState<number | null>(null);
+  const [radarActiveId, setRadarActiveId] = useState<number | null>(null);
+  const [radarCooldown, setRadarCooldown] = useState<number>(0);
+  const [isMuted, setIsMuted] = useState<boolean>(false);
+
+  // 콤보 & 경과 시간 & 오클릭 페널티
+  const [combo, setCombo] = useState<number>(0);
+  const lastFoundTimeRef = useRef<number>(0);
+  const [missMarkers, setMissMarkers] = useState<{ id: number; x: number; y: number }[]>([]);
+  const [foundPopups, setFoundPopups] = useState<
+    { id: number; x: number; y: number; name: string; combo: number }[]
+  >([]);
+  const [mistakesCount, setMistakesCount] = useState<number>(0);
+
+  // 로컬스토리지 일일 보상 상태 로드
   useEffect(() => {
-    if (hintCooldown > 0) {
-      const timer = setTimeout(() => setHintCooldown((prev) => prev - 1), 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [hintCooldown]);
+    if (!isOpen) return;
+    const cleared =
+      localStorage.getItem(`hero_daily_hidden_cleared_${todayStr}`) === 'true';
+    setIsDailyRewardClaimed(cleared);
+  }, [isOpen, todayStr]);
 
-  // 숨은 영웅 클릭 핸들러
-  const handleHeroClick = (heroId: number, e: React.MouseEvent) => {
+  // 스테이지 변경 시 초기화
+  useEffect(() => {
+    setFoundIds(new Set());
+    setOpenedCovers(new Set());
+    setOpenedDecoys(new Set());
+    setShowClearBanner(false);
+    setCombo(0);
+    setMistakesCount(0);
+    setSelectedTargetHintId(null);
+  }, [selectedStageIdx]);
+
+  // 레이더 쿨다운 타이머
+  useEffect(() => {
+    if (radarCooldown <= 0) return;
+    const t = window.setTimeout(() => setRadarCooldown((c) => c - 1), 1000);
+    return () => clearTimeout(t);
+  }, [radarCooldown]);
+
+  // 현재 커서 위치와 가장 가까운 미발견 영웅 사이의 거리 계산 (근접 센서: HOT / WARM / COLD)
+  const proximitySignal = useMemo(() => {
+    const remaining = stageTargets.filter((t) => !foundIds.has(t.id));
+    if (remaining.length === 0) return { label: 'CLEAR', color: 'text-emerald-400' };
+    let minDist = 999;
+    remaining.forEach((t) => {
+      const d = Math.hypot(t.spot.x - pointerPos.x, t.spot.y - pointerPos.y);
+      if (d < minDist) minDist = d;
+    });
+    if (minDist < 9) return { label: '🔥 VERY HOT!!', color: 'text-rose-400 animate-pulse' };
+    if (minDist < 18) return { label: '⚡ WARM', color: 'text-amber-300' };
+    return { label: '❄️ COLD', color: 'text-cyan-400/70' };
+  }, [stageTargets, foundIds, pointerPos]);
+
+  // 장애물 커버 터치 시 들춰보기
+  const handleCoverPeel = (heroId: number, e: React.MouseEvent) => {
     e.stopPropagation();
-    if (foundSet.has(heroId)) return;
+    hiddenSynth.playPropRustle();
+    triggerHaptic('light');
+    setOpenedCovers((prev) => {
+      const next = new Set(prev);
+      next.add(heroId);
+      return next;
+    });
+  };
 
+  // 타겟 영웅 발견 핸들러
+  const handleHeroCatch = (
+    hero: (typeof stageTargets)[0],
+    e: React.MouseEvent
+  ) => {
+    e.stopPropagation();
+    if (foundIds.has(hero.id)) return;
+
+    // 만약 장애물 커버가 덮여있다면 먼저 커버를 벗김
+    if (hero.spot.coverEmoji && !openedCovers.has(hero.id)) {
+      handleCoverPeel(hero.id, e);
+      return;
+    }
+
+    const now = Date.now();
+    const nextCombo = now - lastFoundTimeRef.current < 14000 ? combo + 1 : 1;
+    lastFoundTimeRef.current = now;
+    setCombo(nextCombo);
+
+    hiddenSynth.playHeroFound(nextCombo);
     triggerHaptic('medium');
+
+    const nextFound = new Set(foundIds);
+    nextFound.add(hero.id);
+    setFoundIds(nextFound);
+
+    // 발견 플로팅 팝업 추가
+    const popupId = Date.now() + Math.random();
+    setFoundPopups((prev) => [
+      ...prev,
+      {
+        id: popupId,
+        x: hero.spot.x,
+        y: hero.spot.y,
+        name: isKo ? hero.nameKo : hero.nameEn,
+        combo: nextCombo,
+      },
+    ]);
+    setTimeout(() => {
+      setFoundPopups((prev) => prev.filter((p) => p.id !== popupId));
+    }, 1400);
+
+    // 5명 전원 발견 시 클리어!
+    if (nextFound.size === stageTargets.length) {
+      handleStageComplete();
+    }
+  };
+
+  // 스테이지 올클리어 처리
+  const handleStageComplete = () => {
+    setShowClearBanner(true);
+    triggerHaptic('heavy');
     playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
 
-    const nextSet = new Set(foundSet);
-    nextSet.add(heroId);
-    setFoundSet(nextSet);
-
-    // 진행 상태 저장
-    try {
-      localStorage.setItem(`hero_daily_hidden_progress_${todayStr}`, JSON.stringify(Array.from(nextSet)));
-    } catch (e) {
-      console.error(e);
-    }
-
-    // 4명 모두 찾았는지 확인
-    if (nextSet.size === hiddenHeroes.length && !isRewardClaimed) {
-      handleAllFound();
+    if (!isDailyRewardClaimed) {
+      const DAILY_REWARD = 1500;
+      setIsDailyRewardClaimed(true);
+      try {
+        localStorage.setItem(`hero_daily_hidden_cleared_${todayStr}`, 'true');
+      } catch (e) {
+        console.error(e);
+      }
+      updateSns(
+        DAILY_REWARD,
+        isKo ? '일일 숨은 히어로 찾기 올클리어 보상' : 'Daily Hidden Hero Clear Reward'
+      );
     }
   };
 
-  // 4명 모두 발견 시 보상 처리
-  const handleAllFound = () => {
-    const REWARD_AMOUNT = 1500;
-    setIsRewardClaimed(true);
-    setShowVictoryModal(true);
-
-    try {
-      localStorage.setItem(`hero_daily_hidden_cleared_${todayStr}`, 'true');
-    } catch (e) {
-      console.error(e);
-    }
-
-    updateSns(
-      REWARD_AMOUNT,
-      language === 'ko' ? '일일 숨은그림 찾기 올클리어 보상' : 'Daily Hidden Hero Clear'
-    );
-    playSfx('https://assets.mixkit.co/active_storage/sfx/2018/2018-preview.mp3');
-    triggerHaptic('heavy');
-  };
-
-  // 캔버스 빈 곳 클릭 시 오클릭 피드백
-  const handleBackgroundClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  // 배경 빈 곳 오클릭 핸들러
+  const handleSceneMissClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = ((e.clientX - rect.left) / rect.width) * 100;
     const y = ((e.clientY - rect.top) / rect.height) * 100;
 
-    setClickRipple({ x, y });
-    playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+    setPointerPos({ x, y });
+    setCombo(0);
+    setMistakesCount((m) => m + 1);
+    hiddenSynth.playMissBuzz();
     triggerHaptic('light');
 
+    const markerId = Date.now() + Math.random();
+    setMissMarkers((prev) => [...prev, { id: markerId, x, y }]);
     setTimeout(() => {
-      setClickRipple(null);
-    }, 600);
+      setMissMarkers((prev) => prev.filter((m) => m.id !== markerId));
+    }, 850);
   };
 
-  // 정령의 나침반 힌트 사용
-  const handleUseHint = () => {
-    if (hintCooldown > 0) return;
+  // 마우스/터치 이동 시 돋보기 & 근접 센서 좌표 갱신
+  const handlePointerMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
+    const y = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
+    setPointerPos({ x, y });
+  };
 
-    // 아직 못 찾은 영웅 1명 추출
-    const remaining = hiddenHeroes.filter((h) => !foundSet.has(h.id));
+  // 레이더 스캔 힌트 발동
+  const triggerRadarScan = () => {
+    if (radarCooldown > 0) return;
+    const remaining = stageTargets.filter((t) => !foundIds.has(t.id));
     if (remaining.length === 0) return;
 
     const target = remaining[0];
-    setHintActiveHeroId(target.id);
-    setHintCooldown(20); // 20초 쿨다운
+    // 해당 영웅에 커버가 있으면 자동으로 열어줌
+    if (target.spot.coverEmoji) {
+      setOpenedCovers((prev) => new Set(prev).add(target.id));
+    }
+    setRadarActiveId(target.id);
+    setSelectedTargetHintId(target.id);
+    setPointerPos({ x: target.spot.x, y: target.spot.y });
+    setRadarCooldown(15);
     triggerHaptic('medium');
     playSfx('https://assets.mixkit.co/active_storage/sfx/2020/2020-preview.mp3');
 
     setTimeout(() => {
-      setHintActiveHeroId(null);
+      setRadarActiveId(null);
     }, 4500);
   };
 
   if (!isOpen) return null;
 
+  const selectedClueHero =
+    stageTargets.find((h) => h.id === selectedTargetHintId) ||
+    stageTargets.find((h) => !foundIds.has(h.id)) ||
+    stageTargets[0];
+
+  const starCount = mistakesCount <= 2 ? 3 : mistakesCount <= 6 ? 2 : 1;
+
   return (
-    <div className="fixed inset-0 z-[9998] flex items-center justify-center p-3 bg-black/85 backdrop-blur-md select-none font-mono">
+    <div className="fixed inset-0 z-[9998] flex items-center justify-center p-2 sm:p-4 bg-black/90 backdrop-blur-md select-none font-mono">
       <motion.div
-        initial={{ opacity: 0, scale: 0.93, y: 15 }}
+        initial={{ opacity: 0, scale: 0.93, y: 18 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.93, y: 15 }}
-        className="relative w-full max-w-lg bg-[#141618] border border-cyan-500/40 rounded-none shadow-[0_0_30px_rgba(6,182,212,0.2)] text-white overflow-hidden flex flex-col max-h-[92vh]"
+        exit={{ opacity: 0, scale: 0.93, y: 18 }}
+        className="relative w-full max-w-2xl bg-[#0e131a] border-2 border-cyan-400/75 rounded-none shadow-[0_0_50px_rgba(6,182,212,0.28)] text-white overflow-hidden flex flex-col max-h-[94dvh]"
       >
         {/* 상단 헤더 */}
-        <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-[#17202a] via-[#10171d] to-[#17202a] border-b border-cyan-500/30">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-sm bg-gradient-to-br from-cyan-500 to-blue-700 flex items-center justify-center shadow-md">
-              <Search size={16} className="text-white" />
+        <div className="px-3.5 py-2.5 bg-gradient-to-r from-[#101c29] via-[#162636] to-[#101c29] border-b border-cyan-500/40 flex items-center justify-between">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="w-8 h-8 rounded-sm bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center text-slate-950 font-black shadow-md shrink-0">
+              <Search size={17} />
             </div>
-            <div>
+            <div className="min-w-0">
               <div className="flex items-center gap-1.5">
-                <h3 className="text-sm font-black tracking-wide text-cyan-300">
-                  {language === 'ko' ? '일일 숨은 히어로 찾기' : 'DAILY HIDDEN HERO'}
-                </h3>
-                <span className="px-1.5 py-0.5 text-[9px] font-black bg-rose-600 text-white rounded-sm animate-pulse">
-                  NEW
+                <h2 className="text-xs sm:text-sm font-black tracking-wide text-cyan-300 truncate">
+                  {isKo ? '월리를 찾아라: 히어로 대수색' : "WHERE'S HERO? : WORLD HUNT"}
+                </h2>
+                <span className="px-1.5 py-0.5 text-[9px] font-black bg-rose-600 text-white rounded-sm animate-pulse shrink-0">
+                  PRO
                 </span>
-                {isRewardClaimed && (
-                  <span className="px-1.5 py-0.5 text-[9px] font-bold bg-emerald-600 text-white rounded-sm">
-                    {language === 'ko' ? '오늘 완료 ✓' : 'COMPLETED'}
+                {isDailyRewardClaimed && (
+                  <span className="px-1.5 py-0.5 text-[9px] font-black bg-emerald-500 text-slate-950 rounded-sm shrink-0">
+                    {isKo ? '일일 보상 완료 ✓' : 'CLAIMED ✓'}
                   </span>
                 )}
               </div>
-              <p className="text-[10px] text-stone-400">
-                {language === 'ko' ? currentTheme.titleKo : currentTheme.titleEn} ({todayStr})
+              <p className="text-[10px] text-stone-300 truncate">
+                {isKo ? activeStage.titleKo : activeStage.titleEn}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1 shrink-0">
+            <button
+              type="button"
+              onClick={() => {
+                hiddenSynth.muted = !isMuted;
+                setIsMuted(!isMuted);
+              }}
+              className="w-8 h-8 rounded-sm bg-stone-900 border border-stone-700 flex items-center justify-center text-stone-300 hover:text-white"
+            >
+              {isMuted ? <VolumeX size={15} /> : <Volume2 size={15} />}
+            </button>
             <button
               type="button"
               onClick={onClose}
-              className="p-1.5 rounded-sm bg-stone-800 hover:bg-stone-700 text-stone-300 transition-colors"
+              className="w-8 h-8 rounded-sm bg-stone-900 border border-stone-700 flex items-center justify-center text-stone-300 hover:bg-rose-600 hover:text-white transition-colors"
             >
               <X size={16} />
             </button>
           </div>
         </div>
 
-        {/* 툴바: 줌 토글 & 힌트 & 진행 상태 */}
-        <div className="flex items-center justify-between px-3 py-2 bg-stone-900 border-b border-stone-800 text-xs">
-          {/* 찾은 영웅 수 카운터 */}
-          <div className="flex items-center gap-2">
-            <span className="text-stone-400">{language === 'ko' ? '발견 현황:' : 'Found:'}</span>
-            <span className="font-black text-amber-300">
-              {foundSet.size} / {hiddenHeroes.length}
-            </span>
-            <div className="flex gap-1">
-              {hiddenHeroes.map((h, i) => (
-                <div
-                  key={i}
-                  className={cn(
-                    'w-2 h-2 rounded-full transition-all',
-                    foundSet.has(h.id) ? 'bg-emerald-400 scale-110 shadow-xs' : 'bg-stone-700'
-                  )}
-                />
-              ))}
+        {/* 상단 컨트롤 & 근접 센서 HUD 바 */}
+        <div className="px-3 py-2 bg-[#131b24] border-b border-stone-800 flex flex-wrap items-center justify-between gap-2 text-[11px]">
+          {/* 좌측: 발견 카운터 & 콤보 & 근접 센서 */}
+          <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-1">
+              <span className="text-stone-400">{isKo ? '발견' : 'FOUND'}:</span>
+              <span className="font-black text-amber-300">
+                {foundIds.size}/{stageTargets.length}
+              </span>
+            </div>
+
+            {combo > 1 && (
+              <span className="px-1.5 py-0.5 text-[10px] font-black bg-amber-400 text-slate-950 rounded-xs animate-bounce">
+                {combo}x COMBO!
+              </span>
+            )}
+
+            <div className="flex items-center gap-1 px-2 py-0.5 bg-stone-950 border border-stone-800 rounded-xs">
+              <span className="text-[9px] text-stone-400">{isKo ? '탐지기:' : 'RADAR:'}</span>
+              <span className={cn('text-[10px] font-black', proximitySignal.color)}>
+                {proximitySignal.label}
+              </span>
             </div>
           </div>
 
-          {/* 줌 제어 & 힌트 버튼 */}
+          {/* 우측: 스테이지 선택 & 줌 배율 & 스코프 & 레이더 힌트 */}
           <div className="flex items-center gap-1.5">
-            {/* 줌인/줌아웃 토글 */}
-            <div className="flex items-center bg-stone-950 border border-stone-800 rounded-sm p-0.5">
-              <button
-                type="button"
-                onClick={() => setZoomLevel((z) => (z === 1 ? 1.5 : z === 1.5 ? 2 : 1))}
-                className="px-2 py-0.5 text-[10px] font-bold text-cyan-300 hover:text-white flex items-center gap-1"
-                title="확대/축소"
-              >
-                <ZoomIn size={12} />
-                <span>{zoomLevel}x</span>
-              </button>
-            </div>
+            {/* 5대 월드 스테이지 전환 */}
+            <select
+              value={selectedStageIdx}
+              onChange={(e) => setSelectedStageIdx(Number(e.target.value))}
+              className="bg-stone-950 border border-stone-700 text-[10px] font-bold text-cyan-200 px-1.5 py-1 rounded-sm outline-none"
+            >
+              {COMMERCIAL_WORLD_STAGES.map((st, idx) => (
+                <option key={st.id} value={idx}>
+                  {isKo ? `월드 ${idx + 1}` : `Stage ${idx + 1}`}
+                </option>
+              ))}
+            </select>
 
-            {/* 정령의 나침반 힌트 */}
+            {/* 돋보기 렌즈 스코프 토글 */}
             <button
               type="button"
-              disabled={hintCooldown > 0 || isRewardClaimed}
-              onClick={handleUseHint}
+              onClick={() => setLoupeEnabled(!loupeEnabled)}
               className={cn(
-                'px-2.5 py-1 text-[10px] font-bold rounded-sm border flex items-center gap-1 transition-all',
-                hintCooldown > 0 || isRewardClaimed
+                'px-2 py-1 text-[10px] font-black rounded-sm border flex items-center gap-1',
+                loupeEnabled
+                  ? 'bg-cyan-400 text-slate-950 border-cyan-200'
+                  : 'bg-stone-900 text-stone-400 border-stone-700'
+              )}
+              title="광학 스코프 조준기"
+            >
+              <Eye size={12} />
+              <span>{isKo ? '스코프' : 'SCOPE'}</span>
+            </button>
+
+            {/* 줌 배율 버튼 */}
+            <button
+              type="button"
+              onClick={() =>
+                setZoomScale((z) => (z === 1 ? 1.35 : z === 1.35 ? 1.85 : 1))
+              }
+              className="px-2 py-1 bg-stone-900 hover:bg-stone-800 border border-stone-700 text-[10px] font-black text-amber-300 rounded-sm flex items-center gap-1"
+            >
+              <ZoomIn size={12} />
+              <span>{zoomScale.toFixed(1)}x</span>
+            </button>
+
+            {/* 레이더 힌트 */}
+            <button
+              type="button"
+              disabled={radarCooldown > 0 || foundIds.size === stageTargets.length}
+              onClick={triggerRadarScan}
+              className={cn(
+                'px-2 py-1 text-[10px] font-black rounded-sm border flex items-center gap-1 transition-all',
+                radarCooldown > 0
                   ? 'bg-stone-800 text-stone-500 border-stone-700 cursor-not-allowed'
-                  : 'bg-indigo-900/60 hover:bg-indigo-800 text-indigo-200 border-indigo-500/50 shadow-xs'
+                  : 'bg-indigo-600 hover:bg-indigo-500 text-white border-indigo-400 shadow-xs'
               )}
             >
-              <Compass size={12} className={cn(hintCooldown > 0 && 'opacity-50')} />
+              <Compass size={12} />
               <span>
-                {hintCooldown > 0
-                  ? `${hintCooldown}s`
-                  : language === 'ko'
-                  ? '힌트'
-                  : 'HINT'}
+                {radarCooldown > 0
+                  ? `${radarCooldown}s`
+                  : isKo
+                  ? '위치 스캔'
+                  : 'SCAN'}
               </span>
             </button>
           </div>
         </div>
 
-        {/* 메인 탐색 뷰포트 (그림 영역) */}
+        {/* 🗺️ 메인 고해상도 인터랙티브 디오라마 탐색 뷰포트 */}
         <div className="relative flex-1 bg-stone-950 overflow-hidden flex flex-col">
-          {/* 스크롤/팬 가능한 일러스트 프레임 */}
-          <div className="relative w-full h-[52vh] overflow-auto touch-pan-x touch-pan-y cursor-crosshair">
+          <div className="relative w-full h-[46vh] sm:h-[50vh] overflow-auto touch-pan-x touch-pan-y">
             <div
-              onClick={handleBackgroundClick}
+              onClick={handleSceneMissClick}
+              onMouseMove={handlePointerMove}
               style={{
-                width: `${zoomLevel * 100}%`,
-                height: `${zoomLevel * 100}%`,
-                minHeight: '100%',
+                width: `${zoomScale * 100}%`,
+                height: `${zoomScale * 100}%`,
+                minHeight: '340px',
               }}
-              className={cn(
-                'relative bg-gradient-to-br transition-all duration-200 overflow-hidden select-none',
-                currentTheme.bgGradient
-              )}
+              className="relative overflow-hidden cursor-crosshair select-none bg-stone-950"
             >
-              {/* 테마 배경 건축물 & 지형 데코레이션 SVG */}
-              <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-60">
-                <defs>
-                  <pattern id="gridPattern" width="40" height="40" patternUnits="userSpaceOnUse">
-                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth="1" />
-                  </pattern>
-                </defs>
-                <rect width="100%" height="100%" fill="url(#gridPattern)" />
+              {/* 1층: 고해상도 판타지 월드 일러스트 배경 */}
+              <img
+                src={getAssetUrl(activeStage.bgImage)}
+                alt={activeStage.titleEn}
+                className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none brightness-95 contrast-105"
+                draggable={false}
+              />
 
-                {/* 랜드마크 실루엣들 */}
-                {currentTheme.landmarks.map((lm, idx) => (
-                  <rect
-                    key={idx}
-                    x={`${lm.x - lm.w / 10}%`}
-                    y={`${lm.y - lm.h / 10}%`}
-                    width={`${lm.w * 0.4}%`}
-                    height={`${lm.h * 0.35}%`}
-                    rx="4"
-                    fill={lm.color}
-                    fillOpacity={lm.opacity}
-                  />
-                ))}
+              {/* 분위기 조명 비네팅 오버레이 */}
+              <div
+                className={cn(
+                  'absolute inset-0 bg-gradient-to-b pointer-events-none',
+                  activeStage.ambientOverlay
+                )}
+              />
 
-                {/* 은은한 마법 파티클 빛줄기 */}
-                <circle cx="50%" cy="30%" r="22%" fill={currentTheme.primaryColor} fillOpacity="0.12" filter="blur(25px)" />
-                <circle cx="20%" cy="70%" r="18%" fill={currentTheme.primaryColor} fillOpacity="0.08" filter="blur(20px)" />
-                <circle cx="80%" cy="60%" r="16%" fill={currentTheme.primaryColor} fillOpacity="0.08" filter="blur(20px)" />
-              </svg>
-
-              {/* 오클릭 물결 리플 이펙트 */}
-              {clickRipple && (
-                <motion.div
-                  initial={{ scale: 0.2, opacity: 0.9 }}
-                  animate={{ scale: 2.2, opacity: 0 }}
-                  transition={{ duration: 0.55 }}
-                  style={{ left: `${clickRipple.x}%`, top: `${clickRipple.y}%` }}
-                  className="absolute -translate-x-1/2 -translate-y-1/2 pointer-events-none w-10 h-10 rounded-full border-2 border-stone-400 bg-stone-300/20"
-                />
-              )}
-
-              {/* 숨겨진 4명의 미니 캐릭터들 (아주 작게 24px 크기로 은신) */}
-              {hiddenHeroes.map((hero) => {
-                const isFound = foundSet.has(hero.id);
-                const isHintTarget = hintActiveHeroId === hero.id;
-
+              {/* 2층: 군중 위장 NPC 및 인터랙티브 환경 소품(오크통, 보물상자, 천막 등) */}
+              {dioramaCrowdAndProps.map((item) => {
+                const isOpened = openedDecoys.has(item.id);
                 return (
                   <div
-                    key={hero.instanceId}
+                    key={item.id}
                     style={{
-                      left: `${hero.spot.x}%`,
-                      top: `${hero.spot.y}%`,
+                      left: `${item.x}%`,
+                      top: `${item.y}%`,
+                      transform: `translate(-50%, -50%) scale(${item.scale})`,
                     }}
-                    onClick={(e) => handleHeroClick(hero.id, e)}
-                    className="absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer z-20 group"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      hiddenSynth.playPropRustle();
+                      triggerHaptic('light');
+                      setOpenedDecoys((prev) => new Set(prev).add(item.id));
+                    }}
+                    className="absolute z-10 cursor-pointer group"
                   >
-                    {/* 힌트 활성화 시 주변 펄스 파동 */}
-                    {isHintTarget && !isFound && (
-                      <motion.div
-                        animate={{ scale: [1, 2.5, 1], opacity: [0.8, 0.1, 0.8] }}
-                        transition={{ repeat: Infinity, duration: 1.2 }}
-                        className="absolute -inset-4 rounded-full border-2 border-cyan-400 bg-cyan-400/20 pointer-events-none"
-                      />
-                    )}
-
-                    {/* 초소형 미니 캐릭터 스프라이트 (24px x 24px) */}
-                    <div
-                      className={cn(
-                        'w-6 h-6 rounded-xs border transition-all duration-300 flex items-center justify-center overflow-hidden',
-                        isFound
-                          ? 'border-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.8)] scale-110 bg-emerald-950/80 ring-2 ring-emerald-300'
-                          : 'border-white/20 bg-stone-900/80 opacity-85 hover:opacity-100 hover:scale-125 hover:border-amber-400 hover:z-30 shadow-sm'
-                      )}
-                    >
+                    {item.type === 'npc' ? (
                       <div
-                        className="w-full h-full scale-120"
-                        style={getCardSpriteStyle(hero.id)}
-                      />
-                    </div>
-
-                    {/* 발견 시 팡파레 체크 마크 */}
-                    {isFound && (
-                      <motion.div
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        className="absolute -top-2 -right-2 bg-emerald-500 text-white rounded-full p-0.5 shadow-md pointer-events-none"
+                        className={cn(
+                          'w-7 h-7 rounded-full overflow-hidden border border-stone-600/70 bg-stone-900/80 shadow-md transition-transform',
+                          isOpened ? 'opacity-35 scale-75' : 'hover:scale-110'
+                        )}
                       >
-                        <CheckCircle2 size={10} />
+                        <img
+                          src={getAssetUrl(item.image || '/seat/Balbo.png')}
+                          alt="crowd"
+                          className="w-full h-full object-cover opacity-85"
+                          draggable={false}
+                        />
+                      </div>
+                    ) : (
+                      <motion.div
+                        animate={isOpened ? { rotate: [0, -15, 15, 0], scale: 0.8 } : {}}
+                        className={cn(
+                          'text-lg sm:text-xl select-none drop-shadow-[0_2px_4px_rgba(0,0,0,0.85)] transition-opacity',
+                          isOpened ? 'opacity-40' : 'hover:scale-115'
+                        )}
+                      >
+                        {item.emoji}
                       </motion.div>
                     )}
                   </div>
                 );
               })}
+
+              {/* 3층: 숨겨진 5명의 타겟 히어로 (카모플라주 + 장애물 커버 지원) */}
+              {stageTargets.map((hero) => {
+                const isFound = foundIds.has(hero.id);
+                const hasCover =
+                  Boolean(hero.spot.coverEmoji) && !openedCovers.has(hero.id) && !isFound;
+                const isRadarPing = radarActiveId === hero.id && !isFound;
+
+                return (
+                  <div
+                    key={hero.id}
+                    style={{
+                      left: `${hero.spot.x}%`,
+                      top: `${hero.spot.y}%`,
+                    }}
+                    onClick={(e) => handleHeroCatch(hero, e)}
+                    className="absolute -translate-x-1/2 -translate-y-1/2 z-20 cursor-pointer"
+                  >
+                    {/* 레이더 스캔 위치 펄스 링 */}
+                    {isRadarPing && (
+                      <motion.div
+                        animate={{ scale: [1, 2.8, 1], opacity: [0.95, 0.15, 0.95] }}
+                        transition={{ repeat: Infinity, duration: 1.1 }}
+                        className="absolute -inset-5 rounded-full border-2 border-cyan-300 bg-cyan-400/25 pointer-events-none"
+                      />
+                    )}
+
+                    {/* 숨은 영웅 본체 */}
+                    <motion.div
+                      style={{ rotate: isFound ? 0 : hero.camouflageAngle }}
+                      animate={
+                        isFound
+                          ? { scale: [1, 1.35, 1.15] }
+                          : { y: [0, -1.5, 0] }
+                      }
+                      transition={
+                        isFound
+                          ? { duration: 0.35 }
+                          : { repeat: Infinity, duration: 2.8 }
+                      }
+                      className={cn(
+                        'relative w-7 h-7 sm:w-8 sm:h-8 rounded-full overflow-hidden border transition-all flex items-center justify-center shadow-lg',
+                        isFound
+                          ? 'border-2 border-emerald-300 ring-2 ring-emerald-500 z-30 shadow-[0_0_16px_rgba(16,185,129,0.95)]'
+                          : 'border-amber-200/40 bg-stone-900/75 opacity-85 hover:opacity-100 hover:scale-115'
+                      )}
+                    >
+                      <img
+                        src={getAssetUrl(hero.image)}
+                        alt={hero.nameEn}
+                        className="w-full h-full object-cover"
+                        draggable={false}
+                      />
+                    </motion.div>
+
+                    {/* 장애물 커버 (상자/수풀/오크통이 위를 살짝 가리고 있음 -> 터치하면 들춰짐!) */}
+                    {hasCover && (
+                      <motion.div
+                        whileHover={{ scale: 1.12, rotate: -6 }}
+                        onClick={(e) => handleCoverPeel(hero.id, e)}
+                        className="absolute -inset-1.5 z-30 flex items-center justify-center text-xl sm:text-2xl drop-shadow-[0_3px_6px_rgba(0,0,0,0.95)]"
+                        title={isKo ? '터치하여 들춰보기!' : 'Tap to peek behind!'}
+                      >
+                        {hero.spot.coverEmoji}
+                      </motion.div>
+                    )}
+
+                    {/* 발견 완료 체크 마크 */}
+                    {isFound && (
+                      <div className="absolute -top-1.5 -right-1.5 bg-emerald-500 text-slate-950 rounded-full p-0.5 shadow-md z-40">
+                        <CheckCircle2 size={11} />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+
+              {/* 발견 성공 플로팅 콤보 텍스트 */}
+              {foundPopups.map((fp) => (
+                <motion.div
+                  key={fp.id}
+                  initial={{ opacity: 1, y: 0, scale: 0.8 }}
+                  animate={{ opacity: 0, y: -32, scale: 1.15 }}
+                  transition={{ duration: 1.2 }}
+                  style={{ left: `${fp.x}%`, top: `${fp.y}%` }}
+                  className="pointer-events-none absolute -translate-x-1/2 -translate-y-full z-40 px-2 py-0.5 bg-emerald-500 text-slate-950 font-black text-[10px] rounded-xs shadow-lg whitespace-nowrap"
+                >
+                  ✓ {fp.name} {fp.combo > 1 ? `(${fp.combo}x COMBO!)` : 'FOUND!'}
+                </motion.div>
+              ))}
+
+              {/* 오클릭(MISS) 조준 마커 */}
+              {missMarkers.map((m) => (
+                <motion.div
+                  key={m.id}
+                  initial={{ opacity: 1, scale: 0.5 }}
+                  animate={{ opacity: 0, scale: 1.6 }}
+                  transition={{ duration: 0.75 }}
+                  style={{ left: `${m.x}%`, top: `${m.y}%` }}
+                  className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 z-40 flex flex-col items-center"
+                >
+                  <div className="w-7 h-7 rounded-full border-2 border-rose-500 bg-rose-500/20 flex items-center justify-center text-rose-400 font-black text-xs">
+                    ✕
+                  </div>
+                  <span className="text-[9px] font-black text-rose-400 bg-black/80 px-1 rounded-xs mt-0.5">
+                    MISS
+                  </span>
+                </motion.div>
+              ))}
+
+              {/* 광학 돋보기 스코프 크로스헤어 HUD */}
+              {loupeEnabled && (
+                <div
+                  style={{ left: `${pointerPos.x}%`, top: `${pointerPos.y}%` }}
+                  className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 z-30 w-24 h-24 rounded-full border-2 border-cyan-300/80 shadow-[0_0_25px_rgba(34,211,238,0.45),inset_0_0_15px_rgba(34,211,238,0.25)] flex items-center justify-center"
+                >
+                  <div className="w-full h-[1px] bg-cyan-300/35 absolute" />
+                  <div className="h-full w-[1px] bg-cyan-300/35 absolute" />
+                  <span className="absolute -bottom-4 px-1 py-0.2 bg-black/85 border border-cyan-500/50 text-[8px] text-cyan-300 rounded-xs">
+                    {Math.round(pointerPos.x)},{Math.round(pointerPos.y)}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
 
-          {/* 승리 축하 모달 오버레이 */}
+          {/* 선택된 타겟 단서(Clue) 자막 바 */}
+          <div className="px-3 py-1.5 bg-[#0b1017] border-t border-stone-800 flex items-center justify-between text-[11px]">
+            <div className="flex items-center gap-1.5 truncate">
+              <MapPin size={13} className="text-amber-400 shrink-0" />
+              <span className="text-stone-400 shrink-0">
+                {isKo ? `[${selectedClueHero.nameKo}] 단서:` : `[${selectedClueHero.nameEn}] Clue:`}
+              </span>
+              <span className="font-bold text-amber-200 truncate">
+                {isKo ? selectedClueHero.spot.clueKo : selectedClueHero.spot.clueEn}
+              </span>
+            </div>
+            <span className="text-[10px] text-stone-400 shrink-0 ml-2">
+              {isKo ? '💡 상자·수풀을 탭하면 들춰봅니다' : '💡 Tap props to peek'}
+            </span>
+          </div>
+
+          {/* 스테이지 올클리어 축하 오버레이 */}
           <AnimatePresence>
-            {showVictoryModal && (
+            {showClearBanner && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
-                className="absolute inset-0 z-40 bg-black/90 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center"
+                className="absolute inset-0 z-50 bg-black/90 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center"
               >
-                <div className="w-16 h-16 rounded-full bg-amber-500/20 border-2 border-amber-400 flex items-center justify-center mb-3">
-                  <Trophy size={32} className="text-amber-400 animate-bounce" />
+                <div className="flex items-center gap-1 mb-2">
+                  {[1, 2, 3].map((s) => (
+                    <Star
+                      key={s}
+                      size={28}
+                      className={cn(
+                        s <= starCount
+                          ? 'text-yellow-400 fill-yellow-400 animate-bounce'
+                          : 'text-stone-700'
+                      )}
+                    />
+                  ))}
                 </div>
-                <h4 className="text-lg font-black text-amber-300 tracking-wide">
-                  {language === 'ko' ? '탐색 완료! 모든 영웅 발견!' : 'ALL HEROES FOUND!'}
-                </h4>
-                <p className="text-xs text-stone-300 mt-1 max-w-xs">
-                  {language === 'ko'
-                    ? '오늘의 신비한 그림 속에 은신했던 4명의 영웅들을 완벽하게 모두 찾아냈습니다!'
-                    : 'You successfully discovered all 4 hidden heroes in todays artwork!'}
+                <h3 className="text-lg sm:text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-amber-300 to-yellow-400">
+                  {isKo ? '스테이지 수색 완벽 클리어!!' : 'STAGE CLEAR COMPLETE!!'}
+                </h3>
+                <p className="text-xs text-stone-300 mt-1">
+                  {isKo
+                    ? `${activeStage.titleKo}의 숨은 영웅 5명을 모두 찾아냈습니다!`
+                    : `Found all 5 hidden heroes in ${activeStage.titleEn}!`}
                 </p>
-                <div className="my-3 px-4 py-2 bg-stone-900 border border-amber-500/40 rounded-sm flex items-center gap-2">
+
+                <div className="my-3.5 px-4 py-2 bg-stone-900 border border-amber-400/50 rounded-sm flex items-center gap-2">
                   <Zap size={16} className="text-amber-400" />
-                  <span className="text-sm font-black text-amber-300">+1,500 SNS 지급 완료</span>
+                  <span className="text-sm font-black text-amber-300">
+                    {isKo ? '일일 수색 보상 +1,500 SNS 획득 완료!' : 'Daily Reward +1,500 SNS Claimed!'}
+                  </span>
                 </div>
-                <p className="text-[10px] text-stone-500 font-mono">
-                  {language === 'ko' ? '※ 내일 자정에 새로운 그림과 영웅들이 찾아옵니다!' : 'New artwork arrives tomorrow at midnight!'}
-                </p>
-                <button
-                  type="button"
-                  onClick={() => setShowVictoryModal(false)}
-                  className="mt-4 px-6 py-2 bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-xs rounded-sm shadow-md"
-                >
-                  {language === 'ko' ? '확인 (닫기)' : 'CLOSE'}
-                </button>
+
+                <div className="flex items-center gap-2 mt-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowClearBanner(false);
+                      setSelectedStageIdx((idx) => (idx + 1) % COMMERCIAL_WORLD_STAGES.length);
+                    }}
+                    className="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-xs rounded-sm flex items-center gap-1 cursor-pointer"
+                  >
+                    <RotateCcw size={13} />
+                    <span>{isKo ? '다음 월드 스테이지 도전' : 'NEXT STAGE'}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    className="px-4 py-2 bg-stone-800 hover:bg-stone-700 text-stone-200 font-bold text-xs rounded-sm cursor-pointer"
+                  >
+                    {isKo ? '닫기' : 'CLOSE'}
+                  </button>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
 
-        {/* 하단 타겟 영웅 리스트 패널 */}
-        <div className="p-3 bg-[#171a1d] border-t border-stone-800 space-y-2">
-          <div className="flex items-center justify-between text-[11px] text-stone-400">
-            <span>
-              {language === 'ko' ? '오늘의 수색 타겟 (4명):' : 'Todays Target Heroes (4):'}
+        {/* 하단 현상수배(WANTED) 타겟 영웅 5명 도크 */}
+        <div className="p-2.5 bg-[#121922] border-t border-stone-800">
+          <div className="flex items-center justify-between text-[10px] text-stone-400 mb-1.5">
+            <span className="font-bold text-cyan-300">
+              🎯 {isKo ? '수배 중인 타겟 히어로 (카드를 탭하면 힌트 단서 표시)' : 'WANTED HEROES (Tap card for location clue)'}
             </span>
-            <span className="text-[10px] text-stone-500">
-              {isRewardClaimed
-                ? language === 'ko'
-                  ? '보상 수령 완료 (1,500 SNS)'
-                  : 'Reward Claimed (+1,500 SNS)'
-                : language === 'ko'
-                ? '모두 찾으면 1,500 SNS 지급!'
-                : 'Find all for 1,500 SNS!'}
+            <span className="text-amber-300 font-black">
+              {isDailyRewardClaimed
+                ? isKo
+                  ? '오늘 보상 수령 완료 ✓'
+                  : 'Daily 1,500 SNS Claimed ✓'
+                : isKo
+                ? '전원 발견 시 +1,500 SNS'
+                : 'Find All = +1,500 SNS'}
             </span>
           </div>
 
-          <div className="grid grid-cols-4 gap-2">
-            {hiddenHeroes.map((hero) => {
-              const isFound = foundSet.has(hero.id);
+          <div className="grid grid-cols-5 gap-1.5">
+            {stageTargets.map((hero) => {
+              const isFound = foundIds.has(hero.id);
+              const isSelected = selectedClueHero.id === hero.id;
+
               return (
-                <div
+                <button
                   key={hero.id}
+                  type="button"
+                  onClick={() => setSelectedTargetHintId(hero.id)}
                   className={cn(
-                    'p-1.5 rounded-sm border flex flex-col items-center text-center transition-all',
+                    'relative p-1.5 rounded-sm border flex flex-col items-center transition-all cursor-pointer',
                     isFound
-                      ? 'bg-emerald-950/40 border-emerald-500/60 shadow-xs'
-                      : 'bg-stone-900 border-stone-800 opacity-75'
+                      ? 'bg-emerald-950/40 border-emerald-500/60 opacity-85'
+                      : isSelected
+                      ? 'bg-cyan-950/60 border-cyan-400 ring-1 ring-cyan-300'
+                      : 'bg-stone-900/90 border-stone-800 hover:border-stone-600'
                   )}
                 >
-                  {/* 카드 스프라이트 */}
-                  <div className="relative w-8 h-8 rounded-xs overflow-hidden border border-stone-700 bg-stone-950 mb-1 flex items-center justify-center">
-                    <div
-                      className="w-full h-full scale-110"
-                      style={getCardSpriteStyle(hero.id)}
+                  <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-xs overflow-hidden border border-white/20 bg-black mb-1">
+                    <img
+                      src={getAssetUrl(hero.image)}
+                      alt={hero.nameEn}
+                      className="w-full h-full object-cover"
+                      draggable={false}
                     />
                     {isFound && (
-                      <div className="absolute inset-0 bg-emerald-950/60 flex items-center justify-center">
-                        <CheckCircle2 size={16} className="text-emerald-400" />
+                      <div className="absolute inset-0 bg-emerald-950/75 flex items-center justify-center">
+                        <span className="text-[9px] font-black text-emerald-300 border border-emerald-400 px-1 rounded-xs -rotate-12">
+                          FOUND
+                        </span>
                       </div>
                     )}
                   </div>
-
-                  <span className="text-[10px] font-bold text-stone-200 truncate w-full">
-                    {language === 'ko' ? hero.nameKo : hero.nameEn}
+                  <span className="text-[10px] font-black text-stone-100 truncate w-full text-center">
+                    {isKo ? hero.nameKo : hero.nameEn}
                   </span>
-
-                  <span
-                    className={cn(
-                      'text-[8px] font-mono mt-0.5 px-1 rounded-xs',
-                      isFound ? 'bg-emerald-800 text-emerald-200' : 'bg-stone-800 text-stone-400'
-                    )}
-                  >
-                    {isFound ? (language === 'ko' ? '발견!' : 'FOUND') : (language === 'ko' ? '미발견' : 'HIDDEN')}
+                  <span className="text-[8px] text-stone-400 truncate w-full text-center">
+                    {isKo ? hero.roleKo : hero.roleEn}
                   </span>
-                </div>
+                </button>
               );
             })}
           </div>
