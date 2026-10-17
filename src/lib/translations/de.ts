@@ -2911,4 +2911,7 @@ export const de = {
     novel_prompt_copy_failed: 'Fehler beim Kopieren des Prompts.',
     novel_card_wiki_open: 'Karten-Wiki öffnen',
     novel_card_modal_open_wiki_hint: 'Diese Aktion ist im vollständigen Karten-Wiki-Bildschirm verfügbar.',
+    home_shortcut_novel: 'Web-Roman',
+    home_shortcut_webtoon: 'Webtoon',
+    home_shortcut_movie: 'Film',
 };

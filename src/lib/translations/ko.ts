@@ -3238,4 +3238,7 @@ export const ko = {
     movie_coming_soon: '공개예정',
     movie_coming_soon_msg: '제 {ep}화는 아직 공개 준비 중입니다! 유튜브 오피셜 채널에서 곧 공개됩니다.',
     movie_playlist_link: '유튜브 영화 플레이리스트에서 전체보기',
+    home_shortcut_novel: '웹소설',
+    home_shortcut_webtoon: '웹툰',
+    home_shortcut_movie: '영화',
 };

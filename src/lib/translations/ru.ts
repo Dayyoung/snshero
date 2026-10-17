@@ -2878,4 +2878,7 @@ export const ru = {
     novel_prompt_copy_failed: 'Не удалось скопировать промпт.',
     novel_card_wiki_open: 'Открыть Вики карт',
     novel_card_modal_open_wiki_hint: 'Это действие доступно на полном экране Вики карт.',
+    home_shortcut_novel: 'Веб-роман',
+    home_shortcut_webtoon: 'Вебтун',
+    home_shortcut_movie: 'Фильм',
 };

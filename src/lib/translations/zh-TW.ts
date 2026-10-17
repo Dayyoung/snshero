@@ -2883,4 +2883,7 @@ export const zhTW = {
     novel_prompt_copy_failed: '複製提示詞失敗。',
     novel_card_wiki_open: '查看卡牌百科',
     novel_card_modal_open_wiki_hint: '此功能可在完整卡牌百科頁面中使用。',
+    home_shortcut_novel: '網路小說',
+    home_shortcut_webtoon: '網漫',
+    home_shortcut_movie: '電影',
 };

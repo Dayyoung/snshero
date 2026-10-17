@@ -2883,4 +2883,7 @@ export const id = {
     novel_prompt_copy_failed: 'Gagal menyalin prompt.',
     novel_card_wiki_open: 'Buka Wiki Kartu',
     novel_card_modal_open_wiki_hint: 'Tindakan ini tersedia di layar penuh Wiki Kartu.',
+    home_shortcut_novel: 'Novel Web',
+    home_shortcut_webtoon: 'Webtoon',
+    home_shortcut_movie: 'Film',
 };

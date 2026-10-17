@@ -57,6 +57,7 @@ interface NovelViewProps {
   user?: { uid: string; displayName?: string | null } | null;
   updateSns?: (amount: number, reason?: string) => void;
   showCustomAlert?: (title: string, message: string, autoCloseSeconds?: number) => void;
+  initialTab?: 'novel' | 'cartoon' | 'prompt';
 }
 
 interface IndexEpisodeMeta {
@@ -167,6 +168,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
   user,
   updateSns,
   showCustomAlert,
+  initialTab,
 }) => {
   // Reading episode number (saved in hero_novel_progress_{season})
   const [currentEpisodeNum, setCurrentEpisodeNum] = useState<number>(() => {
@@ -182,11 +184,18 @@ export const NovelView: React.FC<NovelViewProps> = ({
 
   // Reader Tab mode: 'novel' (소설 읽기) | 'cartoon' (카툰 보기) | 'prompt' (프롬프트 모드)
   const [readerTab, setReaderTab] = useState<'novel' | 'cartoon' | 'prompt'>(() => {
+    if (initialTab) return initialTab;
     if (typeof window !== 'undefined' && (window.location.pathname.includes('webtoon') || window.location.hash.includes('webtoon'))) {
       return 'cartoon';
     }
     return 'novel';
   });
+
+  useEffect(() => {
+    if (initialTab) {
+      setReaderTab(initialTab);
+    }
+  }, [initialTab]);
 
   // Cartoon scene image load failover tracking
   const [sceneImgAttempts, setSceneImgAttempts] = useState<Record<string, number>>({});

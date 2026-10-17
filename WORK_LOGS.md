@@ -2,6 +2,20 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-18 06:31 KST] [메인 화면 UX 개선] 웹소설, 웹툰, 영화 바로가기 버튼 메인 화면 추가 완료
+- **요청 사항**:
+  - "웹소설, 웹툰, 영화 는 중요한 기능이야 . 메인화면에 바로가기 버튼 추가"
+- **수정 및 개선 내역**:
+  1. **메인 화면(`HomeView.tsx`) 핵심 액션 허브에 웹소설·웹툰·영화 3열 바로가기 버튼 추가 ([`src/views/HomeView.tsx`](file:///Users/dayyoung/project/snshero/src/views/HomeView.tsx))**:
+     - `DESIGN.md` 가이드(Monospace 서체, 웜크림 `#fdfcfc` / 잉크 `#201d1d` 팔레트, 1px hairline 보더, `rounded-sm` 4px 반경, `min-h-[44px]` 모바일 원핸드 터치 타깃)를 준수하여 `[덱 편성] [상점] [랭킹]` 바로 아래에 **`[웹소설]`, `[웹툰]`, `[영화]`** 3열 바로가기 버튼 그리드를 배치.
+     - 각 버튼 클릭 시 햅틱 피드백(`triggerHaptic('light')`) 및 효과음과 함께 `onNavigate('novel')`, `onNavigate('webtoon')`, `onNavigate('movie')`로 즉시 이동.
+  2. **웹소설/웹툰 초기 탭 즉시 전환 연동 ([`src/App.tsx`](file:///Users/dayyoung/project/snshero/src/App.tsx), [`src/views/NovelView.tsx`](file:///Users/dayyoung/project/snshero/src/views/NovelView.tsx))**:
+     - 메인 화면에서 `웹툰`(`onNavigate('webtoon')`) 클릭 시 `NovelView`에 `initialTab="cartoon"`이 전달되어 즉시 카툰/웹툰 보기 탭으로 열리고, `웹소설`(`onNavigate('novel')`) 클릭 시 `initialTab="novel"`로 소설 읽기 탭이 열리도록 개선.
+  3. **12개 다국어 언어팩(`src/lib/translations/*.ts`) 전면 업데이트**:
+     - `home_shortcut_novel`, `home_shortcut_webtoon`, `home_shortcut_movie` 키를 한국어(`ko`), 영어(`en`/`gb`), 일본어(`ja`), 중국어 간체/번체(`zh-CN`/`zh-TW`), 독일어(`de`), 스페인어(`es`), 프랑스어(`fr`), 인도네시아어(`id`), 러시아어(`ru`), 태국어(`th`), 베트남어(`vi`) 전 언어팩에 추가.
+- **검증 결과**:
+  - `npm run lint` (`tsc --noEmit`) 0 에러 통과 및 `npm run build` 프로덕션 빌드 완료, 로컬 Git 커밋 및 구글 폼 보고서 제출 완료.
+
 ## [2026-10-18 06:10 KST] [이벤트/팝업 정리] FTUE 속성 상성 가이드 및 SSR 지급 이벤트 전면 삭제 완료
 - **요청 사항**:
   - "fluet 속성 상성 가이드. ssr 지급 이벤트는 삭제해줘"

@@ -6286,6 +6286,7 @@ function AppContent() {
             user={effectiveUser}
             updateSns={updateSns}
             showCustomAlert={showCustomAlert}
+            initialTab={view === 'webtoon' ? 'cartoon' : 'novel'}
           />
         );
       default:

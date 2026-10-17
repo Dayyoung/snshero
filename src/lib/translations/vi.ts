@@ -2883,4 +2883,7 @@ export const vi = {
     novel_prompt_copy_failed: 'Sao chép prompt thất bại.',
     novel_card_wiki_open: 'Mở Wiki Thẻ bài',
     novel_card_modal_open_wiki_hint: 'Hành động này khả dụng trong màn hình Wiki Thẻ bài đầy đủ.',
+    home_shortcut_novel: 'Tiểu thuyết',
+    home_shortcut_webtoon: 'Webtoon',
+    home_shortcut_movie: 'Phim',
 };

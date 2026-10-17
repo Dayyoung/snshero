@@ -2942,4 +2942,7 @@ export const gb = {
     novel_prompt_copy_failed: 'Failed to copy prompt.',
     novel_card_wiki_open: 'Open Card Wiki',
     novel_card_modal_open_wiki_hint: 'This action is available in the full Card Wiki screen.',
+    home_shortcut_novel: 'Web Novel',
+    home_shortcut_webtoon: 'Webtoon',
+    home_shortcut_movie: 'Movie',
 };

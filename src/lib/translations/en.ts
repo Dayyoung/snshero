@@ -3231,4 +3231,7 @@ export const en = {
     anime_list: 'Episode List',
     anime_fullscreen: 'Full Screen',
     anime_exit_fullscreen: 'Exit Full Screen',
+    home_shortcut_novel: 'Web Novel',
+    home_shortcut_webtoon: 'Webtoon',
+    home_shortcut_movie: 'Movie',
 };

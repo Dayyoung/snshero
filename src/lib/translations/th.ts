@@ -2878,4 +2878,7 @@ export const th = {
     novel_prompt_copy_failed: 'คัดลอกพรอมต์ล้มเหลว',
     novel_card_wiki_open: 'เปิดวิกิการ์ด',
     novel_card_modal_open_wiki_hint: 'การดำเนินการนี้สามารถใช้งานได้ในหน้าวิกิการ์ดแบบเต็ม',
+    home_shortcut_novel: 'นิยายเว็บ',
+    home_shortcut_webtoon: 'เว็บตูน',
+    home_shortcut_movie: 'ภาพยนตร์',
 };

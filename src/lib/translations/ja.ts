@@ -2971,4 +2971,7 @@ export const ja = {
     novel_prompt_copy_failed: 'プロンプトのコピーに失敗しました。',
     novel_card_wiki_open: 'カードウィキを見る',
     novel_card_modal_open_wiki_hint: 'この機能はフルカードウィキ画面で利用可能です。',
+    home_shortcut_novel: 'ウェブ小説',
+    home_shortcut_webtoon: 'ウェブトゥーン',
+    home_shortcut_movie: '映画',
 };

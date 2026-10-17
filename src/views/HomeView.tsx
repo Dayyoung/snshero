@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LogOut, Trophy, User, BookOpen, Play, ArrowRight, X, ChevronLeft, ChevronRight, ShoppingBag, Flame, Layers, Github, Youtube } from "lucide-react";
+import { LogOut, Trophy, User, BookOpen, Image, Film, Play, ArrowRight, X, ChevronLeft, ChevronRight, ShoppingBag, Flame, Layers, Github, Youtube } from "lucide-react";
 import { NotificationCenterModal } from "../components/NotificationCenterModal";
 import { getUnreadCount } from "../lib/notificationHelper";
 import { motion, AnimatePresence } from "motion/react";
@@ -393,6 +393,51 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 >
                   <Trophy size={16} className="shrink-0" />
                   <span className="truncate">{language === 'ko' ? '랭킹' : 'Rank'}</span>
+                </button>
+              </div>
+
+              {/* ── Core IP Media Shortcuts (웹소설, 웹툰, 영화 바로가기 3열 그리드) ── */}
+              <div className="grid grid-cols-3 gap-2">
+                {/* 1. 웹소설 */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic('light');
+                    playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+                    onNavigate('novel');
+                  }}
+                  className="min-h-[44px] px-2 py-2 bg-[#fdfcfc] text-[#201d1d] font-bold text-xs sm:text-sm border border-[rgba(15,0,0,0.12)] hover:bg-[#201d1d] hover:text-[#fdfcfc] transition-colors cursor-pointer flex items-center justify-center gap-1.5 rounded-sm"
+                >
+                  <BookOpen size={16} className="shrink-0" />
+                  <span className="truncate">{t('home_shortcut_novel', language)}</span>
+                </button>
+
+                {/* 2. 웹툰 */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic('light');
+                    playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+                    onNavigate('webtoon');
+                  }}
+                  className="min-h-[44px] px-2 py-2 bg-[#fdfcfc] text-[#201d1d] font-bold text-xs sm:text-sm border border-[rgba(15,0,0,0.12)] hover:bg-[#201d1d] hover:text-[#fdfcfc] transition-colors cursor-pointer flex items-center justify-center gap-1.5 rounded-sm"
+                >
+                  <Image size={16} className="shrink-0" />
+                  <span className="truncate">{t('home_shortcut_webtoon', language)}</span>
+                </button>
+
+                {/* 3. 영화 */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic('light');
+                    playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+                    onNavigate('movie');
+                  }}
+                  className="min-h-[44px] px-2 py-2 bg-[#fdfcfc] text-[#201d1d] font-bold text-xs sm:text-sm border border-[rgba(15,0,0,0.12)] hover:bg-[#201d1d] hover:text-[#fdfcfc] transition-colors cursor-pointer flex items-center justify-center gap-1.5 rounded-sm"
+                >
+                  <Film size={16} className="shrink-0" />
+                  <span className="truncate">{t('home_shortcut_movie', language)}</span>
                 </button>
               </div>
 

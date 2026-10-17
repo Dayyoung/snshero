@@ -2883,4 +2883,7 @@ export const fr = {
     novel_prompt_copy_failed: 'Échec de la copie du prompt.',
     novel_card_wiki_open: 'Ouvrir le Wiki des cartes',
     novel_card_modal_open_wiki_hint: 'Cette action est disponible sur l\'écran complet du Wiki des cartes.',
+    home_shortcut_novel: 'Roman Web',
+    home_shortcut_webtoon: 'Webtoon',
+    home_shortcut_movie: 'Film',
 };
