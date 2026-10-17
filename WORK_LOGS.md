@@ -2,6 +2,52 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-18 07:15 KST] [M3 극장판 영화관] 40부작 전편 잠금해제 및 인앱 시네마틱 무비 플레이어 엔진 구축 완료
+- **작업명**: `[M3] 극장판 40부작 전편 잠금해제 및 인앱 시네마틱 무비 플레이어 엔진 구축 완료`
+- **담당자**: worker_movie (teamwork_preview_worker)
+- **수행 내역**:
+  1. **`src/lib/webtoonProgress.ts` 매개변수 순서 무관(Order-Agnostic) 버그 수정**:
+     - `setSeasonItem`이 `(key, value, season)` 및 `(key, season, value)` 호출 형태를 모두 스마트 판별하여 `${key}_${season}` 및 `season1` 폴백 키에 정확히 기록하도록 개선.
+     - `MovieView`, `NovelView`, `AnimeView`의 진행도 및 보상 상태 저장 실패 문제 완벽 해결.
+  2. **`src/views/MovieView.tsx` 40부작 전편 잠금 전면 해제**:
+     - `DEFAULT_RELEASED_COUNT = 40`으로 기본값 변경 및 8화 초과 시 경고창 차단 로직 전면 제거.
+     - 1화부터 40화까지 100% 즉시 시청 가능.
+  3. **`src/content/movieEpisodeMapping.ts` 40부작 전편 리치 메타데이터 완성**:
+     - 40개 전체 에피소드에 대해 4대 막(`설원의 서약과 운명의 탄생`, `별의 호흡과 녹옥의 비전`, `불타는 바다와 거짓 혼례`, `십자 성흔과 세계의 수호`), 영문/일문 제목, 상세 시놉시스, 절차적 BGM 테마, 파티클 VFX, 재생 시간, 주요 등장인물 및 하이라이트 씬 매핑 완료.
+  4. **`src/lib/MovieAudioSynthesizer.ts` 절차적 오디오 & 내레이션 신디사이저 엔진 구현**:
+     - Web Audio API 기반 6대 BGM 테마(`arctic-blizzard`, `battle-march`, `arcane-mystery`, `triumph-fanfare`, `dark-ominous`, `sorrow-lament`) 및 6대 전투 효과음(`sword-strike`, `magic-cast`, `thunder-impact`, `shield-block`, `whoosh`, `victory-chime`) 실시간 합성.
+     - Web SpeechSynthesis 연동으로 씬 전환 시 한국어/영어 동기화 음성 내레이션 출력.
+  5. **`src/components/movie/CinematicMoviePlayer.tsx` & `MovieVfxCanvas.tsx` 구현**:
+     - 20씬 Ken Burns 멀티플레인 카메라 모션(줌인/줌아웃/좌우팬/전투 쉐이크) 및 HTML5 Canvas 2D 파티클 VFX(눈보라, 불씨, 룬 문자, 전투 참격, 안개) 구현.
+     - 한/영 이중 자막, 20씬 분할 스크러버 타임라인 점프, 배속 조절(1.0x~2.0x), 전체화면, 터치 친화적 44px+ 컨트롤 HUD 완비.
+  6. **`MovieView.tsx` 듀얼 재생 모드 & 교차 내비게이션 & DESIGN.md 터치 타깃 업그레이드**:
+     - 상단 탭에서 `[🎬 시네마틱 영화관]`과 `[📺 YouTube 오피셜]` 모드 자유 전환 지원.
+     - 현재 회차의 `[📖 소설 {N}화]` 및 `[🖼️ 웹툰 {N}화]` 원클릭 교차 바로가기 제공.
+     - 회차 필터 탭 및 서랍 버튼을 `min-h-[44px]` 및 `rounded-none`/`rounded-sm` 규격으로 전면 준수.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 errors 통과.
+  - `npm run build`: 코드 0으로 프로덕션 번들(dist/assets/MovieView, CinematicMoviePlayer, movieEpisodeMapping) 및 52개 정적 SPA 라우트 정상 생성 완료.
+  - `scripts/verify_ip_trilogy.ts` 및 자동화 스크립트를 통한 40화 전편 메타데이터/스토리지/오디오 엔진 동작 검증 완료.
+  - 연동 구글 폼 작업 완료 보고서 제출 완료 (`submit_report.py`).
+
+## [2026-10-18 07:05 KST] [M4 검증 체계] 40화 IP 3부작 E2E 테스트 인프라 및 자동 검증 하네스 구축 완료
+- **요청 사항**:
+  - 40화 IP 3부작(웹소설, 웹툰, 영화) Dual-Track 4티어 E2E 테스트 인프라(`TEST_INFRA.md`) 및 초고속 자동 검증 스크립트(`scripts/verify_ip_trilogy.ts`), `TEST_READY.md` 구축.
+- **수정 및 개선 내역**:
+  1. **Dual-Track 4티어 E2E 테스트 명세서 작성 ([`TEST_INFRA.md`](file:///Users/dayyoung/project/snshero/TEST_INFRA.md))**:
+     - Tier 1: 기능 범위 검증 (소설 40화 마크다운/3500자/8대사/5대 로어 키워드/index.json 동기화, 웹툰 40화 840패널/이미지URL/말풍선·SFX큐, 영화 40화 전편 해금/매핑/자체 시네마틱 플레이어, tsc/빌드 무결점).
+     - Tier 2: 경계치 & 예외 복원력 (에피소드 파라미터 [1, 40] 클램핑, 말풍선 누락 패널 베이스라인 내레이션 폴백, 에피소드 9..40 비-유튜브 인앱 플레이어 폴백, 로컬스토리지 손상 JSON 무충돌 복구).
+     - Tier 3: 모듈 간 상호작용 & 데이터 파이프라인 (3부작 40화 한/영 에피소드 제목 100% 일치, 로어 키워드 5인방-CARD_DATABASE 1:1 매핑, 85%+ 스크롤 시 자동 읽음 처리).
+     - Tier 4: 실사용자 시나리오 & 모바일 인간공학 (소설 읽기->스크롤->보상 수령 전주기, 시즌1/시즌2 데이터 격리, DESIGN.md 44px+ 터치 타깃 및 font-mono 준수).
+  2. **초고속 자동 검증 하네스 스크립트 구현 ([`scripts/verify_ip_trilogy.ts`](file:///Users/dayyoung/project/snshero/scripts/verify_ip_trilogy.ts))**:
+     - `npx tsx scripts/verify_ip_trilogy.ts` 단일 명령으로 31개 항목 전수 자동 판정 (~0.06s 초고속 실행).
+     - `--skip-build`, `--tier=N`, `--verbose` 옵션 지원으로 작업자 실시간 피드백 보장.
+  3. **테스트 가동 준비 완료 선언서 작성 ([`TEST_READY.md`](file:///Users/dayyoung/project/snshero/TEST_READY.md))**:
+     - 베이스라인 결과 (27개 통과, 4개 마일스톤 진행중 경고, 0개 블로커) 및 `worker_novel`, `worker_webtoon`, `worker_movie`, `sentinel` 대상 하네스 가이드 명시.
+- **검증 결과**:
+  - `npx tsx scripts/verify_ip_trilogy.ts --skip-build` 27/31 통과, 0개 블로킹 실패 확인.
+  - 연동 구글 폼 작업 완료 보고서 제출 완료 (`submit_report.py`).
+
 ## [2026-10-18 06:31 KST] [메인 화면 UX 개선] 웹소설, 웹툰, 영화 바로가기 버튼 메인 화면 추가 완료
 - **요청 사항**:
   - "웹소설, 웹툰, 영화 는 중요한 기능이야 . 메인화면에 바로가기 버튼 추가"
