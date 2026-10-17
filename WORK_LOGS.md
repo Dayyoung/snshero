@@ -2,6 +2,19 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-18 06:10 KST] [이벤트/팝업 정리] FTUE 속성 상성 가이드 및 SSR 지급 이벤트 전면 삭제 완료
+- **요청 사항**:
+  - "fluet 속성 상성 가이드. ssr 지급 이벤트는 삭제해줘"
+- **수정 및 개선 내역**:
+  1. **FTUE 속성 상성 가이드 (`[FTUE // 속성 상성 가이드]` & `[SSR] 설원의 성검` 지급 이벤트) 삭제 ([`src/App.tsx`](file:///Users/dayyoung/project/snshero/src/App.tsx), [`src/components/growth/ElementalCounterStrikeTutorial.tsx`](file:///Users/dayyoung/project/snshero/src/components/growth/ElementalCounterStrikeTutorial.tsx))**:
+     - `view === 'card-play'` 진입 시 자동 팝업되던 `[FTUE // 속성 상성 가이드]`(`ElementalCounterStrikeTutorial`) 트리거 및 모달 렌더링 제거.
+     - 완료 시 지급되던 `+1,500 SNS` 및 `[SSR] 설원의 성검` 지급 이벤트 완전 제거.
+  2. **SSR 지급 이벤트 모달 및 스타터팩 배너 전면 제거 ([`src/App.tsx`](file:///Users/dayyoung/project/snshero/src/App.tsx), [`src/components/FirstVisitOverdriveModal.tsx`](file:///Users/dayyoung/project/snshero/src/components/FirstVisitOverdriveModal.tsx), [`src/views/HomeView.tsx`](file:///Users/dayyoung/project/snshero/src/views/HomeView.tsx), [`src/components/StarterPackModal.tsx`](file:///Users/dayyoung/project/snshero/src/components/StarterPackModal.tsx), [`src/components/NoticeModal.tsx`](file:///Users/dayyoung/project/snshero/src/components/NoticeModal.tsx))**:
+     - `FirstVisitOverdriveModal`(`전술 SSR 보급 팩`), `DailyRequisitionModal`(`SSR 무료 보급`), `SevenDayStreakModal`(`7일차 SSR 페가수스 지급`) 모달 마운트 및 상태 제거.
+     - `HomeView.tsx` 상단의 `[첫 충전 93% OFF] ⚡ 1,000원 스타터팩: SSR 확정팩` 배너 및 `<StarterPackModal>` 제거, `NoticeModal.tsx` 내 `SSR 카드팩` 안내 문구 제거.
+- **검증 결과**:
+  - `npx tsc --noEmit` & `npm run build` 검증, 로컬 Git 커밋 및 연동 구글 폼 보고서 제출 완료 (`submit_report.py`).
+
 ## [2026-10-17 21:30 KST] [이벤트/상업용 고도화] HERO VEGAS 9구 카지노 슬롯머신 & 월리를 찾아라 디오라마 숨은그림 찾기 상업용 게임 전면 업그레이드 완료
 - **요청 사항**:
   - "추가한 게임들이 너무 별루야. 상업용 게임으로 변경해줘"

@@ -217,21 +217,9 @@ const GoogleAuthModal = safeLazy(
   loadComponentSafely('GoogleAuthModal'),
   'GoogleAuthModal'
 );
-const FirstVisitOverdriveModal = safeLazy(
-  loadComponentSafely('FirstVisitOverdriveModal'),
-  'FirstVisitOverdriveModal'
-);
 const InstantChallengeBattleModal = safeLazy(
   loadComponentSafely('InstantChallengeBattleModal'),
   'InstantChallengeBattleModal'
-);
-const DailyRequisitionModal = safeLazy(
-  loadComponentSafely('DailyRequisitionModal'),
-  'DailyRequisitionModal'
-);
-const SevenDayStreakModal = safeLazy(
-  loadComponentSafely('SevenDayStreakModal'),
-  'SevenDayStreakModal'
 );
 const PersonalizedStarterDeckModal = safeLazy(
   loadComponentSafely('PersonalizedStarterDeckModal'),
@@ -260,10 +248,6 @@ const StarBreathingUltimateWidget = safeLazy(
 const GuildBountyBoardModal = safeLazy(
   loadComponentSafely('GuildBountyBoardModal'),
   'GuildBountyBoardModal'
-);
-const ElementalCounterStrikeTutorial = safeLazy(
-  loadComponentSafely('ElementalCounterStrikeTutorial'),
-  'ElementalCounterStrikeTutorial'
 );
 
 const getCardAvatarStyle = (avatar: string): React.CSSProperties => {
@@ -519,10 +503,7 @@ function AppContent() {
   const [autoStartPvp, setAutoStartPvp] = useState(false);
   const [fromBackToRanking, setFromBackToRanking] = useState(false);
   const [view, setView] = useState<ViewType>(() => getViewFromPathAndUrl());
-  // FTUE Tactical Overdrive Modal (Disabled auto-popup to enforce zero-intrusion minimalism)
-  const [showFtueOverdrive, setShowFtueOverdrive] = useState(false);
 
-  // RSI-005: Daily Free 10x Requisition Modal State (Available on-demand via event, no auto-popup)
   // Viral Instant Challenge Deck Modal (?challenge={deckCode})
   const [challengeDeckCode, setChallengeDeckCode] = useState<string | null>(() => {
     if (typeof window === 'undefined') return null;
@@ -557,12 +538,6 @@ function AppContent() {
   });
   const [showStoryDuelModal, setShowStoryDuelModal] = useState<boolean>(() => Boolean(storyDuelParam));
 
-  // RSI-005: Daily Free 10x Requisition Modal State (Manual trigger only)
-  const [showDailyRequisition, setShowDailyRequisition] = useState(false);
-
-  // RSI-010: 7-Day Streak Retention Protocol Modal State (Manual trigger only)
-  const [showSevenDayStreak, setShowSevenDayStreak] = useState(false);
-
   // RSI-011: Personalized Starter Deck Modal State
   const [showPersonalizedStarter, setShowPersonalizedStarter] = useState(false);
 
@@ -574,20 +549,6 @@ function AppContent() {
 
   // RSI-020: Guild Bounty Board & Weekly Raid Modal State
   const [showGuildBountyModal, setShowGuildBountyModal] = useState(false);
-
-  // RSI-021: FTUE Elemental Counter Strike Tutorial State
-  const [showFtueCounterStrike, setShowFtueCounterStrike] = useState(false);
-
-  useEffect(() => {
-    if (view === 'card-play') {
-      try {
-        const cleared = localStorage.getItem('snshero_ftue_battle_cleared');
-        if (!cleared) {
-          setShowFtueCounterStrike(true);
-        }
-      } catch {}
-    }
-  }, [view]);
 
   // Global listeners to trigger modals from any view
   useEffect(() => {
@@ -8196,17 +8157,6 @@ function AppContent() {
         isLoggingIn={isGlobalLoading}
       />
 
-      {/* Tactical First-Visit Overdrive Onboarding Modal */}
-      <FirstVisitOverdriveModal
-        isOpen={showFtueOverdrive}
-        onClose={() => setShowFtueOverdrive(false)}
-        onEnterDeck={() => {
-          setShowFtueOverdrive(false);
-          setShowPersonalizedStarter(true);
-        }}
-        language={language}
-      />
-
       {/* RSI-011: Personalized Starter Deck Modal */}
       <PersonalizedStarterDeckModal
         isOpen={showPersonalizedStarter}
@@ -8259,28 +8209,6 @@ function AppContent() {
         />
       )}
 
-      {/* RSI-005: Daily Free 10x Requisition Modal */}
-      <DailyRequisitionModal
-        isOpen={showDailyRequisition}
-        onClose={() => setShowDailyRequisition(false)}
-        onEquipAndPlay={(acquiredCards) => {
-          acquiredCards.forEach(card => {
-            addCard(card.rarity || 'bronze', card.id, false);
-          });
-          setShowDailyRequisition(false);
-          setView('play');
-        }}
-        language={language}
-      />
-
-      {/* RSI-010: 7-Day Streak Retention Protocol Modal */}
-      <SevenDayStreakModal
-        isOpen={showSevenDayStreak}
-        onClose={() => setShowSevenDayStreak(false)}
-        onNavigateMinigame={() => setView('play')}
-        language={language}
-      />
-
       {/* RSI-015: 30-Day Tactical Season Pass Roadmap Modal */}
       <TacticalSeasonPassModal
         isOpen={showSeasonPassModal || view === 'season-hub'}
@@ -8323,8 +8251,6 @@ function AppContent() {
         }}
       />
 
-
-
       {/* RSI-020: Adventurer Guild Bounty Board Modal */}
       <GuildBountyBoardModal
         isOpen={showGuildBountyModal}
@@ -8335,21 +8261,6 @@ function AppContent() {
         onStartRaidBattle={() => {
           setShowGuildBountyModal(false);
           setView('card-play');
-        }}
-      />
-
-      {/* RSI-021: FTUE Elemental Counter Strike Interactive Tutorial */}
-      <ElementalCounterStrikeTutorial
-        isOpen={showFtueCounterStrike}
-        onSkip={() => setShowFtueCounterStrike(false)}
-        onComplete={(rewardGold) => {
-          setShowFtueCounterStrike(false);
-          setSns((prev) => prev + rewardGold);
-          showCustomAlert(
-            language === 'ko' ? '상성 마스터 달성' : 'COUNTER MASTER',
-            language === 'ko' ? `+${rewardGold} SNS와 [SSR] 설원의 성검이 지급되었습니다!` : `+${rewardGold} SNS and [SSR] Frost Blade acquired!`,
-            3
-          );
         }}
       />
 

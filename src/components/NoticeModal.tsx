@@ -104,10 +104,6 @@ export const NoticeModal: React.FC<NoticeModalProps> = ({ language, onNavigate, 
                 <span>🎁 {language === 'ko' ? '출석 보상' : 'Daily Login Gift'}</span>
                 <span className="text-emerald-400">+1,000 SNS</span>
               </div>
-              <div className="flex items-center justify-between text-slate-200 font-bold">
-                <span>⚔️ {language === 'ko' ? '초보자 미션' : 'Beginner Roadmap'}</span>
-                <span className="text-amber-400">{language === 'ko' ? 'SSR 카드팩' : 'SSR Pack'}</span>
-              </div>
             </div>
           </div>
 

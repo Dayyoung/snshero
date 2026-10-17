@@ -15,7 +15,6 @@ import { BeginnerRoadmap } from "../components/BeginnerRoadmap";
 import { NoticeModal } from "../components/NoticeModal";
 import { AfkPatrolModal } from "../components/AfkPatrolModal";
 import { Milestone600CelebrationModal } from "../components/Milestone600CelebrationModal";
-import { StarterPackModal } from "../components/StarterPackModal";
 import { PwaEventModal } from "../components/PwaEventModal";
 import { LobbyInteractiveCard } from "../components/LobbyInteractiveCard";
 import { CardLongPressPreviewModal } from "../components/CardLongPressPreviewModal";
@@ -88,9 +87,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
   const [isLobbyDrawerOpen, setIsLobbyDrawerOpen] = useState(false);
   // ID 600: Grand Strategist Milestone 600 Celebration
   const [isMilestone600Open, setIsMilestone600Open] = useState(false);
-  // SCR-01-02: Starter Pack state
-  const [isStarterPackOpen, setIsStarterPackOpen] = useState(false);
-  const [isStarterPackPurchased, setIsStarterPackPurchased] = useState(() => localStorage.getItem('hero_starter_pack_purchased') === 'true');
   const [dailyMissionProgress, setDailyMissionProgress] = useState<DailyMissionProgress>(() => loadDailyMissions());
   // PWA 설치 & 알림 등록 이벤트 모달 상태
   const [isPwaEventOpen, setIsPwaEventOpen] = useState(false);
@@ -108,18 +104,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
     });
   }, [onNavigate, addSns, playSfx]);
   useWebMcpTools(homeMcpTools, [homeMcpTools]);
-
-  useEffect(() => {
-    const handleStarterPackUpdate = () => {
-      setIsStarterPackPurchased(localStorage.getItem('hero_starter_pack_purchased') === 'true');
-    };
-    window.addEventListener('hero_starter_pack_purchased_event', handleStarterPackUpdate);
-    window.addEventListener('storage', handleStarterPackUpdate);
-    return () => {
-      window.removeEventListener('hero_starter_pack_purchased_event', handleStarterPackUpdate);
-      window.removeEventListener('storage', handleStarterPackUpdate);
-    };
-  }, []);
 
   useEffect(() => {
     const updateUnread = () => {
@@ -200,7 +184,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
   const [helpOpen, setHelpOpen] = useState(false);
   // Dispatch global popup events so bottom nav hides while help is open
   useEffect(() => {
-    if (helpOpen || isAfkRewardOpen || isMilestone600Open || isPwaEventOpen || isStarterPackOpen || isMailboxOpen || isNotifModalOpen) {
+    if (helpOpen || isAfkRewardOpen || isMilestone600Open || isPwaEventOpen || isMailboxOpen || isNotifModalOpen) {
       window.dispatchEvent(new Event('snshero-help-popup-open'));
     } else {
       window.dispatchEvent(new Event('snshero-help-popup-close'));
@@ -208,7 +192,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
     return () => {
       window.dispatchEvent(new Event('snshero-help-popup-close'));
     };
-  }, [helpOpen, isAfkRewardOpen, isMilestone600Open, isPwaEventOpen, isStarterPackOpen, isMailboxOpen, isNotifModalOpen]);
+  }, [helpOpen, isAfkRewardOpen, isMilestone600Open, isPwaEventOpen, isMailboxOpen, isNotifModalOpen]);
 
   const [helpStep, setHelpStep] = useState(0);
 
@@ -263,51 +247,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
     <div className="flex flex-col gap-6 sm:gap-8 p-4 sm:p-6 md:p-8 pb-32 max-w-6xl mx-auto min-h-screen bg-[#fdfcfc] justify-start text-[#201d1d] font-mono">
       {/* ── Header: Card Display + Title ── */}
       <header className="grid grid-cols-1 gap-4 sm:gap-6 items-stretch w-full pt-12 lg:pt-2">
-        {/* SCR-01-02: Top First Purchase Limited Deal Banner */}
-        <div className={cn('w-full order-2', !isLobbyDrawerOpen && 'hidden')}>
-          {!isStarterPackPurchased ? (
-            <button
-              type="button"
-              onClick={() => {
-                triggerHaptic('heavy');
-                playSfx('click');
-                setIsStarterPackOpen(true);
-              }}
-              className="w-full min-h-14 cursor-pointer rounded-sm border border-[#201d1d] bg-[#201d1d] text-[#fdfcfc] p-4 text-left hover:bg-[#302c2c] select-none font-mono"
-            >
-              <div className="relative flex items-center justify-between gap-2">
-                  <div className="flex flex-wrap items-center gap-2 min-w-0">
-                  <span className="px-2 py-1 border border-[#fdfcfc]/30 text-sm font-bold shrink-0 rounded-none">
-                    {language === 'ko' ? '[첫 충전 93% OFF]' : '[1ST BUY 93% OFF]'}
-                  </span>
-                  <span className="text-sm font-bold">
-                    {language === 'ko'
-                      ? '⚡ 1,000원 스타터팩: SSR 확정팩 + 3,000 SNS + AP 물약 5개!'
-                      : '⚡ ₩1,000 Starter Pack: Guaranteed SSR + 3,000 SNS + AP Potions!'}
-                  </span>
-                </div>
-                <div className="hidden sm:flex items-center gap-1 shrink-0 px-2.5 py-1 text-sm font-bold border border-white/20 rounded-none">
-                  <span>₩1,000</span>
-                  <ArrowRight size={12} />
-                </div>
-              </div>
-            </button>
-          ) : (
-            <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] text-[#201d1d] text-sm select-none rounded-none">
-              <span className="font-bold flex items-center gap-1.5">
-                {language === 'ko' ? '[첫 구매 혜택 완료] SSR 영웅 & 3,000 SNS 적용됨' : '[First Purchase Active] SSR Hero & 3,000 SNS Applied'}
-              </span>
-              <button
-                type="button"
-                onClick={() => onNavigate('shop')}
-                className="min-h-11 text-sm font-bold text-[#201d1d] border border-[rgba(15,0,0,0.12)] px-3 py-2 hover:bg-[#201d1d] hover:text-[#fdfcfc] cursor-pointer rounded-sm"
-              >
-                {language === 'ko' ? '[상점 가기 →]' : '[GO TO SHOP →]'}
-              </button>
-            </div>
-          )}
-        </div>
-
         <div className="rounded-none border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc]">
           <div className="flex flex-col gap-5 p-4 sm:gap-6 sm:p-6">
             <div className="flex flex-wrap items-end justify-between gap-3 border-b border-[rgba(15,0,0,0.12)] pb-5">
@@ -884,16 +823,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
         isOpen={isNotifModalOpen}
         onClose={() => setIsNotifModalOpen(false)}
         language={language}
-      />
-
-      {/* SCR-01-02: Starter Pack Modal */}
-      <StarterPackModal
-        isOpen={isStarterPackOpen}
-        onClose={() => setIsStarterPackOpen(false)}
-        language={language}
-        onPurchased={() => {
-          setIsStarterPackPurchased(true);
-        }}
       />
 
       {/* PWA 설치 & 알림 등록 이벤트 모달 */}
