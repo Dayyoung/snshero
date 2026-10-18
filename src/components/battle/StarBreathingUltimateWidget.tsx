@@ -86,7 +86,7 @@ export const StarBreathingUltimateWidget: React.FC<StarBreathingUltimateWidgetPr
           /* Minimized Edge Badge: Zero intrusion on gameplay */
           <button
             onClick={() => setIsMinimized(false)}
-            className="flex items-center space-x-1.5 px-2.5 py-1 bg-[#090d16]/95 hover:bg-[#201d1d] text-stone-300 border border-[#646262]/30 rounded-sm shadow-sm transition-all"
+            className="min-h-[44px] flex items-center space-x-1.5 px-3 py-2 bg-[#090d16]/95 hover:bg-[#201d1d] text-stone-300 border border-[#646262]/30 rounded-sm transition-all"
             title="Expand Star Breathing HUD"
           >
             <span className="text-amber-400 text-xs">★</span>
@@ -101,19 +101,19 @@ export const StarBreathingUltimateWidget: React.FC<StarBreathingUltimateWidgetPr
           </button>
         ) : (
           /* Clean Monospace Tactical Bar */
-          <div className="bg-[#090d16]/95 border border-[#646262]/30 text-stone-200 rounded-none p-2 shadow-lg backdrop-blur-xs flex flex-col space-y-1.5 min-w-[210px] max-w-[250px]">
+          <div className="bg-[#090d16]/95 border border-[#646262]/30 text-stone-200 rounded-none p-2 flex flex-col space-y-1.5 min-w-[210px] max-w-[250px]">
             {/* Top Bar: Title & Minimize Toggle */}
             <div className="flex items-center justify-between text-[10px] border-b border-white/10 pb-1">
               <button
                 onClick={() => setShowDetail(true)}
-                className="flex items-center space-x-1 text-amber-400 hover:text-amber-300 font-bold transition-colors"
+                className="flex items-center space-x-1 text-amber-400 hover:text-amber-300 font-bold transition-colors min-h-[32px]"
               >
                 <span>[EP.06 성진호흡 {state.stage}성]</span>
                 <span className="text-stone-400 font-normal">?</span>
               </button>
               <button
                 onClick={() => setIsMinimized(true)}
-                className="text-stone-500 hover:text-stone-300 px-1 py-0.5 rounded-xs"
+                className="min-h-[44px] min-w-[44px] text-stone-500 hover:text-stone-300 p-1 rounded-xs flex items-center justify-center text-xs font-bold"
                 title="Minimize HUD"
               >
                 [—]
@@ -142,9 +142,9 @@ export const StarBreathingUltimateWidget: React.FC<StarBreathingUltimateWidgetPr
             <button
               onClick={handleCast}
               disabled={!isReady || isCastingAnimation}
-              className={`w-full py-1.5 px-2 text-xs font-bold rounded-sm border transition-all flex items-center justify-center space-x-1.5 ${
+              className={`w-full min-h-[44px] h-11 py-2 px-3 text-xs font-bold rounded-sm border transition-all flex items-center justify-center space-x-1.5 ${
                 isReady
-                  ? 'bg-cyan-950/80 hover:bg-cyan-900 border-cyan-400 text-cyan-200 cursor-pointer shadow-sm active:bg-cyan-950'
+                  ? 'bg-cyan-950/80 hover:bg-cyan-900 border-cyan-400 text-cyan-200 cursor-pointer active:bg-cyan-950'
                   : 'bg-stone-900 border-stone-800 text-stone-500 cursor-not-allowed opacity-75'
               }`}
             >
@@ -160,7 +160,7 @@ export const StarBreathingUltimateWidget: React.FC<StarBreathingUltimateWidgetPr
       {/* Casting Notice: Flat Terminal Banner adhering to OpenCode TUI style */}
       {isCastingAnimation && (
         <div className="fixed inset-x-0 top-16 z-50 pointer-events-none flex items-center justify-center font-mono px-4">
-          <div className="w-full max-w-md p-3 bg-[#090d16]/98 border border-cyan-400 text-white rounded-none shadow-xl text-center">
+          <div className="w-full max-w-md p-3 bg-[#090d16]/98 border border-cyan-400 text-white rounded-none text-center">
             <div className="text-[10px] text-cyan-400 font-bold uppercase tracking-widest mb-0.5">
               [SYSTEM // ASTRAL SANCTUARY ENGAGED]
             </div>
@@ -173,15 +173,15 @@ export const StarBreathingUltimateWidget: React.FC<StarBreathingUltimateWidgetPr
 
       {/* Star Breathing Detail Modal */}
       {showDetail && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs font-mono select-none">
-          <div className="relative w-full max-w-sm bg-[#090d16] border border-[#646262]/40 rounded-none p-5 text-stone-200 shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 font-mono select-none">
+          <div className="relative w-full max-w-sm bg-[#090d16] border border-[#646262]/40 rounded-none p-5 text-stone-200">
             <div className="flex items-center justify-between border-b border-white/10 pb-2 mb-3">
               <div className="flex items-center space-x-1.5 text-xs text-amber-400 font-bold">
                 <span>[소설 비전 // 성진호흡법 수련기]</span>
               </div>
               <button
                 onClick={() => setShowDetail(false)}
-                className="text-stone-400 hover:text-white p-1 rounded-sm"
+                className="min-h-[44px] min-w-[44px] flex items-center justify-center text-stone-400 hover:text-white rounded-sm border border-transparent hover:border-white/20"
                 aria-label="Close"
               >
                 [x]
@@ -221,7 +221,7 @@ export const StarBreathingUltimateWidget: React.FC<StarBreathingUltimateWidgetPr
 
               <button
                 onClick={() => setShowDetail(false)}
-                className="w-full py-2 bg-stone-900 hover:bg-stone-800 text-stone-200 font-bold text-xs rounded-sm border border-stone-700 transition-colors"
+                className="w-full min-h-[44px] h-11 bg-stone-900 hover:bg-stone-800 text-stone-200 font-bold text-xs rounded-sm border border-stone-700 transition-colors flex items-center justify-center"
               >
                 [확인 완료]
               </button>

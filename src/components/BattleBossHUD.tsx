@@ -67,7 +67,7 @@ export const BattleBossHUD: React.FC<BattleBossHUDProps> = ({
       : (gimmickTextEn || `⚔️ [Charging (${currentFury}/${maxFurySegments})] Standard attack preparing`);
 
   return (
-    <div className="w-full bg-[#1c0f0f]/95 border border-rose-500/50 p-2 font-mono select-none rounded-none text-xs shadow-md">
+    <div className="w-full bg-[#1c0f0f]/95 border border-rose-500/50 p-2 font-mono select-none rounded-none text-xs">
       {/* Upper row: Boss Name + Floor & Fury Segments */}
       <div className="flex items-center justify-between mb-1.5 flex-wrap gap-1">
         <div className="flex items-center gap-1.5 flex-wrap">

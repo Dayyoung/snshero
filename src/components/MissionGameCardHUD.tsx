@@ -32,7 +32,7 @@ export const MissionGameCardHUD: React.FC<MissionGameCardHUDProps> = ({
             {score} / <span className="text-amber-400">{targetScore}</span>
           </div>
         </div>
-        <div className="w-16 h-2 bg-zinc-700 rounded-full overflow-hidden">
+        <div className="w-16 h-2 bg-zinc-700 rounded-none overflow-hidden">
           <div
             className="h-full bg-emerald-500 transition-all duration-300"
             style={{ width: `${progress}%` }}
@@ -52,13 +52,13 @@ export const MissionGameCardHUD: React.FC<MissionGameCardHUDProps> = ({
         {/* Fever Booster Button (SCR-09-09) */}
         <button
           onClick={onOpenFeverModal}
-          className={`px-2 py-1 rounded-sm border text-[10px] font-black flex items-center gap-1 cursor-pointer transition-all active:scale-95 ${
+          className={`min-h-[44px] px-2.5 py-1.5 rounded-sm border text-xs font-black flex items-center justify-center gap-1 cursor-pointer transition-all active:scale-95 ${
             feverActive
-              ? 'bg-amber-500 text-white border-amber-600 animate-pulse shadow-md'
+              ? 'bg-amber-500 text-white border-amber-600'
               : 'bg-white text-amber-700 border-amber-300 hover:bg-amber-50'
           }`}
         >
-          <Zap size={11} className={feverActive ? 'text-white' : 'text-amber-600'} />
+          <Zap size={13} className={feverActive ? 'text-white' : 'text-amber-600'} />
           <span>{feverActive ? `${feverMultiplier}x FEVER` : 'FEVER 2X'}</span>
         </button>
       </div>

@@ -310,7 +310,7 @@ const MissionCharacterPortrait: React.FC<{
     <div className={cn('relative flex h-full w-full items-center justify-center p-1', className)} title={name || dbCard?.title}>
       <CardItem
         card={cardData}
-        className="w-24 h-34 sm:w-28 sm:h-38 rounded-lg shadow-lg pointer-events-none transform group-hover:scale-105 transition-transform duration-300"
+        className="w-24 h-34 sm:w-28 sm:h-38 rounded-none border border-[rgba(15,0,0,0.12)] pointer-events-none transform group-hover:scale-105 transition-transform duration-300"
         language={language}
         hideStats={hideStats}
       />
@@ -354,19 +354,19 @@ const BossCardItem: React.FC<BossCardItemProps> = ({ boss, lowSpecMode, language
 
   return (
     <motion.div
-      whileHover={!isCooldown ? { y: -6, scale: 1.02 } : {}}
+      whileHover={!isCooldown ? { y: -4 } : {}}
       className={cn(
-        "flex flex-col rounded-3xl border bg-slate-900 overflow-hidden shadow-xl transition-all relative",
-        isCooldown ? "border-slate-800 opacity-70" : "border-purple-600/30 hover:border-purple-500 shadow-[0_0_20px_rgba(147,51,234,0.05)] hover:shadow-[0_0_30px_rgba(147,51,234,0.15)]"
+        "flex flex-col rounded-none border bg-[#fdfcfc] text-[#201d1d] overflow-hidden transition-all relative font-mono",
+        isCooldown ? "border-[rgba(15,0,0,0.12)] opacity-70" : "border-[rgba(15,0,0,0.12)] hover:border-[#201d1d]"
       )}
     >
       {/* Reward Tag */}
-      <div className="absolute top-3 right-3 bg-gradient-to-r from-amber-400 to-yellow-400 text-slate-950 font-black text-xs px-3 py-1 rounded-full shadow-md z-10 animate-pulse">
+      <div className="absolute top-3 right-3 bg-[#201d1d] text-[#fdfcfc] border border-[#201d1d] font-mono font-bold text-xs px-2.5 py-1 rounded-sm z-10">
         +{boss.reward} SNS
       </div>
 
       {/* Boss Card Display */}
-      <div className="h-64 bg-slate-950 relative border-b border-slate-800 flex items-center justify-center p-4">
+      <div className="h-64 bg-[#f8f7f7] relative border-b border-[rgba(15,0,0,0.12)] flex items-center justify-center p-4">
         <CardItem 
           card={{
             ...bossCard,
@@ -383,12 +383,12 @@ const BossCardItem: React.FC<BossCardItemProps> = ({ boss, lowSpecMode, language
           language={language}
         />
         {isCooldown && (
-          <div className="absolute inset-0 bg-black/80 backdrop-blur-xs flex flex-col items-center justify-center p-4 text-center z-55">
-            <ShieldAlert size={40} className="text-red-500 animate-bounce mb-2" />
-            <span className="text-xs font-black text-red-500 uppercase tracking-widest bg-red-950/80 px-2.5 py-1 border border-red-500 rounded-md">
+          <div className="absolute inset-0 bg-[#201d1d]/90 flex flex-col items-center justify-center p-4 text-center z-55 font-mono">
+            <ShieldAlert size={36} className="text-red-500 mb-2" />
+            <span className="text-xs font-bold text-red-400 uppercase tracking-wider bg-red-950/80 px-2.5 py-1 border border-red-500/40 rounded-sm">
               COOLDOWN (휴식 중)
             </span>
-            <span className="text-sm font-bold mt-2 text-gray-300">
+            <span className="text-sm font-bold mt-2 text-stone-200">
               {hours}h {minutes}m {seconds}s
             </span>
           </div>
@@ -396,14 +396,14 @@ const BossCardItem: React.FC<BossCardItemProps> = ({ boss, lowSpecMode, language
       </div>
 
       {/* Details */}
-      <div className="p-5 flex-1 flex flex-col justify-between gap-4">
+      <div className="p-5 flex-1 flex flex-col justify-between gap-4 font-mono">
         <div>
           <div className="flex items-center justify-between mb-1">
-            <h3 className="text-lg font-black italic tracking-wide text-white uppercase truncate">
+            <h3 className="text-base font-bold tracking-tight text-[#201d1d] uppercase truncate">
               {language === 'ko' ? bossCard.title : (bossCard.title_dis || bossCard.title_en)}
             </h3>
           </div>
-          <p className="text-xs text-slate-400 line-clamp-2">
+          <p className="text-xs text-[#646262] line-clamp-2">
             {language === 'ko' ? bossCard.desc : (bossCard.desc_dis || bossCard.desc_en)}
           </p>
         </div>
@@ -415,10 +415,10 @@ const BossCardItem: React.FC<BossCardItemProps> = ({ boss, lowSpecMode, language
             onChallenge(boss.id);
           }}
           className={cn(
-            "w-full py-3 font-black uppercase italic tracking-wider rounded-xl transition-all cursor-pointer hover:scale-[1.02] active:scale-[0.98] shadow-md",
+            "w-full min-h-[44px] h-11 py-2 px-3 font-mono font-bold uppercase tracking-wider rounded-sm transition-all cursor-pointer flex items-center justify-center",
             isCooldown 
-              ? "bg-slate-800 text-slate-500 border border-slate-700 cursor-not-allowed" 
-              : "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white shadow-purple-600/20"
+              ? "bg-[#f1eeee] text-[#9a9898] border border-[rgba(15,0,0,0.12)] cursor-not-allowed" 
+              : "bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] border border-[#201d1d]"
           )}
         >
           {isCooldown ? "WAITING..." : "CHALLENGE (대결하기)"}
@@ -1616,7 +1616,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   generated.forEach(chest => {
                     const pulseIconHtml = `
                       <div class="relative flex items-center justify-center w-10 h-10">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75"></span>
+                        <span class=" absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75"></span>
                         <span class="relative text-2xl">🎁</span>
                       </div>
                     `;
@@ -1954,7 +1954,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           if (!chest.isOpened) {
             const pulseIconHtml = `
               <div class="relative flex items-center justify-center w-10 h-10">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75"></span>
+                <span class=" absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75"></span>
                 <span class="relative text-2xl">🎁</span>
               </div>
             `;
@@ -3535,11 +3535,11 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0.85, y: 30 }}
             transition={{ type: 'spring', stiffness: 350, damping: 28 }}
-            className="bg-slate-950 text-slate-100 w-full max-w-sm rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(99,102,241,0.25)] border border-indigo-500/30 relative z-[11001] font-sans"
+            className="bg-slate-950 text-slate-100 w-full max-w-sm rounded-none overflow-hidden  border border-indigo-500/30 relative z-[11001] font-mono"
           >
             {/* Header */}
-            <div className="p-5 bg-gradient-to-r from-indigo-950 to-slate-950 text-white border-b border-indigo-500/20 flex items-center gap-3">
-              <div className="w-9 h-9 bg-indigo-500/10 rounded-xl flex items-center justify-center shrink-0 border border-indigo-500/20">
+            <div className="p-5 bg-[#201d1d] from-indigo-950 to-slate-950 text-white border-b border-indigo-500/20 flex items-center gap-3">
+              <div className="w-9 h-9 bg-indigo-500/10 rounded-none flex items-center justify-center shrink-0 border border-indigo-500/20">
                 <ShieldAlert size={20} className="text-indigo-400" />
               </div>
               <h2 className="text-base font-black italic uppercase tracking-tight leading-tight text-slate-100">
@@ -3555,7 +3555,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
               {/* 자동 닫힘 카운트다운 뱃지 */}
               {customAlertModal.countdown !== undefined && customAlertModal.countdown !== null && customAlertModal.countdown > 0 && (
-                <div className="mt-4 py-1.5 px-3 bg-indigo-950/80 border border-indigo-500/40 rounded-lg text-indigo-300 text-xs font-black flex items-center justify-center gap-1.5 animate-pulse">
+                <div className="mt-4 py-1.5 px-3 bg-indigo-950/80 border border-indigo-500/40 rounded-sm text-indigo-300 text-xs font-black flex items-center justify-center gap-1.5 animate-pulse">
                   <span>⏱️ {language === 'ko' ? `${customAlertModal.countdown}초 후 자동으로 닫힙니다` : `Auto closing in ${customAlertModal.countdown}s...`}</span>
                 </div>
               )}
@@ -3568,7 +3568,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                   setCustomAlertModal(prev => ({ ...prev, isOpen: false, countdown: null }));
                 }}
-                className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold uppercase tracking-wider text-xs rounded-xl shadow-lg shadow-indigo-600/25 active:scale-95 transition-all cursor-pointer text-center"
+                className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold uppercase tracking-wider text-xs rounded-sm  shadow-indigo-600/25 active:scale-95 transition-all cursor-pointer text-center"
               >
                 {customAlertModal.countdown !== undefined && customAlertModal.countdown !== null && customAlertModal.countdown > 0
                   ? (language === 'ko' ? `확인 (${customAlertModal.countdown}초)` : `Confirm (${customAlertModal.countdown}s)`)
@@ -3608,7 +3608,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           <motion.div 
             initial={{ scale: 0.9, y: 20 }}
             animate={{ scale: 1, y: 0 }}
-            className="bg-slate-900 text-white rounded-3xl border border-slate-800 shadow-[0_20px_50px_rgba(0,0,0,0.5)] max-w-lg w-full overflow-hidden flex flex-col"
+            className="bg-slate-900 text-white rounded-none border border-slate-800  max-w-lg w-full overflow-hidden flex flex-col"
           >
             <div className="bg-slate-950 p-6 border-b border-slate-800 flex items-center justify-between">
               <h3 className="text-2xl font-black italic uppercase tracking-tighter flex items-center gap-3 text-indigo-400">
@@ -3630,9 +3630,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             </div>
             <div className="p-6 space-y-6 overflow-y-auto max-h-[65vh] bg-slate-900">
               {/* Rule 1: Card Stats */}
-              <div className="space-y-3 bg-slate-950 p-4 rounded-2xl border border-indigo-500/20">
+              <div className="space-y-3 bg-slate-950 p-4 rounded-none border border-indigo-500/20">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-black shrink-0 shadow-[0_0_10px_rgba(99,102,241,0.3)] text-sm">1</div>
+                  <div className="w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-black shrink-0  text-sm">1</div>
                   <p className="text-sm font-bold leading-relaxed text-slate-200">
                     {language === 'ko' ? '각 카드는 상하좌우 4방향의 숫자를 가집니다.' : 'Each card has 4 directional numbers (Top, Right, Bottom, Left).'}
                   </p>
@@ -3642,7 +3642,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     <CardItem
                       card={rulesExampleCards[0]}
                       isLocked={false}
-                      className="w-[90px] h-[126px] ring-2 ring-indigo-500/50 rounded-xl shadow-lg"
+                      className="w-[90px] h-[126px] ring-2 ring-indigo-500/50 rounded-none "
                     />
                     <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 bg-indigo-600 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full">7</div>
                     <div className="absolute top-1/2 -right-2.5 -translate-y-1/2 bg-rose-600 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full">6</div>
@@ -3653,9 +3653,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               </div>
 
               {/* Rule 2: Capture Mechanic with Card Images */}
-              <div className="space-y-3 bg-slate-950 p-4 rounded-2xl border border-rose-500/20">
+              <div className="space-y-3 bg-slate-950 p-4 rounded-none border border-rose-500/20">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-rose-600 text-white rounded-full flex items-center justify-center font-black shrink-0 shadow-[0_0_10px_rgba(244,63,94,0.3)] text-sm">2</div>
+                  <div className="w-8 h-8 bg-rose-600 text-white rounded-full flex items-center justify-center font-black shrink-0  text-sm">2</div>
                   <p className="text-sm font-bold leading-relaxed text-slate-200">
                     {language === 'ko' 
                       ? '내 카드의 숫자가 인접한 상대 카드보다 크면 캡처합니다.' 
@@ -3670,9 +3670,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       <CardItem
                         card={rulesExampleCards[0]}
                         isLocked={false}
-                        className="w-[80px] h-[112px] ring-2 ring-indigo-500 rounded-lg shadow-lg"
+                        className="w-[80px] h-[112px] ring-2 ring-indigo-500 rounded-none "
                       />
-                      <div className="absolute top-1/2 -right-3 -translate-y-1/2 w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-[10px] font-bold z-10 shadow-md border border-white/20">
+                      <div className="absolute top-1/2 -right-3 -translate-y-1/2 w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-[10px] font-bold z-10  border border-white/20">
                         6
                       </div>
                     </div>
@@ -3695,15 +3695,15 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       <CardItem
                         card={rulesExampleCards[1]}
                         isLocked={false}
-                        className="w-[80px] h-[112px] ring-2 ring-rose-500 rounded-lg shadow-lg opacity-80"
+                        className="w-[80px] h-[112px] ring-2 ring-rose-500 rounded-none  opacity-80"
                       />
-                      <div className="absolute top-1/2 -left-3 -translate-y-1/2 w-6 h-6 rounded-full bg-rose-600 text-white flex items-center justify-center text-[10px] font-bold z-10 shadow-md border border-white/20">
+                      <div className="absolute top-1/2 -left-3 -translate-y-1/2 w-6 h-6 rounded-full bg-rose-600 text-white flex items-center justify-center text-[10px] font-bold z-10  border border-white/20">
                         2
                       </div>
                     </div>
                   </div>
                 </div>
-                <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-3 mt-2">
+                <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-none p-3 mt-2">
                   <p className="text-xs font-bold text-emerald-400 leading-relaxed">
                     {language === 'ko' 
                       ? '→ 내 오른쪽 숫자(6)가 상대 왼쪽 숫자(2)보다 크므로 상대 카드를 캡처!'
@@ -3713,9 +3713,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               </div>
 
               {/* Rule 3: Victory Condition */}
-              <div className="space-y-3 bg-slate-950 p-4 rounded-2xl border border-amber-500/20">
+              <div className="space-y-3 bg-slate-950 p-4 rounded-none border border-amber-500/20">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-amber-500 text-slate-950 rounded-full flex items-center justify-center font-black shrink-0 shadow-[0_0_10px_rgba(245,158,11,0.3)] text-sm">3</div>
+                  <div className="w-8 h-8 bg-amber-500 text-slate-950 rounded-full flex items-center justify-center font-black shrink-0  text-sm">3</div>
                   <div className="space-y-1">
                     <p className="text-sm font-bold leading-relaxed text-slate-200">
                       {language === 'ko' 
@@ -3723,13 +3723,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                         : 'When all 9 slots are filled, highest score wins.'}
                     </p>
                     <div className="flex gap-3 text-[11px] font-semibold mt-2">
-                      <span className="px-2 py-1 bg-indigo-500/10 text-indigo-400 rounded-lg border border-indigo-500/20">
+                      <span className="px-2 py-1 bg-indigo-500/10 text-indigo-400 rounded-sm border border-indigo-500/20">
                         {language === 'ko' ? '5:4 선공=무승부' : '5:4(1st)=Draw'}
                       </span>
-                      <span className="px-2 py-1 bg-emerald-500/10 text-emerald-400 rounded-lg border border-emerald-500/20">
+                      <span className="px-2 py-1 bg-emerald-500/10 text-emerald-400 rounded-sm border border-emerald-500/20">
                         {language === 'ko' ? '5:4 후공=승리' : '5:4(2nd)=Win'}
                       </span>
-                      <span className="px-2 py-1 bg-amber-500/10 text-amber-400 rounded-lg border border-amber-500/20">
+                      <span className="px-2 py-1 bg-amber-500/10 text-amber-400 rounded-sm border border-amber-500/20">
                         {language === 'ko' ? '6:3↑ 즉시승리' : '6:3+ = Instant Win'}
                       </span>
                     </div>
@@ -3746,7 +3746,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     if (setIsAutoBattle) setIsAutoBattle(true);
                   }
                 }}
-                className="w-full h-14 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white font-black uppercase tracking-wider rounded-2xl flex items-center justify-center gap-3 group transition-all shadow-[0_10px_30px_rgba(99,102,241,0.3)] hover:shadow-[0_15px_35px_rgba(99,102,241,0.4)] active:scale-[0.98]"
+                className="w-full h-14 bg-[#201d1d] from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white font-black uppercase tracking-wider rounded-none flex items-center justify-center gap-3 group transition-all  hover: active:scale-[0.98]"
               >
                 <Check size={20} />
                 <span className="text-base font-black italic uppercase tracking-wider">
@@ -4763,11 +4763,11 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     if (!userMarkerRef.current) {
       const userIcon = L.divIcon({
         className: 'custom-user-marker',
-        html: `<div class="relative w-12 h-12 flex items-center justify-center p-1 bg-blue-600 border-2 border-white rounded-xl shadow-[0_0_15px_rgba(37,99,235,0.7)] animate-pulse">
+        html: `<div class="relative w-12 h-12 flex items-center justify-center p-1 bg-blue-600 border-2 border-white rounded-none  animate-pulse">
                  <img src="${effectiveUser?.photoURL?.startsWith('preset:') 
                    ? `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Hero-${effectiveUser.photoURL.split(':')[1]}` 
                    : (effectiveUser?.photoURL || `https://api.dicebear.com/7.x/pixel-art/svg?seed=Hero&backgroundColor=3b82f6`)}" 
-                   class="w-full h-full object-cover rounded-lg" />
+                   class="w-full h-full object-cover rounded-none" />
                  <div class="absolute -bottom-5 bg-blue-600 text-white text-[9px] font-black uppercase px-1.5 py-0.5 rounded border border-white/20 whitespace-nowrap shadow">YOU</div>
                </div>`,
         iconSize: [48, 48],
@@ -4808,10 +4808,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         if (!botMarkersRef.current[c.id]) {
           const botIcon = L.divIcon({
             className: 'custom-bot-marker',
-            html: `<div class="relative w-10 h-10 flex items-center justify-center p-1 bg-red-600 border-2 border-white rounded-xl shadow-[0_0_12px_rgba(220,38,38,0.8)] cursor-pointer">
+            html: `<div class="relative w-10 h-10 flex items-center justify-center p-1 bg-red-600 border-2 border-white rounded-none  cursor-pointer">
                      <div class="absolute -top-3 bg-red-600 text-white text-[8px] font-black px-1 py-0.2 rounded border border-white shadow">AI</div>
                      <img src="https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${c.id}&backgroundColor=b6e3f4" 
-                       class="w-full h-full object-cover rounded-lg" />
+                       class="w-full h-full object-cover rounded-none" />
                    </div>`,
             iconSize: [40, 40],
             iconAnchor: [20, 20]
@@ -10281,7 +10281,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         />
 
         {/* Header */}
-        <header className="h-16 flex items-center justify-between border-b border-white/10 px-6 bg-slate-950/80 backdrop-blur-md z-50 shrink-0 relative font-sans">
+        <header className="h-16 flex items-center justify-between border-b border-white/10 px-6 bg-slate-950/80 backdrop-blur-md z-50 shrink-0 relative font-mono">
           <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 pointer-events-none">
             {gameState === 'treasure' ? (
               <Gift className="text-amber-400 animate-pulse" size={24} />
@@ -10297,7 +10297,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         </header>
 
         {/* Workout info bar */}
-        <div className="bg-slate-950/40 border-b border-white/10 px-6 py-3 flex items-center justify-between z-40 shrink-0 font-sans backdrop-blur-md">
+        <div className="bg-slate-950/40 border-b border-white/10 px-6 py-3 flex items-center justify-between z-40 shrink-0 font-mono backdrop-blur-md">
           <div className="flex flex-col">
             <span className="text-[10px] font-black text-slate-400 uppercase">DISTANCE</span>
             <span className="text-lg font-black text-emerald-400">{runningDistance.toFixed(1)} m</span>
@@ -10324,13 +10324,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         <div className="flex-1 p-4 flex flex-col min-h-0 relative">
           <div 
             id="running-map" 
-            className="flex-1 w-full border border-slate-800 bg-slate-900 rounded-2xl overflow-hidden shadow-2xl relative z-10"
+            className="flex-1 w-full border border-slate-800 bg-slate-900 rounded-none overflow-hidden  relative z-10"
             style={{ minHeight: '350px' }}
           />
 
           {/* Treasure Left Badge (Floating on Map) */}
           {gameState === 'treasure' && (
-            <div className="absolute top-8 right-8 z-20 bg-slate-900/90 border border-amber-400 px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-[0_4px_12px_rgba(0,0,0,0.5)] font-bold text-xs font-sans">
+            <div className="absolute top-8 right-8 z-20 bg-slate-900/90 border border-amber-400 px-3 py-1.5 rounded-full flex items-center gap-1.5  font-bold text-xs font-mono">
               <span className="text-base">🎁</span>
               <span>{language === 'ko' ? '남은 보물' : 'Chests'}: <span className="text-amber-400 font-extrabold">{treasureChests.filter(c => !c.isOpened).length} / 5</span></span>
             </div>
@@ -10340,7 +10340,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           <div className="w-full mt-4 flex justify-center z-20">
             <button 
               onClick={handleStopRunning}
-              className="w-full max-w-md py-4 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-black uppercase text-base tracking-widest rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+              className="w-full max-w-md py-4 bg-[#201d1d] from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-black uppercase text-base tracking-widest rounded-sm  hover: hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
             >
               <X size={20} />
               <span>STOP WORKOUT</span>
@@ -10356,19 +10356,19 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 initial={{ scale: 0.5, opacity: 0, y: 50 }}
                 animate={{ scale: 1.1, opacity: 1, y: 0 }}
                 exit={{ scale: 1.3, opacity: 0, y: -50 }}
-                className="w-full max-w-xs border border-amber-400 bg-slate-900 text-white p-5 rounded-2xl shadow-[0_20px_50px_rgba(245,158,11,0.15)] flex flex-col items-center justify-center pointer-events-auto"
+                className="w-full max-w-xs border border-amber-400 bg-slate-900 text-white p-5 rounded-none  flex flex-col items-center justify-center pointer-events-auto"
               >
                 <span className="text-xs font-black uppercase tracking-wider mb-2 animate-pulse text-amber-400">
                   🎉 CARD DISCOVERED! (10m)
                 </span>
-                <div className={`w-32 aspect-[5/7] border border-amber-400/30 rounded-lg overflow-hidden shadow-lg relative flex flex-col items-center justify-center p-1 bg-slate-950`}>
+                <div className={`w-32 aspect-[5/7] border border-amber-400/30 rounded-none overflow-hidden  relative flex flex-col items-center justify-center p-1 bg-slate-950`}>
                   {/* Character image mapping index */}
                   <div className="w-full h-full flex items-center justify-center relative pointer-events-none overflow-hidden rounded-md">
                     {runningRecentlyEarnedCard.imageUrl ? (
                       <img 
                         src={runningRecentlyEarnedCard.imageUrl} 
                         alt="Earned Card"
-                        className="w-full h-full object-contain pixelated scale-110 drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)]"
+                        className="w-full h-full object-contain pixelated scale-110 drop-"
                       />
                     ) : (
                       <div 
@@ -10399,7 +10399,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 initial={{ scale: 0.5, opacity: 0, y: 50 }}
                 animate={{ scale: 1.05, opacity: 1, y: 0 }}
                 exit={{ scale: 1.2, opacity: 0, y: -50 }}
-                className="w-full max-w-sm border border-amber-400 bg-slate-950 text-white p-6 rounded-2xl shadow-[0_20px_50px_rgba(245,158,11,0.25)] flex flex-col items-center justify-center pointer-events-auto font-sans"
+                className="w-full max-w-sm border border-amber-400 bg-slate-950 text-white p-6 rounded-none  flex flex-col items-center justify-center pointer-events-auto font-mono"
               >
                 <span className="text-xs font-black uppercase tracking-wider mb-2 animate-pulse text-amber-400">
                   🎁 {t('mode_treasure', language)} - {language === 'ko' ? '보물 획득!' : 'TREASURE DISCOVERED!'}
@@ -10408,13 +10408,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 <div className="flex gap-6 items-center justify-center mt-3 w-full">
                   {/* 1. Card */}
                   <div className="flex flex-col items-center">
-                    <div className="w-24 aspect-[5/7] border border-amber-400/30 rounded-lg overflow-hidden shadow-lg relative flex flex-col items-center justify-center p-1 bg-slate-900">
+                    <div className="w-24 aspect-[5/7] border border-amber-400/30 rounded-none overflow-hidden  relative flex flex-col items-center justify-center p-1 bg-slate-900">
                       <div className="w-full h-full flex items-center justify-center relative pointer-events-none overflow-hidden rounded-md">
                         {treasureRecentlyEarned.card.imageUrl ? (
                           <img 
                             src={treasureRecentlyEarned.card.imageUrl} 
                             alt="Earned Card"
-                            className="w-full h-full object-contain pixelated scale-110 drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)]"
+                            className="w-full h-full object-contain pixelated scale-110 drop-"
                           />
                         ) : (
                           <div 
@@ -10437,7 +10437,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   {/* 2. Item */}
                   {treasureRecentlyEarned.item && (
                     <div className="flex flex-col items-center">
-                      <div className="w-24 aspect-[5/7] border border-blue-400/30 rounded-lg shadow-lg flex flex-col items-center justify-center p-2 bg-slate-900 relative">
+                      <div className="w-24 aspect-[5/7] border border-blue-400/30 rounded-none  flex flex-col items-center justify-center p-2 bg-slate-900 relative">
                         <ItemIcon 
                           imageIndex={treasureRecentlyEarned.item.imageIndex} 
                           emoji={treasureRecentlyEarned.item.emoji} 
@@ -10469,9 +10469,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.9, opacity: 0 }}
-                className="w-full max-w-sm border border-red-500/30 bg-red-950/90 backdrop-blur-md p-6 rounded-3xl shadow-[0_20px_50px_rgba(239,68,68,0.2)] text-center relative overflow-hidden"
+                className="w-full max-w-sm border border-red-500/30 bg-red-950/90 backdrop-blur-md p-6 rounded-none  text-center relative overflow-hidden"
               >
-                <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-red-600 to-rose-500 animate-pulse" />
+                <div className="absolute top-0 left-0 right-0 h-1.5 bg-[#201d1d] from-red-600 to-rose-500 animate-pulse" />
                 <h3 className="text-2xl font-black italic uppercase tracking-wider text-red-450 mb-2">
                   {t('anticheat_title', language)}
                 </h3>
@@ -10483,7 +10483,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     setShowAnticheatPopup(false);
                     setGameState('lobby');
                   }}
-                  className="w-full bg-slate-900 text-red-400 border border-red-500/40 py-3 rounded-xl font-black uppercase text-sm hover:bg-red-950 active:scale-[0.98] transition-all"
+                  className="w-full bg-slate-900 text-red-400 border border-red-500/40 py-3 rounded-sm font-black uppercase text-sm hover:bg-red-950 active:scale-[0.98] transition-all"
                 >
                   {t('anticheat_return_lobby', language)}
                 </button>
@@ -10500,9 +10500,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.9, opacity: 0 }}
-                className="w-full max-w-md border border-slate-800 bg-slate-900/95 backdrop-blur-md p-6 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] text-center relative overflow-hidden"
+                className="w-full max-w-md border border-slate-800 bg-slate-900/95 backdrop-blur-md p-6 rounded-none  text-center relative overflow-hidden"
               >
-                <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 to-teal-400 animate-pulse" />
+                <div className="absolute top-0 left-0 right-0 h-1.5 bg-[#201d1d] from-emerald-500 to-teal-400 animate-pulse" />
                 <h3 className="text-2xl font-black italic uppercase tracking-wider text-emerald-400 mb-2">
                   {activeRunningMode === 'treasure' ? 'TREASURE BATTLE COMPLETED' : 'WORKOUT COMPLETED'}
                 </h3>
@@ -10514,7 +10514,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
                 {/* Summary Statistics */}
                 {activeRunningMode === 'treasure' ? (
-                  <div className="grid grid-cols-4 gap-1 border border-slate-800 bg-slate-950 p-2.5 rounded-xl mb-4 text-center">
+                  <div className="grid grid-cols-4 gap-1 border border-slate-800 bg-slate-950 p-2.5 rounded-none mb-4 text-center">
                     <div>
                       <span className="block text-[7px] font-bold text-slate-400">DISTANCE</span>
                       <span className="text-xs font-black text-white">{runningDistance.toFixed(1)}m</span>
@@ -10533,7 +10533,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     </div>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-3 gap-2 border border-slate-800 bg-slate-950 p-3 rounded-xl mb-4 text-center">
+                  <div className="grid grid-cols-3 gap-2 border border-slate-800 bg-slate-950 p-3 rounded-none mb-4 text-center">
                     <div>
                       <span className="block text-[8px] font-bold text-slate-400">DISTANCE</span>
                       <span className="text-sm font-black text-white">{runningDistance.toFixed(1)}m</span>
@@ -10551,7 +10551,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
                 {/* Earned Cards count */}
                 {runningEarnedCards.length > 0 && (
-                  <div className="border border-slate-800 bg-indigo-950/40 p-2 rounded-xl mb-4 text-center text-xs">
+                  <div className="border border-slate-800 bg-indigo-950/40 p-2 rounded-none mb-4 text-center text-xs">
                     <span className="text-yellow-400 font-black">🎉 획득한 카드: {runningEarnedCards.length}장!</span>
                     <div className="flex gap-1.5 justify-center flex-wrap mt-1.5">
                       {runningEarnedCards.map((c, idx) => (
@@ -10564,7 +10564,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 )}
 
                 {/* Summary Map polyline line display */}
-                <div className="border border-slate-800 bg-slate-950 rounded-xl overflow-hidden mb-6 relative">
+                <div className="border border-slate-800 bg-slate-950 rounded-none overflow-hidden mb-6 relative">
                   {runningMapImage ? (
                     <img 
                       src={runningMapImage} 
@@ -10667,7 +10667,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                         });
                       }
                     }}
-                    className="flex-1 py-3 bg-gradient-to-r from-lime-500 to-lime-600 hover:from-lime-400 hover:to-lime-500 text-slate-955 font-black uppercase text-xs tracking-wider rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-1 cursor-pointer"
+                    className="flex-1 py-3 bg-[#201d1d] from-lime-500 to-lime-600 hover:from-lime-400 hover:to-lime-500 text-slate-955 font-black uppercase text-xs tracking-wider rounded-sm  hover: hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-1 cursor-pointer"
                   >
                     <span>SHARE</span>
                   </button>
@@ -10678,7 +10678,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       setIsRunningActive(false);
                       setGameState('modeSelect');
                     }}
-                    className="flex-1 py-3 bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 font-black uppercase text-xs tracking-wider rounded-xl shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-1 cursor-pointer"
+                    className="flex-1 py-3 bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 font-black uppercase text-xs tracking-wider rounded-sm  hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-1 cursor-pointer"
                   >
                     <span>CLOSE</span>
                   </button>
@@ -10706,11 +10706,11 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 animate={{ scale: 1, y: 0 }}
                 exit={{ scale: 0.85, y: 30 }}
                 transition={{ type: 'spring', stiffness: 350, damping: 28 }}
-                className="bg-slate-900 text-white w-full max-w-sm rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.4)] border border-slate-800 relative z-[10000]"
+                className="bg-slate-900 text-white w-full max-w-sm rounded-none overflow-hidden  border border-slate-800 relative z-[10000]"
               >
                 <div className="p-5 bg-slate-950 border-b border-slate-800 flex items-center gap-3">
-                  <div className="w-9 h-9 bg-slate-900 rounded-lg flex items-center justify-center shrink-0 shadow-md">
-                    <ShieldAlert size={20} className="text-amber-400 animate-bounce" />
+                  <div className="w-9 h-9 bg-slate-900 rounded-none flex items-center justify-center shrink-0 ">
+                    <ShieldAlert size={20} className="text-amber-400 " />
                   </div>
                   <h2 className="text-base font-black italic uppercase tracking-tight leading-tight text-slate-100">{confirmModal.title}</h2>
                 </div>
@@ -10720,7 +10720,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 <div className="px-6 pb-6 flex gap-3">
                   <button
                     onClick={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
-                    className="flex-1 py-3 bg-slate-800 hover:bg-slate-700 text-white border border-slate-750 font-black uppercase italic text-sm tracking-wider rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all"
+                    className="flex-1 py-3 bg-slate-800 hover:bg-slate-700 text-white border border-slate-750 font-black uppercase italic text-sm tracking-wider rounded-sm hover:scale-[1.02] active:scale-[0.98] transition-all"
                   >
                     {language === 'ko' ? '취소' : 'Cancel'}
                   </button>
@@ -10729,7 +10729,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       confirmModal.onConfirm();
                       setConfirmModal(prev => ({ ...prev, isOpen: false }));
                     }}
-                    className="flex-1 py-3 bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 text-white font-black uppercase italic text-sm tracking-wider rounded-xl shadow-[0_5px_15px_rgba(220,38,38,0.2)] hover:scale-[1.02] active:scale-[0.98] transition-all"
+                    className="flex-1 py-3 bg-[#201d1d] from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 text-white font-black uppercase italic text-sm tracking-wider rounded-sm  hover:scale-[1.02] active:scale-[0.98] transition-all"
                   >
                     {language === 'ko' ? '확인' : 'Confirm'}
                   </button>
@@ -10747,7 +10747,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       return (
         <div className="flex-1 flex flex-col w-full max-w-[1024px] mx-auto h-full min-h-0 bg-slate-950 text-white overflow-y-auto relative pb-20 select-none">
           {/* Header */}
-          <header className="h-16 flex items-center justify-between border-b border-slate-800 px-6 bg-slate-950 z-50 shrink-0 relative font-sans">
+          <header className="h-16 flex items-center justify-between border-b border-slate-800 px-6 bg-slate-950 z-50 shrink-0 relative font-mono">
             <div className="w-10" />
             <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 pointer-events-none">
               <Swords className="text-red-500 animate-pulse" size={20} />
@@ -10757,8 +10757,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             </div>
             <div className="flex items-center gap-3 z-50">
               <div className={cn(
-                "relative inline-flex items-center justify-center overflow-hidden rounded-xl transition-all",
-                isAutoBattle ? "p-[2px] shadow-[0_0_14px_rgba(59,130,246,0.6)]" : ""
+                "relative inline-flex items-center justify-center overflow-hidden rounded-none transition-all",
+                isAutoBattle ? "p-[2px] " : ""
               )}>
                 {isAutoBattle && (
                   <div className="absolute -inset-[180%] animate-[spin_2.5s_linear_infinite] bg-[conic-gradient(from_0deg,transparent_0deg,transparent_180deg,#1d4ed8_270deg,#60a5fa_330deg,#93c5fd_360deg)]" />
@@ -10783,7 +10783,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   <span>{isAutoBattle ? "AUTO ON" : "AUTO OFF"}</span>
                 </button>
               </div>
-              <div className="px-4 py-1.5 bg-red-650 text-white font-bold text-xs rounded-lg shadow-sm">
+              <div className="px-4 py-1.5 bg-red-650 text-white font-bold text-xs rounded-sm ">
                 <span className="font-bold text-xs uppercase">
                   {dungeonBattleStatus === 'intro' ? "Ready..." : dungeonBattleStatus === 'playing' ? `${dungeonBattleTurn === 'player' ? "PLAYER TURN" : "ENEMY TURN"}` : "FINISH"}
                 </span>
@@ -10797,16 +10797,16 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               
               {/* Opponent Deck (Top side) */}
               <div className={cn(
-                "flex flex-col gap-3 justify-center items-center p-4 rounded-3xl transition-all duration-300 w-full max-w-4xl border",
-                dungeonBattleTurn === 'opponent' && dungeonBattleStatus === 'playing' ? "bg-red-950/20 border-red-500/20 shadow-[0_4px_20px_rgba(239,68,68,0.1)]" : "border-slate-800 bg-slate-900/40"
+                "flex flex-col gap-3 justify-center items-center p-4 rounded-none transition-all duration-300 w-full max-w-4xl border",
+                dungeonBattleTurn === 'opponent' && dungeonBattleStatus === 'playing' ? "bg-red-950/20 border-red-500/20 " : "border-slate-800 bg-slate-900/40"
               )}>
-                <h3 className="text-xs font-bold uppercase text-red-400 border-b border-red-500/30 pb-1 mb-2 flex items-center gap-2 font-sans">
+                <h3 className="text-xs font-bold uppercase text-red-400 border-b border-red-500/30 pb-1 mb-2 flex items-center gap-2 font-mono">
                   <span>ENEMY TEAM</span>
                   {dungeonBattleTurn === 'opponent' && dungeonBattleStatus === 'playing' && (
                     <span className="text-[10px] text-yellow-400 animate-pulse font-bold">(ATTACKING...)</span>
                   )}
                 </h3>
-                <div className="flex flex-row gap-4 overflow-x-auto w-full justify-center py-2 font-sans">
+                <div className="flex flex-row gap-4 overflow-x-auto w-full justify-center py-2 font-mono">
                   {dungeonOpponentDeck.map((item) => {
                     const isAttacking = dungeonAttackingCardId === item.id;
                     const isTarget = dungeonAttackingTargetId === item.id;
@@ -10823,13 +10823,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                         }
                         transition={{ duration: 0.5 }}
                         className={cn(
-                          "relative w-16 sm:w-24 md:w-36 flex flex-col items-center p-1 sm:p-2 rounded-xl border border-slate-800 bg-slate-900 shadow-sm transition-all shrink-0",
+                          "relative w-16 sm:w-24 md:w-36 flex flex-col items-center p-1 sm:p-2 rounded-none border border-slate-800 bg-slate-900  transition-all shrink-0",
                           isDead ? "opacity-30 grayscale" : "hover:border-red-400",
                           isTarget && "border-red-500 bg-red-950/50"
                         )}
                       >
                         {/* Card Image */}
-                        <div className="w-full aspect-[3/4] rounded-lg overflow-hidden border border-slate-800 mb-1 relative flex items-center justify-center">
+                        <div className="w-full aspect-[3/4] rounded-none overflow-hidden border border-slate-800 mb-1 relative flex items-center justify-center">
                           <CardItem 
                             card={item.card}
                             isLocked={true}
@@ -10860,7 +10860,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                               initial={{ opacity: 0, y: 10, scale: 0.5 }}
                               animate={{ opacity: 1, y: -40, scale: 1.5 }}
                               exit={{ opacity: 0 }}
-                              className="absolute -top-4 font-black text-red-500 text-2xl drop-shadow-[0_2px_2px_rgba(0,0,0,1)] z-[100]"
+                              className="absolute -top-4 font-black text-red-500 text-2xl drop- z-[100]"
                             >
                               -{pop.amount}
                             </motion.div>
@@ -10883,16 +10883,16 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
               {/* My Deck (Bottom side) */}
               <div className={cn(
-                "flex flex-col gap-3 justify-center items-center p-4 rounded-3xl transition-all duration-300 w-full max-w-4xl border",
-                dungeonBattleTurn === 'player' && dungeonBattleStatus === 'playing' ? "bg-blue-950/20 border-blue-500/20 shadow-[0_4px_20px_rgba(59,130,246,0.1)]" : "border-slate-800 bg-slate-900/40"
+                "flex flex-col gap-3 justify-center items-center p-4 rounded-none transition-all duration-300 w-full max-w-4xl border",
+                dungeonBattleTurn === 'player' && dungeonBattleStatus === 'playing' ? "bg-blue-950/20 border-blue-500/20 " : "border-slate-800 bg-slate-900/40"
               )}>
-                <h3 className="text-xs font-bold uppercase text-blue-400 border-b border-blue-500/30 pb-1 mb-2 flex items-center gap-2 font-sans">
+                <h3 className="text-xs font-bold uppercase text-blue-400 border-b border-blue-500/30 pb-1 mb-2 flex items-center gap-2 font-mono">
                   <span>MY TEAM</span>
                   {dungeonBattleTurn === 'player' && dungeonBattleStatus === 'playing' && (
                     <span className="text-[10px] text-yellow-400 animate-pulse font-bold">(ATTACKING...)</span>
                   )}
                 </h3>
-                <div className="flex flex-row gap-4 overflow-x-auto w-full justify-center py-2 font-sans">
+                <div className="flex flex-row gap-4 overflow-x-auto w-full justify-center py-2 font-mono">
                   {dungeonPlayerDeck.map((item) => {
                     const isAttacking = dungeonAttackingCardId === item.id;
                     const isTarget = dungeonAttackingTargetId === item.id;
@@ -10909,13 +10909,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                         }
                         transition={{ duration: 0.5 }}
                         className={cn(
-                          "relative w-16 sm:w-24 md:w-36 flex flex-col items-center p-1 sm:p-2 rounded-xl border border-slate-800 bg-slate-900 shadow-sm transition-all shrink-0",
+                          "relative w-16 sm:w-24 md:w-36 flex flex-col items-center p-1 sm:p-2 rounded-none border border-slate-800 bg-slate-900  transition-all shrink-0",
                           isDead ? "opacity-30 grayscale" : "hover:border-blue-400",
                           isTarget && "border-red-500 bg-red-950/50"
                         )}
                       >
                         {/* Card Image */}
-                        <div className="w-full aspect-[3/4] rounded-lg overflow-hidden border border-slate-800 mb-1 relative flex items-center justify-center">
+                        <div className="w-full aspect-[3/4] rounded-none overflow-hidden border border-slate-800 mb-1 relative flex items-center justify-center">
                           <CardItem 
                             card={item.card}
                             isLocked={true}
@@ -10946,7 +10946,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                               initial={{ opacity: 0, y: 10, scale: 0.5 }}
                               animate={{ opacity: 1, y: -40, scale: 1.5 }}
                               exit={{ opacity: 0 }}
-                              className="absolute -top-4 font-black text-red-500 text-2xl drop-shadow-[0_2px_2px_rgba(0,0,0,1)] z-[100]"
+                              className="absolute -top-4 font-black text-red-500 text-2xl drop- z-[100]"
                             >
                               -{pop.amount}
                             </motion.div>
@@ -10975,60 +10975,51 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   initial={{ scale: 0.9, y: 20 }}
                   animate={{ scale: 1, y: 0 }}
                   exit={{ scale: 0.9, y: 20 }}
-                  className="bg-slate-900 text-white w-full max-w-md rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-slate-800 relative flex flex-col z-[1001]"
+                  className="bg-[#fdfcfc] text-[#201d1d] w-full max-w-md rounded-none border border-[#201d1d] relative flex flex-col z-[1001] font-mono"
                 >
-                  <div className={cn(
-                    "p-5 border-b border-slate-800 text-black flex items-center justify-between",
-                    dungeonBattleWinner === 'player' ? "bg-gradient-to-r from-amber-400 to-yellow-400" : "bg-gradient-to-r from-red-600 to-rose-600 text-white"
-                  )}>
+                  <div className="p-4 border-b border-[#201d1d] bg-[#201d1d] text-[#fdfcfc] flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <Trophy size={24} className={dungeonBattleWinner === 'player' ? "text-black" : "text-white"} />
-                      <h2 className={cn(
-                        "text-lg font-black italic uppercase tracking-tight",
-                        dungeonBattleWinner === 'player' ? "text-black" : "text-white"
-                      )}>
+                      <Trophy size={20} className="text-amber-400" />
+                      <h2 className="text-base font-bold uppercase tracking-tight text-[#fdfcfc]">
                         {dungeonBattleWinner === 'player' ? "VICTORY! (승리)" : "DEFEAT (패배)"}
                       </h2>
                     </div>
                   </div>
 
-                  <div className="p-6 space-y-6 text-center bg-slate-900">
+                  <div className="p-5 space-y-4 text-center bg-[#fdfcfc]">
                     <div className={cn(
-                      "w-20 h-20 rounded-full border border-slate-800 flex items-center justify-center mx-auto shadow-lg",
-                      dungeonBattleWinner === 'player' ? "bg-yellow-100/10 text-yellow-400 animate-bounce" : "bg-red-100/10 text-red-500"
+                      "w-14 h-14 rounded-none border border-[#201d1d] flex items-center justify-center mx-auto",
+                      dungeonBattleWinner === 'player' ? "bg-amber-100 text-amber-900" : "bg-red-100 text-red-700"
                     )}>
-                      {dungeonBattleWinner === 'player' ? <Trophy size={36} /> : <Activity size={36} />}
+                      {dungeonBattleWinner === 'player' ? <Trophy size={28} /> : <Activity size={28} />}
                     </div>
 
-                    <h3 className="text-2xl font-black italic leading-tight pt-2 px-2">
+                    <h3 className="text-lg font-bold leading-tight pt-1 px-2 text-[#201d1d]">
                       {dungeonBattleWinner === 'player' ? "필드 전투 승리!" : "전투에서 패배했습니다."}
                     </h3>
 
                     {dungeonBattleWinner === 'ai' && dungeonDefeatCountdown !== null && (
-                      <div className="text-xs font-bold text-rose-300 bg-rose-950/80 border border-rose-500/40 px-3 py-1.5 rounded-xl animate-pulse inline-block">
+                      <div className="text-xs font-bold text-rose-700 bg-rose-50 border border-rose-300 px-3 py-1.5 rounded-sm inline-block">
                         {language === 'ko' ? `${dungeonDefeatCountdown}초 후 자동으로 닫힙니다...` : `Auto closing in ${dungeonDefeatCountdown}s...`}
                       </div>
                     )}
 
                     {dungeonBattleWinner === 'player' && (
-                      <div className="p-4 bg-slate-950 border border-slate-800 rounded-2xl shadow-inner inline-block">
-                        <span className="text-xs font-black uppercase opacity-60 block mb-1">REWARD</span>
-                        <span className="text-2xl font-black italic text-yellow-400">+{dungeonBattleReward} SNS</span>
+                      <div className="p-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none inline-block">
+                        <span className="text-[10px] font-bold uppercase opacity-60 block mb-0.5 text-[#646262]">REWARD</span>
+                        <span className="text-xl font-bold text-amber-700">+{dungeonBattleReward} SNS</span>
                       </div>
                     )}
                   </div>
 
-                  <div className="p-5 border-t border-slate-800 bg-slate-950 flex justify-center">
+                  <div className="p-4 border-t border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] flex justify-center">
                     <button
                       onClick={() => {
                         setDungeonDefeatCountdown(null);
                         playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                         closeDungeonBattleResult();
                       }}
-                      className={cn(
-                        "w-full py-4 text-white font-black uppercase italic tracking-wider rounded-xl shadow-lg transition-all cursor-pointer hover:scale-[1.02] active:scale-[0.98]",
-                        dungeonBattleWinner === 'player' ? "bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-450 hover:to-yellow-450 text-slate-900 shadow-yellow-500/10" : "bg-gradient-to-r from-slate-700 to-slate-800 hover:from-slate-650 hover:to-slate-750"
-                      )}
+                      className="w-full min-h-[44px] h-11 py-2 px-3 text-[#fdfcfc] font-bold uppercase tracking-wider rounded-sm transition-all cursor-pointer bg-[#201d1d] hover:bg-[#302c2c] border border-[#201d1d] flex items-center justify-center text-xs"
                     >
                       {dungeonBattleWinner === 'ai' && dungeonDefeatCountdown !== null
                         ? (language === 'ko' ? `확인 (${dungeonDefeatCountdown}초)` : `Confirm (${dungeonDefeatCountdown}s)`)
@@ -11055,7 +11046,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 {t('mode_dungeon', language)}
               </h2>
             </div>
-            <div className="flex items-center gap-1.5 px-3 py-1 bg-black/80 border border-[#0ff]/30 rounded-lg shadow-[0_0_10px_rgba(0,255,255,0.15)]">
+            <div className="flex items-center gap-1.5 px-3 py-1 bg-black/80 border border-[#0ff]/30 rounded-sm ">
               <span className="text-xs text-yellow-400 font-black">🪙 {sns?.toLocaleString()}</span>
             </div>
           </header>
@@ -11068,17 +11059,17 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
               {/* Premium Workout Floating Dashboard Card */}
               <div className="absolute top-24 right-4 z-50 pointer-events-auto max-w-sm w-[260px] animate-fade-in">
-                <div className="bg-slate-900/90 backdrop-blur-xl border border-cyan-500/30 p-4 rounded-2xl shadow-[0_4px_24px_rgba(6,182,212,0.15)] text-white space-y-4 font-sans">
+                <div className="bg-slate-900/90 backdrop-blur-xl border border-cyan-500/30 p-4 rounded-none  text-white space-y-4 font-mono">
                   <div className="flex items-center justify-between border-b border-white/10 pb-2">
                     <div className="flex items-center gap-2 text-cyan-400">
                       <Activity size={18} className="animate-pulse" />
                       <span className="text-[10px] font-bold uppercase tracking-widest italic">DUNGEON WORKOUT</span>
                     </div>
-                    <div className="w-2 h-2 rounded-full bg-green-500 animate-ping" />
+                    <div className="w-2 h-2 rounded-full bg-green-500 " />
                   </div>
                   
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="flex flex-col font-sans">
+                    <div className="flex flex-col font-mono">
                       <span className="text-[9px] uppercase text-white/50 tracking-wider font-semibold">Distance</span>
                       <span className="text-2xl font-bold text-cyan-400">
                         {workoutDistance.toFixed(1)}<span className="text-xs ml-0.5 font-normal text-white/70">m</span>
@@ -11086,31 +11077,31 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       {/* Progress to next encounter (10m) */}
                       <div className="w-full h-1 bg-white/10 rounded-full mt-1.5 overflow-hidden">
                         <div 
-                          className="h-full bg-gradient-to-r from-blue-400 to-cyan-400 transition-all duration-300"
+                          className="h-full bg-[#201d1d] from-blue-400 to-cyan-400 transition-all duration-300"
                           style={{ width: `${Math.min(100, (workoutDistance / 10) * 100)}%` }}
                         />
                       </div>
                     </div>
                     
-                    <div className="flex flex-col font-sans">
+                    <div className="flex flex-col font-mono">
                       <span className="text-[9px] uppercase text-white/50 tracking-wider font-semibold">Calories</span>
                       <span className="text-2xl font-bold text-orange-400">
                         {workoutCalories.toFixed(2)}<span className="text-xs ml-0.5 font-normal text-white/70">kcal</span>
                       </span>
-                      <div className="text-[8px] text-white/40 mt-1 font-sans">
+                      <div className="text-[8px] text-white/40 mt-1 font-mono">
                         {(workoutCalories / 7.7).toFixed(3)}g fat burnt
                       </div>
                     </div>
                   </div>
 
-                  <div className="text-[9px] text-cyan-400 bg-cyan-950/40 border border-cyan-800/30 px-2.5 py-1.5 rounded-xl font-medium leading-relaxed whitespace-pre-line text-center font-sans">
+                  <div className="text-[9px] text-cyan-400 bg-cyan-950/40 border border-cyan-800/30 px-2.5 py-1.5 rounded-sm font-medium leading-relaxed whitespace-pre-line text-center font-mono">
                     🏃 {language === 'ko' ? "10m를 걸어 다닐 때마다\n가장 가까운 AI와 자동으로 던전 대전이 시작됩니다!" : "Walk 10m to auto-trigger\ndungeon battle with the nearest AI!"}
                   </div>
                 </div>
               </div>
 
               {/* Map Interaction Hint */}
-              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-40 bg-slate-955/90 backdrop-blur-md text-white px-4 py-2.5 text-[10px] font-semibold rounded-full shadow-lg pointer-events-none tracking-tight uppercase whitespace-nowrap border border-white/5 font-sans">
+              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-40 bg-slate-955/90 backdrop-blur-md text-white px-4 py-2.5 text-[10px] font-semibold rounded-full  pointer-events-none tracking-tight uppercase whitespace-nowrap border border-white/5 font-mono">
                 📍 {language === 'ko' ? "지도의 빨간 마커를 탭하면 던전 대전을 시작할 수 있습니다." : "TAP RED MARKERS TO ENGAGE DUNGEON BATTLE"}
               </div>
             </div>
@@ -11167,14 +11158,14 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   <div className="relative group cursor-pointer">
                     {/* AI Tag */}
                     {char.type === 'robot' && (
-                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-red-650 text-white text-sm font-bold px-1.5 py-0.5 shadow-sm z-50 rounded-sm animate-bounce-subtle">
+                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-red-650 text-white text-sm font-bold px-1.5 py-0.5  z-50 rounded-sm ">
                         AI
                       </div>
                     )}
                     
                     <div className={cn(
-                      "p-1 border border-slate-800 rounded-2xl group-hover:border-indigo-400 hover:shadow-lg transition-all transform active:scale-95 bg-slate-900 overflow-hidden w-12 h-12 flex items-center justify-center shadow-md",
-                      char.type === 'robot' && "border-indigo-500 shadow-[0_0_15px_rgba(99,102,241,0.4)]"
+                      "p-1 border border-slate-800 rounded-none group-hover:border-indigo-400 hover: transition-all transform active:scale-95 bg-slate-900 overflow-hidden w-12 h-12 flex items-center justify-center ",
+                      char.type === 'robot' && "border-indigo-500 "
                     )}>
                       {char.type === 'robot' ? (
                         <img 
@@ -11196,19 +11187,19 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     {/* Status Indicator */}
                     {char.type === 'user' && (
                       <div className={cn(
-                        "absolute -right-1.5 -top-1.5 w-3.5 h-3.5 border border-slate-800 rounded-lg",
+                        "absolute -right-1.5 -top-1.5 w-3.5 h-3.5 border border-slate-800 rounded-none",
                         char.status === 'online' ? "bg-green-500" : "bg-gray-400"
                       )} />
                     )}
                     
                     {/* ID / Name Tag under character */}
-                    <div className="mt-1 text-[10px] font-bold bg-slate-900/90 text-white px-2 py-0.5 text-center tracking-tight w-max max-w-[85px] truncate rounded-full absolute left-1/2 -translate-x-1/2 top-full shadow-sm">
+                    <div className="mt-1 text-[10px] font-bold bg-slate-900/90 text-white px-2 py-0.5 text-center tracking-tight w-max max-w-[85px] truncate rounded-full absolute left-1/2 -translate-x-1/2 top-full ">
                       {char.name || `ID_${char.id.slice(0,6).toUpperCase()}`}
                     </div>
 
                     {/* Power & SNS Info */}
                     {char.type === 'robot' && (
-                      <div className="mt-6 text-[9px] font-semibold bg-slate-900/90 text-slate-200 px-2 py-0.5 border border-slate-800 rounded-full text-center w-max max-w-[95px] absolute left-1/2 -translate-x-1/2 top-full whitespace-nowrap shadow-sm">
+                      <div className="mt-6 text-[9px] font-semibold bg-slate-900/90 text-slate-200 px-2 py-0.5 border border-slate-800 rounded-full text-center w-max max-w-[95px] absolute left-1/2 -translate-x-1/2 top-full whitespace-nowrap ">
                         <span className="text-rose-455 font-bold">P:{(char.totalPower || 0).toLocaleString()}</span>
                         <span className="text-slate-700 mx-0.5">|</span>
                         <span className="text-indigo-400 font-bold">S:{(char.sns || 0).toLocaleString()}</span>
@@ -11225,7 +11216,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 className="absolute flex flex-col items-center pointer-events-none z-20"
               >
                  <div className="relative pointer-events-auto">
-                    <div className="p-1 bg-indigo-600 text-white rounded-2xl animate-bounce-subtle w-12 h-12 overflow-hidden flex items-center justify-center shadow-lg shadow-indigo-600/35">
+                    <div className="p-1 bg-indigo-600 text-white rounded-none  w-12 h-12 overflow-hidden flex items-center justify-center  shadow-indigo-600/35">
                        {!effectiveUser ? (
                          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-check text-white" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>
                        ) : effectiveUser?.photoURL?.startsWith('preset:') ? (
@@ -11244,13 +11235,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                        )}
                     </div>
                  </div>
-                 <div className="mt-1 text-xs font-bold bg-indigo-600 text-white px-2.5 py-0.5 text-center tracking-tight w-max rounded-full absolute left-1/2 -translate-x-1/2 top-full shadow-md shadow-indigo-600/20">
+                 <div className="mt-1 text-xs font-bold bg-indigo-600 text-white px-2.5 py-0.5 text-center tracking-tight w-max rounded-full absolute left-1/2 -translate-x-1/2 top-full  shadow-indigo-600/20">
                    YOU
                  </div>
               </motion.div>
 
               {/* Tap Guide Hint */}
-              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-40 bg-slate-955/90 backdrop-blur-md text-white px-4 py-2.5 text-[10px] font-bold rounded-full shadow-lg pointer-events-none tracking-tight uppercase whitespace-nowrap border border-white/5 font-sans">
+              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-40 bg-slate-955/90 backdrop-blur-md text-white px-4 py-2.5 text-[10px] font-bold rounded-full  pointer-events-none tracking-tight uppercase whitespace-nowrap border border-white/5 font-mono">
                 👾 {language === 'ko' ? "AI 로봇을 탭하면 진짜 던전 대전 필드로 입장합니다." : "TAP AI ROBOT TO ENTER THE TRUE DUNGEON"}
               </div>
             </div>
@@ -11276,14 +11267,14 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
         {/* Space Objects - Fixed Top */}
         <div className="absolute top-5 left-[15%] text-4xl opacity-60 animate-pulse">🛰️</div>
-        <div className="absolute top-8 right-[25%] text-5xl opacity-50 drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">🚀</div>
+        <div className="absolute top-8 right-[25%] text-5xl opacity-50 drop-">🚀</div>
         <div className="absolute top-12 left-[40%] text-2xl opacity-40">🌌</div>
-        <div className="absolute top-6 right-[10%] text-3xl opacity-50 animate-bounce-slow">🛰️</div>
+        <div className="absolute top-6 right-[10%] text-3xl opacity-50 ">🛰️</div>
 
         {/* Dense Futuristic City Buildings */}
-        <div className="absolute top-1/4 left-10 text-7xl opacity-60 select-none pointer-events-none drop-shadow-[0_0_20px_rgba(0,255,255,0.8)]">🏙️</div>
-        <div className="absolute top-1/4 left-32 text-6xl opacity-40 select-none pointer-events-none drop-shadow-[0_0_15px_rgba(255,0,255,0.6)]">🏢</div>
-        <div className="absolute top-[30%] right-[15%] text-7xl opacity-50 select-none pointer-events-none drop-shadow-[0_0_20px_rgba(255,0,255,0.8)]">🗼</div>
+        <div className="absolute top-1/4 left-10 text-7xl opacity-60 select-none pointer-events-none drop-">🏙️</div>
+        <div className="absolute top-1/4 left-32 text-6xl opacity-40 select-none pointer-events-none drop-">🏢</div>
+        <div className="absolute top-[30%] right-[15%] text-7xl opacity-50 select-none pointer-events-none drop-">🗼</div>
 
         {/* Header */}
         <header className="h-16 flex items-center justify-between border-b border-white/10 px-6 z-50 bg-black/50 backdrop-blur-md relative shrink-0">
@@ -11293,7 +11284,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               setIsDungeonActive(false);
               saveDungeonState(false);
             }}
-            className="p-2.5 bg-slate-900/80 hover:bg-slate-800 text-white rounded-xl active:scale-95 transition-all cursor-pointer border border-slate-800 flex items-center gap-1.5 z-50"
+            className="p-2.5 bg-slate-900/80 hover:bg-slate-800 text-white rounded-none active:scale-95 transition-all cursor-pointer border border-slate-800 flex items-center gap-1.5 z-50"
           >
             <ArrowLeft size={16} />
             <span className="text-[10px] font-bold uppercase tracking-wider">{t('back', language)}</span>
@@ -11304,7 +11295,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               {t('mode_dungeon', language)}
             </h2>
           </div>
-          <div className="flex items-center gap-1.5 px-3 py-1 bg-black/80 border border-[#0ff]/30 rounded-lg shadow-[0_0_10px_rgba(0,255,255,0.15)]">
+          <div className="flex items-center gap-1.5 px-3 py-1 bg-black/80 border border-[#0ff]/30 rounded-sm ">
             <span className="text-xs text-yellow-400 font-black">🪙 {sns?.toLocaleString()}</span>
           </div>
         </header>
@@ -11326,7 +11317,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         >
           {/* Guide HUD */}
           <div className="absolute top-4 left-4 right-4 z-20 flex justify-center pointer-events-none">
-            <p className="text-xs md:text-sm font-medium text-[#0ff]/80 leading-relaxed bg-black/80 px-4 py-2.5 border border-[#0ff]/30 rounded-xl shadow-[0_0_15px_rgba(0,255,255,0.1)] text-center max-w-lg">
+            <p className="text-xs md:text-sm font-medium text-[#0ff]/80 leading-relaxed bg-black/80 px-4 py-2.5 border border-[#0ff]/30 rounded-sm  text-center max-w-lg">
               {language === 'ko' ? "지도의 AI 몬스터를 선택하여 필드 전투를 시작하세요! 보스 동굴을 클릭하면 보스 대전이 시작됩니다." : "Select an AI monster on the map to start a field battle! Tap boss caves to start a boss showdown."}
             </p>
           </div>
@@ -11351,7 +11342,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               startDungeonBattle(true, 101);
             }}
           >
-            <div className="w-14 h-14 bg-purple-900/80 hover:bg-purple-700 border-2 border-purple-500 flex items-center justify-center rounded-2xl shadow-[0_0_20px_rgba(168,85,247,0.6)] transition-all animate-pulse group-hover:scale-110">
+            <div className="w-14 h-14 bg-purple-900/80 hover:bg-purple-700 border-2 border-purple-500 flex items-center justify-center rounded-none  transition-all animate-pulse group-hover:scale-110">
               <Flame size={28} className="text-purple-400" />
             </div>
             <span className="text-[9px] sm:text-xs font-black uppercase text-purple-400 bg-black/85 px-1.5 py-0.5 rounded border border-purple-500 mt-1 whitespace-nowrap">
@@ -11369,7 +11360,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               startDungeonBattle(true, 102);
             }}
           >
-            <div className="w-14 h-14 bg-red-900/80 hover:bg-red-700 border-2 border-red-500 flex items-center justify-center rounded-2xl shadow-[0_0_20px_rgba(239,68,68,0.6)] transition-all animate-pulse group-hover:scale-110">
+            <div className="w-14 h-14 bg-red-900/80 hover:bg-red-700 border-2 border-red-500 flex items-center justify-center rounded-none  transition-all animate-pulse group-hover:scale-110">
               <Flame size={28} className="text-red-400" />
             </div>
             <span className="text-[9px] sm:text-xs font-black uppercase text-red-400 bg-black/85 px-1.5 py-0.5 rounded border border-red-500 mt-1 whitespace-nowrap">
@@ -11387,7 +11378,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               startDungeonBattle(true, 103);
             }}
           >
-            <div className="w-14 h-14 bg-blue-900/80 hover:bg-blue-700 border-2 border-blue-500 flex items-center justify-center rounded-2xl shadow-[0_0_20px_rgba(59,130,246,0.6)] transition-all animate-pulse group-hover:scale-110">
+            <div className="w-14 h-14 bg-blue-900/80 hover:bg-blue-700 border-2 border-blue-500 flex items-center justify-center rounded-none  transition-all animate-pulse group-hover:scale-110">
               <Flame size={28} className="text-blue-400" />
             </div>
             <span className="text-[9px] sm:text-xs font-black uppercase text-blue-400 bg-black/85 px-1.5 py-0.5 rounded border border-blue-500 mt-1 whitespace-nowrap">
@@ -11405,7 +11396,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               startDungeonBattle(true, 104);
             }}
           >
-            <div className="w-14 h-14 bg-emerald-900/80 hover:bg-emerald-700 border-2 border-emerald-500 flex items-center justify-center rounded-2xl shadow-[0_0_20px_rgba(16,185,129,0.6)] transition-all animate-pulse group-hover:scale-110">
+            <div className="w-14 h-14 bg-emerald-900/80 hover:bg-emerald-700 border-2 border-emerald-500 flex items-center justify-center rounded-none  transition-all animate-pulse group-hover:scale-110">
               <Flame size={28} className="text-emerald-400" />
             </div>
             <span className="text-[9px] sm:text-xs font-black uppercase text-emerald-400 bg-black/85 px-1.5 py-0.5 rounded border border-emerald-500 mt-1 whitespace-nowrap">
@@ -11429,8 +11420,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   startDungeonBattle(false, monster.cardId);
                 }}
               >
-                <div className="w-10 h-10 bg-red-950 border-2 border-red-600 rounded-full flex items-center justify-center shadow-[0_0_10px_rgba(239,68,68,0.7)] group-hover:scale-125 group-hover:bg-red-900 transition-all">
-                  <Bot size={20} className="text-red-400 animate-bounce" />
+                <div className="w-10 h-10 bg-red-950 border-2 border-red-600 rounded-full flex items-center justify-center  group-hover:scale-125 group-hover:bg-red-900 transition-all">
+                  <Bot size={20} className="text-red-400 " />
                 </div>
                 <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-red-600 text-white text-[9px] font-black px-1 py-0.5 rounded-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
                   AI
@@ -11447,7 +11438,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               top: `${dungeonPlayerPos.y}%`,
             }}
           >
-            <div className="w-10 h-10 bg-blue-950 border-2 border-blue-500 rounded-full flex items-center justify-center shadow-[0_0_12px_rgba(59,130,246,0.9)] animate-pulse">
+            <div className="w-10 h-10 bg-blue-950 border-2 border-blue-500 rounded-full flex items-center justify-center  animate-pulse">
               <Swords size={20} className="text-blue-400" />
             </div>
           </div>
@@ -11455,7 +11446,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           {/* Tap target indicator */}
           {dungeonTargetPos && (
             <div
-              className="absolute -translate-x-1/2 -translate-y-1/2 w-4 h-4 border-2 border-yellow-400 rounded-full animate-ping pointer-events-none z-20"
+              className="absolute -translate-x-1/2 -translate-y-1/2 w-4 h-4 border-2 border-yellow-400 rounded-full  pointer-events-none z-20"
               style={{ left: `${dungeonTargetPos.x}%`, top: `${dungeonTargetPos.y}%` }}
             />
           )}
@@ -11483,14 +11474,14 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         />
 
         {/* Header */}
-        <header className="h-16 flex items-center justify-between border-b border-white/10 px-6 bg-slate-950/80 backdrop-blur-md z-50 shrink-0 relative font-sans">
+        <header className="h-16 flex items-center justify-between border-b border-white/10 px-6 bg-slate-950/80 backdrop-blur-md z-50 shrink-0 relative font-mono">
           <div className="w-10" />
           <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 pointer-events-none">
-            <h2 className="text-xl font-black italic tracking-tight leading-none uppercase text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-[#0ff] text-center">
+            <h2 className="text-xl font-black italic tracking-tight leading-none uppercase text-transparent bg-clip-text bg-[#201d1d] from-purple-400 to-[#0ff] text-center">
               {t('mode_boss', language)}
             </h2>
           </div>
-          <div className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-950/80 border border-white/10 rounded-lg shadow-sm">
+          <div className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-950/80 border border-white/10 rounded-sm ">
             <span className="text-xs text-yellow-400 font-black">🪙 {sns?.toLocaleString()}</span>
           </div>
         </header>
@@ -11498,7 +11489,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         {/* Main Area */}
         <main className="flex-1 p-4 md:p-8 flex flex-col items-center justify-start max-w-5xl mx-auto w-full gap-6 touch-auto z-10">
           <div className="w-full text-center max-w-xl">
-            <p className="text-xs md:text-sm font-medium text-slate-350 leading-relaxed bg-slate-900/80 backdrop-blur-md px-4 py-3.5 border border-white/10 rounded-2xl shadow-lg">
+            <p className="text-xs md:text-sm font-medium text-slate-350 leading-relaxed bg-slate-900/80 backdrop-blur-md px-4 py-3.5 border border-white/10 rounded-sm ">
               {language === 'ko' 
                 ? "스토리 대전에서 처치했던 보스들과 1대1 카드 대전을 펼칩니다. 각 보스는 10시간에 1회만 처치할 수 있으나, 확실한 대량 보상을 획득할 수 있습니다!" 
                 : "Duel 1-on-1 with bosses from the Story Mode. Each boss can be defeated once every 10 hours, but guarantees massive rewards!"}
@@ -11553,7 +11544,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         />
 
         {/* Header */}
-        <header className="h-16 flex items-center justify-between border-b border-white/10 px-6 bg-slate-950/80 backdrop-blur-md z-50 shrink-0 relative font-sans">
+        <header className="h-16 flex items-center justify-between border-b border-white/10 px-6 bg-slate-950/80 backdrop-blur-md z-50 shrink-0 relative font-mono">
           <div className="w-10" />
           <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 pointer-events-none">
             <h2 className="text-xl font-black italic tracking-tight leading-none uppercase text-center text-white">{t('story_title', language)}</h2>
@@ -11562,10 +11553,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         </header>
 
         {/* Narrative Banner with Skip and Auto Controls */}
-        <div className="shrink-0 bg-slate-950/60 text-indigo-400 py-2.5 px-4 sm:px-6 text-center font-black italic uppercase tracking-widest text-xs border-b border-white/10 flex justify-between items-center shadow-md backdrop-blur-md z-10 gap-2">
+        <div className="shrink-0 bg-slate-950/60 text-indigo-400 py-2.5 px-4 sm:px-6 text-center font-black italic uppercase tracking-widest text-xs border-b border-white/10 flex justify-between items-center  backdrop-blur-md z-10 gap-2">
           <div className="flex items-center gap-2">
             <span>{t('story_act_prefix', language).replace('{act}', String(storyAct + 1))}</span>
-            <span className="bg-indigo-600 text-white px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider shadow-sm">
+            <span className="bg-indigo-600 text-white px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider ">
               {isIntro ? t('story_step_intro', language) : isClimax ? t('story_step_climax', language) : "BOSS FIGHT"}
             </span>
           </div>
@@ -11579,9 +11570,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 setIsStoryAutoPlay(!isStoryAutoPlay);
               }}
               className={cn(
-                "flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase transition-all cursor-pointer border touch-target",
+                "flex items-center gap-1 px-2.5 py-1 rounded-sm text-[10px] font-black uppercase transition-all cursor-pointer border touch-target",
                 isStoryAutoPlay
-                  ? "bg-amber-500 text-black border-amber-300 shadow-[0_0_10px_rgba(245,158,11,0.5)] animate-pulse"
+                  ? "bg-amber-500 text-black border-amber-300  animate-pulse"
                   : "bg-slate-800/80 text-slate-300 border-slate-700 hover:bg-slate-700"
               )}
             >
@@ -11593,7 +11584,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             <button
               type="button"
               onClick={handleSkipStory}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase bg-indigo-600/90 hover:bg-indigo-500 text-white border border-indigo-400 shadow-sm transition-all cursor-pointer active:scale-95 touch-target"
+              className="flex items-center gap-1 px-2.5 py-1 rounded-sm text-[10px] font-black uppercase bg-indigo-600/90 hover:bg-indigo-500 text-white border border-indigo-400  transition-all cursor-pointer active:scale-95 touch-target"
             >
               <FastForward size={12} />
               <span>{t('story_btn_skip', language)}</span>
@@ -11613,7 +11604,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 className="w-full flex flex-col items-center gap-6 text-center"
               >
                 {/* Visual Boss Card Preview */}
-                <div className="w-40 h-56 shrink-0 shadow-[0_15px_30px_rgba(0,0,0,0.5)] border border-slate-800 rounded-3xl overflow-hidden active:scale-95 transition-transform duration-200">
+                <div className="w-40 h-56 shrink-0  border border-slate-800 rounded-none overflow-hidden active:scale-95 transition-transform duration-200">
                   <CardItem 
                     card={{
                       ...CARD_DATABASE[isIntro ? actInfo.midBossId : actInfo.finalBossId],
@@ -11633,11 +11624,11 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 </div>
 
                 {/* Narrative Text Box */}
-                <div className="border border-indigo-500/20 p-6 rounded-3xl bg-slate-900/90 backdrop-blur-md shadow-[0_0_25px_rgba(99,102,241,0.05)] space-y-4 text-left">
+                <div className="border border-indigo-500/20 p-6 rounded-none bg-slate-900/90 backdrop-blur-md  space-y-4 text-left">
                   <h3 className="text-xl font-black italic uppercase tracking-tight text-indigo-400">
                     {isIntro ? actInfo.title : `${t('story_step_climax', language)}: ${actInfo.title.split(': ')[1]}`}
                   </h3>
-                  <p className="text-sm font-bold text-gray-300 leading-relaxed text-left whitespace-pre-line font-sans">
+                  <p className="text-sm font-bold text-gray-300 leading-relaxed text-left whitespace-pre-line font-mono">
                     {isIntro ? actInfo.desc : actInfo.climax}
                   </p>
                 </div>
@@ -11661,7 +11652,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       }
                     }
                   }}
-                  className="w-full py-4 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white font-black uppercase italic tracking-wider rounded-2xl shadow-lg hover:shadow-xl active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full py-4 bg-[#201d1d] from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white font-black uppercase italic tracking-wider rounded-sm  hover: active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <span>{isIntro ? t('story_btn_challenge', language) : (storyAct === 3 ? t('story_btn_finish', language) : t('story_btn_next_act', language))}</span>
                 </button>
@@ -11677,21 +11668,21 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 className="w-full flex flex-col items-center gap-6"
               >
                 {/* Taunting Dialogue Bubble */}
-                <div className="w-full relative bg-slate-900 border border-slate-800 p-5 rounded-3xl shadow-xl font-bold text-center text-sm md:text-base">
+                <div className="w-full relative bg-slate-900 border border-slate-800 p-5 rounded-none  font-bold text-center text-sm md:text-base">
                   <div className="absolute top-full left-1/2 -translate-x-1/2 border-t-[12px] border-t-slate-800 border-x-[12px] border-x-transparent" />
                   <div className="absolute top-full left-1/2 -translate-x-1/2 border-t-[10px] border-t-slate-900 border-x-[10px] border-x-transparent z-10 -mt-0.5" />
                   
                   <span className="block text-[10px] font-black text-rose-500 uppercase tracking-widest mb-1">
                     [ {isMidTaunt ? "MID BOSS TAUNT" : "FINAL BOSS TAUNT"} ]
                   </span>
-                  <p className="italic text-slate-200 font-sans font-extrabold leading-relaxed">
+                  <p className="italic text-slate-200 font-mono font-extrabold leading-relaxed">
                     "{isMidTaunt ? actInfo.midBossTaunt : actInfo.finalBossTaunt}"
                   </p>
                 </div>
 
                 {/* Boss Avatar Image */}
                 <div className="flex flex-col items-center gap-2 mt-2">
-                  <div className="w-32 h-44 shrink-0 shadow-[0_10px_25px_rgba(0,0,0,0.3)] border border-slate-800 rounded-2xl overflow-hidden relative">
+                  <div className="w-32 h-44 shrink-0  border border-slate-800 rounded-none overflow-hidden relative">
                     <CardItem 
                       card={{
                         ...currentBossCard,
@@ -11709,7 +11700,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       language={language}
                     />
                   </div>
-                  <span className="bg-slate-950 text-white px-3 py-1 text-xs font-black uppercase tracking-wider rounded border border-slate-800 shadow-md">
+                  <span className="bg-slate-950 text-white px-3 py-1 text-xs font-black uppercase tracking-wider rounded border border-slate-800 ">
                     {language === 'ko' ? currentBossCard.title : (currentBossCard.title_dis || currentBossCard.title_en)}
                   </span>
                 </div>
@@ -11717,7 +11708,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 {/* Start Match Button */}
                 <button
                   onClick={() => startStoryMatch(currentBossId, isFinalTaunt)}
-                  className="w-full max-w-sm py-4 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-black uppercase italic tracking-wider rounded-2xl shadow-lg hover:shadow-xl active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer animate-pulse"
+                  className="w-full max-w-sm py-4 bg-[#201d1d] from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-black uppercase italic tracking-wider rounded-sm  hover: active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer animate-pulse"
                 >
                   <Swords size={20} />
                   <span>{winner === 'ai' ? t('story_btn_retry', language) : t('match_start', language)}</span>
@@ -11767,12 +11758,12 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   initial={{ scale: 0.9, y: 20 }}
                   animate={{ scale: 1, y: 0 }}
                   exit={{ scale: 0.9, y: 20 }}
-                  className="bg-slate-900 text-white w-full max-w-md max-h-[90dvh] rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-slate-800 relative flex flex-col z-[1001]"
+                  className="bg-[#fdfcfc] text-[#201d1d] w-full max-w-md max-h-[90dvh] rounded-none border border-[#201d1d] relative flex flex-col z-[1001] font-mono"
                 >
-                  <div className="p-4 sm:p-5 bg-gradient-to-r from-blue-600 to-indigo-600 border-b border-slate-800 text-white flex items-center justify-between shrink-0">
+                  <div className="p-4 sm:p-5 bg-[#201d1d] border-b border-[#201d1d] text-[#fdfcfc] flex items-center justify-between shrink-0">
                     <div className="flex items-center gap-2">
-                      <Sparkles size={22} className="text-yellow-300 animate-spin" />
-                      <h2 className="text-base sm:text-lg font-black italic uppercase tracking-tight">{t('story_reward_earned', language)}</h2>
+                      <Sparkles size={20} className="text-amber-400" />
+                      <h2 className="text-base sm:text-lg font-bold uppercase tracking-tight text-[#fdfcfc]">{t('story_reward_earned', language)}</h2>
                     </div>
                     <button
                       onClick={() => {
@@ -11780,20 +11771,20 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                         claimStoryBattleReward(`story-reward-${storyAct}`);
                         setShowStoryResultModal(false);
                       }}
-                      className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
+                      className="min-h-[44px] min-w-[44px] p-1.5 rounded-sm bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer flex items-center justify-center font-bold text-xs"
                       aria-label={t('close', language)}
                     >
-                      <X size={18} />
+                      [x]
                     </button>
                   </div>
 
                   <div className="p-5 sm:p-6 space-y-4 text-center flex flex-col flex-1 min-h-0 overflow-y-auto">
-                    <h3 className="text-xl sm:text-2xl font-black italic leading-tight pt-1 px-2 text-white">
+                    <h3 className="text-xl sm:text-2xl font-bold leading-tight pt-1 px-2 text-[#201d1d]">
                       {t('story_act_prefix', language).replace('{act}', String(storyAct + 1))} {language === 'ko' ? "클리어!" : "Cleared!"}
                     </h3>
 
                     {/* Character Card Visual and Speech Message */}
-                    <div className="flex flex-col items-center gap-3 bg-slate-950 border border-slate-800 rounded-2xl p-4 shadow-inner">
+                    <div className="flex flex-col items-center gap-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none p-4">
                       <div className="w-20 h-28 flex-shrink-0">
                         <CardItem 
                           card={storyAct === 0 || storyAct === 1 ? akiraCardData : charsiCardData} 
@@ -11801,35 +11792,33 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                           language={language}
                         />
                       </div>
-                      <div className="text-[11px] font-black leading-relaxed text-left text-slate-200 bg-slate-900 p-3 border border-slate-800 rounded-xl relative shadow-md w-full">
-                        {/* Speech Bubble Arrow Decoration */}
-                        <div className="absolute top-[-7px] left-1/2 -translate-x-1/2 w-3 h-3 bg-slate-900 border-t border-l border-slate-800 rotate-45" />
-                        <p className="relative z-10 text-center text-slate-300">
+                      <div className="text-[11px] font-bold leading-relaxed text-left text-[#201d1d] bg-[#fdfcfc] p-3 border border-[rgba(15,0,0,0.12)] rounded-none relative w-full">
+                        <p className="relative z-10 text-center text-[#201d1d]">
                           "{t(storyAct === 0 || storyAct === 1 ? 'story_akira_congratulations' : 'story_charsi_congratulations', language)}"
                         </p>
                       </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-3">
-                      <div className="p-3 sm:p-4 bg-slate-950 border border-slate-800 rounded-2xl shadow-inner text-center flex flex-col justify-center items-center">
-                        <span className="text-[9px] font-bold uppercase opacity-60 block mb-0.5 text-slate-400">{t('reward', language)}</span>
-                        <span className="text-base sm:text-lg font-black text-indigo-400">+{storyReward} SNS</span>
+                      <div className="p-3 sm:p-4 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none text-center flex flex-col justify-center items-center">
+                        <span className="text-[9px] font-bold uppercase opacity-60 block mb-0.5 text-[#646262]">{t('reward', language)}</span>
+                        <span className="text-base sm:text-lg font-bold text-amber-700">+{storyReward} SNS</span>
                       </div>
 
-                      <div className="p-3 sm:p-4 bg-slate-950 border border-slate-800 rounded-2xl shadow-inner text-center flex flex-col justify-center items-center">
-                        <span className="text-[9px] font-bold uppercase opacity-60 block mb-0.5 text-slate-400">
+                      <div className="p-3 sm:p-4 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none text-center flex flex-col justify-center items-center">
+                        <span className="text-[9px] font-bold uppercase opacity-60 block mb-0.5 text-[#646262]">
                           {storyAct === 0 || storyAct === 1 ? (language === 'ko' ? "추가 보상" : "BONUS") : (language === 'ko' ? "획득 아이템" : "ITEM")}
                         </span>
                         {storyAct === 0 || storyAct === 1 ? (
-                          <span className="text-xs sm:text-sm font-black italic text-purple-400">
+                          <span className="text-xs sm:text-sm font-bold text-amber-800">
                             +1 {language === 'ko' ? "스킬포인트" : "Skill Point"}
                           </span>
                         ) : (
                           <div className="flex items-center gap-1.5 justify-center">
-                            <span className="text-base text-purple-400 leading-none">
+                            <span className="text-base text-amber-800 leading-none">
                               {storyBonusItem?.emoji || '🛡️'}
                             </span>
-                            <span className="text-[10px] font-black text-purple-400 truncate max-w-[80px]">
+                            <span className="text-[10px] font-bold text-amber-800 truncate max-w-[80px]">
                               {language === 'ko' ? storyBonusItem?.name_ko : storyBonusItem?.name_en}
                             </span>
                           </div>
@@ -11838,14 +11827,14 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     </div>
                   </div>
 
-                  <div className="p-4 sm:p-5 border-t border-slate-800 bg-slate-950 flex justify-center shrink-0">
+                  <div className="p-4 sm:p-5 border-t border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] flex justify-center shrink-0">
                     <button
                       onClick={() => {
                         playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                         claimStoryBattleReward(`story-reward-${storyAct}`);
                         setShowStoryResultModal(false);
                       }}
-                      className="w-full py-3.5 sm:py-4 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-450 hover:to-yellow-450 text-slate-900 font-bold uppercase rounded-2xl shadow-lg shadow-yellow-500/10 active:scale-98 transition-all cursor-pointer text-center text-xs sm:text-sm"
+                      className="w-full min-h-[44px] h-11 py-2 px-3 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] font-bold uppercase rounded-sm border border-[#201d1d] active:scale-98 transition-all cursor-pointer text-center text-xs sm:text-sm flex items-center justify-center"
                     >
                       {t('tournament_confirm_btn', language)}
                     </button>
@@ -11868,11 +11857,11 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               <motion.div
                 initial={{ scale: 0.9, y: 20 }}
                 animate={{ scale: 1, y: 0 }}
-                className="bg-slate-900 text-white w-full max-w-md max-h-[90dvh] rounded-[2rem] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-slate-800 relative flex flex-col z-[1001]"
+                className="bg-slate-900 text-white w-full max-w-md max-h-[90dvh] rounded-[2rem] overflow-hidden  border border-slate-800 relative flex flex-col z-[1001]"
               >
-                <div className="p-4 sm:p-6 bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 border-b border-slate-800 text-slate-950 flex items-center justify-between shrink-0">
+                <div className="p-4 sm:p-6 bg-[#201d1d] from-amber-400 via-orange-500 to-red-500 border-b border-slate-800 text-slate-950 flex items-center justify-between shrink-0">
                   <div className="flex items-center gap-2">
-                    <Trophy size={26} className="animate-bounce text-slate-950" />
+                    <Trophy size={26} className=" text-slate-950" />
                     <h2 className="text-lg sm:text-xl font-black italic uppercase tracking-tight text-slate-950">THE END</h2>
                   </div>
                   <button
@@ -11894,20 +11883,20 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 </div>
 
                 <div className="p-5 sm:p-8 space-y-4 sm:space-y-6 text-center bg-slate-900 flex-1 min-h-0 overflow-y-auto">
-                  <div className="w-20 h-20 sm:w-24 sm:h-24 bg-yellow-100/10 rounded-full border border-slate-800 flex items-center justify-center mx-auto shadow-lg text-yellow-400 animate-spin animate-duration-3000 shrink-0">
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 bg-yellow-100/10 rounded-full border border-slate-800 flex items-center justify-center mx-auto  text-yellow-400 animate-spin animate-duration-3000 shrink-0">
                     <Trophy size={42} />
                   </div>
 
                   <div className="space-y-2">
                     <h3 className="text-2xl sm:text-3xl font-black italic uppercase tracking-tighter text-white">웅장한 서사의 마무리</h3>
-                    <p className="text-xs font-bold text-slate-350 leading-relaxed font-sans px-2 pt-1">
+                    <p className="text-xs font-bold text-slate-350 leading-relaxed font-mono px-2 pt-1">
                       {language === 'ko' 
                         ? '천상계와의 위대한 결전 끝에 인류와 모든 피조물들은 마침내 평화를 맞이했습니다. 이제 그들을 초월한 새로운 시대가 시작됩니다. 영웅이여, 수고하셨습니다!'
                         : 'After the final battle, humanity and all creatures have achieved eternal peace. A new era transcending the cosmos has begun. Thank you, Hero!'}
                     </p>
                   </div>
 
-                  <div className="p-3 sm:p-4 bg-slate-950 border border-slate-800 rounded-2xl shadow-inner inline-block">
+                  <div className="p-3 sm:p-4 bg-slate-950 border border-slate-800 rounded-none shadow-inner inline-block">
                     <span className="text-[10px] font-black uppercase opacity-60 block mb-1 text-slate-400">TOTAL CLEAR PRIZE</span>
                     <span className="text-2xl sm:text-3xl font-black italic text-yellow-400">+300 SNS</span>
                   </div>
@@ -11925,7 +11914,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       setIsStoryActive(false);
                       setGameState('modeSelect');
                     }}
-                    className="w-full py-4 sm:py-5 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-450 hover:to-yellow-450 text-slate-955 font-black uppercase italic tracking-widest rounded-2xl shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer text-xs sm:text-sm"
+                    className="w-full py-4 sm:py-5 bg-[#201d1d] from-amber-500 to-yellow-500 hover:from-amber-450 hover:to-yellow-450 text-slate-955 font-black uppercase italic tracking-widest rounded-sm  hover: hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer text-xs sm:text-sm"
                   >
                     {t('story_btn_finish', language)}
                   </button>
@@ -11998,11 +11987,11 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   setActiveTournamentTab(rIdx);
                 }}
                 className={cn(
-                  "px-3 py-1.5 text-xs font-black uppercase italic tracking-wider border transition-all rounded-lg select-none cursor-pointer hover:scale-[1.02] active:scale-[0.98] z-10",
+                  "px-3 py-1.5 text-xs font-black uppercase italic tracking-wider border transition-all rounded-sm select-none cursor-pointer hover:scale-[1.02] active:scale-[0.98] z-10",
                   activeTournamentTab === rIdx
-                    ? "bg-[#0ff]/10 text-[#0ff] border-[#0ff]/80 shadow-[0_0_15px_rgba(0,255,255,0.2)]"
+                    ? "bg-[#0ff]/10 text-[#0ff] border-[#0ff]/80 "
                     : isSelectable
-                      ? "bg-slate-950/80 text-slate-300 border-white/10 hover:border-[#0ff]/50 hover:bg-slate-900/60 shadow-sm"
+                      ? "bg-slate-950/80 text-slate-300 border-white/10 hover:border-[#0ff]/50 hover:bg-slate-900/60 "
                       : "bg-slate-950/30 text-slate-600 border-white/5 cursor-not-allowed opacity-45"
                 )}
               >
@@ -12022,7 +12011,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 exit={{ scale: 0.5, opacity: 0 }}
                 className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none"
               >
-                <div className="bg-gradient-to-r from-amber-400 to-yellow-400 border border-amber-300 px-8 py-4 rounded-2xl shadow-xl text-slate-950 font-black text-2xl uppercase italic tracking-widest text-center animate-bounce">
+                <div className="bg-[#201d1d] from-amber-400 to-yellow-400 border border-amber-300 px-8 py-4 rounded-sm  text-slate-950 font-black text-2xl uppercase italic tracking-widest text-center ">
                   🚀 {language === 'ko' ? "다음 라운드 진출!" : "ADVANCED!"}
                 </div>
               </motion.div>
@@ -12045,8 +12034,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 <div 
                   key={roundIdx} 
                   className={cn(
-                    "flex-1 flex flex-col justify-around gap-4 min-h-[600px] p-2 rounded-2xl transition-all duration-300",
-                    isSelectedRoundCol ? "bg-[#0ff]/5 border-2 border-[#0ff]/20 shadow-[0_0_20px_rgba(0,255,255,0.05)]" : "border-2 border-transparent"
+                    "flex-1 flex flex-col justify-around gap-4 min-h-[600px] p-2 rounded-none transition-all duration-300",
+                    isSelectedRoundCol ? "bg-[#0ff]/5 border-2 border-[#0ff]/20 " : "border-2 border-transparent"
                   )}
                 >
                   {/* Round Column Header */}
@@ -12078,8 +12067,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                           animate={{ opacity: 1, scale: 1 }}
                           transition={{ delay: idx * 0.03 }}
                           className={cn(
-                            "border border-white/10 p-3 rounded-2xl bg-slate-900/90 shadow-xl flex flex-col gap-2 relative overflow-hidden transition-all duration-300 w-44 md:w-52 mx-auto shrink-0",
-                            isPlayerMatchToPlay && "ring-4 ring-yellow-500/50 bg-slate-900 scale-105 z-10 shadow-[0_0_25px_rgba(234,179,8,0.2)]",
+                            "border border-white/10 p-3 rounded-none bg-slate-900/90  flex flex-col gap-2 relative overflow-hidden transition-all duration-300 w-44 md:w-52 mx-auto shrink-0",
+                            isPlayerMatchToPlay && "ring-4 ring-yellow-500/50 bg-slate-900 scale-105 z-10 ",
                             isActiveRoundCol && !isPlayerMatchToPlay && "border-slate-700 opacity-90",
                             !isActiveRoundCol && "opacity-60"
                           )}
@@ -12092,8 +12081,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
                           {/* Participant 1 */}
                           <div className={cn(
-                            "flex items-center gap-1.5 p-1 rounded-lg border border-white/5 bg-slate-950/60 text-[10px] md:text-xs min-w-0",
-                            m.winner?.id === m.p1?.id && isMatchFinished && "bg-emerald-950/40 border-emerald-500/50 font-bold text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.1)]",
+                            "flex items-center gap-1.5 p-1 rounded-none border border-white/5 bg-slate-950/60 text-[10px] md:text-xs min-w-0",
+                            m.winner?.id === m.p1?.id && isMatchFinished && "bg-emerald-950/40 border-emerald-500/50 font-bold text-emerald-400 ",
                             m.winner && m.winner.id !== m.p1?.id && "opacity-30 grayscale"
                           )}>
                             <div className="w-5 h-5 rounded bg-slate-900 border border-white/10 flex items-center justify-center shrink-0">
@@ -12111,8 +12100,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
                           {/* Participant 2 */}
                           <div className={cn(
-                            "flex items-center gap-1.5 p-1 rounded-lg border border-white/5 bg-slate-950/60 text-[10px] md:text-xs min-w-0",
-                            m.winner?.id === m.p2?.id && isMatchFinished && "bg-emerald-950/40 border-emerald-500/50 font-bold text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.1)]",
+                            "flex items-center gap-1.5 p-1 rounded-none border border-white/5 bg-slate-950/60 text-[10px] md:text-xs min-w-0",
+                            m.winner?.id === m.p2?.id && isMatchFinished && "bg-emerald-950/40 border-emerald-500/50 font-bold text-emerald-400 ",
                             m.winner && m.winner.id !== m.p2?.id && "opacity-30 grayscale"
                           )}>
                             <div className="w-5 h-5 rounded bg-slate-900 border border-white/10 flex items-center justify-center shrink-0">
@@ -12142,7 +12131,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-full max-w-sm px-6 z-40">
             <button
               onClick={startTournamentMatch}
-              className="w-full py-4 bg-gradient-to-r from-yellow-450 to-amber-500 text-amber-955 font-bold uppercase rounded-2xl shadow-lg shadow-yellow-200/40 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-4 bg-[#201d1d] from-yellow-450 to-amber-500 text-amber-955 font-bold uppercase rounded-sm  shadow-yellow-200/40 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               <Swords size={20} />
               <span>{tournamentRound === 0 ? t('tournament_start', language) : t('tournament_next_match', language)}</span>
@@ -12163,15 +12152,12 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 initial={{ scale: 0.9, y: 20 }}
                 animate={{ scale: 1, y: 0 }}
                 exit={{ scale: 0.9, y: 20 }}
-                className="bg-slate-900 text-white w-full max-w-md max-h-[90dvh] rounded-3xl overflow-hidden shadow-2xl border border-slate-800 relative flex flex-col z-[1001]"
+                className="bg-[#fdfcfc] text-[#201d1d] w-full max-w-md max-h-[90dvh] rounded-none border border-[#201d1d] relative flex flex-col z-[1001] font-mono"
               >
-                <div className={cn(
-                  "p-4 sm:p-5 border-b border-slate-800 text-white flex items-center gap-2 justify-between shrink-0",
-                  isPlayerWinner ? "bg-gradient-to-r from-yellow-450 to-amber-500 text-amber-955" : "bg-gradient-to-r from-rose-600 to-red-650 text-white"
-                )}>
+                <div className="p-4 sm:p-5 border-b border-[#201d1d] bg-[#201d1d] text-[#fdfcfc] flex items-center gap-2 justify-between shrink-0">
                   <div className="flex items-center gap-2">
-                    {isPlayerWinner ? <Trophy size={24} className="text-amber-955" /> : <ShieldAlert size={24} className="text-white" />}
-                    <h2 className={cn("text-base sm:text-lg font-extrabold tracking-tight uppercase", isPlayerWinner ? "text-amber-955" : "text-white")}>
+                    <Trophy size={20} className="text-amber-400" />
+                    <h2 className="text-base sm:text-lg font-bold tracking-tight uppercase text-[#fdfcfc]">
                       {t('tournament_over_title', language)}
                     </h2>
                   </div>
@@ -12182,25 +12168,19 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       setIsTournamentActive(false);
                       setGameState('modeSelect');
                     }}
-                    className={cn(
-                      "p-1.5 rounded-full transition-colors cursor-pointer",
-                      isPlayerWinner ? "bg-amber-950/20 hover:bg-amber-950/30 text-amber-955" : "bg-white/10 hover:bg-white/20 text-white"
-                    )}
+                    className="min-h-[44px] min-w-[44px] p-1.5 rounded-sm bg-white/10 hover:bg-white/20 text-[#fdfcfc] transition-colors cursor-pointer flex items-center justify-center font-bold text-xs"
                     aria-label={t('close', language)}
                   >
-                    <X size={18} />
+                    [x]
                   </button>
                 </div>
 
                 <div className="p-5 sm:p-6 space-y-4 text-center flex-1 min-h-0 overflow-y-auto">
-                  <div className={cn(
-                    "w-16 h-16 sm:w-20 sm:h-20 rounded-full border border-slate-800 flex items-center justify-center mx-auto shadow-inner shrink-0",
-                    isPlayerWinner ? "bg-amber-100 text-yellow-600 animate-bounce shadow-[0_0_15px_rgba(234,179,8,0.3)]" : "bg-rose-100 text-rose-600"
-                  )}>
-                    {isPlayerWinner ? <Trophy size={32} /> : <Activity size={32} />}
+                  <div className="w-14 h-14 rounded-none border border-[#201d1d] flex items-center justify-center mx-auto bg-[#f8f7f7] text-[#201d1d] shrink-0">
+                    {isPlayerWinner ? <Trophy size={28} className="text-amber-700" /> : <Activity size={28} className="text-rose-700" />}
                   </div>
 
-                  <h3 className="text-xl sm:text-2xl font-black italic leading-tight pt-1 px-2">
+                  <h3 className="text-xl sm:text-2xl font-bold leading-tight pt-1 px-2 text-[#201d1d]">
                     {isPlayerWinner 
                       ? t('tournament_summary_win', language)
                       : t('tournament_summary_lose', language).replace(
@@ -12213,13 +12193,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     }
                   </h3>
 
-                  <div className="p-3 sm:p-4.5 bg-slate-950 border border-slate-800 rounded-3xl shadow-inner inline-block">
-                    <span className="text-xs font-black uppercase opacity-60 block mb-1 text-slate-400">{t('tournament_prize', language)}</span>
-                    <span className="text-xl sm:text-2xl font-black italic text-yellow-400">+{tournamentPrize} SNS</span>
+                  <div className="p-3 sm:p-4 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none inline-block">
+                    <span className="text-[10px] font-bold uppercase opacity-60 block mb-0.5 text-[#646262]">{t('tournament_prize', language)}</span>
+                    <span className="text-xl sm:text-2xl font-bold text-amber-700">+{tournamentPrize} SNS</span>
                   </div>
                 </div>
 
-                <div className="p-4 sm:p-5 border-t-2 border-slate-800 bg-slate-950 flex justify-center shrink-0">
+                <div className="p-4 sm:p-5 border-t border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] flex justify-center shrink-0">
                   <button
                     onClick={() => {
                       playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
@@ -12227,7 +12207,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       setIsTournamentActive(false);
                       setGameState('modeSelect');
                     }}
-                    className="w-full py-3.5 sm:py-4 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-450 hover:to-yellow-450 text-slate-900 font-bold uppercase rounded-2xl shadow-lg active:scale-98 transition-all cursor-pointer text-center text-xs sm:text-sm"
+                    className="w-full min-h-[44px] h-11 py-2 px-3 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] font-bold uppercase rounded-sm border border-[#201d1d] active:scale-98 transition-all cursor-pointer text-center text-xs sm:text-sm flex items-center justify-center"
                   >
                     {t('tournament_confirm_btn', language)}
                   </button>
@@ -12244,10 +12224,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+              className="fixed inset-0 z-[9999] flex items-center justify-center p-4 font-mono"
             >
               <div
-                className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+                className="absolute inset-0 bg-black/70"
                 onClick={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
               />
               <motion.div
@@ -12255,21 +12235,21 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 animate={{ scale: 1, y: 0 }}
                 exit={{ scale: 0.85, y: 30 }}
                 transition={{ type: 'spring', stiffness: 350, damping: 28 }}
-                className="bg-slate-950 text-slate-100 w-full max-w-sm rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(244,63,94,0.15)] border border-slate-800 relative z-[10000] font-sans"
+                className="bg-[#fdfcfc] text-[#201d1d] w-full max-w-sm rounded-none border border-[#201d1d] relative z-[10000] font-mono"
               >
-                <div className="p-5 bg-gradient-to-r from-slate-900 to-slate-955 border-b border-slate-800 text-white flex items-center gap-3">
-                  <div className="w-9 h-9 bg-white/10 rounded-xl flex items-center justify-center shrink-0">
-                    <ShieldAlert size={20} className="text-yellow-400 animate-pulse" />
+                <div className="p-4 bg-[#201d1d] border-b border-[#201d1d] text-[#fdfcfc] flex items-center gap-3">
+                  <div className="w-8 h-8 bg-white/10 rounded-none border border-white/20 flex items-center justify-center shrink-0">
+                    <ShieldAlert size={18} className="text-amber-400" />
                   </div>
-                  <h2 className="text-sm font-bold uppercase tracking-wide">{confirmModal.title}</h2>
+                  <h2 className="text-sm font-bold uppercase tracking-wide text-[#fdfcfc]">{confirmModal.title}</h2>
                 </div>
-                <div className="p-6">
-                  <p className="text-sm font-bold text-slate-350 leading-relaxed whitespace-pre-line">{confirmModal.message}</p>
+                <div className="p-5">
+                  <p className="text-xs font-medium text-[#424245] leading-relaxed whitespace-pre-line">{confirmModal.message}</p>
                 </div>
-                <div className="px-6 pb-6 flex gap-3">
+                <div className="p-4 border-t border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] flex gap-2">
                   <button
                     onClick={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
-                    className="flex-1 py-3 bg-slate-900 hover:bg-slate-850 border border-slate-800 text-slate-300 font-bold uppercase text-xs tracking-wider rounded-xl transition-all cursor-pointer text-center"
+                    className="flex-1 min-h-[44px] h-11 py-2 px-3 bg-[#fdfcfc] hover:bg-[#f1eeee] border border-[rgba(15,0,0,0.12)] text-[#201d1d] font-bold uppercase text-xs tracking-wider rounded-sm transition-all cursor-pointer text-center flex items-center justify-center"
                   >
                     {language === 'ko' ? '취소' : 'Cancel'}
                   </button>
@@ -12278,7 +12258,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       confirmModal.onConfirm();
                       setConfirmModal(prev => ({ ...prev, isOpen: false }));
                     }}
-                    className="flex-1 py-3 bg-rose-600 hover:bg-rose-700 text-white font-bold uppercase text-xs tracking-wider rounded-xl shadow-md transition-all cursor-pointer text-center"
+                    className="flex-1 min-h-[44px] h-11 py-2 px-3 bg-[#201d1d] hover:bg-[#302c2c] border border-[#201d1d] text-[#fdfcfc] font-bold uppercase text-xs tracking-wider rounded-sm transition-all cursor-pointer text-center flex items-center justify-center"
                   >
                     {language === 'ko' ? '확인' : 'Confirm'}
                   </button>
@@ -13255,10 +13235,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.85, y: 30 }}
                 transition={{ type: 'spring', damping: 22, stiffness: 320 }}
-                className="relative w-full max-w-sm bg-[#1a1414] border-2 border-amber-400 p-4 text-[#fdfcfc] shadow-2xl flex flex-col items-center text-center"
+                className="relative w-full max-w-sm bg-[#1a1414] border-2 border-amber-400 p-4 text-[#fdfcfc]  flex flex-col items-center text-center"
               >
                 {/* Golden Badge Emblem */}
-                <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-amber-600 via-yellow-400 to-amber-200 flex items-center justify-center text-3xl shadow-lg mb-2 animate-bounce ring-4 ring-amber-400/30">
+                <div className="w-16 h-16 rounded-full bg-[#201d1d] from-amber-600 via-yellow-400 to-amber-200 flex items-center justify-center text-3xl  mb-2  ring-4 ring-amber-400/30">
                   👑
                 </div>
 
@@ -13317,7 +13297,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   <button
                     type="button"
                     onClick={() => setTowerBossClearModal(null)}
-                    className="min-h-[44px] py-2 px-3 bg-amber-400 hover:bg-amber-300 text-[#181515] text-xs font-black transition-all cursor-pointer active:scale-95 shadow-md"
+                    className="min-h-[44px] py-2 px-3 bg-amber-400 hover:bg-amber-300 text-[#181515] text-xs font-black transition-all cursor-pointer active:scale-95 "
                   >
                     {language === 'ko' ? '보상 수령 완료' : 'Claim Rewards'}
                   </button>
@@ -13429,7 +13409,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.7, y: activeEmoteBubble.side === 'player' ? -16 : 16 }}
               className={cn(
-                "fixed z-[250] pointer-events-none flex items-center gap-2.5 px-4 py-2.5 rounded-2xl shadow-2xl border backdrop-blur-md",
+                "fixed z-[250] pointer-events-none flex items-center gap-2.5 px-4 py-2.5 rounded-sm  border backdrop-blur-md",
                 activeEmoteBubble.side === 'player'
                   ? "bottom-28 left-1/2 -translate-x-1/2 bg-indigo-950/95 border-indigo-500/80 text-white shadow-indigo-500/30"
                   : "top-28 left-1/2 -translate-x-1/2 bg-rose-950/95 border-rose-500/80 text-white shadow-rose-500/30"
@@ -13621,7 +13601,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       setDemoAutoMatchCountdown(null);
                       startMissionCardBattle(demoTargetCardId);
                     }}
-                    className="min-h-[38px] px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-xs rounded-xs border border-amber-600 transition-all cursor-pointer shadow-xs active:scale-95 flex items-center gap-1"
+                    className="min-h-[44px] h-11 px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-xs rounded-sm border border-amber-600 transition-all cursor-pointer active:scale-95 flex items-center gap-1"
                   >
                     <span>⚡</span>
                     <span>{language === 'ko' ? '지금 바로 대전' : 'Start Now'}</span>
@@ -13635,7 +13615,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       }
                       setDemoAutoMatchCountdown(null);
                     }}
-                    className="min-h-[38px] px-2.5 py-1.5 bg-[#fdfcfc] hover:bg-[#f1eeee] text-[#201d1d] font-bold text-xs rounded-xs border border-[rgba(15,0,0,0.12)] transition-colors cursor-pointer"
+                    className="min-h-[44px] h-11 px-3 py-1.5 bg-[#fdfcfc] hover:bg-[#f1eeee] text-[#201d1d] font-bold text-xs rounded-sm border border-[rgba(15,0,0,0.12)] transition-colors cursor-pointer flex items-center justify-center"
                     title={language === 'ko' ? '자동 매칭 취소' : 'Cancel Auto Match'}
                   >
                     {language === 'ko' ? '직접 선택' : 'Manual'}
@@ -13662,7 +13642,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               className={cn(
-                "w-full rounded-sm border p-3 sm:p-4 text-white font-mono flex items-center justify-between gap-3 shadow-md",
+                "w-full rounded-none border p-3 sm:p-4 text-white font-mono flex items-center justify-between gap-3",
                 missionBattleFeedback.success
                   ? "bg-emerald-950/90 border-emerald-500/80 text-emerald-100"
                   : "bg-amber-950/90 border-amber-500/80 text-amber-100"
@@ -13685,7 +13665,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               </div>
               <button
                 onClick={() => setMissionBattleFeedback(null)}
-                className="p-1 text-white/70 hover:text-white rounded-xs hover:bg-white/10 cursor-pointer"
+                className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2 text-white/70 hover:text-white rounded-sm hover:bg-white/10 cursor-pointer"
                 aria-label="Close"
               >
                 <X size={16} />
@@ -13990,7 +13970,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                         {charCard ? (
                           <MissionCharacterPortrait cardId={charCard.id} name={charName} language={language} className="w-full h-full" />
                         ) : (
-                          <IconComp size={36} className="text-white/80 drop-shadow-lg my-4" />
+                          <IconComp size={36} className="text-white/80 my-4" />
                         )}
                       </div>
 
@@ -13999,7 +13979,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                         <span className="text-xs font-bold text-[#201d1d] truncate">
                           {isOwned ? (language === 'ko' ? '⚡ 잠재력 강화' : '⚡ Enhance') : (language === 'ko' ? '🎯 카드 획득' : '🎯 Obtain')}
                         </span>
-                        <span className="min-h-[32px] px-2.5 py-1 bg-[#201d1d] group-hover:bg-[#302c2c] text-[#fdfcfc] text-xs font-bold rounded-sm flex items-center justify-center shrink-0 transition-colors">
+                        <span className="min-h-[44px] h-11 px-3 py-2 bg-[#201d1d] group-hover:bg-[#302c2c] text-[#fdfcfc] text-xs font-bold rounded-sm flex items-center justify-center shrink-0 transition-colors">
                           {language === 'ko' ? '대결' : 'Battle'}
                         </span>
                       </div>
@@ -14113,9 +14093,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 initial={{ scale: 0.9, y: 20 }}
                 animate={{ scale: 1, y: 0 }}
                 exit={{ scale: 0.9, y: 20 }}
-                className="bg-slate-950/95 text-slate-100 w-full max-w-md max-h-[90dvh] rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(245,158,11,0.15)] border border-slate-800 relative flex flex-col z-[1001] font-sans"
+                className="bg-slate-950/95 text-slate-100 w-full max-w-md max-h-[90dvh] rounded-none overflow-hidden  border border-slate-800 relative flex flex-col z-[1001] font-mono"
               >
-                <div className="p-4 sm:p-5 bg-gradient-to-r from-amber-500 to-yellow-600 text-slate-950 flex items-center justify-between border-b border-amber-700/20 shrink-0">
+                <div className="p-4 sm:p-5 bg-[#201d1d] from-amber-500 to-yellow-600 text-slate-950 flex items-center justify-between border-b border-amber-700/20 shrink-0">
                   <div className="flex items-center gap-2">
                     <ShieldAlert size={24} className="text-slate-950 animate-pulse" />
                     <h2 className="text-base sm:text-lg font-black uppercase tracking-tight leading-none">{t('under_construction_title', language)}</h2>
@@ -14133,10 +14113,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 </div>
  
                 <div className="p-5 sm:p-6 space-y-4 text-center flex-1 min-h-0 overflow-y-auto">
-                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-amber-950/40 border border-amber-550 flex items-center justify-center mx-auto shadow-[0_0_15px_rgba(245,158,11,0.2)] animate-bounce shrink-0">
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-amber-950/40 border border-amber-550 flex items-center justify-center mx-auto   shrink-0">
                     <Activity size={26} className="text-amber-400" />
                   </div>
-                  <h3 className="text-base sm:text-lg font-black italic text-amber-400 bg-amber-950/30 px-4 py-1.5 rounded-xl border border-amber-900/50 inline-block">
+                  <h3 className="text-base sm:text-lg font-black italic text-amber-400 bg-amber-950/30 px-4 py-1.5 rounded-sm border border-amber-900/50 inline-block">
                     {selectedConstructionMode}
                   </h3>
                   <p className="text-xs sm:text-sm font-semibold text-slate-400 leading-relaxed pt-1">
@@ -14150,7 +14130,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                       setShowConstructionModal(false);
                     }}
-                    className="w-full py-3 sm:py-3.5 bg-slate-900 hover:bg-slate-850 border border-slate-800 text-slate-200 font-bold uppercase tracking-wider rounded-xl shadow-md active:scale-95 transition-all cursor-pointer text-xs sm:text-sm"
+                    className="w-full py-3 sm:py-3.5 bg-slate-900 hover:bg-slate-850 border border-slate-800 text-slate-200 font-bold uppercase tracking-wider rounded-sm  active:scale-95 transition-all cursor-pointer text-xs sm:text-sm"
                   >
                     {t('under_construction_close', language)}
                   </button>
@@ -14173,21 +14153,21 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 initial={{ scale: 0.9, y: 20 }}
                 animate={{ scale: 1, y: 0 }}
                 exit={{ scale: 0.9, y: 20 }}
-                className="bg-white text-slate-800 w-full max-w-md max-h-[90dvh] rounded-3xl overflow-hidden shadow-[8px_8px_0px_rgba(0,0,0,0.3)] border-2 border-slate-300 relative flex flex-col z-[1001] font-sans"
+                className="bg-white text-slate-800 w-full max-w-md max-h-[90dvh] rounded-none overflow-hidden  border-2 border-slate-300 relative flex flex-col z-[1001] font-mono"
               >
                 <div className={cn(
-                  "p-4 sm:p-5 border-b-2 border-slate-200 text-white flex items-center justify-between shrink-0 bg-gradient-to-br",
+                  "p-4 sm:p-5 border-b-2 border-slate-200 text-white flex items-center justify-between shrink-0 bg-[#201d1d]",
                   guideMode.color
                 )}>
                   <div className="flex items-center gap-2.5 sm:gap-3">
-                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-none bg-white/20 flex items-center justify-center shrink-0">
                       <guideMode.icon size={20} className="text-white" />
                     </div>
                     <h2 className="text-base sm:text-lg font-black uppercase tracking-tight">{guideMode.title}</h2>
                   </div>
                   <button 
                     onClick={() => setGuideMode(null)}
-                    className="p-1.5 sm:p-2 bg-white/10 hover:bg-white/20 rounded-xl transition-colors shrink-0"
+                    className="p-1.5 sm:p-2 bg-white/10 hover:bg-white/20 rounded-none transition-colors shrink-0"
                     aria-label={t('close', language)}
                   >
                     <X size={18} className="text-white" />
@@ -14201,7 +14181,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 <div className="p-3.5 sm:p-4 border-t border-slate-200 bg-slate-50 flex justify-end shrink-0">
                   <button
                     onClick={() => setGuideMode(null)}
-                    className="px-5 sm:px-6 py-2 sm:py-2.5 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-colors text-xs sm:text-sm"
+                    className="px-5 sm:px-6 py-2 sm:py-2.5 bg-slate-900 text-white font-bold rounded-sm hover:bg-slate-800 transition-colors text-xs sm:text-sm"
                   >
                     {language === 'ko' ? '확인' : 'OK'}
                   </button>
@@ -14228,19 +14208,19 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 animate={{ scale: 1, y: 0 }}
                 exit={{ scale: 0.85, y: 30 }}
                 transition={{ type: 'spring', stiffness: 350, damping: 28 }}
-                className="bg-slate-950/95 text-slate-100 w-full max-w-sm max-h-[90dvh] rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(244,63,94,0.15)] border border-slate-800 relative flex flex-col z-[10000] font-sans"
+                className="bg-slate-950/95 text-slate-100 w-full max-w-sm max-h-[90dvh] rounded-none overflow-hidden  border border-slate-800 relative flex flex-col z-[10000] font-mono"
               >
                 {/* Header */}
-                <div className="p-4 sm:p-5 bg-gradient-to-r from-amber-500 to-orange-500 text-white border-b border-orange-600/10 flex items-center justify-between shrink-0">
+                <div className="p-4 sm:p-5 bg-[#201d1d] from-amber-500 to-orange-500 text-white border-b border-orange-600/10 flex items-center justify-between shrink-0">
                   <div className="flex items-center gap-2.5 sm:gap-3">
-                    <div className="w-8 h-8 sm:w-9 sm:h-9 bg-white/20 rounded-xl flex items-center justify-center shrink-0">
+                    <div className="w-8 h-8 sm:w-9 sm:h-9 bg-white/20 rounded-none flex items-center justify-center shrink-0">
                       <ShieldAlert size={18} className="text-white" />
                     </div>
                     <h2 className="text-sm sm:text-base font-bold uppercase tracking-tight leading-tight">{confirmModal.title}</h2>
                   </div>
                   <button
                     onClick={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
-                    className="p-1 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
+                    className="p-1 rounded-none bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
                     aria-label={t('close', language)}
                   >
                     <X size={16} />
@@ -14256,7 +14236,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 <div className="px-5 sm:px-6 pb-5 sm:pb-6 flex gap-2.5 sm:gap-3 shrink-0">
                   <button
                     onClick={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
-                    className="flex-1 py-2.5 sm:py-3 bg-slate-900 hover:bg-slate-850 border border-slate-800 text-slate-300 font-semibold text-xs sm:text-sm rounded-xl transition-colors duration-200 cursor-pointer"
+                    className="flex-1 py-2.5 sm:py-3 bg-slate-900 hover:bg-slate-850 border border-slate-800 text-slate-300 font-semibold text-xs sm:text-sm rounded-sm transition-colors duration-200 cursor-pointer"
                   >
                     {language === 'ko' ? '취소' : 'Cancel'}
                   </button>
@@ -14265,7 +14245,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       confirmModal.onConfirm();
                       setConfirmModal(prev => ({ ...prev, isOpen: false }));
                     }}
-                    className="flex-1 py-2.5 sm:py-3 bg-indigo-600 text-white font-semibold text-xs sm:text-sm rounded-xl hover:bg-indigo-500 transition-colors duration-200 shadow-lg shadow-indigo-600/25 active:scale-95 cursor-pointer"
+                    className="flex-1 py-2.5 sm:py-3 bg-indigo-600 text-white font-semibold text-xs sm:text-sm rounded-sm hover:bg-indigo-500 transition-colors duration-200  shadow-indigo-600/25 active:scale-95 cursor-pointer"
                   >
                     {language === 'ko' ? '확인' : 'Confirm'}
                   </button>
@@ -14305,7 +14285,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               <Swords size={14} className="animate-pulse" />
               <span>{language === 'ko' ? '[ 대전 도전자 발견 ]' : '[ CHALLENGER FOUND ]'}</span>
               {rebirthLevel > 0 && (
-                <span className="inline-flex items-center gap-1 ml-1 px-2 py-0.5 rounded-md bg-amber-500/25 border border-amber-400 text-amber-300 text-xs sm:text-sm font-black shadow-[0_0_10px_rgba(245,158,11,0.4)] animate-pulse">
+                <span className="inline-flex items-center gap-1 ml-1 px-2 py-0.5 rounded-md bg-amber-500/25 border border-amber-400 text-amber-300 text-xs sm:text-sm font-black  animate-pulse">
                   <span>👑</span>
                   <span className="text-sm sm:text-base font-black text-amber-100 font-mono">{rebirthLevel}</span>
                   <span>{language === 'ko' ? '환 난이도' : 'R'}</span>
@@ -14322,16 +14302,16 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
         <div className="flex-1 flex flex-col items-center justify-center p-4 sm:p-6 gap-6 max-w-lg mx-auto w-full z-10">
           {/* Opponent Hero Card Portrait & Info */}
-          <div className="w-full flex flex-col items-center gap-4 bg-slate-900/90 border border-slate-800 rounded-3xl p-5 sm:p-6 shadow-2xl backdrop-blur-md relative overflow-hidden">
+          <div className="w-full flex flex-col items-center gap-4 bg-slate-900/90 border border-slate-800 rounded-none p-5 sm:p-6  backdrop-blur-md relative overflow-hidden">
             <div className="absolute -top-10 -right-10 w-40 h-40 bg-rose-500/10 rounded-full blur-2xl pointer-events-none" />
             <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none" />
 
             <div className="relative">
               {/* 캐릭터 포트레이트 */}
-              <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-3xl border-3 border-rose-500/60 bg-slate-950 flex items-center justify-center overflow-hidden shadow-[0_0_30px_rgba(244,63,94,0.35)] ring-2 ring-rose-400/30">
+              <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-none border-3 border-rose-500/60 bg-slate-950 flex items-center justify-center overflow-hidden  ring-2 ring-rose-400/30">
                 <div className="w-[130%] h-[130%] shrink-0" style={getCardSpriteStyle(opponentAvatarCardId)} />
               </div>
-              <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-rose-600 border border-rose-400 text-white text-[9px] font-black uppercase tracking-widest shadow-md">
+              <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-rose-600 border border-rose-400 text-white text-[9px] font-black uppercase tracking-widest ">
                 OPPONENT
               </div>
             </div>
@@ -14343,7 +14323,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               <h3 className="text-xl sm:text-2xl font-black text-white italic tracking-wide flex items-center justify-center gap-2 flex-wrap">
                 <span>{selectedOpponent.name}</span>
                 {rebirthLevel > 0 && (
-                  <span className="inline-flex items-center gap-1 text-sm sm:text-base font-black text-amber-300 bg-amber-950/80 border border-amber-500/60 px-2.5 py-0.5 rounded-lg shadow-sm font-mono">
+                  <span className="inline-flex items-center gap-1 text-sm sm:text-base font-black text-amber-300 bg-amber-950/80 border border-amber-500/60 px-2.5 py-0.5 rounded-sm  font-mono">
                     <span>👑</span>
                     <span className="text-base sm:text-lg font-black text-amber-100">{rebirthLevel}</span>
                     <span>{language === 'ko' ? '환' : 'R'}</span>
@@ -14354,7 +14334,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
             {/* 전투력 & 보상 스탯 바 */}
             <div className="grid grid-cols-2 gap-3 w-full pt-1">
-              <div className="bg-slate-950/80 border border-slate-800 rounded-2xl p-3 text-center">
+              <div className="bg-slate-950/80 border border-slate-800 rounded-none p-3 text-center">
                 <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">
                   {language === 'ko' ? '상대 총 전투력' : 'Opponent Power'}
                 </span>
@@ -14362,7 +14342,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   ⚡ {(selectedOpponent.totalPower || 1200).toLocaleString()} TP
                 </span>
               </div>
-              <div className="bg-slate-950/80 border border-slate-800 rounded-2xl p-3 text-center">
+              <div className="bg-slate-950/80 border border-slate-800 rounded-none p-3 text-center">
                 <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">
                   {language === 'ko' ? '예상 획득 보상' : 'Est. Reward'}
                 </span>
@@ -14394,7 +14374,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               ? `${EQUIPMENT_SET_ICONS[synergyPreview.equipmentSetName] || ''} ${synergyPreview.equipmentSetName.toUpperCase()} +${synergyPreview.equipmentPowerBonus}⚡`
               : t('synergy_no_bonus', language);
             return (
-              <div className={`w-full rounded-2xl border px-4 py-3 text-center ${advantage === 'advantage' ? 'border-green-500/40 bg-green-950/30 shadow-[0_0_20px_rgba(34,197,94,0.15)]' : advantage === 'disadvantage' ? 'border-red-500/40 bg-red-950/30' : 'border-slate-800 bg-slate-900/50'}`}>
+              <div className={`w-full rounded-sm border px-4 py-3 text-center ${advantage === 'advantage' ? 'border-green-500/40 bg-green-950/30 ' : advantage === 'disadvantage' ? 'border-red-500/40 bg-red-950/30' : 'border-slate-800 bg-slate-900/50'}`}>
                 <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1">
                   {language === 'ko' ? '[ 상성 분석 결과 ]' : '[ MATCHUP ANALYSIS ]'}
                 </p>
@@ -14416,7 +14396,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   setShowPreviewDeck(!showPreviewDeck);
                   playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
                 }}
-                className="w-full flex items-center justify-between p-3.5 bg-slate-900/90 border border-slate-800 rounded-2xl hover:bg-slate-850 hover:border-slate-700 transition-all font-black uppercase tracking-wider text-xs text-slate-200 cursor-pointer shadow-sm"
+                className="w-full flex items-center justify-between p-3.5 bg-slate-900/90 border border-slate-800 rounded-none hover:bg-slate-850 hover:border-slate-700 transition-all font-black uppercase tracking-wider text-xs text-slate-200 cursor-pointer "
               >
                 <div className="flex items-center gap-2.5">
                   <Eye size={16} className="text-cyan-400" />
@@ -14464,7 +14444,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                             language === 'ko' ? '카운터 덱 자동 장착' : 'Counter Deck Equipped'
                           );
                         }}
-                        className="w-full py-2.5 px-3 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 rounded-xl flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer text-xs font-bold shadow-xs"
+                        className="w-full py-2.5 px-3 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 rounded-sm flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer text-xs font-bold shadow-xs"
                       >
                         <Zap size={14} className="text-amber-400 animate-pulse" />
                         <span>{language === 'ko' ? '⚡ 추천 상성 카운터 덱 원클릭 장착' : '⚡ Auto-Equip Counter Deck'}</span>
@@ -14485,7 +14465,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 if (autoEnabled) setIsAutoBattle?.(true);
                 startRobotMatch(selectedOpponent);
               }}
-              className="w-full h-14 sm:h-16 bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-600 hover:brightness-110 text-white rounded-2xl flex items-center justify-center gap-3 group transition-all shadow-[0_0_30px_rgba(99,102,241,0.4)] active:scale-[0.98] cursor-pointer border border-indigo-400/40 font-mono"
+              className="w-full h-14 sm:h-16 bg-[#201d1d] from-indigo-600 via-blue-600 to-cyan-600 hover:brightness-110 text-white rounded-none flex items-center justify-center gap-3 group transition-all  active:scale-[0.98] cursor-pointer border border-indigo-400/40 font-mono"
             >
               <Swords className="group-hover:rotate-12 transition-transform text-white" size={22} />
               <span className="text-base sm:text-lg font-black uppercase tracking-wider">
@@ -14499,7 +14479,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                 setGameState('lobby');
               }}
-              className="w-full py-3 rounded-2xl border border-slate-800 bg-slate-900/60 hover:bg-slate-800 text-slate-400 hover:text-white text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
+              className="w-full py-3 rounded-sm border border-slate-800 bg-slate-900/60 hover:bg-slate-800 text-slate-400 hover:text-white text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
             >
               {language === 'ko' ? '← 대전 취소하고 로비로 나가기' : '← Cancel & Return to Lobby'}
             </button>
@@ -14525,59 +14505,58 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 className="absolute inset-0 bg-black/80 backdrop-blur-sm" 
                 onClick={() => setShowRules(false)}
               />
-              <motion.div 
+                <motion.div 
                 initial={{ scale: 0.9, y: 20 }}
                 animate={{ scale: 1, y: 0 }}
                 exit={{ scale: 0.9, y: 20 }}
-                className="bg-slate-950/95 text-slate-100 w-full max-w-lg rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(99,102,241,0.2)] relative flex flex-col max-h-[80vh] border border-slate-850"
+                className="bg-[#fdfcfc] text-[#201d1d] w-full max-w-lg rounded-none overflow-hidden relative flex flex-col max-h-[80vh] border border-[#201d1d] font-mono"
               >
-                <div className="p-6 bg-gradient-to-r from-indigo-955 to-slate-955 text-white flex items-center justify-between border-b border-indigo-500/20">
+                <div className="p-4 bg-[#201d1d] text-[#fdfcfc] flex items-center justify-between border-b border-[#201d1d]">
                   <div className="flex items-center gap-2">
-                    <HelpCircle size={24} className="text-amber-400 animate-pulse" />
-                    <h2 className="text-xl font-extrabold uppercase tracking-tight">{t('game_rules', language)}</h2>
+                    <HelpCircle size={20} className="text-amber-400" />
+                    <h2 className="text-base font-bold uppercase tracking-tight text-[#fdfcfc]">{t('game_rules', language)}</h2>
                   </div>
-                  <button onClick={() => setShowRules(false)} className="bg-white/25 hover:bg-white/40 p-2 rounded-full transition-all flex items-center justify-center">
-                    <X size={20} />
+                  <button
+                    onClick={() => setShowRules(false)}
+                    className="min-h-[44px] min-w-[44px] p-2 text-[#fdfcfc] hover:bg-white/20 rounded-sm transition-all flex items-center justify-center font-bold text-xs"
+                    aria-label="Close"
+                  >
+                    [x]
                   </button>
                 </div>
 
-                <div className="p-6 overflow-y-auto space-y-8 font-sans">
+                <div className="p-5 overflow-y-auto space-y-6 font-mono">
                   {/* Basic How to Play */}
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-2 text-indigo-400">
-                      <Info size={18} />
-                      <h3 className="font-bold uppercase text-sm">{t('how_to_play', language)}</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2 text-[#201d1d]">
+                      <Info size={16} />
+                      <h3 className="font-bold uppercase text-xs tracking-wider">{t('how_to_play', language)}</h3>
                     </div>
-                    <div className="space-y-3">
+                    <div className="space-y-2">
                       {[1, 2, 3, 4].map(num => (
-                        <div key={num} className="bg-slate-900/50 p-3 rounded-xl border border-slate-800/80">
-                          <div className="text-xs font-bold text-indigo-400 uppercase mb-1">{t(`rule_${num}_title` as any, language)}</div>
-                          <div className="text-[11px] font-medium text-slate-350 leading-relaxed">{t(`rule_${num}_desc` as any, language)}</div>
+                        <div key={num} className="bg-[#f8f7f7] p-3 rounded-none border border-[rgba(15,0,0,0.12)]">
+                          <div className="text-xs font-bold text-[#201d1d] uppercase mb-1">{t(`rule_${num}_title` as any, language)}</div>
+                          <div className="text-[11px] font-medium text-[#424245] leading-relaxed">{t(`rule_${num}_desc` as any, language)}</div>
                         </div>
                       ))}
                     </div>
                   </div>
 
                   {/* Abilities Section */}
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-2 text-indigo-400">
-                      <Zap size={18} />
-                      <h3 className="font-bold uppercase text-sm">{t('ability_types', language)}</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2 text-[#201d1d]">
+                      <Zap size={16} />
+                      <h3 className="font-bold uppercase text-xs tracking-wider">{t('ability_types', language)}</h3>
                     </div>
                     <div className="grid grid-cols-1 gap-2">
                       {(['outline_shield' as any, 'outline_power_boost' as any, 'outline_weaken' as any, 'outline_reinforce' as any] as const).map(type => {
                         const baseType = type.replace('outline_', '');
                         return (
-                          <div key={type} className="flex gap-3 bg-slate-900/50 p-3 rounded-xl border border-slate-800/80 items-center">
-                            <div className={cn(
-                              "w-8 h-8 rounded-full flex items-center justify-center shrink-0 border border-white/10 shadow-sm",
-                              baseType === 'shield' ? "bg-blue-500" :
-                              baseType === 'power_boost' ? "bg-amber-500" :
-                              baseType === 'weaken' ? "bg-purple-650" : "bg-emerald-500"
-                            )}>
-                              <Sparkles size={14} className="text-white" />
+                          <div key={type} className="flex gap-3 bg-[#f8f7f7] p-3 rounded-none border border-[rgba(15,0,0,0.12)] items-center">
+                            <div className="w-8 h-8 rounded-none border border-[rgba(15,0,0,0.12)] bg-[#201d1d] text-[#fdfcfc] flex items-center justify-center shrink-0 font-mono text-xs">
+                              <Sparkles size={14} className="text-amber-400" />
                             </div>
-                            <div className="text-[11px] font-medium text-slate-355 leading-snug">
+                            <div className="text-[11px] font-medium text-[#424245] leading-snug">
                               {t(`ability_${baseType}` as any, language)}
                             </div>
                           </div>
@@ -14587,10 +14566,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   </div>
                 </div>
 
-                <div className="p-6 border-t border-slate-900 bg-slate-950/60">
+                <div className="p-4 border-t border-[rgba(15,0,0,0.12)] bg-[#f8f7f7]">
                   <button 
                     onClick={() => setShowRules(false)}
-                    className="w-full py-3.5 bg-indigo-650 hover:bg-indigo-550 text-white rounded-2xl font-bold uppercase tracking-wider transition-all active:scale-95 shadow-lg shadow-indigo-600/20"
+                    className="w-full min-h-[44px] h-11 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] rounded-sm font-bold uppercase tracking-wider transition-all flex items-center justify-center border border-[#201d1d] text-xs"
                   >
                     {t('close', language)}
                   </button>
@@ -14609,50 +14588,50 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             <div ref={mapContainerRef} className="w-full h-full z-10" />
 
             {/* Premium Workout Floating Dashboard Card */}
-            <div className="absolute top-24 right-4 z-50 pointer-events-auto max-w-sm w-[260px] animate-fade-in">
-              <div className="bg-slate-900/90 backdrop-blur-xl border border-cyan-500/30 p-4 rounded-2xl shadow-[0_4px_24px_rgba(6,182,212,0.15)] text-white space-y-4 font-sans">
-                <div className="flex items-center justify-between border-b border-white/10 pb-2">
-                  <div className="flex items-center gap-2 text-cyan-400">
-                    <Activity size={18} className="animate-pulse" />
-                    <span className="text-[10px] font-bold uppercase tracking-widest italic">WORKOUT STATS</span>
+            <div className="absolute top-24 right-4 z-50 pointer-events-auto max-w-sm w-[260px] animate-fade-in font-mono">
+              <div className="bg-[#fdfcfc] border border-[#201d1d] p-3 rounded-none text-[#201d1d] space-y-3 font-mono">
+                <div className="flex items-center justify-between border-b border-[rgba(15,0,0,0.12)] pb-2">
+                  <div className="flex items-center gap-1.5 text-[#201d1d]">
+                    <Activity size={16} />
+                    <span className="text-[10px] font-bold uppercase tracking-wider">[WORKOUT STATS]</span>
                   </div>
-                  <div className="w-2 h-2 rounded-full bg-green-500 animate-ping" />
+                  <span className="text-[10px] font-bold text-emerald-600">[LIVE]</span>
                 </div>
                 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="flex flex-col font-sans">
-                    <span className="text-[9px] uppercase text-white/50 tracking-wider font-semibold">Distance</span>
-                    <span className="text-2xl font-bold text-cyan-400">
-                      {workoutDistance.toFixed(1)}<span className="text-xs ml-0.5 font-normal text-white/70">m</span>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="flex flex-col font-mono">
+                    <span className="text-[9px] uppercase text-[#646262] tracking-wider font-semibold">Distance</span>
+                    <span className="text-xl font-bold text-[#201d1d]">
+                      {workoutDistance.toFixed(1)}<span className="text-xs ml-0.5 font-normal text-[#646262]">m</span>
                     </span>
                     {/* Progress to next encounter (10m) */}
-                    <div className="w-full h-1 bg-white/10 rounded-full mt-1.5 overflow-hidden">
+                    <div className="w-full h-1.5 bg-[#f1eeee] border border-[rgba(15,0,0,0.12)] rounded-none mt-1.5 overflow-hidden">
                       <div 
-                        className="h-full bg-gradient-to-r from-blue-400 to-cyan-400 transition-all duration-300"
+                        className="h-full bg-[#201d1d] transition-all duration-300"
                         style={{ width: `${Math.min(100, (workoutDistance / 10) * 100)}%` }}
                       />
                     </div>
                   </div>
                   
-                  <div className="flex flex-col font-sans">
-                    <span className="text-[9px] uppercase text-white/50 tracking-wider font-semibold">Calories</span>
-                    <span className="text-2xl font-bold text-orange-400">
-                      {workoutCalories.toFixed(2)}<span className="text-xs ml-0.5 font-normal text-white/70">kcal</span>
+                  <div className="flex flex-col font-mono">
+                    <span className="text-[9px] uppercase text-[#646262] tracking-wider font-semibold">Calories</span>
+                    <span className="text-xl font-bold text-[#201d1d]">
+                      {workoutCalories.toFixed(2)}<span className="text-xs ml-0.5 font-normal text-[#646262]">kcal</span>
                     </span>
-                    <div className="text-[8px] text-white/40 mt-1 font-sans">
+                    <div className="text-[8px] text-[#646262] mt-1 font-mono">
                       {(workoutCalories / 7.7).toFixed(3)}g fat burnt
                     </div>
                   </div>
                 </div>
 
-                <div className="text-[9px] text-cyan-400 bg-cyan-950/40 border border-cyan-800/30 px-2.5 py-1.5 rounded-xl font-medium leading-relaxed whitespace-pre-line text-center font-sans">
+                <div className="text-[9px] text-[#201d1d] bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] px-2 py-1.5 rounded-none font-mono leading-relaxed whitespace-pre-line text-center">
                   🏃 {language === 'ko' ? "10m를 걸어 다닐 때마다\n가장 가까운 AI와 자동으로 전투가 시작됩니다!" : "Walk 10m to auto-trigger\nbattle with the nearest AI!"}
                 </div>
               </div>
             </div>
 
             {/* Map Interaction Hint */}
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-40 bg-slate-955/90 backdrop-blur-md text-white px-4 py-2.5 text-[10px] font-semibold rounded-full shadow-lg pointer-events-none tracking-tight uppercase whitespace-nowrap border border-white/5 font-sans">
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-40 bg-[#201d1d] text-[#fdfcfc] px-3 py-2 text-[10px] font-bold rounded-sm pointer-events-none tracking-tight uppercase whitespace-nowrap border border-[#201d1d] font-mono">
               📍 {language === 'ko' ? "지도의 빨간 마커를 탭하면 전투를 시작할 수 있습니다." : "TAP RED MARKERS TO ENGAGE AI ROBOT"}
             </div>
           </div>
@@ -14661,7 +14640,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           <div 
             ref={lobbyRef}
             onClick={handleLobbyClick}
-            className="flex-1 relative bg-[#201d1d] overflow-hidden cursor-crosshair"
+            className="flex-1 relative bg-[#201d1d] overflow-hidden cursor-crosshair font-mono"
           >
             {/* Static Background Grid */}
             <div className="absolute inset-0 grid grid-cols-12 grid-rows-12 opacity-[0.1] pointer-events-none">
@@ -14673,8 +14652,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             {/* Guest Badge in Lobby */}
             <div className="absolute left-4 top-4 flex flex-col gap-3 z-[60]">
               {!effectiveUser && (
-                <div className="bg-amber-500 text-white px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full shadow-lg shadow-amber-500/20 animate-pulse">
-                  AI_BATTLE_ONLY (GUEST)
+                <div className="bg-[#201d1d] text-[#fdfcfc] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-sm border border-[#201d1d] font-mono">
+                  [GUEST // AI BATTLE ONLY]
                 </div>
               )}
             </div>
@@ -14685,20 +14664,20 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 <motion.div 
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  className="bg-slate-900/90 backdrop-blur-md border border-slate-800 p-3 rounded-2xl text-slate-100 font-sans text-[10px] space-y-2 shadow-xl min-w-[140px] pointer-events-auto"
+                  className="bg-[#fdfcfc] border border-[#201d1d] p-3 rounded-none text-[#201d1d] font-mono text-[10px] space-y-2 min-w-[150px] pointer-events-auto"
                 >
-                   <div className="flex justify-between gap-4 border-b border-slate-800 pb-1">
-                     <span className="text-indigo-400 font-bold uppercase tracking-wider">AUTO_BATTLE</span>
+                   <div className="flex justify-between gap-4 border-b border-[rgba(15,0,0,0.12)] pb-1">
+                     <span className="text-[#201d1d] font-bold uppercase tracking-wider">[AUTO_BATTLE]</span>
                    </div>
-                   <div className="flex justify-between gap-2 border-b border-slate-800 pb-1 text-slate-300">
+                   <div className="flex justify-between gap-2 border-b border-[rgba(15,0,0,0.12)] pb-1 text-[#424245]">
                      <span className="opacity-50 uppercase whitespace-nowrap">Sess_Rec</span>
                      <span className="font-bold whitespace-nowrap text-right">
                        {autoBattleStats.wins}W {autoBattleStats.losses}L {autoBattleStats.draws}D
                      </span>
                    </div>
-                   <div className="flex justify-between items-center text-slate-300">
+                   <div className="flex justify-between items-center text-[#424245]">
                      <span className="text-[9px] uppercase tracking-wider opacity-50">Win Rate</span>
-                     <span className="text-indigo-400 font-bold">
+                     <span className="text-[#201d1d] font-bold">
                        {((autoBattleStats.wins / (Math.max(1, autoBattleStats.wins + autoBattleStats.losses + autoBattleStats.draws))) * 100).toFixed(1)}%
                      </span>
                    </div>
@@ -14709,9 +14688,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                          e.stopPropagation();
                          setShowPostBattleSummaryModal(true);
                        }}
-                       className="w-full mt-1 py-1 px-2 bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-500/40 rounded-lg text-[9px] font-bold text-indigo-200 flex items-center justify-center gap-1 transition-all cursor-pointer shadow-sm active:scale-95"
+                       className="w-full mt-1 min-h-[44px] h-11 py-2 px-3 bg-[#201d1d] hover:bg-[#302c2c] border border-[#201d1d] rounded-sm text-xs font-bold text-[#fdfcfc] flex items-center justify-center gap-1.5 transition-all cursor-pointer"
                      >
-                       <BarChart3 size={11} className="text-indigo-400" />
+                       <BarChart3 size={12} className="text-[#fdfcfc]" />
                        <span>{language === 'ko' ? '📊 직전 전투 분석' : '📊 Last Battle'}</span>
                      </button>
                    )}
@@ -14771,7 +14750,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 <div className="relative group cursor-pointer">
                   {/* Speech Bubble */}
                   {bubbles[char.id] && (
-                    <div className="absolute bottom-full mb-8 left-1/2 -translate-x-1/2 bg-slate-900/95 text-slate-105 text-sm font-bold px-3 py-1.5 border border-slate-850 rounded-lg whitespace-nowrap z-50 shadow-[0_4px_15px_rgba(0,0,0,0.4)]">
+                    <div className="absolute bottom-full mb-8 left-1/2 -translate-x-1/2 bg-slate-900/95 text-slate-105 text-sm font-bold px-3 py-1.5 border border-slate-850 rounded-sm whitespace-nowrap z-50 ">
                       {bubbles[char.id].text.length > 5 ? bubbles[char.id].text.substring(0, 5) + '...' : bubbles[char.id].text}
                       {/* Bubble Tail */}
                       <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[6px] border-l-transparent border-t-[8px] border-t-slate-850 border-r-[6px] border-r-transparent"></div>
@@ -14781,13 +14760,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   
                   {/* AI Tag */}
                   {char.type === 'robot' && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-red-650 text-white text-sm font-bold px-1.5 py-0.5 shadow-sm z-50 rounded-sm">
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-red-650 text-white text-sm font-bold px-1.5 py-0.5  z-50 rounded-sm">
                       AI
                     </div>
                   )}
                   
                   <div className={cn(
-                    "p-1 border border-slate-800 rounded-2xl group-hover:border-indigo-400 hover:shadow-lg transition-all transform active:scale-95 bg-slate-900 overflow-hidden w-12 h-12 flex items-center justify-center shadow-md"
+                    "p-1 border border-slate-800 rounded-none group-hover:border-indigo-400 hover: transition-all transform active:scale-95 bg-slate-900 overflow-hidden w-12 h-12 flex items-center justify-center "
                   )}>
                     {char.type === 'robot' ? (
                       <img 
@@ -14811,19 +14790,19 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   {/* Status Indicator */}
                   {char.type === 'user' && (
                     <div className={cn(
-                      "absolute -right-1.5 -top-1.5 w-3.5 h-3.5 border border-slate-800 rounded-lg",
+                      "absolute -right-1.5 -top-1.5 w-3.5 h-3.5 border border-slate-800 rounded-none",
                       char.status === 'online' ? "bg-green-500" : "bg-gray-400"
                     )} />
                   )}
                   
                   {/* ID / Name Tag under character */}
-                  <div className="mt-1 text-[10px] font-bold bg-slate-900/90 text-white px-2 py-0.5 text-center tracking-tight w-max max-w-[85px] truncate rounded-full absolute left-1/2 -translate-x-1/2 top-full shadow-sm">
+                  <div className="mt-1 text-[10px] font-bold bg-slate-900/90 text-white px-2 py-0.5 text-center tracking-tight w-max max-w-[85px] truncate rounded-full absolute left-1/2 -translate-x-1/2 top-full ">
                     {char.name || `ID_${char.id.slice(0,6).toUpperCase()}`}
                   </div>
 
                   {/* Power & SNS Info */}
                   {char.type === 'robot' && (
-                    <div className="mt-6 text-[9px] font-semibold bg-slate-900/90 text-slate-200 px-2 py-0.5 border border-slate-800 rounded-full text-center w-max max-w-[95px] absolute left-1/2 -translate-x-1/2 top-full whitespace-nowrap shadow-sm">
+                    <div className="mt-6 text-[9px] font-semibold bg-slate-900/90 text-slate-200 px-2 py-0.5 border border-slate-800 rounded-full text-center w-max max-w-[95px] absolute left-1/2 -translate-x-1/2 top-full whitespace-nowrap ">
                       <span className="text-rose-455 font-bold">P:{(char.totalPower || 0).toLocaleString()}</span>
                       <span className="text-slate-700 mx-0.5">|</span>
                       <span className="text-indigo-400 font-bold">S:{(char.sns || 0).toLocaleString()}</span>
@@ -14842,14 +14821,14 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                <div className="relative pointer-events-auto">
                   {/* Speech Bubble */}
                   {bubbles['self'] && (
-                    <div className="absolute bottom-full mb-4 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-sm font-bold px-3 py-1.5 border border-gray-200 rounded-lg whitespace-nowrap z-50">
+                    <div className="absolute bottom-full mb-4 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-sm font-bold px-3 py-1.5 border border-gray-200 rounded-sm whitespace-nowrap z-50">
                       {bubbles['self'].text.length > 5 ? bubbles['self'].text.substring(0, 5) + '...' : bubbles['self'].text}
                       <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[6px] border-l-transparent border-t-[8px] border-t-black border-r-[6px] border-r-transparent"></div>
                       <div className="absolute -bottom-[5px] left-1/2 -translate-x-1/2 w-0 h-0 border-l-[4px] border-l-transparent border-t-[6px] border-t-blue-600 border-r-[4px] border-r-transparent"></div>
                     </div>
                   )}
 
-                  <div className="p-1 bg-indigo-600 text-white rounded-2xl animate-bounce-subtle w-12 h-12 overflow-hidden flex items-center justify-center shadow-lg shadow-indigo-600/35">
+                  <div className="p-1 bg-indigo-600 text-white rounded-none  w-12 h-12 overflow-hidden flex items-center justify-center  shadow-indigo-600/35">
                      {!effectiveUser ? (
                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-check text-white" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>
                      ) : effectiveUser?.photoURL?.startsWith('preset:') ? (
@@ -14868,7 +14847,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                      )}
                   </div>
                </div>
-               <div className="mt-1 text-xs font-bold bg-indigo-600 text-white px-2.5 py-0.5 text-center tracking-tight w-max rounded-full absolute left-1/2 -translate-x-1/2 top-full shadow-md shadow-indigo-600/20 animate-pulse">
+               <div className="mt-1 text-xs font-bold bg-indigo-600 text-white px-2.5 py-0.5 text-center tracking-tight w-max rounded-full absolute left-1/2 -translate-x-1/2 top-full  shadow-indigo-600/20 animate-pulse">
                  YOU
                </div>
             </motion.div>
@@ -14884,11 +14863,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     return (
       <>
         {renderRulesPopup()}
-        <div className="flex flex-col flex-1 h-full w-full max-w-[1024px] mx-auto bg-[#030712] font-sans items-center justify-center p-8 text-center overflow-hidden relative text-white">
-          {/* Cyberpunk Grid Background */}
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#1f2937_1px,transparent_1px),linear-gradient(to_bottom,#1f2937_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-25 pointer-events-none" />
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px] pointer-events-none animate-pulse" />
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-[120px] pointer-events-none animate-pulse [animation-delay:1s]" />
+        <div className="flex flex-col flex-1 h-full w-full max-w-[1024px] mx-auto bg-[#090d16] font-mono items-center justify-center p-6 text-center overflow-hidden relative text-[#fdfcfc]">
+          {/* Flat Grid Background */}
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#1f2937_1px,transparent_1px),linear-gradient(to_bottom,#1f2937_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-20 pointer-events-none" />
 
           <AnimatePresence>
             {isCoinFlipping ? (
@@ -14898,49 +14875,44 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 exit={{ scale: 1.2, opacity: 0 }}
                 className="flex flex-col items-center"
               >
-                <div className="relative w-48 h-48 mb-12">
+                <div className="relative w-48 h-48 mb-8">
                   <motion.div
                     animate={!coinWinner ? { 
                       rotateY: [0, 180, 360, 540, 720, 900, 1080, 1260, 1440],
-                      scale: [1, 1.1, 1, 1.1, 1],
-                      y: [0, -50, 0, -50, 0],
-                      boxShadow: '0px 10px 20px rgba(0, 0, 0, 0.3)'
+                      scale: [1, 1.05, 1, 1.05, 1],
+                      y: [0, -30, 0, -30, 0],
                     } : { 
                       rotateY: coinWinner === 'player' ? 0 : 180, 
-                      scale: [1.5, 1.75, 1.55], 
+                      scale: [1.3, 1.4, 1.35], 
                       y: 0,
-                      boxShadow: coinWinner === 'player' 
-                        ? '0px 0px 40px 20px rgba(59, 130, 246, 0.95), 0px 0px 15px 5px rgba(251, 191, 36, 0.8)' 
-                        : '0px 0px 40px 20px rgba(239, 68, 68, 0.95), 0px 0px 15px 5px rgba(251, 191, 36, 0.8)'
                     }}
                     transition={!coinWinner ? { duration: 1.5, ease: "easeInOut" } : { 
                       rotateY: { duration: 0.3, ease: "easeOut" }, 
                       scale: { duration: 0.6, times: [0, 0.4, 1], ease: "backOut" },
-                      boxShadow: { duration: 0.6 }
                     }}
-                    className="w-full h-full relative rounded-2xl"
+                    className="w-full h-full relative rounded-none"
                     style={{ transformStyle: 'preserve-3d' }}
                   >
                     {/* 앞면: 플레이어 프로필 캐릭터 */}
                     <div 
                       className={cn(
-                        "absolute inset-0 bg-gradient-to-br from-indigo-950 via-slate-900 to-indigo-900 border flex flex-col items-center justify-between p-3.5 transition-all duration-300 shadow-[0_0_35px_rgba(99,102,241,0.45)] overflow-hidden",
-                        coinWinner === 'player' ? "border-yellow-400 border-4 scale-105 shadow-[0_0_45px_rgba(234,179,8,0.9)]" : "border-indigo-500/60 border-2"
+                        "absolute inset-0 bg-[#201d1d] border flex flex-col items-center justify-between p-3.5 transition-all duration-300 overflow-hidden rounded-none",
+                        coinWinner === 'player' ? "border-amber-400 border-2 scale-105" : "border-stone-700"
                       )} 
-                      style={{ backfaceVisibility: 'hidden', borderRadius: '20px' }}
+                      style={{ backfaceVisibility: 'hidden' }}
                     >
-                      <div className="w-full flex items-center justify-between px-1 text-[9px] font-mono text-indigo-300/90 font-black">
+                      <div className="w-full flex items-center justify-between px-1 text-[9px] font-mono text-stone-300 font-bold">
                         <span>YOU (PLAYER)</span>
-                        <span className="text-yellow-400">No.{String(playerAvatarCardId).padStart(2, '0')}</span>
+                        <span className="text-amber-400">No.{String(playerAvatarCardId).padStart(2, '0')}</span>
                       </div>
-                      <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden border-2 border-indigo-400/60 shadow-lg bg-slate-950 flex items-center justify-center">
+                      <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-none overflow-hidden border border-stone-700 bg-stone-950 flex items-center justify-center">
                         <div className="w-[130%] h-[130%] shrink-0" style={getCardSpriteStyle(playerAvatarCardId)} />
                       </div>
                       <div className="w-full text-center">
-                        <p className="text-xs font-black text-white truncate px-1">
+                        <p className="text-xs font-bold text-[#fdfcfc] truncate px-1 font-mono">
                           {effectiveUser?.displayName || (language === 'ko' ? '히어로' : 'Hero')}
                         </p>
-                        <span className="text-[10px] font-mono text-indigo-300/90 font-bold block truncate">
+                        <span className="text-[10px] font-mono text-stone-400 font-medium block truncate">
                           {CARD_DATABASE[playerAvatarCardId] ? (language === 'ko' ? CARD_DATABASE[playerAvatarCardId].title : CARD_DATABASE[playerAvatarCardId].title_en) : 'Aquaris'}
                         </span>
                       </div>
@@ -14949,23 +14921,23 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     {/* 뒷면: 상대방 / AI 캐릭터 */}
                     <div 
                       className={cn(
-                        "absolute inset-0 bg-gradient-to-br from-rose-950 via-slate-900 to-red-950 border flex flex-col items-center justify-between p-3.5 transition-all duration-300 shadow-[0_0_35px_rgba(244,63,94,0.45)] overflow-hidden",
-                        coinWinner === 'ai' ? "border-yellow-400 border-4 scale-105 shadow-[0_0_45px_rgba(234,179,8,0.9)]" : "border-rose-500/60 border-2"
+                        "absolute inset-0 bg-[#201d1d] border flex flex-col items-center justify-between p-3.5 transition-all duration-300 overflow-hidden rounded-none",
+                        coinWinner === 'ai' ? "border-amber-400 border-2 scale-105" : "border-stone-700"
                       )} 
-                      style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)', borderRadius: '20px' }}
+                      style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
                     >
-                      <div className="w-full flex items-center justify-between px-1 text-[9px] font-mono text-rose-300/90 font-black">
+                      <div className="w-full flex items-center justify-between px-1 text-[9px] font-mono text-stone-300 font-bold">
                         <span>OPPONENT (AI)</span>
-                        <span className="text-yellow-400">No.{String(opponentAvatarCardId).padStart(2, '0')}</span>
+                        <span className="text-amber-400">No.{String(opponentAvatarCardId).padStart(2, '0')}</span>
                       </div>
-                      <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden border-2 border-rose-400/60 shadow-lg bg-slate-950 flex items-center justify-center">
+                      <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-none overflow-hidden border border-stone-700 bg-stone-950 flex items-center justify-center">
                         <div className="w-[130%] h-[130%] shrink-0" style={getCardSpriteStyle(opponentAvatarCardId)} />
                       </div>
                       <div className="w-full text-center">
-                        <p className="text-xs font-black text-white truncate px-1">
+                        <p className="text-xs font-bold text-[#fdfcfc] truncate px-1 font-mono">
                           {lastOpponent?.name || selectedOpponent?.name || (language === 'ko' ? '상대 도전자' : 'Challenger')}
                         </p>
-                        <span className="text-[10px] font-mono text-rose-300/90 font-bold block truncate">
+                        <span className="text-[10px] font-mono text-stone-400 font-medium block truncate">
                           {CARD_DATABASE[opponentAvatarCardId] ? (language === 'ko' ? CARD_DATABASE[opponentAvatarCardId].title : CARD_DATABASE[opponentAvatarCardId].title_en) : 'Ignis'}
                         </span>
                       </div>
@@ -14975,38 +14947,35 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 <AnimatePresence mode="wait">
                   {coinWinner ? (
                     <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="space-y-2">
-                      <h2 className={cn("text-4xl font-extrabold italic tracking-wider drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]", coinWinner === 'player' ? "text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400 drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]" : "text-transparent bg-clip-text bg-gradient-to-r from-rose-450 to-red-450 to-rose-400 drop-shadow-[0_0_15px_rgba(244,63,94,0.5)]")}>
+                      <h2 className={cn("text-3xl font-black font-mono tracking-wider", coinWinner === 'player' ? "text-amber-300" : "text-rose-400")}>
                         {coinWinner === 'player' ? "YOU START" : "OPPONENT STARTS"}
                       </h2>
-                      <p className="text-xs font-black text-slate-500 tracking-[0.3em]">PROTOCOL_INITIATED</p>
+                      <p className="text-xs font-bold text-stone-400 tracking-[0.2em] font-mono">[ PROTOCOL_INITIATED ]</p>
                     </motion.div>
                   ) : (
                     <motion.div key="waiting" className="space-y-1">
-                      <h2 className="text-4xl font-black italic tracking-wider text-slate-300 drop-shadow-[0_0_10px_rgba(255,255,255,0.1)]">DECIDING TURN...</h2>
-                      <p className="text-xs font-black text-blue-500/70 tracking-[0.2em] animate-pulse">SCANNING_ENTROPY</p>
+                      <h2 className="text-3xl font-bold font-mono tracking-wider text-stone-200">DECIDING TURN...</h2>
+                      <p className="text-xs font-bold text-stone-400 tracking-[0.2em] font-mono">[ SCANNING_ENTROPY ]</p>
                     </motion.div>
                   )}
                 </AnimatePresence>
               </motion.div>
             ) : (
               <div className="flex flex-col items-center max-w-md w-full px-4 font-mono z-10">
-                {/* 대형 서칭 레이더 & 실시간 타이머 */}
-                <div className="relative w-44 h-44 mb-6 flex items-center justify-center">
-                  {/* 레이더 링 & 펄스 애니메이션 */}
-                  <div className="absolute inset-0 rounded-full border border-indigo-500/30 animate-ping [animation-duration:3s]" />
-                  <div className="absolute inset-2 rounded-full border border-indigo-400/20" />
-                  <div className="absolute inset-5 rounded-full border border-dashed border-cyan-400/40 animate-spin [animation-duration:8s]" />
-                  <div className="absolute inset-0 rounded-full border-2 border-t-cyan-400 border-r-transparent border-b-indigo-500 border-l-transparent animate-spin [animation-duration:2s]" />
+                {/* 대형 서칭 박스 & 실시간 타이머 */}
+                <div className="relative w-40 h-40 mb-6 flex items-center justify-center">
+                  <div className="absolute inset-0 rounded-none border border-stone-700 bg-stone-900/60" />
+                  <div className="absolute inset-2 rounded-none border border-stone-800" />
                   
                   {/* 중앙 대형 실시간 경과 시간 카운트업 */}
-                  <div className="flex flex-col items-center justify-center z-10 bg-slate-950/90 rounded-full w-28 h-28 border-2 border-cyan-500/40 shadow-[0_0_30px_rgba(6,182,212,0.35)]">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-cyan-300 animate-pulse">
+                  <div className="flex flex-col items-center justify-center z-10 bg-[#201d1d] rounded-none w-28 h-28 border border-stone-700">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-amber-400 font-mono">
                       {language === 'ko' ? '매칭 탐색' : 'MATCHING'}
                     </span>
-                    <span className="text-3xl font-black text-white tracking-wider font-mono my-0.5">
+                    <span className="text-2xl font-bold text-[#fdfcfc] tracking-wider font-mono my-0.5">
                       00:{String(searchingSeconds).padStart(2, '0')}
                     </span>
-                    <span className="text-[9px] text-slate-400 font-bold">
+                    <span className="text-[9px] text-stone-400 font-bold font-mono">
                       {language === 'ko' ? '실시간 탐색 중' : 'SEARCHING'}
                     </span>
                   </div>
@@ -15014,22 +14983,22 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
                 {/* 명확한 탐색 안내 메시지 */}
                 <div className="space-y-3 text-center w-full">
-                  <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full border border-cyan-400/40 bg-cyan-500/10 text-cyan-200 text-xs font-black tracking-widest uppercase">
-                    <Sparkles size={13} className="text-cyan-300 animate-spin" />
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-sm border border-stone-700 bg-stone-900 text-stone-200 text-xs font-mono font-bold tracking-wider uppercase">
+                    <Sparkles size={13} className="text-amber-400" />
                     <span>{language === 'ko' ? '[ 대전 상대 매칭 중 ]' : '[ BATTLE MATCHING ]'}</span>
                   </div>
                   
-                  <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white italic">
+                  <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[#fdfcfc] font-mono">
                     {language === 'ko' ? '상대 도전자를 탐색하고 있습니다' : 'Searching For Challenger...'}
                   </h2>
                   
-                  <div className="text-xs text-slate-300 leading-relaxed max-w-sm mx-auto bg-slate-900/90 border border-slate-800 p-3.5 rounded-2xl shadow-inner">
-                    <p className="font-semibold text-slate-200">
+                  <div className="text-xs text-stone-300 leading-relaxed max-w-sm mx-auto bg-[#201d1d] border border-stone-800 p-3.5 rounded-none font-mono">
+                    <p className="font-medium text-stone-200">
                       {language === 'ko' 
                         ? '내 전투력(TP)에 알맞은 라이벌 영웅을 검색하고 있습니다.' 
                         : 'Finding a balanced rival hero matching your combat power.'}
                     </p>
-                    <p className="text-[11px] text-cyan-400 mt-1 font-mono">
+                    <p className="text-[11px] text-amber-300 mt-1 font-mono">
                       {language === 'ko' ? '⚡ 매칭 완료 즉시 선공/후공 플립으로 전환됩니다' : '⚡ Turn order coin flip will begin once matched'}
                     </p>
                   </div>
@@ -15043,7 +15012,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                         setIsCoinFlipping(false);
                         setCoinWinner(null);
                       }}
-                      className="px-6 py-2.5 rounded-full border border-slate-700 bg-slate-900/90 hover:bg-slate-800 text-slate-300 hover:text-white text-xs font-bold uppercase tracking-wider transition-all cursor-pointer shadow-md active:scale-95"
+                      className="min-h-[44px] px-6 py-2.5 rounded-sm border border-stone-700 bg-[#201d1d] hover:bg-stone-800 text-stone-200 hover:text-white text-xs font-mono font-bold uppercase tracking-wider transition-all cursor-pointer"
                     >
                       {language === 'ko' ? '✕ 매칭 취소 (로비로 돌아가기)' : '✕ Cancel Match (Lobby)'}
                     </button>
@@ -15055,20 +15024,20 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
           {/* Opponent Deck Preview Toggle */}
           {opponentDeck.length > 0 && (
-            <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-[100] flex flex-col items-center gap-4">
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[100] flex flex-col items-center gap-3">
               <AnimatePresence>
                 {showDeckPreview && (
                   <motion.div
                     initial={{ opacity: 0, y: 20, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 20, scale: 0.95 }}
-                    className="bg-slate-900/90 backdrop-blur-xl border border-slate-700/50 p-4 rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.5)] w-[90vw] max-w-lg mb-4 text-white"
+                    className="bg-[#201d1d] border border-stone-800 p-4 rounded-none w-[90vw] max-w-lg mb-2 text-[#fdfcfc] font-mono"
                   >
-                    <div className="flex items-center justify-between mb-3 px-2">
-                      <span className="text-[10px] font-black text-red-500 uppercase tracking-[0.2em] animate-pulse">
+                    <div className="flex items-center justify-between mb-3 px-1">
+                      <span className="text-[10px] font-bold text-amber-400 uppercase tracking-widest font-mono">
                         Intel: Opponent_Squad
                       </span>
-                      <span className="text-[9px] text-white/30 uppercase">
+                      <span className="text-[9px] text-stone-400 uppercase font-mono">
                         Security_Bypass: Active
                       </span>
                     </div>
@@ -15088,23 +15057,21 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 )}
               </AnimatePresence>
 
-              <motion.button
-                 whileHover={{ scale: 1.05 }}
-                 whileTap={{ scale: 0.95 }}
+              <button
                  onClick={() => {
                    setShowDeckPreview(!showDeckPreview);
                    playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                  }}
                  className={cn(
-                   "flex items-center gap-3 px-6 py-2.5 rounded-full border shadow-2xl transition-all uppercase text-[10px] font-black tracking-widest",
+                   "min-h-[44px] flex items-center gap-3 px-6 py-2.5 rounded-sm border transition-all uppercase text-xs font-mono font-bold tracking-wider cursor-pointer",
                    showDeckPreview 
-                    ? "bg-white text-black border-white" 
-                    : "bg-black text-white border-white/20 hover:border-white/50"
+                    ? "bg-stone-200 text-stone-900 border-stone-300" 
+                    : "bg-[#201d1d] text-[#fdfcfc] border-stone-700 hover:bg-stone-800"
                  )}
               >
-                <Swords size={14} className={cn(showDeckPreview ? "text-blue-600" : "text-red-600")} />
+                <Swords size={14} className={cn(showDeckPreview ? "text-stone-900" : "text-amber-400")} />
                 {showDeckPreview ? "DISMISS_INTEL" : "PREVIEW_OPPONENT_DECK"}
-              </motion.button>
+              </button>
             </div>
           )}
           {renderCustomAlertModal()}
@@ -15179,16 +15146,16 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 type="button"
                 onClick={toggleAutoSpeed}
                 className={cn(
-                  "px-2.5 py-1.5 rounded-sm border font-mono text-[11px] font-black shadow-lg transition-all cursor-pointer flex items-center gap-1 active:scale-95",
+                  "min-h-[44px] px-3 py-2 rounded-sm border font-mono text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5",
                   autoSpeedMode === '3x'
-                    ? "bg-rose-950/90 border-rose-500 text-rose-300 shadow-[0_0_12px_rgba(244,63,94,0.6)] animate-pulse"
+                    ? "bg-rose-950/90 border-rose-600 text-rose-300"
                     : autoSpeedMode === '2x'
-                    ? "bg-amber-950/90 border-amber-500 text-amber-300"
-                    : "bg-slate-900/90 border-slate-700 text-slate-300"
+                    ? "bg-amber-950/90 border-amber-600 text-amber-300"
+                    : "bg-stone-900 border-stone-700 text-stone-300"
                 )}
                 title={language === 'ko' ? `배속 전환: 현재 ${autoSpeedMode.toUpperCase()}` : `Speed: Current ${autoSpeedMode.toUpperCase()}`}
               >
-                <Zap size={12} className={cn(autoSpeedMode === '3x' ? "text-yellow-400 animate-spin" : "text-amber-400")} />
+                <Zap size={14} className="text-amber-400" />
                 <span>{autoSpeedMode === '3x' ? '[ 3X TURBO ]' : `[ ${autoSpeedMode.toUpperCase()} ]`}</span>
               </button>
             )}
@@ -15208,38 +15175,22 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     }
                   }}
                   className={cn(
-                    "w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 shadow-2xl flex items-center justify-center transition-all duration-300 active:scale-95 cursor-pointer touch-target relative",
+                    "min-h-[44px] min-w-[44px] h-11 px-3 rounded-sm border flex items-center justify-center gap-2 transition-all cursor-pointer font-mono font-bold text-xs select-none",
                     isAutoBattle
-                      ? "bg-gradient-to-tr from-amber-600 via-amber-500 to-yellow-400 border-amber-300 text-slate-950 shadow-[0_0_25px_rgba(245,158,11,0.85)] ring-2 ring-amber-300/80"
-                      : "bg-slate-950/90 border-slate-700 text-slate-300 hover:border-slate-500 hover:text-white shadow-xl"
+                      ? "bg-amber-950/90 border-amber-400 text-amber-300"
+                      : "bg-[#201d1d] border-stone-700 text-stone-300 hover:border-stone-500 hover:text-white"
                   )}
                   title={isAutoBattle ? (language === 'ko' ? '자동전투 ON (클릭 시 중단)' : 'AUTO ON (CLICK TO STOP)') : (language === 'ko' ? '자동전투 OFF (클릭 시 시작)' : 'AUTO OFF (CLICK TO START)')}
                   aria-label="Auto Battle Toggle"
                 >
                   <Bot
-                    size={26}
-                    className={cn(
-                      "transition-transform",
-                      isAutoBattle ? "animate-spin text-slate-950 drop-shadow-md" : "text-slate-300"
-                    )}
+                    size={18}
+                    className="text-stone-300 shrink-0"
                   />
-                  <span
-                    className={cn(
-                      "absolute -bottom-1 -right-1 font-black text-[8px] sm:text-[9px] px-1.5 py-0.5 rounded-full border shadow-md uppercase tracking-tighter",
-                      isAutoBattle
-                        ? "bg-rose-600 border-rose-300 text-white animate-pulse"
-                        : "bg-slate-800 border-slate-600 text-slate-400"
-                    )}
-                  >
-                    {isAutoBattle ? 'AUTO' : 'OFF'}
+                  <span>
+                    {isAutoBattle ? '[AUTO ON]' : '[AUTO OFF]'}
                   </span>
                 </button>
-
-                <div className="absolute right-full mr-2.5 top-1/2 -translate-y-1/2 bg-black/95 backdrop-blur-md text-white px-2.5 py-1 text-[10px] font-black opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/20 rounded-md uppercase tracking-wider z-[200] shadow-xl">
-                  {isAutoBattle
-                    ? (language === 'ko' ? '🤖 자동전투 중단하기' : '🤖 STOP AUTO BATTLE')
-                    : (language === 'ko' ? '🤖 자동전투 시작하기' : '🤖 START AUTO BATTLE')}
-                </div>
               </div>
             )}
           </div>
@@ -15262,49 +15213,49 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       skillNameKo = '강화 함성';
                       skillNameEn = 'Rallying Roar';
                       Icon = Flame;
-                      colorClass = 'border-red-500/50 text-red-400 hover:bg-red-600 hover:text-white';
+                      colorClass = 'border-red-600/70 text-red-400 hover:bg-red-950';
                       break;
                     case 2:
                       skillNameKo = '약화 저주';
                       skillNameEn = 'Weaken Curse';
                       Icon = Droplets;
-                      colorClass = 'border-blue-500/50 text-blue-400 hover:bg-blue-600 hover:text-white';
+                      colorClass = 'border-blue-600/70 text-blue-400 hover:bg-blue-950';
                       break;
                     case 3:
                       skillNameKo = '변화 함성';
                       skillNameEn = 'Shift Roar';
                       Icon = Sparkles;
-                      colorClass = 'border-yellow-500/50 text-yellow-400 hover:bg-yellow-600 hover:text-white';
+                      colorClass = 'border-amber-600/70 text-amber-400 hover:bg-amber-950';
                       break;
                     case 4:
                       skillNameKo = '변화 저주';
                       skillNameEn = 'Shift Curse';
                       Icon = ShieldAlert;
-                      colorClass = 'border-purple-500/50 text-purple-400 hover:bg-purple-600 hover:text-white';
+                      colorClass = 'border-purple-600/70 text-purple-400 hover:bg-purple-950';
                       break;
                     case 5:
                       skillNameKo = '약화 함정';
                       skillNameEn = 'Weaken Trap';
                       Icon = TargetIcon;
-                      colorClass = 'border-purple-500/50 text-purple-400 hover:bg-purple-600 hover:text-white';
+                      colorClass = 'border-purple-600/70 text-purple-400 hover:bg-purple-950';
                       break;
                     case 6:
                       skillNameKo = '강화 함정';
                       skillNameEn = 'Rally Trap';
                       Icon = TargetIcon;
-                      colorClass = 'border-red-500/50 text-red-400 hover:bg-red-600 hover:text-white';
+                      colorClass = 'border-red-600/70 text-red-400 hover:bg-red-950';
                       break;
                     case 7:
                       skillNameKo = '체인지 상대카드';
                       skillNameEn = 'Swap Enemy';
                       Icon = RotateCcw;
-                      colorClass = 'border-orange-500/50 text-orange-400 hover:bg-orange-600 hover:text-white';
+                      colorClass = 'border-orange-600/70 text-orange-400 hover:bg-orange-950';
                       break;
                     case 8:
                       skillNameKo = '체인지 내카드';
                       skillNameEn = 'Swap Self';
                       Icon = RotateCcw;
-                      colorClass = 'border-green-500/50 text-green-400 hover:bg-green-600 hover:text-white';
+                      colorClass = 'border-green-600/70 text-green-400 hover:bg-green-950';
                       break;
                   }
 
@@ -15313,7 +15264,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   return (
                     <div key={skillId} className="relative group flex items-center justify-center">
                       {(skillCooldowns[skillId] || 0) > 0 ? (
-                        <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full border-2 border-gray-600 bg-gray-800 text-gray-400 flex items-center justify-center font-black text-xs shadow-lg">
+                        <div className="min-h-[44px] min-w-[44px] h-11 w-11 rounded-sm border border-stone-700 bg-stone-900 text-stone-400 flex items-center justify-center font-mono font-bold text-xs">
                           <span>{skillCooldowns[skillId]}s</span>
                         </div>
                       ) : (
@@ -15321,17 +15272,17 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                           onClick={() => handleExecuteSkill(skillId)}
                           disabled={isRoarActive}
                           className={cn(
-                            "w-10 h-10 sm:w-11 sm:h-11 rounded-full border-2 shadow-lg flex items-center justify-center transition-all active:scale-95 cursor-pointer bg-black/90",
+                            "min-h-[44px] min-w-[44px] h-11 w-11 rounded-sm border flex items-center justify-center transition-all cursor-pointer bg-[#201d1d] font-mono",
                             !isRoarActive
                               ? colorClass
-                              : "bg-gray-800 border-gray-700 text-gray-500 cursor-not-allowed"
+                              : "bg-stone-900 border-stone-800 text-stone-600 cursor-not-allowed"
                           )}
                           title={displayName}
                         >
-                          <Icon size={16} className={cn(!isRoarActive && skillId === 1 && "animate-pulse")} />
+                          <Icon size={18} />
                         </button>
                       )}
-                      <div className="absolute right-full mr-2.5 top-1/2 -translate-y-1/2 bg-black/95 backdrop-blur-md text-white px-2.5 py-1 text-[10px] font-black italic opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/20 rounded-md uppercase tracking-wider z-[200] shadow-xl">
+                      <div className="absolute right-full mr-2.5 top-1/2 -translate-y-1/2 bg-[#201d1d] text-[#fdfcfc] px-2.5 py-1 text-[10px] font-mono font-bold opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-stone-700 rounded-none uppercase tracking-wider z-[200]">
                         {displayName}
                       </div>
                     </div>
@@ -15350,17 +15301,15 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       <AnimatePresence>
         {activeTrapMode && (
           <motion.div
-            initial={{ opacity: 0, y: -50, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -50, scale: 0.95 }}
-            className="fixed top-20 left-1/2 -translate-x-1/2 z-[999] w-[90%] max-w-md pointer-events-auto"
+            initial={{ opacity: 0, y: -30 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -30 }}
+            className="fixed top-20 left-1/2 -translate-x-1/2 z-[999] w-[92%] max-w-md pointer-events-auto font-mono"
           >
-            <div className="bg-slate-950/90 border border-amber-500/30 backdrop-blur-md text-amber-400 p-4 rounded-2xl shadow-[0_0_30px_rgba(245,158,11,0.15)] flex items-center justify-between gap-4 font-sans">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center font-bold animate-pulse text-base">
-                  ⚡
-                </div>
-                <span className="text-sm font-black tracking-tight leading-tight uppercase">
+            <div className="bg-[#201d1d] border border-amber-500/60 text-amber-300 p-3.5 rounded-none flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-bold">⚡</span>
+                <span className="text-xs font-bold uppercase tracking-wider">
                   {activeTrapMode === 'weaken_trap' || activeTrapMode === 'reinforce_trap'
                     ? t('trap_prompt_install', language)
                     : t('trap_prompt_change', language)}
@@ -15368,7 +15317,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               </div>
               <button
                 onClick={() => setActiveTrapMode(null)}
-                className="px-3 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 text-amber-400 text-xs font-semibold rounded-xl transition-all duration-200 cursor-pointer"
+                className="min-h-[44px] px-4 py-2 bg-stone-900 hover:bg-stone-800 border border-stone-700 text-stone-200 text-xs font-mono font-bold rounded-sm cursor-pointer"
               >
                 {t('cancel_btn', language)}
               </button>
@@ -15384,22 +15333,22 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[300] flex items-center justify-center p-4"
+            className="fixed inset-0 bg-black/80 z-[300] flex items-center justify-center p-4 font-mono"
           >
             <motion.div 
-              initial={{ scale: 0.9, y: 20 }}
+              initial={{ scale: 0.95, y: 10 }}
               animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              className="bg-slate-900/95 border border-slate-800 backdrop-blur-xl rounded-3xl p-6 max-w-sm w-full shadow-[0_20px_50px_rgba(239,68,68,0.25)] text-center space-y-6 text-white"
+              exit={{ scale: 0.95, y: 10 }}
+              className="bg-[#201d1d] border border-stone-800 rounded-none p-6 max-w-sm w-full text-center space-y-5 text-[#fdfcfc]"
             >
-              <div className="w-16 h-16 bg-red-500/10 text-red-500 rounded-2xl flex items-center justify-center mx-auto border border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.25)]">
-                <ShieldAlert size={32} />
+              <div className="w-12 h-12 bg-red-950/40 text-red-400 rounded-none border border-red-500/30 flex items-center justify-center mx-auto">
+                <ShieldAlert size={28} />
               </div>
               <div className="space-y-2">
-                <h3 className="text-lg font-black tracking-wider text-red-500 uppercase">
-                  {language === 'ko' ? '경기 기권 확인' : 'MATCH SURRENDER'}
+                <h3 className="text-base font-bold tracking-wider text-red-400 uppercase font-mono">
+                  {language === 'ko' ? '[ 경기 기권 확인 ]' : '[ MATCH SURRENDER ]'}
                 </h3>
-                <p className="text-sm font-semibold text-slate-300 leading-relaxed">
+                <p className="text-xs font-medium text-stone-300 leading-relaxed font-mono">
                   {language === 'ko'
                     ? "정말 경기를 기권하고 나가시겠습니까? (패배로 처리되며 전적에 반영됩니다)"
                     : "Are you sure you want to forfeit this match? (Result: Loss)"}
@@ -15408,7 +15357,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               <div className="flex gap-3">
                 <button 
                   onClick={() => setShowForfeitConfirm(false)}
-                  className="flex-1 bg-slate-950/80 border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-900 rounded-xl py-3 text-sm font-semibold transition-colors duration-200 cursor-pointer"
+                  className="min-h-[44px] flex-1 bg-stone-900 border border-stone-700 text-stone-300 hover:text-white hover:bg-stone-800 rounded-sm py-2.5 px-3 text-xs font-mono font-bold cursor-pointer"
                 >
                   {t('no_decline', language) || "Cancel"}
                 </button>
@@ -15418,7 +15367,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     handleExitMatch(true);
                     playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                   }}
-                  className="flex-1 bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-500 hover:to-rose-600 text-white rounded-xl py-3 text-sm font-semibold shadow-[0_4px_15px_rgba(239,68,68,0.25)] border border-red-500/30 transition-all cursor-pointer"
+                  className="min-h-[44px] flex-1 bg-rose-950 hover:bg-rose-900 text-rose-200 rounded-sm py-2.5 px-3 text-xs font-mono font-bold border border-rose-600 transition-all cursor-pointer"
                 >
                   {t('yes_accept', language) || "Forfeit"}
                 </button>
@@ -15445,12 +15394,12 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 }
                 playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
               }}
-              className="min-h-11 min-w-11 h-11 px-3 bg-[#141212] border-2 border-amber-400 hover:border-amber-300 text-amber-300 hover:text-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.7)] cursor-pointer flex items-center justify-center gap-1.5 transition-all duration-200 active:scale-95 shrink-0 font-bold"
+              className="min-h-[44px] min-w-[44px] h-11 px-3 bg-[#201d1d] border border-amber-400 hover:border-amber-300 text-amber-300 hover:text-white rounded-sm cursor-pointer flex items-center justify-center gap-1.5 transition-all active:scale-95 shrink-0 font-mono font-bold"
               title={language === 'ko' ? '뒤로 / 나가기' : 'Back / Exit'}
               aria-label={language === 'ko' ? '뒤로 / 나가기' : 'Back / Exit'}
             >
-              <ArrowLeft size={20} strokeWidth={2.8} className="text-amber-300 shrink-0" />
-              <span className="text-xs font-black tracking-wider uppercase">{language === 'ko' ? '뒤로' : 'BACK'}</span>
+              <ArrowLeft size={18} strokeWidth={2.4} className="text-amber-300 shrink-0" />
+              <span className="text-xs font-bold tracking-wider uppercase">{language === 'ko' ? '뒤로' : 'BACK'}</span>
             </button>
 
             <button
@@ -15458,11 +15407,11 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 setShowInGameMenu(true);
                 playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
               }}
-              className="h-8 w-8 bg-slate-900/90 border border-slate-800 hover:border-indigo-500/50 text-slate-200 hover:text-white rounded-xl shadow-md cursor-pointer flex items-center justify-center transition-all duration-200 active:scale-95 shrink-0"
+              className="min-h-[44px] min-w-[44px] h-11 w-11 bg-[#201d1d] border border-stone-700 hover:border-stone-500 text-stone-200 hover:text-white rounded-sm cursor-pointer flex items-center justify-center transition-all active:scale-95 shrink-0 font-mono"
               title={language === 'ko' ? '메뉴' : 'Menu'}
               aria-label={language === 'ko' ? '메뉴' : 'Menu'}
             >
-              <Menu size={15} className="text-indigo-400" />
+              <Menu size={18} className="text-stone-300" />
             </button>
 
             <button
@@ -15471,17 +15420,17 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
               }}
               className={cn(
-                "h-8 w-8 border rounded-xl shadow-md cursor-pointer flex items-center justify-center transition-all duration-200 active:scale-95 relative shrink-0",
+                "min-h-[44px] min-w-[44px] h-11 w-11 border rounded-sm cursor-pointer flex items-center justify-center transition-all active:scale-95 relative shrink-0 font-mono",
                 showMobileLogs 
-                  ? "bg-amber-500/20 border-amber-500 text-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.3)]" 
-                  : "bg-slate-900/90 border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800"
+                  ? "bg-amber-950/90 border-amber-500 text-amber-300" 
+                  : "bg-[#201d1d] border-stone-700 text-stone-300 hover:text-white hover:bg-stone-800"
               )}
               title={language === 'ko' ? '전투 로그' : 'Battle Log'}
               aria-label={language === 'ko' ? '전투 로그' : 'Battle Log'}
             >
-              <Terminal size={15} className="text-amber-400" />
+              <Terminal size={18} className="text-amber-400" />
               {gameLogs.length > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-amber-500 border border-amber-300 rounded-full text-[8px] font-black text-black flex items-center justify-center shadow-xs">
+                <span className="absolute -top-1 -right-1 px-1 py-0.2 bg-amber-500 border border-amber-300 rounded-none text-[8px] font-bold text-black flex items-center justify-center font-mono">
                   {gameLogs.length > 99 ? '99+' : gameLogs.length}
                 </span>
               )}
@@ -15491,17 +15440,17 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           {/* Center: Bold Reincarnation Level Badge */}
           {rebirthLevel > 0 && (
             <div 
-              className="flex items-center gap-1.5 px-3 py-1 bg-amber-950/85 border border-amber-500/70 rounded-xl shadow-[0_0_12px_rgba(245,158,11,0.4)] text-amber-300 backdrop-blur-md shrink-0 select-none animate-pulse"
+              className="min-h-[44px] flex items-center gap-1.5 px-3 py-1 bg-[#201d1d] border border-amber-500/50 rounded-sm text-amber-300 shrink-0 select-none font-mono"
               title={language === 'ko' ? `현재 환생 차수: ${rebirthLevel}환` : `Current Rebirth: Lv.${rebirthLevel}`}
             >
-              <span className="text-base sm:text-lg">👑</span>
-              <span className="text-[10px] sm:text-xs font-black text-amber-400">
+              <span className="text-sm">👑</span>
+              <span className="text-[10px] sm:text-xs font-bold text-amber-400">
                 {language === 'ko' ? '환생' : 'REBIRTH'}
               </span>
-              <span className="text-base sm:text-lg font-black text-amber-100 font-mono">
+              <span className="text-sm sm:text-base font-bold text-amber-100 font-mono">
                 {rebirthLevel}
               </span>
-              <span className="text-xs sm:text-sm font-bold text-amber-300">
+              <span className="text-xs font-bold text-amber-300">
                 {language === 'ko' ? '환' : 'R'}
               </span>
             </div>
@@ -15517,21 +15466,21 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
               }}
               className={cn(
-                "h-8 px-2 sm:px-2.5 border rounded-xl shadow-md cursor-pointer flex items-center gap-1.5 transition-all duration-200 active:scale-95 shrink-0 font-mono select-none",
+                "min-h-[44px] h-11 px-3 border rounded-sm cursor-pointer flex items-center gap-1.5 transition-all active:scale-95 shrink-0 font-mono select-none font-bold text-xs",
                 isAutoBattle
-                  ? "bg-amber-500/20 border-amber-500/80 text-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.3)] ring-1 ring-amber-400/40"
-                  : "bg-slate-900/90 border-slate-800 text-slate-300 hover:text-white hover:border-slate-700"
+                  ? "bg-amber-950/90 border-amber-500 text-amber-300"
+                  : "bg-[#201d1d] border-stone-700 text-stone-300 hover:text-white hover:border-stone-500"
               )}
               title={language === 'ko'
                 ? `AI 모델 및 전술 설정 (현재: ${gambitConfig.activeStance === 'attack' ? '⚔️ 공격형' : gambitConfig.activeStance === 'defense' ? '🛡️ 방어형' : '⚖️ 밸런스'} / ${isAutoBattle ? 'AUTO ON' : 'AUTO OFF'})`
                 : `AI Model & Tactics (Current: ${gambitConfig.activeStance === 'attack' ? '⚔️ ATK' : gambitConfig.activeStance === 'defense' ? '🛡️ DEF' : '⚖️ BAL'} / ${isAutoBattle ? 'AUTO ON' : 'AUTO OFF'})`}
               aria-label="AI Battle Model and Tactics"
             >
-              <Bot size={15} className={cn(isAutoBattle ? "animate-spin text-amber-300" : "text-slate-400")} />
-              <span className="text-[11px] font-black">
+              <Bot size={16} className="text-amber-400 shrink-0" />
+              <span className="text-xs">
                 {gambitConfig.activeStance === 'attack' ? '⚔️' : gambitConfig.activeStance === 'defense' ? '🛡️' : '⚖️'}
               </span>
-              <span className="text-[10px] font-black hidden xs:inline">
+              <span className="text-[10px] hidden xs:inline">
                 {gambitConfig.activeStance === 'attack' 
                   ? (language === 'ko' ? '공격' : 'ATK') 
                   : gambitConfig.activeStance === 'defense' 
@@ -15539,7 +15488,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   : (language === 'ko' ? '균형' : 'BAL')}
               </span>
               {isAutoBattle && (
-                <span className="text-[8px] px-1 py-0.2 rounded bg-amber-500 text-black font-black uppercase">
+                <span className="text-[8px] px-1 py-0.2 rounded-none bg-amber-500 text-black font-bold uppercase">
                   AUTO
                 </span>
               )}
@@ -15552,15 +15501,15 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                 }}
                 className={cn(
-                  "h-8 w-8 border rounded-xl shadow-md cursor-pointer flex items-center justify-center transition-all duration-200 active:scale-95 shrink-0",
+                  "min-h-[44px] min-w-[44px] h-11 w-11 border rounded-sm cursor-pointer flex items-center justify-center transition-all active:scale-95 shrink-0 font-mono",
                   isChatOpen
-                    ? "bg-rose-600 border-rose-400 text-white shadow-[0_0_12px_rgba(244,63,94,0.6)] animate-pulse"
-                    : "bg-[#181414] border-cyan-400/70 text-cyan-300 hover:text-white hover:border-cyan-300 shadow-[0_0_8px_rgba(6,182,212,0.3)]"
+                    ? "bg-rose-950 border-rose-500 text-rose-200"
+                    : "bg-[#201d1d] border-stone-700 text-stone-300 hover:text-white hover:border-stone-500"
                 )}
                 title={language === 'ko' ? '전투 채팅 열기/닫기' : 'Toggle Battle Chat'}
                 aria-label="Toggle Battle Chat"
               >
-                <MessageCircle size={18} strokeWidth={2.4} className={cn(isChatOpen ? "text-white" : "text-cyan-300 fill-cyan-400/20")} />
+                <MessageCircle size={18} strokeWidth={2.4} className="text-stone-300" />
               </button>
             )}
 
@@ -15572,12 +15521,12 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 setShowElementAdvantageModal(true);
                 playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
               }}
-              className="h-8 px-2 bg-slate-900/90 border border-slate-800 hover:border-cyan-500/50 text-cyan-300 hover:text-white rounded-xl shadow-md cursor-pointer flex items-center gap-1 transition-all duration-200 active:scale-95 shrink-0"
+              className="min-h-[44px] h-11 px-2.5 bg-[#201d1d] border border-stone-700 hover:border-stone-500 text-stone-300 hover:text-white rounded-sm cursor-pointer flex items-center gap-1 transition-all active:scale-95 shrink-0 font-mono text-xs font-bold"
               title={language === 'ko' ? '속성 상성표 퀵 가이드' : 'Element Advantage Guide'}
               aria-label={language === 'ko' ? '속성 상성표' : 'Element Advantage'}
             >
-              <Shield size={13} className="text-cyan-400" />
-              <span className="text-[10px] font-bold hidden xs:inline">{language === 'ko' ? '상성' : 'ELEM'}</span>
+              <Shield size={14} className="text-amber-400" />
+              <span className="text-[10px] hidden xs:inline">{language === 'ko' ? '상성' : 'ELEM'}</span>
             </button>
 
             <button
@@ -15585,11 +15534,11 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 setShowInGameRules(true);
                 playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
               }}
-              className="h-8 w-8 border rounded-xl shadow-md cursor-pointer flex items-center justify-center transition-all duration-200 bg-slate-900/90 border-slate-800 text-indigo-400 hover:text-white hover:bg-indigo-600 hover:border-indigo-500 shrink-0"
+              className="min-h-[44px] min-w-[44px] h-11 w-11 border border-stone-700 rounded-sm cursor-pointer flex items-center justify-center transition-all bg-[#201d1d] text-stone-300 hover:text-white shrink-0 font-mono"
               title={language === 'ko' ? '도움말 및 규칙' : 'Help & Rules'}
               aria-label={language === 'ko' ? '도움말 및 규칙' : 'Help & Rules'}
             >
-              <HelpCircle size={15} />
+              <HelpCircle size={18} />
             </button>
           </div>
         </div>
@@ -15602,30 +15551,30 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[350] flex items-center justify-center p-4 font-mono pointer-events-auto"
+            className="fixed inset-0 bg-black/80 z-[350] flex items-center justify-center p-4 font-mono pointer-events-auto"
           >
             <motion.div 
-              initial={{ scale: 0.9, y: 20 }}
+              initial={{ scale: 0.95, y: 10 }}
               animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              className="bg-slate-900/95 border border-slate-800 backdrop-blur-xl rounded-2xl p-5 max-w-xs w-full shadow-2xl text-white space-y-4"
+              exit={{ scale: 0.95, y: 10 }}
+              className="bg-[#201d1d] border border-stone-800 rounded-none p-5 max-w-xs w-full text-[#fdfcfc] space-y-4 font-mono"
             >
-              <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div className="flex items-center justify-between border-b border-stone-800 pb-3">
                 <div className="flex items-center gap-2">
-                  <Menu size={18} className="text-indigo-400" />
-                  <h3 className="font-bold text-sm tracking-wider uppercase">
-                    {language === 'ko' ? '메뉴' : 'IN-GAME MENU'}
+                  <Menu size={18} className="text-amber-400" />
+                  <h3 className="font-bold text-sm tracking-wider uppercase font-mono">
+                    {language === 'ko' ? '[ 메뉴 ]' : '[ IN-GAME MENU ]'}
                   </h3>
                 </div>
                 <button
                   onClick={() => setShowInGameMenu(false)}
-                  className="p-1 hover:bg-slate-800 rounded-lg text-slate-400 hover:text-white transition-colors cursor-pointer"
+                  className="min-h-[44px] min-w-[44px] h-11 w-11 flex items-center justify-center rounded-sm text-stone-400 hover:text-white hover:bg-stone-800 cursor-pointer"
                 >
                   <X size={18} />
                 </button>
               </div>
 
-              <div className="space-y-2.5">
+              <div className="space-y-2">
                 {/* AI Model & Tactics Setup Button */}
                 <button
                   onClick={() => {
@@ -15633,13 +15582,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     setIsGambitModalOpen(true);
                     playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                   }}
-                  className="w-full py-2.5 px-4 bg-slate-950/60 border border-slate-800 hover:bg-slate-800 text-slate-300 rounded-xl flex items-center justify-between font-bold text-xs uppercase transition-all cursor-pointer"
+                  className="min-h-[44px] w-full py-2.5 px-3 bg-stone-900 border border-stone-800 hover:bg-stone-800 text-stone-200 rounded-sm flex items-center justify-between font-mono font-bold text-xs uppercase transition-all cursor-pointer"
                 >
                   <div className="flex items-center gap-2">
                     <Bot size={16} className="text-amber-400" />
                     <span>{language === 'ko' ? 'AI 전투 모델 및 전술 설정' : 'AI Battle Model & Tactics'}</span>
                   </div>
-                  <span className="text-[10px] text-amber-300 font-black">
+                  <span className="text-[10px] text-amber-300 font-bold">
                     {gambitConfig.activeStance === 'attack' ? '⚔️' : gambitConfig.activeStance === 'defense' ? '🛡️' : '⚖️'}
                   </span>
                 </button>
@@ -15651,13 +15600,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     setShowCortanaHud(true);
                     playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                   }}
-                  className="w-full py-2.5 px-4 bg-indigo-950/40 border border-indigo-500/40 hover:bg-indigo-900/60 text-indigo-200 rounded-xl flex items-center justify-between font-bold text-xs uppercase transition-all cursor-pointer"
+                  className="min-h-[44px] w-full py-2.5 px-3 bg-stone-900 border border-stone-800 hover:bg-stone-800 text-stone-200 rounded-sm flex items-center justify-between font-mono font-bold text-xs uppercase transition-all cursor-pointer"
                 >
                   <div className="flex items-center gap-2">
-                    <Cpu size={16} className="text-indigo-400" />
+                    <Cpu size={16} className="text-amber-400" />
                     <span>{language === 'ko' ? '코타나 AI 전술 분석 HUD' : 'Cortana AI Tactical HUD'}</span>
                   </div>
-                  <span className="text-[10px] text-indigo-400 font-mono">[HUD]</span>
+                  <span className="text-[10px] text-stone-400 font-mono">[HUD]</span>
                 </button>
 
                 {onToggleAutoBattle && (
@@ -15667,17 +15616,17 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                     }}
                     className={cn(
-                      "w-full py-2.5 px-4 rounded-xl border flex items-center justify-between font-bold text-xs uppercase transition-all cursor-pointer",
+                      "min-h-[44px] w-full py-2.5 px-3 rounded-sm border flex items-center justify-between font-mono font-bold text-xs uppercase transition-all cursor-pointer",
                       isAutoBattle
-                        ? "bg-amber-500/20 border-amber-500/40 text-amber-300"
-                        : "bg-slate-950/60 border-slate-800 text-slate-300 hover:bg-slate-800"
+                        ? "bg-amber-950/80 border-amber-500/60 text-amber-300"
+                        : "bg-stone-900 border-stone-800 text-stone-300 hover:bg-stone-800"
                     )}
                   >
                     <div className="flex items-center gap-2">
-                      <Zap size={16} className={cn(isAutoBattle ? "text-yellow-400 animate-pulse" : "text-slate-400")} />
+                      <Zap size={16} className="text-amber-400" />
                       <span>{language === 'ko' ? '자동 전투 빠른 토글' : 'Auto Battle Toggle'}</span>
                     </div>
-                    <span className="text-[10px] px-2 py-0.5 rounded bg-black/40 font-black">
+                    <span className="text-[10px] px-2 py-0.5 rounded-none bg-stone-950 font-bold">
                       {isAutoBattle ? 'ON' : 'OFF'}
                     </span>
                   </button>
@@ -15689,9 +15638,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     setShowInGameRules(true);
                     playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                   }}
-                  className="w-full py-2.5 px-4 bg-slate-950/60 border border-slate-800 hover:bg-slate-800 text-slate-300 rounded-xl flex items-center gap-2 font-bold text-xs uppercase transition-all cursor-pointer"
+                  className="min-h-[44px] w-full py-2.5 px-3 bg-stone-900 border border-stone-800 hover:bg-stone-800 text-stone-200 rounded-sm flex items-center gap-2 font-mono font-bold text-xs uppercase transition-all cursor-pointer"
                 >
-                  <HelpCircle size={16} className="text-indigo-400" />
+                  <HelpCircle size={16} className="text-stone-300" />
                   <span>{language === 'ko' ? '게임 규칙 및 설명' : 'Game Rules'}</span>
                 </button>
 
@@ -15701,13 +15650,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     setShowInGameMenu(false);
                     setIsBeastariumOpen(true);
                   }}
-                  className="w-full py-2.5 px-4 bg-purple-950/40 border border-purple-800/40 hover:bg-purple-900/60 text-purple-200 rounded-xl flex items-center justify-between font-bold text-xs uppercase transition-all cursor-pointer"
+                  className="min-h-[44px] w-full py-2.5 px-3 bg-stone-900 border border-stone-800 hover:bg-stone-800 text-stone-200 rounded-sm flex items-center justify-between font-mono font-bold text-xs uppercase transition-all cursor-pointer"
                 >
                   <div className="flex items-center gap-2">
                     <span className="text-sm">🐾</span>
                     <span>{language === 'ko' ? '몬스터 비스티아리움' : 'Beastarium & Pets'}</span>
                   </div>
-                  <span className="text-[10px] text-purple-400 font-mono">[OPEN]</span>
+                  <span className="text-[10px] text-stone-400 font-mono">[OPEN]</span>
                 </button>
 
                 {/* Item 385: Offline Expedition */}
@@ -15716,13 +15665,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     setShowInGameMenu(false);
                     setIsExpeditionOpen(true);
                   }}
-                  className="w-full py-2.5 px-4 bg-emerald-950/40 border border-emerald-800/40 hover:bg-emerald-900/60 text-emerald-200 rounded-xl flex items-center justify-between font-bold text-xs uppercase transition-all cursor-pointer"
+                  className="min-h-[44px] w-full py-2.5 px-3 bg-stone-900 border border-stone-800 hover:bg-stone-800 text-stone-200 rounded-sm flex items-center justify-between font-mono font-bold text-xs uppercase transition-all cursor-pointer"
                 >
                   <div className="flex items-center gap-2">
                     <span className="text-sm">🧭</span>
                     <span>{language === 'ko' ? '오프라인 원정대' : 'Offline Expedition'}</span>
                   </div>
-                  <span className="text-[10px] text-emerald-400 font-mono">[PATROL]</span>
+                  <span className="text-[10px] text-stone-400 font-mono">[PATROL]</span>
                 </button>
 
                 {/* Item 389: Tactician Mastery */}
@@ -15731,13 +15680,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     setShowInGameMenu(false);
                     setIsTacticianMasteryOpen(true);
                   }}
-                  className="w-full py-2.5 px-4 bg-amber-950/40 border border-amber-800/40 hover:bg-amber-900/60 text-amber-200 rounded-xl flex items-center justify-between font-bold text-xs uppercase transition-all cursor-pointer"
+                  className="min-h-[44px] w-full py-2.5 px-3 bg-stone-900 border border-stone-800 hover:bg-stone-800 text-stone-200 rounded-sm flex items-center justify-between font-mono font-bold text-xs uppercase transition-all cursor-pointer"
                 >
                   <div className="flex items-center gap-2">
                     <span className="text-sm">👑</span>
                     <span>{language === 'ko' ? '전술가 마스터리 & 스킨' : 'Tactician Mastery'}</span>
                   </div>
-                  <span className="text-[10px] text-amber-400 font-mono">[AURA]</span>
+                  <span className="text-[10px] text-stone-400 font-mono">[AURA]</span>
                 </button>
 
                 {/* Item 392: Tower of Trials */}
@@ -15746,13 +15695,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     setShowInGameMenu(false);
                     setIsTowerTrialsOpen(true);
                   }}
-                  className="w-full py-2.5 px-4 bg-indigo-950/40 border border-indigo-800/40 hover:bg-indigo-900/60 text-indigo-200 rounded-xl flex items-center justify-between font-bold text-xs uppercase transition-all cursor-pointer"
+                  className="min-h-[44px] w-full py-2.5 px-3 bg-stone-900 border border-stone-800 hover:bg-stone-800 text-stone-200 rounded-sm flex items-center justify-between font-mono font-bold text-xs uppercase transition-all cursor-pointer"
                 >
                   <div className="flex items-center gap-2">
                     <span className="text-sm">🗼</span>
                     <span>{language === 'ko' ? '시련의 탑 50층' : 'Tower of Trials'}</span>
                   </div>
-                  <span className="text-[10px] text-indigo-400 font-mono">[ASCENT]</span>
+                  <span className="text-[10px] text-stone-400 font-mono">[ASCENT]</span>
                 </button>
 
                 {/* Item 397: Secret Stamp Book */}
@@ -15761,13 +15710,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     setShowInGameMenu(false);
                     setIsSecretStampModalOpen(true);
                   }}
-                  className="w-full py-2.5 px-4 bg-amber-950/40 border border-amber-800/40 hover:bg-amber-900/60 text-amber-200 rounded-xl flex items-center justify-between font-bold text-xs uppercase transition-all cursor-pointer"
+                  className="min-h-[44px] w-full py-2.5 px-3 bg-stone-900 border border-stone-800 hover:bg-stone-800 text-stone-200 rounded-sm flex items-center justify-between font-mono font-bold text-xs uppercase transition-all cursor-pointer"
                 >
                   <div className="flex items-center gap-2">
                     <span className="text-sm">📜</span>
                     <span>{language === 'ko' ? '비밀 업적 스탬프북' : 'Secret Stamp Book'}</span>
                   </div>
-                  <span className="text-[10px] text-amber-400 font-mono">[STAMPS]</span>
+                  <span className="text-[10px] text-stone-400 font-mono">[STAMPS]</span>
                 </button>
 
                 {/* Item 393: Battle Gambit Tuning */}
@@ -15776,13 +15725,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     setShowInGameMenu(false);
                     setIsGambitModalOpen(true);
                   }}
-                  className="w-full py-2.5 px-4 bg-blue-950/40 border border-blue-800/40 hover:bg-blue-900/60 text-blue-200 rounded-xl flex items-center justify-between font-bold text-xs uppercase transition-all cursor-pointer"
+                  className="min-h-[44px] w-full py-2.5 px-3 bg-stone-900 border border-stone-800 hover:bg-stone-800 text-stone-200 rounded-sm flex items-center justify-between font-mono font-bold text-xs uppercase transition-all cursor-pointer"
                 >
                   <div className="flex items-center gap-2">
                     <span className="text-sm">⚙️</span>
                     <span>{language === 'ko' ? '전술 지침(Gambit) 튜닝' : 'Gambit AI Tuning'}</span>
                   </div>
-                  <span className="text-[10px] text-blue-400 font-mono">[GAMBIT]</span>
+                  <span className="text-[10px] text-stone-400 font-mono">[GAMBIT]</span>
                 </button>
 
                 {/* Post-Battle Detailed Summary (AI Combat Feedback) */}
@@ -15791,13 +15740,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     setShowInGameMenu(false);
                     setShowPostBattleSummaryModal(true);
                   }}
-                  className="w-full py-2.5 px-4 bg-indigo-950/40 border border-indigo-500/40 hover:bg-indigo-900/60 text-indigo-200 rounded-xl flex items-center justify-between font-bold text-xs uppercase transition-all cursor-pointer"
+                  className="min-h-[44px] w-full py-2.5 px-3 bg-stone-900 border border-stone-800 hover:bg-stone-800 text-stone-200 rounded-sm flex items-center justify-between font-mono font-bold text-xs uppercase transition-all cursor-pointer"
                 >
                   <div className="flex items-center gap-2">
-                    <BarChart3 size={16} className="text-indigo-400" />
+                    <BarChart3 size={16} className="text-stone-300" />
                     <span>{language === 'ko' ? '📊 최근 AI 전투 사후 분석' : '📊 Post-Battle Summary'}</span>
                   </div>
-                  <span className="text-[10px] text-indigo-400 font-mono">[STATS]</span>
+                  <span className="text-[10px] text-stone-400 font-mono">[STATS]</span>
                 </button>
 
                 {/* Element Advantage Quick Reference Guide */}
@@ -15806,13 +15755,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     setShowInGameMenu(false);
                     setShowElementAdvantageModal(true);
                   }}
-                  className="w-full py-2.5 px-4 bg-cyan-950/40 border border-cyan-500/40 hover:bg-cyan-900/60 text-cyan-200 rounded-xl flex items-center justify-between font-bold text-xs uppercase transition-all cursor-pointer"
+                  className="min-h-[44px] w-full py-2.5 px-3 bg-stone-900 border border-stone-800 hover:bg-stone-800 text-stone-200 rounded-sm flex items-center justify-between font-mono font-bold text-xs uppercase transition-all cursor-pointer"
                 >
                   <div className="flex items-center gap-2">
-                    <Shield size={16} className="text-cyan-400" />
+                    <Shield size={16} className="text-amber-400" />
                     <span>{language === 'ko' ? '🛡️ 속성 상성표 퀵 가이드' : '🛡️ Element Advantage Guide'}</span>
                   </div>
-                  <span className="text-[10px] text-cyan-400 font-mono">[ELEM]</span>
+                  <span className="text-[10px] text-stone-400 font-mono">[ELEM]</span>
                 </button>
 
                 <button
@@ -15821,16 +15770,16 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     setShowForfeitConfirm(true);
                     playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                   }}
-                  className="w-full py-2.5 px-4 bg-red-950/40 border border-red-800/40 hover:bg-red-900/60 text-red-300 rounded-xl flex items-center gap-2 font-bold text-xs uppercase transition-all cursor-pointer"
+                  className="min-h-[44px] w-full py-2.5 px-3 bg-rose-950/60 border border-rose-800/60 hover:bg-rose-900 text-rose-300 rounded-sm flex items-center gap-2 font-mono font-bold text-xs uppercase transition-all cursor-pointer"
                 >
-                  <ShieldAlert size={16} className="text-red-400" />
+                  <ShieldAlert size={16} className="text-rose-400" />
                   <span>{language === 'ko' ? '경기 포기 / 나가기' : 'Forfeit / Exit Match'}</span>
                 </button>
               </div>
 
               <button
                 onClick={() => setShowInGameMenu(false)}
-                className="w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-bold text-xs uppercase transition-colors cursor-pointer"
+                className="min-h-[44px] w-full py-2.5 bg-stone-900 hover:bg-stone-800 border border-stone-700 text-stone-300 rounded-sm font-mono font-bold text-xs uppercase transition-colors cursor-pointer"
               >
                 {language === 'ko' ? '닫기' : 'Close'}
               </button>
@@ -15846,28 +15795,28 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[350] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 pointer-events-auto font-mono"
+            className="fixed inset-0 z-[350] bg-black/80 flex items-center justify-center p-3 sm:p-4 pointer-events-auto font-mono"
           >
             <motion.div
-              initial={{ scale: 0.95, y: 20 }}
+              initial={{ scale: 0.95, y: 10 }}
               animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.95, y: 20 }}
-              className="bg-slate-900/95 border border-slate-700/80 backdrop-blur-2xl rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.8)] max-w-2xl w-full h-[80vh] max-h-[600px] flex flex-col overflow-hidden text-white border-amber-500/30"
+              exit={{ scale: 0.95, y: 10 }}
+              className="bg-[#201d1d] border border-stone-800 rounded-none max-w-2xl w-full h-[80vh] max-h-[600px] flex flex-col overflow-hidden text-[#fdfcfc]"
             >
               {/* Header */}
-              <div className="px-5 py-4 bg-slate-950/90 border-b border-slate-800 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="p-2.5 bg-amber-500/10 border border-amber-500/30 rounded-2xl text-amber-400">
-                    <Terminal size={20} />
+              <div className="px-4 py-3 bg-[#1a1717] border-b border-stone-800 flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="p-2 bg-stone-900 border border-stone-800 rounded-none text-amber-400">
+                    <Terminal size={18} />
                   </div>
                   <div>
-                    <h3 className="font-black text-sm tracking-wider uppercase text-slate-100 flex items-center gap-2">
-                      <span>{language === 'ko' ? '전투 상황 로그창' : 'TACTICAL BATTLE LOG'}</span>
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-black border border-amber-500/30">
+                    <h3 className="font-bold text-xs tracking-wider uppercase text-[#fdfcfc] flex items-center gap-2 font-mono">
+                      <span>{language === 'ko' ? '[ 전투 상황 로그창 ]' : '[ TACTICAL BATTLE LOG ]'}</span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-none bg-stone-900 text-amber-400 font-bold border border-stone-800">
                         {gameLogs.length} {language === 'ko' ? '건' : 'LOGS'}
                       </span>
                     </h3>
-                    <p className="text-[10px] text-slate-400 font-medium mt-0.5">
+                    <p className="text-[10px] text-stone-400 font-mono mt-0.5">
                       {language === 'ko' ? '턴별 스킬 발동, 대미지 차이 및 카드 점령 상황 기록' : 'Turn-by-turn skill triggers, damage diffs, and card captures'}
                     </p>
                   </div>
@@ -15879,13 +15828,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       setGameLogs([]);
                       localStorage.removeItem('hero_game_logs');
                     }}
-                    className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl text-[10px] font-bold uppercase transition-colors cursor-pointer"
+                    className="min-h-[44px] px-3 py-2 bg-stone-900 hover:bg-stone-800 border border-stone-700 text-stone-200 rounded-sm text-xs font-mono font-bold uppercase transition-colors cursor-pointer"
                   >
                     {language === 'ko' ? '로그 초기화' : 'Clear'}
                   </button>
                   <button
                     onClick={() => setShowMobileLogs(false)}
-                    className="p-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-slate-400 hover:text-white transition-colors cursor-pointer"
+                    className="min-h-[44px] min-w-[44px] h-11 w-11 bg-stone-900 hover:bg-stone-800 border border-stone-700 rounded-sm text-stone-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
                   >
                     <X size={18} />
                   </button>
@@ -15893,11 +15842,11 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               </div>
 
               {/* Log List */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-2.5 custom-scrollbar bg-slate-950/40">
+              <div className="flex-1 overflow-y-auto p-4 space-y-2 custom-scrollbar bg-[#161414]">
                 {gameLogs.length === 0 ? (
-                  <div className="h-full flex flex-col items-center justify-center text-slate-500 gap-2">
-                    <Activity size={32} className="opacity-40" />
-                    <span className="text-xs font-bold uppercase">
+                  <div className="h-full flex flex-col items-center justify-center text-stone-500 gap-2">
+                    <Activity size={28} className="opacity-40" />
+                    <span className="text-xs font-mono font-bold uppercase">
                       {language === 'ko' ? '기록된 전투 로그가 없습니다.' : 'No battle logs recorded yet.'}
                     </span>
                   </div>
@@ -15906,16 +15855,16 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     <div
                       key={log.id}
                       className={cn(
-                        "p-3 rounded-2xl border text-xs leading-relaxed font-semibold transition-all shadow-md flex items-start gap-2.5",
+                        "p-2.5 rounded-none border text-xs leading-relaxed font-mono flex items-start gap-2.5",
                         log.type === 'capture' 
-                          ? "bg-gradient-to-r from-red-950/60 to-rose-950/40 border-red-500/60 text-red-100 shadow-[0_0_12px_rgba(239,68,68,0.15)]" 
+                          ? "bg-red-950/40 border-red-800 text-red-200" 
                           : log.type === 'system' 
-                            ? "bg-gradient-to-r from-amber-950/60 to-yellow-950/40 border-amber-500/60 text-amber-100 shadow-[0_0_12px_rgba(245,158,11,0.15)]" 
+                            ? "bg-amber-950/40 border-amber-800 text-amber-200" 
                             : log.type === 'victory'
-                              ? "bg-gradient-to-r from-emerald-950/60 to-teal-950/40 border-emerald-500/60 text-emerald-100"
+                              ? "bg-emerald-950/40 border-emerald-800 text-emerald-200"
                               : log.type === 'defeat'
-                                ? "bg-gradient-to-r from-purple-950/60 to-indigo-950/40 border-purple-500/60 text-purple-100"
-                                : "bg-slate-900/80 border-slate-800 text-slate-200"
+                                ? "bg-purple-950/40 border-purple-800 text-purple-200"
+                                : "bg-stone-900/60 border-stone-800 text-stone-300"
                       )}
                     >
                       <span className="text-[10px] font-mono opacity-50 shrink-0 pt-0.5">
@@ -15930,11 +15879,11 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               </div>
 
               {/* Footer */}
-              <div className="px-5 py-3 bg-slate-950 border-t border-slate-800 flex items-center justify-between text-[11px] font-bold text-slate-400">
+              <div className="px-4 py-3 bg-[#1a1717] border-t border-stone-800 flex items-center justify-between text-[11px] font-mono font-bold text-stone-400">
                 <span>SNSHero Battle Engine v4.2</span>
                 <button
                   onClick={() => setShowMobileLogs(false)}
-                  className="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-black uppercase transition-all shadow-md cursor-pointer"
+                  className="min-h-[44px] px-4 py-2 bg-stone-900 hover:bg-stone-800 border border-stone-700 text-stone-200 rounded-sm text-xs font-mono font-bold uppercase transition-all cursor-pointer"
                 >
                   {language === 'ko' ? '닫기' : 'Close'}
                 </button>
@@ -15965,7 +15914,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           {rebirthLevel > 0 && (
             <>
               <span className="text-slate-500">·</span>
-              <span className="inline-flex items-center gap-1 bg-amber-500/25 text-amber-300 px-1.5 py-0.5 rounded-xs border border-amber-500/60 font-black text-[10px] sm:text-xs shadow-[0_0_8px_rgba(245,158,11,0.3)] animate-pulse">
+              <span className="inline-flex items-center gap-1 bg-amber-500/25 text-amber-300 px-1.5 py-0.5 rounded-xs border border-amber-500/60 font-black text-[10px] sm:text-xs  animate-pulse">
                 <span className="text-amber-400">👑</span>
                 <span className="text-xs sm:text-sm font-black text-amber-100 font-mono">{rebirthLevel}</span>
                 <span>{language === 'ko' ? '환 강화' : 'R Boost'}</span>
@@ -16003,7 +15952,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               <motion.div 
                 key={card.id} 
                 className={cn(
-                  "w-[16vw] max-w-[58px] sm:max-w-[68px] md:max-w-[80px] lg:max-w-[88px] aspect-[5/7] cursor-pointer flex-shrink-0 relative mx-0.5 md:mx-1 rounded-lg",
+                  "w-[16vw] max-w-[58px] sm:max-w-[68px] md:max-w-[80px] lg:max-w-[88px] aspect-[5/7] cursor-pointer flex-shrink-0 relative mx-0.5 md:mx-1 rounded-none",
                   isSelected && "z-50"
                 )}
                 onClick={() => handleCardClick(idx, 'ai')}
@@ -16024,7 +15973,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   card={card} 
                   isLocked={!isShadowMatch || turn !== 'ai'} 
                   isSelected={selectedCardIdx === idx && selectedCardSide === 'ai'}
-                  className="w-full h-full rounded-lg"
+                  className="w-full h-full rounded-none"
                   customImage={customCardImage}
                   lowSpecMode={lowSpecMode}
                   isMatgo={false}
@@ -16036,27 +15985,27 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       </div>
 
       {/* 2. 가운데 카드판 영역 (유연하게 공간 확장 및 최소높이 유지) */}
-      <div className="flex-1 flex flex-col items-center justify-center p-0.5 sm:p-1 md:p-1.5 bg-[#060a14] relative overflow-visible py-1.5 sm:py-2 md:py-2.5 shadow-[inset_0_0_120px_rgba(0,0,0,0.9)] border border-slate-800 rounded-2xl md:rounded-3xl mx-1 md:mx-2 my-0.5 min-h-[300px] sm:min-h-[340px] shrink-0">
+      <div className="flex-1 flex flex-col items-center justify-center p-0.5 sm:p-1 md:p-1.5 bg-[#060a14] relative overflow-visible py-1.5 sm:py-2 md:py-2.5  border border-slate-800 rounded-sm md:rounded-sm mx-1 md:mx-2 my-0.5 min-h-[300px] sm:min-h-[340px] shrink-0">
         {/* Background layers */}
-        <div className="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none">
+        <div className="absolute inset-0 rounded-none overflow-hidden pointer-events-none">
           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/topography.png')] opacity-[0.06]" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(99,102,241,0.08)_0%,transparent_70%)]" />
           <div className="absolute inset-0 bg-[linear-gradient(rgba(99,102,241,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(99,102,241,0.03)_1px,transparent_1px)] bg-[size:32px_32px]" />
-          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent" />
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 h-px bg-[#201d1d] from-transparent via-indigo-500/30 to-transparent" />
+          <div className="absolute top-0 left-0 right-0 h-px bg-[#201d1d] from-transparent via-indigo-500/30 to-transparent" />
         </div>
         {isPlayground && (
-          <div className="absolute top-2 left-1/2 -translate-x-1/2 z-50 bg-gradient-to-r from-red-600 to-amber-600 border border-amber-400 text-white font-black px-4 py-1 rounded-full text-[10px] md:text-xs uppercase tracking-widest shadow-[0_4px_15px_rgba(220,38,38,0.4)] animate-pulse">
+          <div className="absolute top-2 left-1/2 -translate-x-1/2 z-50 bg-[#201d1d] from-red-600 to-amber-600 border border-amber-400 text-white font-black px-4 py-1 rounded-full text-[10px] md:text-xs uppercase tracking-widest  animate-pulse">
             {t('playground', language).toUpperCase()} MATCH (NO RECORD / NO REWARD)
           </div>
         )}
         {isGuildAttack && (
-          <div className="absolute top-2 left-1/2 -translate-x-1/2 z-50 bg-gradient-to-r from-rose-600 to-indigo-600 border border-rose-400 text-white font-black px-4 py-1 rounded-full text-[10px] md:text-xs uppercase tracking-widest shadow-[0_4px_15px_rgba(225,29,72,0.4)] animate-pulse">
+          <div className="absolute top-2 left-1/2 -translate-x-1/2 z-50 bg-[#201d1d] from-rose-600 to-indigo-600 border border-rose-400 text-white font-black px-4 py-1 rounded-full text-[10px] md:text-xs uppercase tracking-widest  animate-pulse">
             {t('guild_attack_battle_banner', language).toUpperCase()}
           </div>
         )}
         {isPvpBoardAttack && (
-          <div className="absolute top-2 left-1/2 -translate-x-1/2 z-50 bg-gradient-to-r from-red-600 to-rose-600 border border-red-400 text-white font-black px-4 py-1 rounded-full text-[10px] md:text-xs uppercase tracking-widest shadow-[0_4px_15px_rgba(239,68,68,0.4)] animate-pulse">
+          <div className="absolute top-2 left-1/2 -translate-x-1/2 z-50 bg-[#201d1d] from-red-600 to-rose-600 border border-red-400 text-white font-black px-4 py-1 rounded-full text-[10px] md:text-xs uppercase tracking-widest  animate-pulse">
             {t('pvp_board_attack_banner', language).toUpperCase()}
           </div>
         )}
@@ -16103,10 +16052,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     className="flex flex-col items-center justify-center"
                   >
                     <div className={cn(
-                      "w-auto px-2 md:px-3 py-4 md:py-6 rounded-full border font-bold uppercase text-[8px] md:text-xs tracking-[0.2em] shadow-lg transition-all flex flex-col items-center gap-2 md:gap-4 [writing-mode:vertical-lr]",
+                      "w-auto px-2 md:px-3 py-4 md:py-6 rounded-full border font-bold uppercase text-[8px] md:text-xs tracking-[0.2em]  transition-all flex flex-col items-center gap-2 md:gap-4 [writing-mode:vertical-lr]",
                       turn === 'player' 
-                        ? "bg-gradient-to-b from-indigo-600 to-indigo-900 border-indigo-400/40 text-white shadow-[0_0_15px_rgba(99,102,241,0.5)] animate-pulse" 
-                        : "bg-gradient-to-b from-rose-600 to-rose-900 border-rose-400/40 text-white shadow-[0_0_15px_rgba(244,63,94,0.5)] animate-pulse"
+                        ? "bg-[#201d1d] from-indigo-600 to-indigo-900 border-indigo-400/40 text-white  animate-pulse" 
+                        : "bg-[#201d1d] from-rose-600 to-rose-900 border-rose-400/40 text-white  animate-pulse"
                     )}>
                       {turn === 'player' ? (
                         <div className="flex items-center gap-2 md:gap-4">
@@ -16126,15 +16075,15 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             )}
 
           <div className={cn(
-            "relative p-1 md:p-2 border-4 rounded-3xl bg-[#090d16]/90 border-slate-800 transition-all duration-300 shrink-0",
-            !isLowPerformance && "shadow-[0_0_50px_rgba(0,0,0,0.8)]",
-            isFeverMode && "border-amber-400 shadow-[0_0_35px_rgba(251,191,36,0.6)] animate-pulse",
+            "relative p-1 md:p-2 border-4 rounded-none bg-[#090d16]/90 border-slate-800 transition-all duration-300 shrink-0",
+            !isLowPerformance && "",
+            isFeverMode && "border-amber-400  animate-pulse",
             isMicroShaking && "translate-x-[2px] translate-y-[-2px]",
             !gameOver && gameState === 'playing' && !isFeverMode ? (
               turn === 'player' 
-                ? (isLowPerformance ? "border-blue-500" : "border-blue-500/50 shadow-[0_0_60px_rgba(59,130,246,0.25)] scale-[1.01]")
-                : (isLowPerformance ? "border-red-500" : "border-red-500/50 shadow-[0_0_60px_rgba(239,68,68,0.25)] scale-[1.01]")
-            ) : (!isFeverMode && "border-slate-700 shadow-2xl")
+                ? (isLowPerformance ? "border-blue-500" : "border-blue-500/50  scale-[1.01]")
+                : (isLowPerformance ? "border-red-500" : "border-red-500/50  scale-[1.01]")
+            ) : (!isFeverMode && "border-slate-700 ")
           )}>
             {/* SCR-02-01: Comeback Finisher (9th turn clutch reversal) Slow-mo Zoom & Golden Arcs */}
             <AnimatePresence>
@@ -16144,11 +16093,11 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   animate={{ opacity: 1, scale: 1.05 }}
                   exit={{ opacity: 0, scale: 1.25 }}
                   transition={{ duration: 0.35, ease: "easeOut" }}
-                  className="absolute inset-0 z-[270] flex flex-col items-center justify-center bg-amber-950/70 backdrop-blur-xs pointer-events-none rounded-3xl"
+                  className="absolute inset-0 z-[270] flex flex-col items-center justify-center bg-amber-950/70 backdrop-blur-xs pointer-events-none rounded-none"
                 >
-                  <div className="bg-black/90 border-2 border-amber-400 px-6 py-4 rounded-sm text-center shadow-[0_0_50px_rgba(245,158,11,0.8)] relative overflow-hidden">
+                  <div className="bg-black/90 border-2 border-amber-400 px-6 py-4 rounded-sm text-center  relative overflow-hidden">
                     <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent,rgba(245,158,11,0.2),transparent)] animate-pulse" />
-                    <span className="text-2xl md:text-4xl font-black text-amber-300 font-mono tracking-wider block drop-shadow-[0_0_12px_rgba(245,158,11,1)]">
+                    <span className="text-2xl md:text-4xl font-black text-amber-300 font-mono tracking-wider block drop-">
                       ⚡ COMEBACK FINISHER! ⚡
                     </span>
                     <span className="text-xs md:text-sm text-amber-100 font-mono font-bold mt-1 block">
@@ -16166,9 +16115,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1.05 }}
                   exit={{ opacity: 0, scale: 1.2 }}
-                  className="absolute inset-0 z-[250] flex flex-col items-center justify-center bg-amber-500/20 backdrop-blur-xs pointer-events-none rounded-3xl"
+                  className="absolute inset-0 z-[250] flex flex-col items-center justify-center bg-amber-500/20 backdrop-blur-xs pointer-events-none rounded-none"
                 >
-                  <div className="bg-black/85 border border-amber-400 px-4 py-2 rounded-sm text-center shadow-2xl">
+                  <div className="bg-black/85 border border-amber-400 px-4 py-2 rounded-sm text-center ">
                     <span className="text-lg md:text-2xl font-black text-amber-300 font-mono block">
                       ✨ [ CROSS DOMINATION ]
                     </span>
@@ -16186,7 +16135,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 <motion.div
                   initial={{ opacity: 0, scale: 0.5 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="absolute inset-0 z-[260] flex flex-col items-center justify-center bg-black/90 pointer-events-none rounded-3xl"
+                  className="absolute inset-0 z-[260] flex flex-col items-center justify-center bg-black/90 pointer-events-none rounded-none"
                 >
                   <div className="text-center p-4">
                     <span className="text-4xl md:text-6xl animate-spin block mb-2">🌑</span>
@@ -16211,10 +16160,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[200] pointer-events-none select-none"
                 >
                   <div className="flex flex-col items-center">
-                    <span className="text-4xl md:text-7xl font-black italic text-transparent bg-clip-text bg-[linear-gradient(to_bottom,#ef4444,#f59e0b)] drop-shadow-[0_0_15px_rgba(239,68,68,0.8)] leading-none whitespace-nowrap">
+                    <span className="text-4xl md:text-7xl font-black italic text-transparent bg-clip-text bg-[linear-gradient(to_bottom,#ef4444,#f59e0b)] drop- leading-none whitespace-nowrap">
                       X{lastCombo.count} COMBO!
                     </span>
-                    <span className="text-xl md:text-3xl font-black text-white italic uppercase tracking-[0.2em] drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)] whitespace-nowrap">
+                    <span className="text-xl md:text-3xl font-black text-white italic uppercase tracking-[0.2em] drop- whitespace-nowrap">
                       {t('combo_chain', language) || (language === 'ko' ? "콤보체인!" : "CHAIN FLIP!")}
                     </span>
                   </div>
@@ -16234,7 +16183,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
                       className={cn(
-                        "px-3.5 py-2 rounded-full border bg-slate-900/95 border-slate-850 shadow-lg text-[9.5px] font-bold uppercase text-center truncate tracking-wider",
+                        "px-3.5 py-2 rounded-full border bg-slate-900/95 border-slate-850  text-[9.5px] font-bold uppercase text-center truncate tracking-wider",
                         gameLogs[0].type === 'capture' ? "text-rose-400 border-rose-900/50" : 
                         gameLogs[0].type === 'system' ? "text-amber-400 border-amber-900/50" :
                         "text-slate-300"
@@ -16257,11 +16206,11 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   exit={{ opacity: 0, scale: 0.8 }}
                   className="fixed inset-0 z-[500] flex items-center justify-center bg-black/60 backdrop-blur-sm"
                 >
-                  <div className="bg-slate-900/95 border border-amber-500 rounded-3xl p-6 flex flex-col items-center gap-4 max-w-[280px] w-full shadow-2xl animate-pulse">
+                  <div className="bg-slate-900/95 border border-amber-500 rounded-none p-6 flex flex-col items-center gap-4 max-w-[280px] w-full  animate-pulse">
                     <span className="text-xs font-black text-amber-400 tracking-widest uppercase">
                       {t('matgo_middle_draw', language) || (language === 'ko' ? '가운데 카드 뒤집기' : 'DRAWING MIDDLE CARD')}
                     </span>
-                    <div className="w-[120px] aspect-[5/7] rounded-xl overflow-hidden shadow-2xl border-2 border-amber-500">
+                    <div className="w-[120px] aspect-[5/7] rounded-none overflow-hidden  border-2 border-amber-500">
                       <CardItem
                         card={matgoMiddleCard}
                         isLocked={true}
@@ -16341,7 +16290,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             )}>
                     <div className={cn(
                       "grid grid-cols-3 gap-1.5 md:gap-2 w-fit relative p-2 md:p-3 rounded-none border border-[#fdfcfc]/30 bg-[#302c2c] transition-all battle-touch-safe",
-                      isSuddenDeathOverclock && "border border-amber-500/50 shadow-[0_0_15px_rgba(245,158,11,0.25)] bg-amber-950/10",
+                      isSuddenDeathOverclock && "border border-amber-500/50  bg-amber-950/10",
                       isScreenShaking && "animate-screen-shake",
                       board.filter(c => c !== null).length === 8 && "final-move-pulse",
                       (boardScore.ai > boardScore.player + 2) && "board-critical-danger-border"
@@ -16371,27 +16320,27 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
                       {/* Shockwave Overlay */}
                       {customWaveEffect && (
-                        <div className="absolute inset-0 pointer-events-none z-[200] flex items-center justify-center overflow-hidden rounded-xl">
+                        <div className="absolute inset-0 pointer-events-none z-[200] flex items-center justify-center overflow-hidden rounded-none">
                            <div className={cn(
                             "absolute w-12 h-12 rounded-full border-8 animate-roar-ripple",
-                            customWaveEffect === 'red' && "border-red-500 bg-red-500/20 shadow-[0_0_50px_rgba(239,68,68,0.8)]",
-                            customWaveEffect === 'blue' && "border-blue-500 bg-blue-500/20 shadow-[0_0_50px_rgba(59,130,246,0.8)]",
-                            customWaveEffect === 'yellow' && "border-yellow-500 bg-yellow-500/20 shadow-[0_0_50px_rgba(234,179,8,0.8)]",
-                            customWaveEffect === 'purple' && "border-purple-500 bg-purple-500/20 shadow-[0_0_50px_rgba(168,85,247,0.8)]"
+                            customWaveEffect === 'red' && "border-red-500 bg-red-500/20 ",
+                            customWaveEffect === 'blue' && "border-blue-500 bg-blue-500/20 ",
+                            customWaveEffect === 'yellow' && "border-yellow-500 bg-yellow-500/20 ",
+                            customWaveEffect === 'purple' && "border-purple-500 bg-purple-500/20 "
                           )} />
                           <motion.div
                             initial={{ scale: 0.1, opacity: 0 }}
                             animate={{ scale: [0.5, 2.5, 0], opacity: [0, 1, 1, 0] }}
                             transition={{ duration: 1.5, ease: "easeOut" }}
                             className={cn(
-                              "absolute z-[210] p-4 rounded-full border-2 bg-black/80 backdrop-blur-md shadow-2xl flex items-center justify-center",
+                              "absolute z-[210] p-4 rounded-full border-2 bg-black/80 backdrop-blur-md  flex items-center justify-center",
                               customWaveEffect === 'red' && "border-red-500 text-red-500",
                               customWaveEffect === 'blue' && "border-blue-500 text-blue-500",
                               customWaveEffect === 'yellow' && "border-yellow-500 text-yellow-500",
                               customWaveEffect === 'purple' && "border-purple-500 text-purple-500"
                             )}
                           >
-                            {customWaveEffect === 'red' && <Flame size={40} className="animate-bounce" />}
+                            {customWaveEffect === 'red' && <Flame size={40} className="" />}
                             {customWaveEffect === 'blue' && <Droplets size={40} className="animate-pulse" />}
                             {customWaveEffect === 'yellow' && <Sparkles size={40} className="animate-pulse" />}
                             {customWaveEffect === 'purple' && <ShieldAlert size={40} className="animate-pulse" />}
@@ -16430,7 +16379,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                                 stroke={isPl ? "#06b6d4" : "#ec4899"}
                                 strokeWidth="4"
                                 strokeLinecap="round"
-                                className="animate-pulse opacity-90 drop-shadow-[0_0_12px_rgba(6,182,212,0.8)]"
+                                className="animate-pulse opacity-90 drop-"
                               />
                               <line
                                 x1={ax}
@@ -16441,7 +16390,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                                 strokeWidth="1.5"
                                 strokeDasharray="4 4"
                                 strokeLinecap="round"
-                                className="animate-ping opacity-75"
+                                className=" opacity-75"
                               />
                             </g>
                           );
@@ -16489,7 +16438,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                                   strokeWidth="2"
                                   strokeDasharray="6 3"
                                   strokeLinecap="round"
-                                  className="animate-ping opacity-80"
+                                  className=" opacity-80"
                                 />
                               </g>
                             );
@@ -16503,7 +16452,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                               key={idx}
                               className="grid-cell w-[24vw] max-w-[80px] sm:max-w-[100px] md:max-w-[112px] lg:max-w-[120px] aspect-[5/7] flex items-center justify-center relative border border-[#fdfcfc]/30 bg-[#201d1d] rounded-sm overflow-visible cursor-default"
                             >
-                              <div className="absolute inset-0 p-0.5 rounded-lg overflow-hidden flex items-center justify-center bg-[#1e293b]/70 border border-slate-700">
+                              <div className="absolute inset-0 p-0.5 rounded-none overflow-hidden flex items-center justify-center bg-[#1e293b]/70 border border-slate-700">
                                 <img
                                   src={getAssetUrl('/background-gold.png')}
                                   alt="Matgo Deck"
@@ -16540,22 +16489,22 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                                   : "border border-[#fdfcfc]/30 cursor-pointer"
                               ) : (
                                 idx === goblinTileIndex && !goblinCaptured
-                                  ? "border-2 border-yellow-400 bg-yellow-950/40 shadow-[0_0_12px_rgba(234,179,8,0.5)] animate-pulse cursor-pointer"
+                                  ? "border-2 border-yellow-400 bg-yellow-950/40  animate-pulse cursor-pointer"
                                   : idx === manaSpringTileIndex && !manaSpringClaimed
-                                    ? "border-2 border-cyan-400 bg-cyan-950/40 shadow-[0_0_12px_rgba(34,211,238,0.5)] animate-pulse cursor-pointer"
+                                    ? "border-2 border-cyan-400 bg-cyan-950/40  animate-pulse cursor-pointer"
                                     : "border border-dashed border-[#9a9898]/50 bg-[#201d1d] hover:border-solid hover:border-[#fdfcfc] hover:bg-[#424245] cursor-pointer"
                               ),
                               !card && boardTraps[idx] === 'purple' && "bg-purple-800/40 border-purple-400 border-2",
                               !card && boardTraps[idx] === 'red' && "bg-red-800/40 border-red-400 border-2",
                               !card && selectedCardIdx !== null && selectedCardSide === 'player' && turn === 'player' && (
                                 predictedFlipsMap[idx] && predictedFlipsMap[idx].length > 0
-                                  ? "border-2 border-amber-400 bg-amber-950/60 shadow-[0_0_18px_rgba(245,158,11,0.8)] animate-pulse"
-                                  : "border-2 border-emerald-400 bg-emerald-950/50 shadow-[0_0_16px_rgba(52,211,153,0.6)] animate-pulse"
+                                  ? "border-2 border-amber-400 bg-amber-950/60  animate-pulse"
+                                  : "border-2 border-emerald-400 bg-emerald-950/50  animate-pulse"
                               ),
                               !card && aiReasoning?.boardIdx === idx && turn === 'ai' && "border-solid border-rose-500 bg-rose-950/30",
-                              !card && selectedCardIdx !== null && selectedCardSide === 'player' && recommendedPlayerMove?.cardIdx === selectedCardIdx && recommendedPlayerMove?.boardIdx === idx && turn === 'player' && "border-2 border-cyan-300 bg-cyan-900/50 shadow-[0_0_18px_rgba(34,211,238,0.8)]",
+                              !card && selectedCardIdx !== null && selectedCardSide === 'player' && recommendedPlayerMove?.cardIdx === selectedCardIdx && recommendedPlayerMove?.boardIdx === idx && turn === 'player' && "border-2 border-cyan-300 bg-cyan-900/50 ",
                               // ID 366: 직전 턴 상대 착수 슬롯 골든 펄스 링 연출
-                              lastOpponentPlayedSlot === idx && "border-pulse-accent shadow-[0_0_15px_rgba(234,179,8,0.7)] z-10"
+                              lastOpponentPlayedSlot === idx && "border-pulse-accent  z-10"
                             )}
                           >
                             {/* ID 601 (Item 6): Tile Detail Inspection Long-Press Chip */}
@@ -16582,8 +16531,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                               (hoveredCellIdx !== null && predictedFlipsMap[hoveredCellIdx]?.includes(idx)) ||
                               capturePreview.includes(idx)
                             ) && (
-                              <div className="absolute inset-0 z-20 pointer-events-none border-2 border-rose-500 bg-rose-950/40 rounded-lg flex items-center justify-center animate-pulse shadow-[0_0_12px_rgba(244,63,94,0.8)]">
-                                <span className="text-[8px] font-mono font-black text-rose-200 bg-black/90 px-1.5 py-0.5 rounded-xs border border-rose-500 shadow-sm">
+                              <div className="absolute inset-0 z-20 pointer-events-none border-2 border-rose-500 bg-rose-950/40 rounded-none flex items-center justify-center animate-pulse ">
+                                <span className="text-[8px] font-mono font-black text-rose-200 bg-black/90 px-1.5 py-0.5 rounded-xs border border-rose-500 ">
                                   🎯 FLIP
                                 </span>
                               </div>
@@ -16591,7 +16540,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
                             {/* Row 78: Invalid Drop Target Overlay on Occupied Slots */}
                             {card && selectedCardIdx !== null && selectedCardSide === 'player' && turn === 'player' && (
-                              <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none bg-black/25 rounded-lg">
+                              <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none bg-black/25 rounded-none">
                                 <span className="text-[7px] font-mono font-bold text-rose-300/90 bg-rose-950/80 px-1 py-0.2 rounded-xs border border-rose-500/40 shadow-xs">
                                   {language === 'ko' ? '점유됨' : 'OCCUPIED'}
                                 </span>
@@ -16603,15 +16552,15 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                               <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center p-1 pointer-events-none">
                                 {predictedFlipsMap[idx] && predictedFlipsMap[idx].length > 0 ? (
                                   <>
-                                    <div className="w-5 h-5 rounded-full border-2 border-amber-400 bg-amber-500/30 flex items-center justify-center animate-ping" />
-                                    <span className="text-[7px] sm:text-[8px] font-mono font-black text-amber-300 bg-black/90 px-1.5 py-0.5 rounded-sm border border-amber-400/80 mt-1 uppercase whitespace-nowrap shadow-[0_0_8px_rgba(245,158,11,0.7)] animate-pulse">
+                                    <div className="w-5 h-5 rounded-full border-2 border-amber-400 bg-amber-500/30 flex items-center justify-center " />
+                                    <span className="text-[7px] sm:text-[8px] font-mono font-black text-amber-300 bg-black/90 px-1.5 py-0.5 rounded-sm border border-amber-400/80 mt-1 uppercase whitespace-nowrap  animate-pulse">
                                       ⚡ +{predictedFlipsMap[idx].length} FLIP
                                     </span>
                                   </>
                                 ) : (
                                   <>
                                     <div className="w-4 h-4 rounded-full border border-emerald-400/80 bg-emerald-500/20 flex items-center justify-center" />
-                                    <span className="text-[7px] font-mono font-black text-emerald-300 bg-black/85 px-1 py-0.2 rounded-xs border border-emerald-400/60 mt-1 uppercase whitespace-nowrap shadow-sm">
+                                    <span className="text-[7px] font-mono font-black text-emerald-300 bg-black/85 px-1 py-0.2 rounded-xs border border-emerald-400/60 mt-1 uppercase whitespace-nowrap ">
                                       {language === 'ko' ? '[배치]' : '[PLACE]'}
                                     </span>
                                   </>
@@ -16621,7 +16570,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                             {/* Item 347: Goblin Spawn Badge in Grid Cell */}
                             {!card && idx === goblinTileIndex && !goblinCaptured && (
                               <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center p-1 pointer-events-none">
-                                <Coins size={22} className="text-yellow-400 animate-bounce drop-shadow-[0_0_8px_rgba(234,179,8,0.8)]" />
+                                <Coins size={22} className="text-yellow-400  drop-" />
                                 <span className="text-[8px] font-mono font-black text-yellow-300 bg-black/80 px-1 py-0.5 rounded-sm border border-yellow-400/60 mt-1 whitespace-nowrap">
                                   [🪙 +25 SNS]
                                 </span>
@@ -16630,7 +16579,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                             {/* Item 355: Mana Spring Badge in Grid Cell */}
                             {!card && idx === manaSpringTileIndex && !manaSpringClaimed && (
                               <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center p-1 pointer-events-none">
-                                <Sparkles size={22} className="text-cyan-400 animate-spin drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
+                                <Sparkles size={22} className="text-cyan-400 animate-spin drop-" />
                                 <span className="text-[8px] font-mono font-black text-cyan-300 bg-black/80 px-1 py-0.5 rounded-sm border border-cyan-400/60 mt-1 whitespace-nowrap">
                                   [💧 +2 STATS]
                                 </span>
@@ -16639,7 +16588,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                             {/* Item 375: Rage Spark Slot Badge in Grid Cell */}
                             {!card && idx === rageSparkSlotIndex && (
                               <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center p-1 pointer-events-none">
-                                <Flame size={22} className="text-red-400 animate-bounce drop-shadow-[0_0_8px_rgba(239,68,68,0.8)]" />
+                                <Flame size={22} className="text-red-400  drop-" />
                                 <span className="text-[8px] font-mono font-black text-red-300 bg-black/80 px-1 py-0.5 rounded-sm border border-red-400/60 mt-1 whitespace-nowrap">
                                   [🔥 +3 RAGE]
                                 </span>
@@ -16649,11 +16598,11 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                             {idx === poisonSwampTileIndex && (
                               <div className="absolute top-1 right-1 z-20 flex items-center gap-1 pointer-events-none">
                                 {poisonSwampCleansed ? (
-                                  <span className="text-[8px] font-mono font-black text-emerald-300 bg-emerald-950/90 border border-emerald-400/70 px-1 py-0.5 rounded-sm shadow-md">
+                                  <span className="text-[8px] font-mono font-black text-emerald-300 bg-emerald-950/90 border border-emerald-400/70 px-1 py-0.5 rounded-sm ">
                                     [🌿 정화 +1]
                                   </span>
                                 ) : !card ? (
-                                  <span className="text-[8px] font-mono font-black text-rose-300 bg-rose-950/90 border border-rose-400/70 px-1 py-0.5 rounded-sm shadow-md animate-pulse">
+                                  <span className="text-[8px] font-mono font-black text-rose-300 bg-rose-950/90 border border-rose-400/70 px-1 py-0.5 rounded-sm  animate-pulse">
                                     [☣️ 독기 -1]
                                   </span>
                                 ) : null}
@@ -16662,21 +16611,21 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                             {/* Elemental Tile Background */}
                             {!card && elementalBoard[idx] && (
                               <div className={cn(
-                                "absolute inset-0 z-0 flex items-center justify-center bg-gradient-to-br rounded-lg shadow-sm border",
-                                elementalBoard[idx] === 'water' ? "from-blue-600/35 to-cyan-500/35 border-blue-400/50 shadow-[0_0_12px_rgba(59,130,246,0.3)]" :
-                                elementalBoard[idx] === 'fire' ? "from-red-600/35 to-orange-500/35 border-red-400/50 shadow-[0_0_12px_rgba(239,68,68,0.3)]" :
-                                elementalBoard[idx] === 'wind' || elementalBoard[idx] === 'air' ? "from-emerald-500/35 to-teal-400/35 border-emerald-400/50 shadow-[0_0_12px_rgba(16,185,129,0.3)]" :
-                                elementalBoard[idx] === 'land' || elementalBoard[idx] === 'earth' ? "from-amber-700/35 to-orange-900/35 border-amber-500/50 shadow-[0_0_12px_rgba(180,83,9,0.3)]" :
-                                elementalBoard[idx] === 'human' ? "from-sky-400/35 to-indigo-400/35 border-sky-300/50 shadow-[0_0_12px_rgba(56,189,248,0.3)]" :
-                                elementalBoard[idx] === 'undead' ? "from-purple-900/40 to-fuchsia-950/40 border-purple-500/50 shadow-[0_0_12px_rgba(168,85,247,0.3)]" :
-                                elementalBoard[idx] === 'elf' ? "from-green-600/35 to-emerald-600/35 border-green-400/50 shadow-[0_0_12px_rgba(34,197,94,0.3)]" :
-                                elementalBoard[idx] === 'dwarf' ? "from-zinc-650/40 to-slate-700/40 border-zinc-500/50 shadow-[0_0_12px_rgba(113,113,122,0.3)]" :
-                                elementalBoard[idx] === 'monster' ? "from-orange-600/35 to-red-500/35 border-orange-400/50 shadow-[0_0_12px_rgba(249,115,22,0.3)]" :
-                                elementalBoard[idx] === 'robot' ? "from-slate-500/35 to-zinc-600/35 border-slate-400/50 shadow-[0_0_12px_rgba(100,116,139,0.3)]" :
-                                elementalBoard[idx] === 'dragon' ? "from-rose-700/35 to-red-800/35 border-rose-500/50 shadow-[0_0_12px_rgba(225,29,72,0.3)]" :
+                                "absolute inset-0 z-0 flex items-center justify-center bg-[#201d1d] rounded-none  border",
+                                elementalBoard[idx] === 'water' ? "from-blue-600/35 to-cyan-500/35 border-blue-400/50 " :
+                                elementalBoard[idx] === 'fire' ? "from-red-600/35 to-orange-500/35 border-red-400/50 " :
+                                elementalBoard[idx] === 'wind' || elementalBoard[idx] === 'air' ? "from-emerald-500/35 to-teal-400/35 border-emerald-400/50 " :
+                                elementalBoard[idx] === 'land' || elementalBoard[idx] === 'earth' ? "from-amber-700/35 to-orange-900/35 border-amber-500/50 " :
+                                elementalBoard[idx] === 'human' ? "from-sky-400/35 to-indigo-400/35 border-sky-300/50 " :
+                                elementalBoard[idx] === 'undead' ? "from-purple-900/40 to-fuchsia-950/40 border-purple-500/50 " :
+                                elementalBoard[idx] === 'elf' ? "from-green-600/35 to-emerald-600/35 border-green-400/50 " :
+                                elementalBoard[idx] === 'dwarf' ? "from-zinc-650/40 to-slate-700/40 border-zinc-500/50 " :
+                                elementalBoard[idx] === 'monster' ? "from-orange-600/35 to-red-500/35 border-orange-400/50 " :
+                                elementalBoard[idx] === 'robot' ? "from-slate-500/35 to-zinc-600/35 border-slate-400/50 " :
+                                elementalBoard[idx] === 'dragon' ? "from-rose-700/35 to-red-800/35 border-rose-500/50 " :
                                 "from-slate-400/30 to-slate-300/30 border-slate-350/50"
                               )}>
-                                <div className="flex items-center justify-center text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.3)] opacity-75">
+                                <div className="flex items-center justify-center text-white drop- opacity-75">
                                   {elementalBoard[idx] === 'water' && <Waves size={30} className="text-blue-200/80" />}
                                   {elementalBoard[idx] === 'fire' && <Flame size={30} className="text-red-200/80" />}
                                   {(elementalBoard[idx] === 'wind' || elementalBoard[idx] === 'air') && <Wind size={30} className="text-emerald-200/80" />}
@@ -16691,7 +16640,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                                 </div>
 
                                 {/* Terrain Bonus Tooltip Badge on Hover */}
-                                <div className="absolute -bottom-7 left-1/2 -translate-x-1/2 z-[150] opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 whitespace-nowrap bg-slate-900/95 text-amber-300 border border-amber-500/40 text-[9px] font-bold px-2 py-0.5 rounded shadow-xl backdrop-blur-xs">
+                                <div className="absolute -bottom-7 left-1/2 -translate-x-1/2 z-[150] opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 whitespace-nowrap bg-slate-900/95 text-amber-300 border border-amber-500/40 text-[9px] font-bold px-2 py-0.5 rounded  backdrop-blur-xs">
                                   {language === 'ko' 
                                     ? `${elementalBoard[idx].toUpperCase()} 속성 +2 PWR` 
                                     : `${elementalBoard[idx].toUpperCase()} +2 PWR`}
@@ -16700,7 +16649,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                             )}
                             {/* Live Battle Calculation Preview Overlay (Item 70) */}
                             {hoveredCellIdx === idx && selectedCardIdx !== null && !card && (
-                              <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-[160] pointer-events-none whitespace-nowrap bg-indigo-950/95 text-amber-300 border border-amber-400 text-[10px] font-mono font-black px-2.5 py-0.5 rounded-full shadow-2xl animate-bounce">
+                              <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-[160] pointer-events-none whitespace-nowrap bg-indigo-950/95 text-amber-300 border border-amber-400 text-[10px] font-mono font-black px-2.5 py-0.5 rounded-full  ">
                                 ⚡ {capturePreview.length > 0 
                                   ? (language === 'ko' ? `미리보기: ${capturePreview.length}장 캡처!` : `PREVIEW: FLIP +${capturePreview.length}`) 
                                   : (language === 'ko' ? '카드 배치 가능' : 'PLACE CARD')}
@@ -16709,20 +16658,20 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
                             {/* Invalid Drop Target Shading / Prohibition Overlay (ID 78) */}
                             {card && selectedCardIdx !== null && selectedCardSide === 'player' && (
-                              <div className="absolute inset-0 z-[140] bg-red-950/90 border-2 border-red-500 rounded-lg flex flex-col items-center justify-center text-red-400 font-mono text-[9px] font-black cursor-not-allowed pointer-events-none shadow-inner">
+                              <div className="absolute inset-0 z-[140] bg-red-950/90 border-2 border-red-500 rounded-none flex flex-col items-center justify-center text-red-400 font-mono text-[9px] font-black cursor-not-allowed pointer-events-none shadow-inner">
                                 <XCircle size={20} className="text-red-500 animate-pulse mb-0.5" />
                                 <span className="uppercase tracking-tighter">[X] {language === 'ko' ? '배치 불가' : 'OCCUPIED'}</span>
                               </div>
                             )}
                             {capturePreview.includes(idx) && (
-                              <div className="absolute inset-0 z-[120] pointer-events-none rounded-lg flex flex-col items-center justify-center">
-                                <div className="absolute inset-0 border-4 border-amber-400 animate-pulse rounded-lg bg-amber-500/30" />
+                              <div className="absolute inset-0 z-[120] pointer-events-none rounded-none flex flex-col items-center justify-center">
+                                <div className="absolute inset-0 border-4 border-amber-400 animate-pulse rounded-none bg-amber-500/30" />
                                 <motion.div
                                   initial={{ scale: 0 }}
                                   animate={{ scale: [0.8, 1.1, 1] }}
-                                  className="relative z-10 flex flex-col items-center bg-slate-900/95 text-amber-300 border border-amber-400 px-2 py-0.5 rounded-md shadow-xl"
+                                  className="relative z-10 flex flex-col items-center bg-slate-900/95 text-amber-300 border border-amber-400 px-2 py-0.5 rounded-md "
                                 >
-                                  <Swords size={18} className="text-amber-400 animate-bounce" />
+                                  <Swords size={18} className="text-amber-400 " />
                                   <span className="text-[8px] font-mono font-extrabold text-amber-300 whitespace-nowrap">
                                     {language === 'ko' ? '뒤집힘 예상' : 'FLIP TARGET'}
                                   </span>
@@ -16736,7 +16685,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                                 animate={{ opacity: 0.8, scale: 1 }}
                                 className="absolute inset-0 z-[120] flex items-center justify-center pointer-events-none"
                               >
-                                <TargetIcon size={32} className="text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]" />
+                                <TargetIcon size={32} className="text-red-500 drop-" />
                               </motion.div>
                             )}
                             {/* Recommended Targeting Icon */}
@@ -16746,7 +16695,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                                 animate={{ opacity: 0.9, scale: 1 }}
                                 className="absolute inset-0 z-[120] flex items-center justify-center pointer-events-none"
                               >
-                                <TargetIcon size={32} className="text-blue-500 drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
+                                <TargetIcon size={32} className="text-blue-500 drop-" />
                               </motion.div>
                             )}
                             {/* AI & Recommended Reasoning Tooltip */}
@@ -16766,7 +16715,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                                     className="absolute left-1/2 -translate-x-1/2 z-[200] pointer-events-none"
                                   >
                                     <div className={cn(
-                                      "whitespace-nowrap px-3 py-1.5 rounded-lg border-2 shadow-xl text-[10px] md:text-xs font-black italic uppercase tracking-wider flex items-center gap-2",
+                                      "whitespace-nowrap px-3 py-1.5 rounded-sm border-2  text-[10px] md:text-xs font-black italic uppercase tracking-wider flex items-center gap-2",
                                       isPl ? "bg-blue-600 border-blue-400 text-white" : "bg-red-600 border-red-400 text-white"
                                     )}>
                                       {isPl ? <Sparkles size={12} className="animate-pulse" /> : <Cpu size={12} className="animate-spin-slow" />}
@@ -16783,8 +16732,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             
                             {/* Evaluation Highlight */}
                             {checkingIdx === idx && (
-                              <div className="absolute inset-0 z-[150] pointer-events-none rounded-lg flex items-center justify-center bg-white/30 border-4 border-yellow-400 animate-pulse">
-                                <Search size={32} className="text-yellow-500 drop-shadow-md" />
+                              <div className="absolute inset-0 z-[150] pointer-events-none rounded-none flex items-center justify-center bg-white/30 border-4 border-yellow-400 animate-pulse">
+                                <Search size={32} className="text-yellow-500 drop-" />
                               </div>
                             )}
             
@@ -16838,10 +16787,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                                         exit={{ opacity: 0, y: -36, scale: 0.8 }}
                                         transition={{ duration: 1.0, ease: "easeOut" }}
                                         className={cn(
-                                          "absolute -top-3 left-1/2 -translate-x-1/2 z-[120] px-2.5 py-0.5 rounded-full border-2 font-black text-xs tracking-wider shadow-2xl pointer-events-none whitespace-nowrap flex items-center gap-1 font-mono",
+                                          "absolute -top-3 left-1/2 -translate-x-1/2 z-[120] px-2.5 py-0.5 rounded-full border-2 font-black text-xs tracking-wider  pointer-events-none whitespace-nowrap flex items-center gap-1 font-mono",
                                           floatingStatFX[idx].isPositive
-                                            ? "bg-emerald-600 border-emerald-300 text-white shadow-[0_0_18px_rgba(16,185,129,0.9)]"
-                                            : "bg-rose-600 border-rose-300 text-white shadow-[0_0_18px_rgba(244,63,94,0.9)]"
+                                            ? "bg-emerald-600 border-emerald-300 text-white "
+                                            : "bg-rose-600 border-rose-300 text-white "
                                         )}
                                       >
                                         <span>{floatingStatFX[idx].text}</span>
@@ -16850,7 +16799,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                                   </AnimatePresence>
                                   {/* Matgo stack badge */}
                                   {battleType === 'matgo' && matgoBoardStacks[idx] && matgoBoardStacks[idx].length > 1 && (
-                                    <div className="absolute -top-1.5 -left-1.5 z-[70] bg-amber-600 border-2 border-white text-white font-black text-[10px] w-6 h-6 rounded-full flex items-center justify-center shadow-lg animate-pulse">
+                                    <div className="absolute -top-1.5 -left-1.5 z-[70] bg-amber-600 border-2 border-white text-white font-black text-[10px] w-6 h-6 rounded-full flex items-center justify-center  animate-pulse">
                                       x{matgoBoardStacks[idx].length}
                                     </div>
                                   )}
@@ -16858,7 +16807,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                                   {card.ability && (
                                     <motion.div
                                       className={cn(
-                                        "absolute -top-1.5 -right-1.5 z-[60] w-6 h-6 rounded-full border-2 border-white flex items-center justify-center shadow-lg",
+                                        "absolute -top-1.5 -right-1.5 z-[60] w-6 h-6 rounded-full border-2 border-white flex items-center justify-center ",
                                         card.ability.type === 'POWER_BOOST' ? "bg-yellow-400" :
                                         card.ability.type === 'WEAKEN' ? "bg-purple-600" :
                                         card.ability.type === 'REINFORCE' ? "bg-green-500" :
@@ -16879,7 +16828,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                                     if (!normEl) return null;
                                     return (
                                       <div className={cn(
-                                        "absolute -bottom-1 -left-1 z-[60] w-6 h-6 rounded-full border border-white flex items-center justify-center shadow-md",
+                                        "absolute -bottom-1 -left-1 z-[60] w-6 h-6 rounded-full border border-white flex items-center justify-center ",
                                         normEl === 'water' ? "bg-blue-500/90" :
                                         normEl === 'fire' ? "bg-red-500/90" :
                                         normEl === 'wind' ? "bg-emerald-500/90" :
@@ -16909,7 +16858,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                                   })()}
                                   {/* Item 369: Sleek 12px Corner Element Affinity Pip */}
                                   {elementalBoard[idx] && getNormalizedElement(card) === elementalBoard[idx] && (
-                                    <div className="absolute top-0.5 left-0.5 z-[65] px-1 py-0.5 bg-black/90 border border-amber-400 text-amber-300 font-mono text-[8.5px] font-black rounded-xs shadow-md pointer-events-none whitespace-nowrap">
+                                    <div className="absolute top-0.5 left-0.5 z-[65] px-1 py-0.5 bg-black/90 border border-amber-400 text-amber-300 font-mono text-[8.5px] font-black rounded-xs  pointer-events-none whitespace-nowrap">
                                       {elementalBoard[idx] === 'fire' && '[🔥+2]'}
                                       {elementalBoard[idx] === 'water' && '[💧+2]'}
                                       {elementalBoard[idx] === 'wind' && '[🌪️+2]'}
@@ -16966,7 +16915,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     <Terminal size={10} />
                     <span>TACTICAL_LOG</span>
                   </div>
-                  <div className="flex-1 bg-[#0f172a]/95 backdrop-blur-md rounded-2xl border border-white/10 overflow-hidden flex flex-col p-3 shadow-xl">
+                  <div className="flex-1 bg-[#0f172a]/95 backdrop-blur-md rounded-none border border-white/10 overflow-hidden flex flex-col p-3 ">
                      <div className="flex-1 overflow-y-auto space-y-2 pr-1 custom-scrollbar scrollbar-hide">
                         <AnimatePresence initial={false}>
                           {visibleGameLogs.map((log) => (
@@ -16975,7 +16924,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                               initial={{ opacity: 0, x: 20 }}
                               animate={{ opacity: 1, x: 0 }}
                               className={cn(
-                                "text-[8px] xl:text-[9px] leading-tight font-black uppercase tracking-tighter p-1.5 rounded-lg border-l-2",
+                                "text-[8px] xl:text-[9px] leading-tight font-black uppercase tracking-tighter p-1.5 rounded-none border-l-2",
                                 log.type === 'capture' ? "bg-red-950/40 border-red-500/50 text-red-300" : 
                                 log.type === 'system' ? "bg-yellow-950/40 border-yellow-500/50 text-yellow-350" :
                                 "bg-slate-900/40 border-slate-800 text-slate-350"
@@ -17006,7 +16955,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       {/* ID 416: 체인 콤보 플로팅 텍스트 배너 */}
       {chainComboText && (
         <div className="fixed top-28 left-1/2 -translate-x-1/2 z-50 pointer-events-none">
-          <div className="px-4 py-1.5 bg-rose-950/95 border-2 border-amber-400 text-amber-200 font-mono font-black text-sm rounded-sm shadow-[0_0_20px_rgba(251,191,36,0.6)] animate-combo-float">
+          <div className="px-4 py-1.5 bg-rose-950/95 border-2 border-amber-400 text-amber-200 font-mono font-black text-sm rounded-sm  animate-combo-float">
             {chainComboText}
           </div>
         </div>
@@ -17015,7 +16964,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       {/* SCR-02-04: 속성 상성 카운터 크리티컬 플립 플로팅 배너 */}
       {elementalCriticalText && (
         <div className="fixed top-36 left-1/2 -translate-x-1/2 z-50 pointer-events-none">
-          <div className="px-4 py-2 bg-gradient-to-r from-amber-600/95 via-rose-600/95 to-orange-600/95 border-2 border-yellow-300 text-yellow-100 font-mono font-black text-xs sm:text-sm rounded-sm shadow-[0_0_24px_rgba(234,179,8,0.85)] animate-bounce tracking-tight flex items-center gap-1.5">
+          <div className="px-4 py-2 bg-[#201d1d] from-amber-600/95 via-rose-600/95 to-orange-600/95 border-2 border-yellow-300 text-yellow-100 font-mono font-black text-xs sm:text-sm rounded-sm   tracking-tight flex items-center gap-1.5">
             <span>🔥</span>
             <span>{elementalCriticalText}</span>
             <span>⚡</span>
@@ -17026,9 +16975,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       {/* COMPACT 1-LINE SCORE & TURN STATUS BAR (Relocated Below Board / Above Player Hand) */}
       {!gameOver && gameState === 'playing' && (
         <div className={cn(
-          "flex flex-wrap items-center justify-between w-full max-w-sm sm:max-w-md px-3 py-1.5 bg-slate-950/90 border rounded-sm shadow-md text-xs font-mono font-bold z-20 mb-1 backdrop-blur-md gap-2 transition-all shrink-0",
+          "flex flex-wrap items-center justify-between w-full max-w-sm sm:max-w-md px-3 py-1.5 bg-slate-950/90 border rounded-sm  text-xs font-mono font-bold z-20 mb-1 backdrop-blur-md gap-2 transition-all shrink-0",
           turnTimerSeconds <= 5
-            ? "border-rose-500 border-pulse-danger shadow-[0_0_15px_rgba(244,63,94,0.5)]"
+            ? "border-rose-500 border-pulse-danger "
             : "border-slate-800"
         )}>
           {/* Player Score & Ping & Deck Stack */}
@@ -17046,7 +16995,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             <div className={cn(
               "px-2 py-0.5 rounded-sm text-[10px] uppercase font-mono font-black flex items-center gap-1 border",
               turn === 'player'
-                ? "bg-indigo-950/80 border-indigo-500/70 text-indigo-300 shadow-[0_0_8px_rgba(99,102,241,0.4)]"
+                ? "bg-indigo-950/80 border-indigo-500/70 text-indigo-300 "
                 : "bg-rose-950/80 border-rose-500/70 text-rose-300"
             )}>
               {turn === 'player' ? (
@@ -17061,7 +17010,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               className={cn(
                 "flex items-center gap-1 px-1.5 py-0.5 rounded-sm font-mono text-[9px] font-bold border transition-all",
                 turnTimerSeconds <= 5
-                  ? "bg-rose-950/90 border-rose-500 text-rose-300 animate-pulse shadow-[0_0_10px_rgba(244,63,94,0.6)]"
+                  ? "bg-rose-950/90 border-rose-500 text-rose-300 animate-pulse "
                   : turnTimerSeconds <= 10
                     ? "bg-amber-950/80 border-amber-500/80 text-amber-300"
                     : "bg-slate-900 border-slate-700/70 text-slate-300"
@@ -17150,7 +17099,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             {rebirthLevel > 0 && (
               <>
                 <span className="text-slate-500">·</span>
-                <span className="inline-flex items-center gap-1 bg-amber-500/25 text-amber-300 px-1.5 py-0.5 rounded-xs border border-amber-500/60 font-black text-[10px] sm:text-xs shadow-[0_0_8px_rgba(245,158,11,0.3)]">
+                <span className="inline-flex items-center gap-1 bg-amber-500/25 text-amber-300 px-1.5 py-0.5 rounded-xs border border-amber-500/60 font-black text-[10px] sm:text-xs ">
                   <span className="text-amber-400">👑</span>
                   <span className="text-xs sm:text-sm font-black text-amber-100 font-mono">{rebirthLevel}</span>
                   <span>{language === 'ko' ? '환' : 'R'}</span>
@@ -17181,7 +17130,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               <button
                 type="button"
                 onClick={handleSmartOneTapMove}
-                className="px-2.5 py-1 rounded-sm bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 hover:from-amber-400 hover:to-yellow-300 text-slate-950 font-mono text-[10px] sm:text-xs font-black uppercase tracking-tight flex items-center gap-1 shadow-md active:scale-95 transition-all cursor-pointer border border-amber-300 animate-pulse"
+                className="px-2.5 py-1 rounded-sm bg-[#201d1d] from-amber-500 via-yellow-400 to-amber-500 hover:from-amber-400 hover:to-yellow-300 text-slate-950 font-mono text-[10px] sm:text-xs font-black uppercase tracking-tight flex items-center gap-1  active:scale-95 transition-all cursor-pointer border border-amber-300 animate-pulse"
                 title={language === 'ko' ? 'AI 추천 최적 카드와 위치로 원클릭 즉시 착수' : 'One-Tap Smart Play'}
               >
                 <Zap size={13} className="text-slate-950 fill-current" />
@@ -17234,7 +17183,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 }}
                 whileTap={{ scale: 0.95 }}
                 className={cn(
-                  "w-[16vw] max-w-[58px] sm:max-w-[68px] md:max-w-[80px] lg:max-w-[88px] aspect-[5/7] cursor-pointer flex-shrink-0 relative mx-0.5 md:mx-1 rounded-lg [will-change:transform,opacity]",
+                  "w-[16vw] max-w-[58px] sm:max-w-[68px] md:max-w-[80px] lg:max-w-[88px] aspect-[5/7] cursor-pointer flex-shrink-0 relative mx-0.5 md:mx-1 rounded-none [will-change:transform,opacity]",
                   isSelected && "z-50"
                 )}
               >
@@ -17242,7 +17191,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="absolute -top-6 left-1/2 -translate-x-1/2 whitespace-nowrap bg-blue-600 text-white text-[8px] md:text-[10px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded border border-blue-400 shadow-[0_0_10px_rgba(37,99,235,0.8)] z-50 animate-pulse pointer-events-none"
+                    className="absolute -top-6 left-1/2 -translate-x-1/2 whitespace-nowrap bg-blue-600 text-white text-[8px] md:text-[10px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded border border-blue-400  z-50 animate-pulse pointer-events-none"
                   >
                     RECOMMENDED
                   </motion.div>
@@ -17252,7 +17201,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 )}
                 {/* Highlight Glow for Selected Card */}
                 {selectedCardIdx === idx && selectedCardSide === 'player' && (
-                  <div className="absolute -inset-1 bg-indigo-500/40 rounded-xl z-0 pointer-events-none ring-2 ring-indigo-400" />
+                  <div className="absolute -inset-1 bg-indigo-500/40 rounded-none z-0 pointer-events-none ring-2 ring-indigo-400" />
                 )}
                 
                 <CardItem 
@@ -17260,8 +17209,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   isLocked={turn !== 'player'} 
                   isSelected={selectedCardIdx === idx && selectedCardSide === 'player'}
                   className={cn(
-                    "w-full h-full relative z-10 rounded-lg",
-                    isRecommended && "shadow-[0_0_15px_rgba(96,165,250,0.5)]"
+                    "w-full h-full relative z-10 rounded-none",
+                    isRecommended && ""
                   )} 
                   customImage={customCardImage}
                   lowSpecMode={isLowPerformance}
@@ -17289,8 +17238,8 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       key={idx}
                       className={cn(
                         "w-1.5 h-1.5 rounded-full transition-all duration-300",
-                        isPlayer ? "bg-indigo-400 shadow-[0_0_4px_rgba(99,102,241,0.8)] scale-110" :
-                        isAi ? "bg-rose-400 shadow-[0_0_4px_rgba(244,63,94,0.8)] scale-110" :
+                        isPlayer ? "bg-indigo-400  scale-110" :
+                        isAi ? "bg-rose-400  scale-110" :
                         "bg-slate-700/60"
                       )}
                     />
@@ -17329,7 +17278,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               initial={{ scale: 0.95, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 20 }}
-              className="bg-slate-900/95 border border-indigo-500/40 backdrop-blur-2xl rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.8)] max-w-3xl w-full p-4 sm:p-5 flex flex-col text-white"
+              className="bg-slate-900/95 border border-indigo-500/40 backdrop-blur-2xl rounded-none  max-w-3xl w-full p-4 sm:p-5 flex flex-col text-white"
             >
               {/* Header */}
               <div className="flex items-center justify-between border-b border-indigo-500/20 pb-3 mb-3">
@@ -17340,21 +17289,21 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 <button
                   type="button"
                   onClick={() => setShowCortanaHud(false)}
-                  className="p-1.5 bg-slate-800 hover:bg-slate-700 rounded-xl text-slate-400 hover:text-white transition-colors cursor-pointer"
+                  className="p-1.5 bg-slate-800 hover:bg-slate-700 rounded-none text-slate-400 hover:text-white transition-colors cursor-pointer"
                 >
                   <X size={16} />
                 </button>
               </div>
 
               {/* AI Tactical Cortana Operator HUD */}
-              <div className="bg-slate-950/90 border border-indigo-500/40 rounded-2xl p-3 sm:p-4 shadow-[0_0_30px_rgba(99,102,241,0.2)] relative overflow-hidden flex flex-col md:flex-row gap-4">
+              <div className="bg-slate-950/90 border border-indigo-500/40 rounded-none p-3 sm:p-4  relative overflow-hidden flex flex-col md:flex-row gap-4">
                 
                 {/* Hologram Grid Overlay */}
                 <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)+50%,rgba(0,0,0,0.2)+50%),linear-gradient(90deg,rgba(99,102,241,0.04),rgba(0,0,0,0),rgba(244,63,94,0.04))] bg-[size:100%_4px,6px_100%] z-10 opacity-40 animate-pulse" />
                 
                 {/* Left: CORTANA ACTIVE HOLOGRAM AVATAR */}
                 <div className="flex items-center gap-3 border-b md:border-b-0 md:border-r border-indigo-500/10 pb-3 md:pb-0 md:pr-4 shrink-0 justify-center">
-                  <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center bg-indigo-950/40 border border-indigo-500/30 shadow-[0_0_15px_rgba(99,102,241,0.3)]">
+                  <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center bg-indigo-950/40 border border-indigo-500/30 ">
                     {/* Rotating External Ring */}
                     <motion.div 
                       animate={{ rotate: 360 }}
@@ -17373,9 +17322,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                         boxShadow: ["0 0 10px rgba(99,102,241,0.4)", "0 0 25px rgba(99,102,241,0.7)", "0 0 10px rgba(99,102,241,0.4)"] 
                       }}
                       transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-                      className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-tr from-indigo-600 via-indigo-400 to-indigo-900 flex items-center justify-center relative overflow-hidden"
+                      className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#201d1d] from-indigo-600 via-indigo-400 to-indigo-900 flex items-center justify-center relative overflow-hidden"
                     >
-                      <Cpu size={18} className="text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] animate-pulse" />
+                      <Cpu size={18} className="text-white drop- animate-pulse" />
                     </motion.div>
                     {/* AI Voice Activity Waveforms */}
                     <div className="absolute -bottom-1 flex gap-0.5 items-end justify-center w-full">
@@ -17397,13 +17346,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       <Activity size={10} className="text-indigo-400 animate-pulse" />
                       {t('operator_hud_win_rate', language)}
                     </span>
-                    <span className="font-mono text-indigo-200 bg-indigo-500/10 px-1.5 py-0.5 rounded shadow-sm">{winProbability}%</span>
+                    <span className="font-mono text-indigo-200 bg-indigo-500/10 px-1.5 py-0.5 rounded ">{winProbability}%</span>
                   </div>
                   <div className="w-full bg-slate-900 rounded-full h-3 border border-indigo-500/20 overflow-hidden p-[2px] shadow-inner">
                     <motion.div 
                       initial={{ width: '50%' }}
                       animate={{ width: `${winProbability}%` }}
-                      className="h-full bg-gradient-to-r from-indigo-500 via-indigo-400 to-indigo-700 rounded-full"
+                      className="h-full bg-[#201d1d] from-indigo-500 via-indigo-400 to-indigo-700 rounded-full"
                       transition={{ type: 'spring', stiffness: 85, damping: 15 }}
                     />
                   </div>
@@ -17419,7 +17368,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     {t('operator_hud_threat', language)}
                   </div>
                   {threatTarget ? (
-                    <div className="flex items-center gap-2.5 bg-rose-950/20 border border-rose-500/20 rounded-xl p-1.5">
+                    <div className="flex items-center gap-2.5 bg-rose-950/20 border border-rose-500/20 rounded-none p-1.5">
                       <div className="w-7 h-7 rounded bg-slate-900 flex items-center justify-center font-black text-[10px] text-rose-400 border border-rose-500/20">
                         {threatTarget.power}
                       </div>
@@ -17436,7 +17385,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       <span className="text-[7px] font-black text-rose-400 animate-pulse bg-rose-950/50 px-1.5 py-0.5 rounded border border-rose-500/30">LOCKED</span>
                     </div>
                   ) : (
-                    <div className="flex items-center justify-center h-10 border border-dashed border-slate-800 rounded-xl text-[8px] text-slate-600">
+                    <div className="flex items-center justify-center h-10 border border-dashed border-slate-800 rounded-none text-[8px] text-slate-600">
                       {language === 'ko' ? "위협 감지 대기 중..." : "Waiting for threats..."}
                     </div>
                   )}
@@ -17451,7 +17400,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     </span>
                     <span className="text-[7px] opacity-40">STANCE: {adaptiveStrategy.toUpperCase()}</span>
                   </div>
-                  <div className="bg-slate-950 p-2 rounded-xl border border-indigo-500/10 min-h-[48px] max-h-[60px] overflow-y-auto space-y-0.5 scrollbar-hide">
+                  <div className="bg-slate-950 p-2 rounded-none border border-indigo-500/10 min-h-[48px] max-h-[60px] overflow-y-auto space-y-0.5 scrollbar-hide">
                     {operatorLogs.length > 0 ? (
                       operatorLogs.slice(0, 3).map((log, idx) => (
                         <div key={idx} className={cn("text-[8.5px] font-semibold leading-normal flex items-start gap-1", idx === 0 ? "text-indigo-300" : "text-slate-600")}>
@@ -17471,7 +17420,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                         initial={{ opacity: 0, scale: 0.96, y: 8 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.96, y: 8 }}
-                        className="absolute inset-0 bg-slate-950/95 border border-indigo-400/80 rounded-xl p-2 pr-14 md:pr-2 flex flex-col justify-between z-30 shadow-2xl shadow-indigo-500/30"
+                        className="absolute inset-0 bg-slate-950/95 border border-indigo-400/80 rounded-none p-2 pr-14 md:pr-2 flex flex-col justify-between z-30  shadow-indigo-500/30"
                       >
                         <div className="text-[8.5px] font-black text-indigo-200 animate-pulse flex items-center gap-1.5">
                           <Terminal size={9} className="text-indigo-400" />
@@ -17482,7 +17431,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                             <button
                               key={oIdx}
                               onClick={() => handleSelectOperatorTactic(opt.strategy || 'balanced')}
-                              className="flex-1 bg-indigo-950 hover:bg-indigo-900 border border-indigo-500/30 hover:border-indigo-400 text-[8px] font-black py-1 px-0.5 rounded-lg text-indigo-300 transition-all text-center tracking-tighter cursor-pointer"
+                              className="flex-1 bg-indigo-950 hover:bg-indigo-900 border border-indigo-500/30 hover:border-indigo-400 text-[8px] font-black py-1 px-0.5 rounded-sm text-indigo-300 transition-all text-center tracking-tighter cursor-pointer"
                             >
                               {opt.label}
                             </button>
@@ -17509,10 +17458,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             <motion.div 
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
-              className="bg-slate-900/95 rounded-3xl p-6 md:p-10 max-w-md w-full space-y-6 shadow-2xl border border-slate-800 relative overflow-hidden text-white backdrop-blur-xl"
+              className="bg-slate-900/95 rounded-none p-6 md:p-10 max-w-md w-full space-y-6  border border-slate-800 relative overflow-hidden text-white backdrop-blur-xl"
             >
               {/* Decorative Background Elements */}
-              <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 via-purple-500 to-red-500" />
+              <div className="absolute top-0 left-0 w-full h-2 bg-[#201d1d] from-blue-500 via-purple-500 to-red-500" />
               
               <div className="space-y-2">
                 <motion.div
@@ -17521,7 +17470,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   transition={{ type: "spring", damping: 12 }}
                 >
                   <h2 className={cn(
-                    "text-5xl md:text-6xl font-black tracking-tighter uppercase drop-shadow-md",
+                    "text-5xl md:text-6xl font-black tracking-tighter uppercase drop-",
                     winner === 'player' ? "text-amber-500" : 
                     winner === 'ai' ? "text-rose-500" : 
                     "text-gray-400"
@@ -17531,7 +17480,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 </motion.div>
                 <p className="text-[9px] font-bold opacity-30 tracking-[0.3em] uppercase">Combat_Session_Terminal</p>
                 {rebirthLevel > 0 && (
-                  <div className="inline-flex items-center gap-1.5 px-3.5 py-1 bg-amber-950/85 border-2 border-amber-500/70 rounded-xl text-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.35)] animate-pulse">
+                  <div className="inline-flex items-center gap-1.5 px-3.5 py-1 bg-amber-950/85 border-2 border-amber-500/70 rounded-sm text-amber-300  animate-pulse">
                     <span className="text-base sm:text-lg">👑</span>
                     <span className="text-xs sm:text-sm font-black text-amber-400 uppercase">
                       {language === 'ko' ? '환생' : 'REBIRTH'}
@@ -17550,7 +17499,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   <motion.div
                     initial={{ scale: 0.95, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    className="mt-2 py-1.5 px-4 bg-indigo-950/90 border-2 border-indigo-500/80 rounded-xl text-indigo-200 text-xs font-black uppercase tracking-wider animate-pulse flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20 font-mono"
+                    className="mt-2 py-1.5 px-4 bg-indigo-950/90 border-2 border-indigo-500/80 rounded-sm text-indigo-200 text-xs font-black uppercase tracking-wider animate-pulse flex items-center justify-center gap-2  shadow-indigo-500/20 font-mono"
                   >
                     <RotateCcw size={14} className="text-indigo-400 animate-spin shrink-0" />
                     <span>
@@ -17566,7 +17515,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   <motion.div
                     initial={{ scale: 0.95, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    className="mt-2 py-1.5 px-4 bg-emerald-950/90 border-2 border-emerald-500/80 rounded-xl text-emerald-200 text-xs font-black uppercase tracking-wider animate-pulse flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 font-mono"
+                    className="mt-2 py-1.5 px-4 bg-emerald-950/90 border-2 border-emerald-500/80 rounded-sm text-emerald-200 text-xs font-black uppercase tracking-wider animate-pulse flex items-center justify-center gap-2  shadow-emerald-500/20 font-mono"
                   >
                     <RotateCcw size={14} className="text-emerald-400 animate-spin shrink-0" />
                     <span>
@@ -17582,7 +17531,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   <motion.div
                     initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    className="mt-2 py-1.5 px-4 bg-rose-950/90 border border-rose-500/50 rounded-xl text-rose-200 text-xs font-black uppercase tracking-wider animate-pulse flex items-center justify-center gap-2 shadow-md font-mono"
+                    className="mt-2 py-1.5 px-4 bg-rose-950/90 border border-rose-500/50 rounded-sm text-rose-200 text-xs font-black uppercase tracking-wider animate-pulse flex items-center justify-center gap-2  font-mono"
                   >
                     <ShieldAlert size={14} className="text-rose-400 shrink-0" />
                     <span>
@@ -17605,7 +17554,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                         initial={{ scale: 0.5, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         transition={{ type: "spring", stiffness: 200, damping: 10 }}
-                        className="px-4 py-1.5 bg-gradient-to-r from-amber-500 to-rose-500 text-white font-bold text-xs uppercase rounded-full shadow-lg shadow-amber-500/20 flex items-center gap-1.5 animate-pulse"
+                        className="px-4 py-1.5 bg-[#201d1d] from-amber-500 to-rose-500 text-white font-bold text-xs uppercase rounded-full  shadow-amber-500/20 flex items-center gap-1.5 animate-pulse"
                       >
                         <Sparkles size={12} className="animate-spin text-white" />
                         <span>{t('overwhelming_victory', language)} (+20% SNS)</span>
@@ -17617,11 +17566,11 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                         initial={{ scale: 0.5, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         transition={{ type: "spring", stiffness: 200, damping: 10, delay: 0.15 }}
-                        className="px-4 py-1.5 bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-bold text-xs uppercase rounded-full shadow-lg shadow-indigo-500/20 flex items-center gap-1.5"
+                        className="px-4 py-1.5 bg-[#201d1d] from-indigo-500 to-blue-500 text-white font-bold text-xs uppercase rounded-full  shadow-indigo-500/20 flex items-center gap-1.5"
                       >
-                        <Zap size={12} className="animate-bounce text-yellow-300 fill-current" />
+                        <Zap size={12} className=" text-yellow-300 fill-current" />
                         <span>{t('streak_victory_bonus', language).replace('{streak}', String(currentWinStreakDisplay))} (+20% SNS)</span>
-                        <Zap size={12} className="animate-bounce text-yellow-300 fill-current" />
+                        <Zap size={12} className=" text-yellow-300 fill-current" />
                       </motion.div>
                     )}
                   </div>
@@ -17629,13 +17578,13 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-indigo-950/20 p-4 rounded-2xl border border-indigo-500/20 shadow-sm">
+                <div className="bg-indigo-950/20 p-4 rounded-none border border-indigo-500/20 ">
                   <div className="text-[8px] font-bold text-indigo-400 uppercase mb-1">{t('user', language)}</div>
                   <div className="text-4xl font-extrabold italic text-indigo-400">
                     {battleType === 'matgo' ? matgoScores.player : boardScore.player}
                   </div>
                 </div>
-                <div className="bg-rose-950/20 p-4 rounded-2xl border border-rose-500/20 shadow-sm">
+                <div className="bg-rose-950/20 p-4 rounded-none border border-rose-500/20 ">
                   <div className="text-[8px] font-bold text-rose-400 uppercase mb-1">{t('ai', language)}</div>
                   <div className="text-4xl font-extrabold italic text-rose-400">
                     {battleType === 'matgo' ? matgoScores.ai : boardScore.ai}
@@ -17672,14 +17621,14 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               <div className="flex gap-2 font-mono text-xs select-none">
                 <button
                   onClick={handleCopyReplayLink}
-                  className="flex-1 py-2.5 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 rounded-xl font-bold flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 transition-all shadow-xs"
+                  className="flex-1 py-2.5 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 rounded-sm font-bold flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 transition-all shadow-xs"
                 >
                   <Share2 size={13} className="text-amber-400" />
                   <span>{replayCopied ? (language === 'ko' ? '[✓ 리플레이 링크 복사됨]' : '[✓ Replay Copied]') : (language === 'ko' ? '[📋 리플레이 링크 복사]' : '[📋 Copy Replay Link]')}</span>
                 </button>
                 <button
                   onClick={() => setShowSportsmanshipModal(true)}
-                  className="flex-1 py-2.5 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-400 rounded-xl font-bold flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 transition-all shadow-xs"
+                  className="flex-1 py-2.5 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-400 rounded-sm font-bold flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 transition-all shadow-xs"
                 >
                   <Smile size={14} className="text-amber-400" />
                   <span>{language === 'ko' ? '[👍 상대방 매너 칭찬]' : '[👍 Kudos to Rival]'}</span>
@@ -17688,10 +17637,10 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
               {/* Match Analysis Section */}
               {battleType !== 'matgo' && (
-                <div className="bg-slate-950/60 border border-slate-800 rounded-2xl p-4 shadow-sm text-left space-y-3">
+                <div className="bg-slate-950/60 border border-slate-800 rounded-none p-4  text-left space-y-3">
                 {/* ID 371: 서든데스 5:5 무승부 연출 배너 */}
                 {winner === 'draw' && (
-                  <div className="p-2.5 bg-amber-950/80 border border-amber-500 rounded-sm text-center space-y-1 shadow-lg animate-pulse">
+                  <div className="p-2.5 bg-amber-950/80 border border-amber-500 rounded-sm text-center space-y-1  animate-pulse">
                     <span className="text-xs font-mono font-black text-amber-300">
                       ⚔️ SUDDEN DEATH TIE-BREAKER ⚔️
                     </span>
@@ -17764,7 +17713,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
               {/* Synergy Analysis — 세력 상성 및 장비 시너지 요약 */}
               {battleType !== 'matgo' && playerDeck.length > 0 && opponentDeck.length > 0 && (
-                <div className="bg-slate-950/60 border border-slate-800 rounded-2xl p-4 shadow-sm text-left space-y-3">
+                <div className="bg-slate-950/60 border border-slate-800 rounded-none p-4  text-left space-y-3">
                   <div className="flex justify-between items-center border-b border-slate-800 pb-2">
                     <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
                       {t('battle_result_synergy_header', language)}
@@ -17842,9 +17791,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ delay: 0.3, type: "spring", damping: 12 }}
-                  className="relative overflow-hidden rounded-2xl p-5 flex flex-col items-center gap-3"
+                  className="relative overflow-hidden rounded-none p-5 flex flex-col items-center gap-3"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-b from-amber-500/10 to-transparent border border-amber-500/30 rounded-2xl" />
+                  <div className="absolute inset-0 bg-[#201d1d] from-amber-500/10 to-transparent border border-amber-500/30 rounded-none" />
                   {/* Particle burst effect */}
                   {[...Array(8)].map((_, i) => {
                     const angle = (i / 8) * 360;
@@ -17863,7 +17812,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   <motion.div
                     animate={{ rotateY: [0, 360] }}
                     transition={{ duration: 1.2, delay: 0.3, ease: "easeOut" }}
-                    className="relative z-10 w-12 h-12 rounded-full bg-gradient-to-br from-yellow-400 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/40"
+                    className="relative z-10 w-12 h-12 rounded-full bg-[#201d1d] from-yellow-400 to-amber-600 flex items-center justify-center  shadow-amber-500/40"
                   >
                     <span className="text-xl">🪙</span>
                   </motion.div>
@@ -17873,7 +17822,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     initial={{ y: 15, opacity: 0, scale: 0.6 }}
                     animate={{ y: 0, opacity: 1, scale: 1 }}
                     transition={{ delay: 0.5, type: "spring", stiffness: 200, damping: 15 }}
-                    className="relative z-10 text-3xl font-black text-amber-400 drop-shadow-[0_0_15px_rgba(251,191,36,0.4)]"
+                    className="relative z-10 text-3xl font-black text-amber-400 drop-"
                   >
                     +{rewardEarned}<span className="text-sm font-bold ml-1 opacity-80">SNS</span>
                   </motion.div>
@@ -17891,7 +17840,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   initial={{ x: -50, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
                   transition={{ delay: 0.3 }}
-                  className="w-full rounded-2xl p-4 flex items-center justify-between bg-slate-800/50 border border-slate-700/50 text-slate-400"
+                  className="w-full rounded-none p-4 flex items-center justify-between bg-slate-800/50 border border-slate-700/50 text-slate-400"
                 >
                   <div className="flex items-center gap-2">
                     <Zap size={20} className="opacity-40" />
@@ -17927,7 +17876,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4 }}
-                  className="bg-slate-950/80 border border-indigo-500/30 rounded-2xl p-4 shadow-md text-left space-y-3"
+                  className="bg-slate-950/80 border border-indigo-500/30 rounded-none p-4  text-left space-y-3"
                 >
                   <div className="flex justify-between items-center border-b border-slate-800/80 pb-2">
                     <div className="flex items-center gap-2">
@@ -17956,7 +17905,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                         initial={{ width: "35%" }}
                         animate={{ width: "72%" }}
                         transition={{ duration: 1.4, delay: 0.6, ease: "easeOut" }}
-                        className="h-full bg-gradient-to-r from-indigo-600 to-cyan-400 rounded-full relative"
+                        className="h-full bg-[#201d1d] from-indigo-600 to-cyan-400 rounded-full relative"
                       >
                         <div className="absolute inset-0 bg-white/20 animate-pulse" />
                       </motion.div>
@@ -18009,7 +17958,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       console.error(e);
                     }
                   }}
-                  className="px-3 py-2 bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-200 border border-indigo-500/40 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95"
+                  className="px-3 py-2 bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-200 border border-indigo-500/40 rounded-sm text-xs font-black uppercase tracking-wider flex items-center gap-1.5 transition-all cursor-pointer  active:scale-95"
                 >
                   <UserPlus size={14} />
                   {language === 'ko' ? '친구 신청' : 'Add Friend'}
@@ -18026,7 +17975,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       language === 'ko' ? '상대 프로필 조회' : 'Inspect Profile'
                     );
                   }}
-                  className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95"
+                  className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-sm text-xs font-black uppercase tracking-wider flex items-center gap-1.5 transition-all cursor-pointer  active:scale-95"
                 >
                   <Eye size={14} />
                   {language === 'ko' ? '프로필 조회' : 'Inspect Profile'}
@@ -18039,9 +17988,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   <button
                     type="button"
                     onClick={() => setShowRevengeChanceModal(true)}
-                    className="w-full py-3.5 px-4 bg-gradient-to-r from-rose-600 via-rose-500 to-amber-600 hover:from-rose-500 hover:to-amber-500 text-white font-black uppercase tracking-wider active:scale-95 transition-all rounded-2xl shadow-xl shadow-rose-500/30 flex items-center justify-center gap-2 cursor-pointer border border-rose-400 animate-pulse font-mono"
+                    className="w-full py-3.5 px-4 bg-[#201d1d] from-rose-600 via-rose-500 to-amber-600 hover:from-rose-500 hover:to-amber-500 text-white font-black uppercase tracking-wider active:scale-95 transition-all rounded-sm  shadow-rose-500/30 flex items-center justify-center gap-2 cursor-pointer border border-rose-400 animate-pulse font-mono"
                   >
-                    <Flame size={18} className="text-yellow-300 animate-bounce" />
+                    <Flame size={18} className="text-yellow-300 " />
                     <span>{language === 'ko' ? '⚡ 1장 차이 석패! [리벤지 찬스 +2 버프 받기]' : '⚡ REVENGE CHANCE (+2 Buff & Rematch)'}</span>
                   </button>
                 )}
@@ -18053,7 +18002,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       <button
                         type="button"
                         onClick={handleDoubleUpReward}
-                        className="w-full py-3.5 px-4 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 hover:brightness-110 text-slate-950 font-mono font-black text-xs sm:text-sm rounded-2xl border-2 border-yellow-300 shadow-[0_0_20px_rgba(251,191,36,0.6)] flex items-center justify-center gap-2 cursor-pointer active:scale-95 transition-all animate-pulse"
+                        className="w-full py-3.5 px-4 bg-[#201d1d] from-amber-500 via-yellow-400 to-amber-500 hover:brightness-110 text-slate-950 font-mono font-black text-xs sm:text-sm rounded-sm border-2 border-yellow-300  flex items-center justify-center gap-2 cursor-pointer active:scale-95 transition-all animate-pulse"
                       >
                         <Sparkles size={16} className="text-slate-950 fill-current" />
                         <span>
@@ -18063,7 +18012,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                         </span>
                       </button>
                     ) : (
-                      <div className="w-full py-2.5 px-3 bg-amber-950/80 border border-amber-500/60 rounded-xl text-amber-300 font-mono text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm">
+                      <div className="w-full py-2.5 px-3 bg-amber-950/80 border border-amber-500/60 rounded-sm text-amber-300 font-mono text-xs font-bold flex items-center justify-center gap-1.5 ">
                         <CheckCircle2 size={14} className="text-amber-400" />
                         <span>{language === 'ko' ? '✓ 승리 보상 2배 더블업 적용 완료!' : '✓ 2x Double-Up Reward Applied!'}</span>
                       </div>
@@ -18080,7 +18029,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       setShowStreakEffect(false);
                       handleRematch();
                     }}
-                    className="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-black uppercase tracking-wider active:scale-95 transition-all rounded-2xl shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2 cursor-pointer border border-emerald-400/30"
+                    className="w-full py-3.5 bg-[#201d1d] from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-black uppercase tracking-wider active:scale-95 transition-all rounded-sm  shadow-emerald-500/25 flex items-center justify-center gap-2 cursor-pointer border border-emerald-400/30"
                   >
                     <Play size={18} fill="currentColor" />
                     {language === 'ko' ? '▶ 다음 스테이지 바로 진행 (Next Stage)' : '▶ Proceed to Next Stage'}
@@ -18096,7 +18045,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       setShowStreakEffect(false);
                       handleExitMatch(false);
                     }}
-                    className="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-black uppercase tracking-wider active:scale-95 transition-all rounded-2xl shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2 cursor-pointer border border-emerald-400/30"
+                    className="w-full py-3.5 bg-[#201d1d] from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-black uppercase tracking-wider active:scale-95 transition-all rounded-sm  shadow-emerald-500/25 flex items-center justify-center gap-2 cursor-pointer border border-emerald-400/30"
                   >
                     <Check size={18} />
                     {language === 'ko' ? '미션 목록으로 돌아가기' : 'Back to Mission List'}
@@ -18120,7 +18069,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 <button
                   type="button"
                   onClick={() => setShowBattleShareTemplate(true)}
-                  className="w-full py-3 font-bold uppercase tracking-wider active:scale-95 transition-all rounded-2xl flex items-center justify-center gap-2 bg-white/10 text-white hover:bg-white/15 border border-white/10 shadow-lg shadow-black/20 text-xs"
+                  className="w-full py-3 font-bold uppercase tracking-wider active:scale-95 transition-all rounded-sm flex items-center justify-center gap-2 bg-white/10 text-white hover:bg-white/15 border border-white/10  shadow-black/20 text-xs"
                 >
                   <Share2 size={16} />
                   {t('share_template_battle_result', language)}
@@ -18134,7 +18083,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     setShowStreakEffect(false);
                     setCurrentWinStreakDisplay(0);
                   }}
-                  className="w-full py-3 font-bold uppercase tracking-wider active:scale-95 transition-all rounded-2xl flex items-center justify-center gap-2 bg-slate-950 text-white hover:bg-slate-900 border border-slate-850 shadow-lg shadow-black/30 text-xs cursor-pointer"
+                  className="w-full py-3 font-bold uppercase tracking-wider active:scale-95 transition-all rounded-sm flex items-center justify-center gap-2 bg-slate-950 text-white hover:bg-slate-900 border border-slate-850  shadow-black/30 text-xs cursor-pointer"
                 >
                   <ChevronLeft size={16} />
                   {winner === 'ai' && defeatExitCountdown !== null
@@ -18165,7 +18114,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                          handleRematch();
                        }}
                        className={cn(
-                         "w-full py-3 font-bold uppercase tracking-wider active:scale-95 transition-all rounded-2xl shadow-lg text-xs flex items-center justify-center gap-2 cursor-pointer",
+                         "w-full py-3 font-bold uppercase tracking-wider active:scale-95 transition-all rounded-sm  text-xs flex items-center justify-center gap-2 cursor-pointer",
                          (activeMissionCardId !== null || activeMissionCardIdRef.current !== null)
                            ? "bg-emerald-600 text-white hover:bg-emerald-700 shadow-emerald-600/20"
                            : "bg-indigo-600 text-white hover:bg-indigo-700 shadow-indigo-600/20"
@@ -18197,7 +18146,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                           setView('deck');
                           playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                         }}
-                        className="w-full bg-slate-900 hover:bg-slate-800 text-amber-300 border border-amber-500/40 py-3 font-bold uppercase tracking-wider active:scale-95 transition-all rounded-2xl shadow-lg text-xs flex items-center justify-center gap-2 cursor-pointer"
+                        className="w-full bg-slate-900 hover:bg-slate-800 text-amber-300 border border-amber-500/40 py-3 font-bold uppercase tracking-wider active:scale-95 transition-all rounded-sm  text-xs flex items-center justify-center gap-2 cursor-pointer"
                       >
                         <Sliders size={15} />
                         <span>{language === 'ko' ? '덱 편집하러 가기' : 'Edit Deck'}</span>
@@ -18207,7 +18156,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 )}
               </div>
 
-              <div className="pt-4 flex justify-between items-center opacity-25 text-[8px] font-sans font-semibold text-slate-400">
+              <div className="pt-4 flex justify-between items-center opacity-25 text-[8px] font-mono font-semibold text-slate-400">
                  <span>TX_ID: 0x{Math.random().toString(16).slice(2, 10).toUpperCase()}</span>
                  <span>SECURE_SYNC_COMPLETE</span>
               </div>
@@ -18268,7 +18217,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       initial={{ opacity: 0, y: 50, rotateY: 90 }}
                       animate={{ opacity: 1, y: 0, rotateY: 0 }}
                       transition={{ delay: i * 0.1, duration: 0.5, type: 'spring' }}
-                      className="w-[16vw] max-w-[80px] md:max-w-[120px] aspect-[5/7] rounded-lg shadow-[0_0_30px_rgba(220,38,38,0.2)] flex-shrink-0"
+                      className="w-[16vw] max-w-[80px] md:max-w-[120px] aspect-[5/7] rounded-none  flex-shrink-0"
                     >
                       <CardItem card={card} isLocked={true} className="w-full h-full" lowSpecMode={lowSpecMode} />
                     </motion.div>
@@ -18281,7 +18230,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   key={`countdown-${previewCountdown}`}
                   initial={{ scale: 1.5, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
-                  className="text-5xl md:text-7xl font-black text-white italic drop-shadow-[0_0_20px_rgba(255,255,255,0.5)]"
+                  className="text-5xl md:text-7xl font-black text-white italic drop-"
                 >
                   {previewCountdown}
                 </motion.div>
@@ -18321,11 +18270,11 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.85, y: 30 }}
               transition={{ type: 'spring', stiffness: 350, damping: 28 }}
-              className="bg-slate-900 text-white w-full max-w-sm rounded-3xl overflow-hidden shadow-2xl border border-slate-800 relative z-[10000] font-sans"
+              className="bg-slate-900 text-white w-full max-w-sm rounded-none overflow-hidden  border border-slate-800 relative z-[10000] font-mono"
             >
               {/* Header */}
-              <div className="p-5 bg-gradient-to-r from-amber-500 to-orange-500 text-white border-b border-orange-600/10 flex items-center gap-3">
-                <div className="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center shrink-0">
+              <div className="p-5 bg-[#201d1d] from-amber-500 to-orange-500 text-white border-b border-orange-600/10 flex items-center gap-3">
+                <div className="w-9 h-9 bg-white/20 rounded-none flex items-center justify-center shrink-0">
                   <ShieldAlert size={20} className="text-white" />
                 </div>
                 <h2 className="text-base font-bold uppercase tracking-tight leading-tight">{confirmModal.title}</h2>
@@ -18340,7 +18289,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               <div className="px-6 pb-6 flex gap-3">
                 <button
                   onClick={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
-                  className="flex-1 py-3 bg-slate-950/80 border border-slate-800 text-slate-400 font-semibold text-sm rounded-xl hover:bg-slate-900 transition-colors duration-200"
+                  className="flex-1 py-3 bg-slate-950/80 border border-slate-800 text-slate-400 font-semibold text-sm rounded-sm hover:bg-slate-900 transition-colors duration-200"
                 >
                   {language === 'ko' ? '취소' : 'Cancel'}
                 </button>
@@ -18349,7 +18298,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     confirmModal.onConfirm();
                     setConfirmModal(prev => ({ ...prev, isOpen: false }));
                   }}
-                  className="flex-1 py-3 bg-indigo-600 text-white font-semibold text-sm rounded-xl hover:bg-indigo-700 transition-colors duration-200 shadow-lg shadow-indigo-600/20"
+                  className="flex-1 py-3 bg-indigo-600 text-white font-semibold text-sm rounded-sm hover:bg-indigo-700 transition-colors duration-200  shadow-indigo-600/20"
                 >
                   {language === 'ko' ? '확인' : 'Confirm'}
                 </button>
@@ -18372,9 +18321,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
-              className="bg-slate-950 rounded-3xl p-6 max-w-sm w-full border border-slate-800 shadow-2xl text-center space-y-6 font-sans text-white"
+              className="bg-slate-950 rounded-none p-6 max-w-sm w-full border border-slate-800  text-center space-y-6 font-mono text-white"
             >
-              <div className="w-16 h-16 bg-red-950/30 rounded-full mx-auto flex items-center justify-center border border-red-500/30 shadow-md">
+              <div className="w-16 h-16 bg-red-950/30 rounded-full mx-auto flex items-center justify-center border border-red-500/30 ">
                 <ShieldAlert size={32} className="text-red-500 animate-pulse" />
               </div>
               <div className="space-y-1">
@@ -18392,14 +18341,14 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     handleExitMatch(false);
                     setView?.('shop');
                   }}
-                  className="w-full bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-slate-950 font-black py-3.5 uppercase tracking-wider text-xs rounded-xl shadow-md active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2"
+                  className="w-full bg-[#201d1d] from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-slate-950 font-black py-3.5 uppercase tracking-wider text-xs rounded-sm  active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2"
                 >
                   <ShoppingBag size={16} />
                   {language === 'ko' ? '상점/충전소 이동 (Go to Shop)' : 'Go to Shop / Top-Up'}
                 </button>
                 <button 
                   onClick={() => setShowInsufficientPopup(false)}
-                  className="w-full bg-slate-900 hover:bg-slate-800 text-slate-300 py-2.5 font-bold uppercase tracking-wider text-xs rounded-xl cursor-pointer border border-white/5"
+                  className="w-full bg-slate-900 hover:bg-slate-800 text-slate-300 py-2.5 font-bold uppercase tracking-wider text-xs rounded-sm cursor-pointer border border-white/5"
                 >
                   {language === 'ko' ? '닫기' : 'Close'}
                 </button>
@@ -18424,7 +18373,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.85, y: 20 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-sm w-full shadow-2xl text-white flex flex-col items-center gap-4 relative"
+              className="bg-slate-900 border border-slate-800 rounded-none p-6 max-w-sm w-full  text-white flex flex-col items-center gap-4 relative"
             >
               <button
                 onClick={() => setPreviewHandCard(null)}
@@ -18433,7 +18382,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 <X size={18} />
               </button>
 
-              <div className="w-[180px] aspect-[5/7] shadow-2xl rounded-xl overflow-hidden border-2 border-amber-500/50">
+              <div className="w-[180px] aspect-[5/7]  rounded-none overflow-hidden border-2 border-amber-500/50">
                 <CardItem card={previewHandCard} isLocked={false} customImage={customCardImage} />
               </div>
 
@@ -18456,7 +18405,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
               <button
                 onClick={() => setPreviewHandCard(null)}
-                className="w-full py-2.5 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-colors text-xs"
+                className="w-full py-2.5 bg-indigo-600 text-white font-bold rounded-sm hover:bg-indigo-700 transition-colors text-xs"
               >
                 {language === 'ko' ? '확인' : 'Confirm'}
               </button>
@@ -18495,14 +18444,14 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
       {/* Texture Pre-Caching Loading Screen for Low-Spec Performance Optimization */}
       {isTextureCaching && (
         <div className="fixed inset-0 z-[999999] bg-[#fdfcfc] text-[#201d1d] font-mono flex flex-col items-center justify-center p-6 text-center select-none">
-          <div className="w-full max-w-sm bg-white border border-[#201d1d]/15 rounded-sm p-6 sm:p-8 shadow-sm">
+          <div className="w-full max-w-sm bg-white border border-[#201d1d]/15 rounded-sm p-6 sm:p-8 ">
             <div className="inline-block text-[11px] font-bold tracking-widest uppercase bg-[#201d1d] text-[#fdfcfc] px-2.5 py-1 rounded-sm mb-3">
               [GRAPHICS PRE-CACHE]
             </div>
             <h2 className="text-sm sm:text-base font-extrabold text-[#201d1d] mb-1">
               {language === 'ko' ? '카드 이미지 메모리 캐싱 중...' : 'Pre-caching Card Graphics...'}
             </h2>
-            <p className="text-[11px] text-[#201d1d]/60 mb-5 font-sans">
+            <p className="text-[11px] text-[#201d1d]/60 mb-5 font-mono">
               {language === 'ko' ? '저성능 기기 프레임 드롭 및 끊김 방지 최적화' : 'Optimizing for smooth 60FPS playback'}
             </p>
 

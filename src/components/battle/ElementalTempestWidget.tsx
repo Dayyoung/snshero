@@ -57,7 +57,7 @@ export const ElementalTempestWidget: React.FC<ElementalTempestWidgetProps> = ({
       aria-label="Elemental Tempest Tactical Dock"
       className="fixed bottom-20 left-3 z-[9000] font-mono select-none"
     >
-      <div className="bg-[#fdfcfc] dark:bg-[#181616] border border-[#201d1d]/20 dark:border-white/20 shadow-xl rounded-none text-[#201d1d] dark:text-[#fdfcfc] w-[270px] sm:w-[290px] overflow-hidden">
+      <div className="bg-[#fdfcfc] dark:bg-[#181616] border border-[#201d1d]/20 dark:border-white/20 rounded-none text-[#201d1d] dark:text-[#fdfcfc] w-[270px] sm:w-[290px] overflow-hidden">
         {/* Header Bar with Minimize Toggle */}
         <div className="flex items-center justify-between px-3 py-2 bg-[#201d1d]/5 dark:bg-white/5 border-b border-[#201d1d]/10 dark:border-white/10">
           <div className="flex items-center gap-1.5">

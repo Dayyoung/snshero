@@ -553,10 +553,10 @@ export const TacticalCommandHUD: React.FC<TacticalHUDProps> = ({
               <button
                 type="button"
                 onClick={() => setShowPackModal(true)}
-                className="flex items-center gap-1 px-1.5 py-0.5 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500 text-amber-300 rounded-sm text-[10px] font-bold cursor-pointer"
+                className="min-h-[44px] flex items-center gap-1.5 px-2.5 py-1 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500 text-amber-300 rounded-sm text-xs font-bold cursor-pointer"
                 title={t('claim_pack')}
               >
-                <SupplyCrateIcon size={12} />
+                <SupplyCrateIcon size={13} />
                 <span>{t('claim_pack')}</span>
               </button>
             )}
@@ -565,7 +565,7 @@ export const TacticalCommandHUD: React.FC<TacticalHUDProps> = ({
               <button
                 type="button"
                 onClick={onOpenMinigameLounge}
-                className="text-[10px] text-stone-400 hover:text-white underline cursor-pointer hidden md:inline"
+                className="min-h-[44px] px-2 flex items-center justify-center text-xs text-stone-400 hover:text-white underline cursor-pointer hidden md:inline-flex"
                 title={t('ap_recharge_hint')}
               >
                 [+ MANA]

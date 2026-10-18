@@ -46,16 +46,16 @@ export const ResponsiveCleanHUD: React.FC<ResponsiveCleanHUDProps> = ({
 
   return (
     <header className="absolute top-2 left-2 right-2 z-30 pointer-events-none font-mono select-none">
-      <div className="bg-[#fdfcfc]/95 text-[#201d1d] border border-[#201d1d]/30 px-3 py-1.5 rounded-sm shadow-xs flex items-center justify-between gap-2 backdrop-blur-xs">
+      <div className="bg-[#fdfcfc]/95 text-[#201d1d] border border-[#201d1d]/30 px-3 py-1.5 rounded-sm flex items-center justify-between gap-2 backdrop-blur-xs">
         {/* Left: Exit & Title */}
         <div className="flex items-center gap-2 shrink-0">
           <button
             type="button"
             onClick={onExit}
-            className="pointer-events-auto px-2 py-1 bg-[#201d1d] text-[#fdfcfc] hover:bg-stone-800 text-[11px] font-bold rounded-xs flex items-center gap-1 cursor-pointer active:scale-95 transition-transform"
+            className="pointer-events-auto min-h-11 h-11 px-3 bg-[#201d1d] text-[#fdfcfc] hover:bg-stone-800 text-xs font-bold rounded-sm flex items-center gap-1.5 cursor-pointer active:scale-95 transition-transform"
             title={isKo ? '나가기' : 'Exit'}
           >
-            <ArrowLeft size={12} />
+            <ArrowLeft size={13} />
             <span className="hidden xs:inline">{isKo ? '나가기' : 'Exit'}</span>
           </button>
 
@@ -94,9 +94,9 @@ export const ResponsiveCleanHUD: React.FC<ResponsiveCleanHUDProps> = ({
 
           {/* Combo Multiplier */}
           {typeof combo === 'number' && combo > 1 && (
-            <div className="hidden sm:flex items-center gap-0.5 bg-orange-500/15 border border-orange-500/40 px-1.5 py-0.5 rounded-xs text-orange-800 animate-bounce">
+            <div className="hidden sm:flex items-center gap-0.5 bg-orange-500/15 border border-orange-500/40 px-1.5 py-0.5 rounded-xs text-orange-800 font-bold">
               <Flame size={11} className="fill-orange-500 shrink-0" />
-              <span>{combo}x COMBO</span>
+              <span>[{combo}x COMBO]</span>
             </div>
           )}
 
@@ -114,10 +114,10 @@ export const ResponsiveCleanHUD: React.FC<ResponsiveCleanHUDProps> = ({
             <button
               type="button"
               onClick={onTogglePause}
-              className="pointer-events-auto p-1 border border-[#201d1d]/30 text-[#201d1d] hover:bg-[#201d1d]/10 rounded-xs cursor-pointer active:scale-95 transition-colors"
+              className="pointer-events-auto min-h-11 min-w-11 w-11 h-11 p-1 flex items-center justify-center border border-[#201d1d]/30 text-[#201d1d] hover:bg-[#201d1d]/10 rounded-sm cursor-pointer active:scale-95 transition-colors"
               title={isPaused ? 'Resume' : 'Pause'}
             >
-              {isPaused ? <Play size={12} /> : <Pause size={12} />}
+              {isPaused ? <Play size={13} /> : <Pause size={13} />}
             </button>
           )}
 
@@ -125,10 +125,10 @@ export const ResponsiveCleanHUD: React.FC<ResponsiveCleanHUDProps> = ({
             <button
               type="button"
               onClick={onToggleMute}
-              className="pointer-events-auto p-1 border border-[#201d1d]/30 text-[#201d1d] hover:bg-[#201d1d]/10 rounded-xs cursor-pointer active:scale-95 transition-colors"
+              className="pointer-events-auto min-h-11 min-w-11 w-11 h-11 p-1 flex items-center justify-center border border-[#201d1d]/30 text-[#201d1d] hover:bg-[#201d1d]/10 rounded-sm cursor-pointer active:scale-95 transition-colors"
               title={isMuted ? 'Unmute' : 'Mute'}
             >
-              {isMuted ? <VolumeX size={12} /> : <Volume2 size={12} />}
+              {isMuted ? <VolumeX size={13} /> : <Volume2 size={13} />}
             </button>
           )}
 
@@ -136,10 +136,10 @@ export const ResponsiveCleanHUD: React.FC<ResponsiveCleanHUDProps> = ({
             <button
               type="button"
               onClick={onHelp}
-              className="pointer-events-auto px-1.5 py-1 border border-[#201d1d] bg-[#201d1d] text-[#fdfcfc] hover:bg-stone-800 text-[10px] font-bold rounded-xs cursor-pointer active:scale-95 transition-colors flex items-center gap-0.5"
+              className="pointer-events-auto min-h-11 min-w-11 w-11 h-11 px-2 py-1 border border-[#201d1d] bg-[#201d1d] text-[#fdfcfc] hover:bg-stone-800 text-xs font-bold rounded-sm cursor-pointer active:scale-95 transition-colors flex items-center justify-center gap-0.5"
               title={isKo ? '도움말 가이드' : 'Help Guide'}
             >
-              <HelpCircle size={11} />
+              <HelpCircle size={13} />
               <span>?</span>
             </button>
           )}

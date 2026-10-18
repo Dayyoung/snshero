@@ -254,7 +254,7 @@ export const MinimalistMissionHUD: React.FC<MinimalistMissionHUDProps> = ({
         <div className="flex items-center gap-2">
           <button
             onClick={handleExitClick}
-            className="flex items-center gap-1 bg-white/10 hover:bg-white/20 active:bg-white/30 px-2 py-1 rounded-sm border border-white/15 text-white font-bold transition-colors cursor-pointer"
+            className="min-h-11 h-11 px-3 flex items-center gap-1.5 bg-white/10 hover:bg-white/20 active:bg-white/30 rounded-sm border border-white/15 text-white font-bold transition-colors cursor-pointer"
             title={isKo ? '나가기 (정산)' : 'Exit (Settle)'}
           >
             <ArrowLeft size={13} />
@@ -294,7 +294,7 @@ export const MinimalistMissionHUD: React.FC<MinimalistMissionHUDProps> = ({
           {onHelp && (
             <button
               onClick={onHelp}
-              className="w-7 h-7 flex items-center justify-center bg-white/10 hover:bg-white/20 active:bg-white/30 rounded-sm border border-white/15 text-amber-300 transition-colors cursor-pointer"
+              className="min-h-11 min-w-11 w-11 h-11 flex items-center justify-center bg-white/10 hover:bg-white/20 active:bg-white/30 rounded-sm border border-white/15 text-amber-300 transition-colors cursor-pointer"
               title={isKo ? '가이드/도움말' : 'Help Guide'}
             >
               <HelpCircle size={14} />
@@ -303,7 +303,7 @@ export const MinimalistMissionHUD: React.FC<MinimalistMissionHUDProps> = ({
           {onPauseToggle && (
             <button
               onClick={onPauseToggle}
-              className="w-7 h-7 flex items-center justify-center bg-white/10 hover:bg-white/20 active:bg-white/30 rounded-sm border border-white/15 text-slate-200 transition-colors cursor-pointer"
+              className="min-h-11 min-w-11 w-11 h-11 flex items-center justify-center bg-white/10 hover:bg-white/20 active:bg-white/30 rounded-sm border border-white/15 text-slate-200 transition-colors cursor-pointer"
               title={isPaused ? (isKo ? '재개' : 'Resume') : (isKo ? '일시정지' : 'Pause')}
             >
               {isPaused ? <Play size={13} className="text-emerald-400" /> : <Pause size={13} />}
@@ -315,7 +315,7 @@ export const MinimalistMissionHUD: React.FC<MinimalistMissionHUDProps> = ({
       {/* Exit Confirmation & Progress Settlement Modal (110 Games Unified) */}
       {showExitConfirm && (
         <div className="fixed inset-0 z-[999999] bg-[#201d1d]/85 flex items-center justify-center p-4 font-mono select-none backdrop-blur-xs">
-          <div className="bg-[#fdfcfc] text-[#201d1d] border-2 border-[#201d1d] w-full max-w-sm p-5 flex flex-col shadow-2xl relative rounded-none animate-in fade-in zoom-in-95 duration-150">
+          <div className="bg-[#fdfcfc] text-[#201d1d] border-2 border-[#201d1d] w-full max-w-sm p-5 flex flex-col relative rounded-none animate-in fade-in zoom-in-95 duration-150">
             {/* Modal Header */}
             <div className="flex items-center gap-2 border-b border-[#201d1d]/20 pb-3 mb-3">
               <div className="w-8 h-8 rounded-sm bg-amber-500/20 border border-amber-600/40 flex items-center justify-center text-amber-800">
@@ -381,7 +381,7 @@ export const MinimalistMissionHUD: React.FC<MinimalistMissionHUDProps> = ({
                 type="button"
                 disabled={Boolean(settledReceipt)}
                 onClick={() => setShowExitConfirm(false)}
-                className="py-2.5 px-3 border-2 border-[#201d1d] text-[#201d1d] hover:bg-[#201d1d]/10 active:scale-98 text-xs font-bold rounded-sm cursor-pointer transition-all flex items-center justify-center gap-1.5 disabled:opacity-50"
+                className="min-h-[44px] h-11 py-2.5 px-3 border-2 border-[#201d1d] text-[#201d1d] hover:bg-[#201d1d]/10 active:scale-98 text-xs font-bold rounded-sm cursor-pointer transition-all flex items-center justify-center gap-1.5 disabled:opacity-50"
               >
                 <RotateCcw size={13} />
                 <span>{isKo ? '계속하기' : 'Continue'}</span>
@@ -391,7 +391,7 @@ export const MinimalistMissionHUD: React.FC<MinimalistMissionHUDProps> = ({
                 type="button"
                 disabled={Boolean(settledReceipt)}
                 onClick={handleConfirmExit}
-                className="py-2.5 px-3 bg-[#201d1d] hover:bg-stone-800 active:scale-98 text-[#fdfcfc] text-xs font-bold rounded-sm cursor-pointer transition-all flex items-center justify-center gap-1.5 disabled:opacity-50 shadow-xs"
+                className="min-h-[44px] h-11 py-2.5 px-3 bg-[#201d1d] hover:bg-stone-800 active:scale-98 text-[#fdfcfc] text-xs font-bold rounded-sm cursor-pointer transition-all flex items-center justify-center gap-1.5 disabled:opacity-50"
               >
                 <LogOut size={13} />
                 <span>{isKo ? '정산 후 나가기' : 'Exit & Settle'}</span>

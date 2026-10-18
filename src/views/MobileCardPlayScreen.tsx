@@ -1663,7 +1663,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                 playSound('tap');
               }}
               className={cn(
-                "px-2 rounded-sm text-[11px] font-bold border cursor-pointer",
+                "min-h-[44px] min-w-[44px] px-2.5 rounded-sm text-xs font-bold border cursor-pointer flex items-center justify-center",
                 smartLifeCycleActive 
                   ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
                   : "border-[#0f0000]/12 text-[#646262]"
@@ -1953,7 +1953,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
             aria-pressed={activeSkill === 'power'}
             aria-label={`${t('wiki_power', language)} +2 [${skillCharges.power}]`}
             className={cn(
-              "min-w-0 px-1 rounded-sm border flex items-center justify-center gap-1 text-[11px] disabled:opacity-40",
+              "min-h-[44px] h-11 px-2.5 rounded-sm border flex items-center justify-center gap-1.5 font-mono text-xs disabled:opacity-40",
               activeSkill === 'power'
                 ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d] font-bold"
                 : skillCharges.power > 0 && turn === 'player'
@@ -1973,7 +1973,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
             aria-pressed={activeSkill === 'shield'}
             aria-label={`${t('ability_shield', language)} [${skillCharges.shield}]`}
             className={cn(
-              "min-w-0 px-1 rounded-sm border flex items-center justify-center gap-1 text-[11px] disabled:opacity-40",
+              "min-h-[44px] h-11 px-2.5 rounded-sm border flex items-center justify-center gap-1.5 font-mono text-xs disabled:opacity-40",
               activeSkill === 'shield'
                 ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d] font-bold"
                 : skillCharges.shield > 0 && turn === 'player'
@@ -1992,7 +1992,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
             disabled={turn !== 'player' || skillCharges.burst <= 0 || gameOver || isEvaluating}
             aria-label={`${t('wiki_power', language)} +1 [${skillCharges.burst}]`}
             className={cn(
-              "min-w-0 px-1 rounded-sm border flex items-center justify-center gap-1 text-[11px] disabled:opacity-40",
+              "min-h-[44px] h-11 px-2.5 rounded-sm border flex items-center justify-center gap-1.5 font-mono text-xs disabled:opacity-40",
               skillCharges.burst > 0 && turn === 'player'
                 ? "border-[#0f0000]/12 hover:bg-[#f1eeee]"
                 : "border-[#0f0000]/12 text-[#646262]"
@@ -2009,7 +2009,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
             aria-label={t('auto_battle', language)}
             aria-pressed={isAutoBattle}
             className={cn(
-              "min-w-0 px-1 rounded-sm border flex items-center justify-center gap-1 text-[10px] font-bold",
+              "min-h-[44px] h-11 px-2.5 rounded-sm border flex items-center justify-center gap-1.5 font-mono text-xs font-bold",
               isAutoBattle
                 ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
                 : "border-[#0f0000]/12 text-[#646262] hover:bg-[#f1eeee]"
@@ -2062,7 +2062,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                 className={cn(
                   "aspect-[2.8/4] min-h-[96px] sm:min-h-[115px] max-h-[135px] rounded-sm relative overflow-hidden cursor-pointer border-2 transition-colors select-none [@media(max-height:500px)_and_(min-width:480px)]:h-[clamp(44px,24dvh,80px)]",
                   isSelected
-                    ? "border-blue-600 shadow-sm"
+                    ? "border-blue-600 ring-2 ring-blue-600/30"
                     : "border-blue-400/80 hover:border-blue-500 bg-blue-50/10"
                 )}
               >
@@ -2114,7 +2114,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
         onTriggerOverride={handleTriggerOverride}
         disabled={gameOver}
         language={language}
-        className="max-w-[440px] shrink-0 rounded-b-lg border-x border-b border-white/10"
+        className="max-w-[440px] shrink-0 rounded-none border-x border-b border-white/10"
         onOpenMinigameLounge={() => onNavigate?.('play')}
       />
       </div>

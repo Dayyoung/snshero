@@ -109,7 +109,7 @@ export const TacticalSynergyMatrix: React.FC<TacticalSynergyMatrixProps> = ({
             triggerHaptic('tap');
             setIsCompact(!isCompact);
           }}
-          className="text-[10px] text-stone-500 hover:text-white px-1"
+          className="min-h-[44px] min-w-[44px] flex items-center justify-center text-xs font-bold text-stone-500 hover:text-white p-1 rounded-xs"
           title={t.toggleCompact}
         >
           {isCompact ? '[+]' : '[-]'}
