@@ -13,7 +13,25 @@
       "narrationKo": "헤르쿨이 엘윈 마을의 폐허에 도착했을 때 남은 것은 검게 언 서까래와 다리 위의 핏자국뿐이었다. 그는 알렉산다르의 부러진 검을 눈 속에서 찾아냈다. 검면에는 섀도우렐름의 공식 병기에는 없는 톱니 자국이 남아 있었다.",
       "sourceSentenceStart": 1,
       "sourceSentenceEnd": 3,
-      "alignmentScore": 0.5254
+      "alignmentScore": 0.5254,
+      "dialogues": [
+        {
+          "speakerKo": "알렉산다르",
+          "speakerEn": "Aleksandar",
+          "textKo": "검끝이 흔들리지 않는 한, 길은 열린다.",
+          "textEn": "As long as our blades do not waver, the path will open.",
+          "bubbleType": "speech",
+          "position": "bottom-right"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
     },
     {
       "sceneNumber": 2,
@@ -23,7 +41,25 @@
       "narrationKo": "왕국 안쪽의 누군가가 공격을 설계했다는 증거였다. 그 흔적을 좇아 남쪽 항구 세븐브리지에 들어간 헤르쿨은 뜻밖의 일곱 사람과 부딪쳤다. 대장장이 그림리, 쇠뇌 사수 에일라, 약제사 엘리아나, 맹인 추적자 가웨인, 도박사 카제, 뱃사공 론돌, 곡예사 로비냐드.",
       "sourceSentenceStart": 4,
       "sourceSentenceEnd": 6,
-      "alignmentScore": 0.4004
+      "alignmentScore": 0.4004,
+      "dialogues": [
+        {
+          "speakerKo": "헤르쿨",
+          "speakerEn": "Hercul",
+          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
+          "textEn": "All units on high alert! They are coming!",
+          "bubbleType": "shout",
+          "position": "top-right"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
     },
     {
       "sceneNumber": 3,
@@ -33,7 +69,18 @@
       "narrationKo": "출신도 말투도 제각각인 그들은 전쟁고아를 빼돌려 온 비공식 구조대였다. 첫 만남은 좋지 않았다. 헤르쿨은 그들이 유괴범이라는 밀고를 믿었고, 일곱 사람은 성기사 복장을 한 그를 궁정의 앞잡이로 보았다.",
       "sourceSentenceStart": 7,
       "sourceSentenceEnd": 9,
-      "alignmentScore": 0.5021
+      "alignmentScore": 0.5021,
+      "dialogues": [
+        {
+          "speakerKo": "헤르쿨",
+          "speakerEn": "Hercul",
+          "textKo": "우리의 맹세는 아직 꺼지지 않았다.",
+          "textEn": "Our vow has never been extinguished.",
+          "bubbleType": "speech",
+          "position": "top-left"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 4,
@@ -43,7 +90,31 @@
       "narrationKo": "시장의 천막이 뜯겨 나가고 생선 상자가 공중을 날았다. 그림리의 망치가 방호진을 때릴 때마다 금빛 파문이 종탑까지 번졌다. 가웨인은 헤르쿨의 발소리에서 살기를 듣지 못했지만 동료들을 멈추게 할 틈이 없었다. 카제는 주머니에서 동전 일곱 개를 뿌려 방호진의 약한 곳을 찾았고, 에일라는 튕겨 나오는 동전만 골라 쇠뇌를 쐈다.",
       "sourceSentenceStart": 10,
       "sourceSentenceEnd": 13,
-      "alignmentScore": 0.363
+      "alignmentScore": 0.363,
+      "dialogues": [
+        {
+          "speakerKo": "헤르쿨",
+          "speakerEn": "Hercul",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "bottom-left"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
     },
     {
       "sceneNumber": 5,
@@ -53,7 +124,31 @@
       "narrationKo": "헤르쿨은 화살을 막으면서도 시장 사람들에게 파편이 가지 않도록 방패 각도를 돌렸다. 론돌은 수로의 물을 끌어올려 헤르쿨의 발을 묶었다. 그가 황금 마나로 물을 증발시키려 하자 엘리아나가 허브 가루를 섞었다.",
       "sourceSentenceStart": 14,
       "sourceSentenceEnd": 16,
-      "alignmentScore": 0.5235
+      "alignmentScore": 0.5235,
+      "dialogues": [
+        {
+          "speakerKo": "헤르쿨",
+          "speakerEn": "Hercul",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "bottom-right"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
     },
     {
       "sceneNumber": 6,
@@ -63,7 +158,18 @@
       "narrationKo": "뜨거운 약초 증기가 눈을 따갑게 만들었다. 전설적인 성기사가 기침하며 생선 더미에 주저앉자 로비냐드는 싸움 중에도 웃음을 참지 못했다. 싸움을 멈춘 것은 아이 하나였다.",
       "sourceSentenceStart": 17,
       "sourceSentenceEnd": 19,
-      "alignmentScore": 0.4571
+      "alignmentScore": 0.4571,
+      "dialogues": [
+        {
+          "speakerKo": "성기사단원",
+          "speakerEn": "Holy Knight",
+          "textKo": "우리의 맹세는 아직 꺼지지 않았다.",
+          "textEn": "Our vow has never been extinguished.",
+          "bubbleType": "speech",
+          "position": "top-right"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 7,
@@ -73,7 +179,18 @@
       "narrationKo": "에일라의 등 뒤에 숨어 있던 아이가 헤르쿨의 옷자락을 잡고 말했다. “저 사람들은 우리를 판 게 아니라, 팔려 가던 우리를 구했어요.” 헤르쿨은 철퇴를 내렸다.",
       "sourceSentenceStart": 20,
       "sourceSentenceEnd": 22,
-      "alignmentScore": 0.5432
+      "alignmentScore": 0.5432,
+      "dialogues": [
+        {
+          "speakerKo": "헤르쿨",
+          "speakerEn": "Hercul",
+          "textKo": "저 사람들은 우리를 판 게 아니라, 팔려 가던 우리를 구했어요.",
+          "textEn": "Those people didn’t sell us, they saved us from being sold. ",
+          "bubbleType": "speech",
+          "position": "bottom-right"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 8,
@@ -83,7 +200,25 @@
       "narrationKo": "일곱 사람도 무기를 거두었지만 그림리만은 사과 대신 콧방귀를 뀌었다. 그들이 뒤쫓던 인신매매선의 장부에도 루시안의 서명이 있었다. 서로 다른 길에서 같은 적을 발견한 셈이었다. 항구 창고에서 장부를 살피던 밤, 로비냐드가 술항아리 일곱 개를 지붕으로 던졌다.",
       "sourceSentenceStart": 23,
       "sourceSentenceEnd": 26,
-      "alignmentScore": 0.4286
+      "alignmentScore": 0.4286,
+      "dialogues": [
+        {
+          "speakerKo": "루시안",
+          "speakerEn": "Lucian",
+          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
+          "textEn": "All units on high alert! They are coming!",
+          "bubbleType": "shout",
+          "position": "bottom-left"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
     },
     {
       "sceneNumber": 9,
@@ -93,7 +228,25 @@
       "narrationKo": "항아리는 깨지지 않고 허공에 멈춰 원을 그리며 돌았다. 술이 아니라 밀수선의 마나 항로를 드러내는 부유식 나침반이었다. 푸른 액체가 기울 때마다 바닥 지도에 새로운 빛줄기가 생겼다.",
       "sourceSentenceStart": 27,
       "sourceSentenceEnd": 29,
-      "alignmentScore": 0.4556
+      "alignmentScore": 0.4556,
+      "dialogues": [
+        {
+          "speakerKo": "알렉산다르",
+          "speakerEn": "Aleksandar",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "bottom-right"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
     },
     {
       "sceneNumber": 10,
@@ -103,7 +256,25 @@
       "narrationKo": "장부에는 아이들의 이름 대신 키와 몸무게, 마나 속성이 적혀 있었다. 엘리아나는 구조한 아이 한 명 한 명의 이름을 그 옆에 다시 써 넣었다. 헤르쿨도 말없이 펜을 들었다.",
       "sourceSentenceStart": 30,
       "sourceSentenceEnd": 32,
-      "alignmentScore": 0.6613
+      "alignmentScore": 0.6613,
+      "dialogues": [
+        {
+          "speakerKo": "헤르쿨",
+          "speakerEn": "Hercul",
+          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
+          "textEn": "All units on high alert! They are coming!",
+          "bubbleType": "shout",
+          "position": "top-right"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
     },
     {
       "sceneNumber": 11,
@@ -113,7 +284,18 @@
       "narrationKo": "그들은 한참 동안 계산표를 사람의 기록으로 되돌리는 일부터 했다. 한 줄은 북쪽 와일드랜드로, 다른 한 줄은 붉은 유리 궁정으로 향했다. 엘윈과 이셀라가 서로 반대쪽으로 끌려갔음을 헤르쿨은 알아차렸다.",
       "sourceSentenceStart": 33,
       "sourceSentenceEnd": 35,
-      "alignmentScore": 0.1533
+      "alignmentScore": 0.1533,
+      "dialogues": [
+        {
+          "speakerKo": "헤르쿨",
+          "speakerEn": "Hercul",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "top-left"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 12,
@@ -123,7 +305,26 @@
       "narrationKo": "아직 태어나지 않은 두 아이도 그 길 어딘가에 있을 터였다. “내가 궁정으로 간다.” 헤르쿨이 말했다. “그대들은 북쪽을 맡아 줘.”",
       "sourceSentenceStart": 36,
       "sourceSentenceEnd": 39,
-      "alignmentScore": 0.3506
+      "alignmentScore": 0.3506,
+      "dialogues": [
+        {
+          "speakerKo": "헤르쿨",
+          "speakerEn": "Hercul",
+          "textKo": "내가 궁정으로 간다.",
+          "textEn": "I am going to the palace. ",
+          "bubbleType": "speech",
+          "position": "top-left"
+        },
+        {
+          "speakerKo": "헤르쿨",
+          "speakerEn": "Hercul",
+          "textKo": "그대들은 북쪽을 맡아 줘.",
+          "textEn": "“그대들은 북쪽을 맡아 줘.”",
+          "bubbleType": "speech",
+          "position": "top-right"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 13,
@@ -133,7 +334,31 @@
       "narrationKo": "그림리는 팔짱을 꼈다. “우리가 왜 당신의 약속을 대신 지켜야 하지?” 헤르쿨은 알렉산다르의 부러진 검과 아이에게 줄 은빛 단검을 꺼냈다.",
       "sourceSentenceStart": 40,
       "sourceSentenceEnd": 42,
-      "alignmentScore": 0.5038
+      "alignmentScore": 0.5038,
+      "dialogues": [
+        {
+          "speakerKo": "알렉산다르",
+          "speakerEn": "Aleksandar",
+          "textKo": "우리가 왜 당신의 약속을 대신 지켜야 하지?",
+          "textEn": "Why should we keep your promise instead? ",
+          "bubbleType": "speech",
+          "position": "top-right"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
     },
     {
       "sceneNumber": 14,
@@ -143,7 +368,31 @@
       "narrationKo": "“죽은 사람의 부탁이라서가 아니다. 살아 있는 아이가 부모의 죄목까지 물려받는 세상을 그냥 둘 수 없어서다.” 가웨인은 보이지 않는 눈으로 단검의 진동을 들었다.",
       "sourceSentenceStart": 43,
       "sourceSentenceEnd": 45,
-      "alignmentScore": 0.6399
+      "alignmentScore": 0.6399,
+      "dialogues": [
+        {
+          "speakerKo": "알렉산다르",
+          "speakerEn": "Aleksandar",
+          "textKo": "죽은 사람의 부탁이라서가 아니다. 살아 있는 아이가 부모의 죄목까지 물려받는 세상을 그냥 둘 수 없어서다.",
+          "textEn": "It’s not because it’s a request from a dead person. It’s because we can’t just leave a world where living children inherit their parents’ crimes. ",
+          "bubbleType": "speech",
+          "position": "bottom-left"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
     },
     {
       "sceneNumber": 15,
@@ -153,7 +402,18 @@
       "narrationKo": "미약하지만 또렷한 생명의 공명이 북쪽에서 답하고 있었다. 그는 가장 먼저 고개를 끄덕였다. 나머지 여섯도 투덜거리거나 한숨을 쉬면서 각자의 방식으로 동의했다.",
       "sourceSentenceStart": 46,
       "sourceSentenceEnd": 48,
-      "alignmentScore": 0.4457
+      "alignmentScore": 0.4457,
+      "dialogues": [
+        {
+          "speakerKo": "알렉산다르",
+          "speakerEn": "Aleksandar",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "top-left"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 16,
@@ -163,7 +423,18 @@
       "narrationKo": "그날 일곱 추적자는 종탑 꼭대기에 모여 약속했다. 아이를 먼저 찾는 쪽이 그를 제자로 삼아 스스로를 지킬 힘을 가르친다. 열여덟 해 뒤 세븐브리지의 종 아래에서 두 아이를 만나게 해, 부모 세대의 비극을 진실로 끝맺게 한다. 약속을 기록하는 방식부터 의견이 갈렸다.",
       "sourceSentenceStart": 49,
       "sourceSentenceEnd": 52,
-      "alignmentScore": 0.4396
+      "alignmentScore": 0.4396,
+      "dialogues": [
+        {
+          "speakerKo": "알렉산다르",
+          "speakerEn": "Aleksandar",
+          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
+          "textEn": "All units on high alert! They are coming!",
+          "bubbleType": "shout",
+          "position": "bottom-left"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 17,
@@ -173,7 +444,18 @@
       "narrationKo": "그림리는 강철판에 새기자 했고, 카제는 적에게 들키지 않도록 암호로 남기자 했다. 로비냐드는 종 안쪽에 일곱 사람의 손도장을 찍었다. 누구 하나 마음을 바꾸더라도 나머지가 기억하게 하는 방법이었다.",
       "sourceSentenceStart": 53,
       "sourceSentenceEnd": 55,
-      "alignmentScore": 0.3361
+      "alignmentScore": 0.3361,
+      "dialogues": [
+        {
+          "speakerKo": "알렉산다르",
+          "speakerEn": "Aleksandar",
+          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
+          "textEn": "All units on high alert! They are coming!",
+          "bubbleType": "shout",
+          "position": "bottom-right"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 18,
@@ -183,7 +465,18 @@
       "narrationKo": "헤르쿨은 조건을 하나 덧붙였다. “둘을 서로의 원수로 키우지 마라. 누가 더 강한지 겨루게 할 수는 있어도, 누가 더 증오하는지 겨루게 해서는 안 된다.”",
       "sourceSentenceStart": 56,
       "sourceSentenceEnd": 58,
-      "alignmentScore": 0.3534
+      "alignmentScore": 0.3534,
+      "dialogues": [
+        {
+          "speakerKo": "헤르쿨",
+          "speakerEn": "Hercul",
+          "textKo": "둘을 서로의 원수로 키우지 마라. 누가 더 강한지 겨루게 할 수는 있어도, 누가 더 증오하는지 겨루게 해서는 안 된다.",
+          "textEn": "“둘을 서로의 원수로 키우지 마라. 누가 더 강한지 겨루게 할 수는 있어도, 누가 더 증오하는지 겨루게 해서는 안 된다.”",
+          "bubbleType": "speech",
+          "position": "bottom-left"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 19,
@@ -193,7 +486,25 @@
       "narrationKo": "그 말이 끝나기도 전에 창고 지붕을 검은 화살이 뚫었다. 추적을 눈치챈 궁정 암살자들이었다. 일곱 항아리가 동시에 깨지며 푸른 장막을 펼쳤고, 헤르쿨의 방호진이 그 위를 덮었다.",
       "sourceSentenceStart": 59,
       "sourceSentenceEnd": 61,
-      "alignmentScore": 0.3865
+      "alignmentScore": 0.3865,
+      "dialogues": [
+        {
+          "speakerKo": "헤르쿨",
+          "speakerEn": "Hercul",
+          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
+          "textEn": "All units on high alert! They are coming!",
+          "bubbleType": "shout",
+          "position": "top-left"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
     },
     {
       "sceneNumber": 20,
@@ -203,7 +514,18 @@
       "narrationKo": "여덟 사람은 등을 맞댄 채 첫 공동 전투를 치렀다. 동이 틀 무렵, 헤르쿨은 남쪽으로 떠났다. 일곱 추적자는 북쪽 관문을 향했다. 눈 위에는 서로 다른 여덟 종류의 발자국이 잠시 나란히 이어지다가 두 갈래로 갈라졌다.",
       "sourceSentenceStart": 62,
       "sourceSentenceEnd": 65,
-      "alignmentScore": 0.5444
+      "alignmentScore": 0.5444,
+      "dialogues": [
+        {
+          "speakerKo": "헤르쿨",
+          "speakerEn": "Hercul",
+          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
+          "textEn": "All units on high alert! They are coming!",
+          "bubbleType": "shout",
+          "position": "bottom-left"
+        }
+      ],
+      "sfxCues": []
     }
   ]
 }

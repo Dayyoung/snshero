@@ -1,0 +1,111 @@
+# -*- coding: utf-8 -*-
+import sys, os, re
+sys.path.insert(0, ".")
+
+from scripts.author_batch3_full import EP17_KO, EP17_EN
+from scripts.enrich_ep18 import EP18_KO
+from scripts.make_arc2_batch3_master import EP18_EN
+from scripts.enrich_batch3_ep19_20 import EP19_KO_RICH, EP20_KO_RICH
+
+# EP19 English (enriched)
+from scripts.make_arc2_batch3_master import EP19_EN
+EP19_EN_FINAL = EP19_EN + """\n\nKing Aeolus draped his mantle of royal azure feathers around Cilia's shoulders. "This mantle was the cherished legacy bequeathed by your mother Sylphid. Step forward now as the true sovereign of the winds, and lead our people into the dawn." Cilia fastened the golden brooch, bowing deeply before her father."""
+
+# EP20 English (enriched to match EP20_KO_RICH)
+EP20_EN_FINAL = """SNSHero Novel
+Episode 20: Waves Swallowing the Flower Boats
+
+Entering the sanctum of the Jade Barrier Spire, the companions discovered that High Elder Zephyr had already integrated the core mana matrix into the obsidian apparatus of the Nine Shadows Codex. Forbidden abyssal mana tainted the jade conduits of the spire, shaking the foundations of the island. Black lightning erupted from the apex, cleaving through the ocean horizon and awakening a catastrophic tidal wave from the sleeping depths. Ancient mana circulation systems that had maintained the island's gentle climate for thousands of years inverted with cataclysmic violence, staining the heavens crimson as colossal marble walls fractured and tumbled into the abyss.
+
+Zephyr shrieked in maniacal ecstasy as he primed the conduits.
+
+"Foolish Aeolus and witless princess! Whispering Wind Island shall serve as the grand sacrificial altar for the new era! Once the ocean swallows everything, the empire and I shall rule supreme over the continent!"
+
+Kadan and Ignis surged forward, but a violent concussive shockwave from the collapsing core swept Zephyr into a spatial teleportation rift. Laughing in vile triumph, the traitor fled toward the imperial capital.
+
+At that moment, the frantic clangor of the island's temple bells echoed from the harbors below, accompanied by the terrified screams of thousands of citizens.
+
+Rushing to the terrace, Cilia looked down and turned pale as ash.
+
+"No! Zephyr has dismantled the elemental barriers, unsealing the oceanic abyss! A black tsunami hundreds of fathoms high is bearing down upon the harbor!"
+
+Whispering Wind Island possessed not a single war galley. Only hundreds of traditional ceremonial 'Flower Boats'—timber barges festooned with water lilies, lotus blooms, and spring irises for the equinox festival—were moored along the wharves. The festive vessels that had once wafted sweet floral fragrances were now fragile leaves tossed before a wall of liquid death.
+
+As the mountain of black water crested the horizon, panic consumed the gathering refugees. Mooring pylons groaned and snapped under the violent receding undertow, flooding the wharves in chaos.
+
+Raising her Jade Staff, Cilia projected her voice across the harbor with wind magic.
+
+"People of Whispering Wind Island, hear my voice! I am Cilia, daughter of Queen Sylphid! There is nowhere on land to flee! Board every flower barge along the piers! The festive craft of our ancestors shall serve as our ark of salvation!"
+
+Inspired by Cilia's clarion call, the islanders rallied, boarding the barges in disciplined haste.
+
+Stamping his iron pegleg upon the planks, Rondol took command of the dockside evacuations.
+
+"Board the children and elders first! Thirty souls per barge, sturdy hands to the oars on port and starboard! By Rondol's name, the sea shall not claim a single life today!"
+
+Ignis bounded onto the piers, wielding his pure white flame to incinerate fallen timber and shattered rocks, carving open departure channels for the flower barges. The hands of the former imperial commander now reached out to lift weeping children and frail elders safely onto the decks. Bracing fallen beams with his iron shield, Kadan cleared paths for the elderly.
+
+Kadan called out to the boatmen.
+
+"Make haste! Cast off the mooring lines before the deluge swallows the wharves!"
+
+Yet from beyond the boiling swell rose the Leviathan, a colossal sea behemoth corrupted by Medusa Gorgo's necrotic blight. Riding the crest of the black deluge, the abomination opened its gaping maw, charging a cataclysmic beam of shadow mana aimed squarely at the refugee flotilla. If the tsunami struck, the wooden flower boats would be obliterated into splinters.
+
+In that fatal instant, Kadan bounded onto the timber prow of the flagship 'Breeze Wing' at the van of the flotilla.
+
+Grasping his unadorned iron shield with both hands, Kadan drew the foundational power of the earth deep into his spirit. The ultimate defensive mystery passed down by Master Aleksandar—the 'Star-Steadfast Bulwark'—ignited within Kadan's breast in an aura of brilliant starlight.
+
+Planting his boots into the timbers, Kadan unleashed a lion-hearted roar.
+
+"To protect the warmth behind me, this shield shall never break! Guardians of the earth, awaken through the breath of the stars!"
+
+A monumental wall of celestial blue starlight erupted from Kadan's shield. Cilia channeled the tempestuous winds of the Jade Staff into the barrier, while King Aeolus directed the full fury of his storm mana from the Sky Altar into Kadan's guard. Starlight and jade wind fused into an impenetrable mountain of protective light rising from the sea.
+
+Boom!
+
+The black tsunami and the Leviathan's necrotic beam crashed headlong into Kadan's starlight barrier. A cataclysmic shockwave rent the heavens and the sea, vaporizing waves into billowing walls of white steam. The deck beneath Kadan's boots groaned and splintered. Blood welled through the young warrior's sleeves as veins strained under the titanic impact, yet his boots remained wedged into the prow like iron spikes, yielding not an inch.
+
+The apocalyptic tsunami broke against Kadan's shield, cleaving in two and cascading harmlessly to either side. Riding through the towering spray, the frail flower boats crest the swells without capsizing.
+
+Seizing the opening, Ignis vaulted high into the churning air. Channeling his immaculate white flame along his blade, he plunged like a bolt of holy lightning toward the Leviathan's glowing eye.
+
+"Begone into the abyss, fiend of shadow!"
+
+The blazing strike pierced the beast's skull. Howling in agony, the Leviathan thrashed and sank back into the ocean depths. Together, Kadan's immovable aegis and Ignis's sanctifying flame had vanquished the ancient catastrophe.
+
+As the deluge receded and peaceful swells returned, thousands of refugees across the flower boats wept in joyous relief. Millions of colorful petals—lotus, iris, and water lily—floated upon the tranquil emerald sea, blanketing the horizon like a vast floral tapestry. A million floating blossoms bore silent witness to the triumph of life over destruction.
+
+Yet beneath the waves, the outer coral ramparts and ancient palaces of Whispering Wind Island slowly slipped into the deep. Standing by the forward railing, Cilia wiped away quiet tears as she watched her homeland sink beneath the tide.
+
+Stepping to her side, Kadan offered gentle solace.
+
+"Weep not, Cilia. The stone walls have sunk, but the realm of the wind lives eternally within the hearts of the people you saved. So long as our people draw breath, the kingdom shall never perish."
+
+Draping his cloak around her shivering shoulders, Ignis looked toward the western horizon.
+
+"Our duty is not to stone and earth, but to the living warmth of tomorrow. Now we march upon the capital to bring Lucian and Zephyr to justice."
+
+Led by King Aeolus and Captain Rondol, the armada of flower boats hoisted their canvas, sailing boldly toward the western continent. Beyond the jagged coastal peaks, the golden dawn of a new era broke in dazzling splendor. The second arc of the SNS Heroes drew to its triumphant close, opening the final battle for the fate of the realm. The ocean winds now filled their sails like sturdy wings bearing them into history."""
+
+with open("scripts/novel_data/arc2_batch3.py", "w", encoding="utf-8") as f:
+    f.write(f'''# -*- coding: utf-8 -*-
+"""
+scripts/novel_data/arc2_batch3.py
+Episodes 17, 18, 19, 20
+Authentic commercial fantasy literature, 3,750 - 4,200 chars, 12 - 16 dialogues.
+"""
+
+EP17_KO = """{EP17_KO}"""
+EP17_EN = """{EP17_EN}"""
+
+EP18_KO = """{EP18_KO}"""
+EP18_EN = """{EP18_EN}"""
+
+EP19_KO = """{EP19_KO_RICH}"""
+EP19_EN = """{EP19_EN_FINAL}"""
+
+EP20_KO = """{EP20_KO_RICH}"""
+EP20_EN = """{EP20_EN_FINAL}"""
+''')
+
+print("Batch 3 successfully finalized!")

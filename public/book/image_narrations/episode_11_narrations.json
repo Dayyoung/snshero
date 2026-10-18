@@ -13,7 +13,31 @@
       "narrationKo": "발리안이 갇힌 노동 감옥은 궁정 아래의 폐광과 이어져 있었다. 죄수들은 이름 대신 쇠목걸이의 번호로 불렸고, 하루 종일 화염석을 캐며 기억을 잃어 갔다. 실리아는 배수로의 바람을 읽어 순찰 간격을 계산했고, 카단은 얼음막으로 용암 수로 위에 임시 다리를 만들었다.",
       "sourceSentenceStart": 1,
       "sourceSentenceEnd": 3,
-      "alignmentScore": 0.5835
+      "alignmentScore": 0.5835,
+      "dialogues": [
+        {
+          "speakerKo": "발리안",
+          "speakerEn": "Balian",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "top-right"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
     },
     {
       "sceneNumber": 2,
@@ -23,7 +47,31 @@
       "narrationKo": "가장 깊은 채굴장에서 그들은 한쪽 다리를 저는 노인을 찾았다. 얼굴은 흉터로 무너졌지만, 부러진 창대를 잡는 손은 여전히 단단했다. 노인은 카단의 은빛 단검을 보는 순간 곡괭이를 떨어뜨렸다.",
       "sourceSentenceStart": 4,
       "sourceSentenceEnd": 6,
-      "alignmentScore": 0.4859
+      "alignmentScore": 0.4859,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "검끝이 흔들리지 않는 한, 길은 열린다.",
+          "textEn": "As long as our blades do not waver, the path will open.",
+          "bubbleType": "speech",
+          "position": "top-left"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
     },
     {
       "sceneNumber": 3,
@@ -33,7 +81,31 @@
       "narrationKo": "발리안은 죄수들에게 글을 가르치고 있었다. 화염석 벽에 곡괭이로 하루의 날짜와 죽은 사람의 이름을 새겼다. 기억을 잃지 않는 것이 감옥에서 할 수 있는 유일한 저항이었다.",
       "sourceSentenceStart": 7,
       "sourceSentenceEnd": 9,
-      "alignmentScore": 0.7313
+      "alignmentScore": 0.7313,
+      "dialogues": [
+        {
+          "speakerKo": "발리안",
+          "speakerEn": "Balian",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "bottom-left"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        },
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
     },
     {
       "sceneNumber": 4,
@@ -43,7 +115,25 @@
       "narrationKo": "카단은 벽 한쪽에서 아버지 알렉산다르의 이름을 발견했다. 발리안이 열여덟 해 동안 하루도 빠짐없이 다시 새긴 이름이었다. “카단 형님의 칼.”",
       "sourceSentenceStart": 10,
       "sourceSentenceEnd": 12,
-      "alignmentScore": 0.5715
+      "alignmentScore": 0.5715,
+      "dialogues": [
+        {
+          "speakerKo": "알렉산다르",
+          "speakerEn": "Aleksandar",
+          "textKo": "카단 형님의 칼.",
+          "textEn": "“카단 형님의 칼.”",
+          "bubbleType": "speech",
+          "position": "top-left"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
     },
     {
       "sceneNumber": 5,
@@ -53,7 +143,25 @@
       "narrationKo": "발리안은 열여덟 해 전 절벽에서 죽지 않았다. 강 하류의 궁정 병사들에게 붙잡힌 뒤 이셀라의 행방을 알아내려고 신분을 숨긴 채 살아남았다. 루시안은 그를 알아보고도 죽이지 않았다. 이그니스에게 친아버지를 처형하게 만들 날을 기다리고 있었기 때문이다.",
       "sourceSentenceStart": 13,
       "sourceSentenceEnd": 16,
-      "alignmentScore": 0.5728
+      "alignmentScore": 0.5728,
+      "dialogues": [
+        {
+          "speakerKo": "발리안",
+          "speakerEn": "Balian",
+          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
+          "textEn": "All units on high alert! They are coming!",
+          "bubbleType": "shout",
+          "position": "top-right"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
     },
     {
       "sceneNumber": 6,
@@ -63,7 +171,25 @@
       "narrationKo": "탈출 도중 이그니스가 길을 막았다. 카단은 그에게 편지를 던졌고 발리안은 아들에게 가문의 창식을 보여 주었다. 후퇴하는 듯하다가 창끝을 거꾸로 돌리는 동작은 누구에게도 전하지 않은 집안의 수호식이었다.",
       "sourceSentenceStart": 17,
       "sourceSentenceEnd": 19,
-      "alignmentScore": 0.5151
+      "alignmentScore": 0.5151,
+      "dialogues": [
+        {
+          "speakerKo": "발리안",
+          "speakerEn": "Balian",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "top-left"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
     },
     {
       "sceneNumber": 7,
@@ -73,7 +199,18 @@
       "narrationKo": "이그니스의 얼굴에서 핏기가 사라졌다. 자신이 어릴 때 꿈속에서 반복해 보던 동작이었다. 몸이 기억하는 아버지의 흔적을 그는 궁정 교관의 가르침이라고 믿어 왔다.",
       "sourceSentenceStart": 20,
       "sourceSentenceEnd": 22,
-      "alignmentScore": 0.4249
+      "alignmentScore": 0.4249,
+      "dialogues": [
+        {
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
+          "textEn": "All units on high alert! They are coming!",
+          "bubbleType": "shout",
+          "position": "bottom-left"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 8,
@@ -83,7 +220,31 @@
       "narrationKo": "발리안은 이그니스의 창을 한번 쳐 내고 손잡이를 바로잡아 주었다. “엄지를 그렇게 세우면 불꽃이 손목을 태운다.” 꾸짖는 말투가 너무 자연스러워 이그니스는 잠시 어린아이가 된 듯 손을 고쳤다.",
       "sourceSentenceStart": 23,
       "sourceSentenceEnd": 25,
-      "alignmentScore": 0.3747
+      "alignmentScore": 0.3747,
+      "dialogues": [
+        {
+          "speakerKo": "발리안",
+          "speakerEn": "Balian",
+          "textKo": "엄지를 그렇게 세우면 불꽃이 손목을 태운다.",
+          "textEn": "If you raise your thumb like that, flames will burn your wrist. ",
+          "bubbleType": "speech",
+          "position": "top-left"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
     },
     {
       "sceneNumber": 9,
@@ -93,7 +254,25 @@
       "narrationKo": "곧 자신이 한 행동을 깨닫고 창을 거칠게 뿌리쳤다. “저 사람은 죄수다.” 이그니스가 말했다.",
       "sourceSentenceStart": 26,
       "sourceSentenceEnd": 28,
-      "alignmentScore": 0.4179
+      "alignmentScore": 0.4179,
+      "dialogues": [
+        {
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "저 사람은 죄수다.",
+          "textEn": "That man is a prisoner. ",
+          "bubbleType": "speech",
+          "position": "top-right"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
     },
     {
       "sceneNumber": 10,
@@ -103,7 +282,34 @@
       "narrationKo": "“죄수의 말과 기술은 증거가 될 수 없어.” “그럼 네가 직접 확인해.” 카단이 답했다. “불을 휘두르는 대신 질문을 해.”",
       "sourceSentenceStart": 29,
       "sourceSentenceEnd": 32,
-      "alignmentScore": 0.6088
+      "alignmentScore": 0.6088,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "죄수의 말과 기술은 증거가 될 수 없어.",
+          "textEn": "The prisoner’s words and descriptions cannot serve as evidence. ",
+          "bubbleType": "speech",
+          "position": "bottom-left"
+        },
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "그럼 네가 직접 확인해.",
+          "textEn": "Then check it yourself. ",
+          "bubbleType": "speech",
+          "position": "bottom-right"
+        },
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "불을 휘두르는 대신 질문을 해.",
+          "textEn": "“불을 휘두르는 대신 질문을 해.”",
+          "bubbleType": "speech",
+          "position": "top-left"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 11,
@@ -113,7 +319,25 @@
       "narrationKo": "경보가 울리자 발리안은 이그니스를 밀쳐 내고 탈출구를 열었다. 아들을 해칠 수 없어 창끝을 끝까지 뒤집은 채였다. 이그니스는 추격하지 않았으나 함께 가지도 않았다.",
       "sourceSentenceStart": 33,
       "sourceSentenceEnd": 35,
-      "alignmentScore": 0.488
+      "alignmentScore": 0.488,
+      "dialogues": [
+        {
+          "speakerKo": "발리안",
+          "speakerEn": "Balian",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "bottom-left"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
     },
     {
       "sceneNumber": 12,
@@ -123,7 +347,25 @@
       "narrationKo": "쇠창살 사이에 남아 아버지가 사라진 방향을 오래 바라보았다. 지상에서는 여섯 스승이 기다리고 있었다. 그들은 카단이 말도 없이 궁정에 잠입한 데 화가 나 있었고, 실리아가 에올루스의 딸이라는 사실에는 더 크게 놀랐다.",
       "sourceSentenceStart": 36,
       "sourceSentenceEnd": 38,
-      "alignmentScore": 0.49
+      "alignmentScore": 0.49,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "bottom-right"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
     },
     {
       "sceneNumber": 13,
@@ -133,7 +375,25 @@
       "narrationKo": "특히 그림리는 바람섬 출신을 믿지 않았다. 오래전 로비냐드를 죽인 메두사 고르고 역시 그 섬의 제자였기 때문이다. 말싸움은 메두사 고르고의 기습으로 끝났다.",
       "sourceSentenceStart": 39,
       "sourceSentenceEnd": 41,
-      "alignmentScore": 0.5777
+      "alignmentScore": 0.5777,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "top-right"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
     },
     {
       "sceneNumber": 14,
@@ -143,7 +403,25 @@
       "narrationKo": "그녀는 궁정과 거래해 발리안을 넘기는 대가로 코덱스의 나머지 절반을 얻으려 했다. 은빛 채찍이 실리아를 노리자 카단이 몸을 던져 막았고, 메두사 고르고는 그의 목을 움켜쥐었다. “벨페고르를 죽인 건 너희다.”",
       "sourceSentenceStart": 42,
       "sourceSentenceEnd": 44,
-      "alignmentScore": 0.4511
+      "alignmentScore": 0.4511,
+      "dialogues": [
+        {
+          "speakerKo": "발리안",
+          "speakerEn": "Balian",
+          "textKo": "벨페고르를 죽인 건 너희다.",
+          "textEn": "“벨페고르를 죽인 건 너희다.”",
+          "bubbleType": "speech",
+          "position": "bottom-left"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
     },
     {
       "sceneNumber": 15,
@@ -153,7 +431,18 @@
       "narrationKo": "카단은 급류에서 벨페고르가 자신을 구했다고 말했다. 메두사 고르고의 손에 잠시 힘이 풀렸다. 그 틈에 가웨인의 지팡이가 채찍을 감았고, 나머지 스승들이 카단을 끌어냈다. 전투 중 메두사 고르고는 여섯 사람의 은방울 소리를 들었다.",
       "sourceSentenceStart": 45,
       "sourceSentenceEnd": 48,
-      "alignmentScore": 0.4675
+      "alignmentScore": 0.4675,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "bottom-left"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 16,
@@ -163,7 +452,31 @@
       "narrationKo": "미스트폴 절벽에서 죽은 로비냐드의 방울이었다. 남편을 잃은 자신의 복수와 동료를 잃은 그들의 복수가 같은 밤에 맞부딪쳤다. 누구도 상대의 슬픔을 인정하지 않았고, 싸움은 더욱 잔혹해졌다.",
       "sourceSentenceStart": 49,
       "sourceSentenceEnd": 51,
-      "alignmentScore": 0.6672
+      "alignmentScore": 0.6672,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "발소리를 죽여라. 어둠 속에서 숨을 고르는 거다.",
+          "textEn": "Muffle your footsteps. Catch your breath in the dark.",
+          "bubbleType": "whisper",
+          "position": "bottom-right"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
     },
     {
       "sceneNumber": 17,
@@ -173,7 +486,31 @@
       "narrationKo": "발리안이 창으로 바닥을 무너뜨려 두 편을 갈라놓았다. “오늘은 아이들이 부모의 원한을 물려받는 날이 아니다.” 무너진 바닥 아래에는 죄수들이 파 둔 작은 탈출 통로가 있었다.",
       "sourceSentenceStart": 52,
       "sourceSentenceEnd": 54,
-      "alignmentScore": 0.6898
+      "alignmentScore": 0.6898,
+      "dialogues": [
+        {
+          "speakerKo": "발리안",
+          "speakerEn": "Balian",
+          "textKo": "오늘은 아이들이 부모의 원한을 물려받는 날이 아니다.",
+          "textEn": "Today is not the day for children to inherit their parents’ resentment. ",
+          "bubbleType": "speech",
+          "position": "top-right"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
     },
     {
       "sceneNumber": 18,
@@ -183,7 +520,18 @@
       "narrationKo": "발리안은 자기 혼자 나갈 수 있었던 기회를 수년 동안 쓰지 않고, 마지막 죄수까지 지나갈 폭으로 넓혀 왔다. 카단 일행은 싸움을 멈추고 광산 사람들을 먼저 지상으로 이끌었다. 메두사 고르고는 어둠 속으로 물러났지만 실리아에게 경고를 남겼다.",
       "sourceSentenceStart": 55,
       "sourceSentenceEnd": 57,
-      "alignmentScore": 0.4181
+      "alignmentScore": 0.4181,
+      "dialogues": [
+        {
+          "speakerKo": "발리안",
+          "speakerEn": "Balian",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "top-left"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 19,
@@ -193,7 +541,25 @@
       "narrationKo": "에올루스가 코덱스의 비밀을 지키기 위해 얼마나 많은 제자를 버렸는지 아느냐고. 실리아는 대답하지 못했다. 아버지에게서 도망쳐 나온 이유 중 하나가 바로 그 침묵이었기 때문이다.",
       "sourceSentenceStart": 58,
       "sourceSentenceEnd": 60,
-      "alignmentScore": 0.3754
+      "alignmentScore": 0.3754,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "발소리를 죽여라. 어둠 속에서 숨을 고르는 거다.",
+          "textEn": "Muffle your footsteps. Catch your breath in the dark.",
+          "bubbleType": "whisper",
+          "position": "bottom-left"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
     },
     {
       "sceneNumber": 20,
@@ -203,7 +569,18 @@
       "narrationKo": "카단 일행은 도시 밖 폐성소에 몸을 숨겼다. 발리안과 이셀라가 마주 섰을 때 두 사람은 곧장 껴안지 못했다. 잃어버린 열여덟 해가 너무 길어 손을 어디에 놓아야 할지조차 낯설었다. 카단은 조용히 문을 닫아 주었다.",
       "sourceSentenceStart": 61,
       "sourceSentenceEnd": 64,
-      "alignmentScore": 0.4588
+      "alignmentScore": 0.4588,
+      "dialogues": [
+        {
+          "speakerKo": "발리안",
+          "speakerEn": "Balian",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "bottom-right"
+        }
+      ],
+      "sfxCues": []
     }
   ]
 }

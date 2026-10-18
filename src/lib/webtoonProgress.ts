@@ -25,9 +25,46 @@ export function getSeasonItem(key: string, season: string, defaultValue: string 
   return defaultValue;
 }
 
-export function setSeasonItem(key: string, season: string, value: string): void {
+export function setSeasonItem(key: string, arg2: string, arg3?: string): void {
   if (typeof window === 'undefined') return;
-  localStorage.setItem(`${key}_${season}`, value);
+  let season = 'season1';
+  let value = '';
+
+  if (arg3 === undefined) {
+    value = arg2 ?? '';
+  } else if (typeof arg3 === 'string' && (arg3.startsWith('season') || arg3 === 'default')) {
+    // Caller passed (key, value, season)
+    value = arg2;
+    season = arg3;
+  } else if (typeof arg2 === 'string' && (arg2.startsWith('season') || arg2 === 'default')) {
+    // Caller passed (key, season, value)
+    season = arg2;
+    value = arg3;
+  } else {
+    // Heuristic fallback
+    const isValLike = (s: string) =>
+      s.startsWith('{') ||
+      s.startsWith('[') ||
+      /^-?\d+$/.test(s) ||
+      s === 'true' ||
+      s === 'false' ||
+      s.length > 30;
+
+    if (isValLike(arg2) && !isValLike(arg3)) {
+      value = arg2;
+      season = arg3;
+    } else if (isValLike(arg3) && !isValLike(arg2)) {
+      season = arg2;
+      value = arg3;
+    } else {
+      // Default standard order fallback: (key, season, value)
+      season = arg2;
+      value = arg3;
+    }
+  }
+
+  const seasonKey = `${key}_${season}`;
+  localStorage.setItem(seasonKey, value);
   if (season === 'season1') {
     localStorage.setItem(key, value);
   }
@@ -148,7 +185,23 @@ export function loadEpisodeScrollState(
     const key = `hero_scroll_state_${season}_${tab}_ep${episodeNum}`;
     const raw = localStorage.getItem(key);
     if (!raw) return null;
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    if (
+      parsed &&
+      typeof parsed === 'object' &&
+      !Array.isArray(parsed) &&
+      typeof parsed.scrollY === 'number' &&
+      typeof parsed.progressPct === 'number' &&
+      !isNaN(parsed.scrollY) &&
+      !isNaN(parsed.progressPct)
+    ) {
+      return {
+        scrollY: Math.max(0, parsed.scrollY),
+        progressPct: Math.min(100, Math.max(0, parsed.progressPct)),
+        updatedAt: typeof parsed.updatedAt === 'number' && !isNaN(parsed.updatedAt) ? parsed.updatedAt : Date.now(),
+      };
+    }
+    return null;
   } catch {
     return null;
   }

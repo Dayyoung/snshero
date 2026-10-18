@@ -13,7 +13,18 @@
       "narrationKo": "폐성소의 위치는 하루를 넘기지 못하고 발각되었다. 루시안은 발리안이 살아 있다는 사실이 드러나면 이그니스를 지배할 명분을 잃었다.",
       "sourceSentenceStart": 1,
       "sourceSentenceEnd": 2,
-      "alignmentScore": 0.3202
+      "alignmentScore": 0.3202,
+      "dialogues": [
+        {
+          "speakerKo": "발리안",
+          "speakerEn": "Balian",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "top-left"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 2,
@@ -23,7 +34,31 @@
       "narrationKo": "그는 궁정 수비대뿐 아니라 금지술로 개조한 마기테크 골렘까지 풀어 성소를 에워쌌다. 발리안은 이셀라와 함께 뒷문으로 나가려 했지만, 메두사 고르고의 손톱에 입은 상처가 검게 번지고 있었다. 이그니스의 생명력 추출 룬도 같은 독에서 나왔다는 사실을 그는 몸으로 알아차렸다.",
       "sourceSentenceStart": 3,
       "sourceSentenceEnd": 5,
-      "alignmentScore": 0.5769
+      "alignmentScore": 0.5769,
+      "dialogues": [
+        {
+          "speakerKo": "발리안",
+          "speakerEn": "Balian",
+          "textKo": "검끝이 흔들리지 않는 한, 길은 열린다.",
+          "textEn": "As long as our blades do not waver, the path will open.",
+          "bubbleType": "speech",
+          "position": "bottom-left"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
     },
     {
       "sceneNumber": 3,
@@ -33,7 +68,25 @@
       "narrationKo": "달릴수록 팔다리가 굳었다. 헤르쿨과 워커가 길을 열었다. 여섯 스승은 성소 계단을 지켰고 실리아는 부상자들을 바람 통로로 빼냈다.",
       "sourceSentenceStart": 6,
       "sourceSentenceEnd": 8,
-      "alignmentScore": 0.3487
+      "alignmentScore": 0.3487,
+      "dialogues": [
+        {
+          "speakerKo": "헤르쿨",
+          "speakerEn": "Hercul",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "bottom-right"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
     },
     {
       "sceneNumber": 4,
@@ -43,7 +96,18 @@
       "narrationKo": "카단은 부모 세대의 사람들이 다시 한자리에 모였는데도 누구 하나 기뻐할 틈이 없다는 사실이 견디기 어려웠다. 루시안이 직접 나타나 이셀라에게 손을 내밀었다. “궁정으로 돌아오면 발리안의 목숨만은 살려 주지.”",
       "sourceSentenceStart": 9,
       "sourceSentenceEnd": 11,
-      "alignmentScore": 0.3976
+      "alignmentScore": 0.3976,
+      "dialogues": [
+        {
+          "speakerKo": "발리안",
+          "speakerEn": "Balian",
+          "textKo": "궁정으로 돌아오면 발리안의 목숨만은 살려 주지.",
+          "textEn": "“궁정으로 돌아오면 발리안의 목숨만은 살려 주지.”",
+          "bubbleType": "speech",
+          "position": "top-left"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 5,
@@ -53,7 +117,25 @@
       "narrationKo": "이셀라는 한때 그 말을 믿고 싶었던 자신을 용서할 수 없었다. 그녀는 발리안의 손을 잡은 채 루시안에게 등을 돌렸다. 발리안은 남은 힘으로 창을 세워 아내와 카단을 가렸다.",
       "sourceSentenceStart": 12,
       "sourceSentenceEnd": 14,
-      "alignmentScore": 0.5694
+      "alignmentScore": 0.5694,
+      "dialogues": [
+        {
+          "speakerKo": "발리안",
+          "speakerEn": "Balian",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "top-left"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
     },
     {
       "sceneNumber": 6,
@@ -63,7 +145,25 @@
       "narrationKo": "그때 이그니스가 궁정군 앞에 내려섰다. 모두가 그의 선택을 기다렸다. 그는 발리안에게 다가가 무릎을 꿇는 대신 창끝을 겨누었다.",
       "sourceSentenceStart": 15,
       "sourceSentenceEnd": 17,
-      "alignmentScore": 0.6832
+      "alignmentScore": 0.6832,
+      "dialogues": [
+        {
+          "speakerKo": "발리안",
+          "speakerEn": "Balian",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "bottom-left"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
     },
     {
       "sceneNumber": 7,
@@ -73,7 +173,31 @@
       "narrationKo": "루시안은 만족스러운 미소를 지었다. 하지만 이그니스의 불꽃은 발리안의 몸이 아니라 땅속 파괴 룬을 태웠다. 성소 전체를 매몰시키려던 장치가 빛을 잃었다.",
       "sourceSentenceStart": 18,
       "sourceSentenceEnd": 20,
-      "alignmentScore": 0.4891
+      "alignmentScore": 0.4891,
+      "dialogues": [
+        {
+          "speakerKo": "발리안",
+          "speakerEn": "Balian",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "bottom-right"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
     },
     {
       "sceneNumber": 8,
@@ -83,7 +207,18 @@
       "narrationKo": "“나는 아직 당신을 아버지라 부르지 않겠다. 그렇다고 저자의 명령으로 죽이지도 않아.” 발리안이 처음으로 아들의 얼굴을 가까이 보았다. 무슨 말을 해야 할지 찾는 동안 독이 심장에 닿았다.",
       "sourceSentenceStart": 21,
       "sourceSentenceEnd": 24,
-      "alignmentScore": 0.5702
+      "alignmentScore": 0.5702,
+      "dialogues": [
+        {
+          "speakerKo": "발리안",
+          "speakerEn": "Balian",
+          "textKo": "나는 아직 당신을 아버지라 부르지 않겠다. 그렇다고 저자의 명령으로 죽이지도 않아.",
+          "textEn": "I will not call you father yet, nor will I kill you by order of you. ",
+          "bubbleType": "speech",
+          "position": "top-left"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 9,
@@ -93,7 +228,18 @@
       "narrationKo": "그는 이셀라의 어깨에 기대며 카단에게 이그니스를 미워하기 전에 진실을 보여 달라고 부탁했다. 이셀라는 이그니스에게 작은 나무 말 하나를 내밀었다. 납치되던 날까지 아기 침대에 달아 두었던 장난감이었다.",
       "sourceSentenceStart": 25,
       "sourceSentenceEnd": 27,
-      "alignmentScore": 0.5033
+      "alignmentScore": 0.5033,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "top-left"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 10,
@@ -103,7 +249,18 @@
       "narrationKo": "궁정이 모든 과거를 없애려 했지만 그녀는 치마 안감에 꿰매 숨겼다. 이그니스는 받지 않았고, 나무 말은 두 사람 사이의 바닥에 놓였다. 루시안의 화살이 날아왔다.",
       "sourceSentenceStart": 28,
       "sourceSentenceEnd": 30,
-      "alignmentScore": 0.5516
+      "alignmentScore": 0.5516,
+      "dialogues": [
+        {
+          "speakerKo": "루시안",
+          "speakerEn": "Lucian",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "bottom-left"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 11,
@@ -113,7 +270,25 @@
       "narrationKo": "발리안은 마지막 힘으로 아내를 감쌌고, 이셀라는 그의 가슴에 박힌 화살을 붙든 채 놓지 않았다. 두 사람은 서로의 이름을 한 번씩 부른 뒤 같은 자리에서 숨을 거두었다. 이그니스의 불꽃이 폭주했다.",
       "sourceSentenceStart": 31,
       "sourceSentenceEnd": 33,
-      "alignmentScore": 0.5069
+      "alignmentScore": 0.5069,
+      "dialogues": [
+        {
+          "speakerKo": "발리안",
+          "speakerEn": "Balian",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "bottom-right"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
     },
     {
       "sceneNumber": 12,
@@ -123,7 +298,25 @@
       "narrationKo": "성소의 돌기둥이 녹고 궁정 병사들의 갑옷이 붉게 달아올랐다. 카단은 눈결정 방패를 펼쳐 사람들을 지켰다. 그는 이그니스를 공격하지 않고 불길 한가운데로 걸어 들어갔다.",
       "sourceSentenceStart": 34,
       "sourceSentenceEnd": 36,
-      "alignmentScore": 0.5903
+      "alignmentScore": 0.5903,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
+          "textEn": "All units on high alert! They are coming!",
+          "bubbleType": "shout",
+          "position": "top-right"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
     },
     {
       "sceneNumber": 13,
@@ -133,7 +326,18 @@
       "narrationKo": "“네가 지금 태우는 건 루시안이 아니라 네가 들을 수 있었던 마지막 말이야.” 이그니스는 카단의 멱살을 잡았지만 주먹을 내리지 못했다. 루시안은 혼란을 틈타 달아났다.",
       "sourceSentenceStart": 37,
       "sourceSentenceEnd": 39,
-      "alignmentScore": 0.6577
+      "alignmentScore": 0.6577,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "네가 지금 태우는 건 루시안이 아니라 네가 들을 수 있었던 마지막 말이야.",
+          "textEn": "What you are burning now is not Lucian, but those are the last words you could hear. ",
+          "bubbleType": "speech",
+          "position": "top-right"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 14,
@@ -143,7 +347,18 @@
       "narrationKo": "남은 궁정군도 주인을 따라 후퇴했다. 발리안과 이셀라는 엘윈 마을이 보이는 언덕에 함께 묻혔다. 헤르쿨은 열여덟 해 전 자신이 조금만 덜 성급했다면 비극을 막았을지 모른다며 무릎을 꿇었다.",
       "sourceSentenceStart": 40,
       "sourceSentenceEnd": 42,
-      "alignmentScore": 0.4583
+      "alignmentScore": 0.4583,
+      "dialogues": [
+        {
+          "speakerKo": "발리안",
+          "speakerEn": "Balian",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "bottom-left"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 15,
@@ -153,7 +368,25 @@
       "narrationKo": "그림리는 죽은 자 앞에서 후회만 늘어놓는 것은 살아 있는 자의 허영이라며 그를 일으켰다. 카단은 비석에 두 사람의 궁정 죄수 번호를 적지 않았다. 발리안이 감옥 벽에 남긴 이름을 그대로 새겼고, 이셀라가 물레 옆에 두었던 빈 찻잔 두 개를 무덤 앞에 놓았다.",
       "sourceSentenceStart": 43,
       "sourceSentenceEnd": 45,
-      "alignmentScore": 0.3878
+      "alignmentScore": 0.3878,
+      "dialogues": [
+        {
+          "speakerKo": "발리안",
+          "speakerEn": "Balian",
+          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
+          "textEn": "All units on high alert! They are coming!",
+          "bubbleType": "shout",
+          "position": "bottom-right"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
     },
     {
       "sceneNumber": 16,
@@ -163,7 +396,31 @@
       "narrationKo": "실리아는 바람으로 작은 풍경을 달아 누가 찾아오면 소리가 나게 했다. 장례가 끝난 뒤 이그니스는 사라졌다. 무덤 앞에는 백색 유리로 굳은 불꽃 한 송이만 남아 있었다.",
       "sourceSentenceStart": 46,
       "sourceSentenceEnd": 48,
-      "alignmentScore": 0.3782
+      "alignmentScore": 0.3782,
+      "dialogues": [
+        {
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "top-right"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
     },
     {
       "sceneNumber": 17,
@@ -173,7 +430,18 @@
       "narrationKo": "카단은 그것을 치우지 않았다. 아무도 보지 않을 때 이그니스는 되돌아와 나무 말을 무덤 사이에 묻었다. 어머니가 자신을 찾았다는 증거를 간직하면 궁정으로 돌아가지 못할 것 같았다.",
       "sourceSentenceStart": 49,
       "sourceSentenceEnd": 51,
-      "alignmentScore": 0.2957
+      "alignmentScore": 0.2957,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "top-left"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 18,
@@ -183,7 +451,25 @@
       "narrationKo": "그렇다고 버릴 수도 없었다. 흙을 덮는 그의 손에서 백색 불꽃이 처음으로 전혀 피어나지 않았다. 실리아는 카단을 데리고 멀리 강가로 갔다.",
       "sourceSentenceStart": 52,
       "sourceSentenceEnd": 54,
-      "alignmentScore": 0.4255
+      "alignmentScore": 0.4255,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "bottom-left"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
     },
     {
       "sceneNumber": 19,
@@ -193,7 +479,18 @@
       "narrationKo": "그녀는 위로의 말을 고르지 않았다. 대신 따뜻한 빵을 반으로 나누어 건넸다. 처음 시장에서 카단이 자신에게 했던 것처럼.",
       "sourceSentenceStart": 55,
       "sourceSentenceEnd": 57,
-      "alignmentScore": 0.6884
+      "alignmentScore": 0.6884,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "bottom-right"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 20,
@@ -203,7 +500,25 @@
       "narrationKo": "카단은 한참 뒤에야 빵을 받아 들었다. 두 무덤 사이로 어린 풀이 올라오고 있었다. 겨울이 끝났다고 말하기에는 너무 작은 초록이었지만, 카단은 그날 처음으로 슬픔과 삶이 같은 땅에서 자랄 수 있다는 것을 알았다.",
       "sourceSentenceStart": 58,
       "sourceSentenceEnd": 60,
-      "alignmentScore": 0.4873
+      "alignmentScore": 0.4873,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "이 눈보라는 단순한 한기가 아니다... 섀도우렐름의 기운이야.",
+          "textEn": "This blizzard isn't just cold... It bears the aura of the Shadow Realm.",
+          "bubbleType": "thought",
+          "position": "top-right"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
     }
   ]
 }

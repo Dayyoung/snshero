@@ -29,6 +29,7 @@ import { triggerHaptic } from '../lib/haptic';
 import { PageHeader } from '../components/PageHeader';
 import { getSeasonItem, setSeasonItem } from '../lib/webtoonProgress';
 import { MOVIE_EPISODES } from '../content/movieEpisodeMapping';
+import { CinematicMoviePlayer } from '../components/movie/CinematicMoviePlayer';
 
 declare global {
   interface Window {
@@ -50,8 +51,8 @@ const TOTAL_EPISODES = 40;
 const YOUTUBE_PLAYLIST_ID = 'PLOLtCtApKgp8';
 const YOUTUBE_PLAYLIST_URL = 'https://www.youtube.com/playlist?list=PLOLtCtApKgp8';
 
-// 기본 공개 완료 에피소드 기본값 (현재 최소 6화까지 공개됨)
-const DEFAULT_RELEASED_COUNT = 8;
+// 기본 공개 완료 에피소드 기본값 (40부작 전편 100% 공개)
+const DEFAULT_RELEASED_COUNT = 40;
 
 export const MovieView: React.FC<MovieViewProps> = ({
   language,
@@ -61,7 +62,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
   updateSns,
   showCustomAlert,
 }) => {
-  // 현재 시청 중인 에피소드 번호 (1~40) - URL 쿼리 파라미터(?ep=, ?episode=) 최우선 반영
+  // 현재 시청 중인 에피소드 번호 (1~40) - URL 쿼리 파라미터(?ep=, ?episode=) 최우선 반영 및 [1, TOTAL_EPISODES] 클램핑
   const [currentEpisodeNum, setCurrentEpisodeNum] = useState<number>(() => {
     try {
       if (typeof window !== 'undefined') {
@@ -69,8 +70,8 @@ export const MovieView: React.FC<MovieViewProps> = ({
         const epParam = params.get('ep') || params.get('episode');
         if (epParam) {
           const parsedEp = parseInt(epParam, 10);
-          if (!isNaN(parsedEp) && parsedEp >= 1 && parsedEp <= TOTAL_EPISODES) {
-            return parsedEp;
+          if (!isNaN(parsedEp)) {
+            return Math.max(1, Math.min(TOTAL_EPISODES, parsedEp));
           }
         }
       }
@@ -79,7 +80,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
     }
     const saved = getSeasonItem('hero_movie_progress', currentSeason);
     const parsed = saved ? parseInt(saved, 10) : 1;
-    return isNaN(parsed) || parsed < 1 || parsed > TOTAL_EPISODES ? 1 : parsed;
+    return isNaN(parsed) || parsed < 1 || parsed > TOTAL_EPISODES ? 1 : Math.max(1, Math.min(TOTAL_EPISODES, parsed));
   });
 
   // 공개된 에피소드 개수 (최소 8화부터 시작하여 실시간 유동 감지)
@@ -94,6 +95,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
   const [showDrawer, setShowDrawer] = useState<boolean>(false);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [filterMode, setFilterMode] = useState<'all' | 'released' | 'upcoming'>('all');
+  const [playerMode, setPlayerMode] = useState<'cinematic' | 'youtube'>('cinematic');
 
   const playerContainerRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<any>(null);
@@ -359,7 +361,8 @@ export const MovieView: React.FC<MovieViewProps> = ({
   const [claimedRewards, setClaimedRewards] = useState<Record<number, boolean>>(() => {
     try {
       const saved = getSeasonItem('hero_movie_claimed_episodes', currentSeason);
-      return saved ? JSON.parse(saved) : {};
+      const parsed = saved ? JSON.parse(saved) : null;
+      return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
     } catch {
       return {};
     }
@@ -382,19 +385,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
   }, [currentEpisodeNum, currentSeason]);
 
   const handleSelectEpisode = (epNum: number) => {
-    if (epNum > releasedCount) {
-      if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
-      if (showCustomAlert) {
-        showCustomAlert(
-          language === 'ko' ? '공개 예정 에피소드' : 'Episode Coming Soon',
-          language === 'ko'
-            ? `제 ${epNum}화는 아직 공개 준비 중입니다! 유튜브 오피셜 채널에서 곧 공개될 예정입니다.`
-            : `Episode ${epNum} is scheduled for release soon! Stay tuned on the YouTube playlist.`
-        );
-      }
-      return;
-    }
-
+    if (epNum < 1 || epNum > TOTAL_EPISODES) return;
     setCurrentEpisodeNum(epNum);
     setShowDrawer(false);
     if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
@@ -599,35 +590,102 @@ export const MovieView: React.FC<MovieViewProps> = ({
 
       {/* ── Main Movie Player Section ── */}
       <div className="mb-6 space-y-3">
-        <div
-          ref={playerContainerRef}
-          className={cn(
-            'relative w-full rounded-none overflow-hidden bg-black border border-[#201d1d] transition-colors',
-            isFullscreen ? 'fixed inset-0 z-50 rounded-none border-none max-w-none' : 'aspect-video'
-          )}
-        >
-          <iframe
-            key={`movie-yt-player-ep-${currentEpisodeNum}-${currentVideoId || 'playlist'}`}
-            id="movie-yt-player"
-            src={embedUrl}
-            title={`SNSHero Movie Ep.${currentEpisodeNum}`}
-            className="w-full h-full border-0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowFullScreen
-          />
-
-          {/* Fullscreen Overlay Controls */}
-          <div className="absolute top-3 right-3 flex items-center gap-2 z-10">
-            <button
-              type="button"
-              onClick={toggleFullscreen}
-              className="min-h-[44px] min-w-[44px] p-2 rounded-sm bg-[#201d1d] hover:bg-black text-[#fdfcfc] border border-[#fdfcfc]/30 transition-colors cursor-pointer flex items-center justify-center"
-              title={isFullscreen ? '전체화면 종료' : '전체화면'}
-            >
-              {isFullscreen ? <Minimize size={18} /> : <Maximize size={18} />}
-            </button>
-          </div>
+        {/* Playback Mode Switcher: Cinematic Player vs YouTube Stream */}
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic('light');
+              setPlayerMode('cinematic');
+            }}
+            className={cn(
+              'min-h-[44px] flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-sm border font-mono text-xs font-bold transition-colors cursor-pointer',
+              playerMode === 'cinematic'
+                ? 'border-[#201d1d] bg-[#201d1d] text-[#fdfcfc]'
+                : 'border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-[#201d1d] hover:bg-[#f8f7f7]'
+            )}
+          >
+            <Sparkles size={16} className={playerMode === 'cinematic' ? 'text-amber-400' : 'text-amber-600'} />
+            <span>[🎬 시네마틱 영화관 (20씬 40부작 전편)]</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic('light');
+              setPlayerMode('youtube');
+            }}
+            className={cn(
+              'min-h-[44px] flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-sm border font-mono text-xs font-bold transition-colors cursor-pointer',
+              playerMode === 'youtube'
+                ? 'border-[#201d1d] bg-[#201d1d] text-[#fdfcfc]'
+                : 'border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-[#201d1d] hover:bg-[#f8f7f7]'
+            )}
+          >
+            <Film size={16} />
+            <span>[📺 YouTube 오피셜 스트림{currentEpisodeNum <= 8 ? '' : ' (1~8화)'}]</span>
+          </button>
         </div>
+
+        {playerMode === 'cinematic' ? (
+          <CinematicMoviePlayer
+            episodeNumber={currentEpisodeNum}
+            titleKo={MOVIE_EPISODES[currentEpisodeNum]?.titleKo || `제 ${currentEpisodeNum}화`}
+            titleEn={MOVIE_EPISODES[currentEpisodeNum]?.titleEn || `Episode ${currentEpisodeNum}`}
+            titleJa={MOVIE_EPISODES[currentEpisodeNum]?.titleJa}
+            language={language === 'en' ? 'en' : language === 'ja' ? 'ja' : 'ko'}
+            onEpisodeComplete={(ep) => handleClaimReward(ep)}
+            onSelectEpisode={(ep) => handleSelectEpisode(ep)}
+            totalEpisodes={TOTAL_EPISODES}
+          />
+        ) : (
+          <div
+            ref={playerContainerRef}
+            className={cn(
+              'relative w-full rounded-none overflow-hidden bg-black border border-[#201d1d] transition-colors',
+              isFullscreen ? 'fixed inset-0 z-50 rounded-none border-none max-w-none' : 'aspect-video'
+            )}
+          >
+            {currentEpisodeNum <= 8 || currentVideoId ? (
+              <iframe
+                key={`movie-yt-player-ep-${currentEpisodeNum}-${currentVideoId || 'playlist'}`}
+                id="movie-yt-player"
+                src={embedUrl}
+                title={`SNSHero Movie Ep.${currentEpisodeNum}`}
+                className="w-full h-full border-0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              />
+            ) : (
+              <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center text-white bg-stone-950 font-mono">
+                <Sparkles size={36} className="text-amber-400 mb-3" />
+                <h4 className="text-base font-bold mb-2">제 {currentEpisodeNum}화는 인앱 시네마틱 영화관 전용 상영작입니다</h4>
+                <p className="text-xs text-stone-400 max-w-md mb-4">
+                  유튜브 공식 영상은 1~8화까지 제공되며, 9~40화는 20씬 멀티플레인 연출과 사운드 엔진이 탑재된 [시네마틱 영화관]에서 감상하실 수 있습니다.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setPlayerMode('cinematic')}
+                  className="min-h-[44px] flex items-center gap-2 px-5 py-2 rounded-sm border border-amber-500 bg-amber-500 text-black font-bold text-xs hover:bg-amber-400 transition-colors cursor-pointer"
+                >
+                  <Sparkles size={16} />
+                  <span>[시네마틱 영화관으로 전환하여 즉시 감상]</span>
+                </button>
+              </div>
+            )}
+
+            {/* Fullscreen Overlay Controls */}
+            <div className="absolute top-3 right-3 flex items-center gap-2 z-10">
+              <button
+                type="button"
+                onClick={toggleFullscreen}
+                className="min-h-[44px] min-w-[44px] p-2 rounded-sm bg-[#201d1d] hover:bg-black text-[#fdfcfc] border border-[#fdfcfc]/30 transition-colors cursor-pointer flex items-center justify-center"
+                title={isFullscreen ? '전체화면 종료' : '전체화면'}
+              >
+                {isFullscreen ? <Minimize size={18} /> : <Maximize size={18} />}
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Player Controls & Episode Info Bar */}
         <div className="p-3 sm:p-4 rounded-none border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
@@ -657,6 +715,43 @@ export const MovieView: React.FC<MovieViewProps> = ({
           </div>
 
           <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end flex-wrap">
+            {/* Cross-Media Navigation: Novel & Webtoon */}
+            <button
+              type="button"
+              onClick={() => {
+                triggerHaptic('light');
+                if (typeof window !== 'undefined') {
+                  const url = new URL(window.location.href);
+                  url.searchParams.set('ep', currentEpisodeNum.toString());
+                  window.history.replaceState(window.history.state, '', url.pathname + url.search);
+                }
+                onNavigate('novel');
+              }}
+              className="min-h-[44px] flex items-center gap-1.5 px-3 py-1.5 rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] hover:bg-[#f1eeee] text-[#201d1d] text-xs font-bold font-mono transition-colors cursor-pointer"
+              title={`제 ${currentEpisodeNum}화 웹소설 읽기`}
+            >
+              <BookOpen size={14} className="text-amber-800" />
+              <span>[📖 소설 {currentEpisodeNum}화]</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                triggerHaptic('light');
+                if (typeof window !== 'undefined') {
+                  const url = new URL(window.location.href);
+                  url.searchParams.set('ep', currentEpisodeNum.toString());
+                  window.history.replaceState(window.history.state, '', url.pathname + url.search);
+                }
+                onNavigate('webtoon');
+              }}
+              className="min-h-[44px] flex items-center gap-1.5 px-3 py-1.5 rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] hover:bg-[#f1eeee] text-[#201d1d] text-xs font-bold font-mono transition-colors cursor-pointer"
+              title={`제 ${currentEpisodeNum}화 웹툰 보기`}
+            >
+              <Film size={14} className="text-blue-800" />
+              <span>[🖼️ 웹툰 {currentEpisodeNum}화]</span>
+            </button>
+
             {/* Direct YouTube Link Button */}
             <a
               href={getDirectYouTubeWatchUrl(currentEpisodeNum)}
@@ -686,15 +781,10 @@ export const MovieView: React.FC<MovieViewProps> = ({
               type="button"
               disabled={currentEpisodeNum >= TOTAL_EPISODES}
               onClick={() => handleSelectEpisode(currentEpisodeNum + 1)}
-              className={cn(
-                "min-h-[44px] flex items-center gap-1 px-3 py-1.5 rounded-sm border text-xs font-bold font-mono transition-colors cursor-pointer",
-                currentEpisodeNum + 1 > releasedCount
-                  ? "bg-[#f1eeee] text-[#646262] border-[rgba(15,0,0,0.12)]"
-                  : "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d] hover:bg-[#201d1d]/90"
-              )}
+              className="min-h-[44px] flex items-center gap-1 px-3 py-1.5 rounded-sm border bg-[#201d1d] text-[#fdfcfc] border-[#201d1d] hover:bg-[#201d1d]/90 text-xs font-bold font-mono transition-colors cursor-pointer"
             >
               <span>다음 화</span>
-              {currentEpisodeNum + 1 > releasedCount ? <Lock size={14} /> : <ChevronRight size={16} />}
+              <ChevronRight size={16} />
             </button>
 
             {/* Reward Claim Status */}
@@ -725,21 +815,21 @@ export const MovieView: React.FC<MovieViewProps> = ({
             <button
               type="button"
               onClick={() => setFilterMode('all')}
-              className={cn('min-h-[36px] px-2.5 py-1 rounded-sm transition-colors cursor-pointer', filterMode === 'all' ? 'bg-[#201d1d] text-[#fdfcfc] font-bold' : 'text-[#201d1d] hover:bg-[#f1eeee]')}
+              className={cn('min-h-[44px] px-3.5 py-1.5 rounded-sm transition-colors cursor-pointer flex items-center justify-center', filterMode === 'all' ? 'bg-[#201d1d] text-[#fdfcfc] font-bold' : 'text-[#201d1d] hover:bg-[#f1eeee]')}
             >
               [전체]
             </button>
             <button
               type="button"
               onClick={() => setFilterMode('released')}
-              className={cn('min-h-[36px] px-2.5 py-1 rounded-sm transition-colors cursor-pointer', filterMode === 'released' ? 'bg-[#201d1d] text-[#fdfcfc] font-bold' : 'text-[#201d1d] hover:bg-[#f1eeee]')}
+              className={cn('min-h-[44px] px-3.5 py-1.5 rounded-sm transition-colors cursor-pointer flex items-center justify-center', filterMode === 'released' ? 'bg-[#201d1d] text-[#fdfcfc] font-bold' : 'text-[#201d1d] hover:bg-[#f1eeee]')}
             >
               [공개 완료 ({releasedCount})]
             </button>
             <button
               type="button"
               onClick={() => setFilterMode('upcoming')}
-              className={cn('min-h-[36px] px-2.5 py-1 rounded-sm transition-colors cursor-pointer', filterMode === 'upcoming' ? 'bg-[#201d1d] text-[#fdfcfc] font-bold' : 'text-[#201d1d] hover:bg-[#f1eeee]')}
+              className={cn('min-h-[44px] px-3.5 py-1.5 rounded-sm transition-colors cursor-pointer flex items-center justify-center', filterMode === 'upcoming' ? 'bg-[#201d1d] text-[#fdfcfc] font-bold' : 'text-[#201d1d] hover:bg-[#f1eeee]')}
             >
               [공개예정 ({TOTAL_EPISODES - releasedCount})]
             </button>
@@ -881,9 +971,9 @@ export const MovieView: React.FC<MovieViewProps> = ({
                               rel="noopener noreferrer"
                               onClick={(e) => e.stopPropagation()}
                               title={`YouTube에서 제 ${ep}화 직접 시청하기`}
-                              className={cn("p-1 rounded-sm transition-colors", isSelected ? "text-[#fdfcfc]" : "text-[#201d1d] hover:bg-[#f1eeee]")}
+                              className={cn("min-h-[44px] min-w-[44px] flex items-center justify-center p-1 rounded-sm transition-colors", isSelected ? "text-[#fdfcfc]" : "text-[#201d1d] hover:bg-[#f1eeee]")}
                             >
-                              <ExternalLink size={12} />
+                              <ExternalLink size={14} />
                             </a>
                             <span className={cn(
                               "px-1.5 py-0.5 rounded-sm text-[10px] font-bold border",

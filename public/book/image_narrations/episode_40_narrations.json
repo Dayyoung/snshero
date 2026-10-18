@@ -13,7 +13,25 @@
       "narrationKo": "카단과 실리아가 와일드랜드로 돌아왔을 때 초원에는 첫눈이 내리고 있었다. 정복왕의 거대한 군막은 걷혀 있었고, 펜릴은 어린 시절 카단이 드나들던 작은 천막에 누워 있었다. 티타니아와 길가메시는 아버지 곁을 지켰다.",
       "sourceSentenceStart": 1,
       "sourceSentenceEnd": 3,
-      "alignmentScore": 0.4609
+      "alignmentScore": 0.4609,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "top-left"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
     },
     {
       "sceneNumber": 2,
@@ -23,7 +41,25 @@
       "narrationKo": "남부 원정은 멈췄지만 펜릴이 세운 제국은 이미 후계 다툼으로 흔들리고 있었다. 그는 마지막 명령으로 점령지의 피난민을 고향으로 돌려보내고, 각 부족이 새 의회를 열게 했다. “내가 평생 얻은 땅을 며칠 만에 흩어 놓았구나.”",
       "sourceSentenceStart": 4,
       "sourceSentenceEnd": 6,
-      "alignmentScore": 0.4681
+      "alignmentScore": 0.4681,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "내가 평생 얻은 땅을 며칠 만에 흩어 놓았구나.",
+          "textEn": "“내가 평생 얻은 땅을 며칠 만에 흩어 놓았구나.”",
+          "bubbleType": "speech",
+          "position": "bottom-left"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
     },
     {
       "sceneNumber": 3,
@@ -33,7 +69,18 @@
       "narrationKo": "펜릴이 웃었다. “너는 내가 실패했다고 생각하느냐?” 카단은 쉽게 답하지 않았다. 펜릴은 서로 죽이던 부족을 묶고 섀도우렐름의 억압을 끝냈다.",
       "sourceSentenceStart": 7,
       "sourceSentenceEnd": 10,
-      "alignmentScore": 0.3854
+      "alignmentScore": 0.3854,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "너는 내가 실패했다고 생각하느냐?",
+          "textEn": "Do you think I failed? ",
+          "bubbleType": "speech",
+          "position": "bottom-right"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 4,
@@ -43,7 +90,18 @@
       "narrationKo": "동시에 더 큰 통일을 위해 다른 사람의 고향을 빼앗으려 했다. 한 사람 안에 두 진실이 함께 있었다. “왕께서는 많은 사람을 살렸고, 많은 사람을 두려움 속에 두었습니다.",
       "sourceSentenceStart": 11,
       "sourceSentenceEnd": 13,
-      "alignmentScore": 0.5275
+      "alignmentScore": 0.5275,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "top-right"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 5,
@@ -53,7 +111,25 @@
       "narrationKo": "하나로 다른 하나를 지울 수는 없습니다.” 펜릴은 그 대답이 마음에 들지 않는 듯 눈을 감았다가 다시 물었다. “그럼 영웅은 무엇이냐? 가장 넓은 땅을 얻은 사람도, 가장 강한 적을 꺾은 사람도 아니라면.”",
       "sourceSentenceStart": 14,
       "sourceSentenceEnd": 17,
-      "alignmentScore": 0.5997
+      "alignmentScore": 0.5997,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "그럼 영웅은 무엇이냐? 가장 넓은 땅을 얻은 사람도, 가장 강한 적을 꺾은 사람도 아니라면.",
+          "textEn": "“그럼 영웅은 무엇이냐? 가장 넓은 땅을 얻은 사람도, 가장 강한 적을 꺾은 사람도 아니라면.”",
+          "bubbleType": "speech",
+          "position": "top-right"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
     },
     {
       "sceneNumber": 6,
@@ -63,7 +139,18 @@
       "narrationKo": "카단은 천막 밖을 보았다. 실리아가 전쟁고아들의 이름을 기록하고, 티타니아는 해산할 병사들에게 집으로 가는 식량을 나누고 있었다. 길가메시는 아버지의 동상을 세우자는 장수들을 돌려보냈다.",
       "sourceSentenceStart": 18,
       "sourceSentenceEnd": 20,
-      "alignmentScore": 0.3715
+      "alignmentScore": 0.3715,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
+          "textEn": "All units on high alert! They are coming!",
+          "bubbleType": "shout",
+          "position": "bottom-left"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 7,
@@ -73,7 +160,26 @@
       "narrationKo": "“자기 힘으로 다른 사람이 살아갈 자리를 넓히는 사람이라고 생각합니다. 이름이 남지 않아도 그 자리가 남는다면요.” 펜릴은 한참 웃다가 기침을 했다. “그렇다면 나는 절반쯤 영웅이고 절반쯤 재앙이겠군.”",
       "sourceSentenceStart": 21,
       "sourceSentenceEnd": 24,
-      "alignmentScore": 0.2716
+      "alignmentScore": 0.2716,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "자기 힘으로 다른 사람이 살아갈 자리를 넓히는 사람이라고 생각합니다. 이름이 남지 않아도 그 자리가 남는다면요.",
+          "textEn": "I think he is a person who uses his own power to expand the space for others to live in. Even if his name remains, that space remains. ",
+          "bubbleType": "speech",
+          "position": "bottom-right"
+        },
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "그렇다면 나는 절반쯤 영웅이고 절반쯤 재앙이겠군.",
+          "textEn": "“그렇다면 나는 절반쯤 영웅이고 절반쯤 재앙이겠군.”",
+          "bubbleType": "speech",
+          "position": "top-left"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 8,
@@ -83,7 +189,18 @@
       "narrationKo": "“사람은 하나의 이름으로 끝나지 않습니다.” 펜릴은 카단에게 자신의 전기를 정직하게 쓰라고 부탁했다. 승리만 기록하는 궁정 사관의 두루마리를 불태우고, 자신이 죽인 부족과 깨뜨린 약속도 남겨 달라고 했다.",
       "sourceSentenceStart": 25,
       "sourceSentenceEnd": 27,
-      "alignmentScore": 0.4646
+      "alignmentScore": 0.4646,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "사람은 하나의 이름으로 끝나지 않습니다.",
+          "textEn": "A person does not end with one name. ",
+          "bubbleType": "speech",
+          "position": "top-left"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 9,
@@ -93,7 +210,18 @@
       "narrationKo": "티타니아는 그 기록을 자신이 맡겠다고 했다. 정복왕은 그날 밤 숨을 거두었다. 마지막까지 왕관을 찾지 않았고, 티타니아와 길가메시의 손을 한쪽씩 잡았다. 장례는 화려한 무덤 대신 초원 한가운데 작은 돌무더기로 치러졌다.",
       "sourceSentenceStart": 28,
       "sourceSentenceEnd": 31,
-      "alignmentScore": 0.556
+      "alignmentScore": 0.556,
+      "dialogues": [
+        {
+          "speakerKo": "정복왕 발레리우스",
+          "speakerEn": "Conqueror King",
+          "textKo": "발소리를 죽여라. 어둠 속에서 숨을 고르는 거다.",
+          "textEn": "Muffle your footsteps. Catch your breath in the dark.",
+          "bubbleType": "whisper",
+          "position": "top-left"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 10,
@@ -103,7 +231,18 @@
       "narrationKo": "카단은 왕위를 권하는 장수들의 요청을 거절했다. 실리아도 자유민 연맹을 왕국으로 바꾸자는 제안을 물리쳤다. 두 사람은 아이언포지 전략 코어를 여러 도시의 기록관에 나누어 맡기고, 나인섀도우 코덱스는 치유 기록과 금지술을 분리해 누구나 감시할 수 있게 했다.",
       "sourceSentenceStart": 32,
       "sourceSentenceEnd": 34,
-      "alignmentScore": 0.5229
+      "alignmentScore": 0.5229,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "bottom-left"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 11,
@@ -113,7 +252,18 @@
       "narrationKo": "이그니스의 유리 불씨는 아스트라 봉에서 힘을 모두 돌려보낸 뒤 투명한 조각만 남았다. 카단은 그것을 발리안과 이셀라의 무덤 사이에 묻었다. 자격을 얻지 못해 부모 곁에 눕지 않겠다던 이그니스의 마지막 부탁을 어기지 않으면서도, 길을 잃으면 돌아올 곳은 남겨 주고 싶었다.",
       "sourceSentenceStart": 35,
       "sourceSentenceEnd": 37,
-      "alignmentScore": 0.4754
+      "alignmentScore": 0.4754,
+      "dialogues": [
+        {
+          "speakerKo": "발리안",
+          "speakerEn": "Balian",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "bottom-right"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 12,
@@ -123,7 +273,18 @@
       "narrationKo": "나무 말도 함께 묻었다. 이번에는 한쪽 바퀴가 잘 돌아갔다. 카단은 비석에 왕자나 배신자라는 말을 새기지 않고 이름 하나만 적었다. 이그니스.",
       "sourceSentenceStart": 38,
       "sourceSentenceEnd": 41,
-      "alignmentScore": 0.4438
+      "alignmentScore": 0.4438,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
+          "textEn": "All units on high alert! They are coming!",
+          "bubbleType": "shout",
+          "position": "top-right"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 13,
@@ -133,7 +294,25 @@
       "narrationKo": "그가 끝내 하나의 평가로 줄어들지 않기를 바랐다. 실리아는 바람섬 재건을 주민 의회에 맡겼다. 에올루스는 명령하는 군주가 아니라 의회가 부를 때 조언하는 기록관으로 남았다.",
       "sourceSentenceStart": 42,
       "sourceSentenceEnd": 44,
-      "alignmentScore": 0.4318
+      "alignmentScore": 0.4318,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "top-left"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
     },
     {
       "sceneNumber": 14,
@@ -143,7 +322,18 @@
       "narrationKo": "그는 처음으로 딸에게 어디로 가느냐고 묻고, 언제 돌아오라는 말은 하지 않았다. 두 사람은 엘윈 마을의 선술집을 다시 세웠다. 첫날 문을 연 손님은 헤르쿨과 간다르, 나이아드, 아쿠아로드였다. 빈 탁자에는 카단의 스승들과 이그니스, 엘윈의 잔이 놓였다.",
       "sourceSentenceStart": 45,
       "sourceSentenceEnd": 48,
-      "alignmentScore": 0.4546
+      "alignmentScore": 0.4546,
+      "dialogues": [
+        {
+          "speakerKo": "헤르쿨",
+          "speakerEn": "Hercul",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "bottom-left"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 15,
@@ -153,7 +343,25 @@
       "narrationKo": "누구도 그 잔을 치우지 않았다. 카단은 선술집 벽에 아이언포지 전략 코어의 첫 문장을 걸었다. 승리보다 먼저 살아남을 사람을 세어라.",
       "sourceSentenceStart": 49,
       "sourceSentenceEnd": 51,
-      "alignmentScore": 0.4086
+      "alignmentScore": 0.4086,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "bottom-right"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
     },
     {
       "sceneNumber": 16,
@@ -163,7 +371,18 @@
       "narrationKo": "실리아는 그 아래에 작은 글씨를 덧붙였다. 그리고 그 사람들에게 무엇을 원하는지 물어라. 밤이 깊자 간다르는 빈 잔을 훔쳐 마시려다 나이아드에게 손등을 맞았다. 아쿠아로드는 힘을 잃은 손으로도 수프 냄비를 저었고, 헤르쿨은 문짝을 거꾸로 달아 다시 떼어 냈다.",
       "sourceSentenceStart": 52,
       "sourceSentenceEnd": 55,
-      "alignmentScore": 0.5246
+      "alignmentScore": 0.5246,
+      "dialogues": [
+        {
+          "speakerKo": "헤르쿨",
+          "speakerEn": "Hercul",
+          "textKo": "발소리를 죽여라. 어둠 속에서 숨을 고르는 거다.",
+          "textEn": "Muffle your footsteps. Catch your breath in the dark.",
+          "bubbleType": "whisper",
+          "position": "top-right"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 17,
@@ -173,7 +392,25 @@
       "narrationKo": "전설 속 인물들은 새 집에서 대단하지 않은 실수를 하며 살아 있었다. 새벽이 되자 카단과 실리아는 페가수스에 짐을 실었다. 지켜야 할 곳이 한 군데가 아니었고, 전쟁이 끝났다고 상처까지 끝난 것은 아니었다.",
       "sourceSentenceStart": 56,
       "sourceSentenceEnd": 58,
-      "alignmentScore": 0.5005
+      "alignmentScore": 0.5005,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "top-left"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
     },
     {
       "sceneNumber": 18,
@@ -183,7 +420,18 @@
       "narrationKo": "자유민 연맹에서 북부 난민촌의 소식이 도착해 있었다. “이번에는 문을 부수지 않는 계획이 있어?” 실리아가 물었다. 카단은 잠시 생각했다.",
       "sourceSentenceStart": 59,
       "sourceSentenceEnd": 62,
-      "alignmentScore": 0.4243
+      "alignmentScore": 0.4243,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "이번에는 문을 부수지 않는 계획이 있어?",
+          "textEn": "Do you have a plan to not break down the door this time? ",
+          "bubbleType": "speech",
+          "position": "bottom-left"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 19,
@@ -193,7 +441,26 @@
       "narrationKo": "“문 앞에서 먼저 물어본다.” “발전했네.” 두 사람이 눈길을 떠난 뒤 선술집 처마의 은방울이 울렸다.",
       "sourceSentenceStart": 63,
       "sourceSentenceEnd": 65,
-      "alignmentScore": 0.4924
+      "alignmentScore": 0.4924,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "문 앞에서 먼저 물어본다.",
+          "textEn": "Ask first at the door. ",
+          "bubbleType": "speech",
+          "position": "bottom-right"
+        },
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "발전했네.",
+          "textEn": "There has been progress. ",
+          "bubbleType": "speech",
+          "position": "top-left"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 20,
@@ -203,7 +470,27 @@
       "narrationKo": "영웅의 이름을 부르는 나팔도, 왕의 행렬도 없었다. 다만 그들이 지나간 길마다 사람들이 스스로 선택할 수 있는 문이 하나씩 남았다. 눈히어로의 첫 번째 이야기는 그렇게 끝났다. 눈은 발자국을 덮었지만, 길까지 없애지는 못했다.",
       "sourceSentenceStart": 66,
       "sourceSentenceEnd": 69,
-      "alignmentScore": 0.5153
+      "alignmentScore": 0.5153,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "top-right"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ],
+      "localArtUrl": "/images/webtoon/ep40_eternal_shield.jpg",
+      "isKeyClimax": true
     }
   ]
 }

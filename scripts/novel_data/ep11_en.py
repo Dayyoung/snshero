@@ -1,0 +1,88 @@
+# -*- coding: utf-8 -*-
+"""
+scripts/novel_data/ep11_en.py
+1:1 Authentic High-Fantasy Literary Translation for Episode 11: The Dagger That Wakes Memory
+Translates public/book/episode_11.md without boilerplate, filler, or image tokens.
+"""
+
+EP11_EN = """SNSHero Novel
+Episode 11: The Dagger That Wakes Memory
+
+Subterranean Labor Prison No. 7, wherein Paladin Balian was held captive, sprawled like a venomous spider's web beneath the deepest vaults of the Red Glass Court, intersecting with the abandoned shafts of an ancient volcanic mine. Scalding crimson torrents of bubbling magma coursed through subterranean aqueducts, filling the subterranean cavern with suffocating heat, while dense billows of sulfur smoke coiled along obsidian rock faces, searing the lungs with every drawn breath. Thousands of emaciated prisoners interned in this subterranean abyss bore no names, answered only to blunt serial numerals stamped upon heavy iron collars, and swung rusted pickaxes from dawn to dusk to unearth crimson firestones, gradually stripped of every sacred memory of their mortal lives.
+
+Princess Cilia positioned the tip of her jade staff against the cavern floor, gauging the cool ripples of subterranean drafts to calibrate the ventilation cycle of the subterranean drainage corridors with absolute precision.
+
+"The sentry rotation interval lasts precisely three hundred heartbeats," Cilia whispered, her emerald eyes narrowing against the haze. "If we catch the reverse updraft when the massive pressure flue unseals, we can bypass the runic lenses of the central watchtower without sounding an alarm."
+
+Kadan regulated his breathing in harmony with Cilia's signal, drawing upon the celestial cadence of star-breathing. Channeled through the circular rim of the boy's iron shield, a cascade of frost mana surged across the boiling magma aqueduct, freezing the churning lava beneath a thick, glittering span of silver ice in the span of a single heartbeat.
+
+Reaching the deepest, darkest rock face of the subterranean excavation pit, their eyes fell upon a white-haired veteran leaning heavily upon an injured leg. His countenance had been ravaged by years of cruel interrogation and scorched by searing flames, yet the calloused knuckles gripping a fractured iron spear shaft remained as unyielding as tempered steel. The instant the old knight caught sight of the Silver Dagger sheathed at Kadan's belt, the heavy iron pickaxe slipped from his trembling grasp, clattering sharply against the stone floor.
+
+"That blade... is that not my elder brother Aleksandar's blade...?"
+
+The veteran's raspy, cracked voice caused the damp cavern walls to shudder. Even amidst the despair of this subterranean tomb, Balian had been covertly teaching his fellow captives how to read and write. Using a sharpened steel chisel, he had carved the passing dates and the names of those unjustly slaughtered into the stubborn firestone rock faces. Preserving mortal memory was the singular, sublime act of defiance remaining in this living inferno. In a secluded crevice of the stone wall, Kadan discovered his father Aleksandar's name, meticulously re-carved each day for eighteen long years as the old paladin swallowed his silent tears.
+
+"Uncle... I am Kadan, son of Aleksandar."
+
+As Kadan sank to one knee, Balian reached out a weathered hand to cradle the boy's cheek with rough tenderness. Balian had not perished beneath the blizzard-swept bridge chasm eighteen winters ago. Captured downriver by the court's vanguard, he had concealed his noble lineage and endured endless humiliation solely to uncover the fate of his abducted wife, Isella, and their newborn son. High Chancellor Lucian had long known the old knight's identity yet deliberately spared his life, nursing a cruel ambition to have the grown son, Ignis, execute his own father with his own hands, thus shattering the proud spirit of the holy paladins forever.
+
+As the companions retreated along the narrow drainage corridor, an imposing silhouette blocked their vanguard. Clad in immaculate silver plate armor and drawing a broadsword wrapped in incandescent white flame, Ignis fixed them with a gaze as frigid as winter ice.
+
+"Where do you think you are fleeing, vile convicts who dare defile the imperial vaults?"
+
+Rather than raising his weapon, Kadan reached into his tunic, retrieved Lady Elwin's final missive and secret ledger, and tossed them deliberately at Ignis's polished boots.
+
+"Sheathe your steel and look upon the truth, Ignis! The man standing before your eyes is your true father, Duke Balian!"
+
+At that moment, Balian stepped into the vanguard, clutching his fractured spear shaft. As Ignis surged forward with his incandescent blade trailing roaring white flames, Balian feigned a retreat, then flicked the spearhead upward with blinding speed, deflecting the lethal trajectory of the blade. It was the ancestral spear art of the Balian bloodline, a guarded defensive secret transmitted solely among fathers and sons of the ducal house.
+
+Clang!
+
+The color drained from Ignis's face in an instant. It was the precise trajectory of spear combat that his father had demonstrated in his recurring childhood dreams, over and over, while cradling him in strong arms. The very movements his bones and muscles remembered had been dismissed as mere drills taught by the imperial palace instructors, a deception he had whispered to himself to survive.
+
+Balian tapped the young commander's spearhead once more to disrupt his balance, then reached out with practiced ease to correct the youth's grip on the hilt.
+
+"If you raise your thumb in that posture, the backdraft will scorch the tendons of your wrist, my child."
+
+The father's chastising tone was so instinctive and warm that Ignis reflexively shifted his fingers, as if he were once again a small boy kneeling in his father's courtyard. Realizing what he had done, the young commander recoiled violently, slapping the spear aside in frantic denial.
+
+"Lies... this man is nothing more than a condemned felon! The cunning tongue and petty tricks of a prisoner cannot prove noble blood!"
+
+Kadan set his shield firmly between them, his voice cutting through the cavern like a clarion bell.
+
+"Then verify the truth with your own eyes! Before you swing your sacred flame in blind obedience, ask your own heart what truth it whispers!"
+
+A cacophony of emergency bells suddenly resonated through the cavern ceiling. Balian thrust Ignis behind a protective buttress of stone and wrenched open the iron portcullis of the secret escape flue, keeping his spearhead reversed to ensure he would never harm his flesh and blood. Ignis did not give chase, nor could he find the will to step forward with them. The young warrior stood motionless between the iron bars, gazing blankly into the gloomy corridor down which his father had vanished.
+
+Emerging onto the surface under the cover of night, Kadan and his party were met by the Six Masters waiting anxiously in the mountain sanctuary. The masters were infuriated that Kadan had recklessly infiltrated the imperial undercroft without council, and their shock only deepened upon discovering that Cilia was the sole daughter of Sovereign Aeolus of Whispering Wind Island. Grimli the dwarf bared his teeth, refusing to trust an elven princess from the eastern archipelago.
+
+"We cannot trust those islanders! Was it not Medusa Gorgo, an apprentice cast out from that cursed isle, who murdered our sworn brother Robinyard in cold blood?"
+
+Before Grimli's roar faded, a heavy iron chain whipped out from the black mist like a viper. It was an ambush by Medusa Gorgo herself. Having forged an unholy pact with Lucian, she had laid in wait to claim Balian's life in exchange for the missing half of the Nine Shadows Codex.
+
+As the silver chain whip lashed toward the unguarded Cilia, Kadan threw himself forward, intercepting the strike with his iron shield. Twisting along the taut chain, Gorgo's obsidian claws clamped down viciously upon Kadan's throat.
+
+"Murderers who slaughtered my Belphegor in cold blood!"
+
+Though suffocating beneath her grip, Kadan held Gorgo's manic gaze with unblinking clarity.
+
+"A lie... in the raging rapids of Mistfall Cliff, your husband Belphegor saved my life at the cost of his own before sinking into the abyss!"
+
+Gorgo's clawed fingers wavered for a fraction of a heartbeat. Seizing that fleeting opening, Gawain's iron staff struck like thunder, coiling around the chain whip, while Grimli and Rondol surged forward to haul Kadan clear of the witch's reach.
+
+Amidst the fierce skirmish, the crisp chimes of six silver bells rang out simultaneously in Gorgo's ears. They were the silver bells of the pursuers, forged from the keepsakes of fallen Robinyard. A witch's vengeance for a lost husband collided brutally with hunters' grief for a murdered brother in the pitch-black night. Because neither side could acknowledge the sorrow of the other, the clash raged with merciless fury.
+
+It was the aging Paladin Balian who brought an end to the madness. Balian slammed his heavy spear shaft into the cracked flagstones of the ruined shrine, splitting the ground between the opposing forces with a resonant boom.
+
+"Cease this madness! Today is not the day for innocent children to inherit the bloodstained vendettas of their fathers!"
+
+Beneath the collapsed floor, a long-forgotten subterranean tunnel opened its maw. For eighteen winters, Balian had declined countless opportunities to flee alone, laboring with his bare hands to expand this passage so every captive might one day escape to freedom. The companions lowered their weapons, joining hands to lead the suffering mine prisoners up toward the open air.
+
+Medusa Gorgo melted back into the clinging mists, casting a venomous smirk toward Cilia.
+
+"Do you know how many disciples Sovereign Aeolus discarded like refuse to guard the secrets of his coveted codex, Cilia? You shall never wash the blood of your master's sins from your hands."
+
+Cilia offered no retort. It was that very suffocating hypocrisy that had driven her to abandon her arrogant father and wander the continent in beggar's rags.
+
+At dawn's first light, Kadan and his companions reached an abandoned ancient sanctuary beyond the capital's perimeter. When Balian and Isella finally stood before one another, neither could move to embrace. The weight of eighteen stolen years was so crushing that they could only weep in silence, their weathered hands hovering in hesitation before intertwining. Kadan quietly shut the weathered timber doors of the shrine, holding the polished steel of his Silver Dagger toward the rising sun as its brilliance scattered the lingering shadows of the night.
+"""

@@ -3,7 +3,7 @@ import {
   BookOpen, Play, Pause, Square, Volume2, Copy, Sparkles, ChevronLeft, ChevronRight,
   Check, Settings, Moon, Sun, Gift, ArrowLeft, Bookmark, List, ExternalLink, Award, User, Image,
   Maximize2, X, Eye, Film, Layers, RefreshCw, ChevronDown, Search, ListOrdered, CheckCircle2, Clock,
-  ArrowUp, ArrowRight, BookmarkCheck, RotateCcw, MapPin, ShoppingCart, Tv
+  ArrowUp, ArrowRight, BookmarkCheck, RotateCcw, MapPin, ShoppingCart, Tv, MessageSquare
 } from 'lucide-react';
 import { Language, ViewType } from '../types';
 import { t } from '../lib/i18n';
@@ -27,16 +27,27 @@ import { useCardSkins } from '../hooks/useCardSkins';
 import { getCharacterArtPrompt } from '../content/characterArtPrompts';
 import { ENGLISH_NOVEL_MAP } from '../content/englishNovelMapping';
 import WEBTOON_MANIFEST from '../content/webtoonEpisodeManifest.json';
+import {
+  WebtoonPanelCard,
+  WebtoonSpeechBubble,
+  WebtoonSfxOverlay,
+  WebtoonDialogue,
+  WebtoonSfxCue,
+} from '../components/webtoon';
 
 interface WebtoonManifestImage {
   index: number;
   fileName: string;
   imageUrl: string;
+  localArtUrl?: string;
+  isKeyClimax?: boolean;
   type: string;
   narrationEn?: string;
   narrationKo?: string;
   background?: string;
   characters?: string[];
+  dialogues?: WebtoonDialogue[];
+  sfxCues?: WebtoonSfxCue[];
 }
 
 interface WebtoonManifestEpisode {
@@ -170,11 +181,25 @@ export const NovelView: React.FC<NovelViewProps> = ({
   showCustomAlert,
   initialTab,
 }) => {
-  // Reading episode number (saved in hero_novel_progress_{season})
+  // Reading episode number (saved in hero_novel_progress_{season}) - URL query (?ep=, ?episode=) takes highest priority with boundary clamping
   const [currentEpisodeNum, setCurrentEpisodeNum] = useState<number>(() => {
+    try {
+      if (typeof window !== 'undefined') {
+        const params = new URLSearchParams(window.location.search);
+        const epParam = params.get('ep') || params.get('episode');
+        if (epParam) {
+          const parsedEp = parseInt(epParam, 10);
+          if (!isNaN(parsedEp)) {
+            return Math.max(1, Math.min(TOTAL_EPISODES, parsedEp));
+          }
+        }
+      }
+    } catch {
+      // ignore
+    }
     const saved = getSeasonItem('hero_novel_progress', currentSeason);
     const parsed = saved ? parseInt(saved, 10) : 1;
-    return isNaN(parsed) || parsed < 1 || parsed > TOTAL_EPISODES ? 1 : parsed;
+    return isNaN(parsed) || parsed < 1 || parsed > TOTAL_EPISODES ? 1 : Math.max(1, Math.min(TOTAL_EPISODES, parsed));
   });
 
   // Prompt mode state (saved in hero_novel_prompt_mode_{season})
@@ -206,6 +231,8 @@ export const NovelView: React.FC<NovelViewProps> = ({
   // Cartoon layout mode: 'scroll' (vertical webtoon strip) or 'slides' (page-by-page carousel)
   const [cartoonDisplayMode, setCartoonDisplayMode] = useState<'scroll' | 'slides'>('scroll');
   const [activeSlideIndex, setActiveSlideIndex] = useState<number>(1);
+  // Cartoon speech bubbles & SFX overlays toggle
+  const [showCartoonBubbles, setShowCartoonBubbles] = useState<boolean>(true);
 
   // Get cartoon image info for a specific episode and scene index (0..20)
   const getCartoonImageInfo = (epNum: number, sceneIdx: number): WebtoonManifestImage | undefined => {
@@ -214,14 +241,17 @@ export const NovelView: React.FC<NovelViewProps> = ({
     return epData.images.find(img => img.index === sceneIdx);
   };
 
-  // Get cartoon scene image URL candidate based on attempt count using external GitHub Pages CDN
+  // Get cartoon scene image URL candidate based on attempt count using external GitHub Pages CDN or local art
   const getCartoonSceneUrl = (epNum: number, sceneIdx: number, attempt = 0): string => {
     const epData = WEBTOON_DATA[String(epNum)];
     const imgInfo = epData?.images?.find(img => img.index === sceneIdx);
-    if (imgInfo && imgInfo.imageUrl) {
-      if (attempt === 0) return imgInfo.imageUrl;
-      if (attempt === 1) return imgInfo.imageUrl.replace('.jpeg', '.jpg');
-      if (attempt === 2) return imgInfo.imageUrl.replace('.jpeg', '.png');
+    if (imgInfo) {
+      if (attempt === 0 && imgInfo.localArtUrl) return imgInfo.localArtUrl;
+      if (imgInfo.imageUrl) {
+        if (attempt <= 1) return imgInfo.imageUrl;
+        if (attempt === 2) return imgInfo.imageUrl.replace('.jpeg', '.jpg');
+        if (attempt === 3) return imgInfo.imageUrl.replace('.jpeg', '.png');
+      }
     }
     const epPad = pad2(epNum);
     const scPad = pad2(sceneIdx);
@@ -273,7 +303,8 @@ export const NovelView: React.FC<NovelViewProps> = ({
   const [claimedRewards, setClaimedRewards] = useState<Record<number, boolean>>(() => {
     try {
       const saved = getSeasonItem('hero_novel_claimed_episodes', currentSeason);
-      return saved ? JSON.parse(saved) : {};
+      const parsed = saved ? JSON.parse(saved) : null;
+      return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
     } catch {
       return {};
     }
@@ -283,9 +314,20 @@ export const NovelView: React.FC<NovelViewProps> = ({
   const claimedCount = Object.keys(claimedRewards).filter(k => claimedRewards[Number(k)]).length;
   const claimedPct = Math.round((claimedCount / TOTAL_EPISODES) * 100);
 
-  // Save progress on episode change
+  // Save progress on episode change and synchronize browser URL query params
   useEffect(() => {
     setSeasonItem('hero_novel_progress', currentEpisodeNum.toString(), currentSeason);
+    if (typeof window !== 'undefined') {
+      try {
+        const url = new URL(window.location.href);
+        if (url.searchParams.get('ep') !== currentEpisodeNum.toString()) {
+          url.searchParams.set('ep', currentEpisodeNum.toString());
+          window.history.replaceState(window.history.state, '', url.pathname + url.search);
+        }
+      } catch {
+        // ignore
+      }
+    }
   }, [currentEpisodeNum, currentSeason]);
 
   // Reading scroll position and progress tracking (Item 19)
@@ -335,9 +377,10 @@ export const NovelView: React.FC<NovelViewProps> = ({
         setShowResumeBanner(false);
       }
 
-      // Track visible scene in Cartoon mode (Scenes 1-5)
+      // Track visible scene in Cartoon mode (Scenes 1-20)
       if (readerTab === 'cartoon' && cartoonDisplayMode === 'scroll') {
-        const sceneNum = Math.min(5, Math.max(1, Math.ceil((pct / 100) * 5)));
+        const totalScenes = 20;
+        const sceneNum = Math.min(totalScenes, Math.max(1, Math.round((pct / 100) * (totalScenes - 1)) + 1));
         setCurrentVisibleScene(sceneNum);
       }
 
@@ -888,17 +931,17 @@ export const NovelView: React.FC<NovelViewProps> = ({
             </span>
             <button
               onClick={handleResumeLastScroll}
-              className="min-h-[32px] px-2.5 py-1 bg-[#fdfcfc] hover:bg-[#f1eeee] text-[#201d1d] font-bold rounded-sm cursor-pointer transition-colors text-[11px]"
+              className="min-h-[44px] px-3 py-2 bg-[#fdfcfc] hover:bg-[#f1eeee] text-[#201d1d] font-bold rounded-sm cursor-pointer transition-colors text-[11px] flex items-center justify-center"
             >
               [ {language === 'ko' ? '이동' : 'Resume'} ]
             </button>
           </div>
           <button
             onClick={() => setShowResumeBanner(false)}
-            className="min-h-[32px] min-w-[32px] flex items-center justify-center text-[#fdfcfc]/70 hover:text-[#fdfcfc] cursor-pointer ml-1"
+            className="min-h-[44px] min-w-[44px] flex items-center justify-center text-[#fdfcfc]/70 hover:text-[#fdfcfc] hover:bg-white/10 rounded-sm cursor-pointer ml-1 transition-colors"
             title="Dismiss"
           >
-            <X size={13} />
+            <X size={14} />
           </button>
         </div>
       )}
@@ -1101,12 +1144,12 @@ export const NovelView: React.FC<NovelViewProps> = ({
                     setShowEpisodeModal(true);
                     if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                   }}
-                  className="min-h-[36px] text-xs font-bold uppercase tracking-widest text-[#201d1d] px-2.5 py-1 border border-[#201d1d] bg-[#f8f7f7] hover:bg-[#f1eeee] rounded-sm flex items-center gap-1 cursor-pointer transition-colors group"
+                  className="min-h-[44px] text-xs font-bold uppercase tracking-widest text-[#201d1d] px-3 py-2 border border-[#201d1d] bg-[#f8f7f7] hover:bg-[#f1eeee] rounded-sm flex items-center gap-1.5 cursor-pointer transition-colors group"
                   title={t('novel_select_episode_hint', language)}
                 >
-                  <BookOpen size={11} />
+                  <BookOpen size={13} />
                   <span>EPISODE {currentEpisodeNum} / {TOTAL_EPISODES}</span>
-                  <ChevronDown size={11} />
+                  <ChevronDown size={13} />
                 </button>
                 {parsedContent.sourceRange && (
                   <span className="text-xs font-bold text-[#646262] px-2 py-0.5 border border-[rgba(15,0,0,0.12)] rounded-sm bg-[#f8f7f7]">
@@ -1134,7 +1177,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
                       <button
                         key={char.cardId}
                         onClick={() => setSelectedWikiCardId(char.cardId)}
-                        className="min-h-[36px] flex items-center gap-1.5 px-2.5 py-1 border border-[rgba(15,0,0,0.12)] rounded-sm bg-[#fdfcfc] hover:bg-[#f8f7f7] transition-colors cursor-pointer text-xs font-bold text-[#201d1d]"
+                        className="min-h-[44px] flex items-center gap-1.5 px-3 py-2 border border-[rgba(15,0,0,0.12)] rounded-sm bg-[#fdfcfc] hover:bg-[#f8f7f7] transition-colors cursor-pointer text-xs font-bold text-[#201d1d]"
                         title={language === 'ko' ? `${char.cardName} 카드 위키 보기` : `View Card Wiki for ${char.cardName}`}
                       >
                         <div
@@ -1167,36 +1210,36 @@ export const NovelView: React.FC<NovelViewProps> = ({
               {!isTtsPlaying && !isTtsPaused && (
                 <button
                   onClick={() => startTtsFromParagraph(0)}
-                  className="min-h-[36px] px-3 py-1 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm hover:bg-[#201d1d]/90 transition-colors cursor-pointer flex items-center gap-1"
+                  className="min-h-[44px] px-3.5 py-2 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm hover:bg-[#201d1d]/90 transition-colors cursor-pointer flex items-center gap-1.5"
                 >
-                  <Play size={12} /> {t('novel_tts_play', language)}
+                  <Play size={14} /> {t('novel_tts_play', language)}
                 </button>
               )}
 
               {isTtsPlaying && (
                 <button
                   onClick={pauseTts}
-                  className="min-h-[36px] px-3 py-1 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm hover:bg-[#201d1d]/90 transition-colors cursor-pointer flex items-center gap-1"
+                  className="min-h-[44px] px-3.5 py-2 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm hover:bg-[#201d1d]/90 transition-colors cursor-pointer flex items-center gap-1.5"
                 >
-                  <Pause size={12} /> {t('novel_tts_pause', language)}
+                  <Pause size={14} /> {t('novel_tts_pause', language)}
                 </button>
               )}
 
               {isTtsPaused && (
                 <button
                   onClick={resumeTts}
-                  className="min-h-[36px] px-3 py-1 bg-emerald-700 text-[#fdfcfc] text-xs font-bold rounded-sm hover:bg-emerald-800 transition-colors cursor-pointer flex items-center gap-1"
+                  className="min-h-[44px] px-3.5 py-2 bg-emerald-700 text-[#fdfcfc] text-xs font-bold rounded-sm hover:bg-emerald-800 transition-colors cursor-pointer flex items-center gap-1.5"
                 >
-                  <Play size={12} /> {language === 'ko' ? '이어서 재생' : 'Resume'}
+                  <Play size={14} /> {language === 'ko' ? '이어서 재생' : 'Resume'}
                 </button>
               )}
 
               {(isTtsPlaying || isTtsPaused) && (
                 <button
                   onClick={stopTts}
-                  className="min-h-[36px] px-2.5 py-1 bg-[#f1eeee] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm hover:bg-[#fdfcfc] transition-colors cursor-pointer flex items-center gap-1"
+                  className="min-h-[44px] px-3 py-2 bg-[#f1eeee] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm hover:bg-[#fdfcfc] transition-colors cursor-pointer flex items-center gap-1.5"
                 >
-                  <Square size={12} /> Stop
+                  <Square size={14} /> Stop
                 </button>
               )}
             </div>
@@ -1225,7 +1268,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
                         t('novel_prompt_copy_20_summary', language)
                       )
                     }
-                    className="min-h-[36px] px-3 py-1 text-[11px] font-bold border border-[#201d1d] rounded-sm bg-[#f8f7f7] hover:bg-[#f1eeee] text-[#201d1d] cursor-pointer flex items-center gap-1.5 transition-colors"
+                    className="min-h-[44px] px-3.5 py-2 text-[11px] font-bold border border-[#201d1d] rounded-sm bg-[#f8f7f7] hover:bg-[#f1eeee] text-[#201d1d] cursor-pointer flex items-center gap-1.5 transition-colors"
                   >
                     <Copy size={12} />
                     <span>{t('novel_prompt_copy_20_summary', language)}</span>
@@ -1278,7 +1321,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
                       }).join('\n');
                       handleCopyText(allShort, t('novel_prompt_copy_short_narration', language));
                     }}
-                    className="min-h-[36px] px-3 py-1 text-[11px] font-bold border border-[#201d1d] rounded-sm bg-[#f8f7f7] hover:bg-[#f1eeee] text-[#201d1d] cursor-pointer flex items-center gap-1.5 transition-colors"
+                    className="min-h-[44px] px-3.5 py-2 text-[11px] font-bold border border-[#201d1d] rounded-sm bg-[#f8f7f7] hover:bg-[#f1eeee] text-[#201d1d] cursor-pointer flex items-center gap-1.5 transition-colors"
                   >
                     <Copy size={12} />
                     <span>{t('novel_prompt_copy_short_narration', language)}</span>
@@ -1337,7 +1380,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
                       }).join('\n\n---\n\n');
                       handleCopyText(fullPromptText, language === 'ko' ? '전체 캐릭터 프롬프트' : 'All Character Prompts');
                     }}
-                    className="min-h-[36px] px-3 py-1 text-[11px] font-bold border border-[#201d1d] rounded-sm bg-[#f8f7f7] hover:bg-[#f1eeee] text-[#201d1d] cursor-pointer flex items-center gap-1.5 transition-colors"
+                    className="min-h-[44px] px-3.5 py-2 text-[11px] font-bold border border-[#201d1d] rounded-sm bg-[#f8f7f7] hover:bg-[#f1eeee] text-[#201d1d] cursor-pointer flex items-center gap-1.5 transition-colors"
                   >
                     <Copy size={12} />
                     <span>{language === 'ko' ? '모든 캐릭터 프롬프트 복사' : 'Copy All Character Prompts'}</span>
@@ -1355,7 +1398,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
                         <div className="flex items-center justify-between mb-3 border-b border-[rgba(15,0,0,0.12)] pb-2 flex-wrap gap-2">
                           <div className="flex items-center gap-2">
                             <div
-                              className="w-7 h-7 rounded-none border border-[#201d1d] shrink-0 overflow-hidden"
+                              className="w-8 h-8 rounded-none border border-[#201d1d] shrink-0 overflow-hidden"
                               style={getCardSpriteStyle(char.cardId)}
                             />
                             <div>
@@ -1368,13 +1411,13 @@ export const NovelView: React.FC<NovelViewProps> = ({
                             </div>
                           </div>
 
-                          <div className="flex items-center gap-1.5">
+                          <div className="flex items-center gap-1.5 flex-wrap">
                             <button
                               onClick={() => setSelectedWikiCardId(char.cardId)}
-                              className="min-h-[32px] px-2.5 py-1 text-[10px] font-bold border border-[rgba(15,0,0,0.12)] text-[#201d1d] bg-[#fdfcfc] hover:bg-[#f1eeee] rounded-sm cursor-pointer flex items-center gap-1"
+                              className="min-h-[44px] px-3 py-2 text-[11px] font-bold border border-[rgba(15,0,0,0.12)] text-[#201d1d] bg-[#fdfcfc] hover:bg-[#f1eeee] rounded-sm cursor-pointer flex items-center gap-1.5 transition-colors"
                               title={language === 'ko' ? '카드 위키' : 'Card Wiki'}
                             >
-                              <ExternalLink size={10} />
+                              <ExternalLink size={12} />
                               <span>{language === 'ko' ? '위키' : 'Wiki'}</span>
                             </button>
                             <button
@@ -1382,10 +1425,10 @@ export const NovelView: React.FC<NovelViewProps> = ({
                                 triggerHaptic('tap');
                                 onNavigate('shop');
                               }}
-                              className="min-h-[32px] px-2.5 py-1 text-[10px] font-bold border border-[#201d1d] text-[#fdfcfc] bg-[#201d1d] hover:bg-[#201d1d]/90 rounded-sm cursor-pointer flex items-center gap-1"
+                              className="min-h-[44px] px-3 py-2 text-[11px] font-bold border border-[#201d1d] text-[#fdfcfc] bg-[#201d1d] hover:bg-[#201d1d]/90 rounded-sm cursor-pointer flex items-center gap-1.5 transition-colors"
                               title={language === 'ko' ? '상점에서 카드 뽑기' : 'Summon Card in Shop'}
                             >
-                              <ShoppingCart size={10} />
+                              <ShoppingCart size={12} />
                               <span>{language === 'ko' ? '카드 뽑기' : 'Summon'}</span>
                             </button>
                             <button
@@ -1393,9 +1436,9 @@ export const NovelView: React.FC<NovelViewProps> = ({
                                 const singleText = `[Character Art Prompt: ${p.cardNameKo} / ${p.cardNameEn}]\nPrompt: ${p.positivePromptEn}\nNegative: ${p.negativePrompt}\nWebtoon Panel: ${p.webtoonPanelPrompt}`;
                                 handleCopyText(singleText, p.cardNameKo);
                               }}
-                              className="min-h-[32px] px-2.5 py-1 text-[10px] font-bold border border-[rgba(15,0,0,0.12)] text-[#201d1d] bg-[#fdfcfc] hover:bg-[#f1eeee] rounded-sm cursor-pointer flex items-center gap-1"
+                              className="min-h-[44px] px-3 py-2 text-[11px] font-bold border border-[rgba(15,0,0,0.12)] text-[#201d1d] bg-[#fdfcfc] hover:bg-[#f1eeee] rounded-sm cursor-pointer flex items-center gap-1.5 transition-colors"
                             >
-                              <Copy size={10} />
+                              <Copy size={12} />
                               <span>{language === 'ko' ? '프롬프트 복사' : 'Copy Prompt'}</span>
                             </button>
                           </div>
@@ -1473,7 +1516,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
                       const full20Text = continuous20Prompts.join('\n\n');
                       handleCopyText(full20Text, language === 'ko' ? '20개 프롬프트 전체 복사' : 'Copy All 20 Prompts');
                     }}
-                    className="min-h-[36px] px-3 py-1 text-[11px] font-bold border border-[#201d1d] rounded-sm bg-[#f8f7f7] hover:bg-[#f1eeee] text-[#201d1d] cursor-pointer flex items-center gap-1.5 transition-colors"
+                    className="min-h-[44px] px-3.5 py-2 text-[11px] font-bold border border-[#201d1d] rounded-sm bg-[#f8f7f7] hover:bg-[#f1eeee] text-[#201d1d] cursor-pointer flex items-center gap-1.5 transition-colors"
                   >
                     <Copy size={12} />
                     <span>{language === 'ko' ? '20개 프롬프트 한 번에 복사' : 'Copy All 20 Prompts'}</span>
@@ -1520,10 +1563,10 @@ export const NovelView: React.FC<NovelViewProps> = ({
                       if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                       onNavigate('anime');
                     }}
-                    className="min-h-[36px] px-2.5 py-1 text-xs font-bold border border-[#201d1d] bg-[#fdfcfc] hover:bg-[#f1eeee] text-[#201d1d] rounded-sm transition-colors cursor-pointer flex items-center gap-1"
+                    className="min-h-[44px] px-3 py-1.5 text-xs font-bold border border-[#201d1d] bg-[#fdfcfc] hover:bg-[#f1eeee] text-[#201d1d] rounded-sm transition-colors cursor-pointer flex items-center gap-1.5"
                     title={language === 'ko' ? '공식 영상 애니메이션 감상하기' : 'Watch Official Anime Video'}
                   >
-                    <Play size={13} />
+                    <Play size={14} />
                     <span>{language === 'ko' ? '영상 보기' : 'Watch Video'}</span>
                   </button>
                   <a
@@ -1533,35 +1576,51 @@ export const NovelView: React.FC<NovelViewProps> = ({
                     onClick={() => {
                       if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                     }}
-                    className="min-h-[36px] px-2.5 py-1 text-xs font-bold border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] hover:bg-[#f1eeee] text-[#201d1d] rounded-sm transition-colors cursor-pointer flex items-center gap-1"
+                    className="min-h-[44px] px-3 py-1.5 text-xs font-bold border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] hover:bg-[#f1eeee] text-[#201d1d] rounded-sm transition-colors cursor-pointer flex items-center gap-1.5"
                     title="YouTube Playlist"
                   >
-                    <ExternalLink size={13} />
+                    <ExternalLink size={14} />
                     <span>YouTube</span>
                   </a>
+                  <button
+                    onClick={() => {
+                      setShowCartoonBubbles(prev => !prev);
+                      if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                    }}
+                    className={cn(
+                      "min-h-[44px] px-3 py-1.5 text-xs font-bold border rounded-sm transition-colors cursor-pointer flex items-center gap-1.5",
+                      showCartoonBubbles
+                        ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
+                        : "bg-[#fdfcfc] text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee]"
+                    )}
+                    title={language === 'ko' ? '말풍선 및 효과음 토글' : 'Toggle Comic Speech Bubbles & SFX'}
+                  >
+                    <MessageSquare size={14} />
+                    <span>{language === 'ko' ? (showCartoonBubbles ? '말풍선 ON' : '말풍선 OFF') : (showCartoonBubbles ? 'Bubbles ON' : 'Bubbles OFF')}</span>
+                  </button>
                   <span className="text-[10px] text-[#646262] font-bold hidden sm:inline ml-1">[ VIEW MODE ]:</span>
                   <button
                     onClick={() => setCartoonDisplayMode('scroll')}
                     className={cn(
-                      "min-h-[36px] px-2.5 py-1 text-xs font-bold border rounded-sm transition-colors cursor-pointer flex items-center gap-1",
+                      "min-h-[44px] px-3 py-1.5 text-xs font-bold border rounded-sm transition-colors cursor-pointer flex items-center gap-1.5",
                       cartoonDisplayMode === 'scroll'
                         ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
                         : "bg-[#fdfcfc] text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee]"
                     )}
                   >
-                    <Layers size={13} />
+                    <Layers size={14} />
                     <span>{language === 'ko' ? '세로 스크롤' : 'Scroll'}</span>
                   </button>
                   <button
                     onClick={() => setCartoonDisplayMode('slides')}
                     className={cn(
-                      "min-h-[36px] px-2.5 py-1 text-xs font-bold border rounded-sm transition-colors cursor-pointer flex items-center gap-1",
+                      "min-h-[44px] px-3 py-1.5 text-xs font-bold border rounded-sm transition-colors cursor-pointer flex items-center gap-1.5",
                       cartoonDisplayMode === 'slides'
                         ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
                         : "bg-[#fdfcfc] text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee]"
                     )}
                   >
-                    <Film size={13} />
+                    <Film size={14} />
                     <span>{language === 'ko' ? '슬라이드' : 'Slides'}</span>
                   </button>
                 </div>
@@ -1582,85 +1641,28 @@ export const NovelView: React.FC<NovelViewProps> = ({
                           : '');
 
                     return (
-                      <div key={scNum} className="border border-[rgba(15,0,0,0.12)] rounded-none bg-[#fdfcfc] overflow-hidden hover:border-[#201d1d] transition-colors">
-                        {/* Scene Card Header */}
-                        <div className="bg-[#f8f7f7] border-b border-[rgba(15,0,0,0.12)] px-4 py-2 flex items-center justify-between text-xs font-mono">
-                          <span className="font-bold text-[#201d1d] flex items-center gap-1.5">
-                            <span className="w-2 h-2 rounded-none inline-block bg-[#201d1d]" />
-                            {scNum === 0 ? `[ TITLE CARD ]` : `SCENE ${pad2(scNum)} / 20`}
-                          </span>
-                          <button
-                            onClick={() => setLightboxSceneIndex(scNum)}
-                            className="px-2 py-0.5 border border-[rgba(15,0,0,0.12)] rounded-sm bg-[#fdfcfc] hover:bg-[#f1eeee] text-[#201d1d] text-[11px] font-bold cursor-pointer flex items-center gap-1"
-                            title={language === 'ko' ? '크게 보기' : 'Fullscreen'}
-                          >
-                            <Maximize2 size={12} />
-                            <span className="hidden sm:inline">{language === 'ko' ? '확대' : 'Zoom'}</span>
-                          </button>
-                        </div>
-
-                        {/* Scene Image Area */}
-                        <div
-                          className="relative w-full bg-[#201d1d] flex items-center justify-center min-h-[280px] sm:min-h-[420px] group cursor-pointer"
-                          onClick={() => setLightboxSceneIndex(scNum)}
-                        >
-                          {!isFailedAll ? (
-                            <img
-                              src={imgUrl}
-                              alt={`Cartoon Episode ${currentEpisodeNum} Scene ${scNum}`}
-                              loading="lazy"
-                              decoding="async"
-                              referrerPolicy="no-referrer"
-                              onLoad={(e) => {
-                                const target = e.currentTarget;
-                                if (typeof target.decode === 'function') {
-                                  target.decode().catch(() => {});
-                                }
-                              }}
-                              onError={() => {
-                                setSceneImgAttempts(prev => ({
-                                  ...prev,
-                                  [`${currentEpisodeNum}_${scNum}`]: (prev[`${currentEpisodeNum}_${scNum}`] || 0) + 1
-                                }));
-                              }}
-                              className="w-full h-auto max-h-[850px] object-contain"
-                            />
-                          ) : (
-                            /* Fallback Character Card Panel */
-                            <div className="w-full py-12 px-6 flex flex-col items-center justify-center text-center font-mono bg-[#201d1d] text-[#fdfcfc]">
-                              <div
-                                style={getCardSpriteStyle(((currentEpisodeNum * 5 + scNum) % 110) + 1)}
-                                className="w-28 h-28 rounded-none mb-3 border border-[rgba(255,255,255,0.2)] bg-black"
-                              />
-                              <span className="text-xs font-bold text-[#fdfcfc] uppercase tracking-widest">
-                                [ EPISODE {currentEpisodeNum} · {scNum === 0 ? 'TITLE' : `SCENE ${pad2(scNum)}`} ]
-                              </span>
-                            </div>
-                          )}
-
-                          {/* Hover Zoom Prompt Badge */}
-                          <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
-                            <span className="bg-[#201d1d] text-[#fdfcfc] text-xs px-3 py-1.5 rounded-sm font-bold flex items-center gap-1.5 border border-[#fdfcfc]">
-                              <Maximize2 size={14} />
-                              {language === 'ko' ? '클릭하여 큰 화면으로 감상' : 'Click to View Lightbox'}
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Scene Bottom Novel Sentence Card */}
-                        {sentenceText && (
-                          <div className="bg-[#f8f7f7] border-t border-[rgba(15,0,0,0.12)] px-4 py-3.5 sm:px-5 sm:py-4 font-mono">
-                            <div className="flex items-start gap-2.5">
-                              <span className="text-[#fdfcfc] font-bold text-[11px] bg-[#201d1d] px-2 py-0.5 rounded-sm mt-0.5 shrink-0 select-none">
-                                {scNum === 0 ? 'TITLE' : `#${pad2(scNum)}`}
-                              </span>
-                              <p className="text-xs sm:text-[13px] leading-relaxed text-[#201d1d] font-medium select-text">
-                                {sentenceText}
-                              </p>
-                            </div>
-                          </div>
-                        )}
-                      </div>
+                      <WebtoonPanelCard
+                        key={scNum}
+                        episodeNumber={currentEpisodeNum}
+                        sceneIndex={scNum}
+                        imgUrl={imgUrl}
+                        localArtUrl={imgInfo?.localArtUrl}
+                        isKeyClimax={imgInfo?.isKeyClimax}
+                        narrationText={sentenceText || ''}
+                        dialogues={imgInfo?.dialogues}
+                        sfxCues={imgInfo?.sfxCues}
+                        language={language}
+                        showBubbles={showCartoonBubbles}
+                        isFailedAll={isFailedAll}
+                        onZoom={() => setLightboxSceneIndex(scNum)}
+                        onError={() => {
+                          setSceneImgAttempts(prev => ({
+                            ...prev,
+                            [`${currentEpisodeNum}_${scNum}`]: (prev[`${currentEpisodeNum}_${scNum}`] || 0) + 1
+                          }));
+                        }}
+                        onPlaySfx={playSfx}
+                      />
                     );
                   })}
                 </div>
@@ -1681,18 +1683,18 @@ export const NovelView: React.FC<NovelViewProps> = ({
 
                     return (
                       <div className="space-y-4 font-mono">
-                        {/* Slide Navigation Header */}
+                        {/* Slide Navigation Header with 44px+ touch targets */}
                         <div className="flex items-center justify-between border-b border-[rgba(15,0,0,0.12)] pb-3 text-xs flex-wrap gap-2">
                           <span className="font-bold text-[#201d1d]">
                             {scNum === 0 ? `[ TITLE CARD ]` : `SCENE ${pad2(scNum)} / 20`}
                           </span>
-                          <div className="flex items-center gap-1 overflow-x-auto max-w-full pb-1">
+                          <div className="flex items-center gap-1.5 overflow-x-auto max-w-full pb-1">
                             {Array.from({ length: 21 }, (_, i) => i).map(n => (
                               <button
                                 key={n}
                                 onClick={() => setActiveSlideIndex(n)}
                                 className={cn(
-                                  "w-7 h-7 rounded-sm text-[10px] font-bold cursor-pointer transition-colors border shrink-0",
+                                  "min-w-[44px] min-h-[44px] px-2 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors border shrink-0 flex items-center justify-center",
                                   activeSlideIndex === n
                                     ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
                                     : "bg-[#f8f7f7] text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee]"
@@ -1704,52 +1706,28 @@ export const NovelView: React.FC<NovelViewProps> = ({
                           </div>
                         </div>
 
-                        {/* Active Slide Image */}
-                        <div
-                          className="relative w-full bg-[#201d1d] flex items-center justify-center min-h-[320px] sm:min-h-[480px] cursor-pointer group rounded-none overflow-hidden"
-                          onClick={() => setLightboxSceneIndex(scNum)}
-                        >
-                          {!isFailedAll ? (
-                            <img
-                              src={imgUrl}
-                              alt={`Cartoon Episode ${currentEpisodeNum} Scene ${scNum}`}
-                              loading="lazy"
-                              decoding="async"
-                              referrerPolicy="no-referrer"
-                              onError={() => {
-                                setSceneImgAttempts(prev => ({
-                                  ...prev,
-                                  [`${currentEpisodeNum}_${scNum}`]: (prev[`${currentEpisodeNum}_${scNum}`] || 0) + 1
-                                }));
-                              }}
-                              className="w-full h-auto max-h-[720px] object-contain"
-                            />
-                          ) : (
-                            <div className="w-full py-16 px-6 flex flex-col items-center justify-center text-center font-mono bg-[#201d1d] text-[#fdfcfc]">
-                              <div
-                                style={getCardSpriteStyle(((currentEpisodeNum * 5 + scNum) % 110) + 1)}
-                                className="w-32 h-32 rounded-none mb-3 border border-[rgba(255,255,255,0.2)] bg-black"
-                              />
-                              <span className="text-xs font-bold text-[#fdfcfc] uppercase tracking-widest">
-                                [ {scNum === 0 ? 'TITLE' : `SCENE ${pad2(scNum)}`} ]
-                              </span>
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Slide Bottom Novel Sentence Card */}
-                        {sentenceText && (
-                          <div className="bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] p-4 rounded-none">
-                            <div className="flex items-start gap-2.5">
-                              <span className="text-[#fdfcfc] font-bold text-[11px] bg-[#201d1d] px-2 py-0.5 rounded-sm mt-0.5 shrink-0 select-none">
-                                {scNum === 0 ? 'TITLE' : `#${pad2(scNum)}`}
-                              </span>
-                              <p className="text-xs sm:text-[13px] leading-relaxed text-[#201d1d] font-medium select-text">
-                                {sentenceText}
-                              </p>
-                            </div>
-                          </div>
-                        )}
+                        {/* Active Slide Webtoon Panel Card */}
+                        <WebtoonPanelCard
+                          episodeNumber={currentEpisodeNum}
+                          sceneIndex={scNum}
+                          imgUrl={imgUrl}
+                          localArtUrl={imgInfo?.localArtUrl}
+                          isKeyClimax={imgInfo?.isKeyClimax}
+                          narrationText={sentenceText || ''}
+                          dialogues={imgInfo?.dialogues}
+                          sfxCues={imgInfo?.sfxCues}
+                          language={language}
+                          showBubbles={showCartoonBubbles}
+                          isFailedAll={isFailedAll}
+                          onZoom={() => setLightboxSceneIndex(scNum)}
+                          onError={() => {
+                            setSceneImgAttempts(prev => ({
+                              ...prev,
+                              [`${currentEpisodeNum}_${scNum}`]: (prev[`${currentEpisodeNum}_${scNum}`] || 0) + 1
+                            }));
+                          }}
+                          onPlaySfx={playSfx}
+                        />
 
                         {/* Prev / Next Slide Navigation Buttons */}
                         <div className="flex items-center justify-between pt-2">
@@ -1757,11 +1735,11 @@ export const NovelView: React.FC<NovelViewProps> = ({
                             onClick={() => setActiveSlideIndex(prev => Math.max(0, prev - 1))}
                             disabled={activeSlideIndex <= 0}
                             className={cn(
-                              "min-h-[44px] px-3 py-1.5 border rounded-sm font-bold text-xs flex items-center gap-1 cursor-pointer transition-colors",
+                              "min-h-[44px] px-4 py-2 border rounded-sm font-bold text-xs flex items-center gap-1.5 cursor-pointer transition-colors",
                               activeSlideIndex <= 0 ? "opacity-50 cursor-not-allowed bg-[#f1eeee] border-[rgba(15,0,0,0.12)]" : "bg-[#fdfcfc] border-[rgba(15,0,0,0.12)] hover:bg-[#f8f7f7]"
                             )}
                           >
-                            <ChevronLeft size={14} />
+                            <ChevronLeft size={16} />
                             <span>{language === 'ko' ? '이전 장면' : 'Prev'}</span>
                           </button>
                           <span className="text-xs text-[#646262] font-bold">
@@ -1771,12 +1749,12 @@ export const NovelView: React.FC<NovelViewProps> = ({
                             onClick={() => setActiveSlideIndex(prev => Math.min(20, prev + 1))}
                             disabled={activeSlideIndex >= 20}
                             className={cn(
-                              "min-h-[44px] px-3 py-1.5 border rounded-sm font-bold text-xs flex items-center gap-1 cursor-pointer transition-colors",
+                              "min-h-[44px] px-4 py-2 border rounded-sm font-bold text-xs flex items-center gap-1.5 cursor-pointer transition-colors",
                               activeSlideIndex >= 20 ? "opacity-50 cursor-not-allowed bg-[#f1eeee] border-[rgba(15,0,0,0.12)]" : "bg-[#fdfcfc] border-[rgba(15,0,0,0.12)] hover:bg-[#f8f7f7]"
                             )}
                           >
                             <span>{language === 'ko' ? '다음 장면' : 'Next'}</span>
-                            <ChevronRight size={14} />
+                            <ChevronRight size={16} />
                           </button>
                         </div>
                       </div>
@@ -2163,17 +2141,35 @@ export const NovelView: React.FC<NovelViewProps> = ({
               </span>
             </div>
 
-            <button
-              onClick={() => setLightboxSceneIndex(null)}
-              className="min-h-[44px] px-3 py-1.5 bg-[#201d1d] hover:bg-[#201d1d]/80 text-[#fdfcfc] rounded-sm transition-colors cursor-pointer flex items-center gap-1 text-xs font-bold border border-[rgba(255,255,255,0.2)]"
-            >
-              <X size={18} />
-              <span>[ CLOSE ]</span>
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowCartoonBubbles(prev => !prev);
+                  if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                }}
+                className={cn(
+                  "min-h-[44px] px-3 py-1.5 rounded-sm transition-colors cursor-pointer flex items-center gap-1.5 text-xs font-bold border border-[rgba(255,255,255,0.2)]",
+                  showCartoonBubbles ? "bg-[#fdfcfc] text-[#201d1d]" : "bg-[#201d1d] text-[#fdfcfc]"
+                )}
+                title={language === 'ko' ? '말풍선 ON/OFF' : 'Toggle Bubbles'}
+              >
+                <MessageSquare size={14} />
+                <span>{language === 'ko' ? (showCartoonBubbles ? '말풍선 ON' : '말풍선 OFF') : (showCartoonBubbles ? 'Bubbles ON' : 'Bubbles OFF')}</span>
+              </button>
+
+              <button
+                onClick={() => setLightboxSceneIndex(null)}
+                className="min-h-[44px] px-3 py-1.5 bg-[#201d1d] hover:bg-[#201d1d]/80 text-[#fdfcfc] rounded-sm transition-colors cursor-pointer flex items-center gap-1 text-xs font-bold border border-[rgba(255,255,255,0.2)]"
+              >
+                <X size={18} />
+                <span>[ CLOSE ]</span>
+              </button>
+            </div>
           </div>
 
           {/* Lightbox Image Container */}
-          <div className="relative my-auto max-w-5xl max-h-[80vh] flex items-center justify-center" onClick={e => e.stopPropagation()}>
+          <div className="relative my-auto max-w-5xl max-h-[80vh] flex items-center justify-center overflow-hidden" onClick={e => e.stopPropagation()}>
             <img
               src={getCartoonSceneUrl(currentEpisodeNum, lightboxSceneIndex, sceneImgAttempts[`${currentEpisodeNum}_${lightboxSceneIndex}`] || 0)}
               alt={`Episode ${currentEpisodeNum} Scene ${lightboxSceneIndex}`}
@@ -2190,10 +2186,45 @@ export const NovelView: React.FC<NovelViewProps> = ({
               }}
             />
 
+            {/* Speech Bubbles and SFX Overlays in Lightbox */}
+            {(() => {
+              const lbImgInfo = lightboxSceneIndex !== null ? getCartoonImageInfo(currentEpisodeNum, lightboxSceneIndex) : undefined;
+              if (!showCartoonBubbles || !lbImgInfo) return null;
+              return (
+                <>
+                  {lbImgInfo.dialogues && lbImgInfo.dialogues.length > 0 && lbImgInfo.dialogues.map((dialogue, dIdx) => (
+                    <WebtoonSpeechBubble
+                      key={`lb_dialogue_${dIdx}`}
+                      dialogue={dialogue}
+                      language={language}
+                      onBubbleClick={() => {
+                        if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                      }}
+                    />
+                  ))}
+                  {lbImgInfo.sfxCues && lbImgInfo.sfxCues.length > 0 && lbImgInfo.sfxCues.map((sfx, sIdx) => (
+                    <WebtoonSfxOverlay
+                      key={`lb_sfx_${sIdx}`}
+                      sfx={sfx}
+                      language={language}
+                      onTriggerSfx={() => {
+                        if (playSfx) {
+                          const sfxUrl = sfx.style === 'slash'
+                            ? 'https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3'
+                            : 'https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3';
+                          playSfx(sfxUrl);
+                        }
+                      }}
+                    />
+                  ))}
+                </>
+              );
+            })()}
+
             {/* Prev Scene Arrow */}
             <button
               onClick={() => setLightboxSceneIndex(prev => (prev !== null && prev > 0 ? prev - 1 : 20))}
-              className="min-h-[44px] min-w-[44px] absolute left-2 top-1/2 -translate-y-1/2 p-3 bg-[#201d1d] hover:bg-black text-[#fdfcfc] rounded-sm border border-[rgba(255,255,255,0.2)] cursor-pointer transition-colors flex items-center justify-center"
+              className="min-h-[44px] min-w-[44px] absolute left-2 top-1/2 -translate-y-1/2 p-3 bg-[#201d1d] hover:bg-black text-[#fdfcfc] rounded-sm border border-[rgba(255,255,255,0.2)] cursor-pointer transition-colors flex items-center justify-center z-30"
               title="Previous Scene"
             >
               <ChevronLeft size={24} />
@@ -2202,7 +2233,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
             {/* Next Scene Arrow */}
             <button
               onClick={() => setLightboxSceneIndex(prev => (prev !== null && prev < 20 ? prev + 1 : 0))}
-              className="min-h-[44px] min-w-[44px] absolute right-2 top-1/2 -translate-y-1/2 p-3 bg-[#201d1d] hover:bg-black text-[#fdfcfc] rounded-sm border border-[rgba(255,255,255,0.2)] cursor-pointer transition-colors flex items-center justify-center"
+              className="min-h-[44px] min-w-[44px] absolute right-2 top-1/2 -translate-y-1/2 p-3 bg-[#201d1d] hover:bg-black text-[#fdfcfc] rounded-sm border border-[rgba(255,255,255,0.2)] cursor-pointer transition-colors flex items-center justify-center z-30"
               title="Next Scene"
             >
               <ChevronRight size={24} />

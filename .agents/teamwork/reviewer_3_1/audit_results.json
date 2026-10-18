@@ -1,0 +1,210 @@
+{
+  "passed": [
+    {
+      "category": "M1-Korean",
+      "name": "40 files exist and non-empty",
+      "details": "All 40 markdown files present"
+    },
+    {
+      "category": "M1-Korean",
+      "name": "Markdown header format",
+      "details": "All 40 episodes have # 눈히어로 {N}화 headers"
+    },
+    {
+      "category": "M1-Korean",
+      "name": "Character count threshold (>= 3,500)",
+      "details": "Min=3629, Max=4302, Avg=3968.9, Total=158755"
+    },
+    {
+      "category": "M1-Korean",
+      "name": "Direct dialogue line count (>= 8)",
+      "details": "Min=9, Max=22, Avg=16.0"
+    },
+    {
+      "category": "M1-Boilerplate",
+      "name": "Zero occurrences of '대기를 타고'",
+      "details": "0 occurrences across all 40 episodes"
+    },
+    {
+      "category": "M1-Boilerplate",
+      "name": "Zero occurrences of '찰나의 순간에도'",
+      "details": "0 occurrences across all 40 episodes"
+    },
+    {
+      "category": "M1-Boilerplate",
+      "name": "Zero occurrences of '팽팽하게 맞부딪친'",
+      "details": "0 occurrences across all 40 episodes"
+    },
+    {
+      "category": "M1-Boilerplate",
+      "name": "Zero occurrences of '옥빛 마나의'",
+      "details": "0 occurrences across all 40 episodes"
+    },
+    {
+      "category": "M1-Corruption",
+      "name": "Zero occurrences of '거두지 않았다'",
+      "details": "0 occurrences across all 40 episodes"
+    },
+    {
+      "category": "M1-Corruption",
+      "name": "Zero occurrences of '결박펼쳐졌다'",
+      "details": "0 occurrences across all 40 episodes"
+    },
+    {
+      "category": "M1-Corruption",
+      "name": "Zero occurrences of '웃고 타올랐다'",
+      "details": "0 occurrences across all 40 episodes"
+    },
+    {
+      "category": "M1-Corruption",
+      "name": "Zero occurrences of '내리고 타올랐다'",
+      "details": "0 occurrences across all 40 episodes"
+    },
+    {
+      "category": "M1-DialogueUniqueness",
+      "name": "Zero recycled dialogue quotes (len >= 10)",
+      "details": "Total unique dialogues >= 10: 639, 0 recycled"
+    },
+    {
+      "category": "M1-SentenceUniqueness",
+      "name": "Zero non-quote sentences repeated > 2 times",
+      "details": "Total tested sentences: 2335, 0 repeated > 2x"
+    },
+    {
+      "category": "M1-Lifecycle",
+      "name": "Robinyard lifecycle (0 dialogues Ep 04-40)",
+      "details": "No ghost dialogues detected"
+    },
+    {
+      "category": "M1-Lifecycle",
+      "name": "Ignis lifecycle (0 dialogues Ep 29-40)",
+      "details": "No ghost dialogues detected; honored via white glass ember"
+    },
+    {
+      "category": "M1-Lifecycle",
+      "name": "Six Masters lifecycle (0 dialogues Ep 35-40)",
+      "details": "No ghost dialogues detected after Ep 34 sacrifice"
+    },
+    {
+      "category": "M1-Lifecycle",
+      "name": "Artus Ep 39 resolution",
+      "details": "Artus canonical role present in Ep 39"
+    },
+    {
+      "category": "M1-LoreKeywords",
+      "name": "Preservation of 5 core lore keywords",
+      "details": "은빛 단검(31 eps), 알렉산다르(34 eps), 발리안(24 eps), 이그니스(36 eps), 실리아(34 eps)"
+    },
+    {
+      "category": "M1-English",
+      "name": "40 English files exist",
+      "details": "Found 40 files in english_txt/"
+    },
+    {
+      "category": "M1-English",
+      "name": "0 raw image tokens in English text",
+      "details": "0 occurrences of (042.png) or similar tokens"
+    },
+    {
+      "category": "M1-English",
+      "name": "0 Korean characters in English text",
+      "details": "Clean English prose throughout all 40 files"
+    },
+    {
+      "category": "M1-English",
+      "name": "0 repetitive fallback sentences ('In the tense silence...')",
+      "details": "0 occurrences across all files"
+    },
+    {
+      "category": "M1-English",
+      "name": "0 duplicate sentences (>20 chars) repeated > 2 times",
+      "details": "Tested 2243 sentences"
+    },
+    {
+      "category": "M1-EnglishMapping",
+      "name": "englishNovelMapping.ts 100% sync",
+      "details": "All 40 entries map to existing files"
+    },
+    {
+      "category": "M1-IndexSync",
+      "name": "index.json exact synchronization",
+      "details": "40 episodes, exact characterCounts, totalCharacters=158755"
+    },
+    {
+      "category": "M2-Illustrations",
+      "name": "5 Generative dark-fantasy illustrations exist",
+      "details": "ep01_blizzard_vow.jpg (954KB, JPEG=True); ep08_crimson_mane.jpg (1053KB, JPEG=True); ep15_shadow_duel.jpg (840KB, JPEG=True); ep25_assassin_ambush.jpg (985KB, JPEG=True); ep40_eternal_shield.jpg (854KB, JPEG=True)"
+    },
+    {
+      "category": "M2-Manifest",
+      "name": "webtoonEpisodeManifest.json structure & URLs",
+      "details": "40 episodes, 840 panels (all 21-panel uniform), 0 broken URLs"
+    },
+    {
+      "category": "M2-ManifestComicDirection",
+      "name": "Structured dialogues and SFX cues",
+      "details": "860 dialogues in 40/40 eps, 472 SFX cues in 40/40 eps"
+    },
+    {
+      "category": "M2-NarrationFiles",
+      "name": "40 narration JSON files exist",
+      "details": "All 40 episode_XX_narrations.json present"
+    },
+    {
+      "category": "M2-Components",
+      "name": "Modular webtoon components exist",
+      "details": "WebtoonSpeechBubble.tsx, WebtoonSfxOverlay.tsx, WebtoonMonologueBox.tsx, WebtoonPanelCard.tsx"
+    },
+    {
+      "category": "M2-NovelView",
+      "name": "[말풍선 ON/OFF] toggle supported",
+      "details": "showSpeechBubbles state & toggle UI present"
+    },
+    {
+      "category": "M2-NovelView",
+      "name": "Vertical scroll & Slide view modes supported",
+      "details": "Both modes implemented and selectable"
+    },
+    {
+      "category": "M2-NovelView",
+      "name": "Touch ergonomics compliance (>= 44px, no w-7 h-7)",
+      "details": "0 deprecated 28px buttons"
+    }
+  ],
+  "failed": [
+    {
+      "category": "M1-Boilerplate",
+      "name": "Zero occurrences of '칠흑 같은'",
+      "details": "Found in episodes: [5, 11]"
+    }
+  ],
+  "observations": {
+    "korean_chars": {
+      "min": 3629,
+      "max": 4302,
+      "avg": 3968.9,
+      "total": 158755
+    },
+    "korean_dialogues": {
+      "min": 9,
+      "max": 22,
+      "avg": 16.0
+    },
+    "fillers": {
+      "대기를 타고": [],
+      "찰나의 순간에도": [],
+      "팽팽하게 맞부딪친": [],
+      "옥빛 마나의": [],
+      "칠흑 같은": [
+        5,
+        11
+      ]
+    },
+    "corruptions": {
+      "거두지 않았다": [],
+      "결박펼쳐졌다": [],
+      "웃고 타올랐다": [],
+      "내리고 타올랐다": []
+    }
+  }
+}

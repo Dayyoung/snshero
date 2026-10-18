@@ -1,0 +1,113 @@
+import os, sys, re
+
+# ==============================================================================
+# EPISODE 12: 두 무덤 사이의 봄 (Spring Between Two Graves)
+# ==============================================================================
+EP12_KO = """# 눈히어로 12화 - 두 무덤 사이의 봄
+
+> 원문 범위: 제23장-제24장
+
+수도 라이트헤븐의 외곽을 둘러싼 울창한 고대 참나무 숲 깊은 곳에는 세월의 풍파에 잊힌 옛 성기사단의 버려진 성소가 무거운 침묵 속에 잠겨 있었다. 무너져 내린 백색 대리석 회랑의 원형 기둥마다 짙푸른 이끼와 겨우살이 넝쿨이 거미줄처럼 얽혀 있었고, 부서진 성스러운 제단 틈새로는 차가웠던 겨울 눈송이가 녹아내리며 청아한 낙수 소리를 냈다. 산새들이 이른 새벽의 푸르스름한 안갯속에서 조용히 지저귀고 있었지만, 성소 안마당을 감도는 공기는 살얼음판처럼 차갑고 무거웠다.
+
+늙은 성기사 발리안은 성소 안쪽의 허물어진 돌벽에 등을 기댄 채 거친 숨을 몰아쉬고 있었다. 제7 지하 노동 수용소의 유황 불길에서 탈출하는 과정에서 입은 상처가 깊었던 데다, 메두사 고르고의 암흑 맹독이 그의 가슴팍 흉터를 타고 검푸른 혈관처럼 번져 나가고 있었다. 백발의 늙은 기사의 입술은 잿빛으로 바싹 말라붙어 있었고, 거친 손마디는 끊임없이 미세하게 경련하고 있었다.
+
+이셀라는 떨리는 손으로 으깬 컴프리 약초와 카단이 황궁 약초원에서 목숨을 걸고 구해온 달빛잎 즙을 개어 남편의 검게 물든 가슴 상처에 조심스럽게 덧대었다.
+
+“발리안, 조금만 더 기운을 내요. 카단이 가져온 영약이 곧 상처의 불길을 가라앉힐 거예요. 우리 아이를... 이그니스를 다시 품에 안아야 하잖아요.”
+
+발리안은 아내의 젖은 눈가를 상처투성이 손으로 쓸어내리며 힘없이 미소를 지었다.
+
+“이셀라... 내 육신은 이미 수용소의 혹독한 고문 속에서 다 타버렸소. 다만 당신이 기억을 되찾고 내 곁에 있어 주니, 지난 십팔 년 동안 겪었던 지옥 같은 어둠이 봄눈 녹듯 사라지는구려.”
+
+그 평화로운 순간도 잠시, 성소 바깥의 참나무 숲속에서 무거운 철갑 기마대의 발굽 소리와 함께 서슬 퍼런 살기가 밀려들었다. 권신 루시안이 황궁 직속의 정예 불꽃 근위대 백여 명을 이끌고 성소를 겹겹이 포위한 것이었다. 진홍빛 비단 망토를 두른 루시안이 흑마 위에서 은잔을 가볍게 흔들며 조롱 섞인 고함을 내질렀다.
+
+“발리안 경, 비참하게 무너진 돌무더기 속에서 쥐새끼처럼 숨을 헐떡이는 꼴이 참으로 볼만하군! 이셀라를 순순히 내놓고 성기사단의 옥좌 문양을 넘긴다면, 네놈에게 고통 없는 편안한 죽음만은 허락해 주마!”
+
+성소 입구의 좁은 돌계단에서 성기사 워커와 헤르쿨이 거대한 두 자루의 강철 방패를 맞대며 앞을 가로막았다. 그들의 등 뒤에서 여섯 스승들—드워프 대장장이 그림리, 바람술사 가웨인, 사냥꾼 에일라, 암살자 카제, 권사 론돌, 약초사 엘리아나—이 결연한 표정으로 무기를 뽑아 들며 방어 진형을 펼쳤다.
+
+그림리가 거대한 무쇠 모루 망치를 계단 석판에 쾅 내려찍으며 우렁차게 포효했다.
+
+“궁정의 썩어빠진 개새끼들이 주둥이를 함부로 놀리는구나! 성기사의 거룩한 성소에 더러운 발을 들이려거든 네놈들의 해골통부터 모루 위에 쪼갤 각오를 해라!”
+
+루시안이 차갑게 손짓하자, 불꽃 근위병들이 일제히 불화살과 화염창을 겨누며 돌계단으로 쇄도했다. 계단 위는 순식간에 날카로운 쇳소리와 폭음이 난무하는 참혹한 격전지로 변했다. 워커의 푸른 성광 방벽과 헤르쿨의 금빛 수호막이 쏟아지는 불화살을 튕겨내는 사이, 실리아는 성소 뒤편의 험준한 산악 협곡으로 통하는 바람의 퇴각로를 열기 위해 청록색 지팡이를 힘차게 휘둘렀다.
+
+실리아가 카단을 돌아보며 다급하게 외쳤다.
+
+“성소 북쪽 계곡으로 피난민들과 이셀라 님을 모셔야 해요! 적의 화염 마법진이 숲을 포위하기 전에 어서요!”
+
+카단은 고개를 끄덕이며 알렉산다르 스승의 가르침을 되새기며 계단 중앙으로 뛰어들었다. 무쇠 방패를 45도 각도로 기울여 적 기병들의 거센 돌진력을 허공으로 흘려보내며, 카단은 은빛 단검의 날카로운 서리 칼날로 적들의 창대를 연거푸 분질렀다. 청년의 어깨에 실린 묵직한 방어술은 백여 명의 근위대 앞에서도 흔들림 없는 성벽과 같았다. 적의 창끝이 방패 면을 미끄러져 나갈 때마다 튀는 불꽃이 카단의 단호한 눈빛을 비추었다.
+
+그때 성소 안마당의 낡은 석조 가묘 앞에서 발리안이 아내의 부축을 받으며 비틀거리며 일어섰다. 그곳은 십팔 년 전 겨울, 엘윈 마을에서 전사한 의형제 알렉산다르의 빈 무덤이었다. 비바람에 풍화된 묘비에는 알렉산다르의 이름과 성기사단의 십자 문양이 희미하게 새겨져 있었다.
+
+발리안은 떨리는 손으로 성수를 묘비 위에 정성스럽게 붓고 이마를 비석에 대었다.
+
+“형님... 약속대로 우리 아이들이 훌륭하게 자라 주었소. 이제 내게 남은 마지막 불꽃을 저 아이들에게 온전히 넘겨주고 형님의 곁으로 가겠소.”
+
+발리안은 품속에서 성기사단의 비밀 맹세가 새겨진 오래된 은빛 단검 한 자루를 꺼내 카단의 손에 쥐여주었다. 카단은 단검의 서늘한 칼날을 쥐며 숙부의 눈을 응시했다.
+
+“숙부님, 당신이 지켜온 불씨는 결코 꺼지지 않을 것입니다. 반드시 이그니스를 구하고 대륙의 평화를 되찾겠습니다.”
+
+숲속 짙은 나무 그늘 뒤편에서 그 광경을 숨죽이고 지켜보던 사내가 있었다. 백색 화염 기사단의 단장 이그니스였다. 이그니스는 어머니 이셀라의 절절한 눈물과, 알렉산다르의 무덤 앞에서 피를 토하며 무릎을 꿇은 아버지 발리안의 숭고한 모습을 두 눈으로 똑똑히 보았다. 황궁에서 배웠던 모든 법도와 규율이 거짓이었음을 깨달은 이그니스의 황금빛 눈동자에 격렬한 혼란과 비통함이 소용돌이쳤다.
+
+이그니스는 차마 검을 뽑지 못하고 가슴을 쥐어뜯으며 나지막이 읊조렸다.
+
+“아버지... 어머니... 도대체 황궁의 법도는 무엇이었단 말인가... 내가 믿어온 정의는 허상이었단 말인가...”
+
+카단과 여섯 스승들의 목숨을 건 분전에 힘입어 일행은 동쪽 해안으로 통하는 비밀 산악 회랑을 성공적으로 뚫어냈다. 루시안의 군대는 거센 저항과 지형의 험준함에 부딪혀 결국 추격을 포기하고 성벽으로 퇴각했다.
+
+피 묻은 눈밭을 헤치고 산악 회랑을 벗어났을 때, 카단의 발밑에 바위틈 눈송이를 뚫고 피어난 작은 하얀 꽃 한 송이가 보였다. 첫 번째 설강화였다. 혹독했던 겨울의 오랜 상처를 딛고 대지가 마침내 새로운 봄을 호흡하기 시작한 순간이었다. 봄바람이 그들의 지친 이마를 스쳐 지나갔고, 소년 영웅들의 발걸음은 희망으로 채워지고 있었다."""
+
+EP12_EN = """SNSHero Novel
+Episode 12: Spring Between Two Graves
+
+Deep within the ancient oak groves encircling the outer boundaries of the capital, Lighthaven, the forgotten sanctuary of the Arcane Holy Knights lay steeped in heavy silence. Coiling around the fallen columns of the white marble cloister, deep emerald moss and mistletoe tangled like weathered webs, while through fissures in the fractured altar, melting winter snowdrifts dripped with clear, rhythmic drops. Woodland thrushes chirped softly in the twilight mist of early dawn, yet the atmosphere within the flagstone courtyard remained cold and tense as winter ice.
+
+The aged Paladin Balian rested against a crumbling stone wall within the nave, breathing in shallow, labored gasps. The deep wounds sustained while escaping the sulfur fires of the Seventh Labor Camp burned with fever, and the necrotic venom of Medusa Gorgo spread like blackened veins across the scarred expanse of his chest. Parched and pale as ash, the veteran's lips trembled as involuntary tremors passed through his calloused fingers.
+
+With trembling hands, Issela blended crushed comfrey leaves with the cooling sap of the Moonlit Herb brought by Kadan from the imperial apothecary, gently applying the poultice over the blackened lacerations upon her husband's breast.
+
+"Bear it just a little longer, Balian. The medicine Kadan secured will soon extinguish the fever in your blood. You must live... to hold our boy, our Ignis, in your arms once more."
+
+Balian reached out with a scarred, calloused hand to brush away the tears gathering upon his wife's cheeks, a faint, weary smile touching his lips.
+
+"Issela... my mortal shell was largely consumed under the inquisitors' fires in the mines. Yet now that you have reclaimed your true memories and sit beside me, the hellish eighteen years of isolation dissolve like spring snow upon the hearth."
+
+That fragile peace was shattered all too soon. Through the oak groves beyond the perimeter walls came the rhythmic thunder of iron-shod hooves and the unmistakable chill of unsheathed steel. High Minister Lucian had arrived, commanding over a hundred elite flame guardsmen to encircle the sanctuary in an iron perimeter. Draped in a mantle of rich crimson silk, Lucian swirled a chalice of silver wine atop his black charger, bellowing in mocking amusement.
+
+"Lord Balian! What a pathetic spectacle, wheezing like a cornered cur among shattered masonry! Surrender Issela and deliver the Throne Seal of the Holy Order, and I might grant you an untroubled demise without further agony!"
+
+At the foot of the narrow stone stairs guarding the entrance, Paladin Walker and Hercul planted two colossal steel tower shields side by side, barring the gateway. Behind them, the Six Masters—Grimli the dwarven smith, Gawain the wind-blade, Eyla the huntress, Kaze the shadow-blade, Rondol the pugilist, and Eliana the herbalist—drew their weapons with grim resolve, forming an unyielding line.
+
+Grimli slammed his massive iron anvil hammer against the stone flagstones, his voice echoing like rolling thunder.
+
+"The bloated curs of the court bark loud when backed by iron! If you wish to set your corrupt boots upon holy ground, prepare to have your skulls cracked over my anvil!"
+
+With a cold gesture from Lucian, the flame lancers leveled their weapons and charged up the stairway in a roaring tide of fire and steel. The ascent became a slaughterhouse of clashing metal and concussive shockwaves. While Walker's azure barrier and Hercul's golden aegis deflected the incoming tempest of flaming quarrels, Cilia swept her teal staff, weaving a protective draft to open a retreat path through the northern defile.
+
+Cilia turned toward Kadan, her voice urgent.
+
+"We must escort the refugees and Lady Issela into the northern gorge! The wind corridor will collapse within ten minutes!"
+
+Kadan nodded firmly, remembering the fundamental defensive lessons of Master Aleksandar as he leaped into the center of the stairs. Angling his iron shield to deflect the kinetic momentum of charging lancers into empty air, Kadan snapped spear-shafts with the razor edge of his silver dagger. The youthful warrior's grounded stance was an immovable wall against the imperial host. As charging spearheads glanced off the curved rim, flying sparks lit the unwavering resolve in his eyes.
+
+In the courtyard behind them, Balian rose to his feet with Issela's support, stumbling toward an ancient stone cenotaph. It was the empty grave of his sworn brother, Aleksandar, who had fallen eighteen winters ago in Elwin. Weathered by wind and frost, the headstone bore Aleksandar's name and the faded cross emblem of the Holy Order.
+
+With trembling hands, Balian poured sacred water over the lichen-crusted stone, pressing his forehead against the cold granite.
+
+"Brother... As we swore beneath the snow, our sons have grown into stalwart men. Now I shall pass the last remaining embers of my soul to them, and journey to your side."
+
+Drawing an ancient silver dagger inscribed with the vows of the Holy Knights from his breast, Balian pressed the hilt into Kadan's calloused palm. Kadan met the veteran's eyes with solemn depth.
+
+"Uncle, the flame you have guarded shall never be extinguished. I swear to deliver Ignis from the shadows and restore peace to this continent."
+
+Hidden within the deep gloom of the tree line, a solitary warrior watched the scene in breathless silence. It was High Commander Ignis of the White Flame Order. With his own eyes, Ignis beheld the heartfelt tears of his mother Issela, and the sacrificial dignity of his father Balian kneeling in prayer before Aleksandar's cenotaph. Realizing that the entire foundation of justice taught to him in the capital was a fabricated lie, turbulent agony and sorrow tore through Ignis's golden gaze.
+
+Ignis could not bring himself to draw steel, clutching his breastplate as he murmured into the wind.
+
+"Father... Mother... What then was the truth behind the laws of the throne... Was the righteousness I upheld nothing more than a hollow illusion..."
+
+Through the desperate valor of Kadan and the Six Masters, the companions breached the mountain corridor leading toward the eastern coastline. Battered by fierce resistance and hindered by the craggy slopes, Lucian's legions broke off pursuit and fell back toward the citadel.
+
+As they emerged from the blood-stained snowdrifts into the valley, Kadan looked down to see a tiny white flower pushing through the frozen shale. It was the first snowdrop of the season. Overcoming the deep scars of winter, the earth was finally drawing its first breath of spring. A gentle breeze brushed their brows, and the steps of the young wanderers were infused with renewed hope."""
+
+print("EP12 length:", len(EP12_KO), "EN length:", len(EP12_EN))

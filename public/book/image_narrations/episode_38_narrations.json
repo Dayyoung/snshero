@@ -13,7 +13,18 @@
       "narrationKo": "헤르쿨이 와일드랜드 군영에 도착했다. 그는 펜릴의 승전을 축하하는 사절로 위장했지만, 실제로는 카단의 스승들이 남긴 세 개의 봉인을 전하러 왔다.",
       "sourceSentenceStart": 1,
       "sourceSentenceEnd": 2,
-      "alignmentScore": 0.3828
+      "alignmentScore": 0.3828,
+      "dialogues": [
+        {
+          "speakerKo": "헤르쿨",
+          "speakerEn": "Hercul",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "bottom-right"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 2,
@@ -23,7 +34,31 @@
       "narrationKo": "그림리와 가웨인이 죽기 전 각각 한 봉인씩 맡겼고, 마지막 것은 헤르쿨 자신의 것이었다. 첫 봉인에는 아이언포지 전략 코어의 남부 침공로를 무력화하는 방법이 들어 있었다. 강을 터뜨리거나 성을 무너뜨리는 대신 보급 룬의 날짜를 하루씩 어긋나게 하면 대군이 스스로 멈춘다는 계획이었다.",
       "sourceSentenceStart": 3,
       "sourceSentenceEnd": 5,
-      "alignmentScore": 0.5409
+      "alignmentScore": 0.5409,
+      "dialogues": [
+        {
+          "speakerKo": "헤르쿨",
+          "speakerEn": "Hercul",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "top-right"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
     },
     {
       "sceneNumber": 3,
@@ -33,7 +68,18 @@
       "narrationKo": "카제 특유의 속임수였다. 메모 구석에는 영웅은 식량표 앞에서 가장 잘 넘어진다는 카제의 농담이 적혀 있었다. 카단은 웃으려다 목이 메었다.",
       "sourceSentenceStart": 6,
       "sourceSentenceEnd": 8,
-      "alignmentScore": 0.4582
+      "alignmentScore": 0.4582,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
+          "textEn": "All units on high alert! They are coming!",
+          "bubbleType": "shout",
+          "position": "top-left"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 4,
@@ -43,7 +89,25 @@
       "narrationKo": "죽은 스승의 목소리가 거창한 유언보다 삐딱한 한 줄에서 더 선명하게 돌아왔다. 두 번째 봉인에는 펜릴의 측근 명단과 루시안에게 매수된 장수들이 표시되어 있었다. 에일라는 오래전부터 북방 진영 안의 검은 화살을 추적해 왔다.",
       "sourceSentenceStart": 9,
       "sourceSentenceEnd": 11,
-      "alignmentScore": 0.4308
+      "alignmentScore": 0.4308,
+      "dialogues": [
+        {
+          "speakerKo": "루시안",
+          "speakerEn": "Lucian",
+          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
+          "textEn": "All units on high alert! They are coming!",
+          "bubbleType": "shout",
+          "position": "bottom-left"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
     },
     {
       "sceneNumber": 5,
@@ -53,7 +117,25 @@
       "narrationKo": "펜릴의 정복욕은 그의 것이지만, 남부 원정을 서두르게 만든 손은 루시안이었다. 명단에는 매수되지 않은 장수의 이름도 함께 있었다. 의심만 퍼뜨리면 군대가 스스로 무너진다는 것을 에일라는 알았다.",
       "sourceSentenceStart": 12,
       "sourceSentenceEnd": 14,
-      "alignmentScore": 0.3278
+      "alignmentScore": 0.3278,
+      "dialogues": [
+        {
+          "speakerKo": "루시안",
+          "speakerEn": "Lucian",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "bottom-right"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
     },
     {
       "sceneNumber": 6,
@@ -63,7 +145,18 @@
       "narrationKo": "누구를 믿어도 되는지 남기는 일은 배신자를 찾는 일만큼 중요했다. 세 번째 봉인은 비어 있었다. 헤르쿨은 카단에게 직접 쓸 내용을 고르라고 했다.",
       "sourceSentenceStart": 15,
       "sourceSentenceEnd": 17,
-      "alignmentScore": 0.3697
+      "alignmentScore": 0.3697,
+      "dialogues": [
+        {
+          "speakerKo": "헤르쿨",
+          "speakerEn": "Hercul",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "top-right"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 7,
@@ -73,7 +166,18 @@
       "narrationKo": "스승들이 정답을 남기지 않은 이유는 마지막 선택까지 대신하면 또다시 아이를 약속의 도구로 만드는 셈이기 때문이었다. 카단은 세 번째 비단에 두 문장을 썼다.",
       "sourceSentenceStart": 18,
       "sourceSentenceEnd": 19,
-      "alignmentScore": 0.5651
+      "alignmentScore": 0.5651,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "top-left"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 8,
@@ -83,7 +187,18 @@
       "narrationKo": "남부 원정에 참여하지 않는다. 어머니와 함께 떠난다. 그는 자신의 이름을 적고 펜릴에게 직접 전했다.",
       "sourceSentenceStart": 20,
       "sourceSentenceEnd": 22,
-      "alignmentScore": 0.6331
+      "alignmentScore": 0.6331,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
+          "textEn": "All units on high alert! They are coming!",
+          "bubbleType": "shout",
+          "position": "bottom-left"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 9,
@@ -93,7 +208,18 @@
       "narrationKo": "펜릴은 비단을 읽은 뒤 엘윈을 군막 안에 머물게 했다. 손님을 보호한다는 명목이었으나 사실상 인질이었다. 카단에게는 남부 원정의 선봉이 되면 어머니를 고향으로 보내 주겠다고 했다.",
       "sourceSentenceStart": 23,
       "sourceSentenceEnd": 25,
-      "alignmentScore": 0.424
+      "alignmentScore": 0.424,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "bottom-right"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 10,
@@ -103,7 +229,18 @@
       "narrationKo": "티타니아는 아버지에게 칼을 겨눴다. “저를 보물로 주더니 이제는 어머니를 사슬로 쓰십니까?” 펜릴은 딸을 감금했다.",
       "sourceSentenceStart": 26,
       "sourceSentenceEnd": 28,
-      "alignmentScore": 0.4636
+      "alignmentScore": 0.4636,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "저를 보물로 주더니 이제는 어머니를 사슬로 쓰십니까?",
+          "textEn": "You gave me as a treasure, but now you use my mother as a chain? ",
+          "bubbleType": "speech",
+          "position": "bottom-left"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 11,
@@ -113,7 +250,18 @@
       "narrationKo": "길가메시는 누이를 풀어 주려다 군권을 박탈당했다. 가족을 하나로 묶으려던 정복왕은 가장 가까운 사람부터 적으로 만들고 있었다. 실리아는 카단에게 엘윈을 몰래 빼내는 계획을 제시했다.",
       "sourceSentenceStart": 29,
       "sourceSentenceEnd": 31,
-      "alignmentScore": 0.3888
+      "alignmentScore": 0.3888,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
+          "textEn": "All units on high alert! They are coming!",
+          "bubbleType": "shout",
+          "position": "top-left"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 12,
@@ -123,7 +271,18 @@
       "narrationKo": "카단은 어머니를 구하는 동안 원정군이 출발할까 망설였다. 엘윈은 두 사람의 대화를 듣고 아들을 불렀다. “네 아버지는 자기 목숨을 내놓고 나를 보냈다.",
       "sourceSentenceStart": 32,
       "sourceSentenceEnd": 34,
-      "alignmentScore": 0.3804
+      "alignmentScore": 0.3804,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "bottom-left"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 13,
@@ -133,7 +292,18 @@
       "narrationKo": "나는 그 선택을 고맙게 여기지만, 평생 그날에 갇혀 살기도 했단다. 나를 구한다는 이유로 네가 수많은 사람을 버리면 나는 또 누군가의 목숨값이 된다.” 엘윈은 세 번째 봉인 뒷면에 자신의 문장을 덧붙였다.",
       "sourceSentenceStart": 35,
       "sourceSentenceEnd": 37,
-      "alignmentScore": 0.3124
+      "alignmentScore": 0.3124,
+      "dialogues": [
+        {
+          "speakerKo": "엘윈 촌장",
+          "speakerEn": "Elwin Elder",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "bottom-right"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 14,
@@ -143,7 +313,18 @@
       "narrationKo": "내 생명으로 아들의 판단을 사지 않는다. 그날 밤 헤르쿨, 실리아, 티타니아, 길가메시는 역할을 나누었다.",
       "sourceSentenceStart": 38,
       "sourceSentenceEnd": 39,
-      "alignmentScore": 0.6342
+      "alignmentScore": 0.6342,
+      "dialogues": [
+        {
+          "speakerKo": "헤르쿨",
+          "speakerEn": "Hercul",
+          "textKo": "발소리를 죽여라. 어둠 속에서 숨을 고르는 거다.",
+          "textEn": "Muffle your footsteps. Catch your breath in the dark.",
+          "bubbleType": "whisper",
+          "position": "top-right"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 15,
@@ -153,7 +334,25 @@
       "narrationKo": "보급 룬을 바꾸고, 남부 부족에 침공 사실을 알리며, 엘윈의 감금 막사를 열기로 했다. 카단은 펜릴의 회의에 참석해 시간을 끌었다. 계획은 거의 성공했지만 루시안의 매수 장수가 엘윈을 발견했다.",
       "sourceSentenceStart": 40,
       "sourceSentenceEnd": 42,
-      "alignmentScore": 0.4338
+      "alignmentScore": 0.4338,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "top-left"
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
     },
     {
       "sceneNumber": 16,
@@ -163,7 +362,18 @@
       "narrationKo": "그는 카단을 굴복시키려 어머니의 목에 칼을 댔다. 엘윈은 두려움에 떨면서도 칼날을 스스로 붙잡았다. “카단, 나를 보고 결정하지 마라.",
       "sourceSentenceStart": 43,
       "sourceSentenceEnd": 45,
-      "alignmentScore": 0.4473
+      "alignmentScore": 0.4473,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "bottom-left"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 17,
@@ -173,7 +383,18 @@
       "narrationKo": "네가 지키겠다고 한 사람들을 보렴.” 그녀는 병사의 칼을 가슴으로 끌어당겼다. 카단이 달려왔을 때 엘윈은 이미 실리아의 품에 안겨 있었다.",
       "sourceSentenceStart": 46,
       "sourceSentenceEnd": 48,
-      "alignmentScore": 0.3653
+      "alignmentScore": 0.3653,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
+          "textEn": "All units on high alert! They are coming!",
+          "bubbleType": "shout",
+          "position": "bottom-right"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 18,
@@ -183,7 +404,18 @@
       "narrationKo": "마지막으로 아들의 얼굴을 쓰다듬으며, 복수가 아니라 진실을 선택한 사람이 되어 고맙다고 말했다. 카단은 상처를 얼리려 했지만 엘윈이 손을 막았다. 남은 힘을 자신에게 쓰지 말고 경보탑을 얼려 도망칠 시간을 벌라고 했다.",
       "sourceSentenceStart": 49,
       "sourceSentenceEnd": 51,
-      "alignmentScore": 0.6151
+      "alignmentScore": 0.6151,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "발소리를 죽여라. 어둠 속에서 숨을 고르는 거다.",
+          "textEn": "Muffle your footsteps. Catch your breath in the dark.",
+          "bubbleType": "whisper",
+          "position": "top-right"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 19,
@@ -193,7 +425,18 @@
       "narrationKo": "카단은 마지막 부탁까지 전술로 받아들이고 싶지 않았으나, 실리아가 그의 손을 경보탑 쪽으로 돌렸다. 얼음이 탑을 덮는 동안 엘윈은 티타니아에게 북쪽에서 아들을 돌봐 주어 고맙다고, 실리아에게는 앞으로도 카단이 틀렸을 때 반드시 말해 달라고 부탁했다. 아들의 곁에 남을 여자를 고르는 말이 아니라, 두 사람의 선택을 존중하는 작별이었다.",
       "sourceSentenceStart": 52,
       "sourceSentenceEnd": 54,
-      "alignmentScore": 0.4585
+      "alignmentScore": 0.4585,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "top-left"
+        }
+      ],
+      "sfxCues": []
     },
     {
       "sceneNumber": 20,
@@ -203,7 +446,18 @@
       "narrationKo": "군영의 경보가 울렸다. 카단은 어머니를 안고 울 시간조차 얻지 못했다. 세 개의 봉인을 품에 넣은 채 남쪽으로 탈출해야 했다.",
       "sourceSentenceStart": 55,
       "sourceSentenceEnd": 57,
-      "alignmentScore": 0.4221
+      "alignmentScore": 0.4221,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
+          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "bubbleType": "speech",
+          "position": "bottom-left"
+        }
+      ],
+      "sfxCues": []
     }
   ]
 }
