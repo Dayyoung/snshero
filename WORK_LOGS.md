@@ -2,6 +2,46 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-18 21:10 KST] [마일스톤4 리메디에이션] 게이트 결함 12개 어설션 및 4개 잔여 토큰 전수 해결 (E2E 188/188 100% 통과)
+- **작업명**: `[Remediation] Resolve 12 E2E Assertions & 4 Residual Tokens (188/188 Passing, 100.0%)`
+- **담당자**: worker_remediation (Milestone 4 Remediation Worker)
+- **주요 해결 내역**:
+  1. `HomeView.tsx` (`T2.TOUCH.V01`): 로그아웃 버튼(Line 625) `min-h-[44px] min-w-[44px]` 적용 (19/19 100% 충족).
+  2. `MobileCardPlayScreen.tsx` (`T2.TOUCH.V02`, `T2.VIEWPORT.V02`, `T2.MODAL.02`): 정산 모달 10개 버튼 및 핸드 카드, 3x3 보드 슬롯 `min-h-[44px]` 확대, 루트 컨테이너 `#mobile-card-play-viewport` `pb-32` 독 클리어런스 적용, 정산 모달 상단 레이어 `[x]` 닫기 제어 버튼 신설.
+  3. `MyDeckView.tsx` (`T2.TOUCH.V03`): 상세 탭(Stats, Skills, Lore), 카테고리 필터, 하모니 차트, 시너지 모달 닫기 등 7개 서브-44px 버튼 `min-h-[44px]` 확대 (47/47 100% 충족).
+  4. `PlayGameView.tsx` (`T2.TOUCH.V04`): 인게임 룰, 토너먼트 탭, 컨스트럭션 모달, 가이드 확인, 코타나 HUD, 상대 음소거, 칭찬, 친구신청, 프로필 조회 등 26개 서브-44px 버튼 `min-h-[44px]` 확대, 비표준 라운디드(`rounded-full`, `rounded-[10px]`, `rounded-[2rem]`) `rounded-none`/`rounded-sm` 교체, 브래킷 그리드 `min-w-[900px]`을 `max-w-full overflow-x-auto`로 수정하여 모바일 수평 블리딩 제거.
+  5. 하단 독 패딩 보완 (`pb-32`): `ShopView.tsx` (`T2.VIEWPORT.V05`), `NovelView.tsx` (`T2.VIEWPORT.V07`), `RankingView.tsx` (`T2.VIEWPORT.V09`), `RedditCommunityView.tsx` (`T2.VIEWPORT.V13`) 루트 컨테이너 `pb-32` 반영.
+  6. 모달 닫기 제어 (`T2.MODAL.06`): `RankingView.tsx` 및 `MatchHistoryModal.tsx` 내 모달 상단 명시적 `[x]` 닫기 버튼 탑재.
+  7. 서피스 토큰 일관성 (`T3.THEME.01`): `RedditCommunityView.tsx` 루트 컨테이너에 표준 플랫 서피스 `bg-[#fdfcfc] text-[#201d1d]` / `bg-[#201d1d] text-[#fdfcfc]` 반영.
+  8. 잔여 `rounded-lg` 4개 제거: `ProfileView.tsx:380`, `SettingView.tsx:762`, `SettingView.tsx:1404`, `App.tsx:7382` 전수 `rounded-sm`으로 교체.
+- **검증 결과**:
+  1. E2E 테스트 슈트: `python3 tests/e2e_design_system/run_all_e2e_tests.py` -> **188 / 188 PASSING (100.0%)** (Exit code 0).
+  2. 챌린저 적대적 스트레스 스캔: `python3 tests/e2e_design_system/challenger_stress_scan.py` -> **VERDICT: CONFIRM CORRECTNESS (APPROVE)**, 금지 클래스 0건, 764/764 버튼 100% 44px+ 통과, 0개 뷰 패딩 누락.
+  3. 타입스크립트 컴파일: `npx tsc --noEmit` -> 0 TypeScript errors (Exit code 0).
+  4. 프로덕션 번들 빌드: `npm run build` -> 번들링 및 정적 라우트 생성 정상 완료 (Exit code 0).
+  5. 로컬 커밋: `git commit` 완료 (원격 git push 미수행).
+
+
+## [2026-10-18 20:35 KST] [마일스톤2] 경제, 소셜 및 콘텐츠 뷰 터미널-플랫 디자인 시스템 전면 적용 (Shop, Marketplace, Novel, Movie, Ranking, Guild, Community, Reddit)
+- **작업명**: `[M2] Economy, Social & Content Views Terminal-Flat Visual Unification`
+- **담당자**: worker_m2 (Economy, Social & Content Views Implementer)
+- **소유 파일 33종 전수 리팩토링 및 검증 완료**:
+  - `src/views/ShopView.tsx`: 상점 팩 뽑기, 룰렛, 커스텀 얼럿/옵션/선택/체크아웃/배송주소 모달, 결제수단 선택/국가선택 팝업, 암호화폐 결제 스텝 1~2 및 입금 대기 모달, 암호화폐 결제 성공/토스트, 환불 주문 모달, 주문 내역 카드 및 도움말 팝업, 모의 뽑기/마일리지 숍/신규 카드 보너스 배너 등 289+개 레거시 토큰 전수 클렌징. 모든 버튼 `min-h-[44px]` 및 `rounded-none`/`rounded-sm` 터미널-플랫 통일.
+  - `src/views/CardMarketplaceView.tsx`: 필터 탭, 정렬 옵션, 구매/판매/등록/취소 모달, 카드 그리드 및 토스트 알림 전수 44px+ 터치 타깃 및 `rounded-none`/`rounded-sm` 통일.
+  - `src/views/NovelView.tsx`: 챕터 선택 드로어, 에피소드 카드, 프롬프트 복사/내보내기, 리더 뷰 컨트롤러 44px+ 터치 타깃 및 모노스페이스 통일.
+  - `src/views/MovieView.tsx` & `src/components/movie/CinematicMoviePlayer.tsx`: 40부작 네이티브 MP4 플레이어 및 시네마틱 플레이어 상단 툴바, 자막 스위치, 전체화면, 씬 탐색 버튼 44px+ 보장 및 flat surface 적용.
+  - `src/views/RankingView.tsx`: 147개 금지 토큰 클렌징, 티어 뱃지 및 시즌 랭커 카드, 30개 액션 버튼 44px+ 확대, 플랫 모달화.
+  - `src/views/GuildListView.tsx` & `src/views/GuildDetailView.tsx`: 54개 금지 토큰 클렌징, 길드 목록/생성/가입/공지사항/채팅/기부 모달 전수 `GuildDetailView` 골드 스탠다드 스타일과 100% 일치화.
+  - `src/views/CommunityView.tsx`: 82개 금지 토큰 클렌징, 글 목록, 작성, 검색, 카테고리 탭, 뽐내기 덱 프리뷰, 댓글 트리, 68개 인터랙티브 버튼 44px+ 확대.
+  - `src/views/RedditCommunityView.tsx` & Reddit 하위 컴포넌트 23종 전수 (`RedditPostCard`, `RedditHeader`, `RedditSidebarLeft`, `RedditSidebarRight`, `RedditCommentTree`, `RedditPostDetailModal`, `RedditSubmitPostModal`, `RedditQuickCreatePostBar`, `RedditChatDrawer`, `RedditCreateCommunityModal`, `RedditGalleryViewer`, `RedditNotificationsDropdown`, `RedditPolicyModal`, `RedditSearchModal`, `RedditSubredditHeader`, `RedditTrendingCarousel`, `RedditVideoPlayer`, `RedditFloatingPlayButton`, `RedditFeedSortBar`, `RedditUserProfileView`, `RedditAdCard`, `SNSHeroNativeAdCard`, `SNSHeroGameBannerCard`): 100% `font-mono`, `rounded-none`/`rounded-sm`, hairline borders, flat background, 44px+ touch targets 전면 적용.
+- **검증 결과**:
+  1. 금지 클래스 감사: 33개 소유 파일 전수 대상 AST/정규식 자동 감사 결과 `banned_radius` 0건, `shadows` 0건, `gradients` 0건, `animations` 0건, `non_mono` 0건 (Total violations: 0, 100% CLEAN).
+  2. 터치 타깃: 모든 인터랙티브 버튼/모달 닫기 `[x]` / 네비게이션 제어 `min-h-[44px]` (또는 `h-11`, 44px+) 100% 충족.
+  3. 로컬스토리지 무결성: `hero_*` LocalStorage 키 일체 변경/유실 없음.
+  4. 컴파일 및 빌드: `npx tsc --noEmit` 0 errors (Exit 0), `npm run build` 17.03s 정상 완료 (Exit 0).
+  5. 구글 폼 보고서 제출: `skills/report-ex/scripts/submit_report.py` 완료.
+  6. Git 커밋: 로컬 작업 완료 (원격 푸시 미수행).
+
 ## [2026-10-18 19:50 KST] [마일스톤1] 핵심 게임플레이 및 배틀 화면 터미널-플랫 디자인 시스템 전면 적용 (Features 1~17)
 - **작업명**: `핵심 게임플레이 및 배틀 화면 터미널 플랫 디자인 시스템 전면 적용 (Features 1~17)`
 - **담당자**: worker_m1 (Core Gameplay & Battle Views Implementer)
