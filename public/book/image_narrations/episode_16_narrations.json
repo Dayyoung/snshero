@@ -2,26 +2,62 @@
   "episodeNumber": 16,
   "episodeTitleEn": "Brothers Before the Ruins",
   "episodeTitleKo": "폐허 앞의 형제",
-  "sourceSentenceCount": 63,
+  "sourceSentenceCount": 48,
   "sceneCount": 20,
   "scenes": [
     {
       "sceneNumber": 1,
-      "imageFile": "episode_16/scene_01.jpeg",
-      "sourceImageFile": "Aeolus_walking_on_water_202607260802.jpeg",
-      "narrationEn": "The day before leaving for Whisper of the Wind Island, the fog at Cloud Return Mansion parted for a moment. Aeolus holding a black flute walked in on the water. The wind supported his feet but made no sound.",
-      "narrationKo": "바람의 속삭임 섬으로 떠나기 전날, 구름귀환 저택의 안개가 한순간 갈라졌다. 검은 피리를 든 에올루스가 물 위를 걸어 들어왔다. 바람은 그의 발을 받치면서도 소리를 내지 못했다.",
+      "imageFile": "episode_16/scene_01.webp",
+      "sourceImageFile": "episode_16/scene_01.webp",
+      "narrationEn": "On the eve of their voyage to Whispering Wind Island, the dense, milky-white fog that had weighed upon Mist Lake for days lifted as if by magic. A cool crescent moon rose above the placid waters, bathing the seventy-two colossal basalt monoliths in silver radiance, while the mirror-like surface reflected the vast river of stars overhead in breathtaking clarity. In the dead of night, while the weary refugees slept after preparing the vessels for the morning departure, only the gentle lap of water against pilings and the rustle of blooming reeds stirred the peaceful silence. Walking along the wooden boards, Kadan stepped alone toward the furthest jetty of the floating manor. Standing silhouetted against the moonlight at the far edge was a solitary, familiar figure. Having cast aside his immaculate white commander's cloak, Ignis wore only a battered leather arming doublet.",
+      "narrationKo": "바람 속삭임 섬으로 출항하기 전날 밤, 며칠 동안 안개 호수를 무겁게 짓누르던 짙은 유백색 물안개가 한순간 거짓말처럼 걷혀 나갔다. 호수 위로 차가운 상현달이 떠오르며 거대한 일흔두 개의 현무암 석주를 은빛으로 물들였고, 잔잔해진 수면은 마치 거대한 거울처럼 밤하늘의 은하수를 고스란히 비춰내고 있었다. 부두 주변의 잔물결 소리와 밤바람에 스치는 갈대꽃 소리만이 적막을 깨우는 가운데, 장원의 피난민들이 슬픔을 딛고 내일의 출항 준비로 잠든 야심한 시각, 카단은 홀로 부두 끝으로 걸어 나갔다. 부두의 가장 외진 돌출부 끝에 익숙한 뒷모습이 서 있었다. 순백의 망토를 벗어 던진 채 낡은 가죽 갑주만을 걸친 이그니스였다.",
       "sourceSentenceStart": 1,
-      "sourceSentenceEnd": 3,
-      "alignmentScore": 0.5375,
+      "sourceSentenceEnd": 2,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "순백의 망토를 벗어 던진 채 낡은 가죽 갑주만을 걸친 이그니스였다.",
+          "textEn": "Having cast aside his immaculate white commander's cloak, Ignis wore only a battered leather arming doublet.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_16/scene_02.webp",
+      "sourceImageFile": "episode_16/scene_02.webp",
+      "narrationEn": "Grasping his silver-hilted ceremonial longsword—the ancestral heirloom of his lineage and the proud symbol of the White Flame Order—with both hands, Ignis gazed upon the keen, polished edge gleaming in the moonlight. Without a trace of hesitation, he opened his fingers. The blade sliced through the cool air, vanishing into the black depths of the lake with a heavy splash. Rippling concentric rings spread across the surface, swallowing the weapon's trail into the abyss. Approaching quietly, Kadan stood beside him. \"That blade carried the highest honor of the imperial court. Do you feel no regret?\"",
+      "narrationKo": "이그니스는 황실 기사단의 상징이자 가문의 보검이었던 은장 장검을 양손으로 쥐고 있었다. 달빛 아래에서 서슬 퍼런 칼날이 시리도록 번뜩였다. 이그니스는 일말의 망설임도 없이 손을 놓았고, 보검은 허공을 가르며 깊고 검은 호수 속으로 풍덩 소리를 내며 가라앉았다. 수면 위로 동심원의 파문이 퍼져나가며 검의 자취를 지워버렸다. 카단이 천천히 다가가 곁에 섰다. “황실의 영예가 깃든 검이다. 아깝지 않은가?”",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 5,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "검끝이 흔들리지 않는 한, 길은 열린다.",
-          "textEn": "As long as our blades do not waver, the path will open.",
+          "textKo": "“황실의 영예가 깃든 검이다. 아깝지 않은가?”",
+          "textEn": "“That blade carried the highest honor of the imperial court. Do you feel no regret?”",
           "bubbleType": "speech",
-          "position": "top-left"
+          "position": "bottom-left",
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
@@ -32,268 +68,497 @@
           "position": "top-right"
         },
         {
-          "textKo": "휘이이익-!",
-          "textEn": "SWOOSH!",
-          "style": "slash",
-          "position": "top-left"
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
         }
       ]
     },
     {
-      "sceneNumber": 2,
-      "imageFile": "episode_16/scene_02.jpeg",
-      "sourceImageFile": "Rondol_loses_leg_Medusa_Gorgo_202607260802.jpeg",
-      "narrationEn": "When Celia saw his father, he felt more angry than happy. He asked all at once the order to kill Medusa Gorgo, the banishment of Rondol, and the silence that had closed all doors after his mother's death. Instead of explaining, Aeolus looked at his daughter's face and wounds.",
-      "narrationKo": "실리아는 아버지를 보자 반가움보다 분노가 먼저 솟았다. 메두사 고르고를 죽이라는 명령, 론돌의 추방, 어머니가 죽은 뒤 모든 문을 닫아 버린 침묵을 한꺼번에 물었다. 에올루스는 해명 대신 딸의 얼굴과 상처를 살폈다.",
-      "sourceSentenceStart": 4,
-      "sourceSentenceEnd": 6,
-      "alignmentScore": 0.5253,
-      "dialogues": [
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
       "sceneNumber": 3,
-      "imageFile": "episode_16/scene_03.jpeg",
-      "sourceImageFile": "Celia_in_cave_scene_202607260802.jpeg",
-      "narrationEn": "He raised his hand and lowered it when he saw that the way Celia had tied his hair when he was young had changed. He didn't know if he still had the right to tidy up his tangled hair like before. Celia became angrier when he saw that small hesitation, and at the same time, he could not pour out any more words.",
-      "narrationKo": "그는 실리아가 어릴 적 머리를 묶던 방식이 달라진 것을 보고 손을 들었다가 내렸다. 예전처럼 헝클어진 머리카락을 정리할 권리가 아직 자신에게 있는지 알 수 없었다. 실리아는 그 작은 망설임을 보고 더 화가 났고, 동시에 더 이상 말을 쏟아낼 수 없었다.",
-      "sourceSentenceStart": 7,
-      "sourceSentenceEnd": 9,
-      "alignmentScore": 0.7832,
+      "imageFile": "episode_16/scene_03.webp",
+      "sourceImageFile": "episode_16/scene_03.webp",
+      "narrationEn": "Fixing his gaze upon the dark ripples, Ignis spoke in a hoarse, hollow voice. \"Honor stained in deceit and innocent blood is far better buried beneath the lake mud. Everything I spent my life fighting to protect was nothing more than a shield for corrupt monsters feasting upon the weak.\"",
+      "narrationKo": "이그니스는 호수 밑바닥으로 사라진 검의 궤적을 응시하며 메마른 목소리로 대답했다. “거짓과 피로 얼룩진 명예 따위는 차라리 호수 바닥의 진흙 속에 묻히는 편이 낫다. 내 손으로 지켜왔다고 믿었던 모든 것들이, 실은 무고한 사람들의 피를 빨아먹는 괴물들의 방패막이에 불과했어.”",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 7,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
-          "bubbleType": "shout",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 4,
-      "imageFile": "episode_16/scene_04.jpeg",
-      "sourceImageFile": "Celia_confronted_at_palace_court_202607260802.jpeg",
-      "narrationEn": "“You’re alive. ” That one word made Celia more angry. “Did you think all you had to do was stay alive?",
-      "narrationKo": "“살아 있었구나.” 그 한마디가 실리아의 분노를 더 키웠다. “살아 있기만 하면 되는 줄 알았어요?",
-      "sourceSentenceStart": 10,
-      "sourceSentenceEnd": 12,
-      "alignmentScore": 0.1367,
-      "dialogues": [
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "살아 있었구나.",
-          "textEn": "You’re alive. ",
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“거짓과 피로 얼룩진 명예 따위는 차라리 호수 바닥의 진흙 속에 묻히는 편이 낫다. 내 손으로 지켜왔다고 믿었던 모든 것들이, 실은 무고한 사람들의 피를 빨아먹는 괴물들의 방패막이에 불과했어.”",
+          "textEn": "“Honor stained in deceit and innocent blood is far better buried beneath the lake mud. Everything I spent my life fighting to protect was nothing more than a shield for corrupt monsters feasting upon the weak.”",
           "bubbleType": "speech",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 5,
-      "imageFile": "episode_16/scene_05.jpeg",
-      "sourceImageFile": "Ignis_chained_in_palace_court_202607260802.jpeg",
-      "narrationEn": "Did the people your father abandoned think the same way? ” Medusa Gorgo came down from the roof. She aimed the chain whip at Aeolus's back, but Aeolus didn't even turn around.",
-      "narrationKo": "아버지가 버린 사람들도 그렇게 생각했을까요?” 메두사 고르고가 지붕 위에서 내려왔다. 그녀는 에올루스의 등에 사슬채찍을 겨눴지만, 에올루스는 돌아보지도 않았다.",
-      "sourceSentenceStart": 13,
-      "sourceSentenceEnd": 15,
-      "alignmentScore": 0.656,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 6,
-      "imageFile": "episode_16/scene_06.jpeg",
-      "sourceImageFile": "Chibi_fantasy_RPG_illustration_s…_202607260802_5.jpeg",
-      "narrationEn": "The past orders were not forged. He believed that tens of thousands of people would be sacrificed if the Codex fell to the Shadow Realm, and he chose to abandon several of his disciples. Rondol showed the leg he lost because of that choice.",
-      "narrationKo": "과거의 명령서는 위조가 아니었다. 코덱스가 섀도우렐름에 넘어가면 수만 명이 희생된다고 믿었고, 제자 몇 사람을 버리는 선택을 했다. 론돌은 그 선택 때문에 잃은 다리를 보여 주었다.",
-      "sourceSentenceStart": 16,
-      "sourceSentenceEnd": 18,
-      "alignmentScore": 0.2715,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 7,
-      "imageFile": "episode_16/scene_07.jpeg",
-      "sourceImageFile": "Characters_deciphering_codex_fig…_202607260802.jpeg",
-      "narrationEn": "Medusa Gorgo called the name of the dead Belphegor. This was the first time Celia heard that his mother, Sylphid, lost her life while deciphering the codex. The world that Aeolus tried to protect was always bigger than specific people. Kadan did not intend to be a judge.",
-      "narrationKo": "메두사 고르고는 죽은 벨페고르의 이름을 불렀다. 실리아는 어머니 실피드가 코덱스를 해독하다 생명을 잃었다는 사실을 처음 들었다. 에올루스가 지키려 했던 세계는 언제나 구체적인 사람보다 컸다. 카단은 심판자가 되려 하지 않았다.",
-      "sourceSentenceStart": 19,
-      "sourceSentenceEnd": 22,
-      "alignmentScore": 0.4173,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
-          "bubbleType": "shout",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 8,
-      "imageFile": "episode_16/scene_08.jpeg",
-      "sourceImageFile": "Aeolus_asked_Brothers_Ruins_202607260802.jpeg",
-      "narrationEn": "However, I asked Aeolus. “Would you do that again if the same situation came up? ” There was no answer for a long time.",
-      "narrationKo": "다만 에올루스에게 물었다. “같은 상황이 오면 또 그렇게 하겠습니까?” 오랫동안 대답이 없었다.",
-      "sourceSentenceStart": 23,
-      "sourceSentenceEnd": 25,
-      "alignmentScore": 0.5478,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "같은 상황이 오면 또 그렇게 하겠습니까?",
-          "textEn": "Would you do that again if the same situation came up? ",
-          "bubbleType": "speech",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 9,
-      "imageFile": "episode_16/scene_09.jpeg",
-      "sourceImageFile": "Aeolus_playing_flute_on_coast_202607260802.jpeg",
-      "narrationEn": "Finally, Aeolus put down the flute. “If it were me in the past, I would have done that. I don’t know now.",
-      "narrationKo": "마침내 에올루스는 피리를 내려놓았다. “예전의 나라면 그랬을 것이다. 지금은 모르겠다.",
-      "sourceSentenceStart": 26,
-      "sourceSentenceEnd": 28,
-      "alignmentScore": 0.3653,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 10,
-      "imageFile": "episode_16/scene_10.jpeg",
-      "sourceImageFile": "Rondol_reveals_missing_leg_202607260802.jpeg",
-      "narrationEn": "I lost too many people to admit that I don’t know. ” Rondol lifted the blanket on his knees to reveal his missing leg. “If I had heard the answer back then that I didn’t know, I might have stayed.",
-      "narrationKo": "그 모름을 인정하기까지 너무 많은 사람을 잃었구나.” 론돌은 무릎 위에 놓인 담요를 걷어 잃은 다리를 드러냈다. “모른다는 답을 그때 들었다면 나는 남았을지도 모릅니다.”",
-      "sourceSentenceStart": 29,
-      "sourceSentenceEnd": 31,
-      "alignmentScore": 0.4348,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "모른다는 답을 그때 들었다면 나는 남았을지도 모릅니다.",
-          "textEn": "“모른다는 답을 그때 들었다면 나는 남았을지도 모릅니다.”",
-          "bubbleType": "speech",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 11,
-      "imageFile": "episode_16/scene_11.jpeg",
-      "sourceImageFile": "Aeolus_and_Medusa_Gorgo_202607260802.jpeg",
-      "narrationEn": "” Aeolus did not see the wound and lowered his head. Realizing that being silent because of the late apology was another escape, he eventually called out his student's name and said that he had made a mistake. Medusa Gorgo didn't kill him.",
-      "narrationKo": "에올루스는 상처를 보지 못하고 고개를 숙였다. 사과가 늦었다는 사실 때문에 침묵하는 것은 또 다른 도피라는 것을 깨닫고, 결국 제자의 이름을 부르며 잘못했다고 말했다. 메두사 고르고는 그를 죽이지 않았다.",
-      "sourceSentenceStart": 32,
-      "sourceSentenceEnd": 34,
-      "alignmentScore": 0.5988,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 12,
-      "imageFile": "episode_16/scene_12.jpeg",
-      "sourceImageFile": "Celia_finds_letters_in_cave_202607260802.jpeg",
-      "narrationEn": "Not because I forgave him, but because I didn't want to end the answer with death. She headed to Wind Island, saying she would first find the original codex. Aeolus did not order Celia to return.",
-      "narrationKo": "용서해서가 아니라, 죽음으로 답을 끝내 주고 싶지 않았기 때문이다. 그녀는 코덱스 원본을 먼저 찾겠다며 바람섬으로 향했다. 에올루스는 실리아에게 돌아오라고 명령하지 않았다.",
-      "sourceSentenceStart": 35,
-      "sourceSentenceEnd": 37,
-      "alignmentScore": 0.5044,
-      "dialogues": [
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-right"
+          "position": "bottom-right",
+          "characterCardId": 11
         }
       ],
       "sfxCues": [
         {
-          "textKo": "휘이이익-!",
-          "textEn": "SWOOSH!",
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
           "style": "slash",
-          "position": "top-left"
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_16/scene_04.webp",
+      "sourceImageFile": "episode_16/scene_04.webp",
+      "narrationEn": "Looking up into the crystal canopy of northern constellations, Kadan murmured softly. \"Casting aside a blade is never defeat. Only when one empties hands that gripped falsehood can they truly embrace what is worth defending.\" The despair and self-loathing in Ignis's tone cut deep into the night air. The crushing burden of guilt for blood shed in service of lies weighed heavily upon the young warrior's spirit.",
+      "narrationKo": "카단이 밤하늘의 별자리를 올려다보며 나지막이 말했다. “칼을 버리는 것은 패배가 아니다. 잡았던 손을 비워야만 비로소 진정으로 쥐어야 할 것을 품을 수 있는 법이다.” 이그니스의 목소리에는 깊은 자괴감과 절망이 짙게 배어 있었다. 자신의 손에 묻은 피와 속아 살아온 세월의 무게가 젊은 기사의 영혼을 짓누르고 있었다.",
+      "sourceSentenceStart": 8,
+      "sourceSentenceEnd": 10,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“칼을 버리는 것은 패배가 아니다. 잡았던 손을 비워야만 비로소 진정으로 쥐어야 할 것을 품을 수 있는 법이다.”",
+          "textEn": "“Casting aside a blade is never defeat. Only when one empties hands that gripped falsehood can they truly embrace what is worth defending.”",
+          "bubbleType": "speech",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_16/scene_05.webp",
+      "sourceImageFile": "episode_16/scene_05.webp",
+      "narrationEn": "Reaching inside his woolen coat, Kadan retrieved a weathered parchment scroll from an oiled leather pouch. It was dog-eared and stained with dried blood—the final letter written by Uncle Balian before his passing. Kadan offered the scroll into Ignis's hands.",
+      "narrationKo": "카단은 묵묵히 품속을 뒤져 가죽 주머니에서 양피지 서신 한 통을 꺼냈다. 모서리가 닳고 피 얼룩이 묻어 있는 편지였다. 칠흑 노동수용소를 탈출한 뒤 숨을 거두기 전, 발리안 숙부가 남긴 마지막 친필 서신이었다. 카단이 편지를 이그니스에게 건넸다.",
+      "sourceSentenceStart": 11,
+      "sourceSentenceEnd": 12,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단이 편지를 이그니스에게 건넸다.",
+          "textEn": "Kadan offered the scroll into Ignis's hands.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_16/scene_06.webp",
+      "sourceImageFile": "episode_16/scene_06.webp",
+      "narrationEn": "\"Uncle Balian entrusted this letter to me. He said his soul could only rest in peace once it rested within your own grasp.\" With trembling hands, Ignis broke the wax seal. Written upon the parchment in rough, powerful strokes was his father's unmistakable handwriting.",
+      "narrationKo": "“발리안 숙부님께서 내게 맡기신 편지다. 네 손에 직접 쥐여주어야 비로소 그분의 넋이 편히 쉴 수 있을 것이다.” 이그니스는 떨리는 손으로 편지를 펼쳤다. 양피지 위에는 거칠고 투박하지만 한 자 한 자 피를 토하듯 써 내려간 아버지 발리안의 필체가 적혀 있었다.",
+      "sourceSentenceStart": 13,
+      "sourceSentenceEnd": 14,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“발리안 숙부님께서 내게 맡기신 편지다. 네 손에 직접 쥐여주어야 비로소 그분의 넋이 편히 쉴 수 있을 것이다.”",
+          "textEn": "“Uncle Balian entrusted this letter to me. He said his soul could only rest in peace once it rested within your own grasp.”",
+          "bubbleType": "speech",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_16/scene_07.webp",
+      "sourceImageFile": "episode_16/scene_07.webp",
+      "narrationEn": "'To my son, Ignis. When you took up the White Flame in the capital, your father's heart ached with sorrow, yet I never held bitterness toward you. I knew the pure integrity of your spirit, yearning only to bring light to the realm. The path brother Aleksandar and I walked was fraught with hardship, but it was never in vain. The point of your sword must never serve the throne of tyrants; it must shield the hands of freezing children. You are loved, my son.' As Ignis read the words, large tears welled and fell, darkening the ink upon the parchment. The father he had believed had abandoned him had, until his dying breath, held him in his heart as a cherished son. Overwhelmed by grief and redemption, Ignis sank to his knees upon the wooden planks, weeping openly. Clutching the parchment against his chest, Ignis sobbed into the wind.",
+      "narrationKo": "‘나의 아들 이그니스에게. 네가 황궁의 백색 화염을 쥐었을 때, 아비는 슬펐으나 너를 원망하지 않았다. 빛을 갈망하는 네 순수한 영혼을 알기 때문이었다. 알렉산다르 형님과 내가 걸었던 길은 고난이었으나 결코 헛되지 않았다. 네 검이 향해야 할 곳은 권력의 왕좌가 아니라, 추위에 떠는 어린아이들의 손이어야 한다. 너를 사랑한다, 나의 아들아.’ 편지를 읽어 내려가던 이그니스의 눈에서 굵은 눈물방울이 뚝뚝 떨어져 양피지 위를 적셨다. 평생 자신을 버렸다고 원망했던 아버지가, 실은 마지막 순간까지 자신을 자랑스러운 아들로 품고 있었다는 진실 앞에 이그니스는 무릎을 꿇고 오열했다. 이그니스가 흐느끼며 편지를 가슴에 묻었다.",
+      "sourceSentenceStart": 15,
+      "sourceSentenceEnd": 17,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "이그니스가 흐느끼며 편지를 가슴에 묻었다.",
+          "textEn": "Clutching the parchment against his chest, Ignis sobbed into the wind.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_16/scene_08.webp",
+      "sourceImageFile": "episode_16/scene_08.webp",
+      "narrationEn": "\"Father... Blind to your suffering, I cursed you as a traitor and danced as a hunting hound for the court... How can I ever atone for this disgraceful blindness...\" Kneeling beside him, Kadan placed a comforting arm around his shoulders.",
+      "narrationKo": "“아버지... 저는 그것도 모르고 아버지를 역적이라 원망하며 궁정의 사냥개 노릇을 했습니다... 이 불효를 어찌 갚아야 합니까...” 카단이 이그니스의 곁에 꿇어앉아 그의 등을 감싸 안았다.",
+      "sourceSentenceStart": 18,
+      "sourceSentenceEnd": 19,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“아버지... 저는 그것도 모르고 아버지를 역적이라 원망하며 궁정의 사냥개 노릇을 했습니다... 이 불효를 어찌 갚아야 합니까...”",
+          "textEn": "“Father... Blind to your suffering, I cursed you as a traitor and danced as a hunting hound for the court... How can I ever atone for this disgraceful blindness...”",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_16/scene_09.webp",
+      "sourceImageFile": "episode_16/scene_09.webp",
+      "narrationEn": "\"Uncle Balian never once faulted you. His only prayer was that you would endure to find the true light.\" When the quiet sobs subsided under the silver moonlight, Ignis lifted his tear-streaked face toward Kadan. \"Kadan... How did you endure? Having lost your parents, your master, and with the entire world branding you a criminal... How did you keep from being swallowed whole by the roaring fires of hatred?\"",
+      "narrationKo": "“숙부님은 한 번도 너를 탓하지 않으셨다. 네가 살아남아 빛을 찾는 것만이 그분의 유일한 소원이었어.” 달빛 아래에서 오랜 흐느낌이 잦아들었을 때, 이그니스는 눈물 젖은 얼굴을 들어 카단을 올려다보았다. “카단... 너는 어떻게 견뎠지? 부모를 잃고, 스승을 잃고, 온 세상이 너를 거짓으로 몰아세우는데 어떻게 그 거대한 증오에 집어삼켜지지 않고 버틸 수 있었던 거냐?”",
+      "sourceSentenceStart": 20,
+      "sourceSentenceEnd": 22,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“숙부님은 한 번도 너를 탓하지 않으셨다. 네가 살아남아 빛을 찾는 것만이 그분의 유일한 소원이었어.”",
+          "textEn": "“Uncle Balian never once faulted you. His only prayer was that you would endure to find the true light.”",
+          "bubbleType": "shout",
+          "position": "top-right",
+          "characterCardId": 41
+        },
+        {
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“카단... 너는 어떻게 견뎠지? 부모를 잃고, 스승을 잃고, 온 세상이 너를 거짓으로 몰아세우는데 어떻게 그 거대한 증오에 집어삼켜지지 않고 버틸 수 있었던 거냐?”",
+          "textEn": "“Kadan... How did you endure? Having lost your parents, your master, and with the entire world branding you a criminal... How did you keep from being swallowed whole by the roaring fires of hatred?”",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_16/scene_10.webp",
+      "sourceImageFile": "episode_16/scene_10.webp",
+      "narrationEn": "Drawing the silver dagger at his waist, Kadan gazed upon the moonlight gleaming along its spine. The red knot danced gently in the nocturnal lake breeze. \"Master Aleksandar taught me that a weapon is never an instrument to conquer or punish. It must be a sturdy roof that weathers the storm in place of the fragile and defenseless. The heavier the shield in your hand, the warmer the hearts of those you protect will dwell within your breast. Hatred incinerates one's own soul long before it reaches the foe, but the resolve to protect kindles an eternal ember even amidst the bitterest blizzard.\"",
+      "narrationKo": "카단은 허리춤의 은빛 단검을 뽑아 칼날에 비친 달빛을 바라보았다. 붉은 매듭이 밤바람에 부드럽게 나부꼈다. “알렉산다르 스승님께서는 무기는 상대를 베기 위한 도구가 아니라, 약한 자들을 위해 폭풍을 대신 맞아주는 지붕이어야 한다고 가르치셨다. 방패를 쥐는 손이 무거울수록, 지켜야 할 사람들의 온기가 가슴속에 차오르는 법이다. 증오는 상대를 파괴하기 전에 내 영혼을 먼저 태워버리지만, 지키고자 하는 마음은 혹한 속에서도 불씨를 피워낸다.”",
+      "sourceSentenceStart": 23,
+      "sourceSentenceEnd": 24,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“알렉산다르 스승님께서는 무기는 상대를 베기 위한 도구가 아니라, 약한 자들을 위해 폭풍을 대신 맞아주는 지붕이어야 한다고 가르치셨다. 방패를 쥐는 손이 무거울수록, 지켜야 할 사람들의 온기가 가슴속에 차오르는 법이다. 증오는 상대를 파괴하기 전에 내 영혼을 먼저 태워버리지만, 지키고자 하는 마음은 혹한 속에서도 불씨를 피워낸다.”",
+          "textEn": "“Master Aleksandar taught me that a weapon is never an instrument to conquer or punish. It must be a sturdy roof that weathers the storm in place of the fragile and defenseless. The heavier the shield in your hand, the warmer the hearts of those you protect will dwell within your breast. Hatred incinerates one's own soul long before it reaches the foe, but the resolve to protect kindles an eternal ember even amidst the bitterest blizzard.”",
+          "bubbleType": "speech",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_16/scene_11.webp",
+      "sourceImageFile": "episode_16/scene_11.webp",
+      "narrationEn": "Ignis looked down at his empty, calloused hands. The warrior's scars across his palms no longer felt like badges of shame. \"A roof... Could hands like mine ever serve as a shelter for another?\"",
+      "narrationKo": "이그니스는 자신의 비어 있는 두 손을 내려다보았다. 칼자루를 쥐었던 손바닥의 굳은살이 부끄럽게 느껴지지 않았다. “지붕이라... 나 역시 누군가의 지붕이 될 수 있을까.”",
+      "sourceSentenceStart": 25,
+      "sourceSentenceEnd": 26,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“지붕이라... 나 역시 누군가의 지붕이 될 수 있을까.”",
+          "textEn": "“A roof... Could hands like mine ever serve as a shelter for another?”",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_16/scene_12.webp",
+      "sourceImageFile": "episode_16/scene_12.webp",
+      "narrationEn": "Kadan tapped his iron rim with a warm smile. \"We are brothers, Ignis. Just as Uncle Balian and Master Aleksandar stood together, it is our turn to watch each other's back.\" Approaching from the jetty gallery, Cilia offered two steaming ceramic cups of herbal tea.",
+      "narrationKo": "카단이 방패를 두드리며 미소 지었다. “우리는 형제다, 이그니스. 발리안 숙부님과 알렉산다르 스승님이 그러셨듯, 이제는 우리가 서로의 등을 맡길 차례다.” 실리아가 부두 저편에서 다가오며 따뜻한 찻잔 두 개를 건넸다.",
+      "sourceSentenceStart": 27,
+      "sourceSentenceEnd": 29,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“우리는 형제다, 이그니스. 발리안 숙부님과 알렉산다르 스승님이 그러셨듯, 이제는 우리가 서로의 등을 맡길 차례다.”",
+          "textEn": "“We are brothers, Ignis. Just as Uncle Balian and Master Aleksandar stood together, it is our turn to watch each other's back.”",
+          "bubbleType": "speech",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
         }
       ]
     },
     {
       "sceneNumber": 13,
-      "imageFile": "episode_16/scene_13.jpeg",
-      "sourceImageFile": "Ignis_appeared_in_palace_court_202607260802.jpeg",
-      "narrationEn": "Instead, it was announced that the island's barrier was collapsing, and that the Western Poisonous Dragons and the Red Glass Court were approaching at the same time. Celia said he would go back not for the island, but for the people living on it. The moment I was about to leave the mansion, Ignis appeared.",
-      "narrationKo": "대신 섬의 결계가 무너지고 있으며, 서부의 독룡단과 붉은 유리 궁정이 동시에 접근 중이라고 알렸다. 실리아는 섬을 위해서가 아니라 그 안에 사는 사람들을 위해 돌아가겠다고 했다. 저택을 떠나려던 순간 이그니스가 나타났다.",
-      "sourceSentenceStart": 38,
-      "sourceSentenceEnd": 40,
-      "alignmentScore": 0.4815,
+      "imageFile": "episode_16/scene_13.webp",
+      "sourceImageFile": "episode_16/scene_13.webp",
+      "narrationEn": "\"You two should stop letting the chilly dawn wind bite your cheeks. Drink this and warm your bones; tomorrow we must conquer the open sea.\" In that tender moment, a sharp hiss of crossbow quarrels and the frantic cry of a sentry shattered the night air from the outer timber colonnade. Twenty elite inquisitors of the Crimson Fang, dispatched by Minister Lucian to exterminate all living witnesses, charged across the outer piers toward the ships. Hooked blades and poisoned bolts gleamed in their hands, accompanied by jars of flammable pitch meant to incinerate the refugee vessels before departure.",
+      "narrationKo": "“두 분 다 이제 새벽바람 쐬는 건 그만두고 몸을 녹이세요. 내일은 거친 파도를 넘어야 하니까요.” 그 감동의 순간, 장원 외곽의 수상 회랑 쪽에서 쉭 하는 불길한 쇠뇌 소리와 함께 경계병의 외마디 비명이 밤공기를 갈랐다. 루시안 재상이 보낸 최정예 암살 부대 ‘홍련의 이빨’ 감찰 기사 스무 명이 장원의 침묵을 찢고 부두를 향해 쇄도해 온 것이었다. 그들의 손에는 피 묻은 갈고리 검과 독화살이 들려 있었고, 출항을 앞둔 피난선들을 불태우기 위한 기름 항아리가 준비되어 있었다.",
+      "sourceSentenceStart": 30,
+      "sourceSentenceEnd": 31,
+      "alignmentScore": 1.0,
       "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“두 분 다 이제 새벽바람 쐬는 건 그만두고 몸을 녹이세요. 내일은 거친 파도를 넘어야 하니까요.”",
+          "textEn": "“You two should stop letting the chilly dawn wind bite your cheeks. Drink this and warm your bones; tomorrow we must conquer the open sea.”",
+          "bubbleType": "speech",
+          "position": "top-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_16/scene_14.webp",
+      "sourceImageFile": "episode_16/scene_14.webp",
+      "narrationEn": "The inquisition commander barked with vicious malice. \"Slaughter the northern rebels and the imperial turncoat without mercy! Burn the manor and every ship to ash to leave zero evidence behind!\" Without an instant's hesitation, Kadan planted his iron shield forward, anchoring the front line. A volley of poisoned bolts slammed into the curved surface, scattering sparks and splintering harmlessly away.",
+      "narrationKo": "암살 대장이 흉포한 살기를 뿜어내며 소리쳤다. “역적 놈들과 황궁의 배신자를 한 놈도 남기지 말고 몰살해라! 저택과 배를 모조리 불태워 증거를 인멸하라!” 카단이 주저 없이 무쇠 방패를 앞으로 내세우며 전열을 막아섰다. 빗발치는 독화살들이 방패 표면에 부딪쳐 요란한 불꽃을 튀기며 튕겨 나갔다.",
+      "sourceSentenceStart": 32,
+      "sourceSentenceEnd": 34,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“역적 놈들과 황궁의 배신자를 한 놈도 남기지 말고 몰살해라! 저택과 배를 모조리 불태워 증거를 인멸하라!”",
+          "textEn": "“Slaughter the northern rebels and the imperial turncoat without mercy! Burn the manor and every ship to ash to leave zero evidence behind!”",
+          "bubbleType": "shout",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_16/scene_15.webp",
+      "sourceImageFile": "episode_16/scene_15.webp",
+      "narrationEn": "\"Not a single foot shall pass behind this shield!\" Beside him, Ignis charged forward. Deprived of his sword, he seized a heavy iron stanchion from the deck, channeling his mana to the absolute limit. Stripped of imperial arrogance, the pure white flame roared to life along the metal. It was no longer a fire of conquest, but a sanctifying hearthfire ignited solely to defend his comrades.",
+      "narrationKo": "“내 방패 뒤로는 단 한 발자국도 지나갈 수 없다!” 그 옆으로 이그니스가 뛰쳐나왔다. 무기를 버렸던 이그니스는 바닥에 뒹굴던 굵은 쇠파이프를 집어 들고, 자신의 마나를 극한까지 끌어올렸다. 황궁의 오만함을 벗어던진 순백의 화염이 쇠파이프를 타고 맹렬하게 타올랐다. 그것은 파괴의 불꽃이 아니라, 동료를 지키기 위한 정화의 성화였다.",
+      "sourceSentenceStart": 35,
+      "sourceSentenceEnd": 36,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“내 방패 뒤로는 단 한 발자국도 지나갈 수 없다!”",
+          "textEn": "“Not a single foot shall pass behind this shield!”",
+          "bubbleType": "shout",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_16/scene_16.webp",
+      "sourceImageFile": "episode_16/scene_16.webp",
+      "narrationEn": "Ignis's sweeping strike shattered the assassins' hooked blades, casting the assailants headlong into the icy lake. Kadan's immovable barrier and Ignis's immaculate white flame moved in seamless harmony, annihilating the ambush within minutes. Broken blades and sputtering torches hissed out in the freezing water. Spitting lake water, the assassin leader snarled from the waves.",
+      "narrationKo": "이그니스의 화염 강타가 암살자들의 갈고리 검을 산산조각 내며 그들을 호수 속으로 쓸어 넣었다. 카단의 견고한 방패와 이그니스의 순백 화염이 완벽한 조화를 이루며, 순식간에 암살 부대의 습격을 완벽하게 분쇄했다. 부러진 칼날들과 꺼진 횃불들이 차가운 호수 수면 위로 흩어졌다. 암살 대장이 호수에 빠진 채 이를 갈며 소리쳤다.",
+      "sourceSentenceStart": 37,
+      "sourceSentenceEnd": 38,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "암살 대장이 호수에 빠진 채 이를 갈며 소리쳤다.",
+          "textEn": "Spitting lake water, the assassin leader snarled from the waves.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_16/scene_17.webp",
+      "sourceImageFile": "episode_16/scene_17.webp",
+      "narrationEn": "\"Ignis! You shall pay dearly for betraying the grace of the throne!\" Looking down from the deck, Ignis replied with cold resolve. \"The grace of the throne never existed. A power that tramples its own people deserves only to be dismantled.\"",
+      "narrationKo": "“이그니스! 황궁의 은혜를 배신한 대가를 반드시 치르게 될 것이다!” 이그니스가 호수를 내려다보며 차갑게 대답했다. “황궁의 은혜 따위는 애초에 존재하지 않았다. 백성들을 짓밟는 권력은 무너져야 마땅하다.”",
+      "sourceSentenceStart": 39,
+      "sourceSentenceEnd": 41,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“이그니스! 황궁의 은혜를 배신한 대가를 반드시 치르게 될 것이다!”",
+          "textEn": "“Ignis! You shall pay dearly for betraying the grace of the throne!”",
+          "bubbleType": "shout",
+          "position": "top-right",
+          "characterCardId": 41
+        },
         {
           "speakerKo": "이그니스",
           "speakerEn": "Ignis",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "textKo": "“황궁의 은혜 따위는 애초에 존재하지 않았다. 백성들을 짓밟는 권력은 무너져야 마땅하다.”",
+          "textEn": "“The grace of the throne never existed. A power that tramples its own people deserves only to be dismantled.”",
           "bubbleType": "speech",
-          "position": "top-left"
+          "position": "bottom-left",
+          "characterCardId": 11
         }
       ],
       "sfxCues": [
@@ -306,182 +571,101 @@
       ]
     },
     {
-      "sceneNumber": 14,
-      "imageFile": "episode_16/scene_14.jpeg",
-      "sourceImageFile": "Balian_Ysela_die_together_202607260802.jpeg",
-      "narrationEn": "He was putting a handful of dirt from the graves of Balian and Ysela into a small glass jar. While chasing Lucian, I had just discovered that the palace fleet was heading to Wind Island. Kadan took Ignis to the grave. In front of the tombstone, the two people placed the silver daggers left behind by their fathers side by side.",
-      "narrationKo": "그는 발리안과 이셀라의 무덤에서 가져온 흙 한 줌을 작은 유리병에 담고 있었다. 루시안을 쫓다가 궁정의 함대가 바람섬으로 향한다는 것을 알아낸 참이었다. 카단은 이그니스를 무덤으로 데려갔다. 비석 앞에서 두 사람은 아버지들이 남긴 은빛 단검을 나란히 놓았다.",
-      "sourceSentenceStart": 41,
-      "sourceSentenceEnd": 44,
-      "alignmentScore": 0.5288,
-      "dialogues": [
-        {
-          "speakerKo": "발리안",
-          "speakerEn": "Balian",
-          "textKo": "검끝이 흔들리지 않는 한, 길은 열린다.",
-          "textEn": "As long as our blades do not waver, the path will open.",
-          "bubbleType": "speech",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 15,
-      "imageFile": "episode_16/scene_15.jpeg",
-      "sourceImageFile": "Ignis_ignores_father,_takes_horse_202607260802.jpeg",
-      "narrationEn": "Ignis said that he did not deserve to be a brother because he ignored his biological father. Ignis took the wooden horse out of the dirt again. It was wet from the rain and the colors were smudged, but one wheel still turned.",
-      "narrationKo": "이그니스는 친부를 외면한 자신에게 형제의 자격이 없다고 말했다. 이그니스는 흙 속에서 나무 말을 다시 꺼냈다. 비에 젖어 색이 번졌지만 한쪽 바퀴는 여전히 돌아갔다.",
-      "sourceSentenceStart": 45,
-      "sourceSentenceEnd": 47,
-      "alignmentScore": 0.4546,
-      "dialogues": [
-        {
-          "speakerKo": "이그니스",
-          "speakerEn": "Ignis",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 16,
-      "imageFile": "episode_16/scene_16.jpeg",
-      "sourceImageFile": "Seven_pursuers_make_promise_202607260802.jpeg",
-      "narrationEn": "Kadan did not offer to fix it. Ignis was next to hand over a small knife and a dry cloth until he cleaned it himself. “It’s not a promise you make because you’re qualified.",
-      "narrationKo": "카단은 그것을 고쳐 주겠다고 하지 않았다. 이그니스가 직접 손질할 때까지 옆에서 작은 칼과 마른 천만 건넸다. “자격이 있어서 맺는 약속이 아니야.”",
-      "sourceSentenceStart": 48,
-      "sourceSentenceEnd": 50,
-      "alignmentScore": 0.2937,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "자격이 있어서 맺는 약속이 아니야.",
-          "textEn": "“자격이 있어서 맺는 약속이 아니야.”",
-          "bubbleType": "speech",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 17,
-      "imageFile": "episode_16/scene_17.jpeg",
-      "sourceImageFile": "Kadan_Ignis_held_out_hand_202607260802.jpeg",
-      "narrationEn": "” Kadan held out his hand. “We make a deal to pull each other out the next time we go down the wrong path. ” Ignis held hands after a while.",
-      "narrationKo": "카단이 손을 내밀었다. “다음에 잘못된 길로 가면 서로 끌어내려고 맺는 거지.” 이그니스는 한참 뒤 손을 잡았다.",
-      "sourceSentenceStart": 51,
-      "sourceSentenceEnd": 53,
-      "alignmentScore": 0.5303,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "다음에 잘못된 길로 가면 서로 끌어내려고 맺는 거지.",
-          "textEn": "We make a deal to pull each other out the next time we go down the wrong path. ",
-          "bubbleType": "speech",
-          "position": "top-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
       "sceneNumber": 18,
-      "imageFile": "episode_16/scene_18.jpeg",
-      "sourceImageFile": "Two_men_make_vows_202607260802.jpeg",
-      "narrationEn": "The two were not brothers with the same parents, nor were they colleagues who covered each other's sins. They ended up promising to tell the truth that the other person didn't want to hear. Celia became anxious as he watched the two people make their vows.",
-      "narrationKo": "두 사람은 같은 부모를 둔 형제도, 서로의 죄를 덮어 주는 동료도 아니었다. 그들은 상대가 듣기 싫어하는 진실을 말하겠다는 약속으로 이어졌다. 실리아는 두 사람의 서약을 지켜보며 불안해졌다.",
-      "sourceSentenceStart": 54,
-      "sourceSentenceEnd": 56,
-      "alignmentScore": 0.5185,
+      "imageFile": "episode_16/scene_18.webp",
+      "sourceImageFile": "episode_16/scene_18.webp",
+      "narrationEn": "As the surviving assassins scrambled into the dark waters in panic, tranquil silence returned to the pier. Beyond the eastern horizon, the deep indigo sky blushed with the first rose-gold hues of dawn. The massive sails of the flagship, 'Breeze Wing', unfurled in the morning wind, and the resonant blast of a conch horn echoed across the mist-cleared lake. On the pier, gathered refugees and children waved their hands, blessing the voyagers with heartfelt prayers.",
+      "narrationKo": "패퇴한 암살자들이 호수 속으로 헤엄쳐 달아나고, 부두 위에는 다시 평온한 침묵이 돌아왔다. 동쪽 수평선 너머로 짙은 남색 밤하늘이 서서히 붉게 물들기 시작했다. 장원의 거대한 범선 ‘미풍의날개호’의 돛이 아침 바람을 받아 펄럭이며 출항을 알리는 고동 소리가 호수 전체에 웅장하게 울려 퍼졌다. 부두에 모인 난민들과 아이들이 손을 흔들며 일행의 무사 항해를 기원했다.",
+      "sourceSentenceStart": 42,
+      "sourceSentenceEnd": 43,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "부두에 모인 난민들과 아이들이 손을 흔들며 일행의 무사 항해를 기원했다.",
+          "textEn": "On the pier, gathered refugees and children waved their hands, blessing the voyagers with heartfelt prayers.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
           "position": "bottom-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 19,
-      "imageFile": "episode_16/scene_19.jpeg",
-      "sourceImageFile": "Ignis_Kadan_Celia_scene_202607260802.jpeg",
-      "narrationEn": "Kadan's good intentions could have saved Ignis, and could have been used for his own ambitions. Ignis also read Celia's eyes. “You don’t have to trust me.",
-      "narrationKo": "카단의 선의는 이그니스를 구할 수도 있었고, 그의 야심에 이용될 수도 있었다. 이그니스 역시 실리아의 눈빛을 읽었다. “날 믿지 않아도 된다.”",
-      "sourceSentenceStart": 57,
-      "sourceSentenceEnd": 59,
-      "alignmentScore": 0.3799,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "날 믿지 않아도 된다.",
-          "textEn": "“날 믿지 않아도 된다.”",
-          "bubbleType": "speech",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 20,
-      "imageFile": "episode_16/scene_20.jpeg",
-      "sourceImageFile": "Celia_confronts_father_over_Medusa_202607260802.jpeg",
-      "narrationEn": "” “That is not permitted. ” Celia answered. The three people boarded the same boat, but headed to Wind Island for different reasons. Kadan to keep his father's promise, Celia to confront his father's choices, and Ignis to prove that his spark is no one's command.",
-      "narrationKo": "“그건 허락받을 일이 아니야.” 실리아가 답했다. 세 사람은 같은 배에 올랐지만 서로 다른 이유로 바람섬을 향했다. 카단은 아버지의 약속을 지키기 위해, 실리아는 아버지의 선택과 맞서기 위해, 이그니스는 자신의 불꽃이 누구의 명령도 아니라는 것을 증명하기 위해.",
-      "sourceSentenceStart": 60,
-      "sourceSentenceEnd": 63,
-      "alignmentScore": 0.5549,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "그건 허락받을 일이 아니야.",
-          "textEn": "That is not permitted. ",
-          "bubbleType": "speech",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
         },
         {
           "textKo": "휘이이익-!",
           "textEn": "SWOOSH!",
           "style": "slash",
           "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_16/scene_19.webp",
+      "sourceImageFile": "episode_16/scene_19.webp",
+      "narrationEn": "Leaning over the forward railing, Cilia waved eagerly. \"Kadan, Ignis! The anchors are drawn! The wind has turned favorable, come aboard!\" Gripping the helm, Rondol bellowed with hearty triumph.",
+      "narrationKo": "실리아가 뱃머리에서 손을 흔들며 외쳤다. “카단, 이그니스! 닻이 올라가고 있어요! 바람이 순풍으로 바뀌었어요, 어서 타세요!” 론돌 역시 키를 잡고 우렁찬 목소리로 외쳤다.",
+      "sourceSentenceStart": 44,
+      "sourceSentenceEnd": 46,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“카단, 이그니스! 닻이 올라가고 있어요! 바람이 순풍으로 바뀌었어요, 어서 타세요!”",
+          "textEn": "“Kadan, Ignis! The anchors are drawn! The wind has turned favorable, come aboard!”",
+          "bubbleType": "shout",
+          "position": "bottom-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_16/scene_20.webp",
+      "sourceImageFile": "episode_16/scene_20.webp",
+      "narrationEn": "\"The sea gods have opened our passage! Young lions, unfurl the sails toward the new dawn!\" Clasping each other's forearms in an unbreakable pledge of brotherhood, Kadan and Ignis bounded up the gangway. Slipping gracefully between the seventy-two ancient basalt monoliths, the ship glided out toward the boundless expanse of the azure ocean. Morning sunlight washed over the brothers' shoulders, crowning their journey with a golden blessing. Before them lay the uncharted high seas and the legendary shores of Whispering Wind Island.",
+      "narrationKo": "“바다의 신이 우리에게 길을 열어주셨다! 젊은 사자들아, 새로운 시대를 향해 돛을 올려라!” 카단과 이그니스는 서로의 팔뚝을 단단히 맞잡으며 굳은 전우애의 눈빛을 나누었다. 두 청년은 나란히 갑판 위로 뛰어올랐고, 배는 일흔두 개의 거대한 석주 미로를 빠져나와 광활한 푸른 대해를 향해 힘차게 미끄러져 나갔다. 아침 햇살이 두 형제의 어깨 위로 찬란한 황금빛 축복을 내리고 있었다. 이제 그들의 앞에는 미지의 대해와 전설의 바람 속삭임 섬이 기다리고 있었다.",
+      "sourceSentenceStart": 47,
+      "sourceSentenceEnd": 48,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "론돌",
+          "speakerEn": "Rondol",
+          "textKo": "“바다의 신이 우리에게 길을 열어주셨다! 젊은 사자들아, 새로운 시대를 향해 돛을 올려라!”",
+          "textEn": "“The sea gods have opened our passage! Young lions, unfurl the sails toward the new dawn!”",
+          "bubbleType": "shout",
+          "position": "top-left",
+          "characterCardId": 46
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
         }
       ]
     }

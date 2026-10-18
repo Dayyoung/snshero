@@ -2,381 +2,27 @@
   "episodeNumber": 2,
   "episodeTitleEn": "Oath of the Seven Pursuers",
   "episodeTitleKo": "일곱 추적자의 맹세",
-  "sourceSentenceCount": 65,
+  "sourceSentenceCount": 38,
   "sceneCount": 20,
   "scenes": [
     {
       "sceneNumber": 1,
-      "imageFile": "episode_02/scene_01.jpeg",
-      "sourceImageFile": "Hercul_arrives_at_Elwin_ruins_202607260802.jpeg",
-      "narrationEn": "When Hercul arrived at the ruins of Elwin village, all that remained were blackened rafters and blood stains on the bridge. He found Aleksandar's broken sword in the snow. The blade had jagged marks that were not found on the official weapons of the Shadow Realm.",
-      "narrationKo": "헤르쿨이 엘윈 마을의 폐허에 도착했을 때 남은 것은 검게 언 서까래와 다리 위의 핏자국뿐이었다. 그는 알렉산다르의 부러진 검을 눈 속에서 찾아냈다. 검면에는 섀도우렐름의 공식 병기에는 없는 톱니 자국이 남아 있었다.",
+      "imageFile": "episode_02/scene_01.webp",
+      "sourceImageFile": "episode_02/scene_01.webp",
+      "narrationEn": "When Hercul arrived at the smoking ruins of Elwin village, nothing remained upon the desolated earth save for charred rafters and crimson trails frozen like tear-streaked ice. For three days and three nights he had ridden without pause. Though his greaves were caked in mud and freezing slush, the paladin planted his holy warhammer deep into the drift and fell to his knees to search for Aleksandar's traces. From beneath the shattered bridge, amidst the ice-choked shallows, his fingers drew forth the broken blade of a twin sword. Along the jagged fuller lay a cruel serrated groove and imperial seal never found on standard Shadow Realm armaments. \"The royal insignia of Lighthaven's elite frontier high command... This was no barbarian raid. The slaughter was engineered from within the palace walls.\"",
+      "narrationKo": "헤르쿨이 폐허로 변해 버린 엘윈 마을의 잿더미에 당도했을 때, 대지 위에 남은 것은 검게 얼어붙은 서까래와 눈물처럼 얼룩진 핏자국뿐이었다. 사흘 밤낮을 쉬지 않고 말을 달려온 그의 두 발은 진흙과 서릿발로 뒤덮여 무감각해져 있었으나, 헤르쿨은 성스러운 황금 철퇴를 눈 속에 박아 넣은 채 무릎을 꿇고 알렉산다르의 흔적을 수색했다. 무너진 다리 아래 서리꽃이 핀 여울에서 마침내 건져 올린 것은 반 토막 난 쌍검의 칼날이었다. 검면에는 정규 섀도우렐름 병기에는 결코 존재하지 않는 톱니 모양의 잔혹한 홈과 왕실 문장이 깊게 패여 있었다. “이것은 국경을 지키는 라이트헤븐 정예 사령부의 문장... 외부의 적이 아니라, 왕국 내부의 권력자가 설계를 주도했다는 명백한 증거다.”",
       "sourceSentenceStart": 1,
-      "sourceSentenceEnd": 3,
-      "alignmentScore": 0.5254,
-      "dialogues": [
-        {
-          "speakerKo": "알렉산다르",
-          "speakerEn": "Aleksandar",
-          "textKo": "검끝이 흔들리지 않는 한, 길은 열린다.",
-          "textEn": "As long as our blades do not waver, the path will open.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 2,
-      "imageFile": "episode_02/scene_02.jpeg",
-      "sourceImageFile": "Hercul_encounters_seven_people_202607260802.jpeg",
-      "narrationEn": "It was evidence that someone inside the kingdom had designed the attack. Hercul followed the traces into the Seven Bridges of the southern port and ran into seven unexpected people. Blacksmith Grimli, Crossbowman Aila the Demon Hunter, Apothecary Eliana, Blind Stalker Gawain, Gambler Kaze, Boatman Rondol, Acrobat Robinyard.",
-      "narrationKo": "왕국 안쪽의 누군가가 공격을 설계했다는 증거였다. 그 흔적을 좇아 남쪽 항구 세븐브리지에 들어간 헤르쿨은 뜻밖의 일곱 사람과 부딪쳤다. 대장장이 그림리, 쇠뇌 사수 에일라, 약제사 엘리아나, 맹인 추적자 가웨인, 도박사 카제, 뱃사공 론돌, 곡예사 로비냐드.",
-      "sourceSentenceStart": 4,
-      "sourceSentenceEnd": 6,
-      "alignmentScore": 0.4004,
+      "sourceSentenceEnd": 2,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "헤르쿨",
           "speakerEn": "Hercul",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
-          "bubbleType": "shout",
-          "position": "top-right"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 3,
-      "imageFile": "episode_02/scene_03.jpeg",
-      "sourceImageFile": "Paladin_meets_rescue_team_202607260802.jpeg",
-      "narrationEn": "They came from different backgrounds and had different accents, and were an unofficial rescue team that took in war orphans. The first meeting wasn't good. Hercul believed the report that they were kidnappers, and the seven saw him dressed as a paladin as a stooge of the court.",
-      "narrationKo": "출신도 말투도 제각각인 그들은 전쟁고아를 빼돌려 온 비공식 구조대였다. 첫 만남은 좋지 않았다. 헤르쿨은 그들이 유괴범이라는 밀고를 믿었고, 일곱 사람은 성기사 복장을 한 그를 궁정의 앞잡이로 보았다.",
-      "sourceSentenceStart": 7,
-      "sourceSentenceEnd": 9,
-      "alignmentScore": 0.5021,
-      "dialogues": [
-        {
-          "speakerKo": "헤르쿨",
-          "speakerEn": "Hercul",
-          "textKo": "우리의 맹세는 아직 꺼지지 않았다.",
-          "textEn": "Our vow has never been extinguished.",
-          "bubbleType": "speech",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 4,
-      "imageFile": "episode_02/scene_04.jpeg",
-      "sourceImageFile": "Market_tent_torn_apart_fish_202607260802.jpeg",
-      "narrationEn": "The market's tent was torn apart and boxes of fish flew through the air. Every time Grimli's hammer hit the guard, golden ripples spread to the bell tower. Gawain could not hear Hercul's footsteps, but there was no time to stop his colleagues. Kaze scattered seven coins from his pocket to find weak spots in the protective formation, while Aila the Demon Hunter selected only the coins that bounced and shot them with his crossbow.",
-      "narrationKo": "시장의 천막이 뜯겨 나가고 생선 상자가 공중을 날았다. 그림리의 망치가 방호진을 때릴 때마다 금빛 파문이 종탑까지 번졌다. 가웨인은 헤르쿨의 발소리에서 살기를 듣지 못했지만 동료들을 멈추게 할 틈이 없었다. 카제는 주머니에서 동전 일곱 개를 뿌려 방호진의 약한 곳을 찾았고, 에일라는 튕겨 나오는 동전만 골라 쇠뇌를 쐈다.",
-      "sourceSentenceStart": 10,
-      "sourceSentenceEnd": 13,
-      "alignmentScore": 0.363,
-      "dialogues": [
-        {
-          "speakerKo": "헤르쿨",
-          "speakerEn": "Hercul",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        },
-        {
-          "textKo": "쿵-!",
-          "textEn": "THUD!",
-          "style": "impact",
-          "position": "bottom-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 5,
-      "imageFile": "episode_02/scene_05.jpeg",
-      "sourceImageFile": "Hercul_blocks_arrows,_Rondol_use…_202607260802.jpeg",
-      "narrationEn": "Hercul blocked the arrows and turned the angle of his shield to prevent shrapnel from hitting the people in the market. Rondol raised the water from the canal and tied Hercul's feet. As he tried to evaporate the water with golden mana, Eliana mixed the herb powder.",
-      "narrationKo": "헤르쿨은 화살을 막으면서도 시장 사람들에게 파편이 가지 않도록 방패 각도를 돌렸다. 론돌은 수로의 물을 끌어올려 헤르쿨의 발을 묶었다. 그가 황금 마나로 물을 증발시키려 하자 엘리아나가 허브 가루를 섞었다.",
-      "sourceSentenceStart": 14,
-      "sourceSentenceEnd": 16,
-      "alignmentScore": 0.5235,
-      "dialogues": [
-        {
-          "speakerKo": "헤르쿨",
-          "speakerEn": "Hercul",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 6,
-      "imageFile": "episode_02/scene_06.jpeg",
-      "sourceImageFile": "Paladin_coughing_fish_Robinyard_…_202607260802.jpeg",
-      "narrationEn": "The hot herbal steam stung my eyes. As the legendary paladin coughed and collapsed on a pile of fish, Robinyard couldn't help but laugh even during the fight. It was only one child who stopped the fight.",
-      "narrationKo": "뜨거운 약초 증기가 눈을 따갑게 만들었다. 전설적인 성기사가 기침하며 생선 더미에 주저앉자 로비냐드는 싸움 중에도 웃음을 참지 못했다. 싸움을 멈춘 것은 아이 하나였다.",
-      "sourceSentenceStart": 17,
-      "sourceSentenceEnd": 19,
-      "alignmentScore": 0.4571,
-      "dialogues": [
-        {
-          "speakerKo": "성기사단원",
-          "speakerEn": "Holy Knight",
-          "textKo": "우리의 맹세는 아직 꺼지지 않았다.",
-          "textEn": "Our vow has never been extinguished.",
-          "bubbleType": "speech",
-          "position": "top-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 7,
-      "imageFile": "episode_02/scene_07.jpeg",
-      "sourceImageFile": "Child_grabs_clothes,_speaks_202607260802.jpeg",
-      "narrationEn": "The child hiding behind Aila the Demon Hunter's back grabbed the hem of Hercul's clothes and said. “Those people didn’t sell us, they saved us from being sold. ” Hercul put down his mace.",
-      "narrationKo": "에일라의 등 뒤에 숨어 있던 아이가 헤르쿨의 옷자락을 잡고 말했다. “저 사람들은 우리를 판 게 아니라, 팔려 가던 우리를 구했어요.” 헤르쿨은 철퇴를 내렸다.",
-      "sourceSentenceStart": 20,
-      "sourceSentenceEnd": 22,
-      "alignmentScore": 0.5432,
-      "dialogues": [
-        {
-          "speakerKo": "헤르쿨",
-          "speakerEn": "Hercul",
-          "textKo": "저 사람들은 우리를 판 게 아니라, 팔려 가던 우리를 구했어요.",
-          "textEn": "Those people didn’t sell us, they saved us from being sold. ",
-          "bubbleType": "speech",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 8,
-      "imageFile": "episode_02/scene_08.jpeg",
-      "sourceImageFile": "Seven_pursuers_put_up_weapons_202607260802.jpeg",
-      "narrationEn": "The seven also put up their weapons, but only Grimli snorted instead of apologizing. The ledger of the human trafficking ship they were chasing also had the signature of Lucian. It was like discovering the same enemy on different paths. The night he was checking the ledgers in the port warehouse, Robinyard threw seven liquor jars onto the roof.",
-      "narrationKo": "일곱 사람도 무기를 거두었지만 그림리만은 사과 대신 콧방귀를 뀌었다. 그들이 뒤쫓던 인신매매선의 장부에도 루시안의 서명이 있었다. 서로 다른 길에서 같은 적을 발견한 셈이었다. 항구 창고에서 장부를 살피던 밤, 로비냐드가 술항아리 일곱 개를 지붕으로 던졌다.",
-      "sourceSentenceStart": 23,
-      "sourceSentenceEnd": 26,
-      "alignmentScore": 0.4286,
-      "dialogues": [
-        {
-          "speakerKo": "루시안",
-          "speakerEn": "Lucian",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
-          "bubbleType": "shout",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 9,
-      "imageFile": "episode_02/scene_09.jpeg",
-      "sourceImageFile": "Jar_stops_in_air_202607260802.jpeg",
-      "narrationEn": "The jar did not break, but stopped in the air and spun in a circle. It was not alcohol, but a floating compass that revealed the mana route of the smuggling ship. Each time the blue liquid tilted, a new ray of light appeared on the floor map.",
-      "narrationKo": "항아리는 깨지지 않고 허공에 멈춰 원을 그리며 돌았다. 술이 아니라 밀수선의 마나 항로를 드러내는 부유식 나침반이었다. 푸른 액체가 기울 때마다 바닥 지도에 새로운 빛줄기가 생겼다.",
-      "sourceSentenceStart": 27,
-      "sourceSentenceEnd": 29,
-      "alignmentScore": 0.4556,
-      "dialogues": [
-        {
-          "speakerKo": "알렉산다르",
-          "speakerEn": "Aleksandar",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 10,
-      "imageFile": "episode_02/scene_10.jpeg",
-      "sourceImageFile": "Eliana_rewrites_child_names_ledger_202607260802.jpeg",
-      "narrationEn": "In the ledger, instead of the children's names, their height, weight, and mana attributes were written down. Eliana rewrote the name of each rescued child next to it. Hercul also silently picked up the pen.",
-      "narrationKo": "장부에는 아이들의 이름 대신 키와 몸무게, 마나 속성이 적혀 있었다. 엘리아나는 구조한 아이 한 명 한 명의 이름을 그 옆에 다시 써 넣었다. 헤르쿨도 말없이 펜을 들었다.",
-      "sourceSentenceStart": 30,
-      "sourceSentenceEnd": 32,
-      "alignmentScore": 0.6613,
-      "dialogues": [
-        {
-          "speakerKo": "헤르쿨",
-          "speakerEn": "Hercul",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
-          "bubbleType": "shout",
-          "position": "top-right"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 11,
-      "imageFile": "episode_02/scene_11.jpeg",
-      "sourceImageFile": "Characters_return_calculation_sheet_202607260802.jpeg",
-      "narrationEn": "They have been working for a while to return the calculation sheet to human records. One line headed to the northern Wildlands, and the other line headed to the Red Glass Court. Hercul noticed that Elwin and Ysela were pulled in opposite directions.",
-      "narrationKo": "그들은 한참 동안 계산표를 사람의 기록으로 되돌리는 일부터 했다. 한 줄은 북쪽 와일드랜드로, 다른 한 줄은 붉은 유리 궁정으로 향했다. 엘윈과 이셀라가 서로 반대쪽으로 끌려갔음을 헤르쿨은 알아차렸다.",
-      "sourceSentenceStart": 33,
-      "sourceSentenceEnd": 35,
-      "alignmentScore": 0.1533,
-      "dialogues": [
-        {
-          "speakerKo": "헤르쿨",
-          "speakerEn": "Hercul",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 12,
-      "imageFile": "episode_02/scene_12.jpeg",
-      "sourceImageFile": "Children_going_to_palace_202607260802.jpeg",
-      "narrationEn": "The two unborn children were also probably somewhere along the way. “I am going to the palace. ” Hercul said. “You guys take charge of the north.",
-      "narrationKo": "아직 태어나지 않은 두 아이도 그 길 어딘가에 있을 터였다. “내가 궁정으로 간다.” 헤르쿨이 말했다. “그대들은 북쪽을 맡아 줘.”",
-      "sourceSentenceStart": 36,
-      "sourceSentenceEnd": 39,
-      "alignmentScore": 0.3506,
-      "dialogues": [
-        {
-          "speakerKo": "헤르쿨",
-          "speakerEn": "Hercul",
-          "textKo": "내가 궁정으로 간다.",
-          "textEn": "I am going to the palace. ",
-          "bubbleType": "speech",
-          "position": "top-left"
-        },
-        {
-          "speakerKo": "헤르쿨",
-          "speakerEn": "Hercul",
-          "textKo": "그대들은 북쪽을 맡아 줘.",
-          "textEn": "“그대들은 북쪽을 맡아 줘.”",
-          "bubbleType": "speech",
-          "position": "top-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 13,
-      "imageFile": "episode_02/scene_13.jpeg",
-      "sourceImageFile": "Grimli_crossed_arms_Hercul_dagger_202607260802.jpeg",
-      "narrationEn": "” Grimli crossed his arms. “Why should we keep your promise instead? ” Hercul took out Aleksandar's broken sword and a silver dagger to give to the child.",
-      "narrationKo": "그림리는 팔짱을 꼈다. “우리가 왜 당신의 약속을 대신 지켜야 하지?” 헤르쿨은 알렉산다르의 부러진 검과 아이에게 줄 은빛 단검을 꺼냈다.",
-      "sourceSentenceStart": 40,
-      "sourceSentenceEnd": 42,
-      "alignmentScore": 0.5038,
-      "dialogues": [
-        {
-          "speakerKo": "알렉산다르",
-          "speakerEn": "Aleksandar",
-          "textKo": "우리가 왜 당신의 약속을 대신 지켜야 하지?",
-          "textEn": "Why should we keep your promise instead? ",
-          "bubbleType": "speech",
-          "position": "top-right"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 14,
-      "imageFile": "episode_02/scene_14.jpeg",
-      "sourceImageFile": "Gawain_hears_dagger_vibration_202607260802.jpeg",
-      "narrationEn": "“It’s not because it’s a request from a dead person. It’s because we can’t just leave a world where living children inherit their parents’ crimes. ” Gawain heard the vibration of the dagger with his invisible eyes.",
-      "narrationKo": "“죽은 사람의 부탁이라서가 아니다. 살아 있는 아이가 부모의 죄목까지 물려받는 세상을 그냥 둘 수 없어서다.” 가웨인은 보이지 않는 눈으로 단검의 진동을 들었다.",
-      "sourceSentenceStart": 43,
-      "sourceSentenceEnd": 45,
-      "alignmentScore": 0.6399,
-      "dialogues": [
-        {
-          "speakerKo": "알렉산다르",
-          "speakerEn": "Aleksandar",
-          "textKo": "죽은 사람의 부탁이라서가 아니다. 살아 있는 아이가 부모의 죄목까지 물려받는 세상을 그냥 둘 수 없어서다.",
-          "textEn": "It’s not because it’s a request from a dead person. It’s because we can’t just leave a world where living children inherit their parents’ crimes. ",
-          "bubbleType": "speech",
-          "position": "bottom-left"
+          "textKo": "“이것은 국경을 지키는 라이트헤븐 정예 사령부의 문장... 외부의 적이 아니라, 왕국 내부의 권력자가 설계를 주도했다는 명백한 증거다.”",
+          "textEn": "“The royal insignia of Lighthaven's elite frontier high command... This was no barbarian raid. The slaughter was engineered from within the palace walls.”",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 49
         }
       ],
       "sfxCues": [
@@ -395,106 +41,337 @@
       ]
     },
     {
-      "sceneNumber": 15,
-      "imageFile": "episode_02/scene_15.jpeg",
-      "sourceImageFile": "Chibi_characters_in_fantasy_scene_202607260802.jpeg",
-      "narrationEn": "A faint but clear resonance of life was answering from the north. He was the first to nod. The remaining six also grumbled or sighed and agreed in their own way.",
-      "narrationKo": "미약하지만 또렷한 생명의 공명이 북쪽에서 답하고 있었다. 그는 가장 먼저 고개를 끄덕였다. 나머지 여섯도 투덜거리거나 한숨을 쉬면서 각자의 방식으로 동의했다.",
-      "sourceSentenceStart": 46,
-      "sourceSentenceEnd": 48,
-      "alignmentScore": 0.4457,
+      "sceneNumber": 2,
+      "imageFile": "episode_02/scene_02.webp",
+      "sourceImageFile": "episode_02/scene_02.webp",
+      "narrationEn": "Hercul's jaw hardened with righteous fury. Carefully burying the remains of the slaughtered villagers beneath clean drifts of snow, he wrapped the broken blade alongside Aleksandar's scabbard and followed the scent of the conspirators southward toward Sevenbridge, the bustling port metropolis where sea fog mingled with the shouts of merchants and desperate refugees. Sweeping through the narrow labyrinth of the fishmongers' quarter, Hercul found himself confronted by seven formidable figures bristling with lethal intent. At their forefront loomed Grimli, a broad-shouldered dwarven blacksmith resting a colossal maul across his scarred pauldrons. Flanking him was Aila the Demon Hunter, her scarlet braids drawn back as she leveled a cocked heavy crossbow with narrowed eyes. Beside them stood Eliana, an apothecary hung with leather herb-pouches, Gawain, a blind tracker tracing subterranean reverberations with an iron staff, Kaze, a flamboyant gambler flicking silver shillings between his knuckles, Rondol, a canal boatman who commanded water currents with runic paddles, and Robinyard, an agile acrobat balancing effortlessly along the eaves. They were frontier outlaws, distinct in race, tongue, and weapon.",
+      "narrationKo": "헤르쿨의 굳은 턱선이 억누를 수 없는 분노로 파르르 떨렸다. 마을 회관 잿더미 아래에서 억울하게 학살당한 주민들의 유해를 수습하여 정성껏 눈무덤을 쌓은 헤르쿨은, 두 자루의 부러진 검날과 낡은 가죽집을 소중히 챙긴 뒤 흉적들의 냄새를 좇아 남방의 거대한 무역 항구인 세븐브리지로 향했다. 해무가 낮게 깔린 부둣가 시장통은 각지에서 몰려든 상인들과 망명자들의 거친 고함으로 소란스러웠다. 어시장 안쪽, 생선 비린내와 썩은 그물 냄새가 진동하는 낡은 창고 골목을 은밀히 수색하던 헤르쿨은, 뜻밖에도 살기를 뿜어내는 기이한 일곱 사람의 무리와 정면으로 충돌했다.",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 4,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "알렉산다르",
-          "speakerEn": "Aleksandar",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-left"
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "어시장 안쪽, 생선 비린내와 썩은 그물 냄새가 진동하는 낡은 창고 골목을 은밀히 수색하던 헤르쿨은, 뜻밖에도 살기를 뿜어내는 기이한 일곱 사람의 무리와 정면으로 충돌했다.",
+          "textEn": "They were frontier outlaws, distinct in race, tongue, and weapon.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 49
         }
       ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 16,
-      "imageFile": "episode_02/scene_16.jpeg",
-      "sourceImageFile": "Oath_of_Seven_Pursuers_scene_202607260802.jpeg",
-      "narrationEn": "That day, the seven pursuers gathered at the top of the bell tower and made a promise. Whoever finds the child first takes him as his disciple and teaches him the power to protect himself. Eighteen years later, the two children meet under the bell of Seven Bridges, truly ending the tragedy of their parents' generation. Opinions were divided on how to record promises.",
-      "narrationKo": "그날 일곱 추적자는 종탑 꼭대기에 모여 약속했다. 아이를 먼저 찾는 쪽이 그를 제자로 삼아 스스로를 지킬 힘을 가르친다. 열여덟 해 뒤 세븐브리지의 종 아래에서 두 아이를 만나게 해, 부모 세대의 비극을 진실로 끝맺게 한다. 약속을 기록하는 방식부터 의견이 갈렸다.",
-      "sourceSentenceStart": 49,
-      "sourceSentenceEnd": 52,
-      "alignmentScore": 0.4396,
-      "dialogues": [
+      "sfxCues": [
         {
-          "speakerKo": "알렉산다르",
-          "speakerEn": "Aleksandar",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
-          "bubbleType": "shout",
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
           "position": "bottom-left"
         }
-      ],
-      "sfxCues": []
+      ]
     },
     {
-      "sceneNumber": 17,
-      "imageFile": "episode_02/scene_17.jpeg",
-      "sourceImageFile": "Grimli_Kaze_Robinyard_handprints…_202607260802.jpeg",
-      "narrationEn": "Grimli was intended to be engraved on a steel plate, and Kaze was to be left as a password so as not to be discovered by the enemy. Robinyard stamped the handprints of seven people on the inside of the bell. It was a way to ensure that even if one person changed their mind, the others would remember.",
-      "narrationKo": "그림리는 강철판에 새기자 했고, 카제는 적에게 들키지 않도록 암호로 남기자 했다. 로비냐드는 종 안쪽에 일곱 사람의 손도장을 찍었다. 누구 하나 마음을 바꾸더라도 나머지가 기억하게 하는 방법이었다.",
-      "sourceSentenceStart": 53,
-      "sourceSentenceEnd": 55,
-      "alignmentScore": 0.3361,
+      "sceneNumber": 3,
+      "imageFile": "episode_02/scene_03.webp",
+      "sourceImageFile": "episode_02/scene_03.webp",
+      "narrationEn": "\"A gilded hound from the royal holy guard sniffing around our docks!\" Grimli spat on the cobbles, his gravelly voice grating like iron on grindstone. The encounter flared instantly into violent misunderstanding. Hercul had acted on intelligence warning of child slavers operating from the docks, while the Seven Pursuers took one look at Hercul's golden tabard and branded him an imperial inquisitor dispatched by the Red Glass Court to destroy the evidence of their atrocities.",
+      "narrationKo": "무리의 앞머리에는 거대한 쇠망치를 어깨에 멘 드워프 대장장이 그림리가 성큼 걸어 나와 버티고 섰고, 그 뒤로 붉은 머리를 길게 땋아 올린 명사수 에일라가 쇠뇌의 장전을 마친 채 서늘한 눈을 가늘게 뜨고 있었다. 약초 주머니를 주렁주렁 매단 노련한 약제사 엘리아나, 쇠지팡이로 바닥의 미세한 진동을 읽는 맹인 추적자 가웨인, 번뜩이는 은화를 손가락 사이로 현란하게 굴리는 도박사 카제, 강나루의 물길을 부리는 뱃사공 론돌, 그리고 지붕 처마 위에서 고양이처럼 날렵하게 균형을 잡는 유랑 곡예사 로비냐드까지. 종족도, 출신도, 무기도 제각각인 변방의 이단아들이었다. “성기사의 황금 망토를 두른 궁정 똥개가 기어이 여기까지 냄새를 맡고 기어들어 왔군!”",
+      "sourceSentenceStart": 5,
+      "sourceSentenceEnd": 6,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "알렉산다르",
-          "speakerEn": "Aleksandar",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
+          "speakerKo": "그림리",
+          "speakerEn": "Grimli",
+          "textKo": "“성기사의 황금 망토를 두른 궁정 똥개가 기어이 여기까지 냄새를 맡고 기어들어 왔군!”",
+          "textEn": "“A gilded hound from the royal holy guard sniffing around our docks!”",
           "bubbleType": "shout",
+          "position": "bottom-right",
+          "characterCardId": 74
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_02/scene_04.webp",
+      "sourceImageFile": "episode_02/scene_04.webp",
+      "narrationEn": "\"You will tear not one orphan from this harbor, court lapdog! Drop your steel!\" Aila barked, her bowstring snapping with lethal resonance.",
+      "narrationKo": "그림리가 거친 가래침을 판석 위에 뱉으며 쇳소리 나는 목소리로 으르렁거렸다. 첫 만남은 최악의 오해로 번져 나갔다. 헤르쿨은 세븐브리지의 전쟁고아들을 암흑가 노예선으로 팔아넘기는 유괴단이 암약한다는 비밀 밀고를 믿고 있었고, 일곱 사람은 헤르쿨의 화려한 성기사 복식을 보고 붉은 유리 궁정에서 증거를 인멸하기 위해 파견한 황실 암살관이라 확신했던 것이다. “황궁의 충견 놈들에게 넘겨줄 아이는 단 한 놈도 없다! 그 더러운 무기를 버려라!”",
+      "sourceSentenceStart": 7,
+      "sourceSentenceEnd": 8,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "에일라",
+          "speakerEn": "Aila",
+          "textKo": "“황궁의 충견 놈들에게 넘겨줄 아이는 단 한 놈도 없다! 그 더러운 무기를 버려라!”",
+          "textEn": "“You will tear not one orphan from this harbor, court lapdog! Drop your steel!”",
+          "bubbleType": "shout",
+          "position": "top-left",
+          "characterCardId": 70
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
           "position": "bottom-right"
         }
-      ],
-      "sfxCues": []
+      ]
     },
     {
-      "sceneNumber": 18,
-      "imageFile": "episode_02/scene_18.jpeg",
-      "sourceImageFile": "Hercul_added_one_condition_202607260802.jpeg",
-      "narrationEn": "Hercul added one condition. “Don’t make them each other’s enemies. You can make them compete to see who is stronger, but you shouldn’t make them compete to see who they hate more.",
-      "narrationKo": "헤르쿨은 조건을 하나 덧붙였다. “둘을 서로의 원수로 키우지 마라. 누가 더 강한지 겨루게 할 수는 있어도, 누가 더 증오하는지 겨루게 해서는 안 된다.”",
-      "sourceSentenceStart": 56,
-      "sourceSentenceEnd": 58,
-      "alignmentScore": 0.3534,
+      "sceneNumber": 5,
+      "imageFile": "episode_02/scene_05.webp",
+      "sourceImageFile": "episode_02/scene_05.webp",
+      "narrationEn": "A silver-tipped quarrel whistled straight for Hercul's eyes. Reflexively, the knight flared his radiant barrier, deflecting the projectile upward. The kinetic shock tore market awnings to shreds and hurled wooden crates across the quay. Each time Grimli's maul battered the translucent golden dome, harmonious shockwaves rippled out to the distant maritime bell tower. Gawain tapped his staff, his ears twitching as he parsed the cadence of Hercul's stance.",
+      "narrationKo": "에일라의 차가운 일갈과 함께 팽팽하게 당겨진 석궁 시위가 허공을 튕겼다. 은빛 살촉이 헤르쿨의 눈전을 정밀하게 겨누고 쇄도했다. 헤르쿨은 반사적으로 황금빛 방호진을 전개하며 날아오는 화살들을 쳐냈다. 그 충격으로 시장통의 차양 천막이 갈기갈기 찢겨 나가고 생선 상자들이 공중으로 치솟았다. 그림리의 육중한 쇠망치가 방호 결계를 후려칠 때마다 거대한 종소리 같은 성스러운 파문이 멀리 해안 시계탑까지 울려 퍼졌다. 가웨인은 바닥을 울리는 헤르쿨의 호흡에서 순수한 무인의 절제를 감지했다.",
+      "sourceSentenceStart": 9,
+      "sourceSentenceEnd": 10,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "헤르쿨",
-          "speakerEn": "Hercul",
-          "textKo": "둘을 서로의 원수로 키우지 마라. 누가 더 강한지 겨루게 할 수는 있어도, 누가 더 증오하는지 겨루게 해서는 안 된다.",
-          "textEn": "“둘을 서로의 원수로 키우지 마라. 누가 더 강한지 겨루게 할 수는 있어도, 누가 더 증오하는지 겨루게 해서는 안 된다.”",
-          "bubbleType": "speech",
-          "position": "bottom-left"
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "가웨인은 바닥을 울리는 헤르쿨의 호흡에서 순수한 무인의 절제를 감지했다.",
+          "textEn": "Gawain tapped his staff, his ears twitching as he parsed the cadence of Hercul's stance.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 70
         }
       ],
-      "sfxCues": []
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
     },
     {
-      "sceneNumber": 19,
-      "imageFile": "episode_02/scene_19.jpeg",
-      "sourceImageFile": "Black_arrow_pierces_warehouse_roof_202607260802.jpeg",
-      "narrationEn": "” Before the words were finished, a black arrow pierced the roof of the warehouse. They were court assassins who sensed their pursuit. The seven jars shattered at the same time, spreading a blue curtain, and Hercul's protective guard covered it.",
-      "narrationKo": "그 말이 끝나기도 전에 창고 지붕을 검은 화살이 뚫었다. 추적을 눈치챈 궁정 암살자들이었다. 일곱 항아리가 동시에 깨지며 푸른 장막을 펼쳤고, 헤르쿨의 방호진이 그 위를 덮었다.",
-      "sourceSentenceStart": 59,
-      "sourceSentenceEnd": 61,
-      "alignmentScore": 0.3865,
+      "sceneNumber": 6,
+      "imageFile": "episode_02/scene_06.webp",
+      "sourceImageFile": "episode_02/scene_06.webp",
+      "narrationEn": "\"Hold your hands, Grimli! His tread bears no bloodlust toward the innocent!\" Yet the roar of battle drowned his counsel. Kaze cast seven silver coins into the air, pinpointing micro-fractures in Hercul's barrier, while Rondol summoned seawater from the canal to freeze around the knight's boots. As Hercul channeled his inner flame to shatter the frost, Eliana hurled a vial of pulverized sun-peppers, raising a blinding, pungent cloud of vapor. Despite his burning eyes, Hercul tilted his shield to keep flying splinters from striking nearby commoners.",
+      "narrationKo": "“잠깐, 그림리! 저자의 발소리에는 죄 없는 자를 해치려는 살기가 실려 있지 않다!”",
+      "sourceSentenceStart": 11,
+      "sourceSentenceEnd": 11,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "가웨인",
+          "speakerEn": "Gawain",
+          "textKo": "“잠깐, 그림리! 저자의 발소리에는 죄 없는 자를 해치려는 살기가 실려 있지 않다!”",
+          "textEn": "“Hold your hands, Grimli! His tread bears no bloodlust toward the innocent!”",
+          "bubbleType": "shout",
+          "position": "bottom-left",
+          "characterCardId": 45
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_02/scene_07.webp",
+      "sourceImageFile": "episode_02/scene_07.webp",
+      "narrationEn": "The skirmish was halted by a ragged young girl who darted out from behind Aila's cloak, clutching Hercul's torn surcoat with tears streaming down her soot-streaked cheeks. \"Sir Knight, please cease! These people are not slavers! They risked their very lives to drag us from the hold of the slave galleys destined for the Red Glass Court!\"",
+      "narrationKo": "그러나 격돌의 소용돌이 속에서 동료들을 제지하기엔 주변의 소음이 너무 거셌다. 카제가 허공으로 뿌린 일곱 개의 은화가 방호진의 결절점에 부딪치며 미세한 균열을 짚어냈고, 론돌이 바닷물을 수로에서 끌어올려 헤르쿨의 발목을 얼어붙은 족쇄로 묶었다. 헤르쿨이 마나를 폭발시켜 얼음을 깨뜨리려 하자, 엘리아나가 던진 매운 최루 독초 가루가 돌풍을 타고 일어났다. 헤르쿨은 기침을 터뜨리면서도 시장 사람들에게 파편이 튀지 않도록 방패의 각도를 필사적으로 돌렸다. 일촉즉발의 유혈 난투를 멈추어 세운 것은 에일라의 망토 뒤에서 뛰쳐나온 어린 피난민 소녀였다. 누더기를 걸친 아이는 헤르쿨의 찢어진 옷자락을 붙잡으며 눈물범벅이 된 얼굴로 소리쳤다.",
+      "sourceSentenceStart": 12,
+      "sourceSentenceEnd": 13,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "누더기를 걸친 아이는 헤르쿨의 찢어진 옷자락을 붙잡으며 눈물범벅이 된 얼굴로 소리쳤다.",
+          "textEn": "They risked their very lives to drag us from the hold of the slave galleys destined for the Red Glass Court!\"",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 44
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_02/scene_08.webp",
+      "sourceImageFile": "episode_02/scene_08.webp",
+      "narrationEn": "Hercul's warhammer froze mid-swing. The Seven Pursuers lowered their arms in sheepish disbelief. From his travel pouch, Hercul produced the merchant ledger recovered from the burnt wagon. Impressed across its parchment was Prince Lucian's personal wax seal, detailing orders for the total liquidation of the Arcane Holy Order and the trafficking of survivors. On disparate paths of vengeance and justice, these warriors had chased the same monstrous serpent. Grimli rested his hammer on the flagstones, letting out a rough bellow of laughter.",
+      "narrationKo": "“기사님, 제발 멈추세요! 이분들은 우리를 팔아넘기는 유괴범이 아니에요! 붉은 유리 궁정의 지하 감옥으로 끌려가던 우리를 목숨 걸고 구해 주신 분들이라고요!” 헤르쿨의 황금 철퇴가 허공에서 우뚝 멎었다. 일곱 추적자 역시 당황한 기색으로 무기를 거두었다. 헤르쿨이 품속에서 꺼내 놓은 노예 상인들의 비밀 장부에는, 놀랍게도 루시안의 친필 서명과 아케 성기사단 말살 지령이 선명하게 찍혀 있었다. 서로 다른 길에서 불의를 쫓던 의인들이 마침내 하나의 진실 앞에서 마주한 순간이었다.",
+      "sourceSentenceStart": 14,
+      "sourceSentenceEnd": 15,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "헤르쿨",
           "speakerEn": "Hercul",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
+          "textKo": "“기사님, 제발 멈추세요! 이분들은 우리를 팔아넘기는 유괴범이 아니에요! 붉은 유리 궁정의 지하 감옥으로 끌려가던 우리를 목숨 걸고 구해 주신 분들이라고요!”",
+          "textEn": "“Sir Knight, please cease! These people are not slavers! They risked their very lives to drag us from the hold of the slave galleys destined for the Red Glass Court!”",
           "bubbleType": "shout",
-          "position": "top-left"
+          "position": "top-left",
+          "characterCardId": 49
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_02/scene_09.webp",
+      "sourceImageFile": "episode_02/scene_09.webp",
+      "narrationEn": "\"Curse my squinting eyes. An honest-to-god holy knight rather than a court lackey. We were too hasty with our bolts, brother.\" Raising Aleksandar's broken sword, Hercul recounted the tragic stand at Elwin village, the valor of Aleksandar and Balian, and the grim fate of the two expectant mothers. Then, revealing the gleaming silver dagger, he bowed his head with profound solemnity.",
+      "narrationKo": "그림리는 헛기침을 삼키며 쇠망치를 바닥에 내려놓았다. “빌어먹을, 궁정 놈들의 개가 아니라 진짜 뼈대 있는 성기사였단 말인가. 겉모습만 보고 섣불리 화살을 날렸군 그래. 이 부둣가에 궁정 첩자들이 하도 들끓어서 눈이 뒤집혔던 게지.”",
+      "sourceSentenceStart": 16,
+      "sourceSentenceEnd": 17,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "그림리",
+          "speakerEn": "Grimli",
+          "textKo": "“빌어먹을, 궁정 놈들의 개가 아니라 진짜 뼈대 있는 성기사였단 말인가. 겉모습만 보고 섣불리 화살을 날렸군 그래. 이 부둣가에 궁정 첩자들이 하도 들끓어서 눈이 뒤집혔던 게지.”",
+          "textEn": "“Curse my squinting eyes. An honest-to-god holy knight rather than a court lackey. We were too hasty with our bolts, brother.”",
+          "bubbleType": "speech",
+          "position": "top-right",
+          "characterCardId": 74
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_02/scene_10.webp",
+      "sourceImageFile": "episode_02/scene_10.webp",
+      "narrationEn": "\"Aleksandar's wife escaped into the savage frost of the northern Wildlands. Balian's child has been dragged south into the viper's nest of Lucian's court. I implore you, champions of the frontier. Seek out Aleksandar's bloodline in the howling northern plains and shield the child from destruction.\"",
+      "narrationKo": "헤르쿨은 부러진 검을 높이 들어 올리며 엘윈 마을에서 일어난 비극과, 쌍검사 알렉산다르와 창술사 발리안의 숭고한 희생을 전했다. 그리고 품속의 은빛 단검을 보여 주며 고개를 숙였다. “알렉산다르의 아내는 만삭의 몸으로 북쪽 얼어붙은 와일드랜드로 탈출했소. 발리안의 아이는 루시안의 궁정으로 끌려갔지. 부디 간청하오. 황야의 사나운 바람 속에서 알렉산다르의 핏줄이 살아남을 수 있도록 찾아내 거두어 주시오.”",
+      "sourceSentenceStart": 18,
+      "sourceSentenceEnd": 19,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "헤르쿨",
+          "speakerEn": "Hercul",
+          "textKo": "“알렉산다르의 아내는 만삭의 몸으로 북쪽 얼어붙은 와일드랜드로 탈출했소. 발리안의 아이는 루시안의 궁정으로 끌려갔지. 부디 간청하오. 황야의 사나운 바람 속에서 알렉산다르의 핏줄이 살아남을 수 있도록 찾아내 거두어 주시오.”",
+          "textEn": "“Aleksandar's wife escaped into the savage frost of the northern Wildlands. Balian's child has been dragged south into the viper's nest of Lucian's court. I implore you, champions of the frontier. Seek out Aleksandar's bloodline in the howling northern plains and shield the child from destruction.”",
+          "bubbleType": "speech",
+          "position": "bottom-left",
+          "characterCardId": 49
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_02/scene_11.webp",
+      "sourceImageFile": "episode_02/scene_11.webp",
+      "narrationEn": "Gawain rested his hands upon his iron staff, nodding with calm dignity. \"We are men and women who dwell within the border shadows. But we will never allow the blood of a hero to freeze unavenged upon the wastes.\"",
+      "narrationKo": "가웨인이 쇠지팡이를 짚으며 무겁게 입을 열었다. “우리는 대륙의 그림자 속을 걷는 거친 사냥꾼들이오. 하지만 의로운 영웅의 피가 북풍 속에서 얼어 죽는 꼴은 차마 두고 볼 수 없지.”",
+      "sourceSentenceStart": 20,
+      "sourceSentenceEnd": 21,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "가웨인",
+          "speakerEn": "Gawain",
+          "textKo": "“우리는 대륙의 그림자 속을 걷는 거친 사냥꾼들이오. 하지만 의로운 영웅의 피가 북풍 속에서 얼어 죽는 꼴은 차마 두고 볼 수 없지.”",
+          "textEn": "“We are men and women who dwell within the border shadows. But we will never allow the blood of a hero to freeze unavenged upon the wastes.”",
+          "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 45
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_02/scene_12.webp",
+      "sourceImageFile": "episode_02/scene_12.webp",
+      "narrationEn": "Aila slid her crossbow onto her back, her hazel eyes softening with determination. \"Consider it done. We shall comb every nomad encampment until Aleksandar's son is safe in our hands. We will forge him into a warrior whom no northern wolf can break.\"",
+      "narrationKo": "에일라 역시 고개를 끄덕이며 석궁을 등 뒤로 돌렸다. “좋아요. 우리 일곱 사람이 북방의 유목민 천막들을 샅샅이 뒤져 알렉산다르의 아들을 찾아내겠어요. 황야의 거친 늑대들에게도 찢기지 않는 단단한 무인으로 키워내지요. 활 쏘는 법부터 사냥의 숨결까지 모조리 가르치겠어요.”",
+      "sourceSentenceStart": 22,
+      "sourceSentenceEnd": 23,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "에일라",
+          "speakerEn": "Aila",
+          "textKo": "“좋아요. 우리 일곱 사람이 북방의 유목민 천막들을 샅샅이 뒤져 알렉산다르의 아들을 찾아내겠어요. 황야의 거친 늑대들에게도 찢기지 않는 단단한 무인으로 키워내지요. 활 쏘는 법부터 사냥의 숨결까지 모조리 가르치겠어요.”",
+          "textEn": "“Consider it done. We shall comb every nomad encampment until Aleksandar's son is safe in our hands. We will forge him into a warrior whom no northern wolf can break.”",
+          "bubbleType": "speech",
+          "position": "top-left",
+          "characterCardId": 70
         }
       ],
       "sfxCues": [
@@ -507,25 +384,248 @@
       ]
     },
     {
-      "sceneNumber": 20,
-      "imageFile": "episode_02/scene_20.jpeg",
-      "sourceImageFile": "Eight_men_fought_joint_battle_202607260802.jpeg",
-      "narrationEn": "The eight men fought their first joint battle, back to back. At dawn, Hercul departed south. The seven pursuers headed toward the northern gateway. On the snow, eight different types of footprints continued side by side for a moment, then split into two.",
-      "narrationKo": "여덟 사람은 등을 맞댄 채 첫 공동 전투를 치렀다. 동이 틀 무렵, 헤르쿨은 남쪽으로 떠났다. 일곱 추적자는 북쪽 관문을 향했다. 눈 위에는 서로 다른 여덟 종류의 발자국이 잠시 나란히 이어지다가 두 갈래로 갈라졌다.",
-      "sourceSentenceStart": 62,
-      "sourceSentenceEnd": 65,
-      "alignmentScore": 0.5444,
+      "sceneNumber": 13,
+      "imageFile": "episode_02/scene_13.webp",
+      "sourceImageFile": "episode_02/scene_13.webp",
+      "narrationEn": "Kaze chuckled, flicking a shining crown between his fingers. \"And I shall grant him the sharpest instincts and dagger arts to outwit any scoundrel on this continent.\"",
+      "narrationKo": "카제가 손가락 사이로 은화를 튕기며 씨익 웃었다. “거기다 세상의 사기꾼들에게 속지 않는 날카로운 눈치와 비검술까지 덤으로 얹어주지.”",
+      "sourceSentenceStart": 24,
+      "sourceSentenceEnd": 25,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카제",
+          "speakerEn": "Kaze",
+          "textKo": "“거기다 세상의 사기꾼들에게 속지 않는 날카로운 눈치와 비검술까지 덤으로 얹어주지.”",
+          "textEn": "“And I shall grant him the sharpest instincts and dagger arts to outwit any scoundrel on this continent.”",
+          "bubbleType": "speech",
+          "position": "top-right",
+          "characterCardId": 44
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_02/scene_14.webp",
+      "sourceImageFile": "episode_02/scene_14.webp",
+      "narrationEn": "Rondol nodded, securing his oar. \"And the endurance to navigate tempestuous tides upon unyielding waters.\"",
+      "narrationKo": "론돌이 물통을 정리하며 말했다. “물살을 타는 법과 거센 풍랑 속에서 배를 모는 끈기도 결코 빼놓을 수 없소.”",
+      "sourceSentenceStart": 26,
+      "sourceSentenceEnd": 27,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "론돌",
+          "speakerEn": "Rondol",
+          "textKo": "“물살을 타는 법과 거센 풍랑 속에서 배를 모는 끈기도 결코 빼놓을 수 없소.”",
+          "textEn": "“And the endurance to navigate tempestuous tides upon unyielding waters.”",
+          "bubbleType": "speech",
+          "position": "bottom-left",
+          "characterCardId": 46
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_02/scene_15.webp",
+      "sourceImageFile": "episode_02/scene_15.webp",
+      "narrationEn": "Eliana patted her leather satchel. \"And the wisdom of nature to identify deadly venoms and mend shattered bones.\"",
+      "narrationKo": "엘리아나 역시 약초 단지를 챙기며 고개를 끄덕였다.",
+      "sourceSentenceStart": 28,
+      "sourceSentenceEnd": 28,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "엘리아나 역시 약초 단지를 챙기며 고개를 끄덕였다.",
+          "textEn": "\"And the wisdom of nature to identify deadly venoms and mend shattered bones.\"",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 63
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_02/scene_16.webp",
+      "sourceImageFile": "episode_02/scene_16.webp",
+      "narrationEn": "Robinyard leaped lightly from the eaves, landing gracefully beside them. \"With my acrobatic balance to dance across chasms without fear, the boy will be peerless.\"",
+      "narrationKo": "“대륙의 독초를 가려내고 상처를 싸매는 치유의 지혜도 내가 온전히 전수하겠어요.” 로비냐드는 지붕 위에서 가볍게 뛰어내려 착지하며 미소를 지었다.",
+      "sourceSentenceStart": 29,
+      "sourceSentenceEnd": 30,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "엘리아나",
+          "speakerEn": "Eliana",
+          "textKo": "“대륙의 독초를 가려내고 상처를 싸매는 치유의 지혜도 내가 온전히 전수하겠어요.”",
+          "textEn": "“With my acrobatic balance to dance across chasms without fear, the boy will be peerless.”",
+          "bubbleType": "speech",
+          "position": "top-left",
+          "characterCardId": 63
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_02/scene_17.webp",
+      "sourceImageFile": "episode_02/scene_17.webp",
+      "narrationEn": "Hercul placed a fist over his heart in gratitude.",
+      "narrationKo": "“천 길 낭떠러지에서도 사뿐히 살아남는 곡예사의 줄타기 균형감각까지 가르쳐 주면 완벽하겠군.” 헤르쿨이 가슴을 쓸어내리며 답했다.",
+      "sourceSentenceStart": 31,
+      "sourceSentenceEnd": 32,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "로비냐드",
+          "speakerEn": "Robinyard",
+          "textKo": "“천 길 낭떠러지에서도 사뿐히 살아남는 곡예사의 줄타기 균형감각까지 가르쳐 주면 완벽하겠군.”",
+          "textEn": "“With my acrobatic balance to dance across chasms without fear, the boy will be peerless.”",
+          "bubbleType": "speech",
+          "position": "top-right",
+          "characterCardId": 48
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_02/scene_18.webp",
+      "sourceImageFile": "episode_02/scene_18.webp",
+      "narrationEn": "\"Then I shall plunge into the gilded darkness of the Red Glass Court to watch over Balian's child. I swear by my sacred vows that the Shadow Realm shall not corrupt his soul.\" Gawain's lips curled into a fierce smile as he offered a parting wager.",
+      "narrationKo": "“고맙소. 그렇다면 나는 남쪽 붉은 유리 궁정의 어둠 속으로 잠입해 발리안의 아이를 찾아내겠소. 섀도우렐름의 사악한 마도사들이 그 아이의 영혼을 타락시키지 못하도록 진실의 룬을 지킬 것이오.” 가웨인이 미소를 지으며 제안했다.",
+      "sourceSentenceStart": 33,
+      "sourceSentenceEnd": 34,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "헤르쿨",
           "speakerEn": "Hercul",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
-          "bubbleType": "shout",
-          "position": "bottom-left"
+          "textKo": "“고맙소. 그렇다면 나는 남쪽 붉은 유리 궁정의 어둠 속으로 잠입해 발리안의 아이를 찾아내겠소. 섀도우렐름의 사악한 마도사들이 그 아이의 영혼을 타락시키지 못하도록 진실의 룬을 지킬 것이오.”",
+          "textEn": "“Then I shall plunge into the gilded darkness of the Red Glass Court to watch over Balian's child. I swear by my sacred vows that the Shadow Realm shall not corrupt his soul.”",
+          "bubbleType": "speech",
+          "position": "bottom-left",
+          "characterCardId": 49
         }
       ],
-      "sfxCues": []
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_02/scene_19.webp",
+      "sourceImageFile": "episode_02/scene_19.webp",
+      "narrationEn": "\"Then let us seal one more compact, Paladin. In eighteen years, on the night of the midwinter solstice, let us convene atop the Star-Drunken Bell Tower in the heart of the continent. Bring forth the boy you have guided, and we shall bring the boy we have tempered in the blizzard. Let an honorable martial duel reveal whose path forged the truer shield for this broken realm.\" Hercul brought his silver dagger against Gawain's iron staff, the chime of white metal echoing over the misty bay like a consecrated pledge.",
+      "narrationKo": "“그렇다면 하나의 맹세를 더합시다, 성기사여. 지금으로부터 정확히 열여덟 해가 흐른 뒤, 대륙 중앙의 별취한 종탑에서 다시 만납시다. 당신이 기른 아이와 우리 일곱 사람이 길러낸 아이를 마주 세워, 누구의 가르침이 더 올곧게 세상의 불의를 갈랐는지 무인의 결투로 확인하는 것이 어떻겠소?” 헤르쿨은 자신의 은빛 단검을 가웨인의 쇠지팡이에 부딪치며 맑은 파열음을 울렸다.",
+      "sourceSentenceStart": 35,
+      "sourceSentenceEnd": 36,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "가웨인",
+          "speakerEn": "Gawain",
+          "textKo": "“그렇다면 하나의 맹세를 더합시다, 성기사여. 지금으로부터 정확히 열여덟 해가 흐른 뒤, 대륙 중앙의 별취한 종탑에서 다시 만납시다. 당신이 기른 아이와 우리 일곱 사람이 길러낸 아이를 마주 세워, 누구의 가르침이 더 올곧게 세상의 불의를 갈랐는지 무인의 결투로 확인하는 것이 어떻겠소?”",
+          "textEn": "“Then let us seal one more compact, Paladin. In eighteen years, on the night of the midwinter solstice, let us convene atop the Star-Drunken Bell Tower in the heart of the continent. Bring forth the boy you have guided, and we shall bring the boy we have tempered in the blizzard. Let an honorable martial duel reveal whose path forged the truer shield for this broken realm.”",
+          "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 45
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_02/scene_20.webp",
+      "sourceImageFile": "episode_02/scene_20.webp",
+      "narrationEn": "\"So be it! Not for vanity or pride, but to prove that the legacy of their fathers lives on to pierce the darkness of this world!\" Thus was born the legend of the Oath of the Seven Pursuers. Turning their steeds toward the howling blizzards of the north, the seven outlaws rode into destiny, while Hercul walked alone into the blood-scented shadows of the southern courts. Two divergent fates set forth across the vast canvas of the Arcane continent.",
+      "narrationKo": "“좋소! 승패를 떠나, 두 아이가 부모의 숭고한 뜻을 이어받아 이 썩어빠진 대륙을 구할 진정한 등불이 되었음을 증명하는 의식이 될 것이오!” 그것이 바로 훗날 대륙의 전설이 된 `일곱 추적자의 맹세`였다. 일곱 사람은 혹한의 칼바람이 부는 북쪽 국경을 향해 말머리를 돌렸고, 헤르쿨은 홀로 핏빛 장막이 드리운 남방 궁정의 심연으로 발걸음을 옮겼다. 두 줄기의 갈라진 운명이 대륙의 지평선 너머로 아득하게 뻗어 나갔다.",
+      "sourceSentenceStart": 37,
+      "sourceSentenceEnd": 38,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "헤르쿨",
+          "speakerEn": "Hercul",
+          "textKo": "“좋소! 승패를 떠나, 두 아이가 부모의 숭고한 뜻을 이어받아 이 썩어빠진 대륙을 구할 진정한 등불이 되었음을 증명하는 의식이 될 것이오!”",
+          "textEn": "“So be it! Not for vanity or pride, but to prove that the legacy of their fathers lives on to pierce the darkness of this world!”",
+          "bubbleType": "shout",
+          "position": "top-left",
+          "characterCardId": 49
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
     }
   ]
 }

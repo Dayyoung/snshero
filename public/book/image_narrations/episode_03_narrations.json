@@ -2,63 +2,144 @@
   "episodeNumber": 3,
   "episodeTitleEn": "Blood on the Mist Cliff",
   "episodeTitleKo": "안개 절벽의 피",
-  "sourceSentenceCount": 56,
+  "sourceSentenceCount": 47,
   "sceneCount": 20,
   "scenes": [
     {
       "sceneNumber": 1,
-      "imageFile": "episode_03/scene_01.jpeg",
-      "sourceImageFile": "Seven_pursuers_lost_at_cliffs_202607260802.jpeg",
-      "narrationEn": "The seven pursuers heading north got lost at Mistfall Cliffs. Even though it was midday, the fog had risen from my ankles to my shoulders, and there were unfamiliar handprints on each rock.",
-      "narrationKo": "북쪽으로 향하던 일곱 추적자는 미스트폴 절벽에서 길을 잃었다. 한낮인데도 안개가 발목에서 어깨까지 차올랐고, 바위마다 낯선 손자국이 찍혀 있었다.",
+      "imageFile": "episode_03/scene_01.webp",
+      "sourceImageFile": "episode_03/scene_01.webp",
+      "narrationEn": "Crossing the jagged mountain ranges toward the northern borderlands, the Seven Pursuers found themselves disoriented within the eerie silence of Mistfall Cliff. Colossal basalt monoliths, carved by ancient titans millenia ago, loomed through the vapors like primeval tombstones. Though it was high noon, icy mist rising from the bottomless abyss swallowed their horses' hooves before thickening into an impenetrable shroud that reached their shoulders. Across the dark volcanic rock faces, sinister spirals of dried blood trailed like claw marks. Eliana dismounted, uncorking a glass vial of azure reagent to sprinkle upon the stone. With a sharp hiss, silvery powder billowed into the air.",
+      "narrationKo": "북방을 향해 험준한 산악 지대를 가로지르던 일곱 추적자는 미스트폴 절벽의 기괴한 침묵 속에서 길을 잃었다. 수천 년 전 고대 타이탄 거인족이 맨손으로 깎아 세웠다는 거대한 현무암 암벽들이 안개 너머로 거인의 묘비처럼 불길하게 솟아 있었다. 대낮이었음에도 불구하고 천 길 계곡 깊은 곳에서 기어오른 차가운 흑암 안개는 말들의 발목을 덮더니, 이내 사냥꾼들의 어깨 너머까지 짙은 장막처럼 차올랐다. 절벽의 검붉은 바위벽마다 마른 핏자국을 머금은 낯선 손자국들이 기괴한 나선형으로 찍혀 있었다. 약제사 엘리아나가 말에서 내려 유리병에 든 푸른 감식액을 바위벽에 떨어뜨리자, 치익 하는 날카로운 파열음과 함께 은빛 가루가 허공으로 피어올랐다.",
       "sourceSentenceStart": 1,
       "sourceSentenceEnd": 2,
-      "alignmentScore": 0.5844,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "알렉산다르",
-          "speakerEn": "Aleksandar",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
-          "bubbleType": "shout",
-          "position": "top-right"
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "약제사 엘리아나가 말에서 내려 유리병에 든 푸른 감식액을 바위벽에 떨어뜨리자, 치익 하는 날카로운 파열음과 함께 은빛 가루가 허공으로 피어올랐다.",
+          "textEn": "With a sharp hiss, silvery powder billowed into the air.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 63
         }
       ],
       "sfxCues": [
         {
-          "textKo": "쿵-!",
-          "textEn": "THUD!",
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
           "style": "impact",
-          "position": "bottom-right"
+          "position": "center"
         }
       ]
     },
     {
       "sceneNumber": 2,
-      "imageFile": "episode_03/scene_02.jpeg",
-      "sourceImageFile": "Eliana_drops_medicine,_silver_po…_202607260802.jpeg",
-      "narrationEn": "When Eliana dropped the medicine on the handprint, silver powder arose. It was a trace of a forbidden art that took mana out of the body and hardened it like a corpse. That night, two people appeared at the abandoned temple on the cliff.",
-      "narrationKo": "엘리아나가 손자국에 약액을 떨어뜨리자 은빛 가루가 일어났다. 마나를 몸 밖으로 뽑아 시체처럼 굳히는 금지술의 흔적이었다. 그날 밤, 절벽 위 폐신전에 두 사람이 나타났다.",
+      "imageFile": "episode_03/scene_02.webp",
+      "sourceImageFile": "episode_03/scene_02.webp",
+      "narrationEn": "\"A forbidden strain of dark necromancy,\" Eliana warned, her voice trembling in the damp mountain chill. \"It drains the living vital mana from travelers, petrifying their flesh into crystallized corpses.\" Her grim diagnosis vanished into the swirling fog. The mounts snorted anxiously, backing toward the narrow trail. Loose shale clattered down into the void, echoing faintly against the rock walls below.",
+      "narrationKo": "“살아 있는 생명체에서 억지로 마나를 뽑아내어 시체처럼 결정을 굳히는 금지된 흑마술의 흔적이에요.” 엘리아나의 창백한 목소리가 서늘한 안개 속으로 흩어졌다. 일행의 말들이 콧김을 거칠게 뿜으며 뒷걸음질을 쳤다. 말발굽 아래에서 부서지는 자갈 소리가 천 길 낭떠러지 바닥으로 떨어지며 음산한 메아리를 남겼다. “조심해라, 모두 무기를 쥐어라. 이 안개는 단순한 기후의 조화가 아니다.”",
       "sourceSentenceStart": 3,
       "sourceSentenceEnd": 5,
-      "alignmentScore": 0.4338,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "알렉산다르",
-          "speakerEn": "Aleksandar",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
-          "bubbleType": "shout",
-          "position": "top-left"
+          "speakerKo": "엘리아나",
+          "speakerEn": "Eliana",
+          "textKo": "“살아 있는 생명체에서 억지로 마나를 뽑아내어 시체처럼 결정을 굳히는 금지된 흑마술의 흔적이에요.”",
+          "textEn": "“It drains the living vital mana from travelers, petrifying their flesh into crystallized corpses.”",
+          "bubbleType": "speech",
+          "position": "bottom-left",
+          "characterCardId": 63
+        },
+        {
+          "speakerKo": "엘리아나",
+          "speakerEn": "Eliana",
+          "textKo": "“조심해라, 모두 무기를 쥐어라. 이 안개는 단순한 기후의 조화가 아니다.”",
+          "textEn": "“Steady, everyone. Draw your steel,”",
+          "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 63
         }
       ],
       "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
         {
           "textKo": "파지지직!",
           "textEn": "CRACKLE!",
           "style": "magic",
           "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_03/scene_03.webp",
+      "sourceImageFile": "episode_03/scene_03.webp",
+      "narrationEn": "\"Steady, everyone. Draw your steel,\" Gawain commanded softly, lifting his heavy iron staff. \"This mist is born of malice, not mountain weather.\" Kaze flicked three silver coins into the air, listening to their metallic ring as they dropped into his palm. \"The wind twists inward toward a single vortex,\" Kaze muttered. \"I smell rotting blood instead of coin.\"",
+      "narrationKo": "맹인 추적자 가웨인의 서늘한 경고가 떨어지자마자, 바람결을 타고 피비린내 나는 기괴한 휘파람 소리가 절벽 허공을 맴돌았다. 도박사 카제가 손가락 사이로 번뜩이는 은화 세 닢을 허공으로 튕기며 낮게 읊조렸다. “바람의 흐름이 한 지점으로 뒤틀리고 있어. 돈 냄새 대신 썩은 시체 냄새가 진동하는군.”",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 7,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카제",
+          "speakerEn": "Kaze",
+          "textKo": "“바람의 흐름이 한 지점으로 뒤틀리고 있어. 돈 냄새 대신 썩은 시체 냄새가 진동하는군.”",
+          "textEn": "“Steady, everyone. Draw your steel,”",
+          "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 44
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
         },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_03/scene_04.webp",
+      "sourceImageFile": "episode_03/scene_04.webp",
+      "narrationEn": "Rondol gripped the wave-carved staff upon his back, shaking his head. \"This is no river vapor rising from the lowlands. It is a barrier woven from the blood and malice of tormented souls.\"",
+      "narrationKo": "뱃사공 론돌 역시 등에 진 물결무늬 지팡이를 잡으며 고개를 저었다. “강 하류에서 거슬러 올라오는 수증기가 아니오. 이건 원한 맺힌 영혼들의 피 냄새가 섞인 마력의 장벽이오.”",
+      "sourceSentenceStart": 8,
+      "sourceSentenceEnd": 9,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "론돌",
+          "speakerEn": "Rondol",
+          "textKo": "“강 하류에서 거슬러 올라오는 수증기가 아니오. 이건 원한 맺힌 영혼들의 피 냄새가 섞인 마력의 장벽이오.”",
+          "textEn": "“This is no river vapor rising from the lowlands. It is a barrier woven from the blood and malice of tormented souls.”",
+          "bubbleType": "speech",
+          "position": "top-left",
+          "characterCardId": 46
+        }
+      ],
+      "sfxCues": [
         {
           "textKo": "쿵-!",
           "textEn": "THUD!",
@@ -68,118 +149,23 @@
       ]
     },
     {
-      "sceneNumber": 3,
-      "imageFile": "episode_03/scene_03.jpeg",
-      "sourceImageFile": "Medusa_Gorgo_blindfolded_Belpheg…_202607260802.jpeg",
-      "narrationEn": "Medusa Gorgo was blindfolded and moved by sound, while Belphegor had black crystal armor covering its skin. They were once students learning runes from the Wind Sage Aeolus, but after stealing part of the Nine Shadows Codex from their teacher's temple, they were using people's life force as experimental material. Gawain tapped the floor three times with the iron staff.",
-      "narrationKo": "메두사 고르고는 눈을 가린 채 소리로 움직였고, 벨페고르는 피부에 검은 결정 갑옷을 두르고 있었다. 한때 바람의 현자 에올루스에게 룬을 배우던 제자들이었지만, 스승의 성전에서 나인섀도우 코덱스 일부를 훔친 뒤 사람의 생명력을 실험 재료로 쓰고 있었다. 가웨인이 쇠지팡이로 바닥을 세 번 두드렸다.",
-      "sourceSentenceStart": 6,
-      "sourceSentenceEnd": 8,
-      "alignmentScore": 0.5554,
-      "dialogues": [
-        {
-          "speakerKo": "알렉산다르",
-          "speakerEn": "Aleksandar",
-          "textKo": "검끝이 흔들리지 않는 한, 길은 열린다.",
-          "textEn": "As long as our blades do not waver, the path will open.",
-          "bubbleType": "speech",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 4,
-      "imageFile": "episode_03/scene_04.jpeg",
-      "sourceImageFile": "Belphegor_falls_splitting_floor_202607260802.jpeg",
-      "narrationEn": "There were eight echoes that returned, but there were seven in their group. “It’s the ceiling! ” Belphegor fell and split the temple floor.",
-      "narrationKo": "돌아온 울림은 여덟 개였지만 그들 일행은 일곱이었다. “천장이다!” 벨페고르가 내려꽂히며 신전 바닥을 갈랐다.",
-      "sourceSentenceStart": 9,
-      "sourceSentenceEnd": 11,
-      "alignmentScore": 0.171,
-      "dialogues": [
-        {
-          "speakerKo": "알렉산다르",
-          "speakerEn": "Aleksandar",
-          "textKo": "천장이다!",
-          "textEn": "It’s the ceiling! ",
-          "bubbleType": "shout",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "쿠구구궁!",
-          "textEn": "RUMBLE!",
-          "style": "rumble",
-          "position": "bottom-left"
-        }
-      ]
-    },
-    {
       "sceneNumber": 5,
-      "imageFile": "episode_03/scene_05.jpeg",
-      "sourceImageFile": "Grimli_hammer_Aila_crossbow_fog_202607260802.jpeg",
-      "narrationEn": "Grimli caught it with his hammer, and Aila the Demon Hunter's crossbow pierced the fog. However, Medusa Gorgo first heard the vibration of the arrow flying and twisted its body. Black threads stretched from the tips of her fingernails, sewing Robinyard's shadow to the wall.",
-      "narrationKo": "그림리가 망치로 받아 냈고, 에일라의 쇠뇌가 안개를 꿰뚫었다. 그러나 메두사 고르고는 화살이 날아오는 진동을 먼저 듣고 몸을 비틀었다. 그녀의 손톱 끝에서 검은 실이 뻗어 로비냐드의 그림자를 벽에 꿰매 버렸다.",
-      "sourceSentenceStart": 12,
-      "sourceSentenceEnd": 14,
-      "alignmentScore": 0.6512,
+      "imageFile": "episode_03/scene_05.webp",
+      "sourceImageFile": "episode_03/scene_05.webp",
+      "narrationEn": "Grimli planted his maul upon the flagstones, smoothing his braided beard. \"Any devil stepping before my hammer will see his skull forged into an anvil.\"",
+      "narrationKo": "드워프 그림리가 쇠망치를 바닥에 쿵 내려놓으며 수염을 쓸어내렸다. “어떤 놈이든 내 망치 앞에 걸리면 대가리가 모루에 달군 쇳덩이 꼴이 날 게다.” 곡예사 로비냐드는 가볍게 바위 난간 위로 뛰어올라 안개 너머를 살피며 쓴웃음을 지었다.",
+      "sourceSentenceStart": 10,
+      "sourceSentenceEnd": 12,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "알렉산다르",
-          "speakerEn": "Aleksandar",
-          "textKo": "검끝이 흔들리지 않는 한, 길은 열린다.",
-          "textEn": "As long as our blades do not waver, the path will open.",
+          "speakerKo": "그림리",
+          "speakerEn": "Grimli",
+          "textKo": "“어떤 놈이든 내 망치 앞에 걸리면 대가리가 모루에 달군 쇳덩이 꼴이 날 게다.”",
+          "textEn": "“Any devil stepping before my hammer will see his skull forged into an anvil.”",
           "bubbleType": "speech",
-          "position": "top-right"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "쿠구구궁!",
-          "textEn": "RUMBLE!",
-          "style": "rumble",
-          "position": "bottom-left"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 6,
-      "imageFile": "episode_03/scene_06.jpeg",
-      "sourceImageFile": "Two_men_in_tavern_202607260802.jpeg",
-      "narrationEn": "Although each of the seven men was outstanding, it had not been long since they fought together. The knife thrown by Kaze got caught in Rondol's oar, and Grimli's hammer wind blocked Aila the Demon Hunter's vision.",
-      "narrationKo": "일곱 사람은 각자 뛰어났지만 함께 싸운 지 얼마 되지 않았다. 카제가 던진 칼은 론돌의 노에 걸렸고, 그림리의 망치바람은 에일라의 시야를 막았다.",
-      "sourceSentenceStart": 15,
-      "sourceSentenceEnd": 16,
-      "alignmentScore": 0.478,
-      "dialogues": [
-        {
-          "speakerKo": "알렉산다르",
-          "speakerEn": "Aleksandar",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-left"
+          "position": "top-right",
+          "characterCardId": 74
         }
       ],
       "sfxCues": [
@@ -192,134 +178,23 @@
       ]
     },
     {
-      "sceneNumber": 7,
-      "imageFile": "episode_03/scene_07.jpeg",
-      "sourceImageFile": "Medusa_Gorgo_did_not_miss_202607260802.jpeg",
-      "narrationEn": "Medusa Gorgo did not miss the opportunity. The poisonous fog spread and one by one they fell to their knees. The first to stand up again was Robinyard, who was usually the quietest.",
-      "narrationKo": "메두사 고르고는 그 틈을 놓치지 않았다. 독안개가 번지며 하나씩 무릎을 꿇었다. 가장 먼저 다시 일어선 이는 평소 가장 말이 적던 로비냐드였다.",
-      "sourceSentenceStart": 17,
-      "sourceSentenceEnd": 19,
-      "alignmentScore": 0.5122,
+      "sceneNumber": 6,
+      "imageFile": "episode_03/scene_06.webp",
+      "sourceImageFile": "episode_03/scene_06.webp",
+      "narrationEn": "Robinyard leaped lightly atop the parapet, gazing through the vapors with a wry grin. \"Ease your shoulders, comrades. In tightrope dancing, freezing in fear is what sends you over the brink.\"",
+      "narrationKo": "“다들 긴장 풀어요. 줄타기에서 발이 얼어붙으면 낭떠러지로 떨어지는 법이니까요.” 그날 밤, 절벽 정상에 자리 잡은 고대 타이탄의 폐신전 돌기둥 사이로 두 개의 불길한 그림자가 소리 없이 스며들었다. 한때 바람섬의 위대한 현자 에올루스의 문하에서 비전 마법을 전수받았던 파문당한 제자들, 메두사 고르고와 결정술사 벨페고르였다. 두 사람은 스승의 서재에서 절대적인 무공 비급인 `나인섀도우 코덱스`의 암흑 편을 훔쳐 달아난 뒤, 무고한 여행자들의 생명력을 강탈하여 금지된 마공을 완성하려 광기를 번뜩이고 있었다. 고르고는 두 눈을 검은 비단으로 가린 채 미세한 음파의 떨림으로 사물을 감지했고, 벨페고르는 온몸의 피부를 뚫고 솟아난 검은 흑요석 결정 갑옷을 번뜩이고 있었다.",
+      "sourceSentenceStart": 13,
+      "sourceSentenceEnd": 14,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "알렉산다르",
-          "speakerEn": "Aleksandar",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
-          "bubbleType": "shout",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 8,
-      "imageFile": "episode_03/scene_08.jpeg",
-      "sourceImageFile": "Robinyard_cuts_shadow,_blocks_Me…_202607260802.jpeg",
-      "narrationEn": "He cut off his own shadow with a sword and blocked Medusa Gorgo's path. Belphegor's crystal arm pierced his chest, but Robinyard held on to his enemy with both arms even as he fell. “Now.",
-      "narrationKo": "그는 자신의 그림자를 칼로 잘라 낸 뒤 메두사 고르고의 앞을 막았다. 벨페고르의 결정 팔이 그의 가슴을 꿰뚫었지만, 로비냐드는 쓰러지면서도 두 팔로 적을 붙잡았다. “지금이야.",
-      "sourceSentenceStart": 20,
-      "sourceSentenceEnd": 22,
-      "alignmentScore": 0.4264,
-      "dialogues": [
-        {
-          "speakerKo": "알렉산다르",
-          "speakerEn": "Aleksandar",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
-          "bubbleType": "shout",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 9,
-      "imageFile": "episode_03/scene_09.jpeg",
-      "sourceImageFile": "Fantasy_coast_with_dark_waves_202607260802.jpeg",
-      "narrationEn": "This time, let’s look at each other and move. ” Based on the sound of Gawain's staff, Aila the Demon Hunter took three steps and shot an arrow to the left. Kaze deflected the arrow with his blade, and Rondol's wave rune doubled its speed.",
-      "narrationKo": "이번에는 서로를 보고 움직여.” 가웨인의 지팡이 소리를 기준으로 에일라가 세 걸음 왼쪽에 화살을 쏘았다. 카제가 칼날로 화살의 방향을 꺾고, 론돌의 물결 룬이 속도를 두 배로 밀었다.",
-      "sourceSentenceStart": 23,
-      "sourceSentenceEnd": 25,
-      "alignmentScore": 0.5032,
-      "dialogues": [
-        {
-          "speakerKo": "알렉산다르",
-          "speakerEn": "Aleksandar",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "speakerKo": "로비냐드",
+          "speakerEn": "Robinyard",
+          "textKo": "“다들 긴장 풀어요. 줄타기에서 발이 얼어붙으면 낭떠러지로 떨어지는 법이니까요.”",
+          "textEn": "“Ease your shoulders, comrades. In tightrope dancing, freezing in fear is what sends you over the brink.”",
           "bubbleType": "speech",
-          "position": "top-right"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 10,
-      "imageFile": "episode_03/scene_10.jpeg",
-      "sourceImageFile": "Grimli_hammer_breaks_armor_202607260802.jpeg",
-      "narrationEn": "The moment Grimli's hammer broke Belphegor's armor, Eliana's purifying agent seeped into the crack. As Belphegor's crystal melted, the names of the people engraved within it were revealed. There was evidence that the life force stolen through the experiment had been used as armor material.",
-      "narrationKo": "그림리의 망치가 벨페고르의 갑옷을 부순 순간 엘리아나의 정화제가 균열 속으로 스며들었다. 벨페고르의 결정이 녹자 그 안에 새겨진 사람 이름들이 드러났다. 실험으로 빼앗은 생명력을 갑옷 재료로 쓴 흔적이었다.",
-      "sourceSentenceStart": 26,
-      "sourceSentenceEnd": 28,
-      "alignmentScore": 0.4792,
-      "dialogues": [
-        {
-          "speakerKo": "알렉산다르",
-          "speakerEn": "Aleksandar",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
-          "bubbleType": "shout",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 11,
-      "imageFile": "episode_03/scene_11.jpeg",
-      "sourceImageFile": "Eliana_and_Belphegor_scene_11_202607260802.jpeg",
-      "narrationEn": "Eliana couldn't pour more purifier and his hands were shaking. Belphegor saw that expression and for the first time looked at his arm like it was a monster.",
-      "narrationKo": "엘리아나는 정화제를 더 붓지 못하고 손을 떨었다. 벨페고르는 그 표정을 보고 처음으로 자기 팔을 괴물처럼 바라봤다.",
-      "sourceSentenceStart": 29,
-      "sourceSentenceEnd": 30,
-      "alignmentScore": 0.583,
-      "dialogues": [
-        {
-          "speakerKo": "알렉산다르",
-          "speakerEn": "Aleksandar",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 12,
-      "imageFile": "episode_03/scene_12.jpeg",
-      "sourceImageFile": "Medusa_and_Belphegor_flee_fog_202607260802.jpeg",
-      "narrationEn": "Medusa Gorgo and Belphegor took the codex pieces and fled beneath the fog. They were able to give chase, but the seven people stayed by Robinyard. Every time he breathed, small bubbles of blood formed around his mouth.",
-      "narrationKo": "메두사 고르고와 벨페고르는 코덱스 조각을 챙겨 안개 아래로 달아났다. 추격할 수 있었지만 일곱 사람은 로비냐드 곁에 남았다. 그는 숨을 쉴 때마다 입가에 작은 피거품을 만들었다.",
-      "sourceSentenceStart": 31,
-      "sourceSentenceEnd": 33,
-      "alignmentScore": 0.4093,
-      "dialogues": [
-        {
-          "speakerKo": "알렉산다르",
-          "speakerEn": "Aleksandar",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
+          "position": "bottom-left",
+          "characterCardId": 48
         }
       ],
       "sfxCues": [
@@ -328,103 +203,33 @@
           "textEn": "CLANG!",
           "style": "slash",
           "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 13,
-      "imageFile": "episode_03/scene_13.jpeg",
-      "sourceImageFile": "Robinyard_finds_child_on_cliff_202607260802.jpeg",
-      "narrationEn": "“Tell me when you find the child. The world needed at least one fool who wouldn’t run away. ” As the dawn bell rang in the distance, Robinyard's hands grew cold.",
-      "narrationKo": "“아이를 찾으면 말해 줘. 세상에는 도망치지 않는 바보가 한 명쯤 필요했다고.” 새벽 종이 멀리서 울릴 때 로비냐드의 손이 식었다.",
-      "sourceSentenceStart": 34,
-      "sourceSentenceEnd": 36,
-      "alignmentScore": 0.5953,
-      "dialogues": [
+        },
         {
-          "speakerKo": "알렉산다르",
-          "speakerEn": "Aleksandar",
-          "textKo": "아이를 찾으면 말해 줘. 세상에는 도망치지 않는 바보가 한 명쯤 필요했다고.",
-          "textEn": "Tell me when you find the child. The world needed at least one fool who wouldn’t run away. ",
-          "bubbleType": "speech",
-          "position": "top-right"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "쿵-!",
-          "textEn": "THUD!",
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
           "style": "impact",
-          "position": "bottom-right"
+          "position": "center"
         }
       ]
     },
     {
-      "sceneNumber": 14,
-      "imageFile": "episode_03/scene_14.jpeg",
-      "sourceImageFile": "Six_people_did_not_build_202607260802.jpeg",
-      "narrationEn": "The six people did not build a grave on the cliff. This is because the prohibitionists were able to find the body. Instead, he melted his acrobatic silver bells and attached them little by little to each of his six weapons.",
-      "narrationKo": "여섯 사람은 절벽에 무덤을 만들지 않았다. 금지술사들이 시신을 찾아낼 수 있었기 때문이다. 대신 그의 곡예용 은방울을 녹여 여섯 무기에 조금씩 나누어 붙였다.",
-      "sourceSentenceStart": 37,
-      "sourceSentenceEnd": 39,
-      "alignmentScore": 0.4897,
+      "sceneNumber": 7,
+      "imageFile": "episode_03/scene_07.webp",
+      "sourceImageFile": "episode_03/scene_07.webp",
+      "narrationEn": "That very night, within the ruined titan shrine perched atop the precipice, two ominous silhouettes emerged silently between the broken colonnades. They were Medusa Gorgo and the crystal-shaper Belphegor—banished apprentices of the wind sage Aeolus from the distant Wind Isle. Having stolen the dark codex of Nine Shadows, they sought to harvest wandering warriors to complete their forbidden techniques. Gorgo, her blind eyes shrouded in black silk, perceived the world through minute acoustic vibrations, while Belphegor was encased from head to heel in jagged obsidian armor that sprouted directly from his flesh. Gawain struck the flagstones thrice with the heel of his iron staff.",
+      "narrationKo": "가웨인이 묵직한 쇠지팡이 끝으로 신전 바닥의 판석을 둔탁하게 세 번 두드렸다. 탕. 탕. 탕.",
+      "sourceSentenceStart": 15,
+      "sourceSentenceEnd": 16,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "알렉산다르",
-          "speakerEn": "Aleksandar",
-          "textKo": "검끝이 흔들리지 않는 한, 길은 열린다.",
-          "textEn": "As long as our blades do not waver, the path will open.",
-          "bubbleType": "speech",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "쿵-!",
-          "textEn": "THUD!",
-          "style": "impact",
-          "position": "bottom-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 15,
-      "imageFile": "episode_03/scene_15.jpeg",
-      "sourceImageFile": "Grimli_broke_hammer_cremating_body_202607260802.jpeg",
-      "narrationEn": "Grimli broke the handle of the hammer while chopping firewood to cremate the body. Aila the Demon Hunter did not put down a single arrow until the funeral lights were extinguished. Kaze, who always changed the mood with words, couldn't tell any jokes.",
-      "narrationKo": "그림리는 시신을 화장할 장작을 패다가 망치 손잡이를 부러뜨렸다. 에일라는 장례 불이 꺼질 때까지 단 한 발의 화살도 내려놓지 않았다. 늘 말로 분위기를 바꾸던 카제는 아무 농담도 하지 못했다.",
-      "sourceSentenceStart": 40,
-      "sourceSentenceEnd": 42,
-      "alignmentScore": 0.4945,
-      "dialogues": [
-        {
-          "speakerKo": "알렉산다르",
-          "speakerEn": "Aleksandar",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 16,
-      "imageFile": "episode_03/scene_16.jpeg",
-      "sourceImageFile": "Eliana_divides_ashes_into_bottles_202607260802.jpeg",
-      "narrationEn": "For the first time, the seven people realized how big the silence was for the six of them. Eliana divided the ashes into seven small glass bottles.",
-      "narrationKo": "일곱 사람은 처음으로 여섯 사람 몫의 침묵이 얼마나 큰지 알았다. 엘리아나는 재를 작은 유리병 일곱 개에 나눴다.",
-      "sourceSentenceStart": 43,
-      "sourceSentenceEnd": 44,
-      "alignmentScore": 0.6515,
-      "dialogues": [
-        {
-          "speakerKo": "알렉산다르",
-          "speakerEn": "Aleksandar",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "탕.",
+          "textEn": "Gawain struck the flagstones thrice with the heel of his iron staff.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 45
         }
       ],
       "sfxCues": [
@@ -437,88 +242,432 @@
       ]
     },
     {
-      "sceneNumber": 17,
-      "imageFile": "episode_03/scene_17.jpeg",
-      "sourceImageFile": "Six_people_give_bottle_to_202607260802.jpeg",
-      "narrationEn": "Each of the six people took one bottle and decided to give the last bottle to Kadan. It was not to impose a debt on the child he had not yet met for his dead teacher, but to let him know that there was someone waiting for him. Returning to Seven Bridges, they rented the highest floor of the separate bell tower.",
-      "narrationKo": "여섯 사람은 하나씩 가졌고 마지막 병은 카단에게 주기로 했다. 아직 만나지 못한 아이에게 죽은 스승을 빚처럼 지우려는 것이 아니라, 자신을 기다린 사람이 있었다는 사실을 알려 주기 위해서였다. 세븐브리지로 돌아온 그들은 별취한 종탑의 가장 높은 층을 빌렸다.",
-      "sourceSentenceStart": 45,
-      "sourceSentenceEnd": 47,
-      "alignmentScore": 0.4537,
+      "sceneNumber": 8,
+      "imageFile": "episode_03/scene_08.webp",
+      "sourceImageFile": "episode_03/scene_08.webp",
+      "narrationEn": "Clang. Clang. Clang. The reverberation returning through the granite bedrock yielded not seven footsteps, but eight. The veins upon Gawain's knuckles tautened like bowstrings. \"Above us! Scatter!\"",
+      "narrationKo": "그러나 지하 바위틈을 타고 되돌아온 공명음은 일곱 개가 아닌 여덟 개였다. 지팡이를 쥔 가웨인의 핏줄 선 손등이 굳어졌다. “천장이다! 흩어져라!” 가웨인의 일갈과 동시에 거대한 폭음이 터졌다. 천장의 대들보를 부수며 낙하한 벨페고르가 흑요석 주먹으로 신전 바닥을 내리찍었다. 돌바닥이 거미줄처럼 갈라지며 파편이 사방으로 튀었다. 그림리가 본능적으로 달려들어 육중한 쇠망치로 벨페고르의 팔꿈치를 받아쳐 궤도를 꺾었고, 에일라의 쇠뇌 시위가 연거푸 튕기며 안개를 가르고 세 발의 화살을 쏘아 보냈다.",
+      "sourceSentenceStart": 17,
+      "sourceSentenceEnd": 19,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-right"
+          "speakerKo": "가웨인",
+          "speakerEn": "Gawain",
+          "textKo": "“천장이다! 흩어져라!”",
+          "textEn": "“Above us! Scatter!”",
+          "bubbleType": "shout",
+          "position": "top-left",
+          "characterCardId": 45
         }
       ],
-      "sfxCues": []
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_03/scene_09.webp",
+      "sourceImageFile": "episode_03/scene_09.webp",
+      "narrationEn": "A deafening roar split the night. Shattering the ceiling rafters, Belphegor slammed his obsidian fist into the floor, fracturing the flagstones into radial spiderwebs. Grimli surged forward, his heavy maul deflecting Belphegor's crushing blow at the cost of numbing both his arms, while Aila loosed three rapid quarrels into the swirling mist. Yet the blind Gorgo heard the friction of the feathers whistling through the air and arched her spine with inhuman grace to dodge each shaft.",
+      "narrationKo": "그러나 눈이 먼 메두사 고르고는 화살이 공기를 가르는 미세한 마찰열을 미리 감지하고 유연하게 허리를 꺾어 피했다. “어리석은 날파리들이 제 발로 무덤을 찾아왔구나.”",
+      "sourceSentenceStart": 20,
+      "sourceSentenceEnd": 21,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "메두사 고르고",
+          "speakerEn": "Medusa Gorgo",
+          "textKo": "“어리석은 날파리들이 제 발로 무덤을 찾아왔구나.”",
+          "textEn": "“Above us! Scatter!”",
+          "bubbleType": "speech",
+          "position": "top-right",
+          "characterCardId": 89
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_03/scene_10.webp",
+      "sourceImageFile": "episode_03/scene_10.webp",
+      "narrationEn": "\"Insolent insects marching willfully into their own tomb!\" Black filaments of concentrated shadow mana erupted from Gorgo's talons, impaling Robinyard's shadow upon the stone wall behind him. With his shadow anchored, Robinyard's physical body locked in place as if bound in invisible iron chains.",
+      "narrationKo": "고르고의 가느다란 손톱 끝에서 발사된 칠흑의 마나 실가닥들이 허공을 수놓더니, 신전 벽면에 드리워진 로비냐드의 그림자를 바위에 단단히 꿰매 버렸다. 그림자가 묶이자 로비냐드의 육신 또한 보이지 않는 족쇄에 묶인 듯 제자리에 굳어 버렸다. 일곱 사람은 각자의 영역에서 백전노장의 기량을 지녔으나, 함께 목숨을 건 합을 맞춰 본 경험이 턱없이 부족했다. 카제가 던진 비검은 론돌이 휘두른 거친 물살에 휩쓸려 궤도를 잃었고, 그림리가 일으킨 맹렬한 망치바람은 에일라의 조준선에 모래먼지를 퍼부었다. “크하하하! 오합지졸 사냥꾼 놈들! 너희의 심장은 나의 흑요석 갑옷을 완성할 훌륭한 제물이 될 것이다!”",
+      "sourceSentenceStart": 22,
+      "sourceSentenceEnd": 24,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "그림리",
+          "speakerEn": "Grimli",
+          "textKo": "“크하하하! 오합지졸 사냥꾼 놈들! 너희의 심장은 나의 흑요석 갑옷을 완성할 훌륭한 제물이 될 것이다!”",
+          "textEn": "“Insolent insects marching willfully into their own tomb!”",
+          "bubbleType": "shout",
+          "position": "bottom-left",
+          "characterCardId": 74
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_03/scene_11.webp",
+      "sourceImageFile": "episode_03/scene_11.webp",
+      "narrationEn": "Though each of the seven pursuers was a master of their craft, they had never fought together under the pressure of mortal peril. Kaze's throwing daggers were swept aside by Rondol's unruly water currents, and the gale from Grimli's hammer threw stone dust directly across Aila's line of sight. \"Fools! Your hearts shall nourish the completion of my obsidian carapace!\" Belphegor bellowed, striking Grimli across the chest and sending the dwarf skidding across the stones, vomiting blood. To worsen their plight, Gorgo unleashed a cloud of purple venom that brought the hunters to their knees, gasping for breath.",
+      "narrationKo": "벨페고르가 광기 어린 포효를 내지르며 그림리의 어깨를 흑요석 철권으로 강타했다. 그림리가 피를 토하며 바닥을 굴렀다. 설상가상으로 고르고의 손끝에서 퍼져 나온 보랏빛 독안개가 폐신전 내부를 가득 채우자, 일곱 추적자들은 하나둘 무릎을 꺾으며 쓰러져 갔다. “숨을 참아라! 이 독안개는 폐부를 태워 마나를 말려 버린다!”",
+      "sourceSentenceStart": 25,
+      "sourceSentenceEnd": 26,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "메두사 고르고",
+          "speakerEn": "Medusa Gorgo",
+          "textKo": "“숨을 참아라! 이 독안개는 폐부를 태워 마나를 말려 버린다!”",
+          "textEn": "“Fools! Your hearts shall nourish the completion of my obsidian carapace!”",
+          "bubbleType": "shout",
+          "position": "bottom-right",
+          "characterCardId": 89
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_03/scene_12.webp",
+      "sourceImageFile": "episode_03/scene_12.webp",
+      "narrationEn": "\"Hold your breath! The poison burns the lungs and corrodes mana!\" Eliana shouted, casting purifying herbs into the wind, but the toxic haze thickened relentless. It was Robinyard, the quietest of the band, who seized the decisive moment.",
+      "narrationKo": "엘리아나가 외치며 정화의 약초 가루를 뿌렸으나 역부족이었다. 절체절명의 순간, 가장 먼저 결단을 내린 이는 평소 말수가 가장 적었던 곡예사 로비냐드였다. “동료들을 건드리지 마라, 괴물 놈!”",
+      "sourceSentenceStart": 27,
+      "sourceSentenceEnd": 28,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "로비냐드",
+          "speakerEn": "Robinyard",
+          "textKo": "“동료들을 건드리지 마라, 괴물 놈!”",
+          "textEn": "“Hold your breath! The poison burns the lungs and corrodes mana!”",
+          "bubbleType": "shout",
+          "position": "top-left",
+          "characterCardId": 48
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_03/scene_13.webp",
+      "sourceImageFile": "episode_03/scene_13.webp",
+      "narrationEn": "\"Keep your filthy claws off my kin!\" Drawing a serrated skinning knife, Robinyard sliced through his own flesh and gouged the enchanted flagstone beneath him, severing the necrotic threads that pinned his shadow. Though the agony of tearing his spiritual tether burned like molten lead, the acrobat launched himself through the air, wrapping both arms and legs around Belphegor's neck. Thwack!",
+      "narrationKo": "로비냐드는 품속에서 예리한 비수를 꺼내 바닥돌을 후벼 파며 자신의 그림자를 꿰맨 흑마술 실을 억지로 찢어 냈다. 그림자가 찢겨 나가며 살갗이 타들어 가는 극심한 영혼의 고통 속에서도, 로비냐드는 번개처럼 몸을 날려 벨페고르의 목덜미에 매달렸다. 푸욱! 벨페고르의 날카로운 흑요석 결정 가시가 로비냐드의 복부를 무자비하게 꿰뚫었다. 그러나 피를 쏟아내면서도 로비냐드는 두 팔과 두 다리로 괴물의 관절을 부둥켜안은 채 놓지 않았다.",
+      "sourceSentenceStart": 29,
+      "sourceSentenceEnd": 31,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그러나 피를 쏟아내면서도 로비냐드는 두 팔과 두 다리로 괴물의 관절을 부둥켜안은 채 놓지 않았다.",
+          "textEn": "Thwack!",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 48
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_03/scene_14.webp",
+      "sourceImageFile": "episode_03/scene_14.webp",
+      "narrationEn": "Jagged crystal spikes erupted from Belphegor's shoulders, piercing clean through Robinyard's torso. Yet even as lifeblood poured from his lips, Robinyard locked his limbs in an unbreakable vise around the monster's joints. \"Now... Aila, Grimli... listen to each other's breath!\"",
+      "narrationKo": "“지금이야... 에일라, 그림리... 이번에는 서로의 숨소리를 듣고 움직여라!” 로비냐드의 마지막 피 끓는 절규가 울려 퍼졌다.",
+      "sourceSentenceStart": 32,
+      "sourceSentenceEnd": 33,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "로비냐드",
+          "speakerEn": "Robinyard",
+          "textKo": "“지금이야... 에일라, 그림리... 이번에는 서로의 숨소리를 듣고 움직여라!”",
+          "textEn": "“Now... Aila, Grimli... listen to each other's breath!”",
+          "bubbleType": "shout",
+          "position": "bottom-left",
+          "characterCardId": 48
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_03/scene_15.webp",
+      "sourceImageFile": "episode_03/scene_15.webp",
+      "narrationEn": "Robinyard's desperate cry tore through the mist. Gawain's iron staff struck the stone with a clear, bell-like chime. Guided by that acoustic beacon, Aila fired three paces to the left. Kaze's deflection blade clipped the bolt mid-flight to bend its arc, Rondol's rushing tide doubled its velocity, and the projectile drove straight into the vulnerable joint beneath Belphegor's jaw. Roaring with renewed fury, Grimli brought his maul down in a crushing overhead blow that obliterated the crystal core. As Eliana splashed consecrated holy water into the fracture, Belphegor shrieked in agony and plummeted over the cliffside into the abyss.",
+      "narrationKo": "가웨인의 지팡이가 바닥을 한 번 강하게 내리쳤다. 그 맑은 울림을 나침반 삼아 에일라의 쇠뇌가 세 걸음 왼쪽의 허공으로 화살을 쏘았다. 카제가 허공으로 던진 칼날이 화살 깃을 쳐서 궤적을 굴절시켰고, 론돌의 급류 룬이 가속을 더해 벨페고르의 관절 틈새를 뚫었다. 이어 일어선 그림리의 전력 망치질이 흑요석 흉갑의 핵을 산산조각 냈다. 그 파편 틈으로 엘리아나가 던진 성수가 스며들자, 벨페고르는 끔찍한 비명을 지르며 절벽 아래 천 길 낭떠러지로 추락했다. 메두사 고르고는 파트너의 비참한 최후에 이를 갈며 독안개 속으로 모습을 감췄다.",
+      "sourceSentenceStart": 34,
+      "sourceSentenceEnd": 35,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "메두사 고르고는 파트너의 비참한 최후에 이를 갈며 독안개 속으로 모습을 감췄다.",
+          "textEn": "As Eliana splashed consecrated holy water into the fracture, Belphegor shrieked in agony and plummeted over the cliffside into the abyss.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 45
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_03/scene_16.webp",
+      "sourceImageFile": "episode_03/scene_16.webp",
+      "narrationEn": "Gorgo hissed in fury as her partner vanished into the fog. \"Seven Pursuers... you shall repay this blood a thousandfold!\" she snarled, dissolving into the swirling vapors.",
+      "narrationKo": "“일곱 추적자 놈들... 오늘의 피는 너희의 목숨으로 반드시 되갚아 주마!” 안개가 걷힌 신전 바닥에서, 로비냐드는 피 묻은 손으로 동료들의 얼굴을 하나씩 어루만졌다. 그의 손끝에서 떨어진 핏방울이 차가운 판석 위에 붉은 꽃송이처럼 맺혔다. “형제들이여... 울지 마라. 내 목숨 하나로 괴물을 꺾었으니 남는 장사 아닌가.”",
+      "sourceSentenceStart": 36,
+      "sourceSentenceEnd": 38,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "메두사 고르고",
+          "speakerEn": "Medusa Gorgo",
+          "textKo": "“일곱 추적자 놈들... 오늘의 피는 너희의 목숨으로 반드시 되갚아 주마!”",
+          "textEn": "“Seven Pursuers... you shall repay this blood a thousandfold!”",
+          "bubbleType": "shout",
+          "position": "top-left",
+          "characterCardId": 89
+        },
+        {
+          "speakerKo": "로비냐드",
+          "speakerEn": "Robinyard",
+          "textKo": "“형제들이여... 울지 마라. 내 목숨 하나로 괴물을 꺾었으니 남는 장사 아닌가.”",
+          "textEn": "“you shall repay this blood a thousandfold!\" she snarled, dissolving into the swirling vapors.”",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 48
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_03/scene_17.webp",
+      "sourceImageFile": "episode_03/scene_17.webp",
+      "narrationEn": "On the mist-soaked stones, Robinyard touched the faces of his weeping companions one last time. \"Brothers and sisters... do not weep. Trading one rogue life to fell that abomination is a bargain well struck.\"",
+      "narrationKo": "로비냐드가 희미하게 웃으며 가쁜 기침을 뱉었다. 그의 허리춤에서 흔들리던 은빛 방울이 가냘프게 짤랑거렸다. “북쪽으로 가라... 아이를 찾아야 해... 알렉산다르의 맹세를...”",
+      "sourceSentenceStart": 39,
+      "sourceSentenceEnd": 40,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "로비냐드",
+          "speakerEn": "Robinyard",
+          "textKo": "“북쪽으로 가라... 아이를 찾아야 해... 알렉산다르의 맹세를...”",
+          "textEn": "“Brothers and sisters... do not weep. Trading one rogue life to fell that abomination is a bargain well struck.”",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 48
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
     },
     {
       "sceneNumber": 18,
-      "imageFile": "episode_03/scene_18.jpeg",
-      "sourceImageFile": "Grimli_writes_letter_to_Hercul_202607260802.jpeg",
-      "narrationEn": "It was a meeting place eighteen years later. There were seven glasses on the table, but no one touched one. Grimli wrote a letter to Hercul.",
-      "narrationKo": "열여덟 해 뒤의 약속 장소였다. 탁자에는 일곱 잔이 놓였으나 한 잔은 누구도 손대지 않았다. 그림리는 헤르쿨에게 보낼 편지를 썼다.",
-      "sourceSentenceStart": 48,
-      "sourceSentenceEnd": 50,
-      "alignmentScore": 0.2109,
+      "imageFile": "episode_03/scene_18.webp",
+      "sourceImageFile": "episode_03/scene_18.webp",
+      "narrationEn": "Robinyard whispered, coughing faintly as the silver bell at his hip tinkled softly in the gale. \"Go north... find the boy... keep the vow to Aleksandar...\" \"Robinyard! Stay awake! I can close the wound!\" Eliana cried, but the brave acrobat smiled gently and closed his eyes forever beneath the freezing wind.",
+      "narrationKo": "“로비냐드! 눈을 감지 마라! 내가 상처를 꿰맬 수 있다!” 엘리아나가 떨리는 손으로 약초를 짓이기며 비명을 질렀으나, 로비냐드는 조용히 미소를 머금은 채 차가운 절벽 바람 속에서 숨을 거두었다.",
+      "sourceSentenceStart": 41,
+      "sourceSentenceEnd": 42,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "헤르쿨",
-          "speakerEn": "Hercul",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-left"
+          "speakerKo": "엘리아나",
+          "speakerEn": "Eliana",
+          "textKo": "“로비냐드! 눈을 감지 마라! 내가 상처를 꿰맬 수 있다!”",
+          "textEn": "“Go north... find the boy... keep the vow to Aleksandar...”",
+          "bubbleType": "shout",
+          "position": "bottom-left",
+          "characterCardId": 63
         }
       ],
-      "sfxCues": []
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        },
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
     },
     {
       "sceneNumber": 19,
-      "imageFile": "episode_03/scene_19.jpeg",
-      "sourceImageFile": "Kadan's_life_resonance_found_202607260802.jpeg",
-      "narrationEn": "I found Kadan's life resonance in the north, and I will definitely bring him back to teach him. The writing was poor and the ink was smeared here and there, but the last sentence was straight. We lost one person.",
-      "narrationKo": "북쪽에서 카단의 생명 공명을 찾았으며, 그를 반드시 데려와 가르치겠다고. 글씨는 서툴렀고 곳곳에 잉크가 번졌지만 마지막 문장만은 반듯했다. 우리는 한 사람을 잃었다.",
-      "sourceSentenceStart": 51,
-      "sourceSentenceEnd": 53,
-      "alignmentScore": 0.4819,
+      "imageFile": "episode_03/scene_19.webp",
+      "sourceImageFile": "episode_03/scene_19.webp",
+      "narrationEn": "With heavy hearts and tear-streaked faces, the six surviving masters interred their brother upon the rocky summit. Grimli bound Robinyard's silver bell firmly to the crown of his heavy warhammer with hardened steel wire. \"Every time this bell chimes in battle, I shall know you are dancing beside us. Robinyard... we shall forge that boy into the realm's greatest shield.\"",
+      "narrationKo": "여섯 스승은 피눈물을 흘리며 동료의 유해를 바위 봉우리 위에 정성껏 묻었다. 그림리는 자신의 육중한 쇠망치 모서리에 로비냐드가 늘 지니고 다니던 은빛 방울을 단단한 쇠줄로 묶어 고정했다. “이 방울 소리가 울릴 때마다 네가 우리 곁에서 줄타기를 하고 있다고 믿겠다. 로비냐드... 네 몫까지 다해서 그 아이를 천하제일의 의로운 방패로 길러내겠다.” 그림리가 거친 손으로 돌무덤을 내리치며 피 섞인 맹세를 토해냈다. 가웨인이 지팡이를 짚으며 무거운 침묵을 깼다.",
+      "sourceSentenceStart": 43,
+      "sourceSentenceEnd": 45,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-left"
+          "speakerKo": "로비냐드",
+          "speakerEn": "Robinyard",
+          "textKo": "“이 방울 소리가 울릴 때마다 네가 우리 곁에서 줄타기를 하고 있다고 믿겠다. 로비냐드... 네 몫까지 다해서 그 아이를 천하제일의 의로운 방패로 길러내겠다.”",
+          "textEn": "“Every time this bell chimes in battle, I shall know you are dancing beside us. Robinyard... we shall forge that boy into the realm's greatest shield.”",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 48
         }
       ],
-      "sfxCues": []
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
     },
     {
       "sceneNumber": 20,
-      "imageFile": "episode_03/scene_20.jpeg",
-      "sourceImageFile": "Kadan_held_silver_bell_202607260802.jpeg",
-      "narrationEn": "Therefore, I will teach my child how to survive and protect before how to kill. The morning sun rising outside the bell tower illuminated the seven cups one after another. The sound of silver bells was heard even in the empty drinking glass.",
-      "narrationKo": "그러므로 아이에게 죽이는 법보다 살아남아 지키는 법을 먼저 가르치겠다. 종탑 밖으로 떠오른 아침 해가 일곱 잔을 차례로 비췄다. 빈자리의 술잔에서도 은방울 소리가 났다.",
-      "sourceSentenceStart": 54,
-      "sourceSentenceEnd": 56,
-      "alignmentScore": 0.3934,
+      "imageFile": "episode_03/scene_20.webp",
+      "sourceImageFile": "episode_03/scene_20.webp",
+      "narrationEn": "\"We are six now, but Robinyard walks forever within our breath,\" Gawain said softly. \"Forward, to the northern wastes!\" Only through this bitter sacrifice had the hunters forged an unbreakable bond of mutual trust, stepping forward as true guardians of the realm.",
+      "narrationKo": "“우리는 이제 일곱이 아니라 여섯이다. 그러나 로비냐드의 영혼은 영원히 우리 호흡 속에 살아 숨 쉴 것이다. 가자, 북쪽 황야로!” 비극적인 피의 대가를 치른 뒤에야, 여섯 사냥꾼은 진정으로 하나의 심장으로 고동치는 불패의 결속을 얻었다. 절벽 너머로 부는 북풍 속에서, 그들의 눈빛에는 슬픔을 넘어선 서릿발 같은 결의가 깃들어 있었다.",
+      "sourceSentenceStart": 46,
+      "sourceSentenceEnd": 47,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "알렉산다르",
-          "speakerEn": "Aleksandar",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
+          "speakerKo": "가웨인",
+          "speakerEn": "Gawain",
+          "textKo": "“우리는 이제 일곱이 아니라 여섯이다. 그러나 로비냐드의 영혼은 영원히 우리 호흡 속에 살아 숨 쉴 것이다. 가자, 북쪽 황야로!”",
+          "textEn": "“We are six now, but Robinyard walks forever within our breath,”",
+          "bubbleType": "shout",
+          "position": "top-left",
+          "characterCardId": 45
         }
       ],
-      "sfxCues": []
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
     }
   ]
 }

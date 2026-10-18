@@ -2,180 +2,126 @@
   "episodeNumber": 7,
   "episodeTitleEn": "The Traitors Camp",
   "episodeTitleKo": "배신자들의 천막",
-  "sourceSentenceCount": 62,
+  "sourceSentenceCount": 39,
   "sceneCount": 20,
   "scenes": [
     {
       "sceneNumber": 1,
-      "imageFile": "episode_07/scene_01.jpeg",
-      "sourceImageFile": "Kadan_followed_Medusa_traces_202607260802.jpeg",
-      "narrationEn": "On the last night before leaving, Kadan followed Medusa Gorgo's traces with Malfuon. She was practicing the forbidden runes of the Nine Shadows Codex in an abandoned mine near Fenrir's camp. Every time the silver chain whip wrapped around the rock, the mana in the stone dried up.",
-      "narrationKo": "떠나기 전 마지막 밤, 카단은 말퓨온과 함께 메두사 고르고의 흔적을 좇았다. 그녀는 펜릴의 숙영지 가까운 폐광에서 나인섀도우 코덱스의 금지된 룬을 연습하고 있었다. 은빛 사슬채찍이 바위를 감을 때마다 돌 속의 마나가 말라붙었다.",
+      "imageFile": "episode_07/scene_01.webp",
+      "sourceImageFile": "episode_07/scene_01.webp",
+      "narrationEn": "As the campfire smoke coiling across the vast plains of the Wildlands began to wane, the northern night sky gathered heavy charcoal snow-clouds as though preparing to unleash a merciless blizzard. The leather eaves of the yurts fluttered softly against the biting gale, and around the frigid troughs, iron horse-bells chimed with dull, muted clangs. Nomad families appeased the biting frost with strips of dry salted mutton and barley broth steeped in yak butter before extinguishing their tallow lamps for the night. On this final evening before venturing south, Kadan—now an eighteen-year-old wanderer forged by the tundra—stealthily crossed the craggy basalt ridges alongside the hermit Malfurion, hunting the sinister mana trail of Medusa Gorgo. Gorgo had nestled into an abandoned cobalt quarry barely half a league from Chieftain Fenrir's vanguard camp. Inside the subterranean hollow, the stench of acrid sulfur and charred leather hung thick in the air. Upon the rock wall, she carved forbidden runes of the Nine Shadow Codex stolen from master Aeolus, honing her maddened sorcery. Each time her black-iron chain whip cracked against the stone, the slumbering mana within the bedrock withered away, crumbling into pale flakes of crystalline salt.",
+      "narrationKo": "와일드랜드의 대평원을 휘감던 모닥불 연기가 잦아들 무렵, 북방의 밤하늘은 금방이라도 혹한의 폭설을 쏟아낼 듯 짙은 잿빛 먹구름으로 뒤덮여 있었다. 가죽 천막 처마는 매서운 북풍에 소리 없이 퍼덕였고, 차가운 말구유 주변에서는 쇠말방울이 둔탁한 소리를 내며 흔들렸다. 유목민들은 바싹 말린 양고기 육포와 야크 버터를 띄운 따끈한 보리죽으로 추위를 달래며 천막의 등잔불을 일찍 껐다. 남쪽으로 떠나기 전 마지막 밤, 열여덟 살의 건장한 청년으로 자라난 카단은 은둔자 말퓨온과 함께 외곽의 깎아지른 현무암 능선을 은밀히 가로질렀다. 메두사 고르고의 불길한 마나 흔적을 쫓기 위함이었다. 고르고는 부족의 위대한 맹주 펜릴의 숙영지에서 불과 반 리 떨어진 버려진 코발트 폐광산 동굴 속에 숨어들어 있었다. 동굴 안쪽에서는 퀴퀴한 유황 연기와 타버린 가죽 냄새가 진동했다. 그녀는 스승 에올루스에게서 훔쳐낸 나인섀도우 코덱스의 암흑 룬을 바위벽에 음각하며 광기 어린 주술을 연마하고 있었다. 검붉은 사슬채찍이 칠흑의 바위를 내리칠 때마다 돌 속에 잠들어 있던 대지의 마나가 바싹 말라붙으며 은백색 소금 결정으로 부서져 내렸다.",
       "sourceSentenceStart": 1,
-      "sourceSentenceEnd": 3,
-      "alignmentScore": 0.4641,
+      "sourceSentenceEnd": 2,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
-          "bubbleType": "shout",
-          "position": "top-right"
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "검붉은 사슬채찍이 칠흑의 바위를 내리칠 때마다 돌 속에 잠들어 있던 대지의 마나가 바싹 말라붙으며 은백색 소금 결정으로 부서져 내렸다.",
+          "textEn": "Each time her black-iron chain whip cracked against the stone, the slumbering mana within the bedrock withered away, crumbling into pale flakes of crystalline salt.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
         {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
           "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
         }
       ]
     },
     {
       "sceneNumber": 2,
-      "imageFile": "episode_07/scene_02.jpeg",
-      "sourceImageFile": "Two_people_discover_conspiracy_202607260802.jpeg",
-      "narrationEn": "The two people who followed Medusa Gorgo discovered a bigger conspiracy. Fenrir's sworn brother, Barghest, was secretly meeting with Lucian, an emissary of the Red Glass Court. They planned to lure Fenrir to the conference hall, kill him, and hand over the Wildlands' tribes to the Shadow Realm.",
-      "narrationKo": "메두사 고르고를 따라간 두 사람은 더 큰 음모를 발견했다. 펜릴의 의형제 바르가스트가 붉은 유리 궁정의 사절 루시안과 비밀리에 만나고 있었다. 그들은 펜릴을 회담장으로 유인해 죽이고 와일드랜드의 부족들을 섀도우렐름에 넘길 계획이었다.",
-      "sourceSentenceStart": 4,
-      "sourceSentenceEnd": 6,
-      "alignmentScore": 0.4619,
+      "imageFile": "episode_07/scene_02.webp",
+      "sourceImageFile": "episode_07/scene_02.webp",
+      "narrationEn": "Just as Malfurion and Kadan held their breath in the shadows of a fissure, eight riders enveloped in black wool cloaks dismounted before the entrance. Astonishingly, the leading warlord was Bargast, sworn blood-brother to Fenrir and second-in-command of the entire tribal confederacy. Even more alarming was the crimson livery of the figure emerging from the gloom to greet him: an envoy bearing the gold-stitched flame crest of Lucian, prime minister of the Red Glass Court. The envoy lowered his tone, proffering a wax-sealed parchment.",
+      "narrationKo": "말퓨온과 카단이 차가운 바위 틈새에 몸을 숨기고 숨을 죽인 바로 그 순간, 폐광 입구로 검은 모직 망토를 깊게 뒤집어쓴 의문의 기마대 여덟 필이 말에서 내렸다. 놀랍게도 말에서 내린 사내는 펜릴의 의형제이자 부족의 제2인자인 맹장 바르가스트였다. 더욱 경악스러운 것은 어둠 속에서 그를 마중 나온 자의 화려한 복색이었다. 가슴팍에 진홍빛 화염 문양이 금실로 수놓아진 붉은 유리 궁정의 고위 사절 루시안의 밀사였다. 밀사가 나지막이 읊조리며 기름진 양피지 서한을 내밀었다.",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 4,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "루시안",
-          "speakerEn": "Lucian",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-left"
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "밀사가 나지막이 읊조리며 기름진 양피지 서한을 내밀었다.",
+          "textEn": "The envoy lowered his tone, proffering a wax-sealed parchment.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 66
         }
       ],
-      "sfxCues": []
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
     },
     {
       "sceneNumber": 3,
-      "imageFile": "episode_07/scene_03.jpeg",
-      "sourceImageFile": "Kadan_ran_to_camp_202607260802.jpeg",
-      "narrationEn": "Kadan ran straight to the camp. However, Fenrir only believed the words of the young warrior and could not doubt his old sworn brother. Rather, Malfuon, who came with him, was framed and bound as a spy for the palace.",
-      "narrationKo": "카단은 곧장 숙영지로 달렸다. 그러나 펜릴은 어린 전사의 말만 믿고 오랜 의형제를 의심할 수 없었다. 오히려 함께 온 말퓨온이 궁정의 첩자라는 누명을 쓰고 결박되었다.",
-      "sourceSentenceStart": 7,
-      "sourceSentenceEnd": 9,
-      "alignmentScore": 0.416,
+      "imageFile": "episode_07/scene_03.webp",
+      "sourceImageFile": "episode_07/scene_03.webp",
+      "narrationEn": "\"The appointed strike falls upon tomorrow night. Paralyzing venom will be introduced into Fenrir's banquet horn. The instant Fenrir collapses, rally the clan lances beneath the banners of the Shadow Realm.\" Bargast's hoarse rasp echoed along the damp stone.",
+      "narrationKo": "“약조한 거사일이 바로 내일 밤이오. 펜릴의 저녁 축제 술잔에 마비 독을 섞어 둘 것이오. 펜릴이 쓰러지는 즉시 부족 전사들을 모조리 섀도우렐름의 깃발 아래 집결시키시오.” 바르가스트의 쉰 목소리가 젖은 암벽을 타고 울렸다.",
+      "sourceSentenceStart": 5,
+      "sourceSentenceEnd": 6,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "speakerKo": "바르가스트",
+          "speakerEn": "Barghest",
+          "textKo": "“약조한 거사일이 바로 내일 밤이오. 펜릴의 저녁 축제 술잔에 마비 독을 섞어 둘 것이오. 펜릴이 쓰러지는 즉시 부족 전사들을 모조리 섀도우렐름의 깃발 아래 집결시키시오.”",
+          "textEn": "“The appointed strike falls upon tomorrow night. Paralyzing venom will be introduced into Fenrir's banquet horn. The instant Fenrir collapses, rally the clan lances beneath the banners of the Shadow Realm.”",
           "bubbleType": "speech",
-          "position": "bottom-left"
+          "position": "bottom-right",
+          "characterCardId": 87
         }
       ],
-      "sfxCues": []
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
     },
     {
       "sceneNumber": 4,
-      "imageFile": "episode_07/scene_04.jpeg",
-      "sourceImageFile": "Barghest_troops_surround_camp_202607260802.jpeg",
-      "narrationEn": "Barghest's troops had already surrounded the camp in layers. Fenrir asked Kadan for evidence. Kadan repeated the conversation he heard in the tent, but people laughed at him, asking if his memory was evidence.",
-      "narrationKo": "바르가스트의 병력이 이미 야영지를 여러 겹 에워싸고 있었다. 펜릴은 카단에게 증거를 요구했다. 카단은 천막에서 들은 대화를 그대로 반복했지만 사람들은 기억이 증거냐며 비웃었다.",
-      "sourceSentenceStart": 10,
-      "sourceSentenceEnd": 12,
-      "alignmentScore": 0.4354,
+      "imageFile": "episode_07/scene_04.webp",
+      "sourceImageFile": "episode_07/scene_04.webp",
+      "narrationEn": "\"Fenrir's fall will ignite fierce outrage among the elders. When will the royal host reach our borders?\" The crimson envoy sneered coldly, tossing a heavy sack of gold coins.",
+      "narrationKo": "“펜릴 형님이 쓰러지면 부족들이 거세게 반발할 것이다. 황궁의 군대는 언제 도착하는가?” 붉은 옷의 사절이 비열한 미소를 지으며 무거운 금화 주머니를 건넸다.",
+      "sourceSentenceStart": 7,
+      "sourceSentenceEnd": 8,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "speakerKo": "바르가스트",
+          "speakerEn": "Barghest",
+          "textKo": "“펜릴 형님이 쓰러지면 부족들이 거세게 반발할 것이다. 황궁의 군대는 언제 도착하는가?”",
+          "textEn": "“Fenrir's fall will ignite fierce outrage among the elders. When will the royal host reach our borders?”",
           "bubbleType": "speech",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 5,
-      "imageFile": "episode_07/scene_05.jpeg",
-      "sourceImageFile": "Malfuon_tied_up,_Kadan_observes_202607260802.jpeg",
-      "narrationEn": "Malfuon was tied up and said nothing. I wanted to see if Kadan would explain his own observation to the end, rather than relying on someone else's authority. The clue was in the boots of the murdered messenger.",
-      "narrationKo": "말퓨온은 결박된 채 아무 말도 하지 않았다. 카단이 남의 권위가 아니라 자기 관찰을 끝까지 설명하는지 보고 싶었던 것이다. 실마리는 살해된 전령의 장화에 있었다.",
-      "sourceSentenceStart": 13,
-      "sourceSentenceEnd": 15,
-      "alignmentScore": 0.3295,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 6,
-      "imageFile": "episode_07/scene_06.jpeg",
-      "sourceImageFile": "Titania_finds_glass_dust_on_202607260802.jpeg",
-      "narrationEn": "It wasn't Wildland dirt, but red glass dust. Titania found the same powder in the saddle of envoy Barghest. Fenrir then ordered alert, but it was already too late.",
-      "narrationKo": "와일드랜드 흙이 아니라 붉은 유리 가루가 묻어 있었다. 티타니아는 같은 가루를 바르가스트 사절의 말안장에서 찾아냈다. 펜릴은 그제야 경계를 명했지만 이미 늦었다.",
-      "sourceSentenceStart": 16,
-      "sourceSentenceEnd": 18,
-      "alignmentScore": 0.3735,
-      "dialogues": [
-        {
-          "speakerKo": "알렉산다르",
-          "speakerEn": "Aleksandar",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 7,
-      "imageFile": "episode_07/scene_07.jpeg",
-      "sourceImageFile": "Barghest_climbs_hill_alone_202607260802.jpeg",
-      "narrationEn": "As the sun set, Barghest climbed the hill alone. He returned the canine necklace he had exchanged with Fenrir long ago and encouraged him to surrender. “We just have to live within the boundaries set by our ancestors.",
-      "narrationKo": "해가 지자 바르가스트가 혼자 언덕을 올랐다. 그는 펜릴에게 옛날 주고받은 송곳니 목걸이를 돌려주며 항복을 권했다. “우리는 조상들이 정한 경계 안에서 살면 된다.",
-      "sourceSentenceStart": 19,
-      "sourceSentenceEnd": 21,
-      "alignmentScore": 0.4745,
-      "dialogues": [
-        {
-          "speakerKo": "알렉산다르",
-          "speakerEn": "Aleksandar",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 8,
-      "imageFile": "episode_07/scene_08.jpeg",
-      "sourceImageFile": "Fenrir_buries_necklace_in_ground_202607260802.jpeg",
-      "narrationEn": "Why do you want to unite all the tribes? ” Fenrir buried the necklace in the ground. “We want to end children dying in the same well every year.",
-      "narrationKo": "왜 모든 부족을 하나로 묶으려 하나?” 펜릴은 목걸이를 땅에 묻었다. “아이들이 해마다 같은 우물을 놓고 죽는 것을 끝내려는 거다.",
-      "sourceSentenceStart": 22,
-      "sourceSentenceEnd": 24,
-      "alignmentScore": 0.3359,
-      "dialogues": [
-        {
-          "speakerKo": "알렉산다르",
-          "speakerEn": "Aleksandar",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
+          "position": "top-left",
+          "characterCardId": 87
         }
       ],
       "sfxCues": [
@@ -188,30 +134,60 @@
       ]
     },
     {
-      "sceneNumber": 9,
-      "imageFile": "episode_07/scene_09.jpeg",
-      "sourceImageFile": "Rune_knights_attack_fantasy_palace_202607260802.jpeg",
-      "narrationEn": "If tradition is an excuse to increase the number of graves, we need to change it. ” The attack began at dawn. Four rune knights from the court climbed the hill, and the arrows did not pierce their protective clothing.",
-      "narrationKo": "전통이 무덤 수를 늘리는 핑계라면 바꿔야지.” 새벽에 공격이 시작되었다. 궁정에서 온 룬 기사 넷이 언덕을 기어올랐고, 화살은 그들의 방호복을 뚫지 못했다.",
-      "sourceSentenceStart": 25,
-      "sourceSentenceEnd": 27,
-      "alignmentScore": 0.5578,
+      "sceneNumber": 5,
+      "imageFile": "episode_07/scene_05.webp",
+      "sourceImageFile": "episode_07/scene_05.webp",
+      "narrationEn": "\"Ignis, son of Balian, marches north at the head of the Court's White Flame Order. You shall be crowned paramount warlord of the northern reaches, so banish your misgivings.\" Hearing the names of Balian and Ignis fall from the emissary's lips sent a jolt through Kadan's chest. Delay was unthinkable. Following Malfurion's silent gesture, Kadan slipped away from the crag, turning their mounts toward Fenrir's war yurt.",
+      "narrationKo": "“발리안의 아들 이그니스가 황궁의 백색 화염 기사단을 이끌고 북상할 것이오. 귀하가 첫 번째 정복 맹주로 추대될 테니 의심을 거두시오.” 사절의 입에서 발리안과 이그니스의 이름이 흘러나오자 카단의 심장이 거세게 요동쳤다. 더 이상 지체할 수 없었다. 카단은 말퓨온의 눈짓을 따라 바위틈을 빠져나와 펜릴의 대군영을 향해 말머리를 돌렸다.",
+      "sourceSentenceStart": 9,
+      "sourceSentenceEnd": 10,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "성기사단원",
-          "speakerEn": "Holy Knight",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“발리안의 아들 이그니스가 황궁의 백색 화염 기사단을 이끌고 북상할 것이오. 귀하가 첫 번째 정복 맹주로 추대될 테니 의심을 거두시오.”",
+          "textEn": "“Ignis, son of Balian, marches north at the head of the Court's White Flame Order. You shall be crowned paramount warlord of the northern reaches, so banish your misgivings.”",
           "bubbleType": "speech",
-          "position": "top-right"
+          "position": "top-right",
+          "characterCardId": 11
         }
       ],
       "sfxCues": [
         {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_07/scene_06.webp",
+      "sourceImageFile": "episode_07/scene_06.webp",
+      "narrationEn": "Yet when they arrived at the council tent, Kadan was met not by trust, but by an unyielding barrier of suspicion. Seated upon the great white-wolf throne, Fenrir listened to the breathless warning of the youthful wanderer, but thirty winters of brotherhood blinded him to betrayal. Frost clung to the chieftain's iron-gray beard, and deep scars carved across his brow bore witness to dozens of harsh winters survived in blood and honor. \"Bargast has bled beside me for three decades hunting northern frost-beasts! Would you have me condemn my dearest brother upon the loose tongue of a wandering stripling?\"",
+      "narrationKo": "그러나 유목 부족의 중심 대천막에 당도했을 때, 카단이 마주한 것은 신뢰 대신 차가운 의심의 장벽이었다. 거대한 백은 늑대 가죽 왕좌에 앉아 있던 맹주 펜릴은 열여덟 살 어린 방랑 전사의 다급한 고변을 듣고도 오랜 의형제를 쉬이 의심하지 못했다. 펜릴의 수염에는 희끗희끗한 서리가 맺혀 있었고, 그의 굳은 이마에는 수십 번의 겨울을 넘긴 흉터가 깊게 패어 있었다. “바르가스트는 나와 함께 삼십 년 동안 피를 흘리며 북방의 마수들을 토벌한 내 피붙이 같은 아우다! 일개 떠돌이 전사의 세치 혀에 놀아나 내 심장을 바친 형제를 참소하란 말이냐?”",
+      "sourceSentenceStart": 11,
+      "sourceSentenceEnd": 12,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "펜릴",
+          "speakerEn": "Fenrir",
+          "textKo": "“바르가스트는 나와 함께 삼십 년 동안 피를 흘리며 북방의 마수들을 토벌한 내 피붙이 같은 아우다! 일개 떠돌이 전사의 세치 혀에 놀아나 내 심장을 바친 형제를 참소하란 말이냐?”",
+          "textEn": "“Bargast has bled beside me for three decades hunting northern frost-beasts! Would you have me condemn my dearest brother upon the loose tongue of a wandering stripling?”",
+          "bubbleType": "shout",
+          "position": "bottom-left",
+          "characterCardId": 81
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
         },
         {
           "textKo": "쿵-!",
@@ -222,50 +198,139 @@
       ]
     },
     {
-      "sceneNumber": 10,
-      "imageFile": "episode_07/scene_10.jpeg",
-      "sourceImageFile": "Kadan_combines_movements_and_bre…_202607260802.jpeg",
-      "narrationEn": "For the first time, Kadan combined the movements learned from his six teachers and Malfuon's breathing on the battlefield. Rather than receiving the enemy's sword head-on, he slightly tilted his snow crystal shield and let it go through its orbit. Kadan was embarrassed by the fact that he was much slower on the battlefield than on the practice field. There was a person lying on the floor and children crying behind them.",
-      "narrationKo": "카단은 여섯 스승에게 배운 동작과 말퓨온의 호흡을 처음으로 전장에서 하나로 엮었다. 적의 검을 정면으로 받지 않고 눈결정 방패를 얇게 기울여 궤도를 흘렸다. 카단은 자신이 연습장에서보다 전장에서 훨씬 느리다는 사실에 당황했다. 바닥에는 쓰러진 사람이 있었고 뒤에서는 아이들이 울었다.",
-      "sourceSentenceStart": 28,
-      "sourceSentenceEnd": 31,
-      "alignmentScore": 0.5612,
+      "sceneNumber": 7,
+      "imageFile": "episode_07/scene_07.webp",
+      "sourceImageFile": "episode_07/scene_07.webp",
+      "narrationEn": "Chieftains muttered in agreement around the hearth. Worse still, Bargast had anticipated the blow, preemptively branding Malfurion as a southern infiltrator and binding him in heavy iron fetters. Bargast strode into the pavilion, resting a gauntleted hand upon his bloody pommel. His eyes glinted like a hungry timber wolf, a mocking sneer curving his lips.",
+      "narrationKo": "펜릴의 호통에 천막 안의 족장들이 수군거렸다. 설상가상으로 바르가스트가 먼저 손을 써, 말퓨온을 남쪽 궁정의 첩자로 몰아 쇠사슬로 결박해 버렸다. 바르가스트가 피 묻은 칼자루를 두드리며 천막 안으로 걸어 들어왔다. 그의 눈빛은 늑대처럼 번뜩였고, 입가에는 조소 어린 미소가 걸려 있었다.",
+      "sourceSentenceStart": 13,
+      "sourceSentenceEnd": 14,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
-          "bubbleType": "shout",
-          "position": "top-left"
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그의 눈빛은 늑대처럼 번뜩였고, 입가에는 조소 어린 미소가 걸려 있었다.",
+          "textEn": "His eyes glinted like a hungry timber wolf, a mocking sneer curving his lips.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 81
         }
       ],
       "sfxCues": [
         {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
           "position": "top-right"
         }
       ]
     },
     {
-      "sceneNumber": 11,
-      "imageFile": "episode_07/scene_11.jpeg",
-      "sourceImageFile": "Tavern_scene_with_golden_shield_202607260802_2.jpeg",
-      "narrationEn": "Every time I swung my sword, I had to think about who would get hurt next. The perfect posture I had learned in training collapsed after just two attempts, and all that was left was breathing and choice. He captured Ursoc, the son of enemy general Barghest, and instead of using him as a shield, he treated the wounded and sent him back.",
-      "narrationKo": "검을 한 번 휘두를 때마다 그 다음에 누가 다칠지 생각해야 했다. 훈련에서 배운 완벽한 자세는 두 번 만에 무너졌고, 남은 것은 호흡과 선택뿐이었다. 그는 적장 바르가스트의 아들 우르삭을 생포해 방패로 삼지 않고, 부상자를 치료한 뒤 돌려보냈다.",
-      "sourceSentenceStart": 32,
-      "sourceSentenceEnd": 34,
-      "alignmentScore": 0.5063,
+      "sceneNumber": 8,
+      "imageFile": "episode_07/scene_08.webp",
+      "sourceImageFile": "episode_07/scene_08.webp",
+      "narrationEn": "\"Lord brother, I witnessed this vagrant elder and his young pup conspiring in secret with court delegates within the old cobalt mine! Slay these disruptors of northern unity at once!\" Bound in chains, Malfurion offered not a word of self-defense, gazing steadily at Kadan. It was a silent trial—an injunction to rely not upon borrowed authority or blind wrath, but upon senses and wits honed through discipline to lay bare the truth.",
+      "narrationKo": "“맹주 형님, 이 수상쩍은 노인과 애송이가 폐광산에서 궁정 사절과 밀담을 나누는 것을 제 눈으로 똑똑히 보았습니다! 북방의 결속을 해치려는 자들을 즉시 참수해야 합니다!” 말퓨온은 결박된 채로도 한마디 변명조차 하지 않고 카단을 지그시 응시했다. 남의 권위나 분노에 기대지 말고, 오직 스스로 단련한 눈과 귀로 진실을 밝혀내라는 무언의 시험이었다.",
+      "sourceSentenceStart": 15,
+      "sourceSentenceEnd": 16,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "알렉산다르",
-          "speakerEn": "Aleksandar",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
+          "speakerKo": "바르가스트",
+          "speakerEn": "Barghest",
+          "textKo": "“맹주 형님, 이 수상쩍은 노인과 애송이가 폐광산에서 궁정 사절과 밀담을 나누는 것을 제 눈으로 똑똑히 보았습니다! 북방의 결속을 해치려는 자들을 즉시 참수해야 합니다!”",
+          "textEn": "“Lord brother, I witnessed this vagrant elder and his young pup conspiring in secret with court delegates within the old cobalt mine! Slay these disruptors of northern unity at once!”",
           "bubbleType": "shout",
-          "position": "bottom-left"
+          "position": "top-left",
+          "characterCardId": 87
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_07/scene_09.webp",
+      "sourceImageFile": "episode_07/scene_09.webp",
+      "narrationEn": "The conclusive thread emerged in the dead of night. Slipping beneath the baggage wagons, Titania pried loose shimmering shards of red volcanic glass from the saddle lining of a slain courier, scattering them across Fenrir's oak table. Such tempered glass was manufactured solely by the elite cavalry of the southern capital. Fenrir's calloused hands trembled, his weathered countenance turning rigid as frozen lake ice. At that very moment, Bargast entered the tent unescorted, bearing the wolf-fang amulet they had split between them in their youth. \"Brother, it is enough to graze within the borders set by our ancestors. Why force thirty clans into a single realm and invite the wrath of the throne? Take back this fang and surrender with honor.\"",
+      "narrationKo": "실마리는 한밤중에 드러났다. 티타니아가 살해된 전령의 말안장 가죽 틈새에서 붉은 유리 가루를 찾아내 펜릴의 탁자 위에 쏟아부은 것이다. 그것은 남쪽 궁정 기병들만이 사용하는 특수 제련 유리였다. 펜릴의 거친 손이 떨렸고, 그의 얼굴은 얼어붙은 호수처럼 굳어졌다. 바로 그때, 바르가스트가 홀로 천막 안으로 걸어 들어왔다. 그의 손에는 젊은 시절 펜릴과 의형제를 맺으며 나누어 가졌던 늑대 송곳니 목걸이가 들려 있었다. “형님, 조상들이 정해준 경계 안에서 살면 족합니다. 왜 무리하게 모든 부족을 하나로 묶어 황궁의 미움을 사려 하십니까? 이 목걸이를 돌려드릴 테니 이제 그만 항복하십시오.”",
+      "sourceSentenceStart": 17,
+      "sourceSentenceEnd": 18,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "펜릴",
+          "speakerEn": "Fenrir",
+          "textKo": "“형님, 조상들이 정해준 경계 안에서 살면 족합니다. 왜 무리하게 모든 부족을 하나로 묶어 황궁의 미움을 사려 하십니까? 이 목걸이를 돌려드릴 테니 이제 그만 항복하십시오.”",
+          "textEn": "“Brother, it is enough to graze within the borders set by our ancestors. Why force thirty clans into a single realm and invite the wrath of the throne? Take back this fang and surrender with honor.”",
+          "bubbleType": "speech",
+          "position": "top-right",
+          "characterCardId": 81
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_07/scene_10.webp",
+      "sourceImageFile": "episode_07/scene_10.webp",
+      "narrationEn": "Fenrir took the fang, pressing it deep into the frosty soil beneath his boots. His voice fell lower and heavier than the midnight gales. \"I seek to end the madness of children slaughtering one another over the same frozen well year after year. If tradition serves only to swell the count of our graves, I shall shatter it with my own hands.\"",
+      "narrationKo": "펜릴은 송곳니 목걸이를 받아 바닥의 차가운 흙 속에 깊숙이 파묻었다. 그의 목소리는 칼바람보다 더 낮고 무거웠다. “아이들이 해마다 같은 우물을 놓고 피를 흘리는 비극을 끝내려는 거다. 전통이 무덤의 숫자를 늘리는 핑계에 불과하다면 내 손으로 깨부숴야지.”",
+      "sourceSentenceStart": 19,
+      "sourceSentenceEnd": 20,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "펜릴",
+          "speakerEn": "Fenrir",
+          "textKo": "“아이들이 해마다 같은 우물을 놓고 피를 흘리는 비극을 끝내려는 거다. 전통이 무덤의 숫자를 늘리는 핑계에 불과하다면 내 손으로 깨부숴야지.”",
+          "textEn": "“I seek to end the madness of children slaughtering one another over the same frozen well year after year. If tradition serves only to swell the count of our graves, I shall shatter it with my own hands.”",
+          "bubbleType": "speech",
+          "position": "bottom-left",
+          "characterCardId": 81
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_07/scene_11.webp",
+      "sourceImageFile": "episode_07/scene_11.webp",
+      "narrationEn": "At dawn, Bargast's rebels and imperial rune-knights stormed the perimeter hills. Common arrows shattered uselessly against the heavy plate of the vanguard, and the mud at the slope's foot echoed with screams. Blending the defensive arts of Master Aleksandar with Malfurion's star-breathing, Kadan held the breach. Tilting his iron shield to deflect charging lances into empty air, Kadan disarmed Bargast's ferocious son, Ursak, sending his broadsword spinning into the frost.",
+      "narrationKo": "동이 틀 무렵, 바르가스트가 이끄는 반역군과 황궁의 룬 기사들이 펜릴의 언덕을 포위하며 돌격을 감행했다. 화살은 기사들의 두꺼운 강철 갑주를 뚫지 못했고, 언덕 아래 진흙탕은 비명으로 가득 찼다. 카단은 알렉산다르 스승에게 배운 방어 기예와 말퓨온의 별 호흡을 하나로 엮어 선봉에 섰다. 무쇠 방패를 비스듬히 기울여 적의 창검을 허공으로 흘려보내며, 카단은 쓰러진 적장 바르가스트의 아들 우르삭을 단숨에 제압해 무기를 쳐냈다.",
+      "sourceSentenceStart": 21,
+      "sourceSentenceEnd": 21,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "무쇠 방패를 비스듬히 기울여 적의 창검을 허공으로 흘려보내며, 카단은 쓰러진 적장 바르가스트의 아들 우르삭을 단숨에 제압해 무기를 쳐냈다.",
+          "textEn": "Tilting his iron shield to deflect charging lances into empty air, Kadan disarmed Bargast's ferocious son, Ursak, sending his broadsword spinning into the frost.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 87
         }
       ],
       "sfxCues": [
@@ -276,93 +341,101 @@
           "position": "top-right"
         },
         {
-          "textKo": "쿠구구궁!",
-          "textEn": "RUMBLE!",
-          "style": "rumble",
-          "position": "bottom-left"
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
         }
       ]
     },
     {
       "sceneNumber": 12,
-      "imageFile": "episode_07/scene_12.jpeg",
-      "sourceImageFile": "Soldiers_shaken_by_choice_202607260802.jpeg",
-      "narrationEn": "Because of that choice, the young soldiers in the enemy camp were shaken. This is because the mercy he saw before his eyes was more persuasive than his father's orders. Gilgamesh and Titania gathered the young warriors and tied dry bushes to the tails of their horses.",
-      "narrationKo": "그 선택 때문에 적진의 젊은 병사들이 흔들렸다. 아버지들의 명령보다 눈앞에서 본 자비가 더 설득력 있었기 때문이다. 길가메시와 티타니아는 어린 전사들을 모아 말꼬리에 마른 덤불을 매달았다.",
-      "sourceSentenceStart": 35,
-      "sourceSentenceEnd": 37,
-      "alignmentScore": 0.7254,
-      "dialogues": [
-        {
-          "speakerKo": "알렉산다르",
-          "speakerEn": "Aleksandar",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
-          "bubbleType": "shout",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 13,
-      "imageFile": "episode_07/scene_13.jpeg",
-      "sourceImageFile": "Fenrir_escapes,_raids_headquarters_202607260802.jpeg",
-      "narrationEn": "As hundreds of aircraft ran through the wilderness, dust pillars rose like thousands of armies. The besieging army changed its formation, thinking that reinforcements were coming, and Fenrir took advantage of that moment and escaped. Three days later, Fenrir made a night raid on Barghest's headquarters again.",
-      "narrationKo": "수백 기가 황야를 달리자 먼지기둥이 수천 군대처럼 솟았다. 포위군은 원군이 온 줄 알고 진형을 바꾸었고, 펜릴은 그 한순간의 틈을 찢고 빠져나왔다. 사흘 뒤 펜릴은 되레 바르가스트의 본진을 야습했다.",
-      "sourceSentenceStart": 38,
-      "sourceSentenceEnd": 40,
-      "alignmentScore": 0.3111,
-      "dialogues": [
-        {
-          "speakerKo": "알렉산다르",
-          "speakerEn": "Aleksandar",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 14,
-      "imageFile": "episode_07/scene_14.jpeg",
-      "sourceImageFile": "Brothers_before_ruins_scene_202607260802.jpeg",
-      "narrationEn": "After capturing his sworn brother, he punished the traitorous guard and allowed Barghest to die without shedding blood. Even amid the shouts of victory, Fenrir's face was not happy. What was buried that day was not just a necklace, but my entire childhood.",
-      "narrationKo": "의형제를 사로잡은 그는 배신한 호위병부터 처벌하고, 바르가스트에게는 피 흘리지 않는 죽음을 허락했다. 승리의 함성 속에서도 펜릴의 얼굴은 기쁘지 않았다. 그날 묻은 것은 목걸이 하나가 아니라 어린 시절 전체였다.",
-      "sourceSentenceStart": 41,
-      "sourceSentenceEnd": 43,
-      "alignmentScore": 0.345,
-      "dialogues": [
-        {
-          "speakerKo": "알렉산다르",
-          "speakerEn": "Aleksandar",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 15,
-      "imageFile": "episode_07/scene_15.jpeg",
-      "sourceImageFile": "Fenrir_shows_Kadan_treasure_202607260802.jpeg",
-      "narrationEn": "Several tribes in the Wildlands elected Fenrir as the conquering king. He showed the gold and dragon bone weapons from the treasure trove to Kadan, who had contributed, and told him to choose whichever he wanted. Kadan chose to organize the list of fallen soldiers rather than celebrate.",
-      "narrationKo": "와일드랜드의 여러 부족은 펜릴을 정복왕으로 추대했다. 그는 공을 세운 카단에게 보물 창고의 황금과 드래곤 뼈 무기를 보여 주며 원하는 것을 고르라 했다. 카단은 축하연보다 전사자 명단을 정리하는 일을 택했다.",
-      "sourceSentenceStart": 44,
-      "sourceSentenceEnd": 46,
-      "alignmentScore": 0.3514,
+      "imageFile": "episode_07/scene_12.webp",
+      "sourceImageFile": "episode_07/scene_12.webp",
+      "narrationEn": "As allied braves raised their spears to claim the young captain's head, Kadan reversed his silver dagger and barred their path with his shield. \"Slaying a helpless captive breeds only terror, not victory. Cleanse his wounds and let him walk.\"",
+      "narrationKo": "동료 전사들이 우르삭의 목을 베려 칼을 치켜들었으나, 카단은 은빛 단검의 칼자루를 거꾸로 쥐고 온몸으로 칼날을 막아섰다. “포로를 베어 공포를 심는 것은 기사의 도리가 아닙니다. 상처를 꿰매고 돌려보내야 합니다.”",
+      "sourceSentenceStart": 22,
+      "sourceSentenceEnd": 23,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "검끝이 흔들리지 않는 한, 길은 열린다.",
-          "textEn": "As long as our blades do not waver, the path will open.",
+          "textKo": "“포로를 베어 공포를 심는 것은 기사의 도리가 아닙니다. 상처를 꿰매고 돌려보내야 합니다.”",
+          "textEn": "“Slaying a helpless captive breeds only terror, not victory. Cleanse his wounds and let him walk.”",
           "bubbleType": "speech",
-          "position": "bottom-left"
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_07/scene_13.webp",
+      "sourceImageFile": "episode_07/scene_13.webp",
+      "narrationEn": "Ursak spat blood and muddy slush, glaring up with venomous fury. \"Save your false pity, boy! When my father sweeps this hill, your severed skull shall crown a watchpost!\"",
+      "narrationKo": "우르삭이 흙탕물을 튀기며 피를 뱉었다. 그의 독기 어린 눈동자가 카단을 쏘아보았다. “가식 부리지 마라, 애송이! 아버지가 승리하면 네 목부터 베어 말뚝에 꽂을 것이다!”",
+      "sourceSentenceStart": 24,
+      "sourceSentenceEnd": 25,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“가식 부리지 마라, 애송이! 아버지가 승리하면 네 목부터 베어 말뚝에 꽂을 것이다!”",
+          "textEn": "“Save your false pity, boy! When my father sweeps this hill, your severed skull shall crown a watchpost!”",
+          "bubbleType": "shout",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_07/scene_14.webp",
+      "sourceImageFile": "episode_07/scene_14.webp",
+      "narrationEn": "Without replying, Kadan retrieved a strip of clean linen, binding the gashed brow of the fallen youth before guiding him safely down the slope. \"Do not waste your life in service of your father's vain greed. Live, and witness the truth.\"",
+      "narrationKo": "카단은 대답 대신 품에서 거친 아마포를 꺼내 우르삭의 찢어진 이마를 묵묵히 묶어주었다. 그리고 그를 언덕 아래 반역자들의 진영으로 돌려보냈다. “네 아버지의 욕망을 위해 헛되이 목숨을 버리지 마라. 살아서 진실을 보아라.”",
+      "sourceSentenceStart": 26,
+      "sourceSentenceEnd": 27,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“네 아버지의 욕망을 위해 헛되이 목숨을 버리지 마라. 살아서 진실을 보아라.”",
+          "textEn": "“Do not waste your life in service of your father's vain greed. Live, and witness the truth.”",
+          "bubbleType": "speech",
+          "position": "bottom-left",
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
@@ -375,109 +448,196 @@
       ]
     },
     {
-      "sceneNumber": 16,
-      "imageFile": "episode_07/scene_16.jpeg",
-      "sourceImageFile": "Barghest_Fenrir_Kadan_on_board_202607260802.jpeg",
-      "narrationEn": "The names of young people who fought on the Barghest side were also written on the same board. When one of Fenrir's generals asked why he was honoring a traitor, Kadan replied that there was no need to kill someone who died due to a wrong order. “Give me the most precious thing.",
-      "narrationKo": "바르가스트 편에서 싸운 젊은이들의 이름도 같은 판에 적었다. 펜릴의 장수 하나가 반역자를 왜 기리느냐고 묻자, 카단은 잘못된 명령에 죽은 사람을 기록에서까지 죽일 필요는 없다고 답했다. “내게 가장 귀한 것을 주마.”",
-      "sourceSentenceStart": 47,
-      "sourceSentenceEnd": 49,
-      "alignmentScore": 0.4157,
+      "sceneNumber": 15,
+      "imageFile": "episode_07/scene_15.webp",
+      "sourceImageFile": "episode_07/scene_15.webp",
+      "narrationEn": "Witnessing such unexpected mercy and unbending resolve, the young rebel levies hesitated, lowering their spear-points across the front. Three days later, Fenrir launched a decisive flanking assault, breaking Bargast's garrison. The ringleaders were condemned, yet Fenrir granted Bargast a cup of sweetened poison, preserving his final dignity as a warrior. While victory horns resounded over the steppes, Fenrir's eyes remained dark with sorrow. Beckoning Kadan to the armory tent, he offered chests of bullion and a greatbow carved of ancient dragon bone.",
+      "narrationKo": "적진의 젊은 부족 전사들은 카단의 기개와 자비에 크게 동요하며 창끝을 아래로 내렸다. 사흘 뒤, 펜릴은 바르가스트의 본진을 기습해 반역을 완전히 진압했다. 배신한 장수들은 처형되었으나, 펜릴은 바르가스트에게 독주를 건네며 무사로서의 마지막 명예를 허락했다. 승리의 함성이 대평원에 울려 퍼졌지만 펜릴의 눈빛에는 깊은 슬픔이 서려 있었다. 펜릴은 카단을 불러 전리품 창고의 황금과 드래곤 뼈 활을 내리려 했다.",
+      "sourceSentenceStart": 28,
+      "sourceSentenceEnd": 29,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "내게 가장 귀한 것을 주마.",
-          "textEn": "“내게 가장 귀한 것을 주마.”",
-          "bubbleType": "speech",
-          "position": "top-left"
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "펜릴은 카단을 불러 전리품 창고의 황금과 드래곤 뼈 활을 내리려 했다.",
+          "textEn": "Beckoning Kadan to the armory tent, he offered chests of bullion and a greatbow carved of ancient dragon bone.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 41
         }
       ],
-      "sfxCues": []
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_07/scene_16.webp",
+      "sourceImageFile": "episode_07/scene_16.webp",
+      "narrationEn": "\"Name your recompense, young warrior. I would carve you half the northern steppes.\" Kadan shook his head, replying softly.",
+      "narrationKo": "“원하는 것을 말해라, 젊은 전사여. 이 대평원의 절반이라도 베어 주마.” 카단은 고개를 저으며 나지막이 말했다.",
+      "sourceSentenceStart": 30,
+      "sourceSentenceEnd": 31,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "펜릴",
+          "speakerEn": "Fenrir",
+          "textKo": "“원하는 것을 말해라, 젊은 전사여. 이 대평원의 절반이라도 베어 주마.”",
+          "textEn": "“Name your recompense, young warrior. I would carve you half the northern steppes.”",
+          "bubbleType": "speech",
+          "position": "top-left",
+          "characterCardId": 81
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
     },
     {
       "sceneNumber": 17,
-      "imageFile": "episode_07/scene_17.jpeg",
-      "sourceImageFile": "Fenrir_hands_Titania's_hand_Kadan_202607260802.jpeg",
-      "narrationEn": "” Fenrir handed Titania's hand to Kadan. It was a declaration that the two would get married when they became adults. The crowd cheered, but Kadan and Titania couldn't see each other's faces.",
-      "narrationKo": "펜릴은 티타니아의 손을 카단에게 건넸다. 두 사람이 성인이 되면 혼인시키겠다는 선언이었다. 군중은 환호했지만 카단과 티타니아는 서로의 얼굴을 제대로 보지 못했다.",
-      "sourceSentenceStart": 50,
-      "sourceSentenceEnd": 52,
-      "alignmentScore": 0.6202,
+      "imageFile": "episode_07/scene_17.webp",
+      "sourceImageFile": "episode_07/scene_17.webp",
+      "narrationEn": "\"Only ensure that the fallen conscripts from Bargast's levies are inscribed upon the ancestral rolls. True peace comes only when equal rest is granted to all who shed their blood.\" Taking Kadan's hand, Fenrir proclaimed his betrothal to Titania before the gathered chiefs.",
+      "narrationKo": "“전사자 명단에 바르가스트 측의 어린 징집병들 이름까지 빠짐없이 기록해 주십시오. 피 흘린 모든 자에게 평등한 안식을 주는 것만이 진정한 평화입니다.” 펜릴은 카단의 손을 잡고 티타니아와의 공식 약혼을 부족 회의에서 선언했다.",
+      "sourceSentenceStart": 32,
+      "sourceSentenceEnd": 33,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "textKo": "“전사자 명단에 바르가스트 측의 어린 징집병들 이름까지 빠짐없이 기록해 주십시오. 피 흘린 모든 자에게 평등한 안식을 주는 것만이 진정한 평화입니다.”",
+          "textEn": "“Only ensure that the fallen conscripts from Bargast's levies are inscribed upon the ancestral rolls. True peace comes only when equal rest is granted to all who shed their blood.”",
           "bubbleType": "speech",
-          "position": "top-right"
+          "position": "top-right",
+          "characterCardId": 41
         }
       ],
-      "sfxCues": []
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
     },
     {
       "sceneNumber": 18,
-      "imageFile": "episode_07/scene_18.jpeg",
-      "sourceImageFile": "Elwin_Balian_childhood_promise_p…_202607260802.jpeg",
-      "narrationEn": "A childhood promise suddenly became tribal politics. Elwin first revealed that her husband had promised to marry Balian and their children. Since Balian's child was a son, the marriage marriage disappeared, but the promise that the descendants of the two families should meet remained.",
-      "narrationKo": "어린 날의 약속이 갑자기 부족 전체의 정치가 되어 버렸다. 엘윈은 남편이 발리안과 자식들의 혼사를 약속했던 일을 처음 털어놓았다. 발리안의 아이는 아들이었으므로 혼약은 사라졌지만, 두 집안의 후예가 만나야 한다는 약속은 남아 있었다.",
-      "sourceSentenceStart": 53,
-      "sourceSentenceEnd": 55,
-      "alignmentScore": 0.4735,
+      "imageFile": "episode_07/scene_18.webp",
+      "sourceImageFile": "episode_07/scene_18.webp",
+      "narrationEn": "\"I place my greatest treasure into your care. Become the lion of the steppes and lead our people!\" The throng roared in acclaim, but Titania slipped past the bonfires to stand quietly by the horse stalls. The north wind brushed her cheeks with frosty chill, yet her eyes shone with pristine clarity. As Kadan approached, she reached out, tightening the crimson silk ribbon bound to his dagger's hilt.",
+      "narrationKo": "“내게 가장 소중한 딸을 너에게 맡기마. 황야의 사자가 되어 부족을 이끌어라!” 군중이 환호했으나 티타니아는 연회장을 빠져나와 홀로 말구유 곁에 섰다. 그녀의 뺨에 닿는 북풍은 차가웠지만 눈빛은 맑게 빛나고 있었다. 카단이 다가서자, 그녀는 단검 손잡이에 묶인 붉은 비단 끈을 팽팽하게 고쳐 매주었다.",
+      "sourceSentenceStart": 34,
+      "sourceSentenceEnd": 35,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "발리안",
-          "speakerEn": "Balian",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-left"
+          "speakerKo": "펜릴",
+          "speakerEn": "Fenrir",
+          "textKo": "“내게 가장 소중한 딸을 너에게 맡기마. 황야의 사자가 되어 부족을 이끌어라!”",
+          "textEn": "“I place my greatest treasure into your care. Become the lion of the steppes and lead our people!”",
+          "bubbleType": "shout",
+          "position": "bottom-left",
+          "characterCardId": 81
         }
       ],
-      "sfxCues": []
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
     },
     {
       "sceneNumber": 19,
-      "imageFile": "episode_07/scene_19.jpeg",
-      "sourceImageFile": "Kadan_Ignis_Titania_fantasy_scene_202607260802.jpeg",
-      "narrationEn": "Kadan said he would return after finding Ignis and confirming the truth about his fathers. Titania hid his disappointment and tightened the knot of the red string. “I am not a treasure, Kadan.",
-      "narrationKo": "카단은 이그니스를 찾아 아버지들의 진실을 확인한 뒤 돌아오겠다고 했다. 티타니아는 섭섭함을 감추고 붉은 끈의 매듭을 조였다. “나는 보물이 아니야, 카단.",
-      "sourceSentenceStart": 56,
-      "sourceSentenceEnd": 58,
-      "alignmentScore": 0.4566,
+      "imageFile": "episode_07/scene_19.webp",
+      "sourceImageFile": "episode_07/scene_19.webp",
+      "narrationEn": "\"I am neither prize nor chattel to be gifted, Kadan. When you return from the southern courts, ask me then whether I choose you.\" Within her unyielding gaze, Kadan beheld the true, unbroken soul of the northern frontier.",
+      "narrationKo": "“나는 누군가의 전리품이나 보물이 아니야, 카단. 네가 남쪽에서 돌아왔을 때, 그때 내가 널 선택할지 다시 물어봐.” 카단은 그녀의 단단한 시선 속에서 진정한 북방의 영혼을 보았다.",
+      "sourceSentenceStart": 36,
+      "sourceSentenceEnd": 37,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "textKo": "“나는 누군가의 전리품이나 보물이 아니야, 카단. 네가 남쪽에서 돌아왔을 때, 그때 내가 널 선택할지 다시 물어봐.”",
+          "textEn": "“I am neither prize nor chattel to be gifted, Kadan. When you return from the southern courts, ask me then whether I choose you.”",
           "bubbleType": "speech",
-          "position": "bottom-left"
+          "position": "bottom-right",
+          "characterCardId": 41
         }
       ],
-      "sfxCues": []
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
     },
     {
       "sceneNumber": 20,
-      "imageFile": "episode_07/scene_20.jpeg",
-      "sourceImageFile": "Kadan_Fenrir_Lucian_map_exchange_202607260802.jpeg",
-      "narrationEn": "When you come back, ask me again if I will choose you then. ” Kadan replied that that was correct. He left south with his six teachers, and Fenrir gave him a map in exchange for an order to bring Lucian's head. The map showed a secret supply route prepared by the Shadow Realm to invade the southern kingdom.",
-      "narrationKo": "네가 돌아오면 그때 내가 너를 선택할지 다시 물어.” 카단은 그 말이 옳다고 답했다. 그는 여섯 스승과 함께 남쪽으로 떠났고, 펜릴은 루시안의 목을 가져오라는 명령 대신 한 장의 지도를 주었다. 지도에는 섀도우렐름이 남쪽 왕국을 침공하기 위해 준비한 비밀 보급로가 표시되어 있었다.",
-      "sourceSentenceStart": 59,
-      "sourceSentenceEnd": 62,
-      "alignmentScore": 0.6049,
+      "imageFile": "episode_07/scene_20.webp",
+      "sourceImageFile": "episode_07/scene_20.webp",
+      "narrationEn": "\"I shall remember, Titania. I swear to return alive so that your choice may never bring regret.\" Beneath the vault of the midnight sky, stars drew shimmering silver paths behind their shoulders—an overture to the epic trials awaiting a wanderer destined for the southern realm.",
+      "narrationKo": "“기억하겠다, 티타니아. 네 선택이 부끄럽지 않도록 살아 돌아오마.” 밤하늘을 수놓은 별들이 두 사람의 등 뒤로 은빛 궤적을 그리며 쏟아져 내렸다. 그것은 새로운 운명을 향해 첫 발을 내딛는 모험가의 서곡이었다.",
+      "sourceSentenceStart": 38,
+      "sourceSentenceEnd": 39,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "textKo": "“기억하겠다, 티타니아. 네 선택이 부끄럽지 않도록 살아 돌아오마.”",
+          "textEn": "“I shall remember, Titania. I swear to return alive so that your choice may never bring regret.”",
           "bubbleType": "speech",
-          "position": "bottom-right"
+          "position": "top-left",
+          "characterCardId": 41
         }
       ],
-      "sfxCues": []
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
     }
   ]
 }

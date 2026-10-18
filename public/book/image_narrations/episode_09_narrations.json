@@ -2,26 +2,62 @@
   "episodeNumber": 9,
   "episodeTitleEn": "Wind in Beggars Clothes",
   "episodeTitleKo": "거지 옷의 바람",
-  "sourceSentenceCount": 63,
+  "sourceSentenceCount": 41,
   "sceneCount": 20,
   "scenes": [
     {
       "sceneNumber": 1,
-      "imageFile": "episode_09/scene_01.jpeg",
-      "sourceImageFile": "Kadan_Ignis_duel_rune_stone_202607260802.jpeg",
-      "narrationEn": "When Kadan's snow crystal shield and Ignis's white flame collided, the duel's rune stone split in half. Ignis's technique was fast and flashy, but the bigger the attack, the more gaps appeared in the next move. Kadan survived the gap by connecting different beats learned from six teachers.",
-      "narrationKo": "카단의 눈결정 방패와 이그니스의 백색 화염이 충돌하자 결투대의 룬석이 반으로 갈라졌다. 이그니스의 기술은 빠르고 화려했지만 공격이 클수록 다음 동작에 빈틈이 생겼다. 카단은 여섯 스승에게 배운 서로 다른 박자를 이어 붙여 그 틈을 버텼다.",
+      "imageFile": "episode_09/scene_01.webp",
+      "sourceImageFile": "episode_09/scene_01.webp",
+      "narrationEn": "Upon the timber platform of Lighthaven's inner forum, tension solidified into razor-sharp ice. Crimson silk standards fluttered from the perimeter parapets, and from gilded balconies overhead, noblewomen with ivory fans and courtiers with perfumed beards looked down in avid curiosity. The throng of common folk held their breath, their gazes darting between Kadan—a nameless youth robed in rugged northern furs bearing an unadorned iron shield—and Ignis, the celebrated young champion of the realm gleaming in immaculate white-silver plate. Sulfur smoke from the previous bout seeped through the flagstone fissures, and charred remnants of protective brambles drifted on the chilly autumn gale like gray snow. The court herald blew his gilded trumpet, his voice booming over the assembly.",
+      "narrationKo": "라이트헤븐 내성 광장의 거대한 결투 무대 위는 순식간에 살얼음판 같은 팽팽한 긴장감으로 얼어붙었다. 붉은 비단 깃발들이 성벽 망루에서 펄럭였고, 황금으로 장식된 귀족 관람석에서는 부채를 든 귀부인들과 기름진 수염의 대신들이 호기심 어린 눈빛으로 아래를 내려다보았다. 수백 명의 관중들은 숨을 죽인 채, 거친 북방 가죽옷을 입고 낡은 무쇠 방패를 든 무명의 소년 카단과 눈부신 백은 갑주를 두른 왕국의 영웅 이그니스를 번갈아 바라보았다. 무대 위 판석 틈새에서는 방금 전의 전투로 달궈진 유황 연기가 아지랑이처럼 피어오르고 있었고, 부서진 덩굴 잔해들이 잿더미가 되어 차가운 가을바람에 어지럽게 흩날렸다. 황궁의 사회관이 황금 나팔을 불며 목청을 높였다.",
       "sourceSentenceStart": 1,
-      "sourceSentenceEnd": 3,
-      "alignmentScore": 0.5422,
+      "sourceSentenceEnd": 2,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "황궁의 사회관이 황금 나팔을 불며 목청을 높였다.",
+          "textEn": "The court herald blew his gilded trumpet, his voice booming over the assembly.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_09/scene_02.webp",
+      "sourceImageFile": "episode_09/scene_02.webp",
+      "narrationEn": "\"A vagabond wretch from the Wildlands dares challenge the sacred honor of the White Flame Order! Witness the immaculate judgment of High Commander Ignis!\" Ignis's golden eyes gleamed with haughty condescension as he inspected Kadan's battered shield. A cold sneer curved his lips.",
+      "narrationKo": "“와일드랜드에서 온 미천한 부랑자가 감히 황실 백색 화염 기사단의 명예에 도전장을 내밀었도다! 기사단장 이그니스 경의 자비 없는 심판을 보라!” 이그니스의 오만한 황금빛 눈동자가 카단의 낡은 방패를 훑어내렸다. 그의 입술 끝에 서늘한 조소가 걸렸다.",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 4,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-left"
+          "textKo": "“와일드랜드에서 온 미천한 부랑자가 감히 황실 백색 화염 기사단의 명예에 도전장을 내밀었도다! 기사단장 이그니스 경의 자비 없는 심판을 보라!”",
+          "textEn": "“A vagabond wretch from the Wildlands dares challenge the sacred honor of the White Flame Order! Witness the immaculate judgment of High Commander Ignis!”",
+          "bubbleType": "shout",
+          "position": "bottom-left",
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
@@ -40,25 +76,137 @@
       ]
     },
     {
-      "sceneNumber": 2,
-      "imageFile": "episode_09/scene_02.jpeg",
-      "sourceImageFile": "Ignis_raises_fingers_like_hooks_202607260802.jpeg",
-      "narrationEn": "As the game dragged on, Ignis raised his fingers like hooks. It was a life force extraction rune passed down by Medusa Gorgo. Kadan remembered the sign of the silver whip he had seen in the cave and turned his body, but his shoulder was deeply torn.",
-      "narrationKo": "승부가 길어지자 이그니스는 손가락을 갈고리처럼 세웠다. 메두사 고르고가 전수한 생명력 추출 룬이었다. 카단은 동굴에서 본 은빛 채찍의 기척을 떠올리고 몸을 틀었지만 어깨가 깊게 찢어졌다.",
-      "sourceSentenceStart": 4,
+      "sceneNumber": 3,
+      "imageFile": "episode_09/scene_03.webp",
+      "sourceImageFile": "episode_09/scene_03.webp",
+      "narrationEn": "\"A nameless vagabond dares trespass upon an imperial duel? You court your own execution. That rusted iron lid shall serve as your headstone!\" Ignis raised his longsword in a high guard, and pure white sanctifying flames roared to life along the steel like a cataract of liquid fire. Descending with thunderous force, the opening gambit, 'Incandescent Flash,' struck like lightning. A blinding sheet of white brilliance cleaved the air, yet Kadan did not yield half a pace. Drawing upon the foundation taught by Master Aleksandar, he tilted the rim of his iron shield at an obtuse angle, deflecting the kinetic axis of the strike. With a deafening clang, arcs of white flame scattered harmlessly into the empty air.",
+      "narrationKo": "“일개 떠돌이 거지가 황실 기사단의 명예로운 결투에 난입하다니, 죽음을 자초하는구나. 그 녹슨 방패가 네 마지막 관짝이 될 것이다!” 이그니스가 순백의 장검을 비껴들자, 타오르는 백색 화염이 칼날을 따라 폭포수처럼 맹렬하게 솟구쳤다. 이그니스의 첫 번째 초식인 ‘백열섬’이 벼락처럼 내리꽂혔다. 눈이 멀 것 같은 백색 섬광이 허공을 갈랐으나, 카단은 반 걸음도 물러서지 않고 알렉산다르 스승에게 배운 방어의 호흡을 끌어올렸다. 무쇠 방패의 모서리를 비스듬히 기울여 화염의 중심축을 튕겨내자, 귀를 찢는 쇳소리와 함께 백색 불꽃이 사방으로 흩뿌려졌다.",
+      "sourceSentenceStart": 5,
       "sourceSentenceEnd": 6,
-      "alignmentScore": 0.6055,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“일개 떠돌이 거지가 황실 기사단의 명예로운 결투에 난입하다니, 죽음을 자초하는구나. 그 녹슨 방패가 네 마지막 관짝이 될 것이다!”",
+          "textEn": "“A nameless vagabond dares trespass upon an imperial duel? You court your own execution. That rusted iron lid shall serve as your headstone!”",
+          "bubbleType": "shout",
+          "position": "bottom-right",
+          "characterCardId": 11
         }
       ],
       "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_09/scene_04.webp",
+      "sourceImageFile": "episode_09/scene_04.webp",
+      "narrationEn": "Shocked that his opening stroke was turned aside, Ignis's expression hardened into granite. Without pausing, he unleashed his second technique, 'Solar Cleave,' sending a fissure of roaring white flame across the arena stones. The granite flagstones split apart with volcanic fury, yet Kadan grounded his weight through star-breathing, redirecting the devastating shockwave into the perimeter stone pillars. As successive attacks failed before the eyes of the gathered aristocracy, Ignis's pride gave way to dark fury. Channeling forbidden mana, he summoned the parasitic life-drain claw imparted in secret by Medusa Gorgo. Blackish-crimson runes coiled around Ignis's gauntleted fingers, slashing violently across Kadan's left shoulder. With a sickening hiss, the cured leather armor burned away, dark crimson blood welling through the scorched tear. A foul stench of necrotic decay rose from the charred flesh.",
+      "narrationKo": "자신의 일격이 막히자 이그니스의 얼굴이 차갑게 굳어졌다. 이그니스는 곧장 두 번째 초식인 ‘일륜참’을 펼치며 대지를 가르는 맹렬한 화염파를 쏘아 보냈다. 무대 바닥의 화강암이 쩍 갈라지며 불기둥이 치솟았지만, 카단은 별 호흡으로 중심을 잡으며 충격파를 바위 기둥으로 흘려보냈다. 수많은 귀족과 백성들이 지켜보는 가운데 공격이 연거푸 무위로 돌아가자, 승부욕에 눈이 먼 이그니스는 금지된 마나를 끌어올렸다. 메두사 고르고에게 비밀리에 전수받은 생명력 흡수의 암흑 손톱이었다. 검붉은 악령의 룬이 이그니스의 손가락을 휘감으며 카단의 왼쪽 어깨를 스쳐 지나갔다. 치이익 하는 소리와 함께 갑옷 가죽이 타들어가며 검붉은 피가 배어 나왔다. 상처 부위에서 살점이 문드러지는 지독한 독기가 피어올랐다.",
+      "sourceSentenceStart": 7,
+      "sourceSentenceEnd": 8,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "상처 부위에서 살점이 문드러지는 지독한 독기가 피어올랐다.",
+          "textEn": "A foul stench of necrotic decay rose from the charred flesh.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_09/scene_05.webp",
+      "sourceImageFile": "episode_09/scene_05.webp",
+      "narrationEn": "Watching from the front ranks of the crowd, Cilia snapped her fingers with lightning speed. \"Subterranean wards are synchronizing with his mana! Disengage, Kadan!\"",
+      "narrationKo": "관중 속에서 숨을 죽이고 지켜보던 실리아가 급히 손가락을 튕겼다. “땅 밑의 룬 장치들이 이그니스의 마나에 반응하고 있어요! 물러서요, 카단!”",
+      "sourceSentenceStart": 9,
+      "sourceSentenceEnd": 10,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“땅 밑의 룬 장치들이 이그니스의 마나에 반응하고 있어요! 물러서요, 카단!”",
+          "textEn": "“Subterranean wards are synchronizing with his mana! Disengage, Kadan!”",
+          "bubbleType": "shout",
+          "position": "top-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_09/scene_06.webp",
+      "sourceImageFile": "episode_09/scene_06.webp",
+      "narrationEn": "Manipulating subterranean air currents, Cilia severed the tracking magic circles concealed beneath the flagstones. Microscopic needles of compressed wind punctured the hidden ley conduits, paralyzing the imperial mages' sensory wards in a burst of azure sparks. At that exact moment, an imposing warrior bearing the sapphire mantle of the Arcane Holy Knights leaped onto the platform like a bolt of lightning. It was Paladin Walker.",
+      "narrationKo": "실리아는 지하의 바람 기류를 조작해 무대 바닥 아래 깔려 있던 황궁의 추적 마법진을 단숨에 끊어냈다. 미세한 바람의 송곳이 땅속의 마력 도선을 꿰뚫자 파지직거리는 청백색 불꽃과 함께 황궁 마법사들의 감시 결계가 일제히 마비되었다. 바로 그 순간, 관중석 뒤편에서 푸른 성기사의 문양을 두른 장한 사내가 무대 위로 번개처럼 뛰어들었다. 성기사 워커였다.",
+      "sourceSentenceStart": 11,
+      "sourceSentenceEnd": 12,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "성기사 워커였다.",
+          "textEn": "It was Paladin Walker.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        },
         {
           "textKo": "파지지직!",
           "textEn": "CRACKLE!",
@@ -68,22 +216,93 @@
       ]
     },
     {
-      "sceneNumber": 3,
-      "imageFile": "episode_09/scene_03.jpeg",
-      "sourceImageFile": "Kadan_blood_glows_red_symbol_202607260802.jpeg",
-      "narrationEn": "As Kadan's blood fell on the floor of the duel table, the hidden tracking symbol glowed red. It was a device that recorded the participants' mana so that the royal army could later find it. Celia sent wind down the stands, breaking the lines of the pattern one by one.",
-      "narrationKo": "카단의 피가 결투대 바닥에 떨어지자 숨겨진 추적 문양이 붉게 빛났다. 참가자의 마나를 기록해 훗날 궁정군이 찾아낼 수 있게 만든 장치였다. 실리아는 관중석 아래로 바람을 보내 문양의 선을 하나씩 끊었다.",
-      "sourceSentenceStart": 7,
-      "sourceSentenceEnd": 9,
-      "alignmentScore": 0.4924,
+      "sceneNumber": 7,
+      "imageFile": "episode_09/scene_07.webp",
+      "sourceImageFile": "episode_09/scene_07.webp",
+      "narrationEn": "Walker brought down his jade-encrusted staff, parrying Ignis's flaming blade with a resounding boom. \"Who taught you to employ that vile parasitic claw? You dare sully the immaculate flame of the Holy Order with the necrotic sorcery of fiends? Shame upon your steel!\"",
+      "narrationKo": "워커는 거대한 벽옥 지팡이로 이그니스의 불꽃 검을 가로막으며 호통을 쳤다. “누가 네게 그 사악한 손톱을 가르쳤느냐! 순결한 성기사의 화염에 암흑의 마수를 섞다니, 부끄러운 줄 알아라!”",
+      "sourceSentenceStart": 13,
+      "sourceSentenceEnd": 14,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
+          "speakerKo": "워커",
+          "speakerEn": "Walker",
+          "textKo": "“누가 네게 그 사악한 손톱을 가르쳤느냐! 순결한 성기사의 화염에 암흑의 마수를 섞다니, 부끄러운 줄 알아라!”",
+          "textEn": "“Who taught you to employ that vile parasitic claw? You dare sully the immaculate flame of the Holy Order with the necrotic sorcery of fiends? Shame upon your steel!”",
           "bubbleType": "shout",
+          "position": "bottom-right",
+          "characterCardId": 51
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
           "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_09/scene_08.webp",
+      "sourceImageFile": "episode_09/scene_08.webp",
+      "narrationEn": "Yet Gorgo's insidious poison leaped from the blade, creeping up Walker's staff. A pale gray shadow of necrotic venom spread across Walker's temples, causing the veteran to stumble. The forum erupted into pandemonium as watch horns wailed and armored guards surged forward with drawn crossbows. Cilia raised a colossal gale wall, swatting aside the incoming hail of bolts. Grasping the wounded Paladin Walker beneath his arms, Kadan and Cilia melted into the labyrinthine alleys of the lower city. Inside an abandoned timber windmill on the outskirts of the watermills, Paladin Walker collapsed upon a pallet of dry straw, his ragged gasps shuddering through the gloom. Blood dripping from his wound crystallized into dark frost the instant it touched the floorboards.",
+      "narrationKo": "그러나 고르고의 독기는 워커의 지팡이를 타고 파고들었다. 워커의 얼굴에 핏빛 그림자가 드리워지며 비틀거렸다. 장내는 경비병들의 고함과 관중들의 비명으로 아수라장이 되었다. 근위병들이 쇠뇌를 쏘아대며 추격해 오자, 실리아는 허공에 거대한 돌풍 장벽을 펼쳐 화살들을 모조리 쳐냈다. 카단과 실리아는 부상당한 워커를 부축하여 미로 같은 수도의 하층민 골목으로 급히 몸을 숨겼다. 골목길 깊숙한 곳, 버려진 풍차 방앗간 안으로 피신했을 때 워커는 가쁜 숨을 몰아쉬며 짚더미 위에 쓰러졌다. 그의 상처에서 흘러내린 피가 바닥에 닿자마자 차가운 얼음 결정으로 굳어졌다.",
+      "sourceSentenceStart": 15,
+      "sourceSentenceEnd": 16,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그의 상처에서 흘러내린 피가 바닥에 닿자마자 차가운 얼음 결정으로 굳어졌다.",
+          "textEn": "Blood dripping from his wound crystallized into dark frost the instant it touched the floorboards.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 89
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_09/scene_09.webp",
+      "sourceImageFile": "episode_09/scene_09.webp",
+      "narrationEn": "Cilia cast aside her soiled beggar's mantle. Beneath the rags emerged a breathtaking tunic of teal silk and a delicate circlet of braided wind-silver. Through locks of flowing silver-blue hair peered the slender, pointed ears of high elven lineage. She was none other than Princess Cilia of Whispering Wind Island, sovereign realm of the eastern seas. Even the dust motes in the abandoned mill seemed to bow before her serene aura. Panting softly, Cilia inspected Kadan's lacerated shoulder.",
+      "narrationKo": "실리아는 걸치고 있던 남루한 거지 망토를 벗어 던졌다. 낡은 누더기 옷 아래에서 드러난 것은 눈부신 청록색 실크 원피스와 바람의 왕관이었다. 바람에 흩날리는 은빛 머리칼 사이로 뾰족한 엘프의 귀가 드러났다. 그녀는 대륙 동쪽 끝자락에 위치한 ‘바람 속삭임 섬’의 왕녀 실리아였다. 방앗간 구석의 먼지조차 그녀의 우아한 마나에 고요히 가라앉았다. 실리아가 숨을 헐떡이며 카단의 어깨 상처를 살폈다.",
+      "sourceSentenceStart": 17,
+      "sourceSentenceEnd": 18,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "실리아가 숨을 헐떡이며 카단의 어깨 상처를 살폈다.",
+          "textEn": "Panting softly, Cilia inspected Kadan's lacerated shoulder.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
@@ -102,22 +321,61 @@
       ]
     },
     {
-      "sceneNumber": 4,
-      "imageFile": "episode_09/scene_04.jpeg",
-      "sourceImageFile": "Kadan_fighting_duel_stopped_by_202607260802.jpeg",
-      "narrationEn": "While Kadan was fighting, she first noticed that the purpose of the duel was not winning or losing. It was the paladin Walker who stopped the duel. He set up a blue barrier between the two and grabbed Ignis's wrist.",
-      "narrationKo": "그녀는 카단이 싸우는 동안 결투의 목적이 승패가 아님을 먼저 알아챘다. 결투를 멈춘 것은 성기사 워커였다. 그는 두 사람 사이에 푸른 방호벽을 세우고 이그니스의 손목을 붙잡았다.",
-      "sourceSentenceStart": 10,
-      "sourceSentenceEnd": 12,
-      "alignmentScore": 0.582,
+      "sceneNumber": 10,
+      "imageFile": "episode_09/scene_10.webp",
+      "sourceImageFile": "episode_09/scene_10.webp",
+      "narrationEn": "\"It is Gorgo's life-drain venom. If left untreated, your heart will turn to solid stone within three sunrises.\" Despite the agony coursing through his veins, Kadan offered a faint, gentle smile.",
+      "narrationKo": "“고르고의 생명 흡수 독이에요. 이대로 두면 사흘 안에 심장이 굳어 돌이 되고 말아요.” 카단은 고통 속에서도 엷은 미소를 지으며 그녀를 바라보았다.",
+      "sourceSentenceStart": 19,
+      "sourceSentenceEnd": 20,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“고르고의 생명 흡수 독이에요. 이대로 두면 사흘 안에 심장이 굳어 돌이 되고 말아요.”",
+          "textEn": "“It is Gorgo's life-drain venom. If left untreated, your heart will turn to solid stone within three sunrises.”",
+          "bubbleType": "speech",
+          "position": "bottom-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_09/scene_11.webp",
+      "sourceImageFile": "episode_09/scene_11.webp",
+      "narrationEn": "\"Those silk robes look far too thin for the northern winds. You must have been shivering all this time.\" Cilia glared at him in disbelief, yet glistening tears welled at the corners of her eyes. \"Is my attire your primary concern right now? Foolish boy, why did you leap into another's duel only to suffer this horrific wound!\"",
+      "narrationKo": "“그 얇은 옷으로 그동안 꽤 추웠겠구나.” 실리아는 어처구니없다는 듯 눈을 흘겼지만, 그녀의 눈가에는 눈물이 글썽였다. “지금 내 옷 걱정할 때예요? 바보같이 왜 남의 싸움에 끼어들어서 이 꼴이 된 거예요!”",
+      "sourceSentenceStart": 21,
+      "sourceSentenceEnd": 23,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "우리의 맹세는 아직 꺼지지 않았다.",
-          "textEn": "Our vow has never been extinguished.",
+          "textKo": "“그 얇은 옷으로 그동안 꽤 추웠겠구나.”",
+          "textEn": "“Those silk robes look far too thin for the northern winds. You must have been shivering all this time.”",
           "bubbleType": "speech",
-          "position": "top-left"
+          "position": "bottom-right",
+          "characterCardId": 41
+        },
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“지금 내 옷 걱정할 때예요? 바보같이 왜 남의 싸움에 끼어들어서 이 꼴이 된 거예요!”",
+          "textEn": "“Is my attire your primary concern right now? Foolish boy, why did you leap into another's duel only to suffer this horrific wound!”",
+          "bubbleType": "shout",
+          "position": "top-left",
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
@@ -130,22 +388,87 @@
       ]
     },
     {
-      "sceneNumber": 5,
-      "imageFile": "episode_09/scene_05.jpeg",
-      "sourceImageFile": "Walker_astonished_by_Ignis's_arts_202607260802.jpeg",
-      "narrationEn": "Walker, a member of the same Star Sanctuary as Hercul, was astonished to see Ignis using both the Light Sword and Forbidden Arts that he had learned from his disciple. “Who taught you to do that? ” Ignis did not reply.",
-      "narrationKo": "헤르쿨과 같은 별의 성소 소속인 워커는 이그니스가 자신의 제자에게 배운 빛의 검식과 금지술을 함께 쓰는 것을 보고 경악했다. “누가 네게 그 손을 가르쳤지?” 이그니스는 답하지 않았다.",
-      "sourceSentenceStart": 13,
-      "sourceSentenceEnd": 15,
-      "alignmentScore": 0.3618,
+      "sceneNumber": 12,
+      "imageFile": "episode_09/scene_12.webp",
+      "sourceImageFile": "episode_09/scene_12.webp",
+      "narrationEn": "Breathing heavily from the straw pallet, Paladin Walker spoke with strained rasp. \"Eighteen winters ago, beneath the howling blizzard of Elwin hamlet, Brother Aleksandar and Brother Balian touched the flats of their blades above your cradles. Their sacred vow to defend human dignity and justice remained unbroken before any darkness. Yet corrupt lords of the court and Death Knight Artus orchestrated their betrayal, and infant Ignis was stolen away to be raised as a gilded puppet of the Flame Court.\"",
+      "narrationKo": "워커가 거친 숨을 몰아쉬며 짚더미 위에서 입을 열었다. “열여덟 해 전, 눈보라 치던 엘윈 마을에서 알렉산다르 형님과 발리안 형님이 너희 두 아이의 요람을 마주 보며 칼을 맞대었지. 정의와 인간의 존엄을 지키겠다는 두 사람의 서약은 어떤 어둠 앞에서도 꺾이지 않았소. 그러나 탐욕에 눈이 먼 궁정의 귀족들과 데스나이트 아르투스가 배신을 획책했고, 갓난아기였던 이그니스는 불꽃 궁정의 꼭두각시로 길러진 거요.”",
+      "sourceSentenceStart": 24,
+      "sourceSentenceEnd": 25,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "헤르쿨",
-          "speakerEn": "Hercul",
-          "textKo": "누가 네게 그 손을 가르쳤지?",
-          "textEn": "Who taught you to do that? ",
+          "speakerKo": "워커",
+          "speakerEn": "Walker",
+          "textKo": "“열여덟 해 전, 눈보라 치던 엘윈 마을에서 알렉산다르 형님과 발리안 형님이 너희 두 아이의 요람을 마주 보며 칼을 맞대었지. 정의와 인간의 존엄을 지키겠다는 두 사람의 서약은 어떤 어둠 앞에서도 꺾이지 않았소. 그러나 탐욕에 눈이 먼 궁정의 귀족들과 데스나이트 아르투스가 배신을 획책했고, 갓난아기였던 이그니스는 불꽃 궁정의 꼭두각시로 길러진 거요.”",
+          "textEn": "“Eighteen winters ago, beneath the howling blizzard of Elwin hamlet, Brother Aleksandar and Brother Balian touched the flats of their blades above your cradles. Their sacred vow to defend human dignity and justice remained unbroken before any darkness. Yet corrupt lords of the court and Death Knight Artus orchestrated their betrayal, and infant Ignis was stolen away to be raised as a gilded puppet of the Flame Court.”",
           "bubbleType": "speech",
-          "position": "top-right"
+          "position": "top-left",
+          "characterCardId": 51
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_09/scene_13.webp",
+      "sourceImageFile": "episode_09/scene_13.webp",
+      "narrationEn": "Kadan tightened his calloused fists. The bedtime lullabies his mother Elwin had sung on frozen winter nights finally aligned with the harsh reality before his eyes. \"Then Ignis is not my sworn enemy... but a brother with whom I must share the truth.\"",
+      "narrationKo": "카단은 주먹을 꽉 쥐었다. 어머니 엘윈이 겨울밤마다 들려주던 자장가의 진실이 마침내 눈앞의 현실로 맞춰지는 순간이었다. “그렇다면 이그니스는 제 원수가 아니라... 함께 진실을 마주해야 할 형제였군요.”",
+      "sourceSentenceStart": 26,
+      "sourceSentenceEnd": 27,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "엘윈",
+          "speakerEn": "Elwin",
+          "textKo": "“그렇다면 이그니스는 제 원수가 아니라... 함께 진실을 마주해야 할 형제였군요.”",
+          "textEn": "“Then Ignis is not my sworn enemy... but a brother with whom I must share the truth.”",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 42
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_09/scene_14.webp",
+      "sourceImageFile": "episode_09/scene_14.webp",
+      "narrationEn": "Walker rested a blood-stained gauntlet upon Kadan's shoulder. \"Indeed. To strike him down with steel is simple, but to liberate his soul from the fetters of shadow requires a heart bound to the true oath. To purge this venom, you require the Moonlit Herb—an ancient panacea guarded exclusively inside the royal apothecary. Yet that sanctum is sealed behind three tiers of impenetrable imperial wards, and beneath it operate horrific alchemical contraptions extracting the living mana of captive souls.\"",
+      "narrationKo": "워커가 피 묻은 손으로 카단의 어깨를 짚었다. “그렇소. 그 아이를 칼로 베는 것은 쉬우나, 그 영혼을 어둠의 사슬에서 구원하는 것은 오직 진정한 맹세를 품은 자만이 할 수 있는 일이오. 그리고 이 독을 해독하려면 황궁 직속 비밀 약초원에만 보관되어 있는 고대 영약 ‘달빛잎’이 필요하오. 하지만 그곳은 철통같은 룬 결계로 봉인되어 있소. 그곳 지하에는 사람의 마나를 강제로 추출하는 끔찍한 연금술 설비들이 가동되고 있소.”",
+      "sourceSentenceStart": 28,
+      "sourceSentenceEnd": 29,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "워커",
+          "speakerEn": "Walker",
+          "textKo": "“그렇소. 그 아이를 칼로 베는 것은 쉬우나, 그 영혼을 어둠의 사슬에서 구원하는 것은 오직 진정한 맹세를 품은 자만이 할 수 있는 일이오. 그리고 이 독을 해독하려면 황궁 직속 비밀 약초원에만 보관되어 있는 고대 영약 ‘달빛잎’이 필요하오. 하지만 그곳은 철통같은 룬 결계로 봉인되어 있소. 그곳 지하에는 사람의 마나를 강제로 추출하는 끔찍한 연금술 설비들이 가동되고 있소.”",
+          "textEn": "“Indeed. To strike him down with steel is simple, but to liberate his soul from the fetters of shadow requires a heart bound to the true oath. To purge this venom, you require the Moonlit Herb—an ancient panacea guarded exclusively inside the royal apothecary. Yet that sanctum is sealed behind three tiers of impenetrable imperial wards, and beneath it operate horrific alchemical contraptions extracting the living mana of captive souls.”",
+          "bubbleType": "speech",
+          "position": "bottom-left",
+          "characterCardId": 51
         }
       ],
       "sfxCues": [
@@ -164,252 +487,23 @@
       ]
     },
     {
-      "sceneNumber": 6,
-      "imageFile": "episode_09/scene_06.jpeg",
-      "sourceImageFile": "Kadan_Balbo_Eliana_duel_scene_202607260802.jpeg",
-      "narrationEn": "As the palace guards approached, he left the duel, saying only that he would not forget the insult. Kadan supported Balbo and Eliana, who had fallen. At that time, he heard six teachers calling out to him from among the crowd, but the moment he turned around, the people had already dispersed.",
-      "narrationKo": "궁정 호위대가 몰려오자 그는 모욕을 잊지 않겠다는 말만 남기고 결투대를 떠났다. 카단은 쓰러진 발보와 엘리아나를 부축했다. 그때 관중 사이에서 여섯 스승이 자신을 부르는 소리를 들었지만, 돌아보는 순간 사람들은 이미 흩어지고 없었다.",
-      "sourceSentenceStart": 16,
-      "sourceSentenceEnd": 18,
-      "alignmentScore": 0.4164,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 7,
-      "imageFile": "episode_09/scene_07.jpeg",
-      "sourceImageFile": "Walker_poisoned_by_Ignis_attack_202607260802.jpeg",
-      "narrationEn": "Walker was poisoned by Ignis's attack. The moon leaves needed for treatment were only found in the palace apothecary. When Kadan said he was going to enter the front door, Celia sighed. “Why is the only part of your plan that involves breaking down the door?",
-      "narrationKo": "워커는 이그니스의 공격에 독을 입었다. 치료에 필요한 달빛잎은 궁정 약제고에만 있었다. 카단이 정문으로 들어가겠다고 하자 실리아는 한숨을 쉬었다. “네 계획에는 왜 늘 문을 부수는 부분밖에 없어?”",
-      "sourceSentenceStart": 19,
-      "sourceSentenceEnd": 22,
-      "alignmentScore": 0.4836,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "네 계획에는 왜 늘 문을 부수는 부분밖에 없어?",
-          "textEn": "“네 계획에는 왜 늘 문을 부수는 부분밖에 없어?”",
-          "bubbleType": "speech",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 8,
-      "imageFile": "episode_09/scene_08.jpeg",
-      "sourceImageFile": "Celia_takes_off_beggar_clothes_202607260802.jpeg",
-      "narrationEn": "” That night, Celia took off his old beggar clothes. Long, pointed elf ears were revealed from beneath her matted hair, and as she dusted off the lining of her cloak, her silver-blue dress unfolded like the wind. What she hid was not her name but her identity.",
-      "narrationKo": "그날 밤, 실리아는 낡은 거지 옷을 벗었다. 헝클어진 머리 아래에서 길고 뾰족한 엘프의 귀가 드러났고, 망토 안감의 먼지를 털자 은청색 드레스가 바람처럼 펼쳐졌다. 그녀가 숨긴 것은 이름이 아니라 신분이었다.",
-      "sourceSentenceStart": 23,
-      "sourceSentenceEnd": 25,
-      "alignmentScore": 0.8487,
-      "dialogues": [
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "발소리를 죽여라. 어둠 속에서 숨을 고르는 거다.",
-          "textEn": "Muffle your footsteps. Catch your breath in the dark.",
-          "bubbleType": "whisper",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "휘이이익-!",
-          "textEn": "SWOOSH!",
-          "style": "slash",
-          "position": "top-left"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 9,
-      "imageFile": "episode_09/scene_09.jpeg",
-      "sourceImageFile": "Celia_Aeolus_Kadan_Pegasus_scene_202607260802.jpeg",
-      "narrationEn": "Celia was the daughter of Aeolus, who ruled Whisper of the Wind Island. Celia has prepared many situations in which Kadan will get angry. He first revealed how he hid his identity, tested his words, and even joked about asking for Pegasus.",
-      "narrationKo": "실리아는 바람의 속삭임 섬을 다스리는 에올루스의 딸이었다. 실리아는 카단이 화를 낼 상황을 여러 가지로 준비해 두었다. 신분을 숨긴 일, 그의 말을 시험한 일, 페가수스를 달라고 농담한 일까지 먼저 털어놓았다.",
-      "sourceSentenceStart": 26,
-      "sourceSentenceEnd": 28,
-      "alignmentScore": 0.3424,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "휘이이익-!",
-          "textEn": "SWOOSH!",
-          "style": "slash",
-          "position": "top-left"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 10,
-      "imageFile": "episode_09/scene_10.jpeg",
-      "sourceImageFile": "Kadan_heard_horse_name_202607260802.jpeg",
-      "narrationEn": "Kadan tilted his head when he heard the horse's name. “Pegasus is not something I give you. If you want to ride, ask Pegasus.",
-      "narrationKo": "카단은 말의 이름을 듣자 고개를 갸웃했다. “페가수스는 내가 주는 물건이 아니야. 네가 타고 싶으면 페가수스에게 물어봐.”",
-      "sourceSentenceStart": 29,
-      "sourceSentenceEnd": 31,
-      "alignmentScore": 0.5256,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "페가수스는 내가 주는 물건이 아니야. 네가 타고 싶으면 페가수스에게 물어봐.",
-          "textEn": "“페가수스는 내가 주는 물건이 아니야. 네가 타고 싶으면 페가수스에게 물어봐.”",
-          "bubbleType": "speech",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 11,
-      "imageFile": "episode_09/scene_11.jpeg",
-      "sourceImageFile": "Celia_and_Kadan_scene_09_202607260802.jpeg",
-      "narrationEn": "” Celia didn't get any of the apples he expected. The simplicity of Kadan has sometimes most easily broken down a clever person's defenses. Kadan forgot what to say for a while.",
-      "narrationKo": "실리아는 예상했던 사과 중 어느 것도 꺼내지 못했다. 카단의 단순함은 때때로 영리한 사람의 방어를 가장 쉽게 무너뜨렸다. 카단은 한동안 말을 잊었다.",
-      "sourceSentenceStart": 32,
-      "sourceSentenceEnd": 34,
-      "alignmentScore": 0.4644,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-right"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "쿠구구궁!",
-          "textEn": "RUMBLE!",
-          "style": "rumble",
-          "position": "bottom-left"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 12,
-      "imageFile": "episode_09/scene_12.jpeg",
-      "sourceImageFile": "Celia_raised_eyebrows_opened_mouth_202607260802.jpeg",
-      "narrationEn": "Celia raised his eyebrows and barely opened his mouth. “You must have been cold in those clothes. ” Celia laughed and wiped the corners of his eyes.",
-      "narrationKo": "실리아가 눈썹을 치켜세우자 겨우 입을 열었다. “그 옷으로 추웠겠다.” 실리아는 웃다가 눈가를 훔쳤다.",
-      "sourceSentenceStart": 35,
-      "sourceSentenceEnd": 37,
-      "alignmentScore": 0.2856,
-      "dialogues": [
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "그 옷으로 추웠겠다.",
-          "textEn": "You must have been cold in those clothes. ",
-          "bubbleType": "speech",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 13,
-      "imageFile": "episode_09/scene_13.jpeg",
-      "sourceImageFile": "Kadan_in_fantasy_RPG_scene_202607260802.jpeg",
-      "narrationEn": "That answer was more like Kadan than saying I was beautiful or deceived. From a young age, she received the vigilance and admiration of everyone on her father's island. He had just run away because he wanted to see how someone treated him when his identity was unknown.",
-      "narrationKo": "아름답다거나 속았다는 말보다 그 대답이 더 카단다웠다. 그녀는 어릴 때부터 아버지의 섬에서 모든 사람의 경계와 찬사를 받았다. 누가 신분을 모를 때 자신을 어떻게 대하는지 보고 싶어 도망쳐 나온 참이었다.",
-      "sourceSentenceStart": 38,
-      "sourceSentenceEnd": 40,
-      "alignmentScore": 0.4518,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "발소리를 죽여라. 어둠 속에서 숨을 고르는 거다.",
-          "textEn": "Muffle your footsteps. Catch your breath in the dark.",
-          "bubbleType": "whisper",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 14,
-      "imageFile": "episode_09/scene_14.jpeg",
-      "sourceImageFile": "Two_sneaked_into_pharmacy_202607260802.jpeg",
-      "narrationEn": "The two sneaked into the pharmacy. Celia sent wind into the vent to eavesdrop on the guard's conversation, and Kadan stopped the vibration of the alarm rune with a thin film of ice. As I was about to turn around to look for the moon leaves, a fragrant bag slipped down the shelf. In the pharmacy, confiscated herbs were piled up like a mountain and rotting.",
-      "narrationKo": "두 사람은 약제고로 잠입했다. 실리아는 통풍구에 바람을 보내 경비의 대화를 훔쳐 듣고, 카단은 얇은 얼음막으로 경보 룬의 진동을 멈췄다. 달빛잎을 찾아 돌아서려던 순간, 향기로운 봉투 하나가 선반 아래로 미끄러졌다. 약제고에는 압수한 약초가 산처럼 쌓여 썩고 있었다.",
-      "sourceSentenceStart": 41,
-      "sourceSentenceEnd": 44,
-      "alignmentScore": 0.4636,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        },
-        {
-          "textKo": "쿠구구궁!",
-          "textEn": "RUMBLE!",
-          "style": "rumble",
-          "position": "bottom-left"
-        }
-      ]
-    },
-    {
       "sceneNumber": 15,
-      "imageFile": "episode_09/scene_15.jpeg",
-      "sourceImageFile": "Celia_takes_moonlight_leaves_202607260802.jpeg",
-      "narrationEn": "City doctors send patients away because they cannot find even a single antipyretic herb, but the palace keeps them in a warehouse to raise the price. Celia changed his plan to take only the moonlight leaves. I unsealed all the boxes and threw a note with the location written on it out the window.",
-      "narrationKo": "도시의 의원들은 해열초 하나 구하지 못해 환자를 돌려보내는데 궁정은 가격을 올리려고 창고에 묶어 둔 것이다. 실리아는 달빛잎만 가져가자는 계획을 바꿨다. 모든 상자의 봉인을 풀고 위치를 적은 바람 쪽지를 창밖으로 날렸다.",
-      "sourceSentenceStart": 45,
-      "sourceSentenceEnd": 47,
-      "alignmentScore": 0.3204,
+      "imageFile": "episode_09/scene_15.webp",
+      "sourceImageFile": "episode_09/scene_15.webp",
+      "narrationEn": "Kadan withdrew his mother's keepsake, the silver dagger. \"The runes upon this silver blade can unravel any lock. I shall breach the vault.\"",
+      "narrationKo": "카단은 품에서 어머니의 유품인 은빛 단검을 꺼내 쥐었다. “은빛 단검의 룬이라면 어떤 봉인도 풀 수 있습니다. 제가 가겠습니다.”",
+      "sourceSentenceStart": 30,
+      "sourceSentenceEnd": 31,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
-          "bubbleType": "shout",
-          "position": "top-right"
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“은빛 단검의 룬이라면 어떤 봉인도 풀 수 있습니다. 제가 가겠습니다.”",
+          "textEn": "“The runes upon this silver blade can unravel any lock. I shall breach the vault.”",
+          "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
@@ -429,76 +523,57 @@
     },
     {
       "sceneNumber": 16,
-      "imageFile": "episode_09/scene_16.jpeg",
-      "sourceImageFile": "Citizens_gather_at_warehouse_202607260802.jpeg",
-      "narrationEn": "When the citizens gathered in front of the warehouse at dawn the next day, the court could not hide the herbs. Kadan was amazed at how Celia could move through the city without breaking down the door. The letter was sent from Lucian to Ignis.",
-      "narrationKo": "다음 날 새벽 시민들이 창고 앞에 모이면 궁정은 약초를 숨길 수 없었다. 카단은 실리아가 문을 부수지 않고도 도시 전체를 움직이는 방식을 보며 감탄했다. 편지는 루시안이 이그니스에게 보낸 것이었다.",
-      "sourceSentenceStart": 48,
-      "sourceSentenceEnd": 50,
-      "alignmentScore": 0.5023,
+      "imageFile": "episode_09/scene_16.webp",
+      "sourceImageFile": "episode_09/scene_16.webp",
+      "narrationEn": "Cilia blocked the doorway, shaking her head. \"You cannot go alone. The subterranean exhaust shafts of the royal gardens can only be navigated through the guidance of wind sorcery.\"",
+      "narrationKo": "실리아가 앞을 가로막았다. “혼자는 못 가요. 황궁 지하 약초원의 환기구는 바람의 마법사가 아니면 지나갈 수 없어요.”",
+      "sourceSentenceStart": 32,
+      "sourceSentenceEnd": 33,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“혼자는 못 가요. 황궁 지하 약초원의 환기구는 바람의 마법사가 아니면 지나갈 수 없어요.”",
+          "textEn": "“You cannot go alone. The subterranean exhaust shafts of the royal gardens can only be navigated through the guidance of wind sorcery.”",
           "bubbleType": "speech",
-          "position": "top-left"
+          "position": "top-left",
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
         {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
           "position": "top-right"
         },
         {
-          "textKo": "쿵-!",
-          "textEn": "THUD!",
-          "style": "impact",
-          "position": "bottom-right"
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
         }
       ]
     },
     {
       "sceneNumber": 17,
-      "imageFile": "episode_09/scene_17.jpeg",
-      "sourceImageFile": "Instructions_to_poison_Walker_202607260802.jpeg",
-      "narrationEn": "Instructions were written to poison Walker, capture Kadan, and eliminate Balbo before his identity is revealed. At the end of the letter, there was also an order to keep a woman named Ysela confined in the villa. Kadan didn't know the name, but had a hunch that it could be Ignis's mother.",
-      "narrationKo": "워커를 독살하고, 카단을 생포하며, 발보의 정체가 드러나기 전에 제거하라는 지시가 적혀 있었다. 편지 끝에는 이셀라라는 여인을 계속 별궁에 가두라는 명령도 있었다. 카단은 그 이름을 알지 못했지만 이그니스의 어머니일 수 있다고 직감했다.",
-      "sourceSentenceStart": 51,
-      "sourceSentenceEnd": 53,
-      "alignmentScore": 0.4461,
+      "imageFile": "episode_09/scene_17.webp",
+      "sourceImageFile": "episode_09/scene_17.webp",
+      "narrationEn": "Under cover of midnight gloom, the two crept into the imperial conservatory. The sewer waterways reeked of rotting lichen and pungent sludge. Cilia wove a continuous sound-dampening breeze that erased their footfalls, while Kadan channeled the frost mana of the silver dagger, flash-freezing the internal tumbler pins of the heavy iron vaults until they snapped cleanly. Pushing open the massive bronze portals, the radiant azure aroma of the Moonlit Herb greeted their senses, glowing softly in the dark. Growing inside frosty glass domes, the crystalline leaves shimmered with self-luminous starlight. As they gathered the healing herbs, Kadan's gaze snagged upon an iron dispatch coffer stamped with red wax in the corner. Opening the docket, Kadan's heart ceased beating for an agonizing second.",
+      "narrationKo": "두 사람은 야음을 틈타 황궁의 어용 약초 창고로 잠입했다. 지하 배수로는 축축한 이끼와 역겨운 폐수 냄새로 가득 차 있었다. 실리아는 미세한 바람의 장막으로 발소리를 완전히 지웠고, 카단은 은빛 단검의 서리 마나를 흘려보내 무거운 철제 자물쇠의 핀을 순간적으로 얼려 부수었다. 서걱 소리와 함께 육중한 철문이 열리자, 은은한 푸른빛을 발산하는 달빛잎의 영롱한 향기가 창고 안을 가득 채웠다. 서리 내린 유리 온실 안에서 자라난 푸른 잎사귀들은 어둠 속에서도 스스로 별빛처럼 반짝였다. 달빛잎을 챙겨 나오던 카단의 시선이 약초 창고 구석의 기밀 문서함에 멈추었다. 그곳에는 붉은 밀랍으로 봉인된 궁정 죄수 이송 명부가 놓여 있었다. 서류를 펼쳐 든 카단의 눈동자가 크게 흔들렸다.",
+      "sourceSentenceStart": 34,
+      "sourceSentenceEnd": 35,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
-          "bubbleType": "shout",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 18,
-      "imageFile": "episode_09/scene_18.jpeg",
-      "sourceImageFile": "Celia_took_letter,_set_alarm_202607260802.jpeg",
-      "narrationEn": "Celia took the letter and set off a false fire alarm in the pharmacy. While the guards ran with buckets of water, the two escaped across the roof. Walker survived with the moonleaf, but the poison was not completely removed.",
-      "narrationKo": "실리아는 편지를 챙기고 약제고에 거짓 화재 경보를 일으켰다. 경비들이 물통을 들고 뛰어가는 사이 두 사람은 지붕을 건너 빠져나왔다. 워커는 달빛잎으로 목숨을 건졌지만 독은 완전히 빠지지 않았다.",
-      "sourceSentenceStart": 54,
-      "sourceSentenceEnd": 56,
-      "alignmentScore": 0.3024,
-      "dialogues": [
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "서류를 펼쳐 든 카단의 눈동자가 크게 흔들렸다.",
+          "textEn": "Opening the docket, Kadan's heart ceased beating for an agonizing second.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
@@ -508,6 +583,35 @@
           "style": "slash",
           "position": "top-right"
         },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_09/scene_18.webp",
+      "sourceImageFile": "episode_09/scene_18.webp",
+      "narrationEn": "'Seventh Subterranean Labor Camp: Former Grand Master Balian, living mana extraction trials ongoing.' Uncle Balian still lived. Within Kadan's breast, the oath sworn beneath the stars flared into an incandescent flame.",
+      "narrationKo": "‘제7 지하 노동 수용소: 전직 성기사단장 발리안, 생체 마나 추출 실험 지속 중.’ 발리안 숙부가 아직 살아 있었다. 카단의 가슴속에서 꺼지지 않는 별빛 같은 맹세가 다시금 타올랐다.",
+      "sourceSentenceStart": 36,
+      "sourceSentenceEnd": 37,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단의 가슴속에서 꺼지지 않는 별빛 같은 맹세가 다시금 타올랐다.",
+          "textEn": "Within Kadan's breast, the oath sworn beneath the stars flared into an incandescent flame.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 43
+        }
+      ],
+      "sfxCues": [
         {
           "textKo": "파지지직!",
           "textEn": "CRACKLE!",
@@ -518,21 +622,22 @@
     },
     {
       "sceneNumber": 19,
-      "imageFile": "episode_09/scene_19.jpeg",
-      "sourceImageFile": "He_learned_runes_from_Hercul_202607260802.jpeg",
-      "narrationEn": "He said that he briefly learned runes from Hercul when Ignis was a baby, and that one day the court cut off visits between the child and his mother. The guilt of not being able to protect the child he taught silenced him for a long time. The wind outside the window flipped the letter.",
-      "narrationKo": "그는 이그니스가 아기였을 때 헤르쿨에게 잠시 룬을 배웠으며, 어느 날 궁정이 아이와 어머니의 면회를 끊었다고 말했다. 자신이 가르친 아이를 지키지 못했다는 죄책감이 오랫동안 그를 침묵시켰다. 창밖에서 바람이 편지를 뒤집었다.",
-      "sourceSentenceStart": 57,
-      "sourceSentenceEnd": 59,
-      "alignmentScore": 0.6387,
+      "imageFile": "episode_09/scene_19.webp",
+      "sourceImageFile": "episode_09/scene_19.webp",
+      "narrationEn": "\"Uncle Balian survives... I swear upon my blood to tear down his chains.\" Cilia rested a hand upon Kadan's uninjured shoulder, nodding with solemn determination.",
+      "narrationKo": "“숙부님이 살아 계셔... 반드시 내 손으로 구해내겠다.” 실리아는 카단의 어깨에 손을 얹으며 결연하게 고개를 끄덕였다.",
+      "sourceSentenceStart": 38,
+      "sourceSentenceEnd": 39,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "헤르쿨",
-          "speakerEn": "Hercul",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-right"
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“숙부님이 살아 계셔... 반드시 내 손으로 구해내겠다.”",
+          "textEn": "“Uncle Balian survives... I swear upon my blood to tear down his chains.”",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
@@ -541,35 +646,43 @@
           "textEn": "CLANG!",
           "style": "slash",
           "position": "top-right"
-        },
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
         }
       ]
     },
     {
       "sceneNumber": 20,
-      "imageFile": "episode_09/scene_20.jpeg",
-      "sourceImageFile": "Ignis_Celia_Kadan_abandoned_child_202607260802.jpeg",
-      "narrationEn": "Inside the envelope was a short sentence secretly written by Ignis. If my mother is alive, why has she never looked for me? Celia showed the sentence to Kadan. For the first time, the two saw that behind Ignis's arrogance was the face of an abandoned child.",
-      "narrationKo": "봉투 안쪽에는 이그니스가 몰래 적은 짧은 문장이 있었다. 어머니가 살아 있다면, 왜 단 한 번도 나를 찾지 않았습니까? 실리아는 그 문장을 카단에게 보여 주었다. 두 사람은 처음으로 이그니스의 오만함 뒤에 버려진 아이의 얼굴이 숨어 있음을 보았다.",
-      "sourceSentenceStart": 60,
-      "sourceSentenceEnd": 63,
-      "alignmentScore": 0.5292,
+      "imageFile": "episode_09/scene_20.webp",
+      "sourceImageFile": "episode_09/scene_20.webp",
+      "narrationEn": "\"Let us brew the draught to heal Paladin Walker, then march upon the labor camp at once. The winds shall be our unfailing guide.\" Moonlight poured through the skylights, illuminating the path of two young heroes stepping forward across the capital's dark expanse. The profound weight of the ancient vow enveloped their shoulders, and with every passing shadow, the nascent dawn they sought to usher in burned ever brighter.",
+      "narrationKo": "“약초를 달여 워커 님을 치료한 뒤, 곧바로 수용소로 가요. 바람이 우리의 길잡이가 되어줄 테니까요.” 달빛이 두 소년 소녀의 발걸음을 비추며 왕도의 어두운 밤을 가로질렀다. 가슴속에 새겨진 맹세의 무게가 그들의 어깨를 단단하게 감싸 안았다. 어둠이 짙어질수록, 그들이 밝혀야 할 새벽의 빛은 더욱 선명해지고 있었다.",
+      "sourceSentenceStart": 40,
+      "sourceSentenceEnd": 41,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
-          "bubbleType": "shout",
-          "position": "top-left"
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“약초를 달여 워커 님을 치료한 뒤, 곧바로 수용소로 가요. 바람이 우리의 길잡이가 되어줄 테니까요.”",
+          "textEn": "“Let us brew the draught to heal Paladin Walker, then march upon the labor camp at once. The winds shall be our unfailing guide.”",
+          "bubbleType": "speech",
+          "position": "top-left",
+          "characterCardId": 62
         }
       ],
-      "sfxCues": []
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
     }
   ]
 }

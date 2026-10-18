@@ -2,26 +2,27 @@
   "episodeNumber": 1,
   "episodeTitleEn": "Two Vows Beneath the Blizzard",
   "episodeTitleKo": "눈보라 아래 두 서약",
-  "sourceSentenceCount": 65,
+  "sourceSentenceCount": 38,
   "sceneCount": 20,
   "scenes": [
     {
       "sceneNumber": 1,
-      "imageFile": "episode_01/scene_01.jpeg",
-      "sourceImageFile": "Elwin_village_blizzard_scene_202607260802.jpeg",
-      "narrationEn": "Winter arrived first in Elwin village, at the southern end of the Kingdom of Lighthaven. The snow covered the castle walls starting during the day, and as the sun set, it even engulfed the boundaries of the roads and roofs. People lined their windows with thick parchment and turned off their lights early.",
-      "narrationKo": "라이트헤븐 왕국의 남쪽 끝, 엘윈 마을에는 겨울이 먼저 도착했다. 눈발은 낮부터 성벽을 지우더니 해가 지자 길과 지붕의 경계마저 삼켜 버렸다. 사람들은 창문에 두꺼운 양피지를 덧대고 일찍 등불을 껐다.",
+      "imageFile": "episode_01/scene_01.webp",
+      "sourceImageFile": "episode_01/scene_01.webp",
+      "narrationEn": "At the southernmost edge of the Kingdom of Lighthaven, where jagged mountain ranges met the frozen tundra, winter arrived with unsparing brutality in the village of Elwin. By midday, howling gales and razor-sharp flurries had wiped the stockades and watchtowers from sight. Before dusk could settle, the blizzard swallowed the muddy tracks and stone roofs whole. The villagers sealed their windows with grease-coated parchment, covered their hearth embers, and extinguished their lanterns early. Rumors had spread across the ice like wildfire: the dreaded shadow cavalry from the conquered northern marches had already breached the frontier woods. Inside a weathered log tavern hidden behind the village smithy, Aleksandar and Balian sat across from each other, nursing chilled infusions by the dull glow of charcoal. Aleksandar was a quiet hunter of the northern borders who wielded twin blades with effortless grace, while Balian was a seasoned veteran capable of piercing the throat of a winter wolf through the thickest whiteout with his arcane spear. Both men concealed their lineage as descendants of the fallen Order of Arcane Holy Knights, choosing instead to till the stony earth and hammer iron in silence. The impending birth of their firstborns from their heavily pregnant wives, Elwin and Ysela, was the solitary lantern that kept the bitter defeat of their homeland bearable.",
+      "narrationKo": "라이트헤븐 왕국의 남쪽 끝자락, 거친 산맥과 툰드라가 맞닿은 엘윈 마을에는 겨울이 가혹하리만치 서둘러 당도했다. 칼날 같은 눈보라는 정오를 넘기자마자 목책과 망루를 하얗게 지워 버렸고, 황혼이 채 내리기도 전에 얼어붙은 진흙길과 돌지붕의 경계를 통째로 삼켰다. 마을 사람들은 틈새마다 두꺼운 기름 양피지를 덧대고 화로의 잿더미를 덮은 채 일찍이 등잔불을 껐다. 북방의 국경을 유린한 섀도우렐름의 암흑 기병들이 이미 숲을 가로질러 쳐들어왔다는 흉흉한 소문이 빙판 위로 흩날리던 탓이었다. 그날 밤에도 알렉산다르와 발리안은 대장간 뒤편에 숨겨진 낡은 통나무 선술집 탁자에 마주 앉아 서릿발 낀 찻잔을 매만졌다. 알렉산다르는 벼린 쌍검을 능수능란하게 다루는 과묵한 북방의 사냥꾼이었고, 발리안은 한 자루 아케인 창으로 눈보라 속 굶주린 마수들의 숨통을 꿰뚫는 노련한 투사였다. 두 사람은 오래전 몰락한 아케 성기사단의 혈통이라는 사실을 숨긴 채, 거친 밭을 갈고 붉은 쇠를 두드리며 낮게 엎드려 살았다. 각자의 아내인 엘윈과 이셀라가 만삭이 되어 곧 새 생명을 낳는다는 작은 기대만이, 패전국의 잿빛 밤을 버티게 하는 유일한 온기였다.",
       "sourceSentenceStart": 1,
-      "sourceSentenceEnd": 3,
-      "alignmentScore": 0.4861,
+      "sourceSentenceEnd": 2,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "엘윈 촌장",
-          "speakerEn": "Elwin Elder",
-          "textKo": "이 눈보라는 단순한 한기가 아니다... 섀도우렐름의 기운이야.",
-          "textEn": "This blizzard isn't just cold... It bears the aura of the Shadow Realm.",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "각자의 아내인 엘윈과 이셀라가 만삭이 되어 곧 새 생명을 낳는다는 작은 기대만이, 패전국의 잿빛 밤을 버티게 하는 유일한 온기였다.",
+          "textEn": "The impending birth of their firstborns from their heavily pregnant wives, Elwin and Ysela, was the solitary lantern that kept the bitter defeat of their homeland bearable.",
           "bubbleType": "thought",
-          "position": "bottom-left"
+          "position": "bottom-left",
+          "characterCardId": 50
         }
       ],
       "sfxCues": [
@@ -32,30 +33,31 @@
           "position": "top-right"
         },
         {
-          "textKo": "쿵-!",
-          "textEn": "THUD!",
-          "style": "impact",
-          "position": "bottom-right"
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
         }
       ]
     },
     {
       "sceneNumber": 2,
-      "imageFile": "episode_01/scene_02.jpeg",
-      "sourceImageFile": "Aleksandar_and_Balian_on_bridge_202607260802.jpeg",
-      "narrationEn": "It was because of the rumor that the Shadow Realm cavalry that had taken over the north had crossed the border. That night, Aleksandar and Balian were sitting across from each other in the small tavern behind the blacksmith shop. Aleksandar was a quiet hunter who used dual swords, and Balian was a man who pierced the eyes of a wolf in a blizzard with an arcane spear.",
-      "narrationKo": "북쪽을 빼앗은 섀도우렐름의 기병이 국경을 넘었다는 소문 때문이었다. 그날 밤에도 알렉산다르와 발리안은 대장간 뒤편의 작은 선술집에 마주 앉아 있었다. 알렉산다르는 쌍검을 쓰는 과묵한 사냥꾼이었고, 발리안은 아케인 창으로 눈보라 속 늑대의 눈을 꿰뚫는 남자였다.",
-      "sourceSentenceStart": 4,
-      "sourceSentenceEnd": 6,
-      "alignmentScore": 0.6378,
+      "imageFile": "episode_01/scene_02.webp",
+      "sourceImageFile": "episode_01/scene_02.webp",
+      "narrationEn": "Suddenly, the heavy pine door groaned on its iron hinges and burst open. Ahead of the freezing draft came the sharp reek of blood and scorched ozone. Framed against the howling squall stood Hercul, clad in tattered pilgrim vestments. At his belt dangled the cracked golden seal of the Holy Knights, and faint ripples of radiant mana leaked through his torn gauntlets, etching incandescent runes into the damp floorboards. In the span of a single heartbeat, the tip of Balian's arcane spear hissed forward, freezing a bare inch from the intruder's throat. Behind him, Aleksandar's twin blades were already drawn in a fluid cross-guard, sealing every line of retreat.",
+      "narrationKo": "갑자기 낡은 문짝이 삐걱거리며 거칠게 열렸다. 매서운 돌풍보다 먼저 진한 피비린내와 타버린 오존 냄새가 좁은 주막 안으로 들이닥쳤다. 눈보라를 뒤집어쓴 채 문턱에 우뚝 선 사내는 해진 순례자 법복을 걸친 헤르쿨이었다. 그의 허리춤에는 반으로 깨진 성기사단의 황금 인장이 위태롭게 덜렁거렸고, 찢어진 무쇠 장갑 틈새로 새어 나오는 황금빛 마나가 젖은 판자 바닥 위에 희미한 성흔 문양을 새겼다. 순식간에 발리안의 아케인 창끝이 번개처럼 쏘아져 헤르쿨의 목젖 바로 앞에서 멈춰 섰다. 알렉산다르의 서릿발 쌍검 역시 이미 등 뒤의 퇴로를 빈틈없이 차단하고 있었다.",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 4,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "알렉산다르",
-          "speakerEn": "Aleksandar",
-          "textKo": "이 눈보라는 단순한 한기가 아니다... 섀도우렐름의 기운이야.",
-          "textEn": "This blizzard isn't just cold... It bears the aura of the Shadow Realm.",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "알렉산다르의 서릿발 쌍검 역시 이미 등 뒤의 퇴로를 빈틈없이 차단하고 있었다.",
+          "textEn": "Behind him, Aleksandar's twin blades were already drawn in a fluid cross-guard, sealing every line of retreat.",
           "bubbleType": "thought",
-          "position": "bottom-right"
+          "position": "bottom-right",
+          "characterCardId": 49
         }
       ],
       "sfxCues": [
@@ -75,24 +77,66 @@
     },
     {
       "sceneNumber": 3,
-      "imageFile": "episode_01/scene_03.jpeg",
-      "sourceImageFile": "Two_men_hiding_Holy_Knights_202607260802.jpeg",
-      "narrationEn": "The two men lived by plowing fields and pounding iron, hiding the fact that they were descendants of the fallen Holy Knights. The only hope that could endure the night of a defeated nation was that their wives would soon give birth to children. When the door opened, the smell of blood came in before the wind.",
-      "narrationKo": "두 사람은 몰락한 성기사단의 후예라는 사실을 숨긴 채 밭을 갈고 쇠를 두드리며 살았다. 아내들이 곧 아이를 낳는다는 것만이 패전국의 밤을 견디게 하는 희망이었다. 문이 열리자 바람보다 먼저 피 냄새가 들어왔다.",
-      "sourceSentenceStart": 7,
-      "sourceSentenceEnd": 9,
-      "alignmentScore": 0.5981,
+      "imageFile": "episode_01/scene_03.webp",
+      "sourceImageFile": "episode_01/scene_03.webp",
+      "narrationEn": "\"If you are a hound dispatched from the Shadow Realm, speaking your name will only hasten your demise,\" Balian growled, the azure spark along his spearhead reflecting the stranger's grim eyes.",
+      "narrationKo": "“섀도우렐름의 사냥개라면 이름을 밝힐 시간조차 아까울 텐데.” 발리안이 낮게 으르렁거렸다. 창날 끝에서 튀는 푸른 불꽃이 침입자의 눈동자를 겨누었다. 그러나 헤르쿨은 검을 뽑는 대신 가만히 두 손바닥을 펼쳐 보였다.",
+      "sourceSentenceStart": 5,
+      "sourceSentenceEnd": 6,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "성기사단원",
-          "speakerEn": "Holy Knight",
-          "textKo": "우리의 맹세는 아직 꺼지지 않았다.",
-          "textEn": "Our vow has never been extinguished.",
+          "speakerKo": "발리안",
+          "speakerEn": "Balian",
+          "textKo": "“섀도우렐름의 사냥개라면 이름을 밝힐 시간조차 아까울 텐데.”",
+          "textEn": "“If you are a hound dispatched from the Shadow Realm, speaking your name will only hasten your demise,”",
           "bubbleType": "speech",
-          "position": "top-right"
+          "position": "bottom-right",
+          "characterCardId": 43
         }
       ],
       "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_01/scene_04.webp",
+      "sourceImageFile": "episode_01/scene_04.webp",
+      "narrationEn": "Hercul did not reach for a weapon. Instead, he slowly opened both empty palms. \"Stand down, brothers. I bear the blood of wolves upon my mantle, yet I do not hunt for the pack.\"",
+      "narrationKo": "“진정하게, 형제들이여. 늑대의 피를 묻히고 왔으나 늑대의 편에 선 자는 아니네.” 순간 황금빛 방호진이 선술집 천장과 벽을 둥글게 감싸며 폭풍처럼 웅성거리던 바람 소리를 단숨에 차단했다. 선반 위에 놓인 독주 병들이 맑은 파열음을 내며 일제히 공명했다. 헤르쿨은 방호 결계를 펼쳤을 뿐 어떤 반격도 가하지 않았다. 그가 피 묻은 가죽 주머니에서 꺼내 탁자 위에 조용히 내려놓은 것은, 처형당한 아케 성기사단장의 부러진 흉갑 조각이었다.",
+      "sourceSentenceStart": 7,
+      "sourceSentenceEnd": 8,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "헤르쿨",
+          "speakerEn": "Hercul",
+          "textKo": "“진정하게, 형제들이여. 늑대의 피를 묻히고 왔으나 늑대의 편에 선 자는 아니네.”",
+          "textEn": "“Stand down, brothers. I bear the blood of wolves upon my mantle, yet I do not hunt for the pack.”",
+          "bubbleType": "speech",
+          "position": "top-left",
+          "characterCardId": 49
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
         {
           "textKo": "휘이이익-!",
           "textEn": "SWOOSH!",
@@ -102,65 +146,26 @@
       ]
     },
     {
-      "sceneNumber": 4,
-      "imageFile": "episode_01/scene_04.jpeg",
-      "sourceImageFile": "Hercul_Balian_Aleksandar_scene_04_202607260802.jpeg",
-      "narrationEn": "Hercul, wearing tattered pilgrimage clothes, stood at the threshold. The broken seal of the Holy Knights was hanging on his waist, and the golden mana leaking through his gloves drew a thin pattern on the wet floor. The tip of Balian's spear touched his neck. Aleksandar's sword was already blocking the escape route behind his back.",
-      "narrationKo": "해진 순례복을 걸친 헤르쿨이 문턱에 섰다. 허리에는 성기사단의 부서진 인장이 매달려 있었고, 장갑 사이로 새어 나오는 황금 마나가 젖은 바닥에 가느다란 문양을 그렸다. 발리안의 창끝이 그의 목에 닿았다. 알렉산다르의 검은 이미 등 뒤의 퇴로를 막고 있었다.",
-      "sourceSentenceStart": 10,
-      "sourceSentenceEnd": 13,
-      "alignmentScore": 0.3968,
-      "dialogues": [
-        {
-          "speakerKo": "알렉산다르",
-          "speakerEn": "Aleksandar",
-          "textKo": "우리의 맹세는 아직 꺼지지 않았다.",
-          "textEn": "Our vow has never been extinguished.",
-          "bubbleType": "speech",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
       "sceneNumber": 5,
-      "imageFile": "episode_01/scene_05.jpeg",
-      "sourceImageFile": "Hercul_spread_palms_instead_answ…_202607260802.jpeg",
-      "narrationEn": "“If you are a hunting dog from the Shadow Realm, it would be a waste of time to reveal your name. ” Hercul spread his palms instead of answering. The two men's weapons stopped as if they had hit an invisible wall.",
-      "narrationKo": "“섀도우렐름의 사냥개라면 이름을 밝힐 시간도 아깝겠지.” 헤르쿨은 대답 대신 손바닥을 펼쳤다. 두 사람의 무기가 보이지 않는 벽에 부딪친 듯 멎었다.",
-      "sourceSentenceStart": 14,
-      "sourceSentenceEnd": 16,
-      "alignmentScore": 0.5465,
+      "imageFile": "episode_01/scene_05.webp",
+      "sourceImageFile": "episode_01/scene_05.webp",
+      "narrationEn": "A dome of golden protective aegis blossomed outward, muffling the roar of the exterior tempest in an instant. Along the tavern shelves, earthenware flasks vibrated in harmonious resonance. Hercul had manifested a defensive perimeter without initiating a single hostile gesture. Reaching into his tunic with steady fingers, he placed a shattered breastplate insignia upon the rough oak table—the undeniable relic of their executed Grand Master. As the tension subsided, Hercul swallowed a stale crust of bread and laid bare the kingdom's grim plight until the early hours of dawn. The court at Lighthaven wallowed in gluttonous banquets and extortionate levies, leaving frontier outposts entirely defenseless against demonic incursions. Hercul had been tracking a treasonous covenant of nobles who had sold their fealty to the Shadow Realm. At the summit of this black list sat Regent Death Knight Artus and the ambitious courtier Lucian.",
+      "narrationKo": "두 남자의 살기가 잦아들자 헤르쿨은 마른 빵 한 조각을 삼키며 새벽까지 대륙의 비극적인 형편을 털어놓았다. 라이트헤븐의 궁정은 사치스러운 연회와 착취에 눈이 멀었고, 국경의 변방 마을들은 마물과 암흑 병사들의 노략질에 방치되어 있었다. 헤르쿨은 섀도우렐름에 왕국을 팔아넘긴 배신자 귀족들의 살생부를 추적하던 중이었다. 그 명단의 맨 꼭대기에는 붉은 유리 궁정을 지배하는 섭정, 데스나이트 아르투스와 야심가 루시안의 이름이 적혀 있었다. “어둠의 군세가 이 남쪽 계곡까지 내려왔네. 왕실의 밀명으로 위장한 사냥꾼들이 머지않아 이 마을을 덮칠 걸세.”",
+      "sourceSentenceStart": 9,
+      "sourceSentenceEnd": 10,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "헤르쿨",
           "speakerEn": "Hercul",
-          "textKo": "섀도우렐름의 사냥개라면 이름을 밝힐 시간도 아깝겠지.",
-          "textEn": "If you are a hunting dog from the Shadow Realm, it would be a waste of time to reveal your name. ",
+          "textKo": "“어둠의 군세가 이 남쪽 계곡까지 내려왔네. 왕실의 밀명으로 위장한 사냥꾼들이 머지않아 이 마을을 덮칠 걸세.”",
+          "textEn": "“Stand down, brothers. I bear the blood of wolves upon my mantle, yet I do not hunt for the pack.”",
           "bubbleType": "speech",
-          "position": "top-right"
+          "position": "top-right",
+          "characterCardId": 49
         }
       ],
       "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
         {
           "textKo": "쿵-!",
           "textEn": "THUD!",
@@ -171,24 +176,31 @@
     },
     {
       "sceneNumber": 6,
-      "imageFile": "episode_01/scene_06.jpeg",
-      "sourceImageFile": "Two_men_hiding_Holy_Knights_202607260802_2.jpeg",
-      "narrationEn": "As the golden protective shield surrounded the tavern, the liquor bottles on the shelves cried all at once. But he didn't fight back. He simply placed the belongings of the executed Holy Knight Commander Ake on the table.",
-      "narrationKo": "황금빛 방호진이 선술집을 둥글게 감싸자 선반의 술병들이 한꺼번에 울었다. 그러나 그는 반격하지 않았다. 탁자 위에 처형된 아케 성기사단장의 유품을 내려놓았을 뿐이었다.",
-      "sourceSentenceStart": 17,
-      "sourceSentenceEnd": 19,
-      "alignmentScore": 0.4172,
+      "imageFile": "episode_01/scene_06.webp",
+      "sourceImageFile": "episode_01/scene_06.webp",
+      "narrationEn": "\"The shadow reaches even into this southern basin,\" Hercul whispered, his gaze shadowed with sorrow. \"Inquisitors flying royal banners will descend upon this hamlet before the new moon.\"",
+      "narrationKo": "헤르쿨의 눈빛이 무겁게 가라앉았다. 그는 떠나기 직전 품속 깊은 곳에서 룬이 새겨진 은빛 단검 두 자루를 꺼냈다. 백은의 칼날 안쪽에는 아직 깨어나지 않은 순결한 성기사단의 고대 룬이 푸른 맥박처럼 숨 쉬고 있었다.",
+      "sourceSentenceStart": 11,
+      "sourceSentenceEnd": 11,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "성기사단원",
-          "speakerEn": "Holy Knight",
-          "textKo": "우리의 맹세는 아직 꺼지지 않았다.",
-          "textEn": "Our vow has never been extinguished.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "백은의 칼날 안쪽에는 아직 깨어나지 않은 순결한 성기사단의 고대 룬이 푸른 맥박처럼 숨 쉬고 있었다.",
+          "textEn": "\"Inquisitors flying royal banners will descend upon this hamlet before the new moon.\"",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 49
         }
       ],
       "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
         {
           "textKo": "파지지직!",
           "textEn": "CRACKLE!",
@@ -199,49 +211,57 @@
     },
     {
       "sceneNumber": 7,
-      "imageFile": "episode_01/scene_07.jpeg",
-      "sourceImageFile": "Hercul_and_Artus_discuss_kingdom_202607260802.jpeg",
-      "narrationEn": "After the misunderstanding was resolved, the three discussed the state of the kingdom until dawn. The royal family hung on to banquets and tax books, and border towns took it upon themselves to keep monsters and marauders at bay. Hercul was chasing a list of court nobles who had connections with the Shadow Realm. At the top of the list was Death Knight Artus, Regent of the Court of Red Glass.",
-      "narrationKo": "오해가 풀린 뒤 세 사람은 새벽까지 왕국의 형편을 논했다. 왕실은 연회와 세금 장부에 매달렸고, 국경 마을은 스스로 괴물과 약탈자를 막고 있었다. 헤르쿨은 섀도우렐름과 내통한 궁정 귀족의 명단을 쫓고 있었다. 그 명단 맨 위에는 붉은 유리 궁정의 섭정, 데스나이트 아르투스가 있었다.",
-      "sourceSentenceStart": 20,
-      "sourceSentenceEnd": 23,
-      "alignmentScore": 0.4984,
+      "imageFile": "episode_01/scene_07.webp",
+      "sourceImageFile": "episode_01/scene_07.webp",
+      "narrationEn": "Before stepping back into the blizzard, Hercul produced two slender silver daggers wrapped in oiled doe-skin. Along the white-silver fuller slept ancient runes of the Holy Order, pulsing like faint blue veins beneath frost. \"When your sons draw their first breath, place these silver daggers into their hands,\" Hercul urged, his voice trembling with solemn gravity. \"Do not bestow them to demand blood debts or inherited vendettas. When the continent drowns in falsehood and betrayal, let these blades preserve the inner truth so they may discern who stands as brother and who lurks as foe.\"",
+      "narrationKo": "“아이들이 태어나면 이 은빛 단검을 하나씩 건네주게.” 헤르쿨이 떨리는 목소리로 말을 이었다.",
+      "sourceSentenceStart": 12,
+      "sourceSentenceEnd": 13,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "헤르쿨",
           "speakerEn": "Hercul",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "textKo": "“아이들이 태어나면 이 은빛 단검을 하나씩 건네주게.”",
+          "textEn": "“When your sons draw their first breath, place these silver daggers into their hands,”",
           "bubbleType": "speech",
-          "position": "top-right"
+          "position": "bottom-right",
+          "characterCardId": 49
         }
       ],
       "sfxCues": [
         {
-          "textKo": "쿵-!",
-          "textEn": "THUD!",
-          "style": "impact",
-          "position": "bottom-right"
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
         }
       ]
     },
     {
       "sceneNumber": 8,
-      "imageFile": "episode_01/scene_08.jpeg",
-      "sourceImageFile": "Hercul_took_out_two_daggers_202607260802.jpeg",
-      "narrationEn": "Before leaving, Hercul took out two silver daggers. Inside the handle, an unnamed rune was still sleeping. “Give each child one when they are born.",
-      "narrationKo": "헤르쿨은 떠나기 전 은빛 단검 두 자루를 꺼냈다. 손잡이 안에는 아직 이름 없는 룬이 잠들어 있었다. “아이들이 태어나면 하나씩 주게.",
-      "sourceSentenceStart": 24,
-      "sourceSentenceEnd": 26,
-      "alignmentScore": 0.4806,
+      "imageFile": "episode_01/scene_08.webp",
+      "sourceImageFile": "episode_01/scene_08.webp",
+      "narrationEn": "Aleksandar gripped the hilt, nodding with resolute northern stoicism. \"If my son enters this world, I shall name him Kadan—the enduring shield that never shatters.\"",
+      "narrationKo": "“부모의 피비린내 나는 원한을 억지로 떠넘기라는 뜻이 아닐세. 장차 온 세상이 거짓과 탐욕으로 물들 때, 누가 진짜 아군이고 적인지 스스로 판별할 수 있도록 가슴속 진실의 룬을 지키게 하려는 걸세.” 알렉산다르는 탁자 위의 단검을 쥐며 결연하게 고개를 끄덕였다.",
+      "sourceSentenceStart": 14,
+      "sourceSentenceEnd": 15,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "헤르쿨",
           "speakerEn": "Hercul",
-          "textKo": "검끝이 흔들리지 않는 한, 길은 열린다.",
-          "textEn": "As long as our blades do not waver, the path will open.",
+          "textKo": "“부모의 피비린내 나는 원한을 억지로 떠넘기라는 뜻이 아닐세. 장차 온 세상이 거짓과 탐욕으로 물들 때, 누가 진짜 아군이고 적인지 스스로 판별할 수 있도록 가슴속 진실의 룬을 지키게 하려는 걸세.”",
+          "textEn": "“If my son enters this world, I shall name him Kadan—the enduring shield that never shatters.”",
           "bubbleType": "speech",
-          "position": "top-left"
+          "position": "top-left",
+          "characterCardId": 49
         }
       ],
       "sfxCues": [
@@ -261,21 +281,22 @@
     },
     {
       "sceneNumber": 9,
-      "imageFile": "episode_01/scene_09.jpeg",
-      "sourceImageFile": "Tavern_scene_with_golden_shield_202607260802.jpeg",
-      "narrationEn": "This does not mean that they should pass on their parents’ grudges. It means that they do not forget the truth until they decide for themselves who is their friend and who is their enemy. ” Aleksandar said he would give his son the name Kadan, which means a shield that endures to the end in an old northern language.",
-      "narrationKo": "부모의 원한을 떠넘기라는 뜻이 아니야. 누가 아군이고 누가 적인지 스스로 판단할 때까지, 진실을 잊지 않게 하라는 뜻이지.” 알렉산다르는 아들에게 북방의 옛말로 끝까지 버티는 방패를 뜻하는 카단이라는 이름을 주겠다고 했다.",
-      "sourceSentenceStart": 27,
-      "sourceSentenceEnd": 29,
-      "alignmentScore": 0.4179,
+      "imageFile": "episode_01/scene_09.webp",
+      "sourceImageFile": "episode_01/scene_09.webp",
+      "narrationEn": "Balian pressed his hand to his chest as he received the companion blade. \"And mine shall be named Ignis, that his spirit may never lose its way, even within the furnace of tribulation.\"",
+      "narrationKo": "“내 아들이 태어난다면, 북방의 고어로 끝까지 버텨 내는 굳건한 방패를 뜻하는 카단이라는 이름을 줄 것이오.” 발리안 역시 가슴에 손을 얹으며 단검을 받았다.",
+      "sourceSentenceStart": 16,
+      "sourceSentenceEnd": 17,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "알렉산다르",
           "speakerEn": "Aleksandar",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
-          "bubbleType": "shout",
-          "position": "bottom-left"
+          "textKo": "“내 아들이 태어난다면, 북방의 고어로 끝까지 버텨 내는 굳건한 방패를 뜻하는 카단이라는 이름을 줄 것이오.”",
+          "textEn": "“And mine shall be named Ignis, that his spirit may never lose its way, even within the furnace of tribulation.”",
+          "bubbleType": "speech",
+          "position": "top-right",
+          "characterCardId": 50
         }
       ],
       "sfxCues": [
@@ -289,42 +310,57 @@
     },
     {
       "sceneNumber": 10,
-      "imageFile": "episode_01/scene_10.jpeg",
-      "sourceImageFile": "Elwin_Aleksandar_Balian_tavern_p…_202607260802.jpeg",
-      "narrationEn": "Balian said he would call the child Ignis to mean not to get lost even in the fire. Instead of alcohol, the three men filled their glasses with melted snow and prayed for the safety of their two unborn children. A few days later, on a snow-covered road, young nobleman Lucian met Aleksandar's wife, Elwin. He was dressed like an injured traveler, but hidden within his cloak was the coat of arms of the Red Glass Court.",
-      "narrationKo": "발리안은 불길 속에서도 길을 잃지 말라는 뜻으로 아이를 이그니스라 부르겠다고 했다. 세 남자는 술 대신 녹인 눈을 잔에 채워 아직 태어나지 않은 두 아이의 무사함을 빌었다. 며칠 뒤, 눈 덮인 길에서 젊은 귀족 루시안이 알렉산다르의 아내 엘윈을 만났다. 그는 다친 여행객처럼 꾸미고 있었지만 망토 안에는 붉은 유리 궁정의 문장이 숨겨져 있었다.",
-      "sourceSentenceStart": 30,
-      "sourceSentenceEnd": 33,
-      "alignmentScore": 0.6612,
+      "imageFile": "episode_01/scene_10.webp",
+      "sourceImageFile": "episode_01/scene_10.webp",
+      "narrationEn": "Raising cups filled not with wine but with melted snowfall, the three warriors consecrated their vows for the unborn children. Yet fate was swifter and far crueler than their hopes. Three mornings later, amid a blinding snow fog, the young highborn Lucian encountered Aleksandar's wife, Elwin, on the village perimeter. Disguised as an injured merchant who had lost his mount, Lucian concealed beneath his ermine cloak the serpentine crest of the Red Glass Court. When Elwin offered him warm barley broth and tended his fabricated wounds with boundless mercy, a twisted, possessive obsession ignited within Lucian's corrupt heart. To claim her as his own, he fabricated imperial charges declaring the entire settlement a nest of insurgents.",
+      "narrationKo": "“그렇다면 내 아이는 혹독한 눈보라와 불길 속에서도 결코 길을 잃지 말라는 염원을 담아 이그니스라 부르겠소.” 세 사내는 독주 대신 녹아내린 눈물을 잔에 가득 채워 아직 세상의 빛을 보지 못한 두 아이의 앞날을 축복했다. 그러나 운명의 그림자는 그들이 생각한 것보다 훨씬 잔혹하고 빨랐다.",
+      "sourceSentenceStart": 18,
+      "sourceSentenceEnd": 19,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "알렉산다르",
-          "speakerEn": "Aleksandar",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "speakerKo": "발리안",
+          "speakerEn": "Balian",
+          "textKo": "“그렇다면 내 아이는 혹독한 눈보라와 불길 속에서도 결코 길을 잃지 말라는 염원을 담아 이그니스라 부르겠소.”",
+          "textEn": "“And mine shall be named Ignis, that his spirit may never lose its way, even within the furnace of tribulation.”",
           "bubbleType": "speech",
-          "position": "bottom-right"
+          "position": "bottom-left",
+          "characterCardId": 43
         }
       ],
-      "sfxCues": []
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
     },
     {
       "sceneNumber": 11,
-      "imageFile": "episode_01/scene_11.jpeg",
-      "sourceImageFile": "Elwin_Lucian_soup_awakened_desire_202607260802.jpeg",
-      "narrationEn": "A bowl of warm soup and a few kind words from Elwin awakened Lucian's desire. He turned the entire town into a den of traitors to take her over. At dawn, soldiers in black armor surrounded the village.",
-      "narrationKo": "엘윈이 내민 따뜻한 수프 한 그릇과 친절한 말 몇 마디는 루시안의 욕망을 일깨웠다. 그는 그녀를 차지하려고 마을 전체를 반역자의 소굴로 꾸몄다. 새벽녘 검은 갑옷의 병사들이 마을을 포위했다.",
-      "sourceSentenceStart": 34,
-      "sourceSentenceEnd": 36,
-      "alignmentScore": 0.5053,
+      "imageFile": "episode_01/scene_11.webp",
+      "sourceImageFile": "episode_01/scene_11.webp",
+      "narrationEn": "At dawn, iron-clad legionnaires encircled the village under cover of burning pitch. Torches set the straw thatch ablaze. Aleksandar shoved the pregnant Elwin toward the secret northern waterway, drawing his dual swords to hold the solitary wooden bridge alone. Balian concealed his expectant wife, Ysela, within the covered cart, brandishing his arcane spear. Dozens of times they shattered the advancing lines, but Lucian mercilessly drove captive villagers forward as living shields.",
+      "narrationKo": "사흘 뒤, 짙은 안개 속 눈 덮인 비탈길에서 젊은 궁정 귀족 루시안이 알렉산다르의 만삭 아내 엘윈과 마주쳤다. 루시안은 낙마하여 부상당한 유랑 상인 행세를 하고 있었지만, 두꺼운 모피 망토 안쪽에는 붉은 유리 궁정의 뱀 문장이 번득였다. 엘윈이 아무런 의심 없이 내민 따뜻한 보리 수프 한 그릇과 다정한 간호의 손길은 루시안의 비뚤어진 소유욕을 자극했다. 그는 그녀를 차지하기 위해 엘윈 마을 전체를 섀도우렐름과 내통한 반역자들의 소굴로 조작하는 잔혹한 계략을 꾸몄다. 새벽의 어스름을 찢으며 검은 철갑으로 무장한 궁정 토벌대가 마을을 포위했다. 횃불이 처마를 태우며 불기둥이 치솟았다. 알렉산다르는 만삭의 엘윈을 비밀 수로 쪽으로 밀어내며 혼자서 외나무다리 위에 버텨 섰다. 발리안 역시 임신한 아내 이셀라를 마차 짚단 속에 숨긴 채 아케인 창을 움켜쥐었다. 두 사람은 수십 번이나 적의 포위망을 베어 넘겼으나, 비열한 루시안은 마을 주민들과 어린아이들을 방패막이로 내세웠다.",
+      "sourceSentenceStart": 20,
+      "sourceSentenceEnd": 21,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "루시안",
-          "speakerEn": "Lucian",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
-          "bubbleType": "shout",
-          "position": "top-right"
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "두 사람은 수십 번이나 적의 포위망을 베어 넘겼으나, 비열한 루시안은 마을 주민들과 어린아이들을 방패막이로 내세웠다.",
+          "textEn": "Dozens of times they shattered the advancing lines, but Lucian mercilessly drove captive villagers forward as living shields.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 61
         }
       ],
       "sfxCues": [
@@ -335,30 +371,31 @@
           "position": "top-right"
         },
         {
-          "textKo": "쿵-!",
-          "textEn": "THUD!",
-          "style": "impact",
-          "position": "bottom-right"
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
         }
       ]
     },
     {
       "sceneNumber": 12,
-      "imageFile": "episode_01/scene_12.jpeg",
-      "sourceImageFile": "Hercul_Balian_Aleksandar_scene_04_202607260802_2.jpeg",
-      "narrationEn": "Aleksandar sent his wife out to the north canal and stood on the bridge alone. Balian lifted his spear after putting his pregnant wife, Ysela, in the carriage. The two tore through the siege dozens of times, but the enemy even used the local residents as shields.",
-      "narrationKo": "알렉산다르는 아내를 북쪽 수로로 내보내고 혼자 다리 위에 섰다. 발리안은 임신한 아내 이셀라를 마차에 태운 뒤 창을 들었다. 두 사람은 수십 번이나 포위망을 찢었지만, 적은 주민들까지 방패로 세웠다.",
-      "sourceSentenceStart": 37,
-      "sourceSentenceEnd": 39,
-      "alignmentScore": 0.583,
+      "imageFile": "episode_01/scene_12.webp",
+      "sourceImageFile": "episode_01/scene_12.webp",
+      "narrationEn": "\"Surrender your steel, Aleksandar!\" Lucian sneered from horseback atop the ridge. \"Confess your treason, and I may grant your woman her wretched life!\" Refusing to strike the innocent captives, Aleksandar deflected blows with the blunt spines of his swords, absorbing spear thrusts and bleeding profusely from shoulder and thigh. Looking upon the burning village, his eyes burned with unyielding resolve.",
+      "narrationKo": "“알렉산다르! 칼을 버리고 무릎을 꿇어라! 네놈이 반역을 자백한다면 저 계집의 목숨만은 살려 두겠다!” 루시안이 언덕 위에서 비열하게 소리쳤다. 알렉산다르는 주민들이 선 방향을 피해 검등으로 적병들의 관절만을 내리치느라 온몸에 창상을 입고 붉은 피를 흘렸다. 그의 눈동자에 비친 것은 불타는 마을과 겁에 질린 피난민들의 얼굴이었다.",
+      "sourceSentenceStart": 22,
+      "sourceSentenceEnd": 23,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "알렉산다르",
-          "speakerEn": "Aleksandar",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
+          "speakerKo": "루시안",
+          "speakerEn": "Lucian",
+          "textKo": "“알렉산다르! 칼을 버리고 무릎을 꿇어라! 네놈이 반역을 자백한다면 저 계집의 목숨만은 살려 두겠다!”",
+          "textEn": "“Surrender your steel, Aleksandar!”",
           "bubbleType": "shout",
-          "position": "top-left"
+          "position": "top-left",
+          "characterCardId": 61
         }
       ],
       "sfxCues": [
@@ -372,21 +409,22 @@
     },
     {
       "sceneNumber": 13,
-      "imageFile": "episode_01/scene_13.jpeg",
-      "sourceImageFile": "Aleksandar_strikes_soldier's_wrist_202607260802.jpeg",
-      "narrationEn": "Aleksandar chose the line where the resident was standing and struck the soldier's wrist with the back of his sword. The wounds on my shoulders and thighs increased as I was doing things that would have been quick to cut. Balian lifted up the fallen soldier's spear and threw it at the residents.",
-      "narrationKo": "알렉산다르는 주민이 선 줄만 골라 검등으로 병사의 손목을 쳤다. 베면 빠를 일을 돌아가느라 어깨와 허벅지에 창상이 늘었다. 발리안은 쓰러진 병사의 창을 발로 걷어 올려 주민들에게 던졌다.",
-      "sourceSentenceStart": 40,
-      "sourceSentenceEnd": 42,
-      "alignmentScore": 0.4505,
+      "imageFile": "episode_01/scene_13.webp",
+      "sourceImageFile": "episode_01/scene_13.webp",
+      "narrationEn": "\"My wife's life is not a favor to be bartered from a traitor's tongue!\" With a thunderous cry, Aleksandar severed the massive mooring cables supporting the span. Screaming legionnaires plunged headlong into the icy torrent below.",
+      "narrationKo": "“아내의 목숨은 네놈 따위의 더러운 주둥이에서 보장받는 것이 아니다!” 알렉산다르는 포효하며 다리를 지탱하던 거대한 동아줄을 양손의 쌍검으로 단숨에 베어 끊었다. 비명을 지르며 수십 명의 적병이 살얼음이 뜬 계곡 급류 속으로 곤두박질쳤다.",
+      "sourceSentenceStart": 24,
+      "sourceSentenceEnd": 25,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "알렉산다르",
           "speakerEn": "Aleksandar",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
+          "textKo": "“아내의 목숨은 네놈 따위의 더러운 주둥이에서 보장받는 것이 아니다!”",
+          "textEn": "“My wife's life is not a favor to be bartered from a traitor's tongue!”",
           "bubbleType": "shout",
-          "position": "bottom-left"
+          "position": "top-right",
+          "characterCardId": 50
         }
       ],
       "sfxCues": [
@@ -395,71 +433,42 @@
           "textEn": "CLANG!",
           "style": "slash",
           "position": "top-right"
+        },
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
         }
       ]
     },
     {
       "sceneNumber": 14,
-      "imageFile": "episode_01/scene_14.jpeg",
-      "sourceImageFile": "Baker_carpenter_on_bridge_202607260802.jpeg",
-      "narrationEn": "The baker and carpenter, who had never held a weapon in their lives, stood on the railing of the bridge, sending their family behind them. Lucian looked down on the battle from high above. He shouted to Aleksandar that he would guarantee Elwin's life if he admitted to treason. Instead of answering, Aleksandar cut one of the ropes on the bridge.",
-      "narrationKo": "평생 무기를 잡지 않던 제빵사와 목수가 가족을 뒤로 보내며 다리 난간에 섰다. 루시안은 높은 곳에서 전투를 내려다봤다. 그는 알렉산다르에게 반역을 인정하면 엘윈의 목숨을 보장하겠다고 외쳤다. 알렉산다르는 대답 대신 다리의 밧줄 하나를 끊었다.",
-      "sourceSentenceStart": 43,
-      "sourceSentenceEnd": 46,
-      "alignmentScore": 0.4904,
+      "imageFile": "episode_01/scene_14.webp",
+      "sourceImageFile": "episode_01/scene_14.webp",
+      "narrationEn": "Near the rear alleys, Balian's escape cart overturned under iron chains. Ysela crawled desperately through the mud, shielding her belly with both arms, only to be blocked by Lucian's warhorse. She hurled a handful of frozen slush into the nobleman's face with fierce defiance.",
+      "narrationKo": "한편 골목 끝자락에서 발리안의 마차는 궁정 기병대의 쇠사슬에 얽혀 전복되고 말았다. 이셀라는 부른 배를 감싸 쥔 채 필사적으로 진흙탕을 기었으나 루시안의 말발굽이 그녀의 앞을 가로막았다. 이셀라는 땅바닥의 흙과 얼음 조각을 움켜쥐어 루시안의 눈가에 던지며 저항했다. “손대지 마라, 이 비겁한 악마야!”",
+      "sourceSentenceStart": 26,
+      "sourceSentenceEnd": 27,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "알렉산다르",
-          "speakerEn": "Aleksandar",
-          "textKo": "검끝이 흔들리지 않는 한, 길은 열린다.",
-          "textEn": "As long as our blades do not waver, the path will open.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 15,
-      "imageFile": "episode_01/scene_15.jpeg",
-      "sourceImageFile": "Soldiers_falling_into_icy_water_202607260802.jpeg",
-      "narrationEn": "The wooden board the soldiers were standing on tilted and fell into the icy water. “Your wife’s life is not guaranteed by your words. ” Balian's carriage was intercepted by the court cavalry at the end of the alley.",
-      "narrationKo": "병사들이 서 있던 나무판이 기울어 얼음물로 떨어졌다. “아내의 목숨은 네 입에서 보장되는 것이 아니다.” 발리안의 마차는 골목 끝에서 궁정 기병에게 가로막혔다.",
-      "sourceSentenceStart": 47,
-      "sourceSentenceEnd": 49,
-      "alignmentScore": 0.3945,
-      "dialogues": [
-        {
-          "speakerKo": "발리안",
-          "speakerEn": "Balian",
-          "textKo": "아내의 목숨은 네 입에서 보장되는 것이 아니다.",
-          "textEn": "Your wife’s life is not guaranteed by your words. ",
-          "bubbleType": "speech",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 16,
-      "imageFile": "episode_01/scene_16.jpeg",
-      "sourceImageFile": "Ysela_Lucian_Balian_carriage_scene_202607260802.jpeg",
-      "narrationEn": "Ysela crawled under the carriage, covering its stomach, but Lucian personally grabbed the reins and stopped it. She grabbed some mud and threw it in his face. Because of that short resistance, Balian thought his wife had run away and lured the enemy towards the cliff.",
-      "narrationKo": "이셀라는 배를 감싼 채 마차 밑으로 기어들어 갔지만, 루시안이 직접 고삐를 잡아 세웠다. 그녀는 진흙을 움켜쥐어 그의 얼굴에 던졌다. 그 짧은 저항 때문에 발리안은 아내가 도망친 줄로만 알고 절벽 쪽으로 적을 유인했다.",
-      "sourceSentenceStart": 50,
-      "sourceSentenceEnd": 52,
-      "alignmentScore": 0.5326,
-      "dialogues": [
-        {
-          "speakerKo": "발리안",
-          "speakerEn": "Balian",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
+          "speakerKo": "이셀라",
+          "speakerEn": "Ysela",
+          "textKo": "“손대지 마라, 이 비겁한 악마야!”",
+          "textEn": "“Lay no hand upon me, monster!”",
           "bubbleType": "shout",
-          "position": "top-left"
+          "position": "bottom-left",
+          "characterCardId": 107
         }
       ],
       "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        },
         {
           "textKo": "쿵-!",
           "textEn": "THUD!",
@@ -469,22 +478,58 @@
       ]
     },
     {
-      "sceneNumber": 17,
-      "imageFile": "episode_01/scene_17.jpeg",
-      "sourceImageFile": "Aleksandar_did_not_back_down_202607260802.jpeg",
-      "narrationEn": "Aleksandar did not back down from the bridge until the end. By the time his sword broke, Elwin had already disappeared beyond the blizzard. Balian fell into the rapids at the bottom of the cliff while trying to protect Ysela, and Lucian kidnapped Ysela in the confusion and took him to the palace. Arriving in the northern wilderness, Elwin kneeled toward the burned village.",
-      "narrationKo": "알렉산다르는 마지막까지 다리에서 물러서지 않았다. 그의 검이 부러졌을 때 엘윈은 이미 눈보라 너머로 사라진 뒤였다. 발리안은 이셀라를 지키려다 절벽 아래 급류로 떨어졌고, 루시안은 혼란 속에서 이셀라를 납치해 궁정으로 데려갔다. 북쪽 황야에 도착한 엘윈은 불탄 마을 쪽을 향해 무릎을 꿇었다.",
-      "sourceSentenceStart": 53,
-      "sourceSentenceEnd": 56,
-      "alignmentScore": 0.6156,
+      "sceneNumber": 15,
+      "imageFile": "episode_01/scene_15.webp",
+      "sourceImageFile": "episode_01/scene_15.webp",
+      "narrationEn": "\"Lay no hand upon me, monster!\" Hearing her desperate cry and believing she had slipped past the cordon, Balian charged toward the precipice to draw the pursuing cavalry away from her.",
+      "narrationKo": "그 짧은 비명을 도망치라는 신호로 오인한 발리안은 적의 주력을 유인하기 위해 홀로 깎아지른 천 길 안개 절벽으로 뛰어들었다.",
+      "sourceSentenceStart": 28,
+      "sourceSentenceEnd": 28,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "알렉산다르",
-          "speakerEn": "Aleksandar",
-          "textKo": "이 눈보라는 단순한 한기가 아니다... 섀도우렐름의 기운이야.",
-          "textEn": "This blizzard isn't just cold... It bears the aura of the Shadow Realm.",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그 짧은 비명을 도망치라는 신호로 오인한 발리안은 적의 주력을 유인하기 위해 홀로 깎아지른 천 길 안개 절벽으로 뛰어들었다.",
+          "textEn": "\"Lay no hand upon me, monster!\" Hearing her desperate cry and believing she had slipped past the cordon, Balian charged toward the precipice to draw the pursuing cavalry away from her.",
           "bubbleType": "thought",
-          "position": "bottom-left"
+          "position": "top-left",
+          "characterCardId": 43
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        },
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_01/scene_16.webp",
+      "sourceImageFile": "episode_01/scene_16.webp",
+      "narrationEn": "\"Live, Ysela! You must live!\" Snapping his spear haft, Balian dragged several mounted foes with him over the mist-shrouded chasm into the raging river rapids. In the chaos, Lucian threw his heavy cloak over the unconscious Ysela and whisked her south toward the imperial palace.",
+      "narrationKo": "“이셀라, 살아남아야 해!” 발리안은 창대를 부러뜨리며 적병 여럿을 끌어안고 포효하는 소용돌이 급류 속으로 추락했다. 혼란을 틈탄 루시안은 기절한 이셀라를 검은 망토로 둘러메고 남쪽 황궁으로 빼돌렸다.",
+      "sourceSentenceStart": 29,
+      "sourceSentenceEnd": 30,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "발리안",
+          "speakerEn": "Balian",
+          "textKo": "“이셀라, 살아남아야 해!”",
+          "textEn": "“Live, Ysela! You must live!”",
+          "bubbleType": "shout",
+          "position": "top-left",
+          "characterCardId": 43
         }
       ],
       "sfxCues": [
@@ -494,6 +539,99 @@
           "style": "slash",
           "position": "top-right"
         },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_01/scene_17.webp",
+      "sourceImageFile": "episode_01/scene_17.webp",
+      "narrationEn": "On the ruined bridge, Aleksandar broke his twin swords across the breastplate of the final commander before collapsing upon one knee. Through the blinding snow, his fading eyes caught a fleeting glimpse of Elwin's cloaked figure escaping into the safety of the northern wilderness. Reaching the frozen tundra, Elwin dropped to her knees, looking back toward the pillars of smoke rising from their ruined home. Beneath her bodice, the silver dagger resonated faintly against the broken sword-sheath of her husband. Inside her womb, the unborn child kicked with sudden strength.",
+      "narrationKo": "다리 위에서 홀로 남은 알렉산다르는 부러진 검을 쥐고 마지막 적병의 목덜미를 꺾은 뒤 무릎을 꿇었다. 그의 시선 끝에는 눈보라 너머로 무사히 빠져나가는 엘윈의 작은 등 그림자가 흐릿하게 맺혀 있었다. 북쪽 황야의 얼어붙은 벌판에 홀로 당도한 엘윈은 불길에 휩싸인 고향 마을을 돌아보며 눈밭 위에 주저앉았다. 품속에 감춘 은빛 단검이 알렉산다르의 부러진 검집과 맞닿아 애처로운 공명을 일으켰다. 뱃속에서 아직 이름을 알지 못하는 아이가 거칠게 발길질을 했다. 뒤따라온 피난민 노인들은 끝내 알렉산다르의 전사 소식을 입 밖으로 꺼내지 못했다. 그러나 엘윈은 묻지 않았다. 그녀는 피 묻은 부러진 검집을 품에 품고, 마을 텃밭에서 긁어모아 온 작은 밀 씨앗 한 줌을 차가운 설원 깊숙이 묻었다.",
+      "sourceSentenceStart": 31,
+      "sourceSentenceEnd": 32,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그녀는 피 묻은 부러진 검집을 품에 품고, 마을 텃밭에서 긁어모아 온 작은 밀 씨앗 한 줌을 차가운 설원 깊숙이 묻었다.",
+          "textEn": "Inside her womb, the unborn child kicked with sudden strength.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 50
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_01/scene_18.webp",
+      "sourceImageFile": "episode_01/scene_18.webp",
+      "narrationEn": "The elderly refugees who caught up with her could not bear to speak Aleksandar's demise aloud. Elwin did not ask. She tucked the broken sheath against her breast, scooped away the snow with bare fingers, and buried a fistful of golden wheat seeds into the frozen loam. \"Even if we never return,\" she whispered softly, \"someone must live to bake bread upon this ground once more.\"",
+      "narrationKo": "“돌아가지 못한다 해도, 언젠가 누군가는 이 땅에서 다시 따뜻한 빵을 구워야 하니까요.” 엘윈은 얼어붙은 눈물을 소매로 훔치며 북쪽의 혹한 속으로 발걸음을 옮겼다.",
+      "sourceSentenceStart": 33,
+      "sourceSentenceEnd": 34,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "엘윈",
+          "speakerEn": "Elwin",
+          "textKo": "“돌아가지 못한다 해도, 언젠가 누군가는 이 땅에서 다시 따뜻한 빵을 구워야 하니까요.”",
+          "textEn": "“someone must live to bake bread upon this ground once more.”",
+          "bubbleType": "speech",
+          "position": "bottom-left",
+          "characterCardId": 42
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_01/scene_19.webp",
+      "sourceImageFile": "episode_01/scene_19.webp",
+      "narrationEn": "Wiping the frozen tears from her cheeks, Elwin turned north into the gale.",
+      "narrationKo": "“아가야, 너는 증오와 복수 때문에 태어나는 것이 아니란다.” 그녀의 목소리는 매서운 눈보라를 뚫고 잔잔하게 울려 퍼졌다.",
+      "sourceSentenceStart": 35,
+      "sourceSentenceEnd": 36,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "엘윈",
+          "speakerEn": "Elwin",
+          "textKo": "“아가야, 너는 증오와 복수 때문에 태어나는 것이 아니란다.”",
+          "textEn": "“someone must live to bake bread upon this ground once more.”",
+          "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 42
+        }
+      ],
+      "sfxCues": [
         {
           "textKo": "휘이이익-!",
           "textEn": "SWOOSH!",
@@ -503,98 +641,39 @@
       ]
     },
     {
-      "sceneNumber": 18,
-      "imageFile": "episode_01/scene_18.jpeg",
-      "sourceImageFile": "Child_kicks_from_inside_dagger_202607260802.jpeg",
-      "narrationEn": "The dagger in my arms trembled slightly. A child who had not yet come into the world kicked his foot from the inside. The refugees who followed late could not say that Aleksandar was dead.",
-      "narrationKo": "품 안의 단검이 미세하게 떨렸다. 아직 세상에 나오지 않은 아이가 안쪽에서 발을 찼다. 뒤늦게 따라온 피난민들은 알렉산다르가 죽었다고 말하지 못했다.",
-      "sourceSentenceStart": 57,
-      "sourceSentenceEnd": 59,
-      "alignmentScore": 0.5604,
-      "dialogues": [
-        {
-          "speakerKo": "알렉산다르",
-          "speakerEn": "Aleksandar",
-          "textKo": "검끝이 흔들리지 않는 한, 길은 열린다.",
-          "textEn": "As long as our blades do not waver, the path will open.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 19,
-      "imageFile": "episode_01/scene_19.jpeg",
-      "sourceImageFile": "Elwin_buries_wheat_seeds_202607260802.jpeg",
-      "narrationEn": "Elwin didn't even ask. He put the broken sword sheath that someone had given him into his bosom, and buried the wheat seeds he had brought from the village under his eyes. Even if I couldn't come back, I hoped that someone would be able to eat bread again on the spot.",
-      "narrationKo": "엘윈도 묻지 않았다. 누군가 건네준 부러진 검집을 품에 넣고, 마을에서 가져온 밀 씨앗을 눈 아래 묻었다. 돌아오지 못하더라도 누군가는 그 자리에서 다시 빵을 구울 수 있기를 바랐다.",
-      "sourceSentenceStart": 60,
-      "sourceSentenceEnd": 62,
-      "alignmentScore": 0.5411,
-      "dialogues": [
-        {
-          "speakerKo": "엘윈 촌장",
-          "speakerEn": "Elwin Elder",
-          "textKo": "검끝이 흔들리지 않는 한, 길은 열린다.",
-          "textEn": "As long as our blades do not waver, the path will open.",
-          "bubbleType": "speech",
-          "position": "top-right"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
       "sceneNumber": 20,
-      "imageFile": "episode_01/scene_20.jpeg",
-      "sourceImageFile": "Elwin_wipes_tears_walks_again_202607260802.jpeg",
-      "narrationEn": "“You were not born for revenge. ” Elwin wiped his tears and walked again. “Just be someone who doesn’t bow your head in the face of lies. ”",
-      "narrationKo": "“너는 복수 때문에 태어나는 게 아니란다.” 엘윈은 눈물을 닦고 다시 걸었다. “다만 거짓말 앞에서 고개를 숙이지 않는 사람이 되어 다오.”",
-      "sourceSentenceStart": 63,
-      "sourceSentenceEnd": 65,
-      "alignmentScore": 0.4843,
+      "imageFile": "episode_01/scene_20.webp",
+      "sourceImageFile": "episode_01/scene_20.webp",
+      "narrationEn": "\"My child, you were not born to carry the burden of vengeance,\" her voice rang steady against the wind. \"Only promise me that you will never bow your head before a lie.\" The blizzard buried the blood of two brave men, yet the seeds beneath the snow and the twin silver daggers glowed in the darkness like an ember that no storm could ever quench.",
+      "narrationKo": "“다만 어떤 불의와 거짓 앞에서도 비겁하게 고개를 숙이지 않는 사람으로 자라다오.” 눈보라가 두 남자의 피 묻은 맹세를 덮었지만, 설원 아래 묻힌 씨앗과 두 자루 은빛 단검의 룬은 꺼지지 않는 불씨처럼 어둠 속에서 고요히 타오르고 있었다.",
+      "sourceSentenceStart": 37,
+      "sourceSentenceEnd": 38,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "엘윈 촌장",
-          "speakerEn": "Elwin Elder",
-          "textKo": "너는 복수 때문에 태어나는 게 아니란다.",
-          "textEn": "You were not born for revenge. ",
+          "speakerKo": "엘윈",
+          "speakerEn": "Elwin",
+          "textKo": "“다만 어떤 불의와 거짓 앞에서도 비겁하게 고개를 숙이지 않는 사람으로 자라다오.”",
+          "textEn": "“My child, you were not born to carry the burden of vengeance,”",
           "bubbleType": "speech",
-          "position": "top-left"
+          "position": "top-left",
+          "characterCardId": 42
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
         },
         {
-          "speakerKo": "엘윈 촌장",
-          "speakerEn": "Elwin Elder",
-          "textKo": "다만 거짓말 앞에서 고개를 숙이지 않는 사람이 되어 다오.",
-          "textEn": "Just be someone who doesn’t bow your head in the face of lies. ",
-          "bubbleType": "speech",
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
           "position": "top-right"
         }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
-        }
-      ],
-      "localArtUrl": "/images/webtoon/ep01_blizzard_vow.jpg",
-      "isKeyClimax": true
+      ]
     }
   ]
 }

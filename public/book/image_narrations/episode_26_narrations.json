@@ -2,299 +2,62 @@
   "episodeNumber": 26,
   "episodeTitleEn": "Open Door, Closed Heart",
   "episodeTitleKo": "열린 문, 닫힌 마음",
-  "sourceSentenceCount": 52,
+  "sourceSentenceCount": 53,
   "sceneCount": 20,
   "scenes": [
     {
       "sceneNumber": 1,
-      "imageFile": "episode_26/scene_01.jpeg",
-      "sourceImageFile": "Ignis_knelt_before_Lucian_202607260802.jpeg",
-      "narrationEn": "Ignis returned to the Red Glass Court and knelt before Lucian. Although he was momentarily shaken by the death of his parents, he eventually lied and said that the position of prince suited him.",
-      "narrationKo": "이그니스는 붉은 유리 궁정으로 돌아가 루시안 앞에 무릎을 꿇었다. 부모의 죽음으로 잠시 흔들렸지만 결국 황자의 자리가 자신에게 어울린다는 거짓말을 했다.",
+      "imageFile": "episode_26/scene_01.webp",
+      "sourceImageFile": "episode_26/scene_01.webp",
+      "narrationEn": "Word of the grand cathedral's liberation spread like wildfire across the imperial capital of Lighthaven. Merchants and dockworkers who had endured decades under tyranny poured into the avenues bearing blazing pine torches, and amidst the roaring acclamation of the populace, the Sun Gate—the first perimeter portal of the inner citadel—was forced wide open. Yet beyond the shattered iron gates, the inner palaces presented an uncanny, necrotic gloom. Fountains in the grand plaza pooled with foul, bubbling sulfur wastewater instead of clear springs, and from every marble colonnade, flocks of ominous black ravens tainted by the Nine Shadows Codex took flight. Though the physical gates had fallen, the hardened hearts of the imperial aristocracy, steeped in terror and tyranny, remained sealed behind stone walls. Bracing his Dragon Breaker shield, Kadan surveyed the parapets with sharp eyes.",
+      "narrationKo": "대성당의 해방 소식은 삽시간에 수도 전역으로 번져나갔다. 억압받던 상인들과 빈민가의 노동자들은 손에 횃불을 들고 거리로 쏟아져 나왔고, 황궁 외곽을 둘러싸고 있던 삼중 방어벽의 첫 번째 관문인 ‘태양의 철문’이 민중들의 거대한 함성 속에 활짝 열려 젖혀졌다. 그러나 활짝 열린 철문 너머로 보이는 황궁 내궁의 풍경은 기괴할 정도로 음산했다. 광장 분수대에는 물 대신 검붉은 유황 폐수가 고여 있었고, 대리석 회랑마다 나인섀도우 코덱스의 어둠에 물든 검은 까마귀들이 떼를 지어 날아올랐다. 물리적인 문은 열렸지만, 독재와 공포에 찌든 수도 귀족들의 마음의 문은 여전히 굳게 닫혀 있었다. 카단이 드래곤 브레이커 방패를 비껴 쥐며 성벽 난간을 둘러보았다. “철문은 부수었지만 아직 싸움은 끝나지 않았다. 루시안은 내궁 깊숙한 흑요석 탑에 틀어박혀 결사항전을 준비하고 있다.”",
       "sourceSentenceStart": 1,
-      "sourceSentenceEnd": 2,
-      "alignmentScore": 0.472,
+      "sourceSentenceEnd": 3,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "루시안",
-          "speakerEn": "Lucian",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“철문은 부수었지만 아직 싸움은 끝나지 않았다. 루시안은 내궁 깊숙한 흑요석 탑에 틀어박혀 결사항전을 준비하고 있다.”",
+          "textEn": "“The iron gate has fallen, but the battle is far from won. Lucian has entrenched himself within the Obsidian Spire of the inner keep, preparing a fanatical last stand.”",
           "bubbleType": "speech",
-          "position": "bottom-right"
+          "position": "top-right",
+          "characterCardId": 41
         }
       ],
-      "sfxCues": []
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
     },
     {
       "sceneNumber": 2,
-      "imageFile": "episode_26/scene_02.jpeg",
-      "sourceImageFile": "Lucian_accepted_Ignis_skepticism_202607260802.jpeg",
-      "narrationEn": "Lucian accepted him even though he was skeptical. This is because a symbol that deals with white flames was needed for the court ahead of war. For the first few days, Ignis went as planned.",
-      "narrationKo": "루시안은 의심하면서도 그를 받아들였다. 백색 화염을 다루는 상징이 전쟁을 앞둔 궁정에 필요했기 때문이다. 처음 며칠 동안 이그니스는 계획대로 움직였다.",
-      "sourceSentenceStart": 3,
+      "imageFile": "episode_26/scene_02.webp",
+      "sourceImageFile": "episode_26/scene_02.webp",
+      "narrationEn": "\"The iron gate has fallen, but the battle is far from won. Lucian has entrenched himself within the Obsidian Spire of the inner keep, preparing a fanatical last stand.\" Lifting her Jade Staff, Cilia inhaled the chilly night air, her brow furrowing in distaste.",
+      "narrationKo": "실리아가 녹옥 지팡이를 들어 차가운 밤공기를 들이마셨다. “황궁 안쪽에서 인간의 기운이 거의 느껴지지 않아요. 귀족들과 친위대 기사들 대부분이 고르고의 독기에 중독되어 감정을 잃은 꼭두각시가 되어버렸어요.”",
+      "sourceSentenceStart": 4,
       "sourceSentenceEnd": 5,
-      "alignmentScore": 0.6118,
-      "dialogues": [
-        {
-          "speakerKo": "루시안",
-          "speakerEn": "Lucian",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-right"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 3,
-      "imageFile": "episode_26/scene_03.jpeg",
-      "sourceImageFile": "Celia_told_about_secret_passage_202607260802.jpeg",
-      "narrationEn": "Changed the underground guard's shift time and told Celia about the secret passage. However, the old rooms, formal clothes, and people bowing to themselves brought back a sense of the past faster than expected.",
-      "narrationKo": "지하 경비의 교대 시간을 바꾸고, 실리아에게 비밀 통로를 전했다. 그러나 오래된 방과 예복, 자신에게 고개 숙이는 사람들은 생각보다 빠르게 과거의 감각을 되살렸다.",
-      "sourceSentenceStart": 6,
-      "sourceSentenceEnd": 7,
-      "alignmentScore": 0.4284,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "실리아",
           "speakerEn": "Celia",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "textKo": "“황궁 안쪽에서 인간의 기운이 거의 느껴지지 않아요. 귀족들과 친위대 기사들 대부분이 고르고의 독기에 중독되어 감정을 잃은 꼭두각시가 되어버렸어요.”",
+          "textEn": "“The iron gate has fallen, but the battle is far from won. Lucian has entrenched himself within the Obsidian Spire of the inner keep, preparing a fanatical last stand.”",
           "bubbleType": "speech",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 4,
-      "imageFile": "episode_26/scene_04.jpeg",
-      "sourceImageFile": "Servants_cleaned_room_Ignis_gone_202607260802.jpeg",
-      "narrationEn": "The servants said that they cleaned the room every day even while Ignis was gone. In the closet, new formal clothes were prepared for each season. Although it seemed like Lucian's consideration, it was actually a quiet order to return at any time and wear the same role.",
-      "narrationKo": "시종들은 이그니스가 떠난 동안에도 방을 매일 청소했다고 말했다. 옷장에는 새 예복이 계절별로 준비되어 있었다. 루시안의 배려처럼 보였지만, 사실은 언제든 돌아와 같은 역할을 입으라는 조용한 명령이었다.",
-      "sourceSentenceStart": 8,
-      "sourceSentenceEnd": 10,
-      "alignmentScore": 0.5728,
-      "dialogues": [
-        {
-          "speakerKo": "루시안",
-          "speakerEn": "Lucian",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 5,
-      "imageFile": "episode_26/scene_05.jpeg",
-      "sourceImageFile": "Ignis_smooths_collar,_Lucian_whi…_202607260802.jpeg",
-      "narrationEn": "Ignis was unable to burn his robes and only smoothed the collar with his fingertips. Lucian did not promise to put him on the throne. Instead, he whispered, “If Kadan saves the world, people will make him king.",
-      "narrationKo": "이그니스는 예복을 태우지 못하고 손끝으로 옷깃만 매만졌다. 루시안은 왕좌에 앉혀 주겠다고 약속하지 않았다. 대신 “카단이 세상을 구하면 사람들은 그를 왕으로 세울 것”이라고 속삭였다.",
-      "sourceSentenceStart": 11,
-      "sourceSentenceEnd": 13,
-      "alignmentScore": 0.4251,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "카단이 세상을 구하면 사람들은 그를 왕으로 세울 것",
-          "textEn": "“카단이 세상을 구하면 사람들은 그를 왕으로 세울 것”",
-          "bubbleType": "speech",
-          "position": "top-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 6,
-      "imageFile": "episode_26/scene_06.jpeg",
-      "sourceImageFile": "Ignis_feared_possibility,_Kadan_…_202607260802.jpeg",
-      "narrationEn": "” It was the possibility that Ignis feared the most but could not admit. Meanwhile, Kadan arrived in front of the Ironforge tactical room in the basement of the imperial palace.",
-      "narrationKo": "이그니스가 가장 두려워하면서도 인정하지 못한 가능성이었다. 한편 카단은 황궁 지하의 아이언포지 전술실 앞에 도착했다.",
-      "sourceSentenceStart": 14,
-      "sourceSentenceEnd": 15,
-      "alignmentScore": 0.6266,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 7,
-      "imageFile": "episode_26/scene_07.jpeg",
-      "sourceImageFile": "Metal_leaves_on_door_202607260802.jpeg",
-      "narrationEn": "When three bundles of metal leaves were placed on top of the door, a complex ley line map appeared. But the last key was missing. The missing chapter from Orihalcon was needed.",
-      "narrationKo": "세 묶음의 금속잎을 문에 포개자 복잡한 지맥 지도가 나타났다. 그러나 마지막 열쇠가 없었다. 오리하르콘에게서 사라진 장이 필요했다.",
-      "sourceSentenceStart": 16,
-      "sourceSentenceEnd": 18,
-      "alignmentScore": 0.4656,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 8,
-      "imageFile": "episode_26/scene_08.jpeg",
-      "sourceImageFile": "Celia_reads_dust_around_door_202607260802.jpeg",
-      "narrationEn": "Celia read the dust in the wind around the door. There were signs that someone had already opened and closed the door from the inside.",
-      "narrationKo": "실리아는 문 주위 바람의 먼지를 읽었다. 누군가 이미 안쪽에서 문을 열었다 닫은 흔적이 있었다.",
-      "sourceSentenceStart": 19,
-      "sourceSentenceEnd": 20,
-      "alignmentScore": 0.5373,
-      "dialogues": [
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
-          "bubbleType": "shout",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "휘이이익-!",
-          "textEn": "SWOOSH!",
-          "style": "slash",
-          "position": "top-left"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 9,
-      "imageFile": "episode_26/scene_09.jpeg",
-      "sourceImageFile": "Ignis_stole_key,_not_Lucian_202607260802.jpeg",
-      "narrationEn": "The person who stole the key was most likely Ignis, not Lucian. Ignis's characteristic right foot drag remained on the floor. It was a habit I had after injuring my ankle during flame training when I was young.",
-      "narrationKo": "열쇠를 훔친 사람은 루시안이 아니라 이그니스일 가능성이 컸다. 바닥에는 이그니스 특유의 오른발 끌림도 남아 있었다. 어릴 때 화염 훈련으로 발목을 다친 습관이었다.",
-      "sourceSentenceStart": 21,
-      "sourceSentenceEnd": 23,
-      "alignmentScore": 0.4993,
-      "dialogues": [
-        {
-          "speakerKo": "루시안",
-          "speakerEn": "Lucian",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 10,
-      "imageFile": "episode_26/scene_10.jpeg",
-      "sourceImageFile": "Kadan_squatted_in_front_of_202607260802.jpeg",
-      "narrationEn": "Kadan squatted in front of the trace and was silent for a while. I tried to stop the habit of trying to erase something between the words I believe and the evidence I can see. Kadan did not immediately suspect him.",
-      "narrationKo": "카단은 흔적 앞에 쪼그려 앉아 한참 말이 없었다. 믿는다는 말과 보이는 증거 사이에서 어느 하나를 지우려는 버릇을 멈추려 했다. 카단은 곧장 그를 의심하지 않았다.",
-      "sourceSentenceStart": 24,
-      "sourceSentenceEnd": 26,
-      "alignmentScore": 0.3954,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
-          "bubbleType": "shout",
-          "position": "top-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 11,
-      "imageFile": "episode_26/scene_11.jpeg",
-      "sourceImageFile": "Celia_anxious_about_attitude_202607260802.jpeg",
-      "narrationEn": "That attitude actually made Celia anxious. “Trust is not about not seeing the evidence.",
-      "narrationKo": "그 태도가 오히려 실리아를 불안하게 했다. “신뢰는 증거를 보지 않는 일이 아니야.”",
-      "sourceSentenceStart": 27,
-      "sourceSentenceEnd": 28,
-      "alignmentScore": 0.5531,
-      "dialogues": [
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "신뢰는 증거를 보지 않는 일이 아니야.",
-          "textEn": "“신뢰는 증거를 보지 않는 일이 아니야.”",
-          "bubbleType": "speech",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 12,
-      "imageFile": "episode_26/scene_12.jpeg",
-      "sourceImageFile": "Knights_and_Aeolus_encounter_und…_202607260802.jpeg",
-      "narrationEn": "” At that time, the Star Sanctuary knights and Aeolus encountered each other in the underground passage. Death Knight Artus sent different secret messages to both sides to induce battle. Hercul believed that Aeolus had kidnapped Kadan, and Aeolus thought that the Holy Knights had come to steal the codex.",
-      "narrationKo": "그때 별의 성소 기사들과 에올루스가 지하 통로에서 맞닥뜨렸다. 데스나이트 아르투스가 양쪽에 서로 다른 밀서를 보내 전투를 유도한 것이었다. 헤르쿨은 에올루스가 카단을 납치했다고 믿었고, 에올루스는 성기사단이 코덱스를 빼앗으러 왔다고 생각했다.",
-      "sourceSentenceStart": 29,
-      "sourceSentenceEnd": 31,
-      "alignmentScore": 0.6671,
-      "dialogues": [
-        {
-          "speakerKo": "헤르쿨",
-          "speakerEn": "Hercul",
-          "textKo": "우리의 맹세는 아직 꺼지지 않았다.",
-          "textEn": "Our vow has never been extinguished.",
-          "bubbleType": "speech",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 13,
-      "imageFile": "episode_26/scene_13.jpeg",
-      "sourceImageFile": "Death_Knight_Artus_on_Arcane_202607260802.jpeg",
-      "narrationEn": "Death Knight Artus swung his soul sword in the darkness. The attack was aimed at Aeolus's back, but Medusa Gorgo was hit instead.",
-      "narrationKo": "데스나이트 아르투스가 어둠 속에서 영혼검을 휘둘렀다. 공격은 에올루스의 등을 노렸지만 메두사 고르고가 대신 맞았다.",
-      "sourceSentenceStart": 32,
-      "sourceSentenceEnd": 33,
-      "alignmentScore": 0.6984,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "검끝이 흔들리지 않는 한, 길은 열린다.",
-          "textEn": "As long as our blades do not waver, the path will open.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
+          "position": "bottom-left",
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
@@ -307,22 +70,61 @@
       ]
     },
     {
-      "sceneNumber": 14,
-      "imageFile": "episode_26/scene_14.jpeg",
-      "sourceImageFile": "Aeolus_hugged_fallen_disciple_202607260802.jpeg",
-      "narrationEn": "The body damaged by the forbidden liquor quickly collapsed in the black light. Aeolus hugged his fallen disciple. Medusa Gorgo neither asked for nor forgave.",
-      "narrationKo": "금지술로 망가진 몸이 검은 빛에 빠르게 무너졌다. 에올루스는 쓰러진 제자를 안았다. 메두사 고르고는 용서를 구하지도, 용서하지도 않았다.",
-      "sourceSentenceStart": 34,
-      "sourceSentenceEnd": 36,
-      "alignmentScore": 0.4904,
+      "sceneNumber": 3,
+      "imageFile": "episode_26/scene_03.webp",
+      "sourceImageFile": "episode_26/scene_03.webp",
+      "narrationEn": "\"Scarcely any living mortal aura lingers within these walls. The courtiers and shock guards have been poisoned by Medusa Gorgo's necrotic venom, reduced to mindless marionettes devoid of human sentiment.\" Gazing upon the scorched guard barracks where he had once trained, Ignis spoke in solemn grief.",
+      "narrationKo": "이그니스는 불타버린 황궁 위병소를 바라보며 침통하게 말했다. “어릴 적 내가 뛰어놀던 궁정 정원이 이렇게 썩어 문드러지다니... 내 손으로 과거의 추억을 부수고 진실을 심판해야 한다는 사실이 가슴을 옥죄는구나.” 카단이 이그니스의 어깨를 짚어주었다.",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 8,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“어릴 적 내가 뛰어놀던 궁정 정원이 이렇게 썩어 문드러지다니... 내 손으로 과거의 추억을 부수고 진실을 심판해야 한다는 사실이 가슴을 옥죄는구나.”",
+          "textEn": "“Scarcely any living mortal aura lingers within these walls. The courtiers and shock guards have been poisoned by Medusa Gorgo's necrotic venom, reduced to mindless marionettes devoid of human sentiment.”",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_26/scene_04.webp",
+      "sourceImageFile": "episode_26/scene_04.webp",
+      "narrationEn": "\"The palace gardens where I played as a boy have rotted into a festering pit... It tears at my heart that I must shatter the memories of my youth to deliver judgment.\" Kadan placed a firm hand upon Ignis's shoulder.",
+      "narrationKo": "“썩은 살을 도려내지 않고는 새살이 돋아날 수 없다. 가자, 이그니스.” 광장 바닥에 뒹구는 부러진 창자루들과 불타버린 황실 깃발들 사이로 서늘한 밤바람이 휘몰아쳤다. 십팔 년 동안 독재의 칼날 아래에서 침묵을 강요받았던 민중들은 해방의 기쁨 속에서도 내궁 깊은 곳에서 풍겨오는 기괴한 마나의 악취에 본능적인 두려움을 느끼고 있었다. 카단은 방패의 끈을 다시 한번 손목에 단단히 감아쥐며 전열을 가다듬었다. 실리아가 부서진 대리석 분수대 난간을 짚으며 말했다. “물 밑바닥에 메두사 고르고의 산란관들이 흉측하게 얽혀 있어요. 루시안이 황궁을 통째로 마수들의 번식지로 개조하려 했던 거예요.”",
+      "sourceSentenceStart": 9,
+      "sourceSentenceEnd": 11,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "검끝이 흔들리지 않는 한, 길은 열린다.",
-          "textEn": "As long as our blades do not waver, the path will open.",
+          "textKo": "“썩은 살을 도려내지 않고는 새살이 돋아날 수 없다. 가자, 이그니스.”",
+          "textEn": "“The palace gardens where I played as a boy have rotted into a festering pit... It tears at my heart that I must shatter the memories of my youth to deliver judgment.”",
           "bubbleType": "speech",
-          "position": "top-right"
+          "position": "top-left",
+          "characterCardId": 41
+        },
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“물 밑바닥에 메두사 고르고의 산란관들이 흉측하게 얽혀 있어요. 루시안이 황궁을 통째로 마수들의 번식지로 개조하려 했던 거예요.”",
+          "textEn": "“New flesh can never bloom until the necrotic gangrene is carved away. Forward, Ignis.”",
+          "bubbleType": "speech",
+          "position": "top-right",
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
@@ -341,92 +143,23 @@
       ]
     },
     {
-      "sceneNumber": 15,
-      "imageFile": "episode_26/scene_15.jpeg",
-      "sourceImageFile": "Belphegor_Medusa_Aeolus_scene_202607260802.jpeg",
-      "narrationEn": "However, he said that Belphegor sent him alive at the end, and told his teacher to live to see the next story of his mistakes. When Medusa Gorgo touched Aeolus's hand, he initially pushed it away. But at the end, he grabbed his sleeve and asked where Belphegor was buried.",
-      "narrationKo": "다만 벨페고르가 마지막에 자신을 살려 보냈다고 말하며, 스승도 살아서 잘못의 다음을 보라고 했다. 메두사 고르고는 에올루스의 손이 닿자 처음에는 밀어냈다. 그러나 마지막에는 그의 소매를 붙들고 벨페고르가 어디에 묻혔는지 물었다.",
-      "sourceSentenceStart": 37,
-      "sourceSentenceEnd": 39,
-      "alignmentScore": 0.4134,
+      "sceneNumber": 5,
+      "imageFile": "episode_26/scene_05.webp",
+      "sourceImageFile": "episode_26/scene_05.webp",
+      "narrationEn": "\"New flesh can never bloom until the necrotic gangrene is carved away. Forward, Ignis.\" Advancing into the central courtyard, a gilded balcony door creaked open, revealing Count Balthazar, commander of the inner palace guard and Lucian's cousin. Black serpentine runes coiled around Balthazar's throat, and his eyes burned with madness.",
+      "narrationKo": "일행이 황궁 중앙 안뜰로 진입했을 때, 닫혀 있던 화려한 황금 발코니 문이 열리며 루시안 재상의 사촌이자 내궁 수비대장인 발타자르 백작이 모습을 드러냈다. 발타자르의 목덜미에는 뱀 비늘 형상의 암흑 마나 문신이 돋아나 있었고, 그의 눈동자는 이미 이성을 잃고 핏빛으로 번뜩이고 있었다. 발타자르가 난간을 짚으며 광기 어린 비웃음을 터뜨렸다.",
+      "sourceSentenceStart": 12,
+      "sourceSentenceEnd": 13,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 16,
-      "imageFile": "episode_26/scene_16.jpeg",
-      "sourceImageFile": "Brothers_placing_daggers_at_grave_202607260802.jpeg",
-      "narrationEn": "After hearing the answer that there was no exact grave, he asked them to scatter the pieces of the welcome stone where the two laughed in the same sea. The misunderstanding was resolved before her death.",
-      "narrationKo": "정확한 무덤이 없다는 대답을 듣고, 둘이 웃던 환영석 조각을 같은 바다에 뿌려 달라고 했다. 그녀의 죽음 앞에서 오해가 풀렸다.",
-      "sourceSentenceStart": 40,
-      "sourceSentenceEnd": 41,
-      "alignmentScore": 0.5016,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 17,
-      "imageFile": "episode_26/scene_17.jpeg",
-      "sourceImageFile": "Hercul_Aeolus_attacked_Artus_202607260802.jpeg",
-      "narrationEn": "Hercul and Aeolus attacked Death Knight Artus, but the empty armor disappeared into the dark passage. The last metal leaf and the flame mark of Ignis remained on the floor. When the tactical room door opened, the ley line device inside was awakened.",
-      "narrationKo": "헤르쿨과 에올루스는 데스나이트 아르투스를 협공했지만 빈 갑옷은 어둠 통로로 사라졌다. 바닥에는 마지막 금속잎과 이그니스의 불꽃 표식이 남아 있었다. 전술실 문이 열리자 내부의 지맥 장치가 깨어났다.",
-      "sourceSentenceStart": 42,
-      "sourceSentenceEnd": 44,
-      "alignmentScore": 0.5928,
-      "dialogues": [
-        {
-          "speakerKo": "헤르쿨",
-          "speakerEn": "Hercul",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 18,
-      "imageFile": "episode_26/scene_18.jpeg",
-      "sourceImageFile": "Lucian_on_mountain_ridge_202607260802.jpeg",
-      "narrationEn": "The mountain ranges and rivers of the continent emerged as miniature models of light. Lucian had already replicated the northern invasion route, but the core of the civilian refuge network was still safe.",
-      "narrationKo": "대륙의 산맥과 강이 빛의 축소 모형으로 떠올랐다. 루시안은 이미 북쪽 침공로를 복제해 갔지만, 민간 피난망의 핵심은 아직 안전했다.",
-      "sourceSentenceStart": 45,
-      "sourceSentenceEnd": 46,
-      "alignmentScore": 0.4316,
-      "dialogues": [
-        {
-          "speakerKo": "루시안",
-          "speakerEn": "Lucian",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-right"
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "발타자르가 난간을 짚으며 광기 어린 비웃음을 터뜨렸다.",
+          "textEn": "Black serpentine runes coiled around Balthazar's throat, and his eyes burned with madness.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 61
         }
       ],
       "sfxCues": [
@@ -439,46 +172,511 @@
       ]
     },
     {
-      "sceneNumber": 19,
-      "imageFile": "episode_26/scene_19.jpeg",
-      "sourceImageFile": "Celia's_crystal_cracked_202607260802.jpeg",
-      "narrationEn": "The crystal of Celia was slightly cracked. It meant that Ignis had harmed someone. Since it wasn't completely broken, it didn't take his life.",
-      "narrationKo": "실리아의 수정이 미세하게 금이 갔다. 이그니스가 누군가를 해쳤다는 뜻이었다. 완전히 깨지지는 않았기에 목숨을 빼앗지는 않았다.",
-      "sourceSentenceStart": 47,
-      "sourceSentenceEnd": 49,
-      "alignmentScore": 0.2446,
+      "sceneNumber": 6,
+      "imageFile": "episode_26/scene_06.webp",
+      "sourceImageFile": "episode_26/scene_06.webp",
+      "narrationEn": "Clutching the railing, Balthazar laughed maniacally. \"Insolent commoners and turncoat knights! How dare you set foot in the imperial gardens! Tonight, your severed heads shall fertilize my rose beds!\"",
+      "narrationKo": "“어리석은 하층민 놈들과 반역자 기사들이여! 감히 황제의 궁정에 발을 들이다니, 오늘 밤 네놈들의 목을 베어 내궁 정원의 거름으로 삼아주마!” 발타자르가 손짓하자, 안뜰의 대리석 바닥이 열리며 고르고의 마나로 개조된 ‘철갑 키메라’ 세 마리가 포효하며 솟구쳐 올랐다. 사자의 몸통에 독사의 꼬리, 흑철 장갑을 두른 거대한 괴수들이 침을 흘리며 일행을 향해 쇄도했다. 이그니스가 쇠파이프를 비껴 쥐며 앞으로 나섰다.",
+      "sourceSentenceStart": 14,
+      "sourceSentenceEnd": 16,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "메두사 고르고",
+          "speakerEn": "Medusa Gorgo",
+          "textKo": "“어리석은 하층민 놈들과 반역자 기사들이여! 감히 황제의 궁정에 발을 들이다니, 오늘 밤 네놈들의 목을 베어 내궁 정원의 거름으로 삼아주마!”",
+          "textEn": "“Insolent commoners and turncoat knights! How dare you set foot in the imperial gardens! Tonight, your severed heads shall fertilize my rose beds!”",
+          "bubbleType": "shout",
+          "position": "bottom-left",
+          "characterCardId": 89
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_26/scene_07.webp",
+      "sourceImageFile": "episode_26/scene_07.webp",
+      "narrationEn": "With a snap of his fingers, the marble flags parted, unleashing three armored Chimeras engineered through Gorgo's forbidden arts. With lion torsos, viper tails, and black-iron scales, the roaring monstrosities charged forward, spitting corrosive acid. Wielding his iron weapon, Ignis stepped forward.",
+      "narrationKo": "“발타자르 백작! 어릴 적 내게 검술을 가르쳐주었던 당신마저 이런 추악한 괴물이 되었단 말인가! 더 이상 황실의 명예를 더럽히지 말고 무기를 거두어라!” 발타자르가 조소했다. “명예 따위는 패배자들의 변명일 뿐이다! 힘이야말로 이 제국의 절대적인 법이다!”",
+      "sourceSentenceStart": 17,
+      "sourceSentenceEnd": 19,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "이그니스",
           "speakerEn": "Ignis",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-left"
+          "textKo": "“발타자르 백작! 어릴 적 내게 검술을 가르쳐주었던 당신마저 이런 추악한 괴물이 되었단 말인가! 더 이상 황실의 명예를 더럽히지 말고 무기를 거두어라!”",
+          "textEn": "“Insolent commoners and turncoat knights! How dare you set foot in the imperial gardens! Tonight, your severed heads shall fertilize my rose beds!”",
+          "bubbleType": "shout",
+          "position": "bottom-right",
+          "characterCardId": 11
+        },
+        {
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“명예 따위는 패배자들의 변명일 뿐이다! 힘이야말로 이 제국의 절대적인 법이다!”",
+          "textEn": "“Count Balthazar! You, who taught me swordsmanship in my youth, have fallen into this abominable madness! Cast down your steel and defile the empire's honor no longer!”",
+          "bubbleType": "shout",
+          "position": "top-left",
+          "characterCardId": 11
         }
       ],
-      "sfxCues": []
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
     },
     {
-      "sceneNumber": 20,
-      "imageFile": "episode_26/scene_20.jpeg",
-      "sourceImageFile": "Kadan_looked_up_palace_202607260802.jpeg",
-      "narrationEn": "Kadan looked up above the palace. Ignis's closed mind was more dangerous than the open tactical room. He has now accepted that trusting his friend and preventing his friend from making mistakes are equal responsibilities.",
-      "narrationKo": "카단은 궁정 위쪽을 올려다보았다. 열린 전술실보다 닫혀 가는 이그니스의 마음이 더 위험했다. 그는 친구를 믿는 일과 친구의 잘못을 막는 일이 같은 책임이라는 것을 이제야 받아들였다.",
-      "sourceSentenceStart": 50,
-      "sourceSentenceEnd": 52,
-      "alignmentScore": 0.4001,
+      "sceneNumber": 8,
+      "imageFile": "episode_26/scene_08.webp",
+      "sourceImageFile": "episode_26/scene_08.webp",
+      "narrationEn": "\"Count Balthazar! You, who taught me swordsmanship in my youth, have fallen into this abominable madness! Cast down your steel and defile the empire's honor no longer!\" Balthazar sneered in contempt.",
+      "narrationKo": "발타자르 백작이 서 있는 발코니 뒤편으로는 흑마법으로 봉인된 열두 개의 황금 거울들이 음산한 보랏빛 인광을 뿜어내고 있었다. 거울 속에서는 억울하게 희생된 수도 주민들의 원혼들이 고통스럽게 꿈틀거리며 키메라들에게 암흑 마나를 공급하고 있었다. 이그니스가 주먹을 부르르 떨며 소리쳤다. “인간의 영혼을 마력의 연료로 삼다니! 황실의 피를 이어받은 자로서 이토록 추악한 패륜을 더 이상 묵과할 수 없다!” 카단 역시 방패를 앞으로 내세우며 전열의 선두에 섰다.",
+      "sourceSentenceStart": 20,
+      "sourceSentenceEnd": 21,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“인간의 영혼을 마력의 연료로 삼다니! 황실의 피를 이어받은 자로서 이토록 추악한 패륜을 더 이상 묵과할 수 없다!”",
+          "textEn": "“Count Balthazar! You, who taught me swordsmanship in my youth, have fallen into this abominable madness! Cast down your steel and defile the empire's honor no longer!”",
+          "bubbleType": "shout",
+          "position": "top-left",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_26/scene_09.webp",
+      "sourceImageFile": "episode_26/scene_09.webp",
+      "narrationEn": "\"Honor is merely the excuse of the vanquished! Power alone is the absolute law of this realm!\" The chimeras lunged, their iron-plated claws cleaving through the air with concussive snaps.",
+      "narrationKo": "키메라들이 맹렬한 기세로 달려들며 흑철 발톱을 휘둘렀다. 공기를 찢는 파열음과 함께 키메라의 독사 꼬리에서 부식성 산액이 뿜어져 나왔다. 카단이 주저 없이 드래곤 브레이커 방패를 전면에 세우며 별의 호흡을 터뜨렸다. 콰앙!",
+      "sourceSentenceStart": 22,
+      "sourceSentenceEnd": 24,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "콰앙!",
+          "textEn": "Power alone is the absolute law of this realm!\" The chimeras lunged, their iron-plated claws cleaving through the air with concussive snaps.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_26/scene_10.webp",
+      "sourceImageFile": "episode_26/scene_10.webp",
+      "narrationEn": "Without hesitation, Kadan anchored his Dragon Breaker shield, unleashing star-breathing. Boom!",
+      "narrationKo": "키메라의 거대한 앞발이 방패에 부딪치는 순간, 드래곤 브레이커의 황금빛 반발 충격파가 괴수의 발톱을 산산조각 냈다. 카단은 방패를 비틀어 쳐올리며 키메라의 턱을 가격했고, 거대한 괴수가 비명을 지르며 공중으로 솟구쳤다. 그 틈을 타 이그니스가 번개처럼 도약했다.",
+      "sourceSentenceStart": 25,
+      "sourceSentenceEnd": 26,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그 틈을 타 이그니스가 번개처럼 도약했다.",
+          "textEn": "Boom!",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_26/scene_11.webp",
+      "sourceImageFile": "episode_26/scene_11.webp",
+      "narrationEn": "The beast's massive claws slammed into the dragonbone plate, only to be pulverized by the shield's golden kinetic backlash. Twisting his guard upward, Kadan struck the lead chimera's jaw, sending the titan tumbling backward. Vaulting from Kadan's flank, Ignis cleaved through the air. \"Holy flame of purification, grant peace to these corrupted beasts!\"",
+      "narrationKo": "“정화의 불꽃이여, 타락한 영혼에 안식을!” 이그니스의 순백 화염이 허공에서 십자 궤적을 그리며 키메라들의 목을 차례로 베어 넘겼다. 불타는 성화가 괴물들의 독기를 하얗게 증발시키며 안뜰 바닥을 정화했다. 실리아 역시 녹옥 지팡이로 거대한 질풍의 소용돌이를 일으켜 발타자르가 서 있던 발코니 난간을 통째로 무너뜨렸다. 바닥으로 추락한 발타자르는 부러진 칼자루를 쥐고 피를 토하며 쓰러졌다.",
+      "sourceSentenceStart": 27,
+      "sourceSentenceEnd": 29,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“정화의 불꽃이여, 타락한 영혼에 안식을!”",
+          "textEn": "“Holy flame of purification, grant peace to these corrupted beasts!”",
+          "bubbleType": "shout",
+          "position": "bottom-right",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_26/scene_12.webp",
+      "sourceImageFile": "episode_26/scene_12.webp",
+      "narrationEn": "A crescent of pure white fire severed the necks of the chimeras, vaporizing the necrotic corruption into plumes of clean white steam. Simultaneously, Cilia swept her Jade Staff, conjuring a violent whirlwind that collapsed the marble balcony beneath Balthazar's boots. Crashing onto the flagstones, Balthazar lay mortally wounded, coughing black blood.",
+      "narrationKo": "카단의 방패 강타에 턱이 부서진 첫 번째 키메라가 비명을 지르며 나뒹굴자, 나머지 두 마리가 좌우에서 동시에 협공을 가해왔다. 날카로운 흑철 발톱이 카단의 가죽 어깨받이를 스치며 불꽃을 튀겼지만, 카단은 별 호흡의 반발력으로 중심을 무너뜨리지 않고 방패 모서리로 두 번째 키메라의 안면을 강타했다. 이그니스의 순백 화염이 허공을 가르며 세 번째 키메라의 심장을 정확히 꿰뚫었다. 하얀 불꽃이 괴수의 전신을 감싸며 사령의 독기를 완전히 태워버렸다. 안뜰의 대리석 바닥에는 오직 정화된 하얀 재만이 눈송이처럼 흩날렸다. 숨을 헐떡이며 쓰러진 발타자르를 내려다보며, 이그니스는 눈시울을 붉혔다.",
+      "sourceSentenceStart": 30,
+      "sourceSentenceEnd": 32,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "숨을 헐떡이며 쓰러진 발타자르를 내려다보며, 이그니스는 눈시울을 붉혔다.",
+          "textEn": "Crashing onto the flagstones, Balthazar lay mortally wounded, coughing black blood.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_26/scene_13.webp",
+      "sourceImageFile": "episode_26/scene_13.webp",
+      "narrationEn": "Kneeling beside his former mentor, Ignis spoke through clenched teeth. \"Why... Why did you surrender your soul to Lucian's deceit, Count? Did you not teach me that a true knight is a shield for the weak?\"",
+      "narrationKo": "“어째서... 어째서 루시안의 거짓에 영혼을 팔아넘겼습니까, 백작님? 황실의 기사는 백성을 지키는 방패라 가르치셨던 당신이 아니었습니까?” 발타자르가 피 묻은 입술을 떨며 메마른 목소리로 중얼거렸다.",
+      "sourceSentenceStart": 33,
+      "sourceSentenceEnd": 34,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“어째서... 어째서 루시안의 거짓에 영혼을 팔아넘겼습니까, 백작님? 황실의 기사는 백성을 지키는 방패라 가르치셨던 당신이 아니었습니까?”",
+          "textEn": "“Why... Why did you surrender your soul to Lucian's deceit, Count? Did you not teach me that a true knight is a shield for the weak?”",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_26/scene_14.webp",
+      "sourceImageFile": "episode_26/scene_14.webp",
+      "narrationEn": "Trembling, Balthazar gasped in ragged breaths. \"Ignis... Minister Lucian is no mere conspirator... Behind him stands the true archduke of the abyss, Belphegor... Tomorrow at midnight... In the Jade Council... The emperor's soul will be offered as a blood sacrifice...\"",
+      "narrationKo": "“이그니스... 루시안 재상은... 단순한 반역자가 아니다... 그의 등 뒤에는... 나인섀도우의 진정한 군주, 심연의 대공 벨페고르가 버티고 있다... 내일 밤 자정... 평의회에서... 황제 폐하의 영혼을 제물로 바치는 의식이... 거행될 것이다...” 말을 마친 발타자르는 숨을 거두었고, 그의 목덜미에 새겨져 있던 뱀 문신이 연기가 되어 허공으로 사라졌다. 실리아가 안타까운 눈빛으로 백작의 눈을 감겨주었다.",
+      "sourceSentenceStart": 35,
+      "sourceSentenceEnd": 37,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“이그니스... 루시안 재상은... 단순한 반역자가 아니다... 그의 등 뒤에는... 나인섀도우의 진정한 군주, 심연의 대공 벨페고르가 버티고 있다... 내일 밤 자정... 평의회에서... 황제 폐하의 영혼을 제물로 바치는 의식이... 거행될 것이다...”",
+          "textEn": "“Ignis... Minister Lucian is no mere conspirator... Behind him stands the true archduke of the abyss, Belphegor... Tomorrow at midnight... In the Jade Council... The emperor's soul will be offered as a blood sacrifice...”",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_26/scene_15.webp",
+      "sourceImageFile": "episode_26/scene_15.webp",
+      "narrationEn": "With those final words, Balthazar expired, the serpent runes dissolving into thin smoke. Cilia closed the fallen nobleman's eyes with a gentle wind prayer.",
+      "narrationKo": "“공포에 굴복해 스스로 마음의 문을 닫아버린 사람들의 비극이에요.” 카단이 방패를 고쳐 쥐며 단호하게 말했다. “내일 밤 자정, 평의회에서 황제의 폐위와 심연의 제사가 열린다. 그전에 반드시 내궁의 결계탑을 장악해야 한다.”",
+      "sourceSentenceStart": 38,
+      "sourceSentenceEnd": 40,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“공포에 굴복해 스스로 마음의 문을 닫아버린 사람들의 비극이에요.”",
+          "textEn": "“Ignis... Minister Lucian is no mere conspirator... Behind him stands the true archduke of the abyss, Belphegor... Tomorrow at midnight... In the Jade Council... The emperor's soul will be offered as a blood sacrifice...”",
+          "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 62
+        },
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“내일 밤 자정, 평의회에서 황제의 폐위와 심연의 제사가 열린다. 그전에 반드시 내궁의 결계탑을 장악해야 한다.”",
+          "textEn": "“The tragedy of those whose fear locked their hearts in darkness.”",
+          "bubbleType": "speech",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_26/scene_16.webp",
+      "sourceImageFile": "episode_26/scene_16.webp",
+      "narrationEn": "\"The tragedy of those whose fear locked their hearts in darkness.\" Tightening his grip on his shield, Kadan spoke with unwavering resolve.",
+      "narrationKo": "발타자르 백작의 마지막 유언은 안뜰의 적막 속에 무겁게 가라앉았다. 나인섀도우의 진정한 군주 벨페고르의 이름이 언급되자, 밤바람조차 얼어붙는 듯 서늘한 한기가 회랑을 채웠다. 실리아가 녹옥 지팡이 끝으로 백작의 시신에 부드러운 바람의 축복을 내리며 속삭였다. “죄는 미우나 공포에 영혼을 빼앗긴 자의 말로는 비참하군요. 부디 다음 생에는 자유로운 바람으로 태어나기를.”",
+      "sourceSentenceStart": 41,
+      "sourceSentenceEnd": 42,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“죄는 미우나 공포에 영혼을 빼앗긴 자의 말로는 비참하군요. 부디 다음 생에는 자유로운 바람으로 태어나기를.”",
+          "textEn": "“The tragedy of those whose fear locked their hearts in darkness.”",
+          "bubbleType": "speech",
+          "position": "top-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_26/scene_17.webp",
+      "sourceImageFile": "episode_26/scene_17.webp",
+      "narrationEn": "\"Tomorrow at midnight, the council will attempt the dark coronation. We must seize the barrier tower before the blood sacrifice begins.\" With the courtyard secured, volunteer militias from the cathedral took up defensive perches along the parapets. Rondol and Grimli arrived with fresh supplies, fortifying the forward breach.",
+      "narrationKo": "카단이 동료들을 돌아보며 결연하게 말했다. “자정까지 남은 시간은 세 시간뿐이다. 즉시 내궁 결계탑으로 진격한다.” 안뜰의 전투가 정리되자, 대성당에서 무기를 들고 따라온 수도의 자치 의용군들이 안뜰의 경비를 맡았다. 론돌과 그림리 역시 도착하여 부서진 회랑을 수리하고 방어선을 구축했다. 달빛이 구름 사이로 비치며 황궁 내궁의 거대한 흑요석 첨탑을 서늘하게 비추었다. 탑 꼭대기에서는 불길한 보랏빛 번개가 쉼 없이 번뜩이며 내일 밤에 벌어질 대참극을 예고하고 있었다.",
+      "sourceSentenceStart": 43,
+      "sourceSentenceEnd": 45,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "textKo": "“자정까지 남은 시간은 세 시간뿐이다. 즉시 내궁 결계탑으로 진격한다.”",
+          "textEn": "“Tomorrow at midnight, the council will attempt the dark coronation. We must seize the barrier tower before the blood sacrifice begins.”",
           "bubbleType": "speech",
-          "position": "bottom-left"
+          "position": "top-right",
+          "characterCardId": 41
         }
       ],
-      "sfxCues": []
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_26/scene_18.webp",
+      "sourceImageFile": "episode_26/scene_18.webp",
+      "narrationEn": "Gathered around a small brazier beneath the shadow of the Obsidian Spire, the three companions studied the palace blueprints. Touching the scars across his palms, Ignis whispered into the night.",
+      "narrationKo": "카단과 이그니스, 실리아는 안뜰의 작은 모닥불 곁에 둘러앉아 작전 지도를 검토했다. 이그니스가 자신의 손바닥에 남아 있는 화염의 흉터를 바라보며 속삭였다. “내일 밤이면 모든 것이 끝난다. 내 목숨이 다하는 한이 있더라도, 황제 폐하와 무고한 백성들을 반드시 구해내겠다.”",
+      "sourceSentenceStart": 46,
+      "sourceSentenceEnd": 48,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“내일 밤이면 모든 것이 끝난다. 내 목숨이 다하는 한이 있더라도, 황제 폐하와 무고한 백성들을 반드시 구해내겠다.”",
+          "textEn": "“Tomorrow night, everything concludes. Even if my life is extinguished, I will deliver the emperor and our people from the abyss.”",
+          "bubbleType": "speech",
+          "position": "bottom-left",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_26/scene_19.webp",
+      "sourceImageFile": "episode_26/scene_19.webp",
+      "narrationEn": "\"Tomorrow night, everything concludes. Even if my life is extinguished, I will deliver the emperor and our people from the abyss.\" Touching the crimson knot of his silver dagger, Kadan replied.",
+      "narrationKo": "카단이 은빛 단검의 붉은 매듭을 만지며 대답했다. “우리는 함께 살아남을 것이다, 이그니스. 새벽이 오면 이 땅의 모든 아이들이 두려움 없이 웃을 수 있는 세상을 보게 될 테니까.”",
+      "sourceSentenceStart": 49,
+      "sourceSentenceEnd": 50,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“우리는 함께 살아남을 것이다, 이그니스. 새벽이 오면 이 땅의 모든 아이들이 두려움 없이 웃을 수 있는 세상을 보게 될 테니까.”",
+          "textEn": "“Tomorrow night, everything concludes. Even if my life is extinguished, I will deliver the emperor and our people from the abyss.”",
+          "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_26/scene_20.webp",
+      "sourceImageFile": "episode_26/scene_20.webp",
+      "narrationEn": "\"We shall live through the storm together, Ignis. When the dawn breaks, we will look upon a realm where children smile without fear.\" Clasping hands in an unbreakable vow, the three youths stood ready for the fateful night.",
+      "narrationKo": "세 젊은이는 서로의 손을 맞잡으며 결연한 각오를 다졌다. 밤바람은 차가웠지만, 그들의 가슴속에 타오른 맹세의 온기는 결코 꺼지지 않았다. 안뜰의 수비선이 완벽하게 굳어지자, 론돌이 지휘하는 의용군 궁수들이 무너진 발코니 위에 배치되어 내궁의 퇴로를 봉쇄했다. 그림리는 무거운 모루를 내리치며 부러진 창날들을 즉석에서 단련해 병사들에게 나누어주었다. 카단은 이그니스와 함께 모닥불 불빛에 칼날을 비춰보며 조용히 마음을 가다듬었다. “내일 새벽, 우리는 황궁의 옥좌에 진정한 백성들의 깃발을 꽂을 것이다.” 이그니스가 고개를 끄덕이며 미소를 지었다. 어둠이 짙어질수록 새벽의 빛은 더욱 가까워지고 있었다.",
+      "sourceSentenceStart": 51,
+      "sourceSentenceEnd": 53,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“내일 새벽, 우리는 황궁의 옥좌에 진정한 백성들의 깃발을 꽂을 것이다.”",
+          "textEn": "“We shall live through the storm together, Ignis. When the dawn breaks, we will look upon a realm where children smile without fear.”",
+          "bubbleType": "speech",
+          "position": "top-left",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
     }
   ]
 }

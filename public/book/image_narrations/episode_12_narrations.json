@@ -2,47 +2,27 @@
   "episodeNumber": 12,
   "episodeTitleEn": "Spring Between Two Graves",
   "episodeTitleKo": "두 무덤 사이의 봄",
-  "sourceSentenceCount": 60,
+  "sourceSentenceCount": 35,
   "sceneCount": 20,
   "scenes": [
     {
       "sceneNumber": 1,
-      "imageFile": "episode_12/scene_01.jpeg",
-      "sourceImageFile": "Abandoned_sanctuary_discovered_w…_202607260802.jpeg",
-      "narrationEn": "The location of the abandoned sanctuary was discovered within a day. Lucian lost its justification to control Ignis when it was revealed that Balian was alive.",
-      "narrationKo": "폐성소의 위치는 하루를 넘기지 못하고 발각되었다. 루시안은 발리안이 살아 있다는 사실이 드러나면 이그니스를 지배할 명분을 잃었다.",
+      "imageFile": "episode_12/scene_01.webp",
+      "sourceImageFile": "episode_12/scene_01.webp",
+      "narrationEn": "Deep within the ancient oak groves encircling the outer boundaries of the capital, Lighthaven, the forgotten sanctuary of the Arcane Holy Knights lay steeped in heavy silence. Coiling around the fallen columns of the white marble cloister, deep emerald moss and mistletoe tangled like weathered webs, while through fissures in the fractured altar, melting winter snowdrifts dripped with clear, rhythmic drops. Woodland thrushes chirped softly in the twilight mist of early dawn, yet the atmosphere within the flagstone courtyard remained cold and tense as winter ice. The aged Paladin Balian rested against a crumbling stone wall within the nave, breathing in shallow, labored gasps. The deep wounds sustained while escaping the sulfur fires of the Seventh Labor Camp burned with fever, and the necrotic venom of Medusa Gorgo spread like blackened veins across the scarred expanse of his chest. Parched and pale as ash, the veteran's lips trembled as involuntary tremors passed through his calloused fingers. As cold drafts brushed the stone floor, Balian coughed up dark blood, pressing a hand to his wound.",
+      "narrationKo": "수도 라이트헤븐의 외곽을 둘러싼 울창한 고대 참나무 숲 깊은 곳에는 세월의 풍파에 잊힌 옛 성기사단의 버려진 성소가 무거운 침묵 속에 잠겨 있었다. 무너져 내린 백색 대리석 회랑의 원형 기둥마다 짙푸른 이끼와 겨우살이 넝쿨이 거미줄처럼 얽혀 있었고, 부서진 성스러운 제단 틈새로는 차가웠던 겨울 눈송이가 녹아내리며 청아한 낙수 소리를 냈다. 산새들이 이른 새벽의 푸르스름한 안갯속에서 조용히 지저귀고 있었지만, 성소 안마당을 감도는 공기는 살얼음판처럼 차갑고 무거웠다. 늙은 성기사 발리안은 성소 안쪽의 허물어진 돌벽에 등을 기댄 채 거친 숨을 몰아쉬고 있었다. 제7 지하 노동 수용소의 유황 불길에서 탈출하는 과정에서 입은 상처가 깊었던 데다, 메두사 고르고의 암흑 맹독이 그의 가슴팍 흉터를 타고 검푸른 혈관처럼 번져 나가고 있었다. 백발의 늙은 기사의 입술은 잿빛으로 바싹 말라붙어 있었고, 거친 손마디는 끊임없이 미세하게 경련하고 있었다. 차가운 새벽 공기가 성소 바닥을 훑을 때마다 발리안은 마른기침을 토해내며 피 묻은 가슴을 감싸 쥐었다.",
       "sourceSentenceStart": 1,
       "sourceSentenceEnd": 2,
-      "alignmentScore": 0.3202,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "발리안",
-          "speakerEn": "Balian",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 2,
-      "imageFile": "episode_12/scene_02.jpeg",
-      "sourceImageFile": "Magitech_Golem_surrounds_sanctuary_202607260802.jpeg",
-      "narrationEn": "He surrounded the sanctuary not only with the palace guards but also with Magitech Golem, which had been modified with forbidden arts. Balian tried to go out the back door with Ysela, but the wound from Medusa Gorgo's fingernails was spreading black. He realized with his body that Ignis's life force extraction rune came from the same poison.",
-      "narrationKo": "그는 궁정 수비대뿐 아니라 금지술로 개조한 마기테크 골렘까지 풀어 성소를 에워쌌다. 발리안은 이셀라와 함께 뒷문으로 나가려 했지만, 메두사 고르고의 손톱에 입은 상처가 검게 번지고 있었다. 이그니스의 생명력 추출 룬도 같은 독에서 나왔다는 사실을 그는 몸으로 알아차렸다.",
-      "sourceSentenceStart": 3,
-      "sourceSentenceEnd": 5,
-      "alignmentScore": 0.5769,
-      "dialogues": [
-        {
-          "speakerKo": "발리안",
-          "speakerEn": "Balian",
-          "textKo": "검끝이 흔들리지 않는 한, 길은 열린다.",
-          "textEn": "As long as our blades do not waver, the path will open.",
-          "bubbleType": "speech",
-          "position": "bottom-left"
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "차가운 새벽 공기가 성소 바닥을 훑을 때마다 발리안은 마른기침을 토해내며 피 묻은 가슴을 감싸 쥐었다.",
+          "textEn": "As cold drafts brushed the stone floor, Balian coughed up dark blood, pressing a hand to his wound.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 43
         }
       ],
       "sfxCues": [
@@ -53,135 +33,95 @@
           "position": "top-right"
         },
         {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_12/scene_02.webp",
+      "sourceImageFile": "episode_12/scene_02.webp",
+      "narrationEn": "With trembling hands, Issela blended crushed comfrey leaves with the cooling sap of the Moonlit Herb brought by Kadan from the imperial apothecary, gently applying the poultice over the blackened lacerations upon her husband's breast. Whiffs of pale steam rose as the cooling herbs touched the fevered flesh. \"Bear it just a little longer, Balian. The medicine Kadan secured will soon extinguish the fever in your blood. You must live... to hold our boy, our Ignis, in your arms once more.\"",
+      "narrationKo": "이셀라는 떨리는 손으로 으깬 컴프리 약초와 카단이 황궁 약초원에서 목숨을 걸고 구해온 달빛잎 즙을 개어 남편의 검게 물든 가슴 상처에 조심스럽게 덧대었다. 약초 잎사귀가 살점에 닿을 때마다 지글거리는 소리와 함께 희미한 백색 김이 피어올랐다. “발리안, 조금만 더 기운을 내요. 카단이 가져온 영약이 곧 상처의 불길을 가라앉힐 거예요. 우리 아이를... 이그니스를 다시 품에 안아야 하잖아요.”",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 4,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "이셀라",
+          "speakerEn": "Ysela",
+          "textKo": "“발리안, 조금만 더 기운을 내요. 카단이 가져온 영약이 곧 상처의 불길을 가라앉힐 거예요. 우리 아이를... 이그니스를 다시 품에 안아야 하잖아요.”",
+          "textEn": "“Bear it just a little longer, Balian. The medicine Kadan secured will soon extinguish the fever in your blood. You must live... to hold our boy, our Ignis, in your arms once more.”",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 107
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
           "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
         }
       ]
     },
     {
       "sceneNumber": 3,
-      "imageFile": "episode_12/scene_03.jpeg",
-      "sourceImageFile": "Hercul_Walker_Celia_sanctuary_steps_202607260802.jpeg",
-      "narrationEn": "The more I ran, the stiffer my limbs became. Hercul and Walker opened the way. The six masters guarded the sanctuary steps, and Celia pulled the wounded out into the wind tunnel.",
-      "narrationKo": "달릴수록 팔다리가 굳었다. 헤르쿨과 워커가 길을 열었다. 여섯 스승은 성소 계단을 지켰고 실리아는 부상자들을 바람 통로로 빼냈다.",
-      "sourceSentenceStart": 6,
-      "sourceSentenceEnd": 8,
-      "alignmentScore": 0.3487,
+      "imageFile": "episode_12/scene_03.webp",
+      "sourceImageFile": "episode_12/scene_03.webp",
+      "narrationEn": "Balian reached out with a scarred, calloused hand to brush away the tears gathering upon his wife's cheeks, a faint, weary smile touching his lips.",
+      "narrationKo": "발리안은 아내의 젖은 눈가를 상처투성이 손으로 쓸어내리며 힘없이 미소를 지었다.",
+      "sourceSentenceStart": 5,
+      "sourceSentenceEnd": 5,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "헤르쿨",
-          "speakerEn": "Hercul",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "발리안은 아내의 젖은 눈가를 상처투성이 손으로 쓸어내리며 힘없이 미소를 지었다.",
+          "textEn": "Balian reached out with a scarred, calloused hand to brush away the tears gathering upon his wife's cheeks, a faint, weary smile touching his lips.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 43
         }
       ],
       "sfxCues": [
         {
-          "textKo": "휘이이익-!",
-          "textEn": "SWOOSH!",
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
           "style": "slash",
-          "position": "top-left"
+          "position": "center"
         }
       ]
     },
     {
       "sceneNumber": 4,
-      "imageFile": "episode_12/scene_04.jpeg",
-      "sourceImageFile": "Ysela_and_Lucian_in_palace_202607260802.jpeg",
-      "narrationEn": "Kadan found it difficult to bear the fact that even though people from his parents' generation were gathered together again, no one had time to rejoice. Lucian appeared in person and extended his hand to Ysela. “When you return to the palace, I will spare Balian’s life.",
-      "narrationKo": "카단은 부모 세대의 사람들이 다시 한자리에 모였는데도 누구 하나 기뻐할 틈이 없다는 사실이 견디기 어려웠다. 루시안이 직접 나타나 이셀라에게 손을 내밀었다. “궁정으로 돌아오면 발리안의 목숨만은 살려 주지.”",
-      "sourceSentenceStart": 9,
-      "sourceSentenceEnd": 11,
-      "alignmentScore": 0.3976,
+      "imageFile": "episode_12/scene_04.webp",
+      "sourceImageFile": "episode_12/scene_04.webp",
+      "narrationEn": "\"Issela... my mortal shell was largely consumed under the inquisitors' fires in the mines. Yet now that you have reclaimed your true memories and sit beside me, the hellish eighteen years of isolation dissolve like spring snow upon the hearth.\" That fragile peace was shattered all too soon. Through the oak groves beyond the perimeter walls came the rhythmic thunder of iron-shod hooves and the unmistakable chill of unsheathed steel. High Minister Lucian had arrived, commanding over a hundred elite flame guardsmen to encircle the sanctuary in an iron perimeter. Draped in a mantle of rich crimson silk, Lucian swirled a chalice of silver wine atop his black charger, bellowing in mocking amusement. Behind him, crimson flame wards flared to seal every retreat path.",
+      "narrationKo": "“이셀라... 내 육신은 이미 수용소의 혹독한 고문 속에서 다 타버렸소. 다만 당신이 기억을 되찾고 내 곁에 있어 주니, 지난 십팔 년 동안 겪었던 지옥 같은 어둠이 봄눈 녹듯 사라지는구려.” 그 평화로운 순간도 잠시, 성소 바깥의 참나무 숲속에서 무거운 철갑 기마대의 발굽 소리와 함께 서슬 퍼런 살기가 밀려들었다. 권신 루시안이 황궁 직속의 정예 불꽃 근위대 백여 명을 이끌고 성소를 겹겹이 포위한 것이었다. 진홍빛 비단 망토를 두른 루시안이 흑마 위에서 은잔을 가볍게 흔들며 조롱 섞인 고함을 내질렀다. 그의 등 뒤에서는 붉은 화염 마법진이 숲의 나무들을 에워싸며 퇴로를 차단하고 있었다.",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 7,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "발리안",
           "speakerEn": "Balian",
-          "textKo": "궁정으로 돌아오면 발리안의 목숨만은 살려 주지.",
-          "textEn": "“궁정으로 돌아오면 발리안의 목숨만은 살려 주지.”",
-          "bubbleType": "speech",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 5,
-      "imageFile": "episode_12/scene_05.jpeg",
-      "sourceImageFile": "Kadan,_Lucian,_Ysela,_Balian_scene_202607260802.jpeg",
-      "narrationEn": "” Ysela couldn't forgive himself for once wanting to believe those words. She turned her back on Lucian, holding Balian's hand. Balian used his remaining strength to raise a spear to block his wife and Kadan.",
-      "narrationKo": "이셀라는 한때 그 말을 믿고 싶었던 자신을 용서할 수 없었다. 그녀는 발리안의 손을 잡은 채 루시안에게 등을 돌렸다. 발리안은 남은 힘으로 창을 세워 아내와 카단을 가렸다.",
-      "sourceSentenceStart": 12,
-      "sourceSentenceEnd": 14,
-      "alignmentScore": 0.5694,
-      "dialogues": [
-        {
-          "speakerKo": "발리안",
-          "speakerEn": "Balian",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 6,
-      "imageFile": "episode_12/scene_06.jpeg",
-      "sourceImageFile": "Ignis_lands_before_royal_army_202607260802.jpeg",
-      "narrationEn": "At that time, Ignis landed in front of the royal army. Everyone waited for his choice. He approached Balian and instead of kneeling, he aimed the tip of his spear.",
-      "narrationKo": "그때 이그니스가 궁정군 앞에 내려섰다. 모두가 그의 선택을 기다렸다. 그는 발리안에게 다가가 무릎을 꿇는 대신 창끝을 겨누었다.",
-      "sourceSentenceStart": 15,
-      "sourceSentenceEnd": 17,
-      "alignmentScore": 0.6832,
-      "dialogues": [
-        {
-          "speakerKo": "발리안",
-          "speakerEn": "Balian",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 7,
-      "imageFile": "episode_12/scene_07.jpeg",
-      "sourceImageFile": "Lucian_smiled,_Ignis_burned_rune_202607260802.jpeg",
-      "narrationEn": "Lucian smiled with satisfaction. However, Ignis's flame did not burn Balian's body, but the destruction rune in the ground. The device that was supposed to bury the entire sanctuary lost its light.",
-      "narrationKo": "루시안은 만족스러운 미소를 지었다. 하지만 이그니스의 불꽃은 발리안의 몸이 아니라 땅속 파괴 룬을 태웠다. 성소 전체를 매몰시키려던 장치가 빛을 잃었다.",
-      "sourceSentenceStart": 18,
-      "sourceSentenceEnd": 20,
-      "alignmentScore": 0.4891,
-      "dialogues": [
-        {
-          "speakerKo": "발리안",
-          "speakerEn": "Balian",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
+          "textKo": "“이셀라... 내 육신은 이미 수용소의 혹독한 고문 속에서 다 타버렸소. 다만 당신이 기억을 되찾고 내 곁에 있어 주니, 지난 십팔 년 동안 겪었던 지옥 같은 어둠이 봄눈 녹듯 사라지는구려.”",
+          "textEn": "“Issela... my mortal shell was largely consumed under the inquisitors' fires in the mines. Yet now that you have reclaimed your true memories and sit beside me, the hellish eighteen years of isolation dissolve like spring snow upon the hearth.”",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 43
         }
       ],
       "sfxCues": [
@@ -200,186 +140,32 @@
       ]
     },
     {
-      "sceneNumber": 8,
-      "imageFile": "episode_12/scene_08.jpeg",
-      "sourceImageFile": "Balian_sees_son's_face_202607260802.jpeg",
-      "narrationEn": "“I will not call you father yet, nor will I kill you by order of you. ” Balian saw his son's face up close for the first time. A poison touched my heart as I searched for what to say.",
-      "narrationKo": "“나는 아직 당신을 아버지라 부르지 않겠다. 그렇다고 저자의 명령으로 죽이지도 않아.” 발리안이 처음으로 아들의 얼굴을 가까이 보았다. 무슨 말을 해야 할지 찾는 동안 독이 심장에 닿았다.",
-      "sourceSentenceStart": 21,
-      "sourceSentenceEnd": 24,
-      "alignmentScore": 0.5702,
-      "dialogues": [
-        {
-          "speakerKo": "발리안",
-          "speakerEn": "Balian",
-          "textKo": "나는 아직 당신을 아버지라 부르지 않겠다. 그렇다고 저자의 명령으로 죽이지도 않아.",
-          "textEn": "I will not call you father yet, nor will I kill you by order of you. ",
-          "bubbleType": "speech",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 9,
-      "imageFile": "episode_12/scene_09.jpeg",
-      "sourceImageFile": "He_leaned_on_Ysela's_shoulder_202607260802.jpeg",
-      "narrationEn": "He leaned on Ysela's shoulder and asked Kadan to show him the truth before hating Ignis. Ysela held out a small wooden horse to Ignis. It was a toy that was kept in the baby's crib until the day of the kidnapping.",
-      "narrationKo": "그는 이셀라의 어깨에 기대며 카단에게 이그니스를 미워하기 전에 진실을 보여 달라고 부탁했다. 이셀라는 이그니스에게 작은 나무 말 하나를 내밀었다. 납치되던 날까지 아기 침대에 달아 두었던 장난감이었다.",
-      "sourceSentenceStart": 25,
-      "sourceSentenceEnd": 27,
-      "alignmentScore": 0.5033,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 10,
-      "imageFile": "episode_12/scene_10.jpeg",
-      "sourceImageFile": "Fantasy_palace_court_scene_202607260802.jpeg",
-      "narrationEn": "The court tried to get rid of all her past, but she hid it by sewing it into the lining of her skirt. Ignis did not accept it, and the wooden piece was placed on the floor between the two. Lucian's arrow flew.",
-      "narrationKo": "궁정이 모든 과거를 없애려 했지만 그녀는 치마 안감에 꿰매 숨겼다. 이그니스는 받지 않았고, 나무 말은 두 사람 사이의 바닥에 놓였다. 루시안의 화살이 날아왔다.",
-      "sourceSentenceStart": 28,
-      "sourceSentenceEnd": 30,
-      "alignmentScore": 0.5516,
+      "sceneNumber": 5,
+      "imageFile": "episode_12/scene_05.webp",
+      "sourceImageFile": "episode_12/scene_05.webp",
+      "narrationEn": "Lucian's venomous laughter echoed along the sanctuary walls. \"Lord Balian! What a pathetic spectacle, wheezing like a cornered cur among shattered masonry! Surrender Issela and deliver the Throne Seal of the Holy Order, and I might grant you an untroubled demise without further agony!\"",
+      "narrationKo": "루시안의 비열한 웃음소리가 성소의 돌벽을 타고 울려 퍼졌다. “발리안 경, 비참하게 무너진 돌무더기 속에서 쥐새끼처럼 숨을 헐떡이는 꼴이 참으로 볼만하군! 이셀라를 순순히 내놓고 성기사단의 옥좌 문양을 넘긴다면, 네놈에게 고통 없는 편안한 죽음만은 허락해 주마!”",
+      "sourceSentenceStart": 8,
+      "sourceSentenceEnd": 9,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "루시안",
           "speakerEn": "Lucian",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 11,
-      "imageFile": "episode_12/scene_11.jpeg",
-      "sourceImageFile": "Chibi_Fantasy_RPG_2D_illustration,_202607260802.jpeg",
-      "narrationEn": "Balian wrapped his wife with his last strength, and Ysela held on to the arrow lodged in his chest and did not let go. The two people called each other's names once and then died in the same place. Ignis's fireworks ran wild.",
-      "narrationKo": "발리안은 마지막 힘으로 아내를 감쌌고, 이셀라는 그의 가슴에 박힌 화살을 붙든 채 놓지 않았다. 두 사람은 서로의 이름을 한 번씩 부른 뒤 같은 자리에서 숨을 거두었다. 이그니스의 불꽃이 폭주했다.",
-      "sourceSentenceStart": 31,
-      "sourceSentenceEnd": 33,
-      "alignmentScore": 0.5069,
-      "dialogues": [
-        {
-          "speakerKo": "발리안",
-          "speakerEn": "Balian",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 12,
-      "imageFile": "episode_12/scene_12.jpeg",
-      "sourceImageFile": "Kadan_protects_people_from_fire_202607260802.jpeg",
-      "narrationEn": "The stone pillars of the sanctuary melted and the armor of the palace soldiers turned red. Kadan spread a snow crystal shield to protect the people. He walked into the middle of the fire without attacking Ignis.",
-      "narrationKo": "성소의 돌기둥이 녹고 궁정 병사들의 갑옷이 붉게 달아올랐다. 카단은 눈결정 방패를 펼쳐 사람들을 지켰다. 그는 이그니스를 공격하지 않고 불길 한가운데로 걸어 들어갔다.",
-      "sourceSentenceStart": 34,
-      "sourceSentenceEnd": 36,
-      "alignmentScore": 0.5903,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
+          "textKo": "“발리안 경, 비참하게 무너진 돌무더기 속에서 쥐새끼처럼 숨을 헐떡이는 꼴이 참으로 볼만하군! 이셀라를 순순히 내놓고 성기사단의 옥좌 문양을 넘긴다면, 네놈에게 고통 없는 편안한 죽음만은 허락해 주마!”",
+          "textEn": "“Lord Balian! What a pathetic spectacle, wheezing like a cornered cur among shattered masonry! Surrender Issela and deliver the Throne Seal of the Holy Order, and I might grant you an untroubled demise without further agony!”",
           "bubbleType": "shout",
-          "position": "top-right"
+          "position": "top-right",
+          "characterCardId": 61
         }
       ],
       "sfxCues": [
         {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 13,
-      "imageFile": "episode_12/scene_13.jpeg",
-      "sourceImageFile": "Ignis_grabs_Kadan,_Lucian_flees_202607260802.jpeg",
-      "narrationEn": "“What you are burning now is not Lucian, but those are the last words you could hear. ” Ignis grabbed Kadan by the collar, but could not lower his fist. Lucian took advantage of the confusion and fled.",
-      "narrationKo": "“네가 지금 태우는 건 루시안이 아니라 네가 들을 수 있었던 마지막 말이야.” 이그니스는 카단의 멱살을 잡았지만 주먹을 내리지 못했다. 루시안은 혼란을 틈타 달아났다.",
-      "sourceSentenceStart": 37,
-      "sourceSentenceEnd": 39,
-      "alignmentScore": 0.6577,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "네가 지금 태우는 건 루시안이 아니라 네가 들을 수 있었던 마지막 말이야.",
-          "textEn": "What you are burning now is not Lucian, but those are the last words you could hear. ",
-          "bubbleType": "speech",
-          "position": "top-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 14,
-      "imageFile": "episode_12/scene_14.jpeg",
-      "sourceImageFile": "Royal_forces_retreated_Balian_Ysela_202607260802.jpeg",
-      "narrationEn": "The remaining royal forces followed their master and retreated. Balian and Ysela were buried together on a hill overlooking the village of Elwin. Hercul knelt down, saying that if he had been a little less impatient 18 years ago, he might have prevented the tragedy.",
-      "narrationKo": "남은 궁정군도 주인을 따라 후퇴했다. 발리안과 이셀라는 엘윈 마을이 보이는 언덕에 함께 묻혔다. 헤르쿨은 열여덟 해 전 자신이 조금만 덜 성급했다면 비극을 막았을지 모른다며 무릎을 꿇었다.",
-      "sourceSentenceStart": 40,
-      "sourceSentenceEnd": 42,
-      "alignmentScore": 0.4583,
-      "dialogues": [
-        {
-          "speakerKo": "발리안",
-          "speakerEn": "Balian",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
           "position": "bottom-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 15,
-      "imageFile": "episode_12/scene_15.jpeg",
-      "sourceImageFile": "Grimli_raised_him_up_saying_202607260802.jpeg",
-      "narrationEn": "Grimli raised him up, saying that it was the vanity of the living to only express regrets in front of the dead. Kadan did not write down the numbers of the two palace prisoners on the tombstone. Balian's name was engraved on the prison wall, and the two empty teacups that Ysela had left next to the potter's wheel were placed in front of the grave.",
-      "narrationKo": "그림리는 죽은 자 앞에서 후회만 늘어놓는 것은 살아 있는 자의 허영이라며 그를 일으켰다. 카단은 비석에 두 사람의 궁정 죄수 번호를 적지 않았다. 발리안이 감옥 벽에 남긴 이름을 그대로 새겼고, 이셀라가 물레 옆에 두었던 빈 찻잔 두 개를 무덤 앞에 놓았다.",
-      "sourceSentenceStart": 43,
-      "sourceSentenceEnd": 45,
-      "alignmentScore": 0.3878,
-      "dialogues": [
-        {
-          "speakerKo": "발리안",
-          "speakerEn": "Balian",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
-          "bubbleType": "shout",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": [
+        },
         {
           "textKo": "쿵-!",
           "textEn": "THUD!",
@@ -389,22 +175,320 @@
       ]
     },
     {
-      "sceneNumber": 16,
-      "imageFile": "episode_12/scene_16.jpeg",
-      "sourceImageFile": "Celia_hangs_wind_chime_Ignis_202607260802.jpeg",
-      "narrationEn": "Celia hung a small wind chime with the wind and made a sound when someone came by. After the funeral, Ignis disappeared. In front of the tomb, only a single flame solidified in white glass remained.",
-      "narrationKo": "실리아는 바람으로 작은 풍경을 달아 누가 찾아오면 소리가 나게 했다. 장례가 끝난 뒤 이그니스는 사라졌다. 무덤 앞에는 백색 유리로 굳은 불꽃 한 송이만 남아 있었다.",
-      "sourceSentenceStart": 46,
-      "sourceSentenceEnd": 48,
-      "alignmentScore": 0.3782,
+      "sceneNumber": 6,
+      "imageFile": "episode_12/scene_06.webp",
+      "sourceImageFile": "episode_12/scene_06.webp",
+      "narrationEn": "At the foot of the narrow stone stairs guarding the entrance, Paladin Walker and Hercul planted two colossal steel tower shields side by side, barring the gateway. Behind them, the Six Masters—Grimli the dwarven smith, Gawain the wind-blade, Eyla the huntress, Kaze the shadow-blade, Rondol the pugilist, and Eliana the herbalist—drew their weapons with grim resolve, forming an unyielding line.",
+      "narrationKo": "성소 입구의 좁은 돌계단에서 성기사 워커와 헤르쿨이 거대한 두 자루의 강철 방패를 맞대며 앞을 가로막았다. 그들의 등 뒤에서 여섯 스승들—드워프 대장장이 그림리, 바람술사 가웨인, 사냥꾼 에일라, 암살자 카제, 권사 론돌, 약초사 엘리아나—이 결연한 표정으로 무기를 뽑아 들며 방어 진형을 펼쳤다.",
+      "sourceSentenceStart": 10,
+      "sourceSentenceEnd": 10,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "이그니스",
-          "speakerEn": "Ignis",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그들의 등 뒤에서 여섯 스승들—드워프 대장장이 그림리, 바람술사 가웨인, 사냥꾼 에일라, 암살자 카제, 권사 론돌, 약초사 엘리아나—이 결연한 표정으로 무기를 뽑아 들며 방어 진형을 펼쳤다.",
+          "textEn": "Behind them, the Six Masters—Grimli the dwarven smith, Gawain the wind-blade, Eyla the huntress, Kaze the shadow-blade, Rondol the pugilist, and Eliana the herbalist—drew their weapons with grim resolve, forming an unyielding line.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 51
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
           "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_12/scene_07.webp",
+      "sourceImageFile": "episode_12/scene_07.webp",
+      "narrationEn": "Grimli slammed his massive iron anvil hammer against the stone flagstones, his voice echoing like rolling thunder. \"The bloated curs of the court bark loud when backed by iron! If you wish to set your corrupt boots upon holy ground, prepare to have your skulls cracked over my anvil!\"",
+      "narrationKo": "그림리가 거대한 무쇠 모루 망치를 계단 석판에 쾅 내려찍으며 우렁차게 포효했다. “궁정의 썩어빠진 개새끼들이 주둥이를 함부로 놀리는구나! 성기사의 거룩한 성소에 더러운 발을 들이려거든 네놈들의 해골통부터 모루 위에 쪼갤 각오를 해라!”",
+      "sourceSentenceStart": 11,
+      "sourceSentenceEnd": 12,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "그림리",
+          "speakerEn": "Grimli",
+          "textKo": "“궁정의 썩어빠진 개새끼들이 주둥이를 함부로 놀리는구나! 성기사의 거룩한 성소에 더러운 발을 들이려거든 네놈들의 해골통부터 모루 위에 쪼갤 각오를 해라!”",
+          "textEn": "“The bloated curs of the court bark loud when backed by iron! If you wish to set your corrupt boots upon holy ground, prepare to have your skulls cracked over my anvil!”",
+          "bubbleType": "shout",
+          "position": "bottom-right",
+          "characterCardId": 74
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_12/scene_08.webp",
+      "sourceImageFile": "episode_12/scene_08.webp",
+      "narrationEn": "With a cold gesture from Lucian, the flame lancers leveled their weapons and charged up the stairway in a roaring tide of fire and steel. The ascent became a slaughterhouse of clashing metal and concussive shockwaves. Shattered marble fragments flew as spells detonated, sulfur smoke choking the air. While Walker's azure barrier and Hercul's golden aegis deflected the incoming tempest of flaming quarrels, Cilia swept her teal staff, weaving a protective draft to open a retreat path through the northern defile. Cilia turned toward Kadan, her voice urgent.",
+      "narrationKo": "루시안이 차갑게 손짓하자, 불꽃 근위병들이 일제히 불화살과 화염창을 겨누며 돌계단으로 쇄도했다. 계단 위는 순식간에 날카로운 쇳소리와 폭음이 난무하는 참혹한 격전지로 변했다. 화염 마법이 작열할 때마다 대리석 기둥 파편들이 비산했고, 매캐한 유황 연기가 성소 입구를 뒤덮었다. 워커의 푸른 성광 방벽과 헤르쿨의 금빛 수호막이 쏟아지는 불화살을 튕겨내는 사이, 실리아는 성소 뒤편의 험준한 산악 협곡으로 통하는 바람의 퇴각로를 열기 위해 청록색 지팡이를 힘차게 휘둘렀다. 실리아가 카단을 돌아보며 다급하게 외쳤다.",
+      "sourceSentenceStart": 13,
+      "sourceSentenceEnd": 14,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "실리아가 카단을 돌아보며 다급하게 외쳤다.",
+          "textEn": "Cilia turned toward Kadan, her voice urgent.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 61
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_12/scene_09.webp",
+      "sourceImageFile": "episode_12/scene_09.webp",
+      "narrationEn": "\"We must escort the refugees and Lady Issela into the northern gorge! The wind corridor will collapse within ten minutes before the flame circle closes!\" Kadan nodded firmly, remembering the fundamental defensive lessons of Master Aleksandar as he leaped into the center of the stairs. Angling his iron shield to deflect the kinetic momentum of charging lancers into empty air, Kadan snapped spear-shafts with the razor edge of his silver dagger. The youthful warrior's grounded stance was an immovable wall against the imperial host. As charging spearheads glanced off the curved rim, flying sparks lit the unwavering resolve in his eyes.",
+      "narrationKo": "“성소 북쪽 계곡으로 피난민들과 이셀라 님을 모셔야 해요! 적의 화염 마법진이 숲을 포위하기 전에 어서요!” 카단은 고개를 끄덕이며 알렉산다르 스승의 가르침을 되새기며 계단 중앙으로 뛰어들었다. 무쇠 방패를 45도 각도로 기울여 적 기병들의 거센 돌진력을 허공으로 흘려보내며, 카단은 은빛 단검의 날카로운 서리 칼날로 적들의 창대를 연거푸 분질렀다. 청년의 어깨에 실린 묵직한 방어술은 백여 명의 근위대 앞에서도 흔들림 없는 성벽과 같았다. 적의 창끝이 방패 면을 미끄러져 나갈 때마다 튀는 불꽃이 카단의 단호한 눈빛을 비추었다.",
+      "sourceSentenceStart": 15,
+      "sourceSentenceEnd": 16,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“성소 북쪽 계곡으로 피난민들과 이셀라 님을 모셔야 해요! 적의 화염 마법진이 숲을 포위하기 전에 어서요!”",
+          "textEn": "“We must escort the refugees and Lady Issela into the northern gorge! The wind corridor will collapse within ten minutes before the flame circle closes!”",
+          "bubbleType": "shout",
+          "position": "top-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_12/scene_10.webp",
+      "sourceImageFile": "episode_12/scene_10.webp",
+      "narrationEn": "An imperial officer swung his broadsword furiously against Kadan's guard. \"A vagrant pup dares block the imperial vanguard? I shall cleave your shield in two!\"",
+      "narrationKo": "근위대 장교가 카단의 굳건한 방어에 이를 갈며 칼을 내리쳤다. “애송이 놈이 감히 황실 기병대의 진격을 가로막느냐! 네놈의 방패째로 베어버리마!”",
+      "sourceSentenceStart": 17,
+      "sourceSentenceEnd": 18,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“애송이 놈이 감히 황실 기병대의 진격을 가로막느냐! 네놈의 방패째로 베어버리마!”",
+          "textEn": "“A vagrant pup dares block the imperial vanguard? I shall cleave your shield in two!”",
+          "bubbleType": "shout",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_12/scene_11.webp",
+      "sourceImageFile": "episode_12/scene_11.webp",
+      "narrationEn": "Breathing through the star rhythm, Kadan pivoted his shield, burying the blade's force into the earth.",
+      "narrationKo": "카단은 별 호흡을 내쉬며 방패를 살짝 비틀어 칼날의 힘을 대지로 박아 넣었다.",
+      "sourceSentenceStart": 19,
+      "sourceSentenceEnd": 19,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단은 별 호흡을 내쉬며 방패를 살짝 비틀어 칼날의 힘을 대지로 박아 넣었다.",
+          "textEn": "Breathing through the star rhythm, Kadan pivoted his shield, burying the blade's force into the earth.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_12/scene_12.webp",
+      "sourceImageFile": "episode_12/scene_12.webp",
+      "narrationEn": "\"So long as I have people to protect, this shield shall never yield before any flame.\" In the courtyard behind them, Balian rose to his feet with Issela's support, stumbling toward an ancient stone cenotaph. It was the empty grave of his sworn brother, Aleksandar, who had fallen eighteen winters ago in Elwin. Weathered by wind and frost, the headstone bore Aleksandar's name and the faded cross emblem of the Holy Order, surrounded by withered stems of wild chrysanthemums sleeping beneath the snow.",
+      "narrationKo": "“지켜야 할 사람이 있는 한, 내 방패는 그 어떤 불길 앞에서도 부서지지 않는다.” 그때 성소 안마당의 낡은 석조 가묘 앞에서 발리안이 아내의 부축을 받으며 비틀거리며 일어섰다. 그곳은 십팔 년 전 겨울, 엘윈 마을에서 전사한 의형제 알렉산다르의 빈 무덤이었다. 비바람에 풍화된 묘비에는 알렉산다르의 이름과 성기사단의 십자 문양이 희미하게 새겨져 있었다. 무덤 주변에는 알렉산다르가 생전에 좋아했던 흰 들국화의 마른 줄기들이 눈송이 속에 잠들어 있었다.",
+      "sourceSentenceStart": 20,
+      "sourceSentenceEnd": 21,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“지켜야 할 사람이 있는 한, 내 방패는 그 어떤 불길 앞에서도 부서지지 않는다.”",
+          "textEn": "“So long as I have people to protect, this shield shall never yield before any flame.”",
+          "bubbleType": "speech",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_12/scene_13.webp",
+      "sourceImageFile": "episode_12/scene_13.webp",
+      "narrationEn": "With trembling hands, Balian poured sacred water over the lichen-crusted stone, pressing his forehead against the cold granite. \"Brother... As we swore beneath the snow, our sons have grown into stalwart men. Now I shall pass the last remaining embers of my soul to them, and journey to your side.\"",
+      "narrationKo": "발리안은 떨리는 손으로 성수를 묘비 위에 정성스럽게 붓고 이마를 비석에 대었다. “형님... 약속대로 우리 아이들이 훌륭하게 자라 주었소. 이제 내게 남은 마지막 불꽃을 저 아이들에게 온전히 넘겨주고 형님의 곁으로 가겠소.”",
+      "sourceSentenceStart": 22,
+      "sourceSentenceEnd": 23,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "발리안",
+          "speakerEn": "Balian",
+          "textKo": "“형님... 약속대로 우리 아이들이 훌륭하게 자라 주었소. 이제 내게 남은 마지막 불꽃을 저 아이들에게 온전히 넘겨주고 형님의 곁으로 가겠소.”",
+          "textEn": "“Brother... As we swore beneath the snow, our sons have grown into stalwart men. Now I shall pass the last remaining embers of my soul to them, and journey to your side.”",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 43
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_12/scene_14.webp",
+      "sourceImageFile": "episode_12/scene_14.webp",
+      "narrationEn": "Drawing an ancient silver dagger inscribed with the vows of the Holy Knights from his breast, Balian pressed the hilt into Kadan's calloused palm. Kadan met the veteran's eyes with solemn depth.",
+      "narrationKo": "발리안은 품속에서 성기사단의 비밀 맹세가 새겨진 오래된 은빛 단검 한 자루를 꺼내 카단의 손에 쥐여주었다. 카단은 단검의 서늘한 칼날을 쥐며 숙부의 눈을 응시했다.",
+      "sourceSentenceStart": 24,
+      "sourceSentenceEnd": 24,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단은 단검의 서늘한 칼날을 쥐며 숙부의 눈을 응시했다.",
+          "textEn": "Kadan met the veteran's eyes with solemn depth.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 43
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_12/scene_15.webp",
+      "sourceImageFile": "episode_12/scene_15.webp",
+      "narrationEn": "\"Uncle, the flame you have guarded shall never be extinguished. I swear to deliver Ignis from the shadows and restore peace to this continent.\" Hidden within the deep gloom of the tree line, a solitary warrior watched the scene in breathless silence. It was High Commander Ignis of the White Flame Order. With his own eyes, Ignis beheld the heartfelt tears of his mother Issela, and the sacrificial dignity of his father Balian kneeling in prayer before Aleksandar's cenotaph. Realizing that the entire foundation of justice taught to him in the capital was a fabricated lie, turbulent agony and sorrow tore through Ignis's golden gaze.",
+      "narrationKo": "“숙부님, 당신이 지켜온 불씨는 결코 꺼지지 않을 것입니다. 반드시 이그니스를 구하고 대륙의 평화를 되찾겠습니다.” 숲속 짙은 나무 그늘 뒤편에서 그 광경을 숨죽이고 지켜보던 사내가 있었다. 백색 화염 기사단의 단장 이그니스였다. 이그니스는 어머니 이셀라의 절절한 눈물과, 알렉산다르의 무덤 앞에서 피를 토하며 무릎을 꿇은 아버지 발리안의 숭고한 모습을 두 눈으로 똑똑히 보았다. 황궁에서 배웠던 모든 법도와 규율이 거짓이었음을 깨달은 이그니스의 황금빛 눈동자에 격렬한 혼란과 비통함이 소용돌이쳤다.",
+      "sourceSentenceStart": 25,
+      "sourceSentenceEnd": 26,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“숙부님, 당신이 지켜온 불씨는 결코 꺼지지 않을 것입니다. 반드시 이그니스를 구하고 대륙의 평화를 되찾겠습니다.”",
+          "textEn": "“Uncle, the flame you have guarded shall never be extinguished. I swear to deliver Ignis from the shadows and restore peace to this continent.”",
+          "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
@@ -415,51 +499,95 @@
           "position": "center"
         },
         {
-          "textKo": "휘이이익-!",
-          "textEn": "SWOOSH!",
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_12/scene_16.webp",
+      "sourceImageFile": "episode_12/scene_16.webp",
+      "narrationEn": "Ignis could not bring himself to draw steel, clutching his breastplate as he murmured into the wind. \"Father... Mother... What then was the truth behind the laws of the throne... Was the righteousness I upheld nothing more than a hollow illusion...\"",
+      "narrationKo": "이그니스는 차마 검을 뽑지 못하고 가슴을 쥐어뜯으며 나지막이 읊조렸다. “아버지... 어머니... 도대체 황궁의 법도는 무엇이었단 말인가... 내가 믿어온 정의는 허상이었단 말인가...”",
+      "sourceSentenceStart": 27,
+      "sourceSentenceEnd": 28,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“아버지... 어머니... 도대체 황궁의 법도는 무엇이었단 말인가... 내가 믿어온 정의는 허상이었단 말인가...”",
+          "textEn": "“Father... Mother... What then was the truth behind the laws of the throne... Was the righteousness I upheld nothing more than a hollow illusion...”",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
           "style": "slash",
-          "position": "top-left"
+          "position": "top-right"
         }
       ]
     },
     {
       "sceneNumber": 17,
-      "imageFile": "episode_12/scene_17.jpeg",
-      "sourceImageFile": "Kadan_did_not_clean_up_202607260802.jpeg",
-      "narrationEn": "Kadan did not clean it up. When no one was looking, Ignis returned and buried the wooden horse among the graves. He felt that if he kept the evidence that his mother had found him, he would not be able to return to the palace.",
-      "narrationKo": "카단은 그것을 치우지 않았다. 아무도 보지 않을 때 이그니스는 되돌아와 나무 말을 무덤 사이에 묻었다. 어머니가 자신을 찾았다는 증거를 간직하면 궁정으로 돌아가지 못할 것 같았다.",
-      "sourceSentenceStart": 49,
-      "sourceSentenceEnd": 51,
-      "alignmentScore": 0.2957,
+      "imageFile": "episode_12/scene_17.webp",
+      "sourceImageFile": "episode_12/scene_17.webp",
+      "narrationEn": "Through the desperate valor of Kadan and the Six Masters, the companions breached the mountain corridor leading toward the eastern coastline. Gawain's gale blinded the pursuit, and Grimli's hammer triggered a rockslide, blocking the gorge. Battered by fierce resistance and hindered by the craggy slopes, Lucian's legions broke off pursuit and fell back toward the citadel. As they emerged from the blood-stained snowdrifts into the valley, Kadan looked down to see a tiny white flower pushing through the frozen shale. It was the first snowdrop of the season. Overcoming the deep scars of winter, the earth was finally drawing its first breath of spring. A gentle breeze brushed their brows, and the steps of the young wanderers were infused with renewed hope.",
+      "narrationKo": "카단과 여섯 스승들의 목숨을 건 분전에 힘입어 일행은 동쪽 해안으로 통하는 비밀 산악 회랑을 성공적으로 뚫어냈다. 가웨인의 돌풍이 근위대의 눈을 멀게 했고, 그림리의 망치가 좁은 협곡 입구의 바위를 무너뜨려 적의 추격로를 완벽하게 차단했다. 루시안의 군대는 거센 저항과 지형의 험준함에 부딪혀 결국 추격을 포기하고 성벽으로 퇴각했다. 피 묻은 눈밭을 헤치고 산악 회랑을 벗어났을 때, 카단의 발밑에 바위틈 눈송이를 뚫고 피어난 작은 하얀 꽃 한 송이가 보였다. 첫 번째 설강화였다. 혹독했던 겨울의 오랜 상처를 딛고 대지가 마침내 새로운 봄을 호흡하기 시작한 순간이었다. 봄바람이 그들의 지친 이마를 스쳐 지나갔고, 소년 영웅들의 발걸음은 희망으로 채워지고 있었다.",
+      "sourceSentenceStart": 29,
+      "sourceSentenceEnd": 30,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-left"
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "봄바람이 그들의 지친 이마를 스쳐 지나갔고, 소년 영웅들의 발걸음은 희망으로 채워지고 있었다.",
+          "textEn": "A gentle breeze brushed their brows, and the steps of the young wanderers were infused with renewed hope.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 41
         }
       ],
-      "sfxCues": []
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
     },
     {
       "sceneNumber": 18,
-      "imageFile": "episode_12/scene_18.jpeg",
-      "sourceImageFile": "Celia_Kadan_riverside_scene_202607260802.jpeg",
-      "narrationEn": "However, I couldn't throw it away. For the first time, no white flames bloomed from his hands covering the dirt. Celia took Kadan far away to the riverside.",
-      "narrationKo": "그렇다고 버릴 수도 없었다. 흙을 덮는 그의 손에서 백색 불꽃이 처음으로 전혀 피어나지 않았다. 실리아는 카단을 데리고 멀리 강가로 갔다.",
-      "sourceSentenceStart": 52,
-      "sourceSentenceEnd": 54,
-      "alignmentScore": 0.4255,
+      "imageFile": "episode_12/scene_18.webp",
+      "sourceImageFile": "episode_12/scene_18.webp",
+      "narrationEn": "Cilia looked upon the snowdrop with a tender smile. \"No matter how bitter the winter, spring arrives without fail.\"",
+      "narrationKo": "실리아가 설강화를 가만히 내려다보며 미소를 지었다. “겨울이 아무리 길어도, 봄은 반드시 오네요.”",
+      "sourceSentenceStart": 31,
+      "sourceSentenceEnd": 32,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“겨울이 아무리 길어도, 봄은 반드시 오네요.”",
+          "textEn": "“No matter how bitter the winter, spring arrives without fail.”",
           "bubbleType": "speech",
-          "position": "bottom-left"
+          "position": "bottom-left",
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
@@ -473,50 +601,71 @@
     },
     {
       "sceneNumber": 19,
-      "imageFile": "episode_12/scene_19.jpeg",
-      "sourceImageFile": "She_didn't_choose_words_of_202607260802.jpeg",
-      "narrationEn": "She didn't choose words of comfort. Instead, he divided the warm bread in half and handed it to me. Just like Kadan did to himself in the first market.",
-      "narrationKo": "그녀는 위로의 말을 고르지 않았다. 대신 따뜻한 빵을 반으로 나누어 건넸다. 처음 시장에서 카단이 자신에게 했던 것처럼.",
-      "sourceSentenceStart": 55,
-      "sourceSentenceEnd": 57,
-      "alignmentScore": 0.6884,
+      "imageFile": "episode_12/scene_19.webp",
+      "sourceImageFile": "episode_12/scene_19.webp",
+      "narrationEn": "Kadan sheathed his silver dagger, nodding quietly.",
+      "narrationKo": "카단은 은빛 단검을 갈무리하며 고개를 끄덕였다.",
+      "sourceSentenceStart": 33,
+      "sourceSentenceEnd": 33,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 20,
-      "imageFile": "episode_12/scene_20.jpeg",
-      "sourceImageFile": "Kadan_accepting_bread_graves_202607260802.jpeg",
-      "narrationEn": "Kadan waited a while before accepting the bread. Young grass was coming up between the two graves. It was too little green to say that winter was over, but that day Kadan learned for the first time that sadness and life could grow on the same land.",
-      "narrationKo": "카단은 한참 뒤에야 빵을 받아 들었다. 두 무덤 사이로 어린 풀이 올라오고 있었다. 겨울이 끝났다고 말하기에는 너무 작은 초록이었지만, 카단은 그날 처음으로 슬픔과 삶이 같은 땅에서 자랄 수 있다는 것을 알았다.",
-      "sourceSentenceStart": 58,
-      "sourceSentenceEnd": 60,
-      "alignmentScore": 0.4873,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "이 눈보라는 단순한 한기가 아니다... 섀도우렐름의 기운이야.",
-          "textEn": "This blizzard isn't just cold... It bears the aura of the Shadow Realm.",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단은 은빛 단검을 갈무리하며 고개를 끄덕였다.",
+          "textEn": "Kadan sheathed his silver dagger, nodding quietly.",
           "bubbleType": "thought",
-          "position": "top-right"
+          "position": "bottom-right",
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
         {
-          "textKo": "쿠구구궁!",
-          "textEn": "RUMBLE!",
-          "style": "rumble",
-          "position": "bottom-left"
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_12/scene_20.webp",
+      "sourceImageFile": "episode_12/scene_20.webp",
+      "narrationEn": "\"Our path ahead shall be no different. Let us cross the waves to Whispering Wind Island.\" Behind them, the rising sun bathed the mountains in warm gold, illuminating their journey toward the sea.",
+      "narrationKo": "“우리가 걸어갈 길도 마찬가지일 거다. 바다 건너 바람섬으로 가자.” 성소를 뒤로하고 떠나는 그들의 등 뒤로, 아침 햇살이 눈부신 황금빛으로 산맥을 물들이고 있었다.",
+      "sourceSentenceStart": 34,
+      "sourceSentenceEnd": 35,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“우리가 걸어갈 길도 마찬가지일 거다. 바다 건너 바람섬으로 가자.”",
+          "textEn": "“Our path ahead shall be no different. Let us cross the waves to Whispering Wind Island.”",
+          "bubbleType": "speech",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
         }
       ]
     }

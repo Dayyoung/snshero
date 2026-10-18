@@ -1,135 +1,72 @@
 {
   "episodeNumber": 30,
   "episodeTitleEn": "Poison at the Four Gates",
-  "episodeTitleKo": "네 관문의 독",
-  "sourceSentenceCount": 51,
+  "episodeTitleKo": "사문의 독",
+  "sourceSentenceCount": 50,
   "sceneCount": 20,
   "scenes": [
     {
       "sceneNumber": 1,
-      "imageFile": "episode_30/scene_01.jpeg",
-      "sourceImageFile": "Aqualord_at_four_gates_202607260802.jpeg",
-      "narrationEn": "There were four gates on the way to the sanctuary of Aqualord. The first was guarded by a fisherman below the waterfall.",
-      "narrationKo": "아쿠아로드의 성소로 가는 길에는 네 관문이 있었다. 첫 번째는 폭포 아래의 어부가 지켰다.",
+      "imageFile": "episode_30/scene_01.webp",
+      "sourceImageFile": "episode_30/scene_01.webp",
+      "narrationEn": "Breaching the outer perimeter, the companions stood before the formidable citadel of the Four Gates—the ancient northern rampart of the empire. Spanning the narrow chasm between sheer granite precipices, four massive black-iron sluice gates vomited waterfalls of corrosive serpentine bile engineered by Medusa Gorgo. Muck rose to the warriors' knees, threatening to swallow their boots, while the stench of burning sulfur and putrefaction filled the air. Tapping the stone with his hammer, Grimli grimaced in disgust.",
+      "narrationKo": "사문의 첫 번째 관문을 돌파한 일행이 마주한 것은 고대 제국의 북방 방어선이자 악명 높은 ‘사문(四門) 요새’의 본진이었다. 깎아지른 절벽 사이에 축조된 네 개의 거대한 흑철 수문에서는 메두사 고르고가 심어둔 치명적인 사독(蛇毒) 연무가 폭포수처럼 쏟아져 내리고 있었다. 발목까지 차오른 늪지의 진흙탕은 끈적끈적하게 달라붙어 장화를 집어삼킬 듯했고, 썩은 갈대숲 사이에서는 유황 타는 냄새와 시체 썩는 악취가 진동했다. 그림리가 도끼자루로 바닥돌을 두드리며 혀를 찼다.",
       "sourceSentenceStart": 1,
       "sourceSentenceEnd": 2,
-      "alignmentScore": 0.6067,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 2,
-      "imageFile": "episode_30/scene_02.jpeg",
-      "sourceImageFile": "Kadan_blocked_passage_scaring_fish_202607260802.jpeg",
-      "narrationEn": "He blocked the passage of Kadan for scaring the golden scale fish. As time passed, Celia's breathing became shallower. Kadan did not snatch the fishing rod by force.",
-      "narrationKo": "그는 황금비늘 물고기를 놀라게 했다는 이유로 카단의 통행을 막았다. 시간이 흐를수록 실리아의 숨은 얕아졌다. 카단은 힘으로 낚싯대를 빼앗지 않았다.",
-      "sourceSentenceStart": 3,
-      "sourceSentenceEnd": 5,
-      "alignmentScore": 0.3821,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 3,
-      "imageFile": "episode_30/scene_03.jpeg",
-      "sourceImageFile": "Fisherman_releasing_fish_opening…_202607260802.jpeg",
-      "narrationEn": "By using ice to slow down just one line of water, we helped the fish take the bait on their own. The fisherman released the fish he had caught and opened the way.",
-      "narrationKo": "얼음으로 물살 한 줄만 느리게 만들어 물고기가 스스로 미끼를 물도록 도왔다. 어부는 잡은 물고기를 다시 놓아주며 길을 열었다.",
-      "sourceSentenceStart": 6,
-      "sourceSentenceEnd": 7,
-      "alignmentScore": 0.3889,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 4,
-      "imageFile": "episode_30/scene_04.jpeg",
-      "sourceImageFile": "Celia_Kadan_waiting_fever_rose_202607260802.jpeg",
-      "narrationEn": "“People who are in a hurry tend to stir the water more, but you know how to wait. ” While waiting, Celia's fever rose even more. Kadan thought about ignoring the gateway test several times.",
-      "narrationKo": "“급한 사람일수록 물을 더 휘젓는 법인데, 너는 기다릴 줄 아는군.” 기다리는 동안 실리아의 열은 더 올랐다. 카단은 관문 시험을 무시하고 지나갈 생각을 여러 번 했다.",
-      "sourceSentenceStart": 8,
-      "sourceSentenceEnd": 10,
-      "alignmentScore": 0.31,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "급한 사람일수록 물을 더 휘젓는 법인데, 너는 기다릴 줄 아는군.",
-          "textEn": "People who are in a hurry tend to stir the water more, but you know how to wait. ",
-          "bubbleType": "speech",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 5,
-      "imageFile": "episode_30/scene_05.jpeg",
-      "sourceImageFile": "Celia_grabbed_collar_and_muttered_202607260802.jpeg",
-      "narrationEn": "Celia grabbed his collar while unconscious and muttered, “If you start by pointing a knife into someone else’s sanctuary, I will wake up and scold you. ” At the second gate, a woodcutter was moving a large fallen tree by himself.",
-      "narrationKo": "실리아가 의식 사이로 그의 옷깃을 잡고 “남의 성소에 칼부터 들이대면 깨어나서 혼낼 거야”라고 중얼거렸다. 두 번째 관문에서는 나무꾼이 쓰러진 거목을 혼자 옮기고 있었다.",
-      "sourceSentenceStart": 11,
-      "sourceSentenceEnd": 12,
-      "alignmentScore": 0.3481,
-      "dialogues": [
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "남의 성소에 칼부터 들이대면 깨어나서 혼낼 거야",
-          "textEn": "If you start by pointing a knife into someone else’s sanctuary, I will wake up and scold you. ",
-          "bubbleType": "speech",
-          "position": "top-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 6,
-      "imageFile": "episode_30/scene_06.jpeg",
-      "sourceImageFile": "Celia_makes_giant_catapults_202607260802.jpeg",
-      "narrationEn": "When Kadan tried to help, the woodcutter refused to help. The problem was not strength, but pulling out the young spirit trapped under the giant tree without harming it. Celia announced the position of the wind in a faint voice, and Kadan split the binary star to support the weight of each side differently.",
-      "narrationKo": "카단이 들어 주려 하자 나무꾼은 도움을 거절했다. 문제는 힘이 아니라 거목 아래 깔린 어린 정령을 다치지 않게 꺼내는 일이었다. 실리아가 희미한 목소리로 바람의 위치를 알려 주었고, 카단은 쌍성 분할로 양쪽 무게를 다르게 받쳤다.",
-      "sourceSentenceStart": 13,
-      "sourceSentenceEnd": 15,
-      "alignmentScore": 0.4252,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-right"
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그림리가 도끼자루로 바닥돌을 두드리며 혀를 찼다.",
+          "textEn": "Tapping the stone with his hammer, Grimli grimaced in disgust.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 89
         }
       ],
       "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        },
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_30/scene_02.webp",
+      "sourceImageFile": "episode_30/scene_02.webp",
+      "narrationEn": "\"Vile filth! An acidic miasma capable of melting tempered dwarven steel. Breathe a lungful of this vapor, and the strongest warrior will vomit black blood within a mile.\" Kadan withdrew the White Glass Ember, holding it in his open palm. Even amidst the toxic murk, the ember radiated pure, immaculate white brilliance, wrapping his skin in soothing warmth.",
+      "narrationKo": "“고약한 독기로군! 쇠붙이마저 삭혀버리는 산성 독무다. 이 독기를 마시면 아무리 장사라도 십 리를 못 가고 피를 토하며 쓰러질 게야.” 카단이 품속에서 이그니스의 유리 불씨를 꺼내 손바닥 위에 올려놓았다. 차가운 맹독의 안개 속에서도 유리 불씨는 은은하고 투명한 순백의 빛을 발산하며 카단의 손바닥을 따뜻하게 데워주고 있었다. 실리아가 녹옥 지팡이 끝에 이슬 맺힌 약초 잎사귀를 매달며 말했다.",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 5,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "그림리",
+          "speakerEn": "Grimli",
+          "textKo": "“고약한 독기로군! 쇠붙이마저 삭혀버리는 산성 독무다. 이 독기를 마시면 아무리 장사라도 십 리를 못 가고 피를 토하며 쓰러질 게야.”",
+          "textEn": "“Vile filth! An acidic miasma capable of melting tempered dwarven steel. Breathe a lungful of this vapor, and the strongest warrior will vomit black blood within a mile.”",
+          "bubbleType": "shout",
+          "position": "bottom-left",
+          "characterCardId": 74
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
         {
           "textKo": "휘이이익-!",
           "textEn": "SWOOSH!",
@@ -139,46 +76,204 @@
       ]
     },
     {
-      "sceneNumber": 7,
-      "imageFile": "episode_30/scene_07.jpeg",
-      "sourceImageFile": "Celia_chooses_between_sweeping_p…_202607260802.jpeg",
-      "narrationEn": "The farmer at the third gate showed a dry field and asked Celia to choose whether to sweep or pour a bottle of water onto the field. Kadan did not split the bottle in half.",
-      "narrationKo": "세 번째 관문의 농부는 메마른 밭을 보여 주며 물 한 병을 실리아에게 쓸지 밭에 부을지 선택하라고 했다. 카단은 병을 반으로 나누지 않았다.",
-      "sourceSentenceStart": 16,
-      "sourceSentenceEnd": 17,
-      "alignmentScore": 0.4883,
+      "sceneNumber": 3,
+      "imageFile": "episode_30/scene_03.webp",
+      "sourceImageFile": "episode_30/scene_03.webp",
+      "narrationEn": "Fastening fresh comfrey leaves to her staff, Cilia observed with wonder. \"The toxic fumes dare not approach the ember's light. Ignis's sanctified mana encloses us in an invisible sanctuary of pure air.\"",
+      "narrationKo": "“유리 불씨 주변으로 독기가 감히 범접하지 못하고 있어요. 이그니스의 거룩한 마나가 우리를 보이지 않는 방벽으로 지켜주고 있는 거예요.” 카단이 방패를 굳건히 쥐며 앞장섰다. “이그니스가 열어준 길이다. 지체할 시간 없다. 네 개의 수문 핵을 차례로 파괴한다.”",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 8,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“유리 불씨 주변으로 독기가 감히 범접하지 못하고 있어요. 이그니스의 거룩한 마나가 우리를 보이지 않는 방벽으로 지켜주고 있는 거예요.”",
+          "textEn": "“The toxic fumes dare not approach the ember's light. Ignis's sanctified mana encloses us in an invisible sanctuary of pure air.”",
           "bubbleType": "speech",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 8,
-      "imageFile": "episode_30/scene_08.jpeg",
-      "sourceImageFile": "Celia_Kadan_pouring_water_seeds_202607260802.jpeg",
-      "narrationEn": "After just wetting Celia's lips, I poured the remaining water into the seeds. When the farmer tapped the ground with his foot, groundwater rose and both of them quenched their thirst. Kadan began to see that the test was to see whether people doubted the conditions in front of them rather than their goodness.",
-      "narrationKo": "실리아의 입술만 적신 뒤 남은 물을 씨앗에 부었다. 농부가 발로 땅을 두드리자 지하수가 솟아 두 사람 모두 목을 축였다. 카단은 시험이 사람의 선함보다 눈앞의 조건을 의심하는지 보려는 것임을 알기 시작했다.",
-      "sourceSentenceStart": 18,
-      "sourceSentenceEnd": 20,
-      "alignmentScore": 0.4931,
-      "dialogues": [
+          "position": "bottom-right",
+          "characterCardId": 62
+        },
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
-          "bubbleType": "shout",
-          "position": "bottom-left"
+          "textKo": "“이그니스가 열어준 길이다. 지체할 시간 없다. 네 개의 수문 핵을 차례로 파괴한다.”",
+          "textEn": "“Ignis's sanctified mana encloses us in an invisible sanctuary of pure air.\"”",
+          "bubbleType": "speech",
+          "position": "top-left",
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_30/scene_04.webp",
+      "sourceImageFile": "episode_30/scene_04.webp",
+      "narrationEn": "Bracing his shield, Kadan took the lead.",
+      "narrationKo": "사문 요새 주변의 갈대밭은 이미 산성 독액에 절어 검게 타들어가 있었고, 흙탕물 위로는 정체불명의 해골들이 부유하고 있었다. 맹독의 증기가 폐부를 찌르며 숨을 쉴 때마다 목구멍이 타는 듯한 통증을 유발했다. 카단은 가죽 두건으로 코와 입을 가리며 방패의 무게중심을 낮추었다. 품속의 유리 불씨가 순백의 빛을 뿜어내며 카단의 전신에 보이지 않는 공기 정화막을 펼쳐주고 있었다. 카단은 전우의 온기에 감사하며 첫 번째 수문의 철교를 향해 발걸음을 옮겼다.",
+      "sourceSentenceStart": 9,
+      "sourceSentenceEnd": 10,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단은 전우의 온기에 감사하며 첫 번째 수문의 철교를 향해 발걸음을 옮겼다.",
+          "textEn": "Bracing his shield, Kadan took the lead.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_30/scene_05.webp",
+      "sourceImageFile": "episode_30/scene_05.webp",
+      "narrationEn": "\"Ignis has carved our path. We have no time to delay; we must demolish the four sluice cores in succession.\" Reaching the eastern sluice, fifty undead cataphracts clad in rusted plate erupted from the mire, brandishing corroded broadswords in suicidal charges.",
+      "narrationKo": "두 번째 동쪽 수문에 다다랐을 때, 늪지대의 진흙 속에서 흑철 갑주를 입은 언데드 중장보병 쉰 명이 일제히 솟구쳐 올랐다. 붉은 안광을 번뜩이는 언데드들은 부식된 양손 대검을 휘두르며 자폭 공격을 감행해 왔다. 카단이 지체 없이 드래곤 브레이커 방패를 전면에 세우며 하체를 낮추었다.",
+      "sourceSentenceStart": 11,
+      "sourceSentenceEnd": 12,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단이 지체 없이 드래곤 브레이커 방패를 전면에 세우며 하체를 낮추었다.",
+          "textEn": "We have no time to delay; we must demolish the four sluice cores in succession.\" Reaching the eastern sluice, fifty undead cataphracts clad in rusted plate erupted from the mire, brandishing corroded broadswords in suicidal charges.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_30/scene_06.webp",
+      "sourceImageFile": "episode_30/scene_06.webp",
+      "narrationEn": "Kadan lowered his center of gravity, meeting the charge with the Dragon Breaker shield. Boom!",
+      "narrationKo": "콰아아앙! 언데드 병사들의 맹렬한 참격이 방패 표면에 부딪쳤지만, 드래곤 브레이커의 황금빛 반발력은 수십 자루의 대검을 단숨에 부러뜨려 버렸다. 카단은 별의 호흡을 실어 방패를 힘차게 회전시키며 전방의 언데드 군단을 단숨에 쓸어버렸다. 동시에 론돌이 외족을 굴러 진흙탕 위에 거대한 물기둥을 일으켰고, 가웨인이 바람의 칼날을 날려 수문의 첫 번째 독기 밸브를 산산조각 냈다.",
+      "sourceSentenceStart": 13,
+      "sourceSentenceEnd": 15,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "동시에 론돌이 외족을 굴러 진흙탕 위에 거대한 물기둥을 일으켰고, 가웨인이 바람의 칼날을 날려 수문의 첫 번째 독기 밸브를 산산조각 냈다.",
+          "textEn": "Boom!",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_30/scene_07.webp",
+      "sourceImageFile": "episode_30/scene_07.webp",
+      "narrationEn": "The impact shattered the undead blades against the dragonbone rim. Spinning his shield with star-breathing, Kadan pulverized the front ranks in a single concussive sweep. Simultaneously, Rondol brought down a geyser of pressurized water with his iron pegleg, and Gawain sheared the primary control valve with wind blades. With a dying hiss, the corrosive effluent of the eastern gate ceased.",
+      "narrationKo": "치이익 하는 굉음과 함께 동쪽 수문에서 뿜어져 나오던 검은 독기가 멈추었다. 론돌이 껄껄 웃으며 도끼를 휘둘렀다. “하하! 뼈다귀 놈들이 북방의 늑대 방패 앞에서 추풍낙엽이로구나! 다음 문으로 가자!”",
+      "sourceSentenceStart": 16,
+      "sourceSentenceEnd": 18,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "론돌",
+          "speakerEn": "Rondol",
+          "textKo": "“하하! 뼈다귀 놈들이 북방의 늑대 방패 앞에서 추풍낙엽이로구나! 다음 문으로 가자!”",
+          "textEn": "“With a dying hiss, the corrosive effluent of the eastern gate ceased.”",
+          "bubbleType": "shout",
+          "position": "bottom-right",
+          "characterCardId": 46
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_30/scene_08.webp",
+      "sourceImageFile": "episode_30/scene_08.webp",
+      "narrationEn": "Rondol barked a hearty laugh. \"Ha! The northern wolf scatters bone-men like autumn leaves! On to the western portal!\"",
+      "narrationKo": "언데드 병사들의 잔해가 늪지 속으로 가라앉자, 동쪽 수문의 거대한 흑철 밸브가 완전히 멈추어 섰다. 론돌의 지휘 아래 돌격한 의용군들이 수문의 기계 장치를 해체하여 독액 분출을 완전히 차단했다. 그림리가 망치로 수문의 톱니바퀴를 부수며 껄껄 웃었다. “하하! 이 늙은 드워프의 쇠망치 맛을 보니 흑마법 톱니바퀴도 별수 없구나! 서쪽 수문으로 길을 열어라!”",
+      "sourceSentenceStart": 19,
+      "sourceSentenceEnd": 20,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "그림리",
+          "speakerEn": "Grimli",
+          "textKo": "“하하! 이 늙은 드워프의 쇠망치 맛을 보니 흑마법 톱니바퀴도 별수 없구나! 서쪽 수문으로 길을 열어라!”",
+          "textEn": "“Ha! The northern wolf scatters bone-men like autumn leaves! On to the western portal!”",
+          "bubbleType": "shout",
+          "position": "top-left",
+          "characterCardId": 74
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
         {
           "textKo": "쿠구구궁!",
           "textEn": "RUMBLE!",
@@ -189,157 +284,31 @@
     },
     {
       "sceneNumber": 9,
-      "imageFile": "episode_30/scene_09.jpeg",
-      "sourceImageFile": "Snowbound_Lighthaven_frontier_bl…_202607260802.jpeg",
-      "narrationEn": "No one said there was only one bottle of water. He first checked the moisture in the field and the underground noise.",
-      "narrationKo": "물 한 병밖에 없다고 말한 사람은 없었다. 그는 밭의 습기와 지하의 울림을 먼저 확인했다.",
+      "imageFile": "episode_30/scene_09.webp",
+      "sourceImageFile": "episode_30/scene_09.webp",
+      "narrationEn": "The western sluice was defended by twenty venomous wyverns circling overhead, raining clouds of caustic spores upon the defile. Hoisting her Jade Staff, Cilia sang an ancient wind hymn to the heavens.",
+      "narrationKo": "세 번째 서쪽 수문은 공중을 비행하는 독익룡(毒翼龍) 스무 마리가 지키고 있었다. 날개 밑에서 보랏빛 독가루를 흩뿌리며 급강하하는 마수들 때문에 지상의 전사들이 눈을 뜨기조차 힘든 상황이었다. 실리아가 녹옥 지팡이를 머리 위로 치켜들며 청아한 목소리로 바람의 노래를 불렀다.",
       "sourceSentenceStart": 21,
       "sourceSentenceEnd": 22,
-      "alignmentScore": 0.251,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "실리아가 녹옥 지팡이를 머리 위로 치켜들며 청아한 목소리로 바람의 노래를 불렀다.",
+          "textEn": "Hoisting her Jade Staff, Cilia sang an ancient wind hymn to the heavens.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
         {
-          "textKo": "쿠구구궁!",
-          "textEn": "RUMBLE!",
-          "style": "rumble",
-          "position": "bottom-left"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 10,
-      "imageFile": "episode_30/scene_10.jpeg",
-      "sourceImageFile": "Scholar_Sylvania_waits_at_gate_202607260802.jpeg",
-      "narrationEn": "The senses taught by the teachers were more useful in moments like this than in fighting. Scholar Sylvania waited at the final gate. He asked what was heavier: one life or a thousand people.",
-      "narrationKo": "스승들이 가르친 감각은 싸움보다 이런 순간에 더 쓸모 있었다. 마지막 관문에는 학자 실바니아가 기다렸다. 그는 생명 하나와 천 명 중 무엇이 무거운지 물었다.",
-      "sourceSentenceStart": 23,
-      "sourceSentenceEnd": 25,
-      "alignmentScore": 0.4855,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
           "position": "top-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 11,
-      "imageFile": "episode_30/scene_11.jpeg",
-      "sourceImageFile": "Kadan_did_not_embellish_answer_202607260802.jpeg",
-      "narrationEn": "Kadan did not embellish his answer. “Right now, the one person on my back is the heaviest.",
-      "narrationKo": "카단은 답을 꾸미지 않았다. “지금 내 등에 있는 한 사람이 가장 무겁습니다.",
-      "sourceSentenceStart": 26,
-      "sourceSentenceEnd": 27,
-      "alignmentScore": 0.4949,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 12,
-      "imageFile": "episode_30/scene_12.jpeg",
-      "sourceImageFile": "Sylvania_opening_the_way_202607260802.jpeg",
-      "narrationEn": "But I will not choose to put a thousand people in danger to save that person. If there is someone who created a situation where I have to compare the two, I will break that false condition first. ” Sylvania warned while opening the way.",
-      "narrationKo": "하지만 그 사람을 살리려고 천 명을 위험에 빠뜨리는 선택은 하지 않겠습니다. 둘을 비교해야 하는 상황을 만든 사람이 있다면 먼저 그 거짓 조건부터 부수겠습니다.” 실바니아는 길을 열면서도 경고했다.",
-      "sourceSentenceStart": 28,
-      "sourceSentenceEnd": 30,
-      "alignmentScore": 0.5501,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 13,
-      "imageFile": "episode_30/scene_13.jpeg",
-      "sourceImageFile": "Aqualord_abandoned_throne_to_pre…_202607260802.jpeg",
-      "narrationEn": "Aqualord was once a king and was able to save a child, but he turned away and abandoned the throne to prevent war. He said that even now he does not meet anyone who asks for healing.",
-      "narrationKo": "아쿠아로드는 과거 왕이었고, 한 아이를 살릴 수 있었으나 전쟁을 막기 위해 외면한 뒤 왕좌를 버렸다. 지금도 치유를 청하는 사람을 만나지 않는다고 했다.",
-      "sourceSentenceStart": 31,
-      "sourceSentenceEnd": 32,
-      "alignmentScore": 0.4362,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 14,
-      "imageFile": "episode_30/scene_14.jpeg",
-      "sourceImageFile": "Fantasy_palace_court_scene_202607260802_4.jpeg",
-      "narrationEn": "A maze of poisonous fog spread out in the forest just before the sanctuary. The pursuers sent by the fake Grand Elder blocked the road and demanded that Celia be handed over. They said that if the leader died, the League of Freemen would deal with the court again.",
-      "narrationKo": "성소 직전의 숲에는 독안개 미로가 펼쳐졌다. 가짜 대장로가 보낸 추격자들이 길을 막고 실리아를 넘기라고 요구했다. 그들은 수장이 죽으면 자유민 연맹이 다시 궁정과 거래할 거라고 말했다.",
-      "sourceSentenceStart": 33,
-      "sourceSentenceEnd": 35,
-      "alignmentScore": 0.3791,
-      "dialogues": [
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 15,
-      "imageFile": "episode_30/scene_15.jpeg",
-      "sourceImageFile": "Kadan_fought_with_Celia_202607260802.jpeg",
-      "narrationEn": "Kadan fought without putting down Celia. The enemy's position was changed by stepping rather than attacking, and the poisonous fog was carried by the wind and guided back towards the pursuer.",
-      "narrationKo": "카단은 실리아를 내려놓지 않은 채 싸웠다. 공격보다 발걸음으로 적의 위치를 바꾸고, 독안개가 바람을 타고 추격자 쪽으로 돌아가게 유도했다.",
-      "sourceSentenceStart": 36,
-      "sourceSentenceEnd": 37,
-      "alignmentScore": 0.315,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
-          "bubbleType": "shout",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": [
+        },
         {
           "textKo": "휘이이익-!",
           "textEn": "SWOOSH!",
@@ -349,67 +318,172 @@
       ]
     },
     {
-      "sceneNumber": 16,
-      "imageFile": "episode_30/scene_16.jpeg",
-      "sourceImageFile": "Celia_points_direction_unconscious_202607260802.jpeg",
-      "narrationEn": "Even though Celia was unconscious, he pointed in the direction three times with his finger. After the last enemy retreated, Kadan's knees buckled. He drank too much poison, but with the star breathing he learned from Malfuon, he only had air left around his heart.",
-      "narrationKo": "실리아는 의식이 흐린 가운데도 손가락으로 세 번 방향을 가리켰다. 마지막 적이 물러난 뒤 카단의 무릎이 꺾였다. 그는 독을 너무 많이 마셨지만 말퓨온에게 배운 별의 호흡으로 심장 주변에만 공기를 남겼다.",
-      "sourceSentenceStart": 38,
-      "sourceSentenceEnd": 40,
-      "alignmentScore": 0.6137,
+      "sceneNumber": 10,
+      "imageFile": "episode_30/scene_10.webp",
+      "sourceImageFile": "episode_30/scene_10.webp",
+      "narrationEn": "\"Spirits of the eastern sea! Cleanse this blight with the silver tempest of the dawn!\"",
+      "narrationKo": "“바람 속삭임 섬의 정령들이여! 대지의 독기를 씻어낼 정화의 은빛 폭풍을 내리소서!” 실리아의 발밑에서 솟구쳐 오른 거대한 회오리바람이 공중으로 솟구쳐 올랐다. 질풍의 소용돌이가 독익룡들의 독가루를 역류시켜 놈들의 눈과 호흡기를 마비시켰다. 그 틈을 타 엘리아나와 에일라가 서리 화살을 일제히 난사했다. 공중에서 얼어붙은 독익룡들이 차례로 늪지 바닥으로 추락하며 산산조각 났다.",
+      "sourceSentenceStart": 23,
+      "sourceSentenceEnd": 25,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“바람 속삭임 섬의 정령들이여! 대지의 독기를 씻어낼 정화의 은빛 폭풍을 내리소서!”",
+          "textEn": "“Spirits of the eastern sea! Cleanse this blight with the silver tempest of the dawn!”",
           "bubbleType": "shout",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 17,
-      "imageFile": "episode_30/scene_17.jpeg",
-      "sourceImageFile": "Fantasy_characters_on_deserted_i…_202607260802_3.jpeg",
-      "narrationEn": "The white door of the sanctuary was right in front. The door didn't open.",
-      "narrationKo": "성소의 흰 문이 바로 앞에 있었다. 문은 열리지 않았다.",
-      "sourceSentenceStart": 41,
-      "sourceSentenceEnd": 42,
-      "alignmentScore": 0.6705,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 18,
-      "imageFile": "episode_30/scene_18.jpeg",
-      "sourceImageFile": "Kadan_laid_Celia_at_door_202607260802.jpeg",
-      "narrationEn": "Kadan laid Celia in front of the door without knocking or breaking it, and then sat down next to him. He talked to Celia at the door about the past until night fell. From the day we first shared soup to the last flame of Ignis, he did not ask the unconscious person for answers, but only made his voice heard.",
-      "narrationKo": "카단은 두드리거나 부수지 않고 실리아를 문 앞에 눕힌 뒤 자신도 옆에 앉았다. 밤이 내려앉을 때까지 그는 문 앞에서 실리아에게 지난 일을 이야기했다. 처음 수프를 나눠 먹던 날부터 이그니스의 마지막 불꽃까지, 의식이 없는 사람에게 답을 요구하지 않고 자신의 목소리만 들려주었다.",
-      "sourceSentenceStart": 43,
-      "sourceSentenceEnd": 45,
-      "alignmentScore": 0.548,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "발소리를 죽여라. 어둠 속에서 숨을 고르는 거다.",
-          "textEn": "Muffle your footsteps. Catch your breath in the dark.",
-          "bubbleType": "whisper",
-          "position": "top-right"
+          "position": "bottom-left",
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_30/scene_11.webp",
+      "sourceImageFile": "episode_30/scene_11.webp",
+      "narrationEn": "A towering whirlwind erupted from Cilia's boots, reversing the falling spore clouds straight into the wyverns' maws. Paralyzed by their own venom, the beasts tumbled from the sky, where Eliana and Eyla dispatched them with frost arrows. Kadan leaped onto the parapet, driving his silver dagger into the obsidian mana core, silencing the western sluice in a shower of azure sparks.",
+      "narrationKo": "카단이 뛰쳐나가 서쪽 수문의 흑요석 마나 코어를 은빛 단검으로 꿰뚫었다. 파지직 하는 스파크와 함께 서쪽 수문의 독기 분출구 역시 완벽하게 침묵했다. 서쪽 수문의 흑요석 마나 코어가 부서지자, 공중을 맴돌던 나머지 독익룡들도 힘을 잃고 늪지 바닥으로 추락했다. 실리아가 일으킨 거대한 회오리바람이 공중에 남아 있던 보랏빛 독가루를 완전히 대기권 밖으로 밀어냈다. 실리아가 숨을 고르며 카단을 바라보았다. “동쪽과 서쪽의 두 관문이 침묵했어요. 이제 북쪽 중앙의 주 수문만 남았어요.” 카단이 고개를 끄덕이며 전열을 이끌었다.",
+      "sourceSentenceStart": 26,
+      "sourceSentenceEnd": 28,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“동쪽과 서쪽의 두 관문이 침묵했어요. 이제 북쪽 중앙의 주 수문만 남았어요.”",
+          "textEn": "“Spirits of the eastern sea! Cleanse this blight with the silver tempest of the dawn!”",
+          "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_30/scene_12.webp",
+      "sourceImageFile": "episode_30/scene_12.webp",
+      "narrationEn": "At last, the companions arrived before the central northern gate, where General Bargast, Lucian's chief fortress commander, stood atop the iron catwalk. Covered in venomous serpent tattoos, the brute leveled a massive sulfur flamethrower. Bargast sneered in sadistic triumph.",
+      "narrationKo": "마침내 네 번째 북쪽 중앙 수문에 도달했을 때, 거대한 철문 위에서 루시안의 마지막 호위사령관이자 사문의 총지휘관인 바르가스트가 모습을 드러냈다. 바르가스트는 온몸에 메두사 고르고의 독사 문신을 두른 거한으로, 거대한 유황 화염 방사기를 양손에 들고 있었다. 바르가스트가 흉포한 미소를 지으며 화염 방사기의 밸브를 열었다.",
+      "sourceSentenceStart": 29,
+      "sourceSentenceEnd": 30,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "바르가스트가 흉포한 미소를 지으며 화염 방사기의 밸브를 열었다.",
+          "textEn": "Bargast sneered in sadistic triumph.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 61
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_30/scene_13.webp",
+      "sourceImageFile": "episode_30/scene_13.webp",
+      "narrationEn": "\"Insolent pups! This Four Gates Hellfire melts living stone! Burn to ash and feed the swamp!\" A torrent of liquid hellfire and concentrated venom engulfed the narrow defile.",
+      "narrationKo": "“애송이 놈들! 이 최후의 사문독화(四門毒火)는 바위도 녹여버린다! 잿더미가 되어 늪지의 거름이나 되어라!” 용암 같은 유황 불길과 맹독이 합쳐진 거대한 화염 폭풍이 좁은 협곡을 가득 채우며 일행을 덮쳐왔다.",
+      "sourceSentenceStart": 31,
+      "sourceSentenceEnd": 32,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "바르가스트",
+          "speakerEn": "Barghest",
+          "textKo": "“애송이 놈들! 이 최후의 사문독화(四門毒火)는 바위도 녹여버린다! 잿더미가 되어 늪지의 거름이나 되어라!”",
+          "textEn": "“Insolent pups! This Four Gates Hellfire melts living stone! Burn to ash and feed the swamp!”",
+          "bubbleType": "shout",
+          "position": "top-right",
+          "characterCardId": 87
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_30/scene_14.webp",
+      "sourceImageFile": "episode_30/scene_14.webp",
+      "narrationEn": "Kadan braced the Dragon Breaker shield with both hands. Resonating with his heart's resolve, the White Glass Ember within his coat blazed to life, weaving a double aegis of white fire and celestial gold across the shield's face. BOOM!",
+      "narrationKo": "카단은 물러서지 않고 드래곤 브레이커 방패를 두 손으로 받쳐 들었다. 품속의 유리 불씨가 카단의 심장 마나와 공명하며 방패 전면에 눈부신 순백과 황금빛이 어우러진 이중 수호벽을 형성했다. 콰아아아앙! 유황 불길이 방패에 부딪쳐 양옆으로 갈라지며 바위벽을 녹여 내렸지만, 카단의 두 발은 늪지 바닥에 쐐기처럼 박힌 채 단 한 치도 흔들리지 않았다. 방패를 쥔 카단의 눈빛은 성기사의 영원한 신념으로 불타고 있었다.",
+      "sourceSentenceStart": 33,
+      "sourceSentenceEnd": 35,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "방패를 쥔 카단의 눈빛은 성기사의 영원한 신념으로 불타고 있었다.",
+          "textEn": "BOOM!",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
         {
           "textKo": "콰아아앙!",
           "textEn": "BOOM!",
@@ -419,51 +493,200 @@
       ]
     },
     {
-      "sceneNumber": 19,
-      "imageFile": "episode_30/scene_19.jpeg",
-      "sourceImageFile": "Celia's_fingers_moved_once_202607260802.jpeg",
-      "narrationEn": "Celia's fingers moved once, but his eyes did not open. “If you’ve heard why we’ve come here, judge for yourself, but if you’re going to say no, say it to my face, not keep silent behind closed doors.",
-      "narrationKo": "실리아의 손가락이 한 번 움직였지만 눈은 뜨지 않았다. “우리가 여기까지 온 이유를 들으셨다면 판단하십시오. 하지만 거절할 거라면 문 뒤에서 침묵하지 말고 얼굴을 보고 말해 주십시오.”",
-      "sourceSentenceStart": 46,
-      "sourceSentenceEnd": 48,
-      "alignmentScore": 0.5258,
-      "dialogues": [
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "우리가 여기까지 온 이유를 들으셨다면 판단하십시오. 하지만 거절할 거라면 문 뒤에서 침묵하지 말고 얼굴을 보고 말해 주십시오.",
-          "textEn": "“우리가 여기까지 온 이유를 들으셨다면 판단하십시오. 하지만 거절할 거라면 문 뒤에서 침묵하지 말고 얼굴을 보고 말해 주십시오.”",
-          "bubbleType": "speech",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 20,
-      "imageFile": "episode_30/scene_20.jpeg",
-      "sourceImageFile": "Ignis_Kadan_fantasy_scene_202607260802.jpeg",
-      "narrationEn": "” After a long time, the sound of flowing water changed. The white door opened inward, and Aqualord wearing a blue robe appeared. His first gaze was not on Celia, but on the glowing ember of Ignis in Kadan's pocket.",
-      "narrationKo": "긴 시간이 지난 뒤 물 흐르는 소리가 바뀌었다. 흰 문이 안쪽으로 열리고, 푸른 로브를 입은 아쿠아로드가 나타났다. 그의 첫 시선은 실리아가 아니라 카단의 주머니에서 빛나는 이그니스의 불씨에 머물렀다.",
-      "sourceSentenceStart": 49,
-      "sourceSentenceEnd": 51,
-      "alignmentScore": 0.6974,
+      "sceneNumber": 15,
+      "imageFile": "episode_30/scene_15.webp",
+      "sourceImageFile": "episode_30/scene_15.webp",
+      "narrationEn": "The inferno crashed against the bulwark, splitting in two and melting the canyon walls into slag, yet Kadan's boots remained anchored like iron pilings, yielding not a single fraction of an inch. Roaring with righteous fury, Kadan stepped through the flames.",
+      "narrationKo": "카단이 방패를 앞으로 내지르며 사자후를 토했다. “우리가 지켜야 할 사람들의 온기가 있는 한, 이 방패는 결코 녹아내리지 않는다!” 바르가스트의 사문독화가 뿜어낸 유황 불길은 협곡 양쪽의 암벽을 통째로 녹여 붉은 쇳물처럼 흘러내리게 할 정도로 끔찍했다. 그러나 카단의 드래곤 브레이커 방패는 별의 호흡과 이그니스의 순백 불씨가 결합된 성스러운 이중 결계로 그 모든 지옥도를 완벽하게 차단해 냈다.",
+      "sourceSentenceStart": 36,
+      "sourceSentenceEnd": 38,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-left"
+          "textKo": "“우리가 지켜야 할 사람들의 온기가 있는 한, 이 방패는 결코 녹아내리지 않는다!”",
+          "textEn": "“So long as we have living warmth to defend, this shield shall never melt!”",
+          "bubbleType": "shout",
+          "position": "bottom-right",
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_30/scene_16.webp",
+      "sourceImageFile": "episode_30/scene_16.webp",
+      "narrationEn": "\"So long as we have living warmth to defend, this shield shall never melt!\" Slamming his shield into the machinery, Kadan's strike pulverized the flamethrower and hurled Bargast from the parapet into the chasm below. With a final thrust of his silver dagger, Kadan severed the master chains.",
+      "narrationKo": "카단의 눈빛에는 두려움 대신 지키고자 하는 자의 숭고한 결의만이 타오르고 있었다. 방패 전면에서 터져 나온 황금빛 충격파는 대지를 가르며 바르가스트의 화염 방사기를 완전히 산산조각 냈다. 카단의 거대한 방패 강타가 화염 폭풍을 찢어발기며 바르가스트를 정통으로 들이받았다. 콰앙 하는 충격음과 함께 유황 방사기가 폭발하며 바르가스트는 피를 토하고 절벽 아래로 추락했다.",
+      "sourceSentenceStart": 39,
+      "sourceSentenceEnd": 40,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "콰앙 하는 충격음과 함께 유황 방사기가 폭발하며 바르가스트는 피를 토하고 절벽 아래로 추락했다.",
+          "textEn": "With a final thrust of his silver dagger, Kadan severed the master chains.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_30/scene_17.webp",
+      "sourceImageFile": "episode_30/scene_17.webp",
+      "narrationEn": "With groaning thunder, all four iron sluices rose, unleashing the pristine mountain reservoirs behind the fortress. A flood of crystalline water rushed through the defile, washing away the corrosive slime and cleansing the putrid swamp into a clear, living lake.",
+      "narrationKo": "카단이 은빛 단검으로 중앙 수문의 거대한 제어 사슬을 끊어내자, 마침내 사문의 네 개 수문이 모두 열리며 갇혀 있던 거대한 호수의 맑은 물이 늪지로 쏟아져 들어왔다. 우레 같은 물살이 부식성 진흙과 독기를 씻어내며, 썩어가던 늪지가 맑고 푸른 호수로 되살아나기 시작했다.",
+      "sourceSentenceStart": 41,
+      "sourceSentenceEnd": 42,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "우레 같은 물살이 부식성 진흙과 독기를 씻어내며, 썩어가던 늪지가 맑고 푸른 호수로 되살아나기 시작했다.",
+          "textEn": "A flood of crystalline water rushed through the defile, washing away the corrosive slime and cleansing the putrid swamp into a clear, living lake.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
         {
           "textKo": "파지지직!",
           "textEn": "CRACKLE!",
           "style": "magic",
           "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_30/scene_18.webp",
+      "sourceImageFile": "episode_30/scene_18.webp",
+      "narrationEn": "Cheering wildly, thousands of volunteer troops and refugees surged through the liberated gates. Cilia stepped to Kadan's side, her eyes fixed upon the northern peaks.",
+      "narrationKo": "수백 명의 피난민들과 의용군들이 환호성을 지르며 해방된 북문을 통과해 진격하기 시작했다. 실리아가 녹옥 지팡이를 거두며 카단의 곁으로 다가왔다. “사문의 독이 모두 정화되었어요. 이제 루시안이 숨어 있는 최후의 거점, 검은 늪지대의 심장부로 가는 길이 열렸어요.”",
+      "sourceSentenceStart": 43,
+      "sourceSentenceEnd": 45,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“사문의 독이 모두 정화되었어요. 이제 루시안이 숨어 있는 최후의 거점, 검은 늪지대의 심장부로 가는 길이 열렸어요.”",
+          "textEn": "“The poison of the Four Gates is cleansed. The final road to the heart of the Black Marsh is open.”",
+          "bubbleType": "speech",
+          "position": "bottom-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_30/scene_19.webp",
+      "sourceImageFile": "episode_30/scene_19.webp",
+      "narrationEn": "\"The poison of the Four Gates is cleansed. The final road to the heart of the Black Marsh is open.\" Holding the warm ember in his hand, Kadan nodded with unbreakable resolve.",
+      "narrationKo": "카단은 주머니 속에서 따뜻하게 고동치는 이그니스의 유리 불씨를 쥐며 고개를 끄덕였다. “형제가 남겨준 등불을 따라, 최후의 어둠을 심판하러 가자.” 선대 영웅들의 넋과 전우의 희생을 가슴에 품은 두 젊은이는, 대륙의 평화를 되찾기 위한 마지막 전장을 향해 굳건히 발걸음을 옮겼다.",
+      "sourceSentenceStart": 46,
+      "sourceSentenceEnd": 48,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“형제가 남겨준 등불을 따라, 최후의 어둠을 심판하러 가자.”",
+          "textEn": "“The poison of the Four Gates is cleansed. The final road to the heart of the Black Marsh is open.”",
+          "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_30/scene_20.webp",
+      "sourceImageFile": "episode_30/scene_20.webp",
+      "narrationEn": "\"Following the beacon left by our brother, we march to deliver the final judgment.\" Bearing the memories of their forebears and the sacrifice of their comrade, the companions marched forward into the final campaign.",
+      "narrationKo": "사문의 네 개 수문이 모두 열리고 거대한 호수의 청정한 물살이 늪지를 뒤덮자, 수십 년간 썩어가던 검은 대지가 기적처럼 푸른 생명력을 되찾기 시작했다. 맑은 물밑에서 어린 수초들이 돋아났고, 독기에 쫓겨났던 물새들이 하늘로 날아올랐다. 수천 명의 의용군과 피난민들이 만세를 부르며 해방된 관문을 통과했다. 실리아와 카단은 물살을 헤치며 나아가는 군대의 선두에 서서 북쪽의 검은 늪지대 심장부를 응시했다. 이그니스가 남긴 불씨는 여전히 따스하게 고동치며 그들의 앞길을 밝혀주고 있었다.",
+      "sourceSentenceStart": 49,
+      "sourceSentenceEnd": 50,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "이그니스가 남긴 불씨는 여전히 따스하게 고동치며 그들의 앞길을 밝혀주고 있었다.",
+          "textEn": "\"Following the beacon left by our brother, we march to deliver the final judgment.\" Bearing the memories of their forebears and the sacrifice of their comrade, the companions marched forward into the final campaign.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
         }
       ]
     }

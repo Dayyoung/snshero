@@ -1,48 +1,28 @@
 {
   "episodeNumber": 21,
   "episodeTitleEn": "Betrayal Aboard the Burning Ship",
-  "episodeTitleKo": "불타는 배의 배신",
-  "sourceSentenceCount": 58,
+  "episodeTitleKo": "불탄 배의 흔적",
+  "sourceSentenceCount": 48,
   "sceneCount": 20,
   "scenes": [
     {
       "sceneNumber": 1,
-      "imageFile": "episode_21/scene_01.jpeg",
-      "sourceImageFile": "Leonar_searches_for_Kadan_Celia_202607260802.jpeg",
-      "narrationEn": "The footprints on the beach belonged to Leonar. He rescued a refuge ship and searched for Kadan and Celia, but was pushed by a storm and ended up on the same island.",
-      "narrationKo": "해변의 발자국은 레오나르의 것이었다. 그는 피난선 한 척을 구해 카단과 실리아를 찾다가 폭풍에 밀려 같은 섬에 닿았다.",
+      "imageFile": "episode_21/scene_01.webp",
+      "sourceImageFile": "episode_21/scene_01.webp",
+      "narrationEn": "When the armada of hundreds of flower boats led by the flagship 'Breeze Wing' crossed the treacherous ocean swells to reach the southwestern coast of the mainland, what welcomed the companions was not fluttering banners of celebration, but the suffocating stench of burning pitch and towering pillars of blackened smoke. The timber wharves of Seven Bridges Haven, once a tranquil maritime sanctuary connecting the northern tundra with the eastern seas, had been reduced to smoldering ash, while receding tides dragged fractured spars and scorched decking across the mudflats. In this desolate graveyard where not even a solitary gull cried, only the bitter reek of scorched cedar bore testimony to the scale of the atrocity. Rusted harbor chains lay snapped amidst the tidal mud, and the timber warehouses along the shoreline stood as skeletal frames vomiting black soot into the gray sky. Gripping the helm, Rondol surveyed the ruined piers, his broad fists trembling with suppressed rage.",
+      "narrationKo": "미풍의날개호를 선두로 한 수백 척의 꽃배 선단이 대해의 거센 풍랑을 넘어 마침내 대륙의 서남부 해안에 도달했을 때, 일행을 맞이한 것은 환영의 깃발이 아니라 매캐한 기름 냄새와 검붉은 연기 기둥이었다. 과거 북방과 대해를 잇는 평화로운 무역항이었던 세븐브리지 항구의 목재 부두들이 무참히 불타 숯덩이가 되어 있었고, 썰물에 밀려온 검은 잿더미와 부서진 돛대 파편들이 갯벌을 뒤덮고 있었다. 갈매기 한 마리 날지 않는 적막 속에서, 오직 바닷바람에 실려 오는 타는 냄새만이 참극의 규모를 짐작하게 했다. 바다 안개 사이로 부러진 쇠사슬들이 녹슨 채 널브러져 있었고, 선창가의 목재 창고들은 앙상한 뼈대만을 드러낸 채 검은 그을음을 토해내고 있었다. 론돌이 키를 잡고 타버린 부두를 바라보며 굵은 주먹을 떨었다.",
       "sourceSentenceStart": 1,
       "sourceSentenceEnd": 2,
-      "alignmentScore": 0.5346,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 2,
-      "imageFile": "episode_21/scene_02.jpeg",
-      "sourceImageFile": "Death_Knight_Artus_wounds_Leonar_202607260802.jpeg",
-      "narrationEn": "There was a deep black wound on one shoulder. It was a trace of a fight with Death Knight Artus. Leonar climbed onto Lucian's command ship to rescue refugees, but fell into a trap.",
-      "narrationKo": "한쪽 어깨에는 검은 창상이 깊게 패여 있었다. 데스나이트 아르투스와 싸운 흔적이었다. 레오나르는 피난민을 구하려고 루시안의 지휘선에 올랐다가 함정에 빠졌다.",
-      "sourceSentenceStart": 3,
-      "sourceSentenceEnd": 5,
-      "alignmentScore": 0.5074,
-      "dialogues": [
-        {
-          "speakerKo": "루시안",
-          "speakerEn": "Lucian",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
-          "bubbleType": "shout",
-          "position": "bottom-right"
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "론돌이 키를 잡고 타버린 부두를 바라보며 굵은 주먹을 떨었다.",
+          "textEn": "Gripping the helm, Rondol surveyed the ruined piers, his broad fists trembling with suppressed rage.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 46
         }
       ],
       "sfxCues": [
@@ -51,26 +31,77 @@
           "textEn": "CLANG!",
           "style": "slash",
           "position": "top-right"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_21/scene_02.webp",
+      "sourceImageFile": "episode_21/scene_02.webp",
+      "narrationEn": "\"Merciless curs... To trap the fleeing populace, they incinerated civilian transports and fishing cutters without distinction. A decade ago, this haven bustled with grain barges and silk merchants from every corner of the world, yet the madness of those blinded by power knows no boundary.\" Bracing his unadorned iron shield, Kadan leaped first onto the wet mudflats, his leather boots crunching through crushed seashells and charcoal dust. \"Lucian's imperial vanguard has fortified the coastline and initiated a brutal scorched-earth campaign. The fires were set less than half a sunrise ago. We must search for survivors amidst the ruins.\"",
+      "narrationKo": "“이 잔인무도한 놈들... 피난민들의 발을 묶기 위해 민간 항구와 어선들까지 모조리 불태워 버렸구나. 십 년 전만 해도 온갖 곡식과 비단이 오가던 번영하던 항구였거늘, 권력에 눈이 먼 자들의 광기가 끝이 없구나.” 카단이 무쇠 방패를 비껴 쥐며 갯벌 위로 가장 먼저 뛰어내렸다. 바닷물에 젖은 장화 밑으로 부서진 조개껍데기와 숯가루가 버석거렸다. “루시안의 황실 토벌대가 이미 해안선을 봉쇄하고 초토화 작전을 펼친 것이다. 불길이 번진 지 채 반나절도 지나지 않았다. 살아남은 사람들이 있는지 찾아야 한다.”",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 5,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "론돌",
+          "speakerEn": "Rondol",
+          "textKo": "“이 잔인무도한 놈들... 피난민들의 발을 묶기 위해 민간 항구와 어선들까지 모조리 불태워 버렸구나. 십 년 전만 해도 온갖 곡식과 비단이 오가던 번영하던 항구였거늘, 권력에 눈이 먼 자들의 광기가 끝이 없구나.”",
+          "textEn": "“Merciless curs... To trap the fleeing populace, they incinerated civilian transports and fishing cutters without distinction. A decade ago, this haven bustled with grain barges and silk merchants from every corner of the world, yet the madness of those blinded by power knows no boundary.”",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 46
+        },
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“루시안의 황실 토벌대가 이미 해안선을 봉쇄하고 초토화 작전을 펼친 것이다. 불길이 번진 지 채 반나절도 지나지 않았다. 살아남은 사람들이 있는지 찾아야 한다.”",
+          "textEn": "“Lucian's imperial vanguard has fortified the coastline and initiated a brutal scorched-earth campaign. The fires were set less than half a sunrise ago. We must search for survivors amidst the ruins.”",
+          "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
         }
       ]
     },
     {
       "sceneNumber": 3,
-      "imageFile": "episode_21/scene_03.jpeg",
-      "sourceImageFile": "Death_Knight_Artus_attacks_commu…_202607260802.jpeg",
-      "narrationEn": "Death Knight Artus was an undead knight with no body inside his armor. After channeling the opponent's attack into the empty armor, it left a direct wound on the soul. Even the barrier of the green jade staff could not completely block his sword.",
-      "narrationKo": "데스나이트 아르투스는 갑옷 안에 몸이 없는 언데드 기사였다. 상대의 공격을 빈 갑옷 속으로 흘린 뒤 영혼에 직접 상처를 남겼다. 녹옥 지팡이의 결계도 그의 검을 완전히 막지 못했다.",
+      "imageFile": "episode_21/scene_03.webp",
+      "sourceImageFile": "episode_21/scene_03.webp",
+      "narrationEn": "Raising her Jade Staff to gather the coastal winds, Cilia knit her brow in deep concentration. \"Beneath the western sea cliffs near the salt cellar, I sense the faint, labored breathing of living souls. But lethal mana snares are woven densely across the approach.\"",
+      "narrationKo": "실리아가 녹옥 지팡이를 들어 해안가의 바람을 모으며 미간을 찌푸렸다. “서쪽 해안 절벽 아래 소금 창고 쪽에서 미약한 사람들의 숨결이 느껴져요. 하지만 그 주변으로 사나운 마나의 덫들이 촘촘하게 깔려 있어요.”",
       "sourceSentenceStart": 6,
-      "sourceSentenceEnd": 8,
-      "alignmentScore": 0.623,
+      "sourceSentenceEnd": 7,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "성기사단원",
-          "speakerEn": "Holy Knight",
-          "textKo": "검끝이 흔들리지 않는 한, 길은 열린다.",
-          "textEn": "As long as our blades do not waver, the path will open.",
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“서쪽 해안 절벽 아래 소금 창고 쪽에서 미약한 사람들의 숨결이 느껴져요. 하지만 그 주변으로 사나운 마나의 덫들이 촘촘하게 깔려 있어요.”",
+          "textEn": "“Beneath the western sea cliffs near the salt cellar, I sense the faint, labored breathing of living souls. But lethal mana snares are woven densely across the approach.”",
           "bubbleType": "speech",
-          "position": "top-right"
+          "position": "bottom-right",
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
@@ -78,111 +109,177 @@
           "textKo": "챙-!",
           "textEn": "CLANG!",
           "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
           "position": "top-right"
         }
       ]
     },
     {
       "sceneNumber": 4,
-      "imageFile": "episode_21/scene_04.jpeg",
-      "sourceImageFile": "Leonar_hid_wounds_bragging_202607260802.jpeg",
-      "narrationEn": "Leonar hid his wounds as if he were bragging. When Celia tried to cut the armor, he found the meat, saying it was fine, and collapsed after one step. As Kadan carried him to the cave on his back, he realized that he too had behaved the same way in the face of danger.",
-      "narrationKo": "레오나르는 상처를 자랑처럼 숨겼다. 실리아가 갑옷을 자르려 하자 멀쩡하다며 고기를 찾았고, 한 걸음 뒤에 쓰러졌다. 카단은 그를 업어 동굴로 옮기며 자신도 위험 앞에서 똑같이 굴었다는 것을 깨달았다.",
-      "sourceSentenceStart": 9,
-      "sourceSentenceEnd": 11,
-      "alignmentScore": 0.3649,
+      "imageFile": "episode_21/scene_04.webp",
+      "sourceImageFile": "episode_21/scene_04.webp",
+      "narrationEn": "Weaving through heaps of sodden ash and charred timber ribs, the companions advanced cautiously toward the western cliff face. There lay the canted keel of a massive, burned hospital barge, dark bloodstains smeared along the fractured hull. Medicine chests and linen bandages lay trampled into the muck, and upon a broken tea bowl rested the faint, weathered cross-crest of the Arcane Holy Knights. It had been a sanctuary of mercy established decades ago by Master Aleksandar and Uncle Balian to relieve northern famines. Smoothing the scarlet ribbon bound to his silver dagger, Kadan spoke in a hushed, reverent murmur. \"This was the charitable clinic established by Uncle Balian and the Holy Knights. A haven that healed impoverished fishermen and orphans... incinerated into cinder.\"",
+      "narrationKo": "일행은 잿더미와 부러진 선박 잔해를 피해 조심스럽게 서쪽 해안 암벽으로 향했다. 그곳에는 불타 무너진 대형 병원선의 목재 용골(龍骨)이 비스듬히 누워 있었고, 선체 틈새로 검은 핏자국이 어지럽게 번져 있었다. 약초 상자와 붕대 조각들이 진흙탕 속에 짓밟혀 있었고, 부서진 찻잔 사이로 북방 성기사단의 십자 성흔이 희미하게 남아 있었다. 과거 발리안 경과 알렉산다르 스승이 북방의 구휼을 위해 세웠던 자비의 성소였다. 카단이 진흙 속에 파묻혀 있던 은빛 단검의 붉은 매듭을 정돈하며 나지막이 중얼거렸다. “이곳은 발리안 숙부님과 옛 성기사단이 세운 무료 진료소였다. 부상당한 어부들과 고아들을 치료하던 안식처마저 잿더미로 만들다니...”",
+      "sourceSentenceStart": 8,
+      "sourceSentenceEnd": 10,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-left"
+          "textKo": "“이곳은 발리안 숙부님과 옛 성기사단이 세운 무료 진료소였다. 부상당한 어부들과 고아들을 치료하던 안식처마저 잿더미로 만들다니...”",
+          "textEn": "“This was the charitable clinic established by Uncle Balian and the Holy Knights. A haven that healed impoverished fishermen and orphans... incinerated into cinder.”",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 41
         }
       ],
-      "sfxCues": []
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
     },
     {
       "sceneNumber": 5,
-      "imageFile": "episode_21/scene_05.jpeg",
-      "sourceImageFile": "Celia_Kadan_coastal_cave_scene_202607260802.jpeg",
-      "narrationEn": "Celia glared at the two people alternately and asked, “Is the common technique of strong men hindering treatment? ” The three people made their home in a coastal cave. Celia washed the wound with herbs and sea salt, and Kadan collected rainwater and dug an ice cellar.",
-      "narrationKo": "실리아는 두 사람을 번갈아 노려보며 “강한 남자들의 공통 기술은 치료 방해냐”고 물었다. 세 사람은 해안 동굴에 거처를 만들었다. 실리아는 약초와 바닷소금으로 상처를 씻고, 카단은 빗물을 모아 얼음 저장고를 팠다.",
-      "sourceSentenceStart": 12,
-      "sourceSentenceEnd": 14,
-      "alignmentScore": 0.6033,
+      "imageFile": "episode_21/scene_05.webp",
+      "sourceImageFile": "episode_21/scene_05.webp",
+      "narrationEn": "Just then, a weathered trapdoor at the base of the granite cliff creaked open, and a white-haired elder brandishing a broken stone pestle peeked out with trembling wariness. It was Ordo, the elderly apothecary of the haven. Beholding the sacred cross-crest upon Kadan's iron shield, Ordo broke into racking sobs of relief.",
+      "narrationKo": "그때 바위 절벽 아래 지하 소금 창고 입구에서 낡은 나무 판자가 삐걱거리며 열리더니, 백발이 성성한 노인 하나가 부러진 약초 절구통을 든 채 조심스럽게 고개를 내밀었다. 항구의 늙은 의원 오르도였다. 오르도가 카단의 방패에 새겨진 성기사단의 문장을 보고 눈물을 터뜨렸다.",
+      "sourceSentenceStart": 11,
+      "sourceSentenceEnd": 12,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "강한 남자들의 공통 기술은 치료 방해냐",
-          "textEn": "Is the common technique of strong men hindering treatment? ",
-          "bubbleType": "speech",
-          "position": "top-right"
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "오르도가 카단의 방패에 새겨진 성기사단의 문장을 보고 눈물을 터뜨렸다.",
+          "textEn": "Beholding the sacred cross-crest upon Kadan's iron shield, Ordo broke into racking sobs of relief.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 41
         }
       ],
-      "sfxCues": []
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
     },
     {
       "sceneNumber": 6,
-      "imageFile": "episode_21/scene_06.jpeg",
-      "sourceImageFile": "Death_Knight_Artus_Orihalcon_Kadan_202607260802.jpeg",
-      "narrationEn": "It was peaceful during the day, but every night the sound of metal dragging in the forest grew closer. Death Knight Artus was on the island with Orihalcon. They targeted Kadan's codex pieces.",
-      "narrationKo": "낮에는 평화로웠지만 밤마다 숲에서 금속 끌리는 소리가 가까워졌다. 데스나이트 아르투스는 오리하르콘과 함께 섬에 와 있었다. 그들은 카단이 가진 코덱스 조각을 노렸다.",
-      "sourceSentenceStart": 15,
-      "sourceSentenceEnd": 17,
-      "alignmentScore": 0.5101,
+      "imageFile": "episode_21/scene_06.webp",
+      "sourceImageFile": "episode_21/scene_06.webp",
+      "narrationEn": "\"Praise be to the heavens! The sacred shield of the Holy Knights has returned! Lucian's Crimson Wolf vanguard put the harbor to the torch and dragged our able-bodied youths to the labor mines, but I managed to conceal twenty orphaned children beneath these salt vaults!\" Stepping forward, Ignis took the old man's trembling hands, bowing his head in solemn remorse.",
+      "narrationKo": "“오오, 빛의 신이시여! 성기사의 방패가 돌아왔구나! 루시안의 붉은 늑대 기사단이 항구를 불태우고 젊은이들을 광산으로 끌고 갔지만, 지하 소금 창고에 어린아이 스무 명을 숨겨두었습니다!” 이그니스가 다가가 노인의 떨리는 손을 붙잡으며 고개를 숙였다.",
+      "sourceSentenceStart": 13,
+      "sourceSentenceEnd": 14,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "발소리를 죽여라. 어둠 속에서 숨을 고르는 거다.",
-          "textEn": "Muffle your footsteps. Catch your breath in the dark.",
-          "bubbleType": "whisper",
-          "position": "bottom-right"
+          "textKo": "“오오, 빛의 신이시여! 성기사의 방패가 돌아왔구나! 루시안의 붉은 늑대 기사단이 항구를 불태우고 젊은이들을 광산으로 끌고 갔지만, 지하 소금 창고에 어린아이 스무 명을 숨겨두었습니다!”",
+          "textEn": "“Praise be to the heavens! The sacred shield of the Holy Knights has returned! Lucian's Crimson Wolf vanguard put the harbor to the torch and dragged our able-bodied youths to the labor mines, but I managed to conceal twenty orphaned children beneath these salt vaults!”",
+          "bubbleType": "shout",
+          "position": "bottom-left",
+          "characterCardId": 41
         }
       ],
-      "sfxCues": []
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
     },
     {
       "sceneNumber": 7,
-      "imageFile": "episode_21/scene_07.jpeg",
-      "sourceImageFile": "Orihalcon_lied_offered_deal_202607260802.jpeg",
-      "narrationEn": "Orihalcon lied and offered a deal, saying he had seen a rescue ship. The condition was that he would take everyone with him if he read the codex. When Kadan refused, Death Knight Artus awakened the soul fragment planted in Leonar's wound.",
-      "narrationKo": "오리하르콘은 구조선을 보았다고 거짓말하며 거래를 제안했다. 코덱스를 읽어 주면 모두를 데려가겠다는 조건이었다. 카단이 거절하자 데스나이트 아르투스는 레오나르의 상처에 심어 둔 영혼 조각을 깨웠다.",
-      "sourceSentenceStart": 18,
-      "sourceSentenceEnd": 20,
-      "alignmentScore": 0.3719,
+      "imageFile": "episode_21/scene_07.webp",
+      "sourceImageFile": "episode_21/scene_07.webp",
+      "narrationEn": "\"Forgive our tardy arrival, elder. For the atrocities committed by the imperial host, I offer my life in earnest atonement.\" Cilia lifted a broken ceramic herb jar, tears glittering upon her lashes. \"To set fire to a sanctuary dedicated solely to mercy and healing is an unforgivable sacrilege.\"",
+      "narrationKo": "“늦게 와서 죄송합니다, 어르신. 황궁의 군대가 저지른 만행에 대해, 기사의 이름을 걸고 사죄드립니다.” 실리아가 부서진 약탕기를 들어 올리며 눈시울을 붉혔다. “자비와 생명을 돌보던 성역에 불을 지르다니, 결코 용서받지 못할 패륜이에요.”",
+      "sourceSentenceStart": 15,
+      "sourceSentenceEnd": 17,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“늦게 와서 죄송합니다, 어르신. 황궁의 군대가 저지른 만행에 대해, 기사의 이름을 걸고 사죄드립니다.”",
+          "textEn": "“Forgive our tardy arrival, elder. For the atrocities committed by the imperial host, I offer my life in earnest atonement.”",
           "bubbleType": "speech",
-          "position": "top-right"
+          "position": "bottom-right",
+          "characterCardId": 11
+        },
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“자비와 생명을 돌보던 성역에 불을 지르다니, 결코 용서받지 못할 패륜이에요.”",
+          "textEn": "“To set fire to a sanctuary dedicated solely to mercy and healing is an unforgivable sacrilege.”",
+          "bubbleType": "speech",
+          "position": "top-left",
+          "characterCardId": 62
         }
       ],
-      "sfxCues": []
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
     },
     {
       "sceneNumber": 8,
-      "imageFile": "episode_21/scene_08.jpeg",
-      "sourceImageFile": "Black_crack_spread_to_heart_202607260802.jpeg",
-      "narrationEn": "A black crack spread to my heart. To save Leonar, the sealing key held by Death Knight Artus was needed. Kadan bought time by pretending to transcribe the codex.",
-      "narrationKo": "검은 균열이 심장으로 번졌다. 레오나르를 살리려면 데스나이트 아르투스가 가진 봉인 열쇠가 필요했다. 카단은 코덱스를 옮겨 적는 척하며 시간을 벌었다.",
-      "sourceSentenceStart": 21,
-      "sourceSentenceEnd": 23,
-      "alignmentScore": 0.3425,
+      "imageFile": "episode_21/scene_08.webp",
+      "sourceImageFile": "episode_21/scene_08.webp",
+      "narrationEn": "Descending into the salt cellar, the companions beheld twenty orphaned refugee children and wounded fishermen huddled together amidst sacks of coarse sea salt. Caked in grime and starving after days without rations, the children shivered, while injured mariners clutched gangrenous limbs in silent agony. The damp subterranean chill froze the little ones' bare feet blue. Without a second thought, Cilia knelt upon the damp stone, extracting soothing restorative powders from her satchel to dress their lacerations.",
+      "narrationKo": "소금 창고 안으로 들어서자, 서늘한 소금 가마니 사이에서 추위와 공포에 떨고 있던 스무 명의 난민 아이들과 부상자들이 웅크리고 있었다. 며칠 동안 굶주린 아이들의 얼굴은 흙먼지로 뒤덮여 있었고, 상처 입은 어부들은 썩어 들어가는 다리를 부여잡고 신음하고 있었다. 지하 창고 바닥의 축축한 냉기가 어린아이들의 작은 발을 파랗게 얼리고 있었다. 실리아가 주저 없이 무릎을 꿇고 허리춤 주머니에서 정화의 약초 가루를 꺼내 환자들의 상처에 발랐다.",
+      "sourceSentenceStart": 18,
+      "sourceSentenceEnd": 19,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
-          "bubbleType": "shout",
-          "position": "top-left"
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "실리아가 주저 없이 무릎을 꿇고 허리춤 주머니에서 정화의 약초 가루를 꺼내 환자들의 상처에 발랐다.",
+          "textEn": "Without a second thought, Cilia knelt upon the damp stone, extracting soothing restorative powders from her satchel to dress their lacerations.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
@@ -196,21 +293,22 @@
     },
     {
       "sceneNumber": 9,
-      "imageFile": "episode_21/scene_09.jpeg",
-      "sourceImageFile": "Celia_Kadan_burning_ship_scene_202607260802.jpeg",
-      "narrationEn": "He arranged the sentences in reverse order but hid minor errors so as not to overwhelm them immediately after reading them. Celia adjusted the drying speed of the ink with the wind to create different densities between real and fake runes. Kadan's handwriting was slow, so he almost got caught cheating.",
-      "narrationKo": "그는 문장을 반대 순서로 배열하되 읽는 즉시 폭주하지 않도록 미세한 오류를 숨겼다. 실리아가 바람으로 먹물의 마르는 속도를 조절해 진짜와 가짜 룬의 농도를 다르게 만들었다. 카단은 글씨가 느려 속임수를 들킬 뻔했다.",
-      "sourceSentenceStart": 24,
-      "sourceSentenceEnd": 26,
-      "alignmentScore": 0.3048,
+      "imageFile": "episode_21/scene_09.webp",
+      "sourceImageFile": "episode_21/scene_09.webp",
+      "narrationEn": "\"Do not fear. You are safe now. This is the soothing balm of mountain herbs brought from Whispering Wind Island.\" As gentle teal mana radiated from Cilia's staff, stroking the children's fevered brows, their rasping breath smoothed into peaceful cadence. Kadan drew loaves of barley bread and dried venison from his pack, placing them into the children's fragile hands.",
+      "narrationKo": "“두려워하지 마세요. 이제 안전해요. 바람 속삭임 섬에서 가져온 청량한 바람의 약초예요.” 실리아의 녹옥 지팡이에서 뿜어져 나온 은은한 비취빛 마나가 아이들의 이마를 어루만지자, 열병에 들떠 밭은숨을 내쉬던 아이들의 호흡이 차분하게 가라앉았다. 카단은 배낭에서 보리빵과 말린 고기를 꺼내 아이들의 작은 손에 쥐여주며 말했다.",
+      "sourceSentenceStart": 20,
+      "sourceSentenceEnd": 22,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“두려워하지 마세요. 이제 안전해요. 바람 속삭임 섬에서 가져온 청량한 바람의 약초예요.”",
+          "textEn": "“Do not fear. You are safe now. This is the soothing balm of mountain herbs brought from Whispering Wind Island.”",
           "bubbleType": "speech",
-          "position": "bottom-left"
+          "position": "top-right",
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
@@ -230,63 +328,51 @@
     },
     {
       "sceneNumber": 10,
-      "imageFile": "episode_21/scene_10.jpeg",
-      "sourceImageFile": "Celia_argued_with_Orihalcon_202607260802.jpeg",
-      "narrationEn": "Celia deliberately argued with Orihalcon to attract attention. Every time he boasted about his wisdom, he asked a more difficult question and kept people talking all night long. Buying time by fueling the enemy's vanity was a battle that Celia could not imitate.",
-      "narrationKo": "실리아는 일부러 오리하르콘과 말다툼을 벌여 시선을 끌었다. 그가 자기 지혜를 자랑할 때마다 더 어려운 질문을 던져 밤새 떠들게 했다. 적의 허영을 연료로 시간을 버는 일은 카단이 흉내 낼 수 없는 실리아의 전투였다.",
-      "sourceSentenceStart": 27,
-      "sourceSentenceEnd": 29,
-      "alignmentScore": 0.3442,
+      "imageFile": "episode_21/scene_10.webp",
+      "sourceImageFile": "episode_21/scene_10.webp",
+      "narrationEn": "\"Eat slowly and take heart. Beyond these shores, hundreds of festive flower boats are waiting to bear you to safety.\" A small girl touched Kadan's battered iron shield with her tiny fingers, weeping softly.",
+      "narrationKo": "“천천히 씹어 먹어라. 밖의 바다에 너희를 안전하게 태워줄 수백 척의 꽃배가 기다리고 있다.” 한 어린아이가 카단의 무쇠 방패를 작은 손으로 만지며 울먹였다.",
+      "sourceSentenceStart": 23,
+      "sourceSentenceEnd": 24,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
-          "bubbleType": "shout",
-          "position": "bottom-right"
+          "textKo": "“천천히 씹어 먹어라. 밖의 바다에 너희를 안전하게 태워줄 수백 척의 꽃배가 기다리고 있다.”",
+          "textEn": "“Eat slowly and take heart. Beyond these shores, hundreds of festive flower boats are waiting to bear you to safety.”",
+          "bubbleType": "speech",
+          "position": "bottom-left",
+          "characterCardId": 41
         }
       ],
-      "sfxCues": []
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
     },
     {
       "sceneNumber": 11,
-      "imageFile": "episode_21/scene_11.jpeg",
-      "sourceImageFile": "Orihalcon_pushes_Kadan's_raft_202607260802.jpeg",
-      "narrationEn": "Orihalcon pushed Kadan's raft into the sea at night to leave Celia alone. It was a twisted calculation that if he was trapped on the island forever, he would rely on himself.",
-      "narrationKo": "오리하르콘은 실리아를 혼자 남기려고 카단의 뗏목을 밤중에 바다로 밀어냈다. 섬에 영원히 갇히면 자신에게 의지하리라는 비뚤어진 계산이었다.",
-      "sourceSentenceStart": 30,
-      "sourceSentenceEnd": 31,
-      "alignmentScore": 0.4061,
+      "imageFile": "episode_21/scene_11.webp",
+      "sourceImageFile": "episode_21/scene_11.webp",
+      "narrationEn": "\"Mister knight... The men in armor set fire to our home... Where has my mother gone?\" Caressing the girl's hair with tender gentleness, Kadan mastered the blazing fury surging in his breast.",
+      "narrationKo": "“형아... 기사 아저씨들이 우리 집을 불태웠어요... 엄마는 어디로 간 거예요?” 카단은 아이의 머리를 부드럽게 쓰다듬으며 가슴속 깊은 곳에서 차오르는 뜨거운 분노를 다스렸다.",
+      "sourceSentenceStart": 25,
+      "sourceSentenceEnd": 26,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "발소리를 죽여라. 어둠 속에서 숨을 고르는 거다.",
-          "textEn": "Muffle your footsteps. Catch your breath in the dark.",
-          "bubbleType": "whisper",
-          "position": "top-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 12,
-      "imageFile": "episode_21/scene_12.jpeg",
-      "sourceImageFile": "Celia_traps_Orihalcon_below_cliff_202607260802.jpeg",
-      "narrationEn": "When he returned, Celia pretended not to know anything and asked about the rescue boat. She lured Orihalcon into a trap below the cliff. A pocket of wind hidden between the rocks burst and the ground collapsed, and a huge stone crushed his legs.",
-      "narrationKo": "실리아는 그가 돌아오자 아무것도 모르는 척 구조선 이야기를 물었다. 그녀는 오리하르콘을 절벽 아래의 함정으로 유인했다. 바위 사이에 감춰 둔 바람주머니가 터지며 지반이 무너졌고, 거대한 돌이 그의 두 다리를 눌렀다.",
-      "sourceSentenceStart": 32,
-      "sourceSentenceEnd": 34,
-      "alignmentScore": 0.517,
-      "dialogues": [
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-left"
+          "textKo": "“형아... 기사 아저씨들이 우리 집을 불태웠어요... 엄마는 어디로 간 거예요?”",
+          "textEn": "“Mister knight... The men in armor set fire to our home... Where has my mother gone?”",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
@@ -295,7 +381,39 @@
           "textEn": "RUMBLE!",
           "style": "rumble",
           "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_21/scene_12.webp",
+      "sourceImageFile": "episode_21/scene_12.webp",
+      "narrationEn": "\"I will find your mother, little one. And those who crushed your hearth shall answer for every drop of sorrow they caused.\" Offering his canteen of honeyed water to the injured elders, Ignis spoke with earnest depth. \"Moisten your throats. I swear upon my life to hold this battle line so the hunting hounds of the court can never harm you again.\"",
+      "narrationKo": "“엄마를 반드시 찾아주마. 그리고 너희들의 집을 짓밟은 자들에게 반드시 죗값을 물을 것이다.” 이그니스 역시 가죽 수통의 꿀물을 노인들에게 건넸다. “목을 축이십시오. 이제 황궁의 사냥개들이 여러분을 해치지 못하도록 제 목숨을 걸고 전선을 지키겠습니다.”",
+      "sourceSentenceStart": 27,
+      "sourceSentenceEnd": 29,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“엄마를 반드시 찾아주마. 그리고 너희들의 집을 짓밟은 자들에게 반드시 죗값을 물을 것이다.”",
+          "textEn": "“I will find your mother, little one. And those who crushed your hearth shall answer for every drop of sorrow they caused.”",
+          "bubbleType": "speech",
+          "position": "top-left",
+          "characterCardId": 41
         },
+        {
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“목을 축이십시오. 이제 황궁의 사냥개들이 여러분을 해치지 못하도록 제 목숨을 걸고 전선을 지키겠습니다.”",
+          "textEn": "“Moisten your throats. I swear upon my life to hold this battle line so the hunting hounds of the court can never harm you again.”",
+          "bubbleType": "speech",
+          "position": "top-right",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
         {
           "textKo": "휘이이익-!",
           "textEn": "SWOOSH!",
@@ -306,178 +424,268 @@
     },
     {
       "sceneNumber": 13,
-      "imageFile": "episode_21/scene_13.jpeg",
-      "sourceImageFile": "Chibi_fantasy_RPG_illustration_s…_202607260802_8.jpeg",
-      "narrationEn": "The tide began to rise. “Leave that person behind. ” Celia said.",
-      "narrationKo": "밀물이 차오르기 시작했다. “저 사람을 두고 가.” 실리아가 말했다.",
-      "sourceSentenceStart": 35,
-      "sourceSentenceEnd": 37,
-      "alignmentScore": 0.1657,
+      "imageFile": "episode_21/scene_13.webp",
+      "sourceImageFile": "episode_21/scene_13.webp",
+      "narrationEn": "In that tender moment, the sharp crunch of armored boots and the rhythmic creak of cocked crossbows echoed outside. Thirty elite inquisitors of Lucian's guard, alerted by the smoke, had cordoned off the cellar entrance. Kicking down the outer door, the inquisition commander sneered in cruel triumph.",
+      "narrationKo": "그때 소금 창고 밖에서 거친 군화 소리와 함께 쇠뇌 시위가 팽팽하게 당겨지는 소리가 들려왔다. 항구를 순찰하던 루시안의 친위 감찰 기사 서른 명이 연기를 보고 소금 창고를 포위한 것이었다. 감찰대장이 창고 문을 걷어차며 비열한 조소를 흘렸다.",
+      "sourceSentenceStart": 30,
+      "sourceSentenceEnd": 31,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "저 사람을 두고 가.",
-          "textEn": "Leave that person behind. ",
-          "bubbleType": "speech",
-          "position": "top-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 14,
-      "imageFile": "episode_21/scene_14.jpeg",
-      "sourceImageFile": "Man_destroyed_raft_with_killers_202607260802.jpeg",
-      "narrationEn": "“He destroyed the raft. He is with the same people who killed Leonar. ” Kadan said he would save Orihalcon.",
-      "narrationKo": "“그가 뗏목을 없앴어. 레오나르를 죽게 만든 자들과 한패고.” 카단은 오리하르콘을 구하겠다고 했다.",
-      "sourceSentenceStart": 38,
-      "sourceSentenceEnd": 40,
-      "alignmentScore": 0.2484,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "그가 뗏목을 없앴어. 레오나르를 죽게 만든 자들과 한패고.",
-          "textEn": "He destroyed the raft. He is with the same people who killed Leonar. ",
-          "bubbleType": "speech",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 15,
-      "imageFile": "episode_21/scene_15.jpeg",
-      "sourceImageFile": "Celia's_face_stiffened_202607260802.jpeg",
-      "narrationEn": "Celia's face stiffened. “Does your goodness always come before our lives? ” The tide rose even as the two men argued.",
-      "narrationKo": "실리아의 얼굴이 굳었다. “네 선함이 언제나 우리 목숨보다 먼저야?” 밀물은 두 사람이 논쟁하는 동안에도 차올랐다.",
-      "sourceSentenceStart": 41,
-      "sourceSentenceEnd": 43,
-      "alignmentScore": 0.2674,
-      "dialogues": [
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "네 선함이 언제나 우리 목숨보다 먼저야?",
-          "textEn": "Does your goodness always come before our lives? ",
-          "bubbleType": "speech",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 16,
-      "imageFile": "episode_21/scene_16.jpeg",
-      "sourceImageFile": "Kadan_finds_father's_name_202607260802.jpeg",
-      "narrationEn": "Celia did not wait for Kadan to find the right thing to say. I got angry as I hung a rope on a rock and calculated the rescue angle. Kadan felt even more sorry because he was a person who could separate emotions from what needed to be done.",
-      "narrationKo": "실리아는 카단이 옳은 말을 찾을 때까지 기다려 주지 않았다. 바위에 밧줄을 걸고 구조 각도를 계산하면서 화를 냈다. 감정과 해야 할 일을 분리할 수 있는 사람이어서 카단은 더 미안했다.",
-      "sourceSentenceStart": 44,
-      "sourceSentenceEnd": 46,
-      "alignmentScore": 0.588,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 17,
-      "imageFile": "episode_21/scene_17.jpeg",
-      "sourceImageFile": "Kadan_Celia_mist_lake_202607260802.jpeg",
-      "narrationEn": "Kadan could not answer that question right away. Behind my conviction that I was doing the right thing, there were moments when I refused to see the price paid by those close to me. He said, holding Celia's hand.",
-      "narrationKo": "그 질문에 카단은 곧장 답하지 못했다. 옳은 일을 한다는 확신 뒤에, 가까운 사람이 치르는 대가를 보지 않으려 했던 순간들이 있었다. 그는 실리아의 손을 잡고 말했다.",
-      "sourceSentenceStart": 47,
-      "sourceSentenceEnd": 49,
-      "alignmentScore": 0.5161,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 18,
-      "imageFile": "episode_21/scene_18.jpeg",
-      "sourceImageFile": "Chibi_fantasy_RPG_illustration_s…_202607260802_9.jpeg",
-      "narrationEn": "“I will not take lightly the reason you are against it. Still, if you abandon someone who could have been saved right before my eyes, I might blame you for that choice for the rest of my life. I don’t want to be that person.",
-      "narrationKo": "“네가 반대하는 이유를 가볍게 보지 않을게. 그래도 살릴 수 있는 사람을 눈앞에서 버리면 나는 그 선택을 평생 너 때문이라고 원망할지도 몰라. 그런 사람이 되고 싶지 않아.”",
-      "sourceSentenceStart": 50,
-      "sourceSentenceEnd": 52,
-      "alignmentScore": 0.486,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "네가 반대하는 이유를 가볍게 보지 않을게. 그래도 살릴 수 있는 사람을 눈앞에서 버리면 나는 그 선택을 평생 너 때문이라고 원망할지도 몰라. 그런 사람이 되고 싶지 않아.",
-          "textEn": "“네가 반대하는 이유를 가볍게 보지 않을게. 그래도 살릴 수 있는 사람을 눈앞에서 버리면 나는 그 선택을 평생 너 때문이라고 원망할지도 몰라. 그런 사람이 되고 싶지 않아.”",
-          "bubbleType": "speech",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 19,
-      "imageFile": "episode_21/scene_19.jpeg",
-      "sourceImageFile": "Celia_Leonar_Orihalcon_lift_rock_202607260802.jpeg",
-      "narrationEn": "” Celia looked at the cracks in the rock without losing his anger. The two used Leonar's staff as a lever and pushed snow and wind into the gap to lift the rock. Orihalcon survived, but had difficulty regaining use of his legs.",
-      "narrationKo": "실리아는 화가 풀리지 않은 채 바위의 균열을 살폈다. 둘은 레오나르의 지팡이를 지렛대로 쓰고, 눈과 바람을 틈에 밀어 넣어 바위를 들어 올렸다. 오리하르콘은 목숨을 건졌지만 두 다리는 다시 쓰기 어려웠다.",
-      "sourceSentenceStart": 53,
-      "sourceSentenceEnd": 55,
-      "alignmentScore": 0.3295,
-      "dialogues": [
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-right"
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "감찰대장이 창고 문을 걷어차며 비열한 조소를 흘렸다.",
+          "textEn": "Kicking down the outer door, the inquisition commander sneered in cruel triumph.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 61
         }
       ],
       "sfxCues": [
         {
-          "textKo": "휘이이익-!",
-          "textEn": "SWOOSH!",
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
           "style": "slash",
-          "position": "top-left"
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_21/scene_14.webp",
+      "sourceImageFile": "episode_21/scene_14.webp",
+      "narrationEn": "\"So the vermin survived beneath the stones! Exterminate the traitors and feed their bones to the sea!\" Without hesitation, Kadan charged through the threshold, raising his iron shield. A volley of poisoned bolts shattered against the curved surface with deafening clangs. \"Not a single foot shall approach these children!\"",
+      "narrationKo": "“숨어 있는 쥐새끼들이 감히 살아남아 있었군! 반역자들의 씨를 말려 바다에 던져라!” 카단이 지체 없이 무쇠 방패를 앞세우며 창고 문밖으로 뛰쳐나갔다. 빗발치는 독화살들이 방패에 부딪쳐 튕겨 나가며 요란한 쇳소리를 냈다. “아이들에게 단 한 발자국도 다가서지 못한다!”",
+      "sourceSentenceStart": 32,
+      "sourceSentenceEnd": 34,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“숨어 있는 쥐새끼들이 감히 살아남아 있었군! 반역자들의 씨를 말려 바다에 던져라!”",
+          "textEn": "“So the vermin survived beneath the stones! Exterminate the traitors and feed their bones to the sea!”",
+          "bubbleType": "shout",
+          "position": "bottom-left",
+          "characterCardId": 41
+        },
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“아이들에게 단 한 발자국도 다가서지 못한다!”",
+          "textEn": "“Not a single foot shall approach these children!”",
+          "bubbleType": "shout",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_21/scene_15.webp",
+      "sourceImageFile": "episode_21/scene_15.webp",
+      "narrationEn": "Channeling star-breathing, Kadan spun his shield, snapping spearheads and shattering the vanguard's formation. Ignis charged beside him, his iron weapon wreathed in roaring white fire. The sanctified heat incinerated the assassins' plate armor, driving them headlong into the muck, while Cilia's blinding sandstorm stripped away their vision. Sprawling in the mud, the inquisition commander hurled away his shattered helmet, shrieking in venomous rage.",
+      "narrationKo": "카단은 별의 호흡을 실어 방패를 힘차게 회전시키며 감찰병들의 창날을 부러뜨렸다. 이그니스 역시 쇠파이프를 비껴 쥐며 돌진했다. 순백의 성화가 허공을 가르며 적들의 갑주를 녹여 내렸고, 적병들은 비명을 지르며 갯벌 위로 쓰러졌다. 실리아가 일으킨 거센 모래폭풍이 감찰병들의 시야를 완전히 차단했다. 감찰대장이 갯벌 위로 나뒹굴며 부러진 투구를 벗어 던지고 악에 받친 비명을 질렀다.",
+      "sourceSentenceStart": 35,
+      "sourceSentenceEnd": 36,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "감찰대장이 갯벌 위로 나뒹굴며 부러진 투구를 벗어 던지고 악에 받친 비명을 질렀다.",
+          "textEn": "Sprawling in the mud, the inquisition commander hurled away his shattered helmet, shrieking in venomous rage.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_21/scene_16.webp",
+      "sourceImageFile": "episode_21/scene_16.webp",
+      "narrationEn": "\"Ignis! Have you truly renounced the grace of the throne to become a lackey for northern rebels! Minister Lucian has placed the empire's greatest bounty upon your head!\" Planting his weapon into the earth, Ignis glared down with frigid disdain.",
+      "narrationKo": "“이그니스! 네놈이 정녕 황궁의 은혜를 저버리고 반역자들의 하수인이 되었단 말이냐! 루시안 재상 각하께서 네놈의 목에 제국 최고의 현상금을 거셨다!” 이그니스가 쇠파이프를 땅에 꽂으며 차갑게 쏘아보았다.",
+      "sourceSentenceStart": 37,
+      "sourceSentenceEnd": 38,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“이그니스! 네놈이 정녕 황궁의 은혜를 저버리고 반역자들의 하수인이 되었단 말이냐! 루시안 재상 각하께서 네놈의 목에 제국 최고의 현상금을 거셨다!”",
+          "textEn": "“Ignis! Have you truly renounced the grace of the throne to become a lackey for northern rebels! Minister Lucian has placed the empire's greatest bounty upon your head!”",
+          "bubbleType": "shout",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_21/scene_17.webp",
+      "sourceImageFile": "episode_21/scene_17.webp",
+      "narrationEn": "\"Lucian's 'grace' is merely a sandcastle built on the blood of the innocent. Return and tell him: the shield of the Holy Knights and the flame of redemption will soon arrive to shatter his gilded throne!\" With the threat vanquished, tranquil surf returned to the shore. Kadan and Ignis escorted the refugees safely onto the flower boats, where Rondol's crew served steaming carp soup to the shivering children. Beyond the western horizon, the rose-gold dusk cast long, dramatic shadows across the ruined harbor. From the decks of the flower boats drifted the tender, solemn melodies of seafarers' hymns.",
+      "narrationKo": "“루시안의 은혜란 무고한 백성들의 고혈을 짜내 만든 모래성에 불과하다. 돌아가서 전해라. 성기사의 방패와 순백의 화염이 곧 황궁의 옥좌를 부수러 갈 것이라고!” 패퇴한 적병들이 달아나고 해안가에 다시 잔잔한 파도 소리가 돌아왔다. 카단과 이그니스는 소금 창고의 난민들을 안전하게 부두로 호위하여 꽃배에 탑승시켰다. 론돌의 선원들이 따뜻한 잉어 수프를 아이들에게 건네며 안도감을 안겨주었다. 수평선 너머로 저물어가는 붉은 저녁노을이 잿더미가 된 항구를 비추고 있었다. 부두 저편에서 꽃배의 노랫소리가 잔잔하게 퍼져 나왔다.",
+      "sourceSentenceStart": 39,
+      "sourceSentenceEnd": 41,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“루시안의 은혜란 무고한 백성들의 고혈을 짜내 만든 모래성에 불과하다. 돌아가서 전해라. 성기사의 방패와 순백의 화염이 곧 황궁의 옥좌를 부수러 갈 것이라고!”",
+          "textEn": "“Lucian's 'grace' is merely a sandcastle built on the blood of the innocent. Return and tell him: the shield of the Holy Knights and the flame of redemption will soon arrive to shatter his gilded throne!”",
+          "bubbleType": "shout",
+          "position": "top-right",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_21/scene_18.webp",
+      "sourceImageFile": "episode_21/scene_18.webp",
+      "narrationEn": "Touching the scorched stone of the lighthouse, Cilia spoke with solemn resolve. \"The entire continent groans beneath Lucian's reign of terror. The road ahead will test every fiber of our spirits.\"",
+      "narrationKo": "실리아가 불타버린 등대 기둥을 매만지며 결연하게 말했다. “대륙 전체가 루시안의 공포 정치 아래에서 신음하고 있어요. 우리가 걸어가야 할 길이 얼마나 험난할지 똑똑히 보았어요.”",
+      "sourceSentenceStart": 42,
+      "sourceSentenceEnd": 43,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“대륙 전체가 루시안의 공포 정치 아래에서 신음하고 있어요. 우리가 걸어가야 할 길이 얼마나 험난할지 똑똑히 보았어요.”",
+          "textEn": "“The entire continent groans beneath Lucian's reign of terror. The road ahead will test every fiber of our spirits.”",
+          "bubbleType": "speech",
+          "position": "bottom-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_21/scene_19.webp",
+      "sourceImageFile": "episode_21/scene_19.webp",
+      "narrationEn": "Ignis clenched his fists with unyielding conviction. \"They burned timber and stone, but they could never incinerate the hope of the people. At every crossroads toward the capital, we will deliver the suffering from despair.\" Gazing toward the distant western mountain passes, Kadan tightened his grip on his dagger.",
+      "narrationKo": "이그니스가 주먹을 불끈 쥐며 대답했다. “저들이 불태운 것은 집이지만, 결코 사람들의 희망까지 태우지는 못했다. 수도로 가는 길목마다 고통받는 이들을 구원하겠다.” 카단은 은빛 단검을 쥔 채 서쪽 산맥을 바라보았다.",
+      "sourceSentenceStart": 44,
+      "sourceSentenceEnd": 46,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“저들이 불태운 것은 집이지만, 결코 사람들의 희망까지 태우지는 못했다. 수도로 가는 길목마다 고통받는 이들을 구원하겠다.”",
+          "textEn": "“They burned timber and stone, but they could never incinerate the hope of the people. At every crossroads toward the capital, we will deliver the suffering from despair.”",
+          "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
         }
       ]
     },
     {
       "sceneNumber": 20,
-      "imageFile": "episode_21/scene_20.jpeg",
-      "sourceImageFile": "Death_Knight_Artus_leaves_island_202607260802.jpeg",
-      "narrationEn": "Meanwhile, Death Knight Artus left the island with a copy of the codex and the sealing key. Leonar's breathing became shallow. On the horizon was a single burning sail receding away.",
-      "narrationKo": "데스나이트 아르투스는 그 사이 코덱스 사본과 봉인 열쇠를 들고 섬을 떠났다. 레오나르의 숨이 가늘어졌다. 수평선에는 불타는 돛 하나만 멀어지고 있었다.",
-      "sourceSentenceStart": 56,
-      "sourceSentenceEnd": 58,
-      "alignmentScore": 0.4491,
+      "imageFile": "episode_21/scene_20.webp",
+      "sourceImageFile": "episode_21/scene_20.webp",
+      "narrationEn": "\"This is the realm Master Aleksandar and Uncle Balian bled to protect. Even in the ashes of despair, we have defended the warmth of living souls. Now we raise our shields and walk that road until the dawn.\" Under the dying light of dusk, the three youths sealed their unbreakable oath, taking their first bold strides into the heart of the troubled continent. Beyond the cold night fog, the rugged peaks of Mount Dragonhorn silently watched over their march.",
+      "narrationKo": "“알렉산다르 스승님과 발리안 숙부님이 목숨 바쳐 지키려 했던 대륙이다. 절망의 잿더미 속에서도 우리는 사람의 온기를 지켜냈다. 이제 우리가 방패를 들고 그 길을 끝까지 걸어가자.” 세 젊은이는 노을빛 아래에서 굳건한 맹세를 나누며, 대륙의 심장부로 향하는 첫 번째 행군을 힘차게 시작했다. 차가운 밤안개 너머로 용의 뿔 산맥의 거대한 능선이 그들의 결연한 발걸음을 묵묵히 굽어보고 있었다.",
+      "sourceSentenceStart": 47,
+      "sourceSentenceEnd": 48,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "textKo": "“알렉산다르 스승님과 발리안 숙부님이 목숨 바쳐 지키려 했던 대륙이다. 절망의 잿더미 속에서도 우리는 사람의 온기를 지켜냈다. 이제 우리가 방패를 들고 그 길을 끝까지 걸어가자.”",
+          "textEn": "“This is the realm Master Aleksandar and Uncle Balian bled to protect. Even in the ashes of despair, we have defended the warmth of living souls. Now we raise our shields and walk that road until the dawn.”",
           "bubbleType": "speech",
-          "position": "top-left"
+          "position": "top-left",
+          "characterCardId": 41
         }
       ],
-      "sfxCues": []
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
     }
   ]
 }

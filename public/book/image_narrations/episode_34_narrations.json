@@ -1,27 +1,28 @@
 {
   "episodeNumber": 34,
   "episodeTitleEn": "The Fallen Wind Isle",
-  "episodeTitleKo": "무너진 바람섬",
-  "sourceSentenceCount": 54,
+  "episodeTitleKo": "쓰러진 바람섬",
+  "sourceSentenceCount": 52,
   "sceneCount": 20,
   "scenes": [
     {
       "sceneNumber": 1,
-      "imageFile": "episode_34/scene_01.jpeg",
-      "sourceImageFile": "Kadan_in_enchanted_forest_202607260802.jpeg",
-      "narrationEn": "Whisper of the Wind Island no longer hides behind the fog. All the barrier towers had collapsed and the forest was burned black.",
-      "narrationKo": "바람의 속삭임 섬은 더 이상 안개 뒤에 숨지 않았다. 결계탑이 모두 쓰러지고 숲은 검게 타 있었다.",
+      "imageFile": "episode_34/scene_01.webp",
+      "sourceImageFile": "episode_34/scene_01.webp",
+      "narrationEn": "The inner colonnades of the Black Citadel resembled the bowels of the underworld. Burning sulfur boulders rained from the collapsing ceiling, and the flagstones split apart, disgorging geysers of molten magma. Lucian's doomsday runes had destabilized the mountain roots, threatening to entomb the citadel and the allied host beneath millions of tons of granite. Deflecting a falling boulder with his wind staff, Gawain coughed against the sulfur smoke.",
+      "narrationKo": "검은 성채의 내부 회랑은 지옥의 형상을 띠고 있었다. 천장에서는 불타는 유황 암석들이 우박처럼 쏟아져 내렸고, 바닥의 석판들은 거대한 지진에 갈라져 붉은 용암을 토해내고 있었다. 루시안이 가동한 ‘대륙 붕괴의 룬’이 지하 마나 맥을 폭주시킨 탓에, 성채뿐만 아니라 용의 뿔 산맥 전체가 무너져 내릴 위기였다. 수천 명의 연합군 병사들이 성채 안으로 진입했지만, 무너져 내리는 암벽과 쏟아지는 낙석 때문에 진격로는커녕 퇴로마저 위태로운 상황이었다. 가웨인이 폭풍의 지팡이로 거대한 낙석 하나를 쳐내며 외쳤다. “이곳은 성채가 아니라 거대한 무덤이다! 루시안 놈은 처음부터 살아서 나갈 생각이 없었어! 자신의 파멸에 온 대륙을 끌어들이려는 것이다!”",
       "sourceSentenceStart": 1,
-      "sourceSentenceEnd": 2,
-      "alignmentScore": 0.5359,
+      "sourceSentenceEnd": 3,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "검끝이 흔들리지 않는 한, 길은 열린다.",
-          "textEn": "As long as our blades do not waver, the path will open.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
+          "speakerKo": "가웨인",
+          "speakerEn": "Gawain",
+          "textKo": "“이곳은 성채가 아니라 거대한 무덤이다! 루시안 놈은 처음부터 살아서 나갈 생각이 없었어! 자신의 파멸에 온 대륙을 끌어들이려는 것이다!”",
+          "textEn": "“This is no fortress; it is a mass grave! The madman never intended to survive; he seeks to drag the entire continent into his pyre!”",
+          "bubbleType": "shout",
+          "position": "top-right",
+          "characterCardId": 45
         }
       ],
       "sfxCues": [
@@ -32,332 +33,183 @@
           "position": "top-right"
         },
         {
-          "textKo": "휘이이익-!",
-          "textEn": "SWOOSH!",
-          "style": "slash",
-          "position": "top-left"
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
         }
       ]
     },
     {
       "sceneNumber": 2,
-      "imageFile": "episode_34/scene_02.jpeg",
-      "sourceImageFile": "Celia_runs_on_beach_202607260802.jpeg",
-      "narrationEn": "The trail, which was always changing, became straight like a dead snake. As soon as Celia landed on the beach, he ran, calling people's names. Instead of answering, only the broken wind chime bell rang.",
-      "narrationKo": "늘 길을 바꾸던 오솔길도 죽은 뱀처럼 곧게 굳었다. 실리아는 해변에 내리자마자 사람들의 이름을 부르며 달렸다. 대답 대신 부서진 풍경종만 울렸다.",
-      "sourceSentenceStart": 3,
+      "imageFile": "episode_34/scene_02.webp",
+      "sourceImageFile": "episode_34/scene_02.webp",
+      "narrationEn": "\"This is no fortress; it is a mass grave! The madman never intended to survive; he seeks to drag the entire continent into his pyre!\" Channeling her Jade Staff, Cilia strained to hold back the fracturing vault, blood seeping from her lips under the crushing mana strain.",
+      "narrationKo": "실리아가 녹옥 지팡이를 들어 붕괴하는 천장을 떠받치려 했지만, 쏟아지는 암석의 무게는 일개 마법으로 감당할 수 있는 수준을 넘어섰다. 실리아의 입술에서 피가 배어 나왔다.",
+      "sourceSentenceStart": 4,
       "sourceSentenceEnd": 5,
-      "alignmentScore": 0.4706,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "실리아의 입술에서 피가 배어 나왔다.",
+          "textEn": "The madman never intended to survive; he seeks to drag the entire continent into his pyre!\" Channeling her Jade Staff, Cilia strained to hold back the fracturing vault, blood seeping from her lips under the crushing mana strain.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_34/scene_03.webp",
+      "sourceImageFile": "episode_34/scene_03.webp",
+      "narrationEn": "\"The subterranean ley lines are snapping like thread... The ceiling cannot endure!\" Kadan raised his Dragon Breaker shield over Cilia and the wounded vanguard.",
+      "narrationKo": "“마나의 역류가 너무 거세요... 지맥의 기둥들이 하나둘 부러지고 있어요!” 카단이 드래곤 브레이커 방패를 들어 올려 실리아와 부상병들의 머리 위를 가로막았다. “포기하지 마라! 중심 제단으로 가서 루시안의 룬을 파괴하면 붕괴를 멈출 수 있다!”",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 8,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "실리아",
           "speakerEn": "Celia",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 3,
-      "imageFile": "episode_34/scene_03.jpeg",
-      "sourceImageFile": "Kadan_finds_Grimli's_hammer_202607260802.jpeg",
-      "narrationEn": "Most of the island's residents retreated to underground shelters, but traces of those who guarded the barrier remained everywhere. In the central garden, Kadan found Grimli's hammer. The silver bell of Robinyard was still attached to the handle.",
-      "narrationKo": "섬 주민 대부분은 지하 피난처로 빠졌지만, 결계를 지킨 사람들의 흔적이 곳곳에 남아 있었다. 중앙 정원에서 카단은 그림리의 망치를 발견했다. 손잡이에는 로비냐드의 은방울이 그대로 달려 있었다.",
-      "sourceSentenceStart": 6,
-      "sourceSentenceEnd": 8,
-      "alignmentScore": 0.4492,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
+          "textKo": "“마나의 역류가 너무 거세요... 지맥의 기둥들이 하나둘 부러지고 있어요!”",
+          "textEn": "“The subterranean ley lines are snapping like thread... The ceiling cannot endure!”",
           "bubbleType": "shout",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 4,
-      "imageFile": "episode_34/scene_04.jpeg",
-      "sourceImageFile": "Demon_Hunter_crossbow_sword_oar_202607260802.jpeg",
-      "narrationEn": "Going a little further, Aila the Demon Hunter's crossbow, Kaze's sword, and Rondol's oar were laid out one after another. The weapons weren't dropped randomly.",
-      "narrationKo": "조금 더 가자 에일라의 쇠뇌, 카제의 칼, 론돌의 노가 차례로 놓여 있었다. 무기들은 아무렇게나 떨어진 것이 아니었다.",
-      "sourceSentenceStart": 9,
-      "sourceSentenceEnd": 10,
-      "alignmentScore": 0.4287,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "검끝이 흔들리지 않는 한, 길은 열린다.",
-          "textEn": "As long as our blades do not waver, the path will open.",
-          "bubbleType": "speech",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 5,
-      "imageFile": "episode_34/scene_05.jpeg",
-      "sourceImageFile": "Grimli_hammer_supports_shelter_e…_202607260802.jpeg",
-      "narrationEn": "Grimli's hammer was supporting the entrance to the shelter, and Aila the Demon Hunter's last arrow pointed in the opposite direction from where the children fled. Kaze's knife was stuck with the alarm cord cut. Teachers created someone's path until the moment they died.",
-      "narrationKo": "그림리의 망치는 피난처 입구를 받치고 있었고, 에일라의 마지막 화살은 아이들이 달아난 방향과 반대를 가리켰다. 카제의 칼은 경보줄을 끊은 채 박혀 있었다. 스승들은 죽는 순간까지 누군가의 길을 만들었다.",
-      "sourceSentenceStart": 11,
-      "sourceSentenceEnd": 13,
-      "alignmentScore": 0.5759,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 6,
-      "imageFile": "episode_34/scene_06.jpeg",
-      "sourceImageFile": "Six_masters_arrived_island_chasi…_202607260802.jpeg",
-      "narrationEn": "The six masters arrived on the island first, chasing Death Knight Artus's army. Only Gawain survived with fatal injuries. He heard Kadan's footsteps with his invisible eyes and stretched out his hand.",
-      "narrationKo": "여섯 스승은 데스나이트 아르투스의 군대를 쫓아 섬에 먼저 도착했다. 가웨인만 치명상을 입은 채 살아 있었다. 그는 보이지 않는 눈으로 카단의 발소리를 듣고 손을 뻗었다.",
-      "sourceSentenceStart": 14,
-      "sourceSentenceEnd": 16,
-      "alignmentScore": 0.6721,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-right"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "쿵-!",
-          "textEn": "THUD!",
-          "style": "impact",
-          "position": "bottom-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 7,
-      "imageFile": "episode_34/scene_07.jpeg",
-      "sourceImageFile": "Chibi_fantasy_RPG_illustration_s…_202607260802_12.jpeg",
-      "narrationEn": "“It’s not too late. We just got here first.",
-      "narrationKo": "“늦지 않았다. 우리가 먼저 왔을 뿐이다.”",
-      "sourceSentenceStart": 17,
-      "sourceSentenceEnd": 18,
-      "alignmentScore": 0.3952,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "늦지 않았다. 우리가 먼저 왔을 뿐이다.",
-          "textEn": "“늦지 않았다. 우리가 먼저 왔을 뿐이다.”",
-          "bubbleType": "speech",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 8,
-      "imageFile": "episode_34/scene_08.jpeg",
-      "sourceImageFile": "Gawain_said_attacker_used_Aeolus…_202607260802.jpeg",
-      "narrationEn": "” Gawain said the attacker used Aeolus's flute sound. In the black fog, it was impossible to tell who was real, and the comrades fell one by one while protecting each other. At the last moment, I even saw the figure of Aeolus directly wielding the soul sword.",
-      "narrationKo": "가웨인은 공격자가 에올루스의 피리 소리를 사용했다고 말했다. 검은 안개 속에서 누가 진짜인지 구분할 수 없었고, 동료들은 서로를 지키다 하나씩 쓰러졌다. 마지막 순간에는 에올루스의 형체가 직접 영혼검을 휘두르는 모습까지 보았다.",
-      "sourceSentenceStart": 19,
-      "sourceSentenceEnd": 21,
-      "alignmentScore": 0.6516,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "검끝이 흔들리지 않는 한, 길은 열린다.",
-          "textEn": "As long as our blades do not waver, the path will open.",
-          "bubbleType": "speech",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 9,
-      "imageFile": "episode_34/scene_09.jpeg",
-      "sourceImageFile": "Grimli_raises_shield_imitating_K…_202607260802.jpeg",
-      "narrationEn": "He said that Grimli raised his shield at the end, imitating Kadan's posture. He was a person who always found his student's defense frustrating. Aila the Demon Hunter used his crossbow like a club after running out of arrows, and even at the last moment, Kaze left funny graffiti on the enemy's armor.",
-      "narrationKo": "그는 그림리가 마지막에 카단의 자세를 흉내 내며 방패를 들었다고 전했다. 늘 제자의 방어가 답답하다던 사람이었다. 에일라는 화살이 다 떨어진 뒤 쇠뇌를 몽둥이처럼 썼고, 카제는 마지막 순간에도 적의 갑옷에 우스운 낙서를 남겼다.",
-      "sourceSentenceStart": 22,
-      "sourceSentenceEnd": 24,
-      "alignmentScore": 0.43,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
-          "bubbleType": "shout",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 10,
-      "imageFile": "episode_34/scene_10.jpeg",
-      "sourceImageFile": "Kadan_knelt_before_weapons_202607260802.jpeg",
-      "narrationEn": "Kadan knelt before the weapons of his teachers. No tears came out. All I could think about was what kind of curse Grimli would have sworn at the end and how many shots Aila the Demon Hunter had left.",
-      "narrationKo": "카단은 스승들의 무기 앞에서 무릎을 꿇었다. 눈물이 나오지 않았다. 그림리가 마지막에 어떤 욕을 했을지, 에일라가 몇 발을 남겼을지 사소한 생각만 떠올랐다.",
-      "sourceSentenceStart": 25,
-      "sourceSentenceEnd": 27,
-      "alignmentScore": 0.3538,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "검끝이 흔들리지 않는 한, 길은 열린다.",
-          "textEn": "As long as our blades do not waver, the path will open.",
-          "bubbleType": "speech",
-          "position": "top-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 11,
-      "imageFile": "episode_34/scene_11.jpeg",
-      "sourceImageFile": "Aeolus_emerged_from_temple_ruins_202607260802.jpeg",
-      "narrationEn": "Aeolus emerged from the ruins of the temple. There was blood on the clothes and the flute.",
-      "narrationKo": "에올루스는 성전 폐허에서 나타났다. 옷과 피리에 피가 묻어 있었다.",
-      "sourceSentenceStart": 28,
-      "sourceSentenceEnd": 29,
-      "alignmentScore": 0.6024,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 12,
-      "imageFile": "episode_34/scene_12.jpeg",
-      "sourceImageFile": "Kadan_Gawain_Celia_fantasy_scene_202607260802.jpeg",
-      "narrationEn": "He said everyone was already passed out when he arrived. Kadan wanted to believe it, but Gawain's testimony and traces of the flute were right in front of him. Celia approached his father and asked for the flute.",
-      "narrationKo": "그는 자신이 도착했을 때 이미 모두 쓰러져 있었다고 말했다. 카단은 믿고 싶었으나 가웨인의 증언과 피리의 흔적이 눈앞에 있었다. 실리아는 아버지에게 다가가 피리를 달라고 했다.",
-      "sourceSentenceStart": 30,
-      "sourceSentenceEnd": 32,
-      "alignmentScore": 0.5981,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
-          "bubbleType": "shout",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 13,
-      "imageFile": "episode_34/scene_13.jpeg",
-      "sourceImageFile": "Aeolus_hesitated,_Kadan_accused_202607260802.jpeg",
-      "narrationEn": "The moment Aeolus hesitated for a moment, Kadan accepted the movement as evidence of guilt. The impact of the Dragon Breaker split the garden floor. Aeolus did not counterattack, but instead attacked with a flute.",
-      "narrationKo": "에올루스가 잠시 망설이는 순간 카단이 그 움직임을 죄의 증거로 받아들였다. 드래곤 브레이커의 충격이 정원 바닥을 갈랐다. 에올루스는 반격하지 않고 피리로 공격을 흘렸다.",
-      "sourceSentenceStart": 33,
-      "sourceSentenceEnd": 35,
-      "alignmentScore": 0.5729,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 14,
-      "imageFile": "episode_34/scene_14.jpeg",
-      "sourceImageFile": "Chibi_fantasy_RPG_illustration_K…_202607260802.jpeg",
-      "narrationEn": "“There is no room for any answers to questions asked in anger. ” “Then why do you avoid it?",
-      "narrationKo": "“분노한 채 묻는 질문에는 어떤 대답도 들어갈 자리가 없다.” “그럼 왜 피하지?”",
-      "sourceSentenceStart": 36,
-      "sourceSentenceEnd": 37,
-      "alignmentScore": 0.3118,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "분노한 채 묻는 질문에는 어떤 대답도 들어갈 자리가 없다.",
-          "textEn": "There is no room for any answers to questions asked in anger. ",
-          "bubbleType": "speech",
-          "position": "bottom-left"
+          "position": "bottom-right",
+          "characterCardId": 62
         },
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "그럼 왜 피하지?",
-          "textEn": "“그럼 왜 피하지?”",
-          "bubbleType": "speech",
-          "position": "bottom-right"
+          "textKo": "“포기하지 마라! 중심 제단으로 가서 루시안의 룬을 파괴하면 붕괴를 멈출 수 있다!”",
+          "textEn": "“Do not despair! Reach the high altar and shatter Lucian's master rune, and the collapse will halt!”",
+          "bubbleType": "shout",
+          "position": "top-left",
+          "characterCardId": 41
         }
       ],
-      "sfxCues": []
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
     },
     {
-      "sceneNumber": 15,
-      "imageFile": "episode_34/scene_15.jpeg",
-      "sourceImageFile": "Celia_Kadan_war-torn_battlefield_202607260802.jpeg",
-      "narrationEn": "” “Because if you kill me now, Celia will collapse twice. ” Those words made Kadan even more angry. When the battle between the two began, Celia could not get in between them.",
-      "narrationKo": "“네가 지금 나를 죽이면 실리아가 두 번 무너지기 때문이다.” 그 말은 카단을 더 화나게 했다. 두 사람의 전투가 시작되자 실리아는 사이에 들어가지 못했다.",
-      "sourceSentenceStart": 38,
-      "sourceSentenceEnd": 40,
-      "alignmentScore": 0.5649,
+      "sceneNumber": 4,
+      "imageFile": "episode_34/scene_04.webp",
+      "sourceImageFile": "episode_34/scene_04.webp",
+      "narrationEn": "\"Do not despair! Reach the high altar and shatter Lucian's master rune, and the collapse will halt!\" Reaching the central junction, disaster struck: three of the four colossal adamantine support pillars holding the cavern roof fractured in cascading detonations. If the final central pillar collapsed, the entire mountain peak would crush every soul within the citadel.",
+      "narrationKo": "성채 내부 대회랑의 천장은 이미 절반 이상 무너져 내려 거대한 바위더미가 길을 막고 있었고, 갈라진 벽면 틈새로는 붉은 마그마가 폭포처럼 쏟아져 내렸다. 유황 연기가 시야를 가려 한 치 앞을 분간하기 힘들었고, 지축을 뒤흔드는 진동은 전사들의 발목을 꺾어놓을 기세였다. 카단은 방패로 떨어지는 불타는 낙석들을 쳐내며 부상당한 병사들을 엄호했다. 가웨인이 옷자락을 찢어 기침을 막으며 소리쳤다. “성채가 통째로 붕괴하고 있다! 이대로라면 우리 모두 산봉우리 밑에 생매장당한다!”",
+      "sourceSentenceStart": 9,
+      "sourceSentenceEnd": 10,
+      "alignmentScore": 1.0,
       "dialogues": [
+        {
+          "speakerKo": "가웨인",
+          "speakerEn": "Gawain",
+          "textKo": "“성채가 통째로 붕괴하고 있다! 이대로라면 우리 모두 산봉우리 밑에 생매장당한다!”",
+          "textEn": "“Do not despair! Reach the high altar and shatter Lucian's master rune, and the collapse will halt!”",
+          "bubbleType": "shout",
+          "position": "top-left",
+          "characterCardId": 45
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_34/scene_05.webp",
+      "sourceImageFile": "episode_34/scene_05.webp",
+      "narrationEn": "In that fatal instant, Grimli the dwarven smith burst into a hearty laugh, shouldering his great anvil as he strode toward the buckling pillar. Driving the anvil beneath the fractured base as a locking wedge, Grimli bellowed.",
+      "narrationKo": "중앙 회랑의 대회랑 입구에 다다랐을 때, 성채의 천장을 떠받치고 있던 거대한 네 개의 아다만티움 지지 기둥 중 세 개가 폭발과 함께 꺾여 나가기 시작했다. 마지막 남은 중앙 지지 기둥마저 무너지면, 수만 톤의 산봉우리가 통째로 쏟아져 내려 성채 안의 모든 병사들과 카단 일행을 단숨에 압사시킬 절체절명의 위기였다. 그 순간, 드워프 그림리가 껄껄 웃으며 자신의 거대한 강철 모루를 어깨에 짊어지고 꺾여가는 중앙 기둥 앞으로 걸어 나갔다. 그림리가 모루를 기둥 밑에 쐐기처럼 박아 넣으며 소리쳤다.",
+      "sourceSentenceStart": 11,
+      "sourceSentenceEnd": 13,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그림리가 모루를 기둥 밑에 쐐기처럼 박아 넣으며 소리쳤다.",
+          "textEn": "Driving the anvil beneath the fractured base as a locking wedge, Grimli bellowed.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_34/scene_06.webp",
+      "sourceImageFile": "episode_34/scene_06.webp",
+      "narrationEn": "\"Kadan, Cilia! Run to the altar and do not look back! An old blacksmith shall hold up the heavens for his disciples!\" Horrified, Kadan lunged to drag him back.",
+      "narrationKo": "“카단, 실리아! 뒤돌아보지 말고 제단으로 달려라! 이 늙은 대장장이가 마지막으로 제자의 길을 위해 하늘을 떠받쳐주마!” 카단이 경악하여 달려가려 했다. “그림리 스승님! 안 됩니다! 기둥이 무너지면 빠져나올 수 없습니다!”",
+      "sourceSentenceStart": 14,
+      "sourceSentenceEnd": 16,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "그림리",
+          "speakerEn": "Grimli",
+          "textKo": "“카단, 실리아! 뒤돌아보지 말고 제단으로 달려라! 이 늙은 대장장이가 마지막으로 제자의 길을 위해 하늘을 떠받쳐주마!”",
+          "textEn": "“Kadan, Cilia! Run to the altar and do not look back! An old blacksmith shall hold up the heavens for his disciples!”",
+          "bubbleType": "shout",
+          "position": "bottom-left",
+          "characterCardId": 74
+        },
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "네가 지금 나를 죽이면 실리아가 두 번 무너지기 때문이다.",
-          "textEn": "Because if you kill me now, Celia will collapse twice. ",
-          "bubbleType": "speech",
-          "position": "bottom-right"
+          "textKo": "“그림리 스승님! 안 됩니다! 기둥이 무너지면 빠져나올 수 없습니다!”",
+          "textEn": "“Master Grimli, no! If the pillar snaps, there is no escape!”",
+          "bubbleType": "shout",
+          "position": "bottom-right",
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
@@ -370,43 +222,23 @@
       ]
     },
     {
-      "sceneNumber": 16,
-      "imageFile": "episode_34/scene_16.jpeg",
-      "sourceImageFile": "Kadan_sadness_teachers_bodies_202607260802.jpeg",
-      "narrationEn": "Kadan's sadness at seeing the bodies of his teachers and his desire to believe that his father was not the culprit were all real. Gawain rang a silver bell with his last breath. The sound was slightly out of sync with Aeolus's flute.",
-      "narrationKo": "스승들의 시신을 본 카단의 슬픔도, 아버지가 범인이 아니라고 믿고 싶은 자신의 마음도 모두 진짜였다. 가웨인은 마지막 숨으로 은방울을 울렸다. 소리가 에올루스의 피리와 미세하게 어긋났다.",
-      "sourceSentenceStart": 41,
-      "sourceSentenceEnd": 43,
-      "alignmentScore": 0.4281,
+      "sceneNumber": 7,
+      "imageFile": "episode_34/scene_07.webp",
+      "sourceImageFile": "episode_34/scene_07.webp",
+      "narrationEn": "\"Master Grimli, no! If the pillar snaps, there is no escape!\" Eyla the huntress, Rondol the pugilist, Kaze the shadow, and Eliana the herbalist stepped beside Grimli, their weathered faces serene with transcendent peace.",
+      "narrationKo": "사냥꾼 에일라와 권투사 론돌, 암살자 카제, 약초사 엘리아나가 그림리의 곁으로 나란히 걸어 들어갔다. 그들의 얼굴에는 죽음을 초월한 담담하고 평온한 미소가 번져 있었다. 론돌이 외족을 굳건히 딛고 기둥을 어깨로 받치며 외쳤다.",
+      "sourceSentenceStart": 17,
+      "sourceSentenceEnd": 18,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 17,
-      "imageFile": "episode_34/scene_17.jpeg",
-      "sourceImageFile": "Gawain's_hand_fell_202607260802.jpeg",
-      "narrationEn": "This meant that the flute heard during the attack was not a perfect replica, but was half a beat late. Before he could say that, Gawain's hand fell.",
-      "narrationKo": "공격 때 들었던 피리는 완벽한 복제품이 아니라 반 박자 늦었다는 뜻이었다. 그 사실을 말하기 전에 가웨인의 손이 떨어졌다.",
-      "sourceSentenceStart": 44,
-      "sourceSentenceEnd": 45,
-      "alignmentScore": 0.4676,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "론돌이 외족을 굳건히 딛고 기둥을 어깨로 받치며 외쳤다.",
+          "textEn": "If the pillar snaps, there is no escape!\" Eyla the huntress, Rondol the pugilist, Kaze the shadow, and Eliana the herbalist stepped beside Grimli, their weathered faces serene with transcendent peace.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 70
         }
       ],
       "sfxCues": [
@@ -419,22 +251,382 @@
       ]
     },
     {
-      "sceneNumber": 18,
-      "imageFile": "episode_34/scene_18.jpeg",
-      "sourceImageFile": "Kadan_held_silver_bell_202607260802_2.jpeg",
-      "narrationEn": "Kadan held the silver bell, but did not immediately understand its meaning. Aeolus retreated into the black fog, saying that if he fought any longer, the truth would disappear forever. Celia did not follow Kadan.",
-      "narrationKo": "카단은 은방울을 쥐었지만 의미를 곧바로 이해하지 못했다. 에올루스는 더 싸우면 진실이 영원히 사라진다며 검은 안개 속으로 물러났다. 실리아는 카단을 따라가지 않았다.",
-      "sourceSentenceStart": 46,
-      "sourceSentenceEnd": 48,
-      "alignmentScore": 0.4526,
+      "sceneNumber": 8,
+      "imageFile": "episode_34/scene_08.webp",
+      "sourceImageFile": "episode_34/scene_08.webp",
+      "narrationEn": "Bracing his pegleg against the shale, Rondol thrust his broad shoulder against the stone. \"For eighteen winters we lived on borrowed time, honoring the fallen Aleksandar and Balian! The hour has come to pass the dawn to our children! Run, Kadan!\"",
+      "narrationKo": "“우리는 지난 십팔 년간 알렉산다르와 발리안 경의 넋을 기리며 빚진 목숨을 살아왔다! 이제 젊은 영웅들에게 내일의 새벽을 넘겨줄 때가 온 것이다! 가라, 카단!” 중앙 지지 기둥의 아다만티움 금속판이 지반의 압력을 이기지 못하고 쩌적 갈라지는 소리는 마치 거인의 뼈마디가 부러지는 듯했다. 그림리가 자신의 평생의 동반자였던 모루를 기둥 밑에 쐐기로 박아 넣는 순간, 노장의 손등에서 핏줄이 터져 나왔다. 그러나 그림리의 얼굴에는 후회 대신 호탕한 웃음만이 가득했다. “드워프의 모루는 천 번을 두들겨 맞아야 제 몫을 하는 법이지! 내 인생의 마지막 망치질이 이 대륙을 구할 수 있다면 이보다 더 값진 마무리가 어디 있겠느냐!” 론돌 역시 자신의 무쇠 의족을 바위틈에 깊숙이 박아 넣으며 기둥을 어깨로 밀어 올렸다.",
+      "sourceSentenceStart": 19,
+      "sourceSentenceEnd": 21,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "론돌",
+          "speakerEn": "Rondol",
+          "textKo": "“우리는 지난 십팔 년간 알렉산다르와 발리안 경의 넋을 기리며 빚진 목숨을 살아왔다! 이제 젊은 영웅들에게 내일의 새벽을 넘겨줄 때가 온 것이다! 가라, 카단!”",
+          "textEn": "“For eighteen winters we lived on borrowed time, honoring the fallen Aleksandar and Balian! The hour has come to pass the dawn to our children! Run, Kadan!”",
+          "bubbleType": "shout",
+          "position": "top-left",
+          "characterCardId": 46
+        },
+        {
+          "speakerKo": "론돌",
+          "speakerEn": "Rondol",
+          "textKo": "“드워프의 모루는 천 번을 두들겨 맞아야 제 몫을 하는 법이지! 내 인생의 마지막 망치질이 이 대륙을 구할 수 있다면 이보다 더 값진 마무리가 어디 있겠느냐!”",
+          "textEn": "“Run, Kadan!\"”",
+          "bubbleType": "shout",
+          "position": "top-right",
+          "characterCardId": 46
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        },
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_34/scene_09.webp",
+      "sourceImageFile": "episode_34/scene_09.webp",
+      "narrationEn": "Channeling their life essence into the adamantine stone, the Six Masters wove an impenetrable bulwark of five-element mana, miraculously halting the ceiling's collapse. Weeping bitterly, Cilia reached out in agony.",
+      "narrationKo": "여섯 스승이 온몸으로 거대한 아다만티움 기둥을 떠받치자, 삐걱거리던 천장의 붕괴가 기적처럼 멈추어 섰다. 스승들의 전신에서 뿜어져 나온 오색의 마나가 기둥을 감싸며 거대한 수호의 방파제를 형성했다. 실리아가 눈물을 쏟아내며 울부짖었다.",
+      "sourceSentenceStart": 22,
+      "sourceSentenceEnd": 23,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "실리아가 눈물을 쏟아내며 울부짖었다.",
+          "textEn": "Weeping bitterly, Cilia reached out in agony.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_34/scene_10.webp",
+      "sourceImageFile": "episode_34/scene_10.webp",
+      "narrationEn": "\"Masters... please come with us! Please!\" Eliana offered a tender, radiant smile.",
+      "narrationKo": "“스승님들... 제발 함께 가요! 제발!” 약초사 엘리아나가 인자한 미소를 지으며 실리아를 향해 손을 흔들었다. “울지 마라, 어린 왕녀여. 네가 꽃피울 바람의 왕국에 우리들의 넋이 영원히 머물 것이니... 알렉산다르 경을 뵈러 가는 길은 외롭지 않단다.”",
+      "sourceSentenceStart": 24,
+      "sourceSentenceEnd": 26,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“스승님들... 제발 함께 가요! 제발!”",
+          "textEn": "“Masters... please come with us! Please!”",
+          "bubbleType": "shout",
+          "position": "bottom-left",
+          "characterCardId": 62
+        },
+        {
+          "speakerKo": "엘리아나",
+          "speakerEn": "Eliana",
+          "textKo": "“울지 마라, 어린 왕녀여. 네가 꽃피울 바람의 왕국에 우리들의 넋이 영원히 머물 것이니... 알렉산다르 경을 뵈러 가는 길은 외롭지 않단다.”",
+          "textEn": "“Weep not, little princess. Our souls shall dance forever amidst the lilies of the Wind Kingdom... Our reunion with Sir Aleksandar shall be joyous.”",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 63
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_34/scene_11.webp",
+      "sourceImageFile": "episode_34/scene_11.webp",
+      "narrationEn": "\"Weep not, little princess. Our souls shall dance forever amidst the lilies of the Wind Kingdom... Our reunion with Sir Aleksandar shall be joyous.\" Just then, hundreds of abyssal golems breached the rear walls, lunging to slaughter the masters holding the pillar.",
+      "narrationKo": "그때 회랑 뒤편에서 무너진 벽을 뚫고 수백 마리의 암흑 골렘들이 증원되어 쏟아져 들어왔다. 기둥을 떠받치고 있는 스승들을 몰살시키려는 적들의 마지막 발악이었다. 바람의 마도사 가웨인이 지팡이를 땅에 꽂으며 카단을 돌아보았다. “가웨인의 마지막 바람을 보아라, 카단! 제단으로 뛰어라!”",
+      "sourceSentenceStart": 27,
+      "sourceSentenceEnd": 29,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "가웨인",
+          "speakerEn": "Gawain",
+          "textKo": "“가웨인의 마지막 바람을 보아라, 카단! 제단으로 뛰어라!”",
+          "textEn": "“Weep not, little princess. Our souls shall dance forever amidst the lilies of the Wind Kingdom... Our reunion with Sir Aleksandar shall be joyous.”",
+          "bubbleType": "shout",
+          "position": "bottom-right",
+          "characterCardId": 45
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_34/scene_12.webp",
+      "sourceImageFile": "episode_34/scene_12.webp",
+      "narrationEn": "Planting his staff into the earth, Gawain turned to Kadan with fierce pride. \"Behold Gawain's final tempest, boy! Leap to the altar!\"",
+      "narrationKo": "여섯 스승들의 전신에서 타오른 오색 마나는 어두운 대회랑을 눈이 부시도록 찬란하게 밝혔지만, 그것은 생명력을 불사르는 마지막 영혼의 불꽃이었다. 스승들의 피부가 창백하게 변해가며 근육이 뒤틀리는 고통 속에서도, 그들의 어깨는 단 한 치도 내려앉지 않았다. 카단이 피눈물을 흘리며 기둥을 향해 손을 뻗었다. “안 됩니다! 스승님들과 함께 가지 않으면 제 방패는 아무런 의미가 없습니다!” 론돌이 피를 토하며 호통을 쳤다. “바보 같은 놈! 살아서 약속을 지키는 것이 진정한 제자의 도리다! 달려라, 카단!”",
+      "sourceSentenceStart": 30,
+      "sourceSentenceEnd": 31,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "검끝이 흔들리지 않는 한, 길은 열린다.",
-          "textEn": "As long as our blades do not waver, the path will open.",
-          "bubbleType": "speech",
+          "textKo": "“안 됩니다! 스승님들과 함께 가지 않으면 제 방패는 아무런 의미가 없습니다!”",
+          "textEn": "“Behold Gawain's final tempest, boy! Leap to the altar!”",
+          "bubbleType": "shout",
+          "position": "top-left",
+          "characterCardId": 41
+        },
+        {
+          "speakerKo": "론돌",
+          "speakerEn": "Rondol",
+          "textKo": "“바보 같은 놈! 살아서 약속을 지키는 것이 진정한 제자의 도리다! 달려라, 카단!”",
+          "textEn": "“Leap to the altar!\"”",
+          "bubbleType": "shout",
+          "position": "top-right",
+          "characterCardId": 46
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
           "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_34/scene_13.webp",
+      "sourceImageFile": "episode_34/scene_13.webp",
+      "narrationEn": "Igniting his very soul, Gawain unleashed the forbidden mystery: the 'Divine Gale Gyre'. A colossal hurricane tore through the hall, pulverizing the golem horde and carving an open passage directly toward the high altar. Stepping into the center of the vortex, Gawain linked hands with Grimli and the other masters, holding the failing pillar firm.",
+      "narrationKo": "가웨인이 자신의 모든 생명력을 연소시키며 ‘궁극오의 신풍대회전(神風大回轉)’을 시전했다. 거대한 폭풍의 소용돌이가 골렘들을 산산조각 내며 제단으로 향하는 일직선의 통로를 뚫어냈다. 그와 동시에 가웨인의 신형은 그림리와 다른 스승들이 버티고 있는 중앙 기둥 앞으로 합류했다. 스승들은 피를 흘리면서도 어깨를 맞댄 채 카단과 실리아를 향해 고개를 끄덕였다.",
+      "sourceSentenceStart": 32,
+      "sourceSentenceEnd": 34,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "스승들은 피를 흘리면서도 어깨를 맞댄 채 카단과 실리아를 향해 고개를 끄덕였다.",
+          "textEn": "Stepping into the center of the vortex, Gawain linked hands with Grimli and the other masters, holding the failing pillar firm.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 45
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_34/scene_14.webp",
+      "sourceImageFile": "episode_34/scene_14.webp",
+      "narrationEn": "Bloodied but smiling proudly, the masters nodded to Kadan and Cilia. \"We entrust the future to your shield, heir of the Holy Order!\"",
+      "narrationKo": "“대륙의 미래를 부탁한다, 성기사의 후예여!” 쿠구구구궁!",
+      "sourceSentenceStart": 35,
+      "sourceSentenceEnd": 36,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“대륙의 미래를 부탁한다, 성기사의 후예여!”",
+          "textEn": "“We entrust the future to your shield, heir of the Holy Order!”",
+          "bubbleType": "shout",
+          "position": "bottom-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_34/scene_15.webp",
+      "sourceImageFile": "episode_34/scene_15.webp",
+      "narrationEn": "CRRR-AAASH! The mountain peak collapsed in an apocalyptic avalanche, burying the central hall beneath hundreds of thousands of tons of granite. The heroic champions passed into legend, shielding their disciples' retreat with their very flesh.",
+      "narrationKo": "마침내 거대한 산봉우리가 무너지며, 수십만 톤의 바위와 토사가 중앙 대회랑을 완전히 집어삼켰다. 선대 영웅들의 거룩한 육신은 그렇게 후예들의 등을 지키며 영원한 바위산의 전설로 묻혀 들어갔다. “스승님————!!” 카단의 절규와 실리아의 오열이 무너진 암벽을 뒤흔들었지만, 닫혀버린 석벽 너머에서는 오직 고요한 침묵만이 흘러나왔다.",
+      "sourceSentenceStart": 37,
+      "sourceSentenceEnd": 39,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“스승님————!!”",
+          "textEn": "“We entrust the future to your shield, heir of the Holy Order!”",
+          "bubbleType": "shout",
+          "position": "bottom-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        },
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_34/scene_16.webp",
+      "sourceImageFile": "episode_34/scene_16.webp",
+      "narrationEn": "\"MASTERS————!!\" Kadan's agonized roar echoed through the stone, yet from beyond the fallen rock wall came only solemn, eternal silence.",
+      "narrationKo": "가웨인의 궁극오의 신풍대회전이 휘몰아치자, 쏟아져 들어오던 수백 마리의 암흑 골렘들이 폭풍에 갈려 흙먼지가 되었다. 폭풍의 중심에서 가웨인의 백발이 휘날리며, 노마도사는 평생을 갈고닦은 바람의 정수를 카단과 실리아의 등 뒤로 불어넣어 두 사람을 안전한 제단 계단 위로 밀어 올렸다. 그리고 마침내 산봉우리가 완전히 무너져 내렸다. 거대한 바위와 토사가 중앙 회랑을 덮치는 순간, 여섯 스승은 서로의 손을 꼭 맞잡은 채 카단과 실리아를 향해 환하게 미소 지었다. 콰아아앙 하는 천둥 같은 굉음과 함께 그 거룩한 모습은 영원한 어둠 속으로 묻혀 들어갔다. 스승들이 목숨 바쳐 열어준 통로 끝에, 마침내 성채의 가장 높은 심장부인 ‘파멸의 제단’이 모습을 드러냈다.",
+      "sourceSentenceStart": 40,
+      "sourceSentenceEnd": 42,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "스승들이 목숨 바쳐 열어준 통로 끝에, 마침내 성채의 가장 높은 심장부인 ‘파멸의 제단’이 모습을 드러냈다.",
+          "textEn": "\"MASTERS————!!\" Kadan's agonized roar echoed through the stone, yet from beyond the fallen rock wall came only solemn, eternal silence.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 45
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_34/scene_17.webp",
+      "sourceImageFile": "episode_34/scene_17.webp",
+      "narrationEn": "At the summit of the cleared stairway stood the Altar of Ruin. Atop the high throne waited Minister Lucian, his eyes burning with demonic madness as he clutched the blood-stained Nine Shadows Codex.",
+      "narrationKo": "제단 중앙에는 루시안이 옥좌 위에 서서 피 묻은 나인섀도우 코덱스를 들고 광기 어린 눈빛으로 일행을 내려다보고 있었다. 카단은 은빛 단검을 뽑아 들고, 눈물을 닦아내며 제단 계단을 밟았다. 스승들의 희생과 이그니스의 유지가 카단의 전신에 강철 같은 결의로 타올랐다.",
+      "sourceSentenceStart": 43,
+      "sourceSentenceEnd": 44,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "스승들의 희생과 이그니스의 유지가 카단의 전신에 강철 같은 결의로 타올랐다.",
+          "textEn": "Atop the high throne waited Minister Lucian, his eyes burning with demonic madness as he clutched the blood-stained Nine Shadows Codex.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 61
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_34/scene_18.webp",
+      "sourceImageFile": "episode_34/scene_18.webp",
+      "narrationEn": "Drawing his silver dagger, Kadan wiped the tears from his eyes, ascending the altar steps with footsteps heavy as destiny. The sacrifice of the Six Masters and the memory of Ignis ignited within his breast in an eternal flame of iron resolve. Leveling his Dragon Breaker shield, Kadan proclaimed his judgment.",
+      "narrationKo": "카단이 방패를 앞으로 겨누며 선언했다. “여섯 스승들의 고결한 피가 이 길을 열었다. 루시안, 이제 네놈이 저지른 모든 죗값을 마지막 한 방울까지 받아내겠다.” 실리아 역시 눈물을 거두고 녹옥 지팡이를 곧게 세웠다.",
+      "sourceSentenceStart": 45,
+      "sourceSentenceEnd": 47,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“여섯 스승들의 고결한 피가 이 길을 열었다. 루시안, 이제 네놈이 저지른 모든 죗값을 마지막 한 방울까지 받아내겠다.”",
+          "textEn": "“The blood of the Six Masters carved this road. Lucian, you shall answer for every crime to the final drop of your blood.”",
+          "bubbleType": "speech",
+          "position": "bottom-left",
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
@@ -448,45 +640,73 @@
     },
     {
       "sceneNumber": 19,
-      "imageFile": "episode_34/scene_19.jpeg",
-      "sourceImageFile": "Celia_holding_funerals_and_rescu…_202607260802.jpeg",
-      "narrationEn": "The first priority was to hold the funerals of teachers and rescue refugees. For the first time, the two people chose different paths in the face of the same grief. Celia did not light the funeral fire all at once.",
-      "narrationKo": "스승들의 장례를 치르고 피난민을 구하는 일이 먼저였다. 두 사람은 처음으로 같은 슬픔 앞에서 서로 다른 길을 골랐다. 실리아는 장례 불을 한꺼번에 피우지 않았다.",
-      "sourceSentenceStart": 49,
-      "sourceSentenceEnd": 51,
-      "alignmentScore": 0.4301,
+      "imageFile": "episode_34/scene_19.webp",
+      "sourceImageFile": "episode_34/scene_19.webp",
+      "narrationEn": "\"The blood of the Six Masters carved this road. Lucian, you shall answer for every crime to the final drop of your blood.\" Raising her Jade Staff, Cilia stood beside him.",
+      "narrationKo": "“바람 속삭임 섬과 성기사단의 이름으로, 네놈의 어둠을 완전히 끝장내겠어요.” 대륙의 모든 은원과 역사가 집결된 최후의 결전이, 무너진 성채의 정상에서 마침내 막을 올리고 있었다.",
+      "sourceSentenceStart": 48,
+      "sourceSentenceEnd": 49,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "실리아",
           "speakerEn": "Celia",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "textKo": "“바람 속삭임 섬과 성기사단의 이름으로, 네놈의 어둠을 완전히 끝장내겠어요.”",
+          "textEn": "“The blood of the Six Masters carved this road. Lucian, you shall answer for every crime to the final drop of your blood.”",
           "bubbleType": "speech",
-          "position": "top-left"
+          "position": "bottom-right",
+          "characterCardId": 62
         }
       ],
-      "sfxCues": []
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
     },
     {
       "sceneNumber": 20,
-      "imageFile": "episode_34/scene_20.jpeg",
-      "sourceImageFile": "Refugees_tell_teachers_memories_202607260802.jpeg",
-      "narrationEn": "The refugees were asked to tell each teacher what they remembered. Some people talked about the pot that Grimli fixed, and some people talked about the knot that Aila the Demon Hunter taught them. It was a funeral that did not reduce the death of a hero to a single battle scene.",
-      "narrationKo": "피난민들에게 스승 한 사람씩 기억나는 일을 말해 달라고 했다. 누군가는 그림리가 고쳐 준 냄비를, 누군가는 에일라가 가르친 매듭을 이야기했다. 영웅의 죽음이 전투 장면 하나로 줄어들지 않게 하는 장례였다.",
-      "sourceSentenceStart": 52,
-      "sourceSentenceEnd": 54,
-      "alignmentScore": 0.2344,
+      "imageFile": "episode_34/scene_20.webp",
+      "sourceImageFile": "episode_34/scene_20.webp",
+      "narrationEn": "\"In the name of Whispering Wind Island and the Holy Order, your darkness ends tonight.\" The final battle for the soul of the continent commenced upon the summit of ruin.",
+      "narrationKo": "무너진 바위벽을 등지고 돌아선 카단의 눈에는 더 이상 눈물이 흐르지 않았다. 슬픔은 가장 단단한 강철이 되어 청년의 가슴에 박혔고, 스승들의 목숨값으로 열린 길 끝에서 카단의 드래곤 브레이커 방패는 황금빛으로 타올랐다. 실리아 역시 떨리는 손으로 녹옥 지팡이를 고쳐 쥐며 제단 위를 매섭게 노려보았다. 제단 옥좌에 선 루시안의 비열한 눈동자에 처음으로 걷잡을 수 없는 공포가 스쳐 지나갔다. 카단이 방패를 겨누며 선언했다. “루시안, 네놈의 시대는 끝났다. 여섯 스승들의 영혼과 이그니스의 맹세가 지금 네놈의 목을 벨 것이다.” 두 영웅의 마지막 진격이 시작되었다.",
+      "sourceSentenceStart": 50,
+      "sourceSentenceEnd": 52,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "textKo": "“루시안, 네놈의 시대는 끝났다. 여섯 스승들의 영혼과 이그니스의 맹세가 지금 네놈의 목을 벨 것이다.”",
+          "textEn": "“In the name of Whispering Wind Island and the Holy Order, your darkness ends tonight.”",
           "bubbleType": "speech",
-          "position": "bottom-left"
+          "position": "top-left",
+          "characterCardId": 41
         }
       ],
-      "sfxCues": []
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
     }
   ]
 }

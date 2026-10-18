@@ -2,26 +2,62 @@
   "episodeNumber": 29,
   "episodeTitleEn": "Queen of the Wind",
   "episodeTitleKo": "바람의 여왕",
-  "sourceSentenceCount": 49,
+  "sourceSentenceCount": 54,
   "sceneCount": 20,
   "scenes": [
     {
       "sceneNumber": 1,
-      "imageFile": "episode_29/scene_01.jpeg",
-      "sourceImageFile": "Freedmen's_League_congress_after…_202607260802.jpeg",
-      "narrationEn": "The day after Ignis's death, the Freedmen's League held another congress. Celia did not prepare black robes or a memorial speech.",
-      "narrationKo": "이그니스의 죽음 다음 날, 자유민 연맹은 다시 의회를 열었다. 실리아는 검은 예복도 추도 연설도 준비하지 않았다.",
+      "imageFile": "episode_29/scene_01.webp",
+      "sourceImageFile": "episode_29/scene_01.webp",
+      "narrationEn": "On the morning following the tragedy at the Jade Council, the skies above Lighthaven hung heavy with gray storm clouds. Though the fires had been extinguished, the crushing sorrow of losing Ignis weighed upon every stone of the grand cathedral and the imperial palace. Standing beside the fountain in the palace courtyard, Kadan held the White Glass Ember, which pulsed with gentle, living warmth against his palm like the steady heartbeat of his fallen brother. Approaching with her Jade Staff, Cilia stood silently beside him, tears drying upon her pale cheeks.",
+      "narrationKo": "비취 평의회의 참극이 지나간 다음 날 아침, 수도 라이트헤이븐의 하늘은 잿빛 먹구름에 덮여 있었다. 황궁 대전각의 화재는 진압되었지만, 이그니스를 잃은 슬픔의 무게는 대성당과 황궁 전체를 무겁게 짓누르고 있었다. 카단은 품속에서 은은한 온기를 뿜어내는 이그니스의 유리 불씨를 어루만지며 황궁 광장의 분수대 곁에 우두커니 서 있었다. 차가운 아침 바람이 뺨을 스칠 때마다 유리 불씨는 마치 전우의 맥박처럼 따스하게 깜빡였다. 실리아가 녹옥 지팡이를 짚고 다가와 곁에 섰다. 그녀의 눈가에는 밤새 흘린 눈물의 자국이 아직 마르지 않은 채였다. 실리아가 나지막이 속삭였다.",
       "sourceSentenceStart": 1,
-      "sourceSentenceEnd": 2,
-      "alignmentScore": 0.2505,
+      "sourceSentenceEnd": 3,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "이그니스",
-          "speakerEn": "Ignis",
-          "textKo": "검끝이 흔들리지 않는 한, 길은 열린다.",
-          "textEn": "As long as our blades do not waver, the path will open.",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "실리아가 나지막이 속삭였다.",
+          "textEn": "Approaching with her Jade Staff, Cilia stood silently beside him, tears drying upon her pale cheeks.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_29/scene_02.webp",
+      "sourceImageFile": "episode_29/scene_02.webp",
+      "narrationEn": "Cilia whispered softly into the morning draft. \"Holding this glass ember, Ignis's pure spirit speaks clearly to my fingertips. Though his noble sacrifice delivered the capital, the hollow void beside us aches with bitter sorrow.\"",
+      "narrationKo": "“이 유리 불씨를 쥐고 있으면 이그니스의 정결한 영혼이 손끝으로 고스란히 전해져 와요. 그의 고결한 희생으로 황궁을 구했지만, 곁이 비어버린 슬픔은 쉽게 가시지 않네요.” 카단이 방패를 고쳐 쥐며 고개를 끄덕였다.",
+      "sourceSentenceStart": 4,
+      "sourceSentenceEnd": 5,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“이 유리 불씨를 쥐고 있으면 이그니스의 정결한 영혼이 손끝으로 고스란히 전해져 와요. 그의 고결한 희생으로 황궁을 구했지만, 곁이 비어버린 슬픔은 쉽게 가시지 않네요.”",
+          "textEn": "“Holding this glass ember, Ignis's pure spirit speaks clearly to my fingertips. Though his noble sacrifice delivered the capital, the hollow void beside us aches with bitter sorrow.”",
           "bubbleType": "speech",
-          "position": "bottom-left"
+          "position": "bottom-left",
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
@@ -34,85 +70,125 @@
       ]
     },
     {
-      "sceneNumber": 2,
-      "imageFile": "episode_29/scene_02.jpeg",
-      "sourceImageFile": "Man_with_jade_staff_evaluating_202607260802.jpeg",
-      "narrationEn": "Instead, I started by reading the names of those who had been injured the day before, the medicine needed, and the amount of food lost. The representatives entrusted the position of leader to her, who held a green jade staff.",
-      "narrationKo": "대신 전날 다친 사람들의 이름과 필요한 약, 잃어버린 식량 수량부터 읽었다. 대표들은 녹옥 지팡이를 든 그녀에게 수장 자리를 맡겼다.",
-      "sourceSentenceStart": 3,
-      "sourceSentenceEnd": 4,
-      "alignmentScore": 0.418,
+      "sceneNumber": 3,
+      "imageFile": "episode_29/scene_03.webp",
+      "sourceImageFile": "episode_29/scene_03.webp",
+      "narrationEn": "Adjusting his shield, Kadan nodded with solemn depth. \"Ignis is not dead. The oath he left behind breathes eternally within this ember and within the chambers of our hearts.\"",
+      "narrationKo": "“이그니스는 죽지 않았다. 그가 남긴 맹세는 이 불씨 속에서, 그리고 우리 두 사람의 심장 속에서 영원히 살아 숨 쉴 것이다.” 그때 황실 근위대장과 원로원 의원들이 정중하게 다가와 실리아의 앞에 무릎을 꿇었다. 원로원 의장이 양피지 칙령을 받들어 올리며 고했다.",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 8,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "textKo": "“이그니스는 죽지 않았다. 그가 남긴 맹세는 이 불씨 속에서, 그리고 우리 두 사람의 심장 속에서 영원히 살아 숨 쉴 것이다.”",
+          "textEn": "“Ignis is not dead. The oath he left behind breathes eternally within this ember and within the chambers of our hearts.”",
           "bubbleType": "speech",
-          "position": "bottom-right"
+          "position": "bottom-right",
+          "characterCardId": 41
         }
       ],
-      "sfxCues": []
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
     },
     {
-      "sceneNumber": 3,
-      "imageFile": "episode_29/scene_03.jpeg",
-      "sourceImageFile": "Fantasy_RPG_characters_plan_inva…_202607260802.jpeg",
-      "narrationEn": "Celia put a condition on it. The conditions were that the head would not be inherited by blood, that he would step down immediately if three or more regions voted against him, and that an evacuation plan must be attached to every wartime order. Representatives objected, saying it would weaken their authority too much.",
-      "narrationKo": "실리아는 조건을 걸었다. 수장은 혈통으로 계승하지 않으며, 세 지역 이상이 불신임하면 즉시 물러나고, 모든 전시 명령에는 피난 계획이 먼저 붙어야 한다는 조건이었다. 대표들은 권한이 너무 약해진다며 반발했다.",
-      "sourceSentenceStart": 5,
-      "sourceSentenceEnd": 7,
-      "alignmentScore": 0.295,
+      "sceneNumber": 4,
+      "imageFile": "episode_29/scene_04.webp",
+      "sourceImageFile": "episode_29/scene_04.webp",
+      "narrationEn": "At that moment, the high council of senators and the captain of the imperial guard approached, sinking to their knees before Cilia. Holding aloft an imperial parchment decree, the senate chancellor proclaimed with deep reverence.",
+      "narrationKo": "“바람 속삭임 섬의 왕녀 전하여, 황제 폐하의 칙명으로 대륙 동부 연맹과 황실의 임시 섭정, ‘바람의 여왕’으로 즉위해 주실 것을 간청드립니다!” 광장의 시민들은 대성당 앞에 모여 조용히 묵념을 올리고 있었다. 황궁을 집어삼킬 뻔했던 대폭발을 온몸으로 막아내고 산화한 젊은 백색 화염 기사의 숭고한 희생 소식이 전해지자, 거친 부두의 노동자들과 노파들도 눈물을 훔치며 하얀 야생 백합꽃을 제단 앞에 바쳤다. 카단은 품속에서 은은한 온기를 내뿜는 이그니스의 유리 불씨를 어루만졌다. 불씨는 차가운 아침 바람 속에서도 꺼지지 않고 따스한 빛을 발하고 있었다. 카단이 혼잣말처럼 속삭였다. “네가 지킨 백성들이 너를 위해 기도하고 있다, 이그니스.”",
+      "sourceSentenceStart": 9,
+      "sourceSentenceEnd": 11,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“바람 속삭임 섬의 왕녀 전하여, 황제 폐하의 칙명으로 대륙 동부 연맹과 황실의 임시 섭정, ‘바람의 여왕’으로 즉위해 주실 것을 간청드립니다!”",
+          "textEn": "“Ignis is not dead. The oath he left behind breathes eternally within this ember and within the chambers of our hearts.”",
+          "bubbleType": "shout",
+          "position": "top-left",
+          "characterCardId": 41
+        },
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“네가 지킨 백성들이 너를 위해 기도하고 있다, 이그니스.”",
+          "textEn": "“Princess of Whispering Wind Island! By decree of His Imperial Majesty, we humbly petition you to ascend as Regent of the Empire and the Eastern Alliance—the Sovereign Queen of the Winds!”",
+          "bubbleType": "speech",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_29/scene_05.webp",
+      "sourceImageFile": "episode_29/scene_05.webp",
+      "narrationEn": "\"Princess of Whispering Wind Island! By decree of His Imperial Majesty, we humbly petition you to ascend as Regent of the Empire and the Eastern Alliance—the Sovereign Queen of the Winds!\" Across the plaza, thousands of assembled citizens broke into thunderous acclamation, dropping to their knees in tearful entreaty. It was the offer of supreme dominion over the entire continent.",
+      "narrationKo": "원로원 의원들의 간청에 광장에 모여 있던 수천 명의 시민들도 일제히 환호성을 지르며 무릎을 꿇었다. 제국과 동부 연맹을 아우르는 절대적인 권좌의 제안이었다. 그러나 실리아는 조용히 고개를 가로저으며 원로원 의장을 부축해 일으켜 세웠다. 실리아의 목소리는 맑고 청아하게 광장 전체를 울렸다.",
+      "sourceSentenceStart": 12,
+      "sourceSentenceEnd": 14,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "실리아의 목소리는 맑고 청아하게 광장 전체를 울렸다.",
+          "textEn": "It was the offer of supreme dominion over the entire continent.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_29/scene_06.webp",
+      "sourceImageFile": "episode_29/scene_06.webp",
+      "narrationEn": "Yet Cilia shook her head gently, extending her hand to raise the chancellor to his feet. Her voice rang out across the square with crystal clarity.",
+      "narrationKo": "“나를 여왕이라 부르지 마세요. 바람은 결코 왕좌에 앉지 않는 법입니다.” 광장의 시민들이 숨을 죽이고 실리아의 입술을 주목했다.",
+      "sourceSentenceStart": 15,
+      "sourceSentenceEnd": 16,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "실리아",
           "speakerEn": "Celia",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "textKo": "“나를 여왕이라 부르지 마세요. 바람은 결코 왕좌에 앉지 않는 법입니다.”",
+          "textEn": "“Do not address me as Queen. The wind never seats itself upon a throne of stone.”",
           "bubbleType": "speech",
-          "position": "top-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 4,
-      "imageFile": "episode_29/scene_04.jpeg",
-      "sourceImageFile": "Celia_reminds_Ignis_about_organi…_202607260802.jpeg",
-      "narrationEn": "Celia reminded Ignis that an organization where one person can make decisions quickly put Ignis on the stage. Both the costs of slow agreement and the costs of fast dictatorship had to be put on the books.",
-      "narrationKo": "실리아는 한 사람이 빠르게 결정할 수 있는 조직이 이그니스를 단상에 세웠다는 사실을 상기시켰다. 느린 합의의 비용과 빠른 독재의 비용을 둘 다 장부에 올려야 했다.",
-      "sourceSentenceStart": 8,
-      "sourceSentenceEnd": 9,
-      "alignmentScore": 0.5216,
-      "dialogues": [
-        {
-          "speakerKo": "이그니스",
-          "speakerEn": "Ignis",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 5,
-      "imageFile": "episode_29/scene_05.jpeg",
-      "sourceImageFile": "Queen_of_Wind_fantasy_palace_202607260802.jpeg",
-      "narrationEn": "“Don’t call me queen, because the wind doesn’t sit on the throne. ” Nevertheless, people called her the Queen of the Winds. A name mixed with respect and expectations was sometimes heavier than shackles.",
-      "narrationKo": "“나를 여왕이라 부르지 마세요. 바람은 왕좌에 앉지 않으니까.” 그럼에도 사람들은 그녀를 바람의 여왕이라 불렀다. 존경과 기대가 섞인 이름은 때로 족쇄보다 무거웠다.",
-      "sourceSentenceStart": 10,
-      "sourceSentenceEnd": 13,
-      "alignmentScore": 0.6423,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "나를 여왕이라 부르지 마세요. 바람은 왕좌에 앉지 않으니까.",
-          "textEn": "Don’t call me queen, because the wind doesn’t sit on the throne. ",
-          "bubbleType": "speech",
-          "position": "top-right"
+          "position": "bottom-left",
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
@@ -125,85 +201,87 @@
       ]
     },
     {
-      "sceneNumber": 6,
-      "imageFile": "episode_29/scene_06.jpeg",
-      "sourceImageFile": "Lucian_finds_traitors_in_Federation_202607260802.jpeg",
-      "narrationEn": "The first mission was to find traitors within the Federation. Lucian's gold was flowing to various representatives, and fake orders were leading refugees into a dead-end valley in the Iron Palm Mountains.",
-      "narrationKo": "첫 임무는 연맹 내부의 배신자를 찾는 일이었다. 루시안의 금이 여러 대표에게 흘러들었고, 가짜 명령서가 피난민을 아이언팜 산맥의 막다른 계곡으로 유도하고 있었다.",
-      "sourceSentenceStart": 14,
-      "sourceSentenceEnd": 15,
-      "alignmentScore": 0.3288,
-      "dialogues": [
-        {
-          "speakerKo": "루시안",
-          "speakerEn": "Lucian",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
       "sceneNumber": 7,
-      "imageFile": "episode_29/scene_07.jpeg",
-      "sourceImageFile": "Celia_takes_off_chief's_attire_202607260802.jpeg",
-      "narrationEn": "Celia took off his chief's attire and put on the clothes of a beggar from Zhangjiagou Market again. Kadan pretended not to recognize her, just like when they first met, but he couldn't hide his smile.",
-      "narrationKo": "실리아는 수장 복장을 벗고 다시 장가구 시장의 거지 옷을 입었다. 카단은 처음 만났을 때처럼 그녀를 알아보지 못하는 척했지만 웃음을 숨기지 못했다.",
-      "sourceSentenceStart": 16,
-      "sourceSentenceEnd": 17,
-      "alignmentScore": 0.5834,
+      "imageFile": "episode_29/scene_07.webp",
+      "sourceImageFile": "episode_29/scene_07.webp",
+      "narrationEn": "\"Do not address me as Queen. The wind never seats itself upon a throne of stone.\" A breathless silence fell upon the multitude.",
+      "narrationKo": "실리아가 녹옥 지팡이를 높이 들어 올리며 선언했다. “내가 바라는 것은 권력의 왕관이 아닙니다. 이 땅의 모든 백성들이 폭군의 억압 없이 자유롭게 숨 쉴 수 있는 세상, 그것이 바람 속삭임 섬과 어머니 실피드가 꿈꾸었던 참된 바람의 길입니다. 나는 여왕으로서가 아니라, 여러분의 상처를 보듬는 바람의 벗으로서 끝까지 싸우겠습니다.” 실리아의 진심 어린 선언에 광장은 눈물과 환희의 박수갈채로 뒤덮였다. 왕관을 거부하고 민중의 벗으로 남겠다는 결단이야말로 진정한 지도자의 품격이었다.",
+      "sourceSentenceStart": 17,
+      "sourceSentenceEnd": 19,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“내가 바라는 것은 권력의 왕관이 아닙니다. 이 땅의 모든 백성들이 폭군의 억압 없이 자유롭게 숨 쉴 수 있는 세상, 그것이 바람 속삭임 섬과 어머니 실피드가 꿈꾸었던 참된 바람의 길입니다. 나는 여왕으로서가 아니라, 여러분의 상처를 보듬는 바람의 벗으로서 끝까지 싸우겠습니다.”",
+          "textEn": "“Do not address me as Queen. The wind never seats itself upon a throne of stone.”",
           "bubbleType": "speech",
-          "position": "top-right"
+          "position": "bottom-right",
+          "characterCardId": 62
         }
       ],
-      "sfxCues": []
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
     },
     {
       "sceneNumber": 8,
-      "imageFile": "episode_29/scene_08.jpeg",
-      "sourceImageFile": "Kadan_Ignis_refugee_procession_c…_202607260802.jpeg",
-      "narrationEn": "The two joined the refugee procession and chased after the fake guides. The traitors spread a rumor that Kadan killed Ignis. Angry refugees surrounded Kadan.",
-      "narrationKo": "둘은 난민 행렬에 섞여 가짜 안내자들을 뒤쫓았다. 배신자들은 카단이 이그니스를 죽였다는 소문을 퍼뜨렸다. 분노한 피난민들이 카단을 둘러쌌다.",
-      "sourceSentenceStart": 18,
-      "sourceSentenceEnd": 20,
-      "alignmentScore": 0.4483,
+      "imageFile": "episode_29/scene_08.webp",
+      "sourceImageFile": "episode_29/scene_08.webp",
+      "narrationEn": "Raising her Jade Staff, Cilia declared her covenant to the people. \"I seek no gilded crown. A world where every soul draws breath in freedom without the terror of tyrants—that was the true path of the wind envisioned by my mother Sylphid. I shall stand not as an empress above you, but as a sister of the wind who binds up your wounds and marches beside you to the very end.\"",
+      "narrationKo": "카단이 미소를 지으며 실리아를 바라보았다. “스승님과 여왕 전하께서 하늘에서 보셨다면 참으로 자랑스러워하셨을 결단이다.” 실리아의 선언은 화려한 궁정의 권력 다툼에 신물이나 있던 수도 민중들의 가슴에 깊은 감동을 안겨주었다. 왕관을 탐하지 않고 백성들의 아픔을 어루만지는 바람의 벗으로 남겠다는 다짐은, 과거 제국 건국 이래 그 어떤 황제도 보여주지 못했던 진정한 지도자의 모습이었다.",
+      "sourceSentenceStart": 20,
+      "sourceSentenceEnd": 22,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "textKo": "“스승님과 여왕 전하께서 하늘에서 보셨다면 참으로 자랑스러워하셨을 결단이다.”",
+          "textEn": "“I seek no gilded crown. A world where every soul draws breath in freedom without the terror of tyrants—that was the true path of the wind envisioned by my mother Sylphid. I shall stand not as an empress above you, but as a sister of the wind who binds up your wounds and marches beside you to the very end.”",
           "bubbleType": "speech",
-          "position": "top-left"
+          "position": "top-left",
+          "characterCardId": 41
         }
       ],
-      "sfxCues": []
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
     },
     {
       "sceneNumber": 9,
-      "imageFile": "episode_29/scene_09.jpeg",
-      "sourceImageFile": "Ignis_told_about_battle_202607260802.jpeg",
-      "narrationEn": "He did not draw his sword and told exactly what he had done in the last battle. I stopped Ignis, tried to save him, and failed.",
-      "narrationKo": "그는 검을 뽑지 않고 자신이 마지막 전투에서 무엇을 했는지 그대로 말했다. 이그니스를 막았으며, 살리려 했고, 실패했다고.",
-      "sourceSentenceStart": 21,
-      "sourceSentenceEnd": 22,
-      "alignmentScore": 0.3352,
+      "imageFile": "episode_29/scene_09.webp",
+      "sourceImageFile": "episode_29/scene_09.webp",
+      "narrationEn": "A roar of tears, cheers, and heartfelt reverence erupted across the metropolis. To reject the imperial crown in favor of walking beside the common folk was the hallmark of true sovereignty. Kadan looked upon her with profound pride.",
+      "narrationKo": "원로원 의장 역시 떨리는 손으로 양피지 칙령을 가슴에 품으며 깊이 고개를 숙였다. “왕녀 전하의 숭고한 뜻을 받들겠습니다. 황실의 모든 의용군과 기사단은 오직 왕녀 전하와 성기사의 방패를 따를 것입니다.” 즉위식을 대신한 평화의 서약이 끝난 뒤, 카단과 실리아는 작전 회의실로 향했다. 론돌과 그림리, 그리고 여섯 스승들이 지도를 둘러싸고 모여 있었다.",
+      "sourceSentenceStart": 23,
+      "sourceSentenceEnd": 24,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "이그니스",
-          "speakerEn": "Ignis",
-          "textKo": "검끝이 흔들리지 않는 한, 길은 열린다.",
-          "textEn": "As long as our blades do not waver, the path will open.",
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“왕녀 전하의 숭고한 뜻을 받들겠습니다. 황실의 모든 의용군과 기사단은 오직 왕녀 전하와 성기사의 방패를 따를 것입니다.”",
+          "textEn": "“I seek no gilded crown. A world where every soul draws breath in freedom without the terror of tyrants—that was the true path of the wind envisioned by my mother Sylphid. I shall stand not as an empress above you, but as a sister of the wind who binds up your wounds and marches beside you to the very end.”",
           "bubbleType": "speech",
-          "position": "bottom-left"
+          "position": "top-right",
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
@@ -217,84 +295,92 @@
     },
     {
       "sceneNumber": 10,
-      "imageFile": "episode_29/scene_10.jpeg",
-      "sourceImageFile": "Woman_child_survived_on_food_202607260802.jpeg",
-      "narrationEn": "One woman said her child survived on food released by Ignis. Another man lost his brother to Prohibition. Kadan did not refute any of the memories.",
-      "narrationKo": "한 여인은 이그니스가 풀어 준 식량으로 아이가 살았다고 말했다. 다른 남자는 그의 금지술에 형제를 잃었다. 카단은 어느 기억도 반박하지 않았다.",
-      "sourceSentenceStart": 23,
-      "sourceSentenceEnd": 25,
-      "alignmentScore": 0.2852,
+      "imageFile": "episode_29/scene_10.webp",
+      "sourceImageFile": "episode_29/scene_10.webp",
+      "narrationEn": "\"Master Aleksandar and Queen Sylphid smile upon your wisdom from the heavens.\" Retiring to the war chamber, Kadan and Cilia convened with Rondol, Grimli, and the Six Masters around the regional charts.",
+      "narrationKo": "론돌이 해도 위의 수도 북쪽 출구를 짚으며 설명했다. “패퇴한 루시안은 북방의 흑마법 요새인 ‘검은 늪지대’로 퇴각했다. 그곳에는 고대 언데드 군단과 벨페고르의 심연 본대가 도사리고 있지. 하지만 그곳으로 가려면 수도 북문을 가로막고 있는 ‘사문(四門)의 독’ 결계를 통과해야 한다.” 그림리가 모루를 내리치듯 탁자를 치며 덧붙였다.",
+      "sourceSentenceStart": 25,
+      "sourceSentenceEnd": 27,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "speakerKo": "론돌",
+          "speakerEn": "Rondol",
+          "textKo": "“패퇴한 루시안은 북방의 흑마법 요새인 ‘검은 늪지대’로 퇴각했다. 그곳에는 고대 언데드 군단과 벨페고르의 심연 본대가 도사리고 있지. 하지만 그곳으로 가려면 수도 북문을 가로막고 있는 ‘사문(四門)의 독’ 결계를 통과해야 한다.”",
+          "textEn": "“Master Aleksandar and Queen Sylphid smile upon your wisdom from the heavens.”",
           "bubbleType": "speech",
-          "position": "bottom-right"
+          "position": "bottom-left",
+          "characterCardId": 46
         }
       ],
-      "sfxCues": []
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
     },
     {
       "sceneNumber": 11,
-      "imageFile": "episode_29/scene_11.jpeg",
-      "sourceImageFile": "Celia_shows_field_record_crystal…_202607260802.jpeg",
-      "narrationEn": "Loving or hating a person did not erase the other consequences he left behind. Instead of defending Kadan, Celia showed the field record crystal ball.",
-      "narrationKo": "한 사람을 사랑하거나 미워하는 일이 그가 남긴 다른 결과를 지우지는 못했다. 실리아는 카단을 변호하는 대신 현장 기록 수정구를 보여 주었다.",
-      "sourceSentenceStart": 26,
-      "sourceSentenceEnd": 27,
-      "alignmentScore": 0.4496,
+      "imageFile": "episode_29/scene_11.webp",
+      "sourceImageFile": "episode_29/scene_11.webp",
+      "narrationEn": "Pointing to the northern passes, Rondol spoke in grim assessment. \"The wounded serpent Lucian has retreated to his final necromantic fortress in the Black Marsh, rallying the remaining legions of Belphegor. But to pursue him, our armies must breach the Four Gates Fortress, where four colossal sluices spew lethal venom.\"",
+      "narrationKo": "“사문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이 독기를 뚫지 않고는 대군을 진격시킬 수 없어.” 카단이 품속에서 이그니스의 유리 불씨를 꺼내 지도 위에 올려놓았다. 놀랍게도 유리 불씨의 빛이 북쪽 관문을 향해 가느다란 궤적을 그리며 가리키고 있었다. 카단이 눈을 빛냈다.",
+      "sourceSentenceStart": 28,
+      "sourceSentenceEnd": 30,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "speakerKo": "그림리",
+          "speakerEn": "Grimli",
+          "textKo": "“사문의 결계는 동서남북 네 개의 거대한 수문에서 뿜어져 나오는 지독한 부식성 독기둥이다. 이 독기를 뚫지 않고는 대군을 진격시킬 수 없어.”",
+          "textEn": "“The wounded serpent Lucian has retreated to his final necromantic fortress in the Black Marsh, rallying the remaining legions of Belphegor. But to pursue him, our armies must breach the Four Gates Fortress, where four colossal sluices spew lethal venom.”",
           "bubbleType": "speech",
-          "position": "top-right"
+          "position": "bottom-right",
+          "characterCardId": 74
         }
       ],
-      "sfxCues": []
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
     },
     {
       "sceneNumber": 12,
-      "imageFile": "episode_29/scene_12.jpeg",
-      "sourceImageFile": "Crowd_judges_facts_returned_202607260802.jpeg",
-      "narrationEn": "The right to judge the facts was returned to the crowd. After being silent for a long time, people opened the way.",
-      "narrationKo": "사실을 판단할 권리를 군중에게 돌려준 것이다. 사람들은 오래 침묵한 끝에 길을 열었다.",
-      "sourceSentenceStart": 28,
-      "sourceSentenceEnd": 29,
-      "alignmentScore": 0.5083,
+      "imageFile": "episode_29/scene_12.webp",
+      "sourceImageFile": "episode_29/scene_12.webp",
+      "narrationEn": "Grimli slammed his fist onto the oak table. \"A hellish barrier! Acidic mist that dissolves steel plate within minutes. No army can march through that defile.\"",
+      "narrationKo": "“이그니스가 길을 가리켜주고 있다. 놈들이 설치한 사문의 독을 파훼할 약점의 진맥이다.” 작전 회의실 탁자 위에 놓인 유리 불씨는 마치 나침반처럼 북쪽을 향해 가느다란 백색 화염의 꼬리를 뻗고 있었다. 론돌과 그림리, 그리고 여섯 스승들은 그 기적 같은 광경에 숨을 죽였다.",
+      "sourceSentenceStart": 31,
+      "sourceSentenceEnd": 32,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "textKo": "“이그니스가 길을 가리켜주고 있다. 놈들이 설치한 사문의 독을 파훼할 약점의 진맥이다.”",
+          "textEn": "“A hellish barrier! Acidic mist that dissolves steel plate within minutes. No army can march through that defile.”",
           "bubbleType": "speech",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 13,
-      "imageFile": "episode_29/scene_13.jpeg",
-      "sourceImageFile": "Traitor_home_base_abandoned_smelter_202607260802.jpeg",
-      "narrationEn": "The traitors' home base was an abandoned smelter midway up the mountain range. A fake elder claiming to be Orihalcon's older brother gathered followers by demonstrating the miracle of melting steel with his bare hands. Celia found a firestone pipe hidden under the heat source.",
-      "narrationKo": "배신자들의 본거지는 산맥 중턱의 폐제련소였다. 오리하르콘의 형을 자처하는 가짜 대장로가 강철을 맨손으로 녹이는 기적을 선보이며 추종자를 모았다. 실리아는 열원 아래 숨긴 화염석 배관을 찾아냈다.",
-      "sourceSentenceStart": 30,
-      "sourceSentenceEnd": 32,
-      "alignmentScore": 0.4997,
-      "dialogues": [
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
-          "bubbleType": "shout",
-          "position": "bottom-left"
+          "position": "top-left",
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
@@ -303,186 +389,292 @@
           "textEn": "BOOM!",
           "style": "impact",
           "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_29/scene_13.webp",
+      "sourceImageFile": "episode_29/scene_13.webp",
+      "narrationEn": "Taking the White Glass Ember from his coat, Kadan placed it upon the map. Miraculously, the ember cast a slender needle of pure white light pointing toward the northern sluice. Kadan's eyes sharpened with certainty.",
+      "narrationKo": "가웨인이 지팡이를 짚으며 감탄했다. “이그니스의 영혼이 불씨에 깃들어 사문의 약점을 짚어내고 있구나. 동쪽과 서쪽 수문의 마나 핵을 먼저 타격하면 중앙 수문의 독기 분출이 절반으로 줄어들 게다.” 카단이 고개를 끄덕였다. “형제가 길을 열어주었다. 주저 없이 돌파한다.” 카단과 실리아는 소수 정예 결사대를 이끌고 수도 북문의 수로 요새로 향했다. 늪지대에서 밀려온 짙은 유황 안개가 시야를 가로막고 있었고, 수로의 수면은 보랏빛 독극물로 부글부글 끓어오르고 있었다. 수로 벽면에는 메두사 고르고의 금기된 룬이 음각되어 있어 접근하는 생명체의 살갗을 녹여 내리고 있었다.",
+      "sourceSentenceStart": 33,
+      "sourceSentenceEnd": 35,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "가웨인",
+          "speakerEn": "Gawain",
+          "textKo": "“이그니스의 영혼이 불씨에 깃들어 사문의 약점을 짚어내고 있구나. 동쪽과 서쪽 수문의 마나 핵을 먼저 타격하면 중앙 수문의 독기 분출이 절반으로 줄어들 게다.”",
+          "textEn": "“A hellish barrier! Acidic mist that dissolves steel plate within minutes. No army can march through that defile.”",
+          "bubbleType": "speech",
+          "position": "top-right",
+          "characterCardId": 45
+        },
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“형제가 길을 열어주었다. 주저 없이 돌파한다.”",
+          "textEn": "“Ignis is showing us the path. This is the structural flaw in their necrotic conduit.”",
+          "bubbleType": "speech",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
         }
       ]
     },
     {
       "sceneNumber": 14,
-      "imageFile": "episode_29/scene_14.jpeg",
-      "sourceImageFile": "Fake_Grand_Elder_uses_Iron_202607260802.jpeg",
-      "narrationEn": "When his identity was revealed, the fake Grand Elder used the real Iron Palm shock technique. His compression wave hit Celia's back, shattering his windscale armor from the inside.",
-      "narrationKo": "정체가 드러나자 가짜 대장로는 진짜 아이언팜 충격술을 사용했다. 그의 압축파가 실리아의 등을 때렸고, 바람비늘 갑옷이 안쪽에서 부서졌다.",
-      "sourceSentenceStart": 33,
-      "sourceSentenceEnd": 34,
-      "alignmentScore": 0.4296,
+      "imageFile": "episode_29/scene_14.webp",
+      "sourceImageFile": "episode_29/scene_14.webp",
+      "narrationEn": "\"Ignis is showing us the path. This is the structural flaw in their necrotic conduit.\" Leading an elite vanguard, Kadan and Cilia advanced to the northern water gates. Sulfuric fog choked the rocky canyon, and the waterways boiled with violet poison inscribed with Gorgo's necrotic runes.",
+      "narrationKo": "수로의 수문장이자 루시안의 심복인 독술사 아라크네가 거미줄 같은 독침을 번뜩이며 모습을 드러냈다. 아라크네가 기괴하게 웃음을 터뜨렸다. “어리석은 놈들! 이 사문의 독은 스치기만 해도 뼈까지 녹아내린다! 네놈들의 발걸음은 여기서 끝이다!”",
+      "sourceSentenceStart": 36,
+      "sourceSentenceEnd": 38,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“어리석은 놈들! 이 사문의 독은 스치기만 해도 뼈까지 녹아내린다! 네놈들의 발걸음은 여기서 끝이다!”",
+          "textEn": "“Ignis is showing us the path. This is the structural flaw in their necrotic conduit.”",
+          "bubbleType": "shout",
+          "position": "bottom-left",
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
         {
-          "textKo": "휘이이익-!",
-          "textEn": "SWOOSH!",
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
           "style": "slash",
-          "position": "top-left"
+          "position": "center"
         }
       ]
     },
     {
       "sceneNumber": 15,
-      "imageFile": "episode_29/scene_15.jpeg",
-      "sourceImageFile": "Woman_opens_escape_passage_staff_202607260802.jpeg",
-      "narrationEn": "Even as she fell, she opened an escape passage with her green jade staff. Kadan did not chase the enemy, but carried Celia. If he were his old self, he would have tried not to miss the villain.",
-      "narrationKo": "그녀는 쓰러지면서도 녹옥 지팡이로 피난 통로를 열었다. 카단은 적을 쫓지 않고 실리아를 업었다. 예전의 자신이라면 악당을 놓치지 않으려 했을 것이다.",
-      "sourceSentenceStart": 35,
-      "sourceSentenceEnd": 37,
-      "alignmentScore": 0.4888,
+      "imageFile": "episode_29/scene_15.webp",
+      "sourceImageFile": "episode_29/scene_15.webp",
+      "narrationEn": "Surfacing from the venomous swamp, the venom-mistress Arachne sneered with spider-like fangs. \"Fools! A single breath of this miasma dissolves mortal flesh to bone! Your journey ends in this mire!\"",
+      "narrationKo": "수천 개의 독침이 비 오듯 쏟아져 내렸다. 카단이 드래곤 브레이커 방패를 전면에 세우며 별의 호흡을 폭발시켰다.",
+      "sourceSentenceStart": 39,
+      "sourceSentenceEnd": 40,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
-          "bubbleType": "shout",
-          "position": "top-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 16,
-      "imageFile": "episode_29/scene_16.jpeg",
-      "sourceImageFile": "Chibi_fantasy_RPG_illustration_s…_202607260802_11.jpeg",
-      "narrationEn": "Now I know that it is my responsibility to decide who to save first and deal with the consequences. Before Celia lost consciousness, he ordered the fake Grand Elder to be let go.",
-      "narrationKo": "지금은 누구를 먼저 구할지 결정하고 그 결과를 감당하는 것이 책임임을 알았다. 실리아는 정신을 잃기 전 가짜 대장로를 놓치라고 명령했다.",
-      "sourceSentenceStart": 38,
-      "sourceSentenceEnd": 39,
-      "alignmentScore": 0.3913,
-      "dialogues": [
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 17,
-      "imageFile": "episode_29/scene_17.jpeg",
-      "sourceImageFile": "Kadan_following_orders_record_202607260802.jpeg",
-      "narrationEn": "Kadan also told me not to pretend to be my own judgement and to leave a record of following orders. This was meant to ensure that the path of responsibility does not disappear even if the leader falls.",
-      "narrationKo": "카단이 자기 판단인 척하지 말고 명령을 따른 기록을 남기라고도 했다. 수장이 쓰러져도 책임의 경로가 사라지지 않게 하려는 말이었다.",
-      "sourceSentenceStart": 40,
-      "sourceSentenceEnd": 41,
-      "alignmentScore": 0.3907,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 18,
-      "imageFile": "episode_29/scene_18.jpeg",
-      "sourceImageFile": "Celia_stole_map_from_Elder_202607260802.jpeg",
-      "narrationEn": "Celia stole the map from the fake Grand Elder's waist before losing consciousness. The map showed four gateways across the mountain range and the sanctuary of Aqualord hidden at the end of them. He who manipulated life mana could repair the broken wind core.",
-      "narrationKo": "실리아는 의식을 잃기 전에 가짜 대장로의 허리에서 지도를 훔쳤다. 지도에는 산맥 너머 네 개의 관문과 그 끝에 숨은 아쿠아로드의 성소가 표시되어 있었다. 생명 마나를 다루는 그라면 부서진 바람 코어를 고칠 수 있었다.",
-      "sourceSentenceStart": 42,
-      "sourceSentenceEnd": 44,
-      "alignmentScore": 0.4843,
-      "dialogues": [
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단이 드래곤 브레이커 방패를 전면에 세우며 별의 호흡을 폭발시켰다.",
+          "textEn": "Your journey ends in this mire!\"",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
         {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
           "position": "top-right"
         },
-        {
-          "textKo": "휘이이익-!",
-          "textEn": "SWOOSH!",
-          "style": "slash",
-          "position": "top-left"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 19,
-      "imageFile": "episode_29/scene_19.jpeg",
-      "sourceImageFile": "Kadan_picks_up_Celia_202607260802.jpeg",
-      "narrationEn": "Kadan tied the green jade staff to his back and picked up Celia. Federation representatives followed suit, saying they would protect the leader, but he only allowed the minimum number of people.",
-      "narrationKo": "카단은 녹옥 지팡이를 등에 묶고 실리아를 안아 올렸다. 연맹 대표들은 수장을 지키겠다며 따라나섰지만 그는 최소 인원만 허락했다.",
-      "sourceSentenceStart": 45,
-      "sourceSentenceEnd": 46,
-      "alignmentScore": 0.3779,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 20,
-      "imageFile": "episode_29/scene_20.jpeg",
-      "sourceImageFile": "Army_irritated_gateway_at_night_202607260802.jpeg",
-      "narrationEn": "A large army only irritated the gateway. That night, Ignis's glass spark shined once in Kadan's pocket. A thin flame tilted toward the south, as if indicating the remaining path.",
-      "narrationKo": "대규모 병력은 관문을 자극할 뿐이었다. 그날 밤 이그니스의 유리 불씨가 카단의 주머니에서 한 번 빛났다. 마치 남은 길을 가리키는 듯 남쪽을 향해 가느다란 불꽃이 기울었다.",
-      "sourceSentenceStart": 47,
-      "sourceSentenceEnd": 49,
-      "alignmentScore": 0.4326,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "발소리를 죽여라. 어둠 속에서 숨을 고르는 거다.",
-          "textEn": "Muffle your footsteps. Catch your breath in the dark.",
-          "bubbleType": "whisper",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": [
         {
           "textKo": "콰아아앙!",
           "textEn": "BOOM!",
           "style": "impact",
           "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_29/scene_16.webp",
+      "sourceImageFile": "episode_29/scene_16.webp",
+      "narrationEn": "A storm of poisoned quills rained from the heights. Bracing his Dragon Breaker shield, Kadan unleashed the full power of star-breathing.",
+      "narrationKo": "“내 방패는 어떤 맹독 앞에서도 물러서지 않는다!” 드래곤 브레이커의 황금빛 방벽이 빗발치는 독침을 모조리 튕겨냈다. 실리아는 녹옥 지팡이를 휘둘러 청아한 바람의 돌풍을 일으키며 수로에 고여 있던 보랏빛 독안개를 단숨에 날려버렸다. 북문 수로 요새의 절벽 암벽들은 메두사 고르고의 산성 독액에 녹아내려 흉측한 동굴처럼 입을 벌리고 있었다. 아라크네의 독거미 마수들이 수백 마리씩 기어 나오며 맹독을 뿜어댔지만, 카단의 드래곤 브레이커 방패는 황금빛 별빛 장벽을 두르고 전진을 멈추지 않았다.",
+      "sourceSentenceStart": 41,
+      "sourceSentenceEnd": 43,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“내 방패는 어떤 맹독 앞에서도 물러서지 않는다!”",
+          "textEn": "“Fools! A single breath of this miasma dissolves mortal flesh to bone! Your journey ends in this mire!”",
+          "bubbleType": "shout",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
         },
         {
           "textKo": "파지지직!",
           "textEn": "CRACKLE!",
           "style": "magic",
           "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_29/scene_17.webp",
+      "sourceImageFile": "episode_29/scene_17.webp",
+      "narrationEn": "\"This shield shall never yield before any poison!\" The golden aegis deflected the volley harmlessly into the stone. Sweeping her Jade Staff, Cilia conjured an azure gale that purged the violet fog into the upper atmosphere.",
+      "narrationKo": "실리아는 녹옥 지팡이를 휘둘러 날카로운 진공의 칼날로 거미줄을 모조리 베어 넘겼다. 청량한 바람이 수로를 휩쓸며 독기둥을 허공으로 날려버렸다. 카단의 방패 돌파와 실리아의 정화 돌풍 앞에 아라크네의 독술 방어선은 순식간에 무너져 내렸다. 카단의 은빛 단검이 수문의 독기 제어 룬을 깔끔하게 절단하자, 부글거리던 보랏빛 독극물이 맑은 강물로 정화되며 사문의 첫 번째 관문이 활짝 열렸다. 도망친 적병들을 뒤로하고, 북쪽으로 향하는 광활한 대지가 눈앞에 펼쳐졌다.",
+      "sourceSentenceStart": 44,
+      "sourceSentenceEnd": 46,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "도망친 적병들을 뒤로하고, 북쪽으로 향하는 광활한 대지가 눈앞에 펼쳐졌다.",
+          "textEn": "Sweeping her Jade Staff, Cilia conjured an azure gale that purged the violet fog into the upper atmosphere.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_29/scene_18.webp",
+      "sourceImageFile": "episode_29/scene_18.webp",
+      "narrationEn": "With Kadan shattering the central runic conduit with his silver dagger, the boiling toxins neutralized into crystal springs. The first gate swung wide open, revealing the path to the Black Marsh. Standing beside Kadan, Cilia looked toward the northern horizon.",
+      "narrationKo": "저 멀리 북쪽 수평선에는 검푸른 늪지대의 먹구름이 똬리를 틀고 있었지만, 일행의 등 뒤에는 해방된 수도 라이트헤이븐의 황금빛 햇살이 찬란하게 쏟아져 내리고 있었다. 실리아가 카단의 곁으로 다가와 어깨를 나란히 했다. “이그니스가 남긴 불씨가 가리키는 곳으로, 끝까지 함께 가요.”",
+      "sourceSentenceStart": 47,
+      "sourceSentenceEnd": 49,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“이그니스가 남긴 불씨가 가리키는 곳으로, 끝까지 함께 가요.”",
+          "textEn": "“Where Ignis's light guides our steps, we walk together until the dawn.”",
+          "bubbleType": "speech",
+          "position": "bottom-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_29/scene_19.webp",
+      "sourceImageFile": "episode_29/scene_19.webp",
+      "narrationEn": "\"Where Ignis's light guides our steps, we walk together until the dawn.\" Grasping the warm ember in his pocket, Kadan nodded.",
+      "narrationKo": "카단은 주머니 속에서 따스하게 고동치는 유리 불씨를 쥐며 고개를 끄덕였다. “그래. 이 불씨가 꺼지지 않는 한, 우리는 결코 길을 잃지 않는다.”",
+      "sourceSentenceStart": 50,
+      "sourceSentenceEnd": 51,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“그래. 이 불씨가 꺼지지 않는 한, 우리는 결코 길을 잃지 않는다.”",
+          "textEn": "“Where Ignis's light guides our steps, we walk together until the dawn.”",
+          "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_29/scene_20.webp",
+      "sourceImageFile": "episode_29/scene_20.webp",
+      "narrationEn": "\"So long as this fire burns, we shall never lose our way.\" United in grief and unwavering resolve, the companions marched toward the final abyss.",
+      "narrationKo": "바람의 여왕과 성기사의 후예는 새로운 각오를 다지며, 최후의 결전지인 검은 늪지대를 향해 힘찬 발걸음을 내디뎠다. 첫 번째 관문이 무너지자, 갇혀 있던 수로의 수문이 열리며 맑은 물이 쏟아져 들어왔다. 패주하는 독술사 무리를 뒤로하고, 카단과 실리아는 북쪽 평원을 바라보았다. 검은 늪지대의 먹구름 너머로 루시안의 마지막 요새가 도사리고 있었다. 실리아가 카단의 손을 잡으며 말했다. “바람은 결코 멈추지 않아요. 우리가 지나간 자리에 반드시 평화로운 꽃이 필 거예요.” 카단은 주머니 속의 유리 불씨를 쥐며 화답했다. “가자, 최후의 결전지로.”",
+      "sourceSentenceStart": 52,
+      "sourceSentenceEnd": 54,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“바람은 결코 멈추지 않아요. 우리가 지나간 자리에 반드시 평화로운 꽃이 필 거예요.”",
+          "textEn": "“So long as this fire burns, we shall never lose our way.”",
+          "bubbleType": "speech",
+          "position": "top-left",
+          "characterCardId": 62
+        },
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“가자, 최후의 결전지로.”",
+          "textEn": "“\"So long as this fire burns, we shall never lose our way.\" United in grief and unwavering resolve, the companions marched toward the final abyss.”",
+          "bubbleType": "speech",
+          "position": "top-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
         }
       ]
     }

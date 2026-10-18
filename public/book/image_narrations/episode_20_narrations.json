@@ -2,137 +2,260 @@
   "episodeNumber": 20,
   "episodeTitleEn": "The Wave That Swallowed the Flower Ship",
   "episodeTitleKo": "꽃배를 삼킨 파도",
-  "sourceSentenceCount": 57,
+  "sourceSentenceCount": 36,
   "sceneCount": 20,
   "scenes": [
     {
       "sceneNumber": 1,
-      "imageFile": "episode_20/scene_01.jpeg",
-      "sourceImageFile": "Celia_on_burning_ship_202607260802.jpeg",
-      "narrationEn": "There were no war ships in the port of Wind Island. Celia created an evacuation boat by connecting flower boats used during festivals.",
-      "narrationKo": "바람섬의 항구에는 전쟁용 배가 없었다. 실리아는 축제 때 쓰는 꽃배들을 이어 피난선을 만들었다.",
+      "imageFile": "episode_20/scene_01.webp",
+      "sourceImageFile": "episode_20/scene_01.webp",
+      "narrationEn": "Entering the sanctum of the Jade Barrier Spire, the companions discovered that High Elder Zephyr had already integrated the core mana matrix into the obsidian apparatus of the Nine Shadows Codex. Forbidden abyssal mana tainted the jade conduits of the spire, shaking the foundations of the island. Black lightning erupted from the apex, cleaving through the ocean horizon and awakening a catastrophic tidal wave from the sleeping depths. Ancient mana circulation systems that had maintained the island's gentle climate for thousands of years inverted with cataclysmic violence, staining the heavens crimson as colossal marble walls fractured and tumbled into the abyss. Zephyr shrieked in maniacal ecstasy as he primed the conduits.",
+      "narrationKo": "비취 결계탑의 중심부에 진입했을 때, 제피르 대장로는 이미 제단 중앙의 마나 코어를 ‘나인섀도우 코덱스’의 칠흑빛 마도 장치와 강제로 연결해 둔 상태였다. 금지된 암흑 마나가 비취색 결계탑의 회로를 시커멓게 오염시키며 대지를 뒤흔들었고, 탑의 첨탑에서 뿜어져 나온 검은 번개가 대해의 수평선을 가르며 잠들어 있던 심연의 해일(海嘯)을 깨워 올렸다. 수천 년 동안 섬의 온화한 기후를 유지해 주던 고대 마나 순환계가 역류하면서 하늘은 핏빛으로 물들었고, 지축을 뒤흔드는 진동과 함께 성전의 거대한 대리석 벽면들이 무너져 내렸다. 제피르가 광기에 찬 비웃음을 터뜨리며 마도 장치를 작동시켰다.",
       "sourceSentenceStart": 1,
       "sourceSentenceEnd": 2,
-      "alignmentScore": 0.3339,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-left"
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "제피르가 광기에 찬 비웃음을 터뜨리며 마도 장치를 작동시켰다.",
+          "textEn": "Zephyr shrieked in maniacal ecstasy as he primed the conduits.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 25
         }
       ],
       "sfxCues": [
         {
-          "textKo": "휘이이익-!",
-          "textEn": "SWOOSH!",
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
           "style": "slash",
-          "position": "top-left"
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
         }
       ]
     },
     {
       "sceneNumber": 2,
-      "imageFile": "episode_20/scene_02.jpeg",
-      "sourceImageFile": "Children_and_elderly_in_cabin_202607260802.jpeg",
-      "narrationEn": "The children and the elderly were placed in the central cabin, and the fog passage was opened with Aeolus's flute. The colorful flower decorations were a target in the night sea, but there was no time to take them off. Instead of tearing down the flower decorations, the islanders hung empty cloth bags under the flowers.",
-      "narrationKo": "아이와 노인을 중앙 선실에 태우고, 에올루스의 피리로 안개 항로를 열었다. 화려한 꽃장식은 밤바다에서 표적이 되었지만 떼어 낼 시간이 없었다. 섬 주민들은 꽃장식을 뜯는 대신 빈 천 주머니를 꽃 아래 매달았다.",
+      "imageFile": "episode_20/scene_02.webp",
+      "sourceImageFile": "episode_20/scene_02.webp",
+      "narrationEn": "\"Foolish Aeolus and witless princess! Whispering Wind Island shall serve as the grand sacrificial altar for the new era! Once the ocean swallows everything, the empire and I shall rule supreme over the continent!\" Kadan and Ignis surged forward, but a violent concussive shockwave from the collapsing core swept Zephyr into a spatial teleportation rift. Laughing in vile triumph, the traitor fled toward the imperial capital.",
+      "narrationKo": "“어리석은 에올루스와 철없는 왕녀여! 바람 속삭임 섬은 오늘부로 신세계를 열어젖힐 거대한 제물이 될 것이다! 대해의 심연이 모든 것을 삼키고 나면, 황실과 내가 손을 잡고 이 대륙의 새로운 지배자로 군림할 것이다!” 카단과 이그니스가 무기를 쥐고 앞으로 달려들었지만, 폭주하는 결계탑의 마나 역류가 거대한 충격파를 일으키며 제피르의 신형을 공간 전이진 속으로 삼켜버렸다. 제피르는 비열한 웃음소리만을 남긴 채 황궁이 있는 대륙 수도로 도망쳐 버린 것이었다.",
       "sourceSentenceStart": 3,
-      "sourceSentenceEnd": 5,
-      "alignmentScore": 0.5203,
+      "sourceSentenceEnd": 4,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“어리석은 에올루스와 철없는 왕녀여! 바람 속삭임 섬은 오늘부로 신세계를 열어젖힐 거대한 제물이 될 것이다! 대해의 심연이 모든 것을 삼키고 나면, 황실과 내가 손을 잡고 이 대륙의 새로운 지배자로 군림할 것이다!”",
+          "textEn": "“Foolish Aeolus and witless princess! Whispering Wind Island shall serve as the grand sacrificial altar for the new era! Once the ocean swallows everything, the empire and I shall rule supreme over the continent!”",
           "bubbleType": "shout",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 3,
-      "imageFile": "episode_20/scene_03.jpeg",
-      "sourceImageFile": "Celia_forming_shield_from_arrow_202607260802.jpeg",
-      "narrationEn": "It had a structure that caught the wind when an arrow flew, forming a small shield. The tailors preparing for the festival repaired the sails faster than the war engineers. Rather than giving orders, Celia connected each person's skills to where they were needed.",
-      "narrationKo": "화살이 날아오면 바람을 머금어 작은 방패가 되는 구조였다. 축제를 준비하던 재봉사들이 전쟁 기술자보다 빠르게 돛을 고쳤다. 실리아는 명령을 내리기보다 각자가 가진 기술이 어디에 필요한지 연결했다.",
-      "sourceSentenceStart": 6,
-      "sourceSentenceEnd": 8,
-      "alignmentScore": 0.3598,
-      "dialogues": [
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
+          "position": "bottom-left",
+          "characterCardId": 11
         }
       ],
       "sfxCues": [
         {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
           "position": "top-right"
         },
         {
-          "textKo": "휘이이익-!",
-          "textEn": "SWOOSH!",
-          "style": "slash",
-          "position": "top-left"
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_20/scene_03.webp",
+      "sourceImageFile": "episode_20/scene_03.webp",
+      "narrationEn": "At that moment, the frantic clangor of the island's temple bells echoed from the harbors below, accompanied by the terrified screams of thousands of citizens.",
+      "narrationKo": "그 순간, 섬 아래 항구 쪽에서 수천 명의 섬 주민들이 지르는 처절한 비명과 함께 성스러운 경종이 요란하게 울려 퍼졌다.",
+      "sourceSentenceStart": 5,
+      "sourceSentenceEnd": 5,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그 순간, 섬 아래 항구 쪽에서 수천 명의 섬 주민들이 지르는 처절한 비명과 함께 성스러운 경종이 요란하게 울려 퍼졌다.",
+          "textEn": "At that moment, the frantic clangor of the island's temple bells echoed from the harbors below, accompanied by the terrified screams of thousands of citizens.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
         }
       ]
     },
     {
       "sceneNumber": 4,
-      "imageFile": "episode_20/scene_04.jpeg",
-      "sourceImageFile": "Fleet_bombarded_island_artificia…_202607260802.jpeg",
-      "narrationEn": "Lucian's fleet bombarded the island. The artificial white flame did not go out even on the water and followed the evacuation ship. Ignis stood on the bow and read the structure of the same flame.",
-      "narrationKo": "루시안의 함대가 섬을 포격했다. 인공 백색 화염은 물 위에서도 꺼지지 않고 피난선을 따라왔다. 이그니스는 뱃머리에 서서 같은 불꽃의 구조를 읽었다.",
-      "sourceSentenceStart": 9,
-      "sourceSentenceEnd": 11,
-      "alignmentScore": 0.6269,
+      "imageFile": "episode_20/scene_04.webp",
+      "sourceImageFile": "episode_20/scene_04.webp",
+      "narrationEn": "Rushing to the terrace, Cilia looked down and turned pale as ash. \"No! Zephyr has dismantled the elemental barriers, unsealing the oceanic abyss! A black tsunami hundreds of fathoms high is bearing down upon the harbor!\"",
+      "narrationKo": "실리아가 결계탑 테라스로 달려 나가 절벽 아래를 내려다보며 사색이 되었다. “안 돼요! 제피르가 결계탑의 수호를 완전히 무너뜨려 바다의 심연을 개방했어요! 높이 수백 길에 달하는 검은 해일이 항구로 밀려들고 있어요!”",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 7,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "루시안",
-          "speakerEn": "Lucian",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-right"
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“안 돼요! 제피르가 결계탑의 수호를 완전히 무너뜨려 바다의 심연을 개방했어요! 높이 수백 길에 달하는 검은 해일이 항구로 밀려들고 있어요!”",
+          "textEn": "“No! Zephyr has dismantled the elemental barriers, unsealing the oceanic abyss! A black tsunami hundreds of fathoms high is bearing down upon the harbor!”",
+          "bubbleType": "shout",
+          "position": "top-left",
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
         {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
         }
       ]
     },
     {
       "sceneNumber": 5,
-      "imageFile": "episode_20/scene_05.jpeg",
-      "sourceImageFile": "Kadan_and_Ignis_in_ruins_202607260802.jpeg",
-      "narrationEn": "It was a replica made of his blood, but it was designed to react to fear and anger. “The more I shake, the stronger that fire becomes. ” Kadan did not erect a shield in front of Ignis.",
-      "narrationKo": "그것은 그의 피로 만든 모조품이지만 두려움과 분노에 반응하도록 설계되어 있었다. “내가 흔들릴수록 저 불이 강해진다.” 카단은 이그니스의 앞에 방패를 세우지 않았다.",
-      "sourceSentenceStart": 12,
-      "sourceSentenceEnd": 14,
-      "alignmentScore": 0.5426,
+      "imageFile": "episode_20/scene_05.webp",
+      "sourceImageFile": "episode_20/scene_05.webp",
+      "narrationEn": "Whispering Wind Island possessed not a single war galley. Only hundreds of traditional ceremonial 'Flower Boats'—timber barges festooned with water lilies, lotus blooms, and spring irises for the equinox festival—were moored along the wharves. The festive vessels that had once wafted sweet floral fragrances were now fragile leaves tossed before a wall of liquid death. As the mountain of black water crested the horizon, panic consumed the gathering refugees. Mooring pylons groaned and snapped under the violent receding undertow, flooding the wharves in chaos.",
+      "narrationKo": "바람 속삭임 섬의 항구에는 전쟁용 군함이 단 한 척도 없었다. 평화를 사랑하던 엘프 주민들이 봄맞이 축제를 위해 연꽃과 수선화, 백합꽃으로 아름답게 치장해 둔 수백 척의 ‘꽃배’들만이 나루터에 정박해 있을 뿐이었다. 향긋한 꽃향기를 풍기던 축제의 배들이 이제는 성난 파도 앞에 놓인 가련한 낙엽 신세가 되어 있었다. 산더미 같은 검은 파도가 수평선 전체를 칠흑의 장벽처럼 가로막으며 다가오자, 나루터에 모여 있던 수천 명의 주민들과 피난민들은 공포에 질려 우왕좌왕 흩어졌다. 부두의 목재 받침 기둥들이 해일의 전조로 일어난 거대한 너울에 삐걱거리며 차례로 부러져 나가기 시작했고, 바닷물이 부두 위로 역류하며 대혼란이 빚어졌다.",
+      "sourceSentenceStart": 8,
+      "sourceSentenceEnd": 9,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "내가 흔들릴수록 저 불이 강해진다.",
-          "textEn": "The more I shake, the stronger that fire becomes. ",
-          "bubbleType": "speech",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "부두의 목재 받침 기둥들이 해일의 전조로 일어난 거대한 너울에 삐걱거리며 차례로 부러져 나가기 시작했고, 바닷물이 부두 위로 역류하며 대혼란이 빚어졌다.",
+          "textEn": "Mooring pylons groaned and snapped under the violent receding undertow, flooding the wharves in chaos.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
           "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_20/scene_06.webp",
+      "sourceImageFile": "episode_20/scene_06.webp",
+      "narrationEn": "Raising her Jade Staff, Cilia projected her voice across the harbor with wind magic. \"People of Whispering Wind Island, hear my voice! I am Cilia, daughter of Queen Sylphid! There is nowhere on land to flee! Board every flower barge along the piers! The festive craft of our ancestors shall serve as our ark of salvation!\"",
+      "narrationKo": "실리아가 녹옥 지팡이를 치켜들며 바람의 확성 마법으로 항구 전체에 청아하고도 우렁차게 호소했다. “바람 속삭임 섬의 백성들이여, 내 목소리를 들으세요! 나는 실피드 여왕의 딸 실리아입니다! 육지에는 더 이상 도망칠 곳이 없습니다! 항구에 정박한 모든 꽃배에 올라타세요! 축제의 꽃배들이 우리를 살릴 구원의 방주가 될 것입니다!”",
+      "sourceSentenceStart": 10,
+      "sourceSentenceEnd": 11,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“바람 속삭임 섬의 백성들이여, 내 목소리를 들으세요! 나는 실피드 여왕의 딸 실리아입니다! 육지에는 더 이상 도망칠 곳이 없습니다! 항구에 정박한 모든 꽃배에 올라타세요! 축제의 꽃배들이 우리를 살릴 구원의 방주가 될 것입니다!”",
+          "textEn": "“People of Whispering Wind Island, hear my voice! I am Cilia, daughter of Queen Sylphid! There is nowhere on land to flee! Board every flower barge along the piers! The festive craft of our ancestors shall serve as our ark of salvation!”",
+          "bubbleType": "shout",
+          "position": "bottom-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_20/scene_07.webp",
+      "sourceImageFile": "episode_20/scene_07.webp",
+      "narrationEn": "Inspired by Cilia's clarion call, the islanders rallied, boarding the barges in disciplined haste. Stamping his iron pegleg upon the planks, Rondol took command of the dockside evacuations.",
+      "narrationKo": "실리아의 간절한 외침에 방황하던 주민들이 희망을 되찾고 질서정연하게 꽃배에 오르기 시작했다. 론돌이 목재 의족을 쿵쿵 울리며 부두 전면에 나서서 사공들을 진두지휘했다.",
+      "sourceSentenceStart": 12,
+      "sourceSentenceEnd": 13,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "론돌이 목재 의족을 쿵쿵 울리며 부두 전면에 나서서 사공들을 진두지휘했다.",
+          "textEn": "Stamping his iron pegleg upon the planks, Rondol took command of the dockside evacuations.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_20/scene_08.webp",
+      "sourceImageFile": "episode_20/scene_08.webp",
+      "narrationEn": "\"Board the children and elders first! Thirty souls per barge, sturdy hands to the oars on port and starboard! By Rondol's name, the sea shall not claim a single life today!\"",
+      "narrationKo": "“아이들과 노약자들을 먼저 태워라! 배 한 척에 서른 명씩, 노를 잡을 수 있는 장정들은 양쪽에 붙어라! 론돌의 이름을 걸고 단 한 사람도 파도에 빼앗기지 않는다!”",
+      "sourceSentenceStart": 14,
+      "sourceSentenceEnd": 14,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "론돌",
+          "speakerEn": "Rondol",
+          "textKo": "“아이들과 노약자들을 먼저 태워라! 배 한 척에 서른 명씩, 노를 잡을 수 있는 장정들은 양쪽에 붙어라! 론돌의 이름을 걸고 단 한 사람도 파도에 빼앗기지 않는다!”",
+          "textEn": "“Board the children and elders first! Thirty souls per barge, sturdy hands to the oars on port and starboard! By Rondol's name, the sea shall not claim a single life today!”",
+          "bubbleType": "shout",
+          "position": "top-left",
+          "characterCardId": 46
         }
       ],
       "sfxCues": [
@@ -145,108 +268,32 @@
       ]
     },
     {
-      "sceneNumber": 6,
-      "imageFile": "episode_20/scene_06.jpeg",
-      "sourceImageFile": "Ignis_hiding_fear_scene_202607260802.jpeg",
-      "narrationEn": "“Then shake it. Instead, don’t hold on alone. ” For the first time, Ignis did not hide his fear.",
-      "narrationKo": "“그럼 흔들려. 대신 혼자 버티지 마.” 이그니스는 처음으로 두려움을 숨기지 않았다.",
-      "sourceSentenceStart": 15,
-      "sourceSentenceEnd": 17,
-      "alignmentScore": 0.682,
-      "dialogues": [
-        {
-          "speakerKo": "이그니스",
-          "speakerEn": "Ignis",
-          "textKo": "그럼 흔들려. 대신 혼자 버티지 마.",
-          "textEn": "Then shake it. Instead, don’t hold on alone. ",
-          "bubbleType": "speech",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 7,
-      "imageFile": "episode_20/scene_07.jpeg",
-      "sourceImageFile": "Lucian_speaking_fear_throne_202607260802.jpeg",
-      "narrationEn": "The death of his parents, the voice of Lucian, and the fear of losing his throne were spoken one by one. Emotions expressed in words were no longer prey to fake flames.",
-      "narrationKo": "부모의 죽음, 루시안의 목소리, 왕좌를 잃는 공포를 하나씩 입 밖에 냈다. 말로 드러난 감정은 더 이상 모조 화염의 먹이가 되지 못했다.",
-      "sourceSentenceStart": 18,
-      "sourceSentenceEnd": 19,
-      "alignmentScore": 0.4199,
-      "dialogues": [
-        {
-          "speakerKo": "루시안",
-          "speakerEn": "Lucian",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 8,
-      "imageFile": "episode_20/scene_08.jpeg",
-      "sourceImageFile": "Celia_turns_wind_against_fleet_202607260802.jpeg",
-      "narrationEn": "The moment the flames abated, Celia turned the wind and sent it back to the enemy fleet. His confession wasn't cool. Sentences were often interrupted, he said the same thing twice, and when he admitted to being jealous of Kadan, the flames flew again.",
-      "narrationKo": "불길이 약해지는 순간 실리아가 바람을 뒤집어 적 함대로 돌려보냈다. 그의 고백은 멋있지 않았다. 문장은 자주 끊겼고, 같은 말을 두 번 했으며, 카단을 질투했다고 인정할 때에는 불꽃이 다시 치솟았다.",
-      "sourceSentenceStart": 20,
-      "sourceSentenceEnd": 22,
-      "alignmentScore": 0.3678,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
-          "bubbleType": "shout",
-          "position": "top-right"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
-        },
-        {
-          "textKo": "휘이이익-!",
-          "textEn": "SWOOSH!",
-          "style": "slash",
-          "position": "top-left"
-        }
-      ]
-    },
-    {
       "sceneNumber": 9,
-      "imageFile": "episode_20/scene_09.jpeg",
-      "sourceImageFile": "Kadan_waited_for_words_202607260802.jpeg",
-      "narrationEn": "Kadan did not give advice and waited for the next words. When Ignis finally said, “I still want to be king,” the mock flame shook the most and then went out. In Poison Dragon Ship, Belphegor called Medusa Gorgo.",
-      "narrationKo": "카단은 충고하지 않고 다음 말을 기다렸다. 이그니스가 마지막으로 “아직도 왕이 되고 싶다”고 말했을 때 모조 화염이 가장 크게 흔들렸다가 꺼졌다. 독룡선에서는 벨페고르가 메두사 고르고를 불렀다.",
-      "sourceSentenceStart": 23,
-      "sourceSentenceEnd": 25,
-      "alignmentScore": 0.462,
+      "imageFile": "episode_20/scene_09.webp",
+      "sourceImageFile": "episode_20/scene_09.webp",
+      "narrationEn": "Ignis bounded onto the piers, wielding his pure white flame to incinerate fallen timber and shattered rocks, carving open departure channels for the flower barges. The hands of the former imperial commander now reached out to lift weeping children and frail elders safely onto the decks. Bracing fallen beams with his iron shield, Kadan cleared paths for the elderly. Kadan called out to the boatmen.",
+      "narrationKo": "이그니스 역시 부두로 뛰어내려와 순백의 화염으로 거친 암초와 부러진 목재들을 태워 없애며 꽃배들의 출항로를 확보했다. 과거 황실의 차가운 사냥개였던 청년의 손길이 이제는 눈물 흘리는 어린아이들을 번쩍 안아 올려 배 위에 태우는 구원의 손길로 변해 있었다. 카단 역시 쓰러진 목재를 무쇠 방패로 들어 올리며 노인들의 탈출을 도왔다. 카단이 선원들을 독려했다.",
+      "sourceSentenceStart": 15,
+      "sourceSentenceEnd": 16,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "아직도 왕이 되고 싶다",
-          "textEn": "I still want to be king,",
-          "bubbleType": "speech",
-          "position": "top-right"
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단이 선원들을 독려했다.",
+          "textEn": "Kadan called out to the boatmen.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 11
         }
       ],
       "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
         {
           "textKo": "콰아아앙!",
           "textEn": "BOOM!",
@@ -257,146 +304,22 @@
     },
     {
       "sceneNumber": 10,
-      "imageFile": "episode_20/scene_10.jpeg",
-      "sourceImageFile": "Medusa_Gorgo_cuts_fan_202607260802.jpeg",
-      "narrationEn": "He said that if you turn over the codex piece, you can go back to the past. Medusa Gorgo cut his fan in two with a chain whip. “There is no past we can go back to.",
-      "narrationKo": "그는 코덱스 조각을 넘기면 과거로 돌아갈 수 있다고 했다. 메두사 고르고는 사슬채찍으로 그의 부채를 두 동강 냈다. “우리가 돌아갈 과거는 없어.",
-      "sourceSentenceStart": 26,
-      "sourceSentenceEnd": 28,
-      "alignmentScore": 0.5754,
+      "imageFile": "episode_20/scene_10.webp",
+      "sourceImageFile": "episode_20/scene_10.webp",
+      "narrationEn": "\"Make haste! Cast off the mooring lines before the deluge swallows the wharves!\" Yet from beyond the boiling swell rose the Leviathan, a colossal sea behemoth corrupted by Medusa Gorgo's necrotic blight. Riding the crest of the black deluge, the abomination opened its gaping maw, charging a cataclysmic beam of shadow mana aimed squarely at the refugee flotilla. If the tsunami struck, the wooden flower boats would be obliterated into splinters.",
+      "narrationKo": "“서둘러라! 파도가 부두를 집어삼키기 전에 닻줄을 풀고 바다로 나가야 한다!” 그러나 수평선 너머에서 메두사 고르고의 암흑 마나에 잠식된 거대한 심연의 마수 ‘리바이어던’이 거대한 촉수를 치켜들며 모습을 드러냈다. 수백 길에 달하는 검은 해일의 꼭대기에 올라탄 마수는 피난민들이 탄 수백 척의 꽃배를 향해 치명적인 암흑 마나 광선을 조준하고 있었다. 검은 파도가 덮치면 꽃배들은 산산조각 나고 수천의 목숨이 수장될 절체절명의 위기였다.",
+      "sourceSentenceStart": 17,
+      "sourceSentenceEnd": 18,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 11,
-      "imageFile": "episode_20/scene_11.jpeg",
-      "sourceImageFile": "Belphegor_causes_ship_to_explode_202607260802.jpeg",
-      "narrationEn": "So make the right choice at least next time. ” Belphegor was furious and caused the Poison Dragon Ship's heart path to explode. The crew members trapped inside the ship were in danger of dying together.",
-      "narrationKo": "그러니 다음 선택이라도 제대로 해.” 벨페고르는 분노해 독룡선의 심장로를 폭주시켰다. 배 안에 갇힌 선원들까지 함께 죽을 상황이었다.",
-      "sourceSentenceStart": 29,
-      "sourceSentenceEnd": 31,
-      "alignmentScore": 0.3898,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 12,
-      "imageFile": "episode_20/scene_12.jpeg",
-      "sourceImageFile": "Kadan_freed_crew_Ignis_drew_202607260802.jpeg",
-      "narrationEn": "Kadan crossed over to the enemy ship and freed the crew, while Ignis drew the heat from the heart into its core. The pain of returning the power that had been taken away through the forbidden liquor tore through my entire body. Celia cut off all the sails on the flower boat and turned them into a huge wind net.",
-      "narrationKo": "카단은 적선으로 건너가 선원들을 풀었고, 이그니스는 심장로의 열을 자신의 코어로 끌어들였다. 금지술로 빼앗은 힘을 돌려보내는 고통이 전신을 찢었다. 실리아는 꽃배의 돛을 모두 끊어 거대한 바람그물로 만들었다.",
-      "sourceSentenceStart": 32,
-      "sourceSentenceEnd": 34,
-      "alignmentScore": 0.3706,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
+          "textKo": "“서둘러라! 파도가 부두를 집어삼키기 전에 닻줄을 풀고 바다로 나가야 한다!”",
+          "textEn": "“Make haste! Cast off the mooring lines before the deluge swallows the wharves!”",
           "bubbleType": "shout",
-          "position": "top-right"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "쿠구구궁!",
-          "textEn": "RUMBLE!",
-          "style": "rumble",
-          "position": "bottom-left"
-        },
-        {
-          "textKo": "휘이이익-!",
-          "textEn": "SWOOSH!",
-          "style": "slash",
-          "position": "top-left"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 13,
-      "imageFile": "episode_20/scene_13.jpeg",
-      "sourceImageFile": "Belphegor_holds_rudder,_Medusa_h…_202607260802.jpeg",
-      "narrationEn": "I tried to push the poisonous dragon ship that was about to explode into the empty sea, but Belphegor held the rudder and did not let go. Medusa Gorgo held his hand for the last time. “Don’t ask me to go with you.",
-      "narrationKo": "폭발 직전의 독룡선을 빈 바다로 밀어내려 했지만, 벨페고르가 키를 고정한 채 놓지 않았다. 메두사 고르고가 마지막으로 그의 손을 잡았다. “같이 가자고 하지 마.”",
-      "sourceSentenceStart": 35,
-      "sourceSentenceEnd": 37,
-      "alignmentScore": 0.6623,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "같이 가자고 하지 마.",
-          "textEn": "“같이 가자고 하지 마.”",
-          "bubbleType": "speech",
-          "position": "top-right"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 14,
-      "imageFile": "episode_20/scene_14.jpeg",
-      "sourceImageFile": "Belphegor_said_next_choice_202607260802.jpeg",
-      "narrationEn": "” Belphegor said. “At least one person has to make the next choice.",
-      "narrationKo": "벨페고르가 말했다. “적어도 한 사람은 다음 선택을 해야지.”",
-      "sourceSentenceStart": 38,
-      "sourceSentenceEnd": 39,
-      "alignmentScore": 0.637,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "적어도 한 사람은 다음 선택을 해야지.",
-          "textEn": "“적어도 한 사람은 다음 선택을 해야지.”",
-          "bubbleType": "speech",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 15,
-      "imageFile": "episode_20/scene_15.jpeg",
-      "sourceImageFile": "Medusa_Gorgo_pushed_into_sea_202607260802.jpeg",
-      "narrationEn": "” He pushed Medusa Gorgo into the sea. The poisonous dragon ship exploded and a pillar of black fire rose. The shock wave broke the connection of the flower boat and scattered the refuge ships in all directions.",
-      "narrationKo": "그는 메두사 고르고를 바다로 밀어냈다. 독룡선이 폭발하며 검은 불기둥이 솟았다. 충격파가 꽃배의 연결부를 끊고 피난선들을 사방으로 흩뜨렸다.",
-      "sourceSentenceStart": 40,
-      "sourceSentenceEnd": 42,
-      "alignmentScore": 0.5721,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "검끝이 흔들리지 않는 한, 길은 열린다.",
-          "textEn": "As long as our blades do not waver, the path will open.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
+          "position": "bottom-left",
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
@@ -406,34 +329,6 @@
           "style": "slash",
           "position": "top-right"
         },
-        {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 16,
-      "imageFile": "episode_20/scene_16.jpeg",
-      "sourceImageFile": "Kadan_jumps_into_water_202607260802.jpeg",
-      "narrationEn": "Kadan jumped into the water to find Celia, who had fallen into the water. They caught the hem of her silver-blue dress beneath the waves, but the whirlpool dragged them both away from the ship. The red mane of Pegasus and the light of Ignis were briefly visible above the water and then obscured by heavy rain.",
-      "narrationKo": "카단은 물에 빠진 실리아를 찾아 뛰어들었다. 파도 아래에서 그녀의 은청색 옷자락을 붙잡았지만 소용돌이가 두 사람을 배에서 멀리 끌고 갔다. 페가수스의 붉은 갈기와 이그니스의 불빛이 수면 위로 잠깐 보이다가 폭우에 가려졌다.",
-      "sourceSentenceStart": 43,
-      "sourceSentenceEnd": 45,
-      "alignmentScore": 0.452,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-right"
-        }
-      ],
-      "sfxCues": [
         {
           "textKo": "파지지직!",
           "textEn": "CRACKLE!",
@@ -443,22 +338,58 @@
       ]
     },
     {
-      "sceneNumber": 17,
-      "imageFile": "episode_20/scene_17.jpeg",
-      "sourceImageFile": "Celia_unconscious_with_staff_202607260802.jpeg",
-      "narrationEn": "In the water, Celia was unconscious and did not let go of the green jade staff. Kadan knew that if he threw away the wand, two people could come to mind, but he also knew that it was not Celia's personal belongings, but the trust of the refugees. He first unwrapped his armor and his father's empty sword scabbard and released them into the sea.",
-      "narrationKo": "물속에서 실리아는 의식을 잃은 채 녹옥 지팡이를 놓지 않았다. 카단은 지팡이를 버리면 두 사람이 떠오를 수 있다는 것을 알았지만, 그것이 실리아 개인의 물건이 아니라 피난민들의 신뢰라는 것도 알았다. 그는 자기 갑옷과 아버지의 빈 검집을 먼저 풀어 바다에 놓아 주었다.",
-      "sourceSentenceStart": 46,
-      "sourceSentenceEnd": 48,
-      "alignmentScore": 0.6411,
+      "sceneNumber": 11,
+      "imageFile": "episode_20/scene_11.webp",
+      "sourceImageFile": "episode_20/scene_11.webp",
+      "narrationEn": "In that fatal instant, Kadan bounded onto the timber prow of the flagship 'Breeze Wing' at the van of the flotilla. Grasping his unadorned iron shield with both hands, Kadan drew the foundational power of the earth deep into his spirit. The ultimate defensive mystery passed down by Master Aleksandar—the 'Star-Steadfast Bulwark'—ignited within Kadan's breast in an aura of brilliant starlight.",
+      "narrationKo": "그 순간, 카단이 꽃배 선단의 맨 앞에 선 기함 ‘미풍의날개호’의 뱃머리로 도약했다. 카단은 양손으로 무쇠 방패를 꽉 쥐며 대지의 마나를 온몸으로 끌어올렸다. 알렉산다르 스승이 생전에 전수했던 성기사의 궁극오의, ‘성진불락벽(星辰不落壁)’의 호흡이 카단의 가슴속에서 찬란한 별빛으로 타올랐다.",
+      "sourceSentenceStart": 19,
+      "sourceSentenceEnd": 20,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "알렉산다르 스승이 생전에 전수했던 성기사의 궁극오의, ‘성진불락벽(星辰不落壁)’의 호흡이 카단의 가슴속에서 찬란한 별빛으로 타올랐다.",
+          "textEn": "The ultimate defensive mystery passed down by Master Aleksandar—the 'Star-Steadfast Bulwark'—ignited within Kadan's breast in an aura of brilliant starlight.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_20/scene_12.webp",
+      "sourceImageFile": "episode_20/scene_12.webp",
+      "narrationEn": "Planting his boots into the timbers, Kadan unleashed a lion-hearted roar. \"To protect the warmth behind me, this shield shall never break! Guardians of the earth, awaken through the breath of the stars!\"",
+      "narrationKo": "카단이 방패를 앞으로 내지르며 사자후를 토해냈다. “등 뒤의 온기를 지키기 위해 내 방패는 결코 깨어지지 않는다! 대지의 수호령들이여, 별의 숨결로 일어서라!”",
+      "sourceSentenceStart": 21,
+      "sourceSentenceEnd": 22,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "검끝이 흔들리지 않는 한, 길은 열린다.",
-          "textEn": "As long as our blades do not waver, the path will open.",
-          "bubbleType": "speech",
-          "position": "top-left"
+          "textKo": "“등 뒤의 온기를 지키기 위해 내 방패는 결코 깨어지지 않는다! 대지의 수호령들이여, 별의 숨결로 일어서라!”",
+          "textEn": "“To protect the warmth behind me, this shield shall never break! Guardians of the earth, awaken through the breath of the stars!”",
+          "bubbleType": "shout",
+          "position": "top-left",
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
@@ -471,31 +402,201 @@
       ]
     },
     {
-      "sceneNumber": 18,
-      "imageFile": "episode_20/scene_18.jpeg",
-      "sourceImageFile": "Aeolus_sends_rescue_signal_flute_202607260802.jpeg",
-      "narrationEn": "Aeolus sent a rescue signal with a flute. Ignis was lying on the deck with its core burned out. Medusa Gorgo could have killed him or taken the codex piece, but instead, he drew a reverse rune that calmed the flame.",
-      "narrationKo": "에올루스는 피리로 구조 신호를 보냈다. 이그니스는 코어가 타 버린 채 갑판에 쓰러져 있었다. 메두사 고르고는 그를 죽일 수도, 코덱스 조각을 빼앗을 수도 있었으나 대신 불꽃을 진정시키는 역순 룬을 그렸다.",
-      "sourceSentenceStart": 49,
-      "sourceSentenceEnd": 51,
-      "alignmentScore": 0.5955,
+      "sceneNumber": 13,
+      "imageFile": "episode_20/scene_13.webp",
+      "sourceImageFile": "episode_20/scene_13.webp",
+      "narrationEn": "A monumental wall of celestial blue starlight erupted from Kadan's shield. Cilia channeled the tempestuous winds of the Jade Staff into the barrier, while King Aeolus directed the full fury of his storm mana from the Sky Altar into Kadan's guard. Starlight and jade wind fused into an impenetrable mountain of protective light rising from the sea.",
+      "narrationKo": "카단의 방패 전면에서 찬란한 푸른 별빛의 마나 장벽이 솟구쳐 올랐다. 실리아가 녹옥 지팡이의 바람 마나를 장벽에 불어넣었고, 에올루스 국왕 역시 하늘 제단에서 자신의 모든 폭풍 마나를 카단의 방패에 집중시켰다. 별빛과 비취빛 바람이 하나로 응축되며 거대한 산맥만 한 수호벽이 바다 위에 우뚝 솟아올랐다.",
+      "sourceSentenceStart": 23,
+      "sourceSentenceEnd": 23,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "이그니스",
-          "speakerEn": "Ignis",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-left"
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "별빛과 비취빛 바람이 하나로 응축되며 거대한 산맥만 한 수호벽이 바다 위에 우뚝 솟아올랐다.",
+          "textEn": "Starlight and jade wind fused into an impenetrable mountain of protective light rising from the sea.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
         {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
         },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_20/scene_14.webp",
+      "sourceImageFile": "episode_20/scene_14.webp",
+      "narrationEn": "Boom! The black tsunami and the Leviathan's necrotic beam crashed headlong into Kadan's starlight barrier. A cataclysmic shockwave rent the heavens and the sea, vaporizing waves into billowing walls of white steam. The deck beneath Kadan's boots groaned and splintered. Blood welled through the young warrior's sleeves as veins strained under the titanic impact, yet his boots remained wedged into the prow like iron spikes, yielding not an inch.",
+      "narrationKo": "콰아아아아앙! 검은 해일과 리바이어던의 암흑 마나포가 카단의 별빛 장벽을 정면으로 강타했다. 하늘과 바다가 뒤집히는 듯한 굉음과 함께 엄청난 충격파가 대해를 뒤흔들었다. 바닷물이 증발하며 자욱한 수증기가 피어올랐고, 카단의 발밑 갑판이 쩌적 갈라졌다. 방패를 지탱하는 카단의 양팔에서 피가 뿜어져 나왔지만, 카단의 두 발은 뱃머리에 쐐기처럼 박힌 채 단 한 치도 밀려나지 않았다.",
+      "sourceSentenceStart": 24,
+      "sourceSentenceEnd": 25,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "방패를 지탱하는 카단의 양팔에서 피가 뿜어져 나왔지만, 카단의 두 발은 뱃머리에 쐐기처럼 박힌 채 단 한 치도 밀려나지 않았다.",
+          "textEn": "Blood welled through the young warrior's sleeves as veins strained under the titanic impact, yet his boots remained wedged into the prow like iron spikes, yielding not an inch.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_20/scene_15.webp",
+      "sourceImageFile": "episode_20/scene_15.webp",
+      "narrationEn": "The apocalyptic tsunami broke against Kadan's shield, cleaving in two and cascading harmlessly to either side. Riding through the towering spray, the frail flower boats crest the swells without capsizing. Seizing the opening, Ignis vaulted high into the churning air. Channeling his immaculate white flame along his blade, he plunged like a bolt of holy lightning toward the Leviathan's glowing eye.",
+      "narrationKo": "거대한 검은 해일이 카단의 방패에 부딪쳐 둘로 갈라지며 좌우로 흩뿌려졌다. 꽃배들은 거센 물보라 속에서도 전복되지 않고 기적처럼 파도의 골짜기를 타고 넘었다. 그 틈을 타 이그니스가 허공으로 도약했다. 순백의 성화를 칼날에 실은 이그니스가 리바이어던의 거대한 눈을 향해 번개처럼 쇄도했다.",
+      "sourceSentenceStart": 26,
+      "sourceSentenceEnd": 27,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "순백의 성화를 칼날에 실은 이그니스가 리바이어던의 거대한 눈을 향해 번개처럼 쇄도했다.",
+          "textEn": "Channeling his immaculate white flame along his blade, he plunged like a bolt of holy lightning toward the Leviathan's glowing eye.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_20/scene_16.webp",
+      "sourceImageFile": "episode_20/scene_16.webp",
+      "narrationEn": "\"Begone into the abyss, fiend of shadow!\" The blazing strike pierced the beast's skull. Howling in agony, the Leviathan thrashed and sank back into the ocean depths. Together, Kadan's immovable aegis and Ignis's sanctifying flame had vanquished the ancient catastrophe.",
+      "narrationKo": "“사라져라, 심연의 괴물이여!” 순백 화염의 일격이 마수의 눈을 꿰뚫자, 리바이어던은 고통에 찬 비명을 지르며 대해의 깊은 심연 속으로 침몰해 들어갔다. 카단의 불침의 방패와 이그니스의 정화의 화염이 마침내 바다의 재앙을 완벽하게 물리친 순간이었다.",
+      "sourceSentenceStart": 28,
+      "sourceSentenceEnd": 29,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“사라져라, 심연의 괴물이여!”",
+          "textEn": "“Begone into the abyss, fiend of shadow!”",
+          "bubbleType": "shout",
+          "position": "top-left",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_20/scene_17.webp",
+      "sourceImageFile": "episode_20/scene_17.webp",
+      "narrationEn": "As the deluge receded and peaceful swells returned, thousands of refugees across the flower boats wept in joyous relief. Millions of colorful petals—lotus, iris, and water lily—floated upon the tranquil emerald sea, blanketing the horizon like a vast floral tapestry. A million floating blossoms bore silent witness to the triumph of life over destruction. Yet beneath the waves, the outer coral ramparts and ancient palaces of Whispering Wind Island slowly slipped into the deep. Standing by the forward railing, Cilia wiped away quiet tears as she watched her homeland sink beneath the tide.",
+      "narrationKo": "검은 해일이 잦아들고 잔잔한 파도가 돌아왔을 때, 수백 척의 꽃배에 탄 수천 명의 섬 주민들은 기적 같은 생존에 환호성을 지르며 서로를 얼싸안고 눈물을 흘렸다. 배마다 꽂혀 있던 연꽃과 수선화 꽃잎들이 잔잔해진 에메랄드빛 바다 위를 가득 수놓으며, 마치 거대한 꽃의 융단처럼 수평선을 채웠다. 바다 위를 부유하는 백만 송이의 꽃잎들이 죽음의 파도를 이겨낸 생명의 존엄을 증명하고 있었다. 그러나 비취 결계탑의 붕괴로 인해 바람 속삭임 섬의 외곽 산호초와 수천 년 된 옛 궁전들은 서서히 푸른 바닷속으로 가라앉고 있었다. 거대한 비취 첨탑이 파도 속으로 잠기며 마지막 옥빛 파문을 뿜어냈다. 실리아는 뱃머리 난간을 짚고 서서 물밑으로 영원히 가라앉는 고향을 바라보며 조용히 눈물을 훔쳤다.",
+      "sourceSentenceStart": 30,
+      "sourceSentenceEnd": 31,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "실리아는 뱃머리 난간을 짚고 서서 물밑으로 영원히 가라앉는 고향을 바라보며 조용히 눈물을 훔쳤다.",
+          "textEn": "Standing by the forward railing, Cilia wiped away quiet tears as she watched her homeland sink beneath the tide.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_20/scene_18.webp",
+      "sourceImageFile": "episode_20/scene_18.webp",
+      "narrationEn": "Stepping to her side, Kadan offered gentle solace.",
+      "narrationKo": "카단이 다가가 실리아의 곁에 서며 따뜻하게 위로했다.",
+      "sourceSentenceStart": 32,
+      "sourceSentenceEnd": 32,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단이 다가가 실리아의 곁에 서며 따뜻하게 위로했다.",
+          "textEn": "Stepping to her side, Kadan offered gentle solace.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
         {
           "textKo": "파지지직!",
           "textEn": "CRACKLE!",
@@ -506,45 +607,73 @@
     },
     {
       "sceneNumber": 19,
-      "imageFile": "episode_20/scene_19.jpeg",
-      "sourceImageFile": "Dawn_breaks_calm_sea_202607260802.jpeg",
-      "narrationEn": "As dawn broke, the sea became calm as if it were a lie. The remains of the flower boat covered the water surface like flower petals. Kadan and Celia were nowhere to be seen.",
-      "narrationKo": "동이 틀 무렵 바다는 거짓말처럼 잔잔해졌다. 꽃배의 잔해가 꽃잎처럼 수면을 덮었다. 카단과 실리아의 모습은 어디에도 없었다.",
-      "sourceSentenceStart": 52,
-      "sourceSentenceEnd": 54,
-      "alignmentScore": 0.5153,
+      "imageFile": "episode_20/scene_19.webp",
+      "sourceImageFile": "episode_20/scene_19.webp",
+      "narrationEn": "\"Weep not, Cilia. The stone walls have sunk, but the realm of the wind lives eternally within the hearts of the people you saved. So long as our people draw breath, the kingdom shall never perish.\" Draping his cloak around her shivering shoulders, Ignis looked toward the western horizon.",
+      "narrationKo": "“슬퍼하지 마라, 실리아. 섬의 돌벽은 가라앉았지만, 네가 지켜낸 백성들의 가슴속에 바람의 왕국은 영원히 살아 숨 쉬고 있다. 사람이 살아있는 한, 왕국은 결코 멸망하지 않는다.” 이그니스 역시 자신의 망토로 실리아의 젖은 어깨를 감싸주며 주먹을 불끈 쥐었다.",
+      "sourceSentenceStart": 33,
+      "sourceSentenceEnd": 34,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "textKo": "“슬퍼하지 마라, 실리아. 섬의 돌벽은 가라앉았지만, 네가 지켜낸 백성들의 가슴속에 바람의 왕국은 영원히 살아 숨 쉬고 있다. 사람이 살아있는 한, 왕국은 결코 멸망하지 않는다.”",
+          "textEn": "“Weep not, Cilia. The stone walls have sunk, but the realm of the wind lives eternally within the hearts of the people you saved. So long as our people draw breath, the kingdom shall never perish.”",
           "bubbleType": "speech",
-          "position": "bottom-right"
+          "position": "bottom-right",
+          "characterCardId": 41
         }
       ],
-      "sfxCues": []
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        },
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
     },
     {
       "sceneNumber": 20,
-      "imageFile": "episode_20/scene_20.jpeg",
-      "sourceImageFile": "Kadan_opens_eyes_on_beach_202607260802.jpeg",
-      "narrationEn": "Kadan opened his eyes on the beach of an unnamed island far away. One hand was holding Celia's wrist, and the other hand was holding a piece of the codex entrusted by Gandar. I heard someone stepping on wet sand from inside the forest.",
-      "narrationKo": "멀리 이름 없는 섬의 해변에서 카단이 눈을 떴다. 한 손은 실리아의 손목을 붙들고 있었고, 다른 손에는 간다르가 맡긴 코덱스 조각이 쥐어져 있었다. 숲 안쪽에서 누군가 젖은 모래를 밟는 소리가 들렸다.",
-      "sourceSentenceStart": 55,
-      "sourceSentenceEnd": 57,
-      "alignmentScore": 0.6315,
+      "imageFile": "episode_20/scene_20.webp",
+      "sourceImageFile": "episode_20/scene_20.webp",
+      "narrationEn": "\"Our duty is not to stone and earth, but to the living warmth of tomorrow. Now we march upon the capital to bring Lucian and Zephyr to justice.\" Led by King Aeolus and Captain Rondol, the armada of flower boats hoisted their canvas, sailing boldly toward the western continent. Beyond the jagged coastal peaks, the golden dawn of a new era broke in dazzling splendor. The second arc of the SNS Heroes drew to its triumphant close, opening the final battle for the fate of the realm. The ocean winds now filled their sails like sturdy wings bearing them into history.",
+      "narrationKo": "“우리가 지켜야 할 것은 과거의 돌무더기가 아니라, 미래를 살아갈 사람들의 온기다. 이제 수도로 진격해 루시안과 제피르의 죄를 백일하에 드러내고 심판해야 한다.” 에올루스 국왕과 론돌이 지휘하는 꽃배 선단은 수평선 서쪽, 광활한 대륙의 본토를 향해 당당히 닻을 올렸다. 저 멀리 대륙의 산맥 너머로 새로운 시대를 알리는 황금빛 아침 햇살이 찬란하게 쏟아져 내리고 있었다. 눈히어로들의 두 번째 대장정이 끝나고, 대륙의 운명을 건 최후의 결전이 시작되려 하고 있었다. 바람의 파도는 이제 그들의 등 뒤에서 돛을 밀어주는 든든한 날개가 되어주고 있었다.",
+      "sourceSentenceStart": 35,
+      "sourceSentenceEnd": 36,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“우리가 지켜야 할 것은 과거의 돌무더기가 아니라, 미래를 살아갈 사람들의 온기다. 이제 수도로 진격해 루시안과 제피르의 죄를 백일하에 드러내고 심판해야 한다.”",
+          "textEn": "“Our duty is not to stone and earth, but to the living warmth of tomorrow. Now we march upon the capital to bring Lucian and Zephyr to justice.”",
           "bubbleType": "speech",
-          "position": "top-right"
+          "position": "top-left",
+          "characterCardId": 11
         }
       ],
-      "sfxCues": []
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
     }
   ]
 }

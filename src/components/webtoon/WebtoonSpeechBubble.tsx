@@ -94,7 +94,7 @@ export const WebtoonSpeechBubble: React.FC<WebtoonSpeechBubbleProps> = ({
             >
               {speakerName}
             </span>
-            {bubbleType === 'thought' && (
+            {bubbleType === 'thought' && speakerKo !== '내레이션' && speakerEn !== 'Narration' && (
               <span className="text-[10px] text-[#646262] font-semibold">
                 {language === 'ko' ? '(독백)' : '(Thought)'}
               </span>

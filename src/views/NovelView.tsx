@@ -459,8 +459,8 @@ export const NovelView: React.FC<NovelViewProps> = ({
           : (enInfo?.fileName ? `/book/image_narrations/english_txt/${enInfo.fileName}` : `/book/episode_${epPad}.md`);
 
         const [mdRes, narrRes] = await Promise.all([
-          fetch(getAssetUrl(textPath)),
-          fetch(getAssetUrl(`/book/image_narrations/episode_${epPad}_narrations.json`)),
+          fetch(`${getAssetUrl(textPath)}?v=novel2026_v2`),
+          fetch(`${getAssetUrl(`/book/image_narrations/episode_${epPad}_narrations.json`)}?v=novel2026_v2`),
         ]);
 
         if (mdRes.ok && isMounted) {

@@ -2,47 +2,155 @@
   "episodeNumber": 14,
   "episodeTitleEn": "Guests of the Mist Lake",
   "episodeTitleKo": "안개 호수의 손님들",
-  "sourceSentenceCount": 57,
+  "sourceSentenceCount": 40,
   "sceneCount": 20,
   "scenes": [
     {
       "sceneNumber": 1,
-      "imageFile": "episode_14/scene_01.jpeg",
-      "sourceImageFile": "Fantasy_coast_storm_clouds_Kadan_202607260802.jpeg",
-      "narrationEn": "The fog lake was as wide as the sea. Instead of the horizon, seventy-two stone island islands supported the clouds, and the towers of an old underwater city were submerged beneath the water.",
-      "narrationKo": "안개 호수는 바다처럼 넓었다. 수평선 대신 솟은 일흔두 개의 돌기둥 섬이 구름을 떠받쳤고, 물 아래에는 오래된 수중 도시의 탑들이 잠겨 있었다.",
+      "imageFile": "episode_14/scene_01.webp",
+      "sourceImageFile": "episode_14/scene_01.webp",
+      "narrationEn": "Sprawling across the threshold of the eastern seaboard, Mist Lake remained cloaked year-round in a dense, milky-white water fog, a mystical realm that rarely permitted casual travelers to cross its expanse. Rising from the tranquil waters were seventy-two colossal basalt monoliths, standing like silent, primordial giants, while beneath the crystal emerald depths, the sunken palace spires and fractured arched stone bridges of an ancient drowned realm flickered like spectral phantoms even on bright days. In this serene stillness where not even a lone waterbird cried, Kadan and Cilia followed General Leonar's measured guidance, advancing with cautious steps toward Cloud Return Manor—a massive floating sanctuary resting at the heart of the lake. Whenever chilled breezes swept through the damp reed beds, white cotton fluff from blooming cattails drifted through the mist like lingering snowflakes. Lush emerald moss carpeted the rock crevices like rich velvet, and the trailing branches of weeping willows traced delicate ripples across the glass-like water. Extending her hand above the water, Cilia read the intricate currents of the drifting fog with a thoughtful murmur.",
+      "narrationKo": "동해안 어귀에 드넓게 자리 잡은 안개 호수는 사시사철 자욱한 유백색 물안개에 덮여 있어 길손들의 발길을 쉬이 허락하지 않는 신비로운 곳이었다. 호수 수면 위로는 수백 길 높이의 거대한 현무암 석주 일흔두 개가 침묵의 거인처럼 우뚝 솟아 있었고, 맑은 날에도 호수 바닥에 수몰된 고대 도시의 궁전 첨탑과 부서진 아치 석교들이 에메랄드빛 물밑에서 유령처럼 어른거렸다. 물새 한 마리 날지 않는 고요한 호숫가에서, 카단과 실리아는 레오나르 장군의 안내를 받아 호수 중앙의 수상 요새인 ‘구름돌아오는장원’을 향해 조심스럽게 나아갔다. 축축한 갈대밭 사이로 서늘한 호수 바람이 불어올 때마다 갈대꽃 하얀 솜털이 눈송이처럼 허공을 맴돌았다. 바위 틈새마다 푸른 이끼가 융단처럼 깔려 있었고, 물가에 늘어선 수양버들 가지들이 잔잔한 수면에 파문을 그렸다. 실리아가 수면 위로 손을 뻗어 안개의 결을 살피며 말했다.",
       "sourceSentenceStart": 1,
       "sourceSentenceEnd": 2,
-      "alignmentScore": 0.3855,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "실리아가 수면 위로 손을 뻗어 안개의 결을 살피며 말했다.",
+          "textEn": "Extending her hand above the water, Cilia read the intricate currents of the drifting fog with a thoughtful murmur.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 41
         }
       ],
-      "sfxCues": []
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
     },
     {
       "sceneNumber": 2,
-      "imageFile": "episode_14/scene_02.jpeg",
-      "sourceImageFile": "Kadan_Celia_boat_lake_fog_202607260802.jpeg",
-      "narrationEn": "Kadan and Celia rented a small boat and entered the center of the lake. A singing voice was heard in the fog. It was a wind lullaby that Celia learned from Aeolus when he was young.",
-      "narrationKo": "카단과 실리아는 작은 배를 빌려 호수 중심으로 들어갔다. 안개 속에서 노랫소리가 들렸다. 실리아가 어릴 때 에올루스에게 배운 바람의 자장가였다.",
+      "imageFile": "episode_14/scene_02.webp",
+      "sourceImageFile": "episode_14/scene_02.webp",
+      "narrationEn": "\"The submerged bell towers beneath the floor are releasing faint, rhythmic pulses of mana. The ancient water spirits are still slumbering down below.\" Kadan halted at the shoreline, gazing downward through the clear, green depths.",
+      "narrationKo": "“수몰된 종탑들이 물속에서 미세한 마나의 파동을 보내고 있어요. 물의 정령들이 여전히 저 아래에서 잠들어 있는 거예요.” 카단이 물가에 멈추어 서서 수면 아래를 내려다보았다.",
       "sourceSentenceStart": 3,
-      "sourceSentenceEnd": 5,
-      "alignmentScore": 0.5963,
+      "sourceSentenceEnd": 4,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“수몰된 종탑들이 물속에서 미세한 마나의 파동을 보내고 있어요. 물의 정령들이 여전히 저 아래에서 잠들어 있는 거예요.”",
+          "textEn": "“The submerged bell towers beneath the floor are releasing faint, rhythmic pulses of mana. The ancient water spirits are still slumbering down below.”",
+          "bubbleType": "speech",
+          "position": "bottom-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_14/scene_03.webp",
+      "sourceImageFile": "episode_14/scene_03.webp",
+      "narrationEn": "\"What are those monumental stone complexes resting beneath the lake bed? It appears as though an entire imperial metropolis was swallowed whole.\" Resting his Jade Staff against a mossy boulder, Leonar explained in his gravelly, booming timbre.",
+      "narrationKo": "“호수 밑바닥에 잠겨 있는 저 거대한 석조 건축물들은 무엇인가? 마치 거대한 제국이 통째로 가라앉은 것 같군.” 레오나르가 녹옥 지팡이로 물가를 가리키며 굵직한 목소리로 설명했다.",
+      "sourceSentenceStart": 5,
+      "sourceSentenceEnd": 6,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "textKo": "“호수 밑바닥에 잠겨 있는 저 거대한 석조 건축물들은 무엇인가? 마치 거대한 제국이 통째로 가라앉은 것 같군.”",
+          "textEn": "“What are those monumental stone complexes resting beneath the lake bed? It appears as though an entire imperial metropolis was swallowed whole.”",
           "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_14/scene_04.webp",
+      "sourceImageFile": "episode_14/scene_04.webp",
+      "narrationEn": "\"A thousand years ago, this was the heart of Aquaria, the glorious capital of an ancient water-magic civilization. When the forbidden mana within the Nine Shadows Codex spiraled out of control, the entire realm sank into the abyss in a single night. Those seventy-two basalt monoliths we must navigate were once the immense pillars supporting the imperial palaces.\" Reaching the weathered timber landing of the lakeside ferry, Cilia plucked a tender reed leaf from the water's edge, bringing it to her lips to play a tranquil wind lullaby. As the clear, melancholic melody echoed across the fog-draped surface, the steady creak of a solitary oar drifted through the murk, and a small wooden skiff emerged into view. Rowing upon the deck stood a weathered old boatman with an iron prosthetic leg in place of his left limb. It was Rondol, the legendary guardian and master navigator who had once protected the outer shores of Whispering Wind Island.",
+      "narrationKo": "“천 년 전, 고대 마법 문명이 번영을 누리던 ‘물의 도시 아쿠아리아’의 유적이다. 나인섀도우 코덱스의 금기된 마나가 폭주하면서 하루아침에 호수 밑으로 가라앉았지. 지금 우리가 건너야 할 일흔두 개의 석주는 그 당시 궁전들을 떠받치던 거대한 수호 기둥들이다.” 호숫가 나루터의 낡은 계류장에 이르렀을 때, 실리아가 물가에 자란 갈대 풀잎 하나를 뜯어 입술에 대고 고요한 바람의 자장가를 불었다. 청아하고도 애수 어린 피리 소리가 안개 낀 수면을 타고 은은하게 퍼져 나가자, 저 멀리 짙은 안갯속에서 외노를 저으며 삐걱거리는 작은 나룻배 한 척이 모습을 드러냈다. 배 위에는 한쪽 다리를 잃고 무쇠 의족을 찬 늙은 사공이 노를 젓고 있었다. 과거 바람 속삭임 섬의 전설적인 수호자이자 항해사였던 론돌이었다.",
+      "sourceSentenceStart": 7,
+      "sourceSentenceEnd": 8,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "레오나르",
+          "speakerEn": "Leonar",
+          "textKo": "“천 년 전, 고대 마법 문명이 번영을 누리던 ‘물의 도시 아쿠아리아’의 유적이다. 나인섀도우 코덱스의 금기된 마나가 폭주하면서 하루아침에 호수 밑으로 가라앉았지. 지금 우리가 건너야 할 일흔두 개의 석주는 그 당시 궁전들을 떠받치던 거대한 수호 기둥들이다.”",
+          "textEn": "“A thousand years ago, this was the heart of Aquaria, the glorious capital of an ancient water-magic civilization. When the forbidden mana within the Nine Shadows Codex spiraled out of control, the entire realm sank into the abyss in a single night. Those seventy-two basalt monoliths we must navigate were once the immense pillars supporting the imperial palaces.”",
+          "bubbleType": "speech",
+          "position": "top-left",
+          "characterCardId": 86
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
           "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_14/scene_05.webp",
+      "sourceImageFile": "episode_14/scene_05.webp",
+      "narrationEn": "Rondol's piercing gaze rested upon Cilia's face and her elegant teal tunic. His voice was dry and raspy, carrying the chill of the morning mist. \"So you have returned at last, headstrong princess who fled the island. The elders brand you a traitor and curse your name to the tides. By what brazen courage do you dare tread upon this sea once more?\"",
+      "narrationKo": "론돌의 거친 시선이 실리아의 얼굴과 푸른 비단옷에 머물렀다. 그의 목소리는 물안개처럼 메말라 있었다. “결국 돌아왔구나, 섬에서 도망쳤던 어린 왕녀여. 섬의 장로들은 너를 배신자라 부르며 저주하고 있는데, 무슨 낯으로 다시 이 바다를 찾았느냐?”",
+      "sourceSentenceStart": 9,
+      "sourceSentenceEnd": 10,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“결국 돌아왔구나, 섬에서 도망쳤던 어린 왕녀여. 섬의 장로들은 너를 배신자라 부르며 저주하고 있는데, 무슨 낯으로 다시 이 바다를 찾았느냐?”",
+          "textEn": "“So you have returned at last, headstrong princess who fled the island. The elders brand you a traitor and curse your name to the tides. By what brazen courage do you dare tread upon this sea once more?”",
+          "bubbleType": "speech",
+          "position": "top-right",
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
@@ -55,64 +163,116 @@
       ]
     },
     {
-      "sceneNumber": 3,
-      "imageFile": "episode_14/scene_03.jpeg",
-      "sourceImageFile": "One-legged_ship_owner_appeared_202607260802.jpeg",
-      "narrationEn": "As she sang the next verse, the one-legged ship owner Rondol appeared. He was once a disciple of Aeolus, but after losing his leg and being driven off the island, he was guarding a refuge for refugees here. Rondol did not bow even after recognizing who Celia was.",
-      "narrationKo": "그녀가 다음 소절을 부르자 외다리 선주 론돌이 모습을 드러냈다. 그는 한때 에올루스의 제자였으나 다리를 잃고 섬에서 쫓겨난 뒤 이곳 난민들의 피난처를 지키고 있었다. 론돌은 실리아가 누구인지 알아보고도 절하지 않았다.",
-      "sourceSentenceStart": 6,
-      "sourceSentenceEnd": 8,
-      "alignmentScore": 0.5758,
+      "sceneNumber": 6,
+      "imageFile": "episode_14/scene_06.webp",
+      "sourceImageFile": "episode_14/scene_06.webp",
+      "narrationEn": "Meeting Rondol's stern eyes without flinching, Cilia spoke with resolute conviction. \"It was the cowardly elders who chose to seal the gates, burying the monstrous truth behind my mother Sylphid's demise. I did not flee; I departed to honor my mother's spirit and illuminate that darkness, Uncle Rondol. Were you not also cast out, losing your leg when you dared defy that very council?\"",
+      "narrationKo": "실리아는 흔들림 없는 당당한 눈빛으로 론돌을 바라보며 대답했다. “어머니 실피드의 죽음에 얽힌 추악한 진실을 덮어두고 섬의 문을 걸어 잠근 것은 장로들이에요. 저는 도망친 게 아니라 어머니의 넋을 기리고 진실을 밝히러 나선 거예요, 론돌 숙부님. 숙부님 역시 그 어둠에 맞서다 다리를 잃고 쫓겨나신 게 아니었나요?”",
+      "sourceSentenceStart": 11,
+      "sourceSentenceEnd": 12,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "실리아",
           "speakerEn": "Celia",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "textKo": "“어머니 실피드의 죽음에 얽힌 추악한 진실을 덮어두고 섬의 문을 걸어 잠근 것은 장로들이에요. 저는 도망친 게 아니라 어머니의 넋을 기리고 진실을 밝히러 나선 거예요, 론돌 숙부님. 숙부님 역시 그 어둠에 맞서다 다리를 잃고 쫓겨나신 게 아니었나요?”",
+          "textEn": "“It was the cowardly elders who chose to seal the gates, burying the monstrous truth behind my mother Sylphid's demise. I did not flee; I departed to honor my mother's spirit and illuminate that darkness, Uncle Rondol. Were you not also cast out, losing your leg when you dared defy that very council?”",
           "bubbleType": "speech",
-          "position": "top-left"
+          "position": "bottom-left",
+          "characterCardId": 62
         }
       ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 4,
-      "imageFile": "episode_14/scene_04.jpeg",
-      "sourceImageFile": "Celia_angry_at_ruins_202607260802.jpeg",
-      "narrationEn": "“The child who ran away is back on his feet. ” Celia also did not call him teacher. The two took the oars one by one without telling each other why they were angry.",
-      "narrationKo": "“도망친 아이가 제 발로 돌아왔군.” 실리아도 스승이라 부르지 않았다. 두 사람은 서로에게 화가 난 이유를 다 말하지 않은 채 노를 하나씩 잡았다.",
-      "sourceSentenceStart": 9,
-      "sourceSentenceEnd": 11,
-      "alignmentScore": 0.4671,
-      "dialogues": [
+      "sfxCues": [
         {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "도망친 아이가 제 발로 돌아왔군.",
-          "textEn": "The child who ran away is back on his feet. ",
-          "bubbleType": "speech",
-          "position": "top-left"
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
         }
-      ],
-      "sfxCues": []
+      ]
     },
     {
-      "sceneNumber": 5,
-      "imageFile": "episode_14/scene_05.jpeg",
-      "sourceImageFile": "Kadan_looked_at_waves_202607260802.jpeg",
-      "narrationEn": "Kadan just looked at the waves in the meantime. Rondol took the two people to the Cloud Return Mansion. On the wall were hanging mana circuits and ancient maps that looked like paintings.",
-      "narrationKo": "카단은 그 사이에서 괜히 물결만 바라봤다. 론돌은 두 사람을 구름귀환 저택으로 데려갔다. 벽에는 그림처럼 보이는 마나 회로와 고대 지도들이 걸려 있었다.",
-      "sourceSentenceStart": 12,
+      "sceneNumber": 7,
+      "imageFile": "episode_14/scene_07.webp",
+      "sourceImageFile": "episode_14/scene_07.webp",
+      "narrationEn": "Kadan stepped forward, lifting his unadorned iron shield in respectful greeting. \"I recognize the wind rune inscribed upon your iron limb. Master Aleksandar always spoke with profound respect of your unwavering loyalty. Please grant us passage to the manor.\"",
+      "narrationKo": "카단이 한 걸음 앞으로 나서며 무쇠 방패를 가볍게 들어 보였다. “숙부님의 의족에 새겨진 바람 룬을 보았습니다. 알렉산다르 스승님께서도 바다의 벗 론돌의 충직함을 늘 칭송하셨습니다. 저희를 장원으로 인도해 주십시오.”",
+      "sourceSentenceStart": 13,
       "sourceSentenceEnd": 14,
-      "alignmentScore": 0.4603,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "textKo": "“숙부님의 의족에 새겨진 바람 룬을 보았습니다. 알렉산다르 스승님께서도 바다의 벗 론돌의 충직함을 늘 칭송하셨습니다. 저희를 장원으로 인도해 주십시오.”",
+          "textEn": "“I recognize the wind rune inscribed upon your iron limb. Master Aleksandar always spoke with profound respect of your unwavering loyalty. Please grant us passage to the manor.”",
           "bubbleType": "speech",
-          "position": "bottom-right"
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_14/scene_08.webp",
+      "sourceImageFile": "episode_14/scene_08.webp",
+      "narrationEn": "Rondol studied Kadan's grounded shoulders and Cilia's unyielding gaze in prolonged silence before letting out a soft sigh and tapping his oar against the gunwale. \"Step aboard. Your stubborn defiance is the spitting image of your mother Sylphid, and this youth beside you possesses the honest eyes of a northern wolf.\"",
+      "narrationKo": "론돌은 한참 동안 카단의 단단한 어깨와 실리아의 맑은 눈빛을 번갈아 응시하다가 나지막이 한숨을 내쉬며 뱃전을 두드렸다. “올라타라. 네 당돌한 고집은 네 어미 실피드를 빼닮았고, 곁에 선 청년의 눈빛은 북방의 늑대처럼 정직하구나.”",
+      "sourceSentenceStart": 15,
+      "sourceSentenceEnd": 16,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "론돌",
+          "speakerEn": "Rondol",
+          "textKo": "“올라타라. 네 당돌한 고집은 네 어미 실피드를 빼닮았고, 곁에 선 청년의 눈빛은 북방의 늑대처럼 정직하구나.”",
+          "textEn": "“Step aboard. Your stubborn defiance is the spitting image of your mother Sylphid, and this youth beside you possesses the honest eyes of a northern wolf.”",
+          "bubbleType": "speech",
+          "position": "top-left",
+          "characterCardId": 46
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_14/scene_09.webp",
+      "sourceImageFile": "episode_14/scene_09.webp",
+      "narrationEn": "Navigating deftly through the labyrinth of the seventy-two towering monoliths, the skiff arrived at last before Cloud Return Manor. Erected upon hundreds of colossal oak pilings driven deep into the lake floor, the timber compound served as a warm haven for war refugees, displaced orphans, and wounded coastal fishermen. The mouthwatering aroma of fat lake carp steamed with wild mountain ginger and forest greens drifted from the timber verandas, accompanied by the bright laughter of children playing along the railings. On one side of the jetty, an elderly dwarven blacksmith hammered away at a small forge, repairing broken harpoons and iron-weighted nets. As the manor folk approached with welcoming smiles, offering mugs of steaming roasted barley tea, Kadan observed the ancient defensive arrays intricately carved into the walls of the central gallery. It was far more than ornamental art; it was a sophisticated kinetic distribution matrix designed to absorb hostile impacts and diffuse the force through the immense water pressure of the lake. The tactical philosophy mirrored the profound defensive principles taught by Uncle Balian.",
+      "narrationKo": "일행을 태운 나룻배는 일흔두 개의 거대한 석주 미로를 유려하게 헤쳐 나가 마침내 거대한 수상 요새 구름돌아오는장원에 당도했다. 수백 개의 굵은 참나무 기둥으로 호수 위에 세워진 장원은 전쟁 피난민들과 고아, 부상당한 어부들의 따뜻한 안식처였다. 호수에서 건져 올린 살진 잉어를 생강과 산나물에 쪄낸 구수한 냄새가 수상 가옥마다 가득했고, 아이들의 웃음소리가 울려 퍼졌다. 부두 한편에서는 늙은 드워프 대장장이가 화덕을 피우며 부러진 작살과 그물을 손질하고 있었다. 장원의 주민들이 반갑게 다가와 따뜻한 보리차를 건네는 동안, 카단은 장원 중앙 회랑 벽면에 새겨진 고대 수호 마법진을 찬찬히 살펴보았다. 그것은 단순한 벽화가 아니라 적의 공격을 호수의 수압으로 분산시키는 정교한 방어 전술도였다. 발리안 숙부의 수호 진법과 일맥상통하는 원리였다.",
+      "sourceSentenceStart": 17,
+      "sourceSentenceEnd": 18,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "발리안 숙부의 수호 진법과 일맥상통하는 원리였다.",
+          "textEn": "The tactical philosophy mirrored the profound defensive principles taught by Uncle Balian.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
@@ -123,6 +283,35 @@
           "position": "top-right"
         },
         {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_14/scene_10.webp",
+      "sourceImageFile": "episode_14/scene_10.webp",
+      "narrationEn": "Pointing to the carvings, Kadan asked Rondol in quiet admiration. \"This ward configuration shares an extraordinary resemblance with the Earth Cushioning Array of the northern Holy Knights. Did these two traditions spring from a common foundation?\"",
+      "narrationKo": "카단이 벽화를 가리키며 론돌에게 물었다. “이 방어 진법은 북방 성기사단의 ‘대지 완충 진’과 형태가 놀라울 정도로 흡사합니다. 두 기예가 본래 하나의 뿌리에서 나온 것입니까?”",
+      "sourceSentenceStart": 19,
+      "sourceSentenceEnd": 20,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“이 방어 진법은 북방 성기사단의 ‘대지 완충 진’과 형태가 놀라울 정도로 흡사합니다. 두 기예가 본래 하나의 뿌리에서 나온 것입니까?”",
+          "textEn": "“This ward configuration shares an extraordinary resemblance with the Earth Cushioning Array of the northern Holy Knights. Did these two traditions spring from a common foundation?”",
+          "bubbleType": "speech",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
           "textKo": "쿵-!",
           "textEn": "THUD!",
           "style": "impact",
@@ -131,22 +320,122 @@
       ]
     },
     {
-      "sceneNumber": 6,
-      "imageFile": "episode_14/scene_06.jpeg",
-      "sourceImageFile": "Celia_rowing_on_lake_202607260802.jpeg",
-      "narrationEn": "Kadan didn't read much, but he noticed that the strokes of the circuit resembled the movement of a sword. Celia laughed as he saw him slashing the air with his fingers in front of the painting. The peace on the lake did not last long.",
-      "narrationKo": "카단은 글을 많이 읽지 못했지만 회로의 획이 검의 이동과 닮았다는 사실을 알아보았다. 실리아는 그가 그림 앞에서 손가락으로 허공을 베는 모습을 보고 웃었다. 호수의 평화는 오래가지 않았다.",
-      "sourceSentenceStart": 15,
-      "sourceSentenceEnd": 17,
-      "alignmentScore": 0.4812,
+      "sceneNumber": 11,
+      "imageFile": "episode_14/scene_11.webp",
+      "sourceImageFile": "episode_14/scene_11.webp",
+      "narrationEn": "Rondol took a deep draught of cloud wine from an earthen bowl and nodded with a grin. \"You have a keen eye, lad. A century ago, Lord Balian's ancestral forebears and the master artisans of Whispering Wind Island collaborated to forge this very matrix. A shield is never merely a wall of metal; it is a gateway that redirects violence back into the gentle embrace of earth and sea.\"",
+      "narrationKo": "론돌이 막걸리 사발을 들이켜며 고개를 끄덕였다. “날카로운 눈을 가졌구나, 청년. 백 년 전 발리안 경의 선대 성기사들과 우리 바람섬의 장인들이 함께 완성한 수호 진법이다. 방패는 막는 무기가 아니라 대지와 바다의 품으로 충격을 돌려보내는 문이라는 뜻이지.”",
+      "sourceSentenceStart": 21,
+      "sourceSentenceEnd": 22,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "론돌",
+          "speakerEn": "Rondol",
+          "textKo": "“날카로운 눈을 가졌구나, 청년. 백 년 전 발리안 경의 선대 성기사들과 우리 바람섬의 장인들이 함께 완성한 수호 진법이다. 방패는 막는 무기가 아니라 대지와 바다의 품으로 충격을 돌려보내는 문이라는 뜻이지.”",
+          "textEn": "“You have a keen eye, lad. A century ago, Lord Balian's ancestral forebears and the master artisans of Whispering Wind Island collaborated to forge this very matrix. A shield is never merely a wall of metal; it is a gateway that redirects violence back into the gentle embrace of earth and sea.”",
+          "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 46
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_14/scene_12.webp",
+      "sourceImageFile": "episode_14/scene_12.webp",
+      "narrationEn": "Offering Kadan a warm slice of fresh barley bread, Cilia smiled softly. \"Fresh lake game is something you never tasted on the frozen tundras of the north. Eat heartily, Kadan.\"",
+      "narrationKo": "실리아가 갓 구워낸 보리빵 한 조각을 건네며 미소를 지었다. “북방의 추운 툰드라에서는 맛보지 못했던 신선한 민물고기예요. 많이 먹어둬요, 카단.”",
+      "sourceSentenceStart": 23,
+      "sourceSentenceEnd": 24,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“북방의 추운 툰드라에서는 맛보지 못했던 신선한 민물고기예요. 많이 먹어둬요, 카단.”",
+          "textEn": "“Fresh lake game is something you never tasted on the frozen tundras of the north. Eat heartily, Kadan.”",
+          "bubbleType": "speech",
+          "position": "top-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_14/scene_13.webp",
+      "sourceImageFile": "episode_14/scene_13.webp",
+      "narrationEn": "Suddenly, the water erupted into violent whirlpools, and the manor's alarm bell clanged frantically into the mist. Three immense abyssal sea-drakes, their serpent scales tainted by Medusa Gorgo's necrotic miasma, rammed savagely into the supporting timber pylons. The massive oak timbers fractured with groaning tears, tilting the lower pier at an alarming angle. Corrosive crimson acid sprayed from between the drakes' venomous fangs, hissing as it ate through the wooden planks while panicked refugees scattered in terror. Stamping his iron pegleg onto the deck, Rondol summoned a swirling vortex across the surface, while Cilia leaped into the air, unleashing a gale of razor-sharp wind arrows. Kadan dashed to the fractured edge of the pier, slamming his iron shield against the timbers to crystallize a wide, shimmering frost bridge across the churning waters.",
+      "narrationKo": "그때 호수 깊은 곳에서 거대한 물살이 소용돌이치며 비명과 함께 장원의 경종이 요란하게 울려 퍼졌다. 메두사 고르고의 암흑 마나에 오염된 거대한 심연의 수룡 세 마리가 수상 가옥의 받침 기둥들을 들이받으며 습격해 온 것이었다. 기둥들이 부러져 나가며 부두가 기울어졌다. 거대한 뱀의 비늘 사이로 검붉은 부식액이 뿜어져 나와 참나무 갑판을 녹여 내렸다. 주민들이 비명을 지르며 우왕좌왕 흩어졌다. 론돌이 무쇠 의족을 굴러 호수 표면에 거대한 소용돌이를 일으켰고, 실리아는 허공으로 도약해 날카로운 질풍의 화살들을 퍼부었다. 카단은 기우는 부두 끝으로 달려가 무쇠 방패를 내리찍으며 수면에 거대한 서리의 얼음 다리를 펼쳤다.",
+      "sourceSentenceStart": 25,
+      "sourceSentenceEnd": 26,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단은 기우는 부두 끝으로 달려가 무쇠 방패를 내리찍으며 수면에 거대한 서리의 얼음 다리를 펼쳤다.",
+          "textEn": "Kadan dashed to the fractured edge of the pier, slamming his iron shield against the timbers to crystallize a wide, shimmering frost bridge across the churning waters.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 89
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_14/scene_14.webp",
+      "sourceImageFile": "episode_14/scene_14.webp",
+      "narrationEn": "\"Everyone cross the frost bridge into the inner hall! Protect the children first!\" While the terrified families scrambled across the ice to safety, Ignis emerged through the pouring rain onto the lower deck, drawing his longsword with a grim roar.",
+      "narrationKo": "“주민들은 얼음 다리를 건너 본채로 대피하십시오! 아이들을 먼저 챙기세요!” 피난민들이 얼음 다리를 타고 안전하게 대피하는 사이, 뒤늦게 비에 젖은 채 부두에 도착한 이그니스가 칼을 뽑아 들었다.",
+      "sourceSentenceStart": 27,
+      "sourceSentenceEnd": 28,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "검끝이 흔들리지 않는 한, 길은 열린다.",
-          "textEn": "As long as our blades do not waver, the path will open.",
-          "bubbleType": "speech",
-          "position": "top-right"
+          "textKo": "“주민들은 얼음 다리를 건너 본채로 대피하십시오! 아이들을 먼저 챙기세요!”",
+          "textEn": "“Everyone cross the frost bridge into the inner hall! Protect the children first!”",
+          "bubbleType": "shout",
+          "position": "bottom-left",
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
@@ -159,71 +448,87 @@
       ]
     },
     {
-      "sceneNumber": 7,
-      "imageFile": "episode_14/scene_07.jpeg",
-      "sourceImageFile": "Fantasy_palace_court_scene_202607260802_2.jpeg",
-      "narrationEn": "The Red Glass Court's warship plundered the fishing village under the pretext of paying taxes, and at the head of it was Ignis, who was chained up. After leaving the palace after the death of his parents, he was captured and was forced to wear a control device that tightened the flame core whenever he refused orders from Lucian.",
-      "narrationKo": "붉은 유리 궁정의 군선이 세금을 핑계로 어촌을 약탈했고, 그 선두에는 사슬에 묶인 이그니스가 있었다. 부모의 죽음 뒤 궁정을 떠났다가 붙잡힌 그는 루시안의 명령을 거부할 때마다 화염 코어를 조이는 제어구를 차야 했다.",
-      "sourceSentenceStart": 18,
-      "sourceSentenceEnd": 19,
-      "alignmentScore": 0.4152,
+      "sceneNumber": 15,
+      "imageFile": "episode_14/scene_15.webp",
+      "sourceImageFile": "episode_14/scene_15.webp",
+      "narrationEn": "\"Vile abominations who dare prey upon the helpless!\" A searing ribbon of immaculate white flame cleaved through the gloom, decapitating the lead sea-drake in a single blinding stroke. The divine fire incinerated the necrotic venom, sending plumes of pure white steam billowing into the rain. For the first time, water and fire, frost and wind moved in flawless tactical harmony, shattering the assault and saving the sanctuary from devastation.",
+      "narrationKo": "“감히 무고한 이들을 해치는 괴물 놈들이!” 이그니스의 검끝에서 터져 나온 백색 화염이 호수 위를 가르며 수룡의 목을 단숨에 베어 넘겼다. 순백의 화염이 타오르며 호수의 물안개를 하얗게 증발시켰다. 물과 불, 서리와 바람이 처음으로 완벽한 하모니를 이루며 호수의 위기를 막아낸 순간이었다.",
+      "sourceSentenceStart": 29,
+      "sourceSentenceEnd": 30,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "루시안",
-          "speakerEn": "Lucian",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-left"
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“감히 무고한 이들을 해치는 괴물 놈들이!”",
+          "textEn": "“Vile abominations who dare prey upon the helpless!”",
+          "bubbleType": "shout",
+          "position": "bottom-right",
+          "characterCardId": 11
         }
       ],
       "sfxCues": [
         {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
           "position": "center"
         }
       ]
     },
     {
-      "sceneNumber": 8,
-      "imageFile": "episode_14/scene_08.jpeg",
-      "sourceImageFile": "Kaze_attacked_ship_took_Ignis_202607260802.jpeg",
-      "narrationEn": "Rondol's son, Kaze, attacked the military ship and took Ignis prisoner. The people in the mansion wanted to execute him immediately, but Kadan stopped them. Ignis refused help and attempted to melt the chains himself.",
-      "narrationKo": "론돌의 아들 카제는 군선을 습격해 이그니스를 포로로 잡았다. 저택의 사람들은 그를 즉시 처형하자고 했지만 카단이 막았다. 이그니스는 도움을 거부하며 사슬을 스스로 녹이려 했다.",
-      "sourceSentenceStart": 20,
-      "sourceSentenceEnd": 22,
-      "alignmentScore": 0.4686,
+      "sceneNumber": 16,
+      "imageFile": "episode_14/scene_16.webp",
+      "sourceImageFile": "episode_14/scene_16.webp",
+      "narrationEn": "As the remaining serpents sank dead into the lake bed and the disturbed waters smoothed into glass, only ragged breathing echoed along the sodden jetty. Soaked to the skin, Ignis breathed heavily as he wiped the blackened ichor from his longsword, letting the rain wash the steel clean. Rondol limped over, carrying a coarse linen towel and a steaming bowl of hot carp broth, holding them out to the imperial commander in silence.",
+      "narrationKo": "수룡들이 호수 밑바닥으로 가라앉고 잔잔한 물결이 돌아왔을 때, 부두 위에는 거친 숨소리만이 감돌았다. 온몸이 흠뻑 젖은 이그니스는 거친 숨을 몰아쉬며 피 묻은 칼날을 거두었다. 검끝을 타고 흘러내리는 검은 피가 빗물에 씻겨 호수로 떨어졌다. 론돌이 다가와 거친 아마포 수건과 김이 모락모락 피어오르는 뜨거운 잉어 수프 한 그릇을 묵묵히 이그니스에게 내밀었다.",
+      "sourceSentenceStart": 31,
+      "sourceSentenceEnd": 32,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-left"
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "론돌이 다가와 거친 아마포 수건과 김이 모락모락 피어오르는 뜨거운 잉어 수프 한 그릇을 묵묵히 이그니스에게 내밀었다.",
+          "textEn": "Rondol limped over, carrying a coarse linen towel and a steaming bowl of hot carp broth, holding them out to the imperial commander in silence.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 11
         }
       ],
-      "sfxCues": []
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
     },
     {
-      "sceneNumber": 9,
-      "imageFile": "episode_14/scene_09.jpeg",
-      "sourceImageFile": "Celia_cuts_rune_line_Ignis_202607260802.jpeg",
-      "narrationEn": "As the control sphere burned the heart, Celia only cut the rune line with the wind knife. In the prisoner's room, Ignis asked Kadan about his parents' last appearance. When Kadan tried to tell the truth, he was immediately stopped.",
-      "narrationKo": "제어구가 심장을 태우자 실리아가 바람칼로 룬선만 끊었다. 포로실에서 이그니스는 카단에게 부모의 마지막 모습을 물었다. 카단이 사실대로 말하려 하자 곧 말을 막았다.",
-      "sourceSentenceStart": 23,
-      "sourceSentenceEnd": 25,
-      "alignmentScore": 0.2477,
+      "sceneNumber": 17,
+      "imageFile": "episode_14/scene_17.webp",
+      "sourceImageFile": "episode_14/scene_17.webp",
+      "narrationEn": "\"Not half bad for a gilded palace pup. Dry yourself off and drink down this broth before your bones take a chill.\" Ignis stared at the earthen bowl in stunned bewilderment, his lips tightening with residual arrogance.",
+      "narrationKo": "“황궁의 도련님치고는 제법 쓸 만한 칼솜씨로군. 몸이 젖었으니 수건으로 닦고 뜨거운 국물이나 들이켜라.” 이그니스는 당황한 듯 그릇을 바라보며 중얼거렸다.",
+      "sourceSentenceStart": 33,
+      "sourceSentenceEnd": 34,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "speakerKo": "론돌",
+          "speakerEn": "Rondol",
+          "textKo": "“황궁의 도련님치고는 제법 쓸 만한 칼솜씨로군. 몸이 젖었으니 수건으로 닦고 뜨거운 국물이나 들이켜라.”",
+          "textEn": "“Not half bad for a gilded palace pup. Dry yourself off and drink down this broth before your bones take a chill.”",
           "bubbleType": "speech",
-          "position": "bottom-right"
+          "position": "top-right",
+          "characterCardId": 46
         }
       ],
       "sfxCues": [
@@ -232,278 +537,99 @@
           "textEn": "CRACKLE!",
           "style": "magic",
           "position": "top-right"
-        },
-        {
-          "textKo": "휘이이익-!",
-          "textEn": "SWOOSH!",
-          "style": "slash",
-          "position": "top-left"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 10,
-      "imageFile": "episode_14/scene_10.jpeg",
-      "sourceImageFile": "Kadan's_story_grave_location_202607260802.jpeg",
-      "narrationEn": "I asked because I wanted to hear it, but I couldn't bear to hear Kadan's story about a time when I wasn't there. Kadan only provided the location of the grave. “You can go later when you’re ready.",
-      "narrationKo": "듣고 싶어서 물었지만, 자신이 없던 시간의 이야기를 카단의 입으로 듣는 일이 견딜 수 없었다. 카단은 무덤의 위치만 알려 주었다. “나중에 네가 준비되면 가.",
-      "sourceSentenceStart": 26,
-      "sourceSentenceEnd": 28,
-      "alignmentScore": 0.383,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 11,
-      "imageFile": "episode_14/scene_11.jpeg",
-      "sourceImageFile": "Chibi_fantasy_RPG_illustration_s…_202607260802_4.jpeg",
-      "narrationEn": "There are things there that I don’t need to explain. ” “Don’t pity me. ” Ignis said.",
-      "narrationKo": "내가 설명하지 않아도 되는 것들이 거기 있어.” “동정하지 마.” 이그니스가 말했다.",
-      "sourceSentenceStart": 29,
-      "sourceSentenceEnd": 31,
-      "alignmentScore": 0.1566,
-      "dialogues": [
-        {
-          "speakerKo": "이그니스",
-          "speakerEn": "Ignis",
-          "textKo": "동정하지 마.",
-          "textEn": "Don’t pity me. ",
-          "bubbleType": "speech",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 12,
-      "imageFile": "episode_14/scene_12.jpeg",
-      "sourceImageFile": "Celia_and_Lucian_fight_202607260802.jpeg",
-      "narrationEn": "“Don’t get me wrong. I saved you because Lucian would be happy if you died. ” At Celia's answer, Ignis couldn't find anything to say to be more angry.",
-      "narrationKo": "“착각하지 마. 네가 죽으면 루시안이 좋아할 테니까 살린 거야.” 실리아의 대답에 이그니스는 더 화를 낼 말을 찾지 못했다.",
-      "sourceSentenceStart": 32,
-      "sourceSentenceEnd": 34,
-      "alignmentScore": 0.4019,
-      "dialogues": [
-        {
-          "speakerKo": "루시안",
-          "speakerEn": "Lucian",
-          "textKo": "착각하지 마. 네가 죽으면 루시안이 좋아할 테니까 살린 거야.",
-          "textEn": "Don’t get me wrong. I saved you because Lucian would be happy if you died. ",
-          "bubbleType": "speech",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 13,
-      "imageFile": "episode_14/scene_13.jpeg",
-      "sourceImageFile": "Nobleman_with_fan_appeared_mansion_202607260802.jpeg",
-      "narrationEn": "That night, Belphegor, a nobleman holding a metal fan, appeared at the mansion. After surviving the rapids, he separated from Medusa Gorgo and led the Western Poison Dragon. Every time the fan was opened, poisonous needles and small snake spirits poured out.",
-      "narrationKo": "그날 밤 금속 부채를 든 귀족 벨페고르가 저택에 나타났다. 급류에서 살아남은 그는 메두사 고르고와 헤어진 뒤 서부 독룡단을 이끌고 있었다. 부채가 펼쳐질 때마다 독침과 작은 뱀 정령이 쏟아졌다.",
-      "sourceSentenceStart": 35,
-      "sourceSentenceEnd": 37,
-      "alignmentScore": 0.5774,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "발소리를 죽여라. 어둠 속에서 숨을 고르는 거다.",
-          "textEn": "Muffle your footsteps. Catch your breath in the dark.",
-          "bubbleType": "whisper",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 14,
-      "imageFile": "episode_14/scene_14.jpeg",
-      "sourceImageFile": "Ignis_Kadan_snowbound_Lighthaven…_202607260802.jpeg",
-      "narrationEn": "He took Ignis and tried to use it to decipher Medusa Gorgo's codex. While Kadan and Belphegor were fighting, Celia activated the mansion's picture circuit.",
-      "narrationKo": "그는 이그니스를 데려가 메두사 고르고의 코덱스 해독에 쓰려 했다. 카단과 벨페고르가 맞붙는 동안 실리아는 저택의 그림 회로를 작동시켰다.",
-      "sourceSentenceStart": 38,
-      "sourceSentenceEnd": 39,
-      "alignmentScore": 0.3976,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 15,
-      "imageFile": "episode_14/scene_15.jpeg",
-      "sourceImageFile": "Ignis_in_mist_lake_202607260802.jpeg",
-      "narrationEn": "The fog created a different exit for each room, and the Gunseon and Poison Dragons fought each other, mistaking each other for enemies. Rondol turned the water wheel on his wheelchair and turned the lake water into a wall. Ignis had a chance to escape.",
-      "narrationKo": "안개가 방마다 다른 출구를 만들고, 군선과 독룡단은 서로를 적으로 오인해 싸웠다. 론돌은 휠체어의 수차를 돌려 호수 물을 벽처럼 세웠다. 이그니스는 달아날 기회를 얻고도 남았다.",
-      "sourceSentenceStart": 40,
-      "sourceSentenceEnd": 42,
-      "alignmentScore": 0.4995,
-      "dialogues": [
-        {
-          "speakerKo": "이그니스",
-          "speakerEn": "Ignis",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
-          "bubbleType": "shout",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "쿵-!",
-          "textEn": "THUD!",
-          "style": "impact",
-          "position": "bottom-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 16,
-      "imageFile": "episode_14/scene_16.jpeg",
-      "sourceImageFile": "Belphegor_fan_burns_Kadan_202607260802.jpeg",
-      "narrationEn": "However, when Belphegor's fan aimed at Kadan's back, the stinger burned with white flames. “Your life is a debt I must repay. I will not hand it over to anyone else.",
-      "narrationKo": "그러나 벨페고르의 부채가 카단의 등을 노리자 백색 화염으로 독침을 태웠다. “네 목숨은 내가 갚아야 할 빚이다. 다른 자에게 넘기지 않겠다.”",
-      "sourceSentenceStart": 43,
-      "sourceSentenceEnd": 45,
-      "alignmentScore": 0.2627,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "네 목숨은 내가 갚아야 할 빚이다. 다른 자에게 넘기지 않겠다.",
-          "textEn": "“네 목숨은 내가 갚아야 할 빚이다. 다른 자에게 넘기지 않겠다.”",
-          "bubbleType": "speech",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 17,
-      "imageFile": "episode_14/scene_17.jpeg",
-      "sourceImageFile": "Ignis_poisoned_by_needle_202607260802.jpeg",
-      "narrationEn": "” A poisonous needle stuck in Ignis's shoulder. When Celia tried to pull it out, he slapped his hand away, but his knees soon buckled. While Kadan held him, Celia slowed the flow of poison into the wind.",
-      "narrationKo": "독침 하나가 이그니스의 어깨에 박혔다. 실리아가 뽑아 주려 하자 그는 손을 쳐 냈지만 곧 무릎이 꺾였다. 카단이 그를 붙드는 동안 실리아는 독의 흐름을 바람으로 늦췄다.",
-      "sourceSentenceStart": 46,
-      "sourceSentenceEnd": 48,
-      "alignmentScore": 0.3469,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "휘이이익-!",
-          "textEn": "SWOOSH!",
-          "style": "slash",
-          "position": "top-left"
         }
       ]
     },
     {
       "sceneNumber": 18,
-      "imageFile": "episode_14/scene_18.jpeg",
-      "sourceImageFile": "Three_characters_acting_as_one_202607260802.jpeg",
-      "narrationEn": "It was the first moment when the three acted as one body without trusting each other. Belphegor retreated and informed Celia that Medusa Gorgo was heading to Wind Island. Aeolus was trying to retrieve the hidden original codex and his own past.",
-      "narrationKo": "세 사람이 서로를 신뢰하지 않으면서도 한 몸처럼 움직인 첫 순간이었다. 벨페고르는 물러나며 실리아에게 메두사 고르고가 바람섬으로 향하고 있다고 알렸다. 에올루스가 숨긴 코덱스 원본과 자신의 과거를 되찾으려는 것이었다.",
-      "sourceSentenceStart": 49,
-      "sourceSentenceEnd": 51,
-      "alignmentScore": 0.4062,
+      "imageFile": "episode_14/scene_18.webp",
+      "sourceImageFile": "episode_14/scene_18.webp",
+      "narrationEn": "\"I am a knight commander of the imperial court. I have no need for the charity of common fishermen.\" Rondol barked a hearty laugh, slapping the young noble's shoulder with rough camaraderie.",
+      "narrationKo": "“나는 황궁의 기사다. 천한 어부들의 보살핌 따위는 필요치 않다.” 론돌이 껄껄 웃으며 이그니스의 어깨를 툭 쳤다.",
+      "sourceSentenceStart": 35,
+      "sourceSentenceEnd": 36,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“나는 황궁의 기사다. 천한 어부들의 보살핌 따위는 필요치 않다.”",
+          "textEn": "“I am a knight commander of the imperial court. I have no need for the charity of common fishermen.”",
           "bubbleType": "speech",
-          "position": "top-right"
+          "position": "bottom-left",
+          "characterCardId": 11
         }
       ],
       "sfxCues": [
         {
-          "textKo": "휘이이익-!",
-          "textEn": "SWOOSH!",
-          "style": "slash",
-          "position": "top-left"
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
         }
       ]
     },
     {
       "sceneNumber": 19,
-      "imageFile": "episode_14/scene_19.jpeg",
-      "sourceImageFile": "Rondol_released_Ignis_chains_202607260802.jpeg",
-      "narrationEn": "The people in the mansion tried to lock up Ignis, but Rondol released the chains. “Master kicked me off the island, but he couldn’t take away my right to choose. You don’t have to be the person the court decides.",
-      "narrationKo": "저택 사람들은 이그니스를 가두려 했지만 론돌이 사슬을 풀어 주었다. “스승은 나를 섬에서 내쫓았지만 선택할 권리까지 빼앗지는 못했네. 자네도 궁정이 정한 사람이 될 필요는 없어.”",
-      "sourceSentenceStart": 52,
-      "sourceSentenceEnd": 54,
-      "alignmentScore": 0.3536,
+      "imageFile": "episode_14/scene_19.webp",
+      "sourceImageFile": "episode_14/scene_19.webp",
+      "narrationEn": "\"When one person passes a warm bowl of soup to another, what does rank matter? Drink it down, lad; cold broth tastes like swamp water.\" Kadan stoked the nearby brazier with the tip of his silver dagger, tossing on dry birch logs to coax up a roaring flame.",
+      "narrationKo": "“사람이 사람에게 따뜻한 밥을 건네는 데 신분이 무슨 상관이냐? 마셔라, 식으면 맛없다.” 카단 역시 은빛 단검으로 숯불을 뒤적이며 마른 장작을 모닥불에 더 얹어 주었다.",
+      "sourceSentenceStart": 37,
+      "sourceSentenceEnd": 38,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "이그니스",
-          "speakerEn": "Ignis",
-          "textKo": "스승은 나를 섬에서 내쫓았지만 선택할 권리까지 빼앗지는 못했네. 자네도 궁정이 정한 사람이 될 필요는 없어.",
-          "textEn": "“스승은 나를 섬에서 내쫓았지만 선택할 권리까지 빼앗지는 못했네. 자네도 궁정이 정한 사람이 될 필요는 없어.”",
+          "speakerKo": "론돌",
+          "speakerEn": "Rondol",
+          "textKo": "“사람이 사람에게 따뜻한 밥을 건네는 데 신분이 무슨 상관이냐? 마셔라, 식으면 맛없다.”",
+          "textEn": "“When one person passes a warm bowl of soup to another, what does rank matter? Drink it down, lad; cold broth tastes like swamp water.”",
           "bubbleType": "speech",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 20,
-      "imageFile": "episode_14/scene_20.jpeg",
-      "sourceImageFile": "Ignis_left_for_lake_202607260802.jpeg",
-      "narrationEn": "” Ignis left for the other side of the lake. Kadan and Celia didn't know which side he would be on. In the early morning fog, the three boats headed in different directions, but their destination was Whisper of the Wind Island.",
-      "narrationKo": "이그니스는 호수 반대편으로 떠났다. 카단과 실리아는 그가 어느 편에 설지 알 수 없었다. 새벽 안개 속에서 세 사람의 배는 서로 다른 방향을 향했지만, 목적지는 모두 바람의 속삭임 섬이었다.",
-      "sourceSentenceStart": 55,
-      "sourceSentenceEnd": 57,
-      "alignmentScore": 0.6129,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
-          "bubbleType": "shout",
-          "position": "bottom-left"
+          "position": "bottom-right",
+          "characterCardId": 46
         }
       ],
       "sfxCues": [
         {
-          "textKo": "휘이이익-!",
-          "textEn": "SWOOSH!",
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
           "style": "slash",
-          "position": "top-left"
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_14/scene_20.webp",
+      "sourceImageFile": "episode_14/scene_20.webp",
+      "narrationEn": "\"Come sit by the fire and dry your mantle, Ignis. Come sunrise, we must venture out onto the perilous high seas together.\" Biting his lip, Ignis took the bowl with trembling fingers and drank. As the rich, ginger-scented warmth spread down his throat, the stiff tension in his shoulders finally melted away. Above the floating harbor, the dark storm clouds parted, unveiling a canopy of distant stars that mirrored across the lake like scattering silver scales. The true warmth Uncle Balian had sacrificed his life to defend lingered right here upon this humble wooden pier. In this quiet night where scarred wanderers tended to one another's burdens, the silence of the lake felt deeper and infinitely kinder.",
+      "narrationKo": "“불 곁으로 다가와서 몸을 말려라, 이그니스. 내일 새벽이면 우리 모두 저 거친 대해로 나아가야 한다.” 이그니스는 입술을 깨물며 조용히 그릇을 받아 들고 국물을 들이켰다. 생강과 산나물 향이 어우러진 뜨거운 국물이 목을 타고 넘어가자, 이그니스의 얼어붙었던 어깨와 가슴속 응어리가 서서히 풀리기 시작했다. 부두 너머로 밤하늘의 짙은 먹구름이 걷히며, 차가운 별빛이 호수 수면에 은빛 비늘처럼 반짝이고 있었다. 발리안 숙부가 지키려 했던 생명의 온기가 바로 이 소박한 부두 위에 머물고 있었다. 상처 입은 자들이 모여 서로를 위로하는 밤, 호수의 침묵은 한결 부드러워져 있었다.",
+      "sourceSentenceStart": 39,
+      "sourceSentenceEnd": 40,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“불 곁으로 다가와서 몸을 말려라, 이그니스. 내일 새벽이면 우리 모두 저 거친 대해로 나아가야 한다.”",
+          "textEn": "“Come sit by the fire and dry your mantle, Ignis. Come sunrise, we must venture out onto the perilous high seas together.”",
+          "bubbleType": "speech",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
         },
         {
           "textKo": "쿵-!",

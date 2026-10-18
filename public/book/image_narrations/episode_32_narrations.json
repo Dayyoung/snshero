@@ -1,27 +1,28 @@
 {
   "episodeNumber": 32,
   "episodeTitleEn": "Echo of First Love",
-  "episodeTitleKo": "첫사랑의 잔향",
-  "sourceSentenceCount": 53,
+  "episodeTitleKo": "첫사랑의 메아리",
+  "sourceSentenceCount": 49,
   "sceneCount": 20,
   "scenes": [
     {
       "sceneNumber": 1,
-      "imageFile": "episode_32/scene_01.jpeg",
-      "sourceImageFile": "Naiad_in_house_black_swamp_202607260802.jpeg",
-      "narrationEn": "The place where I found Naiad was a small house at the edge of the black swamp. The walls were filled with constellations and water flows calculated over decades, and letters that had never been sent were piled up on the table.",
-      "narrationKo": "나이아드를 찾은 곳은 검은 늪 가장자리의 작은 집이었다. 벽에는 수십 년 동안 계산한 별자리와 물의 흐름이 빼곡했고, 탁자 위에는 한 번도 보내지 못한 편지들이 쌓여 있었다.",
+      "imageFile": "episode_32/scene_01.webp",
+      "sourceImageFile": "episode_32/scene_01.webp",
+      "narrationEn": "Crossing the Quicksand River, the allied host entered the Whispering Willows, an ancient elven grove preserved amidst the desolate rot of the Black Marsh. Thousands of years ago, this sanctuary was where the ancient spirits of the wind and the first high elven sovereigns had pledged their sacred covenants. Silver willow boughs cascaded across placid, glass-like ponds, and bioluminescent fireflies drifted between the leaves like falling starlight. Yet beneath this breathtaking beauty lurked the intoxicating, lethal miasma of Lilith, arch-demon of illusions serving Belphegor. Cilia paused, embracing the Jade Staff against her breast.",
+      "narrationKo": "유사강을 건넌 연합군은 검은 늪지대의 깊은 안개 숲인 ‘속삭이는 버드나무 숲’으로 접어들었다. 늪지대 한가운데에 기적처럼 보존되어 있던 이 고대 버드나무 군락지는, 수천 년 전 바람의 정령들과 고대 엘프들이 처음으로 사랑과 맹세를 나누었던 성스러운 유적지였다. 수백 길 높이의 은빛 수양버들 가지들이 잔잔한 늪지 수면 위로 드리워져 있었고, 버들잎 사이로는 은은한 형광 반딧불이들이 별빛처럼 떠돌고 있었다. 그러나 그 아름다운 풍경 뒤편으로는 벨페고르의 환각 마법이 뿜어내는 달콤하면서도 치명적인 마향(魔香)이 안개처럼 깔려 있었다. 실리아가 녹옥 지팡이를 가슴에 품으며 걸음을 멈추었다.",
       "sourceSentenceStart": 1,
       "sourceSentenceEnd": 2,
-      "alignmentScore": 0.5966,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "검끝이 흔들리지 않는 한, 길은 열린다.",
-          "textEn": "As long as our blades do not waver, the path will open.",
-          "bubbleType": "speech",
-          "position": "top-left"
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "실리아가 녹옥 지팡이를 가슴에 품으며 걸음을 멈추었다.",
+          "textEn": "Cilia paused, embracing the Jade Staff against her breast.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 13
         }
       ],
       "sfxCues": [
@@ -31,217 +32,6 @@
           "style": "slash",
           "position": "top-right"
         },
-        {
-          "textKo": "쿵-!",
-          "textEn": "THUD!",
-          "style": "impact",
-          "position": "bottom-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 2,
-      "imageFile": "episode_32/scene_02.jpeg",
-      "sourceImageFile": "Gandar_poisoned_Kadan_Celia_202607260802.jpeg",
-      "narrationEn": "All letters were addressed to Gandar. When she saw Kadan and Celia, she admitted that she had poisoned them. Knowing that Aqualord would lose his strength if he treated Celia, he deliberately sent two people to the sanctuary.",
-      "narrationKo": "모든 편지의 수신인은 간다르였다. 그녀는 카단과 실리아를 보자 순순히 독을 넣었다고 인정했다. 아쿠아로드가 실리아를 치료하면 힘을 잃을 것을 알고 일부러 두 사람을 성소로 보냈다.",
-      "sourceSentenceStart": 3,
-      "sourceSentenceEnd": 5,
-      "alignmentScore": 0.4554,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 3,
-      "imageFile": "episode_32/scene_03.jpeg",
-      "sourceImageFile": "Celia_revenge_calculation_Naiad_202607260802.jpeg",
-      "narrationEn": "It was as if Celia's life was put into the calculation for revenge. Naiad did not apologize.",
-      "narrationKo": "복수를 위해 실리아의 생명까지 계산에 넣은 셈이었다. 나이아드는 사과하지 않았다.",
-      "sourceSentenceStart": 6,
-      "sourceSentenceEnd": 7,
-      "alignmentScore": 0.4496,
-      "dialogues": [
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 4,
-      "imageFile": "episode_32/scene_04.jpeg",
-      "sourceImageFile": "Aqualord_tells_story_of_pain_202607260802.jpeg",
-      "narrationEn": "Instead of forcing an apology, Aqualord accurately told the story of the pain he had experienced and the strength Aqualord had lost during the healing process. It was a choice to make people see the human body hidden behind abstract revenge. Celia was angry, but before condemning Naiad, he asked about Aquaris's death.",
-      "narrationKo": "실리아는 사과를 강요하는 대신 치유 과정에서 아쿠아로드가 잃은 힘과 자신이 겪은 고통을 정확히 들려주었다. 추상적인 복수 뒤에 가려진 사람의 몸을 보게 하려는 선택이었다. 실리아는 분노했지만 나이아드를 단죄하기 전에 아쿠아리스의 죽음에 관해 물었다.",
-      "sourceSentenceStart": 8,
-      "sourceSentenceEnd": 10,
-      "alignmentScore": 0.45,
-      "dialogues": [
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
-          "bubbleType": "shout",
-          "position": "top-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 5,
-      "imageFile": "episode_32/scene_05.jpeg",
-      "sourceImageFile": "Naiad_took_out_old_cloth_202607260802.jpeg",
-      "narrationEn": "Naiad took out a piece of old cloth. Blood stains remained under the embroidery of two water birds flying side by side. Gandar stayed in the sanctuary when he was young and met Naiad.",
-      "narrationKo": "나이아드는 낡은 천 조각을 꺼냈다. 두 마리 물새가 나란히 날아가는 자수 아래에 핏자국이 남아 있었다. 간다르는 젊은 시절 성소에 머물다 나이아드를 만났다.",
-      "sourceSentenceStart": 11,
-      "sourceSentenceEnd": 13,
-      "alignmentScore": 0.7182,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 6,
-      "imageFile": "episode_32/scene_06.jpeg",
-      "sourceImageFile": "Naiad_gives_birth_to_Aquaris_202607260802.jpeg",
-      "narrationEn": "He only loved pranks and running away, so he left the kingdom because he was afraid that he was in love with someone. Naiad gave birth to Aquaris alone, and ran to Aqualord holding Aquaris, who had been injured by Death Knight Artus's soul sword.",
-      "narrationKo": "장난과 도망만 좋아하던 그는 자신이 누군가를 사랑한다는 사실이 두려워 왕국을 떠났다. 나이아드는 아쿠아리스를 혼자 낳았고, 데스나이트 아르투스의 영혼검에 다친 아쿠아리스를 안고 아쿠아로드에게 달려갔다.",
-      "sourceSentenceStart": 14,
-      "sourceSentenceEnd": 15,
-      "alignmentScore": 0.5622,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "검끝이 흔들리지 않는 한, 길은 열린다.",
-          "textEn": "As long as our blades do not waver, the path will open.",
-          "bubbleType": "speech",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 7,
-      "imageFile": "episode_32/scene_07.jpeg",
-      "sourceImageFile": "Aqualord_refused_saving_Aquaris_202607260802.jpeg",
-      "narrationEn": "Aqualord refused on the grounds that if Aquaris was saved, the kingdom's ley defenses would be turned off for a day. Thousands of people could die that day. He thought he had made the right decision as king, but after Aquaris passed away, he realized that neither life should be left as a number.",
-      "narrationKo": "아쿠아로드는 아쿠아리스를 살리면 왕국의 지맥 방어가 하루 동안 꺼진다는 이유로 거절했다. 그 하루에 수천 명이 죽을 수 있었다. 그는 왕으로서 옳은 결정을 내렸다고 생각했지만, 아쿠아리스가 숨을 거둔 뒤 어느 쪽 생명도 숫자로 남겨서는 안 된다는 것을 깨달았다.",
-      "sourceSentenceStart": 16,
-      "sourceSentenceEnd": 18,
-      "alignmentScore": 0.6272,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 8,
-      "imageFile": "episode_32/scene_08.jpeg",
-      "sourceImageFile": "Naiad_asked_about_Aquaris_202607260802.jpeg",
-      "narrationEn": "“If you realize it, will my Aquaris come back? ” Naiad asked.",
-      "narrationKo": "“깨달았으면 내 아쿠아리스가 돌아오나?” 나이아드가 물었다.",
-      "sourceSentenceStart": 19,
-      "sourceSentenceEnd": 20,
-      "alignmentScore": 0.2161,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "깨달았으면 내 아쿠아리스가 돌아오나?",
-          "textEn": "If you realize it, will my Aquaris come back? ",
-          "bubbleType": "speech",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 9,
-      "imageFile": "episode_32/scene_09.jpeg",
-      "sourceImageFile": "Celia_answers_in_fantasy_location_202607260802.jpeg",
-      "narrationEn": "“No. ” Celia answered. “So you don’t have to forgive, but if you put someone else in the same calculation, you’re repeating the choices you hated.",
-      "narrationKo": "“아니요.” 실리아가 답했다. “그래서 용서할 필요도 없어요. 하지만 다른 사람을 같은 계산에 넣으면 당신이 미워한 선택을 되풀이하는 거예요.”",
-      "sourceSentenceStart": 21,
-      "sourceSentenceEnd": 24,
-      "alignmentScore": 0.4385,
-      "dialogues": [
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "아니요.",
-          "textEn": "No. ",
-          "bubbleType": "speech",
-          "position": "top-right"
-        },
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "그래서 용서할 필요도 없어요. 하지만 다른 사람을 같은 계산에 넣으면 당신이 미워한 선택을 되풀이하는 거예요.",
-          "textEn": "“그래서 용서할 필요도 없어요. 하지만 다른 사람을 같은 계산에 넣으면 당신이 미워한 선택을 되풀이하는 거예요.”",
-          "bubbleType": "speech",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 10,
-      "imageFile": "episode_32/scene_10.jpeg",
-      "sourceImageFile": "Naiad_saw_light_in_Celia's_202607260802.jpeg",
-      "narrationEn": "” Naiad saw a familiar light in Celia's eyes. When I was young, I believed in my own judgment rather than someone else's orders. The years of revenge only dimmed that light.",
-      "narrationKo": "나이아드는 실리아의 눈에서 낯익은 빛을 보았다. 젊은 시절 자신도 누군가의 명령보다 자신의 판단을 믿었다. 복수만 남긴 세월이 그 빛을 흐리게 했을 뿐이었다.",
-      "sourceSentenceStart": 25,
-      "sourceSentenceEnd": 27,
-      "alignmentScore": 0.383,
-      "dialogues": [
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": [
         {
           "textKo": "파지지직!",
           "textEn": "CRACKLE!",
@@ -251,127 +41,67 @@
       ]
     },
     {
-      "sceneNumber": 11,
-      "imageFile": "episode_32/scene_11.jpeg",
-      "sourceImageFile": "Gandar_showed_up_home_late_202607260802.jpeg",
-      "narrationEn": "Gandar showed up at home late. After being released from Aeolus's temple, I was looking for Naiad, but I couldn't come in at the door.",
-      "narrationKo": "간다르는 뒤늦게 집에 나타났다. 에올루스의 성전에서 풀려난 뒤 나이아드를 찾고 있었지만, 막상 문 앞에서는 들어오지 못했다.",
-      "sourceSentenceStart": 28,
-      "sourceSentenceEnd": 29,
-      "alignmentScore": 0.4273,
+      "sceneNumber": 2,
+      "imageFile": "episode_32/scene_02.webp",
+      "sourceImageFile": "episode_32/scene_02.webp",
+      "narrationEn": "\"This is the Silver Willow Garden... where my mother Sylphid and father Aeolus first met in their youth and pledged their eternal love. It is the sacred grove praised in our kingdom's oldest lullabies.\"",
+      "narrationKo": "“이곳은... 어머니 실피드와 아버지 에올루스가 젊은 시절 처음으로 만나 사랑을 맹세하셨던 ‘은빛 버드나무 정원’이에요. 고향 섬의 옛 노래에 나오는 바로 그곳이에요.” 카단이 무쇠 방패를 비껴 쥐며 사방의 기류를 경계했다. “공기 중에 기이한 환각 향료가 섞여 있다. 이그니스의 유리 불씨가 경고하듯 붉게 깜빡이고 있어. 정신을 바짝 차려야 한다.”",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 5,
+      "alignmentScore": 1.0,
       "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“이곳은... 어머니 실피드와 아버지 에올루스가 젊은 시절 처음으로 만나 사랑을 맹세하셨던 ‘은빛 버드나무 정원’이에요. 고향 섬의 옛 노래에 나오는 바로 그곳이에요.”",
+          "textEn": "“This is the Silver Willow Garden... where my mother Sylphid and father Aeolus first met in their youth and pledged their eternal love. It is the sacred grove praised in our kingdom's oldest lullabies.”",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 62
+        },
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "textKo": "“공기 중에 기이한 환각 향료가 섞여 있다. 이그니스의 유리 불씨가 경고하듯 붉게 깜빡이고 있어. 정신을 바짝 차려야 한다.”",
+          "textEn": "“It is the sacred grove praised in our kingdom's oldest lullabies.\"”",
           "bubbleType": "speech",
-          "position": "bottom-right"
+          "position": "bottom-right",
+          "characterCardId": 41
         }
       ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 12,
-      "imageFile": "episode_32/scene_12.jpeg",
-      "sourceImageFile": "Kadan_fell_into_room_202607260802.jpeg",
-      "narrationEn": "When Kadan pushed his back, he fell like a child and entered the room. Gandar took out half of the piece of cloth he had received a long time ago. I lied and said I threw it away the day I ran away, but I kept it sewn into my sleeve for decades.",
-      "narrationKo": "카단이 등을 밀자 그는 아이처럼 넘어져 방 안에 들어갔다. 간다르는 오래전 받은 천 조각의 반쪽을 꺼냈다. 도망치던 날 버렸다고 거짓말했지만 수십 년 동안 소매 안에 꿰매 두었다.",
-      "sourceSentenceStart": 30,
-      "sourceSentenceEnd": 32,
-      "alignmentScore": 0.3764,
-      "dialogues": [
+      "sfxCues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "발소리를 죽여라. 어둠 속에서 숨을 고르는 거다.",
-          "textEn": "Muffle your footsteps. Catch your breath in the dark.",
-          "bubbleType": "whisper",
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
           "position": "top-right"
         }
-      ],
-      "sfxCues": []
+      ]
     },
     {
-      "sceneNumber": 13,
-      "imageFile": "episode_32/scene_13.jpeg",
-      "sourceImageFile": "Gandar_in_Black_Sanctum_202607260802.jpeg",
-      "narrationEn": "Naiad said that keeping records is not evidence of fulfillment of responsibility. For the first time, Gandar did not pass it off as a joke and nodded.",
-      "narrationKo": "나이아드는 정표를 간직한 일이 책임을 다한 증거는 아니라고 말했다. 간다르는 처음으로 장난으로 넘기지 않고 고개를 끄덕였다.",
-      "sourceSentenceStart": 33,
-      "sourceSentenceEnd": 34,
-      "alignmentScore": 0.4517,
+      "sceneNumber": 3,
+      "imageFile": "episode_32/scene_03.webp",
+      "sourceImageFile": "episode_32/scene_03.webp",
+      "narrationEn": "Bracing his shield, Kadan scanned the misty shadows with sharp senses. \"Lethal hallucinatory spores are drifting on the breeze. Ignis's glass ember pulses with warning heat. Maintain utmost vigilance.\"",
+      "narrationKo": "그림리와 론돌 역시 무기를 쥐고 대열을 좁혔다. “오래된 유적일수록 악령들이 둥지를 틀기 좋은 법이지. 발소리를 죽여라.”",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 7,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "speakerKo": "론돌",
+          "speakerEn": "Rondol",
+          "textKo": "“오래된 유적일수록 악령들이 둥지를 틀기 좋은 법이지. 발소리를 죽여라.”",
+          "textEn": "“Lethal hallucinatory spores are drifting on the breeze. Ignis's glass ember pulses with warning heat. Maintain utmost vigilance.”",
           "bubbleType": "speech",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 14,
-      "imageFile": "episode_32/scene_14.jpeg",
-      "sourceImageFile": "Naiad_and_Gandar_talking_202607260802.jpeg",
-      "narrationEn": "Naiad neither hit him nor hugged him. The first question was why did you leave? Gandar admitted that he ran away not because he loved freedom, but because he was not confident in taking responsibility.",
-      "narrationKo": "나이아드는 그를 때리지도 껴안지도 않았다. 첫 질문은 왜 떠났느냐는 것이었다. 간다르는 자유를 사랑해서가 아니라 책임질 자신이 없어 도망쳤다고 인정했다.",
-      "sourceSentenceStart": 35,
-      "sourceSentenceEnd": 37,
-      "alignmentScore": 0.6097,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "발소리를 죽여라. 어둠 속에서 숨을 고르는 거다.",
-          "textEn": "Muffle your footsteps. Catch your breath in the dark.",
-          "bubbleType": "whisper",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 15,
-      "imageFile": "episode_32/scene_15.jpeg",
-      "sourceImageFile": "Naiad_and_Gandar_talking_202607260802_2.jpeg",
-      "narrationEn": "Underneath the mask of being a funny old man, there was the most cowardly memory. The two talked all night. The time lost was not made up and my first love did not return to its former self.",
-      "narrationKo": "재미있는 노인이라는 가면 아래 가장 비겁한 기억이 있었다. 두 사람은 밤새 이야기를 나눴다. 잃은 시간은 메워지지 않았고 첫사랑도 예전 모습으로 돌아오지 않았다.",
-      "sourceSentenceStart": 38,
-      "sourceSentenceEnd": 40,
-      "alignmentScore": 0.6689,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "발소리를 죽여라. 어둠 속에서 숨을 고르는 거다.",
-          "textEn": "Muffle your footsteps. Catch your breath in the dark.",
-          "bubbleType": "whisper",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 16,
-      "imageFile": "episode_32/scene_16.jpeg",
-      "sourceImageFile": "Naiad_hands_letters_to_Gandar_202607260802.jpeg",
-      "narrationEn": "When dawn came, Naiad handed the pile of letters to Gandar without burning them. The responsibility for reading has been returned.",
-      "narrationKo": "새벽이 되었을 때 나이아드는 편지 더미를 불태우지 않고 간다르에게 건넸다. 읽을 책임을 돌려준 것이다.",
-      "sourceSentenceStart": 41,
-      "sourceSentenceEnd": 42,
-      "alignmentScore": 0.4765,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-right"
+          "position": "bottom-right",
+          "characterCardId": 46
         }
       ],
       "sfxCues": [
@@ -384,22 +114,195 @@
       ]
     },
     {
-      "sceneNumber": 17,
-      "imageFile": "episode_32/scene_17.jpeg",
-      "sourceImageFile": "Gandar_reads_letter_Naiad_makes_202607260802.jpeg",
-      "narrationEn": "It took Gandar an hour to read the first letter. I looked out the window every time as if I wanted to run away, but I didn't leave. Naiad made new cups of tea, one cup at a time, until he finished reading.",
-      "narrationKo": "간다르는 첫 편지를 읽는 데 한 시간이 걸렸다. 중간마다 도망치고 싶은 듯 창밖을 봤지만 자리를 뜨지 않았다. 나이아드는 그가 다 읽을 때까지 차를 한 잔씩 새로 끓였다.",
-      "sourceSentenceStart": 43,
-      "sourceSentenceEnd": 45,
-      "alignmentScore": 0.3633,
+      "sceneNumber": 4,
+      "imageFile": "episode_32/scene_04.webp",
+      "sourceImageFile": "episode_32/scene_04.webp",
+      "narrationEn": "Tightening their formation, Grimli and Rondol readied their steel.",
+      "narrationKo": "은빛 수양버들 가지들이 바람에 흔들릴 때마다 은은한 종소리 같은 청아한 파문이 숲속을 맴돌았다. 바닥의 이끼 융단 위에는 고대 엘프들의 연애시(戀愛詩)가 룬 문자로 아스라이 새겨져 있었고, 이슬 맺힌 버들잎에서는 달콤한 꿀 향기가 피어올랐다. 카단은 그 향기를 맡으며 머리가 아찔해지는 것을 느끼고 즉시 별 호흡을 끌어올려 정신을 가다듬었다. 가웨인이 지팡이로 바닥을 짚으며 경고했다. “이 달콤한 향기는 악마들이 정신을 마비시키기 위해 뿌려둔 망각의 독이다. 절대로 깊게 들이마시지 마라.” 버드나무 숲의 가장 깊은 공터에 다다랐을 때, 갑자기 주변의 안개가 자욱하게 피어오르며 환상적인 에메랄드빛 궁전의 정경이 눈앞에 펼쳐졌다.",
+      "sourceSentenceStart": 8,
+      "sourceSentenceEnd": 10,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "발소리를 죽여라. 어둠 속에서 숨을 고르는 거다.",
-          "textEn": "Muffle your footsteps. Catch your breath in the dark.",
-          "bubbleType": "whisper",
+          "speakerKo": "가웨인",
+          "speakerEn": "Gawain",
+          "textKo": "“이 달콤한 향기는 악마들이 정신을 마비시키기 위해 뿌려둔 망각의 독이다. 절대로 깊게 들이마시지 마라.”",
+          "textEn": "“Lethal hallucinatory spores are drifting on the breeze. Ignis's glass ember pulses with warning heat. Maintain utmost vigilance.”",
+          "bubbleType": "speech",
+          "position": "top-left",
+          "characterCardId": 45
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
           "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_32/scene_05.webp",
+      "sourceImageFile": "episode_32/scene_05.webp",
+      "narrationEn": "\"Ancient sanctums make prime nesting grounds for foul phantoms. Keep your boots light.\" Reaching the central clearing, the mist thickened into an ethereal emerald palace. Beside a pristine crystal pool sat a radiant woman robed in immaculate white silk, bearing the crest of the Wind Kingdom upon her bodice. Smiling with infinite maternal tenderness, she opened her arms toward Cilia. It was Queen Sylphid, preserved in the prime of her youth.",
+      "narrationKo": "공터 중앙의 맑은 샘물가에 젊고 눈부신 미모의 여인이 하얀 비단 드레스를 입고 앉아 있었다. 가슴에 바람섬 왕실의 문장을 단 여인은 다정하고 따뜻한 미소를 머금은 채 실리아를 향해 두 팔을 벌렸다. 십팔 년 전 세상을 떠났던 실리아의 어머니, 실피드 여왕의 생전 모습이었다. 환영 속의 실피드가 애절하고 다정한 목소리로 속삭였다.",
+      "sourceSentenceStart": 11,
+      "sourceSentenceEnd": 12,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "환영 속의 실피드가 애절하고 다정한 목소리로 속삭였다.",
+          "textEn": "It was Queen Sylphid, preserved in the prime of her youth.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_32/scene_06.webp",
+      "sourceImageFile": "episode_32/scene_06.webp",
+      "narrationEn": "The spectral queen whispered in a melodious, heartbreaking cadence.",
+      "narrationKo": "“실리아... 내 가여운 딸아... 거친 칼바람 속에서 얼마나 춥고 외로웠니... 이제 무거운 지팡이를 내려놓고 이 어머니의 품에 안겨 영원히 쉬렴... 더 이상 싸우지 않아도 된단다...” 실리아의 눈동자가 흔들리기 시작했다. 어머니를 향한 오랜 그리움과 유년 시절의 상처가 한순간에 봇물 터지듯 터져 나오며, 실리아의 손에서 녹옥 지팡이가 힘없이 미끄러져 떨어지려 했다. “어머니... 정말 어머니예요...? 저를... 두고 가지 마세요...”",
+      "sourceSentenceStart": 13,
+      "sourceSentenceEnd": 15,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실피드",
+          "speakerEn": "Sylphid",
+          "textKo": "“실리아... 내 가여운 딸아... 거친 칼바람 속에서 얼마나 춥고 외로웠니... 이제 무거운 지팡이를 내려놓고 이 어머니의 품에 안겨 영원히 쉬렴... 더 이상 싸우지 않아도 된단다...”",
+          "textEn": "“Cilia... my precious child... How cold and lonely you must have been amidst the harsh tempests of the world... Lay down that heavy staff and rest eternally within your mother's embrace... You need fight no longer...”",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 23
+        },
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“어머니... 정말 어머니예요...? 저를... 두고 가지 마세요...”",
+          "textEn": "“The spectral queen whispered in a melodious, heartbreaking cadence.”",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_32/scene_07.webp",
+      "sourceImageFile": "episode_32/scene_07.webp",
+      "narrationEn": "\"Cilia... my precious child... How cold and lonely you must have been amidst the harsh tempests of the world... Lay down that heavy staff and rest eternally within your mother's embrace... You need fight no longer...\" Tears spilled from Cilia's eyes as her fingers loosened upon her staff. The deep yearning of eighteen motherless years surged forth like an uncontainable tide.",
+      "narrationKo": "실리아가 눈물을 흘리며 홀린 듯 환영을 향해 걸음을 옮기기 시작했다. 환영 속의 실피드 여왕이 내민 손끝에서는 영롱한 물방울들이 보석처럼 반짝이고 있었다. 어머니의 따뜻한 품과 부드러운 목소리는 십팔 년 동안 어머니의 온기를 갈망해 온 실리아의 가장 연약한 가슴속 빈틈을 파고들었다. 환영의 에메랄드 궁전 뒤편으로 은은한 바람의 오르간 소리가 울려 퍼지며 실리아의 발걸음을 유혹했다.",
+      "sourceSentenceStart": 16,
+      "sourceSentenceEnd": 17,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "환영의 에메랄드 궁전 뒤편으로 은은한 바람의 오르간 소리가 울려 퍼지며 실리아의 발걸음을 유혹했다.",
+          "textEn": "The deep yearning of eighteen motherless years surged forth like an uncontainable tide.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_32/scene_08.webp",
+      "sourceImageFile": "episode_32/scene_08.webp",
+      "narrationEn": "\"Mother... Is it truly you...? Please... do not leave me alone again...\"",
+      "narrationKo": "실리아의 뺨을 타고 흘러내리는 눈물이 바닥의 이끼를 적셨다. “어머니... 정말로 이제 쉬어도 되는 건가요...? 제 짐이 너무나 무거웠어요...” 환영의 실피드가 등 뒤에 숨겨둔 손에서 시커먼 사령의 비수를 꺼내 들며 비열한 미소를 짓는 찰나였다. 카단이 번개처럼 뛰쳐나가 실리아의 앞을 가로막아서며 드래곤 브레이커 방패를 강하게 내리찍었다.",
+      "sourceSentenceStart": 18,
+      "sourceSentenceEnd": 20,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“어머니... 정말로 이제 쉬어도 되는 건가요...? 제 짐이 너무나 무거웠어요...”",
+          "textEn": "“Mother... Is it truly you...? Please... do not leave me alone again...”",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_32/scene_09.webp",
+      "sourceImageFile": "episode_32/scene_09.webp",
+      "narrationEn": "Spellbound, Cilia took a trembling step toward the apparition. Just as the phantom slipped a poisoned necrotic dagger from behind her back, her features twisting into a cruel sneer, Kadan sprang forward like a thunderbolt, slamming his Dragon Breaker shield between them.",
+      "narrationKo": "쾅! 지진 같은 충격파가 환영의 샘물을 뒤흔들며 실피드의 모습을 검은 마수의 그림자로 일그러뜨렸다. 그것은 어머니의 영혼이 아니라, 나인섀도우의 환마(幻魔) ‘릴리스’가 파놓은 영혼의 덫이었다.",
+      "sourceSentenceStart": 21,
+      "sourceSentenceEnd": 22,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그것은 어머니의 영혼이 아니라, 나인섀도우의 환마(幻魔) ‘릴리스’가 파놓은 영혼의 덫이었다.",
+          "textEn": "Just as the phantom slipped a poisoned necrotic dagger from behind her back, her features twisting into a cruel sneer, Kadan sprang forward like a thunderbolt, slamming his Dragon Breaker shield between them.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 23
         }
       ],
       "sfxCues": [
@@ -412,80 +315,364 @@
       ]
     },
     {
-      "sceneNumber": 18,
-      "imageFile": "episode_32/scene_18.jpeg",
-      "sourceImageFile": "Death_Knight_Artus_attacked_Aquaris_202607260802.jpeg",
-      "narrationEn": "Something slower and less beautiful than reconciliation began between them. The real reason why Death Knight Artus attacked Aquaris was also revealed.",
-      "narrationKo": "화해보다 느리고 덜 아름다운 일이 두 사람 사이에서 시작되었다. 데스나이트 아르투스가 아쿠아리스를 공격한 진짜 이유도 드러났다.",
-      "sourceSentenceStart": 46,
-      "sourceSentenceEnd": 47,
-      "alignmentScore": 0.7416,
+      "sceneNumber": 10,
+      "imageFile": "episode_32/scene_10.webp",
+      "sourceImageFile": "episode_32/scene_10.webp",
+      "narrationEn": "Boom! A concussive shockwave shattered the phantom pool, revealing the hideous shadow demon beneath. It was no queen, but Lilith, the soul-devouring illusionist of the Nine Shadows.",
+      "narrationKo": "카단이 실리아의 어깨를 붙잡고 강하게 흔들었다. “눈을 떠라, 실리아! 저것은 네 어머니가 아니다! 네 어머니 실피드 여왕 전하는 마지막 순간까지 백성들을 위해 등을 꼿꼿이 세우셨던 고결한 수호자였다! 이런 비겁한 환영 뒤에 숨을 분이 아니다!”",
+      "sourceSentenceStart": 23,
+      "sourceSentenceEnd": 24,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 19,
-      "imageFile": "episode_32/scene_19.jpeg",
-      "sourceImageFile": "Aquaris_Lucian_Ignis_Kadan_scene_202607260802.jpeg",
-      "narrationEn": "Aquaris's bloodline had a rare resonance that stabilized ley lines, and Lucian later stole that power to create artificial flames. The forbidden arts implanted in Ignis also began with that research. The glass embers throbbed hotly in Kadan's hands.",
-      "narrationKo": "아쿠아리스의 혈통에는 지맥을 안정시키는 희귀한 공명이 있었고, 루시안은 훗날 인공 화염을 만들기 위해 그 힘을 빼앗았다. 이그니스에게 심어진 금지술도 그 연구에서 시작되었다. 카단의 손안에서 유리 불씨가 뜨겁게 뛰었다.",
-      "sourceSentenceStart": 48,
-      "sourceSentenceEnd": 50,
-      "alignmentScore": 0.4428,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
+          "textKo": "“눈을 떠라, 실리아! 저것은 네 어머니가 아니다! 네 어머니 실피드 여왕 전하는 마지막 순간까지 백성들을 위해 등을 꼿꼿이 세우셨던 고결한 수호자였다! 이런 비겁한 환영 뒤에 숨을 분이 아니다!”",
+          "textEn": "“It was no queen, but Lilith, the soul-devouring illusionist of the Nine Shadows.”",
+          "bubbleType": "shout",
+          "position": "bottom-left",
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
         {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_32/scene_11.webp",
+      "sourceImageFile": "episode_32/scene_11.webp",
+      "narrationEn": "Grasping Cilia's trembling shoulders, Kadan shook her with desperate conviction.",
+      "narrationKo": "실리아가 카단의 외침에 번쩍 정신을 차렸다. 떨어진 녹옥 지팡이를 주워 든 실리아의 뺨 위로 뜨거운 눈물이 흘러내렸다. “카단... 내가... 내가 잠시 흔들렸어요...” 카단이 자신의 품속에서 이그니스의 따스한 유리 불씨를 꺼내 실리아의 손바닥 위에 얹어주었다.",
+      "sourceSentenceStart": 25,
+      "sourceSentenceEnd": 27,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“카단... 내가... 내가 잠시 흔들렸어요...”",
+          "textEn": "“Open your eyes, Cilia! That is not your mother! Queen Sylphid was a valiant sovereign who held her ground to her dying breath to shield her people! She would never counsel you to flee into cowardly illusions!”",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
           "position": "center"
         }
       ]
     },
     {
-      "sceneNumber": 20,
-      "imageFile": "episode_32/scene_20.jpeg",
-      "sourceImageFile": "Prisoner_of_Flame_Court_scene_202607260802_2.jpeg",
-      "narrationEn": "Ignis's tragedy was planned on top of Aquaris's death even before birth. Naiad touched the embers and sang Aquaris's favorite star song. A tiny bit of water flickered once in the flame.",
-      "narrationKo": "이그니스의 비극은 태어나기 전부터 아쿠아리스의 죽음 위에 설계되어 있었다. 나이아드는 불씨를 만지며 아쿠아리스가 좋아하던 별 노래를 불렀다. 불꽃 속에서 아주 작은 물빛이 한 번 깜박였다.",
-      "sourceSentenceStart": 51,
-      "sourceSentenceEnd": 53,
-      "alignmentScore": 0.5034,
+      "sceneNumber": 12,
+      "imageFile": "episode_32/scene_12.webp",
+      "sourceImageFile": "episode_32/scene_12.webp",
+      "narrationEn": "\"Open your eyes, Cilia! That is not your mother! Queen Sylphid was a valiant sovereign who held her ground to her dying breath to shield her people! She would never counsel you to flee into cowardly illusions!\" Cilia gasped, snapping out of the trance as tears streamed down her cheeks.",
+      "narrationKo": "“우리에게는 지켜야 할 약속이 있다. 봄이 오면 북방의 설원에 보리싹을 보러 가자는 약속을 잊지 마라.” 카단의 드래곤 브레이커 방패가 내리찍힌 순간, 가짜 샘물 바닥에서 시커먼 사령의 해골들이 일제히 솟구치며 비명을 질렀다. 릴리스의 환각이 깨어지자, 실피드의 아름다운 드레스는 피 묻은 가시덤불로 변했고, 다정했던 미소는 흉측한 송곳니를 드러낸 악마의 아가리로 일그러졌다.",
+      "sourceSentenceStart": 28,
+      "sourceSentenceEnd": 29,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "이그니스",
-          "speakerEn": "Ignis",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“우리에게는 지켜야 할 약속이 있다. 봄이 오면 북방의 설원에 보리싹을 보러 가자는 약속을 잊지 마라.”",
+          "textEn": "“Open your eyes, Cilia! That is not your mother! Queen Sylphid was a valiant sovereign who held her ground to her dying breath to shield her people! She would never counsel you to flee into cowardly illusions!”",
           "bubbleType": "speech",
-          "position": "top-right"
+          "position": "top-left",
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
         {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
         },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_32/scene_13.webp",
+      "sourceImageFile": "episode_32/scene_13.webp",
+      "narrationEn": "\"Kadan... I... I faltered for a moment...\"",
+      "narrationKo": "카단이 실리아의 앞을 단단히 가로서며 외쳤다. “네 어머니는 결코 딸에게 도망치라 가르치지 않았다! 실피드 여왕의 영혼은 너의 승리를 위해 하늘에서 기도하고 계신다!” 카단의 따스한 손길과 유리 불씨의 순백 온기가 실리아의 얼어붙었던 영혼을 완전히 녹여냈다. 실리아의 눈동자에 바람의 왕녀다운 당당하고 청아한 예기가 되살아났다. 실리아는 허리춤에서 갈대 피리를 꺼내 입술에 대었다. 그리고 어머니가 생전에 가르쳐주셨던 태초의 바람의 노래, ‘정화의 메아리’를 연주하기 시작했다.",
+      "sourceSentenceStart": 30,
+      "sourceSentenceEnd": 32,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“네 어머니는 결코 딸에게 도망치라 가르치지 않았다! 실피드 여왕의 영혼은 너의 승리를 위해 하늘에서 기도하고 계신다!”",
+          "textEn": "“Kadan... I... I faltered for a moment...”",
+          "bubbleType": "shout",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_32/scene_14.webp",
+      "sourceImageFile": "episode_32/scene_14.webp",
+      "narrationEn": "Reaching into his tunic, Kadan placed the warm White Glass Ember into her trembling palm. \"We have an unbroken covenant to fulfill. Remember our promise to watch the green barley sprout through the northern snows together.\"",
+      "narrationKo": "청아하고도 맑은 피리 소리가 버드나무 숲 전체에 파문처럼 울려 퍼졌다. 피리 소리가 닿는 곳마다 검은 안개가 눈 녹듯 사라지고, 릴리스의 환각 결계가 유리 파편처럼 산산조각 났다. 정체를 드러낸 환마 릴리스가 흉측한 박쥐 날개를 퍼덕이며 비명을 질렀다.",
+      "sourceSentenceStart": 33,
+      "sourceSentenceEnd": 34,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "정체를 드러낸 환마 릴리스가 흉측한 박쥐 날개를 퍼덕이며 비명을 질렀다.",
+          "textEn": "Remember our promise to watch the green barley sprout through the northern snows together.\"",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_32/scene_15.webp",
+      "sourceImageFile": "episode_32/scene_15.webp",
+      "narrationEn": "The pristine warmth of the ember and Kadan's steadfast presence dispelled the lingering poison in Cilia's spirit. Drawing her reed flute, Cilia raised it to her lips and began playing the primordial wind hymn passed down by her mother: the 'Echo of Purification'.",
+      "narrationKo": "“크아악! 천박한 피리 소리가 내 예술을 망치다니!” 카단이 방패를 앞으로 내지르며 도약했다. “스승님과 동료들의 영혼을 모독한 죄, 여기서 끝이다!”",
+      "sourceSentenceStart": 35,
+      "sourceSentenceEnd": 37,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“크아악! 천박한 피리 소리가 내 예술을 망치다니!”",
+          "textEn": "“We have an unbroken covenant to fulfill. Remember our promise to watch the green barley sprout through the northern snows together.”",
+          "bubbleType": "shout",
+          "position": "bottom-right",
+          "characterCardId": 41
+        },
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“스승님과 동료들의 영혼을 모독한 죄, 여기서 끝이다!”",
+          "textEn": "“Drawing her reed flute, Cilia raised it to her lips and began playing the primordial wind hymn passed down by her mother: the 'Echo of Purification'.”",
+          "bubbleType": "shout",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_32/scene_16.webp",
+      "sourceImageFile": "episode_32/scene_16.webp",
+      "narrationEn": "The clear, celestial notes resonated across the weeping willows. Wherever the melody touched, the dark mist melted away like morning frost, shattering Lilith's illusionary web into glass shards. Exposed in her true demonic visage, Lilith shrieked in rage, only for Kadan's shield and Rondol's axe to smash her physical form into dust within seconds.",
+      "narrationKo": "카단의 방패 강타가 릴리스의 흉갑을 산산조각 냈고, 뒤이어 론돌과 그림리의 맹렬한 연격이 환마를 완전히 소멸시켰다. 실리아의 갈대 피리 소리가 절정에 달하자, 버드나무 숲의 고대 정령들이 일제히 화답하듯 은빛 잎사귀들을 파도처럼 흔들었다. 수백만 개의 버들잎이 회오리를 일으키며 릴리스의 박쥐 날개를 갈기갈기 찢어발겼다. 릴리스는 비명을 지르며 늪지대의 검은 진흙탕 속으로 추락했다.",
+      "sourceSentenceStart": 38,
+      "sourceSentenceEnd": 39,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "릴리스는 비명을 지르며 늪지대의 검은 진흙탕 속으로 추락했다.",
+          "textEn": "Exposed in her true demonic visage, Lilith shrieked in rage, only for Kadan's shield and Rondol's axe to smash her physical form into dust within seconds.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_32/scene_17.webp",
+      "sourceImageFile": "episode_32/scene_17.webp",
+      "narrationEn": "Tranquility returned to the ancient grove as starlight broke through the canopy.",
+      "narrationKo": "론돌의 거대한 도끼가 허공을 가르며 악마의 마나 핵을 단숨에 내리찍었다. 콰앙 하는 파열음과 함께 환마는 검은 연기가 되어 대기 중으로 영원히 소멸되었다. 어둠의 환각이 완전히 걷히자, 버드나무 숲은 본래의 평화롭고 고요한 성소의 모습을 되찾았다. 맑은 샘물 위로 은빛 버들잎들이 살랑이며, 마치 선대 영웅들이 두 젊은이의 사랑과 성장을 축복하듯 부드러운 바람을 불어넣어 주고 있었다. 실리아가 피리를 거두며 카단의 손을 꼭 잡았다.",
+      "sourceSentenceStart": 40,
+      "sourceSentenceEnd": 42,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "실리아가 피리를 거두며 카단의 손을 꼭 잡았다.",
+          "textEn": "Tranquility returned to the ancient grove as starlight broke through the canopy.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 46
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_32/scene_18.webp",
+      "sourceImageFile": "episode_32/scene_18.webp",
+      "narrationEn": "Clasping Kadan's hand, Cilia whispered with profound gratitude. \"Thank you, Kadan. Because you stood beside me, I did not lose my mother's true spirit.\"",
+      "narrationKo": "“고마워요, 카단. 당신이 곁에 있어 주었기에 어머니의 진정한 뜻을 잃지 않을 수 있었어요.” 카단이 부드럽게 미소 지으며 대답했다.",
+      "sourceSentenceStart": 43,
+      "sourceSentenceEnd": 44,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“고마워요, 카단. 당신이 곁에 있어 주었기에 어머니의 진정한 뜻을 잃지 않을 수 있었어요.”",
+          "textEn": "“Thank you, Kadan. Because you stood beside me, I did not lose my mother's true spirit.”",
+          "bubbleType": "speech",
+          "position": "bottom-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_32/scene_19.webp",
+      "sourceImageFile": "episode_32/scene_19.webp",
+      "narrationEn": "Smiling gently, Kadan replied.",
+      "narrationKo": "“네가 흔들릴 때 내가 방패가 되어주고, 내가 지칠 때 네 바람이 나를 일으켜 세우는 것이다. 그것이 우리가 함께 걸어가는 이유다.” 여섯 스승들도 흐뭇한 미소를 지으며 두 사람의 뒤를 따랐다. 버드나무 숲을 빠져나오자, 저 멀리 늪지대 한가운데에 솟아 있는 거대한 흑마법 요새 ‘검은 성채’가 마침내 그 흉측한 전경을 드러냈다. 루시안과의 최후의 결전이 코앞으로 다가와 있었다.",
+      "sourceSentenceStart": 45,
+      "sourceSentenceEnd": 47,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“네가 흔들릴 때 내가 방패가 되어주고, 내가 지칠 때 네 바람이 나를 일으켜 세우는 것이다. 그것이 우리가 함께 걸어가는 이유다.”",
+          "textEn": "“Thank you, Kadan. Because you stood beside me, I did not lose my mother's true spirit.”",
+          "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_32/scene_20.webp",
+      "sourceImageFile": "episode_32/scene_20.webp",
+      "narrationEn": "\"When you stumble, I shall be your shield; when I weary, your wind shall lift my wings. That is why we walk this road together.\" Emerging from the willows, the companions beheld the menacing bulk of the Black Citadel looming at the center of the swamp. The final hour had arrived.",
+      "narrationKo": "정화된 버드나무 정원 위로 차가운 밤하늘의 은하수가 쏟아질 듯 맑은 빛을 뿜어냈다. 카단과 실리아는 손을 맞잡은 채 서로의 눈동자에 비친 서로의 모습을 바라보았다. 환각의 시련을 이겨낸 두 사람의 유대는 이제 그 어떤 악마의 속임수로도 흔들 수 없을 만큼 단단해져 있었다. 실리아가 속삭였다. “봄날의 보리밭 약속, 반드시 지켜주셔야 해요.” 카단이 고개를 끄덕이며 미소를 지었다. “목숨을 걸고 지키마.” 두 영웅은 결전의 성채를 향해 발걸음을 옮겼다.",
+      "sourceSentenceStart": 48,
+      "sourceSentenceEnd": 49,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“봄날의 보리밭 약속, 반드시 지켜주셔야 해요.”",
+          "textEn": "“When you stumble, I shall be your shield; when I weary, your wind shall lift my wings. That is why we walk this road together.”",
+          "bubbleType": "speech",
+          "position": "top-left",
+          "characterCardId": 62
+        },
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“목숨을 걸고 지키마.”",
+          "textEn": "“The final hour had arrived.”",
+          "bubbleType": "speech",
+          "position": "top-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
         {
           "textKo": "파지지직!",
           "textEn": "CRACKLE!",

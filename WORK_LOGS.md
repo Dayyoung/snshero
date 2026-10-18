@@ -2,6 +2,13 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-18 14:35 KST] 전 40화(840컷) 웹툰 말풍선 대사 및 내레이션 최신 소설 원문(`episode_01.md`~`episode_40.md`) 100% 일치 동기화 완료
+- **작업명**: `웹툰 전 40화(840컷) 대사·내레이션·등장인물 최신 소설 원문 100% 동기화`
+- **주요 수행 내역**:
+  1. `scripts/sync_webtoon_with_novel.py` 작성 및 실행: 기존 `enrich_webtoon_data.py`가 생성했던 임의의 템플릿 대사(650건)를 전량 제거하고, 최신 40화 한/영 소설 원문(`public/book/episode_01.md`~`episode_40.md`, `public/book/image_narrations/english_txt/*.txt`)에서 실제 대사(`“...”`)와 화자(`발리안`, `헤르쿨`, `알렉산다르`, `루시안`, `이셀라`, `엘윈`, `카단`, `실리아`, `이그니스` 등 41명) 및 실제 문단 내레이션을 100% 원문 그대로 추출하여 `src/content/webtoonEpisodeManifest.json`과 `public/book/image_narrations/episode_01_narrations.json`~`episode_40_narrations.json`에 전수 반영.
+  2. 동기화된 씬별 실제 등장인물(`characters`) 및 배경(`background`) 기준으로 전 40화 840컷 WebP 웹툰 패널 이미지 재합성 완료.
+  3. `WebtoonSpeechBubble.tsx`에서 내레이션 박스 표시 시 불필요한 `(독백)` 표기를 숨기고, `NovelView.tsx` 및 `public/sw.js`(`snshero-media-v5-novel2026`) 캐시 버전을 갱신하여 브라우저에서 즉시 반영되도록 조치.
+
 ## [2026-10-18 14:20 KST] 소설/웹툰 뷰(`NovelView.tsx`) 고대 유물 룬 봉인 해제 팝업(`SecretArtifactDecryptionModal`) 제거
 - **작업명**: `웹툰/소설 화면 고대 유물 룬 봉인 해제 팝업 제거`
 - **주요 수행 내역**:

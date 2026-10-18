@@ -2,26 +2,27 @@
   "episodeNumber": 18,
   "episodeTitleEn": "Secret of the Black Sanctum",
   "episodeTitleKo": "검은 성전의 비밀",
-  "sourceSentenceCount": 57,
+  "sourceSentenceCount": 42,
   "sceneCount": 20,
   "scenes": [
     {
       "sceneNumber": 1,
-      "imageFile": "episode_18/scene_01.jpeg",
-      "sourceImageFile": "No_books_in_temple_basement_202607260802.jpeg",
-      "narrationEn": "There were no books in the basement of the temple. The entire black wall was a huge memory device, with thousands of sentences floating around with light and sound.",
-      "narrationKo": "성전 지하에는 책이 없었다. 검은 벽면 전체가 거대한 기억 장치였고, 수천 개의 문장이 빛과 소리로 떠다녔다.",
+      "imageFile": "episode_18/scene_01.webp",
+      "sourceImageFile": "episode_18/scene_01.webp",
+      "narrationEn": "Emerging cautiously from the flooded sea cavern beneath Razor Reef Defile, the companions set foot upon the ancient ruins of the Black Temple, buried deep in the subterranean foundations of Whispering Wind Island. Isolated from mortal eyes for millennia, the sunken sanctum resembled an immense, majestic library flanked by endless rows of towering basalt columns. Yet nowhere were paper codices or vellum scrolls to be found. The entirety of the colossal obsidian walls, stretching scores of fathoms toward the vaulted ceiling, functioned as living memory crystals pulsing with faint azure phosphorescence. From between the massive stalactites clinging to the vaulted roof, cold subterranean droplets fell in rhythmic intervals, tracing clear, concentric ripples across the glass-like water. Veins of azure mana coursed through the stone like the quiet pulse of primordial elemental spirits. Tracing the glossy basalt with trembling fingertips, Cilia spoke in a hushed, reverent whisper.",
+      "narrationKo": "칼날 산호초 해협의 해저 동굴을 빠져나온 일행은 바람 속삭임 섬 지하 깊은 곳에 자리 잡은 ‘검은 성전’의 폐허에 조심스럽게 발을 디뎠다. 수천 년 동안 세상과 격리되어 있던 지하 성전은 거대한 흑요석 기둥들이 끝없이 늘어서 있는 고대 도서관의 웅장한 형태를 띠고 있었다. 그러나 종이로 된 책이나 양피지 두루마리는 어디에도 보이지 않았다. 높이 수십 길에 달하는 매끄러운 흑요석 벽면 전체가 푸른 인광을 내뿜는 거대한 기억 저장 수정체였던 것이다. 천장에 매달린 거대한 종유석 틈새로는 차가운 지하수 물방울이 떨어지며 고요한 수면에 청아하고도 규칙적인 파문을 일으키고 있었고, 벽면을 따라 흐르는 푸른 마나의 실핏줄들은 고대 정령들의 심장 박동처럼 은은하게 맥동했다. 실리아가 흑요석 벽면을 손끝으로 쓰다듬으며 경외 어린 목소리로 나지막이 속삭였다.",
       "sourceSentenceStart": 1,
       "sourceSentenceEnd": 2,
-      "alignmentScore": 0.572,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "검끝이 흔들리지 않는 한, 길은 열린다.",
-          "textEn": "As long as our blades do not waver, the path will open.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "실리아가 흑요석 벽면을 손끝으로 쓰다듬으며 경외 어린 목소리로 나지막이 속삭였다.",
+          "textEn": "Tracing the glossy basalt with trembling fingertips, Cilia spoke in a hushed, reverent whisper.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
@@ -41,168 +42,22 @@
     },
     {
       "sceneNumber": 2,
-      "imageFile": "episode_18/scene_02.jpeg",
-      "sourceImageFile": "Aeolus_explains_Nine_Shadows_Codex_202607260802.jpeg",
-      "narrationEn": "The Nine Shadows Codex was not one person's secret book, but a record of life mana research left behind by a fallen civilization. Aeolus explained that the codex can be used for healing and life extension, but if read in reverse order, it becomes a forbidden art that takes away the life force of others. Celia's mother, Sylphid, died when her memory and mind were connected while trying to correct a mistranslation.",
-      "narrationKo": "나인섀도우 코덱스는 한 사람의 비술서가 아니라 멸망한 문명이 남긴 생명 마나 연구 기록이었다. 에올루스는 코덱스가 치유와 수명 연장에 쓰일 수 있지만, 순서를 거꾸로 읽으면 타인의 생명력을 빼앗는 금지술이 된다고 설명했다. 실리아의 어머니 실피드는 잘못된 번역을 바로잡으려다 기억 장치와 정신이 연결되어 죽었다.",
+      "imageFile": "episode_18/scene_02.webp",
+      "sourceImageFile": "episode_18/scene_02.webp",
+      "narrationEn": "\"This is the primordial archive established by the ancestors of Aeolus, Spirit King of the Winds, to preserve the unblemished truths of the continent. Parchment and ink decay with the passage of centuries, but every breath of the earth and every true memory is eternally sealed within this living obsidian matrix.\" Resting his unadorned iron shield, Kadan surveyed the solitary altar at the hall's center.",
+      "narrationKo": "“이곳은 바람의 정령왕 에올루스의 선조들이 대륙의 모든 진실을 기록해 둔 태초의 아카이브예요. 종이나 잉크는 세월의 풍파에 닳아 없어지지만, 대지의 모든 숨결과 거짓 없는 기억은 이 흑요석 수정 속에 영원히 봉인되어 있어요.” 카단이 무쇠 방패를 비껴 쥐며 성전 중앙의 제단을 둘러보았다.",
       "sourceSentenceStart": 3,
-      "sourceSentenceEnd": 5,
-      "alignmentScore": 0.5252,
+      "sourceSentenceEnd": 4,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "실리아",
           "speakerEn": "Celia",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "textKo": "“이곳은 바람의 정령왕 에올루스의 선조들이 대륙의 모든 진실을 기록해 둔 태초의 아카이브예요. 종이나 잉크는 세월의 풍파에 닳아 없어지지만, 대지의 모든 숨결과 거짓 없는 기억은 이 흑요석 수정 속에 영원히 봉인되어 있어요.”",
+          "textEn": "“This is the primordial archive established by the ancestors of Aeolus, Spirit King of the Winds, to preserve the unblemished truths of the continent. Parchment and ink decay with the passage of centuries, but every breath of the earth and every true memory is eternally sealed within this living obsidian matrix.”",
           "bubbleType": "speech",
-          "position": "top-right"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 3,
-      "imageFile": "episode_18/scene_03.jpeg",
-      "sourceImageFile": "Old_man_trapped_in_temple_202607260802.jpeg",
-      "narrationEn": "Inside the temple, an old man named Gandar was trapped. He was a heroic priest who founded the Star Sanctuary and a long-time enemy of Aeolus. Aeolus said he locked him up because he knew the location of the codex, but Gandar claimed he stayed because it was fun.",
-      "narrationKo": "성전 안쪽에는 간다르라는 노인이 갇혀 있었다. 그는 별의 성소를 세운 영웅의 사제이자 에올루스의 오랜 적이었다. 에올루스는 코덱스 위치를 안다는 이유로 그를 가뒀다고 했지만, 간다르는 자기가 재미있어서 남아 있었다고 주장했다.",
-      "sourceSentenceStart": 6,
-      "sourceSentenceEnd": 8,
-      "alignmentScore": 0.5435,
-      "dialogues": [
-        {
-          "speakerKo": "순례 사제",
-          "speakerEn": "Pilgrim Priest",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
-          "bubbleType": "shout",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 4,
-      "imageFile": "episode_18/scene_04.jpeg",
-      "sourceImageFile": "Gandar_prison_door_not_locked_202607260802.jpeg",
-      "narrationEn": "Gandar's prison door was not locked. He said that he ate more regularly inside than outside and that it was easy to make fun of Aeolus, so he didn't go out. When Celia did not believe him, he showed him twelve escape hatches he had secretly dug over the past ten years.",
-      "narrationKo": "간다르의 감옥 문은 잠겨 있지 않았다. 그는 바깥보다 안쪽의 식사가 규칙적이고 에올루스를 놀리기 쉬워 나가지 않았다고 했다. 실리아가 믿지 않자 지난 십 년 동안 몰래 판 탈출구 열두 개를 보여 주었다.",
-      "sourceSentenceStart": 9,
-      "sourceSentenceEnd": 11,
-      "alignmentScore": 0.4309,
-      "dialogues": [
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
-          "bubbleType": "shout",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 5,
-      "imageFile": "episode_18/scene_05.jpeg",
-      "sourceImageFile": "Gandar_asks_Kadan_to_be_202607260802.jpeg",
-      "narrationEn": "It was like everyone went out about halfway and then came back because they were bored. When Gandar saw Kadan, he immediately asked him to become his younger brother. The more Kadan tried to be polite, the more he rolled on the floor and laughed.",
-      "narrationKo": "모두 절반쯤 나가다가 지루해서 되돌아온 흔적이었다. 간다르는 카단을 보자 대뜸 동생이 되라고 했다. 카단이 예를 갖추려 할수록 그는 바닥을 구르며 웃었다.",
-      "sourceSentenceStart": 12,
-      "sourceSentenceEnd": 14,
-      "alignmentScore": 0.3099,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
-          "bubbleType": "shout",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 6,
-      "imageFile": "episode_18/scene_06.jpeg",
-      "sourceImageFile": "Gandar_Kadan_Black_Sanctum_202607260802.jpeg",
-      "narrationEn": "“Don’t use adult language. The most dangerous runes in this temple can never be learned by someone with dignity. ” What he showed was binary splitting.",
-      "narrationKo": "“어른들 말투를 쓰지 마라. 이 성전의 가장 위험한 룬은 체면이 있는 사람이 절대 배울 수 없거든.” 그가 보여 준 것은 쌍성 분할이었다.",
-      "sourceSentenceStart": 15,
-      "sourceSentenceEnd": 17,
-      "alignmentScore": 0.4061,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "어른들 말투를 쓰지 마라. 이 성전의 가장 위험한 룬은 체면이 있는 사람이 절대 배울 수 없거든.",
-          "textEn": "Don’t use adult language. The most dangerous runes in this temple can never be learned by someone with dignity. ",
-          "bubbleType": "speech",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 7,
-      "imageFile": "episode_18/scene_07.jpeg",
-      "sourceImageFile": "Kadan_defends_and_attacks_202607260802.jpeg",
-      "narrationEn": "A technique to simultaneously defend and attack by sending different mana commands to the left and right hands. Kadan had a simple idea, so he learned it rather quickly.",
-      "narrationKo": "왼손과 오른손에 서로 다른 마나 명령을 내려 동시에 방어와 공격을 수행하는 기술. 카단은 생각이 단순해서 오히려 빠르게 익혔다.",
-      "sourceSentenceStart": 18,
-      "sourceSentenceEnd": 19,
-      "alignmentScore": 0.4689,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 8,
-      "imageFile": "episode_18/scene_08.jpeg",
-      "sourceImageFile": "Man_creating_seal_Dragon_Breaker_202607260802.jpeg",
-      "narrationEn": "He raised a snow crystal shield with one hand and created the first seal of Dragon Breaker with the other hand. From the first attempt, Celia created different winds with both hands, but the two flows were intertwined too intricately and he got himself caught in a knot. Ignis tried to use two attacks at the same time, but both flames collided.",
-      "narrationKo": "한 손으로 눈결정 방패를 세우며 다른 손으로 드래곤 브레이커의 첫 인장을 만들었다. 실리아는 첫 시도부터 양손으로 다른 바람을 만들었지만 두 흐름을 너무 복잡하게 엮어 스스로 매듭에 갇혔다. 이그니스는 공격 두 개를 동시에 쓰려다 양쪽 불꽃이 충돌했다.",
-      "sourceSentenceStart": 20,
-      "sourceSentenceEnd": 22,
-      "alignmentScore": 0.4919,
-      "dialogues": [
-        {
-          "speakerKo": "이그니스",
-          "speakerEn": "Ignis",
-          "textKo": "우리의 맹세는 아직 꺼지지 않았다.",
-          "textEn": "Our vow has never been extinguished.",
-          "bubbleType": "speech",
-          "position": "bottom-left"
+          "position": "bottom-left",
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
@@ -213,281 +68,258 @@
           "position": "top-right"
         },
         {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_18/scene_03.webp",
+      "sourceImageFile": "episode_18/scene_03.webp",
+      "narrationEn": "\"The histories penned on paper are easily manipulated by the brushes of tyrants, but the stone of the earth never speaks falsehood. Master Aleksandar always told me that only the memories sleeping within the Black Temple across the sea could heal the deep scars of the continent.\" Staring at his own shadowed, battered reflection in the dark stone, Ignis swallowed hard.",
+      "narrationKo": "“종이로 된 역사는 권력자의 붓끝에 의해 얼마든지 조작되지만, 대지의 돌은 결코 거짓을 말하지 않는 법이다. 알렉산다르 스승님께서도 바다 건너 검은 성전에 묻힌 기억만이 대륙의 상처를 치유할 유일한 열쇠라고 말씀하셨지.” 이그니스는 흑요석 벽면에 비친 자신의 초라하고 상처 입은 그림자를 응시하며 마른침을 삼켰다.",
+      "sourceSentenceStart": 5,
+      "sourceSentenceEnd": 6,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“종이로 된 역사는 권력자의 붓끝에 의해 얼마든지 조작되지만, 대지의 돌은 결코 거짓을 말하지 않는 법이다. 알렉산다르 스승님께서도 바다 건너 검은 성전에 묻힌 기억만이 대륙의 상처를 치유할 유일한 열쇠라고 말씀하셨지.”",
+          "textEn": "“The histories penned on paper are easily manipulated by the brushes of tyrants, but the stone of the earth never speaks falsehood. Master Aleksandar always told me that only the memories sleeping within the Black Temple across the sea could heal the deep scars of the continent.”",
+          "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
           "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_18/scene_04.webp",
+      "sourceImageFile": "episode_18/scene_04.webp",
+      "narrationEn": "\"Eighteen winters ago... The fateful night when my father was branded a traitor and Master Aleksandar fell in ash... Is the blood-stained truth of that tragedy recorded here as well? I almost fear to look with my own eyes upon the reality of what I spent my life fighting to defend.\" Turning to him with gentle warmth, Cilia placed a reassuring hand upon his arm.",
+      "narrationKo": "“십팔 년 전의 그날... 내 아버지가 역적으로 몰리고 알렉산다르 숙부가 전사했던 그 피비린내 나는 밤의 진실도 여기에 고스란히 기록되어 있단 말인가? 내 평생을 지탱해 온 정의가 과연 무엇이었는지, 두 눈으로 확인하기가 두렵군.” 실리아가 이그니스를 돌아보며 따뜻하게 위로했다.",
+      "sourceSentenceStart": 7,
+      "sourceSentenceEnd": 8,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“십팔 년 전의 그날... 내 아버지가 역적으로 몰리고 알렉산다르 숙부가 전사했던 그 피비린내 나는 밤의 진실도 여기에 고스란히 기록되어 있단 말인가? 내 평생을 지탱해 온 정의가 과연 무엇이었는지, 두 눈으로 확인하기가 두렵군.”",
+          "textEn": "“Eighteen winters ago... The fateful night when my father was branded a traitor and Master Aleksandar fell in ash... Is the blood-stained truth of that tragedy recorded here as well? I almost fear to look with my own eyes upon the reality of what I spent my life fighting to defend.”",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_18/scene_05.webp",
+      "sourceImageFile": "episode_18/scene_05.webp",
+      "narrationEn": "\"Do not fear, Ignis. No matter how bitter the truth, facing our wounds in the bright light of day is infinitely nobler than wandering lost in the shroud of comfortable falsehood.\" Reaching the center of the hall, Cilia stood before the jade-veined crystal sphere resting upon the altar. Around the cold stone dais, sacred elemental wards carved by wind spirits cast soothing teal light, and etched into the crystal sphere in archaic glyphs was the inscription: 'Let he who seeks truth offer the purest tear.'",
+      "narrationKo": "“두려워 마세요, 이그니스. 진실이 아무리 쓰라릴지라도, 거짓된 어둠 속에서 헤매는 것보다는 눈부신 빛 속에서 상처를 마주하는 편이 훨씬 존엄한 법이에요.” 성전 중앙에 다다른 실리아는 제단 위에 놓인 비취색 수정구 앞에 섰다. 차가운 제단 둘레에는 바람의 정령들이 새겨놓은 신성한 결계 문양이 푸른빛을 발산하고 있었고, 수정구 표면에는 고대 룬 문자로 ‘진실을 바라는 자, 가장 순수한 눈물을 바쳐라’라는 문구가 정교하게 음각되어 있었다.",
+      "sourceSentenceStart": 9,
+      "sourceSentenceEnd": 10,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“두려워 마세요, 이그니스. 진실이 아무리 쓰라릴지라도, 거짓된 어둠 속에서 헤매는 것보다는 눈부신 빛 속에서 상처를 마주하는 편이 훨씬 존엄한 법이에요.”",
+          "textEn": "“Do not fear, Ignis. No matter how bitter the truth, facing our wounds in the bright light of day is infinitely nobler than wandering lost in the shroud of comfortable falsehood.”",
+          "bubbleType": "speech",
+          "position": "top-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_18/scene_06.webp",
+      "sourceImageFile": "episode_18/scene_06.webp",
+      "narrationEn": "With reverent care, Cilia drew the legendary Jade Staff—her mother Sylphid's heirloom—and seated the ferrule into the altar's socket. The massive emerald atop the staff hummed in resonance, stirring a gentle vortex of air. Closing her eyes, Cilia let fall a single crystalline tear born of long years of yearning and sorrow upon the sphere. Instantly, the entire temple shuddered with blinding azure brilliance.",
+      "narrationKo": "실리아는 허리춤에서 어머니 실피드의 유품이었던 녹옥 지팡이를 들어 제단 홈에 조심스럽게 맞추어 꽂았다. 지팡이 끝의 거대한 에메랄드가 공명하며 은은한 바람의 소용돌이를 일으켰다. 실리아는 조용히 눈을 감고, 어머니를 향한 오랜 그리움과 가슴속 깊이 묻어두었던 슬픔을 모아 한 방울의 투명한 눈물을 수정구 위에 떨어뜨렸다. 순간, 흑요석 성전 전체가 눈이 멀 것 같은 푸른빛으로 요동치기 시작했다. 벽면을 채우고 있던 수만 개의 흑요석 수정들이 일제히 공명하며, 허공에 십팔 년 전 바람 속삭임 섬의 비취 궁정에서 벌어졌던 참극이 거대한 환영 영상으로 생생하게 투사되었다.",
+      "sourceSentenceStart": 11,
+      "sourceSentenceEnd": 13,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "벽면을 채우고 있던 수만 개의 흑요석 수정들이 일제히 공명하며, 허공에 십팔 년 전 바람 속삭임 섬의 비취 궁정에서 벌어졌던 참극이 거대한 환영 영상으로 생생하게 투사되었다.",
+          "textEn": "Instantly, the entire temple shuddered with blinding azure brilliance.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_18/scene_07.webp",
+      "sourceImageFile": "episode_18/scene_07.webp",
+      "narrationEn": "Tens of thousands of obsidian crystals resonated in thunderous harmony, projecting a colossal, lifelike phantom memory across the vaulted ceiling, recreating the tragedy that had unfolded in the Jade Palace eighteen winters ago. It revealed a reality utterly antithetical to the imperial histories taught in the capital.",
+      "narrationKo": "그것은 황실의 역사서와 궁정 기사단에서 가르쳤던 내용과는 완전히 다른, 소름 끼치는 진실이었다. 황궁의 최고 권력자 루시안 재상과 내통한 바람섬의 제피르 대장로가, 당시 평화 협정을 축하하기 위해 마련된 연회에서 실피드 여왕의 은잔에 메두사 고르고의 맹독을 은밀히 타는 장면이 공중에 선명하게 떠올랐다. 실피드 여왕이 피를 토하며 쓰러지자, 제피르는 사전에 대기시켜 두었던 암흑 결계로 회랑을 봉쇄한 뒤 성기사단에게 죄를 뒤집어씌우기 위해 비열한 비명을 질렀던 것이다.",
+      "sourceSentenceStart": 14,
+      "sourceSentenceEnd": 15,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "실피드 여왕이 피를 토하며 쓰러지자, 제피르는 사전에 대기시켜 두었던 암흑 결계로 회랑을 봉쇄한 뒤 성기사단에게 죄를 뒤집어씌우기 위해 비열한 비명을 질렀던 것이다.",
+          "textEn": "It revealed a reality utterly antithetical to the imperial histories taught in the capital.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 61
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_18/scene_08.webp",
+      "sourceImageFile": "episode_18/scene_08.webp",
+      "narrationEn": "High Elder Zephyr, colluding with Minister Lucian of the imperial court, was seen secretly pouring the lethal venom of Medusa Gorgo into the ceremonial silver chalice of Queen Sylphid during the peace banquet eighteen winters ago. When Sylphid collapsed coughing blackened blood, Zephyr had sealed the colonnades with pre-cast shadow wards, shrieking in feigned horror to frame the Holy Knights stationed outside. \"The Holy Knights have assassinated the queen! Slay every traitor without mercy!\"",
+      "narrationKo": "“성기사들이 여왕을 시해했다! 반역자들을 한 놈도 살려두지 마라!” 환영 속에서 알렉산다르와 발리안 두 성기사는 불타는 비취 궁정 안으로 뛰어들었다. 알렉산다르는 자신의 은빛 단검과 무쇠 방패로 여왕을 시해하려던 제피르의 암흑 암살자들을 베어 넘기며, 피를 흘리는 여왕의 곁을 끝까지 지키려 필사적으로 저항하고 있었다.",
+      "sourceSentenceStart": 16,
+      "sourceSentenceEnd": 17,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실피드",
+          "speakerEn": "Sylphid",
+          "textKo": "“성기사들이 여왕을 시해했다! 반역자들을 한 놈도 살려두지 마라!”",
+          "textEn": "“The Holy Knights have assassinated the queen! Slay every traitor without mercy!”",
+          "bubbleType": "shout",
+          "position": "top-left",
+          "characterCardId": 23
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
           "position": "center"
         }
       ]
     },
     {
       "sceneNumber": 9,
-      "imageFile": "episode_18/scene_09.jpeg",
-      "sourceImageFile": "Gandar_laughed_holding_stomach_202607260802.jpeg",
-      "narrationEn": "Gandar laughed, holding his stomach and saying that the two smartest people would take the longest. Celia found the voice of Sylphid in the codex records. Instead of telling people not to blame Aeolus, the last study left a warning saying, “Do not trust interpretations that make someone’s sacrifice for granted.",
-      "narrationKo": "간다르는 가장 영리한 두 사람이 가장 오래 걸릴 거라며 배를 잡고 웃었다. 실리아는 코덱스 기록에서 실피드의 목소리를 찾아냈다. 마지막 연구에는 에올루스를 원망하지 말라는 말 대신, “누군가의 희생을 당연하게 만드는 해석을 믿지 말라”는 경고가 남아 있었다.",
-      "sourceSentenceStart": 23,
-      "sourceSentenceEnd": 25,
-      "alignmentScore": 0.5912,
+      "imageFile": "episode_18/scene_09.webp",
+      "sourceImageFile": "episode_18/scene_09.webp",
+      "narrationEn": "Within the projected memory, Aleksandar and Balian charged through the flaming colonnades. Drawing his silver dagger and bracing his iron shield, Aleksandar fought desperately against Zephyr's shadow assassins, striving to defend the dying queen. \"Protect Her Majesty! Balian, take the child and the refugees to the western pier! I shall hold this passage!\"",
+      "narrationKo": "“여왕 전하를 모셔라! 발리안, 아이와 난민들을 데리고 서쪽 부두로 탈출해라! 내가 이곳을 막겠다!” 발리안은 온몸에 쇠뇌 화살을 맞아가면서도 어린 실리아와 피난민들을 품에 안고 활로를 열었다. 그러나 황실의 비밀 감찰대와 제피르의 군사들은 퇴로를 차단한 채, 두 성기사를 여왕 살해범으로 몰아붙이며 대륙 전역에 악의적인 수배령을 내렸다. 불길 속에서 알렉산다르 스승이 홀로 수백 명의 추격대를 막아서며 장렬히 쓰러지는 모습이 허공에 비쳤다.",
+      "sourceSentenceStart": 18,
+      "sourceSentenceEnd": 19,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "누군가의 희생을 당연하게 만드는 해석을 믿지 말라",
-          "textEn": "“누군가의 희생을 당연하게 만드는 해석을 믿지 말라”",
-          "bubbleType": "speech",
-          "position": "top-right"
+          "speakerKo": "알렉산다르",
+          "speakerEn": "Aleksandar",
+          "textKo": "“여왕 전하를 모셔라! 발리안, 아이와 난민들을 데리고 서쪽 부두로 탈출해라! 내가 이곳을 막겠다!”",
+          "textEn": "“Protect Her Majesty! Balian, take the child and the refugees to the western pier! I shall hold this passage!”",
+          "bubbleType": "shout",
+          "position": "top-right",
+          "characterCardId": 50
         }
       ],
-      "sfxCues": []
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
     },
     {
       "sceneNumber": 10,
-      "imageFile": "episode_18/scene_10.jpeg",
-      "sourceImageFile": "Sylphid_and_Celia_in_Sanctum_202607260802.jpeg",
-      "narrationEn": "” It was a sentence I wrote with the belief that my daughter would read it someday. In his memory, after Sylphid finished talking about his research, he even left young Celia instructions on how to comb his hair and a recipe for his favorite soup. There was no difference between the knowledge to save the world and the knowledge to survive each day.",
-      "narrationKo": "딸이 언젠가 읽으리라 믿고 쓴 문장이었다. 기억 속 실피드는 연구 이야기를 끝낸 뒤 어린 실리아에게 머리 빗는 법과 좋아하던 수프 조리법까지 남겼다. 세계를 구하는 지식과 하루를 살아가는 지식 사이에 높낮이를 두지 않았다.",
-      "sourceSentenceStart": 26,
-      "sourceSentenceEnd": 28,
-      "alignmentScore": 0.3502,
-      "dialogues": [
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 11,
-      "imageFile": "episode_18/scene_11.jpeg",
-      "sourceImageFile": "Celia_cried_quietly_Ignis_discov…_202607260802.jpeg",
-      "narrationEn": "It was only at that point that Celia cried quietly. Ignis discovered a structure identical to his fingernail rune in the forbidden arts section. The technique taught by Medusa Gorgo was the reverse translation of the codex.",
-      "narrationKo": "실리아는 그 대목에서야 소리 없이 울었다. 이그니스는 금지술 부분에서 자신의 손톱 룬과 똑같은 구조를 발견했다. 메두사 고르고가 가르친 기술은 코덱스의 역순 번역이었다.",
-      "sourceSentenceStart": 29,
-      "sourceSentenceEnd": 31,
-      "alignmentScore": 0.449,
+      "imageFile": "episode_18/scene_10.webp",
+      "sourceImageFile": "episode_18/scene_10.webp",
+      "narrationEn": "Riddled with crossbow bolts, Balian bore the infant Cilia and weeping refugees into the night, carving an escape corridor. Yet the Imperial Secret Inquisition and Zephyr's faction buried the truth, declaring the two knights traitors and unleashing bounty hunters across the continent. In the flaming ruins, Master Aleksandar stood alone against hundreds of pursuers until he fell in battle. Witnessing the agonizing truth, Ignis dropped to his knees, slamming his fists into the basalt flags as tears of blood spilled from his eyes.",
+      "narrationKo": "그 처절하고도 숭고한 진실을 목격한 이그니스는 무릎을 꿇고 차가운 바닥을 주먹으로 내리쳤다. 그의 눈에서 피눈물이 뚝뚝 떨어져 석판을 적셨다. “아버지... 발리안 아버지... 아버지께서는 배신자가 아니라, 마지막 순간까지 여왕과 어린아이들을 지키려 했던 가장 고결한 기사였어... 그런데 나는... 나는 그 추악한 살인마들의 손을 잡고 아버지를 역적이라 저주하며 살아왔단 말인가!”",
+      "sourceSentenceStart": 20,
+      "sourceSentenceEnd": 21,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "이그니스",
           "speakerEn": "Ignis",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 12,
-      "imageFile": "episode_18/scene_12.jpeg",
-      "sourceImageFile": "Ignis_destroying_flame_core_202607260802.jpeg",
-      "narrationEn": "Every time he attacked a person, some of the opponent's mana flowed into the flame core, and that power was slowly destroying the core. “How to get rid of it? ” Ignis asked.",
-      "narrationKo": "그가 사람을 공격할 때마다 상대의 마나 일부가 불꽃 코어로 흘러들었고, 그 힘은 서서히 코어를 망가뜨리고 있었다. “없앨 방법은?” 이그니스가 물었다.",
-      "sourceSentenceStart": 32,
-      "sourceSentenceEnd": 34,
-      "alignmentScore": 0.4113,
-      "dialogues": [
-        {
-          "speakerKo": "이그니스",
-          "speakerEn": "Ignis",
-          "textKo": "없앨 방법은?",
-          "textEn": "How to get rid of it? ",
-          "bubbleType": "speech",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
-        },
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 13,
-      "imageFile": "episode_18/scene_13.jpeg",
-      "sourceImageFile": "Gandar_giving_back_strength_202607260802.jpeg",
-      "narrationEn": "“Giving back what you have received. ” Gandar answered. “It’s not that you’re losing strength, it’s that you’re letting go of strength that wasn’t yours.",
-      "narrationKo": "“받은 것을 돌려주는 것.” 간다르가 답했다. “힘을 잃는 게 아니라, 네 것이 아니었던 힘을 내보내는 거지. 아프기는 아주 아플 거다.”",
-      "sourceSentenceStart": 35,
-      "sourceSentenceEnd": 38,
-      "alignmentScore": 0.3025,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "받은 것을 돌려주는 것.",
-          "textEn": "Giving back what you have received. ",
-          "bubbleType": "speech",
-          "position": "top-right"
-        },
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "힘을 잃는 게 아니라, 네 것이 아니었던 힘을 내보내는 거지. 아프기는 아주 아플 거다.",
-          "textEn": "“힘을 잃는 게 아니라, 네 것이 아니었던 힘을 내보내는 거지. 아프기는 아주 아플 거다.”",
-          "bubbleType": "speech",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 14,
-      "imageFile": "episode_18/scene_14.jpeg",
-      "sourceImageFile": "Fantasy_characters_on_deserted_i…_202607260802.jpeg",
-      "narrationEn": "It’s going to hurt a lot. ” A warning sound sounded.",
-      "narrationKo": "경고음이 울렸다.",
-      "sourceSentenceStart": 39,
-      "sourceSentenceEnd": 39,
-      "alignmentScore": 0.6167,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 15,
-      "imageFile": "episode_18/scene_15.jpeg",
-      "sourceImageFile": "Magitech_Golem_melting_temple_walls_202607260802.jpeg",
-      "narrationEn": "Artificial white flames were melting the outer walls of the temple. Magitech Golem sent by Lucian copied the island's defense system and opened the door from the inside. Someone had already transmitted part of the codex to the outside world.",
-      "narrationKo": "인공 백색 화염이 성전 외벽을 녹이고 있었다. 루시안이 보낸 마기테크 골렘들이 섬의 방어 체계를 복제해 안쪽에서 문을 열었다. 누군가 이미 코덱스 일부를 외부로 전송한 뒤였다.",
-      "sourceSentenceStart": 40,
-      "sourceSentenceEnd": 42,
-      "alignmentScore": 0.5463,
-      "dialogues": [
-        {
-          "speakerKo": "루시안",
-          "speakerEn": "Lucian",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "top-left"
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
-        },
-        {
-          "textKo": "쿵-!",
-          "textEn": "THUD!",
-          "style": "impact",
-          "position": "bottom-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 16,
-      "imageFile": "episode_18/scene_16.jpeg",
-      "sourceImageFile": "Medusa_Gorgo_not_criminal_202607260802.jpeg",
-      "narrationEn": "Medusa Gorgo said he was not the criminal. What she wanted was the truth, not Lucian's victory. For the first time, Aeolus did not doubt his disciple's words.",
-      "narrationKo": "메두사 고르고는 자신이 범인이 아니라고 했다. 그녀가 원한 것은 진실이지 루시안의 승리가 아니었다. 에올루스는 처음으로 제자의 말을 의심하지 않았다.",
-      "sourceSentenceStart": 43,
-      "sourceSentenceEnd": 45,
-      "alignmentScore": 0.7064,
-      "dialogues": [
-        {
-          "speakerKo": "루시안",
-          "speakerEn": "Lucian",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 17,
-      "imageFile": "episode_18/scene_17.jpeg",
-      "sourceImageFile": "Gandar_Kadan_separated_memory_de…_202607260802.jpeg",
-      "narrationEn": "The four people separated the memory device and each took a different piece. This was to prevent one person from monopolizing the entire codex. Gandar gave Kadan a final warning.",
-      "narrationKo": "네 사람은 기억 장치를 분리해 각자 다른 조각을 맡았다. 누구 한 사람이 전체 코덱스를 독점하지 못하게 하기 위해서였다. 간다르는 카단에게 마지막으로 경고했다.",
-      "sourceSentenceStart": 46,
-      "sourceSentenceEnd": 48,
-      "alignmentScore": 0.4182,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
-          "bubbleType": "speech",
-          "position": "bottom-right"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 18,
-      "imageFile": "episode_18/scene_18.jpeg",
-      "sourceImageFile": "Gandar_Kadan_Black_Sanctum_scene_202607260802.jpeg",
-      "narrationEn": "Binary splitting is not a technique to create two minds, and it is a way for one person to take on different responsibilities at the same time. “The problem will not be solved if you choose between love and duty. You have to look at both clearly and choose.",
-      "narrationKo": "쌍성 분할은 두 마음을 만드는 기술이 아니며, 한 사람이 서로 다른 책임을 동시에 지는 법이라고. “사랑과 의무 중 하나를 지운다고 문제가 풀리지는 않는다. 둘 다 똑바로 보고 고르는 거다.”",
-      "sourceSentenceStart": 49,
-      "sourceSentenceEnd": 51,
-      "alignmentScore": 0.4384,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "사랑과 의무 중 하나를 지운다고 문제가 풀리지는 않는다. 둘 다 똑바로 보고 고르는 거다.",
-          "textEn": "“사랑과 의무 중 하나를 지운다고 문제가 풀리지는 않는다. 둘 다 똑바로 보고 고르는 거다.”",
-          "bubbleType": "speech",
-          "position": "bottom-left"
-        }
-      ],
-      "sfxCues": []
-    },
-    {
-      "sceneNumber": 19,
-      "imageFile": "episode_18/scene_19.jpeg",
-      "sourceImageFile": "Kadan_writes_reply_to_Titania_202607260802.jpeg",
-      "narrationEn": "” Kadan wrote a reply to Titania that night. Although he treasured the promise he made when he was young, he could not marry by the Conqueror's declaration, and he openly wrote that he had fallen in love with Celia. My writing hand trembled more than when I held the sword.",
-      "narrationKo": "카단은 그날 밤 티타니아에게 답장을 썼다. 어린 날의 약속을 소중히 여기지만 정복왕의 선언으로 혼인할 수는 없다고, 자신은 실리아를 사랑하게 되었다고 숨김없이 적었다. 글씨를 쓰는 손이 검을 들 때보다 더 떨렸다.",
-      "sourceSentenceStart": 52,
-      "sourceSentenceEnd": 54,
-      "alignmentScore": 0.3866,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "전원 경계 태세를 갖춰라! 놈들이 온다!",
-          "textEn": "All units on high alert! They are coming!",
+          "textKo": "“아버지... 발리안 아버지... 아버지께서는 배신자가 아니라, 마지막 순간까지 여왕과 어린아이들을 지키려 했던 가장 고결한 기사였어... 그런데 나는... 나는 그 추악한 살인마들의 손을 잡고 아버지를 역적이라 저주하며 살아왔단 말인가!”",
+          "textEn": "“Protect Her Majesty! Balian, take the child and the refugees to the western pier! I shall hold this passage!”",
           "bubbleType": "shout",
-          "position": "top-left"
+          "position": "bottom-left",
+          "characterCardId": 11
         }
       ],
       "sfxCues": [
@@ -500,30 +332,328 @@
       ]
     },
     {
-      "sceneNumber": 20,
-      "imageFile": "episode_18/scene_20.jpeg",
-      "sourceImageFile": "Celia_did_not_read_letter_202607260802.jpeg",
-      "narrationEn": "Celia did not read the letter. I just sat next to Kadan, who had finished sealing, and put our shoulders to each other. Above the temple, Magitech Golem's footsteps were getting closer and closer.",
-      "narrationKo": "실리아는 편지를 읽지 않았다. 봉인을 마친 카단의 옆에 앉아 어깨를 맞댔을 뿐이다. 성전 위에서는 마기테크 골렘의 발소리가 점점 가까워지고 있었다.",
-      "sourceSentenceStart": 55,
-      "sourceSentenceEnd": 57,
-      "alignmentScore": 0.6714,
+      "sceneNumber": 11,
+      "imageFile": "episode_18/scene_11.webp",
+      "sourceImageFile": "episode_18/scene_11.webp",
+      "narrationEn": "\"Father... Father Balian... You were no traitor; you were the noblest knight who fought to your dying breath to protect the queen and her child... Yet I... I held hands with those vile murderers, poisoning my heart with hatred toward you all these years!\" Kadan knelt beside him, wrapping an arm around his brother's shuddering shoulders. Kadan's eyes were wet with unshed tears. \"The fault does not lie with you, Ignis. It was a cruel tragedy forced upon us by tyrants blinded by power. Neither Master Aleksandar nor Uncle Balian ever resented us. Now it falls to our steel to illuminate that truth before the entire world.\"",
+      "narrationKo": "카단이 다가가 이그니스의 어깨를 묵묵히 끌어안았다. 카단의 눈시울도 붉게 젖어 있었다. “너의 잘못이 아니다, 이그니스. 어둠에 눈이 멀었던 권력자들이 우리에게 강요한 잔혹한 비극이었을 뿐이다. 스승님과 숙부님께서는 한 번도 우리를 원망하지 않으셨다. 이제 우리가 그 원통한 진실을 온 세상에 증명해야 한다.”",
+      "sourceSentenceStart": 22,
+      "sourceSentenceEnd": 23,
+      "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "끝까지 포기하지 마라. 우리의 전장은 바로 이곳이다.",
-          "textEn": "Do not yield until the very end. Our battlefield is right here.",
+          "textKo": "“너의 잘못이 아니다, 이그니스. 어둠에 눈이 멀었던 권력자들이 우리에게 강요한 잔혹한 비극이었을 뿐이다. 스승님과 숙부님께서는 한 번도 우리를 원망하지 않으셨다. 이제 우리가 그 원통한 진실을 온 세상에 증명해야 한다.”",
+          "textEn": "“Father... Father Balian... You were no traitor; you were the noblest knight who fought to your dying breath to protect the queen and her child... Yet I... I held hands with those vile murderers, poisoning my heart with hatred toward you all these years!”",
           "bubbleType": "speech",
-          "position": "bottom-left"
+          "position": "bottom-right",
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
         {
-          "textKo": "쿵-!",
-          "textEn": "THUD!",
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_18/scene_12.webp",
+      "sourceImageFile": "episode_18/scene_12.webp",
+      "narrationEn": "Wiping her tears, Cilia drew the Jade Staff from the altar with burning resolve. \"I swear upon my life to prove that my mother's demise was not the crime of the Holy Knights, but the vile treason of Zephyr and Lucian.\"",
+      "narrationKo": "실리아 역시 눈물을 닦으며 제단에서 녹옥 지팡이를 뽑아 들었다. “어머니의 죽음이 성기사단의 배신이 아니었음을, 제피르와 루시안의 추악한 반역이었음을 제 목숨을 걸고 증명하겠어요.”",
+      "sourceSentenceStart": 24,
+      "sourceSentenceEnd": 25,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“어머니의 죽음이 성기사단의 배신이 아니었음을, 제피르와 루시안의 추악한 반역이었음을 제 목숨을 걸고 증명하겠어요.”",
+          "textEn": "“I swear upon my life to prove that my mother's demise was not the crime of the Holy Knights, but the vile treason of Zephyr and Lucian.”",
+          "bubbleType": "speech",
+          "position": "top-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
           "style": "impact",
-          "position": "bottom-right"
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_18/scene_13.webp",
+      "sourceImageFile": "episode_18/scene_13.webp",
+      "narrationEn": "At that moment, the screech of shearing stone echoed from the ceiling as an ominous pulse of mana erupted from the shadows. Automated defenses set by Zephyr activated: three colossal obsidian golems and twenty shadow stalkers surged into the hall to entomb the intruders forever. As the titan golems brought their colossal fists down toward the altar, Kadan bounded forward, angling his iron shield to catch the crushing impact with star-breathing.",
+      "narrationKo": "그때, 성전 천장의 거대한 흑요석 틈새에서 쇳소리와 함께 불길한 마나의 파동이 솟구쳐 올랐다. 제피르 대장로가 설치해 둔 자동 방어 기제와 암흑 골렘 세 마리, 그리고 그림자 추적자 스무 명이 성전 안으로 쏟아져 들어온 것이었다. 진실이 담긴 기억 수정이 활성화되자, 침입자들을 성전 통째로 매장하기 위해 사전에 숨겨두었던 척살 부대가 가동된 것이었다. 골렘들의 거대한 바위 주먹이 제단을 향해 벼락처럼 내리꽂혔다.",
+      "sourceSentenceStart": 26,
+      "sourceSentenceEnd": 27,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "골렘들의 거대한 바위 주먹이 제단을 향해 벼락처럼 내리꽂혔다.",
+          "textEn": "As the titan golems brought their colossal fists down toward the altar, Kadan bounded forward, angling his iron shield to catch the crushing impact with star-breathing.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 99
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_18/scene_14.webp",
+      "sourceImageFile": "episode_18/scene_14.webp",
+      "narrationEn": "Boom! The concussive shockwave felt as though an entire mountain peak had collapsed upon his guard. Yet drawing upon star-breathing, Kadan channeled the kinetic fury through his boots and into the subterranean water conduits. The stone floor fractured as pressurized springs geysered upward, yet Kadan's upper body remained as unyielding as granite.",
+      "narrationKo": "카단이 번개처럼 뛰쳐나가 무쇠 방패를 비스듬히 받쳐 들며 별의 호흡을 터뜨렸다. 콰아앙!",
+      "sourceSentenceStart": 28,
+      "sourceSentenceEnd": 29,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "콰아앙!",
+          "textEn": "The stone floor fractured as pressurized springs geysered upward, yet Kadan's upper body remained as unyielding as granite.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_18/scene_15.webp",
+      "sourceImageFile": "episode_18/scene_15.webp",
+      "narrationEn": "\"Cilia, Ignis! Protect the memory crystal!\" Wielding his iron pipe, Ignis unleashed his immaculate white flame with volcanic ferocity. Burning away his agonizing guilt, his holy fire pierced straight through the shadow stalkers' black iron blades.",
+      "narrationKo": "산봉우리가 무너져 내리는 듯한 충격이 방패를 강타했지만, 카단은 하체에 대지의 마나를 굳건히 실으며 타격의 원심력을 성전 바닥의 지하 수맥으로 유려하게 흘려보냈다. 성전 바닥 판석이 쩌적 갈라지며 지하수가 분수처럼 솟구쳤지만, 카단의 어깨는 바위처럼 요지부동이었다. “실리아, 이그니스! 증거가 담긴 기억 수정을 지켜라!” 이그니스가 부러진 쇠파이프를 꼬나쥐며 백색 화염을 폭발시켰다. 평생의 한과 죄책감을 씻어내듯 맹렬하게 타오른 화염이 그림자 추적자들의 흑철 칼날을 녹여버리고 심장을 꿰뚫었다.",
+      "sourceSentenceStart": 30,
+      "sourceSentenceEnd": 32,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“실리아, 이그니스! 증거가 담긴 기억 수정을 지켜라!”",
+          "textEn": "“Cilia, Ignis! Protect the memory crystal!”",
+          "bubbleType": "shout",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_18/scene_16.webp",
+      "sourceImageFile": "episode_18/scene_16.webp",
+      "narrationEn": "\"I will never be deceived by monsters of shadow again!\" Sweeping her Jade Staff, Cilia transformed the geysering subterranean waters into razor-sharp hydro-blades, cleanly severing the golems' limbs. In the face of the three youths' furious coordination, the ambush was annihilated within moments.",
+      "narrationKo": "“더 이상 너희 같은 그림자의 괴물들에게 속지 않는다!” 실리아는 녹옥 지팡이를 휘둘러 성전에 솟구친 거대한 지하수를 수십 자루의 서슬 퍼런 수류검(水流劍)으로 바꾸어 골렘들의 관절을 단숨에 절단해 버렸다. 세 젊은이의 분노와 결의가 완벽한 삼위일체를 이루며, 암흑 암살 부대는 순식간에 차가운 잔해로 분쇄되었다.",
+      "sourceSentenceStart": 33,
+      "sourceSentenceEnd": 34,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“더 이상 너희 같은 그림자의 괴물들에게 속지 않는다!”",
+          "textEn": "“I will never be deceived by monsters of shadow again!”",
+          "bubbleType": "shout",
+          "position": "top-left",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_18/scene_17.webp",
+      "sourceImageFile": "episode_18/scene_17.webp",
+      "narrationEn": "As silence settled once more over the hall, Cilia wrapped the glowing azure Memory Shard in a fine silk mantle. It was the undeniable proof containing her mother's dying breath and the vindication of Master Aleksandar and Uncle Balian. Pointing his shield toward the spiraling stone stairway carved into the cavern wall, Kadan spoke with determination.",
+      "narrationKo": "치열했던 전투가 끝나고 다시 고요한 적막이 찾아왔을 때, 실리아는 제단에서 추출한 푸른 ‘진실의 기억 수정체’를 비단 손수건에 소중히 감쌌다. 십팔 년간 어둠 속에 묻혀 있던 어머니의 마지막 숨결이자, 억울하게 죽어간 알렉산다르 스승과 발리안 숙부의 결백을 입증할 무구한 증거였다. 카단이 방패에 묻은 먼지를 털어내며 성전 뒤편 암벽에 뚫린 거대한 나선형 계단을 가리켰다.",
+      "sourceSentenceStart": 35,
+      "sourceSentenceEnd": 36,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단이 방패에 묻은 먼지를 털어내며 성전 뒤편 암벽에 뚫린 거대한 나선형 계단을 가리켰다.",
+          "textEn": "Pointing his shield toward the spiraling stone stairway carved into the cavern wall, Kadan spoke with determination.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_18/scene_18.webp",
+      "sourceImageFile": "episode_18/scene_18.webp",
+      "narrationEn": "\"This stairway ascends directly beneath the Sky Altar of the Barrier Spire. King Aeolus must be held captive there.\" Cilia nodded with unyielding resolve, gripping her staff.",
+      "narrationKo": "“이 계단은 비취 결계탑 바로 아래의 ‘하늘 제단’으로 이어진다. 그곳에 에올루스 국왕이 유폐되어 있을 것이다.” 실리아가 결연한 눈빛으로 녹옥 지팡이를 고쳐 쥐며 고개를 끄덕였다.",
+      "sourceSentenceStart": 37,
+      "sourceSentenceEnd": 38,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“이 계단은 비취 결계탑 바로 아래의 ‘하늘 제단’으로 이어진다. 그곳에 에올루스 국왕이 유폐되어 있을 것이다.”",
+          "textEn": "“This stairway ascends directly beneath the Sky Altar of the Barrier Spire. King Aeolus must be held captive there.”",
+          "bubbleType": "speech",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_18/scene_19.webp",
+      "sourceImageFile": "episode_18/scene_19.webp",
+      "narrationEn": "\"We must present this memory crystal to my father. We must shatter the illusions blinding his eyes and stop the barrier spire from collapsing.\" Ignis stepped into the lead, his golden eyes blazing with righteous fire.",
+      "narrationKo": "“아버지에게 이 기억 수정을 보여드려야 해요. 제피르의 환영에 사로잡혀 슬픔 속에서 눈이 먼 아버지를 깨우고, 폭주하는 결계탑을 멈춰야 해요.” 이그니스 역시 쇠파이프를 거두며 불타는 눈빛으로 앞장섰다.",
+      "sourceSentenceStart": 39,
+      "sourceSentenceEnd": 40,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“아버지에게 이 기억 수정을 보여드려야 해요. 제피르의 환영에 사로잡혀 슬픔 속에서 눈이 먼 아버지를 깨우고, 폭주하는 결계탑을 멈춰야 해요.”",
+          "textEn": "“We must present this memory crystal to my father. We must shatter the illusions blinding his eyes and stop the barrier spire from collapsing.”",
+          "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_18/scene_20.webp",
+      "sourceImageFile": "episode_18/scene_20.webp",
+      "narrationEn": "\"I will take Zephyr's head with my own hands. That is the only atonement I can offer to my father Balian and Master Aleksandar.\" Exchanging solemn smiles of brotherhood, the three young wanderers left the dark sanctuary behind, climbing boldly toward the light above. The wind rushing down the staircase was freezing, yet the fire of justice burning within their breasts was hotter than any tempest. Behind them, the azure glow of the obsidian temple illuminated their ascent like the eternal blessing of ancient heroes.",
+      "narrationKo": "“제피르의 목은 내가 베겠다. 그것만이 내 아버지 발리안과 알렉산다르 숙부님 앞에 조금이나마 속죄할 수 있는 유일한 길이다.” 세 사람은 서로를 향해 굳은 신뢰의 눈빛을 나누며, 성전의 어둠을 뒤로하고 지상을 향해 힘찬 발걸음을 옮겼다. 계단 끝에서 불어오는 바람은 살갗을 찌를 듯 차가웠지만, 그들의 가슴속에 타오른 정의의 불꽃은 대륙의 어떤 폭풍보다 뜨거웠다. 그들의 등 뒤로 흑요석 성전의 푸른 인광이 마치 고대 영웅들의 축복처럼 은은하게 길을 비추고 있었다.",
+      "sourceSentenceStart": 41,
+      "sourceSentenceEnd": 42,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“제피르의 목은 내가 베겠다. 그것만이 내 아버지 발리안과 알렉산다르 숙부님 앞에 조금이나마 속죄할 수 있는 유일한 길이다.”",
+          "textEn": "“I will take Zephyr's head with my own hands. That is the only atonement I can offer to my father Balian and Master Aleksandar.”",
+          "bubbleType": "speech",
+          "position": "top-left",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
         }
       ]
     }
