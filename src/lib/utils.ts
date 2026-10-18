@@ -227,6 +227,7 @@ export function getCardSpriteCoords(cardId: number, customSource?: string | null
 }
 
 export interface CardCharacterBackdropTheme {
+  faction: 'water' | 'fire' | 'wind' | 'earth' | 'human' | 'undead' | 'elf' | 'dwarf' | 'monster' | 'robot' | 'dragon';
   factionKey: 'water' | 'fire' | 'wind' | 'earth' | 'human' | 'undead' | 'elf' | 'dwarf' | 'monster' | 'robot' | 'dragon';
   factionLabelKo: string;
   factionLabelEn: string;
@@ -241,7 +242,17 @@ export interface CardCharacterBackdropTheme {
   rarityLabel: string;
   raritySymbol: string;
   rarityRingHex: string;
+  rarityBorderHex: string;
   rarityGlowRgba: string;
+  /** Metallic multi-stop bezel gradient for Bronze / Silver / Gold / Special */
+  frameGradient: string;
+  frameOuterBorderHex: string;
+  frameInnerRimHex: string;
+  frameBoxShadow: string;
+  windowBoxShadow: string;
+  thumbnailBoxShadow: string;
+  prestigeStarCount: number;
+  isHighPrestige: boolean;
   powerScore: number;
   powerTier: 1 | 2 | 3 | 4 | 5;
   powerTierLabel: string;
@@ -445,33 +456,6 @@ export function getCardCharacterBackdropTheme(
     rarityGroup = 'special';
   }
 
-  const rarityConfig = {
-    bronze: {
-      label: 'BRZ',
-      symbol: '🥉',
-      ringHex: '#9a5b32',
-      glowRgba: 'rgba(154, 91, 50, 0.30)',
-    },
-    silver: {
-      label: 'SLV',
-      symbol: '🥈',
-      ringHex: '#475569',
-      glowRgba: 'rgba(100, 116, 139, 0.42)',
-    },
-    gold: {
-      label: 'GLD',
-      symbol: '👑',
-      ringHex: '#ca8a04',
-      glowRgba: 'rgba(234, 179, 8, 0.58)',
-    },
-    special: {
-      label: 'ULT',
-      symbol: '✨',
-      ringHex: '#9333ea',
-      glowRgba: 'rgba(168, 85, 247, 0.65)',
-    },
-  }[rarityGroup];
-
   const powerScore = Number(overrides?.power ?? dbCard?.power ?? 15);
   let powerTier: 1 | 2 | 3 | 4 | 5 = 1;
   let powerTierLabel = 'P1';
@@ -494,6 +478,85 @@ export function getCardCharacterBackdropTheme(
     powerTierColor = '#0284c7';
   }
 
+  const isHighPrestige = rarityGroup === 'gold' || rarityGroup === 'special' || powerTier >= 4;
+  const prestigeStarCount =
+    rarityGroup === 'special' || powerTier === 5
+      ? 5
+      : rarityGroup === 'gold' || powerTier === 4
+      ? 4
+      : rarityGroup === 'silver' || powerTier === 3
+      ? 3
+      : powerTier === 2
+      ? 2
+      : 1;
+
+  const rarityConfig = {
+    bronze: {
+      label: 'BRZ',
+      symbol: '🥉',
+      ringHex: '#9a5b32',
+      glowRgba: 'rgba(154, 91, 50, 0.35)',
+      frameGradient:
+        'linear-gradient(135deg, #4a2810 0%, #c8824e 22%, #7c4724 48%, #e2ab7f 74%, #5c3419 100%)',
+      frameOuterBorderHex: '#4a2810',
+      frameInnerRimHex: '#c8824e',
+      frameBoxShadow:
+        'inset 0 0 0 1.5px rgba(255,224,194,0.65), inset 0 0 0 3px #5c3419, 0 2px 6px rgba(74,40,16,0.32)',
+      windowBoxShadow:
+        'inset 0 0 0 1.5px rgba(200,130,78,0.75), inset 0 0 8px rgba(92,52,25,0.28)',
+      thumbnailBoxShadow:
+        'inset 0 0 0 2px #6b3e20, inset 0 0 0 3.5px #d99b6c',
+    },
+    silver: {
+      label: 'SLV',
+      symbol: '🥈',
+      ringHex: '#475569',
+      glowRgba: 'rgba(100, 116, 139, 0.48)',
+      frameGradient:
+        'linear-gradient(135deg, #1e293b 0%, #f8fafc 20%, #94a3b8 44%, #ffffff 66%, #64748b 84%, #1e293b 100%)',
+      frameOuterBorderHex: '#1e293b',
+      frameInnerRimHex: '#f8fafc',
+      frameBoxShadow:
+        'inset 0 0 0 1.5px #ffffff, inset 0 0 0 3px #475569, 0 3px 10px rgba(51,65,85,0.40)',
+      windowBoxShadow:
+        'inset 0 0 0 1.5px #f8fafc, inset 0 0 10px rgba(100,116,139,0.35), 0 0 6px rgba(148,163,184,0.45)',
+      thumbnailBoxShadow:
+        'inset 0 0 0 2px #334155, inset 0 0 0 3.5px #f1f5f9, inset 0 0 6px rgba(148,163,184,0.45)',
+    },
+    gold: {
+      label: 'GLD',
+      symbol: '👑',
+      ringHex: '#ca8a04',
+      glowRgba: 'rgba(234, 179, 8, 0.65)',
+      frameGradient:
+        'linear-gradient(135deg, #78350f 0%, #fef08a 18%, #d97706 36%, #fffbeb 52%, #ca8a04 70%, #fde047 86%, #78350f 100%)',
+      frameOuterBorderHex: '#78350f',
+      frameInnerRimHex: '#fef08a',
+      frameBoxShadow:
+        'inset 0 0 0 1.5px #fef9c3, inset 0 0 0 3.2px #b45309, 0 0 16px rgba(234,179,8,0.62), 0 3px 10px rgba(120,53,15,0.42)',
+      windowBoxShadow:
+        'inset 0 0 0 1.5px #fef08a, inset 0 0 12px rgba(234,179,8,0.48), 0 0 10px rgba(234,179,8,0.55)',
+      thumbnailBoxShadow:
+        'inset 0 0 0 2.5px #92400e, inset 0 0 0 4.5px #fde047, inset 0 0 10px rgba(234,179,8,0.58)',
+    },
+    special: {
+      label: 'ULT',
+      symbol: '✨',
+      ringHex: '#9333ea',
+      glowRgba: 'rgba(168, 85, 247, 0.72)',
+      frameGradient:
+        'linear-gradient(135deg, #4c1d95 0%, #f43f5e 16%, #fde047 34%, #ffffff 50%, #a855f7 68%, #22d3ee 84%, #fde047 100%)',
+      frameOuterBorderHex: '#581c87',
+      frameInnerRimHex: '#fde047',
+      frameBoxShadow:
+        'inset 0 0 0 1.5px #ffffff, inset 0 0 0 3.2px #facc15, 0 0 20px rgba(168,85,247,0.68), 0 0 10px rgba(250,204,21,0.68)',
+      windowBoxShadow:
+        'inset 0 0 0 1.5px #fde047, inset 0 0 14px rgba(168,85,247,0.52), 0 0 12px rgba(234,179,8,0.62)',
+      thumbnailBoxShadow:
+        'inset 0 0 0 2.5px #6b21a8, inset 0 0 0 4.5px #fde047, inset 0 0 12px rgba(168,85,247,0.65)',
+    },
+  }[rarityGroup];
+
   // Build CSS background layers combining:
   // 1) Power Tier sunburst / energy aura
   // 2) Rarity halo ring
@@ -506,11 +569,11 @@ export function getCardCharacterBackdropTheme(
 
   const rarityHaloLayer =
     rarityGroup === 'special'
-      ? `radial-gradient(circle at 50% 52%, rgba(255,255,255,0.92) 0%, rgba(244,114,182,0.35) 38%, rgba(56,189,248,0.35) 58%, ${pal.glowRgba} 76%, transparent 92%)`
+      ? `radial-gradient(circle at 50% 52%, rgba(255,255,255,0.94) 0%, rgba(250,204,21,0.38) 32%, rgba(244,114,182,0.36) 52%, ${pal.glowRgba} 76%, transparent 92%)`
       : rarityGroup === 'gold'
-      ? `radial-gradient(circle at 50% 52%, rgba(255,254,240,0.95) 0%, rgba(250,204,21,0.42) 42%, ${pal.glowRgba} 72%, transparent 90%)`
+      ? `radial-gradient(circle at 50% 52%, rgba(255,254,240,0.96) 0%, rgba(250,204,21,0.48) 42%, ${pal.glowRgba} 72%, transparent 90%)`
       : rarityGroup === 'silver'
-      ? `radial-gradient(circle at 50% 52%, rgba(255,255,255,0.92) 0%, ${pal.glowRgba} 55%, rgba(148,163,184,0.35) 78%, transparent 92%)`
+      ? `radial-gradient(circle at 50% 52%, rgba(255,255,255,0.93) 0%, ${pal.glowRgba} 55%, rgba(148,163,184,0.38) 78%, transparent 92%)`
       : `radial-gradient(circle at 50% 52%, rgba(255,255,255,0.88) 0%, ${pal.glowRgba} 58%, transparent 88%)`;
 
   const factionBaseLayer =
@@ -523,6 +586,7 @@ export function getCardCharacterBackdropTheme(
   const windowCssBackground = `${rarityHaloLayer}, ${powerBurstLayer}, ${factionBaseLayer}`;
 
   return {
+    faction: factionKey,
     factionKey,
     factionLabelKo: pal.ko,
     factionLabelEn: pal.en,
@@ -537,7 +601,16 @@ export function getCardCharacterBackdropTheme(
     rarityLabel: rarityConfig.label,
     raritySymbol: rarityConfig.symbol,
     rarityRingHex: rarityConfig.ringHex,
+    rarityBorderHex: rarityConfig.ringHex,
     rarityGlowRgba: rarityConfig.glowRgba,
+    frameGradient: rarityConfig.frameGradient,
+    frameOuterBorderHex: rarityConfig.frameOuterBorderHex,
+    frameInnerRimHex: rarityConfig.frameInnerRimHex,
+    frameBoxShadow: rarityConfig.frameBoxShadow,
+    windowBoxShadow: rarityConfig.windowBoxShadow,
+    thumbnailBoxShadow: rarityConfig.thumbnailBoxShadow,
+    prestigeStarCount,
+    isHighPrestige,
     powerScore,
     powerTier,
     powerTierLabel,
@@ -548,7 +621,7 @@ export function getCardCharacterBackdropTheme(
 
 /**
  * Generates CSS background styling for card sprites with a built-in
- * 3-axis (Power Tier x Rarity Grade x Race/Faction) backdrop behind the character.
+ * 3-axis (Power Tier x Rarity Grade x Race/Faction) backdrop and metallic Bronze/Silver/Gold/Special frame.
  * - ID 1 ~ 100 -> cards1.png (10x10)
  * - ID 101+ -> cards2.png (10x10)
  */
@@ -561,7 +634,7 @@ export function getCardSpriteStyle(cardId: number, customSource?: string | null)
     backgroundSize: `${coords.cols * 100}% ${coords.rows * 100}%, 100% 100%, 100% 100%, 100% 100%`,
     backgroundPosition: `${coords.xPercent}% ${coords.yPercent}%, center center, center center, center center`,
     backgroundRepeat: 'no-repeat, no-repeat, no-repeat, no-repeat',
-    boxShadow: `inset 0 0 0 1.5px ${backdrop.rarityRingHex}55`,
+    boxShadow: backdrop.thumbnailBoxShadow,
     imageRendering: 'auto' as const,
   };
 }

@@ -218,18 +218,19 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
  return {
  groupName: 'SILVER',
  symbol: '🥈',
- outerBorder: 'border-[#94a3b8] ring-1 ring-[#64748b]/50',
+ outerBorder: 'border-2 border-[#1e293b]',
  outerBg: 'bg-[#cbd5e1]',
  surfaceBg: 'bg-[#f8fafc]',
- innerBorder: 'border-[#64748b]/40',
- windowBorder: 'border-[#94a3b8]/60 shadow-[inset_0_0_6px_rgba(148,163,184,0.3)]',
+ innerBorder: 'border-2 border-[#475569]',
+ windowBorder: 'border-2 border-[#475569]',
  windowBg: 'bg-[#f8fafc]',
- badgeClass: 'bg-[#475569] text-white border border-[#334155] shadow-xs',
+ badgeClass: 'bg-[#334155] text-[#f8fafc] border border-[#94a3b8]',
  badgeLabel: 'SILVER',
- statBadge: 'border-[#94a3b8]/60 bg-[#f8fafc] text-[#201d1d] shadow-[0_1px_4px_rgba(148,163,184,0.35)]',
- accentColor: '#64748b',
- tagLabel: 'SNSHERO SILVER',
- glowShadow: 'shadow-[0_2px_10px_rgba(148,163,184,0.35)]',
+ statBadge: 'border-2 border-[#475569] bg-[#f8fafc] text-[#0f172a]',
+ statBadgeShadow: 'inset 0 0 0 1px #ffffff, 0 2px 5px rgba(51,65,85,0.38)',
+ accentColor: '#475569',
+ tagLabel: '★★ SILVER PRESTIGE',
+ glowShadow: 'shadow-none',
  isHolo: false,
  isGold: false,
  };
@@ -237,27 +238,28 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
  return {
  groupName: 'GOLD',
  symbol: '👑',
- outerBorder: 'border-[#eab308] ring-1 ring-[#ca8a04]/70',
+ outerBorder: 'border-2 border-[#78350f]',
  outerBg: 'bg-[#facc15]',
  surfaceBg: 'bg-[#fffef0]',
- innerBorder: 'border-[#ca8a04]/50',
- windowBorder: 'border-[#eab308] shadow-[inset_0_0_8px_rgba(234,179,8,0.3)]',
+ innerBorder: 'border-2 border-[#b45309]',
+ windowBorder: 'border-2 border-[#b45309]',
  windowBg: 'bg-[#fffef0]',
- badgeClass: 'bg-[#eab308] text-zinc-950 font-black border border-[#b45309] shadow-sm',
- badgeLabel: 'GOLD',
- statBadge: 'border-[#ca8a04]/70 bg-[#fffbeb] text-[#201d1d] shadow-[0_1px_5px_rgba(202,138,4,0.35)]',
- accentColor: '#d97706',
- tagLabel: 'SNSHERO ★ GOLD',
- glowShadow: 'shadow-[0_0_14px_rgba(234,179,8,0.4)]',
+ badgeClass: 'bg-[#b45309] text-[#fef9c3] font-black border border-[#fde047]',
+ badgeLabel: 'ROYAL GOLD',
+ statBadge: 'border-2 border-[#b45309] bg-[#fffbeb] text-[#201d1d]',
+ statBadgeShadow: 'inset 0 0 0 1.5px #fde047, 0 2px 6px rgba(180,83,9,0.45)',
+ accentColor: '#b45309',
+ tagLabel: '★★★ ROYAL GOLD',
+ glowShadow: 'shadow-none',
  isHolo: false,
  isGold: true,
  };
  case 'special': {
  const specialLabel = normalizedCardRarity === 'legendary'
- ? '★ LEGEND'
+ ? '👑 LEGEND'
  : normalizedCardRarity === 'diamond'
  ? '💎 DIAMOND'
- : '✨ SPECIAL';
+ : '✨ SOVEREIGN';
  const specialWindowBg = normalizedCardRarity === 'diamond'
  ? 'bg-[#f0f9ff]'
  : normalizedCardRarity === 'legendary'
@@ -266,20 +268,21 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
  return {
  groupName: 'SPECIAL',
  symbol: '✨',
- outerBorder: 'border-fuchsia-400 ring-1 ring-cyan-400',
+ outerBorder: 'border-2 border-[#581c87]',
  outerBg: 'bg-[#f5f3ff]',
  surfaceBg: 'bg-[#fdf2f8]',
- innerBorder: 'border-purple-300/60',
- windowBorder: 'border-purple-400/80 shadow-[0_0_8px_rgba(168,85,247,0.35)]',
+ innerBorder: 'border-2 border-[#eab308]',
+ windowBorder: 'border-2 border-[#eab308]',
  windowBg: specialWindowBg,
- badgeClass: 'bg-[#7e22ce] text-white font-black border border-white/60 shadow-[0_0_8px_rgba(236,72,153,0.5)]',
+ badgeClass: 'bg-[#581c87] text-[#fef08a] font-black border border-[#facc15]',
  badgeLabel: specialLabel,
- statBadge: 'border-purple-400/70 bg-[#faf5ff] text-[#201d1d] shadow-[0_1px_6px_rgba(168,85,247,0.35)]',
- accentColor: '#9333ea',
- tagLabel: 'SNSHERO ★ ULTRA',
- glowShadow: 'shadow-[0_0_16px_rgba(217,70,239,0.45)]',
+ statBadge: 'border-2 border-[#7e22ce] bg-[#faf5ff] text-[#201d1d]',
+ statBadgeShadow: 'inset 0 0 0 1.5px #fde047, 0 2px 8px rgba(126,34,206,0.5)',
+ accentColor: '#7e22ce',
+ tagLabel: '★★★★★ SOVEREIGN ULTRA',
+ glowShadow: 'shadow-none',
  isHolo: true,
- isGold: false,
+ isGold: true,
  };
  }
  case 'bronze':
@@ -287,18 +290,19 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
  return {
  groupName: 'BRONZE',
  symbol: '🥉',
- outerBorder: 'border-[#8c5936] ring-1 ring-[#5c3a21]/50',
+ outerBorder: 'border-2 border-[#4a2810]',
  outerBg: 'bg-[#b87d54]',
  surfaceBg: 'bg-[#fcf7f1]',
- innerBorder: 'border-[#713f1f]/35',
- windowBorder: 'border-[#8c5936]/40 shadow-[inset_0_0_4px_rgba(140,89,54,0.2)]',
+ innerBorder: 'border-2 border-[#7c4724]',
+ windowBorder: 'border-2 border-[#7c4724]',
  windowBg: 'bg-[#fcf7f1]',
- badgeClass: 'bg-[#784421] text-[#fff7ed] border border-[#3e210f] shadow-xs',
+ badgeClass: 'bg-[#5c3419] text-[#ffedd5] border border-[#c8824e]',
  badgeLabel: 'BRONZE',
- statBadge: 'border-[#8c5936]/50 bg-[#fffdfa] text-[#201d1d] shadow-[0_1px_4px_rgba(140,89,54,0.25)]',
- accentColor: '#8c5936',
- tagLabel: 'SNSHERO BRONZE',
- glowShadow: 'shadow-[0_2px_8px_rgba(140,89,54,0.25)]',
+ statBadge: 'border-2 border-[#7c4724] bg-[#fffdfa] text-[#201d1d]',
+ statBadgeShadow: 'inset 0 0 0 1px #fed7aa, 0 1.5px 4px rgba(92,52,25,0.32)',
+ accentColor: '#7c4724',
+ tagLabel: '★ BRONZE',
+ glowShadow: 'shadow-none',
  isHolo: false,
  isGold: false,
  };
@@ -336,15 +340,18 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
  return (
  <div
  className={cn(
- 'z-30 flex items-center justify-center border font-mono leading-none tabular-nums select-none backdrop-blur-[0.5px]',
+ 'z-30 flex items-center justify-center font-mono leading-none tabular-nums select-none backdrop-blur-[0.5px]',
  isOnBoard
  ? 'absolute h-[clamp(20px,26cqw,34px)] min-w-[clamp(20px,26cqw,34px)] rounded-xs px-[clamp(2px,1.2cqw,4px)]'
  : 'absolute h-[clamp(18px,22cqw,28px)] min-w-[clamp(18px,22cqw,28px)] rounded-xs px-[clamp(2px,1cqw,4px)]',
  highlighted
- ? 'border-red-500 bg-red-600 text-white shadow-[0_0_12px_rgba(239,68,68,0.9)] scale-110 z-40'
- : 'border-[#201d1d] bg-white/95 text-[#201d1d] shadow-[0_1.5px_5px_rgba(0,0,0,0.25)]',
+ ? 'border-2 border-red-500 bg-red-600 text-white scale-110 z-40'
+ : pokemonTheme.statBadge,
  positionClass,
  )}
+ style={{
+  boxShadow: highlighted ? '0 0 12px rgba(239,68,68,0.9)' : pokemonTheme.statBadgeShadow,
+ }}
  title={`${direction} ${stat.total}${delta ? ` (${stat.base}${delta > 0 ? '+' : ''}${delta})` : ''}`}
  >
  <span className={cn(
@@ -382,6 +389,8 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
  aria-pressed={onClick ? !!isSelected : undefined}
  data-card-layout={isOnBoard ? 'board' : 'tcg'}
  data-owner={owner || undefined}
+ data-card-rarity={rarityGroup}
+ data-card-prestige={charBackdrop.isHighPrestige ? 'high' : 'standard'}
  onKeyDown={onClick ? event => {
  if (event.key === 'Enter' || event.key === ' ') {
  event.preventDefault();
@@ -389,29 +398,118 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
  }
  } : undefined}
  >
- {/* Outer pokemon border frame */}
- <div className={cn(
- 'pointer-events-none absolute inset-0 z-0 rounded-sm border',
- !shouldHideBg && !showOwnership && cn(pokemonTheme.outerBorder, pokemonTheme.outerBg, pokemonTheme.glowShadow),
- showOwnership && owner === 'player' && 'border-[#2563eb] bg-[#2563eb]',
- showOwnership && owner === 'ai' && 'border-[#dc2626] bg-[#dc2626]',
- shouldHideBg && !showOwnership && 'border-transparent',
- )} />
+ {/* Outer Metallic Bezel Frame (Bronze / Silver / Gold / Special) */}
+ <div
+  className={cn(
+   'pointer-events-none absolute inset-0 z-0 rounded-sm',
+   !shouldHideBg && !showOwnership && pokemonTheme.outerBorder,
+   showOwnership && owner === 'player' && 'border-2 border-[#2563eb] bg-[#2563eb]',
+   showOwnership && owner === 'ai' && 'border-2 border-[#dc2626] bg-[#dc2626]',
+   shouldHideBg && !showOwnership && 'border border-transparent',
+  )}
+  style={
+   !shouldHideBg && !showOwnership
+    ? {
+       background: charBackdrop.frameGradient,
+       borderColor: charBackdrop.frameOuterBorderHex,
+       boxShadow: charBackdrop.frameBoxShadow,
+      }
+    : undefined
+  }
+ />
 
- {/* Inner surface texture */}
+ {/* Inner Card Body Surface with Double Metallic Bevel Rim */}
  {!shouldHideBg && (
- <div className={cn(
- 'pointer-events-none absolute inset-[3cqw] z-0 rounded-sm border',
- showOwnership ? (owner === 'player' ? 'bg-[#dbeafe] border-[#2563eb]/40' : 'bg-[#fee2e2] border-[#dc2626]/40') : cn(typeSurface, pokemonTheme.innerBorder),
- )} />
+  <div
+   className={cn(
+    'pointer-events-none absolute inset-[4.6cqw] z-0 rounded-xs',
+    showOwnership
+     ? owner === 'player'
+      ? 'bg-[#dbeafe] border-2 border-[#2563eb]/50'
+      : 'bg-[#fee2e2] border-2 border-[#dc2626]/50'
+     : cn(typeSurface, pokemonTheme.innerBorder),
+   )}
+   style={
+    !showOwnership
+     ? {
+        boxShadow:
+         rarityGroup === 'gold' || rarityGroup === 'special'
+          ? 'inset 0 0 0 1px #fef08a, 0 0 0 1px rgba(254,240,138,0.85)'
+          : rarityGroup === 'silver'
+          ? 'inset 0 0 0 1px #ffffff, 0 0 0 1px rgba(248,250,252,0.8)'
+          : 'inset 0 0 0 1px rgba(254,215,170,0.55)',
+       }
+     : undefined
+   }
+  />
+ )}
+
+ {/* Metallic Corner Filigree & Royal Prestige Ornaments SVG */}
+ {!shouldHideBg && !showOwnership && (
+  <svg
+   viewBox="0 0 100 140"
+   preserveAspectRatio="none"
+   className="pointer-events-none absolute inset-0 z-16 h-full w-full"
+   aria-hidden="true"
+  >
+   {/* 4 Corner Metallic Brackets (Bronze: Copper Rivets, Silver: Double Chrome Chevrons, Gold/Special: Royal Filigree + Diamond Studs) */}
+   <g
+    stroke={
+     rarityGroup === 'special'
+      ? '#fef08a'
+      : rarityGroup === 'gold'
+      ? '#78350f'
+      : rarityGroup === 'silver'
+      ? '#1e293b'
+      : '#4a2810'
+    }
+    fill={
+     rarityGroup === 'special' || rarityGroup === 'gold'
+      ? '#fde047'
+      : rarityGroup === 'silver'
+      ? '#f8fafc'
+      : '#d99b6c'
+    }
+    strokeWidth="1.2"
+   >
+    {/* Top-Left Corner */}
+    <path d="M 2,14 L 2,2 L 14,2" fill="none" strokeWidth="1.8" />
+    {/* Top-Right Corner */}
+    <path d="M 86,2 L 98,2 L 98,14" fill="none" strokeWidth="1.8" />
+    {/* Bottom-Left Corner */}
+    <path d="M 2,126 L 2,138 L 14,138" fill="none" strokeWidth="1.8" />
+    {/* Bottom-Right Corner */}
+    <path d="M 86,138 L 98,138 L 98,126" fill="none" strokeWidth="1.8" />
+
+    {/* High-Prestige Filigree Diamonds & Inner Scrollwork for Silver / Gold / Special / High-Power */}
+    {(rarityGroup !== 'bronze' || charBackdrop.isHighPrestige) && (
+     <>
+      <polygon points="5.5,2.5 8,5.5 5.5,8.5 3,5.5" />
+      <polygon points="94.5,2.5 97,5.5 94.5,8.5 92,5.5" />
+      <polygon points="5.5,131.5 8,134.5 5.5,137.5 3,134.5" />
+      <polygon points="94.5,131.5 97,134.5 94.5,137.5 92,134.5" />
+     </>
+    )}
+
+    {/* Royal Gold & Sovereign Special Extra Inner Corner Filigree Lines & Crown Gems */}
+    {(rarityGroup === 'gold' || rarityGroup === 'special') && (
+     <>
+      <path d="M 5,18 L 5,5 L 18,5" fill="none" stroke="#fef08a" strokeWidth="1.1" />
+      <path d="M 82,5 L 95,5 L 95,18" fill="none" stroke="#fef08a" strokeWidth="1.1" />
+      <path d="M 5,122 L 5,135 L 18,135" fill="none" stroke="#fef08a" strokeWidth="1.1" />
+      <path d="M 82,135 L 95,135 L 95,122" fill="none" stroke="#fef08a" strokeWidth="1.1" />
+     </>
+    )}
+   </g>
+  </svg>
  )}
 
  {/* Special Holographic Foil Rainbow Sheen */}
  {pokemonTheme.isHolo && !performanceMode && !shouldHideBg && (
  <div
- className="pointer-events-none absolute inset-0 z-15 overflow-hidden rounded-[inherit] mix-blend-color-dodge opacity-50"
+ className="pointer-events-none absolute inset-0 z-15 overflow-hidden rounded-[inherit] mix-blend-color-dodge opacity-55"
  style={{
- background: 'linear-gradient(115deg, transparent 20%, rgba(244,63,94,0.3) 35%, rgba(168,85,247,0.3) 50%, rgba(6,182,212,0.3) 65%, transparent 80%)',
+ background: 'linear-gradient(115deg, transparent 15%, rgba(244,63,94,0.32) 32%, rgba(250,204,21,0.34) 48%, rgba(168,85,247,0.32) 64%, rgba(6,182,212,0.32) 80%, transparent 92%)',
  }}
  />
  )}
@@ -419,47 +517,92 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
  {/* Gold Foil Metallic Sheen */}
  {pokemonTheme.isGold && !performanceMode && !shouldHideBg && (
  <div
- className="pointer-events-none absolute inset-0 z-15 overflow-hidden rounded-[inherit] mix-blend-overlay opacity-40"
+ className="pointer-events-none absolute inset-0 z-15 overflow-hidden rounded-[inherit] mix-blend-overlay opacity-45"
  style={{
- background: 'linear-gradient(135deg, transparent 30%, rgba(254,240,138,0.6) 50%, transparent 70%)',
+ background: 'linear-gradient(135deg, transparent 22%, rgba(254,240,138,0.72) 48%, rgba(250,204,21,0.35) 58%, transparent 78%)',
  }}
  />
  )}
 
- {/* Top Header - Pokemon TCG format */}
+ {/* Top Header - Pokemon TCG format with Prestige Ribbon */}
  {!isOnBoard && (
- <div className="absolute inset-x-[5cqw] top-[4.5cqw] z-20 flex h-[16cqw] flex-col justify-between leading-none">
- <div className="flex items-center justify-between gap-[1.5cqw]">
+ <div
+  className="absolute inset-x-[6cqw] top-[5.2cqw] z-20 flex h-[16cqw] flex-col justify-between leading-none"
+ >
+ <div className="flex items-center justify-between gap-[1.2cqw]">
  <div className="flex min-w-0 items-center gap-[1cqw]">
- <span className={cn('truncate rounded-xs px-[1.5cqw] py-[0.5cqw] text-[4.8cqw] font-black uppercase tracking-wider', pokemonTheme.badgeClass)}>
+ <span
+  className={cn('truncate rounded-xs px-[1.6cqw] py-[0.5cqw] text-[4.6cqw] font-black uppercase tracking-wider', pokemonTheme.badgeClass)}
+  style={
+   rarityGroup === 'gold'
+    ? { background: 'linear-gradient(135deg, #92400e 0%, #eab308 50%, #78350f 100%)', color: '#fef9c3' }
+    : rarityGroup === 'special'
+    ? { background: 'linear-gradient(135deg, #581c87 0%, #9333ea 50%, #ca8a04 100%)', color: '#fef08a' }
+    : rarityGroup === 'silver'
+    ? { background: 'linear-gradient(135deg, #1e293b 0%, #475569 50%, #334155 100%)', color: '#f8fafc' }
+    : undefined
+  }
+ >
  {pokemonTheme.symbol} {pokemonTheme.badgeLabel}
  </span>
- <span className="shrink-0 text-[4.8cqw] font-bold text-[#646262] tabular-nums">
+ <span className="shrink-0 text-[4.6cqw] font-bold text-[#201d1d] tabular-nums">
  Lv.{activeCard.level}
  </span>
  </div>
- <div className="flex shrink-0 items-center gap-[1cqw]" title={t('wiki_power', language)}>
- <span className="text-[5cqw] font-black text-[#ca8a04]">⚡</span>
- <span className="text-[8.5cqw] font-black tabular-nums">{powerScore}{hasPowerBonus && '+'}</span>
- <FactionIcon className="h-[6.5cqw] w-[6.5cqw] rounded-full border border-[#201d1d]/30 bg-[#fdfcfc]/80 p-[0.8cqw]" />
+ <div
+  className="flex shrink-0 items-center gap-[0.8cqw] rounded-xs px-[1.2cqw] py-[0.3cqw]"
+  style={
+   charBackdrop.isHighPrestige
+    ? {
+       background: 'linear-gradient(135deg, rgba(254,249,195,0.92) 0%, rgba(253,224,71,0.85) 100%)',
+       border: '1px solid #b45309',
+      }
+    : undefined
+  }
+  title={t('wiki_power', language)}
+ >
+ <span className="text-[4.8cqw] font-black text-[#b45309]">⚡</span>
+ <span className="text-[8cqw] font-black tabular-nums text-[#201d1d]">{powerScore}{hasPowerBonus && '+'}</span>
+ <FactionIcon className="h-[6cqw] w-[6cqw] rounded-full border border-[#201d1d]/30 bg-[#fdfcfc]/90 p-[0.7cqw]" />
  </div>
  </div>
- <div className="flex min-w-0 items-center justify-between gap-[1cqw] border-t border-[#201d1d]/15 pt-[1cqw]">
- <span className="min-w-0 truncate text-[7.5cqw] font-black tracking-tight" title={displayCardName}>
+ <div
+  className="flex min-w-0 items-center justify-between gap-[1cqw] border-t border-[#201d1d]/20 pt-[0.9cqw] px-[1cqw]"
+  style={
+   charBackdrop.isHighPrestige
+    ? {
+       background: 'linear-gradient(90deg, rgba(254,240,138,0.45) 0%, rgba(255,255,255,0.75) 50%, rgba(254,240,138,0.45) 100%)',
+      }
+    : undefined
+  }
+ >
+ <span className="min-w-0 truncate text-[7.2cqw] font-black tracking-tight text-[#201d1d]" title={displayCardName}>
  {displayCardName}
  </span>
- <span className="shrink-0 text-[4.2cqw] font-bold uppercase text-[#646262]">
- {t(`rarity_${rarityTier}`, language)}
+ <span
+  className="shrink-0 text-[4cqw] font-black tracking-tighter"
+  style={{
+   color:
+    rarityGroup === 'special'
+     ? '#7e22ce'
+     : rarityGroup === 'gold'
+     ? '#b45309'
+     : rarityGroup === 'silver'
+     ? '#334155'
+     : '#7c4724',
+  }}
+ >
+ {'★'.repeat(charBackdrop.prestigeStarCount)}
  </span>
  </div>
  </div>
  )}
 
- {/* Illustration window: 3-axis backdrop (Race/Faction × Rarity/Grade × Power Tier) */}
+ {/* Illustration window: 3-axis backdrop (Race/Faction × Rarity/Grade × Power Tier) with Metallic Double Rim */}
  <div
   className={cn(
-   'pointer-events-none absolute z-10 overflow-hidden border [container-type:size]',
-   isOnBoard ? 'inset-x-[4cqw] bottom-[17cqw] top-[4cqw]' : 'inset-x-[5.5cqw] bottom-[26cqw] top-[22.5cqw]',
+   'pointer-events-none absolute z-10 overflow-hidden [container-type:size]',
+   isOnBoard ? 'inset-x-[5cqw] bottom-[17cqw] top-[5cqw]' : 'inset-x-[6.2cqw] bottom-[26cqw] top-[22.5cqw]',
    showOwnership
     ? cn(pokemonTheme.windowBg, owner === 'player' ? 'ring-1 ring-[#2563eb]/50' : 'ring-1 ring-[#dc2626]/50')
     : pokemonTheme.windowBg,
@@ -468,6 +611,7 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
   style={{
    background: charBackdrop.windowCssBackground,
    backgroundColor: charBackdrop.bgLight,
+   boxShadow: charBackdrop.windowBoxShadow,
   }}
   data-backdrop-faction={charBackdrop.faction}
   data-backdrop-rarity={charBackdrop.rarityGroup}
