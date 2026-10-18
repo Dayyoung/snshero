@@ -840,10 +840,13 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  </div>
 
  <div className="flex items-center gap-4 mb-4">
- <div className="w-20 h-24 shrink-0 rounded-none border border-amber-500/40 bg-stone-900 flex items-center justify-center overflow-hidden">
+ <div className="w-20 sm:w-24 aspect-[256/296] shrink-0 rounded-none border border-amber-500/40 bg-stone-900 flex items-center justify-center overflow-hidden p-1">
  <div 
- className="w-full h-full bg-center bg-no-repeat"
- style={getCardSpriteStyle(ambushAlert.leaderCardId)}
+ className="w-full aspect-[256/296] max-h-full bg-center bg-no-repeat"
+ style={{
+ ...getCardSpriteStyle(ambushAlert.leaderCardId),
+ aspectRatio: '256 / 296',
+ }}
  />
  </div>
  <div className="min-w-0 flex-1">

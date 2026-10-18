@@ -474,6 +474,7 @@ export const TacticalCommandHUD: React.FC<TacticalHUDProps> = ({
  const [dailyCount, setDailyCount] = useState<number>(() => getDailyMinigameCount());
  const [packClaimed, setPackClaimed] = useState<boolean>(() => isDailyOverridePackClaimed());
  const [showPackModal, setShowPackModal] = useState<boolean>(false);
+ const [isCompact, setIsCompact] = useState<boolean>(true);
 
  // Sync minigame count and pack events
  useEffect(() => {
@@ -513,17 +514,17 @@ export const TacticalCommandHUD: React.FC<TacticalHUDProps> = ({
  return (
  <>
  <div
- className={`w-full bg-[#141212] border-t border-stone-800 p-2.5 font-mono text-xs select-none ${className}`}
+ className={`w-full bg-[#141212] border-t border-stone-800 p-2.5 font-mono text-xs select-none ${isCompact ? 'py-1' : ''} ${className}`}
  >
  {/* HUD Top Bar: Mana Gauge & Daily Training Progress */}
- <div className="flex items-center justify-between mb-2 gap-2 text-[11px]">
+ <div className={`flex items-center justify-between ${isCompact ? 'mb-0' : 'mb-2'} gap-2 text-[11px]`}>
  {/* Mana Gauge */}
  <div className="flex items-center gap-1.5 min-w-0">
  <BatteryCoreIcon className="text-amber-400 shrink-0" size={14} />
  <span className="text-stone-400 uppercase tracking-wider text-[10px] hidden sm:inline">
  {t('ap_label')}
  </span>
- <div className="w-24 sm:w-32 h-2.5 bg-stone-900 border border-stone-800 rounded-none overflow-hidden relative">
+ <div className="w-20 sm:w-28 h-2.5 bg-stone-900 border border-stone-800 rounded-none overflow-hidden relative">
  <div
  className="h-full bg-amber-500 transition-all duration-300"
  style={{ width: `${apPercentage}%` }}
@@ -534,9 +535,9 @@ export const TacticalCommandHUD: React.FC<TacticalHUDProps> = ({
  </span>
  </div>
 
- {/* Daily Retention Minigame Hook */}
+ {/* Daily Retention Minigame Hook + Compact Toggle */}
  <div className="flex items-center gap-1.5 shrink-0">
- <span className="text-stone-500 text-[10px]">
+ <span className="text-stone-500 text-[10px] hidden sm:inline">
  {t('daily_minigames')}:
  </span>
  <span
@@ -571,10 +572,20 @@ export const TacticalCommandHUD: React.FC<TacticalHUDProps> = ({
  [+ MANA]
  </button>
  )}
+
+ <button
+ type="button"
+ onClick={() => setIsCompact((prev) => !prev)}
+ className="min-h-[44px] min-w-[44px] flex items-center justify-center text-xs font-bold text-stone-400 hover:text-white p-1 rounded-xs cursor-pointer"
+ title={t('hud_title')}
+ >
+ {isCompact ? '[+]' : '[-]'}
+ </button>
  </div>
  </div>
 
  {/* 3-Part Command Grid (ASSAULT, COUNTER, SYNERGY) */}
+ {!isCompact && (
  <div className="grid grid-cols-3 gap-2">
  {/* 1. ASSAULT BUTTON */}
  <button
@@ -672,6 +683,7 @@ export const TacticalCommandHUD: React.FC<TacticalHUDProps> = ({
  </p>
  </button>
  </div>
+ )}
  </div>
 
  {/* ─── Retention Hook: Tactical Override Pack Modal ──────────────── */}

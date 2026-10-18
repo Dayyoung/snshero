@@ -2,6 +2,28 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-19 07:56 KST] [캐릭터 스프라이트 비율(256:296) 왜곡 수정, 카드 배틀 시야 확보 및 3x3 보드 속성 타일 컬러 테두리·대형 아이콘 강조] KadanNpcDialog/CardItem 비율 보정, HUD 기본 접기 및 pb-safe 전환, ELEMENT_DEFINITIONS 속성별 컬러 테두리/대형 아이콘/워터마크 적용 완료
+- **작업 개요**:
+  - NPC 대화창 및 카드 내부 캐릭터 스프라이트 이미지의 종횡비(`256:296`, `2560x2960` 시트 기준) 왜곡 수정, 카드 플레이 화면(`MobileCardPlayScreen`) 내 시야를 가리던 하단 여백/중복 배지/HUD 정리, 3x3 보드 속성 칸(`#board-slot-0`~`8`)의 속성별 고유 컬러 테두리 및 대형 아이콘 강조 적용.
+- **소유 파일 및 주요 구현/수정 내역**:
+  1. `src/components/rpg/KadanNpcDialog.tsx` & `src/views/KadanRpgView.tsx`:
+     - 유효하지 않은 Tailwind 높이 클래스(`sm:h-38 md:h-42`)로 인해 컨테이너 비율이 깨지던 문제를 `aspect-[256/296]` 및 내부 스프라이트 박스 `aspectRatio: '256 / 296'` 고정으로 수정하여 `background-size: 1000% 1000%` 캐릭터 스프라이트가 왜곡 없이 선명하게 표시되도록 개선.
+  2. `src/components/CardItem.tsx`:
+     - 카드 내부 캐릭터 스프라이트 비율을 `'19 / 20'`에서 원본 타일 규격인 `'256 / 296'`(`w-[min(88cqw,88cqh)]`)으로 정밀 보정.
+     - 보드 배치 카드(`isOnBoard`)의 일러스트 창 영역을 `inset-[4.6cqw]`로 확장하고, 캐릭터 얼굴과 상/하/좌/우 스탯을 가리던 중복 종족 텍스트 라벨(`불의 세력` 등), 하단 오너 배너, 손패 카드의 중복 스티커(`MCH-021`)를 제거하여 캐릭터 시인성 극대화.
+  3. `src/components/battle/TacticalSynergyMatrix.tsx` & `src/components/battle/TacticalCommandHUD.tsx`:
+     - 두 하단 전술 HUD 모두 기본 상태를 접힌 컴팩트 모드(`isCompact = true`)로 설정하고 `[+]` / `[-]` 토글 버튼을 제공하여 카드 배틀 중 약 280px의 수직 시야를 즉시 확보.
+  4. `src/views/MobileCardPlayScreen.tsx`:
+     - `#mobile-card-play-viewport` 루트 컨테이너의 과도한 하단 고정 패딩(`pb-32`, 128px)을 `pb-safe`로 전환하고, 스토리 RPG 전투(`autoCloseOnComplete`) 중 불필요한 `#ranking-diverted-hud` 노출을 차단.
+     - `ELEMENT_DEFINITIONS`에 12개 속성(물/불/바람/대지/인간/언데드/엘프/드워프/몬스터/로봇/드래곤)별 전용 컬러 팔레트(`borderHex`, `bgHex`, `playableBgHex`, `iconBgHex`, `textHex`, `glowRgba`) 추가.
+     - 속성이 부여된 3x3 보드 슬롯(`#board-slot-0`~`8`)에 해당 속성 색상의 2px 강조 테두리(`border-2`), 은은한 속성 배경 워터마크 아이콘(`size={60}`), 큼직한 메인 속성 아이콘 엠블럼(`w-11 h-11 sm:w-12 sm:h-12`, `size={28}`), 그리고 고대비 컬러 `[+1 PWR]` 배지를 적용하여 적용 속성을 한눈에 식별할 수 있도록 개선.
+- **검증 결과**:
+  - `python3 tests/e2e_rpg/run_rpg_e2e_tests.py`: 52/52 assertions 전수 통과 (100.0%).
+  - `python3 tests/e2e_design_system/run_all_e2e_tests.py`: 377/377 assertions 전수 통과 (100.0%).
+  - `npx tsc --noEmit`: 0 errors (Exit code 0).
+  - `npm run build`: 26.10초 무결점 번들링 완료 (Exit code 0).
+  - 연동 구글 폼 완료 보고서 제출 완료 (`submit_report.py`).
+
 ## [2026-10-19 07:05 KST] [M4 Iteration 2: 100% 무인 자동 진행(Hands-Free Auto-Play) 계약 수정 및 E2E/적대적 검증 완결] onBack completed 계약 연동, 벽시계 기반 기습 카운트다운 타이머 순수 루프 전환, 52/52 RPG E2E & 34/34 적대적 스트레스 테스트 전수 통과
 - **작업 개요**:
   - `/main` RPG 모드 Milestone 4 Iteration 2: 전투 종료 후 `onBack` 호출 시 `autoMode`가 무조건 해제되던 결함 수정, 리액트 19 순수성 준수를 위한 벽시계 기반 기습 카운트다운 리팩토링, E2E 및 적대적 시뮬레이터 계약 검증 어설션 보강.

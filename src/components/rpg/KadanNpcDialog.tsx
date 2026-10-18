@@ -380,18 +380,21 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
               isKadan ? "flex-row" : "flex-row-reverse"
             )}
           >
-            {/* ─── 팝업 내부 캐릭터 정중앙 포트레이트 프레임 ─── */}
+            {/* ─── 팝업 내부 캐릭터 정중앙 포트레이트 프레임 (256:296 원본 비율 고정) ─── */}
             <div
               key={`standing-portrait-${currentLine.cardId}-${lineIndex}`}
               className={cn(
-                "relative shrink-0 w-24 sm:w-32 md:w-36 h-28 sm:h-38 md:h-42 rounded-none overflow-hidden border-2 border-slate-700/80 bg-[#201d1d] shadow-none flex items-center justify-center select-none transition-all duration-300 transform animate-in fade-in scale-95"
+                "relative shrink-0 w-24 sm:w-28 md:w-32 aspect-[256/296] rounded-none overflow-hidden border-2 border-slate-700/80 bg-[#201d1d] shadow-none flex items-center justify-center select-none transition-all duration-300 transform animate-in fade-in scale-95"
               )}
             >
-              {/* 캐릭터 이미지 (정중앙 정렬) */}
-              <div className="w-full h-full p-1.5 flex items-center justify-center overflow-hidden">
+              {/* 캐릭터 이미지 (정중앙 정렬 & 256:296 정비율 보장) */}
+              <div className="w-full h-full p-1 flex items-center justify-center overflow-hidden">
                 <div
-                  className="w-full h-full rounded-none transition-transform duration-300 filter brightness-105 contrast-105 bg-center bg-no-repeat"
-                  style={getCharacterPortraitStyle(currentLine.cardId)}
+                  className="w-full aspect-[256/296] max-h-full rounded-none transition-transform duration-300 filter brightness-105 contrast-105 bg-center bg-no-repeat"
+                  style={{
+                    ...getCharacterPortraitStyle(currentLine.cardId),
+                    aspectRatio: '256 / 296',
+                  }}
                 />
               </div>
             </div>

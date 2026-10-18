@@ -342,8 +342,8 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
  className={cn(
  'z-30 flex items-center justify-center font-mono leading-none tabular-nums select-none backdrop-blur-[0.5px]',
  isOnBoard
- ? 'absolute h-[clamp(20px,26cqw,34px)] min-w-[clamp(20px,26cqw,34px)] rounded-xs px-[clamp(2px,1.2cqw,4px)]'
- : 'absolute h-[clamp(18px,22cqw,28px)] min-w-[clamp(18px,22cqw,28px)] rounded-xs px-[clamp(2px,1cqw,4px)]',
+ ? 'absolute h-[clamp(16px,20cqw,26px)] min-w-[clamp(16px,20cqw,26px)] rounded-xs px-[clamp(2px,1cqw,4px)]'
+ : 'absolute h-[clamp(15px,19cqw,24px)] min-w-[clamp(15px,19cqw,24px)] rounded-xs px-[clamp(1.5px,0.8cqw,3px)]',
  highlighted
  ? 'border-2 border-red-500 bg-red-600 text-white scale-110 z-40'
  : pokemonTheme.statBadge,
@@ -355,14 +355,16 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
  title={`${direction} ${stat.total}${delta ? ` (${stat.base}${delta > 0 ? '+' : ''}${delta})` : ''}`}
  >
  <span className={cn(
- 'text-[clamp(13px,20cqw,28px)] font-black tracking-tight leading-none text-center',
+ isOnBoard
+ ? 'text-[clamp(11px,15cqw,22px)] font-black tracking-tight leading-none text-center'
+ : 'text-[clamp(10px,15cqw,20px)] font-black tracking-tight leading-none text-center',
  !highlighted && delta > 0 && 'text-[#16a34a]',
  !highlighted && delta < 0 && 'text-[#dc2626]',
  )}>
  {stat.total}
  </span>
  {(delta !== 0 || stat.skillBonus > 0 || stat.equipBonus !== 0) && (
- <span className="absolute -top-[3px] -right-[3px] flex h-[clamp(10px,7cqw,14px)] min-w-[clamp(10px,7cqw,14px)] items-center justify-center rounded-full bg-slate-900 px-[1px] text-[clamp(7px,5cqw,10px)] font-black text-white shadow-xs">
+ <span className="absolute -top-[3px] -right-[3px] flex h-[clamp(9px,6cqw,13px)] min-w-[clamp(9px,6cqw,13px)] items-center justify-center rounded-full bg-slate-900 px-[1px] text-[clamp(6.5px,4.5cqw,9px)] font-black text-white shadow-xs">
  {delta < 0 ? '-' : '+'}
  </span>
  )}
@@ -602,7 +604,7 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
  <div
   className={cn(
    'pointer-events-none absolute z-10 overflow-hidden [container-type:size]',
-   isOnBoard ? 'inset-x-[5cqw] bottom-[17cqw] top-[5cqw]' : 'inset-x-[6.2cqw] bottom-[26cqw] top-[22.5cqw]',
+   isOnBoard ? 'inset-[4.6cqw]' : 'inset-x-[6.2cqw] bottom-[26cqw] top-[22.5cqw]',
    showOwnership
     ? cn(pokemonTheme.windowBg, owner === 'player' ? 'ring-1 ring-[#2563eb]/50' : 'ring-1 ring-[#dc2626]/50')
     : pokemonTheme.windowBg,
@@ -703,35 +705,7 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
    />
   </div>
 
-  {/* Layer 3: Top Corner Micro-Badges inside Character Window (Race/Faction left, Rarity+Power Tier right) */}
-  {!isOnBoard && (
-   <div className="pointer-events-none absolute inset-x-[2.5cqw] top-[2cqw] z-20 flex items-center justify-between leading-none">
-    <span
-     className="inline-flex items-center gap-[0.8cqw] rounded-xs border px-[1.4cqw] py-[0.5cqw] text-[3.8cqw] font-black tracking-tight"
-     style={{
-      backgroundColor: 'rgba(253,252,252,0.86)',
-      borderColor: charBackdrop.accentHex,
-      color: charBackdrop.accentHex,
-     }}
-    >
-     <span>{charBackdrop.factionEmoji}</span>
-     <span>{language === 'ko' ? charBackdrop.factionLabelKo : charBackdrop.factionLabelEn}</span>
-    </span>
-    <span
-     className="inline-flex items-center gap-[0.6cqw] rounded-xs border px-[1.3cqw] py-[0.5cqw] text-[3.7cqw] font-black tracking-tight tabular-nums"
-     style={{
-      backgroundColor: 'rgba(32,29,29,0.84)',
-      borderColor: charBackdrop.rarityBorderHex,
-      color: '#fdfcfc',
-     }}
-    >
-     <span>{charBackdrop.raritySymbol}</span>
-     <span>{charBackdrop.powerTierLabel}</span>
-    </span>
-   </div>
-  )}
-
-  {/* Layer 4: Foreground Character Sprite / Image */}
+  {/* Layer 4: Foreground Character Sprite / Image (exact 256:296 aspect ratio) */}
   {currentImageSource ? (
    isSpriteSheet(currentImageSource) && visualCardId ? (
     <>
@@ -739,8 +713,8 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
      <div
       role="img"
       aria-label={displayCardName}
-      className="absolute left-1/2 top-1/2 z-10 w-[min(92cqw,87cqh)] -translate-x-1/2 -translate-y-1/2"
-      style={{ ...getSpritePosition(visualCardId, currentImageSource), aspectRatio: '19 / 20' }}
+      className="absolute left-1/2 top-1/2 z-10 w-[min(88cqw,88cqh)] -translate-x-1/2 -translate-y-1/2"
+      style={{ ...getSpritePosition(visualCardId, currentImageSource), aspectRatio: '256 / 296' }}
      />
     </>
    ) : (
@@ -771,13 +745,13 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
   )}
 
   {/* Layer 5: Bottom 5-Step Power Tier Gauge Bar inside Character Window */}
-  <div className="pointer-events-none absolute inset-x-[3cqw] bottom-[1.8cqw] z-20 flex items-center gap-[1cqw]">
+  <div className="pointer-events-none absolute inset-x-[3cqw] bottom-[1.4cqw] z-20 flex items-center gap-[1cqw]">
    {[1, 2, 3, 4, 5].map(step => {
     const active = step <= charBackdrop.powerTier;
     return (
      <span
       key={step}
-      className="h-[1.8cqw] flex-1 border border-[#201d1d]/30"
+      className="h-[1.6cqw] flex-1 border border-[#201d1d]/30"
       style={{
        backgroundColor: active ? charBackdrop.accentHex : 'rgba(253,252,252,0.55)',
        boxShadow: active && charBackdrop.powerTier >= 4 ? `0 0 4px ${charBackdrop.glowRgba}` : undefined,
@@ -788,27 +762,14 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
   </div>
  </div>
 
- {/* Board view top-left power indicator */}
+ {/* Board view compact top-left power indicator */}
  {isOnBoard && <div className={cn(
- 'absolute left-[3cqw] z-30 flex items-center gap-[1cqw] border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] px-[2cqw] py-[1.5cqw] leading-none',
- 'top-[3cqw]',
+ 'absolute left-[2cqw] top-[2cqw] z-30 flex items-center gap-[0.8cqw] border border-[rgba(15,0,0,0.2)] bg-[#fdfcfc]/95 px-[1.5cqw] py-[1cqw] leading-none rounded-xs',
  )} title={t('wiki_power', language)}>
- <Zap className="h-[6cqw] w-[6cqw]" strokeWidth={1.5} />
- <span className="text-[8cqw] font-bold tabular-nums">{powerScore}</span>
- {hasPowerBonus && <span className="text-[5cqw] font-bold">+</span>}
+ <Zap className="h-[5cqw] w-[5cqw] text-[#b45309]" strokeWidth={2} />
+ <span className="text-[7cqw] font-black tabular-nums">{powerScore}</span>
+ {hasPowerBonus && <span className="text-[4.5cqw] font-bold">+</span>}
  </div>}
-
- {/* Board view top-right element/faction indicator */}
- {isOnBoard && (factionDef || race) && (
- <div className={cn(
- 'absolute right-[3cqw] top-[3cqw] z-30 flex items-center gap-[1cqw] border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] px-[2cqw] py-[1.5cqw] leading-none'
- )} title={factionDef ? t(factionDef.nameKey, language) : race || undefined}>
- <FactionIcon className="h-[6cqw] w-[6cqw] shrink-0 text-[#201d1d]" />
- <span className="text-[6.5cqw] font-black uppercase tabular-nums">
- {factionDef ? t(factionDef.nameKey, language) : race}
- </span>
- </div>
- )}
 
  {/* Direction stats: Always displayed in North / East / South / West layout (Cross Diamond HUD) */}
  {!hideStats && (
@@ -820,14 +781,10 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
  </>
  )}
 
- {/* Bottom Info Footer - Pokemon TCG attack move / ability style */}
- <div className={cn(
- 'absolute z-20 flex flex-col justify-center',
- isOnBoard ? 'inset-x-[4cqw] bottom-[4cqw] h-[13cqw] px-[2cqw]' : 'inset-x-[5.5cqw] bottom-[3.5cqw] h-[21cqw] gap-[1cqw]',
- showOwnership && 'text-white',
- showOwnership && (owner === 'player' ? 'bg-[#2563eb]' : 'bg-[#dc2626]'),
- )}>
- {!isOnBoard && abilityDescription && (
+ {/* Bottom Info Footer - Pokemon TCG attack move / ability style (only on full TCG card, hidden on 3x3 board so South stat & character stay unobstructed) */}
+ {!isOnBoard && (
+ <div className="absolute z-20 flex flex-col justify-center inset-x-[5.5cqw] bottom-[3.5cqw] h-[21cqw] gap-[1cqw]">
+ {abilityDescription && (
  <div className="flex items-center gap-[1.5cqw] border-b border-[#201d1d]/15 pb-[1cqw]">
  <span className="shrink-0 text-[4.8cqw] font-black text-[#ca8a04]">
  {activeCard.ability?.type === 'POWER_BOOST' && '[⚡BOOST]'}
@@ -857,20 +814,19 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
  <FactionIcon className="h-[4.8cqw] w-[4.8cqw] shrink-0 opacity-80" />
  )}
  </span>
- ) : !isOnBoard && factionDef ? (
+ ) : factionDef ? (
  <span className="flex min-w-0 items-center gap-[1cqw]" title={t(factionDef.nameKey, language)}>
  <FactionIcon className="h-[5.5cqw] w-[5.5cqw] shrink-0 text-[#646262]" />
  <span className="truncate text-[#646262]">{t(factionDef.nameKey, language)}</span>
  </span>
- ) : !isOnBoard && race ? <FactionIcon className="h-[5.5cqw] w-[5.5cqw] shrink-0 text-[#646262]" /> : null}
+ ) : race ? <FactionIcon className="h-[5.5cqw] w-[5.5cqw] shrink-0 text-[#646262]" /> : null}
  </div>
- {!isOnBoard && !abilityDescription && (
+ {!abilityDescription && (
  <span className="shrink-0 text-[4.5cqw] text-[#646262] font-semibold">
  {t('type_normal', language) || 'BASIC CARD'}
  </span>
  )}
  </div>
- {!isOnBoard && (
  <div className="flex items-center justify-between gap-[2cqw] border-t border-[#201d1d]/15 pt-[1cqw] text-[4.5cqw] leading-none">
  <span className="truncate tabular-nums text-[#646262]">#{String(visualCardId ?? activeCard.id).padStart(3, '0')}</span>
  <span className="flex items-center gap-[1cqw] font-bold" style={{ color: rarityAccent }}>
@@ -878,17 +834,14 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
  {pokemonTheme.tagLabel}
  </span>
  </div>
- )}
  </div>
+ )}
 
  {!isOnBoard && resolvedSkin && !downloadMode && (
  <div className="absolute right-[9cqw] top-[28cqw] z-30 flex max-w-[32cqw] items-center gap-[1cqw] border border-[#201d1d]/25 bg-[#fff9e9] px-[1.5cqw] py-[1cqw] text-[5cqw] leading-none" title={t(resolvedSkin.nameKey, language)}>
  <span>{resolvedSkin.fallbackEmoji}</span>
  <span className="truncate">{t(resolvedSkin.nameKey, language)}</span>
  </div>
- )}
- {!isOnBoard && !resolvedSkin && isOriginalMechaTheme && themeVisual && (
- <span className="absolute right-[9cqw] top-[28cqw] z-30 max-w-[30cqw] truncate border border-[#201d1d]/25 bg-[#fff9e9] px-[1.5cqw] py-[1cqw] text-[5cqw]" title={t('card_skin_theme_mecha_badge', language)}>{themeVisual.serialCode}</span>
  )}
  {(activeCard.growth || 0) > 0 && !isOnBoard && (
  <div className="absolute bottom-[51cqw] left-1/2 z-20 flex -translate-x-1/2 gap-[0.5cqw] border border-[#201d1d]/25 bg-[#fff9e9] px-[1cqw] py-[0.5cqw]">

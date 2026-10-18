@@ -43,21 +43,147 @@ export interface ElementDef {
   nameKo: string;
   nameEn: string;
   Icon: React.ComponentType<{ size?: number; className?: string; strokeWidth?: number }>;
+  borderHex: string;
+  bgHex: string;
+  playableBgHex: string;
+  iconBgHex: string;
+  textHex: string;
+  glowRgba: string;
 }
 
 export const ELEMENT_DEFINITIONS: Record<string, ElementDef> = {
-  water: { nameKo: '물', nameEn: 'WATER', Icon: Waves },
-  fire: { nameKo: '불', nameEn: 'FIRE', Icon: Flame },
-  wind: { nameKo: '바람', nameEn: 'WIND', Icon: Wind },
-  land: { nameKo: '대지', nameEn: 'EARTH', Icon: Mountain },
-  earth: { nameKo: '대지', nameEn: 'EARTH', Icon: Mountain },
-  human: { nameKo: '인간', nameEn: 'HUMAN', Icon: User },
-  undead: { nameKo: '언데드', nameEn: 'UNDEAD', Icon: Skull },
-  elf: { nameKo: '엘프', nameEn: 'ELF', Icon: Leaf },
-  dwarf: { nameKo: '드워프', nameEn: 'DWARF', Icon: Hammer },
-  monster: { nameKo: '몬스터', nameEn: 'MONSTER', Icon: Ghost },
-  robot: { nameKo: '로봇', nameEn: 'ROBOT', Icon: Bot },
-  dragon: { nameKo: '드래곤', nameEn: 'DRAGON', Icon: Zap },
+  water: {
+    nameKo: '물',
+    nameEn: 'WATER',
+    Icon: Waves,
+    borderHex: '#0284c7',
+    bgHex: '#f0f9ff',
+    playableBgHex: '#e0f2fe',
+    iconBgHex: '#e0f2fe',
+    textHex: '#0369a1',
+    glowRgba: 'rgba(2, 132, 199, 0.22)',
+  },
+  fire: {
+    nameKo: '불',
+    nameEn: 'FIRE',
+    Icon: Flame,
+    borderHex: '#ea580c',
+    bgHex: '#fff7ed',
+    playableBgHex: '#ffedd5',
+    iconBgHex: '#ffedd5',
+    textHex: '#c2410c',
+    glowRgba: 'rgba(234, 88, 12, 0.22)',
+  },
+  wind: {
+    nameKo: '바람',
+    nameEn: 'WIND',
+    Icon: Wind,
+    borderHex: '#059669',
+    bgHex: '#ecfdf5',
+    playableBgHex: '#d1fae5',
+    iconBgHex: '#d1fae5',
+    textHex: '#047857',
+    glowRgba: 'rgba(5, 150, 105, 0.22)',
+  },
+  land: {
+    nameKo: '대지',
+    nameEn: 'EARTH',
+    Icon: Mountain,
+    borderHex: '#d97706',
+    bgHex: '#fffbeb',
+    playableBgHex: '#fef3c7',
+    iconBgHex: '#fef3c7',
+    textHex: '#b45309',
+    glowRgba: 'rgba(217, 119, 6, 0.22)',
+  },
+  earth: {
+    nameKo: '대지',
+    nameEn: 'EARTH',
+    Icon: Mountain,
+    borderHex: '#d97706',
+    bgHex: '#fffbeb',
+    playableBgHex: '#fef3c7',
+    iconBgHex: '#fef3c7',
+    textHex: '#b45309',
+    glowRgba: 'rgba(217, 119, 6, 0.22)',
+  },
+  human: {
+    nameKo: '인간',
+    nameEn: 'HUMAN',
+    Icon: User,
+    borderHex: '#2563eb',
+    bgHex: '#eff6ff',
+    playableBgHex: '#dbeafe',
+    iconBgHex: '#dbeafe',
+    textHex: '#1d4ed8',
+    glowRgba: 'rgba(37, 99, 235, 0.22)',
+  },
+  undead: {
+    nameKo: '언데드',
+    nameEn: 'UNDEAD',
+    Icon: Skull,
+    borderHex: '#7c3aed',
+    bgHex: '#f5f3ff',
+    playableBgHex: '#ede9fe',
+    iconBgHex: '#ede9fe',
+    textHex: '#6d28d9',
+    glowRgba: 'rgba(124, 58, 237, 0.22)',
+  },
+  elf: {
+    nameKo: '엘프',
+    nameEn: 'ELF',
+    Icon: Leaf,
+    borderHex: '#16a34a',
+    bgHex: '#f0fdf4',
+    playableBgHex: '#dcfce7',
+    iconBgHex: '#dcfce7',
+    textHex: '#15803d',
+    glowRgba: 'rgba(22, 163, 74, 0.22)',
+  },
+  dwarf: {
+    nameKo: '드워프',
+    nameEn: 'DWARF',
+    Icon: Hammer,
+    borderHex: '#ca8a04',
+    bgHex: '#fefce8',
+    playableBgHex: '#fef08a',
+    iconBgHex: '#fef08a',
+    textHex: '#a16207',
+    glowRgba: 'rgba(202, 138, 4, 0.22)',
+  },
+  monster: {
+    nameKo: '몬스터',
+    nameEn: 'MONSTER',
+    Icon: Ghost,
+    borderHex: '#e11d48',
+    bgHex: '#fff1f2',
+    playableBgHex: '#ffe4e6',
+    iconBgHex: '#ffe4e6',
+    textHex: '#be123c',
+    glowRgba: 'rgba(225, 29, 72, 0.22)',
+  },
+  robot: {
+    nameKo: '로봇',
+    nameEn: 'ROBOT',
+    Icon: Bot,
+    borderHex: '#4f46e5',
+    bgHex: '#eef2ff',
+    playableBgHex: '#e0e7ff',
+    iconBgHex: '#e0e7ff',
+    textHex: '#4338ca',
+    glowRgba: 'rgba(79, 70, 229, 0.22)',
+  },
+  dragon: {
+    nameKo: '드래곤',
+    nameEn: 'DRAGON',
+    Icon: Zap,
+    borderHex: '#c026d3',
+    bgHex: '#fdf4ff',
+    playableBgHex: '#fae8ff',
+    iconBgHex: '#fae8ff',
+    textHex: '#a21caf',
+    glowRgba: 'rgba(192, 38, 211, 0.22)',
+  },
 };
 
 export const ELEMENT_META = ELEMENT_DEFINITIONS;
@@ -1510,7 +1636,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     <div 
       id="mobile-card-play-viewport"
       className={cn(
-        "fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-pan-y bg-[#fdfcfc] text-[#201d1d] flex flex-col font-mono z-[100] pb-32 [&_button]:min-h-11 [&_button]:min-w-11 [&_button]:focus-visible:outline-2 [&_button]:focus-visible:outline-offset-2 [&_button]:focus-visible:outline-[#201d1d]",
+        "fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-pan-y bg-[#fdfcfc] text-[#201d1d] flex flex-col font-mono z-[100] pb-safe [&_button]:min-h-11 [&_button]:min-w-11 [&_button]:focus-visible:outline-2 [&_button]:focus-visible:outline-offset-2 [&_button]:focus-visible:outline-[#201d1d]",
         suppressMotion && "[&_*]:animate-none [&_*]:transition-none"
       )}
     >
@@ -1565,7 +1691,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       </header>
 
       {/* ─── 랭킹 전환 모드 (/main 또는 /play 신규 덱 검증) & 데모플레이 HUD 바 ───────── */}
-      {(isRankingDiverted() || isDemoPlayActive()) && (
+      {(isDemoPlayActive() || (isRankingMatch && isRankingDiverted())) && !autoCloseOnComplete && (
         <div 
           id="ranking-diverted-hud"
           className={cn(
@@ -1696,7 +1822,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       )}
 
       {/* ─── 상하 스크롤 배틀 컨테이너 (UI 축소 원천 차단 및 시원한 크기 보장) ─── */}
-      <div className="flex-1 min-h-0 w-full overflow-y-auto overflow-x-hidden touch-pan-y overscroll-y-contain flex flex-col items-center gap-3 p-2.5 pb-[max(32px,env(safe-area-inset-bottom,0px))] [@media(max-height:500px)_and_(min-width:480px)]:grid [@media(max-height:500px)_and_(min-width:480px)]:grid-cols-[minmax(140px,1fr)_minmax(144px,1.4fr)_minmax(140px,1fr)] [@media(max-height:500px)_and_(min-width:480px)]:grid-rows-[48px_minmax(0,1fr)_48px] [@media(max-height:500px)_and_(min-width:480px)]:overflow-hidden">
+      <div className="flex-1 min-h-0 w-full overflow-y-auto overflow-x-hidden touch-pan-y overscroll-y-contain flex flex-col items-center gap-2 p-2 pb-[max(16px,env(safe-area-inset-bottom,0px))] [@media(max-height:500px)_and_(min-width:480px)]:grid [@media(max-height:500px)_and_(min-width:480px)]:grid-cols-[minmax(140px,1fr)_minmax(144px,1.4fr)_minmax(140px,1fr)] [@media(max-height:500px)_and_(min-width:480px)]:grid-rows-[48px_minmax(0,1fr)_48px] [@media(max-height:500px)_and_(min-width:480px)]:overflow-hidden">
       {/* ─── 2. 상대 덱 (Opponent Deck: 접기 가능 홀더 바 & 기본 접힌 상태) ─────────────── */}
       <div 
         id="mobile-card-opponent-deck"
@@ -1709,7 +1835,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
             playSound('tap');
             setIsOpponentDeckExpanded(prev => !prev);
           }}
-          className="w-full min-h-[44px] px-2.5 py-1.5 flex items-center justify-between gap-2 cursor-pointer hover:bg-red-100/40 active:bg-red-100/60 transition-colors select-none touch-manipulation"
+          className="w-full min-h-[44px] px-2.5 py-1 flex items-center justify-between gap-2 cursor-pointer hover:bg-red-100/40 active:bg-red-100/60 transition-colors select-none touch-manipulation"
           aria-expanded={isOpponentDeckExpanded}
           aria-controls="mobile-card-opponent-deck-content"
           title={isOpponentDeckExpanded ? (language === 'ko' ? '상대 카드덱 접기' : 'Collapse Opponent Deck') : (language === 'ko' ? '상대 카드덱 펼치기' : 'Expand Opponent Deck')}
@@ -1739,8 +1865,6 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
             className="p-2 pt-1.5 border-t border-red-200/80 grid grid-cols-5 gap-1.5 w-full [@media(max-height:500px)_and_(min-width:480px)]:grid-cols-2 [@media(max-height:500px)_and_(min-width:560px)]:grid-cols-3"
           >
             {opponentHand.map((card, i) => {
-              const oppEl = getNormalizedElement(card);
-              const oppDef = oppEl ? ELEMENT_DEFINITIONS[oppEl] : null;
               return (
                 <div
                   key={`opp-card-${card.id || i}`}
@@ -1753,15 +1877,6 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                     lowSpecMode={suppressMotion}
                     className="w-full h-full pointer-events-none rounded-none shadow-none"
                   />
-                  {oppDef && (
-                    <div 
-                      className="absolute top-0.5 right-0.5 z-30 flex items-center gap-0.5 px-1 py-0.5 rounded-xs bg-[#fdfcfc]/95 text-[#201d1d] border border-[#201d1d]/30 font-mono text-[7.5px] font-bold leading-none shadow-2xs pointer-events-none select-none"
-                      title={`${language === 'ko' ? oppDef.nameKo : oppDef.nameEn} ${language === 'ko' ? '속성' : 'Element'}`}
-                    >
-                      <oppDef.Icon size={8.5} strokeWidth={2} className="text-[#201d1d] shrink-0" />
-                      <span className="hidden sm:inline tracking-tight">[{language === 'ko' ? oppDef.nameKo : oppDef.nameEn}]</span>
-                    </div>
-                  )}
                 </div>
               );
             })}
@@ -1780,7 +1895,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       </div>
 
       {/* ─── 3. 메인 전투 영역 (좌측 정보 + 카드판 + 우측 액션) ──────── */}
-      <main className="w-full max-w-[440px] shrink-0 flex flex-col items-center gap-2.5 [@media(max-height:500px)_and_(min-width:480px)]:contents">
+      <main className="w-full max-w-[440px] shrink-0 flex flex-col items-center gap-2 [@media(max-height:500px)_and_(min-width:480px)]:contents">
         {/* ── 상단/좌측: 현재스코어 및 턴 정보 위젯 ── */}
         <aside 
           id="mobile-card-left-panel"
@@ -1831,9 +1946,9 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
         {/* ── 중앙: 3x3 카드판 (축소 없이 큼직하고 시원한 정방형 크기 보장) ── */}
         <div 
           id="mobile-card-center-board"
-          className="w-full shrink-0 flex items-center justify-center my-0.5 [@media(max-height:500px)_and_(min-width:480px)]:col-start-2 [@media(max-height:500px)_and_(min-width:480px)]:row-start-1 [@media(max-height:500px)_and_(min-width:480px)]:row-span-2"
+          className="w-full shrink-0 flex items-center justify-center [@media(max-height:500px)_and_(min-width:480px)]:col-start-2 [@media(max-height:500px)_and_(min-width:480px)]:row-start-1 [@media(max-height:500px)_and_(min-width:480px)]:row-span-2"
         >
-          <div className="w-full aspect-square min-h-[300px] sm:min-h-[360px] grid grid-cols-3 grid-rows-3 gap-1.5 bg-[#f1eeee] border border-[#0f0000]/12 p-1.5 rounded-sm shadow-xs">
+          <div className="w-full aspect-square min-h-[290px] sm:min-h-[350px] grid grid-cols-3 grid-rows-3 gap-1.5 bg-[#f1eeee] border border-[#0f0000]/12 p-1.5 rounded-sm shadow-xs">
             {board.map((cell, idx) => {
               const isOccupied = cell !== null;
               const isFlipped = flippedSlots.includes(idx);
@@ -1843,8 +1958,16 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
               const tileEl = elementalBoard[idx];
               const tileDef = tileEl ? ELEMENT_DEFINITIONS[tileEl] : null;
               const cardEl = isOccupied && cell ? getNormalizedElement(cell) : null;
-              const cardDef = cardEl ? ELEMENT_DEFINITIONS[cardEl] : null;
               const isSynergy = Boolean(isOccupied && cell && tileEl && cardEl && cardEl === (tileEl === 'air' ? 'wind' : tileEl === 'earth' ? 'land' : tileEl));
+
+              const elementalSlotStyle: React.CSSProperties | undefined =
+                !isOccupied && tileDef
+                  ? {
+                      borderColor: tileDef.borderHex,
+                      backgroundColor: isPlayable ? tileDef.playableBgHex : tileDef.bgHex,
+                      boxShadow: `inset 0 0 0 1px ${tileDef.glowRgba}, 0 0 10px ${tileDef.glowRgba}`,
+                    }
+                  : undefined;
 
               return (
                 <button
@@ -1858,10 +1981,11 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                       handlePlaceCard(idx, isSelectedHand, true);
                     }
                   }}
+                  style={elementalSlotStyle}
                   className={cn(
                     "relative w-full h-full min-h-[44px] min-w-0 rounded-sm flex flex-col items-center justify-center overflow-hidden transition-all select-none",
-                    isPlayable && "border border-dashed border-[#201d1d] bg-[#fdfcfc] hover:bg-[#e5e1e1] cursor-pointer",
-                    !isOccupied && !isPlayable && (tileDef ? "border border-[#201d1d]/25 bg-[#f8f7f7] text-[#201d1d]" : "border border-[#0f0000]/12 bg-[#f8f7f7] text-[#9a9898]"),
+                    !isOccupied && tileDef && cn("border-2", isPlayable ? "border-dashed cursor-pointer brightness-98" : "border-solid"),
+                    !isOccupied && !tileDef && (isPlayable ? "border border-dashed border-[#201d1d] bg-[#fdfcfc] hover:bg-[#e5e1e1] cursor-pointer" : "border border-[#0f0000]/12 bg-[#f8f7f7] text-[#9a9898]"),
                     isOccupied && cell.owner === 'player' && "border-2 border-[#2563eb] bg-[#2563eb]",
                     isOccupied && cell.owner === 'ai' && "border-2 border-[#dc2626] bg-[#dc2626]",
                     isSynergy && "ring-2 ring-[#201d1d] shadow-[0_0_8px_rgba(32,29,29,0.35)]",
@@ -1887,21 +2011,16 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                         )}
                       />
 
-                      {/* 각 카드별 속성 배지 (우측 하단) */}
-                      {cardDef && (
-                        <div 
-                          className="absolute bottom-0.5 right-0.5 z-30 flex items-center gap-0.5 px-1 py-0.5 rounded-xs bg-[#fdfcfc]/95 text-[#201d1d] border border-[#201d1d]/30 font-mono text-[7.5px] font-bold leading-none shadow-2xs pointer-events-none select-none"
-                          title={`${language === 'ko' ? cardDef.nameKo : cardDef.nameEn} ${language === 'ko' ? '속성' : 'Element'}`}
-                        >
-                          <cardDef.Icon size={8.5} strokeWidth={2} className="text-[#201d1d] shrink-0" />
-                          <span className="tracking-tight uppercase">[{language === 'ko' ? cardDef.nameKo : cardDef.nameEn}]</span>
-                        </div>
-                      )}
-
                       {/* 타일 속성 일치 시 시너지 효과 배지 (좌측 상단) */}
                       {isSynergy && (
-                        <div className="absolute top-0.5 left-0.5 z-35 flex items-center gap-0.5 px-1 py-0.5 rounded-xs bg-[#201d1d] text-[#fdfcfc] border border-[#201d1d] font-mono text-[8px] font-black shadow-xs pointer-events-none">
-                          <Sparkles size={8.5} strokeWidth={2} className="text-amber-300" />
+                        <div
+                          className="absolute top-0.5 left-0.5 z-35 flex items-center gap-0.5 px-1 py-0.5 rounded-xs text-white border font-mono text-[8px] font-black shadow-xs pointer-events-none"
+                          style={{
+                            backgroundColor: tileDef ? tileDef.borderHex : '#201d1d',
+                            borderColor: tileDef ? tileDef.borderHex : '#201d1d',
+                          }}
+                        >
+                          <Sparkles size={8.5} strokeWidth={2} className="text-amber-200" />
                           <span>[+1 SYNERGY]</span>
                         </div>
                       )}
@@ -1914,19 +2033,41 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                       )}
                     </motion.div>
                   ) : (
-                    <div className="flex flex-col items-center justify-center pointer-events-none select-none">
+                    <div className="relative w-full h-full flex flex-col items-center justify-center pointer-events-none select-none">
                       {tileDef ? (
-                        <div className="flex flex-col items-center justify-center gap-1 text-[#201d1d]">
-                          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-sm bg-[#fdfcfc] border border-[#201d1d]/25 flex items-center justify-center shadow-2xs">
-                            <tileDef.Icon size={19} strokeWidth={1.8} className="text-[#201d1d]" />
+                        <>
+                          {/* 배경 워터마크 대형 아이콘 */}
+                          <tileDef.Icon
+                            size={60}
+                            strokeWidth={1.5}
+                            className="absolute opacity-12 pointer-events-none"
+                            style={{ color: tileDef.borderHex }}
+                          />
+                          <div className="relative z-10 flex flex-col items-center justify-center gap-1">
+                            <div
+                              className="w-11 h-11 sm:w-12 sm:h-12 rounded-sm border-2 flex items-center justify-center shadow-xs"
+                              style={{
+                                backgroundColor: tileDef.iconBgHex,
+                                borderColor: tileDef.borderHex,
+                                color: tileDef.textHex,
+                              }}
+                            >
+                              <tileDef.Icon size={28} strokeWidth={2.25} />
+                            </div>
+                            <span
+                              className="font-mono text-[10px] sm:text-[11px] font-black uppercase tracking-wider leading-none"
+                              style={{ color: tileDef.textHex }}
+                            >
+                              [{language === 'ko' ? tileDef.nameKo : tileDef.nameEn}]
+                            </span>
+                            <span
+                              className="px-1.5 py-0.5 rounded-xs font-mono text-[8px] font-black text-white leading-none tracking-tight shadow-2xs"
+                              style={{ backgroundColor: tileDef.borderHex }}
+                            >
+                              [+1 PWR]
+                            </span>
                           </div>
-                          <span className="font-mono text-[9px] font-black uppercase tracking-wider text-[#201d1d] leading-none">
-                            [{language === 'ko' ? tileDef.nameKo : tileDef.nameEn}]
-                          </span>
-                          <span className="font-mono text-[7.5px] font-bold text-[#646262] leading-none tracking-tight">
-                            [+1 PWR]
-                          </span>
-                        </div>
+                        </>
                       ) : (
                         <>
                           <span className="text-lg font-bold">{isPlayable ? '[+]' : '+'}</span>
@@ -1944,7 +2085,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
         {/* ── 하단/우측: 사용할 스킬 과 자동전투 토글 바 ── */}
         <aside 
           id="mobile-card-right-panel"
-          className="w-full shrink-0 grid grid-cols-[1fr_1fr_1fr_1.3fr] gap-1.5 border-t border-[#0f0000]/12 pt-2 [@media(max-height:500px)_and_(min-width:480px)]:col-start-1 [@media(max-height:500px)_and_(min-width:480px)]:col-span-3 [@media(max-height:500px)_and_(min-width:480px)]:row-start-3 [@media(max-height:500px)_and_(min-width:480px)]:pt-1"
+          className="w-full shrink-0 grid grid-cols-[1fr_1fr_1fr_1.3fr] gap-1.5 border-t border-[#0f0000]/12 pt-1.5 [@media(max-height:500px)_and_(min-width:480px)]:col-start-1 [@media(max-height:500px)_and_(min-width:480px)]:col-span-3 [@media(max-height:500px)_and_(min-width:480px)]:row-start-3 [@media(max-height:500px)_and_(min-width:480px)]:pt-1"
         >
           {/* 스킬 1: 파워 부스트 (+2) */}
           <button
@@ -2049,7 +2190,6 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
           {playerHand.map((card, i) => {
             const isSelected = selectedHandIndex === i;
             const myEl = getNormalizedElement(card);
-            const myDef = myEl ? ELEMENT_DEFINITIONS[myEl] : null;
             return (
               <button
                 type="button"
@@ -2075,15 +2215,6 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                   lowSpecMode={suppressMotion}
                   className="w-full h-full pointer-events-none rounded-none shadow-none"
                 />
-                {myDef && (
-                  <div 
-                    className="absolute top-0.5 right-0.5 z-30 flex items-center gap-0.5 px-1 py-0.5 rounded-xs bg-[#fdfcfc]/95 text-[#201d1d] border border-[#201d1d]/30 font-mono text-[7.5px] font-bold leading-none shadow-2xs pointer-events-none select-none"
-                    title={`${language === 'ko' ? myDef.nameKo : myDef.nameEn} ${language === 'ko' ? '속성' : 'Element'}`}
-                  >
-                    <myDef.Icon size={8.5} strokeWidth={2} className="text-[#201d1d] shrink-0" />
-                    <span className="hidden sm:inline tracking-tight">[{language === 'ko' ? myDef.nameKo : myDef.nameEn}]</span>
-                  </div>
-                )}
               </button>
             );
           })}

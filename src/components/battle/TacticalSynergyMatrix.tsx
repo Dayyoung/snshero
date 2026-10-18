@@ -45,7 +45,7 @@ export const TacticalSynergyMatrix: React.FC<TacticalSynergyMatrixProps> = ({
  language = 'ko',
  className = ''
 }) => {
- const [isCompact, setIsCompact] = useState<boolean>(false);
+ const [isCompact, setIsCompact] = useState<boolean>(true);
  const [hasBurstFired, setHasBurstFired] = useState<boolean>(false);
 
  const t = SYNERGY_I18N[language] || SYNERGY_I18N.ko;
@@ -92,15 +92,20 @@ export const TacticalSynergyMatrix: React.FC<TacticalSynergyMatrixProps> = ({
 
  return (
  <div
- className={`bg-[#141212] border border-stone-800 rounded-none p-2.5 font-mono text-xs select-none ${className}`}
+ className={`w-full bg-[#141212] border border-stone-800 rounded-none px-2.5 py-1 font-mono text-xs select-none ${className}`}
  >
  {/* 상단 타이틀 바 */}
- <div className="flex items-center justify-between mb-1.5">
+ <div className={`flex items-center justify-between ${isCompact ? 'mb-0' : 'mb-1.5'}`}>
  <div className="flex items-center gap-1.5 min-w-0">
- <div className={`w-2 h-2 rounded-none ${isTripleBurst ? 'bg-amber-400 animate-pulse' : 'bg-stone-600'}`} />
- <span className="text-[11px] font-bold text-white uppercase tracking-wider truncate">
+ <div className={`w-2 h-2 rounded-none shrink-0 ${isTripleBurst ? 'bg-amber-400 animate-pulse' : 'bg-stone-600'}`} />
+ <span className="text-[10.5px] font-bold text-white uppercase tracking-wider truncate">
  {t.header}
  </span>
+ {isCompact && (
+ <span className="text-[9.5px] font-bold text-amber-300 shrink-0">
+ {isTripleBurst ? '[3/3 공명]' : `[${Number(isFrostActive) + Number(isFlameActive) + Number(isHolyActive)}/3]`}
+ </span>
+ )}
  </div>
 
  <button
@@ -109,7 +114,7 @@ export const TacticalSynergyMatrix: React.FC<TacticalSynergyMatrixProps> = ({
  triggerHaptic('tap');
  setIsCompact(!isCompact);
  }}
- className="min-h-[44px] min-w-[44px] flex items-center justify-center text-xs font-bold text-stone-500 hover:text-white p-1 rounded-xs"
+ className="min-h-[44px] min-w-[44px] flex items-center justify-center text-xs font-bold text-stone-400 hover:text-white p-1 rounded-xs cursor-pointer"
  title={t.toggleCompact}
  >
  {isCompact ? '[+]' : '[-]'}
