@@ -1,0 +1,50 @@
+{
+  "verdict": "CONFIRM_CORRECT",
+  "timestamp": "2026-10-18T02:33:42Z",
+  "summary": {
+    "test1_math_coordinates": "PASS",
+    "test2_center_pixels_and_drift": "PASS",
+    "test3_boundary_seams": "PASS",
+    "test4_cards2_rows1_9": "PASS"
+  },
+  "tests": {
+    "test1_math_coordinates": {
+      "status": "PASS",
+      "errors_count": 0,
+      "errors": []
+    },
+    "test2_center_pixels_and_drift": {
+      "status": "PASS",
+      "faction_exact_match": 68,
+      "faction_close_match": 42,
+      "faction_mismatch": 0,
+      "min_cards1_2_corr": 0.9958555964285238,
+      "mean_cards1_2_corr": 0.9985681303338863,
+      "min_card100_corr": 0.9953653692048091,
+      "mean_card100_corr": 0.9985869056029447,
+      "min_cgem_corr": 0.995258483747683,
+      "mean_cgem_corr": 0.9987366576302363,
+      "drift_count": 0,
+      "anomalies": []
+    },
+    "test3_boundary_seams": {
+      "status": "PASS",
+      "boundary_seam_corr": -0.33962527763473155,
+      "bleed_events": []
+    },
+    "test4_cards2_rows1_9": {
+      "status": "PASS",
+      "details": {
+        "total_cells_checked": 90,
+        "blank_cells": 0,
+        "corrupted_cells": 0,
+        "mean_cell_entropy": 4.665494455460164,
+        "mean_cell_std": 60.72921480740016,
+        "min_cell_correlation": 0.9554173368123067,
+        "mean_cell_correlation": 0.9710438221730531,
+        "cells_above_95_pct_corr": 90
+      },
+      "anomalies": []
+    }
+  }
+}

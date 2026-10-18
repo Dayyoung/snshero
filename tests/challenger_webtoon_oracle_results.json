@@ -1,0 +1,136 @@
+{
+  "summary": {
+    "all_passed": true,
+    "verdict": "APPROVE",
+    "total_violations": 0,
+    "total_webtoon_scenes": 840,
+    "unique_scene_hashes": 840,
+    "climax_heroes_verified": 5,
+    "seat_portraits_verified": 111,
+    "sprite_sheets_verified": 15,
+    "average_scene_size_bytes": 57719.6,
+    "total_webtoon_library_mb": 46.24,
+    "mean_entropy_bits": 7.518,
+    "mean_luminance_std": 56.87
+  },
+  "suites": {
+    "suite_1_inventory": {
+      "passed": true,
+      "total_expected": 840,
+      "total_found": 840,
+      "missing_count": 0,
+      "unexpected_count": 0,
+      "violations": []
+    },
+    "suite_2_decoding_and_entropy": {
+      "passed": true,
+      "violations": [],
+      "entropy_stats": {
+        "min": 5.03,
+        "max": 7.919,
+        "mean": 7.518
+      },
+      "variance_stats": {
+        "min_lum_std": 23.09,
+        "max_lum_std": 75.65,
+        "mean_lum_std": 56.87,
+        "min_laplacian_var": 469.84,
+        "max_laplacian_var": 2224.42,
+        "mean_laplacian_var": 1094.74
+      }
+    },
+    "suite_3_file_size_budget": {
+      "passed": true,
+      "min_bytes": 15620,
+      "max_bytes": 74972,
+      "mean_bytes": 57719.6,
+      "total_mb": 46.24,
+      "violations": []
+    },
+    "suite_4_sha256_uniqueness": {
+      "passed": true,
+      "unique_hashes_count": 840,
+      "expected_unique_count": 840,
+      "duplicates": []
+    },
+    "suite_6_climax_heroes": {
+      "passed": true,
+      "climax_results": [
+        {
+          "file": "ep01_blizzard_vow.webp",
+          "size": 70324,
+          "sha256": "c9ef1e937215f731cd17b7666d53456e295a00d9dc7584af8f131110b61d69cf",
+          "dim": [
+            800,
+            450
+          ],
+          "format": "WEBP",
+          "mode": "RGB",
+          "lum_std": 51.54,
+          "entropy": 7.566
+        },
+        {
+          "file": "ep08_crimson_mane.webp",
+          "size": 74492,
+          "sha256": "df4d2c5082dd3e02499c57edd729692b7e849f668d53823563024174efcf9be7",
+          "dim": [
+            800,
+            450
+          ],
+          "format": "WEBP",
+          "mode": "RGB",
+          "lum_std": 59.83,
+          "entropy": 7.576
+        },
+        {
+          "file": "ep15_shadow_duel.webp",
+          "size": 60742,
+          "sha256": "6e3c0c0a49d665fa604313d332d6a3db1e96ec46779d2bd010e777bb4c91d8a0",
+          "dim": [
+            800,
+            450
+          ],
+          "format": "WEBP",
+          "mode": "RGB",
+          "lum_std": 37.66,
+          "entropy": 7.038
+        },
+        {
+          "file": "ep25_assassin_ambush.webp",
+          "size": 70466,
+          "sha256": "a829080a2dd6de8a86355aec6c3848ab4355d956c91269b6d4e137c343394801",
+          "dim": [
+            800,
+            450
+          ],
+          "format": "WEBP",
+          "mode": "RGB",
+          "lum_std": 42.03,
+          "entropy": 6.915
+        },
+        {
+          "file": "ep40_eternal_shield.webp",
+          "size": 61904,
+          "sha256": "2cf36cbc49f3637fd203e0abd8d9a26bb7a370259967b7284109bb7691e22c3b",
+          "dim": [
+            800,
+            450
+          ],
+          "format": "WEBP",
+          "mode": "RGB",
+          "lum_std": 57.74,
+          "entropy": 7.399
+        }
+      ],
+      "violations": []
+    },
+    "suite_7_character_non_regression": {
+      "passed": true,
+      "seat_files_checked": 111,
+      "sprite_sheets_checked": 15,
+      "violations": []
+    }
+  },
+  "violations": [],
+  "verdict": "APPROVE"
+}

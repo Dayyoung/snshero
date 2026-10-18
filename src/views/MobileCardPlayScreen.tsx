@@ -690,7 +690,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       const ep = s1?.episodes[randomEpIdx];
       const panel = ep?.panels && ep.panels.length > 0 ? ep.panels[0] : null;
       const pad = String(randomEpIdx + 1).padStart(2, '0');
-      const fallbackImg = `https://dayyoung.github.io/image/cartoon/episode_${pad}/00_SNSHERO_Episode_${pad}_title_card_202608311350.jpeg`;
+      const fallbackImg = `/images/webtoon/episode_${pad}/scene_00.webp`;
 
       setRefreshEpisodeData({
         titleKo: ep ? `카단과 아케인의 메아리 제${ep.episodeNumber}화` : '카단과 아케인의 메아리',

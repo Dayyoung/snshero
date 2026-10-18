@@ -1,0 +1,77 @@
+{
+  "verdict": "APPROVE",
+  "suites": [
+    {
+      "name": "1. Manifest Structure & Episode Completeness",
+      "passed": true,
+      "stats": {
+        "total_episodes": 40,
+        "episodes_with_21_scenes": 40,
+        "total_scenes": 840
+      },
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "name": "2. Image Assets Existence, Resolution, File Size & Distinct Hashes",
+      "passed": true,
+      "stats": {
+        "total_images_checked": 840,
+        "valid_paths_count": 840,
+        "valid_webp_headers": 840,
+        "size_in_budget_count": 840,
+        "unique_hashes_count": 840,
+        "average_size_kb": 56.37,
+        "total_size_mb": 46.24
+      },
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "name": "3. Dialogue characterCardId & Card Database Alignment",
+      "passed": true,
+      "stats": {
+        "card_db_size": 110,
+        "total_dialogues": 860,
+        "dialogues_with_card_id": 820,
+        "title_dialogues_count": 40,
+        "distinct_cards_in_dialogues": 10,
+        "used_card_ids_list": [
+          11,
+          41,
+          42,
+          43,
+          45,
+          49,
+          50,
+          61,
+          62,
+          69
+        ]
+      },
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "name": "4. Scenario Alignment with Novel Markdown & Image Narrations",
+      "passed": true,
+      "stats": {
+        "novel_md_present": 40,
+        "scenes_checked": 800,
+        "matched_with_narrations": 800
+      },
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "name": "5. UI Readers & Movie Player CDN Eradication Check",
+      "passed": true,
+      "stats": {
+        "total_occurrences_in_ui": 0,
+        "total_occurrences_in_src": 0
+      },
+      "warnings": [],
+      "errors": []
+    }
+  ]
+}

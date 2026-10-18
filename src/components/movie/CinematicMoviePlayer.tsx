@@ -97,7 +97,7 @@ const buildScenesForEpisode = (epNum: number, language: 'ko' | 'en' | 'ja' = 'ko
     // Generate minimal fallback scenes if manifest is somehow missing
     return Array.from({ length: 20 }, (_, i) => ({
       sceneNumber: i + 1,
-      imageUrl: `https://dayyoung.github.io/image/cartoon/episode_${String(epNum).padStart(2, '0')}/01_scene_${i + 1}.jpeg`,
+      imageUrl: `/images/webtoon/episode_${String(epNum).padStart(2, '0')}/scene_${String(i + 1).padStart(2, '0')}.webp`,
       narrationKo: `제 ${epNum}화 ${meta?.titleKo || ''} - 씬 ${i + 1}`,
       narrationEn: `Episode ${epNum} ${meta?.titleEn || ''} - Scene ${i + 1}`,
       cameraMotion: motionCycle[i % motionCycle.length],
@@ -156,7 +156,7 @@ const buildScenesForEpisode = (epNum: number, language: 'ko' | 'en' | 'ja' = 'ko
 
     return {
       sceneNumber: idx + 1,
-      imageUrl: img.imageUrl,
+      imageUrl: (img as any).localArtUrl || img.imageUrl || `/images/webtoon/episode_${String(epNum).padStart(2, '0')}/scene_${String(idx + 1).padStart(2, '0')}.webp`,
       narrationKo: textKo,
       narrationEn: textEn,
       dialogues,
@@ -491,7 +491,7 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
           onError={(e) => {
             // Graceful fallback to dark atmospheric poster
             (e.target as HTMLImageElement).src =
-              'https://dayyoung.github.io/image/cartoon/episode_01/00_SNSHERO_Episode_01_title_card_202608311350.jpeg';
+              '/images/webtoon/episode_01/scene_00.webp';
           }}
         />
 

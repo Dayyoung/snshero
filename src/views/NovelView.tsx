@@ -241,22 +241,17 @@ export const NovelView: React.FC<NovelViewProps> = ({
     return epData.images.find(img => img.index === sceneIdx);
   };
 
-  // Get cartoon scene image URL candidate based on attempt count using external GitHub Pages CDN or local art
+  // Get cartoon scene image URL candidate pointing to local webtoon assets
   const getCartoonSceneUrl = (epNum: number, sceneIdx: number, attempt = 0): string => {
     const epData = WEBTOON_DATA[String(epNum)];
     const imgInfo = epData?.images?.find(img => img.index === sceneIdx);
     if (imgInfo) {
-      if (attempt === 0 && imgInfo.localArtUrl) return imgInfo.localArtUrl;
-      if (imgInfo.imageUrl) {
-        if (attempt <= 1) return imgInfo.imageUrl;
-        if (attempt === 2) return imgInfo.imageUrl.replace('.jpeg', '.jpg');
-        if (attempt === 3) return imgInfo.imageUrl.replace('.jpeg', '.png');
-      }
+      if (imgInfo.localArtUrl) return imgInfo.localArtUrl;
+      if (imgInfo.imageUrl) return imgInfo.imageUrl;
     }
     const epPad = pad2(epNum);
     const scPad = pad2(sceneIdx);
-    const baseUrl = 'https://dayyoung.github.io/image/cartoon';
-    return `${baseUrl}/episode_${epPad}/${scPad}.jpeg`;
+    return `/images/webtoon/episode_${epPad}/scene_${scPad}.webp`;
   };
 
   // Reader Customization Settings
