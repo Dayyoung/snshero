@@ -2,9 +2,9 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { ArrowLeft, Bot, Compass, Pause, Play, RotateCcw, Sparkles, Swords, X } from 'lucide-react';
 import { t } from '../lib/i18n';
-import { cn } from '../lib/utils';
+import { cn, getCardSpriteStyle } from '../lib/utils';
 import { isSfxMutedGlobal } from '../lib/sound';
-import type { CardData, CardRarity, ItemRarity, Language, ViewType } from '../types';
+import type { CardData, CardElement, CardRarity, ItemRarity, Language, ViewType } from '../types';
 import {
  KADAN_RPG_EVENTS,
  getDynamicKadanEncounter,
@@ -28,6 +28,7 @@ import { AdSenseBanner } from '../components/AdSenseBanner';
 import { MobileCardPlayScreen } from './MobileCardPlayScreen';
 import { isDemoPlayActive, setDemoPlayStep, stopDemoPlay } from '../lib/demoPlayService';
 import { isRankingDiverted, handleDivertedMatchResult, endRankingDivert } from '../lib/rankingDivertService';
+import { shouldTriggerAmbush, generateAmbushEncounter, type AmbushEncounter } from '../lib/rpg/kadanRpgAmbush';
 
 interface KadanRpgViewProps {
  isAdRemoved?: boolean;
@@ -63,6 +64,23 @@ const stepToward = (from: KadanRpgTile, to: KadanRpgTile): KadanRpgTile => {
 const formatStageTitle = (event: KadanRpgEvent | null, language: Language): string => {
  if (!event) return t('kadan_rpg_ending_seen', language);
  return `${String(event.chapterNumber).padStart(2, '0')}. ${t(event.chapterTitleKey, language)}`;
+};
+
+const getBuffedPlayerDeck = (deck: Array<CardData | null>): CardData[] => {
+  const rawDeck = deck.filter((c): c is CardData => Boolean(c));
+  try {
+    const rawBuff = localStorage.getItem('hero_kadan_active_buff');
+    if (!rawBuff) return rawDeck;
+    const buff = JSON.parse(rawBuff);
+    const buffVal = typeof buff.value === 'number' ? buff.value : (buff.id === 'atk_boost' ? 15 : buff.id === 'mana_surge' ? 20 : 15);
+    const multiplier = 1.0 + (buffVal / 100.0);
+    return rawDeck.map((card) => ({
+      ...card,
+      power: Math.round((card.power || 100) * multiplier),
+    }));
+  } catch {
+    return rawDeck;
+  }
 };
 
 export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
@@ -105,6 +123,13 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  const [battleEvent, setBattleEvent] = useState<KadanRpgEvent | null>(null);
  const [rewardEvent, setRewardEvent] = useState<KadanRpgEvent | null>(null);
  const [isMoving, setIsMoving] = useState(false);
+ const [heroStepCount, setHeroStepCount] = useState(0);
+ const [lastAmbushStep, setLastAmbushStep] = useState(-99);
+ const [ambushedInLeg, setAmbushedInLeg] = useState(false);
+ const [currentChapterLegId, setCurrentChapterLegId] = useState<string | null>(nextEvent?.id ?? null);
+ const [ambushAlert, setAmbushAlert] = useState<AmbushEncounter | null>(null);
+ const [ambushBattle, setAmbushBattle] = useState<AmbushEncounter | null>(null);
+ const [ambushCountdown, setAmbushCountdown] = useState<number>(1.0);
 
  const activeEncounter = useMemo(() => {
  if (!battleEvent) return undefined;
@@ -113,23 +138,10 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
 
  const activeReward = rewardEvent?.rewardId ? getKadanRpgReward(rewardEvent.rewardId) : undefined;
 
- const isBattling = Boolean(activeEncounter && battleEvent);
+ const isBattling = Boolean((activeEncounter && battleEvent) || ambushBattle);
 
  const rpgOpponent = useMemo(() => {
  if (!activeEncounter || !battleEvent) return null;
- const categoryToElement = (cat: number): any => {
- switch (cat) {
- case 1: return 'water';
- case 2: return 'fire';
- case 3: return 'wind';
- case 4: return 'land';
- case 5: return 'human';
- case 6: return 'undead';
- case 7: return 'elf';
- case 8: return 'dragon';
- default: return 'fire';
- }
- };
 
  const diffBonus = activeEncounter.difficulty === 'boss' ? 2 : activeEncounter.difficulty === 'hard' ? 1 : activeEncounter.difficulty === 'normal' ? 0 : -1;
  const rebirthBonus = Math.max(0, Math.floor(progress.rebirthLevel));
@@ -150,7 +162,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  title_en: base.title_en,
  title_dis: base.title,
  stats: [boostStat(base.top), boostStat(base.right), boostStat(base.bottom), boostStat(base.left)],
- element: categoryToElement(base.category),
+ element: (base.element || 'neutral') as CardElement,
  rarity: (scaledLevel >= 6 || progress.rebirthLevel >= 2 ? 'UR' : scaledLevel >= 4 ? 'SSR' : scaledLevel >= 3 ? 'SR' : scaledLevel >= 2 ? 'R' : 'N'),
  power: scaledPower,
  imageIndex: base.id,
@@ -174,7 +186,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  };
  }, [activeEncounter, battleEvent, language, progress.rebirthLevel]);
 
- const isCurrentlyInBattle = Boolean(activeEncounter && battleEvent && rpgOpponent);
+ const isCurrentlyInBattle = Boolean((activeEncounter && battleEvent && rpgOpponent) || ambushBattle);
 
  useEffect(() => {
  onBattleStateChange?.(isCurrentlyInBattle);
@@ -229,22 +241,72 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  }, [nextEvent, progress.currentChapterId, progress.currentRegionId, progress.rebirthLevel]);
 
  useEffect(() => {
- if (!targetTile || sameTile(heroTile, targetTile)) {
- setIsMoving(false);
- return;
- }
+  if (nextEvent?.id && nextEvent.id !== currentChapterLegId) {
+   setCurrentChapterLegId(nextEvent.id);
+   setAmbushedInLeg(false);
+  }
+ }, [nextEvent?.id, currentChapterLegId]);
 
- setIsMoving(true);
- const timer = window.setTimeout(() => {
- setHeroTile((previous) => {
- const next = stepToward(previous, targetTile);
- setLastTile(next);
- return next;
- });
- }, lowSpecMode ? 110 : 180);
+ useEffect(() => {
+  if (!targetTile || sameTile(heroTile, targetTile) || ambushAlert || ambushBattle) {
+   setIsMoving(false);
+   return;
+  }
 
- return () => window.clearTimeout(timer);
- }, [heroTile, lowSpecMode, setLastTile, targetTile]);
+  setIsMoving(true);
+  const timer = window.setTimeout(() => {
+   setHeroTile((previous) => {
+    const next = stepToward(previous, targetTile);
+    setLastTile(next);
+
+    const nextStep = heroStepCount + 1;
+    setHeroStepCount(nextStep);
+
+    const isDest = sameTile(next, targetTile);
+    const isStart = sameTile(next, currentRegion.startTile);
+
+    const triggered = shouldTriggerAmbush(
+     nextStep,
+     lastAmbushStep,
+     ambushedInLeg,
+     isDest,
+     undefined,
+     isStart
+    );
+
+    if (triggered && !activeEvent && !battleEvent && !rewardEvent) {
+     const encounter = generateAmbushEncounter(
+      nextEvent?.chapterNumber ?? 1,
+      progress.rebirthLevel,
+      currentRegion.id
+     );
+     setLastAmbushStep(nextStep);
+     setAmbushedInLeg(true);
+     setAmbushAlert(encounter);
+    }
+
+    return next;
+   });
+  }, lowSpecMode ? 110 : 180);
+
+  return () => window.clearTimeout(timer);
+ }, [
+  heroTile,
+  lowSpecMode,
+  setLastTile,
+  targetTile,
+  ambushAlert,
+  ambushBattle,
+  heroStepCount,
+  lastAmbushStep,
+  ambushedInLeg,
+  currentRegion,
+  nextEvent,
+  progress.rebirthLevel,
+  activeEvent,
+  battleEvent,
+  rewardEvent,
+ ]);
 
  const pauseForManualInput = useCallback(() => {
  if (progress.autoMode) setAutoMode(false);
@@ -265,7 +327,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  }, [markChestOpened, markNpcMet]);
 
  useEffect(() => {
- if (isMoving || activeEvent || battleEvent || rewardEvent || !targetTile) return;
+ if (isMoving || activeEvent || battleEvent || rewardEvent || !targetTile || ambushAlert || ambushBattle) return;
  if (!sameTile(heroTile, targetTile)) return;
 
  const arrivedEvent = regionEvents.find((event) => sameTile(event.tile, targetTile));
@@ -277,7 +339,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  openEvent(arrivedEvent);
  setTargetTile(null);
  }
- }, [activeEvent, battleEvent, dismissedEventId, heroTile, isMoving, openEvent, regionEvents, rewardEvent, targetTile]);
+ }, [activeEvent, battleEvent, dismissedEventId, heroTile, isMoving, openEvent, regionEvents, rewardEvent, targetTile, ambushAlert, ambushBattle]);
 
  const handleEventPress = useCallback((event: KadanRpgEvent) => {
  pauseForManualInput();
@@ -372,6 +434,94 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  showCustomAlert(t('kadan_rpg_battle_loss_title', language), t('kadan_rpg_battle_loss_desc', language), 3);
  }, [battleEvent, completeActiveEvent, language, markEncounterCleared, onNavigate, progress.claimedRewardIds, progress.rebirthLevel, showCustomAlert]);
 
+ const handleEngageAmbush = useCallback(() => {
+  if (!ambushAlert) return;
+  setAmbushBattle(ambushAlert);
+  setAmbushAlert(null);
+ }, [ambushAlert]);
+
+ const handleRetreatAmbush = useCallback(() => {
+  setAmbushAlert(null);
+  if (progress.autoMode) setAutoMode(false);
+  showCustomAlert(
+   language === 'ko' ? '기습 후퇴' : 'Ambush Avoided',
+   language === 'ko' ? '산적들의 기습을 피해 안전하게 우회했습니다.' : 'Safely avoided the ambush.',
+   2
+  );
+ }, [language, progress.autoMode, setAutoMode, showCustomAlert]);
+
+ useEffect(() => {
+  if (!ambushAlert) {
+   setAmbushCountdown(1.0);
+   return;
+  }
+
+  if (!progress.autoMode) {
+   setAmbushCountdown(1.0);
+   return;
+  }
+
+  setAmbushCountdown(1.0);
+  const intervalMs = 100;
+  const timer = window.setInterval(() => {
+   setAmbushCountdown((prev) => {
+    const next = Math.max(0, prev - intervalMs / 1000);
+    if (next <= 0.05) {
+     window.clearInterval(timer);
+     handleEngageAmbush();
+     return 0;
+    }
+    return next;
+   });
+  }, intervalMs);
+
+  return () => window.clearInterval(timer);
+ }, [ambushAlert, handleEngageAmbush, progress.autoMode]);
+
+ const handleAmbushBattleComplete = useCallback(async (result: KadanBattleResult) => {
+  if (!ambushBattle) return;
+  const currentEncounter = ambushBattle;
+
+  try {
+   localStorage.removeItem('hero_kadan_active_buff');
+  } catch {}
+
+  if (result === 'win' || result === 'draw') {
+   const earnedSns = currentEncounter.spoilsCoins;
+   await updateSns(earnedSns, 'kadan_rpg_ambush_victory', 'earned');
+
+   if (Math.random() < 0.25 && currentEncounter.deck.length > 0) {
+    const dropCard = currentEncounter.deck[Math.floor(Math.random() * currentEncounter.deck.length)];
+    if (dropCard.imageIndex) {
+     addCard(getKadanRewardRarity(dropCard.imageIndex), dropCard.imageIndex, progress.autoMode);
+    }
+   }
+
+   if (Math.random() < 0.15) {
+    const itemRarity: ItemRarity = (nextEvent?.chapterNumber ?? 1) > 15 ? 'magic' : 'normal';
+    addItem(itemRarity);
+   }
+
+   showCustomAlert(
+    language === 'ko' ? '기습 격퇴 성공!' : 'Ambush Repelled!',
+    language === 'ko'
+     ? `${currentEncounter.name}을(를) 격퇴하고 +${earnedSns} SNS를 획득했습니다!`
+     : `Defeated ${currentEncounter.nameEn} and gained +${earnedSns} SNS!`,
+    3
+   );
+  } else {
+   showCustomAlert(
+    language === 'ko' ? '기습 안전 탈출' : 'Safe Retreat',
+    language === 'ko'
+     ? '산적들의 기습을 뿌리치고 무사히 탈출했습니다!'
+     : 'You broke through the ambush and safely retreated!',
+    3
+   );
+  }
+
+  setAmbushBattle(null);
+ }, [addCard, addItem, ambushBattle, language, nextEvent?.chapterNumber, progress.autoMode, showCustomAlert, updateSns]);
+
  const autoRunner = useKadanRpgAutoRunner({
  enabled: progress.autoMode,
  isComplete,
@@ -380,7 +530,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  hasDialog,
  hasBattle,
  hasReward,
- isBusy: isMoving || Boolean(battleEvent) || Boolean(activeEvent && !battleEvent && !rewardEvent),
+ isBusy: isMoving || Boolean(battleEvent) || Boolean(activeEvent && !battleEvent && !rewardEvent) || Boolean(ambushAlert) || Boolean(ambushBattle),
  onMoveToTarget: () => {
  if (nextEvent) moveToEvent(nextEvent);
  },
@@ -443,6 +593,11 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  setActiveEvent(null);
  setBattleEvent(null);
  setRewardEvent(null);
+ setAmbushAlert(null);
+ setAmbushBattle(null);
+ setHeroStepCount(0);
+ setLastAmbushStep(-99);
+ setAmbushedInLeg(false);
  setIsMoving(false);
  reincarnateProgress();
  }, [reincarnateProgress]);
@@ -586,22 +741,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  <div className="fixed inset-0 z-[99999] w-full h-[100dvh] max-h-[100dvh] bg-[#060a14] flex flex-col items-center justify-center overflow-hidden pointer-events-auto select-none touch-none">
  <MobileCardPlayScreen
  isAdRemoved={isAdRemoved}
- playerDeck={(() => {
-  const rawDeck = currentDeck.filter((c): c is CardData => Boolean(c));
-  try {
-   const rawBuff = localStorage.getItem('hero_kadan_active_buff');
-   if (!rawBuff) return rawDeck;
-   const buff = JSON.parse(rawBuff);
-   const buffVal = typeof buff.value === 'number' ? buff.value : (buff.id === 'atk_boost' ? 15 : buff.id === 'mana_surge' ? 20 : 15);
-   const multiplier = 1.0 + (buffVal / 100.0);
-   return rawDeck.map((card) => ({
-    ...card,
-    power: Math.round(card.power * multiplier),
-   }));
-  } catch {
-   return rawDeck;
-  }
- })()}
+ playerDeck={getBuffedPlayerDeck(currentDeck)}
  opponentCustomDeck={rpgOpponent.deck}
  opponentName={rpgOpponent.name}
  language={language}
@@ -629,6 +769,130 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  />
  </div>,
  document.body
+ )}
+
+ {ambushBattle && createPortal(
+ <div className="fixed inset-0 z-[99999] w-full h-[100dvh] max-h-[100dvh] bg-[#060a14] flex flex-col items-center justify-center overflow-hidden pointer-events-auto select-none touch-none">
+ <MobileCardPlayScreen
+ isAdRemoved={isAdRemoved}
+ playerDeck={getBuffedPlayerDeck(currentDeck)}
+ opponentCustomDeck={ambushBattle.deck}
+ opponentName={language === 'ko' ? `[기습] ${ambushBattle.name}` : `[Ambush] ${ambushBattle.nameEn}`}
+ language={language}
+ initialAutoBattle={true}
+ autoCloseOnComplete={progress.autoMode || isDemoPlayActive() || isRankingDiverted()}
+ onToggleAutoBattle={() => setAutoMode(!progress.autoMode)}
+ onBack={() => {
+ setAmbushBattle(null);
+ if (progress.autoMode) setAutoMode(false);
+ }}
+ recordMatchResult={(result) => {
+ void handleAmbushBattleComplete(result);
+ }}
+ playSfx={(url) => {
+ if (isSfxMutedGlobal()) return;
+ try {
+ const audio = new Audio(url);
+ audio.volume = 0.5;
+ audio.play().catch(() => {});
+ } catch (e) {}
+ }}
+ sns={sns}
+ updateSns={updateSns}
+ addCard={addCard}
+ />
+ </div>,
+ document.body
+ )}
+
+ {ambushAlert && (
+ <div 
+ className="fixed inset-0 z-[10020] flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs font-mono select-none"
+ role="dialog"
+ aria-modal="true"
+ aria-label="Ambush Encounter"
+ >
+ <div className="w-full max-w-lg rounded-none border border-amber-500/80 bg-[#201d1d] text-[#fdfcfc] p-5 shadow-none">
+ <div className="flex items-center justify-between border-b border-amber-500/30 pb-3 mb-4">
+ <div className="flex items-center gap-2">
+ <span className="h-2 w-2 bg-amber-400 rounded-none inline-block animate-pulse" />
+ <span className="text-xs font-black uppercase tracking-wider text-amber-400">
+ {language === 'ko' ? '[필드 기습 / FIELD AMBUSH]' : '[FIELD AMBUSH]'}
+ </span>
+ </div>
+ <div className="flex items-center gap-2">
+ <span className="text-[11px] font-mono text-stone-400">
+ CH.{String(nextEvent?.chapterNumber ?? 1).padStart(2, '0')}
+ </span>
+ <button
+ type="button"
+ onClick={handleRetreatAmbush}
+ className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-sm bg-stone-800 hover:bg-stone-700 text-stone-300 hover:text-white border border-stone-600 transition-colors cursor-pointer"
+ aria-label={language === 'ko' ? '기습 후퇴' : 'Retreat'}
+ title={language === 'ko' ? '안전 후퇴' : 'Safe Retreat'}
+ >
+ <X size={18} />
+ </button>
+ </div>
+ </div>
+
+ <div className="flex items-center gap-4 mb-4">
+ <div className="w-20 h-24 shrink-0 rounded-none border border-amber-500/40 bg-stone-900 flex items-center justify-center overflow-hidden">
+ <div 
+ className="w-full h-full bg-center bg-no-repeat"
+ style={getCardSpriteStyle(ambushAlert.leaderCardId)}
+ />
+ </div>
+ <div className="min-w-0 flex-1">
+ <h3 className="text-base font-extrabold text-amber-200 truncate">
+ {language === 'ko' ? ambushAlert.name : ambushAlert.nameEn}
+ </h3>
+ <p className="mt-1 text-xs text-stone-300 leading-relaxed italic">
+ "{language === 'ko' ? ambushAlert.dialogQuoteKo : ambushAlert.dialogQuoteEn}"
+ </p>
+ <div className="mt-2.5 flex items-center gap-2 text-[11px] text-stone-400">
+ <span>{language === 'ko' ? '예상 전리품:' : 'Spoils:'}</span>
+ <span className="text-amber-300 font-bold">+{ambushAlert.spoilsCoins} SNS</span>
+ <span>·</span>
+ <span className="text-indigo-300 font-bold">{language === 'ko' ? '카드/아이템 획득 찬스' : 'Card/Item Drop'}</span>
+ </div>
+ </div>
+ </div>
+
+ {progress.autoMode && (
+ <div className="mb-4">
+ <div className="flex justify-between text-[10px] text-amber-400/90 font-bold mb-1">
+ <span>⚡ {language === 'ko' ? '자동 전투 개시 중...' : 'Engaging Auto-Battle...'}</span>
+ <span>{Math.max(0, ambushCountdown).toFixed(1)}s</span>
+ </div>
+ <div className="h-1.5 w-full bg-stone-800 rounded-none overflow-hidden">
+ <div 
+ className="h-full bg-amber-400 transition-all duration-100 ease-linear"
+ style={{ width: `${Math.max(0, Math.min(100, (ambushCountdown / 1.0) * 100))}%` }}
+ />
+ </div>
+ </div>
+ )}
+
+ <div className="flex items-center justify-end gap-2 pt-2 border-t border-stone-800">
+ <button
+ type="button"
+ onClick={handleRetreatAmbush}
+ className="min-h-[44px] rounded-sm bg-stone-800 hover:bg-stone-700 text-stone-300 font-bold text-xs px-4 py-2 border border-stone-600 transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-1.5"
+ >
+ <span>{language === 'ko' ? '후퇴하기 (RETREAT)' : 'RETREAT'}</span>
+ </button>
+ <button
+ type="button"
+ onClick={handleEngageAmbush}
+ className="min-h-[44px] flex-1 rounded-sm bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-xs px-4 py-2 transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-2"
+ >
+ <Swords size={16} />
+ <span>{language === 'ko' ? '전투 개시 (ENGAGE BATTLE)' : 'ENGAGE BATTLE'}</span>
+ </button>
+ </div>
+ </div>
+ </div>
  )}
 
  {activeReward && rewardEvent && (
