@@ -7,8 +7,8 @@ Covers:
 - F4: Interactive Choice UI & Attitude Badges (5 tests)
 - F5: Dual-Mode Countdown Timer Bar (5 tests)
 - F8: Random Field Encounters (5 tests)
-- F12: 100% Hands-Free Auto-Play (5 tests)
-Total: 36 Assertions across 7 Core Features.
+- F12: 100% Hands-Free Auto-Play (6 tests)
+Total: 37 Assertions across 7 Core Features.
 """
 
 import math
@@ -898,14 +898,31 @@ def run_tier1_tests(milestone_filter: Optional[str] = None, verbose: bool = Fals
             )
         )
 
-        # T1.F12.4: Ambush Auto-Engagement & Auto-Battle
+        # T1.F12.4: Battle Portal onBack Callback Contract & autoMode Preservation
         t0 = time.perf_counter()
-        has_auto_battle_portal = (
-            "autoCloseOnComplete" in rpg_view_src
-            or "initialAutoBattle" in rpg_view_src
-            or "autoPlay" in rpg_view_src
-            or "MobileCardPlayScreen" in rpg_view_src
+        mobile_portal_matches = re.findall(r'<MobileCardPlayScreen[\s\S]*?/>', rpg_view_src)
+        assert len(mobile_portal_matches) >= 2, (
+            f"Expected at least 2 MobileCardPlayScreen portals (boss and ambush), found {len(mobile_portal_matches)}"
         )
+
+        auto_mode_preserved_in_all_portals = True
+        contract_violations: List[str] = []
+
+        for idx, portal_block in enumerate(mobile_portal_matches):
+            on_back_match = re.search(r'onBack=\{([^}]+)\}', portal_block)
+            if not on_back_match:
+                auto_mode_preserved_in_all_portals = False
+                contract_violations.append(f"Portal {idx}: missing onBack prop")
+                continue
+
+            on_back_code = on_back_match.group(1)
+            # Verify onBack does NOT unconditionally disable autoMode on completion
+            if re.search(r'if\s*\(\s*progress\.autoMode\s*\)\s*setAutoMode\(false\)', on_back_code):
+                auto_mode_preserved_in_all_portals = False
+                contract_violations.append(
+                    f"Portal {idx}: onBack violates contract by calling setAutoMode(false) unconditionally! "
+                    "autoCloseOnComplete invokes onBack, which improperly terminates hands-free auto-play."
+                )
 
         results.append(
             TestResult(
@@ -913,9 +930,13 @@ def run_tier1_tests(milestone_filter: Optional[str] = None, verbose: bool = Fals
                 tier=1,
                 feature="Feature 12: 100% Hands-Free Auto-Play",
                 milestone="M4",
-                name="Battle Portal Auto-Battle & Auto-Close Coordination",
-                status="PASS" if has_auto_battle_portal else "FAIL",
-                message="Card battles execute automatically and close upon match victory",
+                name="Battle Portal onBack Callback Contract & autoMode Preservation",
+                status="PASS" if auto_mode_preserved_in_all_portals else "FAIL",
+                message=(
+                    "Both boss and ambush portals preserve autoMode: true upon battle auto-close"
+                    if auto_mode_preserved_in_all_portals
+                    else "; ".join(contract_violations)
+                ),
                 duration_ms=(time.perf_counter() - t0) * 1000,
             )
         )
@@ -933,6 +954,29 @@ def run_tier1_tests(milestone_filter: Optional[str] = None, verbose: bool = Fals
                 name="Silent Reward Claiming & Non-Blocking Modal Dismiss",
                 status="PASS" if has_reward_handling else "FAIL",
                 message="Earned rewards are claimed and saved to localStorage without stalling",
+                duration_ms=(time.perf_counter() - t0) * 1000,
+            )
+        )
+
+        # T1.F12.6: Pure Ambush Alert Countdown Interval (React 19 Concurrency Compliance)
+        t0 = time.perf_counter()
+        has_impure_state_updater = bool(
+            re.search(r'setAmbushCountdown\(\s*\([^)]*\)\s*=>[\s\S]*?handleEngageAmbush\(\)', rpg_view_src)
+        )
+
+        results.append(
+            TestResult(
+                test_id="T1.F12.6",
+                tier=1,
+                feature="Feature 12: 100% Hands-Free Auto-Play",
+                milestone="M4",
+                name="Ambush Countdown Pure Interval & Concurrency Compliance",
+                status="PASS" if not has_impure_state_updater else "FAIL",
+                message=(
+                    "handleEngageAmbush is called cleanly outside setState updater function"
+                    if not has_impure_state_updater
+                    else "handleEngageAmbush invoked inside setAmbushCountdown updater (React 19 violation)"
+                ),
                 duration_ms=(time.perf_counter() - t0) * 1000,
             )
         )

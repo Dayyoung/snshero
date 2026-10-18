@@ -1,41 +1,54 @@
-# BRIEFING — 2026-10-18T04:35:00Z
+# BRIEFING — 2026-10-18T20:10:00Z
 
 ## Mission
-Investigate UI readers, movie player, webtoon assets, Service Worker caching, build/validation environment, and design automated verification tests.
+Survey and investigate random field encounters and 100% hands-free auto-progression for Kadan RPG mode overhaul.
 
 ## 🔒 My Identity
 - Archetype: explorer
-- Roles: UI Reader, Cache & Verification Specialist
+- Roles: investigator, analyzer, synthesizer
 - Working directory: /Users/dayyoung/project/snshero/.agents/teamwork/teamwork_preview_explorer_survey_3/
-- Original parent: 4fc72135-d58d-4717-8d54-394a3166069f
-- Milestone: Survey Phase
+- Original parent: 0841dceb-1ed6-4895-a369-d9b2f167a28c
+- Milestone: RPG Mode Overhaul - Survey Phase 3 (Field Encounters & Auto-Progression)
 
 ## 🔒 Key Constraints
 - Read-only investigation — do NOT implement
-- All investigations must provide precise file paths and lines
-- Produce survey_ui_verification.md and handoff.md
+- Write only to /Users/dayyoung/project/snshero/.agents/teamwork/teamwork_preview_explorer_survey_3/
+- Produce survey_report.md and handoff.md
+- Reply to user in Korean
 
 ## Current Parent
-- Conversation ID: 4fc72135-d58d-4717-8d54-394a3166069f
-- Updated: 2026-10-18T04:34:30Z
+- Conversation ID: 0841dceb-1ed6-4895-a369-d9b2f167a28c
+- Updated: not yet
 
 ## Investigation State
-- **Explored paths**: `src/views/NovelView.tsx`, `src/components/webtoon/WebtoonPanelCard.tsx`, `src/components/webtoon/WebtoonSpeechBubble.tsx`, `src/components/webtoon/WebtoonSfxOverlay.tsx`, `src/components/movie/CinematicMoviePlayer.tsx`, `src/content/movieEpisodeMapping.ts`, `src/content/webtoonEpisodes.ts`, `src/content/webtoonEpisodeManifest.json`, `public/sw.js`, `package.json`, `WORK_LOGS.md`, `skills/report-ex/scripts/submit_report.py`.
+- **Explored paths**:
+  - `src/views/KadanRpgView.tsx` (tile movement, battle triggers, auto mode)
+  - `src/content/kadanRpgStory.ts` (regions, encounters, scaling formulas)
+  - `src/hooks/useKadanRpgProgress.ts` (storage schema, progress tracking)
+  - `src/hooks/useKadanRpgAutoRunner.ts` (auto-progression loop)
+  - `src/components/rpg/KadanNpcDialog.tsx` (dialogue advancement, portrait rendering)
+  - `src/components/rpg/KadanRewardModal.tsx` (reward modal layout)
+  - `src/components/rpg/KadanWorldMap.tsx` (map grid, terrain, tile rendering)
+  - `src/views/MobileCardPlayScreen.tsx` (initialAutoBattle, autoCloseOnComplete)
+  - `src/cardDatabase.ts` (cards 1-110, bandit & thief deck card candidates)
+  - `tests/e2e_design_system/run_all_e2e_tests.py` (377/377 assertions verified)
 - **Key findings**:
-  1. Identified 5 hardcoded external CDN references (`dayyoung.github.io`) across `NovelView.tsx:258`, `MobileCardPlayScreen.tsx:693`, `webtoonEpisodes.ts:78`, and `CinematicMoviePlayer.tsx:100,494`, plus all 840 scenes in `webtoonEpisodeManifest.json`.
-  2. `CinematicMoviePlayer.tsx:159` only reads `img.imageUrl` without checking `img.localArtUrl`. Needs update to `img.localArtUrl || img.imageUrl`.
-  3. `public/sw.js` uses Cache-First for media with cache key `snshero-media-v3-banana2026`. Must bump to `snshero-media-v4-webtoon2026` to purge stale media caches.
-  4. Character non-regression confirmed 100% against commit `3f64397a` (`public/seat/*.png` and sprite sheets intact).
-  5. Built and tested automated verification suite `verify_webtoon_assets.py`.
-- **Unexplored areas**: None (all survey items investigated).
+  - Random field encounters are missing in current intermediate tile-stepping loop; injection point identified in `stepToward` callback.
+  - Ambush system specified: 14% chance per step, max 1 ambush per chapter leg, min 3 steps cooldown.
+  - Bandit (Beast/Earth/Fire, Aggressive) and Thief (Undead/Air, Balanced) decks and scaling formulas designed.
+  - 100% hands-free auto-progression lifecycle mapped across all 6 phases (navigation, dialogue, 1.5s choice auto-select, ambush, boss battle, silent reward claims).
+  - All UI elements designed strictly to `DESIGN.md` terminal-flat specifications.
+- **Unexplored areas**:
+  - All assigned scope fully investigated.
 
 ## Key Decisions Made
-- Completed survey of UI readers, movie player, asset paths, SW caching, build/validation environment, and designed automated verification checks.
-- Created executable test runner `verify_webtoon_assets.py` for immediate use by subsequent teams.
+- Established 14% encounter probability with 2-level cooldown protection (chapter leg guard + 3-step guard).
+- Made ambush defeat safe and non-blocking (`allowLossProgress = true`), returning player safely to map.
+- Completed comprehensive `survey_report.md` and standard 5-component `handoff.md`.
 
 ## Artifact Index
-- survey_ui_verification.md — Comprehensive survey report
-- handoff.md — 5-component handoff report
-- verify_webtoon_assets.py — Standalone automated verification suite
-- progress.md — Liveness heartbeat
-
+- DISPATCH.md — incoming instructions log
+- BRIEFING.md — persistent working memory
+- progress.md — liveness heartbeat
+- survey_report.md — comprehensive survey and system design report
+- handoff.md — 5-component hard handoff report

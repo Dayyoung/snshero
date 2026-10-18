@@ -2,6 +2,77 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-19 07:05 KST] [M4 Iteration 2: 100% 무인 자동 진행(Hands-Free Auto-Play) 계약 수정 및 E2E/적대적 검증 완결] onBack completed 계약 연동, 벽시계 기반 기습 카운트다운 타이머 순수 루프 전환, 52/52 RPG E2E & 34/34 적대적 스트레스 테스트 전수 통과
+- **작업 개요**:
+  - `/main` RPG 모드 Milestone 4 Iteration 2: 전투 종료 후 `onBack` 호출 시 `autoMode`가 무조건 해제되던 결함 수정, 리액트 19 순수성 준수를 위한 벽시계 기반 기습 카운트다운 리팩토링, E2E 및 적대적 시뮬레이터 계약 검증 어설션 보강.
+- **소유 파일 및 주요 구현/수정 내역**:
+  1. `src/views/MobileCardPlayScreen.tsx`:
+     - `MobileCardPlayScreenProps`의 `onBack` 시그니처를 `(completed?: boolean) => void`로 확장.
+     - `handleExitGame`에서 `isMatchCompleted = Boolean(gameOver && winner)`를 계산하여 `onBack(isMatchCompleted)`로 전달 (정상 승패 종료 시 `true`, 중간 이탈 시 `false`).
+  2. `src/views/KadanRpgView.tsx`:
+     - 보스전 및 기습전 배틀 포털 `onBack` 핸들러에서 `if (!completed && progress.autoMode) setAutoMode(false);` 적용. 정상 전투 완료(`completed: true`) 시에는 `autoMode`를 온전하게 보존하여 40챕터 100% 핸즈프리 자동 진행이 중단 없이 지속되도록 보장하고, 플레이어의 의도적 중간 이탈 시에만 안전하게 일시 정지.
+     - 기습 경보 1.0초 카운트다운 `useEffect`를 `setAmbushCountdown` 내부 함수형 업데이터 내 사이드 이펙트(`handleEngageAmbush`, `clearInterval`) 호출 방식을 완전히 제거하고, `Date.now() + durationMs` 기반 벽시계 데드라인 순수 인터벌 루프로 리팩토링 (`hasEngaged` 멱등성 가드 적용).
+  3. `tests/e2e_rpg/tier1_feature_coverage.py`:
+     - `T1.F12.4`를 배틀 포털 `onBack`의 무조건적인 `setAutoMode(false)` 방지 및 `autoMode` 보존 계약 검증으로 업그레이드.
+     - `T1.F12.6`을 신규 추가하여 React 19 동시성 준수(setState 업데이터 외부에서의 `handleEngageAmbush` 호출) 검증.
+  4. `tests/e2e_rpg/helpers.py`:
+     - `RpgPlaythroughSimulator`에 `auto_mode`, `stalled`, `stall_reason` 상태 추적 및 `KadanRpgView.tsx`의 `onBack` 계약 검증 연동.
+  5. `tests/adversarial_challenger_m4_empirical.ts`:
+     - 40챕터 자율 주행 시뮬레이션 내 `autoMode` 실시간 계약 연동.
+     - SECTION 7에 리액트 콜백 계약 및 40챕터 연속 전투 체인 무인 보존 어설션 5개 추가.
+- **검증 결과**:
+  - `python3 tests/e2e_rpg/run_rpg_e2e_tests.py`: 52/52 assertions 전수 통과 (100.0%, 0.03s).
+  - `npx tsx tests/adversarial_challenger_m4_empirical.ts`: 34/34 assertions 전수 통과 (100.0%).
+  - `npx tsx tests/adversarial_challenger2_m4_rebirth_retreat.ts`: 27/27 assertions 전수 통과 (100.0%).
+  - `python3 tests/e2e_design_system/run_all_e2e_tests.py`: 377/377 assertions 전수 통과 (100.0%).
+  - `npx tsc --noEmit`: 0 errors (Exit code 0).
+  - `npm run build`: 25.93초 무결점 번들링 완료 (Exit code 0).
+  - 연동 구글 폼 완료 보고서 제출 완료 (`submit_report.py`).
+
+## [2026-10-19 06:40 KST] [M4: RPG 40개 챕터 100% 무인 자동 진행(Hands-Free Auto-Play) 및 E2E 전수 검증] 4-Tier 51개 어설션 100% 통과, 타일 이동/기습 카운트다운/대화/선택지/보스전/보상 0스톨 무인 루프 감사 및 프로덕션 빌드 완료
+- **작업 개요**:
+  - `/main` 40개 챕터 RPG 모드 개편 Milestone 4: 100% 핸즈프리 무인 자동 진행(Hands-Free Auto-Progression) 및 포괄적 E2E 테스트 스위트 전수 검증
+- **소유 파일 및 주요 감사/연동 내역**:
+  1. `src/hooks/useKadanRpgAutoRunner.ts`:
+     - 40개 챕터 전 구간 타일 자율 이동(`onMoveToTarget`), 이벤트 타일 도달 시 인터랙션(`onInteractTarget`), 대화 자동 진행(`onAdvanceDialog`), 보스 전투 개시(`onStartBattle`), 전리품 무인 수령(`onClaimReward`) 상태 머신 및 가드 루프 감사.
+     - `repeatedStepCountRef` 기반 스텝 루프 안전 가드 및 idle 자동 복구 메커니즘 검증 (0 무한루프, 0 스톨 보장).
+  2. `src/views/KadanRpgView.tsx`:
+     - 필드 이동 루프: 110ms/180ms 간격 `stepToward` 목적지 순차 이동 및 기습 확률 판정 연동.
+     - 기습 경보 모달: `autoMode` 활성화 시 1.0초 카운트다운 진행 바 소진 후 클릭 없이 `handleEngageAmbush()` 자동 전투 개시.
+     - 3x3 카드 배틀 포털: `MobileCardPlayScreen`에 `initialAutoBattle={true}` 및 `autoCloseOnComplete={true}` 완벽 연동으로 승패 후 자동 복귀.
+     - 대화 및 선택지: `KadanNpcDialog`에서 1.8초 간격 대사 자동 넘김 및 3대 태도 선택지 1.5초 카운트다운 바 만료 시 기본 선택지(`isDefault: true` / index 0) 무인 자동 선택 및 후속 대사 연결.
+     - 보스 전투 및 전리품: 대화 종료 시 챕터 보스전 자동 마운트, 승리 시 전리품 모달 650ms 내 무인 수령(`claimReward`) 및 다음 챕터 타일로 연속 전이.
+     - 40챕터 클라이맥스 엔딩 및 환생(Rebirth) 루프까지 0 스톨·0 멈춤 연속 진행 보장.
+- **검증 결과**:
+  - `python3 tests/e2e_rpg/run_rpg_e2e_tests.py`: 51/51 assertions 전수 통과 (100.0%, 0.02s).
+  - `python3 tests/e2e_design_system/run_all_e2e_tests.py`: 377/377 assertions 전수 통과 (100.0%, 1.94s).
+  - `npx tsx tests/adversarial_challenger_m3_empirical.ts`: 44/44 assertions 전수 통과 (100.0%).
+  - `npx tsc --noEmit`: 0 errors (Exit code 0).
+  - `npm run build`: 17.60초 무결점 번들링 완료 (Exit code 0).
+  - 연동 구글 폼 완료 보고서 제출 완료.
+
+## [2026-10-19 06:12 KST] [M3: RPG 랜덤 필드 조우 및 덱 스케일링/오토플레이 연동] kadanRpgAmbush 모듈 신규 구현, 14% 타일 이동 기습 판정, 산적/도둑 덱 스케일링, 1.0초 자동 전투 개시 및 안전 후퇴 구현 완료
+- **작업 개요**:
+  - `/main` 40개 챕터 RPG 모드 개편 Milestone 3: 필드 맵 타일 이동 중 14% 확률 기습 조우(산적/도둑 덱), 3스텝 쿨다운 및 챕터당 1회 제한, 전리품 및 안전 후퇴(allowLossProgress = true), 터미널 플랫 알림 모달(1.0초 자동 전투 카운트다운), 대화 버프(`hero_kadan_active_buff`) 전투 파워 연동 및 100% 핸즈프리 오토플레이 완성
+- **소유 파일 및 주요 구현 내역**:
+  1. `src/lib/rpg/kadanRpgAmbush.ts` (신규 헬퍼 모듈 생성):
+     - `AmbushType` 및 `AmbushEncounter` 인터페이스 정의 및 export.
+     - `shouldTriggerAmbush`: 14% 확률(`Math.random() < 0.14`), 챕터 구간당 최대 1회(`ambushTriggeredInChapter`), 최소 3스텝 쿨다운(`(currentStep - lastAmbushStep) >= 3`), 목적지 및 시작 타일 면제 가드 구현.
+     - `generateAmbushEncounter`: 50% 확률 황야 산적단(82, 81, 35, 15, 85) 및 50% 그림자 도둑단(54, 51, 62, 53, 57) 덱 편성, 챕터/환생 차수 비례 파워 및 스탯 스케일링, 전리품 공식 `(15 + Math.floor(chapterNumber * 1.2)) * (1 + rebirthCount * 0.25)` 코인 및 25% 카드/15% 아이템 드롭률, `allowLossProgress = true` 패배 시 무페널티 안전 후퇴 보장.
+  2. `src/views/KadanRpgView.tsx`:
+     - `stepToward` 타일 이동 루프 내 `shouldTriggerAmbush` 실시간 판정 및 이동 일시정지.
+     - `DESIGN.md` 터미널 플랫 기습 경보 모달 배너 렌더링 (`font-mono`, `rounded-none`, `rounded-sm`, 1px hairline border, `min-h-[44px]` 터치 타깃, 상단 `[x]` 닫기/후퇴 버튼).
+     - `autoMode` 활성화 시 1.0초 카운트다운 진행 바 애니메이션 후 자동으로 3x3 카드 배틀 개시.
+     - `MobileCardPlayScreen` 포털 마운트 (`initialAutoBattle={true}`, `autoCloseOnComplete={true}`).
+     - 승리 시 전리품 지급(`updateSns`) 및 타일 이동 자동 재개, 패배 시 무페널티 안전 후퇴 및 이동 재개.
+     - `getBuffedPlayerDeck` 헬퍼를 통해 `hero_kadan_active_buff` 배틀 파워 증폭을 보스전 및 기습전에 일관되게 적용.
+- **검증 결과**:
+  - `python3 tests/e2e_rpg/run_rpg_e2e_tests.py`: 51/51 assertions 전수 통과 (100.0%).
+  - `python3 tests/e2e_design_system/run_all_e2e_tests.py`: 377/377 assertions 전수 통과 (100.0%).
+  - `npx tsc --noEmit`: 0 errors (Exit code 0).
+  - `npm run build`: 18.06초 무결점 번들링 완료 (Exit code 0).
+  - 연동 구글 폼 완료 보고서 제출 완료.
+
 ## [2026-10-19 05:32 KST] [M1: RPG 40챕터 스토리라인 및 대화선택지 동기화] 웹소설 40개 전체 챕터 스크립트, 3대 태도 선택지, 인카운터 덱 및 i18n(한/영) 동기화 완료
 - **작업 개요**:
   - `/main` 40개 챕터 RPG 모드 개편 Milestone 1: 소설 원작 40부작 스토리라인, 대화 스크립트, 3대 태도 선택지([결의/돌파], [신중/통찰], [성진호흡/공명]), 인카운터 덱 및 i18n 로케일 동기화

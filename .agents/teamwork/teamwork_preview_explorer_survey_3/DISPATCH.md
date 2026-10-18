@@ -1,33 +1,28 @@
-## 2026-10-18T04:34:30Z
-You are Explorer 3 (UI Reader, Cache & Verification Specialist).
-Your working directory is: /Users/dayyoung/project/snshero/.agents/teamwork/teamwork_preview_explorer_survey_3/
-You must first read: /Users/dayyoung/project/snshero/.agents/teamwork/ORIGINAL_REQUEST.md
+## 2026-10-18T20:04:10Z
+[Message] sender=0841dceb-1ed6-4895-a369-d9b2f167a28c priority=MESSAGE_PRIORITY_HIGH
+content=You are Explorer 3 (Field Encounters & Auto-Progression) for SNSHero Revolution RPG mode overhaul.
+Your working directory is:
+/Users/dayyoung/project/snshero/.agents/teamwork/teamwork_preview_explorer_survey_3/
 
-Task:
-Investigate and analyze:
-1. UI readers and video players:
-   - `src/views/NovelView.tsx` (webtoon cartoon mode, image loading, speech bubble, and SFX rendering)
-   - `src/components/webtoon/WebtoonPanelCard.tsx`
-   - `src/components/webtoon/WebtoonSpeechBubble.tsx`
-   - `src/components/webtoon/WebtoonSfxOverlay.tsx`
-   - `src/components/movie/CinematicMoviePlayer.tsx`
-   - `src/content/movieEpisodeMapping.ts`
-   - `src/content/webtoonEpisodes.ts`
-2. Check how images are referenced in these components. Are there any hardcoded external CDN fallbacks (`dayyoung.github.io`) or broken image fallbacks? How should they resolve local webtoon images (`public/images/webtoon/episode_XX/scene_YY.webp`)?
-3. Service Worker caching: check `public/sw.js` for cache versioning and static asset caching rules.
-4. Build and validation environment:
-   - Check package.json scripts (`npm run lint`, `npm run build`).
-   - Check `WORK_LOGS.md` format and logging standards.
-   - Check report submission script: `skills/report-ex/scripts/submit_report.py`.
-5. Propose automated verification tests and acceptance checks for:
-   - 840 files existence and distinct SHA-256 hashes
-   - File size bounds: all between 4,096 and 76,800 bytes
-   - Character asset non-regression (hash comparison for `public/seat/*.png` and master sheets against commit `3f64397a`)
-   - Webtoon manifest alignment (all 40 episodes, 21 scenes each)
-   - Typecheck and build pass.
+MANDATORY: Read the original user request first:
+/Users/dayyoung/project/snshero/.agents/teamwork/ORIGINAL_REQUEST.md
 
-Write your comprehensive findings to:
-`/Users/dayyoung/project/snshero/.agents/teamwork/teamwork_preview_explorer_survey_3/survey_ui_verification.md`
-and provide a handoff report in:
-`/Users/dayyoung/project/snshero/.agents/teamwork/teamwork_preview_explorer_survey_3/handoff.md`.
-Send a completion message back when done.
+Your mission:
+Survey and investigate random field encounters and 100% hands-free auto-progression:
+1. Examine `/Users/dayyoung/project/snshero/src/views/KadanRpgView.tsx` and related RPG battle hooks/components.
+2. Trace tile movement handling in `KadanRpgView.tsx`: how player moves between tiles on the map, how encounters are checked, and how battles are initiated and resolved.
+3. Design the Random Field Encounter system:
+   - 12-15% chance per tile step.
+   - Cooldown guard: at most 1 ambush per chapter leg, and at least 3 steps minimum cooldown.
+   - Bandit Deck (황야 산적단 덱) and Thief Deck (그림자 도둑단 덱) definitions and level/stat scaling by chapter/region.
+   - Battle trigger: 3x3 card battle against bandit/thief deck. Spoils on victory (coins/cards/potions). Loss does not block story progression (continue or retreat safely).
+4. Analyze the Auto-Play mode:
+   - Ensure 100% hands-free progression across all phases: tile navigation, dialogue advancement, timed dialogue choice auto-selection (1.5s), random field encounter battles, chapter boss battles, and victory/reward modal auto-claim.
+5. Review DESIGN.md compliance and LocalStorage state persistence.
+
+Write your findings to:
+/Users/dayyoung/project/snshero/.agents/teamwork/teamwork_preview_explorer_survey_3/survey_report.md
+and a standard handoff to:
+/Users/dayyoung/project/snshero/.agents/teamwork/teamwork_preview_explorer_survey_3/handoff.md
+
+Send a completion message back to orchestrator_6 when finished.

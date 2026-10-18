@@ -1,53 +1,47 @@
-# BRIEFING — 2026-10-18T04:42:00Z
+# BRIEFING — 2026-10-18T20:04:30Z
 
 ## Mission
-Investigate and synthesize the scenario, manifest, hero character IP mappings, and schema requirements for the 40-episode (840-scene) Webtoon regeneration.
+Survey and investigate the 40-chapter storyline synchronization requirements for SNSHero Revolution RPG mode overhaul.
 
 ## 🔒 My Identity
 - Archetype: explorer
-- Roles: Scenario & Manifest Specialist
+- Roles: Storyline & Script Mapping
 - Working directory: /Users/dayyoung/project/snshero/.agents/teamwork/teamwork_preview_explorer_survey_1
-- Original parent: 4fc72135-d58d-4717-8d54-394a3166069f
-- Milestone: Webtoon Remaster & Manifest Synchronization
+- Original parent: 0841dceb-1ed6-4895-a369-d9b2f167a28c
+- Milestone: RPG Mode Overhaul - Storyline & Script Survey
 
 ## 🔒 Key Constraints
 - Read-only investigation — do NOT implement
-- Strictly read-only on project source/content, only write within own teamwork folder
-- Produce structured survey report (`survey_scenario_manifest.md`) and 5-component handoff (`handoff.md`)
-- Send completion message to parent via send_message
+- Analyze problems, synthesize findings, produce structured reports
 
 ## Current Parent
-- Conversation ID: 4fc72135-d58d-4717-8d54-394a3166069f
-- Updated: 2026-10-18T04:42:00Z
+- Conversation ID: 0841dceb-1ed6-4895-a369-d9b2f167a28c
+- Updated: 2026-10-18T20:12:00Z
 
 ## Investigation State
 - **Explored paths**:
-  - `public/book/episode_01.md` ~ `episode_40.md` (40 files, 158,755 characters total, 3,629~4,302 chars/ep)
-  - `public/book/index.json` (40 episodes catalog, 41 character IDs catalog)
-  - `src/content/englishNovelMapping.ts` (40 English episode titles)
-  - `public/book/image_narrations/` (40 legacy narration files + 40 english translation texts)
-  - `src/content/webtoonEpisodeManifest.json` (40 episodes, 840 scenes total)
-  - `src/content/webtoonEpisodes.ts` (season and panel mapping logic)
-  - `src/cardDatabase.ts` & `src/content/characterIp.ts` (110 hero cards, 11 factions)
-  - `src/content/movieEpisodeMapping.ts` (4 narrative acts, BGM themes, VFX)
-  - `src/views/NovelView.tsx`, `WebtoonPanelCard.tsx`, `WebtoonSpeechBubble.tsx`, `WebtoonSfxOverlay.tsx`
-  - `/tmp/webtoon_bg_plates/bg_01.jpg` ~ `bg_16.jpg` (16 Gemini Nano Banana plates)
-  - `public/images/webtoon/` (5 legacy climax images)
+  - `src/content/englishNovelMapping.ts` (`ENGLISH_NOVEL_MAP`)
+  - `public/book/index.json` (`episodes`, `protagonists`, `characters`)
+  - `src/content/webtoonEpisodeManifest.json` & `src/content/webtoonEpisodes.ts` (`EPISODE_HERO_MAP`)
+  - `public/book/episode_01.md` ~ `episode_40.md`
+  - `src/content/kadanRpgStory.ts` (`KADAN_RPG_EVENTS`, `KADAN_RPG_REGIONS`, `KADAN_RPG_ENCOUNTERS`)
+  - `src/content/kadanRpgNovelScript.ts` (`KADAN_RPG_NOVEL_SCRIPTS`)
+  - `src/lib/i18n.ts` (`kadanRpgTranslations`)
+  - `src/components/rpg/KadanNpcDialog.tsx` & `src/views/KadanRpgView.tsx`
 - **Key findings**:
-  - `webtoonEpisodeManifest.json` contains all 40 episodes and 840 scenes, with 100% synchronized narrations and dialogues.
-  - Critical gap: 835/840 scenes lack `localArtUrl`, and all 840 point to external CDN URLs (`https://dayyoung.github.io/...`).
-  - `public/images/webtoon/` lacks episode folders and scene images (only 5 legacy climax images exist).
-  - 40 distinct characters in the manifest map 100% to CARD_DATABASE IDs.
-  - 16 background plates in `/tmp/webtoon_bg_plates/` map directly across the 4 Acts (Ep 1-10, 11-20, 21-30, 31-40).
-- **Unexplored areas**:
-  - None within the assigned survey scope.
+  - 39 out of 40 chapters in `kadanRpgNovelScript.ts` diverged from the canonical novel narrative.
+  - `i18n.ts` chapter titles in KO and EN reflect obsolete placeholder titles.
+  - Zero choice nodes exist; established 3-attitude structure (`[결의/돌파]`, `[신중/통찰]`, `[성진호흡/공명]`) with 5s manual / 1.5s auto countdown timer.
+  - Specified 12–15% step-based random ambush encounters (Bandit vs Thief decks) with 3-step cooldown and 1/leg limit.
+- **Unexplored areas**: None within the survey scope. Ready for implementation by builder agents.
 
 ## Key Decisions Made
-- Completed deep inspection and compiled full 40-episode master matrix in `survey_scenario_manifest.md`.
-- Established standard WebP generation parameters (`<= 75 KB`, `800x450`, quality 78~84) and manifest update requirements for downstream workers.
+- Formulated complete 40-chapter reference matrix aligning titles, characters, regions, narrative conflicts, opponent decks, and choice nodes in `survey_report.md`.
+- Produced standard 5-component handoff in `handoff.md`.
 
 ## Artifact Index
-- survey_scenario_manifest.md — Comprehensive findings on scenario, manifest, schema, and hero character mappings
-- handoff.md — 5-component handoff report
-- progress.md — Liveness heartbeat log
-- DISPATCH.md — Initial dispatch message
+- /Users/dayyoung/project/snshero/.agents/teamwork/teamwork_preview_explorer_survey_1/survey_report.md — Comprehensive 40-chapter storyline survey and specification report
+- /Users/dayyoung/project/snshero/.agents/teamwork/teamwork_preview_explorer_survey_1/handoff.md — 5-component handoff report
+- /Users/dayyoung/project/snshero/.agents/teamwork/teamwork_preview_explorer_survey_1/progress.md — Progress log
+- /Users/dayyoung/project/snshero/.agents/teamwork/teamwork_preview_explorer_survey_1/DISPATCH.md — Incoming dispatch log
+

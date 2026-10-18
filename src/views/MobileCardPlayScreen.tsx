@@ -77,7 +77,7 @@ export interface MobileCardPlayScreenProps {
   targetCardId?: number | null;
   opponentCustomDeck?: CardData[];
   opponentName?: string;
-  onBack: () => void;
+  onBack: (completed?: boolean) => void;
   language?: string;
   playSfx?: (url: string) => void;
   userStats?: UserStats;
@@ -1247,7 +1247,8 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     setRematchCountdown(null);
     setTutorialShopCountdown(null);
     setRankingSearchCountdown(null);
-    if (gameOver && winner && recordMatchResult && !matchResultReported) {
+    const isMatchCompleted = Boolean(gameOver && winner);
+    if (isMatchCompleted && recordMatchResult && !matchResultReported) {
       const calculatedResult: 'win' | 'loss' | 'draw' = winner === 'player' ? 'win' : (winner === 'ai' ? 'loss' : 'draw');
       const currentBattleType: 'pvp_attack' | 'robot' = isRankingMatch ? 'pvp_attack' : 'robot';
       const currentOppInfo = activeRankOpponent ? {
@@ -1265,7 +1266,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     try {
       localStorage.removeItem('hero_auto_loop_is_ranking');
     } catch {}
-    onBack();
+    onBack(isMatchCompleted);
   }, [gameOver, winner, recordMatchResult, matchResultReported, onBack, playSound, isRankingMatch, activeRankOpponent, opponentName]);
 
   useEffect(() => {

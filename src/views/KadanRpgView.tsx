@@ -451,31 +451,30 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  }, [language, progress.autoMode, setAutoMode, showCustomAlert]);
 
  useEffect(() => {
-  if (!ambushAlert) {
+  if (!ambushAlert || !progress.autoMode) {
    setAmbushCountdown(1.0);
    return;
   }
 
-  if (!progress.autoMode) {
-   setAmbushCountdown(1.0);
-   return;
-  }
-
+  const durationMs = 1000;
+  const deadline = Date.now() + durationMs;
   setAmbushCountdown(1.0);
-  const intervalMs = 100;
-  const timer = window.setInterval(() => {
-   setAmbushCountdown((prev) => {
-    const next = Math.max(0, prev - intervalMs / 1000);
-    if (next <= 0.05) {
-     window.clearInterval(timer);
-     handleEngageAmbush();
-     return 0;
-    }
-    return next;
-   });
-  }, intervalMs);
 
-  return () => window.clearInterval(timer);
+  let hasEngaged = false;
+  const intervalId = window.setInterval(() => {
+   const remainingMs = Math.max(0, deadline - Date.now());
+   setAmbushCountdown(remainingMs / 1000);
+
+   if (remainingMs <= 0 && !hasEngaged) {
+    hasEngaged = true;
+    window.clearInterval(intervalId);
+    handleEngageAmbush();
+   }
+  }, 50);
+
+  return () => {
+   window.clearInterval(intervalId);
+  };
  }, [ambushAlert, handleEngageAmbush, progress.autoMode]);
 
  const handleAmbushBattleComplete = useCallback(async (result: KadanBattleResult) => {
@@ -748,9 +747,11 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  initialAutoBattle={true}
  autoCloseOnComplete={progress.autoMode || isDemoPlayActive() || isRankingDiverted()}
  onToggleAutoBattle={() => setAutoMode(!progress.autoMode)}
- onBack={() => {
- setBattleEvent(null);
- if (progress.autoMode) setAutoMode(false);
+ onBack={(completed) => {
+  setBattleEvent(null);
+  if (!completed && progress.autoMode) {
+   setAutoMode(false);
+  }
  }}
  recordMatchResult={(result) => {
  handleBattleComplete(result);
@@ -782,9 +783,11 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  initialAutoBattle={true}
  autoCloseOnComplete={progress.autoMode || isDemoPlayActive() || isRankingDiverted()}
  onToggleAutoBattle={() => setAutoMode(!progress.autoMode)}
- onBack={() => {
- setAmbushBattle(null);
- if (progress.autoMode) setAutoMode(false);
+ onBack={(completed) => {
+  setAmbushBattle(null);
+  if (!completed && progress.autoMode) {
+   setAutoMode(false);
+  }
  }}
  recordMatchResult={(result) => {
  void handleAmbushBattleComplete(result);

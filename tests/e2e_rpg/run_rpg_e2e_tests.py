@@ -3,7 +3,7 @@
 
 Executes the complete, autonomous, requirement-driven opaque-box verification harness:
 - Tier 1: Feature Coverage & Interface Contracts (F1 Storyline, F2 Scripts, F3 Choices Data,
-          F4 Choices UI, F5 Timers, F8 Ambush Encounters, F12 Auto-Play) - 36 assertions.
+          F4 Choices UI, F5 Timers, F8 Ambush Encounters, F12 Auto-Play) - 37 assertions.
 - Tier 2: Boundary Value Analysis & Corner Cases (Ch 1 Init, Ch 40 Epilogue, Missing Defaults,
           Safe Losses, 0 Buff State, Negative & Overflow Inputs) - 6 assertions.
 - Tier 3: Pairwise Combinations & State Machine (Multi-Phase Pipeline, Buff Acquisition & Combat,

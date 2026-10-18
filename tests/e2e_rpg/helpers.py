@@ -590,9 +590,34 @@ class RpgPlaythroughSimulator:
         self.total_dialog_choices_made = 0
         self.active_buff: Optional[Dict[str, Any]] = None
         self.execution_log: List[Dict[str, Any]] = []
+        self.auto_mode = True
+        self.stalled = False
+        self.stall_reason: Optional[str] = None
+        self._load_kadan_rpg_view_contract()
+
+    def _load_kadan_rpg_view_contract(self):
+        try:
+            rpg_path = REPO_ROOT / "src" / "views" / "KadanRpgView.tsx"
+            with open(rpg_path, "r", encoding="utf-8") as f:
+                src = f.read()
+        except Exception:
+            src = ""
+        # Check if boss portal has unconditional setAutoMode(false)
+        self.boss_on_back_disables_auto = bool(
+            re.search(r'activeEncounter\s*&&\s*battleEvent[\s\S]*?onBack=\{[^\}]*?if\s*\(\s*progress\.autoMode\s*\)\s*setAutoMode\(false\)', src)
+        )
+        # Check if ambush portal has unconditional setAutoMode(false)
+        self.ambush_on_back_disables_auto = bool(
+            re.search(r'ambushBattle[\s\S]*?onBack=\{[^\}]*?if\s*\(\s*progress\.autoMode\s*\)\s*setAutoMode\(false\)', src)
+        )
 
     def simulate_chapter_leg(self, chapter: int) -> bool:
         """Simulates movement, random ambushes, dialogue choice, and boss battle."""
+        if not self.auto_mode:
+            self.stalled = True
+            self.stall_reason = f"Auto-runner paused before Chapter {chapter} because autoMode is false"
+            return False
+
         ambush_in_leg = False
         steps_in_leg = self.rng.randint(4, 7)  # Typical map distance
 
@@ -629,6 +654,13 @@ class RpgPlaythroughSimulator:
                     "win": win,
                     "spoils": enc["spoilsCoins"] if win else 0,
                 })
+
+                # Simulate MobileCardPlayScreen autoCloseOnComplete -> handleExitGame -> onBack
+                if self.ambush_on_back_disables_auto:
+                    self.auto_mode = False
+                    self.stalled = True
+                    self.stall_reason = f"Ambush battle onBack in Chapter {chapter} called setAutoMode(false)"
+                    return False
 
         # 2. Dialogue & Choice Phase at event tile
         choices = ChoiceTimerOracle.create_mock_choice_node(chapter)
@@ -668,6 +700,13 @@ class RpgPlaythroughSimulator:
             "rewardSns": ch_reward,
         })
 
+        # Simulate MobileCardPlayScreen autoCloseOnComplete -> handleExitGame -> onBack
+        if self.boss_on_back_disables_auto:
+            self.auto_mode = False
+            self.stalled = True
+            self.stall_reason = f"Boss battle onBack in Chapter {chapter} called setAutoMode(false)"
+            return False
+
         return True
 
     def run_full_campaign(self) -> Dict[str, Any]:
@@ -677,7 +716,19 @@ class RpgPlaythroughSimulator:
             self.current_chapter = ch
             success = self.simulate_chapter_leg(ch)
             if not success:
-                return {"completed": False, "failed_at_chapter": ch}
+                return {
+                    "completed": False,
+                    "failed_at_chapter": ch,
+                    "stall_reason": self.stall_reason,
+                    "rebirth_count": self.rebirth_count,
+                    "total_ambushes_encountered": self.total_ambushes_encountered,
+                    "total_ambushes_won": self.total_ambushes_won,
+                    "total_boss_battles_won": self.total_boss_battles_won,
+                    "total_dialog_choices_made": self.total_dialog_choices_made,
+                    "total_sns_earned": self.total_sns_earned,
+                    "total_hero_steps": self.hero_step_count,
+                    "elapsed_ms": 0,
+                }
 
         elapsed_ms = (time.perf_counter() - start_t) * 1000
         return {

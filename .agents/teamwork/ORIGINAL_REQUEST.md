@@ -331,3 +331,53 @@ Standardize all 229+ modals, popups, drawers, tutorials, and floating widgets ac
 - [ ] `npx tsc --noEmit` exits with code `0` (0 TypeScript errors).
 - [ ] `npm run build` exits with code `0` and generates all production bundles cleanly.
 - [ ] All changes are committed locally (`git commit` only, `git push` is NOT executed), logged in `WORK_LOGS.md`, and submitted via `python3 skills/report-ex/scripts/submit_report.py`.
+
+## 2026-10-18T20:02:04Z
+
+Overhaul the `/main` RPG mode (`src/views/KadanRpgView.tsx`, `src/content/kadanRpgStory.ts`, `src/content/kadanRpgNovelScript.ts`, `src/components/rpg/KadanNpcDialog.tsx`, and related RPG hooks/i18n) so that all 40 chapters follow the updated SNSHero webnovel/webtoon storyline, featuring interactive protagonist (Kadan) dialogue choices with tailored follow-up reactions, micro-bonuses, and a countdown auto-select timer, occasional random field encounters against Bandit (산적) and Thief (도둑) decks during tile movement, and 100% hands-free progression across all phases when Auto-Play is active.
+
+Working directory: /Users/dayyoung/project/snshero
+Integrity mode: development
+
+Reference specifications:
+- `/Users/dayyoung/project/snshero/src/content/englishNovelMapping.ts` & `/Users/dayyoung/project/snshero/src/content/webtoonEpisodeManifest.json` (Canonical 40-Episode Webnovel/Webtoon Storyline & Episode Titles)
+- `/Users/dayyoung/project/snshero/DESIGN.md` (Canonical OpenCode Terminal-Flat Design System)
+- `/Users/dayyoung/project/snshero/AGENTS.md` & `/Users/dayyoung/project/snshero/GEMINI.md` (Project UX, LocalStorage, Import-Safety, and Mandatory Google Form Reporting Rules)
+
+## Requirements
+
+### R1. 40-Chapter Storyline Synchronization with Updated Webnovel
+Synchronize all 40 chapters in `/main` (`src/content/kadanRpgStory.ts`, `src/content/kadanRpgNovelScript.ts`, and `src/lib/i18n.ts`) with the updated 40-episode webnovel/webtoon storyline:
+- Update chapter titles (`kadan_rpg_chapter_01` through `kadan_rpg_chapter_40`), objectives, region progressions, speaker characters, and opponent decks to match the 40 canonical episodes from Episode 1 (*"Two Vows Beneath the Blizzard / 눈보라 아래 두 서약"*) through Episode 40 (*"One Who Is Not Called a Hero / 영웅이라 불리지 않는 자"*, including *"Oath of the Seven Pursuers"*, *"Blood on the Mist Cliff"*, *"The Child Raised in the Wastes"*, *"Phantom in the Downpour"*, *"The Art of Breathing Stars"*, *"The Traitors Camp"*, *"Rider of the Crimson Mane"*, *"Wind in Beggars Clothes"*, *"Prisoner of the Flame Court"*, *"Guests of the Mist Lake"*, *"Invitation to the Wind Isle"*, *"Four on a Deserted Island"*, *"Seven Nights in the Sealed Chamber"*, *"Night of the False Wedding"*, *"Revolt of the Jade Council"*, *"Queen of the Wind"*, *"War of the Conqueror King"*, etc.).
+- Rewrite `KADAN_RPG_NOVEL_SCRIPTS` (Chapters 1–40) so each chapter's dialogue faithfully dramatizes the updated webnovel episode narrative and characters.
+
+### R2. Interactive Protagonist Dialogue Choices with Bonus & Auto-Select Timer
+Enhance story dialogues (`KadanRpgNovelScriptLine` and `KadanNpcDialog.tsx`) so that during key moments in every chapter, the player is presented with 2–3 interactive protagonist (Kadan) dialogue choices:
+- Each choice displays a distinct attitude/action (e.g., `[결의/돌파]`, `[신중/통찰]`, `[성진호흡/공명]`), triggers a tailored follow-up response line, and grants a small immediate bonus (such as bonus SNS coins or a tactical combat buff/advantage for the upcoming battle).
+- Display a visible countdown timer bar on choice prompts that automatically selects the recommended/default option after **5 seconds** in manual mode, or after **1.5 seconds** when Auto-Play (`autoMode`) is active.
+
+### R3. Random Field Encounters (Bandit & Thief Decks)
+Implement random field encounters during map tile movement between chapter nodes in `KadanRpgView`:
+- While Kadan moves across map tiles toward the next chapter objective, trigger a random ambush encounter with a **12–15% probability per step**, protected by a step/chapter cooldown (at most 1 random ambush per chapter leg, minimum 3 steps between ambushes) to prevent back-to-back spam.
+- Feature distinct **Bandit Deck (황야 산적단 덱)** and **Thief Deck (그림자 도둑단 덱)** encounter variants scaled to the current region/chapter, complete with a brief terminal-flat ambush alert banner/dialog, a 3x3 card battle (`MobileCardPlayScreen`), and bonus spoils (SNS coins + chance of card/item drop) upon victory. Loss in a random encounter never blocks story progression.
+
+### R4. Seamless 100% Auto-Progression Mode & DESIGN.md Compliance
+Ensure that when Auto-Play (`autoMode`) is enabled, 100% of `/main` progresses hands-free without user intervention:
+- Map movement, NPC/story dialogue lines, timed protagonist dialogue choices (auto-picked in 1.5s), random Bandit/Thief ambush alerts and 3x3 card battles (`autoPlay`), chapter boss/enemy battles, and reward collection modals all advance automatically.
+- All new and updated UI components in `/main` (`KadanRpgView`, `KadanNpcDialog`, `KadanWorldMap`, `KadanRewardModal`) must strictly obey `DESIGN.md` (`font-mono`, `rounded-none` containers, `rounded-sm` buttons/badges, 1px hairline borders, `min-h-[44px]` touch targets, and `0` instances of prohibited `bg-gradient-to-`, `rounded-xl/2xl/3xl/full`, `animate-ping`, or `animate-bounce`).
+- Persist all RPG progress, earned SNS, cards, and buffs in `localStorage`, commit locally (`git commit` only, do NOT run `git push`), update `WORK_LOGS.md`, and submit the mandatory Google Form completion report via `python3 skills/report-ex/scripts/submit_report.py`.
+
+## Acceptance Criteria
+
+### Storyline & Interactive Choice Verification
+- [ ] All 40 chapters in `src/content/kadanRpgStory.ts`, `src/content/kadanRpgNovelScript.ts`, and `src/lib/i18n.ts` match the 40 updated webnovel episodes (`ENGLISH_NOVEL_MAP` / `WEBTOON_MANIFEST`), and every chapter (1–40) contains at least one interactive protagonist choice node with 2–3 options, tailored reaction text, and bonus effect metadata.
+- [ ] In `KadanNpcDialog.tsx`, protagonist choice prompts render a visible countdown progress bar and automatically select an option after ~5s in manual mode and ~1.5s when `autoMode` is active.
+
+### Random Bandit/Thief Encounters & Full Auto-Play Verification
+- [ ] Moving across tiles in `KadanRpgView.tsx` can trigger a Bandit (산적) or Thief (도둑) random encounter (12–15% chance per eligible step with cooldown protection), launching a 3x3 card battle against a themed Bandit/Thief deck and awarding spoils upon completion.
+- [ ] With `autoMode` enabled, `/main` progresses continuously through tile movement, story dialogues, protagonist dialogue choices, random Bandit/Thief encounters, chapter battles, and reward modals with zero manual clicks required.
+
+### DESIGN.md, Build & E2E Verification
+- [ ] `python3 tests/e2e_design_system/run_all_e2e_tests.py` passes 100% (including verifying the new `/main` interactive dialogue choice and random encounter logic).
+- [ ] `npx tsc --noEmit` and `npm run build` succeed with `0` errors.
+- [ ] Changes are committed locally (`git commit` only) and reported via `python3 skills/report-ex/scripts/submit_report.py`.

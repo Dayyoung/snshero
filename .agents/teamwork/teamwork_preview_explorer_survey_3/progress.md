@@ -1,18 +1,23 @@
-# Progress - Explorer 3 (UI Reader, Cache & Verification Specialist)
+# Progress - Explorer 3 (Field Encounters & Auto-Progression)
 
-Last visited: 2026-10-18T04:41:30Z
-Status: Survey completed successfully
-
-## Checklist
-- [x] Read `/Users/dayyoung/project/snshero/.agents/teamwork/ORIGINAL_REQUEST.md`
-- [x] Analyze `src/views/NovelView.tsx` (cartoon mode, image loading, speech bubble, SFX)
-- [x] Analyze `src/components/webtoon/WebtoonPanelCard.tsx`, `WebtoonSpeechBubble.tsx`, `WebtoonSfxOverlay.tsx`
-- [x] Analyze `src/components/movie/CinematicMoviePlayer.tsx`
-- [x] Analyze `src/content/movieEpisodeMapping.ts`, `src/content/webtoonEpisodes.ts`
-- [x] Check image references, CDN fallbacks, local resolution paths (5 hardcoded code lines + 840 manifest lines found)
-- [x] Analyze Service Worker caching in `public/sw.js` (media Cache-First, v3 -> v4 bump required)
-- [x] Check build & validation scripts (`package.json`, `WORK_LOGS.md`, `skills/report-ex/scripts/submit_report.py`)
-- [x] Formulate automated verification suite (840 files, hashes, bounds, character regression vs 3f64397a, manifest alignment, build)
-- [x] Implement executable `verify_webtoon_assets.py` test suite
-- [x] Compile `survey_ui_verification.md` and `handoff.md`
-- [x] Send completion message
+- Last visited: 2026-10-18T20:10:00Z
+- Status: Completed (Hard Handoff Ready)
+- Completed:
+  - Read ORIGINAL_REQUEST.md
+  - Analyzed `KadanRpgView.tsx` tile movement, encounter checking, battle mounting, and resolution logic
+  - Designed the Random Field Encounter system:
+    - 14% chance per step (within 12-15% range)
+    - Cooldown guard: at most 1 ambush per chapter leg, and at least 3 steps minimum cooldown
+    - Exclusions: destination tile, region start tile, busy states
+    - Bandit Deck (황야 산적단 덱) and Thief Deck (그림자 도둑단 덱) definitions and level/power scaling
+    - Victory spoils: $(15 + \lfloor C \times 1.2 \rfloor) \times (1 + R \times 0.25)$ SNS coins + 25% card drop + 15% item drop
+    - Defeat safe retreat: `allowLossProgress = true`, non-blocking story progression
+  - Analyzed 100% hands-free Auto-Play mode across all 6 phases:
+    - Tile navigation, dialogue advancement, 1.5s choice auto-select, ambush 1.0s auto-engage, boss battle auto-battle & auto-close (1.6s), silent reward claims
+  - Reviewed DESIGN.md terminal-flat compliance and LocalStorage persistence
+  - Verified `npx tsc --noEmit` (0 errors) and `run_all_e2e_tests.py` (377/377 passed)
+  - Produced `survey_report.md` (comprehensive design report)
+  - Produced `handoff.md` (5-component hard handoff)
+  - Updated `BRIEFING.md`
+- Next:
+  - Send completion message to orchestrator_6

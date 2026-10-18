@@ -1,92 +1,124 @@
-# Project: SNSHero Movie Theater Upgrade & 40-Episode Standalone MP4 Video Generation
+# Project: SNSHero Revolution RPG Mode Overhaul (/main)
 
 ## Architecture
-- **Domain**: Movie Theater, Webtoon Cutscenes, Web Audio Synthesizer, English TTS SpeechSynthesis, Character Portraits & SFX Overlays, FFmpeg Video Generation, Multi-Language Subtitles.
+- **Module Boundaries**:
+  - `src/content/`: Narrative data layer (`kadanRpgStory.ts`, `kadanRpgNovelScript.ts`).
+  - `src/lib/i18n.ts`: Multilingual localization strings for chapter titles, opponents, and choices.
+  - `src/components/rpg/`: Dialog UI, choice buttons, countdown timer bar, and event modals (`KadanNpcDialog.tsx`).
+  - `src/views/KadanRpgView.tsx`: Main RPG map canvas, tile movement loop, random field encounter triggers, deck buffs, and battle portal mounting.
+  - `src/hooks/useKadanRpgAutoRunner.ts`: Auto-progression runner coordinating with dialog and encounter state machines.
+  - `tests/e2e_design_system/`: Automated E2E verification for DESIGN.md compliance and touch targets.
+  - `tests/e2e_rpg/`: Dedicated opaque-box E2E test suite for RPG mode mechanics.
+
 - **Data Flow**:
-  1. Manifest & Cutscenes: `src/content/webtoonEpisodeManifest.json` (40 episodes, 2,049 cutscenes: `scene_00.webp` title card + `scene_01.webp`..`scene_XX.webp` story scenes) stored in `public/images/webtoon/episode_01~40/`.
-  2. Character Portraits & Database: `src/cardDatabase.ts` and `public/seat/*.png` (110 hero cards).
-  3. Interactive Movie Player: `src/components/movie/CinematicMoviePlayer.tsx` and `src/views/MovieView.tsx` with dynamic reading/speech timing, active speaker highlight dock, canvas SFX animations, and multi-language subtitle overlay.
-  4. Audio Engine: `src/lib/MovieAudioSynthesizer.ts` providing uninterrupted procedural BGM anchored to episode lifecycle and speech synthesis voiceover.
-  5. Video Generation Pipeline: Python Pillow frame compositing + NumPy procedural AAC audio synthesis + `/opt/homebrew/bin/ffmpeg` concat demuxer generating 40 browser-compatible MP4 files (`public/videos/episodes/episode_01.mp4`..`episode_40.mp4`).
-  6. Subtitle & Internationalization: Multi-language subtitles (`en` -> `narrationEn`/`textEn`; other -> `narrationKo`/`textKo` or localized) with `[CC ON/OFF]` toggle for both Interactive Cutscene Mode and MP4 Video Mode.
-- **Dual Track Organization**:
-  - **E2E Testing Track**: Autonomous requirement-driven test harness, verifying all 40 MP4 videos, cutscenes, BGM playback, TTS voiceover, character highlights, SFX overlays, subtitles, and CC controls across Tiers 1–4. Publishes `TEST_READY.md`.
-  - **Implementation Track**: Executes M1 -> M2 -> M3 -> M4 (Final Milestone: E2E Pass + Tier 5 Adversarial Hardening + Project Hygiene).
+  1. Map tile navigation (`stepToward`) triggers 14% step roll with cooldown guards.
+  2. If ambush triggered: mounts `MobileCardPlayScreen` with Bandit/Thief deck scaled to chapter.
+  3. When reaching story event tile: mounts `KadanNpcDialog` with chapter's novel script.
+  4. If choice node present: displays 3-attitude choices with 5s (manual) or 1.5s (auto) countdown progress bar.
+  5. Upon choice selection: renders follow-up reaction line, awards SNS coins, and stores combat buff in `localStorage ('hero_kadan_active_buff')`.
+  6. Boss battle: mounts `MobileCardPlayScreen` with chapter boss deck, applying active combat buff to player deck.
+  7. When `autoMode` is enabled: 100% of movements, choices, ambushes, and boss battles execute hands-free.
 
 ## Feature Inventory
 | # | Feature | Description | Milestone | Source |
 |---|---------|-------------|-----------|--------|
-| 1 | 2,049 Webtoon Cutscenes Integration | Load and play all 2,049 cutscenes across all 40 episodes (including `scene_00.webp` title cards) with dynamic timing | M1 | ORIGINAL_REQUEST §R1 |
-| 2 | Continuous Episode BGM on Play | Reliable initialization/resumption of `MovieAudioSynthesizer.ts` on Play; continuous BGM anchored to episode lifecycle without scene-transition cutouts | M1 | ORIGINAL_REQUEST §R1 |
-| 3 | English-Base Cutscene & TTS Voiceover | Display English dialogues (`textEn`, `speakerEn`); read `narrationEn` and English dialogues aloud via `en-US`/`en-GB` SpeechSynthesis when TTS enabled | M1 | ORIGINAL_REQUEST §R2 |
-| 4 | Speaking Character Highlight | Render active speaking character's remastered portrait (`public/seat/*.png`) with glowing frame, aura pulse, and speaker badge while dimming non-speakers | M1 | ORIGINAL_REQUEST §R2 |
-| 5 | Animated Combat SFX Onomatopoeia | Prominently display animated comic/webtoon sound effects (`sfxCues`) on movie canvas/stage alongside procedural combat audio SFX | M1 | ORIGINAL_REQUEST §R2 |
-| 6 | Multi-Language Subtitle System & CC Toggle | Synchronized subtitle overlay (English when `language==='en'`, selected language when not) with intuitive `[CC ON/OFF]` toggle button in both modes | M1 | ORIGINAL_REQUEST §R4 |
-| 7 | Standalone 40-Episode MP4 Video Generation | Generate 40 browser-compatible MP4 files (`public/videos/episodes/episode_01.mp4`..`episode_40.mp4`) with all cutscenes, burned-in English styling/SFX, and embedded AAC BGM | M2 | ORIGINAL_REQUEST §R3 |
-| 8 | MP4 Player Mode & Download Integration | Integrate MP4 video playback and direct download support into `CinematicMoviePlayer.tsx` / `MovieView.tsx` with seamless mode toggle | M2 | ORIGINAL_REQUEST §R3 |
-| 9 | Dual-Track Requirement-Driven E2E Test Suite | Autonomous E2E test harness covering Tiers 1–4 across all features, producing `TEST_READY.md` | E2E-Track | Dual Track Architecture |
-| 10 | 100% E2E Test Suite Pass | Verification that 100% of Tiers 1–4 E2E tests pass without regressions | M3 | Dual Track Architecture |
-| 11 | Tier 5 Adversarial Coverage Hardening | White-box adversarial testing, edge case torture tests, and stress tests | M4 | Project Pattern §Dual Track |
-| 12 | Project Hygiene, Lint, Build & Google Form Report | `npm run lint` & `npm run build` pass with 0 errors, local git commit, `WORK_LOGS.md`, and Google Form report | M4 | ORIGINAL_REQUEST §R5 |
+| F1 | 40-Chapter Canonical Storyline Sync | Synchronize all 40 chapters in `kadanRpgStory.ts` and `i18n.ts` with canonical webnovel/webtoon episodes | M1 (DONE) | Survey |
+| F2 | 40-Chapter Rich Novel Scripts | Rewrite `kadanRpgNovelScript.ts` chapters 1–40 with authentic narrative dramatization and character mapping | M1 (DONE) | Survey |
+| F3 | Interactive Choice Data Structures | Extend `KadanRpgNovelScriptLine` and introduce `KadanRpgDialogueChoice` with bilingual fields and bonuses | M1 (DONE) | Survey |
+| F4 | Interactive Choice UI & Attitude Badges | Implement choice buttons with `[결의/돌파]`, `[신중/통찰]`, `[성진호흡/공명]` in `KadanNpcDialog.tsx` | M2 (DONE) | Survey |
+| F5 | Dual-Mode Countdown Timer Bar | 5.0s (manual) and 1.5s (auto) countdown progress bar auto-selecting default choice upon timeout | M2 (DONE) | Survey |
+| F6 | Follow-Up Reactions & Micro-Bonuses | Display Kadan follow-up line, award SNS coins and register combat buffs (`hero_kadan_active_buff`) | M2 (DONE) | Survey |
+| F7 | DESIGN.md Strict Terminal-Flat Compliance | Fix `min-min-h-[44px]` typo, replace rounded-md/rounded-full, eliminate radial gradient/pulse, ensure 44px+ touch targets | M2 (DONE) | Survey |
+| F8 | Random Field Encounter Generator | Generate scaled Bandit Deck (황야 산적단) and Thief Deck (그림자 도둑단) based on chapter/region/rebirth | M3 (DONE) | Survey |
+| F9 | Step Movement Roll & Cooldown Guards | 14% encounter roll per tile step with max 1 ambush per chapter leg, min 3 steps cooldown, and tile immunities | M3 (DONE) | Survey |
+| F10 | Safe Ambush Defeat & Victory Spoils | Victory yields scaled SNS coins + drops; defeat allows safe retreat with zero penalty (`allowLossProgress = true`) | M3 (DONE) | Survey |
+| F11 | Active Combat Buff Battle Injection | Inject active buffs from choices into player deck in `KadanRpgView.tsx` battle portal | M3 (DONE) | Survey |
+| F12 | 100% Hands-Free Auto-Progression | Seamless auto-progression across tile navigation, dialogues, timed choices, ambushes, and boss battles | M4 (DONE) | Survey |
+| F13 | E2E Testing & Design System Regression | Ensure 100% pass rate in `run_all_e2e_tests.py` and TypeScript build exit 0 | M4 (DONE) | Survey |
+| F14 | Final Verification & Google Form Reporting | Local commit only, update `WORK_LOGS.md`, submit Google Form report, notify Sentinel | M5 (DONE) | Survey |
 
 ## Milestones
 | # | Name | Scope | Dependencies | Status |
 |---|------|-------|-------------|--------|
-| E2E | E2E Testing Suite | Requirements-driven test suite (Tiers 1–4) & runner publishing `TEST_READY.md` | Survey | DONE (`TEST_READY.md`, 59/59 passing) |
-| M1 | Movie Player Engine & Audio/Subtitles | 2,049 cutscenes, continuous BGM, English TTS, character highlight, SFX onomatopoeia, subtitles & CC toggle | Survey | DONE (CinematicMoviePlayer.tsx, MovieAudioSynthesizer.ts, MovieView.tsx) |
-| M2 | 40-Episode MP4 Generation & Player Hookup | Generate 40 MP4 videos via FFmpeg+Pillow+NumPy BGM, browser-compatible flags, player MP4 mode & download | M1 | DONE (40/40 MP4s in public/videos/episodes/, 187.8MB, Faststart) |
-| M3 | E2E Test Suite Pass (Tiers 1–4) | Pass 100% of E2E tests from `TEST_READY.md` | M1, M2, E2E | DONE (59/59 Assertions Passed, Exit Code 0) |
-| M4 | Final Milestone & Project Hygiene | Tier 5 adversarial hardening, lint/build 0 errors, local commit, WORK_LOGS.md, Google Form report | M3 | DONE (Gate Passed: Reviewers APPROVE, Challengers APPROVE, Auditor CLEAN) |
+| M1 | Storyline & Script Content Synchronization | `src/content/kadanRpgStory.ts`, `src/content/kadanRpgNovelScript.ts`, `src/lib/i18n.ts` | none | DONE (Gate passed 5/5) |
+| M2 | Interactive Dialogue Choices & Countdown Timer UI | `src/components/rpg/KadanNpcDialog.tsx`, DESIGN.md fixes | M1 | DONE (Gate passed 5/5) |
+| M3 | Random Field Encounters & Deck Scaling | `src/views/KadanRpgView.tsx`, `src/lib/rpg/kadanRpgAmbush.ts` | M1, M2 | DONE (Gate passed Iteration 2 5/5) |
+| M4 | 100% Hands-Free Auto-Progression & E2E Track | Auto-runner loop, E2E test verification, `TEST_READY.md` | M1, M2, M3 | DONE (Gate passed Iteration 2 5/5) |
+| M5 | Final Verification, Commit & Mandatory Report | Regression test, git commit, `WORK_LOGS.md`, Google Form submission | M1, M2, M3, M4 | DONE |
+
 
 ## Interface Contracts
-### 1. Webtoon Cutscene Manifest ↔ CinematicMoviePlayer
-- Manifest path: `src/content/webtoonEpisodeManifest.json`
-- Episode IDs: `"1"` through `"40"`
-- Image scenes: `images` array (`index: 0` title card to `index: XX` climax/conclusion)
-- Scene schema:
-  - `index`: number
-  - `imageUrl`: string (e.g., `/images/webtoon/episode_01/scene_00.webp`)
-  - `localArtUrl`: string
-  - `narrationKo`: string
-  - `narrationEn`: string
-  - `characters`: string[]
-  - `dialogues`: Array<{ speakerKo: string, speakerEn: string, textKo: string, textEn: string, bubbleType?: string, characterCardId?: number }>
-  - `sfxCues`: Array<{ type: string, textKo: string, textEn: string, intensity?: string }>
+### `src/content/kadanRpgNovelScript.ts` ↔ `src/components/rpg/KadanNpcDialog.tsx`
+```typescript
+export interface KadanRpgDialogueChoice {
+  id: string;
+  attitude: '[결의/돌파]' | '[신중/통찰]' | '[성진호흡/공명]';
+  attitudeEn?: '[Resolve]' | '[Insight]' | '[Resonance]';
+  labelKo: string;
+  labelEn: string;
+  followUpTextKo: string;
+  followUpTextEn: string;
+  bonusType: 'sns' | 'buff' | 'item';
+  bonusValue: number;
+  bonusDescKo: string;
+  bonusDescEn: string;
+  isDefault?: boolean;
+}
 
-### 2. Character Portrait Mapping ↔ Stage Dock
-- Card Database: `src/cardDatabase.ts`
-- Portrait directory: `public/seat/*.png`
-- Mapping formula:
-  - By `characterCardId`: `CARD_DATABASE[characterCardId]?.title_en` -> `/seat/${title_en.replace(/ /g, '_')}.png`
-  - By `speakerEn` / `speakerKo`: lookup in character name alias map -> `/seat/${matchedTitleEn.replace(/ /g, '_')}.png`
-- Visual styling:
-  - Active speaker: glowing amber border (`border-amber-400`), pulse aura (`shadow-[0_0_15px_rgba(251,191,36,0.6)]`), scale-105, speaker badge `[SPEAKER]`
-  - Non-speaker: opacity-40, grayscale-50, scale-95
+export interface KadanRpgNovelScriptLine {
+  speaker: 'narrator' | 'quote' | 'kadan' | 'speaker' | 'choice';
+  name: string;
+  nameEn?: string;
+  text: string;
+  textEn?: string;
+  cardId?: number;
+  choices?: KadanRpgDialogueChoice[];
+}
+```
 
-### 3. Movie Audio Synthesizer ↔ Movie Player
-- API methods in `MovieAudioSynthesizer.ts`:
-  - `initAudio(): Promise<boolean>`: resumes AudioContext on user gesture
-  - `startEpisodeBgm(episodeId: number, theme?: string): void`: starts continuous episode BGM without restarting on scene transitions
-  - `stopEpisodeBgm(): void`: stops episode BGM on movie pause or exit
-  - `speakEnglishNarration(text: string, onEnd?: () => void): void`: speaks narration via `en-US`/`en-GB` SpeechSynthesis
-  - `playSfx(type: string): void`: triggers procedural combat sound effects
+### `src/components/rpg/KadanNpcDialog.tsx` ↔ `src/views/KadanRpgView.tsx`
+```typescript
+interface KadanNpcDialogProps {
+  event: KadanRpgEvent;
+  onClose: () => void;
+  onRewardSns?: (amount: number, reason: string) => void;
+  onApplyBuff?: (buff: { type: string; value: number; label: string }) => void;
+  autoMode?: boolean;
+  language?: string;
+}
+```
 
-### 4. Standalone MP4 Videos ↔ Web Serving & Download
-- Video directory: `public/videos/episodes/`
-- Video naming: `episode_01.mp4` through `episode_40.mp4`
-- Video container: MP4 (H.264 video + AAC stereo audio at 44.1kHz)
-- Video dimensions: `800 x 450` px, 24 fps
-- Flags: `-pix_fmt yuv420p -movflags +faststart`
-- Serving URL: `/videos/episodes/episode_XX.mp4`
-- Download filename: `SNSHero_Episode_XX.mp4`
+### `src/lib/rpg/kadanRpgAmbush.ts` ↔ `src/views/KadanRpgView.tsx`
+```typescript
+export interface AmbushEncounter {
+  type: 'bandit' | 'thief';
+  name: string;
+  nameEn: string;
+  deck: CardData[];
+  powerLevel: number;
+  spoilsCoins: number;
+}
+
+export function shouldTriggerAmbush(
+  currentStep: number,
+  lastAmbushStep: number,
+  ambushTriggeredInChapter: boolean,
+  isDestinationTile: boolean
+): boolean;
+
+export function generateAmbushEncounter(
+  chapterNumber: number,
+  rebirthCount: number,
+  regionId: string
+): AmbushEncounter;
+```
 
 ## Code Layout
-- Player UI: `src/components/movie/CinematicMoviePlayer.tsx`, `src/views/MovieView.tsx`
-- Audio Engine: `src/lib/MovieAudioSynthesizer.ts`
-- Manifest & Mapping: `src/content/webtoonEpisodeManifest.json`, `src/content/movieEpisodeMapping.ts`
-- Video Generation Script: `scripts/generate_all_40_episode_videos.py`
-- Video Assets: `public/videos/episodes/episode_01.mp4`..`episode_40.mp4`
-- Cutscene Images: `public/images/webtoon/episode_01/`..`episode_40/`
-- Hero Portraits: `public/seat/*.png`
-- E2E Tests: `tests/e2e_movie_theater/`
-- Agent Workspace: `.agents/teamwork/`
+- `src/content/kadanRpgStory.ts`: Chapter definitions, region IDs, speaker cards, encounter configurations.
+- `src/content/kadanRpgNovelScript.ts`: 40-chapter dramatized scripts with interactive choice nodes.
+- `src/components/rpg/KadanNpcDialog.tsx`: Dialog screen, choice buttons, countdown timer bar.
+- `src/lib/rpg/kadanRpgAmbush.ts`: Ambush generator, deck composition, scaling formulas.
+- `src/views/KadanRpgView.tsx`: Map canvas, movement loop, encounter resolution, battle portal.
+- `src/hooks/useKadanRpgAutoRunner.ts`: Auto-play coordination.
+- `src/lib/i18n.ts`: Multilingual chapter titles and opponent names.
+- `tests/e2e_rpg/`: E2E test runner and test cases.
