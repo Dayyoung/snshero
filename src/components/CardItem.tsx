@@ -4,7 +4,7 @@ import {
  Star, Zap, Shield, Mountain, Waves, Flame, Wind, User, Skull, Leaf, Hammer, Ghost, Bot, Lock,
 } from 'lucide-react';
 import type { CharacterFaction, CharacterRarityTier, CardData } from '../types';
-import { cn, getAssetUrl, getCardSpriteAsset, getCardSpriteStyle } from '../lib/utils';
+import { cn, getAssetUrl, getCardSpriteAsset, getCardSpriteCoords, getCardCharacterBackdropTheme } from '../lib/utils';
 import { CARD_DATABASE } from '../cardDatabase';
 import { getCardPower, getCardStatWithBonus, getNormalizedElement } from '../constants';
 import { t } from '../lib/i18n';
@@ -58,7 +58,14 @@ const isSpriteSheet = (source?: string | null): boolean => {
 
 const getSpritePosition = (cardIndex: number, spriteSource: string): React.CSSProperties => {
  if (!cardIndex) return {};
- return { ...getCardSpriteStyle(cardIndex, spriteSource), backgroundColor: 'transparent' };
+ const coords = getCardSpriteCoords(cardIndex, spriteSource);
+ return {
+  backgroundImage: `url('${coords.assetUrl}')`,
+  backgroundSize: `${coords.cols * 100}% ${coords.rows * 100}%`,
+  backgroundPosition: `${coords.xPercent}% ${coords.yPercent}%`,
+  backgroundRepeat: 'no-repeat',
+  backgroundColor: 'transparent',
+ };
 };
 
 const areCardsVisuallyEqual = (left: CardData, right: CardData) => {
@@ -310,6 +317,11 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
  undead: 'bg-[#ece0f4]', elf: 'bg-[#e0efd6]', dwarf: 'bg-[#efe2d1]',
  monster: 'bg-[#e5ead4]', robot: 'bg-[#e3e9ef]', dragon: 'bg-[#f1def0]',
  } as Record<string, string>)[ipProfile?.faction || race || ''] || 'bg-[#f6edcf]';
+ const charBackdrop = useMemo(() => getCardCharacterBackdropTheme(visualCardId ?? (Number(activeCard.id) || 1), {
+  faction: ipProfile?.faction || (race === 'land' ? 'earth' : race),
+  rarity: normalizedCardRarity || rarityTier,
+  power: powerScore,
+ }), [visualCardId, activeCard.id, ipProfile?.faction, race, normalizedCardRarity, rarityTier, powerScore]);
  const abilityDescription = language === 'ko'
  ? activeCard.ability?.description_ko || activeCard.ability?.description_en
  : activeCard.ability?.description_en;
@@ -443,52 +455,193 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
  </div>
  )}
 
- {/* Illustration window */}
- <div className={cn(
- 'pointer-events-none absolute z-10 overflow-hidden border [container-type:size]',
- isOnBoard ? 'inset-x-[4cqw] bottom-[17cqw] top-[4cqw]' : 'inset-x-[5.5cqw] bottom-[26cqw] top-[22.5cqw]',
- showOwnership
- ? cn(pokemonTheme.windowBg, owner === 'player' ? 'ring-1 ring-[#2563eb]/50' : 'ring-1 ring-[#dc2626]/50')
- : pokemonTheme.windowBg,
- pokemonTheme.windowBorder,
- )}>
- {currentImageSource ? (
- isSpriteSheet(currentImageSource) && visualCardId ? (
- <>
- <img key={currentImageSource} src={currentImageSource} alt="" className="hidden" aria-hidden="true" referrerPolicy="no-referrer" onError={() => setImageSourceIndex(currentIndex => currentIndex + 1)} />
+ {/* Illustration window: 3-axis backdrop (Race/Faction × Rarity/Grade × Power Tier) */}
  <div
- role="img"
- aria-label={displayCardName}
- className="absolute left-1/2 top-1/2 w-[min(92cqw,87cqh)] -translate-x-1/2 -translate-y-1/2"
- style={{ ...getSpritePosition(visualCardId, currentImageSource), aspectRatio: '19 / 20' }}
- />
- </>
- ) : (
- <img
- key={currentImageSource}
- src={currentImageSource}
- alt={displayCardName}
- className="h-full w-full object-contain"
- referrerPolicy="no-referrer"
- onError={() => setImageSourceIndex(currentIndex => currentIndex + 1)}
- />
- )
- ) : (
- <div className="flex h-full w-full flex-col items-center justify-center gap-[3cqw] px-[8cqw] text-center">
- {isOriginalMechaTheme && themeVisual ? (
- <>
- <FactionIcon className="h-[30cqw] w-[30cqw]" style={{ color: shouldHideBg ? undefined : themeVisual.fallbackPrimaryColor }} />
- <span className="text-[6cqw]">{t('card_skin_theme_mecha_badge', language)}</span>
- <span className="text-[5cqw] text-[#646262]">{themeVisual.serialCode}</span>
- </>
- ) : (
- <>
- <span className="text-[30cqw] leading-none">{resolvedSkin?.fallbackEmoji || imageFallback.emoji}</span>
- <span className="text-[6cqw] text-[#646262]">{t(resolvedSkin?.nameKey || imageFallback.labelKey, language)}</span>
- </>
- )}
- </div>
- )}
+  className={cn(
+   'pointer-events-none absolute z-10 overflow-hidden border [container-type:size]',
+   isOnBoard ? 'inset-x-[4cqw] bottom-[17cqw] top-[4cqw]' : 'inset-x-[5.5cqw] bottom-[26cqw] top-[22.5cqw]',
+   showOwnership
+    ? cn(pokemonTheme.windowBg, owner === 'player' ? 'ring-1 ring-[#2563eb]/50' : 'ring-1 ring-[#dc2626]/50')
+    : pokemonTheme.windowBg,
+   pokemonTheme.windowBorder,
+  )}
+  style={{
+   background: charBackdrop.windowCssBackground,
+   backgroundColor: charBackdrop.bgLight,
+  }}
+  data-backdrop-faction={charBackdrop.faction}
+  data-backdrop-rarity={charBackdrop.rarityGroup}
+  data-backdrop-power-tier={charBackdrop.powerTier}
+ >
+  {/* Layer 1: Geometric Rarity Magic Circle & Power Aura SVG behind character */}
+  <svg
+   viewBox="0 0 100 100"
+   className="pointer-events-none absolute inset-0 z-0 h-full w-full"
+   aria-hidden="true"
+  >
+   {/* Power Tier concentric energy rings (Tier 1..5) */}
+   <circle
+    cx="50"
+    cy="47"
+    r={charBackdrop.powerTier >= 4 ? 42 : 38}
+    fill="none"
+    stroke={charBackdrop.accentHex}
+    strokeWidth={charBackdrop.powerTier >= 4 ? '1.3' : '0.8'}
+    strokeOpacity={0.22 + charBackdrop.powerTier * 0.06}
+    strokeDasharray={charBackdrop.powerTier >= 3 ? '3 2' : '5 4'}
+   />
+   {charBackdrop.powerTier >= 2 && (
+    <circle
+     cx="50"
+     cy="47"
+     r="31"
+     fill="none"
+     stroke={charBackdrop.rarityBorderHex}
+     strokeWidth="1"
+     strokeOpacity={0.28 + charBackdrop.powerTier * 0.05}
+    />
+   )}
+   {charBackdrop.powerTier >= 4 && (
+    <circle
+     cx="50"
+     cy="47"
+     r="23"
+     fill="none"
+     stroke={charBackdrop.accentHex}
+     strokeWidth="1.2"
+     strokeOpacity="0.45"
+     strokeDasharray="2 1.5"
+    />
+   )}
+
+   {/* Rarity Grade Emblem Frame (Bronze: Ring, Silver: Diamond/Dual Ring, Gold: 8-Point Star Octagram, Special: 12-Point Astral Seal) */}
+   {charBackdrop.rarityGroup === 'bronze' && (
+    <circle
+     cx="50"
+     cy="47"
+     r="34"
+     fill="none"
+     stroke="#9a5b32"
+     strokeWidth="1.1"
+     strokeOpacity="0.32"
+    />
+   )}
+   {charBackdrop.rarityGroup === 'silver' && (
+    <g stroke="#475569" strokeOpacity="0.38" fill="none">
+     <polygon points="50,11 86,47 50,83 14,47" strokeWidth="1.1" />
+     <circle cx="50" cy="47" r="34" strokeWidth="1" strokeDasharray="4 2" />
+    </g>
+   )}
+   {charBackdrop.rarityGroup === 'gold' && (
+    <g stroke="#ca8a04" strokeOpacity="0.46" fill="none">
+     <polygon points="50,10 87,47 50,84 13,47" strokeWidth="1.3" />
+     <rect x="24" y="21" width="52" height="52" strokeWidth="1.1" />
+     <circle cx="50" cy="47" r="36" strokeWidth="1.2" />
+    </g>
+   )}
+   {charBackdrop.rarityGroup === 'special' && (
+    <g stroke="#9333ea" strokeOpacity="0.52" fill="none">
+     <polygon points="50,8 89,47 50,86 11,47" strokeWidth="1.4" />
+     <rect x="22" y="19" width="56" height="56" strokeWidth="1.2" />
+     <polygon points="50,14 79,64 21,64" strokeWidth="1" stroke="#06b6d4" strokeOpacity="0.45" />
+     <polygon points="50,80 79,30 21,30" strokeWidth="1" stroke="#ec4899" strokeOpacity="0.45" />
+     <circle cx="50" cy="47" r="39" strokeWidth="1.4" strokeDasharray="2 1.5" />
+    </g>
+   )}
+  </svg>
+
+  {/* Layer 2: Subtle Faction/Race Emblem Watermark behind character */}
+  <div className="pointer-events-none absolute inset-0 z-1 flex items-center justify-center">
+   <FactionIcon
+    className="h-[58cqw] w-[58cqw] opacity-[0.14]"
+    style={{ color: charBackdrop.accentHex }}
+    strokeWidth={1.5}
+   />
+  </div>
+
+  {/* Layer 3: Top Corner Micro-Badges inside Character Window (Race/Faction left, Rarity+Power Tier right) */}
+  {!isOnBoard && (
+   <div className="pointer-events-none absolute inset-x-[2.5cqw] top-[2cqw] z-20 flex items-center justify-between leading-none">
+    <span
+     className="inline-flex items-center gap-[0.8cqw] rounded-xs border px-[1.4cqw] py-[0.5cqw] text-[3.8cqw] font-black tracking-tight"
+     style={{
+      backgroundColor: 'rgba(253,252,252,0.86)',
+      borderColor: charBackdrop.accentHex,
+      color: charBackdrop.accentHex,
+     }}
+    >
+     <span>{charBackdrop.factionEmoji}</span>
+     <span>{language === 'ko' ? charBackdrop.factionLabelKo : charBackdrop.factionLabelEn}</span>
+    </span>
+    <span
+     className="inline-flex items-center gap-[0.6cqw] rounded-xs border px-[1.3cqw] py-[0.5cqw] text-[3.7cqw] font-black tracking-tight tabular-nums"
+     style={{
+      backgroundColor: 'rgba(32,29,29,0.84)',
+      borderColor: charBackdrop.rarityBorderHex,
+      color: '#fdfcfc',
+     }}
+    >
+     <span>{charBackdrop.raritySymbol}</span>
+     <span>{charBackdrop.powerTierLabel}</span>
+    </span>
+   </div>
+  )}
+
+  {/* Layer 4: Foreground Character Sprite / Image */}
+  {currentImageSource ? (
+   isSpriteSheet(currentImageSource) && visualCardId ? (
+    <>
+     <img key={currentImageSource} src={currentImageSource} alt="" className="hidden" aria-hidden="true" referrerPolicy="no-referrer" onError={() => setImageSourceIndex(currentIndex => currentIndex + 1)} />
+     <div
+      role="img"
+      aria-label={displayCardName}
+      className="absolute left-1/2 top-1/2 z-10 w-[min(92cqw,87cqh)] -translate-x-1/2 -translate-y-1/2"
+      style={{ ...getSpritePosition(visualCardId, currentImageSource), aspectRatio: '19 / 20' }}
+     />
+    </>
+   ) : (
+    <img
+     key={currentImageSource}
+     src={currentImageSource}
+     alt={displayCardName}
+     className="relative z-10 h-full w-full object-contain"
+     referrerPolicy="no-referrer"
+     onError={() => setImageSourceIndex(currentIndex => currentIndex + 1)}
+    />
+   )
+  ) : (
+   <div className="relative z-10 flex h-full w-full flex-col items-center justify-center gap-[3cqw] px-[8cqw] text-center">
+    {isOriginalMechaTheme && themeVisual ? (
+     <>
+      <FactionIcon className="h-[30cqw] w-[30cqw]" style={{ color: shouldHideBg ? undefined : themeVisual.fallbackPrimaryColor }} />
+      <span className="text-[6cqw]">{t('card_skin_theme_mecha_badge', language)}</span>
+      <span className="text-[5cqw] text-[#646262]">{themeVisual.serialCode}</span>
+     </>
+    ) : (
+     <>
+      <span className="text-[30cqw] leading-none">{resolvedSkin?.fallbackEmoji || imageFallback.emoji}</span>
+      <span className="text-[6cqw] text-[#646262]">{t(resolvedSkin?.nameKey || imageFallback.labelKey, language)}</span>
+     </>
+    )}
+   </div>
+  )}
+
+  {/* Layer 5: Bottom 5-Step Power Tier Gauge Bar inside Character Window */}
+  <div className="pointer-events-none absolute inset-x-[3cqw] bottom-[1.8cqw] z-20 flex items-center gap-[1cqw]">
+   {[1, 2, 3, 4, 5].map(step => {
+    const active = step <= charBackdrop.powerTier;
+    return (
+     <span
+      key={step}
+      className="h-[1.8cqw] flex-1 border border-[#201d1d]/30"
+      style={{
+       backgroundColor: active ? charBackdrop.accentHex : 'rgba(253,252,252,0.55)',
+       boxShadow: active && charBackdrop.powerTier >= 4 ? `0 0 4px ${charBackdrop.glowRgba}` : undefined,
+      }}
+     />
+    );
+   })}
+  </div>
  </div>
 
  {/* Board view top-left power indicator */}
