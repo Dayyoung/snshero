@@ -2,7 +2,30 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
-## [2026-10-19 05:06 KST] [/reddit 구글 뉴스 검색 노출 버그 해결] 구글 뉴스 사이트맵 48시간 규정, 다국어 태그 판별, 메타 태그 및 NewsArticle JSON-LD 완전성 개선
+## [2026-10-19 05:25 KST] [/main 40개 챕터 RPG 모드 개편 E2E 테스트 스위트 구축] 4-Tier 마스터 테스트 러너, 51개 검증 어설션, TEST_INFRA.md 및 TEST_READY.md 완료
+- **요청 사항**:
+  - `/main` 40개 챕터 RPG 모드 개편(웹소설/웹툰 스토리라인 동기화, Kadan 대화 인터랙티브 3대 태도 선택지, 5.0초/1.5초 카운트다운 타이머 바, 황야 산적단/그림자 도둑단 필드 인카운터 및 100% 무인 자동 진행)에 대한 포괄적·오파크박스 4-Tier E2E 테스트 스위트 구축
+- **주요 구현 및 개선 내역**:
+  1. **전용 E2E 테스트 스위트 디렉토리 구축 (`tests/e2e_rpg/`)**:
+     - `tests/e2e_rpg/__init__.py`: 패키지 초기화.
+     - `tests/e2e_rpg/helpers.py`: `TestResult` 데이터클래스, 정적 AST/토큰/정규식 파서, 40개 챕터 정규 오라클 데이터(`CANONICAL_EPISODES`), 인카운터 확률/쿨다운 판정기(`AmbushOracle`), 대화 선택지 및 타이머 시뮬레이터(`ChoiceTimerOracle`), 40개 챕터 무인 자동 진행 플레이스루 시뮬레이터(`RpgPlaythroughSimulator`).
+     - `tests/e2e_rpg/tier1_feature_coverage.py`: 7대 핵심 기능(F1 스토리라인 동기화, F2 소설 스크립트, F3 선택지 데이터 구조, F4 선택지 UI/태도 뱃지, F5 듀얼 카운트다운 타이머, F8 필드 인카운터, F12 무인 자동 진행) 전수 검증 (36개 어설션, 기능당 >= 5개 충족).
+     - `tests/e2e_rpg/tier2_boundary_corner.py`: 6대 경계값 및 코너 케이스(챕터 1 초기화/세이프로스 유예, 챕터 40 엔딩 에필로그 및 환생 레벨 스케일링, isDefault 누락 시 index 0 안전 폴백, 인카운터 패배 시 무페널티 안전 후퇴, 0 버프 기본 1.0x 전투력 스케일링, 음수/초과 파라미터 안전 처리) 검증 (6개 어설션).
+     - `tests/e2e_rpg/tier3_cross_feature.py`: 5대 크로스 기능 및 상태 머신 전이(이동->인카운터->대화선택->보스승리 멀티페이즈 파이프라인, 대화 버프 전투 적용 및 종료 후 정리, 선택지 SNS 코인 보상 즉시 반영, 대화 중 Auto-Play 토글 시 타이머 1.5초 재스케일링, 챕터 경계 3걸음 쿨다운 보존) 검증 (5개 어설션).
+     - `tests/e2e_rpg/tier4_realworld_workload.py`: 4대 실세계 워크로드 시나리오(40개 챕터 100% 무인 완주 0스톨 검증, 2회차 연속 환생 루프 플레이스루, 10,000보 몬테카를로 시뮬레이션을 통한 쿨다운 위반 0건 및 약 10% 인카운터율 검증, 인카운터 패배 후 안전 복구 및 보스전 클리어) 검증 (4개 어설션).
+     - `tests/e2e_rpg/run_rpg_e2e_tests.py`: CLI 실행기 (`--tier 1..4`, `--milestone M1..M4`, `--verbose`, `--json`, `--allow-fail` 지원) 및 서머리 테이블 출력.
+  2. **프로젝트 루트 테스트 명세 및 완료 선언 문서 작성**:
+     - `TEST_INFRA.md`: 4-Tier 아키텍처 다이어그램, 51개 테스트 어설션 명세, CLI 실행 가이드, 트레이서빌리티 매트릭스 전면 수립.
+     - `TEST_READY.md`: 4-Tier 51개 어설션 100% 통과(Pass Rate 100.0%, 0.01초 소요) 검증 완료 선언 및 게이트 서머리 수록.
+- **검증 결과**:
+  - `python3 tests/e2e_rpg/run_rpg_e2e_tests.py`: **51 / 51 PASS (100.0% 통과, 0.01초 소요)**.
+  - `python3 tests/e2e_rpg/run_rpg_e2e_tests.py --tier 1..4`: 전 티어 개별 실행 100% PASS.
+  - `python3 tests/e2e_rpg/run_rpg_e2e_tests.py --milestone M1..M4`: 마일스톤별 필터 실행 100% PASS.
+  - `npx tsc --noEmit`: 0 TypeScript Errors (Exit Code 0).
+  - `python3 tests/e2e_design_system/run_all_e2e_tests.py`: 377 / 377 PASS (100.0% 통과).
+  - 구글 폼 보고서 제출 완료.
+
+
 - **요청 사항**:
   - `/reddit 에 뉴스들이 구글 뉴스 검색에 노출되지 않는 버그`
 - **원인 분석**:
