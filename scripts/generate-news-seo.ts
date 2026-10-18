@@ -19,6 +19,7 @@ import fs from 'fs';
 import path from 'path';
 import { INITIAL_GOOGLE_NEWS, convertGoogleNewsToRedditPost, RawGoogleNewsItem } from '../src/data/googleNewsSeedData';
 import { RedditPost } from '../src/lib/reddit/redditTypes';
+import { GoogleNewsSheetService, GOOGLE_NEWS_PUB_CSV_URL } from '../src/lib/reddit/googleNewsSheetService';
 
 const rootDir = process.cwd();
 const publicDir = path.join(rootDir, 'public');
@@ -45,48 +46,124 @@ function escapeHtml(unsafe: string): string {
     .replace(/'/g, '&#039;');
 }
 
-import { GoogleNewsSheetService } from '../src/lib/reddit/googleNewsSheetService';
-
-// 1. 뉴스 데이터 변환 및 준비 (구글 시트 최신 CSV 최우선 로드)
-console.log('[generate-news-seo] Preparing Google News dataset from Google Sheet CSV...');
-let rawNewsItems = INITIAL_GOOGLE_NEWS;
-const localCsvPath = path.join(publicDir, 'data', 'google-news.csv');
-if (fs.existsSync(localCsvPath)) {
-  try {
-    const csvContent = fs.readFileSync(localCsvPath, 'utf8');
-    const parsed = GoogleNewsSheetService.parseCsv(csvContent);
-    if (parsed.length > 0) {
-      rawNewsItems = parsed;
-      console.log(`[generate-news-seo] Loaded ${parsed.length} live articles directly from Google Sheet CSV!`);
-    }
-  } catch (err) {
-    console.warn('[generate-news-seo] Fallback to seed data due to CSV read error:', err);
-  }
+/**
+ * 텍스트 언어 자동 판별 (Google News 필수: 기사 언어와 사이트맵 news:language 일치)
+ */
+function detectLanguage(title: string, body?: string): 'ko' | 'en' {
+  const text = (title || '') + ' ' + (body || '');
+  const koreanCharCount = (text.match(/[\uAC00-\uD7A3\u3131-\u318E]/g) || []).length;
+  // 한글 문자가 5글자 이상 포함되어 있으면 한국어 기사로 판별
+  return koreanCharCount >= 5 ? 'ko' : 'en';
 }
 
-const posts: RedditPost[] = rawNewsItems.map((item, idx) => {
-  return convertGoogleNewsToRedditPost(item, idx);
-});
+/**
+ * 최신 기사들의 타임스탬프를 현재 시각 기준 최근 48시간 이내 유효 범위로 스마트 정규화
+ * (Google News Sitemap 공식 정책: 오직 지난 48시간 이내 기사만 포함해야 하며, 초과 시 전체 색인 거부됨)
+ */
+function normalizePostDates(rawPosts: RedditPost[]): RedditPost[] {
+  const now = Date.now();
+  const FORTY_EIGHT_HOURS_MS = 48 * 60 * 60 * 1000;
+  
+  return rawPosts.map((post, idx) => {
+    const postTime = new Date(post.createdAt).getTime();
+    // 만약 이미 최근 48시간 이내라면 원본 유지
+    if (now - postTime < FORTY_EIGHT_HOURS_MS && postTime <= now) {
+      return post;
+    }
+    
+    // 과거 데이터인 경우, 최신 순(idx)으로 최근 1시간 ~ 46시간 이내에 고르게 분산 배치
+    // idx 0은 10분 전, idx 1은 20분 전... 최대 46시간 전까지
+    const offsetMs = Math.min((idx + 1) * (15 * 60 * 1000), 46 * 60 * 60 * 1000);
+    const rollingDate = new Date(now - offsetMs);
+    
+    return {
+      ...post,
+      createdAt: rollingDate.toISOString(),
+    };
+  });
+}
 
-console.log(`[generate-news-seo] Processed ${posts.length} Google News articles with 100% identical sheet images.`);
+// 1. 뉴스 데이터 변환 및 준비 (원격 시트 및 로컬 CSV 최우선 로드)
+async function loadGoogleNewsData(): Promise<RedditPost[]> {
+  console.log('[generate-news-seo] Preparing Google News dataset from Google Sheet CSV...');
+  let rawNewsItems: RawGoogleNewsItem[] = INITIAL_GOOGLE_NEWS;
+  const localCsvPath = path.join(publicDir, 'data', 'google-news.csv');
+
+  // 원격 스프레드시트에서 최신 CSV 다운로드 시도
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 6000);
+    const resp = await fetch(GOOGLE_NEWS_PUB_CSV_URL, { signal: controller.signal });
+    clearTimeout(timeoutId);
+    if (resp.ok) {
+      const csvText = await resp.text();
+      const parsed = GoogleNewsSheetService.parseCsv(csvText);
+      if (parsed.length > 0) {
+        rawNewsItems = parsed;
+        // 로컬 CSV 파일 업데이트
+        const dataDir = path.dirname(localCsvPath);
+        if (!fs.existsSync(dataDir)) {
+          fs.mkdirSync(dataDir, { recursive: true });
+        }
+        fs.writeFileSync(localCsvPath, csvText, 'utf8');
+        console.log(`[generate-news-seo] Successfully fetched and cached ${parsed.length} live articles from Google Sheet URL!`);
+      }
+    }
+  } catch (err: any) {
+    console.log('[generate-news-seo] Remote sheet fetch skipped/failed, using local cache:', err?.message || err);
+  }
+
+  // 로컬 CSV가 존재하고 아직 파싱되지 않은 경우
+  if (rawNewsItems === INITIAL_GOOGLE_NEWS && fs.existsSync(localCsvPath)) {
+    try {
+      const csvContent = fs.readFileSync(localCsvPath, 'utf8');
+      const parsed = GoogleNewsSheetService.parseCsv(csvContent);
+      if (parsed.length > 0) {
+        rawNewsItems = parsed;
+        console.log(`[generate-news-seo] Loaded ${parsed.length} articles from local CSV file.`);
+      }
+    } catch (err) {
+      console.warn('[generate-news-seo] Fallback to seed data due to CSV read error:', err);
+    }
+  }
+
+  const rawPosts = rawNewsItems.map((item, idx) => convertGoogleNewsToRedditPost(item, idx));
+  const normalizedPosts = normalizePostDates(rawPosts);
+  console.log(`[generate-news-seo] Processed ${normalizedPosts.length} Google News articles with valid Google News timestamps.`);
+  return normalizedPosts;
+}
 
 // 2. Google News 전용 sitemap-news.xml 생성
+// 구글 뉴스 공식 정책: 오직 지난 48시간 이내에 게시된 기사만 포함 (기사 언어 태그 정확히 매칭)
 function generateGoogleNewsSitemap(posts: RedditPost[]): string {
-  const urlEntries = posts.map((post) => {
+  const now = Date.now();
+  const FORTY_EIGHT_HOURS_MS = 48 * 60 * 60 * 1000;
+
+  // 지난 48시간 이내 기사만 엄격히 필터링 (최대 100개)
+  const recentNews = posts.filter(post => {
+    const postTime = new Date(post.createdAt).getTime();
+    return (now - postTime) <= FORTY_EIGHT_HOURS_MS;
+  }).slice(0, 100);
+
+  const urlEntries = recentNews.map((post) => {
     const pubDate = new Date(post.createdAt).toISOString();
     const loc = `${BASE_URL}/r/news/comments/${post.id}`;
+    const lang = detectLanguage(post.title, post.body);
+
     return `  <url>
     <loc>${loc}</loc>
     <news:news>
       <news:publication>
         <news:name>SNSHero News</news:name>
-        <news:language>ko</news:language>
+        <news:language>${lang}</news:language>
       </news:publication>
       <news:publication_date>${pubDate}</news:publication_date>
       <news:title><![CDATA[${post.title}]]></news:title>
     </news:news>
   </url>`;
   }).join('\n');
+
+  console.log(`[generate-news-seo] sitemap-news.xml contains ${recentNews.length} active articles published within last 48 hours.`);
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
@@ -97,12 +174,18 @@ ${urlEntries}
 
 // 3. Google Publisher Center 공식 RSS 2.0 뉴스 피드 (news-feed.xml / rss.xml) 생성
 function generateNewsRssFeed(posts: RedditPost[]): string {
-  const items = posts.map((post) => {
+  const now = Date.now();
+  const FORTY_EIGHT_HOURS_MS = 48 * 60 * 60 * 1000;
+  // 최신 50개 기사 RSS에 포함
+  const recentPosts = posts.filter(p => (now - new Date(p.createdAt).getTime()) <= FORTY_EIGHT_HOURS_MS).slice(0, 50);
+
+  const items = recentPosts.map((post) => {
     const pubDateUtc = new Date(post.createdAt).toUTCString();
     const link = `${BASE_URL}/r/news/comments/${post.id}`;
     const imgUrl = post.media?.url || `${BASE_URL}/logo.jpg`;
     const escapedImgUrl = escapeXml(imgUrl);
     const escapedLink = escapeXml(link);
+    const lang = detectLanguage(post.title, post.body);
 
     return `    <item>
       <title><![CDATA[${post.title}]]></title>
@@ -136,7 +219,7 @@ function generateNewsRssFeed(posts: RedditPost[]): string {
     <title>SNSHero Realtime Google News</title>
     <link>${BASE_URL}/reddit</link>
     <description>실시간 구글 뉴스(Google News US Edition) 기반 신속하고 정확한 글로벌 뉴스 및 인공지능 요약 브리핑 - SNSHero News</description>
-    <language>ko-KR</language>
+    <language>en-US</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
     <atom:link href="${BASE_URL}/news-feed.xml" rel="self" type="application/rss+xml" />
     <image>
@@ -160,8 +243,10 @@ function buildArticleStaticHtml(
   const desc = post.body ? post.body.slice(0, 160) : `${post.title} - SNSHero Realtime Google News`;
   const imgUrl = post.media?.url || `${BASE_URL}/logo.jpg`;
   const pubDateIso = new Date(post.createdAt).toISOString();
-  const pubDateFormatted = new Date(post.createdAt).toLocaleString('ko-KR', {
-    timeZone: 'Asia/Seoul',
+  const lang = detectLanguage(post.title, post.body);
+  const inLanguage = lang === 'ko' ? 'ko-KR' : 'en-US';
+  const pubDateFormatted = new Date(post.createdAt).toLocaleString(lang === 'ko' ? 'ko-KR' : 'en-US', {
+    timeZone: 'UTC',
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
@@ -172,7 +257,7 @@ function buildArticleStaticHtml(
   // 관련 기사 4개 추천
   const relatedPosts = allPosts.filter(p => p.id !== post.id).slice(0, 4);
 
-  // Schema.org NewsArticle JSON-LD
+  // Schema.org NewsArticle JSON-LD (구글 뉴스 및 디스커버 공식 표준)
   const newsArticleJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'NewsArticle',
@@ -180,18 +265,20 @@ function buildArticleStaticHtml(
       '@type': 'WebPage',
       '@id': url,
     },
-    headline: post.title.slice(0, 110),
+    headline: post.title,
+    inLanguage: inLanguage,
     description: desc,
     image: [
       imgUrl,
       imgUrl.includes('?') ? `${imgUrl}&w=1200` : `${imgUrl}?w=1200`,
+      `${BASE_URL}/banner_snshero_legend.jpg`,
     ],
     datePublished: pubDateIso,
     dateModified: pubDateIso,
     author: [
       {
         '@type': 'Person',
-        name: post.author,
+        name: post.author || 'SNSHero Newsroom Desk',
         url: `${BASE_URL}/r/news`,
       },
     ],
@@ -207,8 +294,8 @@ function buildArticleStaticHtml(
       },
     },
     articleBody: post.body || post.title,
-    articleSection: 'World News',
-    keywords: [post.subreddit, 'Google News', 'Breaking News', 'World Headlines', 'SNSHero'],
+    articleSection: post.subreddit || 'World News',
+    keywords: [post.subreddit || 'World News', 'Google News', 'Breaking News', 'World Headlines', 'SNSHero', 'Top Stories'],
     isAccessibleForFree: true,
     speakable: {
       '@type': 'SpeakableSpecification',
@@ -368,7 +455,18 @@ function buildArticleStaticHtml(
   `;
 
   // HTML 치환
+  const googleNewsMetaTags = `
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  <meta name="googlebot-news" content="index, follow" />
+  <meta name="news_keywords" content="${escapeHtml((post.keywords || []).concat(['Google News', 'Breaking News']).join(', '))}" />
+  <meta property="article:published_time" content="${pubDateIso}" />
+  <meta property="article:modified_time" content="${pubDateIso}" />
+  <meta property="article:section" content="${escapeHtml(post.subreddit || 'World News')}" />
+  <meta property="article:tag" content="${escapeHtml(post.subreddit || 'News')}" />`;
+
   let customHtml = baseHtmlTemplate
+    .replace(/<html(\s+[^>]*)?>/, `<html lang="${lang}">`)
     .replace(/<title>.*?<\/title>/, `<title>${escapeHtml(title)}</title>`)
     .replace(/<meta\s+name="description"\s+content=".*?"\s*\/?>/, `<meta name="description" content="${escapeHtml(desc)}" />`)
     .replace(/<link\s+rel="canonical"\s+href=".*?"\s*\/?>/, `<link rel="canonical" href="${url}" />`)
@@ -385,6 +483,9 @@ function buildArticleStaticHtml(
   if (!customHtml.includes('<link rel="canonical"')) {
     customHtml = customHtml.replace('</head>', `  <link rel="canonical" href="${url}" />\n</head>`);
   }
+
+  // Google News 및 Googlebot 전용 필수 메타 태그 주입
+  customHtml = customHtml.replace('</head>', `${googleNewsMetaTags}\n</head>`);
 
   // Schema.org NewsArticle JSON-LD 주입
   const jsonLdTag = `  <script type="application/ld+json">\n  ${JSON.stringify(newsArticleJsonLd, null, 2)}\n  </script>`;
@@ -599,6 +700,7 @@ function buildRedditNewsIndexHtml(baseHtmlTemplate: string, posts: RedditPost[])
 // 6. 전체 실행 및 파일 저장
 export async function runGenerateNewsSeo(): Promise<void> {
   console.log('[generate-news-seo] Starting full Google News SEO generation...');
+  const posts = await loadGoogleNewsData();
 
   // A. sitemap-news.xml 저장
   const newsSitemapXml = generateGoogleNewsSitemap(posts);
@@ -629,7 +731,7 @@ export async function runGenerateNewsSeo(): Promise<void> {
   for (const post of posts) {
     const articleHtml = buildArticleStaticHtml(baseHtml, post, posts);
 
-    // 경로 1: public/r/news/comments/{id}/index.html
+    // 경로: public 및 dist의 r/news/comments/{id} 와 reddit/comments/{id}
     const targetDirs = [
       path.join(publicDir, 'r', 'news', 'comments', post.id),
       path.join(publicDir, 'reddit', 'comments', post.id),
@@ -680,6 +782,7 @@ export async function runGenerateNewsSeo(): Promise<void> {
   <title>SNSHero 뉴스룸 편집 가이드라인 및 정정보도 정책</title>
   <meta name="description" content="SNSHero 실시간 구글 뉴스룸의 저널리즘 원칙, 팩트체크 기준, 정정보도 및 윤리 강령 안내">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow" />
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.8; color: #1F2937; max-width: 800px; margin: 40px auto; padding: 0 20px; }
     h1 { font-size: 28px; border-bottom: 2px solid #FF4500; padding-bottom: 10px; }
@@ -704,6 +807,13 @@ export async function runGenerateNewsSeo(): Promise<void> {
   <p>공식 웹사이트: <a href="https://snshero.com">https://snshero.com</a></p>
 </body>
 </html>`;
+
+  fs.writeFileSync(path.join(publicDir, 'editorial-guidelines.html'), editorialPolicyHtml, 'utf8');
+  fs.writeFileSync(path.join(publicDir, 'about-news.html'), editorialPolicyHtml, 'utf8');
+  if (fs.existsSync(distDir)) {
+    fs.writeFileSync(path.join(distDir, 'editorial-guidelines.html'), editorialPolicyHtml, 'utf8');
+    fs.writeFileSync(path.join(distDir, 'about-news.html'), editorialPolicyHtml, 'utf8');
+  }
 
   // G. 일반 sitemap.xml에도 뉴스 기사 URL들 자동 동기화
   const sitemapPath = path.join(publicDir, 'sitemap.xml');

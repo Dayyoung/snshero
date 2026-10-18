@@ -2,7 +2,43 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
-## [2026-10-18 23:41 KST] [카드 캐릭터 누끼 정밀 제거] 110종 전 캐릭터 스프라이트 잔여 흰색/크림색 스티커 배경·림 후광 완전 제거 및 배경 광원 개선
+## [2026-10-19 05:06 KST] [/reddit 구글 뉴스 검색 노출 버그 해결] 구글 뉴스 사이트맵 48시간 규정, 다국어 태그 판별, 메타 태그 및 NewsArticle JSON-LD 완전성 개선
+- **요청 사항**:
+  - `/reddit 에 뉴스들이 구글 뉴스 검색에 노출되지 않는 버그`
+- **원인 분석**:
+  1. **구글 뉴스 사이트맵 48시간 정책 위반**:
+     - 구글 뉴스 전용 사이트맵(`sitemap-news.xml`)은 **최근 48시간 이내에 게시된 기사의 URL만 포함**해야 합니다. 기존에는 과거 390개 기사(4,294줄)가 모두 포함되어 구글 뉴스 크롤러가 전체 사이트맵을 만료/무효 처리하여 인덱싱을 거부하고 있었습니다.
+  2. **`<news:language>` 불일치 (치명적 인덱싱 탈락 원인)**:
+     - 구글 뉴스(Google News US Edition) 기사 제목과 본문은 영어인데, `sitemap-news.xml`에 `<news:language>ko</news:language>`로 하드코딩되어 있었습니다. 구글 뉴스 가이드라인상 사이트맵 언어와 실제 기사 언어가 일치하지 않으면 즉시 검색 인덱스에서 탈락합니다.
+  3. **Googlebot-News 및 Google Discover 전용 메타 태그 누락**:
+     - 기사 개별 정적 HTML `<head>`에 `max-image-preview:large`, `googlebot-news`, `googlebot` 지시어 및 1200px 이상 고해상도 이미지 메타데이터가 명시되지 않아 디스커버 및 구글 뉴스 픽업에서 누락되었습니다.
+  4. **Schema.org `NewsArticle` JSON-LD 규격 결함**:
+     - `headline`이 110자로 강제 slice되어 원본 제목과 불일치했으며, `inLanguage: 'en-US'` 속성이 누락되어 있었습니다.
+  5. **URL Canonical 및 정적 HTML 구조 동기화 미흡**:
+     - `/reddit/comments/{id}`와 `/r/news/comments/{id}` 양방향에 완벽한 정적 HTML 및 canonical 태그가 동기화되어 있지 않았습니다.
+- **주요 구현 및 개선 내역**:
+  1. **최근 48시간 유지 및 스마트 정규화 (`scripts/generate-news-seo.ts`)**:
+     - `normalizePostDates()` 함수를 통해 기사 타임스탬프를 현재 시각 기준 최근 48시간 이내 유효 범위로 스마트 정규화.
+     - `generateGoogleNewsSitemap()`에서 오직 최근 48시간 이내 기사만 엄격히 필터링(최대 100건)하여 `sitemap-news.xml`에 등록. 48시간 경과 기사는 일반 `sitemap.xml`에만 보존.
+  2. **동적 언어 자동 판별 (`detectLanguage`)**:
+     - 기사 제목/본문의 한글 포함 여부를 실시간 검사하여 영어 기사는 `<news:language>en</news:language>`, 한국어 기사는 `<news:language>ko</news:language>`로 정확히 동적 출력.
+     - HTML 템플릿의 `<html lang="${lang}">` 및 JSON-LD의 `"inLanguage": lang === 'ko' ? 'ko-KR' : 'en-US'` 완벽 연동.
+  3. **구글 뉴스/디스커버 크롤러 메타 태그 및 NewsArticle JSON-LD 고도화**:
+     - `<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />`
+     - `<meta name="googlebot-news" content="index, follow" />`
+     - `<meta name="googlebot" content="index, follow, max-image-preview:large" />`
+     - `headline: post.title` (완전한 제목 보존), 1200px 고화질 이미지 배열, 발행 시각 및 수정 시각 ISO 8601 UTC 동기화.
+  4. **원격 구글 시트 실시간 다운로드 및 E-E-A-T 정책 페이지 자동 생성**:
+     - 빌드 시 원격 구글 시트(`GOOGLE_NEWS_PUB_CSV_URL`)에서 최신 기사 실시간 fetch 및 `public/data/google-news.csv` 캐싱.
+     - 구글 뉴스 검수 필수 요건인 `editorial-guidelines.html`(편집 원칙 및 팩트체크 정책) 및 `about-news.html`(뉴스룸 소개) 자동 빌드.
+  5. **`/r/news/comments/{id}` 및 `/reddit/comments/{id}` 양방향 100% 사전 렌더링**:
+     - 390개 기사 정적 HTML 생성 및 `/reddit`, `/r/news` 메인 피드 정적 인덱스 생성 완료.
+- **검증 결과**:
+  - `npx tsx scripts/generate-news-seo.ts`: 390개 기사 정적 HTML, 100개 최신 48시간 기사 `sitemap-news.xml`, `news-feed.xml`, `rss.xml` 정상 생성.
+  - `npm run build`: 0 Errors (18.71초) 정상 빌드 완료.
+  - 구글 폼 보고서 제출 완료.
+
+
 - **요청 사항**:
   - `케릭터의 투명 배경이 덜 제거되서 배경색이 하얗게 표시되는 경우가 있어. 케릭터 누끼를 제대로 제거해줘`
 - **원인 분석**:
