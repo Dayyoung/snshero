@@ -493,7 +493,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
     : `https://www.youtube-nocookie.com/embed?listType=playlist&list=${YOUTUBE_PLAYLIST_ID}&index=${currentEpisodeNum - 1}&autoplay=1&rel=0&enablejsapi=1`;
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#fdfcfc] text-[#201d1d] font-mono p-3 sm:p-4 md:p-8 pb-32 max-w-5xl mx-auto w-full overflow-x-hidden">
+    <div className="flex flex-col min-h-screen bg-[#fdfcfc] text-[#201d1d] font-mono px-0 py-2 sm:py-3 pb-32 max-w-none mx-auto w-full overflow-x-hidden">
       {shareToast && (
         <div className="fixed top-14 left-1/2 -translate-x-1/2 z-[100000] bg-[#201d1d] text-[#fdfcfc] text-xs px-4 py-2.5 rounded-none border border-[#201d1d] flex items-center gap-2 font-mono">
           <CheckCircle2 size={14} className="text-emerald-400" />
@@ -502,37 +502,37 @@ export const MovieView: React.FC<MovieViewProps> = ({
       )}
 
       {/* ── Page Header ── */}
-      <PageHeader
-        title={t('movie_title', language) || 'SNSHero 공식 영화 (극장판)'}
-        onBack={() => onNavigate('home')}
-        rightAction={
-          <div className="flex items-center gap-1.5">
-            <button
-              type="button"
-              onClick={() => fetchLatestPlaylistStatus(false)}
-              disabled={isCheckingPlaylist}
-              title="YouTube 최신 회차 동기화"
-              className="min-h-[44px] flex items-center gap-1 px-3 py-1.5 rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-xs font-bold text-[#201d1d] hover:bg-[#f8f7f7] disabled:opacity-50 transition-colors cursor-pointer shrink-0 font-mono"
-            >
-              <RefreshCw size={14} className={cn(isCheckingPlaylist && 'animate-spin')} />
-              <span className="hidden sm:inline">[동기화]</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setShowDrawer(true)}
-              className="min-h-[44px] flex items-center gap-1.5 px-3 py-1.5 rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-xs font-bold text-[#201d1d] hover:bg-[#f8f7f7] transition-colors cursor-pointer shrink-0 font-mono"
-            >
-              <List size={16} />
-              <span className="hidden sm:inline">[{t('movie_list', language) || '영화 회차 목록'}]</span>
-            </button>
-          </div>
-        }
-      />
-
-
+      <div className="px-2 sm:px-4">
+        <PageHeader
+          title={t('movie_title', language) || 'SNSHero 공식 영화 (극장판)'}
+          onBack={() => onNavigate('home')}
+          rightAction={
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={() => fetchLatestPlaylistStatus(false)}
+                disabled={isCheckingPlaylist}
+                title="YouTube 최신 회차 동기화"
+                className="min-h-[44px] flex items-center gap-1 px-3 py-1.5 rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-xs font-bold text-[#201d1d] hover:bg-[#f8f7f7] disabled:opacity-50 transition-colors cursor-pointer shrink-0 font-mono"
+              >
+                <RefreshCw size={14} className={cn(isCheckingPlaylist && 'animate-spin')} />
+                <span className="hidden sm:inline">[동기화]</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowDrawer(true)}
+                className="min-h-[44px] flex items-center gap-1.5 px-3 py-1.5 rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-xs font-bold text-[#201d1d] hover:bg-[#f8f7f7] transition-colors cursor-pointer shrink-0 font-mono"
+              >
+                <List size={16} />
+                <span className="hidden sm:inline">[{t('movie_list', language) || '영화 회차 목록'}]</span>
+              </button>
+            </div>
+          }
+        />
+      </div>
 
       {/* ── Movie Banner Info Header ── */}
-      <div className="mb-4 sm:mb-6 p-4 rounded-none border border-[#201d1d] bg-[#201d1d] text-[#fdfcfc]">
+      <div className="mb-3 sm:mb-4 px-3 sm:px-4 py-3 sm:py-4 rounded-none border-y border-x-0 border-[#201d1d] bg-[#201d1d] text-[#fdfcfc]">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div className="flex items-start gap-2.5">
             <div className="p-2 rounded-sm bg-[#fdfcfc]/10 border border-[#fdfcfc]/20 text-[#fdfcfc] shrink-0 mt-0.5">
@@ -592,9 +592,9 @@ export const MovieView: React.FC<MovieViewProps> = ({
       </div>
 
       {/* ── Main Movie Player Section ── */}
-      <div className="mb-6 space-y-3">
+      <div className="mb-6 space-y-2 sm:space-y-3 w-full">
         {/* Playback Mode Switcher: Cinematic Player vs MP4 Video vs YouTube Stream */}
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 px-2 sm:px-4">
           <button
             type="button"
             onClick={() => {
@@ -662,7 +662,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
         ) : playerMode === 'mp4' ? (
           <div
             className={cn(
-              'relative w-full rounded-none overflow-hidden bg-black border border-[#201d1d] flex flex-col items-center justify-center',
+              'relative w-full rounded-none overflow-hidden bg-black border-y border-x-0 border-[#201d1d] flex flex-col items-center justify-center',
               isFullscreen ? 'fixed inset-0 z-50 rounded-none border-none max-w-none' : 'aspect-video'
             )}
           >
@@ -671,7 +671,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
               src={`/videos/episodes/episode_${String(currentEpisodeNum).padStart(2, '0')}.mp4`}
               controls
               playsInline
-              className="w-full h-full object-contain"
+              className="w-full h-full object-cover"
               poster={`/images/webtoon/episode_${String(currentEpisodeNum).padStart(2, '0')}/scene_00.webp`}
             >
               <p className="text-white text-xs font-mono p-4">
@@ -705,7 +705,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
           <div
             ref={playerContainerRef}
             className={cn(
-              'relative w-full rounded-none overflow-hidden bg-black border border-[#201d1d] transition-colors',
+              'relative w-full rounded-none overflow-hidden bg-black border-y border-x-0 border-[#201d1d] transition-colors',
               isFullscreen ? 'fixed inset-0 z-50 rounded-none border-none max-w-none' : 'aspect-video'
             )}
           >
@@ -752,7 +752,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
         )}
 
         {/* Player Controls & Episode Info Bar */}
-        <div className="p-3 sm:p-4 rounded-none border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div className="p-3 sm:p-4 rounded-none border-y border-x-0 border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2 flex-wrap">
             <span className="font-mono text-xs font-bold px-2 py-1 rounded-sm bg-[#201d1d] text-[#fdfcfc]">
               극장판 EP.{String(currentEpisodeNum).padStart(2, '0')}
@@ -874,7 +874,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
       </div>
 
       {/* ── Episode Grid View (1 ~ 40화) ── */}
-      <div className="space-y-3">
+      <div className="space-y-3 px-2 sm:px-4">
         <div className="flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center gap-2">
             <h3 className="font-mono text-sm font-bold text-[#201d1d]">

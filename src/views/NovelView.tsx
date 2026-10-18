@@ -1118,11 +1118,20 @@ export const NovelView: React.FC<NovelViewProps> = ({
       )}
 
       {/* Main Content Reader Canvas */}
-      <main className="flex-1 w-full max-w-4xl mx-auto px-4 py-8 flex flex-col items-center">
-        <div className={cn("w-full border p-6 sm:p-10 rounded-none transition-colors duration-200", themeContainerClass)}>
+      <main className="flex-1 w-full max-w-none mx-auto px-0 py-0 flex flex-col items-center">
+        <div
+          className={cn(
+            "w-full border-y border-x-0 rounded-none transition-colors duration-200",
+            readerTab === 'cartoon' && !isPromptMode ? "px-0 py-2 sm:py-4" : "px-3 sm:px-6 py-4 sm:py-6",
+            themeContainerClass
+          )}
+        >
           
           {/* Episode Header */}
-          <div className="border-b border-[rgba(15,0,0,0.12)] pb-6 mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className={cn(
+            "border-b border-[rgba(15,0,0,0.12)] pb-4 mb-4 sm:mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4",
+            readerTab === 'cartoon' && !isPromptMode ? "px-3 sm:px-4" : ""
+          )}>
             <div>
               <div className="flex items-center gap-2 mb-2 flex-wrap">
                 <button
@@ -1181,7 +1190,10 @@ export const NovelView: React.FC<NovelViewProps> = ({
           </div>
 
           {/* TTS Player Bar */}
-          <div className="mb-8 p-3 border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] rounded-none flex items-center justify-between text-xs font-mono">
+          <div className={cn(
+            "mb-4 sm:mb-6 p-3 border-y sm:border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] rounded-none flex items-center justify-between text-xs font-mono",
+            readerTab === 'cartoon' && !isPromptMode ? "border-x-0 px-3 sm:px-4" : ""
+          )}>
             <div className="flex items-center gap-2">
               <Volume2 size={16} className="text-[#201d1d]" />
               <span className="font-bold text-[#201d1d]">TTS Voice Reader</span>
@@ -1538,9 +1550,9 @@ export const NovelView: React.FC<NovelViewProps> = ({
             </div>
           ) : readerTab === 'cartoon' && !isPromptMode ? (
             /* ── CARTOON WEBTOON VIEWER (IMAGE SCENE PANELS) ── */
-            <div className="w-full space-y-6 font-mono">
+            <div className="w-full space-y-4 sm:space-y-6 font-mono">
               {/* Cartoon Subheader & Display Mode Controls */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] rounded-none text-xs">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-3 sm:px-4 py-3 border-y border-x-0 border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] rounded-none text-xs">
                 <div className="flex items-center gap-2">
                   <Image size={18} className="text-[#201d1d]" />
                   <span className="font-bold text-[#201d1d]">
@@ -1603,7 +1615,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
 
               {/* Vertical Scroll Webtoon Strip View */}
               {cartoonDisplayMode === 'scroll' ? (
-                <div className="space-y-8">
+                <div className="space-y-4 sm:space-y-6 w-full">
                   {Array.from({ length: totalEpisodeScenes + 1 }, (_, i) => i).map((scNum) => {
                     const attempt = sceneImgAttempts[`${currentEpisodeNum}_${scNum}`] || 0;
                     const isFailedAll = attempt > 10;
@@ -1644,7 +1656,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
                 </div>
               ) : (
                 /* Single Slide Mode View */
-                <div className="border border-[rgba(15,0,0,0.12)] rounded-none bg-[#fdfcfc] overflow-hidden p-4 sm:p-6 space-y-4">
+                <div className="w-full border-y border-x-0 border-[rgba(15,0,0,0.12)] rounded-none bg-[#fdfcfc] overflow-hidden px-0 py-3 space-y-3">
                   {(() => {
                     const scNum = Math.min(activeSlideIndex, totalEpisodeScenes);
                     const attempt = sceneImgAttempts[`${currentEpisodeNum}_${scNum}`] || 0;
@@ -1658,9 +1670,9 @@ export const NovelView: React.FC<NovelViewProps> = ({
                           : '');
 
                     return (
-                      <div className="space-y-4 font-mono">
+                      <div className="space-y-3 font-mono w-full">
                         {/* Slide Navigation Header with 44px+ touch targets */}
-                        <div className="flex items-center justify-between border-b border-[rgba(15,0,0,0.12)] pb-3 text-xs flex-wrap gap-2">
+                        <div className="flex items-center justify-between border-b border-[rgba(15,0,0,0.12)] px-3 sm:px-4 pb-3 text-xs flex-wrap gap-2">
                           <span className="font-bold text-[#201d1d]">
                             {scNum === 0 ? `[ TITLE CARD ]` : `SCENE ${pad2(scNum)} / ${pad2(totalEpisodeScenes)}`}
                           </span>
@@ -1707,7 +1719,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
                         />
 
                         {/* Prev / Next Slide Navigation Buttons */}
-                        <div className="flex items-center justify-between pt-2">
+                        <div className="flex items-center justify-between px-3 sm:px-4 pt-2">
                           <button
                             onClick={() => setActiveSlideIndex(prev => Math.max(0, prev - 1))}
                             disabled={scNum <= 0}
@@ -1766,7 +1778,10 @@ export const NovelView: React.FC<NovelViewProps> = ({
           )}
 
           {/* SCR-11-03: Episode Complete Reward & Shop Shortcut */}
-          <div className="mt-12 pt-6 border-t border-[rgba(15,0,0,0.12)] flex flex-col items-center gap-3">
+          <div className={cn(
+            "mt-8 sm:mt-12 pt-6 border-t border-[rgba(15,0,0,0.12)] flex flex-col items-center gap-3",
+            readerTab === 'cartoon' && !isPromptMode ? "px-3 sm:px-4" : ""
+          )}>
             {!claimedRewards[currentEpisodeNum] ? (
               <div className="flex items-center gap-2 text-xs font-bold text-[#201d1d] bg-[#f8f7f7] px-4 py-2.5 border border-[#201d1d] rounded-none">
                 <Sparkles size={16} />
@@ -1795,7 +1810,10 @@ export const NovelView: React.FC<NovelViewProps> = ({
 
           {/* Next Episode Teaser & Quick Advance Card */}
           {currentEpisodeNum < TOTAL_EPISODES ? (
-            <div className="mt-8 p-4 sm:p-5 border border-[#201d1d] bg-[#f8f7f7] rounded-none flex flex-col sm:flex-row items-center justify-between gap-4 font-mono">
+            <div className={cn(
+              "mt-6 sm:mt-8 p-4 sm:p-5 border-y sm:border border-[#201d1d] bg-[#f8f7f7] rounded-none flex flex-col sm:flex-row items-center justify-between gap-4 font-mono",
+              readerTab === 'cartoon' && !isPromptMode ? "border-x-0" : ""
+            )}>
               <div className="space-y-1 text-center sm:text-left">
                 <div className="flex items-center justify-center sm:justify-start gap-2 text-xs font-bold text-[#201d1d]">
                   <BookmarkCheck size={16} />
@@ -1829,14 +1847,14 @@ export const NovelView: React.FC<NovelViewProps> = ({
               </button>
             </div>
           ) : (
-            <div className="mt-8 p-4 border border-emerald-500 bg-emerald-50 text-emerald-900 rounded-none text-center text-xs font-bold font-mono">
+            <div className="mt-8 p-4 border-y border-x-0 border-emerald-500 bg-emerald-50 text-emerald-900 rounded-none text-center text-xs font-bold font-mono">
               [v] {t('webtoon_last_ep_reached', language)}
             </div>
           )}
         </div>
 
         {/* Bottom Pagination Controls */}
-        <div className="w-full flex items-center justify-between mt-6 font-mono text-xs pb-16">
+        <div className="w-full flex items-center justify-between mt-6 px-3 sm:px-4 font-mono text-xs pb-16">
           <button
             onClick={goToPrevEpisode}
             disabled={currentEpisodeNum <= 1}
@@ -2105,11 +2123,11 @@ export const NovelView: React.FC<NovelViewProps> = ({
       {/* Lightbox Fullscreen Cartoon Modal */}
       {lightboxSceneIndex !== null && (
         <div
-          className="fixed inset-0 z-50 bg-black/95 flex flex-col items-center justify-between p-4 sm:p-6 font-mono select-none"
+          className="fixed inset-0 z-50 bg-black/95 flex flex-col items-center justify-between px-0 py-2 sm:py-4 font-mono select-none"
           onClick={() => setLightboxSceneIndex(null)}
         >
           {/* Lightbox Header */}
-          <div className="w-full max-w-5xl flex items-center justify-between text-[#fdfcfc] border-b border-[rgba(255,255,255,0.2)] pb-3" onClick={e => e.stopPropagation()}>
+          <div className="w-full px-3 sm:px-4 flex items-center justify-between text-[#fdfcfc] border-b border-[rgba(255,255,255,0.2)] pb-3" onClick={e => e.stopPropagation()}>
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold text-[#fdfcfc] bg-[#201d1d] px-2.5 py-0.5 border border-[rgba(255,255,255,0.2)] rounded-sm uppercase">
                 {lightboxSceneIndex === 0 ? `EPISODE ${currentEpisodeNum} · [ TITLE CARD ]` : `EPISODE ${currentEpisodeNum} · SCENE ${pad2(lightboxSceneIndex)} / ${pad2(totalEpisodeScenes)}`}
@@ -2131,14 +2149,14 @@ export const NovelView: React.FC<NovelViewProps> = ({
           </div>
 
           {/* Lightbox Image Container */}
-          <div className="relative my-auto max-w-5xl max-h-[80vh] flex items-center justify-center overflow-hidden" onClick={e => e.stopPropagation()}>
+          <div className="relative my-auto w-full max-w-none max-h-[85vh] flex items-center justify-center overflow-hidden" onClick={e => e.stopPropagation()}>
             <img
               src={getCartoonSceneUrl(currentEpisodeNum, lightboxSceneIndex, sceneImgAttempts[`${currentEpisodeNum}_${lightboxSceneIndex}`] || 0)}
               alt={`Episode ${currentEpisodeNum} Scene ${lightboxSceneIndex}`}
               loading="lazy"
               decoding="async"
               referrerPolicy="no-referrer"
-              className="max-w-full max-h-[75vh] object-contain rounded-none border border-[rgba(255,255,255,0.2)]"
+              className="w-full max-w-full max-h-[84vh] object-contain rounded-none border-y border-x-0 border-[rgba(255,255,255,0.2)]"
               onError={() => {
                 const key = `${currentEpisodeNum}_${lightboxSceneIndex}`;
                 setSceneImgAttempts(prev => ({
@@ -2203,7 +2221,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
           </div>
 
           {/* Lightbox Footer Caption */}
-          <div className="w-full max-w-3xl bg-[#201d1d] border border-[rgba(255,255,255,0.2)] p-3.5 rounded-none text-center text-xs text-[#fdfcfc] leading-relaxed font-mono select-text" onClick={e => e.stopPropagation()}>
+          <div className="w-full bg-[#201d1d] border-y border-x-0 border-[rgba(255,255,255,0.2)] p-3.5 rounded-none text-center text-xs text-[#fdfcfc] leading-relaxed font-mono select-text" onClick={e => e.stopPropagation()}>
             {(() => {
               const imgInfo = getCartoonImageInfo(currentEpisodeNum, lightboxSceneIndex);
               const txt = imgInfo

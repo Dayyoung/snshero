@@ -2,6 +2,20 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-18 21:35 KST] [UI/UX 개선] 웹툰 및 무비(영화/애니메이션) 뷰 좌우 여백 제거 및 100% 풀와이드 대화면 표시 적용
+- **작업명**: `[UI/UX 개선] 웹툰 및 무비(영화/애니메이션) 뷰 좌우 여백 제거 및 풀와이드 대화면 표시 적용`
+- **주요 해결 내역**:
+  1. `src/App.tsx`: `view === 'webtoon' | 'movie' | 'anime' | 'novel'` 진입 시 메인 컨테이너의 `max-w-[1024px]` 및 좌우 보더 제한을 해제(`max-w-none border-x-0`)하여 화면 전체 폭을 활용하도록 개선.
+  2. `src/views/NovelView.tsx` & `src/components/webtoon/WebtoonPanelCard.tsx`:
+     - `<main>`의 `max-w-4xl px-4` 및 내부 래퍼의 `p-6 sm:p-10`, 슬라이드 모드의 `p-4 sm:p-6` 등 3중으로 중첩되던 좌우 여백을 전면 제거(`px-0 max-w-none border-x-0`).
+     - `WebtoonPanelCard`의 이미지 `max-h-[850px] object-contain` 제한으로 발생하던 좌우 필러박스 여백을 제거하고 `w-full h-auto block object-cover`로 변경하여 웹툰 컷과 라이트박스 확대 모달이 화면 좌우 끝에서 끝까지(100% Full-Bleed) 크게 표시되도록 개선.
+  3. `src/views/MovieView.tsx`, `src/components/movie/CinematicMoviePlayer.tsx`, `src/views/AnimeView.tsx`, `src/views/MobileCardPlayScreen.tsx`:
+     - 루트 컨테이너의 좌우 패딩(`p-3 sm:p-4 md:p-8`) 및 `max-w-5xl` 제한을 제거(`px-0 max-w-none`)하여 무비/애니메이션 플레이어가 화면 가로폭 100%로 꽉 차게 표시되도록 개선.
+     - `CinematicMoviePlayer` 및 MP4 `<video>`의 모바일 `object-contain`으로 인해 발생하던 좌우 검은 여백을 `object-cover`로 통일하여 제거.
+- **검증 및 보고**:
+  - `npm run lint` (`tsc --noEmit`) 0 errors, `npm run build` 정상 통과.
+  - 연동 구글 폼 작업 완료 보고서 제출 완료 (`submit_report.py`).
+
 ## [2026-10-18 21:10 KST] [마일스톤4 리메디에이션] 게이트 결함 12개 어설션 및 4개 잔여 토큰 전수 해결 (E2E 188/188 100% 통과)
 - **작업명**: `[Remediation] Resolve 12 E2E Assertions & 4 Residual Tokens (188/188 Passing, 100.0%)`
 - **담당자**: worker_remediation (Milestone 4 Remediation Worker)

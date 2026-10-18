@@ -2607,16 +2607,16 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
             initial={suppressMotion ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={suppressMotion ? undefined : { opacity: 0 }}
-            className="fixed inset-0 z-[230] bg-[#201d1d]/60 flex flex-col items-center justify-center p-4 font-mono select-none"
+            className="fixed inset-0 z-[230] bg-[#201d1d]/60 flex flex-col items-center justify-center px-0 py-4 sm:p-4 font-mono select-none"
           >
             <motion.div
               initial={suppressMotion ? false : { opacity: 0, y: 8 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={suppressMotion ? undefined : { opacity: 0, y: 8 }}
-              className="w-full max-w-sm max-h-[calc(100dvh-32px)] bg-[#fdfcfc] border border-[#0f0000]/12 p-5 rounded-none flex flex-col items-center text-center relative overflow-y-auto touch-pan-y overscroll-contain"
+              className="w-full max-w-lg max-h-[calc(100dvh-32px)] bg-[#fdfcfc] border-y border-x-0 sm:border border-[#0f0000]/12 px-0 py-4 rounded-none flex flex-col items-center text-center relative overflow-y-auto touch-pan-y overscroll-contain"
             >
               {/* 상단 뱃지 & 아이콘 */}
-              <div className="flex items-center gap-2 mb-2">
+              <div className="flex items-center gap-2 mb-2 px-4">
                 <span className="p-1.5 border border-[#0f0000]/12">
                   {refreshBreakType === 'webtoon' ? <BookOpen size={16} /> : <Film size={16} />}
                 </span>
@@ -2625,13 +2625,13 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                 </span>
               </div>
 
-              <h3 className="text-sm font-bold truncate max-w-full shrink-0">
+              <h3 className="text-sm font-bold truncate max-w-full shrink-0 px-4">
                 {language === 'ko' ? refreshEpisodeData.titleKo : refreshEpisodeData.titleEn}
               </h3>
 
               {/* 미디어 뷰 영역 */}
               {refreshBreakType === 'webtoon' ? (
-                <div className="relative w-full h-44 bg-[#f1eeee] border border-[#0f0000]/12 overflow-hidden my-3 flex items-center justify-center shrink-0">
+                <div className="relative w-full h-64 sm:h-72 bg-[#f1eeee] border-y border-x-0 border-[#0f0000]/12 overflow-hidden my-3 flex items-center justify-center shrink-0">
                   {refreshEpisodeData.imageUrl ? (
                     <img
                       src={refreshEpisodeData.imageUrl}
@@ -2649,7 +2649,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                   </div>
                 </div>
               ) : (
-                <div className="relative w-full h-44 bg-[#f1eeee] border border-[#0f0000]/12 overflow-hidden my-3 shrink-0">
+                <div className="relative w-full aspect-video bg-[#f1eeee] border-y border-x-0 border-[#0f0000]/12 overflow-hidden my-3 shrink-0">
                   {refreshEpisodeData.videoId ? (
                     <iframe
                       src={`https://www.youtube-nocookie.com/embed/${refreshEpisodeData.videoId}?autoplay=1&mute=1&controls=0&playsinline=1`}
@@ -2669,53 +2669,55 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                 </div>
               )}
 
-              {/* 보너스 및 카운트다운 */}
-              <div className="w-full border border-[#0f0000]/12 p-2.5 flex items-center justify-between text-xs">
-                <span className="flex items-center gap-1.5">
-                  <Coffee size={14} />
-                  <span>{language === 'ko' ? '기분전환 보너스' : 'Refresh Bonus'}</span>
-                </span>
-                <span className="font-bold text-xs">
-                  +10 SNS 지급 완료
-                </span>
-              </div>
-
-              {/* 카운트다운 바 */}
-              <div className="w-full mt-3">
-                <div className="w-full bg-[#f1eeee] h-1.5 overflow-hidden">
-                  <motion.div
-                    className="h-full bg-[#201d1d]"
-                    initial={suppressMotion ? false : { width: '100%' }}
-                    animate={{ width: `${((refreshBreakCountdown ?? 4) / 4) * 100}%` }}
-                    transition={{ duration: suppressMotion ? 0 : 0.3 }}
-                  />
+              <div className="w-full px-4 flex flex-col items-center">
+                {/* 보너스 및 카운트다운 */}
+                <div className="w-full border border-[#0f0000]/12 p-2.5 flex items-center justify-between text-xs">
+                  <span className="flex items-center gap-1.5">
+                    <Coffee size={14} />
+                    <span>{language === 'ko' ? '기분전환 보너스' : 'Refresh Bonus'}</span>
+                  </span>
+                  <span className="font-bold text-xs">
+                    +10 SNS 지급 완료
+                  </span>
                 </div>
-                <p className="text-[11px] text-[#646262] mt-2">
-                  {language === 'ko'
-                    ? `${refreshBreakCountdown ?? 0}초 후 랭킹대전 자동 복귀`
-                    : `Returning to battle in ${refreshBreakCountdown ?? 0}s`}
-                </p>
-              </div>
 
-              {/* 즉시 복귀 버튼 */}
-              <button
-                type="button"
-                onClick={() => {
-                  playSound('tap');
-                  setShowRefreshBreakModal(false);
-                  setRefreshBreakCountdown(null);
-                  if (updateSns) {
-                    updateSns(10, 'mental_refresh_bonus', 'earned');
-                  }
-                  refreshDifficulty();
-                  const nextOpp = pickNewRankOpponent(activeRankOpponent?.name || effectiveOpponentName, playerTotalPower, getDynamicDifficultyProfile(playerTotalPower));
-                  setActiveRankOpponent(nextOpp);
-                  setRankingSearchCountdown(3);
-                }}
-                className="mt-4 w-full min-h-[44px] py-2.5 bg-[#201d1d] text-[#fdfcfc] font-bold text-xs cursor-pointer rounded-sm shrink-0 flex items-center justify-center"
-              >
-                {language === 'ko' ? '⚡ 힐링 완료! 즉시 랭킹대전 복귀' : '⚡ Return to Battle Now'}
-              </button>
+                {/* 카운트다운 바 */}
+                <div className="w-full mt-3">
+                  <div className="w-full bg-[#f1eeee] h-1.5 overflow-hidden">
+                    <motion.div
+                      className="h-full bg-[#201d1d]"
+                      initial={suppressMotion ? false : { width: '100%' }}
+                      animate={{ width: `${((refreshBreakCountdown ?? 4) / 4) * 100}%` }}
+                      transition={{ duration: suppressMotion ? 0 : 0.3 }}
+                    />
+                  </div>
+                  <p className="text-[11px] text-[#646262] mt-2">
+                    {language === 'ko'
+                      ? `${refreshBreakCountdown ?? 0}초 후 랭킹대전 자동 복귀`
+                      : `Returning to battle in ${refreshBreakCountdown ?? 0}s`}
+                  </p>
+                </div>
+
+                {/* 즉시 복귀 버튼 */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    playSound('tap');
+                    setShowRefreshBreakModal(false);
+                    setRefreshBreakCountdown(null);
+                    if (updateSns) {
+                      updateSns(10, 'mental_refresh_bonus', 'earned');
+                    }
+                    refreshDifficulty();
+                    const nextOpp = pickNewRankOpponent(activeRankOpponent?.name || effectiveOpponentName, playerTotalPower, getDynamicDifficultyProfile(playerTotalPower));
+                    setActiveRankOpponent(nextOpp);
+                    setRankingSearchCountdown(3);
+                  }}
+                  className="mt-4 w-full min-h-[44px] py-2.5 bg-[#201d1d] text-[#fdfcfc] font-bold text-xs cursor-pointer rounded-sm shrink-0 flex items-center justify-center"
+                >
+                  {language === 'ko' ? '⚡ 힐링 완료! 즉시 랭킹대전 복귀' : '⚡ Return to Battle Now'}
+                </button>
+              </div>
             </motion.div>
           </motion.div>
         )}
