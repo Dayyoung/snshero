@@ -4,7 +4,7 @@
  * HTML, JS 번들, CSS, JSON, API 등 모든 코드/데이터는 실시간 네트워크에서 즉시 받아옵니다.
  */
 
-const MEDIA_CACHE_NAME = 'snshero-media-v1';
+const MEDIA_CACHE_NAME = 'snshero-media-v3-banana2026';
 
 // 캐싱 대상 미디어 파일 확장자 정규식
 const MEDIA_EXT_REGEX = /\.(png|jpg|jpeg|webp|gif|svg|ico|avif|mp3|wav|ogg)(\?.*)?$/i;

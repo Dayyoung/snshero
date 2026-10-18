@@ -106,6 +106,9 @@ export function getUserCollectionName(season: string): string {
 /**
  * Resolves a public asset path to properly support subpath hosting (e.g. GitHub Pages /snshero/).
  */
+const CHARACTER_ASSET_CACHE_TAG = 'v=banana2026';
+const CHARACTER_ASSET_REGEX = /^(cards1|cards2|card2|card100|character_sheet_|seat\/)/i;
+
 export function getAssetUrl(path: string | null | undefined): string {
   if (!path) return '';
   if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:') || path.startsWith('blob:')) {
@@ -113,11 +116,13 @@ export function getAssetUrl(path: string | null | undefined): string {
   }
   const baseUrl = import.meta?.env?.BASE_URL;
   const cleanPath = path.startsWith('/') ? path.slice(1) : path;
-  if (baseUrl && baseUrl !== './') {
-    const normalizedBase = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
-    return `${normalizedBase}${cleanPath}`;
+  const resolved = (baseUrl && baseUrl !== './')
+    ? `${baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`}${cleanPath}`
+    : `/${cleanPath}`;
+  if (!resolved.includes('?') && CHARACTER_ASSET_REGEX.test(cleanPath)) {
+    return `${resolved}?${CHARACTER_ASSET_CACHE_TAG}`;
   }
-  return `/${cleanPath}`;
+  return resolved;
 }
 
 /**
@@ -232,7 +237,7 @@ export function getCardSpriteStyle(cardId: number, customSource?: string | null)
     backgroundSize: `${coords.cols * 100}% ${coords.rows * 100}%`,
     backgroundPosition: `${coords.xPercent}% ${coords.yPercent}%`,
     backgroundRepeat: 'no-repeat',
-    imageRendering: 'pixelated' as const,
+    imageRendering: 'auto' as const,
   };
 }
 

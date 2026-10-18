@@ -3996,7 +3996,26 @@ function AppContent() {
   }, [sns, selectedCompanionIndex, language, updateSns, inventory, currentDeck, effectiveUser, stats, itemInventory, totalPower, isAutoBattle, lowSpecMode, syncUserData]);
 
   const [customCardImage, setCustomCardImage] = useState<string | null>(() => {
-    return localStorage.getItem('hero_custom_card_image');
+    try {
+      const artVer = localStorage.getItem('hero_card_art_ver');
+      if (artVer !== 'banana2026') {
+        localStorage.setItem('hero_card_art_ver', 'banana2026');
+        localStorage.removeItem('hero_custom_card_image');
+        if (typeof window !== 'undefined' && 'caches' in window) {
+          window.caches.keys().then(keys => {
+            keys.forEach(k => {
+              if (k !== 'snshero-media-v3-banana2026') {
+                window.caches.delete(k);
+              }
+            });
+          }).catch(() => {});
+        }
+        return null;
+      }
+      return localStorage.getItem('hero_custom_card_image');
+    } catch {
+      return null;
+    }
   });
 
   // Sync totalPower when inventory changes or deck changes
