@@ -1,68 +1,67 @@
-# BRIEFING — 2026-10-18T02:25:30Z
+# BRIEFING — 2026-10-18T11:35:00Z
 
 ## Mission
-Milestone 2 & 3: Assemble all sprite sheets (cards1.png, cards2.png, card100.png, card100_gemini.png, and 11 character_sheet_*.png) from remastered public/seat portraits, apply Pillow FASTOCTREE palette quantization, ensure strict file size / dimensions / header constraints, and achieve 100% pass on e2e test suite (50 assertions).
+Execute Milestone 2 (Economy, Social & Content Views) terminal-flat UI/UX visual unification according to DESIGN.md and explorer_survey_2/handoff.md across 9 assigned views and reddit subcomponents.
 
 ## 🔒 My Identity
 - Archetype: worker
 - Roles: implementer, qa, specialist
-- Working directory: /Users/dayyoung/project/snshero/.agents/teamwork/worker_m2
-- Original parent: f84aca46-e09f-4967-b5d1-281f855a924e
-- Milestone: Milestone 2 & 3 (Sprite Sheet Assembly & Palette Optimization)
+- Working directory: /Users/dayyoung/project/snshero/.agents/teamwork/worker_m2/
+- Original parent: 3a464f6d-bcf9-4b99-af07-b0e05ceb817a
+- Milestone: Milestone 2 — Economy, Social & Content Views
 
 ## 🔒 Key Constraints
-- Exclusive write ownership:
-  * public/cards1.png
-  * public/cards2.png
-  * public/card100.png
-  * public/card100_gemini.png
-  * public/character_sheet_*.png (all 11 faction horizontal sheets)
-  * Scratch scripts in .agents/teamwork/worker_m2/
-- MUST NOT modify source files in src/ or tests in tests/
-- cards1.png: 1000x1000 px, 10x10 grid for IDs 1–100, 100x100 cells, aspect-fill center crop
-- cards2.png: 1000x1000 px, IDs 101–110 in Row 0, preserve rows 1–9 from original cards2.png
-- card100.png: 1135x1315 px, 10x11 grid, 113.5 x 119.545 px cells
-- card100_gemini.png: 1024x1024 px, 10x11 grid, 102.4 x 93.091 px cells, true valid RGBA PNG (not JPEG-in-PNG)
-- character_sheet_*.png: 2560x296 px, 10 cells of 256x296 px, clean PNG header
-- Size budgets: 4 master sheets <= 819,200 bytes (800 KB); 11 faction sheets <= 307,200 bytes (300 KB)
-- Integrity Mandate: Genuine implementation, no cheating or hardcoding
-- All 50 test assertions pass in `tests/e2e_character_assets/runner.py`
-- npx tsc --noEmit: 0 errors
-- npm run build: 0 errors
-- Log work in WORK_LOGS.md, git commit without push, submit Google Form report
+- Exclusive write ownership: `src/views/ShopView.tsx`, `src/views/CardMarketplaceView.tsx`, `src/views/NovelView.tsx`, `src/views/MovieView.tsx`, `src/views/RankingView.tsx`, `src/views/GuildListView.tsx`, `src/views/GuildDetailView.tsx`, `src/views/CommunityView.tsx`, `src/views/RedditCommunityView.tsx`, `src/components/movie/CinematicMoviePlayer.tsx`, `src/components/reddit/*`.
+- 100% Monospace typography (`font-mono`).
+- Strict 2-tier border radius: `rounded-none` (0px) on containers/cards/modals/frames; `rounded-sm` (4px max) on interactive buttons/inputs/badges. Eliminate `rounded-lg/xl/2xl/3xl/full` pills.
+- Flat surfaces (`#fdfcfc`, `#f8f7f7`, `#201d1d`), 1px hairline borders (`border-[rgba(15,0,0,0.12)]`, `border-[#201d1d]`, `border-white/15`). No gradients, drop shadows, or bounce/ping animations.
+- Mobile ergonomics: minimum 44px touch targets (`min-h-[44px]`).
+- Zero functional regression: keep all `hero_*` LocalStorage keys, i18n support, and safe imports intact.
+- No `git push` (local commit only when requested, or handoff to parent).
+- Verify with `npx tsc --noEmit`.
 
 ## Current Parent
-- Conversation ID: f84aca46-e09f-4967-b5d1-281f855a924e
-- Updated: 2026-10-18T02:25:30Z
+- Conversation ID: 3a464f6d-bcf9-4b99-af07-b0e05ceb817a
+- Updated: not yet
 
 ## Task Summary
-- **What to build**: Full sprite sheet compositing and optimization pipeline for 110 heroes across 4 master sheets and 11 faction sheets.
-- **Success criteria**: All dimensions match exactly, valid PNG headers, sizes within strict budgets, visual fidelity maintained, 50/50 test assertions pass.
-- **Interface contracts**: PROJECT.md, TEST_READY.md, explorer surveys 2 & 3, worker_m1 handoff.
+- **What to build**: Terminal-flat design overhaul of ShopView, CardMarketplaceView, NovelView, MovieView + CinematicMoviePlayer, RankingView, GuildListView, GuildDetailView, CommunityView, RedditCommunityView + reddit subcomponents.
+- **Success criteria**: 0 banned classes (gradients, rounded-lg/xl/2xl/3xl, drop shadows, bounce/ping, font-sans); 0 sub-44px buttons; TypeScript compiles with 0 errors; comprehensive handoff report.
+- **Interface contracts**: DESIGN.md, orchestrator_4/PROJECT.md, explorer_survey_2/handoff.md
+- **Code layout**: Views in `src/views/`, components in `src/components/`
 
 ## Key Decisions Made
-- Compositing Strategy: Lanczos aspect-fill center-crop for 100x100 and float cells on master sheets; exact 1:1 paste for 256x296 cells on faction sheets.
-- Preservation of cards2.png Rows 1-9: Extracted verbatim lower 1000x900 pixel buffer from original cards2.png and pasted onto new canvas at y=100.
-- Legacy card100_gemini.png: Converted from fake JPEG to genuine paletted/RGBA PNG with alpha transparency.
-- Quantization Pipeline: Pillow FASTOCTREE (256 colors) with `optimize=True, compress_level=9` applied to all 15 sprite sheets.
+- Use `GuildDetailView.tsx` as gold-standard reference for terminal-flat patterns.
+- Follow line-by-line recipes from `explorer_survey_2/handoff.md`.
+- Cleansed all 23 Reddit components to 100% font-mono and rounded-none/sm.
+- Cleansed all 6598 lines of `ShopView.tsx`, including all 12 modals/popups.
 
 ## Artifact Index
-- `.agents/teamwork/worker_m2/assemble_and_quantize.py` — Production assembly & quantization script
-- `.agents/teamwork/worker_m2/handoff.md` — 5-Component handoff report
-- `WORK_LOGS.md` — Log entry for Milestone 2 & 3 completion
+- `.agents/teamwork/worker_m2/DISPATCH.md` — Assigned instructions
+- `.agents/teamwork/worker_m2/BRIEFING.md` — Situational awareness
+- `.agents/teamwork/worker_m2/progress.md` — Heartbeat and status
+- `.agents/teamwork/worker_m2/handoff.md` — Final handoff report
 
 ## Change Tracker
 - **Files modified**:
-  * `public/cards1.png`: 1000x1000 px, 10x10 grid, 104.1 KB (PASS <= 800 KB)
-  * `public/cards2.png`: 1000x1000 px, row 0 updated + rows 1-9 preserved, 457.2 KB (PASS <= 800 KB)
-  * `public/card100.png`: 1135x1315 px, 10x11 grid, 154.3 KB (PASS <= 800 KB)
-  * `public/card100_gemini.png`: 1024x1024 px, 10x11 grid, genuine PNG, 110.5 KB (PASS <= 800 KB)
-  * `public/character_sheet_*.png` (11 sheets): 2560x296 px, clean headers, 27.4 KB ~ 30.6 KB each (PASS <= 300 KB)
-  * `WORK_LOGS.md`: Milestone 2 & 3 log entry
-- **Build status**: `npx tsc --noEmit` PASS (0 errors), `npm run build` PASS (16.02s)
+  - `src/views/ShopView.tsx`: 289+ legacy tokens removed, 12 modals flattened, all buttons min-h-[44px].
+  - `src/views/CardMarketplaceView.tsx`: 13 sub-44px buttons upgraded, toasts, actions.
+  - `src/views/NovelView.tsx`: Chapter drawer, episode cards, prompt copy buttons 44px+.
+  - `src/views/MovieView.tsx`: 44px+ controls and flat toolbar.
+  - `src/views/RankingView.tsx`: 147 banned tokens removed, 30 buttons 44px+, modals flattened.
+  - `src/views/GuildListView.tsx`: 54 banned tokens removed, 17 buttons 44px+, unified with GuildDetailView.
+  - `src/views/GuildDetailView.tsx`: Verified compliant.
+  - `src/views/CommunityView.tsx`: 82 banned tokens removed, 68 buttons 44px+, flattened cards/modals.
+  - `src/views/RedditCommunityView.tsx`: Cleaned tokens, font-mono, 44px buttons.
+  - `src/components/movie/CinematicMoviePlayer.tsx`: Removed shadow-2xl, verified 44px+.
+  - `src/components/reddit/*.tsx` (23 files): 100% font-mono, rounded-none/sm, 44px buttons.
+- **Build status**: `npx tsc --noEmit` PASS (0 errors), `npm run build` PASS (17.03s, 52 SPA routes)
 - **Pending issues**: None
 
 ## Quality Status
-- **Build/test result**: 50 / 50 PASS (100.0%, Exit Code 0) on `tests/e2e_character_assets/runner.py`
-- **Lint status**: 0 errors on `npm run lint` and `npx tsc --noEmit`
-- **Tests added/modified**: Test suite fully verified with exit code 0
+- **Build/test result**: PASS (tsc 0 errors, vite build 0 errors, 0 audit violations across 33 files)
+- **Lint status**: 0 errors
+- **Tests added/modified**: Automated Python AST/regex audit across all 33 files (0 banned classes, 0 non-mono fonts)
+
+## Loaded Skills
+- None explicitly loaded for M2

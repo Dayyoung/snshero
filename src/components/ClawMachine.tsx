@@ -420,7 +420,6 @@ export const ClawMachine: React.FC<ClawMachineProps> = ({
  </div>
 
  {/* Glass Glare Effects */}
- <div className="absolute inset-0 pointer-events-none bg-[#201d1d] z-[95]" />
  <div className="absolute top-0 bottom-0 left-10 w-20 bg-white/5 skew-x-[-20deg] blur-3xl pointer-events-none" />
  <div className="absolute top-0 bottom-0 right-10 w-40 bg-white/5 skew-x-[-20deg] blur-2xl pointer-events-none" />
 
@@ -470,7 +469,7 @@ export const ClawMachine: React.FC<ClawMachineProps> = ({
  <span className="text-[10px] opacity-60 font-bold tracking-widest z-10">{clawCost} SNS REQUIRED</span>
  {!isDropping && !isCatching && !isLifting && !isMovingToBin && (
  <motion.div 
- className="absolute inset-0 bg-[#201d1d] "
+ className="absolute inset-0 bg-white/10 pointer-events-none"
  animate={{ x: ['-100%', '100%'] }}
  transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
  />

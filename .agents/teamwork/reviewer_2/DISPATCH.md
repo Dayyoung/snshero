@@ -1,39 +1,52 @@
-# Dispatch: Reviewer 2 (Movie Theater & App Integration)
+# DISPATCH: reviewer_2
 
-Assigned Role: Movie Theater & App Integration Reviewer (teamwork_preview_reviewer)
-Working Directory: /Users/dayyoung/project/snshero/.agents/teamwork/reviewer_2/
-Authoritative Request: /Users/dayyoung/project/snshero/.agents/teamwork/ORIGINAL_REQUEST.md
-PROJECT Specification: /Users/dayyoung/project/snshero/PROJECT.md
-Parent: /Users/dayyoung/project/snshero/.agents/teamwork/orchestrator_1/
+- **Role**: High-Reliability Reviewer 2 (Touch Ergonomics, Viewport Intrusion & Progressive Disclosure)
+- **Working Directory**: `/Users/dayyoung/project/snshero/.agents/teamwork/reviewer_2/`
+- **Scope**: Touch targets, modals, canvas clearances, and LocalStorage/i18n integrity across all 22 views
+- **Inputs**:
+  - `/Users/dayyoung/project/snshero/.agents/teamwork/ORIGINAL_REQUEST.md` (specifically ## 2026-10-18T10:08:37Z)
+  - `/Users/dayyoung/project/snshero/DESIGN.md`
+  - `/Users/dayyoung/project/snshero/TEST_READY.md`
+  - `/Users/dayyoung/project/snshero/.agents/teamwork/orchestrator_4/PROJECT.md`
+  - `/Users/dayyoung/project/snshero/.agents/teamwork/worker_m1/handoff.md`
+  - `/Users/dayyoung/project/snshero/.agents/teamwork/worker_m2/handoff.md`
+  - `/Users/dayyoung/project/snshero/.agents/teamwork/worker_m3/handoff.md`
+- **Task**:
+  1. Audit touch targets: verify `min-h-[44px]` (or `h-11`/`44px+`) on all buttons, tabs, pagination, and actions.
+  2. Verify zero viewport intrusion over the 3x3 battle board, player card hand, mini-game canvas, and media viewports.
+  3. Verify modal close accessibility: top-layer `[x]` / `[SKIP]` buttons on all dialogs and drawers.
+  4. Verify LocalStorage keys adhere to `hero_*` and season isolation.
+  5. Execute `python3 tests/e2e_design_system/run_all_e2e_tests.py` and document results.
+  6. Execute `npx tsc --noEmit` and `npm run build`.
+  7. Provide explicit verdict: `APPROVE` or `REQUEST_CHANGES` in `/Users/dayyoung/project/snshero/.agents/teamwork/reviewer_2/handoff.md`.
 
-## 2026-10-17T22:11:46Z
-You are reviewer_2 (teamwork_preview_reviewer).
-Working Directory: /Users/dayyoung/project/snshero/.agents/teamwork/reviewer_2/
-Authoritative Request: /Users/dayyoung/project/snshero/.agents/teamwork/ORIGINAL_REQUEST.md
-PROJECT Specification: /Users/dayyoung/project/snshero/PROJECT.md
-Parent Orchestrator ID: b25c9f85-c96b-42a7-bce3-42d8c13e23ed
+## 2026-10-18T11:37:25Z
+From: 3a464f6d-bcf9-4b99-af07-b0e05ceb817a
+Priority: MESSAGE_PRIORITY_HIGH
+Content:
+You are High-Reliability Reviewer 2 (Touch Ergonomics, Viewport Intrusion & Progressive Disclosure) for SNSHero Revolution.
+Your working directory is: /Users/dayyoung/project/snshero/.agents/teamwork/reviewer_2/
+You MUST read the authoritative user request at:
+/Users/dayyoung/project/snshero/.agents/teamwork/ORIGINAL_REQUEST.md (specifically the latest request under ## 2026-10-18T10:08:37Z).
 
-READ ORIGINAL_REQUEST.md AND PROJECT.md FIRST BEFORE STARTING.
+Reference specifications:
+- /Users/dayyoung/project/snshero/DESIGN.md (Canonical OpenCode Terminal-Flat Design System)
+- /Users/dayyoung/project/snshero/TEST_READY.md
+- /Users/dayyoung/project/snshero/.agents/teamwork/orchestrator_4/PROJECT.md
+- /Users/dayyoung/project/snshero/.agents/teamwork/worker_m1/handoff.md
+- /Users/dayyoung/project/snshero/.agents/teamwork/worker_m2/handoff.md
+- /Users/dayyoung/project/snshero/.agents/teamwork/worker_m3/handoff.md
+- /Users/dayyoung/project/snshero/.agents/teamwork/reviewer_2/DISPATCH.md
 
-Scope: Review Milestone M3 (Movie Theater & In-App Cinematic Engine) and App Integration.
+Your Task:
+1. Objectively review and independently audit mobile ergonomics and spatial hierarchy:
+   - Verify minimum 44px touch targets (`min-h-[44px]`) on all interactive `<button>` elements, tabs, header actions, and navigation controls across all 22 views.
+   - Verify zero viewport intrusion: floating widgets, HUD bars, and subtitles must never obscure the 3x3 card battle board, player card hand, mini-game canvas, or webtoon/movie artwork.
+   - Verify modal accessibility: every modal/drawer must expose a visible top-layer `[x]` / `[SKIP]` dismiss button.
+   - Verify LocalStorage key persistence (`hero_*`), i18n support, and Vite `safeLazy` dynamic glob imports.
+2. Execute the official E2E test suite: `python3 tests/e2e_design_system/run_all_e2e_tests.py` and document results.
+3. Execute `npx tsc --noEmit` and `npm run build`.
+4. Write your review report in `/Users/dayyoung/project/snshero/.agents/teamwork/reviewer_2/handoff.md`.
+5. In your report and completion message, provide an explicit binary verdict: `APPROVE` or `REQUEST_CHANGES` (with clear reasoning).
 
-Tasks:
-1. Movie Theater (M3) Review:
-   - Verify src/views/MovieView.tsx:
-     - Confirm all 40 episodes are unlocked (DEFAULT_RELEASED_COUNT = 40, zero blocking alerts for ep > 8, all 40 episodes selectable and playable).
-     - Confirm dual-mode switcher ([🎬 시네마틱 영화관] vs [📺 YouTube 오피셜]).
-     - Confirm cross-navigation buttons ([📖 소설], [🖼️ 웹툰]).
-     - Confirm filter tabs and action buttons have min-h-[44px] touch targets.
-   - Verify src/content/movieEpisodeMapping.ts: all 40 episodes have rich metadata (acts, synopses, BGM themes, VFX).
-   - Verify in-app Cinematic Movie Player in src/components/movie/CinematicMoviePlayer.tsx & MovieVfxCanvas.tsx:
-     - 20-scene storyboards with Ken Burns multi-plane camera motion (pan/zoom/shake).
-     - HTML5 2D canvas particle VFX (snow, embers, runes, slashes, fog).
-     - Bilingual theatrical subtitles, timeline scrub controls, fullscreen mode, 44px touch targets.
-   - Verify src/lib/MovieAudioSynthesizer.ts: Web Audio API procedural synthesis for fantasy BGM themes and battle SFX, and SpeechSynthesis voiceover.
-   - Verify src/lib/webtoonProgress.ts: parameter-order agnostic resolution of setSeasonItem for both (key, season, value) and (key, value, season).
-2. App Integration & DESIGN.md Review:
-   - Verify HomeView.tsx media shortcuts and DESIGN.md compliance (font-mono, 0px/4px radii, 44px+ touch targets).
-3. Run verification commands:
-   - npx tsc --noEmit (must be 0 errors)
-   - npm run build (must succeed)
-4. Issue a clear verdict: APPROVE or REQUEST_CHANGES in your handoff report at /Users/dayyoung/project/snshero/.agents/teamwork/reviewer_2/handoff.md and notify the parent orchestrator via send_message.
+HARD CONSTRAINT: You are a reviewer. Do NOT modify source code files.

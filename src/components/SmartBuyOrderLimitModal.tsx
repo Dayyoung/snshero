@@ -81,7 +81,7 @@ export const SmartBuyOrderLimitModal: React.FC<SmartBuyOrderLimitModalProps> = (
  className="bg-slate-950 border-2 border-cyan-400 rounded-none w-full max-w-sm overflow-hidden shadow-none flex flex-col text-center"
  >
  {/* Header */}
- <div className="p-3.5 bg-[#201d1d] text-slate-950 flex items-center justify-between font-black text-xs">
+ <div className="p-3.5 bg-[#201d1d] text-[#fdfcfc] flex items-center justify-between font-black text-xs">
  <div className="flex items-center gap-1.5">
  <Clock size={16} />
  <span>[ 스마트 매수 예약 (Buy Order Limit) ]</span>
@@ -154,7 +154,7 @@ export const SmartBuyOrderLimitModal: React.FC<SmartBuyOrderLimitModalProps> = (
  onClick={handleRegister}
  className={`h-12 w-full font-black text-xs rounded-sm flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer shadow ${
  activeOrders.length < maxSlots
- ? 'bg-[#201d1d] text-slate-950 hover:brightness-105'
+ ? 'bg-[#201d1d] text-[#fdfcfc] hover:brightness-105'
  : 'bg-slate-800 text-slate-500 cursor-not-allowed'
  }`}
  >

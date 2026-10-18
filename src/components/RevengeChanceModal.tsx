@@ -117,7 +117,7 @@ export const RevengeChanceModal: React.FC<RevengeChanceModalProps> = ({
  <button
  type="button"
  onClick={() => handleAction('cash')}
- className="w-full min-h-[46px] py-3 px-4 bg-[#201d1d] hover: hover: text-white font-black text-xs sm:text-sm uppercase rounded-sm border border-rose-400 shadow-[0_0_20px_rgba(244,63,94,0.5)] flex items-center justify-between cursor-pointer active:scale-98 transition-transform"
+ className="w-full min-h-[46px] py-3 px-4 bg-[#201d1d] hover:opacity-90 text-white font-black text-xs sm:text-sm uppercase rounded-sm border border-rose-400 shadow-[0_0_20px_rgba(244,63,94,0.5)] flex items-center justify-between cursor-pointer active:scale-98 transition-transform"
  >
  <div className="flex items-center gap-2">
  <Zap size={16} className="text-yellow-300 fill-yellow-300 transition-transform duration-300" />

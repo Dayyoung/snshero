@@ -360,7 +360,7 @@ export const ChallengeEventSection: React.FC<ChallengeEventSectionProps> = ({
  className={cn("min-h-[44px]", 
  'touch-target flex w-full items-center justify-center gap-1.5 rounded-sm py-2.5 text-[10px] font-bold uppercase tracking-wider transition-all active:scale-[0.98]',
  isValidUrl(draft.snsLink)
- ? 'bg-[#201d1d] text-white shadow-none shadow-none hover: hover:'
+ ? 'bg-[#201d1d] text-white shadow-none shadow-none hover:opacity-90'
  : 'cursor-not-allowed border border-slate-200 bg-slate-100 text-slate-400',
  )}
  >

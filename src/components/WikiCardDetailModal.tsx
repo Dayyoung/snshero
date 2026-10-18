@@ -857,7 +857,7 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
  <span>{language === 'ko' ? '스킨 변경' : 'Skins'}</span>
  </button>
  </div>
- <div className="w-full aspect-square rounded-none bg-slate-950/80 border border-white/10 overflow-hidden flex items-center justify-center p-2">
+ <div className="w-full aspect-square rounded-none bg-[#fdfcfc] border border-white/20 overflow-hidden flex items-center justify-center p-2">
  {resolvedImg.source && !isSpriteSheet(resolvedImg.source) ? (
  <img
  src={resolvedImg.source}
@@ -992,7 +992,7 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
  <button
  type="button"
  onClick={onOpenShareTemplate}
- className="mt-4 w-full inline-flex items-center justify-center gap-2 rounded-sm bg-[#201d1d] px-4 py-3 text-xs font-black uppercase tracking-[0.22em] text-white transition-all hover: hover: active:scale-95 shadow-none"
+ className="mt-4 w-full inline-flex items-center justify-center gap-2 rounded-sm bg-[#201d1d] px-4 py-3 text-xs font-black uppercase tracking-[0.22em] text-white transition-all hover:opacity-90 active:scale-95 shadow-none"
  >
  <Download size={14} />
  {t('wiki_card_detail_share_template_cta', language)}

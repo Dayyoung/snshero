@@ -296,7 +296,7 @@ export const PlaygroundView: React.FC<PlaygroundViewProps> = ({
  className={cn(
  "w-full py-4 rounded-sm font-bold text-lg uppercase tracking-wider flex items-center justify-center gap-3 transition-all",
  isPlayable
- ? "bg-[#201d1d] hover: hover: text-white shadow-none shadow-none cursor-pointer active:scale-[0.99]"
+ ? "bg-[#201d1d] hover:opacity-90 text-white shadow-none shadow-none cursor-pointer active:scale-[0.99]"
  : "bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed shadow-none"
  )}
  >

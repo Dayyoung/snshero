@@ -143,7 +143,7 @@ export const RewardCenterSegmentedView: React.FC<RewardCenterSegmentedViewProps>
  <button
  type="button"
  onClick={handleApplyCoupon}
- className="h-12 px-4 bg-[#201d1d] text-slate-950 font-black text-xs rounded-sm active:scale-95 cursor-pointer shadow hover:brightness-105 shrink-0"
+ className="h-12 px-4 bg-[#201d1d] text-[#fdfcfc] font-black text-xs rounded-sm active:scale-95 cursor-pointer shadow hover:brightness-105 shrink-0"
  >
  등록
  </button>

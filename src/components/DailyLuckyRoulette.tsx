@@ -187,7 +187,7 @@ export const DailyLuckyRoulette: React.FC<DailyLuckyRouletteProps> = ({
  <button
  onClick={handleSpin}
  disabled={isSpinning}
- className="w-full py-3 bg-[#201d1d] hover: hover: text-slate-950 font-black text-xs uppercase tracking-wider rounded-sm flex items-center justify-center gap-2 transition-all active:scale-95 disabled:opacity-50 cursor-pointer shadow-none"
+ className="w-full py-3 bg-[#201d1d] hover:opacity-90 text-[#fdfcfc] font-black text-xs uppercase tracking-wider rounded-sm flex items-center justify-center gap-2 transition-all active:scale-95 disabled:opacity-50 cursor-pointer shadow-none"
  >
  <RotateCw size={15} className={isSpinning ? 'animate-spin' : ''} />
  <span>

@@ -73,7 +73,7 @@ export const MultiBetSplitSlider: React.FC<MultiBetSplitSliderProps> = ({
  [options[1]?.id || 'opt2']: betB,
  });
  }}
- className="h-12 w-full bg-[#201d1d] text-slate-950 font-black text-xs rounded-sm flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer shadow-none"
+ className="h-12 w-full bg-[#201d1d] text-[#fdfcfc] font-black text-xs rounded-sm flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer shadow-none"
  >
  <Check size={16} />
  <span>멀티 배팅 일괄 승인 ({totalBudget} SNS)</span>

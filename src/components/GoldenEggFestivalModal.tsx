@@ -36,7 +36,7 @@ export const GoldenEggFestivalModal: React.FC<GoldenEggFestivalModalProps> = ({
  className="bg-slate-950 border-2 border-amber-400 rounded-none w-full max-w-sm overflow-hidden shadow-none flex flex-col text-center"
  >
  {/* Header */}
- <div className="p-4 bg-[#201d1d] text-slate-950 flex items-center justify-between">
+ <div className="p-4 bg-[#201d1d] text-[#fdfcfc] flex items-center justify-between">
  <div className="flex items-center gap-1.5 font-black text-xs">
  <Egg size={16} />
  <span>🥚 전 서버 황금 알 페스티벌</span>

@@ -91,7 +91,7 @@ export const QuickBatchListingSheet: React.FC<QuickBatchListingSheetProps> = ({
  onBatchList(discountPercent);
  onClose();
  }}
- className="h-12 w-full bg-[#201d1d] text-slate-950 font-black text-xs rounded-sm flex items-center justify-center gap-2 active:scale-95 cursor-pointer shadow-none"
+ className="h-12 w-full bg-[#201d1d] text-[#fdfcfc] font-black text-xs rounded-sm flex items-center justify-center gap-2 active:scale-95 cursor-pointer shadow-none"
  >
  <Check size={16} />
  <span>중복 카드 {duplicates.length}종 일괄 출품 완료</span>

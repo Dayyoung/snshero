@@ -104,7 +104,7 @@ export const EvolutionAltarCinematicCutin: React.FC<EvolutionAltarCinematicCutin
  initial={{ y: 20, opacity: 0 }}
  animate={{ y: 0, opacity: 1 }}
  transition={{ delay: 0.2 }}
- className="mt-6 text-2xl font-black text-transparent bg-clip-text bg-[#201d1d] tracking-wider"
+ className="mt-6 text-2xl font-black text-amber-400   tracking-wider"
  >
  MYTHIC AWAKENED!
  </motion.h2>
@@ -121,7 +121,7 @@ export const EvolutionAltarCinematicCutin: React.FC<EvolutionAltarCinematicCutin
  className="bg-slate-950 border-2 border-amber-400 rounded-none w-full max-w-sm overflow-hidden shadow-none flex flex-col text-center"
  >
  {/* Header */}
- <div className="p-3.5 bg-[#201d1d] text-slate-950 flex items-center justify-between font-black text-xs">
+ <div className="p-3.5 bg-[#201d1d] text-[#fdfcfc] flex items-center justify-between font-black text-xs">
  <div className="flex items-center gap-1.5">
  <Flame size={16} />
  <span>[ 진화의 제단: 신화 각성 성공 ]</span>
@@ -194,7 +194,7 @@ export const EvolutionAltarCinematicCutin: React.FC<EvolutionAltarCinematicCutin
  <button
  type="button"
  onClick={handlePurchase}
- className="min-h-[44px] px-3 py-2 bg-[#201d1d] hover:brightness-105 text-slate-950 text-xs font-black rounded-sm active:scale-95 cursor-pointer shadow-none"
+ className="min-h-[44px] px-3 py-2 bg-[#201d1d] hover:brightness-105 text-[#fdfcfc] text-xs font-black rounded-sm active:scale-95 cursor-pointer shadow-none"
  >
  즉시 구매하기
  </button>

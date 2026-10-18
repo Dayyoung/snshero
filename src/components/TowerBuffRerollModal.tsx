@@ -104,7 +104,7 @@ export const TowerBuffRerollModal: React.FC<TowerBuffRerollModalProps> = ({
  <button
  onClick={handleBuy}
  disabled={isProcessing}
- className="w-full min-h-[48px] bg-[#201d1d] hover: hover: text-black font-black text-xs uppercase tracking-wider rounded-none flex items-center justify-center gap-1.5 cursor-pointer shadow-none active:scale-98"
+ className="w-full min-h-[48px] bg-[#201d1d] hover:opacity-90 text-[#fdfcfc] font-black text-xs uppercase tracking-wider rounded-none flex items-center justify-center gap-1.5 cursor-pointer shadow-none active:scale-98"
  >
  <Zap size={16} />
  <span>

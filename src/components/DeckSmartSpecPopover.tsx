@@ -52,7 +52,7 @@ export const DeckSmartSpecPopover: React.FC<DeckSmartSpecPopoverProps> = ({
  triggerHaptic('heavy');
  onAutoFormDeck();
  }}
- className="h-11 px-4 bg-[#201d1d] text-slate-950 font-black text-xs rounded-sm flex items-center gap-1.5 active:scale-95 cursor-pointer shadow hover:brightness-105"
+ className="h-11 px-4 bg-[#201d1d] text-[#fdfcfc] font-black text-xs rounded-sm flex items-center gap-1.5 active:scale-95 cursor-pointer shadow hover:brightness-105"
  >
  <Wand2 size={15} />
  <span>원터치 자동 편성</span>

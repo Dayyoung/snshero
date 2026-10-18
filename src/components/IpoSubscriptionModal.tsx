@@ -139,7 +139,7 @@ export const IpoSubscriptionModal: React.FC<IpoSubscriptionModalProps> = ({
  onSubscribe(shares, isPremium);
  onClose();
  }}
- className="w-full h-12 bg-[#201d1d] hover:brightness-110 text-slate-950 font-black text-xs uppercase tracking-wider rounded-sm flex items-center justify-center gap-2 active:scale-95 transition-all shadow-none cursor-pointer"
+ className="w-full h-12 bg-[#201d1d] hover:brightness-110 text-[#fdfcfc] font-black text-xs uppercase tracking-wider rounded-sm flex items-center justify-center gap-2 active:scale-95 transition-all shadow-none cursor-pointer"
  >
  <TrendingUp size={16} />
  <span>

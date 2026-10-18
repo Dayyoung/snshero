@@ -232,3 +232,102 @@ Provide a synchronized subtitle overlay in the movie player (working in both Int
 ### Build & Project Hygiene
 - [ ] `npm run lint` and `npm run build` succeed with exit code 0.
 - [ ] Changes are committed locally (`git commit` without `git push`), logged in `WORK_LOGS.md`, and reported via `skills/report-ex/scripts/submit_report.py`.
+
+
+## 2026-10-18T10:08:37Z
+
+Comprehensive UI/UX design overhaul and visual unification across all screens of SNSHero Revolution (`src/views/*` and shared layout/navigation/modal components) strictly following the `DESIGN.md` OpenCode terminal-flat design system, mobile one-hand ergonomics, and progressive disclosure principles.
+
+Working directory: /Users/dayyoung/project/snshero
+Integrity mode: development
+
+Reference specifications:
+- `/Users/dayyoung/project/snshero/DESIGN.md` (Canonical OpenCode Terminal-Flat Design System)
+- `/Users/dayyoung/project/snshero/AGENTS.md` & `/Users/dayyoung/project/snshero/GEMINI.md` (Project UX, LocalStorage, Import-Safety, and Reporting Rules)
+
+## Requirements
+
+### R1. Full-Screen DESIGN.md Terminal-Flat Visual Unification
+Unify all core views (`HomeView`, `MobileCardPlayScreen`, `MyDeckView`, `ShopView`, `CardMarketplaceView`, `PlayGameView`, `NovelView`, `MovieView`, `RankingView`, `GuildListView`, `GuildDetailView`, `CommunityView`, `RedditCommunityView`, `ProfileView`, `SettingView`, `SeasonHubView`, `CompanionView`, `EventView`, `StockMarketView`, `PredictionMarketView`, `WikiCardView`, `WorldCodexView`) and shared chrome (`App.tsx` navigation, `PageHeader`, modals) under the `DESIGN.md` aesthetic:
+- **Monospace Typography**: Consistent `font-mono` hierarchy across headers, labels, stats, badges, and buttons.
+- **Strict 2-Tier Border Radius**: `rounded-none` (`0px`) for all containers, cards, panels, modals, and section frames; `rounded-sm` (`4px`) maximum for interactive buttons, inputs, and badges. Eliminate legacy `rounded-lg`, `rounded-xl`, `rounded-2xl`, `rounded-3xl`, and decorative `rounded-full` pills on containers and buttons across target views.
+- **Flat Surfaces & 1px Hairline Borders**: Use solid Warm Cream (`#fdfcfc`, `#f8f7f7`, `#f1eeee`) and Ink Dark (`#201d1d`, `#302c2c`, `#0e0c0c`) surfaces with crisp `1px` hairline borders (`border-[rgba(15,0,0,0.12)]`, `border-[#201d1d]`, `border-white/15`). Remove multi-stop decorative gradients (`bg-gradient-to-*`), heavy drop shadows (`shadow-xl`, `shadow-2xl`), neon glow blurs, and distracting `animate-ping` / `animate-bounce` effects across target views.
+
+### R2. Progressive Disclosure, Information Hierarchy & Zero Viewport Intrusion
+Declutter high-density screens and enforce clean spatial hierarchy:
+- Group crowded top-level action buttons into structured 3–4 primary category hubs, segmented tabs, or collapsible `[+]` / `[-]` drawers so first-view screens remain clean and scannable.
+- Guarantee zero viewport intrusion: floating widgets, HUD bars, subtitles, and overlays must never obscure the 3x3 card battle board, player card hand, mission game touch canvas, or webtoon/movie artwork.
+- Ensure every modal, drawer, and tutorial overlay provides a clearly visible top-layer `[x]` close or `[SKIP]` button and never triggers sequential back-to-back popup storms on screen entry.
+
+### R3. Mobile Ergonomics & 44px+ Touch Target Compliance
+Optimize all screens for mobile (`375x812`) and desktop responsiveness:
+- Enforce a minimum `44px` touch target (`min-h-[44px]`) on all interactive buttons, tabs, header actions, and navigation controls.
+- Eliminate horizontal scroll bleed, text truncation collisions, and overlapping fixed/sticky toolbars on narrow mobile viewports.
+
+### R4. Zero Functional Regression, Safe Imports & Mandatory Reporting
+- Preserve 100% of existing game features, LocalStorage data persistence (`hero_*` keys), i18n multilingual support, and Vite glob-based lazy loading safety (`safeLazy` / no directory index imports).
+- Verify clean compilation (`npx tsc --noEmit` and `npm run build` with 0 errors), create local git commits only (`git commit`, never `git push`), update `WORK_LOGS.md`, and submit the mandatory Google Form completion report via `python3 skills/report-ex/scripts/submit_report.py`.
+
+## Acceptance Criteria
+
+### DESIGN.md Visual Compliance (Programmatic Audit)
+- [ ] Target views (`HomeView`, `MobileCardPlayScreen`, `MyDeckView`, `ShopView`, `CardMarketplaceView`, `PlayGameView`, `NovelView`, `MovieView`, `RankingView`, `GuildListView`, `GuildDetailView`, `CommunityView`, `RedditCommunityView`, `ProfileView`, `SettingView`, `SeasonHubView`, `CompanionView`, `EventView`, `StockMarketView`, `PredictionMarketView`, `WikiCardView`, `WorldCodexView`, and `PageHeader`) contain `0` instances of prohibited decorative classes: `bg-gradient-to-`, `rounded-xl`, `rounded-2xl`, `rounded-3xl`, `animate-ping`, and `animate-bounce`.
+- [ ] All target views enforce `font-mono`, `1px` hairline borders, and `rounded-none` / `rounded-sm` geometry consistent with `DESIGN.md`.
+
+### Mobile Ergonomics & UX Hierarchy
+- [ ] Automated audit of interactive `<button>` and action controls across all target views confirms `min-h-[44px]` (or `h-11` / `44px+` equivalent) touch target sizing and `0` horizontal overflow issues at `375px` mobile width.
+- [ ] Gameplay and media canvases (`MobileCardPlayScreen`, `PlayGameView`, `NovelView`, `MovieView`) have `0` overlapping HUD/subtitle obstructions over the active playfield or artwork, and all modals expose an immediate `[x]` or `[SKIP]` control.
+
+### Build, Type Safety & Operational Integrity
+- [ ] `npx tsc --noEmit` exits with code `0` (0 TypeScript errors).
+- [ ] `npm run build` exits with code `0` and produces all production bundles cleanly.
+- [ ] All changes are committed locally (`git commit` only, `git push` is NOT executed) and reported via `python3 skills/report-ex/scripts/submit_report.py`.
+
+
+## 2026-10-18T12:11:07Z
+
+Comprehensive codebase-wide UI/UX design audit and overhaul across **ALL 47 views (`src/views/**/*.tsx`), ALL 620 components including all 229+ modals/popups/widgets/overlays/drawers (`src/components/**/*.tsx`), and `src/App.tsx`** of SNSHero Revolution, strictly enforcing 100% compliance with the `DESIGN.md` OpenCode terminal-flat design system, mobile 44px+ one-hand ergonomics, and zero-intrusion progressive disclosure.
+
+Working directory: /Users/dayyoung/project/snshero
+Integrity mode: development
+
+Reference specifications:
+- `/Users/dayyoung/project/snshero/DESIGN.md` (Canonical OpenCode Terminal-Flat Design System)
+- `/Users/dayyoung/project/snshero/AGENTS.md` & `/Users/dayyoung/project/snshero/GEMINI.md` (Project UX, LocalStorage, Import-Safety, and Reporting Rules)
+
+## Requirements
+
+### R1. 100% Codebase-Wide DESIGN.md Terminal-Flat Unification (All 47 Views + All Modals/Popups/Components)
+Audit and refactor **every view file in `src/views/**/*.tsx` (all 47 views)** and **every component/modal/popup/widget/overlay in `src/components/**/*.tsx` (all 620 component files) plus `src/App.tsx`** to strictly conform to `DESIGN.md`:
+- **Monospace Typography (`font-mono`)**: Ensure all screens, modals, popups, tooltips, headers, badges, and buttons use `font-mono` (Berkeley Mono aesthetic) with no non-monospace typography leaks.
+- **Strict 2-Tier Border Radius (`0px` / `4px`)**: Enforce `rounded-none` (`0px`) on all modal frames, popup dialogs, cards, containers, panels, and section wrappers; enforce at most `rounded-sm` (`4px`) on buttons, inputs, and badges. Completely eliminate `rounded-lg`, `rounded-xl`, `rounded-2xl`, `rounded-3xl`, and decorative `rounded-full` pills across all views and all popup/modal/component files.
+- **Single-Tone Flat Surfaces & 1px Hairline Borders**: Replace all multi-stop decorative gradients (`bg-gradient-to-*`), neon glow blurs, heavy shadows (`shadow-xl`, `shadow-2xl`), and distracting `animate-ping` / `animate-bounce` classes with flat Warm Cream (`#fdfcfc`, `#f8f7f7`, `#f1eeee`) or Ink Dark (`#201d1d`, `#302c2c`, `#0e0c0c`, `#090d16`) surfaces and crisp `1px` hairline borders (`border-[rgba(15,0,0,0.12)]`, `border-[#201d1d]`, `border-white/15`, `border-stone-800`).
+
+### R2. Popup/Modal UX Standardization & Zero Viewport Intrusion
+Standardize all 229+ modals, popups, drawers, tutorials, and floating widgets across `src/components/**/*.tsx` and `src/views/**/*.tsx`:
+- **Mandatory Top-Layer Dismiss Controls**: Every modal, popup, and tutorial overlay must provide a clearly visible, top-layer `[x]` close button and/or `[SKIP]` button with at least a `44px x 44px` touch target (`min-h-[44px] min-w-[44px]`).
+- **Smart Popup Deferral & Anti-Spam**: Prevent sequential popup storms on screen entry (at most 1 priority modal per session/entry, deferring secondary modals).
+- **Zero Gameplay/Media Obstruction**: Floating widgets, HUDs, and popups must never block the 3x3 battle board, player card hand, mission game touch canvas, or webtoon/movie artwork, and must provide a `[—]` minimize toggle where persistent.
+
+### R3. Mobile 44px+ Touch Target Ergonomics Across All Views & Popups
+- Enforce `min-h-[44px]` on interactive `<button>` elements, modal action buttons, tab switches, and navigation items across both `src/views/**/*.tsx` and `src/components/**/*.tsx`.
+- Ensure modals and screens fit cleanly within a `375x812` mobile viewport (`max-h-[90dvh] overflow-y-auto` for modal bodies, `0` horizontal overflow bleed, and proper bottom dock clearance).
+
+### R4. Zero Functional Regression, Safe Imports & Mandatory Reporting
+- Preserve 100% of existing game logic, 110 hero cards, 110 mission games, 40-episode novel/webtoon/movie playback, i18n 12-language support, LocalStorage data persistence (`hero_*` keys), and Vite glob-based lazy loading safety (`safeLazy` / no directory index imports).
+- Pass `npx tsc --noEmit` and `npm run build` with `0` errors, commit locally (`git commit` only, never `git push`), append to `WORK_LOGS.md`, and submit the mandatory Google Form completion report via `python3 skills/report-ex/scripts/submit_report.py`.
+
+## Acceptance Criteria
+
+### Full-Codebase DESIGN.md Visual Compliance (All Views + All Modals/Components)
+- [ ] Programmatic scan across **all 47 files in `src/views/**/*.tsx`**, **all modal/popup/widget/overlay/component files in `src/components/**/*.tsx`**, and **`src/App.tsx`** confirms `0` occurrences of prohibited classes: `bg-gradient-to-`, `rounded-xl`, `rounded-2xl`, `rounded-3xl`, `animate-ping`, and `animate-bounce`.
+- [ ] All 47 views and all modal/popup components enforce `font-mono` typography, `rounded-none` (`0px`) container/modal frames, `rounded-sm` (`4px`) button/badge geometry, and `1px` hairline borders.
+
+### Popup/Modal & Mobile Ergonomics Verification
+- [ ] Programmatic audit of all modal/popup/tutorial components in `src/components/**/*.tsx` confirms every modal dialog has a `rounded-none` flat frame, a `1px` hairline border, and an explicit close (`[x]`) or skip (`[SKIP]`) interactive button meeting the `44px+` touch target standard (`min-h-[44px]`).
+- [ ] Interactive buttons across all views and modals enforce `min-h-[44px]` ergonomics with `0` horizontal overflow at `375px` mobile viewport width.
+
+### Build, Type Safety & Operational Integrity
+- [ ] `npx tsc --noEmit` exits with code `0` (0 TypeScript errors).
+- [ ] `npm run build` exits with code `0` and generates all production bundles cleanly.
+- [ ] All changes are committed locally (`git commit` only, `git push` is NOT executed), logged in `WORK_LOGS.md`, and submitted via `python3 skills/report-ex/scripts/submit_report.py`.

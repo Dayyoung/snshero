@@ -69,7 +69,7 @@ export const COMMERCIAL_SLOT_SYMBOLS: SlotHeroSymbol[] = [
  payoutMultiplier: 150,
  scatterReward: 1500,
  frameClass: ' border-yellow-200',
- badgeClass: 'bg-[#201d1d] text-black font-black',
+ badgeClass: 'bg-[#201d1d] text-[#fdfcfc] font-black',
  accentHex: '#facc15',
  weight: 4,
  },
@@ -862,7 +862,7 @@ export const HeroNineSlotModal: React.FC<HeroNineSlotModalProps> = ({
  </div>
  <div>
  <div className="flex items-center gap-1.5">
- <h2 className="text-xs sm:text-sm font-black tracking-wider text-transparent bg-clip-text bg-[#201d1d] ">
+ <h2 className="text-xs sm:text-sm font-black tracking-wider text-amber-400   ">
  {isKo ? 'HERO VEGAS 9-SLOT' : 'HERO VEGAS 9-SLOT'}
  </h2>
  <span className="px-1.5 py-0.5 text-[9px] font-black bg-rose-600 text-white rounded-sm animate-pulse">
@@ -923,7 +923,7 @@ export const HeroNineSlotModal: React.FC<HeroNineSlotModalProps> = ({
  GRAND JACKPOT
  </span>
  </div>
- <div className="text-sm sm:text-base font-black text-transparent bg-clip-text bg-[#201d1d] tracking-wider">
+ <div className="text-sm sm:text-base font-black text-amber-400   tracking-wider">
  {jackpotPool.toLocaleString()} <span className="text-[10px] text-amber-300">SNS</span>
  </div>
  </div>
@@ -1005,7 +1005,7 @@ export const HeroNineSlotModal: React.FC<HeroNineSlotModalProps> = ({
  <img
  src={getAssetUrl(s.image)}
  alt={s.nameEn}
- className="w-8 h-8 rounded-xs object-cover border border-white/20 shrink-0"
+ className="w-8 h-8 rounded-xs object-cover border border-white/20 bg-[#fdfcfc] shrink-0"
  />
  <div className="min-w-0 flex-1">
  <span className={cn('text-[8px] px-1 rounded-xs inline-block', s.badgeClass)}>
@@ -1031,7 +1031,7 @@ export const HeroNineSlotModal: React.FC<HeroNineSlotModalProps> = ({
  </AnimatePresence>
 
  {/* 🎰 메인 3x3 릴 슬롯 머신 스테이지 */}
- <div className="relative p-2.5 bg-[#201d1d] from-[#1a1528] via-[#0f0c18] to-[#1a1528] border-2 border-amber-500/70 rounded-sm shadow-[inset_0_0_25px_rgba(0,0,0,0.9)]">
+ <div className="relative p-2.5 bg-[#201d1d] border-2 border-amber-500/70 rounded-sm shadow-[inset_0_0_25px_rgba(0,0,0,0.9)]">
  {/* 좌/우측 8개 라인 마커 핍(Pip) 장식 */}
  <div className="absolute left-0.5 top-1/2 -translate-y-1/2 flex flex-col gap-9 pointer-events-none z-20">
  <span className="w-1.5 h-3 bg-amber-400 rounded-xs shadow-xs" />
@@ -1067,7 +1067,7 @@ export const HeroNineSlotModal: React.FC<HeroNineSlotModalProps> = ({
  >
  {/* 3열 쪼기(Suspense) 불꽃 스포트라이트 */}
  {isColTension && (
- <div className="absolute inset-0 z-20 pointer-events-none bg-[#201d1d] animate-pulse flex items-start justify-center pt-1">
+ <div className="absolute inset-0 z-20 pointer-events-none bg-amber-400/15 animate-pulse flex items-start justify-center pt-1">
  <span className="px-1.5 py-0.5 text-[8px] font-black bg-yellow-400 text-black rounded-xs shadow-none">
  CHANCE!!
  </span>
@@ -1147,7 +1147,7 @@ export const HeroNineSlotModal: React.FC<HeroNineSlotModalProps> = ({
  </div>
 
  {/* 고화질 캐릭터 포트레이트 이미지 */}
- <div className="relative z-10 w-13 h-13 sm:w-15 sm:h-15 rounded-xs overflow-hidden border border-white/30 bg-black/50 shadow-inner flex items-center justify-center my-0.5">
+ <div className="relative z-10 w-13 h-13 sm:w-15 sm:h-15 rounded-xs overflow-hidden border border-white/30 bg-[#fdfcfc] shadow-inner flex items-center justify-center my-0.5">
  <img
  src={getAssetUrl(displaySym.image)}
  alt={displaySym.nameEn}
@@ -1240,13 +1240,13 @@ export const HeroNineSlotModal: React.FC<HeroNineSlotModalProps> = ({
  className="w-full h-full object-cover"
  />
  </motion.div>
- <span className="px-2 py-0.5 text-[10px] font-black bg-[#201d1d] text-black rounded-xs">
+ <span className="px-2 py-0.5 text-[10px] font-black bg-[#201d1d] text-[#fdfcfc] rounded-xs">
  {bigWinOverlay.title}
  </span>
  <p className="text-xs font-bold text-stone-200 mt-1">
  {bigWinOverlay.subtitle}
  </p>
- <div className="text-2xl font-black text-transparent bg-clip-text bg-[#201d1d] my-1">
+ <div className="text-2xl font-black text-amber-400   my-1">
  +{bigWinOverlay.amount.toLocaleString()} SNS
  </div>
  <span className="text-[10px] text-stone-400 underline mt-1">
@@ -1364,7 +1364,7 @@ export const HeroNineSlotModal: React.FC<HeroNineSlotModalProps> = ({
  ? 'bg-stone-800 border-stone-700 text-stone-500 cursor-not-allowed'
  : isFeverActive
  ? 'bg-[#201d1d] border-yellow-200 text-white shadow-[0_0_25px_rgba(232,121,249,0.6)]'
- : 'bg-[#201d1d] hover: hover: border-yellow-200 text-slate-950 shadow-[0_0_20px_rgba(251,191,36,0.35)]'
+ : 'bg-[#201d1d] hover:opacity-90 border-yellow-200 text-[#fdfcfc] shadow-[0_0_20px_rgba(251,191,36,0.35)]'
  )}
  >
  <Zap size={18} className={cn(isSpinning && 'animate-spin')} />

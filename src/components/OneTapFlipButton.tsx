@@ -23,7 +23,7 @@ export const OneTapFlipButton: React.FC<OneTapFlipButtonProps> = ({
  triggerHaptic('heavy');
  onFlip();
  }}
- className="h-12 w-full bg-[#201d1d] hover: hover: text-slate-950 font-black text-xs rounded-sm flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer shadow-none font-mono select-none"
+ className="h-12 w-full bg-[#201d1d] hover:opacity-90 text-[#fdfcfc] font-black text-xs rounded-sm flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer shadow-none font-mono select-none"
  >
  <ArrowRightLeft size={16} />
  <span>즉시 매수 후 재출품 (플립가: {recommendedFlipPrice} G)</span>

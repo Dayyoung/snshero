@@ -145,7 +145,7 @@ export const CardAcquisitionModal: React.FC<CardAcquisitionModalProps> = ({
  </div>
 
  {/* Sprite Character Art Box */}
- <div className="w-full h-36 sm:h-40 bg-[#201d1d] via-[#151128] to-[#0b0816] flex items-center justify-center relative overflow-hidden p-2">
+ <div className="w-full h-36 sm:h-40 bg-[#fdfcfc] flex items-center justify-center relative overflow-hidden p-2">
  <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(245,158,11,0.25),transparent_65%)] pointer-events-none" />
  <div 
  className="w-24 h-24 sm:w-28 sm:h-28 rounded-xs shadow-none z-10"
@@ -190,7 +190,7 @@ export const CardAcquisitionModal: React.FC<CardAcquisitionModalProps> = ({
  playSfx?.("https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3");
  onClose();
  }}
- className="w-full py-3 bg-[#201d1d] hover: hover: text-slate-950 font-black rounded-xs uppercase tracking-wider text-xs sm:text-sm shadow-none shadow-none flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 transition-all border border-amber-300"
+ className="w-full py-3 bg-amber-400 hover:bg-amber-300 text-[#201d1d] font-black rounded-xs uppercase tracking-wider text-xs sm:text-sm shadow-none flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 transition-all border border-amber-300"
  >
  <Check size={16} className="stroke-[3]" />
  <span>{language === "ko" ? `확인 & 다음 배틀 진행 (${countdown}초)` : `Next Battle (${countdown}s)`}</span>

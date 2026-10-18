@@ -121,7 +121,7 @@ export const BattleFinisherCutin: React.FC<BattleFinisherCutinProps> = ({
  type="button"
  disabled={timeLeft === 0 || isClaimed}
  onClick={handleDoubleUp}
- className="min-h-[44px] w-full py-2.5 bg-[#201d1d] hover: hover: text-slate-950 font-black text-xs rounded active:scale-95 transition-all cursor-pointer shadow-none disabled:opacity-40"
+ className="min-h-[44px] w-full py-2.5 bg-[#201d1d] hover:opacity-90 text-[#fdfcfc] font-black text-xs rounded active:scale-95 transition-all cursor-pointer shadow-none disabled:opacity-40"
  >
  {isClaimed
  ? (language === 'ko' ? '✨ 2배 보상 적용 완료!' : '✨ 2x Reward Applied!')

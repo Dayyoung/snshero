@@ -1,23 +1,58 @@
-## 2026-10-18T01:36:37Z
-You are Explorer 3 (Asset Inventory & Compression Tooling Explorer) for the SNSHero 110-Hero Character Illustration Remaster project.
-Your working directory is: /Users/dayyoung/project/snshero/.agents/teamwork/explorer_survey_3/
-You MUST read: /Users/dayyoung/project/snshero/.agents/teamwork/ORIGINAL_REQUEST.md (under ## 2026-10-18T01:34:39Z).
+# DISPATCH: explorer_survey_3
 
-Your mission:
-Survey existing character assets, file sizes, image generation/manipulation tools, and PNG compression pipelines:
-1. Check existing files on disk:
-   - Verify public/seat/*.png files (how many exist, dimensions, size ranges, blank/duplicate hashes)
-   - Verify public/cards1.png, public/cards2.png, public/card100.png, public/card100_gemini.png (dimensions, file sizes)
-   - Verify public/character_sheet_*.png (all 11 files, dimensions, file sizes)
-2. Survey available environment tools on this Mac system:
-   - Python 3 and installed packages (Pillow/PIL, numpy, etc.)
-   - Command-line image optimization tools (e.g. sips, pngquant, optipng, etc.)
-   - Node.js environment and available scripts/packages for image processing
-3. Test and recommend the optimal pipeline for:
-   - High-density remastering / enhancement of 110 character portraits
-   - Palette quantization and lossless/near-lossless PNG compression to strictly meet budgets:
-     * public/seat/*.png <= 35 KB (4KB–35KB)
-     * Master sheets (cards1, cards2, card100, card100_gemini) <= 800 KB
-     * Faction sheets <= 300 KB
-4. Write a comprehensive, structured handoff report to: /Users/dayyoung/project/snshero/.agents/teamwork/explorer_survey_3/handoff.md
-5. Notify your caller using send_message with a summary and the path to your handoff report.
+- **Role**: Survey Explorer 3 (Progression, Systems, Codex & App Chrome)
+- **Working Directory**: `/Users/dayyoung/project/snshero/.agents/teamwork/explorer_survey_3/`
+- **Target Views**:
+  - `src/views/ProfileView.tsx`
+  - `src/views/SettingView.tsx`
+  - `src/views/SeasonHubView.tsx`
+  - `src/views/CompanionView.tsx`
+  - `src/views/EventView.tsx`
+  - `src/views/StockMarketView.tsx`
+  - `src/views/PredictionMarketView.tsx`
+  - `src/views/WikiCardView.tsx`
+  - `src/views/WorldCodexView.tsx`
+  - `src/App.tsx` (top navigation, bottom dock, drawer modals)
+- **References**:
+  - `/Users/dayyoung/project/snshero/.agents/teamwork/ORIGINAL_REQUEST.md` (specifically ## 2026-10-18T10:08:37Z)
+  - `/Users/dayyoung/project/snshero/DESIGN.md`
+  - `/Users/dayyoung/project/snshero/AGENTS.md` & `/Users/dayyoung/project/snshero/GEMINI.md`
+
+## 2026-10-18T10:12:47Z
+You are Survey Explorer 3 (Progression, Systems, Codex & App Chrome) for SNSHero Revolution.
+Your working directory is: /Users/dayyoung/project/snshero/.agents/teamwork/explorer_survey_3/
+You MUST read the authoritative user request at:
+/Users/dayyoung/project/snshero/.agents/teamwork/ORIGINAL_REQUEST.md (specifically the latest request under ## 2026-10-18T10:08:37Z).
+
+Reference specifications:
+- /Users/dayyoung/project/snshero/DESIGN.md (Canonical OpenCode Terminal-Flat Design System)
+- /Users/dayyoung/project/snshero/AGENTS.md & /Users/dayyoung/project/snshero/GEMINI.md
+- /Users/dayyoung/project/snshero/.agents/teamwork/explorer_survey_3/DISPATCH.md
+
+Your Assigned Scope:
+Investigate and survey the following views and app chrome:
+1. `src/views/ProfileView.tsx`
+2. `src/views/SettingView.tsx`
+3. `src/views/SeasonHubView.tsx`
+4. `src/views/CompanionView.tsx`
+5. `src/views/EventView.tsx`
+6. `src/views/StockMarketView.tsx`
+7. `src/views/PredictionMarketView.tsx`
+8. `src/views/WikiCardView.tsx`
+9. `src/views/WorldCodexView.tsx`
+10. `src/App.tsx` (navigation bar, drawer menus, floating dock, modal containers)
+
+Your Task:
+1. Conduct an exhaustive visual and architectural survey of these 10 targets against DESIGN.md:
+   - Identify all legacy non-compliant classes: `bg-gradient-to-*`, `rounded-lg`, `rounded-xl`, `rounded-2xl`, `rounded-3xl`, `rounded-full`, `shadow-*`, `animate-ping`, `animate-bounce`, non-mono font usage.
+   - Audit touch targets: measure/check button heights, interactive tabs, navigation icons (must be >= 44px / `min-h-[44px]`).
+   - Audit progressive disclosure & spatial layout: check bottom navigation dock clearance, drawer toggles, modal wrappers.
+   - Check modal/overlay close buttons: presence of top-layer [x] close / [SKIP] buttons.
+   - Check LocalStorage keys (`hero_*`), i18n keys, and safeLazy imports in `App.tsx`.
+2. Produce a comprehensive survey and specification report in:
+   `/Users/dayyoung/project/snshero/.agents/teamwork/explorer_survey_3/handoff.md`
+   and update `/Users/dayyoung/project/snshero/.agents/teamwork/explorer_survey_3/progress.md`.
+3. Conclude with a structured Feature Inventory list (Feature Name, Target File, Current Violations, Recommended Design-Compliant Fix, Dependencies).
+4. Send a message to parent reporting completion and pointing to your handoff.md.
+
+HARD CONSTRAINT: You are a read-only Explorer. NEVER edit source files. Write ONLY to your directory `/Users/dayyoung/project/snshero/.agents/teamwork/explorer_survey_3/`.

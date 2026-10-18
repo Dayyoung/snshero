@@ -150,7 +150,7 @@ export const PityRescuePackModal: React.FC<PityRescuePackModalProps> = ({
  type="button"
  disabled={isProcessing}
  onClick={handleBuy}
- className="w-full mt-4 py-3 bg-[#201d1d] hover: hover: text-black rounded-sm text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-none active:scale-98 transition-all cursor-pointer"
+ className="w-full mt-4 py-3 bg-[#201d1d] hover:opacity-90 text-[#fdfcfc] rounded-sm text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-none active:scale-98 transition-all cursor-pointer"
  >
  <CreditCard size={15} />
  <span>{isKo ? '₩2,500 1-Tap 즉시 결제' : '₩2,500 1-Tap Purchase'}</span>

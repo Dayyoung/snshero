@@ -226,8 +226,8 @@ export const CardFlipParticleEffect: React.FC<CardFlipParticleEffectProps> = ({ 
  <div 
  className={`font-black tracking-wider uppercase font-mono select-none drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)] transform ${
  isMulti
- ? 'text-4xl sm:text-5xl scale-110 rotate-[-4deg] text-transparent bg-clip-text bg-[#201d1d] transition-transform duration-300'
- : 'text-3xl sm:text-4xl text-transparent bg-clip-text bg-[#201d1d] '
+ ? 'text-4xl sm:text-5xl scale-110 rotate-[-4deg] text-amber-400   transition-transform duration-300'
+ : 'text-3xl sm:text-4xl text-amber-400   '
  }`}
  style={{
  textShadow: isMulti

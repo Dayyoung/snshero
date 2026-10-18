@@ -73,7 +73,7 @@ export const MidnightBlackMarketModal: React.FC<MidnightBlackMarketModalProps> =
  triggerHaptic('heavy');
  onPlaceBid();
  }}
- className="h-12 w-full bg-[#201d1d] hover: hover: text-white font-black text-xs rounded-sm flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer shadow-none"
+ className="h-12 w-full bg-[#201d1d] hover:opacity-90 text-white font-black text-xs rounded-sm flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer shadow-none"
  >
  <Flame size={16} />
  <span>+50 G 상향 입찰하기</span>

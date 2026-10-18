@@ -1,0 +1,1573 @@
+{
+  "src/views/HomeView.tsx": {
+    "filepath": "src/views/HomeView.tsx",
+    "line_count": 901,
+    "violation_counts": {
+      "gradient": 0,
+      "rounded_forbidden": 0,
+      "rounded_full": 0,
+      "heavy_shadow": 0,
+      "annoying_animations": 0,
+      "animate_pulse": 0,
+      "non_mono_font": 0
+    },
+    "sample_violations": {
+      "gradient": [],
+      "rounded_forbidden": [],
+      "rounded_full": [],
+      "heavy_shadow": [],
+      "annoying_animations": [],
+      "animate_pulse": [],
+      "non_mono_font": []
+    },
+    "total_buttons": 19,
+    "sub_44_buttons_count": 19,
+    "sub_44_samples": [
+      {
+        "line": 262,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "type=\"button\"\n                  onClick={() =",
+        "classes": ""
+      },
+      {
+        "line": 287,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "type=\"button\"\n                  onClick={() =",
+        "classes": ""
+      },
+      {
+        "line": 357,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "type=\"button\"\n                  onClick={() =",
+        "classes": ""
+      },
+      {
+        "line": 371,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "type=\"button\"\n                  onClick={() =",
+        "classes": ""
+      },
+      {
+        "line": 385,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "type=\"button\"\n                  onClick={() =",
+        "classes": ""
+      },
+      {
+        "line": 402,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "type=\"button\"\n                  onClick={() =",
+        "classes": ""
+      },
+      {
+        "line": 416,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "type=\"button\"\n                  onClick={() =",
+        "classes": ""
+      },
+      {
+        "line": 430,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "type=\"button\"\n                  onClick={() =",
+        "classes": ""
+      },
+      {
+        "line": 487,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "onClick={() =",
+        "classes": ""
+      },
+      {
+        "line": 524,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "onClick={onLoginClick}\n                disabled={isLoggingIn}\n                className={cn(\n       ",
+        "classes": "cn(\n                  "
+      }
+    ],
+    "fixed_overlays_count": 2,
+    "fixed_overlays_samples": [
+      [
+        721,
+        "<div className=\"fixed inset-0 z-50 flex items-center justify-center bg-[#201d1d]/80 p-0 md:p-6\">"
+      ],
+      [
+        766,
+        "className=\"fixed inset-0 z-[209] flex items-center justify-center bg-[#201d1d]/50 p-3 sm:p-4\""
+      ]
+    ],
+    "modals": [
+      "AfkPatrolModal",
+      "CardLongPressPreviewModal",
+      "HomeCategoryHubModal",
+      "MailboxModal",
+      "Milestone600CelebrationModal",
+      "NoticeModal",
+      "NotificationCenterModal",
+      "PwaEventModal"
+    ],
+    "local_storage_keys": [
+      "hero_bgm",
+      "hero_match_history",
+      "hero_sfx",
+      "hero_win_streak"
+    ],
+    "hardcoded_ko_count": 53,
+    "hardcoded_ko_samples": [
+      [
+        203,
+        "title: language === 'ko' ? '덱 미리보기' : 'Deck Preview',"
+      ],
+      [
+        205,
+        "? '현재 선택된 5장의 대표 카드가 중앙에 표시됩니다. 각 카드의 N/E/S/W 스탯, 장비 장착 여부(목걸이·반지·신발), 보유 스킬을 작은"
+      ],
+      [
+        209,
+        "title: language === 'ko' ? '공식 웹소설' : 'Official Web Novel',"
+      ],
+      [
+        211,
+        "? '눈히어로: 카단과 아케인의 메아리 — 평범하고 우직한 청년 카단이 아케인 대륙의 11개 종족을 모험하며 힘을 일깨우고 위대한 영웅으로 거듭"
+      ],
+      [
+        215,
+        "title: language === 'ko' ? '신원 확인 및 로그인' : 'Identity & Login',"
+      ],
+      [
+        217,
+        "? 'Google 계정으로 로그인하면 데이터가 클라우드에 안전하게 백업됩니다. 게스트 모드로도 업적과 프로필을 확인할 수 있으며, 로그인 후에는"
+      ],
+      [
+        254,
+        "<p className=\"mb-2 text-sm text-[#646262]\">SNSHero Revolution / {language === 'k"
+      ],
+      [
+        257,
+        "<span className=\"text-sm text-[#646262]\">{language === 'ko' ? '티어: BRONZE I' : '"
+      ],
+      [
+        259,
+        "{/* SCR-01: 대표 덱 종합 전투력(CP) 및 연승 불꽃 뱃지 HUD */}"
+      ],
+      [
+        269,
+        "title={language === 'ko' ? '마이덱 편집 바로가기' : 'Edit My Deck'}"
+      ]
+    ]
+  },
+  "src/views/MobileCardPlayScreen.tsx": {
+    "filepath": "src/views/MobileCardPlayScreen.tsx",
+    "line_count": 2727,
+    "violation_counts": {
+      "gradient": 0,
+      "rounded_forbidden": 0,
+      "rounded_full": 3,
+      "heavy_shadow": 0,
+      "annoying_animations": 0,
+      "animate_pulse": 3,
+      "non_mono_font": 0
+    },
+    "sample_violations": {
+      "gradient": [],
+      "rounded_forbidden": [],
+      "rounded_full": [
+        [
+          1580,
+          "rounded-full",
+          "<span className=\"w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse\" />"
+        ],
+        [
+          1718,
+          "rounded-full",
+          "<span className=\"w-2 h-2 rounded-full bg-white inline-block animate-pulse\" />"
+        ],
+        [
+          2034,
+          "rounded-full",
+          "<span className=\"w-2 h-2 rounded-full bg-white inline-block\" />"
+        ]
+      ],
+      "heavy_shadow": [],
+      "annoying_animations": [],
+      "animate_pulse": [
+        [
+          1580,
+          "animate-pulse",
+          "<span className=\"w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse\" />"
+        ],
+        [
+          1621,
+          "animate-pulse",
+          "? \"bg-amber-600 text-white border-amber-700 animate-pulse\""
+        ],
+        [
+          1718,
+          "animate-pulse",
+          "<span className=\"w-2 h-2 rounded-full bg-white inline-block animate-pulse\" />"
+        ]
+      ],
+      "non_mono_font": []
+    },
+    "total_buttons": 23,
+    "sub_44_buttons_count": 22,
+    "sub_44_samples": [
+      {
+        "line": 1543,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "type=\"button\"\n            onClick={() =",
+        "classes": ""
+      },
+      {
+        "line": 1552,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "type=\"button\"\n            onClick={() =",
+        "classes": ""
+      },
+      {
+        "line": 1657,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "type=\"button\"\n              aria-label={t('macro_loop_play', language)}\n              aria-pressed={",
+        "classes": ""
+      },
+      {
+        "line": 1705,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "type=\"button\"\n          onClick={() =",
+        "classes": ""
+      },
+      {
+        "line": 1818,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "type=\"button\"\n            onClick={() =",
+        "classes": ""
+      },
+      {
+        "line": 1849,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "type=\"button\"\n                  key={`board-slot-${idx}`}\n                  id={`board-slot-${idx}`}",
+        "classes": ""
+      },
+      {
+        "line": 1949,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "type=\"button\"\n            onClick={handleUsePowerSkill}\n            disabled={turn !== 'player' || s",
+        "classes": "cn(\n              "
+      },
+      {
+        "line": 1969,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "type=\"button\"\n            onClick={handleUseShieldSkill}\n            disabled={turn !== 'player' || ",
+        "classes": "cn(\n              "
+      },
+      {
+        "line": 1989,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "type=\"button\"\n            onClick={handleUseBurstSkill}\n            disabled={turn !== 'player' || s",
+        "classes": "cn(\n              "
+      },
+      {
+        "line": 2006,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "type=\"button\"\n            onClick={toggleAuto}\n            aria-label={t('auto_battle', language)}\n ",
+        "classes": "cn(\n              "
+      }
+    ],
+    "fixed_overlays_count": 12,
+    "fixed_overlays_samples": [
+      [
+        1512,
+        "\"fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-pan-y bg-[#fdfcfc] text-[#201d1d] flex flex-col font-mono z-[100] [&_button]:min-h-11 [&_button]:min-w-11 [&_button]:focus-visible:outline-2 [&_button]:focus-visible:outline-offset-2 [&_button]:focus-visible:outline-[#201d1d]\","
+      ],
+      [
+        1757,
+        "className=\"absolute top-0.5 right-0.5 z-30 flex items-center gap-0.5 px-1 py-0.5 rounded-xs bg-[#fdfcfc]/95 text-[#201d1d] border border-[#201d1d]/30 font-mono text-[7.5px] font-bold leading-none shadow-2xs pointer-events-none select-none\""
+      ],
+      [
+        1892,
+        "className=\"absolute bottom-0.5 right-0.5 z-30 flex items-center gap-0.5 px-1 py-0.5 rounded-xs bg-[#fdfcfc]/95 text-[#201d1d] border border-[#201d1d]/30 font-mono text-[7.5px] font-bold leading-none shadow-2xs pointer-events-none select-none\""
+      ],
+      [
+        1902,
+        "<div className=\"absolute top-0.5 left-0.5 z-35 flex items-center gap-0.5 px-1 py-0.5 rounded-xs bg-[#201d1d] text-[#fdfcfc] border border-[#201d1d] font-mono text-[8px] font-black shadow-xs pointer-events-none\">"
+      ],
+      [
+        1910,
+        "<div className=\"absolute top-0.5 right-0.5 z-35 bg-[#fdfcfc] text-[#201d1d] border border-[#201d1d] rounded-sm p-0.5\">"
+      ],
+      [
+        2079,
+        "className=\"absolute top-0.5 right-0.5 z-30 flex items-center gap-0.5 px-1 py-0.5 rounded-xs bg-[#fdfcfc]/95 text-[#201d1d] border border-[#201d1d]/30 font-mono text-[7.5px] font-bold leading-none shadow-2xs pointer-events-none select-none\""
+      ],
+      [
+        2129,
+        "className=\"fixed inset-0 z-[250] bg-[#201d1d]/60 flex items-center justify-center p-3\""
+      ],
+      [
+        2438,
+        "className=\"fixed inset-0 z-[120] bg-[#201d1d]/60 flex items-center justify-center p-4 font-mono select-none\""
+      ]
+    ],
+    "modals": [
+      "RewardedAdModal"
+    ],
+    "local_storage_keys": [
+      "hero_auto_battle",
+      "hero_auto_loop_is_ranking",
+      "hero_auto_loop_match_count",
+      "hero_auto_loop_mode",
+      "hero_sns",
+      "hero_tower_costumes_v1",
+      "hero_tower_titles_v1",
+      "hero_tower_trials_floor_v1",
+      "hero_user_diamonds",
+      "hero_user_sns"
+    ],
+    "hardcoded_ko_count": 127,
+    "hardcoded_ko_samples": [
+      [
+        49,
+        "water: { nameKo: '물', nameEn: 'WATER', Icon: Waves },"
+      ],
+      [
+        50,
+        "fire: { nameKo: '불', nameEn: 'FIRE', Icon: Flame },"
+      ],
+      [
+        51,
+        "wind: { nameKo: '바람', nameEn: 'WIND', Icon: Wind },"
+      ],
+      [
+        52,
+        "land: { nameKo: '대지', nameEn: 'EARTH', Icon: Mountain },"
+      ],
+      [
+        53,
+        "earth: { nameKo: '대지', nameEn: 'EARTH', Icon: Mountain },"
+      ],
+      [
+        54,
+        "human: { nameKo: '인간', nameEn: 'HUMAN', Icon: User },"
+      ],
+      [
+        55,
+        "undead: { nameKo: '언데드', nameEn: 'UNDEAD', Icon: Skull },"
+      ],
+      [
+        56,
+        "elf: { nameKo: '엘프', nameEn: 'ELF', Icon: Leaf },"
+      ],
+      [
+        57,
+        "dwarf: { nameKo: '드워프', nameEn: 'DWARF', Icon: Hammer },"
+      ],
+      [
+        58,
+        "monster: { nameKo: '몬스터', nameEn: 'MONSTER', Icon: Ghost },"
+      ]
+    ]
+  },
+  "src/views/MyDeckView.tsx": {
+    "filepath": "src/views/MyDeckView.tsx",
+    "line_count": 3618,
+    "violation_counts": {
+      "gradient": 0,
+      "rounded_forbidden": 0,
+      "rounded_full": 0,
+      "heavy_shadow": 0,
+      "annoying_animations": 0,
+      "animate_pulse": 0,
+      "non_mono_font": 0
+    },
+    "sample_violations": {
+      "gradient": [],
+      "rounded_forbidden": [],
+      "rounded_full": [],
+      "heavy_shadow": [],
+      "annoying_animations": [],
+      "animate_pulse": [],
+      "non_mono_font": []
+    },
+    "total_buttons": 47,
+    "sub_44_buttons_count": 47,
+    "sub_44_samples": [
+      {
+        "line": 1599,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "onClick={() =",
+        "classes": ""
+      },
+      {
+        "line": 1608,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "type=\"button\" onClick={() =",
+        "classes": ""
+      },
+      {
+        "line": 1623,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "type=\"button\"\n              onClick={() =",
+        "classes": ""
+      },
+      {
+        "line": 1641,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "type=\"button\"\n              onClick={() =",
+        "classes": ""
+      },
+      {
+        "line": 1899,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "onClick={() =",
+        "classes": ""
+      },
+      {
+        "line": 1914,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "key={slot}\n                    onClick={() =",
+        "classes": ""
+      },
+      {
+        "line": 1996,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "onClick={() =",
+        "classes": ""
+      },
+      {
+        "line": 2020,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "key={group.ids[0]}\n                                    onClick={() =",
+        "classes": ""
+      },
+      {
+        "line": 2084,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "type=\"button\"\n                onClick={() =",
+        "classes": ""
+      },
+      {
+        "line": 2146,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "key={opt.id}\n                        onClick={() =",
+        "classes": ""
+      }
+    ],
+    "fixed_overlays_count": 16,
+    "fixed_overlays_samples": [
+      [
+        192,
+        "<div className=\"absolute top-1 left-1/2 -translate-x-1/2 z-30 px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] font-bold text-[9px] rounded-sm border border-[#fdfcfc] uppercase leading-none whitespace-nowrap\">"
+      ],
+      [
+        247,
+        "<div className=\"absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-32 p-2 bg-[#201d1d] text-[#fdfcfc] text-[10px] rounded-none opacity-0 group-hover/skill:opacity-100 pointer-events-none transition-opacity z-50 border border-[#646262]/40\">"
+      ],
+      [
+        1880,
+        "className=\"fixed inset-0 z-[80000] flex items-center justify-center p-4 bg-black/70 font-mono\""
+      ],
+      [
+        2070,
+        "className=\"fixed inset-0 bg-black/75 z-[80000] flex items-center justify-center p-2 sm:p-6 cursor-pointer\""
+      ],
+      [
+        2390,
+        "<div className=\"absolute inset-0 border-2 border-[#201d1d] rounded-sm flex items-end justify-center pointer-events-none z-10\">"
+      ],
+      [
+        2398,
+        "<div className=\"absolute bottom-0 right-0 flex gap-0.5 p-1 z-20 pointer-events-none\">"
+      ],
+      [
+        2413,
+        "<div className=\"absolute -top-1 -right-1 flex flex-col items-end gap-0.5 z-30 pointer-events-none\">"
+      ],
+      [
+        2458,
+        "className=\"absolute -top-12 left-1/2 -translate-x-1/2 bg-[#201d1d] text-[#fdfcfc] border border-[#fdfcfc]/30 px-4 py-2 rounded-sm text-xs font-bold z-50 whitespace-nowrap\""
+      ]
+    ],
+    "modals": [
+      "CardCombineModal",
+      "CardCompareModal",
+      "CardDisassembleModal",
+      "DeckPresetCodeModal",
+      "ElementAdvantageModal",
+      "MaterialDeficitModal",
+      "TacticalPassivePerksModal"
+    ],
+    "local_storage_keys": [
+      "hero_active_deck_preset_${season}",
+      "hero_auto_loop_card",
+      "hero_auto_loop_is_ranking",
+      "hero_auto_loop_mode",
+      "hero_deck",
+      "hero_deck_${season}",
+      "hero_deck_guest_${season}",
+      "hero_deck_preset_${activeDeckPreset}_${season}",
+      "hero_deck_preset_${targetPreset}_${season}",
+      "hero_deck_preset_icon_${num}_${season}",
+      "hero_deck_preset_name_${num}_${season}",
+      "hero_mydeck_viral_share_${new Date().toISOString().slice(0, 10)}",
+      "hero_user_avatar"
+    ],
+    "hardcoded_ko_count": 122,
+    "hardcoded_ko_samples": [
+      [
+        193,
+        "{language === 'ko' ? '⚡ 장착 완료!' : '⚡ EQUIPPED!'}"
+      ],
+      [
+        388,
+        "? '⚡ [데모플레이] 마이덱 구성 확인 완료. 미션게임(/play)으로 이동합니다 (1.5초)...'"
+      ],
+      [
+        481,
+        "? `⚡ [신규 덱 장착 완료] '${cardName}'(으)로 교체 장착!\\n/main 또는 /play 모드로 이동하여 새로운 카드플레이를 시"
+      ],
+      [
+        535,
+        "title: dbCard?.title || '카단',"
+      ],
+      [
+        637,
+        "language === 'ko' ? '덱 완성 상태' : 'Deck Full',"
+      ],
+      [
+        638,
+        "language === 'ko' ? '이미 덱이 5장으로 가득 차 있습니다.' : 'Deck already has 5 cards.'"
+      ],
+      [
+        655,
+        "language === 'ko' ? '보유 카드 부족' : 'Insufficient Cards',"
+      ],
+      [
+        656,
+        "language === 'ko' ? '추가할 수 있는 보유 카드가 없습니다.' : 'No additional owned cards found.'"
+      ],
+      [
+        678,
+        "language === 'ko' ? '✨ 스마트 자동 완성 완료' : '✨ Smart Auto-Fill Complete',"
+      ],
+      [
+        680,
+        "? `최적 시너지 영웅 ${toAdd.length}장을 덱에 편성했습니다!`"
+      ]
+    ]
+  },
+  "src/views/PlayGameView.tsx": {
+    "filepath": "src/views/PlayGameView.tsx",
+    "line_count": 18648,
+    "violation_counts": {
+      "gradient": 68,
+      "rounded_forbidden": 248,
+      "rounded_full": 112,
+      "heavy_shadow": 134,
+      "annoying_animations": 31,
+      "animate_pulse": 103,
+      "non_mono_font": 40
+    },
+    "sample_violations": {
+      "gradient": [
+        [
+          364,
+          "bg-gradient-to-r",
+          "<div className=\"absolute top-3 right-3 bg-gradient-to-r from-amber-400 to-yellow-400 text-slate-950 font-black text-xs px-3 py-1 rounded-full shadow-md z-10 animate-pulse\">"
+        ],
+        [
+          421,
+          "bg-gradient-to-r",
+          ": \"bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white shadow-purple-600/20\""
+        ],
+        [
+          3541,
+          "bg-gradient-to-r",
+          "<div className=\"p-5 bg-gradient-to-r from-indigo-950 to-slate-950 text-white border-b border-indigo-500/20 flex items-center gap-3\">"
+        ],
+        [
+          3749,
+          "bg-gradient-to-r",
+          "className=\"w-full h-14 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white font-black uppercase tracking-wider rounded-2xl flex items-center justify-center gap-3 group transition-all shadow-[0_10px_30px_rgba(99,102,241,0.3)] hover:shadow-[0_15px_35px_rgba(99,102,241,0.4)] active:scale-[0.98]\""
+        ],
+        [
+          10343,
+          "bg-gradient-to-r",
+          "className=\"w-full max-w-md py-4 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-black uppercase text-base tracking-widest rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2\""
+        ],
+        [
+          10474,
+          "bg-gradient-to-r",
+          "<div className=\"absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-red-600 to-rose-500 animate-pulse\" />"
+        ],
+        [
+          10505,
+          "bg-gradient-to-r",
+          "<div className=\"absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 to-teal-400 animate-pulse\" />"
+        ],
+        [
+          10670,
+          "bg-gradient-to-r",
+          "className=\"flex-1 py-3 bg-gradient-to-r from-lime-500 to-lime-600 hover:from-lime-400 hover:to-lime-500 text-slate-955 font-black uppercase text-xs tracking-wider rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-1 cursor-pointer\""
+        ]
+      ],
+      "rounded_forbidden": [
+        [
+          313,
+          "rounded-lg",
+          "className=\"w-24 h-34 sm:w-28 sm:h-38 rounded-lg shadow-lg pointer-events-none transform group-hover:scale-105 transition-transform duration-300\""
+        ],
+        [
+          359,
+          "rounded-3xl",
+          "\"flex flex-col rounded-3xl border bg-slate-900 overflow-hidden shadow-xl transition-all relative\","
+        ],
+        [
+          418,
+          "rounded-xl",
+          "\"w-full py-3 font-black uppercase italic tracking-wider rounded-xl transition-all cursor-pointer hover:scale-[1.02] active:scale-[0.98] shadow-md\","
+        ],
+        [
+          3538,
+          "rounded-3xl",
+          "className=\"bg-slate-950 text-slate-100 w-full max-w-sm rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(99,102,241,0.25)] border border-indigo-500/30 relative z-[11001] font-sans\""
+        ],
+        [
+          3542,
+          "rounded-xl",
+          "<div className=\"w-9 h-9 bg-indigo-500/10 rounded-xl flex items-center justify-center shrink-0 border border-indigo-500/20\">"
+        ],
+        [
+          3558,
+          "rounded-lg",
+          "<div className=\"mt-4 py-1.5 px-3 bg-indigo-950/80 border border-indigo-500/40 rounded-lg text-indigo-300 text-xs font-black flex items-center justify-center gap-1.5 animate-pulse\">"
+        ],
+        [
+          3571,
+          "rounded-xl",
+          "className=\"w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold uppercase tracking-wider text-xs rounded-xl shadow-lg shadow-indigo-600/25 active:scale-95 transition-all cursor-pointer text-center\""
+        ],
+        [
+          3611,
+          "rounded-3xl",
+          "className=\"bg-slate-900 text-white rounded-3xl border border-slate-800 shadow-[0_20px_50px_rgba(0,0,0,0.5)] max-w-lg w-full overflow-hidden flex flex-col\""
+        ]
+      ],
+      "rounded_full": [
+        [
+          364,
+          "rounded-full",
+          "<div className=\"absolute top-3 right-3 bg-gradient-to-r from-amber-400 to-yellow-400 text-slate-950 font-black text-xs px-3 py-1 rounded-full shadow-md z-10 animate-pulse\">"
+        ],
+        [
+          509,
+          "rounded-full",
+          "className=\"inline-flex items-center justify-center min-w-[44px] min-h-[44px] rounded-full bg-slate-100 hover:bg-indigo-50 border border-slate-200 text-slate-400 hover:text-indigo-600 hover:border-indigo-200 shadow-xs transition-all shrink-0 cursor-pointer text-[11px] font-black select-none mt-1\""
+        ],
+        [
+          1619,
+          "rounded-full",
+          "<span class=\"animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75\"></span>"
+        ],
+        [
+          1957,
+          "rounded-full",
+          "<span class=\"animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75\"></span>"
+        ],
+        [
+          3626,
+          "rounded-full",
+          "className=\"p-2 hover:bg-white/10 rounded-full text-slate-400 hover:text-white transition-colors\""
+        ],
+        [
+          3635,
+          "rounded-full",
+          "<div className=\"w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-black shrink-0 shadow-[0_0_10px_rgba(99,102,241,0.3)] text-sm\">1</div>"
+        ],
+        [
+          3647,
+          "rounded-full",
+          "<div className=\"absolute -top-1.5 left-1/2 -translate-x-1/2 bg-indigo-600 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full\">7</div>"
+        ],
+        [
+          3648,
+          "rounded-full",
+          "<div className=\"absolute top-1/2 -right-2.5 -translate-y-1/2 bg-rose-600 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full\">6</div>"
+        ]
+      ],
+      "heavy_shadow": [
+        [
+          313,
+          "shadow-lg",
+          "className=\"w-24 h-34 sm:w-28 sm:h-38 rounded-lg shadow-lg pointer-events-none transform group-hover:scale-105 transition-transform duration-300\""
+        ],
+        [
+          359,
+          "shadow-xl",
+          "\"flex flex-col rounded-3xl border bg-slate-900 overflow-hidden shadow-xl transition-all relative\","
+        ],
+        [
+          364,
+          "shadow-md",
+          "<div className=\"absolute top-3 right-3 bg-gradient-to-r from-amber-400 to-yellow-400 text-slate-950 font-black text-xs px-3 py-1 rounded-full shadow-md z-10 animate-pulse\">"
+        ],
+        [
+          418,
+          "shadow-md",
+          "\"w-full py-3 font-black uppercase italic tracking-wider rounded-xl transition-all cursor-pointer hover:scale-[1.02] active:scale-[0.98] shadow-md\","
+        ],
+        [
+          3571,
+          "shadow-lg",
+          "className=\"w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold uppercase tracking-wider text-xs rounded-xl shadow-lg shadow-indigo-600/25 active:scale-95 transition-all cursor-pointer text-center\""
+        ],
+        [
+          3645,
+          "shadow-lg",
+          "className=\"w-[90px] h-[126px] ring-2 ring-indigo-500/50 rounded-xl shadow-lg\""
+        ],
+        [
+          3673,
+          "shadow-lg",
+          "className=\"w-[80px] h-[112px] ring-2 ring-indigo-500 rounded-lg shadow-lg\""
+        ],
+        [
+          3675,
+          "shadow-md",
+          "<div className=\"absolute top-1/2 -right-3 -translate-y-1/2 w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-[10px] font-bold z-10 shadow-md border border-white/20\">"
+        ]
+      ],
+      "annoying_animations": [
+        [
+          387,
+          "animate-bounce",
+          "<ShieldAlert size={40} className=\"text-red-500 animate-bounce mb-2\" />"
+        ],
+        [
+          1619,
+          "animate-ping",
+          "<span class=\"animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75\"></span>"
+        ],
+        [
+          1957,
+          "animate-ping",
+          "<span class=\"animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75\"></span>"
+        ],
+        [
+          10713,
+          "animate-bounce",
+          "<ShieldAlert size={20} className=\"text-amber-400 animate-bounce\" />"
+        ],
+        [
+          10998,
+          "animate-bounce",
+          "dungeonBattleWinner === 'player' ? \"bg-yellow-100/10 text-yellow-400 animate-bounce\" : \"bg-red-100/10 text-red-500\""
+        ],
+        [
+          11077,
+          "animate-ping",
+          "<div className=\"w-2 h-2 rounded-full bg-green-500 animate-ping\" />"
+        ],
+        [
+          11170,
+          "animate-bounce",
+          "<div className=\"absolute -top-3 left-1/2 -translate-x-1/2 bg-red-650 text-white text-sm font-bold px-1.5 py-0.5 shadow-sm z-50 rounded-sm animate-bounce-subtle\">"
+        ],
+        [
+          11228,
+          "animate-bounce",
+          "<div className=\"p-1 bg-indigo-600 text-white rounded-2xl animate-bounce-subtle w-12 h-12 overflow-hidden flex items-center justify-center shadow-lg shadow-indigo-600/35\">"
+        ]
+      ],
+      "animate_pulse": [
+        [
+          364,
+          "animate-pulse",
+          "<div className=\"absolute top-3 right-3 bg-gradient-to-r from-amber-400 to-yellow-400 text-slate-950 font-black text-xs px-3 py-1 rounded-full shadow-md z-10 animate-pulse\">"
+        ],
+        [
+          3558,
+          "animate-pulse",
+          "<div className=\"mt-4 py-1.5 px-3 bg-indigo-950/80 border border-indigo-500/40 rounded-lg text-indigo-300 text-xs font-black flex items-center justify-center gap-1.5 animate-pulse\">"
+        ],
+        [
+          3615,
+          "animate-pulse",
+          "<Brain size={28} className=\"text-indigo-400 animate-pulse\" />"
+        ],
+        [
+          4766,
+          "animate-pulse",
+          "html: `<div class=\"relative w-12 h-12 flex items-center justify-center p-1 bg-blue-600 border-2 border-white rounded-xl shadow-[0_0_15px_rgba(37,99,235,0.7)] animate-pulse\">"
+        ],
+        [
+          10287,
+          "animate-pulse",
+          "<Gift className=\"text-amber-400 animate-pulse\" size={24} />"
+        ],
+        [
+          10289,
+          "animate-pulse",
+          "<Navigation className=\"text-emerald-400 animate-pulse\" size={24} />"
+        ],
+        [
+          10361,
+          "animate-pulse",
+          "<span className=\"text-xs font-black uppercase tracking-wider mb-2 animate-pulse text-amber-400\">"
+        ],
+        [
+          10404,
+          "animate-pulse",
+          "<span className=\"text-xs font-black uppercase tracking-wider mb-2 animate-pulse text-amber-400\">"
+        ]
+      ],
+      "non_mono_font": [
+        [
+          3538,
+          "font-sans",
+          "className=\"bg-slate-950 text-slate-100 w-full max-w-sm rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(99,102,241,0.25)] border border-indigo-500/30 relative z-[11001] font-sans\""
+        ],
+        [
+          10284,
+          "font-sans",
+          "<header className=\"h-16 flex items-center justify-between border-b border-white/10 px-6 bg-slate-950/80 backdrop-blur-md z-50 shrink-0 relative font-sans\">"
+        ],
+        [
+          10300,
+          "font-sans",
+          "<div className=\"bg-slate-950/40 border-b border-white/10 px-6 py-3 flex items-center justify-between z-40 shrink-0 font-sans backdrop-blur-md\">"
+        ],
+        [
+          10333,
+          "font-sans",
+          "<div className=\"absolute top-8 right-8 z-20 bg-slate-900/90 border border-amber-400 px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-[0_4px_12px_rgba(0,0,0,0.5)] font-bold text-xs font-sans\">"
+        ],
+        [
+          10402,
+          "font-sans",
+          "className=\"w-full max-w-sm border border-amber-400 bg-slate-950 text-white p-6 rounded-2xl shadow-[0_20px_50px_rgba(245,158,11,0.25)] flex flex-col items-center justify-center pointer-events-auto font-sans\""
+        ],
+        [
+          10750,
+          "font-sans",
+          "<header className=\"h-16 flex items-center justify-between border-b border-slate-800 px-6 bg-slate-950 z-50 shrink-0 relative font-sans\">"
+        ],
+        [
+          10803,
+          "font-sans",
+          "<h3 className=\"text-xs font-bold uppercase text-red-400 border-b border-red-500/30 pb-1 mb-2 flex items-center gap-2 font-sans\">"
+        ],
+        [
+          10809,
+          "font-sans",
+          "<div className=\"flex flex-row gap-4 overflow-x-auto w-full justify-center py-2 font-sans\">"
+        ]
+      ]
+    },
+    "total_buttons": 117,
+    "sub_44_buttons_count": 117,
+    "sub_44_samples": [
+      {
+        "line": 411,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "disabled={isCooldown}\n          onClick={() =",
+        "classes": ""
+      },
+      {
+        "line": 504,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "onClick={() =",
+        "classes": ""
+      },
+      {
+        "line": 3566,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "onClick={() =",
+        "classes": ""
+      },
+      {
+        "line": 3618,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "onClick={() =",
+        "classes": ""
+      },
+      {
+        "line": 3741,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "onClick={() =",
+        "classes": ""
+      },
+      {
+        "line": 10341,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "onClick={handleStopRunning}\n              className=\"w-full max-w-md py-4 bg-gradient-to-r from-red-",
+        "classes": "w-full max-w-md py-4 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-black uppercase text-base tracking-widest rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+      },
+      {
+        "line": 10481,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "onClick={() =",
+        "classes": ""
+      },
+      {
+        "line": 10589,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "onClick={async () =",
+        "classes": ""
+      },
+      {
+        "line": 10674,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "onClick={() =",
+        "classes": ""
+      },
+      {
+        "line": 10721,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "onClick={() =",
+        "classes": ""
+      }
+    ],
+    "fixed_overlays_count": 119,
+    "fixed_overlays_samples": [
+      [
+        386,
+        "<div className=\"absolute inset-0 bg-black/80 backdrop-blur-xs flex flex-col items-center justify-center p-4 text-center z-55\">"
+      ],
+      [
+        3531,
+        "className=\"fixed inset-0 z-[11000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm\""
+      ],
+      [
+        3606,
+        "className=\"fixed inset-0 z-[500] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md\""
+      ],
+      [
+        10275,
+        "<div className=\"absolute inset-0 opacity-20 pointer-events-none z-0\""
+      ],
+      [
+        10354,
+        "<div className=\"absolute inset-0 flex items-center justify-center pointer-events-none z-[100] p-4 bg-black/30\">"
+      ],
+      [
+        10397,
+        "<div className=\"absolute inset-0 flex items-center justify-center pointer-events-none z-[100] p-4 bg-black/45 backdrop-blur-[1px]\">"
+      ],
+      [
+        10467,
+        "<div className=\"fixed inset-0 z-[102] flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm\">"
+      ],
+      [
+        10474,
+        "<div className=\"absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-red-600 to-rose-500 animate-pulse\" />"
+      ]
+    ],
+    "modals": [
+      "BattleGambitModal",
+      "BattleReconnectModal",
+      "BattleSummaryModal",
+      "CardAcquisitionModal",
+      "CardLongPressPreviewModal",
+      "CustomMatchModal",
+      "ElementAdvantageModal",
+      "ExpeditionModal",
+      "FriendRivalryModal",
+      "GoldenArcheryModal",
+      "GoldenPirateRouletteModal",
+      "InBattleEmoteModal",
+      "LuckyMatchModal",
+      "MatchMVPShowcaseModal",
+      "MissionEncounterModal",
+      "MonsterBeastariumModal",
+      "RevengeChanceModal",
+      "SecretStampBookModal",
+      "SpectatorModal",
+      "SportsmanshipModal",
+      "StoryStageSelectModal",
+      "TacticianMasteryModal",
+      "TowerOfTrialsModal",
+      "TreasureChestUnlockModal",
+      "TreasureDartModal",
+      "TurnOrderDeciderModal"
+    ],
+    "local_storage_keys": [
+      "hero_auto_battle_setting",
+      "hero_auto_battle_speed",
+      "hero_auto_loop_is_ranking",
+      "hero_auto_loop_mode",
+      "hero_battle_gambit_config_v1",
+      "hero_boss_active_state",
+      "hero_boss_cooldowns",
+      "hero_community_pvp_post_id",
+      "hero_current_season",
+      "hero_defense_active_state",
+      "hero_dungeon_active_state",
+      "hero_farmed_stage_${currentStageId}",
+      "hero_friends",
+      "hero_gambit_config_v1",
+      "hero_game_logs",
+      "hero_gold",
+      "hero_inventory",
+      "hero_last_ai_battle_summary",
+      "hero_last_diligence_time",
+      "hero_match_history",
+      "hero_mode_play_data",
+      "hero_opponent_muted",
+      "hero_pvp_battle_result",
+      "hero_revenge_buff_active",
+      "hero_running_session_data",
+      "hero_sns",
+      "hero_speedrun_fast_wins_v1",
+      "hero_tower_costumes_v1",
+      "hero_tower_titles_v1",
+      "hero_tower_trials_floor_v1",
+      "hero_user_avatar",
+      "hero_user_name",
+      "hero_user_sns"
+    ],
+    "hardcoded_ko_count": 716,
+    "hardcoded_ko_samples": [
+      [
+        389,
+        "COOLDOWN (휴식 중)"
+      ],
+      [
+        424,
+        "{isCooldown ? \"WAITING...\" : \"CHALLENGE (대결하기)\"}"
+      ],
+      [
+        510,
+        "title={language === 'ko' ? '설명 보기' : 'Show Description'}"
+      ],
+      [
+        824,
+        ": (message.includes('버겁') || (title && title.includes('패배')) || message.includes"
+      ],
+      [
+        830,
+        "title: title || (language === 'ko' ? '알림' : 'Notice'),"
+      ],
+      [
+        1233,
+        "onStartMobileCardPlay(undefined, baseDeck, `[보스 레이드] ${oppName}`);"
+      ],
+      [
+        1304,
+        "const R = 6371000; // 지구 반경 (meters)"
+      ],
+      [
+        1412,
+        "title: language === 'ko' ? '위치 정보 권한 동의' : 'LOCATION ACCESSIBILITY REQUIREMENT',"
+      ],
+      [
+        1417,
+        "language === 'ko' ? '이 브라우저는 위치 정보를 지원하지 않습니다.' : 'Geolocation is not supported "
+      ],
+      [
+        1418,
+        "language === 'ko' ? '오류' : 'ERROR'"
+      ]
+    ]
+  },
+  "src/components/PageHeader.tsx": {
+    "filepath": "src/components/PageHeader.tsx",
+    "line_count": 66,
+    "violation_counts": {
+      "gradient": 0,
+      "rounded_forbidden": 0,
+      "rounded_full": 0,
+      "heavy_shadow": 0,
+      "annoying_animations": 0,
+      "animate_pulse": 0,
+      "non_mono_font": 0
+    },
+    "sample_violations": {
+      "gradient": [],
+      "rounded_forbidden": [],
+      "rounded_full": [],
+      "heavy_shadow": [],
+      "annoying_animations": [],
+      "animate_pulse": [],
+      "non_mono_font": []
+    },
+    "total_buttons": 1,
+    "sub_44_buttons_count": 0,
+    "sub_44_samples": [],
+    "fixed_overlays_count": 0,
+    "fixed_overlays_samples": [],
+    "modals": [],
+    "local_storage_keys": [],
+    "hardcoded_ko_count": 0,
+    "hardcoded_ko_samples": []
+  },
+  "src/components/battle/TacticalCommandHUD.tsx": {
+    "filepath": "src/components/battle/TacticalCommandHUD.tsx",
+    "line_count": 738,
+    "violation_counts": {
+      "gradient": 0,
+      "rounded_forbidden": 0,
+      "rounded_full": 0,
+      "heavy_shadow": 0,
+      "annoying_animations": 0,
+      "animate_pulse": 0,
+      "non_mono_font": 0
+    },
+    "sample_violations": {
+      "gradient": [],
+      "rounded_forbidden": [],
+      "rounded_full": [],
+      "heavy_shadow": [],
+      "annoying_animations": [],
+      "animate_pulse": [],
+      "non_mono_font": []
+    },
+    "total_buttons": 7,
+    "sub_44_buttons_count": 6,
+    "sub_44_samples": [
+      {
+        "line": 553,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "type=\"button\"\n                onClick={() =",
+        "classes": ""
+      },
+      {
+        "line": 580,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "type=\"button\"\n            disabled={disabled || currentAp < 30 || activeOverride !== null}\n         ",
+        "classes": ""
+      },
+      {
+        "line": 612,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "type=\"button\"\n            disabled={disabled || currentAp < 30 || activeOverride !== null}\n         ",
+        "classes": ""
+      },
+      {
+        "line": 644,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "type=\"button\"\n            disabled={disabled || currentAp < 50 || activeOverride !== null}\n         ",
+        "classes": ""
+      },
+      {
+        "line": 716,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "type=\"button\"\n                onClick={() =",
+        "classes": ""
+      },
+      {
+        "line": 723,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "type=\"button\"\n                onClick={handleClaimPack}\n                className=\"flex-1 min-h-[44p",
+        "classes": "flex-1 min-h-[44px] rounded-sm border border-amber-500 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-bold"
+      }
+    ],
+    "fixed_overlays_count": 1,
+    "fixed_overlays_samples": [
+      [
+        682,
+        "className=\"fixed inset-0 z-[260] bg-black/80 flex items-center justify-center p-4 font-mono select-none\""
+      ]
+    ],
+    "modals": [],
+    "local_storage_keys": [],
+    "hardcoded_ko_count": 25,
+    "hardcoded_ko_samples": [
+      [
+        145,
+        "hud_title: '[카단 원정대 전술 지휘 // KADAN BATTLE HUD]',"
+      ],
+      [
+        146,
+        "ap_label: '정령 마나',"
+      ],
+      [
+        147,
+        "ap_recharge_hint: '미니게임 플레이 시 정령 마나 충전 (+20)',"
+      ],
+      [
+        148,
+        "assault_name: '[화염 강타 // 이그니스]',"
+      ],
+      [
+        149,
+        "assault_cost: '30 마나',"
+      ],
+      [
+        150,
+        "assault_desc: '이그니스의 화염 폭발 · 공격력 +35% · 속도 +20% (5초)',"
+      ],
+      [
+        151,
+        "counter_name: '[수호 결계 // 실리아]',"
+      ],
+      [
+        152,
+        "counter_cost: '30 마나',"
+      ],
+      [
+        153,
+        "counter_desc: '실리아의 수호 결계 · 피해 감소 40% · 반사 25% (5초)',"
+      ],
+      [
+        154,
+        "synergy_name: '[눈보라 각성 // 카단]',"
+      ]
+    ]
+  },
+  "src/components/battle/TacticalSynergyMatrix.tsx": {
+    "filepath": "src/components/battle/TacticalSynergyMatrix.tsx",
+    "line_count": 182,
+    "violation_counts": {
+      "gradient": 0,
+      "rounded_forbidden": 0,
+      "rounded_full": 0,
+      "heavy_shadow": 0,
+      "annoying_animations": 0,
+      "animate_pulse": 1,
+      "non_mono_font": 0
+    },
+    "sample_violations": {
+      "gradient": [],
+      "rounded_forbidden": [],
+      "rounded_full": [],
+      "heavy_shadow": [],
+      "annoying_animations": [],
+      "animate_pulse": [
+        [
+          100,
+          "animate-pulse",
+          "<div className={`w-2 h-2 rounded-none ${isTripleBurst ? 'bg-amber-400 animate-pulse' : 'bg-stone-600'}`} />"
+        ]
+      ],
+      "non_mono_font": []
+    },
+    "total_buttons": 1,
+    "sub_44_buttons_count": 1,
+    "sub_44_samples": [
+      {
+        "line": 106,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "type=\"button\"\n          onClick={() =",
+        "classes": ""
+      }
+    ],
+    "fixed_overlays_count": 0,
+    "fixed_overlays_samples": [],
+    "modals": [],
+    "local_storage_keys": [],
+    "hardcoded_ko_count": 21,
+    "hardcoded_ko_samples": [
+      [
+        12,
+        "const MASK_FROST = 1 << 0; // 1 (카단 / 알렉산다르)"
+      ],
+      [
+        13,
+        "const MASK_FLAME = 1 << 1; // 2 (이그니스 / 벨페고르)"
+      ],
+      [
+        14,
+        "const MASK_HOLY  = 1 << 2; // 4 (발리안 / 실리아)"
+      ],
+      [
+        19,
+        "header: '[원소 연계 매트릭스 // ELEMENTAL SYNERGY]',"
+      ],
+      [
+        20,
+        "statusActive: '[삼위일체 원소 공명 가동 중]',"
+      ],
+      [
+        21,
+        "statusStandby: '[원소 공명 대기 중]',"
+      ],
+      [
+        22,
+        "frost: 'FROST // 냉기 수호 (카단)',"
+      ],
+      [
+        23,
+        "flame: 'FLAME // 화염 격발 (이그니스)',"
+      ],
+      [
+        24,
+        "holy: 'HOLY // 성광 치유 (실리아)',"
+      ],
+      [
+        25,
+        "overclockTitle: '미니게임 수련 마나 증폭',"
+      ]
+    ]
+  },
+  "src/components/battle/StarBreathingUltimateWidget.tsx": {
+    "filepath": "src/components/battle/StarBreathingUltimateWidget.tsx",
+    "line_count": 236,
+    "violation_counts": {
+      "gradient": 0,
+      "rounded_forbidden": 0,
+      "rounded_full": 0,
+      "heavy_shadow": 3,
+      "annoying_animations": 0,
+      "animate_pulse": 0,
+      "non_mono_font": 0
+    },
+    "sample_violations": {
+      "gradient": [],
+      "rounded_forbidden": [],
+      "rounded_full": [],
+      "heavy_shadow": [
+        [
+          104,
+          "shadow-lg",
+          "<div className=\"bg-[#090d16]/95 border border-[#646262]/30 text-stone-200 rounded-none p-2 shadow-lg backdrop-blur-xs flex flex-col space-y-1.5 min-w-[210px] max-w-[250px]\">"
+        ],
+        [
+          163,
+          "shadow-xl",
+          "<div className=\"w-full max-w-md p-3 bg-[#090d16]/98 border border-cyan-400 text-white rounded-none shadow-xl text-center\">"
+        ],
+        [
+          177,
+          "shadow-2xl",
+          "<div className=\"relative w-full max-w-sm bg-[#090d16] border border-[#646262]/40 rounded-none p-5 text-stone-200 shadow-2xl\">"
+        ]
+      ],
+      "annoying_animations": [],
+      "animate_pulse": [],
+      "non_mono_font": []
+    },
+    "total_buttons": 6,
+    "sub_44_buttons_count": 6,
+    "sub_44_samples": [
+      {
+        "line": 87,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "onClick={() =",
+        "classes": ""
+      },
+      {
+        "line": 107,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "onClick={() =",
+        "classes": ""
+      },
+      {
+        "line": 114,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "onClick={() =",
+        "classes": ""
+      },
+      {
+        "line": 142,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "onClick={handleCast}\n              disabled={!isReady || isCastingAnimation}\n              className",
+        "classes": ""
+      },
+      {
+        "line": 182,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "onClick={() =",
+        "classes": ""
+      },
+      {
+        "line": 222,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "onClick={() =",
+        "classes": ""
+      }
+    ],
+    "fixed_overlays_count": 3,
+    "fixed_overlays_samples": [
+      [
+        84,
+        "<div className={`fixed top-14 right-3 z-40 select-none font-mono ${className}`}>"
+      ],
+      [
+        162,
+        "<div className=\"fixed inset-x-0 top-16 z-50 pointer-events-none flex items-center justify-center font-mono px-4\">"
+      ],
+      [
+        176,
+        "<div className=\"fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs font-mono select-none\">"
+      ]
+    ],
+    "modals": [],
+    "local_storage_keys": [],
+    "hardcoded_ko_count": 11,
+    "hardcoded_ko_samples": [
+      [
+        94,
+        "[성진호흡 {state.stage}성: {Math.floor(state.astralResonance)}%]"
+      ],
+      [
+        111,
+        "<span>[EP.06 성진호흡 {state.stage}성]</span>"
+      ],
+      [
+        126,
+        "<span>영기 충전도</span>"
+      ],
+      [
+        154,
+        "<span>{isReady ? '[오의 발동: 별빛 성역]' : '[영기 충전 대기]'}</span>"
+      ],
+      [
+        168,
+        "성진호흡 제{state.stage}성 오의 발동: 전장 타일 정화 & 적 카드 캡처"
+      ],
+      [
+        180,
+        "<span>[소설 비전 // 성진호흡법 수련기]</span>"
+      ],
+      [
+        200,
+        "고유 특성: {stageInfo.perkKo}"
+      ],
+      [
+        207,
+        "<span>다음 성좌 승급 수련도</span>"
+      ],
+      [
+        208,
+        "<span className=\"font-bold text-stone-200\">{state.starShards} / {nextRequired} 파"
+      ],
+      [
+        219,
+        "110종 미니게임을 승리할 때마다 성진의 파편을 획득하며, 3x3 배틀 중 게이지가 100% 충전되면 전장의 적 카드를 정화 캡처하는 오의를 시"
+      ]
+    ]
+  },
+  "src/components/battle/ElementalTempestWidget.tsx": {
+    "filepath": "src/components/battle/ElementalTempestWidget.tsx",
+    "line_count": 177,
+    "violation_counts": {
+      "gradient": 0,
+      "rounded_forbidden": 0,
+      "rounded_full": 0,
+      "heavy_shadow": 1,
+      "annoying_animations": 0,
+      "animate_pulse": 0,
+      "non_mono_font": 0
+    },
+    "sample_violations": {
+      "gradient": [],
+      "rounded_forbidden": [],
+      "rounded_full": [],
+      "heavy_shadow": [
+        [
+          60,
+          "shadow-xl",
+          "<div className=\"bg-[#fdfcfc] dark:bg-[#181616] border border-[#201d1d]/20 dark:border-white/20 shadow-xl rounded-none text-[#201d1d] dark:text-[#fdfcfc] w-[270px] sm:w-[290px] overflow-hidden\">"
+        ]
+      ],
+      "annoying_animations": [],
+      "animate_pulse": [],
+      "non_mono_font": []
+    },
+    "total_buttons": 2,
+    "sub_44_buttons_count": 2,
+    "sub_44_samples": [
+      {
+        "line": 77,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "onClick={() =",
+        "classes": ""
+      },
+      {
+        "line": 152,
+        "has_min_44": false,
+        "has_sub_44": false,
+        "tag": "onClick={() =",
+        "classes": ""
+      }
+    ],
+    "fixed_overlays_count": 0,
+    "fixed_overlays_samples": [],
+    "modals": [],
+    "local_storage_keys": [],
+    "hardcoded_ko_count": 7,
+    "hardcoded_ko_samples": [
+      [
+        3,
+        "* 미니게임 보스 전리품 연계 3x3 전장 원소 폭풍 연쇄 스펠 위젯 (RSI-024)"
+      ],
+      [
+        30,
+        "const [isCollapsed, setIsCollapsed] = useState<boolean>(true); // 기본 접힘 (사용자 시야 "
+      ],
+      [
+        66,
+        "{isKo ? '원소 폭풍 연쇄 스펠' : 'TEMPEST SPELL'}"
+      ],
+      [
+        83,
+        "title={isCollapsed ? '펼치기' : '접기'}"
+      ],
+      [
+        94,
+        "<span>{isKo ? '원소 폭풍 연쇄 발동 성공!' : 'Tempest Spell Activated!'}</span>"
+      ],
+      [
+        162,
+        "<span>{isKo ? '격발' : 'CAST'}</span>"
+      ],
+      [
+        170,
+        "{isKo ? '* 미니게임 보스 처치 시 원소 핵 획득' : '* Defeat mini-game bosses to loot cores'}"
+      ]
+    ]
+  }
+}

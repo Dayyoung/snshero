@@ -100,7 +100,7 @@ export const FastPassModal: React.FC<FastPassModalProps> = ({
  type="button"
  onClick={() => handlePurchase('early')}
  disabled={isProcessing}
- className="min-h-[44px] min-h-[40px] px-3 bg-[#201d1d] text-black font-black text-xs rounded-none cursor-pointer active:scale-95 shadow-none"
+ className="min-h-[44px] min-h-[40px] px-3 bg-[#201d1d] text-[#fdfcfc] font-black text-xs rounded-none cursor-pointer active:scale-95 shadow-none"
  >
  {isKo ? '500원 결제' : '$0.50'}
  </button>

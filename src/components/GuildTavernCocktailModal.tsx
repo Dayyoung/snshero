@@ -27,7 +27,7 @@ export const GuildTavernCocktailModal: React.FC<GuildTavernCocktailModalProps> =
  <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 font-mono select-none">
  <div className="bg-slate-950 border-2 border-amber-400 rounded-none w-full max-w-sm overflow-hidden shadow-none flex flex-col text-center">
  {/* Header */}
- <div className="p-4 bg-[#201d1d] text-slate-950 flex items-center justify-between">
+ <div className="p-4 bg-[#201d1d] text-[#fdfcfc] flex items-center justify-between">
  <div className="flex items-center gap-1.5 font-black text-xs">
  <Wine size={16} />
  <span>🍸 길드 선술집 & 럭키 칵테일 바</span>
@@ -61,7 +61,7 @@ export const GuildTavernCocktailModal: React.FC<GuildTavernCocktailModalProps> =
  onSpinCocktail();
  onClose();
  }}
- className="h-12 w-full bg-[#201d1d] text-slate-950 font-black text-xs rounded-sm flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer shadow-none"
+ className="h-12 w-full bg-[#201d1d] text-[#fdfcfc] font-black text-xs rounded-sm flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer shadow-none"
  >
  <Sparkles size={16} />
  <span>오늘의 칵테일 룰렛 주문</span>

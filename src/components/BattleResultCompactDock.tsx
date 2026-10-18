@@ -99,7 +99,7 @@ export const BattleResultCompactDock: React.FC<BattleResultCompactDockProps> = (
  }}
  className={`min-h-[44px] h-13 font-black text-xs rounded-sm flex flex-col items-center justify-center gap-1 active:scale-95 cursor-pointer shadow-none ${
  isVictory
- ? 'bg-[#201d1d] text-slate-950 hover:brightness-105'
+ ? 'bg-[#201d1d] text-[#fdfcfc] hover:brightness-105'
  : 'bg-slate-800 text-slate-500 border border-slate-700'
  }`}
  >

@@ -14889,3 +14889,18 @@
   - 전투 의성어(SFX) 배지는 화면 정중앙 대신 우측 상단 모서리에 작고 깔끔한 코너 배지(`top-2 right-2 text-xs`)로 표시되도록 축소.
   - 40화 전체 MP4 동영상(`scripts/generate_all_40_episode_videos.py`, `public/videos/episodes/episode_01.mp4` ~ `episode_40.mp4`) 또한 상단 `800x450` 원본 컷신을 전혀 침범하지 않는 하단 분리형 시네마 독(`800x560`, 하단 `110px` 전용 자막·화자·의성어 영역)으로 전수 재렌더링 완료.
 - **검증 결과**: `npm run lint` 및 `npm run build` 0 에러 통과, 로컬 Git 커밋 및 구글 폼 보고서 제출 완료.
+
+---
+
+## [2026-10-18 22:10 KST] 카드 캐릭터 뒷배경 검은색 표시 이슈 수정 및 프로덕션 번들 갱신
+- **원인 분석**:
+  - 카드 스프라이트 시트(`public/cards1.png`, `public/cards2.png`) 및 캐릭터 포트레이트(`public/seat/*.png`)가 투명 배경(`rgba(0,0,0,0)`)으로 되어 있는데, 이전 그라데이션 제거 리팩토링 과정에서 `CardItem.tsx`의 `pokemonTheme.windowBg` / `surfaceBg` 및 일부 모달의 캐릭터 영역 배경이 `bg-[#201d1d]`(다크 잉크/검은색)로 치환되어 투명 영역 뒤로 검은색 배경이 비치는 현상 확인.
+- **조치 내역**:
+  1. `src/components/CardItem.tsx`: 등급별(Silver/Gold/Special/Bronze) 일러스트 윈도우(`windowBg`) 및 카드 표면(`surfaceBg`)을 밝은 플랫 색상(`bg-[#f8fafc]`, `bg-[#fffef0]`, `bg-[#f0f9ff]`, `bg-[#fdf4ff]`, `bg-[#fdf2f8]`, `bg-[#fcf7f1]`)으로 복원하고, `hideBackground` 상태와 무관하게 캐릭터 일러스트 윈도우에 항상 밝은 배경이 적용되도록 수정.
+  2. `src/lib/utils.ts`: `getCardSpriteStyle` 헬퍼에 기본 `backgroundColor: '#fdfcfc'`(웜크림)를 지정하여 앱 전체의 카드 스프라이트 박스에서 투명 영역 뒤로 검은 배경이 비치지 않도록 근본 차단 (`CardItem` 내부 `getSpritePosition`은 등급별 `windowBg`가 표현되도록 `transparent` 유지).
+  3. `CardAcquisitionModal.tsx`, `GachaRevealSequence.tsx`, `HeroNineSlotModal.tsx`, `DailyHiddenHeroModal.tsx`, `WikiCardDetailModal.tsx`, `MatchMVPShowcaseModal.tsx`, `DeckBuilderSwipeUI.tsx`, `SpinningProfileShowcase.tsx`, `BattleSummaryModal.tsx`, `ClawMachine.tsx`, `EventView.tsx`, `PlayGameView.tsx`, `SkillView.tsx` 등 캐릭터 포트레이트 컨테이너의 어두운 배경(`bg-black`, `bg-slate-950`, `bg-[#201d1d]`)을 밝은 배경(`bg-[#fdfcfc]`)으로 교체하고 불투명 검은색 오버레이 및 다크 배경 위 어두운 텍스트 대비 충돌 일괄 수정.
+- **검증 및 빌드**:
+  - `python3 tests/e2e_design_system/run_all_e2e_tests.py` (377/377 PASS)
+  - `npx tsc --noEmit` (0 errors)
+  - `npm run build` (`dist/` 정적 번들 최신화 완료)
+  - 구글 폼 작업 완료 보고서 제출 완료

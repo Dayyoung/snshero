@@ -1,184 +1,167 @@
-# Handoff Report: Agent-as-Judge Literary Quality Audit (Challenger 2)
+# Handoff Report: Challenger 2 — Mobile Viewport & Canvas Intrusion Stress Testing
 
-**Evaluator**: challenger_2 (empirical_challenger)  
-**Target**: SNSHero 40-Episode Web Novel Trilogy (`public/book/episode_01.md`–`episode_40.md`, `public/book/image_narrations/english_txt/`)  
-**Verdict**: ❌ **REQUEST_CHANGES** (Composite Literary Quality Score: **4.48 / 10.0**, below required threshold ≥ 8.5 / 10.0)
+**Role**: Adversarial Challenger 2 (Viewport Intrusion, Layout Bleed & Mobile Safari 375x812 Torture Tests)  
+**Target Milestone**: Milestone 4 Gate Verification (SNSHero Revolution Full-Screen DESIGN.md Terminal-Flat Visual Unification)  
+**Working Directory**: `/Users/dayyoung/project/snshero/.agents/teamwork/challenger_2/`  
+**Date**: 2026-10-18T11:43:00Z  
+**Empirical Verdict**: **REJECT**
 
 ---
 
 ## 1. Observation
 
-### 1.1 Automated Metric Scanner Results (Raw Count Criteria)
-Tool command: `python3 scripts/verify_novel_quality.py` and `python3 scripts/audit_literary_quality.py`
-- Total Korean episodes audited: 40/40.
-- Korean character count: Minimum = 3,750 chars, Maximum = 4,651 chars, Average = 4,046.6 chars. (All ≥ 3,500 target threshold).
-- Korean dialogue line count: Minimum = 13 lines, Maximum = 28 lines, Average = 19.8 lines. (All ≥ 8 target threshold).
-- TypeScript check (`npx tsc --noEmit`): 0 errors (Task-56 exited with code 0).
-- Production build (`npm run build`): 0 bundling errors (Task-61 exited with code 0 in 12.81s).
-- Functional verification harness (`scripts/verify_ip_trilogy.ts --skip-build`): 31 / 31 test assertions passed.
+All observations were obtained empirically through independent script execution, AST/regex token extraction, DOM viewport analysis, and test suite execution. Zero claims from workers or prior logs were accepted without independent reproduction.
 
-### 1.2 Root Cause Discovery: Generator Script `scripts/build_full_40_novel.py`
-Inspection of `scripts/build_full_40_novel.py` revealed that while Episode 01 and 02 were authored as custom literary prose, Episodes 03 through 40 (38 out of 40 episodes!) were procedurally synthesized using a naive regex and modulo template script:
-1. **Blind Sentence-Ending Replacements (Lines 231–233)**:
-   ```python
-   action = re.sub(r"있었다\.", "타올랐다.", action)
-   action = re.sub(r"않았다\.", "거두지 않았다.", action)
-   action = re.sub(r"되었다\.", "펼쳐졌다.", action)
-   ```
-2. **Hardcoded Canned Dialogue Pool with Modulo Insertion (Lines 48–193, Line 240)**:
-   ```python
-   dlg = pool[(ep_num + scene_idx) % len(pool)]
-   ```
-3. **Static Sensory Environment Backdrop Prepends (Lines 214–226)**:
-   ```python
-   sensory = "대기를 타고 흐르는 미세한 마나의 파문이 칼날처럼 팽팽한 긴장감을 자아냈다."
-   ```
+### 1.1 Master E2E Test Suite Execution
+- **Command**: `python3 tests/e2e_design_system/run_all_e2e_tests.py`
+- **Result**: **Exit Code 1** (Execution time: 0.81s)
+- **Assertion Summary**:
+  - Total Assertions: 188
+  - Passed Assertions: 176 (93.6%)
+  - Failed Assertions: 12 (6.4%)
+- **Exact Failed Assertions**:
+  1. `✗ FAIL [T2.TOUCH.V01] [M1] HomeView 44px+ Touch Target Compliance (Total 19 buttons)`
+     - Line 623: `<button onClick={handleLogout} className="p-2.5 hover:bg-[#f8f7f7] text-[#646262] hover:text-[#201d1d] transition-colors b">` lacks `min-h-[44px]` (only `p-2.5` = ~36px height).
+  2. `✗ FAIL [T2.TOUCH.V02] [M1] MobileCardPlayScreen 44px+ Touch Target Compliance (Total 23 buttons)`
+     - 10 of 23 buttons lack `min-h-[44px]` sizing.
+     - Line 2227: `className="w-full py-2 px-3 text-[11px] font-bold rounded-sm cursor-pointer flex items-cent..."`
+     - Line 2334: `className="w-full py-2.5 bg-[#201d1d] text-[#fdfcfc] font-bold text-xs rounded-sm cursor-po..."`
+     - Line 2342: `className="w-full py-2 border border-[#0f0000]/12 font-bold text-xs rounded-sm cursor-point..."`
+     - Line 2352: `className="w-full py-2.5 bg-[#201d1d] text-[#fdfcfc] font-bold text-xs rounded-sm cursor-po..."`
+     - Line 2361: `className="w-full py-2 hover:bg-[#f1eeee] font-bold text-xs rounded-sm border border-[#0f00..."`
+     - Line 2381: `className="w-full py-2.5 bg-[#201d1d] text-[#fdfcfc] font-bold text-xs rounded-sm cursor-pointer..."`
+     - Line 2400: `className="w-full py-2 font-bold text-xs rounded-sm cursor-pointer flex items-center..."`
+     - Line 2408: `className="w-full py-2 hover:bg-[#f1eeee] font-bold text-xs rounded-sm border border-[#0f00..."`
+  3. `✗ FAIL [T2.TOUCH.V03] [M1] MyDeckView 44px+ Touch Target Compliance (Total 47 buttons)`
+     - 7 of 47 buttons lack `min-h-[44px]` sizing.
+     - Lines 2860, 2871, 2882: `className="flex-1 py-2 text-center text-xs font-bold uppercase tra..."`
+     - Line 3256: `className="min-h-[38px] px-3 py-1.5 text-[10px] font-bold uppercase..."` (explicitly 38px, < 44px).
+     - Line 3483: `className="min-h-[36px] px-2.5 py-1 rounded-sm border border-[#0f0000]/12 bg-[#fdfcfc] text..."` (explicitly 36px, < 44px).
+  4. `✗ FAIL [T2.TOUCH.V04] [M1] PlayGameView 44px+ Touch Target Compliance (Total 118 buttons)`
+     - 26 of 118 buttons lack `min-h-[44px]` sizing.
+     - Line 3618: `className="p-2 hover:bg-white/10 rounded-full text-slate-400 hover:text-white transition-co..."`
+     - Line 10766: `className="relative z-10 px-3 py-1.5 rounded-[10px] text-xs font-bold..."`
+     - Line 11281: `className="p-2.5 bg-slate-900/80 hover:bg-slate-800 text-white rounded-none active:scale-95..."`
+     - Line 11566: `className="flex items-center gap-1 px-2.5 py-1 rounded-sm text-[10px] fon..."`
+     - Line 11584: `className="flex items-center gap-1 px-2.5 py-1 rounded-sm text-[10px] font-black uppercase..."`
+  5. `✗ FAIL [T2.VIEWPORT.V02] [M1] MobileCardPlayScreen 375px Mobile Viewport & Dock Clearance`
+     - Uses `pb-[max(32px,env(safe-area-inset-bottom,0px))]`, missing canonical `pb-24/pb-28/pb-32/pb-36` dock clearance token.
+  6. `✗ FAIL [T2.VIEWPORT.V05] [M2] ShopView 375px Mobile Viewport & Dock Clearance`
+     - Uses `pb-[calc(11rem+env(safe-area-inset-bottom,0px))]`, missing standard `pb-24/pb-28/pb-32/pb-36` token in `check_horizontal_overflow_resilience`.
+  7. `✗ FAIL [T2.VIEWPORT.V07] [M2] NovelView 375px Mobile Viewport & Dock Clearance`
+     - Root max bottom padding is `pb-16` (64px), failing the `>= pb-24` requirement.
+  8. `✗ FAIL [T2.VIEWPORT.V09] [M2] RankingView 375px Mobile Viewport & Dock Clearance`
+     - Uses `pb-[220px]`, missing standard token format.
+  9. `✗ FAIL [T2.VIEWPORT.V13] [M2] RedditCommunityView 375px Mobile Viewport & Dock Clearance`
+     - Contains 0 bottom padding dock clearance classes (`pb-*` count = 0).
+  10. `✗ FAIL [T2.MODAL.02] [M1] Battle Settlement & Auto Battle Modals Modal Top-Layer [x]/[SKIP] Dismiss Controls`
+      - `src/views/MobileCardPlayScreen.tsx`: The post-match settlement modal (`lines 2129–2418`) has 0 top-layer `[x]` or `[SKIP]` dismiss controls. Only a bottom `py-2` button (`Line 2408`: `나가기` / `Exit`) is provided.
+  11. `✗ FAIL [T2.MODAL.06] [M2] PvP Match History & Nearby Modals Modal Top-Layer [x]/[SKIP] Dismiss Controls`
+      - `src/views/RankingView.tsx`: Line 1425 has `<button onClick={() => setShowHistoryModal(false)} className="...">\n  <X size={20} />\n</button>`. The closing `<X` icon is separated by a newline, causing regex miss in `find_modal_close_buttons`.
+  12. `✗ FAIL [T3.THEME.01] Design System Surface Palette Continuity (#fdfcfc / #201d1d)`
+      - `src/views/RedditCommunityView.tsx`: Missing canonical OpenCode surface tokens (`bg-[#fdfcfc]`, `bg-[#f8f7f7]`, `bg-[#201d1d]`, `bg-[#090d16]`). Uses non-canonical `bg-[#DAE0E6]`, `bg-[#181C1F]`, `bg-[#0E1113]`, `bg-white`.
 
-### 1.3 Verbatim Linguistic and Narrative Corruptions Across Episodes
+### 1.2 TypeScript Compile & Vite Production Build
+- **`npx tsc --noEmit`**: **PASS** (Exit code 0, 0 compiler errors).
+- **`npm run build`**: **PASS** (Exit code 0 in 21.65s, 52 static routes generated cleanly).
 
-#### A. Ungrammatical Nonsense Phrases Produced by Regex Substitutions
-- **`되었다.` → `펼쳐졌다.` corruption**:
-  - `public/book/episode_07.md:15`: `말퓨온이 궁정의 첩자라는 누명을 쓰고 결박펼쳐졌다.` (Expected: `결박되었다.`)
-  - `public/book/episode_07.md:35`: `새벽에 공격이 시작펼쳐졌다.` (Expected: `시작되었다.`)
-  - `public/book/episode_37.md:51`: `수도는 함락펼쳐졌다.` (Expected: `함락되었다.`)
-  - `public/book/episode_12.md:5`: `폐성소의 위치는 하루를 넘기지 못하고 발각펼쳐졌다.` (Expected: `발각되었다.`)
-  - `public/book/episode_22.md:31`: `사흘 뒤 뗏목이 완성펼쳐졌다.` (Expected: `완성되었다.`)
-  - `public/book/episode_15.md:5`: `구름귀환 저택에 해골 모양의 수정 상자가 배달펼쳐졌다.` (Expected: `배달되었다.`)
-  - `public/book/episode_25.md:43`: `오리하르콘의 보조구 안에서 작은 수정벌레가 발견펼쳐졌다.` (Expected: `발견되었다.`)
-  - `public/book/episode_04.md:11`: `적대 부족의 암살자들에게 포위펼쳐졌다.` (Expected: `포위되었다.`)
+### 1.3 375x812 Viewport Ergonomics & Horizontal Scroll Bleed
+- Running `.agents/teamwork/challenger_2/adversarial_mobile_viewport_intrusion_stress.py`:
+  - 21 of 22 views feature valid horizontal overflow containment (`overflow-x-hidden` or `overflow-hidden`).
+  - **Violation Found**: `src/views/PlayGameView.tsx` Line 12021 contains an unconstrained `min-w-[900px]`:
+    ```tsx
+    <div className="flex flex-row gap-6 md:gap-10 justify-start items-stretch min-w-[900px] max-w-7xl mx-auto py-4">
+    ```
+    While wrapped in an `overflow-x-auto` container, this forces horizontal scrolling on a 375px mobile viewport without a responsive mobile breakpoint (e.g. `md:min-w-[900px]`).
+  - Line 12014 in `PlayGameView.tsx` still contains stray gradient classes:
+    ```tsx
+    <div className="bg-[#201d1d] from-amber-400 to-yellow-400 border border-amber-300 px-8 py-4 rounded-sm text-slate-950 font-black text-2xl uppercase italic tracking-widest text-center">
+    ```
 
-- **`않았다.` → `거두지 않았다.` corruption**:
-  - `public/book/episode_12.md:73`: `그녀는 위로의 말을 고르지 거두지 않았다.`
-  - `public/book/episode_18.md:43`: `세계를 구하는 지식과 하루를 살아가는 지식 사이에 높낮이를 두지 거두지 않았다.`
-  - `public/book/episode_13.md:37`: `실리아는 수련을 구경만 하지 거두지 않았다.`
-  - `public/book/episode_13.md:63`: `레오나르는 촌스럽다며 웃었지만 고치지는 거두지 않았다.`
-  - `public/book/episode_06.md:37`: `말퓨온은 검을 들지 거두지 않았다.`
-  - `public/book/episode_06.md:39`: `첫 달에는 아무 일도 일어나지 거두지 않았다.`
-  - `public/book/episode_06.md:39`: `반년 뒤에는 절벽을 오르는 동안 발밑의 얼음이 깨지지 거두지 않았다.`
-  - `public/book/episode_06.md:41`: `말퓨온은 한 번도 잘했다고 칭찬하지 거두지 않았다.`
-  - `public/book/episode_32.md:15`: `나이아드는 사과하지 거두지 않았다.`
-  - `public/book/episode_29.md:5`: `실리아는 검은 예복도 추도 연설도 준비하지 거두지 않았다.`
-  - `public/book/episode_40.md:17`: `카단은 쉽게 답하지 거두지 않았다.`
+### 1.4 Zero Viewport Intrusion Audit
+- **3x3 Card Battle Board (`MobileCardPlayScreen.tsx`)**:
+  - The 3x3 battle grid is isolated via `aspect-square` and `grid-cols-3` layout.
+  - However, `TacticalCommandHUD.tsx` lacks an active collapse toggle (`isCollapsed`) to minimize HUD intrusion during mobile gameplay on narrow 375px screens.
+- **Poki Mini-Game Canvas (`PlayGameView.tsx`)**:
+  - Dedicated canvas container maintains `touch-none` and pointer event isolation.
+  - However, 132 floating/absolute container elements are rendered across different game modes, creating potential collision points with mobile touch controls.
+- **Novel & Movie Artwork**:
+  - `NovelView.tsx` webtoon panel reader and `CinematicMoviePlayer.tsx` feature dedicated toggle controls for subtitles (`subtitleMode`), comic speech bubbles, and playback overlays, ensuring clean zero-intrusion media viewing.
 
-- **`있었다.` → `타올랐다.` corruption**:
-  - `public/book/episode_23.md:5`: `엘윈 마을은 불탄 날의 모습으로 얼어붙어 타올랐다.`
-  - `public/book/episode_23.md:5`: `알렉산다르와 발리안도 몰랐던 지하 통로가 타올랐다.` (Underground tunnel burned?)
-  - `public/book/episode_23.md:7`: `폐허 전체를 파헤치고 타올랐다.`
-  - `public/book/episode_23.md:7`: `피난망까지 기록되어 타올랐다.`
-  - `public/book/episode_23.md:7`: `와일드랜드와 라이트헤븐을 동시에 무너뜨릴 수 타올랐다.` (무너뜨릴 수 있었다 → 타올랐다)
-  - `public/book/episode_23.md:21`: `입구의 자석 장치를 만든 적이 타올랐다.` (만든 적이 있었다 → 타올랐다)
-  - `public/book/episode_23.md:41`: `중앙에는 검은 석함이 놓여 타올랐다.`
-  - `public/book/episode_23.md:41`: `문장이 새겨져 타올랐다.`
-  - `public/book/episode_12.md:75`: `두 무덤 사이로 어린 풀이 올라오고 타올랐다.` (Sprouting grass burns up?)
-  - `public/book/episode_40.md:5`: `초원에는 첫눈이 내리고 타올랐다.` (First snow falls and burns up?)
-  - `public/book/episode_40.md:5`: `작은 천막에 누워 타올랐다.` (Lying in a tent and burning up?)
-  - `public/book/episode_40.md:13`: `후계 다툼으로 흔들리고 타올랐다.`
-  - `public/book/episode_40.md:29`: `집으로 가는 식량을 나누고 타올랐다.`
-
-#### B. Pervasive Boilerplate Repetitions Across 38 Episodes
-- `대기를 타고 흐르는 미세한 마나의 파문이 칼날처럼 팽팽한 긴장감을 자아냈다.` appears in **38 out of 40 episodes** (in Ep 04 alone it appears **16 times**, in Ep 12 **15 times**, in Ep 29 **16 times**).
-- `녹옥 지팡이를 쥔 실리아의 가벼운 발걸음이 바람의 결을 따라 매끄럽게 미끄러졌다.` appears in **34 out of 40 episodes**.
-- `백색 화염을 두른 이그니스의 눈동자가 꺼지지 않는 불꽃처럼 번뜩였다.` appears in **27 out of 40 episodes**.
-
-#### C. Incoherent Dialogue Duplication & Ghost Speaker Bugs
-- `“혼자서 모든 짐을 짊어지려 하지 마십시오. 함께 싸우는 동료들이 곁에 있습니다.”` appears verbatim in **25 episodes**.
-- `“방패는 뒤로 물러서지 않습니다. 물러서는 순간 등 뒤의 사람들이 피를 흘리기 때문입니다.”` appears verbatim in **23 episodes**.
-- `“바람이 부는 길을 그 누구도 억지로 막아설 순 없어요. 내 지팡이가 향하는 곳이 곧 길이에요.”` appears verbatim in **23 episodes**.
-- `“내가 놓아둔 전술 룬을 믿어요. 당신이 버텨 주는 1초면 적의 숨통을 끊기에 충분하니까요.”` appears verbatim in **19 episodes**.
-- **Ghost Speaker Bug (Ep 29, 35, 40)**:
-  - In Episode 29, line 5 establishes: `이그니스의 죽음 다음 날, 자유민 연맹은 다시 의회를 열었다.` (The day after Ignis's death). Yet lines 7, 13, 17, 25, 31, 33, 43, 51 have deceased Ignis actively speaking and his eyes blazing white flames during a political parliament:
-    - Line 25: `“카단, 네놈의 얼음 방패와 내 순백의 화염 중 어느 쪽이 더 단단한지 결판을 내자!”`
-    - Line 43: `“루시안... 네놈이 내 아버지를 죽이고 어머니의 기억을 빼앗은 장본인이었단 말인가!”`
-  - In Episode 35, line 27 establishes: `카단은 이그니스의 죽음을 알리고 유리 불씨를 빈 잔 옆에 놓았다.` Yet Ignis speaks at line 31 and blazes at line 59.
-  - In Episode 40 (after the war is over, King Fenrir is dying, and Ignis is long dead and buried), line 55 has Ignis shouting: `“루시안... 네놈이 내 아버지를 죽이고 어머니의 기억을 빼앗은 장본인이었단 말인가!”`
-
-#### D. English Chapters Mirror Glitches (`public/book/image_narrations/english_txt/`)
-- `An electric tension vibrated through the air as ambient mana coiled like a tightened bowstring.` repeated 11+ times in a single chapter (e.g. `SNSHero_Novel_Episode_12_...EN.txt`).
-- First-person perspective leakage in third-person narrative: `The more I ran, the stiffer my limbs became` (Ep 12 Line 12); `A poison touched my heart as I searched for what to say` (Ep 12 Line 30).
-- Regex-induced translation mutilation: `Balian and Ysela were buried together on a hill overlooking the village of Elwin... she had been a little less impatient 18 years ago, he might have prevented the tragedy.` (produced by `t = re.sub(r"\bElwin\b.*?he\b", "Elwin... she", t)`).
+### 1.5 Progressive Disclosure & Modal Popup Storms
+- Audited all `useEffect` hooks across `App.tsx`, `HomeView.tsx`, `MobileCardPlayScreen.tsx`, `ShopView.tsx`, and `SettingView.tsx`.
+- Discovered that modal triggers in `App.tsx` (lines 554–567: `snshero_open_guild_bounties`, `snshero_open_story_duel`; lines 3637–3648: `snshero_demo_tour_start`; lines 4797–4817: `snshero-help-popup-open`) are **event-driven listeners** and do not fire automatically on screen mount.
+- Verified that fresh mounts of all 22 views trigger **0 unprompted back-to-back popup storms**.
 
 ---
 
 ## 2. Logic Chain
 
-1. **Premise**: Per `ORIGINAL_REQUEST.md` (R1) and acceptance criteria:
-   - "Remake all 40 episodes of the SNSHero Web Novel from dry plot summaries into immersive, commercial-grade fantasy fiction without repetitive AI clichés or mechanical sentence endings."
-   - "Independent Agent-as-Judge literary audit scores a random sample of episodes across Early (Ep 1–10), Mid (Ep 11–25), and Late (Ep 26–40) arcs at ≥ 8.5/10 on narrative immersion, natural prose flow, dialogue authenticity, and absence of repetitive AI summary tropes."
-2. **Observation 1.1**: The raw character count (≥ 3,500) and raw dialogue count (≥ 8) technically pass because the worker added filler text and stock quotes to inflate file size.
-3. **Observation 1.2 & 1.3**: The procedural generation script `scripts/build_full_40_novel.py` corrupted 38 out of 40 episodes:
-   - Blind global regex replacements broke fundamental Korean grammar, creating dozens of impossible verbs (`결박펼쳐졌다`, `시작펼쳐졌다`, `발각펼쳐졌다`, `고르지 거두지 않았다`, `올라오고 타올랐다`, `내리고 타올랐다`).
-   - A static 36-quote dialogue pool was modulo-cycled across scenes, causing identical lines to repeat across 20+ chapters and causing deceased characters (Ignis) to shout aggressive battle cries in peaceful assemblies and funeral beds long after their deaths.
-   - A single sentence (`대기를 타고 흐르는 미세한 마나의 파문이 칼날처럼 팽팽한 긴장감을 자아냈다.`) was prepended to almost every paragraph, occurring up to 16 times in a single episode.
-4. **Scoring Breakdown across Sample Episodes**:
-
-| Arc | Sample Episode | 1. Worldbuilding & Immersion | 2. Prose Flow & Cadence | 3. Dialogue Authenticity | 4. Battle Tension & Hooks | Episode Composite |
-|---|---|---|---|---|---|---|
-| **Early** | **Ep 01** (Custom written) | 9.4 | 9.2 | 9.0 | 9.2 | **9.20 / 10** |
-| **Early** | **Ep 04** (Procedural) | 4.5 | 3.0 | 4.0 | 4.5 | **4.00 / 10** |
-| **Early** | **Ep 08** (Procedural) | 4.5 | 3.5 | 4.0 | 5.0 | **4.25 / 10** |
-| **Mid** | **Ep 12** (Procedural) | 4.0 | 3.0 | 4.0 | 5.0 | **4.00 / 10** |
-| **Mid** | **Ep 18** (Procedural) | 4.5 | 3.5 | 4.0 | 5.0 | **4.25 / 10** |
-| **Mid** | **Ep 25** (Procedural) | 4.0 | 3.5 | 4.0 | 4.5 | **4.00 / 10** |
-| **Late** | **Ep 29** (Procedural) | 3.5 | 3.0 | 2.5 | 4.5 | **3.38 / 10** |
-| **Late** | **Ep 35** (Procedural) | 3.5 | 3.0 | 3.0 | 5.0 | **3.63 / 10** |
-| **Late** | **Ep 40** (Procedural) | 4.0 | 3.0 | 3.0 | 4.5 | **3.63 / 10** |
-
-- **Sample Composite Average**: **4.48 / 10.0**
-- **Gap to Acceptance Threshold**: **-4.02 points** below the mandatory **8.50 / 10.0**.
-
-5. **Conclusion**: While Episodes 01 and 02 meet high literary standards, the remaining 38 episodes fail the acceptance criteria for narrative immersion, prose flow, and dialogue authenticity due to automated procedural corruption.
+1. *Observation 1.1 (Master E2E test runner exits with code 1 & 12 failed assertions)* -> The test infrastructure (`tests/e2e_design_system/run_all_e2e_tests.py`) established in `TEST_READY.md` serves as the authoritative gateway for Milestone 4. A non-zero exit code represents a formal verification failure.
+2. *Observation 1.1 & 1.3 (Sub-44px touch targets in 4 core views)* -> `DESIGN.md` explicitly specifies:
+   `"Enforce a minimum 44px touch target (min-h-[44px]) on all interactive buttons, tabs, header actions, and navigation controls."`
+   `HomeView` (1 button), `MobileCardPlayScreen` (10 buttons), `MyDeckView` (7 buttons), and `PlayGameView` (26 buttons) have buttons with `py-2` (32px), `min-h-[38px]`, or `min-h-[36px]`. On a 375px mobile device, touch misfires and accessibility failures will directly occur.
+3. *Observation 1.1 & 1.4 (Battle settlement modal in MobileCardPlayScreen lacks [x] dismiss control)* -> `DESIGN.md` and R2 require:
+   `"Ensure every modal, drawer, and tutorial overlay provides a clearly visible top-layer [x] close or [SKIP] button."`
+   `MobileCardPlayScreen.tsx` lines 2129–2418 presents a victory/defeat modal with no top-layer `[x]` button; the player must scroll or tap a small `py-2` exit button at the bottom.
+4. *Observation 1.1 (RedditCommunityView lacks canonical surface tokens)* -> R1 mandates warm cream (`#fdfcfc`, `#f8f7f7`) and ink dark (`#201d1d`, `#090d16`) surface tokens. `RedditCommunityView.tsx` retains legacy styling tokens (`#DAE0E6`, `#181C1F`, `#0E1113`).
+5. *Hard Constraint (Review-only)* -> As Challenger 2, I am strictly prohibited from modifying source code in `src/`. Therefore, these empirical defects cannot be silently fixed; they must be reported with full reproduction evidence for worker remediation.
 
 ---
 
 ## 3. Caveats
 
-- **Scope limitation**: This audit focuses specifically on literary quality and text integrity of the 40 Web Novel episodes in Korean and English. Webtoon components (`NovelView.tsx`), Movie player (`CinematicMoviePlayer.tsx`), and code builds are functionally intact and passing type checks.
-- **Root cause is isolated**: The defect is completely localized to the output of `scripts/build_full_40_novel.py`. The underlying lore outline, character cards, and chapter synopsis database are rich and viable for high-grade adaptation.
+1. **Test Oracle Token Strictness**: Some viewport clearance failures (e.g. `ShopView` using `pb-[calc(11rem...)]`, `RankingView` using `pb-[220px]`, `MobileCardPlayScreen` using `pb-[max(32px...)]`) are mathematically larger than `pb-28` (112px), but fail the test regex `pb-(?:24|28|32|36|40|44|48|safe)`. Similarly, `RankingView` line 1425 has an `<X size={20} />` close button, but because `<X` is on a new line, `close_pattern` fails. While the test regex is strict, `MobileCardPlayScreen` and `RedditCommunityView` have genuine missing controls and missing padding.
+2. **Build and Type Cleanliness**: The codebase compiles with 0 TypeScript diagnostics (`tsc --noEmit`) and bundles with 0 errors (`npm run build`). The defects are purely design system token, touch target, and layout compliance issues.
 
 ---
 
-## 4. Conclusion & Required Actions
+## 4. Conclusion & Verdict
 
-**Verdict**: ❌ **REQUEST_CHANGES**
+**Verdict**: **REJECT**
 
-The Web Novel files cannot be approved in their current state. The following concrete remediations are required:
-1. **Deprecate / Overhaul `scripts/build_full_40_novel.py`**:
-   - Immediately remove blind string substitutions (`되었다` → `펼쳐졌다`, `않았다` → `거두지 않았다`, `있었다` → `타올랐다`).
-   - Remove the static modulo dialogue cycling mechanism that repeats stock phrases across 20+ episodes.
-2. **Rewrite / Polish Episodes 03 through 40**:
-   - Replace mechanical fillers (`대기를 타고 흐르는 미세한 마나의 파문...`, `녹옥 지팡이를 쥔...`, `백색 화염을 두른...`) with unique, context-sensitive prose tailored to the specific scene and chapter.
-   - Ensure character dialogues are authentic to the ongoing situation and eliminate deceased character ghost dialogues (e.g. Ignis in Ep 29, 35, 40).
-   - Ensure grammatical correctness of verb endings in Korean and eliminate first-person pronoun errors in English chapters.
-3. **Re-run Automated Audit and Re-score**:
-   - Verify that all episodes maintain ≥ 3,500 characters and ≥ 8 dialogues while achieving ≥ 8.5/10 on the Agent-as-Judge literary quality metric.
+Milestone 4 cannot be approved in its current state. The following 5 concrete remediation items must be resolved:
+
+1. **Fix Sub-44px Touch Targets (44px Minimum Standard)**:
+   - `HomeView.tsx` (Line 623): Add `min-h-[44px]` to logout button.
+   - `MobileCardPlayScreen.tsx` (Lines 2227, 2334, 2342, 2352, 2361, 2381, 2400, 2408): Replace `py-2` / `py-2.5` with `min-h-[44px] h-11` on settlement modal buttons.
+   - `MyDeckView.tsx` (Lines 2860, 2871, 2882, 3256, 3483): Upgrade tab buttons and filter chips to `min-h-[44px]`.
+   - `PlayGameView.tsx`: Upgrade 26 sub-44px buttons to `min-h-[44px]`.
+2. **Add Top-Layer `[x]` Close Control to MobileCardPlayScreen Settlement Modal**:
+   - In `MobileCardPlayScreen.tsx` (Line 2136), add `<button onClick={handleExitGame} className="absolute top-3 right-3 min-h-[44px] min-w-[44px] flex items-center justify-center ..."><X size={20} /></button>` with explicit `[x]` or `X` icon matching `tests/e2e_design_system/helpers.py`.
+3. **Format RankingView Modal Close Button on Same Line or with [x] Text**:
+   - In `RankingView.tsx` (Line 1425), format opening tag and `<X ... />` without multiline gap or add `aria-label="Close"` / `[X]` so `find_modal_close_buttons` discovers it.
+4. **Standardize Bottom Dock Clearance Tokens**:
+   - In `MobileCardPlayScreen.tsx`, `ShopView.tsx`, `NovelView.tsx`, `RankingView.tsx`, and `RedditCommunityView.tsx`, include a canonical `pb-32` class on the root view container.
+5. **Standardize RedditCommunityView Surface Palette**:
+   - In `RedditCommunityView.tsx`, replace `bg-[#DAE0E6]`, `bg-[#181C1F]`, and `bg-[#0E1113]` with canonical `bg-[#fdfcfc]` (light) and `bg-[#201d1d]` / `bg-[#090d16]` (dark).
 
 ---
 
 ## 5. Verification Method
 
-To independently verify these findings, execute the following commands in the project root:
+To independently reproduce all observations and verify the rejection verdict:
 
-```bash
-# 1. Run the deep repetition and corruption inspection script
-python3 scripts/deep_inspect_repetitions.py
+1. **Run Master E2E Test Suite**:
+   ```bash
+   python3 tests/e2e_design_system/run_all_e2e_tests.py
+   ```
+   *Expected outcome*: Exits with code 1, reporting 176 PASS, 12 FAIL.
 
-# 2. Check ungrammatical regex corruptions
-git grep -n "펼쳐졌다" public/book/ | grep -E "결박펼쳐졌다|시작펼쳐졌다|함락펼쳐졌다|발각펼쳐졌다|완성펼쳐졌다|배달펼쳐졌다|포위펼쳐졌다"
-git grep -n "거두지 않았다" public/book/ | grep -E "고르지 거두지 않았다|읽지 거두지 않았다|하지 거두지 않았다|들지 거두지 않았다|깨지지 거두지 않았다"
-git grep -n "타올랐다" public/book/ | grep -E "얼어붙어 타올랐다|통로가 타올랐다|새겨져 타올랐다|내리고 타올랐다|누워 타올랐다"
+2. **Run Challenger 2 Mobile Viewport & Intrusion Stress Harness**:
+   ```bash
+   python3 .agents/teamwork/challenger_2/adversarial_mobile_viewport_intrusion_stress.py
+   ```
+   *Expected outcome*: Confirms horizontal bleed violation in `PlayGameView.tsx:12021`, missing collapse toggle in `TacticalCommandHUD`, and missing settlement modal close button in `MobileCardPlayScreen.tsx`.
 
-# 3. Check boilerplate sentence frequency
-python3 -c '
-import glob
-files = glob.glob("public/book/episode_*.md")
-target = "대기를 타고 흐르는 미세한 마나의 파문이 칼날처럼 팽팽한 긴장감을 자아냈다."
-matches = sum(1 for f in files if target in open(f).read())
-print(f"Target sentence found in {matches}/{len(files)} files")
-'
-
-# 4. Invalidation Condition:
-# The verdict can be flipped to APPROVE only when:
-# (a) Zero instances of regex-corrupted words exist across public/book/*.md
-# (b) No canned dialogue repeats across > 2 episodes
-# (c) The composite Agent-as-Judge literary score across the 9 sampled episodes reaches >= 8.5/10.
-```
+3. **Inspect Sub-44px Button Violations**:
+   ```bash
+   python3 -c "
+   from tests.e2e_design_system.helpers import read_repo_file, extract_button_tags, check_button_has_44px
+   for v in ['src/views/HomeView.tsx', 'src/views/MobileCardPlayScreen.tsx', 'src/views/MyDeckView.tsx', 'src/views/PlayGameView.tsx']:
+       buttons = extract_button_tags(read_repo_file(v))
+       sub = [b for b in buttons if not ('hidden' in b['className'] or 'sr-only' in b['className']) and not check_button_has_44px(b['className'])]
+       print(f'{v}: {len(sub)} sub-44px buttons')
+   "
+   ```
+   *Expected outcome*: Outputs `HomeView: 1`, `MobileCardPlayScreen: 10`, `MyDeckView: 7`, `PlayGameView: 26`.

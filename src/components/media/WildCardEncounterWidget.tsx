@@ -622,7 +622,7 @@ export const WildCardEncounterWidget: React.FC<WildCardEncounterWidgetProps> = (
  {/* Deploy Action CTA Button (min-h-[44px]) */}
  <button
  onClick={handleDeployToCombat}
- className="w-full min-h-[44px] px-4 py-3 bg-[#201d1d] hover: hover: active: active: text-white font-mono tracking-wider uppercase text-xs font-bold rounded-sm shadow-none shadow-none transition-all flex items-center justify-center gap-2 cursor-pointer"
+ className="w-full min-h-[44px] px-4 py-3 bg-[#201d1d] hover:opacity-90 active: active: text-white font-mono tracking-wider uppercase text-xs font-bold rounded-sm shadow-none shadow-none transition-all flex items-center justify-center gap-2 cursor-pointer"
  >
  <VectorArrowIcon className="w-4 h-4 text-white" />
  <span>{txt.deployBtn}</span>

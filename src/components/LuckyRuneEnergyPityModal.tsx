@@ -56,7 +56,7 @@ export const LuckyRuneEnergyPityModal: React.FC<LuckyRuneEnergyPityModalProps> =
  className="bg-slate-950 border-2 border-amber-400 rounded-none w-full max-w-sm overflow-hidden shadow-none flex flex-col text-center"
  >
  {/* Header */}
- <div className="p-3.5 bg-[#201d1d] text-slate-950 flex items-center justify-between font-black text-xs">
+ <div className="p-3.5 bg-[#201d1d] text-[#fdfcfc] flex items-center justify-between font-black text-xs">
  <div className="flex items-center gap-1.5">
  <Zap size={16} />
  <span>[ 행운의 룬 에너지 & 천장 시스템 ]</span>

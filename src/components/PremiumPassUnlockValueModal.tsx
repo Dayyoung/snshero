@@ -61,7 +61,7 @@ export const PremiumPassUnlockValueModal: React.FC<PremiumPassUnlockValueModalPr
  className="bg-slate-950 border-2 border-amber-400 rounded-none w-full max-w-sm overflow-hidden shadow-none flex flex-col text-center"
  >
  {/* Header */}
- <div className="p-3.5 bg-[#201d1d] text-slate-950 flex items-center justify-between font-black text-xs">
+ <div className="p-3.5 bg-[#201d1d] text-[#fdfcfc] flex items-center justify-between font-black text-xs">
  <div className="flex items-center gap-1.5">
  <Crown size={16} />
  <span>[ 프리미엄 패스 누적 보상 대방출 ]</span>
@@ -133,7 +133,7 @@ export const PremiumPassUnlockValueModal: React.FC<PremiumPassUnlockValueModalPr
  <button
  type="button"
  onClick={handleBuy}
- className="min-h-[44px] h-13 w-full bg-[#201d1d] text-slate-950 font-black text-xs rounded-sm flex items-center justify-between px-4 cursor-pointer active:scale-95 shadow-none hover:brightness-105"
+ className="min-h-[44px] h-13 w-full bg-[#201d1d] text-[#fdfcfc] font-black text-xs rounded-sm flex items-center justify-between px-4 cursor-pointer active:scale-95 shadow-none hover:brightness-105"
  >
  <div className="flex items-center gap-1.5 text-left">
  <LockOpen size={16} />

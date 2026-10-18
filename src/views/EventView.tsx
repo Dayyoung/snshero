@@ -513,7 +513,7 @@ export const EventView: React.FC<EventViewProps> = ({
 
               <div className="relative z-10 flex items-start justify-between gap-2">
                 <div className="flex items-center gap-3">
-                  <div className="relative w-12 h-12 rounded-none overflow-hidden border border-[rgba(15,0,0,0.12)] shrink-0 bg-black">
+                  <div className="relative w-12 h-12 rounded-none overflow-hidden border border-[rgba(15,0,0,0.12)] shrink-0 bg-[#fdfcfc]">
                     <img src="/seat/Kadan.png" alt="Kadan Wild" className="w-full h-full object-cover" />
                     <span className="absolute bottom-0 inset-x-0 bg-[#fdfcfc] text-[#201d1d] text-[8px] font-black text-center leading-tight">
                       WILD x150
@@ -569,7 +569,7 @@ export const EventView: React.FC<EventViewProps> = ({
 
               <div className="relative z-10 flex items-start justify-between gap-2">
                 <div className="flex items-center gap-3">
-                  <div className="relative w-12 h-12 rounded-none overflow-hidden border border-[rgba(15,0,0,0.12)] shrink-0 bg-black">
+                  <div className="relative w-12 h-12 rounded-none overflow-hidden border border-[rgba(15,0,0,0.12)] shrink-0 bg-[#fdfcfc]">
                     <img src="/seat/Poseidon.png" alt="Hidden Hero" className="w-full h-full object-cover" />
                     <span className="absolute bottom-0 inset-x-0 bg-[#fdfcfc] text-[#201d1d] text-[8px] font-black text-center leading-tight">
                       5 TARGETS

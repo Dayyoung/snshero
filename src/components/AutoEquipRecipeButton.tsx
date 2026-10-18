@@ -26,7 +26,7 @@ export const AutoEquipRecipeButton: React.FC<AutoEquipRecipeButtonProps> = ({
  triggerHaptic('heavy');
  onAutoEquip();
  }}
- className="h-12 w-full bg-[#201d1d] hover: hover: text-slate-950 font-black text-xs sm:text-sm rounded-sm flex items-center justify-center gap-2 shadow-none active:scale-95 disabled:opacity-40 disabled:pointer-events-none cursor-pointer font-mono select-none border border-amber-300"
+ className="h-12 w-full bg-[#201d1d] hover:opacity-90 text-[#fdfcfc] font-black text-xs sm:text-sm rounded-sm flex items-center justify-center gap-2 shadow-none active:scale-95 disabled:opacity-40 disabled:pointer-events-none cursor-pointer font-mono select-none border border-amber-300"
  >
  <Zap size={18} className="fill-slate-950 text-slate-950" />
  <span>{language === 'ko' ? '⚡ [1-Tap] 보유 재료 자동 최적 배치' : '⚡ [1-Tap] Auto-Equip Materials'}</span>

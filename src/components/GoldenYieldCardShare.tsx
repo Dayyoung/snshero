@@ -28,7 +28,7 @@ export const GoldenYieldCardShare: React.FC<GoldenYieldCardShareProps> = ({
  triggerHaptic('medium');
  setShowModal(true);
  }}
- className="h-12 px-4 rounded-sm bg-[#201d1d] hover: hover: text-slate-950 font-black text-xs flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer shadow-none font-mono select-none"
+ className="h-12 px-4 rounded-sm bg-[#201d1d] hover:opacity-90 text-[#fdfcfc] font-black text-xs flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer shadow-none font-mono select-none"
  >
  <Share2 size={16} />
  <span>골든 수익률 카드 공유</span>

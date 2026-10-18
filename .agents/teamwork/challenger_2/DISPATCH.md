@@ -1,23 +1,44 @@
-## 2026-10-17T22:11:47Z
-You are challenger_2 (teamwork_preview_challenger).
-Working Directory: /Users/dayyoung/project/snshero/.agents/teamwork/challenger_2/
-Authoritative Request: /Users/dayyoung/project/snshero/.agents/teamwork/ORIGINAL_REQUEST.md
-PROJECT Specification: /Users/dayyoung/project/snshero/PROJECT.md
-Parent Orchestrator ID: b25c9f85-c96b-42a7-bce3-42d8c13e23ed
+# DISPATCH: challenger_2
 
-READ ORIGINAL_REQUEST.md AND PROJECT.md FIRST BEFORE STARTING.
+- **Role**: Adversarial Challenger 2 (Viewport Intrusion, Layout Bleed & Mobile Safari 375x812 Torture Tests)
+- **Working Directory**: `/Users/dayyoung/project/snshero/.agents/teamwork/challenger_2/`
+- **Scope**: Narrow mobile viewport responsiveness, horizontal overflow bleed, canvas intrusion, and state transitions
+- **Inputs**:
+  - `/Users/dayyoung/project/snshero/.agents/teamwork/ORIGINAL_REQUEST.md` (specifically ## 2026-10-18T10:08:37Z)
+  - `/Users/dayyoung/project/snshero/DESIGN.md`
+  - `/Users/dayyoung/project/snshero/TEST_READY.md`
+  - `/Users/dayyoung/project/snshero/tests/e2e_design_system/*`
+- **Task**:
+  1. Adversarially verify mobile viewport ergonomics: check all 22 views at `375x812` (iPhone SE/mini width) for horizontal scroll bleed (`overflow-x`), un-collapsed overlays, and fixed/sticky toolbar overlaps.
+  2. Verify zero viewport intrusion: ensure HUD bars, floating stats, and subtitles never overlap the 3x3 card battle board, player card hand, Poki mini-game canvas, or webtoon/movie artwork.
+  3. Verify progressive disclosure: ensure no screen mounts triggering sequential modal popup storms.
+  4. Run `python3 tests/e2e_design_system/run_all_e2e_tests.py` and `npm run build`.
+  5. Provide explicit empirical verdict: `CONFIRM CORRECTNESS (APPROVE)` or `REJECT` in `/Users/dayyoung/project/snshero/.agents/teamwork/challenger_2/handoff.md`.
 
-Tasks:
-1. Execute the mandatory Agent-as-Judge literary quality audit per ORIGINAL_REQUEST.md:
-   - Sample representative episodes across:
-     - Early Arc (Ep 1–10): e.g. Ep 01, Ep 04, Ep 08
-     - Mid Arc (Ep 11–25): e.g. Ep 12, Ep 18, Ep 25
-     - Late Arc (Ep 26–40): e.g. Ep 29, Ep 35, Ep 40
-   - Evaluate and score each sample on 4 strict literary dimensions (0.0 to 10.0 scale):
-     1. Narrative Immersion & Sensory Worldbuilding (11 races, environmental atmosphere, emotional stakes)
-     2. Natural Prose Flow & Active Verb Cadence (absence of repetitive AI summary tropes ~있었다, ~않았다)
-     3. Dialogue Authenticity & Distinct Character Voices (believable speech, interpersonal conflict)
-     4. Tactical Battle Tension & Dramatic Cliffhangers (choreographed action, chapter hooks)
-   - Benchmark the overall composite score against the required acceptance criterion (≥ 8.5/10).
-2. Verify dialogue count (≥ 8 lines per episode) and character count (≥ 3,500 characters) across the audited episodes.
-3. Issue a clear empirical verdict: APPROVE or REQUEST_CHANGES in your handoff report at /Users/dayyoung/project/snshero/.agents/teamwork/challenger_2/handoff.md and notify the parent orchestrator via send_message.
+
+## 2026-10-18T11:37:25Z
+From: 3a464f6d-bcf9-4b99-af07-b0e05ceb817a
+Priority: MESSAGE_PRIORITY_HIGH
+
+You are Adversarial Challenger 2 (Mobile Viewport & Canvas Intrusion Stress Testing) for SNSHero Revolution.
+Your working directory is: /Users/dayyoung/project/snshero/.agents/teamwork/challenger_2/
+You MUST read the authoritative user request at:
+/Users/dayyoung/project/snshero/.agents/teamwork/ORIGINAL_REQUEST.md (specifically the latest request under ## 2026-10-18T10:08:37Z).
+
+Reference specifications:
+- /Users/dayyoung/project/snshero/DESIGN.md (Canonical OpenCode Terminal-Flat Design System)
+- /Users/dayyoung/project/snshero/TEST_READY.md
+- /Users/dayyoung/project/snshero/tests/e2e_design_system/*
+- /Users/dayyoung/project/snshero/.agents/teamwork/challenger_2/DISPATCH.md
+
+Your Task:
+1. Adversarially verify mobile viewport ergonomics and zero intrusion:
+   - Check all 22 views under a simulated `375x812` (iPhone SE/mini width) viewport for horizontal scroll bleed (`overflow-x`), un-collapsed overlays, and fixed/sticky toolbar overlaps.
+   - Verify zero viewport intrusion: ensure HUD bars, floating stats, and subtitles never overlap the 3x3 card battle board, player card hand, Poki mini-game canvas, or webtoon/movie artwork.
+   - Verify progressive disclosure: ensure no screen mounts trigger sequential modal popup storms.
+2. Run the master test runner: `python3 tests/e2e_design_system/run_all_e2e_tests.py`.
+3. Run `npx tsc --noEmit` and `npm run build`.
+4. Write your challenger report in `/Users/dayyoung/project/snshero/.agents/teamwork/challenger_2/handoff.md`.
+5. Provide an explicit empirical verdict: `CONFIRM CORRECTNESS (APPROVE)` or `REJECT` (with reproducible evidence).
+
+HARD CONSTRAINT: You are an adversarial verifier. Do NOT modify application source code in `src/`.

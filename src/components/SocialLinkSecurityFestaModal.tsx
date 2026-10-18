@@ -51,7 +51,7 @@ export const SocialLinkSecurityFestaModal: React.FC<SocialLinkSecurityFestaModal
  className="bg-slate-950 border-2 border-cyan-400 rounded-none w-full max-w-sm overflow-hidden shadow-none flex flex-col text-center"
  >
  {/* Header */}
- <div className="p-3.5 bg-[#201d1d] text-slate-950 flex items-center justify-between font-black text-xs">
+ <div className="p-3.5 bg-[#201d1d] text-[#fdfcfc] flex items-center justify-between font-black text-xs">
  <div className="flex items-center gap-1.5">
  <ShieldCheck size={16} />
  <span>[ 보안 강화 안심 연동 페스타 ]</span>

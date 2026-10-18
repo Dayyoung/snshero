@@ -65,7 +65,7 @@ export const MagneticBattleLauncher: React.FC<MagneticBattleLauncherProps> = ({
  triggerHaptic('heavy');
  onLaunchBattle();
  }}
- className="w-16 h-16 rounded-full bg-[#201d1d] text-slate-950 font-black flex flex-col items-center justify-center shadow-[0_0_20px_rgba(245,158,11,0.6)] border-2 border-white cursor-pointer relative"
+ className="w-16 h-16 rounded-full bg-[#201d1d] text-[#fdfcfc] font-black flex flex-col items-center justify-center shadow-[0_0_20px_rgba(245,158,11,0.6)] border-2 border-white cursor-pointer relative"
  >
  {/* Pulsing ring */}
  <div className="absolute inset-0 rounded-full border-2 border-amber-400 transition-opacity duration-300 opacity-60 pointer-events-none" />

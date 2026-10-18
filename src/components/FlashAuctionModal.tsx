@@ -101,7 +101,7 @@ export const FlashAuctionModal: React.FC<FlashAuctionModalProps> = ({
  className="bg-slate-950 border-2 border-amber-400 rounded-none w-full max-w-sm overflow-hidden shadow-none flex flex-col text-center"
  >
  {/* Header */}
- <div className="p-3.5 bg-[#201d1d] text-slate-950 flex items-center justify-between font-black text-xs">
+ <div className="p-3.5 bg-[#201d1d] text-[#fdfcfc] flex items-center justify-between font-black text-xs">
  <div className="flex items-center gap-1.5">
  <Gavel size={16} />
  <span>[ 플래시 블라인드/오픈 경매장 ]</span>
@@ -195,7 +195,7 @@ export const FlashAuctionModal: React.FC<FlashAuctionModalProps> = ({
  <button
  type="button"
  onClick={handleBuyout}
- className="h-12 w-full bg-[#201d1d] text-slate-950 font-black text-xs rounded-sm flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shadow-none"
+ className="h-12 w-full bg-[#201d1d] text-[#fdfcfc] font-black text-xs rounded-sm flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shadow-none"
  >
  <Sparkles size={16} />
  <span>즉시 구매 낙찰 ({auctionItem.buyoutPrice} SNS)</span>

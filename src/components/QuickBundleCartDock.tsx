@@ -86,7 +86,7 @@ export const QuickBundleCartDock: React.FC<QuickBundleCartDockProps> = ({
  triggerHaptic('heavy');
  onCheckout();
  }}
- className="h-12 px-5 bg-[#201d1d] hover:brightness-110 text-slate-950 font-black text-xs uppercase tracking-wider rounded-sm flex items-center gap-2 active:scale-95 transition-all shadow-none cursor-pointer disabled:opacity-40"
+ className="h-12 px-5 bg-[#201d1d] hover:brightness-110 text-[#fdfcfc] font-black text-xs uppercase tracking-wider rounded-sm flex items-center gap-2 active:scale-95 transition-all shadow-none cursor-pointer disabled:opacity-40"
  >
  <CreditCard size={16} />
  <span>

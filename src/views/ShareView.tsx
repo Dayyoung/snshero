@@ -275,7 +275,7 @@ export const ShareView: React.FC<ShareViewProps> = ({
  <div className="w-10" />
  <span 
  onClick={() => onNavigate('home')} 
- className="text-xl sm:text-2xl font-extrabold tracking-tight cursor-pointer uppercase bg-[#201d1d] bg-clip-text text-transparent transition-colors"
+ className="text-xl sm:text-2xl font-extrabold tracking-tight cursor-pointer uppercase   text-amber-400 transition-colors"
  >
  SNSHero.com
  </span>

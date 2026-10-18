@@ -104,7 +104,7 @@ export const GachaResultFilterDock: React.FC<GachaResultFilterDockProps> = ({
  ? 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700'
  : isRolling
  ? 'bg-slate-700 text-slate-300 cursor-wait'
- : 'bg-[#201d1d] text-slate-950 hover:brightness-105'
+ : 'bg-[#201d1d] text-[#fdfcfc] hover:brightness-105'
  }`}
  >
  <RefreshCw size={16} className={isRolling ? 'animate-spin' : ''} />

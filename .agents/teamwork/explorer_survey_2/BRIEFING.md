@@ -1,50 +1,53 @@
-# BRIEFING — 2026-10-18T01:42:00Z
+# BRIEFING — 2026-10-18T10:22:00Z
 
 ## Mission
-Investigate and document all sprite coordinates, rendering math, and asset sheet architectures across SNSHero codebase for the 110-Hero Character Illustration Remaster.
+Comprehensive visual, ergonomic, and architectural survey of 9 target views (Economy, Social & Content: ShopView, CardMarketplaceView, NovelView, MovieView, RankingView, GuildListView, GuildDetailView, CommunityView, RedditCommunityView) against DESIGN.md terminal-flat specifications, 44px+ touch targets, progressive disclosure, and LocalStorage/i18n rules.
 
 ## 🔒 My Identity
 - Archetype: explorer
-- Roles: Sprite Architecture & Coordinates Explorer
+- Roles: Sprite Architecture & Coordinates Explorer, Survey Explorer 2 (Economy, Social & Content Views)
 - Working directory: /Users/dayyoung/project/snshero/.agents/teamwork/explorer_survey_2
 - Original parent: f84aca46-e09f-4967-b5d1-281f855a924e
-- Milestone: 110-Hero Remaster Survey Phase
+- Current parent: 3a464f6d-bcf9-4b99-af07-b0e05ceb817a
+- Milestone: Full-Screen DESIGN.md Terminal-Flat Visual Unification Survey
 
 ## 🔒 Key Constraints
 - Read-only investigation — do NOT implement or modify source code outside working directory
-- Focus strictly on sprite coordinates, rendering math, asset sheet architectures, slicing logic, and compositing transformations
-- Produce self-contained 5-component handoff.md and notify parent agent
+- Write ONLY to /Users/dayyoung/project/snshero/.agents/teamwork/explorer_survey_2/
+- Focus strictly on assigned views: ShopView, CardMarketplaceView, NovelView, MovieView, RankingView, GuildListView, GuildDetailView, CommunityView, RedditCommunityView
+- Produce self-contained 5-component handoff.md with Feature Inventory list and notify parent agent via send_message
 
 ## Current Parent
-- Conversation ID: f84aca46-e09f-4967-b5d1-281f855a924e
-- Updated: 2026-10-18T01:36:37Z
+- Conversation ID: 3a464f6d-bcf9-4b99-af07-b0e05ceb817a
+- Updated: 2026-10-18T10:12:47Z
 
 ## Investigation State
 - **Explored paths**:
-  - `src/lib/utils.ts` (`getCardSpriteCoords`, `getCardSpriteStyle`, `getCardSpriteAsset`, `isSpriteSheet`)
-  - `src/lib/canvasCardRenderer.ts` (`drawCardSprite`, image caching, canvas math)
-  - `src/content/characterAssetManifest.ts` & `src/content/cardImageVariants.ts`
-  - `src/components/CardItem.tsx` (CSS background vs <img> rendering, 19/20 aspect ratio)
-  - `public/seat/*.png` (110 files, naming: `title_en.replace(' ', '_') + '.png'`, 256x296)
-  - `public/cards1.png` (1000x1000, 10x10 grid, IDs 1–100, 100x100 cells)
-  - `public/cards2.png` (1000x1000, 10x10 grid, IDs 101–110 in Row 0, Rows 1–9 legacy)
-  - `public/card100.png` (1135x1315, 10x11 grid, IDs 1–110, float cells 113.5 x 119.545)
-  - `public/card100_gemini.png` (1024x1024, 10x11 grid, IDs 1–110, currently JPEG disguised as PNG)
-  - `public/character_sheet_*.png` (11 files, 2560x296, 10 chars per sheet, 1:1 concatenation of seat portraits)
+  - `src/views/ShopView.tsx` (6,596 lines: 289 banned tokens, 39 sub-44px buttons)
+  - `src/views/CardMarketplaceView.tsx` (1,766 lines: 0 banned tokens, 13 sub-44px buttons)
+  - `src/views/NovelView.tsx` (2,298 lines: 0 banned tokens, 8 sub-44px buttons)
+  - `src/views/MovieView.tsx` (1,078 lines: 0 banned tokens, 0 sub-44px buttons)
+  - `src/components/movie/CinematicMoviePlayer.tsx` (1 shadow-2xl violation)
+  - `src/views/RankingView.tsx` (2,164 lines: 147 banned tokens, 30 sub-44px buttons)
+  - `src/views/GuildListView.tsx` (579 lines: 54 banned tokens, 17 sub-44px buttons)
+  - `src/views/GuildDetailView.tsx` (1,221 lines: 0 banned tokens, 0 sub-44px buttons — canonical reference)
+  - `src/views/CommunityView.tsx` (3,510 lines: 82 banned tokens, 68 sub-44px buttons)
+  - `src/views/RedditCommunityView.tsx` (1,014 lines: 22 banned tokens, 3 sub-44px buttons; 23 subcomponents under `src/components/reddit/*` with 286 banned tokens)
+  - `src/App.tsx` (Verified all 9 views dynamically loaded via `safeLazy`)
 - **Key findings**:
-  - 3 files in `public/seat/` (`Celia.png`, `Hyperion_Prime.png`, `Sentinel.png`) and 3 faction sheets (`fire`, `hobbit`, `mecha`) have corrupted headers with `\xef\xbf\xbdPNG` instead of `\x89PNG`.
-  - `card100_gemini.png` is currently an RGB JPEG file with a `.png` extension and no alpha channel; must be converted to true RGBA PNG.
-  - Faction sheet filenames use `hobbit` (dwarf), `beast` (monster), `mecha` (robot).
-  - PIL RGBA quantization must use `method=Image.Quantize.FASTOCTREE` (method=2) to reduce 2.0MB+ sheets down to ~420KB (<= 800KB budget).
-- **Unexplored areas**: None. All 6 target asset groups, rendering paths, and mathematical formulas completely documented.
+  - 594 banned tokens and 178 sub-44px buttons identified across target views.
+  - `MovieView.tsx` and `GuildDetailView.tsx` are 100% compliant and serve as reference models.
+  - All LocalStorage keys adhere to the `hero_*` naming standard and season data is safely isolated.
+  - Full Feature Inventory (F-01 to F-10) created for downstream implementers.
+- **Unexplored areas**: None within assigned 9-view scope.
 
 ## Key Decisions Made
-- Standardize mathematical formulas for all 6 surfaces.
-- Document exact integer/floating cell coordinate formulas and recommend safety padding to eliminate sub-pixel sampling artifacts in Canvas and CSS.
-- Provide ready-to-use Python compositing algorithms for downstream worker agents.
+- Standardize all modal frames to `rounded-none`, `border border-[#201d1d]`, `bg-[#fdfcfc]` with top-layer `[X]` buttons.
+- Document line-by-line evidence and exact replacement recommendations.
+- Establish `GuildDetailView.tsx` as the canonical implementation pattern for `GuildListView` and `RankingView`.
 
 ## Artifact Index
 - `.agents/teamwork/explorer_survey_2/DISPATCH.md` — Received task dispatch
-- `.agents/teamwork/explorer_survey_2/BRIEFING.md` — Agent state and working memory
-- `.agents/teamwork/explorer_survey_2/progress.md` — Liveness heartbeat
-- `.agents/teamwork/explorer_survey_2/handoff.md` — Final structured report
+- `.agents/teamwork/explorer_survey_2/BRIEFING.md` — Persistent working memory and identity
+- `.agents/teamwork/explorer_survey_2/progress.md` — Liveness heartbeat (100% complete)
+- `.agents/teamwork/explorer_survey_2/handoff.md` — Authoritative 5-component survey and specification report

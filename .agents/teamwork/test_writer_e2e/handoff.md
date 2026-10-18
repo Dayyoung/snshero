@@ -1,106 +1,118 @@
-# Handoff Report: E2E Test Suite Implementation
+# Handoff Report: E2E Testing Track Writer
+
+- **Author**: E2E Testing Track Writer (`test_writer_e2e`)
+- **Parent Agent**: `3a464f6d-bcf9-4b99-af07-b0e05ceb817a`
+- **Working Directory**: `/Users/dayyoung/project/snshero/.agents/teamwork/test_writer_e2e/`
+- **Date & Timestamp**: 2026-10-18T10:39:00Z
+- **Reference Specifications**:
+  - `/Users/dayyoung/project/snshero/DESIGN.md` (OpenCode Terminal-Flat Canonical Design System)
+  - `/Users/dayyoung/project/snshero/.agents/teamwork/ORIGINAL_REQUEST.md` (specifically ## 2026-10-18T10:08:37Z)
+  - `/Users/dayyoung/project/snshero/.agents/teamwork/orchestrator_4/TEST_INFRA.md`
+  - `/Users/dayyoung/project/snshero/.agents/teamwork/orchestrator_4/PROJECT.md`
+- **Exclusive Write Deliverables**:
+  - `tests/e2e_design_system/*`
+  - `/Users/dayyoung/project/snshero/TEST_READY.md`
+  - `/Users/dayyoung/project/snshero/.agents/teamwork/test_writer_e2e/*`
+
+---
 
 ## 1. Observation
 
-### 1.1 Created Test Infrastructure & Files
-- **`TEST_INFRA.md`**: Project-root specification document establishing the 4-tier Dual-Track verification architecture, mapping each requirement to concrete test assertions, and setting exact thresholds for file dimensions, SHA-256 uniqueness, size budgets, and coordinate formulas.
-- **`TEST_READY.md`**: Project-root readiness declaration summarizing test invocation commands, 4-tier architecture, current baseline report, and implementation milestone action plan.
-- **`tests/e2e_character_assets/`**:
-  - `__init__.py`: Package initialization.
-  - `helpers.py`: Authoritative card loader (`load_card_dataset`), PNG magic byte verification (`check_png_magic_header` checking `\x89PNG\r\n\x1a\n` and detecting `\xef\xbf\xbdPNG`), exact coordinate calculators matching `src/lib/utils.ts` (`get_card_sprite_coords`), pixel similarity evaluation (`calculate_image_similarity`), and result data structures (`TestResult`).
-  - `tier1_feature_coverage.py`: 24 assertions covering Features 2, 3, 4, 5 (Seat portraits, Primary 10x10 sheets, Master 10x11 sheets, Faction sheets).
-  - `tier2_boundary_corner.py`: 15 assertions covering Features 7, 2, 5, 3, 6 (Size budgets, Header magic bytes, IHDR chunks, ID 100/101 boundary, ID 110 edge, cards2 rows 1–9, Boss multiples of 10, OOB parameter clamping).
-  - `tier3_coordinate_alignment.py`: 6 assertions covering Feature 6 (Exhaustive coordinate formulas, Faction horizontal cell placement, Pixel synchronization between sheets and seat portraits, Sub-pixel edge bleed).
-  - `tier4_real_world.py`: 5 assertions covering Features 1 & 7 (CardItem 11 faction surface tints & emblems, Rarity tier hierarchy with 11 Bosses at Gold apex, CanvasCardRenderer multi-scale blitting, Fallback priority cascade, Total web payload benchmark).
-  - `runner.py`: Executable CLI runner supporting `--tier`, `--json`, `--verbose`, and `--allow-fail`.
+1. **Test Infrastructure Implementation**:
+   A modular, requirement-driven, opaque-box E2E test harness was established under `tests/e2e_design_system/`:
+   - `tests/e2e_design_system/__init__.py`: Package entrypoint.
+   - `tests/e2e_design_system/helpers.py`: Shared AST token scanners, brace-aware JSX `<button>` tag parser with arrow function resilience, 375px mobile viewport overflow geometry auditor, and `hero_*` LocalStorage key inspector.
+   - `tests/e2e_design_system/tier1_feature_coverage.py`: 118 programmatic assertions covering all 22 core views and 8 shared chrome components for 0 banned classes (`bg-gradient-to-`, `rounded-xl/2xl/3xl`, `animate-ping/bounce`), 100% `font-mono` enforcement, 0 `font-sans`, 2-tier border radius, and flat surfaces with 1px hairlines.
+   - `tests/e2e_design_system/tier2_boundary_corner.py`: 54 assertions evaluating minimum 44px touch target height (`min-h-[44px]`), modal top-layer visible `[x]` / `[SKIP]` dismiss controls, and 375px mobile viewport overflow resilience (`pb-28` to `pb-36` dock clearance).
+   - `tests/e2e_design_system/tier3_cross_feature.py`: 10 composite assertions covering pairwise view routing state machines, `hero_*` LocalStorage persistence, 100% `safeLazy` dynamic glob imports in `src/App.tsx`, zero single-point-of-failure directory index imports, multilingual support (12 languages), and bottom dock integration.
+   - `tests/e2e_design_system/tier4_realworld_workload.py`: 6 real-world end-to-end player journeys covering onboarding, card battle, mini-game settlement, shop/marketplace trading, web novel reading, and settings simulation with zero viewport intrusion.
+   - `tests/e2e_design_system/run_all_e2e_tests.py`: Executable master test runner supporting `--tier`, `--milestone (M1, M2, M3, ALL)`, `--verbose`, `--json`, and `--allow-fail`.
 
-### 1.2 Test Execution Observations
-Running `python3 tests/e2e_character_assets/runner.py --allow-fail`:
-- **Execution Duration**: 0.61s for all 50 assertions.
-- **Assertion Breakdown**: Total: 50 | Passed: 37 | Failed: 13 | Warnings: 0 | Pass Rate: 74.0%.
-- **Passing Requirements Verified**:
-  - All 110 seat files exist on disk, decode cleanly, match exact 256x296 dimensions, yield 110 distinct SHA-256 hashes, contain non-blank illustrations, and preserve alpha transparency (`T1.F2.1`–`T1.F2.6`).
-  - `cards1.png` and `cards2.png` exist, decode as PNGs, have exact 1000x1000 dimensions, and have populated cells (`T1.F3.1`–`T1.F3.7`).
-  - `card100.png` exists, decodes, and has exact 1135x1315 dimensions (`T1.F4.1`–`T1.F4.3`).
-  - All 11 faction sheets exist on disk and have exact 2560x296 dimensions (`T1.F5.1`, `T1.F5.3`, `T1.F5.4`).
-  - Seat files satisfy size budgets (all between 4 KB and 35 KB) (`T2.F7.1`, `T2.F7.2`).
-  - PNG magic bytes match `\x89PNG\r\n\x1a\n` for all 110 seat files (`T2.F2.1`).
-  - Boundary transitions at ID 100 and ID 101, terminal ID 110, rows 1–9 preservation in `cards2.png`, Boss ranks, and OOB parameter clamping all pass 100% (`T2.F6.1`–`T2.F6.5`).
-  - Mathematical coordinate calculations match `utils.ts` for all 110 card IDs across primary and legacy sheets (`T3.F6.1`–`T3.F6.3`).
-  - CardItem rendering simulation across all 11 factions and 4 rarity tiers passes 100% (`T4.F1.1`, `T4.F1.2`).
-  - CanvasCardRenderer blitting geometry and image fallback cascade pass 100% (`T4.F1.3`, `T4.F1.4`).
-- **Verbatim Failing Assertions (Accurately Tracking Pending Milestone Work)**:
-  1. `T1.F4.5` & `T1.F4.7`: `card100_gemini.png` is JPEG format (`ffd8ffe0...`) in RGB mode instead of true RGBA PNG [Pending M2].
-  2. `T1.F5.2` & `T1.F5.5`: 3 faction sheets (`character_sheet_fire.png`, `character_sheet_hobbit.png`, `character_sheet_mecha.png`) fail decoding [Pending M2].
-  3. `T2.F7.3`: Master sheets (`cards1.png` 1.93 MB, `cards2.png` 2.67 MB, `card100.png` 2.01 MB, `card100_gemini.png` 974 KB) exceed 800 KB budget [Pending M3].
-  4. `T2.F7.4`: 3 faction sheets exceed 300 KB budget (`fire` 320 KB, `hobbit` 348 KB, `mecha` 368 KB) [Pending M3].
-  5. `T2.F7.5` & `T4.F1.5`: Total character asset payload (10.64 MB) exceeds 10.11 MB budget [Pending M3].
-  6. `T2.F2.2`: `card100_gemini.png` magic header is `ffd8ffe0...` [Pending M2].
-  7. `T2.F2.3`: 3 faction sheets have `\xef\xbf\xbdPNG` header corruption [Pending M2].
-  8. `T3.F6.4` & `T3.F6.5`: Sprite sheets cells not yet assembled/synchronized with remastered seat portraits [Pending M2].
+2. **Test Harness Execution Results**:
+   Running `python3 tests/e2e_design_system/run_all_e2e_tests.py --allow-fail`:
+   - **Total Assertions**: 188 programmatic assertions.
+   - **Execution Time**: 0.77s.
+   - **Passing Assertions**: 112 (59.6% baseline compliance).
+   - **Pending Milestone Requirements**: 76 assertions accurately pinpointing legacy tokens and sub-44px buttons in active worker milestones.
+   - Verbatim execution output quote:
+     ```
+     ----------------------------------------------------------------------
+       SNSHero Design System E2E Execution Summary (0.77s)
+     ----------------------------------------------------------------------
+       Total Assertions   : 188
+       Passed Assertions  : 112
+       Failed Assertions  : 76
+       Warnings           : 0
+       Pass Rate          : 59.6%
 
-### 1.3 Build and Lint Verification
-- `npm run lint` (`node -e "process.exit(0)"`): Exited with code 0.
-- `npm run build` (`vite build && node scripts/post-build.js`): Exited with code 0 (14.18s), generating complete `dist/` production bundle with 0 errors.
+     STATUS: PENDING MILESTONE DELIVERABLES DETECTED (76 failures).
+     Run with `--milestone M1`, `--milestone M2`, or `--milestone M3` to track per-milestone progress.
+     ```
+
+3. **Compiler and Build Verification**:
+   - `npx tsc --noEmit`: Exited with code `0` (0 TypeScript errors).
+   - `npm run lint`: Exited with code `0`.
+   - `npm run build`: Exited with code `0` (built all 52 static routes and bundles cleanly in 18.07s).
+
+4. **Published Test Declaration**:
+   `TEST_READY.md` was published at the repository root detailing the runner invocation, 4-tier coverage matrix, 22-view checklist, and milestone handover instructions for workers M1, M2, and M3.
 
 ---
 
 ## 2. Logic Chain
 
-1. **Independent Verification of Requirements**: The test harness was constructed directly from specifications defined in `ORIGINAL_REQUEST.md` (R1–R4), `PROJECT.md` (Features 1–9, Milestones M1–M4), `cards_dataset.json`, and `explorer_survey_2/handoff.md`.
-2. **Opaque-Box Testing Integrity**: The test writer touched zero implementation files in `src/` and zero image assets in `public/`. Tests only inspect binary files on disk and mathematical coordinate outputs.
-3. **Discriminative Assertion Precision**:
-   - The test harness does NOT contain facade or mock tests that pass unconditionally.
-   - When run against the current repository state, met requirements (such as 110 individual seat portraits generated by M1, coordinate formulas, and UI rendering simulations) pass cleanly (37 assertions).
-   - Unmet requirements (sprite sheet re-assembly in M2, JPEG replacement for `card100_gemini.png`, header repair for faction sheets, and FASTOCTREE palette quantization in M3) fail with clear diagnostic failure messages (13 assertions).
-4. **Readiness for Milestone Execution**: Implementation workers `worker_m2` and `worker_m3` can now execute `python3 tests/e2e_character_assets/runner.py` iteratively to observe failure counts decrease from 13 to 0 as M2 and M3 work is delivered.
+1. **Premise 1 (Test Philosophy & Inviolable Constraints)**:
+   Per `PROJECT.md` and `TEST_INFRA.md`, the E2E test harness must be opaque-box, requirement-driven, deterministic, and completely autonomous without modifying application code in `src/`.
+2. **Premise 2 (Accuracy & Real-Time Tracking)**:
+   Naive regex splitting on `<button\b([^>]*)>` fails when JSX contains inline arrow functions like `onClick={() => setX(true)}`. Implementing a brace-depth and quote-aware JSX parser in `helpers.py` correctly extracts all `<button>` tags without truncation, allowing authentic evaluation of touch target classes.
+3. **Premise 3 (Dual-Track Milestone Decoupling)**:
+   Workers M1, M2, and M3 work concurrently on distinct view clusters. Adding the `--milestone` CLI flag enables each worker to run only the tests relevant to their scope while preserving the full 188-assertion suite for Orchestrator M4 final hardening.
+4. **Deduction & Assessment**:
+   The E2E test suite accurately reports passing status on compliant views (`MovieView`, `GuildDetailView`, `StockMarketView`, `MyDeckView`, `PageHeader`, `Navbar`, and dynamic glob loaders) while failing on legacy debt files (`PlayGameView`, `ShopView`, `RankingView`, `GuildListView`, `CommunityView`, `RedditCommunityView`, `SettingView`), providing an exact roadmap for Milestone 1–3 workers.
 
 ---
 
 ## 3. Caveats
 
-- **No Caveats**: The test runner is self-contained, requires only standard Python 3 + Pillow (which is verified installed in the environment at version 11.3.0), and runs in ~0.6 seconds.
-- Implementation workers must ensure they use `Image.Quantize.FASTOCTREE` when quantizing RGBA images in M3 to prevent Pillow `ValueError`.
+1. **Non-Modification of `src/`**: In strict compliance with the assigned constraints, 0 application files in `src/` were modified by this agent.
+2. **Leaflet & Third-Party Embeds**: Third-party Leaflet map tiles and Google AdSense banners inject their own internal SVGs/iframes. The test harness evaluates the application wrapper containers, headers, and floating overlays surrounding those embeds.
+3. **Progressive Remediation**: Pass rate will increase incrementally from 59.6% to 100.0% as `worker_m1`, `worker_m2`, and `worker_m3` land their commits.
 
 ---
 
 ## 4. Conclusion
 
-The E2E Test Suite and automated verification runner are **100% complete, verified, and operational**.
-- `TEST_INFRA.md` is published at the project root.
-- `TEST_READY.md` is published at the project root.
-- `tests/e2e_character_assets/` provides a comprehensive 50-assertion test suite across all 4 tiers with a high-performance CLI runner (`runner.py`).
-- All 13 failing assertions accurately reflect pending milestone deliverables for M2 and M3.
-- The project builds cleanly with 0 TypeScript/bundling errors.
+1. **E2E Test Suite Complete**: All 4 tiers (`tier1_feature_coverage.py`, `tier2_boundary_corner.py`, `tier3_cross_feature.py`, `tier4_realworld_workload.py`) and the master runner `run_all_e2e_tests.py` are fully functional and verified.
+2. **Project-Root Publication**: `/Users/dayyoung/project/snshero/TEST_READY.md` is published and ready for team-wide use.
+3. **Execution Readiness**: The test suite executes in < 0.8s, supports milestone filtering, and produces human-readable colored terminal output and JSON reporting.
 
 ---
 
 ## 5. Verification Method
 
-To independently verify the test infrastructure:
+To independently reproduce and verify this test infrastructure:
 
-1. **Run Full E2E Test Suite**:
+1. **Execute Full 4-Tier Test Runner**:
    ```bash
-   python3 tests/e2e_character_assets/runner.py --allow-fail
+   python3 tests/e2e_design_system/run_all_e2e_tests.py --allow-fail
    ```
-   *Expected output*: 50 assertions executed in ~0.6s; 37 Passed, 13 Failed (corresponding to pending M2/M3 work).
+   *Expected Result*: Evaluates all 188 assertions across Tiers 1–4 in under 1 second.
 
-2. **Run Specific Tiers**:
+2. **Execute Milestone-Specific Scopes**:
    ```bash
-   python3 tests/e2e_character_assets/runner.py --tier 1 --allow-fail
-   python3 tests/e2e_character_assets/runner.py --tier 2 --allow-fail
-   python3 tests/e2e_character_assets/runner.py --tier 3 --allow-fail
-   python3 tests/e2e_character_assets/runner.py --tier 4 --allow-fail
-   ```
-
-3. **Verify Machine-Readable Output**:
-   ```bash
-   python3 tests/e2e_character_assets/runner.py --json --allow-fail | grep -E "(total|passed|failed)"
+   python3 tests/e2e_design_system/run_all_e2e_tests.py --milestone M1 --allow-fail
+   python3 tests/e2e_design_system/run_all_e2e_tests.py --milestone M2 --allow-fail
+   python3 tests/e2e_design_system/run_all_e2e_tests.py --milestone M3 --allow-fail
    ```
 
-4. **Verify Project Build and Type Safety**:
+3. **Verify Machine-Readable JSON Export**:
    ```bash
-   npm run lint
+   python3 tests/e2e_design_system/run_all_e2e_tests.py --tier 3 --json --allow-fail
+   ```
+
+4. **Verify Compilation & Build Cleanliness**:
+   ```bash
+   npx tsc --noEmit
    npm run build
    ```
-   *Expected output*: Both exit with code 0.
+   *Expected Result*: Exit code 0, 0 TypeScript errors, successful bundle creation.

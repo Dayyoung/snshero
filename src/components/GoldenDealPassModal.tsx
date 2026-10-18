@@ -106,7 +106,7 @@ export const GoldenDealPassModal: React.FC<GoldenDealPassModalProps> = ({
  type="button"
  disabled={isProcessing}
  onClick={handleBuy}
- className="w-full mt-4 py-3 bg-[#201d1d] hover: hover: text-black rounded-sm text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-none active:scale-98 transition-all cursor-pointer"
+ className="w-full mt-4 py-3 bg-[#201d1d] hover:opacity-90 text-[#fdfcfc] rounded-sm text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-none active:scale-98 transition-all cursor-pointer"
  >
  <CreditCard size={15} />
  <span>{isKo ? '₩1,900 구독 시작하기' : 'Subscribe for ₩1,900'}</span>

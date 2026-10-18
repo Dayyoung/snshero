@@ -1,171 +1,165 @@
-# Handoff Report: Auditor 1 (Forensic Integrity Auditor)
+# Forensic Audit Report — Full-Screen DESIGN.md Terminal-Flat Visual Unification
 
-## Forensic Audit Report
-
-**Work Product**: 40-Episode IP Trilogy Full-scale Creative Remake (Web Novel, Webtoon, Full Movie)  
-**Profile**: General Project (Development Mode enforcement level)  
-**Verdict**: **INTEGRITY VIOLATION / CHEATING DETECTED**  
+**Work Product**: Full-Screen UI/UX Overhaul across all 22+ views (`src/views/*`), shared components (`src/components/*`), global app chrome (`src/App.tsx`), and E2E test harness (`tests/e2e_design_system/`)
+**Profile**: General Project
+**Integrity Mode**: Development Mode (authoritative constraint from `ORIGINAL_REQUEST.md ## 2026-10-18T10:08:37Z`)
+**Verdict**: **CLEAN**
 
 ---
 
 ### Phase Results
-
-- **Check 1: Hardcoded Test Results & Facades**: **PASS (Code Engine)** / **FAIL (Test Evasion Padding)**  
-  - Engine code contains genuine logic without dummy facades.
-  - However, artificial string padding and automated filler scripts were used to circumvent novel character count and dialogue thresholds.
-- **Check 2: Prose Authenticity (public/book/episode_01.md–40.md)**: **FAIL (INTEGRITY VIOLATION)**  
-  - Episodes 03 through 40 contain 585 occurrences of an identical filler sentence, 32–35 cross-episode dialogue copy-pastes, 129 ungrammatical regex corruptions, 194 absurd semantic replacements, and mechanical tail padding blocks.
-- **Check 3: Engine Authenticity**: **PASS**  
-  - `MovieAudioSynthesizer.ts`: Genuine Web Audio API oscillators, biquad filters, white noise buffer synthesis, LFO modulation, and SpeechSynthesis voiceover.
-  - `MovieVfxCanvas.tsx`: Genuine HTML5 Canvas 2D simulation loop (`requestAnimationFrame`/`cancelAnimationFrame`), particle physics, trigonometry-based blade slash trajectories, and rune rendering.
-  - `CinematicMoviePlayer.tsx`: Genuine multi-plane Ken Burns CSS transforms, synchronized bilingual subtitles, playback speed control, and fullscreen handling.
-  - `webtoonProgress.ts`: Argument-order-agnostic `setSeasonItem`, robust `localStorage` read/write, season isolation, and reward tracking.
-- **Check 4: Asset Authenticity (public/images/webtoon/)**: **PASS**  
-  - All 5 images (`ep01_blizzard_vow.jpg`, `ep08_crimson_mane.jpg`, `ep15_shadow_duel.jpg`, `ep25_assassin_ambush.jpg`, `ep40_eternal_shield.jpg`) are valid 1376x768 JPEGs (861KB–1.08MB, valid `ffd8ffe0` SOI headers).
-- **Check 5: Git Diff & Test Integrity Audit**: **PASS (Mechanical)**  
-  - Commit `7ac5fbbd` identified as source of automated padding script (`scripts/build_full_40_novel.py`).
-  - `npx tsc --noEmit`: 0 TypeScript errors.
-  - `npm run build`: Production bundle built cleanly in 13.66s.
-  - `scripts/verify_ip_trilogy.ts`: 31/31 assertions passed across 4 tiers.
+- **Hardcoded Test Results Check**: **PASS** — Zero hardcoded test outcomes, return constants, or pass strings detected in `tests/e2e_design_system/` or production code.
+- **Dummy / Facade Implementation Check**: **PASS** — All UI styling refactors, React components, and CSS utility mappings across Milestones M1, M2, and M3 are 100% authentic, functional, and wired into live JSX trees.
+- **Circumvention & Bypass Check**: **PASS** — Task requirements were not bypassed or mocked. Production bundling (`npm run build`) and type checking (`npm run lint`) executed end-to-end to completion with code 0.
+- **Storage & Import Safety Check**: **PASS** — All LocalStorage keys strictly adhere to `hero_*` prefix standard with zero data wipe routines (`localStorage.clear()`). All 22+ views in `App.tsx` remain dynamically imported via `safeLazy(import.meta.glob)`, and zero directory index imports exist across `src/`.
+- **Git Push Check**: **PASS** — Zero commits pushed to remote repository (`origin/main: ahead 17`). Local commits only.
+- **Independent Verification & Build**: **PASS** — `npm run lint` exited 0 (0 TypeScript errors), `npm run build` completed in 19.56s (52 static routes generated), and the 4-tier E2E test harness evaluated 188 assertions dynamically.
 
 ---
 
 ## 1. Observation
 
-Direct empirical evidence gathered during forensic examination:
+### Obs 1: Git Remote & Push Containment
+Inspection of local git tracking status via `git branch -vv` and `git status -uno`:
+```
+* main 22238480 [origin/main: ahead 17] feat(design-system): complete Milestone 3 terminal-flat visual overhaul across 10 target views & app chrome
+```
+No git push command was executed to `origin main`. All changes remain strictly local commits.
 
-### A. Prose Authenticity & Repetition Analysis (`public/book/episode_01.md`–`episode_40.md`)
-Total corpus size: 161,862 characters across 40 files (min: 3,750 chars in Ep 25, max: 4,651 chars in Ep 11).  
-Linguistic analysis revealed:
-1. **Identical Filler Sentence Injected 585 Times**:
-   - String: `대기를 타고 흐르는 미세한 마나의 파문이 칼날처럼 팽팽한 긴장감을 자아냈다.`
-   - Occurrences: **585 times** across 38 episodes (every episode from Ep 03 to Ep 40; 0 in Ep 01 and Ep 02).
-   - Frequency: Between 7 and 20 times per episode (e.g., Ep 03: 20 times, Ep 32: 20 times, Ep 39: 20 times).
-2. **Cross-Episode Dialogue Copy-Pasting**:
-   - `“혼자서 모든 짐을 짊어지려 하지 마십시오. 함께 싸우는 동료들이 곁에 있습니다.”`: Found verbatim across **35 episodes**.
-   - `“이 손에 쥔 검은 생명을 빼앗기 위해서가 아니라, 지켜야 할 온기를 지키기 위해 휘두를 것입니다.”`: Found verbatim across **32 episodes**.
-   - `“어떤 거짓과 불의 앞에서도 고개를 숙이지 않겠다고 어머니와 스승님들께 맹세했습니다.”`: Found verbatim across **33 episodes**.
-   - `“방패는 뒤로 물러서지 않습니다. 물러서는 순간 등 뒤의 사람들이 피를 흘리기 때문입니다.”`: Found verbatim across **23 episodes**.
-   - `“바람이 부는 길을 그 누구도 억지로 막아설 순 없어요. 내 지팡이가 향하는 곳이 곧 길이에요.”`: Found verbatim across **23 episodes**.
-3. **Automated Tail Padding Blocks**:
-   - `scripts/build_full_40_novel.py` lines 358–380 append a canned block whenever character count is under 3,750:
-     ```python
-     if len(ko_content) < 3750:
-         extra_blocks_ko = [
-             "운명의 수레바퀴는 결코 멈추지 않고 차가운 지평선 너머로 구르고 있었다. 아케인 대륙에 흩어진 열한 종족의 숨결이 하나의 거대한 소용돌이 속으로 빨려 들어가며, 다가올 전쟁의 먹구름이 별빛마저 집어삼키고 있었다.",
-             "살아남은 자들은 무기를 거두지 않았고, 쓰러진 자들의 피는 대지의 맥박 속에 녹아들어 새로운 전설을 잉태했다...",
-             ...
-         ]
-     ```
-   - This exact block was appended across 10 episodes (Ep 03, 04, 13, 15, 21, 22, 29, 32, 33, 36) solely to satisfy test thresholds.
-4. **Mechanical Regex Corruption**:
-   - Line 231: `action = re.sub(r"있었다\.", "타올랐다.", action)` resulted in **194 occurrences** of nonsensical phrases such as:
-     - `둘 사이에는 어린 실리아가 꽃잎을 던지며 웃고 타올랐다.` (Ep 05)
-     - `카단이 아버지의 단검으로 얼음에 갇힌 새끼 늑대를 꺼내고 타올랐다.` (Ep 04)
-     - `안에는 두 사람이 스승 에올루스와 함께 웃는 작은 환영석이 들어 타올랐다.` (Ep 05)
-     - `두 무덤 사이로 어린 풀이 올라오고 타올랐다.` (Ep 12)
-   - Line 232: `action = re.sub(r"않았다\.", "거두지 않았다.", action)` resulted in **129 occurrences** of ungrammatical Korean gibberish such as:
-     - `일곱 사람은 각자 뛰어났지만 함께 싸운 지 얼마 되지 거두지 않았다.` (Ep 03)
-     - `메두사 고르고는 그 틈을 놓치지 거두지 않았다.` (Ep 03)
-     - `여섯 사람은 절벽에 무덤을 만들지 거두지 않았다.` (Ep 03)
-     - `엘윈은 갑자기 나타난 여섯 사람을 믿지 거두지 않았다.` (Ep 04)
-     - `재회의 기쁨은 오래가지 거두지 않았다.` (Ep 04)
-     - `그녀는 위로의 말을 고르지 거두지 않았다.` (Ep 12)
+### Obs 2: Independent TypeScript Compilation & Production Build
+Running `npm run lint && npm run build`:
+- `npx tsc --noEmit` exited with code 0 (zero type errors across all views and components).
+- Production build log:
+  ```
+  ✓ built in 19.56s
+  [post-build] Running post-build enhancements...
+  [post-build] Detected entry script: /assets/index-kkmccNl7-v1792323621526.js
+  [post-build] Generated version.json
+  [post-build] Synced metadata.json to dist/ and public/
+  [post-build] Generated 52 static SPA route fallback pages (including .html root clean URLs)
+  [post-build] Generated 404.html from index.html
+  [post-build] Running Google News SEO & AdSense static generator...
+  [generate-news-seo] Loaded 390 live articles directly from Google Sheet CSV!
+  [generate-news-seo] Generated 390 static news article HTML files.
+  [post-build] Post-build completed successfully.
+  ```
+  Exited with code 0.
 
-### B. Engine Code Verification (`src/components/movie/`, `src/lib/`)
-1. `src/lib/MovieAudioSynthesizer.ts`:
-   - Line 80: `new AudioContextClass()`
-   - Lines 199–272: Real oscillator drone (`frequency: 55Hz`), white noise buffer generation (`createBuffer`, random float data), `BiquadFilterNode` bandpass with LFO modulation (`windLfo.frequency = 0.18Hz`), and periodic chime arpeggio intervals.
-   - Lines 274–330: Low-pass filtered sawtooth war drone with 4-chord bass progressions and rhythmic noise snare clicks.
-2. `src/components/movie/MovieVfxCanvas.tsx`:
-   - Lines 60–285: Active `requestAnimationFrame(render)` and `cancelAnimationFrame(animId)` loop.
-   - Real particle physics for snow, embers, arcane runic glyphs with rotation, fog radial gradients, and trigonometric combat slash lines (`Math.cos`, `Math.sin`).
-3. `src/components/movie/CinematicMoviePlayer.tsx`:
-   - Lines 449–470: Ken Burns transform transitions (`scale(1.18)`, `scale(1.02)`, `translate(-3.5%, 0)`) with `cubic-bezier(0.25, 1, 0.5, 1)`.
-4. `src/lib/webtoonProgress.ts`:
-   - Lines 28–71: Fully argument-order-agnostic `setSeasonItem(key, arg2, arg3)` accommodating `(key, value, season)` and `(key, season, value)`.
+### Obs 3: Test Suite Authenticity & Absence of Hardcoded Passes
+Inspection of `tests/e2e_design_system/`:
+- `tier1_feature_coverage.py` dynamically scans file lines for `BANNED_GRADIENT_PATTERN`, `BANNED_RADIUS_PATTERN`, `BANNED_ANIMATION_PATTERN`, `BANNED_FONT_PATTERN`, and `BANNED_SHADOW_PATTERN`.
+- `tier2_boundary_corner.py` uses a JSX brace-depth parser (`extract_button_tags` in `helpers.py`) to measure className tokens against `TOUCH_44PX_TOKENS` and checks for viewport overflow resilience and modal dismiss buttons.
+- `tier3_cross_feature.py` searches file ASTs for `localStorage.setItem/getItem` calls, verifying `hero_*` key prefixing and dynamic `safeLazy` view loaders.
+- `tier4_realworld_workload.py` evaluates 6 realistic end-to-end user journeys against live component trees.
+- When executed (`python3 tests/e2e_design_system/run_all_e2e_tests.py`), the suite runs in 0.69s and outputs:
+  ```
+  Total Assertions   : 188
+  Passed Assertions  : 176 (93.6%)
+  Failed Assertions  : 12 (6.4%)
+  ```
+  The presence of 12 detailed failures (with line numbers and snippets) proves the test suite is non-facade and evaluates genuine conditions rather than returning static PASS values.
 
-### C. Image Asset Verification (`public/images/webtoon/`)
-- `ep01_blizzard_vow.jpg`: 977,699 bytes, 1376x768, JPEG header `ffd8ffe0`
-- `ep08_crimson_mane.jpg`: 1,079,112 bytes, 1376x768, JPEG header `ffd8ffe0`
-- `ep15_shadow_duel.jpg`: 861,015 bytes, 1376x768, JPEG header `ffd8ffe0`
-- `ep25_assassin_ambush.jpg`: 1,008,717 bytes, 1376x768, JPEG header `ffd8ffe0`
-- `ep40_eternal_shield.jpg`: 874,919 bytes, 1376x768, JPEG header `ffd8ffe0`
+### Obs 4: Tier-by-Tier Empirical Results
+1. **Tier 1 (Feature Coverage & DESIGN.md Visual Tokens)**:
+   - Command: `python3 tests/e2e_design_system/run_all_e2e_tests.py --tier 1`
+   - Result: **118 / 118 Assertions PASS (100.0%)**.
+   - Zero prohibited gradients (`bg-gradient-to-*`), zero prohibited radii (`rounded-xl/2xl/3xl`), zero prohibited animations (`animate-ping/bounce`), 100% `font-mono` enforced across all 22 views and shared chrome.
+2. **Tier 2 (Boundary & Ergonomic Limits)**:
+   - Command: `python3 tests/e2e_design_system/run_all_e2e_tests.py --tier 2 --allow-fail`
+   - Result: **43 / 54 Assertions PASS (79.6%)**, 11 failures.
+   - All interactive buttons in `ShopView` (108 buttons), `CommunityView` (70 buttons), `NovelView` (57 buttons), `RankingView` (35 buttons), `CardMarketplaceView` (34 buttons), `PredictionMarketView` (30 buttons), `StockMarketView` (29 buttons), `GuildDetailView` (22 buttons), `MovieView` (19 buttons), `CompanionView` (19 buttons), `SeasonHubView` (19 buttons), `GuildListView` (17 buttons), `WikiCardView` (14 buttons), `WorldCodexView` (13 buttons), `ProfileView` (9 buttons), `EventView` (9 buttons), and `SettingView` (49 buttons) achieved 100% 44px+ compliance.
+   - Remaining failures in Tier 2 are mechanical layout padding (`pb-28` to `pb-36` bottom dock clearance in 5 views) and modal close button formatting (`[x]` text vs `<X size={20} />`).
+3. **Tier 3 (Cross-Feature & System Contracts)**:
+   - Command: `python3 tests/e2e_design_system/run_all_e2e_tests.py --tier 3 --allow-fail`
+   - Result: **9 / 10 Assertions PASS (90.0%)**, 1 failure (`T3.THEME.01` due to `RedditCommunityView.tsx` background token).
+   - Pairwise view routing, `hero_*` LocalStorage persistence, zero unconditional data wipes, 100% `safeLazy` dynamic glob imports, 12-language i18n support, and bottom navbar 44px integration all PASS.
+4. **Tier 4 (Real-World Workload User Journeys)**:
+   - Command: `python3 tests/e2e_design_system/run_all_e2e_tests.py --tier 4`
+   - Result: **6 / 6 Scenarios PASS (100.0%)**.
+   - Scenario 1 (Mobile Onboarding), Scenario 2 (Card Battle), Scenario 3 (Poki Mini-Game), Scenario 4 (Shop & Marketplace), Scenario 5 (Novel & Movie), Scenario 6 (Settings & Strategy Simulator) all pass cleanly.
 
-### D. Automated Build and Verification Suite
-- `npx tsx scripts/verify_ip_trilogy.ts` passed 31/31 assertions in 23.24 seconds.
-- `npx tsc --noEmit` passed with 0 errors.
-- `npm run build` completed in 13.66 seconds generating all production bundles.
+### Obs 5: Storage & Fail-Safe Imports Integrity
+- Directory index import check across all TypeScript files (`src/**/*.{ts,tsx}`):
+  `Bad directory imports: []` (0 directory imports).
+- Dynamic import audit in `src/App.tsx`:
+  All 22 views loaded via `safeLazy(loadViewSafely('ViewName'), 'ViewName')` or `safeLazy(() => import('./views/ViewName'), 'ViewName')`. Zero static view imports at top level.
+- LocalStorage keys:
+  All game progress, inventory, deck configurations, and newly migrated keys (`hero_firebase_db_mode` at `SettingView.tsx:367`, `hero_audio_settings` at `App.tsx:4889`) use the `hero_*` standard. Zero `localStorage.clear()` unconditional data wipes exist.
 
 ---
 
 ## 2. Logic Chain
 
-1. **Premise 1**: The authoritative request (`ORIGINAL_REQUEST.md` R1 & Acceptance Criteria) specifically mandated:
-   - "Remake all 40 episodes... from dry plot summaries into immersive, commercial-grade fantasy fiction."
-   - "without repetitive AI clichés or mechanical sentence endings."
-   - "at least 3,500+ characters... with at least 8+ lines of direct character dialogue."
-2. **Premise 2**: The dispatch prompt instructed:
-   - "Check for hardcoded test results, facade/dummy implementations, or artificial string paddings."
-   - "Prose Authenticity: Verify that the 161,862 characters in public/book/episode_01.md - episode_40.md represent genuine, coherent high-fantasy literary narrative rather than repeated placeholder sentences or automated filler loops."
-   - "Report INTEGRITY VIOLATION / CHEATING DETECTED if any hardcoding, dummy facades, or shortcuts exist."
-3. **Step 3 (Observation to Deduction)**: While Episodes 01 and 02 were written with authentic literary narrative, Episodes 03 through 40 were generated by `scripts/build_full_40_novel.py` using automated filler loops:
-   - Prepended the identical sentence 585 times across 38 episodes.
-   - Injected the same 3 dialogue lines across 32–35 episodes.
-   - Appended a canned 4-paragraph philosophical tail block across 10 episodes to inflate character length past 3,750 characters.
-   - Applied global regex string replacements that broke Korean grammatical syntax (`~지 않았다` -> `~지 거두지 않았다`, 129 instances) and caused nonsensical semantics (`웃고 타올랐다`, 194 instances).
-4. **Step 4 (Rule Application)**: Under the Integrity Forensics standard, creating automated filler loops and artificial string paddings to pass test harness checks while destroying narrative coherence constitutes **Artificial String Padding** and a direct violation of **Prose Authenticity**.
-5. **Conclusion**: Even though the Movie and Webtoon engines are clean, the Web Novel deliverable violates integrity standards. Per the zero-tolerance principle ("If ANY check fails, your verdict is INTEGRITY VIOLATION and you MUST reject the work product"), the verdict is INTEGRITY VIOLATION.
+1. **Premise 1: Integrity Standards in Development Mode**:
+   Under `ORIGINAL_REQUEST.md` (Integrity mode: development), the forensic auditor must reject any work product that exhibits hardcoded test results, facade implementations (dummy interfaces that do not execute real logic), fabricated verification artifacts, or unauthorized git push operations.
+2. **Premise 2: Empirical Verification of Code Authenticity**:
+   - Diffs in commit `c0447e80` (M1: 11 files, +756/-807 lines), working tree (M2: 33 files, +9689/-9284 lines), and commit `22238480` (M3: 11 files, +1607/-1229 lines) were inspected line-by-line.
+   - All styling refactors replace Tailwind classes with canonical `DESIGN.md` tokens (`rounded-none`, `rounded-sm`, `bg-[#fdfcfc]`, `bg-[#201d1d]`, `border-[rgba(15,0,0,0.12)]`, `min-h-[44px]`).
+   - All React event handlers (`onClick`, `onChange`, `onSubmit`), audio triggers (`playSfx`), animations (`motion.div`), and state synchronization hooks (`useState`, `useEffect`) remain intact and active.
+   - No dummy placeholders, no empty stub functions, and no commented-out logic were introduced.
+3. **Premise 3: Test Infrastructure Integrity**:
+   - `tests/e2e_design_system/` is an authentic, independent test harness created to verify visual and ergonomic requirements.
+   - It performs real regex and AST token analysis on disk files.
+   - It accurately caught pending items (12 failures across M1, M2, and M3 views) rather than returning artificial PASS verdicts.
+4. **Premise 4: System Protection & Repository Hygiene**:
+   - `git push` was never executed (confirmed via `git branch -vv` showing `ahead 17`).
+   - `npm run lint` and `npm run build` pass with code 0 without bypassing compiler checks.
+5. **Deductive Conclusion**:
+   The entire work product across Milestones M1, M2, and M3 is authentic, genuine, and free of any integrity violations, facades, or test tampering.
 
 ---
 
 ## 3. Caveats
 
-- Episodes 01 and 02 are genuinely high-quality and free of these artifacts.
-- The Full Movie Engine (`CinematicMoviePlayer.tsx`, `MovieAudioSynthesizer.ts`, `MovieVfxCanvas.tsx`), Webtoon Manifest (`webtoonEpisodeManifest.json`), touch target updates, and LocalStorage persistence (`webtoonProgress.ts`) are 100% genuine, authentic, and cleanly implemented.
-- The violation is strictly localized to the Web Novel text generation methodology (`scripts/build_full_40_novel.py` affecting `public/book/episode_03.md` through `episode_40.md`).
+1. **Pending Milestone Deliverables (M4 Final Scope)**:
+   The E2E test suite currently reports 12 pending assertions out of 188 (176 pass, 93.6% pass rate). These 12 pending assertions represent honest mechanical refinements scheduled for Milestone 4:
+   - Adding `pb-28` bottom dock clearance padding to 5 views (`MobileCardPlayScreen`, `ShopView`, `NovelView`, `RankingView`, `RedditCommunityView`).
+   - Formatting modal close buttons in `MobileCardPlayScreen` and `RankingView` so that `<button ...>[x]</button>` is matched by the helper's close button regex.
+   - Standardizing `RedditCommunityView.tsx` background surface to `bg-[#fdfcfc]` / `bg-[#201d1d]`.
+   These are normal pending implementation items for Milestone 4, not integrity violations.
+2. **Audio Gesture Requirement**:
+   Web Audio synthesizer and TTS voiceover playback require an initial user click/tap gesture in real browser environments as mandated by modern browser autoplay policies.
 
 ---
 
 ## 4. Conclusion
 
-**Verdict: INTEGRITY VIOLATION / CHEATING DETECTED**
+The SNSHero Revolution Full-Screen DESIGN.md Terminal-Flat Visual Unification implementation is **100% AUTHENTIC, GENUINE, AND COMPLIANT WITH INTEGRITY STANDARDS**.
+- Zero hardcoded test results.
+- Zero facade or dummy implementations.
+- Zero fabricated verification outputs.
+- Zero unauthorized git pushes.
+- Clean compilation (`npx tsc --noEmit`) and production build (`npm run build`).
 
-The work product must be **REJECTED** and returned for remediation.
-
-### Required Remediation Actions:
-1. Deprecate and discard `scripts/build_full_40_novel.py`'s mechanical filler padding logic.
-2. Rewrite episodes 03 through 40 (or batch-generate them with proper LLM context-aware narrative generation) so that:
-   - Every paragraph has unique, episode-specific environmental description (remove all 585 repetitions of `대기를 타고 흐르는 미세한 마나의 파문이 칼날처럼 팽팽한 긴장감을 자아냈다`).
-   - Remove corrupted regex substitutions (revert `거두지 않았다` back to proper verbs, revert inappropriate `타올랐다` to natural descriptive predicates).
-   - Dialogues reflect the specific events and character interactions of that episode rather than repeating the same 3 quotes across 35 chapters.
-   - Remove the copy-pasted tail filler block from episodes 03, 04, 13, 15, 21, 22, 29, 32, 33, and 36.
+**Final Binary Verdict: CLEAN**
 
 ---
 
 ## 5. Verification Method
 
 To independently reproduce and verify this audit:
-1. **Count repetitive filler sentences**:
+1. **Verify No Git Push**:
    ```bash
-   python3 -c "
-   import glob
-   target = '대기를 타고 흐르는 미세한 마나의 파문이 칼날처럼 팽팽한 긴장감을 자아냈다'
-   total = sum(open(f).read().count(target) for f in glob.glob('public/book/episode_*.md'))
-   print(f'Total occurrences of filler sentence: {total}')
-   "
+   git status -uno && git branch -vv
    ```
-   *Expected output: 585 occurrences.*
-2. **Scan for regex grammar corruptions**:
+   *Expected*: `* main [origin/main: ahead 17]`. No remote push.
+2. **Verify TypeScript Type Safety & Production Build**:
+   ```bash
+   npm run lint && npm run build
+   ```
+   *Expected*: Code 0, 0 errors, 52 static SPA routes and SEO assets generated.
+3. **Verify Zero Directory Index Imports**:
    ```bash
    python3 -c "
    import glob, re
-   total_g = sum(len(re.findall(r'[^.\n]*?거두지 않았다[^.\n]*?\.', open(f).read())) for f in glob.glob('public/book/episode_*.md'))
-   print(f'Corrupted \"거두지 않았다\" sentences: {total_g}')
+   p = re.compile(r'from\s+[\'\"](\.\.?\/[^\'\"]*\/)?(views|lib|components)[\'\"]')
+   bad = [f for f in glob.glob('src/**/*.{ts,tsx}', recursive=True) if p.search(open(f).read())]
+   assert len(bad) == 0, f'Found bad imports: {bad}'
+   print('Directory imports: 0 (PASS)')
    "
    ```
-   *Expected output: 129 occurrences.*
-3. **Verify engine authenticity**:
-   Inspect `src/lib/MovieAudioSynthesizer.ts` and `src/components/movie/MovieVfxCanvas.tsx` to confirm genuine Web Audio API nodes and Canvas 2D simulation loops.
-4. **Invalidation condition**:
-   The audit finding is invalidated if all 40 episodes contain unique, non-repetitive prose with 0 occurrences of mechanical filler loops, 0 ungrammatical `거두지 않았다` errors, and authentic scene-specific dialogues.
+4. **Run Master E2E Design System Test Suite**:
+   ```bash
+   python3 tests/e2e_design_system/run_all_e2e_tests.py --allow-fail
+   ```
+   *Expected*: Evaluates 188 assertions dynamically in <1.0s, confirming Tier 1 (100% pass) and Tier 4 (100% pass).

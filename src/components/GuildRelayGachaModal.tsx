@@ -83,7 +83,7 @@ export const GuildRelayGachaModal: React.FC<GuildRelayGachaModalProps> = ({
  setEnergy((p) => Math.min(5, p + 1));
  onContributeEnergy();
  }}
- className="h-12 w-full bg-[#201d1d] text-slate-950 font-black text-xs rounded-sm flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer shadow-none"
+ className="h-12 w-full bg-[#201d1d] text-[#fdfcfc] font-black text-xs rounded-sm flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer shadow-none"
  >
  <Zap size={16} />
  <span>내 마나 공양하기 (50 SNS)</span>

@@ -1,41 +1,47 @@
-## 2026-10-18T01:45:05Z
-You are the E2E Test Writer for the SNSHero 110-Hero Character Illustration Remaster project.
+# DISPATCH: test_writer_e2e
+
+- **Role**: E2E Testing Track Writer
+- **Working Directory**: `/Users/dayyoung/project/snshero/.agents/teamwork/test_writer_e2e/`
+- **Scope**: E2E Test Suite Creation for DESIGN.md Terminal-Flat Visual Unification
+- **Inputs**:
+  - `/Users/dayyoung/project/snshero/.agents/teamwork/ORIGINAL_REQUEST.md` (specifically ## 2026-10-18T10:08:37Z)
+  - `/Users/dayyoung/project/snshero/.agents/teamwork/orchestrator_4/TEST_INFRA.md`
+  - `/Users/dayyoung/project/snshero/.agents/teamwork/orchestrator_4/PROJECT.md`
+  - `/Users/dayyoung/project/snshero/DESIGN.md`
+- **Exclusive Write Ownership**:
+  - `tests/e2e_design_system/*`
+  - `/Users/dayyoung/project/snshero/TEST_READY.md`
+- **Output Requirements**:
+  - Create comprehensive 4-Tier test suite in `tests/e2e_design_system/` (Tier 1: Feature Coverage, Tier 2: Boundary & Corner, Tier 3: Pairwise Combinations, Tier 4: Real-World Scenarios)
+  - Create runnable runner script `tests/e2e_design_system/run_all_e2e_tests.py`
+  - Publish `/Users/dayyoung/project/snshero/TEST_READY.md` with coverage summary and run command
+  - Write handoff report in `/Users/dayyoung/project/snshero/.agents/teamwork/test_writer_e2e/handoff.md`
+
+## 2026-10-18T10:25:54Z
+You are the E2E Testing Track Writer for SNSHero Revolution.
 Your working directory is: /Users/dayyoung/project/snshero/.agents/teamwork/test_writer_e2e/
-You MUST read:
-1. /Users/dayyoung/project/snshero/.agents/teamwork/ORIGINAL_REQUEST.md (under ## 2026-10-18T01:34:39Z)
-2. /Users/dayyoung/project/snshero/PROJECT.md
-3. /Users/dayyoung/project/snshero/.agents/teamwork/explorer_survey_1/cards_dataset.json
-4. /Users/dayyoung/project/snshero/.agents/teamwork/explorer_survey_2/handoff.md
+You MUST read the authoritative user request at:
+/Users/dayyoung/project/snshero/.agents/teamwork/ORIGINAL_REQUEST.md (specifically the latest request under ## 2026-10-18T10:08:37Z).
 
-Write Ownership:
-You exclusively own:
-- /Users/dayyoung/project/snshero/TEST_INFRA.md
-- /Users/dayyoung/project/snshero/TEST_READY.md
-- /Users/dayyoung/project/snshero/tests/e2e_character_assets/ (and all test suites/scripts within)
-You MUST NOT modify source files in src/ or asset files in public/.
+Reference specifications:
+- /Users/dayyoung/project/snshero/.agents/teamwork/orchestrator_4/TEST_INFRA.md
+- /Users/dayyoung/project/snshero/.agents/teamwork/orchestrator_4/PROJECT.md
+- /Users/dayyoung/project/snshero/DESIGN.md
+- /Users/dayyoung/project/snshero/.agents/teamwork/test_writer_e2e/DISPATCH.md
 
-Your Mission:
-Design and implement a comprehensive, requirement-driven, opaque-box E2E test harness for the character illustration remaster:
-1. Create TEST_INFRA.md at the project root documenting test architecture, methodology, and coverage thresholds per the template in PROJECT.md.
-2. Build an automated E2E test runner in tests/e2e_character_assets/runner.py (or .ts/sh) covering 4 systematic tiers:
-   - Tier 1: Feature Coverage (>=5 tests per feature):
-     * Verify all 110 public/seat/*.png files exist, decode validly, exact 256x296 dimensions, 110 distinct SHA-256 hashes, 0 blank/uniform images.
-     * Verify public/cards1.png (1000x1000) and public/cards2.png (1000x1000) exist and decode.
-     * Verify public/card100.png (1135x1315) and public/card100_gemini.png (1024x1024 true RGBA) exist and decode.
-     * Verify all 11 public/character_sheet_*.png exist, decode, and have exact dimensions 2560x296.
-   - Tier 2: Boundary & Corner Cases (>=5 tests per feature):
-     * File size budget checks: every public/seat/*.png must be >= 4,096 bytes and <= 35,840 bytes (35 KB).
-     * Master sheets size budget: cards1, cards2, card100, card100_gemini must each be <= 819,200 bytes (800 KB).
-     * Faction sheets size budget: every character_sheet_*.png must be <= 307,200 bytes (300 KB).
-     * Non-character row preservation: verify rows 1–9 of cards2.png are preserved or cleanly formatted without corruption.
-     * Boundary card ID transition: ID 100 in cards1 vs ID 101 in cards2 row 0 col 0; ID 110 in cards2 row 0 col 9.
-     * PNG Magic header bytes check: verify first 8 bytes of all PNG assets match \x89PNG\r\n\x1a\n (catches UTF-8 replacement byte corruptions).
-   - Tier 3: Cross-Feature Combinations & Sprite Coordinate Alignment (pairwise coverage):
-     * Test each card ID 1–110: verify cell coordinates in cards1/cards2/card100/card100_gemini and character_sheet_* match getCardSpriteCoords formulas from src/lib/utils.ts.
-     * Sample pixel similarity between public/seat/<Card>.png and the sliced cell from the sprite sheets to confirm exact visual synchronization without cropping drift or sub-pixel bleeding.
-   - Tier 4: Real-World Scenarios:
-     * Simulate card rendering in CardItem and CanvasCardRenderer across all 11 factions and 4 rarity tiers.
-     * Total asset payload audit: calculate total web transfer size and verify it is dramatically reduced.
-3. Execute the test runner, verify it accurately fails current unmet requirements and passes met ones.
-4. When the test suite and runner are complete and ready, generate TEST_READY.md at project root with test invocation commands, coverage breakdown, and feature checklist.
-5. Write your handoff report to /Users/dayyoung/project/snshero/.agents/teamwork/test_writer_e2e/handoff.md and notify your caller with send_message.
+Your Exclusive Write Ownership:
+- `tests/e2e_design_system/*`
+- `/Users/dayyoung/project/snshero/TEST_READY.md`
+
+Your Task:
+1. Build the complete, autonomous, requirement-driven opaque-box E2E test harness under `tests/e2e_design_system/`:
+   - `tier1_feature_coverage.py`: Category-Partition test suite covering all 22+ views. Verifies 0 banned classes (`bg-gradient-to-`, `rounded-xl`, `rounded-2xl`, `rounded-3xl`, `animate-ping`, `animate-bounce`), strict monospace typography (`font-mono`, 0 `font-sans`), 2-tier border radius, and flat surfaces with 1px hairlines. (>=50 assertions).
+   - `tier2_boundary_corner.py`: Boundary Value Analysis. Verifies minimum 44px touch target height (`min-h-[44px]`) on all interactive buttons, tabs, pagination, and header CTAs; verifies every modal/drawer exposes a visible top-layer `[x]` / `[SKIP]` button; verifies 375px mobile viewport overflow resilience (0 horizontal scroll overflow). (>=50 assertions).
+   - `tier3_cross_feature.py`: Pairwise Combinatorial Testing. Verifies view transitions between Battle, Deck, Shop, Ranking, Novel, and Settings; verifies LocalStorage key persistence (`hero_*`); verifies 100% `safeLazy` dynamic glob imports in `App.tsx` with zero directory index imports. (>=10 composite assertions).
+   - `tier4_realworld_workload.py`: Real-World Workload Testing. Simulates end-to-end player journeys across all 6 real-world scenarios from `TEST_INFRA.md`, verifying zero viewport intrusion over active game boards/canvases/media and zero console errors.
+   - `run_all_e2e_tests.py`: Master test runner that runs all 4 tiers, formats results with clear colored CLI reports, and returns exit code 0 when all tests pass.
+2. Publish `/Users/dayyoung/project/snshero/TEST_READY.md` at project root with runner command, tier breakdown, and feature checklist.
+3. Write your handoff report in `/Users/dayyoung/project/snshero/.agents/teamwork/test_writer_e2e/handoff.md`.
+4. Send a message to parent reporting completion and pointing to `TEST_READY.md` and `handoff.md`.
+
+HARD CONSTRAINT: You write tests and test infra only. DO NOT modify application source code in `src/`.

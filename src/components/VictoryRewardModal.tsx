@@ -289,7 +289,7 @@ export const VictoryRewardModal: React.FC<VictoryRewardModalProps> = ({
  className={`min-h-[44px] w-full py-2.5 px-4 font-black text-xs uppercase rounded-sm cursor-pointer transition-all flex items-center justify-center gap-2 shadow-xs active:scale-98 ${
  isVip
  ? 'bg-amber-400 hover:bg-amber-300 text-[#201d1d] border-2 border-[#201d1d]'
- : 'bg-[#201d1d] hover: hover: text-[#fdfcfc] border border-amber-600'
+ : 'bg-[#201d1d] hover:opacity-90 text-[#fdfcfc] border border-amber-600'
  }`}
  >
  {isVip ? (

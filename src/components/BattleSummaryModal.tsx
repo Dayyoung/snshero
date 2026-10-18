@@ -512,7 +512,7 @@ export const BattleSummaryModal: React.FC<BattleSummaryModalProps> = ({
  <motion.div 
  animate={{ opacity: [0.15, 0.35, 0.15] }}
  transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
- className="absolute inset-0 bg-[#201d1d] pointer-events-none"
+ className="absolute inset-0 bg-emerald-500/10 pointer-events-none"
  />
  )}
 

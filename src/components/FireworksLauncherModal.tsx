@@ -28,7 +28,7 @@ export const FireworksLauncherModal: React.FC<FireworksLauncherModalProps> = ({
  <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 font-mono select-none">
  <div className="bg-slate-950 border-2 border-amber-400 rounded-none w-full max-w-sm overflow-hidden shadow-none flex flex-col text-center">
  {/* Header */}
- <div className="p-4 bg-[#201d1d] text-slate-950 flex items-center justify-between">
+ <div className="p-4 bg-[#201d1d] text-[#fdfcfc] flex items-center justify-between">
  <div className="flex items-center gap-1.5 font-black text-xs">
  <Sparkles size={16} />
  <span>🎆 전 서버 불꽃놀이 축제</span>
@@ -73,7 +73,7 @@ export const FireworksLauncherModal: React.FC<FireworksLauncherModalProps> = ({
  onLaunchFireworks(msg.trim());
  onClose();
  }}
- className="h-12 w-full bg-[#201d1d] disabled:opacity-50 text-slate-950 font-black text-xs rounded-sm flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer shadow-none"
+ className="h-12 w-full bg-[#201d1d] disabled:opacity-50 text-[#fdfcfc] font-black text-xs rounded-sm flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer shadow-none"
  >
  <Send size={16} />
  <span>불꽃 쏘아 올리기</span>

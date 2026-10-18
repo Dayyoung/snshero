@@ -70,7 +70,7 @@ export const PredictionBoosterModal: React.FC<PredictionBoosterModalProps> = ({
  <button
  type="button"
  onClick={() => handleBuy('multiplier')}
- className="min-h-[44px] w-full py-2 bg-[#201d1d] text-black font-black text-xs rounded-sm active:scale-95 transition-all cursor-pointer"
+ className="min-h-[44px] w-full py-2 bg-[#201d1d] text-[#fdfcfc] font-black text-xs rounded-sm active:scale-95 transition-all cursor-pointer"
  >
  {isKo ? '1.5배 부스터 적용 (₩500)' : 'Apply 1.5x Booster (₩500)'}
  </button>

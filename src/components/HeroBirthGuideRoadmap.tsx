@@ -92,7 +92,7 @@ export const HeroBirthGuideRoadmap: React.FC<HeroBirthGuideRoadmapProps> = ({
  exit={{ scale: 0.9, opacity: 0 }}
  className="bg-slate-950 border-2 border-amber-400 rounded-none w-full max-w-sm overflow-hidden shadow-none flex flex-col text-center"
  >
- <div className="p-3.5 bg-[#201d1d] text-slate-950 flex items-center justify-between font-black text-xs">
+ <div className="p-3.5 bg-[#201d1d] text-[#fdfcfc] flex items-center justify-between font-black text-xs">
  <div className="flex items-center gap-1.5">
  <Gift size={16} />
  <span>[ 웰컴 파이터 스타터 팩: 990원 타임딜 ]</span>
@@ -126,7 +126,7 @@ export const HeroBirthGuideRoadmap: React.FC<HeroBirthGuideRoadmapProps> = ({
  handleBuy();
  setIsStarterPackOpen(false);
  }}
- className="h-12 w-full bg-[#201d1d] text-slate-950 font-black text-xs rounded-sm flex items-center justify-between px-4 cursor-pointer active:scale-95 shadow-none hover:brightness-105"
+ className="h-12 w-full bg-[#201d1d] text-[#fdfcfc] font-black text-xs rounded-sm flex items-center justify-between px-4 cursor-pointer active:scale-95 shadow-none hover:brightness-105"
  >
  <span className="flex items-center gap-1.5">
  <Zap size={16} />

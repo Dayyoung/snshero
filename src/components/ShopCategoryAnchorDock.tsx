@@ -138,7 +138,7 @@ export const ShopCategoryAnchorDock: React.FC<ShopCategoryAnchorDockProps> = ({
  triggerHaptic('heavy');
  onSummonTen();
  }}
- className="h-14 bg-[#201d1d] text-slate-950 rounded-sm flex flex-col items-center justify-center active:scale-95 cursor-pointer shadow-none hover:brightness-105 font-black"
+ className="h-14 bg-[#201d1d] text-[#fdfcfc] rounded-sm flex flex-col items-center justify-center active:scale-95 cursor-pointer shadow-none hover:brightness-105 font-black"
  >
  <div className="flex items-center gap-1 text-xs font-black">
  <Zap size={14} />

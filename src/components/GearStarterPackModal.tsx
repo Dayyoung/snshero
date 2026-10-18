@@ -251,7 +251,7 @@ export const GearStarterPackModal: React.FC<GearStarterPackModalProps> = ({
  type="button"
  disabled={isProcessing}
  onClick={handlePurchaseCash}
- className="min-h-[44px] w-full py-2.5 px-3 bg-[#201d1d] hover: hover: text-black rounded-sm text-xs font-black uppercase flex items-center justify-between active:scale-98 transition-all shadow-none cursor-pointer"
+ className="min-h-[44px] w-full py-2.5 px-3 bg-[#201d1d] hover:opacity-90 text-[#fdfcfc] rounded-sm text-xs font-black uppercase flex items-center justify-between active:scale-98 transition-all shadow-none cursor-pointer"
  >
  <div className="flex items-center gap-1.5">
  <CreditCard size={15} className="text-black" />

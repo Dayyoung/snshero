@@ -157,7 +157,7 @@ export const TowerSweepBottomSheet: React.FC<TowerSweepBottomSheetProps> = ({
  type="button"
  onClick={handleSweep}
  disabled={maxClearedFloor <= 0}
- className="w-full min-h-[48px] bg-[#201d1d] hover: hover: text-black font-black text-xs uppercase tracking-wider rounded-sm flex items-center justify-center gap-2 cursor-pointer shadow-none active:scale-98 disabled:opacity-40"
+ className="w-full min-h-[48px] bg-[#201d1d] hover:opacity-90 text-[#fdfcfc] font-black text-xs uppercase tracking-wider rounded-sm flex items-center justify-center gap-2 cursor-pointer shadow-none active:scale-98 disabled:opacity-40"
  >
  <Zap size={16} />
  <span>[{selectedFloor}층 {sweepTimes}회 원터치 쾌속 소탕 시작]</span>

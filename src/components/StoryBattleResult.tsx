@@ -141,7 +141,7 @@ export const StoryBattleResult: React.FC<StoryBattleResultProps> = ({
  type="button"
  onClick={handleClaimReward}
  className={cn("min-h-[44px]", 
- 'inline-flex items-center gap-1.5 rounded-sm border border-amber-300 bg-[#201d1d] px-3 py-1.5 text-[9px] font-black uppercase tracking-[0.24em] text-amber-950 shadow-sm transition-all hover: hover: active:scale-95',
+ 'inline-flex items-center gap-1.5 rounded-sm border border-amber-300 bg-[#201d1d] px-3 py-1.5 text-[9px] font-black uppercase tracking-[0.24em] text-[#fdfcfc] shadow-sm transition-all hover:opacity-90 active:scale-95',
  lowSpecMode && ' ',
  )}
  >

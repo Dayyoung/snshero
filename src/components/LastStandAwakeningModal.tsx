@@ -46,7 +46,7 @@ export const LastStandAwakeningModal: React.FC<LastStandAwakeningModalProps> = (
  className="bg-slate-950 border-2 border-rose-500 rounded-none w-full max-w-sm overflow-hidden shadow-none flex flex-col text-center relative z-10"
  >
  {/* Header */}
- <div className="p-3.5 bg-[#201d1d] text-slate-950 flex items-center justify-between font-black text-xs">
+ <div className="p-3.5 bg-[#201d1d] text-[#fdfcfc] flex items-center justify-between font-black text-xs">
  <div className="flex items-center gap-1.5">
  <Flame size={16} />
  <span>[ LAST STAND: 히어로 각성 ]</span>
@@ -82,7 +82,7 @@ export const LastStandAwakeningModal: React.FC<LastStandAwakeningModalProps> = (
  onActivateLastStand();
  onClose();
  }}
- className="h-12 w-full bg-[#201d1d] text-slate-950 font-black text-xs rounded-sm flex items-center justify-center gap-2 cursor-pointer active:scale-95 shadow-none hover:brightness-105"
+ className="h-12 w-full bg-[#201d1d] text-[#fdfcfc] font-black text-xs rounded-sm flex items-center justify-center gap-2 cursor-pointer active:scale-95 shadow-none hover:brightness-105"
  >
  <Zap size={16} />
  <span>각성 궁극기 즉시 격발 (ULTIMATE CHARGE)</span>

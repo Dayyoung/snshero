@@ -81,7 +81,7 @@ export const InteractiveCreditsRoll: React.FC<InteractiveCreditsRollProps> = ({
  <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 font-mono select-none">
  <div className="bg-slate-950 border-2 border-amber-400 rounded-none w-full max-w-sm overflow-hidden shadow-none flex flex-col text-center">
  {/* Header */}
- <div className="p-4 bg-[#201d1d] text-slate-950 flex items-center justify-between">
+ <div className="p-4 bg-[#201d1d] text-[#fdfcfc] flex items-center justify-between">
  <div className="flex items-center gap-1.5 font-black text-xs">
  <Star size={16} />
  <span>🌌 별자리 인터랙티브 엔드 크레딧</span>

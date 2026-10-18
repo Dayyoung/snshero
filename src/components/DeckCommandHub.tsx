@@ -143,7 +143,7 @@ export const DeckCommandHub: React.FC<DeckCommandHubProps> = ({
  <button
  type="button"
  onClick={onOptimizeDeck}
- className="min-h-[48px] p-2 bg-[#201d1d] hover: hover: text-amber-300 border border-amber-500/40 rounded-sm flex flex-col justify-center items-start text-left cursor-pointer transition-all active:scale-[0.98]"
+ className="min-h-[48px] p-2 bg-[#201d1d] hover:opacity-90 text-amber-300 border border-amber-500/40 rounded-sm flex flex-col justify-center items-start text-left cursor-pointer transition-all active:scale-[0.98]"
  title={language === 'ko' ? '전투력 기준 최강 조합 자동 편성' : 'Auto Best Deck Lineup'}
  >
  <div className="flex items-center gap-1.5 font-bold text-xs text-amber-200">

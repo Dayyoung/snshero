@@ -123,7 +123,7 @@ export const NoticeModal: React.FC<NoticeModalProps> = ({ language, onNavigate, 
 
  <button
  onClick={handleClose}
- className="min-h-[44px] px-4 py-2 rounded-sm bg-[#201d1d] hover: hover: text-white font-mono text-xs font-bold shadow-none transition-all active:scale-95"
+ className="min-h-[44px] px-4 py-2 rounded-sm bg-[#201d1d] hover:opacity-90 text-white font-mono text-xs font-bold shadow-none transition-all active:scale-95"
  >
  {language === 'ko' ? '확인' : 'Confirm'}
  </button>

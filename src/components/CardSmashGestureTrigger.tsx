@@ -48,7 +48,7 @@ export const CardSmashGestureTrigger: React.FC<CardSmashGestureTriggerProps> = (
  <button
  type="button"
  onClick={handleSimulatedSmash}
- className="w-12 h-12 rounded-sm bg-[#201d1d] text-slate-950 flex items-center justify-center font-black text-xs cursor-pointer shadow-none active:scale-90"
+ className="w-12 h-12 rounded-sm bg-[#201d1d] text-[#fdfcfc] flex items-center justify-center font-black text-xs cursor-pointer shadow-none active:scale-90"
  >
  SMASH
  </button>

@@ -82,7 +82,7 @@ const safeCardName = (card: DatabaseCard | undefined, language: Language): strin
 
 /** SNSHero 브랜드 로고 텍스트 */
 const BrandLogo: React.FC = () => (
- <span className="bg-[#201d1d] bg-clip-text text-transparent text-[10px] font-extrabold uppercase tracking-wider">
+ <span className="  text-amber-400 text-[10px] font-extrabold uppercase tracking-wider">
  SNSHero.com
  </span>
 );

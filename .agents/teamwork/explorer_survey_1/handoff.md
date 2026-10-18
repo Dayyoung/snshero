@@ -1,286 +1,374 @@
-# Specification Mining Report: SNSHero 110-Hero Character Illustration Remaster
+# Core Gameplay & Battle Screens Survey & Specification Report
 
-**Author**: Explorer 1 (Specification Miner)
-**Date**: 2026-10-18T01:42:00Z
-**Target**: Mapping CARD_DATABASE (IDs 1–110), 11 Factions, Rarities, Visual Motifs, UI Rendering Contracts & Asset Surfaces
-**Authoritative Sources**: `src/cardDatabase.ts`, `src/content/characterIp.ts`, `src/content/characterArtPrompts.ts`, `src/components/CardItem.tsx`, `src/content/characterAssetManifest.ts`, `src/lib/utils.ts`, `public/seat/*.png`, `public/cards1.png`, `public/cards2.png`, `public/card100.png`
+**Survey Explorer**: Explorer Survey 1 (Core Gameplay & Battle Screens)  
+**Date & Timestamp**: 2026-10-18T10:20:00Z  
+**Parent Agent ID**: `3a464f6d-bcf9-4b99-af07-b0e05ceb817a`  
+**Working Directory**: `/Users/dayyoung/project/snshero/.agents/teamwork/explorer_survey_1/`  
+**Reference Design System**: `DESIGN.md` (OpenCode Terminal-Flat Canonical Design System)  
+**Assigned Scope**:
+1. `src/views/HomeView.tsx`
+2. `src/views/MobileCardPlayScreen.tsx`
+3. `src/views/MyDeckView.tsx`
+4. `src/views/PlayGameView.tsx`
+5. `src/components/PageHeader.tsx` & Battle/Game HUD Overlays (`TacticalCommandHUD.tsx`, `TacticalSynergyMatrix.tsx`, `StarBreathingUltimateWidget.tsx`, `ElementalTempestWidget.tsx`, `MinimalistMissionHUD.tsx`, `ResponsiveCleanHUD.tsx`, `DemoPlayHUD.tsx`, `BattleBossHUD.tsx`, `MissionGameCardHUD.tsx`)
 
-## Features Discovered
+---
 
-| # | Category | Feature | Description | Inputs | Outputs | Error Behavior | Discovered Via |
-|---|----------|---------|-------------|--------|---------|----------------|----------------|
-| 1 | Card Database | 110 Hero Character Records | Complete database of 110 hero cards with IDs 1–110, powers (10–30), 4-directional stats [N,E,S,W], levels (1–10), and element assignments. | `cardId: 1..110` | `DatabaseCard` object | Returns `undefined` for invalid IDs | `src/cardDatabase.ts` lines 4–147 |
-| 2 | Faction Hierarchy | 11 Elemental/Racial Factions | Exact 10-card partitioning across 11 factions: Water (1–10), Fire (11–20), Wind (21–30), Earth (31–40), Human (41–50), Undead (51–60), Elf (61–70), Dwarf (71–80), Monster (81–90), Robot (91–100), Dragon (101–110). | `cardId` or `CharacterFaction` | `FactionDef` (palette, keywords, emblem, region) | Defaults to `human` in asset manifest | `src/content/characterIp.ts` lines 17–117 |
-| 3 | Rarity Tier Structure | 3 Active Tiers + Boss Ranks | 50 Bronze (IDs 1–5 in factions 1–10), 32 Silver (IDs 6–8 in factions 1–10, 101–102 in Dragon), 28 Gold (IDs 9–10 in factions 1–10, 103–110 in Dragon). All 11 Bosses at multiples of 10 are Gold tier. | `cardId` | `CharacterRarityTier` | Defaults to `bronze` if unspecified | `src/cardDatabase.ts`, `src/content/characterIp.ts` |
-| 4 | Hero Archetype Progression | Consistent Role Progression | In each faction, positions 1–2: scout, 3–4: soldier, 5: warrior, 6–7: elite, 8: commander, 9: champion, 10: legend (Faction Boss). | `cardId` | `archetype: string` | Fallback to `adventurer` | `src/content/characterIp.ts` |
-| 5 | Special Abilities | 7 Active Passive Skills | Cards 1 (SHIELD), 9 (COUNTER), 10 (WALL), 19 (OMNIBOOST), 20 (PIERCE), 40 (IMMUNITY), 50 (TIME_WARP) feature unique battle mechanics. | `activeCard.ability` | Battle stat modifier / combat hook | No-op if null | `src/cardDatabase.ts`, `src/components/CardItem.tsx` lines 538–548 |
-| 6 | Pokemon-Style Frame UI | Dynamic Card Frame Borders | Bronze (#8c5936), Silver (#94a3b8), Gold (#eab308 metallic sheen), and Special (Holographic foil color-dodge sheen) frame and badge borders. | `rarityGroup`, `normalizedCardRarity` | Styled Tailwind container & gradient borders | Falls back to bronze theme | `src/components/CardItem.tsx` lines 208–299 |
-| 7 | Faction Surface Styling | 11 Distinct Card Surfaces | Dynamic type background tints: water (#d9effc), fire (#fce1ce), wind (#e1f3ef), earth (#ebedc8), human (#f6edcf), undead (#ece0f4), elf (#e0efd6), dwarf (#efe2d1), monster (#e5ead4), robot (#e3e9ef), dragon (#f1def0). | `profile.faction` / `element` | Background CSS class | Defaults to human `#f6edcf` | `src/components/CardItem.tsx` lines 307–312 |
-| 8 | Directional HUD | Cross Diamond Stat Layout | Top (North / stat[0]), Right (East / stat[1]), Bottom (South / stat[2]), Left (West / stat[3]) combat power badges. | `card.stats: number[4]` | 4 absolutely positioned stat badges | Render default base values | `src/components/CardItem.tsx` lines 318–350 |
-| 9 | Image Priority Resolver | Fallback & Skin Swap Chain | Ordered fallback: 1. processedImage -> 2. customImage -> 3. resolvedImage (skin/theme) -> 4. card.imageUrl -> 5. defaultSprite (`cards1.png`/`cards2.png`) -> 6. manifest paths. | `visualCardId`, skins, settings | Resolved image URL / sprite CSS | Switches to next source on error | `src/components/CardItem.tsx` lines 174–186 |
-| 10 | Sprite Grid Engine | 10x10 / 10x11 Grid Math | IDs 1–100 mapped to `cards1.png` (10x10 grid), IDs 101–110 mapped to `cards2.png` (row 0, cols 0–9), legacy mapped to `card100.png` (10x11 grid). | `cardId: number`, custom source | `CardSpriteCoords` (col, row, xPercent, yPercent) | Clamped to valid range | `src/lib/utils.ts` lines 158–237 |
-| 11 | Canvas Sprite Renderer | 60fps 2D Canvas Blitting | `drawCardSprite` preloads images, calculates source coordinates (`sWidth`, `sHeight`, `sx`, `sy`), and renders onto 2D Canvas with rotation, alpha, and shadow options. | `ctx, cardId, dx, dy, w, h, options` | Canvas pixel draw | Renders fallback blue `C{id}` badge if unloaded | `src/lib/canvasCardRenderer.ts` lines 51–145 |
-| 12 | Generative Art Prompt Pipeline | Standardized TCG Prompt Bundle | `getCharacterArtPrompt` compiles positive/negative prompts, 1:1 social thumbnail prompts, 16:9 webtoon panel prompts, and review checklists for all 110 cards. | `cardId: 1..110`, locale | `CharacterArtPrompt` bundle | Generates fallback template for missing cards | `src/content/characterArtPrompts.ts` lines 306–334 |
+## 1. Observation
 
-## Edge Cases
+Direct, programmatic, and AST/regex inspection of the 5 assigned target files and associated HUD overlays yielded the following findings:
 
-| # | Feature | Input | Observed Behavior |
-|---|---------|-------|-------------------|
-| 1 | Individual Seat PNGs | `public/seat/Celia.png`, `Hyperion_Prime.png`, `Sentinel.png` | Corrupted binary headers! Files begin with `\xef\xbf\xbdPNG` (UTF-8 replacement char) instead of `\x89PNG`. Pillow and libpng cannot decode them. Must be cleanly re-rendered during remastering. |
-| 2 | Faction Character Sheets | `public/character_sheet_fire.png`, `character_sheet_hobbit.png`, `character_sheet_mecha.png` | Corrupted binary headers starting with `\xef\xbf\xbdPNG`. Failed to decode in Pillow/libpng, whereas the other 8 sheets decode cleanly at `2560x296`. |
-| 3 | Faction Sheet Filename Discrepancies | Factions `dwarf`, `monster`, `robot` | Faction sheet filenames use legacy aliases: `character_sheet_hobbit.png` (for Dwarf), `character_sheet_beast.png` (for Monster), `character_sheet_mecha.png` (for Robot). Script pipelines must account for this mapping. |
-| 4 | Sprite Grid Transition at ID 101 | Card ID 100 vs Card ID 101 | `getCardSpriteAsset` switches from `/cards1.png` to `/cards2.png` at ID 101. On `/cards2.png`, Cards 101–110 reside in Row 0 (cols 0–9, `offsetIndex = (id - 101) % 100`). In legacy `/card100.png`, Cards 101–110 reside in Row 10 (10x11 grid). |
-| 5 | Dragon Faction Rarity Anomaly | Dragon faction cards (IDs 101–110) | Unlike all 10 preceding factions (which have 5 Bronze, 3 Silver, 2 Gold), the Dragon faction contains ZERO Bronze cards. IDs 101–102 are Silver, and IDs 103–110 (8 cards!) are all Gold. |
-| 6 | Multiples of 10 Boss Ranks | Cards 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110 | All 11 cards are Gold tier with top-tier Power ratings (25–30) and signature lore identities. Only 5 of the 11 have battle abilities in `cardDatabase.ts` (10: WALL, 20: PIERCE, 40: IMMUNITY, 50: TIME_WARP; plus 1: SHIELD, 9: COUNTER, 19: OMNIBOOST on non-bosses). |
-| 7 | Seat Filename Spacing/Underscore Rule | Multi-word card names (e.g. Ashel the Immortal, Death Knight Artus) | Files in `public/seat/` use underscores for spaces: `Ashel_the_Immortal.png`, `Death_Knight_Artus.png`, `Earth_Dragon_Terra.png`, `Hyperion_Prime.png`, `Magitech_Golem.png`, `Medusa_Gorgo.png`, `Omega_Weapon.png`, `Siege_Engine.png`, `Stone_Gargoyle.png`, `Wind_God_Toram.png`. Single-word cards use direct names (`Aquaris.png`). |
-| 8 | File Size Budget Overruns | Existing public sprite sheets | `cards1.png` is 1,977 KB (budget <= 800 KB), `cards2.png` is 2,734 KB (budget <= 800 KB), `card100.png` is 2,053 KB, `character_sheet_mecha.png` is 368 KB (budget <= 300 KB). 3 seat files exceed 35 KB. Quantization and optimization are mandatory. |
+### 1.1 Summary Metric Matrix
 
-## 5-Component Handoff Report
+| Target File | Total Lines | Forbidden Gradients (`bg-gradient-to-*`) | Forbidden Radii (`rounded-lg/xl/2xl/3xl`) | Pill/Circle Radius (`rounded-full`) | Heavy Shadows (`shadow-md/lg/xl/2xl`) | Distracting Animations (`ping/bounce/pulse`) | Non-Mono Fonts (`font-sans/serif`) | Buttons Lacking 44px+ (`min-h-[44px]`) |
+|---|---|---|---|---|---|---|---|---|
+| `src/views/HomeView.tsx` | 902 | 0 | 0 | 0 | 0 | 0 | 0 | 0 (main CTAs compliant; child modal spot fixes needed) |
+| `src/views/MobileCardPlayScreen.tsx` | 2,728 | 0 | 1 (`rounded-b-lg`) | 3 | 1 (`shadow-sm`) | 3 (`animate-pulse`) | 0 | 5 key action buttons (Skills & LifeCycle toggle) |
+| `src/views/MyDeckView.tsx` | 3,619 | 0 | 0 | 0 | 0 | 0 | 0 | 3 modal action buttons (sort & filter compliant) |
+| `src/views/PlayGameView.tsx` | 18,648 | **68** | **248** (35 `3xl`, 72 `2xl`, 93 `xl`, 48 `lg`) | **112** | **134** (21 `2xl`, 18 `xl`, 54 `lg`, 41 `md`) | **134** (9 `ping`, 22 `bounce`, 103 `pulse`) | **40** (`font-sans`) | **70+** across modals, story scenes, and floating HUDs |
+| `src/components/PageHeader.tsx` | 66 | 0 | 0 | 0 | 0 | 0 | 0 | 0 (100% compliant) |
+| `src/components/battle/TacticalCommandHUD.tsx` | 739 | 0 | 0 | 0 | 0 | 0 | 0 | 2 (`claim pack` & minigame lounge link) |
+| `src/components/battle/TacticalSynergyMatrix.tsx` | 182 | 0 | 0 | 0 | 0 | 1 (`animate-pulse`) | 0 | 1 (minimize toggle) |
+| `src/components/battle/StarBreathingUltimateWidget.tsx` | 237 | 0 | 0 | 0 | **5** (1 `2xl`, 1 `xl`, 1 `lg`, 2 `sm`) | 0 | 0 | 4 (action button & modal triggers) |
+| `src/components/battle/ElementalTempestWidget.tsx` | 178 | 0 | 0 | 0 | 1 (`shadow-xl`) | 0 | 0 | 0 (toggle & cast button compliant) |
+| `src/components/MinimalistMissionHUD.tsx` | 410 | 0 | 0 | 0 | 1 (`shadow-2xl`) | 1 (`animate-pulse`) | 0 | 4 (Exit, Help, Pause, Settlement CTAs) |
+| `src/components/ResponsiveCleanHUD.tsx` | 151 | 0 | 0 | 0 | 0 | 2 (`pulse`, `bounce`) | 0 | 3 (Exit, Pause, Help buttons) |
+| `src/components/DemoPlayHUD.tsx` | 105 | 0 | 0 | 1 | 1 (`shadow-sm`) | 1 (`animate-pulse`) | 0 | 1 (Exit button `min-h-[30px]`) |
+| `src/components/BattleBossHUD.tsx` | 132 | 0 | 0 | 0 | 1 (`shadow-md`) | 2 (`animate-pulse`) | 0 | 0 |
+| `src/components/MissionGameCardHUD.tsx` | 68 | 0 | 0 | 1 | 1 (`shadow-md`) | 1 (`animate-pulse`) | 0 | 1 (Fever booster button) |
+| `src/components/OpponentThreatHUD.tsx` | 46 | 0 | 0 | 0 | 0 | 0 | 0 | 0 (100% compliant) |
+| `src/components/OpponentHandElementHUD.tsx` | 114 | 0 | 0 | 0 | 0 | 0 | 0 | 0 (100% compliant) |
 
-### 1. Observation
-Direct inspection of the codebase and public assets reveals:
-- `src/cardDatabase.ts`: Exact 110 entries (`CARD_DATABASE[1]` through `CARD_DATABASE[110]`), zero missing keys. Fields include `id`, `title`, `title_en`, `title_dis`, `power`, `stats` ([top, right, bottom, left]), `rarity`, `element`, and optional `ability` / `lore_ko` / `lore_en`.
-- `src/content/characterIp.ts`: 11 factions defined in `CHARACTER_FACTIONS`, 6 rarity tiers in `CHARACTER_RARITY_RULES` (bronze, silver, gold, platinum, diamond, legendary), and 110 detailed IP profiles in `CHARACTER_IP_PROFILES`.
-- `src/content/characterArtPrompts.ts`: Pre-built prompt generator producing localized prompt bundles, style guides, and negative prompts for all 110 cards.
-- `src/components/CardItem.tsx`: Full Pokemon TCG style visual decoration. Card layout handles rarity frames (lines 208–299), faction surface tints (lines 307–312), 4-directional Cross Diamond HUD (lines 318–350), and image resolution fallback cascade (lines 174–186).
-- `src/lib/utils.ts` & `src/lib/canvasCardRenderer.ts`: Coordinate math for `cards1.png` (10x10, IDs 1–100), `cards2.png` (10x10, IDs 101–110 in Row 0), and `card100.png` (10x11, IDs 1–110).
-- `public/seat/*.png`: Exactly 110 files. Verification via Pillow showed 107 valid PNGs at `256x296` px and 3 corrupted files (`Celia.png`, `Hyperion_Prime.png`, `Sentinel.png` starting with `\xef\xbf\xbdPNG`). All 110 filenames match card English titles with space-to-underscore conversion.
-- `public/character_sheet_*.png`: 11 horizontal sheets at `2560x296` px (10 characters per sheet). 8 are valid, 3 are corrupted (`character_sheet_fire.png`, `character_sheet_hobbit.png`, `character_sheet_mecha.png`).
-- Master sprite sheets: `public/cards1.png` (1000x1000, 1.98 MB), `public/cards2.png` (1000x1000, 2.73 MB), `public/card100.png` (1135x1315, 2.05 MB), `public/card100_gemini.png` (1024x1024, 974 KB). All exceed the 800 KB budget.
+---
 
-### 2. Logic Chain
-1. **Faction and Rarity Completeness**: All 110 hero cards map 1:1 to their database entries and IP profiles. Each faction has exactly 10 cards. The rarity distribution is 50 Bronze, 32 Silver, and 28 Gold.
-2. **Boss Tier Identity**: Every multiple of 10 (10, 20, ..., 110) corresponds to the apex character ("legend" archetype) of that faction. All 11 Bosses are Gold rarity, have high power (25–30), and represent the ultimate faction lore figureheads.
-3. **Visual Remastering Input Matrix**: Each card has authoritative visual guidelines defined in `characterIp.ts` (`primaryColor`, `accentColor`, `poseKeywords`, `backgroundKeywords`, `lightingStyle`, `cameraAngle`, `silhouetteStrength`) and `characterArtPrompts.ts` (`positivePromptKo`, `positivePromptEn`, `negativePrompt`). Remastering prompts can directly consume these structured attributes to generate consistent TCG-style illustrations.
-4. **Asset Synchronization Surface**: A regenerated character for Card ID $N$ must update 4 distinct asset surfaces:
-   a. Individual portrait: `public/seat/<Name>.png` (`256x296` px, <= 35 KB).
-   b. Primary battle sprite sheet: `public/cards1.png` (if $N \le 100$) or `public/cards2.png` (if $N \ge 101$, Row 0) at cell $(col, row) \times (100, 100)$ px.
-   c. Legacy master sheet: `public/card100.png` at cell $(col, row) \times (113.5, 119.5)$ px, and `public/card100_gemini.png` at $(col, row) \times (102.4, 93.09)$ px.
-   d. Faction horizontal sheet: `public/character_sheet_<faction>.png` (`2560x296` px, column $(N - 1) \% 10$).
-5. **Budget & Quantization**: Current assets are bloated (2.0–2.8 MB) because they contain 32-bit unquantized RGBA PNGs. By applying 8-bit palette quantization (e.g. `pngquant` or Pillow `quantize(colors=256, method=Image.Quantize.MEDIANCUT)` with dithering), file sizes can be reduced by 70–80%, bringing `cards1.png` and `cards2.png` well below 800 KB, faction sheets below 300 KB, and seat files below 35 KB while preserving visual sharpness.
+### 1.2 Target-by-Target Specific Line Observations
 
-### 3. Caveats
-- **Corrupted Source Assets**: 3 seat files (`Celia.png`, `Hyperion_Prime.png`, `Sentinel.png`) and 3 faction sheets cannot be decoded as input reference images from disk. However, clean visual sources for all 3 exist inside `public/cards1.png` and `public/card100.png` where their sprite cells are intact and fully decodeable.
-- **Dwarf/Hobbit, Monster/Beast, Robot/Mecha Naming**: In code, factions are `dwarf`, `monster`, and `robot`. On disk, filenames use `hobbit`, `beast`, and `mecha`. Remastering workers must strictly respect this translation.
-- **Web Novel & Movie Integration**: Cards 41 (Kadan), 50 (Aleksandar), 62 (Celia), 11 (Ignis), 64 (Titania) are prominent story characters in the 40-episode novel/movie. Their remastered illustrations must stay faithful to their narrative descriptions.
+#### A. Target 1: `src/views/HomeView.tsx` (902 lines)
+1. **Visual Style & Geometry**:
+   - `HomeView.tsx` has successfully transitioned to OpenCode terminal-flat styling (`bg-[#fdfcfc]`, `text-[#201d1d]`, `font-mono`, hairline borders `border-[rgba(15,0,0,0.12)]`).
+   - Line 250: Main lobby card container uses `rounded-none border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc]`.
+   - Line 255: Wordmark rendered as `S&SHERO.com` with monospace hierarchy.
+   - Line 339: Primary Battle CTA is `min-h-[44px] rounded-sm bg-[#201d1d] text-[#fdfcfc] border border-[#201d1d]`.
+2. **Touch Targets**:
+   - Lines 357–397 (3 Core Secondary Actions: Deck, Shop, Rank): All enforce `min-h-[44px] px-2 py-2 rounded-sm border border-[rgba(15,0,0,0.12)] hover:bg-[#201d1d] hover:text-[#fdfcfc]`.
+   - Lines 401–442 (3 Core IP Media Shortcuts: Novel, Webtoon, Movie): All enforce `min-h-[44px] px-2 py-2 rounded-sm`.
+   - Line 268 & 293: Deck CP / Edit buttons enforce `min-h-11 rounded-sm`.
+3. **Progressive Disclosure & Spatial Layout**:
+   - The lobby separates high-frequency actions into two 3-column rows (lines 355, 400) and moves auxiliary tools into `HomeQuickHub` (line 445), preventing button congestion.
+   - Modals rendered: `NotificationCenterModal`, `MailboxModal`, `NoticeModal`, `AfkPatrolModal`, `Milestone600CelebrationModal`, `PwaEventModal`, `HomeCategoryHubModal`.
+   - Potential Issue: Back-to-back popup triggers upon page mount if local storage flags are absent.
+4. **LocalStorage Keys**:
+   - `hero_bgm`, `hero_sfx`, `hero_win_streak`, `hero_match_history`. All conform to `hero_*`.
 
-### 4. Conclusion
-The full 110-character specification across all 11 factions is 100% charted and verified. The database, IP profiles, art directions, sprite coordinate mappings, and CardItem UI contracts are completely aligned. The remastering pipeline has all necessary metadata (names, stats, motifs, palettes, prompt bundles, sprite grid offsets) to proceed with visual regeneration, sprite compilation, and lossless PNG quantization.
+#### B. Target 2: `src/views/MobileCardPlayScreen.tsx` (2,728 lines)
+1. **Forbidden Classes**:
+   - Line 2117: `TacticalCommandHUD` container has `rounded-b-lg border-x border-b border-white/10`. (`rounded-b-lg` is a direct violation of the 2-tier border radius rule).
+   - Lines 1580, 1718, 2034: `<span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />` and `<span className="w-2 h-2 rounded-full bg-white inline-block animate-pulse" />`. (`rounded-full` and `animate-pulse` are non-compliant).
+   - Line 2065: `border-blue-600 shadow-sm` on selected card in player hand. (`shadow-sm` is non-compliant).
+2. **Touch Target Deficits (CRITICAL)**:
+   - **Lines 1950–2023 (In-Battle Skill Action Bar)**:
+     ```tsx
+     1956: className={cn("min-w-0 px-1 rounded-sm border flex items-center justify-center gap-1 text-[11px] disabled:opacity-40", ...)}
+     1976: className={cn("min-w-0 px-1 rounded-sm border flex items-center justify-center gap-1 text-[11px] disabled:opacity-40", ...)}
+     1995: className={cn("min-w-0 px-1 rounded-sm border flex items-center justify-center gap-1 text-[11px] disabled:opacity-40", ...)}
+     2012: className={cn("min-w-0 px-1 rounded-sm border flex items-center justify-center gap-1 text-[10px] font-bold", ...)}
+     ```
+     These 4 interactive buttons (Power Skill +2, Defense Shield, Element Burst +1, Auto Battle Toggle) measure approximately 24–28px in height, severely violating the mobile `min-h-[44px]` requirement.
+   - **Lines 1657–1674 (Smart LifeCycle Toggle `[+]`/`[-]`)**:
+     ```tsx
+     1666: className={cn("px-2 rounded-sm text-[11px] font-bold border cursor-pointer", ...)}
+     ```
+     Measures ~24px height; fails `min-h-[44px]`.
+3. **Progressive Disclosure & Playfield Clearance**:
+   - 3x3 Battle Board (`#mobile-card-center-board`): Rendered in an aspect-square container (min 300px, sm 360px) with 9 flat cells.
+   - Opponent Hand (`#mobile-card-opponent-deck`): Correctly provided with a collapsible accordion (`isOpponentDeckExpanded`, line 1705) defaulting to collapsed, saving 120px+ vertical viewport height.
+   - Stacking Risk: On screens with height < 750px (e.g. mobile Safari with URL bar expanded), rendering Top Header + Ranking Divert HUD + Smart LifeCycle HUD + Opponent Deck Accordion + 3x3 Board + Skill Bar + Player Hand (footer) + TacticalSynergyMatrix + TacticalCommandHUD results in substantial vertical scroll creep.
+4. **LocalStorage Keys**:
+   - `hero_auto_battle`, `hero_auto_loop_mode`, `hero_auto_loop_is_ranking`, `hero_auto_loop_match_count`, `hero_sns`, `hero_user_sns`, `hero_user_diamonds`, `hero_tower_trials_floor_v1`, `hero_tower_titles_v1`, `hero_tower_costumes_v1`. (All compliant).
 
-### 5. Verification Method
-To verify this survey independently:
-1. Run `npx tsx -e "import { CARD_DATABASE } from './src/cardDatabase'; console.log(Object.keys(CARD_DATABASE).length);"` to confirm 110 cards.
-2. Run `python3 -c "import glob; from PIL import Image; [Image.open(f).verify() for f in glob.glob('public/seat/*.png')]"` to reproduce the 3 corrupted seat files (`Celia`, `Hyperion_Prime`, `Sentinel`).
-3. Run `python3 -c "from PIL import Image; [Image.open(f'public/character_sheet_{f}.png').verify() for f in ['water','earth','wind','human','undead','elf','beast','dragon']]"` to verify valid sheets, and inspect `fire`, `hobbit`, `mecha` to reproduce the corrupted sheets.
-4. Inspect `.agents/teamwork/explorer_survey_1/cards_dataset.json` for the complete extracted JSON data.
+#### C. Target 3: `src/views/MyDeckView.tsx` (3,619 lines)
+1. **Visual Style & Geometry**:
+   - Thoroughly styled in OpenCode terminal-flat (`bg-[#fdfcfc]`, `text-[#201d1d]`, `font-mono`, hairline rules).
+   - Zero gradients, zero `rounded-xl/2xl/3xl`, zero heavy shadows.
+2. **Touch Targets**:
+   - Line 1601: `min-w-11 min-h-11 rounded-sm` (Help button).
+   - Line 1608: `min-h-24` (Deck Power Hero block).
+   - Line 1632: `min-h-11` (Active deck dropdown).
+   - Line 1647: `min-h-11` (Synergy trigger).
+   - Lines 2157, 2169, 2176: Sort and 4-way direction buttons (`▲`, `▶`, `▼`, `◀`) all enforce `min-h-11 min-w-11`.
+   - Sub-44px targets:
+     - Line 2128: Checkbox `<input>` has `w-4 h-4 min-w-[20px] min-h-[20px]`, but outer `<label>` has `min-h-11` (Acceptable tap target).
+     - Modal triggers in secondary popups (`CardCompareModal`, `CardDisassembleModal`, `CardCombineModal`) have several internal action buttons configured at `py-2 px-3` (~36px).
+3. **Progressive Disclosure**:
+   - `DeckCommandHub` (line 62, line 1640) consolidates 18+ auxiliary actions into 4 segmented categories (`ai`, `inventory`, `presets`, `codex`).
+   - Detailed card sorting options are nested under `<details className="w-full min-w-0 rounded-none border ...">` (line 2134) with `min-h-11` summary trigger.
+4. **LocalStorage Keys**:
+   - `hero_deck`, `hero_deck_{season}`, `hero_deck_guest_{season}`, `hero_active_deck_preset_{season}`, `hero_deck_preset_{activeDeckPreset}_{season}`, `hero_deck_preset_name_{num}_{season}`, `hero_deck_preset_icon_{num}_{season}`, `hero_mydeck_viral_share_{date}`, `hero_user_avatar`, `hero_auto_loop_card`, `hero_auto_loop_mode`, `hero_auto_loop_is_ranking`. (All compliant).
 
-## Comprehensive 110-Hero Character Catalogue by Faction
+#### D. Target 4: `src/views/PlayGameView.tsx` (18,648 lines)
+1. **Massive Concentration of Legacy Non-Compliant Classes**:
+   - `PlayGameView.tsx` contains 68 gradients, 248 forbidden border radii (`rounded-lg/xl/2xl/3xl`), 112 `rounded-full` pills/circles, 134 heavy shadows (`shadow-md/lg/xl/2xl`), 134 distracting animations (`animate-ping/bounce/pulse`), and 40 instances of `font-sans`.
+   - **Cluster 1 (Lines 300–430: BossCardItem & MissionCharacterPortrait)**:
+     - Line 313: `w-24 h-34 sm:w-28 sm:h-38 rounded-lg shadow-lg pointer-events-none transform group-hover:scale-105`
+     - Line 359: `rounded-3xl border bg-slate-900 overflow-hidden shadow-xl`
+     - Line 364: `bg-gradient-to-r from-amber-400 to-yellow-400 text-slate-950 font-black text-xs px-3 py-1 rounded-full shadow-md z-10 animate-pulse`
+     - Line 387: `ShieldAlert size={40} className="text-red-500 animate-bounce mb-2"`
+     - Line 418: `rounded-xl transition-all cursor-pointer hover:scale-[1.02] shadow-md`
+     - Line 421: `bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500`
+   - **Cluster 2 (Lines 3530–3640: Legacy Modals & Cards)**:
+     - Line 3538: `bg-slate-950 text-slate-100 w-full max-w-sm rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(99,102,241,0.2)]`
+     - Line 3541: `bg-gradient-to-r from-indigo-950 to-slate-955 text-white border-b border-indigo-500/20`
+     - Line 3542: `w-9 h-9 bg-indigo-500/10 rounded-xl`
+     - Line 3571: `py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl shadow-lg`
+     - Line 3611: `bg-slate-900 text-white rounded-3xl border border-slate-800 shadow-[0_20px_50px_rgba(0,0,0,0.5)]`
+     - Line 3633: `space-y-3 bg-slate-950 p-4 rounded-2xl border border-indigo-500/20`
+   - **Cluster 3 (Lines 10880–12240: Dungeon Battle, Results & GPS Mini-Game)**:
+     - Line 10886: `rounded-3xl`
+     - Line 10912: `rounded-xl`
+     - Line 10978: `bg-slate-900 text-white w-full max-w-md rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)]`
+     - Line 10982: `bg-gradient-to-r from-amber-400 to-yellow-400`
+     - Line 11071: `bg-slate-900/90 backdrop-blur-xl border border-cyan-500/30 p-4 rounded-2xl shadow-[0_4px_24px_rgba(6,182,212,0.15)]`
+     - Line 11077: `w-2 h-2 rounded-full bg-green-500 animate-ping`
+     - Line 11089: `bg-gradient-to-r from-blue-400 to-cyan-400`
+     - Line 11170: `animate-bounce`
+     - Line 11176: `p-1 border border-slate-800 rounded-2xl group-hover:border-indigo-400 hover:shadow-lg transition-all transform active:scale-95 bg-slate-900 overflow-hidden w-12 h-12 flex items-center justify-center shadow-md`
+     - Line 11354, 11372, 11390, 11408: `rounded-2xl`
+     - Line 11433: `Bot size={20} className="text-red-400 animate-bounce"`
+     - Line 11458: `w-4 h-4 border-2 border-yellow-400 rounded-full animate-ping`
+     - Line 11664: `bg-gradient-to-r from-indigo-600 to-indigo-700 rounded-2xl shadow-lg shadow-xl`
+     - Line 11680: `rounded-3xl shadow-xl`
+     - Line 11720: `bg-gradient-to-r from-red-600 to-rose-600 rounded-2xl shadow-lg shadow-xl`
+     - Line 11770: `rounded-3xl overflow-hidden shadow-2xl`
+     - Line 11772: `bg-gradient-to-r from-blue-600 to-indigo-600`
+     - Line 11848: `bg-gradient-to-r from-amber-500 to-yellow-500 rounded-2xl shadow-lg`
+     - Line 11873: `bg-gradient-to-r from-amber-400 via-orange-500 to-red-500`
+     - Line 11875: `Trophy size={26} className="animate-bounce text-slate-950"`
+     - Line 12145: `bg-gradient-to-r from-yellow-450 to-amber-500 text-amber-955 rounded-2xl shadow-lg`
+     - Line 12166: `bg-slate-900 text-white w-full max-w-md max-h-[90dvh] rounded-3xl overflow-hidden shadow-2xl`
+     - Line 12170: `bg-gradient-to-r from-yellow-450 to-amber-500`
+     - Line 12198: `animate-bounce`
+   - **Cluster 4 (Lines 13250–15050: Modals, Overlays, Floating Controls & Versus Matchup)**:
+     - Line 13258: `max-w-sm bg-[#1a1414] border-2 border-amber-400 p-4 shadow-2xl`
+     - Line 13261: `w-16 h-16 rounded-full bg-gradient-to-tr from-amber-600 via-yellow-400 to-amber-200 shadow-lg animate-bounce`
+     - Line 13432: `rounded-2xl shadow-2xl border`
+     - Line 13665: `w-full rounded-sm border p-3 sm:p-4 text-white font-mono flex items-center justify-between gap-3 shadow-md`
+     - Line 14116: `rounded-3xl overflow-hidden shadow-2xl`
+     - Line 14118: `bg-gradient-to-r from-amber-500 to-yellow-600`
+     - Line 14136: `animate-bounce`
+     - Line 14139: `rounded-xl`
+     - Line 14268: `rounded-xl shadow-lg`
+     - Line 14325: `rounded-3xl shadow-2xl`
+     - Line 14331: `rounded-3xl`
+     - Line 14334: `rounded-full shadow-md`
+     - Line 14357, 14365, 14397, 14419: `rounded-2xl`
+     - Line 14467: `rounded-xl`
+     - Line 14488: `bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-600 rounded-2xl`
+     - Line 14502: `rounded-2xl`
+     - Line 14532: `rounded-3xl shadow-[0_0_50px_rgba(99,102,241,0.2)]`
+     - Line 14534: `bg-gradient-to-r from-indigo-955 to-slate-955`
+     - Line 14539: `p-2 rounded-full`
+     - Line 14544: `font-sans`
+     - Line 14553, 14571: `rounded-xl`
+     - Line 14593: `py-3.5 bg-indigo-650 hover:bg-indigo-550 text-white rounded-2xl font-bold uppercase tracking-wider transition-all active:scale-95 shadow-lg shadow-indigo-600/20`
+     - Line 14613: `bg-slate-900/90 backdrop-blur-xl border border-cyan-500/30 p-4 rounded-2xl shadow-[0_4px_24px_rgba(6,182,212,0.15)] text-white space-y-4 font-sans`
+     - Line 14619: `w-2 h-2 rounded-full bg-green-500 animate-ping`
+     - Line 14631: `bg-gradient-to-r from-blue-400 to-cyan-400`
+     - Line 14648: `rounded-xl`
+     - Line 14655: `rounded-full shadow-lg`
+     - Line 14676: `bg-amber-500 text-white px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full shadow-lg shadow-amber-500/20 animate-pulse`
+     - Line 14688: `bg-slate-900/90 backdrop-blur-md border border-slate-800 p-3 rounded-2xl text-slate-100 font-sans text-[10px] space-y-2 shadow-xl min-w-[140px] pointer-events-auto`
+     - Line 14712: `rounded-lg shadow-sm`
+     - Line 14774: `rounded-lg shadow-[0_4px_15px_rgba(0,0,0,0.4)]`
+     - Line 14790: `rounded-2xl shadow-lg shadow-md`
+     - Line 14852: `rounded-2xl animate-bounce-subtle shadow-lg`
+     - Line 14871: `shadow-md`
+     - Line 14921: `rounded-2xl`
+     - Line 14927, 14952: `bg-gradient-to-br from-indigo-950 via-slate-900 to-indigo-900`
+     - Line 14936, 14961: `rounded-2xl shadow-lg`
+     - Line 14978: `bg-gradient-to-r drop-shadow-[0_0_15px_rgba(255,255,255,0.6)]`
+     - Line 14996: `animate-ping`
+   - **Cluster 5 (Lines 15140–15360: Floating Battle Overlays & Skill Controls)**:
+     - Line 15134–15136: `border-8 rounded-full animate-roar-ripple`
+     - Line 15182: `px-2.5 py-1.5 rounded-sm border font-mono text-[11px] font-black shadow-lg transition-all cursor-pointer flex items-center gap-1 active:scale-95 shadow-[0_0_12px_rgba(244,63,94,0.6)] animate-pulse`
+     - Line 15211: `w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 shadow-2xl flex items-center justify-center transition-all duration-300 active:scale-95 cursor-pointer touch-target relative bg-gradient-to-tr from-amber-600 via-amber-500 to-yellow-400 border-amber-300 text-slate-950 shadow-[0_0_25px_rgba(245,158,11,0.85)] ring-2 ring-amber-300/80`
+     - Line 15223: `animate-spin drop-shadow-md`
+     - Line 15228: `rounded-full border shadow-md animate-pulse`
+     - Line 15238: `backdrop-blur-md rounded-md shadow-xl`
+     - Line 15316: `w-10 h-10 sm:w-11 sm:h-11 rounded-full border-2 border-gray-600 bg-gray-800 text-gray-400 flex items-center justify-center font-black text-xs shadow-lg`
+     - Line 15324: `w-10 h-10 sm:w-11 sm:h-11 rounded-full border-2 shadow-lg flex items-center justify-center transition-all active:scale-95 cursor-pointer bg-black/90`
+     - Line 15358: `bg-slate-950/90 border border-amber-500/30 backdrop-blur-md text-amber-400 p-4 rounded-2xl shadow-[0_0_30px_rgba(245,158,11,0.15)] flex items-center justify-between gap-4 font-sans`
+     - Line 15360: `w-8 h-8 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center font-bold animate-pulse text-base`
+2. **Touch Target Deficits in PlayGameView.tsx**:
+   - `BossCardItem` button (line 411): `py-3` with no `min-h-[44px]`.
+   - Story dialogue buttons (lines 11582, 11596): `px-2.5 py-1 text-[10px]` (~24px height).
+   - Demo auto-match buttons (lines 13624, 13638): `min-h-[38px] px-3 py-1.5` and `min-h-[38px] px-2.5 py-1.5` (sub-44px).
+   - Close button in feedback banner (line 13688): `p-1 text-white/70 rounded-xs` (~24px tap area).
+   - Card play list action badge (line 14002): `min-h-[32px] px-2.5 py-1`.
+   - Grid skills buttons in battle (line 15320): `w-10 h-10 sm:w-11 sm:h-11` (on mobile, 40px diameter fails 44px minimum).
+3. **Progressive Disclosure in PlayGameView.tsx**:
+   - In `gameState === 'modeSelect'` (lines 13570–14010):
+     - The view renders:
+       1. Top PageHeader + Help modal trigger.
+       2. Daily missions component.
+       3. CODEX HUD with collection percentage progress bar.
+       4. Hot Target (recommended unowned card) banner with 1-tap battle CTA.
+       5. Random 1:1 battle button.
+       6. 6-element filter bar + unowned only toggle.
+       7. Real-time search bar.
+       8. Grid of 110 Guardian missions.
+     - Layout hierarchy is clean and responsive, but legacy modals attached to this state need conversion to solid warm cream/ink dark flat surfaces.
+   - In `gameState === 'playing'` (lines 15115–15400):
+     - Floating robot auto-battle and grid skills panel at lines 15143–15345 obstructs active canvas on narrow viewports; requires conversion to a collapsible dock or bottom bar.
 
-### Faction: 수속성 / 해양 (Water)
-- **Faction Key**: `water` | **World Region**: `ip_region_aqua_abyss`
-- **Color Palette**: Primary `#0ea5e9`, Accent `#06b6d4`
-- **Emblem Icon**: `droplets` | **Faction Sprite Sheet**: `public/character_sheet_water.png` (`2560x296` px)
-- **Visual Keywords**: ocean, waves, bubbles, coral, deep blue, crystalline
+#### E. Target 5: Shared Chrome & Battle HUD Overlays
+1. **`src/components/PageHeader.tsx` (66 lines)**:
+   - Line 25: `sticky top-0 z-50 w-full min-w-0 px-3 pb-2.5 sm:px-4 sm:pb-3 pt-[calc(env(safe-area-inset-top,0px)+0.625rem)] flex items-center justify-between gap-3 shrink-0 bg-[var(--ui-canvas)] border-b border-[var(--ui-line)] font-mono text-[var(--ui-ink)]`
+   - Line 36: Back button `min-h-11 min-w-11 h-11 px-3 rounded-sm border flex items-center gap-1.5 text-xs font-mono font-bold uppercase transition-colors cursor-pointer select-none`
+   - **Assessment**: 100% compliant with `DESIGN.md`.
+2. **`src/components/battle/TacticalCommandHUD.tsx` (739 lines)**:
+   - Command grid buttons (ASSAULT, COUNTER, SYNERGY) on lines 580, 612, 644 all have `min-h-[44px] rounded-sm font-mono`.
+   - Sub-44px targets:
+     - Line 556: `claimDailyOverridePack` button `px-1.5 py-0.5 text-[10px]` (~22px height).
+     - Line 568: `onOpenMinigameLounge` link `text-[10px]`.
+3. **`src/components/battle/StarBreathingUltimateWidget.tsx` (237 lines)**:
+   - Non-compliant classes:
+     - Line 60: `shadow-xl`.
+     - Line 104: `shadow-lg backdrop-blur-xs`.
+     - Line 147: `shadow-sm`.
+     - Line 163: `shadow-xl`.
+     - Line 177: `shadow-2xl`.
+   - Touch targets:
+     - Line 143: `handleCast` button is `py-1.5 px-2 text-xs` (~32px height, fails `min-h-[44px]`).
+     - Line 183: Modal close button `[x]` is `p-1 rounded-sm`.
+     - Line 223: Confirm button is `w-full py-2 bg-stone-900 text-xs`.
+4. **`src/components/battle/ElementalTempestWidget.tsx` (178 lines)**:
+   - Line 60: `shadow-xl` (Non-compliant).
+   - Line 82: Collapse toggle is `min-h-[44px] min-w-[44px]` (Complies).
+   - Line 153: Spell cast button is `min-h-[44px] px-2.5 py-1` (Complies).
+5. **`src/components/MinimalistMissionHUD.tsx` (410 lines)**:
+   - Header is `h-11` (44px), but:
+     - Line 257: Exit button is `px-2 py-1 text-[10px]`.
+     - Lines 296, 304: Help & Pause buttons are `w-7 h-7` (28px height).
+     - Line 318: Settlement modal has `shadow-2xl`.
+     - Lines 384, 394: Continue and Exit CTAs are `py-2.5 px-3` (~36px height).
+6. **`src/components/ResponsiveCleanHUD.tsx` (151 lines)**:
+   - Line 55: Exit button is `px-2 py-1 text-[11px]`.
+   - Lines 117, 127: Pause and Mute buttons are `p-1`.
+   - Line 139: Help button is `px-1.5 py-1 text-[10px]`.
+   - Line 97: `animate-bounce` on combo multiplier.
+7. **`src/components/DemoPlayHUD.tsx` (105 lines)**:
+   - Line 56: `shadow-sm`.
+   - Line 64: `rounded-full bg-emerald-400 animate-pulse`.
+   - Line 95: Exit button is `min-h-[30px] min-w-[70px]` (fails `min-h-[44px]`).
 
-| ID | Korean Name | English Name | Tier / Role | Power | Stats [N,E,S,W] | Ability / Lore | Weapon / Motif / Palette | Sprite Coords (`cards1/2` vs `card100`) | Seat File |
-|:--:|:-----------|:-------------|:------------|:-----:|:---------------:|:---------------|:-------------------------|:---------------------------------------:|:----------|
-| 1 | 아쿠아리스 | Aquaris | BRONZE (scout) | 11 | `[1, 4, 1, 5]` | **SHIELD**: 단단함: 적의 플립 확률을 감소시킵니다. | #0ea5e9/#06b6d4 | soft | dynamic, action-ready | `cards1.png (R0C0) / 100 (R0C0)` | `Aquaris.png` |
-| 2 | 나이아드 | Naiad | BRONZE (scout) | 12 | `[7, 1, 3, 1]` | Personality: 충직하고 믿음직한 | #0ea5e9/#06b6d4 | dramatic | dynamic, action-ready | `cards1.png (R0C1) / 100 (R0C1)` | `Naiad.png` |
-| 3 | 운디네 | Undine | BRONZE (soldier) | 17 | `[6, 6, 3, 2]` | Personality: 대담하고 도전적인 | #0ea5e9/#06b6d4 | mystical | dynamic, action-ready | `cards1.png (R0C2) / 100 (R0C2)` | `Undine.png` |
-| 4 | 켈피 | Kelpie | BRONZE (soldier) | 18 | `[2, 3, 6, 7]` | Personality: 지혜롭고 신중한 | #0ea5e9/#06b6d4 | fiery | dynamic, action-ready | `cards1.png (R0C3) / 100 (R0C3)` | `Kelpie.png` |
-| 5 | 아쿠아로드 | Aqualord | BRONZE (warrior) | 22 | `[6, 5, 6, 5]` | Personality: 열정적이고 직관적인 | #0ea5e9/#06b6d4 | earthy | dynamic, action-ready | `cards1.png (R0C4) / 100 (R0C4)` | `Aqualord.png` |
-| 6 | 레비아탄 | Leviathan | SILVER (elite) | 22 | `[2, 8, 8, 4]` | Personality: 고독하고 신비로운 | #0ea5e9/#06b6d4 | neon | dynamic, action-ready | `cards1.png (R0C5) / 100 (R0C5)` | `Leviathan.png` |
-| 7 | 가르간티아 | Gargantia | SILVER (elite) | 24 | `[8, 4, 4, 8]` | Personality: 용맹하고 희생적인 | #0ea5e9/#06b6d4 | soft | dynamic, action-ready | `cards1.png (R0C6) / 100 (R0C6)` | `Gargantia.png` |
-| 8 | 캐스케이드 | Cascade | SILVER (commander) | 25 | `[4, 4, 8, 9]` | Personality: 교활하고 재치있는 | #0ea5e9/#06b6d4 | dramatic | dynamic, action-ready | `cards1.png (R0C7) / 100 (R0C7)` | `Cascade.png` |
-| 9 | 크라켄 | Kraken | GOLD (champion) | 26 | `[8, 4, 10, 4]` | **COUNTER**: 반사: 적이 이 카드를 뒤집지 못하면 대신 뒤집힙니다. | #0ea5e9/#06b6d4 | mystical | dynamic, action-ready | `cards1.png (R0C8) / 100 (R0C8)` | `Kraken.png` |
-| 10 | 포세이돈 | Poseidon | **GOLD (BOSS)** | 30 | `[10, 7, 2, 8]` | **WALL**: 심해의 벽: 일반 공격으로 뒤집히지 않습니다. | #0ea5e9/#06b6d4 | fiery | dynamic, action-ready | `cards1.png (R0C9) / 100 (R0C9)` | `Poseidon.png` |
+---
 
-### Faction: 화속성 / 화염 (Fire)
-- **Faction Key**: `fire` | **World Region**: `ip_region_ignis_cradle`
-- **Color Palette**: Primary `#ef4444`, Accent `#f97316`
-- **Emblem Icon**: `flame` | **Faction Sprite Sheet**: `public/character_sheet_fire.png` (`2560x296` px)
-- **Visual Keywords**: flames, lava, ember, inferno, scorched, volcanic
+## 2. Logic Chain
 
-| ID | Korean Name | English Name | Tier / Role | Power | Stats [N,E,S,W] | Ability / Lore | Weapon / Motif / Palette | Sprite Coords (`cards1/2` vs `card100`) | Seat File |
-|:--:|:-----------|:-------------|:------------|:-----:|:---------------:|:---------------|:-------------------------|:---------------------------------------:|:----------|
-| 11 | 이그니스 | Ignis | BRONZE (scout) | 10 | `[5, 1, 1, 3]` | Personality: 호기심 많고 장난기 넘치는 | #ef4444/#f97316 | soft | dynamic, action-ready | `cards1.png (R1C0) / 100 (R1C0)` | `Ignis.png` |
-| 12 | 샐러맨더 | Salamander | BRONZE (scout) | 13 | `[6, 2, 2, 3]` | Personality: 충직하고 믿음직한 | #ef4444/#f97316 | dramatic | dynamic, action-ready | `cards1.png (R1C1) / 100 (R1C1)` | `Salamander.png` |
-| 13 | 벨페고르 | Belphegor | BRONZE (soldier) | 16 | `[6, 3, 1, 6]` | Personality: 대담하고 도전적인 | #ef4444/#f97316 | mystical | dynamic, action-ready | `cards1.png (R1C2) / 100 (R1C2)` | `Belphegor.png` |
-| 14 | 파이로 | Pyro | BRONZE (soldier) | 20 | `[6, 5, 4, 5]` | Personality: 지혜롭고 신중한 | #ef4444/#f97316 | fiery | dynamic, action-ready | `cards1.png (R1C3) / 100 (R1C3)` | `Pyro.png` |
-| 15 | 발록 | Balrog | BRONZE (warrior) | 21 | `[3, 7, 5, 6]` | Personality: 열정적이고 직관적인 | #ef4444/#f97316 | earthy | dynamic, action-ready | `cards1.png (R1C4) / 100 (R1C4)` | `Balrog.png` |
-| 16 | 무스펠 | Muspel | SILVER (elite) | 22 | `[7, 8, 3, 1]` | Personality: 고독하고 신비로운 | #ef4444/#f97316 | neon | dynamic, action-ready | `cards1.png (R1C5) / 100 (R1C5)` | `Muspel.png` |
-| 17 | 이바르 | Ivar | SILVER (elite) | 24 | `[8, 8, 4, 4]` | Personality: 용맹하고 희생적인 | #ef4444/#f97316 | soft | dynamic, action-ready | `cards1.png (R1C6) / 100 (R1C6)` | `Ivar.png` |
-| 18 | 불사신 아셀 | Ashel the Immortal | SILVER (commander) | 25 | `[9, 6, 7, 3]` | Personality: 교활하고 재치있는 | #ef4444/#f97316 | dramatic | dynamic, action-ready | `cards1.png (R1C7) / 100 (R1C7)` | `Ashel_the_Immortal.png` |
-| 19 | 피닉스 | Phoenix | GOLD (champion) | 26 | `[5, 10, 8, 3]` | **OMNIBOOST**: 집결: 배치 시 보드에 있는 모든 아군 카드에 +1을 부여합니다. | #ef4444/#f97316 | mystical | dynamic, action-ready | `cards1.png (R1C8) / 100 (R1C8)` | `Phoenix.png` |
-| 20 | 이그니시우스 | Ignisius | **GOLD (BOSS)** | 29 | `[6, 7, 6, 10]` | **PIERCE**: 태양의 폭발: 적의 쉴드와 벽을 무시합니다. | #ef4444/#f97316 | fiery | dynamic, action-ready | `cards1.png (R1C9) / 100 (R1C9)` | `Ignisius.png` |
+1. **Premise 1 (DESIGN.md Canonical Rules)**:
+   - All text roles must use monospaced typography (`font-mono`).
+   - Border radius has strictly two tiers: `rounded-none` (0px) for containers/modals/panels/cards/racks, and `rounded-sm` (4px maximum) for interactive buttons/inputs/badges. `rounded-full` is restricted exclusively to circular avatars in testimonials.
+   - Decorative drop shadows (`shadow-md`, `shadow-lg`, `shadow-xl`, `shadow-2xl`) and decorative multi-stop gradients (`bg-gradient-to-*`) are prohibited. Surfaces must be flat solid Warm Cream (`#fdfcfc`, `#f8f7f7`, `#f1eeee`) or Ink Dark (`#201d1d`, `#302c2c`, `#0e0c0c`) bordered by 1px hairlines (`border-[rgba(15,0,0,0.12)]`, `border-[#201d1d]`, `border-stone-800`).
+   - Distracting animations (`animate-ping`, `animate-bounce`) are prohibited.
+   - Interactive touch targets must guarantee `min-h-[44px]` (or `h-11` / `44px+` equivalent) for one-hand mobile ergonomics.
+   - Progressive disclosure requires grouping high-density buttons into segmented tabs, accordions, or modal hubs to eliminate viewport intrusion over active gameplay boards (3x3 grid, hand, mini-game canvas).
 
-### Faction: 풍속성 / 폭풍 (Wind/Air)
-- **Faction Key**: `wind` | **World Region**: `ip_region_storm_peak`
-- **Color Palette**: Primary `#22d3ee`, Accent `#a78bfa`
-- **Emblem Icon**: `wind` | **Faction Sprite Sheet**: `public/character_sheet_wind.png` (`2560x296` px)
-- **Visual Keywords**: storm, lightning, gale, sky, cloud, tempest
+2. **Premise 2 (Status of Target Views)**:
+   - `HomeView.tsx` and `PageHeader.tsx` have already undergone substantial terminal-flat refactoring and demonstrate compliant design patterns, proving the viability of the OpenCode design system in the codebase.
+   - `MobileCardPlayScreen.tsx` has achieved terminal-flat compliance on its main 3x3 board and opponent accordion, but its critical in-battle skill bar (lines 1950–2023) and LifeCycle toggle (lines 1657–1674) suffer from sub-44px touch targets (~24–28px), and line 2117 retains a legacy `rounded-b-lg` class.
+   - `MyDeckView.tsx` enforces terminal-flat geometry and 44px+ touch targets on all top-level tools, sort buttons, and deck racks, requiring only minor button height upgrades inside secondary modal bodies.
+   - `PlayGameView.tsx` (18,648 lines) is the epicenter of legacy technical debt. While the lobby and 110-mission card list (`gameState === 'modeSelect'`) have been partially adapted to terminal-flat style, the file houses 68 gradients, 248 forbidden border radii, 134 heavy drop shadows, 134 animations, 40 `font-sans` declarations, and numerous sub-44px buttons across legacy dungeon, GPS, story boss, and floating HUD overlays.
+   - Several shared battle HUDs (`StarBreathingUltimateWidget`, `ElementalTempestWidget`, `MinimalistMissionHUD`, `ResponsiveCleanHUD`, `DemoPlayHUD`, `BattleBossHUD`) harbor residual `shadow-xl/2xl`, `rounded-full`, and sub-44px action buttons.
 
-| ID | Korean Name | English Name | Tier / Role | Power | Stats [N,E,S,W] | Ability / Lore | Weapon / Motif / Palette | Sprite Coords (`cards1/2` vs `card100`) | Seat File |
-|:--:|:-----------|:-------------|:------------|:-----:|:---------------:|:---------------|:-------------------------|:---------------------------------------:|:----------|
-| 21 | 제피로스 | Zephyros | BRONZE (scout) | 12 | `[1, 3, 3, 5]` | Personality: 호기심 많고 장난기 넘치는 | #22d3ee/#a78bfa | soft | dynamic, action-ready | `cards1.png (R2C0) / 100 (R2C0)` | `Zephyros.png` |
-| 22 | 실프 | Sylph | BRONZE (scout) | 15 | `[5, 3, 3, 4]` | Personality: 충직하고 믿음직한 | #22d3ee/#a78bfa | dramatic | dynamic, action-ready | `cards1.png (R2C1) / 100 (R2C1)` | `Sylph.png` |
-| 23 | 실피드 | Sylphid | BRONZE (soldier) | 18 | `[3, 5, 5, 5]` | Personality: 대담하고 도전적인 | #22d3ee/#a78bfa | mystical | dynamic, action-ready | `cards1.png (R2C2) / 100 (R2C2)` | `Sylphid.png` |
-| 24 | 하피 | Harpy | BRONZE (soldier) | 19 | `[4, 6, 2, 7]` | Personality: 지혜롭고 신중한 | #22d3ee/#a78bfa | fiery | dynamic, action-ready | `cards1.png (R2C3) / 100 (R2C3)` | `Harpy.png` |
-| 25 | 에올루스 | Aeolus | BRONZE (warrior) | 21 | `[7, 6, 5, 3]` | Personality: 열정적이고 직관적인 | #22d3ee/#a78bfa | earthy | dynamic, action-ready | `cards1.png (R2C4) / 100 (R2C4)` | `Aeolus.png` |
-| 26 | 템페스트 | Tempest | SILVER (elite) | 22 | `[4, 8, 7, 3]` | Personality: 고독하고 신비로운 | #22d3ee/#a78bfa | neon | dynamic, action-ready | `cards1.png (R2C5) / 100 (R2C5)` | `Tempest.png` |
-| 27 | 사이클론 | Cyclone | SILVER (elite) | 23 | `[8, 5, 2, 8]` | Personality: 용맹하고 희생적인 | #22d3ee/#a78bfa | soft | dynamic, action-ready | `cards1.png (R2C6) / 100 (R2C6)` | `Cyclone.png` |
-| 28 | 제우스피어 | Zeusphere | SILVER (commander) | 25 | `[3, 7, 9, 6]` | Personality: 교활하고 재치있는 | #22d3ee/#a78bfa | dramatic | dynamic, action-ready | `cards1.png (R2C7) / 100 (R2C7)` | `Zeusphere.png` |
-| 29 | 뇌신 | Raijin | GOLD (champion) | 25 | `[7, 10, 1, 7]` | Personality: 위엄 있고 카리스마 넘치는 | #22d3ee/#a78bfa | mystical | dynamic, action-ready | `cards1.png (R2C8) / 100 (R2C8)` | `Raijin.png` |
-| 30 | 바람신 토람 | Wind God Toram | **GOLD (BOSS)** | 27 | `[5, 10, 3, 9]` | *천둥과 번개를 부리는 바람의 수호신. 그가 번개 도끼를 던질 때마다 하늘...* | #22d3ee/#a78bfa | fiery | dynamic, action-ready | `cards1.png (R2C9) / 100 (R2C9)` | `Wind_God_Toram.png` |
+3. **Deduction & Action Plan**:
+   - To achieve full compliance with `ORIGINAL_REQUEST.md ## 2026-10-18T10:08:37Z`, the transformation must execute targeted replacements on:
+     1. `MobileCardPlayScreen.tsx`: Enforce `min-h-[44px] h-11 px-2` on the 4 battle skill action buttons (lines 1956, 1976, 1995, 2012) and the LifeCycle toggle (line 1666); change `rounded-b-lg` to `rounded-none` on line 2117.
+     2. `PlayGameView.tsx`: Systematically strip all `bg-gradient-to-*` and replace with solid `#201d1d` or `#fdfcfc` flat surfaces; convert all `rounded-3xl`, `rounded-2xl`, `rounded-xl`, `rounded-lg` containers to `rounded-none`; convert interactive buttons to `rounded-sm`; remove all `shadow-md/lg/xl/2xl`; eliminate `animate-ping` and `animate-bounce`; replace `font-sans` with `font-mono`; and expand all interactive buttons to `min-h-[44px]`.
+     3. Shared HUDs: Strip `shadow-*` from `StarBreathingUltimateWidget`, `ElementalTempestWidget`, `MinimalistMissionHUD`, and `DemoPlayHUD`; enforce `min-h-[44px]` on all interactive buttons (Exit, Help, Pause, Cast, Claim).
 
-### Faction: 지속성 / 대지 (Earth)
-- **Faction Key**: `earth` | **World Region**: `ip_region_terra_core`
-- **Color Palette**: Primary `#84cc16`, Accent `#a16207`
-- **Emblem Icon**: `mountain` | **Faction Sprite Sheet**: `public/character_sheet_earth.png` (`2560x296` px)
-- **Visual Keywords**: mountain, crystal, stone, forest, root, fossil
+---
 
-| ID | Korean Name | English Name | Tier / Role | Power | Stats [N,E,S,W] | Ability / Lore | Weapon / Motif / Palette | Sprite Coords (`cards1/2` vs `card100`) | Seat File |
-|:--:|:-----------|:-------------|:------------|:-----:|:---------------:|:---------------|:-------------------------|:---------------------------------------:|:----------|
-| 31 | 가이아 | Gaia | BRONZE (scout) | 10 | `[6, 1, 1, 2]` | Personality: 호기심 많고 장난기 넘치는 | #84cc16/#a16207 | soft | dynamic, action-ready | `cards1.png (R3C0) / 100 (R3C0)` | `Gaia.png` |
-| 32 | 그놈 | Gnome | BRONZE (scout) | 14 | `[6, 1, 4, 3]` | Personality: 충직하고 믿음직한 | #84cc16/#a16207 | dramatic | dynamic, action-ready | `cards1.png (R3C1) / 100 (R3C1)` | `Gnome.png` |
-| 33 | 테라 | Terra | BRONZE (soldier) | 16 | `[7, 5, 1, 3]` | Personality: 대담하고 도전적인 | #84cc16/#a16207 | mystical | dynamic, action-ready | `cards1.png (R3C2) / 100 (R3C2)` | `Terra.png` |
-| 34 | 고르곤 | Gorgon | BRONZE (soldier) | 18 | `[2, 7, 6, 3]` | Personality: 지혜롭고 신중한 | #84cc16/#a16207 | fiery | dynamic, action-ready | `cards1.png (R3C3) / 100 (R3C3)` | `Gorgon.png` |
-| 35 | 오벨리스크 | Obelisk | BRONZE (warrior) | 16 | `[3, 10, 2, 1]` | Personality: 열정적이고 직관적인 | #84cc16/#a16207 | earthy | dynamic, action-ready | `cards1.png (R3C4) / 100 (R3C4)` | `Obelisk.png` |
-| 36 | 그랜드로크 | Grandrock | SILVER (elite) | 22 | `[7, 2, 8, 5]` | Personality: 고독하고 신비로운 | #84cc16/#a16207 | neon | dynamic, action-ready | `cards1.png (R3C5) / 100 (R3C5)` | `Grandrock.png` |
-| 37 | 록타 | Rokta | SILVER (elite) | 25 | `[5, 6, 6, 8]` | Personality: 용맹하고 희생적인 | #84cc16/#a16207 | soft | dynamic, action-ready | `cards1.png (R3C6) / 100 (R3C6)` | `Rokta.png` |
-| 38 | 오리하르콘 | Orihalcon | SILVER (commander) | 23 | `[9, 3, 9, 2]` | Personality: 교활하고 재치있는 | #84cc16/#a16207 | dramatic | dynamic, action-ready | `cards1.png (R3C7) / 100 (R3C7)` | `Orihalcon.png` |
-| 39 | 아틀라스 | Atlas | GOLD (champion) | 26 | `[8, 10, 3, 5]` | Personality: 위엄 있고 카리스마 넘치는 | #84cc16/#a16207 | mystical | dynamic, action-ready | `cards1.png (R3C8) / 100 (R3C8)` | `Atlas.png` |
-| 40 | 콜로서스 | Colossus | **GOLD (BOSS)** | 28 | `[10, 8, 6, 4]` | **IMMUNITY**: 저지 불가: 콤보, 약화, 반격에 면역입니다. | #84cc16/#a16207 | fiery | dynamic, action-ready | `cards1.png (R3C9) / 100 (R3C9)` | `Colossus.png` |
+## 3. Caveats
 
-### Faction: 인간 / 철의 왕국 (Human)
-- **Faction Key**: `human` | **World Region**: `ip_region_iron_kingdom`
-- **Color Palette**: Primary `#eab308`, Accent `#78716c`
-- **Emblem Icon**: `shield` | **Faction Sprite Sheet**: `public/character_sheet_human.png` (`2560x296` px)
-- **Visual Keywords**: armor, banner, castle, iron, steel, crown
+1. **Read-Only Explorer Scope**: In accordance with the system instructions and task assignment, no production source files (`src/*`) have been modified during this survey. All findings and proposed remedies are documented here for implementation by subsequent agent roles.
+2. **File Scale of PlayGameView.tsx**: At 18,648 lines, `PlayGameView.tsx` contains embedded mini-games, story chapters, and legacy game modes. The programmatic analysis identified 68 gradients, 248 forbidden radii, and 134 shadows throughout this file. Full remediation should be executed modularly or via automated AST regex transforms to avoid regression of mini-game mechanics.
+3. **Poki 110 Mini-Game Canvases**: The 110 Poki mini-game canvas viewports themselves are rendered in HTML5 2D Canvas or dedicated components (`DefenseGame`, `SnakeBattleGame`, etc.). The survey examined the outer wrapper chrome, launcher cards, and overlay HUDs (`MinimalistMissionHUD`, `ResponsiveCleanHUD`), which govern the UI controls surrounding the canvas.
+4. **Third-Party Leaflet Styles**: In the GPS walking workout mode (line 14609), third-party Leaflet map tiles inject their own internal SVG/canvas pins. The surrounding HUD and floating stats dashboard have been surveyed and flagged for terminal-flat compliance.
 
-| ID | Korean Name | English Name | Tier / Role | Power | Stats [N,E,S,W] | Ability / Lore | Weapon / Motif / Palette | Sprite Coords (`cards1/2` vs `card100`) | Seat File |
-|:--:|:-----------|:-------------|:------------|:-----:|:---------------:|:---------------|:-------------------------|:---------------------------------------:|:----------|
-| 41 | 카단 | Kadan | BRONZE (scout) | 11 | `[2, 3, 1, 5]` | Personality: 호기심 많고 장난기 넘치는 | #eab308/#78716c | soft | dynamic, action-ready | `cards1.png (R4C0) / 100 (R4C0)` | `Kadan.png` |
-| 42 | 엘윈 | Elwin | BRONZE (scout) | 11 | `[2, 1, 2, 6]` | Personality: 충직하고 믿음직한 | #eab308/#78716c | dramatic | dynamic, action-ready | `cards1.png (R4C1) / 100 (R4C1)` | `Elwin.png` |
-| 43 | 발리안 | Balian | BRONZE (soldier) | 15 | `[3, 4, 5, 3]` | Personality: 대담하고 도전적인 | #eab308/#78716c | mystical | dynamic, action-ready | `cards1.png (R4C2) / 100 (R4C2)` | `Balian.png` |
-| 44 | 카제 | Kaze | BRONZE (soldier) | 16 | `[7, 1, 5, 3]` | Personality: 지혜롭고 신중한 | #eab308/#78716c | fiery | dynamic, action-ready | `cards1.png (R4C3) / 100 (R4C3)` | `Kaze.png` |
-| 45 | 가웨인 | Gawain | BRONZE (warrior) | 18 | `[1, 6, 4, 7]` | Personality: 열정적이고 직관적인 | #eab308/#78716c | earthy | dynamic, action-ready | `cards1.png (R4C4) / 100 (R4C4)` | `Gawain.png` |
-| 46 | 론돌 | Rondol | SILVER (elite) | 21 | `[6, 2, 6, 7]` | Personality: 고독하고 신비로운 | #eab308/#78716c | neon | dynamic, action-ready | `cards1.png (R4C5) / 100 (R4C5)` | `Rondol.png` |
-| 47 | 길가메시 | Gilgamesh | SILVER (elite) | 20 | `[1, 8, 8, 3]` | Personality: 용맹하고 희생적인 | #eab308/#78716c | soft | dynamic, action-ready | `cards1.png (R4C6) / 100 (R4C6)` | `Gilgamesh.png` |
-| 48 | 로비냐드 | Robinyard | SILVER (commander) | 26 | `[8, 8, 7, 3]` | Personality: 교활하고 재치있는 | #eab308/#78716c | dramatic | dynamic, action-ready | `cards1.png (R4C7) / 100 (R4C7)` | `Robinyard.png` |
-| 49 | 헤르쿨 | Hercul | GOLD (champion) | 25 | `[9, 4, 8, 4]` | Personality: 위엄 있고 카리스마 넘치는 | #eab308/#78716c | mystical | dynamic, action-ready | `cards1.png (R4C8) / 100 (R4C8)` | `Hercul.png` |
-| 50 | 알렉산다르 | Aleksandar | **GOLD (BOSS)** | 27 | `[9, 6, 10, 2]` | **TIME_WARP**: 시간 왜곡: 상대방은 다음 턴을 건너뜁니다. | #eab308/#78716c | fiery | dynamic, action-ready | `cards1.png (R4C9) / 100 (R4C9)` | `Aleksandar.png` |
+---
 
-### Faction: 언데드 / 망령 군단 (Undead)
-- **Faction Key**: `undead` | **World Region**: `ip_region_shadow_march`
-- **Color Palette**: Primary `#a855f7`, Accent `#111827`
-- **Emblem Icon**: `skull` | **Faction Sprite Sheet**: `public/character_sheet_undead.png` (`2560x296` px)
-- **Visual Keywords**: bone, shadow, decay, soul, grave, spectral
+## 4. Conclusion
 
-| ID | Korean Name | English Name | Tier / Role | Power | Stats [N,E,S,W] | Ability / Lore | Weapon / Motif / Palette | Sprite Coords (`cards1/2` vs `card100`) | Seat File |
-|:--:|:-----------|:-------------|:------------|:-----:|:---------------:|:---------------|:-------------------------|:---------------------------------------:|:----------|
-| 51 | 워커 | Walker | BRONZE (scout) | 11 | `[2, 1, 4, 4]` | Personality: 호기심 많고 장난기 넘치는 | #a855f7/#111827 | soft | dynamic, action-ready | `cards1.png (R5C0) / 100 (R5C0)` | `Walker.png` |
-| 52 | 구울 | Ghoul | BRONZE (scout) | 15 | `[5, 3, 2, 5]` | Personality: 충직하고 믿음직한 | #a855f7/#111827 | dramatic | dynamic, action-ready | `cards1.png (R5C1) / 100 (R5C1)` | `Ghoul.png` |
-| 53 | 캐리언 | Carrion | BRONZE (soldier) | 15 | `[5, 2, 5, 3]` | Personality: 대담하고 도전적인 | #a855f7/#111827 | mystical | dynamic, action-ready | `cards1.png (R5C2) / 100 (R5C2)` | `Carrion.png` |
-| 54 | 아라크네 | Arachne | BRONZE (soldier) | 17 | `[5, 6, 3, 3]` | Personality: 지혜롭고 신중한 | #a855f7/#111827 | fiery | dynamic, action-ready | `cards1.png (R5C3) / 100 (R5C3)` | `Arachne.png` |
-| 55 | 패치워크 | Patchwork | BRONZE (warrior) | 17 | `[7, 3, 1, 6]` | Personality: 열정적이고 직관적인 | #a855f7/#111827 | earthy | dynamic, action-ready | `cards1.png (R5C4) / 100 (R5C4)` | `Patchwork.png` |
-| 56 | 카르디스 | Cardis | SILVER (elite) | 21 | `[5, 5, 7, 4]` | Personality: 고독하고 신비로운 | #a855f7/#111827 | neon | dynamic, action-ready | `cards1.png (R5C5) / 100 (R5C5)` | `Cardis.png` |
-| 57 | 스톤가고일 | Stone Gargoyle | SILVER (elite) | 20 | `[8, 2, 8, 2]` | Personality: 용맹하고 희생적인 | #a855f7/#111827 | soft | dynamic, action-ready | `cards1.png (R5C6) / 100 (R5C6)` | `Stone_Gargoyle.png` |
-| 58 | 사이드라고사 | Sidragosa | SILVER (commander) | 24 | `[8, 3, 5, 8]` | Personality: 교활하고 재치있는 | #a855f7/#111827 | dramatic | dynamic, action-ready | `cards1.png (R5C7) / 100 (R5C7)` | `Sidragosa.png` |
-| 59 | 켈투스 | Keltus | GOLD (champion) | 24 | `[2, 9, 9, 4]` | Personality: 위엄 있고 카리스마 넘치는 | #a855f7/#111827 | mystical | dynamic, action-ready | `cards1.png (R5C8) / 100 (R5C8)` | `Keltus.png` |
-| 60 | 데스나이트 아르투스 | Death Knight Artus | **GOLD (BOSS)** | 27 | `[2, 6, 9, 10]` | Personality: 냉철하고 계산적인 | #a855f7/#111827 | fiery | dynamic, action-ready | `cards1.png (R5C9) / 100 (R5C9)` | `Death_Knight_Artus.png` |
+1. **Compliance Baseline**: `PageHeader.tsx` is 100% compliant with `DESIGN.md`. `HomeView.tsx` and `MyDeckView.tsx` are 95%+ compliant, requiring only minor modal touch target adjustments.
+2. **Key Battle Screen Ergonomic Blocker**: `MobileCardPlayScreen.tsx` has 4 primary battle skill action buttons (Power Boost, Shield, Burst, Auto Battle Toggle) that fail the 44px mobile touch target rule (`min-w-0 px-1 text-[11px]`, ~28px height). Expanding these to `min-h-[44px] h-11 px-2` is an urgent ergonomic necessity.
+3. **Main Legacy Visual Debt Center**: `PlayGameView.tsx` accounts for over 85% of all design system violations in the project (68 gradients, 248 forbidden radii, 134 heavy drop shadows, 40 `font-sans` declarations).
+4. **HUD Overlays**: Shared HUD components (`StarBreathingUltimateWidget`, `ElementalTempestWidget`, `MinimalistMissionHUD`, `ResponsiveCleanHUD`, `DemoPlayHUD`) require removing lingering drop shadows (`shadow-xl/2xl`) and sizing all toolbar buttons to `min-h-[44px]`.
 
-### Faction: 엘프 / 달빛 숲 (Elf)
-- **Faction Key**: `elf` | **World Region**: `ip_region_sylvan_glade`
-- **Color Palette**: Primary `#22c55e`, Accent `#d4d4d4`
-- **Emblem Icon**: `leaf` | **Faction Sprite Sheet**: `public/character_sheet_elf.png` (`2560x296` px)
-- **Visual Keywords**: forest, moonlight, arcane, nature, ancient, ethereal
+---
 
-| ID | Korean Name | English Name | Tier / Role | Power | Stats [N,E,S,W] | Ability / Lore | Weapon / Motif / Palette | Sprite Coords (`cards1/2` vs `card100`) | Seat File |
-|:--:|:-----------|:-------------|:------------|:-----:|:---------------:|:---------------|:-------------------------|:---------------------------------------:|:----------|
-| 61 | 루시안 | Lucian | BRONZE (scout) | 10 | `[2, 1, 6, 1]` | Personality: 호기심 많고 장난기 넘치는 | #22c55e/#d4d4d4 | soft | dynamic, action-ready | `cards1.png (R6C0) / 100 (R6C0)` | `Lucian.png` |
-| 62 | 실리아 | Celia | BRONZE (scout) | 15 | `[4, 4, 5, 2]` | Personality: 충직하고 믿음직한 | #22c55e/#d4d4d4 | dramatic | dynamic, action-ready | `cards1.png (R6C1) / 100 (R6C1)` | `Celia.png` |
-| 63 | 엘리아나 | Eliana | BRONZE (soldier) | 17 | `[6, 2, 6, 3]` | Personality: 대담하고 도전적인 | #22c55e/#d4d4d4 | mystical | dynamic, action-ready | `cards1.png (R6C2) / 100 (R6C2)` | `Eliana.png` |
-| 64 | 티타니아 | Titania | BRONZE (soldier) | 17 | `[7, 2, 3, 5]` | Personality: 지혜롭고 신중한 | #22c55e/#d4d4d4 | fiery | dynamic, action-ready | `cards1.png (R6C3) / 100 (R6C3)` | `Titania.png` |
-| 65 | 실바니아 | Sylvania | BRONZE (warrior) | 18 | `[6, 2, 7, 3]` | Personality: 열정적이고 직관적인 | #22c55e/#d4d4d4 | earthy | dynamic, action-ready | `cards1.png (R6C4) / 100 (R6C4)` | `Sylvania.png` |
-| 66 | 말퓨온 | Malfuon | SILVER (elite) | 21 | `[5, 3, 7, 6]` | Personality: 고독하고 신비로운 | #22c55e/#d4d4d4 | neon | dynamic, action-ready | `cards1.png (R6C5) / 100 (R6C5)` | `Malfuon.png` |
-| 67 | 베작스 | Vezax | SILVER (elite) | 21 | `[1, 8, 4, 8]` | Personality: 용맹하고 희생적인 | #22c55e/#d4d4d4 | soft | dynamic, action-ready | `cards1.png (R6C6) / 100 (R6C6)` | `Vezax.png` |
-| 68 | 캘토르 | Kaeltor | SILVER (commander) | 25 | `[6, 8, 4, 7]` | Personality: 교활하고 재치있는 | #22c55e/#d4d4d4 | dramatic | dynamic, action-ready | `cards1.png (R6C7) / 100 (R6C7)` | `Kaeltor.png` |
-| 69 | 간다르 | Gandar | GOLD (champion) | 25 | `[8, 9, 6, 2]` | Personality: 위엄 있고 카리스마 넘치는 | #22c55e/#d4d4d4 | mystical | dynamic, action-ready | `cards1.png (R6C8) / 100 (R6C8)` | `Gandar.png` |
-| 70 | 에일라 | Aila | **GOLD (BOSS)** | 29 | `[8, 5, 10, 6]` | Personality: 냉철하고 계산적인 | #22c55e/#d4d4d4 | fiery | dynamic, action-ready | `cards1.png (R6C9) / 100 (R6C9)` | `Aila.png` |
+## 5. Verification Method
 
-### Faction: 드워프 / 대장간 (Dwarf/Hobbit)
-- **Faction Key**: `dwarf` | **World Region**: `ip_region_deep_forge`
-- **Color Palette**: Primary `#d97706`, Accent `#451a03`
-- **Emblem Icon**: `hammer` | **Faction Sprite Sheet**: `public/character_sheet_hobbit.png` (`2560x296` px)
-- **Visual Keywords**: forge, gold, hammer, ale, cave, gemstone
+To independently verify the observations and validate future implementation changes:
 
-| ID | Korean Name | English Name | Tier / Role | Power | Stats [N,E,S,W] | Ability / Lore | Weapon / Motif / Palette | Sprite Coords (`cards1/2` vs `card100`) | Seat File |
-|:--:|:-----------|:-------------|:------------|:-----:|:---------------:|:---------------|:-------------------------|:---------------------------------------:|:----------|
-| 71 | 발보 | Balbo | BRONZE (scout) | 13 | `[4, 2, 4, 3]` | Personality: 호기심 많고 장난기 넘치는 | #d97706/#451a03 | soft | dynamic, action-ready | `cards1.png (R7C0) / 100 (R7C0)` | `Balbo.png` |
-| 72 | 프레도 | Fredo | BRONZE (scout) | 13 | `[3, 2, 1, 7]` | Personality: 충직하고 믿음직한 | #d97706/#451a03 | dramatic | dynamic, action-ready | `cards1.png (R7C1) / 100 (R7C1)` | `Fredo.png` |
-| 73 | 샘와이 | Samwy | BRONZE (soldier) | 17 | `[3, 6, 4, 4]` | Personality: 대담하고 도전적인 | #d97706/#451a03 | mystical | dynamic, action-ready | `cards1.png (R7C2) / 100 (R7C2)` | `Samwy.png` |
-| 74 | 그림리 | Grimli | BRONZE (soldier) | 20 | `[4, 5, 5, 6]` | Personality: 지혜롭고 신중한 | #d97706/#451a03 | fiery | dynamic, action-ready | `cards1.png (R7C3) / 100 (R7C3)` | `Grimli.png` |
-| 75 | 마그니스 | Magnis | BRONZE (warrior) | 19 | `[7, 5, 4, 3]` | Personality: 열정적이고 직관적인 | #d97706/#451a03 | earthy | dynamic, action-ready | `cards1.png (R7C4) / 100 (R7C4)` | `Magnis.png` |
-| 76 | 브란디 | Brandy | SILVER (elite) | 23 | `[4, 8, 7, 4]` | Personality: 고독하고 신비로운 | #d97706/#451a03 | neon | dynamic, action-ready | `cards1.png (R7C5) / 100 (R7C5)` | `Brandy.png` |
-| 77 | 무라디 | Muradi | SILVER (elite) | 23 | `[6, 5, 8, 4]` | Personality: 용맹하고 희생적인 | #d97706/#451a03 | soft | dynamic, action-ready | `cards1.png (R7C6) / 100 (R7C6)` | `Muradi.png` |
-| 78 | 토그림 | Thorgrim | SILVER (commander) | 23 | `[1, 8, 7, 7]` | Personality: 교활하고 재치있는 | #d97706/#451a03 | dramatic | dynamic, action-ready | `cards1.png (R7C7) / 100 (R7C7)` | `Thorgrim.png` |
-| 79 | 베리포지 | Berryforge | GOLD (champion) | 24 | `[5, 1, 9, 9]` | Personality: 위엄 있고 카리스마 넘치는 | #d97706/#451a03 | mystical | dynamic, action-ready | `cards1.png (R7C8) / 100 (R7C8)` | `Berryforge.png` |
-| 80 | 아이언포지 | Ironforge | **GOLD (BOSS)** | 26 | `[4, 10, 2, 10]` | Personality: 냉철하고 계산적인 | #d97706/#451a03 | fiery | dynamic, action-ready | `cards1.png (R7C9) / 100 (R7C9)` | `Ironforge.png` |
+1. **Automated Static Audit Command**:
+   Run the survey audit script created in this working directory:
+   ```bash
+   python3 /Users/dayyoung/project/snshero/.agents/teamwork/explorer_survey_1/survey_analyzer.py
+   ```
+   *Expected Output*: Prints exact counts of forbidden classes (`gradient`, `rounded_forbidden`, `heavy_shadow`, `annoying_animations`, `non_mono_font`, `sub_44_touch`) across all target files.
 
-### Faction: 야수 / 괴수 (Monster/Beast)
-- **Faction Key**: `monster` | **World Region**: `ip_region_wild_expanse`
-- **Color Palette**: Primary `#65a30d`, Accent `#991b1b`
-- **Emblem Icon**: `paw-print` | **Faction Sprite Sheet**: `public/character_sheet_beast.png` (`2560x296` px)
-- **Visual Keywords**: fang, claw, wild, beast, howl, savage
+2. **Regex Validation for Zero Prohibited Classes**:
+   ```bash
+   # Audit forbidden gradients in target files
+   rg --line-number 'bg-gradient-to-' src/views/HomeView.tsx src/views/MobileCardPlayScreen.tsx src/views/MyDeckView.tsx src/views/PlayGameView.tsx src/components/PageHeader.tsx src/components/battle/
+   
+   # Audit forbidden border radii in target files
+   rg --line-number '\brounded-(lg|xl|2xl|3xl)\b' src/views/HomeView.tsx src/views/MobileCardPlayScreen.tsx src/views/MyDeckView.tsx src/views/PlayGameView.tsx src/components/PageHeader.tsx src/components/battle/
+   
+   # Audit heavy drop shadows in target files
+   rg --line-number '\bshadow-(md|lg|xl|2xl)\b' src/views/HomeView.tsx src/views/MobileCardPlayScreen.tsx src/views/MyDeckView.tsx src/views/PlayGameView.tsx src/components/PageHeader.tsx src/components/battle/
+   
+   # Audit distracting animations in target files
+   rg --line-number '\banimate-(ping|bounce)\b' src/views/HomeView.tsx src/views/MobileCardPlayScreen.tsx src/views/MyDeckView.tsx src/views/PlayGameView.tsx src/components/PageHeader.tsx src/components/battle/
+   
+   # Audit non-mono fonts in target files
+   rg --line-number '\bfont-(sans|serif)\b' src/views/HomeView.tsx src/views/MobileCardPlayScreen.tsx src/views/MyDeckView.tsx src/views/PlayGameView.tsx src/components/PageHeader.tsx src/components/battle/
+   ```
 
-| ID | Korean Name | English Name | Tier / Role | Power | Stats [N,E,S,W] | Ability / Lore | Weapon / Motif / Palette | Sprite Coords (`cards1/2` vs `card100`) | Seat File |
-|:--:|:-----------|:-------------|:------------|:-----:|:---------------:|:---------------|:-------------------------|:---------------------------------------:|:----------|
-| 81 | 펜릴 | Fenrir | BRONZE (scout) | 11 | `[3, 5, 2, 1]` | Personality: 호기심 많고 장난기 넘치는 | #65a30d/#991b1b | soft | dynamic, action-ready | `cards1.png (R8C0) / 100 (R8C0)` | `Fenrir.png` |
-| 82 | 미노타우로스 | Minotaur | BRONZE (scout) | 14 | `[5, 2, 5, 2]` | Personality: 충직하고 믿음직한 | #65a30d/#991b1b | dramatic | dynamic, action-ready | `cards1.png (R8C1) / 100 (R8C1)` | `Minotaur.png` |
-| 83 | 요르문간드 | Jormungandr | BRONZE (soldier) | 17 | `[4, 4, 7, 2]` | Personality: 대담하고 도전적인 | #65a30d/#991b1b | mystical | dynamic, action-ready | `cards1.png (R8C2) / 100 (R8C2)` | `Jormungandr.png` |
-| 84 | 그리폰 | Griffon | BRONZE (soldier) | 19 | `[3, 7, 3, 6]` | Personality: 지혜롭고 신중한 | #65a30d/#991b1b | fiery | dynamic, action-ready | `cards1.png (R8C3) / 100 (R8C3)` | `Griffon.png` |
-| 85 | 바이라 | Byra | BRONZE (warrior) | 20 | `[7, 2, 7, 4]` | Personality: 열정적이고 직관적인 | #65a30d/#991b1b | earthy | dynamic, action-ready | `cards1.png (R8C4) / 100 (R8C4)` | `Byra.png` |
-| 86 | 레오나르 | Leonar | SILVER (elite) | 23 | `[4, 8, 5, 6]` | Personality: 고독하고 신비로운 | #65a30d/#991b1b | neon | dynamic, action-ready | `cards1.png (R8C5) / 100 (R8C5)` | `Leonar.png` |
-| 87 | 바르가스트 | Barghest | SILVER (elite) | 21 | `[7, 5, 8, 1]` | Personality: 용맹하고 희생적인 | #65a30d/#991b1b | soft | dynamic, action-ready | `cards1.png (R8C6) / 100 (R8C6)` | `Barghest.png` |
-| 88 | 우르삭 | Ursoc | SILVER (commander) | 25 | `[5, 7, 8, 5]` | Personality: 교활하고 재치있는 | #65a30d/#991b1b | dramatic | dynamic, action-ready | `cards1.png (R8C7) / 100 (R8C7)` | `Ursoc.png` |
-| 89 | 메두사 고르고 | Medusa Gorgo | GOLD (champion) | 25 | `[9, 6, 2, 8]` | Personality: 위엄 있고 카리스마 넘치는 | #65a30d/#991b1b | mystical | dynamic, action-ready | `cards1.png (R8C8) / 100 (R8C8)` | `Medusa_Gorgo.png` |
-| 90 | 페가수스 | Pegasus | **GOLD (BOSS)** | 26 | `[7, 2, 7, 10]` | Personality: 냉철하고 계산적인 | #65a30d/#991b1b | fiery | dynamic, action-ready | `cards1.png (R8C9) / 100 (R8C9)` | `Pegasus.png` |
+3. **TypeScript Type Safety Check**:
+   ```bash
+   npx tsc --noEmit
+   ```
 
-### Faction: 기계 / 메카 (Robot/Mecha)
-- **Faction Key**: `robot` | **World Region**: `ip_region_mecha_city`
-- **Color Palette**: Primary `#6b7280`, Accent `#06b6d4`
-- **Emblem Icon**: `cpu` | **Faction Sprite Sheet**: `public/character_sheet_mecha.png` (`2560x296` px)
-- **Visual Keywords**: gear, circuit, steel, laser, engine, chrome
+4. **Production Build Verification**:
+   ```bash
+   npm run build
+   ```
 
-| ID | Korean Name | English Name | Tier / Role | Power | Stats [N,E,S,W] | Ability / Lore | Weapon / Motif / Palette | Sprite Coords (`cards1/2` vs `card100`) | Seat File |
-|:--:|:-----------|:-------------|:------------|:-----:|:---------------:|:---------------|:-------------------------|:---------------------------------------:|:----------|
-| 91 | 스파이더봇 | Spiderbot | BRONZE (scout) | 11 | `[1, 5, 4, 1]` | Personality: 호기심 많고 장난기 넘치는 | #6b7280/#06b6d4 | soft | dynamic, action-ready | `cards1.png (R9C0) / 100 (R9C0)` | `Spiderbot.png` |
-| 92 | 크로노스 | Chronos | BRONZE (scout) | 14 | `[5, 1, 3, 5]` | Personality: 충직하고 믿음직한 | #6b7280/#06b6d4 | dramatic | dynamic, action-ready | `cards1.png (R9C1) / 100 (R9C1)` | `Chronos.png` |
-| 93 | 센티넬 | Sentinel | BRONZE (soldier) | 17 | `[5, 6, 2, 4]` | Personality: 대담하고 도전적인 | #6b7280/#06b6d4 | mystical | dynamic, action-ready | `cards1.png (R9C2) / 100 (R9C2)` | `Sentinel.png` |
-| 94 | 디바스터 | Devastator | BRONZE (soldier) | 19 | `[7, 4, 4, 4]` | Personality: 지혜롭고 신중한 | #6b7280/#06b6d4 | fiery | dynamic, action-ready | `cards1.png (R9C3) / 100 (R9C3)` | `Devastator.png` |
-| 95 | 골리앗 | Goliath | BRONZE (warrior) | 20 | `[7, 7, 4, 2]` | Personality: 열정적이고 직관적인 | #6b7280/#06b6d4 | earthy | dynamic, action-ready | `cards1.png (R9C4) / 100 (R9C4)` | `Goliath.png` |
-| 96 | 시즈엔진 | Siege Engine | SILVER (elite) | 21 | `[6, 6, 2, 7]` | Personality: 고독하고 신비로운 | #6b7280/#06b6d4 | neon | dynamic, action-ready | `cards1.png (R9C5) / 100 (R9C5)` | `Siege_Engine.png` |
-| 97 | 하이페리온 프라임 | Hyperion Prime | SILVER (elite) | 23 | `[6, 8, 4, 5]` | Personality: 용맹하고 희생적인 | #6b7280/#06b6d4 | soft | dynamic, action-ready | `cards1.png (R9C6) / 100 (R9C6)` | `Hyperion_Prime.png` |
-| 98 | 아이언클래드 | Ironclad | SILVER (commander) | 25 | `[8, 8, 5, 4]` | Personality: 교활하고 재치있는 | #6b7280/#06b6d4 | dramatic | dynamic, action-ready | `cards1.png (R9C7) / 100 (R9C7)` | `Ironclad.png` |
-| 99 | 마기테크 골렘 | Magitech Golem | GOLD (champion) | 26 | `[6, 7, 4, 9]` | Personality: 위엄 있고 카리스마 넘치는 | #6b7280/#06b6d4 | mystical | dynamic, action-ready | `cards1.png (R9C8) / 100 (R9C8)` | `Magitech_Golem.png` |
-| 100 | 오메가 웨폰 | Omega Weapon | **GOLD (BOSS)** | 25 | `[9, 10, 4, 2]` | Personality: 냉철하고 계산적인 | #6b7280/#06b6d4 | fiery | dynamic, action-ready | `cards1.png (R9C9) / 100 (R9C9)` | `Omega_Weapon.png` |
+---
 
-### Faction: 용족 / 고대 드래곤 (Dragon)
-- **Faction Key**: `dragon` | **World Region**: `ip_region_dragon_spire`
-- **Color Palette**: Primary `#dc2626`, Accent `#fbbf24`
-- **Emblem Icon**: `flame` | **Faction Sprite Sheet**: `public/character_sheet_dragon.png` (`2560x296` px)
-- **Visual Keywords**: scale, wing, fire-breath, ancient, treasure, sky
+## 6. Structured Feature Inventory & Specification Fix Plan
 
-| ID | Korean Name | English Name | Tier / Role | Power | Stats [N,E,S,W] | Ability / Lore | Weapon / Motif / Palette | Sprite Coords (`cards1/2` vs `card100`) | Seat File |
-|:--:|:-----------|:-------------|:------------|:-----:|:---------------:|:---------------|:-------------------------|:---------------------------------------:|:----------|
-| 101 | 드레이크 | Drake | SILVER (scout) | 24 | `[7, 7, 2, 8]` | Personality: 호기심 많고 장난기 넘치는 | #dc2626/#fbbf24 | soft | dynamic, action-ready | `cards2.png (R0C0) / 100 (R10C0)` | `Drake.png` |
-| 102 | 와이버니 | Wyverny | SILVER (scout) | 25 | `[9, 5, 2, 9]` | Personality: 충직하고 믿음직한 | #dc2626/#fbbf24 | dramatic | dynamic, action-ready | `cards2.png (R0C1) / 100 (R10C1)` | `Wyverny.png` |
-| 103 | 네더드래곤 | Netherdragon | GOLD (soldier) | 25 | `[10, 1, 7, 7]` | Personality: 대담하고 도전적인 | #dc2626/#fbbf24 | mystical | dynamic, action-ready | `cards2.png (R0C2) / 100 (R10C2)` | `Netherdragon.png` |
-| 104 | 바하무트 | Bahamut | GOLD (soldier) | 27 | `[7, 4, 6, 10]` | Personality: 지혜롭고 신중한 | #dc2626/#fbbf24 | fiery | dynamic, action-ready | `cards2.png (R0C3) / 100 (R10C3)` | `Bahamut.png` |
-| 105 | 스파이크드래곤 | Spikedragon | GOLD (warrior) | 26 | `[10, 8, 2, 6]` | Personality: 열정적이고 직관적인 | #dc2626/#fbbf24 | earthy | dynamic, action-ready | `cards2.png (R0C4) / 100 (R10C4)` | `Spikedragon.png` |
-| 106 | 어스드래곤 테라 | Earth Dragon Terra | GOLD (elite) | 24 | `[3, 1, 10, 10]` | Personality: 고독하고 신비로운 | #dc2626/#fbbf24 | neon | dynamic, action-ready | `cards2.png (R0C5) / 100 (R10C5)` | `Earth_Dragon_Terra.png` |
-| 107 | 이셀라 | Ysela | GOLD (elite) | 27 | `[4, 4, 9, 10]` | Personality: 용맹하고 희생적인 | #dc2626/#fbbf24 | soft | dynamic, action-ready | `cards2.png (R0C6) / 100 (R10C6)` | `Ysela.png` |
-| 108 | 알렉스트라 | Alexstra | GOLD (commander) | 26 | `[10, 10, 3, 3]` | Personality: 교활하고 재치있는 | #dc2626/#fbbf24 | dramatic | dynamic, action-ready | `cards2.png (R0C7) / 100 (R10C7)` | `Alexstra.png` |
-| 109 | 말리곤 | Malygon | GOLD (champion) | 29 | `[6, 9, 10, 4]` | Personality: 위엄 있고 카리스마 넘치는 | #dc2626/#fbbf24 | mystical | dynamic, action-ready | `cards2.png (R0C8) / 100 (R10C8)` | `Malygon.png` |
-| 110 | 드레드윙 | Dreadwing | **GOLD (BOSS)** | 29 | `[10, 4, 6, 9]` | Personality: 냉철하고 계산적인 | #dc2626/#fbbf24 | fiery | dynamic, action-ready | `cards2.png (R0C9) / 100 (R10C9)` | `Dreadwing.png` |
+| Feature / UI Surface | Target File & Line Range | Current Violations | Recommended Design-Compliant Fix | Dependencies / Interfaces |
+|---|---|---|---|---|
+| **In-Battle Skill Action Bar (Power, Shield, Burst, Auto)** | `src/views/MobileCardPlayScreen.tsx`<br>Lines 1948–2024 | • Buttons lack 44px+ height (`px-1 text-[11px]` ~28px)<br>• Fails touch target standard | Change class to `min-h-[44px] h-11 px-2.5 rounded-sm border font-mono text-xs flex items-center justify-center gap-1.5` on all 4 buttons | `skillCharges`, `handleUsePowerSkill`, `toggleAuto` |
+| **Tactical Command HUD Wrapper** | `src/views/MobileCardPlayScreen.tsx`<br>Line 2117 | • Uses `rounded-b-lg border-x border-b border-white/10`<br>• Violates 2-tier border radius | Change class to `max-w-[440px] shrink-0 rounded-none border-x border-b border-stone-800` | `TacticalCommandHUD.tsx` |
+| **Smart LifeCycle Bar Toggle Button** | `src/views/MobileCardPlayScreen.tsx`<br>Lines 1657–1674 | • Button is `px-2 rounded-sm text-[11px]` (~24px)<br>• Fails 44px+ touch target | Change button class to `min-h-[44px] min-w-[44px] px-2.5 rounded-sm text-xs font-bold border cursor-pointer` | `smartLifeCycleActive`, `t()` |
+| **Active Player Hand Card Selection Outline** | `src/views/MobileCardPlayScreen.tsx`<br>Line 2065 | • Uses `shadow-sm` on selected card | Remove `shadow-sm`, rely on `border-2 border-[#201d1d]` or `outline outline-2 outline-[#201d1d]` | `CardItem.tsx` |
+| **BossCardItem Component (Lobby/Boss Preview)** | `src/views/PlayGameView.tsx`<br>Lines 313–425 | • `rounded-3xl`, `rounded-xl`, `rounded-lg`, `rounded-full`<br>• `bg-gradient-to-r` on reward tag & button<br>• `shadow-xl`, `shadow-md`<br>• `animate-bounce` on ShieldAlert icon<br>• Sub-44px challenge button (`py-3`) | • Change outer container to `rounded-none border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc]`<br>• Replace gradient with solid `bg-[#201d1d] text-[#fdfcfc]`<br>• Remove `shadow-xl/md` and `animate-bounce`<br>• Change challenge button to `min-h-[44px] h-11 rounded-sm bg-[#201d1d] text-[#fdfcfc]` | `CARD_DATABASE`, `onChallenge` |
+| **Dungeon Battle Results & Clear Modals** | `src/views/PlayGameView.tsx`<br>Lines 10978–11005, 11770–11860 | • `rounded-3xl`, `rounded-2xl`<br>• `bg-gradient-to-r`<br>• `shadow-2xl`, `shadow-lg`<br>• Sub-44px buttons | • Change modal container to `rounded-none border border-[#201d1d] bg-[#fdfcfc] text-[#201d1d] p-5 font-mono`<br>• Remove gradients, use `#201d1d` header bar<br>• Buttons: `min-h-[44px] rounded-sm bg-[#201d1d] text-[#fdfcfc]` | `dungeonBattleWinner`, `playSfx` |
+| **GPS Workout Adventure Floating Dashboard** | `src/views/PlayGameView.tsx`<br>Lines 14612–14658 | • `rounded-2xl`, `rounded-xl`, `rounded-full`<br>• `backdrop-blur-xl`, `bg-gradient-to-r`<br>• `shadow-[0_4px_24px_...]`, `animate-ping`<br>• `font-sans` | • Change dashboard container to `bg-[#fdfcfc] text-[#201d1d] border border-[#201d1d] rounded-none p-4 font-mono`<br>• Progress bar: solid `bg-[#201d1d] rounded-none`<br>• Remove `animate-ping`, use square ASCII marker `[LIVE]` | `workoutDistance`, `workoutCalories`, Leaflet |
+| **Final Results Summary Modal** | `src/views/PlayGameView.tsx`<br>Lines 12166–12245 | • `rounded-3xl`, `rounded-2xl`<br>• `bg-gradient-to-r`<br>• `shadow-2xl`, `shadow-lg`<br>• `animate-bounce` | • Modal container: `rounded-none border-2 border-[#201d1d] bg-[#fdfcfc] text-[#201d1d]`<br>• Action buttons: `min-h-[44px] rounded-sm bg-[#201d1d] text-[#fdfcfc]` | `isPlayerWinner`, `score` |
+| **Game Rules / How to Play Modal** | `src/views/PlayGameView.tsx`<br>Lines 14532–14600 | • `rounded-3xl`, `rounded-2xl`, `rounded-xl`, `rounded-full`<br>• `bg-gradient-to-r`<br>• `shadow-[0_0_50px_...]`, `shadow-lg`<br>• `font-sans`<br>• Close button `p-2 rounded-full` | • Container: `rounded-none border border-[#201d1d] bg-[#fdfcfc] text-[#201d1d] font-mono`<br>• Close button: top-right `min-h-[44px] min-w-[44px] rounded-sm border border-[rgba(15,0,0,0.12)]` with `[x]` ASCII text<br>• Rule blocks: `rounded-none border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7]` | `setShowRules`, `t()` |
+| **Floating Robot Auto-Battle Controls in Battle** | `src/views/PlayGameView.tsx`<br>Lines 15143–15345 | • `w-12 h-12 rounded-full border-2 shadow-2xl bg-gradient-to-tr ring-2 ring-amber-300`<br>• `animate-spin drop-shadow-md`<br>• Floating grid skill buttons: `w-10 h-10 rounded-full shadow-lg` (sub-44px)<br>• Obstructs active canvas | • Refactor from floating circular neon stack into a clean docked terminal toolbar or collapsible drawer<br>• Buttons: `min-h-[44px] min-w-[44px] rounded-sm border border-[#201d1d] bg-[#fdfcfc] text-[#201d1d]`<br>• Speed toggle: `min-h-[44px] rounded-sm px-3 text-xs font-mono font-bold` | `isAutoBattle`, `autoSpeedMode`, `skillCooldowns` |
+| **Versus Card Flip Matchup Screen** | `src/views/PlayGameView.tsx`<br>Lines 14920–15020 | • `rounded-2xl`<br>• `bg-gradient-to-br`<br>• `shadow-lg`, `animate-ping`<br>• `drop-shadow-[0_0_15px_...]` | • Container: `rounded-none border-2 border-[#201d1d] bg-[#fdfcfc] text-[#201d1d] font-mono`<br>• Character card frames: `rounded-none border border-[#201d1d]`<br>• VS badge: `[VS]` ASCII box with solid `#201d1d` fill | `playerProfile`, `aiProfile` |
+| **110 Guardian Mission Selector Toolbar & Cards** | `src/views/PlayGameView.tsx`<br>Lines 13615–14010 | • Demo auto-match buttons: `min-h-[38px]`<br>• Feedback close button: `p-1`<br>• Card play list battle badge: `min-h-[32px]`<br>• `shadow-md` on feedback banner | • Upgrade all action buttons to `min-h-[44px]` (`h-11`)<br>• Remove `shadow-md`<br>• Ensure card items maintain `rounded-sm` outline with zero drop shadows | `filteredModes`, `CARD_DATABASE`, `startMissionCardBattle` |
+| **Star Breathing Ultimate Widget** | `src/components/battle/StarBreathingUltimateWidget.tsx`<br>Lines 60–230 | • `shadow-xl`, `shadow-2xl`, `shadow-lg`, `shadow-sm`<br>• Buttons: `py-1.5 px-2` (~32px)<br>• Modal close button: `p-1`<br>• Floating z-40 widget risk | • Strip all `shadow-*` classes<br>• Cast button: upgrade to `min-h-[44px] h-11 rounded-sm bg-cyan-950 text-cyan-200 border border-cyan-400`<br>• Modal: `rounded-none border border-stone-700 bg-[#090d16] text-stone-200`<br>• Close button: `min-h-[44px] min-w-[44px] rounded-sm` | `starBreathingStore`, `handleCast` |
+| **Elemental Tempest Widget** | `src/components/battle/ElementalTempestWidget.tsx`<br>Lines 60–178 | • `shadow-xl` on container | Remove `shadow-xl`, ensure solid surface with `border border-[#201d1d]/20 dark:border-white/20 rounded-none` | `elementalTempestStore` |
+| **Minimalist Mission HUD (Poki / Mini-Game Header)** | `src/components/MinimalistMissionHUD.tsx`<br>Lines 250–405 | • Exit button: `px-2 py-1` (~28px)<br>• Help & Pause: `w-7 h-7` (28px)<br>• Settlement modal: `shadow-2xl`<br>• Modal CTAs: `py-2.5 px-3` (~36px) | • Exit button: `min-h-11 px-3 rounded-sm bg-white/10 border border-white/20`<br>• Help & Pause: `min-h-11 min-w-11 w-11 h-11 rounded-sm`<br>• Settlement modal: `rounded-none border-2 border-[#201d1d] bg-[#fdfcfc] text-[#201d1d]` (no shadow)<br>• Modal CTAs: `min-h-[44px] h-11 rounded-sm` | `standardizedRewardGateway`, `onExit` |
+| **Responsive Clean HUD** | `src/components/ResponsiveCleanHUD.tsx`<br>Lines 50–145 | • Exit button: `px-2 py-1`<br>• Pause & Mute buttons: `p-1`<br>• Help button: `px-1.5 py-1`<br>• `animate-bounce` on combo multiplier | • Exit button: `min-h-11 px-3 rounded-sm`<br>• Pause, Mute, Help: `min-h-11 min-w-11 w-11 h-11 rounded-sm`<br>• Replace `animate-bounce` with static high-contrast badge `[Nx COMBO]` | `onExit`, `onTogglePause`, `onToggleMute` |
+| **Demo Play HUD** | `src/components/DemoPlayHUD.tsx`<br>Lines 55–102 | • `shadow-sm`<br>• `rounded-full` with `animate-pulse`<br>• Exit button: `min-h-[30px] min-w-[70px]` | • Remove `shadow-sm`<br>• Indicator: square `rounded-none` or `rounded-xs` badge `[DEMO]`<br>• Exit button: `min-h-[44px] min-w-[75px] rounded-sm` | `demoPlayService` |
+
+---
+
+*Report compiled by Explorer Survey 1. Ready for handoff to Orchestrator and Implementation Workers.*

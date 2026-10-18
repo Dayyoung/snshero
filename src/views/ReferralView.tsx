@@ -248,7 +248,7 @@ export const ReferralView: React.FC<ReferralViewProps> = ({
  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
  <button
  onClick={handleShare}
- className="w-full py-3 bg-[#201d1d] text-white font-bold rounded-sm hover: hover: transition-all active:scale-[0.98] cursor-pointer shadow-none shadow-none flex items-center justify-center gap-2 touch-target"
+ className="w-full py-3 bg-[#201d1d] text-white font-bold rounded-sm hover:opacity-90 transition-all active:scale-[0.98] cursor-pointer shadow-none shadow-none flex items-center justify-center gap-2 touch-target"
  >
  <Share2 size={18} />
  <span>{t('referral_share_btn', language)}</span>

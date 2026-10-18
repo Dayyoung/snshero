@@ -331,7 +331,7 @@ export function CreatorLandingView({
  <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
  <button
  onClick={handlePlayNow}
- className="px-8 py-4 bg-[#201d1d] hover: hover: text-white font-extrabold text-base rounded-sm shadow-none shadow-none hover:shadow-none active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2"
+ className="px-8 py-4 bg-[#201d1d] hover:opacity-90 text-white font-extrabold text-base rounded-sm shadow-none shadow-none hover:shadow-none active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2"
  >
  <Play size={20} />
  {t('creator_btn_play_now', language)}
@@ -413,7 +413,7 @@ export function CreatorLandingView({
  <div className="max-w-lg mx-auto text-center">
  <button
  onClick={handlePlayNow}
- className="w-full px-8 py-5 bg-[#201d1d] hover: hover: text-white font-extrabold text-lg rounded-sm shadow-none shadow-none hover:shadow-none active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2"
+ className="w-full px-8 py-5 bg-[#201d1d] hover:opacity-90 text-white font-extrabold text-lg rounded-sm shadow-none shadow-none hover:shadow-none active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2"
  >
  <Play size={22} />
  {t('creator_btn_play_now', language)}

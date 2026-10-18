@@ -201,7 +201,7 @@ export const DeckBuilderSwipeUI: React.FC<DeckBuilderSwipeUIProps> = ({
  <>
  {/* 3. Main 3D Perspective Swipeable Card Viewport */}
  <div
- className="relative w-full py-6 px-4 flex flex-col items-center justify-center bg-[#201d1d] from-[#fdfcfc] touch-pan-y"
+ className="relative w-full py-6 px-4 flex flex-col items-center justify-center bg-[#fdfcfc] touch-pan-y"
  onTouchStart={handleTouchStart}
  onTouchMove={handleTouchMove}
  onTouchEnd={handleTouchEnd}
@@ -241,7 +241,7 @@ export const DeckBuilderSwipeUI: React.FC<DeckBuilderSwipeUIProps> = ({
  </div>
 
  {/* Card Sprite / Image */}
- <div className="w-full h-40 bg-stone-200 border border-[#201d1d]/30 relative overflow-hidden flex items-center justify-center">
+ <div className="w-full h-40 bg-[#fdfcfc] border border-[#201d1d]/30 relative overflow-hidden flex items-center justify-center">
  <div
  className="w-24 h-24 bg-contain bg-no-repeat bg-center"
  style={getCardSpriteStyle(activeCard.imageIndex || 0)}

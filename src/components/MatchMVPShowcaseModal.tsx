@@ -42,9 +42,6 @@ export const MatchMVPShowcaseModal: React.FC<MatchMVPShowcaseModalProps> = ({
  return (
  <div className="fixed inset-0 z-[230] flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs font-mono select-none animate-in fade-in duration-200">
  <div className="relative max-w-sm w-full bg-[#fdfcfc] dark:bg-[#1a1717] border border-amber-500/80 p-6 shadow-none text-center rounded-none overflow-hidden">
- {/* Shimmer / Ray Background Effect */}
- <div className="absolute inset-0 bg-[#201d1d] pointer-events-none" />
-
  {/* Top MVP Header Badge */}
  <div className="inline-block px-3 py-1 bg-amber-500 text-black font-black text-xs uppercase tracking-widest mb-3 rounded-none shadow-sm">
  ★ MATCH MVP ★
@@ -60,13 +57,13 @@ export const MatchMVPShowcaseModal: React.FC<MatchMVPShowcaseModalProps> = ({
  </p>
 
  {/* Golden Bordered Card Portrait Showcase */}
- <div className="relative mx-auto w-40 h-56 border-2 border-amber-400 bg-black/5 dark:bg-white/5 p-2 flex flex-col items-center justify-between shadow-[0_0_16px_rgba(245,158,11,0.4)] mb-5">
- <div className="w-full flex justify-between text-[10px] font-bold text-amber-600 dark:text-amber-400">
+ <div className="relative mx-auto w-40 h-56 border-2 border-amber-400 bg-[#fdfcfc] p-2 flex flex-col items-center justify-between shadow-[0_0_16px_rgba(245,158,11,0.4)] mb-5">
+ <div className="w-full flex justify-between text-[10px] font-bold text-amber-600">
  <span>#{mvpCard.imageIndex || 1}</span>
  <span>[{mvpCard.rarity?.toUpperCase() || 'SSR'}]</span>
  </div>
 
- <div className="w-24 h-24 my-auto relative flex items-center justify-center">
+ <div className="w-24 h-24 my-auto relative flex items-center justify-center bg-[#fdfcfc]">
  {mvpCard.imageUrl ? (
  <img
  src={mvpCard.imageUrl}
@@ -79,10 +76,10 @@ export const MatchMVPShowcaseModal: React.FC<MatchMVPShowcaseModalProps> = ({
  </div>
 
  <div className="w-full border-t border-amber-500/30 pt-1 text-center">
- <div className="text-xs font-black truncate text-[#201d1d] dark:text-white">
+ <div className="text-xs font-black truncate text-[#201d1d]">
  {language === 'en' ? (mvpCard.title_en || mvpCard.title) : mvpCard.title}
  </div>
- <div className="text-[10px] text-amber-600 dark:text-amber-400 font-bold">
+ <div className="text-[10px] text-amber-600 font-bold">
  PWR {(mvpCard.power || 1000).toLocaleString()}
  </div>
  </div>

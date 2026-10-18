@@ -29,7 +29,7 @@ export const GoldbackPaybackModal: React.FC<GoldbackPaybackModalProps> = ({
  <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 font-mono select-none">
  <div className="bg-slate-950 border-2 border-amber-400 rounded-none w-full max-w-sm overflow-hidden shadow-none flex flex-col text-center">
  {/* Header */}
- <div className="p-4 bg-[#201d1d] text-slate-950 flex items-center justify-between">
+ <div className="p-4 bg-[#201d1d] text-[#fdfcfc] flex items-center justify-between">
  <div className="flex items-center gap-1.5 font-black text-xs">
  <Trophy size={16} />
  <span>💎 VIP 트레이더 페이백 센터</span>
@@ -63,7 +63,7 @@ export const GoldbackPaybackModal: React.FC<GoldbackPaybackModalProps> = ({
  onSpinRoulette();
  onClose();
  }}
- className="h-12 w-full bg-[#201d1d] text-slate-950 font-black text-xs rounded-sm flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer shadow-none"
+ className="h-12 w-full bg-[#201d1d] text-[#fdfcfc] font-black text-xs rounded-sm flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer shadow-none"
  >
  <Disc size={16} />
  <span>럭키 페이백 룰렛 돌리기</span>

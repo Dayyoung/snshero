@@ -494,7 +494,7 @@ export const ArReward: React.FC<ArRewardProps> = ({
  {isScanning && (
  <button
  onClick={() => setConfidence(60)}
- className="px-6 py-3.5 bg-[#201d1d] text-white font-black text-xs uppercase tracking-wider rounded-sm shadow-none hover: hover: active:scale-95 transition-all cursor-pointer"
+ className="px-6 py-3.5 bg-[#201d1d] text-white font-black text-xs uppercase tracking-wider rounded-sm shadow-none hover:opacity-90 active:scale-95 transition-all cursor-pointer"
  >
  {language === 'ko' ? '인식률 강제 부스트 (시뮬레이션)' : 'BOOST DETECTION RATE'}
  </button>

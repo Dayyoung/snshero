@@ -70,7 +70,7 @@ export const GuildDailyQuickHub: React.FC<GuildDailyQuickHubProps> = ({
  className={`w-full sm:w-auto min-h-[48px] px-4 py-2 font-black text-xs uppercase tracking-wider rounded-none flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-none active:scale-98 ${
  isAllInOneDone
  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500 cursor-default opacity-80'
- : 'bg-[#201d1d] hover: hover: text-black border border-amber-300'
+ : 'bg-[#201d1d] hover:opacity-90 text-[#fdfcfc] border border-amber-300'
  }`}
  >
  {isAllInOneDone ? (

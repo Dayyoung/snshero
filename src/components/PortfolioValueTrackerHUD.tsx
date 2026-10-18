@@ -46,7 +46,7 @@ export const PortfolioValueTrackerHUD: React.FC<PortfolioValueTrackerHUDProps> =
  <button
  type="button"
  onClick={onOpenBatchListing}
- className="min-h-[44px] px-3 py-1.5 bg-[#201d1d] text-slate-950 font-black text-[11px] rounded-sm flex items-center gap-1 cursor-pointer active:scale-95 shadow"
+ className="min-h-[44px] px-3 py-1.5 bg-[#201d1d] text-[#fdfcfc] font-black text-[11px] rounded-sm flex items-center gap-1 cursor-pointer active:scale-95 shadow"
  >
  <Layers size={13} />
  <span>스마트 일괄 출품</span>

@@ -69,7 +69,7 @@ export const AllOutRaidChainModal: React.FC<AllOutRaidChainModalProps> = ({
  className="bg-slate-950 border-2 border-amber-400 rounded-none w-full max-w-sm overflow-hidden shadow-none flex flex-col text-center"
  >
  {/* Header */}
- <div className="p-3.5 bg-[#201d1d] text-slate-950 flex items-center justify-between font-black text-xs">
+ <div className="p-3.5 bg-[#201d1d] text-[#fdfcfc] flex items-center justify-between font-black text-xs">
  <div className="flex items-center gap-1.5">
  <Flame size={16} />
  <span>
@@ -110,7 +110,7 @@ export const AllOutRaidChainModal: React.FC<AllOutRaidChainModalProps> = ({
  <button
  type="button"
  onClick={handleTap}
- className="min-h-[44px] h-13 w-full bg-[#201d1d] text-slate-950 font-black text-sm rounded-sm flex items-center justify-center gap-2 cursor-pointer active:scale-90 shadow-none"
+ className="min-h-[44px] h-13 w-full bg-[#201d1d] text-[#fdfcfc] font-black text-sm rounded-sm flex items-center justify-center gap-2 cursor-pointer active:scale-90 shadow-none"
  >
  <Zap size={20} />
  <span>합체 연타 공격! (ALL-OUT SMASH)</span>
@@ -137,7 +137,7 @@ export const AllOutRaidChainModal: React.FC<AllOutRaidChainModalProps> = ({
  <button
  type="button"
  onClick={handleClaim}
- className="h-12 w-full bg-[#201d1d] text-slate-950 font-black text-xs rounded-sm flex items-center justify-center gap-2 cursor-pointer active:scale-95 shadow-none"
+ className="h-12 w-full bg-[#201d1d] text-[#fdfcfc] font-black text-xs rounded-sm flex items-center justify-center gap-2 cursor-pointer active:scale-95 shadow-none"
  >
  <Gift size={16} />
  <span>전리품 상자 열기 (OPEN CHEST)</span>

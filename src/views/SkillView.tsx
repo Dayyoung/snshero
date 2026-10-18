@@ -272,7 +272,7 @@ export const SkillView: React.FC<SkillViewProps> = ({
  <div className="my-4 rounded-none border border-indigo-500/30 bg-slate-900 p-4 text-white shadow-none flex items-center justify-between gap-4">
  <div className="flex items-center gap-3.5 min-w-0">
  <div
- className="w-13 h-13 rounded-none border-2 border-indigo-400/60 bg-slate-950 shrink-0 relative overflow-hidden shadow-inner"
+ className="w-13 h-13 rounded-none border-2 border-indigo-400/60 bg-[#fdfcfc] shrink-0 relative overflow-hidden shadow-inner"
  style={getCardSpriteStyle(targetCardIdNum)}
  >
  {targetCard.rarity && (
@@ -368,7 +368,7 @@ export const SkillView: React.FC<SkillViewProps> = ({
  className={cn("min-h-[44px]", 
  "flex min-h-10 items-center gap-1.5 rounded-sm px-3.5 py-2 text-xs font-black uppercase tracking-wider active:scale-95 transition-all shadow-none cursor-pointer",
  affordableUpgrades.totalCount > 0
- ? "bg-[#201d1d] hover: hover: text-slate-950 border border-amber-300 shadow-none"
+ ? "bg-[#201d1d] hover:opacity-90 text-[#fdfcfc] border border-amber-300 shadow-none"
  : "bg-slate-800 text-slate-500 border border-slate-700 cursor-not-allowed shadow-none"
  )}
  title={

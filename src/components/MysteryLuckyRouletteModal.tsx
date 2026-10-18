@@ -78,7 +78,7 @@ export const MysteryLuckyRouletteModal: React.FC<MysteryLuckyRouletteModalProps>
  <div
  className={`p-3.5 flex items-center justify-between font-black text-xs ${
  isVictory
- ? 'bg-[#201d1d] text-slate-950'
+ ? 'bg-[#201d1d] text-[#fdfcfc]'
  : 'bg-[#201d1d] text-white'
  }`}
  >
@@ -132,7 +132,7 @@ export const MysteryLuckyRouletteModal: React.FC<MysteryLuckyRouletteModalProps>
  className={`h-12 w-full rounded-sm font-black text-xs flex items-center justify-center gap-2 cursor-pointer active:scale-95 shadow-none ${
  isSpinning || selectedMultiplier !== null
  ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
- : 'bg-[#201d1d] text-slate-950 hover:brightness-105'
+ : 'bg-[#201d1d] text-[#fdfcfc] hover:brightness-105'
  }`}
  >
  <Zap size={16} />
@@ -184,7 +184,7 @@ export const MysteryLuckyRouletteModal: React.FC<MysteryLuckyRouletteModalProps>
  <button
  type="button"
  onClick={handleBuyRevenge}
- className="min-h-[44px] px-3 py-1.5 bg-[#201d1d] text-slate-950 text-xs font-black rounded-sm active:scale-95 cursor-pointer shadow"
+ className="min-h-[44px] px-3 py-1.5 bg-[#201d1d] text-[#fdfcfc] text-xs font-black rounded-sm active:scale-95 cursor-pointer shadow"
  >
  구매하기
  </button>

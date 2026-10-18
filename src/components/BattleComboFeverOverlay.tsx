@@ -64,7 +64,7 @@ export const BattleComboFeverOverlay: React.FC<BattleComboFeverOverlayProps> = (
  triggerHaptic('heavy');
  onBuyOverchargeGem();
  }}
- className="min-h-[44px] ml-2 px-2.5 py-1 bg-[#201d1d] text-slate-950 text-[10px] font-black rounded-sm cursor-pointer active:scale-95 shadow"
+ className="min-h-[44px] ml-2 px-2.5 py-1 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-black rounded-sm cursor-pointer active:scale-95 shadow"
  >
  과충전 젬 (100 SNS)
  </button>

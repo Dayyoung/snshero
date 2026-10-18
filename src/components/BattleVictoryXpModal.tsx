@@ -82,7 +82,7 @@ export const BattleVictoryXpModal: React.FC<BattleVictoryXpModalProps> = ({
  initial={{ scale: 0 }}
  animate={{ scale: 1.1 }}
  transition={{ type: 'spring', stiffness: 300, damping: 15 }}
- className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#201d1d] text-slate-950 flex items-center justify-center mx-auto shadow-none shadow-none ring-4 ring-amber-200 shrink-0"
+ className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#201d1d] text-[#fdfcfc] flex items-center justify-center mx-auto shadow-none shadow-none ring-4 ring-amber-200 shrink-0"
  >
  <Trophy size={28} className="transition-transform duration-300" />
  </motion.div>
@@ -134,7 +134,7 @@ export const BattleVictoryXpModal: React.FC<BattleVictoryXpModalProps> = ({
  <div className="pt-2 shrink-0">
  <button
  onClick={onClose}
- className="w-full py-3 bg-[#201d1d] hover: hover: text-slate-950 font-black rounded-sm text-xs uppercase tracking-wider transition-all shadow-none active:scale-95 cursor-pointer flex items-center justify-center gap-1.5"
+ className="w-full py-3 bg-[#201d1d] hover:opacity-90 text-[#fdfcfc] font-black rounded-sm text-xs uppercase tracking-wider transition-all shadow-none active:scale-95 cursor-pointer flex items-center justify-center gap-1.5"
  >
  <CheckCircle size={16} />
  <span>{language === 'ko' ? '보상 수령 완료' : 'Claim & Close'}</span>

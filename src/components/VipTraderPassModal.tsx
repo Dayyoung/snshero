@@ -106,7 +106,7 @@ export const VipTraderPassModal: React.FC<VipTraderPassModalProps> = ({
  type="button"
  disabled={isProcessing}
  onClick={handleBuy}
- className="w-full mt-4 py-3 bg-[#201d1d] hover: hover: text-white rounded-sm text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-none active:scale-98 transition-all cursor-pointer"
+ className="w-full mt-4 py-3 bg-[#201d1d] hover:opacity-90 text-white rounded-sm text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-none active:scale-98 transition-all cursor-pointer"
  >
  <CreditCard size={15} />
  <span>{isKo ? '₩1,500 VIP 트레이더 시작하기' : 'Subscribe for ₩1,500'}</span>

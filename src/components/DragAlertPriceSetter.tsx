@@ -57,7 +57,7 @@ export const DragAlertPriceSetter: React.FC<DragAlertPriceSetterProps> = ({
  triggerHaptic('success');
  onSetAlertPrice(targetPrice);
  }}
- className="min-h-[44px] px-3 bg-[#201d1d] text-slate-950 font-black text-[11px] rounded-sm flex items-center gap-1 cursor-pointer active:scale-95 shadow"
+ className="min-h-[44px] px-3 bg-[#201d1d] text-[#fdfcfc] font-black text-[11px] rounded-sm flex items-center gap-1 cursor-pointer active:scale-95 shadow"
  >
  <Check size={14} />
  <span>핀 등록</span>

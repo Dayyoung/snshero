@@ -1,17 +1,27 @@
-# Explorer Survey 1 Dispatch
+# DISPATCH: explorer_survey_1
 
-## 2026-10-18T01:36:37Z
-Target: Map CARD_DATABASE (IDs 1-110), 11 Factions, Tiers, Visual Motifs, and Lore
-Sender: f84aca46-e09f-4967-b5d1-281f855a924e
-Working directory: /Users/dayyoung/project/snshero/.agents/teamwork/explorer_survey_1/
-Mission:
-Investigate and map the full specification of all 110 hero characters in SNSHero:
-1. Examine src/cardDatabase.ts (IDs 1–110) and src/content/characterIp.ts.
-2. Group all 110 cards by their 11 elemental/racial factions (Water: 1–10, Fire: 11–20, Wind: 21–30, Earth: 31–40, Human: 41–50, Undead: 51–60, Elf: 61–70, Dwarf/Hobbit: 71–80, Beast/Monster: 81–90, Mecha/Robot: 91–100, Dragon: 101–110).
-3. Document for each card and faction:
-   - Card ID, Korean Name, English Name
-   - Rarity/Tier (Bronze, Silver, Gold, Boss at multiples of 10)
-   - Visual motifs, elemental affinities, weapon/armor, key color palettes, and lore/character silhouette identity.
-4. Check src/components/CardItem.tsx and src/content/characterAssetManifest.ts for how card portraits and frames are decorated or rendered in the game UI.
-5. Write a comprehensive, structured handoff report to: /Users/dayyoung/project/snshero/.agents/teamwork/explorer_survey_1/handoff.md
-6. Notify your caller using send_message with a summary and the path to your handoff report.
+- **Role**: Survey Explorer 1 (Core Gameplay & Battle Screens)
+- **Working Directory**: `/Users/dayyoung/project/snshero/.agents/teamwork/explorer_survey_1/`
+- **Target Views**:
+  - `src/views/HomeView.tsx`
+  - `src/views/MobileCardPlayScreen.tsx`
+  - `src/views/MyDeckView.tsx`
+  - `src/views/PlayGameView.tsx`
+  - `src/components/PageHeader.tsx` & battle HUDs
+- **References**:
+  - `/Users/dayyoung/project/snshero/.agents/teamwork/ORIGINAL_REQUEST.md` (specifically ## 2026-10-18T10:08:37Z)
+  - `/Users/dayyoung/project/snshero/DESIGN.md`
+  - `/Users/dayyoung/project/snshero/AGENTS.md` & `/Users/dayyoung/project/snshero/GEMINI.md`
+
+## 2026-10-18T10:12:47Z
+Sender: 3a464f6d-bcf9-4b99-af07-b0e05ceb817a
+Content: You are Survey Explorer 1 (Core Gameplay & Battle Screens) for SNSHero Revolution.
+Investigate and survey:
+1. `src/views/HomeView.tsx`
+2. `src/views/MobileCardPlayScreen.tsx`
+3. `src/views/MyDeckView.tsx`
+4. `src/views/PlayGameView.tsx`
+5. `src/components/PageHeader.tsx` & any battle/game HUD overlays
+Perform exhaustive audit against DESIGN.md, touch targets, progressive disclosure, modals, LocalStorage, i18n, safeLazy.
+Produce handoff.md with Feature Inventory list and update progress.md and BRIEFING.md.
+

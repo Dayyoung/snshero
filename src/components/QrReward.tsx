@@ -317,31 +317,31 @@ export const QrReward: React.FC<QrRewardProps> = ({
  <>
  <button
  onClick={triggerRandomScan}
- className="min-h-[44px] px-4 py-2.5 bg-[#201d1d] text-slate-950 font-black text-[10px] uppercase tracking-wider rounded-sm shadow-none hover: hover: active:scale-95 transition-all cursor-pointer"
+ className="min-h-[44px] px-4 py-2.5 bg-[#201d1d] text-[#fdfcfc] font-black text-[10px] uppercase tracking-wider rounded-sm shadow-none hover:opacity-90 active:scale-95 transition-all cursor-pointer"
  >
  {language === 'ko' ? '기본 QR 시뮬레이션' : 'SIMULATE DEFAULT QR'}
  </button>
  <button
  onClick={() => handleDetectedQr('https://snshero.com/reward1000')}
- className="min-h-[44px] px-4 py-2.5 bg-[#201d1d] text-slate-950 font-black text-[10px] uppercase tracking-wider rounded-sm shadow-none hover: hover: active:scale-95 transition-all cursor-pointer"
+ className="min-h-[44px] px-4 py-2.5 bg-[#201d1d] text-[#fdfcfc] font-black text-[10px] uppercase tracking-wider rounded-sm shadow-none hover:opacity-90 active:scale-95 transition-all cursor-pointer"
  >
  {language === 'ko' ? '10000SNS 획득 시뮬레이션' : 'SIMULATE 10,000 SNS'}
  </button>
  <button
  onClick={() => handleDetectedQr('https://snshero.com/reward3000')}
- className="min-h-[44px] px-4 py-2.5 bg-[#201d1d] text-white font-black text-[10px] uppercase tracking-wider rounded-sm shadow-none hover: hover: active:scale-95 transition-all cursor-pointer"
+ className="min-h-[44px] px-4 py-2.5 bg-[#201d1d] text-white font-black text-[10px] uppercase tracking-wider rounded-sm shadow-none hover:opacity-90 active:scale-95 transition-all cursor-pointer"
  >
  {language === 'ko' ? '30000SNS 획득 시뮬레이션' : 'SIMULATE 30,000 SNS'}
  </button>
  <button
  onClick={() => handleDetectedQr('https://snshero.com/reward4000')}
- className="min-h-[44px] px-4 py-2.5 bg-[#201d1d] text-white font-black text-[10px] uppercase tracking-wider rounded-sm shadow-none hover: hover: active:scale-95 transition-all cursor-pointer"
+ className="min-h-[44px] px-4 py-2.5 bg-[#201d1d] text-white font-black text-[10px] uppercase tracking-wider rounded-sm shadow-none hover:opacity-90 active:scale-95 transition-all cursor-pointer"
  >
  {language === 'ko' ? '40000SNS 획득 시뮬레이션' : 'SIMULATE 40,000 SNS'}
  </button>
  <button
  onClick={() => handleDetectedQr('https://snshero.com/reward5000')}
- className="min-h-[44px] px-4 py-2.5 bg-[#201d1d] text-white font-black text-[10px] uppercase tracking-wider rounded-sm shadow-none hover: hover: active:scale-95 transition-all cursor-pointer"
+ className="min-h-[44px] px-4 py-2.5 bg-[#201d1d] text-white font-black text-[10px] uppercase tracking-wider rounded-sm shadow-none hover:opacity-90 active:scale-95 transition-all cursor-pointer"
  >
  {language === 'ko' ? '50000SNS 획득 시뮬레이션' : 'SIMULATE 50,000 SNS'}
  </button>

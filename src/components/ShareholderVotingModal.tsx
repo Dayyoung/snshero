@@ -234,7 +234,7 @@ export const ShareholderVotingModal: React.FC<ShareholderVotingModalProps> = ({
 
  {activeTab === 'booster' && (
  <div className="space-y-4">
- <div className="p-4 bg-[#201d1d] border border-amber-400 text-stone-950 space-y-3 shadow-xs">
+ <div className="p-4 bg-[#201d1d] border border-amber-400 text-[#fdfcfc] space-y-3 shadow-xs">
  <div className="flex items-center gap-2">
  <span className="text-2xl">⚡</span>
  <div>

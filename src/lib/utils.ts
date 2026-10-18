@@ -233,6 +233,7 @@ export function getCardSpriteCoords(cardId: number, customSource?: string | null
 export function getCardSpriteStyle(cardId: number, customSource?: string | null): CSSProperties {
   const coords = getCardSpriteCoords(cardId, customSource);
   return {
+    backgroundColor: '#fdfcfc',
     backgroundImage: `url('${coords.assetUrl}')`,
     backgroundSize: `${coords.cols * 100}% ${coords.rows * 100}%`,
     backgroundPosition: `${coords.xPercent}% ${coords.yPercent}%`,

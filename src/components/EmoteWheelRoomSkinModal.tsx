@@ -52,7 +52,7 @@ export const EmoteWheelRoomSkinModal: React.FC<EmoteWheelRoomSkinModalProps> = (
  className="bg-slate-950 border-2 border-amber-400 rounded-none w-full max-w-sm overflow-hidden shadow-none flex flex-col text-center"
  >
  {/* Header */}
- <div className="p-3.5 bg-[#201d1d] text-slate-950 flex items-center justify-between font-black text-xs">
+ <div className="p-3.5 bg-[#201d1d] text-[#fdfcfc] flex items-center justify-between font-black text-xs">
  <div className="flex items-center gap-1.5">
  <Smile size={16} />
  <span>[ 이모티콘 휠 & 입장 스킨 커스텀 ]</span>

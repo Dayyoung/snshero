@@ -1,188 +1,201 @@
-# Handoff Report: Automated 4-Tier Stress Challenger
-
-- **Agent**: `challenger_1` (teamwork_preview_challenger)
-- **Role**: critic, specialist
-- **Date**: 2026-10-17T22:18:00Z
-- **Authoritative Request**: `/Users/dayyoung/project/snshero/.agents/teamwork/ORIGINAL_REQUEST.md`
-- **Project Contract**: `/Users/dayyoung/project/snshero/PROJECT.md`
-- **Parent Conversation ID**: `b25c9f85-c96b-42a7-bce3-42d8c13e23ed`
-- **Verdict**: **REQUEST_CHANGES**
-
----
+# Challenger 1 Handoff Report — Adversarial Class Tokens & Touch Target Stress Testing
 
 ## 1. Observation
 
-### Obs 1. Execution of Automated 4-Tier Harness (`scripts/verify_ip_trilogy.ts`)
-- **Command**: `npx tsx scripts/verify_ip_trilogy.ts`
-- **Result**:
-  - Total Tests Run: 32 | Passed: 32 | Warnings: 0 | Failed: 0 (100.0% Pass Rate).
-  - Production build (`npm run build`) succeeded cleanly.
-  - TypeScript check (`npx tsc --noEmit`) reported 0 errors.
-  - Asset integrity: 40/40 novel markdown files, 40/40 webtoon manifest episodes (840 panels), 40/40 movie entries unlocked.
-- **Deficiency in Existing Harness**:
-  In `scripts/verify_ip_trilogy.ts` line 902:
-  ```ts
-  const hasSmallNovelButtons = novelContent.includes('w-7 h-7');
-  ```
-  The test harness only checked for legacy `w-7 h-7` classes in `NovelView.tsx`, failing to inspect other substandard touch target classes (`min-h-[36px]`, `min-h-[32px]`).
+### 1.1 Master Test Runner Execution (`run_all_e2e_tests.py`)
+- Command: `python3 tests/e2e_design_system/run_all_e2e_tests.py`
+- Result: **Exit Code 1**
+- Metrics:
+  - **Total Assertions**: 188
+  - **Passed Assertions**: 176 (93.6%)
+  - **Failed Assertions**: 12 (6.4%)
+  - **Tier 1 (Feature Coverage & Visual Tokens)**: 118 / 118 Passed (100.0%)
+  - **Tier 2 (Boundary & Ergonomic Limits)**: 43 / 54 Passed, **11 Failed** (79.6%)
+  - **Tier 3 (Cross-Feature & Pairwise)**: 9 / 10 Passed, **1 Failed** (90.0%)
+  - **Tier 4 (Real-World Workload Journeys)**: 6 / 6 Passed (100.0%)
 
-### Obs 2. Discovery of 17 Interactive Controls Below 44px (`DESIGN.md` & R4 Violation)
-Direct static analysis and execution of `scripts/challenger_empirical_stress.ts` revealed **17 interactive controls** with explicit height below the mandatory 44px mobile touch target:
-1. `src/views/NovelView.tsx:908`:
-   ```tsx
-   className="min-h-[32px] px-2.5 py-1 bg-[#fdfcfc] hover:bg-[#f1eeee] text-[#201d1d] font-bold rounded-sm cursor-pointer transition-colors text-[11px]"
-   ```
-2. `src/views/NovelView.tsx:915`:
-   ```tsx
-   className="min-h-[32px] min-w-[32px] flex items-center justify-center text-[#fdfcfc]/70 hover:text-[#fdfcfc] cursor-pointer ml-1"
-   ```
-3. `src/views/NovelView.tsx:1121`:
-   ```tsx
-   className="min-h-[36px] text-xs font-bold uppercase tracking-widest text-[#201d1d] px-2.5 py-1 border border-[#201d1d] bg-[#f8f7f7] hover:bg-[#f1eeee] rounded-sm flex items-center gap-1 cursor-pointer transition-colors group"
-   ```
-4. `src/views/NovelView.tsx:1154`:
-   ```tsx
-   className="min-h-[36px] flex items-center gap-1.5 px-2.5 py-1 border border-[rgba(15,0,0,0.12)] rounded-sm bg-[#fdfcfc] hover:bg-[#f8f7f7] transition-colors cursor-pointer text-xs font-bold text-[#201d1d]"
-   ```
-5. `src/views/NovelView.tsx:1187`:
-   ```tsx
-   className="min-h-[36px] px-3 py-1 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm hover:bg-[#201d1d]/90 transition-colors cursor-pointer flex items-center gap-1"
-   ```
-6. `src/views/NovelView.tsx:1196`:
-   ```tsx
-   className="min-h-[36px] px-3 py-1 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm hover:bg-[#201d1d]/90 transition-colors cursor-pointer flex items-center gap-1"
-   ```
-7. `src/views/NovelView.tsx:1205`:
-   ```tsx
-   className="min-h-[36px] px-3 py-1 bg-emerald-700 text-[#fdfcfc] text-xs font-bold rounded-sm hover:bg-emerald-800 transition-colors cursor-pointer flex items-center gap-1"
-   ```
-8. `src/views/NovelView.tsx:1214`:
-   ```tsx
-   className="min-h-[36px] px-2.5 py-1 bg-[#f1eeee] text-[#201d1d] border border-[rgba(15,0,0,0.12)] text-xs font-bold rounded-sm hover:bg-[#fdfcfc] transition-colors cursor-pointer flex items-center gap-1"
-   ```
-9. `src/views/NovelView.tsx:1245`:
-   ```tsx
-   className="min-h-[36px] px-3 py-1 text-[11px] font-bold border border-[#201d1d] rounded-sm bg-[#f8f7f7] hover:bg-[#f1eeee] text-[#201d1d] cursor-pointer flex items-center gap-1.5 transition-colors"
-   ```
-10. `src/views/NovelView.tsx:1298`:
-    ```tsx
-    className="min-h-[36px] px-3 py-1 text-[11px] font-bold border border-[#201d1d] rounded-sm bg-[#f8f7f7] hover:bg-[#f1eeee] text-[#201d1d] cursor-pointer flex items-center gap-1.5 transition-colors"
-    ```
-11. `src/views/NovelView.tsx:1357`:
-    ```tsx
-    className="min-h-[36px] px-3 py-1 text-[11px] font-bold border border-[#201d1d] rounded-sm bg-[#f8f7f7] hover:bg-[#f1eeee] text-[#201d1d] cursor-pointer flex items-center gap-1.5 transition-colors"
-    ```
-12. `src/views/NovelView.tsx:1391`:
-    ```tsx
-    className="min-h-[32px] px-2.5 py-1 text-[10px] font-bold border border-[rgba(15,0,0,0.12)] text-[#201d1d] bg-[#fdfcfc] hover:bg-[#f1eeee] rounded-sm cursor-pointer flex items-center gap-1"
-    ```
-13. `src/views/NovelView.tsx:1402`:
-    ```tsx
-    className="min-h-[32px] px-2.5 py-1 text-[10px] font-bold border border-[#201d1d] text-[#fdfcfc] bg-[#201d1d] hover:bg-[#201d1d]/90 rounded-sm cursor-pointer flex items-center gap-1"
-    ```
-14. `src/views/NovelView.tsx:1413`:
-    ```tsx
-    className="min-h-[32px] px-2.5 py-1 text-[10px] font-bold border border-[rgba(15,0,0,0.12)] text-[#201d1d] bg-[#fdfcfc] hover:bg-[#f1eeee] rounded-sm cursor-pointer flex items-center gap-1"
-    ```
-15. `src/views/NovelView.tsx:1493`:
-    ```tsx
-    className="min-h-[36px] px-3 py-1 text-[11px] font-bold border border-[#201d1d] rounded-sm bg-[#f8f7f7] hover:bg-[#f1eeee] text-[#201d1d] cursor-pointer flex items-center gap-1.5 transition-colors"
-    ```
-16. `src/components/movie/CinematicMoviePlayer.tsx:643`:
-    ```tsx
-    className="group relative flex-1 min-h-[28px] flex items-center py-2"
-    ```
-17. `src/components/webtoon/WebtoonPanelCard.tsx:80`:
-    ```tsx
-    className="min-h-[32px] px-2.5 py-1 border border-[rgba(15,0,0,0.12)] rounded-sm bg-[#fdfcfc] hover:bg-[#f1eeee] text-[#201d1d] text-[11px] font-bold cursor-pointer flex items-center gap-1 transition-colors"
-    ```
+#### Verbatim Failure List (12 Assertions):
+1. `FAIL [T2.TOUCH.V01] [M1] HomeView 44px+ Touch Target Compliance (Total 19 buttons)`:
+   - `1 of 19 buttons lack min-h-[44px] sizing`
+   - `Line 623: <button className='p-2.5 hover:bg-[#f8f7f7] text-[#646262] hover:text-[#201d1d] transitio...'>`
+2. `FAIL [T2.TOUCH.V02] [M1] MobileCardPlayScreen 44px+ Touch Target Compliance (Total 23 buttons)`:
+   - `10 of 23 buttons lack min-h-[44px] sizing`
+   - `Line 2227: <button className='w-full py-2 px-3 text-[11px] font-bold rounded-sm cursor-pointer flex ...'>`
+   - `Line 2334: <button className='w-full py-2.5 bg-[#201d1d] text-[#fdfcfc] font-bold text-xs rounded-sm...'>`
+   - `Line 2342: <button className='w-full py-2 border border-[#0f0000]/12 font-bold text-xs rounded-sm cu...'>`
+   - `Line 2352: <button className='w-full py-2.5 bg-[#201d1d] text-[#fdfcfc] font-bold text-xs rounded-sm...'>`
+   - `Line 2361: <button className='w-full py-2 hover:bg-[#f1eeee] font-bold text-xs rounded-sm border bor...'>`
+   - `Line 2370: <button className='w-full py-2.5 bg-[#201d1d] text-[#fdfcfc] font-bold text-xs rounded-sm...'>`
+   - `Line 2388: <button className='w-full py-2 font-bold text-xs rounded-sm cursor-pointer flex ...'>`
+   - `Line 2405: <button className='w-full py-2 hover:bg-[#f1eeee] font-bold text-xs rounded-sm border bor...'>`
+   - `Line 2579: <button className='mt-4 w-full py-2 bg-[#201d1d] text-[#fdfcfc] rounded-sm font-bold text-x...'>`
+   - `Line 2689: <button className='w-full py-2.5 bg-[#201d1d] text-[#fdfcfc] font-bold text-xs rounded-sm...'>`
+3. `FAIL [T2.TOUCH.V03] [M1] MyDeckView 44px+ Touch Target Compliance (Total 47 buttons)`:
+   - `7 of 47 buttons lack min-h-[44px] sizing`
+   - `Line 2860: <button className=' "flex-1 py-2 text-center text-xs font-bold upp...'>`
+   - `Line 2871: <button className=' "flex-1 py-2 text-center text-xs font-bold upp...'>`
+   - `Line 2882: <button className=' "flex-1 py-2 text-center text-xs font-bold upp...'>`
+   - `Line 3256: <button className=' "min-h-[38px] px-3 py-1.5 text-[10px] font-bold...'>`
+   - `Line 3483: <button className='min-h-[36px] px-2.5 py-1 rounded-sm border border-[#0f0000]/12 bg-[#fd...'>`
+   - `Line 3494: <button className='p-1.5 text-[#646262] hover:text-[#201d1d] dark:hover:text-white transi...'>`
+   - `Line 3537: <button className='min-h-[36px] px-3 py-1.5 bg-[#201d1d] text-[#fdfcfc] font-bold rounded...'>`
+4. `FAIL [T2.TOUCH.V04] [M1] PlayGameView 44px+ Touch Target Compliance (Total 118 buttons)`:
+   - `26 of 118 buttons lack min-h-[44px] sizing`
+   - Lines: 3618, 10766, 11281, 11566, 11584, 11867, 11982, 14103, 14168, 14182, 14221, 14272, 14431, 15930, 17115, 17130, 17252, 17289, 17431, 17622, 17629, 17935, 17966, 18349, 18406, 18472.
+5. `FAIL [T2.VIEWPORT.V02] [M1] MobileCardPlayScreen 375px Mobile Viewport & Dock Clearance`:
+   - `Message: Fails mobile viewport resilience audit - Missing bottom dock clearance padding (pb-24/pb-28/pb-32/pb-36)`
+6. `FAIL [T2.VIEWPORT.V05] [M2] ShopView 375px Mobile Viewport & Dock Clearance`:
+   - `Message: Fails mobile viewport resilience audit - Missing bottom dock clearance padding (pb-24/pb-28/pb-32/pb-36)`
+7. `FAIL [T2.VIEWPORT.V07] [M2] NovelView 375px Mobile Viewport & Dock Clearance`:
+   - `Message: Fails mobile viewport resilience audit - Missing bottom dock clearance padding (pb-24/pb-28/pb-32/pb-36)`
+8. `FAIL [T2.VIEWPORT.V09] [M2] RankingView 375px Mobile Viewport & Dock Clearance`:
+   - `Message: Fails mobile viewport resilience audit - Missing bottom dock clearance padding (pb-24/pb-28/pb-32/pb-36)`
+9. `FAIL [T2.VIEWPORT.V13] [M2] RedditCommunityView 375px Mobile Viewport & Dock Clearance`:
+   - `Message: Fails mobile viewport resilience audit - Missing bottom dock clearance padding (pb-24/pb-28/pb-32/pb-36)`
+10. `FAIL [T2.MODAL.02] [M1] Battle Settlement & Auto Battle Modals Modal Top-Layer [x]/[SKIP] Dismiss Controls`:
+    - `Message: Detected modal structures without explicit top-layer [x] or [SKIP] buttons`
+11. `FAIL [T2.MODAL.06] [M2] PvP Match History & Nearby Modals Modal Top-Layer [x]/[SKIP] Dismiss Controls`:
+    - `Message: Detected modal structures without explicit top-layer [x] or [SKIP] buttons`
+12. `FAIL [T3.THEME.01] Design System Surface Palette Continuity (#fdfcfc / #201d1d)`:
+    - `Message: Views lacking canonical surface tokens: ['src/views/RedditCommunityView.tsx']`
 
-### Obs 3. Deep-Linking Query Parameter Clamping & Consistency Gap
-- In `src/views/MovieView.tsx` lines 66–84:
-  ```ts
-  const params = new URLSearchParams(window.location.search);
-  const epParam = params.get('ep') || params.get('episode');
-  if (epParam) {
-    const parsedEp = parseInt(epParam, 10);
-    if (!isNaN(parsedEp) && parsedEp >= 1 && parsedEp <= TOTAL_EPISODES) {
-      return parsedEp;
-    }
-  }
-  ```
-  When `?ep=999` is passed, `parsedEp <= TOTAL_EPISODES` is false. `MovieView` does not clamp to 40, but falls back to `hero_movie_progress` (or Ep 1).
-- In `src/views/NovelView.tsx` lines 185–189:
-  ```ts
-  const [currentEpisodeNum, setCurrentEpisodeNum] = useState<number>(() => {
-    const saved = getSeasonItem('hero_novel_progress', currentSeason);
-    const parsed = saved ? parseInt(saved, 10) : 1;
-    return isNaN(parsed) || parsed < 1 || parsed > TOTAL_EPISODES ? 1 : parsed;
-  });
-  ```
-  `NovelView.tsx` completely ignores `window.location.search` (`?ep=` or `?episode=`), so navigating to `/book?ep=20` or `/webtoon?ep=20` will NOT open Episode 20.
+### 1.2 Independent Adversarial Stress Scanner (`tests/e2e_design_system/challenger_stress_scan.py`)
+- Command: `python3 tests/e2e_design_system/challenger_stress_scan.py`
+- Executed against all 22 core views and shared components.
 
-### Obs 4. LocalStorage `loadEpisodeScrollState` Type Robustness
-In `src/lib/webtoonProgress.ts` line 188:
-```ts
-const raw = localStorage.getItem(key);
-if (!raw) return null;
-return JSON.parse(raw);
-```
-When `raw` is a valid JSON primitive such as `'true'`, `'false'`, or `'99999'`, `JSON.parse` returns a boolean or number instead of `EpisodeScrollData | null`, violating the declared TypeScript return type.
+#### Interactive Button Census:
+- **Total Interactive Buttons Measured across 22 Views**: 624 buttons
+- **Compliant Buttons (`>= 44px`)**: 578 buttons (92.6%)
+- **Non-Compliant Sub-44px Buttons**: **46 buttons** (7.4%) across 4 views:
+  - `HomeView.tsx`: 1 / 19 failing (Line 623)
+  - `MobileCardPlayScreen.tsx`: 10 / 23 failing (Lines 2227, 2334, 2342, 2352, 2361, 2370, 2388, 2405, 2579, 2689)
+  - `MyDeckView.tsx`: 7 / 47 failing (Lines 2860, 2871, 2882, 3256, 3483, 3494, 3537)
+  - `PlayGameView.tsx`: 26 / 118 failing (Lines 3618, 10766, 11281, 11566, 11584, 11867, 11982, 14103, 14168, 14182, 14221, 14272, 14431, 15930, 17115, 17130, 17252, 17289, 17431, 17622, 17629, 17935, 17966, 18349, 18406, 18472)
 
-### Obs 5. Multi-Season Data Isolation Verification
-Empirical testing in `scripts/challenger_empirical_stress.ts` confirmed:
-- `setSeasonItem` correctly handles both parameter orders: `(key, season, value)` and `(key, value, season)`.
-- Reading `season1` data does not bleed into `season2`, `season3`, or uninitialized `season4`.
-- Claiming rewards in `season1` does not affect `season2`.
+#### Prohibited Radius Class Tokens (`rounded-lg` & `rounded-full`):
+- `DESIGN.md` explicitly mandates a strict 2-tier border radius system:
+  `rounded: none: 0px (sections/containers), sm: 4px (interactive elements). Avatar circles are the only full-rounded element.`
+- Independent scan detected 4 instances of prohibited `rounded-lg` (8px radius) that escaped Tier 1:
+  - `src/views/ProfileView.tsx:380`: `"w-full p-3.5 border rounded-lg font-semibold text-slate-800 ..."`
+  - `src/views/SettingView.tsx:762`: `className="w-full h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer ..."`
+  - `src/views/SettingView.tsx:1404`: `className="p-3 bg-green-50 border border-green-200 text-green-700 text-xs font-bold rounded-lg ..."`
+  - `src/App.tsx:7382`: `"flex-1 p-2 sm:p-2.5 text-xs sm:text-sm font-mono font-bold outline-none rounded-lg ..."`
+- `src/views/PlayGameView.tsx` contains **84 occurrences of `rounded-full`**, including interactive buttons (e.g. Line 509: `className="inline-flex items-center justify-center min-w-[44px] min-h-[44px] rounded-full ..."`).
+
+### 1.3 TypeScript Compilation & Production Build Verification
+- Command: `npx tsc --noEmit`
+  - Result: **Exit Code 0** (0 errors)
+- Command: `npm run build`
+  - Result: **Exit Code 0** (`built in 17.46s`, all 52 static SPA routes and SEO files bundled cleanly in `dist/`)
 
 ---
 
 ## 2. Logic Chain
 
-1. **Premise 1 (`ORIGINAL_REQUEST.md` Line 22 & Line 43)**: All UI controls in `NovelView.tsx` and `MovieView.tsx` must strictly comply with `DESIGN.md` (`min-h-[44px]` touch targets, 44px+ mobile touch ergonomics).
-2. **Premise 2 (`Obs 2`)**: 17 buttons in `NovelView.tsx`, `WebtoonPanelCard.tsx`, and `CinematicMoviePlayer.tsx` explicitly set `min-h-[36px]`, `min-h-[32px]`, or `min-h-[28px]`.
-3. **Inference 1**: Despite `verify_ip_trilogy.ts` reporting a nominal pass (because it only tested `!includes('w-7 h-7')`), the implementation fails the authoritative requirement of `min-h-[44px]` touch targets on 17 interactive controls.
-4. **Premise 3 (`Obs 3`)**: Deep linking via `?ep=` is supported in `MovieView.tsx` but entirely absent in `NovelView.tsx`, creating an inconsistent user journey across the IP Trilogy.
-5. **Premise 4 (`Obs 4`)**: `loadEpisodeScrollState` returns non-null primitives when localStorage contains corrupted boolean or numeric values, failing type guards.
-6. **Conclusion**: The implementation requires targeted remediation before commercial signoff.
+1. **Premise 1 (Design Contract & Acceptance Criteria)**:
+   - Under `ORIGINAL_REQUEST.md` (specifically `## 2026-10-18T10:08:37Z`) and `DESIGN.md`:
+     - R1: "Strict 2-Tier Border Radius: `rounded-none` (`0px`) for all containers, cards, panels, modals, and section frames; `rounded-sm` (`4px`) maximum for interactive buttons, inputs, and badges. Eliminate legacy `rounded-lg`, `rounded-xl`, `rounded-2xl`, `rounded-3xl`, and decorative `rounded-full` pills on containers and buttons across target views."
+     - R2: "Ensure every modal, drawer, and tutorial overlay provides a clearly visible top-layer `[x]` close or `[SKIP]` button."
+     - R3: "Enforce a minimum `44px` touch target (`min-h-[44px]`) on all interactive buttons, tabs, header actions, and navigation controls. Eliminate horizontal scroll bleed, text truncation collisions, and overlapping fixed/sticky toolbars on narrow mobile viewports."
+     - Acceptance Criteria: "Automated audit of interactive `<button>` and action controls across all target views confirms `min-h-[44px]` (or `h-11` / `44px+` equivalent) touch target sizing... Gameplay and media canvases have 0 overlapping HUD/subtitle obstructions over the active playfield or artwork, and all modals expose an immediate `[x]` or `[SKIP]` control."
+
+2. **Inference from Observations 1.1 & 1.2 (Sub-44px Touch Violations)**:
+   - 46 buttons across 4 core views (`HomeView`, `MobileCardPlayScreen`, `MyDeckView`, `PlayGameView`) have heights strictly below 44px.
+   - For example, in `MobileCardPlayScreen.tsx`, post-battle settlement buttons (`Rematch`, `Go to Shop`, `Next Rank Battle`, `Exit`) are coded with `py-2` and `py-2.5` without `min-h-[44px]`, measuring ~28px to ~36px height. On a 375x812 mobile viewport, thumbs will frequently miss or tap-collide.
+   - In `MyDeckView.tsx`, lines 3256, 3483, 3494, and 3537 are explicitly coded with `min-h-[38px]` and `min-h-[36px]`, directly defying the 44px minimum touch target standard.
+   - Therefore, the requirement for 100% 44px+ touch compliance is violated.
+
+3. **Inference from Observations 1.1 & 1.2 (Viewport Dock Clearance Violations)**:
+   - SNSHero's bottom navigation dock (`Navbar.tsx`) is fixed at the bottom of the viewport with a height of ~70px.
+   - Views must reserve bottom clearance via `pb-24/pb-28/pb-32/pb-36` to prevent the bottom controls from being hidden under the fixed navigation dock.
+   - `MobileCardPlayScreen.tsx` has only `pb-1`, `ShopView.tsx` has only `pb-4`, `RankingView.tsx` has only `pb-3`, `RedditCommunityView.tsx` has 0 `pb-` tokens, and `NovelView.tsx` has only `pb-16`.
+   - On a mobile device, users cannot tap or view the bottom items/buttons in these views without toolbar occlusion.
+
+4. **Inference from Observations 1.1 & 1.2 (Modal Dismissal Violations)**:
+   - In `MobileCardPlayScreen.tsx` (battle settlement modal) and `RankingView.tsx` (PvP match history modal), the modal overlay does not provide an immediate top-layer `[x]` or `[SKIP]` close button.
+   - This traps users inside modals without an explicit dismissal path, failing the Progressive Disclosure & User Control contract.
+
+5. **Inference from Observation 1.2 (Border Radius Contract Violations)**:
+   - `ProfileView.tsx:380`, `SettingView.tsx:762`, `SettingView.tsx:1404`, and `App.tsx:7382` contain `rounded-lg` (8px radius).
+   - `PlayGameView.tsx:509` contains `rounded-full` on an interactive button.
+   - These violate the canonical 2-tier border radius specification (`rounded-none` 0px containers / `rounded-sm` 4px interactive).
+
+6. **Conclusion of Logic Chain**:
+   - Because 46 interactive buttons violate the 44px touch rule, 5 views lack bottom dock clearance, 2 modals lack dismissal controls, and prohibited `rounded-lg` tokens remain in production views, the codebase fails the authoritative acceptance criteria.
+   - Under the Empirical Challenger protocol, unverified claims by workers (e.g., worker M1 claiming "ALL 13 FILES CLEAN") are rejected in light of empirical evidence.
 
 ---
 
 ## 3. Caveats
 
-- **No Caveats**: All 5 stress test dimensions were executed directly with empirical scripts (`scripts/challenger_empirical_stress.ts` and `scripts/verify_ip_trilogy.ts`).
-- **Severity Assessment**: The 17 touch target violations do not crash the application, but they violate the project's strict `DESIGN.md` and `AGENTS.md` mobile ergonomic standards.
+- **Build and Type Safety Pass**: `npx tsc --noEmit` and `npm run build` both succeed with exit code 0. There are zero compilation or syntax errors; the failures are strictly visual token, ergonomic touch sizing, and layout clearance regressions.
+- **Worker Scope Boundaries**: Worker M3 resolved its assigned views (`ProfileView`, `SettingView`, `SeasonHubView`, `CompanionView`, `EventView`, `StockMarketView`, `PredictionMarketView`, `WikiCardView`, `WorldCodexView`) with high button compliance (232 / 232 buttons >= 44px), but left behind 3 `rounded-lg` tokens in `ProfileView` and `SettingView`.
+- **Worker M1 Button Debt**: Worker M1 focused heavily on removing gradients and heavy shadows, but failed to upgrade 37 buttons in `MobileCardPlayScreen.tsx`, `MyDeckView.tsx`, and `PlayGameView.tsx` to `min-h-[44px]`.
+- **No Source Code Modified**: In strict adherence to the HARD CONSTRAINT (`Do NOT modify application source code in src/`), this challenger has only written and executed independent verification harnesses in `tests/e2e_design_system/challenger_stress_scan.py` and has not modified any file under `src/`.
 
 ---
 
-## 4. Conclusion: REQUEST_CHANGES
+## 4. Conclusion
 
-The IP Trilogy creative rewrite and player architecture are exceptionally rich and functional, and the multi-season isolation and asset integrity are 100% verified. However, **REQUEST_CHANGES** is issued due to the following concrete, actionable findings:
+### Final Empirical Verdict: **`REJECT`**
 
-### Actionable Remediation Items:
-1. **Touch Ergonomics (`NovelView.tsx`, `WebtoonPanelCard.tsx`, `CinematicMoviePlayer.tsx`)**:
-   - Upgrade all 15 instances of `min-h-[36px]` and `min-h-[32px]` in `NovelView.tsx` (resume banner, drawer trigger, character wiki buttons, TTS controls, lore triggers, and prompt action buttons) to `min-h-[44px]`.
-   - Upgrade `WebtoonPanelCard.tsx:80` zoom button from `min-h-[32px]` to `min-h-[44px]`.
-   - Upgrade `CinematicMoviePlayer.tsx:643` scene scrubber button from `min-h-[28px]` to `min-h-[44px]`.
-2. **Deep-Linking Parity in `NovelView.tsx`**:
-   - In `NovelView.tsx`, parse `window.location.search` (`?ep=` / `?episode=`) during initial state initialization with boundary clamping (`Math.max(1, Math.min(TOTAL_EPISODES, parsedEp))`), mirroring `MovieView.tsx`.
-3. **Clamping Refinement in `MovieView.tsx`**:
-   - Clamp out-of-bounds `?ep=` values (e.g. `?ep=999` -> 40, `?ep=-10` -> 1) rather than resetting to 1.
-4. **Defensive Type Guard in `webtoonProgress.ts`**:
-   - Update `loadEpisodeScrollState` to verify that `parsed` is an object: `parsed && typeof parsed === 'object' && typeof parsed.progressPct === 'number' ? parsed : null`.
+The codebase does **NOT** pass full DESIGN.md terminal-flat and mobile touch target compliance.
+
+#### Summary of Remediation Items Required:
+1. **Touch Targets (46 Buttons)**:
+   - `HomeView.tsx` (1 button): Line 623 logout button -> add `min-h-[44px] min-w-[44px]`.
+   - `MobileCardPlayScreen.tsx` (10 buttons): Lines 2227, 2334, 2342, 2352, 2361, 2370, 2388, 2405, 2579, 2689 post-match buttons -> add `min-h-[44px]`.
+   - `MyDeckView.tsx` (7 buttons): Lines 2860, 2871, 2882, 3256, 3483, 3494, 3537 -> replace `min-h-[38px]`, `min-h-[36px]`, and `py-2` with `min-h-[44px]`.
+   - `PlayGameView.tsx` (26 buttons): Lines 3618, 10766, 11281, 11566, 11584, 11867, 11982, 14103, 14168, 14182, 14221, 14272, 14431, 15930, 17115, 17130, 17252, 17289, 17431, 17622, 17629, 17935, 17966, 18349, 18406, 18472 -> replace `py-1`, `py-2`, `p-1`, `p-2` with `min-h-[44px]`.
+2. **Bottom Dock Clearance (`pb-28` to `pb-36`)**:
+   - Add `pb-28` or `pb-32` to the main scroll container in `MobileCardPlayScreen.tsx`, `ShopView.tsx`, `NovelView.tsx`, `RankingView.tsx`, and `RedditCommunityView.tsx`.
+3. **Modal Dismiss Controls**:
+   - Add top-layer `[x]` / `[SKIP]` close button to settlement modal in `MobileCardPlayScreen.tsx` and PvP match history in `RankingView.tsx`.
+4. **Prohibited Radius Tokens**:
+   - Replace `rounded-lg` with `rounded-sm` or `rounded-none` in `ProfileView.tsx:380`, `SettingView.tsx:762`, `SettingView.tsx:1404`, and `App.tsx:7382`.
+   - Replace `rounded-full` on button at `PlayGameView.tsx:509` with `rounded-sm`.
+5. **Surface Palette Continuity**:
+   - Add canonical surface classes (`bg-[#fdfcfc]` / `bg-[#201d1d]`) to `RedditCommunityView.tsx`.
 
 ---
 
 ## 5. Verification Method
 
-To independently verify these findings:
-```bash
-# 1. Run the challenger empirical stress test harness:
-npx tsx scripts/challenger_empirical_stress.ts
+To independently reproduce this challenger's findings:
 
-# 2. Inspect touch target violations reported:
-# Observe 17 failed assertions in TouchErgonomics category.
+1. **Run Master Test Runner**:
+   ```bash
+   python3 tests/e2e_design_system/run_all_e2e_tests.py
+   ```
+   *Observed result*: Exits with code 1, reporting 12 failures (11 in Tier 2, 1 in Tier 3).
 
-# 3. Invalidation Conditions:
-# All 17 controls updated to min-h-[44px], and scripts/challenger_empirical_stress.ts outputs 58/58 PASSED.
-```
+2. **Run Independent Challenger Stress Scanner**:
+   ```bash
+   python3 tests/e2e_design_system/challenger_stress_scan.py
+   ```
+   *Observed result*: Measures all 624 buttons across the 22 core views, isolates all 46 sub-44px buttons by exact file and line number, flags 5 views missing dock padding, and outputs `VERDICT: REJECT`.
+
+3. **Verify Prohibited `rounded-lg` Tokens**:
+   ```bash
+   python3 -c "
+   import re
+   pat = re.compile(r'\brounded-lg\b')
+   for f in ['src/views/ProfileView.tsx', 'src/views/SettingView.tsx', 'src/App.tsx']:
+       for i, l in enumerate(open(f)):
+           if pat.search(l) and not l.strip().startswith('//'):
+               print(f'{f}:{i+1} -> {l.strip()[:80]}')
+   "
+   ```
+   *Observed result*: Prints 4 exact line occurrences in `ProfileView.tsx`, `SettingView.tsx`, and `App.tsx`.
+
+4. **Verify TypeScript & Production Build**:
+   ```bash
+   npx tsc --noEmit
+   npm run build
+   ```
+   *Observed result*: Both exit with code 0.
+
+5. **Invalidation Condition**:
+   - This REJECT verdict is invalidated only when:
+     - `python3 tests/e2e_design_system/run_all_e2e_tests.py` achieves 188 / 188 passing assertions (exit code 0).
+     - `python3 tests/e2e_design_system/challenger_stress_scan.py` outputs 0 sub-44px buttons, 0 prohibited radius tokens, 0 dock clearance failures, and `VERDICT: CONFIRM CORRECTNESS (APPROVE)`.

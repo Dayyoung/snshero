@@ -83,7 +83,7 @@ export const RivalMatchupCard: React.FC<RivalMatchupCardProps> = ({
  triggerHaptic('heavy');
  onSelectRival(rival);
  }}
- className="min-h-[44px] px-2.5 py-1 bg-[#201d1d] hover: hover: text-white font-black text-[11px] rounded-sm flex items-center gap-1 active:scale-95 cursor-pointer shadow-none"
+ className="min-h-[44px] px-2.5 py-1 bg-[#201d1d] hover:opacity-90 text-white font-black text-[11px] rounded-sm flex items-center gap-1 active:scale-95 cursor-pointer shadow-none"
  >
  <Swords size={12} />
  <span>도전</span>

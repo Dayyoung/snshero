@@ -70,7 +70,7 @@ export const PassClaimAllPulseDock: React.FC<PassClaimAllPulseDockProps> = ({
  triggerHaptic('heavy');
  onClaimAll();
  }}
- className="min-h-[44px] h-13 w-full bg-[#201d1d] text-slate-950 font-black text-xs rounded-sm flex items-center justify-between px-4 shadow-none active:scale-95 cursor-pointer border-2 border-amber-300 animate-pulse hover:brightness-105"
+ className="min-h-[44px] h-13 w-full bg-[#201d1d] text-[#fdfcfc] font-black text-xs rounded-sm flex items-center justify-between px-4 shadow-none active:scale-95 cursor-pointer border-2 border-amber-300 animate-pulse hover:brightness-105"
  >
  <div className="flex items-center gap-2">
  <Sparkles size={18} />

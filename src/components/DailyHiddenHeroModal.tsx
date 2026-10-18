@@ -589,7 +589,7 @@ export const DailyHiddenHeroModal: React.FC<DailyHiddenHeroModalProps> = ({
  {/* 상단 헤더 */}
  <div className="px-3.5 py-2.5 bg-[#201d1d] from-[#101c29] via-[#162636] to-[#101c29] border-b border-cyan-500/40 flex items-center justify-between">
  <div className="flex items-center gap-2.5 min-w-0">
- <div className="w-8 h-8 rounded-sm bg-[#201d1d] flex items-center justify-center text-slate-950 font-black shadow-none shrink-0">
+ <div className="w-8 h-8 rounded-sm bg-[#201d1d] flex items-center justify-center text-[#fdfcfc] font-black shadow-none shrink-0">
  <Search size={17} />
  </div>
  <div className="min-w-0">
@@ -749,7 +749,7 @@ export const DailyHiddenHeroModal: React.FC<DailyHiddenHeroModalProps> = ({
  {/* 분위기 조명 비네팅 오버레이 */}
  <div
  className={cn(
- 'absolute inset-0 bg-[#201d1d] pointer-events-none',
+ 'absolute inset-0 bg-transparent pointer-events-none',
  activeStage.ambientOverlay
  )}
  />
@@ -776,7 +776,7 @@ export const DailyHiddenHeroModal: React.FC<DailyHiddenHeroModalProps> = ({
  {item.type === 'npc' ? (
  <div
  className={cn(
- 'w-7 h-7 rounded-full overflow-hidden border border-stone-600/70 bg-stone-900/80 shadow-none transition-transform',
+ 'w-7 h-7 rounded-full overflow-hidden border border-stone-600/70 bg-[#fdfcfc] shadow-none transition-transform',
  isOpened ? 'opacity-35 scale-75' : 'hover:scale-110'
  )}
  >
@@ -844,8 +844,8 @@ export const DailyHiddenHeroModal: React.FC<DailyHiddenHeroModalProps> = ({
  className={cn(
  'relative w-7 h-7 sm:w-8 sm:h-8 rounded-full overflow-hidden border transition-all flex items-center justify-center shadow-none',
  isFound
- ? 'border-2 border-emerald-300 ring-2 ring-emerald-500 z-30 shadow-[0_0_16px_rgba(16,185,129,0.95)]'
- : 'border-amber-200/40 bg-stone-900/75 opacity-85 hover:opacity-100 hover:scale-115'
+ ? 'border-2 border-emerald-300 ring-2 ring-emerald-500 bg-[#fdfcfc] z-30 shadow-[0_0_16px_rgba(16,185,129,0.95)]'
+ : 'border-amber-200/40 bg-[#fdfcfc] opacity-85 hover:opacity-100 hover:scale-115'
  )}
  >
  <img
@@ -965,7 +965,7 @@ export const DailyHiddenHeroModal: React.FC<DailyHiddenHeroModalProps> = ({
  />
  ))}
  </div>
- <h3 className="text-lg sm:text-xl font-black text-transparent bg-clip-text bg-[#201d1d] ">
+ <h3 className="text-lg sm:text-xl font-black text-amber-300">
  {isKo ? '스테이지 수색 완벽 클리어!!' : 'STAGE CLEAR COMPLETE!!'}
  </h3>
  <p className="text-xs text-stone-300 mt-1">
@@ -1042,7 +1042,7 @@ export const DailyHiddenHeroModal: React.FC<DailyHiddenHeroModalProps> = ({
  : 'bg-stone-900/90 border-stone-800 hover:border-stone-600'
  )}
  >
- <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-xs overflow-hidden border border-white/20 bg-black mb-1">
+ <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-xs overflow-hidden border border-white/20 bg-[#fdfcfc] mb-1">
  <img
  src={getAssetUrl(hero.image)}
  alt={hero.nameEn}

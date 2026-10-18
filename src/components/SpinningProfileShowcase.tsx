@@ -369,7 +369,7 @@ export const SpinningProfileShowcase: React.FC<SpinningProfileShowcaseProps> = (
  </div>
 
  {/* Character Sprite Center Stage */}
- <div className="w-full flex-1 my-1 bg-slate-950/70 border border-white/10 rounded-sm relative overflow-hidden flex items-center justify-center group">
+ <div className="w-full flex-1 my-1 bg-[#fdfcfc] border border-white/20 rounded-sm relative overflow-hidden flex items-center justify-center group">
  {playerCard ? (
  <div
  className="w-20 h-20 bg-contain bg-no-repeat bg-center transform transition-transform group-hover:scale-110"
@@ -445,7 +445,7 @@ export const SpinningProfileShowcase: React.FC<SpinningProfileShowcaseProps> = (
  </div>
 
  {/* Character Sprite Center Stage */}
- <div className="w-full flex-1 my-1 bg-slate-950/70 border border-white/10 rounded-sm relative overflow-hidden flex items-center justify-center group">
+ <div className="w-full flex-1 my-1 bg-[#fdfcfc] border border-white/20 rounded-sm relative overflow-hidden flex items-center justify-center group">
  {opponentCard ? (
  <div
  className="w-20 h-20 bg-contain bg-no-repeat bg-center transform transition-transform group-hover:scale-110"
@@ -621,7 +621,7 @@ export const SpinningProfileShowcase: React.FC<SpinningProfileShowcaseProps> = (
  </div>
 
  {/* Card Sprite */}
- <div className="w-11 h-11 bg-slate-950 border border-white/10 rounded-xs flex items-center justify-center overflow-hidden my-0.5">
+ <div className="w-11 h-11 bg-[#fdfcfc] border border-white/20 rounded-xs flex items-center justify-center overflow-hidden my-0.5">
  <div
  className="w-10 h-10 bg-contain bg-no-repeat bg-center"
  style={getCardSpriteStyle(card.imageIndex ?? Number(card.id) ?? 0)}

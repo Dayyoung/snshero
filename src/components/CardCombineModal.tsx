@@ -461,7 +461,7 @@ export const CardCombineModal: React.FC<CardCombineModalProps> = ({
  <button
  type="button"
  onClick={handleBuyMaterialPack}
- className="min-h-[44px] px-3 py-2 bg-[#201d1d] hover: hover: text-stone-950 font-bold text-xs rounded-sm shrink-0 active:scale-95 transition-all shadow-none flex items-center gap-1 cursor-pointer border border-amber-300"
+ className="min-h-[44px] px-3 py-2 bg-[#201d1d] hover:opacity-90 text-[#fdfcfc] font-bold text-xs rounded-sm shrink-0 active:scale-95 transition-all shadow-none flex items-center gap-1 cursor-pointer border border-amber-300"
  >
  <Zap size={12} className="fill-current" />
  <span>{language === 'ko' ? '1탭 즉시 보충' : 'Quick Fill'}</span>
@@ -540,7 +540,7 @@ export const CardCombineModal: React.FC<CardCombineModalProps> = ({
  setSuccessCardId(null);
  setLastPowerGained(null);
  }}
- className="min-h-[44px] mt-2 px-5 py-2 bg-[#201d1d] text-slate-950 font-black uppercase text-xs rounded-sm shadow-none shadow-none active:scale-95 hover: hover: transition-all border border-amber-300 cursor-pointer"
+ className="min-h-[44px] mt-2 px-5 py-2 bg-[#201d1d] text-[#fdfcfc] font-black uppercase text-xs rounded-sm shadow-none shadow-none active:scale-95 hover:opacity-90 transition-all border border-amber-300 cursor-pointer"
  >
  [{language === 'ko' ? '확인' : 'Confirm'}]
  </button>

@@ -198,7 +198,7 @@ export const MarketSmartFilterBottomSheet: React.FC<MarketSmartFilterBottomSheet
  triggerHaptic('heavy');
  onClose();
  }}
- className="h-12 w-full bg-[#201d1d] text-slate-950 font-black text-xs rounded-sm flex items-center justify-center gap-2 cursor-pointer active:scale-95 shadow-none"
+ className="h-12 w-full bg-[#201d1d] text-[#fdfcfc] font-black text-xs rounded-sm flex items-center justify-center gap-2 cursor-pointer active:scale-95 shadow-none"
  >
  <span>{totalMatchesCount}개 매물 검색 적용</span>
  </button>

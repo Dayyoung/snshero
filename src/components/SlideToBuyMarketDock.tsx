@@ -105,7 +105,7 @@ export const SlideToBuyMarketDock: React.FC<SlideToBuyMarketDockProps> = ({
  dragElastic={0.1}
  onDrag={handleDrag}
  whileTap={{ scale: 0.95 }}
- className="w-11 h-10 rounded-none bg-[#201d1d] flex items-center justify-center text-slate-950 shadow-none cursor-grab active:cursor-grabbing z-10"
+ className="w-11 h-10 rounded-none bg-[#201d1d] flex items-center justify-center text-[#fdfcfc] shadow-none cursor-grab active:cursor-grabbing z-10"
  >
  <ChevronRight size={18} className="animate-pulse" />
  </motion.div>

@@ -171,7 +171,7 @@ const SkillTimingButton: React.FC<SkillTimingButtonProps> = ({
 
  switch (state) {
  case 'idle':
- return `${base} bg-[#201d1d] text-white shadow-none hover: hover: active:scale-95 transition-all duration-200`;
+ return `${base} bg-[#201d1d] text-white shadow-none hover:opacity-90 active:scale-95 transition-all duration-200`;
  case 'charging':
  return `${base} bg-[#201d1d] text-white shadow-none animate-pulse`;
  case 'ready':

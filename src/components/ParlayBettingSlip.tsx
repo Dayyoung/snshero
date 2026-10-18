@@ -47,7 +47,7 @@ export const ParlayBettingSlip: React.FC<ParlayBettingSlipProps> = ({
  triggerHaptic('medium');
  onOpenSheet();
  }}
- className="min-h-[44px] px-4 rounded-sm bg-[#201d1d] text-slate-950 font-black text-xs flex items-center gap-1 active:scale-95 cursor-pointer shadow"
+ className="min-h-[44px] px-4 rounded-sm bg-[#201d1d] text-[#fdfcfc] font-black text-xs flex items-center gap-1 active:scale-95 cursor-pointer shadow"
  >
  <span>베팅 확정</span>
  <ChevronUp size={14} />

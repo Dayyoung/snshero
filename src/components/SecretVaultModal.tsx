@@ -45,7 +45,7 @@ export const SecretVaultModal: React.FC<SecretVaultModalProps> = ({
  <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4 font-mono select-none">
  <div className="bg-slate-950 border-2 border-amber-400 rounded-none w-full max-w-md overflow-hidden shadow-none flex flex-col">
  {/* Header */}
- <div className="p-4 bg-[#201d1d] text-slate-950 flex items-center justify-between">
+ <div className="p-4 bg-[#201d1d] text-[#fdfcfc] flex items-center justify-between">
  <div className="flex items-center gap-1.5 font-black text-sm">
  <Key size={18} />
  <span>🔐 계정 비밀 금고 (Secret Vault)</span>

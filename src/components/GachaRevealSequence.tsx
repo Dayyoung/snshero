@@ -72,10 +72,10 @@ const rarityBadgeClass = (rarity: string): string => {
  return 'bg-[#201d1d] text-white border-cyan-300/60 shadow-[0_0_12px_rgba(34,211,238,0.5)]';
  }
  if (normalized === 'gold') {
- return 'bg-[#201d1d] text-amber-950 border-yellow-200/90 shadow-[0_0_10px_rgba(245,158,11,0.5)] font-black';
+ return 'bg-[#201d1d] text-[#fdfcfc] border-yellow-200/90 shadow-[0_0_10px_rgba(245,158,11,0.5)] font-black';
  }
  if (normalized === 'silver') {
- return 'bg-[#201d1d] text-slate-900 border-slate-100/70';
+ return 'bg-[#201d1d] text-[#fdfcfc] border-slate-100/70';
  }
  return 'bg-[#201d1d] text-white border-amber-400/30';
 };
@@ -466,7 +466,7 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
  transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
  className="relative z-10 flex flex-col items-center justify-center gap-3"
  >
- <div className="relative flex items-center justify-center w-24 h-24 rounded-full bg-[#201d1d] shadow-[0_0_60px_rgba(250,204,21,1)] text-slate-950">
+ <div className="relative flex items-center justify-center w-24 h-24 rounded-full bg-[#201d1d] shadow-[0_0_60px_rgba(250,204,21,1)] text-[#fdfcfc]">
  <Sparkles size={48} className="animate-spin" />
  <Zap size={28} className="absolute -top-1 -right-1 text-white transition-transform duration-300" />
  </div>
@@ -478,7 +478,7 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
  <span>[ RE-DRAW SUMMONING ]</span>
  <Sparkles size={12} className="animate-spin text-yellow-300" />
  </div>
- <h3 className="text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-[#201d1d] tracking-wider animate-pulse drop-shadow-[0_2px_20px_rgba(250,204,21,0.8)]">
+ <h3 className="text-2xl sm:text-3xl font-black text-amber-400   tracking-wider animate-pulse drop-shadow-[0_2px_20px_rgba(250,204,21,0.8)]">
  {language === 'ko' ? '다시 뽑기 마력 집중 중...' : 'Re-Summoning In Progress...'}
  </h3>
  <p className="text-xs font-mono text-white/70 tracking-widest uppercase">
@@ -553,7 +553,7 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
  <div className="text-[10px] font-mono font-black tracking-[0.3em] text-amber-300 animate-pulse">
  [ ★★★ GOLD SPECIAL JACKPOT ★★★ ]
  </div>
- <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full border-2 border-amber-200 bg-[#201d1d] text-amber-950 text-xs font-black uppercase tracking-[0.3em] shadow-[0_0_25px_rgba(250,204,21,0.9)] transition-transform duration-300">
+ <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full border-2 border-amber-200 bg-[#201d1d] text-[#fdfcfc] text-xs font-black uppercase tracking-[0.3em] shadow-[0_0_25px_rgba(250,204,21,0.9)] transition-transform duration-300">
  <Sparkles size={16} className="animate-spin" />
  <span>{cutInInfo.rarity.toUpperCase()} SPECIAL PULL!</span>
  <Sparkles size={16} className="animate-spin" />
@@ -576,7 +576,7 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
  className={cn(
  'text-3xl sm:text-5xl font-black italic tracking-wide max-w-full truncate px-2',
  cutInInfo.isGoldSpecial
- ? 'text-transparent bg-clip-text bg-[#201d1d] drop-shadow-[0_4px_30px_rgba(245,158,11,0.95)]'
+ ? 'text-amber-400   drop-shadow-[0_4px_30px_rgba(245,158,11,0.95)]'
  : 'text-white drop-shadow-[0_2px_15px_rgba(255,255,255,0.4)]'
  )}
  >
@@ -741,7 +741,7 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
  <Sparkles size={10} className="animate-spin" />
  </div>
  ) : (EXTENDED_RARITY_RANK[highestRarity.toLowerCase()] ?? 0) >= EXTENDED_RARITY_RANK['gold'] ? (
- <div className="absolute top-1 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-[#201d1d] text-slate-950 text-[8px] font-black uppercase tracking-widest shadow-none flex items-center gap-1 transition-transform duration-300 z-20 whitespace-nowrap">
+ <div className="absolute top-1 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[8px] font-black uppercase tracking-widest shadow-none flex items-center gap-1 transition-transform duration-300 z-20 whitespace-nowrap">
  <Sparkles size={10} />
  <span>💜 SR 보라빛 출현 예고!</span>
  <Sparkles size={10} />
@@ -758,7 +758,7 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
  </div>
 
  <div className="my-auto space-y-2 sm:space-y-3">
- <div className="mx-auto w-16 h-16 sm:w-20 sm:h-20 rounded-none bg-[#201d1d] flex items-center justify-center shadow-none shadow-none group-hover:scale-110 transition-transform">
+ <div className="mx-auto w-16 h-16 sm:w-20 sm:h-20 rounded-none bg-amber-400 flex items-center justify-center shadow-none group-hover:scale-110 transition-transform">
  <Gift size={36} className="text-slate-950 sm:w-11 sm:h-11" />
  </div>
  <h4 className="text-lg sm:text-xl font-black text-white tracking-wide">
@@ -774,7 +774,7 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
  <button
  type="button"
  onClick={handleOpenPack}
- className="min-h-[44px] w-full py-2.5 rounded-sm bg-[#201d1d] text-slate-950 text-xs font-black uppercase tracking-wider shadow-none hover:brightness-110 active:scale-95 transition-all cursor-pointer font-mono"
+ className="min-h-[44px] w-full py-2.5 rounded-sm bg-amber-400 text-slate-950 text-xs font-black uppercase tracking-wider shadow-none hover:brightness-110 active:scale-95 transition-all cursor-pointer font-mono"
  >
  {t('shop_gacha_tap_pack_to_open', language)}
  </button>
@@ -823,7 +823,7 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
  <button
  type="button"
  onClick={handleFastSkip}
- className="min-h-[44px] px-4 py-1.5 sm:px-5 sm:py-2 rounded-sm bg-[#201d1d] text-slate-950 font-black text-xs sm:text-sm uppercase hover:brightness-110 active:scale-95 cursor-pointer shadow-none whitespace-nowrap shrink-0 min-h-[36px] flex items-center gap-1.5"
+ className="min-h-[44px] px-4 py-1.5 sm:px-5 sm:py-2 rounded-sm bg-amber-400 text-slate-950 font-black text-xs sm:text-sm uppercase hover:brightness-110 active:scale-95 cursor-pointer shadow-none whitespace-nowrap shrink-0 flex items-center gap-1.5"
  >
  <Sparkles size={14} className="shrink-0 text-slate-950" />
  <span>{language === 'ko' ? '전체 공개' : 'Reveal All'}</span>
@@ -855,7 +855,7 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
  >
  {/* BEST PULL 하이라이트 배지 */}
  {isBest && (
- <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 z-30 flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-[#201d1d] text-slate-950 text-[8px] sm:text-[9px] font-black uppercase tracking-wider shadow-none transition-transform duration-300 whitespace-nowrap">
+ <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 z-30 flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[8px] sm:text-[9px] font-black uppercase tracking-wider shadow-none transition-transform duration-300 whitespace-nowrap">
  <Trophy size={10} />
  <span>{t('shop_gacha_best_pull', language)}</span>
  </div>
@@ -878,7 +878,7 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
 
  {/* 골드 조건 만족 시 금빛 배지 */}
  {isRevealed && isCardGoldCondition && !isBest && (
- <div className="absolute -top-2 right-1 z-30 flex items-center gap-0.5 px-1.5 py-0.2 rounded-full bg-[#201d1d] text-amber-950 text-[8px] font-black uppercase tracking-wider shadow-none border border-yellow-200 animate-pulse">
+ <div className="absolute -top-2 right-1 z-30 flex items-center gap-0.5 px-1.5 py-0.2 rounded-full bg-amber-400 text-amber-950 text-[8px] font-black uppercase tracking-wider shadow-none border border-yellow-200 animate-pulse">
  <Sparkles size={9} />
  <span>GOLD+</span>
  </div>
@@ -930,7 +930,7 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
  {/* 카드 앞면 (Revealed: CardItem 자체에 스탯 4방향·이름·등급이 포켓몬 TCG 포맷으로 완벽 렌더링되므로 하단 오버레이 배제) */}
  <div
  style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
- className="absolute inset-0 rounded-none sm:rounded-none overflow-hidden bg-slate-950"
+ className="absolute inset-0 rounded-none sm:rounded-none overflow-hidden bg-[#fdfcfc]"
  >
  <CardItem
  card={{
@@ -972,7 +972,7 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
  e.stopPropagation();
  onEquipCardToDeck(card.imageIndex);
  }}
- className="min-h-[44px] px-2 py-0.5 rounded-sm bg-[#201d1d] text-slate-950 text-[8px] font-black uppercase flex items-center gap-1 shadow-none hover:brightness-110 active:scale-95 transition-all cursor-pointer whitespace-nowrap"
+ className="min-h-[44px] px-2 py-0.5 rounded-sm bg-[#201d1d] text-[#fdfcfc] text-[8px] font-black uppercase flex items-center gap-1 shadow-none hover:brightness-110 active:scale-95 transition-all cursor-pointer whitespace-nowrap"
  title={language === 'ko' ? '전투 덱 1번 슬롯에 즉시 장착' : 'Equip card directly to battle deck'}
  >
  <Layers size={9} />
@@ -992,7 +992,7 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
  type="button"
  disabled={isReSummoning}
  onClick={handleDrawAgainClick}
- className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-sm bg-[#201d1d] text-slate-950 text-xs sm:text-sm font-black uppercase tracking-wider shadow-none hover:brightness-110 active:scale-95 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed touch-target"
+ className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-sm bg-[#201d1d] text-[#fdfcfc] text-xs sm:text-sm font-black uppercase tracking-wider shadow-none hover:brightness-110 active:scale-95 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed touch-target"
  >
  <Package2 size={16} className={isReSummoning ? 'animate-spin' : 'shrink-0'} />
  <span className="whitespace-nowrap">{t('draw_again', language)} ({packCost} SNS)</span>
@@ -1014,7 +1014,7 @@ export const GachaRevealSequence: React.FC<GachaRevealSequenceProps> = ({
  <button
  type="button"
  onClick={handleFastSkip}
- className="flex items-center justify-center gap-1.5 sm:gap-2 px-5 sm:px-7 py-2.5 sm:py-3 rounded-sm bg-[#201d1d] text-slate-950 text-xs sm:text-sm font-black uppercase tracking-wider shadow-[0_0_18px_rgba(251,191,36,0.6)] hover:brightness-110 active:scale-95 transition-all cursor-pointer animate-pulse shrink-0 touch-target border border-amber-300 min-h-[44px]"
+ className="flex items-center justify-center gap-1.5 sm:gap-2 px-5 sm:px-7 py-2.5 sm:py-3 rounded-sm bg-[#201d1d] text-[#fdfcfc] text-xs sm:text-sm font-black uppercase tracking-wider shadow-[0_0_18px_rgba(251,191,36,0.6)] hover:brightness-110 active:scale-95 transition-all cursor-pointer animate-pulse shrink-0 touch-target border border-amber-300 min-h-[44px]"
  title={language === 'ko' ? '모든 카드를 한 번에 공개합니다' : 'Reveal all cards at once'}
  >
  <Sparkles size={16} className="text-slate-950 animate-spin shrink-0" />

@@ -10340,7 +10340,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           <div className="w-full mt-4 flex justify-center z-20">
             <button 
               onClick={handleStopRunning}
-              className="w-full max-w-md py-4 bg-[#201d1d] from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-black uppercase text-base tracking-widest rounded-sm  hover: hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+              className="w-full max-w-md py-4 bg-[#201d1d] from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-black uppercase text-base tracking-widest rounded-sm  hover:opacity-90scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
             >
               <X size={20} />
               <span>STOP WORKOUT</span>
@@ -10361,7 +10361,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 <span className="text-xs font-black uppercase tracking-wider mb-2 animate-pulse text-amber-400">
                   🎉 CARD DISCOVERED! (10m)
                 </span>
-                <div className={`w-32 aspect-[5/7] border border-amber-400/30 rounded-none overflow-hidden  relative flex flex-col items-center justify-center p-1 bg-slate-950`}>
+                <div className={`w-32 aspect-[5/7] border border-amber-400/30 rounded-none overflow-hidden relative flex flex-col items-center justify-center p-1 bg-[#fdfcfc]`}>
                   {/* Character image mapping index */}
                   <div className="w-full h-full flex items-center justify-center relative pointer-events-none overflow-hidden rounded-md">
                     {runningRecentlyEarnedCard.imageUrl ? (
@@ -10408,7 +10408,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 <div className="flex gap-6 items-center justify-center mt-3 w-full">
                   {/* 1. Card */}
                   <div className="flex flex-col items-center">
-                    <div className="w-24 aspect-[5/7] border border-amber-400/30 rounded-none overflow-hidden  relative flex flex-col items-center justify-center p-1 bg-slate-900">
+                    <div className="w-24 aspect-[5/7] border border-amber-400/30 rounded-none overflow-hidden relative flex flex-col items-center justify-center p-1 bg-[#fdfcfc]">
                       <div className="w-full h-full flex items-center justify-center relative pointer-events-none overflow-hidden rounded-md">
                         {treasureRecentlyEarned.card.imageUrl ? (
                           <img 
@@ -10667,7 +10667,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                         });
                       }
                     }}
-                    className="flex-1 py-3 bg-[#201d1d] from-lime-500 to-lime-600 hover:from-lime-400 hover:to-lime-500 text-slate-955 font-black uppercase text-xs tracking-wider rounded-sm  hover: hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-1 cursor-pointer"
+                    className="flex-1 py-3 bg-[#201d1d] from-lime-500 to-lime-600 hover:from-lime-400 hover:to-lime-500 text-[#fdfcfc] font-black uppercase text-xs tracking-wider rounded-sm  hover:opacity-90scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-1 cursor-pointer"
                   >
                     <span>SHARE</span>
                   </button>
@@ -11477,7 +11477,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         <header className="h-16 flex items-center justify-between border-b border-white/10 px-6 bg-slate-950/80 backdrop-blur-md z-50 shrink-0 relative font-mono">
           <div className="w-10" />
           <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 pointer-events-none">
-            <h2 className="text-xl font-black italic tracking-tight leading-none uppercase text-transparent bg-clip-text bg-[#201d1d] from-purple-400 to-[#0ff] text-center">
+            <h2 className="text-xl font-black italic tracking-tight leading-none uppercase text-amber-400   from-purple-400 to-[#0ff] text-center">
               {t('mode_boss', language)}
             </h2>
           </div>
@@ -11859,7 +11859,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 animate={{ scale: 1, y: 0 }}
                 className="bg-slate-900 text-white w-full max-w-md max-h-[90dvh] rounded-none overflow-hidden  border border-slate-800 relative flex flex-col z-[1001]"
               >
-                <div className="p-4 sm:p-6 bg-[#201d1d] from-amber-400 via-orange-500 to-red-500 border-b border-slate-800 text-slate-950 flex items-center justify-between shrink-0">
+                <div className="p-4 sm:p-6 bg-[#201d1d] from-amber-400 via-orange-500 to-red-500 border-b border-slate-800 text-[#fdfcfc] flex items-center justify-between shrink-0">
                   <div className="flex items-center gap-2">
                     <Trophy size={26} className=" text-slate-950" />
                     <h2 className="text-lg sm:text-xl font-black italic uppercase tracking-tight text-slate-950">THE END</h2>
@@ -11914,7 +11914,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       setIsStoryActive(false);
                       setGameState('modeSelect');
                     }}
-                    className="w-full py-4 sm:py-5 bg-[#201d1d] from-amber-500 to-yellow-500 hover:from-amber-450 hover:to-yellow-450 text-slate-955 font-black uppercase italic tracking-widest rounded-sm  hover: hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer text-xs sm:text-sm"
+                    className="w-full py-4 sm:py-5 bg-[#201d1d] from-amber-500 to-yellow-500 hover:from-amber-450 hover:to-yellow-450 text-[#fdfcfc] font-black uppercase italic tracking-widest rounded-sm  hover:opacity-90scale-[1.02] active:scale-[0.98] transition-all cursor-pointer text-xs sm:text-sm"
                   >
                     {t('story_btn_finish', language)}
                   </button>
@@ -12011,7 +12011,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 exit={{ scale: 0.5, opacity: 0 }}
                 className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none"
               >
-                <div className="bg-[#201d1d] from-amber-400 to-yellow-400 border border-amber-300 px-8 py-4 rounded-sm  text-slate-950 font-black text-2xl uppercase italic tracking-widest text-center ">
+                <div className="bg-[#201d1d] from-amber-400 to-yellow-400 border border-amber-300 px-8 py-4 rounded-sm  text-[#fdfcfc] font-black text-2xl uppercase italic tracking-widest text-center ">
                   🚀 {language === 'ko' ? "다음 라운드 진출!" : "ADVANCED!"}
                 </div>
               </motion.div>
@@ -12131,7 +12131,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-full max-w-sm px-6 z-40">
             <button
               onClick={startTournamentMatch}
-              className="w-full py-4 bg-[#201d1d] from-yellow-450 to-amber-500 text-amber-955 font-bold uppercase rounded-sm  shadow-yellow-200/40 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-4 bg-[#201d1d] from-yellow-450 to-amber-500 text-[#fdfcfc] font-bold uppercase rounded-sm  shadow-yellow-200/40 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               <Swords size={20} />
               <span>{tournamentRound === 0 ? t('tournament_start', language) : t('tournament_next_match', language)}</span>
@@ -14095,7 +14095,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 exit={{ scale: 0.9, y: 20 }}
                 className="bg-slate-950/95 text-slate-100 w-full max-w-md max-h-[90dvh] rounded-none overflow-hidden  border border-slate-800 relative flex flex-col z-[1001] font-mono"
               >
-                <div className="p-4 sm:p-5 bg-[#201d1d] from-amber-500 to-yellow-600 text-slate-950 flex items-center justify-between border-b border-amber-700/20 shrink-0">
+                <div className="p-4 sm:p-5 bg-[#201d1d] from-amber-500 to-yellow-600 text-[#fdfcfc] flex items-center justify-between border-b border-amber-700/20 shrink-0">
                   <div className="flex items-center gap-2">
                     <ShieldAlert size={24} className="text-slate-950 animate-pulse" />
                     <h2 className="text-base sm:text-lg font-black uppercase tracking-tight leading-none">{t('under_construction_title', language)}</h2>
@@ -14308,7 +14308,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
             <div className="relative">
               {/* 캐릭터 포트레이트 */}
-              <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-none border-3 border-rose-500/60 bg-slate-950 flex items-center justify-center overflow-hidden  ring-2 ring-rose-400/30">
+              <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-none border-3 border-rose-500/60 bg-[#fdfcfc] flex items-center justify-center overflow-hidden ring-2 ring-rose-400/30">
                 <div className="w-[130%] h-[130%] shrink-0" style={getCardSpriteStyle(opponentAvatarCardId)} />
               </div>
               <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-rose-600 border border-rose-400 text-white text-[9px] font-black uppercase tracking-widest ">
@@ -14905,7 +14905,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                         <span>YOU (PLAYER)</span>
                         <span className="text-amber-400">No.{String(playerAvatarCardId).padStart(2, '0')}</span>
                       </div>
-                      <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-none overflow-hidden border border-stone-700 bg-stone-950 flex items-center justify-center">
+                      <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-none overflow-hidden border border-stone-700 bg-[#fdfcfc] flex items-center justify-center">
                         <div className="w-[130%] h-[130%] shrink-0" style={getCardSpriteStyle(playerAvatarCardId)} />
                       </div>
                       <div className="w-full text-center">
@@ -14930,7 +14930,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                         <span>OPPONENT (AI)</span>
                         <span className="text-amber-400">No.{String(opponentAvatarCardId).padStart(2, '0')}</span>
                       </div>
-                      <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-none overflow-hidden border border-stone-700 bg-stone-950 flex items-center justify-center">
+                      <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-none overflow-hidden border border-stone-700 bg-[#fdfcfc] flex items-center justify-center">
                         <div className="w-[130%] h-[130%] shrink-0" style={getCardSpriteStyle(opponentAvatarCardId)} />
                       </div>
                       <div className="w-full text-center">
@@ -17130,7 +17130,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               <button
                 type="button"
                 onClick={handleSmartOneTapMove}
-                className="min-h-[44px] px-3 py-1.5 rounded-sm bg-[#201d1d] from-amber-500 via-yellow-400 to-amber-500 hover:from-amber-400 hover:to-yellow-300 text-slate-950 font-mono text-[10px] sm:text-xs font-black uppercase tracking-tight flex items-center gap-1  active:scale-95 transition-all cursor-pointer border border-amber-300 animate-pulse"
+                className="min-h-[44px] px-3 py-1.5 rounded-sm bg-[#201d1d] from-amber-500 via-yellow-400 to-amber-500 hover:from-amber-400 hover:to-yellow-300 text-[#fdfcfc] font-mono text-[10px] sm:text-xs font-black uppercase tracking-tight flex items-center gap-1  active:scale-95 transition-all cursor-pointer border border-amber-300 animate-pulse"
                 title={language === 'ko' ? 'AI 추천 최적 카드와 위치로 원클릭 즉시 착수' : 'One-Tap Smart Play'}
               >
                 <Zap size={13} className="text-slate-950 fill-current" />
@@ -18002,7 +18002,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       <button
                         type="button"
                         onClick={handleDoubleUpReward}
-                        className="w-full py-3.5 px-4 bg-[#201d1d] from-amber-500 via-yellow-400 to-amber-500 hover:brightness-110 text-slate-950 font-mono font-black text-xs sm:text-sm rounded-sm border-2 border-yellow-300  flex items-center justify-center gap-2 cursor-pointer active:scale-95 transition-all animate-pulse"
+                        className="w-full py-3.5 px-4 bg-[#201d1d] from-amber-500 via-yellow-400 to-amber-500 hover:brightness-110 text-[#fdfcfc] font-mono font-black text-xs sm:text-sm rounded-sm border-2 border-yellow-300  flex items-center justify-center gap-2 cursor-pointer active:scale-95 transition-all animate-pulse"
                       >
                         <Sparkles size={16} className="text-slate-950 fill-current" />
                         <span>
@@ -18341,7 +18341,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     handleExitMatch(false);
                     setView?.('shop');
                   }}
-                  className="w-full bg-[#201d1d] from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-slate-950 font-black py-3.5 uppercase tracking-wider text-xs rounded-sm  active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2"
+                  className="w-full bg-[#201d1d] from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-[#fdfcfc] font-black py-3.5 uppercase tracking-wider text-xs rounded-sm  active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2"
                 >
                   <ShoppingBag size={16} />
                   {language === 'ko' ? '상점/충전소 이동 (Go to Shop)' : 'Go to Shop / Top-Up'}

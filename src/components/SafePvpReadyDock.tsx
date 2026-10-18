@@ -96,7 +96,7 @@ export const SafePvpReadyDock: React.FC<SafePvpReadyDockProps> = ({
  className={`w-16 h-16 rounded-full font-black flex flex-col items-center justify-center border-2 cursor-pointer shadow-none relative transition-all ${
  isReady
  ? 'bg-emerald-500 text-slate-950 border-white shadow-[0_0_20px_rgba(16,185,129,0.7)]'
- : 'bg-[#201d1d] text-slate-950 border-white shadow-[0_0_20px_rgba(245,158,11,0.6)]'
+ : 'bg-[#201d1d] text-[#fdfcfc] border-white shadow-[0_0_20px_rgba(245,158,11,0.6)]'
  }`}
  >
  {/* Pulsing ring when not ready */}

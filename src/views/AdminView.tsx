@@ -481,7 +481,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
  )}
  <button
  type="submit"
- className="w-full bg-[#201d1d] hover: hover: text-white font-bold text-xs py-3.5 rounded-sm active:scale-[0.98] transition-all uppercase tracking-wider shadow-none shadow-none border border-red-500/10 cursor-pointer"
+ className="w-full bg-[#201d1d] hover:opacity-90 text-white font-bold text-xs py-3.5 rounded-sm active:scale-[0.98] transition-all uppercase tracking-wider shadow-none shadow-none border border-red-500/10 cursor-pointer"
  >
  SUBMIT_CREDENTIALS
  </button>
@@ -1163,7 +1163,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
  <button
  type="submit"
  disabled={isBroadcasting || sheetSubscribers.length === 0}
- className="w-full py-4 bg-[#201d1d] hover: hover: text-slate-950 font-black text-sm uppercase rounded-sm active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-none shadow-none disabled:opacity-50 disabled:cursor-not-allowed"
+ className="w-full py-4 bg-[#201d1d] hover:opacity-90 text-[#fdfcfc] font-black text-sm uppercase rounded-sm active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-none shadow-none disabled:opacity-50 disabled:cursor-not-allowed"
  >
  {isBroadcasting ? (
  <>

@@ -57,7 +57,7 @@ export const PinchFlipCardScatter: React.FC<PinchFlipCardScatterProps> = ({
  <button
  type="button"
  onClick={handlePinchFlip}
- className="min-h-[44px] px-4 py-2 bg-[#201d1d] text-slate-950 text-xs font-black rounded-sm flex items-center gap-1.5 active:scale-95 cursor-pointer shadow-none"
+ className="min-h-[44px] px-4 py-2 bg-[#201d1d] text-[#fdfcfc] text-xs font-black rounded-sm flex items-center gap-1.5 active:scale-95 cursor-pointer shadow-none"
  >
  <Sparkles size={14} />
  <span>핀치 아웃하여 일괄 공개!</span>

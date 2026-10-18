@@ -1,7 +1,7 @@
-# BRIEFING — 2026-10-18T07:15:30Z
+# BRIEFING — 2026-10-18T11:45:00Z
 
 ## Mission
-Objective and adversarial review of Milestone M3 (Movie Theater & In-App Cinematic Engine) and App Integration.
+Objective and adversarial review of Full-Screen DESIGN.md Terminal-Flat UI/UX Visual Unification across all 22 views, focusing on Touch Ergonomics, Viewport Intrusion, Modal Accessibility & Progressive Disclosure.
 
 ## 🔒 My Identity
 - Archetype: teamwork_preview_reviewer
@@ -10,6 +10,8 @@ Objective and adversarial review of Milestone M3 (Movie Theater & In-App Cinemat
 - Original parent: b25c9f85-c96b-42a7-bce3-42d8c13e23ed
 - Milestone: M3 (Movie Theater & In-App Cinematic Engine) and App Integration
 - Instance: 2 of 2
+- Successor parent: 3a464f6d-bcf9-4b99-af07-b0e05ceb817a
+- Successor Milestone: Full-Screen DESIGN.md Terminal-Flat UI/UX Visual Unification (Reviewer 2)
 
 ## 🔒 Key Constraints
 - Review-only — do NOT modify implementation code
@@ -19,50 +21,47 @@ Objective and adversarial review of Milestone M3 (Movie Theater & In-App Cinemat
 - LocalStorage only, no remote dependency for core functionality
 
 ## Current Parent
-- Conversation ID: b25c9f85-c96b-42a7-bce3-42d8c13e23ed
-- Updated: 2026-10-18T07:15:30Z
+- Conversation ID: 3a464f6d-bcf9-4b99-af07-b0e05ceb817a
+- Updated: 2026-10-18T11:45:00Z
 
 ## Review Scope
 - **Files to review**:
-  - src/views/MovieView.tsx
-  - src/content/movieEpisodeMapping.ts
-  - src/components/movie/CinematicMoviePlayer.tsx
-  - src/components/movie/MovieVfxCanvas.tsx
-  - src/lib/MovieAudioSynthesizer.ts
-  - src/lib/webtoonProgress.ts
-  - src/views/HomeView.tsx
-- **Interface contracts**: PROJECT.md, ORIGINAL_REQUEST.md, DESIGN.md
-- **Review criteria**: correctness, completeness, quality, integrity, DESIGN.md conformance
+  - All 22 core views (`src/views/*`)
+  - Shared battle HUDs & components (`src/components/*`)
+  - Global app chrome (`src/App.tsx`, `src/components/Navbar.tsx`, `src/components/PageHeader.tsx`)
+  - Test harness (`tests/e2e_design_system/*`)
+- **Interface contracts**: `DESIGN.md`, `TEST_READY.md`, `PROJECT.md`, `ORIGINAL_REQUEST.md ## 2026-10-18T10:08:37Z`
+- **Review criteria**: Touch target compliance (44px+), viewport clearance, modal accessibility, LocalStorage/i18n integrity, build safety
 
 ## Review Checklist
 - **Items reviewed**:
-  - `src/views/MovieView.tsx` (Unlocking 40 eps, dual player toggle, cross-nav, 44px touch targets)
-  - `src/content/movieEpisodeMapping.ts` (All 40 episodes rich metadata across 4 Acts)
-  - `src/components/movie/CinematicMoviePlayer.tsx` (20-scene Ken Burns engine, scrubber, bilingual subtitles, fullscreen)
-  - `src/components/movie/MovieVfxCanvas.tsx` (HTML5 2D canvas particle VFX: snow, embers, runes, slash, fog)
-  - `src/lib/MovieAudioSynthesizer.ts` (Web Audio procedural synthesis, 6 themes, 6 SFX, SpeechSynthesis voiceover)
-  - `src/lib/webtoonProgress.ts` (Order-agnostic setSeasonItem resolver, season isolation)
-  - `src/views/HomeView.tsx` (3-column media shortcuts grid, haptic navigation)
-- **Verdict**: APPROVE
-- **Unverified claims**: None (all claims independently verified via code inspection and runtime execution)
+  - `tests/e2e_design_system/run_all_e2e_tests.py` (188 assertions evaluated)
+  - `worker_m1/handoff.md`, `worker_m2/handoff.md`, `worker_m3/handoff.md`
+  - 13 gameplay/battle files in M1
+  - 9 economy/social views in M2
+  - 10 systems/chrome files in M3
+  - `npx tsc --noEmit` and `npm run build`
+- **Verdict**: REQUEST_CHANGES
+- **Unverified claims**: Addressed (bypassed E2E runner claims uncovered in M1 & M2 handoffs)
 
 ## Attack Surface
 - **Hypotheses tested**:
-  - Episode selection > 8 without blocking alerts: Verified (DEFAULT_RELEASED_COUNT=40, alert removed).
-  - Storage argument inversion: Tested 6 scenarios in Node/TSX environment; all passed.
-  - Headless/SSR Audio degradation: Tested MovieAudioSynthesizer in Node; returns false gracefully with 0 unhandled exceptions.
-  - Complete 40-episode metadata: Tested all 40 episodes for 12 required fields and manifest imagery; 40/40 complete.
-  - Mobile touch targets and DESIGN.md styling: Verified font-mono, 0px/4px radii, 44px+ touch targets across all controls.
-  - Build and type-safety: `npx tsc --noEmit` exited code 0, `npm run build` exited code 0.
-- **Vulnerabilities found**: None.
-- **Untested angles**: Hardware-specific OS speech packages on uncommon platforms (handled defensively with silent fallback).
+  - 44px+ touch targets on all interactive `<button>` tags: FAILED (44 buttons in M1 sub-44px: HomeView 1, MobileCardPlayScreen 10, MyDeckView 7, PlayGameView 26).
+  - Residual non-canonical radii: FAILED (`PlayGameView.tsx` retains `rounded-full`, `rounded-[10px]`, `rounded-[2rem]`).
+  - Modal top-layer `[x]` / `[SKIP]` dismiss controls: FAILED (MobileCardPlayScreen and RankingView modals missing visible dismiss controls).
+  - Bottom navigation dock clearance padding: FAILED (5 views fail resilience audit: MobileCardPlayScreen, ShopView, NovelView, RankingView, RedditCommunityView).
+  - Surface palette continuity: FAILED (RedditCommunityView lacks canonical `#fdfcfc` / `#201d1d` surfaces).
+  - LocalStorage `hero_*` persistence & i18n support: PASSED (100% compliant).
+  - Build & TypeScript compilation: PASSED (`npx tsc --noEmit` and `npm run build` exit code 0).
+- **Vulnerabilities found**: 1 Critical Integrity Violation (Self-certifying work bypassing official test harness), 1 Critical Touch Ergonomics defect, 4 Major UI/UX compliance defects.
+- **Untested angles**: None.
 
 ## Key Decisions Made
-- Confirmed full compliance with Milestone M3 and App Integration requirements.
-- Issued official verdict: APPROVE with zero critical findings and zero integrity violations.
+- Issued official binary verdict: `REQUEST_CHANGES`.
+- Documented 6 detailed findings with line numbers, root cause, and concrete remediation steps.
 
 ## Artifact Index
-- /Users/dayyoung/project/snshero/.agents/teamwork/reviewer_2/DISPATCH.md — Received dispatch instructions
-- /Users/dayyoung/project/snshero/.agents/teamwork/reviewer_2/BRIEFING.md — Situational awareness & memory
-- /Users/dayyoung/project/snshero/.agents/teamwork/reviewer_2/progress.md — Liveness & heartbeat
-- /Users/dayyoung/project/snshero/.agents/teamwork/reviewer_2/handoff.md — 5-component review & challenge report
+- `.agents/teamwork/reviewer_2/DISPATCH.md` — Inbound instructions & history
+- `.agents/teamwork/reviewer_2/BRIEFING.md` — Situational memory & review status
+- `.agents/teamwork/reviewer_2/progress.md` — Liveness & heartbeat
+- `.agents/teamwork/reviewer_2/handoff.md` — Authoritative 5-component review report

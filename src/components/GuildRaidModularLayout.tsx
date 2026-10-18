@@ -136,7 +136,7 @@ export const GuildRaidModularLayout: React.FC<GuildRaidModularLayoutProps> = ({
  triggerHaptic('heavy');
  onAttack();
  }}
- className="min-h-[44px] h-13 w-full bg-[#201d1d] text-slate-950 font-black text-xs rounded-sm flex items-center justify-center gap-2 cursor-pointer active:scale-95 shadow-none hover:brightness-105"
+ className="min-h-[44px] h-13 w-full bg-[#201d1d] text-[#fdfcfc] font-black text-xs rounded-sm flex items-center justify-center gap-2 cursor-pointer active:scale-95 shadow-none hover:brightness-105"
  >
  <Flame size={18} />
  <span>길드 총공격 시전 (ATTACK)</span>

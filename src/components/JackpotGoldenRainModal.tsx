@@ -86,7 +86,7 @@ export const JackpotGoldenRainModal: React.FC<JackpotGoldenRainModalProps> = ({
  className="bg-slate-950 border-2 border-yellow-400 rounded-none w-full max-w-sm overflow-hidden shadow-none flex flex-col text-center relative z-10"
  >
  {/* Header */}
- <div className="p-3.5 bg-[#201d1d] text-slate-950 flex items-center justify-between font-black text-xs">
+ <div className="p-3.5 bg-[#201d1d] text-[#fdfcfc] flex items-center justify-between font-black text-xs">
  <div className="flex items-center gap-1.5">
  <Crown size={16} />
  <span>[ 전 서버 잭팟! 황금비 페스티벌 ]</span>
@@ -172,7 +172,7 @@ export const JackpotGoldenRainModal: React.FC<JackpotGoldenRainModalProps> = ({
  <button
  type="button"
  onClick={handleBuy}
- className="min-h-[44px] px-3 py-1.5 bg-[#201d1d] hover:brightness-105 text-slate-950 text-xs font-black rounded-sm active:scale-95 cursor-pointer shadow-none"
+ className="min-h-[44px] px-3 py-1.5 bg-[#201d1d] hover:brightness-105 text-[#fdfcfc] text-xs font-black rounded-sm active:scale-95 cursor-pointer shadow-none"
  >
  구매하기
  </button>
