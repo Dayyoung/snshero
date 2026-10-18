@@ -41,3 +41,7 @@ Ensure the remade Web Novel, Webtoon, and Movie views integrate cleanly with the
 - [ ] `npm run lint` (`tsc --noEmit`) passes with 0 TypeScript errors.
 - [ ] `npm run build` succeeds with 0 bundling errors.
 - [ ] All UI controls in `NovelView.tsx` and `MovieView.tsx` comply with `DESIGN.md` (`font-mono`, `rounded-none` containers, `rounded-sm` interactive elements, `min-h-[44px]` touch targets).
+
+## Follow-up — 2026-10-18T01:16:25Z
+
+git push
