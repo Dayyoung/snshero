@@ -3623,7 +3623,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     if (setIsAutoBattle) setIsAutoBattle(true);
                   }
                 }} 
-                className="p-2 hover:bg-white/10 rounded-full text-slate-400 hover:text-white transition-colors"
+                className="min-h-[44px] min-w-[44px] p-2 hover:bg-white/10 rounded-sm text-slate-400 hover:text-white transition-colors flex items-center justify-center cursor-pointer"
               >
                 <X size={24} />
               </button>
@@ -10773,7 +10773,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                     }
                   }}
                   className={cn(
-                    "relative z-10 px-3 py-1.5 rounded-[10px] text-xs font-bold tracking-wider transition-all select-none cursor-pointer flex items-center gap-1 active:scale-95",
+                    "relative z-10 min-h-[44px] px-3 py-1.5 rounded-sm text-xs font-bold tracking-wider transition-all select-none cursor-pointer flex items-center gap-1 active:scale-95",
                     isAutoBattle 
                       ? "bg-slate-950 text-blue-300" 
                       : "bg-slate-900 border border-slate-800 text-slate-400 hover:text-slate-300 hover:border-slate-700"
@@ -11284,7 +11284,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               setIsDungeonActive(false);
               saveDungeonState(false);
             }}
-            className="p-2.5 bg-slate-900/80 hover:bg-slate-800 text-white rounded-none active:scale-95 transition-all cursor-pointer border border-slate-800 flex items-center gap-1.5 z-50"
+            className="min-h-[44px] min-w-[44px] p-2.5 bg-slate-900/80 hover:bg-slate-800 text-white rounded-none active:scale-95 transition-all cursor-pointer border border-slate-800 flex items-center gap-1.5 z-50"
           >
             <ArrowLeft size={16} />
             <span className="text-[10px] font-bold uppercase tracking-wider">{t('back', language)}</span>
@@ -11570,7 +11570,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 setIsStoryAutoPlay(!isStoryAutoPlay);
               }}
               className={cn(
-                "flex items-center gap-1 px-2.5 py-1 rounded-sm text-[10px] font-black uppercase transition-all cursor-pointer border touch-target",
+                "flex items-center gap-1 min-h-[44px] px-2.5 py-1 rounded-sm text-[10px] font-black uppercase transition-all cursor-pointer border touch-target",
                 isStoryAutoPlay
                   ? "bg-amber-500 text-black border-amber-300  animate-pulse"
                   : "bg-slate-800/80 text-slate-300 border-slate-700 hover:bg-slate-700"
@@ -11584,7 +11584,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             <button
               type="button"
               onClick={handleSkipStory}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-sm text-[10px] font-black uppercase bg-indigo-600/90 hover:bg-indigo-500 text-white border border-indigo-400  transition-all cursor-pointer active:scale-95 touch-target"
+              className="flex items-center gap-1 min-h-[44px] px-2.5 py-1 rounded-sm text-[10px] font-black uppercase bg-indigo-600/90 hover:bg-indigo-500 text-white border border-indigo-400  transition-all cursor-pointer active:scale-95 touch-target"
             >
               <FastForward size={12} />
               <span>{t('story_btn_skip', language)}</span>
@@ -11857,7 +11857,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               <motion.div
                 initial={{ scale: 0.9, y: 20 }}
                 animate={{ scale: 1, y: 0 }}
-                className="bg-slate-900 text-white w-full max-w-md max-h-[90dvh] rounded-[2rem] overflow-hidden  border border-slate-800 relative flex flex-col z-[1001]"
+                className="bg-slate-900 text-white w-full max-w-md max-h-[90dvh] rounded-none overflow-hidden  border border-slate-800 relative flex flex-col z-[1001]"
               >
                 <div className="p-4 sm:p-6 bg-[#201d1d] from-amber-400 via-orange-500 to-red-500 border-b border-slate-800 text-slate-950 flex items-center justify-between shrink-0">
                   <div className="flex items-center gap-2">
@@ -11875,7 +11875,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       setIsStoryActive(false);
                       setGameState('modeSelect');
                     }}
-                    className="p-1.5 rounded-full bg-slate-950/20 hover:bg-slate-950/30 text-slate-950 transition-colors cursor-pointer"
+                    className="min-h-[44px] min-w-[44px] p-2 rounded-sm bg-slate-950/20 hover:bg-slate-950/30 text-slate-950 transition-colors cursor-pointer flex items-center justify-center"
                     aria-label={t('close', language)}
                   >
                     <X size={20} />
@@ -11987,7 +11987,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   setActiveTournamentTab(rIdx);
                 }}
                 className={cn(
-                  "px-3 py-1.5 text-xs font-black uppercase italic tracking-wider border transition-all rounded-sm select-none cursor-pointer hover:scale-[1.02] active:scale-[0.98] z-10",
+                  "min-h-[44px] px-3 py-1.5 text-xs font-black uppercase italic tracking-wider border transition-all rounded-sm select-none cursor-pointer hover:scale-[1.02] active:scale-[0.98] z-10 flex items-center justify-center",
                   activeTournamentTab === rIdx
                     ? "bg-[#0ff]/10 text-[#0ff] border-[#0ff]/80 "
                     : isSelectable
@@ -12018,7 +12018,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             )}
           </AnimatePresence>
 
-          <div className="flex flex-row gap-6 md:gap-10 justify-start items-stretch min-w-[900px] max-w-7xl mx-auto py-4">
+          <div className="flex flex-row gap-6 md:gap-10 justify-start items-stretch max-w-full overflow-x-auto py-4">
             {[0, 1, 2, 3].map((roundIdx) => {
               const roundLabels = [
                 t('tournament_round_16', language),
@@ -14105,7 +14105,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                       setShowConstructionModal(false);
                     }} 
-                    className="bg-slate-950/20 hover:bg-slate-950/30 text-slate-950 p-1.5 transition-all flex items-center justify-center rounded-full cursor-pointer"
+                    className="min-h-[44px] min-w-[44px] bg-slate-950/20 hover:bg-slate-950/30 text-slate-950 p-2 transition-all flex items-center justify-center rounded-sm cursor-pointer"
                     aria-label={t('close', language)}
                   >
                     <X size={16} className="text-slate-955" />
@@ -14167,7 +14167,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   </div>
                   <button 
                     onClick={() => setGuideMode(null)}
-                    className="p-1.5 sm:p-2 bg-white/10 hover:bg-white/20 rounded-none transition-colors shrink-0"
+                    className="min-h-[44px] min-w-[44px] p-1.5 sm:p-2 bg-white/10 hover:bg-white/20 rounded-none transition-colors shrink-0 flex items-center justify-center cursor-pointer"
                     aria-label={t('close', language)}
                   >
                     <X size={18} className="text-white" />
@@ -14181,7 +14181,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 <div className="p-3.5 sm:p-4 border-t border-slate-200 bg-slate-50 flex justify-end shrink-0">
                   <button
                     onClick={() => setGuideMode(null)}
-                    className="px-5 sm:px-6 py-2 sm:py-2.5 bg-slate-900 text-white font-bold rounded-sm hover:bg-slate-800 transition-colors text-xs sm:text-sm"
+                    className="min-h-[44px] px-5 sm:px-6 py-2 sm:py-2.5 bg-slate-900 text-white font-bold rounded-sm hover:bg-slate-800 transition-colors text-xs sm:text-sm flex items-center justify-center cursor-pointer"
                   >
                     {language === 'ko' ? '확인' : 'OK'}
                   </button>
@@ -14220,7 +14220,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                   </div>
                   <button
                     onClick={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
-                    className="p-1 rounded-none bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
+                    className="min-h-[44px] min-w-[44px] p-2 rounded-none bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer flex items-center justify-center"
                     aria-label={t('close', language)}
                   >
                     <X size={16} />
@@ -14274,7 +14274,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
               setGameState('lobby');
             }}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/15 bg-white/5 hover:bg-white/15 text-slate-300 hover:text-white text-xs font-bold transition-all cursor-pointer"
+            className="flex items-center gap-1.5 min-h-[44px] px-3 py-1.5 rounded-sm border border-white/15 bg-white/5 hover:bg-white/15 text-slate-300 hover:text-white text-xs font-bold transition-all cursor-pointer"
           >
             <ChevronLeft size={16} />
             <span>{language === 'ko' ? '로비로' : 'Lobby'}</span>
@@ -14444,7 +14444,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                             language === 'ko' ? '카운터 덱 자동 장착' : 'Counter Deck Equipped'
                           );
                         }}
-                        className="w-full py-2.5 px-3 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 rounded-sm flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer text-xs font-bold shadow-xs"
+                        className="w-full min-h-[44px] py-2.5 px-3 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 rounded-sm flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer text-xs font-bold shadow-xs"
                       >
                         <Zap size={14} className="text-amber-400 animate-pulse" />
                         <span>{language === 'ko' ? '⚡ 추천 상성 카운터 덱 원클릭 장착' : '⚡ Auto-Equip Counter Deck'}</span>
@@ -15931,7 +15931,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             type="button"
             onClick={handleToggleOpponentMute}
             className={cn(
-              "ml-1 px-1.5 py-0.2 rounded text-[8px] font-black uppercase tracking-wider flex items-center gap-1 active:scale-95 transition-all cursor-pointer shadow-2xs",
+              "ml-1 min-h-[44px] px-2.5 py-1 rounded-sm text-[9px] font-black uppercase tracking-wider flex items-center gap-1 active:scale-95 transition-all cursor-pointer shadow-2xs",
               isOpponentMuted
                 ? "bg-rose-600 text-white hover:bg-rose-700"
                 : "bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700"
@@ -17115,7 +17115,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             <button
               type="button"
               onClick={() => setIsEmoteModalOpen(true)}
-              className="ml-1 px-1.5 py-0.2 rounded bg-indigo-600 hover:bg-indigo-500 text-white text-[8px] font-black uppercase tracking-wider flex items-center gap-1 active:scale-95 transition-all cursor-pointer shadow-2xs"
+              className="ml-1 min-h-[44px] px-2.5 py-1 rounded-sm bg-indigo-600 hover:bg-indigo-500 text-white text-[9px] font-black uppercase tracking-wider flex items-center gap-1 active:scale-95 transition-all cursor-pointer shadow-2xs"
               title={language === 'ko' ? '감정표현 보내기' : 'Send Emote'}
             >
               <span>💬</span>
@@ -17130,7 +17130,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               <button
                 type="button"
                 onClick={handleSmartOneTapMove}
-                className="px-2.5 py-1 rounded-sm bg-[#201d1d] from-amber-500 via-yellow-400 to-amber-500 hover:from-amber-400 hover:to-yellow-300 text-slate-950 font-mono text-[10px] sm:text-xs font-black uppercase tracking-tight flex items-center gap-1  active:scale-95 transition-all cursor-pointer border border-amber-300 animate-pulse"
+                className="min-h-[44px] px-3 py-1.5 rounded-sm bg-[#201d1d] from-amber-500 via-yellow-400 to-amber-500 hover:from-amber-400 hover:to-yellow-300 text-slate-950 font-mono text-[10px] sm:text-xs font-black uppercase tracking-tight flex items-center gap-1  active:scale-95 transition-all cursor-pointer border border-amber-300 animate-pulse"
                 title={language === 'ko' ? 'AI 추천 최적 카드와 위치로 원클릭 즉시 착수' : 'One-Tap Smart Play'}
               >
                 <Zap size={13} className="text-slate-950 fill-current" />
@@ -17252,7 +17252,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 <button
                   type="button"
                   onClick={() => setShowCortanaHud(true)}
-                  className="ml-2 px-1.5 py-0.2 rounded-xs bg-indigo-950/90 hover:bg-indigo-900 border border-indigo-500/50 text-indigo-300 text-[8px] sm:text-[9px] font-mono font-bold uppercase transition-all cursor-pointer flex items-center gap-1 active:scale-95 shadow-2xs"
+                  className="ml-2 min-h-[44px] px-2.5 py-1 rounded-sm bg-indigo-950/90 hover:bg-indigo-900 border border-indigo-500/50 text-indigo-300 text-[8px] sm:text-[9px] font-mono font-bold uppercase transition-all cursor-pointer flex items-center gap-1 active:scale-95 shadow-2xs"
                   title={language === 'ko' ? '코타나 AI 전술 HUD 열기' : 'Open Cortana AI HUD'}
                 >
                   <Cpu size={10} className="text-indigo-400 animate-pulse shrink-0" />
@@ -17289,7 +17289,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 <button
                   type="button"
                   onClick={() => setShowCortanaHud(false)}
-                  className="p-1.5 bg-slate-800 hover:bg-slate-700 rounded-none text-slate-400 hover:text-white transition-colors cursor-pointer"
+                  className="min-h-[44px] min-w-[44px] p-2 bg-slate-800 hover:bg-slate-700 rounded-sm text-slate-400 hover:text-white transition-colors cursor-pointer flex items-center justify-center"
                 >
                   <X size={16} />
                 </button>
@@ -17431,7 +17431,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                             <button
                               key={oIdx}
                               onClick={() => handleSelectOperatorTactic(opt.strategy || 'balanced')}
-                              className="flex-1 bg-indigo-950 hover:bg-indigo-900 border border-indigo-500/30 hover:border-indigo-400 text-[8px] font-black py-1 px-0.5 rounded-sm text-indigo-300 transition-all text-center tracking-tighter cursor-pointer"
+                              className="flex-1 min-h-[44px] bg-indigo-950 hover:bg-indigo-900 border border-indigo-500/30 hover:border-indigo-400 text-[8px] font-black py-1 px-0.5 rounded-sm text-indigo-300 transition-all text-center tracking-tighter cursor-pointer flex items-center justify-center"
                             >
                               {opt.label}
                             </button>
@@ -17621,14 +17621,14 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               <div className="flex gap-2 font-mono text-xs select-none">
                 <button
                   onClick={handleCopyReplayLink}
-                  className="flex-1 py-2.5 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 rounded-sm font-bold flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 transition-all shadow-xs"
+                  className="flex-1 min-h-[44px] py-2.5 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 rounded-sm font-bold flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 transition-all shadow-xs"
                 >
                   <Share2 size={13} className="text-amber-400" />
                   <span>{replayCopied ? (language === 'ko' ? '[✓ 리플레이 링크 복사됨]' : '[✓ Replay Copied]') : (language === 'ko' ? '[📋 리플레이 링크 복사]' : '[📋 Copy Replay Link]')}</span>
                 </button>
                 <button
                   onClick={() => setShowSportsmanshipModal(true)}
-                  className="flex-1 py-2.5 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-400 rounded-sm font-bold flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 transition-all shadow-xs"
+                  className="flex-1 min-h-[44px] py-2.5 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-400 rounded-sm font-bold flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 transition-all shadow-xs"
                 >
                   <Smile size={14} className="text-amber-400" />
                   <span>{language === 'ko' ? '[👍 상대방 매너 칭찬]' : '[👍 Kudos to Rival]'}</span>
@@ -17958,7 +17958,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       console.error(e);
                     }
                   }}
-                  className="px-3 py-2 bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-200 border border-indigo-500/40 rounded-sm text-xs font-black uppercase tracking-wider flex items-center gap-1.5 transition-all cursor-pointer  active:scale-95"
+                  className="min-h-[44px] px-3 py-2 bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-200 border border-indigo-500/40 rounded-sm text-xs font-black uppercase tracking-wider flex items-center gap-1.5 transition-all cursor-pointer  active:scale-95"
                 >
                   <UserPlus size={14} />
                   {language === 'ko' ? '친구 신청' : 'Add Friend'}
@@ -17975,7 +17975,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                       language === 'ko' ? '상대 프로필 조회' : 'Inspect Profile'
                     );
                   }}
-                  className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-sm text-xs font-black uppercase tracking-wider flex items-center gap-1.5 transition-all cursor-pointer  active:scale-95"
+                  className="min-h-[44px] px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-sm text-xs font-black uppercase tracking-wider flex items-center gap-1.5 transition-all cursor-pointer  active:scale-95"
                 >
                   <Eye size={14} />
                   {language === 'ko' ? '프로필 조회' : 'Inspect Profile'}
@@ -18348,7 +18348,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 </button>
                 <button 
                   onClick={() => setShowInsufficientPopup(false)}
-                  className="w-full bg-slate-900 hover:bg-slate-800 text-slate-300 py-2.5 font-bold uppercase tracking-wider text-xs rounded-sm cursor-pointer border border-white/5"
+                  className="w-full min-h-[44px] bg-slate-900 hover:bg-slate-800 text-slate-300 py-2.5 font-bold uppercase tracking-wider text-xs rounded-sm cursor-pointer border border-white/5 flex items-center justify-center"
                 >
                   {language === 'ko' ? '닫기' : 'Close'}
                 </button>
@@ -18377,7 +18377,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
             >
               <button
                 onClick={() => setPreviewHandCard(null)}
-                className="absolute top-4 right-4 w-8 h-8 bg-slate-800 hover:bg-slate-700 rounded-full flex items-center justify-center text-slate-400 hover:text-white"
+                className="absolute top-4 right-4 min-w-[44px] min-h-[44px] bg-slate-800 hover:bg-slate-700 rounded-sm flex items-center justify-center text-slate-400 hover:text-white cursor-pointer"
               >
                 <X size={18} />
               </button>
@@ -18405,7 +18405,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
               <button
                 onClick={() => setPreviewHandCard(null)}
-                className="w-full py-2.5 bg-indigo-600 text-white font-bold rounded-sm hover:bg-indigo-700 transition-colors text-xs"
+                className="w-full min-h-[44px] py-2.5 bg-indigo-600 text-white font-bold rounded-sm hover:bg-indigo-700 transition-colors text-xs flex items-center justify-center"
               >
                 {language === 'ko' ? '확인' : 'Confirm'}
               </button>
@@ -18471,7 +18471,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
 
             <button
               onClick={() => setIsTextureCaching(false)}
-              className="w-full mt-2 py-1.5 bg-[#201d1d] hover:bg-black text-[#fdfcfc] text-[11px] font-bold rounded-sm transition-all cursor-pointer"
+              className="w-full min-h-[44px] mt-2 py-1.5 bg-[#201d1d] hover:bg-black text-[#fdfcfc] text-[11px] font-bold rounded-sm transition-all cursor-pointer flex items-center justify-center"
             >
               {language === 'ko' ? '▶ 바로 시작하기' : '▶ Start Immediately'}
             </button>

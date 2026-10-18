@@ -125,11 +125,11 @@ const CommentItem: React.FC<CommentItemProps> = ({
 
   if (isCollapsed) {
     return (
-      <div className="text-xs opacity-50 py-1 flex items-center gap-2">
+      <div className="text-xs opacity-50 py-1 flex items-center gap-2 font-mono">
         <button
           type="button"
           onClick={() => setIsCollapsed(false)}
-          className="flex items-center gap-1.5 font-bold hover:underline cursor-pointer"
+          className="flex items-center gap-1.5 font-bold hover:underline cursor-pointer min-h-[44px]"
         >
           <ChevronDown className="w-3.5 h-3.5" />
           <span>[+] {comment.author}</span>
@@ -142,12 +142,12 @@ const CommentItem: React.FC<CommentItemProps> = ({
   }
 
   return (
-    <div className="relative group text-xs font-sans w-full max-w-full overflow-hidden break-words">
+    <div className="relative group text-xs font-mono w-full max-w-full overflow-hidden break-words">
       {/* 1. 작성자 헤더 */}
       <div className="flex items-center gap-2 mb-1.5 flex-wrap">
         <div
           onClick={() => onOpenUserProfile(comment.author)}
-          className="w-5 h-5 rounded-full overflow-hidden bg-gradient-to-tr from-sky-400 to-indigo-500 flex-shrink-0 cursor-pointer flex items-center justify-center text-[10px] text-white font-bold"
+          className="w-5 h-5 rounded-sm overflow-hidden bg-[#22272B] flex-shrink-0 cursor-pointer flex items-center justify-center text-[10px] text-white font-bold"
         >
           {comment.authorAvatar ? (
             <img src={comment.authorAvatar} alt="" className="w-full h-full object-cover" />
@@ -159,11 +159,11 @@ const CommentItem: React.FC<CommentItemProps> = ({
         <button
           type="button"
           onClick={() => onOpenUserProfile(comment.author)}
-          className="font-bold hover:underline cursor-pointer flex items-center gap-1"
+          className="font-bold hover:underline cursor-pointer flex items-center gap-1 min-h-[44px] px-1"
         >
           <span>{comment.author}</span>
           {comment.isAuthorOp && (
-            <span className="px-1 py-0.2 rounded bg-sky-500/20 text-sky-400 text-[9px] font-extrabold uppercase">
+            <span className="px-1 py-0.2 rounded-sm bg-sky-500/20 text-sky-400 text-[9px] font-extrabold uppercase">
               작성자
             </span>
           )}
@@ -177,7 +177,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
           <button
             type="button"
             onClick={() => setShowOriginal(!showOriginal)}
-            className="inline-flex items-center gap-1 text-[10px] text-blue-500 font-semibold hover:underline cursor-pointer ml-1"
+            className="inline-flex items-center gap-1 text-[10px] text-blue-500 font-semibold hover:underline cursor-pointer ml-1 min-h-[44px] px-1"
             title={showOriginal ? (isKo ? '번역문 보기' : 'Show translation') : (isKo ? '원문 보기' : 'Show original')}
           >
             <Globe className="w-2.5 h-2.5" />
@@ -188,15 +188,16 @@ const CommentItem: React.FC<CommentItemProps> = ({
         <button
           type="button"
           onClick={() => setIsCollapsed(true)}
-          className="p-0.5 rounded opacity-40 hover:opacity-100 cursor-pointer"
+          className="w-11 h-11 flex items-center justify-center rounded-sm opacity-40 hover:opacity-100 cursor-pointer min-h-[44px]"
           title={isKo ? "스레드 접기" : "Collapse thread"}
+          aria-label="Collapse thread"
         >
           <ChevronUp className="w-3 h-3" />
         </button>
       </div>
 
       {/* 2. 본문 (설정된 언어로 번역된 텍스트 자동 반영) */}
-      <div className="pl-7 text-xs sm:text-sm leading-relaxed whitespace-pre-line opacity-90 mb-2 font-sans break-words">
+      <div className="pl-7 text-xs sm:text-sm leading-relaxed whitespace-pre-line opacity-90 mb-2 font-mono break-words">
         {displayBody}
       </div>
 
@@ -206,9 +207,10 @@ const CommentItem: React.FC<CommentItemProps> = ({
           <button
             type="button"
             onClick={() => onVoteComment(comment.id, 'up')}
-            className={`p-0.5 rounded cursor-pointer ${
+            className={`w-11 h-11 flex items-center justify-center rounded-sm cursor-pointer min-h-[44px] ${
               comment.userVote === 'up' ? 'text-[#FF4500]' : 'hover:text-[#FF4500]'
             }`}
+            aria-label="Upvote comment"
           >
             <ArrowBigUp className="w-4 h-4 fill-current" />
           </button>
@@ -220,9 +222,10 @@ const CommentItem: React.FC<CommentItemProps> = ({
           <button
             type="button"
             onClick={() => onVoteComment(comment.id, 'down')}
-            className={`p-0.5 rounded cursor-pointer ${
+            className={`w-11 h-11 flex items-center justify-center rounded-sm cursor-pointer min-h-[44px] ${
               comment.userVote === 'down' ? 'text-[#7193FF]' : 'hover:text-[#7193FF]'
             }`}
+            aria-label="Downvote comment"
           >
             <ArrowBigDown className="w-4 h-4 fill-current" />
           </button>
@@ -231,7 +234,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
         <button
           type="button"
           onClick={() => setIsReplying(!isReplying)}
-          className="flex items-center gap-1 hover:text-[#FF4500] cursor-pointer"
+          className="flex items-center gap-1 hover:text-[#FF4500] cursor-pointer min-h-[44px] px-2 py-1"
         >
           <CornerDownRight className="w-3.5 h-3.5" />
           <span>{isKo ? '답글 달기' : 'Reply'}</span>
@@ -241,7 +244,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
       {/* 4. 인라인 답글 입력 폼 */}
       {isReplying && (
         <form onSubmit={handleReplySubmit} className="mt-2.5 pl-3 sm:pl-7 w-full max-w-full">
-          <div className={`p-2.5 rounded-xl border ${
+          <div className={`p-2.5 rounded-none border ${
             isDark ? 'bg-[#0E1113] border-[#2E363E]' : 'bg-gray-50 border-gray-300'
           }`}>
             <textarea
@@ -249,20 +252,20 @@ const CommentItem: React.FC<CommentItemProps> = ({
               value={replyText}
               onChange={(e) => setReplyText(e.target.value)}
               placeholder={isKo ? `u/${comment.author} 님에게 답글 작성...` : `Reply to u/${comment.author}...`}
-              className="w-full bg-transparent text-xs outline-none resize-none font-sans"
+              className="w-full bg-transparent text-xs outline-none resize-none font-mono"
               autoFocus
             />
             <div className="flex justify-end gap-2 mt-1">
               <button
                 type="button"
                 onClick={() => setIsReplying(false)}
-                className="px-3 py-1 rounded-full text-[11px] font-semibold opacity-70 hover:opacity-100 cursor-pointer"
+                className="px-3 py-1.5 rounded-sm text-[11px] font-semibold opacity-70 hover:opacity-100 cursor-pointer min-h-[44px]"
               >
                 {isKo ? '취소' : 'Cancel'}
               </button>
               <button
                 type="submit"
-                className="px-3.5 py-1 rounded-full bg-[#FF4500] text-white text-[11px] font-bold cursor-pointer hover:bg-[#FF5414]"
+                className="px-3.5 py-1.5 rounded-sm bg-[#FF4500] text-white text-[11px] font-bold cursor-pointer hover:bg-[#FF5414] min-h-[44px]"
               >
                 {isKo ? '답글 등록' : 'Reply'}
               </button>

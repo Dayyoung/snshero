@@ -52,7 +52,7 @@ export const RedditSubredditHeader: React.FC<RedditSubredditHeaderProps> = ({
     const info = getFrontPageInfo();
 
     return (
-      <div className={`rounded-2xl border p-4 sm:p-5 mb-4 shadow-sm flex items-center justify-between transition-colors w-full max-w-full overflow-hidden ${
+      <div className={`rounded-none border p-4 sm:p-5 mb-4 flex items-center justify-between font-mono transition-colors w-full max-w-full overflow-hidden ${
         isDark ? 'bg-[#181C1F] border-[#22272B] text-gray-200' : 'bg-white border-gray-200 text-gray-800'
       }`}>
         <div>
@@ -69,11 +69,11 @@ export const RedditSubredditHeader: React.FC<RedditSubredditHeaderProps> = ({
   }
 
   return (
-    <div className={`rounded-2xl border mb-4 w-full max-w-full overflow-hidden shadow-sm transition-colors ${
+    <div className={`rounded-none border mb-4 w-full max-w-full overflow-hidden font-mono transition-colors ${
       isDark ? 'bg-[#181C1F] border-[#22272B] text-gray-200' : 'bg-white border-gray-200 text-gray-800'
     }`}>
       {/* 1. 커버 배너 이미지 */}
-      <div className="h-28 sm:h-40 w-full relative bg-gradient-to-r from-amber-500 via-[#FF4500] to-purple-600 overflow-hidden">
+      <div className="h-28 sm:h-40 w-full relative bg-[#FF4500] overflow-hidden">
         {subreddit.bannerUrl && (
           <img
             src={subreddit.bannerUrl}
@@ -87,7 +87,7 @@ export const RedditSubredditHeader: React.FC<RedditSubredditHeaderProps> = ({
       <div className="px-4 pb-3 sm:px-6 relative">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 -mt-8 sm:-mt-10 mb-3">
           <div className="flex items-end gap-3 sm:gap-4">
-            <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full border-4 overflow-hidden flex-shrink-0 shadow-lg relative bg-white ${
+            <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-none border overflow-hidden flex-shrink-0 relative bg-white ${
               isDark ? 'border-[#181C1F]' : 'border-white'
             }`}>
               {subreddit.iconUrl ? (
@@ -114,7 +114,7 @@ export const RedditSubredditHeader: React.FC<RedditSubredditHeaderProps> = ({
             <button
               type="button"
               onClick={onToggleJoin}
-              className={`px-5 py-2 rounded-full font-bold text-xs cursor-pointer shadow-sm transition-all ${
+              className={`px-5 py-2 rounded-sm font-bold text-xs cursor-pointer transition-colors min-h-[44px] ${
                 isJoined
                   ? isDark
                     ? 'border border-gray-600 text-gray-200 hover:border-red-500 hover:text-red-400'
@@ -128,10 +128,11 @@ export const RedditSubredditHeader: React.FC<RedditSubredditHeaderProps> = ({
             {isJoined && (
               <button
                 type="button"
-                className={`p-2 rounded-full border cursor-pointer transition-colors ${
+                className={`w-11 h-11 flex items-center justify-center rounded-sm border cursor-pointer transition-colors min-h-[44px] ${
                   isDark ? 'border-gray-700 hover:bg-[#22272B]' : 'border-gray-200 hover:bg-gray-100'
                 }`}
                 title={isKo ? "알림 설정" : "Community Notifications"}
+                aria-label="Community Notifications"
               >
                 <Bell className="w-4 h-4 text-[#FF4500]" />
               </button>
@@ -150,7 +151,7 @@ export const RedditSubredditHeader: React.FC<RedditSubredditHeaderProps> = ({
               key={tab.id}
               type="button"
               onClick={() => onSelectTab(tab.id as 'posts' | 'about' | 'rules')}
-              className={`pb-1 cursor-pointer uppercase tracking-wider transition-colors relative ${
+              className={`pb-1 cursor-pointer uppercase tracking-wider transition-colors relative min-h-[44px] flex items-center ${
                 activeTab === tab.id
                   ? 'text-[#FF4500]'
                   : 'opacity-60 hover:opacity-100'
@@ -158,7 +159,7 @@ export const RedditSubredditHeader: React.FC<RedditSubredditHeaderProps> = ({
             >
               <span>{tab.label}</span>
               {activeTab === tab.id && (
-                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#FF4500] rounded-full" />
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#FF4500] rounded-none" />
               )}
             </button>
           ))}

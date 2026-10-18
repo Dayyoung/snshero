@@ -759,7 +759,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
                       step="0.01" 
                       value={bgmVolume} 
                       onChange={(e) => setBgmVolume(parseFloat(e.target.value))}
-                      className="w-full h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+                      className="w-full h-1 bg-slate-200 rounded-sm appearance-none cursor-pointer accent-indigo-600"
                     />
                   </div>
 
@@ -1401,7 +1401,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
                  <motion.div
                    initial={{ opacity: 0, y: 10 }}
                    animate={{ opacity: 1, y: 0 }}
-                   className="p-3 bg-green-50 border border-green-200 text-green-700 text-xs font-bold rounded-lg flex items-center justify-center gap-2"
+                   className="p-3 bg-green-50 border border-green-200 text-green-700 text-xs font-bold rounded-sm flex items-center justify-center gap-2"
                  >
                    <CheckCircle2 size={14} />
                    {t('feedback_success', language)}

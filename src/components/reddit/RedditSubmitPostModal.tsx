@@ -109,7 +109,7 @@ export const RedditSubmitPostModal: React.FC<RedditSubmitPostModalProps> = ({
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black/75 backdrop-blur-sm flex justify-center items-center p-3 sm:p-6">
       <div className="fixed inset-0 -z-10" onClick={onClose} />
 
-      <div className={`relative w-full max-w-2xl rounded-2xl border shadow-2xl overflow-hidden transition-colors ${
+      <div className={`relative w-full max-w-2xl rounded-none border overflow-hidden font-mono transition-colors ${
         isDark ? 'bg-[#181C1F] border-[#2E363E] text-gray-200' : 'bg-white border-gray-200 text-gray-900'
       }`}>
         {/* 모달 헤더 */}
@@ -117,7 +117,12 @@ export const RedditSubmitPostModal: React.FC<RedditSubmitPostModalProps> = ({
           <div className="flex items-center gap-2">
             <span className="font-extrabold text-base">{isKo ? '게시물 작성' : 'Create a Post'}</span>
           </div>
-          <button type="button" onClick={onClose} className="p-1 rounded-full hover:bg-black/10 cursor-pointer">
+          <button
+            type="button"
+            onClick={onClose}
+            className="w-11 h-11 flex items-center justify-center rounded-sm hover:bg-black/10 cursor-pointer min-h-[44px]"
+            aria-label="Close"
+          >
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -132,7 +137,7 @@ export const RedditSubmitPostModal: React.FC<RedditSubmitPostModalProps> = ({
               <select
                 value={selectedSub}
                 onChange={(e) => setSelectedSub(e.target.value)}
-                className={`w-full px-3 py-2 rounded-xl border text-xs font-bold appearance-none cursor-pointer outline-none ${
+                className={`w-full px-3 py-2 rounded-none border text-xs font-bold appearance-none cursor-pointer outline-none min-h-[44px] font-mono ${
                   isDark ? 'bg-[#0E1113] border-[#2E363E] text-white' : 'bg-gray-50 border-gray-300 text-gray-900'
                 }`}
               >
@@ -151,7 +156,7 @@ export const RedditSubmitPostModal: React.FC<RedditSubmitPostModalProps> = ({
             <button
               type="button"
               onClick={() => setActiveTab('text')}
-              className={`flex items-center gap-1.5 px-4 py-2.5 cursor-pointer border-b-2 transition-colors ${
+              className={`flex items-center gap-1.5 px-4 py-2.5 cursor-pointer border-b-2 transition-colors min-h-[44px] ${
                 activeTab === 'text' ? 'border-[#FF4500] text-[#FF4500]' : 'border-transparent opacity-60 hover:opacity-100'
               }`}
             >
@@ -161,7 +166,7 @@ export const RedditSubmitPostModal: React.FC<RedditSubmitPostModalProps> = ({
             <button
               type="button"
               onClick={() => setActiveTab('image')}
-              className={`flex items-center gap-1.5 px-4 py-2.5 cursor-pointer border-b-2 transition-colors ${
+              className={`flex items-center gap-1.5 px-4 py-2.5 cursor-pointer border-b-2 transition-colors min-h-[44px] ${
                 activeTab === 'image' ? 'border-[#FF4500] text-[#FF4500]' : 'border-transparent opacity-60 hover:opacity-100'
               }`}
             >
@@ -171,7 +176,7 @@ export const RedditSubmitPostModal: React.FC<RedditSubmitPostModalProps> = ({
             <button
               type="button"
               onClick={() => setActiveTab('link')}
-              className={`flex items-center gap-1.5 px-4 py-2.5 cursor-pointer border-b-2 transition-colors ${
+              className={`flex items-center gap-1.5 px-4 py-2.5 cursor-pointer border-b-2 transition-colors min-h-[44px] ${
                 activeTab === 'link' ? 'border-[#FF4500] text-[#FF4500]' : 'border-transparent opacity-60 hover:opacity-100'
               }`}
             >
@@ -188,7 +193,7 @@ export const RedditSubmitPostModal: React.FC<RedditSubmitPostModalProps> = ({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder={isKo ? "제목 (필수 입력)" : "Title (required)"}
-              className={`w-full px-3 py-2.5 rounded-xl border text-sm font-medium outline-none focus:ring-1 focus:ring-[#FF4500] ${
+              className={`w-full px-3 py-2.5 rounded-none border text-sm font-medium outline-none focus:ring-1 focus:ring-[#FF4500] min-h-[44px] font-mono ${
                 isDark ? 'bg-[#0E1113] border-[#2E363E]' : 'bg-gray-50 border-gray-300'
               }`}
             />
@@ -204,12 +209,12 @@ export const RedditSubmitPostModal: React.FC<RedditSubmitPostModalProps> = ({
                 value={imageUrl}
                 onChange={(e) => setImageUrl(e.target.value)}
                 placeholder="https://images.unsplash.com/..."
-                className={`w-full px-3 py-2 rounded-xl border text-xs outline-none focus:ring-1 focus:ring-[#FF4500] ${
+                className={`w-full px-3 py-2 rounded-none border text-xs outline-none focus:ring-1 focus:ring-[#FF4500] min-h-[44px] font-mono ${
                   isDark ? 'bg-[#0E1113] border-[#2E363E]' : 'bg-gray-50 border-gray-300'
                 }`}
               />
               {imageUrl && (
-                <div className="mt-2 rounded-lg overflow-hidden max-h-48 bg-black/10 flex items-center justify-center">
+                <div className="mt-2 rounded-none overflow-hidden max-h-48 bg-black/10 flex items-center justify-center">
                   <img src={imageUrl} alt="preview" className="h-48 object-contain" />
                 </div>
               )}
@@ -226,7 +231,7 @@ export const RedditSubmitPostModal: React.FC<RedditSubmitPostModalProps> = ({
                 value={linkUrl}
                 onChange={(e) => setLinkUrl(e.target.value)}
                 placeholder="https://..."
-                className={`w-full px-3 py-2 rounded-xl border text-xs outline-none focus:ring-1 focus:ring-[#FF4500] ${
+                className={`w-full px-3 py-2 rounded-none border text-xs outline-none focus:ring-1 focus:ring-[#FF4500] min-h-[44px] font-mono ${
                   isDark ? 'bg-[#0E1113] border-[#2E363E]' : 'bg-gray-50 border-gray-300'
                 }`}
               />
@@ -240,7 +245,7 @@ export const RedditSubmitPostModal: React.FC<RedditSubmitPostModalProps> = ({
               value={body}
               onChange={(e) => setBody(e.target.value)}
               placeholder={isKo ? "본문 내용 (마크다운 지원, 선택 사항)..." : "Text (optional markdown supported)..."}
-              className={`w-full p-3 rounded-xl border text-xs sm:text-sm outline-none resize-none focus:ring-1 focus:ring-[#FF4500] font-sans ${
+              className={`w-full p-3 rounded-none border text-xs sm:text-sm outline-none resize-none focus:ring-1 focus:ring-[#FF4500] font-mono ${
                 isDark ? 'bg-[#0E1113] border-[#2E363E]' : 'bg-gray-50 border-gray-300'
               }`}
             />
@@ -257,7 +262,7 @@ export const RedditSubmitPostModal: React.FC<RedditSubmitPostModalProps> = ({
                   key={f.text}
                   type="button"
                   onClick={() => setSelectedFlair(f.text)}
-                  className={`px-3 py-1 rounded-full text-xs font-bold cursor-pointer transition-all border ${
+                  className={`px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-all border min-h-[44px] ${
                     selectedFlair === f.text
                       ? 'border-[#FF4500] text-white bg-[#FF4500]'
                       : isDark
@@ -278,14 +283,14 @@ export const RedditSubmitPostModal: React.FC<RedditSubmitPostModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-full font-bold text-xs opacity-70 hover:opacity-100 cursor-pointer"
+              className="px-4 py-2 rounded-sm font-bold text-xs opacity-70 hover:opacity-100 cursor-pointer min-h-[44px]"
             >
               {isKo ? '취소' : 'Cancel'}
             </button>
             <button
               type="submit"
               disabled={!title.trim()}
-              className="px-6 py-2 rounded-full bg-[#FF4500] disabled:opacity-40 text-white font-extrabold text-xs cursor-pointer hover:bg-[#FF5414] shadow-md transition-all"
+              className="px-6 py-2 rounded-sm bg-[#FF4500] disabled:opacity-40 text-white font-extrabold text-xs cursor-pointer hover:bg-[#FF5414] min-h-[44px] transition-all"
             >
               {isKo ? '게시하기' : 'Post'}
             </button>

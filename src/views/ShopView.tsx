@@ -232,7 +232,7 @@ const PayPalButtonWrapper = ({ item, updateSns, playSfx, setSuccessVisible, setS
 
   if (isRejected) {
     return (
-      <div className="w-full h-12 rounded-lg bg-red-50 border border-red-200 flex items-center justify-center gap-2 text-red-600 text-[10px] font-bold uppercase tracking-widest">
+      <div className="w-full h-12 rounded-sm bg-red-50 border border-red-200 flex items-center justify-center gap-2 text-red-600 text-[10px] font-bold uppercase tracking-widest">
         <AlertCircle size={14} />
         {language === 'ko' ? '결제 모듈 로드 실패' : 'Payment SDK Error'}
       </div>
@@ -241,8 +241,8 @@ const PayPalButtonWrapper = ({ item, updateSns, playSfx, setSuccessVisible, setS
 
   if (isPending) {
     return (
-      <div className="w-full h-12 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-center gap-3">
-        <div className="w-4 h-4 border-2 border-black/10 border-t-black rounded-full animate-spin" />
+      <div className="w-full h-12 rounded-sm bg-gray-50 border border-gray-200 flex items-center justify-center gap-3">
+        <div className="w-4 h-4 border-2 border-black/10 border-t-black rounded-none animate-spin" />
         <span className="text-[10px] font-bold uppercase tracking-widest opacity-40">
           {language === 'ko' ? '로딩 중...' : 'Loading...'}
         </span>
@@ -1201,20 +1201,20 @@ export const ShopView: React.FC<ShopViewProps> = ({
       <motion.article
         key={product.id}
         whileHover={lowSpecMode ? undefined : { y: -4 }}
-        className="bg-white border border-slate-100 p-4 sm:p-5 md:p-6 flex flex-col gap-4 relative overflow-hidden group shadow-sm hover:shadow-md transition-all rounded-2xl text-left"
+        className="bg-white border border-slate-200 p-4 sm:p-5 md:p-6 flex flex-col gap-4 relative overflow-hidden group transition-all rounded-none text-left"
       >
         <div className="absolute top-0 right-0 w-24 h-24 sm:w-32 sm:h-32 bg-slate-900/5 blur-[42px] sm:blur-[52px] -mr-12 -mt-12 sm:-mr-16 sm:-mt-16 transition-all duration-500 group-hover:bg-slate-900/10" />
         <div className="flex items-start justify-between gap-3 relative z-10">
-          <div className="bg-slate-900 text-white px-2.5 sm:px-3 py-1 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest rounded-lg">
+          <div className="bg-slate-900 text-white px-2.5 sm:px-3 py-1 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest rounded-sm">
             {sectionLabel}
           </div>
-          <div className="bg-amber-50 text-amber-700 px-2.5 py-1 rounded-lg text-[9px] sm:text-[10px] font-black uppercase tracking-widest border border-amber-100">
+          <div className="bg-amber-50 text-amber-700 px-2.5 py-1 rounded-sm text-[9px] sm:text-[10px] font-black uppercase tracking-widest border border-amber-100">
             {priceLabel}
           </div>
         </div>
 
         <div className="flex gap-4 items-start relative z-10">
-          <div className="w-24 sm:w-28 shrink-0 aspect-[5/7] rounded-2xl overflow-hidden border border-slate-100 shadow-sm bg-slate-50">
+          <div className="w-24 sm:w-28 shrink-0 aspect-[5/7] rounded-none overflow-hidden border border-slate-200 bg-slate-50">
             {primaryCard ? (
               <CardItem
                 card={{
@@ -1272,7 +1272,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
             <button
               type="button"
               onClick={() => handleOpenMerchProduct(product)}
-              className="inline-flex min-h-11 w-full items-center justify-between gap-3 rounded-xl bg-slate-950 px-4 py-3 text-left text-white shadow-sm transition-all hover:bg-slate-800 active:scale-[0.98] touch-target sm:w-auto sm:min-w-[180px]"
+              className="inline-flex min-h-11 w-full items-center justify-between gap-3 rounded-sm bg-slate-950 px-4 py-3 text-left text-white transition-all hover:bg-slate-800 active:scale-[0.98] touch-target sm:w-auto sm:min-w-[180px]"
               aria-label={t(product.titleKey, language)}
             >
               <span className="text-[10px] sm:text-xs font-black uppercase tracking-[0.18em] text-white">
@@ -1959,7 +1959,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
   }, [activeGachaPackType, gachaPityState]);
 
   const getGuideButtonClassName = (tone: 'slate' | 'amber' = 'slate') => cn(
-    'inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-full border bg-white shadow-sm transition active:scale-95 touch-target',
+    'inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-sm border bg-white transition active:scale-95 touch-target',
     tone === 'amber'
       ? 'border-amber-300 text-amber-700 hover:border-amber-400 hover:bg-amber-50'
       : 'border-slate-300 text-slate-700 hover:border-slate-900 hover:bg-slate-50 hover:text-slate-900'
@@ -1990,7 +1990,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
     const shortfallHint = options?.shortfallHint ?? t('sns_spend_help_hint', language);
 
     return (
-      <div className={cn('rounded-xl border px-3 py-2.5 text-[10px] font-bold tracking-wide', accentClasses)}>
+      <div className={cn('rounded-none border px-3 py-2.5 text-[10px] font-bold tracking-wide', accentClasses)}>
         <div className="flex items-start justify-between gap-2">
           <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-1 pr-2">
             <span>{t('sns_spend_cost', language)} {cost.toLocaleString()} SNS</span>
@@ -2000,7 +2000,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
             <button
               type="button"
               onClick={() => setSpendGuideState({ step: 0 })}
-              className={cn(getGuideButtonClassName(), 'border-current/20 bg-white/85 text-current hover:border-current/35 hover:bg-white')}
+              className={cn(getGuideButtonClassName(), 'min-h-[44px] min-w-[44px] border-current/20 bg-white/85 text-current hover:border-current/35 hover:bg-white')}
               aria-label={t('sns_spend_help_open', language)}
               title={t('sns_spend_help_open', language)}
             >
@@ -2018,14 +2018,14 @@ export const ShopView: React.FC<ShopViewProps> = ({
             {shortfallHint}
           </p>
         ) : showShortfallAction ? (
-          <div className="mt-3 rounded-xl border border-current/10 bg-white/60 p-2.5 text-current/80">
+          <div className="mt-3 rounded-none border border-current/10 bg-white/60 p-2.5 text-current/80">
             <button
               type="button"
               onClick={() => {
                 playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                 onNavigate?.('season-hub');
               }}
-              className="flex min-h-11 w-full items-center justify-between gap-3 rounded-xl border border-black/10 bg-white px-3.5 py-2.5 text-left text-[10px] font-black uppercase tracking-[0.18em] shadow-sm transition hover:bg-white/95 touch-target active:scale-[0.99]"
+              className="flex min-h-11 w-full items-center justify-between gap-3 rounded-sm border border-black/10 bg-white px-3.5 py-2.5 text-left text-[10px] font-black uppercase tracking-[0.18em] transition hover:bg-white/95 touch-target active:scale-[0.99]"
             >
               <span className="min-w-0">{t('sns_spend_go_season_hub', language)}</span>
               <ArrowRight size={14} className="shrink-0 opacity-60" />
@@ -2035,7 +2035,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
             </p>
           </div>
         ) : (
-          <div className="mt-3 rounded-xl border border-dashed border-current/15 bg-white/45 px-3 py-2.5 text-[9px] font-medium leading-relaxed text-current/75">
+          <div className="mt-3 rounded-none border border-dashed border-current/15 bg-white/45 px-3 py-2.5 text-[9px] font-medium leading-relaxed text-current/75">
             {shortfallHint}
           </div>
         )}
@@ -2971,7 +2971,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
             <div className="flex-1 overflow-y-auto pr-1 space-y-3 min-h-[300px]">
               {historyLoading ? (
                 <div className="flex flex-col items-center justify-center py-20 gap-4">
-                  <div className="w-10 h-10 border-4 border-slate-200 border-t-indigo-500 rounded-full animate-spin" />
+                  <div className="w-10 h-10 border-4 border-slate-200 border-t-indigo-500 rounded-none animate-spin" />
                   <p className="text-xs font-semibold tracking-wider text-slate-400 uppercase animate-pulse">
                     LOADING LOGS...
                   </p>
@@ -2981,7 +2981,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   {t('no_history', language)}
                 </div>
               ) : (
-                <div className="border border-slate-150 rounded-xl overflow-hidden shadow-xs">
+                <div className="border border-slate-200 rounded-none overflow-hidden">
                   <table className="w-full text-left border-collapse">
                     <thead>
                       <tr className="bg-slate-900 text-white text-[10px] font-bold uppercase tracking-wider">
@@ -3073,7 +3073,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
       components: "buttons"
     }}>
       <>
-        <div className="pb-[calc(11rem+env(safe-area-inset-bottom,0px))] sm:pb-[calc(12rem+env(safe-area-inset-bottom,0px))] w-full max-w-4xl mx-auto min-h-screen bg-[#fdfcfc] text-[#201d1d] font-mono selection:bg-[#201d1d] selection:text-[#fdfcfc] overflow-x-hidden">
+        <div className="pb-32 pb-[calc(11rem+env(safe-area-inset-bottom,0px))] sm:pb-[calc(12rem+env(safe-area-inset-bottom,0px))] w-full max-w-4xl mx-auto min-h-screen bg-[#fdfcfc] text-[#201d1d] font-mono selection:bg-[#201d1d] selection:text-[#fdfcfc] overflow-x-hidden">
           <div className="flex items-center justify-between px-4 sm:px-6 md:px-8 pt-4 pb-2">
             <div className="flex items-center gap-2">
               <PageHeader title={t('shop', language)} />
@@ -3135,7 +3135,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 initial={{ opacity: 0, y: 50, x: '-50%' }}
                 animate={{ opacity: 1, y: 0, x: '-50%' }}
                 exit={{ opacity: 0, y: 20, x: '-50%' }}
-                className="fixed bottom-24 left-1/2 z-[200] bg-black text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl shadow-2xl font-black text-xs tracking-widest uppercase border border-white/20 whitespace-nowrap"
+                className="fixed bottom-24 left-1/2 z-[200] bg-black text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-none font-black text-xs tracking-widest uppercase border border-white/20 whitespace-nowrap"
               >
                 {toastMessage}
               </motion.div>
@@ -3149,7 +3149,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="fixed top-4 sm:top-8 left-1/2 -translate-x-1/2 z-[110] bg-red-600 text-white px-4 sm:px-6 py-3 sm:py-4 border border-gray-200 rounded-lg flex items-center gap-3 sm:gap-4 min-w-[280px] sm:min-w-[300px] max-w-[90vw]"
+                className="fixed top-4 sm:top-8 left-1/2 -translate-x-1/2 z-[110] bg-red-600 text-white px-4 sm:px-6 py-3 sm:py-4 border border-gray-200 rounded-none flex items-center gap-3 sm:gap-4 min-w-[280px] sm:min-w-[300px] max-w-[90vw]"
               >
                 <AlertCircle className="text-white shrink-0" size={18} />
                 <div className="flex-1 min-w-0">
@@ -3287,7 +3287,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     e.stopPropagation();
                     handleCloseGacha();
                   }}
-                  className="absolute top-4 sm:top-6 right-4 sm:right-6 text-white/40 hover:text-white transition-all z-[250] p-2 hover:bg-white/10 rounded-full touch-target"
+                  className="absolute top-4 sm:top-6 right-4 sm:right-6 text-white/40 hover:text-white transition-all z-[250] p-2 hover:bg-white/10 rounded-sm min-h-[44px] min-w-[44px] flex items-center justify-center touch-target"
                 >
                   <X size={28} className="sm:w-8 sm:h-8" />
                 </button>
@@ -3303,7 +3303,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     animate={{ opacity: 1, y: 0 }}
                     className="flex flex-col items-center gap-2"
                   >
-                    <h3 className="text-yellow-500 text-2xl sm:text-3xl font-black tracking-widest uppercase text-center shadow-black drop-shadow-lg">
+                    <h3 className="text-yellow-500 text-2xl sm:text-3xl font-black tracking-widest uppercase text-center">
                       {gachaState.packType === 'item' ? t('equipment_acquired', language) : t('protocol_synchronized', language)}
                     </h3>
                     {gachaState.packType !== 'item' && gachaState.packType !== 'roulette' && (
@@ -3325,13 +3325,12 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     <motion.div
                       initial={{ scale: 0.8, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
-                      className="relative border border-white/20 p-6 sm:p-8 rounded-full bg-[#111] aspect-square w-56 sm:w-64 overflow-hidden z-10 flex flex-col items-center justify-center gap-3 sm:gap-4 shadow-[0_0_50px_rgba(234,179,8,0.2)] gacha-card-wrapper"
+                      className="relative border border-white/20 p-6 sm:p-8 rounded-none bg-[#111] aspect-square w-56 sm:w-64 overflow-hidden z-10 flex flex-col items-center justify-center gap-3 sm:gap-4 gacha-card-wrapper"
                     >
-                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(234,179,8,0.2)_0%,transparent_70%)] animate-pulse" />
-                      <Sparkles size={56} className="sm:w-16 sm:h-16 text-yellow-500 animate-pulse relative z-10" />
+                      <Sparkles size={56} className="sm:w-16 sm:h-16 text-yellow-500 relative z-10" />
                       <div className="text-center space-y-1 sm:space-y-2 relative z-10 mt-3 sm:mt-4">
-                        <span className="text-[10px] font-black text-yellow-500 uppercase tracking-widest leading-none block">{t('roulette_win', language)}</span>
-                        <h4 className="text-xl sm:text-2xl font-black text-white uppercase tracking-tighter leading-none">{gachaState.roulettePrize?.label}</h4>
+                        <span className="text-[10px] font-black text-yellow-500 uppercase tracking-widest leading-none block font-mono">{t('roulette_win', language)}</span>
+                        <h4 className="text-xl sm:text-2xl font-black text-white uppercase tracking-tighter leading-none font-mono">{gachaState.roulettePrize?.label}</h4>
                       </div>
                     </motion.div>
                   ) : (
@@ -3365,15 +3364,12 @@ export const ShopView: React.FC<ShopViewProps> = ({
                                   onClick={() => flipCard(idx)}
                                 >
                                   <div className="absolute inset-0 backface-hidden z-20">
-                                    <div className={cn(
-                                      "w-full h-full border border-white/20 bg-[#111] flex flex-col items-center justify-center overflow-hidden shadow-xl rounded-lg relative",
-                                      shouldPromptReveal && "animate-bounce"
-                                    )}>
+                                    <div className="w-full h-full border border-white/20 bg-[#111] flex flex-col items-center justify-center overflow-hidden rounded-none relative">
                                       {gachaState.packType !== 'item' && (
                                         <div className="absolute inset-0 bg-cover bg-center opacity-80" style={{ backgroundImage: `url('/background-${(gachaState.packType === 'item' || gachaState.packType === 'roulette') ? 'item' : gachaState.packType}.png')` }} />
                                       )}
                                       {gachaState.packType === 'item' ? (
-                                        <span className="text-7xl drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] animate-bounce">🎁</span>
+                                        <span className="text-7xl">🎁</span>
                                       ) : (
                                         <Terminal className="relative z-10 text-white/40" size={24} />
                                       )}
@@ -3381,8 +3377,8 @@ export const ShopView: React.FC<ShopViewProps> = ({
                                   </div>
                                   <div className="absolute inset-0 backface-hidden rotate-y-180 z-10">
                                     {gachaState.packType === 'item' ? (
-                                      <div className="w-full h-full bg-[#111] border border-white/10 rounded-lg flex flex-col items-center justify-center p-2">
-                                        <div className="w-16 h-16 flex items-center justify-center bg-white/5 rounded-xl border border-white/10 mb-2 overflow-hidden shadow-inner relative z-10">
+                                      <div className="w-full h-full bg-[#111] border border-white/10 rounded-none flex flex-col items-center justify-center p-2">
+                                        <div className="w-16 h-16 flex items-center justify-center bg-white/5 rounded-sm border border-white/10 mb-2 overflow-hidden relative z-10">
                                           <ItemIcon imageIndex={obj.item.imageIndex} size={64} />
                                         </div>
                                         <div className="flex flex-col items-center gap-1 w-full relative z-10">
@@ -3391,12 +3387,12 @@ export const ShopView: React.FC<ShopViewProps> = ({
                                           </h4>
                                           <div className="flex gap-1 flex-wrap justify-center px-1">
                                             {obj.item.stats.map((s, i) => s !== 0 && (
-                                              <span key={i} className="text-[7px] font-bold text-green-400 bg-green-400/10 px-1 rounded whitespace-nowrap border border-green-400/20">
+                                              <span key={i} className="text-[7px] font-bold text-green-400 bg-green-400/10 px-1 rounded-sm whitespace-nowrap border border-green-400/20">
                                                 {['N', 'E', 'S', 'W'][i]}:{s > 0 ? '+' + s : s}
                                               </span>
                                             ))}
                                             {obj.item.magicChance && (
-                                              <span className="text-[7px] font-bold text-purple-400 bg-purple-400/10 px-1 rounded whitespace-nowrap border border-purple-400/20">
+                                              <span className="text-[7px] font-bold text-purple-400 bg-purple-400/10 px-1 rounded-sm whitespace-nowrap border border-purple-400/20">
                                                 M:+{obj.item.magicChance}%
                                               </span>
                                             )}
@@ -3415,7 +3411,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                                           level: 1,
                                           imageIndex: obj.imageIndex
                                         }}
-                                        className="w-full h-full rounded-lg overflow-hidden"
+                                        className="w-full h-full rounded-none overflow-hidden"
                                         customImage={customCardImage}
                                         processedImage={processedCardImages?.[obj.imageIndex - 1]}
                                         lowSpecMode={true}
@@ -3426,11 +3422,11 @@ export const ShopView: React.FC<ShopViewProps> = ({
                                 <AnimatePresence>
                                   {isRevealed && (
                                     <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className={cn(
-                                      "absolute -top-2 -right-2 z-30 text-white text-[8px] font-black px-1.5 py-0.5 rounded-full uppercase shadow-lg border border-white/10",
-                                      ['rare', 'legendary', 'platinum', 'social', 'epic'].includes(rarity?.toLowerCase() || '') ? 'bg-gradient-to-r from-pink-500 to-purple-600' :
-                                      (rarity?.toLowerCase() === 'gold') ? 'bg-gradient-to-r from-yellow-500 to-amber-600 text-yellow-950 border-yellow-400' :
-                                      ['silver', 'magic'].includes(rarity?.toLowerCase() || '') ? 'bg-gradient-to-r from-slate-400 to-slate-600' :
-                                      'bg-gradient-to-r from-amber-600 to-amber-800'
+                                      "absolute -top-2 -right-2 z-30 text-white text-[8px] font-black px-1.5 py-0.5 rounded-sm uppercase border border-white/10",
+                                      ['rare', 'legendary', 'platinum', 'social', 'epic'].includes(rarity?.toLowerCase() || '') ? 'bg-purple-600' :
+                                      (rarity?.toLowerCase() === 'gold') ? 'bg-amber-500 text-stone-900 border-amber-400' :
+                                      ['silver', 'magic'].includes(rarity?.toLowerCase() || '') ? 'bg-slate-500' :
+                                      'bg-amber-700'
                                     )}>
                                         {t(`rarity_${rarity}` as any, language)}
                                     </motion.div>
@@ -3480,15 +3476,12 @@ export const ShopView: React.FC<ShopViewProps> = ({
                                   onClick={() => flipCard(idx)}
                                 >
                                   <div className="absolute inset-0 backface-hidden z-20">
-                                    <div className={cn(
-                                      "w-full h-full border border-white/20 bg-[#111] flex flex-col items-center justify-center overflow-hidden shadow-xl rounded-lg relative",
-                                      shouldPromptReveal && "animate-bounce"
-                                    )}>
+                                    <div className="w-full h-full border border-white/20 bg-[#111] flex flex-col items-center justify-center overflow-hidden rounded-none relative">
                                       {gachaState.packType !== 'item' && (
                                         <div className="absolute inset-0 bg-cover bg-center opacity-80" style={{ backgroundImage: `url('/background-${(gachaState.packType === 'item' || gachaState.packType === 'roulette') ? 'item' : gachaState.packType}.png')` }} />
                                       )}
                                       {gachaState.packType === 'item' ? (
-                                        <span className="text-7xl drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] animate-bounce">🎁</span>
+                                        <span className="text-7xl">🎁</span>
                                       ) : (
                                         <Terminal className="relative z-10 text-white/40" size={24} />
                                       )}
@@ -3496,8 +3489,8 @@ export const ShopView: React.FC<ShopViewProps> = ({
                                   </div>
                                   <div className="absolute inset-0 backface-hidden rotate-y-180 z-10">
                                     {gachaState.packType === 'item' ? (
-                                      <div className="w-full h-full bg-[#111] border border-white/10 rounded-lg flex flex-col items-center justify-center p-2">
-                                        <div className="w-16 h-16 flex items-center justify-center bg-white/5 rounded-xl border border-white/10 mb-2 overflow-hidden shadow-inner relative z-10">
+                                      <div className="w-full h-full bg-[#111] border border-white/10 rounded-none flex flex-col items-center justify-center p-2">
+                                        <div className="w-16 h-16 flex items-center justify-center bg-white/5 rounded-sm border border-white/10 mb-2 overflow-hidden relative z-10">
                                           <ItemIcon imageIndex={obj.item.imageIndex} size={64} />
                                         </div>
                                         <div className="flex flex-col items-center gap-1 w-full relative z-10">
@@ -3506,12 +3499,12 @@ export const ShopView: React.FC<ShopViewProps> = ({
                                           </h4>
                                           <div className="flex gap-1 flex-wrap justify-center px-1">
                                             {obj.item.stats.map((s, i) => s !== 0 && (
-                                              <span key={i} className="text-[7px] font-bold text-green-400 bg-green-400/10 px-1 rounded whitespace-nowrap border border-green-400/20">
+                                              <span key={i} className="text-[7px] font-bold text-green-400 bg-green-400/10 px-1 rounded-sm whitespace-nowrap border border-green-400/20">
                                                 {['N', 'E', 'S', 'W'][i]}:{s > 0 ? '+' + s : s}
                                               </span>
                                             ))}
                                             {obj.item.magicChance && (
-                                              <span className="text-[7px] font-bold text-purple-400 bg-purple-400/10 px-1 rounded whitespace-nowrap border border-purple-400/20">
+                                              <span className="text-[7px] font-bold text-purple-400 bg-purple-400/10 px-1 rounded-sm whitespace-nowrap border border-purple-400/20">
                                                 M:+{obj.item.magicChance}%
                                               </span>
                                             )}
@@ -3530,7 +3523,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                                           level: 1,
                                           imageIndex: obj.imageIndex
                                         }}
-                                        className="w-full h-full rounded-lg overflow-hidden"
+                                        className="w-full h-full rounded-none overflow-hidden"
                                         customImage={customCardImage}
                                         processedImage={processedCardImages?.[obj.imageIndex - 1]}
                                         lowSpecMode={true}
@@ -3541,13 +3534,13 @@ export const ShopView: React.FC<ShopViewProps> = ({
                                 <AnimatePresence>
                                   {isRevealed && (
                                     <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className={cn(
-                                      "absolute -top-2 -right-2 z-30 text-white text-[8px] font-black px-1.5 py-0.5 rounded-full uppercase shadow-lg border border-white/10",
-                                      ['rare', 'legendary', 'platinum', 'social', 'epic'].includes(rarity?.toLowerCase() || '') ? 'bg-gradient-to-r from-pink-500 to-purple-600' :
-                                      (rarity?.toLowerCase() === 'gold') ? 'bg-gradient-to-r from-yellow-500 to-amber-600 text-yellow-950 border-yellow-400' :
-                                      ['silver', 'magic'].includes(rarity?.toLowerCase() || '') ? 'bg-gradient-to-r from-slate-400 to-slate-600' :
-                                      'bg-gradient-to-r from-amber-600 to-amber-800'
+                                      "absolute -top-2 -right-2 z-30 text-white text-[8px] font-black px-1.5 py-0.5 rounded-sm uppercase border border-white/10",
+                                      ['rare', 'legendary', 'platinum', 'social', 'epic'].includes(rarity?.toLowerCase() || '') ? 'bg-purple-600' :
+                                      (rarity?.toLowerCase() === 'gold') ? 'bg-amber-500 text-stone-900 border-amber-400' :
+                                      ['silver', 'magic'].includes(rarity?.toLowerCase() || '') ? 'bg-slate-500' :
+                                      'bg-amber-700'
                                     )}>
-                                      {t(`rarity_${rarity}` as any, language)}
+                                        {t(`rarity_${rarity}` as any, language)}
                                     </motion.div>
                                   )}
                                 </AnimatePresence>
@@ -3593,7 +3586,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                           }, 1000);
                         }
                       }}
-                      className="flex-1 min-h-[44px] flex items-center justify-center gap-2 bg-gradient-to-r from-amber-400 to-yellow-300 text-slate-950 font-black tracking-wider text-xs uppercase rounded-full shadow-xl hover:brightness-110 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer touch-target"
+                      className="flex-1 min-h-[44px] flex items-center justify-center gap-2 bg-[#201d1d] hover:bg-[#322d2d] text-[#fdfcfc] font-black tracking-wider text-xs uppercase rounded-sm border border-white/20 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer touch-target"
                     >
                       <Package size={16} />
                       <span>{t('draw_again', language)} ({(cardPacks.find(p => p.rarity === gachaState.packType)?.cost || 0)} SNS)</span>
@@ -3609,7 +3602,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                         }));
                         playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
                       }}
-                      className="min-h-[44px] bg-gradient-to-r from-amber-400 to-yellow-300 hover:brightness-110 text-slate-950 px-5 py-2.5 rounded-full font-black uppercase tracking-wider text-xs transition-all border border-amber-500 active:scale-95 cursor-pointer touch-target shadow-lg flex items-center justify-center gap-1.5"
+                      className="min-h-[44px] bg-[#201d1d] hover:bg-[#322d2d] text-[#fdfcfc] px-5 py-2.5 rounded-sm font-black uppercase tracking-wider text-xs transition-all border border-white/20 active:scale-95 cursor-pointer touch-target flex items-center justify-center gap-1.5"
                     >
                       <Sparkles size={15} />
                       <span>{language === 'ko' ? '전체 공개' : 'REVEAL ALL'}</span>
@@ -3619,7 +3612,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       onClick={() => {
                         handleCloseGacha();
                       }}
-                      className="min-h-[44px] bg-white/15 hover:bg-white/25 text-white px-6 py-2.5 rounded-full font-black uppercase tracking-wider text-xs transition-all border border-white/20 active:scale-95 cursor-pointer touch-target"
+                      className="min-h-[44px] bg-white/15 hover:bg-white/25 text-white px-6 py-2.5 rounded-sm font-black uppercase tracking-wider text-xs transition-all border border-white/20 active:scale-95 cursor-pointer touch-target"
                     >
                       {language === 'ko' ? '닫기' : 'CLOSE'}
                     </button>
@@ -3649,13 +3642,10 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 12, scale: 0.98 }}
                     transition={{ duration: 0.18, ease: 'easeOut' }}
-                    className="w-full max-w-md rounded-[28px] border border-slate-200 bg-white p-5 shadow-2xl"
+                    className="w-full max-w-md rounded-none border border-slate-200 bg-white p-5"
                     onClick={(event) => event.stopPropagation()}
                   >
-                    <div className={cn(
-                      'flex items-start justify-between gap-4 rounded-[24px] border px-4 py-4 text-white shadow-sm',
-                      `bg-gradient-to-br ${activeFeatureGuideMeta.gradientClassName}`,
-                    )}>
+                    <div className="flex items-start justify-between gap-4 rounded-none border px-4 py-4 text-white bg-[#201d1d]">
                       <div className="min-w-0">
                         <div className="text-[10px] font-black uppercase tracking-[0.22em] text-white/75">
                           {activeFeatureGuideMeta.badge}
@@ -3663,13 +3653,13 @@ export const ShopView: React.FC<ShopViewProps> = ({
                         <h3 className="mt-1 text-lg font-black tracking-tight">{activeFeatureGuideMeta.label}</h3>
                       </div>
                       <div className="flex items-center gap-2">
-                        <div className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-white/20 bg-white/15">
+                        <div className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-sm border border-white/20 bg-white/15">
                           <FeatureGuideIcon size={18} />
                         </div>
                         <button
                           type="button"
                           onClick={() => setFeatureGuideState(null)}
-                          className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-white/20 bg-white/15 text-white transition hover:bg-white/25 active:scale-95 touch-target"
+                          className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-sm border border-white/20 bg-white/15 text-white transition hover:bg-white/25 active:scale-95 touch-target cursor-pointer"
                           aria-label={language === 'ko' ? '닫기' : 'Close'}
                         >
                           <X size={18} />
@@ -3677,8 +3667,8 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       </div>
                     </div>
 
-                    <div className="mt-4 rounded-3xl border border-slate-200 bg-slate-50/80 p-4">
-                      <div className={cn('inline-flex rounded-full border px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em]', activeFeatureGuideStep.accentClassName)}>
+                    <div className="mt-4 rounded-none border border-slate-200 bg-slate-50/80 p-4">
+                      <div className={cn('inline-flex rounded-sm border px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em]', activeFeatureGuideStep.accentClassName)}>
                         {t('contextual_tutorial_badge', language)}
                       </div>
                       <h4 className="mt-3 text-lg font-black tracking-tight text-slate-900">
@@ -3700,7 +3690,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                         onClick={() => setFeatureGuideState((prev) => prev ? { ...prev, step: Math.max(prev.step - 1, 0) } : prev)}
                         disabled={featureGuideState.step === 0}
                         className={cn(
-                          'min-h-11 rounded-2xl border px-3 py-2 text-sm font-bold transition touch-target',
+                          'min-h-11 rounded-sm border px-3 py-2 text-sm font-bold transition touch-target cursor-pointer',
                           featureGuideState.step === 0
                             ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-400'
                             : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-50 active:scale-95'
@@ -3711,14 +3701,14 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       <button
                         type="button"
                         onClick={() => setFeatureGuideState(null)}
-                        className="min-h-11 rounded-2xl border border-slate-300 bg-white px-3 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-50 active:scale-95 touch-target"
+                        className="min-h-11 rounded-sm border border-slate-300 bg-white px-3 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-50 active:scale-95 touch-target cursor-pointer"
                       >
                         {language === 'ko' ? '닫기' : 'Close'}
                       </button>
                       <button
                         type="button"
                         onClick={() => setFeatureGuideState((prev) => prev ? { ...prev, step: Math.min(prev.step + 1, activeFeatureGuideSteps.length - 1) } : prev)}
-                        className="min-h-11 rounded-2xl border border-slate-900 bg-slate-900 px-3 py-2 text-sm font-bold text-white transition hover:bg-slate-800 active:scale-95 touch-target"
+                        className="min-h-11 rounded-sm border border-slate-900 bg-slate-900 px-3 py-2 text-sm font-bold text-white transition hover:bg-slate-800 active:scale-95 touch-target cursor-pointer"
                       >
                         {featureGuideState.step === activeFeatureGuideSteps.length - 1
                           ? t('contextual_tutorial_done', language)
@@ -3744,12 +3734,12 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   initial={{ opacity: 0, y: 12, scale: 0.98 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 12, scale: 0.98 }}
-                  className="relative w-full max-w-md rounded-3xl border border-slate-200 bg-white p-5 shadow-2xl"
+                  className="relative w-full max-w-md rounded-none border border-slate-200 bg-white p-5"
                   onClick={(event) => event.stopPropagation()}
                 >
                   <div className="flex items-start justify-between gap-3 sticky top-0 z-10 bg-white pt-2">
                     <div className="space-y-2">
-                      <span className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
+                      <span className="inline-flex rounded-sm border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
                         {t('contextual_tutorial_badge', language)}
                       </span>
                       <h3 className="text-lg font-black tracking-tight text-slate-900">
@@ -3759,14 +3749,14 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     <button
                       type="button"
                       onClick={() => setSpendGuideState(null)}
-                      className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-slate-900 active:scale-95 touch-target"
+                      className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-sm border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-slate-900 active:scale-95 touch-target cursor-pointer"
                       aria-label={language === 'ko' ? '닫기' : 'Close'}
                     >
                       <X size={18} />
                     </button>
                   </div>
 
-                  <div className={cn('mt-4 rounded-2xl border px-4 py-3', activeSpendGuideStep.accentClassName)}>
+                  <div className={cn('mt-4 rounded-none border px-4 py-3', activeSpendGuideStep.accentClassName)}>
                     <p className="text-sm font-semibold leading-relaxed">
                       {activeSpendGuideStep.body}
                     </p>
@@ -3783,7 +3773,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       onClick={() => {
                         activeSpendGuideStep.onAction?.();
                       }}
-                      className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl border border-slate-900 bg-slate-900 px-4 py-3 text-sm font-black text-white transition hover:bg-slate-800 active:scale-95 touch-target"
+                      className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-sm border border-slate-900 bg-slate-900 px-4 py-3 text-sm font-black text-white transition hover:bg-slate-800 active:scale-95 touch-target cursor-pointer"
                     >
                       <span>{activeSpendGuideStep.actionLabel}</span>
                       <ArrowRight size={16} className="shrink-0" />
@@ -3796,7 +3786,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       onClick={() => setSpendGuideState((prev) => prev ? { ...prev, step: Math.max(prev.step - 1, 0) } : prev)}
                       disabled={spendGuideState.step === 0}
                       className={cn(
-                        'min-h-11 rounded-2xl border px-3 py-2 text-sm font-bold transition touch-target',
+                        'min-h-11 rounded-sm border px-3 py-2 text-sm font-bold transition touch-target cursor-pointer',
                         spendGuideState.step === 0
                           ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-400'
                           : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-50 active:scale-95'
@@ -3807,7 +3797,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     <button
                       type="button"
                       onClick={() => setSpendGuideState(null)}
-                      className="min-h-11 rounded-2xl border border-slate-300 bg-white px-3 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-50 active:scale-95 touch-target"
+                      className="min-h-11 rounded-sm border border-slate-300 bg-white px-3 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-50 active:scale-95 touch-target cursor-pointer"
                     >
                       {language === 'ko' ? '닫기' : 'Close'}
                     </button>
@@ -3821,7 +3811,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
                         setSpendGuideState((prev) => prev ? { ...prev, step: Math.min(prev.step + 1, spendGuideSteps.length - 1) } : prev);
                       }}
-                      className="min-h-11 rounded-2xl border border-slate-900 bg-slate-900 px-3 py-2 text-sm font-bold text-white transition hover:bg-slate-800 active:scale-95 touch-target"
+                      className="min-h-11 rounded-sm border border-slate-900 bg-slate-900 px-3 py-2 text-sm font-bold text-white transition hover:bg-slate-800 active:scale-95 touch-target cursor-pointer"
                     >
                       {spendGuideState.step === spendGuideSteps.length - 1
                         ? t('contextual_tutorial_done', language)
@@ -3846,12 +3836,12 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   initial={{ opacity: 0, y: 12, scale: 0.98 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 12, scale: 0.98 }}
-                  className="relative w-full max-w-md rounded-3xl border border-slate-200 bg-white p-5 shadow-2xl"
+                  className="relative w-full max-w-md rounded-none border border-slate-200 bg-white p-5"
                   onClick={(event) => event.stopPropagation()}
                 >
                   <div className="flex items-start justify-between gap-3 sticky top-0 z-10 bg-white pt-2">
                     <div className="space-y-2">
-                      <span className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
+                      <span className="inline-flex rounded-sm border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
                         {t('contextual_tutorial_badge', language)}
                       </span>
                       <h3 className="text-lg font-black tracking-tight text-slate-900">
@@ -3861,14 +3851,14 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     <button
                       type="button"
                       onClick={() => setPityGuideState(null)}
-                      className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-slate-900 active:scale-95 touch-target"
+                      className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-sm border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-slate-900 active:scale-95 touch-target cursor-pointer"
                       aria-label={language === 'ko' ? '닫기' : 'Close'}
                     >
                       <X size={18} />
                     </button>
                   </div>
 
-                  <div className={cn('mt-4 rounded-2xl border px-4 py-3', activePityGuideStep.accentClassName)}>
+                  <div className={cn('mt-4 rounded-none border px-4 py-3', activePityGuideStep.accentClassName)}>
                     <p className="text-sm font-semibold leading-relaxed">
                       {activePityGuideStep.body}
                     </p>
@@ -3885,7 +3875,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       onClick={() => {
                         activePityGuideStep.onAction?.();
                       }}
-                      className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl border border-slate-900 bg-slate-900 px-4 py-3 text-sm font-black text-white transition hover:bg-slate-800 active:scale-95 touch-target"
+                      className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-sm border border-slate-900 bg-slate-900 px-4 py-3 text-sm font-black text-white transition hover:bg-slate-800 active:scale-95 touch-target cursor-pointer"
                     >
                       <span>{activePityGuideStep.actionLabel}</span>
                       <ArrowRight size={16} className="shrink-0" />
@@ -3898,7 +3888,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       onClick={() => setPityGuideState((prev) => prev ? { ...prev, step: Math.max(prev.step - 1, 0) } : prev)}
                       disabled={pityGuideState.step === 0}
                       className={cn(
-                        'min-h-11 rounded-2xl border px-3 py-2 text-sm font-bold transition touch-target',
+                        'min-h-11 rounded-sm border px-3 py-2 text-sm font-bold transition touch-target cursor-pointer',
                         pityGuideState.step === 0
                           ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-400'
                           : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-50 active:scale-95'
@@ -3909,7 +3899,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     <button
                       type="button"
                       onClick={() => setPityGuideState(null)}
-                      className="min-h-11 rounded-2xl border border-slate-300 bg-white px-3 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-50 active:scale-95 touch-target"
+                      className="min-h-11 rounded-sm border border-slate-300 bg-white px-3 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-50 active:scale-95 touch-target cursor-pointer"
                     >
                       {language === 'ko' ? '닫기' : 'Close'}
                     </button>
@@ -3923,7 +3913,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
                         setPityGuideState((prev) => prev ? { ...prev, step: Math.min(prev.step + 1, pityGuideSteps.length - 1) } : prev);
                       }}
-                      className="min-h-11 rounded-2xl border border-slate-900 bg-slate-900 px-3 py-2 text-sm font-bold text-white transition hover:bg-slate-800 active:scale-95 touch-target"
+                      className="min-h-11 rounded-sm border border-slate-900 bg-slate-900 px-3 py-2 text-sm font-bold text-white transition hover:bg-slate-800 active:scale-95 touch-target cursor-pointer"
                     >
                       {pityGuideState.step === pityGuideSteps.length - 1
                         ? t('contextual_tutorial_done', language)
@@ -3948,12 +3938,12 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   initial={{ opacity: 0, y: 12, scale: 0.98 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 12, scale: 0.98 }}
-                  className="relative w-full max-w-md rounded-3xl border border-slate-200 bg-white p-5 shadow-2xl"
+                  className="relative w-full max-w-md rounded-none border border-slate-200 bg-white p-5"
                   onClick={(event) => event.stopPropagation()}
                 >
                   <div className="flex items-start justify-between gap-3 sticky top-0 z-10 bg-white pt-2">
                     <div className="space-y-2">
-                      <span className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
+                      <span className="inline-flex rounded-sm border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
                         {t('contextual_tutorial_badge', language)}
                       </span>
                       <h3 className="text-lg font-black tracking-tight text-slate-900">
@@ -3963,14 +3953,14 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     <button
                       type="button"
                       onClick={() => setPackGuideState(null)}
-                      className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-slate-900 active:scale-95 touch-target"
+                      className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-sm border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-slate-900 active:scale-95 touch-target cursor-pointer"
                       aria-label={language === 'ko' ? '닫기' : 'Close'}
                     >
                       <X size={18} />
                     </button>
                   </div>
 
-                  <div className={cn('mt-4 rounded-2xl border px-4 py-3', activePackGuideStep.accentClassName)}>
+                  <div className={cn('mt-4 rounded-none border px-4 py-3', activePackGuideStep.accentClassName)}>
                     <p className="text-sm font-semibold leading-relaxed">
                       {activePackGuideStep.body}
                     </p>
@@ -3992,7 +3982,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       onClick={() => {
                         activePackGuideStep.onAction?.();
                       }}
-                      className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl border border-slate-900 bg-slate-900 px-4 py-3 text-sm font-black text-white transition hover:bg-slate-800 active:scale-95 touch-target"
+                      className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-sm border border-slate-900 bg-slate-900 px-4 py-3 text-sm font-black text-white transition hover:bg-slate-800 active:scale-95 touch-target cursor-pointer"
                     >
                       <span>{activePackGuideStep.actionLabel}</span>
                       <ArrowRight size={16} className="shrink-0" />
@@ -4005,7 +3995,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       onClick={() => setPackGuideState((prev) => prev ? { ...prev, step: Math.max(prev.step - 1, 0) } : prev)}
                       disabled={packGuideState.step === 0}
                       className={cn(
-                        'min-h-11 rounded-2xl border px-3 py-2 text-sm font-bold transition touch-target',
+                        'min-h-11 rounded-sm border px-3 py-2 text-sm font-bold transition touch-target cursor-pointer',
                         packGuideState.step === 0
                           ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-400'
                           : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-50 active:scale-95'
@@ -4016,7 +4006,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     <button
                       type="button"
                       onClick={() => setPackGuideState(null)}
-                      className="min-h-11 rounded-2xl border border-slate-300 bg-white px-3 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-50 active:scale-95 touch-target"
+                      className="min-h-11 rounded-sm border border-slate-300 bg-white px-3 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-50 active:scale-95 touch-target cursor-pointer"
                     >
                       {language === 'ko' ? '닫기' : 'Close'}
                     </button>
@@ -4030,7 +4020,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
                         setPackGuideState((prev) => prev ? { ...prev, step: Math.min(prev.step + 1, activePackGuideSteps.length - 1) } : prev);
                       }}
-                      className="min-h-11 rounded-2xl border border-slate-900 bg-slate-900 px-3 py-2 text-sm font-bold text-white transition hover:bg-slate-800 active:scale-95 touch-target"
+                      className="min-h-11 rounded-sm border border-slate-900 bg-slate-900 px-3 py-2 text-sm font-bold text-white transition hover:bg-slate-800 active:scale-95 touch-target cursor-pointer"
                     >
                       {packGuideState.step === activePackGuideSteps.length - 1
                         ? t('contextual_tutorial_done', language)
@@ -4055,12 +4045,12 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   initial={{ opacity: 0, y: 12, scale: 0.98 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 12, scale: 0.98 }}
-                  className="w-full max-w-3xl rounded-3xl border border-amber-200 bg-white p-5 shadow-2xl"
+                  className="w-full max-w-3xl rounded-none border border-amber-200 bg-white p-5"
                   onClick={(event) => event.stopPropagation()}
                 >
                   <div className="flex items-start justify-between gap-3 sticky top-0 z-10 bg-white pt-2">
                     <div className="space-y-2">
-                      <span className="inline-flex rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-amber-700">
+                      <span className="inline-flex rounded-sm border border-amber-200 bg-amber-50 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-amber-700">
                         {t('shop_gacha_pity_banner_title', language)}
                       </span>
                       <h3 className="text-lg font-black tracking-tight text-slate-900">
@@ -4073,7 +4063,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     <button
                       type="button"
                       onClick={() => setPityBannerOpen(false)}
-                      className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-slate-900 active:scale-95 touch-target"
+                      className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-sm border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-slate-900 active:scale-95 touch-target cursor-pointer"
                       aria-label={language === 'ko' ? '닫기' : 'Close'}
                     >
                       <X size={18} />
@@ -4508,20 +4498,20 @@ export const ShopView: React.FC<ShopViewProps> = ({
             {/* Remove Ads Pack */}
             <motion.div
               whileHover={lowSpecMode ? undefined : { y: -4 }}
-              className="relative flex flex-col justify-between gap-4 overflow-hidden rounded-2xl border border-blue-100 bg-white p-5 shadow-sm transition-all group sm:p-6 md:p-7 h-full"
+              className="relative flex flex-col justify-between gap-4 overflow-hidden rounded-none border border-slate-200 bg-white p-5 transition-all group sm:p-6 md:p-7 h-full"
             >
-              <div className="absolute -left-10 top-8 h-28 w-28 rounded-full bg-blue-500/10 blur-3xl transition-all duration-500 group-hover:bg-blue-500/20" />
+              <div className="absolute -left-10 top-8 h-28 w-28 rounded-none bg-blue-500/10 blur-3xl transition-all duration-500 group-hover:bg-blue-500/20" />
               <ShieldAlert className="pointer-events-none absolute left-4 top-14 z-0 h-16 w-16 text-blue-200 opacity-80 sm:h-20 sm:w-20" aria-hidden="true" />
 
               <div className="relative z-10 flex flex-col gap-3">
                 <div className="flex items-start justify-between gap-3">
-                  <div className="rounded-lg bg-blue-600 px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest text-white sm:text-[10px]">
+                  <div className="rounded-sm bg-blue-600 px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest text-white sm:text-[10px]">
                     {language === 'ko' ? '광고 제거' : 'REMOVE ADS'}
                   </div>
                   <button
                     type="button"
                     onClick={() => setFeatureGuideState({ feature: 'ad-removal', step: 0 })}
-                    className={cn(getGuideButtonClassName(), 'border-blue-200 bg-white/90 text-blue-700 hover:border-blue-300 hover:bg-blue-50')}
+                    className={cn(getGuideButtonClassName(), 'min-h-[44px] min-w-[44px] border-blue-200 bg-white/90 text-blue-700 hover:border-blue-300 hover:bg-blue-50 cursor-pointer')}
                     aria-label={t('shop_feature_ad_removal_guide_open', language)}
                     title={t('shop_feature_ad_removal_guide_open', language)}
                   >
@@ -4576,7 +4566,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     }
                   }}
                   className={cn(
-                    'min-h-[44px] h-auto w-full rounded-xl border px-3 py-2.5 text-left shadow-sm transition-all touch-target flex items-center justify-between gap-1 overflow-hidden',
+                    'min-h-[44px] h-auto w-full rounded-sm border px-3 py-2.5 text-left transition-all touch-target flex items-center justify-between gap-1 overflow-hidden',
                     isAdRemoved
                       ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-400 opacity-80 pointer-events-none'
                       : 'border-blue-600 bg-blue-600 text-white hover:border-blue-500 hover:bg-blue-500 active:scale-95 cursor-pointer'
@@ -4598,23 +4588,23 @@ export const ShopView: React.FC<ShopViewProps> = ({
             {/* Full Novel Download Pack */}
             <motion.div
               whileHover={lowSpecMode ? undefined : { y: -4 }}
-              className="relative flex flex-col justify-between gap-4 overflow-hidden rounded-2xl border-2 border-emerald-500/30 bg-gradient-to-b from-emerald-50/50 via-white to-white p-5 sm:p-6 md:p-7 shadow-sm transition-all group hover:border-emerald-500/60 hover:shadow-md h-full"
+              className="relative flex flex-col justify-between gap-4 overflow-hidden rounded-none border border-emerald-600/30 bg-white p-5 sm:p-6 md:p-7 transition-all group hover:border-emerald-600 h-full"
             >
-              <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-emerald-500/10 blur-2xl transition-all duration-500 group-hover:bg-emerald-500/20" />
+              <div className="absolute -right-8 -top-8 h-32 w-32 rounded-none bg-emerald-500/10 blur-2xl transition-all duration-500 group-hover:bg-emerald-500/20" />
 
               <div className="relative z-10 flex flex-col gap-3">
                 <div className="flex items-start justify-between gap-2">
-                  <div className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-700 px-2.5 py-1 text-[10px] font-black uppercase tracking-widest text-white shadow-xs">
+                  <div className="inline-flex items-center gap-1.5 rounded-sm bg-emerald-700 px-2.5 py-1 text-[10px] font-black uppercase tracking-widest text-white">
                     <BookOpen size={12} className="shrink-0" />
                     <span>{language === 'ko' ? '공식 소설' : 'OFFICIAL NOVEL'}</span>
                   </div>
-                  <span className="rounded-md border border-emerald-400/50 bg-emerald-100 px-2 py-0.5 text-[10px] font-black text-emerald-900 tracking-wider">
+                  <span className="rounded-sm border border-emerald-400/50 bg-emerald-100 px-2 py-0.5 text-[10px] font-black text-emerald-900 tracking-wider">
                     {language === 'ko' ? '무료 (FREE)' : 'FREE'}
                   </span>
                 </div>
 
                 <div className="flex items-center gap-3 my-1">
-                  <div className="w-12 h-12 rounded-xl bg-emerald-100 border border-emerald-200 flex items-center justify-center shrink-0 text-emerald-700 group-hover:scale-105 transition-transform">
+                  <div className="w-12 h-12 rounded-sm bg-emerald-100 border border-emerald-200 flex items-center justify-center shrink-0 text-emerald-700 group-hover:scale-105 transition-transform">
                     <BookOpen size={24} />
                   </div>
                   <div className="min-w-0">
@@ -4654,7 +4644,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     link.click();
                     document.body.removeChild(link);
                   }}
-                  className="min-h-[44px] h-auto w-full rounded-xl border border-emerald-700 bg-emerald-700 hover:bg-emerald-800 px-3 py-2.5 text-left text-white shadow-sm transition-all active:scale-95 touch-target flex items-center justify-between gap-1 overflow-hidden cursor-pointer"
+                  className="min-h-[44px] h-auto w-full rounded-sm border border-emerald-700 bg-emerald-700 hover:bg-emerald-800 px-3 py-2.5 text-left text-white transition-all active:scale-95 touch-target flex items-center justify-between gap-1 overflow-hidden cursor-pointer"
                 >
                   <span className="min-w-0 leading-tight flex-1">
                     <span className="block text-[10px] uppercase tracking-[0.05em] text-white/80 truncate">{language === 'ko' ? '소설 PDF 다운로드' : 'Download Novel PDF'}</span>
@@ -4668,23 +4658,23 @@ export const ShopView: React.FC<ShopViewProps> = ({
             {/* Watch Full Video Pack */}
             <motion.div
               whileHover={lowSpecMode ? undefined : { y: -4 }}
-              className="relative flex flex-col justify-between gap-4 overflow-hidden rounded-2xl border-2 border-red-500/30 bg-gradient-to-b from-red-50/50 via-white to-white p-5 sm:p-6 md:p-7 shadow-sm transition-all group hover:border-red-500/60 hover:shadow-md h-full"
+              className="relative flex flex-col justify-between gap-4 overflow-hidden rounded-none border border-red-600/30 bg-white p-5 sm:p-6 md:p-7 transition-all group hover:border-red-600 h-full"
             >
-              <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-red-500/10 blur-2xl transition-all duration-500 group-hover:bg-red-500/20" />
+              <div className="absolute -right-8 -top-8 h-32 w-32 rounded-none bg-red-500/10 blur-2xl transition-all duration-500 group-hover:bg-red-500/20" />
 
               <div className="relative z-10 flex flex-col gap-3">
                 <div className="flex items-start justify-between gap-2">
-                  <div className="inline-flex items-center gap-1.5 rounded-lg bg-red-700 px-2.5 py-1 text-[10px] font-black uppercase tracking-widest text-white shadow-xs">
+                  <div className="inline-flex items-center gap-1.5 rounded-sm bg-red-700 px-2.5 py-1 text-[10px] font-black uppercase tracking-widest text-white">
                     <Film size={12} className="shrink-0" />
                     <span>{language === 'ko' ? '공식 영상' : 'OFFICIAL VIDEO'}</span>
                   </div>
-                  <span className="rounded-md border border-red-400/50 bg-red-100 px-2 py-0.5 text-[10px] font-black text-red-900 tracking-wider">
+                  <span className="rounded-sm border border-red-400/50 bg-red-100 px-2 py-0.5 text-[10px] font-black text-red-900 tracking-wider">
                     {language === 'ko' ? '무료 (FREE)' : 'FREE'}
                   </span>
                 </div>
 
                 <div className="flex items-center gap-3 my-1">
-                  <div className="w-12 h-12 rounded-xl bg-red-100 border border-red-200 flex items-center justify-center shrink-0 text-red-700 group-hover:scale-105 transition-transform">
+                  <div className="w-12 h-12 rounded-sm bg-red-100 border border-red-200 flex items-center justify-center shrink-0 text-red-700 group-hover:scale-105 transition-transform">
                     <Play size={24} className="fill-current ml-0.5" />
                   </div>
                   <div className="min-w-0">
@@ -4719,7 +4709,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       : 'https://www.youtube.com/watch?v=TA1klx1DSGs';
                     window.open(videoUrl, '_blank', 'noopener,noreferrer');
                   }}
-                  className="min-h-[44px] h-auto w-full rounded-xl border border-red-700 bg-red-700 hover:bg-red-800 px-3 py-2.5 text-left text-white shadow-sm transition-all active:scale-95 touch-target flex items-center justify-between gap-1 overflow-hidden cursor-pointer"
+                  className="min-h-[44px] h-auto w-full rounded-sm border border-red-700 bg-red-700 hover:bg-red-800 px-3 py-2.5 text-left text-white transition-all active:scale-95 touch-target flex items-center justify-between gap-1 overflow-hidden cursor-pointer"
                 >
                   <span className="min-w-0 leading-tight flex-1">
                     <span className="block text-[10px] uppercase tracking-[0.05em] text-white/80 truncate">{language === 'ko' ? '공식 영상 시청' : 'Watch Official Video'}</span>
@@ -4836,11 +4826,11 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   initial={{ scale: 0.9, y: 20 }}
                   animate={{ scale: 1, y: 0 }}
                   exit={{ scale: 0.9, y: 20 }}
-                  className="bg-white rounded-3xl p-7 max-w-sm w-full border border-slate-100 shadow-2xl text-center space-y-6 select-none relative overflow-hidden"
+                  className="bg-white rounded-none p-6 max-w-sm w-full border border-slate-200 text-center space-y-6 select-none relative overflow-hidden font-mono"
                   onClick={e => e.stopPropagation()}
                 >
-                  <div className="w-14 h-14 bg-amber-50 border border-amber-100 rounded-full mx-auto flex items-center justify-center shadow-xs">
-                    <AlertCircle size={26} className="text-amber-600" />
+                  <div className="w-12 h-12 bg-amber-50 border border-amber-200 rounded-none mx-auto flex items-center justify-center">
+                    <AlertCircle size={24} className="text-amber-600" />
                   </div>
                   
                   <div className="space-y-3">
@@ -4855,7 +4845,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
                       setCustomAlert(prev => ({ ...prev, isOpen: false }));
                     }}
-                    className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-xl font-bold uppercase tracking-wider text-xs shadow-md shadow-slate-950/10 active:scale-[0.98] transition-all cursor-pointer"
+                    className="w-full min-h-[44px] bg-slate-900 hover:bg-slate-800 text-white py-3 px-4 rounded-sm font-bold uppercase tracking-wider text-xs active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center"
                   >
                     {language === 'ko' ? '확인' : 'OK'}
                   </button>
@@ -4877,20 +4867,21 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   initial={{ scale: 0.95 }}
                   animate={{ scale: 1 }}
                   exit={{ scale: 0.95 }}
-                  className="bg-white border border-slate-100 p-6.5 rounded-3xl shadow-2xl w-full max-w-md flex flex-col gap-5 relative"
+                  className="bg-white border border-slate-200 p-6 rounded-none w-full max-w-md flex flex-col gap-5 relative font-mono"
                 >
                   <button
                     onClick={() => {
                       setGoodsModalOpen(false);
                       setSelectedGoods(null);
                     }}
-                    className="absolute top-4 right-4 p-1.5 hover:bg-slate-50 border border-slate-200 rounded-lg text-slate-400 hover:text-red-500 active:scale-95 transition-all cursor-pointer"
+                    className="absolute top-4 right-4 p-2 min-w-[44px] min-h-[44px] hover:bg-slate-50 border border-slate-200 rounded-sm text-slate-500 hover:text-red-500 active:scale-95 transition-all cursor-pointer flex items-center justify-center"
+                    aria-label="Close"
                   >
                     <X size={16} />
                   </button>
 
                   <div className="flex flex-col items-center gap-4">
-                    <div className="relative w-36 h-36 flex items-center justify-center bg-slate-50 border border-slate-150 rounded-2xl overflow-hidden shadow-xs">
+                    <div className="relative w-36 h-36 flex items-center justify-center bg-slate-50 border border-slate-200 rounded-none overflow-hidden">
                       <img src={selectedGoods === 'mug' ? getAssetUrl('/mug.png') : getAssetUrl('/icon.png')} alt="Goods" className="w-full h-full object-contain" />
                       <div className={cn(
                         "absolute bg-transparent overflow-hidden opacity-90 select-none rounded-xs p-1 flex flex-col justify-between items-center",
@@ -4920,7 +4911,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                           })()}
                         </div>
                         <div className="w-full flex justify-center origin-center scale-[0.4] my-0.5 whitespace-nowrap">
-                          <h1 id="main-logo" className="font-extrabold italic tracking-tight flex items-baseline justify-center mx-auto select-none font-sans"><span className="bg-gradient-to-r from-indigo-600 via-fuchsia-600 to-rose-500 bg-clip-text text-transparent pr-0.5 text-[8px]">S&amp;SHERO</span><span className="text-slate-900 text-[5px] not-italic">.com</span></h1>
+                          <h1 id="main-logo" className="font-extrabold italic tracking-tight flex items-baseline justify-center mx-auto select-none font-mono"><span className="text-indigo-600 pr-0.5 text-[8px]">S&amp;SHERO</span><span className="text-slate-900 text-[5px] not-italic">.com</span></h1>
                         </div>
                       </div>
                     </div>
@@ -4928,11 +4919,11 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
                   <div className="space-y-4">
                     {/* Card Changer Option */}
-                    <div className="flex justify-between items-center bg-slate-50 p-3 border border-slate-150 rounded-xl">
+                    <div className="flex justify-between items-center bg-slate-50 p-3 border border-slate-200 rounded-none">
                       <span className="font-bold uppercase text-xs">{t('goods_change_card', language)}</span>
                       <button
                         onClick={() => setGoodsCardSelectOpen(true)}
-                        className="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-bold uppercase active:scale-95 transition-all cursor-pointer"
+                        className="px-3.5 py-2.5 min-h-[44px] bg-slate-900 hover:bg-slate-800 text-white rounded-sm text-xs font-bold uppercase active:scale-95 transition-all cursor-pointer flex items-center justify-center"
                       >
                         {t('goods_change_card', language)}
                       </button>
@@ -4940,7 +4931,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
                     {/* Size Option (Only for Tshirt) */}
                     {selectedGoods === 'tshirt' && (
-                      <div className="flex justify-between items-center bg-slate-50 p-3 border border-slate-150 rounded-xl">
+                      <div className="flex justify-between items-center bg-slate-50 p-3 border border-slate-200 rounded-none">
                         <span className="font-bold uppercase text-xs">{t('goods_change_size', language)}</span>
                         <div className="flex gap-1.5">
                           {(['S', 'M', 'L'] as const).map(size => (
@@ -4951,7 +4942,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                                 playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                               }}
                               className={cn(
-                                "min-w-[44px] min-h-[44px] rounded-lg text-xs font-bold transition-all border cursor-pointer flex items-center justify-center",
+                                "min-w-[44px] min-h-[44px] rounded-sm text-xs font-bold transition-all border cursor-pointer flex items-center justify-center",
                                 goodsSize === size
                                   ? "bg-slate-900 text-white border-slate-900"
                                   : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
@@ -4965,19 +4956,19 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     )}
 
                     {/* Quantity Regulator */}
-                    <div className="flex justify-between items-center bg-slate-50 p-3 border border-slate-150 rounded-xl">
+                    <div className="flex justify-between items-center bg-slate-50 p-3 border border-slate-200 rounded-none">
                       <span className="font-bold uppercase text-xs">{t('goods_change_quantity', language)}</span>
                       <div className="flex items-center gap-3">
                         <button
                           onClick={() => setGoodsQuantity(q => Math.max(1, q - 1))}
-                          className="min-w-[44px] min-h-[44px] bg-white border border-slate-200 active:scale-95 rounded-lg font-bold flex items-center justify-center hover:bg-slate-50 cursor-pointer"
+                          className="min-w-[44px] min-h-[44px] bg-white border border-slate-200 active:scale-95 rounded-sm font-bold flex items-center justify-center hover:bg-slate-50 cursor-pointer"
                         >
                           -
                         </button>
                         <span className="font-bold text-sm w-6 text-center">{goodsQuantity}</span>
                         <button
                           onClick={() => setGoodsQuantity(q => q + 1)}
-                          className="min-w-[44px] min-h-[44px] bg-white border border-slate-200 active:scale-95 rounded-lg font-bold flex items-center justify-center hover:bg-slate-50 cursor-pointer"
+                          className="min-w-[44px] min-h-[44px] bg-white border border-slate-200 active:scale-95 rounded-sm font-bold flex items-center justify-center hover:bg-slate-50 cursor-pointer"
                         >
                           +
                         </button>
@@ -4992,7 +4983,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
                     <button
                       onClick={() => setGoodsCheckoutOpen(true)}
-                      className="w-full py-3.5 bg-slate-900 text-white font-bold hover:bg-slate-800 shadow-md shadow-slate-950/10 active:scale-[0.98] transition-all rounded-xl uppercase tracking-wider text-xs mt-2 cursor-pointer"
+                      className="w-full min-h-[44px] py-3.5 px-4 bg-slate-900 text-white font-bold hover:bg-slate-800 active:scale-[0.98] transition-all rounded-sm uppercase tracking-wider text-xs mt-2 cursor-pointer flex items-center justify-center"
                     >
                       {t('goods_checkout', language)}
                     </button>
@@ -5015,16 +5006,17 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   initial={{ scale: 0.95 }}
                   animate={{ scale: 1 }}
                   exit={{ scale: 0.95 }}
-                  className="bg-white border border-slate-100 p-6 rounded-3xl shadow-2xl w-full max-w-md max-h-[80vh] flex flex-col gap-4.5 relative"
+                  className="bg-white border border-slate-200 p-6 rounded-none w-full max-w-md max-h-[80vh] flex flex-col gap-4.5 relative font-mono"
                 >
                   <button
                     onClick={() => setGoodsCardSelectOpen(false)}
-                    className="absolute top-4 right-4 p-1.5 hover:bg-slate-50 border border-slate-200 rounded-lg text-slate-400 hover:text-red-500 active:scale-95 transition-all cursor-pointer"
+                    className="absolute top-4 right-4 p-2 min-w-[44px] min-h-[44px] hover:bg-slate-50 border border-slate-200 rounded-sm text-slate-500 hover:text-red-500 active:scale-95 transition-all cursor-pointer flex items-center justify-center"
+                    aria-label="Close"
                   >
                     <X size={16} />
                   </button>
 
-                  <h3 className="text-lg font-bold tracking-tight text-slate-800 uppercase border-b border-slate-100 pb-3">
+                  <h3 className="text-lg font-bold tracking-tight text-slate-800 uppercase border-b border-slate-200 pb-3">
                     {t('goods_select_card_title', language)}
                   </h3>
 
@@ -5046,9 +5038,9 @@ export const ShopView: React.FC<ShopViewProps> = ({
                               }
                               setGoodsCardSelectOpen(false);
                             }}
-                            className="border border-slate-200/80 p-2 bg-slate-50/50 hover:bg-slate-100/50 rounded-xl cursor-pointer active:scale-98 transition-all flex flex-col gap-1.5 overflow-hidden min-h-0 shadow-xs"
+                            className="border border-slate-200 p-2 bg-slate-50/50 hover:bg-slate-100/50 rounded-none cursor-pointer active:scale-98 transition-all flex flex-col gap-1.5 overflow-hidden min-h-0"
                           >
-                            <div className="aspect-[5/7] w-full overflow-hidden rounded-lg flex-shrink-0">
+                            <div className="aspect-[5/7] w-full overflow-hidden rounded-none flex-shrink-0">
                                <CardItem
                                 card={{
                                   ...cardData,
@@ -5090,23 +5082,24 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   initial={{ scale: 0.95 }}
                   animate={{ scale: 1 }}
                   exit={{ scale: 0.95 }}
-                  className="bg-white border border-slate-100 p-6.5 rounded-3xl shadow-2xl w-full max-w-sm flex flex-col gap-5 relative"
+                  className="bg-white border border-slate-200 p-6 rounded-none w-full max-w-sm flex flex-col gap-5 relative font-mono"
                 >
                   <button
                     onClick={() => setGoodsCheckoutOpen(false)}
-                    className="absolute top-4 right-4 p-1.5 hover:bg-slate-50 border border-slate-200 rounded-lg text-slate-400 hover:text-red-500 active:scale-95 transition-all cursor-pointer"
+                    className="absolute top-4 right-4 p-2 min-w-[44px] min-h-[44px] hover:bg-slate-50 border border-slate-200 rounded-sm text-slate-500 hover:text-red-500 active:scale-95 transition-all cursor-pointer flex items-center justify-center"
+                    aria-label="Close"
                   >
                     <X size={16} />
                   </button>
 
-                  <h3 className="text-lg font-bold tracking-tight text-slate-800 uppercase border-b border-slate-100 pb-3">
+                  <h3 className="text-lg font-bold tracking-tight text-slate-800 uppercase border-b border-slate-200 pb-3">
                     {t('goods_checkout', language)}
                   </h3>
 
                   <div className="flex flex-col gap-4">
                     <button
                       onClick={handleGoodsDollarCheckout}
-                      className="w-full py-3.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-md shadow-orange-500/10 active:scale-[0.98] transition-all rounded-xl flex flex-col items-center justify-center gap-0.5 cursor-pointer"
+                      className="w-full min-h-[44px] py-3.5 px-4 bg-amber-600 hover:bg-amber-700 text-white active:scale-[0.98] transition-all rounded-sm flex flex-col items-center justify-center gap-0.5 cursor-pointer"
                     >
                       <span className="text-sm uppercase font-bold">{t('goods_dollar_payment', language)}</span>
                       <span className="text-xs font-semibold opacity-90">${(selectedGoods === 'mug' ? 10 : 35) * goodsQuantity}.00 USD</span>
@@ -5114,7 +5107,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
                     <button
                       onClick={() => handleGoodsCryptoPayment()}
-                      className="w-full py-3.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 shadow-xs active:scale-[0.98] transition-all rounded-xl flex flex-col items-center justify-center gap-0.5 cursor-pointer"
+                      className="w-full min-h-[44px] py-3.5 px-4 bg-slate-50 hover:bg-slate-100 border border-slate-200 active:scale-[0.98] transition-all rounded-sm flex flex-col items-center justify-center gap-0.5 cursor-pointer"
                     >
                       <span className="text-sm uppercase font-bold text-slate-700">{t('goods_coin_payment', language)}</span>
                       <span className="text-xs font-bold text-blue-600">${(selectedGoods === 'mug' ? 10 : 35) * goodsQuantity}.00 USD</span>
@@ -5123,7 +5116,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     {user?.email === 'dryudryu@gmail.com' && (
                       <button
                         onClick={handleGoodsTestPurchase}
-                        className="w-full py-3 bg-red-650 hover:bg-red-750 text-white shadow-md shadow-red-650/10 active:scale-[0.98] transition-all rounded-xl uppercase tracking-wider text-xs flex items-center justify-center gap-2 cursor-pointer border-none"
+                        className="w-full min-h-[44px] py-3 px-4 bg-red-650 hover:bg-red-750 text-white active:scale-[0.98] transition-all rounded-sm uppercase tracking-wider text-xs flex items-center justify-center gap-2 cursor-pointer border-none"
                       >
                         <Lock size={14} />
                         {t('goods_test_payment', language)}
@@ -5142,22 +5135,23 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md font-sans text-slate-800"
+                className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md font-mono text-slate-800"
               >
                 <motion.div
                   initial={{ scale: 0.95 }}
                   animate={{ scale: 1 }}
                   exit={{ scale: 0.95 }}
-                  className="bg-white border border-slate-100 p-6 rounded-3xl shadow-2xl w-full max-w-sm flex flex-col gap-4 relative"
+                  className="bg-white border border-slate-200 p-6 rounded-none w-full max-w-sm flex flex-col gap-4 relative"
                 >
                   <button
                     onClick={() => setGoodsShippingOpen(false)}
-                    className="absolute top-4 right-4 p-1.5 hover:bg-slate-100 rounded-full text-slate-400 cursor-pointer"
+                    className="absolute top-4 right-4 p-2 min-w-[44px] min-h-[44px] hover:bg-slate-50 border border-slate-200 rounded-sm text-slate-500 hover:text-red-500 active:scale-95 transition-all cursor-pointer flex items-center justify-center"
+                    aria-label="Close"
                   >
-                    <X size={20} />
+                    <X size={16} />
                   </button>
 
-                  <h3 className="text-xl font-bold uppercase tracking-tight border-b border-slate-100 pb-3 text-slate-800">
+                  <h3 className="text-xl font-bold uppercase tracking-tight border-b border-slate-200 pb-3 text-slate-800">
                     {t('goods_buyer_info', language)}
                   </h3>
 
@@ -5170,7 +5164,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                         value={goodsBuyerName}
                         onChange={e => setGoodsBuyerName(e.target.value)}
                         placeholder="Greg You"
-                        className="w-full bg-slate-50 border border-slate-100 px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 focus:bg-white rounded-xl transition-all"
+                        className="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:border-slate-900 focus:bg-white rounded-sm transition-all"
                       />
                     </div>
 
@@ -5182,13 +5176,13 @@ export const ShopView: React.FC<ShopViewProps> = ({
                         value={goodsBuyerAddress}
                         onChange={e => setGoodsBuyerAddress(e.target.value)}
                         placeholder="Seoul, South Korea..."
-                        className="w-full bg-slate-50 border border-slate-100 px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 focus:bg-white rounded-xl resize-none transition-all"
+                        className="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:border-slate-900 focus:bg-white rounded-sm resize-none transition-all"
                       />
                     </div>
 
                     <button
                       type="submit"
-                      className="w-full py-4 bg-slate-900 text-white font-bold hover:bg-slate-800 transition-all rounded-xl uppercase tracking-wider text-sm mt-2 cursor-pointer active:scale-95 shadow-sm border-none"
+                      className="w-full min-h-[44px] py-3.5 px-4 bg-slate-900 text-white font-bold hover:bg-slate-800 transition-all rounded-sm uppercase tracking-wider text-sm mt-2 cursor-pointer active:scale-95 border-none flex items-center justify-center"
                     >
                       {t('goods_complete_order', language)}
                     </button>
@@ -5205,26 +5199,27 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs font-sans text-slate-800"
+                className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs font-mono text-slate-800"
               >
                 <motion.div
                   initial={{ scale: 0.95 }}
                   animate={{ scale: 1 }}
                   exit={{ scale: 0.95 }}
-                  className="bg-white border border-slate-100 p-6.5 rounded-3xl shadow-2xl w-full max-w-sm flex flex-col gap-4 relative max-h-[85vh] overflow-y-auto"
+                  className="bg-white border border-slate-200 p-6 rounded-none w-full max-w-sm flex flex-col gap-4 relative max-h-[85vh] overflow-y-auto"
                 >
                   <button
                     onClick={() => setGoodsPaymentPopupOpen(false)}
-                    className="absolute top-4 right-4 p-1.5 hover:bg-slate-50 border border-slate-200 rounded-lg text-slate-400 hover:text-red-500 active:scale-95 transition-all cursor-pointer"
+                    className="absolute top-4 right-4 p-2 min-w-[44px] min-h-[44px] hover:bg-slate-50 border border-slate-200 rounded-sm text-slate-500 hover:text-red-500 active:scale-95 transition-all cursor-pointer flex items-center justify-center"
+                    aria-label="Close"
                   >
                     <X size={16} />
                   </button>
 
-                  <h3 className="text-lg font-bold tracking-tight border-b border-slate-100 pb-3 text-slate-800">
+                  <h3 className="text-lg font-bold tracking-tight border-b border-slate-200 pb-3 text-slate-800">
                     {t('goods_payment_method_title', language)}
                   </h3>
 
-                  <div className="rounded-2xl border border-slate-100 bg-slate-50 p-3.5 space-y-1.5">
+                  <div className="rounded-none border border-slate-200 bg-slate-50 p-3.5 space-y-1.5">
                     <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
                       {t('goods_payment_summary_title', language)}
                     </p>
@@ -5301,7 +5296,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     {selectedGoodsGatewayId === 'crypto-okx' && (
                       <button
                         onClick={handleGoodsCryptoPayment}
-                        className="w-full py-3.5 bg-slate-900 hover:bg-slate-800 text-white shadow-md active:scale-[0.98] transition-all rounded-xl uppercase tracking-wider text-xs font-bold flex items-center justify-center gap-2 cursor-pointer border-none"
+                        className="w-full min-h-[44px] py-3.5 px-4 bg-slate-900 hover:bg-slate-800 text-white active:scale-[0.98] transition-all rounded-sm uppercase tracking-wider text-xs font-bold flex items-center justify-center gap-2 cursor-pointer border-none"
                       >
                         {t('goods_crypto_payment', language)}
                       </button>
@@ -5310,7 +5305,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     {user?.email === 'dryudryu@gmail.com' && (
                       <button
                         onClick={handleGoodsPaymentConfirm}
-                        className="w-full py-4 bg-rose-600 text-white font-bold hover:bg-rose-700 transition-all rounded-xl uppercase tracking-wider text-sm flex items-center justify-center gap-2 cursor-pointer active:scale-95 shadow-sm border-none"
+                        className="w-full min-h-[44px] py-3.5 px-4 bg-rose-600 text-white font-bold hover:bg-rose-700 transition-all rounded-sm uppercase tracking-wider text-sm flex items-center justify-center gap-2 cursor-pointer active:scale-95 border-none"
                       >
                         <Lock size={14} />
                         {t('goods_test_payment', language)}
@@ -5331,13 +5326,14 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 exit={{ opacity: 0 }}
                 className="fixed inset-0 z-[10001] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md"
               >
-                <div className="bg-white border border-slate-100 rounded-2xl p-6 max-w-md w-full max-h-[80vh] overflow-hidden flex flex-col gap-4 shadow-2xl">
-                  <div className="flex justify-between items-center border-b border-slate-100 pb-4">
+                <div className="bg-white border border-slate-200 rounded-none p-6 max-w-md w-full max-h-[80vh] overflow-hidden flex flex-col gap-4 font-mono">
+                  <div className="flex justify-between items-center border-b border-slate-200 pb-4">
                     <div className="flex items-center gap-2">
                       {selectedCountry && (
                         <button
                           onClick={() => setSelectedCountry(null)}
-                          className="mr-2 p-1.5 hover:bg-slate-100 rounded-full transition-colors cursor-pointer"
+                          className="mr-2 p-2 min-w-[44px] min-h-[44px] hover:bg-slate-100 rounded-sm border border-slate-200 transition-colors cursor-pointer flex items-center justify-center"
+                          aria-label="Back"
                         >
                           <ChevronLeft className="text-slate-600" size={18} />
                         </button>
@@ -5346,7 +5342,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                         {!selectedCountry ? t('select_country', language) : (language === 'ko' ? '결제 수단 선택' : 'Select Payment Method')}
                       </h3>
                     </div>
-                    <button className="text-slate-400 hover:text-slate-600 cursor-pointer p-2 min-w-[44px] min-h-[44px] flex items-center justify-center" onClick={() => setCountryModalOpen(false)}><X size={20} /></button>
+                    <button className="text-slate-500 hover:text-slate-900 border border-slate-200 rounded-sm cursor-pointer p-2 min-w-[44px] min-h-[44px] flex items-center justify-center" onClick={() => setCountryModalOpen(false)} aria-label="Close"><X size={18} /></button>
                   </div>
 
                   <div className="overflow-y-auto pr-2 space-y-2 flex-1">
@@ -5362,10 +5358,10 @@ export const ShopView: React.FC<ShopViewProps> = ({
                               setCryptoStep('coin');
                               fetchCryptoCoins();
                             }}
-                            className="w-full p-3.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-xl shadow-sm transition-all flex items-center justify-between group cursor-pointer active:scale-[0.98] border border-amber-400/40"
+                            className="w-full min-h-[44px] p-3.5 bg-amber-600 hover:bg-amber-700 text-white rounded-sm transition-all flex items-center justify-between group cursor-pointer active:scale-[0.98] border border-amber-700"
                           >
                             <div className="flex items-center gap-3">
-                              <div className="w-9 h-9 rounded-lg bg-white/20 flex items-center justify-center font-bold text-lg">
+                              <div className="w-8 h-8 rounded-sm bg-white/20 flex items-center justify-center font-bold text-lg">
                                 ⚡
                               </div>
                               <div className="text-left">
@@ -5389,7 +5385,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                                 setGoodsSelectedCountry(country.code);
                               }
                             }}
-                            className="w-full text-left p-4 border border-slate-100 rounded-xl hover:border-blue-500 hover:bg-blue-50/30 transition-all flex items-center justify-between group cursor-pointer"
+                            className="w-full min-h-[44px] text-left p-4 border border-slate-200 rounded-sm hover:border-slate-900 hover:bg-slate-50 transition-all flex items-center justify-between group cursor-pointer"
                           >
                             <div className="flex items-center gap-3">
                               <span className="text-2xl">{country.flag}</span>
@@ -5420,7 +5416,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                               }
                               setCountryModalOpen(false);
                             }}
-                            className="w-full bg-slate-900 text-white font-bold uppercase tracking-widest text-base hover:bg-slate-800 transition-all font-sans h-12 rounded-xl flex items-center justify-center cursor-pointer shadow-sm active:scale-95"
+                            className="w-full bg-slate-900 text-white font-bold uppercase tracking-widest text-sm hover:bg-slate-800 transition-all font-mono min-h-[44px] rounded-sm flex items-center justify-center cursor-pointer active:scale-95"
                           >
                             {selectedPackage?.isGoods
                               ? (language === 'ko' ? '테스트 결제 (배송정보)' : 'Test Purchase (Shipping)')
@@ -5430,7 +5426,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                           </button>
                         ) : isAppEnv ? (
                           <div className="flex flex-col gap-3">
-                            <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl flex items-start gap-2.5 text-xs text-emerald-800 font-medium">
+                            <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-none flex items-start gap-2.5 text-xs text-emerald-800 font-medium">
                               <ShieldAlert size={16} className="text-emerald-600 shrink-0 mt-0.5" />
                               <div className="space-y-0.5">
                                 <span className="font-bold block uppercase tracking-wider text-[10px] text-emerald-700">
@@ -5471,7 +5467,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                                     setCountryModalOpen(false);
                                   }
                                 }}
-                                className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold uppercase tracking-widest text-sm rounded-xl shadow-md active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer border-none"
+                                className="w-full min-h-[44px] py-3.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold uppercase tracking-widest text-sm rounded-sm active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer border-none"
                               >
                                 <Zap size={18} />
                                 <span>{language === 'ko' ? 'Google Play 인앱 결제 진행' : 'Pay via Google Play'}</span>
@@ -5519,7 +5515,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                                       (window as any).PayApp.payrequest();
                                     }
                                   }}
-                                  className="w-full bg-black text-white font-bold uppercase tracking-widest text-lg flex items-center justify-center gap-2 hover:bg-zinc-900 transition-all font-sans h-12 rounded shadow-sm border-b-4 border-zinc-800 active:border-b-0 active:translate-y-1 mt-2"
+                                  className="w-full bg-black text-white font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-2 hover:bg-zinc-900 transition-all font-mono min-h-[44px] rounded-sm border border-black active:translate-y-0.5 mt-2"
                                 >
                                   <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M17.05 20.28c-.96.95-2.208 1.1-2.93 1.1-1.002 0-2.096-.4-2.99-.4-.922 0-2.15.4-2.848.4-.698 0-2.136-.318-3.034-1.1-1.807-1.572-3.055-4.595-3.055-7.19 0-3.968 2.585-6.074 5.073-6.074 1.285 0 2.338.746 3.034.746.68 0 2.046-.81 3.478-.81 1.446 0 3.313.393 4.57 2.1-.284.17-2.697 1.577-2.697 4.607 0 3.512 3.125 4.743 3.164 4.76a11.537 11.537 0 0 1-1.765 2.761zm-2.783-17.428c0 2.1-.825 4.136-3.23 4.136 0-2.1.841-3.917 3.23-4.136z"/>
@@ -5553,7 +5549,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                                         (window as any).PayApp.payrequest();
                                       }
                                     }}
-                                    className="w-full bg-[#2DB400] text-white font-bold uppercase tracking-widest text-lg flex items-center justify-center gap-2 hover:bg-[#2DB400]/80 transition-all font-sans h-12 rounded shadow-sm border-b-4 border-[#249000] active:border-b-0 active:translate-y-1"
+                                    className="w-full bg-[#2DB400] text-white font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-2 hover:bg-[#2DB400]/80 transition-all font-mono min-h-[44px] rounded-sm border border-[#249000] active:translate-y-0.5"
                                   >
                                     <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current" xmlns="http://www.w3.org/2000/svg">
                                       <path d="M16.273 12.845L7.376 0H0v24h7.727V11.155L16.624 24H24V0h-7.727v12.845z"/>
@@ -5588,7 +5584,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                                           (window as any).PayApp.payrequest();
                                         }
                                       }}
-                                      className="w-full bg-[#00A1E9] text-white font-bold uppercase tracking-widest text-lg flex items-center justify-center gap-2 hover:bg-[#00A1E9]/80 transition-all font-sans h-12 rounded shadow-sm border-b-4 border-[#007cb3] active:border-b-0 active:translate-y-1"
+                                      className="w-full bg-[#00A1E9] text-white font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-2 hover:bg-[#00A1E9]/80 transition-all font-mono min-h-[44px] rounded-sm border border-[#007cb3] active:translate-y-0.5"
                                     >
                                       <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M12.015 2c-5.523 0-10 4.477-10 10s4.477 10 10 10 10-4.477 10-10-4.477-10-10-10zm4.27 12.383h-2.183l-.332 1.417h-2.134l.332-1.417h-2.134l-.248 1.055h-1.92l.493-2.1h5.81l.163-.694H8.435l.164-.694H8.435l.164-.694H8.435l.164-.694H8.435l.164-.694h5.638l.164-.7h5.638l.164-.7h-5.638l.164-.7H9.429l.332-1.417h2.134l-.332 1.417h2.133l.332 1.417h2.134l-.332 1.417h1.921l-.493 2.1h-1.428l-.163.694h1.427l-.163.694h-1.427l.163.694h1.427l-.493 2.1z"/>
@@ -5619,7 +5615,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                                           (window as any).PayApp.payrequest();
                                         }
                                       }}
-                                      className="w-full bg-[#07C160] text-white font-bold uppercase tracking-widest text-lg flex items-center justify-center gap-2 hover:bg-[#07C160]/80 transition-all font-sans h-12 rounded shadow-sm border-b-4 border-[#059048] active:border-b-0 active:translate-y-1"
+                                      className="w-full bg-[#07C160] text-white font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-2 hover:bg-[#07C160]/80 transition-all font-mono min-h-[44px] rounded-sm border border-[#059048] active:translate-y-0.5"
                                     >
                                       <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.5 13.5c-.28 0-.5-.22-.5-.5s.22-.5.5-.5.5.22.5.5-.22.5-.5.5zm-4.5 0c-.28 0-.5-.22-.5-.5s.22-.5.5-.5.5.22.5.5-.22.5-.5.5zm-4.5 0c-.28 0-.5-.22-.5-.5s.22-.5.5-.5.5.22.5.5-.22.5-.5.5zm9-4.5c-.28 0-.5-.22-.5-.5s.22-.5.5-.5.5.22.5.5-.22.5-.5.5zm-4.5 0c-.28 0-.5-.22-.5-.5s.22-.5.5-.5.5.22.5.5-.22.5-.5.5zm-4.5 0c-.28 0-.5-.22-.5-.5s.22-.5.5-.5.5.22.5.5-.22.5-.5.5z"/>
@@ -5654,7 +5650,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                                         console.error('PayApp SDK not loaded');
                                       }
                                     }}
-                                    className="w-full bg-[#1e58ff] text-white font-bold uppercase tracking-widest text-lg flex items-center justify-center gap-2 hover:bg-[#1e58ff]/80 transition-all font-sans h-12 rounded shadow-sm border-b-4 border-[#1542c7] active:border-b-0 active:translate-y-1"
+                                    className="w-full bg-[#1e58ff] text-white font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-2 hover:bg-[#1e58ff]/80 transition-all font-mono min-h-[44px] rounded-sm border border-[#1542c7] active:translate-y-0.5"
                                   >
                                     {language === 'ko' ? '신용카드 (PayApp)' : 'Credit Card (PayApp)'}
                                   </button>
@@ -5672,7 +5668,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                                     setCryptoStep('coin');
                                     fetchCryptoCoins();
                                   }}
-                                  className="w-full bg-[#f7931a] hover:bg-[#e08213] text-white font-bold uppercase tracking-widest text-base flex items-center justify-center gap-2 hover:opacity-95 transition-all font-sans h-12 rounded shadow-sm border-b-4 border-[#c7710d] active:border-b-0 active:translate-y-1 mt-1 cursor-pointer"
+                                  className="w-full bg-[#f7931a] hover:bg-[#e08213] text-white font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-2 hover:opacity-95 transition-all font-mono min-h-[44px] rounded-sm border border-[#c7710d] active:translate-y-0.5 mt-1 cursor-pointer"
                                 >
                                   <Coins size={20} className="fill-current" />
                                   {language === 'ko' ? '암호화폐 결제 (USDT / BTC / ETH)' : 'Crypto Payment (USDT / BTC / ETH)'}
@@ -5698,14 +5694,15 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 exit={{ opacity: 0 }}
                 className="fixed inset-0 z-[10002] flex items-center justify-center p-4 bg-black/65 backdrop-blur-md"
               >
-                <div className="bg-white border border-slate-200 rounded-2xl p-6 max-w-md w-full max-h-[85vh] overflow-hidden flex flex-col gap-4 shadow-2xl font-mono">
+                <div className="bg-white border border-slate-200 rounded-none p-6 max-w-md w-full max-h-[85vh] overflow-hidden flex flex-col gap-4 font-mono">
                   {/* Header */}
-                  <div className="flex justify-between items-center border-b border-slate-100 pb-3">
+                  <div className="flex justify-between items-center border-b border-slate-200 pb-3">
                     <div className="flex items-center gap-2">
                       {cryptoStep === 'chain' && (
                         <button
                           onClick={() => setCryptoStep('coin')}
-                          className="mr-1 p-1 hover:bg-slate-100 rounded-lg text-slate-600 transition cursor-pointer"
+                          className="mr-1 p-2 min-w-[44px] min-h-[44px] hover:bg-slate-100 rounded-sm border border-slate-200 text-slate-600 transition cursor-pointer flex items-center justify-center"
+                          aria-label="Back"
                         >
                           <ChevronLeft size={18} />
                         </button>
@@ -5720,21 +5717,22 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       </div>
                     </div>
                     <button
-                      className="text-slate-400 hover:text-slate-700 cursor-pointer p-2 rounded-lg hover:bg-slate-50 transition"
+                      className="text-slate-500 hover:text-slate-900 cursor-pointer p-2 min-w-[44px] min-h-[44px] rounded-sm border border-slate-200 hover:bg-slate-50 transition flex items-center justify-center"
                       onClick={() => setCryptoModalOpen(false)}
+                      aria-label="Close"
                     >
-                      <X size={20} />
+                      <X size={18} />
                     </button>
                   </div>
 
                   {/* Payment Item Summary */}
                   {selectedPaymentItem && (
-                    <div className="bg-amber-50/70 border border-amber-200/60 rounded-xl p-3 flex justify-between items-center">
+                    <div className="bg-amber-50/70 border border-amber-200/60 rounded-none p-3 flex justify-between items-center">
                       <div className="text-xs text-amber-900">
                         <span className="font-bold block">{selectedPaymentItem.label || (selectedPaymentItem.amount ? `${selectedPaymentItem.amount.toLocaleString()} SNS` : 'SNS Package')}</span>
                         <span className="text-amber-700 text-[11px]">{language === 'ko' ? '결제 예정 금액' : 'Total Amount'}: ${selectedPaymentItem.price} USD</span>
                       </div>
-                      <span className="text-xs font-black bg-amber-500 text-white px-2 py-1 rounded">
+                      <span className="text-xs font-black bg-amber-500 text-white px-2 py-1 rounded-sm">
                         ${selectedPaymentItem.price}
                       </span>
                     </div>
@@ -5751,7 +5749,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                           value={coinSearch}
                           onChange={(e) => setCoinSearch(e.target.value)}
                           placeholder={language === 'ko' ? '코인 심볼 또는 이름 검색 (USDT, BTC...)' : 'Search coin (USDT, BTC...)'}
-                          className="w-full pl-9 pr-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-amber-500 bg-slate-50 font-sans"
+                          className="w-full pl-9 pr-3 py-2 text-xs border border-slate-200 rounded-sm focus:outline-none focus:border-amber-500 bg-slate-50 font-mono"
                         />
                       </div>
 
@@ -5772,7 +5770,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                                 }
                               }
                             }}
-                            className="px-2.5 py-1 bg-slate-100 hover:bg-amber-100 hover:text-amber-800 text-slate-700 rounded-lg font-bold border border-slate-200 transition cursor-pointer"
+                            className="px-2.5 py-1 min-h-[44px] bg-slate-100 hover:bg-amber-100 hover:text-amber-800 text-slate-700 rounded-sm font-bold border border-slate-200 transition cursor-pointer flex items-center justify-center"
                           >
                             {chip}
                           </button>
@@ -5805,10 +5803,10 @@ export const ShopView: React.FC<ShopViewProps> = ({
                                     initiateCryptoDeposit(coin, selectedPaymentItem);
                                   }
                                 }}
-                                className="w-full p-3 border border-slate-100 hover:border-amber-400 hover:bg-amber-50/30 rounded-xl flex items-center justify-between transition group cursor-pointer text-left"
+                                className="w-full p-3 min-h-[44px] border border-slate-200 hover:border-amber-500 hover:bg-amber-50/30 rounded-none flex items-center justify-between transition group cursor-pointer text-left"
                               >
                                 <div className="flex items-center gap-3">
-                                  <div className="w-8 h-8 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center font-bold text-base shrink-0">
+                                  <div className="w-8 h-8 rounded-none bg-slate-100 border border-slate-200 flex items-center justify-center font-bold text-base shrink-0">
                                     {coin.icon || '🪙'}
                                   </div>
                                   <div>
@@ -5818,12 +5816,12 @@ export const ShopView: React.FC<ShopViewProps> = ({
                                     </div>
                                     <div className="flex flex-wrap gap-1 mt-0.5">
                                       {(coin.chains || []).slice(0, 3).map((ch: string) => (
-                                        <span key={ch} className="text-[9px] bg-slate-100 text-slate-600 px-1.5 py-0.2 rounded font-sans">
+                                        <span key={ch} className="text-[9px] bg-slate-100 text-slate-600 px-1.5 py-0.2 rounded-none font-mono">
                                           {ch.replace(`${coin.ccy}-`, '')}
                                         </span>
                                       ))}
                                       {(coin.chains || []).length > 3 && (
-                                        <span className="text-[9px] text-slate-400 font-sans">
+                                        <span className="text-[9px] text-slate-400 font-mono">
                                           +{(coin.chains || []).length - 3}
                                         </span>
                                       )}
@@ -5841,7 +5839,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   {/* Body: Step 2 Network/Chain Selection */}
                   {cryptoStep === 'chain' && (
                     <div className="flex-1 overflow-y-auto space-y-2.5 pr-1">
-                      <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-600">
+                      <div className="p-3 bg-slate-50 border border-slate-200 rounded-none text-xs text-slate-600">
                         {language === 'ko'
                           ? `선택한 코인 [${selectedCoin?.ccy}]의 입금 네트워크(체인)를 선택해주세요. 송금 지갑과 동일한 네트워크를 선택해야 안전합니다.`
                           : `Please select the deposit network for [${selectedCoin?.ccy}]. Ensure it matches your sending wallet.`}
@@ -5858,18 +5856,18 @@ export const ShopView: React.FC<ShopViewProps> = ({
                                 playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
                                 initiateCryptoDeposit({ ...selectedCoin, chain: chainItem }, selectedPaymentItem);
                               }}
-                              className="w-full p-3.5 border border-slate-200 hover:border-amber-500 hover:bg-amber-50/40 rounded-xl flex items-center justify-between transition group cursor-pointer text-left"
+                              className="w-full p-3.5 min-h-[44px] border border-slate-200 hover:border-amber-500 hover:bg-amber-50/40 rounded-none flex items-center justify-between transition group cursor-pointer text-left"
                             >
                               <div>
                                 <div className="flex items-center gap-2">
                                   <span className="font-bold text-sm text-slate-800">{chainName}</span>
                                   {isRecommended && (
-                                    <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.5 rounded">
+                                    <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.5 rounded-sm">
                                       {language === 'ko' ? '추천 (저렴한 수수료)' : 'Recommended'}
                                     </span>
                                   )}
                                 </div>
-                                <span className="text-[11px] text-slate-400 font-sans block mt-0.5">
+                                <span className="text-[11px] text-slate-400 font-mono block mt-0.5">
                                   {chainItem}
                                 </span>
                               </div>
@@ -5882,7 +5880,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   )}
 
                   {cryptoError && (
-                    <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 text-xs rounded-xl flex items-center gap-2">
+                    <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 text-xs rounded-none flex items-center gap-2">
                       <AlertCircle size={16} className="shrink-0" />
                       <span>{cryptoError}</span>
                     </div>
@@ -5901,9 +5899,9 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 exit={{ opacity: 0 }}
                 className="fixed inset-0 z-[10003] flex items-center justify-center p-4 bg-black/70 backdrop-blur-md"
               >
-                <div className="bg-white border border-slate-200 rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto flex flex-col gap-4 shadow-2xl font-mono">
+                <div className="bg-white border border-slate-200 rounded-none p-6 max-w-md w-full max-h-[90vh] overflow-y-auto flex flex-col gap-4 font-mono">
                   {/* Header */}
-                  <div className="flex justify-between items-center border-b border-slate-100 pb-3">
+                  <div className="flex justify-between items-center border-b border-slate-200 pb-3">
                     <div className="flex items-center gap-2">
                       <span className="text-xl">⚡</span>
                       <div>
@@ -5916,15 +5914,16 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       </div>
                     </div>
                     <button
-                      className="text-slate-400 hover:text-slate-700 cursor-pointer p-2 rounded-lg hover:bg-slate-50 transition"
+                      className="text-slate-500 hover:text-slate-900 cursor-pointer p-2 min-w-[44px] min-h-[44px] rounded-sm border border-slate-200 hover:bg-slate-50 transition flex items-center justify-center"
                       onClick={() => setPaymentInfo(null)}
+                      aria-label="Close"
                     >
-                      <X size={20} />
+                      <X size={18} />
                     </button>
                   </div>
 
                   {/* Countdown Timer Badge */}
-                  <div className="flex items-center justify-between p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs">
+                  <div className="flex items-center justify-between p-2.5 bg-slate-50 border border-slate-200 rounded-none text-xs">
                     <div className="flex items-center gap-1.5 text-slate-600">
                       <Clock size={15} className="text-amber-500" />
                       <span>{language === 'ko' ? '입금 유효 시간' : 'Time Remaining'}:</span>
@@ -5935,7 +5934,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   </div>
 
                   {/* Amount to Send */}
-                  <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-3 text-center space-y-1">
+                  <div className="bg-amber-50 border border-amber-200 rounded-none p-3 text-center space-y-1">
                     <span className="text-[11px] text-amber-800 font-semibold block uppercase tracking-wider">
                       {language === 'ko' ? '전송해야 할 정확한 금액' : 'Exact Amount to Send'}
                     </span>
@@ -5948,14 +5947,14 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   </div>
 
                   {/* QR Code */}
-                  <div className="flex flex-col items-center justify-center p-3 bg-white border border-slate-100 rounded-xl shadow-xs">
+                  <div className="flex flex-col items-center justify-center p-3 bg-white border border-slate-200 rounded-none">
                     <QRCodeSVG
                       value={paymentInfo.address}
                       size={168}
                       level="M"
                       includeMargin={true}
                     />
-                    <span className="text-[10px] text-slate-400 mt-1 font-sans">
+                    <span className="text-[10px] text-slate-400 mt-1 font-mono">
                       {language === 'ko' ? '지갑 앱으로 스캔하여 전송하세요' : 'Scan with your crypto wallet app'}
                     </span>
                   </div>
@@ -5970,11 +5969,11 @@ export const ShopView: React.FC<ShopViewProps> = ({
                         type="text"
                         readOnly
                         value={paymentInfo.address}
-                        className="flex-1 p-2.5 text-[11px] bg-slate-50 border border-slate-200 rounded-xl font-mono text-slate-800 select-all focus:outline-none"
+                        className="flex-1 p-2.5 text-[11px] bg-slate-50 border border-slate-200 rounded-sm font-mono text-slate-800 select-all focus:outline-none"
                       />
                       <button
                         onClick={() => handleCopyAddress(paymentInfo.address)}
-                        className="px-3 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer shrink-0 transition active:scale-95"
+                        className="px-3 py-2.5 min-h-[44px] bg-slate-900 hover:bg-slate-800 text-white rounded-sm text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer shrink-0 transition active:scale-95"
                       >
                         {copiedAddress ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
                         <span>{copiedAddress ? (language === 'ko' ? '복사됨' : 'Copied') : (language === 'ko' ? '복사' : 'Copy')}</span>
@@ -5984,15 +5983,15 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
                   {/* Status & Manual Verification Button */}
                   <div className="space-y-2 pt-1">
-                    <div className="flex items-center justify-center gap-2 text-xs text-amber-700 bg-amber-50/60 p-2 rounded-lg">
-                      <div className="w-2 h-2 rounded-full bg-amber-500 animate-ping" />
+                    <div className="flex items-center justify-center gap-2 text-xs text-amber-700 bg-amber-50/60 p-2 rounded-none border border-amber-200/40">
+                      <div className="w-2 h-2 rounded-none bg-amber-500" />
                       <span>{language === 'ko' ? '네트워크 트랜잭션을 실시간 감지 중입니다...' : 'Detecting blockchain transaction in real-time...'}</span>
                     </div>
 
                     <button
                       onClick={handleManualCheckCryptoDeposit}
                       disabled={isVerifyingCrypto}
-                      className="w-full py-3 bg-amber-500 hover:bg-amber-600 disabled:opacity-50 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition flex items-center justify-center gap-2 cursor-pointer shadow-sm active:scale-[0.98]"
+                      className="w-full min-h-[44px] py-3 px-4 bg-amber-600 hover:bg-amber-700 disabled:opacity-50 text-white font-bold text-xs uppercase tracking-wider rounded-sm transition flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98] border-none"
                     >
                       {isVerifyingCrypto ? (
                         <>
@@ -6009,7 +6008,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
                     <button
                       onClick={() => setPaymentInfo(null)}
-                      className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold rounded-xl transition cursor-pointer"
+                      className="w-full min-h-[44px] py-2.5 px-4 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 text-xs font-bold rounded-sm transition cursor-pointer flex items-center justify-center"
                     >
                       {language === 'ko' ? '결제 취소' : 'Cancel'}
                     </button>
@@ -6032,10 +6031,10 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   initial={{ scale: 0.9, y: 20 }}
                   animate={{ scale: 1, y: 0 }}
                   exit={{ scale: 0.9, y: 20 }}
-                  className="bg-white border border-slate-100 p-6 rounded-3xl shadow-2xl max-w-sm w-full text-center space-y-4"
+                  className="bg-white border border-slate-200 p-6 rounded-none max-w-sm w-full text-center space-y-4 font-mono"
                 >
-                  <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
-                    <CheckCircle2 size={36} />
+                  <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-none border border-emerald-200 flex items-center justify-center mx-auto">
+                    <CheckCircle2 size={28} />
                   </div>
                   <div>
                     <h3 className="text-lg font-bold text-slate-900">
@@ -6052,7 +6051,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                       setCryptoSuccessModal(false);
                     }}
-                    className="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition cursor-pointer shadow-sm active:scale-95"
+                    className="w-full min-h-[44px] py-3 px-4 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider rounded-sm transition cursor-pointer active:scale-95 flex items-center justify-center"
                   >
                     {language === 'ko' ? '확인' : 'OK'}
                   </button>
@@ -6068,7 +6067,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 30 }}
-                className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[10005] bg-slate-900/90 text-white px-4 py-2.5 rounded-full text-xs font-mono shadow-xl backdrop-blur-xs flex items-center gap-2 border border-slate-700"
+                className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[10005] bg-slate-900 text-white px-4 py-2.5 rounded-none text-xs font-mono backdrop-blur-xs flex items-center gap-2 border border-slate-700"
               >
                 <Sparkles size={14} className="text-amber-400" />
                 <span>{toastMessage}</span>
@@ -6089,7 +6088,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   initial={{ scale: 0.95, y: 16 }}
                   animate={{ scale: 1, y: 0 }}
                   exit={{ scale: 0.95, y: 16 }}
-                  className="bg-white border border-slate-100 p-6 rounded-3xl shadow-2xl w-full max-w-lg flex flex-col gap-4"
+                  className="bg-white border border-slate-200 p-6 rounded-none w-full max-w-lg flex flex-col gap-4 font-mono"
                   onClick={(event) => event.stopPropagation()}
                 >
                   <div className="flex items-start justify-between gap-3">
@@ -6100,19 +6099,20 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     <button
                       type="button"
                       onClick={() => setSelectedRefundOrder(null)}
-                      className="p-2 rounded-xl border border-slate-200 text-slate-400 hover:text-red-500 hover:bg-slate-50 transition"
+                      className="p-2 min-w-[44px] min-h-[44px] rounded-sm border border-slate-200 text-slate-500 hover:text-red-500 hover:bg-slate-50 transition flex items-center justify-center"
+                      aria-label="Close"
                     >
                       <X size={16} />
                     </button>
                   </div>
 
-                  <div className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3 space-y-1.5">
+                  <div className="rounded-none border border-slate-200 bg-slate-50 px-4 py-3 space-y-1.5">
                     <p className="text-sm font-bold text-slate-800">{selectedRefundOrder.itemName}</p>
                     <p className="text-xs font-semibold text-slate-500">{t('refund_request_order_number', language)}: {selectedRefundOrder.orderId}</p>
                     <p className="text-xs font-semibold text-slate-500">{t('refund_request_amount', language)}: ${selectedRefundOrder.amountUsd.toFixed(2)} USD</p>
                   </div>
 
-                  <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 space-y-2">
+                  <div className="rounded-none border border-amber-200 bg-amber-50 px-4 py-3 space-y-2">
                     <div className="flex items-center gap-2 text-amber-700">
                       <Clock size={14} />
                       <p className="text-[11px] font-black uppercase tracking-[0.18em]">{t('refund_request_modal_notice_title', language)}</p>
@@ -6126,7 +6126,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     <select
                       value={refundReason}
                       onChange={(event) => setRefundReason(event.target.value as RefundRequestReason)}
-                      className="w-full min-h-11 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 outline-none focus:border-emerald-400"
+                      className="w-full min-h-11 rounded-sm border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 outline-none focus:border-slate-900"
                     >
                       {REFUND_REASON_OPTIONS.map((reason) => (
                         <option key={reason} value={reason}>
@@ -6142,7 +6142,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       value={refundDetails}
                       onChange={(event) => setRefundDetails(event.target.value)}
                       rows={4}
-                      className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 outline-none focus:border-emerald-400 resize-none"
+                      className="w-full rounded-sm border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 outline-none focus:border-slate-900 resize-none"
                       placeholder={t('refund_request_detail_placeholder', language)}
                     />
                   </label>
@@ -6151,14 +6151,14 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     <button
                       type="button"
                       onClick={() => onNavigate?.('policy-center')}
-                      className="min-h-11 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-[10px] font-black uppercase tracking-[0.18em] text-slate-700 transition hover:bg-slate-100 touch-target"
+                      className="min-h-11 rounded-sm border border-slate-200 bg-slate-50 px-4 py-3 text-[10px] font-black uppercase tracking-[0.18em] text-slate-700 transition hover:bg-slate-100 touch-target flex items-center justify-center"
                     >
                       {t('refund_request_view_policy', language)}
                     </button>
                     <button
                       type="button"
                       onClick={handleSubmitRefundRequest}
-                      className="flex-1 min-h-11 rounded-2xl bg-emerald-600 px-4 py-3 text-[10px] font-black uppercase tracking-[0.18em] text-white transition hover:bg-emerald-500 touch-target active:scale-[0.98]"
+                      className="flex-1 min-h-11 rounded-sm bg-emerald-600 px-4 py-3 text-[10px] font-black uppercase tracking-[0.18em] text-white transition hover:bg-emerald-500 touch-target active:scale-[0.98] flex items-center justify-center"
                     >
                       {t('refund_request_submit', language)}
                     </button>
@@ -6182,11 +6182,11 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   initial={{ scale: 0.9, y: 20 }}
                   animate={{ scale: 1, y: 0 }}
                   exit={{ scale: 0.9, y: 20 }}
-                  className="bg-white rounded-3xl p-7 max-w-sm w-full border border-slate-100 shadow-2xl text-center space-y-6 relative overflow-hidden"
+                  className="bg-white rounded-none p-6 max-w-sm w-full border border-slate-200 text-center space-y-6 relative overflow-hidden font-mono"
                   onClick={e => e.stopPropagation()}
                 >
-                  <div className="w-14 h-14 bg-emerald-50 border border-emerald-100 rounded-full mx-auto flex items-center justify-center shadow-xs">
-                    <Sparkles size={26} className="text-emerald-600" />
+                  <div className="w-12 h-12 bg-emerald-50 border border-emerald-200 rounded-none mx-auto flex items-center justify-center">
+                    <Sparkles size={24} className="text-emerald-600" />
                   </div>
                   
                   <div className="space-y-2">
@@ -6200,7 +6200,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
                   <button
                     onClick={() => setGoodsThankYouOpen(false)}
-                    className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-xl font-bold uppercase tracking-wider text-xs shadow-md shadow-slate-950/10 active:scale-[0.98] transition-all cursor-pointer"
+                    className="w-full min-h-[44px] bg-slate-900 hover:bg-slate-800 text-white py-3 px-4 rounded-sm font-bold uppercase tracking-wider text-xs active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center"
                   >
                     {language === 'ko' ? '감사합니다' : 'Thank You'}
                   </button>
@@ -6211,7 +6211,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
           <div className="space-y-5 sm:space-y-6 pt-4 sm:pt-6 md:pt-8 border-t border-emerald-100 mt-4 sm:mt-6 md:mt-8">
             {goodsOrderCards.length === 0 ? (
-              <div className="rounded-3xl border border-dashed border-emerald-200 bg-emerald-50/60 px-5 py-8 text-center text-sm font-semibold text-emerald-700">
+              <div className="rounded-none border border-dashed border-emerald-200 bg-emerald-50/60 px-5 py-8 text-center text-sm font-semibold text-emerald-700 font-mono">
                 {t('refund_request_empty', language)}
               </div>
             ) : (
@@ -6226,7 +6226,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   });
 
                   return (
-                    <div key={order.orderId} className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm flex flex-col gap-4">
+                    <div key={order.orderId} className="rounded-none border border-slate-200 bg-white p-5 flex flex-col gap-4 font-mono">
                       <div className="flex flex-wrap items-start justify-between gap-3">
                         <div className="space-y-1">
                           <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
@@ -6235,7 +6235,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                           <p className="text-sm font-bold text-slate-800 break-all">{order.orderId}</p>
                         </div>
                         <span className={cn(
-                          'inline-flex items-center rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] border',
+                          'inline-flex items-center rounded-sm px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] border',
                           eligible
                             ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
                             : 'border-slate-200 bg-slate-100 text-slate-500'
@@ -6264,7 +6264,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       </div>
 
                       {refundRequest ? (
-                        <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 space-y-1.5">
+                        <div className="rounded-none border border-amber-200 bg-amber-50 px-4 py-3 space-y-1.5">
                           <div className="flex items-center justify-between gap-3">
                             <p className="text-[10px] font-black uppercase tracking-[0.18em] text-amber-700">{t('refund_request_status', language)}</p>
                             <span className="text-[10px] font-black uppercase tracking-[0.18em] text-amber-700">
@@ -6285,7 +6285,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                         <button
                           type="button"
                           onClick={() => onNavigate?.('policy-center')}
-                          className="min-h-11 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-[10px] font-black uppercase tracking-[0.18em] text-slate-700 transition hover:bg-slate-100 touch-target"
+                          className="min-h-11 rounded-sm border border-slate-200 bg-slate-50 px-4 py-2 text-[10px] font-black uppercase tracking-[0.18em] text-slate-700 transition hover:bg-slate-100 touch-target flex items-center justify-center"
                         >
                           {t('refund_request_view_policy', language)}
                         </button>
@@ -6294,9 +6294,9 @@ export const ShopView: React.FC<ShopViewProps> = ({
                           onClick={() => handleOpenRefundRequest(order)}
                           disabled={!eligible || Boolean(refundRequest)}
                           className={cn(
-                            'min-h-11 rounded-xl px-4 py-2 text-[10px] font-black uppercase tracking-[0.18em] touch-target transition',
+                            'min-h-11 rounded-sm px-4 py-2 text-[10px] font-black uppercase tracking-[0.18em] touch-target transition flex items-center justify-center',
                             eligible && !refundRequest
-                              ? 'bg-emerald-600 text-white shadow-sm hover:bg-emerald-500 active:scale-[0.98]'
+                              ? 'bg-emerald-600 text-white hover:bg-emerald-500 active:scale-[0.98]'
                               : 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200'
                           )}
                         >
@@ -6324,12 +6324,12 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   initial={{ opacity: 0, y: 12, scale: 0.98 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 12, scale: 0.98 }}
-                  className="relative w-full max-w-lg rounded-3xl border border-slate-200 bg-white p-5 shadow-2xl"
+                  className="relative w-full max-w-lg rounded-none border border-slate-200 bg-white p-5 font-mono"
                   onClick={(event) => event.stopPropagation()}
                 >
                   <div className="flex items-start justify-between gap-3 sticky top-0 z-10 bg-white pt-2">
                     <div className="space-y-2">
-                      <span className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
+                      <span className="inline-flex rounded-sm border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
                         {t('shop', language)}
                       </span>
                       <h3 className="text-lg font-black tracking-tight text-slate-900">
@@ -6339,14 +6339,14 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     <button
                       type="button"
                       onClick={() => setHelpPopupState(null)}
-                      className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-slate-900 active:scale-95 touch-target"
+                      className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-sm border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-slate-900 active:scale-95 touch-target"
                       aria-label={language === 'ko' ? '닫기' : 'Close'}
                     >
                       <X size={18} />
                     </button>
                   </div>
 
-                  <div className={cn('mt-4 rounded-2xl border px-4 py-3', helpSteps[helpPopupState.step].accentClassName)}>
+                  <div className={cn('mt-4 rounded-none border px-4 py-3', helpSteps[helpPopupState.step].accentClassName)}>
                     <p className="text-sm font-semibold leading-relaxed whitespace-pre-line">
                       {helpSteps[helpPopupState.step].body}
                     </p>
@@ -6362,7 +6362,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       onClick={() => setHelpPopupState((prev) => prev ? { step: Math.max(prev.step - 1, 0) } : prev)}
                       disabled={helpPopupState.step === 0}
                       className={cn(
-                        'min-h-11 rounded-2xl border px-3 py-2 text-sm font-bold transition touch-target',
+                        'min-h-11 rounded-sm border px-3 py-2 text-sm font-bold transition touch-target flex items-center justify-center',
                         helpPopupState.step === 0
                           ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-400'
                           : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-50 active:scale-95'
@@ -6373,7 +6373,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     <button
                       type="button"
                       onClick={() => setHelpPopupState(null)}
-                      className="min-h-11 rounded-2xl border border-slate-300 bg-white px-3 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-50 active:scale-95 touch-target"
+                      className="min-h-11 rounded-sm border border-slate-300 bg-white px-3 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-50 active:scale-95 touch-target flex items-center justify-center"
                     >
                       {language === 'ko' ? '닫기' : 'Close'}
                     </button>
@@ -6386,7 +6386,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                         }
                         setHelpPopupState((prev) => prev ? { step: Math.min(prev.step + 1, helpSteps.length - 1) } : prev);
                       }}
-                      className="min-h-11 rounded-2xl border border-slate-900 bg-slate-900 px-3 py-2 text-sm font-bold text-white transition hover:bg-slate-800 active:scale-95 touch-target"
+                      className="min-h-11 rounded-sm border border-slate-900 bg-slate-900 px-3 py-2 text-sm font-bold text-white transition hover:bg-slate-800 active:scale-95 touch-target flex items-center justify-center"
                     >
                       {helpPopupState.step === helpSteps.length - 1
                         ? t('contextual_tutorial_done', language)
@@ -6416,13 +6416,13 @@ export const ShopView: React.FC<ShopViewProps> = ({
           {/* ID 548: 10연차 모의 뽑기 결과 모달 */}
           {isMockPullModalOpen && (
             <div className="fixed inset-0 z-[250] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm font-mono select-none">
-              <div className="bg-[#1a1717] border border-purple-500 rounded-2xl p-5 max-w-lg w-full text-white space-y-4 shadow-2xl animate-fadeIn">
+              <div className="bg-[#1a1717] border border-purple-500 rounded-none p-5 max-w-lg w-full text-white space-y-4">
                 <div className="flex items-center justify-between border-b border-purple-900/60 pb-2.5">
                   <div className="flex items-center gap-2 font-bold text-xs text-purple-300">
                     <span>🎲</span>
                     <span>{language === 'ko' ? '[10연차 모의 소환 체험 결과 (SNS 미소모)]' : '[10x Mock Pull Simulation (0 SNS)]'}</span>
                   </div>
-                  <button onClick={() => setIsMockPullModalOpen(false)} className="text-slate-400 hover:text-white px-1 text-xs">
+                  <button onClick={() => setIsMockPullModalOpen(false)} className="text-slate-400 hover:text-white p-2 min-w-[44px] min-h-[44px] border border-slate-700 rounded-sm text-xs flex items-center justify-center cursor-pointer" aria-label="Close">
                     ✕
                   </button>
                 </div>
@@ -6431,13 +6431,13 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   {mockPullCards.map((c, i) => {
                     const dbC = CARD_DATABASE[c.imageIndex];
                     return (
-                      <div key={i} className="bg-black/60 border border-slate-700 p-1.5 rounded-lg flex flex-col items-center gap-1 text-[9px] text-center">
-                        <span className={`px-1 rounded-xs font-bold uppercase ${
+                      <div key={i} className="bg-black/60 border border-slate-700 p-1.5 rounded-none flex flex-col items-center gap-1 text-[9px] text-center">
+                        <span className={`px-1 rounded-none font-bold uppercase ${
                           c.rarity === 'gold' ? 'bg-amber-500 text-black' : c.rarity === 'silver' ? 'bg-slate-300 text-black' : 'bg-amber-900 text-amber-200'
                         }`}>
                           {c.rarity}
                         </span>
-                        <div className="w-12 h-16 bg-slate-800 border border-slate-700 rounded flex items-center justify-center font-bold text-slate-300">
+                        <div className="w-12 h-16 bg-slate-800 border border-slate-700 rounded-none flex items-center justify-center font-bold text-slate-300">
                           #{c.imageIndex}
                         </div>
                         <span className="truncate max-w-full text-slate-300 font-medium">
@@ -6456,14 +6456,14 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     <button
                       type="button"
                       onClick={handleMockPull}
-                      className="px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-lg active:scale-95"
+                      className="px-3 py-2 min-h-[44px] bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-sm active:scale-95 flex items-center justify-center cursor-pointer"
                     >
                       {language === 'ko' ? '다시 모의 뽑기' : 'Re-roll Mock'}
                     </button>
                     <button
                       type="button"
                       onClick={() => setIsMockPullModalOpen(false)}
-                      className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs rounded-lg"
+                      className="px-3 py-2 min-h-[44px] bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs rounded-sm flex items-center justify-center cursor-pointer"
                     >
                       {language === 'ko' ? '닫기' : 'Close'}
                     </button>
@@ -6476,18 +6476,18 @@ export const ShopView: React.FC<ShopViewProps> = ({
           {/* ID 533: 중복 소환 마일리지 로테이션 샵 모달 */}
           {isDupeMileageShopOpen && (
             <div className="fixed inset-0 z-[250] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm font-mono select-none">
-              <div className="bg-[#1a1717] border border-amber-500 rounded-2xl p-5 max-w-md w-full text-white space-y-4 shadow-2xl animate-fadeIn">
+              <div className="bg-[#1a1717] border border-amber-500 rounded-none p-5 max-w-md w-full text-white space-y-4">
                 <div className="flex items-center justify-between border-b border-amber-900/60 pb-2.5">
                   <div className="flex items-center gap-2 font-bold text-xs text-amber-300">
                     <span>🔄</span>
                     <span>{language === 'ko' ? '[중복 소환 마일리지 교환소]' : '[Duplicate Mileage Exchange]'}</span>
                   </div>
-                  <button onClick={() => setIsDupeMileageShopOpen(false)} className="text-slate-400 hover:text-white px-1 text-xs">
+                  <button onClick={() => setIsDupeMileageShopOpen(false)} className="text-slate-400 hover:text-white p-2 min-w-[44px] min-h-[44px] border border-slate-700 rounded-sm text-xs flex items-center justify-center cursor-pointer" aria-label="Close">
                     ✕
                   </button>
                 </div>
 
-                <div className="flex items-center justify-between bg-black/40 border border-amber-500/30 p-2.5 rounded-lg text-xs">
+                <div className="flex items-center justify-between bg-black/40 border border-amber-500/30 p-2.5 rounded-none text-xs">
                   <span className="text-slate-300 font-medium">{language === 'ko' ? '보유 마일리지:' : 'Current Mileage:'}</span>
                   <span className="text-amber-400 font-black text-sm">{dupeMileage} P</span>
                 </div>
@@ -6498,13 +6498,13 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     { id: 'epic_sleeve', name: language === 'ko' ? '🎨 황금 홀로그램 카드 슬리브' : '🎨 Gold Holo Sleeve', cost: 500 },
                     { id: 'ap_pack', name: language === 'ko' ? '🧪 대용량 200 AP 물약 번들' : '🧪 200 AP Potion Bundle', cost: 200 },
                   ].map(item => (
-                    <div key={item.id} className="flex items-center justify-between p-2.5 bg-slate-900 border border-slate-800 rounded-lg text-xs">
+                    <div key={item.id} className="flex items-center justify-between p-2.5 bg-slate-900 border border-slate-800 rounded-none text-xs">
                       <span className="font-bold text-slate-200">{item.name}</span>
                       <button
                         type="button"
                         disabled={dupeMileage < item.cost}
                         onClick={() => handleBuyDupeShopItem(item.cost, item.name)}
-                        className="px-2.5 py-1 bg-amber-500 hover:bg-amber-400 disabled:bg-slate-800 disabled:text-slate-600 text-stone-950 font-black text-[10px] rounded active:scale-95 transition-all"
+                        className="px-3 py-1.5 min-h-[44px] bg-amber-500 hover:bg-amber-400 disabled:bg-slate-800 disabled:text-slate-600 text-stone-950 font-black text-[10px] rounded-sm active:scale-95 transition-all flex items-center justify-center cursor-pointer"
                       >
                         {item.cost} P 교환
                       </button>
@@ -6516,7 +6516,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   <button
                     type="button"
                     onClick={() => setIsDupeMileageShopOpen(false)}
-                    className="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs rounded-lg"
+                    className="px-4 py-2 min-h-[44px] bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs rounded-sm flex items-center justify-center cursor-pointer"
                   >
                     {language === 'ko' ? '닫기' : 'Close'}
                   </button>
@@ -6527,7 +6527,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
           {/* ID 513: 신규 미보유 카드 획득 알림 토스트 배너 */}
           {newCardBonusNotice && (
-            <div className="fixed top-14 left-1/2 -translate-x-1/2 z-[300] bg-amber-500 border border-amber-600 text-stone-950 px-4 py-2 text-xs font-black shadow-2xl animate-bounce rounded-lg font-mono flex items-center gap-2">
+            <div className="fixed top-14 left-1/2 -translate-x-1/2 z-[300] bg-amber-500 border border-amber-600 text-stone-950 px-4 py-2 text-xs font-black rounded-none font-mono flex items-center gap-2">
               <span>✨ [NEW!]</span>
               <span>{newCardBonusNotice.cardName} 신규 도감 등록! (+{newCardBonusNotice.bonusSns} SNS 보너스)</span>
             </div>

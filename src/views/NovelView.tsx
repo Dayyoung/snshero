@@ -831,7 +831,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
       : 'text-xl leading-loose';
 
   return (
-    <div className="min-h-screen w-full bg-[#fdfcfc] text-[#201d1d] font-mono flex flex-col justify-between selection:bg-[#f1eeee]">
+    <div className="min-h-screen w-full bg-[#fdfcfc] text-[#201d1d] font-mono flex flex-col justify-between selection:bg-[#f1eeee] pb-32">
       {/* Copy Toast Feedback */}
       {copyToast && (
         <div className="fixed top-14 left-1/2 -translate-x-1/2 z-[100000] bg-[#201d1d] text-[#fdfcfc] text-xs px-4 py-2.5 rounded-none border border-[#201d1d] flex items-center gap-2 font-mono">
@@ -1070,8 +1070,9 @@ export const NovelView: React.FC<NovelViewProps> = ({
               [ 📖 {language === 'ko' ? '공식 웹소설 목차 (1 ~ 40화)' : 'Official Web Novel Chapters (1 ~ 40)'} ]
             </span>
             <button
+              type="button"
               onClick={() => setShowChapterDrawer(false)}
-              className="text-stone-500 hover:text-stone-900 font-bold text-xs cursor-pointer"
+              className="min-h-[44px] min-w-[44px] flex items-center justify-center text-stone-500 hover:text-stone-900 font-bold text-xs cursor-pointer"
             >
               [X]
             </button>
@@ -1267,13 +1268,14 @@ export const NovelView: React.FC<NovelViewProps> = ({
                         {language === 'ko' ? sc.narrationKo : sc.narrationEn}
                       </p>
                       <button
+                        type="button"
                         onClick={() =>
                           handleCopyText(
                             language === 'ko' ? sc.narrationKo : sc.narrationEn,
                             `Scene #${sc.sceneNumber} Story Summary`
                           )
                         }
-                        className="opacity-0 group-hover:opacity-100 transition-opacity p-1 text-[10px] text-[#646262] hover:text-[#201d1d] border border-[rgba(15,0,0,0.12)] rounded-sm bg-[#fdfcfc] cursor-pointer shrink-0"
+                        className="opacity-0 group-hover:opacity-100 transition-opacity min-h-[44px] min-w-[44px] flex items-center justify-center p-1 text-[10px] text-[#646262] hover:text-[#201d1d] border border-[rgba(15,0,0,0.12)] rounded-sm bg-[#fdfcfc] cursor-pointer shrink-0"
                         title={language === 'ko' ? '이 문장 복사' : 'Copy line'}
                       >
                         <Copy size={11} />
@@ -1337,8 +1339,9 @@ export const NovelView: React.FC<NovelViewProps> = ({
                         </p>
                         <div className="mt-2 pt-1 border-t border-[rgba(15,0,0,0.12)] flex items-center justify-end">
                           <button
+                            type="button"
                             onClick={() => handleCopyText(shortNarration, `Scene #${sc.sceneNumber} 8s Narration`)}
-                            className="text-[10px] font-mono text-[#201d1d] hover:underline flex items-center gap-1 cursor-pointer px-1.5 py-0.5 rounded-sm"
+                            className="min-h-[44px] text-[10px] font-mono text-[#201d1d] hover:underline flex items-center gap-1 cursor-pointer px-2.5 py-1 rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc]"
                           >
                             <Copy size={10} />
                             <span>[COPY]</span>
@@ -1448,8 +1451,9 @@ export const NovelView: React.FC<NovelViewProps> = ({
                             <div className="flex items-center justify-between mb-1">
                               <span className="text-[10px] text-[#201d1d] font-bold">[POSITIVE IMAGE PROMPT (EN)]:</span>
                               <button
+                                type="button"
                                 onClick={() => handleCopyText(p.positivePromptEn, `${p.cardNameKo} (EN Prompt)`)}
-                                className="text-[10px] text-[#646262] hover:text-[#201d1d] font-bold cursor-pointer"
+                                className="min-h-[44px] min-w-[44px] flex items-center justify-center text-[10px] text-[#646262] hover:text-[#201d1d] font-bold cursor-pointer"
                               >
                                 [COPY]
                               </button>
@@ -1462,8 +1466,9 @@ export const NovelView: React.FC<NovelViewProps> = ({
                             <div className="flex items-center justify-between mb-1">
                               <span className="text-[10px] text-[#646262] font-bold">[이미지 생성 프롬프트 설명 (KO)]:</span>
                               <button
+                                type="button"
                                 onClick={() => handleCopyText(p.positivePromptKo, `${p.cardNameKo} (KO Prompt)`)}
-                                className="text-[10px] text-[#646262] hover:text-[#201d1d] font-bold cursor-pointer"
+                                className="min-h-[44px] min-w-[44px] flex items-center justify-center text-[10px] text-[#646262] hover:text-[#201d1d] font-bold cursor-pointer"
                               >
                                 [COPY]
                               </button>
@@ -1519,8 +1524,9 @@ export const NovelView: React.FC<NovelViewProps> = ({
                         {promptText}
                       </p>
                       <button
+                        type="button"
                         onClick={() => handleCopyText(promptText, `Prompt #${idx + 1}`)}
-                        className="text-[10px] text-[#646262] hover:text-[#201d1d] font-bold shrink-0 cursor-pointer px-1.5 py-0.5 border border-[rgba(15,0,0,0.12)] rounded-sm bg-[#f8f7f7] hover:bg-[#f1eeee] transition-colors"
+                        className="min-h-[44px] min-w-[44px] text-[10px] text-[#646262] hover:text-[#201d1d] font-bold shrink-0 cursor-pointer px-2 flex items-center justify-center border border-[rgba(15,0,0,0.12)] rounded-sm bg-[#f8f7f7] hover:bg-[#f1eeee] transition-colors"
                         title="Copy single prompt"
                       >
                         [COPY]
@@ -1949,10 +1955,11 @@ export const NovelView: React.FC<NovelViewProps> = ({
                 />
                 {episodeModalSearch && (
                   <button
+                    type="button"
                     onClick={() => setEpisodeModalSearch('')}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#646262] hover:text-[#201d1d] cursor-pointer"
+                    className="absolute right-1 top-1/2 -translate-y-1/2 min-h-[44px] min-w-[44px] flex items-center justify-center text-[#646262] hover:text-[#201d1d] cursor-pointer"
                   >
-                    <X size={12} />
+                    <X size={14} />
                   </button>
                 )}
               </div>

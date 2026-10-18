@@ -93,7 +93,7 @@ export const RedditChatDrawer: React.FC<RedditChatDrawerProps> = ({
     <div className="fixed inset-0 z-50 flex justify-end">
       <div className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onClick={onClose} />
 
-      <div className={`relative w-full max-w-md h-full shadow-2xl flex flex-col z-10 animate-in slide-in-from-right duration-200 border-l ${
+      <div className={`relative w-full max-w-md h-full flex flex-col z-10 animate-in slide-in-from-right duration-200 border-l font-mono ${
         isDark ? 'bg-[#0E1113] border-[#22272B] text-gray-200' : 'bg-white border-gray-200 text-gray-800'
       }`}>
         {/* 상단 헤더 */}
@@ -101,13 +101,13 @@ export const RedditChatDrawer: React.FC<RedditChatDrawerProps> = ({
           isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-gray-50 border-gray-200'
         }`}>
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-full bg-[#FF4500] flex items-center justify-center text-white">
+            <div className="w-8 h-8 rounded-sm bg-[#FF4500] flex items-center justify-center text-white">
               <MessageCircle className="w-4 h-4" />
             </div>
             <div>
               <div className="font-extrabold text-sm flex items-center gap-1.5">
                 <span>{isKo ? '실시간 커뮤니티 채팅' : 'Community Live Chat'}</span>
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="w-2 h-2 rounded-sm bg-emerald-500 animate-pulse" />
               </div>
               <div className="text-[10px] opacity-60">
                 {isKo ? '128명 온라인 참여 중' : '128 members online'}
@@ -118,7 +118,8 @@ export const RedditChatDrawer: React.FC<RedditChatDrawerProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-full hover:bg-black/10 cursor-pointer"
+            className="w-11 h-11 flex items-center justify-center rounded-sm hover:bg-black/10 cursor-pointer min-h-[44px]"
+            aria-label="Close"
           >
             <X className="w-5 h-5" />
           </button>
@@ -127,7 +128,7 @@ export const RedditChatDrawer: React.FC<RedditChatDrawerProps> = ({
         {/* 메시지 스크롤 영역 */}
         <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-3 text-xs">
           <div className="text-center py-2">
-            <span className={`px-3 py-1 rounded-full text-[10px] font-semibold ${
+            <span className={`px-3 py-1 rounded-sm text-[10px] font-semibold ${
               isDark ? 'bg-[#181C1F] text-gray-400' : 'bg-gray-100 text-gray-500'
             }`}>
               <Sparkles className="inline w-3 h-3 text-[#FF4500] mr-1" />
@@ -146,12 +147,12 @@ export const RedditChatDrawer: React.FC<RedditChatDrawerProps> = ({
                 <span>•</span>
                 <span>{m.time}</span>
               </div>
-              <div className={`p-3 rounded-2xl max-w-[85%] text-xs leading-relaxed font-sans ${
+              <div className={`p-3 rounded-none max-w-[85%] text-xs leading-relaxed font-mono ${
                 m.isMe
-                  ? 'bg-[#FF4500] text-white rounded-tr-none'
+                  ? 'bg-[#FF4500] text-white'
                   : isDark
-                  ? 'bg-[#181C1F] border border-[#22272B] text-gray-200 rounded-tl-none'
-                  : 'bg-gray-100 text-gray-800 rounded-tl-none'
+                  ? 'bg-[#181C1F] border border-[#22272B] text-gray-200'
+                  : 'bg-gray-100 text-gray-800'
               }`}>
                 {m.text}
               </div>
@@ -168,14 +169,15 @@ export const RedditChatDrawer: React.FC<RedditChatDrawerProps> = ({
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             placeholder={isKo ? "메시지 보내기..." : "Send a message..."}
-            className={`flex-1 px-4 py-2 rounded-full text-xs outline-none focus:ring-1 focus:ring-[#FF4500] font-sans ${
+            className={`flex-1 px-4 py-2 rounded-sm text-xs outline-none focus:ring-1 focus:ring-[#FF4500] font-mono min-h-[44px] ${
               isDark ? 'bg-[#0E1113] text-white border border-[#2A3238]' : 'bg-white text-gray-900 border border-gray-300'
             }`}
           />
           <button
             type="submit"
             disabled={!inputText.trim()}
-            className="p-2 rounded-full bg-[#FF4500] disabled:opacity-40 text-white cursor-pointer hover:bg-[#FF5414] transition-colors"
+            className="w-11 h-11 min-h-[44px] flex items-center justify-center rounded-sm bg-[#FF4500] disabled:opacity-40 text-white cursor-pointer hover:bg-[#FF5414] transition-colors"
+            aria-label="Send"
           >
             <Send className="w-4 h-4" />
           </button>

@@ -45,9 +45,9 @@ export const RedditSidebarRight: React.FC<RedditSidebarRightProps> = ({
   const topCommunities = ['hanguk', 'gaming', 'technology', 'AskReddit', 'memes'];
 
   return (
-    <aside className="w-80 flex-shrink-0 space-y-4 text-xs font-sans">
+    <aside className="w-80 flex-shrink-0 space-y-4 text-xs font-mono">
       {/* 1. 커뮤니티 소개 박스 */}
-      <div className={`rounded-2xl border p-4 shadow-sm ${
+      <div className={`rounded-none border p-4 ${
         isDark ? 'bg-[#181C1F] border-[#22272B] text-gray-200' : 'bg-white border-gray-200 text-gray-800'
       }`}>
         <div className="flex items-center justify-between pb-3 border-b border-inherit/10">
@@ -56,7 +56,7 @@ export const RedditSidebarRight: React.FC<RedditSidebarRightProps> = ({
               ? (isKo ? 'SNSHero 커뮤니티' : 'About SNSHero') 
               : `r/${subredditData.name}`}
           </span>
-          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FF4500]/10 text-[#FF4500]">
+          <span className="text-[10px] font-bold px-2 py-0.5 rounded-sm bg-[#FF4500]/10 text-[#FF4500]">
             {isKo ? '공식 커뮤니티' : 'Community'}
           </span>
         </div>
@@ -98,12 +98,12 @@ export const RedditSidebarRight: React.FC<RedditSidebarRightProps> = ({
             <button
               type="button"
               onClick={() => onToggleJoin(subredditData.name)}
-              className={`w-full py-2 rounded-full font-bold text-xs cursor-pointer transition-all ${
+              className={`w-full min-h-[44px] py-2.5 px-4 rounded-sm font-bold text-xs cursor-pointer transition-all flex items-center justify-center ${
                 isJoined
                   ? isDark
                     ? 'border border-gray-600 hover:border-red-500 hover:text-red-400 text-gray-300'
                     : 'border border-gray-300 hover:border-red-500 hover:text-red-500 text-gray-700'
-                  : 'bg-[#FF4500] hover:bg-[#FF5414] text-white shadow-md'
+                  : 'bg-[#FF4500] hover:bg-[#FF5414] text-white'
               }`}
             >
               {isJoined ? (isKo ? '가입됨' : 'Joined') : (isKo ? '커뮤니티 가입' : 'Join Community')}
@@ -113,7 +113,7 @@ export const RedditSidebarRight: React.FC<RedditSidebarRightProps> = ({
           <button
             type="button"
             onClick={onOpenSubmitModal}
-            className={`w-full py-2 rounded-full font-bold text-xs cursor-pointer border transition-colors flex items-center justify-center gap-1.5 ${
+            className={`w-full min-h-[44px] py-2.5 px-4 rounded-sm font-bold text-xs cursor-pointer border transition-colors flex items-center justify-center gap-1.5 ${
               isDark
                 ? 'bg-[#22272B] border-[#2E363E] hover:bg-[#2C3238] text-white'
                 : 'bg-gray-100 border-gray-300 hover:bg-gray-200 text-gray-900'
@@ -126,7 +126,7 @@ export const RedditSidebarRight: React.FC<RedditSidebarRightProps> = ({
       </div>
 
       {/* 2. 구글 애드센스 (Google AdSense) 300x250 반응형 직사각형 디스플레이 광고 */}
-      <div className={`rounded-2xl border p-3 shadow-sm overflow-hidden ${
+      <div className={`rounded-none border p-3 overflow-hidden ${
         isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'
       }`}>
         <div className="flex items-center justify-between mb-2">
@@ -135,7 +135,7 @@ export const RedditSidebarRight: React.FC<RedditSidebarRightProps> = ({
           </span>
           <span className="text-[9px] opacity-40">Ad</span>
         </div>
-        <div className="min-h-[250px] w-full flex items-center justify-center rounded-xl bg-black/5 overflow-hidden">
+        <div className="min-h-[250px] w-full flex items-center justify-center rounded-none bg-black/5 overflow-hidden">
           <AdSenseBanner
             format="rectangle"
             responsive={true}
@@ -147,7 +147,7 @@ export const RedditSidebarRight: React.FC<RedditSidebarRightProps> = ({
 
       {/* 3. 커뮤니티 규칙 (Rules) 아코디언 */}
       {subredditData.rules && subredditData.rules.length > 0 && (
-        <div className={`rounded-2xl border p-4 shadow-sm ${
+        <div className={`rounded-none border p-4 ${
           isDark ? 'bg-[#181C1F] border-[#22272B] text-gray-200' : 'bg-white border-gray-200 text-gray-800'
         }`}>
           <div className="font-bold text-sm tracking-tight mb-3 flex items-center gap-1.5">
@@ -160,14 +160,14 @@ export const RedditSidebarRight: React.FC<RedditSidebarRightProps> = ({
               return (
                 <div
                   key={rule.number}
-                  className={`rounded-xl border transition-colors ${
+                  className={`rounded-none border transition-colors ${
                     isDark ? 'border-[#2E363E] bg-[#0E1113]/40' : 'border-gray-200 bg-gray-50'
                   }`}
                 >
                   <button
                     type="button"
                     onClick={() => setExpandedRule(isOpen ? null : rule.number)}
-                    className="w-full px-3 py-2 text-left font-semibold text-xs flex items-center justify-between cursor-pointer"
+                    className="w-full min-h-[44px] px-3 py-2 text-left font-semibold text-xs flex items-center justify-between cursor-pointer"
                   >
                     <span className="truncate pr-2">
                       {rule.number}. {rule.title}
@@ -187,7 +187,7 @@ export const RedditSidebarRight: React.FC<RedditSidebarRightProps> = ({
       )}
 
       {/* 4. 인기 트렌딩 커뮤니티 TOP 5 */}
-      <div className={`rounded-2xl border p-4 shadow-sm ${
+      <div className={`rounded-none border p-4 ${
         isDark ? 'bg-[#181C1F] border-[#22272B] text-gray-200' : 'bg-white border-gray-200 text-gray-800'
       }`}>
         <div className="font-bold text-sm tracking-tight mb-3 flex items-center gap-1.5">
@@ -203,11 +203,11 @@ export const RedditSidebarRight: React.FC<RedditSidebarRightProps> = ({
                 <button
                   type="button"
                   onClick={() => onSelectSubreddit(subKey)}
-                  className="flex items-center gap-2 cursor-pointer group text-left"
+                  className="flex items-center gap-2 cursor-pointer group text-left min-h-[44px] py-1"
                 >
                   <span className="font-extrabold text-xs opacity-40 w-3">{idx + 1}</span>
                   {sub?.iconUrl && (
-                    <img src={sub.iconUrl} alt={subKey} className="w-5 h-5 rounded-full object-cover" />
+                    <img src={sub.iconUrl} alt={subKey} className="w-5 h-5 rounded-sm object-cover" />
                   )}
                   <div>
                     <div className="font-bold text-xs group-hover:text-[#FF4500] transition-colors">
@@ -221,7 +221,7 @@ export const RedditSidebarRight: React.FC<RedditSidebarRightProps> = ({
                 <button
                   type="button"
                   onClick={() => onToggleJoin(subKey)}
-                  className={`px-3 py-1 rounded-full text-[11px] font-bold cursor-pointer transition-colors ${
+                  className={`min-h-[44px] px-3 py-2 rounded-sm text-xs font-bold cursor-pointer transition-colors flex items-center justify-center ${
                     isSubJoined
                       ? isDark
                         ? 'border border-gray-600 text-gray-300'
@@ -238,7 +238,7 @@ export const RedditSidebarRight: React.FC<RedditSidebarRightProps> = ({
       </div>
 
       {/* 5. 스티키 Google AdSense 300x250 반응형 직사각형 디스플레이 광고 */}
-      <div className={`sticky top-20 rounded-2xl border p-3 shadow-sm overflow-hidden ${
+      <div className={`sticky top-20 rounded-none border p-3 overflow-hidden ${
         isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'
       }`}>
         <div className="flex items-center justify-between mb-2">
@@ -247,7 +247,7 @@ export const RedditSidebarRight: React.FC<RedditSidebarRightProps> = ({
           </span>
           <span className="text-[9px] opacity-40">Ad</span>
         </div>
-        <div className="min-h-[250px] w-full flex items-center justify-center rounded-xl bg-black/5 overflow-hidden">
+        <div className="min-h-[250px] w-full flex items-center justify-center rounded-none bg-black/5 overflow-hidden">
           <AdSenseBanner
             format="rectangle"
             responsive={true}

@@ -187,7 +187,7 @@ export const RedditVideoPlayer: React.FC<RedditVideoPlayerProps> = ({
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
       onClick={togglePlay}
-      className={`relative w-full max-h-[560px] bg-black rounded-xl overflow-hidden flex items-center justify-center select-none cursor-pointer group ${className}`}
+      className={`relative w-full max-h-[560px] bg-black rounded-none overflow-hidden flex items-center justify-center select-none cursor-pointer group font-mono ${className}`}
     >
       {/* 1. YouTube 영상 인라인 재생 활성화 시 iframe 렌더링 */}
       {isYoutubeActive && (youtubeVideoId || youtubePlaylistId) ? (
@@ -243,7 +243,7 @@ export const RedditVideoPlayer: React.FC<RedditVideoPlayerProps> = ({
         onClick={(e) => e.stopPropagation()}
         className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-auto z-10"
       >
-        <span className="px-2.5 py-1 rounded-full bg-black/75 backdrop-blur-md text-white text-[11px] font-extrabold flex items-center gap-1.5 shadow-md border border-white/10">
+        <span className="px-2.5 py-1 rounded-sm bg-black/75 text-white text-[11px] font-extrabold flex items-center gap-1.5 border border-white/10">
           <Film className={`w-3.5 h-3.5 ${isYouTube ? 'text-red-500' : 'text-[#FF4500]'}`} />
           <span>{isYouTube ? 'YouTube 동영상' : (isKo ? 'Reddit 동영상' : 'Reddit Video')}</span>
         </span>
@@ -253,7 +253,7 @@ export const RedditVideoPlayer: React.FC<RedditVideoPlayerProps> = ({
             href={targetLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-2.5 py-1 rounded-full bg-black/75 hover:bg-black/90 backdrop-blur-md text-white text-[11px] font-bold flex items-center gap-1 transition-all shadow-md border border-white/10 hover:border-red-500/50"
+            className="px-2.5 py-1 rounded-sm bg-black/75 hover:bg-black/90 text-white text-[11px] font-bold flex items-center gap-1 transition-all border border-white/10 hover:border-red-500/50 min-h-[44px]"
             title={isKo ? '원본 동영상 페이지 열기' : 'Open original video page'}
           >
             <span>{isYouTube ? 'YouTube' : (domain || 'v.redd.it')}</span>
@@ -264,18 +264,18 @@ export const RedditVideoPlayer: React.FC<RedditVideoPlayerProps> = ({
 
       {/* 4. 중앙 재생 버튼 & 원본 영상 직결 오버레이 */}
       {!isYoutubeActive && (!isPlaying || !isDirectVideo || hasError) && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40 backdrop-blur-[2px] transition-all z-10 p-4 text-center">
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/50 transition-all z-10 p-4 text-center">
           <button
             type="button"
             onClick={togglePlay}
-            className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full ${isYouTube ? 'bg-[#FF0000] hover:bg-[#CC0000]' : 'bg-[#FF4500] hover:bg-[#FF5714]'} text-white flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all cursor-pointer border border-white/30 mb-2.5`}
+            className={`w-16 h-16 sm:w-20 sm:h-20 rounded-sm ${isYouTube ? 'bg-[#FF0000] hover:bg-[#CC0000]' : 'bg-[#FF4500] hover:bg-[#FF5714]'} text-white flex items-center justify-center transition-all cursor-pointer border border-white/30 mb-2.5 min-h-[44px]`}
             aria-label={isKo ? '동영상 재생' : 'Play Video'}
           >
             <Play className="w-8 h-8 sm:w-10 sm:h-10 ml-1 fill-white" />
           </button>
 
           {!isDirectVideo && (
-            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-black/80 backdrop-blur-md text-white text-xs font-bold border border-white/20 shadow-md">
+            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-sm bg-black/80 text-white text-xs font-bold border border-white/20">
               <span>{isYouTube ? (isKo ? '동영상 재생하기 (클릭)' : 'Play on YouTube') : (isKo ? 'Reddit 원본 영상 바로보기' : 'Watch on Reddit')}</span>
               <ExternalLink className={`w-3 h-3 ${isYouTube ? 'text-red-400' : 'text-[#FF4500]'}`} />
             </span>
@@ -287,17 +287,17 @@ export const RedditVideoPlayer: React.FC<RedditVideoPlayerProps> = ({
       {isDirectVideo && !hasError && (
         <div
           onClick={(e) => e.stopPropagation()}
-          className={`absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/90 via-black/60 to-transparent flex flex-col gap-2 transition-opacity duration-300 z-10 ${
+          className={`absolute bottom-0 left-0 right-0 p-3 bg-black/85 flex flex-col gap-2 transition-opacity duration-300 z-10 ${
             showControls || !isPlaying ? 'opacity-100' : 'opacity-0 pointer-events-none'
           }`}
         >
           {/* 진행 바 */}
           <div
             onClick={handleSeek}
-            className="w-full h-1.5 bg-white/30 hover:h-2.5 rounded-full cursor-pointer relative overflow-hidden transition-all"
+            className="w-full h-1.5 bg-white/30 hover:h-2.5 rounded-none cursor-pointer relative overflow-hidden transition-all"
           >
             <div
-              className="h-full bg-[#FF4500] rounded-full relative transition-all"
+              className="h-full bg-[#FF4500] rounded-none relative transition-all"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -308,7 +308,8 @@ export const RedditVideoPlayer: React.FC<RedditVideoPlayerProps> = ({
               <button
                 type="button"
                 onClick={togglePlay}
-                className="p-1 hover:text-[#FF4500] transition-colors cursor-pointer"
+                className="w-11 h-11 flex items-center justify-center rounded-sm hover:text-[#FF4500] transition-colors cursor-pointer min-h-[44px]"
+                aria-label={isPlaying ? 'Pause' : 'Play'}
               >
                 {isPlaying ? <Pause className="w-4 h-4 fill-current" /> : <Play className="w-4 h-4 fill-current" />}
               </button>
@@ -316,7 +317,8 @@ export const RedditVideoPlayer: React.FC<RedditVideoPlayerProps> = ({
               <button
                 type="button"
                 onClick={toggleMute}
-                className="p-1 hover:text-[#FF4500] transition-colors cursor-pointer"
+                className="w-11 h-11 flex items-center justify-center rounded-sm hover:text-[#FF4500] transition-colors cursor-pointer min-h-[44px]"
+                aria-label={isMuted ? 'Unmute' : 'Mute'}
               >
                 {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
               </button>
@@ -329,8 +331,9 @@ export const RedditVideoPlayer: React.FC<RedditVideoPlayerProps> = ({
             <button
               type="button"
               onClick={toggleFullscreen}
-              className="p-1 hover:text-[#FF4500] transition-colors cursor-pointer"
+              className="w-11 h-11 flex items-center justify-center rounded-sm hover:text-[#FF4500] transition-colors cursor-pointer min-h-[44px]"
               title={isKo ? '전체화면' : 'Fullscreen'}
+              aria-label="Fullscreen"
             >
               <Maximize2 className="w-4 h-4" />
             </button>

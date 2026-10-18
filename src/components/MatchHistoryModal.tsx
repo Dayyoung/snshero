@@ -215,9 +215,10 @@ export const MatchHistoryModal: React.FC<MatchHistoryModalProps> = ({
             </div>
             <button
               onClick={onClose}
-              className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-full transition-colors cursor-pointer"
+              className="min-h-[44px] min-w-[44px] p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-sm transition-colors cursor-pointer flex items-center justify-center font-bold text-xs"
+              aria-label="Close"
             >
-              <X size={20} />
+              [x]
             </button>
           </div>
 
@@ -491,7 +492,7 @@ export const MatchHistoryModal: React.FC<MatchHistoryModalProps> = ({
             </span>
             <button
               onClick={onClose}
-              className="px-5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-500 transition-all cursor-pointer shadow-md"
+              className="min-h-[44px] px-5 py-2 rounded-sm bg-[#201d1d] text-[#fdfcfc] text-xs font-bold hover:bg-black transition-all cursor-pointer flex items-center justify-center"
             >
               {isKo ? '닫기' : 'Close'}
             </button>

@@ -7379,7 +7379,7 @@ function AppContent() {
                     }
                   }}
                   className={cn(
-                    "flex-1 p-2 sm:p-2.5 text-xs sm:text-sm font-mono font-bold outline-none rounded-lg",
+                    "flex-1 p-2 sm:p-2.5 text-xs sm:text-sm font-mono font-bold outline-none rounded-sm",
                     view === 'play'
                       ? "bg-slate-900 border border-slate-700 text-white placeholder:text-slate-500 focus:border-indigo-500"
                       : "border-2 border-black p-3 text-sm font-bold outline-none focus:bg-yellow-100 placeholder:text-gray-400"

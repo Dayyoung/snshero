@@ -377,7 +377,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
               onChange={(e) => setNickname(e.target.value)}
               placeholder={user?.displayName || t('profile_nickname_placeholder', language)}
               className={cn(
-                "w-full p-3.5 border rounded-lg font-semibold text-slate-800 focus:outline-none transition-all text-sm pr-10",
+                "w-full p-3.5 border rounded-sm font-semibold text-slate-800 focus:outline-none transition-all text-sm pr-10",
                 hasInvalidChars || hasSpaces || isTooLong
                   ? "bg-rose-50/40 border-rose-400 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20 text-rose-900"
                   : isNicknameValid

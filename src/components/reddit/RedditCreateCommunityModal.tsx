@@ -66,7 +66,7 @@ export const RedditCreateCommunityModal: React.FC<RedditCreateCommunityModalProp
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black/75 backdrop-blur-sm flex justify-center items-center p-3 sm:p-6">
       <div className="fixed inset-0 -z-10" onClick={onClose} />
 
-      <div className={`relative w-full max-w-lg rounded-2xl border shadow-2xl overflow-hidden transition-colors ${
+      <div className={`relative w-full max-w-lg rounded-none border overflow-hidden font-mono transition-colors ${
         isDark ? 'bg-[#181C1F] border-[#2E363E] text-gray-200' : 'bg-white border-gray-200 text-gray-900'
       }`}>
         {/* 모달 헤더 */}
@@ -80,7 +80,8 @@ export const RedditCreateCommunityModal: React.FC<RedditCreateCommunityModalProp
           <button
             type="button"
             onClick={onClose}
-            className="p-1 rounded-full hover:bg-black/10 cursor-pointer"
+            className="w-11 h-11 flex items-center justify-center rounded-sm hover:bg-black/10 cursor-pointer min-h-[44px]"
+            aria-label="Close"
           >
             <X className="w-5 h-5" />
           </button>
@@ -96,7 +97,7 @@ export const RedditCreateCommunityModal: React.FC<RedditCreateCommunityModalProp
             <p className="opacity-60 text-[11px] mb-2">
               {isKo ? '영문자, 숫자, 밑줄(_)만 사용 가능하며 변경할 수 없습니다.' : 'Community names cannot be changed.'}
             </p>
-            <div className={`flex items-center rounded-xl border px-3 py-2 ${
+            <div className={`flex items-center rounded-none border px-3 py-2 ${
               isDark ? 'bg-[#0E1113] border-[#2E363E]' : 'bg-gray-50 border-gray-300'
             }`}>
               <span className="font-bold text-[#FF4500] mr-1">r/</span>
@@ -107,7 +108,7 @@ export const RedditCreateCommunityModal: React.FC<RedditCreateCommunityModalProp
                 value={name}
                 onChange={(e) => setName(e.target.value.replace(/[^a-zA-Z0-9_]/g, ''))}
                 placeholder={isKo ? "커뮤니티_이름" : "community_name"}
-                className="w-full bg-transparent outline-none font-bold text-xs sm:text-sm"
+                className="w-full bg-transparent outline-none font-bold text-xs sm:text-sm font-mono"
               />
             </div>
             <div className="text-[10px] opacity-40 mt-1 text-right">
@@ -125,7 +126,7 @@ export const RedditCreateCommunityModal: React.FC<RedditCreateCommunityModalProp
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder={isKo ? "예: 한국 인디 게임 개발자 모임" : "e.g. Korea Indie Game Developers"}
-              className={`w-full px-3 py-2 rounded-xl border outline-none font-medium text-xs sm:text-sm ${
+              className={`w-full px-3 py-2 rounded-none border outline-none font-medium text-xs sm:text-sm font-mono ${
                 isDark ? 'bg-[#0E1113] border-[#2E363E]' : 'bg-gray-50 border-gray-300'
               }`}
             />
@@ -141,7 +142,7 @@ export const RedditCreateCommunityModal: React.FC<RedditCreateCommunityModalProp
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder={isKo ? "커뮤니티의 목적과 주제를 자유롭게 작성해주세요." : "Describe what this community is about."}
-              className={`w-full p-3 rounded-xl border outline-none resize-none font-sans text-xs sm:text-sm ${
+              className={`w-full p-3 rounded-none border outline-none resize-none font-mono text-xs sm:text-sm ${
                 isDark ? 'bg-[#0E1113] border-[#2E363E]' : 'bg-gray-50 border-gray-300'
               }`}
             />
@@ -164,7 +165,7 @@ export const RedditCreateCommunityModal: React.FC<RedditCreateCommunityModalProp
                   <label
                     key={item.id}
                     onClick={() => setCommunityType(item.id as any)}
-                    className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-colors ${
+                    className={`flex items-start gap-3 p-3 rounded-none border cursor-pointer transition-colors ${
                       isSelected
                         ? 'border-[#FF4500] bg-[#FF4500]/5'
                         : isDark ? 'border-[#2E363E] hover:bg-[#22272B]' : 'border-gray-200 hover:bg-gray-50'
@@ -195,14 +196,14 @@ export const RedditCreateCommunityModal: React.FC<RedditCreateCommunityModalProp
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-full font-bold opacity-70 hover:opacity-100 cursor-pointer"
+              className="px-4 py-2 rounded-sm font-bold opacity-70 hover:opacity-100 cursor-pointer min-h-[44px]"
             >
               {isKo ? '취소' : 'Cancel'}
             </button>
             <button
               type="submit"
               disabled={!name.trim()}
-              className="px-6 py-2 rounded-full bg-[#FF4500] disabled:opacity-40 text-white font-extrabold cursor-pointer hover:bg-[#FF5414] shadow-md transition-all"
+              className="px-6 py-2 rounded-sm bg-[#FF4500] disabled:opacity-40 text-white font-extrabold cursor-pointer hover:bg-[#FF5414] min-h-[44px] transition-all"
             >
               {isKo ? '커뮤니티 만들기' : 'Create Community'}
             </button>

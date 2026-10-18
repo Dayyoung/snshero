@@ -949,8 +949,9 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
               <span className="font-bold">{priceAlertToast}</span>
             </div>
             <button
+              type="button"
               onClick={() => setPriceAlertToast(null)}
-              className="text-[#646262] hover:text-[#201d1d] font-black text-xs px-2 py-1 rounded-sm cursor-pointer"
+              className="min-h-[44px] min-w-[44px] flex items-center justify-center text-[#646262] hover:text-[#201d1d] font-black text-xs rounded-sm cursor-pointer"
             >
               [x]
             </button>
@@ -965,8 +966,9 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
               <span className="font-bold">{viralShareNotice}</span>
             </div>
             <button
+              type="button"
               onClick={() => setViralShareNotice(null)}
-              className="text-[#646262] hover:text-[#201d1d] font-black text-xs px-2 py-1 rounded-sm cursor-pointer"
+              className="min-h-[44px] min-w-[44px] flex items-center justify-center text-[#646262] hover:text-[#201d1d] font-black text-xs rounded-sm cursor-pointer"
             >
               [x]
             </button>
@@ -985,8 +987,9 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
               </span>
             </div>
             <button
+              type="button"
               onClick={() => setGasRebateNotice(null)}
-              className="text-emerald-800 hover:text-[#201d1d] font-black text-xs px-2 py-1 rounded-sm cursor-pointer"
+              className="min-h-[44px] min-w-[44px] flex items-center justify-center text-emerald-800 hover:text-[#201d1d] font-black text-xs rounded-sm cursor-pointer"
             >
               [x]
             </button>
@@ -1001,8 +1004,9 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
               <span className="font-bold">{autoBuySuccessMsg}</span>
             </div>
             <button
+              type="button"
               onClick={() => setAutoBuySuccessMsg(null)}
-              className="text-[#646262] hover:text-[#201d1d] font-black text-xs px-2 py-1 rounded-sm cursor-pointer"
+              className="min-h-[44px] min-w-[44px] flex items-center justify-center text-[#646262] hover:text-[#201d1d] font-black text-xs rounded-sm cursor-pointer"
             >
               [x]
             </button>
@@ -1020,7 +1024,13 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
                   : `[First Trade Welcome] +50 SNS bonus has been credited for your first P2P trade!`}
               </span>
             </div>
-            <button onClick={() => setFirstTradeBonusToast(false)} className="text-[#646262] hover:text-[#201d1d] font-black text-xs px-2 py-1 rounded-sm cursor-pointer">[x]</button>
+            <button
+              type="button"
+              onClick={() => setFirstTradeBonusToast(false)}
+              className="min-h-[44px] min-w-[44px] flex items-center justify-center text-[#646262] hover:text-[#201d1d] font-black text-xs rounded-sm cursor-pointer"
+            >
+              [x]
+            </button>
           </div>
         )}
 
@@ -1116,7 +1126,7 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
                       type="button"
                       onClick={() => setRarityFilter(filter)}
                       className={cn(
-                        'min-h-[36px] px-2.5 rounded-sm text-[10px] font-bold uppercase transition-colors cursor-pointer',
+                        'min-h-[44px] px-2.5 rounded-sm text-[10px] font-bold uppercase transition-colors cursor-pointer',
                         rarityFilter === filter ? 'bg-[#201d1d] text-[#fdfcfc]' : 'text-[#646262] hover:text-[#201d1d] hover:bg-[#fdfcfc]',
                       )}
                     >
@@ -1131,7 +1141,7 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
                       type="button"
                       onClick={() => setBuildFocusFilter(filter)}
                       className={cn(
-                        'min-h-[36px] px-2 rounded-sm text-[10px] font-bold uppercase transition-colors cursor-pointer',
+                        'min-h-[44px] px-2 rounded-sm text-[10px] font-bold uppercase transition-colors cursor-pointer',
                         buildFocusFilter === filter ? 'bg-[#201d1d] text-[#fdfcfc]' : 'text-[#646262] hover:text-[#201d1d] hover:bg-[#fdfcfc]',
                       )}
                     >
@@ -1147,7 +1157,7 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
               <button
                 type="button"
                 onClick={() => setShowDirectionSliders((prev) => !prev)}
-                className="min-h-[36px] text-[11px] font-bold text-[#646262] hover:text-[#201d1d] flex items-center gap-1.5 cursor-pointer"
+                className="min-h-[44px] text-[11px] font-bold text-[#646262] hover:text-[#201d1d] flex items-center gap-1.5 cursor-pointer"
               >
                 <SlidersHorizontal size={12} className="text-[#201d1d]" />
                 <span>{language === 'ko' ? '[방향별 최소 스탯 필터 (0~10)]' : '[Min Directional Stats (0-10)]'}</span>
@@ -1156,7 +1166,7 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
                 <button
                   type="button"
                   onClick={() => { setMinStatUp(0); setMinStatRight(0); setMinStatDown(0); setMinStatLeft(0); }}
-                  className="min-h-[36px] px-2 text-[10px] text-rose-700 font-bold hover:underline cursor-pointer"
+                  className="min-h-[44px] px-2 text-[10px] text-rose-700 font-bold hover:underline cursor-pointer"
                 >
                   [{language === 'ko' ? '필터 리셋' : 'Reset'}]
                 </button>
@@ -1546,7 +1556,7 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
               <button
                 type="button"
                 onClick={() => setHelpOpen(false)}
-                className="absolute top-3 right-3 min-h-[36px] px-2 rounded-sm border border-[rgba(15,0,0,0.12)] flex items-center justify-center text-[#646262] hover:text-[#201d1d] hover:bg-[#f8f7f7] transition-colors cursor-pointer"
+                className="absolute top-3 right-3 min-h-[44px] min-w-[44px] rounded-sm border border-[rgba(15,0,0,0.12)] flex items-center justify-center text-[#646262] hover:text-[#201d1d] hover:bg-[#f8f7f7] transition-colors cursor-pointer"
               >
                 [x]
               </button>
@@ -1597,9 +1607,10 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
             {(['all', 'instant', 'auction'] as const).map((mode) => (
               <button
                 key={mode}
+                type="button"
                 onClick={() => setTradeTypeFilter(mode)}
                 className={cn(
-                  "min-h-[36px] px-2.5 py-1 text-[11px] font-bold rounded-sm border transition-colors cursor-pointer whitespace-nowrap",
+                  "min-h-[44px] px-2.5 py-1 text-[11px] font-bold rounded-sm border transition-colors cursor-pointer whitespace-nowrap",
                   tradeTypeFilter === mode
                     ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
                     : "bg-[#f8f7f7] text-[#646262] border-[rgba(15,0,0,0.12)] hover:text-[#201d1d]"
@@ -1618,9 +1629,10 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
             {(['all', 'FIRE', 'WATER', 'EARTH', 'WIND'] as const).map((elem) => (
               <button
                 key={elem}
+                type="button"
                 onClick={() => setElementFilter(elem)}
                 className={cn(
-                  "min-h-[36px] px-2 py-1 text-[11px] font-bold rounded-sm border transition-colors cursor-pointer whitespace-nowrap flex items-center gap-1",
+                  "min-h-[44px] px-2 py-1 text-[11px] font-bold rounded-sm border transition-colors cursor-pointer whitespace-nowrap flex items-center gap-1",
                   elementFilter === elem
                     ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d] font-black"
                     : "bg-[#f8f7f7] text-[#646262] border-[rgba(15,0,0,0.12)] hover:text-[#201d1d]"
@@ -1670,8 +1682,9 @@ export const CardMarketplaceView: React.FC<CardMarketplaceViewProps> = ({
                 <span>{language === 'ko' ? '희망 매수가 예약 (Auto-Buy)' : 'Auto-Buy Limit Order'}</span>
               </h3>
               <button
+                type="button"
                 onClick={() => setAutoBuyModalCardId(null)}
-                className="text-xs font-bold text-[#646262] hover:text-[#201d1d] cursor-pointer"
+                className="min-h-[44px] min-w-[44px] flex items-center justify-center text-xs font-bold text-[#646262] hover:text-[#201d1d] cursor-pointer"
               >
                 [x]
               </button>

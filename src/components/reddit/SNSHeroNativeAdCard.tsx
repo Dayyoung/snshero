@@ -184,7 +184,7 @@ export const SNSHeroNativeAdCard: React.FC<SNSHeroNativeAdCardProps> = ({
   return (
     <article
       onClick={handleCardClick}
-      className={`group relative rounded-2xl border mb-3.5 transition-all duration-200 cursor-pointer overflow-hidden shadow-sm hover:shadow-md select-none ${
+      className={`group relative rounded-none border mb-3.5 transition-all duration-200 cursor-pointer overflow-hidden select-none font-mono ${
         isDark
           ? 'bg-[#15191C] hover:bg-[#181D21] border-[#2A3035] text-[#D7DADC]'
           : 'bg-white hover:bg-slate-50 border-gray-200 text-[#1C1C1C]'
@@ -199,7 +199,7 @@ export const SNSHeroNativeAdCard: React.FC<SNSHeroNativeAdCardProps> = ({
             type="button"
             onClick={(e) => handleVote(e, 1)}
             title={isKo ? '추천' : 'Upvote'}
-            className={`p-1 rounded hover:bg-black/10 transition-colors cursor-pointer ${
+            className={`w-11 h-11 flex items-center justify-center rounded-sm hover:bg-black/10 transition-colors cursor-pointer min-h-[44px] ${
               userScoreDelta === 1 ? 'text-[#FF4500]' : 'opacity-60 hover:opacity-100'
             }`}
           >
@@ -214,7 +214,7 @@ export const SNSHeroNativeAdCard: React.FC<SNSHeroNativeAdCardProps> = ({
             type="button"
             onClick={(e) => handleVote(e, -1)}
             title={isKo ? '비추천' : 'Downvote'}
-            className={`p-1 rounded hover:bg-black/10 transition-colors cursor-pointer ${
+            className={`w-11 h-11 flex items-center justify-center rounded-sm hover:bg-black/10 transition-colors cursor-pointer min-h-[44px] ${
               userScoreDelta === -1 ? 'text-[#7193FF]' : 'opacity-60 hover:opacity-100'
             }`}
           >
@@ -229,11 +229,11 @@ export const SNSHeroNativeAdCard: React.FC<SNSHeroNativeAdCardProps> = ({
             <div className="flex items-center gap-1.5 flex-wrap">
               {/* 스폰서드 / 프로모티드 마커 */}
               <span className="font-extrabold text-[11px] text-[#FF4500] flex items-center gap-1 font-mono">
-                <Sparkles className="w-3 h-3 animate-pulse" />
+                <Sparkles className="w-3 h-3" />
                 r/SNSHero
               </span>
               <span className="opacity-40">•</span>
-              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-500 border border-amber-500/30">
+              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-sm bg-amber-500/15 text-amber-500 border border-amber-500/30">
                 {isKo ? '추천 콘텐츠' : 'Promoted'}
               </span>
               <span className="opacity-40">•</span>
@@ -241,7 +241,7 @@ export const SNSHeroNativeAdCard: React.FC<SNSHeroNativeAdCardProps> = ({
 
               {/* 카테고리 플레어 */}
               <span
-                className="text-[10px] font-bold px-2 py-0.5 rounded-full text-white ml-1"
+                className="text-[10px] font-bold px-2 py-0.5 rounded-sm text-white ml-1"
                 style={{ backgroundColor: ad.flair.color }}
               >
                 {isKo ? ad.flair.ko : ad.flair.en}
@@ -261,12 +261,12 @@ export const SNSHeroNativeAdCard: React.FC<SNSHeroNativeAdCardProps> = ({
           </h3>
 
           {/* 본문 요약 (간접 소개 텍스트) */}
-          <p className="text-xs sm:text-sm opacity-80 leading-relaxed mb-3 line-clamp-3 font-sans">
+          <p className="text-xs sm:text-sm opacity-80 leading-relaxed mb-3 line-clamp-3 font-mono">
             {isKo ? ad.snippet.ko : ad.snippet.en}
           </p>
 
           {/* 미디어 이미지 (고화질 썸네일) */}
-          <div className="relative w-full aspect-[16/9] sm:aspect-[21/9] rounded-xl overflow-hidden mb-3 border border-inherit/30 bg-black/60 shadow-inner">
+          <div className="relative w-full aspect-[16/9] sm:aspect-[21/9] rounded-none overflow-hidden mb-3 border border-inherit/30 bg-black/60">
             <img
               src={ad.imageUrl}
               alt={isKo ? ad.title.ko : ad.title.en}
@@ -276,8 +276,8 @@ export const SNSHeroNativeAdCard: React.FC<SNSHeroNativeAdCardProps> = ({
               }}
             />
             {/* 호버 시 은은한 오버레이 */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-3">
-              <span className="text-white text-xs font-bold flex items-center gap-1.5 drop-shadow">
+            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-3">
+              <span className="text-white text-xs font-bold flex items-center gap-1.5">
                 <Eye className="w-3.5 h-3.5" />
                 {isKo ? '클릭하여 자세히 보기' : 'Click to explore'}
               </span>
@@ -291,7 +291,7 @@ export const SNSHeroNativeAdCard: React.FC<SNSHeroNativeAdCardProps> = ({
               {ad.tags.map((tag, tIdx) => (
                 <span
                   key={tIdx}
-                  className={`text-[10px] font-semibold px-2 py-0.5 rounded-md ${
+                  className={`text-[10px] font-semibold px-2 py-0.5 rounded-sm ${
                     isDark ? 'bg-white/5 text-gray-300' : 'bg-gray-100 text-gray-700'
                   }`}
                 >
@@ -305,7 +305,7 @@ export const SNSHeroNativeAdCard: React.FC<SNSHeroNativeAdCardProps> = ({
               <button
                 type="button"
                 onClick={handleShare}
-                className="p-1.5 rounded-lg hover:bg-black/10 text-xs font-semibold opacity-70 hover:opacity-100 flex items-center gap-1 transition-all"
+                className="px-2 py-1.5 rounded-sm hover:bg-black/10 text-xs font-semibold opacity-70 hover:opacity-100 flex items-center gap-1 transition-all min-h-[44px]"
                 title={isKo ? '공유하기' : 'Share'}
               >
                 {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Share2 className="w-3.5 h-3.5" />}
@@ -318,7 +318,7 @@ export const SNSHeroNativeAdCard: React.FC<SNSHeroNativeAdCardProps> = ({
                   e.stopPropagation();
                   onNavigateView(ad.targetView);
                 }}
-                className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-[#FF4500] hover:bg-[#FF5414] text-white font-extrabold text-xs shadow-sm hover:shadow transition-all cursor-pointer group/btn"
+                className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-sm bg-[#FF4500] hover:bg-[#FF5414] text-white font-bold text-xs transition-colors cursor-pointer group/btn min-h-[44px]"
               >
                 <span>{isKo ? ad.ctaText.ko : ad.ctaText.en}</span>
                 <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-0.5 transition-transform" />

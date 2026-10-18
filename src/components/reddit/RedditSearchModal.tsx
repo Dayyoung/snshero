@@ -45,13 +45,13 @@ export const RedditSearchModal: React.FC<RedditSearchModalProps> = ({
   const [activeTab, setActiveTab] = useState<'posts' | 'communities' | 'people'>('posts');
 
   return (
-    <div className="space-y-4 w-full max-w-full overflow-hidden">
+    <div className="space-y-4 w-full max-w-full overflow-hidden font-mono">
       {/* 헤더 & 뒤로가기 */}
       <div className="flex items-center justify-between">
         <button
           type="button"
           onClick={onBack}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold cursor-pointer transition-colors ${
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-xs font-bold cursor-pointer transition-colors min-h-[44px] ${
             isDark ? 'hover:bg-[#22272B] text-gray-200' : 'hover:bg-gray-100 text-gray-800'
           }`}
         >
@@ -65,13 +65,13 @@ export const RedditSearchModal: React.FC<RedditSearchModalProps> = ({
       </div>
 
       {/* 탭 바: Posts, Communities, People */}
-      <div className={`rounded-2xl border p-2 flex items-center gap-2 ${
+      <div className={`rounded-none border p-2 flex items-center gap-2 ${
         isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'
       }`}>
         <button
           type="button"
           onClick={() => setActiveTab('posts')}
-          className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold cursor-pointer transition-colors ${
+          className={`flex items-center gap-1.5 px-4 py-2 rounded-sm text-xs font-bold cursor-pointer transition-colors min-h-[44px] ${
             activeTab === 'posts'
               ? isDark ? 'bg-[#272D32] text-white' : 'bg-gray-200 text-gray-900'
               : 'opacity-60 hover:opacity-100'
@@ -84,7 +84,7 @@ export const RedditSearchModal: React.FC<RedditSearchModalProps> = ({
         <button
           type="button"
           onClick={() => setActiveTab('communities')}
-          className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold cursor-pointer transition-colors ${
+          className={`flex items-center gap-1.5 px-4 py-2 rounded-sm text-xs font-bold cursor-pointer transition-colors min-h-[44px] ${
             activeTab === 'communities'
               ? isDark ? 'bg-[#272D32] text-white' : 'bg-gray-200 text-gray-900'
               : 'opacity-60 hover:opacity-100'
@@ -97,7 +97,7 @@ export const RedditSearchModal: React.FC<RedditSearchModalProps> = ({
         <button
           type="button"
           onClick={() => setActiveTab('people')}
-          className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold cursor-pointer transition-colors ${
+          className={`flex items-center gap-1.5 px-4 py-2 rounded-sm text-xs font-bold cursor-pointer transition-colors min-h-[44px] ${
             activeTab === 'people'
               ? isDark ? 'bg-[#272D32] text-white' : 'bg-gray-200 text-gray-900'
               : 'opacity-60 hover:opacity-100'
@@ -130,7 +130,7 @@ export const RedditSearchModal: React.FC<RedditSearchModalProps> = ({
               />
             ))
           ) : (
-            <div className={`rounded-2xl border p-12 text-center text-xs opacity-50 ${
+            <div className={`rounded-none border p-12 text-center text-xs opacity-50 ${
               isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'
             }`}>
               {isKo ? `"${query}"에 일치하는 게시물이 없습니다.` : `No posts found matching "${query}".`}
@@ -146,7 +146,7 @@ export const RedditSearchModal: React.FC<RedditSearchModalProps> = ({
                 return (
                   <div
                     key={sub.name}
-                    className={`rounded-2xl border p-4 shadow-sm flex items-start justify-between gap-3 ${
+                    className={`rounded-none border p-4 flex items-start justify-between gap-3 ${
                       isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'
                     }`}
                   >
@@ -156,9 +156,9 @@ export const RedditSearchModal: React.FC<RedditSearchModalProps> = ({
                     >
                       <div className="flex items-center gap-2 mb-1.5">
                         {sub.iconUrl ? (
-                          <img src={sub.iconUrl} alt="" className="w-8 h-8 rounded-full object-cover" />
+                          <img src={sub.iconUrl} alt="" className="w-8 h-8 rounded-sm object-cover" />
                         ) : (
-                          <div className="w-8 h-8 rounded-full bg-[#FF4500] text-white flex items-center justify-center font-bold text-xs">
+                          <div className="w-8 h-8 rounded-sm bg-[#FF4500] text-white flex items-center justify-center font-bold text-xs">
                             r/
                           </div>
                         )}
@@ -179,7 +179,7 @@ export const RedditSearchModal: React.FC<RedditSearchModalProps> = ({
                     <button
                       type="button"
                       onClick={() => onToggleJoin(sub.name)}
-                      className={`px-4 py-1.5 rounded-full text-xs font-bold cursor-pointer transition-colors flex-shrink-0 ${
+                      className={`px-4 py-2 rounded-sm text-xs font-bold cursor-pointer transition-colors flex-shrink-0 min-h-[44px] ${
                         isSubJoined
                           ? isDark ? 'border border-gray-600 text-gray-300' : 'border border-gray-300 text-gray-700'
                           : 'bg-[#FF4500] text-white hover:bg-[#FF5414]'
@@ -192,7 +192,7 @@ export const RedditSearchModal: React.FC<RedditSearchModalProps> = ({
               })}
             </div>
           ) : (
-            <div className={`rounded-2xl border p-12 text-center text-xs opacity-50 ${
+            <div className={`rounded-none border p-12 text-center text-xs opacity-50 ${
               isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'
             }`}>
               {isKo ? `"${query}"에 일치하는 커뮤니티가 없습니다.` : `No communities found matching "${query}".`}
@@ -207,11 +207,11 @@ export const RedditSearchModal: React.FC<RedditSearchModalProps> = ({
                 <div
                   key={u.username}
                   onClick={() => onOpenUserProfile(u.username)}
-                  className={`rounded-2xl border p-4 shadow-sm flex items-center gap-3 cursor-pointer hover:border-[#FF4500]/50 transition-colors ${
+                  className={`rounded-none border p-4 flex items-center gap-3 cursor-pointer hover:border-[#FF4500]/50 transition-colors ${
                     isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'
                   }`}
                 >
-                  <img src={u.avatarUrl} alt="" className="w-10 h-10 rounded-full object-cover" />
+                  <img src={u.avatarUrl} alt="" className="w-10 h-10 rounded-sm object-cover" />
                   <div>
                     <div className="font-bold text-sm">u/{u.username}</div>
                     <div className="text-[11px] opacity-60">{isKo ? '카르마' : 'Karma'}: {u.postKarma.toLocaleString()}</div>
@@ -220,7 +220,7 @@ export const RedditSearchModal: React.FC<RedditSearchModalProps> = ({
               ))}
             </div>
           ) : (
-            <div className={`rounded-2xl border p-12 text-center text-xs opacity-50 ${
+            <div className={`rounded-none border p-12 text-center text-xs opacity-50 ${
               isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'
             }`}>
               {isKo ? `"${query}"에 일치하는 유저가 없습니다.` : `No people found matching "${query}".`}

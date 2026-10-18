@@ -153,15 +153,16 @@ export const GuildListView: React.FC<GuildListViewProps> = ({
   ];
 
   return (
-    <div className="min-h-screen app-bg text-slate-800 font-sans pb-32 overflow-x-hidden">
+    <div className="min-h-screen bg-[#fdfcfc] text-[#201d1d] font-mono pb-32 overflow-x-hidden">
       <div className="max-w-4xl mx-auto px-4 mt-2">
         <PageHeader
           title={t('guild_management', language)}
           onBack={() => onNavigate('home')}
           rightAction={
             <button
+              type="button"
               onClick={() => { setShowHelp(true); setHelpSlide(0); }}
-              className="min-h-9 min-w-9 rounded-full border border-slate-300 bg-white/80 text-slate-600 flex items-center justify-center transition-all hover:border-slate-400 hover:bg-white hover:text-slate-800 active:scale-95 cursor-pointer"
+              className="min-h-[44px] min-w-[44px] rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-[#646262] hover:text-[#201d1d] hover:bg-[#f8f7f7] flex items-center justify-center transition-colors cursor-pointer"
               aria-label="Help"
             >
               <HelpCircle size={16} />
@@ -173,14 +174,17 @@ export const GuildListView: React.FC<GuildListViewProps> = ({
         <div className="flex gap-2 my-4">
           {userGuild ? (
             <button
+              type="button"
               onClick={() => onSelectGuild(userGuild.id, false)}
-              className="w-10 h-10 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg flex items-center justify-center transition-all active:scale-95 cursor-pointer shadow-sm"
+              className="min-h-[44px] min-w-[44px] px-3 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] rounded-sm flex items-center justify-center gap-1.5 transition-colors cursor-pointer border border-[#201d1d]"
               aria-label={t("view_my_guild", language)}
             >
               <Shield size={16} />
+              <span className="text-xs font-bold font-mono">[{t("view_my_guild", language)}]</span>
             </button>
           ) : (
             <button
+              type="button"
               onClick={() => {
                 if (!currentUser || currentUser.uid === 'guest-id') {
                   setAlertMsg(t("guild_login_required", language));
@@ -188,15 +192,17 @@ export const GuildListView: React.FC<GuildListViewProps> = ({
                 }
                 setIsModalOpen(true);
               }}
-              className="w-10 h-10 bg-amber-400 hover:bg-amber-300 text-amber-950 rounded-lg flex items-center justify-center transition-all active:scale-95 cursor-pointer shadow-sm"
+              className="min-h-[44px] min-w-[44px] px-3 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] rounded-sm flex items-center justify-center gap-1.5 transition-colors cursor-pointer border border-[#201d1d]"
               aria-label={t("create_guild", language)}
             >
               <Plus size={16} />
+              <span className="text-xs font-bold font-mono">[{t("create_guild", language)}]</span>
             </button>
           )}
           <button
+            type="button"
             onClick={loadGuilds}
-            className="w-10 h-10 bg-white border border-slate-200 rounded-lg flex items-center justify-center transition-all active:scale-95 cursor-pointer text-slate-600 hover:bg-slate-50"
+            className="min-h-[44px] min-w-[44px] bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-sm flex items-center justify-center transition-colors cursor-pointer text-[#201d1d] hover:bg-[#f8f7f7]"
             aria-label={t("refresh", language)}
           >
             <RefreshCw size={16} />
@@ -204,28 +210,30 @@ export const GuildListView: React.FC<GuildListViewProps> = ({
         </div>
 
         {/* Tab Bar: List / Rankings */}
-        <div className="flex gap-2 mb-5 bg-slate-100/80 rounded-xl p-1.5">
+        <div className="flex gap-2 mb-5 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none p-1 font-mono">
           <button
+            type="button"
             onClick={() => setShowRanking(false)}
-            className={`flex-1 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all active:scale-[0.98] cursor-pointer flex items-center justify-center gap-1.5 ${
+            className={`flex-1 min-h-[44px] rounded-sm text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer flex items-center justify-center gap-1.5 border ${
               !showRanking
-                ? 'bg-white text-slate-800 shadow-sm'
-                : 'text-slate-500 hover:text-slate-700'
+                ? 'bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]'
+                : 'bg-transparent text-[#646262] border-transparent hover:text-[#201d1d]'
             }`}
           >
             <Shield size={14} />
-            {t('guild_ranking_tab_list', language)}
+            [{t('guild_ranking_tab_list', language)}]
           </button>
           <button
+            type="button"
             onClick={() => setShowRanking(true)}
-            className={`flex-1 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all active:scale-[0.98] cursor-pointer flex items-center justify-center gap-1.5 ${
+            className={`flex-1 min-h-[44px] rounded-sm text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer flex items-center justify-center gap-1.5 border ${
               showRanking
-                ? 'bg-white text-amber-700 shadow-sm'
-                : 'text-slate-500 hover:text-slate-700'
+                ? 'bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]'
+                : 'bg-transparent text-[#646262] border-transparent hover:text-[#201d1d]'
             }`}
           >
             <Trophy size={14} />
-            {t('guild_ranking_tab_rankings', language)}
+            [{t('guild_ranking_tab_rankings', language)}]
           </button>
         </div>
 
@@ -233,7 +241,7 @@ export const GuildListView: React.FC<GuildListViewProps> = ({
           /* ===== RANKING VIEW ===== */
           <div>
             {/* Top 3 Podium */}
-            <div className="bg-white border border-slate-200/80 rounded-2xl p-5 mb-5 shadow-sm">
+            <div className="bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-none p-4 mb-4">
               <div className="grid grid-cols-3 gap-2">
                 {(() => {
                   const sorted = [...guilds].sort((a, b) => {
@@ -251,15 +259,15 @@ export const GuildListView: React.FC<GuildListViewProps> = ({
                     return (
                       <div
                         key={g.id}
-                        className={`flex flex-col items-center p-3 rounded-xl text-center ${
+                        className={`flex flex-col items-center p-3 rounded-none text-center border ${
                           isFirst
-                            ? 'bg-amber-100/80 border border-amber-300 shadow-md -mt-1'
-                            : 'bg-white border border-slate-200/70 shadow-sm'
+                            ? 'bg-[#f8f7f7] border-[#201d1d]'
+                            : 'bg-[#fdfcfc] border-[rgba(15,0,0,0.12)]'
                         }`}
                       >
-                        <span className="text-2xl mb-1">{medals[idx]}</span>
+                        <span className="text-xl mb-1">{medals[idx]}</span>
                         <span className="text-xl mb-0.5">{g.mark}</span>
-                        <span className="text-[11px] font-extrabold text-slate-800 leading-tight truncate max-w-full">
+                        <span className="text-[11px] font-bold text-[#201d1d] leading-tight truncate max-w-full">
                           {g.name}
                         </span>
                       </div>
@@ -270,8 +278,8 @@ export const GuildListView: React.FC<GuildListViewProps> = ({
             </div>
 
             {/* Ranking Table */}
-            <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
-              <div className="divide-y divide-slate-50">
+            <div className="bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-none overflow-hidden">
+              <div className="divide-y divide-[rgba(15,0,0,0.08)]">
                 {(() => {
                   const ranked = [...guilds].sort((a, b) => {
                     const scoreA = a.level * 10000 + a.exp + a.members.length * 100;
@@ -286,22 +294,22 @@ export const GuildListView: React.FC<GuildListViewProps> = ({
                       <div
                         key={g.id}
                         onClick={() => onSelectGuild(g.id, false)}
-                        className={`flex items-center gap-3 px-4 py-3 cursor-pointer transition-all hover:bg-slate-50/80 active:scale-[0.99] ${
-                          isMyGuild ? 'bg-emerald-50/40' : ''
+                        className={`flex items-center gap-3 px-4 py-3 min-h-[44px] cursor-pointer transition-colors hover:bg-[#f8f7f7] ${
+                          isMyGuild ? 'bg-[#f8f7f7] border-l-2 border-[#201d1d]' : ''
                         }`}
                       >
                         <div className="w-6 text-center shrink-0">
                           {rankIcon ? (
                             <span className="text-lg">{rankIcon}</span>
                           ) : (
-                            <span className="text-xs font-bold text-slate-400">{i + 1}</span>
+                            <span className="text-xs font-bold text-[#646262]">{i + 1}</span>
                           )}
                         </div>
                         <span className="text-lg shrink-0">{g.mark}</span>
-                        <span className={`text-sm font-bold truncate flex-1 ${isMyGuild ? 'text-emerald-700' : 'text-slate-800'}`}>
+                        <span className={`text-sm font-bold truncate flex-1 ${isMyGuild ? 'text-[#201d1d]' : 'text-[#424245]'}`}>
                           {g.name}
                         </span>
-                        <span className="text-xs font-extrabold text-amber-700 shrink-0">{score.toLocaleString()}</span>
+                        <span className="text-xs font-bold text-[#201d1d] shrink-0">{score.toLocaleString()}</span>
                       </div>
                     );
                   });
@@ -313,33 +321,33 @@ export const GuildListView: React.FC<GuildListViewProps> = ({
           <>
             {/* Search */}
             <div className="relative mb-4">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#646262]" size={16} />
               <input
                 type="text"
                 placeholder={t("search_guilds", language)}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-11 pr-4 py-3.5 bg-white border border-slate-200/80 rounded-lg text-sm font-semibold placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-600/15 focus:border-indigo-600 shadow-sm"
+                className="w-full min-h-[44px] pl-10 pr-4 py-2.5 bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-sm text-xs font-mono text-[#201d1d] placeholder:text-[#646262] focus:outline-none focus:border-[#201d1d]"
               />
             </div>
 
             {/* Guild List */}
             {loading ? (
-              <div className="py-20 text-center text-sm font-bold text-slate-400">
-                {t("loading", language)}
+              <div className="py-20 text-center text-sm font-bold text-[#646262]">
+                [{t("loading", language)}]
               </div>
             ) : filteredGuilds.length === 0 ? (
-              <div className="bg-white border border-slate-200/80 rounded-lg p-12 text-center shadow-sm">
-                <Shield size={40} className="mx-auto mb-4 text-slate-300" />
-                <h3 className="text-lg font-bold text-slate-800 mb-1">
-                  {t("guild_not_found_list", language)}
+              <div className="bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-none p-10 text-center">
+                <Shield size={36} className="mx-auto mb-3 text-[#646262]" />
+                <h3 className="text-sm font-bold text-[#201d1d] mb-1">
+                  [{t("guild_not_found_list", language)}]
                 </h3>
-                <p className="text-xs text-slate-400 font-medium">
+                <p className="text-xs text-[#646262]">
                   {t("guild_not_found_desc", language)}
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 gap-3">
+              <div className="grid grid-cols-1 gap-2.5">
                 {filteredGuilds.map((guild) => {
                   const isMyGuild = userGuild?.id === guild.id;
                   const hasGuild = !!userGuild;
@@ -347,45 +355,50 @@ export const GuildListView: React.FC<GuildListViewProps> = ({
                   return (
                     <div
                       key={guild.id}
-                      className={`bg-white border rounded-lg p-4 flex items-center justify-between gap-3 transition-all shadow-sm ${
-                        isMyGuild ? "border-emerald-200 bg-emerald-50/10" : "border-slate-200/70"
+                      className={`bg-[#fdfcfc] border rounded-none p-3.5 flex items-center justify-between gap-3 transition-colors ${
+                        isMyGuild ? "border-[#201d1d] bg-[#f8f7f7]" : "border-[rgba(15,0,0,0.12)]"
                       }`}
                     >
                       <div className="flex items-center gap-3 min-w-0">
-                        <div className="w-11 h-11 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center text-2xl shrink-0">
+                        <div className="w-11 h-11 rounded-none bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] flex items-center justify-center text-2xl shrink-0">
                           {guild.mark}
                         </div>
                         <div className="min-w-0">
-                          <h3 className="text-sm font-bold text-slate-800 truncate">
+                          <h3 className="text-xs font-bold text-[#201d1d] truncate">
                             {guild.name}
                           </h3>
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-1 shrink-0">
+                      <div className="flex items-center gap-1.5 shrink-0">
                         <button
+                          type="button"
                           onClick={() => onSelectGuild(guild.id, false)}
-                          className="w-8 h-8 bg-white hover:bg-slate-50 border border-slate-200/80 rounded-lg flex items-center justify-center transition-all active:scale-95 text-slate-600 cursor-pointer"
+                          className="min-h-[44px] min-w-[44px] bg-[#fdfcfc] hover:bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-sm flex items-center justify-center text-[#201d1d] cursor-pointer transition-colors"
                           aria-label={t("details", language)}
                         >
-                          <Eye size={14} />
+                          <Eye size={16} />
                         </button>
 
                         {isMyGuild ? null : hasGuild ? (
                           <button
+                            type="button"
                             onClick={() => onSelectGuild(guild.id, true)}
-                            className="w-8 h-8 bg-rose-600 hover:bg-rose-700 text-white rounded-lg flex items-center justify-center transition-all active:scale-95 cursor-pointer shadow-sm"
+                            className="min-h-[44px] min-w-[44px] px-3 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] rounded-sm flex items-center justify-center gap-1 cursor-pointer transition-colors border border-[#201d1d]"
                             aria-label={t("guild_attack", language)}
                           >
-                            <Swords size={14} />
+                            <Swords size={16} />
+                            <span className="text-[11px] font-bold">[{t("guild_attack", language)}]</span>
                           </button>
                         ) : (
                           <button
+                            type="button"
                             onClick={() => handleJoinGuild(guild.id)}
-                            className="w-8 h-8 bg-amber-400 hover:bg-amber-300 text-amber-950 rounded-lg flex items-center justify-center transition-all active:scale-95 cursor-pointer"
+                            className="min-h-[44px] min-w-[44px] px-3 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] rounded-sm flex items-center justify-center gap-1 cursor-pointer transition-colors border border-[#201d1d]"
                             aria-label={t("guild_join", language)}
                           >
-                            <Plus size={14} />
+                            <Plus size={16} />
+                            <span className="text-[11px] font-bold">[{t("guild_join", language)}]</span>
                           </button>
                         )}
                       </div>
@@ -401,32 +414,33 @@ export const GuildListView: React.FC<GuildListViewProps> = ({
       {/* Guild Creation Modal */}
       <AnimatePresence>
         {isModalOpen && (
-          <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 font-mono">
             <motion.div
               initial={{ scale: 0.95, y: 15 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 15 }}
-              className="bg-white border border-slate-100 rounded-3xl p-6 w-full max-w-md shadow-2xl relative"
+              className="bg-[#fdfcfc] border border-[#201d1d] rounded-none p-5 w-full max-w-md relative text-[#201d1d]"
             >
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold uppercase tracking-tight flex items-center gap-2 text-slate-800">
-                  <Shield className="text-yellow-500" />
-                  {t("create_guild", language)}
+              <div className="flex items-center justify-between mb-4 border-b border-[rgba(15,0,0,0.12)] pb-2">
+                <h2 className="text-sm font-bold uppercase tracking-tight flex items-center gap-2 text-[#201d1d]">
+                  <Shield size={16} />
+                  [{t("create_guild", language)}]
                 </h2>
                 <button
+                  type="button"
                   onClick={() => {
                     setIsModalOpen(false);
                     setErrorMsg("");
                   }}
-                  className="text-slate-400 hover:text-slate-700 transition-colors"
+                  className="min-h-[44px] min-w-[44px] flex items-center justify-center text-[#646262] hover:text-[#201d1d] cursor-pointer"
                 >
-                  <X size={20} />
+                  [x]
                 </button>
               </div>
 
-              <form onSubmit={handleCreateGuild} className="space-y-5">
+              <form onSubmit={handleCreateGuild} className="space-y-4">
                 {errorMsg && (
-                  <div className="bg-rose-50 border border-rose-200 text-rose-700 p-3 rounded-2xl text-xs font-bold">
+                  <div className="bg-[#f8f7f7] border border-rose-600 text-rose-700 p-3 rounded-none text-xs font-bold font-mono">
                     {errorMsg}
                   </div>
                 )}
@@ -438,7 +452,7 @@ export const GuildListView: React.FC<GuildListViewProps> = ({
                     value={guildName}
                     onChange={(e) => setGuildName(e.target.value)}
                     placeholder={t("enter_guild_name", language)}
-                    className="w-full p-3 bg-white border border-slate-200 rounded-2xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-650/15 focus:border-indigo-600 shadow-sm"
+                    className="w-full min-h-[44px] p-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-sm text-xs font-mono font-semibold text-[#201d1d] focus:outline-none focus:border-[#201d1d]"
                   />
                 </div>
 
@@ -448,10 +462,10 @@ export const GuildListView: React.FC<GuildListViewProps> = ({
                       key={mark}
                       type="button"
                       onClick={() => setSelectedMark(mark)}
-                      className={`text-2xl p-2 rounded-2xl border transition-all active:scale-95 cursor-pointer ${
+                      className={`min-h-[44px] text-xl p-1 rounded-sm border transition-colors cursor-pointer flex items-center justify-center ${
                         selectedMark === mark
-                          ? "border-indigo-600 bg-indigo-50/50 scale-105 shadow-sm"
-                          : "border-slate-200 hover:border-slate-300 bg-white"
+                          ? "border-[#201d1d] bg-[#201d1d] text-[#fdfcfc]"
+                          : "border-[rgba(15,0,0,0.12)] hover:bg-[#f8f7f7] bg-[#fdfcfc]"
                       }`}
                     >
                       {mark}
@@ -463,7 +477,7 @@ export const GuildListView: React.FC<GuildListViewProps> = ({
                   <select
                     value={selectedLang}
                     onChange={(e) => setSelectedLang(e.target.value as Language)}
-                    className="w-full p-3 bg-white border border-slate-200 rounded-2xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-650/15 focus:border-indigo-600 shadow-sm"
+                    className="w-full min-h-[44px] p-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-sm text-xs font-mono font-semibold text-[#201d1d] focus:outline-none focus:border-[#201d1d]"
                   >
                     {LANG_OPTIONS.map((opt) => (
                       <option key={opt.code} value={opt.code}>
@@ -473,22 +487,22 @@ export const GuildListView: React.FC<GuildListViewProps> = ({
                   </select>
                 </div>
 
-                <div className="pt-4 flex gap-3">
+                <div className="pt-2 flex gap-2">
                   <button
                     type="button"
                     onClick={() => {
                       setIsModalOpen(false);
                       setErrorMsg("");
                     }}
-                    className="flex-1 border border-slate-200 py-3 rounded-2xl text-xs font-bold uppercase tracking-wider bg-white hover:bg-slate-50 transition-all active:scale-[0.98] shadow-sm text-slate-500 cursor-pointer"
+                    className="flex-1 min-h-[44px] border border-[rgba(15,0,0,0.12)] rounded-sm text-xs font-bold uppercase tracking-wider bg-[#fdfcfc] hover:bg-[#f8f7f7] text-[#201d1d] transition-colors cursor-pointer"
                   >
-                    {t("cancel_btn", language)}
+                    [{t("cancel_btn", language)}]
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 bg-gradient-to-r from-yellow-450 to-amber-500 text-amber-950 py-3 rounded-2xl text-xs font-bold uppercase tracking-wider transition-all active:scale-[0.98] shadow-lg shadow-yellow-200/40 cursor-pointer"
+                    className="flex-1 min-h-[44px] bg-[#201d1d] text-[#fdfcfc] rounded-sm text-xs font-bold uppercase tracking-wider transition-colors border border-[#201d1d] hover:bg-[#302c2c] cursor-pointer"
                   >
-                    {t("guild_create_btn", language)}
+                    [{t("guild_create_btn", language)}]
                   </button>
                 </div>
               </form>
@@ -500,23 +514,24 @@ export const GuildListView: React.FC<GuildListViewProps> = ({
       {/* Custom Alert/Error Toast Popup */}
       <AnimatePresence>
         {alertMsg && (
-          <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
+          <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/60 font-mono">
             <motion.div
               initial={{ scale: 0.95 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.95 }}
-              className="bg-white border border-slate-100 rounded-3xl p-6 w-full max-w-sm text-center shadow-2xl relative"
+              className="bg-[#fdfcfc] border border-[#201d1d] rounded-none p-5 w-full max-w-sm text-center relative"
             >
-              <div className="w-12 h-12 bg-rose-50 border border-rose-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <AlertCircle className="text-rose-500" size={24} />
+              <div className="w-10 h-10 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none flex items-center justify-center mx-auto mb-3">
+                <AlertCircle className="text-rose-600" size={20} />
               </div>
-              <h4 className="text-sm font-bold text-slate-800 mb-2">Notification</h4>
-              <p className="text-xs text-slate-500 leading-relaxed mb-5">{alertMsg}</p>
+              <h4 className="text-xs font-bold text-[#201d1d] mb-1.5 uppercase">[NOTIFICATION]</h4>
+              <p className="text-xs text-[#646262] leading-relaxed mb-4">{alertMsg}</p>
               <button
+                type="button"
                 onClick={() => setAlertMsg(null)}
-                className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl transition-colors active:scale-[0.98] shadow-sm cursor-pointer"
+                className="w-full min-h-[44px] bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] font-bold text-xs rounded-sm transition-colors cursor-pointer border border-[#201d1d]"
               >
-                Close
+                [{language === 'ko' ? '닫기' : 'Close'}]
               </button>
             </motion.div>
           </div>
@@ -530,44 +545,47 @@ export const GuildListView: React.FC<GuildListViewProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[209] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+            className="fixed inset-0 z-[209] flex items-center justify-center p-4 bg-black/60 font-mono"
             onClick={() => setShowHelp(false)}
           >
             <motion.div
-              initial={{ scale: 0.95, y: 20 }}
+              initial={{ scale: 0.95, y: 10 }}
               animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.95, y: 20 }}
+              exit={{ scale: 0.95, y: 10 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 relative"
+              className="bg-[#fdfcfc] rounded-none max-w-sm w-full p-5 border border-[#201d1d] relative text-[#201d1d]"
             >
               <button
+                type="button"
                 onClick={() => setShowHelp(false)}
-                className="absolute top-4 right-4 p-1.5 hover:bg-slate-100 rounded-full text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
+                className="absolute top-3 right-3 min-h-[44px] min-w-[44px] flex items-center justify-center text-[#646262] hover:text-[#201d1d] cursor-pointer"
               >
-                <X size={18} />
+                [x]
               </button>
-              <div className="flex items-center gap-2 mb-4">
-                <HelpCircle size={20} className="text-indigo-500" />
-                <h3 className="font-bold text-sm text-slate-800">{t('guild_management', language)}</h3>
+              <div className="flex items-center gap-2 mb-3">
+                <HelpCircle size={18} className="text-[#201d1d]" />
+                <h3 className="font-bold text-xs text-[#201d1d]">[{t('guild_management', language)}]</h3>
               </div>
-              <div className="min-h-[80px] flex flex-col justify-center text-sm text-slate-600 leading-relaxed mb-4">
+              <div className="min-h-[70px] flex flex-col justify-center text-xs text-[#646262] leading-relaxed mb-4">
                 <p>{helpSlides[helpSlide]}</p>
               </div>
               <div className="flex items-center justify-between">
                 <button
+                  type="button"
                   onClick={() => setHelpSlide((s) => Math.max(0, s - 1))}
                   disabled={helpSlide === 0}
-                  className="p-1.5 rounded-lg hover:bg-slate-100 disabled:opacity-30 transition-colors cursor-pointer"
+                  className="min-h-[44px] min-w-[44px] rounded-sm border border-[rgba(15,0,0,0.12)] flex items-center justify-center hover:bg-[#f8f7f7] disabled:opacity-30 transition-colors cursor-pointer"
                 >
-                  <ChevronLeft size={18} />
+                  <ChevronLeft size={16} />
                 </button>
-                <span className="text-[10px] font-bold text-slate-400">{helpSlide + 1} / {helpSlides.length}</span>
+                <span className="text-[10px] font-bold text-[#646262]">{helpSlide + 1} / {helpSlides.length}</span>
                 <button
+                  type="button"
                   onClick={() => setHelpSlide((s) => Math.min(helpSlides.length - 1, s + 1))}
                   disabled={helpSlide === helpSlides.length - 1}
-                  className="p-1.5 rounded-lg hover:bg-slate-100 disabled:opacity-30 transition-colors cursor-pointer"
+                  className="min-h-[44px] min-w-[44px] rounded-sm border border-[rgba(15,0,0,0.12)] flex items-center justify-center hover:bg-[#f8f7f7] disabled:opacity-30 transition-colors cursor-pointer"
                 >
-                  <ChevronRight size={18} />
+                  <ChevronRight size={16} />
                 </button>
               </div>
             </motion.div>

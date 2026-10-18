@@ -23,7 +23,7 @@ export const RedditPolicyModal: React.FC<RedditPolicyModalProps> = ({
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black/75 backdrop-blur-sm flex justify-center items-center p-3 sm:p-6">
       <div className="fixed inset-0 -z-10" onClick={onClose} />
 
-      <div className={`relative w-full max-w-xl rounded-2xl border shadow-2xl overflow-hidden transition-colors ${
+      <div className={`relative w-full max-w-xl rounded-none border overflow-hidden font-mono transition-colors ${
         isDark ? 'bg-[#181C1F] border-[#2E363E] text-gray-200' : 'bg-white border-gray-200 text-gray-900'
       }`}>
         {/* 모달 헤더 */}
@@ -43,7 +43,7 @@ export const RedditPolicyModal: React.FC<RedditPolicyModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="p-1 rounded-full hover:bg-black/10 cursor-pointer"
+            className="w-11 h-11 flex items-center justify-center rounded-sm hover:bg-black/10 cursor-pointer min-h-[44px]"
             aria-label="Close"
           >
             <X className="w-5 h-5" />
@@ -61,7 +61,7 @@ export const RedditPolicyModal: React.FC<RedditPolicyModalProps> = ({
               </p>
 
               <div className="space-y-3">
-                <div className={`p-3 rounded-xl border ${isDark ? 'border-[#2E363E] bg-[#0E1113]' : 'border-gray-200 bg-gray-50'}`}>
+                <div className={`p-3 rounded-none border ${isDark ? 'border-[#2E363E] bg-[#0E1113]' : 'border-gray-200 bg-gray-50'}`}>
                   <div className="font-bold flex items-center gap-1.5 text-sm mb-1 text-[#FF4500]">
                     <CheckCircle2 className="w-4 h-4" />
                     <span>{isKo ? '1. 상호 존중과 비방 금지' : '1. Respect and Civility'}</span>
@@ -73,7 +73,7 @@ export const RedditPolicyModal: React.FC<RedditPolicyModalProps> = ({
                   </p>
                 </div>
 
-                <div className={`p-3 rounded-xl border ${isDark ? 'border-[#2E363E] bg-[#0E1113]' : 'border-gray-200 bg-gray-50'}`}>
+                <div className={`p-3 rounded-none border ${isDark ? 'border-[#2E363E] bg-[#0E1113]' : 'border-gray-200 bg-gray-50'}`}>
                   <div className="font-bold flex items-center gap-1.5 text-sm mb-1 text-[#FF4500]">
                     <CheckCircle2 className="w-4 h-4" />
                     <span>{isKo ? '2. 무비용 정적 커뮤니티 원칙' : '2. Zero-Cost Open Access'}</span>
@@ -85,7 +85,7 @@ export const RedditPolicyModal: React.FC<RedditPolicyModalProps> = ({
                   </p>
                 </div>
 
-                <div className={`p-3 rounded-xl border ${isDark ? 'border-[#2E363E] bg-[#0E1113]' : 'border-gray-200 bg-gray-50'}`}>
+                <div className={`p-3 rounded-none border ${isDark ? 'border-[#2E363E] bg-[#0E1113]' : 'border-gray-200 bg-gray-50'}`}>
                   <div className="font-bold flex items-center gap-1.5 text-sm mb-1 text-[#FF4500]">
                     <CheckCircle2 className="w-4 h-4" />
                     <span>{isKo ? '3. 스팸 및 영리 목적 도배 제한' : '3. No Spam or Self-Promotion'}</span>
@@ -107,7 +107,7 @@ export const RedditPolicyModal: React.FC<RedditPolicyModalProps> = ({
               </p>
 
               <div className="space-y-3">
-                <div className={`p-3 rounded-xl border ${isDark ? 'border-[#2E363E] bg-[#0E1113]' : 'border-gray-200 bg-gray-50'}`}>
+                <div className={`p-3 rounded-none border ${isDark ? 'border-[#2E363E] bg-[#0E1113]' : 'border-gray-200 bg-gray-50'}`}>
                   <div className="font-bold flex items-center gap-1.5 text-sm mb-1 text-sky-400">
                     <CheckCircle2 className="w-4 h-4" />
                     <span>{isKo ? '로컬스토리지 기반 데이터 보존' : 'LocalStorage Persistence'}</span>
@@ -119,7 +119,7 @@ export const RedditPolicyModal: React.FC<RedditPolicyModalProps> = ({
                   </p>
                 </div>
 
-                <div className={`p-3 rounded-xl border ${isDark ? 'border-[#2E363E] bg-[#0E1113]' : 'border-gray-200 bg-gray-50'}`}>
+                <div className={`p-3 rounded-none border ${isDark ? 'border-[#2E363E] bg-[#0E1113]' : 'border-gray-200 bg-gray-50'}`}>
                   <div className="font-bold flex items-center gap-1.5 text-sm mb-1 text-sky-400">
                     <CheckCircle2 className="w-4 h-4" />
                     <span>{isKo ? '구글 애드센스 광고 규정 준수' : 'AdSense Privacy Standard'}</span>
@@ -140,7 +140,7 @@ export const RedditPolicyModal: React.FC<RedditPolicyModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="px-5 py-2 rounded-full bg-[#FF4500] hover:bg-[#FF5414] text-white font-bold text-xs cursor-pointer transition-colors"
+            className="px-5 py-2 rounded-sm bg-[#FF4500] hover:bg-[#FF5414] text-white font-bold text-xs cursor-pointer transition-colors min-h-[44px]"
           >
             {isKo ? '확인 및 닫기' : 'Close'}
           </button>

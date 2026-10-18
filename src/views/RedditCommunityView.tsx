@@ -556,8 +556,8 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
   }, []);
 
   return (
-    <div className={`min-h-screen w-full max-w-full overflow-x-clip flex flex-col font-sans transition-colors duration-150 ${
-      isDark ? 'bg-[#0E1113] text-[#D7DADC]' : 'bg-[#DAE0E6] text-[#1C1C1C]'
+    <div className={`min-h-screen w-full max-w-full overflow-x-clip flex flex-col font-mono pb-32 transition-colors duration-150 ${
+      isDark ? 'bg-[#201d1d] text-[#fdfcfc]' : 'bg-[#fdfcfc] text-[#201d1d]'
     }`}>
       {/* 1. 상단 글로벌 헤더 */}
       <RedditHeader
@@ -643,16 +643,16 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
                   />
 
                   {/* 실시간 Reddit 피드 연동 상태 바 및 수동 새로고침 버튼 */}
-                  <div className={`flex flex-col gap-1.5 px-3 sm:px-3.5 py-2 mb-3 rounded-2xl text-[11px] font-semibold border shadow-sm transition-colors w-full max-w-full overflow-hidden ${
+                  <div className={`flex flex-col gap-1.5 px-3 sm:px-3.5 py-2 mb-3 rounded-none text-[11px] font-semibold border transition-colors w-full max-w-full overflow-hidden ${
                     isDark ? 'bg-[#181C1F] border-[#22272B] text-gray-300' : 'bg-white border-gray-200 text-gray-700'
                   }`}>
                     <div className="flex items-center justify-between w-full">
                       <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 truncate">
-                        <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${
+                        <span className={`w-2.5 h-2.5 rounded-none flex-shrink-0 ${
                           syncStatus === 'unauthorized'
                             ? 'bg-amber-500 animate-pulse'
                             : syncStatus === 'syncing'
-                              ? 'bg-blue-500 animate-ping'
+                              ? 'bg-blue-500'
                               : 'bg-emerald-500 animate-pulse'
                         }`} />
                         <span className={`font-bold flex-shrink-0 ${
@@ -686,7 +686,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
                         type="button"
                         onClick={handleSyncLive}
                         disabled={isSyncingLive}
-                        className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full hover:bg-black/10 cursor-pointer disabled:opacity-50 transition-all font-bold text-[11px] text-[#FF4500] flex-shrink-0 ml-2"
+                        className="min-h-[44px] flex items-center gap-1.5 px-3 py-1 rounded-sm hover:bg-black/10 cursor-pointer disabled:opacity-50 transition-all font-bold text-[11px] text-[#FF4500] flex-shrink-0 ml-2 border border-transparent hover:border-black/10"
                         title={isKo ? '구글 시트 최신 뉴스 실시간 갱신' : 'Refresh Google News'}
                       >
                         <RotateCw className={`w-3.5 h-3.5 ${isSyncingLive ? 'animate-spin' : ''}`} />
@@ -697,7 +697,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
 
                   {/* 구글 시트 비공개(로그인 필요) 시 눈에 띄는 가이드 Alert 카드 */}
                   {syncStatus === 'unauthorized' && (
-                    <div className={`p-3.5 mb-3 rounded-2xl border transition-all text-xs ${
+                    <div className={`p-3.5 mb-3 rounded-none border transition-all text-xs ${
                       isDark ? 'bg-amber-950/25 border-amber-500/40 text-amber-200' : 'bg-amber-50 border-amber-300 text-amber-900'
                     }`}>
                       <div className="flex items-start gap-2.5">
@@ -705,7 +705,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
                         <div className="flex-1 min-w-0">
                           <div className="font-bold text-sm mb-1 flex items-center justify-between flex-wrap gap-1">
                             <span>{isKo ? '⚠️ 구글 뉴스 시트 공유 설정 필요 (HTTP 401 Unauthorized)' : '⚠️ Google Sheet Sharing Required'}</span>
-                            <span className="text-[10px] font-mono px-2 py-0.5 bg-amber-500/20 text-amber-600 dark:text-amber-400 font-bold rounded-full">
+                            <span className="text-[10px] font-mono px-2 py-0.5 bg-amber-500/20 text-amber-600 dark:text-amber-400 font-bold rounded-sm">
                               {isKo ? '시트가 비공개 상태' : 'Sheet is Private'}
                             </span>
                           </div>
@@ -714,7 +714,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
                               ? '구글 스프레드시트가 현재 "비공개(구글 로그인 필요)"로 잠겨 있어, 웹 브라우저가 최신 뉴스를 받아오지 못하고 있습니다. 아래 3단계 안내에 따라 공유 설정을 "링크가 있는 모든 사용자"로 변경하시면 최신 뉴스가 실시간으로 자동 갱신됩니다.'
                               : 'The Google Sheet is currently private (requires Google login). Change sharing settings to "Anyone with the link (Viewer)" to allow live sync.'}
                           </p>
-                          <div className="bg-black/5 dark:bg-white/5 rounded-xl p-2.5 mb-3 text-[11px] leading-relaxed space-y-1">
+                          <div className="bg-black/5 dark:bg-white/5 rounded-none p-2.5 mb-3 text-[11px] leading-relaxed space-y-1">
                             <div className="font-bold text-amber-700 dark:text-amber-300">{isKo ? '📋 설정 변경 방법 (10초 소요):' : 'How to fix:'}</div>
                             <div>{isKo ? '1. 아래 [구글 시트 열기] 버튼 클릭' : '1. Click [Open Google Sheet] below'}</div>
                             <div>{isKo ? '2. 시트 우측 상단 [공유] 클릭 ➔ 일반 액세스를 "링크가 있는 모든 사용자" (역할: 뷰어)로 변경 후 [완료]' : '2. Click top-right [Share] ➔ Change General Access to "Anyone with the link (Viewer)" ➔ Done'}</div>
@@ -725,7 +725,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
                               href="https://docs.google.com/spreadsheets/d/1CT5Yy1-i6kkOfx3d-Yw1osOEYbN7fkk8IDiI8Vm82vM/edit?usp=sharing"
                               target="_blank"
                               rel="noreferrer"
-                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500 text-white font-bold hover:bg-amber-600 transition-colors cursor-pointer text-xs shadow-sm"
+                              className="min-h-[44px] inline-flex items-center gap-1.5 px-3 py-2 rounded-sm bg-amber-500 text-white font-bold hover:bg-amber-600 transition-colors cursor-pointer text-xs border border-amber-600"
                             >
                               <span>{isKo ? '구글 시트 열기' : 'Open Google Sheet'}</span>
                               <ExternalLink className="w-3.5 h-3.5" />
@@ -734,7 +734,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
                               type="button"
                               onClick={handleSyncLive}
                               disabled={isSyncingLive}
-                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-amber-500/50 font-bold hover:bg-amber-500/10 transition-colors cursor-pointer text-xs"
+                              className="min-h-[44px] inline-flex items-center gap-1.5 px-3 py-2 rounded-sm border border-amber-500/50 font-bold hover:bg-amber-500/10 transition-colors cursor-pointer text-xs"
                             >
                               <RotateCw className={`w-3.5 h-3.5 ${isSyncingLive ? 'animate-spin' : ''}`} />
                               <span>{isSyncingLive ? (isKo ? '확인 중...' : 'Checking...') : (isKo ? '지금 다시 동기화' : 'Try Sync Now')}</span>
@@ -758,7 +758,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
                   />
 
                   {/* 피드 최상단 고수익 구글 애드센스 디스플레이 스폰서 배너 (Above-The-Fold) */}
-                  <div className={`p-3 mb-3 rounded-2xl border transition-all overflow-hidden ${
+                  <div className={`p-3 mb-3 rounded-none border transition-all overflow-hidden ${
                     isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'
                   }`}>
                     <div className="flex items-center justify-between text-[10px] font-bold text-[#FF4500] uppercase tracking-wider mb-2">
@@ -804,20 +804,20 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
                               {/* 2. SNSHero 관련 글: 상단 이후부터 적절한 간격으로 광고처럼 삽입 (스폰서드/프로모티드 카드) */}
                               {promotedPost && (
                                 <div className="my-2.5">
-                                  <div className={`px-3 py-1 rounded-t-xl text-[10px] font-extrabold uppercase tracking-wider flex items-center justify-between border-x border-t ${
+                                  <div className={`px-3 py-1 rounded-none text-[10px] font-extrabold uppercase tracking-wider flex items-center justify-between border-x border-t ${
                                     isDark ? 'bg-[#181C1F] border-[#2A3136] text-amber-400' : 'bg-amber-50/80 border-amber-200 text-amber-800'
                                   }`}>
                                     <span className="flex items-center gap-1.5">
                                       <Sparkles className="w-3 h-3 text-[#FF4500]" />
                                       <span>{isKo ? '스폰서 프로모션 • SNSHero 공식' : 'Promoted by SNSHero Official'}</span>
                                     </span>
-                                    <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${
+                                    <span className={`px-1.5 py-0.5 rounded-sm text-[9px] font-bold ${
                                       isDark ? 'bg-amber-400/10 text-amber-400' : 'bg-amber-200 text-amber-900'
                                     }`}>
                                       {isKo ? '광고' : 'Promoted'}
                                     </span>
                                   </div>
-                                  <div className="rounded-b-2xl overflow-hidden border-x border-b border-inherit">
+                                  <div className="rounded-none overflow-hidden border-x border-b border-inherit">
                                     <RedditPostCard
                                       post={{
                                         ...promotedPost,
@@ -857,7 +857,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
                         <div ref={feedSentinelRef} className="py-6 text-center">
                           {isLoadingMorePosts ? (
                             <div className="flex items-center justify-center gap-2 text-xs font-bold text-[#FF4500] py-3">
-                              <span className="w-4 h-4 border-2 border-[#FF4500] border-t-transparent rounded-full animate-spin" />
+                              <span className="w-4 h-4 border-2 border-[#FF4500] border-t-transparent rounded-none animate-spin" />
                               <span>{isKo ? '실시간 추가 피드 불러오는 중...' : 'Streaming more live posts...'}</span>
                             </div>
                           ) : feedVisibleCount < posts.length ? (
@@ -865,10 +865,10 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
                               <button
                                 type="button"
                                 onClick={handleLoadMorePosts}
-                                className={`px-6 py-2.5 rounded-full border text-xs font-bold transition-all active:scale-95 cursor-pointer flex items-center gap-2 shadow-sm ${
+                                className={`min-h-[44px] px-6 py-2.5 rounded-sm border text-xs font-bold transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-2 ${
                                   isDark 
                                     ? 'bg-[#22272B] hover:bg-[#2A3136] text-white border-white/10' 
-                                    : 'bg-white hover:bg-gray-100 text-[#1A1A1B] border-gray-300 shadow-xs'
+                                    : 'bg-white hover:bg-gray-100 text-[#1A1A1B] border-gray-300'
                                 }`}
                               >
                                 <RotateCw size={14} className={isLoadingMorePosts ? 'animate-spin' : ''} />
@@ -885,7 +885,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
                         </div>
                       </>
                     ) : (
-                      <div className={`rounded-2xl border p-12 text-center text-xs opacity-50 ${
+                      <div className={`rounded-none border p-12 text-center text-xs opacity-50 ${
                         isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'
                       }`}>
                         {isKo ? '피드에 표시할 게시물이 아직 없습니다. 첫 게시물을 작성해보세요!' : 'No posts in this feed yet. Be the first to create one!'}
@@ -897,7 +897,7 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
 
               {/* About 탭 */}
               {activeTab === 'about' && (
-                <div className={`rounded-2xl border p-6 text-xs leading-relaxed space-y-4 ${
+                <div className={`rounded-none border p-6 text-xs leading-relaxed space-y-4 ${
                   isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'
                 }`}>
                   <h3 className="font-extrabold text-base">
@@ -919,14 +919,14 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
 
               {/* Rules 탭 */}
               {activeTab === 'rules' && (
-                <div className={`rounded-2xl border p-6 text-xs space-y-3 ${
+                <div className={`rounded-none border p-6 text-xs space-y-3 ${
                   isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'
                 }`}>
                   <h3 className="font-extrabold text-base mb-3">
                     {isKo ? '커뮤니티 규칙' : 'Community Rules'}
                   </h3>
                   {currentSubredditInfo.rules.map((rule) => (
-                    <div key={rule.number} className="p-3 rounded-xl border border-inherit/10">
+                    <div key={rule.number} className="p-3 rounded-none border border-inherit/10">
                       <div className="font-bold text-xs mb-1">{rule.number}. {rule.title}</div>
                       <div className="opacity-75 text-[11px]">{rule.description}</div>
                     </div>

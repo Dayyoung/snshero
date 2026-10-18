@@ -122,7 +122,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
     return (
       <article
         onClick={() => onOpenDetail(post)}
-        className={`w-full max-w-full overflow-hidden break-words px-3 py-2 border-b flex items-center justify-between gap-3 text-xs cursor-pointer transition-colors ${
+        className={`w-full max-w-full overflow-hidden break-words px-3 py-2 border-b flex items-center justify-between gap-3 text-xs cursor-pointer font-mono transition-colors ${
           isDark 
             ? 'bg-[#181C1F] hover:bg-[#22272B] border-[#22272B] text-gray-200' 
             : 'bg-white hover:bg-gray-50 border-gray-100 text-gray-800'
@@ -133,7 +133,8 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
             <button
               type="button"
               onClick={(e) => { e.stopPropagation(); onVote(post.id, 'up'); }}
-              className={`p-0.5 rounded cursor-pointer ${post.userVote === 'up' ? 'text-[#FF4500]' : 'opacity-50'}`}
+              className={`w-11 h-11 flex items-center justify-center rounded-sm cursor-pointer min-h-[44px] ${post.userVote === 'up' ? 'text-[#FF4500]' : 'opacity-50'}`}
+              aria-label="Upvote"
             >
               <ArrowBigUp className="w-4 h-4 fill-current" />
             </button>
@@ -143,7 +144,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
           </div>
 
           {post.isPinned && (
-            <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-emerald-600 text-white flex-shrink-0">
+            <span className="px-1.5 py-0.5 rounded-sm text-[9px] font-bold bg-emerald-600 text-white flex-shrink-0">
               📌 {isKo ? '고정' : 'Pinned'}
             </span>
           )}
@@ -174,7 +175,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
     return (
       <article
         onClick={() => onOpenDetail(post)}
-        className={`w-full max-w-full overflow-hidden break-words p-3 rounded-xl border mb-2 flex items-start gap-3 text-xs cursor-pointer transition-colors shadow-sm ${
+        className={`w-full max-w-full overflow-hidden break-words p-3 rounded-none border mb-2 flex items-start gap-3 text-xs cursor-pointer font-mono transition-colors ${
           isDark 
             ? 'bg-[#181C1F] hover:border-gray-600 border-[#22272B] text-gray-200' 
             : 'bg-white hover:border-gray-300 border-gray-200 text-gray-800'
@@ -184,9 +185,10 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); onVote(post.id, 'up'); }}
-            className={`p-1 rounded cursor-pointer hover:bg-black/10 transition-colors ${
+            className={`w-11 h-11 flex items-center justify-center rounded-sm cursor-pointer hover:bg-black/10 transition-colors min-h-[44px] ${
               post.userVote === 'up' ? 'text-[#FF4500]' : 'opacity-60 hover:opacity-100'
             }`}
+            aria-label="Upvote"
           >
             <ArrowBigUp className="w-5 h-5 fill-current" />
           </button>
@@ -198,16 +200,17 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); onVote(post.id, 'down'); }}
-            className={`p-1 rounded cursor-pointer hover:bg-black/10 transition-colors ${
+            className={`w-11 h-11 flex items-center justify-center rounded-sm cursor-pointer hover:bg-black/10 transition-colors min-h-[44px] ${
               post.userVote === 'down' ? 'text-[#7193FF]' : 'opacity-60 hover:opacity-100'
             }`}
+            aria-label="Downvote"
           >
             <ArrowBigDown className="w-5 h-5 fill-current" />
           </button>
         </div>
 
         {post.media && (post.media.url || post.media.previewUrl) && (
-          <div className="relative w-20 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-black/10">
+          <div className="relative w-20 h-16 rounded-none overflow-hidden flex-shrink-0 bg-black/10">
             <img 
               src={post.media.previewUrl || post.media.url} 
               alt="" 
@@ -215,12 +218,12 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
             />
             {post.media.type === 'video' ? (
               <div className="absolute inset-0 bg-black/35 flex items-center justify-center">
-                <div className="w-6 h-6 rounded-full bg-[#FF4500] text-white flex items-center justify-center shadow-md">
+                <div className="w-6 h-6 rounded-sm bg-[#FF4500] text-white flex items-center justify-center">
                   <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
                 </div>
               </div>
             ) : isGalleryPost ? (
-              <div className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded bg-black/75 text-white text-[9px] font-bold flex items-center gap-1 backdrop-blur-sm">
+              <div className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded-sm bg-black/75 text-white text-[9px] font-bold flex items-center gap-1">
                 <Images className="w-2.5 h-2.5 text-amber-400" />
                 <span>{galleryImages.length}</span>
               </div>
@@ -246,7 +249,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
             </span>
             <span>{getRelativeTime(post.createdAt)}</span>
             {post.isPinned && (
-              <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-emerald-600 text-white flex items-center gap-0.5">
+              <span className="px-1.5 py-0.2 rounded-sm text-[9px] font-bold bg-emerald-600 text-white flex items-center gap-0.5">
                 📌 {isKo ? '고정 공지' : 'Pinned'}
               </span>
             )}
@@ -262,7 +265,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
             <button
               type="button"
               onClick={handleShare}
-              className="flex items-center gap-1 hover:opacity-100 cursor-pointer"
+              className="flex items-center gap-1 hover:opacity-100 cursor-pointer min-h-[44px] px-2 py-1 rounded-sm"
             >
               <Share2 className="w-3.5 h-3.5" />
               <span>{isCopied ? (isKo ? '복사됨!' : 'Copied!') : (isKo ? '공유' : 'Share')}</span>
@@ -279,7 +282,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
   return (
     <article
       onClick={() => onOpenDetail(post)}
-      className={`w-full max-w-full overflow-hidden break-words rounded-2xl border mb-3.5 shadow-sm cursor-pointer transition-all ${
+      className={`w-full max-w-full overflow-hidden break-words rounded-none border mb-3.5 cursor-pointer font-mono transition-all ${
         post.isPinned
           ? isDark
             ? 'bg-[#181C1F] border-emerald-500/50 hover:border-emerald-400 text-gray-200 ring-1 ring-emerald-500/20'
@@ -294,14 +297,14 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
         <div className="flex items-center justify-between text-xs mb-2">
           <div className="flex items-center gap-1.5 flex-wrap">
             {post.isPinned && (
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-600 text-white flex items-center gap-1 shadow-xs mr-0.5">
+              <span className="px-2 py-0.5 rounded-sm text-[10px] font-bold bg-emerald-600 text-white flex items-center gap-1 mr-0.5">
                 📌 {isKo ? '고정 공지' : 'Pinned'}
               </span>
             )}
             <button
               type="button"
               onClick={(e) => { e.stopPropagation(); onSelectSubreddit(post.subreddit); }}
-              className="font-bold hover:underline flex items-center gap-1 text-inherit cursor-pointer"
+              className="font-bold hover:underline inline-flex items-center gap-1 text-inherit cursor-pointer min-h-[44px] px-1"
             >
               <span className="text-[#FF4500] font-extrabold">r/</span>
               <span>{post.subreddit}</span>
@@ -311,7 +314,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
             <button
               type="button"
               onClick={(e) => { e.stopPropagation(); onOpenUserProfile(post.author); }}
-              className="hover:underline opacity-80 cursor-pointer text-[11px]"
+              className="hover:underline opacity-80 cursor-pointer text-[11px] min-h-[44px] px-1 inline-flex items-center"
             >
               u/{post.author}
             </button>
@@ -320,7 +323,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
 
             {post.flair && (
               <span
-                className="px-2 py-0.5 rounded-full text-[10px] font-bold tracking-tight shadow-sm ml-1"
+                className="px-2 py-0.5 rounded-sm text-[10px] font-bold tracking-tight ml-1"
                 style={{
                   backgroundColor: post.flair.bgColor || '#FF4500',
                   color: post.flair.textColor || '#FFFFFF',
@@ -336,14 +339,15 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
             <button
               type="button"
               onClick={(e) => { e.stopPropagation(); setIsMenuOpen(!isMenuOpen); }}
-              className="p-1 rounded-full hover:bg-black/10 cursor-pointer opacity-60 hover:opacity-100"
+              className="w-11 h-11 flex items-center justify-center rounded-sm hover:bg-black/10 cursor-pointer opacity-60 hover:opacity-100 min-h-[44px]"
+              aria-label="More options"
             >
               <MoreHorizontal className="w-4 h-4" />
             </button>
 
             {isMenuOpen && (
               <div
-                className={`absolute top-full right-0 mt-1 w-36 rounded-xl border shadow-xl py-1 z-30 text-xs overflow-hidden backdrop-blur-md ${
+                className={`absolute top-full right-0 mt-1 w-36 rounded-none border py-1 z-30 text-xs overflow-hidden ${
                   isDark ? 'bg-[#181C1F] border-[#2E363E] text-gray-200' : 'bg-white border-gray-200 text-gray-800'
                 }`}
                 onClick={(e) => e.stopPropagation()}
@@ -351,7 +355,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
                 <button
                   type="button"
                   onClick={() => { onToggleSave(post.id); setIsMenuOpen(false); }}
-                  className={`w-full text-left px-3 py-2 flex items-center gap-2 cursor-pointer ${
+                  className={`w-full text-left px-3 py-2 flex items-center gap-2 cursor-pointer min-h-[44px] ${
                     isDark ? 'hover:bg-[#22272B]' : 'hover:bg-gray-100'
                   }`}
                 >
@@ -361,7 +365,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
                 <button
                   type="button"
                   onClick={() => { onToggleHide(post.id); setIsMenuOpen(false); }}
-                  className={`w-full text-left px-3 py-2 flex items-center gap-2 cursor-pointer ${
+                  className={`w-full text-left px-3 py-2 flex items-center gap-2 cursor-pointer min-h-[44px] ${
                     isDark ? 'hover:bg-[#22272B]' : 'hover:bg-gray-100'
                   }`}
                 >
@@ -376,7 +380,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
         {/* 번역 상태 표시줄 (원문이 다른 언어일 때 노출) */}
         {needsTrans && (
           <div className="flex items-center gap-2 mb-2 text-[11px]">
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-500 font-semibold border border-blue-500/20">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm bg-blue-500/10 text-blue-500 font-semibold border border-blue-500/20">
               <Globe className="w-3 h-3" />
               {isCurrentlyTranslated ? (isKo ? 'Google 번역됨' : 'Google Translated') : (isKo ? '원문 표시 중' : 'Original')}
             </span>
@@ -386,7 +390,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
                 e.stopPropagation();
                 setShowOriginal(!showOriginal);
               }}
-              className="opacity-75 hover:opacity-100 underline cursor-pointer text-[11px]"
+              className="opacity-75 hover:opacity-100 underline cursor-pointer text-[11px] min-h-[44px] px-1 inline-flex items-center"
             >
               {showOriginal ? (isKo ? '번역본 보기' : 'Show translation') : (isKo ? '원문 보기' : 'Show original')}
             </button>
@@ -402,7 +406,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
         {displayBody && (
           <div className="mb-3">
             <div
-              className={`text-xs sm:text-sm leading-relaxed opacity-85 whitespace-pre-line font-sans break-words ${
+              className={`text-xs sm:text-sm leading-relaxed opacity-85 whitespace-pre-line font-mono break-words ${
                 isExpandedBody ? '' : 'line-clamp-3'
               }`}
             >
@@ -417,7 +421,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
                   e.stopPropagation();
                   setIsExpandedBody(!isExpandedBody);
                 }}
-                className="mt-1 text-xs font-bold text-[#FF4500] hover:underline cursor-pointer flex items-center gap-1 active:scale-95 transition-transform"
+                className="mt-1 text-xs font-bold text-[#FF4500] hover:underline cursor-pointer flex items-center gap-1 active:scale-95 transition-transform min-h-[44px] px-2"
               >
                 <span>{isExpandedBody ? (isKo ? '▲ 기사 요약 접기' : '▲ Show less') : (isKo ? '▼ 기사 본문 더보기...' : '▼ Read more...')}</span>
               </button>
@@ -433,7 +437,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-semibold transition-all hover:scale-102 active:scale-98 cursor-pointer ${
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-none border text-xs font-semibold transition-all cursor-pointer min-h-[44px] ${
                 isDark 
                   ? 'bg-[#22272B] hover:bg-[#2A3136] text-sky-400 border-white/10' 
                   : 'bg-sky-50 hover:bg-sky-100 text-sky-700 border-sky-200'
@@ -451,7 +455,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
             onClick={(e) => {
               if (post.media?.type === 'video') e.stopPropagation();
             }}
-            className="relative rounded-xl overflow-hidden mb-3 bg-black flex items-center justify-center max-h-[500px] border border-inherit/10 group"
+            className="relative rounded-none overflow-hidden mb-3 bg-black flex items-center justify-center max-h-[500px] border border-inherit/10 group"
           >
             {post.media.type === 'link' ? (
               <a
@@ -459,7 +463,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={(e) => e.stopPropagation()}
-                className={`w-full p-4 flex items-center justify-between gap-3 text-xs font-semibold rounded-xl border transition-colors ${
+                className={`w-full p-4 flex items-center justify-between gap-3 text-xs font-semibold rounded-none border transition-colors min-h-[44px] ${
                   isDark ? 'bg-[#0E1113] hover:bg-[#181C1F] border-[#2E363E] text-sky-400' : 'bg-gray-50 hover:bg-gray-100 border-gray-200 text-sky-600'
                 }`}
               >
@@ -467,7 +471,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
                   <ExternalLink className="w-4 h-4 flex-shrink-0" />
                   <span className="truncate">{cleanRedditUrl(post.media.url)}</span>
                 </div>
-                <span className="text-[10px] px-2.5 py-1 rounded-full bg-black/10 flex-shrink-0 opacity-80">
+                <span className="text-[10px] px-2.5 py-1 rounded-sm bg-black/10 flex-shrink-0 opacity-80">
                   {post.media.domain || 'link'}
                 </span>
               </a>
@@ -506,7 +510,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
               />
             )}
             {post.media.type !== 'link' && post.media.domain && (
-              <div className="absolute bottom-2 right-2 px-2 py-0.5 rounded-md bg-black/70 text-white text-[10px] font-semibold flex items-center gap-1 backdrop-blur-sm pointer-events-none">
+              <div className="absolute bottom-2 right-2 px-2 py-0.5 rounded-sm bg-black/70 text-white text-[10px] font-semibold flex items-center gap-1 pointer-events-none">
                 <span>{post.media.domain}</span>
                 <ExternalLink className="w-2.5 h-2.5" />
               </div>
@@ -519,19 +523,20 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
           {/* 보팅 위젯 캡슐 */}
           <div
             onClick={(e) => e.stopPropagation()}
-            className={`flex items-center rounded-full px-1.5 py-0.5 border ${
+            className={`flex items-center rounded-sm px-1.5 py-0.5 border ${
               isDark ? 'bg-[#22272B] border-[#2A3238]' : 'bg-gray-100 border-gray-200'
             }`}
           >
             <button
               type="button"
               onClick={() => onVote(post.id, 'up')}
-              className={`p-1 rounded-full cursor-pointer transition-colors ${
+              className={`w-11 h-11 flex items-center justify-center rounded-sm cursor-pointer transition-colors min-h-[44px] ${
                 post.userVote === 'up'
                   ? 'text-[#FF4500]'
                   : 'opacity-70 hover:opacity-100 hover:text-[#FF4500]'
               }`}
               title={isKo ? "추천" : "Upvote"}
+              aria-label="Upvote"
             >
               <ArrowBigUp className="w-5 h-5 fill-current" />
             </button>
@@ -549,12 +554,13 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
             <button
               type="button"
               onClick={() => onVote(post.id, 'down')}
-              className={`p-1 rounded-full cursor-pointer transition-colors ${
+              className={`w-11 h-11 flex items-center justify-center rounded-sm cursor-pointer transition-colors min-h-[44px] ${
                 post.userVote === 'down'
                   ? 'text-[#7193FF]'
                   : 'opacity-70 hover:opacity-100 hover:text-[#7193FF]'
               }`}
               title={isKo ? "비추천" : "Downvote"}
+              aria-label="Downvote"
             >
               <ArrowBigDown className="w-5 h-5 fill-current" />
             </button>
@@ -564,7 +570,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
           <button
             type="button"
             onClick={() => onOpenDetail(post)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full cursor-pointer transition-colors border ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm cursor-pointer transition-colors border min-h-[44px] ${
               isDark
                 ? 'bg-[#22272B] border-[#2A3238] hover:bg-[#2A3238] text-gray-200'
                 : 'bg-gray-100 border-gray-200 hover:bg-gray-200 text-gray-800'
@@ -578,7 +584,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
           <button
             type="button"
             onClick={handleShare}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full cursor-pointer transition-colors border ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm cursor-pointer transition-colors border min-h-[44px] ${
               isDark
                 ? 'bg-[#22272B] border-[#2A3238] hover:bg-[#2A3238] text-gray-200'
                 : 'bg-gray-100 border-gray-200 hover:bg-gray-200 text-gray-800'
@@ -592,7 +598,7 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); onToggleSave(post.id); }}
-            className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full cursor-pointer transition-colors border ${
+            className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-sm cursor-pointer transition-colors border min-h-[44px] ${
               post.isSaved ? 'text-[#FF4500] border-[#FF4500]/40' : ''
             } ${
               isDark

@@ -44,7 +44,7 @@ export const RedditGalleryViewer: React.FC<RedditGalleryViewerProps> = ({
   if (total === 1) {
     return (
       <div 
-        className={`relative w-full ${maxHeight} overflow-hidden rounded-xl bg-black/90 flex items-center justify-center cursor-pointer select-none`}
+        className={`relative w-full ${maxHeight} overflow-hidden rounded-none bg-black/90 flex items-center justify-center cursor-pointer select-none font-mono`}
         onClick={() => {
           if (onImageClick) onImageClick(0);
           else setIsLightboxOpen(true);
@@ -113,7 +113,7 @@ export const RedditGalleryViewer: React.FC<RedditGalleryViewerProps> = ({
   return (
     <>
       <div 
-        className="relative w-full rounded-xl overflow-hidden mb-3 select-none bg-black flex flex-col items-center justify-center group"
+        className="relative w-full rounded-none overflow-hidden mb-3 select-none bg-black flex flex-col items-center justify-center group font-mono"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
@@ -132,14 +132,14 @@ export const RedditGalleryViewer: React.FC<RedditGalleryViewerProps> = ({
 
           {/* 호버 시 확대 돋보기 아이콘 */}
           <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
-            <div className="p-2.5 rounded-full bg-black/60 text-white backdrop-blur-sm">
+            <div className="p-2.5 rounded-sm bg-black/60 text-white">
               <ZoomIn className="w-5 h-5" />
             </div>
           </div>
         </div>
 
         {/* 2. 우측 상단 갤러리 인디케이터 배지 (예: [📷 1/4]) */}
-        <div className="absolute top-2.5 right-2.5 z-10 px-2.5 py-1 rounded-full bg-black/75 backdrop-blur-md text-white text-[11px] font-bold flex items-center gap-1.5 shadow-md border border-white/10 pointer-events-none">
+        <div className="absolute top-2.5 right-2.5 z-10 px-2.5 py-1 rounded-sm bg-black/75 text-white text-[11px] font-bold flex items-center gap-1.5 border border-white/10 pointer-events-none">
           <Images className="w-3.5 h-3.5 text-amber-400" />
           <span>{currentIndex + 1} / {total}</span>
         </div>
@@ -151,7 +151,7 @@ export const RedditGalleryViewer: React.FC<RedditGalleryViewerProps> = ({
               type="button"
               onClick={handlePrev}
               aria-label={isKo ? '이전 사진' : 'Previous Image'}
-              className="absolute left-2.5 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-black/60 hover:bg-black/85 text-white backdrop-blur-sm transition-all shadow-lg hover:scale-110 active:scale-95 cursor-pointer opacity-90 sm:opacity-0 group-hover:opacity-100 border border-white/20"
+              className="absolute left-2.5 top-1/2 -translate-y-1/2 z-10 w-11 h-11 min-h-[44px] flex items-center justify-center rounded-sm bg-black/60 hover:bg-black/85 text-white transition-all cursor-pointer opacity-90 sm:opacity-0 group-hover:opacity-100 border border-white/20"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
@@ -159,7 +159,7 @@ export const RedditGalleryViewer: React.FC<RedditGalleryViewerProps> = ({
               type="button"
               onClick={handleNext}
               aria-label={isKo ? '다음 사진' : 'Next Image'}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-black/60 hover:bg-black/85 text-white backdrop-blur-sm transition-all shadow-lg hover:scale-110 active:scale-95 cursor-pointer opacity-90 sm:opacity-0 group-hover:opacity-100 border border-white/20"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 z-10 w-11 h-11 min-h-[44px] flex items-center justify-center rounded-sm bg-black/60 hover:bg-black/85 text-white transition-all cursor-pointer opacity-90 sm:opacity-0 group-hover:opacity-100 border border-white/20"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
@@ -168,19 +168,21 @@ export const RedditGalleryViewer: React.FC<RedditGalleryViewerProps> = ({
 
         {/* 4. 하단 도트(Dot) 인디케이터 (사진이 2장 이상일 때) */}
         {total > 1 && (
-          <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/50 backdrop-blur-md">
+          <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5 px-3 py-1 rounded-sm bg-black/50">
             {sanitizedImages.map((_, idx) => (
               <button
                 key={idx}
                 type="button"
                 onClick={(e) => handleSelectIndex(idx, e)}
-                className={`transition-all rounded-full cursor-pointer ${
+                className={`transition-all rounded-sm cursor-pointer min-h-[44px] px-1 flex items-center justify-center`}
+                aria-label={`Go to slide ${idx + 1}`}
+              >
+                <span className={`block rounded-sm transition-all ${
                   currentIndex === idx 
                     ? 'w-4 h-1.5 bg-[#FF4500]' 
                     : 'w-1.5 h-1.5 bg-white/50 hover:bg-white/90'
-                }`}
-                aria-label={`Go to slide ${idx + 1}`}
-              />
+                }`} />
+              </button>
             ))}
           </div>
         )}
@@ -188,15 +190,15 @@ export const RedditGalleryViewer: React.FC<RedditGalleryViewerProps> = ({
 
       {/* 5. 썸네일 스트립 (상세 모달용 옵션) */}
       {showThumbnailStrip && total > 1 && (
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-3 scrollbar-thin">
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-3 scrollbar-thin font-mono">
           {sanitizedImages.map((imgUrl, idx) => (
             <button
               key={idx}
               type="button"
               onClick={(e) => handleSelectIndex(idx, e)}
-              className={`relative flex-shrink-0 w-16 h-14 rounded-lg overflow-hidden border-2 transition-all cursor-pointer ${
+              className={`relative flex-shrink-0 w-16 h-14 min-h-[44px] rounded-none overflow-hidden border transition-all cursor-pointer ${
                 currentIndex === idx 
-                  ? 'border-[#FF4500] scale-105 shadow-md' 
+                  ? 'border-[#FF4500]' 
                   : 'border-transparent opacity-60 hover:opacity-100'
               }`}
             >
@@ -212,7 +214,7 @@ export const RedditGalleryViewer: React.FC<RedditGalleryViewerProps> = ({
       {/* 6. 전체화면 라이트박스 팝업 */}
       {isLightboxOpen && (
         <div 
-          className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-md flex flex-col items-center justify-between p-4"
+          className="fixed inset-0 z-[100] bg-black/95 flex flex-col items-center justify-between p-4 font-mono"
           onClick={() => setIsLightboxOpen(false)}
         >
           {/* 상단 툴바 */}
@@ -225,7 +227,8 @@ export const RedditGalleryViewer: React.FC<RedditGalleryViewerProps> = ({
             <button
               type="button"
               onClick={() => setIsLightboxOpen(false)}
-              className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white cursor-pointer"
+              className="w-11 h-11 flex items-center justify-center rounded-sm bg-white/10 hover:bg-white/20 text-white cursor-pointer min-h-[44px]"
+              aria-label="Close"
             >
               <X className="w-6 h-6" />
             </button>
@@ -239,7 +242,7 @@ export const RedditGalleryViewer: React.FC<RedditGalleryViewerProps> = ({
             <img
               src={currentUrl}
               alt=""
-              className="max-w-full max-h-[85vh] object-contain shadow-2xl"
+              className="max-w-full max-h-[85vh] object-contain"
             />
 
             {total > 1 && (
@@ -247,14 +250,16 @@ export const RedditGalleryViewer: React.FC<RedditGalleryViewerProps> = ({
                 <button
                   type="button"
                   onClick={handlePrev}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/60 hover:bg-black/90 text-white cursor-pointer shadow-xl"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-sm bg-black/60 hover:bg-black/90 text-white cursor-pointer min-h-[44px]"
+                  aria-label="Previous"
                 >
                   <ChevronLeft className="w-6 h-6" />
                 </button>
                 <button
                   type="button"
                   onClick={handleNext}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/60 hover:bg-black/90 text-white cursor-pointer shadow-xl"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-sm bg-black/60 hover:bg-black/90 text-white cursor-pointer min-h-[44px]"
+                  aria-label="Next"
                 >
                   <ChevronRight className="w-6 h-6" />
                 </button>
@@ -265,7 +270,7 @@ export const RedditGalleryViewer: React.FC<RedditGalleryViewerProps> = ({
           {/* 하단 썸네일 탐색 바 */}
           {total > 1 && (
             <div 
-              className="flex items-center gap-2 overflow-x-auto max-w-2xl px-4 py-2 rounded-2xl bg-black/50 backdrop-blur-md border border-white/10 z-10"
+              className="flex items-center gap-2 overflow-x-auto max-w-2xl px-4 py-2 rounded-none bg-black/50 border border-white/10 z-10"
               onClick={(e) => e.stopPropagation()}
             >
               {sanitizedImages.map((imgUrl, idx) => (
@@ -273,8 +278,8 @@ export const RedditGalleryViewer: React.FC<RedditGalleryViewerProps> = ({
                   key={idx}
                   type="button"
                   onClick={() => setCurrentIndex(idx)}
-                  className={`relative flex-shrink-0 w-14 h-12 rounded-lg overflow-hidden border-2 transition-all cursor-pointer ${
-                    currentIndex === idx ? 'border-[#FF4500] scale-105' : 'border-transparent opacity-50 hover:opacity-100'
+                  className={`relative flex-shrink-0 w-14 h-12 min-h-[44px] rounded-none overflow-hidden border transition-all cursor-pointer ${
+                    currentIndex === idx ? 'border-[#FF4500]' : 'border-transparent opacity-50 hover:opacity-100'
                   }`}
                 >
                   <img src={imgUrl} alt="" className="w-full h-full object-cover" />

@@ -65,7 +65,7 @@ export const RedditNotificationsDropdown: React.FC<RedditNotificationsDropdownPr
   };
 
   return (
-    <div className={`absolute top-full right-0 mt-2 w-80 sm:w-96 rounded-2xl border shadow-2xl py-2 z-50 text-xs overflow-hidden backdrop-blur-xl ${
+    <div className={`absolute top-full right-0 mt-2 w-80 sm:w-96 rounded-none border py-2 z-50 text-xs overflow-hidden font-mono ${
       isDark ? 'bg-[#181C1F] border-[#2E363E] text-gray-200' : 'bg-white border-gray-200 text-gray-800'
     }`}>
       {/* 헤더 */}
@@ -77,7 +77,7 @@ export const RedditNotificationsDropdown: React.FC<RedditNotificationsDropdownPr
         <button
           type="button"
           onClick={handleMarkAllRead}
-          className="text-[11px] font-semibold text-[#FF4500] hover:underline cursor-pointer flex items-center gap-1"
+          className="text-[11px] font-semibold text-[#FF4500] hover:underline cursor-pointer flex items-center gap-1 min-h-[44px] px-2 rounded-sm"
         >
           <Check className="w-3.5 h-3.5" />
           <span>{isKo ? '모두 읽음' : 'Mark all read'}</span>
@@ -97,7 +97,7 @@ export const RedditNotificationsDropdown: React.FC<RedditNotificationsDropdownPr
               !item.isRead ? (isDark ? 'bg-[#0E1113]/60' : 'bg-[#FF4500]/5') : ''
             } ${isDark ? 'hover:bg-[#22272B]' : 'hover:bg-gray-50'}`}
           >
-            <div className={`p-2 rounded-full flex-shrink-0 ${
+            <div className={`p-2 rounded-sm flex-shrink-0 ${
               item.type === 'reply' ? 'bg-sky-500/20 text-sky-400' :
               item.type === 'trending' ? 'bg-[#FF4500]/20 text-[#FF4500]' :
               'bg-amber-500/20 text-amber-400'

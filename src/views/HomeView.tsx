@@ -622,7 +622,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 </button>
                 <button
                   onClick={handleLogout}
-                  className="p-2.5 hover:bg-[#f8f7f7] text-[#646262] hover:text-[#201d1d] transition-colors border border-[rgba(15,0,0,0.12)] rounded-sm shrink-0 touch-target cursor-pointer"
+                  className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2.5 hover:bg-[#f8f7f7] text-[#646262] hover:text-[#201d1d] transition-colors border border-[rgba(15,0,0,0.12)] rounded-sm shrink-0 touch-target cursor-pointer"
                   aria-label="Logout"
                 >
                   <LogOut size={18} />

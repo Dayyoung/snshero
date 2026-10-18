@@ -1509,7 +1509,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     <div 
       id="mobile-card-play-viewport"
       className={cn(
-        "fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-pan-y bg-[#fdfcfc] text-[#201d1d] flex flex-col font-mono z-[100] [&_button]:min-h-11 [&_button]:min-w-11 [&_button]:focus-visible:outline-2 [&_button]:focus-visible:outline-offset-2 [&_button]:focus-visible:outline-[#201d1d]",
+        "fixed inset-0 w-full h-[100dvh] overflow-hidden select-none touch-pan-y bg-[#fdfcfc] text-[#201d1d] flex flex-col font-mono z-[100] pb-32 [&_button]:min-h-11 [&_button]:min-w-11 [&_button]:focus-visible:outline-2 [&_button]:focus-visible:outline-offset-2 [&_button]:focus-visible:outline-[#201d1d]",
         suppressMotion && "[&_*]:animate-none [&_*]:transition-none"
       )}
     >
@@ -1858,7 +1858,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                     }
                   }}
                   className={cn(
-                    "relative w-full h-full min-w-0 rounded-sm flex flex-col items-center justify-center overflow-hidden transition-all select-none",
+                    "relative w-full h-full min-h-[44px] min-w-0 rounded-sm flex flex-col items-center justify-center overflow-hidden transition-all select-none",
                     isPlayable && "border border-dashed border-[#201d1d] bg-[#fdfcfc] hover:bg-[#e5e1e1] cursor-pointer",
                     !isOccupied && !isPlayable && (tileDef ? "border border-[#201d1d]/25 bg-[#f8f7f7] text-[#201d1d]" : "border border-[#0f0000]/12 bg-[#f8f7f7] text-[#9a9898]"),
                     isOccupied && cell.owner === 'player' && "border-2 border-[#2563eb] bg-[#2563eb]",
@@ -2060,7 +2060,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                   setSelectedHandIndex(i);
                 }}
                 className={cn(
-                  "aspect-[2.8/4] min-h-[96px] sm:min-h-[115px] max-h-[135px] rounded-sm relative overflow-hidden cursor-pointer border-2 transition-colors select-none [@media(max-height:500px)_and_(min-width:480px)]:h-[clamp(44px,24dvh,80px)]",
+                  "aspect-[2.8/4] min-h-[44px] min-h-[96px] sm:min-h-[115px] max-h-[135px] rounded-sm relative overflow-hidden cursor-pointer border-2 transition-colors select-none [@media(max-height:500px)_and_(min-width:480px)]:h-[clamp(44px,24dvh,80px)]",
                   isSelected
                     ? "border-blue-600 ring-2 ring-blue-600/30"
                     : "border-blue-400/80 hover:border-blue-500 bg-blue-50/10"
@@ -2132,8 +2132,20 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
               initial={suppressMotion ? false : { opacity: 0, y: 8 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={suppressMotion ? undefined : { opacity: 0, y: 8 }}
-              className="w-full max-w-sm max-h-[calc(100dvh-24px)] overflow-y-auto touch-pan-y overscroll-contain rounded-none border border-[#0f0000]/12 bg-[#fdfcfc] p-4 sm:p-5 flex flex-col items-center text-center font-mono shrink-0"
+              className="w-full max-w-sm max-h-[calc(100dvh-24px)] overflow-y-auto touch-pan-y overscroll-contain rounded-none border border-[#0f0000]/12 bg-[#fdfcfc] p-4 sm:p-5 flex flex-col items-center text-center font-mono shrink-0 relative"
             >
+              {/* Modal Top-Layer Dismiss Control */}
+              <div className="w-full flex justify-end -mt-1 -mr-1 mb-1">
+                <button
+                  type="button"
+                  onClick={handleExitGame}
+                  className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2 text-[#646262] hover:text-[#201d1d] hover:bg-[#f1eeee] rounded-sm font-bold text-xs cursor-pointer"
+                  aria-label="Close"
+                >
+                  [x]
+                </button>
+              </div>
+
               {/* Winner Icon & Header */}
               <div className="mb-2">
                 {winner === 'player' ? (
@@ -2227,7 +2239,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                       <button
                         type="button"
                         onClick={() => setIsRewardedModalOpen(true)}
-                        className="w-full py-2 px-3 text-[11px] font-bold rounded-sm cursor-pointer flex items-center justify-center gap-1.5 bg-[#201d1d] text-[#fdfcfc]"
+                        className="w-full min-h-[44px] py-2 px-3 text-[11px] font-bold rounded-sm cursor-pointer flex items-center justify-center gap-1.5 bg-[#201d1d] text-[#fdfcfc]"
                       >
                         {isVipUser ? (
                           <>
@@ -2334,7 +2346,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                         <button
                           type="button"
                           onClick={handleImmediateShopGo}
-                          className="w-full py-2.5 bg-[#201d1d] text-[#fdfcfc] font-bold text-xs rounded-sm cursor-pointer flex items-center justify-center gap-1.5"
+                          className="w-full min-h-[44px] py-2.5 bg-[#201d1d] text-[#fdfcfc] font-bold text-xs rounded-sm cursor-pointer flex items-center justify-center gap-1.5"
                         >
                           <span>🛒</span>
                           <span>{language === 'ko' ? '지금 바로 상점에서 카드 뽑기' : 'Go to Shop Now'}</span>
@@ -2342,7 +2354,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                         <button
                           type="button"
                           onClick={handleImmediateNextRankBattle}
-                          className="w-full py-2 border border-[#0f0000]/12 font-bold text-xs rounded-sm cursor-pointer flex items-center justify-center gap-1.5 hover:bg-[#f1eeee]"
+                          className="w-full min-h-[44px] py-2 border border-[#0f0000]/12 font-bold text-xs rounded-sm cursor-pointer flex items-center justify-center gap-1.5 hover:bg-[#f1eeee]"
                         >
                           <span>⚔️</span>
                           <span>{language === 'ko' ? '상점 건너뛰고 다음 랭킹전' : 'Skip Shop & Next Battle'}</span>
@@ -2352,7 +2364,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                       <button
                         type="button"
                         onClick={handleImmediateNextRankBattle}
-                        className="w-full py-2.5 bg-[#201d1d] text-[#fdfcfc] font-bold text-xs rounded-sm cursor-pointer flex items-center justify-center gap-1.5"
+                        className="w-full min-h-[44px] py-2.5 bg-[#201d1d] text-[#fdfcfc] font-bold text-xs rounded-sm cursor-pointer flex items-center justify-center gap-1.5"
                       >
                         <span>⚔️</span>
                         <span>{language === 'ko' ? '지금 바로 랭킹플레이 재시작' : 'Restart Rank Play Now'}</span>
@@ -2361,7 +2373,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                     <button
                       type="button"
                       onClick={handleExitGame}
-                      className="w-full py-2 hover:bg-[#f1eeee] font-bold text-xs rounded-sm border border-[#0f0000]/12 cursor-pointer"
+                      className="w-full min-h-[44px] py-2 hover:bg-[#f1eeee] font-bold text-xs rounded-sm border border-[#0f0000]/12 cursor-pointer flex items-center justify-center"
                     >
                       {language === 'ko' ? '나가기' : 'Exit'}
                     </button>
@@ -2378,7 +2390,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                         handleExitGame();
                       }
                     }}
-                    className="w-full py-2.5 bg-[#201d1d] text-[#fdfcfc] font-bold text-xs rounded-sm cursor-pointer flex items-center justify-center gap-1"
+                    className="w-full min-h-[44px] py-2.5 bg-[#201d1d] text-[#fdfcfc] font-bold text-xs rounded-sm cursor-pointer flex items-center justify-center gap-1"
                   >
                     <span>🛒</span>
                     <span>{language === 'ko' ? '상점으로 이동' : 'Go to Shop'}</span>
@@ -2397,7 +2409,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                           initMatchDecks();
                         }
                       }}
-                      className="w-full py-2 font-bold text-xs rounded-sm cursor-pointer flex items-center justify-center gap-1 bg-[#201d1d] text-[#fdfcfc]"
+                      className="w-full min-h-[44px] py-2 font-bold text-xs rounded-sm cursor-pointer flex items-center justify-center gap-1 bg-[#201d1d] text-[#fdfcfc]"
                     >
                       <RefreshCw size={13} />
                       <span>{language === 'ko' ? '재대결' : 'Rematch'}</span>
@@ -2405,7 +2417,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                     <button
                       type="button"
                       onClick={handleExitGame}
-                      className="w-full py-2 hover:bg-[#f1eeee] font-bold text-xs rounded-sm border border-[#0f0000]/12 cursor-pointer"
+                      className="w-full min-h-[44px] py-2 hover:bg-[#f1eeee] font-bold text-xs rounded-sm border border-[#0f0000]/12 cursor-pointer flex items-center justify-center"
                     >
                       {language === 'ko' ? '나가기' : 'Exit'}
                     </button>
@@ -2579,7 +2591,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
               <button
                 type="button"
                 onClick={handleExitGame}
-                className="mt-4 w-full py-2 bg-[#201d1d] text-[#fdfcfc] rounded-sm font-bold text-xs cursor-pointer shrink-0"
+                className="mt-4 w-full min-h-[44px] py-2 bg-[#201d1d] text-[#fdfcfc] rounded-sm font-bold text-xs cursor-pointer shrink-0 flex items-center justify-center"
               >
                 {language === 'ko' ? '매칭 취소 및 나가기' : 'Cancel & Exit'}
               </button>
@@ -2700,7 +2712,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                   setActiveRankOpponent(nextOpp);
                   setRankingSearchCountdown(3);
                 }}
-                className="mt-4 w-full py-2.5 bg-[#201d1d] text-[#fdfcfc] font-bold text-xs cursor-pointer rounded-sm shrink-0"
+                className="mt-4 w-full min-h-[44px] py-2.5 bg-[#201d1d] text-[#fdfcfc] font-bold text-xs cursor-pointer rounded-sm shrink-0 flex items-center justify-center"
               >
                 {language === 'ko' ? '⚡ 힐링 완료! 즉시 랭킹대전 복귀' : '⚡ Return to Battle Now'}
               </button>

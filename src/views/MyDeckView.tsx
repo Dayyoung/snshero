@@ -2860,7 +2860,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                    <button
                      onClick={() => setCardDetailTab('stats')}
                      className={cn(
-                       "flex-1 py-2 text-center text-xs font-bold uppercase transition-colors rounded-sm border cursor-pointer",
+                       "flex-1 min-h-[44px] py-2 text-center text-xs font-bold uppercase transition-colors rounded-sm border cursor-pointer flex items-center justify-center",
                        cardDetailTab === 'stats' 
                          ? "border-[#201d1d] text-[#fdfcfc] bg-[#201d1d]" 
                          : "border-transparent text-[#646262] hover:bg-[#f1eeee]"
@@ -2871,7 +2871,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                    <button
                      onClick={() => setCardDetailTab('skills')}
                      className={cn(
-                       "flex-1 py-2 text-center text-xs font-bold uppercase transition-colors rounded-sm border cursor-pointer",
+                       "flex-1 min-h-[44px] py-2 text-center text-xs font-bold uppercase transition-colors rounded-sm border cursor-pointer flex items-center justify-center",
                        cardDetailTab === 'skills' 
                          ? "border-[#201d1d] text-[#fdfcfc] bg-[#201d1d]" 
                          : "border-transparent text-[#646262] hover:bg-[#f1eeee]"
@@ -2882,7 +2882,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                    <button
                      onClick={() => setCardDetailTab('lore')}
                      className={cn(
-                       "flex-1 py-2 text-center text-xs font-bold uppercase transition-colors rounded-sm border cursor-pointer",
+                       "flex-1 min-h-[44px] py-2 text-center text-xs font-bold uppercase transition-colors rounded-sm border cursor-pointer flex items-center justify-center",
                        cardDetailTab === 'lore' 
                          ? "border-[#201d1d] text-[#fdfcfc] bg-[#201d1d]" 
                          : "border-transparent text-[#646262] hover:bg-[#f1eeee]"
@@ -3257,7 +3257,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                     key={cat}
                     onClick={() => setActiveCategory(cat)}
                     className={cn(
-                      "min-h-[38px] px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-sm border transition-colors shrink-0 cursor-pointer",
+                      "min-h-[44px] px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-sm border transition-colors shrink-0 cursor-pointer flex items-center justify-center",
                       activeCategory === cat ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]" : "bg-[#fdfcfc] text-[#646262] border-[#0f0000]/12 hover:bg-[#f1eeee]"
                     )}
                   >
@@ -3486,7 +3486,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                       setIsVisualizerOpen(true);
                       playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                     }}
-                    className="min-h-[36px] px-2.5 py-1 rounded-sm border border-[#0f0000]/12 bg-[#fdfcfc] text-[#201d1d] text-[10px] sm:text-[11px] font-bold hover:bg-[#f1eeee] transition-colors flex items-center gap-1 cursor-pointer"
+                    className="min-h-[44px] px-2.5 py-1 rounded-sm border border-[#0f0000]/12 bg-[#fdfcfc] text-[#201d1d] text-[10px] sm:text-[11px] font-bold hover:bg-[#f1eeee] transition-colors flex items-center gap-1 cursor-pointer"
                   >
                     <Sparkles size={12} />
                     <span>{language === 'ko' ? '하모니 차트' : 'Harmony Chart'}</span>
@@ -3494,7 +3494,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                   <button
                     type="button"
                     onClick={() => setIsSynergyModalOpen(false)}
-                    className="p-1.5 text-[#646262] hover:text-[#201d1d] dark:hover:text-white transition-colors cursor-pointer rounded-sm hover:bg-[#f1eeee] dark:hover:bg-white/10 z-[999999] min-w-[36px] min-h-[36px] flex items-center justify-center"
+                    className="p-1.5 text-[#646262] hover:text-[#201d1d] dark:hover:text-white transition-colors cursor-pointer rounded-sm hover:bg-[#f1eeee] dark:hover:bg-white/10 z-[999999] min-w-[44px] min-h-[44px] flex items-center justify-center"
                     aria-label="Close"
                   >
                     <X size={18} />
@@ -3537,7 +3537,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsSynergyModalOpen(false)}
-                  className="min-h-[36px] px-3 py-1.5 bg-[#201d1d] text-[#fdfcfc] font-bold rounded-sm hover:bg-[#302c2c] transition-colors text-xs cursor-pointer shrink-0"
+                  className="min-h-[44px] px-3 py-1.5 bg-[#201d1d] text-[#fdfcfc] font-bold rounded-sm hover:bg-[#302c2c] transition-colors text-xs cursor-pointer shrink-0 flex items-center justify-center"
                 >
                   {language === 'ko' ? '닫기' : 'Close'}
                 </button>

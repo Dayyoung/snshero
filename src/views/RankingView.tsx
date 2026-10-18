@@ -1004,18 +1004,14 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
   };
 
   return (
-    <div id="leaderboard" className={cn(
-      "min-h-screen p-4 pb-[220px]",
-      (theme === 'dark' || theme === 'metal')
-        ? "text-slate-100 bg-[#0f172a] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black"
-        : "app-bg text-slate-800 font-sans"
-    )}>
+    <div id="leaderboard" className="min-h-screen p-4 pb-32 pb-[220px] bg-[#fdfcfc] text-[#201d1d] font-mono">
       <div className="max-w-4xl mx-auto w-full px-4">
         <PageHeader title={t('ranking', language)}
           rightAction={
             <button
+              type="button"
               onClick={() => { setShowHelp(true); setHelpSlide(0); playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3'); }}
-              className="inline-flex min-h-9 min-w-9 items-center justify-center rounded-full border border-slate-300 bg-white/80 text-slate-600 transition-all hover:border-slate-400 hover:bg-white hover:text-slate-800 active:scale-95"
+              className="min-h-[44px] min-w-[44px] rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-[#646262] hover:text-[#201d1d] hover:bg-[#f8f7f7] flex items-center justify-center transition-colors cursor-pointer"
               title="Help"
               aria-label="Help"
             >
@@ -1029,43 +1025,39 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
         description=""
         actionButton={
           <button
+            type="button"
             onClick={() => {
               playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
               loadHistory();
               setShowHistoryModal(true);
             }}
-            className={cn(
-              "min-h-11 w-full sm:w-auto px-3.5 py-2.5 rounded-xl active:scale-95 transition-all cursor-pointer shadow-sm flex items-center justify-center gap-1.5 border touch-target",
-              (theme === 'dark' || theme === 'metal')
-                ? "bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-200 border-indigo-400/40"
-                : "bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border-indigo-200 font-extrabold"
-            )}
+            className="min-h-[44px] w-full sm:w-auto px-3.5 py-2 rounded-sm border border-[#201d1d] bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] transition-colors cursor-pointer flex items-center justify-center gap-1.5 text-xs font-bold"
             title="Battle Records"
           >
-            <List size={15} className="shrink-0 text-indigo-500" />
-            <span className="min-w-0 truncate text-xs font-black uppercase">{t('battle_record', language)}</span>
+            <List size={15} className="shrink-0" />
+            <span className="min-w-0 truncate text-xs font-bold uppercase">[{t('battle_record', language)}]</span>
           </button>
         }
       />
 
       {/* Season 1 Leaderboard Countdown & Rank Rewards Banner (Item 28) */}
-      <div className="mb-4 p-4 rounded-2xl bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-amber-500/10 border border-amber-400/30 backdrop-blur-xs flex flex-wrap items-center justify-between gap-3 shadow-md">
+      <div className="mb-4 p-4 rounded-none bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-amber-500 text-slate-950 flex items-center justify-center shrink-0 shadow-sm">
-            <Clock size={22} className="animate-pulse" />
+          <div className="w-10 h-10 rounded-sm bg-[#201d1d] text-[#fdfcfc] flex items-center justify-center shrink-0">
+            <Clock size={20} />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-black uppercase text-amber-500 tracking-wider">
-                {language === 'ko' ? '시즌 1 라이브 랭킹' : 'SEASON 1 LIVE LEADERBOARD'}
+              <span className="text-xs font-bold uppercase text-[#201d1d] tracking-wider">
+                [{language === 'ko' ? '시즌 1 라이브 랭킹' : 'SEASON 1 LIVE LEADERBOARD'}]
               </span>
-              <span className="text-[10px] font-black px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-600 border border-amber-400/30">
+              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-sm bg-[#201d1d] text-[#fdfcfc]">
                 OFFICIAL
               </span>
             </div>
-            <p className="text-sm font-black text-slate-900 dark:text-amber-100 flex items-center gap-1.5 mt-0.5">
+            <p className="text-xs font-bold text-[#201d1d] flex items-center gap-1.5 mt-0.5">
               <span>{language === 'ko' ? '시즌 종료까지:' : 'Season Ends In:'}</span>
-              <span className="font-mono text-amber-600 dark:text-amber-300 tracking-tight">
+              <span className="font-mono text-[#201d1d] tracking-tight">
                 {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m {timeLeft.seconds}s
               </span>
             </p>
@@ -1073,37 +1065,39 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
         </div>
 
         <button
+          type="button"
           onClick={() => {
             playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
             setShowRankRewardsModal(true);
           }}
-          className="px-4 py-2 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-black rounded-xl text-xs shadow-md shadow-amber-500/20 active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer shrink-0"
+          className="min-h-[44px] px-3.5 py-2 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] font-bold rounded-sm text-xs border border-[#201d1d] transition-colors flex items-center gap-1.5 cursor-pointer shrink-0"
         >
           <Crown size={15} />
-          <span>{language === 'ko' ? '시즌 보상 안내' : 'Rank Rewards'}</span>
+          <span>[{language === 'ko' ? '시즌 보상 안내' : 'Rank Rewards'}]</span>
         </button>
       </div>
-
 
       {/* Matching Controls: Hierarchical Modern Action Grid */}
       <div className="mb-6 font-mono">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
           {/* 실시간 PvP 대전 — 메인 CTA */}
           <button
+            type="button"
             onClick={handleRealTimePvp}
-            className="sm:col-span-1 bg-gradient-to-r from-red-600 to-rose-600 text-white font-bold py-3.5 px-3 rounded-none border border-red-500/40 shadow-xs active:scale-[0.98] transition-all flex sm:flex-col items-center justify-center gap-1.5 cursor-pointer hover:from-red-500 hover:to-rose-500 text-xs touch-target"
+            className="sm:col-span-1 bg-[#201d1d] text-[#fdfcfc] font-bold min-h-[44px] py-2 px-3 rounded-sm border border-[#201d1d] hover:bg-[#302c2c] transition-colors flex sm:flex-col items-center justify-center gap-1 cursor-pointer text-xs"
           >
             <div className="flex items-center gap-1.5">
               <Zap size={16} className="shrink-0" />
-              <span className="font-extrabold uppercase tracking-wider">{t('pvp_matchmaking_title', language)}</span>
+              <span className="font-bold uppercase tracking-wider">{t('pvp_matchmaking_title', language)}</span>
             </div>
             <span className="text-[10px] opacity-80 hidden sm:inline">[REALTIME PVP]</span>
           </button>
 
           {/* 최적 라이벌 대전 */}
           <button
+            type="button"
             onClick={handleOptimalBattle}
-            className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 px-3 rounded-none border border-indigo-500/30 shadow-xs active:scale-[0.98] transition-all flex sm:flex-col items-center justify-center gap-1.5 cursor-pointer text-xs touch-target"
+            className="bg-[#fdfcfc] hover:bg-[#f8f7f7] text-[#201d1d] font-bold min-h-[44px] py-2 px-3 rounded-sm border border-[rgba(15,0,0,0.12)] transition-colors flex sm:flex-col items-center justify-center gap-1 cursor-pointer text-xs"
           >
             <div className="flex items-center gap-1.5">
               <Swords size={15} className="shrink-0" />
@@ -1114,8 +1108,9 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
 
           {/* 근거리 대전 */}
           <button
+            type="button"
             onClick={handleNearbyBattle}
-            className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-3 rounded-none border border-emerald-500/30 shadow-xs active:scale-[0.98] transition-all flex sm:flex-col items-center justify-center gap-1.5 cursor-pointer text-xs touch-target"
+            className="bg-[#fdfcfc] hover:bg-[#f8f7f7] text-[#201d1d] font-bold min-h-[44px] py-2 px-3 rounded-sm border border-[rgba(15,0,0,0.12)] transition-colors flex sm:flex-col items-center justify-center gap-1 cursor-pointer text-xs"
           >
             <div className="flex items-center gap-1.5">
               <Wifi size={15} className="shrink-0" />
@@ -1128,37 +1123,22 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
 
       {/* 내 순위 요약 헤더 */}
       {user && user.uid !== 'guest-id' && (
-        <div className="grid grid-cols-3 gap-3 mb-6 font-sans">
-          <div className={cn(
-            "p-4 rounded-2xl shadow-md text-center hover:border-indigo-500/20 transition-all border",
-            (theme === 'dark' || theme === 'metal') 
-              ? "bg-slate-800 border-white/10" 
-              : "bg-white border-slate-200/80"
-          )}>
-            <div className="text-[10px] font-bold text-slate-300 uppercase tracking-wider">{t('global', language)}</div>
-            <div className={cn("text-2xl font-extrabold mt-1", (theme === 'dark' || theme === 'metal') ? "text-white" : "text-slate-800")}>
+        <div className="grid grid-cols-3 gap-2.5 mb-5 font-mono">
+          <div className="p-3 rounded-none border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-center">
+            <div className="text-[10px] font-bold text-[#646262] uppercase tracking-wider">{t('global', language)}</div>
+            <div className="text-xl font-bold mt-1 text-[#201d1d]">
               {myGlobalRank ? `#${myGlobalRank}` : t('out_of_50', language)}
             </div>
           </div>
-          <div className={cn(
-            "p-4 rounded-2xl shadow-md text-center hover:border-indigo-500/20 transition-all border",
-            (theme === 'dark' || theme === 'metal') 
-              ? "bg-slate-800 border-white/10" 
-              : "bg-white border-slate-200/80"
-          )}>
-            <div className="text-[10px] font-bold text-slate-300 uppercase tracking-wider">{t('weekly', language)}</div>
-            <div className="text-2xl font-extrabold text-blue-400 mt-1 drop-shadow-[0_0_8px_rgba(96,165,250,0.5)]">
+          <div className="p-3 rounded-none border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-center">
+            <div className="text-[10px] font-bold text-[#646262] uppercase tracking-wider">{t('weekly', language)}</div>
+            <div className="text-xl font-bold text-[#201d1d] mt-1">
               {myWeeklyRank ? `#${myWeeklyRank}` : t('out_of_50', language)}
             </div>
           </div>
-          <div className={cn(
-            "p-4 rounded-2xl shadow-md text-center hover:border-indigo-500/20 transition-all border",
-            (theme === 'dark' || theme === 'metal') 
-              ? "bg-slate-800 border-white/10" 
-              : "bg-white border-slate-200/80"
-          )}>
-            <div className="text-[10px] font-bold text-slate-300 uppercase tracking-wider">{t('monthly', language)}</div>
-            <div className="text-2xl font-extrabold text-purple-400 mt-1 drop-shadow-[0_0_8px_rgba(192,132,252,0.5)]">
+          <div className="p-3 rounded-none border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-center">
+            <div className="text-[10px] font-bold text-[#646262] uppercase tracking-wider">{t('monthly', language)}</div>
+            <div className="text-xl font-bold text-[#201d1d] mt-1">
               {myMonthlyRank ? `#${myMonthlyRank}` : t('out_of_50', language)}
             </div>
           </div>
@@ -1166,19 +1146,17 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
       )}
 
       {/* Tabs for Ranking Type */}
-      <div className={cn(
-        "flex gap-1 mb-4 p-1 border rounded-xl font-sans",
-        (theme === 'dark' || theme === 'metal') ? "bg-slate-950 border-white/5" : "bg-slate-100 border-slate-200"
-      )}>
+      <div className="flex gap-1.5 mb-4 p-1 border border-[rgba(15,0,0,0.12)] rounded-none bg-[#f8f7f7] font-mono">
         {(['global', 'weekly', 'monthly'] as RankingType[]).map((type) => (
           <button
             key={type}
+            type="button"
             onClick={() => handleTypeChange(type)}
             className={cn(
-              "flex-1 min-h-11 px-2 py-2 text-xs sm:text-sm font-bold rounded-lg transition-all cursor-pointer border touch-target",
+              "flex-1 min-h-[44px] px-2 py-2 text-xs sm:text-sm font-bold rounded-sm transition-colors cursor-pointer border",
               rankingType === type 
-                ? ((theme === 'dark' || theme === 'metal') ? "bg-slate-800 text-white border-white/10 shadow-md" : "bg-white text-slate-850 border-slate-250/80 shadow-xs")
-                : ((theme === 'dark' || theme === 'metal') ? "text-slate-400 hover:bg-white/5 border-transparent" : "text-slate-500 hover:bg-white/50 border-transparent")
+                ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
+                : "bg-transparent text-[#646262] border-transparent hover:text-[#201d1d]"
             )}
           >
             {type === 'global' ? t('global', language) : (type === 'weekly' ? t('weekly', language) : t('monthly', language))}
@@ -1186,51 +1164,45 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
         ))}
       </div>
 
-      <div className={cn(
-        "ollama-panel mb-6 font-sans border",
-        (theme === 'dark' || theme === 'metal') ? "bg-slate-900 text-white border-none shadow-md" : "bg-white text-slate-800 border-slate-150 shadow-xs"
-      )}>
+      <div className="mb-5 font-mono border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-4 rounded-none">
         <div className="flex items-center gap-2 mb-3">
-          <Users size={16} className="text-blue-400" />
-          <h2 className={cn("text-xs sm:text-sm font-bold tracking-normal", (theme === 'dark' || theme === 'metal') ? "text-white" : "text-slate-800")}>{t('sort_criteria', language)}</h2>
+          <Users size={16} className="text-[#201d1d]" />
+          <h2 className="text-xs sm:text-sm font-bold tracking-normal text-[#201d1d]">[{t('sort_criteria', language)}]</h2>
         </div>
         <div className="flex gap-2">
           <button 
+            type="button"
             onClick={() => handleSortChange('winRate')}
             className={cn(
-              "flex-1 min-h-11 px-2 py-2.5 text-xs sm:text-sm font-bold rounded-lg border transition-all cursor-pointer touch-target",
+              "flex-1 min-h-[44px] px-2 py-2.5 text-xs sm:text-sm font-bold rounded-sm border transition-colors cursor-pointer",
               sortBy === 'winRate' 
-                ? "bg-blue-600 border-blue-500 text-white shadow-sm" 
-                : ((theme === 'dark' || theme === 'metal') ? "bg-slate-950 border-white/5 text-slate-400 hover:opacity-75" : "bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100")
+                ? "bg-[#201d1d] border-[#201d1d] text-[#fdfcfc]" 
+                : "bg-[#f8f7f7] border-[rgba(15,0,0,0.12)] text-[#646262] hover:text-[#201d1d]"
             )}
           >
             {t('win_rate', language)}
           </button>
           <button 
+            type="button"
             onClick={() => handleSortChange('wins')}
             className={cn(
-              "flex-1 min-h-11 px-2 py-2.5 text-xs sm:text-sm font-bold rounded-xl border transition-all cursor-pointer touch-target",
+              "flex-1 min-h-[44px] px-2 py-2.5 text-xs sm:text-sm font-bold rounded-sm border transition-colors cursor-pointer",
               sortBy === 'wins' 
-                ? "bg-blue-600 border-blue-400 text-white shadow-[0_0_15px_rgba(59,130,246,0.4)]" 
-                : ((theme === 'dark' || theme === 'metal') ? "bg-slate-950 border-white/5 text-slate-400 hover:opacity-75" : "bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100")
+                ? "bg-[#201d1d] border-[#201d1d] text-[#fdfcfc]" 
+                : "bg-[#f8f7f7] border-[rgba(15,0,0,0.12)] text-[#646262] hover:text-[#201d1d]"
             )}
           >
             {t('most_wins', language)}
           </button>
         </div>
-        <p className="text-[10px] mt-3 opacity-40 italic">
+        <p className="text-[10px] mt-2.5 text-[#646262]">
           {t('guest_excluded', language)}
         </p>
       </div>
 
       {/* Selected Language Filter State Bar */}
       {selectedLangFilter && (
-        <div className={cn(
-          "mb-4 flex items-center justify-between p-3 rounded-lg shadow-sm text-xs font-semibold font-sans border",
-          (theme === 'dark' || theme === 'metal') 
-            ? "bg-amber-950/20 border-amber-500/30 text-amber-200" 
-            : "bg-amber-50 border-amber-200 text-amber-800"
-        )}>
+        <div className="mb-4 flex items-center justify-between p-3 rounded-none text-xs font-mono border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] text-[#201d1d]">
           <div className="flex items-center gap-2">
             <span className="text-lg">{FLAG_MAP[selectedLangFilter] || '🇺🇸'}</span>
             <span>
@@ -1238,16 +1210,12 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
             </span>
           </div>
           <button 
+            type="button"
             onClick={() => {
               playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
               setSelectedLangFilter(null);
             }}
-            className={cn(
-              "p-1.5 rounded-lg active:scale-95 transition-all shrink-0 flex items-center justify-center cursor-pointer border",
-              (theme === 'dark' || theme === 'metal')
-                ? "border-amber-500/20 bg-amber-900/60 hover:bg-amber-800 text-amber-100"
-                : "border-amber-200 bg-white hover:bg-slate-50 text-amber-800"
-            )}
+            className="min-h-[44px] min-w-[44px] rounded-sm flex items-center justify-center border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-[#201d1d] hover:bg-[#eae8e8] transition-colors cursor-pointer"
             title={t('clear_filter', language)}
           >
             <X size={14} />
@@ -1256,12 +1224,12 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
       )}
 
       {loading ? (
-        <div className="flex flex-col items-center justify-center py-20 gap-4">
-          <div className="w-12 h-12 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin shadow-[0_0_15px_rgba(99,102,241,0.5)]" />
-          <p className="text-sm font-bold tracking-normal animate-pulse text-indigo-400">{t('ranking_accessing', language)}</p>
+        <div className="flex flex-col items-center justify-center py-20 gap-4 font-mono">
+          <div className="w-12 h-12 border-2 border-[#201d1d] border-t-transparent rounded-none animate-spin" />
+          <p className="text-sm font-bold tracking-normal text-[#201d1d]">{t('ranking_accessing', language)}</p>
         </div>
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-2 font-mono">
           {users.map((rankUser, idx) => {
             const isMe = user && user.uid === rankUser.id;
             const profileEmoticon = rankUser.activeEmoticonKey ? getProfileEmoticonByKey(rankUser.activeEmoticonKey) : null;
@@ -1285,26 +1253,26 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
                   });
                 }}
                 className={cn(
-                  "flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 transition-all p-3.5 rounded-lg border font-sans cursor-pointer active:scale-[0.99]",
+                  "flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 transition-all p-3.5 rounded-none border font-mono cursor-pointer active:scale-[0.99]",
                   isMe 
                     ? (theme === 'dark' || theme === 'metal'
-                        ? "bg-blue-950/70 border-blue-500/80 ring-1 ring-blue-400/30 text-white" 
-                        : "bg-indigo-50 border-blue-300 shadow-sm text-slate-800")
+                        ? "bg-[#201d1d] border-[#fdfcfc] text-white" 
+                        : "bg-[#f8f7f7] border-[#201d1d] text-[#201d1d]")
                     : (theme === 'dark' || theme === 'metal'
-                        ? "bg-slate-900/60 border-slate-800/80 text-slate-200 hover:border-slate-700/80"
-                        : "bg-white border-slate-150 text-slate-700 hover:border-slate-300 hover:shadow-xs"),
-                  idx === 0 && !isMe ? "border-l-4 border-l-yellow-400" :
-                  idx === 1 && !isMe ? "border-l-4 border-l-slate-400" :
-                  idx === 2 && !isMe ? "border-l-4 border-l-orange-550" : ""
+                        ? "bg-[#181616] border-white/15 text-slate-200 hover:border-white/30"
+                        : "bg-[#fdfcfc] border-[rgba(15,0,0,0.12)] text-[#201d1d] hover:border-[#201d1d]"),
+                  idx === 0 && !isMe ? "border-l-4 border-l-yellow-600" :
+                  idx === 1 && !isMe ? "border-l-4 border-l-stone-400" :
+                  idx === 2 && !isMe ? "border-l-4 border-l-amber-700" : ""
                 )}
               >
-                <div className="flex items-center gap-3 min-w-0 flex-1 font-sans">
+                <div className="flex items-center gap-3 min-w-0 flex-1 font-mono">
                   <div className={cn(
-                    "w-10 h-10 flex items-center justify-center shrink-0 rounded-lg border font-bold shadow-xs",
-                    idx === 0 ? "bg-amber-300 border-amber-200 text-slate-900" :
-                    idx === 1 ? "bg-slate-200 border-slate-300 text-slate-800" :
-                    idx === 2 ? "bg-orange-500 border-orange-400 text-white" :
-                    (theme === 'dark' || theme === 'metal' ? "border-slate-800 bg-slate-950 text-slate-400" : "border-slate-200 bg-slate-100 text-slate-500")
+                    "w-10 h-10 flex items-center justify-center shrink-0 rounded-none border font-bold",
+                    idx === 0 ? "bg-amber-300 border-amber-400 text-stone-900" :
+                    idx === 1 ? "bg-stone-200 border-stone-300 text-stone-800" :
+                    idx === 2 ? "bg-orange-500 border-orange-600 text-white" :
+                    (theme === 'dark' || theme === 'metal' ? "border-white/15 bg-[#201d1d] text-stone-400" : "border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] text-[#646262]")
                   )}>
                      <span className="text-sm">
                        #{idx + 1}
@@ -1325,49 +1293,49 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
                         {FLAG_MAP[rankUser.language || 'en'] || '🇺🇸'}
                       </span>
                       <div className="min-w-0 flex-1">
-                        <div className={cn("text-sm font-bold truncate tracking-tight flex items-center gap-1.5", theme === 'dark' || theme === 'metal' ? "text-white" : "text-slate-800")}>
+                        <div className={cn("text-sm font-bold truncate tracking-tight flex items-center gap-1.5", theme === 'dark' || theme === 'metal' ? "text-white" : "text-[#201d1d]")}>
                           <span className="truncate">{rankUser.name}</span>
                           {profileEmoticon ? <span className="text-sm leading-none shrink-0">{profileEmoticon.symbol}</span> : null}
                           {profileBadge ? (
-                            <span className="rounded-full border border-amber-100 bg-amber-50 px-1.5 py-0.5 text-[8px] font-bold text-amber-700 shrink-0">
+                            <span className="rounded-sm border border-amber-300 bg-amber-50 px-1.5 py-0.5 text-[8px] font-bold text-amber-800 shrink-0">
                               {profileBadge.symbol}
                             </span>
                           ) : null}
                           {isMe && (
-                            <span className="text-[9px] font-black uppercase tracking-wider bg-blue-600 text-white px-1.5 py-0.5 rounded-full animate-pulse shrink-0">
+                            <span className="text-[9px] font-black uppercase tracking-wider bg-[#201d1d] text-[#fdfcfc] px-1.5 py-0.5 rounded-sm shrink-0 border border-[#201d1d]">
                               {t('you', language)}
                             </span>
                           )}
                         </div>
                         {profileTitle ? (
-                          <p className={cn("mt-1 text-[10px] font-semibold truncate", theme === 'dark' || theme === 'metal' ? "text-slate-400" : "text-slate-500")}>
+                          <p className={cn("mt-1 text-[10px] font-semibold truncate", theme === 'dark' || theme === 'metal' ? "text-stone-400" : "text-[#646262]")}>
                             {t(profileTitle.labelKey, language)}
                           </p>
                         ) : null}
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 mt-1.5 flex-wrap font-sans">
-                      <span className={cn("text-[9px] font-bold px-1.5 py-0.5 rounded-md shrink-0 border", theme === 'dark' || theme === 'metal' ? "bg-slate-950 text-slate-400 border-white/5" : "bg-slate-100 text-slate-500 border-slate-200")}>CP</span>
-                      <span className="text-xs font-bold text-blue-400 shrink-0">{rankUser.totalPower.toLocaleString()}</span>
-                      <span className={cn("text-[9px] font-bold px-1.5 py-0.5 rounded-md ml-1 shrink-0 border", theme === 'dark' || theme === 'metal' ? "bg-slate-950 text-slate-400 border-white/5" : "bg-slate-100 text-slate-500 border-slate-200")}>SNS</span>
-                      <span className="text-xs font-bold text-amber-400 flex items-center gap-0.5 shrink-0">
+                    <div className="flex items-center gap-2 mt-1.5 flex-wrap font-mono">
+                      <span className={cn("text-[9px] font-bold px-1.5 py-0.5 rounded-sm shrink-0 border", theme === 'dark' || theme === 'metal' ? "bg-black text-stone-300 border-white/10" : "bg-[#f8f7f7] text-[#646262] border-[rgba(15,0,0,0.12)]")}>CP</span>
+                      <span className="text-xs font-bold text-blue-600 dark:text-blue-400 shrink-0">{rankUser.totalPower.toLocaleString()}</span>
+                      <span className={cn("text-[9px] font-bold px-1.5 py-0.5 rounded-sm ml-1 shrink-0 border", theme === 'dark' || theme === 'metal' ? "bg-black text-stone-300 border-white/10" : "bg-[#f8f7f7] text-[#646262] border-[rgba(15,0,0,0.12)]")}>SNS</span>
+                      <span className="text-xs font-bold text-amber-600 dark:text-amber-400 flex items-center gap-0.5 shrink-0">
                         🪙 {rankUser.sns !== undefined ? rankUser.sns.toLocaleString() : '0'}
                       </span>
                     </div>
                   </div>
                 </div>
  
-                <div className={cn("flex items-center justify-between sm:justify-end gap-3 border-t sm:border-t-0 pt-3 sm:pt-0 shrink-0", theme === 'dark' || theme === 'metal' ? "border-slate-800" : "border-slate-150")}>
-                   <div className="text-left sm:text-right font-sans">
+                <div className={cn("flex items-center justify-between sm:justify-end gap-3 border-t sm:border-t-0 pt-3 sm:pt-0 shrink-0", theme === 'dark' || theme === 'metal' ? "border-white/10" : "border-[rgba(15,0,0,0.12)]")}>
+                   <div className="text-left sm:text-right font-mono">
                      <div className="flex sm:flex-col items-center sm:items-end gap-2 sm:gap-0 flex-wrap">
                         <div className="flex items-center gap-1">
-                           <span className="text-[10px] font-black opacity-45 text-slate-400">{t('win_rate', language)}</span>
-                           <span className={cn("text-xs font-black", theme === 'dark' || theme === 'metal' ? "text-slate-100" : "text-slate-800")}>{rankUser.winRate}%</span>
+                           <span className="text-[10px] font-black opacity-45 text-stone-400">{t('win_rate', language)}</span>
+                           <span className={cn("text-xs font-black", theme === 'dark' || theme === 'metal' ? "text-stone-100" : "text-[#201d1d]")}>{rankUser.winRate}%</span>
                         </div>
                         <div className="flex items-center gap-1 sm:gap-2 sm:mt-0.5">
-                           <span className="text-[10px] font-bold text-green-400">{rankUser.wins}W</span>
-                           <span className="text-[10px] font-bold text-rose-400">{rankUser.losses}L</span>
-                           <span className="text-[10px] font-bold text-slate-400">{rankUser.draws}D</span>
+                           <span className="text-[10px] font-bold text-emerald-600">{rankUser.wins}W</span>
+                           <span className="text-[10px] font-bold text-rose-600">{rankUser.losses}L</span>
+                           <span className="text-[10px] font-bold text-stone-500">{rankUser.draws}D</span>
                         </div>
                      </div>
                    </div>
@@ -1391,7 +1359,7 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
                            draws: rankUser.draws
                          });
                        }}
-                       className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold uppercase rounded-lg shadow-sm active:scale-95 transition-all shrink-0 cursor-pointer border border-rose-500/20"
+                       className="min-h-[44px] px-4 py-2 bg-rose-700 hover:bg-rose-800 text-white text-xs font-bold uppercase rounded-sm active:scale-95 transition-all shrink-0 cursor-pointer border border-rose-900"
                      >
                        {t('attack', language)}
                      </button>
@@ -1402,13 +1370,13 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
           })}
 
           {users.length === 0 && (
-            <div className="text-center py-20 bg-slate-900/60 rounded-3xl border border-dashed border-slate-800 mx-4 font-sans text-slate-300">
+            <div className="text-center py-20 bg-[#f8f7f7] rounded-none border border-dashed border-[rgba(15,0,0,0.2)] mx-4 font-mono text-[#201d1d]">
               <div className="mb-4 flex flex-col items-center">
-                <Users size={40} className="text-slate-600 mb-2" />
-                <p className="text-sm font-bold uppercase opacity-45 tracking-widest text-slate-400">{t('insufficient_data', language)}</p>
+                <Users size={40} className="text-[#646262] mb-2" />
+                <p className="text-sm font-bold uppercase opacity-45 tracking-widest text-[#646262]">{t('insufficient_data', language)}</p>
               </div>
               <div className="space-y-2 px-8">
-                <p className="text-[11px] font-semibold text-slate-500 leading-relaxed">
+                <p className="text-[11px] font-semibold text-[#646262] leading-relaxed">
                   {language === 'ko' 
                     ? '데이터베이스에 등록된 헌터가 없습니다. 에뮬레이터를 재시작했거나 아직 동기화된 데이터가 없을 수 있습니다.' 
                     : 'No hunters found in database. The emulator might have reset or no data has been synced yet.'}
@@ -1419,7 +1387,7 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
                       playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
                       window.location.reload(); 
                     }}
-                    className="bg-slate-900 hover:bg-slate-800 text-white px-6 py-2.5 text-xs font-bold uppercase rounded-lg shadow-sm active:scale-95 transition-all cursor-pointer"
+                    className="min-h-[44px] bg-[#201d1d] hover:bg-stone-800 text-[#fdfcfc] px-6 py-2.5 text-xs font-bold uppercase rounded-sm active:scale-95 transition-all cursor-pointer border border-[#201d1d]"
                   >
                     {language === 'ko' ? '데이터 다시 불러오기' : 'RELOAD DATABANK'}
                   </button>
@@ -1438,39 +1406,39 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/85 backdrop-blur-sm z-[10000] flex items-center justify-center p-4"
+            className="fixed inset-0 bg-[#131010]/85 z-[10000] flex items-center justify-center p-4 font-mono"
           >
             <motion.div
-              initial={{ scale: 0.9, y: 20 }}
+              initial={{ scale: 0.98, y: 10 }}
               animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              className="bg-slate-950 border border-slate-800 w-full max-w-md rounded-3xl overflow-hidden shadow-2xl relative z-10 font-sans flex flex-col max-h-[80vh] text-white"
+              exit={{ scale: 0.98, y: 10 }}
+              className="bg-[#fdfcfc] border border-[#201d1d] w-full max-w-md rounded-none overflow-hidden relative z-10 font-mono flex flex-col max-h-[80vh] text-[#201d1d]"
             >
               {/* Modal Header */}
-              <div className="bg-slate-900 text-white p-4.5 flex items-center justify-between border-b border-slate-800 shrink-0">
+              <div className="bg-[#201d1d] text-[#fdfcfc] p-4 flex items-center justify-between border-b border-[#201d1d] shrink-0 font-mono">
                 <div className="flex items-center gap-2">
-                  <List size={18} className="text-yellow-400" />
+                  <List size={18} className="text-[#fdfcfc]" />
                   <span className="font-bold uppercase tracking-wider text-sm">
                     {t('battle_record', language)} (RECENT 50)
                   </span>
                 </div>
                 <button 
                   onClick={() => setShowHistoryModal(false)}
-                  className="text-white hover:text-red-400 transition-colors cursor-pointer"
+                  className="min-h-[44px] min-w-[44px] flex items-center justify-center text-[#fdfcfc] hover:bg-stone-800 transition-colors cursor-pointer rounded-sm"
                 >
                   <X size={20} />
                 </button>
               </div>
 
               {/* Records List Body */}
-              <div className="p-4 overflow-y-auto flex-1 space-y-3">
-                {/* Push Alert Opt-In Button moved here */}
+              <div className="p-4 overflow-y-auto flex-1 space-y-3 font-mono">
+                {/* Push Alert Opt-In Button */}
                 <div className="flex justify-center mb-3">
                   <button
                     onClick={handlePushOptIn}
-                    className="w-full flex items-center justify-center gap-1.5 px-3 py-2.5 bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-900 font-bold text-xs uppercase rounded-xl shadow-md hover:from-amber-500 hover:to-yellow-600 active:scale-95 transition-all cursor-pointer"
+                    className="min-h-[44px] w-full flex items-center justify-center gap-1.5 px-3 py-2.5 bg-[#201d1d] text-[#fdfcfc] font-bold text-xs uppercase rounded-sm border border-[#201d1d] active:scale-95 transition-all cursor-pointer"
                   >
-                    <Bell size={14} className="animate-bounce" />
+                    <Bell size={14} />
                     <span>{t('push_alert_opt_in', language)}</span>
                   </button>
                 </div>
@@ -1489,32 +1457,32 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
                         }
                       }}
                       className={cn(
-                        "p-3.5 rounded-2xl border flex items-center justify-between shadow-xs cursor-pointer hover:shadow-sm transition-all",
-                        isWin ? "bg-emerald-950/20 border-emerald-800/40" : isDraw ? "bg-slate-900/60 border-slate-800/40" : "bg-rose-950/20 border-rose-800/40"
+                        "p-3.5 rounded-none border flex items-center justify-between cursor-pointer transition-all font-mono",
+                        isWin ? "bg-emerald-50 border-emerald-300 hover:border-emerald-500" : isDraw ? "bg-stone-50 border-stone-300 hover:border-stone-500" : "bg-rose-50 border-rose-300 hover:border-rose-500"
                       )}
                     >
-                      <div className="min-w-0 flex-1 font-sans">
+                      <div className="min-w-0 flex-1 font-mono">
                         <div className="flex items-center gap-2">
                           <span className={cn(
-                            "text-[9px] font-bold uppercase px-2 py-0.5 rounded-md shadow-xs",
-                            isWin ? "bg-emerald-600 text-white" : isDraw ? "bg-slate-700 text-slate-300" : "bg-rose-605 text-white"
+                            "text-[9px] font-bold uppercase px-2 py-0.5 rounded-sm border",
+                            isWin ? "bg-emerald-800 text-white border-emerald-900" : isDraw ? "bg-stone-700 text-white border-stone-800" : "bg-rose-800 text-white border-rose-900"
                           )}>
                             {isWin ? 'WIN' : isDraw ? 'DRAW' : 'LOSS'}
                           </span>
-                          <span className="font-black text-xs text-slate-200 truncate">
+                          <span className="font-bold text-xs text-[#201d1d] truncate">
                             VS {item.player2Id === 'SYSTEM_BOT' ? 'AI ROBOT' : item.player2Id}
                           </span>
                         </div>
-                        <div className="text-[10px] text-slate-400 font-bold mt-1">
+                        <div className="text-[10px] text-[#646262] font-bold mt-1">
                           {new Date(item.timestamp).toLocaleString()}
                         </div>
                       </div>
                       
-                      <div className="text-right shrink-0 font-sans">
-                        <div className="font-black text-xs text-slate-100">
+                      <div className="text-right shrink-0 font-mono">
+                        <div className="font-bold text-xs text-[#201d1d]">
                           SCORE: {item.score || 'N/A'}
                         </div>
-                        <div className="text-[10px] font-black text-yellow-400 mt-0.5">
+                        <div className="text-[10px] font-bold text-amber-800 mt-0.5">
                           🪙 {item.rewardSns >= 0 ? `+${item.rewardSns}` : item.rewardSns} SNS
                         </div>
                       </div>
@@ -1523,7 +1491,7 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
                 })}
 
                 {localHistory.length === 0 && (
-                  <div className="text-center py-12 text-gray-400 text-sm">
+                  <div className="text-center py-12 text-[#646262] text-sm">
                     {language === 'ko' ? '기록된 전투 내역이 없습니다.' : 'No recorded battle history.'}
                   </div>
                 )}
@@ -1540,23 +1508,23 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/80 backdrop-blur-md z-[10000] flex items-center justify-center p-4"
+            className="fixed inset-0 bg-[#131010]/85 z-[10000] flex items-center justify-center p-4 font-mono"
           >
             <motion.div
-              initial={{ scale: 0.9, y: 20 }}
+              initial={{ scale: 0.98, y: 10 }}
               animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              className="bg-slate-950 rounded-3xl p-6 max-w-sm w-full border border-slate-800 shadow-2xl text-center space-y-6 font-sans text-white"
+              exit={{ scale: 0.98, y: 10 }}
+              className="bg-[#fdfcfc] rounded-none p-6 max-w-sm w-full border border-[#201d1d] text-center space-y-6 font-mono text-[#201d1d]"
             >
-              <div className="w-16 h-16 bg-gradient-to-tr from-amber-300 to-yellow-400 border border-amber-200 rounded-full mx-auto flex items-center justify-center shadow-md">
-                {pwaAlertMode === 'success' ? <Bell size={28} className="text-slate-900" /> : <AlertCircle size={28} className="text-slate-900" />}
+              <div className="w-14 h-14 bg-[#201d1d] text-[#fdfcfc] border border-[#201d1d] rounded-none mx-auto flex items-center justify-center">
+                {pwaAlertMode === 'success' ? <Bell size={28} className="text-[#fdfcfc]" /> : <AlertCircle size={28} className="text-[#fdfcfc]" />}
               </div>
 
               <div className="space-y-2">
-                <h3 className="text-xl font-bold uppercase leading-none text-slate-100">
+                <h3 className="text-lg font-bold uppercase leading-none text-[#201d1d]">
                   {pwaAlertMode === 'success' ? (language === 'ko' ? '알림 설정 완료' : 'NOTIFICATION ACTIVE') : (language === 'ko' ? 'PWA 안내' : 'PWA INSTALL GUIDE')}
                 </h3>
-                <p className="text-sm font-semibold text-slate-400 leading-tight">
+                <p className="text-xs font-semibold text-[#646262] leading-tight">
                   {pwaAlertMode === 'success' 
                     ? t('notification_granted_success', language)
                     : t('pwa_install_guide', language)
@@ -1570,7 +1538,7 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
                   setShowPwaAlert(false);
                   setShowHistoryModal(true);
                 }}
-                className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-xl font-bold uppercase tracking-wider text-xs shadow-md active:scale-95 transition-all cursor-pointer border border-white/5"
+                className="min-h-[44px] w-full bg-[#201d1d] hover:bg-stone-800 text-[#fdfcfc] py-3 rounded-sm font-bold uppercase tracking-wider text-xs active:scale-95 transition-all cursor-pointer border border-[#201d1d]"
               >
                 {language === 'ko' ? '확인' : 'OK'}
               </button>
@@ -1586,20 +1554,20 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/80 backdrop-blur-md z-[200] flex items-center justify-center p-4"
+            className="fixed inset-0 bg-[#131010]/85 z-[200] flex items-center justify-center p-4 font-mono"
           >
             <motion.div 
-              initial={{ scale: 0.9, y: 20 }}
+              initial={{ scale: 0.98, y: 10 }}
               animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              className="bg-slate-950 rounded-3xl p-6 max-w-sm w-full border border-slate-800 shadow-2xl text-center space-y-6 font-sans text-white"
+              exit={{ scale: 0.98, y: 10 }}
+              className="bg-[#fdfcfc] rounded-none p-6 max-w-sm w-full border border-[#201d1d] text-center space-y-6 font-mono text-[#201d1d]"
             >
-              <div className="w-16 h-16 bg-red-950/30 rounded-full mx-auto flex items-center justify-center border border-red-500/30 mb-4 shadow-md">
-                <ShieldAlert size={32} className="text-red-500 animate-pulse" />
+              <div className="w-14 h-14 bg-rose-50 border border-rose-300 text-rose-800 rounded-none mx-auto flex items-center justify-center mb-4">
+                <ShieldAlert size={32} />
               </div>
               <div className="space-y-1">
-                <h3 className="text-lg font-bold uppercase text-slate-100">ACCESS DENIED</h3>
-                <p className="text-sm font-semibold text-slate-400">
+                <h3 className="text-lg font-bold uppercase text-[#201d1d]">ACCESS DENIED</h3>
+                <p className="text-xs font-semibold text-[#646262]">
                   {t('not_enough_sns', language)}
                 </p>
               </div>
@@ -1610,7 +1578,7 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
                     setShowInsufficientPopup(false);
                     setView?.('shop');
                   }}
-                  className="w-full bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-slate-950 font-black py-3.5 uppercase tracking-wider text-xs rounded-xl shadow-md active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2"
+                  className="min-h-[44px] w-full bg-[#201d1d] hover:bg-stone-800 text-[#fdfcfc] font-bold py-3 uppercase tracking-wider text-xs rounded-sm active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2 border border-[#201d1d]"
                 >
                   <ShoppingBag size={16} />
                   {language === 'ko' ? '상점/충전소 이동 (Go to Shop)' : 'Go to Shop / Top-Up'}
@@ -1620,7 +1588,7 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
                     playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
                     setShowInsufficientPopup(false);
                   }}
-                  className="w-full bg-slate-900 hover:bg-slate-800 text-slate-300 py-2.5 font-bold uppercase tracking-wider text-xs rounded-xl cursor-pointer border border-white/5"
+                  className="min-h-[44px] w-full bg-[#f8f7f7] hover:bg-stone-200 text-[#201d1d] py-3 font-bold uppercase tracking-wider text-xs rounded-sm cursor-pointer border border-[rgba(15,0,0,0.12)]"
                 >
                   {t('yes_accept', language) || "Confirm"}
                 </button>
@@ -1630,30 +1598,30 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
         )}
 
         {autoBattleCountdown !== null && (
-          <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-[200] flex flex-col items-center justify-center p-4 select-none">
+          <div className="fixed inset-0 bg-[#131010]/85 z-[200] flex flex-col items-center justify-center p-4 select-none font-mono">
             <motion.div 
-              initial={{ scale: 0.9, y: 20 }}
+              initial={{ scale: 0.98, y: 10 }}
               animate={{ scale: 1, y: 0 }}
-              className="bg-slate-950 rounded-3xl p-8 max-w-sm w-full border border-slate-800 shadow-2xl text-center space-y-6 font-sans text-white"
+              className="bg-[#fdfcfc] rounded-none p-8 max-w-sm w-full border border-[#201d1d] text-center space-y-6 font-mono text-[#201d1d]"
             >
-              <div className="w-16 h-16 bg-blue-950/30 text-blue-400 rounded-full flex items-center justify-center mx-auto border border-blue-800/30 shadow-md animate-pulse">
-                <Swords size={28} className="animate-bounce text-slate-300" />
+              <div className="w-14 h-14 bg-[#201d1d] text-[#fdfcfc] rounded-none flex items-center justify-center mx-auto border border-[#201d1d]">
+                <Swords size={28} />
               </div>
               <div className="space-y-1">
-                <h3 className="text-xl font-bold uppercase tracking-tight text-slate-100">{language === 'ko' ? '자동 매칭' : 'AUTO MATCHING'}</h3>
-                <p className="text-sm font-semibold text-slate-400 leading-tight">
+                <h3 className="text-lg font-bold uppercase tracking-tight text-[#201d1d]">{language === 'ko' ? '자동 매칭' : 'AUTO MATCHING'}</h3>
+                <p className="text-xs font-semibold text-[#646262] leading-tight">
                   {language === 'ko' ? '전적 기반 맞춤 상대를 탐색하고 있습니다...' : 'Finding personalized opponent based on battle records...'}
                 </p>
                 <div className="pt-2">
                   <span className={cn("inline-block text-[10px] px-2 py-0.5 rounded-sm font-mono font-bold border", ddaProfile.badgeColor)}>
                     {language === 'ko' ? ddaProfile.labelKo : ddaProfile.labelEn}
                   </span>
-                  <p className="text-[10px] text-slate-400 mt-1 leading-tight">
+                  <p className="text-[10px] text-[#646262] mt-1 leading-tight">
                     {language === 'ko' ? ddaProfile.descriptionKo : ddaProfile.descriptionEn}
                   </p>
                 </div>
               </div>
-              <div className="text-5xl font-black text-blue-400 animate-pulse drop-shadow-[0_0_10px_rgba(96,165,250,0.5)]">
+              <div className="text-5xl font-black text-[#201d1d] font-mono">
                 {autoBattleCountdown}
               </div>
               <button 
@@ -1662,7 +1630,7 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
                   setAutoBattleCountdown(null);
                   setIsSearching(false);
                 }}
-                className="w-full bg-red-600 hover:bg-red-700 text-white rounded-xl py-3 text-sm font-bold uppercase transition-colors shadow-sm active:scale-95 cursor-pointer border border-red-500/20"
+                className="min-h-[44px] w-full bg-rose-700 hover:bg-rose-800 text-white rounded-sm py-3 text-xs font-bold uppercase transition-colors active:scale-95 cursor-pointer border border-rose-900"
               >
                 {language === 'ko' ? '취소' : 'Cancel'}
               </button>
@@ -1675,25 +1643,25 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-[200] flex items-center justify-center p-4"
+            className="fixed inset-0 bg-[#131010]/85 z-[200] flex items-center justify-center p-4 font-mono"
           >
             <motion.div 
-              initial={{ scale: 0.9, y: 20 }}
+              initial={{ scale: 0.98, y: 10 }}
               animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              className="bg-slate-950 rounded-3xl p-7 max-w-sm w-full border border-slate-800 shadow-2xl text-center space-y-6 select-none relative text-white"
+              exit={{ scale: 0.98, y: 10 }}
+              className="bg-[#fdfcfc] rounded-none p-7 max-w-sm w-full border border-[#201d1d] text-center space-y-6 select-none relative text-[#201d1d] font-mono"
               onClick={e => e.stopPropagation()}
             >
-              <div className="w-14 h-14 bg-yellow-950/30 border border-yellow-800/30 rounded-full mx-auto flex items-center justify-center shadow-md animate-pulse">
-                <ShieldAlert size={26} className="text-yellow-400" />
+              <div className="w-14 h-14 bg-amber-50 border border-amber-300 rounded-none mx-auto flex items-center justify-center">
+                <ShieldAlert size={26} className="text-amber-800" />
               </div>
               <div className="space-y-3">
-                <h3 className="text-xl font-bold tracking-tight text-slate-100 uppercase leading-none">{language === 'ko' ? '매칭 상대 없음' : 'NO TARGET FOUND'}</h3>
-                <p className="text-sm font-semibold text-slate-400 leading-tight">
+                <h3 className="text-lg font-bold tracking-tight text-[#201d1d] uppercase leading-none">{language === 'ko' ? '매칭 상대 없음' : 'NO TARGET FOUND'}</h3>
+                <p className="text-xs font-semibold text-[#646262] leading-tight">
                   {t('no_optimal_opponent', language)}
                 </p>
-                <div className="bg-slate-900/60 border border-slate-800 p-3.5 rounded-2xl text-left">
-                  <p className="text-[10px] font-semibold text-slate-400 leading-normal">
+                <div className="bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] p-3.5 rounded-none text-left">
+                  <p className="text-[10px] font-semibold text-[#646262] leading-normal font-mono">
                     {t('optimal_battle_condition_desc', language)}
                   </p>
                 </div>
@@ -1703,7 +1671,7 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
                   playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
                   setShowNoOptimalPopup(false);
                 }}
-                className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-xl font-bold uppercase tracking-wider text-xs shadow-md active:scale-[0.98] transition-all cursor-pointer border border-white/5"
+                className="min-h-[44px] w-full bg-[#201d1d] hover:bg-stone-800 text-[#fdfcfc] py-3 rounded-sm font-bold uppercase tracking-wider text-xs active:scale-[0.98] transition-all cursor-pointer border border-[#201d1d]"
               >
                 {language === 'ko' ? '확인' : 'OK'}
               </button>
@@ -1716,13 +1684,13 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-[200] flex items-center justify-center p-4"
+            className="fixed inset-0 bg-[#131010]/85 z-[200] flex items-center justify-center p-4 font-mono"
           >
             <motion.div
-              initial={{ scale: 0.9, y: 20 }}
+              initial={{ scale: 0.98, y: 10 }}
               animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              className="bg-slate-950 rounded-3xl p-7 max-w-sm w-full border border-slate-800 shadow-2xl text-center space-y-6 select-none relative overflow-hidden text-white"
+              exit={{ scale: 0.98, y: 10 }}
+              className="bg-[#fdfcfc] rounded-none p-7 max-w-sm w-full border border-[#201d1d] text-center space-y-6 select-none relative overflow-hidden text-[#201d1d] font-mono"
               onClick={e => e.stopPropagation()}
             >
               {/* Close Button */}
@@ -1731,18 +1699,19 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
                   playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
                   setShowLoginRequiredModal(false);
                 }}
-                className="absolute top-4 right-4 p-1.5 hover:bg-slate-900 border border-slate-800 rounded-lg text-slate-400 hover:text-red-500 active:scale-95 transition-all cursor-pointer"
+                className="min-h-[44px] min-w-[44px] absolute top-2 right-2 flex items-center justify-center hover:bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-sm text-[#646262] hover:text-[#201d1d] active:scale-95 transition-all cursor-pointer font-bold text-xs"
+                aria-label="Close"
               >
-                <X size={14} />
+                [x]
               </button>
 
-              <div className="w-14 h-14 bg-blue-950/30 border border-blue-800/30 rounded-full mx-auto flex items-center justify-center shadow-md">
-                <Users size={26} className="text-blue-400" />
+              <div className="w-14 h-14 bg-[#201d1d] text-[#fdfcfc] border border-[#201d1d] rounded-none mx-auto flex items-center justify-center">
+                <Users size={26} />
               </div>
               
               <div className="space-y-3">
-                <h3 className="text-xl font-bold tracking-tight text-slate-100 uppercase leading-none">{language === 'ko' ? '로그인 필요' : 'LOGIN REQUIRED'}</h3>
-                <p className="text-sm font-semibold text-slate-400 leading-tight">
+                <h3 className="text-lg font-bold tracking-tight text-[#201d1d] uppercase leading-none">{language === 'ko' ? '로그인 필요' : 'LOGIN REQUIRED'}</h3>
+                <p className="text-xs font-semibold text-[#646262] leading-tight">
                   {t('login_required_ranking', language)}
                 </p>
               </div>
@@ -1760,7 +1729,7 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
                       }
                     }
                   }}
-                  className="w-full h-14 bg-slate-900 border border-slate-800 hover:bg-slate-850 p-4 flex items-center justify-center gap-3.5 rounded-xl shadow-md active:scale-[0.98] transition-all group cursor-pointer text-white"
+                  className="min-h-[44px] w-full bg-[#201d1d] border border-[#201d1d] hover:bg-stone-800 p-3 flex items-center justify-center gap-3.5 rounded-sm active:scale-[0.98] transition-all group cursor-pointer text-[#fdfcfc]"
                 >
                   <svg viewBox="0 0 24 24" className="w-5 h-5 group-hover:scale-105 transition-transform">
                     <path
@@ -1768,7 +1737,7 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
                       d="M12.48 10.92v3.28h7.84c-.24 1.84-.92 3.36-2.12 4.36-1.12.88-2.6 1.48-5.72 1.48-4.8 0-8.72-3.88-8.72-8.72s3.92-8.72 8.72-8.72c2.6 0 4.56 1.04 5.96 2.32l2.32-2.32c-2.12-2.04-4.92-3.2-8.28-3.2C5.36 0 0 5.36 0 12s5.36 12 12 12c3.56 0 6.24-1.16 8.36-3.32 2.12-2.12 2.84-5.2 2.84-7.76 0-.56-.04-1.12-.12-1.64h-10.6z"
                     />
                   </svg>
-                  <span className="font-bold text-sm uppercase tracking-wider text-white">
+                  <span className="font-bold text-xs uppercase tracking-wider text-[#fdfcfc]">
                     {language === 'ko' ? 'Google 로그인' : 'Google Login'}
                   </span>
                 </button>
@@ -1778,7 +1747,7 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
                     playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
                     setShowLoginRequiredModal(false);
                   }}
-                  className="w-full bg-slate-900 hover:bg-slate-855 text-slate-300 py-3.5 rounded-xl font-bold uppercase tracking-wider text-xs border border-slate-800 shadow-sm active:scale-[0.98] transition-all cursor-pointer"
+                  className="min-h-[44px] w-full bg-[#f8f7f7] hover:bg-stone-200 text-[#201d1d] py-3 rounded-sm font-bold uppercase tracking-wider text-xs border border-[rgba(15,0,0,0.12)] active:scale-[0.98] transition-all cursor-pointer"
                 >
                   {language === 'ko' ? '취소' : 'CANCEL'}
                 </button>
@@ -1795,22 +1764,22 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[250] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs"
+            className="fixed inset-0 z-[250] flex items-center justify-center p-4 bg-[#131010]/85 font-mono"
           >
             <motion.div
-              initial={{ scale: 0.9, y: 20 }}
+              initial={{ scale: 0.98, y: 10 }}
               animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              className="bg-slate-950 rounded-3xl p-7 max-w-sm w-full border border-slate-800 shadow-2xl text-center space-y-6 select-none relative overflow-hidden text-white"
+              exit={{ scale: 0.98, y: 10 }}
+              className="bg-[#fdfcfc] rounded-none p-7 max-w-sm w-full border border-[#201d1d] text-center space-y-6 select-none relative overflow-hidden text-[#201d1d] font-mono"
               onClick={e => e.stopPropagation()}
             >
-              <div className="w-14 h-14 bg-amber-950/30 border border-amber-800/30 rounded-full mx-auto flex items-center justify-center shadow-md">
-                <ShieldAlert size={26} className="text-amber-400" />
+              <div className="w-14 h-14 bg-amber-50 border border-amber-300 rounded-none mx-auto flex items-center justify-center">
+                <ShieldAlert size={26} className="text-amber-800" />
               </div>
               
               <div className="space-y-3">
-                <h3 className="text-xl font-bold tracking-tight text-slate-100 uppercase leading-none">{customAlert.title}</h3>
-                <p className="text-sm font-semibold text-slate-400 leading-tight">
+                <h3 className="text-lg font-bold tracking-tight text-[#201d1d] uppercase leading-none">{customAlert.title}</h3>
+                <p className="text-xs font-semibold text-[#646262] leading-tight">
                   {customAlert.message}
                 </p>
               </div>
@@ -1820,7 +1789,7 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
                   playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
                   setCustomAlert(prev => ({ ...prev, isOpen: false }));
                 }}
-                className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-xl font-bold uppercase tracking-wider text-xs shadow-md active:scale-[0.98] transition-all cursor-pointer border border-white/5"
+                className="min-h-[44px] w-full bg-[#201d1d] hover:bg-stone-800 text-[#fdfcfc] py-3 rounded-sm font-bold uppercase tracking-wider text-xs active:scale-[0.98] transition-all cursor-pointer border border-[#201d1d]"
               >
                 {language === 'ko' ? '확인' : 'OK'}
               </button>
@@ -1849,41 +1818,42 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[250] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs"
+            className="fixed inset-0 z-[250] flex items-center justify-center p-4 bg-[#131010]/85 font-mono"
           >
             <motion.div
-              initial={{ scale: 0.9, y: 20 }}
+              initial={{ scale: 0.98, y: 10 }}
               animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              className="bg-slate-950 rounded-3xl p-5.5 max-w-sm w-full border border-slate-800 shadow-2xl text-center space-y-5 select-none relative overflow-hidden text-white"
+              exit={{ scale: 0.98, y: 10 }}
+              className="bg-[#fdfcfc] rounded-none p-5.5 max-w-sm w-full border border-[#201d1d] text-center space-y-5 select-none relative overflow-hidden text-[#201d1d] font-mono"
               onClick={e => e.stopPropagation()}
             >
-              <div className="flex justify-between items-center border-b border-slate-800 pb-3 shrink-0">
-                <h3 className="text-md font-bold tracking-tight text-slate-100 uppercase leading-none">
+              <div className="flex justify-between items-center border-b border-[rgba(15,0,0,0.12)] pb-3 shrink-0">
+                <h3 className="text-sm font-bold tracking-tight text-[#201d1d] uppercase leading-none font-mono">
                   {t('nearby_select_method', language)}
                 </h3>
                 <button
                   onClick={() => setShowNearbyTypeModal(false)}
-                  className="p-1 hover:bg-slate-900 border border-slate-800 rounded-lg text-slate-400 hover:text-red-500 active:scale-95 transition-all cursor-pointer"
+                  className="min-h-[44px] min-w-[44px] flex items-center justify-center hover:bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-sm text-[#646262] hover:text-[#201d1d] active:scale-95 transition-all cursor-pointer font-bold text-xs"
+                  aria-label="Close"
                 >
-                  <X size={16} />
+                  [x]
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 gap-3.5 pt-1">
+              <div className="grid grid-cols-1 gap-3.5 pt-1 font-mono">
                 <button
                   onClick={handleWifiSearch}
-                  className="w-full bg-slate-900 hover:bg-slate-800 border border-slate-800 text-white p-4.5 rounded-2xl shadow-md active:scale-[0.98] transition-all flex flex-col items-center gap-2 font-bold tracking-wider uppercase text-xs cursor-pointer"
+                  className="min-h-[44px] w-full bg-[#f8f7f7] hover:bg-stone-200 border border-[rgba(15,0,0,0.12)] text-[#201d1d] p-4.5 rounded-none active:scale-[0.98] transition-all flex flex-col items-center gap-2 font-bold tracking-wider uppercase text-xs cursor-pointer"
                 >
-                  <Wifi size={22} className="text-blue-400" />
+                  <Wifi size={22} className="text-[#201d1d]" />
                   <span>Wi-Fi (IP)</span>
                 </button>
 
                 <button
                   onClick={handleBluetoothSearch}
-                  className="w-full bg-slate-900 hover:bg-slate-800 border border-slate-800 text-white p-4.5 rounded-2xl shadow-md active:scale-[0.98] transition-all flex flex-col items-center gap-2 font-bold tracking-wider uppercase text-xs cursor-pointer"
+                  className="min-h-[44px] w-full bg-[#f8f7f7] hover:bg-stone-200 border border-[rgba(15,0,0,0.12)] text-[#201d1d] p-4.5 rounded-none active:scale-[0.98] transition-all flex flex-col items-center gap-2 font-bold tracking-wider uppercase text-xs cursor-pointer"
                 >
-                  <Bluetooth size={22} className="text-purple-400" />
+                  <Bluetooth size={22} className="text-[#201d1d]" />
                   <span>Bluetooth</span>
                 </button>
               </div>
@@ -1899,24 +1869,24 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[250] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs"
+            className="fixed inset-0 z-[250] flex items-center justify-center p-4 bg-[#131010]/85 font-mono"
           >
             <motion.div
-              initial={{ scale: 0.9, y: 20 }}
+              initial={{ scale: 0.98, y: 10 }}
               animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              className="bg-slate-950 rounded-3xl p-6.5 max-w-sm w-full border border-slate-800 shadow-2xl text-center space-y-6 select-none relative overflow-hidden text-white"
+              exit={{ scale: 0.98, y: 10 }}
+              className="bg-[#fdfcfc] rounded-none p-6.5 max-w-sm w-full border border-[#201d1d] text-center space-y-6 select-none relative overflow-hidden text-[#201d1d] font-mono"
               onClick={e => e.stopPropagation()}
             >
-              <div className="w-16 h-16 bg-purple-950/30 border border-purple-800/30 rounded-full mx-auto flex items-center justify-center shadow-md">
-                <Bluetooth size={28} className="text-purple-400 animate-pulse" />
+              <div className="w-14 h-14 bg-[#201d1d] text-[#fdfcfc] border border-[#201d1d] rounded-none mx-auto flex items-center justify-center">
+                <Bluetooth size={28} />
               </div>
 
               <div className="space-y-2">
-                <h3 className="text-lg font-bold tracking-tight text-slate-100 uppercase leading-none">
+                <h3 className="text-lg font-bold tracking-tight text-[#201d1d] uppercase leading-none font-mono">
                   {t('bt_permission_title', language)}
                 </h3>
-                <p className="text-xs font-semibold text-slate-400 leading-relaxed">
+                <p className="text-xs font-semibold text-[#646262] leading-relaxed">
                   {t('bt_permission_desc', language)}
                 </p>
               </div>
@@ -1924,13 +1894,13 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
               <div className="grid grid-cols-2 gap-3 pt-1">
                 <button
                   onClick={() => setShowBluetoothPermissionModal(false)}
-                  className="w-full bg-slate-50 text-slate-650 hover:text-slate-800 hover:bg-slate-100 py-3 rounded-xl font-bold uppercase tracking-wider text-xs border border-slate-200/50 shadow-xs active:scale-[0.98] transition-all cursor-pointer"
+                  className="min-h-[44px] w-full bg-[#f8f7f7] text-[#201d1d] hover:bg-stone-200 py-3 rounded-sm font-bold uppercase tracking-wider text-xs border border-[rgba(15,0,0,0.12)] active:scale-[0.98] transition-all cursor-pointer"
                 >
                   {t('deny', language)}
                 </button>
                 <button
                   onClick={handleBluetoothPermissionGrant}
-                  className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-xl font-bold uppercase tracking-wider text-xs shadow-md shadow-purple-650/10 active:scale-[0.98] transition-all cursor-pointer"
+                  className="min-h-[44px] w-full bg-[#201d1d] hover:bg-stone-800 text-[#fdfcfc] py-3 rounded-sm font-bold uppercase tracking-wider text-xs border border-[#201d1d] active:scale-[0.98] transition-all cursor-pointer"
                 >
                   {t('allow', language)}
                 </button>
@@ -1947,40 +1917,41 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[250] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs"
+            className="fixed inset-0 z-[250] flex items-center justify-center p-4 bg-[#131010]/85 font-mono"
           >
             <motion.div
-              initial={{ scale: 0.9, y: 20 }}
+              initial={{ scale: 0.98, y: 10 }}
               animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              className="bg-slate-950 rounded-3xl p-5.5 max-w-sm w-full border border-slate-800 shadow-2xl flex flex-col relative overflow-hidden select-none max-h-[80vh] text-white"
+              exit={{ scale: 0.98, y: 10 }}
+              className="bg-[#fdfcfc] rounded-none p-5.5 max-w-sm w-full border border-[#201d1d] flex flex-col relative overflow-hidden select-none max-h-[80vh] text-[#201d1d] font-mono"
               onClick={e => e.stopPropagation()}
             >
-              <div className="flex justify-between items-center border-b border-slate-800 pb-3 shrink-0">
+              <div className="flex justify-between items-center border-b border-[rgba(15,0,0,0.12)] pb-3 shrink-0">
                 <div className="flex items-center gap-2">
-                  <Wifi size={18} className="text-blue-400" />
-                  <h3 className="text-md font-bold tracking-tight text-slate-100 uppercase leading-none">
+                  <Wifi size={18} className="text-[#201d1d]" />
+                  <h3 className="text-sm font-bold tracking-tight text-[#201d1d] uppercase leading-none font-mono">
                     Wi-Fi (IP) Players
                   </h3>
                 </div>
                 <button
                   onClick={() => setShowWifiModal(false)}
-                  className="p-1 hover:bg-slate-900 border border-slate-800 rounded-lg text-slate-400 hover:text-red-500 active:scale-95 transition-all cursor-pointer"
+                  className="min-h-[44px] min-w-[44px] flex items-center justify-center hover:bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-sm text-[#646262] hover:text-[#201d1d] active:scale-95 transition-all cursor-pointer font-bold text-xs"
+                  aria-label="Close"
                 >
-                  <X size={16} />
+                  [x]
                 </button>
               </div>
 
-              <div className="flex-1 overflow-y-auto py-4 min-h-[200px] flex flex-col justify-center">
+              <div className="flex-1 overflow-y-auto py-4 min-h-[200px] flex flex-col justify-center font-mono">
                 {isNearbySearching ? (
                   <div className="text-center space-y-4 py-8">
-                    <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto" />
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                    <div className="w-12 h-12 border-4 border-[#201d1d] border-t-transparent rounded-none animate-spin mx-auto" />
+                    <p className="text-xs font-bold text-[#646262] uppercase tracking-wider">
                       {t('searching', language)}
                     </p>
                   </div>
                 ) : nearbyList.length === 0 ? (
-                  <div className="text-center text-xs font-semibold text-slate-400 py-8">
+                  <div className="text-center text-xs font-semibold text-[#646262] py-8">
                     No players found.
                   </div>
                 ) : (
@@ -1989,10 +1960,10 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
                       <button
                         key={opp.id}
                         onClick={() => handleSelectNearbyOpponent(opp)}
-                        className="w-full bg-slate-900 hover:bg-slate-850 border border-slate-800 p-4.5 rounded-xl flex flex-col gap-1.5 text-left active:scale-[0.98] transition-all cursor-pointer shadow-md text-white"
+                        className="min-h-[44px] w-full bg-[#f8f7f7] hover:bg-stone-200 border border-[rgba(15,0,0,0.12)] p-3 rounded-none flex flex-col gap-1.5 text-left active:scale-[0.98] transition-all cursor-pointer text-[#201d1d]"
                       >
-                        <span className="text-xs font-bold text-slate-200 truncate">{opp.name}</span>
-                        <div className="flex justify-between text-[10px] text-slate-400 font-semibold">
+                        <span className="text-xs font-bold text-[#201d1d] truncate">{opp.name}</span>
+                        <div className="flex justify-between text-[10px] text-[#646262] font-semibold">
                           <span>⚔️ TP: {opp.totalPower}</span>
                           <span>🪙 SNS: {opp.sns}</span>
                         </div>
@@ -2013,40 +1984,40 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[250] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs"
+            className="fixed inset-0 z-[250] flex items-center justify-center p-4 bg-[#131010]/85 font-mono"
           >
             <motion.div
-              initial={{ scale: 0.9, y: 20 }}
+              initial={{ scale: 0.98, y: 10 }}
               animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              className="bg-slate-950 rounded-3xl p-5.5 max-w-sm w-full border border-slate-800 shadow-2xl flex flex-col relative overflow-hidden select-none max-h-[80vh] text-white"
+              exit={{ scale: 0.98, y: 10 }}
+              className="bg-[#fdfcfc] rounded-none p-5.5 max-w-sm w-full border border-[#201d1d] flex flex-col relative overflow-hidden select-none max-h-[80vh] text-[#201d1d] font-mono"
               onClick={e => e.stopPropagation()}
             >
-              <div className="flex justify-between items-center border-b border-slate-800 pb-3 shrink-0">
+              <div className="flex justify-between items-center border-b border-[rgba(15,0,0,0.12)] pb-3 shrink-0">
                 <div className="flex items-center gap-2">
-                  <Bluetooth size={18} className="text-purple-400" />
-                  <h3 className="text-md font-bold tracking-tight text-slate-100 uppercase leading-none">
+                  <Bluetooth size={18} className="text-[#201d1d]" />
+                  <h3 className="text-sm font-bold tracking-tight text-[#201d1d] uppercase leading-none font-mono">
                     Bluetooth Devices
                   </h3>
                 </div>
                 <button
                   onClick={() => setShowBluetoothModal(false)}
-                  className="p-1 hover:bg-slate-900 border border-slate-800 rounded-lg text-slate-400 hover:text-red-500 active:scale-95 transition-all cursor-pointer"
+                  className="min-h-[44px] min-w-[44px] flex items-center justify-center hover:bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-sm text-[#646262] hover:text-[#201d1d] active:scale-95 transition-all cursor-pointer"
                 >
                   <X size={16} />
                 </button>
               </div>
 
-              <div className="flex-1 overflow-y-auto py-4 min-h-[200px] flex flex-col justify-center">
+              <div className="flex-1 overflow-y-auto py-4 min-h-[200px] flex flex-col justify-center font-mono">
                 {isNearbySearching ? (
                   <div className="text-center space-y-4 py-8">
-                    <div className="w-12 h-12 border-4 border-purple-600 border-t-transparent rounded-full animate-spin mx-auto" />
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                    <div className="w-12 h-12 border-4 border-[#201d1d] border-t-transparent rounded-none animate-spin mx-auto" />
+                    <p className="text-xs font-bold text-[#646262] uppercase tracking-wider">
                       {t('searching', language)}
                     </p>
                   </div>
                 ) : nearbyList.length === 0 ? (
-                  <div className="text-center text-xs font-semibold text-slate-400 py-8">
+                  <div className="text-center text-xs font-semibold text-[#646262] py-8">
                     No devices found.
                   </div>
                 ) : (
@@ -2055,10 +2026,10 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
                       <button
                         key={opp.id}
                         onClick={() => handleSelectNearbyOpponent(opp)}
-                        className="w-full bg-slate-900 hover:bg-slate-850 border border-slate-800 p-4.5 rounded-xl flex flex-col gap-1.5 text-left active:scale-[0.98] transition-all cursor-pointer shadow-md text-white"
+                        className="min-h-[44px] w-full bg-[#f8f7f7] hover:bg-stone-200 border border-[rgba(15,0,0,0.12)] p-3 rounded-none flex flex-col gap-1.5 text-left active:scale-[0.98] transition-all cursor-pointer text-[#201d1d]"
                       >
-                        <span className="text-xs font-bold text-slate-200 truncate">{opp.name}</span>
-                        <div className="flex justify-between text-[10px] text-slate-400 font-semibold">
+                        <span className="text-xs font-bold text-[#201d1d] truncate">{opp.name}</span>
+                        <div className="flex justify-between text-[10px] text-[#646262] font-semibold">
                           <span>⚔️ TP: {opp.totalPower}</span>
                           <span>🪙 SNS: {opp.sns}</span>
                         </div>
@@ -2079,27 +2050,28 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[209] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+            className="fixed inset-0 z-[209] flex items-center justify-center p-4 bg-[#131010]/85 font-mono"
             onClick={() => setShowHelp(false)}
           >
             <motion.div
-              initial={{ scale: 0.95, y: 20 }}
+              initial={{ scale: 0.98, y: 10 }}
               animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.95, y: 20 }}
+              exit={{ scale: 0.98, y: 10 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 relative"
+              className="bg-[#fdfcfc] rounded-none max-w-sm w-full p-6 border border-[#201d1d] relative text-[#201d1d] font-mono"
             >
               <button
                 onClick={() => setShowHelp(false)}
-                className="absolute top-4 right-4 p-1.5 hover:bg-slate-100 rounded-full text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
+                className="min-h-[44px] min-w-[44px] absolute top-2 right-2 flex items-center justify-center hover:bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-sm text-[#646262] hover:text-[#201d1d] transition-colors cursor-pointer font-bold text-xs"
+                aria-label="Close"
               >
-                <X size={18} />
+                [x]
               </button>
               <div className="flex items-center gap-2 mb-4">
-                <HelpCircle size={20} className="text-indigo-500" />
-                <h3 className="font-bold text-sm text-slate-800">{t('ranking', language)}</h3>
+                <HelpCircle size={20} className="text-[#201d1d]" />
+                <h3 className="font-bold text-sm text-[#201d1d] uppercase font-mono">{t('ranking', language)}</h3>
               </div>
-              <div className="min-h-[120px] flex flex-col justify-center text-sm text-slate-600 leading-relaxed space-y-2 mb-4">
+              <div className="min-h-[120px] flex flex-col justify-center text-xs text-[#646262] leading-relaxed space-y-2 mb-4 font-mono">
                 {helpSlide === 0 && (
                   <p>{language === 'ko' ? '전 세계 헌터들의 전투력(CP)과 승률을 기준으로 한 리더보드입니다. 실시간 Firestore 데이터를 기반으로 순위가 집계됩니다.' : 'Global leaderboard ranked by Combat Power (CP) and win rate. Rankings are aggregated from real-time Firestore data.'}</p>
                 )}
@@ -2114,15 +2086,15 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
                 <button
                   onClick={() => setHelpSlide((s) => Math.max(0, s - 1))}
                   disabled={helpSlide === 0}
-                  className="p-1.5 rounded-lg hover:bg-slate-100 disabled:opacity-30 transition-colors cursor-pointer"
+                  className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-sm border border-[rgba(15,0,0,0.12)] hover:bg-[#f8f7f7] disabled:opacity-30 transition-colors cursor-pointer text-[#201d1d]"
                 >
                   <ChevronLeft size={18} />
                 </button>
-                <span className="text-[10px] font-bold text-slate-400">{helpSlide + 1} / 3</span>
+                <span className="text-[10px] font-bold text-[#646262] font-mono">{helpSlide + 1} / 3</span>
                 <button
                   onClick={() => setHelpSlide((s) => Math.min(2, s + 1))}
                   disabled={helpSlide === 2}
-                  className="p-1.5 rounded-lg hover:bg-slate-100 disabled:opacity-30 transition-colors cursor-pointer"
+                  className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-sm border border-[rgba(15,0,0,0.12)] hover:bg-[#f8f7f7] disabled:opacity-30 transition-colors cursor-pointer text-[#201d1d]"
                 >
                   <ChevronRight size={18} />
                 </button>

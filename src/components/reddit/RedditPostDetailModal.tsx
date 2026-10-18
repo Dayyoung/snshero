@@ -111,7 +111,7 @@ function renderInlineMarkdown(text: string): React.ReactNode[] {
 function renderMarkdownBody(content: string): React.ReactNode {
   const lines = content.split('\n');
   return (
-    <div className="space-y-2.5 text-sm sm:text-base leading-relaxed opacity-95 font-sans break-words">
+    <div className="space-y-2.5 text-sm sm:text-base leading-relaxed opacity-95 font-mono break-words">
       {lines.map((line, idx) => {
         const trimmed = line.trim();
 
@@ -121,8 +121,8 @@ function renderMarkdownBody(content: string): React.ReactNode {
           const alt = imgMatch[1];
           const src = imgMatch[2];
           return (
-            <figure key={idx} className="my-3 rounded-xl overflow-hidden border border-inherit/15 bg-black/5 dark:bg-white/5 p-1">
-              <img src={src} alt={alt} className="w-full h-auto max-h-[520px] object-contain rounded-lg" loading="lazy" />
+            <figure key={idx} className="my-3 rounded-none overflow-hidden border border-inherit/15 bg-black/5 dark:bg-white/5 p-1">
+              <img src={src} alt={alt} className="w-full h-auto max-h-[520px] object-contain rounded-none" loading="lazy" />
               {alt && <figcaption className="text-xs text-center py-1.5 opacity-70 italic font-mono">{alt}</figcaption>}
             </figure>
           );
@@ -409,18 +409,18 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
     >
       <div className="fixed inset-0 -z-10" onClick={onClose} />
 
-      <div className={`relative w-full max-w-6xl my-auto sm:my-0 rounded-none sm:rounded-2xl shadow-2xl flex flex-col transition-colors min-h-[85vh] pb-16 overflow-x-hidden ${
+      <div className={`relative w-full max-w-6xl my-auto sm:my-0 rounded-none flex flex-col font-mono transition-colors min-h-[85vh] pb-16 overflow-x-hidden ${
         isDark ? 'bg-[#0E1113] text-gray-200' : 'bg-[#F6F7F8] text-gray-900'
       }`}>
         {/* 상단 네비게이션 헤더 */}
-        <div className={`sticky top-0 z-20 h-12 px-4 border-b flex items-center justify-between backdrop-blur-md w-full max-w-full overflow-hidden ${
+        <div className={`sticky top-0 z-20 h-14 px-4 border-b flex items-center justify-between backdrop-blur-md w-full max-w-full overflow-hidden ${
           isDark ? 'bg-[#0E1113]/95 border-[#22272B]' : 'bg-white/95 border-gray-200'
         }`}>
           <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={onClose}
-              className="p-1 rounded-full hover:bg-black/10 cursor-pointer flex items-center gap-1 text-xs font-bold"
+              className="px-3 py-1.5 rounded-sm hover:bg-black/10 cursor-pointer flex items-center gap-1 text-xs font-bold min-h-[44px]"
             >
               <ArrowLeft className="w-4 h-4" />
               <span>{isKo ? '뒤로' : 'Back'}</span>
@@ -429,7 +429,7 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
             <button
               type="button"
               onClick={() => { onSelectSubreddit(post.subreddit); onClose(); }}
-              className="font-bold text-xs hover:underline flex items-center gap-1 cursor-pointer"
+              className="font-bold text-xs hover:underline flex items-center gap-1 cursor-pointer min-h-[44px] px-2 py-1 rounded-sm"
             >
               <span className="text-[#FF4500]">r/</span>
               <span>{post.subreddit}</span>
@@ -439,7 +439,7 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-full hover:bg-black/10 cursor-pointer"
+            className="w-11 h-11 flex items-center justify-center rounded-sm hover:bg-black/10 cursor-pointer min-h-[44px]"
             aria-label="Close"
           >
             <X className="w-5 h-5" />
@@ -450,7 +450,7 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
         <div className="flex-1 flex flex-col lg:flex-row gap-6 p-3 sm:p-6 w-full max-w-full overflow-x-hidden">
           <main className="flex-1 max-w-4xl min-w-0 space-y-5 w-full overflow-x-hidden">
             {/* 포스트 카드 */}
-            <article className={`rounded-2xl border p-4 sm:p-6 shadow-sm w-full max-w-full overflow-hidden break-words ${
+            <article className={`rounded-none border p-4 sm:p-6 w-full max-w-full overflow-hidden break-words ${
               isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'
             }`}>
               {/* 헤더 */}
@@ -458,7 +458,7 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
                 <button
                   type="button"
                   onClick={() => { onSelectSubreddit(post.subreddit); onClose(); }}
-                  className="font-extrabold hover:underline text-[#FF4500] cursor-pointer"
+                  className="font-extrabold hover:underline text-[#FF4500] cursor-pointer min-h-[44px] px-1 inline-flex items-center"
                 >
                   r/{post.subreddit}
                 </button>
@@ -467,7 +467,7 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
                 <button
                   type="button"
                   onClick={() => onOpenUserProfile(post.author)}
-                  className="hover:underline font-medium cursor-pointer"
+                  className="hover:underline font-medium cursor-pointer min-h-[44px] px-1 inline-flex items-center"
                 >
                   u/{post.author}
                 </button>
@@ -476,7 +476,7 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
 
                 {post.flair && (
                   <span
-                    className="px-2 py-0.5 rounded-full text-[10px] font-bold shadow-sm ml-1"
+                    className="px-2 py-0.5 rounded-sm text-[10px] font-bold ml-1"
                     style={{
                       backgroundColor: post.flair.bgColor || '#FF4500',
                       color: post.flair.textColor || '#FFFFFF',
@@ -490,14 +490,14 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
               {/* 번역 상태 표시줄 (원문이 다른 언어일 때 노출) */}
               {needsTrans && (
                 <div className="flex items-center gap-2 mb-3 text-xs">
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-500 font-semibold border border-blue-500/20">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-sm bg-blue-500/10 text-blue-500 font-semibold border border-blue-500/20">
                     <Globe className="w-3.5 h-3.5" />
                     {isCurrentlyTranslated ? (isKo ? 'Google 번역 적용됨 (한국어)' : 'Google Translated') : (isKo ? '원문 표시 중' : 'Original Text')}
                   </span>
                   <button
                     type="button"
                     onClick={() => setShowOriginal(!showOriginal)}
-                    className="opacity-75 hover:opacity-100 underline cursor-pointer text-xs"
+                    className="opacity-75 hover:opacity-100 underline cursor-pointer text-xs min-h-[44px] px-2 inline-flex items-center"
                   >
                     {showOriginal ? (isKo ? '번역본 보기' : 'Show translation') : (isKo ? '원문 보기' : 'Show original')}
                   </button>
@@ -511,13 +511,13 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
 
               {/* 고화질 미디어 (동영상 및 이미지, 링크 완벽 지원) */}
               {post.media?.url && (
-                <div className="rounded-xl overflow-hidden mb-5 flex items-center justify-center border border-inherit/10">
+                <div className="rounded-none overflow-hidden mb-5 flex items-center justify-center border border-inherit/10">
                   {post.media.type === 'link' ? (
                     <a
                       href={cleanRedditUrl(post.media.url)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`w-full p-4 flex items-center justify-between gap-3 text-xs sm:text-sm font-semibold rounded-xl border transition-colors ${
+                      className={`w-full p-4 flex items-center justify-between gap-3 text-xs sm:text-sm font-semibold rounded-none border transition-colors min-h-[44px] ${
                         isDark ? 'bg-[#0E1113] hover:bg-[#181C1F] border-[#2E363E] text-sky-400' : 'bg-gray-50 hover:bg-gray-100 border-gray-200 text-sky-600'
                       }`}
                     >
@@ -525,7 +525,7 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
                         <ExternalLink className="w-4 h-4 flex-shrink-0" />
                         <span className="truncate">{cleanRedditUrl(post.media.url)}</span>
                       </div>
-                      <span className="text-xs px-3 py-1 rounded-full bg-black/10 flex-shrink-0 opacity-80">
+                      <span className="text-xs px-3 py-1 rounded-sm bg-black/10 flex-shrink-0 opacity-80">
                         {post.media.domain || '외부 링크 열기'}
                       </span>
                     </a>
@@ -575,7 +575,7 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
               )}
 
               {/* 본문 직후 고수익 In-Article 구글 애드센스 네이티브 광고 (CTR 극대화) */}
-              <div className={`my-4 p-2.5 rounded-xl border overflow-hidden ${
+              <div className={`my-4 p-2.5 rounded-none border overflow-hidden ${
                 isDark ? 'bg-[#181C1F]/80 border-[#22272B]' : 'bg-gray-50 border-gray-200'
               }`}>
                 <div className="flex items-center justify-between text-[10px] font-bold text-[#FF4500] uppercase tracking-wider mb-1.5 px-1">
@@ -599,7 +599,7 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
                     href={post.sourceUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl border text-xs sm:text-sm font-bold transition-all hover:scale-102 active:scale-98 shadow-sm cursor-pointer ${
+                    className={`inline-flex items-center gap-2 px-4 py-2 rounded-none border text-xs sm:text-sm font-bold transition-all cursor-pointer min-h-[44px] ${
                       isDark 
                         ? 'bg-[#22272B] hover:bg-[#2A3136] text-sky-400 border-white/10' 
                         : 'bg-sky-50 hover:bg-sky-100 text-sky-700 border-sky-200'
@@ -613,15 +613,16 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
 
               {/* 액션 바 */}
               <div className="flex items-center gap-2 sm:gap-3 pt-3 border-t border-inherit/10 text-xs font-semibold flex-wrap">
-                <div className={`flex items-center rounded-full px-2 py-0.5 border ${
+                <div className={`flex items-center rounded-sm px-2 py-0.5 border ${
                   isDark ? 'bg-[#22272B] border-[#2A3238]' : 'bg-gray-100 border-gray-200'
                 }`}>
                   <button
                     type="button"
                     onClick={() => onVotePost(post.id, 'up')}
-                    className={`p-1 rounded-full cursor-pointer transition-colors ${
+                    className={`p-1 rounded-sm cursor-pointer transition-colors min-h-[44px] min-w-[36px] flex items-center justify-center ${
                       post.userVote === 'up' ? 'text-[#FF4500]' : 'opacity-70 hover:opacity-100 hover:text-[#FF4500]'
                     }`}
+                    aria-label="Upvote"
                   >
                     <ArrowBigUp className="w-5 h-5 fill-current" />
                   </button>
@@ -633,15 +634,16 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
                   <button
                     type="button"
                     onClick={() => onVotePost(post.id, 'down')}
-                    className={`p-1 rounded-full cursor-pointer transition-colors ${
+                    className={`p-1 rounded-sm cursor-pointer transition-colors min-h-[44px] min-w-[36px] flex items-center justify-center ${
                       post.userVote === 'down' ? 'text-[#7193FF]' : 'opacity-70 hover:opacity-100 hover:text-[#7193FF]'
                     }`}
+                    aria-label="Downvote"
                   >
                     <ArrowBigDown className="w-5 h-5 fill-current" />
                   </button>
                 </div>
 
-                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-inherit/10">
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-sm border border-inherit/10 min-h-[44px]">
                   <MessageSquare className="w-4 h-4 opacity-70" />
                   <span>{isKo ? `댓글 ${post.commentCount}개` : `${post.commentCount} Comments`}</span>
                 </div>
@@ -649,7 +651,7 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
                 <button
                   type="button"
                   onClick={handleShare}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-inherit/10 cursor-pointer hover:bg-black/5"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-sm border border-inherit/10 cursor-pointer hover:bg-black/5 min-h-[44px]"
                 >
                   {isCopied ? <Check className="w-4 h-4 text-emerald-400" /> : <Share2 className="w-4 h-4 opacity-70" />}
                   <span>{isCopied ? (isKo ? '복사됨!' : 'Copied!') : (isKo ? '공유' : 'Share')}</span>
@@ -658,7 +660,7 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
                 <button
                   type="button"
                   onClick={() => onToggleSave(post.id)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-inherit/10 cursor-pointer hover:bg-black/5 ${
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm border border-inherit/10 cursor-pointer hover:bg-black/5 min-h-[44px] ${
                     post.isSaved ? 'text-[#FF4500]' : ''
                   }`}
                 >
@@ -670,7 +672,7 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
 
 
             {/* 댓글 작성기 */}
-            <div className={`rounded-2xl border p-4 sm:p-5 shadow-sm ${
+            <div className={`rounded-none border p-4 sm:p-5 ${
               isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'
             }`}>
               <div className="text-xs font-semibold mb-2 opacity-80">
@@ -678,7 +680,7 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
               </div>
 
               <form onSubmit={handleCommentSubmit} className="space-y-3">
-                <div className={`rounded-xl border overflow-hidden ${
+                <div className={`rounded-none border overflow-hidden ${
                   isDark ? 'bg-[#0E1113] border-[#2E363E]' : 'bg-gray-50 border-gray-300'
                 }`}>
                   <textarea
@@ -686,25 +688,25 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
                     value={commentText}
                     onChange={(e) => setCommentText(e.target.value)}
                     placeholder={isKo ? "자유롭게 생각을 남겨보세요..." : "What are your thoughts?"}
-                    className="w-full p-3 bg-transparent text-xs sm:text-sm outline-none resize-none font-sans"
+                    className="w-full p-3 bg-transparent text-xs sm:text-sm outline-none resize-none font-mono"
                   />
 
                   <div className={`flex items-center justify-between px-3 py-2 border-t text-xs ${
                     isDark ? 'bg-[#181C1F] border-[#2E363E]' : 'bg-gray-100 border-gray-200'
                   }`}>
                     <div className="flex items-center gap-1 opacity-70">
-                      <button type="button" onClick={() => insertFormatting('**', '**')} className="p-1 hover:opacity-100 cursor-pointer" title="Bold"><Bold className="w-3.5 h-3.5" /></button>
-                      <button type="button" onClick={() => insertFormatting('*', '*')} className="p-1 hover:opacity-100 cursor-pointer" title="Italic"><Italic className="w-3.5 h-3.5" /></button>
-                      <button type="button" onClick={() => insertFormatting('[Link](', ')')} className="p-1 hover:opacity-100 cursor-pointer" title="Link"><LinkIcon className="w-3.5 h-3.5" /></button>
-                      <button type="button" onClick={() => insertFormatting('`', '`')} className="p-1 hover:opacity-100 cursor-pointer" title="Code"><Code className="w-3.5 h-3.5" /></button>
-                      <button type="button" onClick={() => insertFormatting('> ')} className="p-1 hover:opacity-100 cursor-pointer" title="Quote"><Quote className="w-3.5 h-3.5" /></button>
-                      <button type="button" onClick={() => insertFormatting('- ')} className="p-1 hover:opacity-100 cursor-pointer" title="Bullet"><List className="w-3.5 h-3.5" /></button>
+                      <button type="button" onClick={() => insertFormatting('**', '**')} className="w-11 h-11 flex items-center justify-center rounded-sm hover:opacity-100 cursor-pointer min-h-[44px]" title="Bold"><Bold className="w-3.5 h-3.5" /></button>
+                      <button type="button" onClick={() => insertFormatting('*', '*')} className="w-11 h-11 flex items-center justify-center rounded-sm hover:opacity-100 cursor-pointer min-h-[44px]" title="Italic"><Italic className="w-3.5 h-3.5" /></button>
+                      <button type="button" onClick={() => insertFormatting('[Link](', ')')} className="w-11 h-11 flex items-center justify-center rounded-sm hover:opacity-100 cursor-pointer min-h-[44px]" title="Link"><LinkIcon className="w-3.5 h-3.5" /></button>
+                      <button type="button" onClick={() => insertFormatting('`', '`')} className="w-11 h-11 flex items-center justify-center rounded-sm hover:opacity-100 cursor-pointer min-h-[44px]" title="Code"><Code className="w-3.5 h-3.5" /></button>
+                      <button type="button" onClick={() => insertFormatting('> ')} className="w-11 h-11 flex items-center justify-center rounded-sm hover:opacity-100 cursor-pointer min-h-[44px]" title="Quote"><Quote className="w-3.5 h-3.5" /></button>
+                      <button type="button" onClick={() => insertFormatting('- ')} className="w-11 h-11 flex items-center justify-center rounded-sm hover:opacity-100 cursor-pointer min-h-[44px]" title="Bullet"><List className="w-3.5 h-3.5" /></button>
                     </div>
 
                     <button
                       type="submit"
                       disabled={!commentText.trim()}
-                      className="px-4 py-1.5 rounded-full bg-[#FF4500] disabled:opacity-40 text-white font-bold text-xs cursor-pointer hover:bg-[#FF5414] transition-all"
+                      className="px-4 py-2 rounded-sm bg-[#FF4500] disabled:opacity-40 text-white font-bold text-xs cursor-pointer hover:bg-[#FF5414] transition-all min-h-[44px]"
                     >
                       {isKo ? '댓글 등록' : 'Comment'}
                     </button>
@@ -714,7 +716,7 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
             </div>
 
             {/* 중첩 댓글 트리 */}
-            <div className={`rounded-2xl border p-4 sm:p-6 shadow-sm ${
+            <div className={`rounded-none border p-4 sm:p-6 ${
               isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'
             }`}>
               <div className="flex items-center justify-between pb-4 border-b border-inherit/10 mb-4 flex-wrap gap-2">
@@ -722,16 +724,16 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
                   <span className="font-extrabold text-sm sm:text-base">
                     {isKo ? `전체 댓글 ${post.commentCount.toLocaleString()}개` : `All ${post.commentCount.toLocaleString()} Comments`}
                   </span>
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#FF4500]/10 text-[#FF4500]">
+                  <span className="px-2 py-0.5 rounded-sm text-[10px] font-bold bg-[#FF4500]/10 text-[#FF4500]">
                     {displayedComments.length}{isKo ? '개 표시 중' : ' shown'}
                   </span>
                   {isRealSynced && (
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-500 border border-emerald-500/20 flex items-center gap-1 shadow-sm">
+                    <span className="px-2 py-0.5 rounded-sm text-[10px] font-bold bg-emerald-500/15 text-emerald-500 border border-emerald-500/20 flex items-center gap-1">
                       <Check className="w-3 h-3 text-emerald-500" />
                       <span>{isKo ? 'Reddit 실제 원본 댓글' : 'Live Reddit Comments'}</span>
                     </span>
                   )}
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/15 text-blue-500 border border-blue-500/20 flex items-center gap-1 shadow-sm">
+                  <span className="px-2 py-0.5 rounded-sm text-[10px] font-bold bg-blue-500/15 text-blue-500 border border-blue-500/20 flex items-center gap-1">
                     <Globe className="w-3 h-3 text-blue-500" />
                     <span>{isKo ? '한국어로 번역됨' : `Translated to ${targetLang}`}</span>
                   </span>
@@ -744,7 +746,7 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
                   <button
                     type="button"
                     onClick={() => fetchActualComments(true)}
-                    className={`p-1 rounded-full cursor-pointer transition-colors opacity-70 hover:opacity-100 ${
+                    className={`w-11 h-11 min-h-[44px] flex items-center justify-center rounded-sm cursor-pointer transition-colors opacity-70 hover:opacity-100 ${
                       isDark ? 'hover:bg-white/10' : 'hover:bg-black/5'
                     }`}
                     title={isKo ? '실제 원본 댓글 새로고침' : 'Refresh real comments'}
@@ -759,7 +761,7 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
                   <select
                     value={commentSort}
                     onChange={(e) => setCommentSort(e.target.value as any)}
-                    className={`font-bold cursor-pointer outline-none border border-inherit/20 rounded-lg px-2 py-1 text-xs transition-colors ${
+                    className={`font-bold cursor-pointer outline-none border border-inherit/20 rounded-none px-2 py-1.5 text-xs transition-colors min-h-[44px] font-mono ${
                       isDark ? 'bg-[#22272B] text-gray-200' : 'bg-gray-100 text-gray-800'
                     }`}
                   >
@@ -790,7 +792,7 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
                         type="button"
                         onClick={handleLoadMoreComments}
                         disabled={isLoadingMore}
-                        className="px-4 py-1.5 rounded-full border border-inherit/20 font-bold text-xs hover:bg-[#FF4500] hover:text-white transition-all cursor-pointer shadow-sm flex items-center justify-center gap-1.5 disabled:opacity-50"
+                        className="px-4 py-2 rounded-sm border border-inherit/20 font-bold text-xs hover:bg-[#FF4500] hover:text-white transition-all cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50 min-h-[44px]"
                       >
                         <RefreshCw className={`w-3.5 h-3.5 ${isLoadingMore ? 'animate-spin' : ''}`} />
                         <span>{isLoadingMore ? (isKo ? '구글 시트 동기화 중...' : 'Syncing Sheet...') : (isKo ? '댓글 실시간 새로고침' : 'Refresh Comments')}</span>

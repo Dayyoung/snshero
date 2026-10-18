@@ -107,7 +107,7 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
   };
 
   return (
-    <header className={`sticky top-0 z-40 h-14 w-full max-w-full overflow-hidden border-b flex items-center justify-between px-2 sm:px-5 transition-colors duration-150 ${
+    <header className={`sticky top-0 z-40 h-14 w-full max-w-full overflow-hidden border-b flex items-center justify-between px-2 sm:px-5 transition-colors duration-150 font-mono ${
       isDark 
         ? 'bg-[#0E1113] border-[#22272B] text-[#D7DADC]' 
         : 'bg-white border-gray-200 text-[#1C1C1C]'
@@ -118,7 +118,7 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
           type="button"
           onClick={onToggleSidebar}
           aria-label={isKo ? '메뉴 토글' : 'Toggle menu'}
-          className={`p-2 rounded-full cursor-pointer transition-colors ${
+          className={`w-11 h-11 min-h-[44px] flex items-center justify-center rounded-sm cursor-pointer transition-colors ${
             isDark ? 'hover:bg-[#22272B] text-gray-300' : 'hover:bg-gray-100 text-gray-700'
           }`}
         >
@@ -129,13 +129,13 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
         <button
           type="button"
           onClick={() => onSelectSubreddit('popular')}
-          className="flex items-center gap-2.5 cursor-pointer group"
+          className="flex items-center gap-2.5 cursor-pointer group min-h-[44px]"
         >
-          <div className="relative w-8 h-8 rounded-full bg-gradient-to-tr from-[#FF4500] to-[#FF5414] flex items-center justify-center shadow-md overflow-hidden ring-2 ring-[#FF4500]/30 group-hover:scale-105 transition-transform">
+          <div className="relative w-8 h-8 rounded-sm bg-[#FF4500] flex items-center justify-center overflow-hidden border border-[#FF4500]/30 transition-transform">
             <Gamepad2 className="w-5 h-5 text-white" />
           </div>
           <div className="flex items-baseline">
-            <span className="font-extrabold text-xl sm:text-2xl tracking-tighter text-[#FF4500] font-sans">
+            <span className="font-extrabold text-xl sm:text-2xl tracking-tighter text-[#FF4500] font-mono">
               SNS<span className={isDark ? 'text-white' : 'text-gray-900'}>Hero</span>
             </span>
           </div>
@@ -146,7 +146,7 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
           <button
             type="button"
             onClick={() => setIsCommunityDropdownOpen(!isCommunityDropdownOpen)}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold cursor-pointer border transition-colors ${
+            className={`flex items-center gap-2 px-3.5 py-2 min-h-[44px] rounded-sm text-xs font-semibold cursor-pointer border transition-colors ${
               isDark 
                 ? 'bg-[#181C1F] border-[#2A3238] hover:bg-[#22272B] text-gray-200' 
                 : 'bg-gray-100 border-gray-200 hover:bg-gray-200 text-gray-800'
@@ -160,7 +160,7 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
           </button>
 
           {isCommunityDropdownOpen && (
-            <div className={`absolute top-full left-0 mt-2 w-60 rounded-2xl border shadow-2xl py-2 z-50 text-xs overflow-hidden backdrop-blur-md ${
+            <div className={`absolute top-full left-0 mt-2 w-60 rounded-none border py-2 z-50 text-xs overflow-hidden ${
               isDark ? 'bg-[#181C1F] border-[#2E363E] text-gray-200' : 'bg-white border-gray-200 text-gray-800'
             }`}>
               <div className="px-3.5 py-1 text-[10px] font-bold tracking-wider uppercase opacity-50">
@@ -178,13 +178,13 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
                     onSelectSubreddit(feed.id);
                     setIsCommunityDropdownOpen(false);
                   }}
-                  className={`w-full text-left px-3.5 py-2 cursor-pointer font-medium flex items-center justify-between ${
+                  className={`w-full text-left px-3.5 py-2.5 min-h-[44px] cursor-pointer font-medium flex items-center justify-between ${
                     isDark ? 'hover:bg-[#22272B]' : 'hover:bg-gray-100'
                   }`}
                 >
                   <span>{feed.label}</span>
                   {currentSubreddit.toLowerCase() === feed.id && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#FF4500]" />
+                    <span className="w-1.5 h-1.5 rounded-sm bg-[#FF4500]" />
                   )}
                 </button>
               ))}
@@ -201,7 +201,7 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
                     onSelectSubreddit(subKey);
                     setIsCommunityDropdownOpen(false);
                   }}
-                  className={`w-full text-left px-3.5 py-2 cursor-pointer font-medium flex items-center gap-2 ${
+                  className={`w-full text-left px-3.5 py-2.5 min-h-[44px] cursor-pointer font-medium flex items-center gap-2 ${
                     isDark ? 'hover:bg-[#22272B]' : 'hover:bg-gray-100'
                   }`}
                 >
@@ -224,7 +224,7 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
             onChange={(e) => setSearchQuery(e.target.value)}
             onFocus={() => setIsSearchFocused(true)}
             placeholder={isKo ? "SNSHero 검색..." : "Search SNSHero..."}
-            className={`w-full h-9 sm:h-10 pl-10 pr-8 rounded-full text-xs sm:text-sm font-normal outline-none transition-all ${
+            className={`w-full h-11 min-h-[44px] pl-10 pr-10 rounded-sm text-xs sm:text-sm font-mono outline-none transition-all ${
               isDark
                 ? 'bg-[#181C1F] hover:bg-[#22272B] focus:bg-[#0E1113] focus:ring-1 focus:ring-[#FF4500] text-gray-100 border border-transparent focus:border-[#FF4500]'
                 : 'bg-[#EAEDEF] hover:bg-gray-200 focus:bg-white focus:ring-1 focus:ring-[#FF4500] text-gray-900 border border-transparent focus:border-[#FF4500]'
@@ -234,7 +234,7 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
             <button
               type="button"
               onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 p-0.5 opacity-50 hover:opacity-100"
+              className="absolute right-0 top-1/2 -translate-y-1/2 w-11 h-11 min-h-[44px] flex items-center justify-center opacity-50 hover:opacity-100 cursor-pointer"
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -243,7 +243,7 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
 
         {/* 검색 자동완성 & 트렌딩 검색어 */}
         {isSearchFocused && (
-          <div className={`absolute top-full left-0 right-0 mt-2 rounded-2xl border shadow-2xl py-3 z-50 overflow-hidden backdrop-blur-xl ${
+          <div className={`absolute top-full left-0 right-0 mt-2 rounded-none border py-3 z-50 overflow-hidden ${
             isDark ? 'bg-[#181C1F] border-[#2E363E] text-gray-200' : 'bg-white border-gray-200 text-gray-800'
           }`}>
             <div className="px-4 py-1 text-[11px] font-bold tracking-wider uppercase opacity-50 flex items-center gap-1.5">
@@ -259,7 +259,7 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
                   onSearch(item);
                   setIsSearchFocused(false);
                 }}
-                className={`w-full text-left px-4 py-2 text-xs sm:text-sm cursor-pointer flex items-center justify-between transition-colors ${
+                className={`w-full text-left px-4 py-2.5 min-h-[44px] text-xs sm:text-sm cursor-pointer flex items-center justify-between transition-colors ${
                   isDark ? 'hover:bg-[#22272B]' : 'hover:bg-gray-100'
                 }`}
               >
@@ -280,7 +280,7 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
         <button
           type="button"
           onClick={onOpenSubmitModal}
-          className={`flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-1.5 rounded-full text-xs font-semibold cursor-pointer transition-all ${
+          className={`flex items-center gap-1.5 px-3.5 py-2.5 min-h-[44px] rounded-sm text-xs font-semibold cursor-pointer transition-all ${
             isDark
               ? 'bg-[#22272B] hover:bg-[#2C3238] text-gray-100'
               : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
@@ -294,7 +294,7 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
         <button
           type="button"
           aria-label={isKo ? '채팅' : 'Chat'}
-          className={`p-2 rounded-full cursor-pointer transition-colors relative ${
+          className={`w-11 h-11 min-h-[44px] flex items-center justify-center rounded-sm cursor-pointer transition-colors relative ${
             isDark ? 'hover:bg-[#22272B] text-gray-300' : 'hover:bg-gray-100 text-gray-700'
           }`}
           onClick={() => setIsChatOpen(true)}
@@ -311,13 +311,13 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
               setIsNotificationsOpen(!isNotificationsOpen);
               setHasUnreadNotif(false);
             }}
-            className={`p-2 rounded-full cursor-pointer transition-colors relative ${
+            className={`w-11 h-11 min-h-[44px] flex items-center justify-center rounded-sm cursor-pointer transition-colors relative ${
               isDark ? 'hover:bg-[#22272B] text-gray-300' : 'hover:bg-gray-100 text-gray-700'
             }`}
           >
             <Bell className="w-5 h-5" />
             {hasUnreadNotif && (
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#FF4500] ring-2 ring-[#0E1113]" />
+              <span className="absolute top-2 right-2 w-2 h-2 rounded-sm bg-[#FF4500] ring-2 ring-[#0E1113]" />
             )}
           </button>
 
@@ -340,23 +340,23 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
           <button
             type="button"
             onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
-            className="flex items-center gap-1.5 p-1 rounded-full cursor-pointer hover:ring-2 hover:ring-[#FF4500]/50 transition-all"
+            className="flex items-center gap-1.5 p-1 min-h-[44px] rounded-sm cursor-pointer hover:border hover:border-[#FF4500]/50 transition-all"
           >
-            <div className="relative w-8 h-8 rounded-full overflow-hidden bg-gradient-to-br from-amber-400 to-[#FF4500] flex items-center justify-center text-white font-bold text-xs shadow-inner">
+            <div className="relative w-8 h-8 rounded-sm overflow-hidden bg-[#FF4500] flex items-center justify-center text-white font-bold text-xs">
               <User className="w-4 h-4" />
-              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-[#0E1113]" />
+              <span className="absolute bottom-0 right-0 w-2 h-2 rounded-sm bg-emerald-500 border border-[#0E1113]" />
             </div>
             <ChevronDown className="w-3.5 h-3.5 opacity-60 hidden sm:block" />
           </button>
 
           {isProfileMenuOpen && (
-            <div className={`absolute top-full right-0 mt-2 w-64 rounded-2xl border shadow-2xl py-3 z-50 text-xs overflow-hidden backdrop-blur-xl ${
+            <div className={`absolute top-full right-0 mt-2 w-64 rounded-none border py-3 z-50 text-xs overflow-hidden ${
               isDark ? 'bg-[#181C1F] border-[#2E363E] text-gray-200' : 'bg-white border-gray-200 text-gray-800'
             }`}>
               {/* 유저 정보 요약 */}
               <div className="px-4 py-2 border-b border-inherit/10">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-amber-400 to-[#FF4500] flex items-center justify-center text-white font-bold">
+                  <div className="w-9 h-9 rounded-sm bg-[#FF4500] flex items-center justify-center text-white font-bold">
                     <User className="w-4 h-4" />
                   </div>
                   <div>
@@ -377,7 +377,7 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
                     onOpenUserProfile('SNSHeroPlayer');
                     setIsProfileMenuOpen(false);
                   }}
-                  className={`w-full text-left px-4 py-2.5 flex items-center gap-2.5 cursor-pointer ${
+                  className={`w-full text-left px-4 py-3 min-h-[44px] flex items-center gap-2.5 cursor-pointer ${
                     isDark ? 'hover:bg-[#22272B]' : 'hover:bg-gray-100'
                   }`}
                 >
@@ -389,7 +389,7 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
                 <button
                   type="button"
                   onClick={onToggleTheme}
-                  className={`w-full text-left px-4 py-2.5 flex items-center justify-between cursor-pointer ${
+                  className={`w-full text-left px-4 py-3 min-h-[44px] flex items-center justify-between cursor-pointer ${
                     isDark ? 'hover:bg-[#22272B]' : 'hover:bg-gray-100'
                   }`}
                 >
@@ -397,7 +397,7 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
                     {isDark ? <Moon className="w-4 h-4 text-purple-400" /> : <Sun className="w-4 h-4 text-amber-500" />}
                     <span>{isKo ? '다크 모드' : 'Dark Mode'}</span>
                   </div>
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-sm ${
                     isDark ? 'bg-[#2E363E] text-[#FF4500]' : 'bg-gray-200 text-gray-700'
                   }`}>
                     {isDark ? 'ON' : 'OFF'}
@@ -408,7 +408,7 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
                 <button
                   type="button"
                   onClick={onToggleLanguage}
-                  className={`w-full text-left px-4 py-2.5 flex items-center justify-between cursor-pointer ${
+                  className={`w-full text-left px-4 py-3 min-h-[44px] flex items-center justify-between cursor-pointer ${
                     isDark ? 'hover:bg-[#22272B]' : 'hover:bg-gray-100'
                   }`}
                 >
@@ -416,7 +416,7 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
                     <Languages className="w-4 h-4 text-emerald-400" />
                     <span>{isKo ? '언어 (Language)' : 'Language'}</span>
                   </div>
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FF4500]/15 text-[#FF4500]`}>
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-sm bg-[#FF4500]/15 text-[#FF4500]`}>
                     {isKo ? '한국어' : 'English'}
                   </span>
                 </button>
@@ -430,7 +430,7 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
                     setIsProfileMenuOpen(false);
                     onGoToGame();
                   }}
-                  className={`w-full text-left px-4 py-2.5 flex items-center gap-2.5 cursor-pointer text-[#FF4500] font-bold ${
+                  className={`w-full text-left px-4 py-3 min-h-[44px] flex items-center gap-2.5 cursor-pointer text-[#FF4500] font-bold ${
                     isDark ? 'hover:bg-[#22272B]' : 'hover:bg-gray-100'
                   }`}
                 >

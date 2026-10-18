@@ -57,13 +57,13 @@ export const RedditUserProfileView: React.FC<RedditUserProfileViewProps> = ({
   const savedPosts = posts.filter((p) => userState.savedPostIds.includes(p.id));
 
   return (
-    <div className="space-y-4 w-full max-w-full overflow-hidden">
+    <div className="space-y-4 w-full max-w-full overflow-hidden font-mono">
       {/* 뒤로가기 바 */}
       <div className="flex items-center justify-between">
         <button
           type="button"
           onClick={onBack}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold cursor-pointer transition-colors ${
+          className={`flex items-center gap-1.5 px-3.5 py-2.5 min-h-[44px] rounded-sm text-xs font-bold cursor-pointer transition-colors ${
             isDark ? 'hover:bg-[#22272B] text-gray-200' : 'hover:bg-gray-100 text-gray-800'
           }`}
         >
@@ -74,7 +74,7 @@ export const RedditUserProfileView: React.FC<RedditUserProfileViewProps> = ({
         <button
           type="button"
           onClick={handleShareProfile}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border cursor-pointer ${
+          className={`flex items-center gap-1.5 px-3.5 py-2.5 min-h-[44px] rounded-sm text-xs font-bold border cursor-pointer ${
             isDark ? 'border-gray-700 hover:bg-[#22272B]' : 'border-gray-200 hover:bg-gray-100'
           }`}
         >
@@ -84,10 +84,10 @@ export const RedditUserProfileView: React.FC<RedditUserProfileViewProps> = ({
       </div>
 
       {/* 프로필 카드 헤더 */}
-      <div className={`rounded-2xl border overflow-hidden shadow-sm ${
+      <div className={`rounded-none border overflow-hidden ${
         isDark ? 'bg-[#181C1F] border-[#22272B] text-gray-200' : 'bg-white border-gray-200 text-gray-800'
       }`}>
-        <div className="h-24 sm:h-32 w-full bg-gradient-to-r from-sky-500 via-indigo-600 to-purple-600 relative">
+        <div className="h-24 sm:h-32 w-full bg-[#201d1d] border-b border-inherit/10 relative">
           {user.bannerUrl && (
             <img src={user.bannerUrl} alt="" className="w-full h-full object-cover opacity-80" />
           )}
@@ -96,7 +96,7 @@ export const RedditUserProfileView: React.FC<RedditUserProfileViewProps> = ({
         <div className="p-4 sm:p-6 relative">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 -mt-12 sm:-mt-16 mb-4">
             <div className="flex items-end gap-3 sm:gap-4">
-              <div className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 overflow-hidden flex-shrink-0 shadow-lg bg-white ${
+              <div className={`w-20 h-20 sm:w-24 sm:h-24 rounded-sm border-2 overflow-hidden flex-shrink-0 bg-white ${
                 isDark ? 'border-[#181C1F]' : 'border-white'
               }`}>
                 {user.avatarUrl ? (
@@ -159,13 +159,13 @@ export const RedditUserProfileView: React.FC<RedditUserProfileViewProps> = ({
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveTab(tab.id as 'overview' | 'posts' | 'saved')}
-                className={`pb-1 cursor-pointer uppercase tracking-wider transition-colors relative ${
+                className={`min-h-[44px] px-3 py-2 cursor-pointer uppercase tracking-wider transition-colors relative flex items-center justify-center ${
                   activeTab === tab.id ? 'text-[#FF4500]' : 'opacity-60 hover:opacity-100'
                 }`}
               >
                 <span>{tab.label}</span>
                 {activeTab === tab.id && (
-                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#FF4500] rounded-full" />
+                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#FF4500]" />
                 )}
               </button>
             ))}
@@ -195,7 +195,7 @@ export const RedditUserProfileView: React.FC<RedditUserProfileViewProps> = ({
               />
             ))
           ) : (
-            <div className={`rounded-2xl border p-12 text-center text-xs opacity-50 ${
+            <div className={`rounded-none border p-12 text-center text-xs opacity-50 ${
               isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'
             }`}>
               {isKo ? `u/${user.username} 님이 아직 작성한 게시물이 없습니다.` : `u/${user.username} has not submitted any posts yet.`}
@@ -219,7 +219,7 @@ export const RedditUserProfileView: React.FC<RedditUserProfileViewProps> = ({
               />
             ))
           ) : (
-            <div className={`rounded-2xl border p-12 text-center text-xs opacity-50 ${
+            <div className={`rounded-none border p-12 text-center text-xs opacity-50 ${
               isDark ? 'bg-[#181C1F] border-[#22272B]' : 'bg-white border-gray-200'
             }`}>
               {isKo ? '저장된 게시물이 없습니다.' : 'No saved posts found.'}

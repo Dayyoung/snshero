@@ -20,7 +20,7 @@ export const RedditQuickCreatePostBar: React.FC<RedditQuickCreatePostBarProps> =
   return (
     <div
       onClick={onOpenSubmitModal}
-      className={`rounded-2xl border p-2.5 sm:p-3 mb-3 w-full max-w-full overflow-hidden flex items-center gap-2 sm:gap-3 cursor-pointer transition-colors shadow-sm ${
+      className={`rounded-none border p-2.5 sm:p-3 mb-3 w-full max-w-full overflow-hidden flex items-center gap-2 sm:gap-3 cursor-pointer transition-colors font-mono ${
         isDark
           ? 'bg-[#181C1F] hover:bg-[#1E2328] border-[#22272B]'
           : 'bg-white hover:bg-gray-50 border-gray-200'
@@ -30,12 +30,12 @@ export const RedditQuickCreatePostBar: React.FC<RedditQuickCreatePostBarProps> =
       <img
         src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=64&q=80"
         alt="User Avatar"
-        className="w-9 h-9 rounded-full object-cover flex-shrink-0 border border-inherit/20"
+        className="w-9 h-9 rounded-none object-cover flex-shrink-0 border border-inherit/20"
       />
 
       {/* 가짜 인풋 창 */}
       <div
-        className={`flex-1 min-w-0 px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-colors truncate ${
+        className={`flex-1 min-w-0 min-h-[44px] px-4 py-2 rounded-sm text-xs sm:text-sm font-medium transition-colors truncate flex items-center ${
           isDark
             ? 'bg-[#22272B] hover:bg-[#2A3238] text-gray-400'
             : 'bg-gray-100 hover:bg-gray-200 text-gray-500'
@@ -49,7 +49,7 @@ export const RedditQuickCreatePostBar: React.FC<RedditQuickCreatePostBarProps> =
         <button
           type="button"
           onClick={(e) => { e.stopPropagation(); onOpenSubmitModal(); }}
-          className="p-2 rounded-full hover:bg-black/10 cursor-pointer"
+          className="min-h-[44px] min-w-[44px] p-2 rounded-sm hover:bg-black/10 cursor-pointer flex items-center justify-center"
           title={isKo ? '이미지 업로드' : 'Upload Image'}
         >
           <Image className="w-5 h-5 opacity-70 hover:opacity-100 transition-opacity" />
@@ -57,7 +57,7 @@ export const RedditQuickCreatePostBar: React.FC<RedditQuickCreatePostBarProps> =
         <button
           type="button"
           onClick={(e) => { e.stopPropagation(); onOpenSubmitModal(); }}
-          className="p-2 rounded-full hover:bg-black/10 cursor-pointer"
+          className="min-h-[44px] min-w-[44px] p-2 rounded-sm hover:bg-black/10 cursor-pointer flex items-center justify-center"
           title={isKo ? '링크 공유' : 'Share Link'}
         >
           <Link2 className="w-5 h-5 opacity-70 hover:opacity-100 transition-opacity" />

@@ -116,7 +116,7 @@ const renderFlairBadge = (flair?: PostFlair, extraClass?: string) => {
   const meta = FLAIR_META[flair];
   if (!meta) return null;
   return (
-    <span className={cn('inline-flex items-center gap-1 px-2 py-0.5 rounded-md border text-[9px] font-bold leading-none', meta.color, extraClass)}>
+    <span className={cn('inline-flex items-center gap-1 px-2 py-0.5 rounded-sm border text-[9px] font-bold leading-none', meta.color, extraClass)}>
       <span className="text-[10px] leading-none">{meta.icon}</span>
       {meta.label}
     </span>
@@ -1234,7 +1234,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
             <button
               onClick={handleToggleSound}
               className={cn(
-                "inline-flex min-h-9 min-w-9 items-center justify-center rounded-sm border transition-all active:scale-95 cursor-pointer touch-target font-mono text-xs",
+                "inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-sm border transition-all active:scale-95 cursor-pointer touch-target font-mono text-xs",
                 soundMuted
                   ? "bg-[#eae5e5] text-[#888] border-[rgba(15,0,0,0.2)]"
                   : "bg-white text-[#201d1d] border-[rgba(15,0,0,0.15)] hover:border-[#201d1d]"
@@ -1242,7 +1242,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
               title={soundMuted ? (language === 'ko' ? '사운드 켜기' : 'Unmute sound') : (language === 'ko' ? '사운드 끄기' : 'Mute sound')}
               aria-label={soundMuted ? "Unmute sound" : "Mute sound"}
             >
-              {soundMuted ? <VolumeX size={14} /> : <Volume2 size={14} />}
+              {soundMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
             </button>
             <button
               onClick={() => {
@@ -1252,7 +1252,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                 }
                 setShowUploadModal(true);
               }}
-              className="inline-flex min-h-9 items-center gap-1 px-3 py-1.5 rounded-sm border border-[#201d1d] bg-[#201d1d] hover:bg-[#383333] text-white text-xs font-bold transition-all active:scale-95 cursor-pointer touch-target"
+              className="inline-flex min-h-[44px] items-center gap-1 px-3.5 py-2 rounded-sm border border-[#201d1d] bg-[#201d1d] hover:bg-[#383333] text-white text-xs font-bold transition-all active:scale-95 cursor-pointer touch-target font-mono"
               title={language === 'ko' ? '새 글 작성' : 'Write post'}
               aria-label="Write post"
             >
@@ -1265,17 +1265,17 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                 loadPosts();
               }}
               className={cn(
-                "inline-flex min-h-9 min-w-9 items-center justify-center rounded-sm border border-[rgba(15,0,0,0.15)] bg-white text-[#201d1d] transition-all hover:border-[#201d1d] hover:bg-[#f5f2f2] active:scale-95 cursor-pointer touch-target",
+                "inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-sm border border-[rgba(15,0,0,0.15)] bg-white text-[#201d1d] transition-all hover:border-[#201d1d] hover:bg-[#f5f2f2] active:scale-95 cursor-pointer touch-target font-mono",
                 loading && "animate-spin text-[#201d1d]"
               )}
               title={language === 'ko' ? '글 목록 새로고침 (구글 시트)' : 'Refresh posts (Google Sheet)'}
               aria-label="Refresh posts"
             >
-              <RotateCw size={14} />
+              <RotateCw size={16} />
             </button>
             <button
               onClick={() => { setShowHelp(true); setHelpSlide(0); playCustomSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3'); }}
-              className="inline-flex min-h-9 min-w-9 items-center justify-center rounded-sm border border-[rgba(15,0,0,0.15)] bg-white text-[#201d1d] transition-all hover:border-[#201d1d] hover:bg-[#f5f2f2] active:scale-95 cursor-pointer touch-target font-mono font-bold text-xs"
+              className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-sm border border-[rgba(15,0,0,0.15)] bg-white text-[#201d1d] transition-all hover:border-[#201d1d] hover:bg-[#f5f2f2] active:scale-95 cursor-pointer touch-target font-mono font-bold text-xs"
               title="Help"
               aria-label="Help"
             >
@@ -1295,12 +1295,12 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
 
       {/* ── Fan Events Section ── */}
       {activeFanEvents.length > 0 && (
-        <div className="mt-2 mb-1">
-          <h3 className="text-[11px] font-black text-slate-500 uppercase tracking-wider mb-2 px-1 flex items-center gap-2">
-            <Sparkles size={14} className="text-amber-500" />
+        <div className="mt-2 mb-1 font-mono">
+          <h3 className="text-[11px] font-bold text-[#646262] uppercase tracking-wider mb-2 px-1 flex items-center gap-2 font-mono">
+            <Sparkles size={14} className="text-[#201d1d]" />
             {t('fan_events_title', language)}
           </h3>
-          <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-hide">
+          <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-hide font-mono">
             {activeFanEvents.map((event) => {
               const meta = FAN_EVENT_TYPE_META[event.type];
               const userVoted = hasVoted(event.id);
@@ -1325,34 +1325,34 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                       window.history.pushState({}, '', `?view=community&category=${event.categoryType}`);
                     }
                   }}
-                  className="flex-shrink-0 w-56 rounded-xl border border-slate-200 bg-white p-3 hover:border-slate-300 transition-all shadow-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-200"
+                  className="flex-shrink-0 w-56 rounded-none border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] p-3 hover:border-[#201d1d] transition-all cursor-pointer font-mono"
                 >
                   {/* Event type badge */}
-                  <div className="flex items-center gap-1.5 mb-2">
-                    <span className={cn('w-6 h-6 rounded-lg flex items-center justify-center text-xs', meta.bgClass)}>
+                  <div className="flex items-center gap-1.5 mb-2 font-mono">
+                    <span className={cn('w-6 h-6 rounded-none flex items-center justify-center text-xs font-mono', meta.bgClass)}>
                       {meta.iconKey}
                     </span>
-                    <span className="text-[9px] font-black uppercase text-slate-400">
+                    <span className="text-[9px] font-bold uppercase text-[#646262]">
                       {t(`fan_event_type_${event.type}`, language)}
                     </span>
                     {event.type === 'vote' && userVoted && (
-                      <span className="ml-auto text-[8px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">
+                      <span className="ml-auto text-[8px] font-bold text-emerald-800 bg-emerald-50 px-1.5 py-0.5 rounded-sm border border-emerald-200">
                         ✓ {t('fan_event_voted', language)}
                       </span>
                     )}
                   </div>
 
                   {/* Title */}
-                  <p className="text-xs font-bold text-slate-800 mb-1">
+                  <p className="text-xs font-bold text-[#201d1d] mb-1 font-mono">
                     {t(event.titleKey, language)}
                   </p>
-                  <p className="text-[10px] text-slate-500 mb-2 line-clamp-2">
+                  <p className="text-[10px] text-[#646262] mb-2 line-clamp-2 font-mono">
                     {t(event.descKey, language)}
                   </p>
 
                   {/* Vote options & Result Graph */}
                   {event.type === 'vote' && event.voteOptions && (
-                    <div className="mb-2.5 space-y-1.5">
+                    <div className="mb-2.5 space-y-1.5 font-mono">
                       <div className="flex flex-wrap gap-1.5">
                         {event.voteOptions.map((opt) => {
                           const isSelected = userVote === opt.id;
@@ -1376,26 +1376,26 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                                 }
                               }}
                               className={cn(
-                                'relative flex-1 min-w-[100px] overflow-hidden flex flex-col p-2 rounded-lg border text-[10px] font-bold transition-all touch-target',
+                                'relative flex-1 min-w-[100px] min-h-[44px] overflow-hidden flex flex-col justify-center p-2 rounded-sm border text-[10px] font-bold font-mono transition-all touch-target cursor-pointer',
                                 isSelected
-                                  ? 'border-indigo-400 bg-indigo-50/70 text-indigo-700 shadow-sm'
-                                  : 'border-slate-200 bg-slate-50 hover:bg-rose-50/50 hover:border-rose-200 text-slate-700'
+                                  ? 'border-[#201d1d] bg-[#201d1d] text-[#fdfcfc]'
+                                  : 'border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] hover:border-[#201d1d] text-[#201d1d]'
                               )}
                             >
                               {/* Graph bar fill */}
                               <div
                                 className={cn(
                                   'absolute left-0 top-0 bottom-0 opacity-20 transition-all duration-500',
-                                  isSelected ? 'bg-indigo-500' : 'bg-slate-400'
+                                  isSelected ? 'bg-white' : 'bg-stone-400'
                                 )}
                                 style={{ width: `${pct}%` }}
                               />
-                              <div className="relative z-10 flex items-center justify-between gap-1 w-full">
+                              <div className="relative z-10 flex items-center justify-between gap-1 w-full font-mono">
                                 <span className="flex items-center gap-1 truncate">
                                   {opt.emoji && <span>{opt.emoji}</span>}
                                   {t(opt.labelKey, language)}
                                 </span>
-                                <span className="text-[9px] font-black shrink-0">{pct}%</span>
+                                <span className="text-[9px] font-bold shrink-0">{pct}%</span>
                               </div>
                             </button>
                           );
@@ -1403,12 +1403,12 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                       </div>
 
                       {userVoted && (
-                        <div className="flex items-center justify-between px-1 text-[9px] text-slate-500">
-                          <span className="flex items-center gap-1 text-emerald-600 font-bold">
+                        <div className="flex items-center justify-between px-1 text-[9px] text-[#646262] font-mono">
+                          <span className="flex items-center gap-1 text-emerald-700 font-bold">
                             <CheckCircle2 size={11} />
                             {t('fan_event_voted_notice', language) || '투표 완료 (다시 선택하여 변경 가능)'}
                           </span>
-                          <span className="font-semibold text-slate-400">
+                          <span className="font-semibold text-[#888]">
                             {t('fan_event_expires', language) || '마감'}: {event.endDate} 23:59
                           </span>
                         </div>
@@ -1417,8 +1417,8 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                   )}
 
                   {/* Reward + action */}
-                  <div className="flex items-center justify-between">
-                    <span className="text-[9px] font-bold text-amber-600">
+                  <div className="flex items-center justify-between font-mono">
+                    <span className="text-[9px] font-bold text-amber-800">
                       +{event.rewardSns.toLocaleString()} SNS
                     </span>
                     <button
@@ -1440,7 +1440,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                         }
                         setShowUploadModal(true);
                       }}
-                      className="text-[9px] font-bold text-indigo-600 hover:text-indigo-700 active:scale-95 transition-all touch-target flex items-center gap-1"
+                      className="min-h-[44px] px-2 text-[9px] font-bold font-mono text-[#201d1d] hover:underline active:scale-95 transition-all touch-target flex items-center gap-1 cursor-pointer"
                     >
                       <Tag size={12} />
                       {t('fan_event_join', language)}
@@ -1468,7 +1468,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
             playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
             loadPosts();
           }}
-          className="inline-flex items-center gap-1 text-[10px] font-mono font-bold text-emerald-800 hover:text-emerald-950 underline cursor-pointer bg-transparent border-none p-0 touch-target"
+          className="inline-flex min-h-[44px] px-2 items-center gap-1 text-[10px] font-mono font-bold text-emerald-800 hover:text-emerald-950 underline cursor-pointer bg-transparent border-none p-0 touch-target"
         >
           <RotateCw size={11} className={loading ? "animate-spin" : ""} />
           <span>{language === 'ko' ? '[새로고침]' : '[Refresh]'}</span>
@@ -1477,7 +1477,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
 
       {/* [Round 4] Search & Filter Control Hub (DESIGN.md Monospace Flat) */}
       {!selectedPost && (
-        <div className="flex flex-col gap-2.5 border-b border-[rgba(15,0,0,0.12)] pb-3 px-1 mt-2">
+        <div className="flex flex-col gap-2.5 border-b border-[rgba(15,0,0,0.12)] pb-3 px-1 mt-2 font-mono">
           {/* 실시간 검색창 */}
           <div className="relative flex items-center">
             <Search size={14} className="absolute left-3 text-[#777] pointer-events-none" />
@@ -1486,7 +1486,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={language === 'ko' ? '글 내용, 작성자, 태그 실시간 검색...' : 'Search posts, authors, tags...'}
-              className="w-full pl-8 pr-16 py-2 bg-white border border-[rgba(15,0,0,0.15)] focus:border-[#201d1d] rounded-sm font-mono text-xs text-[#201d1d] outline-none transition-colors shadow-xs"
+              className="w-full pl-8 pr-16 py-2 bg-white border border-[rgba(15,0,0,0.15)] focus:border-[#201d1d] rounded-sm font-mono text-xs text-[#201d1d] outline-none transition-colors"
             />
             {searchQuery && (
               <div className="absolute right-2.5 flex items-center gap-1.5">
@@ -1499,7 +1499,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                     playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
                     setSearchQuery('');
                   }}
-                  className="px-1.5 py-0.5 bg-[#eae5e5] hover:bg-[#d8d2d2] text-[#201d1d] text-[10px] font-mono font-bold rounded-xs cursor-pointer border-none"
+                  className="min-h-[44px] min-w-[44px] flex items-center justify-center px-1.5 bg-[#eae5e5] hover:bg-[#d8d2d2] text-[#201d1d] text-[10px] font-mono font-bold rounded-xs cursor-pointer border-none"
                   title="Clear search"
                 >
                   [✕]
@@ -1509,7 +1509,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
           </div>
 
           {/* Sort & Hidden Posts Bar */}
-          <div className="flex items-center justify-between gap-2 pt-1">
+          <div className="flex items-center justify-between gap-2 pt-1 font-mono">
             <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-hide py-0.5">
               {([
                 { mode: 'hot' as CommunitySortMode, icon: Flame, label: 'Hot' },
@@ -1524,7 +1524,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                     setSortMode(mode);
                   }}
                   className={cn(
-                    'flex items-center gap-1 px-2.5 py-1 rounded-sm text-[10px] font-mono font-bold transition-all cursor-pointer border touch-target',
+                    'flex items-center gap-1 min-h-[44px] px-3 py-1.5 rounded-sm text-[10px] font-mono font-bold transition-all cursor-pointer border touch-target',
                     sortMode === mode
                       ? 'bg-[#201d1d] text-white border-[#201d1d]'
                       : 'bg-[#fdfcfc] text-[#554f4f] border-[rgba(15,0,0,0.15)] hover:border-[#201d1d]'
@@ -1535,7 +1535,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                 </button>
               ))}
             </div>
-            <div className="flex items-center gap-2 shrink-0">
+            <div className="flex items-center gap-2 shrink-0 font-mono">
               {activeUser && posts.some(p => p.hiddenBy?.includes(activeUser.uid)) && (
                 <button
                   onClick={() => {
@@ -1543,7 +1543,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                     setShowHiddenPosts(!showHiddenPosts);
                   }}
                   className={cn(
-                    'flex items-center gap-1 px-2 py-1 rounded-sm text-[10px] font-mono font-bold transition-all cursor-pointer border touch-target',
+                    'flex items-center gap-1 min-h-[44px] px-3 py-1.5 rounded-sm text-[10px] font-mono font-bold transition-all cursor-pointer border touch-target',
                     showHiddenPosts
                       ? 'bg-amber-100 text-amber-900 border-amber-300'
                       : 'bg-[#fdfcfc] text-[#554f4f] border-[rgba(15,0,0,0.15)] hover:border-[#201d1d]'
@@ -1557,7 +1557,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
           </div>
 
           {/* 원터치 플레어(태그) 토글 칩 바 */}
-          <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-hide py-0.5">
+          <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-hide py-0.5 font-mono">
             <span className="text-[10px] font-mono font-bold text-[#888] shrink-0">
               [TAG]:
             </span>
@@ -1567,7 +1567,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                 setSelectedFlairFilter('all');
               }}
               className={cn(
-                'px-2 py-0.5 rounded-sm text-[10px] font-mono font-bold transition-all cursor-pointer border touch-target shrink-0',
+                'min-h-[44px] px-3 py-1 flex items-center justify-center rounded-sm text-[10px] font-mono font-bold transition-all cursor-pointer border touch-target shrink-0',
                 selectedFlairFilter === 'all'
                   ? 'bg-[#201d1d] text-white border-[#201d1d]'
                   : 'bg-white text-[#666] border-[rgba(15,0,0,0.12)] hover:border-[#201d1d]'
@@ -1586,7 +1586,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                     setSelectedFlairFilter(isSelected ? 'all' : flair);
                   }}
                   className={cn(
-                    'flex items-center gap-1 px-2 py-0.5 rounded-sm text-[10px] font-mono font-bold transition-all cursor-pointer border touch-target shrink-0',
+                    'flex items-center gap-1 min-h-[44px] px-3 py-1 rounded-sm text-[10px] font-mono font-bold transition-all cursor-pointer border touch-target shrink-0',
                     isSelected
                       ? 'bg-[#201d1d] text-white border-[#201d1d]'
                       : 'bg-white text-[#444] border-[rgba(15,0,0,0.12)] hover:border-[#201d1d]'
@@ -1606,7 +1606,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
         // 3A. 자세히 보기 화면 (Semantic HTML5, DESIGN.md Monospace Flat)
         <article className="border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] rounded-none overflow-hidden flex flex-col text-[#201d1d] font-mono">
           {/* Header */}
-          <header className="p-4 border-b border-[rgba(15,0,0,0.10)] flex items-center justify-between bg-white">
+          <header className="p-4 border-b border-[rgba(15,0,0,0.10)] flex items-center justify-between bg-white font-mono">
             <div className="flex items-center gap-3">
               <button
                 onClick={() => {
@@ -1616,7 +1616,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                   url.searchParams.delete('postId');
                   window.history.replaceState({}, '', url.toString());
                 }}
-                className="p-1.5 border border-[rgba(15,0,0,0.15)] hover:border-[#201d1d] hover:bg-[#f5f2f2] rounded-sm transition-colors cursor-pointer text-[#201d1d] shrink-0 font-mono font-bold text-xs"
+                className="min-h-[44px] min-w-[44px] flex items-center justify-center p-1.5 border border-[rgba(15,0,0,0.15)] hover:border-[#201d1d] hover:bg-[#f5f2f2] rounded-sm transition-colors cursor-pointer text-[#201d1d] shrink-0 font-mono font-bold text-xs"
                 title="Back"
               >
                 [←]
@@ -1625,7 +1625,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                 <img
                   src={formatAvatarUrl(selectedPost.userAvatar, selectedPost.userId)}
                   alt={selectedPost.userName}
-                  className="w-10 h-10 border border-slate-150 rounded-full object-cover bg-white"
+                  className="w-10 h-10 border border-[rgba(15,0,0,0.12)] rounded-none object-cover bg-white"
                 />
                 {(() => {
                   const petCardId = getLocalMonsterPetId(selectedPost.userId, selectedPost.userAvatar);
@@ -1645,30 +1645,30 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                   return (
                     <>
                       <div className="flex flex-wrap items-center gap-1.5">
-                        <h4 className="font-bold text-sm tracking-tight text-slate-800">
+                        <h4 className="font-bold text-sm tracking-tight text-[#201d1d]">
                           <HighlightText text={selectedPost.userName} query={searchQuery} />
                         </h4>
                         {identity.emoticon ? <span className="text-sm leading-none">{identity.emoticon.symbol}</span> : null}
                         {identity.badge ? (
-                          <span className="rounded-full border border-amber-100 bg-amber-50 px-2 py-0.5 text-[9px] font-bold text-amber-700">
+                          <span className="rounded-sm border border-amber-300 bg-amber-50 px-2 py-0.5 text-[9px] font-bold text-amber-800">
                             {identity.badge.symbol} {t(identity.badge.labelKey, language)}
                           </span>
                         ) : null}
                       </div>
                       {identity.title ? (
-                        <p className="mt-0.5 text-[10px] font-semibold text-slate-500">{t(identity.title.labelKey, language)}</p>
+                        <p className="mt-0.5 text-[10px] font-semibold text-[#646262]">{t(identity.title.labelKey, language)}</p>
                       ) : null}
                     </>
                   );
                 })()}
-                <time className="text-[10px] text-slate-400 font-semibold block mt-0.5" dateTime={new Date(selectedPost.createdAt).toISOString()}>
+                <time className="text-[10px] text-[#646262] font-semibold block mt-0.5" dateTime={new Date(selectedPost.createdAt).toISOString()}>
                   {getRelativeTimeString(selectedPost.createdAt)}
                 </time>
               </div>
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-bold uppercase bg-slate-100 text-slate-650 px-2.5 py-1 rounded-md">
+              <span className="text-[10px] font-bold uppercase bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] text-[#201d1d] px-2.5 py-1 rounded-sm">
                 {t(`community_cat_${selectedPost.category || 'free'}` as any, language)}
               </span>
 
@@ -1676,21 +1676,21 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
               {renderFlairBadge(selectedPost.flair)}
 
               {selectedPost.isFromSheet && (
-                <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200 text-[9px] font-bold">
+                <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-sm bg-emerald-50 text-emerald-800 border border-emerald-300 text-[9px] font-bold">
                   📊 G-Sheet
                 </span>
               )}
 
               {/* Doc 62: Pinned indicator */}
               {selectedPost.isPinned && (
-                <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 border border-amber-200 text-[9px] font-bold">
+                <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-sm bg-amber-50 text-amber-800 border border-amber-300 text-[9px] font-bold">
                   <Pin size={10} /> Pinned
                 </span>
               )}
 
               {/* Doc 62: Weekly thread indicator */}
               {selectedPost.isWeeklyThread && (
-                <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200 text-[9px] font-bold">
+                <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-sm bg-emerald-50 text-emerald-800 border border-emerald-300 text-[9px] font-bold">
                   📅 Weekly
                 </span>
               )}
@@ -1703,13 +1703,13 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                     playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
                     setPostMenuOpen(postMenuOpen === selectedPost.id ? null : selectedPost.id);
                   }}
-                  className="p-1.5 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer text-slate-500 border-none"
+                  className="min-h-[44px] min-w-[44px] flex items-center justify-center p-1.5 hover:bg-[#f8f7f7] rounded-sm transition-colors cursor-pointer text-[#646262] hover:text-[#201d1d] border border-[rgba(15,0,0,0.12)]"
                   title="Post menu"
                 >
                   <MoreHorizontal size={16} />
                 </button>
                 {postMenuOpen === selectedPost.id && (
-                  <div className="absolute right-0 top-full mt-1 w-40 bg-white border border-slate-200 rounded-xl shadow-lg z-30 py-1 text-[11px] font-semibold">
+                  <div className="absolute right-0 top-full mt-1 w-40 bg-[#fdfcfc] border border-[#201d1d] rounded-none z-30 py-1 text-[11px] font-semibold font-mono">
                     {activeUser && (
                       <>
                         <button
@@ -1717,7 +1717,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                             const isHidden = selectedPost.hiddenBy?.includes(activeUser.uid);
                             handleHidePost(selectedPost.id, e);
                           }}
-                          className="w-full text-left px-3 py-2 hover:bg-slate-50 cursor-pointer flex items-center gap-2 text-slate-700 border-none bg-transparent"
+                          className="min-h-[44px] w-full text-left px-3 py-2 hover:bg-[#f8f7f7] cursor-pointer flex items-center gap-2 text-[#201d1d] border-none bg-transparent"
                         >
                           <EyeOff size={13} />
                           {selectedPost.hiddenBy?.includes(activeUser.uid) ? 'Unhide' : 'Hide'}
@@ -1732,7 +1732,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                               postTitle: selectedPost.content.substring(0, 50)
                             });
                           }}
-                          className="w-full text-left px-3 py-2 hover:bg-rose-50 cursor-pointer flex items-center gap-2 text-rose-600 border-none bg-transparent"
+                          className="min-h-[44px] w-full text-left px-3 py-2 hover:bg-rose-50 cursor-pointer flex items-center gap-2 text-rose-700 border-none bg-transparent"
                         >
                           <Flag size={13} />
                           Report
@@ -1742,7 +1742,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                     {activeUser?.isAdmin && (
                       <button
                         onClick={(e) => handlePinPost(selectedPost.id, e)}
-                        className="w-full text-left px-3 py-2 hover:bg-amber-50 cursor-pointer flex items-center gap-2 text-amber-700 border-none bg-transparent"
+                        className="min-h-[44px] w-full text-left px-3 py-2 hover:bg-amber-50 cursor-pointer flex items-center gap-2 text-amber-800 border-none bg-transparent"
                       >
                         <Pin size={13} />
                         {selectedPost.isPinned ? 'Unpin' : 'Pin'}
@@ -1765,7 +1765,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                       onConfirm: () => handleDeletePost(selectedPost.id)
                     });
                   }}
-                  className="p-1.5 text-rose-500 hover:text-rose-650 hover:bg-rose-50/50 rounded-lg transition-colors cursor-pointer border-none"
+                  className="min-h-[44px] min-w-[44px] flex items-center justify-center p-1.5 text-rose-700 hover:text-rose-900 hover:bg-rose-50 rounded-sm transition-colors cursor-pointer border border-rose-300"
                   title="Delete Post"
                 >
                   <Trash2 size={16} />
@@ -1776,13 +1776,13 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
 
           {/* 뽐내기(boast) 카드 덱 표시 또는 캐러셀 다중 이미지 슬라이더 */}
           {selectedPost.category === 'boast' && selectedPost.deckData && selectedPost.deckData.length > 0 ? (
-            <div className="border-b border-slate-800 bg-slate-950 p-6 flex flex-col items-center justify-center gap-4">
-              <div className="text-center">
-                <span className="text-amber-300 font-bold tracking-wider uppercase text-[10px] bg-white/10 px-3 py-1 rounded-md">{t('community_cat_boast', language)}</span>
+            <div className="border-b border-[rgba(15,0,0,0.12)] bg-[#151313] p-6 flex flex-col items-center justify-center gap-4 font-mono">
+              <div className="text-center font-mono">
+                <span className="text-amber-400 font-bold tracking-wider uppercase text-[10px] bg-white/10 px-3 py-1 rounded-sm border border-white/20 font-mono">{t('community_cat_boast', language)}</span>
               </div>
-              <div className="flex flex-wrap gap-3.5 justify-center items-center py-2 w-full">
+              <div className="flex flex-wrap gap-3.5 justify-center items-center py-2 w-full font-mono">
                 {selectedPost.deckData.map((card, idx) => (
-                  <div key={card.id || idx} className="w-[100px] sm:w-[125px] aspect-[3/4] flex flex-col items-center gap-1 shadow-lg rounded-lg hover:scale-[1.02] transition-all">
+                  <div key={card.id || idx} className="w-[100px] sm:w-[125px] aspect-[3/4] flex flex-col items-center gap-1 border border-white/20 rounded-none hover:border-white/50 transition-all">
                     <CardItem card={card} language={language} className="w-full h-full" />
                   </div>
                 ))}
@@ -1880,7 +1880,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                               playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
                               setCarouselIndex((prev) => (prev === 0 ? imgUrls.length - 1 : prev - 1));
                             }}
-                            className="absolute left-3 p-2 bg-[#201d1d]/85 hover:bg-[#201d1d] text-white rounded-sm border border-white/20 active:scale-95 transition-all cursor-pointer flex items-center justify-center font-mono font-bold text-xs touch-target"
+                            className="absolute left-3 min-h-[44px] min-w-[44px] p-2 bg-[#201d1d]/85 hover:bg-[#201d1d] text-white rounded-sm border border-white/20 active:scale-95 transition-all cursor-pointer flex items-center justify-center font-mono font-bold text-xs touch-target"
                             title="Previous image"
                             aria-label="Previous image"
                           >
@@ -1892,7 +1892,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                               playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
                               setCarouselIndex((prev) => (prev === imgUrls.length - 1 ? 0 : prev + 1));
                             }}
-                            className="absolute right-3 p-2 bg-[#201d1d]/85 hover:bg-[#201d1d] text-white rounded-sm border border-white/20 active:scale-95 transition-all cursor-pointer flex items-center justify-center font-mono font-bold text-xs touch-target"
+                            className="absolute right-3 min-h-[44px] min-w-[44px] p-2 bg-[#201d1d]/85 hover:bg-[#201d1d] text-white rounded-sm border border-white/20 active:scale-95 transition-all cursor-pointer flex items-center justify-center font-mono font-bold text-xs touch-target"
                             title="Next image"
                             aria-label="Next image"
                           >
@@ -1903,7 +1903,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
 
                       {/* 슬라이드 도트 인디케이터 */}
                       {imgUrls.length > 1 && (
-                        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10 bg-black/60 px-2 py-1 rounded-sm border border-white/10">
+                        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1 z-10 bg-black/60 px-1 py-0.5 rounded-sm border border-white/10">
                           {imgUrls.map((_, dotIdx) => (
                             <button
                               key={dotIdx}
@@ -1912,12 +1912,17 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                                 playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
                                 setCarouselIndex(dotIdx);
                               }}
-                              className={cn(
-                                "w-4 h-1 rounded-none transition-all cursor-pointer border-none",
-                                carouselIndex === dotIdx ? "bg-white" : "bg-white/40 hover:bg-white/70"
-                              )}
+                              className="min-h-[44px] min-w-[28px] flex items-center justify-center p-1 cursor-pointer bg-transparent border-none"
                               title={`Image ${dotIdx + 1}`}
-                            />
+                              aria-label={`Image ${dotIdx + 1}`}
+                            >
+                              <span
+                                className={cn(
+                                  "w-4 h-1 rounded-none transition-all block",
+                                  carouselIndex === dotIdx ? "bg-white" : "bg-white/40 hover:bg-white/70"
+                                )}
+                              />
+                            </button>
                           ))}
                         </div>
                       )}
@@ -1948,18 +1953,18 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
               </p>
               
               {/* Translation Button */}
-              <div className="flex flex-wrap justify-start gap-2">
+              <div className="flex flex-wrap justify-start gap-2 font-mono">
                 <button
                   onClick={() => handleTranslate(selectedPost.id, selectedPost.content)}
                   disabled={translatedContents[selectedPost.id]?.isLoading}
                   className={cn(
-                    "flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 border border-slate-200/80 rounded-lg bg-slate-50 hover:bg-slate-100/80 active:scale-98 transition-all disabled:opacity-50 cursor-pointer text-slate-550 shadow-xs",
-                    translatedContents[selectedPost.id] && !translatedContents[selectedPost.id].isOriginal && "bg-indigo-50 text-indigo-750 border-indigo-150/50"
+                    "flex items-center gap-1.5 min-h-[44px] text-[10px] font-bold font-mono uppercase tracking-wider px-3 py-1.5 border border-[rgba(15,0,0,0.12)] rounded-sm bg-[#f8f7f7] hover:bg-stone-200 active:scale-98 transition-all disabled:opacity-50 cursor-pointer text-[#201d1d]",
+                    translatedContents[selectedPost.id] && !translatedContents[selectedPost.id].isOriginal && "bg-stone-200 border-[#201d1d]"
                   )}
                 >
                   {translatedContents[selectedPost.id]?.isLoading ? (
                     <>
-                      <div className="w-3 h-3 border-2 border-slate-400 border-t-transparent rounded-full animate-spin" />
+                      <div className="w-3 h-3 border-2 border-[#201d1d] border-t-transparent rounded-none animate-spin" />
                       <span>{t('community_translating', language)}</span>
                     </>
                   ) : translatedContents[selectedPost.id] && !translatedContents[selectedPost.id].isOriginal ? (
@@ -1977,7 +1982,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                 {getOriginalUrl(selectedPost) && (
                   <button
                     onClick={(event) => openOriginalUrl(getOriginalUrl(selectedPost)!, event)}
-                    className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 border border-slate-200/80 rounded-lg bg-white hover:bg-slate-50 active:scale-98 transition-all cursor-pointer text-slate-650 shadow-xs"
+                    className="flex items-center gap-1.5 min-h-[44px] text-[10px] font-bold font-mono uppercase tracking-wider px-3 py-1.5 border border-[rgba(15,0,0,0.12)] rounded-sm bg-white hover:bg-[#f8f7f7] active:scale-98 transition-all cursor-pointer text-[#201d1d]"
                   >
                     <ExternalLink size={11} />
                     <span>{t('community_open_original', language)}</span>
@@ -1987,19 +1992,19 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
             </div>
 
             {/* Actions (Like / Comment count / Share) */}
-            <div className="flex items-center gap-3.5 pt-3 border-t border-slate-100">
+            <div className="flex items-center gap-3.5 pt-3 border-t border-[rgba(15,0,0,0.12)] font-mono">
               <button
                 onClick={() => handleLikeToggle(selectedPost.id)}
                 className={cn(
-                  "flex items-center gap-1.5 px-3 py-1.5 border border-slate-200/80 rounded-lg font-bold text-xs transition-all cursor-pointer shadow-xs active:scale-98",
-                  activeUser && selectedPost.likes.includes(activeUser.uid) ? "bg-rose-600 hover:bg-rose-700 text-white border-none shadow-md shadow-rose-200/30" : "bg-white hover:bg-slate-50 text-slate-700"
+                  "flex items-center gap-1.5 min-h-[44px] px-3.5 py-1.5 border border-[rgba(15,0,0,0.12)] rounded-sm font-bold font-mono text-xs transition-all cursor-pointer active:scale-98",
+                  activeUser && selectedPost.likes.includes(activeUser.uid) ? "bg-rose-700 hover:bg-rose-800 text-white border-rose-900" : "bg-white hover:bg-[#f8f7f7] text-[#201d1d]"
                 )}
               >
                 <Heart size={15} fill={activeUser && selectedPost.likes.includes(activeUser.uid) ? "currentColor" : "none"} />
                 <span>{selectedPost.likes.length}</span>
               </button>
 
-              <div className="flex items-center gap-1.5 px-3 py-1.5 border border-slate-200/85 rounded-lg font-bold text-xs bg-slate-50 text-slate-600">
+              <div className="flex items-center gap-1.5 min-h-[44px] px-3.5 py-1.5 border border-[rgba(15,0,0,0.12)] rounded-sm font-bold font-mono text-xs bg-[#f8f7f7] text-[#201d1d]">
                 <MessageCircle size={15} />
                 <span>{selectedPost.comments.length}</span>
               </div>
@@ -2015,7 +2020,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                     showShareToastMessage(t('link_copied_desc', language));
                   }
                 }}
-                className="flex items-center gap-1.5 px-3.5 py-1.5 border border-slate-200/80 rounded-lg font-bold text-xs bg-white hover:bg-slate-50 text-slate-700 shadow-xs cursor-pointer ml-auto hover:shadow-sm active:scale-98 transition-all touch-target"
+                className="flex items-center gap-1.5 min-h-[44px] px-3.5 py-1.5 border border-[rgba(15,0,0,0.12)] rounded-sm font-bold font-mono text-xs bg-white hover:bg-[#f8f7f7] text-[#201d1d] cursor-pointer ml-auto active:scale-98 transition-all touch-target"
                 title="Share Post Link"
               >
                 <Share2 size={15} />
@@ -2025,7 +2030,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
 
             {/* 대결하기 버튼 (본인 글 제외 및 PVP 대전 카테고리 한정) */}
             {activeUser && selectedPost.userId !== activeUser.uid && selectedPost.category === 'pvp' && (
-              <div className="pt-3 border-t border-slate-100 flex">
+              <div className="pt-3 border-t border-[rgba(15,0,0,0.12)] flex font-mono">
                 <button
                   onClick={() => {
                     playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
@@ -2040,7 +2045,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                       }
                     });
                   }}
-                  className="w-full py-3 bg-rose-600 hover:bg-rose-500 text-white font-black uppercase tracking-wider text-xs rounded-lg flex items-center justify-center gap-2 active:scale-[0.99] transition-all cursor-pointer shadow-sm border-none"
+                  className="min-h-[44px] w-full py-3 bg-rose-700 hover:bg-rose-800 text-white font-bold uppercase tracking-wider text-xs rounded-sm flex items-center justify-center gap-2 active:scale-[0.99] transition-all cursor-pointer border border-rose-900"
                 >
                   <Swords size={14} />
                   {t('pvp_challenge_btn', language)}
@@ -2060,7 +2065,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
               {selectedPost.comments.some(c => c.replies && c.replies.length > 0) && (
                 <button
                   onClick={handleToggleAllReplies}
-                  className="px-2.5 py-1 text-[10px] font-bold font-mono text-[#201d1d] hover:bg-[#eae8e8] border border-[rgba(15,0,0,0.15)] rounded-sm active:scale-95 transition-all cursor-pointer"
+                  className="min-h-[44px] px-3 py-1 flex items-center text-[10px] font-bold font-mono text-[#201d1d] hover:bg-[#eae8e8] border border-[rgba(15,0,0,0.15)] rounded-sm active:scale-95 transition-all cursor-pointer"
                 >
                   {allRepliesExpanded
                     ? (language === 'ko' ? '[▲ 전체 대댓글 접기]' : '[▲ Collapse All]')
@@ -2081,7 +2086,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                         <img
                           src={formatAvatarUrl(comment.userAvatar, comment.userId)}
                           alt={comment.userName}
-                          className="w-7 h-7 border border-[rgba(15,0,0,0.12)] rounded-full object-cover shrink-0 bg-white"
+                          className="w-7 h-7 border border-[rgba(15,0,0,0.12)] rounded-none object-cover shrink-0 bg-white"
                         />
                         <div className="bg-[#f8f7f7] p-3 rounded-none border border-[rgba(15,0,0,0.12)] flex-1 relative text-[#201d1d]">
                           <div className="flex justify-between items-start gap-2 mb-1">
@@ -2113,7 +2118,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                               {isCommentOwner && (
                                 <button
                                   onClick={() => handleDeleteComment(selectedPost.id, comment.id)}
-                                  className="text-[9px] text-rose-600 hover:text-rose-800 font-bold px-1 py-0.5 border border-rose-200 hover:bg-rose-50 rounded-sm cursor-pointer transition-all"
+                                  className="min-h-[44px] min-w-[44px] text-[9px] text-rose-600 hover:text-rose-800 font-bold px-1.5 py-1 border border-rose-200 hover:bg-rose-50 rounded-sm cursor-pointer transition-all flex items-center justify-center font-mono"
                                   title="Delete Comment"
                                 >
                                   [✕]
@@ -2138,7 +2143,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                                   setReplyInputs(prev => ({ ...prev, [comment.id]: `@${comment.userName} ` }));
                                 }
                               }}
-                              className="text-[10px] font-bold font-mono text-[#201d1d] hover:underline cursor-pointer flex items-center gap-1"
+                              className="min-h-[44px] px-2 py-1 text-[10px] font-bold font-mono text-[#201d1d] hover:bg-black/5 rounded-sm cursor-pointer flex items-center gap-1"
                             >
                               <CornerDownRight size={11} />
                               {t('community_comment_reply', language)}
@@ -2147,7 +2152,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                               onClick={() => handleTranslate(comment.id, comment.content)}
                               disabled={translatedContents[comment.id]?.isLoading}
                               className={cn(
-                                "text-[9px] font-bold font-mono ml-auto flex items-center gap-1 cursor-pointer px-1.5 py-0.5 border border-[rgba(15,0,0,0.12)] rounded-sm bg-white",
+                                "min-h-[44px] px-2 py-1 text-[9px] font-bold font-mono ml-auto flex items-center gap-1 cursor-pointer border border-[rgba(15,0,0,0.12)] rounded-sm bg-white",
                                 translatedContents[comment.id] && !translatedContents[comment.id].isOriginal ? "text-indigo-700 bg-indigo-50" : "text-[#666060] hover:text-[#201d1d]"
                               )}
                             >
@@ -2162,7 +2167,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                                   playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
                                   setOpenReplies(prev => ({ ...prev, [comment.id]: !prev[comment.id] }));
                                 }}
-                                className="text-[10px] font-bold font-mono px-2 py-0.5 border border-[rgba(15,0,0,0.15)] rounded-sm bg-white hover:bg-[#eae8e8] text-[#201d1d] cursor-pointer"
+                                className="min-h-[44px] px-2.5 py-1 text-[10px] font-bold font-mono border border-[rgba(15,0,0,0.15)] rounded-sm bg-white hover:bg-[#eae8e8] text-[#201d1d] cursor-pointer flex items-center justify-center"
                               >
                                 {openReplies[comment.id] ? '▲' : '▼'} {comment.replies.length} {language === 'ko' ? '답글' : 'Replies'}
                               </button>
@@ -2181,7 +2186,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                                 <img
                                   src={formatAvatarUrl(reply.userAvatar, reply.userId)}
                                   alt={reply.userName}
-                                  className="w-5 h-5 border border-[rgba(15,0,0,0.12)] rounded-full object-cover shrink-0 bg-white"
+                                  className="w-5 h-5 border border-[rgba(15,0,0,0.12)] rounded-none object-cover shrink-0 bg-white"
                                 />
                                 <div className="bg-[#f0eeee] p-2 rounded-none border border-[rgba(15,0,0,0.1)] flex-1 text-[#201d1d]">
                                   <div className="flex justify-between items-start gap-2 mb-0.5">
@@ -2213,7 +2218,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                                       {isReplyOwner && (
                                         <button
                                           onClick={() => handleDeleteReply(selectedPost.id, comment.id, reply.id)}
-                                          className="text-[8px] text-rose-600 hover:text-rose-800 font-bold px-1 py-0.2 border border-rose-200 hover:bg-rose-50 rounded-sm cursor-pointer transition-all"
+                                          className="min-h-[44px] min-w-[44px] text-[8px] text-rose-600 hover:text-rose-800 font-bold px-1.5 py-1 border border-rose-200 hover:bg-rose-50 rounded-sm cursor-pointer transition-all flex items-center justify-center font-mono"
                                           title="Delete Reply"
                                         >
                                           [✕]
@@ -2250,14 +2255,14 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                           <button
                             onClick={() => handleAddReply(selectedPost.id, comment.id)}
                             disabled={!(replyInputs[comment.id] || '').trim()}
-                            className="px-3 py-2 bg-[#201d1d] hover:bg-[#3d3838] text-white transition-all rounded-sm disabled:opacity-30 shrink-0 cursor-pointer text-xs font-mono font-bold active:scale-95 border-none flex items-center justify-center gap-1"
+                            className="min-h-[44px] px-3 py-2 bg-[#201d1d] hover:bg-[#3d3838] text-white transition-all rounded-sm disabled:opacity-30 shrink-0 cursor-pointer text-xs font-mono font-bold active:scale-95 border-none flex items-center justify-center gap-1"
                           >
                             <Send size={11} />
                             <span>{language === 'ko' ? '등록' : 'Reply'}</span>
                           </button>
                           <button
                             onClick={() => setActiveReplyBox(null)}
-                            className="p-2 text-[#666060] hover:text-[#201d1d] border border-[rgba(15,0,0,0.15)] rounded-sm hover:bg-[#eae8e8] text-xs font-mono cursor-pointer"
+                            className="min-h-[44px] min-w-[44px] p-2 text-[#666060] hover:text-[#201d1d] border border-[rgba(15,0,0,0.15)] rounded-sm hover:bg-[#eae8e8] text-xs font-mono cursor-pointer flex items-center justify-center"
                           >
                             ✕
                           </button>
@@ -2280,7 +2285,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                   type="button"
                   onClick={() => setShowEmojiPicker(!showEmojiPicker)}
                   className={cn(
-                    "flex items-center gap-1 px-2 py-1 border text-[10px] font-bold font-mono rounded-sm cursor-pointer transition-all active:scale-95 shrink-0",
+                    "min-h-[44px] flex items-center gap-1 px-3 py-1.5 border text-[10px] font-bold font-mono rounded-sm cursor-pointer transition-all active:scale-95 shrink-0",
                     showEmojiPicker
                       ? "bg-[#201d1d] text-white border-[#201d1d]"
                       : "bg-white text-[#201d1d] border-[rgba(15,0,0,0.15)] hover:bg-[#eae8e8]"
@@ -2294,7 +2299,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                   type="button"
                   onClick={() => setShowMentionPicker(!showMentionPicker)}
                   className={cn(
-                    "flex items-center gap-1 px-2 py-1 border text-[10px] font-bold font-mono rounded-sm cursor-pointer transition-all active:scale-95 shrink-0",
+                    "min-h-[44px] flex items-center gap-1 px-3 py-1.5 border text-[10px] font-bold font-mono rounded-sm cursor-pointer transition-all active:scale-95 shrink-0",
                     showMentionPicker
                       ? "bg-[#201d1d] text-white border-[#201d1d]"
                       : "bg-white text-[#201d1d] border-[rgba(15,0,0,0.15)] hover:bg-[#eae8e8]"
@@ -2311,7 +2316,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                     playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
                     setCommentInput(prev => `${prev.trim()} @${selectedPost.userName} `.trimStart());
                   }}
-                  className="px-2 py-1 bg-white hover:bg-[#eae8e8] border border-[rgba(15,0,0,0.15)] rounded-sm text-[10px] font-bold font-mono text-[#201d1d] cursor-pointer shrink-0 active:scale-95 transition-all"
+                  className="min-h-[44px] px-3 py-1.5 bg-white hover:bg-[#eae8e8] border border-[rgba(15,0,0,0.15)] rounded-sm text-[10px] font-bold font-mono text-[#201d1d] cursor-pointer shrink-0 active:scale-95 transition-all flex items-center justify-center"
                 >
                   @{selectedPost.userName}
                 </button>
@@ -2328,7 +2333,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                         playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
                         setCommentInput(prev => prev + emoji);
                       }}
-                      className="w-7 h-7 flex items-center justify-center text-sm border border-[rgba(15,0,0,0.1)] rounded-sm bg-[#fdfcfc] hover:bg-[#eae8e8] cursor-pointer active:scale-90 transition-all"
+                      className="min-h-[44px] min-w-[44px] flex items-center justify-center text-sm border border-[rgba(15,0,0,0.1)] rounded-sm bg-[#fdfcfc] hover:bg-[#eae8e8] cursor-pointer active:scale-90 transition-all font-mono"
                     >
                       {emoji}
                     </button>
@@ -2348,7 +2353,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                         setCommentInput(prev => `${prev.trim()} @${name} `.trimStart());
                         setShowMentionPicker(false);
                       }}
-                      className="px-2 py-1 bg-[#fdfcfc] hover:bg-[#eae8e8] border border-[rgba(15,0,0,0.12)] rounded-sm text-[10px] font-bold font-mono text-[#201d1d] cursor-pointer active:scale-95 transition-all"
+                      className="min-h-[44px] px-3 py-1.5 bg-[#fdfcfc] hover:bg-[#eae8e8] border border-[rgba(15,0,0,0.12)] rounded-sm text-[10px] font-bold font-mono text-[#201d1d] cursor-pointer active:scale-95 transition-all flex items-center justify-center"
                     >
                       @{name}
                     </button>
@@ -2363,7 +2368,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                 <img
                   src={formatAvatarUrl(activeUser.photoURL || '', activeUser.uid)}
                   alt="Me"
-                  className="w-7 h-7 border border-[rgba(15,0,0,0.12)] rounded-full object-cover shrink-0 bg-white"
+                  className="w-7 h-7 border border-[rgba(15,0,0,0.12)] rounded-none object-cover shrink-0 bg-white"
                 />
                 {activeUser ? (() => {
                   const petCardId = getLocalMonsterPetId(activeUser.uid, activeUser.photoURL || '');
@@ -2391,7 +2396,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                 <button
                   onClick={() => handleAddComment(selectedPost.id)}
                   disabled={!commentInput.trim()}
-                  className="px-3 py-1 bg-[#201d1d] text-white hover:bg-[#3d3838] disabled:opacity-30 transition-all shrink-0 cursor-pointer rounded-sm text-xs font-mono font-bold flex items-center gap-1 active:scale-95"
+                  className="min-h-[44px] px-4 py-2 bg-[#201d1d] text-white hover:bg-[#3d3838] disabled:opacity-30 transition-all shrink-0 cursor-pointer rounded-sm text-xs font-mono font-bold flex items-center justify-center gap-1 active:scale-95"
                 >
                   <Send size={11} />
                   <span>{language === 'ko' ? '작성' : 'Post'}</span>
@@ -2403,16 +2408,16 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
       ) : selectedCategory === 'select' ? (
         // 3B. 커뮤니티 카테고리 선택 대시보드
         <div className="flex flex-col gap-3 sm:gap-6" id="community-dashboard">
-          <div className="border border-indigo-100 p-3 sm:p-5 bg-indigo-50/30 rounded-2xl shadow-sm">
-            <h4 className="font-bold text-xs sm:text-sm uppercase tracking-wide flex items-center gap-1.5 mb-1 text-indigo-905">
-              💡 {t('community_category_select', language)}
+          <div className="border border-[rgba(15,0,0,0.12)] p-3 sm:p-4 bg-[#f8f7f7] rounded-none font-mono">
+            <h4 className="font-bold text-xs sm:text-sm uppercase tracking-wide flex items-center gap-1.5 mb-1 text-[#201d1d]">
+              [💡 {t('community_category_select', language)}]
             </h4>
-            <p className="text-[10px] sm:text-xs font-semibold text-indigo-755 leading-relaxed line-clamp-2">
+            <p className="text-[10px] sm:text-xs font-semibold text-[#666060] leading-relaxed line-clamp-2">
               {t('community_category_select_desc', language)}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-5 md:gap-6 items-stretch">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-5 md:gap-6 items-stretch font-mono">
             {(() => {
               const categoriesList = [
                 {
@@ -2420,9 +2425,8 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                   title: t('community_cat_news', language),
                   desc: t('community_cat_news_desc', language),
                   icon: Globe,
-                  color: 'from-slate-500 to-slate-650',
                   badge: 'NEWS',
-                  badgeColor: 'bg-slate-100 text-slate-500 font-bold',
+                  badgeColor: 'bg-white text-slate-700 border border-slate-300',
                   colSpan: ''
                 },
                 {
@@ -2430,9 +2434,8 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                   title: t('community_cat_free', language),
                   desc: t('community_cat_free_desc', language),
                   icon: MessageCircle,
-                  color: 'from-amber-400 to-orange-500',
                   badge: 'TALK',
-                  badgeColor: 'bg-amber-500 text-white font-bold animate-pulse',
+                  badgeColor: 'bg-amber-50 text-amber-800 border border-amber-300',
                   colSpan: ''
                 },
                 {
@@ -2440,9 +2443,8 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                   title: t('community_cat_qa', language),
                   desc: t('community_cat_qa_desc', language),
                   icon: HelpCircle,
-                  color: 'from-blue-400 to-indigo-500',
                   badge: 'Q&A',
-                  badgeColor: 'bg-indigo-600 text-white font-bold',
+                  badgeColor: 'bg-blue-50 text-blue-800 border border-blue-300',
                   colSpan: ''
                 },
                 {
@@ -2450,9 +2452,8 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                   title: t('community_cat_tip', language),
                   desc: t('community_cat_tip_desc', language),
                   icon: Sparkles,
-                  color: 'from-emerald-450 to-teal-500',
                   badge: 'TIP',
-                  badgeColor: 'bg-emerald-500 text-white font-bold animate-bounce',
+                  badgeColor: 'bg-emerald-50 text-emerald-800 border border-emerald-300',
                   colSpan: ''
                 },
                 {
@@ -2460,9 +2461,8 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                   title: t('community_cat_boast', language),
                   desc: t('community_cat_boast_desc', language),
                   icon: Trophy,
-                  color: 'from-pink-500 to-rose-500',
                   badge: 'DECK',
-                  badgeColor: 'bg-rose-500 text-white font-bold animate-pulse',
+                  badgeColor: 'bg-rose-50 text-rose-800 border border-rose-300',
                   colSpan: ''
                 },
                 {
@@ -2470,9 +2470,8 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                   title: t('community_cat_running', language),
                   desc: t('community_cat_running_desc', language),
                   icon: Navigation,
-                  color: 'from-violet-500 to-purple-600',
                   badge: 'GPS',
-                  badgeColor: 'bg-purple-600 text-white font-bold',
+                  badgeColor: 'bg-purple-50 text-purple-800 border border-purple-300',
                   colSpan: ''
                 },
                 {
@@ -2480,9 +2479,8 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                   title: t('community_cat_guild', language),
                   desc: t('community_cat_guild_desc', language),
                   icon: Shield,
-                  color: 'from-indigo-500 to-blue-600',
                   badge: 'GUILD',
-                  badgeColor: 'bg-blue-600 text-white font-bold',
+                  badgeColor: 'bg-indigo-50 text-indigo-800 border border-indigo-300',
                   colSpan: ''
                 },
                 {
@@ -2490,9 +2488,8 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                   title: t('community_cat_pvp', language),
                   desc: t('community_cat_pvp_desc', language),
                   icon: Swords,
-                  color: 'from-rose-500 to-red-600',
                   badge: 'PVP',
-                  badgeColor: 'bg-rose-500 text-white font-bold animate-pulse',
+                  badgeColor: 'bg-rose-50 text-rose-800 border border-rose-300',
                   colSpan: ''
                 },
                 {
@@ -2500,9 +2497,8 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                   title: t('community_cat_fanart', language),
                   desc: t('fan_event_fanart_desc', language),
                   icon: Palette,
-                  color: 'from-fuchsia-500 to-purple-600',
                   badge: 'ART',
-                  badgeColor: 'bg-fuchsia-500 text-white font-bold',
+                  badgeColor: 'bg-fuchsia-50 text-fuchsia-800 border border-fuchsia-300',
                   colSpan: ''
                 },
                 {
@@ -2510,9 +2506,8 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                   title: t('community_cat_vote', language),
                   desc: t('fan_event_vote_desc', language),
                   icon: Vote,
-                  color: 'from-rose-500 to-orange-500',
                   badge: 'VOTE',
-                  badgeColor: 'bg-rose-500 text-white font-bold',
+                  badgeColor: 'bg-rose-50 text-rose-800 border border-rose-300',
                   colSpan: ''
                 },
                 {
@@ -2520,9 +2515,8 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                   title: t('community_cat_webtoon', language),
                   desc: t('fan_event_webtoon_desc', language),
                   icon: BookOpenCheck,
-                  color: 'from-amber-500 to-yellow-500',
                   badge: 'CUT',
-                  badgeColor: 'bg-amber-500 text-white font-bold',
+                  badgeColor: 'bg-amber-50 text-amber-800 border border-amber-300',
                   colSpan: ''
                 },
                 {
@@ -2530,9 +2524,8 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                   title: t('community_cat_season', language),
                   desc: t('fan_event_deck_desc', language),
                   icon: Tag,
-                  color: 'from-emerald-500 to-teal-600',
                   badge: 'EVENT',
-                  badgeColor: 'bg-emerald-500 text-white font-bold',
+                  badgeColor: 'bg-emerald-50 text-emerald-800 border border-emerald-300',
                   colSpan: ''
                 }
               ];
@@ -2545,29 +2538,25 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                     initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.05 }}
-                    whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className={cn(
-                      "border border-slate-200/80 rounded-2xl sm:rounded-3xl overflow-hidden shadow-md sm:shadow-xl hover:shadow-2xl transition-all flex flex-col bg-white",
+                      "border border-[rgba(15,0,0,0.12)] rounded-none overflow-hidden transition-all flex flex-col bg-[#fdfcfc] font-mono",
                       cat.colSpan
                     )}
                   >
                     {/* Card top accent */}
-                    <div className={cn('h-1 sm:h-1.5 bg-gradient-to-r', cat.color)} />
+                    <div className="h-1 bg-[#201d1d]" />
 
-                    <div className="p-3 sm:p-4 md:p-6 flex flex-col flex-1 justify-between">
+                    <div className="p-3 sm:p-4 md:p-5 flex flex-col flex-1 justify-between">
                       {/* Content Area */}
                       <div className="flex-1 flex flex-col mb-2.5 sm:mb-4">
                         {/* Icon + Badge */}
-                        <div className="flex items-start justify-between mb-2.5 sm:mb-4">
-                          <div className={cn(
-                            'w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-md shadow-indigo-100/50',
-                            `bg-gradient-to-br ${cat.color}`
-                          )}>
-                            <IconComp size={18} className="text-white sm:w-[22px] sm:h-[22px]" />
+                        <div className="flex items-start justify-between mb-2.5 sm:mb-3">
+                          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-sm flex items-center justify-center bg-[#201d1d] text-white border border-[#201d1d]">
+                            <IconComp size={18} className="text-white" />
                           </div>
                           <div className="flex items-center gap-1.5">
                             <span className={cn(
-                              'text-[8px] md:text-[9px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full shadow-xs',
+                              'text-[8px] md:text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-sm',
                               cat.badgeColor
                             )}>
                               {cat.badge}
@@ -2575,7 +2564,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                             {(() => {
                               const postCount = posts.filter(p => (p.category || 'free') === cat.id).length;
                               return postCount > 0 ? (
-                                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200">
+                                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-sm bg-white text-[#201d1d] border border-[rgba(15,0,0,0.15)]">
                                   {postCount}
                                 </span>
                               ) : null;
@@ -2584,10 +2573,10 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                         </div>
 
                         {/* Text */}
-                        <h3 className="font-extrabold text-sm md:text-base tracking-tight text-slate-800 mb-1.5 sm:mb-2 font-sans">
+                        <h3 className="font-bold text-sm md:text-base tracking-tight text-[#201d1d] mb-1">
                           {cat.title}
                         </h3>
-                        <p className="text-[10px] md:text-[11px] text-slate-450 font-semibold leading-relaxed font-sans line-clamp-1 sm:line-clamp-none">
+                        <p className="text-[10px] md:text-xs text-[#666060] font-semibold leading-relaxed line-clamp-1 sm:line-clamp-none">
                           {cat.desc}
                         </p>
                       </div>
@@ -2599,10 +2588,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                           setSelectedCategory(cat.id);
                           window.history.pushState({}, '', `?view=community&category=${cat.id}`);
                         }}
-                        className={cn(
-                          'w-full min-h-11 px-4 py-3 font-extrabold uppercase text-[10px] md:text-[11px] tracking-wider rounded-2xl active:scale-98 transition-all flex items-center justify-center gap-1.5 mt-auto shadow-sm cursor-pointer text-white touch-target',
-                          `bg-gradient-to-r ${cat.color} hover:opacity-95 shadow-lg shadow-indigo-200/40`
-                        )}
+                        className="w-full min-h-[44px] px-4 py-2 font-mono font-bold uppercase text-xs tracking-wider rounded-sm active:scale-98 transition-all flex items-center justify-center gap-1.5 mt-auto cursor-pointer bg-[#201d1d] text-white hover:bg-[#383333] border border-[#201d1d] touch-target"
                       >
                         <Plus size={12} className="shrink-0 fill-current" />
                         <span className="min-w-0 truncate">{t('enter_board', language)}</span>
@@ -2625,7 +2611,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                 setUploadCategory(selectedCategory);
                 setShowUploadModal(true);
               }}
-              className="inline-flex items-center gap-1.5 text-xs font-mono font-bold bg-[#201d1d] hover:bg-[#383333] text-white px-3.5 py-2 rounded-sm border border-[#201d1d] transition-all active:scale-95 cursor-pointer touch-target"
+              className="min-h-[44px] inline-flex items-center gap-1.5 text-xs font-mono font-bold bg-[#201d1d] hover:bg-[#383333] text-white px-3.5 py-2 rounded-sm border border-[#201d1d] transition-all active:scale-95 cursor-pointer touch-target"
             >
               <span className="font-mono text-sm">[+]</span>
               <span>{language === 'ko' ? '게시판 글쓰기' : 'Write Post'}</span>
@@ -2638,7 +2624,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
           {/* Grid Preview List */}
           {loading ? (
             <div className="flex flex-col items-center justify-center py-20 gap-3 border border-[rgba(15,0,0,0.10)] bg-white rounded-none">
-              <div className="w-8 h-8 border-2 border-[#201d1d] border-t-transparent rounded-full animate-spin" />
+              <div className="w-8 h-8 border-2 border-[#201d1d] border-t-transparent rounded-none animate-spin" />
               <span className="font-mono font-bold text-xs text-[#666060] tracking-wider">[LOADING POSTS...]</span>
             </div>
           ) : filteredPosts.length === 0 ? (
@@ -2662,7 +2648,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                     setSearchQuery('');
                     setSelectedFlairFilter('all');
                   }}
-                  className="mt-2 px-3 py-1.5 bg-[#201d1d] hover:bg-[#3d3838] text-white text-xs font-mono font-bold rounded-sm border border-[#201d1d] cursor-pointer touch-target active:scale-95 transition-all"
+                  className="min-h-[44px] mt-2 px-3.5 py-2 bg-[#201d1d] hover:bg-[#3d3838] text-white text-xs font-mono font-bold rounded-sm border border-[#201d1d] cursor-pointer touch-target active:scale-95 transition-all inline-flex items-center justify-center"
                 >
                   {language === 'ko' ? '[검색/필터 초기화]' : '[Reset Filters]'}
                 </button>
@@ -2690,7 +2676,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                     {post.category === 'boast' && post.deckData && post.deckData.length > 0 ? (
                       <div className="border-b border-slate-100 bg-slate-950 aspect-video p-3 flex items-center justify-center gap-1.5 overflow-hidden">
                         {post.deckData.map((card, idx) => (
-                          <div key={card.id || idx} className="w-[18%] max-w-[55px] aspect-[3/4] flex items-center justify-center scale-95 shadow-sm rounded">
+                          <div key={card.id || idx} className="w-[18%] max-w-[55px] aspect-[3/4] flex items-center justify-center scale-95 border border-white/10 rounded-none">
                             <CardItem card={card} language={language} className="w-full h-full pointer-events-none" />
                           </div>
                         ))}
@@ -2741,7 +2727,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                       <img
                         src={formatAvatarUrl(post.userAvatar, post.userId)}
                         alt={post.userName}
-                        className="w-6 h-6 border border-slate-100 rounded-full object-cover bg-white"
+                        className="w-6 h-6 border border-slate-100 rounded-none object-cover bg-white"
                       />
                       {(() => {
                         const petCardId = getLocalMonsterPetId(post.userId, post.userAvatar);
@@ -2766,7 +2752,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                                 </h5>
                                 {identity.emoticon ? <span className="text-[10px] leading-none">{identity.emoticon.symbol}</span> : null}
                                 {identity.badge ? (
-                                  <span className="rounded-full border border-amber-100 bg-amber-50 px-1.5 py-0.5 text-[7px] font-bold text-amber-700">
+                                  <span className="rounded-sm border border-amber-100 bg-amber-50 px-1.5 py-0.5 text-[7px] font-bold text-amber-700">
                                     {identity.badge.symbol}
                                   </span>
                                 ) : null}
@@ -2782,20 +2768,20 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                     </div>
 
                     {/* Doc 62: Flair + Pinned/Weekly indicators in grid */}
-                    <div className="px-3 pb-1 flex flex-wrap items-center gap-1.5">
+                    <div className="px-3 pb-1 flex flex-wrap items-center gap-1.5 font-mono">
                       {renderFlairBadge(post.flair)}
                       {post.isFromSheet && (
-                        <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-emerald-50 text-emerald-600 border border-emerald-200 text-[8px] font-bold">
+                        <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-sm bg-emerald-50 text-emerald-600 border border-emerald-200 text-[8px] font-bold">
                           📊 G-Sheet
                         </span>
                       )}
                       {post.isPinned && (
-                        <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-amber-50 text-amber-600 border border-amber-200 text-[8px] font-bold">
+                        <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-sm bg-amber-50 text-amber-600 border border-amber-200 text-[8px] font-bold">
                           <Pin size={9} /> Pinned
                         </span>
                       )}
                       {post.isWeeklyThread && (
-                        <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-emerald-50 text-emerald-600 border border-emerald-200 text-[8px] font-bold">
+                        <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-sm bg-emerald-50 text-emerald-600 border border-emerald-200 text-[8px] font-bold">
                           📅 Weekly
                         </span>
                       )}
@@ -2825,7 +2811,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                                   e.stopPropagation();
                                   handleTranslate(post.id, post.content);
                                 }}
-                                className="text-[9px] font-bold text-indigo-650 hover:text-indigo-850 cursor-pointer border-none bg-transparent p-0"
+                                className="min-h-[44px] px-2 py-1 text-[9px] font-bold text-indigo-650 hover:text-indigo-850 cursor-pointer border border-[rgba(15,0,0,0.12)] rounded-sm bg-white inline-flex items-center"
                               >
                                 {t('community_show_original', language)}
                               </button>
@@ -2833,7 +2819,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                             {getOriginalUrl(post) && (
                               <button
                                 onClick={(event) => openOriginalUrl(getOriginalUrl(post)!, event)}
-                                className="inline-flex items-center gap-1 text-[9px] font-bold text-slate-500 hover:text-slate-800 cursor-pointer border-none bg-transparent p-0"
+                                className="min-h-[44px] px-2 py-1 inline-flex items-center gap-1 text-[9px] font-bold text-slate-500 hover:text-slate-800 cursor-pointer border border-[rgba(15,0,0,0.12)] rounded-sm bg-white"
                               >
                                 <ExternalLink size={10} />
                                 {t('community_open_original', language)}
@@ -2871,7 +2857,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                                 }
                               });
                             }}
-                            className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded-sm text-[9px] font-mono font-bold uppercase tracking-wider flex items-center gap-1 border border-red-700 active:scale-95 transition-all cursor-pointer z-10 touch-target"
+                            className="min-h-[44px] px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded-sm text-[9px] font-mono font-bold uppercase tracking-wider flex items-center justify-center gap-1 border border-red-700 active:scale-95 transition-all cursor-pointer z-10 touch-target"
                           >
                             [⚔️ ATTACK]
                           </button>
@@ -2885,13 +2871,13 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                               playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
                               setPostMenuOpen(postMenuOpen === post.id ? null : post.id);
                             }}
-                            className="p-1 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer text-slate-400 border-none"
+                            className="min-h-[44px] min-w-[44px] p-2 hover:bg-slate-100 rounded-sm transition-colors cursor-pointer text-slate-600 border border-[rgba(15,0,0,0.12)] flex items-center justify-center"
                             title="Post menu"
                           >
                             <MoreHorizontal size={14} />
                           </button>
                           {postMenuOpen === post.id && (
-                            <div className="absolute right-0 bottom-full mb-1 w-36 bg-white border border-slate-200 rounded-xl shadow-lg z-30 py-1 text-[10px] font-semibold">
+                            <div className="absolute right-0 bottom-full mb-1 w-36 bg-white border border-[#201d1d] rounded-none z-30 py-1 text-[10px] font-mono font-bold">
                               {activeUser && (
                                 <>
                                   <button
@@ -2899,7 +2885,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                                       const isHidden = post.hiddenBy?.includes(activeUser.uid);
                                       handleHidePost(post.id, e);
                                     }}
-                                    className="w-full text-left px-3 py-1.5 hover:bg-slate-50 cursor-pointer flex items-center gap-2 text-slate-700 border-none bg-transparent"
+                                    className="min-h-[44px] w-full text-left px-3 py-2 hover:bg-[#f0eeee] cursor-pointer flex items-center gap-2 text-slate-700 border-none bg-transparent"
                                   >
                                     <EyeOff size={12} />
                                     {post.hiddenBy?.includes(activeUser.uid) ? 'Unhide' : 'Hide'}
@@ -2914,7 +2900,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                                         postTitle: post.content.substring(0, 50)
                                       });
                                     }}
-                                    className="w-full text-left px-3 py-1.5 hover:bg-rose-50 cursor-pointer flex items-center gap-2 text-rose-600 border-none bg-transparent"
+                                    className="min-h-[44px] w-full text-left px-3 py-2 hover:bg-rose-50 cursor-pointer flex items-center gap-2 text-rose-600 border-none bg-transparent"
                                   >
                                     <Flag size={12} />
                                     Report
@@ -2924,7 +2910,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                               {activeUser?.isAdmin && (
                                 <button
                                   onClick={(e) => handlePinPost(post.id, e)}
-                                  className="w-full text-left px-3 py-1.5 hover:bg-amber-50 cursor-pointer flex items-center gap-2 text-amber-700 border-none bg-transparent"
+                                  className="min-h-[44px] w-full text-left px-3 py-2 hover:bg-amber-50 cursor-pointer flex items-center gap-2 text-amber-700 border-none bg-transparent"
                                 >
                                   <Pin size={12} />
                                   {post.isPinned ? 'Unpin' : 'Pin'}
@@ -2951,7 +2937,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                       triggerHaptic('medium');
                       setVisiblePostsCount((prev) => prev + 15);
                     }}
-                    className="w-full sm:w-auto px-4 py-2 bg-[#201d1d] hover:bg-[#383333] text-white text-xs font-bold rounded-sm border border-[#201d1d] active:scale-95 transition-all cursor-pointer touch-target"
+                    className="min-h-[44px] w-full sm:w-auto px-4 py-2 bg-[#201d1d] hover:bg-[#383333] text-white text-xs font-bold rounded-sm border border-[#201d1d] active:scale-95 transition-all cursor-pointer touch-target flex items-center justify-center"
                   >
                     {language === 'ko' ? `[더 보기 (+15건)]` : `[Load More (+15)]`}
                   </button>
@@ -2971,7 +2957,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-md max-h-[85dvh] sm:max-h-[88dvh] bg-[#fdfcfc] border border-[rgba(15,0,0,0.2)] rounded-none overflow-hidden shadow-2xl relative flex flex-col text-[#201d1d]"
+              className="w-full max-w-md max-h-[85dvh] sm:max-h-[88dvh] bg-[#fdfcfc] border border-[rgba(15,0,0,0.2)] rounded-none overflow-hidden relative flex flex-col text-[#201d1d]"
             >
               {/* Modal Header */}
               <div className="shrink-0 p-3.5 sm:p-4 bg-white border-b border-[rgba(15,0,0,0.12)] flex justify-between items-center">
@@ -2987,7 +2973,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                     setImagePreviews([]);
                     setUploadFlair('');
                   }}
-                  className="px-2 py-1 border border-[rgba(15,0,0,0.15)] hover:border-[#201d1d] text-[#201d1d] text-xs font-mono font-bold rounded-sm cursor-pointer transition-colors"
+                  className="min-h-[44px] min-w-[44px] px-2.5 py-1 border border-[rgba(15,0,0,0.15)] hover:border-[#201d1d] text-[#201d1d] text-xs font-mono font-bold rounded-sm cursor-pointer transition-colors flex items-center justify-center"
                   title="Close"
                 >
                   [✕]
@@ -3004,7 +2990,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                       <button
                         type="button"
                         onClick={handleClearDraft}
-                        className="px-2 py-0.5 bg-amber-200/80 hover:bg-amber-300 text-amber-950 text-[10px] font-mono rounded-sm border border-amber-400 cursor-pointer"
+                        className="min-h-[44px] px-2.5 py-1 bg-amber-200/80 hover:bg-amber-300 text-amber-950 text-[10px] font-mono rounded-sm border border-amber-400 cursor-pointer flex items-center justify-center"
                       >
                         [초기화]
                       </button>
@@ -3107,7 +3093,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                     <button
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
-                      className="w-full p-3 bg-white hover:bg-[#f5f2f2] border border-dashed border-[rgba(15,0,0,0.25)] rounded-sm font-mono text-xs flex items-center justify-center gap-2 cursor-pointer transition-all text-[#444] touch-target"
+                      className="min-h-[44px] w-full p-3 bg-white hover:bg-[#f5f2f2] border border-dashed border-[rgba(15,0,0,0.25)] rounded-sm font-mono text-xs flex items-center justify-center gap-2 cursor-pointer transition-all text-[#444] touch-target"
                     >
                       <ImageIcon size={14} />
                       <span>[{t('choose_images_label', language)} (최대 5장)]</span>
@@ -3136,7 +3122,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                           <button
                             type="button"
                             onClick={() => handleRemoveImage(index)}
-                            className="absolute top-0 right-0 bg-black/80 hover:bg-red-600 px-1 py-0.5 text-white text-[9px] font-mono font-bold cursor-pointer border-none flex items-center justify-center"
+                            className="absolute top-0 right-0 min-h-[44px] min-w-[44px] bg-black/80 hover:bg-red-600 px-1 py-0.5 text-white text-[9px] font-mono font-bold cursor-pointer border-none flex items-center justify-center"
                             title="Remove image"
                           >
                             [✕]
@@ -3153,7 +3139,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                     type="submit"
                     disabled={isSubmitting}
                     className={cn(
-                      "w-full py-3 bg-[#201d1d] hover:bg-[#383333] text-white font-mono font-bold tracking-wider rounded-sm transition-all border border-[#201d1d] disabled:opacity-50 cursor-pointer active:scale-98 text-xs uppercase touch-target",
+                      "min-h-[44px] w-full py-3 bg-[#201d1d] hover:bg-[#383333] text-white font-mono font-bold tracking-wider rounded-sm transition-all border border-[#201d1d] disabled:opacity-50 cursor-pointer active:scale-98 text-xs uppercase touch-target flex items-center justify-center",
                       isSubmitting && "animate-pulse"
                     )}
                   >
@@ -3169,39 +3155,39 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
       {/* Custom Dialog Modal */}
       <AnimatePresence>
         {customModal && customModal.isOpen && (
-          <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4 z-[20050]">
+          <div className="fixed inset-0 bg-black/75 backdrop-blur-xs flex items-center justify-center p-4 z-[20050] font-mono">
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-sm bg-white border border-slate-100 rounded-3xl overflow-hidden shadow-2xl relative flex flex-col font-sans text-slate-800"
+              className="w-full max-w-sm bg-[#fdfcfc] border border-[#201d1d] rounded-none overflow-hidden relative flex flex-col font-mono text-[#201d1d]"
             >
               {/* Header */}
               <div className={cn(
-                "p-4 border-b flex justify-between items-center",
+                "p-3.5 border-b flex justify-between items-center",
                 customModal.type === 'error' 
-                  ? "bg-rose-50 border-rose-100 text-rose-800" 
+                  ? "bg-rose-50 border-rose-200 text-rose-800" 
                   : customModal.type === 'confirm' 
-                  ? "bg-amber-50 border-amber-100 text-amber-800" 
-                  : "bg-emerald-50 border-emerald-100 text-emerald-800"
+                  ? "bg-amber-50 border-amber-200 text-amber-800" 
+                  : "bg-emerald-50 border-emerald-200 text-emerald-800"
               )}>
-                <h3 className="font-bold text-sm uppercase tracking-tight flex items-center gap-1.5">
-                  {customModal.type === 'error' ? '❌' : customModal.type === 'confirm' ? '❓' : '🔔'} {customModal.title}
+                <h3 className="font-bold text-xs uppercase tracking-tight flex items-center gap-1.5">
+                  [{customModal.type === 'error' ? '❌' : customModal.type === 'confirm' ? '❓' : '🔔'} {customModal.title}]
                 </h3>
                 <button
                   onClick={() => {
                     playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
                     setCustomModal(null);
                   }}
-                  className="text-slate-400 hover:text-slate-700 cursor-pointer border-none bg-transparent"
+                  className="min-h-[44px] min-w-[44px] text-[#201d1d] hover:bg-black/5 cursor-pointer border-none bg-transparent rounded-sm flex items-center justify-center"
                 >
                   <X size={16} />
                 </button>
               </div>
 
               {/* Message */}
-              <div className="p-5.5 bg-white flex flex-col gap-4">
-                <p className="text-xs font-semibold leading-relaxed whitespace-pre-wrap text-slate-500">{customModal.message}</p>
+              <div className="p-4 bg-white flex flex-col gap-4">
+                <p className="text-xs font-semibold leading-relaxed whitespace-pre-wrap text-[#332e2e]">{customModal.message}</p>
                 
                 {/* Actions */}
                 <div className="flex gap-2 justify-end mt-2">
@@ -3212,7 +3198,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                           playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
                           setCustomModal(null);
                         }}
-                        className="px-4 py-2 border border-slate-200/80 rounded-xl text-xs font-bold bg-white text-slate-500 hover:bg-slate-50 active:scale-98 transition-all cursor-pointer shadow-xs"
+                        className="min-h-[44px] px-4 py-2 border border-[rgba(15,0,0,0.18)] rounded-sm text-xs font-bold bg-white text-[#504a4a] hover:bg-[#f0eeee] active:scale-98 transition-all cursor-pointer flex items-center justify-center font-mono"
                       >
                         {t('cancel_btn', language)}
                       </button>
@@ -3222,7 +3208,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                           if (customModal.onConfirm) customModal.onConfirm();
                           setCustomModal(null);
                         }}
-                        className="px-4 py-2 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white active:scale-98 transition-all cursor-pointer shadow-md shadow-rose-200 border-none"
+                        className="min-h-[44px] px-4 py-2 rounded-sm text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white active:scale-98 transition-all cursor-pointer border border-rose-700 flex items-center justify-center font-mono"
                       >
                         {t('community_confirm', language)}
                       </button>
@@ -3234,7 +3220,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                         if (customModal.onConfirm) customModal.onConfirm();
                         setCustomModal(null);
                       }}
-                      className="px-5 py-2.5 rounded-xl text-xs font-bold bg-slate-900 text-white hover:bg-slate-800 active:scale-98 transition-all cursor-pointer shadow-md border-none"
+                      className="min-h-[44px] px-5 py-2.5 rounded-sm text-xs font-bold bg-[#201d1d] text-white hover:bg-[#383333] active:scale-98 transition-all cursor-pointer border border-[#201d1d] flex items-center justify-center font-mono"
                     >
                       {t('community_confirm', language)}
                     </button>
@@ -3249,29 +3235,29 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
       {/* Doc 62: Report Modal */}
       <AnimatePresence>
         {reportModal && reportModal.isOpen && (
-          <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4 z-[20050]">
+          <div className="fixed inset-0 bg-black/75 backdrop-blur-xs flex items-center justify-center p-4 z-[20050] font-mono">
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-sm bg-white border border-slate-100 rounded-3xl overflow-hidden shadow-2xl relative flex flex-col font-sans text-slate-800"
+              className="w-full max-w-sm bg-[#fdfcfc] border border-[#201d1d] rounded-none overflow-hidden relative flex flex-col font-mono text-[#201d1d]"
             >
-              <div className="p-4 bg-rose-50 border-b border-rose-100 flex justify-between items-center">
-                <h3 className="font-bold text-sm uppercase tracking-tight flex items-center gap-1.5 text-rose-800">
-                  <Flag size={16} /> Report Post
+              <div className="p-3.5 bg-rose-50 border-b border-rose-200 flex justify-between items-center text-rose-800">
+                <h3 className="font-bold text-xs uppercase tracking-tight flex items-center gap-1.5">
+                  <Flag size={14} /> [REPORT POST]
                 </h3>
                 <button
                   onClick={() => {
                     playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
                     setReportModal(null);
                   }}
-                  className="text-slate-400 hover:text-slate-700 cursor-pointer border-none bg-transparent"
+                  className="min-h-[44px] min-w-[44px] text-rose-800 hover:bg-rose-100 cursor-pointer border-none bg-transparent rounded-sm flex items-center justify-center"
                 >
                   <X size={16} />
                 </button>
               </div>
-              <div className="p-5 bg-white flex flex-col gap-3">
-                <p className="text-[10px] font-semibold text-slate-500 line-clamp-1">
+              <div className="p-4 bg-white flex flex-col gap-3">
+                <p className="text-[10px] font-semibold text-[#666060] line-clamp-1">
                   "{reportModal.postTitle}..."
                 </p>
                 <div className="flex flex-col gap-2">
@@ -3284,10 +3270,10 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                     <button
                       key={reason}
                       onClick={() => handleReportPost(reportModal.postId, reason)}
-                      className="flex items-center gap-2 p-3 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 active:scale-98 transition-all cursor-pointer text-left border-none"
+                      className="min-h-[44px] flex items-center gap-2 p-3 rounded-sm border border-[rgba(15,0,0,0.15)] bg-white hover:bg-[#f0eeee] active:scale-98 transition-all cursor-pointer text-left font-mono"
                     >
-                      <span className="text-base">{icon}</span>
-                      <span className="text-xs font-bold text-slate-700">{label}</span>
+                      <span className="text-sm">{icon}</span>
+                      <span className="text-xs font-bold text-[#201d1d]">{label}</span>
                     </button>
                   ))}
                 </div>
@@ -3306,7 +3292,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
           }
           setShowUploadModal(true);
         }}
-        className="fixed bottom-[calc(env(safe-area-inset-bottom)+5.25rem)] right-4 sm:right-6 z-[10010] px-3.5 py-2.5 bg-[#201d1d] hover:bg-[#332f2f] text-white font-mono font-bold rounded-sm shadow-xl active:scale-95 transition-all cursor-pointer border border-[rgba(255,255,255,0.2)] flex items-center gap-1.5 touch-target"
+        className="fixed bottom-[calc(env(safe-area-inset-bottom)+5.25rem)] right-4 sm:right-6 z-[10010] min-h-[44px] px-3.5 py-2.5 bg-[#201d1d] hover:bg-[#332f2f] text-white font-mono font-bold rounded-sm active:scale-95 transition-all cursor-pointer border border-[rgba(255,255,255,0.2)] flex items-center gap-1.5 touch-target"
         aria-label={t('community_new_post', language)}
       >
         <span className="font-mono text-base leading-none">[+]</span>
@@ -3340,7 +3326,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
               </div>
               <button
                 onClick={() => setLightbox(null)}
-                className="px-3 py-1 bg-red-600/80 hover:bg-red-600 text-white rounded-sm border border-red-400 text-xs font-mono font-bold transition-all cursor-pointer active:scale-95"
+                className="min-h-[44px] px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded-sm border border-red-500 text-xs font-mono font-bold transition-all cursor-pointer active:scale-95 flex items-center justify-center"
                 title="Close (Esc)"
               >
                 [✕ {language === 'ko' ? '닫기' : 'CLOSE'}]
@@ -3358,7 +3344,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                       index: (prev.index === 0 ? prev.images.length - 1 : prev.index - 1)
                     }) : null);
                   }}
-                  className="absolute left-2 sm:left-4 z-20 p-3 bg-black/75 hover:bg-black text-white border border-white/30 rounded-sm active:scale-95 transition-all cursor-pointer font-mono font-bold text-sm touch-target"
+                  className="absolute left-2 sm:left-4 z-20 min-h-[44px] min-w-[44px] p-3 bg-black/75 hover:bg-black text-white border border-white/30 rounded-sm active:scale-95 transition-all cursor-pointer font-mono font-bold text-sm touch-target flex items-center justify-center"
                   title="Previous image"
                 >
                   [&lt;]
@@ -3373,7 +3359,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                 transition={{ duration: 0.15 }}
                 src={lightbox.images[lightbox.index]}
                 alt={`Expanded view ${lightbox.index + 1}`}
-                className="max-h-[72vh] max-w-full object-contain rounded-none border border-white/20 shadow-2xl"
+                className="max-h-[72vh] max-w-full object-contain rounded-none border border-white/20"
               />
 
               {lightbox.images.length > 1 && (
@@ -3385,7 +3371,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                       index: (prev.index === prev.images.length - 1 ? 0 : prev.index + 1)
                     }) : null);
                   }}
-                  className="absolute right-2 sm:right-4 z-20 p-3 bg-black/75 hover:bg-black text-white border border-white/30 rounded-sm active:scale-95 transition-all cursor-pointer font-mono font-bold text-sm touch-target"
+                  className="absolute right-2 sm:right-4 z-20 min-h-[44px] min-w-[44px] p-3 bg-black/75 hover:bg-black text-white border border-white/30 rounded-sm active:scale-95 transition-all cursor-pointer font-mono font-bold text-sm touch-target flex items-center justify-center"
                   title="Next image"
                 >
                   [&gt;]
@@ -3424,7 +3410,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[20050] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+            className="fixed inset-0 z-[20050] flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs font-mono"
             onClick={() => setShowHelp(false)}
           >
             <motion.div
@@ -3432,19 +3418,19 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 20 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 relative"
+              className="bg-[#fdfcfc] rounded-none max-w-sm w-full p-5 border border-[#201d1d] relative font-mono text-[#201d1d]"
             >
               <button
                 onClick={() => setShowHelp(false)}
-                className="absolute top-4 right-4 p-1.5 hover:bg-slate-100 rounded-full text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
+                className="absolute top-3 right-3 min-h-[44px] min-w-[44px] p-2 hover:bg-black/5 rounded-sm text-[#201d1d] transition-colors cursor-pointer flex items-center justify-center"
               >
                 <X size={18} />
               </button>
-              <div className="flex items-center gap-2 mb-4">
-                <HelpCircle size={20} className="text-indigo-500" />
-                <h3 className="font-bold text-sm text-slate-800">{t('community', language)}</h3>
+              <div className="flex items-center gap-2 mb-3">
+                <HelpCircle size={18} className="text-[#201d1d]" />
+                <h3 className="font-bold text-sm text-[#201d1d]">[{t('community', language)}]</h3>
               </div>
-              <div className="min-h-[120px] flex flex-col justify-center text-sm text-slate-600 leading-relaxed space-y-2 mb-4">
+              <div className="min-h-[120px] flex flex-col justify-center text-xs text-[#504a4a] leading-relaxed space-y-2 mb-4">
                 {helpSlide === 0 && (
                   <p>{language === 'ko' ? '커뮤니티는 자유게시판, Q&A, 팁, 덱 자랑 등 다양한 카테고리로 구성된 헌터들의 소통 공간입니다. 게시글 작성, 좋아요, 댓글 및 대댓글을 통해 소통할 수 있습니다.' : 'The community is a hub for hunters with categories like Free Board, Q&A, Tips, Deck Showcase, and more. Write posts, like, comment, and reply.'}</p>
                 )}
@@ -3459,15 +3445,15 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
                 <button
                   onClick={() => setHelpSlide((s) => Math.max(0, s - 1))}
                   disabled={helpSlide === 0}
-                  className="p-1.5 rounded-lg hover:bg-slate-100 disabled:opacity-30 transition-colors cursor-pointer"
+                  className="min-h-[44px] min-w-[44px] p-2 rounded-sm hover:bg-black/5 disabled:opacity-30 transition-colors cursor-pointer flex items-center justify-center text-[#201d1d] border border-[rgba(15,0,0,0.15)]"
                 >
                   <ChevronLeft size={18} />
                 </button>
-                <span className="text-[10px] font-bold text-slate-400">{helpSlide + 1} / 3</span>
+                <span className="text-[10px] font-bold text-[#888] font-mono">[{helpSlide + 1} / 3]</span>
                 <button
                   onClick={() => setHelpSlide((s) => Math.min(2, s + 1))}
                   disabled={helpSlide === 2}
-                  className="p-1.5 rounded-lg hover:bg-slate-100 disabled:opacity-30 transition-colors cursor-pointer"
+                  className="min-h-[44px] min-w-[44px] p-2 rounded-sm hover:bg-black/5 disabled:opacity-30 transition-colors cursor-pointer flex items-center justify-center text-[#201d1d] border border-[rgba(15,0,0,0.15)]"
                 >
                   <ChevronRight size={18} />
                 </button>
@@ -3481,7 +3467,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
       {likeParticles.map((particle) => (
         <span
           key={particle.id}
-          className="fixed z-50 pointer-events-none text-2xl animate-ping"
+          className="fixed z-50 pointer-events-none text-2xl transition-opacity duration-300 opacity-90"
           style={{
             left: `calc(50% + ${particle.x}px)`,
             top: '40%'
@@ -3498,7 +3484,7 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-[#201d1d] text-white px-4 py-2.5 rounded-sm border border-white/20 text-xs font-mono font-bold shadow-xl flex items-center gap-2"
+            className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-[#201d1d] text-white px-4 py-2.5 rounded-sm border border-white/20 text-xs font-mono font-bold flex items-center gap-2"
           >
             <Check size={14} className="text-emerald-400" />
             <span>{shareToast}</span>

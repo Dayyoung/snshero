@@ -27,20 +27,20 @@ export const RedditAdCard: React.FC<RedditAdCardProps> = ({ isDark, isKo = true,
   return (
     <article
       onClick={handleClick}
-      className={`rounded-2xl border p-4 mb-3.5 shadow-sm hover:shadow-md cursor-pointer transition-all duration-200 w-full max-w-full overflow-hidden break-words group ${
+      className={`rounded-none border p-4 mb-3.5 cursor-pointer font-mono transition-all duration-200 w-full max-w-full overflow-hidden break-words group ${
         isDark ? 'bg-[#181C1F] border-[#22272B] hover:border-[#FF4500]/40 text-gray-200' : 'bg-white border-gray-200 hover:border-[#FF4500]/40 text-gray-800'
       }`}
     >
       {/* 1. 상단 프로모션 헤더 */}
       <div className="flex items-center justify-between text-xs mb-2.5">
         <div className="flex items-center gap-2">
-          <div className="w-5 h-5 rounded-full bg-gradient-to-tr from-amber-500 to-[#FF4500] flex items-center justify-center text-[10px] text-white font-extrabold shadow-sm">
+          <div className="w-5 h-5 rounded-sm bg-[#FF4500] flex items-center justify-center text-[10px] text-white font-extrabold">
             AD
           </div>
           <span className="font-bold text-xs opacity-90">
             {isKo ? 'u/SNSHero_공식스폰서' : 'u/SNSHero_Official'}
           </span>
-          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FF4500]/10 text-[#FF4500] flex items-center gap-1">
+          <span className="text-[10px] font-bold px-2 py-0.5 rounded-sm bg-[#FF4500]/10 text-[#FF4500] flex items-center gap-1">
             <Sparkles className="w-2.5 h-2.5" />
             <span>{isKo ? '프로모션' : 'Promoted'}</span>
           </span>
@@ -59,7 +59,7 @@ export const RedditAdCard: React.FC<RedditAdCardProps> = ({ isDark, isKo = true,
       </h3>
 
       {/* 3. 구글 애드센스 인피드 반응형 광고 슬롯 */}
-      <div className="w-full rounded-xl overflow-hidden mb-3 border border-inherit/15 bg-black/5 dark:bg-white/5 flex flex-col items-center justify-center p-2 min-h-[140px]">
+      <div className="w-full rounded-none overflow-hidden mb-3 border border-inherit/15 bg-black/5 dark:bg-white/5 flex flex-col items-center justify-center p-2 min-h-[140px]">
         <AdSenseBanner
           format="auto"
           responsive={true}
@@ -78,7 +78,7 @@ export const RedditAdCard: React.FC<RedditAdCardProps> = ({ isDark, isKo = true,
         <button
           type="button"
           onClick={handleClick}
-          className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-gradient-to-r from-[#FF4500] to-[#FF6B00] hover:from-[#FF5414] hover:to-[#FF8500] text-white font-extrabold text-xs cursor-pointer shadow-md shadow-[#FF4500]/25 transition-all hover:scale-105 active:scale-95"
+          className="flex items-center gap-1.5 px-4 py-2 rounded-sm bg-[#FF4500] hover:bg-[#FF5414] text-white font-bold text-xs cursor-pointer transition-colors min-h-[44px]"
         >
           <Gamepad2 className="w-3.5 h-3.5" />
           <span>{isKo ? '자세히 보기 (게임하기)' : 'Play Game'}</span>

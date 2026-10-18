@@ -684,7 +684,7 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
       onMouseMove={resetControlsTimeout}
       onTouchStart={resetControlsTimeout}
       className={`flex flex-col w-full overflow-hidden bg-[#0e0c0c] font-mono select-none ${
-        isFullscreen ? 'fixed inset-0 z-50 h-[100dvh] w-screen justify-between' : 'rounded-none border border-white/15 shadow-2xl'
+        isFullscreen ? 'fixed inset-0 z-50 h-[100dvh] w-screen justify-between' : 'rounded-none border border-white/15'
       }`}
     >
       {/* 1. TOP THEATRICAL HEADER BAR (Placed cleanly above the video canvas) */}

@@ -75,7 +75,7 @@ export const RedditFeedSortBar: React.FC<RedditFeedSortBarProps> = ({
   ];
 
   return (
-    <div className={`rounded-2xl border p-2 mb-4 w-full max-w-full overflow-hidden flex items-center justify-between shadow-sm transition-colors ${
+    <div className={`rounded-none border p-2 mb-4 w-full max-w-full overflow-hidden flex items-center justify-between font-mono transition-colors ${
       isDark ? 'bg-[#181C1F] border-[#22272B] text-gray-200' : 'bg-white border-gray-200 text-gray-800'
     }`}>
       {/* 1. 정렬 칩 목록 */}
@@ -93,11 +93,11 @@ export const RedditFeedSortBar: React.FC<RedditFeedSortBarProps> = ({
                   setIsTopDropdownOpen(true);
                 }
               }}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold cursor-pointer transition-all flex-shrink-0 ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-xs font-bold cursor-pointer transition-all flex-shrink-0 min-h-[44px] ${
                 isActive
                   ? isDark
-                    ? 'bg-[#272D32] text-white shadow-sm'
-                    : 'bg-gray-200 text-gray-900 shadow-sm'
+                    ? 'bg-[#272D32] text-white'
+                    : 'bg-gray-200 text-gray-900'
                   : isDark
                   ? 'hover:bg-[#22272B] text-gray-400 hover:text-gray-200'
                   : 'hover:bg-gray-100 text-gray-600 hover:text-gray-900'
@@ -115,7 +115,7 @@ export const RedditFeedSortBar: React.FC<RedditFeedSortBarProps> = ({
             <button
               type="button"
               onClick={() => setIsTopDropdownOpen(!isTopDropdownOpen)}
-              className={`flex items-center gap-1 px-2.5 py-1.5 rounded-full text-xs font-semibold cursor-pointer border ${
+              className={`flex items-center gap-1 px-2.5 py-1.5 rounded-sm text-xs font-semibold cursor-pointer border min-h-[44px] ${
                 isDark ? 'bg-[#22272B] border-[#2E363E] text-gray-200' : 'bg-gray-100 border-gray-200 text-gray-800'
               }`}
             >
@@ -128,7 +128,7 @@ export const RedditFeedSortBar: React.FC<RedditFeedSortBarProps> = ({
             </button>
 
             {isTopDropdownOpen && (
-              <div className={`absolute top-full left-0 mt-1.5 w-36 rounded-xl border shadow-xl py-1 z-30 text-xs overflow-hidden backdrop-blur-md ${
+              <div className={`absolute top-full left-0 mt-1.5 w-36 rounded-none border py-1 z-30 text-xs overflow-hidden ${
                 isDark ? 'bg-[#181C1F] border-[#2E363E] text-gray-200' : 'bg-white border-gray-200 text-gray-800'
               }`}>
                 {timeFilters.map((tf) => (
@@ -139,7 +139,7 @@ export const RedditFeedSortBar: React.FC<RedditFeedSortBarProps> = ({
                       onSelectTimeFilter(tf.id);
                       setIsTopDropdownOpen(false);
                     }}
-                    className={`w-full text-left px-3 py-1.5 cursor-pointer font-medium ${
+                    className={`w-full text-left px-3 py-2 cursor-pointer font-medium min-h-[44px] flex items-center ${
                       currentTimeFilter === tf.id ? 'text-[#FF4500] font-bold' : ''
                     } ${isDark ? 'hover:bg-[#22272B]' : 'hover:bg-gray-100'}`}
                   >
@@ -157,10 +157,11 @@ export const RedditFeedSortBar: React.FC<RedditFeedSortBarProps> = ({
         <button
           type="button"
           onClick={() => setIsViewDropdownOpen(!isViewDropdownOpen)}
-          className={`p-2 rounded-full cursor-pointer transition-colors ${
+          className={`w-11 h-11 flex items-center justify-center rounded-sm cursor-pointer transition-colors min-h-[44px] ${
             isDark ? 'hover:bg-[#22272B] text-gray-300' : 'hover:bg-gray-100 text-gray-700'
           }`}
           title={isKo ? "보기 모드 변경" : "Change View Mode"}
+          aria-label="Change View Mode"
         >
           {currentViewMode === 'card' && <Columns className="w-4 h-4" />}
           {currentViewMode === 'classic' && <LayoutList className="w-4 h-4" />}
@@ -168,7 +169,7 @@ export const RedditFeedSortBar: React.FC<RedditFeedSortBarProps> = ({
         </button>
 
         {isViewDropdownOpen && (
-          <div className={`absolute top-full right-0 mt-1.5 w-40 rounded-xl border shadow-xl py-1 z-30 text-xs overflow-hidden backdrop-blur-md ${
+          <div className={`absolute top-full right-0 mt-1.5 w-40 rounded-none border py-1 z-30 text-xs overflow-hidden ${
             isDark ? 'bg-[#181C1F] border-[#2E363E] text-gray-200' : 'bg-white border-gray-200 text-gray-800'
           }`}>
             {[
@@ -185,7 +186,7 @@ export const RedditFeedSortBar: React.FC<RedditFeedSortBarProps> = ({
                     onSelectViewMode(vm.id as ViewModeType);
                     setIsViewDropdownOpen(false);
                   }}
-                  className={`w-full text-left px-3 py-2 cursor-pointer font-medium flex items-center gap-2 ${
+                  className={`w-full text-left px-3 py-2 cursor-pointer font-medium flex items-center gap-2 min-h-[44px] ${
                     currentViewMode === vm.id ? 'text-[#FF4500] font-bold' : ''
                   } ${isDark ? 'hover:bg-[#22272B]' : 'hover:bg-gray-100'}`}
                 >

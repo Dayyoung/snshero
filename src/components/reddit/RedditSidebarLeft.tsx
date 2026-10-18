@@ -80,7 +80,7 @@ export const RedditSidebarLeft: React.FC<RedditSidebarLeftProps> = ({
   };
 
   const content = (
-    <div className="h-full flex flex-col justify-between overflow-y-auto py-3 px-2 text-xs font-medium select-none scrollbar-thin">
+    <div className="h-full flex flex-col justify-between overflow-y-auto py-3 px-2 text-xs font-mono select-none scrollbar-thin">
       <div className="space-y-4">
         {/* 1. 피드 섹션 */}
         <div>
@@ -104,7 +104,7 @@ export const RedditSidebarLeft: React.FC<RedditSidebarLeftProps> = ({
                     onSelectSubreddit(feed.id);
                     onClose();
                   }}
-                  className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl cursor-pointer transition-colors ${
+                  className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-none cursor-pointer transition-colors min-h-[44px] ${
                     isActive
                       ? isDark
                         ? 'bg-[#22272B] text-white font-bold'
@@ -126,7 +126,7 @@ export const RedditSidebarLeft: React.FC<RedditSidebarLeftProps> = ({
         <div>
           <div className="px-3.5 py-1.5 text-[10px] font-bold tracking-wider uppercase opacity-50 flex items-center justify-between">
             <span>{isKo ? 'SNSHero 컨텐츠 라운지' : 'Core Features'}</span>
-            <span className="text-[9px] px-1 py-0.2 rounded bg-[#FF4500]/15 text-[#FF4500] font-extrabold">HOME</span>
+            <span className="text-[9px] px-1 py-0.2 rounded-sm bg-[#FF4500]/15 text-[#FF4500] font-extrabold">HOME</span>
           </div>
           <div className="space-y-0.5">
             {homeContents.map((c) => {
@@ -136,7 +136,7 @@ export const RedditSidebarLeft: React.FC<RedditSidebarLeftProps> = ({
                   key={c.view}
                   type="button"
                   onClick={() => handleNavigateContent(c.view)}
-                  className={`w-full flex items-center justify-between px-3.5 py-2 rounded-xl cursor-pointer transition-colors group ${
+                  className={`w-full flex items-center justify-between px-3.5 py-2 rounded-none cursor-pointer transition-colors group min-h-[44px] ${
                     isDark
                       ? 'hover:bg-[#181C1F] text-gray-300 hover:text-white'
                       : 'hover:bg-gray-100 text-gray-700 hover:text-gray-900'
@@ -148,7 +148,7 @@ export const RedditSidebarLeft: React.FC<RedditSidebarLeftProps> = ({
                   </div>
                   <div className="flex items-center gap-1.5 flex-shrink-0">
                     {c.badge && (
-                      <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-full bg-amber-500/15 text-amber-500 border border-amber-500/30">
+                      <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-sm bg-amber-500/15 text-amber-500 border border-amber-500/30">
                         {c.badge}
                       </span>
                     )}
@@ -170,7 +170,8 @@ export const RedditSidebarLeft: React.FC<RedditSidebarLeftProps> = ({
               type="button"
               onClick={onOpenCreateCommunity || onOpenSubmitModal}
               title={isKo ? '새 커뮤니티 만들기' : 'Create Community'}
-              className="p-1 rounded-full hover:bg-black/10 cursor-pointer text-[#FF4500]"
+              className="w-11 h-11 flex items-center justify-center rounded-sm hover:bg-black/10 cursor-pointer text-[#FF4500] min-h-[44px]"
+              aria-label="Create Community"
             >
               <Plus className="w-3.5 h-3.5" />
             </button>
@@ -187,7 +188,7 @@ export const RedditSidebarLeft: React.FC<RedditSidebarLeftProps> = ({
                     onSelectSubreddit(subName);
                     onClose();
                   }}
-                  className={`w-full flex items-center gap-2.5 px-3.5 py-2 rounded-xl cursor-pointer transition-colors ${
+                  className={`w-full flex items-center gap-2.5 px-3.5 py-2 rounded-none cursor-pointer transition-colors min-h-[44px] ${
                     isActive
                       ? isDark
                         ? 'bg-[#22272B] text-white font-bold'
@@ -201,7 +202,7 @@ export const RedditSidebarLeft: React.FC<RedditSidebarLeftProps> = ({
                     <img
                       src={subData.iconUrl}
                       alt={subName}
-                      className="w-4 h-4 rounded-full object-cover"
+                      className="w-4 h-4 rounded-sm object-cover"
                     />
                   ) : (
                     <span className="text-[#FF4500] font-bold">r/</span>
@@ -222,7 +223,7 @@ export const RedditSidebarLeft: React.FC<RedditSidebarLeftProps> = ({
             <button
               type="button"
               onClick={() => setPolicyModalType('rules')}
-              className={`w-full text-left flex items-center gap-2.5 px-3.5 py-2 rounded-xl cursor-pointer transition-colors ${
+              className={`w-full text-left flex items-center gap-2.5 px-3.5 py-2 rounded-none cursor-pointer transition-colors min-h-[44px] ${
                 isDark ? 'hover:bg-[#181C1F] text-gray-400' : 'hover:bg-gray-100 text-gray-600'
               }`}
             >
@@ -232,7 +233,7 @@ export const RedditSidebarLeft: React.FC<RedditSidebarLeftProps> = ({
             <button
               type="button"
               onClick={() => setPolicyModalType('privacy')}
-              className={`w-full text-left flex items-center gap-2.5 px-3.5 py-2 rounded-xl cursor-pointer transition-colors ${
+              className={`w-full text-left flex items-center gap-2.5 px-3.5 py-2 rounded-none cursor-pointer transition-colors min-h-[44px] ${
                 isDark ? 'hover:bg-[#181C1F] text-gray-400' : 'hover:bg-gray-100 text-gray-600'
               }`}
             >
@@ -273,7 +274,7 @@ export const RedditSidebarLeft: React.FC<RedditSidebarLeftProps> = ({
             onClick={onClose}
           />
           <div
-            className={`relative w-72 max-w-[80vw] h-full shadow-2xl flex flex-col z-10 animate-in slide-in-from-left duration-200 ${
+            className={`relative w-72 max-w-[80vw] h-full flex flex-col z-10 animate-in slide-in-from-left duration-200 font-mono ${
               isDark ? 'bg-[#0E1113] text-gray-200' : 'bg-white text-gray-800'
             }`}
           >
@@ -284,7 +285,8 @@ export const RedditSidebarLeft: React.FC<RedditSidebarLeftProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="p-1 rounded-full hover:bg-black/10 cursor-pointer"
+                className="w-11 h-11 flex items-center justify-center rounded-sm hover:bg-black/10 cursor-pointer min-h-[44px]"
+                aria-label="Close"
               >
                 <X className="w-5 h-5" />
               </button>
