@@ -32,21 +32,43 @@ import {
 } from 'lucide-react';
 import { MovieVfxCanvas, MovieVfxType } from './MovieVfxCanvas';
 import { movieAudio, MovieBgmTheme, MovieSfxType } from '../../lib/MovieAudioSynthesizer';
-import { MOVIE_EPISODES } from '../../content/movieEpisodeMapping';
+import { MOVIE_EPISODES, getCharacterPortraitUrl } from '../../content/movieEpisodeMapping';
 import WEBTOON_MANIFEST from '../../content/webtoonEpisodeManifest.json';
 import { triggerHaptic } from '../../lib/haptic';
+
+export interface CinematicDialogueItem {
+  speakerKo?: string;
+  speakerEn?: string;
+  textKo: string;
+  textEn: string;
+  speaker?: string;
+  text?: string;
+  bubbleType?: 'thought' | 'speech' | 'shout';
+  position?: 'bottom-left' | 'top-left' | 'bottom-right' | 'top-right' | 'center';
+  characterCardId?: number;
+}
+
+export interface CinematicSfxCue {
+  textKo: string;
+  textEn: string;
+  style?: 'slash' | 'impact' | 'magic' | 'rumble';
+  position?: 'center' | 'top-right' | 'top-left' | 'bottom-left' | 'bottom-right';
+}
 
 export interface CinematicScene {
   sceneNumber: number;
   imageUrl: string;
   narrationKo: string;
   narrationEn: string;
-  dialogues?: Array<{ speaker: string; text: string }>;
+  characters?: string[];
+  dialogues?: CinematicDialogueItem[];
+  sfxCues?: CinematicSfxCue[];
   vfxType?: MovieVfxType;
   cameraMotion?: 'pan-left' | 'pan-right' | 'zoom-in' | 'zoom-out' | 'shake';
   bgmTheme?: MovieBgmTheme;
   sfxTrigger?: MovieSfxType;
   durationSeconds?: number;
+  type?: 'title_card' | 'scene';
 }
 
 export interface CinematicMoviePlayerProps {
@@ -62,7 +84,7 @@ export interface CinematicMoviePlayerProps {
   totalEpisodes?: number;
 }
 
-// Fallback scene generator from webtoonEpisodeManifest
+// Scene generator from webtoonEpisodeManifest supporting all 40 episodes & 2,049 cutscenes
 const buildScenesForEpisode = (epNum: number, language: 'ko' | 'en' | 'ja' = 'ko'): CinematicScene[] => {
   const manifest = WEBTOON_MANIFEST as Record<string, {
     episodeNumber: number;
@@ -71,12 +93,27 @@ const buildScenesForEpisode = (epNum: number, language: 'ko' | 'en' | 'ja' = 'ko
     images: Array<{
       index: number;
       imageUrl: string;
+      localArtUrl?: string;
       type: string;
       narrationEn?: string;
       narrationKo?: string;
       background?: string;
       characters?: string[];
-      dialogues?: Array<{ speakerKo?: string; speakerEn?: string; textKo: string; textEn: string }>;
+      dialogues?: Array<{
+        speakerKo?: string;
+        speakerEn?: string;
+        textKo: string;
+        textEn: string;
+        bubbleType?: 'thought' | 'speech' | 'shout';
+        position?: 'bottom-left' | 'top-left' | 'bottom-right' | 'top-right' | 'center';
+        characterCardId?: number;
+      }>;
+      sfxCues?: Array<{
+        textKo: string;
+        textEn: string;
+        style?: 'slash' | 'impact' | 'magic' | 'rumble';
+        position?: 'center' | 'top-right' | 'top-left' | 'bottom-left' | 'bottom-right';
+      }>;
     }>;
   }>;
 
@@ -94,7 +131,7 @@ const buildScenesForEpisode = (epNum: number, language: 'ko' | 'en' | 'ja' = 'ko
   ];
 
   if (!epData || !epData.images || epData.images.length === 0) {
-    // Generate minimal fallback scenes if manifest is somehow missing
+    // Fallback if manifest is missing
     return Array.from({ length: 20 }, (_, i) => ({
       sceneNumber: i + 1,
       imageUrl: `/images/webtoon/episode_${String(epNum).padStart(2, '0')}/scene_${String(i + 1).padStart(2, '0')}.webp`,
@@ -107,13 +144,14 @@ const buildScenesForEpisode = (epNum: number, language: 'ko' | 'en' | 'ja' = 'ko
     }));
   }
 
-  // Filter out title card (index 0) or map scenes 1..20
-  const sceneImages = epData.images.filter((img) => img.index > 0);
-  const targetImages = sceneImages.length > 0 ? sceneImages : epData.images;
+  // Load ALL cutscenes: scene_00.webp (index 0 title card) through scene_XX.webp (100% of episode cutscenes)
+  const targetImages = epData.images;
 
   return targetImages.map((img, idx) => {
     const textKo = img.narrationKo || '';
     const textEn = img.narrationEn || '';
+    const sfxCues: CinematicSfxCue[] = img.sfxCues || [];
+    const characters: string[] = img.characters || [];
 
     // Smart VFX heuristic based on scene text
     let sceneVfx: MovieVfxType = defaultVfx;
@@ -129,9 +167,15 @@ const buildScenesForEpisode = (epNum: number, language: 'ko' | 'en' | 'ja' = 'ko
       sceneVfx = 'fog';
     }
 
-    // Smart SFX trigger on dramatic beats
+    // Smart SFX trigger: priority to structured sfxCues, then text heuristics
     let sfxTrigger: MovieSfxType | undefined = undefined;
-    if (textKo.includes('검') || textKo.includes('칼날') || textEn.toLowerCase().includes('sword')) {
+    if (sfxCues.length > 0) {
+      const firstStyle = sfxCues[0].style;
+      if (firstStyle === 'slash') sfxTrigger = 'sword-strike';
+      else if (firstStyle === 'magic') sfxTrigger = 'magic-cast';
+      else if (firstStyle === 'impact') sfxTrigger = 'thunder-impact';
+      else if (firstStyle === 'rumble') sfxTrigger = 'shield-block';
+    } else if (textKo.includes('검') || textKo.includes('칼날') || textEn.toLowerCase().includes('sword')) {
       sfxTrigger = 'sword-strike';
     } else if (textKo.includes('마법') || textKo.includes('주문') || textEn.toLowerCase().includes('magic')) {
       sfxTrigger = 'magic-cast';
@@ -145,26 +189,45 @@ const buildScenesForEpisode = (epNum: number, language: 'ko' | 'en' | 'ja' = 'ko
 
     // Camera motion: Climax or combat scenes get shake
     let motion: 'zoom-in' | 'pan-left' | 'zoom-out' | 'pan-right' | 'shake' = motionCycle[idx % motionCycle.length];
-    if (idx === 18 || textKo.includes('폭발') || textKo.includes('일격') || textEn.toLowerCase().includes('clash')) {
+    if (idx === targetImages.length - 2 || textKo.includes('폭발') || textKo.includes('일격') || textEn.toLowerCase().includes('clash') || (sfxCues.length > 0 && sfxCues[0].style === 'impact')) {
       motion = 'shake';
     }
 
-    const dialogues = img.dialogues?.map((d) => ({
-      speaker: (language === 'ko' ? d.speakerKo : d.speakerEn) || d.speakerKo || '',
-      text: (language === 'ko' ? d.textKo : d.textEn) || d.textKo || '',
+    const dialogues: CinematicDialogueItem[] = (img.dialogues || []).map((d) => ({
+      speakerKo: d.speakerKo,
+      speakerEn: d.speakerEn,
+      textKo: d.textKo,
+      textEn: d.textEn,
+      speaker: (language === 'ko' ? d.speakerKo : d.speakerEn) || d.speakerKo || d.speakerEn || '',
+      text: (language === 'ko' ? d.textKo : d.textEn) || d.textKo || d.textEn || '',
+      bubbleType: d.bubbleType,
+      position: d.position,
+      characterCardId: d.characterCardId,
     }));
+
+    // Dynamic scene timing based on English word count and speech synthesis length
+    const enWords = (textEn + ' ' + (img.dialogues?.map((d) => d.textEn).join(' ') || ''))
+      .split(/\s+/)
+      .filter(Boolean).length;
+    const isTitleCard = img.type === 'title_card' || img.index === 0;
+    const dynamicDuration = isTitleCard
+      ? 4.5
+      : Math.max(4.5, Math.min(14.0, 3.2 + enWords * 0.38));
 
     return {
       sceneNumber: idx + 1,
-      imageUrl: (img as any).localArtUrl || img.imageUrl || `/images/webtoon/episode_${String(epNum).padStart(2, '0')}/scene_${String(idx + 1).padStart(2, '0')}.webp`,
+      imageUrl: img.localArtUrl || img.imageUrl || `/images/webtoon/episode_${String(epNum).padStart(2, '0')}/scene_${String(idx).padStart(2, '0')}.webp`,
       narrationKo: textKo,
       narrationEn: textEn,
+      characters,
       dialogues,
+      sfxCues,
       cameraMotion: motion,
       vfxType: sceneVfx,
       bgmTheme: defaultTheme,
       sfxTrigger,
-      durationSeconds: 6.5,
+      durationSeconds: dynamicDuration,
+      type: (img.type as any) || (img.index === 0 ? 'title_card' : 'scene'),
     };
   });
 };
@@ -195,6 +258,7 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
   const [playbackSpeed, setPlaybackSpeed] = useState<number>(1.0);
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const [isTtsEnabled, setIsTtsEnabled] = useState<boolean>(true);
+  const [isCcEnabled, setIsCcEnabled] = useState<boolean>(true);
   const [subtitleMode, setSubtitleMode] = useState<'dual' | 'primary' | 'off'>('dual');
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [showControls, setShowControls] = useState<boolean>(true);
@@ -217,6 +281,22 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
 
   const currentScene = scenes[currentSceneIdx] || scenes[0];
 
+  // Characters present in current scene (manifest characters + dialogue speakers)
+  const sceneCharacterNames: string[] = Array.from(
+    new Set([
+      ...(currentScene?.characters || []),
+      ...(currentScene?.dialogues || [])
+        .map((d) => d.speakerEn)
+        .filter((s): s is string => Boolean(s && s !== 'Narration' && s !== '내레이션')),
+    ])
+  );
+
+  const activeSpeakerDialogue = currentScene?.dialogues?.find(
+    (d) => d.speakerEn && d.speakerEn !== 'Narration' && d.speakerEn !== '내레이션'
+  );
+  const activeSpeakerName = activeSpeakerDialogue?.speakerEn?.toLowerCase();
+  const activeSpeakerCardId = activeSpeakerDialogue?.characterCardId;
+
   // Auto-hide controls timer
   const resetControlsTimeout = useCallback(() => {
     setShowControls(true);
@@ -237,35 +317,53 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
     };
   }, [resetControlsTimeout]);
 
-  // Audio & TTS Synchronization on Scene Change
+  // 1. Episode BGM Lifecycle: Starts continuous BGM on playback & persists across scenes
+  useEffect(() => {
+    if (isPlaying && !isMuted) {
+      const meta = MOVIE_EPISODES[episodeNumber];
+      const episodeTheme = meta?.bgmTheme || currentScene?.bgmTheme || 'arcane-mystery';
+      movieAudio.startEpisodeBgm(episodeNumber, episodeTheme);
+    }
+  }, [episodeNumber, isPlaying, isMuted, currentScene?.bgmTheme]);
+
+  // Clean unmount audio stop
+  useEffect(() => {
+    return () => {
+      movieAudio.stopAll();
+    };
+  }, []);
+
+  // 2. Audio SFX & English TTS voiceover on scene change (WITHOUT cutting episode BGM)
   useEffect(() => {
     if (!currentScene) return;
 
-    // Start background music theme
-    if (currentScene.bgmTheme) {
-      movieAudio.startBgm(currentScene.bgmTheme);
-    }
-
-    // Trigger one-shot battle/scene sound effect
+    // Trigger one-shot combat sound effect
     if (currentScene.sfxTrigger) {
       movieAudio.playSfx(currentScene.sfxTrigger);
     }
 
-    // Voiceover SpeechSynthesis
+    // English-Base TTS Voiceover (Requirement R2)
+    // Always speaks English narrationEn and English dialogues using English SpeechSynthesis
     if (isTtsEnabled && isPlaying && !isMuted) {
-      const narrationText = language === 'en' ? currentScene.narrationEn : currentScene.narrationKo;
-      if (narrationText) {
-        movieAudio.speakNarration(narrationText, language === 'en' ? 'en' : 'ko');
+      const dialogueLines = (currentScene.dialogues || [])
+        .map((d) => (d.speakerEn ? `${d.speakerEn}: ${d.textEn}` : d.textEn))
+        .filter(Boolean);
+      const fullEnglishScript = [
+        ...dialogueLines,
+        currentScene.narrationEn,
+      ].filter(Boolean).join('. ');
+
+      if (fullEnglishScript) {
+        movieAudio.speakEnglishNarration(fullEnglishScript);
       }
     } else {
       movieAudio.stopNarration();
     }
 
     return () => {
-      // Don't stop BGM if theme hasn't changed, but stop narration on scene switch
       movieAudio.stopNarration();
     };
-  }, [currentSceneIdx, currentScene, isTtsEnabled, isPlaying, isMuted, language]);
+  }, [currentSceneIdx, currentScene, isTtsEnabled, isPlaying, isMuted]);
 
   // Scene auto-advance timer and progress ticker
   useEffect(() => {
@@ -337,8 +435,15 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
   // Controls Handlers
   const handleTogglePlay = () => {
     triggerHaptic('light');
-    movieAudio.initAudio();
-    setIsPlaying((prev) => !prev);
+    const willPlay = !isPlaying;
+    setIsPlaying(willPlay);
+    movieAudio.initAudio().then(() => {
+      if (willPlay) {
+        const meta = MOVIE_EPISODES[episodeNumber];
+        const episodeTheme = meta?.bgmTheme || currentScene?.bgmTheme || 'arcane-mystery';
+        movieAudio.startEpisodeBgm(episodeNumber, episodeTheme);
+      }
+    });
     resetControlsTimeout();
   };
 
@@ -396,6 +501,12 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
     resetControlsTimeout();
   };
 
+  const handleToggleCc = () => {
+    triggerHaptic('light');
+    setIsCcEnabled((prev) => !prev);
+    resetControlsTimeout();
+  };
+
   const handleToggleTts = () => {
     triggerHaptic('light');
     setIsTtsEnabled((prev) => !prev);
@@ -408,7 +519,11 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
     setCurrentSceneIdx(0);
     setSceneProgress(0);
     setIsPlaying(true);
-    movieAudio.initAudio();
+    movieAudio.initAudio().then(() => {
+      const meta = MOVIE_EPISODES[episodeNumber];
+      const episodeTheme = meta?.bgmTheme || currentScene?.bgmTheme || 'arcane-mystery';
+      movieAudio.startEpisodeBgm(episodeNumber, episodeTheme);
+    });
   };
 
   const handlePlayNextEpisode = () => {
@@ -436,6 +551,9 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
       } else if (e.key === 'm' || e.key === 'M') {
         e.preventDefault();
         handleToggleMute();
+      } else if (e.key === 'c' || e.key === 'C') {
+        e.preventDefault();
+        handleToggleCc();
       } else if (e.key === 'Escape' && isFullscreen) {
         document.exitFullscreen().catch(() => {});
       }
@@ -504,6 +622,122 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
       {/* 2. HTML5 PARTICLE VFX CANVAS OVERLAY */}
       <MovieVfxCanvas vfxType={currentScene?.vfxType || 'none'} intensity={1.1} />
 
+      {/* 2.5 ANIMATED COMBAT ONOMATOPOEIA (SFX) OVERLAY */}
+      {currentScene?.sfxCues && currentScene.sfxCues.length > 0 && !isCompleted && (
+        <div className="absolute inset-0 pointer-events-none z-25 overflow-hidden">
+          {currentScene.sfxCues.map((sfx, idx) => {
+            const positionClass = {
+              'center': 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
+              'top-right': 'top-14 right-6 sm:right-12',
+              'top-left': 'top-14 left-6 sm:left-12',
+              'bottom-right': 'bottom-24 right-6 sm:right-12',
+              'bottom-left': 'bottom-24 left-6 sm:left-12',
+            }[sfx.position || 'center'];
+
+            const styleClass = {
+              slash: 'text-red-500 italic -rotate-12 border-red-500/80 drop-shadow-[0_4px_16px_rgba(239,68,68,0.9)] scale-110',
+              impact: 'text-amber-400 rotate-6 border-amber-400/80 drop-shadow-[0_4px_16px_rgba(251,191,36,0.9)] scale-125',
+              magic: 'text-cyan-400 -rotate-3 border-cyan-400/80 drop-shadow-[0_4px_16px_rgba(6,182,212,0.9)] scale-110',
+              rumble: 'text-stone-300 rotate-1 border-stone-400/80 drop-shadow-[0_4px_16px_rgba(214,211,209,0.9)] scale-105',
+            }[sfx.style || 'impact'];
+
+            return (
+              <div
+                key={`${currentSceneIdx}_sfx_${idx}`}
+                className={`absolute font-mono font-black select-none pointer-events-auto cursor-pointer ${positionClass} animate-in zoom-in-75 duration-200`}
+                onClick={() => {
+                  if (sfx.style === 'slash') movieAudio.playSfx('sword-strike');
+                  else if (sfx.style === 'magic') movieAudio.playSfx('magic-cast');
+                  else if (sfx.style === 'impact') movieAudio.playSfx('thunder-impact');
+                  else movieAudio.playSfx('shield-block');
+                }}
+                title="Click to replay SFX"
+              >
+                <div className={`px-4 py-1.5 bg-black/85 rounded-none border-2 backdrop-blur-sm text-2xl md:text-4xl tracking-widest ${styleClass}`}>
+                  <span>{sfx.textEn}</span>
+                  <span className="block text-[11px] font-medium text-stone-300 tracking-normal text-center mt-0.5">
+                    {sfx.textKo}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* 2.6 ACTIVE CHARACTER PORTRAIT DOCK & STAGE DIALOGUE */}
+      {sceneCharacterNames.length > 0 && !isCompleted && (
+        <div className="absolute bottom-24 sm:bottom-28 left-3 sm:left-6 z-20 flex flex-col gap-2 pointer-events-none max-w-[85vw] sm:max-w-md">
+          {/* Floating English Dialogue Speech Box on the stage */}
+          {activeSpeakerDialogue && (
+            <div className="flex items-center gap-2 rounded-sm border border-amber-400/80 bg-black/85 px-3 py-1.5 backdrop-blur-md shadow-xl animate-in fade-in duration-200">
+              <div className="flex flex-col">
+                <div className="flex items-center gap-1.5 text-xs font-black text-amber-400">
+                  <span>[{activeSpeakerDialogue.speakerEn || activeSpeakerDialogue.speaker}]</span>
+                  {activeSpeakerDialogue.bubbleType && (
+                    <span className="text-[10px] uppercase text-stone-400">({activeSpeakerDialogue.bubbleType})</span>
+                  )}
+                </div>
+                <p className="text-xs sm:text-sm font-semibold text-white leading-snug">
+                  "{activeSpeakerDialogue.textEn || activeSpeakerDialogue.text}"
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Character Portraits Dock */}
+          <div className="flex items-end gap-2 overflow-x-auto py-1">
+            {sceneCharacterNames.map((charName) => {
+              const isSpeaking = activeSpeakerName
+                ? charName.toLowerCase() === activeSpeakerName
+                : false;
+              const portraitUrl = getCharacterPortraitUrl(
+                isSpeaking ? activeSpeakerCardId : undefined,
+                charName
+              );
+
+              return (
+                <div
+                  key={charName}
+                  className={`relative transition-all duration-300 shrink-0 ${
+                    isSpeaking
+                      ? 'scale-110 z-10 translate-y-[-4px]'
+                      : 'scale-90 opacity-45 grayscale-40 brightness-75 z-0'
+                  }`}
+                >
+                  <div
+                    className={`h-16 w-14 sm:h-20 sm:w-16 overflow-hidden rounded-none border ${
+                      isSpeaking
+                        ? 'border-2 border-amber-400 ring-4 ring-amber-400/40 shadow-[0_0_18px_rgba(251,191,36,0.8)] bg-amber-950/40'
+                        : 'border-stone-700 bg-stone-900/70'
+                    }`}
+                  >
+                    <img
+                      src={portraitUrl}
+                      alt={charName}
+                      className="h-full w-full object-cover object-top"
+                      onError={(e) => {
+                        (e.target as HTMLElement).style.display = 'none';
+                      }}
+                    />
+                  </div>
+
+                  {/* Active Speaker Badge & Aura Pulse */}
+                  {isSpeaking && (
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap">
+                      <span className="flex items-center gap-1 rounded-none bg-amber-400 px-1.5 py-0.5 font-mono text-[9px] font-black uppercase tracking-wider text-black shadow-md animate-pulse">
+                        <span className="h-1.5 w-1.5 rounded-full bg-red-600 animate-ping" />
+                        {charName}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {/* 3. FLOATING THEATRICAL HEADER (Title & Badges) */}
       <div
         className={`absolute top-0 inset-x-0 z-20 flex items-center justify-between p-3 md:p-4 transition-opacity duration-300 ${
@@ -558,25 +792,35 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
       </div>
 
       {/* 4. THEATRICAL SUBTITLE OVERLAY */}
-      {subtitleMode !== 'off' && !isCompleted && (
+      {isCcEnabled && subtitleMode !== 'off' && !isCompleted && (
         <div className="absolute bottom-16 md:bottom-20 inset-x-2 md:inset-x-8 z-20 flex flex-col items-center pointer-events-none">
           <div className="max-w-4xl rounded-sm border border-white/10 bg-black/85 px-4 py-2.5 backdrop-blur-md text-center shadow-lg transition-all duration-200">
             {/* Dialogue Speaker Tag if present */}
             {currentScene?.dialogues && currentScene.dialogues.length > 0 && (
               <div className="mb-1 flex items-center justify-center gap-1 text-xs font-bold text-amber-400">
-                <span>[ {currentScene.dialogues[0].speaker} ]</span>
+                <span>
+                  [{' '}
+                  {language === 'en'
+                    ? (currentScene.dialogues[0].speakerEn || currentScene.dialogues[0].speaker)
+                    : (currentScene.dialogues[0].speakerKo || currentScene.dialogues[0].speaker)}{' '}
+                  ]
+                </span>
               </div>
             )}
 
             {/* Primary Language Subtitle */}
             <p className="text-sm md:text-base font-medium text-white leading-relaxed tracking-wide">
-              {language === 'en' ? currentScene?.narrationEn : currentScene?.narrationKo}
+              {language === 'en'
+                ? (currentScene?.dialogues?.[0]?.textEn || currentScene?.narrationEn)
+                : (currentScene?.dialogues?.[0]?.textKo || currentScene?.narrationKo)}
             </p>
 
             {/* Secondary Language Subtitle (Dual Mode) */}
             {subtitleMode === 'dual' && (
               <p className="mt-1 text-xs text-stone-400 leading-normal tracking-tight">
-                {language === 'en' ? currentScene?.narrationKo : currentScene?.narrationEn}
+                {language === 'en'
+                  ? (currentScene?.dialogues?.[0]?.textKo || currentScene?.narrationKo)
+                  : (currentScene?.dialogues?.[0]?.textEn || currentScene?.narrationEn)}
               </p>
             )}
           </div>
@@ -598,8 +842,8 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
           </h3>
           <p className="text-xs md:text-sm text-stone-300 max-w-md mb-6 leading-relaxed">
             {language === 'en'
-              ? `You have experienced the full 20-scene cinematic adaptation of Episode ${episodeNumber}: ${titleEn}. Watching rewards have been unlocked!`
-              : `제 ${episodeNumber}화: ${titleKo}의 전편 20씬 시네마틱 상영을 모두 감상하셨습니다. 시청 보상이 활성화되었습니다!`}
+              ? `You have experienced the full ${scenes.length}-scene cinematic adaptation of Episode ${episodeNumber}: ${titleEn}. Watching rewards have been unlocked!`
+              : `제 ${episodeNumber}화: ${titleKo}의 전편 ${scenes.length}씬 시네마틱 상영을 모두 감상하셨습니다. 시청 보상이 활성화되었습니다!`}
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-3">
@@ -624,45 +868,41 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
         </div>
       )}
 
-      {/* 6. BOTTOM PLAYBACK HUD & 20-SCENE SCRUBBER DOCK */}
+      {/* 6. BOTTOM PLAYBACK HUD & FLUID 40-55 SCENES SCRUBBER DOCK */}
       <div
         className={`absolute bottom-0 inset-x-0 z-20 flex flex-col bg-gradient-to-t from-black via-black/90 to-transparent p-2 md:p-3 transition-opacity duration-300 ${
           showControls ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
       >
-        {/* 20-Scene Segmented Progress Bar */}
-        <div className="mb-2 flex items-center gap-1 px-1">
-          {scenes.map((_, idx) => {
-            const isPast = idx < currentSceneIdx;
-            const isCurrent = idx === currentSceneIdx;
+        {/* Continuous Fluid Scrubber Track (Handles 40-55 scenes with zero overflow) */}
+        <div className="mb-2 relative flex items-center px-1">
+          <div className="relative w-full h-2.5 bg-stone-800/90 rounded-none overflow-hidden cursor-pointer group">
+            {/* Progress Fill */}
+            <div
+              className="h-full bg-amber-400 transition-all duration-75"
+              style={{
+                width: `${Math.min(100, Math.max(0, ((currentSceneIdx + sceneProgress / 100) / scenes.length) * 100))}%`,
+              }}
+            />
 
-            return (
-              <button
-                key={idx}
-                onClick={() => handleJumpToScene(idx)}
-                className="group relative flex-1 min-h-[44px] flex items-center py-2 cursor-pointer"
-                title={`Jump to Scene ${idx + 1}`}
-              >
-                <div className="h-1.5 w-full rounded-none bg-stone-700/80 overflow-hidden transition-all group-hover:h-2.5">
-                  <div
-                    className={`h-full transition-all ${
-                      isPast
-                        ? 'w-full bg-amber-400'
-                        : isCurrent
-                        ? 'bg-amber-400'
-                        : 'w-0'
-                    }`}
-                    style={isCurrent ? { width: `${sceneProgress}%` } : undefined}
-                  />
-                </div>
+            {/* Subtle Milestone Dividers for 40-55 scenes */}
+            <div className="absolute inset-0 flex justify-between pointer-events-none opacity-30">
+              {Array.from({ length: Math.min(10, scenes.length) }).map((_, i) => (
+                <div key={i} className="w-[1px] h-full bg-white/40" />
+              ))}
+            </div>
+          </div>
 
-                {/* Hover Scene Number Pill */}
-                <span className="pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity rounded-sm bg-black border border-white/20 px-1.5 py-0.5 text-[10px] text-amber-300 whitespace-nowrap">
-                  씬 {idx + 1}
-                </span>
-              </button>
-            );
-          })}
+          {/* Interactive Range Input Overlay */}
+          <input
+            type="range"
+            min={0}
+            max={Math.max(0, scenes.length - 1)}
+            value={currentSceneIdx}
+            onChange={(e) => handleJumpToScene(Number(e.target.value))}
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+            title={`Scrub Scenes (Current: ${currentSceneIdx + 1}/${scenes.length})`}
+          />
         </div>
 
         {/* Control Button Strip (All 44px+ touch targets) */}
@@ -694,12 +934,20 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
               <SkipForward size={18} />
             </button>
 
-            <span className="ml-2 text-xs text-stone-300 hidden sm:inline">
-              <span className="text-amber-400 font-bold">{currentSceneIdx + 1}</span> / {scenes.length}
+            {/* Scene Position Badge */}
+            <span className="ml-1 sm:ml-2 text-xs text-stone-300 font-mono flex items-center gap-1">
+              <span className="text-amber-400 font-bold">{currentSceneIdx + 1}</span>
+              <span>/</span>
+              <span>{scenes.length}</span>
+              {currentScene?.type === 'title_card' && (
+                <span className="ml-1 px-1 py-0.5 text-[9px] bg-amber-500/20 text-amber-300 border border-amber-500/40 rounded-none hidden sm:inline">
+                  [TITLE]
+                </span>
+              )}
             </span>
           </div>
 
-          {/* Right Controls: Speed, TTS, Audio, Subtitles, Fullscreen */}
+          {/* Right Controls: Speed, TTS, CC Toggle, Subtitles, Audio Mute */}
           <div className="flex items-center gap-1.5">
             {/* Speed Toggle */}
             <button
@@ -718,20 +966,35 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
                   ? 'border-amber-500/80 bg-amber-500/20 text-amber-300'
                   : 'border-stone-700 bg-stone-900/80 text-stone-400'
               }`}
-              title={isTtsEnabled ? 'Voiceover TTS Enabled' : 'Voiceover TTS Disabled'}
+              title={isTtsEnabled ? 'English Voiceover TTS Enabled' : 'Voiceover TTS Disabled'}
             >
               {isTtsEnabled ? <Mic size={17} /> : <MicOff size={17} />}
             </button>
 
-            {/* Subtitle Mode Button */}
+            {/* Dedicated CC ON/OFF Toggle Button */}
             <button
-              onClick={handleCycleSubtitle}
-              className="flex min-h-[44px] px-2.5 items-center gap-1 rounded-sm border border-stone-700 bg-stone-900/80 text-xs text-stone-200 hover:bg-stone-800 transition-colors"
-              title="Subtitle Mode: Dual / Single / Off"
+              onClick={handleToggleCc}
+              className={`flex min-h-[44px] px-2.5 items-center gap-1 rounded-sm border font-mono text-xs transition-colors ${
+                isCcEnabled
+                  ? 'border-amber-400 bg-amber-400/20 text-amber-300'
+                  : 'border-stone-700 bg-stone-900/80 text-stone-500'
+              }`}
+              title={isCcEnabled ? '자막 끄기 (CC OFF)' : '자막 켜기 (CC ON)'}
             >
               <Languages size={15} />
-              <span className="uppercase text-[11px] font-semibold">{subtitleMode}</span>
+              <span className="font-bold text-[11px]">CC {isCcEnabled ? 'ON' : 'OFF'}</span>
             </button>
+
+            {/* Subtitle Mode Button (Dual / Primary) */}
+            {isCcEnabled && (
+              <button
+                onClick={handleCycleSubtitle}
+                className="hidden sm:flex min-h-[44px] px-2 items-center gap-1 rounded-sm border border-stone-700 bg-stone-900/80 text-xs text-stone-200 hover:bg-stone-800 transition-colors"
+                title="Subtitle Mode: Dual / Single"
+              >
+                <span className="uppercase text-[10px] font-semibold">{subtitleMode}</span>
+              </button>
+            )}
 
             {/* Audio Mute Button */}
             <button

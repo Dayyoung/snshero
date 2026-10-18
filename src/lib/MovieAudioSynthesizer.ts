@@ -33,6 +33,7 @@ export class MovieAudioSynthesizer {
   private sfxVolume: number = 0.75;
 
   private currentTheme: MovieBgmTheme | null = null;
+  private currentEpisodeId: number | null = null;
   private bgmNodes: {
     oscillators: OscillatorNode[];
     sources: AudioBufferSourceNode[];
@@ -128,10 +129,39 @@ export class MovieAudioSynthesizer {
   }
 
   /**
+   * Continuous Episode BGM Lifecycle
+   */
+  public async startEpisodeBgm(episodeId: number, theme?: MovieBgmTheme): Promise<void> {
+    const targetTheme: MovieBgmTheme = theme || 'arcane-mystery';
+    if (
+      this.currentEpisodeId === episodeId &&
+      this.currentTheme === targetTheme &&
+      this.bgmNodes.oscillators.length > 0
+    ) {
+      if (this.ctx && this.ctx.state === 'suspended') {
+        await this.ctx.resume();
+      }
+      return;
+    }
+    this.currentEpisodeId = episodeId;
+    await this.startBgm(targetTheme);
+  }
+
+  public stopEpisodeBgm(fadeTime: number = 0.5): void {
+    this.currentEpisodeId = null;
+    this.stopBgm(fadeTime);
+  }
+
+  /**
    * Procedural BGM Engine
    */
   public async startBgm(theme: MovieBgmTheme): Promise<void> {
-    if (this.currentTheme === theme) return;
+    if (this.currentTheme === theme && this.bgmNodes.oscillators.length > 0) {
+      if (this.ctx && this.ctx.state === 'suspended') {
+        await this.ctx.resume();
+      }
+      return;
+    }
     await this.initAudio();
     if (!this.ctx || !this.bgmGain) return;
 
@@ -688,9 +718,13 @@ export class MovieAudioSynthesizer {
 
   // --- SPEECHSYNTHESIS VOICEOVER NARRATION ---
 
+  public speakEnglishNarration(text: string, onEnd?: () => void): void {
+    this.speakNarration(text, 'en', onEnd);
+  }
+
   public speakNarration(
     text: string,
-    language: 'ko' | 'en' | 'ja' = 'ko',
+    language: 'ko' | 'en' | 'ja' = 'en',
     onEnd?: () => void
   ): void {
     if (this.isMuted) {
@@ -705,36 +739,61 @@ export class MovieAudioSynthesizer {
     try {
       this.stopNarration();
 
-      const utterance = new SpeechSynthesisUtterance(text);
-      this.currentUtterance = utterance;
+      // Fix race condition in speech synthesis engines
+      window.setTimeout(() => {
+        const utterance = new SpeechSynthesisUtterance(text);
+        this.currentUtterance = utterance;
 
-      const langMap: Record<string, string> = {
-        ko: 'ko-KR',
-        en: 'en-US',
-        ja: 'ja-JP',
-      };
-      utterance.lang = langMap[language] || 'ko-KR';
-      utterance.rate = 1.05;
-      utterance.pitch = 1.0;
-      utterance.volume = 1.0;
+        const langMap: Record<string, string> = {
+          ko: 'ko-KR',
+          en: 'en-US',
+          ja: 'ja-JP',
+        };
+        utterance.lang = langMap[language] || 'en-US';
+        utterance.rate = 1.02;
+        utterance.pitch = 1.0;
+        utterance.volume = 1.0;
 
-      // Select natural voice if available
-      if (this.speechVoices.length > 0) {
-        const prefix = utterance.lang.slice(0, 2);
-        const matched = this.speechVoices.find((v) => v.lang.startsWith(prefix));
-        if (matched) utterance.voice = matched;
-      }
+        // Lazy voice reload if empty
+        if (this.speechVoices.length === 0 && typeof window !== 'undefined' && 'speechSynthesis' in window) {
+          try {
+            this.speechVoices = window.speechSynthesis.getVoices();
+          } catch {
+            // ignore
+          }
+        }
 
-      utterance.onend = () => {
-        this.currentUtterance = null;
-        if (onEnd) onEnd();
-      };
-      utterance.onerror = () => {
-        this.currentUtterance = null;
-        if (onEnd) onEnd();
-      };
+        // Prioritized voice selection
+        if (this.speechVoices.length > 0) {
+          if (language === 'en') {
+            const preferredVoices = [
+              'Google US English', 'Samantha', 'Daniel', 'Alex',
+              'Karen', 'Victoria', 'Fred', 'en-US', 'en-GB'
+            ];
+            const matched =
+              this.speechVoices.find((v) => preferredVoices.some((p) => v.name.includes(p))) ||
+              this.speechVoices.find((v) => v.lang === 'en-US') ||
+              this.speechVoices.find((v) => v.lang === 'en-GB') ||
+              this.speechVoices.find((v) => v.lang.startsWith('en'));
+            if (matched) utterance.voice = matched;
+          } else {
+            const prefix = utterance.lang.slice(0, 2);
+            const matched = this.speechVoices.find((v) => v.lang.startsWith(prefix));
+            if (matched) utterance.voice = matched;
+          }
+        }
 
-      window.speechSynthesis.speak(utterance);
+        utterance.onend = () => {
+          this.currentUtterance = null;
+          if (onEnd) onEnd();
+        };
+        utterance.onerror = () => {
+          this.currentUtterance = null;
+          if (onEnd) onEnd();
+        };
+
+        window.speechSynthesis.speak(utterance);
+      }, 30);
     } catch (err) {
       console.warn('[MovieAudioSynthesizer] SpeechSynthesis error:', err);
       if (onEnd) onEnd();
@@ -760,6 +819,7 @@ export class MovieAudioSynthesizer {
   }
 
   public stopAll(): void {
+    this.currentEpisodeId = null;
     this.stopBgm(0.3);
     this.stopNarration();
   }

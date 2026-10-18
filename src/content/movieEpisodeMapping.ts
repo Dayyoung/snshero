@@ -1,3 +1,5 @@
+import { CARD_DATABASE } from '../cardDatabase';
+
 export interface MovieEpisodeMeta {
   episodeNumber: number;
   titleKo: string;
@@ -625,3 +627,38 @@ export const MOVIE_EPISODES: Record<number, MovieEpisodeMeta> = {
     highlightScene: "눈 덮인 엘윈 마을의 언덕길을 걸어가는 카단과 실리아의 평화로운 뒷모습"
   }
 };
+
+// Speaker and character name lookup cache
+const SPEAKER_TO_PORTRAIT_MAP: Record<string, string> = {};
+if (typeof CARD_DATABASE !== 'undefined') {
+  Object.values(CARD_DATABASE).forEach((card) => {
+    if (card?.title_en) {
+      const fn = `/seat/${card.title_en.replace(/ /g, '_')}.png`;
+      SPEAKER_TO_PORTRAIT_MAP[card.title_en.toLowerCase()] = fn;
+      if (card.title) {
+        SPEAKER_TO_PORTRAIT_MAP[card.title.toLowerCase()] = fn;
+      }
+    }
+  });
+}
+
+/**
+ * Returns deterministic portrait asset path from public/seat/*.png
+ * mapped by characterCardId, English speaker name, or Korean speaker name.
+ */
+export function getCharacterPortraitUrl(cardId?: number, speakerEn?: string, speakerKo?: string): string {
+  if (cardId && CARD_DATABASE[cardId]?.title_en) {
+    return `/seat/${CARD_DATABASE[cardId].title_en.replace(/ /g, '_')}.png`;
+  }
+  if (speakerEn && speakerEn !== 'Narration' && speakerEn !== '내레이션') {
+    const key = speakerEn.toLowerCase().trim();
+    if (SPEAKER_TO_PORTRAIT_MAP[key]) return SPEAKER_TO_PORTRAIT_MAP[key];
+    return `/seat/${speakerEn.replace(/ /g, '_')}.png`;
+  }
+  if (speakerKo && speakerKo !== '내레이션' && speakerKo !== 'Narration') {
+    const key = speakerKo.toLowerCase().trim();
+    if (SPEAKER_TO_PORTRAIT_MAP[key]) return SPEAKER_TO_PORTRAIT_MAP[key];
+  }
+  return '/seat/Kadan.png';
+}
+

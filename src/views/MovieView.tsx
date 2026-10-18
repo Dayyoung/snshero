@@ -20,7 +20,8 @@ import {
   RefreshCw,
   Copy,
   ShoppingCart,
-  BookOpen
+  BookOpen,
+  Download
 } from 'lucide-react';
 import { Language, ViewType } from '../types';
 import { t } from '../lib/i18n';
@@ -95,7 +96,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
   const [showDrawer, setShowDrawer] = useState<boolean>(false);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [filterMode, setFilterMode] = useState<'all' | 'released' | 'upcoming'>('all');
-  const [playerMode, setPlayerMode] = useState<'cinematic' | 'youtube'>('cinematic');
+  const [playerMode, setPlayerMode] = useState<'cinematic' | 'mp4' | 'youtube'>('cinematic');
 
   const playerContainerRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<any>(null);
@@ -590,8 +591,8 @@ export const MovieView: React.FC<MovieViewProps> = ({
 
       {/* ── Main Movie Player Section ── */}
       <div className="mb-6 space-y-3">
-        {/* Playback Mode Switcher: Cinematic Player vs YouTube Stream */}
-        <div className="flex items-center gap-2">
+        {/* Playback Mode Switcher: Cinematic Player vs MP4 Video vs YouTube Stream */}
+        <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
             onClick={() => {
@@ -599,14 +600,30 @@ export const MovieView: React.FC<MovieViewProps> = ({
               setPlayerMode('cinematic');
             }}
             className={cn(
-              'min-h-[44px] flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-sm border font-mono text-xs font-bold transition-colors cursor-pointer',
+              'min-h-[44px] flex-1 min-w-[140px] flex items-center justify-center gap-2 px-3 py-2 rounded-sm border font-mono text-xs font-bold transition-colors cursor-pointer',
               playerMode === 'cinematic'
                 ? 'border-[#201d1d] bg-[#201d1d] text-[#fdfcfc]'
                 : 'border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-[#201d1d] hover:bg-[#f8f7f7]'
             )}
           >
             <Sparkles size={16} className={playerMode === 'cinematic' ? 'text-amber-400' : 'text-amber-600'} />
-            <span>[🎬 시네마틱 영화관 (20씬 40부작 전편)]</span>
+            <span>[🎬 인터랙티브 영화관 (40부작)]</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic('light');
+              setPlayerMode('mp4');
+            }}
+            className={cn(
+              'min-h-[44px] flex-1 min-w-[140px] flex items-center justify-center gap-2 px-3 py-2 rounded-sm border font-mono text-xs font-bold transition-colors cursor-pointer',
+              playerMode === 'mp4'
+                ? 'border-[#201d1d] bg-[#201d1d] text-[#fdfcfc]'
+                : 'border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-[#201d1d] hover:bg-[#f8f7f7]'
+            )}
+          >
+            <Film size={16} className={playerMode === 'mp4' ? 'text-amber-400' : 'text-stone-700'} />
+            <span>[🎞️ MP4 비디오 상영]</span>
           </button>
           <button
             type="button"
@@ -615,14 +632,14 @@ export const MovieView: React.FC<MovieViewProps> = ({
               setPlayerMode('youtube');
             }}
             className={cn(
-              'min-h-[44px] flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-sm border font-mono text-xs font-bold transition-colors cursor-pointer',
+              'min-h-[44px] flex-1 min-w-[140px] flex items-center justify-center gap-2 px-3 py-2 rounded-sm border font-mono text-xs font-bold transition-colors cursor-pointer',
               playerMode === 'youtube'
                 ? 'border-[#201d1d] bg-[#201d1d] text-[#fdfcfc]'
                 : 'border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-[#201d1d] hover:bg-[#f8f7f7]'
             )}
           >
-            <Film size={16} />
-            <span>[📺 YouTube 오피셜 스트림{currentEpisodeNum <= 8 ? '' : ' (1~8화)'}]</span>
+            <Play size={16} />
+            <span>[📺 YouTube 오피셜{currentEpisodeNum <= 8 ? '' : ' (1~8화)'}]</span>
           </button>
         </div>
 
@@ -637,6 +654,48 @@ export const MovieView: React.FC<MovieViewProps> = ({
             onSelectEpisode={(ep) => handleSelectEpisode(ep)}
             totalEpisodes={TOTAL_EPISODES}
           />
+        ) : playerMode === 'mp4' ? (
+          <div
+            className={cn(
+              'relative w-full rounded-none overflow-hidden bg-black border border-[#201d1d] flex flex-col items-center justify-center',
+              isFullscreen ? 'fixed inset-0 z-50 rounded-none border-none max-w-none' : 'aspect-video'
+            )}
+          >
+            <video
+              key={`mp4-video-ep-${currentEpisodeNum}`}
+              src={`/videos/episodes/episode_${String(currentEpisodeNum).padStart(2, '0')}.mp4`}
+              controls
+              playsInline
+              className="w-full h-full object-contain"
+              poster={`/images/webtoon/episode_${String(currentEpisodeNum).padStart(2, '0')}/scene_00.webp`}
+            >
+              <p className="text-white text-xs font-mono p-4">
+                브라우저가 HTML5 비디오를 지원하지 않습니다.
+              </p>
+            </video>
+
+            {/* Top Bar with MP4 Download Button and Fullscreen */}
+            <div className="absolute top-3 right-3 flex items-center gap-2 z-10">
+              <a
+                href={`/videos/episodes/episode_${String(currentEpisodeNum).padStart(2, '0')}.mp4`}
+                download={`SNSHero_Episode_${String(currentEpisodeNum).padStart(2, '0')}.mp4`}
+                className="min-h-[44px] flex items-center gap-1.5 px-3 py-1.5 rounded-sm bg-[#201d1d] hover:bg-black text-[#fdfcfc] border border-[#fdfcfc]/30 font-mono text-xs font-bold transition-colors cursor-pointer shrink-0"
+                title="MP4 비디오 파일 다운로드"
+              >
+                <Download size={14} />
+                <span>[⬇️ MP4 다운로드]</span>
+              </a>
+
+              <button
+                type="button"
+                onClick={toggleFullscreen}
+                className="min-h-[44px] min-w-[44px] p-2 rounded-sm bg-[#201d1d] hover:bg-black text-[#fdfcfc] border border-[#fdfcfc]/30 transition-colors cursor-pointer flex items-center justify-center"
+                title={isFullscreen ? '전체화면 종료' : '전체화면'}
+              >
+                {isFullscreen ? <Minimize size={18} /> : <Maximize size={18} />}
+              </button>
+            </div>
+          </div>
         ) : (
           <div
             ref={playerContainerRef}
@@ -660,7 +719,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
                 <Sparkles size={36} className="text-amber-400 mb-3" />
                 <h4 className="text-base font-bold mb-2">제 {currentEpisodeNum}화는 인앱 시네마틱 영화관 전용 상영작입니다</h4>
                 <p className="text-xs text-stone-400 max-w-md mb-4">
-                  유튜브 공식 영상은 1~8화까지 제공되며, 9~40화는 20씬 멀티플레인 연출과 사운드 엔진이 탑재된 [시네마틱 영화관]에서 감상하실 수 있습니다.
+                  유튜브 공식 영상은 1~8화까지 제공되며, 9~40화는 멀티플레인 연출과 사운드 엔진이 탑재된 [인터랙티브 영화관] 또는 [MP4 비디오]에서 감상하실 수 있습니다.
                 </p>
                 <button
                   type="button"
@@ -763,6 +822,17 @@ export const MovieView: React.FC<MovieViewProps> = ({
               <ExternalLink size={13} />
               <span className="hidden xs:inline">YouTube</span>
               <span>EP.{currentEpisodeNum}</span>
+            </a>
+
+            {/* Direct MP4 Download Button */}
+            <a
+              href={`/videos/episodes/episode_${String(currentEpisodeNum).padStart(2, '0')}.mp4`}
+              download={`SNSHero_Episode_${String(currentEpisodeNum).padStart(2, '0')}.mp4`}
+              className="min-h-[44px] flex items-center gap-1.5 px-3 py-1.5 rounded-sm border border-[#201d1d] bg-[#201d1d] text-[#fdfcfc] hover:bg-black text-xs font-bold font-mono transition-colors cursor-pointer"
+              title={`제 ${currentEpisodeNum}화 MP4 비디오 파일 다운로드`}
+            >
+              <Download size={13} />
+              <span>[MP4 다운]</span>
             </a>
 
             {/* Prev Ep */}
