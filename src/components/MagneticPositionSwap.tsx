@@ -8,37 +8,37 @@ import { motion } from 'motion/react';
 import { triggerHaptic } from '../lib/haptic';
 
 interface MagneticPositionSwapProps {
-  index: number;
-  isHoveredOver: boolean;
-  onSwapPositions: (targetIndex: number) => void;
-  children: React.ReactNode;
+ index: number;
+ isHoveredOver: boolean;
+ onSwapPositions: (targetIndex: number) => void;
+ children: React.ReactNode;
 }
 
 export const MagneticPositionSwap: React.FC<MagneticPositionSwapProps> = ({
-  index,
-  isHoveredOver,
-  onSwapPositions,
-  children,
+ index,
+ isHoveredOver,
+ onSwapPositions,
+ children,
 }) => {
-  return (
-    <motion.div
-      layout
-      animate={isHoveredOver ? { scale: 1.05, y: -4 } : { scale: 1, y: 0 }}
-      transition={{ type: 'spring', damping: 15, stiffness: 200 }}
-      onPointerEnter={() => {
-        if (isHoveredOver) {
-          triggerHaptic('selection');
-        }
-      }}
-      onClick={() => {
-        triggerHaptic('medium');
-        onSwapPositions(index);
-      }}
-      className={`rounded-2xl transition-colors cursor-pointer ${
-        isHoveredOver ? 'border-2 border-amber-400 bg-amber-950/20 shadow-lg' : ''
-      }`}
-    >
-      {children}
-    </motion.div>
-  );
+ return (
+ <motion.div
+ layout
+ animate={isHoveredOver ? { scale: 1.05, y: -4 } : { scale: 1, y: 0 }}
+ transition={{ type: 'spring', damping: 15, stiffness: 200 }}
+ onPointerEnter={() => {
+ if (isHoveredOver) {
+ triggerHaptic('selection');
+ }
+ }}
+ onClick={() => {
+ triggerHaptic('medium');
+ onSwapPositions(index);
+ }}
+ className={`rounded-none transition-colors cursor-pointer ${
+ isHoveredOver ? 'border-2 border-amber-400 bg-amber-950/20 shadow-none' : ''
+ }`}
+ >
+ {children}
+ </motion.div>
+ );
 };

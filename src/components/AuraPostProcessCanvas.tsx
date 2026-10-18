@@ -6,48 +6,48 @@
 import React, { useRef, useEffect } from 'react';
 
 export const AuraPostProcessCanvas: React.FC<{ activeAuras: { x: number; y: number; color: string }[] }> = ({
-  activeAuras,
+ activeAuras,
 }) => {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+ const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+ useEffect(() => {
+ const canvas = canvasRef.current;
+ if (!canvas) return;
+ const ctx = canvas.getContext('2d');
+ if (!ctx) return;
 
-    let animId: number;
-    let tick = 0;
+ let animId: number;
+ let tick = 0;
 
-    const render = () => {
-      tick++;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+ const render = () => {
+ tick++;
+ ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      activeAuras.forEach((aura) => {
-        const pulse = Math.sin(tick * 0.08) * 6 + 28;
-        const radGrad = ctx.createRadialGradient(aura.x, aura.y, 10, aura.x, aura.y, pulse);
-        radGrad.addColorStop(0, aura.color);
-        radGrad.addColorStop(1, 'transparent');
+ activeAuras.forEach((aura) => {
+ const pulse = Math.sin(tick * 0.08) * 6 + 28;
+ const radGrad = ctx.createRadialGradient(aura.x, aura.y, 10, aura.x, aura.y, pulse);
+ radGrad.addColorStop(0, aura.color);
+ radGrad.addColorStop(1, 'transparent');
 
-        ctx.fillStyle = radGrad;
-        ctx.beginPath();
-        ctx.arc(aura.x, aura.y, pulse, 0, Math.PI * 2);
-        ctx.fill();
-      });
+ ctx.fillStyle = radGrad;
+ ctx.beginPath();
+ ctx.arc(aura.x, aura.y, pulse, 0, Math.PI * 2);
+ ctx.fill();
+ });
 
-      animId = requestAnimationFrame(render);
-    };
+ animId = requestAnimationFrame(render);
+ };
 
-    animId = requestAnimationFrame(render);
-    return () => cancelAnimationFrame(animId);
-  }, [activeAuras]);
+ animId = requestAnimationFrame(render);
+ return () => cancelAnimationFrame(animId);
+ }, [activeAuras]);
 
-  return (
-    <canvas
-      ref={canvasRef}
-      width={window.innerWidth || 360}
-      height={window.innerHeight || 640}
-      className="absolute inset-0 pointer-events-none z-10 w-full h-full"
-    />
-  );
+ return (
+ <canvas
+ ref={canvasRef}
+ width={window.innerWidth || 360}
+ height={window.innerHeight || 640}
+ className="absolute inset-0 pointer-events-none z-10 w-full h-full"
+ />
+ );
 };

@@ -9,58 +9,58 @@ import { triggerHaptic } from '../lib/haptic';
 export type TickUnit = 1 | 5 | 10 | 50;
 
 interface PinchSpreadZoomControllerProps {
-  currentTick: TickUnit;
-  onChangeTick: (tick: TickUnit) => void;
-  children: React.ReactNode;
+ currentTick: TickUnit;
+ onChangeTick: (tick: TickUnit) => void;
+ children: React.ReactNode;
 }
 
 export const PinchSpreadZoomController: React.FC<PinchSpreadZoomControllerProps> = ({
-  currentTick,
-  onChangeTick,
-  children,
+ currentTick,
+ onChangeTick,
+ children,
 }) => {
-  const initialDistRef = useRef<number | null>(null);
+ const initialDistRef = useRef<number | null>(null);
 
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (e.touches.length === 2) {
-      const t1 = e.touches[0];
-      const t2 = e.touches[1];
-      const dist = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
+ const handleTouchMove = (e: React.TouchEvent) => {
+ if (e.touches.length === 2) {
+ const t1 = e.touches[0];
+ const t2 = e.touches[1];
+ const dist = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
 
-      if (initialDistRef.current === null) {
-        initialDistRef.current = dist;
-      } else {
-        const delta = dist - initialDistRef.current;
-        if (Math.abs(delta) > 40) {
-          triggerHaptic('selection');
-          if (delta > 0) {
-            // Zoom in -> smaller tick
-            if (currentTick === 50) onChangeTick(10);
-            else if (currentTick === 10) onChangeTick(5);
-            else if (currentTick === 5) onChangeTick(1);
-          } else {
-            // Zoom out -> larger tick
-            if (currentTick === 1) onChangeTick(5);
-            else if (currentTick === 5) onChangeTick(10);
-            else if (currentTick === 10) onChangeTick(50);
-          }
-          initialDistRef.current = dist;
-        }
-      }
-    }
-  };
+ if (initialDistRef.current === null) {
+ initialDistRef.current = dist;
+ } else {
+ const delta = dist - initialDistRef.current;
+ if (Math.abs(delta) > 40) {
+ triggerHaptic('selection');
+ if (delta > 0) {
+ // Zoom in -> smaller tick
+ if (currentTick === 50) onChangeTick(10);
+ else if (currentTick === 10) onChangeTick(5);
+ else if (currentTick === 5) onChangeTick(1);
+ } else {
+ // Zoom out -> larger tick
+ if (currentTick === 1) onChangeTick(5);
+ else if (currentTick === 5) onChangeTick(10);
+ else if (currentTick === 10) onChangeTick(50);
+ }
+ initialDistRef.current = dist;
+ }
+ }
+ }
+ };
 
-  const handleTouchEnd = () => {
-    initialDistRef.current = null;
-  };
+ const handleTouchEnd = () => {
+ initialDistRef.current = null;
+ };
 
-  return (
-    <div
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-      className="relative w-full h-full select-none"
-    >
-      {children}
-    </div>
-  );
+ return (
+ <div
+ onTouchMove={handleTouchMove}
+ onTouchEnd={handleTouchEnd}
+ className="relative w-full h-full select-none"
+ >
+ {children}
+ </div>
+ );
 };

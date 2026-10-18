@@ -8,46 +8,46 @@ import { Lock, Unlock } from 'lucide-react';
 import { triggerHaptic } from '../lib/haptic';
 
 interface InstantMaterialLockProps {
-  cardId: string;
-  isLocked: boolean;
-  onToggleLock: (cardId: string) => void;
-  children: React.ReactNode;
+ cardId: string;
+ isLocked: boolean;
+ onToggleLock: (cardId: string) => void;
+ children: React.ReactNode;
 }
 
 export const InstantMaterialLock: React.FC<InstantMaterialLockProps> = ({
-  cardId,
-  isLocked,
-  onToggleLock,
-  children,
+ cardId,
+ isLocked,
+ onToggleLock,
+ children,
 }) => {
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+ const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const startPress = () => {
-    timerRef.current = setTimeout(() => {
-      triggerHaptic('heavy');
-      onToggleLock(cardId);
-    }, 500);
-  };
+ const startPress = () => {
+ timerRef.current = setTimeout(() => {
+ triggerHaptic('heavy');
+ onToggleLock(cardId);
+ }, 500);
+ };
 
-  const endPress = () => {
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
-    }
-  };
+ const endPress = () => {
+ if (timerRef.current) {
+ clearTimeout(timerRef.current);
+ }
+ };
 
-  return (
-    <div
-      onPointerDown={startPress}
-      onPointerUp={endPress}
-      onPointerLeave={endPress}
-      className="relative select-none"
-    >
-      {children}
-      {isLocked && (
-        <div className="absolute top-1 right-1 bg-amber-400 text-slate-950 p-1 rounded-full shadow-md z-20">
-          <Lock size={12} />
-        </div>
-      )}
-    </div>
-  );
+ return (
+ <div
+ onPointerDown={startPress}
+ onPointerUp={endPress}
+ onPointerLeave={endPress}
+ className="relative select-none"
+ >
+ {children}
+ {isLocked && (
+ <div className="absolute top-1 right-1 bg-amber-400 text-slate-950 p-1 rounded-full shadow-none z-20">
+ <Lock size={12} />
+ </div>
+ )}
+ </div>
+ );
 };

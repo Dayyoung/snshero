@@ -86,6 +86,19 @@ M3_TARGETS = [
 # All in-scope target files
 ALL_IN_SCOPE_FILES = list(dict.fromkeys(M1_TARGETS + M2_TARGETS + M3_TARGETS))
 
+# All 47 Views and 620 Components in Repository
+ALL_47_VIEWS = sorted([
+    str(p.relative_to(REPO_ROOT)) for p in (REPO_ROOT / "src/views").glob("*.tsx")
+])
+EXPANSION_25_VIEWS = [v for v in ALL_47_VIEWS if v not in CORE_22_VIEWS]
+
+ALL_620_COMPONENTS = sorted([
+    str(p.relative_to(REPO_ROOT)) for p in (REPO_ROOT / "src/components").glob("**/*.tsx")
+])
+
+ALL_CODEBASE_FILES = ALL_47_VIEWS + ALL_620_COMPONENTS + ["src/App.tsx"]
+
+
 
 @dataclass
 class TestResult:

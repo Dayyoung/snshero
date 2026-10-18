@@ -21,6 +21,9 @@ from tests.e2e_design_system.helpers import (
     BANNED_RADIUS_PATTERN,
     BANNED_SHADOW_PATTERN,
     CORE_22_VIEWS,
+    EXPANSION_25_VIEWS,
+    ALL_47_VIEWS,
+    ALL_620_COMPONENTS,
     M1_TARGETS,
     M2_TARGETS,
     M3_TARGETS,
@@ -308,5 +311,186 @@ def run_tier1_tests(
                     milestone=s_ms,
                 )
             )
+
+    # 7. Milestone 5: Expansion 25 Views Audits (25 views x 5 categories = 125 assertions)
+    for idx, view_rel in enumerate(EXPANSION_25_VIEWS, start=1):
+        view_name = Path(view_rel).stem
+        view_ms = "M5"
+
+        if milestone_filter and milestone_filter.upper() != "ALL" and milestone_filter.upper() != view_ms:
+            continue
+
+        try:
+            content = read_repo_file(view_rel)
+        except Exception as e:
+            results.append(
+                TestResult(
+                    test_id=f"T1.EXP_V{idx:02d}.READ",
+                    name=f"{view_name} Accessibility",
+                    tier=1,
+                    status="FAIL",
+                    message=f"Failed to read file: {e}",
+                    milestone=view_ms,
+                )
+            )
+            continue
+
+        # 1. Gradients
+        t0 = time.perf_counter()
+        grad = find_banned_tokens_in_file(view_rel, BANNED_GRADIENT_PATTERN)
+        dt = (time.perf_counter() - t0) * 1000.0
+        results.append(
+            TestResult(
+                test_id=f"T1.EXP_V{idx:02d}.GRAD",
+                name=f"{view_name} Terminal-Flat Solid Surfaces (0 bg-gradient-to-*)",
+                tier=1,
+                status="PASS" if len(grad) == 0 else "FAIL",
+                message="Zero decorative gradient classes detected" if len(grad) == 0 else f"Found {len(grad)} gradient occurrences",
+                duration_ms=dt,
+                milestone=view_ms,
+            )
+        )
+
+        # 2. Border radius
+        t0 = time.perf_counter()
+        rad = find_banned_tokens_in_file(view_rel, BANNED_RADIUS_PATTERN)
+        dt = (time.perf_counter() - t0) * 1000.0
+        results.append(
+            TestResult(
+                test_id=f"T1.EXP_V{idx:02d}.RAD",
+                name=f"{view_name} 2-Tier Border Radius (0 rounded-xl/2xl/3xl)",
+                tier=1,
+                status="PASS" if len(rad) == 0 else "FAIL",
+                message="Zero forbidden large rounded classes detected" if len(rad) == 0 else f"Found {len(rad)} radius occurrences",
+                duration_ms=dt,
+                milestone=view_ms,
+            )
+        )
+
+        # 3. Animations
+        t0 = time.perf_counter()
+        anim = find_banned_tokens_in_file(view_rel, BANNED_ANIMATION_PATTERN)
+        dt = (time.perf_counter() - t0) * 1000.0
+        results.append(
+            TestResult(
+                test_id=f"T1.EXP_V{idx:02d}.ANIM",
+                name=f"{view_name} Distraction-Free Animations (0 ping/bounce)",
+                tier=1,
+                status="PASS" if len(anim) == 0 else "FAIL",
+                message="Zero distracting animate-ping/bounce classes detected" if len(anim) == 0 else f"Found {len(anim)} animation occurrences",
+                duration_ms=dt,
+                milestone=view_ms,
+            )
+        )
+
+        # 4. Typography
+        t0 = time.perf_counter()
+        font_matches = find_banned_tokens_in_file(view_rel, BANNED_FONT_PATTERN)
+        dt = (time.perf_counter() - t0) * 1000.0
+        results.append(
+            TestResult(
+                test_id=f"T1.EXP_V{idx:02d}.TYPO",
+                name=f"{view_name} Monospace Typography (0 font-sans/serif)",
+                tier=1,
+                status="PASS" if len(font_matches) == 0 else "FAIL",
+                message="Monospace typography enforced; 0 font-sans/serif classes" if len(font_matches) == 0 else f"Found {len(font_matches)} non-mono occurrences",
+                duration_ms=dt,
+                milestone=view_ms,
+            )
+        )
+
+        # 5. Shadows
+        t0 = time.perf_counter()
+        shadow_matches = find_banned_tokens_in_file(view_rel, BANNED_SHADOW_PATTERN)
+        dt = (time.perf_counter() - t0) * 1000.0
+        results.append(
+            TestResult(
+                test_id=f"T1.EXP_V{idx:02d}.SHAD",
+                name=f"{view_name} Flat Surfaces (0 heavy drop shadows)",
+                tier=1,
+                status="PASS" if len(shadow_matches) == 0 else "FAIL",
+                message="Zero heavy drop shadow classes detected" if len(shadow_matches) == 0 else f"Found {len(shadow_matches)} shadow occurrences",
+                duration_ms=dt,
+                milestone=view_ms,
+            )
+        )
+
+    # 8. Milestone 6: All 620 Components in Repository (Cluster and Global Census)
+    component_clusters = [
+        ("admin", "Admin Component Cluster"),
+        ("battle", "Battle & Combat Component Cluster"),
+        ("bench", "Benchmark Component Cluster"),
+        ("growth", "Player Growth & Progression Cluster"),
+        ("media", "Novel & Media Component Cluster"),
+        ("movie", "Cinematic Movie Component Cluster"),
+        ("reddit", "Reddit Social Component Cluster"),
+        ("retention", "Daily Retention & Quest Cluster"),
+        ("rpg", "RPG Adventure Component Cluster"),
+        ("viral", "Viral Sharing & Referral Cluster"),
+        ("webtoon", "Webtoon Viewer Component Cluster"),
+        ("root", "Root Core Components Cluster"),
+    ]
+
+    for c_idx, (cluster_key, cluster_name) in enumerate(component_clusters, start=1):
+        if milestone_filter and milestone_filter.upper() != "ALL" and milestone_filter.upper() != "M6":
+            continue
+
+        if cluster_key == "root":
+            cluster_files = [c for c in ALL_620_COMPONENTS if "/" not in c.replace("src/components/", "")]
+        else:
+            cluster_files = [c for c in ALL_620_COMPONENTS if f"src/components/{cluster_key}/" in c]
+
+        t0 = time.perf_counter()
+        violations = 0
+        details = []
+        for cf in cluster_files:
+            g = find_banned_tokens_in_file(cf, BANNED_GRADIENT_PATTERN)
+            r = find_banned_tokens_in_file(cf, BANNED_RADIUS_PATTERN)
+            s = find_banned_tokens_in_file(cf, BANNED_SHADOW_PATTERN)
+            a = find_banned_tokens_in_file(cf, BANNED_ANIMATION_PATTERN)
+            f = find_banned_tokens_in_file(cf, BANNED_FONT_PATTERN)
+            v_cnt = len(g) + len(r) + len(s) + len(a) + len(f)
+            if v_cnt > 0:
+                violations += v_cnt
+                details.append(f"{cf}: {v_cnt} violations")
+
+        dt = (time.perf_counter() - t0) * 1000.0
+        results.append(
+            TestResult(
+                test_id=f"T1.COMP.{c_idx:02d}",
+                name=f"{cluster_name} Terminal-Flat Visual Compliance ({len(cluster_files)} files)",
+                tier=1,
+                status="PASS" if violations == 0 else "FAIL",
+                message=f"All {len(cluster_files)} components pass 100% terminal-flat standards" if violations == 0 else f"{violations} violations in cluster",
+                duration_ms=dt,
+                details=details[:5],
+                milestone="M6",
+            )
+        )
+
+    # 9. Milestone 6: Codebase-wide 620 Components Global Integrity
+    if not milestone_filter or milestone_filter.upper() in ("ALL", "M6"):
+        t0 = time.perf_counter()
+        total_comp_violations = 0
+        for cf in ALL_620_COMPONENTS:
+            g = find_banned_tokens_in_file(cf, BANNED_GRADIENT_PATTERN)
+            r = find_banned_tokens_in_file(cf, BANNED_RADIUS_PATTERN)
+            s = find_banned_tokens_in_file(cf, BANNED_SHADOW_PATTERN)
+            a = find_banned_tokens_in_file(cf, BANNED_ANIMATION_PATTERN)
+            f = find_banned_tokens_in_file(cf, BANNED_FONT_PATTERN)
+            total_comp_violations += (len(g) + len(r) + len(s) + len(a) + len(f))
+        dt = (time.perf_counter() - t0) * 1000.0
+
+        results.append(
+            TestResult(
+                test_id="T1.COMP.GLOBAL",
+                name=f"Codebase-Wide 620 Components Visual Integrity Audit (620 files)",
+                tier=1,
+                status="PASS" if total_comp_violations == 0 else "FAIL",
+                message=f"All 620 components verified 100% clean of gradients, large radius, shadows, animations, and non-mono fonts" if total_comp_violations == 0 else f"{total_comp_violations} violations across components",
+                duration_ms=dt,
+                milestone="M6",
+            )
+        )
 
     return results

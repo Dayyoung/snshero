@@ -8,18 +8,20 @@ export const PacpikView: React.FC = () => {
   }, []);
 
   return (
-    <pre style={{
-      fontFamily: 'monospace',
-      fontSize: '14px',
-      margin: 0,
-      padding: '16px',
-      whiteSpace: 'pre-wrap',
-      wordBreak: 'break-all',
-      background: '#ffffff',
-      color: '#000000',
-    }}>
-      {VERIFICATION_TEXT}
-    </pre>
+    <div className="w-full min-h-screen font-mono overflow-x-hidden pb-28 bg-white">
+      <pre style={{
+        fontFamily: 'monospace',
+        fontSize: '14px',
+        margin: 0,
+        padding: '16px',
+        whiteSpace: 'pre-wrap',
+        wordBreak: 'break-all',
+        background: '#ffffff',
+        color: '#000000',
+      }}>
+        {VERIFICATION_TEXT}
+      </pre>
+    </div>
   );
 };
 

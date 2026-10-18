@@ -15,6 +15,9 @@ from typing import Dict, List, Optional
 from tests.e2e_design_system.helpers import (
     ALL_IN_SCOPE_FILES,
     CORE_22_VIEWS,
+    EXPANSION_25_VIEWS,
+    ALL_47_VIEWS,
+    ALL_620_COMPONENTS,
     M1_TARGETS,
     M2_TARGETS,
     M3_TARGETS,
@@ -240,5 +243,161 @@ def run_tier2_tests(
                     milestone=m_ms,
                 )
             )
+
+    # =========================================================================
+    # 4. Minimum 44px Touch Target Height across Expansion 25 Views (25 Assertions)
+    # =========================================================================
+    for idx, view_rel in enumerate(EXPANSION_25_VIEWS, start=1):
+        view_name = Path(view_rel).stem
+        view_ms = "M5"
+
+        if milestone_filter and milestone_filter.upper() != "ALL" and milestone_filter.upper() != view_ms:
+            continue
+
+        try:
+            content = read_repo_file(view_rel)
+            btns = extract_button_tags(content)
+        except Exception as e:
+            results.append(
+                TestResult(
+                    test_id=f"T2.TOUCH.EXP_V{idx:02d}",
+                    name=f"{view_name} 44px+ Touch Target Compliance",
+                    tier=2,
+                    status="FAIL",
+                    message=f"Failed to read file: {e}",
+                    milestone=view_ms,
+                )
+            )
+            continue
+
+        t0 = time.perf_counter()
+        failing_btns = []
+        for b in btns:
+            if not check_button_has_44px(b["className"]):
+                failing_btns.append(b)
+
+        dt = (time.perf_counter() - t0) * 1000.0
+
+        if len(failing_btns) == 0:
+            results.append(
+                TestResult(
+                    test_id=f"T2.TOUCH.EXP_V{idx:02d}",
+                    name=f"{view_name} 44px+ Touch Target Compliance (Total {len(btns)} buttons)",
+                    tier=2,
+                    status="PASS",
+                    message=f"All {len(btns)} interactive buttons meet >=44px mobile touch ergonomics",
+                    duration_ms=dt,
+                    milestone=view_ms,
+                )
+            )
+        else:
+            details = [f"Line {b['line']}: {b['raw'][:80]}" for b in failing_btns[:8]]
+            results.append(
+                TestResult(
+                    test_id=f"T2.TOUCH.EXP_V{idx:02d}",
+                    name=f"{view_name} 44px+ Touch Target Compliance (Total {len(btns)} buttons)",
+                    tier=2,
+                    status="FAIL",
+                    message=f"{len(failing_btns)} / {len(btns)} buttons violate 44px minimum touch target",
+                    duration_ms=dt,
+                    details=details,
+                    milestone=view_ms,
+                )
+            )
+
+    # =========================================================================
+    # 5. 375px Mobile Viewport & Dock Clearance across Expansion 25 Views (25 Assertions)
+    # =========================================================================
+    for idx, view_rel in enumerate(EXPANSION_25_VIEWS, start=1):
+        view_name = Path(view_rel).stem
+        view_ms = "M5"
+
+        if milestone_filter and milestone_filter.upper() != "ALL" and milestone_filter.upper() != view_ms:
+            continue
+
+        try:
+            content = read_repo_file(view_rel)
+        except Exception as e:
+            results.append(
+                TestResult(
+                    test_id=f"T2.VIEWPORT.EXP_V{idx:02d}",
+                    name=f"{view_name} 375px Mobile Viewport & Dock Clearance",
+                    tier=2,
+                    status="FAIL",
+                    message=f"Failed to read file: {e}",
+                    milestone=view_ms,
+                )
+            )
+            continue
+
+        t0 = time.perf_counter()
+        res = check_horizontal_overflow_resilience(content)
+        dt = (time.perf_counter() - t0) * 1000.0
+
+        if res["is_resilient"]:
+            results.append(
+                TestResult(
+                    test_id=f"T2.VIEWPORT.EXP_V{idx:02d}",
+                    name=f"{view_name} 375px Mobile Viewport & Dock Clearance",
+                    tier=2,
+                    status="PASS",
+                    message="Zero horizontal overflow bleed; bottom navigation dock padding enforced",
+                    duration_ms=dt,
+                    milestone=view_ms,
+                )
+            )
+        else:
+            details = []
+            if not res["has_overflow_guard"]:
+                details.append("Missing overflow-hidden/overflow-x-hidden container guard")
+            if not res["has_bottom_clearance"]:
+                details.append("Missing bottom dock padding (pb-28/32/36/safe)")
+            if res["risky_fixed_widths"]:
+                details.append(f"Hardcoded fixed widths > 375px: {res['risky_fixed_widths']}")
+
+            results.append(
+                TestResult(
+                    test_id=f"T2.VIEWPORT.EXP_V{idx:02d}",
+                    name=f"{view_name} 375px Mobile Viewport & Dock Clearance",
+                    tier=2,
+                    status="FAIL",
+                    message="Mobile viewport overflow vulnerability or missing bottom dock clearance",
+                    duration_ms=dt,
+                    details=details,
+                    milestone=view_ms,
+                )
+            )
+
+    # =========================================================================
+    # 6. Milestone 6: Codebase-Wide 620 Components Button 44px+ Census
+    # =========================================================================
+    if not milestone_filter or milestone_filter.upper() in ("ALL", "M6"):
+        t0 = time.perf_counter()
+        total_comp_btns = 0
+        failed_comp_btns = 0
+        details = []
+        for cf in ALL_620_COMPONENTS:
+            c_content = read_repo_file(cf)
+            c_btns = extract_button_tags(c_content)
+            for b in c_btns:
+                total_comp_btns += 1
+                if not check_button_has_44px(b["className"]):
+                    failed_comp_btns += 1
+                    if len(details) < 8:
+                        details.append(f"{cf}:{b['line']}: {b['raw'][:60]}")
+        dt = (time.perf_counter() - t0) * 1000.0
+
+        results.append(
+            TestResult(
+                test_id="T2.TOUCH.COMP_ALL",
+                name=f"Codebase-Wide 620 Components 44px+ Touch Target Census ({total_comp_btns} buttons)",
+                tier=2,
+                status="PASS" if failed_comp_btns == 0 else "FAIL",
+                message=f"All {total_comp_btns} interactive buttons in 620 components meet >=44px mobile touch ergonomics (100.0% pass)" if failed_comp_btns == 0 else f"{failed_comp_btns} / {total_comp_btns} buttons failed 44px touch target",
+                duration_ms=dt,
+                details=details,
+                milestone="M6",
+            )
+        )
 
     return results

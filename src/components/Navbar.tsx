@@ -11,186 +11,186 @@ import { prefetchPlayGameView } from '../App';
 import { GestureNavigator } from '../lib/GestureNavigator';
 
 interface NavbarProps {
-  currentView: ViewType;
-  setView: (view: ViewType) => void;
-  setIsAutoBattle?: (val: boolean) => void;
-  playSfx: (url: string) => void;
-  language: Language;
-  onRandomPlay?: () => void;
+ currentView: ViewType;
+ setView: (view: ViewType) => void;
+ setIsAutoBattle?: (val: boolean) => void;
+ playSfx: (url: string) => void;
+ language: Language;
+ onRandomPlay?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ currentView, setView, setIsAutoBattle, playSfx, language }) => {
-  const { lowSpecMode } = useGameSettings();
-  const reducedMotion = useReducedMotion();
-  const [hasMissionNotice, setHasMissionNotice] = useState<boolean>(false);
-  const [hasShopReward, setHasShopReward] = useState<boolean>(false);
-  const [rebirthLevel, setRebirthLevel] = useState<number>(() => getRebirthLevel());
+ const { lowSpecMode } = useGameSettings();
+ const reducedMotion = useReducedMotion();
+ const [hasMissionNotice, setHasMissionNotice] = useState<boolean>(false);
+ const [hasShopReward, setHasShopReward] = useState<boolean>(false);
+ const [rebirthLevel, setRebirthLevel] = useState<number>(() => getRebirthLevel());
 
-  useEffect(() => {
-    const updateRebirth = () => {
-      setRebirthLevel(getRebirthLevel());
-    };
-    updateRebirth();
-    window.addEventListener('hero_reincarnation_updated', updateRebirth);
-    window.addEventListener('storage', updateRebirth);
-    return () => {
-      window.removeEventListener('hero_reincarnation_updated', updateRebirth);
-      window.removeEventListener('storage', updateRebirth);
-    };
-  }, []);
+ useEffect(() => {
+ const updateRebirth = () => {
+ setRebirthLevel(getRebirthLevel());
+ };
+ updateRebirth();
+ window.addEventListener('hero_reincarnation_updated', updateRebirth);
+ window.addEventListener('storage', updateRebirth);
+ return () => {
+ window.removeEventListener('hero_reincarnation_updated', updateRebirth);
+ window.removeEventListener('storage', updateRebirth);
+ };
+ }, []);
 
-  useEffect(() => {
-    const checkRedDots = () => {
-      try {
-        // Daily Quest: 수령 가능한 미션 보상이 있는 경우에만 빨간점 표시 (보상 수령 완료 시 빨간점 미표시)
-        const hasPending = getClaimableCount() > 0;
-        setHasMissionNotice(hasPending);
+ useEffect(() => {
+ const checkRedDots = () => {
+ try {
+ // Daily Quest: 수령 가능한 미션 보상이 있는 경우에만 빨간점 표시 (보상 수령 완료 시 빨간점 미표시)
+ const hasPending = getClaimableCount() > 0;
+ setHasMissionNotice(hasPending);
 
-        // Daily Shop free claim status
-        const todayStr = getTodayStr();
-        const shopClaimed = localStorage.getItem(`hero_shop_free_sns_claimed_${todayStr}`);
-        setHasShopReward(shopClaimed !== 'true');
-      } catch (e) {
-        // Safe fallback
-      }
-    };
+ // Daily Shop free claim status
+ const todayStr = getTodayStr();
+ const shopClaimed = localStorage.getItem(`hero_shop_free_sns_claimed_${todayStr}`);
+ setHasShopReward(shopClaimed !== 'true');
+ } catch (e) {
+ // Safe fallback
+ }
+ };
 
-    checkRedDots();
-    const interval = setInterval(checkRedDots, 3000);
-    window.addEventListener('hero_daily_missions_updated', checkRedDots);
-    window.addEventListener('hero_daily_mission_completed', checkRedDots);
+ checkRedDots();
+ const interval = setInterval(checkRedDots, 3000);
+ window.addEventListener('hero_daily_missions_updated', checkRedDots);
+ window.addEventListener('hero_daily_mission_completed', checkRedDots);
 
-    // SCR-01-08: 모바일 수평 스와이프 제스처 네비게이터 연동
-    // 마이덱(mydeck) 화면에서는 카드 조작 및 슬롯 관리 중 원치 않는 화면 전환(플레이 등으로 이동)을 원천 차단하기 위해 스와이프 네비게이터 비활성화
-    const mainTabs: ViewType[] = ['home', 'mydeck', 'main', 'play', 'shop'];
-    let detachGesture = () => {};
+ // SCR-01-08: 모바일 수평 스와이프 제스처 네비게이터 연동
+ // 마이덱(mydeck) 화면에서는 카드 조작 및 슬롯 관리 중 원치 않는 화면 전환(플레이 등으로 이동)을 원천 차단하기 위해 스와이프 네비게이터 비활성화
+ const mainTabs: ViewType[] = ['home', 'mydeck', 'main', 'play', 'shop'];
+ let detachGesture = () => {};
 
-    if (currentView !== 'mydeck') {
-      const gestureNav = new GestureNavigator({
-        onSwipeLeft: () => {
-          const curIdx = mainTabs.indexOf(currentView);
-          if (curIdx >= 0 && curIdx < mainTabs.length - 1) {
-            setView(mainTabs[curIdx + 1]);
-            playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-          }
-        },
-        onSwipeRight: () => {
-          const curIdx = mainTabs.indexOf(currentView);
-          if (curIdx > 0) {
-            setView(mainTabs[curIdx - 1]);
-            playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-          }
-        },
-      });
-      detachGesture = gestureNav.attach(window);
-    }
+ if (currentView !== 'mydeck') {
+ const gestureNav = new GestureNavigator({
+ onSwipeLeft: () => {
+ const curIdx = mainTabs.indexOf(currentView);
+ if (curIdx >= 0 && curIdx < mainTabs.length - 1) {
+ setView(mainTabs[curIdx + 1]);
+ playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+ }
+ },
+ onSwipeRight: () => {
+ const curIdx = mainTabs.indexOf(currentView);
+ if (curIdx > 0) {
+ setView(mainTabs[curIdx - 1]);
+ playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+ }
+ },
+ });
+ detachGesture = gestureNav.attach(window);
+ }
 
-    return () => {
-      clearInterval(interval);
-      window.removeEventListener('hero_daily_missions_updated', checkRedDots);
-      window.removeEventListener('hero_daily_mission_completed', checkRedDots);
-      detachGesture();
-    };
-  }, [currentView, setView, playSfx]);
+ return () => {
+ clearInterval(interval);
+ window.removeEventListener('hero_daily_missions_updated', checkRedDots);
+ window.removeEventListener('hero_daily_mission_completed', checkRedDots);
+ detachGesture();
+ };
+ }, [currentView, setView, playSfx]);
 
-  if (currentView === 'card-play') {
-    return null;
-  }
+ if (currentView === 'card-play') {
+ return null;
+ }
 
-  const items = [
-    { id: 'home', label: t('home', language), icon: Home, hasRedDot: false },
-    { id: 'mydeck', label: t('mydeck', language), icon: Library, hasRedDot: false },
-    { id: 'main', label: t('kadan_rpg_nav', language), icon: Play, hasRedDot: false },
-    { id: 'play', label: t('training_ground', language), icon: Gamepad2, hasRedDot: hasMissionNotice },
-    { id: 'shop', label: t('shop', language), icon: ShoppingBag, hasRedDot: hasShopReward },
-  ];
+ const items = [
+ { id: 'home', label: t('home', language), icon: Home, hasRedDot: false },
+ { id: 'mydeck', label: t('mydeck', language), icon: Library, hasRedDot: false },
+ { id: 'main', label: t('kadan_rpg_nav', language), icon: Play, hasRedDot: false },
+ { id: 'play', label: t('training_ground', language), icon: Gamepad2, hasRedDot: hasMissionNotice },
+ { id: 'shop', label: t('shop', language), icon: ShoppingBag, hasRedDot: hasShopReward },
+ ];
 
-  return (
-    <nav className="fixed bottom-0 left-0 right-0 w-full bg-[var(--ui-canvas)] text-[var(--ui-ink)] border-t border-[var(--ui-line)] z-[10005] pointer-events-auto pb-[env(safe-area-inset-bottom)] font-mono">
-      <div className="max-w-[1024px] mx-auto w-full h-16 sm:h-[72px] flex items-stretch">
-        {items.map((item) => {
-        const isActive = currentView === item.id;
-        return (
-          <button
-            key={item.id}
-            onMouseEnter={() => {
-              if (item.id === 'play') {
-                prefetchPlayGameView();
-              }
-            }}
-            onTouchStart={() => {
-              if (item.id === 'play') {
-                prefetchPlayGameView();
-              }
-            }}
-            onClick={() => {
-              if (item.id === 'main') {
-                if (typeof window !== 'undefined') {
-                  const season = localStorage.getItem('hero_current_season') || 'season1';
-                  localStorage.setItem(`hero_kadan_rpg_auto_mode_${season}`, 'true');
-                }
-              } else if (setIsAutoBattle) {
-                setIsAutoBattle(false);
-              }
-              setView(item.id as ViewType);
-              playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-            }}
-            className={cn(
-              "flex-1 min-w-0 min-h-11 h-full flex flex-col items-center justify-center gap-1.5 py-1 px-0.5 transition-colors relative group cursor-pointer select-none focus-visible:z-30 focus-visible:outline-offset-[-4px]",
-              isActive 
-                ? "text-[#fdfcfc]" 
-                : "text-[var(--ui-muted)] hover:text-[var(--ui-ink)] hover:bg-[var(--ui-surface)]"
-            )}
-            aria-label={item.label}
-            aria-current={isActive ? 'page' : undefined}
-            type="button"
-          >
-            {isActive && (
-              <motion.div
-                layoutId={lowSpecMode || reducedMotion ? undefined : 'navbar-active'}
-                className="absolute inset-x-1 inset-y-1 bg-[#201d1d] rounded-sm"
-                transition={{ duration: lowSpecMode || reducedMotion ? 0 : 0.16 }}
-              />
-            )}
-            
-            <div className="relative">
-              <item.icon 
-                size={20} 
-                strokeWidth={isActive ? 2.5 : 2}
-                className="relative z-10 transition-transform duration-200"
-              />
-              {item.hasRedDot && (
-                <span className="absolute -top-1 -right-1.5 z-20 flex h-2.5 w-2.5">
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-600 border border-white"></span>
-                </span>
-              )}
-              {item.id === 'main' && (
-                <span
-                  className={cn(
-                    "absolute -top-2 -right-4 z-20 px-1 py-0.5 rounded-sm text-[9px] font-bold font-mono leading-none border select-none pointer-events-none",
-                    rebirthLevel > 0
-                      ? "bg-[#f1eeee] text-[#201d1d] border-[#646262]"
-                      : (isActive ? "bg-[#fdfcfc] text-[#201d1d] border-[#646262]" : "bg-[var(--ui-surface)] text-[var(--ui-muted)] border-[var(--ui-line)]")
-                  )}
-                  title={language === 'ko' ? `환생 횟수: ${rebirthLevel}회` : `Reincarnation Lv.${rebirthLevel}`}
-                >
-                  {rebirthLevel > 0 ? (
-                    <span className="flex items-center gap-0.5">
-                      <span className="text-[9px] sm:text-[10px] font-black">{rebirthLevel}</span>
-                    </span>
-                  ) : (
-                    rebirthLevel
-                  )}
-                </span>
-              )}
-            </div>
-            <span className="max-w-full truncate px-0.5 text-[11px] sm:text-xs font-medium relative z-10 font-mono leading-tight">
-              {item.label}
-            </span>
-          </button>
-        );
-      })}
-      </div>
-    </nav>
-  );
+ return (
+ <nav className="fixed bottom-0 left-0 right-0 w-full bg-[var(--ui-canvas)] text-[var(--ui-ink)] border-t border-[var(--ui-line)] z-[10005] pointer-events-auto pb-[env(safe-area-inset-bottom)] font-mono">
+ <div className="max-w-[1024px] mx-auto w-full h-16 sm:h-[72px] flex items-stretch">
+ {items.map((item) => {
+ const isActive = currentView === item.id;
+ return (
+ <button
+ key={item.id}
+ onMouseEnter={() => {
+ if (item.id === 'play') {
+ prefetchPlayGameView();
+ }
+ }}
+ onTouchStart={() => {
+ if (item.id === 'play') {
+ prefetchPlayGameView();
+ }
+ }}
+ onClick={() => {
+ if (item.id === 'main') {
+ if (typeof window !== 'undefined') {
+ const season = localStorage.getItem('hero_current_season') || 'season1';
+ localStorage.setItem(`hero_kadan_rpg_auto_mode_${season}`, 'true');
+ }
+ } else if (setIsAutoBattle) {
+ setIsAutoBattle(false);
+ }
+ setView(item.id as ViewType);
+ playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+ }}
+ className={cn(
+ "flex-1 min-w-0 min-h-11 h-full flex flex-col items-center justify-center gap-1.5 py-1 px-0.5 transition-colors relative group cursor-pointer select-none focus-visible:z-30 focus-visible:outline-offset-[-4px]",
+ isActive 
+ ? "text-[#fdfcfc]" 
+ : "text-[var(--ui-muted)] hover:text-[var(--ui-ink)] hover:bg-[var(--ui-surface)]"
+ )}
+ aria-label={item.label}
+ aria-current={isActive ? 'page' : undefined}
+ type="button"
+ >
+ {isActive && (
+ <motion.div
+ layoutId={lowSpecMode || reducedMotion ? undefined : 'navbar-active'}
+ className="absolute inset-x-1 inset-y-1 bg-[#201d1d] rounded-sm"
+ transition={{ duration: lowSpecMode || reducedMotion ? 0 : 0.16 }}
+ />
+ )}
+ 
+ <div className="relative">
+ <item.icon 
+ size={20} 
+ strokeWidth={isActive ? 2.5 : 2}
+ className="relative z-10 transition-transform duration-200"
+ />
+ {item.hasRedDot && (
+ <span className="absolute -top-1 -right-1.5 z-20 flex h-2.5 w-2.5">
+ <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-600 border border-white"></span>
+ </span>
+ )}
+ {item.id === 'main' && (
+ <span
+ className={cn(
+ "absolute -top-2 -right-4 z-20 px-1 py-0.5 rounded-sm text-[9px] font-bold font-mono leading-none border select-none pointer-events-none",
+ rebirthLevel > 0
+ ? "bg-[#f1eeee] text-[#201d1d] border-[#646262]"
+ : (isActive ? "bg-[#fdfcfc] text-[#201d1d] border-[#646262]" : "bg-[var(--ui-surface)] text-[var(--ui-muted)] border-[var(--ui-line)]")
+ )}
+ title={language === 'ko' ? `환생 횟수: ${rebirthLevel}회` : `Reincarnation Lv.${rebirthLevel}`}
+ >
+ {rebirthLevel > 0 ? (
+ <span className="flex items-center gap-0.5">
+ <span className="text-[9px] sm:text-[10px] font-black">{rebirthLevel}</span>
+ </span>
+ ) : (
+ rebirthLevel
+ )}
+ </span>
+ )}
+ </div>
+ <span className="max-w-full truncate px-0.5 text-[11px] sm:text-xs font-medium relative z-10 font-mono leading-tight">
+ {item.label}
+ </span>
+ </button>
+ );
+ })}
+ </div>
+ </nav>
+ );
 };

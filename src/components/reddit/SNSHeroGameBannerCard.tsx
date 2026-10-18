@@ -8,34 +8,34 @@ import React from 'react';
 import { SNSHeroNativeAdCard } from './SNSHeroNativeAdCard';
 
 interface SNSHeroGameBannerCardProps {
-  isDark: boolean;
-  isKo?: boolean;
-  adIndex?: number;
-  onGoToGame: () => void;
-  onNavigateView?: (view: string) => void;
+ isDark: boolean;
+ isKo?: boolean;
+ adIndex?: number;
+ onGoToGame: () => void;
+ onNavigateView?: (view: string) => void;
 }
 
 export const SNSHeroGameBannerCard: React.FC<SNSHeroGameBannerCardProps> = ({
-  isDark,
-  isKo = true,
-  adIndex = 0,
-  onGoToGame,
-  onNavigateView,
+ isDark,
+ isKo = true,
+ adIndex = 0,
+ onGoToGame,
+ onNavigateView,
 }) => {
-  const handleNavigate = (view: string) => {
-    if (onNavigateView) {
-      onNavigateView(view);
-    } else {
-      onGoToGame();
-    }
-  };
+ const handleNavigate = (view: string) => {
+ if (onNavigateView) {
+ onNavigateView(view);
+ } else {
+ onGoToGame();
+ }
+ };
 
-  return (
-    <SNSHeroNativeAdCard
-      isDark={isDark}
-      isKo={isKo}
-      adIndex={adIndex}
-      onNavigateView={handleNavigate}
-    />
-  );
+ return (
+ <SNSHeroNativeAdCard
+ isDark={isDark}
+ isKo={isKo}
+ adIndex={adIndex}
+ onNavigateView={handleNavigate}
+ />
+ );
 };

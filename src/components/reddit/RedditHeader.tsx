@@ -6,21 +6,21 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { 
-  Search, 
-  Menu, 
-  Plus, 
-  Bell, 
-  MessageCircle, 
-  ChevronDown, 
-  Moon, 
-  Sun, 
-  User, 
-  Sparkles, 
-  TrendingUp, 
-  Gamepad2,
-  X,
-  Compass,
-  Languages
+ Search, 
+ Menu, 
+ Plus, 
+ Bell, 
+ MessageCircle, 
+ ChevronDown, 
+ Moon, 
+ Sun, 
+ User, 
+ Sparkles, 
+ TrendingUp, 
+ Gamepad2,
+ X,
+ Compass,
+ Languages
 } from 'lucide-react';
 import { RedditUserDataState } from '../../lib/reddit/redditTypes';
 import { SEED_SUBREDDITS } from '../../data/redditSeedData';
@@ -28,428 +28,428 @@ import { RedditChatDrawer } from './RedditChatDrawer';
 import { RedditNotificationsDropdown, RedditNotificationItem } from './RedditNotificationsDropdown';
 
 interface RedditHeaderProps {
-  currentSubreddit: string;
-  userState: RedditUserDataState;
-  onSelectSubreddit: (sub: string) => void;
-  onOpenSubmitModal: () => void;
-  onToggleSidebar: () => void;
-  onToggleTheme: () => void;
-  onToggleLanguage: () => void;
-  onSearch: (query: string) => void;
-  onGoToGame: () => void;
-  onOpenUserProfile: (username: string) => void;
+ currentSubreddit: string;
+ userState: RedditUserDataState;
+ onSelectSubreddit: (sub: string) => void;
+ onOpenSubmitModal: () => void;
+ onToggleSidebar: () => void;
+ onToggleTheme: () => void;
+ onToggleLanguage: () => void;
+ onSearch: (query: string) => void;
+ onGoToGame: () => void;
+ onOpenUserProfile: (username: string) => void;
 }
 
 export const RedditHeader: React.FC<RedditHeaderProps> = ({
-  currentSubreddit,
-  userState,
-  onSelectSubreddit,
-  onOpenSubmitModal,
-  onToggleSidebar,
-  onToggleTheme,
-  onToggleLanguage,
-  onSearch,
-  onGoToGame,
-  onOpenUserProfile,
+ currentSubreddit,
+ userState,
+ onSelectSubreddit,
+ onOpenSubmitModal,
+ onToggleSidebar,
+ onToggleTheme,
+ onToggleLanguage,
+ onSearch,
+ onGoToGame,
+ onOpenUserProfile,
 }) => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
-  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
-  const [isCommunityDropdownOpen, setIsCommunityDropdownOpen] = useState(false);
-  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
-  const [isChatOpen, setIsChatOpen] = useState(false);
-  const [hasUnreadNotif, setHasUnreadNotif] = useState(true);
+ const [searchQuery, setSearchQuery] = useState('');
+ const [isSearchFocused, setIsSearchFocused] = useState(false);
+ const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+ const [isCommunityDropdownOpen, setIsCommunityDropdownOpen] = useState(false);
+ const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+ const [isChatOpen, setIsChatOpen] = useState(false);
+ const [hasUnreadNotif, setHasUnreadNotif] = useState(true);
 
-  const searchContainerRef = useRef<HTMLDivElement>(null);
-  const profileMenuRef = useRef<HTMLDivElement>(null);
-  const communityDropdownRef = useRef<HTMLDivElement>(null);
-  const notificationsRef = useRef<HTMLDivElement>(null);
+ const searchContainerRef = useRef<HTMLDivElement>(null);
+ const profileMenuRef = useRef<HTMLDivElement>(null);
+ const communityDropdownRef = useRef<HTMLDivElement>(null);
+ const notificationsRef = useRef<HTMLDivElement>(null);
 
-  const isDark = userState.theme === 'dark';
-  const isKo = userState.language !== 'en'; // 한국어 기본
+ const isDark = userState.theme === 'dark';
+ const isKo = userState.language !== 'en'; // 한국어 기본
 
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (searchContainerRef.current && !searchContainerRef.current.contains(e.target as Node)) {
-        setIsSearchFocused(false);
-      }
-      if (profileMenuRef.current && !profileMenuRef.current.contains(e.target as Node)) {
-        setIsProfileMenuOpen(false);
-      }
-      if (communityDropdownRef.current && !communityDropdownRef.current.contains(e.target as Node)) {
-        setIsCommunityDropdownOpen(false);
-      }
-      if (notificationsRef.current && !notificationsRef.current.contains(e.target as Node)) {
-        setIsNotificationsOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+ useEffect(() => {
+ const handleClickOutside = (e: MouseEvent) => {
+ if (searchContainerRef.current && !searchContainerRef.current.contains(e.target as Node)) {
+ setIsSearchFocused(false);
+ }
+ if (profileMenuRef.current && !profileMenuRef.current.contains(e.target as Node)) {
+ setIsProfileMenuOpen(false);
+ }
+ if (communityDropdownRef.current && !communityDropdownRef.current.contains(e.target as Node)) {
+ setIsCommunityDropdownOpen(false);
+ }
+ if (notificationsRef.current && !notificationsRef.current.contains(e.target as Node)) {
+ setIsNotificationsOpen(false);
+ }
+ };
+ document.addEventListener('mousedown', handleClickOutside);
+ return () => document.removeEventListener('mousedown', handleClickOutside);
+ }, []);
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      onSearch(searchQuery.trim());
-      setIsSearchFocused(false);
-    }
-  };
+ const handleSearchSubmit = (e: React.FormEvent) => {
+ e.preventDefault();
+ if (searchQuery.trim()) {
+ onSearch(searchQuery.trim());
+ setIsSearchFocused(false);
+ }
+ };
 
-  const trendingSearches = isKo
-    ? ['언리얼 엔진 5 1인 개발', '상온 광학 컴퓨팅', '전략적 4초 침묵', '사이버펑크 데스크셋업', '이더리움 ZK 롤업']
-    : ['Unreal Engine 5 indie', 'Optical computing', 'Strategic 4-second silence', 'Cyberpunk battlestation', 'Ethereum ZK'];
+ const trendingSearches = isKo
+ ? ['언리얼 엔진 5 1인 개발', '상온 광학 컴퓨팅', '전략적 4초 침묵', '사이버펑크 데스크셋업', '이더리움 ZK 롤업']
+ : ['Unreal Engine 5 indie', 'Optical computing', 'Strategic 4-second silence', 'Cyberpunk battlestation', 'Ethereum ZK'];
 
-  const getSubDisplayName = (name: string) => {
-    if (name.toLowerCase() === 'popular') return isKo ? '인기 피드' : 'Popular';
-    if (name.toLowerCase() === 'all') return isKo ? '전체 피드' : 'All';
-    if (name.toLowerCase() === 'home') return isKo ? '홈 피드' : 'Home';
-    return `r/${name}`;
-  };
+ const getSubDisplayName = (name: string) => {
+ if (name.toLowerCase() === 'popular') return isKo ? '인기 피드' : 'Popular';
+ if (name.toLowerCase() === 'all') return isKo ? '전체 피드' : 'All';
+ if (name.toLowerCase() === 'home') return isKo ? '홈 피드' : 'Home';
+ return `r/${name}`;
+ };
 
-  return (
-    <header className={`sticky top-0 z-40 h-14 w-full max-w-full overflow-hidden border-b flex items-center justify-between px-2 sm:px-5 transition-colors duration-150 font-mono ${
-      isDark 
-        ? 'bg-[#0E1113] border-[#22272B] text-[#D7DADC]' 
-        : 'bg-white border-gray-200 text-[#1C1C1C]'
-    }`}>
-      {/* 1. 좌측: 햄버거 메뉴 + SNSHero 로고 + 커뮤니티 드롭다운 셀렉터 */}
-      <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-        <button
-          type="button"
-          onClick={onToggleSidebar}
-          aria-label={isKo ? '메뉴 토글' : 'Toggle menu'}
-          className={`w-11 h-11 min-h-[44px] flex items-center justify-center rounded-sm cursor-pointer transition-colors ${
-            isDark ? 'hover:bg-[#22272B] text-gray-300' : 'hover:bg-gray-100 text-gray-700'
-          }`}
-        >
-          <Menu className="w-5 h-5" />
-        </button>
+ return (
+ <header className={`sticky top-0 z-40 h-14 w-full max-w-full overflow-hidden border-b flex items-center justify-between px-2 sm:px-5 transition-colors duration-150 font-mono ${
+ isDark 
+ ? 'bg-[#0E1113] border-[#22272B] text-[#D7DADC]' 
+ : 'bg-white border-gray-200 text-[#1C1C1C]'
+ }`}>
+ {/* 1. 좌측: 햄버거 메뉴 + SNSHero 로고 + 커뮤니티 드롭다운 셀렉터 */}
+ <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+ <button
+ type="button"
+ onClick={onToggleSidebar}
+ aria-label={isKo ? '메뉴 토글' : 'Toggle menu'}
+ className={`w-11 h-11 min-h-[44px] flex items-center justify-center rounded-sm cursor-pointer transition-colors ${
+ isDark ? 'hover:bg-[#22272B] text-gray-300' : 'hover:bg-gray-100 text-gray-700'
+ }`}
+ >
+ <Menu className="w-5 h-5" />
+ </button>
 
-        {/* SNSHero 브랜드 로고 & 마크 (Reddit Snoo 마크 자리 완벽 대체) */}
-        <button
-          type="button"
-          onClick={() => onSelectSubreddit('popular')}
-          className="flex items-center gap-2.5 cursor-pointer group min-h-[44px]"
-        >
-          <div className="relative w-8 h-8 rounded-sm bg-[#FF4500] flex items-center justify-center overflow-hidden border border-[#FF4500]/30 transition-transform">
-            <Gamepad2 className="w-5 h-5 text-white" />
-          </div>
-          <div className="flex items-baseline">
-            <span className="font-extrabold text-xl sm:text-2xl tracking-tighter text-[#FF4500] font-mono">
-              SNS<span className={isDark ? 'text-white' : 'text-gray-900'}>Hero</span>
-            </span>
-          </div>
-        </button>
+ {/* SNSHero 브랜드 로고 & 마크 (Reddit Snoo 마크 자리 완벽 대체) */}
+ <button
+ type="button"
+ onClick={() => onSelectSubreddit('popular')}
+ className="flex items-center gap-2.5 cursor-pointer group min-h-[44px]"
+ >
+ <div className="relative w-8 h-8 rounded-sm bg-[#FF4500] flex items-center justify-center overflow-hidden border border-[#FF4500]/30 transition-transform">
+ <Gamepad2 className="w-5 h-5 text-white" />
+ </div>
+ <div className="flex items-baseline">
+ <span className="font-extrabold text-xl sm:text-2xl tracking-tighter text-[#FF4500] font-mono">
+ SNS<span className={isDark ? 'text-white' : 'text-gray-900'}>Hero</span>
+ </span>
+ </div>
+ </button>
 
-        {/* 현재 피드/서브레딧 드롭다운 (PC 화면) */}
-        <div className="relative hidden md:block" ref={communityDropdownRef}>
-          <button
-            type="button"
-            onClick={() => setIsCommunityDropdownOpen(!isCommunityDropdownOpen)}
-            className={`flex items-center gap-2 px-3.5 py-2 min-h-[44px] rounded-sm text-xs font-semibold cursor-pointer border transition-colors ${
-              isDark 
-                ? 'bg-[#181C1F] border-[#2A3238] hover:bg-[#22272B] text-gray-200' 
-                : 'bg-gray-100 border-gray-200 hover:bg-gray-200 text-gray-800'
-            }`}
-          >
-            <Compass className="w-3.5 h-3.5 text-[#FF4500]" />
-            <span className="max-w-[140px] truncate">
-              {getSubDisplayName(currentSubreddit)}
-            </span>
-            <ChevronDown className="w-3.5 h-3.5 opacity-60" />
-          </button>
+ {/* 현재 피드/서브레딧 드롭다운 (PC 화면) */}
+ <div className="relative hidden md:block" ref={communityDropdownRef}>
+ <button
+ type="button"
+ onClick={() => setIsCommunityDropdownOpen(!isCommunityDropdownOpen)}
+ className={`flex items-center gap-2 px-3.5 py-2 min-h-[44px] rounded-sm text-xs font-semibold cursor-pointer border transition-colors ${
+ isDark 
+ ? 'bg-[#181C1F] border-[#2A3238] hover:bg-[#22272B] text-gray-200' 
+ : 'bg-gray-100 border-gray-200 hover:bg-gray-200 text-gray-800'
+ }`}
+ >
+ <Compass className="w-3.5 h-3.5 text-[#FF4500]" />
+ <span className="max-w-[140px] truncate">
+ {getSubDisplayName(currentSubreddit)}
+ </span>
+ <ChevronDown className="w-3.5 h-3.5 opacity-60" />
+ </button>
 
-          {isCommunityDropdownOpen && (
-            <div className={`absolute top-full left-0 mt-2 w-60 rounded-none border py-2 z-50 text-xs overflow-hidden ${
-              isDark ? 'bg-[#181C1F] border-[#2E363E] text-gray-200' : 'bg-white border-gray-200 text-gray-800'
-            }`}>
-              <div className="px-3.5 py-1 text-[10px] font-bold tracking-wider uppercase opacity-50">
-                {isKo ? '피드 목록' : 'Feeds'}
-              </div>
-              {[
-                { id: 'popular', label: isKo ? '인기 (Popular)' : 'Popular' },
-                { id: 'all', label: isKo ? '전체 (All)' : 'All' },
-                { id: 'home', label: isKo ? '홈 (Home)' : 'Home' },
-              ].map((feed) => (
-                <button
-                  key={feed.id}
-                  type="button"
-                  onClick={() => {
-                    onSelectSubreddit(feed.id);
-                    setIsCommunityDropdownOpen(false);
-                  }}
-                  className={`w-full text-left px-3.5 py-2.5 min-h-[44px] cursor-pointer font-medium flex items-center justify-between ${
-                    isDark ? 'hover:bg-[#22272B]' : 'hover:bg-gray-100'
-                  }`}
-                >
-                  <span>{feed.label}</span>
-                  {currentSubreddit.toLowerCase() === feed.id && (
-                    <span className="w-1.5 h-1.5 rounded-sm bg-[#FF4500]" />
-                  )}
-                </button>
-              ))}
+ {isCommunityDropdownOpen && (
+ <div className={`absolute top-full left-0 mt-2 w-60 rounded-none border py-2 z-50 text-xs overflow-hidden ${
+ isDark ? 'bg-[#181C1F] border-[#2E363E] text-gray-200' : 'bg-white border-gray-200 text-gray-800'
+ }`}>
+ <div className="px-3.5 py-1 text-[10px] font-bold tracking-wider uppercase opacity-50">
+ {isKo ? '피드 목록' : 'Feeds'}
+ </div>
+ {[
+ { id: 'popular', label: isKo ? '인기 (Popular)' : 'Popular' },
+ { id: 'all', label: isKo ? '전체 (All)' : 'All' },
+ { id: 'home', label: isKo ? '홈 (Home)' : 'Home' },
+ ].map((feed) => (
+ <button
+ key={feed.id}
+ type="button"
+ onClick={() => {
+ onSelectSubreddit(feed.id);
+ setIsCommunityDropdownOpen(false);
+ }}
+ className={`w-full text-left px-3.5 py-2.5 min-h-[44px] cursor-pointer font-medium flex items-center justify-between ${
+ isDark ? 'hover:bg-[#22272B]' : 'hover:bg-gray-100'
+ }`}
+ >
+ <span>{feed.label}</span>
+ {currentSubreddit.toLowerCase() === feed.id && (
+ <span className="w-1.5 h-1.5 rounded-sm bg-[#FF4500]" />
+ )}
+ </button>
+ ))}
 
-              <div className="my-1 border-t opacity-10" />
-              <div className="px-3.5 py-1 text-[10px] font-bold tracking-wider uppercase opacity-50">
-                {isKo ? '추천 서브레딧' : 'Popular Subreddits'}
-              </div>
-              {Object.keys(SEED_SUBREDDITS).slice(0, 7).map((subKey) => (
-                <button
-                  key={subKey}
-                  type="button"
-                  onClick={() => {
-                    onSelectSubreddit(subKey);
-                    setIsCommunityDropdownOpen(false);
-                  }}
-                  className={`w-full text-left px-3.5 py-2.5 min-h-[44px] cursor-pointer font-medium flex items-center gap-2 ${
-                    isDark ? 'hover:bg-[#22272B]' : 'hover:bg-gray-100'
-                  }`}
-                >
-                  <span className="text-[#FF4500] font-bold">r/</span>
-                  <span className="truncate">{subKey}</span>
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
+ <div className="my-1 border-t opacity-10" />
+ <div className="px-3.5 py-1 text-[10px] font-bold tracking-wider uppercase opacity-50">
+ {isKo ? '추천 서브레딧' : 'Popular Subreddits'}
+ </div>
+ {Object.keys(SEED_SUBREDDITS).slice(0, 7).map((subKey) => (
+ <button
+ key={subKey}
+ type="button"
+ onClick={() => {
+ onSelectSubreddit(subKey);
+ setIsCommunityDropdownOpen(false);
+ }}
+ className={`w-full text-left px-3.5 py-2.5 min-h-[44px] cursor-pointer font-medium flex items-center gap-2 ${
+ isDark ? 'hover:bg-[#22272B]' : 'hover:bg-gray-100'
+ }`}
+ >
+ <span className="text-[#FF4500] font-bold">r/</span>
+ <span className="truncate">{subKey}</span>
+ </button>
+ ))}
+ </div>
+ )}
+ </div>
+ </div>
 
-      {/* 2. 중앙: 글로벌 스마트 검색바 */}
-      <div className="flex-1 min-w-0 max-w-xl mx-1.5 sm:mx-6 relative" ref={searchContainerRef}>
-        <form onSubmit={handleSearchSubmit} className="relative w-full">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 opacity-50" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onFocus={() => setIsSearchFocused(true)}
-            placeholder={isKo ? "SNSHero 검색..." : "Search SNSHero..."}
-            className={`w-full h-11 min-h-[44px] pl-10 pr-10 rounded-sm text-xs sm:text-sm font-mono outline-none transition-all ${
-              isDark
-                ? 'bg-[#181C1F] hover:bg-[#22272B] focus:bg-[#0E1113] focus:ring-1 focus:ring-[#FF4500] text-gray-100 border border-transparent focus:border-[#FF4500]'
-                : 'bg-[#EAEDEF] hover:bg-gray-200 focus:bg-white focus:ring-1 focus:ring-[#FF4500] text-gray-900 border border-transparent focus:border-[#FF4500]'
-            }`}
-          />
-          {searchQuery && (
-            <button
-              type="button"
-              onClick={() => setSearchQuery('')}
-              className="absolute right-0 top-1/2 -translate-y-1/2 w-11 h-11 min-h-[44px] flex items-center justify-center opacity-50 hover:opacity-100 cursor-pointer"
-            >
-              <X className="w-3.5 h-3.5" />
-            </button>
-          )}
-        </form>
+ {/* 2. 중앙: 글로벌 스마트 검색바 */}
+ <div className="flex-1 min-w-0 max-w-xl mx-1.5 sm:mx-6 relative" ref={searchContainerRef}>
+ <form onSubmit={handleSearchSubmit} className="relative w-full">
+ <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 opacity-50" />
+ <input
+ type="text"
+ value={searchQuery}
+ onChange={(e) => setSearchQuery(e.target.value)}
+ onFocus={() => setIsSearchFocused(true)}
+ placeholder={isKo ? "SNSHero 검색..." : "Search SNSHero..."}
+ className={`w-full h-11 min-h-[44px] pl-10 pr-10 rounded-sm text-xs sm:text-sm font-mono outline-none transition-all ${
+ isDark
+ ? 'bg-[#181C1F] hover:bg-[#22272B] focus:bg-[#0E1113] focus:ring-1 focus:ring-[#FF4500] text-gray-100 border border-transparent focus:border-[#FF4500]'
+ : 'bg-[#EAEDEF] hover:bg-gray-200 focus:bg-white focus:ring-1 focus:ring-[#FF4500] text-gray-900 border border-transparent focus:border-[#FF4500]'
+ }`}
+ />
+ {searchQuery && (
+ <button
+ type="button"
+ onClick={() => setSearchQuery('')}
+ className="absolute right-0 top-1/2 -translate-y-1/2 w-11 h-11 min-h-[44px] flex items-center justify-center opacity-50 hover:opacity-100 cursor-pointer"
+ >
+ <X className="w-3.5 h-3.5" />
+ </button>
+ )}
+ </form>
 
-        {/* 검색 자동완성 & 트렌딩 검색어 */}
-        {isSearchFocused && (
-          <div className={`absolute top-full left-0 right-0 mt-2 rounded-none border py-3 z-50 overflow-hidden ${
-            isDark ? 'bg-[#181C1F] border-[#2E363E] text-gray-200' : 'bg-white border-gray-200 text-gray-800'
-          }`}>
-            <div className="px-4 py-1 text-[11px] font-bold tracking-wider uppercase opacity-50 flex items-center gap-1.5">
-              <TrendingUp className="w-3.5 h-3.5 text-[#FF4500]" />
-              <span>{isKo ? '실시간 인기 검색어' : 'Trending on SNSHero'}</span>
-            </div>
-            {trendingSearches.map((item) => (
-              <button
-                key={item}
-                type="button"
-                onClick={() => {
-                  setSearchQuery(item);
-                  onSearch(item);
-                  setIsSearchFocused(false);
-                }}
-                className={`w-full text-left px-4 py-2.5 min-h-[44px] text-xs sm:text-sm cursor-pointer flex items-center justify-between transition-colors ${
-                  isDark ? 'hover:bg-[#22272B]' : 'hover:bg-gray-100'
-                }`}
-              >
-                <div className="flex items-center gap-2">
-                  <Search className="w-3.5 h-3.5 opacity-40" />
-                  <span>{item}</span>
-                </div>
-                <span className="text-[10px] opacity-40">{isKo ? '검색' : 'Search'}</span>
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
+ {/* 검색 자동완성 & 트렌딩 검색어 */}
+ {isSearchFocused && (
+ <div className={`absolute top-full left-0 right-0 mt-2 rounded-none border py-3 z-50 overflow-hidden ${
+ isDark ? 'bg-[#181C1F] border-[#2E363E] text-gray-200' : 'bg-white border-gray-200 text-gray-800'
+ }`}>
+ <div className="px-4 py-1 text-[11px] font-bold tracking-wider uppercase opacity-50 flex items-center gap-1.5">
+ <TrendingUp className="w-3.5 h-3.5 text-[#FF4500]" />
+ <span>{isKo ? '실시간 인기 검색어' : 'Trending on SNSHero'}</span>
+ </div>
+ {trendingSearches.map((item) => (
+ <button
+ key={item}
+ type="button"
+ onClick={() => {
+ setSearchQuery(item);
+ onSearch(item);
+ setIsSearchFocused(false);
+ }}
+ className={`w-full text-left px-4 py-2.5 min-h-[44px] text-xs sm:text-sm cursor-pointer flex items-center justify-between transition-colors ${
+ isDark ? 'hover:bg-[#22272B]' : 'hover:bg-gray-100'
+ }`}
+ >
+ <div className="flex items-center gap-2">
+ <Search className="w-3.5 h-3.5 opacity-40" />
+ <span>{item}</span>
+ </div>
+ <span className="text-[10px] opacity-40">{isKo ? '검색' : 'Search'}</span>
+ </button>
+ ))}
+ </div>
+ )}
+ </div>
 
-      {/* 3. 우측: 포스트 작성(+) + 채팅 + 알림 + 프로필 아바타 & 메뉴 */}
-      <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
-        {/* 만들기 (+) 버튼 */}
-        <button
-          type="button"
-          onClick={onOpenSubmitModal}
-          className={`flex items-center gap-1.5 px-3.5 py-2.5 min-h-[44px] rounded-sm text-xs font-semibold cursor-pointer transition-all ${
-            isDark
-              ? 'bg-[#22272B] hover:bg-[#2C3238] text-gray-100'
-              : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
-          }`}
-        >
-          <Plus className="w-4 h-4 text-[#FF4500]" />
-          <span className="hidden sm:inline">{isKo ? '만들기' : 'Create'}</span>
-        </button>
+ {/* 3. 우측: 포스트 작성(+) + 채팅 + 알림 + 프로필 아바타 & 메뉴 */}
+ <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+ {/* 만들기 (+) 버튼 */}
+ <button
+ type="button"
+ onClick={onOpenSubmitModal}
+ className={`flex items-center gap-1.5 px-3.5 py-2.5 min-h-[44px] rounded-sm text-xs font-semibold cursor-pointer transition-all ${
+ isDark
+ ? 'bg-[#22272B] hover:bg-[#2C3238] text-gray-100'
+ : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
+ }`}
+ >
+ <Plus className="w-4 h-4 text-[#FF4500]" />
+ <span className="hidden sm:inline">{isKo ? '만들기' : 'Create'}</span>
+ </button>
 
-        {/* 채팅 버튼 */}
-        <button
-          type="button"
-          aria-label={isKo ? '채팅' : 'Chat'}
-          className={`w-11 h-11 min-h-[44px] flex items-center justify-center rounded-sm cursor-pointer transition-colors relative ${
-            isDark ? 'hover:bg-[#22272B] text-gray-300' : 'hover:bg-gray-100 text-gray-700'
-          }`}
-          onClick={() => setIsChatOpen(true)}
-        >
-          <MessageCircle className="w-5 h-5" />
-        </button>
+ {/* 채팅 버튼 */}
+ <button
+ type="button"
+ aria-label={isKo ? '채팅' : 'Chat'}
+ className={`w-11 h-11 min-h-[44px] flex items-center justify-center rounded-sm cursor-pointer transition-colors relative ${
+ isDark ? 'hover:bg-[#22272B] text-gray-300' : 'hover:bg-gray-100 text-gray-700'
+ }`}
+ onClick={() => setIsChatOpen(true)}
+ >
+ <MessageCircle className="w-5 h-5" />
+ </button>
 
-        {/* 알림 버튼 & 드롭다운 */}
-        <div className="relative" ref={notificationsRef}>
-          <button
-            type="button"
-            aria-label={isKo ? '알림' : 'Notifications'}
-            onClick={() => {
-              setIsNotificationsOpen(!isNotificationsOpen);
-              setHasUnreadNotif(false);
-            }}
-            className={`w-11 h-11 min-h-[44px] flex items-center justify-center rounded-sm cursor-pointer transition-colors relative ${
-              isDark ? 'hover:bg-[#22272B] text-gray-300' : 'hover:bg-gray-100 text-gray-700'
-            }`}
-          >
-            <Bell className="w-5 h-5" />
-            {hasUnreadNotif && (
-              <span className="absolute top-2 right-2 w-2 h-2 rounded-sm bg-[#FF4500] ring-2 ring-[#0E1113]" />
-            )}
-          </button>
+ {/* 알림 버튼 & 드롭다운 */}
+ <div className="relative" ref={notificationsRef}>
+ <button
+ type="button"
+ aria-label={isKo ? '알림' : 'Notifications'}
+ onClick={() => {
+ setIsNotificationsOpen(!isNotificationsOpen);
+ setHasUnreadNotif(false);
+ }}
+ className={`w-11 h-11 min-h-[44px] flex items-center justify-center rounded-sm cursor-pointer transition-colors relative ${
+ isDark ? 'hover:bg-[#22272B] text-gray-300' : 'hover:bg-gray-100 text-gray-700'
+ }`}
+ >
+ <Bell className="w-5 h-5" />
+ {hasUnreadNotif && (
+ <span className="absolute top-2 right-2 w-2 h-2 rounded-sm bg-[#FF4500] ring-2 ring-[#0E1113]" />
+ )}
+ </button>
 
-          {isNotificationsOpen && (
-            <RedditNotificationsDropdown
-              isDark={isDark}
-              isKo={isKo}
-              onClose={() => setIsNotificationsOpen(false)}
-              onSelectNotification={(item) => {
-                if (item.linkSubreddit) {
-                  onSelectSubreddit(item.linkSubreddit);
-                }
-              }}
-            />
-          )}
-        </div>
+ {isNotificationsOpen && (
+ <RedditNotificationsDropdown
+ isDark={isDark}
+ isKo={isKo}
+ onClose={() => setIsNotificationsOpen(false)}
+ onSelectNotification={(item) => {
+ if (item.linkSubreddit) {
+ onSelectSubreddit(item.linkSubreddit);
+ }
+ }}
+ />
+ )}
+ </div>
 
-        {/* 프로필 아바타 & 메뉴 */}
-        <div className="relative" ref={profileMenuRef}>
-          <button
-            type="button"
-            onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
-            className="flex items-center gap-1.5 p-1 min-h-[44px] rounded-sm cursor-pointer hover:border hover:border-[#FF4500]/50 transition-all"
-          >
-            <div className="relative w-8 h-8 rounded-sm overflow-hidden bg-[#FF4500] flex items-center justify-center text-white font-bold text-xs">
-              <User className="w-4 h-4" />
-              <span className="absolute bottom-0 right-0 w-2 h-2 rounded-sm bg-emerald-500 border border-[#0E1113]" />
-            </div>
-            <ChevronDown className="w-3.5 h-3.5 opacity-60 hidden sm:block" />
-          </button>
+ {/* 프로필 아바타 & 메뉴 */}
+ <div className="relative" ref={profileMenuRef}>
+ <button
+ type="button"
+ onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+ className="flex items-center gap-1.5 p-1 min-h-[44px] rounded-sm cursor-pointer hover:border hover:border-[#FF4500]/50 transition-all"
+ >
+ <div className="relative w-8 h-8 rounded-sm overflow-hidden bg-[#FF4500] flex items-center justify-center text-white font-bold text-xs">
+ <User className="w-4 h-4" />
+ <span className="absolute bottom-0 right-0 w-2 h-2 rounded-sm bg-emerald-500 border border-[#0E1113]" />
+ </div>
+ <ChevronDown className="w-3.5 h-3.5 opacity-60 hidden sm:block" />
+ </button>
 
-          {isProfileMenuOpen && (
-            <div className={`absolute top-full right-0 mt-2 w-64 rounded-none border py-3 z-50 text-xs overflow-hidden ${
-              isDark ? 'bg-[#181C1F] border-[#2E363E] text-gray-200' : 'bg-white border-gray-200 text-gray-800'
-            }`}>
-              {/* 유저 정보 요약 */}
-              <div className="px-4 py-2 border-b border-inherit/10">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-sm bg-[#FF4500] flex items-center justify-center text-white font-bold">
-                    <User className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <div className="font-bold text-sm">u/SNSHeroPlayer</div>
-                    <div className="text-[11px] opacity-60 flex items-center gap-1">
-                      <Sparkles className="w-3 h-3 text-[#FF4500]" />
-                      <span>{isKo ? '카르마' : 'Karma'}: 4,820</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+ {isProfileMenuOpen && (
+ <div className={`absolute top-full right-0 mt-2 w-64 rounded-none border py-3 z-50 text-xs overflow-hidden ${
+ isDark ? 'bg-[#181C1F] border-[#2E363E] text-gray-200' : 'bg-white border-gray-200 text-gray-800'
+ }`}>
+ {/* 유저 정보 요약 */}
+ <div className="px-4 py-2 border-b border-inherit/10">
+ <div className="flex items-center gap-2.5">
+ <div className="w-9 h-9 rounded-sm bg-[#FF4500] flex items-center justify-center text-white font-bold">
+ <User className="w-4 h-4" />
+ </div>
+ <div>
+ <div className="font-bold text-sm">u/SNSHeroPlayer</div>
+ <div className="text-[11px] opacity-60 flex items-center gap-1">
+ <Sparkles className="w-3 h-3 text-[#FF4500]" />
+ <span>{isKo ? '카르마' : 'Karma'}: 4,820</span>
+ </div>
+ </div>
+ </div>
+ </div>
 
-              {/* 메뉴 목록 */}
-              <div className="py-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    onOpenUserProfile('SNSHeroPlayer');
-                    setIsProfileMenuOpen(false);
-                  }}
-                  className={`w-full text-left px-4 py-3 min-h-[44px] flex items-center gap-2.5 cursor-pointer ${
-                    isDark ? 'hover:bg-[#22272B]' : 'hover:bg-gray-100'
-                  }`}
-                >
-                  <User className="w-4 h-4 text-sky-400" />
-                  <span>{isKo ? '프로필 보기' : 'View Profile'}</span>
-                </button>
+ {/* 메뉴 목록 */}
+ <div className="py-2">
+ <button
+ type="button"
+ onClick={() => {
+ onOpenUserProfile('SNSHeroPlayer');
+ setIsProfileMenuOpen(false);
+ }}
+ className={`w-full text-left px-4 py-3 min-h-[44px] flex items-center gap-2.5 cursor-pointer ${
+ isDark ? 'hover:bg-[#22272B]' : 'hover:bg-gray-100'
+ }`}
+ >
+ <User className="w-4 h-4 text-sky-400" />
+ <span>{isKo ? '프로필 보기' : 'View Profile'}</span>
+ </button>
 
-                {/* 다크 모드 토글 */}
-                <button
-                  type="button"
-                  onClick={onToggleTheme}
-                  className={`w-full text-left px-4 py-3 min-h-[44px] flex items-center justify-between cursor-pointer ${
-                    isDark ? 'hover:bg-[#22272B]' : 'hover:bg-gray-100'
-                  }`}
-                >
-                  <div className="flex items-center gap-2.5">
-                    {isDark ? <Moon className="w-4 h-4 text-purple-400" /> : <Sun className="w-4 h-4 text-amber-500" />}
-                    <span>{isKo ? '다크 모드' : 'Dark Mode'}</span>
-                  </div>
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-sm ${
-                    isDark ? 'bg-[#2E363E] text-[#FF4500]' : 'bg-gray-200 text-gray-700'
-                  }`}>
-                    {isDark ? 'ON' : 'OFF'}
-                  </span>
-                </button>
+ {/* 다크 모드 토글 */}
+ <button
+ type="button"
+ onClick={onToggleTheme}
+ className={`w-full text-left px-4 py-3 min-h-[44px] flex items-center justify-between cursor-pointer ${
+ isDark ? 'hover:bg-[#22272B]' : 'hover:bg-gray-100'
+ }`}
+ >
+ <div className="flex items-center gap-2.5">
+ {isDark ? <Moon className="w-4 h-4 text-purple-400" /> : <Sun className="w-4 h-4 text-amber-500" />}
+ <span>{isKo ? '다크 모드' : 'Dark Mode'}</span>
+ </div>
+ <span className={`text-[10px] font-bold px-2 py-0.5 rounded-sm ${
+ isDark ? 'bg-[#2E363E] text-[#FF4500]' : 'bg-gray-200 text-gray-700'
+ }`}>
+ {isDark ? 'ON' : 'OFF'}
+ </span>
+ </button>
 
-                {/* 언어 설정 토글 (한국어 / English) */}
-                <button
-                  type="button"
-                  onClick={onToggleLanguage}
-                  className={`w-full text-left px-4 py-3 min-h-[44px] flex items-center justify-between cursor-pointer ${
-                    isDark ? 'hover:bg-[#22272B]' : 'hover:bg-gray-100'
-                  }`}
-                >
-                  <div className="flex items-center gap-2.5">
-                    <Languages className="w-4 h-4 text-emerald-400" />
-                    <span>{isKo ? '언어 (Language)' : 'Language'}</span>
-                  </div>
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-sm bg-[#FF4500]/15 text-[#FF4500]`}>
-                    {isKo ? '한국어' : 'English'}
-                  </span>
-                </button>
+ {/* 언어 설정 토글 (한국어 / English) */}
+ <button
+ type="button"
+ onClick={onToggleLanguage}
+ className={`w-full text-left px-4 py-3 min-h-[44px] flex items-center justify-between cursor-pointer ${
+ isDark ? 'hover:bg-[#22272B]' : 'hover:bg-gray-100'
+ }`}
+ >
+ <div className="flex items-center gap-2.5">
+ <Languages className="w-4 h-4 text-emerald-400" />
+ <span>{isKo ? '언어 (Language)' : 'Language'}</span>
+ </div>
+ <span className={`text-[10px] font-bold px-2 py-0.5 rounded-sm bg-[#FF4500]/15 text-[#FF4500]`}>
+ {isKo ? '한국어' : 'English'}
+ </span>
+ </button>
 
-                <div className="my-1 border-t opacity-10" />
+ <div className="my-1 border-t opacity-10" />
 
-                {/* 기존 게임 로비 바로가기 */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsProfileMenuOpen(false);
-                    onGoToGame();
-                  }}
-                  className={`w-full text-left px-4 py-3 min-h-[44px] flex items-center gap-2.5 cursor-pointer text-[#FF4500] font-bold ${
-                    isDark ? 'hover:bg-[#22272B]' : 'hover:bg-gray-100'
-                  }`}
-                >
-                  <Gamepad2 className="w-4 h-4" />
-                  <span>{isKo ? 'SNSHero 게임 플레이' : 'SNSHero Game Lobby'}</span>
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
+ {/* 기존 게임 로비 바로가기 */}
+ <button
+ type="button"
+ onClick={() => {
+ setIsProfileMenuOpen(false);
+ onGoToGame();
+ }}
+ className={`w-full text-left px-4 py-3 min-h-[44px] flex items-center gap-2.5 cursor-pointer text-[#FF4500] font-bold ${
+ isDark ? 'hover:bg-[#22272B]' : 'hover:bg-gray-100'
+ }`}
+ >
+ <Gamepad2 className="w-4 h-4" />
+ <span>{isKo ? 'SNSHero 게임 플레이' : 'SNSHero Game Lobby'}</span>
+ </button>
+ </div>
+ </div>
+ )}
+ </div>
+ </div>
 
-      {/* 실시간 커뮤니티 채팅 드로어 */}
-      <RedditChatDrawer
-        isOpen={isChatOpen}
-        isDark={isDark}
-        isKo={isKo}
-        onClose={() => setIsChatOpen(false)}
-      />
-    </header>
-  );
+ {/* 실시간 커뮤니티 채팅 드로어 */}
+ <RedditChatDrawer
+ isOpen={isChatOpen}
+ isDark={isDark}
+ isKo={isKo}
+ onClose={() => setIsChatOpen(false)}
+ />
+ </header>
+ );
 };

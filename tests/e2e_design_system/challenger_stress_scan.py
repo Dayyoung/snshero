@@ -8,53 +8,16 @@ import glob
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+import sys
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 
-CORE_22_VIEWS = [
-    "src/views/HomeView.tsx",
-    "src/views/MobileCardPlayScreen.tsx",
-    "src/views/MyDeckView.tsx",
-    "src/views/PlayGameView.tsx",
-    "src/views/ShopView.tsx",
-    "src/views/CardMarketplaceView.tsx",
-    "src/views/NovelView.tsx",
-    "src/views/MovieView.tsx",
-    "src/views/RankingView.tsx",
-    "src/views/GuildListView.tsx",
-    "src/views/GuildDetailView.tsx",
-    "src/views/CommunityView.tsx",
-    "src/views/RedditCommunityView.tsx",
-    "src/views/ProfileView.tsx",
-    "src/views/SettingView.tsx",
-    "src/views/SeasonHubView.tsx",
-    "src/views/CompanionView.tsx",
-    "src/views/EventView.tsx",
-    "src/views/StockMarketView.tsx",
-    "src/views/PredictionMarketView.tsx",
-    "src/views/WikiCardView.tsx",
-    "src/views/WorldCodexView.tsx",
-]
+from tests.e2e_design_system.helpers import ALL_47_VIEWS, ALL_620_COMPONENTS
 
-SHARED_COMPONENTS = [
-    "src/App.tsx",
-    "src/components/PageHeader.tsx",
-    "src/components/Navbar.tsx",
-    "src/components/battle/TacticalCommandHUD.tsx",
-    "src/components/battle/TacticalSynergyMatrix.tsx",
-    "src/components/battle/StarBreathingUltimateWidget.tsx",
-    "src/components/battle/ElementalTempestWidget.tsx",
-    "src/components/MinimalistMissionHUD.tsx",
-    "src/components/ResponsiveCleanHUD.tsx",
-    "src/components/DemoPlayHUD.tsx",
-    "src/components/BattleBossHUD.tsx",
-    "src/components/MissionGameCardHUD.tsx",
-    "src/components/movie/CinematicMoviePlayer.tsx",
-] + glob.glob(str(REPO_ROOT / "src/components/reddit/*.tsx"))
+CORE_22_VIEWS = ALL_47_VIEWS
 
-# Normalize paths relative to REPO_ROOT
-SHARED_COMPONENTS = [
-    os.path.relpath(p, REPO_ROOT) if os.path.isabs(p) else p
-    for p in SHARED_COMPONENTS
-]
+SHARED_COMPONENTS = ["src/App.tsx"] + ALL_620_COMPONENTS
+
 
 TOUCH_44PX_TOKENS = (
     "min-h-[44px]", "min-h-[46px]", "min-h-[48px]", "min-h-[50px]", "min-h-[52px]",

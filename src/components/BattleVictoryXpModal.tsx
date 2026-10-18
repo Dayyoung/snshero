@@ -5,143 +5,143 @@ import { Language } from '../types';
 import { cn } from '../lib/utils';
 
 interface BattleVictoryXpModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  language: Language;
-  earnedXp: number;
-  earnedSns: number;
-  playSfx: (url: string) => void;
+ isOpen: boolean;
+ onClose: () => void;
+ language: Language;
+ earnedXp: number;
+ earnedSns: number;
+ playSfx: (url: string) => void;
 }
 
 export const BattleVictoryXpModal: React.FC<BattleVictoryXpModalProps> = ({
-  isOpen,
-  onClose,
-  language,
-  earnedXp,
-  earnedSns,
-  playSfx,
+ isOpen,
+ onClose,
+ language,
+ earnedXp,
+ earnedSns,
+ playSfx,
 }) => {
-  const [animatedXp, setAnimatedXp] = useState(0);
-  const [animatedSns, setAnimatedSns] = useState(0);
+ const [animatedXp, setAnimatedXp] = useState(0);
+ const [animatedSns, setAnimatedSns] = useState(0);
 
-  useEffect(() => {
-    if (!isOpen) {
-      setAnimatedXp(0);
-      setAnimatedSns(0);
-      return;
-    }
+ useEffect(() => {
+ if (!isOpen) {
+ setAnimatedXp(0);
+ setAnimatedSns(0);
+ return;
+ }
 
-    playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+ playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
 
-    // Number counter animation
-    const duration = 1200; // 1.2s
-    const steps = 30;
-    const stepTime = duration / steps;
-    let step = 0;
+ // Number counter animation
+ const duration = 1200; // 1.2s
+ const steps = 30;
+ const stepTime = duration / steps;
+ let step = 0;
 
-    const timer = setInterval(() => {
-      step++;
-      const progress = step / steps;
-      setAnimatedXp(Math.floor(earnedXp * progress));
-      setAnimatedSns(Math.floor(earnedSns * progress));
+ const timer = setInterval(() => {
+ step++;
+ const progress = step / steps;
+ setAnimatedXp(Math.floor(earnedXp * progress));
+ setAnimatedSns(Math.floor(earnedSns * progress));
 
-      if (step >= steps) {
-        clearInterval(timer);
-        setAnimatedXp(earnedXp);
-        setAnimatedSns(earnedSns);
-      }
-    }, stepTime);
+ if (step >= steps) {
+ clearInterval(timer);
+ setAnimatedXp(earnedXp);
+ setAnimatedSns(earnedSns);
+ }
+ }, stepTime);
 
-    return () => clearInterval(timer);
-  }, [isOpen, earnedXp, earnedSns]);
+ return () => clearInterval(timer);
+ }, [isOpen, earnedXp, earnedSns]);
 
-  if (!isOpen) return null;
+ if (!isOpen) return null;
 
-  return (
-    <AnimatePresence>
-      <div className="fixed inset-0 z-[220] flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-md select-none">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.8, y: 20 }}
-          className="bg-gradient-to-b from-amber-500/10 via-white to-white rounded-3xl max-w-sm w-full max-h-[90dvh] border border-amber-300 shadow-2xl p-4 sm:p-6 text-center overflow-hidden relative flex flex-col"
-        >
-          {/* Top Right Close Button */}
-          <button
-            onClick={onClose}
-            className="absolute top-3 right-3 p-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 transition-colors cursor-pointer z-10"
-            aria-label="Close"
-          >
-            <X size={16} />
-          </button>
+ return (
+ <AnimatePresence>
+ <div className="fixed inset-0 z-[220] flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-md select-none">
+ <motion.div
+ initial={{ opacity: 0, scale: 0.8, y: 20 }}
+ animate={{ opacity: 1, scale: 1, y: 0 }}
+ exit={{ opacity: 0, scale: 0.8, y: 20 }}
+ className="bg-[#201d1d] rounded-none max-w-sm w-full max-h-[90dvh] border border-amber-300 shadow-none p-4 sm:p-6 text-center overflow-hidden relative flex flex-col"
+ >
+ {/* Top Right Close Button */}
+ <button
+ onClick={onClose}
+ className="absolute top-3 right-3 p-1.5 rounded-sm bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 transition-colors cursor-pointer z-10"
+ aria-label="Close"
+ >
+ <X size={16} />
+ </button>
 
-          {/* Scrollable Content */}
-          <div className="flex-1 min-h-0 overflow-y-auto space-y-4 py-1">
-            {/* Victory Header Badge */}
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1.1 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 15 }}
-              className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-tr from-amber-500 to-yellow-400 text-slate-950 flex items-center justify-center mx-auto shadow-lg shadow-amber-500/30 ring-4 ring-amber-200 shrink-0"
-            >
-              <Trophy size={28} className="animate-bounce" />
-            </motion.div>
+ {/* Scrollable Content */}
+ <div className="flex-1 min-h-0 overflow-y-auto space-y-4 py-1">
+ {/* Victory Header Badge */}
+ <motion.div
+ initial={{ scale: 0 }}
+ animate={{ scale: 1.1 }}
+ transition={{ type: 'spring', stiffness: 300, damping: 15 }}
+ className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#201d1d] text-slate-950 flex items-center justify-center mx-auto shadow-none shadow-none ring-4 ring-amber-200 shrink-0"
+ >
+ <Trophy size={28} className="transition-transform duration-300" />
+ </motion.div>
 
-            <div className="space-y-1">
-              <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight uppercase">
-                {language === 'ko' ? 'VICTORY! 승리' : 'VICTORY!'}
-              </h2>
-              <p className="text-xs text-slate-500 font-bold">
-                {language === 'ko' ? '대전에서 승리하여 경험치와 보상을 획득했습니다!' : 'Battle won! Claiming earned EXP & SNS rewards.'}
-              </p>
-            </div>
+ <div className="space-y-1">
+ <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight uppercase">
+ {language === 'ko' ? 'VICTORY! 승리' : 'VICTORY!'}
+ </h2>
+ <p className="text-xs text-slate-500 font-bold">
+ {language === 'ko' ? '대전에서 승리하여 경험치와 보상을 획득했습니다!' : 'Battle won! Claiming earned EXP & SNS rewards.'}
+ </p>
+ </div>
 
-            {/* Animated EXP Counter (Item 30) */}
-            <div className="p-3.5 sm:p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2.5 sm:space-y-3 text-left">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-xs font-black text-indigo-600">
-                  <Zap size={16} className="text-indigo-500" />
-                  <span>{language === 'ko' ? '획득 경험치 (EXP)' : 'Earned EXP'}</span>
-                </div>
-                <span className="text-base sm:text-lg font-black text-indigo-600 font-mono">
-                  +{animatedXp.toLocaleString()} EXP
-                </span>
-              </div>
+ {/* Animated EXP Counter (Item 30) */}
+ <div className="p-3.5 sm:p-4 bg-slate-50 rounded-none border border-slate-200 space-y-2.5 sm:space-y-3 text-left">
+ <div className="flex items-center justify-between">
+ <div className="flex items-center gap-2 text-xs font-black text-indigo-600">
+ <Zap size={16} className="text-indigo-500" />
+ <span>{language === 'ko' ? '획득 경험치 (EXP)' : 'Earned EXP'}</span>
+ </div>
+ <span className="text-base sm:text-lg font-black text-indigo-600 font-mono">
+ +{animatedXp.toLocaleString()} EXP
+ </span>
+ </div>
 
-              {/* EXP Bar Animation */}
-              <div className="w-full bg-slate-200 h-2 sm:h-2.5 rounded-full overflow-hidden">
-                <motion.div
-                  initial={{ width: '0%' }}
-                  animate={{ width: '85%' }}
-                  transition={{ duration: 1.2, ease: 'easeOut' }}
-                  className="bg-indigo-600 h-full rounded-full"
-                />
-              </div>
+ {/* EXP Bar Animation */}
+ <div className="w-full bg-slate-200 h-2 sm:h-2.5 rounded-full overflow-hidden">
+ <motion.div
+ initial={{ width: '0%' }}
+ animate={{ width: '85%' }}
+ transition={{ duration: 1.2, ease: 'easeOut' }}
+ className="bg-indigo-600 h-full rounded-full"
+ />
+ </div>
 
-              <div className="flex items-center justify-between pt-1 border-t border-slate-200/60">
-                <div className="flex items-center gap-2 text-xs font-black text-amber-600">
-                  <Sparkles size={16} className="text-amber-500" />
-                  <span>{language === 'ko' ? 'SNS 포인트' : 'SNS Points'}</span>
-                </div>
-                <span className="text-base sm:text-lg font-black text-amber-600 font-mono">
-                  +{animatedSns.toLocaleString()} SNS
-                </span>
-              </div>
-            </div>
-          </div>
+ <div className="flex items-center justify-between pt-1 border-t border-slate-200/60">
+ <div className="flex items-center gap-2 text-xs font-black text-amber-600">
+ <Sparkles size={16} className="text-amber-500" />
+ <span>{language === 'ko' ? 'SNS 포인트' : 'SNS Points'}</span>
+ </div>
+ <span className="text-base sm:text-lg font-black text-amber-600 font-mono">
+ +{animatedSns.toLocaleString()} SNS
+ </span>
+ </div>
+ </div>
+ </div>
 
-          {/* Confirm Button */}
-          <div className="pt-2 shrink-0">
-            <button
-              onClick={onClose}
-              className="w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-black rounded-xl text-xs uppercase tracking-wider transition-all shadow-md active:scale-95 cursor-pointer flex items-center justify-center gap-1.5"
-            >
-              <CheckCircle size={16} />
-              <span>{language === 'ko' ? '보상 수령 완료' : 'Claim & Close'}</span>
-            </button>
-          </div>
-        </motion.div>
-      </div>
-    </AnimatePresence>
-  );
+ {/* Confirm Button */}
+ <div className="pt-2 shrink-0">
+ <button
+ onClick={onClose}
+ className="w-full py-3 bg-[#201d1d] hover: hover: text-slate-950 font-black rounded-sm text-xs uppercase tracking-wider transition-all shadow-none active:scale-95 cursor-pointer flex items-center justify-center gap-1.5"
+ >
+ <CheckCircle size={16} />
+ <span>{language === 'ko' ? '보상 수령 완료' : 'Claim & Close'}</span>
+ </button>
+ </div>
+ </motion.div>
+ </div>
+ </AnimatePresence>
+ );
 };

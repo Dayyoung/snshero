@@ -11,161 +11,161 @@ import { cn } from '../lib/utils';
 import { t } from '../lib/i18n';
 
 interface NavItem {
-  id: ViewType;
-  labelKo: string;
-  labelEn: string;
-  asciiTag: string;
-  icon: React.ComponentType<{ size?: number; className?: string }>;
-  badgeCount?: number;
+ id: ViewType;
+ labelKo: string;
+ labelEn: string;
+ asciiTag: string;
+ icon: React.ComponentType<{ size?: number; className?: string }>;
+ badgeCount?: number;
 }
 
 interface MainNavigationDockProps {
-  currentView: ViewType;
-  onNavigate: (view: ViewType) => void;
-  language?: Language;
-  deckCount?: number;
-  newCardsBadge?: boolean;
-  marketAlertBadge?: boolean;
+ currentView: ViewType;
+ onNavigate: (view: ViewType) => void;
+ language?: Language;
+ deckCount?: number;
+ newCardsBadge?: boolean;
+ marketAlertBadge?: boolean;
 }
 
 const NAV_ITEMS: NavItem[] = [
-  {
-    id: 'home',
-    labelKo: '로비',
-    labelEn: 'LOBBY',
-    asciiTag: '[LOBBY]',
-    icon: Home,
-  },
-  {
-    id: 'play',
-    labelKo: '플레이',
-    labelEn: 'PLAY',
-    asciiTag: '[PLAY]',
-    icon: Swords,
-  },
-  {
-    id: 'mydeck',
-    labelKo: '마이덱',
-    labelEn: 'DECK',
-    asciiTag: '[DECK]',
-    icon: Layers,
-  },
-  {
-    id: 'card-marketplace',
-    labelKo: '거래소',
-    labelEn: 'MARKET',
-    asciiTag: '[MARKET]',
-    icon: Store,
-  },
-  {
-    id: 'shop',
-    labelKo: '상점',
-    labelEn: 'SHOP',
-    asciiTag: '[SHOP]',
-    icon: ShoppingBag,
-  },
+ {
+ id: 'home',
+ labelKo: '로비',
+ labelEn: 'LOBBY',
+ asciiTag: '[LOBBY]',
+ icon: Home,
+ },
+ {
+ id: 'play',
+ labelKo: '플레이',
+ labelEn: 'PLAY',
+ asciiTag: '[PLAY]',
+ icon: Swords,
+ },
+ {
+ id: 'mydeck',
+ labelKo: '마이덱',
+ labelEn: 'DECK',
+ asciiTag: '[DECK]',
+ icon: Layers,
+ },
+ {
+ id: 'card-marketplace',
+ labelKo: '거래소',
+ labelEn: 'MARKET',
+ asciiTag: '[MARKET]',
+ icon: Store,
+ },
+ {
+ id: 'shop',
+ labelKo: '상점',
+ labelEn: 'SHOP',
+ asciiTag: '[SHOP]',
+ icon: ShoppingBag,
+ },
 ];
 
 export const MainNavigationDock: React.FC<MainNavigationDockProps> = ({
-  currentView,
-  onNavigate,
-  language = 'ko',
-  deckCount,
-  newCardsBadge = false,
-  marketAlertBadge = false,
+ currentView,
+ onNavigate,
+ language = 'ko',
+ deckCount,
+ newCardsBadge = false,
+ marketAlertBadge = false,
 }) => {
-  const isKo = language === 'ko';
-  const touchStartXRef = React.useRef<number | null>(null);
+ const isKo = language === 'ko';
+ const touchStartXRef = React.useRef<number | null>(null);
 
-  // 특정 전체화면 뷰에서는 내비게이션 바 숨김 (필요시)
-  const isFullScreenGame = currentView === 'game' || currentView === 'main';
-  if (isFullScreenGame) return null;
+ // 특정 전체화면 뷰에서는 내비게이션 바 숨김 (필요시)
+ const isFullScreenGame = currentView === 'game' || currentView === 'main';
+ if (isFullScreenGame) return null;
 
-  // 좌우 스와이프 뷰 전환 핸들러 (Row 775 / ID 564)
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartXRef.current = e.touches[0].clientX;
-  };
+ // 좌우 스와이프 뷰 전환 핸들러 (Row 775 / ID 564)
+ const handleTouchStart = (e: React.TouchEvent) => {
+ touchStartXRef.current = e.touches[0].clientX;
+ };
 
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    if (touchStartXRef.current === null) return;
-    const touchEndX = e.changedTouches[0].clientX;
-    const diffX = touchStartXRef.current - touchEndX;
-    touchStartXRef.current = null;
+ const handleTouchEnd = (e: React.TouchEvent) => {
+ if (touchStartXRef.current === null) return;
+ const touchEndX = e.changedTouches[0].clientX;
+ const diffX = touchStartXRef.current - touchEndX;
+ touchStartXRef.current = null;
 
-    if (Math.abs(diffX) > 50) {
-      const currentIndex = NAV_ITEMS.findIndex((item) => item.id === currentView);
-      if (currentIndex === -1) return;
+ if (Math.abs(diffX) > 50) {
+ const currentIndex = NAV_ITEMS.findIndex((item) => item.id === currentView);
+ if (currentIndex === -1) return;
 
-      if (diffX > 0 && currentIndex < NAV_ITEMS.length - 1) {
-        // 스와이프 왼쪽 ➔ 다음 탭 이동
-        onNavigate(NAV_ITEMS[currentIndex + 1].id);
-      } else if (diffX < 0 && currentIndex > 0) {
-        // 스와이프 오른쪽 ➔ 이전 탭 이동
-        onNavigate(NAV_ITEMS[currentIndex - 1].id);
-      }
-    }
-  };
+ if (diffX > 0 && currentIndex < NAV_ITEMS.length - 1) {
+ // 스와이프 왼쪽 ➔ 다음 탭 이동
+ onNavigate(NAV_ITEMS[currentIndex + 1].id);
+ } else if (diffX < 0 && currentIndex > 0) {
+ // 스와이프 오른쪽 ➔ 이전 탭 이동
+ onNavigate(NAV_ITEMS[currentIndex - 1].id);
+ }
+ }
+ };
 
-  return (
-    <nav
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-      className="fixed bottom-0 left-0 right-0 z-40 bg-[#fdfcfc]/95 dark:bg-[#201d1d]/95 backdrop-blur-md border-t border-slate-900/10 dark:border-white/10 shadow-lg pb-[env(safe-area-inset-bottom,0px)] select-none font-mono transition-transform"
-      role="navigation"
-      aria-label="Main Navigation Dock"
-    >
-      <div className="mx-auto max-w-lg flex items-center justify-around px-2 h-14">
-        {NAV_ITEMS.map((item) => {
-          const isActive = currentView === item.id;
-          const Icon = item.icon;
-          const hasBadge =
-            (item.id === 'mydeck' && newCardsBadge) ||
-            (item.id === 'card-marketplace' && marketAlertBadge);
+ return (
+ <nav
+ onTouchStart={handleTouchStart}
+ onTouchEnd={handleTouchEnd}
+ className="fixed bottom-0 left-0 right-0 z-40 bg-[#fdfcfc]/95 dark:bg-[#201d1d]/95 backdrop-blur-md border-t border-slate-900/10 dark:border-white/10 shadow-none pb-[env(safe-area-inset-bottom,0px)] select-none font-mono transition-transform"
+ role="navigation"
+ aria-label="Main Navigation Dock"
+ >
+ <div className="mx-auto max-w-lg flex items-center justify-around px-2 h-14">
+ {NAV_ITEMS.map((item) => {
+ const isActive = currentView === item.id;
+ const Icon = item.icon;
+ const hasBadge =
+ (item.id === 'mydeck' && newCardsBadge) ||
+ (item.id === 'card-marketplace' && marketAlertBadge);
 
-          return (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => onNavigate(item.id)}
-              className={cn(
-                "relative flex-1 flex flex-col items-center justify-center h-full min-h-[44px] transition-all duration-150 active:scale-95 group focus:outline-none touch-target",
-                isActive
-                  ? "text-indigo-600 dark:text-indigo-400 font-extrabold"
-                  : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
-              )}
-              aria-current={isActive ? 'page' : undefined}
-            >
-              {/* Active Hairline Indicator on Top */}
-              {isActive && (
-                <div className="absolute top-0 left-2 right-2 h-[2px] bg-indigo-600 dark:bg-indigo-400 rounded-full" />
-              )}
+ return (
+ <button
+ key={item.id}
+ type="button"
+ onClick={() => onNavigate(item.id)}
+ className={cn(
+ "relative flex-1 flex flex-col items-center justify-center h-full min-h-[44px] transition-all duration-150 active:scale-95 group focus:outline-none touch-target",
+ isActive
+ ? "text-indigo-600 dark:text-indigo-400 font-extrabold"
+ : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+ )}
+ aria-current={isActive ? 'page' : undefined}
+ >
+ {/* Active Hairline Indicator on Top */}
+ {isActive && (
+ <div className="absolute top-0 left-2 right-2 h-[2px] bg-indigo-600 dark:bg-indigo-400 rounded-full" />
+ )}
 
-              {/* Icon Container with Badge */}
-              <div className="relative flex items-center justify-center">
-                <Icon
-                  size={20}
-                  className={cn(
-                    "transition-transform duration-150",
-                    isActive && "scale-110"
-                  )}
-                />
+ {/* Icon Container with Badge */}
+ <div className="relative flex items-center justify-center">
+ <Icon
+ size={20}
+ className={cn(
+ "transition-transform duration-150",
+ isActive && "scale-110"
+ )}
+ />
 
-                {hasBadge && (
-                  <span className="absolute -top-1 -right-2 flex h-2.5 w-2.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-500" />
-                  </span>
-                )}
-              </div>
+ {hasBadge && (
+ <span className="absolute -top-1 -right-2 flex h-2.5 w-2.5">
+ <span className="transition-opacity duration-300 absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75" />
+ <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-500" />
+ </span>
+ )}
+ </div>
 
-              {/* Label in Monospace Neo-Brutalist Style */}
-              <span className="text-[10px] tracking-tight mt-0.5 uppercase">
-                {isKo ? item.labelKo : item.labelEn}
-              </span>
-            </button>
-          );
-        })}
-      </div>
-    </nav>
-  );
+ {/* Label in Monospace Neo-Brutalist Style */}
+ <span className="text-[10px] tracking-tight mt-0.5 uppercase">
+ {isKo ? item.labelKo : item.labelEn}
+ </span>
+ </button>
+ );
+ })}
+ </div>
+ </nav>
+ );
 };

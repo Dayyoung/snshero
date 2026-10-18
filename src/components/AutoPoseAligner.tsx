@@ -4,24 +4,24 @@
  */
 
 export interface GuildMemberAvatar {
-  id: string;
-  name: string;
-  role: string;
-  pose: 'cheer' | 'salute' | 'arms_crossed' | 'victory';
+ id: string;
+ name: string;
+ role: string;
+ pose: 'cheer' | 'salute' | 'arms_crossed' | 'victory';
 }
 
 export class AutoPoseAligner {
-  public static alignMembersOnPodium(members: { id: string; name: string; role: string }[]): GuildMemberAvatar[] {
-    const poses: ('cheer' | 'salute' | 'arms_crossed' | 'victory')[] = [
-      'victory',
-      'cheer',
-      'salute',
-      'arms_crossed',
-    ];
+ public static alignMembersOnPodium(members: { id: string; name: string; role: string }[]): GuildMemberAvatar[] {
+ const poses: ('cheer' | 'salute' | 'arms_crossed' | 'victory')[] = [
+ 'victory',
+ 'cheer',
+ 'salute',
+ 'arms_crossed',
+ ];
 
-    return members.map((m, idx) => ({
-      ...m,
-      pose: poses[idx % poses.length],
-    }));
-  }
+ return members.map((m, idx) => ({
+ ...m,
+ pose: poses[idx % poses.length],
+ }));
+ }
 }

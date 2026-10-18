@@ -8,47 +8,47 @@ import { CardData } from '../types';
 import { triggerHaptic } from '../lib/haptic';
 
 interface HandCardReorderProps {
-  hand: CardData[];
-  onReorderHand: (newHand: CardData[]) => void;
-  renderCard: (card: CardData, idx: number) => React.ReactNode;
+ hand: CardData[];
+ onReorderHand: (newHand: CardData[]) => void;
+ renderCard: (card: CardData, idx: number) => React.ReactNode;
 }
 
 export const HandCardReorder: React.FC<HandCardReorderProps> = ({
-  hand,
-  onReorderHand,
-  renderCard,
+ hand,
+ onReorderHand,
+ renderCard,
 }) => {
-  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+ const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
-  const handleDragStart = (idx: number) => {
-    triggerHaptic('selection');
-    setDraggedIndex(idx);
-  };
+ const handleDragStart = (idx: number) => {
+ triggerHaptic('selection');
+ setDraggedIndex(idx);
+ };
 
-  const handleDragOver = (idx: number) => {
-    if (draggedIndex === null || draggedIndex === idx) return;
-    const reordered = [...hand];
-    const [moved] = reordered.splice(draggedIndex, 1);
-    reordered.splice(idx, 0, moved);
-    setDraggedIndex(idx);
-    triggerHaptic('selection');
-    onReorderHand(reordered);
-  };
+ const handleDragOver = (idx: number) => {
+ if (draggedIndex === null || draggedIndex === idx) return;
+ const reordered = [...hand];
+ const [moved] = reordered.splice(draggedIndex, 1);
+ reordered.splice(idx, 0, moved);
+ setDraggedIndex(idx);
+ triggerHaptic('selection');
+ onReorderHand(reordered);
+ };
 
-  return (
-    <div className="flex items-center justify-center gap-1 overflow-x-auto no-scrollbar py-2 font-mono select-none">
-      {hand.map((card, idx) => (
-        <div
-          key={card.id || idx}
-          draggable
-          onDragStart={() => handleDragStart(idx)}
-          onDragOver={() => handleDragOver(idx)}
-          onDragEnd={() => setDraggedIndex(null)}
-          className={`transition transform ${draggedIndex === idx ? 'scale-105 opacity-80' : ''}`}
-        >
-          {renderCard(card, idx)}
-        </div>
-      ))}
-    </div>
-  );
+ return (
+ <div className="flex items-center justify-center gap-1 overflow-x-auto no-scrollbar py-2 font-mono select-none">
+ {hand.map((card, idx) => (
+ <div
+ key={card.id || idx}
+ draggable
+ onDragStart={() => handleDragStart(idx)}
+ onDragOver={() => handleDragOver(idx)}
+ onDragEnd={() => setDraggedIndex(null)}
+ className={`transition transform ${draggedIndex === idx ? 'scale-105 opacity-80' : ''}`}
+ >
+ {renderCard(card, idx)}
+ </div>
+ ))}
+ </div>
+ );
 };
