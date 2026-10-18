@@ -14656,3 +14656,11 @@
   - `npm run build`: Vite 6 프로덕션 번들 정상 완료 (`built in 13.42s`).
   - 구글 폼 완료 보고서 제출 완료 (`submit_report.py`).
 - **최종 판정**: **`CONFIRM_CORRECT`** (Milestone 1 에셋 검증 완료, Milestone 2 스프라이트 시트 합성 착수 승인).
+
+## [2026-10-18 14:54 KST] 웹툰 40화 전체 컷신 내레이션 2~3줄 단위 세분화 및 2,049컷 컷신 이미지/UI 동적 확장 완료
+- **작업 내용**:
+  - 기존 회차당 20컷 고정 제한으로 인해 한 컷에 긴 문단 내레이션이 과밀하게 표시되던 문제를 해결하기 위해, 40화 전체 소설(`public/book/episode_01.md` ~ `episode_40.md` 및 영문 텍스트)을 문장·절 단위로 정밀 분할하여 **모든 컷신의 내레이션이 2~3줄(50~125자 이내) 분량**으로 표시되도록 컷신 수를 대폭 확장(`scripts/sync_webtoon_with_novel.py`).
+  - 총 40화 기준 타이틀 카드 40컷 + 스토리 컷신 2,009컷 = **총 2,049개 컷신**으로 확장하고, `.agents/teamwork/teamwork_preview_worker_m1/generate_webtoon_scenes.py`를 통해 2,049개의 고유 WebP 컷신(`public/images/webtoon/episode_01~40/scene_00~XX.webp`, 전수 `<= 75KB`)을 병렬 생성 완료.
+  - `src/views/NovelView.tsx`, `src/components/webtoon/WebtoonPanelCard.tsx`, `src/components/movie/CinematicMoviePlayer.tsx`에서 기존의 `20` / `21` 하드코딩 제한을 제거하고 각 에피소드의 실제 컷신 수(`totalEpisodeScenes`, 회차별 42~57컷)에 맞춰 세로 스크롤, 슬라이드 뷰, 라이트박스, 진행률 바가 동적으로 동작하도록 개선.
+  - `public/sw.js` 미디어 캐시 버전(`snshero-media-v6-cutscenes2026`) 및 내레이션 JSON 쿼리 버전(`?v=novel2026_v3`) 갱신 완료.
+- **검증 결과**: `npm run lint` 및 `npm run build` 0 에러 통과, 구글 폼 작업 완료 보고 제출 완료.

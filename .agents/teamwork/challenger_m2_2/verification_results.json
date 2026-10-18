@@ -1,0 +1,58 @@
+{
+  "e2e_runner": {
+    "exit_code": 0,
+    "total": 50,
+    "passed": 50,
+    "failed": 0,
+    "tier_distribution": {
+      "1": 25,
+      "2": 14,
+      "3": 6,
+      "4": 5
+    }
+  },
+  "card100_gemini": {
+    "file_size": 113108,
+    "magic_header": "VALID_PNG",
+    "jpeg_disguise": "NONE",
+    "chunks": [
+      "IHDR",
+      "PLTE",
+      "tRNS",
+      "IDAT",
+      "IDAT",
+      "IEND"
+    ],
+    "color_type": 3,
+    "pil_mode": "P",
+    "transparency_info": true,
+    "rgba_alpha_extrema": [
+      99,
+      255
+    ],
+    "correlation_avg": 0.9987339496612548,
+    "correlation_min": 0.9952461123466492
+  },
+  "payload_reduction": {
+    "baseline_total_bytes": 12921995,
+    "current_total_bytes": 1786618,
+    "net_bytes_saved": 11135377,
+    "reduction_percentage": 86.17382223101,
+    "all_budgets_satisfied": true
+  },
+  "cards2_preservation": {
+    "minigame_region_correlation": 0.9796558618545532,
+    "status": "PRESERVED"
+  },
+  "repaired_faction_sheets": {
+    "fire": "CLEAN_PNG",
+    "hobbit": "CLEAN_PNG",
+    "mecha": "CLEAN_PNG"
+  },
+  "seat_portraits": {
+    "count": 110,
+    "unique_hashes": 110,
+    "dimensions": "256x296"
+  },
+  "overall_verdict": "CONFIRM_CORRECT"
+}

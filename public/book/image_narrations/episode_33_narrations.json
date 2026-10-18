@@ -2,26 +2,55 @@
   "episodeNumber": 33,
   "episodeTitleEn": "Grudge of the Black Marsh",
   "episodeTitleKo": "검은 늪",
-  "sourceSentenceCount": 49,
-  "sceneCount": 20,
+  "sourceSentenceCount": 50,
+  "sceneCount": 50,
   "scenes": [
     {
       "sceneNumber": 1,
       "imageFile": "episode_33/scene_01.webp",
       "sourceImageFile": "episode_33/scene_01.webp",
-      "narrationEn": "Clearing the willows, the allied army arrived before the ultimate bastion of imperial corruption: the central fortress of the Black Marsh. Stretching to the horizon lay putrid quagmires and boiling sulfur pools, under skies choked by the necrotic squalls of the Nine Shadows Codex. At the heart of the mire upon a volcanic crag rose the Black Citadel, a titanic obsidian fortress erected by primordial shadow warlords, bristling with legions of undead cataphracts and iron-plated golems. Bracing his Dragon Breaker shield, Kadan surveyed the formidable ramparts.",
-      "narrationKo": "속삭이는 버드나무 숲을 벗어난 연합군이 당도한 곳은 마침내 대륙의 모든 악과 부패가 집결된 심연의 심장부, ‘검은 늪’의 본진이었다. 지평선 끝까지 펼쳐진 칠흑의 늪지는 썩은 유황 진흙과 부식성 산성 웅덩이로 가득 차 있었고, 하늘은 나인섀도우 코덱스가 뿜어내는 검붉은 마나 폭풍으로 뒤덮여 태양빛조차 들어오지 않았다. 늪지 중앙의 거대한 화산 암반 위에는 수천 년 전 고대 암흑 제국이 건설했던 거대한 흑요석 요새 ‘검은 성채’가 마치 웅크린 거대한 악마처럼 대륙을 굽어보고 있었다. 성채의 외벽에는 수만 명의 언데드 군단과 골렘들이 흑철 창을 번뜩이며 도열해 있었다. 카단이 드래곤 브레이커 방패를 고쳐 쥐며 성채의 방어선을 응시했다.",
+      "narrationEn": "Clearing the willows, the allied army arrived before the ultimate bastion of imperial corruption: the central fortress of the Black Marsh.",
+      "narrationKo": "속삭이는 버드나무 숲을 벗어난 연합군이 당도한 곳은 마침내 대륙의 모든 악과 부패가 집결된 심연의 심장부, ‘검은 늪’의 본진이었다.",
       "sourceSentenceStart": 1,
+      "sourceSentenceEnd": 1,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "속삭이는 버드나무 숲을 벗어난 연합군이 당도한 곳은 마침내 대륙의 모든 악과 부패가 집결된 심연의 심장부, ‘검은 늪’의 본진이었다.",
+          "textEn": "Clearing the willows, the allied army arrived before the ultimate bastion of imperial corruption: the central fortress of the Black Marsh.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 99
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_33/scene_02.webp",
+      "sourceImageFile": "episode_33/scene_02.webp",
+      "narrationEn": "Stretching to the horizon lay putrid quagmires and boiling sulfur pools, under skies choked by the necrotic squalls of the Nine Shadows Codex.",
+      "narrationKo": "지평선 끝까지 펼쳐진 칠흑의 늪지는 썩은 유황 진흙과 부식성 산성 웅덩이로 가득 차 있었고, 하늘은 나인섀도우 코덱스가 뿜어내는 검붉은 마나 폭풍으로 뒤덮여 태양빛조차 들어오지 않았다.",
+      "sourceSentenceStart": 2,
       "sourceSentenceEnd": 2,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "카단이 드래곤 브레이커 방패를 고쳐 쥐며 성채의 방어선을 응시했다.",
-          "textEn": "Bracing his Dragon Breaker shield, Kadan surveyed the formidable ramparts.",
+          "textKo": "지평선 끝까지 펼쳐진 칠흑의 늪지는 썩은 유황 진흙과 부식성 산성 웅덩이로 가득 차 있었고, 하늘은 나인섀도우 코덱스가 뿜어내는 검붉은 마나 폭풍으로 뒤덮여 태양빛조차 들어오지 않았다.",
+          "textEn": "Stretching to the horizon lay putrid quagmires and boiling sulfur pools, under skies choked by the necrotic squalls of the Nine Shadows Codex.",
           "bubbleType": "thought",
-          "position": "bottom-left",
+          "position": "bottom-right",
           "characterCardId": 99
         }
       ],
@@ -41,70 +70,32 @@
       ]
     },
     {
-      "sceneNumber": 2,
-      "imageFile": "episode_33/scene_02.webp",
-      "sourceImageFile": "episode_33/scene_02.webp",
-      "narrationEn": "\"Lucian has marshaled every remaining reserve in the realm. The moat before the gates is a boiling abyss of magma and concentrated venom; a conventional crossing is impossible.\"",
-      "narrationKo": "“루시안이 대륙 전역에서 끌어모은 최후의 병력이다. 성문 앞의 해자(垓字)에는 펄펄 끓는 용암과 독극물이 흐르고 있어 평범한 도하로는 접근조차 불가능하다.” 실리아가 녹옥 지팡이를 들어 대지의 기류를 분석했다. “성채 지하에서 거대한 지맥 역류가 감지돼요. 루시안이 대륙의 심장부를 인위적으로 폭발시켜 온 대륙을 불바다로 만들려는 음모를 꾸미고 있어요.”",
-      "sourceSentenceStart": 3,
-      "sourceSentenceEnd": 5,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“루시안이 대륙 전역에서 끌어모은 최후의 병력이다. 성문 앞의 해자(垓字)에는 펄펄 끓는 용암과 독극물이 흐르고 있어 평범한 도하로는 접근조차 불가능하다.”",
-          "textEn": "“Lucian has marshaled every remaining reserve in the realm. The moat before the gates is a boiling abyss of magma and concentrated venom; a conventional crossing is impossible.”",
-          "bubbleType": "speech",
-          "position": "bottom-left",
-          "characterCardId": 41
-        },
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“성채 지하에서 거대한 지맥 역류가 감지돼요. 루시안이 대륙의 심장부를 인위적으로 폭발시켜 온 대륙을 불바다로 만들려는 음모를 꾸미고 있어요.”",
-          "textEn": "“The moat before the gates is a boiling abyss of magma and concentrated venom; a conventional crossing is impossible.\"”",
-          "bubbleType": "speech",
-          "position": "bottom-right",
-          "characterCardId": 62
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
-        },
-        {
-          "textKo": "쿠구구궁!",
-          "textEn": "RUMBLE!",
-          "style": "rumble",
-          "position": "bottom-left"
-        }
-      ]
-    },
-    {
       "sceneNumber": 3,
       "imageFile": "episode_33/scene_03.webp",
       "sourceImageFile": "episode_33/scene_03.webp",
-      "narrationEn": "Reading the atmospheric conduits with her staff, Cilia noted with grave urgency. \"Catastrophic mana inversions are building within the foundations. Lucian intends to detonate the continental ley lines, incinerating the land in hellfire.\"",
-      "narrationKo": "그림리가 거대한 양손 도끼날을 갈며 이를 갈았다. “더 이상 지체할 시간 없다! 우리 여섯 스승이 앞장서서 성채의 외곽 해자를 돌파할 길을 열겠다!”",
-      "sourceSentenceStart": 6,
-      "sourceSentenceEnd": 7,
+      "narrationEn": "At the heart of the mire upon a volcanic crag rose the Black Citadel, a titanic obsidian fortress erected by primordial shadow warlords, bristling with legions of undead cataphracts and iron-plated golems.",
+      "narrationKo": "늪지 중앙의 거대한 화산 암반 위에는 수천 년 전 고대 암흑 제국이 건설했던 거대한 흑요석 요새 ‘검은 성채’가 마치 웅크린 거대한 악마처럼 대륙을 굽어보고 있었다.",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 3,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "그림리",
-          "speakerEn": "Grimli",
-          "textKo": "“더 이상 지체할 시간 없다! 우리 여섯 스승이 앞장서서 성채의 외곽 해자를 돌파할 길을 열겠다!”",
-          "textEn": "“Catastrophic mana inversions are building within the foundations. Lucian intends to detonate the continental ley lines, incinerating the land in hellfire.”",
-          "bubbleType": "shout",
-          "position": "bottom-right",
-          "characterCardId": 74
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "늪지 중앙의 거대한 화산 암반 위에는 수천 년 전 고대 암흑 제국이 건설했던 거대한 흑요석 요새 ‘검은 성채’가 마치 웅크린 거대한 악마처럼 대륙을 굽어보고 있었다.",
+          "textEn": "At the heart of the mire upon a volcanic crag rose the Black Citadel, a titanic obsidian fortress erected by primordial shadow warlords, bristling with legions of undead cataphracts and iron-plated golems.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 99
         }
       ],
       "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
         {
           "textKo": "쿠구구궁!",
           "textEn": "RUMBLE!",
@@ -117,20 +108,20 @@
       "sceneNumber": 4,
       "imageFile": "episode_33/scene_04.webp",
       "sourceImageFile": "episode_33/scene_04.webp",
-      "narrationEn": "Grimli honed his twin battleaxes, gritting his teeth in fury.",
-      "narrationKo": "론돌 역시 목재 의족을 쿵 울리며 호탕하게 웃었다. “늙은이들의 마지막 불꽃을 보여줄 때가 왔구나! 젊은이들은 내 등 뒤를 따르라!” 검은 늪지대의 수면은 부글부글 끓어오르는 검붉은 기포로 가득 차 있었고, 발을 딛는 곳마다 뼈마디가 녹아내릴 듯한 유황 증기가 피어올랐다. 거대한 검은 성채의 외벽에는 수천 개의 해골 횃불이 불길하게 타오르고 있었고, 첨탑 꼭대기의 흑마법 렌즈는 대륙 전체를 겨누고 있는 사악한 눈동자처럼 붉은 안광을 번뜩이고 있었다. 카단은 방패의 십자 성흔을 손으로 쓸어내리며 마지막 호흡을 정돈했다.",
-      "sourceSentenceStart": 8,
-      "sourceSentenceEnd": 10,
+      "narrationEn": "Bracing his Dragon Breaker shield, Kadan surveyed the formidable ramparts.",
+      "narrationKo": "성채의 외벽에는 수만 명의 언데드 군단과 골렘들이 흑철 창을 번뜩이며 도열해 있었다.",
+      "sourceSentenceStart": 4,
+      "sourceSentenceEnd": 4,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "론돌",
-          "speakerEn": "Rondol",
-          "textKo": "“늙은이들의 마지막 불꽃을 보여줄 때가 왔구나! 젊은이들은 내 등 뒤를 따르라!”",
-          "textEn": "“Catastrophic mana inversions are building within the foundations. Lucian intends to detonate the continental ley lines, incinerating the land in hellfire.”",
-          "bubbleType": "shout",
-          "position": "top-left",
-          "characterCardId": 46
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "성채의 외벽에는 수만 명의 언데드 군단과 골렘들이 흑철 창을 번뜩이며 도열해 있었다.",
+          "textEn": "Bracing his Dragon Breaker shield, Kadan surveyed the formidable ramparts.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 99
         }
       ],
       "sfxCues": [
@@ -141,10 +132,10 @@
           "position": "top-right"
         },
         {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
           "style": "impact",
-          "position": "center"
+          "position": "bottom-right"
         }
       ]
     },
@@ -152,20 +143,20 @@
       "sceneNumber": 5,
       "imageFile": "episode_33/scene_05.webp",
       "sourceImageFile": "episode_33/scene_05.webp",
-      "narrationEn": "\"No time to dally! We Six Masters will spearhead the assault to bridge that infernal moat!\" Stamping his pegleg, Rondol bellowed with hearty resolve.",
-      "narrationKo": "실리아가 지팡이로 기류를 갈랐다. “성채 전체가 하나의 거대한 나인섀도우 마법진이에요. 루시안을 처단하지 않으면 대륙의 지맥이 영원히 오염될 거예요.” 연합군의 총공격 나팔 소리가 검은 늪지대 전체를 뒤흔들었다.",
-      "sourceSentenceStart": 11,
-      "sourceSentenceEnd": 12,
+      "narrationEn": "\"Lucian has marshaled every remaining reserve in the realm.",
+      "narrationKo": "카단이 드래곤 브레이커 방패를 고쳐 쥐며 성채의 방어선을 응시했다.",
+      "sourceSentenceStart": 5,
+      "sourceSentenceEnd": 5,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“성채 전체가 하나의 거대한 나인섀도우 마법진이에요. 루시안을 처단하지 않으면 대륙의 지맥이 영원히 오염될 거예요.”",
-          "textEn": "“No time to dally! We Six Masters will spearhead the assault to bridge that infernal moat!”",
-          "bubbleType": "speech",
-          "position": "top-right",
-          "characterCardId": 62
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단이 드래곤 브레이커 방패를 고쳐 쥐며 성채의 방어선을 응시했다.",
+          "textEn": "\"Lucian has marshaled every remaining reserve in the realm.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
@@ -173,12 +164,6 @@
           "textKo": "챙-!",
           "textEn": "CLANG!",
           "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
           "position": "top-right"
         }
       ]
@@ -187,34 +172,28 @@
       "sceneNumber": 6,
       "imageFile": "episode_33/scene_06.webp",
       "sourceImageFile": "episode_33/scene_06.webp",
-      "narrationEn": "\"Time for old dogs to blaze their final embers! Follow our charge, young lions!\"",
-      "narrationKo": "수천 명의 의용군과 피난민 결사대가 늪지를 가로질러 성채를 향해 진격하자, 성벽 위에서 흑철 투석기와 마나 대포들이 일제히 불을 뿜었다. 불타는 유황 암괴들이 비 오듯 쏟아져 내리며 늪지 바닥을 폭파시켰다. 카단이 전열의 맨 앞에 서서 드래곤 브레이커 방패를 높이 치켜들었다. “방패를 겹쳐라! 동료들의 어깨를 믿고 전진하라!”",
-      "sourceSentenceStart": 13,
-      "sourceSentenceEnd": 15,
+      "narrationEn": "The moat before the gates is a boiling abyss of magma and concentrated venom; a conventional crossing is impossible.\"",
+      "narrationKo": "“루시안이 대륙 전역에서 끌어모은 최후의 병력이다. 성문 앞의 해자(垓字)에는 펄펄 끓는 용암과 독극물이 흐르고 있어 평범한 도하로는 접근조차 불가능하다.”",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 6,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "“방패를 겹쳐라! 동료들의 어깨를 믿고 전진하라!”",
-          "textEn": "“Time for old dogs to blaze their final embers! Follow our charge, young lions!”",
-          "bubbleType": "shout",
+          "textKo": "“루시안이 대륙 전역에서 끌어모은 최후의 병력이다. 성문 앞의 해자(垓字)에는 펄펄 끓는 용암과 독극물이 흐르고 있어 평범한 도하로는 접근조차 불가능하다.”",
+          "textEn": "“The moat before the gates is a boiling abyss of magma and concentrated venom; a conventional crossing is impossible.\"”",
+          "bubbleType": "speech",
           "position": "bottom-left",
           "characterCardId": 41
         }
       ],
       "sfxCues": [
         {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
         }
       ]
     },
@@ -222,34 +201,34 @@
       "sceneNumber": 7,
       "imageFile": "episode_33/scene_07.webp",
       "sourceImageFile": "episode_33/scene_07.webp",
-      "narrationEn": "The battle horns of the allied host tore through the marsh. As thousands of volunteers charged across the mud, the citadel's black-iron ballistae and mana cannons opened fire, raining fiery sulfur boulders across the approaches.",
-      "narrationKo": "카단의 방패에서 뿜어져 나온 황금빛 별빛 결계가 쏟아지는 유황탄들을 차례로 공중에서 튕겨냈다. 동시에 여섯 스승들의 눈부신 활약이 펼쳐졌다.",
-      "sourceSentenceStart": 16,
-      "sourceSentenceEnd": 17,
+      "narrationEn": "Reading the atmospheric conduits with her staff, Cilia noted with grave urgency.",
+      "narrationKo": "실리아가 녹옥 지팡이를 들어 대지의 기류를 분석했다. “성채 지하에서 거대한 지맥 역류가 감지돼요. 루시안이 대륙의 심장부를 인위적으로 폭발시켜 온 대륙을 불바다로 만들려는 음모를 꾸미고 있어요.”",
+      "sourceSentenceStart": 7,
+      "sourceSentenceEnd": 7,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "내레이션",
-          "speakerEn": "Narration",
-          "textKo": "동시에 여섯 스승들의 눈부신 활약이 펼쳐졌다.",
-          "textEn": "As thousands of volunteers charged across the mud, the citadel's black-iron ballistae and mana cannons opened fire, raining fiery sulfur boulders across the approaches.",
-          "bubbleType": "thought",
-          "position": "top-left",
-          "characterCardId": 41
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“성채 지하에서 거대한 지맥 역류가 감지돼요. 루시안이 대륙의 심장부를 인위적으로 폭발시켜 온 대륙을 불바다로 만들려는 음모를 꾸미고 있어요.”",
+          "textEn": "“Reading the atmospheric conduits with her staff, Cilia noted with grave urgency.”",
+          "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
         {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
         },
         {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
         }
       ]
     },
@@ -257,34 +236,28 @@
       "sceneNumber": 8,
       "imageFile": "episode_33/scene_08.webp",
       "sourceImageFile": "episode_33/scene_08.webp",
-      "narrationEn": "Standing at the vanguard, Kadan held his Dragon Breaker shield high, anchoring an impenetrable dome of starlight that deflected the falling siege shot into the swamp.",
-      "narrationKo": "드워프 그림리가 선두에 서서 거대한 모루 망치를 내리찍으며 성문 앞의 도하용 얼음 다리를 지탱할 기초 바위들을 깎아 세웠고, 가웨인은 날카로운 질풍의 칼날을 연속으로 날려 성벽 위의 포수들을 쓸어버렸다. 사냥꾼 에일라와 약초사 엘리아나는 후방에서 서리 화살을 쏘아 올려 성채의 쇠뇌 진지를 차례로 무력화시켰다. 성벽 위에서 쏟아지는 유황 암괴들은 땅에 닿는 순간 반경 수십 보를 쑥대밭으로 만들며 불바다를 이루었다. 그러나 카단의 드래곤 브레이커 방패가 이끄는 전열은 마치 거대한 파도를 가르는 강철 쐐기처럼 조금도 흔들리지 않고 성문을 향해 전진했다. 여섯 스승들은 오랜 세월 동안 갈고닦은 완벽한 호흡으로 적의 포병 진지를 유린했다. 에일라의 얼음 화살이 흑철 대포의 약실을 얼려 폭발시켰고, 엘리아나의 수면 마법이 적의 성벽 수비대원들을 깊은 잠에 빠뜨렸다. 연합군의 사기는 하늘을 찔렀다.",
-      "sourceSentenceStart": 18,
-      "sourceSentenceEnd": 20,
+      "narrationEn": "\"Catastrophic mana inversions are building within the foundations.",
+      "narrationKo": "그림리가 거대한 양손 도끼날을 갈며 이를 갈았다. “더 이상 지체할 시간 없다! 우리 여섯 스승이 앞장서서 성채의 외곽 해자를 돌파할 길을 열겠다!”",
+      "sourceSentenceStart": 8,
+      "sourceSentenceEnd": 8,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "내레이션",
-          "speakerEn": "Narration",
-          "textKo": "연합군의 사기는 하늘을 찔렀다.",
-          "textEn": "Standing at the vanguard, Kadan held his Dragon Breaker shield high, anchoring an impenetrable dome of starlight that deflected the falling siege shot into the swamp.",
-          "bubbleType": "thought",
-          "position": "top-right",
+          "speakerKo": "그림리",
+          "speakerEn": "Grimli",
+          "textKo": "“더 이상 지체할 시간 없다! 우리 여섯 스승이 앞장서서 성채의 외곽 해자를 돌파할 길을 열겠다!”",
+          "textEn": "“\"Catastrophic mana inversions are building within the foundations.”",
+          "bubbleType": "shout",
+          "position": "top-left",
           "characterCardId": 74
         }
       ],
       "sfxCues": [
         {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
         }
       ]
     },
@@ -292,20 +265,20 @@
       "sceneNumber": 9,
       "imageFile": "episode_33/scene_09.webp",
       "sourceImageFile": "episode_33/scene_09.webp",
-      "narrationEn": "Behind his bulwark, the Six Masters demonstrated the peerless artistry of seasoned veterans. Grimli pulverized boulders to anchor an ice bridge across the moat, Gawain's wind scythes cleared the battlement gunners, and Eyla and Eliana neutralized the ballista crews with pinpoint frost arrows. Reaching the iron drawbridge, the massive gates parted, unleashing two gargantuan Bone Drakes animated by the Nine Shadows Codex. The skeletal horrors plunged from the towers, vomiting torrents of caustic dragonfire.",
-      "narrationKo": "성채 정문의 거대한 흑철 성교(城橋)에 다다랐을 때, 성문이 열리며 루시안이 나인섀도우 코덱스로 소환한 거대한 ‘고대 골룡(骨龍)’ 두 마리가 포효하며 솟구쳐 올랐다. 썩은 뼈마디 사이에 암흑 마나를 품은 골룡들이 지상으로 급강하하며 부식성 화염 브레스를 내뿜었다. “모두 흩어져라!”",
-      "sourceSentenceStart": 21,
-      "sourceSentenceEnd": 22,
+      "narrationEn": "Lucian intends to detonate the continental ley lines, incinerating the land in hellfire.\"",
+      "narrationKo": "론돌 역시 목재 의족을 쿵 울리며 호탕하게 웃었다. “늙은이들의 마지막 불꽃을 보여줄 때가 왔구나! 젊은이들은 내 등 뒤를 따르라!”",
+      "sourceSentenceStart": 9,
+      "sourceSentenceEnd": 9,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "루시안",
-          "speakerEn": "Lucian",
-          "textKo": "“모두 흩어져라!”",
-          "textEn": "“Scatter!”",
+          "speakerKo": "론돌",
+          "speakerEn": "Rondol",
+          "textKo": "“늙은이들의 마지막 불꽃을 보여줄 때가 왔구나! 젊은이들은 내 등 뒤를 따르라!”",
+          "textEn": "“Lucian intends to detonate the continental ley lines, incinerating the land in hellfire.\"”",
           "bubbleType": "shout",
           "position": "top-right",
-          "characterCardId": 61
+          "characterCardId": 46
         }
       ],
       "sfxCues": [
@@ -314,12 +287,6 @@
           "textEn": "BOOM!",
           "style": "impact",
           "position": "center"
-        },
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
         }
       ]
     },
@@ -327,20 +294,49 @@
       "sceneNumber": 10,
       "imageFile": "episode_33/scene_10.webp",
       "sourceImageFile": "episode_33/scene_10.webp",
-      "narrationEn": "\"Scatter!\" Kadan leaped forward, catching the direct blast upon his shield. Molten flames split around the dragonbone plate, scorching his gauntlets, yet his stance held firm.",
-      "narrationKo": "카단이 방패를 앞으로 내지르며 첫 번째 골룡의 브레스를 정면으로 받아냈다. 용암 같은 불길이 드래곤 브레이커의 표면을 타고 좌우로 갈라졌지만, 엄청난 열기에 카단의 장갑이 타들어갔다. 그 절체절명의 순간, 론돌이 외족을 굴러 늪지의 거대한 진흙 기둥을 솟구쳐 올렸다.",
-      "sourceSentenceStart": 23,
-      "sourceSentenceEnd": 24,
+      "narrationEn": "Lucian intends to detonate the continental ley lines, incinerating the land in hellfire.\"",
+      "narrationKo": "검은 늪지대의 수면은 부글부글 끓어오르는 검붉은 기포로 가득 차 있었고, 발을 딛는 곳마다 뼈마디가 녹아내릴 듯한 유황 증기가 피어올랐다.",
+      "sourceSentenceStart": 10,
+      "sourceSentenceEnd": 10,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "그 절체절명의 순간, 론돌이 외족을 굴러 늪지의 거대한 진흙 기둥을 솟구쳐 올렸다.",
-          "textEn": "Molten flames split around the dragonbone plate, scorching his gauntlets, yet his stance held firm.",
+          "textKo": "검은 늪지대의 수면은 부글부글 끓어오르는 검붉은 기포로 가득 차 있었고, 발을 딛는 곳마다 뼈마디가 녹아내릴 듯한 유황 증기가 피어올랐다.",
+          "textEn": "Lucian intends to detonate the continental ley lines, incinerating the land in hellfire.\"",
           "bubbleType": "thought",
           "position": "bottom-right",
-          "characterCardId": 41
+          "characterCardId": 46
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_33/scene_11.webp",
+      "sourceImageFile": "episode_33/scene_11.webp",
+      "narrationEn": "Grimli honed his twin battleaxes, gritting his teeth in fury.",
+      "narrationKo": "거대한 검은 성채의 외벽에는 수천 개의 해골 횃불이 불길하게 타오르고 있었고, 첨탑 꼭대기의 흑마법 렌즈는 대륙 전체를 겨누고 있는 사악한 눈동자처럼 붉은 안광을 번뜩이고 있었다.",
+      "sourceSentenceStart": 11,
+      "sourceSentenceEnd": 11,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "거대한 검은 성채의 외벽에는 수천 개의 해골 횃불이 불길하게 타오르고 있었고, 첨탑 꼭대기의 흑마법 렌즈는 대륙 전체를 겨누고 있는 사악한 눈동자처럼 붉은 안광을 번뜩이고 있었다.",
+          "textEn": "Grimli honed his twin battleaxes, gritting his teeth in fury.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 46
         }
       ],
       "sfxCues": [
@@ -359,55 +355,20 @@
       ]
     },
     {
-      "sceneNumber": 11,
-      "imageFile": "episode_33/scene_11.webp",
-      "sourceImageFile": "episode_33/scene_11.webp",
-      "narrationEn": "Seizing the opening, Rondol raised a massive mud spout with his pegleg, throwing the lead drake off balance, while Gawain vaulted overhead to decapitate the beast with an azure wind stroke. Simultaneously, Cilia swept her staff, conjuring a vacuum vortex that smashed the second drake against the granite ramparts.",
-      "narrationKo": "“뼈다귀 도마뱀 놈아, 바다의 짠맛을 보아라!” 진흙 기둥이 골룡의 날개를 강타하며 균형을 무너뜨렸고, 가웨인이 허공으로 도약해 폭풍의 참격으로 첫 번째 골룡의 목뼈를 단숨에 절단해 버렸다. 실리아 역시 녹옥 지팡이로 거대한 진공 폭풍을 일으켜 두 번째 골룡을 성벽 암반에 처박아 산산조각 냈다. 선대 영웅들과 젊은 계승자들의 완벽한 합동 작전이 성채의 최강 마수들을 단숨에 격파한 것이었다.",
-      "sourceSentenceStart": 25,
-      "sourceSentenceEnd": 27,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "론돌",
-          "speakerEn": "Rondol",
-          "textKo": "“뼈다귀 도마뱀 놈아, 바다의 짠맛을 보아라!”",
-          "textEn": "“Simultaneously, Cilia swept her staff, conjuring a vacuum vortex that smashed the second drake against the granite ramparts.”",
-          "bubbleType": "shout",
-          "position": "bottom-right",
-          "characterCardId": 46
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "서걱-!",
-          "textEn": "SLASH!",
-          "style": "slash",
-          "position": "center"
-        },
-        {
-          "textKo": "쿠구구궁!",
-          "textEn": "RUMBLE!",
-          "style": "rumble",
-          "position": "bottom-left"
-        }
-      ]
-    },
-    {
       "sceneNumber": 12,
       "imageFile": "episode_33/scene_12.webp",
       "sourceImageFile": "episode_33/scene_12.webp",
-      "narrationEn": "Breaching the outer lines, the companions stood before the great obsidian gates of the inner keep. Standing atop the parapet, Minister Lucian appeared in flowing crimson vestments, his body warping under demonic possession. Lucian shrieked in maniacal frenzy.",
-      "narrationKo": "골룡들의 썩은 뼈마디에서 뿜어져 나오는 부식성 화염은 바위마저 녹여 쇳물로 만들 기세였다. 그러나 카단은 별 호흡의 대지 마나를 방패에 집중시켜 화염의 중심축을 하늘로 비틀어 쳐올렸다. 거대한 불기둥이 먹구름을 뚫고 솟구치자, 가웨인의 폭풍검이 번개처럼 내리꽂히며 골룡의 두개골을 두 동강 냈다. 골룡이 처참한 굉음과 함께 해자 속으로 추락하자, 펄펄 끓던 용암 해자가 얼어붙으며 안전한 도하로가 확보되었다. 연합군 병사들이 환호성을 질렀다.",
-      "sourceSentenceStart": 28,
-      "sourceSentenceEnd": 29,
+      "narrationEn": "\"No time to dally!",
+      "narrationKo": "카단은 방패의 십자 성흔을 손으로 쓸어내리며 마지막 호흡을 정돈했다.",
+      "sourceSentenceStart": 12,
+      "sourceSentenceEnd": 12,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "연합군 병사들이 환호성을 질렀다.",
-          "textEn": "Lucian shrieked in maniacal frenzy.",
+          "textKo": "카단은 방패의 십자 성흔을 손으로 쓸어내리며 마지막 호흡을 정돈했다.",
+          "textEn": "\"No time to dally!",
           "bubbleType": "thought",
           "position": "top-right",
           "characterCardId": 41
@@ -419,12 +380,6 @@
           "textEn": "CLANG!",
           "style": "slash",
           "position": "top-right"
-        },
-        {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
         }
       ]
     },
@@ -432,20 +387,55 @@
       "sceneNumber": 13,
       "imageFile": "episode_33/scene_13.webp",
       "sourceImageFile": "episode_33/scene_13.webp",
-      "narrationEn": "\"Insolent insects! Even gods cannot force these adamantine gates! You shall be entombed alive beneath the mountain!\"",
-      "narrationKo": "외곽 방어선이 무너지자, 일행은 마침내 검은 성채의 중앙 대성문 앞에 도달했다. 높이 쉰 길에 달하는 거대한 흑요석 성문에는 나인섀도우의 절대 방어 결계가 걸려 있어 어떤 공성 망치로도 부술 수 없었다. 성벽 위에서 최고 재상 루시안이 핏빛 망토를 펄럭이며 모습을 드러냈다. 루시안의 전신은 이미 심연의 마나에 잠식되어 인간의 모습을 잃어가고 있었다. 루시안이 흉포한 광소를 터뜨렸다.",
-      "sourceSentenceStart": 30,
-      "sourceSentenceEnd": 32,
+      "narrationEn": "We Six Masters will spearhead the assault to bridge that infernal moat!\"",
+      "narrationKo": "실리아가 지팡이로 기류를 갈랐다. “성채 전체가 하나의 거대한 나인섀도우 마법진이에요. 루시안을 처단하지 않으면 대륙의 지맥이 영원히 오염될 거예요.”",
+      "sourceSentenceStart": 13,
+      "sourceSentenceEnd": 13,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“성채 전체가 하나의 거대한 나인섀도우 마법진이에요. 루시안을 처단하지 않으면 대륙의 지맥이 영원히 오염될 거예요.”",
+          "textEn": "“We Six Masters will spearhead the assault to bridge that infernal moat!\"”",
+          "bubbleType": "speech",
+          "position": "top-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_33/scene_14.webp",
+      "sourceImageFile": "episode_33/scene_14.webp",
+      "narrationEn": "Stamping his pegleg, Rondol bellowed with hearty resolve.",
+      "narrationKo": "연합군의 총공격 나팔 소리가 검은 늪지대 전체를 뒤흔들었다.",
+      "sourceSentenceStart": 14,
+      "sourceSentenceEnd": 14,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "루시안이 흉포한 광소를 터뜨렸다.",
-          "textEn": "You shall be entombed alive beneath the mountain!\"",
+          "textKo": "연합군의 총공격 나팔 소리가 검은 늪지대 전체를 뒤흔들었다.",
+          "textEn": "Stamping his pegleg, Rondol bellowed with hearty resolve.",
           "bubbleType": "thought",
-          "position": "bottom-left",
-          "characterCardId": 61
+          "position": "bottom-right",
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
@@ -454,47 +444,6 @@
           "textEn": "CLANG!",
           "style": "slash",
           "position": "top-right"
-        },
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 14,
-      "imageFile": "episode_33/scene_14.webp",
-      "sourceImageFile": "episode_33/scene_14.webp",
-      "narrationEn": "Pulling the master lever, Lucian initiated the fortress self-destruct sequence. The foundations groaned as titanic stalactites began crashing from the vaulted ceiling. Cilia cried out in horror.",
-      "narrationKo": "“하하하! 기어코 여기까지 기어왔구나, 반역자 벌레들아! 하지만 이 성문은 신의 힘으로도 열 수 없다! 네놈들은 이 문턱을 넘지도 못한 채 지하의 붕괴와 함께 생매장당할 것이다!” 루시안이 성벽의 마나 스위치를 내리자, 성채 지하 깊은 곳에서 지축을 뒤흔드는 진동과 함께 성채 전체를 무너뜨릴 자폭 시퀀스가 가동되기 시작했다.",
-      "sourceSentenceStart": 33,
-      "sourceSentenceEnd": 34,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "루시안",
-          "speakerEn": "Lucian",
-          "textKo": "“하하하! 기어코 여기까지 기어왔구나, 반역자 벌레들아! 하지만 이 성문은 신의 힘으로도 열 수 없다! 네놈들은 이 문턱을 넘지도 못한 채 지하의 붕괴와 함께 생매장당할 것이다!”",
-          "textEn": "“Insolent insects! Even gods cannot force these adamantine gates! You shall be entombed alive beneath the mountain!”",
-          "bubbleType": "shout",
-          "position": "bottom-left",
-          "characterCardId": 61
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        },
-        {
-          "textKo": "쿠구구궁!",
-          "textEn": "RUMBLE!",
-          "style": "rumble",
-          "position": "bottom-left"
         }
       ]
     },
@@ -502,28 +451,34 @@
       "sceneNumber": 15,
       "imageFile": "episode_33/scene_15.webp",
       "sourceImageFile": "episode_33/scene_15.webp",
-      "narrationEn": "\"He is bringing down the entire mountain to bury our army!\"",
-      "narrationKo": "천장에서 거대한 종유석들이 떨어져 내리며 퇴로가 차단되기 시작했다. 실리아가 절규했다. “안 돼요! 루시안이 성채를 통째로 무너뜨려 연합군 전체를 매장하려 하고 있어요!”",
-      "sourceSentenceStart": 35,
-      "sourceSentenceEnd": 37,
+      "narrationEn": "\"Time for old dogs to blaze their final embers!",
+      "narrationKo": "수천 명의 의용군과 피난민 결사대가 늪지를 가로질러 성채를 향해 진격하자, 성벽 위에서 흑철 투석기와 마나 대포들이 일제히 불을 뿜었다. 불타는 유황 암괴들이 비 오듯 쏟아져 내리며 늪지 바닥을 폭파시켰다.",
+      "sourceSentenceStart": 15,
+      "sourceSentenceEnd": 15,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“안 돼요! 루시안이 성채를 통째로 무너뜨려 연합군 전체를 매장하려 하고 있어요!”",
-          "textEn": "“He is bringing down the entire mountain to bury our army!”",
-          "bubbleType": "shout",
-          "position": "bottom-right",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "불타는 유황 암괴들이 비 오듯 쏟아져 내리며 늪지 바닥을 폭파시켰다.",
+          "textEn": "\"Time for old dogs to blaze their final embers!",
+          "bubbleType": "thought",
+          "position": "top-left",
           "characterCardId": 62
         }
       ],
       "sfxCues": [
         {
-          "textKo": "쿠구구궁!",
-          "textEn": "RUMBLE!",
-          "style": "rumble",
-          "position": "bottom-left"
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
         }
       ]
     },
@@ -531,19 +486,19 @@
       "sceneNumber": 16,
       "imageFile": "episode_33/scene_16.webp",
       "sourceImageFile": "episode_33/scene_16.webp",
-      "narrationEn": "In that fatal breath, Kadan raised the White Glass Ember high into the gloom. The ember resonated with his heart's resolve, firing a beam of pure celestial starlight directly into the gate's runic core. Corrupted by holy fire, the necrotic wards shrieked and dissolved.",
-      "narrationKo": "루시안의 미친 웃음소리가 성벽 전체를 뒤흔드는 가운데, 성채 바닥에서 솟구쳐 오른 검은 균열들이 사방으로 뻗어 나갔다. 지하 깊은 곳에 묻혀 있던 자폭 마법진이 붉은빛을 뿜어내며 임계점에 도달하고 있었다. 성채의 천장 아치들이 무너져 내리며 집채만 한 바위들이 진격로를 가로막았다. 카단이 이를 악물며 외쳤다. “물러설 곳은 없다! 성문을 부수고 루시안의 멱살을 잡아야 한다!”",
-      "sourceSentenceStart": 38,
-      "sourceSentenceEnd": 39,
+      "narrationEn": "Follow our charge, young lions!\"",
+      "narrationKo": "카단이 전열의 맨 앞에 서서 드래곤 브레이커 방패를 높이 치켜들었다.",
+      "sourceSentenceStart": 16,
+      "sourceSentenceEnd": 16,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“물러설 곳은 없다! 성문을 부수고 루시안의 멱살을 잡아야 한다!”",
-          "textEn": "“He is bringing down the entire mountain to bury our army!”",
-          "bubbleType": "shout",
-          "position": "top-left",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단이 전열의 맨 앞에 서서 드래곤 브레이커 방패를 높이 치켜들었다.",
+          "textEn": "Follow our charge, young lions!\"",
+          "bubbleType": "thought",
+          "position": "top-right",
           "characterCardId": 41
         }
       ],
@@ -552,12 +507,6 @@
           "textKo": "챙-!",
           "textEn": "CLANG!",
           "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
           "position": "top-right"
         }
       ]
@@ -566,19 +515,19 @@
       "sceneNumber": 17,
       "imageFile": "episode_33/scene_17.webp",
       "sourceImageFile": "episode_33/scene_17.webp",
-      "narrationEn": "Driving his silver dagger into the keystone, Kadan slammed his Dragon Breaker shield into the timbers.",
-      "narrationKo": "성채 전체가 붕괴하기 직전의 절체절명의 순간, 카단이 품속에서 이그니스의 유리 불씨를 꺼내 들었다. 순백의 유리 불씨가 카단의 심장 마나와 공명하며 눈부신 빛의 기둥을 허공으로 쏘아 올렸다. 성문의 흑요석 결계에 깃들어 있던 어둠의 마나가 순백의 성화에 닿자 비명을 지르며 녹아내리기 시작했다. 카단이 은빛 단검으로 약화된 결계의 중심핵을 꿰뚫고, 드래곤 브레이커 방패로 성문의 빗장을 강타했다.",
-      "sourceSentenceStart": 40,
-      "sourceSentenceEnd": 42,
+      "narrationEn": "The battle horns of the allied host tore through the marsh.",
+      "narrationKo": "“방패를 겹쳐라! 동료들의 어깨를 믿고 전진하라!” 카단의 방패에서 뿜어져 나온 황금빛 별빛 결계가 쏟아지는 유황탄들을 차례로 공중에서 튕겨냈다.",
+      "sourceSentenceStart": 17,
+      "sourceSentenceEnd": 17,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "내레이션",
-          "speakerEn": "Narration",
-          "textKo": "카단이 은빛 단검으로 약화된 결계의 중심핵을 꿰뚫고, 드래곤 브레이커 방패로 성문의 빗장을 강타했다.",
-          "textEn": "Driving his silver dagger into the keystone, Kadan slammed his Dragon Breaker shield into the timbers.",
-          "bubbleType": "thought",
-          "position": "bottom-left",
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“방패를 겹쳐라! 동료들의 어깨를 믿고 전진하라!”",
+          "textEn": "“The battle horns of the allied host tore through the marsh.”",
+          "bubbleType": "shout",
+          "position": "top-right",
           "characterCardId": 41
         }
       ],
@@ -601,17 +550,145 @@
       "sceneNumber": 18,
       "imageFile": "episode_33/scene_18.webp",
       "sourceImageFile": "episode_33/scene_18.webp",
-      "narrationEn": "BOOM! The ancient gates shattered inward with concussive force.",
-      "narrationKo": "콰아아앙! 수천 년 동안 굳게 닫혀 있던 검은 성채의 대성문이 마침내 비명을 지르며 안쪽으로 무너져 내렸다.",
-      "sourceSentenceStart": 43,
-      "sourceSentenceEnd": 44,
+      "narrationEn": "As thousands of volunteers charged across the mud, the citadel's black-iron ballistae and mana cannons opened fire, raining fiery sulfur boulders across the approaches.",
+      "narrationKo": "동시에 여섯 스승들의 눈부신 활약이 펼쳐졌다.",
+      "sourceSentenceStart": 18,
+      "sourceSentenceEnd": 18,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "수천 년 동안 굳게 닫혀 있던 검은 성채의 대성문이 마침내 비명을 지르며 안쪽으로 무너져 내렸다.",
-          "textEn": "The ancient gates shattered inward with concussive force.",
+          "textKo": "동시에 여섯 스승들의 눈부신 활약이 펼쳐졌다.",
+          "textEn": "As thousands of volunteers charged across the mud, the citadel's black-iron ballistae and mana cannons opened fire, raining fiery sulfur boulders across the approaches.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_33/scene_19.webp",
+      "sourceImageFile": "episode_33/scene_19.webp",
+      "narrationEn": "Standing at the vanguard, Kadan held his Dragon Breaker shield high, anchoring an impenetrable dome of starlight that deflected the falling siege shot into the swamp.",
+      "narrationKo": "드워프 그림리가 선두에 서서 거대한 모루 망치를 내리찍으며 성문 앞의 도하용 얼음 다리를 지탱할 기초 바위들을 깎아 세웠고, 가웨인은 날카로운 질풍의 칼날을 연속으로 날려 성벽 위의 포수들을 쓸어버렸다.",
+      "sourceSentenceStart": 19,
+      "sourceSentenceEnd": 19,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "드워프 그림리가 선두에 서서 거대한 모루 망치를 내리찍으며 성문 앞의 도하용 얼음 다리를 지탱할 기초 바위들을 깎아 세웠고, 가웨인은 날카로운 질풍의 칼날을 연속으로 날려 성벽 위의 포수들을 쓸어버렸다.",
+          "textEn": "Standing at the vanguard, Kadan held his Dragon Breaker shield high, anchoring an impenetrable dome of starlight that deflected the falling siege shot into the swamp.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 74
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_33/scene_20.webp",
+      "sourceImageFile": "episode_33/scene_20.webp",
+      "narrationEn": "Behind his bulwark, the Six Masters demonstrated the peerless artistry of seasoned veterans.",
+      "narrationKo": "사냥꾼 에일라와 약초사 엘리아나는 후방에서 서리 화살을 쏘아 올려 성채의 쇠뇌 진지를 차례로 무력화시켰다.",
+      "sourceSentenceStart": 20,
+      "sourceSentenceEnd": 20,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "사냥꾼 에일라와 약초사 엘리아나는 후방에서 서리 화살을 쏘아 올려 성채의 쇠뇌 진지를 차례로 무력화시켰다.",
+          "textEn": "Behind his bulwark, the Six Masters demonstrated the peerless artistry of seasoned veterans.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 70
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 21,
+      "imageFile": "episode_33/scene_21.webp",
+      "sourceImageFile": "episode_33/scene_21.webp",
+      "narrationEn": "Grimli pulverized boulders to anchor an ice bridge across the moat, Gawain's wind scythes cleared the battlement gunners, and Eyla and Eliana neutralized the ballista crews with pinpoint frost arrows.",
+      "narrationKo": "성벽 위에서 쏟아지는 유황 암괴들은 땅에 닿는 순간 반경 수십 보를 쑥대밭으로 만들며 불바다를 이루었다.",
+      "sourceSentenceStart": 21,
+      "sourceSentenceEnd": 21,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "성벽 위에서 쏟아지는 유황 암괴들은 땅에 닿는 순간 반경 수십 보를 쑥대밭으로 만들며 불바다를 이루었다.",
+          "textEn": "Grimli pulverized boulders to anchor an ice bridge across the moat, Gawain's wind scythes cleared the battlement gunners, and Eyla and Eliana neutralized the ballista crews with pinpoint frost arrows.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 70
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        },
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 22,
+      "imageFile": "episode_33/scene_22.webp",
+      "sourceImageFile": "episode_33/scene_22.webp",
+      "narrationEn": "Reaching the iron drawbridge, the massive gates parted, unleashing two gargantuan Bone Drakes animated by the Nine Shadows Codex.",
+      "narrationKo": "그러나 카단의 드래곤 브레이커 방패가 이끄는 전열은 마치 거대한 파도를 가르는 강철 쐐기처럼 조금도 흔들리지 않고 성문을 향해 전진했다.",
+      "sourceSentenceStart": 22,
+      "sourceSentenceEnd": 22,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그러나 카단의 드래곤 브레이커 방패가 이끄는 전열은 마치 거대한 파도를 가르는 강철 쐐기처럼 조금도 흔들리지 않고 성문을 향해 전진했다.",
+          "textEn": "Reaching the iron drawbridge, the massive gates parted, unleashing two gargantuan Bone Drakes animated by the Nine Shadows Codex.",
           "bubbleType": "thought",
           "position": "bottom-right",
           "characterCardId": 41
@@ -633,26 +710,32 @@
       ]
     },
     {
-      "sceneNumber": 19,
-      "imageFile": "episode_33/scene_19.webp",
-      "sourceImageFile": "episode_33/scene_19.webp",
-      "narrationEn": "Raising his blade high, Kadan bellowed to the host.",
-      "narrationKo": "카단이 칼을 높이 치켜들며 전군에 명령했다. “성문이 열렸다! 전군, 성채 내부로 돌격하라!” 함성과 함께 연합군이 성채 안으로 쏟아져 들어갔다. 최후의 심판대인 성채의 심장부를 향한 마지막 돌격이 시작되었다.",
-      "sourceSentenceStart": 45,
-      "sourceSentenceEnd": 47,
+      "sceneNumber": 23,
+      "imageFile": "episode_33/scene_23.webp",
+      "sourceImageFile": "episode_33/scene_23.webp",
+      "narrationEn": "The skeletal horrors plunged from the towers, vomiting torrents of caustic dragonfire.",
+      "narrationKo": "여섯 스승들은 오랜 세월 동안 갈고닦은 완벽한 호흡으로 적의 포병 진지를 유린했다. 에일라의 얼음 화살이 흑철 대포의 약실을 얼려 폭발시켰고, 엘리아나의 수면 마법이 적의 성벽 수비대원들을 깊은 잠에 빠뜨렸다.",
+      "sourceSentenceStart": 23,
+      "sourceSentenceEnd": 23,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“성문이 열렸다! 전군, 성채 내부로 돌격하라!”",
-          "textEn": "“The gate is broken! Forward, to the heart of the citadel!”",
-          "bubbleType": "shout",
-          "position": "bottom-right",
-          "characterCardId": 41
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "에일라의 얼음 화살이 흑철 대포의 약실을 얼려 폭발시켰고, 엘리아나의 수면 마법이 적의 성벽 수비대원들을 깊은 잠에 빠뜨렸다.",
+          "textEn": "The skeletal horrors plunged from the towers, vomiting torrents of caustic dragonfire.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 70
         }
       ],
       "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        },
         {
           "textKo": "파지지직!",
           "textEn": "CRACKLE!",
@@ -662,23 +745,256 @@
       ]
     },
     {
-      "sceneNumber": 20,
-      "imageFile": "episode_33/scene_20.webp",
-      "sourceImageFile": "episode_33/scene_20.webp",
-      "narrationEn": "\"The gate is broken! Forward, to the heart of the citadel!\" With a roar that shook the swamp, the army poured into the breach, launching the final assault upon the seat of darkness.",
-      "narrationKo": "카단의 은빛 단검과 드래곤 브레이커 방패가 합일되어 내뿜은 황금빛 충격파는 대성문의 흑요석 빗장을 가루로 만들었다. 무너져 내린 문틈 사이로 연합군 결사대가 함성을 지르며 쏟아져 들어갔다. 성채 안의 잔여 언데드 병력들이 공포에 질려 무기를 버리고 달아났다. 실리아가 카단의 곁으로 달려와 호흡을 맞추었다. “성문이 열렸어요! 루시안이 있는 중앙 대회랑으로 돌격해요!” 두 영웅은 앞장서서 성채 내부의 어두운 나선 계단을 향해 질주했다.",
-      "sourceSentenceStart": 48,
-      "sourceSentenceEnd": 49,
+      "sceneNumber": 24,
+      "imageFile": "episode_33/scene_24.webp",
+      "sourceImageFile": "episode_33/scene_24.webp",
+      "narrationEn": "\"Scatter!\"",
+      "narrationKo": "연합군의 사기는 하늘을 찔렀다. 성채 정문의 거대한 흑철 성교(城橋)에 다다랐을 때, 성문이 열리며 루시안이 나인섀도우 코덱스로 소환한 거대한 ‘고대 골룡(骨龍)’ 두 마리가 포효하며 솟구쳐 올랐다.",
+      "sourceSentenceStart": 24,
+      "sourceSentenceEnd": 24,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“성문이 열렸어요! 루시안이 있는 중앙 대회랑으로 돌격해요!”",
-          "textEn": "“The gate is broken! Forward, to the heart of the citadel!”",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "성채 정문의 거대한 흑철 성교(城橋)에 다다랐을 때, 성문이 열리며 루시안이 나인섀도우 코덱스로 소환한 거대한 ‘고대 골룡(骨龍)’ 두 마리가 포효하며 솟구쳐 올랐다.",
+          "textEn": "\"Scatter!\"",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 61
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 25,
+      "imageFile": "episode_33/scene_25.webp",
+      "sourceImageFile": "episode_33/scene_25.webp",
+      "narrationEn": "Kadan leaped forward, catching the direct blast upon his shield.",
+      "narrationKo": "썩은 뼈마디 사이에 암흑 마나를 품은 골룡들이 지상으로 급강하하며 부식성 화염 브레스를 내뿜었다.",
+      "sourceSentenceStart": 25,
+      "sourceSentenceEnd": 25,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "썩은 뼈마디 사이에 암흑 마나를 품은 골룡들이 지상으로 급강하하며 부식성 화염 브레스를 내뿜었다.",
+          "textEn": "Kadan leaped forward, catching the direct blast upon his shield.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 61
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 26,
+      "imageFile": "episode_33/scene_26.webp",
+      "sourceImageFile": "episode_33/scene_26.webp",
+      "narrationEn": "Molten flames split around the dragonbone plate, scorching his gauntlets, yet his stance held firm.",
+      "narrationKo": "“모두 흩어져라!” 카단이 방패를 앞으로 내지르며 첫 번째 골룡의 브레스를 정면으로 받아냈다. 용암 같은 불길이 드래곤 브레이커의 표면을 타고 좌우로 갈라졌지만, 엄청난 열기에 카단의 장갑이 타들어갔다.",
+      "sourceSentenceStart": 26,
+      "sourceSentenceEnd": 26,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“모두 흩어져라!”",
+          "textEn": "“Molten flames split around the dragonbone plate, scorching his gauntlets, yet his stance held firm.”",
+          "bubbleType": "shout",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 27,
+      "imageFile": "episode_33/scene_27.webp",
+      "sourceImageFile": "episode_33/scene_27.webp",
+      "narrationEn": "Molten flames split around the dragonbone plate, scorching his gauntlets, yet his stance held firm.",
+      "narrationKo": "그 절체절명의 순간, 론돌이 외족을 굴러 늪지의 거대한 진흙 기둥을 솟구쳐 올렸다.",
+      "sourceSentenceStart": 27,
+      "sourceSentenceEnd": 27,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그 절체절명의 순간, 론돌이 외족을 굴러 늪지의 거대한 진흙 기둥을 솟구쳐 올렸다.",
+          "textEn": "Molten flames split around the dragonbone plate, scorching his gauntlets, yet his stance held firm.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 46
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 28,
+      "imageFile": "episode_33/scene_28.webp",
+      "sourceImageFile": "episode_33/scene_28.webp",
+      "narrationEn": "Seizing the opening, Rondol raised a massive mud spout with his pegleg, throwing the lead drake off balance, while Gawain vaulted overhead to decapitate the beast with an azure wind stroke.",
+      "narrationKo": "“뼈다귀 도마뱀 놈아, 바다의 짠맛을 보아라!” 진흙 기둥이 골룡의 날개를 강타하며 균형을 무너뜨렸고, 가웨인이 허공으로 도약해 폭풍의 참격으로 첫 번째 골룡의 목뼈를 단숨에 절단해 버렸다.",
+      "sourceSentenceStart": 28,
+      "sourceSentenceEnd": 28,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "가웨인",
+          "speakerEn": "Gawain",
+          "textKo": "“뼈다귀 도마뱀 놈아, 바다의 짠맛을 보아라!”",
+          "textEn": "“Seizing the opening, Rondol raised a massive mud spout with his pegleg, throwing the lead drake off balance, while Gawain vaulted overhead to decapitate the beast with an azure wind stroke.”",
           "bubbleType": "shout",
           "position": "top-left",
+          "characterCardId": 45
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 29,
+      "imageFile": "episode_33/scene_29.webp",
+      "sourceImageFile": "episode_33/scene_29.webp",
+      "narrationEn": "Simultaneously, Cilia swept her staff, conjuring a vacuum vortex that smashed the second drake against the granite ramparts.",
+      "narrationKo": "실리아 역시 녹옥 지팡이로 거대한 진공 폭풍을 일으켜 두 번째 골룡을 성벽 암반에 처박아 산산조각 냈다. 선대 영웅들과 젊은 계승자들의 완벽한 합동 작전이 성채의 최강 마수들을 단숨에 격파한 것이었다.",
+      "sourceSentenceStart": 29,
+      "sourceSentenceEnd": 29,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "선대 영웅들과 젊은 계승자들의 완벽한 합동 작전이 성채의 최강 마수들을 단숨에 격파한 것이었다.",
+          "textEn": "Simultaneously, Cilia swept her staff, conjuring a vacuum vortex that smashed the second drake against the granite ramparts.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
           "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        },
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 30,
+      "imageFile": "episode_33/scene_30.webp",
+      "sourceImageFile": "episode_33/scene_30.webp",
+      "narrationEn": "Breaching the outer lines, the companions stood before the great obsidian gates of the inner keep.",
+      "narrationKo": "골룡들의 썩은 뼈마디에서 뿜어져 나오는 부식성 화염은 바위마저 녹여 쇳물로 만들 기세였다. 그러나 카단은 별 호흡의 대지 마나를 방패에 집중시켜 화염의 중심축을 하늘로 비틀어 쳐올렸다.",
+      "sourceSentenceStart": 30,
+      "sourceSentenceEnd": 30,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그러나 카단은 별 호흡의 대지 마나를 방패에 집중시켜 화염의 중심축을 하늘로 비틀어 쳐올렸다.",
+          "textEn": "Breaching the outer lines, the companions stood before the great obsidian gates of the inner keep.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 31,
+      "imageFile": "episode_33/scene_31.webp",
+      "sourceImageFile": "episode_33/scene_31.webp",
+      "narrationEn": "Standing atop the parapet, Minister Lucian appeared in flowing crimson vestments, his body warping under demonic possession.",
+      "narrationKo": "거대한 불기둥이 먹구름을 뚫고 솟구치자, 가웨인의 폭풍검이 번개처럼 내리꽂히며 골룡의 두개골을 두 동강 냈다.",
+      "sourceSentenceStart": 31,
+      "sourceSentenceEnd": 31,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "거대한 불기둥이 먹구름을 뚫고 솟구치자, 가웨인의 폭풍검이 번개처럼 내리꽂히며 골룡의 두개골을 두 동강 냈다.",
+          "textEn": "Standing atop the parapet, Minister Lucian appeared in flowing crimson vestments, his body warping under demonic possession.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 45
         }
       ],
       "sfxCues": [
@@ -693,6 +1009,599 @@
           "textEn": "CRACKLE!",
           "style": "magic",
           "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 32,
+      "imageFile": "episode_33/scene_32.webp",
+      "sourceImageFile": "episode_33/scene_32.webp",
+      "narrationEn": "Lucian shrieked in maniacal frenzy.",
+      "narrationKo": "골룡이 처참한 굉음과 함께 해자 속으로 추락하자, 펄펄 끓던 용암 해자가 얼어붙으며 안전한 도하로가 확보되었다. 연합군 병사들이 환호성을 질렀다.",
+      "sourceSentenceStart": 32,
+      "sourceSentenceEnd": 32,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "연합군 병사들이 환호성을 질렀다.",
+          "textEn": "Lucian shrieked in maniacal frenzy.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 45
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 33,
+      "imageFile": "episode_33/scene_33.webp",
+      "sourceImageFile": "episode_33/scene_33.webp",
+      "narrationEn": "\"Insolent insects!",
+      "narrationKo": "외곽 방어선이 무너지자, 일행은 마침내 검은 성채의 중앙 대성문 앞에 도달했다. 높이 쉰 길에 달하는 거대한 흑요석 성문에는 나인섀도우의 절대 방어 결계가 걸려 있어 어떤 공성 망치로도 부술 수 없었다.",
+      "sourceSentenceStart": 33,
+      "sourceSentenceEnd": 33,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "높이 쉰 길에 달하는 거대한 흑요석 성문에는 나인섀도우의 절대 방어 결계가 걸려 있어 어떤 공성 망치로도 부술 수 없었다.",
+          "textEn": "\"Insolent insects!",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 45
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 34,
+      "imageFile": "episode_33/scene_34.webp",
+      "sourceImageFile": "episode_33/scene_34.webp",
+      "narrationEn": "Even gods cannot force these adamantine gates!",
+      "narrationKo": "성벽 위에서 최고 재상 루시안이 핏빛 망토를 펄럭이며 모습을 드러냈다. 루시안의 전신은 이미 심연의 마나에 잠식되어 인간의 모습을 잃어가고 있었다.",
+      "sourceSentenceStart": 34,
+      "sourceSentenceEnd": 34,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "루시안의 전신은 이미 심연의 마나에 잠식되어 인간의 모습을 잃어가고 있었다.",
+          "textEn": "Even gods cannot force these adamantine gates!",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 61
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 35,
+      "imageFile": "episode_33/scene_35.webp",
+      "sourceImageFile": "episode_33/scene_35.webp",
+      "narrationEn": "You shall be entombed alive beneath the mountain!\"",
+      "narrationKo": "루시안이 흉포한 광소를 터뜨렸다. “하하하! 기어코 여기까지 기어왔구나, 반역자 벌레들아! 하지만 이 성문은 신의 힘으로도 열 수 없다! 네놈들은 이 문턱을 넘지도 못한 채 지하의 붕괴와 함께 생매장당할 것이다!”",
+      "sourceSentenceStart": 35,
+      "sourceSentenceEnd": 35,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "루시안",
+          "speakerEn": "Lucian",
+          "textKo": "“하하하! 기어코 여기까지 기어왔구나, 반역자 벌레들아! 하지만 이 성문은 신의 힘으로도 열 수 없다! 네놈들은 이 문턱을 넘지도 못한 채 지하의 붕괴와 함께 생매장당할 것이다!”",
+          "textEn": "“You shall be entombed alive beneath the mountain!\"”",
+          "bubbleType": "shout",
+          "position": "bottom-right",
+          "characterCardId": 61
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 36,
+      "imageFile": "episode_33/scene_36.webp",
+      "sourceImageFile": "episode_33/scene_36.webp",
+      "narrationEn": "Pulling the master lever, Lucian initiated the fortress self-destruct sequence.",
+      "narrationKo": "루시안이 성벽의 마나 스위치를 내리자, 성채 지하 깊은 곳에서 지축을 뒤흔드는 진동과 함께 성채 전체를 무너뜨릴 자폭 시퀀스가 가동되기 시작했다.",
+      "sourceSentenceStart": 36,
+      "sourceSentenceEnd": 36,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "루시안이 성벽의 마나 스위치를 내리자, 성채 지하 깊은 곳에서 지축을 뒤흔드는 진동과 함께 성채 전체를 무너뜨릴 자폭 시퀀스가 가동되기 시작했다.",
+          "textEn": "Pulling the master lever, Lucian initiated the fortress self-destruct sequence.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 61
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 37,
+      "imageFile": "episode_33/scene_37.webp",
+      "sourceImageFile": "episode_33/scene_37.webp",
+      "narrationEn": "The foundations groaned as titanic stalactites began crashing from the vaulted ceiling.",
+      "narrationKo": "천장에서 거대한 종유석들이 떨어져 내리며 퇴로가 차단되기 시작했다.",
+      "sourceSentenceStart": 37,
+      "sourceSentenceEnd": 37,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "천장에서 거대한 종유석들이 떨어져 내리며 퇴로가 차단되기 시작했다.",
+          "textEn": "The foundations groaned as titanic stalactites began crashing from the vaulted ceiling.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 61
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 38,
+      "imageFile": "episode_33/scene_38.webp",
+      "sourceImageFile": "episode_33/scene_38.webp",
+      "narrationEn": "Cilia cried out in horror.",
+      "narrationKo": "실리아가 절규했다. “안 돼요! 루시안이 성채를 통째로 무너뜨려 연합군 전체를 매장하려 하고 있어요!”",
+      "sourceSentenceStart": 38,
+      "sourceSentenceEnd": 38,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“안 돼요! 루시안이 성채를 통째로 무너뜨려 연합군 전체를 매장하려 하고 있어요!”",
+          "textEn": "“Cilia cried out in horror.”",
+          "bubbleType": "shout",
+          "position": "bottom-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 39,
+      "imageFile": "episode_33/scene_39.webp",
+      "sourceImageFile": "episode_33/scene_39.webp",
+      "narrationEn": "\"He is bringing down the entire mountain to bury our army!\"",
+      "narrationKo": "루시안의 미친 웃음소리가 성벽 전체를 뒤흔드는 가운데, 성채 바닥에서 솟구쳐 오른 검은 균열들이 사방으로 뻗어 나갔다. 지하 깊은 곳에 묻혀 있던 자폭 마법진이 붉은빛을 뿜어내며 임계점에 도달하고 있었다.",
+      "sourceSentenceStart": 39,
+      "sourceSentenceEnd": 39,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "지하 깊은 곳에 묻혀 있던 자폭 마법진이 붉은빛을 뿜어내며 임계점에 도달하고 있었다.",
+          "textEn": "\"He is bringing down the entire mountain to bury our army!\"",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 61
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 40,
+      "imageFile": "episode_33/scene_40.webp",
+      "sourceImageFile": "episode_33/scene_40.webp",
+      "narrationEn": "In that fatal breath, Kadan raised the White Glass Ember high into the gloom.",
+      "narrationKo": "성채의 천장 아치들이 무너져 내리며 집채만 한 바위들이 진격로를 가로막았다.",
+      "sourceSentenceStart": 40,
+      "sourceSentenceEnd": 40,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "성채의 천장 아치들이 무너져 내리며 집채만 한 바위들이 진격로를 가로막았다.",
+          "textEn": "In that fatal breath, Kadan raised the White Glass Ember high into the gloom.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 61
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 41,
+      "imageFile": "episode_33/scene_41.webp",
+      "sourceImageFile": "episode_33/scene_41.webp",
+      "narrationEn": "The ember resonated with his heart's resolve, firing a beam of pure celestial starlight directly into the gate's runic core.",
+      "narrationKo": "카단이 이를 악물며 외쳤다. “물러설 곳은 없다! 성문을 부수고 루시안의 멱살을 잡아야 한다!”",
+      "sourceSentenceStart": 41,
+      "sourceSentenceEnd": 41,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“물러설 곳은 없다! 성문을 부수고 루시안의 멱살을 잡아야 한다!”",
+          "textEn": "“The ember resonated with his heart's resolve, firing a beam of pure celestial starlight directly into the gate's runic core.”",
+          "bubbleType": "shout",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 42,
+      "imageFile": "episode_33/scene_42.webp",
+      "sourceImageFile": "episode_33/scene_42.webp",
+      "narrationEn": "Corrupted by holy fire, the necrotic wards shrieked and dissolved.",
+      "narrationKo": "성채 전체가 붕괴하기 직전의 절체절명의 순간, 카단이 품속에서 이그니스의 유리 불씨를 꺼내 들었다.",
+      "sourceSentenceStart": 42,
+      "sourceSentenceEnd": 42,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "성채 전체가 붕괴하기 직전의 절체절명의 순간, 카단이 품속에서 이그니스의 유리 불씨를 꺼내 들었다.",
+          "textEn": "Corrupted by holy fire, the necrotic wards shrieked and dissolved.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 43,
+      "imageFile": "episode_33/scene_43.webp",
+      "sourceImageFile": "episode_33/scene_43.webp",
+      "narrationEn": "Corrupted by holy fire, the necrotic wards shrieked and dissolved.",
+      "narrationKo": "순백의 유리 불씨가 카단의 심장 마나와 공명하며 눈부신 빛의 기둥을 허공으로 쏘아 올렸다. 성문의 흑요석 결계에 깃들어 있던 어둠의 마나가 순백의 성화에 닿자 비명을 지르며 녹아내리기 시작했다.",
+      "sourceSentenceStart": 43,
+      "sourceSentenceEnd": 43,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "성문의 흑요석 결계에 깃들어 있던 어둠의 마나가 순백의 성화에 닿자 비명을 지르며 녹아내리기 시작했다.",
+          "textEn": "Corrupted by holy fire, the necrotic wards shrieked and dissolved.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 44,
+      "imageFile": "episode_33/scene_44.webp",
+      "sourceImageFile": "episode_33/scene_44.webp",
+      "narrationEn": "Driving his silver dagger into the keystone, Kadan slammed his Dragon Breaker shield into the timbers.",
+      "narrationKo": "카단이 은빛 단검으로 약화된 결계의 중심핵을 꿰뚫고, 드래곤 브레이커 방패로 성문의 빗장을 강타했다.",
+      "sourceSentenceStart": 44,
+      "sourceSentenceEnd": 44,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단이 은빛 단검으로 약화된 결계의 중심핵을 꿰뚫고, 드래곤 브레이커 방패로 성문의 빗장을 강타했다.",
+          "textEn": "Driving his silver dagger into the keystone, Kadan slammed his Dragon Breaker shield into the timbers.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 45,
+      "imageFile": "episode_33/scene_45.webp",
+      "sourceImageFile": "episode_33/scene_45.webp",
+      "narrationEn": "BOOM!",
+      "narrationKo": "콰아아앙! 수천 년 동안 굳게 닫혀 있던 검은 성채의 대성문이 마침내 비명을 지르며 안쪽으로 무너져 내렸다.",
+      "sourceSentenceStart": 45,
+      "sourceSentenceEnd": 45,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "수천 년 동안 굳게 닫혀 있던 검은 성채의 대성문이 마침내 비명을 지르며 안쪽으로 무너져 내렸다.",
+          "textEn": "BOOM!",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 46,
+      "imageFile": "episode_33/scene_46.webp",
+      "sourceImageFile": "episode_33/scene_46.webp",
+      "narrationEn": "The ancient gates shattered inward with concussive force.",
+      "narrationKo": "카단이 칼을 높이 치켜들며 전군에 명령했다. “성문이 열렸다! 전군, 성채 내부로 돌격하라!”",
+      "sourceSentenceStart": 46,
+      "sourceSentenceEnd": 46,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“성문이 열렸다! 전군, 성채 내부로 돌격하라!”",
+          "textEn": "“The ancient gates shattered inward with concussive force.”",
+          "bubbleType": "shout",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 47,
+      "imageFile": "episode_33/scene_47.webp",
+      "sourceImageFile": "episode_33/scene_47.webp",
+      "narrationEn": "Raising his blade high, Kadan bellowed to the host.",
+      "narrationKo": "함성과 함께 연합군이 성채 안으로 쏟아져 들어갔다. 최후의 심판대인 성채의 심장부를 향한 마지막 돌격이 시작되었다.",
+      "sourceSentenceStart": 47,
+      "sourceSentenceEnd": 47,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "최후의 심판대인 성채의 심장부를 향한 마지막 돌격이 시작되었다.",
+          "textEn": "Raising his blade high, Kadan bellowed to the host.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 48,
+      "imageFile": "episode_33/scene_48.webp",
+      "sourceImageFile": "episode_33/scene_48.webp",
+      "narrationEn": "\"The gate is broken!",
+      "narrationKo": "카단의 은빛 단검과 드래곤 브레이커 방패가 합일되어 내뿜은 황금빛 충격파는 대성문의 흑요석 빗장을 가루로 만들었다. 무너져 내린 문틈 사이로 연합군 결사대가 함성을 지르며 쏟아져 들어갔다.",
+      "sourceSentenceStart": 48,
+      "sourceSentenceEnd": 48,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "무너져 내린 문틈 사이로 연합군 결사대가 함성을 지르며 쏟아져 들어갔다.",
+          "textEn": "\"The gate is broken!",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 49,
+      "imageFile": "episode_33/scene_49.webp",
+      "sourceImageFile": "episode_33/scene_49.webp",
+      "narrationEn": "Forward, to the heart of the citadel!\"",
+      "narrationKo": "성채 안의 잔여 언데드 병력들이 공포에 질려 무기를 버리고 달아났다.",
+      "sourceSentenceStart": 49,
+      "sourceSentenceEnd": 49,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "성채 안의 잔여 언데드 병력들이 공포에 질려 무기를 버리고 달아났다.",
+          "textEn": "Forward, to the heart of the citadel!\"",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 50,
+      "imageFile": "episode_33/scene_50.webp",
+      "sourceImageFile": "episode_33/scene_50.webp",
+      "narrationEn": "With a roar that shook the swamp, the army poured into the breach, launching the final assault upon the seat of darkness.",
+      "narrationKo": "실리아가 카단의 곁으로 달려와 호흡을 맞추었다. “성문이 열렸어요! 루시안이 있는 중앙 대회랑으로 돌격해요!” 두 영웅은 앞장서서 성채 내부의 어두운 나선 계단을 향해 질주했다.",
+      "sourceSentenceStart": 50,
+      "sourceSentenceEnd": 50,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“성문이 열렸어요! 루시안이 있는 중앙 대회랑으로 돌격해요!”",
+          "textEn": "“With a roar that shook the swamp, the army poured into the breach, launching the final assault upon the seat of darkness.”",
+          "bubbleType": "shout",
+          "position": "bottom-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
         }
       ]
     }

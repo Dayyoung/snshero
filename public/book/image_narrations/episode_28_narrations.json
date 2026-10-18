@@ -3,35 +3,29 @@
   "episodeTitleEn": "Revolt of the Jade Council",
   "episodeTitleKo": "비취 평의회의 반란",
   "sourceSentenceCount": 54,
-  "sceneCount": 20,
+  "sceneCount": 54,
   "scenes": [
     {
       "sceneNumber": 1,
       "imageFile": "episode_28/scene_01.webp",
       "sourceImageFile": "episode_28/scene_01.webp",
-      "narrationEn": "As midnight descended, the Jade Council Hall of the Imperial Palace was consumed by a tempest of catastrophic black mana. Enshrined atop the high dais where the thrones of past emperors had rested for centuries floated the forbidden relic of the Nine Shadows Codex: the Abyssal Core, pulsing with sickening crimson veins. Bound in dark mana chains, the unconscious elderly emperor hung suspended as a blood sacrifice, while spellbound senators and nobles chanted dissonant, guttural hymns in vacant delirium. Stepping from the shadows of the dais in flowing crimson vestments, High Minister Lucian raised the desecrated Sovereign Blade bestowed by the demon prince Belphegor.",
-      "narrationKo": "자정이 깊어지자 황궁 최고 회의장인 ‘비취 평의회’ 대전각은 짙푸른 암흑 마나의 소용돌이에 휩싸였다. 수백 년 동안 역대 황제들의 옥좌가 놓여 있던 중앙 제단 위에는 나인섀도우 코덱스의 금지된 마도 유물 ‘심연의 핵’이 검붉은 맥박을 요동치며 떠올라 있었고, 쇠사슬에 묶인 채 의식을 잃은 늙은 황제가 제물로 매달려 있었다. 대전각을 둘러싼 귀족들과 평의원들은 이미 고르고의 세뇌 마법에 걸려 초점 없는 눈으로 기괴한 찬송가를 읊조리고 있었다. 옥좌 뒤편의 어둠 속에서 진홍빛 법복을 입은 루시안 재상이 모습을 드러냈다. 그의 손에는 어둠의 군주 벨페고르에게서 하사받은 ‘사령의 권능 검’이 쥐여져 있었다. 루시안이 광기에 찬 사자후를 터뜨렸다.",
+      "narrationEn": "As midnight descended, the Jade Council Hall of the Imperial Palace was consumed by a tempest of catastrophic black mana.",
+      "narrationKo": "자정이 깊어지자 황궁 최고 회의장인 ‘비취 평의회’ 대전각은 짙푸른 암흑 마나의 소용돌이에 휩싸였다.",
       "sourceSentenceStart": 1,
-      "sourceSentenceEnd": 3,
+      "sourceSentenceEnd": 1,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "루시안이 광기에 찬 사자후를 터뜨렸다.",
-          "textEn": "Stepping from the shadows of the dais in flowing crimson vestments, High Minister Lucian raised the desecrated Sovereign Blade bestowed by the demon prince Belphegor.",
+          "textKo": "자정이 깊어지자 황궁 최고 회의장인 ‘비취 평의회’ 대전각은 짙푸른 암흑 마나의 소용돌이에 휩싸였다.",
+          "textEn": "As midnight descended, the Jade Council Hall of the Imperial Palace was consumed by a tempest of catastrophic black mana.",
           "bubbleType": "thought",
           "position": "top-right",
           "characterCardId": 89
         }
       ],
       "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
         {
           "textKo": "파지지직!",
           "textEn": "CRACKLE!",
@@ -44,20 +38,20 @@
       "sceneNumber": 2,
       "imageFile": "episode_28/scene_02.webp",
       "sourceImageFile": "episode_28/scene_02.webp",
-      "narrationEn": "Lucian bellowed in manic ecstasy. \"The hour has arrived! With the emperor's blood, the gates of the abyss shall open, and I shall reign as the immortal sovereign of the new world!\"",
-      "narrationKo": "“시간이 되었다! 황제의 피를 바쳐 심연의 차원문을 열고, 신세계의 절대 군주로 군림하리라!” 그 순간, 대전각의 거대한 천장 유리창이 와장창 깨져 나가며 세 명의 영웅이 번개처럼 강하했다.",
-      "sourceSentenceStart": 4,
-      "sourceSentenceEnd": 5,
+      "narrationEn": "Enshrined atop the high dais where the thrones of past emperors had rested for centuries floated the forbidden relic of the Nine Shadows Codex: the Abyssal Core, pulsing with sickening crimson veins. Bound in dark mana chains, the unconscious elderly emperor hung suspended as a blood sacrifice, while spellbound senators and nobles chanted dissonant, guttural hymns in vacant delirium.",
+      "narrationKo": "수백 년 동안 역대 황제들의 옥좌가 놓여 있던 중앙 제단 위에는 나인섀도우 코덱스의 금지된 마도 유물 ‘심연의 핵’이 검붉은 맥박을 요동치며 떠올라 있었고, 쇠사슬에 묶인 채 의식을 잃은 늙은 황제가 제물로 매달려 있었다.",
+      "sourceSentenceStart": 2,
+      "sourceSentenceEnd": 2,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "루시안",
-          "speakerEn": "Lucian",
-          "textKo": "“시간이 되었다! 황제의 피를 바쳐 심연의 차원문을 열고, 신세계의 절대 군주로 군림하리라!”",
-          "textEn": "“The hour has arrived! With the emperor's blood, the gates of the abyss shall open, and I shall reign as the immortal sovereign of the new world!”",
-          "bubbleType": "shout",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "수백 년 동안 역대 황제들의 옥좌가 놓여 있던 중앙 제단 위에는 나인섀도우 코덱스의 금지된 마도 유물 ‘심연의 핵’이 검붉은 맥박을 요동치며 떠올라 있었고, 쇠사슬에 묶인 채 의식을 잃은 늙은 황제가 제물로 매달려 있었다.",
+          "textEn": "Bound in dark mana chains, the unconscious elderly emperor hung suspended as a blood sacrifice, while spellbound senators and nobles chanted dissonant, guttural hymns in vacant delirium.",
+          "bubbleType": "thought",
           "position": "bottom-left",
-          "characterCardId": 61
+          "characterCardId": 89
         }
       ],
       "sfxCues": [
@@ -65,12 +59,6 @@
           "textKo": "챙-!",
           "textEn": "CLANG!",
           "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
           "position": "top-right"
         }
       ]
@@ -79,29 +67,23 @@
       "sceneNumber": 3,
       "imageFile": "episode_28/scene_03.webp",
       "sourceImageFile": "episode_28/scene_03.webp",
-      "narrationEn": "In that fatal breath, the massive stained-glass dome high above detonated into a shower of crystalline shards as three figures dropped from the ceiling like thunderbolts. Slamming his Dragon Breaker shield against the altar steps, Kadan detonated a concussive shockwave of golden starlight. Boom!",
-      "narrationKo": "카단이 드래곤 브레이커 방패를 앞세우며 제단 바닥을 강타했다. 콰아앙! 황금빛 충격파가 평의회 대전각을 뒤흔들며 제물로 바쳐지려던 황제의 쇠사슬을 단숨에 끊어냈다. 실리아가 바람의 장막으로 늙은 황제의 신형을 낚아채 안전한 후방으로 대피시켰다.",
-      "sourceSentenceStart": 6,
-      "sourceSentenceEnd": 8,
+      "narrationEn": "Stepping from the shadows of the dais in flowing crimson vestments, High Minister Lucian raised the desecrated Sovereign Blade bestowed by the demon prince Belphegor.",
+      "narrationKo": "대전각을 둘러싼 귀족들과 평의원들은 이미 고르고의 세뇌 마법에 걸려 초점 없는 눈으로 기괴한 찬송가를 읊조리고 있었다.",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 3,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "실리아가 바람의 장막으로 늙은 황제의 신형을 낚아채 안전한 후방으로 대피시켰다.",
-          "textEn": "Boom!",
+          "textKo": "대전각을 둘러싼 귀족들과 평의원들은 이미 고르고의 세뇌 마법에 걸려 초점 없는 눈으로 기괴한 찬송가를 읊조리고 있었다.",
+          "textEn": "Stepping from the shadows of the dais in flowing crimson vestments, High Minister Lucian raised the desecrated Sovereign Blade bestowed by the demon prince Belphegor.",
           "bubbleType": "thought",
           "position": "bottom-right",
-          "characterCardId": 41
+          "characterCardId": 89
         }
       ],
       "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
         {
           "textKo": "파지지직!",
           "textEn": "CRACKLE!",
@@ -114,20 +96,20 @@
       "sceneNumber": 4,
       "imageFile": "episode_28/scene_04.webp",
       "sourceImageFile": "episode_28/scene_04.webp",
-      "narrationEn": "The kinetic backlash rent the dais, snapping the sacrificial chains binding the emperor. Sweeping forward with her Jade Staff, Cilia scooped the monarch into an azure wind gale, depositing him safely behind the front ranks. Snarling in fury, Lucian brandished his blade.",
-      "narrationKo": "대전각 천장 돔에 조각되어 있던 역대 황제들의 황금 부조들은 검붉은 마나의 부식액에 녹아내려 기괴한 흉물로 변해 있었다. 회랑 기둥마다 나인섀도우의 사령 주술사들이 흑요석 향로를 흔들며 피비린내 나는 의식을 거행하고 있었고, 제단 바닥에 고인 황제의 피가 룬 회로를 따라 맥동하며 차원의 균열을 넓히고 있었다. 카단이 방패를 고쳐 쥐며 포효했다. “인간의 생명을 탐하는 사악한 의식은 여기서 끝이다! 성기사의 이름으로 심연의 문을 닫겠다!” 루시안이 이를 갈며 권능 검을 휘둘렀다.",
-      "sourceSentenceStart": 9,
-      "sourceSentenceEnd": 11,
+      "narrationEn": "Lucian bellowed in manic ecstasy.",
+      "narrationKo": "옥좌 뒤편의 어둠 속에서 진홍빛 법복을 입은 루시안 재상이 모습을 드러냈다. 그의 손에는 어둠의 군주 벨페고르에게서 하사받은 ‘사령의 권능 검’이 쥐여져 있었다.",
+      "sourceSentenceStart": 4,
+      "sourceSentenceEnd": 4,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“인간의 생명을 탐하는 사악한 의식은 여기서 끝이다! 성기사의 이름으로 심연의 문을 닫겠다!”",
-          "textEn": "“Insolent vermin! Death Knight Artus, tear them limb from limb!”",
-          "bubbleType": "shout",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그의 손에는 어둠의 군주 벨페고르에게서 하사받은 ‘사령의 권능 검’이 쥐여져 있었다.",
+          "textEn": "Lucian bellowed in manic ecstasy.",
+          "bubbleType": "thought",
           "position": "top-left",
-          "characterCardId": 41
+          "characterCardId": 61
         }
       ],
       "sfxCues": [
@@ -149,20 +131,84 @@
       "sceneNumber": 5,
       "imageFile": "episode_28/scene_05.webp",
       "sourceImageFile": "episode_28/scene_05.webp",
-      "narrationEn": "\"Insolent vermin! Death Knight Artus, tear them limb from limb!\" Summoned from the crypts, Artus charged with his broken obsidian greatsword, unleashing cleaves meant to split mountains. Yet Kadan angled the curved dragonbone plate of his shield with star-breathing, redirecting the shearing force into empty air. The deflected shockwave shattered colossal marble pillars, yet Kadan's guard remained impenetrable.",
-      "narrationKo": "“감히 기어들어왔구나, 반역자 쥐새끼들! 죽음의 기사 아르투스여, 저놈들을 갈기갈기 찢어발겨라!” 지하에서 소환된 아르투스가 흑요석 대검을 휘두르며 카단을 향해 쇄도했다. 산을 가를 듯한 참격이 쏟아졌지만, 카단은 드래곤 브레이커 방패의 곡면을 비스듬히 기울이며 별 호흡의 리듬으로 타격의 축을 비틀어냈다. 챙 하는 굉음과 함께 아르투스의 검격이 허공으로 빗나가며 대리석 기둥을 반 토막 냈다. 이그니스가 쇠파이프를 꼬나쥐며 루시안을 향해 돌진했다.",
-      "sourceSentenceStart": 12,
-      "sourceSentenceEnd": 14,
+      "narrationEn": "\"The hour has arrived! With the emperor's blood, the gates of the abyss shall open, and I shall reign as the immortal sovereign of the new world!\"",
+      "narrationKo": "루시안이 광기에 찬 사자후를 터뜨렸다. “시간이 되었다! 황제의 피를 바쳐 심연의 차원문을 열고, 신세계의 절대 군주로 군림하리라!”",
+      "sourceSentenceStart": 5,
+      "sourceSentenceEnd": 5,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "루시안",
           "speakerEn": "Lucian",
-          "textKo": "“감히 기어들어왔구나, 반역자 쥐새끼들! 죽음의 기사 아르투스여, 저놈들을 갈기갈기 찢어발겨라!”",
-          "textEn": "“Insolent vermin! Death Knight Artus, tear them limb from limb!”",
+          "textKo": "“시간이 되었다! 황제의 피를 바쳐 심연의 차원문을 열고, 신세계의 절대 군주로 군림하리라!”",
+          "textEn": "“The hour has arrived! With the emperor's blood, the gates of the abyss shall open, and I shall reign as the immortal sovereign of the new world!”",
           "bubbleType": "shout",
           "position": "top-right",
           "characterCardId": 61
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_28/scene_06.webp",
+      "sourceImageFile": "episode_28/scene_06.webp",
+      "narrationEn": "In that fatal breath, the massive stained-glass dome high above detonated into a shower of crystalline shards as three figures dropped from the ceiling like thunderbolts.",
+      "narrationKo": "그 순간, 대전각의 거대한 천장 유리창이 와장창 깨져 나가며 세 명의 영웅이 번개처럼 강하했다.",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 6,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그 순간, 대전각의 거대한 천장 유리창이 와장창 깨져 나가며 세 명의 영웅이 번개처럼 강하했다.",
+          "textEn": "In that fatal breath, the massive stained-glass dome high above detonated into a shower of crystalline shards as three figures dropped from the ceiling like thunderbolts.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 61
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_28/scene_07.webp",
+      "sourceImageFile": "episode_28/scene_07.webp",
+      "narrationEn": "Slamming his Dragon Breaker shield against the altar steps, Kadan detonated a concussive shockwave of golden starlight.",
+      "narrationKo": "카단이 드래곤 브레이커 방패를 앞세우며 제단 바닥을 강타했다. 콰아앙!",
+      "sourceSentenceStart": 7,
+      "sourceSentenceEnd": 7,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "콰아앙!",
+          "textEn": "Slamming his Dragon Breaker shield against the altar steps, Kadan detonated a concussive shockwave of golden starlight.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
@@ -181,245 +227,32 @@
       ]
     },
     {
-      "sceneNumber": 6,
-      "imageFile": "episode_28/scene_06.webp",
-      "sourceImageFile": "episode_28/scene_06.webp",
-      "narrationEn": "Brandishing his weapon, Ignis charged directly toward Lucian. \"Lucian! Your vile tyranny ends tonight!\"",
-      "narrationKo": "“루시안! 네놈의 더러운 야망은 여기서 끝이다!” 이그니스의 순백 화염이 루시안의 사령 방벽을 사정없이 난타했다. 화염과 암흑이 맞부딪치며 대전각 안은 눈이 멀 것 같은 섬광과 열기로 가득 찼다. 실리아는 녹옥 지팡이로 평의회 회랑을 포위하던 암흑 사제들의 결계를 차례로 무력화시키며 퇴로를 차단했다.",
-      "sourceSentenceStart": 15,
-      "sourceSentenceEnd": 16,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "이그니스",
-          "speakerEn": "Ignis",
-          "textKo": "“루시안! 네놈의 더러운 야망은 여기서 끝이다!”",
-          "textEn": "“Lucian! Your vile tyranny ends tonight!”",
-          "bubbleType": "shout",
-          "position": "bottom-left",
-          "characterCardId": 11
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 7,
-      "imageFile": "episode_28/scene_07.webp",
-      "sourceImageFile": "episode_28/scene_07.webp",
-      "narrationEn": "Ignis's pure white fire collided with Lucian's necrotic shields, filling the hall with blinding brilliance and suffocating heat. Cilia swept her staff, systematically severing the ley lines powering the inquisitors' wards. Driven into a corner, utter madness flared in Lucian's eyes.",
-      "narrationKo": "전세가 불리해지자, 루시안의 눈에 극단적인 광기가 번뜩였다. “크하하! 네놈들이 이겼다고 생각하느냐? 그렇다면 이 황궁 전체를 심연의 잿더미로 만들어주마!” 아르투스의 흑요석 대검이 내리꽂힐 때마다 대리석 바닥이 쩌적 갈라지며 음산한 원혼의 비명이 터져 나왔다. 그러나 카단의 드래곤 브레이커 방패는 단 한 치의 균열도 허용치 않고 죽음의 충격을 허공으로 흩뿌렸다. 카단은 별 호흡을 터뜨리며 방패로 아르투스의 흉갑을 들이받았고, 거대한 죽음의 기사는 쇠사슬을 끊으며 뒤로 밀려났다.",
-      "sourceSentenceStart": 17,
-      "sourceSentenceEnd": 19,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "루시안",
-          "speakerEn": "Lucian",
-          "textKo": "“크하하! 네놈들이 이겼다고 생각하느냐? 그렇다면 이 황궁 전체를 심연의 잿더미로 만들어주마!”",
-          "textEn": "“Lucian! Your vile tyranny ends tonight!”",
-          "bubbleType": "shout",
-          "position": "bottom-right",
-          "characterCardId": 61
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
-        }
-      ]
-    },
-    {
       "sceneNumber": 8,
       "imageFile": "episode_28/scene_08.webp",
       "sourceImageFile": "episode_28/scene_08.webp",
-      "narrationEn": "\"Bwahaha! Do you think you have triumphed? Then let this entire palace burn to ash in the abyss!\" Slashing his palm across the blade, Lucian drove his bloodied steel straight into the heart of the Abyssal Core. Cra-aaack!",
-      "narrationKo": "이그니스의 백색 화염은 루시안의 암흑 결계를 맹렬하게 집어삼켰다. 불길 속에서 루시안의 진홍빛 법복이 누더기로 타들어갔다. “괴물 같은 놈들! 감히 내 신세계를 방해하다니!” 루시안은 권능 검의 칼날을 자신의 손바닥에 그어 피를 뿜어낸 뒤, 제단 중앙의 ‘심연의 핵’에 꽂아 넣었다. 쿠구구구궁!",
-      "sourceSentenceStart": 20,
-      "sourceSentenceEnd": 22,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "이그니스",
-          "speakerEn": "Ignis",
-          "textKo": "“괴물 같은 놈들! 감히 내 신세계를 방해하다니!”",
-          "textEn": "“Bwahaha! Do you think you have triumphed? Then let this entire palace burn to ash in the abyss!”",
-          "bubbleType": "shout",
-          "position": "top-left",
-          "characterCardId": 11
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 9,
-      "imageFile": "episode_28/scene_09.webp",
-      "sourceImageFile": "episode_28/scene_09.webp",
-      "narrationEn": "The core went critical, expanding into an apocalyptic black sun that began consuming the hall's pillars. Space warped violently, initiating a cataclysmic dimensional collapse capable of vaporizing every living soul across the metropolis. Kadan planted his boots forward, shouting over the roar.",
-      "narrationKo": "심연의 핵이 임계점을 넘어서며 폭주하기 시작했다. 대전각 바닥이 쩌적 갈라지며 수도 라이트헤이븐 전체를 집어삼킬 거대한 흑색 마나 폭발이 카운트다운에 들어간 것이었다. 반경 수십 리 안의 모든 생명체를 소멸시킬 수 있는 치명적인 차원 붕괴였다. 카단이 방패를 앞으로 내세우며 외쳤다.",
-      "sourceSentenceStart": 23,
-      "sourceSentenceEnd": 24,
+      "narrationEn": "Boom! The kinetic backlash rent the dais, snapping the sacrificial chains binding the emperor.",
+      "narrationKo": "황금빛 충격파가 평의회 대전각을 뒤흔들며 제물로 바쳐지려던 황제의 쇠사슬을 단숨에 끊어냈다. 실리아가 바람의 장막으로 늙은 황제의 신형을 낚아채 안전한 후방으로 대피시켰다.",
+      "sourceSentenceStart": 8,
+      "sourceSentenceEnd": 8,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "카단이 방패를 앞으로 내세우며 외쳤다.",
-          "textEn": "Kadan planted his boots forward, shouting over the roar.",
+          "textKo": "실리아가 바람의 장막으로 늙은 황제의 신형을 낚아채 안전한 후방으로 대피시켰다.",
+          "textEn": "The kinetic backlash rent the dais, snapping the sacrificial chains binding the emperor.",
           "bubbleType": "thought",
-          "position": "top-right",
-          "characterCardId": 41
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 10,
-      "imageFile": "episode_28/scene_10.webp",
-      "sourceImageFile": "episode_28/scene_10.webp",
-      "narrationEn": "\"Fall back behind my shield! I will hold the line!\" Yet the scale of the impending detonation defied mortal containment. Unless an elemental champion entered the epicenter to neutralize the mana feedback with his own life essence, tens of thousands of citizens in the plazas outside would be obliterated.",
-      "narrationKo": "“모두 내 방패 뒤로 물러서라! 전력을 다해 막아내겠다!” 그러나 방패로 막아내기에는 폭발의 규모가 너무나 거대했다. 핵의 중심부에 직접 들어가 마나 역류를 자신의 생명력으로 상쇄시키지 않는 한, 대성당 광장에 모여 있는 수만 명의 시민들까지 모조리 소멸될 절체절명의 위기였다. 제단 중앙의 심연의 핵은 이미 거대한 검은 태양처럼 팽창하며 대전각의 기둥들을 집어삼키고 있었다. 중력을 무시한 파편들이 허공으로 떠올랐고, 시공간이 뒤틀리며 수도 라이트헤이븐 전체가 칠흑의 심연 속으로 끌려 들어가기 직전이었다. 반경 수십 리 안의 모든 건물과 백성들이 일순간에 소멸될 전대미문의 위기였다.",
-      "sourceSentenceStart": 25,
-      "sourceSentenceEnd": 27,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“모두 내 방패 뒤로 물러서라! 전력을 다해 막아내겠다!”",
-          "textEn": "“Fall back behind my shield! I will hold the line!”",
-          "bubbleType": "shout",
-          "position": "bottom-left",
-          "characterCardId": 41
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 11,
-      "imageFile": "episode_28/scene_11.webp",
-      "sourceImageFile": "episode_28/scene_11.webp",
-      "narrationEn": "In that heart-stopping instant, Ignis shoved Kadan backward with sudden, desperate strength. \"No, Kadan! Your shield must protect the future! This fire exists to burn away my sins!\"",
-      "narrationKo": "실리아가 눈물을 흘리며 녹옥 지팡이의 모든 바람을 끌어올려 차원 균열을 막아서려 했지만, 역부족이었다. “차원의 문이 너무 넓게 열렸어요! 결계가 버티지 못해요!” 그 찰나, 이그니스가 카단을 거칠게 밀쳐내며 앞으로 뛰쳐나갔다. “안 된다, 카단! 네 방패는 대륙의 미래를 지켜야 해! 이 불꽃은 내 죄업을 태우기 위해 존재하는 것이다!”",
-      "sourceSentenceStart": 28,
-      "sourceSentenceEnd": 30,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“차원의 문이 너무 넓게 열렸어요! 결계가 버티지 못해요!”",
-          "textEn": "“No, Kadan! Your shield must protect the future! This fire exists to burn away my sins!”",
-          "bubbleType": "shout",
-          "position": "bottom-right",
+          "position": "top-left",
           "characterCardId": 62
-        },
-        {
-          "speakerKo": "이그니스",
-          "speakerEn": "Ignis",
-          "textKo": "“안 된다, 카단! 네 방패는 대륙의 미래를 지켜야 해! 이 불꽃은 내 죄업을 태우기 위해 존재하는 것이다!”",
-          "textEn": "“This fire exists to burn away my sins!\"”",
-          "bubbleType": "shout",
-          "position": "top-left",
-          "characterCardId": 11
         }
       ],
       "sfxCues": [
         {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
           "position": "top-right"
         },
-        {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 12,
-      "imageFile": "episode_28/scene_12.webp",
-      "sourceImageFile": "episode_28/scene_12.webp",
-      "narrationEn": "Kadan cried out in sheer agony. \"Ignis! Stop! In the name of our fathers, do not do this!\"",
-      "narrationKo": "카단이 경악하여 소리쳤다. “이그니스! 멈춰라! 제발!”",
-      "sourceSentenceStart": 31,
-      "sourceSentenceEnd": 32,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“이그니스! 멈춰라! 제발!”",
-          "textEn": "“Ignis! Stop! In the name of our fathers, do not do this!”",
-          "bubbleType": "shout",
-          "position": "top-left",
-          "characterCardId": 41
-        }
-      ],
-      "sfxCues": [
         {
           "textKo": "휘이이익-!",
           "textEn": "SWOOSH!",
@@ -429,23 +262,238 @@
       ]
     },
     {
-      "sceneNumber": 13,
-      "imageFile": "episode_28/scene_13.webp",
-      "sourceImageFile": "episode_28/scene_13.webp",
-      "narrationEn": "Cilia shrieked, reaching out with all her might, but Ignis never looked back. He threw his living body into the raging vortex of the Abyssal Core. From Ignis's spirit erupted a supernova of pure, immaculate white fire brighter than the sun. The ancient royal bloodline of the White Flame ignited in transcendent sacrifice, systematically neutralizing the necrotic singularity. Turning his head through the flames, Ignis offered the radiant, innocent smile of his childhood, speaking his final words over the roaring tempest.",
-      "narrationKo": "실리아 역시 비명을 지르며 손을 뻗었지만, 이그니스는 뒤도 돌아보지 않고 폭주하는 심연의 핵 한가운데로 몸을 던졌다. 이그니스의 전신에서 태양보다 눈부신 순백의 성화가 폭발하듯 뿜어져 나왔다. 황실 정통 혈통의 순수한 마나가 핵의 암흑 마나와 맞부딪치며 맹렬하게 중화되기 시작했다. 이그니스가 피를 토하면서도 환하게 미소를 지으며 뒤를 돌아보았다.",
-      "sourceSentenceStart": 33,
-      "sourceSentenceEnd": 35,
+      "sceneNumber": 9,
+      "imageFile": "episode_28/scene_09.webp",
+      "sourceImageFile": "episode_28/scene_09.webp",
+      "narrationEn": "Sweeping forward with her Jade Staff, Cilia scooped the monarch into an azure wind gale, depositing him safely behind the front ranks.",
+      "narrationKo": "대전각 천장 돔에 조각되어 있던 역대 황제들의 황금 부조들은 검붉은 마나의 부식액에 녹아내려 기괴한 흉물로 변해 있었다.",
+      "sourceSentenceStart": 9,
+      "sourceSentenceEnd": 9,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "이그니스가 피를 토하면서도 환하게 미소를 지으며 뒤를 돌아보았다.",
-          "textEn": "Turning his head through the flames, Ignis offered the radiant, innocent smile of his childhood, speaking his final words over the roaring tempest.",
+          "textKo": "대전각 천장 돔에 조각되어 있던 역대 황제들의 황금 부조들은 검붉은 마나의 부식액에 녹아내려 기괴한 흉물로 변해 있었다.",
+          "textEn": "Sweeping forward with her Jade Staff, Cilia scooped the monarch into an azure wind gale, depositing him safely behind the front ranks.",
           "bubbleType": "thought",
           "position": "top-right",
           "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_28/scene_10.webp",
+      "sourceImageFile": "episode_28/scene_10.webp",
+      "narrationEn": "Snarling in fury, Lucian brandished his blade.",
+      "narrationKo": "회랑 기둥마다 나인섀도우의 사령 주술사들이 흑요석 향로를 흔들며 피비린내 나는 의식을 거행하고 있었고, 제단 바닥에 고인 황제의 피가 룬 회로를 따라 맥동하며 차원의 균열을 넓히고 있었다.",
+      "sourceSentenceStart": 10,
+      "sourceSentenceEnd": 10,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "회랑 기둥마다 나인섀도우의 사령 주술사들이 흑요석 향로를 흔들며 피비린내 나는 의식을 거행하고 있었고, 제단 바닥에 고인 황제의 피가 룬 회로를 따라 맥동하며 차원의 균열을 넓히고 있었다.",
+          "textEn": "Snarling in fury, Lucian brandished his blade.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_28/scene_11.webp",
+      "sourceImageFile": "episode_28/scene_11.webp",
+      "narrationEn": "\"Insolent vermin!",
+      "narrationKo": "카단이 방패를 고쳐 쥐며 포효했다. “인간의 생명을 탐하는 사악한 의식은 여기서 끝이다! 성기사의 이름으로 심연의 문을 닫겠다!”",
+      "sourceSentenceStart": 11,
+      "sourceSentenceEnd": 11,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“인간의 생명을 탐하는 사악한 의식은 여기서 끝이다! 성기사의 이름으로 심연의 문을 닫겠다!”",
+          "textEn": "“\"Insolent vermin!”",
+          "bubbleType": "shout",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_28/scene_12.webp",
+      "sourceImageFile": "episode_28/scene_12.webp",
+      "narrationEn": "Death Knight Artus, tear them limb from limb!\" Summoned from the crypts, Artus charged with his broken obsidian greatsword, unleashing cleaves meant to split mountains.",
+      "narrationKo": "루시안이 이를 갈며 권능 검을 휘둘렀다. “감히 기어들어왔구나, 반역자 쥐새끼들! 죽음의 기사 아르투스여, 저놈들을 갈기갈기 찢어발겨라!”",
+      "sourceSentenceStart": 12,
+      "sourceSentenceEnd": 12,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "루시안",
+          "speakerEn": "Lucian",
+          "textKo": "“감히 기어들어왔구나, 반역자 쥐새끼들! 죽음의 기사 아르투스여, 저놈들을 갈기갈기 찢어발겨라!”",
+          "textEn": "“Death Knight Artus, tear them limb from limb!\" Summoned from the crypts, Artus charged with his broken obsidian greatsword, unleashing cleaves meant to split mountains.”",
+          "bubbleType": "shout",
+          "position": "top-left",
+          "characterCardId": 61
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_28/scene_13.webp",
+      "sourceImageFile": "episode_28/scene_13.webp",
+      "narrationEn": "Yet Kadan angled the curved dragonbone plate of his shield with star-breathing, redirecting the shearing force into empty air.",
+      "narrationKo": "지하에서 소환된 아르투스가 흑요석 대검을 휘두르며 카단을 향해 쇄도했다. 산을 가를 듯한 참격이 쏟아졌지만, 카단은 드래곤 브레이커 방패의 곡면을 비스듬히 기울이며 별 호흡의 리듬으로 타격의 축을 비틀어냈다.",
+      "sourceSentenceStart": 13,
+      "sourceSentenceEnd": 13,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "산을 가를 듯한 참격이 쏟아졌지만, 카단은 드래곤 브레이커 방패의 곡면을 비스듬히 기울이며 별 호흡의 리듬으로 타격의 축을 비틀어냈다.",
+          "textEn": "Yet Kadan angled the curved dragonbone plate of his shield with star-breathing, redirecting the shearing force into empty air.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 60
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_28/scene_14.webp",
+      "sourceImageFile": "episode_28/scene_14.webp",
+      "narrationEn": "The deflected shockwave shattered colossal marble pillars, yet Kadan's guard remained impenetrable.",
+      "narrationKo": "챙 하는 굉음과 함께 아르투스의 검격이 허공으로 빗나가며 대리석 기둥을 반 토막 냈다.",
+      "sourceSentenceStart": 14,
+      "sourceSentenceEnd": 14,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "챙 하는 굉음과 함께 아르투스의 검격이 허공으로 빗나가며 대리석 기둥을 반 토막 냈다.",
+          "textEn": "The deflected shockwave shattered colossal marble pillars, yet Kadan's guard remained impenetrable.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 60
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_28/scene_15.webp",
+      "sourceImageFile": "episode_28/scene_15.webp",
+      "narrationEn": "Brandishing his weapon, Ignis charged directly toward Lucian. \"Lucian!",
+      "narrationKo": "이그니스가 쇠파이프를 꼬나쥐며 루시안을 향해 돌진했다. “루시안! 네놈의 더러운 야망은 여기서 끝이다!”",
+      "sourceSentenceStart": 15,
+      "sourceSentenceEnd": 15,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“루시안! 네놈의 더러운 야망은 여기서 끝이다!”",
+          "textEn": "“Brandishing his weapon, Ignis charged directly toward Lucian. \"Lucian!”",
+          "bubbleType": "shout",
+          "position": "bottom-right",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_28/scene_16.webp",
+      "sourceImageFile": "episode_28/scene_16.webp",
+      "narrationEn": "Your vile tyranny ends tonight!\"",
+      "narrationKo": "이그니스의 순백 화염이 루시안의 사령 방벽을 사정없이 난타했다. 화염과 암흑이 맞부딪치며 대전각 안은 눈이 멀 것 같은 섬광과 열기로 가득 찼다.",
+      "sourceSentenceStart": 16,
+      "sourceSentenceEnd": 16,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "화염과 암흑이 맞부딪치며 대전각 안은 눈이 멀 것 같은 섬광과 열기로 가득 찼다.",
+          "textEn": "Your vile tyranny ends tonight!\"",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 11
         }
       ],
       "sfxCues": [
@@ -464,116 +512,23 @@
       ]
     },
     {
-      "sceneNumber": 14,
-      "imageFile": "episode_28/scene_14.webp",
-      "sourceImageFile": "episode_28/scene_14.webp",
-      "narrationEn": "\"Kadan... my brother... Tell Master Aleksandar and father Balian... that Ignis was never a coward at the end... Cilia... watch over Kadan...\" BOOOOM!",
-      "narrationKo": "“카단... 내 형제여... 알렉산다르 숙부님과 발리안 아버지께 전해다오... 이그니스는 마지막 순간에... 비겁하지 않았노라고... 실리아... 카단을... 부탁하오...” 콰아아아아아앙! 눈이 멀 것 같은 순백의 섬광이 대전각을 가득 채웠다. 심연의 핵은 순백의 성화에 완전히 감싸여 자폭의 에너지를 잃고 산산조각 나 소멸되었지만, 그 폭심지 한가운데에 서 있던 젊은 영웅의 육신 역시 거룩한 빛의 재가 되어 허공으로 흩어졌다.",
-      "sourceSentenceStart": 36,
-      "sourceSentenceEnd": 38,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "이그니스",
-          "speakerEn": "Ignis",
-          "textKo": "“카단... 내 형제여... 알렉산다르 숙부님과 발리안 아버지께 전해다오... 이그니스는 마지막 순간에... 비겁하지 않았노라고... 실리아... 카단을... 부탁하오...”",
-          "textEn": "“Kadan... my brother... Tell Master Aleksandar and father Balian... that Ignis was never a coward at the end... Cilia... watch over Kadan...”",
-          "bubbleType": "thought",
-          "position": "bottom-left",
-          "characterCardId": 11
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 15,
-      "imageFile": "episode_28/scene_15.webp",
-      "sourceImageFile": "episode_28/scene_15.webp",
-      "narrationEn": "A blinding sheet of pure white starlight engulfed the entire palace. Wrapped in the holy flames of martyrdom, the Abyssal Core shattered into harmless dust, yet the physical vessel of the young hero dissolved into a shower of celestial light, scattering into the heavens. \"IGNIS————!!\"",
-      "narrationKo": "“이그니스————!!” 카단의 절규가 무너져 내리는 대전각을 찢어발겼다.",
-      "sourceSentenceStart": 39,
-      "sourceSentenceEnd": 40,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“이그니스————!!”",
-          "textEn": "“IGNIS————!!”",
-          "bubbleType": "shout",
-          "position": "bottom-right",
-          "characterCardId": 41
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "쿠구구궁!",
-          "textEn": "RUMBLE!",
-          "style": "rumble",
-          "position": "bottom-left"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 16,
-      "imageFile": "episode_28/scene_16.webp",
-      "sourceImageFile": "episode_28/scene_16.webp",
-      "narrationEn": "Kadan's grief-stricken roar rent the collapsing hall. When the brilliance faded and silence settled over the ruins, only a small mound of white ash remained upon the altar.",
-      "narrationKo": "이그니스의 마지막 순간은 대륙의 역사상 가장 눈부시고 숭고한 영웅의 탄생이었다. 폭주하는 핵의 중심부로 뛰어든 청년의 육신은 거대한 백색 불꽃의 화신이 되어 타올랐다. 황실 정통 혈통의 순수한 영혼이 스스로를 불살라 차원의 균열을 메우는 거룩한 제물이 된 것이었다. 이그니스의 입가에 어릴 적 보았던 가장 맑고 순수한 미소가 번졌다. 피눈물을 흘리며 절규하는 카단과 실리아를 향해, 청년은 마지막 작별의 손짓을 건넸다. 그리고 마침내 눈이 멀 것 같은 순백의 빛 속으로 완전히 녹아내렸다. 빛의 폭풍이 잦아들고 정적이 찾아왔을 때, 폭심지 제단 위에는 오직 작은 재의 더미만이 남아 있었다.",
-      "sourceSentenceStart": 41,
-      "sourceSentenceEnd": 43,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "내레이션",
-          "speakerEn": "Narration",
-          "textKo": "빛의 폭풍이 잦아들고 정적이 찾아왔을 때, 폭심지 제단 위에는 오직 작은 재의 더미만이 남아 있었다.",
-          "textEn": "When the brilliance faded and silence settled over the ruins, only a small mound of white ash remained upon the altar.",
-          "bubbleType": "thought",
-          "position": "top-left",
-          "characterCardId": 11
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
-        },
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
       "sceneNumber": 17,
       "imageFile": "episode_28/scene_17.webp",
       "sourceImageFile": "episode_28/scene_17.webp",
-      "narrationEn": "Stumbling forward, Kadan dropped to his knees. Miraculously intact amidst the embers rested the carved wooden horse toy and the White Glass Ember, glowing with gentle, eternal warmth. Clutching the relics against his chest, Kadan wept racking sobs, his tears darkening the ash.",
-      "narrationKo": "카단은 비틀거리며 다가가 무릎을 꿇었다. 재 속에서 이그니스가 생전에 품고 있던 작은 나무 말 장난감과, 은은한 온기를 내뿜는 ‘이그니스의 유리 불씨’만이 기적처럼 온전하게 빛나고 있었다. 카단은 떨리는 손으로 나무 말과 유리 불씨를 품속에 안았다. 카단의 뺨을 타고 굵은 눈물이 뚝뚝 떨어져 재를 적셨다. 실리아 역시 주저앉아 입술을 깨물며 오열했다.",
-      "sourceSentenceStart": 44,
-      "sourceSentenceEnd": 46,
+      "narrationEn": "Ignis's pure white fire collided with Lucian's necrotic shields, filling the hall with blinding brilliance and suffocating heat.",
+      "narrationKo": "실리아는 녹옥 지팡이로 평의회 회랑을 포위하던 암흑 사제들의 결계를 차례로 무력화시키며 퇴로를 차단했다.",
+      "sourceSentenceStart": 17,
+      "sourceSentenceEnd": 17,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "실리아 역시 주저앉아 입술을 깨물며 오열했다.",
-          "textEn": "Clutching the relics against his chest, Kadan wept racking sobs, his tears darkening the ash.",
+          "textKo": "실리아는 녹옥 지팡이로 평의회 회랑을 포위하던 암흑 사제들의 결계를 차례로 무력화시키며 퇴로를 차단했다.",
+          "textEn": "Ignis's pure white fire collided with Lucian's necrotic shields, filling the hall with blinding brilliance and suffocating heat.",
           "bubbleType": "thought",
           "position": "top-right",
-          "characterCardId": 41
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
@@ -589,20 +544,886 @@
       "sceneNumber": 18,
       "imageFile": "episode_28/scene_18.webp",
       "sourceImageFile": "episode_28/scene_18.webp",
-      "narrationEn": "Beside him, Cilia sank to the flagstones, biting her lip in agonizing sorrow. Mortally wounded by the backlash, Lucian had fled through the subterranean conduits, while Artus dissolved into the shadows. Stepping forward, the rescued emperor laid a trembling hand upon Kadan's shoulder.",
-      "narrationKo": "패배한 루시안은 폭발의 충격으로 지하 비밀 수로를 통해 비틀거리며 도망쳤고, 아르투스 역시 어둠 속으로 자취를 감추었다. 늙은 황제가 비틀거리며 다가와 카단의 어깨에 손을 얹었다. “고결한 기사의 영혼이... 제국과 백성들을 구원하였구나...”",
-      "sourceSentenceStart": 47,
-      "sourceSentenceEnd": 49,
+      "narrationEn": "Cilia swept her staff, systematically severing the ley lines powering the inquisitors' wards. Driven into a corner, utter madness flared in Lucian's eyes.",
+      "narrationKo": "전세가 불리해지자, 루시안의 눈에 극단적인 광기가 번뜩였다. “크하하! 네놈들이 이겼다고 생각하느냐? 그렇다면 이 황궁 전체를 심연의 잿더미로 만들어주마!”",
+      "sourceSentenceStart": 18,
+      "sourceSentenceEnd": 18,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "루시안",
+          "speakerEn": "Lucian",
+          "textKo": "“크하하! 네놈들이 이겼다고 생각하느냐? 그렇다면 이 황궁 전체를 심연의 잿더미로 만들어주마!”",
+          "textEn": "“Cilia swept her staff, systematically severing the ley lines powering the inquisitors' wards. Driven into a corner, utter madness flared in Lucian's eyes.”",
+          "bubbleType": "shout",
+          "position": "bottom-left",
+          "characterCardId": 61
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_28/scene_19.webp",
+      "sourceImageFile": "episode_28/scene_19.webp",
+      "narrationEn": "\"Bwahaha!",
+      "narrationKo": "아르투스의 흑요석 대검이 내리꽂힐 때마다 대리석 바닥이 쩌적 갈라지며 음산한 원혼의 비명이 터져 나왔다. 그러나 카단의 드래곤 브레이커 방패는 단 한 치의 균열도 허용치 않고 죽음의 충격을 허공으로 흩뿌렸다.",
+      "sourceSentenceStart": 19,
+      "sourceSentenceEnd": 19,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그러나 카단의 드래곤 브레이커 방패는 단 한 치의 균열도 허용치 않고 죽음의 충격을 허공으로 흩뿌렸다.",
+          "textEn": "\"Bwahaha!",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 60
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_28/scene_20.webp",
+      "sourceImageFile": "episode_28/scene_20.webp",
+      "narrationEn": "Do you think you have triumphed?",
+      "narrationKo": "카단은 별 호흡을 터뜨리며 방패로 아르투스의 흉갑을 들이받았고, 거대한 죽음의 기사는 쇠사슬을 끊으며 뒤로 밀려났다.",
+      "sourceSentenceStart": 20,
+      "sourceSentenceEnd": 20,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단은 별 호흡을 터뜨리며 방패로 아르투스의 흉갑을 들이받았고, 거대한 죽음의 기사는 쇠사슬을 끊으며 뒤로 밀려났다.",
+          "textEn": "Do you think you have triumphed?",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 21,
+      "imageFile": "episode_28/scene_21.webp",
+      "sourceImageFile": "episode_28/scene_21.webp",
+      "narrationEn": "Then let this entire palace burn to ash in the abyss!\" Slashing his palm across the blade, Lucian drove his bloodied steel straight into the heart of the Abyssal Core.",
+      "narrationKo": "이그니스의 백색 화염은 루시안의 암흑 결계를 맹렬하게 집어삼켰다. 불길 속에서 루시안의 진홍빛 법복이 누더기로 타들어갔다. “괴물 같은 놈들! 감히 내 신세계를 방해하다니!”",
+      "sourceSentenceStart": 21,
+      "sourceSentenceEnd": 21,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“괴물 같은 놈들! 감히 내 신세계를 방해하다니!”",
+          "textEn": "“Then let this entire palace burn to ash in the abyss!\" Slashing his palm across the blade, Lucian drove his bloodied steel straight into the heart of the Abyssal Core.”",
+          "bubbleType": "shout",
+          "position": "top-right",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 22,
+      "imageFile": "episode_28/scene_22.webp",
+      "sourceImageFile": "episode_28/scene_22.webp",
+      "narrationEn": "Cra-aaack!",
+      "narrationKo": "루시안은 권능 검의 칼날을 자신의 손바닥에 그어 피를 뿜어낸 뒤, 제단 중앙의 ‘심연의 핵’에 꽂아 넣었다.",
+      "sourceSentenceStart": 22,
+      "sourceSentenceEnd": 22,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "루시안은 권능 검의 칼날을 자신의 손바닥에 그어 피를 뿜어낸 뒤, 제단 중앙의 ‘심연의 핵’에 꽂아 넣었다.",
+          "textEn": "Cra-aaack!",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 61
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 23,
+      "imageFile": "episode_28/scene_23.webp",
+      "sourceImageFile": "episode_28/scene_23.webp",
+      "narrationEn": "The core went critical, expanding into an apocalyptic black sun that began consuming the hall's pillars.",
+      "narrationKo": "쿠구구구궁! 심연의 핵이 임계점을 넘어서며 폭주하기 시작했다. 대전각 바닥이 쩌적 갈라지며 수도 라이트헤이븐 전체를 집어삼킬 거대한 흑색 마나 폭발이 카운트다운에 들어간 것이었다.",
+      "sourceSentenceStart": 23,
+      "sourceSentenceEnd": 23,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "대전각 바닥이 쩌적 갈라지며 수도 라이트헤이븐 전체를 집어삼킬 거대한 흑색 마나 폭발이 카운트다운에 들어간 것이었다.",
+          "textEn": "The core went critical, expanding into an apocalyptic black sun that began consuming the hall's pillars.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 61
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 24,
+      "imageFile": "episode_28/scene_24.webp",
+      "sourceImageFile": "episode_28/scene_24.webp",
+      "narrationEn": "Space warped violently, initiating a cataclysmic dimensional collapse capable of vaporizing every living soul across the metropolis. Kadan planted his boots forward, shouting over the roar.",
+      "narrationKo": "반경 수십 리 안의 모든 생명체를 소멸시킬 수 있는 치명적인 차원 붕괴였다.",
+      "sourceSentenceStart": 24,
+      "sourceSentenceEnd": 24,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "반경 수십 리 안의 모든 생명체를 소멸시킬 수 있는 치명적인 차원 붕괴였다.",
+          "textEn": "Kadan planted his boots forward, shouting over the roar.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 61
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 25,
+      "imageFile": "episode_28/scene_25.webp",
+      "sourceImageFile": "episode_28/scene_25.webp",
+      "narrationEn": "\"Fall back behind my shield!",
+      "narrationKo": "카단이 방패를 앞으로 내세우며 외쳤다. “모두 내 방패 뒤로 물러서라! 전력을 다해 막아내겠다!”",
+      "sourceSentenceStart": 25,
+      "sourceSentenceEnd": 25,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "“고결한 기사의 영혼이... 제국과 백성들을 구원하였구나...”",
-          "textEn": "“A noble knight's soul... has preserved the realm and its people...”",
+          "textKo": "“모두 내 방패 뒤로 물러서라! 전력을 다해 막아내겠다!”",
+          "textEn": "“\"Fall back behind my shield!”",
+          "bubbleType": "shout",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 26,
+      "imageFile": "episode_28/scene_26.webp",
+      "sourceImageFile": "episode_28/scene_26.webp",
+      "narrationEn": "I will hold the line!\"",
+      "narrationKo": "그러나 방패로 막아내기에는 폭발의 규모가 너무나 거대했다. 핵의 중심부에 직접 들어가 마나 역류를 자신의 생명력으로 상쇄시키지 않는 한, 대성당 광장에 모여 있는 수만 명의 시민들까지 모조리 소멸될 절체절명의 위기였다.",
+      "sourceSentenceStart": 26,
+      "sourceSentenceEnd": 26,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "핵의 중심부에 직접 들어가 마나 역류를 자신의 생명력으로 상쇄시키지 않는 한, 대성당 광장에 모여 있는 수만 명의 시민들까지 모조리 소멸될 절체절명의 위기였다.",
+          "textEn": "I will hold the line!\"",
           "bubbleType": "thought",
           "position": "bottom-left",
           "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 27,
+      "imageFile": "episode_28/scene_27.webp",
+      "sourceImageFile": "episode_28/scene_27.webp",
+      "narrationEn": "Yet the scale of the impending detonation defied mortal containment. Unless an elemental champion entered the epicenter to neutralize the mana feedback with his own life essence, tens of thousands of citizens in the plazas outside would be obliterated.",
+      "narrationKo": "제단 중앙의 심연의 핵은 이미 거대한 검은 태양처럼 팽창하며 대전각의 기둥들을 집어삼키고 있었다.",
+      "sourceSentenceStart": 27,
+      "sourceSentenceEnd": 27,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "제단 중앙의 심연의 핵은 이미 거대한 검은 태양처럼 팽창하며 대전각의 기둥들을 집어삼키고 있었다.",
+          "textEn": "Unless an elemental champion entered the epicenter to neutralize the mana feedback with his own life essence, tens of thousands of citizens in the plazas outside would be obliterated.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 28,
+      "imageFile": "episode_28/scene_28.webp",
+      "sourceImageFile": "episode_28/scene_28.webp",
+      "narrationEn": "In that heart-stopping instant, Ignis shoved Kadan backward with sudden, desperate strength.",
+      "narrationKo": "중력을 무시한 파편들이 허공으로 떠올랐고, 시공간이 뒤틀리며 수도 라이트헤이븐 전체가 칠흑의 심연 속으로 끌려 들어가기 직전이었다. 반경 수십 리 안의 모든 건물과 백성들이 일순간에 소멸될 전대미문의 위기였다.",
+      "sourceSentenceStart": 28,
+      "sourceSentenceEnd": 28,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "반경 수십 리 안의 모든 건물과 백성들이 일순간에 소멸될 전대미문의 위기였다.",
+          "textEn": "In that heart-stopping instant, Ignis shoved Kadan backward with sudden, desperate strength.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 29,
+      "imageFile": "episode_28/scene_29.webp",
+      "sourceImageFile": "episode_28/scene_29.webp",
+      "narrationEn": "\"No, Kadan!",
+      "narrationKo": "실리아가 눈물을 흘리며 녹옥 지팡이의 모든 바람을 끌어올려 차원 균열을 막아서려 했지만, 역부족이었다. “차원의 문이 너무 넓게 열렸어요! 결계가 버티지 못해요!”",
+      "sourceSentenceStart": 29,
+      "sourceSentenceEnd": 29,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“차원의 문이 너무 넓게 열렸어요! 결계가 버티지 못해요!”",
+          "textEn": "“\"No, Kadan!”",
+          "bubbleType": "shout",
+          "position": "top-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 30,
+      "imageFile": "episode_28/scene_30.webp",
+      "sourceImageFile": "episode_28/scene_30.webp",
+      "narrationEn": "Your shield must protect the future!",
+      "narrationKo": "그 찰나, 이그니스가 카단을 거칠게 밀쳐내며 앞으로 뛰쳐나갔다. “안 된다, 카단! 네 방패는 대륙의 미래를 지켜야 해! 이 불꽃은 내 죄업을 태우기 위해 존재하는 것이다!”",
+      "sourceSentenceStart": 30,
+      "sourceSentenceEnd": 30,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“안 된다, 카단! 네 방패는 대륙의 미래를 지켜야 해! 이 불꽃은 내 죄업을 태우기 위해 존재하는 것이다!”",
+          "textEn": "“Your shield must protect the future!”",
+          "bubbleType": "shout",
+          "position": "bottom-left",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 31,
+      "imageFile": "episode_28/scene_31.webp",
+      "sourceImageFile": "episode_28/scene_31.webp",
+      "narrationEn": "This fire exists to burn away my sins!\" Kadan cried out in sheer agony.",
+      "narrationKo": "카단이 경악하여 소리쳤다. “이그니스! 멈춰라! 제발!”",
+      "sourceSentenceStart": 31,
+      "sourceSentenceEnd": 31,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“이그니스! 멈춰라! 제발!”",
+          "textEn": "“This fire exists to burn away my sins!\" Kadan cried out in sheer agony.”",
+          "bubbleType": "shout",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 32,
+      "imageFile": "episode_28/scene_32.webp",
+      "sourceImageFile": "episode_28/scene_32.webp",
+      "narrationEn": "\"Ignis!",
+      "narrationKo": "실리아 역시 비명을 지르며 손을 뻗었지만, 이그니스는 뒤도 돌아보지 않고 폭주하는 심연의 핵 한가운데로 몸을 던졌다.",
+      "sourceSentenceStart": 32,
+      "sourceSentenceEnd": 32,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "실리아 역시 비명을 지르며 손을 뻗었지만, 이그니스는 뒤도 돌아보지 않고 폭주하는 심연의 핵 한가운데로 몸을 던졌다.",
+          "textEn": "\"Ignis!",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 33,
+      "imageFile": "episode_28/scene_33.webp",
+      "sourceImageFile": "episode_28/scene_33.webp",
+      "narrationEn": "Stop!",
+      "narrationKo": "이그니스의 전신에서 태양보다 눈부신 순백의 성화가 폭발하듯 뿜어져 나왔다. 황실 정통 혈통의 순수한 마나가 핵의 암흑 마나와 맞부딪치며 맹렬하게 중화되기 시작했다.",
+      "sourceSentenceStart": 33,
+      "sourceSentenceEnd": 33,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "황실 정통 혈통의 순수한 마나가 핵의 암흑 마나와 맞부딪치며 맹렬하게 중화되기 시작했다.",
+          "textEn": "Stop!",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 34,
+      "imageFile": "episode_28/scene_34.webp",
+      "sourceImageFile": "episode_28/scene_34.webp",
+      "narrationEn": "In the name of our fathers, do not do this!\" Cilia shrieked, reaching out with all her might, but Ignis never looked back.",
+      "narrationKo": "이그니스가 피를 토하면서도 환하게 미소를 지으며 뒤를 돌아보았다.",
+      "sourceSentenceStart": 34,
+      "sourceSentenceEnd": 34,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "이그니스가 피를 토하면서도 환하게 미소를 지으며 뒤를 돌아보았다.",
+          "textEn": "In the name of our fathers, do not do this!\" Cilia shrieked, reaching out with all her might, but Ignis never looked back.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 35,
+      "imageFile": "episode_28/scene_35.webp",
+      "sourceImageFile": "episode_28/scene_35.webp",
+      "narrationEn": "He threw his living body into the raging vortex of the Abyssal Core.",
+      "narrationKo": "“카단... 내 형제여... 알렉산다르 숙부님과 발리안 아버지께 전해다오... 이그니스는 마지막 순간에... 비겁하지 않았노라고... 실리아... 카단을... 부탁하오...”",
+      "sourceSentenceStart": 35,
+      "sourceSentenceEnd": 35,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“카단... 내 형제여... 알렉산다르 숙부님과 발리안 아버지께 전해다오... 이그니스는 마지막 순간에... 비겁하지 않았노라고... 실리아... 카단을... 부탁하오...”",
+          "textEn": "“He threw his living body into the raging vortex of the Abyssal Core.”",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 36,
+      "imageFile": "episode_28/scene_36.webp",
+      "sourceImageFile": "episode_28/scene_36.webp",
+      "narrationEn": "From Ignis's spirit erupted a supernova of pure, immaculate white fire brighter than the sun.",
+      "narrationKo": "콰아아아아아앙! 눈이 멀 것 같은 순백의 섬광이 대전각을 가득 채웠다.",
+      "sourceSentenceStart": 36,
+      "sourceSentenceEnd": 36,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "눈이 멀 것 같은 순백의 섬광이 대전각을 가득 채웠다.",
+          "textEn": "From Ignis's spirit erupted a supernova of pure, immaculate white fire brighter than the sun.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 37,
+      "imageFile": "episode_28/scene_37.webp",
+      "sourceImageFile": "episode_28/scene_37.webp",
+      "narrationEn": "The ancient royal bloodline of the White Flame ignited in transcendent sacrifice, systematically neutralizing the necrotic singularity. Turning his head through the flames, Ignis offered the radiant, innocent smile of his childhood, speaking his final words over the roaring tempest.",
+      "narrationKo": "심연의 핵은 순백의 성화에 완전히 감싸여 자폭의 에너지를 잃고 산산조각 나 소멸되었지만, 그 폭심지 한가운데에 서 있던 젊은 영웅의 육신 역시 거룩한 빛의 재가 되어 허공으로 흩어졌다.",
+      "sourceSentenceStart": 37,
+      "sourceSentenceEnd": 37,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "심연의 핵은 순백의 성화에 완전히 감싸여 자폭의 에너지를 잃고 산산조각 나 소멸되었지만, 그 폭심지 한가운데에 서 있던 젊은 영웅의 육신 역시 거룩한 빛의 재가 되어 허공으로 흩어졌다.",
+          "textEn": "Turning his head through the flames, Ignis offered the radiant, innocent smile of his childhood, speaking his final words over the roaring tempest.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 38,
+      "imageFile": "episode_28/scene_38.webp",
+      "sourceImageFile": "episode_28/scene_38.webp",
+      "narrationEn": "\"Kadan... my brother...",
+      "narrationKo": "“이그니스————!!” 카단의 절규가 무너져 내리는 대전각을 찢어발겼다.",
+      "sourceSentenceStart": 38,
+      "sourceSentenceEnd": 38,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“이그니스————!!”",
+          "textEn": "“\"Kadan... my brother...”",
+          "bubbleType": "shout",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 39,
+      "imageFile": "episode_28/scene_39.webp",
+      "sourceImageFile": "episode_28/scene_39.webp",
+      "narrationEn": "Tell Master Aleksandar and father Balian... that Ignis was never a coward at the end...",
+      "narrationKo": "이그니스의 마지막 순간은 대륙의 역사상 가장 눈부시고 숭고한 영웅의 탄생이었다. 폭주하는 핵의 중심부로 뛰어든 청년의 육신은 거대한 백색 불꽃의 화신이 되어 타올랐다.",
+      "sourceSentenceStart": 39,
+      "sourceSentenceEnd": 39,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "폭주하는 핵의 중심부로 뛰어든 청년의 육신은 거대한 백색 불꽃의 화신이 되어 타올랐다.",
+          "textEn": "that Ignis was never a coward at the end...",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 40,
+      "imageFile": "episode_28/scene_40.webp",
+      "sourceImageFile": "episode_28/scene_40.webp",
+      "narrationEn": "Cilia... watch over Kadan...\" BOOOOM!",
+      "narrationKo": "황실 정통 혈통의 순수한 영혼이 스스로를 불살라 차원의 균열을 메우는 거룩한 제물이 된 것이었다.",
+      "sourceSentenceStart": 40,
+      "sourceSentenceEnd": 40,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "황실 정통 혈통의 순수한 영혼이 스스로를 불살라 차원의 균열을 메우는 거룩한 제물이 된 것이었다.",
+          "textEn": "watch over Kadan...\" BOOOOM!",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 41,
+      "imageFile": "episode_28/scene_41.webp",
+      "sourceImageFile": "episode_28/scene_41.webp",
+      "narrationEn": "A blinding sheet of pure white starlight engulfed the entire palace.",
+      "narrationKo": "이그니스의 입가에 어릴 적 보았던 가장 맑고 순수한 미소가 번졌다. 피눈물을 흘리며 절규하는 카단과 실리아를 향해, 청년은 마지막 작별의 손짓을 건넸다.",
+      "sourceSentenceStart": 41,
+      "sourceSentenceEnd": 41,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "피눈물을 흘리며 절규하는 카단과 실리아를 향해, 청년은 마지막 작별의 손짓을 건넸다.",
+          "textEn": "A blinding sheet of pure white starlight engulfed the entire palace.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 42,
+      "imageFile": "episode_28/scene_42.webp",
+      "sourceImageFile": "episode_28/scene_42.webp",
+      "narrationEn": "Wrapped in the holy flames of martyrdom, the Abyssal Core shattered into harmless dust, yet the physical vessel of the young hero dissolved into a shower of celestial light, scattering into the heavens.",
+      "narrationKo": "그리고 마침내 눈이 멀 것 같은 순백의 빛 속으로 완전히 녹아내렸다.",
+      "sourceSentenceStart": 42,
+      "sourceSentenceEnd": 42,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그리고 마침내 눈이 멀 것 같은 순백의 빛 속으로 완전히 녹아내렸다.",
+          "textEn": "Wrapped in the holy flames of martyrdom, the Abyssal Core shattered into harmless dust, yet the physical vessel of the young hero dissolved into a shower of celestial light, scattering into the heavens.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 43,
+      "imageFile": "episode_28/scene_43.webp",
+      "sourceImageFile": "episode_28/scene_43.webp",
+      "narrationEn": "\"IGNIS————!!\" Kadan's grief-stricken roar rent the collapsing hall.",
+      "narrationKo": "빛의 폭풍이 잦아들고 정적이 찾아왔을 때, 폭심지 제단 위에는 오직 작은 재의 더미만이 남아 있었다.",
+      "sourceSentenceStart": 43,
+      "sourceSentenceEnd": 43,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "빛의 폭풍이 잦아들고 정적이 찾아왔을 때, 폭심지 제단 위에는 오직 작은 재의 더미만이 남아 있었다.",
+          "textEn": "\"IGNIS————!!\" Kadan's grief-stricken roar rent the collapsing hall.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 44,
+      "imageFile": "episode_28/scene_44.webp",
+      "sourceImageFile": "episode_28/scene_44.webp",
+      "narrationEn": "When the brilliance faded and silence settled over the ruins, only a small mound of white ash remained upon the altar.",
+      "narrationKo": "카단은 비틀거리며 다가가 무릎을 꿇었다. 재 속에서 이그니스가 생전에 품고 있던 작은 나무 말 장난감과, 은은한 온기를 내뿜는 ‘이그니스의 유리 불씨’만이 기적처럼 온전하게 빛나고 있었다.",
+      "sourceSentenceStart": 44,
+      "sourceSentenceEnd": 44,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "재 속에서 이그니스가 생전에 품고 있던 작은 나무 말 장난감과, 은은한 온기를 내뿜는 ‘이그니스의 유리 불씨’만이 기적처럼 온전하게 빛나고 있었다.",
+          "textEn": "When the brilliance faded and silence settled over the ruins, only a small mound of white ash remained upon the altar.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 45,
+      "imageFile": "episode_28/scene_45.webp",
+      "sourceImageFile": "episode_28/scene_45.webp",
+      "narrationEn": "Stumbling forward, Kadan dropped to his knees.",
+      "narrationKo": "카단은 떨리는 손으로 나무 말과 유리 불씨를 품속에 안았다. 카단의 뺨을 타고 굵은 눈물이 뚝뚝 떨어져 재를 적셨다.",
+      "sourceSentenceStart": 45,
+      "sourceSentenceEnd": 45,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단의 뺨을 타고 굵은 눈물이 뚝뚝 떨어져 재를 적셨다.",
+          "textEn": "Stumbling forward, Kadan dropped to his knees.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 46,
+      "imageFile": "episode_28/scene_46.webp",
+      "sourceImageFile": "episode_28/scene_46.webp",
+      "narrationEn": "Miraculously intact amidst the embers rested the carved wooden horse toy and the White Glass Ember, glowing with gentle, eternal warmth.",
+      "narrationKo": "실리아 역시 주저앉아 입술을 깨물며 오열했다. 패배한 루시안은 폭발의 충격으로 지하 비밀 수로를 통해 비틀거리며 도망쳤고, 아르투스 역시 어둠 속으로 자취를 감추었다.",
+      "sourceSentenceStart": 46,
+      "sourceSentenceEnd": 46,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "패배한 루시안은 폭발의 충격으로 지하 비밀 수로를 통해 비틀거리며 도망쳤고, 아르투스 역시 어둠 속으로 자취를 감추었다.",
+          "textEn": "Miraculously intact amidst the embers rested the carved wooden horse toy and the White Glass Ember, glowing with gentle, eternal warmth.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
@@ -615,22 +1436,51 @@
       ]
     },
     {
-      "sceneNumber": 19,
-      "imageFile": "episode_28/scene_19.webp",
-      "sourceImageFile": "episode_28/scene_19.webp",
-      "narrationEn": "\"A noble knight's soul... has preserved the realm and its people...\" Gripping his silver dagger, Kadan lifted his face. Through the tears in the young warrior's eyes blazed an unbreakable, eternal resolve of iron.",
-      "narrationKo": "카단은 은빛 단검을 꽉 쥔 채 고개를 들었다. 슬픔으로 젖었던 청년의 눈동자에 절대 꺾이지 않을 강철 같은 결의가 타올랐다. “이그니스... 네 희생을 결코 헛되이 하지 않겠다. 네가 목숨으로 지켜낸 이 땅에 반드시 온전한 평화를 세우겠다.”",
-      "sourceSentenceStart": 50,
-      "sourceSentenceEnd": 51,
+      "sceneNumber": 47,
+      "imageFile": "episode_28/scene_47.webp",
+      "sourceImageFile": "episode_28/scene_47.webp",
+      "narrationEn": "Clutching the relics against his chest, Kadan wept racking sobs, his tears darkening the ash. Beside him, Cilia sank to the flagstones, biting her lip in agonizing sorrow.",
+      "narrationKo": "늙은 황제가 비틀거리며 다가와 카단의 어깨에 손을 얹었다. “고결한 기사의 영혼이... 제국과 백성들을 구원하였구나...”",
+      "sourceSentenceStart": 47,
+      "sourceSentenceEnd": 47,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "“이그니스... 네 희생을 결코 헛되이 하지 않겠다. 네가 목숨으로 지켜낸 이 땅에 반드시 온전한 평화를 세우겠다.”",
-          "textEn": "“A noble knight's soul... has preserved the realm and its people...”",
+          "textKo": "“고결한 기사의 영혼이... 제국과 백성들을 구원하였구나...”",
+          "textEn": "“Clutching the relics against his chest, Kadan wept racking sobs, his tears darkening the ash. Beside him, Cilia sank to the flagstones, biting her lip in agonizing sorrow.”",
           "bubbleType": "thought",
           "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 48,
+      "imageFile": "episode_28/scene_48.webp",
+      "sourceImageFile": "episode_28/scene_48.webp",
+      "narrationEn": "Mortally wounded by the backlash, Lucian had fled through the subterranean conduits, while Artus dissolved into the shadows.",
+      "narrationKo": "카단은 은빛 단검을 꽉 쥔 채 고개를 들었다. 슬픔으로 젖었던 청년의 눈동자에 절대 꺾이지 않을 강철 같은 결의가 타올랐다.",
+      "sourceSentenceStart": 48,
+      "sourceSentenceEnd": 48,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "슬픔으로 젖었던 청년의 눈동자에 절대 꺾이지 않을 강철 같은 결의가 타올랐다.",
+          "textEn": "Mortally wounded by the backlash, Lucian had fled through the subterranean conduits, while Artus dissolved into the shadows.",
+          "bubbleType": "thought",
+          "position": "top-left",
           "characterCardId": 41
         }
       ],
@@ -650,22 +1500,138 @@
       ]
     },
     {
-      "sceneNumber": 20,
-      "imageFile": "episode_28/scene_20.webp",
-      "sourceImageFile": "episode_28/scene_20.webp",
-      "narrationEn": "\"Ignis... Your sacrifice shall never be in vain. Upon the world you preserved with your life, I swear to erect an enduring peace.\" Before the solemn martyrdom of the young hero, the darkest night of the continent was passing into dawn.",
-      "narrationKo": "영웅의 비장한 죽음 앞에, 대륙의 밤은 가장 깊은 어둠을 지나 새벽을 향해 나아가고 있었다. 폭심지의 잿더미 위에 무릎을 꿇은 카단의 두 어깨가 걷잡을 수 없이 떨렸다. 품에 안은 작은 나무 말 장난감과 따스한 유리 불씨에 카단의 뜨거운 눈물이 뚝뚝 떨어졌다. 형제를 잃은 슬픔은 가슴을 칼로 도려내는 듯 아팠지만, 이그니스가 목숨 바쳐 지켜낸 수도 라이트헤이븐의 수만 명 시민들의 환호성이 먼 창밖에서 은은하게 들려왔다. 실리아가 다가와 카단의 젖은 뺨을 부드럽게 감싸주었다. “이그니스는 영원히 우리 곁에 있어요. 그가 남긴 빛으로 반드시 새벽을 완성해야 해요.” 카단은 은빛 단검을 쥐며 일어섰다. 청년의 눈빛은 결코 꺼지지 않을 영원한 등불이 되어 타오르고 있었다.",
+      "sceneNumber": 49,
+      "imageFile": "episode_28/scene_49.webp",
+      "sourceImageFile": "episode_28/scene_49.webp",
+      "narrationEn": "Stepping forward, the rescued emperor laid a trembling hand upon Kadan's shoulder.",
+      "narrationKo": "“이그니스... 네 희생을 결코 헛되이 하지 않겠다. 네가 목숨으로 지켜낸 이 땅에 반드시 온전한 평화를 세우겠다.”",
+      "sourceSentenceStart": 49,
+      "sourceSentenceEnd": 49,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“이그니스... 네 희생을 결코 헛되이 하지 않겠다. 네가 목숨으로 지켜낸 이 땅에 반드시 온전한 평화를 세우겠다.”",
+          "textEn": "“Stepping forward, the rescued emperor laid a trembling hand upon Kadan's shoulder.”",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 50,
+      "imageFile": "episode_28/scene_50.webp",
+      "sourceImageFile": "episode_28/scene_50.webp",
+      "narrationEn": "\"A noble knight's soul... has preserved the realm and its people...\" Gripping his silver dagger, Kadan lifted his face.",
+      "narrationKo": "영웅의 비장한 죽음 앞에, 대륙의 밤은 가장 깊은 어둠을 지나 새벽을 향해 나아가고 있었다.",
+      "sourceSentenceStart": 50,
+      "sourceSentenceEnd": 50,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "영웅의 비장한 죽음 앞에, 대륙의 밤은 가장 깊은 어둠을 지나 새벽을 향해 나아가고 있었다.",
+          "textEn": "has preserved the realm and its people...\" Gripping his silver dagger, Kadan lifted his face.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 51,
+      "imageFile": "episode_28/scene_51.webp",
+      "sourceImageFile": "episode_28/scene_51.webp",
+      "narrationEn": "Through the tears in the young warrior's eyes blazed an unbreakable, eternal resolve of iron.",
+      "narrationKo": "폭심지의 잿더미 위에 무릎을 꿇은 카단의 두 어깨가 걷잡을 수 없이 떨렸다. 품에 안은 작은 나무 말 장난감과 따스한 유리 불씨에 카단의 뜨거운 눈물이 뚝뚝 떨어졌다.",
+      "sourceSentenceStart": 51,
+      "sourceSentenceEnd": 51,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "품에 안은 작은 나무 말 장난감과 따스한 유리 불씨에 카단의 뜨거운 눈물이 뚝뚝 떨어졌다.",
+          "textEn": "Through the tears in the young warrior's eyes blazed an unbreakable, eternal resolve of iron.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 52,
+      "imageFile": "episode_28/scene_52.webp",
+      "sourceImageFile": "episode_28/scene_52.webp",
+      "narrationEn": "\"Ignis...",
+      "narrationKo": "형제를 잃은 슬픔은 가슴을 칼로 도려내는 듯 아팠지만, 이그니스가 목숨 바쳐 지켜낸 수도 라이트헤이븐의 수만 명 시민들의 환호성이 먼 창밖에서 은은하게 들려왔다.",
       "sourceSentenceStart": 52,
-      "sourceSentenceEnd": 54,
+      "sourceSentenceEnd": 52,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "형제를 잃은 슬픔은 가슴을 칼로 도려내는 듯 아팠지만, 이그니스가 목숨 바쳐 지켜낸 수도 라이트헤이븐의 수만 명 시민들의 환호성이 먼 창밖에서 은은하게 들려왔다.",
+          "textEn": "\"Ignis...",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 53,
+      "imageFile": "episode_28/scene_53.webp",
+      "sourceImageFile": "episode_28/scene_53.webp",
+      "narrationEn": "Your sacrifice shall never be in vain. Upon the world you preserved with your life, I swear to erect an enduring peace.\"",
+      "narrationKo": "실리아가 다가와 카단의 젖은 뺨을 부드럽게 감싸주었다. “이그니스는 영원히 우리 곁에 있어요. 그가 남긴 빛으로 반드시 새벽을 완성해야 해요.” 카단은 은빛 단검을 쥐며 일어섰다.",
+      "sourceSentenceStart": 53,
+      "sourceSentenceEnd": 53,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "실리아",
           "speakerEn": "Celia",
           "textKo": "“이그니스는 영원히 우리 곁에 있어요. 그가 남긴 빛으로 반드시 새벽을 완성해야 해요.”",
-          "textEn": "“Ignis... Your sacrifice shall never be in vain. Upon the world you preserved with your life, I swear to erect an enduring peace.”",
+          "textEn": "“Your sacrifice shall never be in vain. Upon the world you preserved with your life, I swear to erect an enduring peace.\"”",
           "bubbleType": "speech",
-          "position": "top-left",
+          "position": "top-right",
           "characterCardId": 62
         }
       ],
@@ -676,6 +1642,35 @@
           "style": "slash",
           "position": "top-right"
         },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 54,
+      "imageFile": "episode_28/scene_54.webp",
+      "sourceImageFile": "episode_28/scene_54.webp",
+      "narrationEn": "Before the solemn martyrdom of the young hero, the darkest night of the continent was passing into dawn.",
+      "narrationKo": "청년의 눈빛은 결코 꺼지지 않을 영원한 등불이 되어 타오르고 있었다.",
+      "sourceSentenceStart": 54,
+      "sourceSentenceEnd": 54,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "청년의 눈빛은 결코 꺼지지 않을 영원한 등불이 되어 타오르고 있었다.",
+          "textEn": "Before the solemn martyrdom of the young hero, the darkest night of the continent was passing into dawn.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
         {
           "textKo": "파지지직!",
           "textEn": "CRACKLE!",

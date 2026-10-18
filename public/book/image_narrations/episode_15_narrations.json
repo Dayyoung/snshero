@@ -2,24 +2,24 @@
   "episodeNumber": 15,
   "episodeTitleEn": "Night of Serpent and Lion",
   "episodeTitleKo": "독사와 사자의 밤",
-  "sourceSentenceCount": 45,
-  "sceneCount": 20,
+  "sourceSentenceCount": 48,
+  "sceneCount": 48,
   "scenes": [
     {
       "sceneNumber": 1,
       "imageFile": "episode_15/scene_01.webp",
       "sourceImageFile": "episode_15/scene_01.webp",
-      "narrationEn": "As midnight deepened, the waves across Mist Lake grew increasingly tumultuous. Violent nocturnal gales sweeping down from the eastern mountain crags battered the cedar shingles of Cloud Return Manor without mercy, while torrents of heavy rain churned the dark waters into foam. Within the manor's great central hearth, logs of seasoned oak crackled and cast fluttering orange flames across the hall, yet the uncanny chill seeping through the drafty corridors defied the fire's warmth. Huddled around the hearthstone, displaced fishermen and war refugees roasted salted lake fish, seeking refuge from the bitter cold. Beside the brazier, Cilia ground lily-of-the-valley extracts and mountain mint leaves in a stone mortar, carefully preparing a restorative tonic for General Leonar's lingering battle wounds. Stirring the ceramic medicine bowl, Cilia gazed through the rain-streaked window into the tempest.",
-      "narrationKo": "자정이 깊어갈 무렵, 안개 호수의 물결은 한층 더 거칠어지고 있었다. 동해안 산맥에서 불어닥친 사나운 밤바람이 구름돌아오는장원의 삼나무 지붕을 사정없이 흔들었고, 굵은 빗줄기가 호수 수면을 어지럽게 두드렸다. 장원 중앙 홀의 거대한 벽난로에서는 참나무 장작이 타닥거리며 붉은 불꽃을 뿜어내고 있었지만, 복도 구석구석으로 스며드는 음산한 한기는 쉽게 가시지 않았다. 벽난로 주위에는 전쟁으로 집을 잃은 어부들과 피난민들이 모여 앉아 말린 생선을 구우며 추위를 녹이고 있었고, 실리아는 레오나르 장군의 오랜 전상(戰傷)을 돌보기 위해 은방울꽃 즙과 박하 잎을 빻아 약탕관을 달이고 있었다. 실리아가 약사발을 저으며 창밖의 험악한 비바람을 내다보았다.",
+      "narrationEn": "As midnight deepened, the waves across Mist Lake grew increasingly tumultuous. Violent nocturnal gales sweeping down from the eastern mountain crags battered the cedar shingles of Cloud Return Manor without mercy, while torrents of heavy rain churned the dark waters into foam.",
+      "narrationKo": "자정이 깊어갈 무렵, 안개 호수의 물결은 한층 더 거칠어지고 있었다. 동해안 산맥에서 불어닥친 사나운 밤바람이 구름돌아오는장원의 삼나무 지붕을 사정없이 흔들었고, 굵은 빗줄기가 호수 수면을 어지럽게 두드렸다.",
       "sourceSentenceStart": 1,
-      "sourceSentenceEnd": 2,
+      "sourceSentenceEnd": 1,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "실리아가 약사발을 저으며 창밖의 험악한 비바람을 내다보았다.",
-          "textEn": "Stirring the ceramic medicine bowl, Cilia gazed through the rain-streaked window into the tempest.",
+          "textKo": "동해안 산맥에서 불어닥친 사나운 밤바람이 구름돌아오는장원의 삼나무 지붕을 사정없이 흔들었고, 굵은 빗줄기가 호수 수면을 어지럽게 두드렸다.",
+          "textEn": "Violent nocturnal gales sweeping down from the eastern mountain crags battered the cedar shingles of Cloud Return Manor without mercy, while torrents of heavy rain churned the dark waters into foam.",
           "bubbleType": "thought",
           "position": "top-left",
           "characterCardId": 62
@@ -27,16 +27,10 @@
       ],
       "sfxCues": [
         {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
           "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
+          "position": "top-left"
         }
       ]
     },
@@ -44,58 +38,29 @@
       "sceneNumber": 2,
       "imageFile": "episode_15/scene_02.webp",
       "sourceImageFile": "episode_15/scene_02.webp",
-      "narrationEn": "\"Ominous currents are churning beneath the lake surface. The cadence of the waves is distorted, poisoned with deep crimson mana.\" Resting his unadorned iron shield against the stone mantle, Kadan nodded solemnly.",
-      "narrationKo": "“호수의 수면 아래에서 불길한 기류가 소용돌이치고 있어요. 파도의 결이 평소와 달리 검붉은 마나를 머금고 뒤틀려 있네요.” 카단이 무쇠 방패를 난로 옆에 기대어 두며 고개를 끄덕였다.",
-      "sourceSentenceStart": 3,
-      "sourceSentenceEnd": 4,
+      "narrationEn": "Within the manor's great central hearth, logs of seasoned oak crackled and cast fluttering orange flames across the hall, yet the uncanny chill seeping through the drafty corridors defied the fire's warmth. Huddled around the hearthstone, displaced fishermen and war refugees roasted salted lake fish, seeking refuge from the bitter cold.",
+      "narrationKo": "장원 중앙 홀의 거대한 벽난로에서는 참나무 장작이 타닥거리며 붉은 불꽃을 뿜어내고 있었지만, 복도 구석구석으로 스며드는 음산한 한기는 쉽게 가시지 않았다.",
+      "sourceSentenceStart": 2,
+      "sourceSentenceEnd": 2,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“호수의 수면 아래에서 불길한 기류가 소용돌이치고 있어요. 파도의 결이 평소와 달리 검붉은 마나를 머금고 뒤틀려 있네요.”",
-          "textEn": "“Ominous currents are churning beneath the lake surface. The cadence of the waves is distorted, poisoned with deep crimson mana.”",
-          "bubbleType": "speech",
-          "position": "bottom-left",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "장원 중앙 홀의 거대한 벽난로에서는 참나무 장작이 타닥거리며 붉은 불꽃을 뿜어내고 있었지만, 복도 구석구석으로 스며드는 음산한 한기는 쉽게 가시지 않았다.",
+          "textEn": "Huddled around the hearthstone, displaced fishermen and war refugees roasted salted lake fish, seeking refuge from the bitter cold.",
+          "bubbleType": "thought",
+          "position": "top-right",
           "characterCardId": 62
         }
       ],
       "sfxCues": [
         {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
           "textKo": "콰아아앙!",
           "textEn": "BOOM!",
           "style": "impact",
           "position": "center"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 3,
-      "imageFile": "episode_15/scene_03.webp",
-      "sourceImageFile": "episode_15/scene_03.webp",
-      "narrationEn": "\"It bears the chilling aura of the imperial secret inquisition we witnessed in the capital. Lucian has surely tracked our scent to this lake.\" At that moment, an elderly watchman stationed at the jetty tower hurried into the hall, shaking the driving rain from his oilskin cloak. Clutched tightly against his chest was an unidentified parcel wrapped in sodden burlap. Panting heavily, the fisherman set the container down atop the heavy trestle table.",
-      "narrationKo": "“수도에서 보았던 암흑 감찰대의 살기와 흡사하다. 루시안이 호수까지 추격대를 보낸 것이 분명해.” 그때 나루터의 망루를 지키던 늙은 어부 하나가 흠뻑 젖은 우비를 털며 급히 홀 안으로 뛰어 들어왔다. 그의 품에는 정체불명의 화물 하나가 안겨 있었다. 어부가 거친 숨을 몰아쉬며 화물을 탁자 위에 내려놓았다.",
-      "sourceSentenceStart": 5,
-      "sourceSentenceEnd": 7,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“수도에서 보았던 암흑 감찰대의 살기와 흡사하다. 루시안이 호수까지 추격대를 보낸 것이 분명해.”",
-          "textEn": "“It bears the chilling aura of the imperial secret inquisition we witnessed in the capital. Lucian has surely tracked our scent to this lake.”",
-          "bubbleType": "speech",
-          "position": "bottom-right",
-          "characterCardId": 41
-        }
-      ],
-      "sfxCues": [
+        },
         {
           "textKo": "쿠구구궁!",
           "textEn": "RUMBLE!",
@@ -105,23 +70,52 @@
       ]
     },
     {
-      "sceneNumber": 4,
-      "imageFile": "episode_15/scene_04.webp",
-      "sourceImageFile": "episode_15/scene_04.webp",
-      "narrationEn": "\"Just moments ago, a black-sailed cutter slipped through the fog, hurled this crate onto the jetty, and vanished into the darkness! General Leonar's honored name is carved distinctly across the lid!\" Resting upon the timber planks was a skull-sized chest carved from translucent black crystal. Atop the lid squatted five masterfully sculpted viper heads coiled in serpentine tension, while from the fine hairline fractures along the seams seeped an ominous violet miasma, pulsing like living capillaries.",
-      "narrationKo": "“방금 안갯속에서 검은 돛을 단 쾌속선 한 척이 다가와 이 상자만 던져두고 쏜살같이 사라졌습니다! 수신인에 분명히 레오나르 장군님의 존함이 적혀 있었습니다.” 탁자 위에 놓인 것은 사람 두개골 크기만 한 투명한 흑수정 상자였다. 상자 뚜껑 위에는 정교하게 세공된 다섯 마리의 독사 머리가 똬리를 튼 형상으로 조각되어 있었고, 상자의 이음매 사이로는 보랏빛 인광을 띤 불길한 독기가 실핏줄처럼 피어오르고 있었다.",
-      "sourceSentenceStart": 8,
-      "sourceSentenceEnd": 9,
+      "sceneNumber": 3,
+      "imageFile": "episode_15/scene_03.webp",
+      "sourceImageFile": "episode_15/scene_03.webp",
+      "narrationEn": "Beside the brazier, Cilia ground lily-of-the-valley extracts and mountain mint leaves in a stone mortar, carefully preparing a restorative tonic for General Leonar's lingering battle wounds. Stirring the ceramic medicine bowl, Cilia gazed through the rain-streaked window into the tempest.",
+      "narrationKo": "벽난로 주위에는 전쟁으로 집을 잃은 어부들과 피난민들이 모여 앉아 말린 생선을 구우며 추위를 녹이고 있었고, 실리아는 레오나르 장군의 오랜 전상(戰傷)을 돌보기 위해 은방울꽃 즙과 박하 잎을 빻아 약탕관을 달이고 있었다.",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 3,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“방금 안갯속에서 검은 돛을 단 쾌속선 한 척이 다가와 이 상자만 던져두고 쏜살같이 사라졌습니다! 수신인에 분명히 레오나르 장군님의 존함이 적혀 있었습니다.”",
-          "textEn": "“Just moments ago, a black-sailed cutter slipped through the fog, hurled this crate onto the jetty, and vanished into the darkness! General Leonar's honored name is carved distinctly across the lid!”",
-          "bubbleType": "shout",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "벽난로 주위에는 전쟁으로 집을 잃은 어부들과 피난민들이 모여 앉아 말린 생선을 구우며 추위를 녹이고 있었고, 실리아는 레오나르 장군의 오랜 전상(戰傷)을 돌보기 위해 은방울꽃 즙과 박하 잎을 빻아 약탕관을 달이고 있었다.",
+          "textEn": "Stirring the ceramic medicine bowl, Cilia gazed through the rain-streaked window into the tempest.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_15/scene_04.webp",
+      "sourceImageFile": "episode_15/scene_04.webp",
+      "narrationEn": "\"Ominous currents are churning beneath the lake surface. The cadence of the waves is distorted, poisoned with deep crimson mana.\"",
+      "narrationKo": "실리아가 약사발을 저으며 창밖의 험악한 비바람을 내다보았다. “호수의 수면 아래에서 불길한 기류가 소용돌이치고 있어요. 파도의 결이 평소와 달리 검붉은 마나를 머금고 뒤틀려 있네요.”",
+      "sourceSentenceStart": 4,
+      "sourceSentenceEnd": 4,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“호수의 수면 아래에서 불길한 기류가 소용돌이치고 있어요. 파도의 결이 평소와 달리 검붉은 마나를 머금고 뒤틀려 있네요.”",
+          "textEn": "“Ominous currents are churning beneath the lake surface. The cadence of the waves is distorted, poisoned with deep crimson mana.”",
+          "bubbleType": "speech",
           "position": "top-left",
-          "characterCardId": 41
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
@@ -143,28 +137,28 @@
       "sceneNumber": 5,
       "imageFile": "episode_15/scene_05.webp",
       "sourceImageFile": "episode_15/scene_05.webp",
-      "narrationEn": "Cilia gripped her staff, her voice ringing out in sharp alarm. \"Do not approach it! The runes etched across those crystal facets bear the forbidden necromantic death-curses of Medusa Gorgo! The instant the lid is released, lethal necrotic venom will engulf this room!\"",
-      "narrationKo": "실리아가 녹옥 지팡이를 쥐며 다급하게 물러서라고 외쳤다. “가까이 가지 마세요! 상자 표면에 새겨진 문양은 메두사 고르고의 금지된 사령 저주예요! 뚜껑을 여는 순간 치명적인 사독이 퍼져나갈 거예요!”",
-      "sourceSentenceStart": 10,
-      "sourceSentenceEnd": 11,
+      "narrationEn": "Resting his unadorned iron shield against the stone mantle, Kadan nodded solemnly.",
+      "narrationKo": "카단이 무쇠 방패를 난로 옆에 기대어 두며 고개를 끄덕였다. “수도에서 보았던 암흑 감찰대의 살기와 흡사하다. 루시안이 호수까지 추격대를 보낸 것이 분명해.”",
+      "sourceSentenceStart": 5,
+      "sourceSentenceEnd": 5,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“가까이 가지 마세요! 상자 표면에 새겨진 문양은 메두사 고르고의 금지된 사령 저주예요! 뚜껑을 여는 순간 치명적인 사독이 퍼져나갈 거예요!”",
-          "textEn": "“Do not approach it! The runes etched across those crystal facets bear the forbidden necromantic death-curses of Medusa Gorgo! The instant the lid is released, lethal necrotic venom will engulf this room!”",
-          "bubbleType": "shout",
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“수도에서 보았던 암흑 감찰대의 살기와 흡사하다. 루시안이 호수까지 추격대를 보낸 것이 분명해.”",
+          "textEn": "“Resting his unadorned iron shield against the stone mantle, Kadan nodded solemnly.”",
+          "bubbleType": "speech",
           "position": "top-right",
-          "characterCardId": 62
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
         {
-          "textKo": "쿵-!",
-          "textEn": "THUD!",
-          "style": "impact",
-          "position": "bottom-right"
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
         }
       ]
     },
@@ -172,34 +166,28 @@
       "sceneNumber": 6,
       "imageFile": "episode_15/scene_06.webp",
       "sourceImageFile": "episode_15/scene_06.webp",
-      "narrationEn": "Before her warning could be fully registered, the cunning internal clockwork trigger embedded within the box's base released with a crisp, fatal click. With a violent crystalline detonation, the obsidian chest shattered into shards, and from the billowing purple toxic vapor surged five ethereal phantom vipers with burning crimson eyes. The weightless spirit-serpents lunged with blinding speed toward two young refugee orphans slumbering wrapped in blankets beside the hearthstone. In that heart-stopping instant, General Leonar launched his massive frame across the floor with the thunderous roar of an enraged lion.",
-      "narrationKo": "하지만 주의를 주기도 전에, 상자 바닥에 설치된 교활한 시한식 룬 장치가 딸깍하는 소리와 함께 저절로 풀려나갔다. 쩌적 하는 파열음과 함께 수정 상자가 산산조각 나며, 짙은 암자색의 독안개 속에서 다섯 마리의 거대한 사령 독사들이 붉은 눈을 번뜩이며 솟구쳐 올랐다. 실체 없는 망령 독사들은 벽난로 곁 바닥에서 단잠에 빠져 있던 두 명의 난민 어린아이들을 향해 맹렬한 기세로 쇄도했다. 그 찰나, 모닥불 곁에 앉아 있던 레오나르 장군이 천둥 같은 기합과 함께 자신의 거대한 몸을 날렸다. “이 더러운 버러지 놈들이 어디서 어린것들을 넘보느냐!”",
-      "sourceSentenceStart": 12,
-      "sourceSentenceEnd": 14,
+      "narrationEn": "\"It bears the chilling aura of the imperial secret inquisition we witnessed in the capital. Lucian has surely tracked our scent to this lake.\"",
+      "narrationKo": "그때 나루터의 망루를 지키던 늙은 어부 하나가 흠뻑 젖은 우비를 털며 급히 홀 안으로 뛰어 들어왔다. 그의 품에는 정체불명의 화물 하나가 안겨 있었다.",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 6,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "레오나르",
-          "speakerEn": "Leonar",
-          "textKo": "“이 더러운 버러지 놈들이 어디서 어린것들을 넘보느냐!”",
-          "textEn": "“Do not approach it! The runes etched across those crystal facets bear the forbidden necromantic death-curses of Medusa Gorgo! The instant the lid is released, lethal necrotic venom will engulf this room!”",
-          "bubbleType": "shout",
-          "position": "bottom-left",
-          "characterCardId": 86
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그의 품에는 정체불명의 화물 하나가 안겨 있었다.",
+          "textEn": "Lucian has surely tracked our scent to this lake.\"",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
         {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
           "position": "top-right"
-        },
-        {
-          "textKo": "쿠구구궁!",
-          "textEn": "RUMBLE!",
-          "style": "rumble",
-          "position": "bottom-left"
         }
       ]
     },
@@ -207,28 +195,28 @@
       "sceneNumber": 7,
       "imageFile": "episode_15/scene_07.webp",
       "sourceImageFile": "episode_15/scene_07.webp",
-      "narrationEn": "\"Vile vermin, dare you bare your fangs against innocent babes!\" It was a split second too brief to evade or brandish his heavy staff. Without a trace of hesitation, Leonar swept his immense arms around the children, shielding their fragile bodies against his breast while presenting his broad back and shoulders to the incoming strike. With a sickening hiss of dissolving flesh, the spectral fangs sank deep into the veteran's nape and collarbone, and a network of blackened, corrosive necrotic venom spread like spiderwebs beneath his graying skin. His massive muscles sizzled as sulfurous fumes filled the air.",
-      "narrationKo": "피할 수도, 지팡이를 휘두를 수도 없는 극히 촉박한 순간이었다. 레오나르는 주저 없이 아이들의 몸을 자신의 품안에 감싸 안으며, 넓은 등과 어깨로 사령 독사들의 독아를 온몸으로 받아냈다. 치이익 하는 끔찍한 파열음과 함께 독사들의 이빨이 늙은 사자의 살갗을 파고들었고, 시커먼 부식성 사독이 레오나르의 목덜미와 어깨를 타고 거미줄처럼 번져나갔다. 노장의 단단한 근육이 독기에 썩어 들어가며 지독한 유황 타는 냄새가 진동했다. 아이들을 꼭 껴안은 채 무릎을 꿇은 레오나르의 입에서 짙은 핏덩이가 쏟아져 나왔다.",
-      "sourceSentenceStart": 15,
-      "sourceSentenceEnd": 16,
+      "narrationEn": "At that moment, an elderly watchman stationed at the jetty tower hurried into the hall, shaking the driving rain from his oilskin cloak. Clutched tightly against his chest was an unidentified parcel wrapped in sodden burlap.",
+      "narrationKo": "어부가 거친 숨을 몰아쉬며 화물을 탁자 위에 내려놓았다. “방금 안갯속에서 검은 돛을 단 쾌속선 한 척이 다가와 이 상자만 던져두고 쏜살같이 사라졌습니다! 수신인에 분명히 레오나르 장군님의 존함이 적혀 있었습니다.”",
+      "sourceSentenceStart": 7,
+      "sourceSentenceEnd": 7,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "내레이션",
-          "speakerEn": "Narration",
-          "textKo": "아이들을 꼭 껴안은 채 무릎을 꿇은 레오나르의 입에서 짙은 핏덩이가 쏟아져 나왔다.",
-          "textEn": "His massive muscles sizzled as sulfurous fumes filled the air.",
-          "bubbleType": "thought",
-          "position": "bottom-left",
-          "characterCardId": 86
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“방금 안갯속에서 검은 돛을 단 쾌속선 한 척이 다가와 이 상자만 던져두고 쏜살같이 사라졌습니다! 수신인에 분명히 레오나르 장군님의 존함이 적혀 있었습니다.”",
+          "textEn": "“At that moment, an elderly watchman stationed at the jetty tower hurried into the hall, shaking the driving rain from his oilskin cloak. Clutched tightly against his chest was an unidentified parcel wrapped in sodden burlap.”",
+          "bubbleType": "shout",
+          "position": "bottom-right",
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
         {
-          "textKo": "쿠구구궁!",
-          "textEn": "RUMBLE!",
-          "style": "rumble",
-          "position": "bottom-left"
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
         }
       ]
     },
@@ -236,20 +224,20 @@
       "sceneNumber": 8,
       "imageFile": "episode_15/scene_08.webp",
       "sourceImageFile": "episode_15/scene_08.webp",
-      "narrationEn": "Kneeling rigidly with his arms locked around the weeping children, Leonar coughed violently, dark clots of corrupted blood spattering the flagstones. \"Ghk... Little ones, are you harmed...? Speak to me, are you whole...?\" Clinging to the titan's chest in sheer terror, the children cried out in agony.",
-      "narrationKo": "“크윽... 꼬마들아, 괜찮으냐... 다친 곳은 없지...?” 아이들이 공포에 질려 노장의 가슴팍에 얼굴을 묻고 울부짖었다.",
-      "sourceSentenceStart": 17,
-      "sourceSentenceEnd": 18,
+      "narrationEn": "Panting heavily, the fisherman set the container down atop the heavy trestle table. \"Just moments ago, a black-sailed cutter slipped through the fog, hurled this crate onto the jetty, and vanished into the darkness!",
+      "narrationKo": "탁자 위에 놓인 것은 사람 두개골 크기만 한 투명한 흑수정 상자였다.",
+      "sourceSentenceStart": 8,
+      "sourceSentenceEnd": 8,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "레오나르",
-          "speakerEn": "Leonar",
-          "textKo": "“크윽... 꼬마들아, 괜찮으냐... 다친 곳은 없지...?”",
-          "textEn": "“Ghk... Little ones, are you harmed...? Speak to me, are you whole...?”",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "탁자 위에 놓인 것은 사람 두개골 크기만 한 투명한 흑수정 상자였다.",
+          "textEn": "\"Just moments ago, a black-sailed cutter slipped through the fog, hurled this crate onto the jetty, and vanished into the darkness!",
           "bubbleType": "thought",
-          "position": "top-left",
-          "characterCardId": 86
+          "position": "bottom-right",
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
@@ -265,52 +253,29 @@
       "sceneNumber": 9,
       "imageFile": "episode_15/scene_09.webp",
       "sourceImageFile": "episode_15/scene_09.webp",
-      "narrationEn": "\"Grandfather! Your back... Black blood is pouring from your shoulders!\" Caressing their tear-stained cheeks with his massive, calloused hand, Leonar forced a reassuring grin.",
-      "narrationKo": "“할아버지! 등에서 피가... 검은 피가 흘러요!” 레오나르는 거친 손으로 아이들의 뺨을 어루만지며 억지로 미소를 지어 보였다.",
-      "sourceSentenceStart": 19,
-      "sourceSentenceEnd": 20,
+      "narrationEn": "General Leonar's honored name is carved distinctly across the lid!\" Resting upon the timber planks was a skull-sized chest carved from translucent black crystal.",
+      "narrationKo": "상자 뚜껑 위에는 정교하게 세공된 다섯 마리의 독사 머리가 똬리를 튼 형상으로 조각되어 있었고, 상자의 이음매 사이로는 보랏빛 인광을 띤 불길한 독기가 실핏줄처럼 피어오르고 있었다.",
+      "sourceSentenceStart": 9,
+      "sourceSentenceEnd": 9,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "레오나르",
-          "speakerEn": "Leonar",
-          "textKo": "“할아버지! 등에서 피가... 검은 피가 흘러요!”",
-          "textEn": "“Grandfather! Your back... Black blood is pouring from your shoulders!”",
-          "bubbleType": "shout",
-          "position": "top-right",
-          "characterCardId": 86
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "상자 뚜껑 위에는 정교하게 세공된 다섯 마리의 독사 머리가 똬리를 튼 형상으로 조각되어 있었고, 상자의 이음매 사이로는 보랏빛 인광을 띤 불길한 독기가 실핏줄처럼 피어오르고 있었다.",
+          "textEn": "General Leonar's honored name is carved distinctly across the lid!\" Resting upon the timber planks was a skull-sized chest carved from translucent black crystal.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
         {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 10,
-      "imageFile": "episode_15/scene_10.webp",
-      "sourceImageFile": "episode_15/scene_10.webp",
-      "narrationEn": "\"Lion hide is tougher than dragon scales; the poisoned nibbles of garden snakes cannot bring me down. Fear not, little ones.\" Kadan sprang forward with decisive fury, drawing the silver dagger from his belt. Channeling the star rhythm perfected across the frozen northern tundras, a brilliant aura of purifying starlight wrapped around the razor edge like crackling frost.",
-      "narrationKo": "“사자 가죽은 질겨서 이까짓 뱀새끼들의 독니 따위엔 끄떡없단다. 걱정하지 마라.” 아이들은 울음을 터뜨렸고, 홀 안은 아비규환의 혼란에 휩싸였다. 상처에서 뿜어져 나오는 사독은 레오나르의 전신 마나 회로를 급속도로 태워버리며 피부를 잿빛으로 변색시켰다.",
-      "sourceSentenceStart": 21,
-      "sourceSentenceEnd": 22,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "레오나르",
-          "speakerEn": "Leonar",
-          "textKo": "“사자 가죽은 질겨서 이까짓 뱀새끼들의 독니 따위엔 끄떡없단다. 걱정하지 마라.”",
-          "textEn": "“Lion hide is tougher than dragon scales; the poisoned nibbles of garden snakes cannot bring me down. Fear not, little ones.”",
-          "bubbleType": "speech",
-          "position": "bottom-left",
-          "characterCardId": 86
-        }
-      ],
-      "sfxCues": [
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        },
         {
           "textKo": "파지지직!",
           "textEn": "CRACKLE!",
@@ -320,32 +285,55 @@
       ]
     },
     {
-      "sceneNumber": 11,
-      "imageFile": "episode_15/scene_11.webp",
-      "sourceImageFile": "episode_15/scene_11.webp",
-      "narrationEn": "\"Foul spirits shall never desecrate the blood of the righteous!\" With fluid, lightning precision, Kadan cleaved through the air. The sacred anti-fiend sword techniques passed down by Master Aleksandar severed the ethereal spines of the five phantom serpents in consecutive arcs of azure radiance. Wherever the blade passed, the screeching apparitions dissolved into shimmering white ash, snuffed out by the starlight.",
-      "narrationKo": "카단이 성큼 앞으로 뛰쳐나가며 허리춤의 은빛 단검을 뽑아 들었다. 북방 혹한의 설원에서 단련된 별 호흡의 마나가 단검의 날카로운 칼날 위로 서릿발처럼 서려 올라왔다. “더러운 원혼들이 감히 의로운 자의 피를 더럽히지 못한다!” 카단의 은빛 단검이 허공을 가르며 푸른 유성 같은 궤적을 그렸다. 알렉산다르 스승이 전수했던 성기사의 파마 비검이 사령 독사들의 목을 연달아 꿰뚫었다. 빛의 궤적이 지나간 자리마다 독사들이 처절한 비명을 지르며 하얀 재가 되어 흩어졌다.",
-      "sourceSentenceStart": 23,
-      "sourceSentenceEnd": 25,
+      "sceneNumber": 10,
+      "imageFile": "episode_15/scene_10.webp",
+      "sourceImageFile": "episode_15/scene_10.webp",
+      "narrationEn": "Atop the lid squatted five masterfully sculpted viper heads coiled in serpentine tension, while from the fine hairline fractures along the seams seeped an ominous violet miasma, pulsing like living capillaries. Cilia gripped her staff, her voice ringing out in sharp alarm.",
+      "narrationKo": "실리아가 녹옥 지팡이를 쥐며 다급하게 물러서라고 외쳤다. “가까이 가지 마세요! 상자 표면에 새겨진 문양은 메두사 고르고의 금지된 사령 저주예요! 뚜껑을 여는 순간 치명적인 사독이 퍼져나갈 거예요!”",
+      "sourceSentenceStart": 10,
+      "sourceSentenceEnd": 10,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“더러운 원혼들이 감히 의로운 자의 피를 더럽히지 못한다!”",
-          "textEn": "“Foul spirits shall never desecrate the blood of the righteous!”",
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“가까이 가지 마세요! 상자 표면에 새겨진 문양은 메두사 고르고의 금지된 사령 저주예요! 뚜껑을 여는 순간 치명적인 사독이 퍼져나갈 거예요!”",
+          "textEn": "“Atop the lid squatted five masterfully sculpted viper heads coiled in serpentine tension, while from the fine hairline fractures along the seams seeped an ominous violet miasma, pulsing like living capillaries. Cilia gripped her staff, her voice ringing out in sharp alarm.”",
           "bubbleType": "shout",
-          "position": "bottom-right",
-          "characterCardId": 41
+          "position": "bottom-left",
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
         {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_15/scene_11.webp",
+      "sourceImageFile": "episode_15/scene_11.webp",
+      "narrationEn": "\"Do not approach it! The runes etched across those crystal facets bear the forbidden necromantic death-curses of Medusa Gorgo!",
+      "narrationKo": "하지만 주의를 주기도 전에, 상자 바닥에 설치된 교활한 시한식 룬 장치가 딸깍하는 소리와 함께 저절로 풀려나갔다.",
+      "sourceSentenceStart": 11,
+      "sourceSentenceEnd": 11,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "하지만 주의를 주기도 전에, 상자 바닥에 설치된 교활한 시한식 룬 장치가 딸깍하는 소리와 함께 저절로 풀려나갔다.",
+          "textEn": "The runes etched across those crystal facets bear the forbidden necromantic death-curses of Medusa Gorgo!",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
         {
           "textKo": "파지지직!",
           "textEn": "CRACKLE!",
@@ -358,28 +346,28 @@
       "sceneNumber": 12,
       "imageFile": "episode_15/scene_12.webp",
       "sourceImageFile": "episode_15/scene_12.webp",
-      "narrationEn": "Simultaneously, Cilia hoisted her Jade Staff high overhead, invoking the ancient cleansing cantrip of the eastern wind. \"Spirits of the eastern sea, sweep away this defiling shroud and restore the pure breath of life!\"",
-      "narrationKo": "동시에 실리아가 녹옥 지팡이를 머리 위로 치켜들며 청아한 바람의 축복을 영창했다. “동쪽 바다의 정령들이여, 이 더러운 장막을 걷어내고 맑은 숨결을 되돌려주소서!”",
-      "sourceSentenceStart": 26,
-      "sourceSentenceEnd": 27,
+      "narrationEn": "The instant the lid is released, lethal necrotic venom will engulf this room!\"",
+      "narrationKo": "쩌적 하는 파열음과 함께 수정 상자가 산산조각 나며, 짙은 암자색의 독안개 속에서 다섯 마리의 거대한 사령 독사들이 붉은 눈을 번뜩이며 솟구쳐 올랐다.",
+      "sourceSentenceStart": 12,
+      "sourceSentenceEnd": 12,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“동쪽 바다의 정령들이여, 이 더러운 장막을 걷어내고 맑은 숨결을 되돌려주소서!”",
-          "textEn": "“Spirits of the eastern sea, sweep away this defiling shroud and restore the pure breath of life!”",
-          "bubbleType": "shout",
-          "position": "top-left",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "쩌적 하는 파열음과 함께 수정 상자가 산산조각 나며, 짙은 암자색의 독안개 속에서 다섯 마리의 거대한 사령 독사들이 붉은 눈을 번뜩이며 솟구쳐 올랐다.",
+          "textEn": "The instant the lid is released, lethal necrotic venom will engulf this room!\"",
+          "bubbleType": "thought",
+          "position": "bottom-right",
           "characterCardId": 62
         }
       ],
       "sfxCues": [
         {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
         },
         {
           "textKo": "휘이이익-!",
@@ -393,90 +381,20 @@
       "sceneNumber": 13,
       "imageFile": "episode_15/scene_13.webp",
       "sourceImageFile": "episode_15/scene_13.webp",
-      "narrationEn": "A spiraling vortex of teal wind erupted from beneath Cilia's boots, sweeping the lingering clouds of violet toxic vapor straight up through the open roof vents into the torrential night. Crisp, pristine lake breezes poured into the timber hall, eradicating the last lingering traces of necrotic venom. Rushing into the hall after hearing the tumult, Ignis froze in horror at the scene of destruction. Amidst the glittering fragments of the shattered crystal chest, a gleam of polished metal caught his eye. It was the golden imperial signet mechanism that had primed the detonation. Stamped into the hardened crimson wax was the personal crest of High Minister Lucian, flanked by the classified cipher runes of the Imperial Secret Inquisition. Ignis's golden eyes widened in disbelieving agony, his breath catching as blood welled where his teeth bit through his lip.",
-      "narrationKo": "실리아의 발밑에서 솟구쳐 오른 청록색 바람의 소용돌이가 홀 안을 가득 채우고 있던 보랏빛 독안개를 천장 환기창 밖으로 단숨에 밀어냈다. 서늘하고 맑은 호수의 바람이 들어오며 마침내 맹독의 기운이 완전히 소멸되었다. 소동을 듣고 복도를 달려온 이그니스가 홀 안의 처참한 광경을 목격하고 굳어버렸다. 산산조각 난 수정 상자의 잔해 속에서 무언가 반짝이는 쇠붙이가 이그니스의 시선에 들어왔다. 그것은 상자의 뇌관에 새겨진 황실 재상의 황금 인장이었다. 붉은 밀랍에는 수도 최고 재상 루시안의 가문 문장과 함께 황실 비밀 감찰대의 극비 지령 코드가 선명하게 찍혀 있었다.",
-      "sourceSentenceStart": 28,
-      "sourceSentenceEnd": 29,
+      "narrationEn": "Before her warning could be fully registered, the cunning internal clockwork trigger embedded within the box's base released with a crisp, fatal click. With a violent crystalline detonation, the obsidian chest shattered into shards, and from the billowing purple toxic vapor surged five ethereal phantom vipers with burning crimson eyes.",
+      "narrationKo": "실체 없는 망령 독사들은 벽난로 곁 바닥에서 단잠에 빠져 있던 두 명의 난민 어린아이들을 향해 맹렬한 기세로 쇄도했다.",
+      "sourceSentenceStart": 13,
+      "sourceSentenceEnd": 13,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "붉은 밀랍에는 수도 최고 재상 루시안의 가문 문장과 함께 황실 비밀 감찰대의 극비 지령 코드가 선명하게 찍혀 있었다.",
-          "textEn": "Ignis's golden eyes widened in disbelieving agony, his breath catching as blood welled where his teeth bit through his lip.",
+          "textKo": "실체 없는 망령 독사들은 벽난로 곁 바닥에서 단잠에 빠져 있던 두 명의 난민 어린아이들을 향해 맹렬한 기세로 쇄도했다.",
+          "textEn": "With a violent crystalline detonation, the obsidian chest shattered into shards, and from the billowing purple toxic vapor surged five ethereal phantom vipers with burning crimson eyes.",
           "bubbleType": "thought",
           "position": "top-left",
           "characterCardId": 62
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 14,
-      "imageFile": "episode_15/scene_14.webp",
-      "sourceImageFile": "episode_15/scene_14.webp",
-      "narrationEn": "\"The imperial crest... It was Minister Lucian himself who dispatched this cowardly murder weapon? To butcher helpless refugees and an honorable retired general, solely to blame the atrocity upon the Holy Knights... Is this the 'order and justice' to which I pledged my sword and soul!\" In a frenzy of grief and disgust, Ignis violently tore the gilded medal of the White Flame Order from his breastplate, hurling it against the stone floorboards. The gilded emblem clattered across the flags with a hollow, pathetic chime. The grand edifice of imperial righteousness that had anchored his entire existence had collapsed into a cesspool of vile deceit.",
-      "narrationKo": "이그니스의 눈동자가 걷잡을 수 없이 흔들렸다. 손끝이 파르르 떨리며 입술에서 피가 배어 나왔다. “황실의 인장... 루시안 재상이 직접 보낸 암살 도구였단 말인가? 무고한 난민들과 은퇴한 노장을 몰살하고 성기사단의 소행으로 위장하려 한 것이... 내가 충성을 바쳤던 황궁의 정의였단 말인가!” 이그니스는 자신의 가슴에 달려 있던 순백 화염 기사단의 금빛 훈장을 거칠게 뜯어내 바닥에 내던졌다. 금속 훈장이 차가운 석판 위를 구르며 비참한 소리를 냈다. 평생을 믿어왔던 황실의 법과 질서가 한순간에 추악한 시궁창으로 전락해 버린 순간이었다.",
-      "sourceSentenceStart": 30,
-      "sourceSentenceEnd": 32,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "이그니스",
-          "speakerEn": "Ignis",
-          "textKo": "“황실의 인장... 루시안 재상이 직접 보낸 암살 도구였단 말인가? 무고한 난민들과 은퇴한 노장을 몰살하고 성기사단의 소행으로 위장하려 한 것이... 내가 충성을 바쳤던 황궁의 정의였단 말인가!”",
-          "textEn": "“The imperial crest... It was Minister Lucian himself who dispatched this cowardly murder weapon? To butcher helpless refugees and an honorable retired general, solely to blame the atrocity upon the Holy Knights... Is this the 'order and justice' to which I pledged my sword and soul!”",
-          "bubbleType": "shout",
-          "position": "bottom-left",
-          "characterCardId": 11
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 15,
-      "imageFile": "episode_15/scene_15.webp",
-      "sourceImageFile": "episode_15/scene_15.webp",
-      "narrationEn": "Slamming his fist against the timber pillar, Ignis wept in fury. \"For what purpose did I hone my blade all these years! Did my steel defend peace, or merely fatten the corrupt parasites of the imperial court!\"",
-      "narrationKo": "이그니스가 주먹을 쥐고 벽을 내리치며 절규했다. “나는 대체 무엇을 위해 칼을 갈아왔던 것인가! 내 칼끝이 지킨 것은 평화가 아니라 황궁의 탐욕스러운 돼지들이었단 말인가!”",
-      "sourceSentenceStart": 33,
-      "sourceSentenceEnd": 34,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "이그니스",
-          "speakerEn": "Ignis",
-          "textKo": "“나는 대체 무엇을 위해 칼을 갈아왔던 것인가! 내 칼끝이 지킨 것은 평화가 아니라 황궁의 탐욕스러운 돼지들이었단 말인가!”",
-          "textEn": "“For what purpose did I hone my blade all these years! Did my steel defend peace, or merely fatten the corrupt parasites of the imperial court!”",
-          "bubbleType": "shout",
-          "position": "bottom-right",
-          "characterCardId": 11
         }
       ],
       "sfxCues": [
@@ -489,23 +407,81 @@
       ]
     },
     {
-      "sceneNumber": 16,
-      "imageFile": "episode_15/scene_16.webp",
-      "sourceImageFile": "episode_15/scene_16.webp",
-      "narrationEn": "Stepping forward, Kadan placed a firm, steady hand upon Ignis's shuddering shoulder. \"Facing the naked truth is an agonizing wound, Ignis. Yet keeping your eyes open to that darkness is the only way honor can ever be reborn. Uncle Balian prayed every single night that you would one day break free from that hollow shell.\"",
-      "narrationKo": "카단이 다가와 이그니스의 떨리는 어깨를 묵묵히 짚어주었다. “진실을 마주하는 것은 고통스러운 일이다. 하지만 눈을 감지 않는 것만이 그 오명을 씻어낼 수 있는 유일한 시작이다. 발리안 숙부님께서도 네가 그 껍질을 깨고 나오기를 늘 기도하셨다.”",
-      "sourceSentenceStart": 35,
-      "sourceSentenceEnd": 36,
+      "sceneNumber": 14,
+      "imageFile": "episode_15/scene_14.webp",
+      "sourceImageFile": "episode_15/scene_14.webp",
+      "narrationEn": "The weightless spirit-serpents lunged with blinding speed toward two young refugee orphans slumbering wrapped in blankets beside the hearthstone. In that heart-stopping instant, General Leonar launched his massive frame across the floor with the thunderous roar of an enraged lion.",
+      "narrationKo": "그 찰나, 모닥불 곁에 앉아 있던 레오나르 장군이 천둥 같은 기합과 함께 자신의 거대한 몸을 날렸다.",
+      "sourceSentenceStart": 14,
+      "sourceSentenceEnd": 14,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“진실을 마주하는 것은 고통스러운 일이다. 하지만 눈을 감지 않는 것만이 그 오명을 씻어낼 수 있는 유일한 시작이다. 발리안 숙부님께서도 네가 그 껍질을 깨고 나오기를 늘 기도하셨다.”",
-          "textEn": "“Facing the naked truth is an agonizing wound, Ignis. Yet keeping your eyes open to that darkness is the only way honor can ever be reborn. Uncle Balian prayed every single night that you would one day break free from that hollow shell.”",
-          "bubbleType": "speech",
-          "position": "top-left",
-          "characterCardId": 41
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그 찰나, 모닥불 곁에 앉아 있던 레오나르 장군이 천둥 같은 기합과 함께 자신의 거대한 몸을 날렸다.",
+          "textEn": "In that heart-stopping instant, General Leonar launched his massive frame across the floor with the thunderous roar of an enraged lion.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 86
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_15/scene_15.webp",
+      "sourceImageFile": "episode_15/scene_15.webp",
+      "narrationEn": "\"Vile vermin, dare you bare your fangs against innocent babes!\" It was a split second too brief to evade or brandish his heavy staff.",
+      "narrationKo": "“이 더러운 버러지 놈들이 어디서 어린것들을 넘보느냐!”",
+      "sourceSentenceStart": 15,
+      "sourceSentenceEnd": 15,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "레오나르",
+          "speakerEn": "Leonar",
+          "textKo": "“이 더러운 버러지 놈들이 어디서 어린것들을 넘보느냐!”",
+          "textEn": "“Vile vermin, dare you bare your fangs against innocent babes!”",
+          "bubbleType": "shout",
+          "position": "bottom-right",
+          "characterCardId": 86
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_15/scene_16.webp",
+      "sourceImageFile": "episode_15/scene_16.webp",
+      "narrationEn": "Without a trace of hesitation, Leonar swept his immense arms around the children, shielding their fragile bodies against his breast while presenting his broad back and shoulders to the incoming strike. With a sickening hiss of dissolving flesh, the spectral fangs sank deep into the veteran's nape and collarbone, and a network of blackened, corrosive necrotic venom spread like spiderwebs beneath his graying skin.",
+      "narrationKo": "피할 수도, 지팡이를 휘두를 수도 없는 극히 촉박한 순간이었다. 레오나르는 주저 없이 아이들의 몸을 자신의 품안에 감싸 안으며, 넓은 등과 어깨로 사령 독사들의 독아를 온몸으로 받아냈다.",
+      "sourceSentenceStart": 16,
+      "sourceSentenceEnd": 16,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "레오나르는 주저 없이 아이들의 몸을 자신의 품안에 감싸 안으며, 넓은 등과 어깨로 사령 독사들의 독아를 온몸으로 받아냈다.",
+          "textEn": "With a sickening hiss of dissolving flesh, the spectral fangs sank deep into the veteran's nape and collarbone, and a network of blackened, corrosive necrotic venom spread like spiderwebs beneath his graying skin.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 86
         }
       ],
       "sfxCues": [
@@ -521,29 +497,23 @@
       "sceneNumber": 17,
       "imageFile": "episode_15/scene_17.webp",
       "sourceImageFile": "episode_15/scene_17.webp",
-      "narrationEn": "Slumped against a timber stanchion, Leonar wiped dark blood from his lips, his breathing growing shallow and rasping. Though the veil of death was descending swiftly across his features, the old warlord's gaze retained the undaunted majesty of a battlefield titan. With trembling, calloused hands, he lifted his legendary Jade Staff, passing the ancestral weapon into the care of Kadan and Cilia. \"My ember burns down to the wick... But the barrier spires of Whispering Wind Island must never fall. Tell Aeolus... that Leonar never retreated, that he held his ground until his final breath...\"",
-      "narrationKo": "레오나르는 기둥에 등을 기대고 앉아 거친 숨을 몰아쉬며 피 묻은 입가를 닦아냈다. 그의 얼굴에는 이미 죽음의 그림자가 짙게 깔려 있었지만, 노장의 눈빛만은 사자의 위엄을 잃지 않고 있었다. 레오나르는 떨리는 손으로 자신의 상징이었던 거대한 녹옥 지팡이를 들어 올려 카단과 실리아에게 건넸다. “내 목숨의 불씨는 여기까지다... 하지만 바람 속삭임 섬의 결계탑은 반드시 지켜내야 한다. 에올루스에게 전해라... 레오나르는 마지막 순간까지 도망치지 않고 제자리를 지켰노라고...”",
-      "sourceSentenceStart": 37,
-      "sourceSentenceEnd": 38,
+      "narrationEn": "His massive muscles sizzled as sulfurous fumes filled the air. Kneeling rigidly with his arms locked around the weeping children, Leonar coughed violently, dark clots of corrupted blood spattering the flagstones.",
+      "narrationKo": "치이익 하는 끔찍한 파열음과 함께 독사들의 이빨이 늙은 사자의 살갗을 파고들었고, 시커먼 부식성 사독이 레오나르의 목덜미와 어깨를 타고 거미줄처럼 번져나갔다.",
+      "sourceSentenceStart": 17,
+      "sourceSentenceEnd": 17,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "레오나르",
-          "speakerEn": "Leonar",
-          "textKo": "“내 목숨의 불씨는 여기까지다... 하지만 바람 속삭임 섬의 결계탑은 반드시 지켜내야 한다. 에올루스에게 전해라... 레오나르는 마지막 순간까지 도망치지 않고 제자리를 지켰노라고...”",
-          "textEn": "“My ember burns down to the wick... But the barrier spires of Whispering Wind Island must never fall. Tell Aeolus... that Leonar never retreated, that he held his ground until his final breath...”",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "치이익 하는 끔찍한 파열음과 함께 독사들의 이빨이 늙은 사자의 살갗을 파고들었고, 시커먼 부식성 사독이 레오나르의 목덜미와 어깨를 타고 거미줄처럼 번져나갔다.",
+          "textEn": "Kneeling rigidly with his arms locked around the weeping children, Leonar coughed violently, dark clots of corrupted blood spattering the flagstones.",
           "bubbleType": "thought",
-          "position": "top-right",
+          "position": "top-left",
           "characterCardId": 86
         }
       ],
       "sfxCues": [
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        },
         {
           "textKo": "쿠구구궁!",
           "textEn": "RUMBLE!",
@@ -556,20 +526,450 @@
       "sceneNumber": 18,
       "imageFile": "episode_15/scene_18.webp",
       "sourceImageFile": "episode_15/scene_18.webp",
-      "narrationEn": "Tears spilled down Cilia's cheeks as her hands closed around the polished jade. \"General, the sacred covenant of the earth bound within this staff shall never be betrayed. We will safeguard the island and illuminate my mother's truth, no matter the cost.\" Kadan knelt before the dying lion, clasping the warrior's rough hand in both of his own.",
-      "narrationKo": "실리아가 눈물을 글썽이며 지팡이를 받아 들었다. “장군님, 이 지팡이에 깃든 대지의 맹세를 결코 헛되이 하지 않겠어요. 반드시 섬을 구하고 어머니의 진실을 밝혀내겠어요.”",
-      "sourceSentenceStart": 39,
-      "sourceSentenceEnd": 40,
+      "narrationEn": "\"Ghk... Little ones, are you harmed...?",
+      "narrationKo": "노장의 단단한 근육이 독기에 썩어 들어가며 지독한 유황 타는 냄새가 진동했다.",
+      "sourceSentenceStart": 18,
+      "sourceSentenceEnd": 18,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "노장의 단단한 근육이 독기에 썩어 들어가며 지독한 유황 타는 냄새가 진동했다.",
+          "textEn": "Little ones, are you harmed...?",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 86
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_15/scene_19.webp",
+      "sourceImageFile": "episode_15/scene_19.webp",
+      "narrationEn": "Speak to me, are you whole...?\" Clinging to the titan's chest in sheer terror, the children cried out in agony.",
+      "narrationKo": "아이들을 꼭 껴안은 채 무릎을 꿇은 레오나르의 입에서 짙은 핏덩이가 쏟아져 나왔다.",
+      "sourceSentenceStart": 19,
+      "sourceSentenceEnd": 19,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "아이들을 꼭 껴안은 채 무릎을 꿇은 레오나르의 입에서 짙은 핏덩이가 쏟아져 나왔다.",
+          "textEn": "Speak to me, are you whole...?\" Clinging to the titan's chest in sheer terror, the children cried out in agony.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 86
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_15/scene_20.webp",
+      "sourceImageFile": "episode_15/scene_20.webp",
+      "narrationEn": "\"Grandfather! Your back...",
+      "narrationKo": "“크윽... 꼬마들아, 괜찮으냐... 다친 곳은 없지...?” 아이들이 공포에 질려 노장의 가슴팍에 얼굴을 묻고 울부짖었다.",
+      "sourceSentenceStart": 20,
+      "sourceSentenceEnd": 20,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "레오나르",
+          "speakerEn": "Leonar",
+          "textKo": "“크윽... 꼬마들아, 괜찮으냐... 다친 곳은 없지...?”",
+          "textEn": "“\"Grandfather! Your back...”",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 86
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 21,
+      "imageFile": "episode_15/scene_21.webp",
+      "sourceImageFile": "episode_15/scene_21.webp",
+      "narrationEn": "Black blood is pouring from your shoulders!\"",
+      "narrationKo": "“할아버지! 등에서 피가... 검은 피가 흘러요!” 레오나르는 거친 손으로 아이들의 뺨을 어루만지며 억지로 미소를 지어 보였다.",
+      "sourceSentenceStart": 21,
+      "sourceSentenceEnd": 21,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "레오나르",
+          "speakerEn": "Leonar",
+          "textKo": "“할아버지! 등에서 피가... 검은 피가 흘러요!”",
+          "textEn": "“Black blood is pouring from your shoulders!\"”",
+          "bubbleType": "shout",
+          "position": "top-right",
+          "characterCardId": 86
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 22,
+      "imageFile": "episode_15/scene_22.webp",
+      "sourceImageFile": "episode_15/scene_22.webp",
+      "narrationEn": "Caressing their tear-stained cheeks with his massive, calloused hand, Leonar forced a reassuring grin. \"Lion hide is tougher than dragon scales; the poisoned nibbles of garden snakes cannot bring me down.",
+      "narrationKo": "“사자 가죽은 질겨서 이까짓 뱀새끼들의 독니 따위엔 끄떡없단다. 걱정하지 마라.”",
+      "sourceSentenceStart": 22,
+      "sourceSentenceEnd": 22,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "레오나르",
+          "speakerEn": "Leonar",
+          "textKo": "“사자 가죽은 질겨서 이까짓 뱀새끼들의 독니 따위엔 끄떡없단다. 걱정하지 마라.”",
+          "textEn": "“Caressing their tear-stained cheeks with his massive, calloused hand, Leonar forced a reassuring grin. \"Lion hide is tougher than dragon scales; the poisoned nibbles of garden snakes cannot bring me down.”",
+          "bubbleType": "speech",
+          "position": "bottom-left",
+          "characterCardId": 86
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 23,
+      "imageFile": "episode_15/scene_23.webp",
+      "sourceImageFile": "episode_15/scene_23.webp",
+      "narrationEn": "Fear not, little ones.\" Kadan sprang forward with decisive fury, drawing the silver dagger from his belt.",
+      "narrationKo": "아이들은 울음을 터뜨렸고, 홀 안은 아비규환의 혼란에 휩싸였다. 상처에서 뿜어져 나오는 사독은 레오나르의 전신 마나 회로를 급속도로 태워버리며 피부를 잿빛으로 변색시켰다.",
+      "sourceSentenceStart": 23,
+      "sourceSentenceEnd": 23,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "상처에서 뿜어져 나오는 사독은 레오나르의 전신 마나 회로를 급속도로 태워버리며 피부를 잿빛으로 변색시켰다.",
+          "textEn": "Fear not, little ones.\" Kadan sprang forward with decisive fury, drawing the silver dagger from his belt.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 86
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 24,
+      "imageFile": "episode_15/scene_24.webp",
+      "sourceImageFile": "episode_15/scene_24.webp",
+      "narrationEn": "Channeling the star rhythm perfected across the frozen northern tundras, a brilliant aura of purifying starlight wrapped around the razor edge like crackling frost. \"Foul spirits shall never desecrate the blood of the righteous!\"",
+      "narrationKo": "카단이 성큼 앞으로 뛰쳐나가며 허리춤의 은빛 단검을 뽑아 들었다. 북방 혹한의 설원에서 단련된 별 호흡의 마나가 단검의 날카로운 칼날 위로 서릿발처럼 서려 올라왔다.",
+      "sourceSentenceStart": 24,
+      "sourceSentenceEnd": 24,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "북방 혹한의 설원에서 단련된 별 호흡의 마나가 단검의 날카로운 칼날 위로 서릿발처럼 서려 올라왔다.",
+          "textEn": "\"Foul spirits shall never desecrate the blood of the righteous!\"",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 25,
+      "imageFile": "episode_15/scene_25.webp",
+      "sourceImageFile": "episode_15/scene_25.webp",
+      "narrationEn": "With fluid, lightning precision, Kadan cleaved through the air. The sacred anti-fiend sword techniques passed down by Master Aleksandar severed the ethereal spines of the five phantom serpents in consecutive arcs of azure radiance.",
+      "narrationKo": "“더러운 원혼들이 감히 의로운 자의 피를 더럽히지 못한다!” 카단의 은빛 단검이 허공을 가르며 푸른 유성 같은 궤적을 그렸다. 알렉산다르 스승이 전수했던 성기사의 파마 비검이 사령 독사들의 목을 연달아 꿰뚫었다.",
+      "sourceSentenceStart": 25,
+      "sourceSentenceEnd": 25,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "알렉산다르",
+          "speakerEn": "Aleksandar",
+          "textKo": "“더러운 원혼들이 감히 의로운 자의 피를 더럽히지 못한다!”",
+          "textEn": "“With fluid, lightning precision, Kadan cleaved through the air. The sacred anti-fiend sword techniques passed down by Master Aleksandar severed the ethereal spines of the five phantom serpents in consecutive arcs of azure radiance.”",
+          "bubbleType": "shout",
+          "position": "top-right",
+          "characterCardId": 50
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 26,
+      "imageFile": "episode_15/scene_26.webp",
+      "sourceImageFile": "episode_15/scene_26.webp",
+      "narrationEn": "Wherever the blade passed, the screeching apparitions dissolved into shimmering white ash, snuffed out by the starlight. Simultaneously, Cilia hoisted her Jade Staff high overhead, invoking the ancient cleansing cantrip of the eastern wind.",
+      "narrationKo": "빛의 궤적이 지나간 자리마다 독사들이 처절한 비명을 지르며 하얀 재가 되어 흩어졌다.",
+      "sourceSentenceStart": 26,
+      "sourceSentenceEnd": 26,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "빛의 궤적이 지나간 자리마다 독사들이 처절한 비명을 지르며 하얀 재가 되어 흩어졌다.",
+          "textEn": "Simultaneously, Cilia hoisted her Jade Staff high overhead, invoking the ancient cleansing cantrip of the eastern wind.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 50
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 27,
+      "imageFile": "episode_15/scene_27.webp",
+      "sourceImageFile": "episode_15/scene_27.webp",
+      "narrationEn": "\"Spirits of the eastern sea, sweep away this defiling shroud and restore the pure breath of life!\" A spiraling vortex of teal wind erupted from beneath Cilia's boots, sweeping the lingering clouds of violet toxic vapor straight up through the open roof vents into the torrential night.",
+      "narrationKo": "동시에 실리아가 녹옥 지팡이를 머리 위로 치켜들며 청아한 바람의 축복을 영창했다.",
+      "sourceSentenceStart": 27,
+      "sourceSentenceEnd": 27,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "동시에 실리아가 녹옥 지팡이를 머리 위로 치켜들며 청아한 바람의 축복을 영창했다.",
+          "textEn": "\"Spirits of the eastern sea, sweep away this defiling shroud and restore the pure breath of life!\" A spiraling vortex of teal wind erupted from beneath Cilia's boots, sweeping the lingering clouds of violet toxic vapor straight up through the open roof vents into the torrential night.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 28,
+      "imageFile": "episode_15/scene_28.webp",
+      "sourceImageFile": "episode_15/scene_28.webp",
+      "narrationEn": "Crisp, pristine lake breezes poured into the timber hall, eradicating the last lingering traces of necrotic venom.",
+      "narrationKo": "“동쪽 바다의 정령들이여, 이 더러운 장막을 걷어내고 맑은 숨결을 되돌려주소서!”",
+      "sourceSentenceStart": 28,
+      "sourceSentenceEnd": 28,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "실리아",
           "speakerEn": "Celia",
-          "textKo": "“장군님, 이 지팡이에 깃든 대지의 맹세를 결코 헛되이 하지 않겠어요. 반드시 섬을 구하고 어머니의 진실을 밝혀내겠어요.”",
-          "textEn": "“General, the sacred covenant of the earth bound within this staff shall never be betrayed. We will safeguard the island and illuminate my mother's truth, no matter the cost.”",
-          "bubbleType": "speech",
-          "position": "bottom-left",
+          "textKo": "“동쪽 바다의 정령들이여, 이 더러운 장막을 걷어내고 맑은 숨결을 되돌려주소서!”",
+          "textEn": "“Crisp, pristine lake breezes poured into the timber hall, eradicating the last lingering traces of necrotic venom.”",
+          "bubbleType": "shout",
+          "position": "top-left",
           "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 29,
+      "imageFile": "episode_15/scene_29.webp",
+      "sourceImageFile": "episode_15/scene_29.webp",
+      "narrationEn": "Rushing into the hall after hearing the tumult, Ignis froze in horror at the scene of destruction. Amidst the glittering fragments of the shattered crystal chest, a gleam of polished metal caught his eye.",
+      "narrationKo": "실리아의 발밑에서 솟구쳐 오른 청록색 바람의 소용돌이가 홀 안을 가득 채우고 있던 보랏빛 독안개를 천장 환기창 밖으로 단숨에 밀어냈다. 서늘하고 맑은 호수의 바람이 들어오며 마침내 맹독의 기운이 완전히 소멸되었다.",
+      "sourceSentenceStart": 29,
+      "sourceSentenceEnd": 29,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "서늘하고 맑은 호수의 바람이 들어오며 마침내 맹독의 기운이 완전히 소멸되었다.",
+          "textEn": "Amidst the glittering fragments of the shattered crystal chest, a gleam of polished metal caught his eye.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 30,
+      "imageFile": "episode_15/scene_30.webp",
+      "sourceImageFile": "episode_15/scene_30.webp",
+      "narrationEn": "It was the golden imperial signet mechanism that had primed the detonation. Stamped into the hardened crimson wax was the personal crest of High Minister Lucian, flanked by the classified cipher runes of the Imperial Secret Inquisition.",
+      "narrationKo": "소동을 듣고 복도를 달려온 이그니스가 홀 안의 처참한 광경을 목격하고 굳어버렸다. 산산조각 난 수정 상자의 잔해 속에서 무언가 반짝이는 쇠붙이가 이그니스의 시선에 들어왔다.",
+      "sourceSentenceStart": 30,
+      "sourceSentenceEnd": 30,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "산산조각 난 수정 상자의 잔해 속에서 무언가 반짝이는 쇠붙이가 이그니스의 시선에 들어왔다.",
+          "textEn": "Stamped into the hardened crimson wax was the personal crest of High Minister Lucian, flanked by the classified cipher runes of the Imperial Secret Inquisition.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 31,
+      "imageFile": "episode_15/scene_31.webp",
+      "sourceImageFile": "episode_15/scene_31.webp",
+      "narrationEn": "Ignis's golden eyes widened in disbelieving agony, his breath catching as blood welled where his teeth bit through his lip. \"The imperial crest...",
+      "narrationKo": "그것은 상자의 뇌관에 새겨진 황실 재상의 황금 인장이었다. 붉은 밀랍에는 수도 최고 재상 루시안의 가문 문장과 함께 황실 비밀 감찰대의 극비 지령 코드가 선명하게 찍혀 있었다.",
+      "sourceSentenceStart": 31,
+      "sourceSentenceEnd": 31,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "붉은 밀랍에는 수도 최고 재상 루시안의 가문 문장과 함께 황실 비밀 감찰대의 극비 지령 코드가 선명하게 찍혀 있었다.",
+          "textEn": "\"The imperial crest...",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 61
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 32,
+      "imageFile": "episode_15/scene_32.webp",
+      "sourceImageFile": "episode_15/scene_32.webp",
+      "narrationEn": "It was Minister Lucian himself who dispatched this cowardly murder weapon? To butcher helpless refugees and an honorable retired general, solely to blame the atrocity upon the Holy Knights...",
+      "narrationKo": "이그니스의 눈동자가 걷잡을 수 없이 흔들렸다. 손끝이 파르르 떨리며 입술에서 피가 배어 나왔다.",
+      "sourceSentenceStart": 32,
+      "sourceSentenceEnd": 32,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "손끝이 파르르 떨리며 입술에서 피가 배어 나왔다.",
+          "textEn": "To butcher helpless refugees and an honorable retired general, solely to blame the atrocity upon the Holy Knights...",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 11
         }
       ],
       "sfxCues": [
@@ -582,22 +982,347 @@
       ]
     },
     {
-      "sceneNumber": 19,
-      "imageFile": "episode_15/scene_19.webp",
-      "sourceImageFile": "episode_15/scene_19.webp",
-      "narrationEn": "\"I swear upon my shield to safeguard the innocent lives and the hearthfire of this manor you defended. May your journey to reunite with Master Aleksandar be filled with eternal peace.\" Reaching out with gentle, massive fingers, Leonar patted the heads of the weeping refugee orphans who clung to his knees.",
-      "narrationKo": "카단 역시 무릎을 꿇고 노장의 거친 손을 두 손으로 감싸 쥐었다. “장군님께서 지키신 아이들의 생명과 장원의 온기를 제 방패로 영원히 수호하겠습니다. 알렉산다르 스승님을 뵈러 가시는 길에 부디 평안만이 가득하기를 빕니다.” 레오나르는 곁에서 고개를 숙이고 흐느끼는 난민 아이들의 머리를 커다란 손으로 부드럽게 쓰다듬었다.",
+      "sceneNumber": 33,
+      "imageFile": "episode_15/scene_33.webp",
+      "sourceImageFile": "episode_15/scene_33.webp",
+      "narrationEn": "Is this the 'order and justice' to which I pledged my sword and soul!\" In a frenzy of grief and disgust, Ignis violently tore the gilded medal of the White Flame Order from his breastplate, hurling it against the stone floorboards.",
+      "narrationKo": "“황실의 인장... 루시안 재상이 직접 보낸 암살 도구였단 말인가? 무고한 난민들과 은퇴한 노장을 몰살하고 성기사단의 소행으로 위장하려 한 것이... 내가 충성을 바쳤던 황궁의 정의였단 말인가!”",
+      "sourceSentenceStart": 33,
+      "sourceSentenceEnd": 33,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“황실의 인장... 루시안 재상이 직접 보낸 암살 도구였단 말인가? 무고한 난민들과 은퇴한 노장을 몰살하고 성기사단의 소행으로 위장하려 한 것이... 내가 충성을 바쳤던 황궁의 정의였단 말인가!”",
+          "textEn": "“Is this the 'order and justice' to which I pledged my sword and soul!\" In a frenzy of grief and disgust, Ignis violently tore the gilded medal of the White Flame Order from his breastplate, hurling it against the stone floorboards.”",
+          "bubbleType": "shout",
+          "position": "top-right",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 34,
+      "imageFile": "episode_15/scene_34.webp",
+      "sourceImageFile": "episode_15/scene_34.webp",
+      "narrationEn": "The gilded emblem clattered across the flags with a hollow, pathetic chime. The grand edifice of imperial righteousness that had anchored his entire existence had collapsed into a cesspool of vile deceit.",
+      "narrationKo": "이그니스는 자신의 가슴에 달려 있던 순백 화염 기사단의 금빛 훈장을 거칠게 뜯어내 바닥에 내던졌다. 금속 훈장이 차가운 석판 위를 구르며 비참한 소리를 냈다.",
+      "sourceSentenceStart": 34,
+      "sourceSentenceEnd": 34,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "금속 훈장이 차가운 석판 위를 구르며 비참한 소리를 냈다.",
+          "textEn": "The grand edifice of imperial righteousness that had anchored his entire existence had collapsed into a cesspool of vile deceit.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 35,
+      "imageFile": "episode_15/scene_35.webp",
+      "sourceImageFile": "episode_15/scene_35.webp",
+      "narrationEn": "Slamming his fist against the timber pillar, Ignis wept in fury. \"For what purpose did I hone my blade all these years!",
+      "narrationKo": "평생을 믿어왔던 황실의 법과 질서가 한순간에 추악한 시궁창으로 전락해 버린 순간이었다.",
+      "sourceSentenceStart": 35,
+      "sourceSentenceEnd": 35,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "평생을 믿어왔던 황실의 법과 질서가 한순간에 추악한 시궁창으로 전락해 버린 순간이었다.",
+          "textEn": "\"For what purpose did I hone my blade all these years!",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 36,
+      "imageFile": "episode_15/scene_36.webp",
+      "sourceImageFile": "episode_15/scene_36.webp",
+      "narrationEn": "Did my steel defend peace, or merely fatten the corrupt parasites of the imperial court!\" Stepping forward, Kadan placed a firm, steady hand upon Ignis's shuddering shoulder.",
+      "narrationKo": "이그니스가 주먹을 쥐고 벽을 내리치며 절규했다. “나는 대체 무엇을 위해 칼을 갈아왔던 것인가! 내 칼끝이 지킨 것은 평화가 아니라 황궁의 탐욕스러운 돼지들이었단 말인가!”",
+      "sourceSentenceStart": 36,
+      "sourceSentenceEnd": 36,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“나는 대체 무엇을 위해 칼을 갈아왔던 것인가! 내 칼끝이 지킨 것은 평화가 아니라 황궁의 탐욕스러운 돼지들이었단 말인가!”",
+          "textEn": "“Did my steel defend peace, or merely fatten the corrupt parasites of the imperial court!\" Stepping forward, Kadan placed a firm, steady hand upon Ignis's shuddering shoulder.”",
+          "bubbleType": "shout",
+          "position": "top-left",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 37,
+      "imageFile": "episode_15/scene_37.webp",
+      "sourceImageFile": "episode_15/scene_37.webp",
+      "narrationEn": "\"Facing the naked truth is an agonizing wound, Ignis.",
+      "narrationKo": "카단이 다가와 이그니스의 떨리는 어깨를 묵묵히 짚어주었다.",
+      "sourceSentenceStart": 37,
+      "sourceSentenceEnd": 37,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단이 다가와 이그니스의 떨리는 어깨를 묵묵히 짚어주었다.",
+          "textEn": "\"Facing the naked truth is an agonizing wound, Ignis.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 38,
+      "imageFile": "episode_15/scene_38.webp",
+      "sourceImageFile": "episode_15/scene_38.webp",
+      "narrationEn": "Yet keeping your eyes open to that darkness is the only way honor can ever be reborn. Uncle Balian prayed every single night that you would one day break free from that hollow shell.\"",
+      "narrationKo": "“진실을 마주하는 것은 고통스러운 일이다. 하지만 눈을 감지 않는 것만이 그 오명을 씻어낼 수 있는 유일한 시작이다. 발리안 숙부님께서도 네가 그 껍질을 깨고 나오기를 늘 기도하셨다.”",
+      "sourceSentenceStart": 38,
+      "sourceSentenceEnd": 38,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“진실을 마주하는 것은 고통스러운 일이다. 하지만 눈을 감지 않는 것만이 그 오명을 씻어낼 수 있는 유일한 시작이다. 발리안 숙부님께서도 네가 그 껍질을 깨고 나오기를 늘 기도하셨다.”",
+          "textEn": "“Yet keeping your eyes open to that darkness is the only way honor can ever be reborn. Uncle Balian prayed every single night that you would one day break free from that hollow shell.\"”",
+          "bubbleType": "speech",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 39,
+      "imageFile": "episode_15/scene_39.webp",
+      "sourceImageFile": "episode_15/scene_39.webp",
+      "narrationEn": "Slumped against a timber stanchion, Leonar wiped dark blood from his lips, his breathing growing shallow and rasping. Though the veil of death was descending swiftly across his features, the old warlord's gaze retained the undaunted majesty of a battlefield titan.",
+      "narrationKo": "레오나르는 기둥에 등을 기대고 앉아 거친 숨을 몰아쉬며 피 묻은 입가를 닦아냈다. 그의 얼굴에는 이미 죽음의 그림자가 짙게 깔려 있었지만, 노장의 눈빛만은 사자의 위엄을 잃지 않고 있었다.",
+      "sourceSentenceStart": 39,
+      "sourceSentenceEnd": 39,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그의 얼굴에는 이미 죽음의 그림자가 짙게 깔려 있었지만, 노장의 눈빛만은 사자의 위엄을 잃지 않고 있었다.",
+          "textEn": "Though the veil of death was descending swiftly across his features, the old warlord's gaze retained the undaunted majesty of a battlefield titan.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 86
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 40,
+      "imageFile": "episode_15/scene_40.webp",
+      "sourceImageFile": "episode_15/scene_40.webp",
+      "narrationEn": "With trembling, calloused hands, he lifted his legendary Jade Staff, passing the ancestral weapon into the care of Kadan and Cilia. \"My ember burns down to the wick...",
+      "narrationKo": "레오나르는 떨리는 손으로 자신의 상징이었던 거대한 녹옥 지팡이를 들어 올려 카단과 실리아에게 건넸다.",
+      "sourceSentenceStart": 40,
+      "sourceSentenceEnd": 40,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "레오나르는 떨리는 손으로 자신의 상징이었던 거대한 녹옥 지팡이를 들어 올려 카단과 실리아에게 건넸다.",
+          "textEn": "\"My ember burns down to the wick...",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 86
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 41,
+      "imageFile": "episode_15/scene_41.webp",
+      "sourceImageFile": "episode_15/scene_41.webp",
+      "narrationEn": "But the barrier spires of Whispering Wind Island must never fall. Tell Aeolus... that Leonar never retreated, that he held his ground until his final breath...\"",
+      "narrationKo": "“내 목숨의 불씨는 여기까지다... 하지만 바람 속삭임 섬의 결계탑은 반드시 지켜내야 한다. 에올루스에게 전해라... 레오나르는 마지막 순간까지 도망치지 않고 제자리를 지켰노라고...”",
       "sourceSentenceStart": 41,
+      "sourceSentenceEnd": 41,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "레오나르",
+          "speakerEn": "Leonar",
+          "textKo": "“내 목숨의 불씨는 여기까지다... 하지만 바람 속삭임 섬의 결계탑은 반드시 지켜내야 한다. 에올루스에게 전해라... 레오나르는 마지막 순간까지 도망치지 않고 제자리를 지켰노라고...”",
+          "textEn": "“But the barrier spires of Whispering Wind Island must never fall. Tell Aeolus... that Leonar never retreated, that he held his ground until his final breath...\"”",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 86
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 42,
+      "imageFile": "episode_15/scene_42.webp",
+      "sourceImageFile": "episode_15/scene_42.webp",
+      "narrationEn": "Tears spilled down Cilia's cheeks as her hands closed around the polished jade. \"General, the sacred covenant of the earth bound within this staff shall never be betrayed.",
+      "narrationKo": "실리아가 눈물을 글썽이며 지팡이를 받아 들었다. “장군님, 이 지팡이에 깃든 대지의 맹세를 결코 헛되이 하지 않겠어요. 반드시 섬을 구하고 어머니의 진실을 밝혀내겠어요.”",
+      "sourceSentenceStart": 42,
+      "sourceSentenceEnd": 42,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“장군님, 이 지팡이에 깃든 대지의 맹세를 결코 헛되이 하지 않겠어요. 반드시 섬을 구하고 어머니의 진실을 밝혀내겠어요.”",
+          "textEn": "“Tears spilled down Cilia's cheeks as her hands closed around the polished jade. \"General, the sacred covenant of the earth bound within this staff shall never be betrayed.”",
+          "bubbleType": "speech",
+          "position": "bottom-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 43,
+      "imageFile": "episode_15/scene_43.webp",
+      "sourceImageFile": "episode_15/scene_43.webp",
+      "narrationEn": "We will safeguard the island and illuminate my mother's truth, no matter the cost.\" Kadan knelt before the dying lion, clasping the warrior's rough hand in both of his own.",
+      "narrationKo": "카단 역시 무릎을 꿇고 노장의 거친 손을 두 손으로 감싸 쥐었다.",
+      "sourceSentenceStart": 43,
       "sourceSentenceEnd": 43,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단 역시 무릎을 꿇고 노장의 거친 손을 두 손으로 감싸 쥐었다.",
+          "textEn": "We will safeguard the island and illuminate my mother's truth, no matter the cost.\" Kadan knelt before the dying lion, clasping the warrior's rough hand in both of his own.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 44,
+      "imageFile": "episode_15/scene_44.webp",
+      "sourceImageFile": "episode_15/scene_44.webp",
+      "narrationEn": "\"I swear upon my shield to safeguard the innocent lives and the hearthfire of this manor you defended.",
+      "narrationKo": "“장군님께서 지키신 아이들의 생명과 장원의 온기를 제 방패로 영원히 수호하겠습니다. 알렉산다르 스승님을 뵈러 가시는 길에 부디 평안만이 가득하기를 빕니다.”",
+      "sourceSentenceStart": 44,
+      "sourceSentenceEnd": 44,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
           "textKo": "“장군님께서 지키신 아이들의 생명과 장원의 온기를 제 방패로 영원히 수호하겠습니다. 알렉산다르 스승님을 뵈러 가시는 길에 부디 평안만이 가득하기를 빕니다.”",
-          "textEn": "“I swear upon my shield to safeguard the innocent lives and the hearthfire of this manor you defended. May your journey to reunite with Master Aleksandar be filled with eternal peace.”",
+          "textEn": "“\"I swear upon my shield to safeguard the innocent lives and the hearthfire of this manor you defended.”",
           "bubbleType": "speech",
-          "position": "bottom-right",
+          "position": "top-left",
           "characterCardId": 41
         }
       ],
@@ -611,13 +1336,42 @@
       ]
     },
     {
-      "sceneNumber": 20,
-      "imageFile": "episode_15/scene_20.webp",
-      "sourceImageFile": "episode_15/scene_20.webp",
-      "narrationEn": "\"Weep not, little ones... An old lion is merely closing his eyes for a well-earned slumber...\" The refugees and fishermen gathered in a silent circle around their fallen protector, raising their voices in a sorrowful, ancient mariners' requiem. As the tempest outside gradually waned and the cool blue hues of early dawn settled over Mist Lake, the great warrior breathed his last with a peaceful smile upon his lips. Kneeling before the fallen titan, the three youths forged an unbreakable vow of resolve for the battles that lay ahead. The golden dawn rising over the tranquil waters crowned the old general's departure with transcendent majesty.",
-      "narrationKo": "“울지 마라, 얘들아... 늙은 사자는 그저 잠시 눈을 붙이는 것뿐이다...” 장원의 난민들과 어부들이 하나둘 모여들어 노장을 둘러싸고 고요한 바다의 진혼곡을 부르기 시작했다. 거센 폭풍우가 잦아들고 새벽의 푸른빛이 호수 위로 내려앉을 때, 노장은 평온한 미소를 머금은 채 영원한 안식에 들었다. 세 젊은이는 거인의 죽음 앞에 무릎을 꿇고, 다가올 결전을 향한 결의를 가슴 깊이 새겼다. 호수 위로 밝아오는 여명은 노장이 남긴 마지막 훈장처럼 고결하고 찬란했다.",
-      "sourceSentenceStart": 44,
+      "sceneNumber": 45,
+      "imageFile": "episode_15/scene_45.webp",
+      "sourceImageFile": "episode_15/scene_45.webp",
+      "narrationEn": "May your journey to reunite with Master Aleksandar be filled with eternal peace.\" Reaching out with gentle, massive fingers, Leonar patted the heads of the weeping refugee orphans who clung to his knees.",
+      "narrationKo": "레오나르는 곁에서 고개를 숙이고 흐느끼는 난민 아이들의 머리를 커다란 손으로 부드럽게 쓰다듬었다.",
+      "sourceSentenceStart": 45,
       "sourceSentenceEnd": 45,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "레오나르는 곁에서 고개를 숙이고 흐느끼는 난민 아이들의 머리를 커다란 손으로 부드럽게 쓰다듬었다.",
+          "textEn": "May your journey to reunite with Master Aleksandar be filled with eternal peace.\" Reaching out with gentle, massive fingers, Leonar patted the heads of the weeping refugee orphans who clung to his knees.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 86
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 46,
+      "imageFile": "episode_15/scene_46.webp",
+      "sourceImageFile": "episode_15/scene_46.webp",
+      "narrationEn": "\"Weep not, little ones... An old lion is merely closing his eyes for a well-earned slumber...\"",
+      "narrationKo": "“울지 마라, 얘들아... 늙은 사자는 그저 잠시 눈을 붙이는 것뿐이다...”",
+      "sourceSentenceStart": 46,
+      "sourceSentenceEnd": 46,
       "alignmentScore": 1.0,
       "dialogues": [
         {
@@ -626,7 +1380,36 @@
           "textKo": "“울지 마라, 얘들아... 늙은 사자는 그저 잠시 눈을 붙이는 것뿐이다...”",
           "textEn": "“Weep not, little ones... An old lion is merely closing his eyes for a well-earned slumber...”",
           "bubbleType": "thought",
-          "position": "top-left",
+          "position": "bottom-left",
+          "characterCardId": 86
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 47,
+      "imageFile": "episode_15/scene_47.webp",
+      "sourceImageFile": "episode_15/scene_47.webp",
+      "narrationEn": "The refugees and fishermen gathered in a silent circle around their fallen protector, raising their voices in a sorrowful, ancient mariners' requiem. As the tempest outside gradually waned and the cool blue hues of early dawn settled over Mist Lake, the great warrior breathed his last with a peaceful smile upon his lips.",
+      "narrationKo": "장원의 난민들과 어부들이 하나둘 모여들어 노장을 둘러싸고 고요한 바다의 진혼곡을 부르기 시작했다. 거센 폭풍우가 잦아들고 새벽의 푸른빛이 호수 위로 내려앉을 때, 노장은 평온한 미소를 머금은 채 영원한 안식에 들었다.",
+      "sourceSentenceStart": 47,
+      "sourceSentenceEnd": 47,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "거센 폭풍우가 잦아들고 새벽의 푸른빛이 호수 위로 내려앉을 때, 노장은 평온한 미소를 머금은 채 영원한 안식에 들었다.",
+          "textEn": "As the tempest outside gradually waned and the cool blue hues of early dawn settled over Mist Lake, the great warrior breathed his last with a peaceful smile upon his lips.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
           "characterCardId": 86
         }
       ],
@@ -642,6 +1425,35 @@
           "textEn": "THUD!",
           "style": "impact",
           "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 48,
+      "imageFile": "episode_15/scene_48.webp",
+      "sourceImageFile": "episode_15/scene_48.webp",
+      "narrationEn": "Kneeling before the fallen titan, the three youths forged an unbreakable vow of resolve for the battles that lay ahead. The golden dawn rising over the tranquil waters crowned the old general's departure with transcendent majesty.",
+      "narrationKo": "세 젊은이는 거인의 죽음 앞에 무릎을 꿇고, 다가올 결전을 향한 결의를 가슴 깊이 새겼다. 호수 위로 밝아오는 여명은 노장이 남긴 마지막 훈장처럼 고결하고 찬란했다.",
+      "sourceSentenceStart": 48,
+      "sourceSentenceEnd": 48,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "호수 위로 밝아오는 여명은 노장이 남긴 마지막 훈장처럼 고결하고 찬란했다.",
+          "textEn": "The golden dawn rising over the tranquil waters crowned the old general's departure with transcendent majesty.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 86
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
         }
       ]
     }

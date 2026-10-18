@@ -2,36 +2,30 @@
   "episodeNumber": 27,
   "episodeTitleEn": "Between Two Promises",
   "episodeTitleKo": "두 개의 약속 사이에서",
-  "sourceSentenceCount": 53,
-  "sceneCount": 20,
+  "sourceSentenceCount": 50,
+  "sceneCount": 50,
   "scenes": [
     {
       "sceneNumber": 1,
       "imageFile": "episode_27/scene_01.webp",
       "sourceImageFile": "episode_27/scene_01.webp",
-      "narrationEn": "As midnight approached, the gardens of the inner citadel fell into an uncanny, breathless stillness. Though the fires of daytime skirmishes had subsided, the sharp chill seeping through the nocturnal mist prickled the skin like needles. Standing upon the marble terrace overlooking the capital, Kadan gazed up into the northern firmament, where the North Star shone with crystal clarity—the very constellation he had contemplated alongside Master Aleksandar across the snowy wastes of his youth. Quiet footsteps stirred behind him as Cilia approached, carrying two steaming silver goblets of wild mountain mint tea.",
-      "narrationKo": "자정을 앞둔 황궁 내궁의 정원은 적막할 정도로 고요했다. 낮 동안의 전투 흔적은 가라앉았지만, 밤안개 사이로 스며드는 살기는 살갗을 바늘처럼 찔렀다. 내일 밤 평의회에서 벌어질 결전을 앞두고, 카단은 홀로 회랑 구석의 대리석 테라스에 서서 밤하늘의 북극성을 응시하고 있었다. 소년 시절 북방 설원에서 스승 알렉산다르와 함께 올려다보았던 그 별빛이었다. 등 뒤에서 조용한 발소리와 함께 실리아가 다가왔다. 실리아의 손에는 따뜻한 박하차가 담긴 두 개의 은잔이 들려 있었다. 실리아가 은잔 하나를 카단에게 건네며 미소를 지었다.",
+      "narrationEn": "As midnight approached, the gardens of the inner citadel fell into an uncanny, breathless stillness.",
+      "narrationKo": "자정을 앞둔 황궁 내궁의 정원은 적막할 정도로 고요했다. 낮 동안의 전투 흔적은 가라앉았지만, 밤안개 사이로 스며드는 살기는 살갗을 바늘처럼 찔렀다.",
       "sourceSentenceStart": 1,
-      "sourceSentenceEnd": 3,
+      "sourceSentenceEnd": 1,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "실리아가 은잔 하나를 카단에게 건네며 미소를 지었다.",
-          "textEn": "Quiet footsteps stirred behind him as Cilia approached, carrying two steaming silver goblets of wild mountain mint tea.",
+          "textKo": "낮 동안의 전투 흔적은 가라앉았지만, 밤안개 사이로 스며드는 살기는 살갗을 바늘처럼 찔렀다.",
+          "textEn": "As midnight approached, the gardens of the inner citadel fell into an uncanny, breathless stillness.",
           "bubbleType": "thought",
           "position": "top-left",
           "characterCardId": 41
         }
       ],
       "sfxCues": [
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        },
         {
           "textKo": "휘이이익-!",
           "textEn": "SWOOSH!",
@@ -44,61 +38,29 @@
       "sceneNumber": 2,
       "imageFile": "episode_27/scene_02.webp",
       "sourceImageFile": "episode_27/scene_02.webp",
-      "narrationEn": "Offering a cup to Kadan, Cilia smiled gently. \"Sleep eludes you, Kadan? Tomorrow night, eighteen winters of bitter vengeance will reach their conclusion, yet your shoulders remain as steadfast as northern granite.\"",
-      "narrationKo": "“잠이 오지 않나요, 카단? 내일이면 십팔 년간 얽혀 있던 대륙의 오랜 악연이 결판날 텐데, 당신의 등은 여전히 북방의 바위처럼 묵직하네요.” 카단이 따뜻한 차를 한 모금 마시며 나지막이 대답했다.",
-      "sourceSentenceStart": 4,
-      "sourceSentenceEnd": 5,
+      "narrationEn": "Though the fires of daytime skirmishes had subsided, the sharp chill seeping through the nocturnal mist prickled the skin like needles. Standing upon the marble terrace overlooking the capital, Kadan gazed up into the northern firmament, where the North Star shone with crystal clarity—the very constellation he had contemplated alongside Master Aleksandar across the snowy wastes of his youth.",
+      "narrationKo": "내일 밤 평의회에서 벌어질 결전을 앞두고, 카단은 홀로 회랑 구석의 대리석 테라스에 서서 밤하늘의 북극성을 응시하고 있었다. 소년 시절 북방 설원에서 스승 알렉산다르와 함께 올려다보았던 그 별빛이었다.",
+      "sourceSentenceStart": 2,
+      "sourceSentenceEnd": 2,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“잠이 오지 않나요, 카단? 내일이면 십팔 년간 얽혀 있던 대륙의 오랜 악연이 결판날 텐데, 당신의 등은 여전히 북방의 바위처럼 묵직하네요.”",
-          "textEn": "“Sleep eludes you, Kadan? Tomorrow night, eighteen winters of bitter vengeance will reach their conclusion, yet your shoulders remain as steadfast as northern granite.”",
-          "bubbleType": "speech",
-          "position": "bottom-left",
-          "characterCardId": 62
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "서걱-!",
-          "textEn": "SLASH!",
-          "style": "slash",
-          "position": "center"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 3,
-      "imageFile": "episode_27/scene_03.webp",
-      "sourceImageFile": "episode_27/scene_03.webp",
-      "narrationEn": "Sipping the warm tea, Kadan replied in a quiet, measured cadence. \"I was thinking of the sacred vows I pledged to Master Aleksandar. That steel is never an instrument of dominion, but a shield to dry the tears of the suffering. And... the fraternal oath I shared with Ignis.\"",
-      "narrationKo": "“스승님과 나누었던 약속을 생각하고 있었다. 무기는 힘을 과시하기 위함이 아니라 약한 자들의 눈물을 닦아주기 위함이라는 약속. 그리고... 이그니스와 나누었던 형제의 약속도.” 실리아가 난간에 기대어 바람의 결을 매만졌다. “당신은 항상 다른 사람들의 약속만을 짊어지고 있어요. 당신 자신을 위한 소원은 어디에 있나요?”",
-      "sourceSentenceStart": 6,
-      "sourceSentenceEnd": 8,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“스승님과 나누었던 약속을 생각하고 있었다. 무기는 힘을 과시하기 위함이 아니라 약한 자들의 눈물을 닦아주기 위함이라는 약속. 그리고... 이그니스와 나누었던 형제의 약속도.”",
-          "textEn": "“Sleep eludes you, Kadan? Tomorrow night, eighteen winters of bitter vengeance will reach their conclusion, yet your shoulders remain as steadfast as northern granite.”",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "소년 시절 북방 설원에서 스승 알렉산다르와 함께 올려다보았던 그 별빛이었다.",
+          "textEn": "Standing upon the marble terrace overlooking the capital, Kadan gazed up into the northern firmament, where the North Star shone with crystal clarity—the very constellation he had contemplated alongside Master Aleksandar across the snowy wastes of his youth.",
           "bubbleType": "thought",
-          "position": "bottom-right",
+          "position": "top-right",
           "characterCardId": 41
-        },
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“당신은 항상 다른 사람들의 약속만을 짊어지고 있어요. 당신 자신을 위한 소원은 어디에 있나요?”",
-          "textEn": "“I was thinking of the sacred vows I pledged to Master Aleksandar. That steel is never an instrument of dominion, but a shield to dry the tears of the suffering. And... the fraternal oath I shared with Ignis.”",
-          "bubbleType": "speech",
-          "position": "top-left",
-          "characterCardId": 62
         }
       ],
       "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
         {
           "textKo": "휘이이익-!",
           "textEn": "SWOOSH!",
@@ -108,32 +70,55 @@
       ]
     },
     {
+      "sceneNumber": 3,
+      "imageFile": "episode_27/scene_03.webp",
+      "sourceImageFile": "episode_27/scene_03.webp",
+      "narrationEn": "Quiet footsteps stirred behind him as Cilia approached, carrying two steaming silver goblets of wild mountain mint tea.",
+      "narrationKo": "등 뒤에서 조용한 발소리와 함께 실리아가 다가왔다. 실리아의 손에는 따뜻한 박하차가 담긴 두 개의 은잔이 들려 있었다.",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 3,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "실리아의 손에는 따뜻한 박하차가 담긴 두 개의 은잔이 들려 있었다.",
+          "textEn": "Quiet footsteps stirred behind him as Cilia approached, carrying two steaming silver goblets of wild mountain mint tea.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
       "sceneNumber": 4,
       "imageFile": "episode_27/scene_04.webp",
       "sourceImageFile": "episode_27/scene_04.webp",
-      "narrationEn": "Leaning against the balustrade, Cilia caressed the night air with her fingers. \"You constantly shoulder the covenants of others, Kadan. Where does your own heart's longing reside?\"",
-      "narrationKo": "내궁 테라스 아래로는 수백 년 된 주목(朱木)들이 밤안개 속에 그림자처럼 늘어서 있었다. 테라스 난간의 대리석 부조에는 고대 성기사들이 북방의 늑대들과 어깨를 나란히 하고 대륙을 수호하던 거룩한 역사가 새겨져 있었다. 카단은 그 부조를 손끝으로 쓸어내리며 스승 알렉산다르의 엄격하면서도 따뜻했던 목소리를 떠올렸다. 실리아가 카단의 곁에서 밤하늘을 올려다보며 부드럽게 미소를 지었다. “북극성이 오늘 밤 유난히 맑게 빛나네요. 폭풍우가 지나간 뒤의 하늘은 언제나 거짓 없이 깨끗한 법이에요.” 카단이 엷은 미소를 지으며 자신의 낡은 무쇠 방패를 바라보았다.",
-      "sourceSentenceStart": 9,
-      "sourceSentenceEnd": 11,
+      "narrationEn": "Offering a cup to Kadan, Cilia smiled gently.",
+      "narrationKo": "실리아가 은잔 하나를 카단에게 건네며 미소를 지었다. “잠이 오지 않나요, 카단? 내일이면 십팔 년간 얽혀 있던 대륙의 오랜 악연이 결판날 텐데, 당신의 등은 여전히 북방의 바위처럼 묵직하네요.”",
+      "sourceSentenceStart": 4,
+      "sourceSentenceEnd": 4,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "실리아",
           "speakerEn": "Celia",
-          "textKo": "“북극성이 오늘 밤 유난히 맑게 빛나네요. 폭풍우가 지나간 뒤의 하늘은 언제나 거짓 없이 깨끗한 법이에요.”",
-          "textEn": "“You constantly shoulder the covenants of others, Kadan. Where does your own heart's longing reside?”",
+          "textKo": "“잠이 오지 않나요, 카단? 내일이면 십팔 년간 얽혀 있던 대륙의 오랜 악연이 결판날 텐데, 당신의 등은 여전히 북방의 바위처럼 묵직하네요.”",
+          "textEn": "“Offering a cup to Kadan, Cilia smiled gently.”",
           "bubbleType": "speech",
           "position": "top-left",
           "characterCardId": 62
         }
       ],
       "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
         {
           "textKo": "파지지직!",
           "textEn": "CRACKLE!",
@@ -146,28 +131,28 @@
       "sceneNumber": 5,
       "imageFile": "episode_27/scene_05.webp",
       "sourceImageFile": "episode_27/scene_05.webp",
-      "narrationEn": "A faint, tender smile touched Kadan's lips as he looked down upon his battered iron shield. \"My wish is humble. When this war ends, I wish to return to my master's resting place in the northern wildlands, repair the fallen fences, and sow barley in the dormant fields. To kindle a warm hearthfire where weary wanderers shivering from the cold can always find shelter. That is the only peace I desire.\"",
-      "narrationKo": "“내 소원은 소박하다. 이 전쟁이 끝나면 스승님이 잠드신 북방의 고향으로 돌아가, 부서진 울타리를 고치고 버려진 밭에 보리를 심는 것이다. 그리고 추위에 떠는 길손들이 언제든 쉬어갈 수 있는 따뜻한 모닥불을 피우는 것. 그것이 내가 바라는 유일한 평화다.” 실리아의 눈동자가 달빛 아래에서 촉촉하게 젖어 들었다.",
-      "sourceSentenceStart": 12,
-      "sourceSentenceEnd": 13,
+      "narrationEn": "\"Sleep eludes you, Kadan?",
+      "narrationKo": "카단이 따뜻한 차를 한 모금 마시며 나지막이 대답했다.",
+      "sourceSentenceStart": 5,
+      "sourceSentenceEnd": 5,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“내 소원은 소박하다. 이 전쟁이 끝나면 스승님이 잠드신 북방의 고향으로 돌아가, 부서진 울타리를 고치고 버려진 밭에 보리를 심는 것이다. 그리고 추위에 떠는 길손들이 언제든 쉬어갈 수 있는 따뜻한 모닥불을 피우는 것. 그것이 내가 바라는 유일한 평화다.”",
-          "textEn": "“My wish is humble. When this war ends, I wish to return to my master's resting place in the northern wildlands, repair the fallen fences, and sow barley in the dormant fields. To kindle a warm hearthfire where weary wanderers shivering from the cold can always find shelter. That is the only peace I desire.”",
-          "bubbleType": "speech",
-          "position": "top-right",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단이 따뜻한 차를 한 모금 마시며 나지막이 대답했다.",
+          "textEn": "\"Sleep eludes you, Kadan?",
+          "bubbleType": "thought",
+          "position": "top-left",
           "characterCardId": 41
         }
       ],
       "sfxCues": [
         {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
         }
       ]
     },
@@ -175,28 +160,19 @@
       "sceneNumber": 6,
       "imageFile": "episode_27/scene_06.webp",
       "sourceImageFile": "episode_27/scene_06.webp",
-      "narrationEn": "Cilia's eyes softened under the moonlight.",
-      "narrationKo": "“따뜻한 모닥불이라... 참으로 카단다운 소망이네요. 그렇다면 전쟁이 끝난 뒤에, 저를 그 북방의 모닥불 곁으로 초대해 주시겠어요? 바람 속삭임 섬의 백합 향유를 가져가서 당신의 오두막을 향긋하게 채워드릴게요.” 카단이 실리아의 맑은 눈을 마주 보며 고개를 끄덕였다. “약속하마, 실리아. 봄이 오면 너와 함께 북방의 설원에 푸른 보리싹이 돋아나는 것을 보러 가자.”",
-      "sourceSentenceStart": 14,
-      "sourceSentenceEnd": 16,
+      "narrationEn": "Tomorrow night, eighteen winters of bitter vengeance will reach their conclusion, yet your shoulders remain as steadfast as northern granite.\" Sipping the warm tea, Kadan replied in a quiet, measured cadence.",
+      "narrationKo": "“스승님과 나누었던 약속을 생각하고 있었다. 무기는 힘을 과시하기 위함이 아니라 약한 자들의 눈물을 닦아주기 위함이라는 약속. 그리고... 이그니스와 나누었던 형제의 약속도.”",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 6,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“따뜻한 모닥불이라... 참으로 카단다운 소망이네요. 그렇다면 전쟁이 끝난 뒤에, 저를 그 북방의 모닥불 곁으로 초대해 주시겠어요? 바람 속삭임 섬의 백합 향유를 가져가서 당신의 오두막을 향긋하게 채워드릴게요.”",
-          "textEn": "“My wish is humble. When this war ends, I wish to return to my master's resting place in the northern wildlands, repair the fallen fences, and sow barley in the dormant fields. To kindle a warm hearthfire where weary wanderers shivering from the cold can always find shelter. That is the only peace I desire.”",
-          "bubbleType": "thought",
-          "position": "bottom-left",
-          "characterCardId": 62
-        },
-        {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "“약속하마, 실리아. 봄이 오면 너와 함께 북방의 설원에 푸른 보리싹이 돋아나는 것을 보러 가자.”",
-          "textEn": "“A warm hearthfire... How wonderfully like you, Kadan. If so, when the peace is won, will you invite me to sit beside that northern hearth? I shall bring the fragrant lily oil of Whispering Wind Island to sweeten the air of your timber cabin.”",
-          "bubbleType": "speech",
-          "position": "bottom-right",
+          "textKo": "“스승님과 나누었던 약속을 생각하고 있었다. 무기는 힘을 과시하기 위함이 아니라 약한 자들의 눈물을 닦아주기 위함이라는 약속. 그리고... 이그니스와 나누었던 형제의 약속도.”",
+          "textEn": "“Tomorrow night, eighteen winters of bitter vengeance will reach their conclusion, yet your shoulders remain as steadfast as northern granite.\" Sipping the warm tea, Kadan replied in a quiet, measured cadence.”",
+          "bubbleType": "thought",
+          "position": "bottom-left",
           "characterCardId": 41
         }
       ],
@@ -213,34 +189,28 @@
       "sceneNumber": 7,
       "imageFile": "episode_27/scene_07.webp",
       "sourceImageFile": "episode_27/scene_07.webp",
-      "narrationEn": "\"A warm hearthfire... How wonderfully like you, Kadan. If so, when the peace is won, will you invite me to sit beside that northern hearth? I shall bring the fragrant lily oil of Whispering Wind Island to sweeten the air of your timber cabin.\" Meeting her gaze with deep sincerity, Kadan nodded.",
-      "narrationKo": "두 사람 사이에 따스한 침묵이 흘렀다. 전장의 포연 속에서 피어난 연정과 신뢰가 달빛 아래에서 잔잔하게 일렁이고 있었다. 실리아의 목소리에는 깊은 신뢰와 은은한 애정이 담겨 있었다. 피와 화약 냄새로 물든 전장의 한가운데에서도, 두 사람이 나누는 소박한 희망은 차가운 밤공기를 훈훈하게 데워주고 있었다. 카단이 방패에 새겨진 드래곤의 문양을 어루만지며 속삭였다. “보리가 익어갈 무렵이면 바람 속삭임 섬의 꽃배들도 다시 바다를 메우겠지. 그날이 오면 검과 방패를 내려놓고 온전한 평화를 노래할 수 있을 것이다.”",
-      "sourceSentenceStart": 17,
-      "sourceSentenceEnd": 19,
+      "narrationEn": "\"I was thinking of the sacred vows I pledged to Master Aleksandar.",
+      "narrationKo": "실리아가 난간에 기대어 바람의 결을 매만졌다. “당신은 항상 다른 사람들의 약속만을 짊어지고 있어요. 당신 자신을 위한 소원은 어디에 있나요?”",
+      "sourceSentenceStart": 7,
+      "sourceSentenceEnd": 7,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“보리가 익어갈 무렵이면 바람 속삭임 섬의 꽃배들도 다시 바다를 메우겠지. 그날이 오면 검과 방패를 내려놓고 온전한 평화를 노래할 수 있을 것이다.”",
-          "textEn": "“A warm hearthfire... How wonderfully like you, Kadan. If so, when the peace is won, will you invite me to sit beside that northern hearth? I shall bring the fragrant lily oil of Whispering Wind Island to sweeten the air of your timber cabin.”",
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“당신은 항상 다른 사람들의 약속만을 짊어지고 있어요. 당신 자신을 위한 소원은 어디에 있나요?”",
+          "textEn": "“\"I was thinking of the sacred vows I pledged to Master Aleksandar.”",
           "bubbleType": "speech",
           "position": "bottom-right",
-          "characterCardId": 41
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
         {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
           "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
+          "position": "top-left"
         }
       ]
     },
@@ -248,28 +218,28 @@
       "sceneNumber": 8,
       "imageFile": "episode_27/scene_08.webp",
       "sourceImageFile": "episode_27/scene_08.webp",
-      "narrationEn": "\"I promise, Cilia. When spring arrives, we will watch the green barley sprout through the snow together.\" A tender, sacred silence lingered between them under the silver moon, binding their spirits in quiet trust.",
-      "narrationKo": "실리아가 고개를 끄덕였다. “네, 그 약속을 가슴에 품고 내일의 전장을 견뎌낼게요.” 그때 회랑 저편에서 무거운 칼집 소리가 들려왔다. 순백의 기사 갑주 대신 가죽 조끼를 걸친 이그니스가 다가오고 있었다. 이그니스의 손에는 아버지가 남긴 작은 나무 말 장난감이 들려 있었다. 어린 시절 발리안이 손수 깎아주었던 소중한 유품이었다.",
-      "sourceSentenceStart": 20,
-      "sourceSentenceEnd": 21,
+      "narrationEn": "That steel is never an instrument of dominion, but a shield to dry the tears of the suffering.",
+      "narrationKo": "내궁 테라스 아래로는 수백 년 된 주목(朱木)들이 밤안개 속에 그림자처럼 늘어서 있었다. 테라스 난간의 대리석 부조에는 고대 성기사들이 북방의 늑대들과 어깨를 나란히 하고 대륙을 수호하던 거룩한 역사가 새겨져 있었다.",
+      "sourceSentenceStart": 8,
+      "sourceSentenceEnd": 8,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“네, 그 약속을 가슴에 품고 내일의 전장을 견뎌낼게요.”",
-          "textEn": "“I promise, Cilia. When spring arrives, we will watch the green barley sprout through the snow together.”",
-          "bubbleType": "speech",
-          "position": "top-left",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "테라스 난간의 대리석 부조에는 고대 성기사들이 북방의 늑대들과 어깨를 나란히 하고 대륙을 수호하던 거룩한 역사가 새겨져 있었다.",
+          "textEn": "That steel is never an instrument of dominion, but a shield to dry the tears of the suffering.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
           "characterCardId": 62
         }
       ],
       "sfxCues": [
         {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
           "style": "slash",
-          "position": "top-right"
+          "position": "top-left"
         }
       ]
     },
@@ -277,20 +247,20 @@
       "sceneNumber": 9,
       "imageFile": "episode_27/scene_09.webp",
       "sourceImageFile": "episode_27/scene_09.webp",
-      "narrationEn": "Soon, the heavy scrape of boots broke the reverie as Ignis joined them upon the terrace. Robed in a simple leather arming doublet, he carried the weathered wooden horse toy carved by his father Balian before his imprisonment. Sitting beside the brazier, Ignis offered a wry, sorrowful smile.",
-      "narrationKo": "이그니스가 모닥불 곁에 앉으며 씁쓸한 미소를 지었다. “두 사람의 정다운 대화를 방해한 것은 아닌지 모르겠군.” 카단이 차를 건네며 대답했다.",
-      "sourceSentenceStart": 22,
-      "sourceSentenceEnd": 24,
+      "narrationEn": "And... the fraternal oath I shared with Ignis.\" Leaning against the balustrade, Cilia caressed the night air with her fingers.",
+      "narrationKo": "카단은 그 부조를 손끝으로 쓸어내리며 스승 알렉산다르의 엄격하면서도 따뜻했던 목소리를 떠올렸다.",
+      "sourceSentenceStart": 9,
+      "sourceSentenceEnd": 9,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "이그니스",
-          "speakerEn": "Ignis",
-          "textKo": "“두 사람의 정다운 대화를 방해한 것은 아닌지 모르겠군.”",
-          "textEn": "“I trust I am not intruding upon your peace.”",
-          "bubbleType": "speech",
-          "position": "top-right",
-          "characterCardId": 11
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단은 그 부조를 손끝으로 쓸어내리며 스승 알렉산다르의 엄격하면서도 따뜻했던 목소리를 떠올렸다.",
+          "textEn": "the fraternal oath I shared with Ignis.\" Leaning against the balustrade, Cilia caressed the night air with her fingers.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
@@ -306,17 +276,371 @@
       "sceneNumber": 10,
       "imageFile": "episode_27/scene_10.webp",
       "sourceImageFile": "episode_27/scene_10.webp",
-      "narrationEn": "\"I trust I am not intruding upon your peace.\" Handing him a cup of tea, Kadan shook his head.",
-      "narrationKo": "“아니다, 이그니스. 내일 밤 평의회 잠입로를 점검하던 중이었다.” 이그니스는 나무 말의 갈기를 손끝으로 어루만지며 말을 이었다.",
-      "sourceSentenceStart": 25,
-      "sourceSentenceEnd": 26,
+      "narrationEn": "\"You constantly shoulder the covenants of others, Kadan.",
+      "narrationKo": "실리아가 카단의 곁에서 밤하늘을 올려다보며 부드럽게 미소를 지었다. “북극성이 오늘 밤 유난히 맑게 빛나네요. 폭풍우가 지나간 뒤의 하늘은 언제나 거짓 없이 깨끗한 법이에요.”",
+      "sourceSentenceStart": 10,
+      "sourceSentenceEnd": 10,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“북극성이 오늘 밤 유난히 맑게 빛나네요. 폭풍우가 지나간 뒤의 하늘은 언제나 거짓 없이 깨끗한 법이에요.”",
+          "textEn": "“\"You constantly shoulder the covenants of others, Kadan.”",
+          "bubbleType": "speech",
+          "position": "bottom-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_27/scene_11.webp",
+      "sourceImageFile": "episode_27/scene_11.webp",
+      "narrationEn": "Where does your own heart's longing reside?\"",
+      "narrationKo": "카단이 엷은 미소를 지으며 자신의 낡은 무쇠 방패를 바라보았다. “내 소원은 소박하다. 이 전쟁이 끝나면 스승님이 잠드신 북방의 고향으로 돌아가, 부서진 울타리를 고치고 버려진 밭에 보리를 심는 것이다.”",
+      "sourceSentenceStart": 11,
+      "sourceSentenceEnd": 11,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "“아니다, 이그니스. 내일 밤 평의회 잠입로를 점검하던 중이었다.”",
-          "textEn": "“I trust I am not intruding upon your peace.”",
+          "textKo": "“내 소원은 소박하다. 이 전쟁이 끝나면 스승님이 잠드신 북방의 고향으로 돌아가, 부서진 울타리를 고치고 버려진 밭에 보리를 심는 것이다.”",
+          "textEn": "“Where does your own heart's longing reside?\"”",
+          "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_27/scene_12.webp",
+      "sourceImageFile": "episode_27/scene_12.webp",
+      "narrationEn": "A faint, tender smile touched Kadan's lips as he looked down upon his battered iron shield. \"My wish is humble.",
+      "narrationKo": "“그리고 추위에 떠는 길손들이 언제든 쉬어갈 수 있는 따뜻한 모닥불을 피우는 것. 그것이 내가 바라는 유일한 평화다.”",
+      "sourceSentenceStart": 12,
+      "sourceSentenceEnd": 12,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“그리고 추위에 떠는 길손들이 언제든 쉬어갈 수 있는 따뜻한 모닥불을 피우는 것. 그것이 내가 바라는 유일한 평화다.”",
+          "textEn": "“A faint, tender smile touched Kadan's lips as he looked down upon his battered iron shield. \"My wish is humble.”",
+          "bubbleType": "speech",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_27/scene_13.webp",
+      "sourceImageFile": "episode_27/scene_13.webp",
+      "narrationEn": "When this war ends, I wish to return to my master's resting place in the northern wildlands, repair the fallen fences, and sow barley in the dormant fields.",
+      "narrationKo": "실리아의 눈동자가 달빛 아래에서 촉촉하게 젖어 들었다.",
+      "sourceSentenceStart": 13,
+      "sourceSentenceEnd": 13,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "실리아의 눈동자가 달빛 아래에서 촉촉하게 젖어 들었다.",
+          "textEn": "When this war ends, I wish to return to my master's resting place in the northern wildlands, repair the fallen fences, and sow barley in the dormant fields.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_27/scene_14.webp",
+      "sourceImageFile": "episode_27/scene_14.webp",
+      "narrationEn": "To kindle a warm hearthfire where weary wanderers shivering from the cold can always find shelter.",
+      "narrationKo": "“따뜻한 모닥불이라... 참으로 카단다운 소망이네요. 그렇다면 전쟁이 끝난 뒤에, 저를 그 북방의 모닥불 곁으로 초대해 주시겠어요? 바람 속삭임 섬의 백합 향유를 가져가서 당신의 오두막을 향긋하게 채워드릴게요.”",
+      "sourceSentenceStart": 14,
+      "sourceSentenceEnd": 14,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“따뜻한 모닥불이라... 참으로 카단다운 소망이네요. 그렇다면 전쟁이 끝난 뒤에, 저를 그 북방의 모닥불 곁으로 초대해 주시겠어요? 바람 속삭임 섬의 백합 향유를 가져가서 당신의 오두막을 향긋하게 채워드릴게요.”",
+          "textEn": "“To kindle a warm hearthfire where weary wanderers shivering from the cold can always find shelter.”",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_27/scene_15.webp",
+      "sourceImageFile": "episode_27/scene_15.webp",
+      "narrationEn": "That is the only peace I desire.\" Cilia's eyes softened under the moonlight.",
+      "narrationKo": "카단이 실리아의 맑은 눈을 마주 보며 고개를 끄덕였다. “약속하마, 실리아. 봄이 오면 너와 함께 북방의 설원에 푸른 보리싹이 돋아나는 것을 보러 가자.”",
+      "sourceSentenceStart": 15,
+      "sourceSentenceEnd": 15,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“약속하마, 실리아. 봄이 오면 너와 함께 북방의 설원에 푸른 보리싹이 돋아나는 것을 보러 가자.”",
+          "textEn": "“That is the only peace I desire.\" Cilia's eyes softened under the moonlight.”",
+          "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_27/scene_16.webp",
+      "sourceImageFile": "episode_27/scene_16.webp",
+      "narrationEn": "\"A warm hearthfire...",
+      "narrationKo": "두 사람 사이에 따스한 침묵이 흘렀다. 전장의 포연 속에서 피어난 연정과 신뢰가 달빛 아래에서 잔잔하게 일렁이고 있었다.",
+      "sourceSentenceStart": 16,
+      "sourceSentenceEnd": 16,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "전장의 포연 속에서 피어난 연정과 신뢰가 달빛 아래에서 잔잔하게 일렁이고 있었다.",
+          "textEn": "\"A warm hearthfire...",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_27/scene_17.webp",
+      "sourceImageFile": "episode_27/scene_17.webp",
+      "narrationEn": "How wonderfully like you, Kadan.",
+      "narrationKo": "실리아의 목소리에는 깊은 신뢰와 은은한 애정이 담겨 있었다. 피와 화약 냄새로 물든 전장의 한가운데에서도, 두 사람이 나누는 소박한 희망은 차가운 밤공기를 훈훈하게 데워주고 있었다.",
+      "sourceSentenceStart": 17,
+      "sourceSentenceEnd": 17,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "피와 화약 냄새로 물든 전장의 한가운데에서도, 두 사람이 나누는 소박한 희망은 차가운 밤공기를 훈훈하게 데워주고 있었다.",
+          "textEn": "How wonderfully like you, Kadan.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_27/scene_18.webp",
+      "sourceImageFile": "episode_27/scene_18.webp",
+      "narrationEn": "If so, when the peace is won, will you invite me to sit beside that northern hearth?",
+      "narrationKo": "카단이 방패에 새겨진 드래곤의 문양을 어루만지며 속삭였다. “보리가 익어갈 무렵이면 바람 속삭임 섬의 꽃배들도 다시 바다를 메우겠지. 그날이 오면 검과 방패를 내려놓고 온전한 평화를 노래할 수 있을 것이다.”",
+      "sourceSentenceStart": 18,
+      "sourceSentenceEnd": 18,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“보리가 익어갈 무렵이면 바람 속삭임 섬의 꽃배들도 다시 바다를 메우겠지. 그날이 오면 검과 방패를 내려놓고 온전한 평화를 노래할 수 있을 것이다.”",
+          "textEn": "“If so, when the peace is won, will you invite me to sit beside that northern hearth?”",
+          "bubbleType": "speech",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_27/scene_19.webp",
+      "sourceImageFile": "episode_27/scene_19.webp",
+      "narrationEn": "I shall bring the fragrant lily oil of Whispering Wind Island to sweeten the air of your timber cabin.\" Meeting her gaze with deep sincerity, Kadan nodded.",
+      "narrationKo": "실리아가 고개를 끄덕였다. “네, 그 약속을 가슴에 품고 내일의 전장을 견뎌낼게요.”",
+      "sourceSentenceStart": 19,
+      "sourceSentenceEnd": 19,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“네, 그 약속을 가슴에 품고 내일의 전장을 견뎌낼게요.”",
+          "textEn": "“I shall bring the fragrant lily oil of Whispering Wind Island to sweeten the air of your timber cabin.\" Meeting her gaze with deep sincerity, Kadan nodded.”",
+          "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_27/scene_20.webp",
+      "sourceImageFile": "episode_27/scene_20.webp",
+      "narrationEn": "\"I promise, Cilia.",
+      "narrationKo": "그때 회랑 저편에서 무거운 칼집 소리가 들려왔다. 순백의 기사 갑주 대신 가죽 조끼를 걸친 이그니스가 다가오고 있었다. 이그니스의 손에는 아버지가 남긴 작은 나무 말 장난감이 들려 있었다.",
+      "sourceSentenceStart": 20,
+      "sourceSentenceEnd": 20,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "이그니스의 손에는 아버지가 남긴 작은 나무 말 장난감이 들려 있었다.",
+          "textEn": "\"I promise, Cilia.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 21,
+      "imageFile": "episode_27/scene_21.webp",
+      "sourceImageFile": "episode_27/scene_21.webp",
+      "narrationEn": "When spring arrives, we will watch the green barley sprout through the snow together.\"",
+      "narrationKo": "어린 시절 발리안이 손수 깎아주었던 소중한 유품이었다. 이그니스가 모닥불 곁에 앉으며 씁쓸한 미소를 지었다.",
+      "sourceSentenceStart": 21,
+      "sourceSentenceEnd": 21,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "이그니스가 모닥불 곁에 앉으며 씁쓸한 미소를 지었다.",
+          "textEn": "When spring arrives, we will watch the green barley sprout through the snow together.\"",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 43
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 22,
+      "imageFile": "episode_27/scene_22.webp",
+      "sourceImageFile": "episode_27/scene_22.webp",
+      "narrationEn": "A tender, sacred silence lingered between them under the silver moon, binding their spirits in quiet trust. Soon, the heavy scrape of boots broke the reverie as Ignis joined them upon the terrace.",
+      "narrationKo": "“두 사람의 정다운 대화를 방해한 것은 아닌지 모르겠군.” 카단이 차를 건네며 대답했다.",
+      "sourceSentenceStart": 22,
+      "sourceSentenceEnd": 22,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“두 사람의 정다운 대화를 방해한 것은 아닌지 모르겠군.”",
+          "textEn": "“A tender, sacred silence lingered between them under the silver moon, binding their spirits in quiet trust. Soon, the heavy scrape of boots broke the reverie as Ignis joined them upon the terrace.”",
           "bubbleType": "speech",
           "position": "bottom-left",
           "characterCardId": 41
@@ -332,31 +656,80 @@
       ]
     },
     {
-      "sceneNumber": 11,
-      "imageFile": "episode_27/scene_11.webp",
-      "sourceImageFile": "episode_27/scene_11.webp",
-      "narrationEn": "\"Never, brother. We were reviewing the infiltration route into the council chamber.\" Caressing the carved mane of the toy horse, Ignis spoke in solemn resolution.",
-      "narrationKo": "“내일 밤 평의회에서... 나는 루시안과 끝장을 볼 생각이다. 내 아버지가 뒤집어썼던 누명과, 내 칼에 희생되었던 무고한 사람들의 넋을 달래기 위해, 내 목숨을 던져서라도 루시안의 심연 마법을 끊어내겠다.” 카단이 눈살을 찌푸리며 단호하게 말했다. “목숨을 버릴 생각을 먼저 하지 마라. 우리는 살아서 함께 승리를 맞이해야 한다.”",
-      "sourceSentenceStart": 27,
-      "sourceSentenceEnd": 29,
+      "sceneNumber": 23,
+      "imageFile": "episode_27/scene_23.webp",
+      "sourceImageFile": "episode_27/scene_23.webp",
+      "narrationEn": "Robed in a simple leather arming doublet, he carried the weathered wooden horse toy carved by his father Balian before his imprisonment.",
+      "narrationKo": "“아니다, 이그니스. 내일 밤 평의회 잠입로를 점검하던 중이었다.”",
+      "sourceSentenceStart": 23,
+      "sourceSentenceEnd": 23,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "이그니스",
-          "speakerEn": "Ignis",
-          "textKo": "“내일 밤 평의회에서... 나는 루시안과 끝장을 볼 생각이다. 내 아버지가 뒤집어썼던 누명과, 내 칼에 희생되었던 무고한 사람들의 넋을 달래기 위해, 내 목숨을 던져서라도 루시안의 심연 마법을 끊어내겠다.”",
-          "textEn": "“Never, brother. We were reviewing the infiltration route into the council chamber.”",
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“아니다, 이그니스. 내일 밤 평의회 잠입로를 점검하던 중이었다.”",
+          "textEn": "“Robed in a simple leather arming doublet, he carried the weathered wooden horse toy carved by his father Balian before his imprisonment.”",
+          "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 24,
+      "imageFile": "episode_27/scene_24.webp",
+      "sourceImageFile": "episode_27/scene_24.webp",
+      "narrationEn": "Sitting beside the brazier, Ignis offered a wry, sorrowful smile.",
+      "narrationKo": "이그니스는 나무 말의 갈기를 손끝으로 어루만지며 말을 이었다.",
+      "sourceSentenceStart": 24,
+      "sourceSentenceEnd": 24,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "이그니스는 나무 말의 갈기를 손끝으로 어루만지며 말을 이었다.",
+          "textEn": "Sitting beside the brazier, Ignis offered a wry, sorrowful smile.",
           "bubbleType": "thought",
           "position": "bottom-right",
           "characterCardId": 11
-        },
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 25,
+      "imageFile": "episode_27/scene_25.webp",
+      "sourceImageFile": "episode_27/scene_25.webp",
+      "narrationEn": "\"I trust I am not intruding upon your peace.\"",
+      "narrationKo": "“내일 밤 평의회에서... 나는 루시안과 끝장을 볼 생각이다. 내 아버지가 뒤집어썼던 누명과, 내 칼에 희생되었던 무고한 사람들의 넋을 달래기 위해, 내 목숨을 던져서라도 루시안의 심연 마법을 끊어내겠다.”",
+      "sourceSentenceStart": 25,
+      "sourceSentenceEnd": 25,
+      "alignmentScore": 1.0,
+      "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "“목숨을 버릴 생각을 먼저 하지 마라. 우리는 살아서 함께 승리를 맞이해야 한다.”",
-          "textEn": "“Tomorrow night, I will settle the final debt with Lucian. To atone for the infamy forced upon my father and the innocent blood shed by my steel, I will extinguish Lucian's abyssal rites, even at the cost of my very breath.”",
-          "bubbleType": "speech",
-          "position": "top-left",
+          "textKo": "“내일 밤 평의회에서... 나는 루시안과 끝장을 볼 생각이다. 내 아버지가 뒤집어썼던 누명과, 내 칼에 희생되었던 무고한 사람들의 넋을 달래기 위해, 내 목숨을 던져서라도 루시안의 심연 마법을 끊어내겠다.”",
+          "textEn": "“I trust I am not intruding upon your peace.”",
+          "bubbleType": "thought",
+          "position": "top-right",
           "characterCardId": 41
         }
       ],
@@ -370,13 +743,100 @@
       ]
     },
     {
-      "sceneNumber": 12,
-      "imageFile": "episode_27/scene_12.webp",
-      "sourceImageFile": "episode_27/scene_12.webp",
-      "narrationEn": "\"Tomorrow night, I will settle the final debt with Lucian. To atone for the infamy forced upon my father and the innocent blood shed by my steel, I will extinguish Lucian's abyssal rites, even at the cost of my very breath.\" Kadan frowned, his voice firm with reprimand.",
-      "narrationKo": "이그니스가 들고 온 작은 나무 말 장난감은 모서리가 닳고 칠이 벗겨져 있었지만, 어린아이의 손때가 묻어 따스한 온기를 머금고 있었다. 발리안 경이 북방 수용소로 끌려가기 전날 밤, 어린 아들의 손목에 쥐여주며 ‘어떤 시련 앞에서도 쓰러지지 않는 명마가 되어라’고 당부했던 소중한 보물이었다. 이그니스는 모닥불 불꽃을 물끄러미 바라보며 말했다. “아버지는 나를 용서하셨지만, 내 손으로 지은 죗값은 여전히 내 영혼을 무겁게 짓누르고 있다. 내 검이 마지막으로 해야 할 일은 그 죗값을 온전히 치르는 것이다.” 이그니스는 고개를 가로저으며 품속에서 투명한 유리 호리병 하나를 꺼냈다. 그 안에는 순백의 화염 마나가 조그마한 불씨의 형태로 은은하게 깜빡이고 있었다.",
-      "sourceSentenceStart": 30,
-      "sourceSentenceEnd": 32,
+      "sceneNumber": 26,
+      "imageFile": "episode_27/scene_26.webp",
+      "sourceImageFile": "episode_27/scene_26.webp",
+      "narrationEn": "Handing him a cup of tea, Kadan shook his head. \"Never, brother.",
+      "narrationKo": "카단이 눈살을 찌푸리며 단호하게 말했다. “목숨을 버릴 생각을 먼저 하지 마라. 우리는 살아서 함께 승리를 맞이해야 한다.”",
+      "sourceSentenceStart": 26,
+      "sourceSentenceEnd": 26,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“목숨을 버릴 생각을 먼저 하지 마라. 우리는 살아서 함께 승리를 맞이해야 한다.”",
+          "textEn": "“Handing him a cup of tea, Kadan shook his head. \"Never, brother.”",
+          "bubbleType": "speech",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 27,
+      "imageFile": "episode_27/scene_27.webp",
+      "sourceImageFile": "episode_27/scene_27.webp",
+      "narrationEn": "We were reviewing the infiltration route into the council chamber.\"",
+      "narrationKo": "이그니스가 들고 온 작은 나무 말 장난감은 모서리가 닳고 칠이 벗겨져 있었지만, 어린아이의 손때가 묻어 따스한 온기를 머금고 있었다.",
+      "sourceSentenceStart": 27,
+      "sourceSentenceEnd": 27,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "이그니스가 들고 온 작은 나무 말 장난감은 모서리가 닳고 칠이 벗겨져 있었지만, 어린아이의 손때가 묻어 따스한 온기를 머금고 있었다.",
+          "textEn": "We were reviewing the infiltration route into the council chamber.\"",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 28,
+      "imageFile": "episode_27/scene_28.webp",
+      "sourceImageFile": "episode_27/scene_28.webp",
+      "narrationEn": "Caressing the carved mane of the toy horse, Ignis spoke in solemn resolution.",
+      "narrationKo": "발리안 경이 북방 수용소로 끌려가기 전날 밤, 어린 아들의 손목에 쥐여주며 ‘어떤 시련 앞에서도 쓰러지지 않는 명마가 되어라’고 당부했던 소중한 보물이었다.",
+      "sourceSentenceStart": 28,
+      "sourceSentenceEnd": 28,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "발리안 경이 북방 수용소로 끌려가기 전날 밤, 어린 아들의 손목에 쥐여주며 ‘어떤 시련 앞에서도 쓰러지지 않는 명마가 되어라’고 당부했던 소중한 보물이었다.",
+          "textEn": "Caressing the carved mane of the toy horse, Ignis spoke in solemn resolution.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 43
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 29,
+      "imageFile": "episode_27/scene_29.webp",
+      "sourceImageFile": "episode_27/scene_29.webp",
+      "narrationEn": "\"Tomorrow night, I will settle the final debt with Lucian. To atone for the infamy forced upon my father and the innocent blood shed by my steel, I will extinguish Lucian's abyssal rites, even at the cost of my very breath.\"",
+      "narrationKo": "이그니스는 모닥불 불꽃을 물끄러미 바라보며 말했다. “아버지는 나를 용서하셨지만, 내 손으로 지은 죗값은 여전히 내 영혼을 무겁게 짓누르고 있다. 내 검이 마지막으로 해야 할 일은 그 죗값을 온전히 치르는 것이다.”",
+      "sourceSentenceStart": 29,
+      "sourceSentenceEnd": 29,
       "alignmentScore": 1.0,
       "dialogues": [
         {
@@ -385,7 +845,7 @@
           "textKo": "“아버지는 나를 용서하셨지만, 내 손으로 지은 죗값은 여전히 내 영혼을 무겁게 짓누르고 있다. 내 검이 마지막으로 해야 할 일은 그 죗값을 온전히 치르는 것이다.”",
           "textEn": "“Tomorrow night, I will settle the final debt with Lucian. To atone for the infamy forced upon my father and the innocent blood shed by my steel, I will extinguish Lucian's abyssal rites, even at the cost of my very breath.”",
           "bubbleType": "speech",
-          "position": "top-left",
+          "position": "top-right",
           "characterCardId": 11
         }
       ],
@@ -405,21 +865,21 @@
       ]
     },
     {
-      "sceneNumber": 13,
-      "imageFile": "episode_27/scene_13.webp",
-      "sourceImageFile": "episode_27/scene_13.webp",
-      "narrationEn": "\"Speak not of throwing away your life. We fight so that all three of us may walk into the dawn together.\" Shaking his head, Ignis withdrew a slender glass phial from his tunic. Suspended within was a miniature ember of pure white fire, pulsing with the gentle rhythm of a living heartbeat.",
-      "narrationKo": "이그니스가 유리 불씨를 카단의 손에 쥐여주었다. “이것은 내 심장 마나와 연결된 ‘순백의 유리 불씨’다. 루시안은 내일 밤 황제의 옥좌에 나인섀도우의 심연 핵을 설치해 폭주시킬 것이다. 그 핵을 파괴하려면 황실의 정통 화염 혈통인 내 마나를 희생시켜야만 해.”",
-      "sourceSentenceStart": 33,
-      "sourceSentenceEnd": 34,
+      "sceneNumber": 30,
+      "imageFile": "episode_27/scene_30.webp",
+      "sourceImageFile": "episode_27/scene_30.webp",
+      "narrationEn": "Kadan frowned, his voice firm with reprimand.",
+      "narrationKo": "이그니스는 고개를 가로저으며 품속에서 투명한 유리 호리병 하나를 꺼냈다. 그 안에는 순백의 화염 마나가 조그마한 불씨의 형태로 은은하게 깜빡이고 있었다.",
+      "sourceSentenceStart": 30,
+      "sourceSentenceEnd": 30,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "이그니스",
-          "speakerEn": "Ignis",
-          "textKo": "“이것은 내 심장 마나와 연결된 ‘순백의 유리 불씨’다. 루시안은 내일 밤 황제의 옥좌에 나인섀도우의 심연 핵을 설치해 폭주시킬 것이다. 그 핵을 파괴하려면 황실의 정통 화염 혈통인 내 마나를 희생시켜야만 해.”",
-          "textEn": "“Speak not of throwing away your life. We fight so that all three of us may walk into the dawn together.”",
-          "bubbleType": "speech",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그 안에는 순백의 화염 마나가 조그마한 불씨의 형태로 은은하게 깜빡이고 있었다.",
+          "textEn": "Kadan frowned, his voice firm with reprimand.",
+          "bubbleType": "thought",
           "position": "top-right",
           "characterCardId": 11
         }
@@ -440,21 +900,114 @@
       ]
     },
     {
-      "sceneNumber": 14,
-      "imageFile": "episode_27/scene_14.webp",
-      "sourceImageFile": "episode_27/scene_14.webp",
-      "narrationEn": "Ignis pressed the glass ember into Kadan's palm. \"This is the White Glass Ember, bound to my life's mana. Tomorrow, Lucian will prime the Abyssal Core beneath the throne. To shatter that core, it must be neutralized by the sacred bloodline of the White Flame.\"",
-      "narrationKo": "카단이 손을 거두려 하자, 이그니스가 카단의 손목을 단단히 붙잡았다. “들어라, 카단. 너는 대륙의 백성들을 지킬 방패다. 실리아는 새로운 시대를 이끌 바람의 여왕이고. 하지만 나는 과거의 죄업을 씻어내야 할 황실의 마지막 죄인이다. 만약 내게 무슨 일이 생기거든... 이 불씨를 쥐고 끝까지 살아남아 다오. 그리고 내 몫까지 세상을 지켜다오.” 실리아가 눈물을 글썽이며 외쳤다.",
-      "sourceSentenceStart": 35,
-      "sourceSentenceEnd": 37,
+      "sceneNumber": 31,
+      "imageFile": "episode_27/scene_31.webp",
+      "sourceImageFile": "episode_27/scene_31.webp",
+      "narrationEn": "\"Speak not of throwing away your life.",
+      "narrationKo": "이그니스가 유리 불씨를 카단의 손에 쥐여주었다.",
+      "sourceSentenceStart": 31,
+      "sourceSentenceEnd": 31,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "이그니스가 유리 불씨를 카단의 손에 쥐여주었다.",
+          "textEn": "\"Speak not of throwing away your life.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 32,
+      "imageFile": "episode_27/scene_32.webp",
+      "sourceImageFile": "episode_27/scene_32.webp",
+      "narrationEn": "We fight so that all three of us may walk into the dawn together.\" Shaking his head, Ignis withdrew a slender glass phial from his tunic.",
+      "narrationKo": "“이것은 내 심장 마나와 연결된 ‘순백의 유리 불씨’다. 루시안은 내일 밤 황제의 옥좌에 나인섀도우의 심연 핵을 설치해 폭주시킬 것이다. 그 핵을 파괴하려면 황실의 정통 화염 혈통인 내 마나를 희생시켜야만 해.”",
+      "sourceSentenceStart": 32,
+      "sourceSentenceEnd": 32,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "이그니스",
           "speakerEn": "Ignis",
-          "textKo": "“들어라, 카단. 너는 대륙의 백성들을 지킬 방패다. 실리아는 새로운 시대를 이끌 바람의 여왕이고. 하지만 나는 과거의 죄업을 씻어내야 할 황실의 마지막 죄인이다. 만약 내게 무슨 일이 생기거든... 이 불씨를 쥐고 끝까지 살아남아 다오. 그리고 내 몫까지 세상을 지켜다오.”",
-          "textEn": "“This is the White Glass Ember, bound to my life's mana. Tomorrow, Lucian will prime the Abyssal Core beneath the throne. To shatter that core, it must be neutralized by the sacred bloodline of the White Flame.”",
-          "bubbleType": "shout",
+          "textKo": "“이것은 내 심장 마나와 연결된 ‘순백의 유리 불씨’다. 루시안은 내일 밤 황제의 옥좌에 나인섀도우의 심연 핵을 설치해 폭주시킬 것이다. 그 핵을 파괴하려면 황실의 정통 화염 혈통인 내 마나를 희생시켜야만 해.”",
+          "textEn": "“We fight so that all three of us may walk into the dawn together.\" Shaking his head, Ignis withdrew a slender glass phial from his tunic.”",
+          "bubbleType": "speech",
+          "position": "top-left",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 33,
+      "imageFile": "episode_27/scene_33.webp",
+      "sourceImageFile": "episode_27/scene_33.webp",
+      "narrationEn": "Suspended within was a miniature ember of pure white fire, pulsing with the gentle rhythm of a living heartbeat.",
+      "narrationKo": "카단이 손을 거두려 하자, 이그니스가 카단의 손목을 단단히 붙잡았다.",
+      "sourceSentenceStart": 33,
+      "sourceSentenceEnd": 33,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단이 손을 거두려 하자, 이그니스가 카단의 손목을 단단히 붙잡았다.",
+          "textEn": "Suspended within was a miniature ember of pure white fire, pulsing with the gentle rhythm of a living heartbeat.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 34,
+      "imageFile": "episode_27/scene_34.webp",
+      "sourceImageFile": "episode_27/scene_34.webp",
+      "narrationEn": "Ignis pressed the glass ember into Kadan's palm.",
+      "narrationKo": "“들어라, 카단. 너는 대륙의 백성들을 지킬 방패다. 실리아는 새로운 시대를 이끌 바람의 여왕이고. 하지만 나는 과거의 죄업을 씻어내야 할 황실의 마지막 죄인이다.”",
+      "sourceSentenceStart": 34,
+      "sourceSentenceEnd": 34,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“들어라, 카단. 너는 대륙의 백성들을 지킬 방패다. 실리아는 새로운 시대를 이끌 바람의 여왕이고. 하지만 나는 과거의 죄업을 씻어내야 할 황실의 마지막 죄인이다.”",
+          "textEn": "“Ignis pressed the glass ember into Kadan's palm.”",
+          "bubbleType": "speech",
           "position": "bottom-left",
           "characterCardId": 11
         }
@@ -475,32 +1028,52 @@
       ]
     },
     {
-      "sceneNumber": 15,
-      "imageFile": "episode_27/scene_15.webp",
-      "sourceImageFile": "episode_27/scene_15.webp",
-      "narrationEn": "When Kadan tried to return the phial, Ignis held his wrist in an unyielding grip.",
-      "narrationKo": "“안 돼요, 이그니스! 그런 비장한 희생을 전제로 한 승리는 진정한 구원이 아니에요! 셋이 함께 살아서 돌아가야 해요!” 이그니스는 부드러운 미소로 실리아의 말을 받았다. “고맙다, 왕녀님. 하지만 기사는 물러서지 않아야 할 때를 아는 법입니다.”",
-      "sourceSentenceStart": 38,
-      "sourceSentenceEnd": 40,
+      "sceneNumber": 35,
+      "imageFile": "episode_27/scene_35.webp",
+      "sourceImageFile": "episode_27/scene_35.webp",
+      "narrationEn": "\"This is the White Glass Ember, bound to my life's mana. Tomorrow, Lucian will prime the Abyssal Core beneath the throne.",
+      "narrationKo": "“만약 내게 무슨 일이 생기거든... 이 불씨를 쥐고 끝까지 살아남아 다오. 그리고 내 몫까지 세상을 지켜다오.”",
+      "sourceSentenceStart": 35,
+      "sourceSentenceEnd": 35,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“만약 내게 무슨 일이 생기거든... 이 불씨를 쥐고 끝까지 살아남아 다오. 그리고 내 몫까지 세상을 지켜다오.”",
+          "textEn": "“\"This is the White Glass Ember, bound to my life's mana. Tomorrow, Lucian will prime the Abyssal Core beneath the throne.”",
+          "bubbleType": "shout",
+          "position": "bottom-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 36,
+      "imageFile": "episode_27/scene_36.webp",
+      "sourceImageFile": "episode_27/scene_36.webp",
+      "narrationEn": "To shatter that core, it must be neutralized by the sacred bloodline of the White Flame.\"",
+      "narrationKo": "실리아가 눈물을 글썽이며 외쳤다. “안 돼요, 이그니스! 그런 비장한 희생을 전제로 한 승리는 진정한 구원이 아니에요! 셋이 함께 살아서 돌아가야 해요!”",
+      "sourceSentenceStart": 36,
+      "sourceSentenceEnd": 36,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "실리아",
           "speakerEn": "Celia",
           "textKo": "“안 돼요, 이그니스! 그런 비장한 희생을 전제로 한 승리는 진정한 구원이 아니에요! 셋이 함께 살아서 돌아가야 해요!”",
-          "textEn": "“This is the White Glass Ember, bound to my life's mana. Tomorrow, Lucian will prime the Abyssal Core beneath the throne. To shatter that core, it must be neutralized by the sacred bloodline of the White Flame.”",
+          "textEn": "“To shatter that core, it must be neutralized by the sacred bloodline of the White Flame.\"”",
           "bubbleType": "shout",
-          "position": "bottom-right",
-          "characterCardId": 62
-        },
-        {
-          "speakerKo": "이그니스",
-          "speakerEn": "Ignis",
-          "textKo": "“고맙다, 왕녀님. 하지만 기사는 물러서지 않아야 할 때를 아는 법입니다.”",
-          "textEn": "“Listen to me, Kadan. You are the immovable shield of this continent. Cilia is the wind queen who will guide the new dawn. But I am the last scion of a corrupted court, whose duty is to burn away the sins of the past. If the worst befalls me... hold this ember close, survive, and protect the world in my stead.”",
-          "bubbleType": "speech",
           "position": "top-left",
-          "characterCardId": 11
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
@@ -513,22 +1086,80 @@
       ]
     },
     {
-      "sceneNumber": 16,
-      "imageFile": "episode_27/scene_16.webp",
-      "sourceImageFile": "episode_27/scene_16.webp",
-      "narrationEn": "\"Listen to me, Kadan. You are the immovable shield of this continent. Cilia is the wind queen who will guide the new dawn. But I am the last scion of a corrupted court, whose duty is to burn away the sins of the past. If the worst befalls me... hold this ember close, survive, and protect the world in my stead.\" Tears welled in Cilia's eyes as she cried out.",
-      "narrationKo": "이그니스가 건넨 유리 호리병 속의 순백 불씨는 마치 작은 아기새의 심장처럼 규칙적으로 팔딱거리며 카단의 손바닥을 비추었다. 그것은 단순한 마나의 덩어리가 아니라 이그니스의 고결한 영혼 그 자체였다. 카단이 주먹을 쥐며 단호하게 말했다. “나는 네 목숨을 대가로 바치는 승리 따위는 원치 않는다. 알렉산다르 스승님께서도 형제를 버리고 얻은 평화는 거짓이라 하셨다. 우리는 셋이서 함께 살아서 내궁을 나갈 것이다.”",
-      "sourceSentenceStart": 41,
-      "sourceSentenceEnd": 42,
+      "sceneNumber": 37,
+      "imageFile": "episode_27/scene_37.webp",
+      "sourceImageFile": "episode_27/scene_37.webp",
+      "narrationEn": "When Kadan tried to return the phial, Ignis held his wrist in an unyielding grip.",
+      "narrationKo": "이그니스는 부드러운 미소로 실리아의 말을 받았다. “고맙다, 왕녀님. 하지만 기사는 물러서지 않아야 할 때를 아는 법입니다.”",
+      "sourceSentenceStart": 37,
+      "sourceSentenceEnd": 37,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“고맙다, 왕녀님. 하지만 기사는 물러서지 않아야 할 때를 아는 법입니다.”",
+          "textEn": "“When Kadan tried to return the phial, Ignis held his wrist in an unyielding grip.”",
+          "bubbleType": "speech",
+          "position": "top-right",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 38,
+      "imageFile": "episode_27/scene_38.webp",
+      "sourceImageFile": "episode_27/scene_38.webp",
+      "narrationEn": "\"Listen to me, Kadan.",
+      "narrationKo": "이그니스가 건넨 유리 호리병 속의 순백 불씨는 마치 작은 아기새의 심장처럼 규칙적으로 팔딱거리며 카단의 손바닥을 비추었다. 그것은 단순한 마나의 덩어리가 아니라 이그니스의 고결한 영혼 그 자체였다.",
+      "sourceSentenceStart": 38,
+      "sourceSentenceEnd": 38,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그것은 단순한 마나의 덩어리가 아니라 이그니스의 고결한 영혼 그 자체였다.",
+          "textEn": "\"Listen to me, Kadan.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 39,
+      "imageFile": "episode_27/scene_39.webp",
+      "sourceImageFile": "episode_27/scene_39.webp",
+      "narrationEn": "You are the immovable shield of this continent. Cilia is the wind queen who will guide the new dawn.",
+      "narrationKo": "카단이 주먹을 쥐며 단호하게 말했다. “나는 네 목숨을 대가로 바치는 승리 따위는 원치 않는다. 알렉산다르 스승님께서도 형제를 버리고 얻은 평화는 거짓이라 하셨다. 우리는 셋이서 함께 살아서 내궁을 나갈 것이다.”",
+      "sourceSentenceStart": 39,
+      "sourceSentenceEnd": 39,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
           "textKo": "“나는 네 목숨을 대가로 바치는 승리 따위는 원치 않는다. 알렉산다르 스승님께서도 형제를 버리고 얻은 평화는 거짓이라 하셨다. 우리는 셋이서 함께 살아서 내궁을 나갈 것이다.”",
-          "textEn": "“Listen to me, Kadan. You are the immovable shield of this continent. Cilia is the wind queen who will guide the new dawn. But I am the last scion of a corrupted court, whose duty is to burn away the sins of the past. If the worst befalls me... hold this ember close, survive, and protect the world in my stead.”",
+          "textEn": "“You are the immovable shield of this continent. Cilia is the wind queen who will guide the new dawn.”",
           "bubbleType": "speech",
-          "position": "top-left",
+          "position": "bottom-right",
           "characterCardId": 41
         }
       ],
@@ -542,61 +1173,26 @@
       ]
     },
     {
-      "sceneNumber": 17,
-      "imageFile": "episode_27/scene_17.webp",
-      "sourceImageFile": "episode_27/scene_17.webp",
-      "narrationEn": "\"No, Ignis! A victory bought with your martyrdom is no true salvation! We must return together!\" Smiling with profound gentleness, Ignis replied softly.",
-      "narrationKo": "이그니스가 묵묵히 미소를 지으며 고개를 숙였다. “고맙다, 카단. 하지만 내 결심은 이미 섰다.” 깊은 밤, 세 젊은이는 모닥불의 온기를 나누며 결전의 밤을 준비했다. 카단은 품속에 넣은 이그니스의 유리 불씨를 만지며, 가슴을 짓누르는 불안감을 떨쳐내려 애썼다. 유리 불씨는 마치 살아있는 심장처럼 따스하게 고동치고 있었다.",
-      "sourceSentenceStart": 43,
-      "sourceSentenceEnd": 45,
+      "sceneNumber": 40,
+      "imageFile": "episode_27/scene_40.webp",
+      "sourceImageFile": "episode_27/scene_40.webp",
+      "narrationEn": "But I am the last scion of a corrupted court, whose duty is to burn away the sins of the past.",
+      "narrationKo": "이그니스가 묵묵히 미소를 지으며 고개를 숙였다. “고맙다, 카단. 하지만 내 결심은 이미 섰다.”",
+      "sourceSentenceStart": 40,
+      "sourceSentenceEnd": 40,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "이그니스",
           "speakerEn": "Ignis",
           "textKo": "“고맙다, 카단. 하지만 내 결심은 이미 섰다.”",
-          "textEn": "“No, Ignis! A victory bought with your martyrdom is no true salvation! We must return together!”",
+          "textEn": "“But I am the last scion of a corrupted court, whose duty is to burn away the sins of the past.”",
           "bubbleType": "speech",
-          "position": "top-right",
+          "position": "top-left",
           "characterCardId": 11
         }
       ],
       "sfxCues": [
-        {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 18,
-      "imageFile": "episode_27/scene_18.webp",
-      "sourceImageFile": "episode_27/scene_18.webp",
-      "narrationEn": "\"My thanks, princess. But a knight knows the hour when he must stand without retreating.\" Deep in the night, the three youths shared the dying warmth of the brazier.",
-      "narrationKo": "스승 알렉산다르와의 약속, 실리아와의 봄날의 약속, 그리고 이그니스가 건넨 비장한 운명의 약속. 세 개의 거대한 약속이 카단의 어깨 위에 묵직하게 내려앉아 있었다. 카단은 드래곤 브레이커 방패를 품에 안고 조용히 눈을 감았다.",
-      "sourceSentenceStart": 46,
-      "sourceSentenceEnd": 48,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "내레이션",
-          "speakerEn": "Narration",
-          "textKo": "카단은 드래곤 브레이커 방패를 품에 안고 조용히 눈을 감았다.",
-          "textEn": "But a knight knows the hour when he must stand without retreating.\" Deep in the night, the three youths shared the dying warmth of the brazier.",
-          "bubbleType": "thought",
-          "position": "top-right",
-          "characterCardId": 50
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
         {
           "textKo": "쿠구구궁!",
           "textEn": "RUMBLE!",
@@ -606,21 +1202,224 @@
       ]
     },
     {
-      "sceneNumber": 19,
-      "imageFile": "episode_27/scene_19.webp",
-      "sourceImageFile": "episode_27/scene_19.webp",
-      "narrationEn": "Touching the glass ember pulsing against his breast, Kadan bore the staggering weight of three immense covenants: his vow to Master Aleksandar, his promise of spring to Cilia, and the tragic pledge entrusted by his brother. Embracing the Dragon Breaker shield, Kadan closed his eyes in prayer.",
-      "narrationKo": "“어떤 운명이 닥쳐올지라도, 내 방패는 동료들의 목숨을 포기하지 않을 것이다.” 동쪽 하늘에서 희미한 여명이 밝아오고 있었다. 폭풍전야의 고요가 걷히고, 대륙의 역사를 영원히 바꿀 결전의 날이 밝아오고 있었다.",
-      "sourceSentenceStart": 49,
-      "sourceSentenceEnd": 50,
+      "sceneNumber": 41,
+      "imageFile": "episode_27/scene_41.webp",
+      "sourceImageFile": "episode_27/scene_41.webp",
+      "narrationEn": "If the worst befalls me... hold this ember close, survive, and protect the world in my stead.\"",
+      "narrationKo": "깊은 밤, 세 젊은이는 모닥불의 온기를 나누며 결전의 밤을 준비했다.",
+      "sourceSentenceStart": 41,
+      "sourceSentenceEnd": 41,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "깊은 밤, 세 젊은이는 모닥불의 온기를 나누며 결전의 밤을 준비했다.",
+          "textEn": "hold this ember close, survive, and protect the world in my stead.\"",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 42,
+      "imageFile": "episode_27/scene_42.webp",
+      "sourceImageFile": "episode_27/scene_42.webp",
+      "narrationEn": "Tears welled in Cilia's eyes as she cried out. \"No, Ignis!",
+      "narrationKo": "카단은 품속에 넣은 이그니스의 유리 불씨를 만지며, 가슴을 짓누르는 불안감을 떨쳐내려 애썼다. 유리 불씨는 마치 살아있는 심장처럼 따스하게 고동치고 있었다.",
+      "sourceSentenceStart": 42,
+      "sourceSentenceEnd": 42,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "유리 불씨는 마치 살아있는 심장처럼 따스하게 고동치고 있었다.",
+          "textEn": "\"No, Ignis!",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 43,
+      "imageFile": "episode_27/scene_43.webp",
+      "sourceImageFile": "episode_27/scene_43.webp",
+      "narrationEn": "A victory bought with your martyrdom is no true salvation!",
+      "narrationKo": "스승 알렉산다르와의 약속, 실리아와의 봄날의 약속, 그리고 이그니스가 건넨 비장한 운명의 약속.",
+      "sourceSentenceStart": 43,
+      "sourceSentenceEnd": 43,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "스승 알렉산다르와의 약속, 실리아와의 봄날의 약속, 그리고 이그니스가 건넨 비장한 운명의 약속.",
+          "textEn": "A victory bought with your martyrdom is no true salvation!",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 50
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 44,
+      "imageFile": "episode_27/scene_44.webp",
+      "sourceImageFile": "episode_27/scene_44.webp",
+      "narrationEn": "We must return together!\"",
+      "narrationKo": "세 개의 거대한 약속이 카단의 어깨 위에 묵직하게 내려앉아 있었다.",
+      "sourceSentenceStart": 44,
+      "sourceSentenceEnd": 44,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "세 개의 거대한 약속이 카단의 어깨 위에 묵직하게 내려앉아 있었다.",
+          "textEn": "We must return together!\"",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 45,
+      "imageFile": "episode_27/scene_45.webp",
+      "sourceImageFile": "episode_27/scene_45.webp",
+      "narrationEn": "Smiling with profound gentleness, Ignis replied softly.",
+      "narrationKo": "카단은 드래곤 브레이커 방패를 품에 안고 조용히 눈을 감았다. “어떤 운명이 닥쳐올지라도, 내 방패는 동료들의 목숨을 포기하지 않을 것이다.”",
+      "sourceSentenceStart": 45,
+      "sourceSentenceEnd": 45,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
           "textKo": "“어떤 운명이 닥쳐올지라도, 내 방패는 동료들의 목숨을 포기하지 않을 것이다.”",
-          "textEn": "“Whatever destiny awaits, this shield shall never surrender the lives of those I love.”",
+          "textEn": "“Smiling with profound gentleness, Ignis replied softly.”",
           "bubbleType": "speech",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 46,
+      "imageFile": "episode_27/scene_46.webp",
+      "sourceImageFile": "episode_27/scene_46.webp",
+      "narrationEn": "\"My thanks, princess. But a knight knows the hour when he must stand without retreating.\"",
+      "narrationKo": "동쪽 하늘에서 희미한 여명이 밝아오고 있었다. 폭풍전야의 고요가 걷히고, 대륙의 역사를 영원히 바꿀 결전의 날이 밝아오고 있었다.",
+      "sourceSentenceStart": 46,
+      "sourceSentenceEnd": 46,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "폭풍전야의 고요가 걷히고, 대륙의 역사를 영원히 바꿀 결전의 날이 밝아오고 있었다.",
+          "textEn": "But a knight knows the hour when he must stand without retreating.\"",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 47,
+      "imageFile": "episode_27/scene_47.webp",
+      "sourceImageFile": "episode_27/scene_47.webp",
+      "narrationEn": "Deep in the night, the three youths shared the dying warmth of the brazier.",
+      "narrationKo": "테라스 너머로 자정을 알리는 수도 대성당의 청동 종소리가 무겁게 울려 퍼졌다. 뎅, 뎅 하는 공명음이 대지를 흔들며 최후의 심판의 시간이 다가왔음을 알렸다.",
+      "sourceSentenceStart": 47,
+      "sourceSentenceEnd": 47,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "뎅, 뎅 하는 공명음이 대지를 흔들며 최후의 심판의 시간이 다가왔음을 알렸다.",
+          "textEn": "Deep in the night, the three youths shared the dying warmth of the brazier.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 48,
+      "imageFile": "episode_27/scene_48.webp",
+      "sourceImageFile": "episode_27/scene_48.webp",
+      "narrationEn": "Touching the glass ember pulsing against his breast, Kadan bore the staggering weight of three immense covenants: his vow to Master Aleksandar, his promise of spring to Cilia, and the tragic pledge entrusted by his brother.",
+      "narrationKo": "세 사람은 자리에서 일어나 무기를 점검하고 갑옷 끈을 바짝 조였다.",
+      "sourceSentenceStart": 48,
+      "sourceSentenceEnd": 48,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "세 사람은 자리에서 일어나 무기를 점검하고 갑옷 끈을 바짝 조였다.",
+          "textEn": "Touching the glass ember pulsing against his breast, Kadan bore the staggering weight of three immense covenants: his vow to Master Aleksandar, his promise of spring to Cilia, and the tragic pledge entrusted by his brother.",
+          "bubbleType": "thought",
           "position": "bottom-right",
           "characterCardId": 41
         }
@@ -635,13 +1434,13 @@
       ]
     },
     {
-      "sceneNumber": 20,
-      "imageFile": "episode_27/scene_20.webp",
-      "sourceImageFile": "episode_27/scene_20.webp",
-      "narrationEn": "\"Whatever destiny awaits, this shield shall never surrender the lives of those I love.\" Beyond the horizon, the first faint gray of dawn stirred, heralding the fateful day that would decide the fate of the realm.",
-      "narrationKo": "테라스 너머로 자정을 알리는 수도 대성당의 청동 종소리가 무겁게 울려 퍼졌다. 뎅, 뎅 하는 공명음이 대지를 흔들며 최후의 심판의 시간이 다가왔음을 알렸다. 세 사람은 자리에서 일어나 무기를 점검하고 갑옷 끈을 바짝 조였다. 실리아가 녹옥 지팡이를 곧게 세우며 앞장섰다. “바람의 정령들이 길을 인도하고 있어요. 갑시다, 평의회의 대전각으로.” 카단과 이그니스는 서로의 눈빛을 마주 보며 고개를 끄덕였다. 두 청년의 어깨 위로 찬란한 결의의 빛이 쏟아져 내렸다.",
-      "sourceSentenceStart": 51,
-      "sourceSentenceEnd": 53,
+      "sceneNumber": 49,
+      "imageFile": "episode_27/scene_49.webp",
+      "sourceImageFile": "episode_27/scene_49.webp",
+      "narrationEn": "Embracing the Dragon Breaker shield, Kadan closed his eyes in prayer. \"Whatever destiny awaits, this shield shall never surrender the lives of those I love.\"",
+      "narrationKo": "실리아가 녹옥 지팡이를 곧게 세우며 앞장섰다. “바람의 정령들이 길을 인도하고 있어요. 갑시다, 평의회의 대전각으로.”",
+      "sourceSentenceStart": 49,
+      "sourceSentenceEnd": 49,
       "alignmentScore": 1.0,
       "dialogues": [
         {
@@ -650,17 +1449,40 @@
           "textKo": "“바람의 정령들이 길을 인도하고 있어요. 갑시다, 평의회의 대전각으로.”",
           "textEn": "“Whatever destiny awaits, this shield shall never surrender the lives of those I love.”",
           "bubbleType": "speech",
-          "position": "top-left",
+          "position": "top-right",
           "characterCardId": 62
         }
       ],
       "sfxCues": [
         {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
           "style": "slash",
-          "position": "top-right"
-        },
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 50,
+      "imageFile": "episode_27/scene_50.webp",
+      "sourceImageFile": "episode_27/scene_50.webp",
+      "narrationEn": "Beyond the horizon, the first faint gray of dawn stirred, heralding the fateful day that would decide the fate of the realm.",
+      "narrationKo": "카단과 이그니스는 서로의 눈빛을 마주 보며 고개를 끄덕였다. 두 청년의 어깨 위로 찬란한 결의의 빛이 쏟아져 내렸다.",
+      "sourceSentenceStart": 50,
+      "sourceSentenceEnd": 50,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "두 청년의 어깨 위로 찬란한 결의의 빛이 쏟아져 내렸다.",
+          "textEn": "Beyond the horizon, the first faint gray of dawn stirred, heralding the fateful day that would decide the fate of the realm.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
         {
           "textKo": "파지지직!",
           "textEn": "CRACKLE!",

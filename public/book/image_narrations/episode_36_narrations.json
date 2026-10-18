@@ -2,24 +2,24 @@
   "episodeNumber": 36,
   "episodeTitleEn": "Map of the Cross-Shaped Scar",
   "episodeTitleKo": "십자 흉터의 지도",
-  "sourceSentenceCount": 40,
-  "sceneCount": 20,
+  "sourceSentenceCount": 47,
+  "sceneCount": 47,
   "scenes": [
     {
       "sceneNumber": 1,
       "imageFile": "episode_36/scene_01.webp",
       "sourceImageFile": "episode_36/scene_01.webp",
-      "narrationEn": "Having fought their way through the suffocating illusions of the misty corridors, Kadan and Princess Cilia at last set foot within the highest sanctum of the Black Citadel—the Starlight Archives, where the empire's darkest arcana had lain interred for centuries. The vaulted ceiling of the circular obsidian gallery opened directly to the heavens, where the frigid constellations of the northern sky poured down their pale luminescence upon a colossal granite altar. Chiseled into the altar's stone in deep relief was the Continental Star Chart, tracing every ancient leyline, ridge, and river across the breadth of the realm. Though the crushing grief of having lost the Six Masters pressed heavily against their shoulders, neither companion faltered in their stride. The rough calluses on Kadan's forearm gripping the Dragon Breaker shield and the crimson cord binding the Silver Dagger whispered of solemn vows sworn in blood, steadying his resolve against the biting night gale.",
-      "narrationKo": "환영의 안개 회랑을 돌파한 카단과 실리아는 마침내 검은 성채의 최상층이자 제국의 모든 비밀이 봉인된 ‘별빛의 기록실’에 도달했다. 흑요석 벽면으로 둘러싸인 거대한 원형 회랑의 천장은 뚫려 있어 차가운 밤하늘의 북두칠성이 서늘하게 쏟아져 내리고 있었고, 회랑 중앙의 거대한 화강암 제단 위에는 대륙 전체의 지맥과 산맥을 양각으로 새겨 넣은 거대한 ‘대륙 성도(星圖)’가 자리 잡고 있었다. 스승들을 잃은 슬픔의 무게가 두 사람의 어깨를 짓누르고 있었지만, 카단의 발걸음은 조금도 흐트러짐이 없었다. 드래곤 브레이커 방패를 쥔 팔의 굳은살과 은빛 단검의 붉은 매듭이 차가운 밤바람에 스치며 묵직한 결의를 다잡아주었다.",
+      "narrationEn": "Having fought their way through the suffocating illusions of the misty corridors, Kadan and Princess Cilia at last set foot within the highest sanctum of the Black Citadel—the Starlight Archives, where the empire's darkest arcana had lain interred for centuries.",
+      "narrationKo": "환영의 안개 회랑을 돌파한 카단과 실리아는 마침내 검은 성채의 최상층이자 제국의 모든 비밀이 봉인된 ‘별빛의 기록실’에 도달했다.",
       "sourceSentenceStart": 1,
-      "sourceSentenceEnd": 2,
+      "sourceSentenceEnd": 1,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "드래곤 브레이커 방패를 쥔 팔의 굳은살과 은빛 단검의 붉은 매듭이 차가운 밤바람에 스치며 묵직한 결의를 다잡아주었다.",
-          "textEn": "The rough calluses on Kadan's forearm gripping the Dragon Breaker shield and the crimson cord binding the Silver Dagger whispered of solemn vows sworn in blood, steadying his resolve against the biting night gale.",
+          "textKo": "환영의 안개 회랑을 돌파한 카단과 실리아는 마침내 검은 성채의 최상층이자 제국의 모든 비밀이 봉인된 ‘별빛의 기록실’에 도달했다.",
+          "textEn": "Having fought their way through the suffocating illusions of the misty corridors, Kadan and Princess Cilia at last set foot within the highest sanctum of the Black Citadel—the Starlight Archives, where the empire's darkest arcana had lain interred for centuries.",
           "bubbleType": "thought",
           "position": "top-right",
           "characterCardId": 41
@@ -44,34 +44,34 @@
       "sceneNumber": 2,
       "imageFile": "episode_36/scene_02.webp",
       "sourceImageFile": "episode_36/scene_02.webp",
-      "narrationEn": "Through the chilled fog drifting along the flagstones, the gentle warmth of starlight spirits who had watched over these archives for centuries still lingered. Embedded like luminous constellations into the obsidian walls were the archaic cross-shaped stigmata of the holy order, casting radiant amber beams into the shadows. Kadan brushed his boot against the floor's runic engravings, remembering the footsteps of his fallen mentor.",
-      "narrationKo": "실리아가 녹옥 지팡이를 들고 대륙 성도 앞으로 다가갔다. “이 성도는 단순한 지도가 아니에요. 대륙 전역에 흐르는 고대 마나의 맥동과 봉인된 룬의 위치가 실시간으로 빛나고 있어요. 하지만 지도의 중심부마다 검붉은 독기가 핏줄처럼 얽혀 있네요.”",
-      "sourceSentenceStart": 3,
-      "sourceSentenceEnd": 4,
+      "narrationEn": "The vaulted ceiling of the circular obsidian gallery opened directly to the heavens, where the frigid constellations of the northern sky poured down their pale luminescence upon a colossal granite altar. Chiseled into the altar's stone in deep relief was the Continental Star Chart, tracing every ancient leyline, ridge, and river across the breadth of the realm.",
+      "narrationKo": "흑요석 벽면으로 둘러싸인 거대한 원형 회랑의 천장은 뚫려 있어 차가운 밤하늘의 북두칠성이 서늘하게 쏟아져 내리고 있었고,",
+      "sourceSentenceStart": 2,
+      "sourceSentenceEnd": 2,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“이 성도는 단순한 지도가 아니에요. 대륙 전역에 흐르는 고대 마나의 맥동과 봉인된 룬의 위치가 실시간으로 빛나고 있어요. 하지만 지도의 중심부마다 검붉은 독기가 핏줄처럼 얽혀 있네요.”",
-          "textEn": "“Kadan brushed his boot against the floor's runic engravings, remembering the footsteps of his fallen mentor.”",
-          "bubbleType": "speech",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "흑요석 벽면으로 둘러싸인 거대한 원형 회랑의 천장은 뚫려 있어 차가운 밤하늘의 북두칠성이 서늘하게 쏟아져 내리고 있었고,",
+          "textEn": "Chiseled into the altar's stone in deep relief was the Continental Star Chart, tracing every ancient leyline, ridge, and river across the breadth of the realm.",
+          "bubbleType": "thought",
           "position": "bottom-left",
-          "characterCardId": 62
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
         {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
         },
         {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
         }
       ]
     },
@@ -79,18 +79,18 @@
       "sceneNumber": 3,
       "imageFile": "episode_36/scene_03.webp",
       "sourceImageFile": "episode_36/scene_03.webp",
-      "narrationEn": "Princess Cilia stepped toward the star chart, raising her jade staff toward the outer mountain ranges. \"This chart is the living lifeline of the realm,\" Cilia whispered softly. \"Though Lucian has warped the subterranean leylines through the foul sorcery of the Nine Shadows Codex, once we shatter the core barrier of the central nexus, the earth's innate purification will restore the mana to its pristine flow.\"",
-      "narrationKo": "카단이 지도의 중심인 수도 라이트헤이븐과 북방 엘윈 영지를 유심히 살폈다. “루시안이 나인섀도우 코덱스를 통해 대륙의 일곱 대성소의 지맥을 흡수하려 했던 흔적이다. 스승님들이 목숨 바쳐 막아서지 않았다면 이미 온 대륙이 붕괴했을 것이다.”",
-      "sourceSentenceStart": 5,
-      "sourceSentenceEnd": 6,
+      "narrationEn": "Though the crushing grief of having lost the Six Masters pressed heavily against their shoulders, neither companion faltered in their stride.",
+      "narrationKo": "회랑 중앙의 거대한 화강암 제단 위에는 대륙 전체의 지맥과 산맥을 양각으로 새겨 넣은 거대한 ‘대륙 성도(星圖)’가 자리 잡고 있었다.",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 3,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“루시안이 나인섀도우 코덱스를 통해 대륙의 일곱 대성소의 지맥을 흡수하려 했던 흔적이다. 스승님들이 목숨 바쳐 막아서지 않았다면 이미 온 대륙이 붕괴했을 것이다.”",
-          "textEn": "“This chart is the living lifeline of the realm,”",
-          "bubbleType": "speech",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "회랑 중앙의 거대한 화강암 제단 위에는 대륙 전체의 지맥과 산맥을 양각으로 새겨 넣은 거대한 ‘대륙 성도(星圖)’가 자리 잡고 있었다.",
+          "textEn": "Though the crushing grief of having lost the Six Masters pressed heavily against their shoulders, neither companion faltered in their stride.",
+          "bubbleType": "thought",
           "position": "bottom-right",
           "characterCardId": 41
         }
@@ -108,29 +108,23 @@
       "sceneNumber": 4,
       "imageFile": "episode_36/scene_04.webp",
       "sourceImageFile": "episode_36/scene_04.webp",
-      "narrationEn": "Kadan scrutinized the central coordinates of Lighthaven and the northern expanse of the Elwin fief. \"Here lies the proof of Lucian's plot to drain the leylines of all seven great sanctuaries through the dark codex. Had our masters not laid down their lives to halt the flow, the continent would have shattered beneath our feet long ago.\"",
-      "narrationKo": "회랑 바닥을 따라 흐르는 차가운 밤안개 속에는 수백 년 동안 이 기록실을 지켜온 별빛 정령들의 온기가 은은하게 서려 있었다. 흑요석 벽면마다 성기사단의 고대 십자 성흔이 별자리처럼 박혀 있어 어두운 밤하늘을 환하게 밝히고 있었다. 카단은 장화 끝으로 바닥의 룬 문양을 쓸어내리며 스승의 발자취를 회상했다. 실리아가 성도의 외곽 산맥을 가리키며 말했다. “이 지도는 대륙의 생명선이에요. 루시안이 나인섀도우의 흑마법으로 지맥을 뒤틀어놓았지만, 중심핵의 결계만 해제하면 대지의 자정 작용으로 모든 마나가 본래의 순수한 흐름을 되찾을 거예요.”",
-      "sourceSentenceStart": 7,
-      "sourceSentenceEnd": 8,
+      "narrationEn": "The rough calluses on Kadan's forearm gripping the Dragon Breaker shield and the crimson cord binding the Silver Dagger whispered of solemn vows sworn in blood, steadying his resolve against the biting night gale. Through the chilled fog drifting along the flagstones, the gentle warmth of starlight spirits who had watched over these archives for centuries still lingered.",
+      "narrationKo": "스승들을 잃은 슬픔의 무게가 두 사람의 어깨를 짓누르고 있었지만, 카단의 발걸음은 조금도 흐트러짐이 없었다.",
+      "sourceSentenceStart": 4,
+      "sourceSentenceEnd": 4,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“이 지도는 대륙의 생명선이에요. 루시안이 나인섀도우의 흑마법으로 지맥을 뒤틀어놓았지만, 중심핵의 결계만 해제하면 대지의 자정 작용으로 모든 마나가 본래의 순수한 흐름을 되찾을 거예요.”",
-          "textEn": "“Here lies the proof of Lucian's plot to drain the leylines of all seven great sanctuaries through the dark codex. Had our masters not laid down their lives to halt the flow, the continent would have shattered beneath our feet long ago.”",
-          "bubbleType": "speech",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "스승들을 잃은 슬픔의 무게가 두 사람의 어깨를 짓누르고 있었지만, 카단의 발걸음은 조금도 흐트러짐이 없었다.",
+          "textEn": "Through the chilled fog drifting along the flagstones, the gentle warmth of starlight spirits who had watched over these archives for centuries still lingered.",
+          "bubbleType": "thought",
           "position": "top-left",
-          "characterCardId": 62
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        },
         {
           "textKo": "휘이이익-!",
           "textEn": "SWOOSH!",
@@ -143,48 +137,19 @@
       "sceneNumber": 5,
       "imageFile": "episode_36/scene_05.webp",
       "sourceImageFile": "episode_36/scene_05.webp",
-      "narrationEn": "As Kadan pressed his gauntleted hand upon the coordinate of Lighthaven, a metallic click echoed through the altar base, and a concealed stone coffer rose smoothly from the floor. Within lay a weathered, blood-crusted leather pouch enclosing an ancient parchment tactical diagram etched with a deep cross-shaped scar.",
-      "narrationKo": "카단이 성도 중앙의 라이트헤이븐 위치에 손을 얹는 순간, 제단 바닥에서 딸깍하는 기계음과 함께 숨겨진 비밀 수납함이 솟구쳐 올랐다. 그 안에는 피 묻은 가죽 주머니와 함께, 십자 모양의 깊은 흉터가 새겨진 오래된 양피지 전술도가 들어 있었다. 그것은 이십 년 전 제1차 성전 당시, 스승 알렉산다르와 발리안 숙부가 자신의 가슴에 새겨진 성기사의 십자 성흔을 본떠 남겨둔 ‘십자 흉터의 지도’였다.",
-      "sourceSentenceStart": 9,
-      "sourceSentenceEnd": 10,
+      "narrationEn": "Embedded like luminous constellations into the obsidian walls were the archaic cross-shaped stigmata of the holy order, casting radiant amber beams into the shadows.",
+      "narrationKo": "드래곤 브레이커 방패를 쥔 팔의 굳은살과 은빛 단검의 붉은 매듭이 차가운 밤바람에 스치며 묵직한 결의를 다잡아주었다.",
+      "sourceSentenceStart": 5,
+      "sourceSentenceEnd": 5,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "그것은 이십 년 전 제1차 성전 당시, 스승 알렉산다르와 발리안 숙부가 자신의 가슴에 새겨진 성기사의 십자 성흔을 본떠 남겨둔 ‘십자 흉터의 지도’였다.",
-          "textEn": "Within lay a weathered, blood-crusted leather pouch enclosing an ancient parchment tactical diagram etched with a deep cross-shaped scar.",
+          "textKo": "드래곤 브레이커 방패를 쥔 팔의 굳은살과 은빛 단검의 붉은 매듭이 차가운 밤바람에 스치며 묵직한 결의를 다잡아주었다.",
+          "textEn": "Embedded like luminous constellations into the obsidian walls were the archaic cross-shaped stigmata of the holy order, casting radiant amber beams into the shadows.",
           "bubbleType": "thought",
           "position": "top-right",
-          "characterCardId": 41
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "쿵-!",
-          "textEn": "THUD!",
-          "style": "impact",
-          "position": "bottom-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 6,
-      "imageFile": "episode_36/scene_06.webp",
-      "sourceImageFile": "episode_36/scene_06.webp",
-      "narrationEn": "It was the Map of the Cross-Shaped Scar, drafted twenty winters ago during the First Crusade by Master Aleksandar and Uncle Balian, tracing the sacred stigmata carved across their own chests. With trembling fingers, Kadan unfurled the yellowed parchment. Upon it, Master Aleksandar's brushstrokes remained as sharp and vivid as iron.",
-      "narrationKo": "카단이 떨리는 손으로 지도를 펼쳐 들었다. 양피지 위에는 스승의 친필 묵서가 선명하게 남아 있었다. ‘나의 아이 카단에게. 네가 이 글을 읽고 있다면, 나는 이미 세상에 없을 것이다. 그러나 슬퍼하지 마라. 성기사의 방패는 흙으로 돌아가도, 그 방패가 지켜낸 생명의 씨앗은 대지의 품에서 반드시 싹을 틔우는 법이다. 루시안의 흑마법 결계는 완벽해 보이지만, 대륙의 동서남북 네 성소에 깃든 사람들의 온기가 하나로 모일 때 그 중심핵은 모래성처럼 무너져 내릴 것이다.’",
-      "sourceSentenceStart": 11,
-      "sourceSentenceEnd": 12,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "내레이션",
-          "speakerEn": "Narration",
-          "textKo": "루시안의 흑마법 결계는 완벽해 보이지만, 대륙의 동서남북 네 성소에 깃든 사람들의 온기가 하나로 모일 때 그 중심핵은 모래성처럼 무너져 내릴 것이다.’",
-          "textEn": "Upon it, Master Aleksandar's brushstrokes remained as sharp and vivid as iron.",
-          "bubbleType": "thought",
-          "position": "bottom-left",
           "characterCardId": 41
         }
       ],
@@ -204,21 +169,50 @@
       ]
     },
     {
+      "sceneNumber": 6,
+      "imageFile": "episode_36/scene_06.webp",
+      "sourceImageFile": "episode_36/scene_06.webp",
+      "narrationEn": "Kadan brushed his boot against the floor's runic engravings, remembering the footsteps of his fallen mentor.",
+      "narrationKo": "실리아가 녹옥 지팡이를 들고 대륙 성도 앞으로 다가갔다.",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 6,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "실리아가 녹옥 지팡이를 들고 대륙 성도 앞으로 다가갔다.",
+          "textEn": "Kadan brushed his boot against the floor's runic engravings, remembering the footsteps of his fallen mentor.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
       "sceneNumber": 7,
       "imageFile": "episode_36/scene_07.webp",
       "sourceImageFile": "episode_36/scene_07.webp",
-      "narrationEn": "'To my child Kadan. If your eyes read these words, I have already returned to the earth. Yet weep not. Though a paladin's shield must turn to dust, the seed of life shielded beneath its iron shall take root and blossom upon this soil. Lucian's dark wards appear impenetrable, yet when the living warmth of the people dwelling in the four cardinal sanctuaries unites, the dark citadel's core shall crumble like sand.' The brushwork was rugged, yet every stroke brimmed with boundless faith and tender fatherly love. Foreseeing the agonizing trials the orphaned boy would endure in his absence, Aleksandar had inscribed this testament of hope in his own blood until his final breath.",
-      "narrationKo": "실리아가 지도의 네 모서리에 새겨진 룬을 해독하며 감탄했다. “북방의 눈꽃, 대해의 바람, 황실의 성화, 그리고 대지의 방패... 네 가지 힘이 교차하는 중심점이 바로 루시안이 서 있는 파멸의 제단이에요. 스승님께서는 이 날을 위해 마지막 파훼법을 남겨두신 거예요.”",
-      "sourceSentenceStart": 13,
-      "sourceSentenceEnd": 14,
+      "narrationEn": "Princess Cilia stepped toward the star chart, raising her jade staff toward the outer mountain ranges. \"This chart is the living lifeline of the realm,\"",
+      "narrationKo": "“이 성도는 단순한 지도가 아니에요. 대륙 전역에 흐르는 고대 마나의 맥동과 봉인된 룬의 위치가 실시간으로 빛나고 있어요. 하지만 지도의 중심부마다 검붉은 독기가 핏줄처럼 얽혀 있네요.”",
+      "sourceSentenceStart": 7,
+      "sourceSentenceEnd": 7,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "실리아",
           "speakerEn": "Celia",
-          "textKo": "“북방의 눈꽃, 대해의 바람, 황실의 성화, 그리고 대지의 방패... 네 가지 힘이 교차하는 중심점이 바로 루시안이 서 있는 파멸의 제단이에요. 스승님께서는 이 날을 위해 마지막 파훼법을 남겨두신 거예요.”",
-          "textEn": "“Foreseeing the agonizing trials the orphaned boy would endure in his absence, Aleksandar had inscribed this testament of hope in his own blood until his final breath.”",
-          "bubbleType": "thought",
+          "textKo": "“이 성도는 단순한 지도가 아니에요. 대륙 전역에 흐르는 고대 마나의 맥동과 봉인된 룬의 위치가 실시간으로 빛나고 있어요. 하지만 지도의 중심부마다 검붉은 독기가 핏줄처럼 얽혀 있네요.”",
+          "textEn": "“This chart is the living lifeline of the realm,”",
+          "bubbleType": "speech",
           "position": "bottom-right",
           "characterCardId": 62
         }
@@ -242,20 +236,49 @@
       "sceneNumber": 8,
       "imageFile": "episode_36/scene_08.webp",
       "sourceImageFile": "episode_36/scene_08.webp",
-      "narrationEn": "Kadan touched the worn parchment edge, moisture welling in his eyes. \"Master never feared his own demise. His only thought was the brightness of the dawn awaiting the children who walked behind him.\"",
-      "narrationKo": "양피지 지도에 새겨진 스승 알렉산다르의 필체는 거칠었지만, 그 속에는 제자를 향한 무한한 신뢰와 애정이 깃들어 있었다. 스승은 자신이 죽고 난 뒤 홀로 남겨질 카단이 겪을 고통과 방황을 예견하고, 마지막 순간까지 한 자 한 자 피로 써 내려간 희망의 유언을 남겨둔 것이었다. 카단은 눈시울을 붉히며 지도의 모서리를 조심스럽게 어루만졌다. “스승님께서는 결코 죽음을 두려워하지 않으셨다. 오직 등 뒤에 남겨진 아이들이 걸어갈 미래의 빛만을 걱정하셨지.” 실리아가 조용히 다가와 카단의 굳은 손을 잡아주었다.",
-      "sourceSentenceStart": 15,
-      "sourceSentenceEnd": 16,
+      "narrationEn": "Cilia whispered softly.",
+      "narrationKo": "카단이 지도의 중심인 수도 라이트헤이븐과 북방 엘윈 영지를 유심히 살폈다.",
+      "sourceSentenceStart": 8,
+      "sourceSentenceEnd": 8,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“스승님께서는 결코 죽음을 두려워하지 않으셨다. 오직 등 뒤에 남겨진 아이들이 걸어갈 미래의 빛만을 걱정하셨지.”",
-          "textEn": "“Master never feared his own demise. His only thought was the brightness of the dawn awaiting the children who walked behind him.”",
-          "bubbleType": "speech",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단이 지도의 중심인 수도 라이트헤이븐과 북방 엘윈 영지를 유심히 살폈다.",
+          "textEn": "Cilia whispered softly.",
+          "bubbleType": "thought",
           "position": "top-left",
-          "characterCardId": 62
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_36/scene_09.webp",
+      "sourceImageFile": "episode_36/scene_09.webp",
+      "narrationEn": "\"Though Lucian has warped the subterranean leylines through the foul sorcery of the Nine Shadows Codex, once we shatter the core barrier of the central nexus, the earth's innate purification will restore the mana to its pristine flow.\"",
+      "narrationKo": "“루시안이 나인섀도우 코덱스를 통해 대륙의 일곱 대성소의 지맥을 흡수하려 했던 흔적이다. 스승님들이 목숨 바쳐 막아서지 않았다면 이미 온 대륙이 붕괴했을 것이다.”",
+      "sourceSentenceStart": 9,
+      "sourceSentenceEnd": 9,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“루시안이 나인섀도우 코덱스를 통해 대륙의 일곱 대성소의 지맥을 흡수하려 했던 흔적이다. 스승님들이 목숨 바쳐 막아서지 않았다면 이미 온 대륙이 붕괴했을 것이다.”",
+          "textEn": "“Though Lucian has warped the subterranean leylines through the foul sorcery of the Nine Shadows Codex, once we shatter the core barrier of the central nexus, the earth's innate purification will restore the mana to its pristine flow.”",
+          "bubbleType": "speech",
+          "position": "top-right",
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
@@ -268,22 +291,22 @@
       ]
     },
     {
-      "sceneNumber": 9,
-      "imageFile": "episode_36/scene_09.webp",
-      "sourceImageFile": "episode_36/scene_09.webp",
-      "narrationEn": "Cilia drew near, clasping his weathered hand, and decoded the four cardinal runes inscribed along the margin.",
-      "narrationKo": "카단은 품속에서 이그니스의 따스한 유리 불씨를 꺼내 지도의 성화 자리에 올려놓았다. 그러자 유리 불씨에서 뿜어져 나온 순백의 빛이 지도의 십자 흉터를 타고 흐르며, 제단 전체를 황금빛과 비취빛의 성스러운 오라로 가득 채웠다. 실리아가 자신의 녹옥 지팡이를 바람의 자리에 맞추어 꽂았다.",
-      "sourceSentenceStart": 17,
-      "sourceSentenceEnd": 18,
+      "sceneNumber": 10,
+      "imageFile": "episode_36/scene_10.webp",
+      "sourceImageFile": "episode_36/scene_10.webp",
+      "narrationEn": "Kadan scrutinized the central coordinates of Lighthaven and the northern expanse of the Elwin fief. \"Here lies the proof of Lucian's plot to drain the leylines of all seven great sanctuaries through the dark codex.",
+      "narrationKo": "회랑 바닥을 따라 흐르는 차가운 밤안개 속에는 수백 년 동안 이 기록실을 지켜온 별빛 정령들의 온기가 은은하게 서려 있었다.",
+      "sourceSentenceStart": 10,
+      "sourceSentenceEnd": 10,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "실리아가 자신의 녹옥 지팡이를 바람의 자리에 맞추어 꽂았다.",
-          "textEn": "Cilia drew near, clasping his weathered hand, and decoded the four cardinal runes inscribed along the margin.",
+          "textKo": "회랑 바닥을 따라 흐르는 차가운 밤안개 속에는 수백 년 동안 이 기록실을 지켜온 별빛 정령들의 온기가 은은하게 서려 있었다.",
+          "textEn": "\"Here lies the proof of Lucian's plot to drain the leylines of all seven great sanctuaries through the dark codex.",
           "bubbleType": "thought",
-          "position": "top-right",
+          "position": "bottom-left",
           "characterCardId": 41
         }
       ],
@@ -303,72 +326,37 @@
       ]
     },
     {
-      "sceneNumber": 10,
-      "imageFile": "episode_36/scene_10.webp",
-      "sourceImageFile": "episode_36/scene_10.webp",
-      "narrationEn": "\"The northern snow, the oceanic gale, the imperial sacred flame, and the guardian shield of the earth... The intersection where these four primordial forces converge is the Throne of Ruin where Lucian awaits. Master left us the ultimate key to victory.\" Kadan retrieved Ignis's White Glass Ember from his tunic and nestled it upon the sacred flame node of the parchment. In an instant, pure white sanctifying flames surged from the glass vessel, racing along the scarred contours of the map to envelop the obsidian dais in ripples of incandescent gold and radiant jade. The flame Ignis had bequeathed at the cost of his mortal life fused seamlessly with Master Aleksandar's tactical diagram, manifesting a luminous miracle that banished the darkness.",
-      "narrationKo": "“바람 속삭임 섬의 넋과 이그니스의 불꽃, 그리고 카단의 방패가 하나로 이어졌어요. 이제 루시안의 나인섀도우 결계를 단숨에 해체할 수 있어요.” 카단이 은빛 단검을 뽑아 지도의 중심핵을 짚었다.",
-      "sourceSentenceStart": 19,
-      "sourceSentenceEnd": 20,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“바람 속삭임 섬의 넋과 이그니스의 불꽃, 그리고 카단의 방패가 하나로 이어졌어요. 이제 루시안의 나인섀도우 결계를 단숨에 해체할 수 있어요.”",
-          "textEn": "“The northern snow, the oceanic gale, the imperial sacred flame, and the guardian shield of the earth... The intersection where these four primordial forces converge is the Throne of Ruin where Lucian awaits. Master left us the ultimate key to victory.”",
-          "bubbleType": "speech",
-          "position": "bottom-left",
-          "characterCardId": 62
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
-        }
-      ]
-    },
-    {
       "sceneNumber": 11,
       "imageFile": "episode_36/scene_11.webp",
       "sourceImageFile": "episode_36/scene_11.webp",
-      "narrationEn": "Clenching his fist, Kadan looked upon the light. \"Ignis breathes alongside us even now. The three flames and the sacred shield are finally united.\"",
-      "narrationKo": "“알렉산다르 스승님과 발리안 숙부님, 그리고 이그니스가 우리와 함께하고 있다. 슬픔에 주저앉아 있을 시간이 없다.” 그때 회랑 바깥쪽의 낭떠러지 아래에서 우레 같은 말발굽 소리와 함께 거대한 늑대의 포효가 밤공기를 갈랐다. 북방의 백은 늑대들을 이끄는 패왕 펜릴의 군세가 검은 성채의 하층부를 포위하며 돌격해 들어온 것이었다.",
-      "sourceSentenceStart": 21,
-      "sourceSentenceEnd": 22,
+      "narrationEn": "Had our masters not laid down their lives to halt the flow, the continent would have shattered beneath our feet long ago.\"",
+      "narrationKo": "흑요석 벽면마다 성기사단의 고대 십자 성흔이 별자리처럼 박혀 있어 어두운 밤하늘을 환하게 밝히고 있었다. 카단은 장화 끝으로 바닥의 룬 문양을 쓸어내리며 스승의 발자취를 회상했다.",
+      "sourceSentenceStart": 11,
+      "sourceSentenceEnd": 11,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“알렉산다르 스승님과 발리안 숙부님, 그리고 이그니스가 우리와 함께하고 있다. 슬픔에 주저앉아 있을 시간이 없다.”",
-          "textEn": "“Ignis breathes alongside us even now. The three flames and the sacred shield are finally united.”",
-          "bubbleType": "speech",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단은 장화 끝으로 바닥의 룬 문양을 쓸어내리며 스승의 발자취를 회상했다.",
+          "textEn": "Had our masters not laid down their lives to halt the flow, the continent would have shattered beneath our feet long ago.\"",
+          "bubbleType": "thought",
           "position": "bottom-right",
           "characterCardId": 41
         }
       ],
       "sfxCues": [
         {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
           "position": "top-right"
         },
         {
-          "textKo": "쿠구구궁!",
-          "textEn": "RUMBLE!",
-          "style": "rumble",
-          "position": "bottom-left"
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
         }
       ]
     },
@@ -376,64 +364,20 @@
       "sceneNumber": 12,
       "imageFile": "episode_36/scene_12.webp",
       "sourceImageFile": "episode_36/scene_12.webp",
-      "narrationEn": "Cilia nodded, aligning her jade staff with the wind node.",
-      "narrationKo": "유리 불씨에서 뿜어져 나온 순백의 성화가 지도의 네 성소를 하나로 연결하자, 흑요석 제단 전체가 마치 살아 숨 쉬는 심장처럼 황금빛 파문을 일으켰다. 이그니스가 목숨 바쳐 남겨준 불꽃이 스승의 전술도와 완벽하게 융합하며 어둠을 몰아내는 기적을 일으킨 것이었다. 카단이 굳게 주먹을 쥐며 말했다. “그 불꽃은 지금도 우리와 함께 호흡하고 있다. 세 개의 불꽃과 방패가 마침내 하나가 되었다.” 실리아 역시 녹옥 지팡이를 고쳐 쥐며 고개를 끄덕였다. “선대 영웅들의 모든 맹세가 우리 손끝에 모였어요.”",
-      "sourceSentenceStart": 23,
-      "sourceSentenceEnd": 24,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“그 불꽃은 지금도 우리와 함께 호흡하고 있다. 세 개의 불꽃과 방패가 마침내 하나가 되었다.”",
-          "textEn": "“Ignis breathes alongside us even now. The three flames and the sacred shield are finally united.”",
-          "bubbleType": "speech",
-          "position": "top-left",
-          "characterCardId": 62
-        },
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“선대 영웅들의 모든 맹세가 우리 손끝에 모였어요.”",
-          "textEn": "“All the solemn oaths of the ancient heroes have gathered at our fingertips.”",
-          "bubbleType": "speech",
-          "position": "top-right",
-          "characterCardId": 62
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 13,
-      "imageFile": "episode_36/scene_13.webp",
-      "sourceImageFile": "episode_36/scene_13.webp",
-      "narrationEn": "\"All the solemn oaths of the ancient heroes have gathered at our fingertips.\" Kadan unsheathed the Silver Dagger, resting its tip at the map's nexus.",
-      "narrationKo": "성채 하층부에서 울려 퍼지는 함성은 연합군의 사기를 드높이기에 충분했다. 펜릴 왕이 이끄는 북방의 전사들이 루시안의 잔여 마수 군단을 차례로 유린하며 최상층으로 향하는 외곽 방어선을 완벽하게 차단해주고 있었다. 실리아가 테라스 난간으로 달려 나가 아래를 내려다보며 환호했다.",
-      "sourceSentenceStart": 25,
-      "sourceSentenceEnd": 26,
+      "narrationEn": "As Kadan pressed his gauntleted hand upon the coordinate of Lighthaven, a metallic click echoed through the altar base, and a concealed stone coffer rose smoothly from the floor. Within lay a weathered, blood-crusted leather pouch enclosing an ancient parchment tactical diagram etched with a deep cross-shaped scar.",
+      "narrationKo": "실리아가 성도의 외곽 산맥을 가리키며 말했다.",
+      "sourceSentenceStart": 12,
+      "sourceSentenceEnd": 12,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "실리아가 테라스 난간으로 달려 나가 아래를 내려다보며 환호했다.",
-          "textEn": "\"All the solemn oaths of the ancient heroes have gathered at our fingertips.\" Kadan unsheathed the Silver Dagger, resting its tip at the map's nexus.",
+          "textKo": "실리아가 성도의 외곽 산맥을 가리키며 말했다.",
+          "textEn": "Within lay a weathered, blood-crusted leather pouch enclosing an ancient parchment tactical diagram etched with a deep cross-shaped scar.",
           "bubbleType": "thought",
-          "position": "top-right",
-          "characterCardId": 81
+          "position": "top-left",
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
@@ -446,31 +390,60 @@
       ]
     },
     {
-      "sceneNumber": 14,
-      "imageFile": "episode_36/scene_14.webp",
-      "sourceImageFile": "episode_36/scene_14.webp",
-      "narrationEn": "\"Master Aleksandar, Uncle Balian, and Ignis stand with us. We have no time to linger in grief.\" Suddenly, thunderous hoofbeats and the resonant roars of great wolves pierced the nocturnal air from the abyss beneath the terrace. King Fenrir's Silver Wolf Vanguard had enveloped the lower bastion of the Black Citadel, launching a fierce assault against the demonic legions.",
-      "narrationKo": "“펜릴 왕의 백색 늑대 기병대예요! 북방의 지원군이 성채 하층부를 완전히 장악했어요!” 카단이 방패를 고쳐 쥐며 고개를 끄덕였다.",
-      "sourceSentenceStart": 27,
-      "sourceSentenceEnd": 28,
+      "sceneNumber": 13,
+      "imageFile": "episode_36/scene_13.webp",
+      "sourceImageFile": "episode_36/scene_13.webp",
+      "narrationEn": "It was the Map of the Cross-Shaped Scar, drafted twenty winters ago during the First Crusade by Master Aleksandar and Uncle Balian, tracing the sacred stigmata carved across their own chests.",
+      "narrationKo": "“이 지도는 대륙의 생명선이에요. 루시안이 나인섀도우의 흑마법으로 지맥을 뒤틀어놓았지만, 중심핵의 결계만 해제하면 대지의 자정 작용으로 모든 마나가 본래의 순수한 흐름을 되찾을 거예요.”",
+      "sourceSentenceStart": 13,
+      "sourceSentenceEnd": 13,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "실리아",
           "speakerEn": "Celia",
-          "textKo": "“펜릴 왕의 백색 늑대 기병대예요! 북방의 지원군이 성채 하층부를 완전히 장악했어요!”",
-          "textEn": "“Master Aleksandar, Uncle Balian, and Ignis stand with us. We have no time to linger in grief.”",
-          "bubbleType": "shout",
-          "position": "bottom-left",
+          "textKo": "“이 지도는 대륙의 생명선이에요. 루시안이 나인섀도우의 흑마법으로 지맥을 뒤틀어놓았지만, 중심핵의 결계만 해제하면 대지의 자정 작용으로 모든 마나가 본래의 순수한 흐름을 되찾을 거예요.”",
+          "textEn": "“It was the Map of the Cross-Shaped Scar, drafted twenty winters ago during the First Crusade by Master Aleksandar and Uncle Balian, tracing the sacred stigmata carved across their own chests.”",
+          "bubbleType": "speech",
+          "position": "top-right",
           "characterCardId": 62
         }
       ],
       "sfxCues": [
         {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
           "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_36/scene_14.webp",
+      "sourceImageFile": "episode_36/scene_14.webp",
+      "narrationEn": "With trembling fingers, Kadan unfurled the yellowed parchment.",
+      "narrationKo": "카단이 성도 중앙의 라이트헤이븐 위치에 손을 얹는 순간, 제단 바닥에서 딸깍하는 기계음과 함께 숨겨진 비밀 수납함이 솟구쳐 올랐다.",
+      "sourceSentenceStart": 14,
+      "sourceSentenceEnd": 14,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단이 성도 중앙의 라이트헤이븐 위치에 손을 얹는 순간, 제단 바닥에서 딸깍하는 기계음과 함께 숨겨진 비밀 수납함이 솟구쳐 올랐다.",
+          "textEn": "With trembling fingers, Kadan unfurled the yellowed parchment.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
         }
       ]
     },
@@ -478,34 +451,28 @@
       "sceneNumber": 15,
       "imageFile": "episode_36/scene_15.webp",
       "sourceImageFile": "episode_36/scene_15.webp",
-      "narrationEn": "The battle cries echoing from the lower terraces reignited the spirits of the allied hosts. King Fenrir and his northern warriors methodically dismantled Lucian's reserve beast legions, severing every outer line of communication and reinforcing the perimeter. Because the northern beasts held the bloodstained sulfur swamps, Kadan and Cilia were freed from guarding their vanguard, able to focus their entire will upon the tyrant on the throne. Kadan raised his Dragon Breaker shield toward the warriors battling below.",
-      "narrationKo": "“펜릴 왕이 외곽을 맡아주었으니, 우리는 오직 루시안과의 일대일 결전에만 집중할 수 있다. 십자 흉터의 지도가 가리키는 파멸의 제단 중심부로 진격하자.” 두 사람은 지도와 유리 불씨를 소중히 갈무리하고, 최후의 옥좌로 이어지는 거대한 흑요석 대문을 향해 나아갔다. 대문 너머에서 풍겨오는 피비린내 나는 마나의 파동이 점점 더 거칠어지고 있었다.",
-      "sourceSentenceStart": 29,
-      "sourceSentenceEnd": 30,
+      "narrationEn": "Upon it, Master Aleksandar's brushstrokes remained as sharp and vivid as iron. 'To my child Kadan.",
+      "narrationKo": "그 안에는 피 묻은 가죽 주머니와 함께, 십자 모양의 깊은 흉터가 새겨진 오래된 양피지 전술도가 들어 있었다.",
+      "sourceSentenceStart": 15,
+      "sourceSentenceEnd": 15,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“펜릴 왕이 외곽을 맡아주었으니, 우리는 오직 루시안과의 일대일 결전에만 집중할 수 있다. 십자 흉터의 지도가 가리키는 파멸의 제단 중심부로 진격하자.”",
-          "textEn": "“King Fenrir's loyalty has lifted the burden from our shoulders. Now it is our turn to cleave the tyrant on the throne.”",
-          "bubbleType": "speech",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그 안에는 피 묻은 가죽 주머니와 함께, 십자 모양의 깊은 흉터가 새겨진 오래된 양피지 전술도가 들어 있었다.",
+          "textEn": "'To my child Kadan.",
+          "bubbleType": "thought",
           "position": "bottom-right",
           "characterCardId": 41
         }
       ],
       "sfxCues": [
         {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        },
-        {
-          "textKo": "쿠구구궁!",
-          "textEn": "RUMBLE!",
-          "style": "rumble",
-          "position": "bottom-left"
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
         }
       ]
     },
@@ -513,64 +480,23 @@
       "sceneNumber": 16,
       "imageFile": "episode_36/scene_16.webp",
       "sourceImageFile": "episode_36/scene_16.webp",
-      "narrationEn": "\"King Fenrir's loyalty has lifted the burden from our shoulders. Now it is our turn to cleave the tyrant on the throne.\"",
-      "narrationKo": "성채 하층부에서 울려 퍼지는 펜릴 왕의 백은 늑대 군단의 포효는 지축을 뒤흔들며 암흑 마수들의 사기를 완전히 꺾어놓았다. 북방 설원의 맹수들이 피비린내 나는 유황 늪지를 평정하며 퇴로를 완벽하게 차단해주었기에, 카단과 실리아는 등 뒤를 걱정하지 않고 온전히 옥좌의 루시안에게만 집중할 수 있게 되었다. 카단이 성벽 너머의 북방 전사들을 향해 방패를 높이 들어 경의를 표했다. “펜릴 왕의 의리가 우리 등의 짐을 덜어주었다. 이제 우리가 옥좌의 마왕을 벨 차례다.”",
-      "sourceSentenceStart": 31,
-      "sourceSentenceEnd": 32,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“펜릴 왕의 의리가 우리 등의 짐을 덜어주었다. 이제 우리가 옥좌의 마왕을 벨 차례다.”",
-          "textEn": "“King Fenrir's loyalty has lifted the burden from our shoulders. Now it is our turn to cleave the tyrant on the throne.”",
-          "bubbleType": "speech",
-          "position": "top-left",
-          "characterCardId": 41
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "쿠구구궁!",
-          "textEn": "RUMBLE!",
-          "style": "rumble",
-          "position": "bottom-left"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 17,
-      "imageFile": "episode_36/scene_17.webp",
-      "sourceImageFile": "episode_36/scene_17.webp",
-      "narrationEn": "Securing the parchment and the glowing glass ember, the two companions advanced toward the colossal obsidian portal sealing the inner sanctum. From beyond the threshold drifted the choking stench of brimstone and the violent ripples of corrupted mana. Standing before the stone gate, Kadan hoisted his shield to his chest, its cross-shaped insignia humming in resonance with the parchment's scar.",
-      "narrationKo": "흑요석 대문 앞에 선 카단은 드래곤 브레이커 방패를 가슴 높이로 들어 올렸다. 방패 표면의 십자 성흔이 지도의 흉터와 공명하며 눈부신 황금빛으로 진동했다. 실리아가 녹옥 지팡이를 양손으로 꼭 쥐며 카단의 곁에 섰다.",
-      "sourceSentenceStart": 33,
-      "sourceSentenceEnd": 34,
+      "narrationEn": "If your eyes read these words, I have already returned to the earth.",
+      "narrationKo": "그것은 이십 년 전 제1차 성전 당시, 스승 알렉산다르와 발리안 숙부가 자신의 가슴에 새겨진 성기사의 십자 성흔을 본떠 남겨둔 ‘십자 흉터의 지도’였다.",
+      "sourceSentenceStart": 16,
+      "sourceSentenceEnd": 16,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "실리아가 녹옥 지팡이를 양손으로 꼭 쥐며 카단의 곁에 섰다.",
-          "textEn": "Standing before the stone gate, Kadan hoisted his shield to his chest, its cross-shaped insignia humming in resonance with the parchment's scar.",
+          "textKo": "그것은 이십 년 전 제1차 성전 당시, 스승 알렉산다르와 발리안 숙부가 자신의 가슴에 새겨진 성기사의 십자 성흔을 본떠 남겨둔 ‘십자 흉터의 지도’였다.",
+          "textEn": "If your eyes read these words, I have already returned to the earth.",
           "bubbleType": "thought",
-          "position": "top-right",
-          "characterCardId": 41
+          "position": "top-left",
+          "characterCardId": 50
         }
       ],
       "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
         {
           "textKo": "파지지직!",
           "textEn": "CRACKLE!",
@@ -580,23 +506,52 @@
       ]
     },
     {
-      "sceneNumber": 18,
-      "imageFile": "episode_36/scene_18.webp",
-      "sourceImageFile": "episode_36/scene_18.webp",
-      "narrationEn": "Cilia gripped her jade staff with both hands, standing shoulder-to-shoulder with him. \"Lucian waits beyond this threshold. Whatever darkness lurks within, I shall not yield half a pace from your side.\"",
-      "narrationKo": "“문 너머에 루시안이 있어요. 어떤 어둠이 도사리고 있을지라도, 당신의 방패 곁에서 한 발자국도 물러서지 않겠어요.” 카단이 부드럽게 미소 지으며 대답했다.",
-      "sourceSentenceStart": 35,
-      "sourceSentenceEnd": 36,
+      "sceneNumber": 17,
+      "imageFile": "episode_36/scene_17.webp",
+      "sourceImageFile": "episode_36/scene_17.webp",
+      "narrationEn": "Yet weep not. Though a paladin's shield must turn to dust, the seed of life shielded beneath its iron shall take root and blossom upon this soil.",
+      "narrationKo": "카단이 떨리는 손으로 지도를 펼쳐 들었다. 양피지 위에는 스승의 친필 묵서가 선명하게 남아 있었다.",
+      "sourceSentenceStart": 17,
+      "sourceSentenceEnd": 17,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“문 너머에 루시안이 있어요. 어떤 어둠이 도사리고 있을지라도, 당신의 방패 곁에서 한 발자국도 물러서지 않겠어요.”",
-          "textEn": "“Lucian waits beyond this threshold. Whatever darkness lurks within, I shall not yield half a pace from your side.”",
-          "bubbleType": "speech",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "양피지 위에는 스승의 친필 묵서가 선명하게 남아 있었다.",
+          "textEn": "Though a paladin's shield must turn to dust, the seed of life shielded beneath its iron shall take root and blossom upon this soil.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_36/scene_18.webp",
+      "sourceImageFile": "episode_36/scene_18.webp",
+      "narrationEn": "Lucian's dark wards appear impenetrable, yet when the living warmth of the people dwelling in the four cardinal sanctuaries unites, the dark citadel's core shall crumble like sand.'",
+      "narrationKo": "‘나의 아이 카단에게. 네가 이 글을 읽고 있다면, 나는 이미 세상에 없을 것이다. 그러나 슬퍼하지 마라. 성기사의 방패는 흙으로 돌아가도, 그 방패가 지켜낸 생명의 씨앗은 대지의 품에서 반드시 싹을 틔우는 법이다.",
+      "sourceSentenceStart": 18,
+      "sourceSentenceEnd": 18,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "성기사의 방패는 흙으로 돌아가도, 그 방패가 지켜낸 생명의 씨앗은 대지의 품에서 반드시 싹을 틔우는 법이다.",
+          "textEn": "Lucian's dark wards appear impenetrable, yet when the living warmth of the people dwelling in the four cardinal sanctuaries unites, the dark citadel's core shall crumble like sand.'",
+          "bubbleType": "thought",
           "position": "bottom-left",
-          "characterCardId": 62
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
@@ -612,19 +567,810 @@
       "sceneNumber": 19,
       "imageFile": "episode_36/scene_19.webp",
       "sourceImageFile": "episode_36/scene_19.webp",
-      "narrationEn": "Kadan offered a warm, unwavering smile.",
-      "narrationKo": "“우리가 지켜야 할 사람들의 온기가 우리 등 뒤에 있다. 가자, 실리아. 이 땅의 모든 눈물을 닦아낼 마지막 문을 열자.” 카단이 방패로 대문의 중심부를 강타하자, 거대한 석문이 천둥 같은 파열음과 함께 산산조각 났다. 그 너머로 피비린내 나는 파멸의 옥좌와 루시안의 흉포한 그림자가 모습을 드러냈다.",
+      "narrationEn": "The brushwork was rugged, yet every stroke brimmed with boundless faith and tender fatherly love.",
+      "narrationKo": "루시안의 흑마법 결계는 완벽해 보이지만, 대륙의 동서남북 네 성소에 깃든 사람들의 온기가 하나로 모일 때 그 중심핵은 모래성처럼 무너져 내릴 것이다.’",
+      "sourceSentenceStart": 19,
+      "sourceSentenceEnd": 19,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "루시안의 흑마법 결계는 완벽해 보이지만, 대륙의 동서남북 네 성소에 깃든 사람들의 온기가 하나로 모일 때 그 중심핵은 모래성처럼 무너져 내릴 것이다.’",
+          "textEn": "The brushwork was rugged, yet every stroke brimmed with boundless faith and tender fatherly love.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 61
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_36/scene_20.webp",
+      "sourceImageFile": "episode_36/scene_20.webp",
+      "narrationEn": "Foreseeing the agonizing trials the orphaned boy would endure in his absence, Aleksandar had inscribed this testament of hope in his own blood until his final breath. Kadan touched the worn parchment edge, moisture welling in his eyes.",
+      "narrationKo": "실리아가 지도의 네 모서리에 새겨진 룬을 해독하며 감탄했다.",
+      "sourceSentenceStart": 20,
+      "sourceSentenceEnd": 20,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "실리아가 지도의 네 모서리에 새겨진 룬을 해독하며 감탄했다.",
+          "textEn": "Kadan touched the worn parchment edge, moisture welling in his eyes.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 21,
+      "imageFile": "episode_36/scene_21.webp",
+      "sourceImageFile": "episode_36/scene_21.webp",
+      "narrationEn": "\"Master never feared his own demise.",
+      "narrationKo": "“북방의 눈꽃, 대해의 바람, 황실의 성화, 그리고 대지의 방패... 네 가지 힘이 교차하는 중심점이 바로 루시안이 서 있는 파멸의 제단이에요. 스승님께서는 이 날을 위해 마지막 파훼법을 남겨두신 거예요.”",
+      "sourceSentenceStart": 21,
+      "sourceSentenceEnd": 21,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“북방의 눈꽃, 대해의 바람, 황실의 성화, 그리고 대지의 방패... 네 가지 힘이 교차하는 중심점이 바로 루시안이 서 있는 파멸의 제단이에요. 스승님께서는 이 날을 위해 마지막 파훼법을 남겨두신 거예요.”",
+          "textEn": "“\"Master never feared his own demise.”",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 22,
+      "imageFile": "episode_36/scene_22.webp",
+      "sourceImageFile": "episode_36/scene_22.webp",
+      "narrationEn": "His only thought was the brightness of the dawn awaiting the children who walked behind him.\"",
+      "narrationKo": "양피지 지도에 새겨진 스승 알렉산다르의 필체는 거칠었지만, 그 속에는 제자를 향한 무한한 신뢰와 애정이 깃들어 있었다.",
+      "sourceSentenceStart": 22,
+      "sourceSentenceEnd": 22,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "양피지 지도에 새겨진 스승 알렉산다르의 필체는 거칠었지만, 그 속에는 제자를 향한 무한한 신뢰와 애정이 깃들어 있었다.",
+          "textEn": "His only thought was the brightness of the dawn awaiting the children who walked behind him.\"",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 50
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 23,
+      "imageFile": "episode_36/scene_23.webp",
+      "sourceImageFile": "episode_36/scene_23.webp",
+      "narrationEn": "Cilia drew near, clasping his weathered hand, and decoded the four cardinal runes inscribed along the margin. \"The northern snow, the oceanic gale, the imperial sacred flame, and the guardian shield of the earth...",
+      "narrationKo": "스승은 자신이 죽고 난 뒤 홀로 남겨질 카단이 겪을 고통과 방황을 예견하고, 마지막 순간까지 한 자 한 자 피로 써 내려간 희망의 유언을 남겨둔 것이었다.",
+      "sourceSentenceStart": 23,
+      "sourceSentenceEnd": 23,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "스승은 자신이 죽고 난 뒤 홀로 남겨질 카단이 겪을 고통과 방황을 예견하고, 마지막 순간까지 한 자 한 자 피로 써 내려간 희망의 유언을 남겨둔 것이었다.",
+          "textEn": "\"The northern snow, the oceanic gale, the imperial sacred flame, and the guardian shield of the earth...",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 24,
+      "imageFile": "episode_36/scene_24.webp",
+      "sourceImageFile": "episode_36/scene_24.webp",
+      "narrationEn": "The intersection where these four primordial forces converge is the Throne of Ruin where Lucian awaits.",
+      "narrationKo": "카단은 눈시울을 붉히며 지도의 모서리를 조심스럽게 어루만졌다. “스승님께서는 결코 죽음을 두려워하지 않으셨다. 오직 등 뒤에 남겨진 아이들이 걸어갈 미래의 빛만을 걱정하셨지.”",
+      "sourceSentenceStart": 24,
+      "sourceSentenceEnd": 24,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“스승님께서는 결코 죽음을 두려워하지 않으셨다. 오직 등 뒤에 남겨진 아이들이 걸어갈 미래의 빛만을 걱정하셨지.”",
+          "textEn": "“The intersection where these four primordial forces converge is the Throne of Ruin where Lucian awaits.”",
+          "bubbleType": "speech",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 25,
+      "imageFile": "episode_36/scene_25.webp",
+      "sourceImageFile": "episode_36/scene_25.webp",
+      "narrationEn": "Master left us the ultimate key to victory.\" Kadan retrieved Ignis's White Glass Ember from his tunic and nestled it upon the sacred flame node of the parchment.",
+      "narrationKo": "실리아가 조용히 다가와 카단의 굳은 손을 잡아주었다. 카단은 품속에서 이그니스의 따스한 유리 불씨를 꺼내 지도의 성화 자리에 올려놓았다.",
+      "sourceSentenceStart": 25,
+      "sourceSentenceEnd": 25,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단은 품속에서 이그니스의 따스한 유리 불씨를 꺼내 지도의 성화 자리에 올려놓았다.",
+          "textEn": "Master left us the ultimate key to victory.\" Kadan retrieved Ignis's White Glass Ember from his tunic and nestled it upon the sacred flame node of the parchment.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 26,
+      "imageFile": "episode_36/scene_26.webp",
+      "sourceImageFile": "episode_36/scene_26.webp",
+      "narrationEn": "In an instant, pure white sanctifying flames surged from the glass vessel, racing along the scarred contours of the map to envelop the obsidian dais in ripples of incandescent gold and radiant jade.",
+      "narrationKo": "그러자 유리 불씨에서 뿜어져 나온 순백의 빛이 지도의 십자 흉터를 타고 흐르며, 제단 전체를 황금빛과 비취빛의 성스러운 오라로 가득 채웠다.",
+      "sourceSentenceStart": 26,
+      "sourceSentenceEnd": 26,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그러자 유리 불씨에서 뿜어져 나온 순백의 빛이 지도의 십자 흉터를 타고 흐르며, 제단 전체를 황금빛과 비취빛의 성스러운 오라로 가득 채웠다.",
+          "textEn": "In an instant, pure white sanctifying flames surged from the glass vessel, racing along the scarred contours of the map to envelop the obsidian dais in ripples of incandescent gold and radiant jade.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 27,
+      "imageFile": "episode_36/scene_27.webp",
+      "sourceImageFile": "episode_36/scene_27.webp",
+      "narrationEn": "The flame Ignis had bequeathed at the cost of his mortal life fused seamlessly with Master Aleksandar's tactical diagram, manifesting a luminous miracle that banished the darkness.",
+      "narrationKo": "실리아가 자신의 녹옥 지팡이를 바람의 자리에 맞추어 꽂았다. “바람 속삭임 섬의 넋과 이그니스의 불꽃, 그리고 카단의 방패가 하나로 이어졌어요. 이제 루시안의 나인섀도우 결계를 단숨에 해체할 수 있어요.”",
+      "sourceSentenceStart": 27,
+      "sourceSentenceEnd": 27,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“바람 속삭임 섬의 넋과 이그니스의 불꽃, 그리고 카단의 방패가 하나로 이어졌어요. 이제 루시안의 나인섀도우 결계를 단숨에 해체할 수 있어요.”",
+          "textEn": "“The flame Ignis had bequeathed at the cost of his mortal life fused seamlessly with Master Aleksandar's tactical diagram, manifesting a luminous miracle that banished the darkness.”",
+          "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 28,
+      "imageFile": "episode_36/scene_28.webp",
+      "sourceImageFile": "episode_36/scene_28.webp",
+      "narrationEn": "Clenching his fist, Kadan looked upon the light. \"Ignis breathes alongside us even now.",
+      "narrationKo": "카단이 은빛 단검을 뽑아 지도의 중심핵을 짚었다. “알렉산다르 스승님과 발리안 숙부님, 그리고 이그니스가 우리와 함께하고 있다. 슬픔에 주저앉아 있을 시간이 없다.”",
+      "sourceSentenceStart": 28,
+      "sourceSentenceEnd": 28,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“알렉산다르 스승님과 발리안 숙부님, 그리고 이그니스가 우리와 함께하고 있다. 슬픔에 주저앉아 있을 시간이 없다.”",
+          "textEn": "“Clenching his fist, Kadan looked upon the light. \"Ignis breathes alongside us even now.”",
+          "bubbleType": "speech",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 29,
+      "imageFile": "episode_36/scene_29.webp",
+      "sourceImageFile": "episode_36/scene_29.webp",
+      "narrationEn": "The three flames and the sacred shield are finally united.\"",
+      "narrationKo": "그때 회랑 바깥쪽의 낭떠러지 아래에서 우레 같은 말발굽 소리와 함께 거대한 늑대의 포효가 밤공기를 갈랐다. 북방의 백은 늑대들을 이끄는 패왕 펜릴의 군세가 검은 성채의 하층부를 포위하며 돌격해 들어온 것이었다.",
+      "sourceSentenceStart": 29,
+      "sourceSentenceEnd": 29,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "북방의 백은 늑대들을 이끄는 패왕 펜릴의 군세가 검은 성채의 하층부를 포위하며 돌격해 들어온 것이었다.",
+          "textEn": "The three flames and the sacred shield are finally united.\"",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 81
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 30,
+      "imageFile": "episode_36/scene_30.webp",
+      "sourceImageFile": "episode_36/scene_30.webp",
+      "narrationEn": "Cilia nodded, aligning her jade staff with the wind node.",
+      "narrationKo": "유리 불씨에서 뿜어져 나온 순백의 성화가 지도의 네 성소를 하나로 연결하자, 흑요석 제단 전체가 마치 살아 숨 쉬는 심장처럼 황금빛 파문을 일으켰다.",
+      "sourceSentenceStart": 30,
+      "sourceSentenceEnd": 30,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "유리 불씨에서 뿜어져 나온 순백의 성화가 지도의 네 성소를 하나로 연결하자, 흑요석 제단 전체가 마치 살아 숨 쉬는 심장처럼 황금빛 파문을 일으켰다.",
+          "textEn": "Cilia nodded, aligning her jade staff with the wind node.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 81
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 31,
+      "imageFile": "episode_36/scene_31.webp",
+      "sourceImageFile": "episode_36/scene_31.webp",
+      "narrationEn": "\"All the solemn oaths of the ancient heroes have gathered at our fingertips.\" Kadan unsheathed the Silver Dagger, resting its tip at the map's nexus.",
+      "narrationKo": "이그니스가 목숨 바쳐 남겨준 불꽃이 스승의 전술도와 완벽하게 융합하며 어둠을 몰아내는 기적을 일으킨 것이었다.",
+      "sourceSentenceStart": 31,
+      "sourceSentenceEnd": 31,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "이그니스가 목숨 바쳐 남겨준 불꽃이 스승의 전술도와 완벽하게 융합하며 어둠을 몰아내는 기적을 일으킨 것이었다.",
+          "textEn": "\"All the solemn oaths of the ancient heroes have gathered at our fingertips.\" Kadan unsheathed the Silver Dagger, resting its tip at the map's nexus.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        },
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 32,
+      "imageFile": "episode_36/scene_32.webp",
+      "sourceImageFile": "episode_36/scene_32.webp",
+      "narrationEn": "\"Master Aleksandar, Uncle Balian, and Ignis stand with us.",
+      "narrationKo": "카단이 굳게 주먹을 쥐며 말했다. “그 불꽃은 지금도 우리와 함께 호흡하고 있다. 세 개의 불꽃과 방패가 마침내 하나가 되었다.” 실리아 역시 녹옥 지팡이를 고쳐 쥐며 고개를 끄덕였다.",
+      "sourceSentenceStart": 32,
+      "sourceSentenceEnd": 32,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“그 불꽃은 지금도 우리와 함께 호흡하고 있다. 세 개의 불꽃과 방패가 마침내 하나가 되었다.”",
+          "textEn": "“\"Master Aleksandar, Uncle Balian, and Ignis stand with us.”",
+          "bubbleType": "speech",
+          "position": "top-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 33,
+      "imageFile": "episode_36/scene_33.webp",
+      "sourceImageFile": "episode_36/scene_33.webp",
+      "narrationEn": "We have no time to linger in grief.\" Suddenly, thunderous hoofbeats and the resonant roars of great wolves pierced the nocturnal air from the abyss beneath the terrace.",
+      "narrationKo": "“선대 영웅들의 모든 맹세가 우리 손끝에 모였어요.”",
+      "sourceSentenceStart": 33,
+      "sourceSentenceEnd": 33,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“선대 영웅들의 모든 맹세가 우리 손끝에 모였어요.”",
+          "textEn": "“We have no time to linger in grief.\" Suddenly, thunderous hoofbeats and the resonant roars of great wolves pierced the nocturnal air from the abyss beneath the terrace.”",
+          "bubbleType": "speech",
+          "position": "top-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 34,
+      "imageFile": "episode_36/scene_34.webp",
+      "sourceImageFile": "episode_36/scene_34.webp",
+      "narrationEn": "King Fenrir's Silver Wolf Vanguard had enveloped the lower bastion of the Black Citadel, launching a fierce assault against the demonic legions.",
+      "narrationKo": "성채 하층부에서 울려 퍼지는 함성은 연합군의 사기를 드높이기에 충분했다. 펜릴 왕이 이끄는 북방의 전사들이 루시안의 잔여 마수 군단을 차례로 유린하며 최상층으로 향하는 외곽 방어선을 완벽하게 차단해주고 있었다.",
+      "sourceSentenceStart": 34,
+      "sourceSentenceEnd": 34,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "펜릴 왕이 이끄는 북방의 전사들이 루시안의 잔여 마수 군단을 차례로 유린하며 최상층으로 향하는 외곽 방어선을 완벽하게 차단해주고 있었다.",
+          "textEn": "King Fenrir's Silver Wolf Vanguard had enveloped the lower bastion of the Black Citadel, launching a fierce assault against the demonic legions.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 81
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 35,
+      "imageFile": "episode_36/scene_35.webp",
+      "sourceImageFile": "episode_36/scene_35.webp",
+      "narrationEn": "The battle cries echoing from the lower terraces reignited the spirits of the allied hosts.",
+      "narrationKo": "실리아가 테라스 난간으로 달려 나가 아래를 내려다보며 환호했다. “펜릴 왕의 백색 늑대 기병대예요! 북방의 지원군이 성채 하층부를 완전히 장악했어요!”",
+      "sourceSentenceStart": 35,
+      "sourceSentenceEnd": 35,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“펜릴 왕의 백색 늑대 기병대예요! 북방의 지원군이 성채 하층부를 완전히 장악했어요!”",
+          "textEn": "“The battle cries echoing from the lower terraces reignited the spirits of the allied hosts.”",
+          "bubbleType": "shout",
+          "position": "bottom-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 36,
+      "imageFile": "episode_36/scene_36.webp",
+      "sourceImageFile": "episode_36/scene_36.webp",
+      "narrationEn": "King Fenrir and his northern warriors methodically dismantled Lucian's reserve beast legions, severing every outer line of communication and reinforcing the perimeter. Because the northern beasts held the bloodstained sulfur swamps, Kadan and Cilia were freed from guarding their vanguard, able to focus their entire will upon the tyrant on the throne.",
+      "narrationKo": "카단이 방패를 고쳐 쥐며 고개를 끄덕였다. “펜릴 왕이 외곽을 맡아주었으니, 우리는 오직 루시안과의 일대일 결전에만 집중할 수 있다. 십자 흉터의 지도가 가리키는 파멸의 제단 중심부로 진격하자.”",
+      "sourceSentenceStart": 36,
+      "sourceSentenceEnd": 36,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“펜릴 왕이 외곽을 맡아주었으니, 우리는 오직 루시안과의 일대일 결전에만 집중할 수 있다. 십자 흉터의 지도가 가리키는 파멸의 제단 중심부로 진격하자.”",
+          "textEn": "“King Fenrir and his northern warriors methodically dismantled Lucian's reserve beast legions, severing every outer line of communication and reinforcing the perimeter. Because the northern beasts held the bloodstained sulfur swamps, Kadan and Cilia were freed from guarding their vanguard, able to focus their entire will upon the tyrant on the throne.”",
+          "bubbleType": "speech",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 37,
+      "imageFile": "episode_36/scene_37.webp",
+      "sourceImageFile": "episode_36/scene_37.webp",
+      "narrationEn": "Kadan raised his Dragon Breaker shield toward the warriors battling below.",
+      "narrationKo": "두 사람은 지도와 유리 불씨를 소중히 갈무리하고, 최후의 옥좌로 이어지는 거대한 흑요석 대문을 향해 나아갔다. 대문 너머에서 풍겨오는 피비린내 나는 마나의 파동이 점점 더 거칠어지고 있었다.",
       "sourceSentenceStart": 37,
+      "sourceSentenceEnd": 37,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "대문 너머에서 풍겨오는 피비린내 나는 마나의 파동이 점점 더 거칠어지고 있었다.",
+          "textEn": "Kadan raised his Dragon Breaker shield toward the warriors battling below.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 38,
+      "imageFile": "episode_36/scene_38.webp",
+      "sourceImageFile": "episode_36/scene_38.webp",
+      "narrationEn": "\"King Fenrir's loyalty has lifted the burden from our shoulders. Now it is our turn to cleave the tyrant on the throne.\"",
+      "narrationKo": "성채 하층부에서 울려 퍼지는 펜릴 왕의 백은 늑대 군단의 포효는 지축을 뒤흔들며 암흑 마수들의 사기를 완전히 꺾어놓았다.",
+      "sourceSentenceStart": 38,
       "sourceSentenceEnd": 38,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "성채 하층부에서 울려 퍼지는 펜릴 왕의 백은 늑대 군단의 포효는 지축을 뒤흔들며 암흑 마수들의 사기를 완전히 꺾어놓았다.",
+          "textEn": "Now it is our turn to cleave the tyrant on the throne.\"",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 81
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 39,
+      "imageFile": "episode_36/scene_39.webp",
+      "sourceImageFile": "episode_36/scene_39.webp",
+      "narrationEn": "Securing the parchment and the glowing glass ember, the two companions advanced toward the colossal obsidian portal sealing the inner sanctum.",
+      "narrationKo": "북방 설원의 맹수들이 피비린내 나는 유황 늪지를 평정하며 퇴로를 완벽하게 차단해주었기에, 카단과 실리아는 등 뒤를 걱정하지 않고 온전히 옥좌의 루시안에게만 집중할 수 있게 되었다.",
+      "sourceSentenceStart": 39,
+      "sourceSentenceEnd": 39,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "북방 설원의 맹수들이 피비린내 나는 유황 늪지를 평정하며 퇴로를 완벽하게 차단해주었기에, 카단과 실리아는 등 뒤를 걱정하지 않고 온전히 옥좌의 루시안에게만 집중할 수 있게 되었다.",
+          "textEn": "Securing the parchment and the glowing glass ember, the two companions advanced toward the colossal obsidian portal sealing the inner sanctum.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        },
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 40,
+      "imageFile": "episode_36/scene_40.webp",
+      "sourceImageFile": "episode_36/scene_40.webp",
+      "narrationEn": "From beyond the threshold drifted the choking stench of brimstone and the violent ripples of corrupted mana.",
+      "narrationKo": "카단이 성벽 너머의 북방 전사들을 향해 방패를 높이 들어 경의를 표했다. “펜릴 왕의 의리가 우리 등의 짐을 덜어주었다. 이제 우리가 옥좌의 마왕을 벨 차례다.”",
+      "sourceSentenceStart": 40,
+      "sourceSentenceEnd": 40,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“펜릴 왕의 의리가 우리 등의 짐을 덜어주었다. 이제 우리가 옥좌의 마왕을 벨 차례다.”",
+          "textEn": "“From beyond the threshold drifted the choking stench of brimstone and the violent ripples of corrupted mana.”",
+          "bubbleType": "speech",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 41,
+      "imageFile": "episode_36/scene_41.webp",
+      "sourceImageFile": "episode_36/scene_41.webp",
+      "narrationEn": "Standing before the stone gate, Kadan hoisted his shield to his chest, its cross-shaped insignia humming in resonance with the parchment's scar. Cilia gripped her jade staff with both hands, standing shoulder-to-shoulder with him.",
+      "narrationKo": "흑요석 대문 앞에 선 카단은 드래곤 브레이커 방패를 가슴 높이로 들어 올렸다. 방패 표면의 십자 성흔이 지도의 흉터와 공명하며 눈부신 황금빛으로 진동했다.",
+      "sourceSentenceStart": 41,
+      "sourceSentenceEnd": 41,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "방패 표면의 십자 성흔이 지도의 흉터와 공명하며 눈부신 황금빛으로 진동했다.",
+          "textEn": "Cilia gripped her jade staff with both hands, standing shoulder-to-shoulder with him.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 42,
+      "imageFile": "episode_36/scene_42.webp",
+      "sourceImageFile": "episode_36/scene_42.webp",
+      "narrationEn": "\"Lucian waits beyond this threshold.",
+      "narrationKo": "실리아가 녹옥 지팡이를 양손으로 꼭 쥐며 카단의 곁에 섰다. “문 너머에 루시안이 있어요. 어떤 어둠이 도사리고 있을지라도, 당신의 방패 곁에서 한 발자국도 물러서지 않겠어요.”",
+      "sourceSentenceStart": 42,
+      "sourceSentenceEnd": 42,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“문 너머에 루시안이 있어요. 어떤 어둠이 도사리고 있을지라도, 당신의 방패 곁에서 한 발자국도 물러서지 않겠어요.”",
+          "textEn": "“\"Lucian waits beyond this threshold.”",
+          "bubbleType": "speech",
+          "position": "bottom-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 43,
+      "imageFile": "episode_36/scene_43.webp",
+      "sourceImageFile": "episode_36/scene_43.webp",
+      "narrationEn": "Whatever darkness lurks within, I shall not yield half a pace from your side.\"",
+      "narrationKo": "카단이 부드럽게 미소 지으며 대답했다. “우리가 지켜야 할 사람들의 온기가 우리 등 뒤에 있다. 가자, 실리아. 이 땅의 모든 눈물을 닦아낼 마지막 문을 열자.”",
+      "sourceSentenceStart": 43,
+      "sourceSentenceEnd": 43,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
           "textKo": "“우리가 지켜야 할 사람들의 온기가 우리 등 뒤에 있다. 가자, 실리아. 이 땅의 모든 눈물을 닦아낼 마지막 문을 열자.”",
-          "textEn": "“Lucian waits beyond this threshold. Whatever darkness lurks within, I shall not yield half a pace from your side.”",
+          "textEn": "“Whatever darkness lurks within, I shall not yield half a pace from your side.\"”",
           "bubbleType": "speech",
           "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 44,
+      "imageFile": "episode_36/scene_44.webp",
+      "sourceImageFile": "episode_36/scene_44.webp",
+      "narrationEn": "Kadan offered a warm, unwavering smile. \"The warmth of the lives we must protect rests at our backs.",
+      "narrationKo": "카단이 방패로 대문의 중심부를 강타하자, 거대한 석문이 천둥 같은 파열음과 함께 산산조각 났다. 그 너머로 피비린내 나는 파멸의 옥좌와 루시안의 흉포한 그림자가 모습을 드러냈다.",
+      "sourceSentenceStart": 44,
+      "sourceSentenceEnd": 44,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그 너머로 피비린내 나는 파멸의 옥좌와 루시안의 흉포한 그림자가 모습을 드러냈다.",
+          "textEn": "\"The warmth of the lives we must protect rests at our backs.",
+          "bubbleType": "thought",
+          "position": "top-left",
           "characterCardId": 41
         }
       ],
@@ -644,22 +1390,80 @@
       ]
     },
     {
-      "sceneNumber": 20,
-      "imageFile": "episode_36/scene_20.webp",
-      "sourceImageFile": "episode_36/scene_20.webp",
-      "narrationEn": "\"The warmth of the lives we must protect rests at our backs. Come, Cilia. Let us open the final door to wipe away every tear from this land.\" Kadan drove his shield into the portal's center, shattering the massive stone gates in a roar of splintering granite. Beyond lay the blood-drenched Throne of Ruin, and the monstrous silhouette of High Chancellor Lucian waiting in the dark.",
-      "narrationKo": "부서진 흑요석 대문 너머로 뿜어져 나오는 유황 연기와 피비린내 나는 마나의 파동 속에서, 두 영웅은 결연한 눈빛으로 발걸음을 옮겼다. 십자 흉터의 지도가 가리키는 파멸의 제단 중심부에서, 대륙의 모든 악을 잉태한 최고 재상 루시안과의 최후의 일전이 마침내 시작되려 하고 있었다. 실리아가 속삭였다. “우리의 신념이 대륙의 어둠을 밝힐 거예요.” 카단이 방패를 세우며 화답했다. “가자. 평화로운 새벽을 되찾으러!”",
-      "sourceSentenceStart": 39,
-      "sourceSentenceEnd": 40,
+      "sceneNumber": 45,
+      "imageFile": "episode_36/scene_45.webp",
+      "sourceImageFile": "episode_36/scene_45.webp",
+      "narrationEn": "Come, Cilia.",
+      "narrationKo": "부서진 흑요석 대문 너머로 뿜어져 나오는 유황 연기와 피비린내 나는 마나의 파동 속에서, 두 영웅은 결연한 눈빛으로 발걸음을 옮겼다.",
+      "sourceSentenceStart": 45,
+      "sourceSentenceEnd": 45,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "부서진 흑요석 대문 너머로 뿜어져 나오는 유황 연기와 피비린내 나는 마나의 파동 속에서, 두 영웅은 결연한 눈빛으로 발걸음을 옮겼다.",
+          "textEn": "Come, Cilia.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 46,
+      "imageFile": "episode_36/scene_46.webp",
+      "sourceImageFile": "episode_36/scene_46.webp",
+      "narrationEn": "Let us open the final door to wipe away every tear from this land.\" Kadan drove his shield into the portal's center, shattering the massive stone gates in a roar of splintering granite.",
+      "narrationKo": "십자 흉터의 지도가 가리키는 파멸의 제단 중심부에서, 대륙의 모든 악을 잉태한 최고 재상 루시안과의 최후의 일전이 마침내 시작되려 하고 있었다.",
+      "sourceSentenceStart": 46,
+      "sourceSentenceEnd": 46,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "십자 흉터의 지도가 가리키는 파멸의 제단 중심부에서, 대륙의 모든 악을 잉태한 최고 재상 루시안과의 최후의 일전이 마침내 시작되려 하고 있었다.",
+          "textEn": "Let us open the final door to wipe away every tear from this land.\" Kadan drove his shield into the portal's center, shattering the massive stone gates in a roar of splintering granite.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 61
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 47,
+      "imageFile": "episode_36/scene_47.webp",
+      "sourceImageFile": "episode_36/scene_47.webp",
+      "narrationEn": "Beyond lay the blood-drenched Throne of Ruin, and the monstrous silhouette of High Chancellor Lucian waiting in the dark.",
+      "narrationKo": "실리아가 속삭였다. “우리의 신념이 대륙의 어둠을 밝힐 거예요.” 카단이 방패를 세우며 화답했다. “가자. 평화로운 새벽을 되찾으러!”",
+      "sourceSentenceStart": 47,
+      "sourceSentenceEnd": 47,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "실리아",
           "speakerEn": "Celia",
           "textKo": "“우리의 신념이 대륙의 어둠을 밝힐 거예요.”",
-          "textEn": "“The warmth of the lives we must protect rests at our backs. Come, Cilia. Let us open the final door to wipe away every tear from this land.”",
+          "textEn": "“Beyond lay the blood-drenched Throne of Ruin, and the monstrous silhouette of High Chancellor Lucian waiting in the dark.”",
           "bubbleType": "speech",
-          "position": "top-left",
+          "position": "bottom-right",
           "characterCardId": 62
         },
         {
@@ -668,7 +1472,7 @@
           "textKo": "“가자. 평화로운 새벽을 되찾으러!”",
           "textEn": "“Beyond lay the blood-drenched Throne of Ruin, and the monstrous silhouette of High Chancellor Lucian waiting in the dark.”",
           "bubbleType": "shout",
-          "position": "top-right",
+          "position": "top-left",
           "characterCardId": 62
         }
       ],
@@ -680,10 +1484,10 @@
           "position": "top-right"
         },
         {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
         }
       ]
     }

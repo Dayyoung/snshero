@@ -3,7 +3,7 @@
 Synchronizes src/content/webtoonEpisodeManifest.json and public/book/image_narrations/episode_XX_narrations.json
 100% faithfully with the latest 40-episode novel texts in public/book/episode_01.md..episode_40.md
 and public/book/image_narrations/english_txt/SNSHero_Novel_Episode_01..40_*.txt.
-Eliminates all fabricated/template dialogues so every narration and every speech bubble matches the novel verbatim.
+Splits each episode into 2–3 line narration cutscenes (~55–130 Korean chars per cutscene) without a 20-scene limit.
 """
 
 import json
@@ -139,20 +139,19 @@ def find_subject_in_sentence(sent: str, vocatives: set):
             return ch
     return None
 
-def detect_speaker_for_quote(quote_ko: str, para_idx: int, all_ko_paras: list, last_speaker=None):
+def detect_speaker_for_quote(quote_ko: str, chunk_idx: int, all_ko_chunks: list, last_speaker=None):
     def strip_q(s):
         return re.sub(r'[“"][^”"]*[”"]', '', s)
 
-    curr_narr = strip_q(all_ko_paras[para_idx]).strip()
-    next_narr = strip_q(all_ko_paras[para_idx + 1]).strip() if para_idx + 1 < len(all_ko_paras) else ""
-    prev_narr = strip_q(all_ko_paras[para_idx - 1]).strip() if para_idx - 1 >= 0 else ""
+    curr_narr = strip_q(all_ko_chunks[chunk_idx]).strip()
+    next_narr = strip_q(all_ko_chunks[chunk_idx + 1]).strip() if chunk_idx + 1 < len(all_ko_chunks) else ""
+    prev_narr = strip_q(all_ko_chunks[chunk_idx - 1]).strip() if chunk_idx - 1 >= 0 else ""
 
     vocatives = set()
     for alias, ch in CHAR_ALIASES:
         if re.search(rf'(^|[,\s“"]){re.escape(alias)}[!?,，\s]', quote_ko):
             vocatives.add(ch["ko"])
 
-    # 1. Same paragraph narrative
     if len(curr_narr) > 2:
         sp = find_subject_in_sentence(curr_narr, vocatives)
         if sp:
@@ -163,27 +162,23 @@ def detect_speaker_for_quote(quote_ko: str, para_idx: int, all_ko_paras: list, l
     prev_sents = [s.strip() for s in re.split(r'[.!?]\s*', prev_narr) if s.strip()]
     prev_last_sent = prev_sents[-1] if prev_sents else ""
 
-    # 2. If next paragraph is a 1-sentence lead-in followed by another quote, check prev_last_sent first
-    next_introduces_next_quote = (para_idx + 2 < len(all_ko_paras) and ('“' in all_ko_paras[para_idx + 2] or '"' in all_ko_paras[para_idx + 2]) and len(next_sents) <= 1)
+    next_introduces_next_quote = (chunk_idx + 2 < len(all_ko_chunks) and ('“' in all_ko_chunks[chunk_idx + 2] or '"' in all_ko_chunks[chunk_idx + 2]) and len(next_sents) <= 1)
     if next_introduces_next_quote and prev_last_sent:
         sp = find_subject_in_sentence(prev_last_sent, vocatives)
         if sp:
             return sp
 
-    # 3. Explicit post-quote speech attribution in next_first_sent
     post_speech_re = r'(으르렁|소리쳤|외쳤|속삭였|말했|물었|답했|중얼|내뱉|읊조|부르짖|호통|일갈|덧붙였|대꾸했|눈빛이|목소리가)'
     if next_first_sent and re.search(post_speech_re, next_first_sent):
         sp = find_subject_in_sentence(next_first_sent, vocatives)
         if sp:
             return sp
 
-    # 4. Check prev_sents from last to first
     for sent in reversed(prev_sents):
         sp = find_subject_in_sentence(sent, vocatives)
         if sp:
             return sp
 
-    # 5. Check next_first_sent
     if next_first_sent:
         sp = find_subject_in_sentence(next_first_sent, vocatives)
         if sp:
@@ -205,17 +200,128 @@ def extract_chars_in_text(text: str) -> list:
                 found.append(ch)
     return found
 
-def extract_english_quotes_from_paras(en_paras: list) -> list:
-    """Extracts spoken quotes from English paragraphs, merging split quotes like '"...", she whispered, "..."'."""
-    results = []
+def split_long_sentence_if_needed(sent: str, max_len: int = 125) -> list:
+    """If a single sentence or multi-sentence quote exceeds max_len, split it cleanly into 2-3 line chunks."""
+    if len(sent) <= max_len:
+        return [sent]
+    mid = len(sent) // 2
+
+    # Case 1: Long multi-sentence quote “...”
+    if sent.startswith('“') and sent.endswith('”'):
+        inner = sent[1:-1].strip()
+        q_cands = []
+        for m in re.finditer(r'[.!?]\s+', inner):
+            pos = m.end()
+            if 28 <= pos <= len(inner) - 28:
+                q_cands.append((abs(pos - len(inner) // 2), pos))
+        if q_cands:
+            q_cands.sort(key=lambda x: x[0])
+            sp_pos = q_cands[0][1]
+            left_q = f"“{inner[:sp_pos].strip()}”"
+            right_q = f"“{inner[sp_pos:].strip()}”"
+            res = []
+            res.extend(split_long_sentence_if_needed(left_q, max_len))
+            res.extend(split_long_sentence_if_needed(right_q, max_len))
+            return res
+
+    # Case 2: Sentence outside quotes
+    if '“' in sent or '"' in sent:
+        return [sent]
+
+    candidates = []
+    for m in re.finditer(r'(,\s+|며\s+|고\s+|자\s+|으나\s+|지만\s+|채\s+|뒤\s+|동안\s+)', sent):
+        pos = m.end()
+        if 32 <= pos <= len(sent) - 32:
+            candidates.append((abs(pos - mid), pos))
+    if not candidates:
+        return [sent]
+    candidates.sort(key=lambda x: x[0])
+    split_pos = candidates[0][1]
+    left = sent[:split_pos].strip()
+    right = sent[split_pos:].strip()
+    return [left, right]
+
+def split_para_into_sentences_ko(p: str) -> list:
+    sents = []
+    buf = []
+    in_quote = False
+    i = 0
+    n = len(p)
+    while i < n:
+        ch = p[i]
+        buf.append(ch)
+        if ch == '“':
+            in_quote = True
+        elif ch == '”':
+            in_quote = False
+            if i + 1 < n and p[i + 1] == ' ':
+                raw_s = "".join(buf).strip()
+                sents.extend(split_long_sentence_if_needed(raw_s))
+                buf = []
+                i += 1
+        elif not in_quote and ch in '.!?':
+            if i + 1 == n or p[i + 1] == ' ':
+                raw_s = "".join(buf).strip()
+                sents.extend(split_long_sentence_if_needed(raw_s))
+                buf = []
+                if i + 1 < n and p[i + 1] == ' ':
+                    i += 1
+        i += 1
+    rem = "".join(buf).strip()
+    if rem:
+        sents.extend(split_long_sentence_if_needed(rem))
+    return [s for s in sents if s]
+
+def build_2_3_line_chunks_ko(paras: list, max_chars: int = 118) -> list:
+    """
+    Splits Korean paragraphs into 2–3 line narration chunks (~50–122 chars).
+    Preserves paragraph boundaries unless a single-sentence paragraph is very short (< 38 chars).
+    """
+    raw_para_chunks = []
+    for p in paras:
+        sents = split_para_into_sentences_ko(p)
+        p_chunks = []
+        curr = ""
+        for s in sents:
+            if not curr:
+                curr = s
+            elif len(curr) + 1 + len(s) <= max_chars:
+                curr = curr + " " + s
+            else:
+                p_chunks.append(curr)
+                curr = s
+        if curr:
+            if p_chunks and len(curr) < 32 and len(p_chunks[-1]) + 1 + len(curr) <= 125:
+                p_chunks[-1] = p_chunks[-1] + " " + curr
+            else:
+                p_chunks.append(curr)
+        raw_para_chunks.extend(p_chunks)
+
+    # Merge very short standalone chunks (< 36 chars) with adjacent chunk if combined <= 125 chars
+    merged = []
+    i = 0
+    while i < len(raw_para_chunks):
+        c = raw_para_chunks[i]
+        if len(c) < 36 and i + 1 < len(raw_para_chunks) and len(c) + 1 + len(raw_para_chunks[i + 1]) <= 125:
+            merged.append(c + " " + raw_para_chunks[i + 1])
+            i += 2
+        else:
+            merged.append(c)
+            i += 1
+    return merged
+
+def split_en_paras_into_sentences(en_paras: list) -> list:
+    sents = []
     for p in en_paras:
-        # Merge split quotes within the same paragraph: "Part 1," she whispered softly, "part 2."
-        merged_p = re.sub(r'[”"]\s*[^”".!?]{2,45}?,\s*[“"]', ' ', p)
-        qs = re.findall(r'[“"]([^”"]+)[”"]', merged_p)
-        for q in qs:
-            if len(q.strip()) >= 3:
-                results.append(q.strip())
-    return results
+        # Split on sentence-ending punctuation outside quotes or at end of quotes
+        parts = [s.strip() for s in re.split(r'(?<=[.!?”"])\s+(?=[A-Z“"])', p.strip()) if s.strip()]
+        sents.extend(parts)
+    return sents
+
+def extract_english_quotes_from_text(en_text: str) -> list:
+    merged_p = re.sub(r'[”"]\s*[^”".!?]{2,45}?,\s*[“"]', ' ', en_text)
+    qs = re.findall(r'[“"]([^”"]+)[”"]', merged_p)
+    return [q.strip() for q in qs if len(q.strip()) >= 3]
 
 def get_concise_narration_sentence(text_ko: str, text_en: str) -> tuple:
     sents_ko = [s.strip() for s in re.split(r'(?<=[.!?])\s+', text_ko.strip()) if s.strip()]
@@ -228,16 +334,10 @@ def main():
     manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
     positions = ["top-left", "top-right", "bottom-left", "bottom-right"]
 
-    climax_map = {
-        (1, 20): ("/images/webtoon/ep01_blizzard_vow.webp", True),
-        (8, 15): ("/images/webtoon/ep08_crimson_mane.webp", True),
-        (15, 18): ("/images/webtoon/ep15_shadow_duel.webp", True),
-        (25, 16): ("/images/webtoon/ep25_assassin_ambush.webp", True),
-        (40, 20): ("/images/webtoon/ep40_eternal_shield.webp", True),
-    }
-
+    total_scenes_all = 0
     total_quoted_scenes = 0
     total_narration_scenes = 0
+    max_chunk_len_seen = 0
 
     for ep_num in range(1, 41):
         ep_pad = f"{ep_num:02d}"
@@ -253,7 +353,6 @@ def main():
             if not s:
                 continue
             if s.startswith("#"):
-                # e.g. "# 눈히어로 1화 - 눈보라 아래 두 서약"
                 m_t = re.search(r'-\s*(.+)$', s)
                 if m_t:
                     title_ko = m_t.group(1).strip()
@@ -271,94 +370,92 @@ def main():
                 continue
             en_paras.append(s)
 
-        # Precompute quotes & speakers across all ko_paras in this episode
-        para_quotes_ko = {}
+        # Build 2-3 line Korean narration chunks for this episode
+        ko_chunks = build_2_3_line_chunks_ko(ko_paras, max_chars=122)
+        num_scenes = len(ko_chunks)
+        en_sents = split_en_paras_into_sentences(en_paras)
+
+        # Precompute quotes & speakers across all ko_chunks in this episode
+        chunk_quotes_ko = {}
         last_sp = None
-        all_ep_ko_quotes = []
-        for i, p in enumerate(ko_paras):
-            qs = re.findall(r'[“"]([^”"]+)[”"]', p)
+        for i, ch_txt in enumerate(ko_chunks):
+            qs = re.findall(r'[“"]([^”"]+)[”"]', ch_txt)
             q_list = []
             for q in qs:
-                sp = detect_speaker_for_quote(q, i, ko_paras, last_sp)
+                sp = detect_speaker_for_quote(q, i, ko_chunks, last_sp)
                 if sp:
                     last_sp = sp
                 q_list.append((q, sp))
-                all_ep_ko_quotes.append((i, q, sp))
-            para_quotes_ko[i] = q_list
+            chunk_quotes_ko[i] = q_list
 
         # All episode characters for title card
         ep_chars_all = extract_chars_in_text(" ".join(ko_paras))
         ep_char_names_en = [c["en"] for c in ep_chars_all[:8]] or ["Kadan"]
 
-        ep_manifest = manifest[str(ep_num)]
+        ep_manifest = manifest.get(str(ep_num), {})
         ep_manifest["episodeNumber"] = ep_num
         ep_manifest["episodeTitle"] = title_en
         ep_manifest["episodeTitleKo"] = title_ko
-        ep_manifest["totalImages"] = 21
+        ep_manifest["totalImages"] = num_scenes + 1
 
-        # Track active characters across scenes so no scene has an empty character list
+        # Determine climax scene index if this episode has a special climax art
+        climax_art = None
+        if ep_num == 1:
+            climax_art = (num_scenes, "/images/webtoon/ep01_blizzard_vow.webp")
+        elif ep_num == 8:
+            climax_art = (max(1, round(num_scenes * 0.75)), "/images/webtoon/ep08_crimson_mane.webp")
+        elif ep_num == 15:
+            climax_art = (max(1, round(num_scenes * 0.90)), "/images/webtoon/ep15_shadow_duel.webp")
+        elif ep_num == 25:
+            climax_art = (max(1, round(num_scenes * 0.80)), "/images/webtoon/ep25_assassin_ambush.webp")
+        elif ep_num == 40:
+            climax_art = (num_scenes, "/images/webtoon/ep40_eternal_shield.webp")
+
         last_active_chars = ep_chars_all[:2] if ep_chars_all else [{"cardId": 41, "ko": "카단", "en": "Kadan"}]
 
+        new_images_list = []
         narr_json_scenes = []
 
-        for img in ep_manifest["images"]:
-            idx = img["index"]
-            local_webp = f"/images/webtoon/episode_{ep_pad}/scene_{idx:02d}.webp"
-            img["fileName"] = f"scene_{idx:02d}.webp"
-            img["imageUrl"] = local_webp
-            img["localArtUrl"] = local_webp
+        # Scene 0: Title Card
+        title_card_entry = {
+            "index": 0,
+            "fileName": "scene_00.webp",
+            "imageUrl": f"/images/webtoon/episode_{ep_pad}/scene_00.webp",
+            "localArtUrl": f"/images/webtoon/episode_{ep_pad}/scene_00.webp",
+            "type": "title_card",
+            "narrationKo": f"SNS히어로 제{ep_num}화 - {title_ko}",
+            "narrationEn": f"SNSHERO · EPISODE {ep_pad} - {title_en}",
+            "characters": ep_char_names_en,
+            "dialogues": [{
+                "speakerKo": "내레이션",
+                "speakerEn": "Narration",
+                "textKo": f"SNS히어로 제{ep_num}화 - {title_ko}",
+                "textEn": f"SNSHERO · EPISODE {ep_pad} - {title_en}",
+                "bubbleType": "thought",
+                "position": "center"
+            }],
+            "sfxCues": []
+        }
+        new_images_list.append(title_card_entry)
 
-            if idx == 0:
-                img["type"] = "title_card"
-                img["narrationKo"] = f"SNS히어로 제{ep_num}화 - {title_ko}"
-                img["narrationEn"] = f"SNSHERO · EPISODE {ep_pad} - {title_en}"
-                img["characters"] = ep_char_names_en
-                img["dialogues"] = [{
-                    "speakerKo": "내레이션",
-                    "speakerEn": "Narration",
-                    "textKo": f"SNS히어로 제{ep_num}화 - {title_ko}",
-                    "textEn": f"SNSHERO · EPISODE {ep_pad} - {title_en}",
-                    "bubbleType": "thought",
-                    "position": "center"
-                }]
-                img["sfxCues"] = []
-                continue
+        # Scenes 1..num_scenes: 2-3 line narration cutscenes
+        for idx in range(1, num_scenes + 1):
+            narration_ko = ko_chunks[idx - 1]
+            if len(narration_ko) > max_chunk_len_seen:
+                max_chunk_len_seen = len(narration_ko)
 
-            # Partition paragraphs for scene idx (1..20)
-            sk = round((idx - 1) * len(ko_paras) / 20)
-            ek = round(idx * len(ko_paras) / 20)
-            if ek <= sk:
-                ek = min(len(ko_paras), sk + 1)
-
-            se = round((idx - 1) * len(en_paras) / 20)
-            ee = round(idx * len(en_paras) / 20)
+            se = round((idx - 1) * len(en_sents) / num_scenes)
+            ee = round(idx * len(en_sents) / num_scenes)
             if ee <= se:
-                ee = min(len(en_paras), se + 1)
+                ee = min(len(en_sents), se + 1)
+            e_slice = en_sents[se:ee]
+            narration_en = " ".join(e_slice) if e_slice else title_en
 
-            k_slice = ko_paras[sk:ek]
-            e_slice = en_paras[se:ee]
+            local_webp = f"/images/webtoon/episode_{ep_pad}/scene_{idx:02d}.webp"
+            scene_quotes_ko = chunk_quotes_ko.get(idx - 1, [])
+            scene_quotes_en = extract_english_quotes_from_text(narration_en)
 
-            narration_ko = " ".join(k_slice)
-            narration_en = " ".join(e_slice)
-
-            img["narrationKo"] = narration_ko
-            img["narrationEn"] = narration_en
-
-            # Gather quotes in this scene's Korean paragraphs
-            scene_quotes_ko = []
-            for pi in range(sk, ek):
-                scene_quotes_ko.extend(para_quotes_ko.get(pi, []))
-
-            # Gather quotes in this scene's English paragraphs (with 1-para window fallback if needed)
-            scene_quotes_en = extract_english_quotes_from_paras(e_slice)
-            if len(scene_quotes_en) < len(scene_quotes_ko):
-                ext_se = max(0, se - 1)
-                ext_ee = min(len(en_paras), ee + 1)
-                scene_quotes_en = extract_english_quotes_from_paras(en_paras[ext_se:ext_ee])
-
-            # Characters appearing in this scene
             scene_chars = extract_chars_in_text(narration_ko)
-            # Ensure any quote speaker is at the front of scene_chars so they appear on the panel!
             for _, sp in reversed(scene_quotes_ko):
                 if sp:
                     scene_chars = [sp] + [c for c in scene_chars if c["en"] != sp["en"]]
@@ -368,23 +465,11 @@ def main():
             else:
                 scene_chars = last_active_chars
 
-            img["characters"] = [c["en"] for c in scene_chars[:4]]
-            img["background"] = infer_background_desc(narration_ko, ep_num)
-
-            if (ep_num, idx) in climax_map:
-                climax_url, is_climax = climax_map[(ep_num, idx)]
-                img["localArtUrl"] = climax_url
-                img["isKeyClimax"] = is_climax
-
-            # Build dialogues 100% faithfully from the novel text
             dialogues = []
             if scene_quotes_ko:
                 total_quoted_scenes += 1
                 for q_i, (q_ko, sp) in enumerate(scene_quotes_ko):
-                    if q_i < len(scene_quotes_en):
-                        q_en = scene_quotes_en[q_i]
-                    else:
-                        _, q_en = get_concise_narration_sentence(narration_ko, narration_en)
+                    q_en = scene_quotes_en[q_i] if q_i < len(scene_quotes_en) else narration_en
                     speaker_ko = sp["ko"] if sp else "내레이션"
                     speaker_en = sp["en"] if sp else "Narration"
                     card_id = sp["cardId"] if sp else scene_chars[0]["cardId"]
@@ -414,8 +499,25 @@ def main():
                     "characterCardId": lead_char["cardId"]
                 })
 
-            img["dialogues"] = dialogues
-            img["sfxCues"] = determine_sfx(narration_ko, ep_num, idx)
+            sfx_cues = determine_sfx(narration_ko, ep_num, idx)
+            img_entry = {
+                "index": idx,
+                "fileName": f"scene_{idx:02d}.webp",
+                "imageUrl": local_webp,
+                "localArtUrl": local_webp,
+                "type": "scene",
+                "narrationKo": narration_ko,
+                "narrationEn": narration_en,
+                "characters": [c["en"] for c in scene_chars[:4]],
+                "background": infer_background_desc(narration_ko, ep_num),
+                "dialogues": dialogues,
+                "sfxCues": sfx_cues
+            }
+            if climax_art and climax_art[0] == idx:
+                img_entry["localArtUrl"] = climax_art[1]
+                img_entry["isKeyClimax"] = True
+
+            new_images_list.append(img_entry)
 
             narr_json_scenes.append({
                 "sceneNumber": idx,
@@ -423,27 +525,30 @@ def main():
                 "sourceImageFile": f"episode_{ep_pad}/scene_{idx:02d}.webp",
                 "narrationEn": narration_en,
                 "narrationKo": narration_ko,
-                "sourceSentenceStart": sk + 1,
-                "sourceSentenceEnd": ek,
+                "sourceSentenceStart": idx,
+                "sourceSentenceEnd": idx,
                 "alignmentScore": 1.0,
                 "dialogues": dialogues,
-                "sfxCues": img["sfxCues"]
+                "sfxCues": sfx_cues
             })
 
-        # Write episode_XX_narrations.json
+        ep_manifest["images"] = new_images_list
+        manifest[str(ep_num)] = ep_manifest
+        total_scenes_all += (num_scenes + 1)
+
         narr_json_path = NARRATIONS_DIR / f"episode_{ep_pad}_narrations.json"
         narr_payload = {
             "episodeNumber": ep_num,
             "episodeTitleEn": title_en,
             "episodeTitleKo": title_ko,
-            "sourceSentenceCount": len(ko_paras),
-            "sceneCount": 20,
+            "sourceSentenceCount": num_scenes,
+            "sceneCount": num_scenes,
             "scenes": narr_json_scenes
         }
         narr_json_path.write_text(json.dumps(narr_payload, ensure_ascii=False, indent=2), encoding="utf-8")
 
     MANIFEST_PATH.write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"Successfully synchronized all 40 episodes (800 story scenes: {total_quoted_scenes} direct quote scenes, {total_narration_scenes} verbatim narration scenes)!")
+    print(f"Successfully synchronized all 40 episodes into {total_scenes_all} total panels ({total_scenes_all - 40} story cutscenes; max chunk length = {max_chunk_len_seen} chars)!")
 
 if __name__ == "__main__":
     main()

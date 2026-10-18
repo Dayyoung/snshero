@@ -1,0 +1,102 @@
+{
+  "phase1_timeline": {},
+  "phase2_anti_gaming": {},
+  "phase3_independent_execution": {
+    "panels": {
+      "pass": true,
+      "total_scanned": 840,
+      "unique_hashes": 840,
+      "min_size": 15620,
+      "max_size": 74972,
+      "avg_size_kb": 56.36684337797619,
+      "total_size_mb": 46.238426208496094,
+      "min_entropy": 5.049718699755214,
+      "max_entropy": 7.9061685041068595,
+      "min_stddev": 23.908156051222527
+    },
+    "climax": {
+      "pass": true,
+      "files": [
+        [
+          "ep01_blizzard_vow.webp",
+          70324,
+          [
+            800,
+            450
+          ],
+          "WEBP"
+        ],
+        [
+          "ep08_crimson_mane.webp",
+          74492,
+          [
+            800,
+            450
+          ],
+          "WEBP"
+        ],
+        [
+          "ep15_shadow_duel.webp",
+          60742,
+          [
+            800,
+            450
+          ],
+          "WEBP"
+        ],
+        [
+          "ep25_assassin_ambush.webp",
+          70466,
+          [
+            800,
+            450
+          ],
+          "WEBP"
+        ],
+        [
+          "ep40_eternal_shield.webp",
+          61904,
+          [
+            800,
+            450
+          ],
+          "WEBP"
+        ]
+      ]
+    },
+    "bg_plates": {
+      "pass": true,
+      "count": 16
+    },
+    "manifest": {
+      "pass": true,
+      "episodes": 40,
+      "unresolved_images": 0,
+      "dialogue_count": 860,
+      "dialogues_with_card_id": 820
+    },
+    "cdn_elimination": {
+      "pass": true,
+      "occurrences": 0,
+      "hits": []
+    },
+    "character_non_regression": {
+      "pass": true,
+      "diff_files": [],
+      "seat_count": 111
+    },
+    "build_and_lint": {
+      "tsc_pass": true,
+      "tsc_code": 0,
+      "build_pass": true,
+      "build_code": 0
+    },
+    "git_and_hygiene": {
+      "pass": true,
+      "head_commit": "12f3e5088319cdeac7f00943f8856b146df1b85e",
+      "ahead_of_origin": true,
+      "work_logs_updated": true
+    }
+  },
+  "failures": []
+}

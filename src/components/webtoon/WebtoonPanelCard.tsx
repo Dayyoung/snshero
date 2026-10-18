@@ -7,6 +7,7 @@ import { WebtoonSfxOverlay, WebtoonSfxCue } from './WebtoonSfxOverlay';
 export interface WebtoonPanelCardProps {
   episodeNumber: number;
   sceneIndex: number;
+  totalScenes?: number;
   imgUrl: string;
   localArtUrl?: string;
   isKeyClimax?: boolean;
@@ -25,6 +26,7 @@ export interface WebtoonPanelCardProps {
 export const WebtoonPanelCard: React.FC<WebtoonPanelCardProps> = ({
   episodeNumber,
   sceneIndex,
+  totalScenes = 20,
   imgUrl,
   localArtUrl,
   isKeyClimax,
@@ -64,7 +66,7 @@ export const WebtoonPanelCard: React.FC<WebtoonPanelCardProps> = ({
                 isKeyClimax ? 'bg-amber-600' : 'bg-[#201d1d]'
               )}
             />
-            {sceneIndex === 0 ? `[ TITLE CARD ]` : `SCENE ${pad2(sceneIndex)} / 20`}
+            {sceneIndex === 0 ? `[ TITLE CARD ]` : `SCENE ${pad2(sceneIndex)} / ${pad2(totalScenes)}`}
           </span>
 
           {isKeyClimax && (

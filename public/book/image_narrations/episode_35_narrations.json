@@ -2,17 +2,145 @@
   "episodeNumber": 35,
   "episodeTitleEn": "Mistaken in the Fog",
   "episodeTitleKo": "안개 속의 착각",
-  "sourceSentenceCount": 47,
-  "sceneCount": 20,
+  "sourceSentenceCount": 52,
+  "sceneCount": 52,
   "scenes": [
     {
       "sceneNumber": 1,
       "imageFile": "episode_35/scene_01.webp",
       "sourceImageFile": "episode_35/scene_01.webp",
-      "narrationEn": "Breaching the final threshold through the sacrifice of the Six Masters, Kadan and Cilia emerged upon the Phantasm Colonnade encircling the Altar of Ruin. Open to the storm-swept heavens, freezing northern winds howled through the fractured pillars above dizzying chasms plunging thousands of fathoms into the abyss. Choking the suspended flagstone spans was a dense, milky-white fog woven from Medusa Gorgo's necrotic hallucinations and Belphegor's dark sorcery. From the drifting mists echoed the phantom laughter of Grimli, the warm counsel of Gawain, and the familiar cadence of Ignis, testing the young champions' grief. Touching the White Glass Ember pulsing against his breast, Kadan steadied his breathing.",
-      "narrationKo": "여섯 스승의 거룩한 희생으로 붕괴의 통로를 돌파한 카단과 실리아가 도달한 곳은 파멸의 제단 외곽을 둘러싸고 있는 거대한 공중 회랑, ‘환영의 안개 회랑’이었다. 성채 정상의 천장이 뚫려 있어 차가운 밤하늘의 잿빛 구름이 소용돌이치고 있었고, 발밑은 천 길 낭떠러지로 이어지는 아찔한 허공이었다. 회랑 전체에는 메두사 고르고의 환각 마법과 벨페고르의 암흑 주술이 짙은 유백색 안개가 되어 소용돌이치고 있었다. 그 안개 속에서는 방금 세상을 떠난 그림리와 가웨인, 그리고 이그니스의 목소리가 마치 살아있는 듯 애절하게 메아리치며 두 젊은이의 영혼을 미혹하려 들었다. 카단이 품속의 이그니스의 유리 불씨를 꼭 쥐며 방패의 무게중심을 낮추었다.",
+      "narrationEn": "Breaching the final threshold through the sacrifice of the Six Masters, Kadan and Cilia emerged upon the Phantasm Colonnade encircling the Altar of Ruin.",
+      "narrationKo": "여섯 스승의 거룩한 희생으로 붕괴의 통로를 돌파한 카단과 실리아가 도달한 곳은 파멸의 제단 외곽을 둘러싸고 있는 거대한 공중 회랑, ‘환영의 안개 회랑’이었다.",
       "sourceSentenceStart": 1,
+      "sourceSentenceEnd": 1,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "여섯 스승의 거룩한 희생으로 붕괴의 통로를 돌파한 카단과 실리아가 도달한 곳은 파멸의 제단 외곽을 둘러싸고 있는 거대한 공중 회랑, ‘환영의 안개 회랑’이었다.",
+          "textEn": "Breaching the final threshold through the sacrifice of the Six Masters, Kadan and Cilia emerged upon the Phantasm Colonnade encircling the Altar of Ruin.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_35/scene_02.webp",
+      "sourceImageFile": "episode_35/scene_02.webp",
+      "narrationEn": "Open to the storm-swept heavens, freezing northern winds howled through the fractured pillars above dizzying chasms plunging thousands of fathoms into the abyss.",
+      "narrationKo": "성채 정상의 천장이 뚫려 있어 차가운 밤하늘의 잿빛 구름이 소용돌이치고 있었고, 발밑은 천 길 낭떠러지로 이어지는 아찔한 허공이었다.",
+      "sourceSentenceStart": 2,
       "sourceSentenceEnd": 2,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "성채 정상의 천장이 뚫려 있어 차가운 밤하늘의 잿빛 구름이 소용돌이치고 있었고, 발밑은 천 길 낭떠러지로 이어지는 아찔한 허공이었다.",
+          "textEn": "Open to the storm-swept heavens, freezing northern winds howled through the fractured pillars above dizzying chasms plunging thousands of fathoms into the abyss.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_35/scene_03.webp",
+      "sourceImageFile": "episode_35/scene_03.webp",
+      "narrationEn": "Choking the suspended flagstone spans was a dense, milky-white fog woven from Medusa Gorgo's necrotic hallucinations and Belphegor's dark sorcery.",
+      "narrationKo": "회랑 전체에는 메두사 고르고의 환각 마법과 벨페고르의 암흑 주술이 짙은 유백색 안개가 되어 소용돌이치고 있었다.",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 3,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "회랑 전체에는 메두사 고르고의 환각 마법과 벨페고르의 암흑 주술이 짙은 유백색 안개가 되어 소용돌이치고 있었다.",
+          "textEn": "Choking the suspended flagstone spans was a dense, milky-white fog woven from Medusa Gorgo's necrotic hallucinations and Belphegor's dark sorcery.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 89
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_35/scene_04.webp",
+      "sourceImageFile": "episode_35/scene_04.webp",
+      "narrationEn": "From the drifting mists echoed the phantom laughter of Grimli, the warm counsel of Gawain, and the familiar cadence of Ignis, testing the young champions' grief.",
+      "narrationKo": "그 안개 속에서는 방금 세상을 떠난 그림리와 가웨인, 그리고 이그니스의 목소리가 마치 살아있는 듯 애절하게 메아리치며 두 젊은이의 영혼을 미혹하려 들었다.",
+      "sourceSentenceStart": 4,
+      "sourceSentenceEnd": 4,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그 안개 속에서는 방금 세상을 떠난 그림리와 가웨인, 그리고 이그니스의 목소리가 마치 살아있는 듯 애절하게 메아리치며 두 젊은이의 영혼을 미혹하려 들었다.",
+          "textEn": "From the drifting mists echoed the phantom laughter of Grimli, the warm counsel of Gawain, and the familiar cadence of Ignis, testing the young champions' grief.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 74
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_35/scene_05.webp",
+      "sourceImageFile": "episode_35/scene_05.webp",
+      "narrationEn": "Touching the White Glass Ember pulsing against his breast, Kadan steadied his breathing.",
+      "narrationKo": "카단이 품속의 이그니스의 유리 불씨를 꼭 쥐며 방패의 무게중심을 낮추었다.",
+      "sourceSentenceStart": 5,
+      "sourceSentenceEnd": 5,
       "alignmentScore": 1.0,
       "dialogues": [
         {
@@ -31,164 +159,6 @@
           "textEn": "CLANG!",
           "style": "slash",
           "position": "top-right"
-        },
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 2,
-      "imageFile": "episode_35/scene_02.webp",
-      "sourceImageFile": "episode_35/scene_02.webp",
-      "narrationEn": "\"Cover your ears, Cilia. Those voices in the fog are not our masters. They are vile phantoms engineered to exploit our sorrow.\"",
-      "narrationKo": "“귀를 막아라, 실리아. 안개 속에서 들려오는 목소리는 스승님들이 아니다. 적들이 우리의 슬픔을 파고들기 위해 펼쳐둔 비열한 환청이다.” 실리아가 녹옥 지팡이를 두 손으로 감싸 쥐며 눈물을 삼켰다. “알아요, 카단. 스승님들의 넋은 우리를 나약하게 흔들지 않아요. 그분들은 우리의 등 뒤에서 굳건히 바람을 불어넣어 주고 계세요.”",
-      "sourceSentenceStart": 3,
-      "sourceSentenceEnd": 5,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“귀를 막아라, 실리아. 안개 속에서 들려오는 목소리는 스승님들이 아니다. 적들이 우리의 슬픔을 파고들기 위해 펼쳐둔 비열한 환청이다.”",
-          "textEn": "“Cover your ears, Cilia. Those voices in the fog are not our masters. They are vile phantoms engineered to exploit our sorrow.”",
-          "bubbleType": "speech",
-          "position": "bottom-left",
-          "characterCardId": 41
-        },
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“알아요, 카단. 스승님들의 넋은 우리를 나약하게 흔들지 않아요. 그분들은 우리의 등 뒤에서 굳건히 바람을 불어넣어 주고 계세요.”",
-          "textEn": "“They are vile phantoms engineered to exploit our sorrow.\"”",
-          "bubbleType": "speech",
-          "position": "bottom-right",
-          "characterCardId": 62
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "휘이이익-!",
-          "textEn": "SWOOSH!",
-          "style": "slash",
-          "position": "top-left"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 3,
-      "imageFile": "episode_35/scene_03.webp",
-      "sourceImageFile": "episode_35/scene_03.webp",
-      "narrationEn": "Gripping her Jade Staff with both hands, Cilia swallowed her tears. \"I know, Kadan. The spirits of our forebears do not tempt us into weakness; they blow strength into our wings from beyond the veil.\"",
-      "narrationKo": "두 사람은 등을 맞댄 채, 안개 자욱한 회랑의 돌다리를 조심스럽게 건너기 시작했다. 공중 회랑의 깎아지른 절벽 틈새로는 차가운 북풍이 칼날처럼 울부짖고 있었고, 짙은 유백색 안개는 손가락 끝조차 보이지 않을 정도로 짙게 깔려 있었다. 안개 속에서 환청처럼 들려오는 그림리의 호탕한 웃음소리와 가웨인의 따스한 음성은 두 사람의 억장을 무너지게 만들었지만, 카단은 품속의 따스한 유리 불씨를 만지며 흔들리는 마음을 다잡았다.",
-      "sourceSentenceStart": 6,
-      "sourceSentenceEnd": 7,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "내레이션",
-          "speakerEn": "Narration",
-          "textKo": "안개 속에서 환청처럼 들려오는 그림리의 호탕한 웃음소리와 가웨인의 따스한 음성은 두 사람의 억장을 무너지게 만들었지만, 카단은 품속의 따스한 유리 불씨를 만지며 흔들리는 마음을 다잡았다.",
-          "textEn": "The spirits of our forebears do not tempt us into weakness; they blow strength into our wings from beyond the veil.\"",
-          "bubbleType": "thought",
-          "position": "bottom-left",
-          "characterCardId": 74
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "쿠구구궁!",
-          "textEn": "RUMBLE!",
-          "style": "rumble",
-          "position": "bottom-left"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 4,
-      "imageFile": "episode_35/scene_04.webp",
-      "sourceImageFile": "episode_35/scene_04.webp",
-      "narrationEn": "Back to back, the two companions advanced across the fog-shrouded stone bridge. From the gloom strode a massive, armored figure clad in cracked obsidian plate: Death Knight Artus. Yet within the mist, his shadow fractured into five identical replicas, each bearing the same terrifying mana signature and brandishing broken obsidian greatswords.",
-      "narrationKo": "실리아가 카단의 등 뒤에 서며 낮게 읊조렸다. “바람의 결이 뒤틀려 있어요. 이 안개는 살아있는 생명체가 아니라 영혼을 갉아먹는 환각의 독이에요. 절대 귀를 기울이지 마세요.” 공중 회랑의 차가운 난간을 스치는 바람결 속에는 오랜 세월 동안 산화해 간 영웅들의 슬픈 한숨이 배어 있었다. 카단은 드래곤 브레이커 방패의 표면을 쓸어내리며, 북방 설원에서 스승 알렉산다르가 쥐여주었던 은빛 단검의 붉은 매듭을 다시 한번 단단히 묶었다. “우리의 등 뒤에는 수만 명의 생명이 걸려 있다. 어떤 악령의 속삭임도 우리를 멈추지 못한다.”",
-      "sourceSentenceStart": 8,
-      "sourceSentenceEnd": 9,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“바람의 결이 뒤틀려 있어요. 이 안개는 살아있는 생명체가 아니라 영혼을 갉아먹는 환각의 독이에요. 절대 귀를 기울이지 마세요.”",
-          "textEn": "“I know, Kadan. The spirits of our forebears do not tempt us into weakness; they blow strength into our wings from beyond the veil.”",
-          "bubbleType": "speech",
-          "position": "top-left",
-          "characterCardId": 62
-        },
-        {
-          "speakerKo": "알렉산다르",
-          "speakerEn": "Aleksandar",
-          "textKo": "“우리의 등 뒤에는 수만 명의 생명이 걸려 있다. 어떤 악령의 속삭임도 우리를 멈추지 못한다.”",
-          "textEn": "“Yet within the mist, his shadow fractured into five identical replicas, each bearing the same terrifying mana signature and brandishing broken obsidian greatswords.”",
-          "bubbleType": "speech",
-          "position": "top-right",
-          "characterCardId": 50
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 5,
-      "imageFile": "episode_35/scene_05.webp",
-      "sourceImageFile": "episode_35/scene_05.webp",
-      "narrationEn": "Artus's hollow voice echoed simultaneously from every direction.",
-      "narrationKo": "그때 회랑 앞쪽의 짙은 안개 속에서 서늘한 쇳소리와 함께 거대한 인영이 걸어 나왔다. 루시안의 마지막 충견이자 죽음의 군주 아르투스였다. 그러나 아르투스는 혼자가 아니었다. 환각의 안개 속에서 아르투스의 그림자가 분열하더니, 완전히 똑같은 외형과 마나 파동을 지닌 네 명의 ‘그림자 분신 아르투스’가 사방에서 솟구쳐 올랐다. 진짜와 가짜를 구별할 수 없는 다섯 명의 죽음의 기사들이 부러진 흑요석 대검을 일제히 치켜들며 음산한 살기를 뿜어냈다. 아르투스의 갈라진 음성이 안개 전체에서 동시에 메아리쳤다.",
-      "sourceSentenceStart": 10,
-      "sourceSentenceEnd": 12,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "내레이션",
-          "speakerEn": "Narration",
-          "textKo": "아르투스의 갈라진 음성이 안개 전체에서 동시에 메아리쳤다.",
-          "textEn": "Artus's hollow voice echoed simultaneously from every direction.",
-          "bubbleType": "thought",
-          "position": "top-left",
-          "characterCardId": 61
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
         }
       ]
     },
@@ -196,29 +166,23 @@
       "sceneNumber": 6,
       "imageFile": "episode_35/scene_06.webp",
       "sourceImageFile": "episode_35/scene_06.webp",
-      "narrationEn": "\"Miserable orphans who buried your masters in the stone... The living cannot navigate the labyrinth of the dead. Your hollow convictions shall rot within this fog!\" Five obsidian broadswords slashed downward in unison, targeting Kadan and Cilia from every angle.",
-      "narrationKo": "“스승들을 무덤에 묻고 온 가련한 고아들이여... 산 자는 결코 죽은 자들의 미로를 빠져나갈 수 없다. 네놈들의 헛된 신념도 이 안개 속에서 썩어 문드러질 것이다!” 다섯 자루의 흑요석 대검이 공기를 찢으며 카단과 실리아를 향해 일제히 쇄도했다.",
-      "sourceSentenceStart": 13,
-      "sourceSentenceEnd": 14,
+      "narrationEn": "\"Cover your ears, Cilia.",
+      "narrationKo": "“귀를 막아라, 실리아. 안개 속에서 들려오는 목소리는 스승님들이 아니다. 적들이 우리의 슬픔을 파고들기 위해 펼쳐둔 비열한 환청이다.”",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 6,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "데스나이트 아르투스",
-          "speakerEn": "Death Knight Artus",
-          "textKo": "“스승들을 무덤에 묻고 온 가련한 고아들이여... 산 자는 결코 죽은 자들의 미로를 빠져나갈 수 없다. 네놈들의 헛된 신념도 이 안개 속에서 썩어 문드러질 것이다!”",
-          "textEn": "“Miserable orphans who buried your masters in the stone... The living cannot navigate the labyrinth of the dead. Your hollow convictions shall rot within this fog!”",
-          "bubbleType": "shout",
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“귀를 막아라, 실리아. 안개 속에서 들려오는 목소리는 스승님들이 아니다. 적들이 우리의 슬픔을 파고들기 위해 펼쳐둔 비열한 환청이다.”",
+          "textEn": "“\"Cover your ears, Cilia.”",
+          "bubbleType": "speech",
           "position": "bottom-left",
-          "characterCardId": 60
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
         {
           "textKo": "휘이이익-!",
           "textEn": "SWOOSH!",
@@ -231,34 +195,28 @@
       "sceneNumber": 7,
       "imageFile": "episode_35/scene_07.webp",
       "sourceImageFile": "episode_35/scene_07.webp",
-      "narrationEn": "Defending against five simultaneous strikes with mortal sight was impossible; vision alone could not distinguish phantom blade from solid steel. Without hesitation, Kadan closed his eyes.",
-      "narrationKo": "다섯 명의 아르투스가 휘두르는 흑요석 대검에서는 짙은 검은 피와 같은 독기가 뚝뚝 떨어져 석판을 부식시켰다. 분신들의 발자국 소리와 숨소리까지 완벽하게 일치하여 시각과 청각으로는 도저히 본체를 가려낼 수 없는 절망적인 포위망이었다. 다섯 자루의 흑요석 대검이 공기를 가르며 동시에 카단의 심장을 향해 찔러 들어왔다. 죽음의 냉기가 살갗을 얼려 붙게 만들었다.",
-      "sourceSentenceStart": 15,
-      "sourceSentenceEnd": 16,
+      "narrationEn": "Those voices in the fog are not our masters.",
+      "narrationKo": "실리아가 녹옥 지팡이를 두 손으로 감싸 쥐며 눈물을 삼켰다. “알아요, 카단. 스승님들의 넋은 우리를 나약하게 흔들지 않아요. 그분들은 우리의 등 뒤에서 굳건히 바람을 불어넣어 주고 계세요.”",
+      "sourceSentenceStart": 7,
+      "sourceSentenceEnd": 7,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "내레이션",
-          "speakerEn": "Narration",
-          "textKo": "죽음의 냉기가 살갗을 얼려 붙게 만들었다.",
-          "textEn": "Without hesitation, Kadan closed his eyes.",
-          "bubbleType": "thought",
-          "position": "bottom-left",
-          "characterCardId": 60
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“알아요, 카단. 스승님들의 넋은 우리를 나약하게 흔들지 않아요. 그분들은 우리의 등 뒤에서 굳건히 바람을 불어넣어 주고 계세요.”",
+          "textEn": "“Those voices in the fog are not our masters.”",
+          "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
         {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
           "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "쿵-!",
-          "textEn": "THUD!",
-          "style": "impact",
-          "position": "bottom-right"
+          "position": "top-left"
         }
       ]
     },
@@ -266,28 +224,28 @@
       "sceneNumber": 8,
       "imageFile": "episode_35/scene_08.webp",
       "sourceImageFile": "episode_35/scene_08.webp",
-      "narrationEn": "\"Discard visual deception. Master Aleksandar taught me that when the eyes are shuttered, the ear perceives the true pulse of the earth.\" Focusing entirely upon star-breathing and the ground beneath his boots, Kadan read the subtle micro-vibrations in the flagstones. Four of the descending blades cleaved only air, but one strike bore the crushing kinetic mass of living stone.",
-      "narrationKo": "다섯 방향에서 쏟아지는 치명적인 참격을 눈으로 보고 막아내는 것은 불가능했다. 어느 것이 진짜 검격이고 어느 것이 환영인지 시각으로는 도저히 판별할 수 없었다. 카단은 주저 없이 두 눈을 감았다. “시각을 버려라. 알렉산다르 스승님께서는 눈이 가려졌을 때 비로소 대지의 맥박을 들을 수 있다고 하셨다.”",
-      "sourceSentenceStart": 17,
-      "sourceSentenceEnd": 19,
+      "narrationEn": "They are vile phantoms engineered to exploit our sorrow.\"",
+      "narrationKo": "두 사람은 등을 맞댄 채, 안개 자욱한 회랑의 돌다리를 조심스럽게 건너기 시작했다.",
+      "sourceSentenceStart": 8,
+      "sourceSentenceEnd": 8,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“시각을 버려라. 알렉산다르 스승님께서는 눈이 가려졌을 때 비로소 대지의 맥박을 들을 수 있다고 하셨다.”",
-          "textEn": "“Discard visual deception. Master Aleksandar taught me that when the eyes are shuttered, the ear perceives the true pulse of the earth.”",
-          "bubbleType": "speech",
-          "position": "top-left",
-          "characterCardId": 41
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "두 사람은 등을 맞댄 채, 안개 자욱한 회랑의 돌다리를 조심스럽게 건너기 시작했다.",
+          "textEn": "They are vile phantoms engineered to exploit our sorrow.\"",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
         {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
           "style": "slash",
-          "position": "top-right"
+          "position": "top-left"
         }
       ]
     },
@@ -295,20 +253,20 @@
       "sceneNumber": 9,
       "imageFile": "episode_35/scene_09.webp",
       "sourceImageFile": "episode_35/scene_09.webp",
-      "narrationEn": "\"Found you!\"",
-      "narrationKo": "카단은 온 신경을 발바닥과 별 호흡의 리듬에 집중시켰다. 드래곤 브레이커 방패를 든 손끝으로 공기의 미세한 저항과 진동을 감지해 냈다. 네 개의 분신은 허공을 가르는 바람에 불과했지만, 단 하나의 검격만이 석판 바닥을 짓누르는 육중한 실체의 무게를 품고 있었다. “찾았다!”",
-      "sourceSentenceStart": 20,
-      "sourceSentenceEnd": 21,
+      "narrationEn": "Gripping her Jade Staff with both hands, Cilia swallowed her tears.",
+      "narrationKo": "공중 회랑의 깎아지른 절벽 틈새로는 차가운 북풍이 칼날처럼 울부짖고 있었고, 짙은 유백색 안개는 손가락 끝조차 보이지 않을 정도로 짙게 깔려 있었다.",
+      "sourceSentenceStart": 9,
+      "sourceSentenceEnd": 9,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“찾았다!”",
-          "textEn": "“Found you!”",
-          "bubbleType": "shout",
-          "position": "top-right",
-          "characterCardId": 41
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "공중 회랑의 깎아지른 절벽 틈새로는 차가운 북풍이 칼날처럼 울부짖고 있었고, 짙은 유백색 안개는 손가락 끝조차 보이지 않을 정도로 짙게 깔려 있었다.",
+          "textEn": "Gripping her Jade Staff with both hands, Cilia swallowed her tears.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
@@ -319,10 +277,10 @@
           "position": "top-right"
         },
         {
-          "textKo": "쿠구구궁!",
-          "textEn": "RUMBLE!",
-          "style": "rumble",
-          "position": "bottom-left"
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
         }
       ]
     },
@@ -330,34 +288,34 @@
       "sceneNumber": 10,
       "imageFile": "episode_35/scene_10.webp",
       "sourceImageFile": "episode_35/scene_10.webp",
-      "narrationEn": "Snapping his eyes open, Kadan spun his Dragon Breaker shield upward at a forty-five-degree angle. Boom!",
-      "narrationKo": "카단이 눈을 번쩍 뜨며 드래곤 브레이커 방패를 오른쪽 45도 각도로 힘차게 회전시켰다. 콰아앙! 진짜 아르투스의 흑요석 대검이 방패 전면에 격돌하는 순간, 거대한 황금빛 반발파가 터져 나왔다. 네 개의 그림자 분신들은 충격파에 휩쓸려 신기루처럼 허공으로 흩어졌고, 본체 아르투스만이 피를 뿜으며 뒤로 튕겨 나갔다.",
-      "sourceSentenceStart": 22,
-      "sourceSentenceEnd": 24,
+      "narrationEn": "Gripping her Jade Staff with both hands, Cilia swallowed her tears.",
+      "narrationKo": "안개 속에서 환청처럼 들려오는 그림리의 호탕한 웃음소리와 가웨인의 따스한 음성은 두 사람의 억장을 무너지게 만들었지만, 카단은 품속의 따스한 유리 불씨를 만지며 흔들리는 마음을 다잡았다.",
+      "sourceSentenceStart": 10,
+      "sourceSentenceEnd": 10,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "네 개의 그림자 분신들은 충격파에 휩쓸려 신기루처럼 허공으로 흩어졌고, 본체 아르투스만이 피를 뿜으며 뒤로 튕겨 나갔다.",
-          "textEn": "Boom!",
+          "textKo": "안개 속에서 환청처럼 들려오는 그림리의 호탕한 웃음소리와 가웨인의 따스한 음성은 두 사람의 억장을 무너지게 만들었지만, 카단은 품속의 따스한 유리 불씨를 만지며 흔들리는 마음을 다잡았다.",
+          "textEn": "Gripping her Jade Staff with both hands, Cilia swallowed her tears.",
           "bubbleType": "thought",
           "position": "top-right",
-          "characterCardId": 41
+          "characterCardId": 74
         }
       ],
       "sfxCues": [
         {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
         },
         {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
         }
       ]
     },
@@ -365,19 +323,77 @@
       "sceneNumber": 11,
       "imageFile": "episode_35/scene_11.webp",
       "sourceImageFile": "episode_35/scene_11.webp",
-      "narrationEn": "The moment the true blade struck the dragonbone rim, a radial shockwave of golden starlight detonated across the span. The four shadow clones dissolved into wisps of smoke, and the real Artus was hurled backward, vomiting black blood. Stumbling, the death knight lost his balance.",
-      "narrationKo": "두 눈을 감은 카단의 귓가에 오직 대지의 고동만이 고요하게 울려 퍼졌다. 스승 알렉산다르가 눈 덮인 설원에서 가르쳐주었던 ‘심안(心眼)’의 경지였다. 허공을 가르는 네 개의 가짜 검풍 사이에서, 단 하나의 검격만이 바닥 석판의 미세한 진동을 일으키며 묵직한 살기를 품고 있었다. 카단이 눈을 뜨며 방패를 회전시킨 순간, 드래곤 브레이커의 황금빛 섬광이 짙은 안개를 단숨에 찢어발겼다. 진짜 아르투스의 대검이 방패에 부딪쳐 튕겨 나가며, 어둠의 주술이 한순간에 파훼되었다.",
-      "sourceSentenceStart": 25,
-      "sourceSentenceEnd": 26,
+      "narrationEn": "\"I know, Kadan.",
+      "narrationKo": "실리아가 카단의 등 뒤에 서며 낮게 읊조렸다. “바람의 결이 뒤틀려 있어요. 이 안개는 살아있는 생명체가 아니라 영혼을 갉아먹는 환각의 독이에요. 절대 귀를 기울이지 마세요.”",
+      "sourceSentenceStart": 11,
+      "sourceSentenceEnd": 11,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“바람의 결이 뒤틀려 있어요. 이 안개는 살아있는 생명체가 아니라 영혼을 갉아먹는 환각의 독이에요. 절대 귀를 기울이지 마세요.”",
+          "textEn": "“\"I know, Kadan.”",
+          "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_35/scene_12.webp",
+      "sourceImageFile": "episode_35/scene_12.webp",
+      "narrationEn": "The spirits of our forebears do not tempt us into weakness; they blow strength into our wings from beyond the veil.\"",
+      "narrationKo": "공중 회랑의 차가운 난간을 스치는 바람결 속에는 오랜 세월 동안 산화해 간 영웅들의 슬픈 한숨이 배어 있었다.",
+      "sourceSentenceStart": 12,
+      "sourceSentenceEnd": 12,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "진짜 아르투스의 대검이 방패에 부딪쳐 튕겨 나가며, 어둠의 주술이 한순간에 파훼되었다.",
-          "textEn": "Stumbling, the death knight lost his balance.",
+          "textKo": "공중 회랑의 차가운 난간을 스치는 바람결 속에는 오랜 세월 동안 산화해 간 영웅들의 슬픈 한숨이 배어 있었다.",
+          "textEn": "The spirits of our forebears do not tempt us into weakness; they blow strength into our wings from beyond the veil.\"",
           "bubbleType": "thought",
-          "position": "bottom-left",
+          "position": "bottom-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_35/scene_13.webp",
+      "sourceImageFile": "episode_35/scene_13.webp",
+      "narrationEn": "Back to back, the two companions advanced across the fog-shrouded stone bridge.",
+      "narrationKo": "카단은 드래곤 브레이커 방패의 표면을 쓸어내리며, 북방 설원에서 스승 알렉산다르가 쥐여주었던 은빛 단검의 붉은 매듭을 다시 한번 단단히 묶었다.",
+      "sourceSentenceStart": 13,
+      "sourceSentenceEnd": 13,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단은 드래곤 브레이커 방패의 표면을 쓸어내리며, 북방 설원에서 스승 알렉산다르가 쥐여주었던 은빛 단검의 붉은 매듭을 다시 한번 단단히 묶었다.",
+          "textEn": "Back to back, the two companions advanced across the fog-shrouded stone bridge.",
+          "bubbleType": "thought",
+          "position": "top-left",
           "characterCardId": 41
         }
       ],
@@ -397,22 +413,615 @@
       ]
     },
     {
-      "sceneNumber": 12,
-      "imageFile": "episode_35/scene_12.webp",
-      "sourceImageFile": "episode_35/scene_12.webp",
-      "narrationEn": "Seizing the opening, Cilia vaulted overhead with her Jade Staff.",
-      "narrationKo": "방패 표면에서 터져 나온 황금빛 별빛 고리가 공중 회랑 전체를 대낮처럼 환하게 밝혔다. 가짜 환영들이 비명을 지르며 연기처럼 흩어지자, 짙게 깔려 있던 유백색 안개가 순식간에 걷히며 맑은 밤하늘의 차가운 달빛이 두 영웅의 발밑을 비추었다. 시각을 버리고 대지의 맥박을 신뢰한 카단의 심안이 만들어낸 기적이었다. 본체가 드러난 아르투스는 비틀거리며 중심을 잃었다.",
+      "sceneNumber": 14,
+      "imageFile": "episode_35/scene_14.webp",
+      "sourceImageFile": "episode_35/scene_14.webp",
+      "narrationEn": "From the gloom strode a massive, armored figure clad in cracked obsidian plate: Death Knight Artus.",
+      "narrationKo": "“우리의 등 뒤에는 수만 명의 생명이 걸려 있다. 어떤 악령의 속삭임도 우리를 멈추지 못한다.”",
+      "sourceSentenceStart": 14,
+      "sourceSentenceEnd": 14,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "알렉산다르",
+          "speakerEn": "Aleksandar",
+          "textKo": "“우리의 등 뒤에는 수만 명의 생명이 걸려 있다. 어떤 악령의 속삭임도 우리를 멈추지 못한다.”",
+          "textEn": "“From the gloom strode a massive, armored figure clad in cracked obsidian plate: Death Knight Artus.”",
+          "bubbleType": "speech",
+          "position": "bottom-left",
+          "characterCardId": 50
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_35/scene_15.webp",
+      "sourceImageFile": "episode_35/scene_15.webp",
+      "narrationEn": "Yet within the mist, his shadow fractured into five identical replicas, each bearing the same terrifying mana signature and brandishing broken obsidian greatswords.",
+      "narrationKo": "그때 회랑 앞쪽의 짙은 안개 속에서 서늘한 쇳소리와 함께 거대한 인영이 걸어 나왔다. 루시안의 마지막 충견이자 죽음의 군주 아르투스였다. 그러나 아르투스는 혼자가 아니었다.",
+      "sourceSentenceStart": 15,
+      "sourceSentenceEnd": 15,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그러나 아르투스는 혼자가 아니었다.",
+          "textEn": "Yet within the mist, his shadow fractured into five identical replicas, each bearing the same terrifying mana signature and brandishing broken obsidian greatswords.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 61
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_35/scene_16.webp",
+      "sourceImageFile": "episode_35/scene_16.webp",
+      "narrationEn": "Artus's hollow voice echoed simultaneously from every direction.",
+      "narrationKo": "환각의 안개 속에서 아르투스의 그림자가 분열하더니, 완전히 똑같은 외형과 마나 파동을 지닌 네 명의 ‘그림자 분신 아르투스’가 사방에서 솟구쳐 올랐다.",
+      "sourceSentenceStart": 16,
+      "sourceSentenceEnd": 16,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "환각의 안개 속에서 아르투스의 그림자가 분열하더니, 완전히 똑같은 외형과 마나 파동을 지닌 네 명의 ‘그림자 분신 아르투스’가 사방에서 솟구쳐 올랐다.",
+          "textEn": "Artus's hollow voice echoed simultaneously from every direction.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 60
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_35/scene_17.webp",
+      "sourceImageFile": "episode_35/scene_17.webp",
+      "narrationEn": "\"Miserable orphans who buried your masters in the stone...",
+      "narrationKo": "진짜와 가짜를 구별할 수 없는 다섯 명의 죽음의 기사들이 부러진 흑요석 대검을 일제히 치켜들며 음산한 살기를 뿜어냈다.",
+      "sourceSentenceStart": 17,
+      "sourceSentenceEnd": 17,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "진짜와 가짜를 구별할 수 없는 다섯 명의 죽음의 기사들이 부러진 흑요석 대검을 일제히 치켜들며 음산한 살기를 뿜어냈다.",
+          "textEn": "\"Miserable orphans who buried your masters in the stone...",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 60
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_35/scene_18.webp",
+      "sourceImageFile": "episode_35/scene_18.webp",
+      "narrationEn": "The living cannot navigate the labyrinth of the dead.",
+      "narrationKo": "아르투스의 갈라진 음성이 안개 전체에서 동시에 메아리쳤다. “스승들을 무덤에 묻고 온 가련한 고아들이여... 산 자는 결코 죽은 자들의 미로를 빠져나갈 수 없다. 네놈들의 헛된 신념도 이 안개 속에서 썩어 문드러질 것이다!”",
+      "sourceSentenceStart": 18,
+      "sourceSentenceEnd": 18,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "데스나이트 아르투스",
+          "speakerEn": "Death Knight Artus",
+          "textKo": "“스승들을 무덤에 묻고 온 가련한 고아들이여... 산 자는 결코 죽은 자들의 미로를 빠져나갈 수 없다. 네놈들의 헛된 신념도 이 안개 속에서 썩어 문드러질 것이다!”",
+          "textEn": "“The living cannot navigate the labyrinth of the dead.”",
+          "bubbleType": "shout",
+          "position": "bottom-left",
+          "characterCardId": 60
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_35/scene_19.webp",
+      "sourceImageFile": "episode_35/scene_19.webp",
+      "narrationEn": "Your hollow convictions shall rot within this fog!\"",
+      "narrationKo": "다섯 자루의 흑요석 대검이 공기를 찢으며 카단과 실리아를 향해 일제히 쇄도했다.",
+      "sourceSentenceStart": 19,
+      "sourceSentenceEnd": 19,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "다섯 자루의 흑요석 대검이 공기를 찢으며 카단과 실리아를 향해 일제히 쇄도했다.",
+          "textEn": "Your hollow convictions shall rot within this fog!\"",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_35/scene_20.webp",
+      "sourceImageFile": "episode_35/scene_20.webp",
+      "narrationEn": "Five obsidian broadswords slashed downward in unison, targeting Kadan and Cilia from every angle.",
+      "narrationKo": "다섯 명의 아르투스가 휘두르는 흑요석 대검에서는 짙은 검은 피와 같은 독기가 뚝뚝 떨어져 석판을 부식시켰다.",
+      "sourceSentenceStart": 20,
+      "sourceSentenceEnd": 20,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "다섯 명의 아르투스가 휘두르는 흑요석 대검에서는 짙은 검은 피와 같은 독기가 뚝뚝 떨어져 석판을 부식시켰다.",
+          "textEn": "Five obsidian broadswords slashed downward in unison, targeting Kadan and Cilia from every angle.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 60
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 21,
+      "imageFile": "episode_35/scene_21.webp",
+      "sourceImageFile": "episode_35/scene_21.webp",
+      "narrationEn": "Defending against five simultaneous strikes with mortal sight was impossible; vision alone could not distinguish phantom blade from solid steel.",
+      "narrationKo": "분신들의 발자국 소리와 숨소리까지 완벽하게 일치하여 시각과 청각으로는 도저히 본체를 가려낼 수 없는 절망적인 포위망이었다.",
+      "sourceSentenceStart": 21,
+      "sourceSentenceEnd": 21,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "분신들의 발자국 소리와 숨소리까지 완벽하게 일치하여 시각과 청각으로는 도저히 본체를 가려낼 수 없는 절망적인 포위망이었다.",
+          "textEn": "Defending against five simultaneous strikes with mortal sight was impossible; vision alone could not distinguish phantom blade from solid steel.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 60
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 22,
+      "imageFile": "episode_35/scene_22.webp",
+      "sourceImageFile": "episode_35/scene_22.webp",
+      "narrationEn": "Without hesitation, Kadan closed his eyes.",
+      "narrationKo": "다섯 자루의 흑요석 대검이 공기를 가르며 동시에 카단의 심장을 향해 찔러 들어왔다. 죽음의 냉기가 살갗을 얼려 붙게 만들었다.",
+      "sourceSentenceStart": 22,
+      "sourceSentenceEnd": 22,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "죽음의 냉기가 살갗을 얼려 붙게 만들었다.",
+          "textEn": "Without hesitation, Kadan closed his eyes.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 23,
+      "imageFile": "episode_35/scene_23.webp",
+      "sourceImageFile": "episode_35/scene_23.webp",
+      "narrationEn": "\"Discard visual deception.",
+      "narrationKo": "다섯 방향에서 쏟아지는 치명적인 참격을 눈으로 보고 막아내는 것은 불가능했다. 어느 것이 진짜 검격이고 어느 것이 환영인지 시각으로는 도저히 판별할 수 없었다.",
+      "sourceSentenceStart": 23,
+      "sourceSentenceEnd": 23,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "어느 것이 진짜 검격이고 어느 것이 환영인지 시각으로는 도저히 판별할 수 없었다.",
+          "textEn": "\"Discard visual deception.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 24,
+      "imageFile": "episode_35/scene_24.webp",
+      "sourceImageFile": "episode_35/scene_24.webp",
+      "narrationEn": "Master Aleksandar taught me that when the eyes are shuttered, the ear perceives the true pulse of the earth.\"",
+      "narrationKo": "카단은 주저 없이 두 눈을 감았다. “시각을 버려라. 알렉산다르 스승님께서는 눈이 가려졌을 때 비로소 대지의 맥박을 들을 수 있다고 하셨다.”",
+      "sourceSentenceStart": 24,
+      "sourceSentenceEnd": 24,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“시각을 버려라. 알렉산다르 스승님께서는 눈이 가려졌을 때 비로소 대지의 맥박을 들을 수 있다고 하셨다.”",
+          "textEn": "“Master Aleksandar taught me that when the eyes are shuttered, the ear perceives the true pulse of the earth.\"”",
+          "bubbleType": "speech",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 25,
+      "imageFile": "episode_35/scene_25.webp",
+      "sourceImageFile": "episode_35/scene_25.webp",
+      "narrationEn": "Focusing entirely upon star-breathing and the ground beneath his boots, Kadan read the subtle micro-vibrations in the flagstones.",
+      "narrationKo": "카단은 온 신경을 발바닥과 별 호흡의 리듬에 집중시켰다. 드래곤 브레이커 방패를 든 손끝으로 공기의 미세한 저항과 진동을 감지해 냈다.",
+      "sourceSentenceStart": 25,
+      "sourceSentenceEnd": 25,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "드래곤 브레이커 방패를 든 손끝으로 공기의 미세한 저항과 진동을 감지해 냈다.",
+          "textEn": "Focusing entirely upon star-breathing and the ground beneath his boots, Kadan read the subtle micro-vibrations in the flagstones.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 26,
+      "imageFile": "episode_35/scene_26.webp",
+      "sourceImageFile": "episode_35/scene_26.webp",
+      "narrationEn": "Four of the descending blades cleaved only air, but one strike bore the crushing kinetic mass of living stone.",
+      "narrationKo": "네 개의 분신은 허공을 가르는 바람에 불과했지만, 단 하나의 검격만이 석판 바닥을 짓누르는 육중한 실체의 무게를 품고 있었다.",
+      "sourceSentenceStart": 26,
+      "sourceSentenceEnd": 26,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "네 개의 분신은 허공을 가르는 바람에 불과했지만, 단 하나의 검격만이 석판 바닥을 짓누르는 육중한 실체의 무게를 품고 있었다.",
+          "textEn": "Four of the descending blades cleaved only air, but one strike bore the crushing kinetic mass of living stone.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 27,
+      "imageFile": "episode_35/scene_27.webp",
+      "sourceImageFile": "episode_35/scene_27.webp",
+      "narrationEn": "Four of the descending blades cleaved only air, but one strike bore the crushing kinetic mass of living stone.",
+      "narrationKo": "“찾았다!” 카단이 눈을 번쩍 뜨며 드래곤 브레이커 방패를 오른쪽 45도 각도로 힘차게 회전시켰다.",
       "sourceSentenceStart": 27,
+      "sourceSentenceEnd": 27,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“찾았다!”",
+          "textEn": "“Four of the descending blades cleaved only air, but one strike bore the crushing kinetic mass of living stone.”",
+          "bubbleType": "shout",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 28,
+      "imageFile": "episode_35/scene_28.webp",
+      "sourceImageFile": "episode_35/scene_28.webp",
+      "narrationEn": "\"Found you!\"",
+      "narrationKo": "콰아앙!",
+      "sourceSentenceStart": 28,
       "sourceSentenceEnd": 28,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "본체가 드러난 아르투스는 비틀거리며 중심을 잃었다.",
-          "textEn": "Seizing the opening, Cilia vaulted overhead with her Jade Staff.",
+          "textKo": "콰아앙!",
+          "textEn": "\"Found you!\"",
           "bubbleType": "thought",
           "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 29,
+      "imageFile": "episode_35/scene_29.webp",
+      "sourceImageFile": "episode_35/scene_29.webp",
+      "narrationEn": "Snapping his eyes open, Kadan spun his Dragon Breaker shield upward at a forty-five-degree angle.",
+      "narrationKo": "진짜 아르투스의 흑요석 대검이 방패 전면에 격돌하는 순간, 거대한 황금빛 반발파가 터져 나왔다. 네 개의 그림자 분신들은 충격파에 휩쓸려 신기루처럼 허공으로 흩어졌고, 본체 아르투스만이 피를 뿜으며 뒤로 튕겨 나갔다.",
+      "sourceSentenceStart": 29,
+      "sourceSentenceEnd": 29,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "네 개의 그림자 분신들은 충격파에 휩쓸려 신기루처럼 허공으로 흩어졌고, 본체 아르투스만이 피를 뿜으며 뒤로 튕겨 나갔다.",
+          "textEn": "Snapping his eyes open, Kadan spun his Dragon Breaker shield upward at a forty-five-degree angle.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 60
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 30,
+      "imageFile": "episode_35/scene_30.webp",
+      "sourceImageFile": "episode_35/scene_30.webp",
+      "narrationEn": "Boom!",
+      "narrationKo": "두 눈을 감은 카단의 귓가에 오직 대지의 고동만이 고요하게 울려 퍼졌다. 스승 알렉산다르가 눈 덮인 설원에서 가르쳐주었던 ‘심안(心眼)’의 경지였다.",
+      "sourceSentenceStart": 30,
+      "sourceSentenceEnd": 30,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "스승 알렉산다르가 눈 덮인 설원에서 가르쳐주었던 ‘심안(心眼)’의 경지였다.",
+          "textEn": "Boom!",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 31,
+      "imageFile": "episode_35/scene_31.webp",
+      "sourceImageFile": "episode_35/scene_31.webp",
+      "narrationEn": "The moment the true blade struck the dragonbone rim, a radial shockwave of golden starlight detonated across the span.",
+      "narrationKo": "허공을 가르는 네 개의 가짜 검풍 사이에서, 단 하나의 검격만이 바닥 석판의 미세한 진동을 일으키며 묵직한 살기를 품고 있었다.",
+      "sourceSentenceStart": 31,
+      "sourceSentenceEnd": 31,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "허공을 가르는 네 개의 가짜 검풍 사이에서, 단 하나의 검격만이 바닥 석판의 미세한 진동을 일으키며 묵직한 살기를 품고 있었다.",
+          "textEn": "The moment the true blade struck the dragonbone rim, a radial shockwave of golden starlight detonated across the span.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 32,
+      "imageFile": "episode_35/scene_32.webp",
+      "sourceImageFile": "episode_35/scene_32.webp",
+      "narrationEn": "The four shadow clones dissolved into wisps of smoke, and the real Artus was hurled backward, vomiting black blood.",
+      "narrationKo": "카단이 눈을 뜨며 방패를 회전시킨 순간, 드래곤 브레이커의 황금빛 섬광이 짙은 안개를 단숨에 찢어발겼다. 진짜 아르투스의 대검이 방패에 부딪쳐 튕겨 나가며, 어둠의 주술이 한순간에 파훼되었다.",
+      "sourceSentenceStart": 32,
+      "sourceSentenceEnd": 32,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "진짜 아르투스의 대검이 방패에 부딪쳐 튕겨 나가며, 어둠의 주술이 한순간에 파훼되었다.",
+          "textEn": "The four shadow clones dissolved into wisps of smoke, and the real Artus was hurled backward, vomiting black blood.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 33,
+      "imageFile": "episode_35/scene_33.webp",
+      "sourceImageFile": "episode_35/scene_33.webp",
+      "narrationEn": "Stumbling, the death knight lost his balance.",
+      "narrationKo": "방패 표면에서 터져 나온 황금빛 별빛 고리가 공중 회랑 전체를 대낮처럼 환하게 밝혔다.",
+      "sourceSentenceStart": 33,
+      "sourceSentenceEnd": 33,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "방패 표면에서 터져 나온 황금빛 별빛 고리가 공중 회랑 전체를 대낮처럼 환하게 밝혔다.",
+          "textEn": "Stumbling, the death knight lost his balance.",
+          "bubbleType": "thought",
+          "position": "top-left",
           "characterCardId": 41
         }
       ],
@@ -432,21 +1041,149 @@
       ]
     },
     {
-      "sceneNumber": 13,
-      "imageFile": "episode_35/scene_13.webp",
-      "sourceImageFile": "episode_35/scene_13.webp",
-      "narrationEn": "\"Blade of the gale, sever the chains of the damned!\" A crescent of pressurized vacuum severed Artus's right arm at the elbow, sending the obsidian greatsword clattering into the chasm below.",
-      "narrationKo": "그 틈을 놓치지 않고 실리아가 허공으로 솟구쳐 올랐다. “바람의 칼날이여, 망령의 사슬을 끊어내라!” 실리아의 녹옥 지팡이에서 뿜어져 나온 서슬 퍼런 진공의 참격이 아르투스의 오른팔 관절을 단숨에 베어 넘겼다. 챙 하는 소리와 함께 흉포한 흑요석 대검이 바닥으로 떨어져 나뒹굴었다.",
-      "sourceSentenceStart": 29,
-      "sourceSentenceEnd": 31,
+      "sceneNumber": 34,
+      "imageFile": "episode_35/scene_34.webp",
+      "sourceImageFile": "episode_35/scene_34.webp",
+      "narrationEn": "Seizing the opening, Cilia vaulted overhead with her Jade Staff.",
+      "narrationKo": "가짜 환영들이 비명을 지르며 연기처럼 흩어지자, 짙게 깔려 있던 유백색 안개가 순식간에 걷히며 맑은 밤하늘의 차가운 달빛이 두 영웅의 발밑을 비추었다.",
+      "sourceSentenceStart": 34,
+      "sourceSentenceEnd": 34,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "가짜 환영들이 비명을 지르며 연기처럼 흩어지자, 짙게 깔려 있던 유백색 안개가 순식간에 걷히며 맑은 밤하늘의 차가운 달빛이 두 영웅의 발밑을 비추었다.",
+          "textEn": "Seizing the opening, Cilia vaulted overhead with her Jade Staff.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 35,
+      "imageFile": "episode_35/scene_35.webp",
+      "sourceImageFile": "episode_35/scene_35.webp",
+      "narrationEn": "\"Blade of the gale, sever the chains of the damned!\"",
+      "narrationKo": "시각을 버리고 대지의 맥박을 신뢰한 카단의 심안이 만들어낸 기적이었다.",
+      "sourceSentenceStart": 35,
+      "sourceSentenceEnd": 35,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "시각을 버리고 대지의 맥박을 신뢰한 카단의 심안이 만들어낸 기적이었다.",
+          "textEn": "\"Blade of the gale, sever the chains of the damned!\"",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 36,
+      "imageFile": "episode_35/scene_36.webp",
+      "sourceImageFile": "episode_35/scene_36.webp",
+      "narrationEn": "A crescent of pressurized vacuum severed Artus's right arm at the elbow, sending the obsidian greatsword clattering into the chasm below.",
+      "narrationKo": "본체가 드러난 아르투스는 비틀거리며 중심을 잃었다. 그 틈을 놓치지 않고 실리아가 허공으로 솟구쳐 올랐다.",
+      "sourceSentenceStart": 36,
+      "sourceSentenceEnd": 36,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그 틈을 놓치지 않고 실리아가 허공으로 솟구쳐 올랐다.",
+          "textEn": "A crescent of pressurized vacuum severed Artus's right arm at the elbow, sending the obsidian greatsword clattering into the chasm below.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 60
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 37,
+      "imageFile": "episode_35/scene_37.webp",
+      "sourceImageFile": "episode_35/scene_37.webp",
+      "narrationEn": "Robbed of his weapon, Artus clutched his shattered armor, groaning in human torment as Lucian's controlling curse fractured.",
+      "narrationKo": "“바람의 칼날이여, 망령의 사슬을 끊어내라!”",
+      "sourceSentenceStart": 37,
+      "sourceSentenceEnd": 37,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "실리아",
           "speakerEn": "Celia",
           "textKo": "“바람의 칼날이여, 망령의 사슬을 끊어내라!”",
-          "textEn": "“Blade of the gale, sever the chains of the damned!”",
+          "textEn": "“Robbed of his weapon, Artus clutched his shattered armor, groaning in human torment as Lucian's controlling curse fractured.”",
           "bubbleType": "shout",
+          "position": "top-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 38,
+      "imageFile": "episode_35/scene_38.webp",
+      "sourceImageFile": "episode_35/scene_38.webp",
+      "narrationEn": "\"Lord Lucian...",
+      "narrationKo": "실리아의 녹옥 지팡이에서 뿜어져 나온 서슬 퍼런 진공의 참격이 아르투스의 오른팔 관절을 단숨에 베어 넘겼다. 챙 하는 소리와 함께 흉포한 흑요석 대검이 바닥으로 떨어져 나뒹굴었다.",
+      "sourceSentenceStart": 38,
+      "sourceSentenceEnd": 38,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "챙 하는 소리와 함께 흉포한 흑요석 대검이 바닥으로 떨어져 나뒹굴었다.",
+          "textEn": "\"Lord Lucian...",
+          "bubbleType": "thought",
           "position": "top-right",
           "characterCardId": 62
         }
@@ -467,22 +1204,22 @@
       ]
     },
     {
-      "sceneNumber": 14,
-      "imageFile": "episode_35/scene_14.webp",
-      "sourceImageFile": "episode_35/scene_14.webp",
-      "narrationEn": "Robbed of his weapon, Artus clutched his shattered armor, groaning in human torment as Lucian's controlling curse fractured. \"Lord Lucian... I have failed to breach the knight's shield...\"",
+      "sceneNumber": 39,
+      "imageFile": "episode_35/scene_39.webp",
+      "sourceImageFile": "episode_35/scene_39.webp",
+      "narrationEn": "I have failed to breach the knight's shield...\"",
       "narrationKo": "무기를 잃은 아르투스는 부러진 갑주를 쥐어뜯으며 절규했다. “루시안 각하... 이 아르투스는 끝까지... 성기사의 방패를 넘지 못했습니다...”",
-      "sourceSentenceStart": 32,
-      "sourceSentenceEnd": 33,
+      "sourceSentenceStart": 39,
+      "sourceSentenceEnd": 39,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "데스나이트 아르투스",
           "speakerEn": "Death Knight Artus",
           "textKo": "“루시안 각하... 이 아르투스는 끝까지... 성기사의 방패를 넘지 못했습니다...”",
-          "textEn": "“Lord Lucian... I have failed to breach the knight's shield...”",
+          "textEn": "“I have failed to breach the knight's shield...\"”",
           "bubbleType": "thought",
-          "position": "bottom-left",
+          "position": "bottom-right",
           "characterCardId": 60
         }
       ],
@@ -496,23 +1233,87 @@
       ]
     },
     {
-      "sceneNumber": 15,
-      "imageFile": "episode_35/scene_15.webp",
-      "sourceImageFile": "episode_35/scene_15.webp",
-      "narrationEn": "Retreating through the fog, Artus sealed the inner bronze gates of the sanctum behind him, retreating into the final chamber. With the phantom fog dispelled, the starlit night sky illuminated the stone bridge.",
-      "narrationKo": "아르투스는 낭떠러지 아래로 추락하지 않기 위해 안개 속으로 뒷걸음질 치며 파멸의 제단 중앙 문을 닫아걸고 마지막 방어선으로 퇴각했다. 환영의 안개 회랑은 마침내 맑은 밤하늘의 시야를 되찾았다. 오른팔을 잃은 아르투스는 피를 흘리며 비틀거렸다. 부러진 흑요석 검이 낭떠러지 아래로 떨어져 까마득한 어둠 속으로 사라졌다. 루시안이 심어둔 암흑 주술이 풀려나자, 아르투스의 투구 틈새로 고통에 찬 인간의 신음이 흘러나왔다.",
-      "sourceSentenceStart": 34,
-      "sourceSentenceEnd": 35,
+      "sceneNumber": 40,
+      "imageFile": "episode_35/scene_40.webp",
+      "sourceImageFile": "episode_35/scene_40.webp",
+      "narrationEn": "Retreating through the fog, Artus sealed the inner bronze gates of the sanctum behind him, retreating into the final chamber.",
+      "narrationKo": "아르투스는 낭떠러지 아래로 추락하지 않기 위해 안개 속으로 뒷걸음질 치며 파멸의 제단 중앙 문을 닫아걸고 마지막 방어선으로 퇴각했다. 환영의 안개 회랑은 마침내 맑은 밤하늘의 시야를 되찾았다.",
+      "sourceSentenceStart": 40,
+      "sourceSentenceEnd": 40,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "환영의 안개 회랑은 마침내 맑은 밤하늘의 시야를 되찾았다.",
+          "textEn": "Retreating through the fog, Artus sealed the inner bronze gates of the sanctum behind him, retreating into the final chamber.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 60
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 41,
+      "imageFile": "episode_35/scene_41.webp",
+      "sourceImageFile": "episode_35/scene_41.webp",
+      "narrationEn": "With the phantom fog dispelled, the starlit night sky illuminated the stone bridge.",
+      "narrationKo": "오른팔을 잃은 아르투스는 피를 흘리며 비틀거렸다. 부러진 흑요석 검이 낭떠러지 아래로 떨어져 까마득한 어둠 속으로 사라졌다.",
+      "sourceSentenceStart": 41,
+      "sourceSentenceEnd": 41,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "부러진 흑요석 검이 낭떠러지 아래로 떨어져 까마득한 어둠 속으로 사라졌다.",
+          "textEn": "With the phantom fog dispelled, the starlit night sky illuminated the stone bridge.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 60
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 42,
+      "imageFile": "episode_35/scene_42.webp",
+      "sourceImageFile": "episode_35/scene_42.webp",
+      "narrationEn": "Before the shattered portal lay the inner sanctuary of the Altar of Ruin, where Lucian channeled the final pages of the Nine Shadows Codex.",
+      "narrationKo": "루시안이 심어둔 암흑 주술이 풀려나자, 아르투스의 투구 틈새로 고통에 찬 인간의 신음이 흘러나왔다.",
+      "sourceSentenceStart": 42,
+      "sourceSentenceEnd": 42,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
           "textKo": "루시안이 심어둔 암흑 주술이 풀려나자, 아르투스의 투구 틈새로 고통에 찬 인간의 신음이 흘러나왔다.",
-          "textEn": "With the phantom fog dispelled, the starlit night sky illuminated the stone bridge.",
+          "textEn": "Before the shattered portal lay the inner sanctuary of the Altar of Ruin, where Lucian channeled the final pages of the Nine Shadows Codex.",
           "bubbleType": "thought",
-          "position": "bottom-left",
-          "characterCardId": 60
+          "position": "top-right",
+          "characterCardId": 61
         }
       ],
       "sfxCues": [
@@ -521,33 +1322,91 @@
           "textEn": "CLANG!",
           "style": "slash",
           "position": "top-right"
-        },
-        {
-          "textKo": "쿠구구궁!",
-          "textEn": "RUMBLE!",
-          "style": "rumble",
-          "position": "bottom-left"
         }
       ]
     },
     {
-      "sceneNumber": 16,
-      "imageFile": "episode_35/scene_16.webp",
-      "sourceImageFile": "episode_35/scene_16.webp",
-      "narrationEn": "Before the shattered portal lay the inner sanctuary of the Altar of Ruin, where Lucian channeled the final pages of the Nine Shadows Codex.",
-      "narrationKo": "실리아가 지팡이를 거두며 나지막이 말했다. “너 역시 루시안의 탐욕에 희생된 꼭두각시였을 뿐이구나.” 아르투스는 문을 닫아걸고 마지막 어둠 속으로 숨어들었다. 치열했던 안개 속의 사투가 끝나고, 두 젊은이는 제단 정상의 거대한 문 앞에 섰다. 문틈 사이로는 루시안이 나인섀도우 코덱스를 최후로 가동하는 불길한 검붉은 마나의 빛줄기가 새어 나오고 있었다. 이제 이 문 너머에 대륙의 모든 고통과 비극을 끝장낼 최후의 적이 기다리고 있었다.",
-      "sourceSentenceStart": 36,
-      "sourceSentenceEnd": 38,
+      "sceneNumber": 43,
+      "imageFile": "episode_35/scene_43.webp",
+      "sourceImageFile": "episode_35/scene_43.webp",
+      "narrationEn": "Checking the edge of his silver dagger, Kadan turned to Cilia.",
+      "narrationKo": "실리아가 지팡이를 거두며 나지막이 말했다. “너 역시 루시안의 탐욕에 희생된 꼭두각시였을 뿐이구나.” 아르투스는 문을 닫아걸고 마지막 어둠 속으로 숨어들었다.",
+      "sourceSentenceStart": 43,
+      "sourceSentenceEnd": 43,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "데스나이트 아르투스",
           "speakerEn": "Death Knight Artus",
           "textKo": "“너 역시 루시안의 탐욕에 희생된 꼭두각시였을 뿐이구나.”",
-          "textEn": "“Before the shattered portal lay the inner sanctuary of the Altar of Ruin, where Lucian channeled the final pages of the Nine Shadows Codex.”",
+          "textEn": "“Checking the edge of his silver dagger, Kadan turned to Cilia.”",
           "bubbleType": "speech",
-          "position": "top-left",
+          "position": "bottom-right",
           "characterCardId": 60
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 44,
+      "imageFile": "episode_35/scene_44.webp",
+      "sourceImageFile": "episode_35/scene_44.webp",
+      "narrationEn": "\"Are you ready, Cilia?\"",
+      "narrationKo": "치열했던 안개 속의 사투가 끝나고, 두 젊은이는 제단 정상의 거대한 문 앞에 섰다.",
+      "sourceSentenceStart": 44,
+      "sourceSentenceEnd": 44,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "치열했던 안개 속의 사투가 끝나고, 두 젊은이는 제단 정상의 거대한 문 앞에 섰다.",
+          "textEn": "\"Are you ready, Cilia?\"",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 60
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 45,
+      "imageFile": "episode_35/scene_45.webp",
+      "sourceImageFile": "episode_35/scene_45.webp",
+      "narrationEn": "\"Are you ready, Cilia?\"",
+      "narrationKo": "문틈 사이로는 루시안이 나인섀도우 코덱스를 최후로 가동하는 불길한 검붉은 마나의 빛줄기가 새어 나오고 있었다. 이제 이 문 너머에 대륙의 모든 고통과 비극을 끝장낼 최후의 적이 기다리고 있었다.",
+      "sourceSentenceStart": 45,
+      "sourceSentenceEnd": 45,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "이제 이 문 너머에 대륙의 모든 고통과 비극을 끝장낼 최후의 적이 기다리고 있었다.",
+          "textEn": "\"Are you ready, Cilia?\"",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 61
         }
       ],
       "sfxCues": [
@@ -566,21 +1425,143 @@
       ]
     },
     {
-      "sceneNumber": 17,
-      "imageFile": "episode_35/scene_17.webp",
-      "sourceImageFile": "episode_35/scene_17.webp",
-      "narrationEn": "Checking the edge of his silver dagger, Kadan turned to Cilia. \"Are you ready, Cilia?\"",
+      "sceneNumber": 46,
+      "imageFile": "episode_35/scene_46.webp",
+      "sourceImageFile": "episode_35/scene_46.webp",
+      "narrationEn": "Wiping the dust from her brow, Cilia smiled with unbreakable resolve.",
       "narrationKo": "카단은 은빛 단검의 칼날을 점검하며 실리아를 돌아보았다. “준비되었는가, 실리아.”",
-      "sourceSentenceStart": 39,
-      "sourceSentenceEnd": 40,
+      "sourceSentenceStart": 46,
+      "sourceSentenceEnd": 46,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
           "textKo": "“준비되었는가, 실리아.”",
-          "textEn": "“Are you ready, Cilia?”",
+          "textEn": "“Wiping the dust from her brow, Cilia smiled with unbreakable resolve.”",
           "bubbleType": "speech",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 47,
+      "imageFile": "episode_35/scene_47.webp",
+      "sourceImageFile": "episode_35/scene_47.webp",
+      "narrationEn": "\"Yes, Kadan.",
+      "narrationKo": "실리아가 눈물을 닦아내고 결연한 미소를 지었다. “네, 카단. 스승님들과 이그니스가 우리와 함께하고 있어요. 두려움은 없어요.”",
+      "sourceSentenceStart": 47,
+      "sourceSentenceEnd": 47,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“네, 카단. 스승님들과 이그니스가 우리와 함께하고 있어요. 두려움은 없어요.”",
+          "textEn": "“\"Yes, Kadan.”",
+          "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 48,
+      "imageFile": "episode_35/scene_48.webp",
+      "sourceImageFile": "episode_35/scene_48.webp",
+      "narrationEn": "Our masters and Ignis march beside us.",
+      "narrationKo": "카단이 드래곤 브레이커 방패를 전면에 세우며 문의 빗장을 박살 냈다.",
+      "sourceSentenceStart": 48,
+      "sourceSentenceEnd": 48,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단이 드래곤 브레이커 방패를 전면에 세우며 문의 빗장을 박살 냈다.",
+          "textEn": "Our masters and Ignis march beside us.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 49,
+      "imageFile": "episode_35/scene_49.webp",
+      "sourceImageFile": "episode_35/scene_49.webp",
+      "narrationEn": "I fear nothing.\"",
+      "narrationKo": "쾅! 거대한 문이 열리며, 두 영웅은 대륙의 운명을 결정지을 최후의 심판대를 향해 당당히 발을 디뎠다.",
+      "sourceSentenceStart": 49,
+      "sourceSentenceEnd": 49,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "거대한 문이 열리며, 두 영웅은 대륙의 운명을 결정지을 최후의 심판대를 향해 당당히 발을 디뎠다.",
+          "textEn": "I fear nothing.\"",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 50,
+      "imageFile": "episode_35/scene_50.webp",
+      "sourceImageFile": "episode_35/scene_50.webp",
+      "narrationEn": "Slamming his Dragon Breaker shield into the bronze gates, Kadan shattered the final locking bar.",
+      "narrationKo": "파멸의 제단 정문의 거대한 빗장이 부서지자, 문틈 사이로 뿜어져 나오던 검붉은 마나의 폭풍이 일순간 멎었다. 카단과 실리아는 나란히 문턱을 넘어섰다.",
+      "sourceSentenceStart": 50,
+      "sourceSentenceEnd": 50,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단과 실리아는 나란히 문턱을 넘어섰다.",
+          "textEn": "Slamming his Dragon Breaker shield into the bronze gates, Kadan shattered the final locking bar.",
+          "bubbleType": "thought",
           "position": "top-right",
           "characterCardId": 41
         }
@@ -601,77 +1582,42 @@
       ]
     },
     {
-      "sceneNumber": 18,
-      "imageFile": "episode_35/scene_18.webp",
-      "sourceImageFile": "episode_35/scene_18.webp",
-      "narrationEn": "Wiping the dust from her brow, Cilia smiled with unbreakable resolve. \"Yes, Kadan. Our masters and Ignis march beside us. I fear nothing.\"",
-      "narrationKo": "실리아가 눈물을 닦아내고 결연한 미소를 지었다. “네, 카단. 스승님들과 이그니스가 우리와 함께하고 있어요. 두려움은 없어요.”",
-      "sourceSentenceStart": 41,
-      "sourceSentenceEnd": 42,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“네, 카단. 스승님들과 이그니스가 우리와 함께하고 있어요. 두려움은 없어요.”",
-          "textEn": "“Yes, Kadan. Our masters and Ignis march beside us. I fear nothing.”",
-          "bubbleType": "speech",
-          "position": "bottom-left",
-          "characterCardId": 62
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "쿠구구궁!",
-          "textEn": "RUMBLE!",
-          "style": "rumble",
-          "position": "bottom-left"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 19,
-      "imageFile": "episode_35/scene_19.webp",
-      "sourceImageFile": "episode_35/scene_19.webp",
-      "narrationEn": "Slamming his Dragon Breaker shield into the bronze gates, Kadan shattered the final locking bar.",
-      "narrationKo": "카단이 드래곤 브레이커 방패를 전면에 세우며 문의 빗장을 박살 냈다. 쾅! 거대한 문이 열리며, 두 영웅은 대륙의 운명을 결정지을 최후의 심판대를 향해 당당히 발을 디뎠다.",
-      "sourceSentenceStart": 43,
-      "sourceSentenceEnd": 45,
+      "sceneNumber": 51,
+      "imageFile": "episode_35/scene_51.webp",
+      "sourceImageFile": "episode_35/scene_51.webp",
+      "narrationEn": "Boom!",
+      "narrationKo": "그곳에는 대륙의 모든 비극을 초래한 만악의 근원, 루시안 재상이 마지막 옥좌에 앉아 피 묻은 나인섀도우 코덱스를 쥐고 있었다.",
+      "sourceSentenceStart": 51,
+      "sourceSentenceEnd": 51,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "거대한 문이 열리며, 두 영웅은 대륙의 운명을 결정지을 최후의 심판대를 향해 당당히 발을 디뎠다.",
-          "textEn": "Slamming his Dragon Breaker shield into the bronze gates, Kadan shattered the final locking bar.",
+          "textKo": "그곳에는 대륙의 모든 비극을 초래한 만악의 근원, 루시안 재상이 마지막 옥좌에 앉아 피 묻은 나인섀도우 코덱스를 쥐고 있었다.",
+          "textEn": "Boom!",
           "bubbleType": "thought",
           "position": "bottom-left",
-          "characterCardId": 41
+          "characterCardId": 61
         }
       ],
       "sfxCues": [
         {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "쿠구구궁!",
-          "textEn": "RUMBLE!",
-          "style": "rumble",
-          "position": "bottom-left"
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
         }
       ]
     },
     {
-      "sceneNumber": 20,
-      "imageFile": "episode_35/scene_20.webp",
-      "sourceImageFile": "episode_35/scene_20.webp",
-      "narrationEn": "Boom! The doors swung wide, and the two young champions crossed the threshold to face the architect of the realm's long nightmare.",
-      "narrationKo": "파멸의 제단 정문의 거대한 빗장이 부서지자, 문틈 사이로 뿜어져 나오던 검붉은 마나의 폭풍이 일순간 멎었다. 카단과 실리아는 나란히 문턱을 넘어섰다. 그곳에는 대륙의 모든 비극을 초래한 만악의 근원, 루시안 재상이 마지막 옥좌에 앉아 피 묻은 나인섀도우 코덱스를 쥐고 있었다. 카단이 은빛 단검을 곧게 세우며 말했다. “더 이상 도망칠 곳은 없다, 루시안.” 대륙의 운명을 건 최후의 결전이 마침내 시작되고 있었다.",
-      "sourceSentenceStart": 46,
-      "sourceSentenceEnd": 47,
+      "sceneNumber": 52,
+      "imageFile": "episode_35/scene_52.webp",
+      "sourceImageFile": "episode_35/scene_52.webp",
+      "narrationEn": "The doors swung wide, and the two young champions crossed the threshold to face the architect of the realm's long nightmare.",
+      "narrationKo": "카단이 은빛 단검을 곧게 세우며 말했다. “더 이상 도망칠 곳은 없다, 루시안.” 대륙의 운명을 건 최후의 결전이 마침내 시작되고 있었다.",
+      "sourceSentenceStart": 52,
+      "sourceSentenceEnd": 52,
       "alignmentScore": 1.0,
       "dialogues": [
         {

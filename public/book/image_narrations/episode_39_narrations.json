@@ -2,24 +2,24 @@
   "episodeNumber": 39,
   "episodeTitleEn": "The World Worth Protecting",
   "episodeTitleKo": "지킬 만한 가치가 있는 세상",
-  "sourceSentenceCount": 46,
-  "sceneCount": 20,
+  "sourceSentenceCount": 53,
+  "sceneCount": 53,
   "scenes": [
     {
       "sceneNumber": 1,
       "imageFile": "episode_39/scene_01.webp",
       "sourceImageFile": "episode_39/scene_01.webp",
-      "narrationEn": "As the Three Silk Seals shattered and the shroud of the Nine Shadows Codex dissipated, a crisp morning breeze swept through the ruined colonnade. Yet from the shadows behind the splintered dais, a battered figure in dented black armor dragged himself forward—Sir Artus, the final Death Knight.",
-      "narrationKo": "세 개의 명주 봉인이 모두 산산조각 나며 나인섀도우 코덱스의 어둠이 걷혀 나가자, 파멸의 제단에는 차가운 새벽바람이 들이치기 시작했다. 그러나 무너진 옥좌 뒤편의 어둠 속에서, 부러진 갑주를 끌며 마지막 죽음의 기사 아르투스가 비틀거리며 걸어 나왔다. 아르투스의 붉은 안광은 이미 흐려져 있었고, 그의 흑요석 대검은 반 토막이 난 채 검은 피를 뚝뚝 흘리고 있었다. 그러나 루시안이 심어둔 마지막 사령 주술의 사슬이 그의 썩은 심장을 억지로 조종하며 카단을 향해 검을 겨누게 만들고 있었다.",
+      "narrationEn": "As the Three Silk Seals shattered and the shroud of the Nine Shadows Codex dissipated, a crisp morning breeze swept through the ruined colonnade.",
+      "narrationKo": "세 개의 명주 봉인이 모두 산산조각 나며 나인섀도우 코덱스의 어둠이 걷혀 나가자, 파멸의 제단에는 차가운 새벽바람이 들이치기 시작했다.",
       "sourceSentenceStart": 1,
-      "sourceSentenceEnd": 2,
+      "sourceSentenceEnd": 1,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "그러나 루시안이 심어둔 마지막 사령 주술의 사슬이 그의 썩은 심장을 억지로 조종하며 카단을 향해 검을 겨누게 만들고 있었다.",
-          "textEn": "Yet from the shadows behind the splintered dais, a battered figure in dented black armor dragged himself forward—Sir Artus, the final Death Knight.",
+          "textKo": "세 개의 명주 봉인이 모두 산산조각 나며 나인섀도우 코덱스의 어둠이 걷혀 나가자, 파멸의 제단에는 차가운 새벽바람이 들이치기 시작했다.",
+          "textEn": "As the Three Silk Seals shattered and the shroud of the Nine Shadows Codex dissipated, a crisp morning breeze swept through the ruined colonnade.",
           "bubbleType": "thought",
           "position": "top-left",
           "characterCardId": 60
@@ -27,11 +27,40 @@
       ],
       "sfxCues": [
         {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
           "style": "slash",
-          "position": "top-right"
+          "position": "top-left"
         },
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_39/scene_02.webp",
+      "sourceImageFile": "episode_39/scene_02.webp",
+      "narrationEn": "Yet from the shadows behind the splintered dais, a battered figure in dented black armor dragged himself forward—Sir Artus, the final Death Knight.",
+      "narrationKo": "그러나 무너진 옥좌 뒤편의 어둠 속에서, 부러진 갑주를 끌며 마지막 죽음의 기사 아르투스가 비틀거리며 걸어 나왔다.",
+      "sourceSentenceStart": 2,
+      "sourceSentenceEnd": 2,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그러나 무너진 옥좌 뒤편의 어둠 속에서, 부러진 갑주를 끌며 마지막 죽음의 기사 아르투스가 비틀거리며 걸어 나왔다.",
+          "textEn": "Yet from the shadows behind the splintered dais, a battered figure in dented black armor dragged himself forward—Sir Artus, the final Death Knight.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 60
+        }
+      ],
+      "sfxCues": [
         {
           "textKo": "쿠구구궁!",
           "textEn": "RUMBLE!",
@@ -41,12 +70,70 @@
       ]
     },
     {
-      "sceneNumber": 2,
-      "imageFile": "episode_39/scene_02.webp",
-      "sourceImageFile": "episode_39/scene_02.webp",
-      "narrationEn": "Artus's crimson eyes were dim, and his fractured obsidian broadsword dripped necrotic black blood. Only the residual tendrils of Lucian's puppetry compelled his withered frame to advance. Through parched lips, the fallen knight rasped:",
-      "narrationKo": "아르투스가 갈라진 음성으로 중얼거렸다. “기사의... 맹세는... 어둠 속에서도... 결코 더럽혀지지... 않았다...” 카단이 드래곤 브레이커 방패를 내리고, 은빛 단검의 칼끝을 땅으로 향하며 조용히 다가갔다.",
+      "sceneNumber": 3,
+      "imageFile": "episode_39/scene_03.webp",
+      "sourceImageFile": "episode_39/scene_03.webp",
+      "narrationEn": "Artus's crimson eyes were dim, and his fractured obsidian broadsword dripped necrotic black blood.",
+      "narrationKo": "아르투스의 붉은 안광은 이미 흐려져 있었고, 그의 흑요석 대검은 반 토막이 난 채 검은 피를 뚝뚝 흘리고 있었다.",
       "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 3,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "아르투스의 붉은 안광은 이미 흐려져 있었고, 그의 흑요석 대검은 반 토막이 난 채 검은 피를 뚝뚝 흘리고 있었다.",
+          "textEn": "Artus's crimson eyes were dim, and his fractured obsidian broadsword dripped necrotic black blood.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 60
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_39/scene_04.webp",
+      "sourceImageFile": "episode_39/scene_04.webp",
+      "narrationEn": "Only the residual tendrils of Lucian's puppetry compelled his withered frame to advance.",
+      "narrationKo": "그러나 루시안이 심어둔 마지막 사령 주술의 사슬이 그의 썩은 심장을 억지로 조종하며 카단을 향해 검을 겨누게 만들고 있었다.",
+      "sourceSentenceStart": 4,
+      "sourceSentenceEnd": 4,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그러나 루시안이 심어둔 마지막 사령 주술의 사슬이 그의 썩은 심장을 억지로 조종하며 카단을 향해 검을 겨누게 만들고 있었다.",
+          "textEn": "Only the residual tendrils of Lucian's puppetry compelled his withered frame to advance.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 61
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_39/scene_05.webp",
+      "sourceImageFile": "episode_39/scene_05.webp",
+      "narrationEn": "Through parched lips, the fallen knight rasped:",
+      "narrationKo": "아르투스가 갈라진 음성으로 중얼거렸다. “기사의... 맹세는... 어둠 속에서도... 결코 더럽혀지지... 않았다...”",
+      "sourceSentenceStart": 5,
       "sourceSentenceEnd": 5,
       "alignmentScore": 1.0,
       "dialogues": [
@@ -54,10 +141,39 @@
           "speakerKo": "데스나이트 아르투스",
           "speakerEn": "Death Knight Artus",
           "textKo": "“기사의... 맹세는... 어둠 속에서도... 결코 더럽혀지지... 않았다...”",
-          "textEn": "“A paladin's vow... is never sullied... even in the dark...”",
+          "textEn": "“Through parched lips, the fallen knight rasped:”",
           "bubbleType": "thought",
-          "position": "bottom-left",
+          "position": "top-right",
           "characterCardId": 60
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_39/scene_06.webp",
+      "sourceImageFile": "episode_39/scene_06.webp",
+      "narrationEn": "\"A paladin's vow... is never sullied... even in the dark...\"",
+      "narrationKo": "카단이 드래곤 브레이커 방패를 내리고, 은빛 단검의 칼끝을 땅으로 향하며 조용히 다가갔다.",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 6,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단이 드래곤 브레이커 방패를 내리고, 은빛 단검의 칼끝을 땅으로 향하며 조용히 다가갔다.",
+          "textEn": "even in the dark...\"",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
@@ -76,12 +192,12 @@
       ]
     },
     {
-      "sceneNumber": 3,
-      "imageFile": "episode_39/scene_03.webp",
-      "sourceImageFile": "episode_39/scene_03.webp",
-      "narrationEn": "\"A paladin's vow... is never sullied... even in the dark...\"",
-      "narrationKo": "“아르투스 경. 당신은 과거 성기사단의 맹장이자 발리안 숙부님의 친우였습니다. 이제 그 사악한 사슬을 끊고 영원한 안식에 들 시간입니다.” 실리아 역시 녹옥 지팡이로 부드러운 바람의 진혼곡을 연주하기 시작했다.",
-      "sourceSentenceStart": 6,
+      "sceneNumber": 7,
+      "imageFile": "episode_39/scene_07.webp",
+      "sourceImageFile": "episode_39/scene_07.webp",
+      "narrationEn": "Kadan lowered his Dragon Breaker shield and pointed the Silver Dagger toward the floor.",
+      "narrationKo": "“아르투스 경. 당신은 과거 성기사단의 맹장이자 발리안 숙부님의 친우였습니다. 이제 그 사악한 사슬을 끊고 영원한 안식에 들 시간입니다.”",
+      "sourceSentenceStart": 7,
       "sourceSentenceEnd": 7,
       "alignmentScore": 1.0,
       "dialogues": [
@@ -89,10 +205,39 @@
           "speakerKo": "카단",
           "speakerEn": "Kadan",
           "textKo": "“아르투스 경. 당신은 과거 성기사단의 맹장이자 발리안 숙부님의 친우였습니다. 이제 그 사악한 사슬을 끊고 영원한 안식에 들 시간입니다.”",
-          "textEn": "“A paladin's vow... is never sullied... even in the dark...”",
+          "textEn": "“Kadan lowered his Dragon Breaker shield and pointed the Silver Dagger toward the floor.”",
           "bubbleType": "speech",
           "position": "bottom-right",
           "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_39/scene_08.webp",
+      "sourceImageFile": "episode_39/scene_08.webp",
+      "narrationEn": "\"Sir Artus.",
+      "narrationKo": "실리아 역시 녹옥 지팡이로 부드러운 바람의 진혼곡을 연주하기 시작했다.",
+      "sourceSentenceStart": 8,
+      "sourceSentenceEnd": 8,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "실리아 역시 녹옥 지팡이로 부드러운 바람의 진혼곡을 연주하기 시작했다.",
+          "textEn": "\"Sir Artus.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
@@ -105,23 +250,23 @@
       ]
     },
     {
-      "sceneNumber": 4,
-      "imageFile": "episode_39/scene_04.webp",
-      "sourceImageFile": "episode_39/scene_04.webp",
-      "narrationEn": "Kadan lowered his Dragon Breaker shield and pointed the Silver Dagger toward the floor.",
-      "narrationKo": "무너진 옥좌 홀의 대리석 기둥들 사이로 스며드는 새벽바람은 십팔 년간 갇혀 있던 원혼들의 오랜 속삭임을 품고 있었다. 죽음의 기사 아르투스는 부러진 흑요석 대검을 질질 끌며 카단을 향해 한 걸음씩 다가왔다. 그의 낡은 갑주 틈새로는 검은 피 대신 메두사 고르고가 심어둔 기괴한 사령의 실핏줄들이 부서진 쇠사슬처럼 끊어져 나가고 있었다. 실리아가 녹옥 지팡이 끝으로 아침이슬을 털어내며 속삭였다. “아르투스 경의 영혼이 비명을 지르고 있어요. 육신은 괴물이 되었지만, 그의 가슴속 기사의 심장은 여전히 해방을 갈망하고 있어요.” 카단이 고개를 끄덕이며 방패를 가슴 높이로 정돈했다.",
-      "sourceSentenceStart": 8,
+      "sceneNumber": 9,
+      "imageFile": "episode_39/scene_09.webp",
+      "sourceImageFile": "episode_39/scene_09.webp",
+      "narrationEn": "You were once a peerless champion of the holy knights and the dearest friend of Uncle Balian.",
+      "narrationKo": "무너진 옥좌 홀의 대리석 기둥들 사이로 스며드는 새벽바람은 십팔 년간 갇혀 있던 원혼들의 오랜 속삭임을 품고 있었다. 죽음의 기사 아르투스는 부러진 흑요석 대검을 질질 끌며 카단을 향해 한 걸음씩 다가왔다.",
+      "sourceSentenceStart": 9,
       "sourceSentenceEnd": 9,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“아르투스 경의 영혼이 비명을 지르고 있어요. 육신은 괴물이 되었지만, 그의 가슴속 기사의 심장은 여전히 해방을 갈망하고 있어요.”",
-          "textEn": "“A paladin's vow... is never sullied... even in the dark...”",
-          "bubbleType": "speech",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "죽음의 기사 아르투스는 부러진 흑요석 대검을 질질 끌며 카단을 향해 한 걸음씩 다가왔다.",
+          "textEn": "You were once a peerless champion of the holy knights and the dearest friend of Uncle Balian.",
+          "bubbleType": "thought",
           "position": "top-left",
-          "characterCardId": 62
+          "characterCardId": 60
         }
       ],
       "sfxCues": [
@@ -140,23 +285,81 @@
       ]
     },
     {
-      "sceneNumber": 5,
-      "imageFile": "episode_39/scene_05.webp",
-      "sourceImageFile": "episode_39/scene_05.webp",
-      "narrationEn": "\"Sir Artus. You were once a peerless champion of the holy knights and the dearest friend of Uncle Balian. The time has come to cast off these cursed chains and enter eternal rest.\" Cilia raised her jade staff, letting a gentle melody of wind drift across the shattered stones.",
-      "narrationKo": "아르투스가 절규하며 부러진 검을 내리찍었다. 그것은 살의가 아니라, 고통에서 벗어나고 싶어 하는 영혼의 마지막 비명이었다. 카단은 칼을 휘두르지 않고, 드래곤 브레이커 방패로 아르투스의 검격을 부드럽게 감싸 안았다. 쾅!",
+      "sceneNumber": 10,
+      "imageFile": "episode_39/scene_10.webp",
+      "sourceImageFile": "episode_39/scene_10.webp",
+      "narrationEn": "The time has come to cast off these cursed chains and enter eternal rest.\"",
+      "narrationKo": "그의 낡은 갑주 틈새로는 검은 피 대신 메두사 고르고가 심어둔 기괴한 사령의 실핏줄들이 부서진 쇠사슬처럼 끊어져 나가고 있었다.",
       "sourceSentenceStart": 10,
+      "sourceSentenceEnd": 10,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그의 낡은 갑주 틈새로는 검은 피 대신 메두사 고르고가 심어둔 기괴한 사령의 실핏줄들이 부서진 쇠사슬처럼 끊어져 나가고 있었다.",
+          "textEn": "The time has come to cast off these cursed chains and enter eternal rest.\"",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 89
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_39/scene_11.webp",
+      "sourceImageFile": "episode_39/scene_11.webp",
+      "narrationEn": "Cilia raised her jade staff, letting a gentle melody of wind drift across the shattered stones.",
+      "narrationKo": "실리아가 녹옥 지팡이 끝으로 아침이슬을 털어내며 속삭였다. “아르투스 경의 영혼이 비명을 지르고 있어요. 육신은 괴물이 되었지만, 그의 가슴속 기사의 심장은 여전히 해방을 갈망하고 있어요.”",
+      "sourceSentenceStart": 11,
+      "sourceSentenceEnd": 11,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“아르투스 경의 영혼이 비명을 지르고 있어요. 육신은 괴물이 되었지만, 그의 가슴속 기사의 심장은 여전히 해방을 갈망하고 있어요.”",
+          "textEn": "“Cilia raised her jade staff, letting a gentle melody of wind drift across the shattered stones.”",
+          "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_39/scene_12.webp",
+      "sourceImageFile": "episode_39/scene_12.webp",
+      "narrationEn": "\"His soul weeps in agony.",
+      "narrationKo": "카단이 고개를 끄덕이며 방패를 가슴 높이로 정돈했다. 아르투스가 절규하며 부러진 검을 내리찍었다. 그것은 살의가 아니라, 고통에서 벗어나고 싶어 하는 영혼의 마지막 비명이었다.",
+      "sourceSentenceStart": 12,
       "sourceSentenceEnd": 12,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "쾅!",
-          "textEn": "The time has come to cast off these cursed chains and enter eternal rest.\" Cilia raised her jade staff, letting a gentle melody of wind drift across the shattered stones.",
+          "textKo": "그것은 살의가 아니라, 고통에서 벗어나고 싶어 하는 영혼의 마지막 비명이었다.",
+          "textEn": "\"His soul weeps in agony.",
           "bubbleType": "thought",
-          "position": "top-left",
-          "characterCardId": 60
+          "position": "bottom-right",
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
@@ -175,20 +378,49 @@
       ]
     },
     {
-      "sceneNumber": 6,
-      "imageFile": "episode_39/scene_06.webp",
-      "sourceImageFile": "episode_39/scene_06.webp",
-      "narrationEn": "\"His soul weeps in agony. Though his body was made a monster, the heart of a paladin beats within, yearning for release.\"",
-      "narrationKo": "방패 표면에서 터져 나온 온화한 황금빛 별빛이 아르투스의 전신을 따뜻하게 감싸 안았다. 알렉산다르 스승이 전수했던 성기사의 궁극오의, 사령을 해방시키는 ‘성진해탈(星辰解脫)’의 마나였다. 아르투스의 흑요석 갑주를 옭아매고 있던 메두사 고르고의 검은 저주 사슬들이 하얀 빛의 가루가 되어 하나둘 부서져 내렸다.",
+      "sceneNumber": 13,
+      "imageFile": "episode_39/scene_13.webp",
+      "sourceImageFile": "episode_39/scene_13.webp",
+      "narrationEn": "Though his body was made a monster, the heart of a paladin beats within, yearning for release.\"",
+      "narrationKo": "카단은 칼을 휘두르지 않고, 드래곤 브레이커 방패로 아르투스의 검격을 부드럽게 감싸 안았다.",
       "sourceSentenceStart": 13,
+      "sourceSentenceEnd": 13,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단은 칼을 휘두르지 않고, 드래곤 브레이커 방패로 아르투스의 검격을 부드럽게 감싸 안았다.",
+          "textEn": "Though his body was made a monster, the heart of a paladin beats within, yearning for release.\"",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_39/scene_14.webp",
+      "sourceImageFile": "episode_39/scene_14.webp",
+      "narrationEn": "Artus brought down his broken broadsword with a desperate cry—not an attack of malice, but a plea for deliverance.",
+      "narrationKo": "쾅! 방패 표면에서 터져 나온 온화한 황금빛 별빛이 아르투스의 전신을 따뜻하게 감싸 안았다. 알렉산다르 스승이 전수했던 성기사의 궁극오의, 사령을 해방시키는 ‘성진해탈(星辰解脫)’의 마나였다.",
+      "sourceSentenceStart": 14,
       "sourceSentenceEnd": 14,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "아르투스의 흑요석 갑주를 옭아매고 있던 메두사 고르고의 검은 저주 사슬들이 하얀 빛의 가루가 되어 하나둘 부서져 내렸다.",
-          "textEn": "Though his body was made a monster, the heart of a paladin beats within, yearning for release.\"",
+          "textKo": "알렉산다르 스승이 전수했던 성기사의 궁극오의, 사령을 해방시키는 ‘성진해탈(星辰解脫)’의 마나였다.",
+          "textEn": "Artus brought down his broken broadsword with a desperate cry—not an attack of malice, but a plea for deliverance.",
           "bubbleType": "thought",
           "position": "top-right",
           "characterCardId": 60
@@ -210,282 +442,32 @@
       ]
     },
     {
-      "sceneNumber": 7,
-      "imageFile": "episode_39/scene_07.webp",
-      "sourceImageFile": "episode_39/scene_07.webp",
-      "narrationEn": "Artus brought down his broken broadsword with a desperate cry—not an attack of malice, but a plea for deliverance. Kadan did not draw his steel; instead, he stepped forward, meeting the blow with the gentle embrace of his shield.",
-      "narrationKo": "아르투스의 투구가 벗겨지며, 백발이 성성한 노기사의 평온한 미소가 드러났다. 노기사가 부러진 검을 바닥에 떨어뜨리며 무릎을 꿇었다.",
-      "sourceSentenceStart": 15,
-      "sourceSentenceEnd": 16,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "내레이션",
-          "speakerEn": "Narration",
-          "textKo": "노기사가 부러진 검을 바닥에 떨어뜨리며 무릎을 꿇었다.",
-          "textEn": "Kadan did not draw his steel; instead, he stepped forward, meeting the blow with the gentle embrace of his shield.",
-          "bubbleType": "thought",
-          "position": "bottom-left",
-          "characterCardId": 60
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 8,
-      "imageFile": "episode_39/scene_08.webp",
-      "sourceImageFile": "episode_39/scene_08.webp",
-      "narrationEn": "A soothing aura of golden starlight radiated from the shield face—Master Aleksandar's ultimate art, 'Star Deliverance.' The necrotic tendrils wrapping Artus's plate disintegrated into luminous white butterflies that drifted upward into the sky. His battered helm slipped away, revealing the serene countenance of a white-haired elder. Kneeling before Kadan, Artus took the youth's hand with trembling fingers.",
-      "narrationKo": "“고맙다... 알렉산다르의 아이여... 내 영혼이... 드디어 빛의 품으로 돌아가는구나... 이 세상은... 여전히 목숨을 바쳐... 지킬 만한 가치가 있는 곳이었어...” 말을 마친 아르투스의 신형은 은빛 먼지가 되어 바람결을 타고 하늘로 평화롭게 흩어졌다. 죽음의 기사는 마침내 성기사의 명예를 되찾고 영면에 들었다.",
-      "sourceSentenceStart": 17,
-      "sourceSentenceEnd": 18,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "데스나이트 아르투스",
-          "speakerEn": "Death Knight Artus",
-          "textKo": "“고맙다... 알렉산다르의 아이여... 내 영혼이... 드디어 빛의 품으로 돌아가는구나... 이 세상은... 여전히 목숨을 바쳐... 지킬 만한 가치가 있는 곳이었어...”",
-          "textEn": "“Thank you... child of Aleksandar... Your shield has redeemed me... Now I may face Sir Balian and Sir Aleksandar with head held high... This world... was truly worth defending...”",
-          "bubbleType": "thought",
-          "position": "top-left",
-          "characterCardId": 60
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        },
-        {
-          "textKo": "휘이이익-!",
-          "textEn": "SWOOSH!",
-          "style": "slash",
-          "position": "top-left"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 9,
-      "imageFile": "episode_39/scene_09.webp",
-      "sourceImageFile": "episode_39/scene_09.webp",
-      "narrationEn": "\"Thank you... child of Aleksandar... Your shield has redeemed me... Now I may face Sir Balian and Sir Aleksandar with head held high... This world... was truly worth defending...\"",
-      "narrationKo": "카단의 드래곤 브레이커 방패에서 뿜어져 나온 성진해탈의 황금빛 마나는 대지와 별의 치유력을 품고 있었다. 방패와 맞부딪친 순간, 아르투스의 부러진 흑요석 대검은 산산조각 나 먼지로 흩어졌고, 노기사의 가슴을 짓누르던 검은 원혼의 멍에가 마침내 하얀 빛의 나비가 되어 허공으로 날아올랐다. 아르투스는 무릎을 꿇은 채 눈물을 흘리며 카단의 손을 잡았다. “고맙다... 알렉산다르의 아이여... 네 방패가... 나를 구원하였구나... 이제 발리안 경과 알렉산다르 경을 뵈러 갈 수 있겠어...” 노기사의 영혼은 평온한 미소를 머금은 채 아침 햇살 속으로 승화되었다. 아르투스가 성불하고 남은 것은 오직 바닥에 쓰러져 피를 토하는 루시안뿐이었다. 마나를 모두 소진하고 세 개의 봉인을 잃은 루시안은 더 이상 권력자도 괴물도 아닌, 늙고 비참한 죄인에 불과했다.",
-      "sourceSentenceStart": 19,
-      "sourceSentenceEnd": 21,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "데스나이트 아르투스",
-          "speakerEn": "Death Knight Artus",
-          "textKo": "“고맙다... 알렉산다르의 아이여... 네 방패가... 나를 구원하였구나... 이제 발리안 경과 알렉산다르 경을 뵈러 갈 수 있겠어...”",
-          "textEn": "“Thank you... child of Aleksandar... Your shield has redeemed me... Now I may face Sir Balian and Sir Aleksandar with head held high... This world... was truly worth defending...”",
-          "bubbleType": "thought",
-          "position": "top-right",
-          "characterCardId": 60
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 10,
-      "imageFile": "episode_39/scene_10.webp",
-      "sourceImageFile": "episode_39/scene_10.webp",
-      "narrationEn": "With a peaceful smile, the old knight's spirit dissolved into silver dust, carried away on the morning breeze. Only Lucian remained, weeping black bile upon the marble floor. Stripped of his codex, the once-mighty tyrant had withered into a frail, trembling old wretch. He clawed at Kadan's boots, begging for mercy.",
-      "narrationKo": "루시안이 피 묻은 손으로 바닥을 기며 카단의 장화를 붙잡으려 했다. “살려다오... 카단! 네게 황실의 모든 재보와 영지를 주마! 날 살려만 준다면...”",
-      "sourceSentenceStart": 22,
-      "sourceSentenceEnd": 23,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "루시안",
-          "speakerEn": "Lucian",
-          "textKo": "“살려다오... 카단! 네게 황실의 모든 재보와 영지를 주마! 날 살려만 준다면...”",
-          "textEn": "“Thank you... child of Aleksandar... Your shield has redeemed me... Now I may face Sir Balian and Sir Aleksandar with head held high... This world... was truly worth defending...”",
-          "bubbleType": "shout",
-          "position": "bottom-left",
-          "characterCardId": 61
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 11,
-      "imageFile": "episode_39/scene_11.webp",
-      "sourceImageFile": "episode_39/scene_11.webp",
-      "narrationEn": "\"Spare me, Kadan! I shall grant you every treasure and province in the empire! Only spare my life!\"",
-      "narrationKo": "카단이 차가운 눈빛으로 루시안을 내려다보았다. “네가 불태운 수많은 마을과, 광산에서 얼어 죽어간 무고한 백성들, 그리고 스승님들과 이그니스의 생명은 그 어떤 황금으로도 되돌릴 수 없다. 네 죄는 법과 역사의 심판대 앞에 서야 마땅하다.”",
-      "sourceSentenceStart": 24,
-      "sourceSentenceEnd": 25,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“네가 불태운 수많은 마을과, 광산에서 얼어 죽어간 무고한 백성들, 그리고 스승님들과 이그니스의 생명은 그 어떤 황금으로도 되돌릴 수 없다. 네 죄는 법과 역사의 심판대 앞에 서야 마땅하다.”",
-          "textEn": "“Spare me, Kadan! I shall grant you every treasure and province in the empire! Only spare my life!”",
-          "bubbleType": "speech",
-          "position": "bottom-right",
-          "characterCardId": 41
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        },
-        {
-          "textKo": "쿠구구궁!",
-          "textEn": "RUMBLE!",
-          "style": "rumble",
-          "position": "bottom-left"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 12,
-      "imageFile": "episode_39/scene_12.webp",
-      "sourceImageFile": "episode_39/scene_12.webp",
-      "narrationEn": "Kadan looked down with eyes as cool as northern mountain streams.",
-      "narrationKo": "카단은 단검으로 루시안의 마나 회로를 봉인하고, 대성당에서 올라온 의용군들에게 죄인을 넘겼다. 루시안은 비명을 지르며 쇠사슬에 묶여 끌려내려갔다. 십팔 년간 대륙을 짓누르던 어둠의 폭정이 마침내 완전히 종식된 순간이었다. 아르투스가 성불하고 난 자리에는 오직 자신의 탐욕에 짓밟혀 피를 토하는 루시안만이 홀로 남아 있었다. 한때 대륙을 호령하던 최고 권력자의 진홍빛 법복은 불타버린 걸레짝이 되어 있었고, 나인섀도우 코덱스가 소멸하자 급격한 노화가 찾아와 노파처럼 쪼그라들어 있었다.",
-      "sourceSentenceStart": 26,
-      "sourceSentenceEnd": 28,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "내레이션",
-          "speakerEn": "Narration",
-          "textKo": "한때 대륙을 호령하던 최고 권력자의 진홍빛 법복은 불타버린 걸레짝이 되어 있었고, 나인섀도우 코덱스가 소멸하자 급격한 노화가 찾아와 노파처럼 쪼그라들어 있었다.",
-          "textEn": "Kadan looked down with eyes as cool as northern mountain streams.",
-          "bubbleType": "thought",
-          "position": "bottom-right",
-          "characterCardId": 41
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 13,
-      "imageFile": "episode_39/scene_13.webp",
-      "sourceImageFile": "episode_39/scene_13.webp",
-      "narrationEn": "\"The villages you burned, the captives who perished in the mines, and the lives of my masters and Ignis cannot be bought with gold. You shall answer for your deeds before the judgment of law and history.\" Allied soldiers bound Lucian in heavy chains and hauled him down to the dungeons. The eighteen-year tyranny that had choked the realm had come to an end.",
-      "narrationKo": "루시안은 바닥을 기며 살려달라고 애원했지만, 카단의 눈빛은 얼어붙은 강물처럼 차가웠다. “네가 앗아간 수많은 목숨들의 무게를 뼈저리게 느껴라. 죗값은 법과 역사의 엄정한 심판대에서 치러질 것이다.” 의용군 병사들이 달려와 루시안을 쇠사슬로 결박해 끌고 내려갔다. 카단과 실리아는 파멸의 제단 난간에 나란히 섰다.",
-      "sourceSentenceStart": 29,
-      "sourceSentenceEnd": 30,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "루시안",
-          "speakerEn": "Lucian",
-          "textKo": "“네가 앗아간 수많은 목숨들의 무게를 뼈저리게 느껴라. 죗값은 법과 역사의 엄정한 심판대에서 치러질 것이다.”",
-          "textEn": "“The villages you burned, the captives who perished in the mines, and the lives of my masters and Ignis cannot be bought with gold. You shall answer for your deeds before the judgment of law and history.”",
-          "bubbleType": "speech",
-          "position": "top-right",
-          "characterCardId": 61
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 14,
-      "imageFile": "episode_39/scene_14.webp",
-      "sourceImageFile": "episode_39/scene_14.webp",
-      "narrationEn": "Kadan and Cilia stood side-by-side upon the terrace. Below, the dark storm clouds parted as the morning sun rose over the eastern sea, bathing the scarred land in gold. The sulfur fog was swept away, revealing green forests and sparkling rivers.",
-      "narrationKo": "제단 아래로 펼쳐진 대륙의 전경 위로, 칠흑 같던 먹구름이 서서히 걷혀 나가고 있었다. 동쪽 대해의 수평선 너머에서 찬란한 황금빛 아침 햇살이 쏟아져 내리며, 전쟁의 상흔으로 물들었던 대지를 따스하게 어루만지기 시작했다. 실리아가 눈물을 글썽이며 카단의 손을 잡았다.",
-      "sourceSentenceStart": 31,
-      "sourceSentenceEnd": 32,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "내레이션",
-          "speakerEn": "Narration",
-          "textKo": "실리아가 눈물을 글썽이며 카단의 손을 잡았다.",
-          "textEn": "The sulfur fog was swept away, revealing green forests and sparkling rivers.",
-          "bubbleType": "thought",
-          "position": "top-right",
-          "characterCardId": 62
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
       "sceneNumber": 15,
       "imageFile": "episode_39/scene_15.webp",
       "sourceImageFile": "episode_39/scene_15.webp",
-      "narrationEn": "Cilia leaned against Kadan's shoulder, tears shimmering in her eyes.",
-      "narrationKo": "“우리가 해냈어요, 카단. 어둠이 걷히고 진정한 아침이 찾아왔어요.” 카단은 주머니 속에서 따스하게 빛나는 이그니스의 유리 불씨를 꺼내 아침 햇살을 향해 높이 들어 올렸다.",
-      "sourceSentenceStart": 33,
-      "sourceSentenceEnd": 34,
+      "narrationEn": "Artus brought down his broken broadsword with a desperate cry—not an attack of malice, but a plea for deliverance.",
+      "narrationKo": "아르투스의 흑요석 갑주를 옭아매고 있던 메두사 고르고의 검은 저주 사슬들이 하얀 빛의 가루가 되어 하나둘 부서져 내렸다.",
+      "sourceSentenceStart": 15,
+      "sourceSentenceEnd": 15,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“우리가 해냈어요, 카단. 어둠이 걷히고 진정한 아침이 찾아왔어요.”",
-          "textEn": "“We have done it, Kadan. True dawn has arrived.”",
-          "bubbleType": "speech",
-          "position": "bottom-right",
-          "characterCardId": 62
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "아르투스의 흑요석 갑주를 옭아매고 있던 메두사 고르고의 검은 저주 사슬들이 하얀 빛의 가루가 되어 하나둘 부서져 내렸다.",
+          "textEn": "Artus brought down his broken broadsword with a desperate cry—not an attack of malice, but a plea for deliverance.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 60
         }
       ],
       "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
         {
           "textKo": "파지지직!",
           "textEn": "CRACKLE!",
@@ -498,20 +480,49 @@
       "sceneNumber": 16,
       "imageFile": "episode_39/scene_16.webp",
       "sourceImageFile": "episode_39/scene_16.webp",
-      "narrationEn": "\"We have done it, Kadan. True dawn has arrived.\" Kadan retrieved Ignis's White Glass Ember, holding it toward the sun. The vessel emanated a steady, warm white light, as though their fallen brother were smiling beside them.",
-      "narrationKo": "유리 불씨 속의 순백 화염이 햇살과 어우러지며, 마치 이그니스가 환하게 미소 짓는 듯 눈부신 빛의 파문을 일으켰다. “보고 있는가, 이그니스. 스승님, 숙부님... 우리가 마침내 약속을 지켜냈습니다.” 파멸의 제단 테라스 위로 떠오른 거대한 아침 태양은 온 대륙을 찬란한 황금빛으로 물들이고 있었다. 검은 늪지대의 지독한 유황 안개는 아침 바람에 완전히 씻겨 나갔고, 산맥 너머로 푸른 숲과 강줄기가 눈부신 자태를 드러냈다.",
-      "sourceSentenceStart": 35,
-      "sourceSentenceEnd": 37,
+      "narrationEn": "Kadan did not draw his steel; instead, he stepped forward, meeting the blow with the gentle embrace of his shield.",
+      "narrationKo": "아르투스의 투구가 벗겨지며, 백발이 성성한 노기사의 평온한 미소가 드러났다.",
+      "sourceSentenceStart": 16,
+      "sourceSentenceEnd": 16,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "이그니스",
-          "speakerEn": "Ignis",
-          "textKo": "“보고 있는가, 이그니스. 스승님, 숙부님... 우리가 마침내 약속을 지켜냈습니다.”",
-          "textEn": "“We have done it, Kadan. True dawn has arrived.”",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "아르투스의 투구가 벗겨지며, 백발이 성성한 노기사의 평온한 미소가 드러났다.",
+          "textEn": "Kadan did not draw his steel; instead, he stepped forward, meeting the blow with the gentle embrace of his shield.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 60
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_39/scene_17.webp",
+      "sourceImageFile": "episode_39/scene_17.webp",
+      "narrationEn": "A soothing aura of golden starlight radiated from the shield face—Master Aleksandar's ultimate art, 'Star Deliverance.' The necrotic tendrils wrapping Artus's plate disintegrated into luminous white butterflies that drifted upward into the sky.",
+      "narrationKo": "노기사가 부러진 검을 바닥에 떨어뜨리며 무릎을 꿇었다.",
+      "sourceSentenceStart": 17,
+      "sourceSentenceEnd": 17,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "노기사가 부러진 검을 바닥에 떨어뜨리며 무릎을 꿇었다.",
+          "textEn": "A soothing aura of golden starlight radiated from the shield face—Master Aleksandar's ultimate art, 'Star Deliverance.' The necrotic tendrils wrapping Artus's plate disintegrated into luminous white butterflies that drifted upward into the sky.",
           "bubbleType": "thought",
           "position": "top-left",
-          "characterCardId": 11
+          "characterCardId": 60
         }
       ],
       "sfxCues": [
@@ -520,33 +531,27 @@
           "textEn": "CLANG!",
           "style": "slash",
           "position": "top-right"
-        },
-        {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
         }
       ]
     },
     {
-      "sceneNumber": 17,
-      "imageFile": "episode_39/scene_17.webp",
-      "sourceImageFile": "episode_39/scene_17.webp",
-      "narrationEn": "\"Are you watching, Ignis? Master, uncle... We have kept our vow.\"",
-      "narrationKo": "카단은 주머니 속에서 따스하게 빛나는 이그니스의 유리 불씨를 꺼내 햇살을 향해 비추었다. 불씨는 이제 깜빡이지 않고, 마치 모든 임무를 완수한 기사처럼 온화하고 잔잔한 백색 빛을 내뿜고 있었다. 실리아가 카단의 어깨에 기대어 미소를 지었다. “이그니스가 우리를 보며 웃고 있어요.” 저 멀리 하층부에서 펜릴 왕과 수만 명의 연합군 병사들, 그리고 피난민들이 일제히 무기를 하늘 높이 치켜들며 승리의 함성을 질렀다. 함성은 산맥을 울리고 대해를 건너 대륙 전체로 메아리쳐 퍼져나갔다.",
-      "sourceSentenceStart": 38,
-      "sourceSentenceEnd": 39,
+      "sceneNumber": 18,
+      "imageFile": "episode_39/scene_18.webp",
+      "sourceImageFile": "episode_39/scene_18.webp",
+      "narrationEn": "His battered helm slipped away, revealing the serene countenance of a white-haired elder.",
+      "narrationKo": "“고맙다... 알렉산다르의 아이여... 내 영혼이... 드디어 빛의 품으로 돌아가는구나... 이 세상은... 여전히 목숨을 바쳐... 지킬 만한 가치가 있는 곳이었어...”",
+      "sourceSentenceStart": 18,
+      "sourceSentenceEnd": 18,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“이그니스가 우리를 보며 웃고 있어요.”",
-          "textEn": "“Are you watching, Ignis? Master, uncle... We have kept our vow.”",
-          "bubbleType": "speech",
-          "position": "top-right",
-          "characterCardId": 62
+          "speakerKo": "데스나이트 아르투스",
+          "speakerEn": "Death Knight Artus",
+          "textKo": "“고맙다... 알렉산다르의 아이여... 내 영혼이... 드디어 빛의 품으로 돌아가는구나... 이 세상은... 여전히 목숨을 바쳐... 지킬 만한 가치가 있는 곳이었어...”",
+          "textEn": "“His battered helm slipped away, revealing the serene countenance of a white-haired elder.”",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 60
         }
       ],
       "sfxCues": [
@@ -559,22 +564,847 @@
       ]
     },
     {
-      "sceneNumber": 18,
-      "imageFile": "episode_39/scene_18.webp",
-      "sourceImageFile": "episode_39/scene_18.webp",
-      "narrationEn": "Far below, tens of thousands of allied soldiers and liberated citizens raised their weapons, sending a thunderous cheer across the mountains. Cilia swept her staff, releasing a blessing of gentle wind across the valleys.",
-      "narrationKo": "실리아가 녹옥 지팡이를 들어 허공에 부드러운 바람의 축복을 흩뿌렸다. “이 세상은 수많은 아픔과 상처가 가득하지만, 서로의 손을 잡아주는 온기가 있기에 여전히 지킬 만한 가치가 있는 아름다운 곳이에요.”",
-      "sourceSentenceStart": 40,
-      "sourceSentenceEnd": 41,
+      "sceneNumber": 19,
+      "imageFile": "episode_39/scene_19.webp",
+      "sourceImageFile": "episode_39/scene_19.webp",
+      "narrationEn": "Kneeling before Kadan, Artus took the youth's hand with trembling fingers.",
+      "narrationKo": "말을 마친 아르투스의 신형은 은빛 먼지가 되어 바람결을 타고 하늘로 평화롭게 흩어졌다. 죽음의 기사는 마침내 성기사의 명예를 되찾고 영면에 들었다.",
+      "sourceSentenceStart": 19,
+      "sourceSentenceEnd": 19,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "죽음의 기사는 마침내 성기사의 명예를 되찾고 영면에 들었다.",
+          "textEn": "Kneeling before Kadan, Artus took the youth's hand with trembling fingers.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 60
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_39/scene_20.webp",
+      "sourceImageFile": "episode_39/scene_20.webp",
+      "narrationEn": "\"Thank you... child of Aleksandar...",
+      "narrationKo": "카단의 드래곤 브레이커 방패에서 뿜어져 나온 성진해탈의 황금빛 마나는 대지와 별의 치유력을 품고 있었다.",
+      "sourceSentenceStart": 20,
+      "sourceSentenceEnd": 20,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단의 드래곤 브레이커 방패에서 뿜어져 나온 성진해탈의 황금빛 마나는 대지와 별의 치유력을 품고 있었다.",
+          "textEn": "child of Aleksandar...",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 21,
+      "imageFile": "episode_39/scene_21.webp",
+      "sourceImageFile": "episode_39/scene_21.webp",
+      "narrationEn": "Your shield has redeemed me...",
+      "narrationKo": "방패와 맞부딪친 순간, 아르투스의 부러진 흑요석 대검은 산산조각 나 먼지로 흩어졌고, 노기사의 가슴을 짓누르던 검은 원혼의 멍에가 마침내 하얀 빛의 나비가 되어 허공으로 날아올랐다.",
+      "sourceSentenceStart": 21,
+      "sourceSentenceEnd": 21,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "방패와 맞부딪친 순간, 아르투스의 부러진 흑요석 대검은 산산조각 나 먼지로 흩어졌고, 노기사의 가슴을 짓누르던 검은 원혼의 멍에가 마침내 하얀 빛의 나비가 되어 허공으로 날아올랐다.",
+          "textEn": "Your shield has redeemed me...",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 60
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 22,
+      "imageFile": "episode_39/scene_22.webp",
+      "sourceImageFile": "episode_39/scene_22.webp",
+      "narrationEn": "Now I may face Sir Balian and Sir Aleksandar with head held high...",
+      "narrationKo": "아르투스는 무릎을 꿇은 채 눈물을 흘리며 카단의 손을 잡았다. “고맙다... 알렉산다르의 아이여... 네 방패가... 나를 구원하였구나... 이제 발리안 경과 알렉산다르 경을 뵈러 갈 수 있겠어...”",
+      "sourceSentenceStart": 22,
+      "sourceSentenceEnd": 22,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "데스나이트 아르투스",
+          "speakerEn": "Death Knight Artus",
+          "textKo": "“고맙다... 알렉산다르의 아이여... 네 방패가... 나를 구원하였구나... 이제 발리안 경과 알렉산다르 경을 뵈러 갈 수 있겠어...”",
+          "textEn": "“Now I may face Sir Balian and Sir Aleksandar with head held high...”",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 60
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 23,
+      "imageFile": "episode_39/scene_23.webp",
+      "sourceImageFile": "episode_39/scene_23.webp",
+      "narrationEn": "This world... was truly worth defending...\"",
+      "narrationKo": "노기사의 영혼은 평온한 미소를 머금은 채 아침 햇살 속으로 승화되었다.",
+      "sourceSentenceStart": 23,
+      "sourceSentenceEnd": 23,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "노기사의 영혼은 평온한 미소를 머금은 채 아침 햇살 속으로 승화되었다.",
+          "textEn": "was truly worth defending...\"",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 60
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 24,
+      "imageFile": "episode_39/scene_24.webp",
+      "sourceImageFile": "episode_39/scene_24.webp",
+      "narrationEn": "With a peaceful smile, the old knight's spirit dissolved into silver dust, carried away on the morning breeze.",
+      "narrationKo": "아르투스가 성불하고 남은 것은 오직 바닥에 쓰러져 피를 토하는 루시안뿐이었다. 마나를 모두 소진하고 세 개의 봉인을 잃은 루시안은 더 이상 권력자도 괴물도 아닌, 늙고 비참한 죄인에 불과했다.",
+      "sourceSentenceStart": 24,
+      "sourceSentenceEnd": 24,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "마나를 모두 소진하고 세 개의 봉인을 잃은 루시안은 더 이상 권력자도 괴물도 아닌, 늙고 비참한 죄인에 불과했다.",
+          "textEn": "With a peaceful smile, the old knight's spirit dissolved into silver dust, carried away on the morning breeze.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 60
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 25,
+      "imageFile": "episode_39/scene_25.webp",
+      "sourceImageFile": "episode_39/scene_25.webp",
+      "narrationEn": "Only Lucian remained, weeping black bile upon the marble floor.",
+      "narrationKo": "루시안이 피 묻은 손으로 바닥을 기며 카단의 장화를 붙잡으려 했다.",
+      "sourceSentenceStart": 25,
+      "sourceSentenceEnd": 25,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "루시안이 피 묻은 손으로 바닥을 기며 카단의 장화를 붙잡으려 했다.",
+          "textEn": "Only Lucian remained, weeping black bile upon the marble floor.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 61
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 26,
+      "imageFile": "episode_39/scene_26.webp",
+      "sourceImageFile": "episode_39/scene_26.webp",
+      "narrationEn": "Stripped of his codex, the once-mighty tyrant had withered into a frail, trembling old wretch.",
+      "narrationKo": "“살려다오... 카단! 네게 황실의 모든 재보와 영지를 주마! 날 살려만 준다면...”",
+      "sourceSentenceStart": 26,
+      "sourceSentenceEnd": 26,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "루시안",
+          "speakerEn": "Lucian",
+          "textKo": "“살려다오... 카단! 네게 황실의 모든 재보와 영지를 주마! 날 살려만 준다면...”",
+          "textEn": "“Stripped of his codex, the once-mighty tyrant had withered into a frail, trembling old wretch.”",
+          "bubbleType": "shout",
+          "position": "bottom-left",
+          "characterCardId": 61
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 27,
+      "imageFile": "episode_39/scene_27.webp",
+      "sourceImageFile": "episode_39/scene_27.webp",
+      "narrationEn": "He clawed at Kadan's boots, begging for mercy.",
+      "narrationKo": "카단이 차가운 눈빛으로 루시안을 내려다보았다.",
+      "sourceSentenceStart": 27,
+      "sourceSentenceEnd": 27,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단이 차가운 눈빛으로 루시안을 내려다보았다.",
+          "textEn": "He clawed at Kadan's boots, begging for mercy.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 28,
+      "imageFile": "episode_39/scene_28.webp",
+      "sourceImageFile": "episode_39/scene_28.webp",
+      "narrationEn": "\"Spare me, Kadan!",
+      "narrationKo": "“네가 불태운 수많은 마을과, 광산에서 얼어 죽어간 무고한 백성들, 그리고 스승님들과 이그니스의 생명은 그 어떤 황금으로도 되돌릴 수 없다. 네 죄는 법과 역사의 심판대 앞에 서야 마땅하다.”",
+      "sourceSentenceStart": 28,
+      "sourceSentenceEnd": 28,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“네가 불태운 수많은 마을과, 광산에서 얼어 죽어간 무고한 백성들, 그리고 스승님들과 이그니스의 생명은 그 어떤 황금으로도 되돌릴 수 없다. 네 죄는 법과 역사의 심판대 앞에 서야 마땅하다.”",
+          "textEn": "“\"Spare me, Kadan!”",
+          "bubbleType": "speech",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 29,
+      "imageFile": "episode_39/scene_29.webp",
+      "sourceImageFile": "episode_39/scene_29.webp",
+      "narrationEn": "I shall grant you every treasure and province in the empire!",
+      "narrationKo": "카단은 단검으로 루시안의 마나 회로를 봉인하고, 대성당에서 올라온 의용군들에게 죄인을 넘겼다.",
+      "sourceSentenceStart": 29,
+      "sourceSentenceEnd": 29,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단은 단검으로 루시안의 마나 회로를 봉인하고, 대성당에서 올라온 의용군들에게 죄인을 넘겼다.",
+          "textEn": "I shall grant you every treasure and province in the empire!",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 30,
+      "imageFile": "episode_39/scene_30.webp",
+      "sourceImageFile": "episode_39/scene_30.webp",
+      "narrationEn": "Only spare my life!\"",
+      "narrationKo": "루시안은 비명을 지르며 쇠사슬에 묶여 끌려내려갔다. 십팔 년간 대륙을 짓누르던 어둠의 폭정이 마침내 완전히 종식된 순간이었다.",
+      "sourceSentenceStart": 30,
+      "sourceSentenceEnd": 30,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "십팔 년간 대륙을 짓누르던 어둠의 폭정이 마침내 완전히 종식된 순간이었다.",
+          "textEn": "Only spare my life!\"",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 61
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 31,
+      "imageFile": "episode_39/scene_31.webp",
+      "sourceImageFile": "episode_39/scene_31.webp",
+      "narrationEn": "Kadan looked down with eyes as cool as northern mountain streams.",
+      "narrationKo": "아르투스가 성불하고 난 자리에는 오직 자신의 탐욕에 짓밟혀 피를 토하는 루시안만이 홀로 남아 있었다.",
+      "sourceSentenceStart": 31,
+      "sourceSentenceEnd": 31,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "아르투스가 성불하고 난 자리에는 오직 자신의 탐욕에 짓밟혀 피를 토하는 루시안만이 홀로 남아 있었다.",
+          "textEn": "Kadan looked down with eyes as cool as northern mountain streams.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 60
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 32,
+      "imageFile": "episode_39/scene_32.webp",
+      "sourceImageFile": "episode_39/scene_32.webp",
+      "narrationEn": "\"The villages you burned, the captives who perished in the mines, and the lives of my masters and Ignis cannot be bought with gold.",
+      "narrationKo": "한때 대륙을 호령하던 최고 권력자의 진홍빛 법복은 불타버린 걸레짝이 되어 있었고, 나인섀도우 코덱스가 소멸하자 급격한 노화가 찾아와 노파처럼 쪼그라들어 있었다.",
+      "sourceSentenceStart": 32,
+      "sourceSentenceEnd": 32,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "한때 대륙을 호령하던 최고 권력자의 진홍빛 법복은 불타버린 걸레짝이 되어 있었고, 나인섀도우 코덱스가 소멸하자 급격한 노화가 찾아와 노파처럼 쪼그라들어 있었다.",
+          "textEn": "\"The villages you burned, the captives who perished in the mines, and the lives of my masters and Ignis cannot be bought with gold.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 60
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 33,
+      "imageFile": "episode_39/scene_33.webp",
+      "sourceImageFile": "episode_39/scene_33.webp",
+      "narrationEn": "You shall answer for your deeds before the judgment of law and history.\"",
+      "narrationKo": "루시안은 바닥을 기며 살려달라고 애원했지만, 카단의 눈빛은 얼어붙은 강물처럼 차가웠다. “네가 앗아간 수많은 목숨들의 무게를 뼈저리게 느껴라. 죗값은 법과 역사의 엄정한 심판대에서 치러질 것이다.”",
+      "sourceSentenceStart": 33,
+      "sourceSentenceEnd": 33,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "루시안",
+          "speakerEn": "Lucian",
+          "textKo": "“네가 앗아간 수많은 목숨들의 무게를 뼈저리게 느껴라. 죗값은 법과 역사의 엄정한 심판대에서 치러질 것이다.”",
+          "textEn": "“You shall answer for your deeds before the judgment of law and history.\"”",
+          "bubbleType": "speech",
+          "position": "top-right",
+          "characterCardId": 61
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 34,
+      "imageFile": "episode_39/scene_34.webp",
+      "sourceImageFile": "episode_39/scene_34.webp",
+      "narrationEn": "Allied soldiers bound Lucian in heavy chains and hauled him down to the dungeons.",
+      "narrationKo": "의용군 병사들이 달려와 루시안을 쇠사슬로 결박해 끌고 내려갔다. 카단과 실리아는 파멸의 제단 난간에 나란히 섰다.",
+      "sourceSentenceStart": 34,
+      "sourceSentenceEnd": 34,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단과 실리아는 파멸의 제단 난간에 나란히 섰다.",
+          "textEn": "Allied soldiers bound Lucian in heavy chains and hauled him down to the dungeons.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 61
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 35,
+      "imageFile": "episode_39/scene_35.webp",
+      "sourceImageFile": "episode_39/scene_35.webp",
+      "narrationEn": "The eighteen-year tyranny that had choked the realm had come to an end.",
+      "narrationKo": "제단 아래로 펼쳐진 대륙의 전경 위로, 칠흑 같던 먹구름이 서서히 걷혀 나가고 있었다.",
+      "sourceSentenceStart": 35,
+      "sourceSentenceEnd": 35,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "제단 아래로 펼쳐진 대륙의 전경 위로, 칠흑 같던 먹구름이 서서히 걷혀 나가고 있었다.",
+          "textEn": "The eighteen-year tyranny that had choked the realm had come to an end.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 61
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 36,
+      "imageFile": "episode_39/scene_36.webp",
+      "sourceImageFile": "episode_39/scene_36.webp",
+      "narrationEn": "Kadan and Cilia stood side-by-side upon the terrace.",
+      "narrationKo": "동쪽 대해의 수평선 너머에서 찬란한 황금빛 아침 햇살이 쏟아져 내리며, 전쟁의 상흔으로 물들었던 대지를 따스하게 어루만지기 시작했다.",
+      "sourceSentenceStart": 36,
+      "sourceSentenceEnd": 36,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "동쪽 대해의 수평선 너머에서 찬란한 황금빛 아침 햇살이 쏟아져 내리며, 전쟁의 상흔으로 물들었던 대지를 따스하게 어루만지기 시작했다.",
+          "textEn": "Kadan and Cilia stood side-by-side upon the terrace.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 61
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 37,
+      "imageFile": "episode_39/scene_37.webp",
+      "sourceImageFile": "episode_39/scene_37.webp",
+      "narrationEn": "Below, the dark storm clouds parted as the morning sun rose over the eastern sea, bathing the scarred land in gold.",
+      "narrationKo": "실리아가 눈물을 글썽이며 카단의 손을 잡았다. “우리가 해냈어요, 카단. 어둠이 걷히고 진정한 아침이 찾아왔어요.”",
+      "sourceSentenceStart": 37,
+      "sourceSentenceEnd": 37,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "실리아",
           "speakerEn": "Celia",
-          "textKo": "“이 세상은 수많은 아픔과 상처가 가득하지만, 서로의 손을 잡아주는 온기가 있기에 여전히 지킬 만한 가치가 있는 아름다운 곳이에요.”",
-          "textEn": "“Are you watching, Ignis? Master, uncle... We have kept our vow.”",
+          "textKo": "“우리가 해냈어요, 카단. 어둠이 걷히고 진정한 아침이 찾아왔어요.”",
+          "textEn": "“Below, the dark storm clouds parted as the morning sun rose over the eastern sea, bathing the scarred land in gold.”",
           "bubbleType": "speech",
+          "position": "top-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 38,
+      "imageFile": "episode_39/scene_38.webp",
+      "sourceImageFile": "episode_39/scene_38.webp",
+      "narrationEn": "The sulfur fog was swept away, revealing green forests and sparkling rivers.",
+      "narrationKo": "카단은 주머니 속에서 따스하게 빛나는 이그니스의 유리 불씨를 꺼내 아침 햇살을 향해 높이 들어 올렸다.",
+      "sourceSentenceStart": 38,
+      "sourceSentenceEnd": 38,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단은 주머니 속에서 따스하게 빛나는 이그니스의 유리 불씨를 꺼내 아침 햇살을 향해 높이 들어 올렸다.",
+          "textEn": "The sulfur fog was swept away, revealing green forests and sparkling rivers.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 39,
+      "imageFile": "episode_39/scene_39.webp",
+      "sourceImageFile": "episode_39/scene_39.webp",
+      "narrationEn": "Cilia leaned against Kadan's shoulder, tears shimmering in her eyes.",
+      "narrationKo": "유리 불씨 속의 순백 화염이 햇살과 어우러지며, 마치 이그니스가 환하게 미소 짓는 듯 눈부신 빛의 파문을 일으켰다.",
+      "sourceSentenceStart": 39,
+      "sourceSentenceEnd": 39,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "유리 불씨 속의 순백 화염이 햇살과 어우러지며, 마치 이그니스가 환하게 미소 짓는 듯 눈부신 빛의 파문을 일으켰다.",
+          "textEn": "Cilia leaned against Kadan's shoulder, tears shimmering in her eyes.",
+          "bubbleType": "thought",
           "position": "bottom-left",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 40,
+      "imageFile": "episode_39/scene_40.webp",
+      "sourceImageFile": "episode_39/scene_40.webp",
+      "narrationEn": "\"We have done it, Kadan.",
+      "narrationKo": "“보고 있는가, 이그니스. 스승님, 숙부님... 우리가 마침내 약속을 지켜냈습니다.”",
+      "sourceSentenceStart": 40,
+      "sourceSentenceEnd": 40,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“보고 있는가, 이그니스. 스승님, 숙부님... 우리가 마침내 약속을 지켜냈습니다.”",
+          "textEn": "“\"We have done it, Kadan.”",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 41,
+      "imageFile": "episode_39/scene_41.webp",
+      "sourceImageFile": "episode_39/scene_41.webp",
+      "narrationEn": "\"We have done it, Kadan.",
+      "narrationKo": "파멸의 제단 테라스 위로 떠오른 거대한 아침 태양은 온 대륙을 찬란한 황금빛으로 물들이고 있었다.",
+      "sourceSentenceStart": 41,
+      "sourceSentenceEnd": 41,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "파멸의 제단 테라스 위로 떠오른 거대한 아침 태양은 온 대륙을 찬란한 황금빛으로 물들이고 있었다.",
+          "textEn": "\"We have done it, Kadan.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 42,
+      "imageFile": "episode_39/scene_42.webp",
+      "sourceImageFile": "episode_39/scene_42.webp",
+      "narrationEn": "True dawn has arrived.\"",
+      "narrationKo": "검은 늪지대의 지독한 유황 안개는 아침 바람에 완전히 씻겨 나갔고, 산맥 너머로 푸른 숲과 강줄기가 눈부신 자태를 드러냈다.",
+      "sourceSentenceStart": 42,
+      "sourceSentenceEnd": 42,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "검은 늪지대의 지독한 유황 안개는 아침 바람에 완전히 씻겨 나갔고, 산맥 너머로 푸른 숲과 강줄기가 눈부신 자태를 드러냈다.",
+          "textEn": "True dawn has arrived.\"",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 43,
+      "imageFile": "episode_39/scene_43.webp",
+      "sourceImageFile": "episode_39/scene_43.webp",
+      "narrationEn": "Kadan retrieved Ignis's White Glass Ember, holding it toward the sun.",
+      "narrationKo": "카단은 주머니 속에서 따스하게 빛나는 이그니스의 유리 불씨를 꺼내 햇살을 향해 비추었다. 불씨는 이제 깜빡이지 않고, 마치 모든 임무를 완수한 기사처럼 온화하고 잔잔한 백색 빛을 내뿜고 있었다.",
+      "sourceSentenceStart": 43,
+      "sourceSentenceEnd": 43,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "불씨는 이제 깜빡이지 않고, 마치 모든 임무를 완수한 기사처럼 온화하고 잔잔한 백색 빛을 내뿜고 있었다.",
+          "textEn": "Kadan retrieved Ignis's White Glass Ember, holding it toward the sun.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 44,
+      "imageFile": "episode_39/scene_44.webp",
+      "sourceImageFile": "episode_39/scene_44.webp",
+      "narrationEn": "The vessel emanated a steady, warm white light, as though their fallen brother were smiling beside them.",
+      "narrationKo": "실리아가 카단의 어깨에 기대어 미소를 지었다. “이그니스가 우리를 보며 웃고 있어요.”",
+      "sourceSentenceStart": 44,
+      "sourceSentenceEnd": 44,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“이그니스가 우리를 보며 웃고 있어요.”",
+          "textEn": "“The vessel emanated a steady, warm white light, as though their fallen brother were smiling beside them.”",
+          "bubbleType": "speech",
+          "position": "top-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 45,
+      "imageFile": "episode_39/scene_45.webp",
+      "sourceImageFile": "episode_39/scene_45.webp",
+      "narrationEn": "\"Are you watching, Ignis?",
+      "narrationKo": "저 멀리 하층부에서 펜릴 왕과 수만 명의 연합군 병사들, 그리고 피난민들이 일제히 무기를 하늘 높이 치켜들며 승리의 함성을 질렀다. 함성은 산맥을 울리고 대해를 건너 대륙 전체로 메아리쳐 퍼져나갔다.",
+      "sourceSentenceStart": 45,
+      "sourceSentenceEnd": 45,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "함성은 산맥을 울리고 대해를 건너 대륙 전체로 메아리쳐 퍼져나갔다.",
+          "textEn": "\"Are you watching, Ignis?",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 81
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 46,
+      "imageFile": "episode_39/scene_46.webp",
+      "sourceImageFile": "episode_39/scene_46.webp",
+      "narrationEn": "Master, uncle...",
+      "narrationKo": "실리아가 녹옥 지팡이를 들어 허공에 부드러운 바람의 축복을 흩뿌렸다.",
+      "sourceSentenceStart": 46,
+      "sourceSentenceEnd": 46,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "실리아가 녹옥 지팡이를 들어 허공에 부드러운 바람의 축복을 흩뿌렸다.",
+          "textEn": "Master, uncle...",
+          "bubbleType": "thought",
+          "position": "top-right",
           "characterCardId": 62
         }
       ],
@@ -588,22 +1418,51 @@
       ]
     },
     {
-      "sceneNumber": 19,
-      "imageFile": "episode_39/scene_19.webp",
-      "sourceImageFile": "episode_39/scene_19.webp",
-      "narrationEn": "\"This world bears countless scars, but the warmth of hands held makes it beautiful and worth defending.\" Kadan lowered his shield, clasping her hand tightly.",
-      "narrationKo": "카단이 방패를 거두며 고개를 끄덕였다. “그 온기를 지키기 위해 우리는 방패를 들었다. 이제 사람들의 웃음소리가 이 땅을 가득 채울 것이다.” 새로운 시대의 서막을 알리는 여명 아래에서, 두 영웅은 서로를 향해 굳은 신뢰와 사랑의 미소를 나누었다.",
-      "sourceSentenceStart": 42,
-      "sourceSentenceEnd": 44,
+      "sceneNumber": 47,
+      "imageFile": "episode_39/scene_47.webp",
+      "sourceImageFile": "episode_39/scene_47.webp",
+      "narrationEn": "We have kept our vow.\"",
+      "narrationKo": "“이 세상은 수많은 아픔과 상처가 가득하지만, 서로의 손을 잡아주는 온기가 있기에 여전히 지킬 만한 가치가 있는 아름다운 곳이에요.”",
+      "sourceSentenceStart": 47,
+      "sourceSentenceEnd": 47,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“이 세상은 수많은 아픔과 상처가 가득하지만, 서로의 손을 잡아주는 온기가 있기에 여전히 지킬 만한 가치가 있는 아름다운 곳이에요.”",
+          "textEn": "“We have kept our vow.\"”",
+          "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 48,
+      "imageFile": "episode_39/scene_48.webp",
+      "sourceImageFile": "episode_39/scene_48.webp",
+      "narrationEn": "Far below, tens of thousands of allied soldiers and liberated citizens raised their weapons, sending a thunderous cheer across the mountains.",
+      "narrationKo": "카단이 방패를 거두며 고개를 끄덕였다. “그 온기를 지키기 위해 우리는 방패를 들었다. 이제 사람들의 웃음소리가 이 땅을 가득 채울 것이다.”",
+      "sourceSentenceStart": 48,
+      "sourceSentenceEnd": 48,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
           "textKo": "“그 온기를 지키기 위해 우리는 방패를 들었다. 이제 사람들의 웃음소리가 이 땅을 가득 채울 것이다.”",
-          "textEn": "“This world bears countless scars, but the warmth of hands held makes it beautiful and worth defending.”",
+          "textEn": "“Far below, tens of thousands of allied soldiers and liberated citizens raised their weapons, sending a thunderous cheer across the mountains.”",
           "bubbleType": "speech",
-          "position": "bottom-right",
+          "position": "top-left",
           "characterCardId": 41
         }
       ],
@@ -623,31 +1482,109 @@
       ]
     },
     {
-      "sceneNumber": 20,
-      "imageFile": "episode_39/scene_20.webp",
-      "sourceImageFile": "episode_39/scene_20.webp",
-      "narrationEn": "\"To protect that warmth, we raised our shield. Now let the laughter of the people fill this earth.\"",
-      "narrationKo": "산 아래에서 울려 퍼지는 수만 명의 연합군 병사들과 피난민들의 승전 함성은 대륙의 새로운 봄을 알리는 우레 같은 서곡이었다. 부러진 칼날과 불타버린 방패들이 나뒹굴던 참혹한 전장 위로, 자유를 되찾은 사람들의 눈물과 웃음이 강물처럼 흘러넘쳤다. 실리아가 녹옥 지팡이를 들어 대지를 향해 생명의 바람을 불어넣었다. “우리가 지켜낸 세상이에요. 이제 모든 상처를 보듬고 새로운 이야기를 시작해요.” 카단이 방패를 거두며 손을 꼭 잡았다. “그래, 실리아. 우리의 봄날이 마침내 시작되었다.”",
-      "sourceSentenceStart": 45,
-      "sourceSentenceEnd": 46,
+      "sceneNumber": 49,
+      "imageFile": "episode_39/scene_49.webp",
+      "sourceImageFile": "episode_39/scene_49.webp",
+      "narrationEn": "Cilia swept her staff, releasing a blessing of gentle wind across the valleys.",
+      "narrationKo": "새로운 시대의 서막을 알리는 여명 아래에서, 두 영웅은 서로를 향해 굳은 신뢰와 사랑의 미소를 나누었다.",
+      "sourceSentenceStart": 49,
+      "sourceSentenceEnd": 49,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "새로운 시대의 서막을 알리는 여명 아래에서, 두 영웅은 서로를 향해 굳은 신뢰와 사랑의 미소를 나누었다.",
+          "textEn": "Cilia swept her staff, releasing a blessing of gentle wind across the valleys.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 50,
+      "imageFile": "episode_39/scene_50.webp",
+      "sourceImageFile": "episode_39/scene_50.webp",
+      "narrationEn": "\"This world bears countless scars, but the warmth of hands held makes it beautiful and worth defending.\"",
+      "narrationKo": "산 아래에서 울려 퍼지는 수만 명의 연합군 병사들과 피난민들의 승전 함성은 대륙의 새로운 봄을 알리는 우레 같은 서곡이었다.",
+      "sourceSentenceStart": 50,
+      "sourceSentenceEnd": 50,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "산 아래에서 울려 퍼지는 수만 명의 연합군 병사들과 피난민들의 승전 함성은 대륙의 새로운 봄을 알리는 우레 같은 서곡이었다.",
+          "textEn": "\"This world bears countless scars, but the warmth of hands held makes it beautiful and worth defending.\"",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 51,
+      "imageFile": "episode_39/scene_51.webp",
+      "sourceImageFile": "episode_39/scene_51.webp",
+      "narrationEn": "Kadan lowered his shield, clasping her hand tightly.",
+      "narrationKo": "부러진 칼날과 불타버린 방패들이 나뒹굴던 참혹한 전장 위로, 자유를 되찾은 사람들의 눈물과 웃음이 강물처럼 흘러넘쳤다.",
+      "sourceSentenceStart": 51,
+      "sourceSentenceEnd": 51,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "부러진 칼날과 불타버린 방패들이 나뒹굴던 참혹한 전장 위로, 자유를 되찾은 사람들의 눈물과 웃음이 강물처럼 흘러넘쳤다.",
+          "textEn": "Kadan lowered his shield, clasping her hand tightly.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 52,
+      "imageFile": "episode_39/scene_52.webp",
+      "sourceImageFile": "episode_39/scene_52.webp",
+      "narrationEn": "\"To protect that warmth, we raised our shield.",
+      "narrationKo": "실리아가 녹옥 지팡이를 들어 대지를 향해 생명의 바람을 불어넣었다. “우리가 지켜낸 세상이에요. 이제 모든 상처를 보듬고 새로운 이야기를 시작해요.” 카단이 방패를 거두며 손을 꼭 잡았다.",
+      "sourceSentenceStart": 52,
+      "sourceSentenceEnd": 52,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "실리아",
           "speakerEn": "Celia",
           "textKo": "“우리가 지켜낸 세상이에요. 이제 모든 상처를 보듬고 새로운 이야기를 시작해요.”",
-          "textEn": "“To protect that warmth, we raised our shield. Now let the laughter of the people fill this earth.”",
+          "textEn": "“\"To protect that warmth, we raised our shield.”",
           "bubbleType": "speech",
           "position": "top-left",
-          "characterCardId": 62
-        },
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“그래, 실리아. 우리의 봄날이 마침내 시작되었다.”",
-          "textEn": "“Now let the laughter of the people fill this earth.\"”",
-          "bubbleType": "speech",
-          "position": "top-right",
           "characterCardId": 62
         }
       ],
@@ -663,6 +1600,35 @@
           "textEn": "SWOOSH!",
           "style": "slash",
           "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 53,
+      "imageFile": "episode_39/scene_53.webp",
+      "sourceImageFile": "episode_39/scene_53.webp",
+      "narrationEn": "Now let the laughter of the people fill this earth.\"",
+      "narrationKo": "“그래, 실리아. 우리의 봄날이 마침내 시작되었다.”",
+      "sourceSentenceStart": 53,
+      "sourceSentenceEnd": 53,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“그래, 실리아. 우리의 봄날이 마침내 시작되었다.”",
+          "textEn": "“Now let the laughter of the people fill this earth.\"”",
+          "bubbleType": "speech",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
         }
       ]
     }

@@ -232,12 +232,17 @@ export const NovelView: React.FC<NovelViewProps> = ({
   // Cartoon speech bubbles & SFX overlays toggle (기본 비표시)
   const [showCartoonBubbles, setShowCartoonBubbles] = useState<boolean>(false);
 
-  // Get cartoon image info for a specific episode and scene index (0..20)
+  // Get cartoon image info for a specific episode and scene index (0..N)
   const getCartoonImageInfo = (epNum: number, sceneIdx: number): WebtoonManifestImage | undefined => {
     const epData = WEBTOON_DATA[String(epNum)];
     if (!epData || !epData.images) return undefined;
     return epData.images.find(img => img.index === sceneIdx);
   };
+
+  const totalEpisodeScenes = Math.max(
+    1,
+    (WEBTOON_DATA[String(currentEpisodeNum)]?.images?.length || 21) - 1
+  );
 
   // Get cartoon scene image URL candidate pointing to local webtoon assets
   const getCartoonSceneUrl = (epNum: number, sceneIdx: number, attempt = 0): string => {
@@ -357,9 +362,9 @@ export const NovelView: React.FC<NovelViewProps> = ({
         setShowResumeBanner(false);
       }
 
-      // Track visible scene in Cartoon mode (Scenes 1-20)
+      // Track visible scene in Cartoon mode
       if (readerTab === 'cartoon' && cartoonDisplayMode === 'scroll') {
-        const totalScenes = 20;
+        const totalScenes = totalEpisodeScenes;
         const sceneNum = Math.min(totalScenes, Math.max(1, Math.round((pct / 100) * (totalScenes - 1)) + 1));
         setCurrentVisibleScene(sceneNum);
       }
@@ -459,8 +464,8 @@ export const NovelView: React.FC<NovelViewProps> = ({
           : (enInfo?.fileName ? `/book/image_narrations/english_txt/${enInfo.fileName}` : `/book/episode_${epPad}.md`);
 
         const [mdRes, narrRes] = await Promise.all([
-          fetch(`${getAssetUrl(textPath)}?v=novel2026_v2`),
-          fetch(`${getAssetUrl(`/book/image_narrations/episode_${epPad}_narrations.json`)}?v=novel2026_v2`),
+          fetch(`${getAssetUrl(textPath)}?v=novel2026_v3`),
+          fetch(`${getAssetUrl(`/book/image_narrations/episode_${epPad}_narrations.json`)}?v=novel2026_v3`),
         ]);
 
         if (mdRes.ok && isMounted) {
@@ -1593,7 +1598,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
               {/* Vertical Scroll Webtoon Strip View */}
               {cartoonDisplayMode === 'scroll' ? (
                 <div className="space-y-8">
-                  {Array.from({ length: 21 }, (_, i) => i).map((scNum) => {
+                  {Array.from({ length: totalEpisodeScenes + 1 }, (_, i) => i).map((scNum) => {
                     const attempt = sceneImgAttempts[`${currentEpisodeNum}_${scNum}`] || 0;
                     const isFailedAll = attempt > 10;
                     const imgUrl = getCartoonSceneUrl(currentEpisodeNum, scNum, attempt);
@@ -1609,6 +1614,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
                         key={scNum}
                         episodeNumber={currentEpisodeNum}
                         sceneIndex={scNum}
+                        totalScenes={totalEpisodeScenes}
                         imgUrl={imgUrl}
                         localArtUrl={imgInfo?.localArtUrl}
                         isKeyClimax={imgInfo?.isKeyClimax}
@@ -1634,7 +1640,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
                 /* Single Slide Mode View */
                 <div className="border border-[rgba(15,0,0,0.12)] rounded-none bg-[#fdfcfc] overflow-hidden p-4 sm:p-6 space-y-4">
                   {(() => {
-                    const scNum = activeSlideIndex;
+                    const scNum = Math.min(activeSlideIndex, totalEpisodeScenes);
                     const attempt = sceneImgAttempts[`${currentEpisodeNum}_${scNum}`] || 0;
                     const isFailedAll = attempt > 10;
                     const imgUrl = getCartoonSceneUrl(currentEpisodeNum, scNum, attempt);
@@ -1650,16 +1656,16 @@ export const NovelView: React.FC<NovelViewProps> = ({
                         {/* Slide Navigation Header with 44px+ touch targets */}
                         <div className="flex items-center justify-between border-b border-[rgba(15,0,0,0.12)] pb-3 text-xs flex-wrap gap-2">
                           <span className="font-bold text-[#201d1d]">
-                            {scNum === 0 ? `[ TITLE CARD ]` : `SCENE ${pad2(scNum)} / 20`}
+                            {scNum === 0 ? `[ TITLE CARD ]` : `SCENE ${pad2(scNum)} / ${pad2(totalEpisodeScenes)}`}
                           </span>
                           <div className="flex items-center gap-1.5 overflow-x-auto max-w-full pb-1">
-                            {Array.from({ length: 21 }, (_, i) => i).map(n => (
+                            {Array.from({ length: totalEpisodeScenes + 1 }, (_, i) => i).map(n => (
                               <button
                                 key={n}
                                 onClick={() => setActiveSlideIndex(n)}
                                 className={cn(
                                   "min-w-[44px] min-h-[44px] px-2 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors border shrink-0 flex items-center justify-center",
-                                  activeSlideIndex === n
+                                  scNum === n
                                     ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
                                     : "bg-[#f8f7f7] text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee]"
                                 )}
@@ -1674,6 +1680,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
                         <WebtoonPanelCard
                           episodeNumber={currentEpisodeNum}
                           sceneIndex={scNum}
+                          totalScenes={totalEpisodeScenes}
                           imgUrl={imgUrl}
                           localArtUrl={imgInfo?.localArtUrl}
                           isKeyClimax={imgInfo?.isKeyClimax}
@@ -1697,24 +1704,24 @@ export const NovelView: React.FC<NovelViewProps> = ({
                         <div className="flex items-center justify-between pt-2">
                           <button
                             onClick={() => setActiveSlideIndex(prev => Math.max(0, prev - 1))}
-                            disabled={activeSlideIndex <= 0}
+                            disabled={scNum <= 0}
                             className={cn(
                               "min-h-[44px] px-4 py-2 border rounded-sm font-bold text-xs flex items-center gap-1.5 cursor-pointer transition-colors",
-                              activeSlideIndex <= 0 ? "opacity-50 cursor-not-allowed bg-[#f1eeee] border-[rgba(15,0,0,0.12)]" : "bg-[#fdfcfc] border-[rgba(15,0,0,0.12)] hover:bg-[#f8f7f7]"
+                              scNum <= 0 ? "opacity-50 cursor-not-allowed bg-[#f1eeee] border-[rgba(15,0,0,0.12)]" : "bg-[#fdfcfc] border-[rgba(15,0,0,0.12)] hover:bg-[#f8f7f7]"
                             )}
                           >
                             <ChevronLeft size={16} />
                             <span>{language === 'ko' ? '이전 장면' : 'Prev'}</span>
                           </button>
                           <span className="text-xs text-[#646262] font-bold">
-                            {activeSlideIndex === 0 ? 'TITLE (00/20)' : `${activeSlideIndex} / 20`}
+                            {scNum === 0 ? `TITLE (00/${pad2(totalEpisodeScenes)})` : `${scNum} / ${totalEpisodeScenes}`}
                           </span>
                           <button
-                            onClick={() => setActiveSlideIndex(prev => Math.min(20, prev + 1))}
-                            disabled={activeSlideIndex >= 20}
+                            onClick={() => setActiveSlideIndex(prev => Math.min(totalEpisodeScenes, prev + 1))}
+                            disabled={scNum >= totalEpisodeScenes}
                             className={cn(
                               "min-h-[44px] px-4 py-2 border rounded-sm font-bold text-xs flex items-center gap-1.5 cursor-pointer transition-colors",
-                              activeSlideIndex >= 20 ? "opacity-50 cursor-not-allowed bg-[#f1eeee] border-[rgba(15,0,0,0.12)]" : "bg-[#fdfcfc] border-[rgba(15,0,0,0.12)] hover:bg-[#f8f7f7]"
+                              scNum >= totalEpisodeScenes ? "opacity-50 cursor-not-allowed bg-[#f1eeee] border-[rgba(15,0,0,0.12)]" : "bg-[#fdfcfc] border-[rgba(15,0,0,0.12)] hover:bg-[#f8f7f7]"
                             )}
                           >
                             <span>{language === 'ko' ? '다음 장면' : 'Next'}</span>
@@ -2098,7 +2105,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
           <div className="w-full max-w-5xl flex items-center justify-between text-[#fdfcfc] border-b border-[rgba(255,255,255,0.2)] pb-3" onClick={e => e.stopPropagation()}>
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold text-[#fdfcfc] bg-[#201d1d] px-2.5 py-0.5 border border-[rgba(255,255,255,0.2)] rounded-sm uppercase">
-                {lightboxSceneIndex === 0 ? `EPISODE ${currentEpisodeNum} · [ TITLE CARD ]` : `EPISODE ${currentEpisodeNum} · SCENE ${pad2(lightboxSceneIndex)} / 20`}
+                {lightboxSceneIndex === 0 ? `EPISODE ${currentEpisodeNum} · [ TITLE CARD ]` : `EPISODE ${currentEpisodeNum} · SCENE ${pad2(lightboxSceneIndex)} / ${pad2(totalEpisodeScenes)}`}
               </span>
               <span className="text-xs text-[#fdfcfc]/80 font-bold hidden sm:inline">
                 {parsedContent.title}
@@ -2171,7 +2178,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
 
             {/* Prev Scene Arrow */}
             <button
-              onClick={() => setLightboxSceneIndex(prev => (prev !== null && prev > 0 ? prev - 1 : 20))}
+              onClick={() => setLightboxSceneIndex(prev => (prev !== null && prev > 0 ? prev - 1 : totalEpisodeScenes))}
               className="min-h-[44px] min-w-[44px] absolute left-2 top-1/2 -translate-y-1/2 p-3 bg-[#201d1d] hover:bg-black text-[#fdfcfc] rounded-sm border border-[rgba(255,255,255,0.2)] cursor-pointer transition-colors flex items-center justify-center z-30"
               title="Previous Scene"
             >
@@ -2180,7 +2187,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
 
             {/* Next Scene Arrow */}
             <button
-              onClick={() => setLightboxSceneIndex(prev => (prev !== null && prev < 20 ? prev + 1 : 0))}
+              onClick={() => setLightboxSceneIndex(prev => (prev !== null && prev < totalEpisodeScenes ? prev + 1 : 0))}
               className="min-h-[44px] min-w-[44px] absolute right-2 top-1/2 -translate-y-1/2 p-3 bg-[#201d1d] hover:bg-black text-[#fdfcfc] rounded-sm border border-[rgba(255,255,255,0.2)] cursor-pointer transition-colors flex items-center justify-center z-30"
               title="Next Scene"
             >

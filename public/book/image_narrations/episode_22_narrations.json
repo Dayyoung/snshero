@@ -2,27 +2,56 @@
   "episodeNumber": 22,
   "episodeTitleEn": "Four on a Deserted Island",
   "episodeTitleKo": "무인도의 투석기",
-  "sourceSentenceCount": 54,
-  "sceneCount": 20,
+  "sourceSentenceCount": 56,
+  "sceneCount": 56,
   "scenes": [
     {
       "sceneNumber": 1,
       "imageFile": "episode_22/scene_01.webp",
       "sourceImageFile": "episode_22/scene_01.webp",
-      "narrationEn": "When the flotilla of flower boats clearing Seven Bridges Haven reached the threshold of the Siren Strait—the solitary maritime gateway into the continental capital—chilled tension solidified across the water like winter ice. Atop the jagged cliffs flanking the narrowest defile of the strait, three colossal mana-ballista batteries erected by Lucian's imperial navy gleamed with lethal menace, while anchored directly in the mid-channel sat two titanic black-iron ironclads, enforcing an airtight maritime blockade. The siege engines possessed an effective range of a thousand paces, rendering any frontal assault by the frail wooden flower boats an act of suicidal folly. Gripping the helm, Rondol studied the imperial fortifications through his brass telescope, clicking his tongue in frustration.",
-      "narrationKo": "세븐브리지 항구를 벗어난 꽃배 선단이 수도로 진입하기 위한 유일한 해상 관문인 ‘사이렌 해협’ 어귀에 도달했을 때, 바다 위에는 차가운 긴장감이 팽팽하게 감돌았다. 해협의 가장 좁은 목덜미 양쪽 암벽 위에는 루시안의 황실 해군이 구축해 둔 거대한 마나 쇠뇌 포탑 세 개가 시퍼런 살기를 번뜩이고 있었고, 해협 한가운데에는 흑철 장갑을 두른 거대한 황실 철갑선 두 척이 닻을 내린 채 민간 선박의 통행을 철저히 차단하고 있었다. 포탑에서 발사되는 마나 유탄은 사정거리가 천 길에 달해, 목재로 된 꽃배들로는 도저히 정면 돌파가 불가능한 형국이었다. 론돌이 키를 잡은 채 쌍안경으로 해협의 방어선을 살피며 혀를 찼다. “저 철갑선들의 흘수선이 너무 깊어 우리 꽃배들이 접근하기도 전에 마나포에 수장되고 말겠어. 암벽 위의 쇠뇌 포탑들을 먼저 침묵시키지 않고는 단 한 척도 해협을 빠져나갈 수 없다.”",
+      "narrationEn": "When the flotilla of flower boats clearing Seven Bridges Haven reached the threshold of the Siren Strait—the solitary maritime gateway into the continental capital—chilled tension solidified across the water like winter ice.",
+      "narrationKo": "세븐브리지 항구를 벗어난 꽃배 선단이 수도로 진입하기 위한 유일한 해상 관문인 ‘사이렌 해협’ 어귀에 도달했을 때, 바다 위에는 차가운 긴장감이 팽팽하게 감돌았다.",
       "sourceSentenceStart": 1,
-      "sourceSentenceEnd": 3,
+      "sourceSentenceEnd": 1,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "론돌",
-          "speakerEn": "Rondol",
-          "textKo": "“저 철갑선들의 흘수선이 너무 깊어 우리 꽃배들이 접근하기도 전에 마나포에 수장되고 말겠어. 암벽 위의 쇠뇌 포탑들을 먼저 침묵시키지 않고는 단 한 척도 해협을 빠져나갈 수 없다.”",
-          "textEn": "“Those ironclads draw too much water for our craft to board them, and their battery arcs overlap completely. Unless those cliffside ballista towers are silenced first, not a single flower barge will slip through alive.”",
-          "bubbleType": "speech",
-          "position": "top-right",
-          "characterCardId": 46
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "세븐브리지 항구를 벗어난 꽃배 선단이 수도로 진입하기 위한 유일한 해상 관문인 ‘사이렌 해협’ 어귀에 도달했을 때, 바다 위에는 차가운 긴장감이 팽팽하게 감돌았다.",
+          "textEn": "When the flotilla of flower boats clearing Seven Bridges Haven reached the threshold of the Siren Strait—the solitary maritime gateway into the continental capital—chilled tension solidified across the water like winter ice.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 61
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_22/scene_02.webp",
+      "sourceImageFile": "episode_22/scene_02.webp",
+      "narrationEn": "Atop the jagged cliffs flanking the narrowest defile of the strait, three colossal mana-ballista batteries erected by Lucian's imperial navy gleamed with lethal menace, while anchored directly in the mid-channel sat two titanic black-iron ironclads, enforcing an airtight maritime blockade.",
+      "narrationKo": "해협의 가장 좁은 목덜미 양쪽 암벽 위에는 루시안의 황실 해군이 구축해 둔 거대한 마나 쇠뇌 포탑 세 개가 시퍼런 살기를 번뜩이고",
+      "sourceSentenceStart": 2,
+      "sourceSentenceEnd": 2,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "해협의 가장 좁은 목덜미 양쪽 암벽 위에는 루시안의 황실 해군이 구축해 둔 거대한 마나 쇠뇌 포탑 세 개가 시퍼런 살기를 번뜩이고",
+          "textEn": "Atop the jagged cliffs flanking the narrowest defile of the strait, three colossal mana-ballista batteries erected by Lucian's imperial navy gleamed with lethal menace, while anchored directly in the mid-channel sat two titanic black-iron ironclads, enforcing an airtight maritime blockade.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 61
         }
       ],
       "sfxCues": [
@@ -32,35 +61,6 @@
           "style": "magic",
           "position": "top-right"
         },
-        {
-          "textKo": "쿠구구궁!",
-          "textEn": "RUMBLE!",
-          "style": "rumble",
-          "position": "bottom-left"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 2,
-      "imageFile": "episode_22/scene_02.webp",
-      "sourceImageFile": "episode_22/scene_02.webp",
-      "narrationEn": "\"Those ironclads draw too much water for our craft to board them, and their battery arcs overlap completely. Unless those cliffside ballista towers are silenced first, not a single flower barge will slip through alive.\" Standing upon the timber prow, Kadan pointed his unadorned iron shield toward a solitary, wind-scoured reef rising outside the channel—Gull Crag.",
-      "narrationKo": "카단이 뱃머리에서 해협 외곽에 홀로 솟아 있는 거친 암초 바위섬 ‘갈매기바위섬’을 가리켰다. “저 암초 섬은 포탑들의 사각지대입니다. 저곳에 교두보를 마련하고 적의 방어선을 무너뜨릴 기습 수단을 마련해야 합니다.”",
-      "sourceSentenceStart": 4,
-      "sourceSentenceEnd": 5,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“저 암초 섬은 포탑들의 사각지대입니다. 저곳에 교두보를 마련하고 적의 방어선을 무너뜨릴 기습 수단을 마련해야 합니다.”",
-          "textEn": "“Those ironclads draw too much water for our craft to board them, and their battery arcs overlap completely. Unless those cliffside ballista towers are silenced first, not a single flower barge will slip through alive.”",
-          "bubbleType": "speech",
-          "position": "bottom-left",
-          "characterCardId": 41
-        }
-      ],
-      "sfxCues": [
         {
           "textKo": "쿠구구궁!",
           "textEn": "RUMBLE!",
@@ -73,93 +73,20 @@
       "sceneNumber": 3,
       "imageFile": "episode_22/scene_03.webp",
       "sourceImageFile": "episode_22/scene_03.webp",
-      "narrationEn": "\"That rocky islet lies in the battery blind spot. If we establish a beachhead upon those cliffs, we can construct a counter-siege weapon to break the blockade.\" Cilia swept her Jade Staff, reading the coastal squalls with a nod of approval. \"Violent undertows around Gull Crag deter imperial patrol cutters from venturing near. We can establish an encampment there under total concealment.\"",
-      "narrationKo": "실리아가 녹옥 지팡이로 바람의 흐름을 읽으며 동의했다. “갈매기바위섬 주변은 조류가 거칠어 적들의 정찰선이 쉽게 접근하지 못해요. 저곳이라면 은밀히 거점을 구축할 수 있어요.” 이그니스 역시 주먹을 쥐며 고개를 끄덕였다.",
-      "sourceSentenceStart": 6,
-      "sourceSentenceEnd": 8,
+      "narrationEn": "The siege engines possessed an effective range of a thousand paces, rendering any frontal assault by the frail wooden flower boats an act of suicidal folly. Gripping the helm, Rondol studied the imperial fortifications through his brass telescope, clicking his tongue in frustration.",
+      "narrationKo": "있었고, 해협 한가운데에는 흑철 장갑을 두른 거대한 황실 철갑선 두 척이 닻을 내린 채 민간 선박의 통행을 철저히 차단하고 있었다.",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 3,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“갈매기바위섬 주변은 조류가 거칠어 적들의 정찰선이 쉽게 접근하지 못해요. 저곳이라면 은밀히 거점을 구축할 수 있어요.”",
-          "textEn": "“That rocky islet lies in the battery blind spot. If we establish a beachhead upon those cliffs, we can construct a counter-siege weapon to break the blockade.”",
-          "bubbleType": "speech",
-          "position": "bottom-right",
-          "characterCardId": 62
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "휘이이익-!",
-          "textEn": "SWOOSH!",
-          "style": "slash",
-          "position": "top-left"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 4,
-      "imageFile": "episode_22/scene_04.webp",
-      "sourceImageFile": "episode_22/scene_04.webp",
-      "narrationEn": "Ignis clenched his fists, examining the enemy ships with tactical precision. \"Imperial ironclads boast impenetrable belt armor, but their top decking is notoriously vulnerable to plunging kinetic fire. If we strike them from the heights, we can cave in their boiler rooms.\"",
-      "narrationKo": "“황궁 철갑선의 장갑은 두껍지만, 위에서 쏟아지는 낙하 충격에는 취약하다. 높은 곳에서 일격을 가할 수단만 있다면 철갑선의 갑판을 부술 수 있다.” 바다 위를 떠도는 짙은 해무 사이로 황실 해군의 삼색 깃발이 오만하게 펄럭이고 있었다. 철갑선의 거대한 외륜이 물살을 가를 때마다 검은 기름 찌꺼기가 바다를 오염시키고 있었고, 암벽 포탑의 포신들은 굶주린 맹수처럼 바다를 노려보고 있었다. 카단은 장화 끈을 단단히 동여매며 말했다. “정면으로 부딪치면 희생이 너무 크다. 소수의 결사대가 먼저 상륙하여 길을 뚫어야 한다.”",
-      "sourceSentenceStart": 9,
-      "sourceSentenceEnd": 11,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "이그니스",
-          "speakerEn": "Ignis",
-          "textKo": "“황궁 철갑선의 장갑은 두껍지만, 위에서 쏟아지는 낙하 충격에는 취약하다. 높은 곳에서 일격을 가할 수단만 있다면 철갑선의 갑판을 부술 수 있다.”",
-          "textEn": "“Violent undertows around Gull Crag deter imperial patrol cutters from venturing near. We can establish an encampment there under total concealment.”",
-          "bubbleType": "speech",
-          "position": "top-left",
-          "characterCardId": 11
-        },
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“정면으로 부딪치면 희생이 너무 크다. 소수의 결사대가 먼저 상륙하여 길을 뚫어야 한다.”",
-          "textEn": "“Imperial ironclads boast impenetrable belt armor, but their top decking is notoriously vulnerable to plunging kinetic fire. If we strike them from the heights, we can cave in their boiler rooms.”",
-          "bubbleType": "speech",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "있었고, 해협 한가운데에는 흑철 장갑을 두른 거대한 황실 철갑선 두 척이 닻을 내린 채 민간 선박의 통행을 철저히 차단하고 있었다.",
+          "textEn": "Gripping the helm, Rondol studied the imperial fortifications through his brass telescope, clicking his tongue in frustration.",
+          "bubbleType": "thought",
           "position": "top-right",
-          "characterCardId": 41
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "서걱-!",
-          "textEn": "SLASH!",
-          "style": "slash",
-          "position": "center"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 5,
-      "imageFile": "episode_22/scene_05.webp",
-      "sourceImageFile": "episode_22/scene_05.webp",
-      "narrationEn": "Altering their trim under the cover of sea mist, the companions dropped anchor upon the gravel sandbar of Gull Crag. Though an arid, forbidding rock shelf battered by howling surf, the shoreline was littered with colossal oak timbers, shattered keels, and heaps of massive bull kelp washed ashore from centuries of shipwrecks. Slamming his massive double-bitted battleaxe into the sand, Grimli the dwarven smith burst into a roaring laugh.",
-      "narrationKo": "일행은 은밀히 방향을 틀어 파도가 거세게 몰아치는 무인도 갈매기바위섬의 모래톱에 닻을 내렸다. 사방이 깎아지른 절벽으로 둘러싸인 황량한 바위섬이었지만, 해안가에는 수많은 난파선들의 거대한 참나무 목재와 질긴 대왕 다시마 줄기들이 파도에 밀려와 어지럽게 널브러져 있었다. 드워프 대장장이 그림리가 커다란 양손 도끼를 모래사장에 꽂으며 호탕하게 웃음을 터뜨렸다. “크하하! 바다가 우리에게 최고의 공성 재료들을 선물해 주었구나! 이 굵은 참나무 용골과 탄력 있는 흑철 나무토막들을 보아라! 이 늙은 그림리의 손재주라면 한나절 만에 성벽도 부수는 거대한 ‘삼중 회전식 투석기’를 뚝딱 만들어낼 수 있다!”",
-      "sourceSentenceStart": 12,
-      "sourceSentenceEnd": 14,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "그림리",
-          "speakerEn": "Grimli",
-          "textKo": "“크하하! 바다가 우리에게 최고의 공성 재료들을 선물해 주었구나! 이 굵은 참나무 용골과 탄력 있는 흑철 나무토막들을 보아라! 이 늙은 그림리의 손재주라면 한나절 만에 성벽도 부수는 거대한 ‘삼중 회전식 투석기’를 뚝딱 만들어낼 수 있다!”",
-          "textEn": "“Imperial ironclads boast impenetrable belt armor, but their top decking is notoriously vulnerable to plunging kinetic fire. If we strike them from the heights, we can cave in their boiler rooms.”",
-          "bubbleType": "shout",
-          "position": "top-right",
-          "characterCardId": 74
+          "characterCardId": 61
         }
       ],
       "sfxCues": [
@@ -168,7 +95,59 @@
           "textEn": "RUMBLE!",
           "style": "rumble",
           "position": "bottom-left"
-        },
+        }
+      ]
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_22/scene_04.webp",
+      "sourceImageFile": "episode_22/scene_04.webp",
+      "narrationEn": "\"Those ironclads draw too much water for our craft to board them, and their battery arcs overlap completely.",
+      "narrationKo": "포탑에서 발사되는 마나 유탄은 사정거리가 천 길에 달해, 목재로 된 꽃배들로는 도저히 정면 돌파가 불가능한 형국이었다.",
+      "sourceSentenceStart": 4,
+      "sourceSentenceEnd": 4,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "포탑에서 발사되는 마나 유탄은 사정거리가 천 길에 달해, 목재로 된 꽃배들로는 도저히 정면 돌파가 불가능한 형국이었다.",
+          "textEn": "\"Those ironclads draw too much water for our craft to board them, and their battery arcs overlap completely.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 61
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_22/scene_05.webp",
+      "sourceImageFile": "episode_22/scene_05.webp",
+      "narrationEn": "Unless those cliffside ballista towers are silenced first, not a single flower barge will slip through alive.\"",
+      "narrationKo": "론돌이 키를 잡은 채 쌍안경으로 해협의 방어선을 살피며 혀를 찼다.",
+      "sourceSentenceStart": 5,
+      "sourceSentenceEnd": 5,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "론돌이 키를 잡은 채 쌍안경으로 해협의 방어선을 살피며 혀를 찼다.",
+          "textEn": "Unless those cliffside ballista towers are silenced first, not a single flower barge will slip through alive.\"",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 46
+        }
+      ],
+      "sfxCues": [
         {
           "textKo": "쿵-!",
           "textEn": "THUD!",
@@ -181,34 +160,34 @@
       "sceneNumber": 6,
       "imageFile": "episode_22/scene_06.webp",
       "sourceImageFile": "episode_22/scene_06.webp",
-      "narrationEn": "\"Bwahaha! The sea gods have delivered the finest siege timber right to our doorsteps! Look at these seasoned oak ribs and dense ironwood spars! Give this old dwarf half a day, and I shall erect a triple-torsion counterweight catapult capable of cracking a citadel wall!\" Drawing his silver dagger to strip the briny bark from the timbers, Kadan joined the work.",
-      "narrationKo": "카단이 은빛 단검을 뽑아 참나무 목재의 썩은 껍질을 능숙하게 깎아내며 거들었다. “좋습니다, 그림리 스승님. 제가 목재의 이음새를 다듬고 쐐기를 박겠습니다.”",
-      "sourceSentenceStart": 15,
-      "sourceSentenceEnd": 16,
+      "narrationEn": "Standing upon the timber prow, Kadan pointed his unadorned iron shield toward a solitary, wind-scoured reef rising outside the channel—Gull Crag.",
+      "narrationKo": "“저 철갑선들의 흘수선이 너무 깊어 우리 꽃배들이 접근하기도 전에 마나포에 수장되고 말겠어. 암벽 위의 쇠뇌 포탑들을 먼저 침묵시키지 않고는 단 한 척도 해협을 빠져나갈 수 없다.”",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 6,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“좋습니다, 그림리 스승님. 제가 목재의 이음새를 다듬고 쐐기를 박겠습니다.”",
-          "textEn": "“Bwahaha! The sea gods have delivered the finest siege timber right to our doorsteps! Look at these seasoned oak ribs and dense ironwood spars! Give this old dwarf half a day, and I shall erect a triple-torsion counterweight catapult capable of cracking a citadel wall!”",
+          "speakerKo": "론돌",
+          "speakerEn": "Rondol",
+          "textKo": "“저 철갑선들의 흘수선이 너무 깊어 우리 꽃배들이 접근하기도 전에 마나포에 수장되고 말겠어. 암벽 위의 쇠뇌 포탑들을 먼저 침묵시키지 않고는 단 한 척도 해협을 빠져나갈 수 없다.”",
+          "textEn": "“Standing upon the timber prow, Kadan pointed his unadorned iron shield toward a solitary, wind-scoured reef rising outside the channel—Gull Crag.”",
           "bubbleType": "speech",
           "position": "bottom-left",
-          "characterCardId": 41
+          "characterCardId": 46
         }
       ],
       "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
         {
           "textKo": "파지지직!",
           "textEn": "CRACKLE!",
           "style": "magic",
           "position": "top-right"
+        },
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
         }
       ]
     },
@@ -216,29 +195,23 @@
       "sceneNumber": 7,
       "imageFile": "episode_22/scene_07.webp",
       "sourceImageFile": "episode_22/scene_07.webp",
-      "narrationEn": "\"Lead the way, Master Grimli. I will shape the mortises and drive the locking wedges.\" Ignis gathered granite stones to construct a makeshift forge, kindling his immaculate white flame to smelt discarded anchor chains into heavy iron axle bearings.",
-      "narrationKo": "이그니스는 모래밭에 돌을 모아 간이 화덕을 쌓고, 순백의 화염을 일으켜 부러진 닻과 쇠사슬들을 녹여 투석기의 핵심 회전축을 단련하기 시작했다. “이 화염으로 쇠사슬을 녹여 단단한 강철 베어링을 주조하겠다. 적의 철갑선을 한 방에 박살 낼 묵직한 놈으로 만들자.” 실리아는 바닷가에 널려 있던 질긴 대왕 다시마와 밧줄을 모아, 바람의 마나를 주입하며 탄력 넘치는 투석용 탄성 로프를 꼬아 나갔다. 세 젊은이와 드워프 장인의 손길이 완벽한 조화를 이루며 모래톱 위에서 거대한 공성 병기가 형태를 갖추어 갔다.",
-      "sourceSentenceStart": 17,
-      "sourceSentenceEnd": 19,
+      "narrationEn": "\"That rocky islet lies in the battery blind spot. If we establish a beachhead upon those cliffs, we can construct a counter-siege weapon to break the blockade.\"",
+      "narrationKo": "카단이 뱃머리에서 해협 외곽에 홀로 솟아 있는 거친 암초 바위섬 ‘갈매기바위섬’을 가리켰다.",
+      "sourceSentenceStart": 7,
+      "sourceSentenceEnd": 7,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "이그니스",
-          "speakerEn": "Ignis",
-          "textKo": "“이 화염으로 쇠사슬을 녹여 단단한 강철 베어링을 주조하겠다. 적의 철갑선을 한 방에 박살 낼 묵직한 놈으로 만들자.”",
-          "textEn": "“Lead the way, Master Grimli. I will shape the mortises and drive the locking wedges.”",
-          "bubbleType": "speech",
-          "position": "bottom-right",
-          "characterCardId": 11
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단이 뱃머리에서 해협 외곽에 홀로 솟아 있는 거친 암초 바위섬 ‘갈매기바위섬’을 가리켰다.",
+          "textEn": "If we establish a beachhead upon those cliffs, we can construct a counter-siege weapon to break the blockade.\"",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
         {
           "textKo": "서걱-!",
           "textEn": "SLASH!",
@@ -251,34 +224,28 @@
       "sceneNumber": 8,
       "imageFile": "episode_22/scene_08.webp",
       "sourceImageFile": "episode_22/scene_08.webp",
-      "narrationEn": "\"I will fuse these iron links into balanced rotating spindles. We will give those imperial tin cans an iron greeting they will never forget.\" Weaving the thick, fibrous bull kelp into high-tensile torsion cords, Cilia infused the fibers with elasticity through wind mana. Under the unified labor of the three youths and the master dwarven smith, the colossal siege engine rapidly took form upon the cliffs. By the time the crimson sun dipped toward the waves, a magnificent thirty-foot counterweight catapult stood poised upon the highest precipice of Gull Crag. Massive basalt boulders were quarried as ammunition, upon which Cilia carved frost runes designed to shatter into concussive shards of razor ice upon detonation.",
-      "narrationKo": "바위섬 기슭에서는 차가운 파도가 부서지며 하얀 포말을 뿜어냈고, 바위틈마다 자라난 억센 해초들이 비린 갯내음을 풍겼다. 그림리는 도끼날로 거대한 통나무에 홈을 파며 콧노래를 흥얼거렸다. “드워프의 망치질 소리는 바다 괴물도 춤추게 만드는 법이지! 카단, 그 은빛 단검의 솜씨가 예사롭지 않구나. 나무의 결을 읽고 깎아내는 품이 일류 목수 뺨치겠어!” 노을이 질 무렵, 마침내 높이 서른 자에 달하는 거대한 참나무 투석기가 갈매기바위섬 정상 절벽 위에 웅장한 자태를 드러냈다. 바위섬의 거대한 현무암 덩어리들이 포탄으로 준비되었고, 실리아는 포탄 표면에 냉기의 서리 룬을 새겨 폭발 시 거대한 빙벽 파편을 비산시키는 특수 탄환을 완성했다.",
-      "sourceSentenceStart": 20,
-      "sourceSentenceEnd": 22,
+      "narrationEn": "Cilia swept her Jade Staff, reading the coastal squalls with a nod of approval.",
+      "narrationKo": "“저 암초 섬은 포탑들의 사각지대입니다. 저곳에 교두보를 마련하고 적의 방어선을 무너뜨릴 기습 수단을 마련해야 합니다.”",
+      "sourceSentenceStart": 8,
+      "sourceSentenceEnd": 8,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "그림리",
-          "speakerEn": "Grimli",
-          "textKo": "“드워프의 망치질 소리는 바다 괴물도 춤추게 만드는 법이지! 카단, 그 은빛 단검의 솜씨가 예사롭지 않구나. 나무의 결을 읽고 깎아내는 품이 일류 목수 뺨치겠어!”",
-          "textEn": "“I will fuse these iron links into balanced rotating spindles. We will give those imperial tin cans an iron greeting they will never forget.”",
-          "bubbleType": "shout",
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“저 암초 섬은 포탑들의 사각지대입니다. 저곳에 교두보를 마련하고 적의 방어선을 무너뜨릴 기습 수단을 마련해야 합니다.”",
+          "textEn": "“Cilia swept her Jade Staff, reading the coastal squalls with a nod of approval.”",
+          "bubbleType": "speech",
           "position": "top-left",
-          "characterCardId": 74
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
         {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
         }
       ]
     },
@@ -286,28 +253,28 @@
       "sceneNumber": 9,
       "imageFile": "episode_22/scene_09.webp",
       "sourceImageFile": "episode_22/scene_09.webp",
-      "narrationEn": "Checking the ratchet gears of the winch, Grimli clapped Kadan's broad shoulder. \"Kadan, lad, your master Aleksandar and I built just such a siege thrower amidst the blizzards of the First Crusade twenty winters ago. That stubborn knight not only wielded a shield like a mountain, but he also had the finest hands for timber and stonework I ever saw. Watching your hammer work today, I know his craft lives proudly in your blood.\"",
-      "narrationKo": "그림리가 투석기의 권양기 톱니바퀴를 점검하며 카단의 어깨를 툭 쳤다. “카단, 네 스승 알렉산다르 경도 과거 제1차 성전 때 나와 함께 눈 덮인 협곡에서 이런 투석기를 만들었었지. 그 우직한 친구는 방패만 잘 다루는 게 아니라 나무를 깎고 돌을 쌓는 손재주도 기가 막혔어. 네 망치질 솜씨를 보니 스승의 피가 헛되이 흐르지 않았구나.”",
-      "sourceSentenceStart": 23,
-      "sourceSentenceEnd": 24,
+      "narrationEn": "\"Violent undertows around Gull Crag deter imperial patrol cutters from venturing near.",
+      "narrationKo": "실리아가 녹옥 지팡이로 바람의 흐름을 읽으며 동의했다. “갈매기바위섬 주변은 조류가 거칠어 적들의 정찰선이 쉽게 접근하지 못해요. 저곳이라면 은밀히 거점을 구축할 수 있어요.”",
+      "sourceSentenceStart": 9,
+      "sourceSentenceEnd": 9,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "그림리",
-          "speakerEn": "Grimli",
-          "textKo": "“카단, 네 스승 알렉산다르 경도 과거 제1차 성전 때 나와 함께 눈 덮인 협곡에서 이런 투석기를 만들었었지. 그 우직한 친구는 방패만 잘 다루는 게 아니라 나무를 깎고 돌을 쌓는 손재주도 기가 막혔어. 네 망치질 솜씨를 보니 스승의 피가 헛되이 흐르지 않았구나.”",
-          "textEn": "“Kadan, lad, your master Aleksandar and I built just such a siege thrower amidst the blizzards of the First Crusade twenty winters ago. That stubborn knight not only wielded a shield like a mountain, but he also had the finest hands for timber and stonework I ever saw. Watching your hammer work today, I know his craft lives proudly in your blood.”",
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“갈매기바위섬 주변은 조류가 거칠어 적들의 정찰선이 쉽게 접근하지 못해요. 저곳이라면 은밀히 거점을 구축할 수 있어요.”",
+          "textEn": "“\"Violent undertows around Gull Crag deter imperial patrol cutters from venturing near.”",
           "bubbleType": "speech",
           "position": "top-right",
-          "characterCardId": 74
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
         {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
           "style": "slash",
-          "position": "top-right"
+          "position": "top-left"
         }
       ]
     },
@@ -315,33 +282,27 @@
       "sceneNumber": 10,
       "imageFile": "episode_22/scene_10.webp",
       "sourceImageFile": "episode_22/scene_10.webp",
-      "narrationEn": "Resting against his shield, Kadan gazed across the sunset swells with a serene smile. \"Master Aleksandar taught me that craft is never about senseless destruction, but the manifestation of wisdom to protect the vulnerable. This catapult is not a weapon of slaughter, but the key to open a path of life for our people.\"",
-      "narrationKo": "카단이 방패를 짚고 서서 서쪽 바다를 바라보며 엷은 미소를 지었다. “스승님께서는 기술이란 파괴가 아니라, 소중한 이들을 지키기 위한 지혜의 발현이라고 가르치셨습니다. 이 투석기는 길을 막아선 폭력을 부수고 사람들을 살릴 문을 여는 열쇠입니다.” 이그니스가 투석기 발사대에 불타는 성화를 덧씌우며 나지막이 중얼거렸다.",
-      "sourceSentenceStart": 25,
-      "sourceSentenceEnd": 27,
+      "narrationEn": "We can establish an encampment there under total concealment.\"",
+      "narrationKo": "이그니스 역시 주먹을 쥐며 고개를 끄덕였다. “황궁 철갑선의 장갑은 두껍지만, 위에서 쏟아지는 낙하 충격에는 취약하다. 높은 곳에서 일격을 가할 수단만 있다면 철갑선의 갑판을 부술 수 있다.”",
+      "sourceSentenceStart": 10,
+      "sourceSentenceEnd": 10,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“스승님께서는 기술이란 파괴가 아니라, 소중한 이들을 지키기 위한 지혜의 발현이라고 가르치셨습니다. 이 투석기는 길을 막아선 폭력을 부수고 사람들을 살릴 문을 여는 열쇠입니다.”",
-          "textEn": "“Master Aleksandar taught me that craft is never about senseless destruction, but the manifestation of wisdom to protect the vulnerable. This catapult is not a weapon of slaughter, but the key to open a path of life for our people.”",
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“황궁 철갑선의 장갑은 두껍지만, 위에서 쏟아지는 낙하 충격에는 취약하다. 높은 곳에서 일격을 가할 수단만 있다면 철갑선의 갑판을 부술 수 있다.”",
+          "textEn": "“We can establish an encampment there under total concealment.\"”",
           "bubbleType": "speech",
           "position": "bottom-left",
-          "characterCardId": 41
+          "characterCardId": 11
         }
       ],
       "sfxCues": [
         {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
           "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
           "position": "center"
         }
       ]
@@ -350,37 +311,28 @@
       "sceneNumber": 11,
       "imageFile": "episode_22/scene_11.webp",
       "sourceImageFile": "episode_22/scene_11.webp",
-      "narrationEn": "Coating the throwing basket with sanctifying fire, Ignis spoke in quiet reverence. \"The road once walked by father Balian and uncle Aleksandar... is now ours to complete.\"",
-      "narrationKo": "“발리안 아버지와 알렉산다르 숙부님이 함께 걸으셨던 길을, 이제 우리가 걷고 있군.” 카단은 투석기의 중심축을 다시 한번 손으로 짚으며 수평을 맞추었다. 바위섬의 거친 해풍이 세 젊은이의 옷자락을 세차게 흔들었지만, 그들의 눈빛에는 단 한 점의 망설임도 없었다. 실리아가 서리 룬을 새긴 현무암 포탄을 어루만지며 속삭였다. “이 포탄이 터지면 적들의 포탑은 얼음 파편에 휩싸여 완전히 무력화될 거예요. 무고한 인명 살상 없이 오직 대포들만을 침묵시키겠어요.”",
-      "sourceSentenceStart": 28,
-      "sourceSentenceEnd": 30,
+      "narrationEn": "Ignis clenched his fists, examining the enemy ships with tactical precision. \"Imperial ironclads boast impenetrable belt armor, but their top decking is notoriously vulnerable to plunging kinetic fire.",
+      "narrationKo": "바다 위를 떠도는 짙은 해무 사이로 황실 해군의 삼색 깃발이 오만하게 펄럭이고 있었다.",
+      "sourceSentenceStart": 11,
+      "sourceSentenceEnd": 11,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "이그니스",
-          "speakerEn": "Ignis",
-          "textKo": "“발리안 아버지와 알렉산다르 숙부님이 함께 걸으셨던 길을, 이제 우리가 걷고 있군.”",
-          "textEn": "“Master Aleksandar taught me that craft is never about senseless destruction, but the manifestation of wisdom to protect the vulnerable. This catapult is not a weapon of slaughter, but the key to open a path of life for our people.”",
-          "bubbleType": "speech",
-          "position": "bottom-right",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "바다 위를 떠도는 짙은 해무 사이로 황실 해군의 삼색 깃발이 오만하게 펄럭이고 있었다.",
+          "textEn": "\"Imperial ironclads boast impenetrable belt armor, but their top decking is notoriously vulnerable to plunging kinetic fire.",
+          "bubbleType": "thought",
+          "position": "top-right",
           "characterCardId": 11
-        },
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“이 포탄이 터지면 적들의 포탑은 얼음 파편에 휩싸여 완전히 무력화될 거예요. 무고한 인명 살상 없이 오직 대포들만을 침묵시키겠어요.”",
-          "textEn": "“The road once walked by father Balian and uncle Aleksandar... is now ours to complete.”",
-          "bubbleType": "speech",
-          "position": "top-left",
-          "characterCardId": 62
         }
       ],
       "sfxCues": [
         {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
         }
       ]
     },
@@ -388,28 +340,34 @@
       "sceneNumber": 12,
       "imageFile": "episode_22/scene_12.webp",
       "sourceImageFile": "episode_22/scene_12.webp",
-      "narrationEn": "Just then, alarm klaxons blared across the strait as two swift imperial scouting pinnaces detected the activity upon the crag, surging forward with archers nocking fire arrows. Sweeping her Jade Staff, Cilia conjured dense oceanic fog around the heights.",
-      "narrationKo": "그때 해협 저편에서 경종 소리가 울리며, 이상 징후를 감지한 황실 정찰 쾌속선 두 척이 갈매기바위섬을 향해 전속력으로 다가오기 시작했다. 쾌속선의 갑판 위에서 궁수들이 불화살을 메기며 투석기를 향해 조준하고 있었다. 실리아가 녹옥 지팡이를 휘둘러 바다 안개를 짙게 끌어올렸다.",
-      "sourceSentenceStart": 31,
-      "sourceSentenceEnd": 32,
+      "narrationEn": "If we strike them from the heights, we can cave in their boiler rooms.\"",
+      "narrationKo": "철갑선의 거대한 외륜이 물살을 가를 때마다 검은 기름 찌꺼기가 바다를 오염시키고 있었고, 암벽 포탑의 포신들은 굶주린 맹수처럼 바다를 노려보고 있었다.",
+      "sourceSentenceStart": 12,
+      "sourceSentenceEnd": 12,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "실리아가 녹옥 지팡이를 휘둘러 바다 안개를 짙게 끌어올렸다.",
-          "textEn": "Sweeping her Jade Staff, Cilia conjured dense oceanic fog around the heights.",
+          "textKo": "철갑선의 거대한 외륜이 물살을 가를 때마다 검은 기름 찌꺼기가 바다를 오염시키고 있었고, 암벽 포탑의 포신들은 굶주린 맹수처럼 바다를 노려보고 있었다.",
+          "textEn": "If we strike them from the heights, we can cave in their boiler rooms.\"",
           "bubbleType": "thought",
           "position": "bottom-left",
-          "characterCardId": 62
+          "characterCardId": 11
         }
       ],
       "sfxCues": [
         {
-          "textKo": "휘이이익-!",
-          "textEn": "SWOOSH!",
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
           "style": "slash",
-          "position": "top-left"
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
         }
       ]
     },
@@ -417,37 +375,28 @@
       "sceneNumber": 13,
       "imageFile": "episode_22/scene_13.webp",
       "sourceImageFile": "episode_22/scene_13.webp",
-      "narrationEn": "\"I will shroud the peak in mist to blind their bowmen! Stand ready!\" As milky-white fog swallowed the rock shelf, Kadan gripped the release lever with steady nerves. \"Target: imperial flagship engine bay, three thousand paces ahead!\"",
-      "narrationKo": "“안개의 장막으로 섬의 정상을 가리겠어요! 적들이 조준하지 못하게 시간을 벌게요!” 자욱한 유백색 안개가 바위섬을 뒤덮는 사이, 카단이 투석기의 격발 레버를 꽉 쥐었다. “목표, 전방 삼천 보 거리의 황실 제1철갑선 기관실이다!”",
-      "sourceSentenceStart": 33,
-      "sourceSentenceEnd": 35,
+      "narrationEn": "Altering their trim under the cover of sea mist, the companions dropped anchor upon the gravel sandbar of Gull Crag.",
+      "narrationKo": "카단은 장화 끈을 단단히 동여매며 말했다. “정면으로 부딪치면 희생이 너무 크다. 소수의 결사대가 먼저 상륙하여 길을 뚫어야 한다.”",
+      "sourceSentenceStart": 13,
+      "sourceSentenceEnd": 13,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“안개의 장막으로 섬의 정상을 가리겠어요! 적들이 조준하지 못하게 시간을 벌게요!”",
-          "textEn": "“I will shroud the peak in mist to blind their bowmen! Stand ready!”",
-          "bubbleType": "shout",
-          "position": "top-right",
-          "characterCardId": 62
-        },
-        {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "“목표, 전방 삼천 보 거리의 황실 제1철갑선 기관실이다!”",
-          "textEn": "“Target: imperial flagship engine bay, three thousand paces ahead!”",
-          "bubbleType": "shout",
-          "position": "bottom-left",
+          "textKo": "“정면으로 부딪치면 희생이 너무 크다. 소수의 결사대가 먼저 상륙하여 길을 뚫어야 한다.”",
+          "textEn": "“Altering their trim under the cover of sea mist, the companions dropped anchor upon the gravel sandbar of Gull Crag.”",
+          "bubbleType": "speech",
+          "position": "top-right",
           "characterCardId": 41
         }
       ],
       "sfxCues": [
         {
-          "textKo": "휘이이익-!",
-          "textEn": "SWOOSH!",
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
           "style": "slash",
-          "position": "top-left"
+          "position": "top-right"
         }
       ]
     },
@@ -455,20 +404,20 @@
       "sceneNumber": 14,
       "imageFile": "episode_22/scene_14.webp",
       "sourceImageFile": "episode_22/scene_14.webp",
-      "narrationEn": "Grimli hammered down the locking dog. \"Loose the stone, lad!\"",
-      "narrationKo": "그림리가 권양기 쐐기를 내리쳤다. “발사해라, 애송이!” 쿠우웅!",
-      "sourceSentenceStart": 36,
-      "sourceSentenceEnd": 38,
+      "narrationEn": "Though an arid, forbidding rock shelf battered by howling surf, the shoreline was littered with colossal oak timbers, shattered keels, and heaps of massive bull kelp washed ashore from centuries of shipwrecks.",
+      "narrationKo": "일행은 은밀히 방향을 틀어 파도가 거세게 몰아치는 무인도 갈매기바위섬의 모래톱에 닻을 내렸다.",
+      "sourceSentenceStart": 14,
+      "sourceSentenceEnd": 14,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "그림리",
-          "speakerEn": "Grimli",
-          "textKo": "“발사해라, 애송이!”",
-          "textEn": "“Loose the stone, lad!”",
-          "bubbleType": "shout",
-          "position": "bottom-left",
-          "characterCardId": 74
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "일행은 은밀히 방향을 틀어 파도가 거세게 몰아치는 무인도 갈매기바위섬의 모래톱에 닻을 내렸다.",
+          "textEn": "Though an arid, forbidding rock shelf battered by howling surf, the shoreline was littered with colossal oak timbers, shattered keels, and heaps of massive bull kelp washed ashore from centuries of shipwrecks.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
@@ -484,17 +433,883 @@
       "sceneNumber": 15,
       "imageFile": "episode_22/scene_15.webp",
       "sourceImageFile": "episode_22/scene_15.webp",
-      "narrationEn": "Boom! With a concussive crack of bending timber, the catapult arm cleaved through the air, hurling the frost-inscribed basalt monolith into the twilight sky. Like a roaring meteor, the projectile arced over the channel, crashing dead-center through the armored deck of the lead imperial ironclad.",
-      "narrationKo": "거대한 투석기 팔이 허공을 가르며 서리 룬이 새겨진 거대한 현무암 암괴를 쏘아 올렸다. 허공을 가르는 포탄은 포효하는 유성처럼 날아가, 해협 중앙에 정박해 있던 황실 제1철갑선의 장갑 갑판을 정통으로 강타했다. 콰아아앙!",
+      "narrationEn": "Slamming his massive double-bitted battleaxe into the sand, Grimli the dwarven smith burst into a roaring laugh.",
+      "narrationKo": "사방이 깎아지른 절벽으로 둘러싸인 황량한 바위섬이었지만, 해안가에는 수많은 난파선들의 거대한 참나무 목재와 질긴 대왕 다시마 줄기들이 파도에 밀려와 어지럽게 널브러져 있었다.",
+      "sourceSentenceStart": 15,
+      "sourceSentenceEnd": 15,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "사방이 깎아지른 절벽으로 둘러싸인 황량한 바위섬이었지만, 해안가에는 수많은 난파선들의 거대한 참나무 목재와 질긴 대왕 다시마 줄기들이 파도에 밀려와 어지럽게 널브러져 있었다.",
+          "textEn": "Slamming his massive double-bitted battleaxe into the sand, Grimli the dwarven smith burst into a roaring laugh.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        },
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_22/scene_16.webp",
+      "sourceImageFile": "episode_22/scene_16.webp",
+      "narrationEn": "\"Bwahaha! The sea gods have delivered the finest siege timber right to our doorsteps!",
+      "narrationKo": "드워프 대장장이 그림리가 커다란 양손 도끼를 모래사장에 꽂으며 호탕하게 웃음을 터뜨렸다.",
+      "sourceSentenceStart": 16,
+      "sourceSentenceEnd": 16,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "드워프 대장장이 그림리가 커다란 양손 도끼를 모래사장에 꽂으며 호탕하게 웃음을 터뜨렸다.",
+          "textEn": "The sea gods have delivered the finest siege timber right to our doorsteps!",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 74
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_22/scene_17.webp",
+      "sourceImageFile": "episode_22/scene_17.webp",
+      "narrationEn": "Look at these seasoned oak ribs and dense ironwood spars!",
+      "narrationKo": "“크하하! 바다가 우리에게 최고의 공성 재료들을 선물해 주었구나! 이 굵은 참나무 용골과 탄력 있는 흑철 나무토막들을 보아라!”",
+      "sourceSentenceStart": 17,
+      "sourceSentenceEnd": 17,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "그림리",
+          "speakerEn": "Grimli",
+          "textKo": "“크하하! 바다가 우리에게 최고의 공성 재료들을 선물해 주었구나! 이 굵은 참나무 용골과 탄력 있는 흑철 나무토막들을 보아라!”",
+          "textEn": "“Look at these seasoned oak ribs and dense ironwood spars!”",
+          "bubbleType": "shout",
+          "position": "top-right",
+          "characterCardId": 74
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_22/scene_18.webp",
+      "sourceImageFile": "episode_22/scene_18.webp",
+      "narrationEn": "Give this old dwarf half a day, and I shall erect a triple-torsion counterweight catapult capable of cracking a citadel wall!\"",
+      "narrationKo": "“이 늙은 그림리의 손재주라면 한나절 만에 성벽도 부수는 거대한 ‘삼중 회전식 투석기’를 뚝딱 만들어낼 수 있다!”",
+      "sourceSentenceStart": 18,
+      "sourceSentenceEnd": 18,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“이 늙은 그림리의 손재주라면 한나절 만에 성벽도 부수는 거대한 ‘삼중 회전식 투석기’를 뚝딱 만들어낼 수 있다!”",
+          "textEn": "“Give this old dwarf half a day, and I shall erect a triple-torsion counterweight catapult capable of cracking a citadel wall!\"”",
+          "bubbleType": "shout",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        },
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_22/scene_19.webp",
+      "sourceImageFile": "episode_22/scene_19.webp",
+      "narrationEn": "Drawing his silver dagger to strip the briny bark from the timbers, Kadan joined the work.",
+      "narrationKo": "카단이 은빛 단검을 뽑아 참나무 목재의 썩은 껍질을 능숙하게 깎아내며 거들었다.",
+      "sourceSentenceStart": 19,
+      "sourceSentenceEnd": 19,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단이 은빛 단검을 뽑아 참나무 목재의 썩은 껍질을 능숙하게 깎아내며 거들었다.",
+          "textEn": "Drawing his silver dagger to strip the briny bark from the timbers, Kadan joined the work.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_22/scene_20.webp",
+      "sourceImageFile": "episode_22/scene_20.webp",
+      "narrationEn": "\"Lead the way, Master Grimli. I will shape the mortises and drive the locking wedges.\"",
+      "narrationKo": "“좋습니다, 그림리 스승님. 제가 목재의 이음새를 다듬고 쐐기를 박겠습니다.”",
+      "sourceSentenceStart": 20,
+      "sourceSentenceEnd": 20,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“좋습니다, 그림리 스승님. 제가 목재의 이음새를 다듬고 쐐기를 박겠습니다.”",
+          "textEn": "“Lead the way, Master Grimli. I will shape the mortises and drive the locking wedges.”",
+          "bubbleType": "speech",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 21,
+      "imageFile": "episode_22/scene_21.webp",
+      "sourceImageFile": "episode_22/scene_21.webp",
+      "narrationEn": "Ignis gathered granite stones to construct a makeshift forge, kindling his immaculate white flame to smelt discarded anchor chains into heavy iron axle bearings.",
+      "narrationKo": "이그니스는 모래밭에 돌을 모아 간이 화덕을 쌓고, 순백의 화염을 일으켜 부러진 닻과 쇠사슬들을 녹여 투석기의 핵심 회전축을 단련하기 시작했다.",
+      "sourceSentenceStart": 21,
+      "sourceSentenceEnd": 21,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "이그니스는 모래밭에 돌을 모아 간이 화덕을 쌓고, 순백의 화염을 일으켜 부러진 닻과 쇠사슬들을 녹여 투석기의 핵심 회전축을 단련하기 시작했다.",
+          "textEn": "Ignis gathered granite stones to construct a makeshift forge, kindling his immaculate white flame to smelt discarded anchor chains into heavy iron axle bearings.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 22,
+      "imageFile": "episode_22/scene_22.webp",
+      "sourceImageFile": "episode_22/scene_22.webp",
+      "narrationEn": "\"I will fuse these iron links into balanced rotating spindles.",
+      "narrationKo": "“이 화염으로 쇠사슬을 녹여 단단한 강철 베어링을 주조하겠다. 적의 철갑선을 한 방에 박살 낼 묵직한 놈으로 만들자.”",
+      "sourceSentenceStart": 22,
+      "sourceSentenceEnd": 22,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“이 화염으로 쇠사슬을 녹여 단단한 강철 베어링을 주조하겠다. 적의 철갑선을 한 방에 박살 낼 묵직한 놈으로 만들자.”",
+          "textEn": "“\"I will fuse these iron links into balanced rotating spindles.”",
+          "bubbleType": "speech",
+          "position": "bottom-left",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 23,
+      "imageFile": "episode_22/scene_23.webp",
+      "sourceImageFile": "episode_22/scene_23.webp",
+      "narrationEn": "We will give those imperial tin cans an iron greeting they will never forget.\"",
+      "narrationKo": "실리아는 바닷가에 널려 있던 질긴 대왕 다시마와 밧줄을 모아, 바람의 마나를 주입하며 탄력 넘치는 투석용 탄성 로프를 꼬아 나갔다.",
+      "sourceSentenceStart": 23,
+      "sourceSentenceEnd": 23,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "실리아는 바닷가에 널려 있던 질긴 대왕 다시마와 밧줄을 모아, 바람의 마나를 주입하며 탄력 넘치는 투석용 탄성 로프를 꼬아 나갔다.",
+          "textEn": "We will give those imperial tin cans an iron greeting they will never forget.\"",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 24,
+      "imageFile": "episode_22/scene_24.webp",
+      "sourceImageFile": "episode_22/scene_24.webp",
+      "narrationEn": "Weaving the thick, fibrous bull kelp into high-tensile torsion cords, Cilia infused the fibers with elasticity through wind mana. Under the unified labor of the three youths and the master dwarven smith, the colossal siege engine rapidly took form upon the cliffs.",
+      "narrationKo": "세 젊은이와 드워프 장인의 손길이 완벽한 조화를 이루며 모래톱 위에서 거대한 공성 병기가 형태를 갖추어 갔다.",
+      "sourceSentenceStart": 24,
+      "sourceSentenceEnd": 24,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "세 젊은이와 드워프 장인의 손길이 완벽한 조화를 이루며 모래톱 위에서 거대한 공성 병기가 형태를 갖추어 갔다.",
+          "textEn": "Under the unified labor of the three youths and the master dwarven smith, the colossal siege engine rapidly took form upon the cliffs.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        },
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 25,
+      "imageFile": "episode_22/scene_25.webp",
+      "sourceImageFile": "episode_22/scene_25.webp",
+      "narrationEn": "By the time the crimson sun dipped toward the waves, a magnificent thirty-foot counterweight catapult stood poised upon the highest precipice of Gull Crag.",
+      "narrationKo": "바위섬 기슭에서는 차가운 파도가 부서지며 하얀 포말을 뿜어냈고, 바위틈마다 자라난 억센 해초들이 비린 갯내음을 풍겼다. 그림리는 도끼날로 거대한 통나무에 홈을 파며 콧노래를 흥얼거렸다.",
+      "sourceSentenceStart": 25,
+      "sourceSentenceEnd": 25,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그림리는 도끼날로 거대한 통나무에 홈을 파며 콧노래를 흥얼거렸다.",
+          "textEn": "By the time the crimson sun dipped toward the waves, a magnificent thirty-foot counterweight catapult stood poised upon the highest precipice of Gull Crag.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 74
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 26,
+      "imageFile": "episode_22/scene_26.webp",
+      "sourceImageFile": "episode_22/scene_26.webp",
+      "narrationEn": "Massive basalt boulders were quarried as ammunition, upon which Cilia carved frost runes designed to shatter into concussive shards of razor ice upon detonation.",
+      "narrationKo": "“드워프의 망치질 소리는 바다 괴물도 춤추게 만드는 법이지! 카단, 그 은빛 단검의 솜씨가 예사롭지 않구나. 나무의 결을 읽고 깎아내는 품이 일류 목수 뺨치겠어!”",
+      "sourceSentenceStart": 26,
+      "sourceSentenceEnd": 26,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "그림리",
+          "speakerEn": "Grimli",
+          "textKo": "“드워프의 망치질 소리는 바다 괴물도 춤추게 만드는 법이지! 카단, 그 은빛 단검의 솜씨가 예사롭지 않구나. 나무의 결을 읽고 깎아내는 품이 일류 목수 뺨치겠어!”",
+          "textEn": "“Massive basalt boulders were quarried as ammunition, upon which Cilia carved frost runes designed to shatter into concussive shards of razor ice upon detonation.”",
+          "bubbleType": "shout",
+          "position": "bottom-left",
+          "characterCardId": 74
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 27,
+      "imageFile": "episode_22/scene_27.webp",
+      "sourceImageFile": "episode_22/scene_27.webp",
+      "narrationEn": "Checking the ratchet gears of the winch, Grimli clapped Kadan's broad shoulder.",
+      "narrationKo": "노을이 질 무렵, 마침내 높이 서른 자에 달하는 거대한 참나무 투석기가 갈매기바위섬 정상 절벽 위에 웅장한 자태를 드러냈다.",
+      "sourceSentenceStart": 27,
+      "sourceSentenceEnd": 27,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "노을이 질 무렵, 마침내 높이 서른 자에 달하는 거대한 참나무 투석기가 갈매기바위섬 정상 절벽 위에 웅장한 자태를 드러냈다.",
+          "textEn": "Checking the ratchet gears of the winch, Grimli clapped Kadan's broad shoulder.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 74
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        },
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 28,
+      "imageFile": "episode_22/scene_28.webp",
+      "sourceImageFile": "episode_22/scene_28.webp",
+      "narrationEn": "\"Kadan, lad, your master Aleksandar and I built just such a siege thrower amidst the blizzards of the First Crusade twenty winters ago.",
+      "narrationKo": "바위섬의 거대한 현무암 덩어리들이 포탄으로 준비되었고, 실리아는 포탄 표면에 냉기의 서리 룬을 새겨 폭발 시 거대한 빙벽 파편을 비산시키는 특수 탄환을 완성했다.",
+      "sourceSentenceStart": 28,
+      "sourceSentenceEnd": 28,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "바위섬의 거대한 현무암 덩어리들이 포탄으로 준비되었고, 실리아는 포탄 표면에 냉기의 서리 룬을 새겨 폭발 시 거대한 빙벽 파편을 비산시키는 특수 탄환을 완성했다.",
+          "textEn": "\"Kadan, lad, your master Aleksandar and I built just such a siege thrower amidst the blizzards of the First Crusade twenty winters ago.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 29,
+      "imageFile": "episode_22/scene_29.webp",
+      "sourceImageFile": "episode_22/scene_29.webp",
+      "narrationEn": "That stubborn knight not only wielded a shield like a mountain, but he also had the finest hands for timber and stonework I ever saw. Watching your hammer work today, I know his craft lives proudly in your blood.\"",
+      "narrationKo": "그림리가 투석기의 권양기 톱니바퀴를 점검하며 카단의 어깨를 툭 쳤다.",
+      "sourceSentenceStart": 29,
+      "sourceSentenceEnd": 29,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그림리가 투석기의 권양기 톱니바퀴를 점검하며 카단의 어깨를 툭 쳤다.",
+          "textEn": "Watching your hammer work today, I know his craft lives proudly in your blood.\"",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 74
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 30,
+      "imageFile": "episode_22/scene_30.webp",
+      "sourceImageFile": "episode_22/scene_30.webp",
+      "narrationEn": "Resting against his shield, Kadan gazed across the sunset swells with a serene smile.",
+      "narrationKo": "“카단, 네 스승 알렉산다르 경도 과거 제1차 성전 때 나와 함께 눈 덮인 협곡에서 이런 투석기를 만들었었지.”",
+      "sourceSentenceStart": 30,
+      "sourceSentenceEnd": 30,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "그림리",
+          "speakerEn": "Grimli",
+          "textKo": "“카단, 네 스승 알렉산다르 경도 과거 제1차 성전 때 나와 함께 눈 덮인 협곡에서 이런 투석기를 만들었었지.”",
+          "textEn": "“Resting against his shield, Kadan gazed across the sunset swells with a serene smile.”",
+          "bubbleType": "speech",
+          "position": "bottom-left",
+          "characterCardId": 74
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 31,
+      "imageFile": "episode_22/scene_31.webp",
+      "sourceImageFile": "episode_22/scene_31.webp",
+      "narrationEn": "\"Master Aleksandar taught me that craft is never about senseless destruction, but the manifestation of wisdom to protect the vulnerable.",
+      "narrationKo": "“그 우직한 친구는 방패만 잘 다루는 게 아니라 나무를 깎고 돌을 쌓는 손재주도 기가 막혔어. 네 망치질 솜씨를 보니 스승의 피가 헛되이 흐르지 않았구나.”",
+      "sourceSentenceStart": 31,
+      "sourceSentenceEnd": 31,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“그 우직한 친구는 방패만 잘 다루는 게 아니라 나무를 깎고 돌을 쌓는 손재주도 기가 막혔어. 네 망치질 솜씨를 보니 스승의 피가 헛되이 흐르지 않았구나.”",
+          "textEn": "“\"Master Aleksandar taught me that craft is never about senseless destruction, but the manifestation of wisdom to protect the vulnerable.”",
+          "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 32,
+      "imageFile": "episode_22/scene_32.webp",
+      "sourceImageFile": "episode_22/scene_32.webp",
+      "narrationEn": "This catapult is not a weapon of slaughter, but the key to open a path of life for our people.\"",
+      "narrationKo": "카단이 방패를 짚고 서서 서쪽 바다를 바라보며 엷은 미소를 지었다.",
+      "sourceSentenceStart": 32,
+      "sourceSentenceEnd": 32,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단이 방패를 짚고 서서 서쪽 바다를 바라보며 엷은 미소를 지었다.",
+          "textEn": "This catapult is not a weapon of slaughter, but the key to open a path of life for our people.\"",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 33,
+      "imageFile": "episode_22/scene_33.webp",
+      "sourceImageFile": "episode_22/scene_33.webp",
+      "narrationEn": "Coating the throwing basket with sanctifying fire, Ignis spoke in quiet reverence. \"The road once walked by father Balian and uncle Aleksandar... is now ours to complete.\"",
+      "narrationKo": "“스승님께서는 기술이란 파괴가 아니라, 소중한 이들을 지키기 위한 지혜의 발현이라고 가르치셨습니다. 이 투석기는 길을 막아선 폭력을 부수고 사람들을 살릴 문을 여는 열쇠입니다.”",
+      "sourceSentenceStart": 33,
+      "sourceSentenceEnd": 33,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“스승님께서는 기술이란 파괴가 아니라, 소중한 이들을 지키기 위한 지혜의 발현이라고 가르치셨습니다. 이 투석기는 길을 막아선 폭력을 부수고 사람들을 살릴 문을 여는 열쇠입니다.”",
+          "textEn": "“The road once walked by father Balian and uncle Aleksandar... is now ours to complete.”",
+          "bubbleType": "speech",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 34,
+      "imageFile": "episode_22/scene_34.webp",
+      "sourceImageFile": "episode_22/scene_34.webp",
+      "narrationEn": "Just then, alarm klaxons blared across the strait as two swift imperial scouting pinnaces detected the activity upon the crag, surging forward with archers nocking fire arrows.",
+      "narrationKo": "이그니스가 투석기 발사대에 불타는 성화를 덧씌우며 나지막이 중얼거렸다.",
+      "sourceSentenceStart": 34,
+      "sourceSentenceEnd": 34,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "이그니스가 투석기 발사대에 불타는 성화를 덧씌우며 나지막이 중얼거렸다.",
+          "textEn": "Just then, alarm klaxons blared across the strait as two swift imperial scouting pinnaces detected the activity upon the crag, surging forward with archers nocking fire arrows.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 35,
+      "imageFile": "episode_22/scene_35.webp",
+      "sourceImageFile": "episode_22/scene_35.webp",
+      "narrationEn": "Sweeping her Jade Staff, Cilia conjured dense oceanic fog around the heights.",
+      "narrationKo": "“발리안 아버지와 알렉산다르 숙부님이 함께 걸으셨던 길을, 이제 우리가 걷고 있군.”",
+      "sourceSentenceStart": 35,
+      "sourceSentenceEnd": 35,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“발리안 아버지와 알렉산다르 숙부님이 함께 걸으셨던 길을, 이제 우리가 걷고 있군.”",
+          "textEn": "“Sweeping her Jade Staff, Cilia conjured dense oceanic fog around the heights.”",
+          "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 36,
+      "imageFile": "episode_22/scene_36.webp",
+      "sourceImageFile": "episode_22/scene_36.webp",
+      "narrationEn": "\"I will shroud the peak in mist to blind their bowmen!",
+      "narrationKo": "카단은 투석기의 중심축을 다시 한번 손으로 짚으며 수평을 맞추었다. 바위섬의 거친 해풍이 세 젊은이의 옷자락을 세차게 흔들었지만, 그들의 눈빛에는 단 한 점의 망설임도 없었다.",
+      "sourceSentenceStart": 36,
+      "sourceSentenceEnd": 36,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "바위섬의 거친 해풍이 세 젊은이의 옷자락을 세차게 흔들었지만, 그들의 눈빛에는 단 한 점의 망설임도 없었다.",
+          "textEn": "\"I will shroud the peak in mist to blind their bowmen!",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 37,
+      "imageFile": "episode_22/scene_37.webp",
+      "sourceImageFile": "episode_22/scene_37.webp",
+      "narrationEn": "Stand ready!\" As milky-white fog swallowed the rock shelf, Kadan gripped the release lever with steady nerves.",
+      "narrationKo": "실리아가 서리 룬을 새긴 현무암 포탄을 어루만지며 속삭였다. “이 포탄이 터지면 적들의 포탑은 얼음 파편에 휩싸여 완전히 무력화될 거예요. 무고한 인명 살상 없이 오직 대포들만을 침묵시키겠어요.”",
+      "sourceSentenceStart": 37,
+      "sourceSentenceEnd": 37,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“이 포탄이 터지면 적들의 포탑은 얼음 파편에 휩싸여 완전히 무력화될 거예요. 무고한 인명 살상 없이 오직 대포들만을 침묵시키겠어요.”",
+          "textEn": "“Stand ready!\" As milky-white fog swallowed the rock shelf, Kadan gripped the release lever with steady nerves.”",
+          "bubbleType": "speech",
+          "position": "top-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 38,
+      "imageFile": "episode_22/scene_38.webp",
+      "sourceImageFile": "episode_22/scene_38.webp",
+      "narrationEn": "\"Target: imperial flagship engine bay, three thousand paces ahead!\"",
+      "narrationKo": "그때 해협 저편에서 경종 소리가 울리며, 이상 징후를 감지한 황실 정찰 쾌속선 두 척이 갈매기바위섬을 향해 전속력으로 다가오기 시작했다. 쾌속선의 갑판 위에서 궁수들이 불화살을 메기며 투석기를 향해 조준하고 있었다.",
+      "sourceSentenceStart": 38,
+      "sourceSentenceEnd": 38,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "쾌속선의 갑판 위에서 궁수들이 불화살을 메기며 투석기를 향해 조준하고 있었다.",
+          "textEn": "\"Target: imperial flagship engine bay, three thousand paces ahead!\"",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 39,
+      "imageFile": "episode_22/scene_39.webp",
+      "sourceImageFile": "episode_22/scene_39.webp",
+      "narrationEn": "Grimli hammered down the locking dog.",
+      "narrationKo": "실리아가 녹옥 지팡이를 휘둘러 바다 안개를 짙게 끌어올렸다. “안개의 장막으로 섬의 정상을 가리겠어요! 적들이 조준하지 못하게 시간을 벌게요!”",
       "sourceSentenceStart": 39,
+      "sourceSentenceEnd": 39,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“안개의 장막으로 섬의 정상을 가리겠어요! 적들이 조준하지 못하게 시간을 벌게요!”",
+          "textEn": "“Grimli hammered down the locking dog.”",
+          "bubbleType": "shout",
+          "position": "bottom-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 40,
+      "imageFile": "episode_22/scene_40.webp",
+      "sourceImageFile": "episode_22/scene_40.webp",
+      "narrationEn": "\"Loose the stone, lad!\"",
+      "narrationKo": "자욱한 유백색 안개가 바위섬을 뒤덮는 사이, 카단이 투석기의 격발 레버를 꽉 쥐었다.",
+      "sourceSentenceStart": 40,
       "sourceSentenceEnd": 40,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "콰아아앙!",
-          "textEn": "Like a roaring meteor, the projectile arced over the channel, crashing dead-center through the armored deck of the lead imperial ironclad.",
+          "textKo": "자욱한 유백색 안개가 바위섬을 뒤덮는 사이, 카단이 투석기의 격발 레버를 꽉 쥐었다.",
+          "textEn": "\"Loose the stone, lad!\"",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 41,
+      "imageFile": "episode_22/scene_41.webp",
+      "sourceImageFile": "episode_22/scene_41.webp",
+      "narrationEn": "Boom! With a concussive crack of bending timber, the catapult arm cleaved through the air, hurling the frost-inscribed basalt monolith into the twilight sky.",
+      "narrationKo": "“목표, 전방 삼천 보 거리의 황실 제1철갑선 기관실이다!” 그림리가 권양기 쐐기를 내리쳤다.",
+      "sourceSentenceStart": 41,
+      "sourceSentenceEnd": 41,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "그림리",
+          "speakerEn": "Grimli",
+          "textKo": "“목표, 전방 삼천 보 거리의 황실 제1철갑선 기관실이다!”",
+          "textEn": "“Boom! With a concussive crack of bending timber, the catapult arm cleaved through the air, hurling the frost-inscribed basalt monolith into the twilight sky.”",
+          "bubbleType": "shout",
+          "position": "top-right",
+          "characterCardId": 74
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 42,
+      "imageFile": "episode_22/scene_42.webp",
+      "sourceImageFile": "episode_22/scene_42.webp",
+      "narrationEn": "Like a roaring meteor, the projectile arced over the channel, crashing dead-center through the armored deck of the lead imperial ironclad.",
+      "narrationKo": "“발사해라, 애송이!” 쿠우웅!",
+      "sourceSentenceStart": 42,
+      "sourceSentenceEnd": 42,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "그림리",
+          "speakerEn": "Grimli",
+          "textKo": "“발사해라, 애송이!”",
+          "textEn": "“Like a roaring meteor, the projectile arced over the channel, crashing dead-center through the armored deck of the lead imperial ironclad.”",
+          "bubbleType": "shout",
+          "position": "bottom-left",
+          "characterCardId": 74
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 43,
+      "imageFile": "episode_22/scene_43.webp",
+      "sourceImageFile": "episode_22/scene_43.webp",
+      "narrationEn": "Crr-aaash!",
+      "narrationKo": "거대한 투석기 팔이 허공을 가르며 서리 룬이 새겨진 거대한 현무암 암괴를 쏘아 올렸다. 허공을 가르는 포탄은 포효하는 유성처럼 날아가, 해협 중앙에 정박해 있던 황실 제1철갑선의 장갑 갑판을 정통으로 강타했다.",
+      "sourceSentenceStart": 43,
+      "sourceSentenceEnd": 43,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "허공을 가르는 포탄은 포효하는 유성처럼 날아가, 해협 중앙에 정박해 있던 황실 제1철갑선의 장갑 갑판을 정통으로 강타했다.",
+          "textEn": "Crr-aaash!",
           "bubbleType": "thought",
           "position": "top-right",
           "characterCardId": 74
@@ -516,22 +1331,57 @@
       ]
     },
     {
-      "sceneNumber": 16,
-      "imageFile": "episode_22/scene_16.webp",
-      "sourceImageFile": "episode_22/scene_16.webp",
-      "narrationEn": "Crr-aaash! The thick iron plate buckled like parchment as the frost runes detonated in an apocalyptic freezing blast. The arcane steam boilers ruptured in cascading detonations, vomiting black smoke as the flagship tilted violently onto its beam ends.",
-      "narrationKo": "철갑선의 두꺼운 장갑판이 종잇장처럼 구겨지며 거대한 얼음 폭풍이 선체를 뒤흔들었다. 동력을 공급하던 마나 증기 보일러가 연쇄 폭발을 일으키며 철갑선이 검은 연기를 뿜으며 옆으로 기울어지기 시작했다. 황실 정찰선에서 발사된 불화살들이 바위섬의 절벽에 부딪쳐 맹렬한 불꽃을 튀겼지만, 실리아의 바람 장막에 막혀 투석기에는 닿지 못했다. 포탄이 적의 철갑선을 강타하자 바다 위로 거대한 물기둥이 솟구쳐 올랐다. 적선에서 비명과 함께 퇴각 나팔 소리가 요란하게 울려 퍼졌다. 거대한 얼음 결정들이 철갑선의 갑판을 뒤덮으며 동력 기관을 완전히 얼려버렸다.",
-      "sourceSentenceStart": 41,
-      "sourceSentenceEnd": 43,
+      "sceneNumber": 44,
+      "imageFile": "episode_22/scene_44.webp",
+      "sourceImageFile": "episode_22/scene_44.webp",
+      "narrationEn": "The thick iron plate buckled like parchment as the frost runes detonated in an apocalyptic freezing blast.",
+      "narrationKo": "콰아아앙! 철갑선의 두꺼운 장갑판이 종잇장처럼 구겨지며 거대한 얼음 폭풍이 선체를 뒤흔들었다. 동력을 공급하던 마나 증기 보일러가 연쇄 폭발을 일으키며 철갑선이 검은 연기를 뿜으며 옆으로 기울어지기 시작했다.",
+      "sourceSentenceStart": 44,
+      "sourceSentenceEnd": 44,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "거대한 얼음 결정들이 철갑선의 갑판을 뒤덮으며 동력 기관을 완전히 얼려버렸다.",
-          "textEn": "The arcane steam boilers ruptured in cascading detonations, vomiting black smoke as the flagship tilted violently onto its beam ends.",
+          "textKo": "동력을 공급하던 마나 증기 보일러가 연쇄 폭발을 일으키며 철갑선이 검은 연기를 뿜으며 옆으로 기울어지기 시작했다.",
+          "textEn": "The thick iron plate buckled like parchment as the frost runes detonated in an apocalyptic freezing blast.",
           "bubbleType": "thought",
           "position": "bottom-left",
+          "characterCardId": 74
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 45,
+      "imageFile": "episode_22/scene_45.webp",
+      "sourceImageFile": "episode_22/scene_45.webp",
+      "narrationEn": "The arcane steam boilers ruptured in cascading detonations, vomiting black smoke as the flagship tilted violently onto its beam ends.",
+      "narrationKo": "황실 정찰선에서 발사된 불화살들이 바위섬의 절벽에 부딪쳐 맹렬한 불꽃을 튀겼지만, 실리아의 바람 장막에 막혀 투석기에는 닿지 못했다. 포탄이 적의 철갑선을 강타하자 바다 위로 거대한 물기둥이 솟구쳐 올랐다.",
+      "sourceSentenceStart": 45,
+      "sourceSentenceEnd": 45,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "포탄이 적의 철갑선을 강타하자 바다 위로 거대한 물기둥이 솟구쳐 올랐다.",
+          "textEn": "The arcane steam boilers ruptured in cascading detonations, vomiting black smoke as the flagship tilted violently onto its beam ends.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
           "characterCardId": 62
         }
       ],
@@ -551,20 +1401,113 @@
       ]
     },
     {
-      "sceneNumber": 17,
-      "imageFile": "episode_22/scene_17.webp",
-      "sourceImageFile": "episode_22/scene_17.webp",
-      "narrationEn": "In rapid succession, the second and third projectiles slammed squarely into the cliffside ballista towers. Hundreds of tons of pulverized granite cascaded into the sea, burying the imperial artillery beneath landslides. With the ironclads crippled and the gun towers silenced, the passage through the Siren Strait lay wide open.",
-      "narrationKo": "연이어 장전된 두 번째, 세 번째 포탄이 해협 양쪽 암벽의 쇠뇌 포탑들을 차례로 강타했다. 수백 톤의 바위 파편이 쏟아져 내리며 황실 해군의 포탑들이 산산조각 나 해협 바닥으로 무너져 내렸다. 해협을 가로막고 있던 철갑선이 침몰하고 포탑들이 침묵하자, 사이렌 해협의 거친 물길이 활짝 열렸다. 바다 위에서 대기하고 있던 수백 척의 꽃배 선단에서 우레와 같은 함성이 터져 나왔다. 론돌이 기함의 돛을 높이 올리며 고동을 길게 불어 승리를 알렸다.",
-      "sourceSentenceStart": 44,
+      "sceneNumber": 46,
+      "imageFile": "episode_22/scene_46.webp",
+      "sourceImageFile": "episode_22/scene_46.webp",
+      "narrationEn": "In rapid succession, the second and third projectiles slammed squarely into the cliffside ballista towers. Hundreds of tons of pulverized granite cascaded into the sea, burying the imperial artillery beneath landslides.",
+      "narrationKo": "적선에서 비명과 함께 퇴각 나팔 소리가 요란하게 울려 퍼졌다. 거대한 얼음 결정들이 철갑선의 갑판을 뒤덮으며 동력 기관을 완전히 얼려버렸다.",
+      "sourceSentenceStart": 46,
       "sourceSentenceEnd": 46,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "론돌이 기함의 돛을 높이 올리며 고동을 길게 불어 승리를 알렸다.",
+          "textKo": "거대한 얼음 결정들이 철갑선의 갑판을 뒤덮으며 동력 기관을 완전히 얼려버렸다.",
+          "textEn": "Hundreds of tons of pulverized granite cascaded into the sea, burying the imperial artillery beneath landslides.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 47,
+      "imageFile": "episode_22/scene_47.webp",
+      "sourceImageFile": "episode_22/scene_47.webp",
+      "narrationEn": "With the ironclads crippled and the gun towers silenced, the passage through the Siren Strait lay wide open.",
+      "narrationKo": "연이어 장전된 두 번째, 세 번째 포탄이 해협 양쪽 암벽의 쇠뇌 포탑들을 차례로 강타했다. 수백 톤의 바위 파편이 쏟아져 내리며 황실 해군의 포탑들이 산산조각 나 해협 바닥으로 무너져 내렸다.",
+      "sourceSentenceStart": 47,
+      "sourceSentenceEnd": 47,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "수백 톤의 바위 파편이 쏟아져 내리며 황실 해군의 포탑들이 산산조각 나 해협 바닥으로 무너져 내렸다.",
           "textEn": "With the ironclads crippled and the gun towers silenced, the passage through the Siren Strait lay wide open.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        },
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 48,
+      "imageFile": "episode_22/scene_48.webp",
+      "sourceImageFile": "episode_22/scene_48.webp",
+      "narrationEn": "From the hundreds of flower boats holding position offshore erupted a deafening roar of triumph.",
+      "narrationKo": "해협을 가로막고 있던 철갑선이 침몰하고 포탑들이 침묵하자, 사이렌 해협의 거친 물길이 활짝 열렸다.",
+      "sourceSentenceStart": 48,
+      "sourceSentenceEnd": 48,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "해협을 가로막고 있던 철갑선이 침몰하고 포탑들이 침묵하자, 사이렌 해협의 거친 물길이 활짝 열렸다.",
+          "textEn": "From the hundreds of flower boats holding position offshore erupted a deafening roar of triumph.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 49,
+      "imageFile": "episode_22/scene_49.webp",
+      "sourceImageFile": "episode_22/scene_49.webp",
+      "narrationEn": "Hoisting his sails, Rondol sounded the conch horn to signal the general advance.",
+      "narrationKo": "바다 위에서 대기하고 있던 수백 척의 꽃배 선단에서 우레와 같은 함성이 터져 나왔다. 론돌이 기함의 돛을 높이 올리며 고동을 길게 불어 승리를 알렸다.",
+      "sourceSentenceStart": 49,
+      "sourceSentenceEnd": 49,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "론돌이 기함의 돛을 높이 올리며 고동을 길게 불어 승리를 알렸다.",
+          "textEn": "Hoisting his sails, Rondol sounded the conch horn to signal the general advance.",
           "bubbleType": "thought",
           "position": "bottom-right",
           "characterCardId": 46
@@ -576,7 +1519,88 @@
           "textEn": "BOOM!",
           "style": "impact",
           "position": "center"
-        },
+        }
+      ]
+    },
+    {
+      "sceneNumber": 50,
+      "imageFile": "episode_22/scene_50.webp",
+      "sourceImageFile": "episode_22/scene_50.webp",
+      "narrationEn": "Standing beside the timber catapult, Kadan, Ignis, and Cilia watched the refugee flotilla glide safely through the gap, letting out long breaths of relief. Passing a leather flask of potent dwarven ale to Kadan, Grimli barked a hearty chuckle.",
+      "narrationKo": "카단과 이그니스, 실리아는 투석기 곁에 서서 열린 해협을 통과하는 꽃배들을 바라보며 안도의 숨을 내쉬었다.",
+      "sourceSentenceStart": 50,
+      "sourceSentenceEnd": 50,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단과 이그니스, 실리아는 투석기 곁에 서서 열린 해협을 통과하는 꽃배들을 바라보며 안도의 숨을 내쉬었다.",
+          "textEn": "Passing a leather flask of potent dwarven ale to Kadan, Grimli barked a hearty chuckle.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 51,
+      "imageFile": "episode_22/scene_51.webp",
+      "sourceImageFile": "episode_22/scene_51.webp",
+      "narrationEn": "\"Magnificently done, children!",
+      "narrationKo": "그림리가 호리병에 든 독한 드워프 에일을 카단에게 건네며 껄껄 웃었다.",
+      "sourceSentenceStart": 51,
+      "sourceSentenceEnd": 51,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그림리가 호리병에 든 독한 드워프 에일을 카단에게 건네며 껄껄 웃었다.",
+          "textEn": "\"Magnificently done, children!",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 74
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 52,
+      "imageFile": "episode_22/scene_52.webp",
+      "sourceImageFile": "episode_22/scene_52.webp",
+      "narrationEn": "The first iron gate is shattered!",
+      "narrationKo": "“잘했다, 아이들아! 첫 번째 관문을 멋지게 뚫어냈구나! 이제 용의 뿔 산맥의 비밀 석굴로 가서 선대 영웅들이 남긴 유산을 확인할 차례다!”",
+      "sourceSentenceStart": 52,
+      "sourceSentenceEnd": 52,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "그림리",
+          "speakerEn": "Grimli",
+          "textKo": "“잘했다, 아이들아! 첫 번째 관문을 멋지게 뚫어냈구나! 이제 용의 뿔 산맥의 비밀 석굴로 가서 선대 영웅들이 남긴 유산을 확인할 차례다!”",
+          "textEn": "“The first iron gate is shattered!”",
+          "bubbleType": "shout",
+          "position": "top-left",
+          "characterCardId": 74
+        }
+      ],
+      "sfxCues": [
         {
           "textKo": "쿠구구궁!",
           "textEn": "RUMBLE!",
@@ -586,51 +1610,22 @@
       ]
     },
     {
-      "sceneNumber": 18,
-      "imageFile": "episode_22/scene_18.webp",
-      "sourceImageFile": "episode_22/scene_18.webp",
-      "narrationEn": "From the hundreds of flower boats holding position offshore erupted a deafening roar of triumph. Hoisting his sails, Rondol sounded the conch horn to signal the general advance. Standing beside the timber catapult, Kadan, Ignis, and Cilia watched the refugee flotilla glide safely through the gap, letting out long breaths of relief. Passing a leather flask of potent dwarven ale to Kadan, Grimli barked a hearty chuckle.",
-      "narrationKo": "카단과 이그니스, 실리아는 투석기 곁에 서서 열린 해협을 통과하는 꽃배들을 바라보며 안도의 숨을 내쉬었다. 그림리가 호리병에 든 독한 드워프 에일을 카단에게 건네며 껄껄 웃었다. “잘했다, 아이들아! 첫 번째 관문을 멋지게 뚫어냈구나! 이제 용의 뿔 산맥의 비밀 석굴로 가서 선대 영웅들이 남긴 유산을 확인할 차례다!”",
-      "sourceSentenceStart": 47,
-      "sourceSentenceEnd": 49,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "그림리",
-          "speakerEn": "Grimli",
-          "textKo": "“잘했다, 아이들아! 첫 번째 관문을 멋지게 뚫어냈구나! 이제 용의 뿔 산맥의 비밀 석굴로 가서 선대 영웅들이 남긴 유산을 확인할 차례다!”",
-          "textEn": "“Magnificently done, children! The first iron gate is shattered! Now let us march to the secret grottos of Mount Dragonhorn and reclaim the ancestral heritage left by our forebears!”",
-          "bubbleType": "shout",
-          "position": "bottom-left",
-          "characterCardId": 74
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "휘이이익-!",
-          "textEn": "SWOOSH!",
-          "style": "slash",
-          "position": "top-left"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 19,
-      "imageFile": "episode_22/scene_19.webp",
-      "sourceImageFile": "episode_22/scene_19.webp",
-      "narrationEn": "\"Magnificently done, children! The first iron gate is shattered! Now let us march to the secret grottos of Mount Dragonhorn and reclaim the ancestral heritage left by our forebears!\" Taking a deep draught, Kadan nodded firmly.",
+      "sceneNumber": 53,
+      "imageFile": "episode_22/scene_53.webp",
+      "sourceImageFile": "episode_22/scene_53.webp",
+      "narrationEn": "Now let us march to the secret grottos of Mount Dragonhorn and reclaim the ancestral heritage left by our forebears!\"",
       "narrationKo": "카단이 에일을 한 모금 들이켜며 고개를 끄덕였다. “가자, 동료들이여. 대륙의 새벽이 머지않았다.”",
-      "sourceSentenceStart": 50,
-      "sourceSentenceEnd": 51,
+      "sourceSentenceStart": 53,
+      "sourceSentenceEnd": 53,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
           "textKo": "“가자, 동료들이여. 대륙의 새벽이 머지않았다.”",
-          "textEn": "“Magnificently done, children! The first iron gate is shattered! Now let us march to the secret grottos of Mount Dragonhorn and reclaim the ancestral heritage left by our forebears!”",
+          "textEn": "“Now let us march to the secret grottos of Mount Dragonhorn and reclaim the ancestral heritage left by our forebears!\"”",
           "bubbleType": "speech",
-          "position": "bottom-right",
+          "position": "top-right",
           "characterCardId": 41
         }
       ],
@@ -644,20 +1639,78 @@
       ]
     },
     {
-      "sceneNumber": 20,
-      "imageFile": "episode_22/scene_20.webp",
-      "sourceImageFile": "episode_22/scene_20.webp",
-      "narrationEn": "\"Forward, companions. The dawn of the continent is at hand.\" Leaving Gull Crag in their wake, the companions resumed their resolute voyage toward the foothills of Mount Dragonhorn.",
-      "narrationKo": "일행은 갈매기바위섬을 뒤로하고, 용의 뿔 산맥 기슭을 향해 힘찬 항해를 재개했다. 연이어 쏟아진 포탄에 해협 양쪽의 쇠뇌 포탑들이 완전히 무너지며, 사이렌 해협의 거친 파도는 마침내 자유의 물길을 되찾았다. 론돌의 기함 미풍의날개호가 선두에 서서 포효하는 파도를 가르며 당당히 해협으로 진입했다. 카단은 손을 흔드는 피난민 아이들을 바라보며 가슴속 깊은 곳에서 차오르는 온기를 느꼈다. “우리가 만든 작은 도구가 수많은 생명을 살려냈다. 스승님께서 말씀하셨던 방패의 참뜻이 바로 이것이리라.”",
-      "sourceSentenceStart": 52,
+      "sceneNumber": 54,
+      "imageFile": "episode_22/scene_54.webp",
+      "sourceImageFile": "episode_22/scene_54.webp",
+      "narrationEn": "Taking a deep draught, Kadan nodded firmly. \"Forward, companions.",
+      "narrationKo": "일행은 갈매기바위섬을 뒤로하고, 용의 뿔 산맥 기슭을 향해 힘찬 항해를 재개했다.",
+      "sourceSentenceStart": 54,
       "sourceSentenceEnd": 54,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "일행은 갈매기바위섬을 뒤로하고, 용의 뿔 산맥 기슭을 향해 힘찬 항해를 재개했다.",
+          "textEn": "\"Forward, companions.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 55,
+      "imageFile": "episode_22/scene_55.webp",
+      "sourceImageFile": "episode_22/scene_55.webp",
+      "narrationEn": "The dawn of the continent is at hand.\"",
+      "narrationKo": "연이어 쏟아진 포탄에 해협 양쪽의 쇠뇌 포탑들이 완전히 무너지며, 사이렌 해협의 거친 파도는 마침내 자유의 물길을 되찾았다. 론돌의 기함 미풍의날개호가 선두에 서서 포효하는 파도를 가르며 당당히 해협으로 진입했다.",
+      "sourceSentenceStart": 55,
+      "sourceSentenceEnd": 55,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "론돌의 기함 미풍의날개호가 선두에 서서 포효하는 파도를 가르며 당당히 해협으로 진입했다.",
+          "textEn": "The dawn of the continent is at hand.\"",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 46
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 56,
+      "imageFile": "episode_22/scene_56.webp",
+      "sourceImageFile": "episode_22/scene_56.webp",
+      "narrationEn": "Leaving Gull Crag in their wake, the companions resumed their resolute voyage toward the foothills of Mount Dragonhorn.",
+      "narrationKo": "카단은 손을 흔드는 피난민 아이들을 바라보며 가슴속 깊은 곳에서 차오르는 온기를 느꼈다. “우리가 만든 작은 도구가 수많은 생명을 살려냈다. 스승님께서 말씀하셨던 방패의 참뜻이 바로 이것이리라.”",
+      "sourceSentenceStart": 56,
+      "sourceSentenceEnd": 56,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
           "textKo": "“우리가 만든 작은 도구가 수많은 생명을 살려냈다. 스승님께서 말씀하셨던 방패의 참뜻이 바로 이것이리라.”",
-          "textEn": "“Forward, companions. The dawn of the continent is at hand.”",
+          "textEn": "“Leaving Gull Crag in their wake, the companions resumed their resolute voyage toward the foothills of Mount Dragonhorn.”",
           "bubbleType": "speech",
           "position": "top-left",
           "characterCardId": 41
@@ -669,12 +1722,6 @@
           "textEn": "CLANG!",
           "style": "slash",
           "position": "top-right"
-        },
-        {
-          "textKo": "쿠구구궁!",
-          "textEn": "RUMBLE!",
-          "style": "rumble",
-          "position": "bottom-left"
         }
       ]
     }

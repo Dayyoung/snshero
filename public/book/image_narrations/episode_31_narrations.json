@@ -2,27 +2,85 @@
   "episodeNumber": 31,
   "episodeTitleEn": "The Hand That Wagered Everything",
   "episodeTitleKo": "내기에 건 손",
-  "sourceSentenceCount": 57,
-  "sceneCount": 20,
+  "sourceSentenceCount": 59,
+  "sceneCount": 59,
   "scenes": [
     {
       "sceneNumber": 1,
       "imageFile": "episode_31/scene_01.webp",
       "sourceImageFile": "episode_31/scene_01.webp",
-      "narrationEn": "Advancing across the northern plains after cleansing the Four Gates, the allied host stood before the Quicksand River, a treacherous watery boundary encircling the outer perimeter of the dreaded Black Marsh. Scores of fathoms wide, the torrent churned with thick, viscous sludge and liquefied sand rather than clean water, harboring bottomless quicksand pits that could swallow supply wagons in seconds. Across the opposite bank rose Lucian's dark citadel amidst rolling storm clouds, yet without specialized shallow-draft craft, crossing was impossible. Probing the riverbank with his timber pegleg, Rondol clicked his tongue in grim assessment.",
-      "narrationKo": "사문의 독을 정화하고 북쪽 평원으로 진격한 연합군이 마주한 것은 대륙 북방의 악명 높은 불모지, ‘검은 늪지대’의 외곽을 가로지르는 유사강(流砂江)이었다. 수십 길 너비의 강물은 맑은 물 대신 끈적끈적한 모래와 진흙이 소용돌이치며 흐르고 있었고, 발을 잘못 디뎠다간 마차마저 통째로 삼켜버리는 치명적인 모래 수렁이 끝없이 도사리고 있었다. 강 건너편으로는 루시안의 흑마법 요새가 검은 구름 속에 우뚝 솟아 있었지만, 배나 다리 없이는 단 한 명의 군사도 건널 수 없는 천연의 요새였다. 론돌이 목재 의족으로 강가의 모래를 쿡쿡 찌르며 혀를 찼다. “이 유사강은 바다보다 더 고약해. 일반 목재 배는 띄우자마자 진흙의 무게를 못 이기고 가라앉아 버리지. 오직 늪지대 고블린들이 만든 특수 부유선 ‘갈대나룻배’만이 이 강을 건널 수 있다.”",
+      "narrationEn": "Advancing across the northern plains after cleansing the Four Gates, the allied host stood before the Quicksand River, a treacherous watery boundary encircling the outer perimeter of the dreaded Black Marsh.",
+      "narrationKo": "사문의 독을 정화하고 북쪽 평원으로 진격한 연합군이 마주한 것은 대륙 북방의 악명 높은 불모지, ‘검은 늪지대’의 외곽을 가로지르는 유사강(流砂江)이었다.",
       "sourceSentenceStart": 1,
+      "sourceSentenceEnd": 1,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "사문의 독을 정화하고 북쪽 평원으로 진격한 연합군이 마주한 것은 대륙 북방의 악명 높은 불모지, ‘검은 늪지대’의 외곽을 가로지르는 유사강(流砂江)이었다.",
+          "textEn": "Advancing across the northern plains after cleansing the Four Gates, the allied host stood before the Quicksand River, a treacherous watery boundary encircling the outer perimeter of the dreaded Black Marsh.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 61
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_31/scene_02.webp",
+      "sourceImageFile": "episode_31/scene_02.webp",
+      "narrationEn": "Scores of fathoms wide, the torrent churned with thick, viscous sludge and liquefied sand rather than clean water, harboring bottomless quicksand pits that could swallow supply wagons in seconds. Across the opposite bank rose Lucian's dark citadel amidst rolling storm clouds, yet without specialized shallow-draft craft, crossing was impossible.",
+      "narrationKo": "수십 길 너비의 강물은 맑은 물 대신 끈적끈적한 모래와 진흙이 소용돌이치며 흐르고 있었고, 발을 잘못 디뎠다간 마차마저 통째로 삼켜버리는 치명적인 모래 수렁이 끝없이 도사리고 있었다.",
+      "sourceSentenceStart": 2,
+      "sourceSentenceEnd": 2,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "수십 길 너비의 강물은 맑은 물 대신 끈적끈적한 모래와 진흙이 소용돌이치며 흐르고 있었고, 발을 잘못 디뎠다간 마차마저 통째로 삼켜버리는 치명적인 모래 수렁이 끝없이 도사리고 있었다.",
+          "textEn": "Across the opposite bank rose Lucian's dark citadel amidst rolling storm clouds, yet without specialized shallow-draft craft, crossing was impossible.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 61
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_31/scene_03.webp",
+      "sourceImageFile": "episode_31/scene_03.webp",
+      "narrationEn": "Probing the riverbank with his timber pegleg, Rondol clicked his tongue in grim assessment.",
+      "narrationKo": "강 건너편으로는 루시안의 흑마법 요새가 검은 구름 속에 우뚝 솟아 있었지만, 배나 다리 없이는 단 한 명의 군사도 건널 수 없는 천연의 요새였다.",
+      "sourceSentenceStart": 3,
       "sourceSentenceEnd": 3,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "론돌",
-          "speakerEn": "Rondol",
-          "textKo": "“이 유사강은 바다보다 더 고약해. 일반 목재 배는 띄우자마자 진흙의 무게를 못 이기고 가라앉아 버리지. 오직 늪지대 고블린들이 만든 특수 부유선 ‘갈대나룻배’만이 이 강을 건널 수 있다.”",
-          "textEn": "“This quicksand river is more foul than any stormy sea. Standard timber cutters will founder within minutes under the weight of the mud. Only the buoyant reed-skiffs crafted by the swamp goblins can navigate this slurry.”",
-          "bubbleType": "speech",
-          "position": "top-right",
-          "characterCardId": 46
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "강 건너편으로는 루시안의 흑마법 요새가 검은 구름 속에 우뚝 솟아 있었지만, 배나 다리 없이는 단 한 명의 군사도 건널 수 없는 천연의 요새였다.",
+          "textEn": "Probing the riverbank with his timber pegleg, Rondol clicked his tongue in grim assessment.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 61
         }
       ],
       "sfxCues": [
@@ -41,96 +99,23 @@
       ]
     },
     {
-      "sceneNumber": 2,
-      "imageFile": "episode_31/scene_02.webp",
-      "sourceImageFile": "episode_31/scene_02.webp",
-      "narrationEn": "\"This quicksand river is more foul than any stormy sea. Standard timber cutters will founder within minutes under the weight of the mud. Only the buoyant reed-skiffs crafted by the swamp goblins can navigate this slurry.\" Bracing his shield, Kadan examined a crude skull-inscribed marker post.",
-      "narrationKo": "카단이 무쇠 방패를 고쳐 쥐며 강변의 기괴한 해골 표지판을 살폈다. “이 일대의 나룻배를 독점하고 있는 자가 있다고 들었다.” 그림리가 침을 뱉으며 대답했다.",
-      "sourceSentenceStart": 4,
-      "sourceSentenceEnd": 6,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“이 일대의 나룻배를 독점하고 있는 자가 있다고 들었다.”",
-          "textEn": "“This quicksand river is more foul than any stormy sea. Standard timber cutters will founder within minutes under the weight of the mud. Only the buoyant reed-skiffs crafted by the swamp goblins can navigate this slurry.”",
-          "bubbleType": "speech",
-          "position": "bottom-left",
-          "characterCardId": 41
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 3,
-      "imageFile": "episode_31/scene_03.webp",
-      "sourceImageFile": "episode_31/scene_03.webp",
-      "narrationEn": "\"I understand a solitary overlord monopolizes all the river barges.\" Spitting into the sand, Grimli replied in disgust. \"Bogart, the greedy goblin casino king. Colluding with the imperial court, he extorts fortune from fleeing refugees while hoarding the ferry fleet in his subterranean den. We must confront the cur directly.\"",
-      "narrationKo": "“지하 도박장의 군주이자 탐욕스러운 고블린 왕 ‘보가트’다. 황실과 결탁하여 피난민들의 통행료를 갈취하며 배를 틀어쥐고 있지. 그놈의 소굴로 가서 담판을 지어야 한다.” 실리아가 녹옥 지팡이로 서늘한 바람의 결을 읽으며 고개를 끄덕였다. “지하 암반 틈새에서 금화 부딪치는 소리와 기름진 고기 냄새가 풍겨와요. 저곳이 보가트의 은신처예요.”",
-      "sourceSentenceStart": 7,
-      "sourceSentenceEnd": 9,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "그림리",
-          "speakerEn": "Grimli",
-          "textKo": "“지하 도박장의 군주이자 탐욕스러운 고블린 왕 ‘보가트’다. 황실과 결탁하여 피난민들의 통행료를 갈취하며 배를 틀어쥐고 있지. 그놈의 소굴로 가서 담판을 지어야 한다.”",
-          "textEn": "“I understand a solitary overlord monopolizes all the river barges.”",
-          "bubbleType": "speech",
-          "position": "bottom-right",
-          "characterCardId": 74
-        },
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“지하 암반 틈새에서 금화 부딪치는 소리와 기름진 고기 냄새가 풍겨와요. 저곳이 보가트의 은신처예요.”",
-          "textEn": "“Bogart, the greedy goblin casino king. Colluding with the imperial court, he extorts fortune from fleeing refugees while hoarding the ferry fleet in his subterranean den. We must confront the cur directly.”",
-          "bubbleType": "speech",
-          "position": "top-left",
-          "characterCardId": 62
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "휘이이익-!",
-          "textEn": "SWOOSH!",
-          "style": "slash",
-          "position": "top-left"
-        }
-      ]
-    },
-    {
       "sceneNumber": 4,
       "imageFile": "episode_31/scene_04.webp",
       "sourceImageFile": "episode_31/scene_04.webp",
-      "narrationEn": "Cilia swept her Jade Staff, reading the subterranean drafts with a nod. \"Beneath that shale ledge, I hear the clinking of gold coins and smell roasted fat. That is Bogart's lair.\"",
-      "narrationKo": "유사강 수면 위로는 정체불명의 가스 방울들이 부글거리며 터져 나왔고, 썩은 갈대뿌리 사이로는 독사들이 똬리를 틀고 있었다. 강변의 검은 진흙은 한번 발을 들이면 무릎까지 순식간에 빨아들이는 무서운 흡인력을 지니고 있었다. 카단은 장화 끝으로 진흙의 점도를 확인하며 방패의 균형을 맞추었다. 실리아가 강바람을 느끼며 덧붙였다. “강 건너편 요새에서 탐지 마법진이 주기적으로 붉은 파문을 뿜어내고 있어요. 정면으로 강을 건너려 했다간 대포의 표적이 되기 십상이에요.”",
-      "sourceSentenceStart": 10,
-      "sourceSentenceEnd": 11,
+      "narrationEn": "\"This quicksand river is more foul than any stormy sea. Standard timber cutters will founder within minutes under the weight of the mud.",
+      "narrationKo": "론돌이 목재 의족으로 강가의 모래를 쿡쿡 찌르며 혀를 찼다.",
+      "sourceSentenceStart": 4,
+      "sourceSentenceEnd": 4,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“강 건너편 요새에서 탐지 마법진이 주기적으로 붉은 파문을 뿜어내고 있어요. 정면으로 강을 건너려 했다간 대포의 표적이 되기 십상이에요.”",
-          "textEn": "“Beneath that shale ledge, I hear the clinking of gold coins and smell roasted fat. That is Bogart's lair.”",
-          "bubbleType": "speech",
-          "position": "top-left",
-          "characterCardId": 62
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "론돌이 목재 의족으로 강가의 모래를 쿡쿡 찌르며 혀를 찼다.",
+          "textEn": "Standard timber cutters will founder within minutes under the weight of the mud.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 46
         }
       ],
       "sfxCues": [
@@ -139,12 +124,6 @@
           "textEn": "CLANG!",
           "style": "slash",
           "position": "top-right"
-        },
-        {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
         }
       ]
     },
@@ -152,34 +131,28 @@
       "sceneNumber": 5,
       "imageFile": "episode_31/scene_05.webp",
       "sourceImageFile": "episode_31/scene_05.webp",
-      "narrationEn": "Infiltrating the cavern den behind the reeds, the companions entered a vast subterranean gambling hall. Hundreds of rough brigands and goblins gathered around dice tables and card games amidst thick clouds of sulfuric tallow smoke. Lounging atop a silk divan at the center sat the corpulent goblin king Bogart, festooned in garish gold jewelry and swigging dwarven stout. Eyeing Kadan's Dragon Breaker shield with a covetous smirk, Bogart sneered.",
-      "narrationKo": "일행은 갈대숲 뒤편에 숨겨진 동굴 통로를 따라 지하 밀수 도박장으로 잠입했다. 지하 홀 안은 수백 명의 부랑배들과 고블린들이 둘러앉아 주사위 놀음과 카드 도박에 열을 올리고 있었고, 유황 등불의 매캐한 연기가 천장을 자욱하게 메우고 있었다. 홀 중앙의 거대한 비단 방석 위에는 온몸에 번쩍이는 황금 패물을 두른 뚱뚱한 고블린 왕 보가트가 커다란 맥주잔을 들이켜고 있었다. 보가트가 카단의 드래곤 브레이커 방패를 흘겨보며 교활한 웃음을 흘렸다. “키히힉! 황궁을 뒤집어엎었다는 성기사의 애송이와 왕녀님이 내 누추한 소굴을 어쩐 일로 찾으셨나? 유사강을 건널 갈대나룻배 백 척이 필요하다고? 하지만 이 보가트는 공짜로는 숨도 쉬지 않는 몸이라서 말이지!”",
-      "sourceSentenceStart": 12,
-      "sourceSentenceEnd": 14,
+      "narrationEn": "Only the buoyant reed-skiffs crafted by the swamp goblins can navigate this slurry.\"",
+      "narrationKo": "“이 유사강은 바다보다 더 고약해. 일반 목재 배는 띄우자마자 진흙의 무게를 못 이기고 가라앉아 버리지. 오직 늪지대 고블린들이 만든 특수 부유선 ‘갈대나룻배’만이 이 강을 건널 수 있다.”",
+      "sourceSentenceStart": 5,
+      "sourceSentenceEnd": 5,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“키히힉! 황궁을 뒤집어엎었다는 성기사의 애송이와 왕녀님이 내 누추한 소굴을 어쩐 일로 찾으셨나? 유사강을 건널 갈대나룻배 백 척이 필요하다고? 하지만 이 보가트는 공짜로는 숨도 쉬지 않는 몸이라서 말이지!”",
-          "textEn": "“Beneath that shale ledge, I hear the clinking of gold coins and smell roasted fat. That is Bogart's lair.”",
-          "bubbleType": "shout",
+          "speakerKo": "론돌",
+          "speakerEn": "Rondol",
+          "textKo": "“이 유사강은 바다보다 더 고약해. 일반 목재 배는 띄우자마자 진흙의 무게를 못 이기고 가라앉아 버리지. 오직 늪지대 고블린들이 만든 특수 부유선 ‘갈대나룻배’만이 이 강을 건널 수 있다.”",
+          "textEn": "“Only the buoyant reed-skiffs crafted by the swamp goblins can navigate this slurry.\"”",
+          "bubbleType": "speech",
           "position": "top-right",
-          "characterCardId": 41
+          "characterCardId": 46
         }
       ],
       "sfxCues": [
         {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
           "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "쿠구구궁!",
-          "textEn": "RUMBLE!",
-          "style": "rumble",
-          "position": "bottom-left"
+          "position": "center"
         }
       ]
     },
@@ -187,19 +160,19 @@
       "sceneNumber": 6,
       "imageFile": "episode_31/scene_06.webp",
       "sourceImageFile": "episode_31/scene_06.webp",
-      "narrationEn": "\"Heh-heh! The northern knight who shattered the palace gates graces my humble den! You desire a hundred reed-skiffs to cross the Quicksand River? But Bogart never parts with his property for free!\" Planting his shield onto the table with a heavy thud, Kadan spoke calmly.",
-      "narrationKo": "카단이 석탁 앞으로 걸어가 방패를 쾅 내려놓았다. “원하는 대가가 무엇이냐. 금화라면 황실 국고에서 압류한 것을 넉넉히 지불하겠다.” 보가트가 황금 주사위 두 개를 손안에서 짤랑거리며 눈을 번뜩였다.",
-      "sourceSentenceStart": 15,
-      "sourceSentenceEnd": 17,
+      "narrationEn": "Bracing his shield, Kadan examined a crude skull-inscribed marker post. \"I understand a solitary overlord monopolizes all the river barges.\"",
+      "narrationKo": "카단이 무쇠 방패를 고쳐 쥐며 강변의 기괴한 해골 표지판을 살폈다.",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 6,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“원하는 대가가 무엇이냐. 금화라면 황실 국고에서 압류한 것을 넉넉히 지불하겠다.”",
-          "textEn": "“Heh-heh! The northern knight who shattered the palace gates graces my humble den! You desire a hundred reed-skiffs to cross the Quicksand River? But Bogart never parts with his property for free!”",
-          "bubbleType": "speech",
-          "position": "bottom-left",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단이 무쇠 방패를 고쳐 쥐며 강변의 기괴한 해골 표지판을 살폈다.",
+          "textEn": "\"I understand a solitary overlord monopolizes all the river barges.\"",
+          "bubbleType": "thought",
+          "position": "top-right",
           "characterCardId": 41
         }
       ],
@@ -216,67 +189,23 @@
       "sceneNumber": 7,
       "imageFile": "episode_31/scene_07.webp",
       "sourceImageFile": "episode_31/scene_07.webp",
-      "narrationEn": "\"Name your price. We can compensate you generously in imperial gold.\" Juggling two gilded dice in his claws, Bogart's yellow eyes gleamed with malice.",
-      "narrationKo": "“금화 따위는 시시해! 내기를 하자, 기사 양반! 내 주사위 놀음에서 네놈이 이기면 나룻배 백 척을 무상으로 내어주지. 하지만 네놈이 진다면... 그 전설의 방패를 쥔 네 왼팔을 통째로 잘라 내 도박장의 장식품으로 걸어두겠다! 어때, 내기에 걸겠느냐?” 실리아가 지팡이를 겨누며 분노했다. “비열한 협잡꾼! 생명을 건 도박 따위에 응할 순 없어요!”",
-      "sourceSentenceStart": 18,
-      "sourceSentenceEnd": 20,
+      "narrationEn": "Spitting into the sand, Grimli replied in disgust.",
+      "narrationKo": "“이 일대의 나룻배를 독점하고 있는 자가 있다고 들었다.” 그림리가 침을 뱉으며 대답했다.",
+      "sourceSentenceStart": 7,
+      "sourceSentenceEnd": 7,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“금화 따위는 시시해! 내기를 하자, 기사 양반! 내 주사위 놀음에서 네놈이 이기면 나룻배 백 척을 무상으로 내어주지. 하지만 네놈이 진다면... 그 전설의 방패를 쥔 네 왼팔을 통째로 잘라 내 도박장의 장식품으로 걸어두겠다! 어때, 내기에 걸겠느냐?”",
-          "textEn": "“Name your price. We can compensate you generously in imperial gold.”",
-          "bubbleType": "shout",
+          "speakerKo": "그림리",
+          "speakerEn": "Grimli",
+          "textKo": "“이 일대의 나룻배를 독점하고 있는 자가 있다고 들었다.”",
+          "textEn": "“Spitting into the sand, Grimli replied in disgust.”",
+          "bubbleType": "speech",
           "position": "bottom-right",
-          "characterCardId": 62
-        },
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“비열한 협잡꾼! 생명을 건 도박 따위에 응할 순 없어요!”",
-          "textEn": "“Gold is boring! Let us wager, knight! If you defeat me in a single throw of the dice, I grant you a hundred skiffs without fee. But if you lose... I shall sever your left arm at the shoulder and mount that legendary shield as the grand trophy of my gambling hall! Do you dare accept the wager?”",
-          "bubbleType": "shout",
-          "position": "top-left",
-          "characterCardId": 62
+          "characterCardId": 74
         }
       ],
       "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 8,
-      "imageFile": "episode_31/scene_08.webp",
-      "sourceImageFile": "episode_31/scene_08.webp",
-      "narrationEn": "\"Gold is boring! Let us wager, knight! If you defeat me in a single throw of the dice, I grant you a hundred skiffs without fee. But if you lose... I shall sever your left arm at the shoulder and mount that legendary shield as the grand trophy of my gambling hall! Do you dare accept the wager?\" Cilia leveled her staff, her voice ringing in anger. \"A despicable cheat! We will not gamble human lives upon a table!\"",
-      "narrationKo": "도박장 안의 고블린들은 카단의 무쇠 방패와 실리아의 녹옥 지팡이를 보며 수군거리기 시작했다. 선대 성기사단이 제국을 뒤흔들었을 때도 고블린들은 지하에서 온갖 밀수와 도박으로 막대한 부를 챙겼던 터라, 성기사의 상징을 단번에 알아본 것이었다. 보가트가 금반지를 낀 손가락으로 수염을 꼬며 비열하게 웃었다. “북방의 늑대 알렉산다르의 제자라더니, 배짱 하나는 두둑하군! 하지만 이 도박판은 힘으로 이기는 곳이 아니야. 운명에 네 모가지를 걸어보란 말이다!” 그러나 카단은 조용히 손을 들어 실리아를 제지했다. 카단은 품속에서 따스하게 고동치는 이그니스의 유리 불씨를 살며시 어루만졌다. 불씨의 미세한 마나 파동이 보가트의 손안에 든 황금 주사위의 숨겨진 트릭을 정확히 감지해 내고 있었다.",
-      "sourceSentenceStart": 21,
-      "sourceSentenceEnd": 23,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“북방의 늑대 알렉산다르의 제자라더니, 배짱 하나는 두둑하군! 하지만 이 도박판은 힘으로 이기는 곳이 아니야. 운명에 네 모가지를 걸어보란 말이다!”",
-          "textEn": "“Gold is boring! Let us wager, knight! If you defeat me in a single throw of the dice, I grant you a hundred skiffs without fee. But if you lose... I shall sever your left arm at the shoulder and mount that legendary shield as the grand trophy of my gambling hall! Do you dare accept the wager?”",
-          "bubbleType": "shout",
-          "position": "top-left",
-          "characterCardId": 62
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
         {
           "textKo": "파지지직!",
           "textEn": "CRACKLE!",
@@ -286,23 +215,52 @@
       ]
     },
     {
-      "sceneNumber": 9,
-      "imageFile": "episode_31/scene_09.webp",
-      "sourceImageFile": "episode_31/scene_09.webp",
-      "narrationEn": "Yet Kadan raised a calm hand to steady her. Reaching into his coat, he touched the White Glass Ember, which pulsed with rhythmic warmth against his palm. The ember's subtle resonance detected the microscopic magnetic core embedded within Bogart's dice. Sitting before the stone table, Kadan replied evenly.",
-      "narrationKo": "카단이 석탁에 앉으며 담담하게 말했다. “좋다. 내 왼팔을 걸겠다. 대신 규칙은 네가 먼저 주사위를 던지고, 내가 그 뒤에 던지는 것이다.” 보가트가 득의양양한 미소를 지으며 황금 컵에 주사위를 넣고 흔들었다. 주사위 내부에는 미세한 자철석이 심어져 있어 탁자 밑의 자석 장치와 반응해 무조건 최고 숫자인 ‘12’가 나오도록 조작되어 있었다.",
-      "sourceSentenceStart": 24,
-      "sourceSentenceEnd": 26,
+      "sceneNumber": 8,
+      "imageFile": "episode_31/scene_08.webp",
+      "sourceImageFile": "episode_31/scene_08.webp",
+      "narrationEn": "\"Bogart, the greedy goblin casino king. Colluding with the imperial court, he extorts fortune from fleeing refugees while hoarding the ferry fleet in his subterranean den.",
+      "narrationKo": "“지하 도박장의 군주이자 탐욕스러운 고블린 왕 ‘보가트’다. 황실과 결탁하여 피난민들의 통행료를 갈취하며 배를 틀어쥐고 있지. 그놈의 소굴로 가서 담판을 지어야 한다.”",
+      "sourceSentenceStart": 8,
+      "sourceSentenceEnd": 8,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“좋다. 내 왼팔을 걸겠다. 대신 규칙은 네가 먼저 주사위를 던지고, 내가 그 뒤에 던지는 것이다.”",
-          "textEn": "“A despicable cheat! We will not gamble human lives upon a table!”",
+          "speakerKo": "그림리",
+          "speakerEn": "Grimli",
+          "textKo": "“지하 도박장의 군주이자 탐욕스러운 고블린 왕 ‘보가트’다. 황실과 결탁하여 피난민들의 통행료를 갈취하며 배를 틀어쥐고 있지. 그놈의 소굴로 가서 담판을 지어야 한다.”",
+          "textEn": "“\"Bogart, the greedy goblin casino king. Colluding with the imperial court, he extorts fortune from fleeing refugees while hoarding the ferry fleet in his subterranean den.”",
           "bubbleType": "speech",
-          "position": "top-right",
-          "characterCardId": 41
+          "position": "top-left",
+          "characterCardId": 74
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_31/scene_09.webp",
+      "sourceImageFile": "episode_31/scene_09.webp",
+      "narrationEn": "We must confront the cur directly.\"",
+      "narrationKo": "실리아가 녹옥 지팡이로 서늘한 바람의 결을 읽으며 고개를 끄덕였다.",
+      "sourceSentenceStart": 9,
+      "sourceSentenceEnd": 9,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "실리아가 녹옥 지팡이로 서늘한 바람의 결을 읽으며 고개를 끄덕였다.",
+          "textEn": "We must confront the cur directly.\"",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
@@ -318,28 +276,28 @@
       "sceneNumber": 10,
       "imageFile": "episode_31/scene_10.webp",
       "sourceImageFile": "episode_31/scene_10.webp",
-      "narrationEn": "\"I accept the wager. My shield arm against your fleet. You cast first, and I cast after.\" Grinning in cruel triumph, Bogart rattled the dice in a golden cup. Weighted with loadstone to react with a magnetic plate concealed beneath the table, the dice were rigged to land invariably upon double sixes.",
-      "narrationKo": "달그락, 쾅! 보가트가 컵을 열자 선명한 숫자 6과 6이 나란히 나타났다.",
-      "sourceSentenceStart": 27,
-      "sourceSentenceEnd": 28,
+      "narrationEn": "Cilia swept her Jade Staff, reading the subterranean drafts with a nod. \"Beneath that shale ledge, I hear the clinking of gold coins and smell roasted fat.",
+      "narrationKo": "“지하 암반 틈새에서 금화 부딪치는 소리와 기름진 고기 냄새가 풍겨와요. 저곳이 보가트의 은신처예요.”",
+      "sourceSentenceStart": 10,
+      "sourceSentenceEnd": 10,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "내레이션",
-          "speakerEn": "Narration",
-          "textKo": "보가트가 컵을 열자 선명한 숫자 6과 6이 나란히 나타났다.",
-          "textEn": "Weighted with loadstone to react with a magnetic plate concealed beneath the table, the dice were rigged to land invariably upon double sixes.",
-          "bubbleType": "thought",
-          "position": "top-right",
-          "characterCardId": 41
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“지하 암반 틈새에서 금화 부딪치는 소리와 기름진 고기 냄새가 풍겨와요. 저곳이 보가트의 은신처예요.”",
+          "textEn": "“Cilia swept her Jade Staff, reading the subterranean drafts with a nod. \"Beneath that shale ledge, I hear the clinking of gold coins and smell roasted fat.”",
+          "bubbleType": "speech",
+          "position": "bottom-left",
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
         {
-          "textKo": "쿵-!",
-          "textEn": "THUD!",
-          "style": "impact",
-          "position": "bottom-right"
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
         }
       ]
     },
@@ -347,28 +305,28 @@
       "sceneNumber": 11,
       "imageFile": "episode_31/scene_11.webp",
       "sourceImageFile": "episode_31/scene_11.webp",
-      "narrationEn": "Clatter-bang! Bogart lifted the cup, revealing a perfect pair of sixes.",
-      "narrationKo": "“키히힉! 12다! 완벽한 만점이지! 네놈이 아무리 용을 써도 동점 아니면 패배다! 어서 네 왼팔을 모루 위에 올려놓아라!” 도박장의 불한당들이 환호성을 지르며 칼을 빼들었다. 실리아와 여섯 스승들이 긴장하여 무기를 움켜쥐었다.",
-      "sourceSentenceStart": 29,
-      "sourceSentenceEnd": 31,
+      "narrationEn": "That is Bogart's lair.\"",
+      "narrationKo": "유사강 수면 위로는 정체불명의 가스 방울들이 부글거리며 터져 나왔고, 썩은 갈대뿌리 사이로는 독사들이 똬리를 틀고 있었다.",
+      "sourceSentenceStart": 11,
+      "sourceSentenceEnd": 11,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“키히힉! 12다! 완벽한 만점이지! 네놈이 아무리 용을 써도 동점 아니면 패배다! 어서 네 왼팔을 모루 위에 올려놓아라!”",
-          "textEn": "“Heh-heh-heh! Twelve! An immaculate, unbeatable score! At best, you tie; at worst, you lose! Lay your arm upon the anvil, boy!”",
-          "bubbleType": "shout",
-          "position": "bottom-right",
-          "characterCardId": 41
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "유사강 수면 위로는 정체불명의 가스 방울들이 부글거리며 터져 나왔고, 썩은 갈대뿌리 사이로는 독사들이 똬리를 틀고 있었다.",
+          "textEn": "That is Bogart's lair.\"",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
         {
-          "textKo": "쿵-!",
-          "textEn": "THUD!",
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
           "style": "impact",
-          "position": "bottom-right"
+          "position": "center"
         }
       ]
     },
@@ -376,19 +334,48 @@
       "sceneNumber": 12,
       "imageFile": "episode_31/scene_12.webp",
       "sourceImageFile": "episode_31/scene_12.webp",
-      "narrationEn": "\"Heh-heh-heh! Twelve! An immaculate, unbeatable score! At best, you tie; at worst, you lose! Lay your arm upon the anvil, boy!\" The gathered ruffians roared, drawing rusted daggers, while the Six Masters tensed their weapons.",
-      "narrationKo": "카단이 주사위 컵을 만지는 동안, 품속의 이그니스의 유리 불씨가 은은하게 맥동하며 카단의 손가락 끝에 미세한 전율을 전해주었다. 불씨의 순백 마나는 탁자 밑에 숨겨진 자석 장치의 극성을 꿰뚫어 보고 있었다. 전우의 영혼이 여전히 곁에서 함께 싸우고 있음을 느낀 카단의 입가에 엷은 미소가 번졌다. 실리아가 카단의 결연한 표정을 보며 안도감을 느꼈다. “카단은 결코 무모한 도박을 하지 않아요. 승산이 있기에 나선 거예요.” 카단은 조금도 동요하지 않고 황금 컵을 집어 들었다. 주사위 두 개를 컵 안에 넣고 가볍게 흔들며, 카단은 별 호흡의 미세한 마나 진동을 주사위 표면에 불어넣었다. 주사위 내부의 속임수 자철석이 카단의 성기사 마나와 공명하며 극성을 뒤바꾸었다.",
-      "sourceSentenceStart": 32,
-      "sourceSentenceEnd": 34,
+      "narrationEn": "Infiltrating the cavern den behind the reeds, the companions entered a vast subterranean gambling hall.",
+      "narrationKo": "강변의 검은 진흙은 한번 발을 들이면 무릎까지 순식간에 빨아들이는 무서운 흡인력을 지니고 있었다. 카단은 장화 끝으로 진흙의 점도를 확인하며 방패의 균형을 맞추었다.",
+      "sourceSentenceStart": 12,
+      "sourceSentenceEnd": 12,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단은 장화 끝으로 진흙의 점도를 확인하며 방패의 균형을 맞추었다.",
+          "textEn": "Infiltrating the cavern den behind the reeds, the companions entered a vast subterranean gambling hall.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_31/scene_13.webp",
+      "sourceImageFile": "episode_31/scene_13.webp",
+      "narrationEn": "Hundreds of rough brigands and goblins gathered around dice tables and card games amidst thick clouds of sulfuric tallow smoke. Lounging atop a silk divan at the center sat the corpulent goblin king Bogart, festooned in garish gold jewelry and swigging dwarven stout.",
+      "narrationKo": "실리아가 강바람을 느끼며 덧붙였다. “강 건너편 요새에서 탐지 마법진이 주기적으로 붉은 파문을 뿜어내고 있어요. 정면으로 강을 건너려 했다간 대포의 표적이 되기 십상이에요.”",
+      "sourceSentenceStart": 13,
+      "sourceSentenceEnd": 13,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "실리아",
           "speakerEn": "Celia",
-          "textKo": "“카단은 결코 무모한 도박을 하지 않아요. 승산이 있기에 나선 거예요.”",
-          "textEn": "“Heh-heh-heh! Twelve! An immaculate, unbeatable score! At best, you tie; at worst, you lose! Lay your arm upon the anvil, boy!”",
+          "textKo": "“강 건너편 요새에서 탐지 마법진이 주기적으로 붉은 파문을 뿜어내고 있어요. 정면으로 강을 건너려 했다간 대포의 표적이 되기 십상이에요.”",
+          "textEn": "“Hundreds of rough brigands and goblins gathered around dice tables and card games amidst thick clouds of sulfuric tallow smoke. Lounging atop a silk divan at the center sat the corpulent goblin king Bogart, festooned in garish gold jewelry and swigging dwarven stout.”",
           "bubbleType": "speech",
-          "position": "top-left",
+          "position": "top-right",
           "characterCardId": 62
         }
       ],
@@ -400,45 +387,10 @@
           "position": "top-right"
         },
         {
-          "textKo": "쿠구구궁!",
-          "textEn": "RUMBLE!",
-          "style": "rumble",
-          "position": "bottom-left"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 13,
-      "imageFile": "episode_31/scene_13.webp",
-      "sourceImageFile": "episode_31/scene_13.webp",
-      "narrationEn": "Unperturbed, Kadan took the golden cup, placing the dice within. As he swirled the dice, he channeled a minute pulse of star-breathing into the metal. The celestial mana vibrated the loadstone, inverting its magnetic polarity. Boom! Kadan brought the cup down with decisive force. As the cup rose, the first die rolled true, displaying a clear '6'. The second die, unable to endure the concentrated mana shock, split cleanly in half down its center seam, presenting both a '6' and a '1' facing upward.",
-      "narrationKo": "카단이 컵을 석탁에 내리찍었다. 쿵! 석탁이 울리며 컵이 열렸다. 굴러떨어진 첫 번째 주사위는 선명하게 ‘6’을 가리켰다. 그리고 두 번째 주사위는 카단의 마나 충격을 이기지 못하고 정확히 반으로 쪼개지며, 양쪽 단면에 새겨진 ‘6’과 ‘1’이 동시에 하늘을 향해 펼쳐졌다.",
-      "sourceSentenceStart": 35,
-      "sourceSentenceEnd": 37,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "내레이션",
-          "speakerEn": "Narration",
-          "textKo": "그리고 두 번째 주사위는 카단의 마나 충격을 이기지 못하고 정확히 반으로 쪼개지며, 양쪽 단면에 새겨진 ‘6’과 ‘1’이 동시에 하늘을 향해 펼쳐졌다.",
-          "textEn": "The second die, unable to endure the concentrated mana shock, split cleanly in half down its center seam, presenting both a '6' and a '1' facing upward.",
-          "bubbleType": "thought",
-          "position": "top-left",
-          "characterCardId": 41
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        },
-        {
-          "textKo": "쿵-!",
-          "textEn": "THUD!",
-          "style": "impact",
-          "position": "bottom-right"
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
         }
       ]
     },
@@ -446,20 +398,20 @@
       "sceneNumber": 14,
       "imageFile": "episode_31/scene_14.webp",
       "sourceImageFile": "episode_31/scene_14.webp",
-      "narrationEn": "A total score of thirteen. Stunned silence fell across the gambling den.",
-      "narrationKo": "총합 ‘13’. 도박장 전체가 찬물을 끼얹은 듯 적막에 휩싸였다. 카단이 차분한 목소리로 선언했다.",
-      "sourceSentenceStart": 38,
-      "sourceSentenceEnd": 40,
+      "narrationEn": "Eyeing Kadan's Dragon Breaker shield with a covetous smirk, Bogart sneered.",
+      "narrationKo": "일행은 갈대숲 뒤편에 숨겨진 동굴 통로를 따라 지하 밀수 도박장으로 잠입했다.",
+      "sourceSentenceStart": 14,
+      "sourceSentenceEnd": 14,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "카단이 차분한 목소리로 선언했다.",
-          "textEn": "Stunned silence fell across the gambling den.",
+          "textKo": "일행은 갈대숲 뒤편에 숨겨진 동굴 통로를 따라 지하 밀수 도박장으로 잠입했다.",
+          "textEn": "Eyeing Kadan's Dragon Breaker shield with a covetous smirk, Bogart sneered.",
           "bubbleType": "thought",
           "position": "top-right",
-          "characterCardId": 41
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
@@ -475,37 +427,28 @@
       "sceneNumber": 15,
       "imageFile": "episode_31/scene_15.webp",
       "sourceImageFile": "episode_31/scene_15.webp",
-      "narrationEn": "Kadan declared with tranquil authority. \"My score is thirteen. All pips face the ceiling. The wager is mine.\"",
-      "narrationKo": "“내 점수는 13이다. 규칙상 주사위의 눈이 온전히 위를 향하고 있으니, 승부는 나의 승리다.” 보가트의 얼굴이 흙빛으로 변하며 턱이 덜덜 떨렸다. “마, 말도 안 돼! 주사위가 쪼개져서 13이 나오다니... 사기다! 이놈들을 모조리 쳐라!”",
-      "sourceSentenceStart": 41,
-      "sourceSentenceEnd": 43,
+      "narrationEn": "\"Heh-heh! The northern knight who shattered the palace gates graces my humble den!",
+      "narrationKo": "지하 홀 안은 수백 명의 부랑배들과 고블린들이 둘러앉아 주사위 놀음과 카드 도박에 열을 올리고 있었고, 유황 등불의 매캐한 연기가 천장을 자욱하게 메우고 있었다.",
+      "sourceSentenceStart": 15,
+      "sourceSentenceEnd": 15,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“내 점수는 13이다. 규칙상 주사위의 눈이 온전히 위를 향하고 있으니, 승부는 나의 승리다.”",
-          "textEn": "“My score is thirteen. All pips face the ceiling. The wager is mine.”",
-          "bubbleType": "speech",
-          "position": "bottom-right",
-          "characterCardId": 41
-        },
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“마, 말도 안 돼! 주사위가 쪼개져서 13이 나오다니... 사기다! 이놈들을 모조리 쳐라!”",
-          "textEn": "“The wager is mine.\"”",
-          "bubbleType": "shout",
-          "position": "top-left",
-          "characterCardId": 41
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "지하 홀 안은 수백 명의 부랑배들과 고블린들이 둘러앉아 주사위 놀음과 카드 도박에 열을 올리고 있었고, 유황 등불의 매캐한 연기가 천장을 자욱하게 메우고 있었다.",
+          "textEn": "The northern knight who shattered the palace gates graces my humble den!",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
         {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
         }
       ]
     },
@@ -513,28 +456,28 @@
       "sceneNumber": 16,
       "imageFile": "episode_31/scene_16.webp",
       "sourceImageFile": "episode_31/scene_16.webp",
-      "narrationEn": "Bogart's greenish skin paled as his jowls quivered in disbelief. \"Im-impossible! The dice split... A score of thirteen is blasphemy! Guards, butcher them all!\"",
-      "narrationKo": "쪼개진 주사위의 단면에서 풍겨 나온 미세한 화약 연기가 도박장 조명을 뿌옇게 흐렸다. 속임수 주사위가 부서지며 그 안에 숨겨져 있던 납덩이와 자철석 파편이 바닥에 차르르 쏟아져 내렸다. 카단의 성기사 마나가 사기 도박의 증거를 만천하에 드러낸 순간이었다. 도박판을 지켜보던 부랑배들이 웅성거리며 동요했다. “보가트 두목이 자석 주사위를 쓰고 있었잖아! 우리 돈을 사기로 털어간 거였어!” 고블린들의 사기가 바닥으로 떨어졌다. 보가트의 부하들이 칼을 뽑아 달려들었지만, 여섯 스승과 실리아가 일제히 무기를 휘둘렀다.",
-      "sourceSentenceStart": 44,
-      "sourceSentenceEnd": 46,
+      "narrationEn": "You desire a hundred reed-skiffs to cross the Quicksand River?",
+      "narrationKo": "홀 중앙의 거대한 비단 방석 위에는 온몸에 번쩍이는 황금 패물을 두른 뚱뚱한 고블린 왕 보가트가 커다란 맥주잔을 들이켜고 있었다.",
+      "sourceSentenceStart": 16,
+      "sourceSentenceEnd": 16,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“보가트 두목이 자석 주사위를 쓰고 있었잖아! 우리 돈을 사기로 털어간 거였어!”",
-          "textEn": "“Im-impossible! The dice split... A score of thirteen is blasphemy! Guards, butcher them all!”",
-          "bubbleType": "shout",
-          "position": "top-left",
-          "characterCardId": 41
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "홀 중앙의 거대한 비단 방석 위에는 온몸에 번쩍이는 황금 패물을 두른 뚱뚱한 고블린 왕 보가트가 커다란 맥주잔을 들이켜고 있었다.",
+          "textEn": "You desire a hundred reed-skiffs to cross the Quicksand River?",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
         {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
         }
       ]
     },
@@ -542,19 +485,19 @@
       "sceneNumber": 17,
       "imageFile": "episode_31/scene_17.webp",
       "sourceImageFile": "episode_31/scene_17.webp",
-      "narrationEn": "The ruffians lunged forward, but the Six Masters moved in devastating unison. Grimli's hammer pulverized the stone table, Gawain's wind blades disarmed the thugs, and Kadan pinned Bogart against the rock face with the rim of his shield. \"You played with loaded dice, Bogart. I could sever your head for your fraud, but I grant you your life. Deliver two hundred reed-skiffs to the riverbank at once.\"",
-      "narrationKo": "그림리의 무쇠 망치가 도박장 석탁을 박살 냈고, 가웨인의 돌풍이 불한당들의 무기를 허공으로 날려버렸다. 카단은 드래곤 브레이커 방패로 보가트의 멱살을 잡아 벽면에 처박았다. “사기를 친 것은 네놈이다, 보가트. 탁자 밑의 자석 장치를 부수고 네 목을 벨 수도 있지만, 목숨만은 살려주마. 당장 갈대나룻배 백 척을 강가에 대령해라.”",
-      "sourceSentenceStart": 47,
-      "sourceSentenceEnd": 48,
+      "narrationEn": "But Bogart never parts with his property for free!\" Planting his shield onto the table with a heavy thud, Kadan spoke calmly.",
+      "narrationKo": "보가트가 카단의 드래곤 브레이커 방패를 흘겨보며 교활한 웃음을 흘렸다.",
+      "sourceSentenceStart": 17,
+      "sourceSentenceEnd": 17,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“사기를 친 것은 네놈이다, 보가트. 탁자 밑의 자석 장치를 부수고 네 목을 벨 수도 있지만, 목숨만은 살려주마. 당장 갈대나룻배 백 척을 강가에 대령해라.”",
-          "textEn": "“You played with loaded dice, Bogart. I could sever your head for your fraud, but I grant you your life. Deliver two hundred reed-skiffs to the riverbank at once.”",
-          "bubbleType": "speech",
-          "position": "top-right",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "보가트가 카단의 드래곤 브레이커 방패를 흘겨보며 교활한 웃음을 흘렸다.",
+          "textEn": "But Bogart never parts with his property for free!\" Planting his shield onto the table with a heavy thud, Kadan spoke calmly.",
+          "bubbleType": "thought",
+          "position": "top-left",
           "characterCardId": 41
         }
       ],
@@ -564,12 +507,6 @@
           "textEn": "CLANG!",
           "style": "slash",
           "position": "top-right"
-        },
-        {
-          "textKo": "휘이이익-!",
-          "textEn": "SWOOSH!",
-          "style": "slash",
-          "position": "top-left"
         }
       ]
     },
@@ -577,17 +514,17 @@
       "sceneNumber": 18,
       "imageFile": "episode_31/scene_18.webp",
       "sourceImageFile": "episode_31/scene_18.webp",
-      "narrationEn": "Terrified, the goblin king groveled in the dust. \"Mercy, noble knight! Two hundred skiffs... Three hundred skiffs, anything you desire!\" Within an hour, a grand armada of buoyant reed-skiffs lined the shore, ferrying the entire allied host safely across the quicksand without shedding a drop of blood.",
-      "narrationKo": "보가트는 겁에 질려 오줌을 지리며 연신 머리를 조아렸다. “사, 살려주십시오! 나룻배 백 척... 아니 이백 척을 당장 내어드리겠습니다!” 한 시간 뒤, 수백 척의 갈대나룻배가 유사강 기슭에 정렬했고, 연합군은 단 한 명의 희생도 없이 거친 모래강을 건너기 시작했다.",
-      "sourceSentenceStart": 49,
-      "sourceSentenceEnd": 51,
+      "narrationEn": "\"Name your price.",
+      "narrationKo": "“키히힉! 황궁을 뒤집어엎었다는 성기사의 애송이와 왕녀님이 내 누추한 소굴을 어쩐 일로 찾으셨나? 유사강을 건널 갈대나룻배 백 척이 필요하다고? 하지만 이 보가트는 공짜로는 숨도 쉬지 않는 몸이라서 말이지!”",
+      "sourceSentenceStart": 18,
+      "sourceSentenceEnd": 18,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "“사, 살려주십시오! 나룻배 백 척... 아니 이백 척을 당장 내어드리겠습니다!”",
-          "textEn": "“Mercy, noble knight! Two hundred skiffs... Three hundred skiffs, anything you desire!”",
+          "textKo": "“키히힉! 황궁을 뒤집어엎었다는 성기사의 애송이와 왕녀님이 내 누추한 소굴을 어쩐 일로 찾으셨나? 유사강을 건널 갈대나룻배 백 척이 필요하다고? 하지만 이 보가트는 공짜로는 숨도 쉬지 않는 몸이라서 말이지!”",
+          "textEn": "“\"Name your price.”",
           "bubbleType": "shout",
           "position": "bottom-left",
           "characterCardId": 41
@@ -606,18 +543,279 @@
       "sceneNumber": 19,
       "imageFile": "episode_31/scene_19.webp",
       "sourceImageFile": "episode_31/scene_19.webp",
-      "narrationEn": "Touching the warm glass ember in his pocket, Kadan gazed toward the distant citadel. \"Ignis, the wisdom you left behind has opened another bloodless path.\"",
-      "narrationKo": "카단은 주머니 속에서 따스하게 빛나는 이그니스의 유리 불씨를 쥐며 강 건너 흑마법 요새를 응시했다. “이그니스, 네가 준 지혜가 또 한 번 피를 흘리지 않고 길을 열었다.” 실리아가 곁에 서며 미소를 지었다.",
-      "sourceSentenceStart": 52,
-      "sourceSentenceEnd": 54,
+      "narrationEn": "We can compensate you generously in imperial gold.\" Juggling two gilded dice in his claws, Bogart's yellow eyes gleamed with malice.",
+      "narrationKo": "카단이 석탁 앞으로 걸어가 방패를 쾅 내려놓았다. “원하는 대가가 무엇이냐. 금화라면 황실 국고에서 압류한 것을 넉넉히 지불하겠다.”",
+      "sourceSentenceStart": 19,
+      "sourceSentenceEnd": 19,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "“이그니스, 네가 준 지혜가 또 한 번 피를 흘리지 않고 길을 열었다.”",
-          "textEn": "“Ignis, the wisdom you left behind has opened another bloodless path.”",
+          "textKo": "“원하는 대가가 무엇이냐. 금화라면 황실 국고에서 압류한 것을 넉넉히 지불하겠다.”",
+          "textEn": "“We can compensate you generously in imperial gold.\" Juggling two gilded dice in his claws, Bogart's yellow eyes gleamed with malice.”",
           "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_31/scene_20.webp",
+      "sourceImageFile": "episode_31/scene_20.webp",
+      "narrationEn": "\"Gold is boring!",
+      "narrationKo": "보가트가 황금 주사위 두 개를 손안에서 짤랑거리며 눈을 번뜩였다.",
+      "sourceSentenceStart": 20,
+      "sourceSentenceEnd": 20,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "보가트가 황금 주사위 두 개를 손안에서 짤랑거리며 눈을 번뜩였다.",
+          "textEn": "\"Gold is boring!",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 21,
+      "imageFile": "episode_31/scene_21.webp",
+      "sourceImageFile": "episode_31/scene_21.webp",
+      "narrationEn": "Let us wager, knight! If you defeat me in a single throw of the dice, I grant you a hundred skiffs without fee.",
+      "narrationKo": "“금화 따위는 시시해! 내기를 하자, 기사 양반! 내 주사위 놀음에서 네놈이 이기면 나룻배 백 척을 무상으로 내어주지.”",
+      "sourceSentenceStart": 21,
+      "sourceSentenceEnd": 21,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“금화 따위는 시시해! 내기를 하자, 기사 양반! 내 주사위 놀음에서 네놈이 이기면 나룻배 백 척을 무상으로 내어주지.”",
+          "textEn": "“Let us wager, knight! If you defeat me in a single throw of the dice, I grant you a hundred skiffs without fee.”",
+          "bubbleType": "shout",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 22,
+      "imageFile": "episode_31/scene_22.webp",
+      "sourceImageFile": "episode_31/scene_22.webp",
+      "narrationEn": "But if you lose...",
+      "narrationKo": "“하지만 네놈이 진다면... 그 전설의 방패를 쥔 네 왼팔을 통째로 잘라 내 도박장의 장식품으로 걸어두겠다! 어때, 내기에 걸겠느냐?”",
+      "sourceSentenceStart": 22,
+      "sourceSentenceEnd": 22,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“하지만 네놈이 진다면... 그 전설의 방패를 쥔 네 왼팔을 통째로 잘라 내 도박장의 장식품으로 걸어두겠다! 어때, 내기에 걸겠느냐?”",
+          "textEn": "“But if you lose...”",
+          "bubbleType": "shout",
+          "position": "bottom-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 23,
+      "imageFile": "episode_31/scene_23.webp",
+      "sourceImageFile": "episode_31/scene_23.webp",
+      "narrationEn": "I shall sever your left arm at the shoulder and mount that legendary shield as the grand trophy of my gambling hall! Do you dare accept the wager?\"",
+      "narrationKo": "실리아가 지팡이를 겨누며 분노했다. “비열한 협잡꾼! 생명을 건 도박 따위에 응할 순 없어요!”",
+      "sourceSentenceStart": 23,
+      "sourceSentenceEnd": 23,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“비열한 협잡꾼! 생명을 건 도박 따위에 응할 순 없어요!”",
+          "textEn": "“I shall sever your left arm at the shoulder and mount that legendary shield as the grand trophy of my gambling hall! Do you dare accept the wager?\"”",
+          "bubbleType": "shout",
+          "position": "bottom-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 24,
+      "imageFile": "episode_31/scene_24.webp",
+      "sourceImageFile": "episode_31/scene_24.webp",
+      "narrationEn": "Cilia leveled her staff, her voice ringing in anger.",
+      "narrationKo": "도박장 안의 고블린들은 카단의 무쇠 방패와 실리아의 녹옥 지팡이를 보며 수군거리기 시작했다.",
+      "sourceSentenceStart": 24,
+      "sourceSentenceEnd": 24,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "도박장 안의 고블린들은 카단의 무쇠 방패와 실리아의 녹옥 지팡이를 보며 수군거리기 시작했다.",
+          "textEn": "Cilia leveled her staff, her voice ringing in anger.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 25,
+      "imageFile": "episode_31/scene_25.webp",
+      "sourceImageFile": "episode_31/scene_25.webp",
+      "narrationEn": "\"A despicable cheat!",
+      "narrationKo": "선대 성기사단이 제국을 뒤흔들었을 때도 고블린들은 지하에서 온갖 밀수와 도박으로 막대한 부를 챙겼던 터라, 성기사의 상징을 단번에 알아본 것이었다.",
+      "sourceSentenceStart": 25,
+      "sourceSentenceEnd": 25,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "선대 성기사단이 제국을 뒤흔들었을 때도 고블린들은 지하에서 온갖 밀수와 도박으로 막대한 부를 챙겼던 터라, 성기사의 상징을 단번에 알아본 것이었다.",
+          "textEn": "\"A despicable cheat!",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 26,
+      "imageFile": "episode_31/scene_26.webp",
+      "sourceImageFile": "episode_31/scene_26.webp",
+      "narrationEn": "We will not gamble human lives upon a table!\" Yet Kadan raised a calm hand to steady her.",
+      "narrationKo": "보가트가 금반지를 낀 손가락으로 수염을 꼬며 비열하게 웃었다. “북방의 늑대 알렉산다르의 제자라더니, 배짱 하나는 두둑하군! 하지만 이 도박판은 힘으로 이기는 곳이 아니야. 운명에 네 모가지를 걸어보란 말이다!”",
+      "sourceSentenceStart": 26,
+      "sourceSentenceEnd": 26,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“북방의 늑대 알렉산다르의 제자라더니, 배짱 하나는 두둑하군! 하지만 이 도박판은 힘으로 이기는 곳이 아니야. 운명에 네 모가지를 걸어보란 말이다!”",
+          "textEn": "“We will not gamble human lives upon a table!\" Yet Kadan raised a calm hand to steady her.”",
+          "bubbleType": "shout",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 27,
+      "imageFile": "episode_31/scene_27.webp",
+      "sourceImageFile": "episode_31/scene_27.webp",
+      "narrationEn": "Reaching into his coat, he touched the White Glass Ember, which pulsed with rhythmic warmth against his palm.",
+      "narrationKo": "그러나 카단은 조용히 손을 들어 실리아를 제지했다. 카단은 품속에서 따스하게 고동치는 이그니스의 유리 불씨를 살며시 어루만졌다.",
+      "sourceSentenceStart": 27,
+      "sourceSentenceEnd": 27,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단은 품속에서 따스하게 고동치는 이그니스의 유리 불씨를 살며시 어루만졌다.",
+          "textEn": "Reaching into his coat, he touched the White Glass Ember, which pulsed with rhythmic warmth against his palm.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 28,
+      "imageFile": "episode_31/scene_28.webp",
+      "sourceImageFile": "episode_31/scene_28.webp",
+      "narrationEn": "The ember's subtle resonance detected the microscopic magnetic core embedded within Bogart's dice. Sitting before the stone table, Kadan replied evenly.",
+      "narrationKo": "불씨의 미세한 마나 파동이 보가트의 손안에 든 황금 주사위의 숨겨진 트릭을 정확히 감지해 내고 있었다.",
+      "sourceSentenceStart": 28,
+      "sourceSentenceEnd": 28,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "불씨의 미세한 마나 파동이 보가트의 손안에 든 황금 주사위의 숨겨진 트릭을 정확히 감지해 내고 있었다.",
+          "textEn": "Sitting before the stone table, Kadan replied evenly.",
+          "bubbleType": "thought",
           "position": "bottom-right",
           "characterCardId": 41
         }
@@ -632,31 +830,608 @@
       ]
     },
     {
-      "sceneNumber": 20,
-      "imageFile": "episode_31/scene_20.webp",
-      "sourceImageFile": "episode_31/scene_20.webp",
-      "narrationEn": "Smiling beside him, Cilia gripped her staff. \"Now we march into the heart of the Black Marsh to end Lucian's reign forever.\"",
-      "narrationKo": "“이제 검은 늪지대의 심장부로 들어가요. 루시안의 마지막 숨통을 끊을 시간이에요.” 갈대나룻배들은 늪지대의 유사(流砂) 위를 마치 얼음판 위를 미끄러지듯 유려하게 건너갔다. 연합군 병사들이 환호성을 지르며 강 건너편의 모래톱에 무사히 닻을 내렸다. 도박장의 악당들을 무력화시키고 무고한 피를 흘리지 않은 채 천연의 험지를 돌파한 완벽한 승리였다. 그림리가 카단의 어깨를 툭 치며 껄껄 웃었다. “주사위를 쪼개서 13을 만들다니, 알렉산다르 그 양반보다 네놈이 한 수 위로구나! 참으로 가슴이 뻥 뚫리는 한판이었다!” 일행은 사기충천하여 흑마법 요새를 향해 진격을 개시했다.",
-      "sourceSentenceStart": 55,
-      "sourceSentenceEnd": 57,
+      "sceneNumber": 29,
+      "imageFile": "episode_31/scene_29.webp",
+      "sourceImageFile": "episode_31/scene_29.webp",
+      "narrationEn": "\"I accept the wager.",
+      "narrationKo": "카단이 석탁에 앉으며 담담하게 말했다. “좋다. 내 왼팔을 걸겠다. 대신 규칙은 네가 먼저 주사위를 던지고, 내가 그 뒤에 던지는 것이다.”",
+      "sourceSentenceStart": 29,
+      "sourceSentenceEnd": 29,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“좋다. 내 왼팔을 걸겠다. 대신 규칙은 네가 먼저 주사위를 던지고, 내가 그 뒤에 던지는 것이다.”",
+          "textEn": "“\"I accept the wager.”",
+          "bubbleType": "speech",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 30,
+      "imageFile": "episode_31/scene_30.webp",
+      "sourceImageFile": "episode_31/scene_30.webp",
+      "narrationEn": "My shield arm against your fleet. You cast first, and I cast after.\"",
+      "narrationKo": "보가트가 득의양양한 미소를 지으며 황금 컵에 주사위를 넣고 흔들었다. 주사위 내부에는 미세한 자철석이 심어져 있어 탁자 밑의 자석 장치와 반응해 무조건 최고 숫자인 ‘12’가 나오도록 조작되어 있었다.",
+      "sourceSentenceStart": 30,
+      "sourceSentenceEnd": 30,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "주사위 내부에는 미세한 자철석이 심어져 있어 탁자 밑의 자석 장치와 반응해 무조건 최고 숫자인 ‘12’가 나오도록 조작되어 있었다.",
+          "textEn": "You cast first, and I cast after.\"",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 31,
+      "imageFile": "episode_31/scene_31.webp",
+      "sourceImageFile": "episode_31/scene_31.webp",
+      "narrationEn": "Grinning in cruel triumph, Bogart rattled the dice in a golden cup.",
+      "narrationKo": "달그락, 쾅! 보가트가 컵을 열자 선명한 숫자 6과 6이 나란히 나타났다.",
+      "sourceSentenceStart": 31,
+      "sourceSentenceEnd": 31,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "보가트가 컵을 열자 선명한 숫자 6과 6이 나란히 나타났다.",
+          "textEn": "Grinning in cruel triumph, Bogart rattled the dice in a golden cup.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 32,
+      "imageFile": "episode_31/scene_32.webp",
+      "sourceImageFile": "episode_31/scene_32.webp",
+      "narrationEn": "Weighted with loadstone to react with a magnetic plate concealed beneath the table, the dice were rigged to land invariably upon double sixes. Clatter-bang!",
+      "narrationKo": "“키히힉! 12다! 완벽한 만점이지! 네놈이 아무리 용을 써도 동점 아니면 패배다! 어서 네 왼팔을 모루 위에 올려놓아라!”",
+      "sourceSentenceStart": 32,
+      "sourceSentenceEnd": 32,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“키히힉! 12다! 완벽한 만점이지! 네놈이 아무리 용을 써도 동점 아니면 패배다! 어서 네 왼팔을 모루 위에 올려놓아라!”",
+          "textEn": "“Weighted with loadstone to react with a magnetic plate concealed beneath the table, the dice were rigged to land invariably upon double sixes. Clatter-bang!”",
+          "bubbleType": "shout",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 33,
+      "imageFile": "episode_31/scene_33.webp",
+      "sourceImageFile": "episode_31/scene_33.webp",
+      "narrationEn": "Bogart lifted the cup, revealing a perfect pair of sixes.",
+      "narrationKo": "도박장의 불한당들이 환호성을 지르며 칼을 빼들었다. 실리아와 여섯 스승들이 긴장하여 무기를 움켜쥐었다.",
+      "sourceSentenceStart": 33,
+      "sourceSentenceEnd": 33,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "실리아와 여섯 스승들이 긴장하여 무기를 움켜쥐었다.",
+          "textEn": "Bogart lifted the cup, revealing a perfect pair of sixes.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 34,
+      "imageFile": "episode_31/scene_34.webp",
+      "sourceImageFile": "episode_31/scene_34.webp",
+      "narrationEn": "\"Heh-heh-heh! Twelve!",
+      "narrationKo": "카단이 주사위 컵을 만지는 동안, 품속의 이그니스의 유리 불씨가 은은하게 맥동하며 카단의 손가락 끝에 미세한 전율을 전해주었다. 불씨의 순백 마나는 탁자 밑에 숨겨진 자석 장치의 극성을 꿰뚫어 보고 있었다.",
+      "sourceSentenceStart": 34,
+      "sourceSentenceEnd": 34,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "불씨의 순백 마나는 탁자 밑에 숨겨진 자석 장치의 극성을 꿰뚫어 보고 있었다.",
+          "textEn": "Twelve!",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 35,
+      "imageFile": "episode_31/scene_35.webp",
+      "sourceImageFile": "episode_31/scene_35.webp",
+      "narrationEn": "An immaculate, unbeatable score!",
+      "narrationKo": "전우의 영혼이 여전히 곁에서 함께 싸우고 있음을 느낀 카단의 입가에 엷은 미소가 번졌다.",
+      "sourceSentenceStart": 35,
+      "sourceSentenceEnd": 35,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "전우의 영혼이 여전히 곁에서 함께 싸우고 있음을 느낀 카단의 입가에 엷은 미소가 번졌다.",
+          "textEn": "An immaculate, unbeatable score!",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 36,
+      "imageFile": "episode_31/scene_36.webp",
+      "sourceImageFile": "episode_31/scene_36.webp",
+      "narrationEn": "At best, you tie; at worst, you lose!",
+      "narrationKo": "실리아가 카단의 결연한 표정을 보며 안도감을 느꼈다. “카단은 결코 무모한 도박을 하지 않아요. 승산이 있기에 나선 거예요.”",
+      "sourceSentenceStart": 36,
+      "sourceSentenceEnd": 36,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "실리아",
           "speakerEn": "Celia",
-          "textKo": "“이제 검은 늪지대의 심장부로 들어가요. 루시안의 마지막 숨통을 끊을 시간이에요.”",
-          "textEn": "“Ignis, the wisdom you left behind has opened another bloodless path.”",
+          "textKo": "“카단은 결코 무모한 도박을 하지 않아요. 승산이 있기에 나선 거예요.”",
+          "textEn": "“At best, you tie; at worst, you lose!”",
           "bubbleType": "speech",
           "position": "top-left",
           "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 37,
+      "imageFile": "episode_31/scene_37.webp",
+      "sourceImageFile": "episode_31/scene_37.webp",
+      "narrationEn": "Lay your arm upon the anvil, boy!\" The gathered ruffians roared, drawing rusted daggers, while the Six Masters tensed their weapons.",
+      "narrationKo": "카단은 조금도 동요하지 않고 황금 컵을 집어 들었다. 주사위 두 개를 컵 안에 넣고 가볍게 흔들며, 카단은 별 호흡의 미세한 마나 진동을 주사위 표면에 불어넣었다.",
+      "sourceSentenceStart": 37,
+      "sourceSentenceEnd": 37,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "주사위 두 개를 컵 안에 넣고 가볍게 흔들며, 카단은 별 호흡의 미세한 마나 진동을 주사위 표면에 불어넣었다.",
+          "textEn": "Lay your arm upon the anvil, boy!\" The gathered ruffians roared, drawing rusted daggers, while the Six Masters tensed their weapons.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
         },
         {
-          "speakerKo": "그림리",
-          "speakerEn": "Grimli",
-          "textKo": "“주사위를 쪼개서 13을 만들다니, 알렉산다르 그 양반보다 네놈이 한 수 위로구나! 참으로 가슴이 뻥 뚫리는 한판이었다!”",
-          "textEn": "“Now we march into the heart of the Black Marsh to end Lucian's reign forever.”",
-          "bubbleType": "shout",
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 38,
+      "imageFile": "episode_31/scene_38.webp",
+      "sourceImageFile": "episode_31/scene_38.webp",
+      "narrationEn": "Unperturbed, Kadan took the golden cup, placing the dice within.",
+      "narrationKo": "주사위 내부의 속임수 자철석이 카단의 성기사 마나와 공명하며 극성을 뒤바꾸었다.",
+      "sourceSentenceStart": 38,
+      "sourceSentenceEnd": 38,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "주사위 내부의 속임수 자철석이 카단의 성기사 마나와 공명하며 극성을 뒤바꾸었다.",
+          "textEn": "Unperturbed, Kadan took the golden cup, placing the dice within.",
+          "bubbleType": "thought",
           "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 39,
+      "imageFile": "episode_31/scene_39.webp",
+      "sourceImageFile": "episode_31/scene_39.webp",
+      "narrationEn": "As he swirled the dice, he channeled a minute pulse of star-breathing into the metal. The celestial mana vibrated the loadstone, inverting its magnetic polarity.",
+      "narrationKo": "카단이 컵을 석탁에 내리찍었다. 쿵!",
+      "sourceSentenceStart": 39,
+      "sourceSentenceEnd": 39,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "쿵!",
+          "textEn": "The celestial mana vibrated the loadstone, inverting its magnetic polarity.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 40,
+      "imageFile": "episode_31/scene_40.webp",
+      "sourceImageFile": "episode_31/scene_40.webp",
+      "narrationEn": "Boom!",
+      "narrationKo": "석탁이 울리며 컵이 열렸다. 굴러떨어진 첫 번째 주사위는 선명하게 ‘6’을 가리켰다.",
+      "sourceSentenceStart": 40,
+      "sourceSentenceEnd": 40,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "굴러떨어진 첫 번째 주사위는 선명하게 ‘6’을 가리켰다.",
+          "textEn": "Boom!",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 41,
+      "imageFile": "episode_31/scene_41.webp",
+      "sourceImageFile": "episode_31/scene_41.webp",
+      "narrationEn": "Kadan brought the cup down with decisive force. As the cup rose, the first die rolled true, displaying a clear '6'.",
+      "narrationKo": "그리고 두 번째 주사위는 카단의 마나 충격을 이기지 못하고 정확히 반으로 쪼개지며, 양쪽 단면에 새겨진 ‘6’과 ‘1’이 동시에 하늘을 향해 펼쳐졌다.",
+      "sourceSentenceStart": 41,
+      "sourceSentenceEnd": 41,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그리고 두 번째 주사위는 카단의 마나 충격을 이기지 못하고 정확히 반으로 쪼개지며, 양쪽 단면에 새겨진 ‘6’과 ‘1’이 동시에 하늘을 향해 펼쳐졌다.",
+          "textEn": "As the cup rose, the first die rolled true, displaying a clear '6'.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 42,
+      "imageFile": "episode_31/scene_42.webp",
+      "sourceImageFile": "episode_31/scene_42.webp",
+      "narrationEn": "The second die, unable to endure the concentrated mana shock, split cleanly in half down its center seam, presenting both a '6' and a '1' facing upward.",
+      "narrationKo": "총합 ‘13’. 도박장 전체가 찬물을 끼얹은 듯 적막에 휩싸였다.",
+      "sourceSentenceStart": 42,
+      "sourceSentenceEnd": 42,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "도박장 전체가 찬물을 끼얹은 듯 적막에 휩싸였다.",
+          "textEn": "The second die, unable to endure the concentrated mana shock, split cleanly in half down its center seam, presenting both a '6' and a '1' facing upward.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 43,
+      "imageFile": "episode_31/scene_43.webp",
+      "sourceImageFile": "episode_31/scene_43.webp",
+      "narrationEn": "A total score of thirteen. Stunned silence fell across the gambling den.",
+      "narrationKo": "카단이 차분한 목소리로 선언했다. “내 점수는 13이다. 규칙상 주사위의 눈이 온전히 위를 향하고 있으니, 승부는 나의 승리다.”",
+      "sourceSentenceStart": 43,
+      "sourceSentenceEnd": 43,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“내 점수는 13이다. 규칙상 주사위의 눈이 온전히 위를 향하고 있으니, 승부는 나의 승리다.”",
+          "textEn": "“A total score of thirteen. Stunned silence fell across the gambling den.”",
+          "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 44,
+      "imageFile": "episode_31/scene_44.webp",
+      "sourceImageFile": "episode_31/scene_44.webp",
+      "narrationEn": "Kadan declared with tranquil authority.",
+      "narrationKo": "보가트의 얼굴이 흙빛으로 변하며 턱이 덜덜 떨렸다. “마, 말도 안 돼! 주사위가 쪼개져서 13이 나오다니... 사기다! 이놈들을 모조리 쳐라!”",
+      "sourceSentenceStart": 44,
+      "sourceSentenceEnd": 44,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“마, 말도 안 돼! 주사위가 쪼개져서 13이 나오다니... 사기다! 이놈들을 모조리 쳐라!”",
+          "textEn": "“Kadan declared with tranquil authority.”",
+          "bubbleType": "shout",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 45,
+      "imageFile": "episode_31/scene_45.webp",
+      "sourceImageFile": "episode_31/scene_45.webp",
+      "narrationEn": "\"My score is thirteen. All pips face the ceiling.",
+      "narrationKo": "쪼개진 주사위의 단면에서 풍겨 나온 미세한 화약 연기가 도박장 조명을 뿌옇게 흐렸다. 속임수 주사위가 부서지며 그 안에 숨겨져 있던 납덩이와 자철석 파편이 바닥에 차르르 쏟아져 내렸다.",
+      "sourceSentenceStart": 45,
+      "sourceSentenceEnd": 45,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "속임수 주사위가 부서지며 그 안에 숨겨져 있던 납덩이와 자철석 파편이 바닥에 차르르 쏟아져 내렸다.",
+          "textEn": "All pips face the ceiling.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 46,
+      "imageFile": "episode_31/scene_46.webp",
+      "sourceImageFile": "episode_31/scene_46.webp",
+      "narrationEn": "The wager is mine.\"",
+      "narrationKo": "카단의 성기사 마나가 사기 도박의 증거를 만천하에 드러낸 순간이었다.",
+      "sourceSentenceStart": 46,
+      "sourceSentenceEnd": 46,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단의 성기사 마나가 사기 도박의 증거를 만천하에 드러낸 순간이었다.",
+          "textEn": "The wager is mine.\"",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 47,
+      "imageFile": "episode_31/scene_47.webp",
+      "sourceImageFile": "episode_31/scene_47.webp",
+      "narrationEn": "Bogart's greenish skin paled as his jowls quivered in disbelief. \"Im-impossible!",
+      "narrationKo": "도박판을 지켜보던 부랑배들이 웅성거리며 동요했다. “보가트 두목이 자석 주사위를 쓰고 있었잖아! 우리 돈을 사기로 털어간 거였어!” 고블린들의 사기가 바닥으로 떨어졌다.",
+      "sourceSentenceStart": 47,
+      "sourceSentenceEnd": 47,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“보가트 두목이 자석 주사위를 쓰고 있었잖아! 우리 돈을 사기로 털어간 거였어!”",
+          "textEn": "“Bogart's greenish skin paled as his jowls quivered in disbelief. \"Im-impossible!”",
+          "bubbleType": "shout",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 48,
+      "imageFile": "episode_31/scene_48.webp",
+      "sourceImageFile": "episode_31/scene_48.webp",
+      "narrationEn": "The dice split...",
+      "narrationKo": "보가트의 부하들이 칼을 뽑아 달려들었지만, 여섯 스승과 실리아가 일제히 무기를 휘둘렀다.",
+      "sourceSentenceStart": 48,
+      "sourceSentenceEnd": 48,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "보가트의 부하들이 칼을 뽑아 달려들었지만, 여섯 스승과 실리아가 일제히 무기를 휘둘렀다.",
+          "textEn": "The dice split...",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 49,
+      "imageFile": "episode_31/scene_49.webp",
+      "sourceImageFile": "episode_31/scene_49.webp",
+      "narrationEn": "A score of thirteen is blasphemy!",
+      "narrationKo": "그림리의 무쇠 망치가 도박장 석탁을 박살 냈고, 가웨인의 돌풍이 불한당들의 무기를 허공으로 날려버렸다. 카단은 드래곤 브레이커 방패로 보가트의 멱살을 잡아 벽면에 처박았다.",
+      "sourceSentenceStart": 49,
+      "sourceSentenceEnd": 49,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단은 드래곤 브레이커 방패로 보가트의 멱살을 잡아 벽면에 처박았다.",
+          "textEn": "A score of thirteen is blasphemy!",
+          "bubbleType": "thought",
+          "position": "top-left",
           "characterCardId": 74
         }
       ],
@@ -667,6 +1442,296 @@
           "style": "slash",
           "position": "top-right"
         },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 50,
+      "imageFile": "episode_31/scene_50.webp",
+      "sourceImageFile": "episode_31/scene_50.webp",
+      "narrationEn": "Guards, butcher them all!\" The ruffians lunged forward, but the Six Masters moved in devastating unison.",
+      "narrationKo": "“사기를 친 것은 네놈이다, 보가트. 탁자 밑의 자석 장치를 부수고 네 목을 벨 수도 있지만, 목숨만은 살려주마. 당장 갈대나룻배 백 척을 강가에 대령해라.”",
+      "sourceSentenceStart": 50,
+      "sourceSentenceEnd": 50,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“사기를 친 것은 네놈이다, 보가트. 탁자 밑의 자석 장치를 부수고 네 목을 벨 수도 있지만, 목숨만은 살려주마. 당장 갈대나룻배 백 척을 강가에 대령해라.”",
+          "textEn": "“Guards, butcher them all!\" The ruffians lunged forward, but the Six Masters moved in devastating unison.”",
+          "bubbleType": "speech",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 51,
+      "imageFile": "episode_31/scene_51.webp",
+      "sourceImageFile": "episode_31/scene_51.webp",
+      "narrationEn": "Grimli's hammer pulverized the stone table, Gawain's wind blades disarmed the thugs, and Kadan pinned Bogart against the rock face with the rim of his shield.",
+      "narrationKo": "보가트는 겁에 질려 오줌을 지리며 연신 머리를 조아렸다. “사, 살려주십시오! 나룻배 백 척... 아니 이백 척을 당장 내어드리겠습니다!”",
+      "sourceSentenceStart": 51,
+      "sourceSentenceEnd": 51,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“사, 살려주십시오! 나룻배 백 척... 아니 이백 척을 당장 내어드리겠습니다!”",
+          "textEn": "“Grimli's hammer pulverized the stone table, Gawain's wind blades disarmed the thugs, and Kadan pinned Bogart against the rock face with the rim of his shield.”",
+          "bubbleType": "shout",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 52,
+      "imageFile": "episode_31/scene_52.webp",
+      "sourceImageFile": "episode_31/scene_52.webp",
+      "narrationEn": "\"You played with loaded dice, Bogart. I could sever your head for your fraud, but I grant you your life.",
+      "narrationKo": "한 시간 뒤, 수백 척의 갈대나룻배가 유사강 기슭에 정렬했고, 연합군은 단 한 명의 희생도 없이 거친 모래강을 건너기 시작했다.",
+      "sourceSentenceStart": 52,
+      "sourceSentenceEnd": 52,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "한 시간 뒤, 수백 척의 갈대나룻배가 유사강 기슭에 정렬했고, 연합군은 단 한 명의 희생도 없이 거친 모래강을 건너기 시작했다.",
+          "textEn": "I could sever your head for your fraud, but I grant you your life.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 53,
+      "imageFile": "episode_31/scene_53.webp",
+      "sourceImageFile": "episode_31/scene_53.webp",
+      "narrationEn": "Deliver two hundred reed-skiffs to the riverbank at once.\"",
+      "narrationKo": "카단은 주머니 속에서 따스하게 빛나는 이그니스의 유리 불씨를 쥐며 강 건너 흑마법 요새를 응시했다.",
+      "sourceSentenceStart": 53,
+      "sourceSentenceEnd": 53,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단은 주머니 속에서 따스하게 빛나는 이그니스의 유리 불씨를 쥐며 강 건너 흑마법 요새를 응시했다.",
+          "textEn": "Deliver two hundred reed-skiffs to the riverbank at once.\"",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 54,
+      "imageFile": "episode_31/scene_54.webp",
+      "sourceImageFile": "episode_31/scene_54.webp",
+      "narrationEn": "Terrified, the goblin king groveled in the dust. \"Mercy, noble knight!",
+      "narrationKo": "“이그니스, 네가 준 지혜가 또 한 번 피를 흘리지 않고 길을 열었다.”",
+      "sourceSentenceStart": 54,
+      "sourceSentenceEnd": 54,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“이그니스, 네가 준 지혜가 또 한 번 피를 흘리지 않고 길을 열었다.”",
+          "textEn": "“Terrified, the goblin king groveled in the dust. \"Mercy, noble knight!”",
+          "bubbleType": "speech",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 55,
+      "imageFile": "episode_31/scene_55.webp",
+      "sourceImageFile": "episode_31/scene_55.webp",
+      "narrationEn": "Two hundred skiffs...",
+      "narrationKo": "실리아가 곁에 서며 미소를 지었다. “이제 검은 늪지대의 심장부로 들어가요. 루시안의 마지막 숨통을 끊을 시간이에요.”",
+      "sourceSentenceStart": 55,
+      "sourceSentenceEnd": 55,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“이제 검은 늪지대의 심장부로 들어가요. 루시안의 마지막 숨통을 끊을 시간이에요.”",
+          "textEn": "“Two hundred skiffs...”",
+          "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 56,
+      "imageFile": "episode_31/scene_56.webp",
+      "sourceImageFile": "episode_31/scene_56.webp",
+      "narrationEn": "Three hundred skiffs, anything you desire!\" Within an hour, a grand armada of buoyant reed-skiffs lined the shore, ferrying the entire allied host safely across the quicksand without shedding a drop of blood.",
+      "narrationKo": "갈대나룻배들은 늪지대의 유사(流砂) 위를 마치 얼음판 위를 미끄러지듯 유려하게 건너갔다. 연합군 병사들이 환호성을 지르며 강 건너편의 모래톱에 무사히 닻을 내렸다.",
+      "sourceSentenceStart": 56,
+      "sourceSentenceEnd": 56,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "연합군 병사들이 환호성을 지르며 강 건너편의 모래톱에 무사히 닻을 내렸다.",
+          "textEn": "Three hundred skiffs, anything you desire!\" Within an hour, a grand armada of buoyant reed-skiffs lined the shore, ferrying the entire allied host safely across the quicksand without shedding a drop of blood.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 57,
+      "imageFile": "episode_31/scene_57.webp",
+      "sourceImageFile": "episode_31/scene_57.webp",
+      "narrationEn": "Touching the warm glass ember in his pocket, Kadan gazed toward the distant citadel.",
+      "narrationKo": "도박장의 악당들을 무력화시키고 무고한 피를 흘리지 않은 채 천연의 험지를 돌파한 완벽한 승리였다.",
+      "sourceSentenceStart": 57,
+      "sourceSentenceEnd": 57,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "도박장의 악당들을 무력화시키고 무고한 피를 흘리지 않은 채 천연의 험지를 돌파한 완벽한 승리였다.",
+          "textEn": "Touching the warm glass ember in his pocket, Kadan gazed toward the distant citadel.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 58,
+      "imageFile": "episode_31/scene_58.webp",
+      "sourceImageFile": "episode_31/scene_58.webp",
+      "narrationEn": "\"Ignis, the wisdom you left behind has opened another bloodless path.\" Smiling beside him, Cilia gripped her staff.",
+      "narrationKo": "그림리가 카단의 어깨를 툭 치며 껄껄 웃었다. “주사위를 쪼개서 13을 만들다니, 알렉산다르 그 양반보다 네놈이 한 수 위로구나! 참으로 가슴이 뻥 뚫리는 한판이었다!”",
+      "sourceSentenceStart": 58,
+      "sourceSentenceEnd": 58,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "그림리",
+          "speakerEn": "Grimli",
+          "textKo": "“주사위를 쪼개서 13을 만들다니, 알렉산다르 그 양반보다 네놈이 한 수 위로구나! 참으로 가슴이 뻥 뚫리는 한판이었다!”",
+          "textEn": "“Ignis, the wisdom you left behind has opened another bloodless path.”",
+          "bubbleType": "shout",
+          "position": "bottom-left",
+          "characterCardId": 74
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 59,
+      "imageFile": "episode_31/scene_59.webp",
+      "sourceImageFile": "episode_31/scene_59.webp",
+      "narrationEn": "\"Now we march into the heart of the Black Marsh to end Lucian's reign forever.\"",
+      "narrationKo": "일행은 사기충천하여 흑마법 요새를 향해 진격을 개시했다.",
+      "sourceSentenceStart": 59,
+      "sourceSentenceEnd": 59,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "일행은 사기충천하여 흑마법 요새를 향해 진격을 개시했다.",
+          "textEn": "\"Now we march into the heart of the Black Marsh to end Lucian's reign forever.\"",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 74
+        }
+      ],
+      "sfxCues": [
         {
           "textKo": "파지지직!",
           "textEn": "CRACKLE!",

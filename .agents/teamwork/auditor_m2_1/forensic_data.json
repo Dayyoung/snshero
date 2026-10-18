@@ -1,0 +1,254 @@
+{
+  "master_results": {
+    "cards1.png": {
+      "size": 106597,
+      "max_size": 819200,
+      "size_pass": true,
+      "dimensions": [
+        1000,
+        1000
+      ],
+      "expected_dimensions": [
+        1000,
+        1000
+      ],
+      "dim_pass": true,
+      "format": "PNG",
+      "mode": "P",
+      "ihdr": {
+        "width": 1000,
+        "height": 1000,
+        "bit_depth": 8,
+        "color_type": 3,
+        "compression": 0,
+        "filter": 0,
+        "interlace": 0
+      },
+      "pass_all": true
+    },
+    "cards2.png": {
+      "size": 468157,
+      "max_size": 819200,
+      "size_pass": true,
+      "dimensions": [
+        1000,
+        1000
+      ],
+      "expected_dimensions": [
+        1000,
+        1000
+      ],
+      "dim_pass": true,
+      "format": "PNG",
+      "mode": "P",
+      "ihdr": {
+        "width": 1000,
+        "height": 1000,
+        "bit_depth": 8,
+        "color_type": 3,
+        "compression": 0,
+        "filter": 0,
+        "interlace": 0
+      },
+      "pass_all": true
+    },
+    "card100.png": {
+      "size": 158025,
+      "max_size": 819200,
+      "size_pass": true,
+      "dimensions": [
+        1135,
+        1315
+      ],
+      "expected_dimensions": [
+        1135,
+        1315
+      ],
+      "dim_pass": true,
+      "format": "PNG",
+      "mode": "P",
+      "ihdr": {
+        "width": 1135,
+        "height": 1315,
+        "bit_depth": 8,
+        "color_type": 3,
+        "compression": 0,
+        "filter": 0,
+        "interlace": 0
+      },
+      "pass_all": true
+    },
+    "card100_gemini.png": {
+      "size": 113108,
+      "max_size": 819200,
+      "size_pass": true,
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "expected_dimensions": [
+        1024,
+        1024
+      ],
+      "dim_pass": true,
+      "format": "PNG",
+      "mode": "P",
+      "ihdr": {
+        "width": 1024,
+        "height": 1024,
+        "bit_depth": 8,
+        "color_type": 3,
+        "compression": 0,
+        "filter": 0,
+        "interlace": 0
+      },
+      "pass_all": true
+    }
+  },
+  "faction_results": {
+    "character_sheet_water.png": {
+      "size": 28834,
+      "max_size": 307200,
+      "size_pass": true,
+      "dimensions": [
+        2560,
+        296
+      ],
+      "format": "PNG",
+      "mode": "P",
+      "pass_all": true
+    },
+    "character_sheet_fire.png": {
+      "size": 28760,
+      "max_size": 307200,
+      "size_pass": true,
+      "dimensions": [
+        2560,
+        296
+      ],
+      "format": "PNG",
+      "mode": "P",
+      "pass_all": true
+    },
+    "character_sheet_wind.png": {
+      "size": 29399,
+      "max_size": 307200,
+      "size_pass": true,
+      "dimensions": [
+        2560,
+        296
+      ],
+      "format": "PNG",
+      "mode": "P",
+      "pass_all": true
+    },
+    "character_sheet_earth.png": {
+      "size": 29711,
+      "max_size": 307200,
+      "size_pass": true,
+      "dimensions": [
+        2560,
+        296
+      ],
+      "format": "PNG",
+      "mode": "P",
+      "pass_all": true
+    },
+    "character_sheet_human.png": {
+      "size": 30365,
+      "max_size": 307200,
+      "size_pass": true,
+      "dimensions": [
+        2560,
+        296
+      ],
+      "format": "PNG",
+      "mode": "P",
+      "pass_all": true
+    },
+    "character_sheet_undead.png": {
+      "size": 27409,
+      "max_size": 307200,
+      "size_pass": true,
+      "dimensions": [
+        2560,
+        296
+      ],
+      "format": "PNG",
+      "mode": "P",
+      "pass_all": true
+    },
+    "character_sheet_elf.png": {
+      "size": 30139,
+      "max_size": 307200,
+      "size_pass": true,
+      "dimensions": [
+        2560,
+        296
+      ],
+      "format": "PNG",
+      "mode": "P",
+      "pass_all": true
+    },
+    "character_sheet_hobbit.png": {
+      "size": 29904,
+      "max_size": 307200,
+      "size_pass": true,
+      "dimensions": [
+        2560,
+        296
+      ],
+      "format": "PNG",
+      "mode": "P",
+      "pass_all": true
+    },
+    "character_sheet_beast.png": {
+      "size": 31377,
+      "max_size": 307200,
+      "size_pass": true,
+      "dimensions": [
+        2560,
+        296
+      ],
+      "format": "PNG",
+      "mode": "P",
+      "pass_all": true
+    },
+    "character_sheet_mecha.png": {
+      "size": 28557,
+      "max_size": 307200,
+      "size_pass": true,
+      "dimensions": [
+        2560,
+        296
+      ],
+      "format": "PNG",
+      "mode": "P",
+      "pass_all": true
+    },
+    "character_sheet_dragon.png": {
+      "size": 28083,
+      "max_size": 307200,
+      "size_pass": true,
+      "dimensions": [
+        2560,
+        296
+      ],
+      "format": "PNG",
+      "mode": "P",
+      "pass_all": true
+    }
+  },
+  "alignment_summary": {
+    "min_faction": 0.999774694442749,
+    "avg_faction": 0.9999490862542932,
+    "min_primary": 0.9914183020591736,
+    "avg_primary": 0.9950443278659474,
+    "min_c100": 0.9925116300582886,
+    "avg_c100": 0.9955541616136377,
+    "min_cgem": 0.9853181838989258,
+    "avg_cgem": 0.9915463041175495
+  },
+  "findings": [],
+  "verdict": "CLEAN"
+}

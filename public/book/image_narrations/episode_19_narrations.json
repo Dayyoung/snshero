@@ -2,24 +2,24 @@
   "episodeNumber": 19,
   "episodeTitleEn": "Three Trials",
   "episodeTitleKo": "세 가지 시험",
-  "sourceSentenceCount": 47,
-  "sceneCount": 20,
+  "sourceSentenceCount": 50,
+  "sceneCount": 50,
   "scenes": [
     {
       "sceneNumber": 1,
       "imageFile": "episode_19/scene_01.webp",
       "sourceImageFile": "episode_19/scene_01.webp",
-      "narrationEn": "Ascending the final coils of the spiraling staircase, the companions reached the Sky Altar, suspended thousands of fathoms above Whispering Wind Island. Far below stretched the panoramic expanse of the azure ocean and jagged coastal shoals, while overhead, the colossal mana vortex of the Jade Barrier Spire cleaved through the thunderheads with concussive roars. Across a narrow stone bridge bridging the chasm stood King Aeolus, once revered as the sovereign Spirit King of the Winds. His silver hair whipped wildly in the tempest, his eyes clouded with profound grief and corrupted by High Elder Zephyr's phantom illusions. Crackling ribbons of lightning coiled around the massive broadsword held in his trembling grasp. Leveling his storm blade, Aeolus bellowed in a voice hoarse with pain.",
-      "narrationKo": "나선형 계단을 모두 오른 일행은 마침내 바람 속삭임 섬의 최정상이자 해발 수천 길 상공에 떠 있는 ‘하늘 제단’에 도달했다. 발밑으로는 아득한 푸른 대해와 섬 전역의 기암괴석들이 한눈에 내려다보였고, 머리 위로는 거대한 옥빛 결계탑의 마나 소용돌이가 먹구름을 가르며 천둥 같은 굉음을 토해내고 있었다. 깎아지른 절벽 사이에 아슬아슬하게 걸쳐진 외나무다리 형태의 ‘하늘 석교’ 건너편에, 한때 대해를 호령했던 바람의 정령왕이자 실리아의 아버지인 국왕 에올루스가 고독하게 서 있었다. 백발이 성성한 국왕의 두 눈은 깊은 슬픔과 제피르가 걸어둔 환영 마법에 깊이 잠식되어 푸른빛 대신 탁한 잿빛으로 흐려져 있었다. 손에 쥔 거대한 폭풍의 대검에서는 서슬 퍼런 뇌전이 튀었다. 에올루스가 대검을 겨누며 갈라진 목소리로 포효했다.",
+      "narrationEn": "Ascending the final coils of the spiraling staircase, the companions reached the Sky Altar, suspended thousands of fathoms above Whispering Wind Island. Far below stretched the panoramic expanse of the azure ocean and jagged coastal shoals, while overhead, the colossal mana vortex of the Jade Barrier Spire cleaved through the thunderheads with concussive roars.",
+      "narrationKo": "나선형 계단을 모두 오른 일행은 마침내 바람 속삭임 섬의 최정상이자 해발 수천 길 상공에 떠 있는 ‘하늘 제단’에 도달했다.",
       "sourceSentenceStart": 1,
-      "sourceSentenceEnd": 2,
+      "sourceSentenceEnd": 1,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "에올루스가 대검을 겨누며 갈라진 목소리로 포효했다.",
-          "textEn": "Leveling his storm blade, Aeolus bellowed in a voice hoarse with pain.",
+          "textKo": "나선형 계단을 모두 오른 일행은 마침내 바람 속삭임 섬의 최정상이자 해발 수천 길 상공에 떠 있는 ‘하늘 제단’에 도달했다.",
+          "textEn": "Far below stretched the panoramic expanse of the azure ocean and jagged coastal shoals, while overhead, the colossal mana vortex of the Jade Barrier Spire cleaved through the thunderheads with concussive roars.",
           "bubbleType": "thought",
           "position": "top-left",
           "characterCardId": 62
@@ -27,16 +27,10 @@
       ],
       "sfxCues": [
         {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
           "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
+          "position": "top-left"
         }
       ]
     },
@@ -44,37 +38,34 @@
       "sceneNumber": 2,
       "imageFile": "episode_19/scene_02.webp",
       "sourceImageFile": "episode_19/scene_02.webp",
-      "narrationEn": "\"None shall cross this bridge! I will never permit the heir of the treacherous Holy Knights who butchered my beloved Sylphid, nor the wayward princess who consorts with our foes, to desecrate the sanctuary!\" Stepping forward with the Jade Staff, Cilia pleaded through falling tears.",
-      "narrationKo": "“누구도 이 다리를 건널 수 없다! 아내 실피드를 비열하게 살해한 성기사단의 후예와, 어미의 원수와 손을 잡은 배신자 왕녀를 결코 결계탑 안으로 들일 수 없다!” 실리아가 녹옥 지팡이를 들고 앞으로 나서며 눈물로 호소했다. “아버지! 제발 눈을 뜨세요! 제 손에 들린 어머니의 지팡이와 이 기억 수정을 보세요! 어머니를 죽인 것은 성기사단이 아니라, 황실과 손을 잡고 왕권을 탐낸 제피르 대장로예요!”",
-      "sourceSentenceStart": 3,
-      "sourceSentenceEnd": 5,
+      "narrationEn": "Across a narrow stone bridge bridging the chasm stood King Aeolus, once revered as the sovereign Spirit King of the Winds. His silver hair whipped wildly in the tempest, his eyes clouded with profound grief and corrupted by High Elder Zephyr's phantom illusions.",
+      "narrationKo": "발밑으로는 아득한 푸른 대해와 섬 전역의 기암괴석들이 한눈에 내려다보였고, 머리 위로는 거대한 옥빛 결계탑의 마나 소용돌이가 먹구름을 가르며 천둥 같은 굉음을 토해내고 있었다.",
+      "sourceSentenceStart": 2,
+      "sourceSentenceEnd": 2,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "에올루스",
-          "speakerEn": "Aeolus",
-          "textKo": "“누구도 이 다리를 건널 수 없다! 아내 실피드를 비열하게 살해한 성기사단의 후예와, 어미의 원수와 손을 잡은 배신자 왕녀를 결코 결계탑 안으로 들일 수 없다!”",
-          "textEn": "“None shall cross this bridge! I will never permit the heir of the treacherous Holy Knights who butchered my beloved Sylphid, nor the wayward princess who consorts with our foes, to desecrate the sanctuary!”",
-          "bubbleType": "shout",
-          "position": "bottom-left",
-          "characterCardId": 25
-        },
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“아버지! 제발 눈을 뜨세요! 제 손에 들린 어머니의 지팡이와 이 기억 수정을 보세요! 어머니를 죽인 것은 성기사단이 아니라, 황실과 손을 잡고 왕권을 탐낸 제피르 대장로예요!”",
-          "textEn": "“Father, look upon me! Look at mother's staff in my hands and this living memory crystal! It was not the Holy Knights who took mother's life, but High Elder Zephyr, who poisoned her cup in treasonous collusion with the imperial court!”",
-          "bubbleType": "shout",
-          "position": "bottom-right",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "발밑으로는 아득한 푸른 대해와 섬 전역의 기암괴석들이 한눈에 내려다보였고, 머리 위로는 거대한 옥빛 결계탑의 마나 소용돌이가 먹구름을 가르며 천둥 같은 굉음을 토해내고 있었다.",
+          "textEn": "His silver hair whipped wildly in the tempest, his eyes clouded with profound grief and corrupted by High Elder Zephyr's phantom illusions.",
+          "bubbleType": "thought",
+          "position": "top-right",
           "characterCardId": 62
         }
       ],
       "sfxCues": [
         {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
           "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
         }
       ]
     },
@@ -82,393 +73,20 @@
       "sceneNumber": 3,
       "imageFile": "episode_19/scene_03.webp",
       "sourceImageFile": "episode_19/scene_03.webp",
-      "narrationEn": "\"Father, look upon me! Look at mother's staff in my hands and this living memory crystal! It was not the Holy Knights who took mother's life, but High Elder Zephyr, who poisoned her cup in treasonous collusion with the imperial court!\" Clutching his temples in agony, Aeolus refused to lower his guard. \"Vile deceptions! Zephyr testified before the council that the silver dagger of the Holy Order pierced my queen's heart! If the youth beside you is truly innocent, let him brave my three trials to prove his purity of purpose!\"",
-      "narrationKo": "에올루스는 고통스러운 듯 이마를 감싸 쥐면서도 대검의 서슬을 낮추지 않았다. “사악한 속임수다! 성기사의 은빛 단검이 내 아내의 심장을 찔렀다는 제피르의 증언을 내 어찌 의심하겠느냐! 네 곁에 선 청년이 진정 결백하다면, 내 세 가지 시험을 통과하여 그 굳은 신념을 증명해 보아라!”",
-      "sourceSentenceStart": 6,
-      "sourceSentenceEnd": 7,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "에올루스",
-          "speakerEn": "Aeolus",
-          "textKo": "“사악한 속임수다! 성기사의 은빛 단검이 내 아내의 심장을 찔렀다는 제피르의 증언을 내 어찌 의심하겠느냐! 네 곁에 선 청년이 진정 결백하다면, 내 세 가지 시험을 통과하여 그 굳은 신념을 증명해 보아라!”",
-          "textEn": "“Father, look upon me! Look at mother's staff in my hands and this living memory crystal! It was not the Holy Knights who took mother's life, but High Elder Zephyr, who poisoned her cup in treasonous collusion with the imperial court!”",
-          "bubbleType": "shout",
-          "position": "bottom-right",
-          "characterCardId": 25
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 4,
-      "imageFile": "episode_19/scene_04.webp",
-      "sourceImageFile": "episode_19/scene_04.webp",
-      "narrationEn": "Planting his boots firmly, Kadan raised his unadorned iron shield to chest height. \"I will not shrink from any trial. If crossing this bridge can vindicate Master Aleksandar and prove Cilia's truth, I wager my life upon this stone.\"",
-      "narrationKo": "카단이 한 걸음 앞으로 나서며 무쇠 방패를 가슴 높이로 굳건히 들어 올렸다. “어떤 시련이든 피하지 않겠습니다. 알렉산다르 스승님의 결백과 실리아의 진심을 증명할 수 있다면, 제 목숨을 걸고 이 다리를 건너겠습니다.”",
-      "sourceSentenceStart": 8,
-      "sourceSentenceEnd": 9,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“어떤 시련이든 피하지 않겠습니다. 알렉산다르 스승님의 결백과 실리아의 진심을 증명할 수 있다면, 제 목숨을 걸고 이 다리를 건너겠습니다.”",
-          "textEn": "“I will not shrink from any trial. If crossing this bridge can vindicate Master Aleksandar and prove Cilia's truth, I wager my life upon this stone.”",
-          "bubbleType": "speech",
-          "position": "top-left",
-          "characterCardId": 41
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 5,
-      "imageFile": "episode_19/scene_05.webp",
-      "sourceImageFile": "episode_19/scene_05.webp",
-      "narrationEn": "Ignis gripped Kadan's shoulder with solemn urgency. \"Stay sharp, Kadan. King Aeolus's storm blade is a divine relic of the winds, capable of cleaving imperial knights in twain with a single stroke.\"",
-      "narrationKo": "이그니스가 카단의 어깨를 잡으며 경고했다. “조심해라, 카단. 에올루스 왕의 폭풍검은 황궁의 기사단장들조차 일격에 베어 넘기는 일국의 신기(神器)다.” 바람 속삭임 섬의 전설에 따르면 하늘 석교를 건너지 못한 자는 영원히 대기의 미아가 되어 허공을 떠돈다고 전해졌다. 카단은 그 전설을 떠올리며 방패의 무게중심을 다시 한번 낮추었다.",
-      "sourceSentenceStart": 10,
-      "sourceSentenceEnd": 12,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "이그니스",
-          "speakerEn": "Ignis",
-          "textKo": "“조심해라, 카단. 에올루스 왕의 폭풍검은 황궁의 기사단장들조차 일격에 베어 넘기는 일국의 신기(神器)다.”",
-          "textEn": "“Stay sharp, Kadan. King Aeolus's storm blade is a divine relic of the winds, capable of cleaving imperial knights in twain with a single stroke.”",
-          "bubbleType": "speech",
-          "position": "top-right",
-          "characterCardId": 11
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "서걱-!",
-          "textEn": "SLASH!",
-          "style": "slash",
-          "position": "center"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 6,
-      "imageFile": "episode_19/scene_06.webp",
-      "sourceImageFile": "episode_19/scene_06.webp",
-      "narrationEn": "The first trial was the Trial of the Gale. With a sweeping gesture from Aeolus, thousands of razor-sharp wind blades erupted across the bridge, churning the air with deafening shrieks. The kinetic pressure was fierce enough to pulverize granite, while beneath the narrow span lay an abyss plunging straight into the ocean depths. A glancing gale sheared Kadan's cheek, drawing crimson blood.",
-      "narrationKo": "첫 번째 시험은 ‘질풍의 시련’이었다. 에올루스가 검을 휘두르자 하늘 석교 위로 살점을 도려낼 듯한 수천 자루의 바람 칼날이 소용돌이치며 쏟아져 내렸다. 폭풍의 압력은 바위마저 가루로 만들 기세였고, 다리 밑은 떨어지면 시신조차 찾을 수 없는 천 길 낭떠러지였다. 칼날 같은 돌풍이 카단의 볼을 스치며 피를 뿜어냈다.",
-      "sourceSentenceStart": 13,
-      "sourceSentenceEnd": 14,
+      "narrationEn": "Crackling ribbons of lightning coiled around the massive broadsword held in his trembling grasp.",
+      "narrationKo": "깎아지른 절벽 사이에 아슬아슬하게 걸쳐진 외나무다리 형태의 ‘하늘 석교’ 건너편에, 한때 대해를 호령했던 바람의 정령왕이자 실리아의 아버지인 국왕 에올루스가 고독하게 서 있었다.",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 3,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "칼날 같은 돌풍이 카단의 볼을 스치며 피를 뿜어냈다.",
-          "textEn": "A glancing gale sheared Kadan's cheek, drawing crimson blood.",
+          "textKo": "깎아지른 절벽 사이에 아슬아슬하게 걸쳐진 외나무다리 형태의 ‘하늘 석교’ 건너편에, 한때 대해를 호령했던 바람의 정령왕이자 실리아의 아버지인 국왕 에올루스가 고독하게 서 있었다.",
+          "textEn": "Crackling ribbons of lightning coiled around the massive broadsword held in his trembling grasp.",
           "bubbleType": "thought",
-          "position": "top-right",
-          "characterCardId": 25
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "휘이이익-!",
-          "textEn": "SWOOSH!",
-          "style": "slash",
-          "position": "top-left"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 7,
-      "imageFile": "episode_19/scene_07.webp",
-      "sourceImageFile": "episode_19/scene_07.webp",
-      "narrationEn": "Yet Kadan drew no weapon. Bracing his unadorned iron shield, he drew star-breathing deep into his lungs. \"Master Aleksandar taught me never to fight the gale, but to embrace its flow through the unyielding weight of the earth.\"",
-      "narrationKo": "카단은 칼을 뽑지 않고, 오직 무쇠 방패 하나만을 앞세운 채 별의 호흡을 폐부 깊숙이 끌어올렸다. “알렉산다르 스승님께서는 바람을 거스르려 하지 말고, 대지의 무게로 바람의 결을 품으라고 가르치셨다.”",
-      "sourceSentenceStart": 15,
-      "sourceSentenceEnd": 16,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“알렉산다르 스승님께서는 바람을 거스르려 하지 말고, 대지의 무게로 바람의 결을 품으라고 가르치셨다.”",
-          "textEn": "“Master Aleksandar taught me never to fight the gale, but to embrace its flow through the unyielding weight of the earth.”",
-          "bubbleType": "speech",
-          "position": "bottom-right",
-          "characterCardId": 41
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "휘이이익-!",
-          "textEn": "SWOOSH!",
-          "style": "slash",
-          "position": "top-left"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 8,
-      "imageFile": "episode_19/scene_08.webp",
-      "sourceImageFile": "episode_19/scene_08.webp",
-      "narrationEn": "Angling the face of his shield at forty-five degrees, Kadan deflected the tempest's fury into the empty air. Wind blades shrieked violently against the iron rim, yet Kadan advanced step by steady step across the stones. Blood seeped through his sleeves where veins strained under the pressure, yet his eyes remained as tranquil as a frozen northern tarn. He pressed forward like an immovable iron monolith cleaving the storm. Halting midway across the bridge, Kadan stood firm, shaking Aeolus to his soul. \"To advance without unsheathing steel, taking the storm upon his own flesh... That grounded posture and that impenetrable guard... It is beyond question the peerless art of Aleksandar.\"",
-      "narrationKo": "카단은 방패의 각도를 45도로 비스듬히 기울이며 폭풍의 압력을 허공으로 흘려보냈다. 날카로운 바람 칼날들이 방패 표면을 때리며 쩌정하는 굉음을 냈지만, 카단의 발걸음은 한 치의 흔들림도 없이 석교 위를 한 걸음씩 굳건히 디뎌 나갔다. 무쇠 방패를 쥔 팔의 근육이 비틀리고 핏줄이 터져 나왔지만, 카단의 눈빛은 한겨울 얼어붙은 호수처럼 고요했다. 폭풍 속을 뚫고 전진하는 청년의 모습은 거친 파도를 가르는 흑철 바위 같았다. 마침내 다리 절반을 건너선 카단을 보며 에올루스의 눈이 크게 흔들렸다. “칼을 뽑아 폭풍을 베지 않고, 오직 제 몸으로 바람의 무게를 받아내며 나아간단 말인가... 저 우직한 하체와 대지를 품은 방패술은... 틀림없는 알렉산다르의 기예로구나.”",
-      "sourceSentenceStart": 17,
-      "sourceSentenceEnd": 19,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "에올루스",
-          "speakerEn": "Aeolus",
-          "textKo": "“칼을 뽑아 폭풍을 베지 않고, 오직 제 몸으로 바람의 무게를 받아내며 나아간단 말인가... 저 우직한 하체와 대지를 품은 방패술은... 틀림없는 알렉산다르의 기예로구나.”",
-          "textEn": "“To advance without unsheathing steel, taking the storm upon his own flesh... That grounded posture and that impenetrable guard... It is beyond question the peerless art of Aleksandar.”",
-          "bubbleType": "thought",
-          "position": "top-left",
-          "characterCardId": 25
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 9,
-      "imageFile": "episode_19/scene_09.webp",
-      "sourceImageFile": "episode_19/scene_09.webp",
-      "narrationEn": "The second trial was the Trial of Memory. The moment Kadan set foot on the center of the span, Aeolus's arcane illusion erupted, transfiguring the altar into the flaming ruins of the Elwin estate in the north. Before Kadan's eyes rose the slaughter of his childhood: village elders cut down and his parents' dying cries echoing through the smoke. From the shadows coiling around the stones hissed a serpentine voice: 'Hate this corrupt world. Draw your blade and burn the empire and the wind kingdom in retribution. Avenge the blood stolen from you.'",
-      "narrationKo": "두 번째 시험은 ‘기억의 시련’이었다. 카단이 석교 중앙에 발을 딛는 순간, 에올루스의 환영 마법이 폭발하며 주변의 풍경이 순식간에 불타는 북방 엘윈 영지로 뒤바뀌었다. 카단의 눈앞에 피를 흘리며 쓰러져 가는 마을 주민들과, 제국군에게 목숨을 잃던 부모님의 마지막 비명이 생생한 악몽이 되어 덮쳐왔다. 허공에서 검은 그림자가 뱀처럼 똬리를 틀며 속삭였다.",
-      "sourceSentenceStart": 20,
-      "sourceSentenceEnd": 21,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "내레이션",
-          "speakerEn": "Narration",
-          "textKo": "허공에서 검은 그림자가 뱀처럼 똬리를 틀며 속삭였다.",
-          "textEn": "Avenge the blood stolen from you.'",
-          "bubbleType": "thought",
-          "position": "top-left",
-          "characterCardId": 41
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 10,
-      "imageFile": "episode_19/scene_10.webp",
-      "sourceImageFile": "episode_19/scene_10.webp",
-      "narrationEn": "Violent fury and grief constricted Kadan's throat, tempting him to draw his steel and butcher the phantoms. Yet Kadan gripped the scarlet ribbon bound to his silver dagger, breathing out a steady, measured breath.",
-      "narrationKo": "‘세상을 증오해라. 네 손에 든 무기로 황실과 바람섬의 모든 것을 불태워 복수해라. 너를 버린 세상을 향해 검을 휘둘러라.’ 맹렬한 분노와 살기가 카단의 폐부를 짓눌렀다. 단검을 뽑아 눈앞의 모든 환영을 베어버리고 싶은 충동이 영혼을 뒤흔들었다. 하지만 카단은 품속에서 은빛 단검의 붉은 매듭을 꽉 쥐며 깊은 숨을 내쉬었다.",
-      "sourceSentenceStart": 22,
-      "sourceSentenceEnd": 24,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "내레이션",
-          "speakerEn": "Narration",
-          "textKo": "하지만 카단은 품속에서 은빛 단검의 붉은 매듭을 꽉 쥐며 깊은 숨을 내쉬었다.",
-          "textEn": "Yet Kadan gripped the scarlet ribbon bound to his silver dagger, breathing out a steady, measured breath.",
-          "bubbleType": "thought",
-          "position": "top-right",
-          "characterCardId": 41
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "서걱-!",
-          "textEn": "SLASH!",
-          "style": "slash",
-          "position": "center"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 11,
-      "imageFile": "episode_19/scene_11.webp",
-      "sourceImageFile": "episode_19/scene_11.webp",
-      "narrationEn": "\"My shield was never forged for bloody vengeance. It exists to protect the fragile warmth of those shivering behind me, to halt the cycle of tragedy forever!\" With a decisive thrust of his shield, Kadan shattered the phantom mist. The dark mirage fractured like brittle glass, returning the pristine light of the Sky Altar. Staring at the young warrior who refused to surrender to hatred, Aeolus fell speechless.",
-      "narrationKo": "“내 방패는 피의 복수를 위해 쥔 것이 아니다. 등 뒤에서 추위에 떨고 있는 사람들의 따스한 온기를 지키기 위해, 더 이상의 비극을 막기 위해 서 있는 것이다!” 카단이 방패를 앞으로 힘차게 내지르며 환영의 안개를 깨뜨렸다. 어둠의 환영이 거울 조각처럼 부서져 나가며 맑은 하늘 제단의 풍경이 되돌아왔다. 증오에 굴복하지 않고 수호의 의지를 증명해 낸 카단의 당당한 모습에 에올루스는 말을 잇지 못했다.",
-      "sourceSentenceStart": 25,
-      "sourceSentenceEnd": 26,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“내 방패는 피의 복수를 위해 쥔 것이 아니다. 등 뒤에서 추위에 떨고 있는 사람들의 따스한 온기를 지키기 위해, 더 이상의 비극을 막기 위해 서 있는 것이다!”",
-          "textEn": "“My shield was never forged for bloody vengeance. It exists to protect the fragile warmth of those shivering behind me, to halt the cycle of tragedy forever!”",
-          "bubbleType": "shout",
-          "position": "bottom-right",
-          "characterCardId": 41
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "휘이이익-!",
-          "textEn": "SWOOSH!",
-          "style": "slash",
-          "position": "top-left"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 12,
-      "imageFile": "episode_19/scene_12.webp",
-      "sourceImageFile": "episode_19/scene_12.webp",
-      "narrationEn": "\"He broke the nightmare not through wrath... but solely through the resolve to protect...\" The final trial was the Trial of Sacrifice.",
-      "narrationKo": "에올루스가 떨리는 목소리로 중얼거렸다. “복수심에 눈이 멀지 않고... 오직 지키려는 마음으로 환영을 부수었단 말인가...”",
-      "sourceSentenceStart": 27,
-      "sourceSentenceEnd": 28,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "에올루스",
-          "speakerEn": "Aeolus",
-          "textKo": "“복수심에 눈이 멀지 않고... 오직 지키려는 마음으로 환영을 부수었단 말인가...”",
-          "textEn": "“He broke the nightmare not through wrath... but solely through the resolve to protect...”",
-          "bubbleType": "thought",
-          "position": "top-left",
-          "characterCardId": 25
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 13,
-      "imageFile": "episode_19/scene_13.webp",
-      "sourceImageFile": "episode_19/scene_13.webp",
-      "narrationEn": "As Aeolus invoked the central lightning glyphs, a colossal thunderbolt formed in the clouds, crackling with righteous execution. It was a lethal judgment designed to cease only when an intruder's life was consumed. In that fatal instant, Ignis vaulted across the stones, throwing his unarmored body beside Kadan. Conjuring his immaculate white flame, he erected a radiant dome of pure fire. \"I will not let my brother perish alone! If blood must atone for imperial crimes, let mine be the first to fall!\"",
-      "narrationKo": "마지막 세 번째 시험은 ‘희생의 시련’이었다. 에올루스가 제단의 거대한 번개 룬을 가동하자, 하늘에서 벼락같은 심판의 뇌전이 카단의 정수리를 향해 내리꽂히려 했다. 그것은 한 사람의 목숨을 온전히 바쳐야만 멈추는 치명적인 징벌의 뇌격이었다. 뇌운이 소용돌이치며 푸른 벼락이 허공을 찢었다. 그 절체절명의 순간, 뒤에서 달려온 이그니스가 카단의 옆으로 뛰어들었다. 무기를 버렸던 이그니스는 자신의 맨몸으로 뇌전을 가로막으며, 순백의 화염으로 거대한 결계막을 펼쳤다.",
-      "sourceSentenceStart": 29,
-      "sourceSentenceEnd": 31,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "내레이션",
-          "speakerEn": "Narration",
-          "textKo": "무기를 버렸던 이그니스는 자신의 맨몸으로 뇌전을 가로막으며, 순백의 화염으로 거대한 결계막을 펼쳤다.",
-          "textEn": "If blood must atone for imperial crimes, let mine be the first to fall!\"",
-          "bubbleType": "thought",
-          "position": "top-left",
-          "characterCardId": 25
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
-        },
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 14,
-      "imageFile": "episode_19/scene_14.webp",
-      "sourceImageFile": "episode_19/scene_14.webp",
-      "narrationEn": "Cilia raised her Jade Staff, layering an azure gale barrier over their heads. \"Father! If your blade remains blind to the truth, let it strike through my heart first!\"",
-      "narrationKo": "“내 형제를 홀로 죽게 내버려 둘 순 없다! 죗값을 치러야 한다면 황실의 기사였던 내가 먼저 받겠다!” 실리아 역시 녹옥 지팡이를 높이 쳐들며 청록색 바람의 방벽을 두 사람의 머리 위에 겹쳐 올렸다.",
-      "sourceSentenceStart": 32,
-      "sourceSentenceEnd": 33,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "이그니스",
-          "speakerEn": "Ignis",
-          "textKo": "“내 형제를 홀로 죽게 내버려 둘 순 없다! 죗값을 치러야 한다면 황실의 기사였던 내가 먼저 받겠다!”",
-          "textEn": "“Father! If your blade remains blind to the truth, let it strike through my heart first!”",
-          "bubbleType": "shout",
           "position": "bottom-left",
-          "characterCardId": 11
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
@@ -487,21 +105,21 @@
       ]
     },
     {
-      "sceneNumber": 15,
-      "imageFile": "episode_19/scene_15.webp",
-      "sourceImageFile": "episode_19/scene_15.webp",
-      "narrationEn": "Shoulder to shoulder, the three youths braced against the descending thunderbolt. Fire, light, and wind fused into a blinding supernova across the altar. The devastating stroke broke upon their unified barrier, dissolving into harmless sparks. In the quiet that followed, only their ragged breathing stirred the heights. The great storm blade slipped from Aeolus's fingers, clattering upon the stones. The gray film clouding his eyes washed away in tears. Stumbling forward, the king cradled Cilia's face in trembling hands.",
-      "narrationKo": "“아버지! 진실을 보지 못하는 맹목적인 칼날이라면, 제 심장을 먼저 꿰뚫으세요!” 세 젊은이가 어깨를 맞댄 채 서로를 감싸 안으며 쏟아지는 뇌격을 온몸으로 받아냈다. 빛과 불꽃, 바람이 하나로 어우러지며 제단을 눈부시게 밝힌 순간, 에올루스의 검끝이 허공에서 멈추었다. 뇌전이 힘을 잃고 흩어지며 제단에는 세 사람의 거친 숨소리만이 감돌았다. 동료를 위해 목숨을 던지는 세 사람의 숭고한 유대가 제단을 감싸고 있었다.",
-      "sourceSentenceStart": 34,
-      "sourceSentenceEnd": 35,
+      "sceneNumber": 4,
+      "imageFile": "episode_19/scene_04.webp",
+      "sourceImageFile": "episode_19/scene_04.webp",
+      "narrationEn": "Leveling his storm blade, Aeolus bellowed in a voice hoarse with pain. \"None shall cross this bridge!",
+      "narrationKo": "백발이 성성한 국왕의 두 눈은 깊은 슬픔과 제피르가 걸어둔 환영 마법에 깊이 잠식되어 푸른빛 대신 탁한 잿빛으로 흐려져 있었다. 손에 쥔 거대한 폭풍의 대검에서는 서슬 퍼런 뇌전이 튀었다.",
+      "sourceSentenceStart": 4,
+      "sourceSentenceEnd": 4,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“아버지! 진실을 보지 못하는 맹목적인 칼날이라면, 제 심장을 먼저 꿰뚫으세요!”",
-          "textEn": "“Father! If your blade remains blind to the truth, let it strike through my heart first!”",
-          "bubbleType": "shout",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "손에 쥔 거대한 폭풍의 대검에서는 서슬 퍼런 뇌전이 튀었다.",
+          "textEn": "\"None shall cross this bridge!",
+          "bubbleType": "thought",
           "position": "bottom-right",
           "characterCardId": 62
         }
@@ -514,30 +132,152 @@
           "position": "top-right"
         },
         {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
         }
       ]
     },
     {
-      "sceneNumber": 16,
-      "imageFile": "episode_19/scene_16.webp",
-      "sourceImageFile": "episode_19/scene_16.webp",
-      "narrationEn": "\"Cilia... My precious daughter... I was blinded by sorrow, dancing like a fool to a traitor's whispers... In the eyes of these youths shielding one another, the dream of peace once shared by Sylphid and Aleksandar lives still...\" Kneeling, Aeolus grasped Kadan's calloused hands.",
-      "narrationKo": "에올루스의 손에서 폭풍의 대검이 맥없이 바닥으로 떨어졌다. 국왕의 잿빛 눈동자에서 마침내 제피르의 환영 안개가 완전히 걷히고, 맑은 눈물이 흘러내렸다. 에올루스는 비틀거리며 다가와 실리아의 뺨을 떨리는 손으로 어루만졌다. “실리아... 내 딸아... 내가 오랜 슬픔에 눈이 멀어 역적의 혓바닥에 놀아나고 있었구나... 서로의 등을 지켜주는 저 아이들의 눈빛 속에, 과거 실피드와 알렉산다르가 꿈꾸었던 평화의 불씨가 살아 숨 쉬고 있었거늘...” 에올루스는 무릎을 꿇고 카단의 거친 손을 두 손으로 감싸 쥐었다.",
-      "sourceSentenceStart": 36,
-      "sourceSentenceEnd": 38,
+      "sceneNumber": 5,
+      "imageFile": "episode_19/scene_05.webp",
+      "sourceImageFile": "episode_19/scene_05.webp",
+      "narrationEn": "I will never permit the heir of the treacherous Holy Knights who butchered my beloved Sylphid, nor the wayward princess who consorts with our foes, to desecrate the sanctuary!\" Stepping forward with the Jade Staff, Cilia pleaded through falling tears.",
+      "narrationKo": "에올루스가 대검을 겨누며 갈라진 목소리로 포효했다. “누구도 이 다리를 건널 수 없다! 아내 실피드를 비열하게 살해한 성기사단의 후예와, 어미의 원수와 손을 잡은 배신자 왕녀를 결코 결계탑 안으로 들일 수 없다!”",
+      "sourceSentenceStart": 5,
+      "sourceSentenceEnd": 5,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "에올루스",
           "speakerEn": "Aeolus",
-          "textKo": "“실리아... 내 딸아... 내가 오랜 슬픔에 눈이 멀어 역적의 혓바닥에 놀아나고 있었구나... 서로의 등을 지켜주는 저 아이들의 눈빛 속에, 과거 실피드와 알렉산다르가 꿈꾸었던 평화의 불씨가 살아 숨 쉬고 있었거늘...”",
-          "textEn": "“Cilia... My precious daughter... I was blinded by sorrow, dancing like a fool to a traitor's whispers... In the eyes of these youths shielding one another, the dream of peace once shared by Sylphid and Aleksandar lives still...”",
+          "textKo": "“누구도 이 다리를 건널 수 없다! 아내 실피드를 비열하게 살해한 성기사단의 후예와, 어미의 원수와 손을 잡은 배신자 왕녀를 결코 결계탑 안으로 들일 수 없다!”",
+          "textEn": "“I will never permit the heir of the treacherous Holy Knights who butchered my beloved Sylphid, nor the wayward princess who consorts with our foes, to desecrate the sanctuary!\" Stepping forward with the Jade Staff, Cilia pleaded through falling tears.”",
+          "bubbleType": "shout",
+          "position": "top-right",
+          "characterCardId": 25
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_19/scene_06.webp",
+      "sourceImageFile": "episode_19/scene_06.webp",
+      "narrationEn": "\"Father, look upon me! Look at mother's staff in my hands and this living memory crystal!",
+      "narrationKo": "실리아가 녹옥 지팡이를 들고 앞으로 나서며 눈물로 호소했다.",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 6,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "실리아가 녹옥 지팡이를 들고 앞으로 나서며 눈물로 호소했다.",
+          "textEn": "Look at mother's staff in my hands and this living memory crystal!",
           "bubbleType": "thought",
-          "position": "top-left",
+          "position": "top-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_19/scene_07.webp",
+      "sourceImageFile": "episode_19/scene_07.webp",
+      "narrationEn": "It was not the Holy Knights who took mother's life, but High Elder Zephyr, who poisoned her cup in treasonous collusion with the imperial court!\"",
+      "narrationKo": "“아버지! 제발 눈을 뜨세요! 제 손에 들린 어머니의 지팡이와 이 기억 수정을 보세요! 어머니를 죽인 것은 성기사단이 아니라, 황실과 손을 잡고 왕권을 탐낸 제피르 대장로예요!”",
+      "sourceSentenceStart": 7,
+      "sourceSentenceEnd": 7,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“아버지! 제발 눈을 뜨세요! 제 손에 들린 어머니의 지팡이와 이 기억 수정을 보세요! 어머니를 죽인 것은 성기사단이 아니라, 황실과 손을 잡고 왕권을 탐낸 제피르 대장로예요!”",
+          "textEn": "“It was not the Holy Knights who took mother's life, but High Elder Zephyr, who poisoned her cup in treasonous collusion with the imperial court!\"”",
+          "bubbleType": "shout",
+          "position": "bottom-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_19/scene_08.webp",
+      "sourceImageFile": "episode_19/scene_08.webp",
+      "narrationEn": "Clutching his temples in agony, Aeolus refused to lower his guard. \"Vile deceptions!",
+      "narrationKo": "에올루스는 고통스러운 듯 이마를 감싸 쥐면서도 대검의 서슬을 낮추지 않았다.",
+      "sourceSentenceStart": 8,
+      "sourceSentenceEnd": 8,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "에올루스는 고통스러운 듯 이마를 감싸 쥐면서도 대검의 서슬을 낮추지 않았다.",
+          "textEn": "\"Vile deceptions!",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 25
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_19/scene_09.webp",
+      "sourceImageFile": "episode_19/scene_09.webp",
+      "narrationEn": "Zephyr testified before the council that the silver dagger of the Holy Order pierced my queen's heart! If the youth beside you is truly innocent, let him brave my three trials to prove his purity of purpose!\"",
+      "narrationKo": "“사악한 속임수다! 성기사의 은빛 단검이 내 아내의 심장을 찔렀다는 제피르의 증언을 내 어찌 의심하겠느냐! 네 곁에 선 청년이 진정 결백하다면, 내 세 가지 시험을 통과하여 그 굳은 신념을 증명해 보아라!”",
+      "sourceSentenceStart": 9,
+      "sourceSentenceEnd": 9,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "에올루스",
+          "speakerEn": "Aeolus",
+          "textKo": "“사악한 속임수다! 성기사의 은빛 단검이 내 아내의 심장을 찔렀다는 제피르의 증언을 내 어찌 의심하겠느냐! 네 곁에 선 청년이 진정 결백하다면, 내 세 가지 시험을 통과하여 그 굳은 신념을 증명해 보아라!”",
+          "textEn": "“Zephyr testified before the council that the silver dagger of the Holy Order pierced my queen's heart! If the youth beside you is truly innocent, let him brave my three trials to prove his purity of purpose!\"”",
+          "bubbleType": "shout",
+          "position": "top-right",
           "characterCardId": 25
         }
       ],
@@ -557,23 +297,23 @@
       ]
     },
     {
-      "sceneNumber": 17,
-      "imageFile": "episode_19/scene_17.webp",
-      "sourceImageFile": "episode_19/scene_17.webp",
-      "narrationEn": "\"Young knight, your shield has opened my blind eyes. Sir Aleksandar's noble spirit smiles proudly within you.\" Wiping her tears, Cilia supported her father.",
-      "narrationKo": "“젊은 기사여, 그대의 방패가 내 어두운 눈을 틔워주었소. 알렉산다르 경의 영혼이 그대 안에서 자랑스럽게 미소 짓고 있을 것이오.” 실리아가 눈물을 닦으며 아버지를 부축했다.",
-      "sourceSentenceStart": 39,
-      "sourceSentenceEnd": 40,
+      "sceneNumber": 10,
+      "imageFile": "episode_19/scene_10.webp",
+      "sourceImageFile": "episode_19/scene_10.webp",
+      "narrationEn": "Planting his boots firmly, Kadan raised his unadorned iron shield to chest height. \"I will not shrink from any trial.",
+      "narrationKo": "카단이 한 걸음 앞으로 나서며 무쇠 방패를 가슴 높이로 굳건히 들어 올렸다.",
+      "sourceSentenceStart": 10,
+      "sourceSentenceEnd": 10,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "에올루스",
-          "speakerEn": "Aeolus",
-          "textKo": "“젊은 기사여, 그대의 방패가 내 어두운 눈을 틔워주었소. 알렉산다르 경의 영혼이 그대 안에서 자랑스럽게 미소 짓고 있을 것이오.”",
-          "textEn": "“Young knight, your shield has opened my blind eyes. Sir Aleksandar's noble spirit smiles proudly within you.”",
-          "bubbleType": "speech",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단이 한 걸음 앞으로 나서며 무쇠 방패를 가슴 높이로 굳건히 들어 올렸다.",
+          "textEn": "\"I will not shrink from any trial.",
+          "bubbleType": "thought",
           "position": "top-right",
-          "characterCardId": 25
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
@@ -586,23 +326,23 @@
       ]
     },
     {
-      "sceneNumber": 18,
-      "imageFile": "episode_19/scene_18.webp",
-      "sourceImageFile": "episode_19/scene_18.webp",
-      "narrationEn": "\"Father, we must halt the spire's collapse! Zephyr is channeling the Nine Shadows Codex!\" Aeolus pointed toward the inner bronze doors with grim urgency. \"Make haste! Zephyr has inverted the mana flows to awaken the abyssal depths! Before the black tsunami drowns the island, race to the core!\"",
-      "narrationKo": "“아버지, 어서 결계탑의 폭주를 막아야 해요. 제피르가 나인섀도우 코덱스를 가동하고 있어요!” 에올루스가 비장한 표정으로 결계탑의 문을 가리켰다.",
-      "sourceSentenceStart": 41,
-      "sourceSentenceEnd": 42,
+      "sceneNumber": 11,
+      "imageFile": "episode_19/scene_11.webp",
+      "sourceImageFile": "episode_19/scene_11.webp",
+      "narrationEn": "If crossing this bridge can vindicate Master Aleksandar and prove Cilia's truth, I wager my life upon this stone.\" Ignis gripped Kadan's shoulder with solemn urgency.",
+      "narrationKo": "“어떤 시련이든 피하지 않겠습니다. 알렉산다르 스승님의 결백과 실리아의 진심을 증명할 수 있다면, 제 목숨을 걸고 이 다리를 건너겠습니다.”",
+      "sourceSentenceStart": 11,
+      "sourceSentenceEnd": 11,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“아버지, 어서 결계탑의 폭주를 막아야 해요. 제피르가 나인섀도우 코덱스를 가동하고 있어요!”",
-          "textEn": "“Father, we must halt the spire's collapse! Zephyr is channeling the Nine Shadows Codex!”",
-          "bubbleType": "shout",
-          "position": "bottom-left",
-          "characterCardId": 62
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“어떤 시련이든 피하지 않겠습니다. 알렉산다르 스승님의 결백과 실리아의 진심을 증명할 수 있다면, 제 목숨을 걸고 이 다리를 건너겠습니다.”",
+          "textEn": "“If crossing this bridge can vindicate Master Aleksandar and prove Cilia's truth, I wager my life upon this stone.\" Ignis gripped Kadan's shoulder with solemn urgency.”",
+          "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
@@ -615,31 +355,517 @@
       ]
     },
     {
+      "sceneNumber": 12,
+      "imageFile": "episode_19/scene_12.webp",
+      "sourceImageFile": "episode_19/scene_12.webp",
+      "narrationEn": "\"Stay sharp, Kadan.",
+      "narrationKo": "이그니스가 카단의 어깨를 잡으며 경고했다. “조심해라, 카단. 에올루스 왕의 폭풍검은 황궁의 기사단장들조차 일격에 베어 넘기는 일국의 신기(神器)다.”",
+      "sourceSentenceStart": 12,
+      "sourceSentenceEnd": 12,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“조심해라, 카단. 에올루스 왕의 폭풍검은 황궁의 기사단장들조차 일격에 베어 넘기는 일국의 신기(神器)다.”",
+          "textEn": "“\"Stay sharp, Kadan.”",
+          "bubbleType": "speech",
+          "position": "top-left",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_19/scene_13.webp",
+      "sourceImageFile": "episode_19/scene_13.webp",
+      "narrationEn": "King Aeolus's storm blade is a divine relic of the winds, capable of cleaving imperial knights in twain with a single stroke.\" The first trial was the Trial of the Gale.",
+      "narrationKo": "바람 속삭임 섬의 전설에 따르면 하늘 석교를 건너지 못한 자는 영원히 대기의 미아가 되어 허공을 떠돈다고 전해졌다. 카단은 그 전설을 떠올리며 방패의 무게중심을 다시 한번 낮추었다.",
+      "sourceSentenceStart": 13,
+      "sourceSentenceEnd": 13,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단은 그 전설을 떠올리며 방패의 무게중심을 다시 한번 낮추었다.",
+          "textEn": "King Aeolus's storm blade is a divine relic of the winds, capable of cleaving imperial knights in twain with a single stroke.\" The first trial was the Trial of the Gale.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_19/scene_14.webp",
+      "sourceImageFile": "episode_19/scene_14.webp",
+      "narrationEn": "With a sweeping gesture from Aeolus, thousands of razor-sharp wind blades erupted across the bridge, churning the air with deafening shrieks. The kinetic pressure was fierce enough to pulverize granite, while beneath the narrow span lay an abyss plunging straight into the ocean depths.",
+      "narrationKo": "첫 번째 시험은 ‘질풍의 시련’이었다. 에올루스가 검을 휘두르자 하늘 석교 위로 살점을 도려낼 듯한 수천 자루의 바람 칼날이 소용돌이치며 쏟아져 내렸다.",
+      "sourceSentenceStart": 14,
+      "sourceSentenceEnd": 14,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "에올루스가 검을 휘두르자 하늘 석교 위로 살점을 도려낼 듯한 수천 자루의 바람 칼날이 소용돌이치며 쏟아져 내렸다.",
+          "textEn": "The kinetic pressure was fierce enough to pulverize granite, while beneath the narrow span lay an abyss plunging straight into the ocean depths.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 25
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_19/scene_15.webp",
+      "sourceImageFile": "episode_19/scene_15.webp",
+      "narrationEn": "A glancing gale sheared Kadan's cheek, drawing crimson blood. Yet Kadan drew no weapon.",
+      "narrationKo": "폭풍의 압력은 바위마저 가루로 만들 기세였고, 다리 밑은 떨어지면 시신조차 찾을 수 없는 천 길 낭떠러지였다. 칼날 같은 돌풍이 카단의 볼을 스치며 피를 뿜어냈다.",
+      "sourceSentenceStart": 15,
+      "sourceSentenceEnd": 15,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "칼날 같은 돌풍이 카단의 볼을 스치며 피를 뿜어냈다.",
+          "textEn": "Yet Kadan drew no weapon.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_19/scene_16.webp",
+      "sourceImageFile": "episode_19/scene_16.webp",
+      "narrationEn": "Bracing his unadorned iron shield, he drew star-breathing deep into his lungs.",
+      "narrationKo": "카단은 칼을 뽑지 않고, 오직 무쇠 방패 하나만을 앞세운 채 별의 호흡을 폐부 깊숙이 끌어올렸다.",
+      "sourceSentenceStart": 16,
+      "sourceSentenceEnd": 16,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단은 칼을 뽑지 않고, 오직 무쇠 방패 하나만을 앞세운 채 별의 호흡을 폐부 깊숙이 끌어올렸다.",
+          "textEn": "Bracing his unadorned iron shield, he drew star-breathing deep into his lungs.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_19/scene_17.webp",
+      "sourceImageFile": "episode_19/scene_17.webp",
+      "narrationEn": "\"Master Aleksandar taught me never to fight the gale, but to embrace its flow through the unyielding weight of the earth.\" Angling the face of his shield at forty-five degrees, Kadan deflected the tempest's fury into the empty air.",
+      "narrationKo": "“알렉산다르 스승님께서는 바람을 거스르려 하지 말고, 대지의 무게로 바람의 결을 품으라고 가르치셨다.”",
+      "sourceSentenceStart": 17,
+      "sourceSentenceEnd": 17,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“알렉산다르 스승님께서는 바람을 거스르려 하지 말고, 대지의 무게로 바람의 결을 품으라고 가르치셨다.”",
+          "textEn": "“Master Aleksandar taught me never to fight the gale, but to embrace its flow through the unyielding weight of the earth.”",
+          "bubbleType": "speech",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_19/scene_18.webp",
+      "sourceImageFile": "episode_19/scene_18.webp",
+      "narrationEn": "Wind blades shrieked violently against the iron rim, yet Kadan advanced step by steady step across the stones. Blood seeped through his sleeves where veins strained under the pressure, yet his eyes remained as tranquil as a frozen northern tarn.",
+      "narrationKo": "카단은 방패의 각도를 45도로 비스듬히 기울이며 폭풍의 압력을 허공으로 흘려보냈다.",
+      "sourceSentenceStart": 18,
+      "sourceSentenceEnd": 18,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단은 방패의 각도를 45도로 비스듬히 기울이며 폭풍의 압력을 허공으로 흘려보냈다.",
+          "textEn": "Blood seeped through his sleeves where veins strained under the pressure, yet his eyes remained as tranquil as a frozen northern tarn.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
       "sceneNumber": 19,
       "imageFile": "episode_19/scene_19.webp",
       "sourceImageFile": "episode_19/scene_19.webp",
-      "narrationEn": "Kadan adjusted his shield with solemn resolve. \"Though the tides rise to the heavens, this shield will never yield.\"",
-      "narrationKo": "“서둘러라! 제피르가 이미 결계탑의 마나를 역류시켜 대해의 심연을 깨우고 있다. 거대한 해일이 섬을 삼키기 전에 탑의 중심부로 가거라!” 카단이 방패를 고쳐 쥐며 고개를 끄덕였다. “대해의 파도가 아무리 거칠어도, 우리의 방패는 물러서지 않을 것입니다.”",
-      "sourceSentenceStart": 43,
-      "sourceSentenceEnd": 45,
+      "narrationEn": "He pressed forward like an immovable iron monolith cleaving the storm. Halting midway across the bridge, Kadan stood firm, shaking Aeolus to his soul.",
+      "narrationKo": "날카로운 바람 칼날들이 방패 표면을 때리며 쩌정하는 굉음을 냈지만, 카단의 발걸음은 한 치의 흔들림도 없이 석교 위를 한 걸음씩 굳건히 디뎌 나갔다.",
+      "sourceSentenceStart": 19,
+      "sourceSentenceEnd": 19,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "날카로운 바람 칼날들이 방패 표면을 때리며 쩌정하는 굉음을 냈지만, 카단의 발걸음은 한 치의 흔들림도 없이 석교 위를 한 걸음씩 굳건히 디뎌 나갔다.",
+          "textEn": "Halting midway across the bridge, Kadan stood firm, shaking Aeolus to his soul.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_19/scene_20.webp",
+      "sourceImageFile": "episode_19/scene_20.webp",
+      "narrationEn": "\"To advance without unsheathing steel, taking the storm upon his own flesh... That grounded posture and that impenetrable guard...",
+      "narrationKo": "무쇠 방패를 쥔 팔의 근육이 비틀리고 핏줄이 터져 나왔지만, 카단의 눈빛은 한겨울 얼어붙은 호수처럼 고요했다. 폭풍 속을 뚫고 전진하는 청년의 모습은 거친 파도를 가르는 흑철 바위 같았다.",
+      "sourceSentenceStart": 20,
+      "sourceSentenceEnd": 20,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "폭풍 속을 뚫고 전진하는 청년의 모습은 거친 파도를 가르는 흑철 바위 같았다.",
+          "textEn": "That grounded posture and that impenetrable guard...",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 21,
+      "imageFile": "episode_19/scene_21.webp",
+      "sourceImageFile": "episode_19/scene_21.webp",
+      "narrationEn": "It is beyond question the peerless art of Aleksandar.\"",
+      "narrationKo": "마침내 다리 절반을 건너선 카단을 보며 에올루스의 눈이 크게 흔들렸다.",
+      "sourceSentenceStart": 21,
+      "sourceSentenceEnd": 21,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "마침내 다리 절반을 건너선 카단을 보며 에올루스의 눈이 크게 흔들렸다.",
+          "textEn": "It is beyond question the peerless art of Aleksandar.\"",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 22,
+      "imageFile": "episode_19/scene_22.webp",
+      "sourceImageFile": "episode_19/scene_22.webp",
+      "narrationEn": "The second trial was the Trial of Memory. The moment Kadan set foot on the center of the span, Aeolus's arcane illusion erupted, transfiguring the altar into the flaming ruins of the Elwin estate in the north.",
+      "narrationKo": "“칼을 뽑아 폭풍을 베지 않고, 오직 제 몸으로 바람의 무게를 받아내며 나아간단 말인가... 저 우직한 하체와 대지를 품은 방패술은... 틀림없는 알렉산다르의 기예로구나.”",
+      "sourceSentenceStart": 22,
+      "sourceSentenceEnd": 22,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "에올루스",
           "speakerEn": "Aeolus",
-          "textKo": "“서둘러라! 제피르가 이미 결계탑의 마나를 역류시켜 대해의 심연을 깨우고 있다. 거대한 해일이 섬을 삼키기 전에 탑의 중심부로 가거라!”",
-          "textEn": "“Make haste! Zephyr has inverted the mana flows to awaken the abyssal depths! Before the black tsunami drowns the island, race to the core!”",
-          "bubbleType": "shout",
-          "position": "bottom-right",
+          "textKo": "“칼을 뽑아 폭풍을 베지 않고, 오직 제 몸으로 바람의 무게를 받아내며 나아간단 말인가... 저 우직한 하체와 대지를 품은 방패술은... 틀림없는 알렉산다르의 기예로구나.”",
+          "textEn": "“The second trial was the Trial of Memory. The moment Kadan set foot on the center of the span, Aeolus's arcane illusion erupted, transfiguring the altar into the flaming ruins of the Elwin estate in the north.”",
+          "bubbleType": "thought",
+          "position": "bottom-left",
           "characterCardId": 25
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
         },
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“대해의 파도가 아무리 거칠어도, 우리의 방패는 물러서지 않을 것입니다.”",
-          "textEn": "“Though the tides rise to the heavens, this shield will never yield.”",
-          "bubbleType": "speech",
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 23,
+      "imageFile": "episode_19/scene_23.webp",
+      "sourceImageFile": "episode_19/scene_23.webp",
+      "narrationEn": "Before Kadan's eyes rose the slaughter of his childhood: village elders cut down and his parents' dying cries echoing through the smoke. From the shadows coiling around the stones hissed a serpentine voice: 'Hate this corrupt world.",
+      "narrationKo": "두 번째 시험은 ‘기억의 시련’이었다. 카단이 석교 중앙에 발을 딛는 순간, 에올루스의 환영 마법이 폭발하며 주변의 풍경이 순식간에 불타는 북방 엘윈 영지로 뒤바뀌었다.",
+      "sourceSentenceStart": 23,
+      "sourceSentenceEnd": 23,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단이 석교 중앙에 발을 딛는 순간, 에올루스의 환영 마법이 폭발하며 주변의 풍경이 순식간에 불타는 북방 엘윈 영지로 뒤바뀌었다.",
+          "textEn": "From the shadows coiling around the stones hissed a serpentine voice: 'Hate this corrupt world.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 24,
+      "imageFile": "episode_19/scene_24.webp",
+      "sourceImageFile": "episode_19/scene_24.webp",
+      "narrationEn": "Draw your blade and burn the empire and the wind kingdom in retribution. Avenge the blood stolen from you.'",
+      "narrationKo": "카단의 눈앞에 피를 흘리며 쓰러져 가는 마을 주민들과, 제국군에게 목숨을 잃던 부모님의 마지막 비명이 생생한 악몽이 되어 덮쳐왔다. 허공에서 검은 그림자가 뱀처럼 똬리를 틀며 속삭였다.",
+      "sourceSentenceStart": 24,
+      "sourceSentenceEnd": 24,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "허공에서 검은 그림자가 뱀처럼 똬리를 틀며 속삭였다.",
+          "textEn": "Avenge the blood stolen from you.'",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 25,
+      "imageFile": "episode_19/scene_25.webp",
+      "sourceImageFile": "episode_19/scene_25.webp",
+      "narrationEn": "Violent fury and grief constricted Kadan's throat, tempting him to draw his steel and butcher the phantoms.",
+      "narrationKo": "‘세상을 증오해라. 네 손에 든 무기로 황실과 바람섬의 모든 것을 불태워 복수해라. 너를 버린 세상을 향해 검을 휘둘러라.’",
+      "sourceSentenceStart": 25,
+      "sourceSentenceEnd": 25,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "너를 버린 세상을 향해 검을 휘둘러라.’",
+          "textEn": "Violent fury and grief constricted Kadan's throat, tempting him to draw his steel and butcher the phantoms.",
+          "bubbleType": "thought",
           "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 26,
+      "imageFile": "episode_19/scene_26.webp",
+      "sourceImageFile": "episode_19/scene_26.webp",
+      "narrationEn": "Yet Kadan gripped the scarlet ribbon bound to his silver dagger, breathing out a steady, measured breath. \"My shield was never forged for bloody vengeance.",
+      "narrationKo": "맹렬한 분노와 살기가 카단의 폐부를 짓눌렀다. 단검을 뽑아 눈앞의 모든 환영을 베어버리고 싶은 충동이 영혼을 뒤흔들었다.",
+      "sourceSentenceStart": 26,
+      "sourceSentenceEnd": 26,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "단검을 뽑아 눈앞의 모든 환영을 베어버리고 싶은 충동이 영혼을 뒤흔들었다.",
+          "textEn": "\"My shield was never forged for bloody vengeance.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 27,
+      "imageFile": "episode_19/scene_27.webp",
+      "sourceImageFile": "episode_19/scene_27.webp",
+      "narrationEn": "It exists to protect the fragile warmth of those shivering behind me, to halt the cycle of tragedy forever!\" With a decisive thrust of his shield, Kadan shattered the phantom mist.",
+      "narrationKo": "하지만 카단은 품속에서 은빛 단검의 붉은 매듭을 꽉 쥐며 깊은 숨을 내쉬었다.",
+      "sourceSentenceStart": 27,
+      "sourceSentenceEnd": 27,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "하지만 카단은 품속에서 은빛 단검의 붉은 매듭을 꽉 쥐며 깊은 숨을 내쉬었다.",
+          "textEn": "It exists to protect the fragile warmth of those shivering behind me, to halt the cycle of tragedy forever!\" With a decisive thrust of his shield, Kadan shattered the phantom mist.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
           "characterCardId": 41
         }
       ],
@@ -659,22 +885,272 @@
       ]
     },
     {
-      "sceneNumber": 20,
-      "imageFile": "episode_19/scene_20.webp",
-      "sourceImageFile": "episode_19/scene_20.webp",
-      "narrationEn": "Blessed by the sovereign of the winds, the three companions sprinted boldly into the core of the raging spire. King Aeolus draped his mantle of royal azure feathers around Cilia's shoulders. \"This mantle was the cherished legacy bequeathed by your mother Sylphid. Step forward now as the true sovereign of the winds, and lead our people into the dawn.\" Cilia fastened the golden brooch, bowing deeply before her father.",
-      "narrationKo": "세 젊은이는 에올루스의 축복을 받으며, 폭주하는 결계탑의 심장부를 향해 전력으로 달려 들어갔다. 에올루스 국왕이 자신의 어깨에 둘렀던 푸른 깃털 망토를 벗어 실리아의 어깨에 걸쳐주었다. “이 망토는 네 어미 실피드가 물려준 왕가의 유산이다. 이제 네가 바람의 참된 주인이 되어 백성들을 이끌어다오.” 실리아는 망토의 매듭을 묶으며 고개를 깊이 숙였다.",
-      "sourceSentenceStart": 46,
-      "sourceSentenceEnd": 47,
+      "sceneNumber": 28,
+      "imageFile": "episode_19/scene_28.webp",
+      "sourceImageFile": "episode_19/scene_28.webp",
+      "narrationEn": "The dark mirage fractured like brittle glass, returning the pristine light of the Sky Altar. Staring at the young warrior who refused to surrender to hatred, Aeolus fell speechless.",
+      "narrationKo": "“내 방패는 피의 복수를 위해 쥔 것이 아니다. 등 뒤에서 추위에 떨고 있는 사람들의 따스한 온기를 지키기 위해, 더 이상의 비극을 막기 위해 서 있는 것이다!”",
+      "sourceSentenceStart": 28,
+      "sourceSentenceEnd": 28,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“이 망토는 네 어미 실피드가 물려준 왕가의 유산이다. 이제 네가 바람의 참된 주인이 되어 백성들을 이끌어다오.”",
-          "textEn": "“This mantle was the cherished legacy bequeathed by your mother Sylphid. Step forward now as the true sovereign of the winds, and lead our people into the dawn.”",
-          "bubbleType": "speech",
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“내 방패는 피의 복수를 위해 쥔 것이 아니다. 등 뒤에서 추위에 떨고 있는 사람들의 따스한 온기를 지키기 위해, 더 이상의 비극을 막기 위해 서 있는 것이다!”",
+          "textEn": "“The dark mirage fractured like brittle glass, returning the pristine light of the Sky Altar. Staring at the young warrior who refused to surrender to hatred, Aeolus fell speechless.”",
+          "bubbleType": "shout",
           "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 29,
+      "imageFile": "episode_19/scene_29.webp",
+      "sourceImageFile": "episode_19/scene_29.webp",
+      "narrationEn": "\"He broke the nightmare not through wrath... but solely through the resolve to protect...\" The final trial was the Trial of Sacrifice.",
+      "narrationKo": "카단이 방패를 앞으로 힘차게 내지르며 환영의 안개를 깨뜨렸다. 어둠의 환영이 거울 조각처럼 부서져 나가며 맑은 하늘 제단의 풍경이 되돌아왔다.",
+      "sourceSentenceStart": 29,
+      "sourceSentenceEnd": 29,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "어둠의 환영이 거울 조각처럼 부서져 나가며 맑은 하늘 제단의 풍경이 되돌아왔다.",
+          "textEn": "but solely through the resolve to protect...\" The final trial was the Trial of Sacrifice.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 30,
+      "imageFile": "episode_19/scene_30.webp",
+      "sourceImageFile": "episode_19/scene_30.webp",
+      "narrationEn": "As Aeolus invoked the central lightning glyphs, a colossal thunderbolt formed in the clouds, crackling with righteous execution.",
+      "narrationKo": "증오에 굴복하지 않고 수호의 의지를 증명해 낸 카단의 당당한 모습에 에올루스는 말을 잇지 못했다.",
+      "sourceSentenceStart": 30,
+      "sourceSentenceEnd": 30,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "증오에 굴복하지 않고 수호의 의지를 증명해 낸 카단의 당당한 모습에 에올루스는 말을 잇지 못했다.",
+          "textEn": "As Aeolus invoked the central lightning glyphs, a colossal thunderbolt formed in the clouds, crackling with righteous execution.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 31,
+      "imageFile": "episode_19/scene_31.webp",
+      "sourceImageFile": "episode_19/scene_31.webp",
+      "narrationEn": "It was a lethal judgment designed to cease only when an intruder's life was consumed. In that fatal instant, Ignis vaulted across the stones, throwing his unarmored body beside Kadan.",
+      "narrationKo": "에올루스가 떨리는 목소리로 중얼거렸다. “복수심에 눈이 멀지 않고... 오직 지키려는 마음으로 환영을 부수었단 말인가...”",
+      "sourceSentenceStart": 31,
+      "sourceSentenceEnd": 31,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "에올루스",
+          "speakerEn": "Aeolus",
+          "textKo": "“복수심에 눈이 멀지 않고... 오직 지키려는 마음으로 환영을 부수었단 말인가...”",
+          "textEn": "“It was a lethal judgment designed to cease only when an intruder's life was consumed. In that fatal instant, Ignis vaulted across the stones, throwing his unarmored body beside Kadan.”",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 25
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 32,
+      "imageFile": "episode_19/scene_32.webp",
+      "sourceImageFile": "episode_19/scene_32.webp",
+      "narrationEn": "Conjuring his immaculate white flame, he erected a radiant dome of pure fire. \"I will not let my brother perish alone!",
+      "narrationKo": "마지막 세 번째 시험은 ‘희생의 시련’이었다.",
+      "sourceSentenceStart": 32,
+      "sourceSentenceEnd": 32,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "마지막 세 번째 시험은 ‘희생의 시련’이었다.",
+          "textEn": "\"I will not let my brother perish alone!",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 25
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 33,
+      "imageFile": "episode_19/scene_33.webp",
+      "sourceImageFile": "episode_19/scene_33.webp",
+      "narrationEn": "If blood must atone for imperial crimes, let mine be the first to fall!\" Cilia raised her Jade Staff, layering an azure gale barrier over their heads.",
+      "narrationKo": "에올루스가 제단의 거대한 번개 룬을 가동하자, 하늘에서 벼락같은 심판의 뇌전이 카단의 정수리를 향해 내리꽂히려 했다. 그것은 한 사람의 목숨을 온전히 바쳐야만 멈추는 치명적인 징벌의 뇌격이었다.",
+      "sourceSentenceStart": 33,
+      "sourceSentenceEnd": 33,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그것은 한 사람의 목숨을 온전히 바쳐야만 멈추는 치명적인 징벌의 뇌격이었다.",
+          "textEn": "If blood must atone for imperial crimes, let mine be the first to fall!\" Cilia raised her Jade Staff, layering an azure gale barrier over their heads.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 25
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 34,
+      "imageFile": "episode_19/scene_34.webp",
+      "sourceImageFile": "episode_19/scene_34.webp",
+      "narrationEn": "\"Father! If your blade remains blind to the truth, let it strike through my heart first!\"",
+      "narrationKo": "뇌운이 소용돌이치며 푸른 벼락이 허공을 찢었다. 그 절체절명의 순간, 뒤에서 달려온 이그니스가 카단의 옆으로 뛰어들었다. 무기를 버렸던 이그니스는 자신의 맨몸으로 뇌전을 가로막으며, 순백의 화염으로 거대한 결계막을 펼쳤다.",
+      "sourceSentenceStart": 34,
+      "sourceSentenceEnd": 34,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "무기를 버렸던 이그니스는 자신의 맨몸으로 뇌전을 가로막으며, 순백의 화염으로 거대한 결계막을 펼쳤다.",
+          "textEn": "If your blade remains blind to the truth, let it strike through my heart first!\"",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 35,
+      "imageFile": "episode_19/scene_35.webp",
+      "sourceImageFile": "episode_19/scene_35.webp",
+      "narrationEn": "Shoulder to shoulder, the three youths braced against the descending thunderbolt.",
+      "narrationKo": "“내 형제를 홀로 죽게 내버려 둘 순 없다! 죗값을 치러야 한다면 황실의 기사였던 내가 먼저 받겠다!”",
+      "sourceSentenceStart": 35,
+      "sourceSentenceEnd": 35,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“내 형제를 홀로 죽게 내버려 둘 순 없다! 죗값을 치러야 한다면 황실의 기사였던 내가 먼저 받겠다!”",
+          "textEn": "“Shoulder to shoulder, the three youths braced against the descending thunderbolt.”",
+          "bubbleType": "shout",
+          "position": "bottom-right",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 36,
+      "imageFile": "episode_19/scene_36.webp",
+      "sourceImageFile": "episode_19/scene_36.webp",
+      "narrationEn": "Fire, light, and wind fused into a blinding supernova across the altar. The devastating stroke broke upon their unified barrier, dissolving into harmless sparks.",
+      "narrationKo": "실리아 역시 녹옥 지팡이를 높이 쳐들며 청록색 바람의 방벽을 두 사람의 머리 위에 겹쳐 올렸다.",
+      "sourceSentenceStart": 36,
+      "sourceSentenceEnd": 36,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "실리아 역시 녹옥 지팡이를 높이 쳐들며 청록색 바람의 방벽을 두 사람의 머리 위에 겹쳐 올렸다.",
+          "textEn": "The devastating stroke broke upon their unified barrier, dissolving into harmless sparks.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
           "characterCardId": 62
         }
       ],
@@ -684,6 +1160,436 @@
           "textEn": "SWOOSH!",
           "style": "slash",
           "position": "top-left"
+        },
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 37,
+      "imageFile": "episode_19/scene_37.webp",
+      "sourceImageFile": "episode_19/scene_37.webp",
+      "narrationEn": "In the quiet that followed, only their ragged breathing stirred the heights. The great storm blade slipped from Aeolus's fingers, clattering upon the stones.",
+      "narrationKo": "“아버지! 진실을 보지 못하는 맹목적인 칼날이라면, 제 심장을 먼저 꿰뚫으세요!”",
+      "sourceSentenceStart": 37,
+      "sourceSentenceEnd": 37,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“아버지! 진실을 보지 못하는 맹목적인 칼날이라면, 제 심장을 먼저 꿰뚫으세요!”",
+          "textEn": "“In the quiet that followed, only their ragged breathing stirred the heights. The great storm blade slipped from Aeolus's fingers, clattering upon the stones.”",
+          "bubbleType": "shout",
+          "position": "top-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 38,
+      "imageFile": "episode_19/scene_38.webp",
+      "sourceImageFile": "episode_19/scene_38.webp",
+      "narrationEn": "The gray film clouding his eyes washed away in tears. Stumbling forward, the king cradled Cilia's face in trembling hands.",
+      "narrationKo": "세 젊은이가 어깨를 맞댄 채 서로를 감싸 안으며 쏟아지는 뇌격을 온몸으로 받아냈다. 빛과 불꽃, 바람이 하나로 어우러지며 제단을 눈부시게 밝힌 순간, 에올루스의 검끝이 허공에서 멈추었다.",
+      "sourceSentenceStart": 38,
+      "sourceSentenceEnd": 38,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "빛과 불꽃, 바람이 하나로 어우러지며 제단을 눈부시게 밝힌 순간, 에올루스의 검끝이 허공에서 멈추었다.",
+          "textEn": "Stumbling forward, the king cradled Cilia's face in trembling hands.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 25
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 39,
+      "imageFile": "episode_19/scene_39.webp",
+      "sourceImageFile": "episode_19/scene_39.webp",
+      "narrationEn": "\"Cilia...",
+      "narrationKo": "뇌전이 힘을 잃고 흩어지며 제단에는 세 사람의 거친 숨소리만이 감돌았다. 동료를 위해 목숨을 던지는 세 사람의 숭고한 유대가 제단을 감싸고 있었다.",
+      "sourceSentenceStart": 39,
+      "sourceSentenceEnd": 39,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "동료를 위해 목숨을 던지는 세 사람의 숭고한 유대가 제단을 감싸고 있었다.",
+          "textEn": "\"Cilia...",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 25
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 40,
+      "imageFile": "episode_19/scene_40.webp",
+      "sourceImageFile": "episode_19/scene_40.webp",
+      "narrationEn": "My precious daughter... I was blinded by sorrow, dancing like a fool to a traitor's whispers...",
+      "narrationKo": "에올루스의 손에서 폭풍의 대검이 맥없이 바닥으로 떨어졌다. 국왕의 잿빛 눈동자에서 마침내 제피르의 환영 안개가 완전히 걷히고, 맑은 눈물이 흘러내렸다.",
+      "sourceSentenceStart": 40,
+      "sourceSentenceEnd": 40,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "국왕의 잿빛 눈동자에서 마침내 제피르의 환영 안개가 완전히 걷히고, 맑은 눈물이 흘러내렸다.",
+          "textEn": "I was blinded by sorrow, dancing like a fool to a traitor's whispers...",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 25
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 41,
+      "imageFile": "episode_19/scene_41.webp",
+      "sourceImageFile": "episode_19/scene_41.webp",
+      "narrationEn": "In the eyes of these youths shielding one another, the dream of peace once shared by Sylphid and Aleksandar lives still...\" Kneeling, Aeolus grasped Kadan's calloused hands.",
+      "narrationKo": "에올루스는 비틀거리며 다가와 실리아의 뺨을 떨리는 손으로 어루만졌다.",
+      "sourceSentenceStart": 41,
+      "sourceSentenceEnd": 41,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "에올루스는 비틀거리며 다가와 실리아의 뺨을 떨리는 손으로 어루만졌다.",
+          "textEn": "In the eyes of these youths shielding one another, the dream of peace once shared by Sylphid and Aleksandar lives still...\" Kneeling, Aeolus grasped Kadan's calloused hands.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 25
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 42,
+      "imageFile": "episode_19/scene_42.webp",
+      "sourceImageFile": "episode_19/scene_42.webp",
+      "narrationEn": "\"Young knight, your shield has opened my blind eyes. Sir Aleksandar's noble spirit smiles proudly within you.\"",
+      "narrationKo": "“실리아... 내 딸아... 내가 오랜 슬픔에 눈이 멀어 역적의 혓바닥에 놀아나고 있었구나... 서로의 등을 지켜주는 저 아이들의 눈빛 속에, 과거 실피드와 알렉산다르가 꿈꾸었던 평화의 불씨가 살아 숨 쉬고 있었거늘...”",
+      "sourceSentenceStart": 42,
+      "sourceSentenceEnd": 42,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "에올루스",
+          "speakerEn": "Aeolus",
+          "textKo": "“실리아... 내 딸아... 내가 오랜 슬픔에 눈이 멀어 역적의 혓바닥에 놀아나고 있었구나... 서로의 등을 지켜주는 저 아이들의 눈빛 속에, 과거 실피드와 알렉산다르가 꿈꾸었던 평화의 불씨가 살아 숨 쉬고 있었거늘...”",
+          "textEn": "“Young knight, your shield has opened my blind eyes. Sir Aleksandar's noble spirit smiles proudly within you.”",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 25
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 43,
+      "imageFile": "episode_19/scene_43.webp",
+      "sourceImageFile": "episode_19/scene_43.webp",
+      "narrationEn": "Wiping her tears, Cilia supported her father. \"Father, we must halt the spire's collapse!",
+      "narrationKo": "에올루스는 무릎을 꿇고 카단의 거친 손을 두 손으로 감싸 쥐었다.",
+      "sourceSentenceStart": 43,
+      "sourceSentenceEnd": 43,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "에올루스는 무릎을 꿇고 카단의 거친 손을 두 손으로 감싸 쥐었다.",
+          "textEn": "\"Father, we must halt the spire's collapse!",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 25
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 44,
+      "imageFile": "episode_19/scene_44.webp",
+      "sourceImageFile": "episode_19/scene_44.webp",
+      "narrationEn": "Zephyr is channeling the Nine Shadows Codex!\"",
+      "narrationKo": "“젊은 기사여, 그대의 방패가 내 어두운 눈을 틔워주었소. 알렉산다르 경의 영혼이 그대 안에서 자랑스럽게 미소 짓고 있을 것이오.”",
+      "sourceSentenceStart": 44,
+      "sourceSentenceEnd": 44,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "에올루스",
+          "speakerEn": "Aeolus",
+          "textKo": "“젊은 기사여, 그대의 방패가 내 어두운 눈을 틔워주었소. 알렉산다르 경의 영혼이 그대 안에서 자랑스럽게 미소 짓고 있을 것이오.”",
+          "textEn": "“Zephyr is channeling the Nine Shadows Codex!\"”",
+          "bubbleType": "speech",
+          "position": "top-left",
+          "characterCardId": 25
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 45,
+      "imageFile": "episode_19/scene_45.webp",
+      "sourceImageFile": "episode_19/scene_45.webp",
+      "narrationEn": "Aeolus pointed toward the inner bronze doors with grim urgency. \"Make haste!",
+      "narrationKo": "실리아가 눈물을 닦으며 아버지를 부축했다. “아버지, 어서 결계탑의 폭주를 막아야 해요. 제피르가 나인섀도우 코덱스를 가동하고 있어요!”",
+      "sourceSentenceStart": 45,
+      "sourceSentenceEnd": 45,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“아버지, 어서 결계탑의 폭주를 막아야 해요. 제피르가 나인섀도우 코덱스를 가동하고 있어요!”",
+          "textEn": "“Aeolus pointed toward the inner bronze doors with grim urgency. \"Make haste!”",
+          "bubbleType": "shout",
+          "position": "top-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 46,
+      "imageFile": "episode_19/scene_46.webp",
+      "sourceImageFile": "episode_19/scene_46.webp",
+      "narrationEn": "Zephyr has inverted the mana flows to awaken the abyssal depths! Before the black tsunami drowns the island, race to the core!\"",
+      "narrationKo": "에올루스가 비장한 표정으로 결계탑의 문을 가리켰다. “서둘러라! 제피르가 이미 결계탑의 마나를 역류시켜 대해의 심연을 깨우고 있다. 거대한 해일이 섬을 삼키기 전에 탑의 중심부로 가거라!”",
+      "sourceSentenceStart": 46,
+      "sourceSentenceEnd": 46,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "에올루스",
+          "speakerEn": "Aeolus",
+          "textKo": "“서둘러라! 제피르가 이미 결계탑의 마나를 역류시켜 대해의 심연을 깨우고 있다. 거대한 해일이 섬을 삼키기 전에 탑의 중심부로 가거라!”",
+          "textEn": "“Zephyr has inverted the mana flows to awaken the abyssal depths! Before the black tsunami drowns the island, race to the core!\"”",
+          "bubbleType": "shout",
+          "position": "bottom-left",
+          "characterCardId": 25
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 47,
+      "imageFile": "episode_19/scene_47.webp",
+      "sourceImageFile": "episode_19/scene_47.webp",
+      "narrationEn": "Kadan adjusted his shield with solemn resolve. \"Though the tides rise to the heavens, this shield will never yield.\"",
+      "narrationKo": "카단이 방패를 고쳐 쥐며 고개를 끄덕였다. “대해의 파도가 아무리 거칠어도, 우리의 방패는 물러서지 않을 것입니다.”",
+      "sourceSentenceStart": 47,
+      "sourceSentenceEnd": 47,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“대해의 파도가 아무리 거칠어도, 우리의 방패는 물러서지 않을 것입니다.”",
+          "textEn": "“Though the tides rise to the heavens, this shield will never yield.”",
+          "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 48,
+      "imageFile": "episode_19/scene_48.webp",
+      "sourceImageFile": "episode_19/scene_48.webp",
+      "narrationEn": "Blessed by the sovereign of the winds, the three companions sprinted boldly into the core of the raging spire.",
+      "narrationKo": "세 젊은이는 에올루스의 축복을 받으며, 폭주하는 결계탑의 심장부를 향해 전력으로 달려 들어갔다.",
+      "sourceSentenceStart": 48,
+      "sourceSentenceEnd": 48,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "세 젊은이는 에올루스의 축복을 받으며, 폭주하는 결계탑의 심장부를 향해 전력으로 달려 들어갔다.",
+          "textEn": "Blessed by the sovereign of the winds, the three companions sprinted boldly into the core of the raging spire.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 25
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 49,
+      "imageFile": "episode_19/scene_49.webp",
+      "sourceImageFile": "episode_19/scene_49.webp",
+      "narrationEn": "King Aeolus draped his mantle of royal azure feathers around Cilia's shoulders. \"This mantle was the cherished legacy bequeathed by your mother Sylphid.",
+      "narrationKo": "에올루스 국왕이 자신의 어깨에 둘렀던 푸른 깃털 망토를 벗어 실리아의 어깨에 걸쳐주었다. “이 망토는 네 어미 실피드가 물려준 왕가의 유산이다. 이제 네가 바람의 참된 주인이 되어 백성들을 이끌어다오.”",
+      "sourceSentenceStart": 49,
+      "sourceSentenceEnd": 49,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "에올루스",
+          "speakerEn": "Aeolus",
+          "textKo": "“이 망토는 네 어미 실피드가 물려준 왕가의 유산이다. 이제 네가 바람의 참된 주인이 되어 백성들을 이끌어다오.”",
+          "textEn": "“King Aeolus draped his mantle of royal azure feathers around Cilia's shoulders. \"This mantle was the cherished legacy bequeathed by your mother Sylphid.”",
+          "bubbleType": "speech",
+          "position": "top-right",
+          "characterCardId": 25
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 50,
+      "imageFile": "episode_19/scene_50.webp",
+      "sourceImageFile": "episode_19/scene_50.webp",
+      "narrationEn": "Step forward now as the true sovereign of the winds, and lead our people into the dawn.\" Cilia fastened the golden brooch, bowing deeply before her father.",
+      "narrationKo": "실리아는 망토의 매듭을 묶으며 고개를 깊이 숙였다.",
+      "sourceSentenceStart": 50,
+      "sourceSentenceEnd": 50,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "실리아는 망토의 매듭을 묶으며 고개를 깊이 숙였다.",
+          "textEn": "Step forward now as the true sovereign of the winds, and lead our people into the dawn.\" Cilia fastened the golden brooch, bowing deeply before her father.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
         }
       ]
     }

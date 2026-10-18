@@ -2,26 +2,55 @@
   "episodeNumber": 5,
   "episodeTitleEn": "Phantom in the Downpour",
   "episodeTitleKo": "폭우 속의 유령",
-  "sourceSentenceCount": 41,
-  "sceneCount": 20,
+  "sourceSentenceCount": 51,
+  "sceneCount": 51,
   "scenes": [
     {
       "sceneNumber": 1,
       "imageFile": "episode_05/scene_01.webp",
       "sourceImageFile": "episode_05/scene_01.webp",
-      "narrationEn": "The brief northern summer cooled rapidly, and a savage tempest swept across the high bluffs of the Wildlands. Violet lightning cracked through the churning clouds, illuminating the basalt canyons in eerie brilliance, driving the six masters and twelve-year-old Kadan into the mouth of a subterranean limestone cavern. Hollowed over untold millennia by underground torrents, the cavern opened like a forgotten titan's shrine, its ceiling bristling with crystalline stalactites hung with luminous green moss. Drying their heavy fur cloaks beside a kindled fire, the masters remained vigilant. Aila inspected the unstrung sinew of her crossbow, watching the rain sheet across the canyon.",
-      "narrationKo": "황야의 짧은 여름이 차갑게 식어 가고, 대지를 집어삼킬 듯한 흉포한 폭우가 와일드랜드의 북방 고원 지대를 무섭게 강타했다. 칠흑 같은 먹구름 사이로 천둥이 벼락처럼 내리꽂힐 때마다 수백 척 높이의 거대한 현무암 협곡이 음산한 보랏빛으로 물들었고, 여섯 스승과 열두 살이 된 소년 카단은 비바람을 피해 절벽 기슭에 입을 벌린 거대한 석회암 종유석 동굴 안으로 몸을 피했다. 수만 년의 세월 동안 지하수가 석회질을 깎아 만든 동굴 내부는 고대 타이탄 거인들이 남겨둔 지하 제단처럼 웅장하고도 서늘했다. 천장에 거꾸로 매달린 고드름 모양의 거대한 종유석마다 푸른 형광 이끼가 돋아나 희미한 인광을 뿜어내고 있었다. 스승들은 젖은 털가죽 망토를 벗어 바위에 널고, 동굴 안쪽에 흩어진 마른 고사리 덤불과 장작개비를 모아 모닥불을 지피기 시작했다. 에일라는 시위를 푼 쇠뇌를 마른 천으로 정성스럽게 닦아내며 동굴 밖의 빗줄기를 응시했다.",
+      "narrationEn": "The brief northern summer cooled rapidly, and a savage tempest swept across the high bluffs of the Wildlands. Violet lightning cracked through the churning clouds, illuminating the basalt canyons in eerie brilliance, driving the six masters and twelve-year-old Kadan into the mouth of a subterranean limestone cavern.",
+      "narrationKo": "황야의 짧은 여름이 차갑게 식어 가고, 대지를 집어삼킬 듯한 흉포한 폭우가 와일드랜드의 북방 고원 지대를 무섭게 강타했다.",
       "sourceSentenceStart": 1,
+      "sourceSentenceEnd": 1,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "황야의 짧은 여름이 차갑게 식어 가고, 대지를 집어삼킬 듯한 흉포한 폭우가 와일드랜드의 북방 고원 지대를 무섭게 강타했다.",
+          "textEn": "Violet lightning cracked through the churning clouds, illuminating the basalt canyons in eerie brilliance, driving the six masters and twelve-year-old Kadan into the mouth of a subterranean limestone cavern.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 2,
+      "imageFile": "episode_05/scene_02.webp",
+      "sourceImageFile": "episode_05/scene_02.webp",
+      "narrationEn": "Hollowed over untold millennia by underground torrents, the cavern opened like a forgotten titan's shrine, its ceiling bristling with crystalline stalactites hung with luminous green moss.",
+      "narrationKo": "칠흑 같은 먹구름 사이로 천둥이 벼락처럼 내리꽂힐 때마다 수백 척 높이의 거대한 현무암 협곡이 음산한 보랏빛으로 물들었고,",
+      "sourceSentenceStart": 2,
       "sourceSentenceEnd": 2,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "에일라는 시위를 푼 쇠뇌를 마른 천으로 정성스럽게 닦아내며 동굴 밖의 빗줄기를 응시했다.",
-          "textEn": "Aila inspected the unstrung sinew of her crossbow, watching the rain sheet across the canyon.",
+          "textKo": "칠흑 같은 먹구름 사이로 천둥이 벼락처럼 내리꽂힐 때마다 수백 척 높이의 거대한 현무암 협곡이 음산한 보랏빛으로 물들었고,",
+          "textEn": "Hollowed over untold millennia by underground torrents, the cavern opened like a forgotten titan's shrine, its ceiling bristling with crystalline stalactites hung with luminous green moss.",
           "bubbleType": "thought",
-          "position": "bottom-left",
+          "position": "bottom-right",
           "characterCardId": 41
         }
       ],
@@ -41,22 +70,144 @@
       ]
     },
     {
-      "sceneNumber": 2,
-      "imageFile": "episode_05/scene_02.webp",
-      "sourceImageFile": "episode_05/scene_02.webp",
-      "narrationEn": "\"This is no natural squall,\" Aila murmured. \"The mana threads are twisted. Someone weaves an artificial veil of black sorcery behind the clouds.\" Eliana tasted the mineral spring trickling between the rock fissures and frowned.",
-      "narrationKo": "“단순한 가을비가 아니에요. 마나의 결이 불길하게 뒤틀리고 있어요. 저 먹구름 뒤편에서 누군가 인위적으로 흑마술의 장막을 부르고 있습니다.” 약제사 엘리아나 역시 바위틈에서 솟아나는 지하수를 손가락 끝으로 찍어 냄새를 맡더니 미간을 찌푸렸다.",
+      "sceneNumber": 3,
+      "imageFile": "episode_05/scene_03.webp",
+      "sourceImageFile": "episode_05/scene_03.webp",
+      "narrationEn": "Drying their heavy fur cloaks beside a kindled fire, the masters remained vigilant. Aila inspected the unstrung sinew of her crossbow, watching the rain sheet across the canyon.",
+      "narrationKo": "여섯 스승과 열두 살이 된 소년 카단은 비바람을 피해 절벽 기슭에 입을 벌린 거대한 석회암 종유석 동굴 안으로 몸을 피했다.",
       "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 3,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "여섯 스승과 열두 살이 된 소년 카단은 비바람을 피해 절벽 기슭에 입을 벌린 거대한 석회암 종유석 동굴 안으로 몸을 피했다.",
+          "textEn": "Aila inspected the unstrung sinew of her crossbow, watching the rain sheet across the canyon.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_05/scene_04.webp",
+      "sourceImageFile": "episode_05/scene_04.webp",
+      "narrationEn": "\"This is no natural squall,\"",
+      "narrationKo": "수만 년의 세월 동안 지하수가 석회질을 깎아 만든 동굴 내부는 고대 타이탄 거인들이 남겨둔 지하 제단처럼 웅장하고도 서늘했다.",
+      "sourceSentenceStart": 4,
       "sourceSentenceEnd": 4,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "수만 년의 세월 동안 지하수가 석회질을 깎아 만든 동굴 내부는 고대 타이탄 거인들이 남겨둔 지하 제단처럼 웅장하고도 서늘했다.",
+          "textEn": "\"This is no natural squall,\"",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 5,
+      "imageFile": "episode_05/scene_05.webp",
+      "sourceImageFile": "episode_05/scene_05.webp",
+      "narrationEn": "Aila murmured. \"The mana threads are twisted.",
+      "narrationKo": "천장에 거꾸로 매달린 고드름 모양의 거대한 종유석마다 푸른 형광 이끼가 돋아나 희미한 인광을 뿜어내고 있었다.",
+      "sourceSentenceStart": 5,
+      "sourceSentenceEnd": 5,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "천장에 거꾸로 매달린 고드름 모양의 거대한 종유석마다 푸른 형광 이끼가 돋아나 희미한 인광을 뿜어내고 있었다.",
+          "textEn": "\"The mana threads are twisted.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 6,
+      "imageFile": "episode_05/scene_06.webp",
+      "sourceImageFile": "episode_05/scene_06.webp",
+      "narrationEn": "Someone weaves an artificial veil of black sorcery behind the clouds.\"",
+      "narrationKo": "스승들은 젖은 털가죽 망토를 벗어 바위에 널고, 동굴 안쪽에 흩어진 마른 고사리 덤불과 장작개비를 모아 모닥불을 지피기 시작했다. 에일라는 시위를 푼 쇠뇌를 마른 천으로 정성스럽게 닦아내며 동굴 밖의 빗줄기를 응시했다.",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 6,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "에일라는 시위를 푼 쇠뇌를 마른 천으로 정성스럽게 닦아내며 동굴 밖의 빗줄기를 응시했다.",
+          "textEn": "Someone weaves an artificial veil of black sorcery behind the clouds.\"",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 70
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_05/scene_07.webp",
+      "sourceImageFile": "episode_05/scene_07.webp",
+      "narrationEn": "Eliana tasted the mineral spring trickling between the rock fissures and frowned. \"The taste of sulfur and rot.",
+      "narrationKo": "“단순한 가을비가 아니에요. 마나의 결이 불길하게 뒤틀리고 있어요. 저 먹구름 뒤편에서 누군가 인위적으로 흑마술의 장막을 부르고 있습니다.”",
+      "sourceSentenceStart": 7,
+      "sourceSentenceEnd": 7,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "에일라",
           "speakerEn": "Aila",
           "textKo": "“단순한 가을비가 아니에요. 마나의 결이 불길하게 뒤틀리고 있어요. 저 먹구름 뒤편에서 누군가 인위적으로 흑마술의 장막을 부르고 있습니다.”",
-          "textEn": "“The mana threads are twisted. Someone weaves an artificial veil of black sorcery behind the clouds.”",
+          "textEn": "“Eliana tasted the mineral spring trickling between the rock fissures and frowned. \"The taste of sulfur and rot.”",
           "bubbleType": "speech",
-          "position": "bottom-left",
+          "position": "bottom-right",
           "characterCardId": 70
         }
       ],
@@ -76,192 +227,23 @@
       ]
     },
     {
-      "sceneNumber": 3,
-      "imageFile": "episode_05/scene_03.webp",
-      "sourceImageFile": "episode_05/scene_03.webp",
-      "narrationEn": "\"The taste of sulfur and rot. Not the water of living earth, but the residue of obsidian crystal corruption that leaches vitality.\" Amidst the rhythmic patter of condensation and the roar of the deluge outside, a chilling scrape of iron chains dragged across the cavern flags. Before the embers could catch, the silver runes carved into the cavern ceiling inverted into abyssal darkness. From the shadows emerged Medusa Gorgo, her blind eyes bound in black silk, obsidian talons gleaming with lethal venom.",
-      "narrationKo": "“유황과 썩은 이끼 냄새가 섞여 있어요. 살아 있는 대지의 물이 아니라, 생명력을 빨아들이는 흑요석 결정술의 독기예요.” 동굴 천장에서 뚝뚝 떨어지는 불규칙한 물방울 소리와 세찬 빗소리가 뒤섞여 귓전을 먹먹하게 만들던 바로 그 순간, 동굴 안쪽의 깊고 어두운 낭떠러지 바닥에서 차가운 쇠사슬이 뱀처럼 바닥돌을 긁는 음산한 쇳소리가 울려 퍼졌다.",
-      "sourceSentenceStart": 5,
-      "sourceSentenceEnd": 6,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "엘리아나",
-          "speakerEn": "Eliana",
-          "textKo": "“유황과 썩은 이끼 냄새가 섞여 있어요. 살아 있는 대지의 물이 아니라, 생명력을 빨아들이는 흑요석 결정술의 독기예요.”",
-          "textEn": "“The taste of sulfur and rot. Not the water of living earth, but the residue of obsidian crystal corruption that leaches vitality.”",
-          "bubbleType": "speech",
-          "position": "bottom-right",
-          "characterCardId": 63
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "서걱-!",
-          "textEn": "SLASH!",
-          "style": "slash",
-          "position": "center"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 4,
-      "imageFile": "episode_05/scene_04.webp",
-      "sourceImageFile": "episode_05/scene_04.webp",
-      "narrationEn": "\"Six winters have I hunted your scent across this barren waste,\" Gorgo sneered, her voice reverberating from every crack in the stone. \"And at last, Aleksandar's stray cur is delivered into my web.\" Moving without sight, Gorgo rode the acoustic vibrations of falling raindrops and the thermal drafts of the chamber. With the crack of thunder, her poisoned talons plunged toward Kadan's throat.",
-      "narrationKo": "스승들이 마른 장작에 불꽃을 튀겨 점화하려는 찰나, 동굴 천장과 벽면에 음각되어 있던 고대 성기사단의 은빛 룬이 일제히 불길한 검은빛으로 뒤집히며 칠흑 같은 암흑 안개가 동굴 안을 장막처럼 가득 메웠다. 짙은 어둠 속에서 차가운 웃음소리가 울려 퍼졌다. 미스트폴 절벽에서 곡예사 로비냐드의 목숨을 앗아간 뒤 거친 강물 속으로 도망쳤던 메두사 고르고였다. 칠흑의 비단으로 두 눈을 가린 그녀의 손가락 끝에는 흑요석 결정이 가시처럼 돋아나 있었고, 맹독을 머금은 마나의 실가닥이 허공을 팽팽하게 수놓았다. “육 년 동안 너희 늙은 사냥개들의 발자국을 쫓아 이 황야를 샅샅이 뒤졌다. 그리고 마침내 알렉산다르의 부러진 검을 이어받은 핏줄까지 한자리에 모여 있구나.”",
-      "sourceSentenceStart": 7,
-      "sourceSentenceEnd": 8,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "메두사 고르고",
-          "speakerEn": "Medusa Gorgo",
-          "textKo": "“육 년 동안 너희 늙은 사냥개들의 발자국을 쫓아 이 황야를 샅샅이 뒤졌다. 그리고 마침내 알렉산다르의 부러진 검을 이어받은 핏줄까지 한자리에 모여 있구나.”",
-          "textEn": "“Six winters have I hunted your scent across this barren waste,”",
-          "bubbleType": "speech",
-          "position": "top-left",
-          "characterCardId": 89
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 5,
-      "imageFile": "episode_05/scene_05.webp",
-      "sourceImageFile": "episode_05/scene_05.webp",
-      "narrationEn": "\"Kadan, down!\" Aila cried, firing three quarrels, but they struck only a fading purple afterimage. Gorgo had already merged into the shadow cast behind the boy's boots. Panic seized Kadan's chest, but Gawain's thunderous command shattered his dread. \"Close your eyes, Kadan! The witch does not dwell where your eyes seek her!\"",
-      "narrationKo": "고르고의 서늘한 목소리가 동굴 암벽의 모든 틈새에서 동시에 메아리쳤다. 그녀는 두 눈이 먼 대신 사방에 흩뿌려지는 빗방울의 미세한 음파 파동과 공기의 마찰열을 타고 유령처럼 허공을 미끄러졌다. 번개가 동굴 입구를 하얗게 밝히는 찰나, 고르고의 날카로운 독 손톱이 카단의 목덜미를 베어 내기 위해 번개처럼 쏘아져 내렸다. “카단, 엎드려라!”",
-      "sourceSentenceStart": 9,
-      "sourceSentenceEnd": 10,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "메두사 고르고",
-          "speakerEn": "Medusa Gorgo",
-          "textKo": "“카단, 엎드려라!”",
-          "textEn": "“Kadan, down!”",
-          "bubbleType": "shout",
-          "position": "top-right",
-          "characterCardId": 89
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "서걱-!",
-          "textEn": "SLASH!",
-          "style": "slash",
-          "position": "center"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 6,
-      "imageFile": "episode_05/scene_06.webp",
-      "sourceImageFile": "episode_05/scene_06.webp",
-      "narrationEn": "Gawain struck his iron staff against the bedrock, sending harmonic acoustic ripples surging through the cavern.",
-      "narrationKo": "에일라가 다급하게 외치며 세 발의 쇠뇌 화살을 쏘아 보냈으나, 화살은 실체 없는 보랏빛 잔상만을 허무하게 꿰뚫었을 뿐이었다. 고르고의 몸체는 이미 허공의 마찰열을 비틀며 카단의 등 뒤 그림자 속으로 뱀처럼 미끄러져 들어가 있었다. 목덜미에 차가운 살기가 닿자 소년 카단의 심장이 얼어붙는 듯했다. 소년이 본능적으로 허리춤의 단검을 쥐고 몸을 돌리려 했을 때, 맹인 추적자 가웨인의 차분하고도 묵직한 호령이 소년의 귓전을 강하게 내리쳤다. “눈을 감아라, 카단! 저 마녀는 네가 바라보는 시야 안에 존재하지 않는다!”",
-      "sourceSentenceStart": 11,
-      "sourceSentenceEnd": 12,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "가웨인",
-          "speakerEn": "Gawain",
-          "textKo": "“눈을 감아라, 카단! 저 마녀는 네가 바라보는 시야 안에 존재하지 않는다!”",
-          "textEn": "“Close your eyes, Kadan! The witch does not dwell where your eyes seek her!”",
-          "bubbleType": "shout",
-          "position": "bottom-left",
-          "characterCardId": 45
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 7,
-      "imageFile": "episode_05/scene_07.webp",
-      "sourceImageFile": "episode_05/scene_07.webp",
-      "narrationEn": "\"Your sight deceives you, boy, but the rain lashing your skin never lies! Remember the path of acoustics taught by Lord Aeolus of the Wind Isle! No living being can cut through the air without leaving a void in the gale!\" Kadan inhaled sharply and snapped his eyelids shut.",
-      "narrationKo": "가웨인이 쇠지팡이로 젖은 동굴 바닥을 내리찍자, 맑은 음파 진동이 물결처럼 바닥을 타고 사방으로 뻗어 나갔다. “시각은 언제나 허상을 보여주지만, 네 피부를 때리는 빗방울과 공기의 흐름은 결코 거짓말을 하지 않는다! 일찍이 바람섬의 현자 에올루스 경에게서 배운 음파의 길을 기억하라. 살아 숨 쉬는 생명체가 공기를 가를 때, 바람은 그 자리를 비워두지 못하는 법이다!”",
-      "sourceSentenceStart": 13,
-      "sourceSentenceEnd": 14,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "가웨인",
-          "speakerEn": "Gawain",
-          "textKo": "“시각은 언제나 허상을 보여주지만, 네 피부를 때리는 빗방울과 공기의 흐름은 결코 거짓말을 하지 않는다! 일찍이 바람섬의 현자 에올루스 경에게서 배운 음파의 길을 기억하라. 살아 숨 쉬는 생명체가 공기를 가를 때, 바람은 그 자리를 비워두지 못하는 법이다!”",
-          "textEn": "“Your sight deceives you, boy, but the rain lashing your skin never lies! Remember the path of acoustics taught by Lord Aeolus of the Wind Isle! No living being can cut through the air without leaving a void in the gale!”",
-          "bubbleType": "shout",
-          "position": "bottom-right",
-          "characterCardId": 45
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "쿠구구궁!",
-          "textEn": "RUMBLE!",
-          "style": "rumble",
-          "position": "bottom-left"
-        },
-        {
-          "textKo": "휘이이익-!",
-          "textEn": "SWOOSH!",
-          "style": "slash",
-          "position": "top-left"
-        }
-      ]
-    },
-    {
       "sceneNumber": 8,
       "imageFile": "episode_05/scene_08.webp",
       "sourceImageFile": "episode_05/scene_08.webp",
-      "narrationEn": "Within the absolute darkness of his mind, a breathtaking sensory tapestry unfolded: the steady cadence of water droplets from the ceiling, the ragged heave of Grimli's chest, the angled sheets of wind spray, and—there! A solitary pocket where falling drops bent unnaturally around an empty space! 'She is there! The wind is hollow!'",
-      "narrationKo": "가웨인의 준엄한 가르침에 카단은 떨리는 숨을 삼키며 지체 없이 두 눈을 질끈 감았다. 시야가 완전한 암흑에 잠기자, 소년의 귓가와 살갗으로 놀라운 감각의 세계가 쏟아져 들어왔다. 천장 종유석 끝에서 떨어지는 차가운 물방울의 리듬, 드워프 그림리가 거칠게 헐떡이는 가슴의 맥박, 동굴 입구로 들이치는 빗줄기의 각도, 그리고—오직 한 지점, 허공을 가르며 낙하하던 빗방울이 바닥에 닿기 직전 궤적을 비틀며 허물어지는 미세한 진공의 구멍!",
-      "sourceSentenceStart": 15,
-      "sourceSentenceEnd": 16,
+      "narrationEn": "Not the water of living earth, but the residue of obsidian crystal corruption that leaches vitality.\"",
+      "narrationKo": "약제사 엘리아나 역시 바위틈에서 솟아나는 지하수를 손가락 끝으로 찍어 냄새를 맡더니 미간을 찌푸렸다.",
+      "sourceSentenceStart": 8,
+      "sourceSentenceEnd": 8,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "천장 종유석 끝에서 떨어지는 차가운 물방울의 리듬, 드워프 그림리가 거칠게 헐떡이는 가슴의 맥박, 동굴 입구로 들이치는 빗줄기의 각도, 그리고—오직 한 지점, 허공을 가르며 낙하하던 빗방울이 바닥에 닿기 직전 궤적을 비틀며 허물어지는 미세한 진공의 구멍!",
-          "textEn": "The wind is hollow!'",
+          "textKo": "약제사 엘리아나 역시 바위틈에서 솟아나는 지하수를 손가락 끝으로 찍어 냄새를 맡더니 미간을 찌푸렸다.",
+          "textEn": "Not the water of living earth, but the residue of obsidian crystal corruption that leaches vitality.\"",
           "bubbleType": "thought",
           "position": "top-right",
-          "characterCardId": 45
+          "characterCardId": 63
         }
       ],
       "sfxCues": [
@@ -277,19 +259,588 @@
       "sceneNumber": 9,
       "imageFile": "episode_05/scene_09.webp",
       "sourceImageFile": "episode_05/scene_09.webp",
-      "narrationEn": "Without hesitation, Kadan gripped his silver dagger and spun on his heel, driving the white-silver blade into the empty pocket of air with all his young strength. Clang!",
-      "narrationKo": "‘저기다! 저곳에 바람이 비어 있다!’ 카단은 눈을 감은 채, 본능적으로 허리춤에 차고 있던 은빛 단검을 뽑아 허공의 빈자리를 향해 전신을 던져 칼날을 휘둘렀다.",
+      "narrationEn": "Amidst the rhythmic patter of condensation and the roar of the deluge outside, a chilling scrape of iron chains dragged across the cavern flags. Before the embers could catch, the silver runes carved into the cavern ceiling inverted into abyssal darkness.",
+      "narrationKo": "“유황과 썩은 이끼 냄새가 섞여 있어요. 살아 있는 대지의 물이 아니라, 생명력을 빨아들이는 흑요석 결정술의 독기예요.”",
+      "sourceSentenceStart": 9,
+      "sourceSentenceEnd": 9,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "엘리아나",
+          "speakerEn": "Eliana",
+          "textKo": "“유황과 썩은 이끼 냄새가 섞여 있어요. 살아 있는 대지의 물이 아니라, 생명력을 빨아들이는 흑요석 결정술의 독기예요.”",
+          "textEn": "“Amidst the rhythmic patter of condensation and the roar of the deluge outside, a chilling scrape of iron chains dragged across the cavern flags. Before the embers could catch, the silver runes carved into the cavern ceiling inverted into abyssal darkness.”",
+          "bubbleType": "speech",
+          "position": "top-right",
+          "characterCardId": 63
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 10,
+      "imageFile": "episode_05/scene_10.webp",
+      "sourceImageFile": "episode_05/scene_10.webp",
+      "narrationEn": "From the shadows emerged Medusa Gorgo, her blind eyes bound in black silk, obsidian talons gleaming with lethal venom.",
+      "narrationKo": "동굴 천장에서 뚝뚝 떨어지는 불규칙한 물방울 소리와 세찬 빗소리가 뒤섞여 귓전을 먹먹하게 만들던 바로 그 순간, 동굴 안쪽의 깊고 어두운 낭떠러지 바닥에서 차가운 쇠사슬이 뱀처럼 바닥돌을 긁는 음산한 쇳소리가 울려 퍼졌다.",
+      "sourceSentenceStart": 10,
+      "sourceSentenceEnd": 10,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "동굴 천장에서 뚝뚝 떨어지는 불규칙한 물방울 소리와 세찬 빗소리가 뒤섞여 귓전을 먹먹하게 만들던 바로 그 순간, 동굴 안쪽의 깊고 어두운 낭떠러지 바닥에서 차가운 쇠사슬이 뱀처럼 바닥돌을 긁는 음산한 쇳소리가 울려 퍼졌다.",
+          "textEn": "From the shadows emerged Medusa Gorgo, her blind eyes bound in black silk, obsidian talons gleaming with lethal venom.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 63
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 11,
+      "imageFile": "episode_05/scene_11.webp",
+      "sourceImageFile": "episode_05/scene_11.webp",
+      "narrationEn": "\"Six winters have I hunted your scent across this barren waste,\" Gorgo sneered, her voice reverberating from every crack in the stone.",
+      "narrationKo": "스승들이 마른 장작에 불꽃을 튀겨 점화하려는 찰나, 동굴 천장과 벽면에 음각되어 있던 고대 성기사단의 은빛 룬이 일제히 불길한 검은빛으로 뒤집히며 칠흑 같은 암흑 안개가 동굴 안을 장막처럼 가득 메웠다.",
+      "sourceSentenceStart": 11,
+      "sourceSentenceEnd": 11,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "스승들이 마른 장작에 불꽃을 튀겨 점화하려는 찰나, 동굴 천장과 벽면에 음각되어 있던 고대 성기사단의 은빛 룬이 일제히 불길한 검은빛으로 뒤집히며 칠흑 같은 암흑 안개가 동굴 안을 장막처럼 가득 메웠다.",
+          "textEn": "\"Six winters have I hunted your scent across this barren waste,\" Gorgo sneered, her voice reverberating from every crack in the stone.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 63
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 12,
+      "imageFile": "episode_05/scene_12.webp",
+      "sourceImageFile": "episode_05/scene_12.webp",
+      "narrationEn": "\"And at last, Aleksandar's stray cur is delivered into my web.\"",
+      "narrationKo": "짙은 어둠 속에서 차가운 웃음소리가 울려 퍼졌다. 미스트폴 절벽에서 곡예사 로비냐드의 목숨을 앗아간 뒤 거친 강물 속으로 도망쳤던 메두사 고르고였다.",
+      "sourceSentenceStart": 12,
+      "sourceSentenceEnd": 12,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "미스트폴 절벽에서 곡예사 로비냐드의 목숨을 앗아간 뒤 거친 강물 속으로 도망쳤던 메두사 고르고였다.",
+          "textEn": "\"And at last, Aleksandar's stray cur is delivered into my web.\"",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 48
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 13,
+      "imageFile": "episode_05/scene_13.webp",
+      "sourceImageFile": "episode_05/scene_13.webp",
+      "narrationEn": "Moving without sight, Gorgo rode the acoustic vibrations of falling raindrops and the thermal drafts of the chamber. With the crack of thunder, her poisoned talons plunged toward Kadan's throat.",
+      "narrationKo": "칠흑의 비단으로 두 눈을 가린 그녀의 손가락 끝에는 흑요석 결정이 가시처럼 돋아나 있었고, 맹독을 머금은 마나의 실가닥이 허공을 팽팽하게 수놓았다.",
+      "sourceSentenceStart": 13,
+      "sourceSentenceEnd": 13,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "칠흑의 비단으로 두 눈을 가린 그녀의 손가락 끝에는 흑요석 결정이 가시처럼 돋아나 있었고, 맹독을 머금은 마나의 실가닥이 허공을 팽팽하게 수놓았다.",
+          "textEn": "With the crack of thunder, her poisoned talons plunged toward Kadan's throat.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 48
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 14,
+      "imageFile": "episode_05/scene_14.webp",
+      "sourceImageFile": "episode_05/scene_14.webp",
+      "narrationEn": "\"Kadan, down!\"",
+      "narrationKo": "“육 년 동안 너희 늙은 사냥개들의 발자국을 쫓아 이 황야를 샅샅이 뒤졌다. 그리고 마침내 알렉산다르의 부러진 검을 이어받은 핏줄까지 한자리에 모여 있구나.”",
+      "sourceSentenceStart": 14,
+      "sourceSentenceEnd": 14,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "메두사 고르고",
+          "speakerEn": "Medusa Gorgo",
+          "textKo": "“육 년 동안 너희 늙은 사냥개들의 발자국을 쫓아 이 황야를 샅샅이 뒤졌다. 그리고 마침내 알렉산다르의 부러진 검을 이어받은 핏줄까지 한자리에 모여 있구나.”",
+          "textEn": "“Kadan, down!”",
+          "bubbleType": "speech",
+          "position": "bottom-left",
+          "characterCardId": 89
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 15,
+      "imageFile": "episode_05/scene_15.webp",
+      "sourceImageFile": "episode_05/scene_15.webp",
+      "narrationEn": "Aila cried, firing three quarrels, but they struck only a fading purple afterimage. Gorgo had already merged into the shadow cast behind the boy's boots.",
+      "narrationKo": "고르고의 서늘한 목소리가 동굴 암벽의 모든 틈새에서 동시에 메아리쳤다. 그녀는 두 눈이 먼 대신 사방에 흩뿌려지는 빗방울의 미세한 음파 파동과 공기의 마찰열을 타고 유령처럼 허공을 미끄러졌다.",
+      "sourceSentenceStart": 15,
+      "sourceSentenceEnd": 15,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그녀는 두 눈이 먼 대신 사방에 흩뿌려지는 빗방울의 미세한 음파 파동과 공기의 마찰열을 타고 유령처럼 허공을 미끄러졌다.",
+          "textEn": "Gorgo had already merged into the shadow cast behind the boy's boots.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 89
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 16,
+      "imageFile": "episode_05/scene_16.webp",
+      "sourceImageFile": "episode_05/scene_16.webp",
+      "narrationEn": "Panic seized Kadan's chest, but Gawain's thunderous command shattered his dread.",
+      "narrationKo": "번개가 동굴 입구를 하얗게 밝히는 찰나, 고르고의 날카로운 독 손톱이 카단의 목덜미를 베어 내기 위해 번개처럼 쏘아져 내렸다.",
+      "sourceSentenceStart": 16,
+      "sourceSentenceEnd": 16,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "번개가 동굴 입구를 하얗게 밝히는 찰나, 고르고의 날카로운 독 손톱이 카단의 목덜미를 베어 내기 위해 번개처럼 쏘아져 내렸다.",
+          "textEn": "Panic seized Kadan's chest, but Gawain's thunderous command shattered his dread.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 89
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 17,
+      "imageFile": "episode_05/scene_17.webp",
+      "sourceImageFile": "episode_05/scene_17.webp",
+      "narrationEn": "\"Close your eyes, Kadan! The witch does not dwell where your eyes seek her!\"",
+      "narrationKo": "“카단, 엎드려라!” 에일라가 다급하게 외치며 세 발의 쇠뇌 화살을 쏘아 보냈으나, 화살은 실체 없는 보랏빛 잔상만을 허무하게 꿰뚫었을 뿐이었다.",
       "sourceSentenceStart": 17,
+      "sourceSentenceEnd": 17,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "에일라",
+          "speakerEn": "Aila",
+          "textKo": "“카단, 엎드려라!”",
+          "textEn": "“Close your eyes, Kadan! The witch does not dwell where your eyes seek her!”",
+          "bubbleType": "shout",
+          "position": "top-right",
+          "characterCardId": 70
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_05/scene_18.webp",
+      "sourceImageFile": "episode_05/scene_18.webp",
+      "narrationEn": "Gawain struck his iron staff against the bedrock, sending harmonic acoustic ripples surging through the cavern. \"Your sight deceives you, boy, but the rain lashing your skin never lies!",
+      "narrationKo": "고르고의 몸체는 이미 허공의 마찰열을 비틀며 카단의 등 뒤 그림자 속으로 뱀처럼 미끄러져 들어가 있었다. 목덜미에 차가운 살기가 닿자 소년 카단의 심장이 얼어붙는 듯했다.",
+      "sourceSentenceStart": 18,
       "sourceSentenceEnd": 18,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "저곳에 바람이 비어 있다!’ 카단은 눈을 감은 채, 본능적으로 허리춤에 차고 있던 은빛 단검을 뽑아 허공의 빈자리를 향해 전신을 던져 칼날을 휘둘렀다.",
-          "textEn": "Clang!",
+          "textKo": "목덜미에 차가운 살기가 닿자 소년 카단의 심장이 얼어붙는 듯했다.",
+          "textEn": "\"Your sight deceives you, boy, but the rain lashing your skin never lies!",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 89
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 19,
+      "imageFile": "episode_05/scene_19.webp",
+      "sourceImageFile": "episode_05/scene_19.webp",
+      "narrationEn": "Remember the path of acoustics taught by Lord Aeolus of the Wind Isle!",
+      "narrationKo": "소년이 본능적으로 허리춤의 단검을 쥐고 몸을 돌리려 했을 때, 맹인 추적자 가웨인의 차분하고도 묵직한 호령이 소년의 귓전을 강하게 내리쳤다.",
+      "sourceSentenceStart": 19,
+      "sourceSentenceEnd": 19,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "소년이 본능적으로 허리춤의 단검을 쥐고 몸을 돌리려 했을 때, 맹인 추적자 가웨인의 차분하고도 묵직한 호령이 소년의 귓전을 강하게 내리쳤다.",
+          "textEn": "Remember the path of acoustics taught by Lord Aeolus of the Wind Isle!",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 45
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_05/scene_20.webp",
+      "sourceImageFile": "episode_05/scene_20.webp",
+      "narrationEn": "No living being can cut through the air without leaving a void in the gale!\" Kadan inhaled sharply and snapped his eyelids shut.",
+      "narrationKo": "“눈을 감아라, 카단! 저 마녀는 네가 바라보는 시야 안에 존재하지 않는다!”",
+      "sourceSentenceStart": 20,
+      "sourceSentenceEnd": 20,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "가웨인",
+          "speakerEn": "Gawain",
+          "textKo": "“눈을 감아라, 카단! 저 마녀는 네가 바라보는 시야 안에 존재하지 않는다!”",
+          "textEn": "“No living being can cut through the air without leaving a void in the gale!\" Kadan inhaled sharply and snapped his eyelids shut.”",
+          "bubbleType": "shout",
+          "position": "top-left",
+          "characterCardId": 45
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 21,
+      "imageFile": "episode_05/scene_21.webp",
+      "sourceImageFile": "episode_05/scene_21.webp",
+      "narrationEn": "Within the absolute darkness of his mind, a breathtaking sensory tapestry unfolded: the steady cadence of water droplets from the ceiling, the ragged heave of Grimli's chest, the angled sheets of wind spray, and—there!",
+      "narrationKo": "가웨인이 쇠지팡이로 젖은 동굴 바닥을 내리찍자, 맑은 음파 진동이 물결처럼 바닥을 타고 사방으로 뻗어 나갔다.",
+      "sourceSentenceStart": 21,
+      "sourceSentenceEnd": 21,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "가웨인이 쇠지팡이로 젖은 동굴 바닥을 내리찍자, 맑은 음파 진동이 물결처럼 바닥을 타고 사방으로 뻗어 나갔다.",
+          "textEn": "Within the absolute darkness of his mind, a breathtaking sensory tapestry unfolded: the steady cadence of water droplets from the ceiling, the ragged heave of Grimli's chest, the angled sheets of wind spray, and—there!",
           "bubbleType": "thought",
           "position": "bottom-left",
+          "characterCardId": 45
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        },
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 22,
+      "imageFile": "episode_05/scene_22.webp",
+      "sourceImageFile": "episode_05/scene_22.webp",
+      "narrationEn": "A solitary pocket where falling drops bent unnaturally around an empty space! 'She is there!",
+      "narrationKo": "“시각은 언제나 허상을 보여주지만, 네 피부를 때리는 빗방울과 공기의 흐름은 결코 거짓말을 하지 않는다!”",
+      "sourceSentenceStart": 22,
+      "sourceSentenceEnd": 22,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "가웨인",
+          "speakerEn": "Gawain",
+          "textKo": "“시각은 언제나 허상을 보여주지만, 네 피부를 때리는 빗방울과 공기의 흐름은 결코 거짓말을 하지 않는다!”",
+          "textEn": "“A solitary pocket where falling drops bent unnaturally around an empty space! 'She is there!”",
+          "bubbleType": "shout",
+          "position": "bottom-left",
+          "characterCardId": 45
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 23,
+      "imageFile": "episode_05/scene_23.webp",
+      "sourceImageFile": "episode_05/scene_23.webp",
+      "narrationEn": "The wind is hollow!'",
+      "narrationKo": "“일찍이 바람섬의 현자 에올루스 경에게서 배운 음파의 길을 기억하라. 살아 숨 쉬는 생명체가 공기를 가를 때, 바람은 그 자리를 비워두지 못하는 법이다!”",
+      "sourceSentenceStart": 23,
+      "sourceSentenceEnd": 23,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“일찍이 바람섬의 현자 에올루스 경에게서 배운 음파의 길을 기억하라. 살아 숨 쉬는 생명체가 공기를 가를 때, 바람은 그 자리를 비워두지 못하는 법이다!”",
+          "textEn": "“The wind is hollow!'”",
+          "bubbleType": "shout",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 24,
+      "imageFile": "episode_05/scene_24.webp",
+      "sourceImageFile": "episode_05/scene_24.webp",
+      "narrationEn": "Without hesitation, Kadan gripped his silver dagger and spun on his heel, driving the white-silver blade into the empty pocket of air with all his young strength. Clang!",
+      "narrationKo": "가웨인의 준엄한 가르침에 카단은 떨리는 숨을 삼키며 지체 없이 두 눈을 질끈 감았다.",
+      "sourceSentenceStart": 24,
+      "sourceSentenceEnd": 24,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "가웨인의 준엄한 가르침에 카단은 떨리는 숨을 삼키며 지체 없이 두 눈을 질끈 감았다.",
+          "textEn": "Clang!",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 45
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 25,
+      "imageFile": "episode_05/scene_25.webp",
+      "sourceImageFile": "episode_05/scene_25.webp",
+      "narrationEn": "The silver blade slammed violently into Gorgo's conjured chain.",
+      "narrationKo": "시야가 완전한 암흑에 잠기자, 소년의 귓가와 살갗으로 놀라운 감각의 세계가 쏟아져 들어왔다.",
+      "sourceSentenceStart": 25,
+      "sourceSentenceEnd": 25,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "시야가 완전한 암흑에 잠기자, 소년의 귓가와 살갗으로 놀라운 감각의 세계가 쏟아져 들어왔다.",
+          "textEn": "The silver blade slammed violently into Gorgo's conjured chain.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 45
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 26,
+      "imageFile": "episode_05/scene_26.webp",
+      "sourceImageFile": "episode_05/scene_26.webp",
+      "narrationEn": "White sparks erupted through the cavern, the razor tip cutting through her silk cuff and biting deep into her wrist meridians. \"Insolent whelp!",
+      "narrationKo": "천장 종유석 끝에서 떨어지는 차가운 물방울의 리듬, 드워프 그림리가 거칠게 헐떡이는 가슴의 맥박, 동굴 입구로 들이치는 빗줄기의 각도,",
+      "sourceSentenceStart": 26,
+      "sourceSentenceEnd": 26,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "천장 종유석 끝에서 떨어지는 차가운 물방울의 리듬, 드워프 그림리가 거칠게 헐떡이는 가슴의 맥박, 동굴 입구로 들이치는 빗줄기의 각도,",
+          "textEn": "\"Insolent whelp!",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 74
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 27,
+      "imageFile": "episode_05/scene_27.webp",
+      "sourceImageFile": "episode_05/scene_27.webp",
+      "narrationEn": "You anticipate an unseen strike?\"",
+      "narrationKo": "그리고—오직 한 지점, 허공을 가르며 낙하하던 빗방울이 바닥에 닿기 직전 궤적을 비틀며 허물어지는 미세한 진공의 구멍!",
+      "sourceSentenceStart": 27,
+      "sourceSentenceEnd": 27,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그리고—오직 한 지점, 허공을 가르며 낙하하던 빗방울이 바닥에 닿기 직전 궤적을 비틀며 허물어지는 미세한 진공의 구멍!",
+          "textEn": "You anticipate an unseen strike?\"",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 74
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 28,
+      "imageFile": "episode_05/scene_28.webp",
+      "sourceImageFile": "episode_05/scene_28.webp",
+      "narrationEn": "Gorgo gasped, recoiling as her balance broke. The masters seized the opening ruthlessly.",
+      "narrationKo": "‘저기다! 저곳에 바람이 비어 있다!’ 카단은 눈을 감은 채, 본능적으로 허리춤에 차고 있던 은빛 단검을 뽑아 허공의 빈자리를 향해 전신을 던져 칼날을 휘둘렀다.",
+      "sourceSentenceStart": 28,
+      "sourceSentenceEnd": 28,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "저곳에 바람이 비어 있다!’ 카단은 눈을 감은 채, 본능적으로 허리춤에 차고 있던 은빛 단검을 뽑아 허공의 빈자리를 향해 전신을 던져 칼날을 휘둘렀다.",
+          "textEn": "The masters seized the opening ruthlessly.",
+          "bubbleType": "thought",
+          "position": "top-right",
           "characterCardId": 41
         }
       ],
@@ -309,20 +860,49 @@
       ]
     },
     {
-      "sceneNumber": 10,
-      "imageFile": "episode_05/scene_10.webp",
-      "sourceImageFile": "episode_05/scene_10.webp",
-      "narrationEn": "The silver blade slammed violently into Gorgo's conjured chain. White sparks erupted through the cavern, the razor tip cutting through her silk cuff and biting deep into her wrist meridians. \"Insolent whelp! You anticipate an unseen strike?\"",
-      "narrationKo": "챙그랑! 백은의 칼날이 허공 속에서 실체화되던 고르고의 검은 사슬을 정면으로 후려쳤다. 날카로운 쇳소리와 함께 백색 불꽃이 어둠을 찢었고, 은빛 단검의 예리한 칼끝이 고르고의 손목을 꿰뚫으며 그녀의 마나 혈도를 강하게 쳐냈다.",
-      "sourceSentenceStart": 19,
-      "sourceSentenceEnd": 20,
+      "sceneNumber": 29,
+      "imageFile": "episode_05/scene_29.webp",
+      "sourceImageFile": "episode_05/scene_29.webp",
+      "narrationEn": "Grimli brought down his great hammer, collapsing the rear rock arch and sealing her escape route.",
+      "narrationKo": "챙그랑!",
+      "sourceSentenceStart": 29,
+      "sourceSentenceEnd": 29,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "챙그랑!",
+          "textEn": "Grimli brought down his great hammer, collapsing the rear rock arch and sealing her escape route.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 30,
+      "imageFile": "episode_05/scene_30.webp",
+      "sourceImageFile": "episode_05/scene_30.webp",
+      "narrationEn": "The silver bell upon his hammer chimed like an enraged beast. \"Robinyard's vengeance is at hand, foul witch!\"",
+      "narrationKo": "백은의 칼날이 허공 속에서 실체화되던 고르고의 검은 사슬을 정면으로 후려쳤다. 날카로운 쇳소리와 함께 백색 불꽃이 어둠을 찢었고, 은빛 단검의 예리한 칼끝이 고르고의 손목을 꿰뚫으며 그녀의 마나 혈도를 강하게 쳐냈다.",
+      "sourceSentenceStart": 30,
+      "sourceSentenceEnd": 30,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
           "textKo": "날카로운 쇳소리와 함께 백색 불꽃이 어둠을 찢었고, 은빛 단검의 예리한 칼끝이 고르고의 손목을 꿰뚫으며 그녀의 마나 혈도를 강하게 쳐냈다.",
-          "textEn": "You anticipate an unseen strike?\"",
+          "textEn": "\"Robinyard's vengeance is at hand, foul witch!\"",
           "bubbleType": "thought",
           "position": "bottom-right",
           "characterCardId": 89
@@ -344,32 +924,52 @@
       ]
     },
     {
-      "sceneNumber": 11,
-      "imageFile": "episode_05/scene_11.webp",
-      "sourceImageFile": "episode_05/scene_11.webp",
-      "narrationEn": "Gorgo gasped, recoiling as her balance broke. The masters seized the opening ruthlessly. Grimli brought down his great hammer, collapsing the rear rock arch and sealing her escape route. The silver bell upon his hammer chimed like an enraged beast. \"Robinyard's vengeance is at hand, foul witch!\"",
-      "narrationKo": "“크아악! 이 어린송사리 놈이... 보이지도 않는 칼길을 미리 읽었단 말인가!” 고르고가 경악하며 균형을 잃고 비틀거렸다. 스승들은 그 천금 같은 빈틈을 결코 놓치지 않았다. 그림리가 맹수처럼 포효하며 도약하여 쇠망치로 동굴 뒤편의 퇴로를 내리찍었다. 망치에 달린 은빛 방울이 맹렬하게 딸랑거렸다. “로비냐드의 원수를 갚을 날이 왔다, 이 마녀 녀석!”",
-      "sourceSentenceStart": 21,
-      "sourceSentenceEnd": 23,
+      "sceneNumber": 31,
+      "imageFile": "episode_05/scene_31.webp",
+      "sourceImageFile": "episode_05/scene_31.webp",
+      "narrationEn": "Rondol swept subterranean water upward in a surging wave, stripping away Gorgo's toxic mist.",
+      "narrationKo": "“크아악! 이 어린송사리 놈이... 보이지도 않는 칼길을 미리 읽었단 말인가!”",
+      "sourceSentenceStart": 31,
+      "sourceSentenceEnd": 31,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "메두사 고르고",
           "speakerEn": "Medusa Gorgo",
           "textKo": "“크아악! 이 어린송사리 놈이... 보이지도 않는 칼길을 미리 읽었단 말인가!”",
-          "textEn": "“Insolent whelp! You anticipate an unseen strike?”",
+          "textEn": "“Rondol swept subterranean water upward in a surging wave, stripping away Gorgo's toxic mist.”",
           "bubbleType": "shout",
           "position": "bottom-right",
           "characterCardId": 89
-        },
+        }
+      ],
+      "sfxCues": [
         {
-          "speakerKo": "그림리",
-          "speakerEn": "Grimli",
-          "textKo": "“로비냐드의 원수를 갚을 날이 왔다, 이 마녀 녀석!”",
-          "textEn": "“Robinyard's vengeance is at hand, foul witch!”",
-          "bubbleType": "shout",
-          "position": "top-left",
-          "characterCardId": 74
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 32,
+      "imageFile": "episode_05/scene_32.webp",
+      "sourceImageFile": "episode_05/scene_32.webp",
+      "narrationEn": "Three barbed quarrels from Aila's crossbow punched through Gorgo's shoulder and thigh, while Kaze's paired daggers severed her primary mana meridians. Bleeding onto the stone, Gorgo detonated a violet smoke bomb and leaped toward the subterranean cataract.",
+      "narrationKo": "고르고가 경악하며 균형을 잃고 비틀거렸다. 스승들은 그 천금 같은 빈틈을 결코 놓치지 않았다. 그림리가 맹수처럼 포효하며 도약하여 쇠망치로 동굴 뒤편의 퇴로를 내리찍었다. 망치에 달린 은빛 방울이 맹렬하게 딸랑거렸다.",
+      "sourceSentenceStart": 32,
+      "sourceSentenceEnd": 32,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "망치에 달린 은빛 방울이 맹렬하게 딸랑거렸다.",
+          "textEn": "Bleeding onto the stone, Gorgo detonated a violet smoke bomb and leaped toward the subterranean cataract.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 89
         }
       ],
       "sfxCues": [
@@ -388,23 +988,52 @@
       ]
     },
     {
-      "sceneNumber": 12,
-      "imageFile": "episode_05/scene_12.webp",
-      "sourceImageFile": "episode_05/scene_12.webp",
-      "narrationEn": "Rondol swept subterranean water upward in a surging wave, stripping away Gorgo's toxic mist. Three barbed quarrels from Aila's crossbow punched through Gorgo's shoulder and thigh, while Kaze's paired daggers severed her primary mana meridians. Bleeding onto the stone, Gorgo detonated a violet smoke bomb and leaped toward the subterranean cataract.",
-      "narrationKo": "그림리의 포효와 함께 뱃사공 론돌이 지하수를 소용돌이치듯 끌어올려 고르고를 감싼 암흑 연막을 단숨에 씻어냈다. 에일라의 독화살 세 발이 고르고의 어깨와 허벅지를 꿰뚫었고, 도박사 카제가 손가락 사이로 튕긴 비검 두 자루가 고르고의 마나 회로를 봉쇄했다. 피를 흘리며 동굴 벽에 몰린 고르고는 품속에서 보랏빛 독연막탄을 터뜨리며 절벽 아래의 지하 폭포로 몸을 던지려 했다.",
-      "sourceSentenceStart": 24,
-      "sourceSentenceEnd": 25,
+      "sceneNumber": 33,
+      "imageFile": "episode_05/scene_33.webp",
+      "sourceImageFile": "episode_05/scene_33.webp",
+      "narrationEn": "\"Clever curs... but do not rejoice!",
+      "narrationKo": "“로비냐드의 원수를 갚을 날이 왔다, 이 마녀 녀석!” 그림리의 포효와 함께 뱃사공 론돌이 지하수를 소용돌이치듯 끌어올려 고르고를 감싼 암흑 연막을 단숨에 씻어냈다.",
+      "sourceSentenceStart": 33,
+      "sourceSentenceEnd": 33,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "론돌",
+          "speakerEn": "Rondol",
+          "textKo": "“로비냐드의 원수를 갚을 날이 왔다, 이 마녀 녀석!”",
+          "textEn": "“\"Clever curs... but do not rejoice!”",
+          "bubbleType": "shout",
+          "position": "top-right",
+          "characterCardId": 46
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 34,
+      "imageFile": "episode_05/scene_34.webp",
+      "sourceImageFile": "episode_05/scene_34.webp",
+      "narrationEn": "While you rot in these northern wastes, Balian's son is raised in the Red Glass Court as Prince Lucian's most lethal assassin! And upon the distant Wind Isle, Lord Aeolus's daughter, the brilliant Silia, grows into a storm that will tear this continent apart!\"",
+      "narrationKo": "에일라의 독화살 세 발이 고르고의 어깨와 허벅지를 꿰뚫었고, 도박사 카제가 손가락 사이로 튕긴 비검 두 자루가 고르고의 마나 회로를 봉쇄했다.",
+      "sourceSentenceStart": 34,
+      "sourceSentenceEnd": 34,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "피를 흘리며 동굴 벽에 몰린 고르고는 품속에서 보랏빛 독연막탄을 터뜨리며 절벽 아래의 지하 폭포로 몸을 던지려 했다.",
-          "textEn": "Bleeding onto the stone, Gorgo detonated a violet smoke bomb and leaped toward the subterranean cataract.",
+          "textKo": "에일라의 독화살 세 발이 고르고의 어깨와 허벅지를 꿰뚫었고, 도박사 카제가 손가락 사이로 튕긴 비검 두 자루가 고르고의 마나 회로를 봉쇄했다.",
+          "textEn": "And upon the distant Wind Isle, Lord Aeolus's daughter, the brilliant Silia, grows into a storm that will tear this continent apart!\"",
           "bubbleType": "thought",
-          "position": "top-right",
-          "characterCardId": 74
+          "position": "bottom-right",
+          "characterCardId": 70
         }
       ],
       "sfxCues": [
@@ -423,29 +1052,119 @@
       ]
     },
     {
-      "sceneNumber": 13,
-      "imageFile": "episode_05/scene_13.webp",
-      "sourceImageFile": "episode_05/scene_13.webp",
-      "narrationEn": "\"Clever curs... but do not rejoice! While you rot in these northern wastes, Balian's son is raised in the Red Glass Court as Prince Lucian's most lethal assassin! And upon the distant Wind Isle, Lord Aeolus's daughter, the brilliant Silia, grows into a storm that will tear this continent apart!\" \"Silence, hag!\" Grimli threw his hammer, but Gorgo vanished beneath the surging rapids.",
-      "narrationKo": "“크하하... 제법이구나, 어리석은 사냥꾼 놈들! 하지만 기뻐하기엔 이르다! 너희가 이 북방 구석에 처박혀 있는 동안, 남쪽 붉은 유리 궁정에선 발리안의 아들이 루시안 경의 가장 치명적인 살인귀로 자라나고 있으니! 그리고 대해의 바람섬에서는 현자 에올루스의 외동딸 실리아가 대륙의 질서를 뒤흔들 거대한 폭풍으로 피어나고 있다!” “입 닥쳐라!”",
-      "sourceSentenceStart": 26,
-      "sourceSentenceEnd": 27,
+      "sceneNumber": 35,
+      "imageFile": "episode_05/scene_35.webp",
+      "sourceImageFile": "episode_05/scene_35.webp",
+      "narrationEn": "\"Silence, hag!\" Grimli threw his hammer, but Gorgo vanished beneath the surging rapids.",
+      "narrationKo": "피를 흘리며 동굴 벽에 몰린 고르고는 품속에서 보랏빛 독연막탄을 터뜨리며 절벽 아래의 지하 폭포로 몸을 던지려 했다.",
+      "sourceSentenceStart": 35,
+      "sourceSentenceEnd": 35,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "피를 흘리며 동굴 벽에 몰린 고르고는 품속에서 보랏빛 독연막탄을 터뜨리며 절벽 아래의 지하 폭포로 몸을 던지려 했다.",
+          "textEn": "\"Silence, hag!\" Grimli threw his hammer, but Gorgo vanished beneath the surging rapids.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 89
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 36,
+      "imageFile": "episode_05/scene_36.webp",
+      "sourceImageFile": "episode_05/scene_36.webp",
+      "narrationEn": "As the deluge subsided, silence returned to the cavern.",
+      "narrationKo": "“크하하... 제법이구나, 어리석은 사냥꾼 놈들! 하지만 기뻐하기엔 이르다! 너희가 이 북방 구석에 처박혀 있는 동안, 남쪽 붉은 유리 궁정에선 발리안의 아들이 루시안 경의 가장 치명적인 살인귀로 자라나고 있으니!”",
+      "sourceSentenceStart": 36,
+      "sourceSentenceEnd": 36,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "메두사 고르고",
           "speakerEn": "Medusa Gorgo",
-          "textKo": "“크하하... 제법이구나, 어리석은 사냥꾼 놈들! 하지만 기뻐하기엔 이르다! 너희가 이 북방 구석에 처박혀 있는 동안, 남쪽 붉은 유리 궁정에선 발리안의 아들이 루시안 경의 가장 치명적인 살인귀로 자라나고 있으니! 그리고 대해의 바람섬에서는 현자 에올루스의 외동딸 실리아가 대륙의 질서를 뒤흔들 거대한 폭풍으로 피어나고 있다!”",
-          "textEn": "“Clever curs... but do not rejoice! While you rot in these northern wastes, Balian's son is raised in the Red Glass Court as Prince Lucian's most lethal assassin! And upon the distant Wind Isle, Lord Aeolus's daughter, the brilliant Silia, grows into a storm that will tear this continent apart!”",
+          "textKo": "“크하하... 제법이구나, 어리석은 사냥꾼 놈들! 하지만 기뻐하기엔 이르다! 너희가 이 북방 구석에 처박혀 있는 동안, 남쪽 붉은 유리 궁정에선 발리안의 아들이 루시안 경의 가장 치명적인 살인귀로 자라나고 있으니!”",
+          "textEn": "“As the deluge subsided, silence returned to the cavern.”",
+          "bubbleType": "shout",
+          "position": "top-left",
+          "characterCardId": 89
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 37,
+      "imageFile": "episode_05/scene_37.webp",
+      "sourceImageFile": "episode_05/scene_37.webp",
+      "narrationEn": "Kadan wiped cold sweat from his palms and looked toward Gawain. \"Master... who is this girl Silia from the Wind Isle?",
+      "narrationKo": "“그리고 대해의 바람섬에서는 현자 에올루스의 외동딸 실리아가 대륙의 질서를 뒤흔들 거대한 폭풍으로 피어나고 있다!”",
+      "sourceSentenceStart": 37,
+      "sourceSentenceEnd": 37,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "그림리",
+          "speakerEn": "Grimli",
+          "textKo": "“그리고 대해의 바람섬에서는 현자 에올루스의 외동딸 실리아가 대륙의 질서를 뒤흔들 거대한 폭풍으로 피어나고 있다!”",
+          "textEn": "“Kadan wiped cold sweat from his palms and looked toward Gawain. \"Master... who is this girl Silia from the Wind Isle?”",
           "bubbleType": "shout",
           "position": "top-right",
-          "characterCardId": 89
+          "characterCardId": 74
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
         },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 38,
+      "imageFile": "episode_05/scene_38.webp",
+      "sourceImageFile": "episode_05/scene_38.webp",
+      "narrationEn": "And who is the son of Balian she spoke of?\"",
+      "narrationKo": "“입 닥쳐라!” 그림리가 망치를 던졌으나 고르고는 거친 지하 급류 속으로 몸을 던져 어둠 속으로 유령처럼 휩쓸려 사라졌다.",
+      "sourceSentenceStart": 38,
+      "sourceSentenceEnd": 38,
+      "alignmentScore": 1.0,
+      "dialogues": [
         {
           "speakerKo": "그림리",
           "speakerEn": "Grimli",
           "textKo": "“입 닥쳐라!”",
-          "textEn": "“Silence, hag!”",
+          "textEn": "“And who is the son of Balian she spoke of?\"”",
           "bubbleType": "shout",
           "position": "bottom-left",
           "characterCardId": 74
@@ -457,61 +1176,55 @@
           "textEn": "RUMBLE!",
           "style": "rumble",
           "position": "bottom-left"
-        },
-        {
-          "textKo": "휘이이익-!",
-          "textEn": "SWOOSH!",
-          "style": "slash",
-          "position": "top-left"
         }
       ]
     },
     {
-      "sceneNumber": 14,
-      "imageFile": "episode_05/scene_14.webp",
-      "sourceImageFile": "episode_05/scene_14.webp",
-      "narrationEn": "As the deluge subsided, silence returned to the cavern. Kadan wiped cold sweat from his palms and looked toward Gawain. \"Master... who is this girl Silia from the Wind Isle? And who is the son of Balian she spoke of?\"",
-      "narrationKo": "그림리가 망치를 던졌으나 고르고는 거친 지하 급류 속으로 몸을 던져 어둠 속으로 유령처럼 휩쓸려 사라졌다. 폭우가 차츰 잦아들고 동굴 안에는 무거운 정적이 흘렀다. 카단은 손바닥에 밴 식은땀을 닦아내며 맹인 추적자 가웨인을 올려다보았다.",
-      "sourceSentenceStart": 28,
-      "sourceSentenceEnd": 29,
+      "sceneNumber": 39,
+      "imageFile": "episode_05/scene_39.webp",
+      "sourceImageFile": "episode_05/scene_39.webp",
+      "narrationEn": "Gawain rested upon his staff, listening to the murmuring earth outside. \"The Wind Isle is an isolated sanctuary upon the eastern sea.",
+      "narrationKo": "폭우가 차츰 잦아들고 동굴 안에는 무거운 정적이 흘렀다. 카단은 손바닥에 밴 식은땀을 닦아내며 맹인 추적자 가웨인을 올려다보았다.",
+      "sourceSentenceStart": 39,
+      "sourceSentenceEnd": 39,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
           "textKo": "카단은 손바닥에 밴 식은땀을 닦아내며 맹인 추적자 가웨인을 올려다보았다.",
-          "textEn": "And who is the son of Balian she spoke of?\"",
+          "textEn": "\"The Wind Isle is an isolated sanctuary upon the eastern sea.",
           "bubbleType": "thought",
-          "position": "bottom-right",
-          "characterCardId": 74
+          "position": "top-left",
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
         {
-          "textKo": "쿠구구궁!",
-          "textEn": "RUMBLE!",
-          "style": "rumble",
-          "position": "bottom-left"
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
         }
       ]
     },
     {
-      "sceneNumber": 15,
-      "imageFile": "episode_05/scene_15.webp",
-      "sourceImageFile": "episode_05/scene_15.webp",
-      "narrationEn": "Gawain rested upon his staff, listening to the murmuring earth outside.",
-      "narrationKo": "“스승님... 방금 마녀가 말한 바람섬과 실리아라는 이름은 대체 누구입니까? 그리고 발리안이라는 분의 아들은 또 누구입니까?” 가웨인은 쇠지팡이를 짚은 채 젖은 동굴 밖의 대지 소리를 묵묵히 들었다.",
-      "sourceSentenceStart": 30,
-      "sourceSentenceEnd": 31,
+      "sceneNumber": 40,
+      "imageFile": "episode_05/scene_40.webp",
+      "sourceImageFile": "episode_05/scene_40.webp",
+      "narrationEn": "Its ruler, Aeolus, is the proudest and most formidable sage of air mana.",
+      "narrationKo": "“스승님... 방금 마녀가 말한 바람섬과 실리아라는 이름은 대체 누구입니까? 그리고 발리안이라는 분의 아들은 또 누구입니까?”",
+      "sourceSentenceStart": 40,
+      "sourceSentenceEnd": 40,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
           "textKo": "“스승님... 방금 마녀가 말한 바람섬과 실리아라는 이름은 대체 누구입니까? 그리고 발리안이라는 분의 아들은 또 누구입니까?”",
-          "textEn": "“Master... who is this girl Silia from the Wind Isle? And who is the son of Balian she spoke of?”",
+          "textEn": "“Its ruler, Aeolus, is the proudest and most formidable sage of air mana.”",
           "bubbleType": "thought",
-          "position": "bottom-right",
+          "position": "top-left",
           "characterCardId": 41
         }
       ],
@@ -525,22 +1238,22 @@
       ]
     },
     {
-      "sceneNumber": 16,
-      "imageFile": "episode_05/scene_16.webp",
-      "sourceImageFile": "episode_05/scene_16.webp",
-      "narrationEn": "\"The Wind Isle is an isolated sanctuary upon the eastern sea. Its ruler, Aeolus, is the proudest and most formidable sage of air mana. It is said he has a daughter named Silia, sharp as diamond and free as the sea breeze. If the Shadow Realm touches her, war will engulf the world.\" Kadan placed his hand upon his chest.",
-      "narrationKo": "“바람섬은 동쪽 대해에 홀로 떠 있는 신비로운 고립의 성역이다. 그곳의 영주 에올루스는 대륙에서 가장 오만하고도 고결한 바람의 현자이지. 그에게는 눈처럼 영민하고 바람처럼 자유로운 외동딸 실리아가 있다고 들었다. 만약 섀도우렐름의 그림자가 그곳까지 닿았다면 장차 천하가 거대한 전화에 휩싸일 게다.” 카단은 떨리는 손으로 자신의 가슴에 손을 얹었다.",
-      "sourceSentenceStart": 32,
-      "sourceSentenceEnd": 33,
+      "sceneNumber": 41,
+      "imageFile": "episode_05/scene_41.webp",
+      "sourceImageFile": "episode_05/scene_41.webp",
+      "narrationEn": "It is said he has a daughter named Silia, sharp as diamond and free as the sea breeze. If the Shadow Realm touches her, war will engulf the world.\"",
+      "narrationKo": "가웨인은 쇠지팡이를 짚은 채 젖은 동굴 밖의 대지 소리를 묵묵히 들었다.",
+      "sourceSentenceStart": 41,
+      "sourceSentenceEnd": 41,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "가웨인",
-          "speakerEn": "Gawain",
-          "textKo": "“바람섬은 동쪽 대해에 홀로 떠 있는 신비로운 고립의 성역이다. 그곳의 영주 에올루스는 대륙에서 가장 오만하고도 고결한 바람의 현자이지. 그에게는 눈처럼 영민하고 바람처럼 자유로운 외동딸 실리아가 있다고 들었다. 만약 섀도우렐름의 그림자가 그곳까지 닿았다면 장차 천하가 거대한 전화에 휩싸일 게다.”",
-          "textEn": "“The Wind Isle is an isolated sanctuary upon the eastern sea. Its ruler, Aeolus, is the proudest and most formidable sage of air mana. It is said he has a daughter named Silia, sharp as diamond and free as the sea breeze. If the Shadow Realm touches her, war will engulf the world.”",
-          "bubbleType": "speech",
-          "position": "top-left",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "가웨인은 쇠지팡이를 짚은 채 젖은 동굴 밖의 대지 소리를 묵묵히 들었다.",
+          "textEn": "If the Shadow Realm touches her, war will engulf the world.\"",
+          "bubbleType": "thought",
+          "position": "bottom-left",
           "characterCardId": 45
         }
       ],
@@ -550,6 +1263,64 @@
           "textEn": "RUMBLE!",
           "style": "rumble",
           "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 42,
+      "imageFile": "episode_05/scene_42.webp",
+      "sourceImageFile": "episode_05/scene_42.webp",
+      "narrationEn": "Kadan placed his hand upon his chest.",
+      "narrationKo": "“바람섬은 동쪽 대해에 홀로 떠 있는 신비로운 고립의 성역이다. 그곳의 영주 에올루스는 대륙에서 가장 오만하고도 고결한 바람의 현자이지.”",
+      "sourceSentenceStart": 42,
+      "sourceSentenceEnd": 42,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "가웨인",
+          "speakerEn": "Gawain",
+          "textKo": "“바람섬은 동쪽 대해에 홀로 떠 있는 신비로운 고립의 성역이다. 그곳의 영주 에올루스는 대륙에서 가장 오만하고도 고결한 바람의 현자이지.”",
+          "textEn": "“Kadan placed his hand upon his chest.”",
+          "bubbleType": "speech",
+          "position": "bottom-left",
+          "characterCardId": 45
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 43,
+      "imageFile": "episode_05/scene_43.webp",
+      "sourceImageFile": "episode_05/scene_43.webp",
+      "narrationEn": "\"Is she... also hunted and afraid, like me?\" Aila brushed back his damp hair with a gentle smile.",
+      "narrationKo": "“그에게는 눈처럼 영민하고 바람처럼 자유로운 외동딸 실리아가 있다고 들었다. 만약 섀도우렐름의 그림자가 그곳까지 닿았다면 장차 천하가 거대한 전화에 휩싸일 게다.”",
+      "sourceSentenceStart": 43,
+      "sourceSentenceEnd": 43,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“그에게는 눈처럼 영민하고 바람처럼 자유로운 외동딸 실리아가 있다고 들었다. 만약 섀도우렐름의 그림자가 그곳까지 닿았다면 장차 천하가 거대한 전화에 휩싸일 게다.”",
+          "textEn": "“Is she... also hunted and afraid, like me?”",
+          "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
         },
         {
           "textKo": "휘이이익-!",
@@ -560,23 +1331,52 @@
       ]
     },
     {
-      "sceneNumber": 17,
-      "imageFile": "episode_05/scene_17.webp",
-      "sourceImageFile": "episode_05/scene_17.webp",
-      "narrationEn": "\"Is she... also hunted and afraid, like me?\" Aila brushed back his damp hair with a gentle smile.",
-      "narrationKo": "“그 아이도... 저처럼 누군가에게 쫓기며 두려움 속에 떨고 있는 겁니까?” 에일라가 젖은 카단의 이마를 쓸어 넘기며 따스한 미소를 지었다.",
-      "sourceSentenceStart": 34,
-      "sourceSentenceEnd": 35,
+      "sceneNumber": 44,
+      "imageFile": "episode_05/scene_44.webp",
+      "sourceImageFile": "episode_05/scene_44.webp",
+      "narrationEn": "\"Then you must grow stronger, Kadan.",
+      "narrationKo": "카단은 떨리는 손으로 자신의 가슴에 손을 얹었다. “그 아이도... 저처럼 누군가에게 쫓기며 두려움 속에 떨고 있는 겁니까?”",
+      "sourceSentenceStart": 44,
+      "sourceSentenceEnd": 44,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
           "textKo": "“그 아이도... 저처럼 누군가에게 쫓기며 두려움 속에 떨고 있는 겁니까?”",
-          "textEn": "“Is she... also hunted and afraid, like me?”",
+          "textEn": "“\"Then you must grow stronger, Kadan.”",
           "bubbleType": "thought",
-          "position": "top-right",
+          "position": "top-left",
           "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 45,
+      "imageFile": "episode_05/scene_45.webp",
+      "sourceImageFile": "episode_05/scene_45.webp",
+      "narrationEn": "The shield to protect others is never granted to those who simply wait. To honor the silver dagger your father left behind.\"",
+      "narrationKo": "에일라가 젖은 카단의 이마를 쓸어 넘기며 따스한 미소를 지었다.",
+      "sourceSentenceStart": 45,
+      "sourceSentenceEnd": 45,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "에일라가 젖은 카단의 이마를 쓸어 넘기며 따스한 미소를 지었다.",
+          "textEn": "To honor the silver dagger your father left behind.\"",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 70
         }
       ],
       "sfxCues": [
@@ -589,20 +1389,20 @@
       ]
     },
     {
-      "sceneNumber": 18,
-      "imageFile": "episode_05/scene_18.webp",
-      "sourceImageFile": "episode_05/scene_18.webp",
-      "narrationEn": "\"Then you must grow stronger, Kadan. The shield to protect others is never granted to those who simply wait. To honor the silver dagger your father left behind.\" Grimli chuckled, setting his maul beside the hearth.",
-      "narrationKo": "“그렇다면 네가 더 강해져야 한단다, 카단. 남을 지키는 방패는 그저 기다린다고 주어지는 것이 아니니까. 네 아버지가 남긴 은빛 단검의 진실을 증명하려면 말이다.” 그림리 역시 수염에 묻은 빗물을 털어내며 쇠망치를 모닥불 옆에 내려놓았다.",
-      "sourceSentenceStart": 36,
-      "sourceSentenceEnd": 37,
+      "sceneNumber": 46,
+      "imageFile": "episode_05/scene_46.webp",
+      "sourceImageFile": "episode_05/scene_46.webp",
+      "narrationEn": "Grimli chuckled, setting his maul beside the hearth.",
+      "narrationKo": "“그렇다면 네가 더 강해져야 한단다, 카단. 남을 지키는 방패는 그저 기다린다고 주어지는 것이 아니니까. 네 아버지가 남긴 은빛 단검의 진실을 증명하려면 말이다.”",
+      "sourceSentenceStart": 46,
+      "sourceSentenceEnd": 46,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "에일라",
           "speakerEn": "Aila",
           "textKo": "“그렇다면 네가 더 강해져야 한단다, 카단. 남을 지키는 방패는 그저 기다린다고 주어지는 것이 아니니까. 네 아버지가 남긴 은빛 단검의 진실을 증명하려면 말이다.”",
-          "textEn": "“Then you must grow stronger, Kadan. The shield to protect others is never granted to those who simply wait. To honor the silver dagger your father left behind.”",
+          "textEn": "“Grimli chuckled, setting his maul beside the hearth.”",
           "bubbleType": "speech",
           "position": "bottom-left",
           "characterCardId": 70
@@ -624,22 +1424,22 @@
       ]
     },
     {
-      "sceneNumber": 19,
-      "imageFile": "episode_05/scene_19.webp",
-      "sourceImageFile": "episode_05/scene_19.webp",
-      "narrationEn": "\"Aye, lad! Deflecting a phantom blade in the dark was fine work. Tomorrow, your boulder drills triple!\" Eliana bound Kadan's scraped arm with soothing mountain moss salve.",
-      "narrationKo": "“그래, 꼬마 녀석아! 오늘 눈을 감고 칼을 쳐낸 솜씨는 제법이었다. 내일부터는 바위 부수기 훈련을 세 배로 늘려주마!” 엘리아나는 부드러운 산이끼 고약으로 카단의 긁힌 팔을 정성껏 감싸며 속삭였다.",
-      "sourceSentenceStart": 38,
-      "sourceSentenceEnd": 39,
+      "sceneNumber": 47,
+      "imageFile": "episode_05/scene_47.webp",
+      "sourceImageFile": "episode_05/scene_47.webp",
+      "narrationEn": "\"Aye, lad! Deflecting a phantom blade in the dark was fine work.",
+      "narrationKo": "그림리 역시 수염에 묻은 빗물을 털어내며 쇠망치를 모닥불 옆에 내려놓았다.",
+      "sourceSentenceStart": 47,
+      "sourceSentenceEnd": 47,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "그림리",
-          "speakerEn": "Grimli",
-          "textKo": "“그래, 꼬마 녀석아! 오늘 눈을 감고 칼을 쳐낸 솜씨는 제법이었다. 내일부터는 바위 부수기 훈련을 세 배로 늘려주마!”",
-          "textEn": "“Aye, lad! Deflecting a phantom blade in the dark was fine work. Tomorrow, your boulder drills triple!”",
-          "bubbleType": "shout",
-          "position": "bottom-right",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그림리 역시 수염에 묻은 빗물을 털어내며 쇠망치를 모닥불 옆에 내려놓았다.",
+          "textEn": "Deflecting a phantom blade in the dark was fine work.",
+          "bubbleType": "thought",
+          "position": "top-left",
           "characterCardId": 74
         }
       ],
@@ -653,23 +1453,110 @@
       ]
     },
     {
-      "sceneNumber": 20,
-      "imageFile": "episode_05/scene_20.webp",
-      "sourceImageFile": "episode_05/scene_20.webp",
-      "narrationEn": "\"Fear not your scars. Healed flesh becomes an armor tougher than boiled hide.\" Kadan gazed past the broken cavern mouth toward the morning star rising through the clearing skies. Having learned to listen with closed eyes, the boy felt the distant fate of the world and the name of Silia etch itself into his destiny like a shining silver ripple.",
-      "narrationKo": "“상처를 두려워하지 마라. 아문 상처는 살갗보다 더 단단한 갑옷이 되는 법이란다.” 카단은 동굴 입구 너머로 먹구름이 걷히며 드러난 새벽하늘의 샛별을 올려다보았다. 눈을 감고 듣는 법을 깨달은 소년의 가슴속에서, 머나먼 대륙의 운명과 실리아라는 신비로운 이름이 맑은 은빛 파문처럼 퍼져 나가고 있었다.",
-      "sourceSentenceStart": 40,
-      "sourceSentenceEnd": 41,
+      "sceneNumber": 48,
+      "imageFile": "episode_05/scene_48.webp",
+      "sourceImageFile": "episode_05/scene_48.webp",
+      "narrationEn": "Tomorrow, your boulder drills triple!\"",
+      "narrationKo": "“그래, 꼬마 녀석아! 오늘 눈을 감고 칼을 쳐낸 솜씨는 제법이었다. 내일부터는 바위 부수기 훈련을 세 배로 늘려주마!”",
+      "sourceSentenceStart": 48,
+      "sourceSentenceEnd": 48,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "그림리",
+          "speakerEn": "Grimli",
+          "textKo": "“그래, 꼬마 녀석아! 오늘 눈을 감고 칼을 쳐낸 솜씨는 제법이었다. 내일부터는 바위 부수기 훈련을 세 배로 늘려주마!”",
+          "textEn": "“Tomorrow, your boulder drills triple!\"”",
+          "bubbleType": "shout",
+          "position": "top-left",
+          "characterCardId": 74
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 49,
+      "imageFile": "episode_05/scene_49.webp",
+      "sourceImageFile": "episode_05/scene_49.webp",
+      "narrationEn": "Eliana bound Kadan's scraped arm with soothing mountain moss salve. \"Fear not your scars.",
+      "narrationKo": "엘리아나는 부드러운 산이끼 고약으로 카단의 긁힌 팔을 정성껏 감싸며 속삭였다.",
+      "sourceSentenceStart": 49,
+      "sourceSentenceEnd": 49,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "엘리아나는 부드러운 산이끼 고약으로 카단의 긁힌 팔을 정성껏 감싸며 속삭였다.",
+          "textEn": "\"Fear not your scars.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 63
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 50,
+      "imageFile": "episode_05/scene_50.webp",
+      "sourceImageFile": "episode_05/scene_50.webp",
+      "narrationEn": "Healed flesh becomes an armor tougher than boiled hide.\"",
+      "narrationKo": "“상처를 두려워하지 마라. 아문 상처는 살갗보다 더 단단한 갑옷이 되는 법이란다.”",
+      "sourceSentenceStart": 50,
+      "sourceSentenceEnd": 50,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "엘리아나",
           "speakerEn": "Eliana",
           "textKo": "“상처를 두려워하지 마라. 아문 상처는 살갗보다 더 단단한 갑옷이 되는 법이란다.”",
-          "textEn": "“Fear not your scars. Healed flesh becomes an armor tougher than boiled hide.”",
+          "textEn": "“Healed flesh becomes an armor tougher than boiled hide.\"”",
           "bubbleType": "speech",
-          "position": "top-left",
+          "position": "bottom-left",
           "characterCardId": 63
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 51,
+      "imageFile": "episode_05/scene_51.webp",
+      "sourceImageFile": "episode_05/scene_51.webp",
+      "narrationEn": "Kadan gazed past the broken cavern mouth toward the morning star rising through the clearing skies. Having learned to listen with closed eyes, the boy felt the distant fate of the world and the name of Silia etch itself into his destiny like a shining silver ripple.",
+      "narrationKo": "카단은 동굴 입구 너머로 먹구름이 걷히며 드러난 새벽하늘의 샛별을 올려다보았다. 눈을 감고 듣는 법을 깨달은 소년의 가슴속에서, 머나먼 대륙의 운명과 실리아라는 신비로운 이름이 맑은 은빛 파문처럼 퍼져 나가고 있었다.",
+      "sourceSentenceStart": 51,
+      "sourceSentenceEnd": 51,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "눈을 감고 듣는 법을 깨달은 소년의 가슴속에서, 머나먼 대륙의 운명과 실리아라는 신비로운 이름이 맑은 은빛 파문처럼 퍼져 나가고 있었다.",
+          "textEn": "Having learned to listen with closed eyes, the boy felt the distant fate of the world and the name of Silia etch itself into his destiny like a shining silver ripple.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 41
         }
       ],
       "sfxCues": [

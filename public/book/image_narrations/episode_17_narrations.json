@@ -2,36 +2,30 @@
   "episodeNumber": 17,
   "episodeTitleEn": "Invitation to the Wind Isle",
   "episodeTitleKo": "바람섬의 초대장",
-  "sourceSentenceCount": 47,
-  "sceneCount": 20,
+  "sourceSentenceCount": 45,
+  "sceneCount": 45,
   "scenes": [
     {
       "sceneNumber": 1,
       "imageFile": "episode_17/scene_01.webp",
       "sourceImageFile": "episode_17/scene_01.webp",
-      "narrationEn": "Across the deck of the flagship 'Breeze Wing' slicing through the eastern ocean, salty gales whipped in relentless squalls. In every direction stretched the rolling azure swells of the boundless main and the distant horizon, and each time the vessel's timber prow cleaved through a crest, showers of crystalline foam scattered into the air like shimmering rainbows. Thick manila rigging groaned in protest against the mastheads, and from the wet oak decking rose the sharp, briny mingling of sea salt and pine tar. At high noon on the second day of their voyage, the rhythmic thunder of immense wings pierced the roar of the surf from beneath the heavy storm clouds to the north. Gripping the ship's helm, Rondol adjusted his brass monocular, pointing toward the northern squall line.",
-      "narrationKo": "동쪽 대해를 가르는 범선 ‘미풍의날개호’의 갑판 위로는 소금기 머금은 거센 해풍이 쉴 새 없이 몰아치고 있었다. 사방을 둘러보아도 끝없이 일렁이는 짙푸른 파도와 아득한 수평선뿐이었고, 뱃머리가 거친 파도를 쪼갤 때마다 하얀 포말이 무지갯빛을 뿜어내며 허공으로 흩어졌다. 돛대에 묶인 굵은 마닐라삼 밧줄들이 삐걱거리는 비명을 질렀고, 젖은 목재 갑판에서는 특유의 갯내음과 타르 향이 뒤섞여 피어올랐다. 출항 이틀째 되던 날 정오, 북쪽 수평선의 먹구름 사이로 거대한 날개짓 소리가 파도 소리를 뚫고 울려 퍼졌다. 키를 잡고 있던 론돌이 외눈 안경을 치켜올리며 하늘을 가리켰다.",
+      "narrationEn": "Across the deck of the flagship 'Breeze Wing' slicing through the eastern ocean, salty gales whipped in relentless squalls. In every direction stretched the rolling azure swells of the boundless main and the distant horizon, and each time the vessel's timber prow cleaved through a crest, showers of crystalline foam scattered into the air like shimmering rainbows.",
+      "narrationKo": "동쪽 대해를 가르는 범선 ‘미풍의날개호’의 갑판 위로는 소금기 머금은 거센 해풍이 쉴 새 없이 몰아치고 있었다.",
       "sourceSentenceStart": 1,
-      "sourceSentenceEnd": 2,
+      "sourceSentenceEnd": 1,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "키를 잡고 있던 론돌이 외눈 안경을 치켜올리며 하늘을 가리켰다.",
-          "textEn": "Gripping the ship's helm, Rondol adjusted his brass monocular, pointing toward the northern squall line.",
+          "textKo": "동쪽 대해를 가르는 범선 ‘미풍의날개호’의 갑판 위로는 소금기 머금은 거센 해풍이 쉴 새 없이 몰아치고 있었다.",
+          "textEn": "In every direction stretched the rolling azure swells of the boundless main and the distant horizon, and each time the vessel's timber prow cleaved through a crest, showers of crystalline foam scattered into the air like shimmering rainbows.",
           "bubbleType": "thought",
           "position": "bottom-left",
           "characterCardId": 46
         }
       ],
       "sfxCues": [
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        },
         {
           "textKo": "쿠구구궁!",
           "textEn": "RUMBLE!",
@@ -44,19 +38,19 @@
       "sceneNumber": 2,
       "imageFile": "episode_17/scene_02.webp",
       "sourceImageFile": "episode_17/scene_02.webp",
-      "narrationEn": "\"Look to the northwestern heavens! That is no common albatross. It is an imperial wind gryphon bearing the silver plumage of the royal aviary!\" At Rondol's shout, Kadan and Ignis hurried to the weather railing. A magnificent beast adorned in silver and deep indigo feathers circled the rigging before alighting with majestic grace upon the topgallant yardarm. Fastened to the gryphon's right talon was a cylindrical silver courier tube, its wax seal bearing the distinct plum-blossom cipher of Master Titania, high royal scholar of Whispering Wind Island and Cilia's revered mentor. Whistling a melodious wind greeting, Cilia coaxed the gentle beast to glide down and perch upon her leather arm-guard.",
-      "narrationKo": "“북서쪽 하늘을 보아라! 보통 바다갈매기가 아니다. 왕실의 은빛 깃털을 지닌 바람 그리폰이다!” 론돌의 외침에 카단과 이그니스가 갑판 난간으로 다가갔다. 은빛과 감청색 깃털이 조화를 이룬 거대한 그리폰 한 마리가 선회하더니, 돛대 꼭대기의 망루 활대에 사뿐히 내려앉았다. 그리폰의 오른쪽 발목에는 은빛 원통형 전서구 통이 매달려 있었고, 그 마개에는 바람 속삭임 섬 왕실의 수석 학사이자 실리아의 오랜 스승인 티타니아의 매화 문장이 선명하게 찍혀 있었다. 실리아가 휘파람으로 청아한 바람의 신호를 보내자, 그리폰은 온순하게 활강해 실리아의 가죽 토시 위에 내려앉았다.",
-      "sourceSentenceStart": 3,
-      "sourceSentenceEnd": 5,
+      "narrationEn": "Thick manila rigging groaned in protest against the mastheads, and from the wet oak decking rose the sharp, briny mingling of sea salt and pine tar. At high noon on the second day of their voyage, the rhythmic thunder of immense wings pierced the roar of the surf from beneath the heavy storm clouds to the north.",
+      "narrationKo": "사방을 둘러보아도 끝없이 일렁이는 짙푸른 파도와 아득한 수평선뿐이었고, 뱃머리가 거친 파도를 쪼갤 때마다 하얀 포말이 무지갯빛을 뿜어내며 허공으로 흩어졌다.",
+      "sourceSentenceStart": 2,
+      "sourceSentenceEnd": 2,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "론돌",
-          "speakerEn": "Rondol",
-          "textKo": "“북서쪽 하늘을 보아라! 보통 바다갈매기가 아니다. 왕실의 은빛 깃털을 지닌 바람 그리폰이다!”",
-          "textEn": "“Look to the northwestern heavens! That is no common albatross. It is an imperial wind gryphon bearing the silver plumage of the royal aviary!”",
-          "bubbleType": "shout",
-          "position": "bottom-left",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "사방을 둘러보아도 끝없이 일렁이는 짙푸른 파도와 아득한 수평선뿐이었고, 뱃머리가 거친 파도를 쪼갤 때마다 하얀 포말이 무지갯빛을 뿜어내며 허공으로 흩어졌다.",
+          "textEn": "At high noon on the second day of their voyage, the rhythmic thunder of immense wings pierced the roar of the surf from beneath the heavy storm clouds to the north.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
           "characterCardId": 46
         }
       ],
@@ -66,7 +60,59 @@
           "textEn": "CRACKLE!",
           "style": "magic",
           "position": "top-right"
-        },
+        }
+      ]
+    },
+    {
+      "sceneNumber": 3,
+      "imageFile": "episode_17/scene_03.webp",
+      "sourceImageFile": "episode_17/scene_03.webp",
+      "narrationEn": "Gripping the ship's helm, Rondol adjusted his brass monocular, pointing toward the northern squall line. \"Look to the northwestern heavens!",
+      "narrationKo": "돛대에 묶인 굵은 마닐라삼 밧줄들이 삐걱거리는 비명을 질렀고, 젖은 목재 갑판에서는 특유의 갯내음과 타르 향이 뒤섞여 피어올랐다.",
+      "sourceSentenceStart": 3,
+      "sourceSentenceEnd": 3,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "돛대에 묶인 굵은 마닐라삼 밧줄들이 삐걱거리는 비명을 질렀고, 젖은 목재 갑판에서는 특유의 갯내음과 타르 향이 뒤섞여 피어올랐다.",
+          "textEn": "\"Look to the northwestern heavens!",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 46
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 4,
+      "imageFile": "episode_17/scene_04.webp",
+      "sourceImageFile": "episode_17/scene_04.webp",
+      "narrationEn": "That is no common albatross. It is an imperial wind gryphon bearing the silver plumage of the royal aviary!\"",
+      "narrationKo": "출항 이틀째 되던 날 정오, 북쪽 수평선의 먹구름 사이로 거대한 날개짓 소리가 파도 소리를 뚫고 울려 퍼졌다.",
+      "sourceSentenceStart": 4,
+      "sourceSentenceEnd": 4,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "출항 이틀째 되던 날 정오, 북쪽 수평선의 먹구름 사이로 거대한 날개짓 소리가 파도 소리를 뚫고 울려 퍼졌다.",
+          "textEn": "It is an imperial wind gryphon bearing the silver plumage of the royal aviary!\"",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 46
+        }
+      ],
+      "sfxCues": [
         {
           "textKo": "쿠구구궁!",
           "textEn": "RUMBLE!",
@@ -76,81 +122,23 @@
       ]
     },
     {
-      "sceneNumber": 3,
-      "imageFile": "episode_17/scene_03.webp",
-      "sourceImageFile": "episode_17/scene_03.webp",
-      "narrationEn": "Extracting the parchment scroll from the silver canister, Cilia murmured with growing apprehension. \"An urgent dispatch from Master Titania. Grave calamity has struck the island.\"",
-      "narrationKo": "실리아가 은빛 원통을 열고 양피지 서신을 꺼내 들며 나지막이 읊조렸다. “티타니아 스승님의 긴급 전서예요. 섬에 심상치 않은 변고가 일어났어요.”",
-      "sourceSentenceStart": 6,
-      "sourceSentenceEnd": 7,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“티타니아 스승님의 긴급 전서예요. 섬에 심상치 않은 변고가 일어났어요.”",
-          "textEn": "“An urgent dispatch from Master Titania. Grave calamity has struck the island.”",
-          "bubbleType": "speech",
-          "position": "bottom-right",
-          "characterCardId": 62
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 4,
-      "imageFile": "episode_17/scene_04.webp",
-      "sourceImageFile": "episode_17/scene_04.webp",
-      "narrationEn": "Kadan rested his iron shield, gently stroking the beast's downy feathers. \"A messenger that flew thousands of leagues across open water. It carries your mentor's utmost devotion.\"",
-      "narrationKo": "카단이 방패를 고쳐 쥐며 그리폰의 깃털을 부드럽게 쓰다듬었다. “수천 리 바다를 건너온 전령이다. 스승님의 충정이 깃들어 있군.”",
-      "sourceSentenceStart": 8,
-      "sourceSentenceEnd": 9,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“수천 리 바다를 건너온 전령이다. 스승님의 충정이 깃들어 있군.”",
-          "textEn": "“A messenger that flew thousands of leagues across open water. It carries your mentor's utmost devotion.”",
-          "bubbleType": "speech",
-          "position": "top-left",
-          "characterCardId": 41
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
       "sceneNumber": 5,
       "imageFile": "episode_17/scene_05.webp",
       "sourceImageFile": "episode_17/scene_05.webp",
-      "narrationEn": "Across the unfurled scroll, ink strokes had been brushed in hurried, frantic haste, conveying news that chilled the companions to their marrow. High Elder Zephyr, supreme archon of the Wind Isle Council, had placed King Aeolus under de facto house arrest and proclaimed martial law across the entire archipelago. Colluding with Minister Lucian of the imperial court, Zephyr had integrated the forbidden mana siphon of the Nine Shadows Codex into the island's vital core, the Jade Barrier Spire. It was an act of treason designed to open the kingdom's sacred elemental mantle as an invasion corridor for the imperial armada. Cilia's face paled as her voice trembled.",
-      "narrationKo": "실리아가 펼쳐 든 양피지 위에는 다급하게 휘갈겨 쓴 잉크 자국이 번져 있었다. 서신의 내용은 일행의 가슴을 서늘하게 얼어붙게 만들기에 충분했다. 바람 속삭임 섬의 최고 권력자인 제피르 대장로가 국왕 에올루스를 반쯤 유폐하고 섬 전역에 계엄령을 선포했다는 것이었다. 제피르는 황실의 루시안 재상과 내통하여 ‘나인섀도우 코덱스’의 금지된 마나 제어기를 섬의 심장부인 비취 결계탑에 연결하려 하고 있었다. 섬을 수호해 온 바람의 장막을 황실의 침공 통로로 열어주려는 반역이었다. 실리아가 파리해진 얼굴로 편지를 읽어 내려갔다.",
-      "sourceSentenceStart": 10,
-      "sourceSentenceEnd": 12,
+      "narrationEn": "At Rondol's shout, Kadan and Ignis hurried to the weather railing. A magnificent beast adorned in silver and deep indigo feathers circled the rigging before alighting with majestic grace upon the topgallant yardarm.",
+      "narrationKo": "키를 잡고 있던 론돌이 외눈 안경을 치켜올리며 하늘을 가리켰다. “북서쪽 하늘을 보아라! 보통 바다갈매기가 아니다. 왕실의 은빛 깃털을 지닌 바람 그리폰이다!”",
+      "sourceSentenceStart": 5,
+      "sourceSentenceEnd": 5,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "내레이션",
-          "speakerEn": "Narration",
-          "textKo": "실리아가 파리해진 얼굴로 편지를 읽어 내려갔다.",
-          "textEn": "Cilia's face paled as her voice trembled.",
-          "bubbleType": "thought",
-          "position": "bottom-left",
-          "characterCardId": 62
+          "speakerKo": "론돌",
+          "speakerEn": "Rondol",
+          "textKo": "“북서쪽 하늘을 보아라! 보통 바다갈매기가 아니다. 왕실의 은빛 깃털을 지닌 바람 그리폰이다!”",
+          "textEn": "“At Rondol's shout, Kadan and Ignis hurried to the weather railing. A magnificent beast adorned in silver and deep indigo feathers circled the rigging before alighting with majestic grace upon the topgallant yardarm.”",
+          "bubbleType": "shout",
+          "position": "top-right",
+          "characterCardId": 46
         }
       ],
       "sfxCues": [
@@ -172,17 +160,116 @@
       "sceneNumber": 6,
       "imageFile": "episode_17/scene_06.webp",
       "sourceImageFile": "episode_17/scene_06.webp",
-      "narrationEn": "\"Master Titania writes that Elder Zephyr has already locked down the southern and eastern commercial havens, inviting the imperial navy's shadow galleys into our territorial waters. My father Aeolus, ensnared by phantom illusions regarding my mother Sylphid's death, has become Zephyr's helpless puppet...\" Ignis slammed his armored fist against the oak railing in mounting fury.",
-      "narrationKo": "“스승님께서 말씀하시길, 제피르 장로가 이미 섬의 남쪽과 동쪽 항구를 봉쇄하고 황실의 암흑 함대를 섬 안으로 끌어들였다고 해요. 에올루스 아버지는 어머니 실피드의 죽음에 얽힌 환영 마법에 취해 제피르의 꼭두각시가 되어버렸다고...” 이그니스가 주먹을 쥐며 갑판 난간을 내리쳤다.",
-      "sourceSentenceStart": 13,
-      "sourceSentenceEnd": 14,
+      "narrationEn": "Fastened to the gryphon's right talon was a cylindrical silver courier tube, its wax seal bearing the distinct plum-blossom cipher of Master Titania, high royal scholar of Whispering Wind Island and Cilia's revered mentor. Whistling a melodious wind greeting, Cilia coaxed the gentle beast to glide down and perch upon her leather arm-guard.",
+      "narrationKo": "론돌의 외침에 카단과 이그니스가 갑판 난간으로 다가갔다. 은빛과 감청색 깃털이 조화를 이룬 거대한 그리폰 한 마리가 선회하더니, 돛대 꼭대기의 망루 활대에 사뿐히 내려앉았다.",
+      "sourceSentenceStart": 6,
+      "sourceSentenceEnd": 6,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“스승님께서 말씀하시길, 제피르 장로가 이미 섬의 남쪽과 동쪽 항구를 봉쇄하고 황실의 암흑 함대를 섬 안으로 끌어들였다고 해요. 에올루스 아버지는 어머니 실피드의 죽음에 얽힌 환영 마법에 취해 제피르의 꼭두각시가 되어버렸다고...”",
-          "textEn": "“Master Titania writes that Elder Zephyr has already locked down the southern and eastern commercial havens, inviting the imperial navy's shadow galleys into our territorial waters. My father Aeolus, ensnared by phantom illusions regarding my mother Sylphid's death, has become Zephyr's helpless puppet...”",
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "은빛과 감청색 깃털이 조화를 이룬 거대한 그리폰 한 마리가 선회하더니, 돛대 꼭대기의 망루 활대에 사뿐히 내려앉았다.",
+          "textEn": "Whistling a melodious wind greeting, Cilia coaxed the gentle beast to glide down and perch upon her leather arm-guard.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 46
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 7,
+      "imageFile": "episode_17/scene_07.webp",
+      "sourceImageFile": "episode_17/scene_07.webp",
+      "narrationEn": "Extracting the parchment scroll from the silver canister, Cilia murmured with growing apprehension. \"An urgent dispatch from Master Titania.",
+      "narrationKo": "그리폰의 오른쪽 발목에는 은빛 원통형 전서구 통이 매달려 있었고, 그 마개에는 바람 속삭임 섬 왕실의 수석 학사이자 실리아의 오랜 스승인 티타니아의 매화 문장이 선명하게 찍혀 있었다.",
+      "sourceSentenceStart": 7,
+      "sourceSentenceEnd": 7,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "그리폰의 오른쪽 발목에는 은빛 원통형 전서구 통이 매달려 있었고, 그 마개에는 바람 속삭임 섬 왕실의 수석 학사이자 실리아의 오랜 스승인 티타니아의 매화 문장이 선명하게 찍혀 있었다.",
+          "textEn": "\"An urgent dispatch from Master Titania.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 84
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 8,
+      "imageFile": "episode_17/scene_08.webp",
+      "sourceImageFile": "episode_17/scene_08.webp",
+      "narrationEn": "Grave calamity has struck the island.\" Kadan rested his iron shield, gently stroking the beast's downy feathers. \"A messenger that flew thousands of leagues across open water.",
+      "narrationKo": "실리아가 휘파람으로 청아한 바람의 신호를 보내자, 그리폰은 온순하게 활강해 실리아의 가죽 토시 위에 내려앉았다.",
+      "sourceSentenceStart": 8,
+      "sourceSentenceEnd": 8,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "실리아가 휘파람으로 청아한 바람의 신호를 보내자, 그리폰은 온순하게 활강해 실리아의 가죽 토시 위에 내려앉았다.",
+          "textEn": "\"A messenger that flew thousands of leagues across open water.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 9,
+      "imageFile": "episode_17/scene_09.webp",
+      "sourceImageFile": "episode_17/scene_09.webp",
+      "narrationEn": "It carries your mentor's utmost devotion.\" Across the unfurled scroll, ink strokes had been brushed in hurried, frantic haste, conveying news that chilled the companions to their marrow.",
+      "narrationKo": "실리아가 은빛 원통을 열고 양피지 서신을 꺼내 들며 나지막이 읊조렸다.",
+      "sourceSentenceStart": 9,
+      "sourceSentenceEnd": 9,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "실리아가 은빛 원통을 열고 양피지 서신을 꺼내 들며 나지막이 읊조렸다.",
+          "textEn": "It carries your mentor's utmost devotion.\" Across the unfurled scroll, ink strokes had been brushed in hurried, frantic haste, conveying news that chilled the companions to their marrow.",
           "bubbleType": "thought",
           "position": "bottom-left",
           "characterCardId": 62
@@ -198,139 +285,31 @@
       ]
     },
     {
-      "sceneNumber": 7,
-      "imageFile": "episode_17/scene_07.webp",
-      "sourceImageFile": "episode_17/scene_07.webp",
-      "narrationEn": "\"Lucian's venomous claws have reached even the sacred havens of the eastern sea! Wielding the empire's legions like private mercenaries to usurp the sovereign throne of an allied realm! I swear to snap that tyrant's neck with my bare hands!\" Placing a steadying hand upon Cilia's shuddering shoulder, Kadan asked in calm tactical focus.",
-      "narrationKo": "“결국 루시안의 더러운 손길이 대해의 성역까지 뻗친 것이군. 황궁의 군대를 사병처럼 부려 타국의 왕좌까지 찬탈하려 들다니! 내 두 손으로 그자의 오만한 목을 꺾어버리겠다!” 카단이 실리아의 떨리는 어깨를 묵묵히 짚어주며 침착하게 물었다.",
-      "sourceSentenceStart": 15,
-      "sourceSentenceEnd": 16,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "이그니스",
-          "speakerEn": "Ignis",
-          "textKo": "“결국 루시안의 더러운 손길이 대해의 성역까지 뻗친 것이군. 황궁의 군대를 사병처럼 부려 타국의 왕좌까지 찬탈하려 들다니! 내 두 손으로 그자의 오만한 목을 꺾어버리겠다!”",
-          "textEn": "“Lucian's venomous claws have reached even the sacred havens of the eastern sea! Wielding the empire's legions like private mercenaries to usurp the sovereign throne of an allied realm! I swear to snap that tyrant's neck with my bare hands!”",
-          "bubbleType": "shout",
-          "position": "bottom-right",
-          "characterCardId": 11
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 8,
-      "imageFile": "episode_17/scene_08.webp",
-      "sourceImageFile": "episode_17/scene_08.webp",
-      "narrationEn": "\"Did Master Titania provide an alternate approach? Sailing into the fortified harbors will only draw concentrated fire from the coastal mana batteries.\" Turning the scroll over, Cilia nodded with renewed hope. \"Master Titania has drawn the secret maritime passage known only to my mother and Uncle Rondol.\"",
-      "narrationKo": "“티타니아 학사님이 제시한 다른 진입로가 있는가? 정규 항구로 접근했다간 해안 마나포의 표적이 될 것이다.” 실리아가 편지 뒷면을 넘기며 고개를 끄덕였다. “스승님께서 과거 어머니와 론돌 숙부님만이 알고 계시던 비밀 항로를 적어 보내셨어요.”",
-      "sourceSentenceStart": 17,
-      "sourceSentenceEnd": 19,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“티타니아 학사님이 제시한 다른 진입로가 있는가? 정규 항구로 접근했다간 해안 마나포의 표적이 될 것이다.”",
-          "textEn": "“Did Master Titania provide an alternate approach? Sailing into the fortified harbors will only draw concentrated fire from the coastal mana batteries.”",
-          "bubbleType": "speech",
-          "position": "top-left",
-          "characterCardId": 41
-        },
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“스승님께서 과거 어머니와 론돌 숙부님만이 알고 계시던 비밀 항로를 적어 보내셨어요.”",
-          "textEn": "“Master Titania has drawn the secret maritime passage known only to my mother and Uncle Rondol.”",
-          "bubbleType": "speech",
-          "position": "top-right",
-          "characterCardId": 62
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 9,
-      "imageFile": "episode_17/scene_09.webp",
-      "sourceImageFile": "episode_17/scene_09.webp",
-      "narrationEn": "Spreading the secret naval chart across the plotting table, Cilia traced an intricate nautical route. The weathered brass compass and arcane mana gauges clicked in rhythm with the rolling deck. \"Beneath the western sea cliffs lies Razor Reef Defile, where violent subterranean currents normally prevent ships from navigating. A flooded subterranean grotto there leads directly into the catacombs beneath the Black Temple at the base of the barrier spire.\"",
-      "narrationKo": "실리아는 양피지 뒷면에 그려진 비밀 해도를 펼쳐 조타실 탁자 위에 올려놓았다. 낡은 나침반과 마나 계측기가 파도의 흔들림에 맞춰 잘각거렸다. “섬의 서쪽 절벽 아래, 조류가 험난해 배들이 접근하지 못하는 ‘칼날 산호초 해협’이 있어요. 그곳의 해저 동굴을 통하면 결계탑 외곽의 검은 성전 지하로 은밀히 잠입할 수 있어요.”",
-      "sourceSentenceStart": 20,
-      "sourceSentenceEnd": 21,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“섬의 서쪽 절벽 아래, 조류가 험난해 배들이 접근하지 못하는 ‘칼날 산호초 해협’이 있어요. 그곳의 해저 동굴을 통하면 결계탑 외곽의 검은 성전 지하로 은밀히 잠입할 수 있어요.”",
-          "textEn": "“Beneath the western sea cliffs lies Razor Reef Defile, where violent subterranean currents normally prevent ships from navigating. A flooded subterranean grotto there leads directly into the catacombs beneath the Black Temple at the base of the barrier spire.”",
-          "bubbleType": "speech",
-          "position": "top-right",
-          "characterCardId": 62
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
-        }
-      ]
-    },
-    {
       "sceneNumber": 10,
       "imageFile": "episode_17/scene_10.webp",
       "sourceImageFile": "episode_17/scene_10.webp",
-      "narrationEn": "Rondol whistled through his teeth as he examined the jagged shoals marked upon the chart. \"Razor Reef Defile! The seabed is bristling with serrated granite ridges like dragon's teeth. Misjudge the current by half a fathom and the keel will be ripped out. Even seasoned elven pilots would never dare attempt that passage under the cover of night. An old sea dog like me lost his ship and left his leg behind in those very waters a decade ago.\" Adjusting the scarlet ribbon bound to his silver dagger, Kadan spoke with unwavering resolve.",
-      "narrationKo": "론돌이 해도 위의 암초 지대를 들여다보며 혀를 찼다. “칼날 산호초 해협이라니! 수면 아래 날카로운 암초들이 톱니처럼 도사리고 있어 조류를 반 발짝만 잘못 타도 배 밑창이 박살 나는 죽음의 수로다. 바람의 결을 읽는 일류 항해사라도 밤에는 감히 엄두를 못 내는 곳이야. 이 론돌도 십 년 전 저곳에서 배를 잃고 다리 하나를 바다에 바쳤지.” 카단이 은빛 단검의 칼자루를 매만지며 단호하게 말했다.",
-      "sourceSentenceStart": 22,
-      "sourceSentenceEnd": 24,
+      "narrationEn": "High Elder Zephyr, supreme archon of the Wind Isle Council, had placed King Aeolus under de facto house arrest and proclaimed martial law across the entire archipelago. Colluding with Minister Lucian of the imperial court, Zephyr had integrated the forbidden mana siphon of the Nine Shadows Codex into the island's vital core, the Jade Barrier Spire.",
+      "narrationKo": "“티타니아 스승님의 긴급 전서예요. 섬에 심상치 않은 변고가 일어났어요.”",
+      "sourceSentenceStart": 10,
+      "sourceSentenceEnd": 10,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "론돌",
-          "speakerEn": "Rondol",
-          "textKo": "“칼날 산호초 해협이라니! 수면 아래 날카로운 암초들이 톱니처럼 도사리고 있어 조류를 반 발짝만 잘못 타도 배 밑창이 박살 나는 죽음의 수로다. 바람의 결을 읽는 일류 항해사라도 밤에는 감히 엄두를 못 내는 곳이야. 이 론돌도 십 년 전 저곳에서 배를 잃고 다리 하나를 바다에 바쳤지.”",
-          "textEn": "“Razor Reef Defile! The seabed is bristling with serrated granite ridges like dragon's teeth. Misjudge the current by half a fathom and the keel will be ripped out. Even seasoned elven pilots would never dare attempt that passage under the cover of night. An old sea dog like me lost his ship and left his leg behind in those very waters a decade ago.”",
-          "bubbleType": "shout",
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“티타니아 스승님의 긴급 전서예요. 섬에 심상치 않은 변고가 일어났어요.”",
+          "textEn": "“High Elder Zephyr, supreme archon of the Wind Isle Council, had placed King Aeolus under de facto house arrest and proclaimed martial law across the entire archipelago. Colluding with Minister Lucian of the imperial court, Zephyr had integrated the forbidden mana siphon of the Nine Shadows Codex into the island's vital core, the Jade Barrier Spire.”",
+          "bubbleType": "speech",
           "position": "bottom-left",
-          "characterCardId": 46
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
         {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
         }
       ]
     },
@@ -338,17 +317,17 @@
       "sceneNumber": 11,
       "imageFile": "episode_17/scene_11.webp",
       "sourceImageFile": "episode_17/scene_11.webp",
-      "narrationEn": "\"A treacherous reef is far better than imperial cannon batteries. Master Aleksandar taught me that danger and opportunity share the same threshold. When night falls, the surface chop will settle; with Cilia's wind weaving and Uncle Rondol's master seamanship, we can navigate the defile.\" Rondol stroked his briny gray beard, letting out a booming belly laugh.",
-      "narrationKo": "“정면 돌파보다는 암초가 낫습니다. 알렉산다르 스승님께서는 위험한 길일수록 적의 방심이 숨어 있다고 하셨습니다. 밤이 되면 바다의 기류가 잠잠해질 테니, 실리아의 바람과 론돌 숙부님의 키솜씨라면 해협을 통과할 수 있습니다.” 론돌이 거친 턱수염을 쓰다듬으며 호탕하게 껄껄 웃었다.",
-      "sourceSentenceStart": 25,
-      "sourceSentenceEnd": 26,
+      "narrationEn": "It was an act of treason designed to open the kingdom's sacred elemental mantle as an invasion corridor for the imperial armada. Cilia's face paled as her voice trembled.",
+      "narrationKo": "카단이 방패를 고쳐 쥐며 그리폰의 깃털을 부드럽게 쓰다듬었다. “수천 리 바다를 건너온 전령이다. 스승님의 충정이 깃들어 있군.”",
+      "sourceSentenceStart": 11,
+      "sourceSentenceEnd": 11,
       "alignmentScore": 1.0,
       "dialogues": [
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "“정면 돌파보다는 암초가 낫습니다. 알렉산다르 스승님께서는 위험한 길일수록 적의 방심이 숨어 있다고 하셨습니다. 밤이 되면 바다의 기류가 잠잠해질 테니, 실리아의 바람과 론돌 숙부님의 키솜씨라면 해협을 통과할 수 있습니다.”",
-          "textEn": "“A treacherous reef is far better than imperial cannon batteries. Master Aleksandar taught me that danger and opportunity share the same threshold. When night falls, the surface chop will settle; with Cilia's wind weaving and Uncle Rondol's master seamanship, we can navigate the defile.”",
+          "textKo": "“수천 리 바다를 건너온 전령이다. 스승님의 충정이 깃들어 있군.”",
+          "textEn": "“It was an act of treason designed to open the kingdom's sacred elemental mantle as an invasion corridor for the imperial armada. Cilia's face paled as her voice trembled.”",
           "bubbleType": "speech",
           "position": "bottom-right",
           "characterCardId": 41
@@ -356,10 +335,10 @@
       ],
       "sfxCues": [
         {
-          "textKo": "휘이이익-!",
-          "textEn": "SWOOSH!",
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
           "style": "slash",
-          "position": "top-left"
+          "position": "top-right"
         }
       ]
     },
@@ -367,20 +346,20 @@
       "sceneNumber": 12,
       "imageFile": "episode_17/scene_12.webp",
       "sourceImageFile": "episode_17/scene_12.webp",
-      "narrationEn": "\"Ha! The northern wolf knows how to stoke the embers in an old sea dog's chest! So be it! This pegleg will prove that an old sailor's blood has not turned to bilge water!\" Ignis tightened his jaw with fierce determination.",
-      "narrationKo": "“하하! 북방의 늑대 녀석이 늙은 바다표범의 심장에 다시 불을 지르는구나. 좋다! 이 론돌의 외다리가 아직 녹슬지 않았음을 증명해 보이마!” 이그니스 역시 입술을 다물며 결의를 다졌다.",
-      "sourceSentenceStart": 27,
-      "sourceSentenceEnd": 28,
+      "narrationEn": "\"Master Titania writes that Elder Zephyr has already locked down the southern and eastern commercial havens, inviting the imperial navy's shadow galleys into our territorial waters. My father Aeolus, ensnared by phantom illusions regarding my mother Sylphid's death, has become Zephyr's helpless puppet...\"",
+      "narrationKo": "실리아가 펼쳐 든 양피지 위에는 다급하게 휘갈겨 쓴 잉크 자국이 번져 있었다. 서신의 내용은 일행의 가슴을 서늘하게 얼어붙게 만들기에 충분했다.",
+      "sourceSentenceStart": 12,
+      "sourceSentenceEnd": 12,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "론돌",
-          "speakerEn": "Rondol",
-          "textKo": "“하하! 북방의 늑대 녀석이 늙은 바다표범의 심장에 다시 불을 지르는구나. 좋다! 이 론돌의 외다리가 아직 녹슬지 않았음을 증명해 보이마!”",
-          "textEn": "“Ha! The northern wolf knows how to stoke the embers in an old sea dog's chest! So be it! This pegleg will prove that an old sailor's blood has not turned to bilge water!”",
-          "bubbleType": "shout",
-          "position": "top-left",
-          "characterCardId": 46
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "서신의 내용은 일행의 가슴을 서늘하게 얼어붙게 만들기에 충분했다.",
+          "textEn": "My father Aeolus, ensnared by phantom illusions regarding my mother Sylphid's death, has become Zephyr's helpless puppet...\"",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
@@ -396,34 +375,28 @@
       "sceneNumber": 13,
       "imageFile": "episode_17/scene_13.webp",
       "sourceImageFile": "episode_17/scene_13.webp",
-      "narrationEn": "\"I know the firing angles of imperial siege vessels by heart. If we penetrate their blind spots, my flames will light our path.\" At twilight, as blood-red dusk stained the rolling swells, danger struck without warning. Slicing through the ocean fog, three black-hulled imperial attack galleys surged forward, flanking Breeze Wing from port and starboard. From their mounted ballistae erupted a lethal volley of sulfur-tipped fire quarrels and iron grappling anchors. Stepping swiftly to the windward deck, Kadan angled his unadorned iron shield, deflecting the hail of flaming missiles to shield the crew. Sparks cascaded like fireworks against the iron rim, yet Kadan's grounded stance absorbed the kinetic momentum without yielding an inch. Hissing fiercely, deflected quarrels plunged into the brine.",
-      "narrationKo": "“황궁 함선의 포격각은 내가 잘 안다. 놈들의 사각을 찌르는 침투라면 내 화염이 길을 비출 것이다.” 해 질 무렵, 붉은 노을이 바다를 검붉게 물들일 때 돌발적인 위기가 닥쳤다. 짙은 해무(海霧) 속에서 검은 깃발을 단 황실 해군의 기습 쾌속 갤리선 세 척이 미풍의날개호의 좌우를 포위하며 쇄도해 온 것이었다. 갤리선의 쇠뇌 발사대에서 흑철 쇠뇌살과 유황 불화살들이 비 오듯 쏟아져 내렸다. 카단이 지체 없이 무쇠 방패를 들어 올려 날아드는 불화살들을 쳐내며 선원들을 보호했다. 쾅 하는 굉음과 함께 방패 표면에서 화염이 튀었지만, 카단의 견고한 하체는 조금도 흔들리지 않았다. 방패 곡면을 타고 빗나간 화살들이 바닷물 속으로 치익 소리를 내며 꺼져 들어갔다.",
-      "sourceSentenceStart": 29,
-      "sourceSentenceEnd": 31,
+      "narrationEn": "Ignis slammed his armored fist against the oak railing in mounting fury. \"Lucian's venomous claws have reached even the sacred havens of the eastern sea!",
+      "narrationKo": "바람 속삭임 섬의 최고 권력자인 제피르 대장로가 국왕 에올루스를 반쯤 유폐하고 섬 전역에 계엄령을 선포했다는 것이었다.",
+      "sourceSentenceStart": 13,
+      "sourceSentenceEnd": 13,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "이그니스",
-          "speakerEn": "Ignis",
-          "textKo": "“황궁 함선의 포격각은 내가 잘 안다. 놈들의 사각을 찌르는 침투라면 내 화염이 길을 비출 것이다.”",
-          "textEn": "“I know the firing angles of imperial siege vessels by heart. If we penetrate their blind spots, my flames will light our path.”",
-          "bubbleType": "speech",
-          "position": "top-right",
-          "characterCardId": 11
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "바람 속삭임 섬의 최고 권력자인 제피르 대장로가 국왕 에올루스를 반쯤 유폐하고 섬 전역에 계엄령을 선포했다는 것이었다.",
+          "textEn": "\"Lucian's venomous claws have reached even the sacred havens of the eastern sea!",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 25
         }
       ],
       "sfxCues": [
         {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
           "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
+          "position": "top-left"
         }
       ]
     },
@@ -431,34 +404,34 @@
       "sceneNumber": 14,
       "imageFile": "episode_17/scene_14.webp",
       "sourceImageFile": "episode_17/scene_14.webp",
-      "narrationEn": "\"Hostile cutters boarding! Prepare for melee on deck!\" Seizing his iron stanchion, Ignis leaped onto the bulwarks. A sweeping ribbon of immaculate white flame cleaved through the air, melting through the approaching grappling hawsers in a blinding flash. As imperial shock troops hurled boarding irons to breach the deck, Cilia swept her Jade Staff, conjuring a crushing gale-force vortex across the waves. Caught in the sudden swell, one enemy galley lost its trim and slammed violently against an outcrop of razor shale, its timber hull buckling in half.",
-      "narrationKo": "“적선이 접근한다! 선상 난전을 준비하라!” 이그니스가 쇠파이프를 비껴 쥐며 갑판 난간 위로 도약했다. 순백의 성화가 허공을 가르며 적선의 마나 닻줄을 단숨에 녹여 끊었다. 적병들이 갈고리를 던지며 갑판으로 기어오르려 하자, 실리아가 녹옥 지팡이를 휘둘러 거대한 역풍의 파도를 일으켰다. 돌풍에 휘말린 적선 한 척이 중심을 잃고 암초에 부딪쳐 좌초되었다.",
-      "sourceSentenceStart": 32,
-      "sourceSentenceEnd": 33,
+      "narrationEn": "Wielding the empire's legions like private mercenaries to usurp the sovereign throne of an allied realm! I swear to snap that tyrant's neck with my bare hands!\"",
+      "narrationKo": "제피르는 황실의 루시안 재상과 내통하여 ‘나인섀도우 코덱스’의 금지된 마나 제어기를 섬의 심장부인 비취 결계탑에 연결하려 하고 있었다. 섬을 수호해 온 바람의 장막을 황실의 침공 통로로 열어주려는 반역이었다.",
+      "sourceSentenceStart": 14,
+      "sourceSentenceEnd": 14,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“적선이 접근한다! 선상 난전을 준비하라!”",
-          "textEn": "“Hostile cutters boarding! Prepare for melee on deck!”",
-          "bubbleType": "shout",
-          "position": "bottom-left",
-          "characterCardId": 41
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "섬을 수호해 온 바람의 장막을 황실의 침공 통로로 열어주려는 반역이었다.",
+          "textEn": "I swear to snap that tyrant's neck with my bare hands!\"",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 61
         }
       ],
       "sfxCues": [
         {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
           "position": "top-right"
         },
         {
-          "textKo": "서걱-!",
-          "textEn": "SLASH!",
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
           "style": "slash",
-          "position": "center"
+          "position": "top-left"
         }
       ]
     },
@@ -466,34 +439,28 @@
       "sceneNumber": 15,
       "imageFile": "episode_17/scene_15.webp",
       "sourceImageFile": "episode_17/scene_15.webp",
-      "narrationEn": "Planting his boots back-to-back with Kadan, Ignis called out over the roar of the gale. \"Kadan! Their flagship is driven by an arcane mana-steam turbine! We must disable their drive furnace to slip their pursuit!\"",
-      "narrationKo": "이그니스가 카단과 등을 맞대며 외쳤다. “카단! 저놈들의 기함에 마나 증기 기관이 달려 있다! 기관실을 파괴해야 추격을 떨쳐낼 수 있다!”",
-      "sourceSentenceStart": 34,
-      "sourceSentenceEnd": 35,
+      "narrationEn": "Placing a steadying hand upon Cilia's shuddering shoulder, Kadan asked in calm tactical focus. \"Did Master Titania provide an alternate approach?",
+      "narrationKo": "실리아가 파리해진 얼굴로 편지를 읽어 내려갔다. “스승님께서 말씀하시길, 제피르 장로가 이미 섬의 남쪽과 동쪽 항구를 봉쇄하고 황실의 암흑 함대를 섬 안으로 끌어들였다고 해요.”",
+      "sourceSentenceStart": 15,
+      "sourceSentenceEnd": 15,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "이그니스",
-          "speakerEn": "Ignis",
-          "textKo": "“카단! 저놈들의 기함에 마나 증기 기관이 달려 있다! 기관실을 파괴해야 추격을 떨쳐낼 수 있다!”",
-          "textEn": "“Kadan! Their flagship is driven by an arcane mana-steam turbine! We must disable their drive furnace to slip their pursuit!”",
-          "bubbleType": "shout",
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“스승님께서 말씀하시길, 제피르 장로가 이미 섬의 남쪽과 동쪽 항구를 봉쇄하고 황실의 암흑 함대를 섬 안으로 끌어들였다고 해요.”",
+          "textEn": "“Placing a steadying hand upon Cilia's shuddering shoulder, Kadan asked in calm tactical focus. \"Did Master Titania provide an alternate approach?”",
+          "bubbleType": "speech",
           "position": "bottom-right",
-          "characterCardId": 11
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
         {
-          "textKo": "콰아아앙!",
-          "textEn": "BOOM!",
-          "style": "impact",
-          "position": "center"
-        },
-        {
-          "textKo": "파지지직!",
-          "textEn": "CRACKLE!",
-          "style": "magic",
-          "position": "top-right"
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
         }
       ]
     },
@@ -501,64 +468,23 @@
       "sceneNumber": 16,
       "imageFile": "episode_17/scene_16.webp",
       "sourceImageFile": "episode_17/scene_16.webp",
-      "narrationEn": "Bracing his shield with firm balance, Kadan opened the assault vector. \"Spring from my shield, Ignis!\" Launching himself off the face of Kadan's shield, Ignis vaulted across the churning sea. Cleaving downward in a spinning crescent, his pure white flame pierced straight through the armored grates of the enemy's mana furnace. With a concussive roar, the arcane boiler detonated, crippling the flagship's propulsion in clouds of boiling steam.",
-      "narrationKo": "카단이 고개를 끄덕이며 방패를 내세워 돌진로를 열었다. “내 방패를 딛고 뛰어라, 이그니스!” 이그니스는 카단의 방패를 딛고 허공으로 솟구쳐 올랐다. 공중에서 회전하며 내리꽂힌 순백 화염의 일격이 적 기함의 마나 기관실을 정통으로 꿰뚫었다. 콰아앙 하는 굉음과 함께 기관실이 폭발하며 적선의 동력이 완전히 마비되었다.",
-      "sourceSentenceStart": 36,
-      "sourceSentenceEnd": 38,
+      "narrationEn": "Sailing into the fortified harbors will only draw concentrated fire from the coastal mana batteries.\" Turning the scroll over, Cilia nodded with renewed hope.",
+      "narrationKo": "“에올루스 아버지는 어머니 실피드의 죽음에 얽힌 환영 마법에 취해 제피르의 꼭두각시가 되어버렸다고...”",
+      "sourceSentenceStart": 16,
+      "sourceSentenceEnd": 16,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "카단",
-          "speakerEn": "Kadan",
-          "textKo": "“내 방패를 딛고 뛰어라, 이그니스!”",
-          "textEn": "“Spring from my shield, Ignis!”",
-          "bubbleType": "shout",
-          "position": "top-left",
-          "characterCardId": 41
-        }
-      ],
-      "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
-        {
-          "textKo": "서걱-!",
-          "textEn": "SLASH!",
-          "style": "slash",
-          "position": "center"
-        }
-      ]
-    },
-    {
-      "sceneNumber": 17,
-      "imageFile": "episode_17/scene_17.webp",
-      "sourceImageFile": "episode_17/scene_17.webp",
-      "narrationEn": "Leaving the burning imperial galleys adrift in their wake, Rondol wrenched the helm, expertly slipping the timber bow of Breeze Wing into the narrow, swirling waters of Razor Reef Defile. With Cilia's gentle wind mana filling the canvas, the vessel glided gracefully between the menacing granite fangs like a phantom. Though violent swells slammed against the hull, Rondol's seasoned helmsmanship and Kadan's grounded mana stabilization kept the ship upright. When total darkness enfolded the sea, the legendary Whispering Wind Island rose before them in breathtaking splendor, shrouded in luminous emerald sea mist. High atop the colossal basalt crags at the heart of the island, the majestic Jade Barrier Spire pulsed with ripples of soothing, translucent green light across the starry firmament. The ship glided silently into the gaping mouth of an ancient limestone sea cavern beneath the cliffs.",
-      "narrationKo": "혼란에 빠진 적 함대를 뒤로하고, 론돌은 미풍의날개호의 키를 꺾어 칼날 산호초 해협의 좁은 입구로 능숙하게 밀어 넣었다. 실리아의 청아한 바람 마나가 돛을 밀어주었고, 배는 날카로운 바위 암초 사이를 미끄러지듯 빠져나갔다. 성난 파도가 뱃전을 사정없이 때렸지만, 론돌의 노련한 조타술과 카단의 균형 잡힌 마나 지지가 배의 침몰을 막아냈다. 어둠이 완전히 내려앉았을 때, 일행의 눈앞에 에메랄드빛 마나 안개에 휩싸인 전설의 바람 속삭임 섬이 거대한 자태를 드러냈다. 섬 중앙의 거대한 절벽 위로 우뚝 솟은 비취 결계탑에서 은은한 옥빛 파문이 밤하늘을 수놓고 있었다. 천 길 절벽 아래 입을 벌린 고대 석회암 동굴 속으로 배가 조용히 미끄러져 들어갔다.",
-      "sourceSentenceStart": 39,
-      "sourceSentenceEnd": 40,
-      "alignmentScore": 1.0,
-      "dialogues": [
-        {
-          "speakerKo": "내레이션",
-          "speakerEn": "Narration",
-          "textKo": "천 길 절벽 아래 입을 벌린 고대 석회암 동굴 속으로 배가 조용히 미끄러져 들어갔다.",
-          "textEn": "The ship glided silently into the gaping mouth of an ancient limestone sea cavern beneath the cliffs.",
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“에올루스 아버지는 어머니 실피드의 죽음에 얽힌 환영 마법에 취해 제피르의 꼭두각시가 되어버렸다고...”",
+          "textEn": "“Sailing into the fortified harbors will only draw concentrated fire from the coastal mana batteries.\" Turning the scroll over, Cilia nodded with renewed hope.”",
           "bubbleType": "thought",
-          "position": "bottom-left",
-          "characterCardId": 46
+          "position": "top-left",
+          "characterCardId": 62
         }
       ],
       "sfxCues": [
-        {
-          "textKo": "챙-!",
-          "textEn": "CLANG!",
-          "style": "slash",
-          "position": "top-right"
-        },
         {
           "textKo": "파지지직!",
           "textEn": "CRACKLE!",
@@ -568,23 +494,52 @@
       ]
     },
     {
-      "sceneNumber": 18,
-      "imageFile": "episode_17/scene_18.webp",
-      "sourceImageFile": "episode_17/scene_18.webp",
-      "narrationEn": "Tears glistening upon her eyelashes, Cilia gazed upon her ancestral shores. \"I have returned... to the sacred haven where my mother sleeps. The light of the barrier spire has not yet been extinguished.\"",
-      "narrationKo": "실리아가 눈시울을 붉히며 고향의 섬을 바라보았다. “돌아왔어요... 어머니가 잠들어 계신 나의 고향으로. 비취 결계탑의 불빛이 아직 완전히 꺼지지 않았어요.”",
-      "sourceSentenceStart": 41,
-      "sourceSentenceEnd": 42,
+      "sceneNumber": 17,
+      "imageFile": "episode_17/scene_17.webp",
+      "sourceImageFile": "episode_17/scene_17.webp",
+      "narrationEn": "\"Master Titania has drawn the secret maritime passage known only to my mother and Uncle Rondol.\" Spreading the secret naval chart across the plotting table, Cilia traced an intricate nautical route.",
+      "narrationKo": "이그니스가 주먹을 쥐며 갑판 난간을 내리쳤다. “결국 루시안의 더러운 손길이 대해의 성역까지 뻗친 것이군. 황궁의 군대를 사병처럼 부려 타국의 왕좌까지 찬탈하려 들다니! 내 두 손으로 그자의 오만한 목을 꺾어버리겠다!”",
+      "sourceSentenceStart": 17,
+      "sourceSentenceEnd": 17,
       "alignmentScore": 1.0,
       "dialogues": [
         {
-          "speakerKo": "실리아",
-          "speakerEn": "Celia",
-          "textKo": "“돌아왔어요... 어머니가 잠들어 계신 나의 고향으로. 비취 결계탑의 불빛이 아직 완전히 꺼지지 않았어요.”",
-          "textEn": "“I have returned... to the sacred haven where my mother sleeps. The light of the barrier spire has not yet been extinguished.”",
-          "bubbleType": "thought",
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“결국 루시안의 더러운 손길이 대해의 성역까지 뻗친 것이군. 황궁의 군대를 사병처럼 부려 타국의 왕좌까지 찬탈하려 들다니! 내 두 손으로 그자의 오만한 목을 꺾어버리겠다!”",
+          "textEn": "“Master Titania has drawn the secret maritime passage known only to my mother and Uncle Rondol.”",
+          "bubbleType": "shout",
+          "position": "top-right",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 18,
+      "imageFile": "episode_17/scene_18.webp",
+      "sourceImageFile": "episode_17/scene_18.webp",
+      "narrationEn": "The weathered brass compass and arcane mana gauges clicked in rhythm with the rolling deck. \"Beneath the western sea cliffs lies Razor Reef Defile, where violent subterranean currents normally prevent ships from navigating.",
+      "narrationKo": "카단이 실리아의 떨리는 어깨를 묵묵히 짚어주며 침착하게 물었다. “티타니아 학사님이 제시한 다른 진입로가 있는가? 정규 항구로 접근했다간 해안 마나포의 표적이 될 것이다.”",
+      "sourceSentenceStart": 18,
+      "sourceSentenceEnd": 18,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“티타니아 학사님이 제시한 다른 진입로가 있는가? 정규 항구로 접근했다간 해안 마나포의 표적이 될 것이다.”",
+          "textEn": "“The weathered brass compass and arcane mana gauges clicked in rhythm with the rolling deck. \"Beneath the western sea cliffs lies Razor Reef Defile, where violent subterranean currents normally prevent ships from navigating.”",
+          "bubbleType": "speech",
           "position": "bottom-left",
-          "characterCardId": 62
+          "characterCardId": 41
         }
       ],
       "sfxCues": [
@@ -600,10 +555,772 @@
       "sceneNumber": 19,
       "imageFile": "episode_17/scene_19.webp",
       "sourceImageFile": "episode_17/scene_19.webp",
-      "narrationEn": "Lowering his iron shield, Kadan spoke with solemn depth. \"Now is the hour to banish the encroaching shadow and return true freedom to the realm of the wind. Queen Sylphid's spirit watches over our blades.\" Ignis touched his breastplate with solemn devotion.",
-      "narrationKo": "카단이 방패를 거두며 굳건한 목소리로 말했다. “이제 어둠을 걷어내고 바람의 왕국에 진정한 평화를 되찾을 시간이다. 어머니 실피드의 넋도 우리를 지켜보고 계실 것이다.” 이그니스 역시 가슴에 손을 얹으며 맹세했다.",
+      "narrationEn": "A flooded subterranean grotto there leads directly into the catacombs beneath the Black Temple at the base of the barrier spire.\" Rondol whistled through his teeth as he examined the jagged shoals marked upon the chart.",
+      "narrationKo": "실리아가 편지 뒷면을 넘기며 고개를 끄덕였다. “스승님께서 과거 어머니와 론돌 숙부님만이 알고 계시던 비밀 항로를 적어 보내셨어요.”",
+      "sourceSentenceStart": 19,
+      "sourceSentenceEnd": 19,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“스승님께서 과거 어머니와 론돌 숙부님만이 알고 계시던 비밀 항로를 적어 보내셨어요.”",
+          "textEn": "“A flooded subterranean grotto there leads directly into the catacombs beneath the Black Temple at the base of the barrier spire.\" Rondol whistled through his teeth as he examined the jagged shoals marked upon the chart.”",
+          "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 20,
+      "imageFile": "episode_17/scene_20.webp",
+      "sourceImageFile": "episode_17/scene_20.webp",
+      "narrationEn": "\"Razor Reef Defile! The seabed is bristling with serrated granite ridges like dragon's teeth.",
+      "narrationKo": "실리아는 양피지 뒷면에 그려진 비밀 해도를 펼쳐 조타실 탁자 위에 올려놓았다. 낡은 나침반과 마나 계측기가 파도의 흔들림에 맞춰 잘각거렸다.",
+      "sourceSentenceStart": 20,
+      "sourceSentenceEnd": 20,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "낡은 나침반과 마나 계측기가 파도의 흔들림에 맞춰 잘각거렸다.",
+          "textEn": "The seabed is bristling with serrated granite ridges like dragon's teeth.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 21,
+      "imageFile": "episode_17/scene_21.webp",
+      "sourceImageFile": "episode_17/scene_21.webp",
+      "narrationEn": "Misjudge the current by half a fathom and the keel will be ripped out. Even seasoned elven pilots would never dare attempt that passage under the cover of night.",
+      "narrationKo": "“섬의 서쪽 절벽 아래, 조류가 험난해 배들이 접근하지 못하는 ‘칼날 산호초 해협’이 있어요. 그곳의 해저 동굴을 통하면 결계탑 외곽의 검은 성전 지하로 은밀히 잠입할 수 있어요.”",
+      "sourceSentenceStart": 21,
+      "sourceSentenceEnd": 21,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“섬의 서쪽 절벽 아래, 조류가 험난해 배들이 접근하지 못하는 ‘칼날 산호초 해협’이 있어요. 그곳의 해저 동굴을 통하면 결계탑 외곽의 검은 성전 지하로 은밀히 잠입할 수 있어요.”",
+          "textEn": "“Misjudge the current by half a fathom and the keel will be ripped out. Even seasoned elven pilots would never dare attempt that passage under the cover of night.”",
+          "bubbleType": "speech",
+          "position": "top-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 22,
+      "imageFile": "episode_17/scene_22.webp",
+      "sourceImageFile": "episode_17/scene_22.webp",
+      "narrationEn": "An old sea dog like me lost his ship and left his leg behind in those very waters a decade ago.\" Adjusting the scarlet ribbon bound to his silver dagger, Kadan spoke with unwavering resolve.",
+      "narrationKo": "론돌이 해도 위의 암초 지대를 들여다보며 혀를 찼다. “칼날 산호초 해협이라니! 수면 아래 날카로운 암초들이 톱니처럼 도사리고 있어 조류를 반 발짝만 잘못 타도 배 밑창이 박살 나는 죽음의 수로다.”",
+      "sourceSentenceStart": 22,
+      "sourceSentenceEnd": 22,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "론돌",
+          "speakerEn": "Rondol",
+          "textKo": "“칼날 산호초 해협이라니! 수면 아래 날카로운 암초들이 톱니처럼 도사리고 있어 조류를 반 발짝만 잘못 타도 배 밑창이 박살 나는 죽음의 수로다.”",
+          "textEn": "“An old sea dog like me lost his ship and left his leg behind in those very waters a decade ago.\" Adjusting the scarlet ribbon bound to his silver dagger, Kadan spoke with unwavering resolve.”",
+          "bubbleType": "shout",
+          "position": "bottom-left",
+          "characterCardId": 46
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 23,
+      "imageFile": "episode_17/scene_23.webp",
+      "sourceImageFile": "episode_17/scene_23.webp",
+      "narrationEn": "\"A treacherous reef is far better than imperial cannon batteries. Master Aleksandar taught me that danger and opportunity share the same threshold. When night falls, the surface chop will settle; with Cilia's wind weaving and Uncle Rondol's master seamanship, we can navigate the defile.\"",
+      "narrationKo": "“바람의 결을 읽는 일류 항해사라도 밤에는 감히 엄두를 못 내는 곳이야. 이 론돌도 십 년 전 저곳에서 배를 잃고 다리 하나를 바다에 바쳤지.”",
+      "sourceSentenceStart": 23,
+      "sourceSentenceEnd": 23,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "론돌",
+          "speakerEn": "Rondol",
+          "textKo": "“바람의 결을 읽는 일류 항해사라도 밤에는 감히 엄두를 못 내는 곳이야. 이 론돌도 십 년 전 저곳에서 배를 잃고 다리 하나를 바다에 바쳤지.”",
+          "textEn": "“A treacherous reef is far better than imperial cannon batteries. Master Aleksandar taught me that danger and opportunity share the same threshold. When night falls, the surface chop will settle; with Cilia's wind weaving and Uncle Rondol's master seamanship, we can navigate the defile.”",
+          "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 46
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 24,
+      "imageFile": "episode_17/scene_24.webp",
+      "sourceImageFile": "episode_17/scene_24.webp",
+      "narrationEn": "Rondol stroked his briny gray beard, letting out a booming belly laugh. \"Ha!",
+      "narrationKo": "카단이 은빛 단검의 칼자루를 매만지며 단호하게 말했다.",
+      "sourceSentenceStart": 24,
+      "sourceSentenceEnd": 24,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "카단이 은빛 단검의 칼자루를 매만지며 단호하게 말했다.",
+          "textEn": "\"Ha!",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 25,
+      "imageFile": "episode_17/scene_25.webp",
+      "sourceImageFile": "episode_17/scene_25.webp",
+      "narrationEn": "The northern wolf knows how to stoke the embers in an old sea dog's chest! So be it!",
+      "narrationKo": "“정면 돌파보다는 암초가 낫습니다. 알렉산다르 스승님께서는 위험한 길일수록 적의 방심이 숨어 있다고 하셨습니다. 밤이 되면 바다의 기류가 잠잠해질 테니, 실리아의 바람과 론돌 숙부님의 키솜씨라면 해협을 통과할 수 있습니다.”",
+      "sourceSentenceStart": 25,
+      "sourceSentenceEnd": 25,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“정면 돌파보다는 암초가 낫습니다. 알렉산다르 스승님께서는 위험한 길일수록 적의 방심이 숨어 있다고 하셨습니다. 밤이 되면 바다의 기류가 잠잠해질 테니, 실리아의 바람과 론돌 숙부님의 키솜씨라면 해협을 통과할 수 있습니다.”",
+          "textEn": "“The northern wolf knows how to stoke the embers in an old sea dog's chest! So be it!”",
+          "bubbleType": "speech",
+          "position": "top-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 26,
+      "imageFile": "episode_17/scene_26.webp",
+      "sourceImageFile": "episode_17/scene_26.webp",
+      "narrationEn": "This pegleg will prove that an old sailor's blood has not turned to bilge water!\" Ignis tightened his jaw with fierce determination.",
+      "narrationKo": "론돌이 거친 턱수염을 쓰다듬으며 호탕하게 껄껄 웃었다. “하하! 북방의 늑대 녀석이 늙은 바다표범의 심장에 다시 불을 지르는구나. 좋다! 이 론돌의 외다리가 아직 녹슬지 않았음을 증명해 보이마!”",
+      "sourceSentenceStart": 26,
+      "sourceSentenceEnd": 26,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "론돌",
+          "speakerEn": "Rondol",
+          "textKo": "“하하! 북방의 늑대 녀석이 늙은 바다표범의 심장에 다시 불을 지르는구나. 좋다! 이 론돌의 외다리가 아직 녹슬지 않았음을 증명해 보이마!”",
+          "textEn": "“This pegleg will prove that an old sailor's blood has not turned to bilge water!\" Ignis tightened his jaw with fierce determination.”",
+          "bubbleType": "shout",
+          "position": "bottom-left",
+          "characterCardId": 46
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 27,
+      "imageFile": "episode_17/scene_27.webp",
+      "sourceImageFile": "episode_17/scene_27.webp",
+      "narrationEn": "\"I know the firing angles of imperial siege vessels by heart. If we penetrate their blind spots, my flames will light our path.\"",
+      "narrationKo": "이그니스 역시 입술을 다물며 결의를 다졌다. “황궁 함선의 포격각은 내가 잘 안다. 놈들의 사각을 찌르는 침투라면 내 화염이 길을 비출 것이다.”",
+      "sourceSentenceStart": 27,
+      "sourceSentenceEnd": 27,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“황궁 함선의 포격각은 내가 잘 안다. 놈들의 사각을 찌르는 침투라면 내 화염이 길을 비출 것이다.”",
+          "textEn": "“I know the firing angles of imperial siege vessels by heart. If we penetrate their blind spots, my flames will light our path.”",
+          "bubbleType": "speech",
+          "position": "bottom-right",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 28,
+      "imageFile": "episode_17/scene_28.webp",
+      "sourceImageFile": "episode_17/scene_28.webp",
+      "narrationEn": "At twilight, as blood-red dusk stained the rolling swells, danger struck without warning. Slicing through the ocean fog, three black-hulled imperial attack galleys surged forward, flanking Breeze Wing from port and starboard.",
+      "narrationKo": "해 질 무렵, 붉은 노을이 바다를 검붉게 물들일 때 돌발적인 위기가 닥쳤다. 짙은 해무(海霧) 속에서 검은 깃발을 단 황실 해군의 기습 쾌속 갤리선 세 척이 미풍의날개호의 좌우를 포위하며 쇄도해 온 것이었다.",
+      "sourceSentenceStart": 28,
+      "sourceSentenceEnd": 28,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "짙은 해무(海霧) 속에서 검은 깃발을 단 황실 해군의 기습 쾌속 갤리선 세 척이 미풍의날개호의 좌우를 포위하며 쇄도해 온 것이었다.",
+          "textEn": "Slicing through the ocean fog, three black-hulled imperial attack galleys surged forward, flanking Breeze Wing from port and starboard.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 29,
+      "imageFile": "episode_17/scene_29.webp",
+      "sourceImageFile": "episode_17/scene_29.webp",
+      "narrationEn": "From their mounted ballistae erupted a lethal volley of sulfur-tipped fire quarrels and iron grappling anchors. Stepping swiftly to the windward deck, Kadan angled his unadorned iron shield, deflecting the hail of flaming missiles to shield the crew.",
+      "narrationKo": "갤리선의 쇠뇌 발사대에서 흑철 쇠뇌살과 유황 불화살들이 비 오듯 쏟아져 내렸다.",
+      "sourceSentenceStart": 29,
+      "sourceSentenceEnd": 29,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "갤리선의 쇠뇌 발사대에서 흑철 쇠뇌살과 유황 불화살들이 비 오듯 쏟아져 내렸다.",
+          "textEn": "Stepping swiftly to the windward deck, Kadan angled his unadorned iron shield, deflecting the hail of flaming missiles to shield the crew.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 30,
+      "imageFile": "episode_17/scene_30.webp",
+      "sourceImageFile": "episode_17/scene_30.webp",
+      "narrationEn": "Sparks cascaded like fireworks against the iron rim, yet Kadan's grounded stance absorbed the kinetic momentum without yielding an inch. Hissing fiercely, deflected quarrels plunged into the brine.",
+      "narrationKo": "카단이 지체 없이 무쇠 방패를 들어 올려 날아드는 불화살들을 쳐내며 선원들을 보호했다. 쾅 하는 굉음과 함께 방패 표면에서 화염이 튀었지만, 카단의 견고한 하체는 조금도 흔들리지 않았다.",
+      "sourceSentenceStart": 30,
+      "sourceSentenceEnd": 30,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "쾅 하는 굉음과 함께 방패 표면에서 화염이 튀었지만, 카단의 견고한 하체는 조금도 흔들리지 않았다.",
+          "textEn": "Hissing fiercely, deflected quarrels plunged into the brine.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 31,
+      "imageFile": "episode_17/scene_31.webp",
+      "sourceImageFile": "episode_17/scene_31.webp",
+      "narrationEn": "\"Hostile cutters boarding! Prepare for melee on deck!\"",
+      "narrationKo": "방패 곡면을 타고 빗나간 화살들이 바닷물 속으로 치익 소리를 내며 꺼져 들어갔다.",
+      "sourceSentenceStart": 31,
+      "sourceSentenceEnd": 31,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "방패 곡면을 타고 빗나간 화살들이 바닷물 속으로 치익 소리를 내며 꺼져 들어갔다.",
+          "textEn": "Prepare for melee on deck!\"",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 32,
+      "imageFile": "episode_17/scene_32.webp",
+      "sourceImageFile": "episode_17/scene_32.webp",
+      "narrationEn": "Seizing his iron stanchion, Ignis leaped onto the bulwarks. A sweeping ribbon of immaculate white flame cleaved through the air, melting through the approaching grappling hawsers in a blinding flash.",
+      "narrationKo": "“적선이 접근한다! 선상 난전을 준비하라!” 이그니스가 쇠파이프를 비껴 쥐며 갑판 난간 위로 도약했다. 순백의 성화가 허공을 가르며 적선의 마나 닻줄을 단숨에 녹여 끊었다.",
+      "sourceSentenceStart": 32,
+      "sourceSentenceEnd": 32,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“적선이 접근한다! 선상 난전을 준비하라!”",
+          "textEn": "“Seizing his iron stanchion, Ignis leaped onto the bulwarks. A sweeping ribbon of immaculate white flame cleaved through the air, melting through the approaching grappling hawsers in a blinding flash.”",
+          "bubbleType": "shout",
+          "position": "top-left",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 33,
+      "imageFile": "episode_17/scene_33.webp",
+      "sourceImageFile": "episode_17/scene_33.webp",
+      "narrationEn": "As imperial shock troops hurled boarding irons to breach the deck, Cilia swept her Jade Staff, conjuring a crushing gale-force vortex across the waves. Caught in the sudden swell, one enemy galley lost its trim and slammed violently against an outcrop of razor shale, its timber hull buckling in half.",
+      "narrationKo": "적병들이 갈고리를 던지며 갑판으로 기어오르려 하자, 실리아가 녹옥 지팡이를 휘둘러 거대한 역풍의 파도를 일으켰다. 돌풍에 휘말린 적선 한 척이 중심을 잃고 암초에 부딪쳐 좌초되었다.",
+      "sourceSentenceStart": 33,
+      "sourceSentenceEnd": 33,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "돌풍에 휘말린 적선 한 척이 중심을 잃고 암초에 부딪쳐 좌초되었다.",
+          "textEn": "Caught in the sudden swell, one enemy galley lost its trim and slammed violently against an outcrop of razor shale, its timber hull buckling in half.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 34,
+      "imageFile": "episode_17/scene_34.webp",
+      "sourceImageFile": "episode_17/scene_34.webp",
+      "narrationEn": "Planting his boots back-to-back with Kadan, Ignis called out over the roar of the gale. \"Kadan!",
+      "narrationKo": "이그니스가 카단과 등을 맞대며 외쳤다. “카단! 저놈들의 기함에 마나 증기 기관이 달려 있다! 기관실을 파괴해야 추격을 떨쳐낼 수 있다!”",
+      "sourceSentenceStart": 34,
+      "sourceSentenceEnd": 34,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "이그니스",
+          "speakerEn": "Ignis",
+          "textKo": "“카단! 저놈들의 기함에 마나 증기 기관이 달려 있다! 기관실을 파괴해야 추격을 떨쳐낼 수 있다!”",
+          "textEn": "“Planting his boots back-to-back with Kadan, Ignis called out over the roar of the gale. \"Kadan!”",
+          "bubbleType": "shout",
+          "position": "bottom-left",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        },
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 35,
+      "imageFile": "episode_17/scene_35.webp",
+      "sourceImageFile": "episode_17/scene_35.webp",
+      "narrationEn": "Their flagship is driven by an arcane mana-steam turbine! We must disable their drive furnace to slip their pursuit!\"",
+      "narrationKo": "카단이 고개를 끄덕이며 방패를 내세워 돌진로를 열었다. “내 방패를 딛고 뛰어라, 이그니스!”",
+      "sourceSentenceStart": 35,
+      "sourceSentenceEnd": 35,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "카단",
+          "speakerEn": "Kadan",
+          "textKo": "“내 방패를 딛고 뛰어라, 이그니스!”",
+          "textEn": "“Their flagship is driven by an arcane mana-steam turbine! We must disable their drive furnace to slip their pursuit!\"”",
+          "bubbleType": "shout",
+          "position": "bottom-right",
+          "characterCardId": 41
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿵-!",
+          "textEn": "THUD!",
+          "style": "impact",
+          "position": "bottom-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 36,
+      "imageFile": "episode_17/scene_36.webp",
+      "sourceImageFile": "episode_17/scene_36.webp",
+      "narrationEn": "Bracing his shield with firm balance, Kadan opened the assault vector. \"Spring from my shield, Ignis!\"",
+      "narrationKo": "이그니스는 카단의 방패를 딛고 허공으로 솟구쳐 올랐다. 공중에서 회전하며 내리꽂힌 순백 화염의 일격이 적 기함의 마나 기관실을 정통으로 꿰뚫었다.",
+      "sourceSentenceStart": 36,
+      "sourceSentenceEnd": 36,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "공중에서 회전하며 내리꽂힌 순백 화염의 일격이 적 기함의 마나 기관실을 정통으로 꿰뚫었다.",
+          "textEn": "\"Spring from my shield, Ignis!\"",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        },
+        {
+          "textKo": "서걱-!",
+          "textEn": "SLASH!",
+          "style": "slash",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 37,
+      "imageFile": "episode_17/scene_37.webp",
+      "sourceImageFile": "episode_17/scene_37.webp",
+      "narrationEn": "Launching himself off the face of Kadan's shield, Ignis vaulted across the churning sea. Cleaving downward in a spinning crescent, his pure white flame pierced straight through the armored grates of the enemy's mana furnace.",
+      "narrationKo": "콰아앙 하는 굉음과 함께 기관실이 폭발하며 적선의 동력이 완전히 마비되었다.",
+      "sourceSentenceStart": 37,
+      "sourceSentenceEnd": 37,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "콰아앙 하는 굉음과 함께 기관실이 폭발하며 적선의 동력이 완전히 마비되었다.",
+          "textEn": "Cleaving downward in a spinning crescent, his pure white flame pierced straight through the armored grates of the enemy's mana furnace.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "콰아아앙!",
+          "textEn": "BOOM!",
+          "style": "impact",
+          "position": "center"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 38,
+      "imageFile": "episode_17/scene_38.webp",
+      "sourceImageFile": "episode_17/scene_38.webp",
+      "narrationEn": "With a concussive roar, the arcane boiler detonated, crippling the flagship's propulsion in clouds of boiling steam. Leaving the burning imperial galleys adrift in their wake, Rondol wrenched the helm, expertly slipping the timber bow of Breeze Wing into the narrow, swirling waters of Razor Reef Defile. With Cilia's gentle wind mana filling the canvas, the vessel glided gracefully between the menacing granite fangs like a phantom.",
+      "narrationKo": "혼란에 빠진 적 함대를 뒤로하고, 론돌은 미풍의날개호의 키를 꺾어 칼날 산호초 해협의 좁은 입구로 능숙하게 밀어 넣었다.",
+      "sourceSentenceStart": 38,
+      "sourceSentenceEnd": 38,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "혼란에 빠진 적 함대를 뒤로하고, 론돌은 미풍의날개호의 키를 꺾어 칼날 산호초 해협의 좁은 입구로 능숙하게 밀어 넣었다.",
+          "textEn": "With Cilia's gentle wind mana filling the canvas, the vessel glided gracefully between the menacing granite fangs like a phantom.",
+          "bubbleType": "thought",
+          "position": "bottom-right",
+          "characterCardId": 46
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "챙-!",
+          "textEn": "CLANG!",
+          "style": "slash",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 39,
+      "imageFile": "episode_17/scene_39.webp",
+      "sourceImageFile": "episode_17/scene_39.webp",
+      "narrationEn": "Though violent swells slammed against the hull, Rondol's seasoned helmsmanship and Kadan's grounded mana stabilization kept the ship upright. When total darkness enfolded the sea, the legendary Whispering Wind Island rose before them in breathtaking splendor, shrouded in luminous emerald sea mist.",
+      "narrationKo": "실리아의 청아한 바람 마나가 돛을 밀어주었고, 배는 날카로운 바위 암초 사이를 미끄러지듯 빠져나갔다. 성난 파도가 뱃전을 사정없이 때렸지만, 론돌의 노련한 조타술과 카단의 균형 잡힌 마나 지지가 배의 침몰을 막아냈다.",
+      "sourceSentenceStart": 39,
+      "sourceSentenceEnd": 39,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "성난 파도가 뱃전을 사정없이 때렸지만, 론돌의 노련한 조타술과 카단의 균형 잡힌 마나 지지가 배의 침몰을 막아냈다.",
+          "textEn": "When total darkness enfolded the sea, the legendary Whispering Wind Island rose before them in breathtaking splendor, shrouded in luminous emerald sea mist.",
+          "bubbleType": "thought",
+          "position": "top-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 40,
+      "imageFile": "episode_17/scene_40.webp",
+      "sourceImageFile": "episode_17/scene_40.webp",
+      "narrationEn": "High atop the colossal basalt crags at the heart of the island, the majestic Jade Barrier Spire pulsed with ripples of soothing, translucent green light across the starry firmament. The ship glided silently into the gaping mouth of an ancient limestone sea cavern beneath the cliffs.",
+      "narrationKo": "어둠이 완전히 내려앉았을 때, 일행의 눈앞에 에메랄드빛 마나 안개에 휩싸인 전설의 바람 속삭임 섬이 거대한 자태를 드러냈다.",
+      "sourceSentenceStart": 40,
+      "sourceSentenceEnd": 40,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "어둠이 완전히 내려앉았을 때, 일행의 눈앞에 에메랄드빛 마나 안개에 휩싸인 전설의 바람 속삭임 섬이 거대한 자태를 드러냈다.",
+          "textEn": "The ship glided silently into the gaping mouth of an ancient limestone sea cavern beneath the cliffs.",
+          "bubbleType": "thought",
+          "position": "top-right",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 41,
+      "imageFile": "episode_17/scene_41.webp",
+      "sourceImageFile": "episode_17/scene_41.webp",
+      "narrationEn": "Tears glistening upon her eyelashes, Cilia gazed upon her ancestral shores. \"I have returned... to the sacred haven where my mother sleeps.",
+      "narrationKo": "섬 중앙의 거대한 절벽 위로 우뚝 솟은 비취 결계탑에서 은은한 옥빛 파문이 밤하늘을 수놓고 있었다. 천 길 절벽 아래 입을 벌린 고대 석회암 동굴 속으로 배가 조용히 미끄러져 들어갔다.",
+      "sourceSentenceStart": 41,
+      "sourceSentenceEnd": 41,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "천 길 절벽 아래 입을 벌린 고대 석회암 동굴 속으로 배가 조용히 미끄러져 들어갔다.",
+          "textEn": "to the sacred haven where my mother sleeps.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        },
+        {
+          "textKo": "쿠구구궁!",
+          "textEn": "RUMBLE!",
+          "style": "rumble",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 42,
+      "imageFile": "episode_17/scene_42.webp",
+      "sourceImageFile": "episode_17/scene_42.webp",
+      "narrationEn": "The light of the barrier spire has not yet been extinguished.\" Lowering his iron shield, Kadan spoke with solemn depth.",
+      "narrationKo": "실리아가 눈시울을 붉히며 고향의 섬을 바라보았다. “돌아왔어요... 어머니가 잠들어 계신 나의 고향으로. 비취 결계탑의 불빛이 아직 완전히 꺼지지 않았어요.”",
+      "sourceSentenceStart": 42,
+      "sourceSentenceEnd": 42,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "실리아",
+          "speakerEn": "Celia",
+          "textKo": "“돌아왔어요... 어머니가 잠들어 계신 나의 고향으로. 비취 결계탑의 불빛이 아직 완전히 꺼지지 않았어요.”",
+          "textEn": "“The light of the barrier spire has not yet been extinguished.\" Lowering his iron shield, Kadan spoke with solemn depth.”",
+          "bubbleType": "thought",
+          "position": "bottom-left",
+          "characterCardId": 62
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "파지지직!",
+          "textEn": "CRACKLE!",
+          "style": "magic",
+          "position": "top-right"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 43,
+      "imageFile": "episode_17/scene_43.webp",
+      "sourceImageFile": "episode_17/scene_43.webp",
+      "narrationEn": "\"Now is the hour to banish the encroaching shadow and return true freedom to the realm of the wind. Queen Sylphid's spirit watches over our blades.\"",
+      "narrationKo": "카단이 방패를 거두며 굳건한 목소리로 말했다. “이제 어둠을 걷어내고 바람의 왕국에 진정한 평화를 되찾을 시간이다. 어머니 실피드의 넋도 우리를 지켜보고 계실 것이다.”",
       "sourceSentenceStart": 43,
-      "sourceSentenceEnd": 45,
+      "sourceSentenceEnd": 43,
       "alignmentScore": 1.0,
       "dialogues": [
         {
@@ -632,13 +1349,13 @@
       ]
     },
     {
-      "sceneNumber": 20,
-      "imageFile": "episode_17/scene_20.webp",
-      "sourceImageFile": "episode_17/scene_20.webp",
-      "narrationEn": "\"I shall be the first to pay the debt my empire incurred.\" With resolute hearts, the three young champions and the old mariner cast anchor into the dark waters before the submerged cavern of the Black Temple. Rhythmic drops falling from the cavern ceiling echoed their solemn silence.",
-      "narrationKo": "“황실이 저지른 죗값을 내가 앞장서서 갚겠다.” 세 젊은이와 노장은 결연한 각오를 다지며, 어둠 속 검은 성전의 해저 동굴을 향해 조용히 닻을 내렸다. 차가운 동굴 천장에서 떨어지는 물방울 소리가 그들의 비장한 침묵을 어루만지고 있었다.",
-      "sourceSentenceStart": 46,
-      "sourceSentenceEnd": 47,
+      "sceneNumber": 44,
+      "imageFile": "episode_17/scene_44.webp",
+      "sourceImageFile": "episode_17/scene_44.webp",
+      "narrationEn": "Ignis touched his breastplate with solemn devotion. \"I shall be the first to pay the debt my empire incurred.\"",
+      "narrationKo": "이그니스 역시 가슴에 손을 얹으며 맹세했다. “황실이 저지른 죗값을 내가 앞장서서 갚겠다.”",
+      "sourceSentenceStart": 44,
+      "sourceSentenceEnd": 44,
       "alignmentScore": 1.0,
       "dialogues": [
         {
@@ -648,6 +1365,35 @@
           "textEn": "“I shall be the first to pay the debt my empire incurred.”",
           "bubbleType": "speech",
           "position": "top-left",
+          "characterCardId": 11
+        }
+      ],
+      "sfxCues": [
+        {
+          "textKo": "휘이이익-!",
+          "textEn": "SWOOSH!",
+          "style": "slash",
+          "position": "top-left"
+        }
+      ]
+    },
+    {
+      "sceneNumber": 45,
+      "imageFile": "episode_17/scene_45.webp",
+      "sourceImageFile": "episode_17/scene_45.webp",
+      "narrationEn": "With resolute hearts, the three young champions and the old mariner cast anchor into the dark waters before the submerged cavern of the Black Temple. Rhythmic drops falling from the cavern ceiling echoed their solemn silence.",
+      "narrationKo": "세 젊은이와 노장은 결연한 각오를 다지며, 어둠 속 검은 성전의 해저 동굴을 향해 조용히 닻을 내렸다. 차가운 동굴 천장에서 떨어지는 물방울 소리가 그들의 비장한 침묵을 어루만지고 있었다.",
+      "sourceSentenceStart": 45,
+      "sourceSentenceEnd": 45,
+      "alignmentScore": 1.0,
+      "dialogues": [
+        {
+          "speakerKo": "내레이션",
+          "speakerEn": "Narration",
+          "textKo": "차가운 동굴 천장에서 떨어지는 물방울 소리가 그들의 비장한 침묵을 어루만지고 있었다.",
+          "textEn": "Rhythmic drops falling from the cavern ceiling echoed their solemn silence.",
+          "bubbleType": "thought",
+          "position": "bottom-left",
           "characterCardId": 11
         }
       ],

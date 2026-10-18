@@ -1,119 +1,88 @@
-# Project: SNSHero 40-Episode IP Trilogy Full-scale Commercial Remake (Web Novel, Webtoon, Full Movie)
+# Project: SNSHero 110-Hero Character Illustration Remaster & Asset Synchronization
 
 ## Architecture
-The SNSHero media subsystem consists of three integrated creative experiences powered by React 19, TypeScript 5.8, Tailwind CSS 4.1, and client-side web APIs:
-1. **Web Novel Engine (`NovelView.tsx`)**: Renders high-fantasy literary prose across 40 episodes (`public/book/episode_01.md`–`episode_40.md`) and English adaptations (`englishNovelMapping.ts`), supporting paragraph-level Web SpeechSynthesis TTS, font-mono typography, interactive lore keyword inspection (`loreRecruitmentStore.ts`), and LocalStorage progress persistence.
-2. **Webtoon Comic Reader (`NovelView.tsx` cartoon mode)**: Renders 40 episodes (840 panels) in vertical scroll and slide modes, enriched with structured comic direction (`WebtoonSpeechBubble`, `WebtoonSfxOverlay`, `WebtoonMonologueBox`, `WebtoonPanelCard`), generative dark-fantasy key illustrations (`generate_image`), and speaker-attributed dialogue datasets (`webtoonEpisodeManifest.json`, `image_narrations/*.json`).
-3. **In-App Theatrical Movie Engine (`MovieView.tsx`)**: Unlocks all 40 episodes (episodes 1–40, 0 episodes blocked), providing dual playback capability: official YouTube streams for episodes 1–8 and an in-app Generative Cinematic Movie Player (`CinematicMoviePlayer.tsx`) for all 40 episodes. The player renders 20-scene animated storyboards with Ken Burns multi-plane camera motion (pan/zoom/shake), procedural particle VFX (snow, embers, runes, slashes), procedural Web Audio API soundtrack & battle SFX synthesis (`MovieAudioSynthesizer.ts`), synchronized bilingual voiceover narration, and theatrical subtitles.
-4. **App Shell & Persistence (`HomeView.tsx`, `webtoonProgress.ts`, `App.tsx`)**: Provides 1-click media shortcuts from the home dashboard, argument-order-agnostic season-isolated LocalStorage state (`hero_novel_progress_{season}`, `hero_movie_progress_{season}`), and 100% adherence to `DESIGN.md` (font-mono, 0px/4px border radii, 44px+ mobile touch targets).
+- **Domain**: Visual Assets, TCG Artwork, Sprite Sheets, Image Optimization & Frontend Rendering.
+- **Data Flow**:
+  1. Base Character Specifications & Lore (`src/cardDatabase.ts`, `src/content/characterIp.ts`, and `cards_dataset.json`).
+  2. High-Density Fantasy TCG Remastering & Portrait Generation (`public/seat/*.png`, 256x296 px, 110 files).
+  3. Multi-Surface Sprite Sheet Assembly (`public/cards1.png`, `public/cards2.png`, `public/card100.png`, `public/card100_gemini.png`, `public/character_sheet_*.png`).
+  4. Compression Pipeline: Pillow FASTOCTREE 256-color palette quantization + `compress_level=9` to meet strict file size budgets.
+  5. UI Coordinate Verification: `src/lib/utils.ts` (`getCardSpriteCoords`), `src/lib/canvasCardRenderer.ts`, `src/components/CardItem.tsx`.
+- **Dual Track Organization**:
+  - **E2E Testing Track**: Autonomous requirement-driven test harness, verifying all 110 seat files, master sheets, faction sheets, coordinates, file sizes, hashes, and decoding. Publishes `TEST_READY.md`.
+  - **Implementation Track**: Executes M1 -> M2 -> M3 -> M4 (Final Milestone: E2E Pass + Tier 5 Adversarial Hardening + Project Hygiene).
 
 ## Feature Inventory
-Every feature from the Survey phase is mapped to a milestone below.
 | # | Feature | Description | Milestone | Source |
 |---|---------|-------------|-----------|--------|
-| 1 | 40-Episode Korean Literary Prose Rewrite | Expand public/book/episode_01.md–40.md to ≥ 3,500+ Korean characters each with rich worldbuilding across 11 races | M1 | Survey Ep 1 |
-| 2 | Character Dialogue Dramatization | Ensure every Korean episode features ≥ 8+ distinct lines of dialogue (“...”) with authentic character voices | M1 | Survey Ep 1 |
-| 3 | Core Lore Keyword Preservation | Preserve keywords (은빛 단검, 알렉산다르, 발리안, 이그니스, 실리아) in prose for SSR Kadan recruitment integration | M1 | Survey Ep 1 |
-| 4 | English Novel Commercial Adaptation | Clean 40 English chapters in englishNovelMapping.ts and image_narrations/english_txt/, removing raw image tags and translation glitches | M1 | Survey Ep 1 |
-| 5 | Metadata Synchronization | Synchronize episode titles, character counts, and totals in public/book/index.json and englishNovelMapping.ts | M1 | Survey Ep 1 |
-| 6 | Generative Dark-Fantasy Art Assets | Generate high-impact key illustrations via generative image tool for key title cards and climax scenes | M2 | Survey Ep 2 |
-| 7 | Webtoon Structured Comic Manifest | Enrich webtoonEpisodeManifest.json with speaker-attributed dialogues, monologue cards, and dramatic SFX cues | M2 | Survey Ep 2 |
-| 8 | 40-Episode Image Narration Datasets | Enrich public/book/image_narrations/episode_01_narrations.json–episode_40_narrations.json with comic dialogue and SFX tags | M2 | Survey Ep 2 |
-| 9 | Comic Direction UI Components | Implement WebtoonSpeechBubble, WebtoonSfxOverlay, WebtoonMonologueBox, and WebtoonPanelCard in DESIGN.md style | M2 | Survey Ep 2 |
-| 10 | NovelView Webtoon Reader Refactor | Integrate comic components into vertical scroll and slide modes, fix 5-scene hardcoded scroll bug, and add speech bubble toggle | M2 | Survey Ep 2 |
-| 11 | Webtoon Slide Touch Target Fix | Replace 28px (w-7 h-7) buttons with 44px+ mobile touch-compliant buttons in NovelView.tsx slide mode | M2 | Survey Ep 2 |
-| 12 | 40-Episode Full Movie Unlocking | Unlock all 40 episodes in MovieView.tsx (default releasedCount = 40, eliminate Coming Soon alert block) | M3 | Survey Ep 3 |
-| 13 | Movie Episode Mapping Completion | Populate all 40 episode entries with full metadata in src/content/movieEpisodeMapping.ts | M3 | Survey Ep 3 |
-| 14 | In-App Generative Cinematic Movie Player | Implement CinematicMoviePlayer.tsx rendering 20-scene sequences with Ken Burns camera motion and timeline scrub controls | M3 | Survey Ep 3 |
-| 15 | Atmospheric Particle VFX Engine | Implement HTML5 canvas particle VFX (snow, embers, runes, combat slashes) with low-spec graceful degradation | M3 | Survey Ep 3 |
-| 16 | Procedural Audio Synthesizer & Voiceover | Implement MovieAudioSynthesizer.ts for Web Audio BGM themes & battle SFX, coupled with SpeechSynthesis voiceover | M3 | Survey Ep 3 |
-| 17 | Theatrical Subtitles & Playback Controls | Add synchronized bilingual subtitles, play/pause/restart/fullscreen/scrubbing controls with 44px+ touch targets | M3 | Survey Ep 3 |
-| 18 | LocalStorage Parameter-Order Agnostic Fix | Update src/lib/webtoonProgress.ts setSeasonItem to be argument-order agnostic, fixing broken persistence | M3 | Survey Ep 3 |
-| 19 | MovieView DESIGN.md Touch Target Fix | Upgrade 36px filter tabs and small action buttons in MovieView.tsx to min-h-[44px] | M3 | Survey Ep 3 |
-| 20 | Dual-Track E2E Test Suite & Script | Implement scripts/verify_ip_trilogy.ts verifying all 40 episodes of Novel, Webtoon, and Movie | M4 | Survey Ep 3 |
-| 21 | Agent-as-Judge Literary Quality Audit | Audit representative sample of early, mid, and late episodes for prose depth, dialogue, and zero AI summary clichés | M4 | Authoritative Spec |
-| 22 | 0 TypeScript Errors & Build Cleanliness | Verify npm run lint (tsc --noEmit) and npm run build succeed with 0 errors | M4 | Authoritative Spec |
-| 23 | Mandatory Google Form Report Submission | Submit automated completion report to Google Form endpoint upon successful verification | M4 | AGENTS.md / GEMINI.md |
+| 1 | 110-Hero Design Remastering & Lore Preservation | Visual remaster of IDs 1–110 across 11 factions with high-density fantasy TCG detail, palette, silhouette, and aura preservation | M1 | ORIGINAL_REQUEST §R1 |
+| 2 | Individual Seat Portraits Synchronization | All 110 individual portrait files in `public/seat/*.png` at exact 256x296 px, repairing corrupted legacy files (`Celia`, `Hyperion_Prime`, `Sentinel`) | M1 | ORIGINAL_REQUEST §R1, §R2 |
+| 3 | Primary 10x10 Sprite Sheets Assembly | `public/cards1.png` (IDs 1–100) and `public/cards2.png` (IDs 101–110 in Row 0) at 1000x1000 px with exact 100x100 cells | M2 | ORIGINAL_REQUEST §R2 |
+| 4 | Legacy Master 10x11 Sheets Assembly | `public/card100.png` (1135x1315 px) and `public/card100_gemini.png` (1024x1024 px true RGBA PNG) covering IDs 1–110 | M2 | ORIGINAL_REQUEST §R2 |
+| 5 | Faction Horizontal Sheets Assembly | All 11 `public/character_sheet_*.png` files at 2560x296 px with 10 horizontal cards per faction, correcting aliases (`hobbit`, `beast`, `mecha`) | M2 | ORIGINAL_REQUEST §R2 |
+| 6 | Sprite Grid & Coordinate Alignment | Exact coordinate alignment per `getCardSpriteCoords` and `canvasCardRenderer.ts` with sub-pixel padding to prevent bleeding | M2 | ORIGINAL_REQUEST §R2 |
+| 7 | Web Traffic & File Size Optimization | Strict size budgets: seat <= 35 KB (4KB–35KB), master sheets <= 800 KB, faction sheets <= 300 KB via FASTOCTREE quantization | M3 | ORIGINAL_REQUEST §R3 |
+| 8 | E2E Requirement-Driven Testing Track | Autonomous E2E test suite across Tiers 1–4 testing file validity, dimensions, hashes, budgets, coordinates; produces `TEST_READY.md` | E2E-Track | Dual Track Architecture |
+| 9 | Final E2E Pass & Adversarial Hardening | 100% pass on Tiers 1–4, Tier 5 white-box adversarial stress tests, lint & build pass, git commit, WORK_LOGS.md, and Google Form report | M4 | ORIGINAL_REQUEST §R4 |
 
 ## Milestones
-| # | Name | Scope | Dependencies | Status | Agent Conv ID |
-|---|------|-------|-------------|--------|---------------|
-| M1 | Web Novel Literary Adaptation | Features 1, 2, 3, 4, 5: 40 Korean episodes rewrite (≥3,500 chars, ≥8 dialogues), 40 English chapters adaptation, index.json & englishNovelMapping sync | None | DONE (Gate 3 PASS: Authentic authoring, 0 fillers, 0 duplicate dialogues, Auditor CLEAN) | b716401f-78a4-4740-9b6c-1dc59031606e |
-| M2 | Webtoon Remake & Comic Direction | Features 6, 7, 8, 9, 10, 11: Generative dark fantasy illustrations, comic manifest & narrations enrichment, speech bubble & SFX overlay components, NovelView reader refactor, 44px touch targets | None | DONE (Gate 3 PASS: Reviewer 3-1 APPROVE, Auditor CLEAN) | a634589c-3756-4b20-bf6b-8c88452d93e4 |
-| M3 | Full Movie Theater & Cinematic Engine | Features 12, 13, 14, 15, 16, 17, 18, 19: All 40 episodes unlocked, CinematicMoviePlayer with Ken Burns camera & particle VFX, MovieAudioSynthesizer procedural BGM/SFX/TTS, setSeasonItem fix, 44px tabs | None | DONE (Gate 3 PASS: Reviewer 3-2 APPROVE, Auditor CLEAN) | 11b3d25f-d7a2-4c84-8cdb-91fefb0f900b |
-| M4 | E2E Testing, Audit & Verification | Features 20, 21, 22, 23: Test infrastructure, scripts/verify_ip_trilogy.ts (38/38), challenger stress tests (58/58), Agent-as-Judge (9.64/10), tsc (0 errors), npm run build (clean), Google Form report | M1, M2, M3 | DONE (Gate 3 PASS: 100% Tests Pass, Challenger 3-1 & 3-2 APPROVE) | fdfc9478-8e8e-4ad8-89b0-732e8ff6364f |
+| # | Name | Scope | Dependencies | Status |
+|---|------|-------|-------------|--------|
+| E2E | E2E Testing Suite | Requirements-driven test suite (Tiers 1–4) & runner publishing `TEST_READY.md` | Survey | IN_PROGRESS |
+| M1 | 110-Hero Portrait Remastering | Remaster all 110 characters, generate 256x296 RGBA portraits in `public/seat/*.png`, fix corrupted headers | Survey | PLANNED |
+| M2 | Sprite Sheet Synchronization | Assemble `cards1.png`, `cards2.png`, `card100.png`, `card100_gemini.png`, and 11 faction sheets with exact grid alignment | M1 | PLANNED |
+| M3 | Traffic & Size Optimization | Apply FASTOCTREE quantization to all assets, verifying seat <= 35KB, master <= 800KB, faction <= 300KB | M2 | PLANNED |
+| M4 | Final E2E Pass & Hardening | Pass 100% E2E tests, Tier 5 adversarial testing, `npm run lint` & `build`, git commit, WORK_LOGS.md, Google Form | M3, E2E | PLANNED |
 
 ## Interface Contracts
-### Web Novel ↔ NovelView Reader
-- Path: `public/book/episode_${epPad}.md`
-- Header: `# 눈히어로 {N}화 - {제목}`
-- Lore keywords: Must contain `은빛 단검`, `알렉산다르`, `발리안`, `이그니스`, `실리아` across designated chapters.
-- Formatting: Empty line between paragraphs for optimal Web SpeechSynthesis TTS and smooth scrolling.
+### 1. Individual Seat Portraits ↔ Sprite Sheet Compositors
+- Directory: `public/seat/`
+- Filename format: `${CARD_DATABASE[id].title_en.replace(/ /g, '_')}.png`
+- Dimensions: `256 x 296` px
+- Format: 32-bit RGBA or 8-bit paletted RGBA PNG, alpha transparency preserved.
 
-### Webtoon Manifest ↔ NovelView Cartoon Reader
-- Interface: `WebtoonEpisodeManifest` in `src/content/webtoonEpisodeManifest.json`
-- Item Schema:
-  ```ts
-  interface WebtoonSceneImage {
-    index: number;
-    fileName: string;
-    imageUrl: string;
-    type: 'title_card' | 'scene';
-    narrationEn: string;
-    narrationKo: string;
-    background: string;
-    characters: string[];
-    dialogues?: Array<{
-      speakerKo: string;
-      speakerEn: string;
-      textKo: string;
-      textEn: string;
-      bubbleType?: 'speech' | 'shout' | 'thought' | 'whisper';
-      position?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'center';
-    }>;
-    sfxCues?: Array<{
-      textKo: string;
-      textEn: string;
-      style?: 'slash' | 'impact' | 'magic' | 'rumble';
-      position?: 'center' | 'top-right' | 'bottom-left';
-    }>;
-  }
-  ```
+### 2. Primary Sprite Sheets ↔ Frontend CardItem & Canvas Renderer
+- `public/cards1.png`:
+  - Size: `1000 x 1000` px
+  - Grid: 10 columns x 10 rows (100 cells, each `100 x 100` px)
+  - Card IDs: 1 to 100. Index formula: `idx = id - 1`, `col = idx % 10`, `row = Math.floor(idx / 10)`
+  - Coordinate: `x = col * 100`, `y = row * 100`
+- `public/cards2.png`:
+  - Size: `1000 x 1000` px
+  - Grid: 10 columns x 10 rows (100 cells, each `100 x 100` px)
+  - Card IDs: 101 to 110 in Row 0 (`row = 0`, `col = id - 101`). Rows 1–9 preserved.
+- `public/card100.png`:
+  - Size: `1135 x 1315` px
+  - Grid: 10 columns x 11 rows (110 cells, each `113.5 x 119.545` px)
+  - Card IDs: 1 to 110. Index: `idx = id - 1`, `col = idx % 10`, `row = Math.floor(idx / 10)`
+- `public/card100_gemini.png`:
+  - Size: `1024 x 1024` px
+  - Grid: 10 columns x 11 rows (110 cells, each `102.4 x 93.091` px)
+  - Format: True RGBA PNG (replacing old JPEG-in-PNG file)
 
-### Movie Player ↔ MovieView
-- Interface: `CinematicMoviePlayerProps`
-  ```ts
-  interface CinematicMoviePlayerProps {
-    episodeNumber: number;
-    titleKo: string;
-    titleEn: string;
-    scenes: Array<{
-      sceneNumber: number;
-      imageUrl: string;
-      narrationKo: string;
-      narrationEn: string;
-      dialogues?: Array<{ speaker: string; text: string }>;
-      vfxType?: 'snow' | 'embers' | 'runes' | 'slash' | 'none';
-      cameraMotion?: 'pan-left' | 'pan-right' | 'zoom-in' | 'zoom-out' | 'shake';
-    }>;
-    language: 'ko' | 'en';
-    onClose?: () => void;
-    onEpisodeComplete?: (epNum: number) => void;
-  }
-  ```
+### 3. Faction Sheets ↔ Faction Carousels
+- Files: 11 sheets in `public/`:
+  - `character_sheet_water.png` (IDs 1–10)
+  - `character_sheet_fire.png` (IDs 11–20)
+  - `character_sheet_wind.png` (IDs 21–30)
+  - `character_sheet_earth.png` (IDs 31–40)
+  - `character_sheet_human.png` (IDs 41–50)
+  - `character_sheet_undead.png` (IDs 51–60)
+  - `character_sheet_elf.png` (IDs 61–70)
+  - `character_sheet_hobbit.png` (IDs 71–80, Dwarf/Hobbit faction)
+  - `character_sheet_beast.png` (IDs 81–90, Monster/Beast faction)
+  - `character_sheet_mecha.png` (IDs 91–100, Robot/Mecha faction)
+  - `character_sheet_dragon.png` (IDs 101–110, Dragon faction)
+- Dimensions: `2560 x 296` px (10 horizontal cells, each `256 x 296` px).
 
-### LocalStorage Contract (`webtoonProgress.ts`)
-- Functions:
-  - `getSeasonItem(key: string, season: string): string | null`
-  - `setSeasonItem(key: string, arg2: string, arg3: string): void` (must handle both `(key, season, value)` and `(key, value, season)` to support legacy callers).
+### 4. File Size Budgets
+- `public/seat/*.png`: `>= 4,096` bytes and `<= 35,840` bytes (35 KB).
+- `public/cards1.png`, `public/cards2.png`, `public/card100.png`, `public/card100_gemini.png`: `<= 819,200` bytes (800 KB).
+- `public/character_sheet_*.png`: `<= 307,200` bytes (300 KB).
 
 ## Code Layout
-- `public/book/`: 40 Korean markdown episode files + `index.json`.
-- `public/book/image_narrations/`: 40 scene narration JSONs + `english_txt/`.
-- `public/images/webtoon/`: Generated dark-fantasy key art illustrations.
-- `src/components/webtoon/`: `WebtoonSpeechBubble.tsx`, `WebtoonSfxOverlay.tsx`, `WebtoonMonologueBox.tsx`.
-- `src/components/movie/`: `CinematicMoviePlayer.tsx`, `MovieVfxCanvas.tsx`.
-- `src/lib/`: `MovieAudioSynthesizer.ts`, `webtoonProgress.ts`.
-- `src/content/`: `webtoonEpisodeManifest.json`, `movieEpisodeMapping.ts`, `englishNovelMapping.ts`.
-- `src/views/`: `NovelView.tsx`, `MovieView.tsx`, `HomeView.tsx`.
-- `scripts/`: `verify_ip_trilogy.ts`.
+- Metadata / Specs: `src/cardDatabase.ts`, `src/content/characterIp.ts`
+- Rendering & Coords: `src/lib/utils.ts`, `src/lib/canvasCardRenderer.ts`, `src/components/CardItem.tsx`
+- Asset Destination: `public/seat/*.png`, `public/cards1.png`, `public/cards2.png`, `public/card100.png`, `public/card100_gemini.png`, `public/character_sheet_*.png`
+- Test Runner & Infra: `tests/e2e_character_assets/`
+- Working Directory: `.agents/teamwork/`

@@ -111,7 +111,7 @@ const buildScenesForEpisode = (epNum: number, language: 'ko' | 'en' | 'ja' = 'ko
   const sceneImages = epData.images.filter((img) => img.index > 0);
   const targetImages = sceneImages.length > 0 ? sceneImages : epData.images;
 
-  return targetImages.slice(0, 20).map((img, idx) => {
+  return targetImages.map((img, idx) => {
     const textKo = img.narrationKo || '';
     const textEn = img.narrationEn || '';
 

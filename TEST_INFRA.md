@@ -1,225 +1,235 @@
-# SNSHero IP Trilogy Dual-Track E2E Test Infrastructure (TEST_INFRA.md)
+# SNSHero 110-Hero Character Illustration Remaster E2E Test Infrastructure (TEST_INFRA.md)
 
-## 1. Overview & Strategy
+## 1. Overview & Architecture
 
-This document establishes the comprehensive test infrastructure for the commercial-grade remake of the **SNSHero 40-Episode IP Trilogy** — spanning the **Web Novel**, **Webtoon**, and **Full Movie** subsystems within the SNSHero application (`snshero.com`).
+This document establishes the comprehensive test architecture, methodology, and coverage criteria for the visual remastering, multi-surface asset synchronization, and web payload optimization of all **110 hero characters** in **SNSHero** (`CARD_DATABASE` IDs 1–110 across 11 elemental/racial factions).
 
-The testing strategy employs a **Dual-Track 4-Tier Verification Framework**:
-- **Track A (Continuous Automated Harness)**: High-speed, deterministic verification executed programmatically via `npx tsx scripts/verify_ip_trilogy.ts`. Verifies structural integrity, content volume, schema compliance, metadata synchronization, build cleanliness, and DESIGN.md constraints in seconds.
-- **Track B (E2E Scenario & Quality Audit)**: Interactive workflow simulation, literary immersion grading (Agent-as-Judge), visual direction verification, and real-world persistence validation across devices and seasons.
+The testing strategy employs a **Dual-Track 4-Tier Automated Verification Framework** driven by a standalone, headless Python 3 test harness (`tests/e2e_character_assets/runner.py`):
 
 ```
-+-----------------------------------------------------------------------------------+
-|                        SNSHero IP Trilogy Test Infrastructure                     |
-+-----------------------------------------------------------------------------------+
-|  Tier 1: Feature Coverage (Unit / Contract / Asset Integrity / Build)             |
-|  - Novel: 40 Korean/English eps, ≥3500 chars, ≥8 dialogues, lore keywords, sync   |
-|  - Webtoon: 40 manifest eps, 40 narrations, valid URLs, speech bubbles, SFX cues  |
-|  - Movie: 40 eps unlocked (0 blocked), movieEpisodeMapping, Cinematic Player      |
-|  - Persistence: webtoonProgress argument order agnostic, season isolation         |
-|  - Build & Design: tsc 0-error, vite build 0-error, font-mono, ≥44px touch targets |
-+-----------------------------------------------------------------------------------+
-|  Tier 2: Boundary & Corner Cases                                                  |
-|  - Episode out-of-bounds (ep < 1, ep > 40, non-numeric query params)              |
-|  - Missing dialogue/SFX fallback in Webtoon panel rendering                       |
-|  - Movie fallback from missing YouTube videoId to in-app Generative Player         |
-|  - LocalStorage corrupted JSON recovery, quota limit handling                     |
-+-----------------------------------------------------------------------------------+
-|  Tier 3: Cross-Feature Interactions & Data Pipeline                               |
-|  - Trilogy Title & Arc Synchronicity (Novel == Webtoon == Movie across all 40)    |
-|  - Lore Keyword Bridge (Novel keywords -> TacticalLoreDock / SSR Kadan recruitment)|
-|  - Unified Progress Sync (read/watch state propagation, reward claiming)         |
-|  - Deep-link URL Routing (?view=novel&ep=N, ?view=movie&ep=N, ?tab=cartoon)       |
-+-----------------------------------------------------------------------------------+
-|  Tier 4: Real-World Scenarios (End-to-End User Journeys)                          |
-|  - Journey 1: Novel Reader -> TTS playback -> 85%+ scroll -> Reward claim         |
-|  - Journey 2: Webtoon Comic -> Speech bubble toggle -> Vertical & Slide nav       |
-|  - Journey 3: Theatrical Movie -> 20-scene playback -> Ken Burns + VFX + Synth SFX|
-|  - Journey 4: Season Transition & Zero-Data-Loss Multi-Session Survival           |
-+-----------------------------------------------------------------------------------+
++---------------------------------------------------------------------------------------------------+
+|               SNSHero 110-Hero Character Remaster E2E Test Infrastructure                         |
++---------------------------------------------------------------------------------------------------+
+|  Tier 1: Feature Coverage & Asset Integrity (>= 5 tests per feature)                              |
+|  - Feature 2 (Seat Portraits): 110 files exist, 110 decode validly, exact 256x296, 110 distinct  |
+|    SHA-256 hashes, zero blank/uniform images, alpha transparency preserved.                       |
+|  - Feature 3 (Primary Sheets): cards1.png (1000x1000) & cards2.png (1000x1000) exist, decode    |
+|    validly, exact dimensions, 10x10 cells populated.                                              |
+|  - Feature 4 (Master Sheets): card100.png (1135x1315) & card100_gemini.png (1024x1024 true RGBA) |
+|    exist, decode as genuine PNGs (reject JPEG disguise), exact dimensions, alpha preserved.      |
+|  - Feature 5 (Faction Sheets): 11 horizontal sheets exist (with aliases hobbit/beast/mecha),      |
+|    decode validly, exact 2560x296 dimensions, alpha channel, 10 cells contain rich art.           |
++---------------------------------------------------------------------------------------------------+
+|  Tier 2: Boundary & Corner Cases (>= 5 tests per feature)                                         |
+|  - Feature 7 (Size Budgets): Seat files in [4 KB, 35 KB]; Master sheets <= 800 KB;               |
+|    Faction sheets <= 300 KB; Total aggregate payload <= 10.11 MB.                                 |
+|  - Feature 2 & 5 (Header Integrity): 8-byte PNG magic header (\x89PNG\r\n\x1a\n) check on all     |
+|    125 PNG assets to catch UTF-8 replacement byte corruptions (\xef\xbf\xbdPNG); IHDR structure. |
+|  - Feature 3 & 6 (Grid Boundaries): Boundary ID 100 termination vs ID 101 origin transition;     |
+|    Card ID 110 terminal alignment; Rows 1-9 preservation in cards2.png; Boss column 9 alignment; |
+|    OOB & negative ID clamping.                                                                    |
++---------------------------------------------------------------------------------------------------+
+|  Tier 3: Cross-Feature Combinations & Sprite Coordinate Alignment (Pairwise Coverage)             |
+|  - Mathematical coordinate parity: All 110 card IDs verified against getCardSpriteCoords formulas |
+|    for cards1/cards2 (10x10), card100 (10x11), and card100_gemini (10x11).                        |
+|  - Faction horizontal placement: Exact x = ((id - 1) % 10) * 256, y = 0 mapping.                  |
+|  - Pixel synchronization: Normalized visual similarity between public/seat/<Card>.png and sliced   |
+|    cells from faction sheets and master sheets.                                                   |
+|  - Sub-pixel boundary integrity: Zero edge bleeding / ghosting between adjacent sprite cells.    |
++---------------------------------------------------------------------------------------------------+
+|  Tier 4: Real-World Scenarios                                                                     |
+|  - CardItem rendering simulation: Surface tint classes and emblems across all 11 factions.         |
+|  - Rarity frame & sheen simulation: 50 Bronze, 32 Silver, 28 Gold (11 Bosses at Gold apex).       |
+|  - CanvasCardRenderer drawCardSprite blitting: Slicing geometry verified at mini (32px),          |
+|    hand (80x92px), board (120x140px), and zoom (256x296px) viewports.                            |
+|  - Priority resolver cascade: custom/processed -> default sprite -> seat fallback chain.          |
+|  - Total web payload audit: Comprehensive payload benchmark demonstrating >= 50% traffic cut.     |
++---------------------------------------------------------------------------------------------------+
 ```
 
 ---
 
 ## 2. 4-Tier Test Suite Specification
 
-### Tier 1: Feature Coverage & Contract Verification
+### Tier 1: Feature Coverage & Asset Integrity (>= 5 Tests per Feature)
 
-#### T1.1 Web Novel Literary Expansion & Contract
-- **Objective**: Verify that all 40 Korean episodes (`public/book/episode_01.md` through `episode_40.md`) and their English counterparts (`src/content/englishNovelMapping.ts`) exist, have valid markdown structure, meet the commercial volume threshold, and preserve core lore keywords.
-- **Authoritative Requirements**: `ORIGINAL_REQUEST.md` R1 & Acceptance Criteria, `PROJECT.md` Features 1, 2, 3, 4, 5.
+#### T1.1 Individual Seat Portraits (`public/seat/*.png`, Feature 2)
+- **Objective**: Ensure all 110 hero character portraits exist, decode cleanly without binary or raster corruption, maintain exact dimensions, have unique visual identity, and preserve alpha transparency.
+- **Authoritative Sources**: `PROJECT.md` Feature 2, `ORIGINAL_REQUEST.md` R1 & R2, `cards_dataset.json`.
 - **Assertions**:
-  1. **File Existence**: Exactly 40 Korean files (`public/book/episode_01.md` ... `episode_40.md`) exist and are non-empty.
-  2. **Header Syntax**: Each file starts with valid markdown header `# 눈히어로 {N}화 - {제목}` where `N` matches 1..40.
-  3. **Character Volume**: Every Korean episode contains at least 3,500+ characters (Korean text length ≥ 3,500 chars).
-  4. **Dialogue Dramatization**: Every episode contains at least 8+ distinct direct character dialogue lines enclosed in quotation marks (`“...”` or `"..."`).
-  5. **Lore Keyword Preservation**: Across designated chapters, verify presence of core SSR Kadan recruitment lore keywords:
-     - `은빛 단검` (Silver Dagger)
-     - `알렉산다르` (Aleksandar)
-     - `발리안` (Balian)
-     - `이그니스` (Ignis)
-     - `실리아` (Celia)
-  6. **Metadata Synchronization**: `public/book/index.json` episode titles, numbers, and character counts match the markdown files and `src/content/englishNovelMapping.ts`.
+  1. `T1.F2.1` **File Existence**: All 110 individual portrait files exist in `public/seat/` matching `${title_en.replace(/ /g, '_')}.png`.
+  2. `T1.F2.2` **Raster Decode Validity**: All 110 files open and decode without syntax errors (PIL `UnidentifiedImageError`, truncated chunks, or bad CRC).
+  3. `T1.F2.3` **Exact Dimensions**: All 110 portraits are exactly `256 x 296` px (width 256, height 296).
+  4. `T1.F2.4` **110 Distinct SHA-256 Hashes**: Every portrait file yields a unique cryptographic hash; zero duplicate or clone files.
+  5. `T1.F2.5` **Zero Blank / Uniform Images**: Entropy $\ge 2.0$ and pixel standard deviation $\ge 8.0$; zero solid color or empty transparent canvases.
+  6. `T1.F2.6` **Alpha Transparency Support**: Image color mode is RGBA, LA, or paletted with alpha transparency enabled.
 
-#### T1.2 Webtoon Comic Manifest & Asset Integrity
-- **Objective**: Verify that the 40-episode Webtoon dataset has full panel coverage, valid asset URLs, and structured comic direction data.
-- **Authoritative Requirements**: `ORIGINAL_REQUEST.md` R2, `PROJECT.md` Features 6, 7, 8, 9, 10, 11.
+#### T1.2 Primary 10x10 Sprite Sheets (`public/cards1.png`, `public/cards2.png`, Feature 3)
+- **Objective**: Verify standard battle sprite sheets covering IDs 1–100 (`cards1.png`) and IDs 101–110 (`cards2.png`).
+- **Authoritative Sources**: `PROJECT.md` Feature 3, `src/lib/utils.ts` (`getCardSpriteCoords`).
 - **Assertions**:
-  1. **Manifest Coverage**: `src/content/webtoonEpisodeManifest.json` contains entries for all 40 episodes (keys `1` through `40`).
-  2. **Narration Datasets**: 40 narration files exist in `public/book/image_narrations/episode_01_narrations.json` through `episode_40_narrations.json`.
-  3. **Panel Count & Asset URLs**: Total panel count equals 840 (average 21 panels/episode: 1 title card + 20 scene panels). All `imageUrl` fields are non-empty, well-formed valid URLs (HTTPS or valid relative asset paths).
-  4. **Structured Comic Direction**:
-     - `dialogues` field on scene panels: array of `{ speakerKo, speakerEn, textKo, textEn, bubbleType?, position? }`.
-     - `sfxCues` field on scene panels: array of `{ textKo, textEn, style?, position? }`.
-  5. **Component Integration**: Verify that `WebtoonSpeechBubble`, `WebtoonSfxOverlay`, `WebtoonMonologueBox` components are integrated in `NovelView.tsx`.
+  1. `T1.F3.1` **cards1.png Existence**: `public/cards1.png` exists on disk.
+  2. `T1.F3.2` **cards1.png Decode Validity**: Decodes cleanly as a genuine PNG image.
+  3. `T1.F3.3` **cards1.png Exact Dimensions**: Exactly `1000 x 1000` px (10 rows $\times$ 10 cols of `100 x 100` px cells).
+  4. `T1.F3.4` **cards2.png Existence**: `public/cards2.png` exists on disk.
+  5. `T1.F3.5` **cards2.png Decode Validity**: Decodes cleanly as a genuine PNG image.
+  6. `T1.F3.6` **cards2.png Exact Dimensions**: Exactly `1000 x 1000` px.
+  7. `T1.F3.7` **Populated Cell Content**: Sampled cells across `cards1.png` (IDs 1–100) and Row 0 of `cards2.png` (IDs 101–110) contain non-blank artwork.
 
-#### T1.3 Movie 40-Episode Playability & Cinematic Engine
-- **Objective**: Verify all 40 movie episodes are unlocked, with complete metadata and in-app generative cinematic player capabilities.
-- **Authoritative Requirements**: `ORIGINAL_REQUEST.md` R3, `PROJECT.md` Features 12, 13, 14, 15, 16, 17, 18, 19.
+#### T1.3 Legacy Master 10x11 Sprite Sheets (`public/card100.png`, `public/card100_gemini.png`, Feature 4)
+- **Objective**: Verify legacy master sheets covering all 110 characters, strictly enforcing true RGBA format for `card100_gemini.png` to eliminate legacy JPEG disguise.
+- **Authoritative Sources**: `PROJECT.md` Feature 4, `ORIGINAL_REQUEST.md` R2.
 - **Assertions**:
-  1. **40 Episode Unlocking**: `MovieView.tsx` default `releasedCount` is 40 (`DEFAULT_RELEASED_COUNT = 40`), with 0 episodes blocked by "Coming Soon" or alert modals.
-  2. **Mapping Completeness**: `src/content/movieEpisodeMapping.ts` contains all 40 episode definitions (1..40) with `titleKo`, `titleEn`, `titleJa`.
-  3. **Generative Cinematic Movie Player**: `src/components/movie/CinematicMoviePlayer.tsx` exists, accepting `CinematicMoviePlayerProps`, rendering 20 scenes per episode.
-  4. **VFX & Audio Synthesis**: Procedural canvas VFX engine (`MovieVfxCanvas.tsx`) supports snow, embers, runes, slashes. `MovieAudioSynthesizer.ts` provides procedural Web Audio BGM and battle SFX without external audio file dependencies.
+  1. `T1.F4.1` **card100.png Existence**: `public/card100.png` exists on disk.
+  2. `T1.F4.2` **card100.png Decode Validity**: Decodes as valid PNG.
+  3. `T1.F4.3` **card100.png Exact Dimensions**: Exactly `1135 x 1315` px (10 cols $\times$ 11 rows).
+  4. `T1.F4.4` **card100_gemini.png Existence**: `public/card100_gemini.png` exists on disk.
+  5. `T1.F4.5` **card100_gemini.png Genuine PNG Format**: Decodes as `PNG` format (fails if JPEG).
+  6. `T1.F4.6` **card100_gemini.png Exact Dimensions**: Exactly `1024 x 1024` px.
+  7. `T1.F4.7` **card100_gemini.png True RGBA Alpha**: Mode is `RGBA` or paletted with alpha; zero loss of transparency.
 
-#### T1.4 LocalStorage & State Persistence Contracts
-- **Objective**: Verify parameter-order-agnostic persistence and state integrity across seasons.
-- **Authoritative Requirements**: `PROJECT.md` Feature 18, `src/lib/webtoonProgress.ts`.
+#### T1.4 Faction Horizontal Sheets (`public/character_sheet_*.png`, Feature 5)
+- **Objective**: Verify all 11 faction horizontal sheets containing 10 characters per sheet.
+- **Authoritative Sources**: `PROJECT.md` Feature 5, `explorer_survey_2/handoff.md`.
 - **Assertions**:
-  1. `setSeasonItem(key, season, value)` sets `key_season` in localStorage.
-  2. `setSeasonItem(key, value, season)` correctly identifies `season` and sets `key_season` identically.
-  3. `getSeasonItem(key, season)` retrieves saved state, falling back to season1 un-suffixed key for backward compatibility.
-  4. `loadWebtoonProgress` and `saveWebtoonProgress` serialize and deserialize `readEpisodeIds`, `claimedRewardEpisodeIds`, and `lastReadPanelIndex` cleanly.
-
-#### T1.5 Build & Type Safety
-- **Objective**: Ensure the entire repository builds cleanly without errors.
-- **Assertions**:
-  1. `npx tsc --noEmit` exits with code 0 (0 TypeScript diagnostics).
-  2. `npm run build` (`vite build && node scripts/post-build.js`) finishes with code 0 and bundles `dist/`.
-
-#### T1.6 DESIGN.md Aesthetic & Mobile Ergonomics
-- **Objective**: Enforce the OpenCode terminal-flat design standard.
-- **Authoritative Requirements**: `DESIGN.md`, `AGENTS.md`, `GEMINI.md`.
-- **Assertions**:
-  1. **Typography**: UI uses `font-mono` exclusively; no sans-serif/serif display fonts.
-  2. **Surfaces**: Flat cream (`#fdfcfc`) / ink dark (`#201d1d`) surfaces with 1px hairline borders (`border-[#646262]/30`, `border-stone-800`, `border-white/10`). Zero box-shadows, zero multi-color gradient backgrounds.
-  3. **Touch Targets**: All interactive buttons, tabs, and toggles in `NovelView.tsx` and `MovieView.tsx` have `min-h-[44px]` (or equivalent tappable bounds). No 28px (`w-7 h-7`) or 36px (`min-h-[36px]`) controls.
-  4. **Corner Radii**: Containers are `rounded-none` (0px); buttons and badges are `rounded-sm` (4px).
+  1. `T1.F5.1` **All 11 Sheets Exist**: Confirms files for water, fire, wind, earth, human, undead, elf, hobbit (dwarf), beast (monster), mecha (robot), and dragon.
+  2. `T1.F5.2` **Decode Validity**: All 11 sheets decode as valid PNGs.
+  3. `T1.F5.3` **Exact Dimensions**: Exactly `2560 x 296` px (10 horizontal cells of `256 x 296` px).
+  4. `T1.F5.4` **Alpha Transparency Support**: Alpha channel present across all 11 sheets.
+  5. `T1.F5.5` **Non-Blank Cells**: All 10 cells ($0..9$) in each faction sheet contain non-blank character artwork.
 
 ---
 
-### Tier 2: Boundary & Corner Cases
+### Tier 2: Boundary & Corner Cases (>= 5 Tests per Feature)
 
-- **T2.1 Out-of-Bounds & Malformed Route Parameters**:
-  - `?ep=0`, `?ep=41`, `?ep=-1`, `?ep=abc`, `?ep=9999`: Handled gracefully by clamping to valid episode range `[1, 40]`, never crashing or throwing unhandled exceptions.
-- **T2.2 Graceful Degradation on Incomplete Panel Annotations**:
-  - Panels without `dialogues` or `sfxCues` render normal narration box cleanly without throwing null reference errors.
-- **T2.3 Fallback from Missing YouTube Video ID**:
-  - Movie episodes 9..40 without official YouTube embed IDs automatically switch to the in-app Generative Cinematic Movie Player (`CinematicMoviePlayer.tsx`), providing an uninterrupted 20-scene watchable experience.
-- **T2.4 LocalStorage Resilience**:
-  - Corrupted JSON in `hero_webtoon_progress` or `hero_novel_progress` falls back to default empty state without crashing the reader.
-  - Storage quota exceptions (`QuotaExceededError`) are caught gracefully.
-- **T2.5 Extreme Viewport & Low-Spec Mode**:
-  - Ultra-narrow mobile viewports (320px width) maintain readable typography and accessible 44px+ touch targets without horizontal clipping.
-  - `lowSpecMode: true` throttles canvas particle VFX to zero or low count to preserve 60fps interaction on mobile browsers.
+#### T2.1 Web Traffic & File Size Budgets (Feature 7)
+- **Objective**: Guarantee substantial web payload reduction via strict size budgets.
+- **Assertions**:
+  1. `T2.F7.1` **Seat Upper Budget**: Every `public/seat/*.png` $\le 35,840$ bytes (35 KB).
+  2. `T2.F7.2` **Seat Lower Budget**: Every `public/seat/*.png` $\ge 4,096$ bytes (4 KB, preventing empty stubs).
+  3. `T2.F7.3` **Master Sheets Budget**: `cards1.png`, `cards2.png`, `card100.png`, `card100_gemini.png` each $\le 819,200$ bytes (800 KB).
+  4. `T2.F7.4` **Faction Sheets Budget**: Every `character_sheet_*.png` $\le 307,200$ bytes (300 KB).
+  5. `T2.F7.5` **Aggregate Asset Payload Budget**: Total payload across all individual and sheet assets $\le 10,598,400$ bytes (~10.11 MB).
 
----
+#### T2.2 Binary Header Integrity & Magic Bytes Verification (Features 2 & 5)
+- **Objective**: Detect binary corruptions, notably the UTF-8 replacement byte sequence (`\xef\xbf\xbdPNG`) that historically corrupted `Celia.png`, `Hyperion_Prime.png`, `Sentinel.png`, `character_sheet_fire.png`, `character_sheet_hobbit.png`, and `character_sheet_mecha.png`.
+- **Assertions**:
+  1. `T2.F2.1` **Seat Magic Header**: All 110 seat files start with `\x89PNG\r\n\x1a\n` (`89 50 4E 47 0D 0A 1A 0A`).
+  2. `T2.F2.2` **Master Sheets Magic Header**: All 4 master sheets start with valid PNG magic bytes.
+  3. `T2.F2.3` **Faction Sheets Magic Header**: All 11 faction sheets start with valid PNG magic bytes.
+  4. `T2.F2.4` **IHDR Chunk Validation**: First chunk is 13-byte `IHDR` with non-zero dimensions and valid bit depth.
 
-### Tier 3: Cross-Feature Interactions & Data Pipeline
-
-- **T3.1 Trilogy Title & Arc Synchronicity**:
-  - Cross-verifies that for every episode $i \in [1, 40]$:
-    - Korean title in `public/book/episode_{i}.md` == `public/book/index.json` == `webtoonEpisodeManifest.json` == `movieEpisodeMapping.ts`.
-    - English title in `englishNovelMapping.ts` == `webtoonEpisodeManifest.json` == `movieEpisodeMapping.ts`.
-- **T3.2 Lore Keyword Integration (Novel -> RPG Integration)**:
-  - Reading episodes containing lore keywords (`은빛 단검`, `알렉산다르`, `발리안`, `이그니스`, `실리아`) activates lore inspection cards via `TacticalLoreAnnotation` and unlocks recruitment clues for SSR Kadan (`loreRecruitmentStore.ts`).
-- **T3.3 Unified Cross-Media Progress Persistence**:
-  - Reading a novel episode to 85%+ scroll marks the episode read, saves max reading percentage in `hero_max_read_pct_{season}_ep{N}`, and synchronizes read status with webtoon episode progress.
-  - Completing a movie episode triggers `onEpisodeComplete`, updating `hero_movie_progress_{season}` and enabling SNS reward claiming without state collisions.
-- **T3.4 Home Dashboard Shortcuts & Deep-Linking**:
-  - Direct URL deep-links (`/?view=novel&ep=12`, `/?view=movie&ep=25`, `/?view=novel&tab=cartoon&ep=7`) navigate directly to the targeted episode in the specified tab mode.
+#### T2.3 Grid Transitions & Boundary IDs (Features 3 & 6)
+- **Objective**: Validate critical grid transition points and out-of-bounds safety.
+- **Assertions**:
+  1. `T2.F6.1` **ID 100 to 101 Transition**: ID 100 is terminal cell of `cards1.png` (col 9, row 9, coords 900,900); ID 101 is origin cell of `cards2.png` (col 0, row 0, coords 0,0).
+  2. `T2.F6.2` **ID 110 Terminal Boundary**: ID 110 maps cleanly to `cards2.png` (col 9, row 0) and `card100.png` (col 9, row 10).
+  3. `T2.F6.3` **cards2.png Rows 1–9 Preservation**: Rows 1–9 (y in [100, 1000]) are preserved or cleanly formatted without corruption.
+  4. `T2.F6.4` **Boss Multiples of 10 Apex Alignment**: Cards 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110 align to apex column 9.
+  5. `T2.F6.5` **Out-of-Bounds Clamping Safety**: IDs $\le 0$, $> 110$, or non-numeric clamp safely per `utils.ts` without throwing exceptions.
 
 ---
 
-### Tier 4: Real-World Scenarios (End-to-End User Journeys)
+### Tier 3: Cross-Feature Combinations & Sprite Coordinate Alignment (Pairwise Coverage)
 
-- **T4.1 Journey 1: Immersive Novel Reading to Webtoon Transition**:
-  1. User enters NovelView at Episode 1.
-  2. TTS speech synthesis plays Korean voiceover paragraph by paragraph.
-  3. User toggles to Webtoon mode (`tab=cartoon`).
-  4. Reader renders generative dark-fantasy panels with comic speech bubbles and SFX overlays.
-  5. User scrolls past 85% depth -> automatic read completion recorded in LocalStorage.
-  6. Reading reward modal triggers with haptic vibration; user claims SNS reward.
-  7. User clicks Next Episode -> transitions smoothly to Episode 2.
-- **T4.2 Journey 2: 40-Episode Theatrical Movie Experience**:
-  1. User enters MovieView.
-  2. Selects Episode 20 from drawer / grid (verified unlocked, not blocked).
-  3. Generative Cinematic Movie Player mounts and begins 20-scene sequence.
-  4. Procedural BGM theme plays via Web Audio API, paired with ambient particle effects (embers/runes) and Ken Burns camera pan/zoom.
-  5. User scrubs the playback timeline slider, toggles bilingual subtitles between KO and EN.
-  6. Playback completes -> episode marked watched in `hero_movie_progress`.
-- **T4.3 Journey 3: Low-End Smartphone Experience**:
-  1. Emulated mobile viewport (390x844).
-  2. Touch targets on slide arrows, menu drawers, and tab switchers are all ≥44px.
-  3. Fast touch response (<50ms) without ghost taps or double-zoom interference.
-- **T4.4 Journey 4: Season Transition & Zero Data Loss**:
-  1. Player progress stored in `season1`.
-  2. Game updates to `season2`.
-  3. Reading and movie states isolate under `hero_novel_progress_season2` without corrupting or deleting `season1` achievements.
+- **T3.F6.1 Exhaustive Coordinate Formula Parity (`cards1`/`cards2`)**:
+  - For every $id \in [1, 110]$, verify `col`, `row`, `xPercent`, `yPercent` calculated by `getCardSpriteCoords` match formula:
+    $$\text{idx} = id \le 100 \ ? \ (id - 1) : (id - 101), \quad \text{col} = \text{idx} \% 10, \quad \text{row} = \lfloor\text{idx} / 10\rfloor$$
+- **T3.F6.2 Exhaustive Coordinate Formula Parity (`card100.png` 10x11 Grid)**:
+  - For every $id \in [1, 110]$, verify `col = (id - 1) % 10`, `row = Math.floor((id - 1) / 10)`, `yPercent = row * 10%`.
+- **T3.F6.3 Faction Horizontal Placement Mapping**:
+  - Card $id$ maps to faction $\lfloor(id - 1) / 10\rfloor$ at horizontal offset $x = ((id - 1) \% 10) \times 256$ px, $y = 0$.
+- **T3.F6.4 Pixel Synchronization: Faction Sheets vs Seat Portraits**:
+  - Crop cell $x \in [c \times 256, (c + 1) \times 256]$ from `character_sheet_{faction}.png` and compute visual correlation against `public/seat/{Card}.png` (threshold $\ge 0.70$).
+- **T3.F6.5 Pixel Correspondence: Master Sheets Cells vs Seat Portraits**:
+  - Crop cell $(c \times 100, r \times 100)$ from `cards1.png` / `cards2.png` and verify visual correspondence with scaled seat portrait.
+- **T3.F6.6 Sub-Pixel Margin Bleed Check**:
+  - Verify that cell bounding margins have zero bleed or overlapping artifacts from adjacent cards.
 
 ---
 
-## 3. Test Runner & Verification Script (`scripts/verify_ip_trilogy.ts`)
+### Tier 4: Real-World Scenarios & UI Simulation
 
-The project provides an automated TypeScript verification script executable in Node.js via `tsx`:
+- **T4.F1.1 CardItem Faction Surface Tint & Emblem Simulation**:
+  - Simulates dynamic type surface background classes across all 11 factions:
+    - Water (`bg-[#d9effc]`), Fire (`bg-[#fce1ce]`), Wind (`bg-[#e1f3ef]`), Earth (`bg-[#ebedc8]`)
+    - Human (`bg-[#f6edcf]`), Undead (`bg-[#ece0f4]`), Elf (`bg-[#e0efd6]`), Dwarf (`bg-[#efe2d1]`)
+    - Monster (`bg-[#e5ead4]`), Robot (`bg-[#e3e9ef]`), Dragon (`bg-[#f1def0]`)
+- **T4.F1.2 CardItem Rarity Hierarchy & Boss Apex Verification**:
+  - Simulates 50 Bronze, 32 Silver, and 28 Gold cards, confirming that all 11 Bosses at multiples of 10 occupy the Gold apex tier.
+- **T4.F1.3 CanvasCardRenderer Slicing Geometry Simulation**:
+  - Simulates `drawCardSprite` across 4 standard screen scales:
+    - Mini Icon (`32 x 32` px)
+    - Hand Card (`80 x 92` px)
+    - Board Slot (`120 x 140` px)
+    - Zoom / Inspection (`256 x 296` px)
+- **T4.F1.4 Image Fallback Priority Cascade Simulation**:
+  - Simulates fallback sequence: `customImage` $\to$ `processedImage` $\to$ `resolvedSkin` $\to$ `activeCard.imageUrl` $\to$ default sprite $\to$ individual portrait.
+- **T4.F1.5 Total Web Traffic Payload Audit & Reduction Benchmark**:
+  - Calculates total network payload across all 125 assets, benchmarking against the unoptimized baseline (~12.9 MB) and enforcing the $\le 10.11$ MB threshold.
+
+---
+
+## 3. Automated Test Runner (`tests/e2e_character_assets/runner.py`)
+
+The test harness is implemented in Python 3 (using Pillow) for high-speed, headless, deterministic execution:
+
+### Invocations
 
 ```bash
-# Run full automated verification suite
-npx tsx scripts/verify_ip_trilogy.ts
+# Execute entire E2E test suite across all 4 tiers
+python3 tests/e2e_character_assets/runner.py
 
-# Fast iteration mode (skips tsc and full vite build)
-npx tsx scripts/verify_ip_trilogy.ts --skip-build
+# Execute specific tier
+python3 tests/e2e_character_assets/runner.py --tier 1
+python3 tests/e2e_character_assets/runner.py --tier 2
+python3 tests/e2e_character_assets/runner.py --tier 3
+python3 tests/e2e_character_assets/runner.py --tier 4
 
-# Filter by tier (e.g., Tier 1 only)
-npx tsx scripts/verify_ip_trilogy.ts --tier=1
+# Detailed verbose logging (outputs per-card metrics and coordinates)
+python3 tests/e2e_character_assets/runner.py --verbose
+
+# Machine-readable JSON output (for CI/CD pipelines)
+python3 tests/e2e_character_assets/runner.py --json
+
+# Baseline audit mode (exits with code 0 even if assertions fail)
+python3 tests/e2e_character_assets/runner.py --allow-fail
 ```
 
-### Output Diagnostics & Baseline Tracking
-The script prints:
-- Color-coded progress per tier and subsystem (Novel, Webtoon, Movie, Persistence, Build, Design).
-- Diagnostic summary table with Passed, Failed, and Warning counts.
-- Detailed listing of any failing assertion (e.g. specific episode numbers missing dialogues or under 3,500 chars).
-- Exit code 0 on complete pass, non-zero on failure.
+### Exit Codes
+- `0`: All executed test assertions passed 100%.
+- `1`: One or more test assertions failed (unmet milestone requirement or regression detected).
 
 ---
 
-## 4. Verification & Baseline Matrix
+## 4. Requirement Verification & Baseline Matrix
 
-| Requirement | Scope | Target Threshold | Verification Method | Status |
+| Test ID | Scope | Requirement & Target Threshold | Verification Method | Current Baseline Status |
 |---|---|---|---|---|
-| R1. Novel 40 Eps | `public/book/episode_*.md` | 40 files exist, non-empty, valid `# 눈히어로 N화` header | T1.1 Automated Script | Baseline Verified |
-| R1. Novel Chars | `public/book/episode_*.md` | ≥ 3,500 chars per episode | T1.1 Automated Script | In Progress (M1) |
-| R1. Novel Dialogue | `public/book/episode_*.md` | ≥ 8 dialogue lines per episode | T1.1 Automated Script | In Progress (M1) |
-| R1. Lore Keywords | `public/book/episode_*.md` | 은빛 단검, 알렉산다르, 발리안, 이그니스, 실리아 present | T1.1 Automated Script | Baseline Verified |
-| R1. Metadata Sync | `public/book/index.json` | 40 eps synced with markdown titles & counts | T1.1 Automated Script | In Progress (M1) |
-| R2. Webtoon Manifest | `webtoonEpisodeManifest.json` | 40 eps, 840 panels total | T1.2 Automated Script | Baseline Verified |
-| R2. Webtoon Narrations| `image_narrations/*.json` | 40 narration files exist | T1.2 Automated Script | Baseline Verified |
-| R2. Comic Dialogues | `webtoonEpisodeManifest.json` | Structured `dialogues` array present | T1.2 Automated Script | In Progress (M2) |
-| R2. SFX Cues | `webtoonEpisodeManifest.json` | Structured `sfxCues` array present | T1.2 Automated Script | In Progress (M2) |
-| R2. Webtoon UI | `NovelView.tsx` | Speech bubbles & SFX overlays integrated | T1.2 Automated Script | In Progress (M2) |
-| R3. Movie 40 Unlocked | `MovieView.tsx` | All 40 unlocked (releasedCount = 40, 0 blocked) | T1.3 Automated Script | In Progress (M3) |
-| R3. Movie Mapping | `movieEpisodeMapping.ts` | 40 episode definitions complete | T1.3 Automated Script | Baseline Verified |
-| R3. Cinematic Player | `CinematicMoviePlayer.tsx` | In-app 20-scene player with camera & VFX | T1.3 Automated Script | In Progress (M3) |
-| R4. Persistence | `webtoonProgress.ts` | Argument-order agnostic `setSeasonItem` | T1.4 Automated Script | Baseline Verified |
-| R4. Type Safety | Whole repo | `tsc --noEmit` 0 errors | T1.5 Automated Script | Baseline Verified |
-| R4. Bundling | Whole repo | `npm run build` succeeds | T1.5 Automated Script | Baseline Verified |
-| R4. DESIGN.md Touch | `NovelView.tsx`, `MovieView.tsx` | All buttons/tabs ≥ 44px (no 28px/36px) | T1.6 Automated Script | In Progress (M2, M3) |
-| R4. DESIGN.md Style | `NovelView.tsx`, `MovieView.tsx` | font-mono, flat cream/ink, rounded-none/sm | T1.6 Automated Script | Baseline Verified |
-
----
-
-## 5. Ongoing Monitoring & Handoff Checklist
-1. All changes committed locally (`git commit`).
-2. Run `npx tsx scripts/verify_ip_trilogy.ts` after milestone code changes.
-3. Verify 0 TypeScript errors (`npx tsc --noEmit`).
-4. Ensure mandatory Google Form completion report submitted via `submit_report.py`.
+| **T1.F2.1** | `public/seat/*.png` | All 110 portrait files exist | `tier1_feature_coverage.py` | **PASS** (110/110 found) |
+| **T1.F2.2** | `public/seat/*.png` | All 110 portrait files decode cleanly | `tier1_feature_coverage.py` | **PASS** (110/110 valid) |
+| **T1.F2.3** | `public/seat/*.png` | Exact 256x296 dimensions | `tier1_feature_coverage.py` | **PASS** (110/110 matched) |
+| **T1.F2.4** | `public/seat/*.png` | 110 distinct SHA-256 hashes | `tier1_feature_coverage.py` | **PASS** (110 unique hashes) |
+| **T1.F2.5** | `public/seat/*.png` | Zero blank/uniform images | `tier1_feature_coverage.py` | **PASS** (entropy $\ge 2.0$) |
+| **T1.F2.6** | `public/seat/*.png` | Alpha transparency preserved | `tier1_feature_coverage.py` | **PASS** (110/110 with alpha) |
+| **T1.F3.1–3** | `public/cards1.png` | Exists, valid PNG, exact 1000x1000 | `tier1_feature_coverage.py` | **PASS** |
+| **T1.F3.4–6** | `public/cards2.png` | Exists, valid PNG, exact 1000x1000 | `tier1_feature_coverage.py` | **PASS** |
+| **T1.F3.7** | `cards1.png` / `cards2.png` | Cell content populated & non-blank | `tier1_feature_coverage.py` | **PASS** |
+| **T1.F4.1–3** | `public/card100.png` | Exists, valid PNG, exact 1135x1315 | `tier1_feature_coverage.py` | **PASS** |
+| **T1.F4.4–7** | `card100_gemini.png` | Exists, genuine PNG (not JPEG), 1024x1024 RGBA | `tier1_feature_coverage.py` | **FAIL** (legacy JPEG, RGB mode) [Pending M2] |
+| **T1.F5.1–4** | `character_sheet_*.png` | All 11 sheets exist, decode, 2560x296, RGBA | `tier1_feature_coverage.py` | **FAIL** (3 sheets corrupt: fire, hobbit, mecha) [Pending M2] |
+| **T1.F5.5** | `character_sheet_*.png` | All 10 cells per sheet contain rich art | `tier1_feature_coverage.py` | **FAIL** (low entropy in legacy sheets) [Pending M2] |
+| **T2.F7.1–2** | `public/seat/*.png` | Size budget: 4 KB $\le$ file $\le$ 35 KB | `tier2_boundary_corner.py` | **PASS** (all 110 within budget) |
+| **T2.F7.3** | Master Sheets (4 files) | File size budget: each $\le$ 800 KB | `tier2_boundary_corner.py` | **FAIL** (2.0–2.8 MB bloated) [Pending M3] |
+| **T2.F7.4** | Faction Sheets (11 files) | File size budget: each $\le$ 300 KB | `tier2_boundary_corner.py` | **FAIL** (3 sheets $> 300$ KB) [Pending M3] |
+| **T2.F7.5** | Aggregate Assets | Total payload $\le 10.11$ MB | `tier2_boundary_corner.py` | **FAIL** (10.64 MB total) [Pending M3] |
+| **T2.F2.1** | `public/seat/*.png` | PNG 8-byte magic header (\x89PNG\r\n\x1a\n) | `tier2_boundary_corner.py` | **PASS** (110/110 valid) |
+| **T2.F2.2** | Master Sheets | PNG 8-byte magic header verification | `tier2_boundary_corner.py` | **FAIL** (card100_gemini has JPEG SOI) [Pending M2] |
+| **T2.F2.3** | Faction Sheets | PNG 8-byte magic header verification | `tier2_boundary_corner.py` | **FAIL** (fire, hobbit, mecha have \xef\xbf\xbd) [Pending M2] |
+| **T2.F2.4** | All Sheets | IHDR chunk structure validation | `tier2_boundary_corner.py` | **PASS** |
+| **T2.F6.1–5** | Coordinates & IDs | ID 100/101 boundary, ID 110, Rows 1-9, Bosses, OOB | `tier2_boundary_corner.py` | **PASS** (5/5 passed) |
+| **T3.F6.1–3** | Math Verification | cards1/cards2, card100, faction horizontal formulas | `tier3_coordinate_alignment.py` | **PASS** (3/3 passed) |
+| **T3.F6.4–5** | Pixel Synchronization | Faction & Master sheets cells vs Seat portraits | `tier3_coordinate_alignment.py` | **FAIL** (pending M2 sprite sheet assembly) |
+| **T3.F6.6** | Edge Bleeding | Zero inter-cell sub-pixel bleed | `tier3_coordinate_alignment.py` | **PASS** |
+| **T4.F1.1–4** | UI Simulation | 11 Factions, 4 Rarities, Canvas blitting, Fallback cascade | `tier4_real_world.py` | **PASS** (4/4 passed) |
+| **T4.F1.5** | Payload Audit | Total web traffic reduction benchmark | `tier4_real_world.py` | **FAIL** (pending M3 quantization) |
