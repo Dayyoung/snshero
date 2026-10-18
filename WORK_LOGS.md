@@ -15047,3 +15047,27 @@
   - `npx tsc --noEmit` (0 errors)
   - `npm run build` (`dist/` 정적 번들 최신화 완료)
   - 구글 폼 작업 완료 보고서 제출 완료
+
+
+## [2026-10-19 05:49 KST] [Milestone 2] Kadan RPG 인터랙티브 선택지 분기 & 카운트다운 타이머 UI 구현 완료
+- **작업명**: `[Milestone 2] Kadan RPG Interactive Dialogue Choices & Countdown Timer UI`
+- **담당자**: teamwork_preview_worker_m2_1 (implementer, qa)
+- **수행 내역**:
+  1. `src/components/rpg/KadanNpcDialog.tsx`:
+     - `KADAN_RPG_NOVEL_SCRIPTS`에서 `choices` 및 `speaker === 'choice'` 인터랙티브 선택지 분기 렌더링 구현.
+     - 성향 뱃지(`[결의/돌파]`, `[신중/통찰]`, `[성진호흡/공명]` 및 영문 대응 뱃지) 터미널 플랫 렌더링.
+     - 수동 모드 5.0초 / 자동 모드 1.5초 듀얼 카운트다운 게이지 바 및 잔여 시간 시각화 구현.
+     - 타임아웃 시 기본 옵션(`isDefault: true` 또는 `choices[0]`) 자동 선택 엔진 구현.
+     - 선택지 결정 시 즉시 후속 리액션 라인 동적 삽입(`setDynamicLines`), `onRewardSns` 및 `onApplyBuff` 콜백 디스패치 및 `hero_kadan_active_buff` 저장.
+     - 다국어 지원: `language !== 'ko'` 시 스크립트를 버리지 않고 영문 필드(`textEn`, `nameEn`, `labelEn`, `attitudeEn`, `followUpTextEn`)를 활용해 글로벌 유저에게도 40화 소설 스크립트 제공.
+     - `DESIGN.md` 터미널 플랫 정밀 규격 준수: `min-min-h-[44px]` 오타를 `min-h-[44px]`로 수정, `rounded-md`/`rounded-full`을 `rounded-none`(컨테이너) 및 `rounded-sm`(버튼/뱃지)으로 치환, `radial-gradient`/`animate-pulse`/`drop-shadow-[...]` 제거 및 1px 헤어라인(`border-slate-700/80`, `border-amber-500/80`), `font-mono` 적용.
+  2. `src/views/KadanRpgView.tsx`:
+     - `<KadanNpcDialog>`에 `onRewardSns` (재화 획득) 및 `onApplyBuff` (버프 로컬스토리지 저장) 콜백 연동.
+     - `hero_kadan_active_buff` 활성화 시 `MobileCardPlayScreen` 전투 덱에 공격력/스탯 배율 적용 및 전투 완료(`handleBattleComplete`) 시 자동 클린업.
+  3. 무결성 및 검증 결과:
+     - `python3 tests/e2e_rpg/run_rpg_e2e_tests.py`: 51 / 51 PASS (100.0%).
+     - `python3 tests/e2e_design_system/run_all_e2e_tests.py`: 377 / 377 PASS (100.0%).
+     - `python3 tests/adversarial_rpg_m2_oracle.py`: 10 / 10 PASS (100.0%).
+     - `npx tsc --noEmit`: 0 TypeScript errors (Exit Code 0).
+     - `npm run build`: 프로덕션 번들링 클린 성공 (Exit Code 0).
+     - 연동 구글 폼 완료 보고서 제출 완료 (`submit_report.py`).

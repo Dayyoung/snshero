@@ -345,6 +345,9 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
 
  const handleBattleComplete = useCallback((result: KadanBattleResult) => {
  if (!battleEvent) return;
+ try {
+  localStorage.removeItem('hero_kadan_active_buff');
+ } catch {}
  const encounter = getDynamicKadanEncounter(battleEvent, progress.rebirthLevel);
  if (!encounter) return;
 
@@ -562,6 +565,14 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  canStartBattle={true}
  canClaimReward={Boolean(activeEvent.rewardId && !progress.claimedRewardIds.includes(activeEvent.rewardId) && progress.clearedEncounterIds.includes(activeEvent.encounterId || `enc-ch${String(activeEvent.chapterNumber).padStart(2, '0')}`))}
  rebirthLevel={progress.rebirthLevel}
+ onRewardSns={(amount, reason) => {
+  updateSns(amount, reason, 'earned');
+ }}
+ onApplyBuff={(buff) => {
+  try {
+   localStorage.setItem('hero_kadan_active_buff', JSON.stringify(buff));
+  } catch {}
+ }}
  onStartBattle={() => setBattleEvent(activeEvent)}
  onClaimReward={() => setRewardEvent(activeEvent)}
  onComplete={() => completeActiveEvent(activeEvent)}
@@ -575,7 +586,22 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  <div className="fixed inset-0 z-[99999] w-full h-[100dvh] max-h-[100dvh] bg-[#060a14] flex flex-col items-center justify-center overflow-hidden pointer-events-auto select-none touch-none">
  <MobileCardPlayScreen
  isAdRemoved={isAdRemoved}
- playerDeck={currentDeck.filter((c): c is CardData => Boolean(c))}
+ playerDeck={(() => {
+  const rawDeck = currentDeck.filter((c): c is CardData => Boolean(c));
+  try {
+   const rawBuff = localStorage.getItem('hero_kadan_active_buff');
+   if (!rawBuff) return rawDeck;
+   const buff = JSON.parse(rawBuff);
+   const buffVal = typeof buff.value === 'number' ? buff.value : (buff.id === 'atk_boost' ? 15 : buff.id === 'mana_surge' ? 20 : 15);
+   const multiplier = 1.0 + (buffVal / 100.0);
+   return rawDeck.map((card) => ({
+    ...card,
+    power: Math.round(card.power * multiplier),
+   }));
+  } catch {
+   return rawDeck;
+  }
+ })()}
  opponentCustomDeck={rpgOpponent.deck}
  opponentName={rpgOpponent.name}
  language={language}
