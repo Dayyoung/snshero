@@ -267,19 +267,61 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
 
   const controlsTimeoutRef = useRef<number | null>(null);
   const progressTimerRef = useRef<number | null>(null);
+  const prevEpisodeRef = useRef<{ ep: number; lang: string; init: CinematicScene[] | undefined }>({
+    ep: episodeNumber,
+    lang: language,
+    init: initialScenes,
+  });
 
-  // When episodeNumber changes, rebuild scenes
+  // When episodeNumber or language changes after initial mount, rebuild scenes
   useEffect(() => {
+    const prev = prevEpisodeRef.current;
+    if (prev.ep === episodeNumber && prev.lang === language && prev.init === initialScenes) {
+      return;
+    }
+    const episodeChanged = prev.ep !== episodeNumber || prev.init !== initialScenes;
+    prevEpisodeRef.current = { ep: episodeNumber, lang: language, init: initialScenes };
+
     const newScenes = initialScenes && initialScenes.length > 0
       ? initialScenes
       : buildScenesForEpisode(episodeNumber, language);
     setScenes(newScenes);
-    setCurrentSceneIdx(0);
-    setIsCompleted(false);
-    setSceneProgress(0);
+    if (episodeChanged) {
+      setCurrentSceneIdx(0);
+      setIsCompleted(false);
+      setSceneProgress(0);
+    }
   }, [episodeNumber, initialScenes, language]);
 
   const currentScene = scenes[currentSceneIdx] || scenes[0];
+
+  // Clean, non-duplicated English script for TTS voiceover
+  const getSceneEnglishTtsScript = useCallback(
+    (scene: CinematicScene | undefined): string => {
+      if (!scene) return '';
+      const narration = (scene.narrationEn || '').trim();
+      const nonNarrationDialogues = (scene.dialogues || [])
+        .filter(
+          (d) =>
+            d.textEn &&
+            d.speakerEn &&
+            d.speakerEn !== 'Narration' &&
+            d.speakerEn !== '내레이션' &&
+            d.textEn.trim() !== narration
+        )
+        .map((d) => `${d.speakerEn}: ${d.textEn.trim()}`);
+
+      const parts = [...nonNarrationDialogues, narration].filter(Boolean);
+      if (parts.length > 0) {
+        return parts.join('. ');
+      }
+      if (scene.type === 'title_card' || scene.sceneNumber === 1) {
+        return `Episode ${episodeNumber}. ${titleEn || ''}.`.trim();
+      }
+      return '';
+    },
+    [episodeNumber, titleEn]
+  );
 
   // Characters present in current scene (manifest characters + dialogue speakers)
   const sceneCharacterNames: string[] = Array.from(
@@ -335,24 +377,18 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
 
   // 2. Audio SFX & English TTS voiceover on scene change (WITHOUT cutting episode BGM)
   useEffect(() => {
-    if (!currentScene) return;
+    const activeScene = scenes[currentSceneIdx] || scenes[0];
+    if (!activeScene) return;
 
     // Trigger one-shot combat sound effect
-    if (currentScene.sfxTrigger) {
-      movieAudio.playSfx(currentScene.sfxTrigger);
+    if (activeScene.sfxTrigger) {
+      movieAudio.playSfx(activeScene.sfxTrigger);
     }
 
     // English-Base TTS Voiceover (Requirement R2)
-    // Always speaks English narrationEn and English dialogues using English SpeechSynthesis
+    // Always speaks English narrationEn and English dialogues
     if (isTtsEnabled && isPlaying && !isMuted) {
-      const dialogueLines = (currentScene.dialogues || [])
-        .map((d) => (d.speakerEn ? `${d.speakerEn}: ${d.textEn}` : d.textEn))
-        .filter(Boolean);
-      const fullEnglishScript = [
-        ...dialogueLines,
-        currentScene.narrationEn,
-      ].filter(Boolean).join('. ');
-
+      const fullEnglishScript = getSceneEnglishTtsScript(activeScene);
       if (fullEnglishScript) {
         movieAudio.speakEnglishNarration(fullEnglishScript);
       }
@@ -363,7 +399,7 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
     return () => {
       movieAudio.stopNarration();
     };
-  }, [currentSceneIdx, currentScene, isTtsEnabled, isPlaying, isMuted]);
+  }, [episodeNumber, currentSceneIdx, isTtsEnabled, isPlaying, isMuted, getSceneEnglishTtsScript]);
 
   // Scene auto-advance timer and progress ticker
   useEffect(() => {
@@ -432,23 +468,57 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
     return () => document.removeEventListener('fullscreenchange', handleFsChange);
   }, []);
 
-  // Controls Handlers
-  const handleTogglePlay = () => {
-    triggerHaptic('light');
-    const willPlay = !isPlaying;
-    setIsPlaying(willPlay);
+  // Ensure any pointer gesture inside the player unlocks Web Audio + SpeechSynthesis if blocked by browser autoplay policy
+  const handleUserAudioUnlock = useCallback(() => {
+    movieAudio.unlockSpeech();
     movieAudio.initAudio().then(() => {
-      if (willPlay) {
+      if (isPlaying && !isMuted) {
         const meta = MOVIE_EPISODES[episodeNumber];
         const episodeTheme = meta?.bgmTheme || currentScene?.bgmTheme || 'arcane-mystery';
         movieAudio.startEpisodeBgm(episodeNumber, episodeTheme);
       }
     });
+    if (
+      isPlaying &&
+      isTtsEnabled &&
+      !isMuted &&
+      typeof window !== 'undefined' &&
+      (!('speechSynthesis' in window) || !window.speechSynthesis.speaking)
+    ) {
+      const script = getSceneEnglishTtsScript(currentScene);
+      if (script) {
+        movieAudio.speakEnglishNarration(script);
+      }
+    }
+  }, [isPlaying, isTtsEnabled, isMuted, episodeNumber, currentScene, getSceneEnglishTtsScript]);
+
+  // Controls Handlers
+  const handleTogglePlay = () => {
+    triggerHaptic('light');
+    movieAudio.unlockSpeech();
+    const willPlay = !isPlaying;
+    setIsPlaying(willPlay);
+    movieAudio.initAudio().then(() => {
+      if (willPlay && !isMuted) {
+        const meta = MOVIE_EPISODES[episodeNumber];
+        const episodeTheme = meta?.bgmTheme || currentScene?.bgmTheme || 'arcane-mystery';
+        movieAudio.startEpisodeBgm(episodeNumber, episodeTheme);
+      }
+    });
+    if (willPlay && isTtsEnabled && !isMuted) {
+      const script = getSceneEnglishTtsScript(currentScene);
+      if (script) {
+        movieAudio.speakEnglishNarration(script);
+      }
+    } else if (!willPlay) {
+      movieAudio.stopNarration();
+    }
     resetControlsTimeout();
   };
 
   const handlePrevScene = () => {
     triggerHaptic('light');
+    movieAudio.unlockSpeech();
     movieAudio.playSfx('whoosh');
     setCurrentSceneIdx((prev) => Math.max(0, prev - 1));
     setSceneProgress(0);
@@ -457,6 +527,7 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
 
   const handleNextScene = () => {
     triggerHaptic('light');
+    movieAudio.unlockSpeech();
     movieAudio.playSfx('whoosh');
     if (currentSceneIdx < scenes.length - 1) {
       setCurrentSceneIdx((prev) => prev + 1);
@@ -470,6 +541,7 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
 
   const handleJumpToScene = (idx: number) => {
     triggerHaptic('light');
+    movieAudio.unlockSpeech();
     movieAudio.playSfx('whoosh');
     setCurrentSceneIdx(idx);
     setSceneProgress(0);
@@ -479,9 +551,16 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
 
   const handleToggleMute = () => {
     triggerHaptic('light');
+    movieAudio.unlockSpeech();
     const nextMuted = !isMuted;
     setIsMuted(nextMuted);
     movieAudio.setMuted(nextMuted);
+    if (!nextMuted && isPlaying && isTtsEnabled) {
+      const script = getSceneEnglishTtsScript(currentScene);
+      if (script) {
+        movieAudio.speakEnglishNarration(script);
+      }
+    }
     resetControlsTimeout();
   };
 
@@ -509,12 +588,23 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
 
   const handleToggleTts = () => {
     triggerHaptic('light');
-    setIsTtsEnabled((prev) => !prev);
+    movieAudio.unlockSpeech();
+    const nextTts = !isTtsEnabled;
+    setIsTtsEnabled(nextTts);
+    if (nextTts && isPlaying && !isMuted) {
+      const script = getSceneEnglishTtsScript(currentScene);
+      if (script) {
+        movieAudio.speakEnglishNarration(script);
+      }
+    } else {
+      movieAudio.stopNarration();
+    }
     resetControlsTimeout();
   };
 
   const handleReplayEpisode = () => {
     triggerHaptic('medium');
+    movieAudio.unlockSpeech();
     setIsCompleted(false);
     setCurrentSceneIdx(0);
     setSceneProgress(0);
@@ -590,6 +680,7 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
   return (
     <div
       ref={containerRef}
+      onPointerDown={handleUserAudioUnlock}
       onMouseMove={resetControlsTimeout}
       onTouchStart={resetControlsTimeout}
       className={`flex flex-col w-full overflow-hidden bg-[#0e0c0c] font-mono select-none ${

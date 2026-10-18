@@ -31,6 +31,7 @@ import { PageHeader } from '../components/PageHeader';
 import { getSeasonItem, setSeasonItem } from '../lib/webtoonProgress';
 import { MOVIE_EPISODES } from '../content/movieEpisodeMapping';
 import { CinematicMoviePlayer } from '../components/movie/CinematicMoviePlayer';
+import { movieAudio } from '../lib/MovieAudioSynthesizer';
 
 declare global {
   interface Window {
@@ -387,6 +388,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
 
   const handleSelectEpisode = (epNum: number) => {
     if (epNum < 1 || epNum > TOTAL_EPISODES) return;
+    movieAudio.unlockSpeech();
     setCurrentEpisodeNum(epNum);
     setShowDrawer(false);
     if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
@@ -597,6 +599,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
             type="button"
             onClick={() => {
               triggerHaptic('light');
+              movieAudio.unlockSpeech();
               setPlayerMode('cinematic');
             }}
             className={cn(
@@ -613,6 +616,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
             type="button"
             onClick={() => {
               triggerHaptic('light');
+              movieAudio.stopAll();
               setPlayerMode('mp4');
             }}
             className={cn(
@@ -629,6 +633,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
             type="button"
             onClick={() => {
               triggerHaptic('light');
+              movieAudio.stopAll();
               setPlayerMode('youtube');
             }}
             className={cn(

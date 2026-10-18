@@ -46,6 +46,11 @@ export class MovieAudioSynthesizer {
 
   private currentUtterance: SpeechSynthesisUtterance | null = null;
   private speechVoices: SpeechSynthesisVoice[] = [];
+  private speakTimeoutId: number | null = null;
+  private keepAliveIntervalId: number | null = null;
+  private fallbackCheckTimeoutId: number | null = null;
+  private fallbackAudio: HTMLAudioElement | null = null;
+  private speechUnlocked: boolean = false;
 
   private constructor() {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
@@ -718,8 +723,81 @@ export class MovieAudioSynthesizer {
 
   // --- SPEECHSYNTHESIS VOICEOVER NARRATION ---
 
+  public unlockSpeech(): void {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+    try {
+      window.speechSynthesis.resume();
+      if (!this.speechUnlocked) {
+        const silent = new SpeechSynthesisUtterance('');
+        silent.volume = 0;
+        window.speechSynthesis.speak(silent);
+        this.speechUnlocked = true;
+      }
+    } catch {
+      // ignore
+    }
+  }
+
   public speakEnglishNarration(text: string, onEnd?: () => void): void {
     this.speakNarration(text, 'en', onEnd);
+  }
+
+  private playHtml5AudioTtsFallback(
+    cleanText: string,
+    language: 'ko' | 'en' | 'ja',
+    onEnd?: () => void
+  ): void {
+    if (this.isMuted || typeof window === 'undefined') {
+      if (onEnd) onEnd();
+      return;
+    }
+    try {
+      const tl = language === 'ko' ? 'ko' : language === 'ja' ? 'ja' : 'en';
+      // Split into <= 170 char chunks on sentence/clause boundaries
+      const words = cleanText.split(/\s+/);
+      const chunks: string[] = [];
+      let cur = '';
+      for (const w of words) {
+        if ((cur + ' ' + w).trim().length <= 170) {
+          cur = (cur + ' ' + w).trim();
+        } else {
+          if (cur) chunks.push(cur);
+          cur = w;
+        }
+      }
+      if (cur) chunks.push(cur);
+      if (chunks.length === 0) {
+        if (onEnd) onEnd();
+        return;
+      }
+
+      let idx = 0;
+      const playNextChunk = () => {
+        if (this.isMuted || idx >= chunks.length) {
+          this.fallbackAudio = null;
+          if (onEnd) onEnd();
+          return;
+        }
+        const q = encodeURIComponent(chunks[idx++]);
+        const url = `https://translate.googleapis.com/translate_tts?ie=UTF-8&client=tw-ob&tl=${tl}&q=${q}`;
+        const audio = new Audio(url);
+        audio.volume = 1.0;
+        this.fallbackAudio = audio;
+        audio.onended = () => playNextChunk();
+        audio.onerror = () => {
+          this.fallbackAudio = null;
+          if (onEnd) onEnd();
+        };
+        audio.play().catch(() => {
+          this.fallbackAudio = null;
+          if (onEnd) onEnd();
+        });
+      };
+
+      playNextChunk();
+    } catch {
+      if (onEnd) onEnd();
+    }
   }
 
   public speakNarration(
@@ -731,18 +809,37 @@ export class MovieAudioSynthesizer {
       if (onEnd) onEnd();
       return;
     }
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
+
+    const cleanText = text
+      .replace(/[“”"*_#]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    if (!cleanText) {
       if (onEnd) onEnd();
+      return;
+    }
+
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
+      this.playHtml5AudioTtsFallback(cleanText, language, onEnd);
       return;
     }
 
     try {
       this.stopNarration();
 
-      // Fix race condition in speech synthesis engines
-      window.setTimeout(() => {
-        const utterance = new SpeechSynthesisUtterance(text);
+      this.speakTimeoutId = window.setTimeout(() => {
+        this.speakTimeoutId = null;
+        try {
+          window.speechSynthesis.resume();
+        } catch {
+          // ignore
+        }
+
+        const utterance = new SpeechSynthesisUtterance(cleanText);
         this.currentUtterance = utterance;
+        // Prevent browser GC of active utterance
+        (window as unknown as { __snsheroActiveUtterance?: SpeechSynthesisUtterance }).__snsheroActiveUtterance = utterance;
 
         const langMap: Record<string, string> = {
           ko: 'ko-KR',
@@ -750,11 +847,10 @@ export class MovieAudioSynthesizer {
           ja: 'ja-JP',
         };
         utterance.lang = langMap[language] || 'en-US';
-        utterance.rate = 1.02;
+        utterance.rate = 1.0;
         utterance.pitch = 1.0;
         utterance.volume = 1.0;
 
-        // Lazy voice reload if empty
         if (this.speechVoices.length === 0 && typeof window !== 'undefined' && 'speechSynthesis' in window) {
           try {
             this.speechVoices = window.speechSynthesis.getVoices();
@@ -763,12 +859,11 @@ export class MovieAudioSynthesizer {
           }
         }
 
-        // Prioritized voice selection
         if (this.speechVoices.length > 0) {
           if (language === 'en') {
             const preferredVoices = [
-              'Google US English', 'Samantha', 'Daniel', 'Alex',
-              'Karen', 'Victoria', 'Fred', 'en-US', 'en-GB'
+              'Samantha', 'Google US English', 'Daniel', 'Alex',
+              'Karen', 'Victoria', 'Moira', 'en-US', 'en-GB'
             ];
             const matched =
               this.speechVoices.find((v) => preferredVoices.some((p) => v.name.includes(p))) ||
@@ -783,27 +878,101 @@ export class MovieAudioSynthesizer {
           }
         }
 
-        utterance.onend = () => {
-          this.currentUtterance = null;
-          if (onEnd) onEnd();
+        let didStartSpeech = false;
+
+        utterance.onstart = () => {
+          didStartSpeech = true;
+          this.speechUnlocked = true;
+          if (this.fallbackCheckTimeoutId !== null) {
+            window.clearTimeout(this.fallbackCheckTimeoutId);
+            this.fallbackCheckTimeoutId = null;
+          }
         };
-        utterance.onerror = () => {
+
+        utterance.onend = () => {
+          if (this.keepAliveIntervalId !== null) {
+            window.clearInterval(this.keepAliveIntervalId);
+            this.keepAliveIntervalId = null;
+          }
           this.currentUtterance = null;
           if (onEnd) onEnd();
         };
 
+        utterance.onerror = (ev) => {
+          if (this.keepAliveIntervalId !== null) {
+            window.clearInterval(this.keepAliveIntervalId);
+            this.keepAliveIntervalId = null;
+          }
+          if (this.fallbackCheckTimeoutId !== null) {
+            window.clearTimeout(this.fallbackCheckTimeoutId);
+            this.fallbackCheckTimeoutId = null;
+          }
+          this.currentUtterance = null;
+          const errType = (ev as SpeechSynthesisErrorEvent)?.error;
+          if (errType !== 'canceled' && errType !== 'interrupted') {
+            this.playHtml5AudioTtsFallback(cleanText, language, onEnd);
+          } else if (onEnd) {
+            onEnd();
+          }
+        };
+
         window.speechSynthesis.speak(utterance);
-      }, 30);
+
+        // Keep-alive for Chrome/Safari 15s pause bug
+        this.keepAliveIntervalId = window.setInterval(() => {
+          if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+            if (window.speechSynthesis.speaking && window.speechSynthesis.paused) {
+              window.speechSynthesis.resume();
+            }
+          }
+        }, 2000);
+
+        // If Web Speech API silently fails to start within 450ms (e.g. mobile WebView without TTS voices), trigger HTML5 Audio TTS fallback
+        this.fallbackCheckTimeoutId = window.setTimeout(() => {
+          this.fallbackCheckTimeoutId = null;
+          if (!didStartSpeech && this.currentUtterance === utterance && !this.isMuted) {
+            try {
+              window.speechSynthesis.cancel();
+            } catch {
+              // ignore
+            }
+            this.playHtml5AudioTtsFallback(cleanText, language, onEnd);
+          }
+        }, 450);
+      }, 25);
     } catch (err) {
       console.warn('[MovieAudioSynthesizer] SpeechSynthesis error:', err);
-      if (onEnd) onEnd();
+      this.playHtml5AudioTtsFallback(cleanText, language, onEnd);
     }
   }
 
   public stopNarration(): void {
+    if (this.speakTimeoutId !== null) {
+      window.clearTimeout(this.speakTimeoutId);
+      this.speakTimeoutId = null;
+    }
+    if (this.fallbackCheckTimeoutId !== null) {
+      window.clearTimeout(this.fallbackCheckTimeoutId);
+      this.fallbackCheckTimeoutId = null;
+    }
+    if (this.keepAliveIntervalId !== null) {
+      window.clearInterval(this.keepAliveIntervalId);
+      this.keepAliveIntervalId = null;
+    }
+    if (this.fallbackAudio) {
+      try {
+        this.fallbackAudio.pause();
+        this.fallbackAudio.src = '';
+      } catch {
+        // ignore
+      }
+      this.fallbackAudio = null;
+    }
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       try {
-        window.speechSynthesis.cancel();
+        if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
+          window.speechSynthesis.cancel();
+        }
       } catch {
         // safe fallback
       }
@@ -812,6 +981,9 @@ export class MovieAudioSynthesizer {
   }
 
   public isSpeaking(): boolean {
+    if (this.fallbackAudio && !this.fallbackAudio.paused) {
+      return true;
+    }
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       return window.speechSynthesis.speaking;
     }

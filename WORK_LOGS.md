@@ -2,6 +2,24 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-18 17:05 KST] 무비 플레이어 영어 TTS 나레이션 재생 버그 수정 및 40부작 MP4 전편 영어 TTS 보이스오버 + BGM 믹싱 완료
+- **작업명**: `무비 재생 시 영어 TTS 나레이션 미작동 버그 수정 및 40부작 MP4 영어 보이스오버/BGM 믹싱 재렌더링`
+- **주요 수행 내역**:
+  1. **시네마틱 무비 플레이어(`CinematicMoviePlayer.tsx`) 영어 TTS 취소 버그 수정**:
+     - 초기 마운트 시 `useState` 초기화 직후 `useEffect([episodeNumber, initialScenes, language])`가 중복 실행되면서 `setScenes(newScenes)`가 호출되어 씬 1의 `speakEnglishNarration`이 즉시 `stopNarration()`(클린업)에 의해 취소되던 레이스 컨디션 원천 해결.
+     - `dialogues[0].speakerEn === 'Narration'`일 때 영문 나레이션 문장이 2번 중복 합성되던 문제를 제거하고, 타이틀 카드(`scene_00`)에서도 `"Episode X. Title."` 영문 보이스오버가 즉시 재생되도록 `getSceneEnglishTtsScript` 정제.
+     - 플레이어 루트 컨테이너 `onPointerDown` 및 모든 재생/탐색/회차 선택 버튼 클릭 시 `movieAudio.unlockSpeech()`를 즉시 호출하여 모바일/데스크톱 브라우저의 자동재생 차단 정책을 해제하고 현재 씬 영어 나레이션을 즉시 발화하도록 연동.
+  2. **오디오 신시사이저(`MovieAudioSynthesizer.ts`) Web Speech API 안정화 및 HTML5 Audio 스트리밍 TTS 폴백 탑재**:
+     - `speakTimeoutId`를 추적·해제하여 이전 `stopNarration()`과 신규 `speakEnglishNarration()` 간 타이머 충돌 제거.
+     - 브라우저 GC에 의해 발화 도중 `SpeechSynthesisUtterance`가 수거되어 음성이 끊기는 버그 방지를 위해 전역 참조 유지 및 2초 주기 `resume()` 워치독 탑재.
+     - 브라우저 `speechSynthesis`에 영어 음성이 없거나 자동재생 제한 등으로 450ms 이내에 `onstart`가 트리거되지 않을 경우, 즉시 `HTMLAudioElement` 기반 영어 스트리밍 TTS(`playHtml5AudioTtsFallback`)로 자동 전환되어 모든 환경에서 100% 영어 나레이션 음성 출력 보장.
+  3. **전 40화 독립형 MP4 비디오(`public/videos/episodes/episode_01.mp4` ~ `episode_40.mp4`) 영어 TTS 보이스오버 + BGM 오디오 더킹 믹싱 재생성**:
+     - `scripts/generate_all_40_episode_videos.py`에 macOS `/usr/bin/say -v Samantha -r 185` 기반 전 컷씬 영어 나레이션 음성 합성 및 `[[slnc 900]]` 무음 구간 자동 감지 기반 컷씬별 영상 프레임 길이 정밀 동기화 파이프라인 구현.
+     - 영어 나레이션 발화 구간에서는 배경음악(BGM) 볼륨을 24%로 자동 더킹(Audio Ducking)하고 무음 구간에서는 48%로 복원하는 44.1kHz 스테레오 마스터링 적용.
+     - 40개 전 에피소드 MP4(총 2,049컷씬, 화당 314s~564s 분량) 40/40 전수 재생성 및 `ffprobe` 무결성 검증 완료.
+  4. **검증 및 보고**:
+     - `npx tsc --noEmit` (0 errors) 및 `npm run build` 통과, `dist/videos/episodes/` 동기화, 로컬 Git 커밋 및 구글 폼 보고 완료.
+
 ## [2026-10-18 15:48 KST] [독립 승리 감사] SNSHero 영화관 40부작 MP4 비디오 및 플레이어 전수 독립 감사 완료 (VICTORY CONFIRMED)
 - **작업명**: `[Victory Audit] 40부작 영화관 업그레이드 및 MP4 비디오 생성 전수 독립 감사`
 - **감사관**: victory_auditor_1 (독립 승리 감사관)

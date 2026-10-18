@@ -361,9 +361,156 @@ def resolve_portrait_file(img_entry: dict, card_map: dict) -> str:
     return ''
 
 
+def clean_tts_line(text: str) -> str:
+    """Sanitize English text for macOS /usr/bin/say TTS engine."""
+    import re
+    cleaned = re.sub(r'\[\[.*?\]\]', ' ', text or '')
+    cleaned = re.sub(r'["“”\'‘’`*_~<>|]', ' ', cleaned)
+    cleaned = re.sub(r'\s+', ' ', cleaned).strip()
+    if not cleaned:
+        return 'Next scene.'
+    if cleaned[-1] not in '.!?':
+        cleaned += '.'
+    return cleaned
+
+
+def synthesize_tts_and_bgm_wav(ep_num: int, scene_scripts: list, theme: str,
+                               fallback_durations: list, out_wav_path: str) -> list:
+    """
+    Synthesize English TTS voiceover for all scenes in an episode using /usr/bin/say,
+    detect exact [[slnc 900]] boundaries for per-scene video duration alignment,
+    and mix clear English narration over ducked 44.1kHz stereo episode BGM.
+    """
+    say_bin = '/usr/bin/say'
+    tts_wav_path = out_wav_path + '.tts22k.wav'
+    n_scenes = len(scene_scripts)
+
+    if os.path.exists(say_bin) and n_scenes > 0:
+        joined_script = ' [[slnc 900]] '.join(clean_tts_line(s) for s in scene_scripts)
+        cmd = [
+            say_bin,
+            '-v', 'Samantha',
+            '-r', '185',
+            '-o', tts_wav_path,
+            '--data-format=LEI16@22050',
+            joined_script,
+        ]
+        res = subprocess.run(cmd, capture_output=True, text=True)
+        if res.returncode == 0 and os.path.exists(tts_wav_path):
+            try:
+                with wave.open(tts_wav_path, 'rb') as wf:
+                    sr_tts = wf.getframerate()
+                    n_frames = wf.getnframes()
+                    raw_bytes = wf.readframes(n_frames)
+                os.remove(tts_wav_path)
+
+                tts_pcm = np.frombuffer(raw_bytes, dtype=np.int16).astype(np.float32) / 32768.0
+                # Detect [[slnc 900]] digital silence gaps using 20ms windows
+                win = int(sr_tts * 0.02)  # 441 samples at 22050Hz
+                n_wins = len(tts_pcm) // win
+                if n_wins > 0 and n_scenes > 1:
+                    reshaped = tts_pcm[:n_wins * win].reshape(n_wins, win)
+                    rms = np.sqrt(np.mean(reshaped * reshaped, axis=1))
+                    silent = rms < 0.0035
+
+                    gaps = []
+                    in_gap = False
+                    g_start = 0
+                    for wi, is_s in enumerate(silent):
+                        if is_s and not in_gap:
+                            in_gap = True
+                            g_start = wi
+                        elif not is_s and in_gap:
+                            in_gap = False
+                            g_len = wi - g_start
+                            # Ignore leading/trailing silence; keep interior gaps >= 0.56s (28 windows)
+                            if g_len >= 28 and g_start > 5 and wi < n_wins - 5:
+                                mid_sec = ((g_start + wi) / 2.0) * 0.02
+                                gaps.append((g_len, mid_sec))
+
+                    if len(gaps) >= n_scenes - 1:
+                        # Pick top (n_scenes - 1) longest silence gaps and sort chronologically
+                        top_gaps = sorted(gaps, key=lambda x: x[0], reverse=True)[:n_scenes - 1]
+                        split_points = sorted(x[1] for x in top_gaps)
+                    else:
+                        # Proportional fallback based on character length
+                        total_tts_sec = len(tts_pcm) / float(sr_tts)
+                        weights = [max(len(s), 8) for s in scene_scripts]
+                        total_w = float(sum(weights))
+                        acc = 0.0
+                        split_points = []
+                        for w in weights[:-1]:
+                            acc += (w / total_w) * total_tts_sec
+                            split_points.append(acc)
+
+                    total_tts_sec = len(tts_pcm) / float(sr_tts) + 0.75
+                    boundaries = [0.0] + split_points + [total_tts_sec]
+                    aligned_durations = [
+                        max(1.5, boundaries[i + 1] - boundaries[i])
+                        for i in range(n_scenes)
+                    ]
+                else:
+                    total_tts_sec = len(tts_pcm) / float(sr_tts) + 0.75
+                    aligned_durations = [total_tts_sec] if n_scenes == 1 else fallback_durations
+
+                total_dur = sum(aligned_durations)
+                # Synthesize 44.1kHz BGM first
+                bgm_only_path = out_wav_path + '.bgm.wav'
+                synthesize_bgm_wav(theme, total_dur, bgm_only_path)
+
+                with wave.open(bgm_only_path, 'rb') as bwf:
+                    bgm_frames = bwf.readframes(bwf.getnframes())
+                os.remove(bgm_only_path)
+
+                bgm_stereo = np.frombuffer(bgm_frames, dtype=np.int16).astype(np.float32) / 32768.0
+                bgm_l = bgm_stereo[0::2]
+                bgm_r = bgm_stereo[1::2]
+                n_44k = len(bgm_l)
+
+                # Upsample 22050Hz TTS to 44100Hz via linear interpolation
+                tts_44k_len = len(tts_pcm) * 2
+                tts_44k = np.zeros(n_44k, dtype=np.float32)
+                x_old = np.arange(len(tts_pcm), dtype=np.float32)
+                x_new = np.linspace(0, len(tts_pcm) - 1, min(tts_44k_len, n_44k), dtype=np.float32)
+                tts_up = np.interp(x_new, x_old, tts_pcm).astype(np.float32)
+
+                # Normalize TTS voiceover peak to 0.90
+                tts_peak = max(float(np.max(np.abs(tts_up))), 1e-5)
+                tts_up = (tts_up / tts_peak) * 0.90
+                tts_44k[:len(tts_up)] = tts_up
+
+                # Dynamic audio ducking: lower BGM to 25% when voice is active, 50% in gaps
+                voice_env = np.abs(tts_44k)
+                duck_kernel = np.ones(2205, dtype=np.float32) / 2205.0  # 50ms smoothing
+                voice_active = np.convolve(voice_env, duck_kernel, mode='same')
+                bgm_gain = np.where(voice_active > 0.015, 0.24, 0.48).astype(np.float32)
+
+                mix_l = np.clip(bgm_l * bgm_gain + tts_44k * 0.92, -0.99, 0.99)
+                mix_r = np.clip(bgm_r * bgm_gain + tts_44k * 0.92, -0.99, 0.99)
+
+                out_stereo = np.empty((n_44k * 2,), dtype=np.int16)
+                out_stereo[0::2] = (mix_l * 32767).astype(np.int16)
+                out_stereo[1::2] = (mix_r * 32767).astype(np.int16)
+
+                with wave.open(out_wav_path, 'wb') as wf:
+                    wf.setnchannels(2)
+                    wf.setsampwidth(2)
+                    wf.setframerate(44100)
+                    wf.writeframes(out_stereo.tobytes())
+
+                return aligned_durations
+            except Exception as e:
+                print(f"[WARN] Ep {ep_num} TTS mix fallback: {e}")
+
+    # Fallback if /usr/bin/say is unavailable
+    total_dur = sum(fallback_durations)
+    synthesize_bgm_wav(theme, total_dur, out_wav_path)
+    return fallback_durations
+
+
 def generate_single_episode(ep_num: int, ep_data: dict, theme: str, card_map: dict,
                             out_mp4_path: str, temp_base_dir: str) -> dict:
-    """Generate standalone MP4 video for one episode."""
+    """Generate standalone MP4 video for one episode with English TTS narration + BGM."""
     ep_dir = Path(temp_base_dir) / f'ep_{ep_num:02d}'
     ep_dir.mkdir(parents=True, exist_ok=True)
 
@@ -374,8 +521,9 @@ def generate_single_episode(ep_num: int, ep_data: dict, theme: str, card_map: di
     title_en = ep_data.get('episodeTitle', f'Episode {ep_num}')
     title_ko = ep_data.get('episodeTitleKo', f'제 {ep_num}화')
 
-    frame_list = []
-    total_duration = 0.0
+    frame_filenames = []
+    fallback_durations = []
+    scene_scripts = []
 
     for idx, img_entry in enumerate(images):
         rel_img = img_entry.get('imageUrl', '').lstrip('/')
@@ -385,23 +533,35 @@ def generate_single_episode(ep_num: int, ep_data: dict, theme: str, card_map: di
 
         is_title = (idx == 0 or img_entry.get('type') == 'title_card')
         speaker_en = ''
-        text_en = img_entry.get('narrationEn', '')
+        narration_en = (img_entry.get('narrationEn') or '').strip()
+        text_en = narration_en
 
         dialogues = img_entry.get('dialogues', [])
         if dialogues:
             speaker_en = dialogues[0].get('speakerEn', '')
-            text_en = dialogues[0].get('textEn') or text_en
+            text_en = (dialogues[0].get('textEn') or narration_en).strip()
 
         portrait_file = resolve_portrait_file(img_entry, card_map)
         sfx_list = img_entry.get('sfxCues', [])
 
-        # Duration calculation
+        # Spoken English script for this scene
+        if is_title and not text_en:
+            spoken_en = f"Episode {ep_num}. {title_en}."
+        elif speaker_en and speaker_en not in ('Narration', '내레이션'):
+            if narration_en and narration_en != text_en:
+                spoken_en = f"{speaker_en} says: {text_en}. {narration_en}"
+            else:
+                spoken_en = f"{speaker_en} says: {text_en}"
+        else:
+            spoken_en = text_en or narration_en or f"Episode {ep_num}, scene {idx + 1}."
+
+        # Fallback duration calculation
         if is_title:
             duration = 3.5
         elif idx == len(images) - 1:
             duration = 4.0
         else:
-            word_count = len(text_en.split())
+            word_count = len(spoken_en.split())
             duration = 2.4 + min(word_count * 0.04, 1.2)
 
         frame_filename = f'frame_{idx:03d}.jpg'
@@ -410,24 +570,28 @@ def generate_single_episode(ep_num: int, ep_data: dict, theme: str, card_map: di
         render_styled_cutscene(str(src_path), is_title, title_en, title_ko,
                                speaker_en, text_en, portrait_file, sfx_list, str(frame_path))
 
-        frame_list.append((frame_filename, duration))
-        total_duration += duration
+        frame_filenames.append(frame_filename)
+        fallback_durations.append(duration)
+        scene_scripts.append(spoken_en)
 
-    if not frame_list:
+    if not frame_filenames:
         shutil.rmtree(ep_dir, ignore_errors=True)
         return {'ep_num': ep_num, 'status': 'FAIL', 'error': 'Zero valid frames'}
 
-    # Concat file
+    # Synthesize English TTS voiceover + BGM and align frame durations to exact speech pauses
+    bgm_wav_path = ep_dir / 'bgm.wav'
+    aligned_durations = synthesize_tts_and_bgm_wav(
+        ep_num, scene_scripts, theme, fallback_durations, str(bgm_wav_path)
+    )
+    total_duration = sum(aligned_durations)
+
+    # Concat file with TTS-synchronized frame durations
     concat_txt_path = ep_dir / 'concat.txt'
     with open(concat_txt_path, 'w', encoding='utf-8') as f:
-        for fname, dur in frame_list:
+        for fname, dur in zip(frame_filenames, aligned_durations):
             f.write(f"file '{fname}'\n")
             f.write(f"duration {dur:.2f}\n")
-        f.write(f"file '{frame_list[-1][0]}'\n")
-
-    # Synthesize BGM
-    bgm_wav_path = ep_dir / 'bgm.wav'
-    synthesize_bgm_wav(theme, total_duration, str(bgm_wav_path))
+        f.write(f"file '{frame_filenames[-1]}'\n")
 
     # Run FFmpeg
     cmd = [
