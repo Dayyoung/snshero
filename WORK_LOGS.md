@@ -2,6 +2,26 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-19 05:32 KST] [M1: RPG 40챕터 스토리라인 및 대화선택지 동기화] 웹소설 40개 전체 챕터 스크립트, 3대 태도 선택지, 인카운터 덱 및 i18n(한/영) 동기화 완료
+- **작업 개요**:
+  - `/main` 40개 챕터 RPG 모드 개편 Milestone 1: 소설 원작 40부작 스토리라인, 대화 스크립트, 3대 태도 선택지([결의/돌파], [신중/통찰], [성진호흡/공명]), 인카운터 덱 및 i18n 로케일 동기화
+- **소유 파일 및 주요 구현 내역**:
+  1. `src/content/kadanRpgNovelScript.ts`:
+     - `KadanRpgDialogueChoice` 및 `KadanRpgNovelScriptLine` 인터페이스 정의 및 내보내기.
+     - 40개 전체 챕터의 정통 웹소설 기반 서사, 인물별 `cardId` 매핑, 3대 태도 인터랙티브 선택지 및 후속 리액션 대사, 보너스(SNS 코인/전투 버프) 전수 수록 (총 235KB).
+  2. `src/content/kadanRpgStory.ts`:
+     - 40개 챕터 타이틀, 8대 지역 매핑(`chapterRegionIds`), 화자 카드 ID(`speakerCardIds`), 40개 챕터 인카운터 덱(`KADAN_RPG_ENCOUNTERS`) 전수 동기화.
+  3. `src/lib/i18n.ts`:
+     - `kadan_rpg_chapter_01`~`40` (한/영 40개 챕터 정규 제목) 동기화.
+     - `kadan_rpg_opp_ch01`~`40` (한/영 40개 챕터 상대 대전명) 동기화.
+     - 기습 인카운터 상대명 `kadan_rpg_opp_bandit`, `kadan_rpg_opp_thief` 한/영 추가.
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 errors (Exit code 0).
+  - `npm run build`: Vite 프로덕션 빌드 무결점 완료 (17.86초, 0 errors).
+  - 정규 오라클 무결성 검증: 40/40 챕터 전수 충족, 선택지 태도 각 40개 이상(총 81개씩) 충족.
+  - 연동 구글 폼 보고서 제출 완료 (`submit_report.py`).
+
+
 ## [2026-10-19 05:25 KST] [/main 40개 챕터 RPG 모드 개편 E2E 테스트 스위트 구축] 4-Tier 마스터 테스트 러너, 51개 검증 어설션, TEST_INFRA.md 및 TEST_READY.md 완료
 - **요청 사항**:
   - `/main` 40개 챕터 RPG 모드 개편(웹소설/웹툰 스토리라인 동기화, Kadan 대화 인터랙티브 3대 태도 선택지, 5.0초/1.5초 카운트다운 타이머 바, 황야 산적단/그림자 도둑단 필드 인카운터 및 100% 무인 자동 진행)에 대한 포괄적·오파크박스 4-Tier E2E 테스트 스위트 구축
