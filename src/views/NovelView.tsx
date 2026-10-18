@@ -229,8 +229,8 @@ export const NovelView: React.FC<NovelViewProps> = ({
   // Cartoon layout mode: 'scroll' (vertical webtoon strip) or 'slides' (page-by-page carousel)
   const [cartoonDisplayMode, setCartoonDisplayMode] = useState<'scroll' | 'slides'>('scroll');
   const [activeSlideIndex, setActiveSlideIndex] = useState<number>(1);
-  // Cartoon speech bubbles & SFX overlays toggle
-  const [showCartoonBubbles, setShowCartoonBubbles] = useState<boolean>(true);
+  // Cartoon speech bubbles & SFX overlays toggle (기본 비표시)
+  const [showCartoonBubbles, setShowCartoonBubbles] = useState<boolean>(false);
 
   // Get cartoon image info for a specific episode and scene index (0..20)
   const getCartoonImageInfo = (epNum: number, sceneIdx: number): WebtoonManifestImage | undefined => {
@@ -1562,22 +1562,6 @@ export const NovelView: React.FC<NovelViewProps> = ({
                     <ExternalLink size={14} />
                     <span>YouTube</span>
                   </a>
-                  <button
-                    onClick={() => {
-                      setShowCartoonBubbles(prev => !prev);
-                      if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                    }}
-                    className={cn(
-                      "min-h-[44px] px-3 py-1.5 text-xs font-bold border rounded-sm transition-colors cursor-pointer flex items-center gap-1.5",
-                      showCartoonBubbles
-                        ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
-                        : "bg-[#fdfcfc] text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#f1eeee]"
-                    )}
-                    title={language === 'ko' ? '말풍선 및 효과음 토글' : 'Toggle Comic Speech Bubbles & SFX'}
-                  >
-                    <MessageSquare size={14} />
-                    <span>{language === 'ko' ? (showCartoonBubbles ? '말풍선 ON' : '말풍선 OFF') : (showCartoonBubbles ? 'Bubbles ON' : 'Bubbles OFF')}</span>
-                  </button>
                   <span className="text-[10px] text-[#646262] font-bold hidden sm:inline ml-1">[ VIEW MODE ]:</span>
                   <button
                     onClick={() => setCartoonDisplayMode('scroll')}
@@ -2122,22 +2106,6 @@ export const NovelView: React.FC<NovelViewProps> = ({
             </div>
 
             <div className="flex items-center gap-2">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setShowCartoonBubbles(prev => !prev);
-                  if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                }}
-                className={cn(
-                  "min-h-[44px] px-3 py-1.5 rounded-sm transition-colors cursor-pointer flex items-center gap-1.5 text-xs font-bold border border-[rgba(255,255,255,0.2)]",
-                  showCartoonBubbles ? "bg-[#fdfcfc] text-[#201d1d]" : "bg-[#201d1d] text-[#fdfcfc]"
-                )}
-                title={language === 'ko' ? '말풍선 ON/OFF' : 'Toggle Bubbles'}
-              >
-                <MessageSquare size={14} />
-                <span>{language === 'ko' ? (showCartoonBubbles ? '말풍선 ON' : '말풍선 OFF') : (showCartoonBubbles ? 'Bubbles ON' : 'Bubbles OFF')}</span>
-              </button>
-
               <button
                 onClick={() => setLightboxSceneIndex(null)}
                 className="min-h-[44px] px-3 py-1.5 bg-[#201d1d] hover:bg-[#201d1d]/80 text-[#fdfcfc] rounded-sm transition-colors cursor-pointer flex items-center gap-1 text-xs font-bold border border-[rgba(255,255,255,0.2)]"

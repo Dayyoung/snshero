@@ -18,7 +18,11 @@ export interface WebtoonSpeechBubbleProps {
   onBubbleClick?: () => void;
 }
 
-export const WebtoonSpeechBubble: React.FC<WebtoonSpeechBubbleProps> = ({
+export const WebtoonSpeechBubble: React.FC<WebtoonSpeechBubbleProps> = () => {
+  return null;
+};
+
+export const _DisabledWebtoonSpeechBubble: React.FC<WebtoonSpeechBubbleProps> = ({
   dialogue,
   language,
   className,
