@@ -2,7 +2,50 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
-## [2026-10-18 17:05 KST] 무비 플레이어 영어 TTS 나레이션 재생 버그 수정 및 40부작 MP4 전편 영어 TTS 보이스오버 + BGM 믹싱 완료
+## [2026-10-18 19:50 KST] [마일스톤1] 핵심 게임플레이 및 배틀 화면 터미널-플랫 디자인 시스템 전면 적용 (Features 1~17)
+- **작업명**: `핵심 게임플레이 및 배틀 화면 터미널 플랫 디자인 시스템 전면 적용 (Features 1~17)`
+- **담당자**: worker_m1 (Core Gameplay & Battle Views Implementer)
+- **소유 파일 13종 전수 리팩토링 및 검증 완료**:
+  - `src/views/MobileCardPlayScreen.tsx`: 인배틀 4대 스킬 바 44px+ 터치 타깃 보장(`min-h-[44px] h-11 px-2.5`), 스마트 수명주기 토글 44px 확대, TacticalCommandHUD 컨테이너 `rounded-none` 단일 서피스화, 패 카드 선택 외곽선 `shadow-sm` 제거.
+  - `src/views/PlayGameView.tsx`: 보스 카드 아이템(`BossCardItem`), 던전 전투 결과 및 스테이지 클리어 모달, GPS 운동 모험 HUD, 최종 정산 모달, 게임 규칙 모달, 110 가디언 미션 툴바, 3x3 전장 로봇 자동전투 독 툴바, 선공/후공 코인 플립 버서스 매치업 및 서칭 레이더, 인게임 탑 컨트롤 바 및 메뉴 모달, 전술 배틀 로그 모달 전수 터미널-플랫 리팩토링.
+  - `src/components/battle/TacticalCommandHUD.tsx`: 일일 팩 수령 및 미니게임 라운지 버튼 44px+ 확대, `shadow-md` 제거.
+  - `src/components/battle/TacticalSynergyMatrix.tsx`: 접기/펼치기 토글 44px+ 확대, `rounded-sm` 적용.
+  - `src/components/battle/StarBreathingUltimateWidget.tsx`: 시전/토글/닫기 버튼 44px+ 확대, `shadow-xl/2xl/lg/sm` 전수 제거.
+  - `src/components/battle/ElementalTempestWidget.tsx`: 44px+ 터치 타깃 보장, `shadow-xl` 제거.
+  - `src/components/MinimalistMissionHUD.tsx`: 상단 툴바(나가기, 도움말, 일시정지) 44px+(`min-h-11 h-11`), 정산 모달 44px 액션 버튼, `shadow-2xl` 제거.
+  - `src/components/ResponsiveCleanHUD.tsx`: 상단 툴바 44px+ 보장, 콤보 배너 `animate-bounce` 제거 및 플랫 뱃지화, `shadow-xs` 제거.
+  - `src/components/DemoPlayHUD.tsx`: 나가기 버튼 44px+(`min-h-[44px] min-w-[75px]`), `shadow-sm` 및 `animate-pulse` 제거.
+  - `src/components/BattleBossHUD.tsx`: `shadow-md` 제거, 단일 서피스 플랫화.
+  - `src/components/MissionGameCardHUD.tsx`: 게이지 바 `rounded-none`, 피버 부스터 버튼 44px+ 보장, `shadow-md` 제거.
+  - `src/views/HomeView.tsx` & `src/views/MyDeckView.tsx`: 금지 클래스 0건 감사 완료.
+- **검증 결과**:
+  1. 금지 클래스 감사: 13개 소유 파일 전수에서 `bg-gradient-to-*` 0건, `rounded-lg/xl/2xl/3xl` 0건, `shadow-md/lg/xl/2xl` 0건, `animate-ping/bounce` 0건, `font-sans` 0건 확인 (100% CLEAN).
+  2. 터치 타깃: 모든 인터랙티브 버튼/토글 `min-h-[44px]` (또는 `h-11`, 44px+) 100% 충족.
+  3. 시야 방해: 3x3 배틀 보드 및 미션 게임 캔버스 오버레이 0% 차단 (도킹 툴바 및 최소화 지원).
+  4. 컴파일 및 빌드: `npx tsc --noEmit` 0 errors (Exit 0), `npm run build` 19.78s 정상 빌드 (Exit 0).
+  5. 구글 폼 보고서 제출: `skills/report-ex/scripts/submit_report.py` 완료.
+  6. Git 커밋: `feat(design-system): Milestone 1 terminal-flat refactoring across core gameplay & battle views (Features 1-17)` 로컬 커밋 완료 (push 미수행).
+
+## [2026-10-18 19:40 KST] DESIGN.md 터미널-플랫 4-Tier E2E 테스트 하네스 구축 및 TEST_READY.md 발행 완료
+- **작업명**: `DESIGN.md 터미널-플랫 4-Tier E2E 테스트 하네스 구축 및 TEST_READY.md 발행 완료`
+- **담당자**: test_writer_e2e (E2E Testing Track Writer)
+- **주요 수행 내역**:
+  1. **4-Tier E2E 테스트 하네스 구현 (`tests/e2e_design_system/`)**:
+     - `helpers.py`: JSX 중괄호/화살표 함수 정밀 파서 기반 `<button>` 태그 및 클래스 식별기, 금지 CSS 정규식 토큰 스캐너, 375px 모바일 뷰포트 오버플로 및 하단 독 클리어런스(`pb-28`~`pb-36`) 검사기, LocalStorage `hero_*` 영구 보존 감사기.
+     - `tier1_feature_coverage.py`: 22개 전체 뷰 및 8개 공유 크롬 대상 118개 기능 범위 검증 (그라데이션 0건, rounded-xl/2xl/3xl 0건, animate-ping/bounce 0건, 100% font-mono, 0 font-sans, 단일 플랫 서피스 및 1px hairline 보더).
+     - `tier2_boundary_corner.py`: 54개 경계값/모서리 조건 검증 (인터랙티브 버튼 최소 44px 높이 `min-h-[44px]`, 모달/드로어 최상위 닫기 제어 `[x]` / `[SKIP]`, 375px 모바일 뷰포트 오버플로 방지).
+     - `tier3_cross_feature.py`: 10개 교차 통합 검증 (배틀, 덱, 상점, 랭킹, 소설, 설정 간 라우팅 상태 머신, `hero_*` LocalStorage 영구 보존, 100% `safeLazy` 동적 로더 및 디렉토리 인덱스 import 0건, 12개 언어 i18n 보존, 하단 네비게이션 독 탭 통합).
+     - `tier4_realworld_workload.py`: 6개 실사용 유저 시나리오 워크로드 (모바일 온보딩, 카드 배틀, 포키 미니게임 정산, 상점/마켓플레이스, 소설/영화관, 설정 시뮬레이터).
+     - `run_all_e2e_tests.py`: CLI 마스터 러너 (`--tier`, `--milestone M1/M2/M3/ALL`, `--verbose`, `--json`, `--allow-fail` 지원).
+  2. **프로젝트 루트 `TEST_READY.md` 발행**:
+     - 러너 실행법, 티어별 매트릭스, 22개 화면 체크리스트, 마일스톤별 인수 조건 및 진행 현황 문서화.
+  3. **빌드 및 린트 검증**:
+     - `python3 tests/e2e_design_system/run_all_e2e_tests.py --allow-fail`: 0.69초 만에 188개 전수 실행 (114 통과, 74개 미해결 레거시 결함 정확 추적, Pass Rate 60.6%).
+     - `npx tsc --noEmit`: 0 TypeScript errors (Exit 0).
+     - `npm run lint`: 0 errors (Exit 0).
+     - `npm run build`: 18.07초 만에 52개 SPA 정적 라우트 번들링 정상 완료 (Exit 0).
+  4. **구글 폼 보고서 제출 완료**:
+     - `skills/report-ex/scripts/submit_report.py` 연동 제출 완료.
 - **작업명**: `무비 재생 시 영어 TTS 나레이션 미작동 버그 수정 및 40부작 MP4 영어 보이스오버/BGM 믹싱 재렌더링`
 - **주요 수행 내역**:
   1. **시네마틱 무비 플레이어(`CinematicMoviePlayer.tsx`) 영어 TTS 취소 버그 수정**:
