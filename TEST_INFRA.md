@@ -1,49 +1,58 @@
-# SNSHero 110-Hero Character Illustration Remaster E2E Test Infrastructure (TEST_INFRA.md)
+# SNSHero Movie Theater 40-Episode E2E Test Infrastructure (TEST_INFRA.md)
 
 ## 1. Overview & Architecture
 
-This document establishes the comprehensive test architecture, methodology, and coverage criteria for the visual remastering, multi-surface asset synchronization, and web payload optimization of all **110 hero characters** in **SNSHero** (`CARD_DATABASE` IDs 1–110 across 11 elemental/racial factions).
+This document establishes the comprehensive test architecture, methodology, and coverage criteria for the **SNSHero Movie Theater Upgrade & 40-Episode Standalone MP4 Video Generation** (`public/videos/episodes/episode_01.mp4`..`episode_40.mp4`, 2,049 webtoon cutscenes, Web Audio procedural BGM synthesis, English TTS voiceover, character portrait dock highlighting, animated combat SFX onomatopoeia overlays, multi-language subtitles, and CC toggle).
 
-The testing strategy employs a **Dual-Track 4-Tier Automated Verification Framework** driven by a standalone, headless Python 3 test harness (`tests/e2e_character_assets/runner.py`):
+The testing strategy employs a **Dual-Track 4-Tier Automated Verification Framework** driven by a standalone, autonomous Python 3 test harness (`tests/e2e_movie_theater/run_movie_e2e_tests.py`):
 
 ```
 +---------------------------------------------------------------------------------------------------+
-|               SNSHero 110-Hero Character Remaster E2E Test Infrastructure                         |
+|               SNSHero Movie Theater Dual-Track 4-Tier E2E Test Infrastructure                    |
 +---------------------------------------------------------------------------------------------------+
-|  Tier 1: Feature Coverage & Asset Integrity (>= 5 tests per feature)                              |
-|  - Feature 2 (Seat Portraits): 110 files exist, 110 decode validly, exact 256x296, 110 distinct  |
-|    SHA-256 hashes, zero blank/uniform images, alpha transparency preserved.                       |
-|  - Feature 3 (Primary Sheets): cards1.png (1000x1000) & cards2.png (1000x1000) exist, decode    |
-|    validly, exact dimensions, 10x10 cells populated.                                              |
-|  - Feature 4 (Master Sheets): card100.png (1135x1315) & card100_gemini.png (1024x1024 true RGBA) |
-|    exist, decode as genuine PNGs (reject JPEG disguise), exact dimensions, alpha preserved.      |
-|  - Feature 5 (Faction Sheets): 11 horizontal sheets exist (with aliases hobbit/beast/mecha),      |
-|    decode validly, exact 2560x296 dimensions, alpha channel, 10 cells contain rich art.           |
+|  Tier 1: Feature Coverage & Asset Integrity (35 Assertions across 8 Features)                     |
+|  - Feature 1 (2,049 Cutscenes): All 40 episodes in manifest, exactly 2,049 cutscenes, all files  |
+|    exist on disk in public/images/webtoon/episode_XX/, valid WebP RIFF headers, scene 0 title cards. |
+|  - Feature 2 (MP4 Video Assets): All 40 MP4 files exist, probed via ffprobe for H.264 video,   |
+|    AAC audio (>=44.1kHz), non-zero duration (>0.0s), faststart moov placement, <=25MB payload.     |
+|  - Feature 3 (Continuous BGM Engine): MovieAudioSynthesizer singleton, initAudio(),              |
+|    startEpisodeBgm(), stopEpisodeBgm(), and 6 core themes (arctic-blizzard, battle-march, etc.).  |
+|  - Feature 4 (English TTS Voiceover): speakEnglishNarration/speakNarration, en-US/en-GB voices,   |
+|    CinematicMoviePlayer narrationEn binding, mute and isTtsEnabled state respect.                |
+|  - Feature 5 (Character Highlighting): Dialogues map to CARD_DATABASE (1..110), portraits exist  |
+|    in public/seat/, active speaker glowing highlight & [SPEAKER] badge, non-speaker dimming.      |
+|  - Feature 6 (Combat SFX Overlays): Manifest sfxCues schema, onomatopoeia visual rendering on     |
+|    stage/canvas, synchronized procedural audio SFX (movieAudio.playSfx).                         |
+|  - Feature 7 (Subtitles & CC Toggle): English for en viewers, localized text for others,         |
+|    [CC ON/OFF] toggle button in control bar, clean overlay visibility toggle.                    |
+|  - Feature 8 (MP4 Player & Download): Mode switcher between Cutscene & MP4, native <video> tag,  |
+|    direct MP4 download link with formatted filename (SNSHero_Episode_XX.mp4).                    |
 +---------------------------------------------------------------------------------------------------+
-|  Tier 2: Boundary & Corner Cases (>= 5 tests per feature)                                         |
-|  - Feature 7 (Size Budgets): Seat files in [4 KB, 35 KB]; Master sheets <= 800 KB;               |
-|    Faction sheets <= 300 KB; Total aggregate payload <= 10.11 MB.                                 |
-|  - Feature 2 & 5 (Header Integrity): 8-byte PNG magic header (\x89PNG\r\n\x1a\n) check on all     |
-|    125 PNG assets to catch UTF-8 replacement byte corruptions (\xef\xbf\xbdPNG); IHDR structure. |
-|  - Feature 3 & 6 (Grid Boundaries): Boundary ID 100 termination vs ID 101 origin transition;     |
-|    Card ID 110 terminal alignment; Rows 1-9 preservation in cards2.png; Boss column 9 alignment; |
-|    OOB & negative ID clamping.                                                                    |
+|  Tier 2: Boundary & Corner Cases (10 Assertions across 5 Boundaries)                              |
+|  - Boundary 1 (Subtitle Fallback): Zero 'undefined'/null text printed, dialogues array safe nav.  |
+|  - Boundary 2 (Rapid Skipping): Prior speech canceled immediately, interval timers cleared cleanly|
+|    without leaks, scene index strictly clamped to [0, totalScenes - 1].                           |
+|  - Boundary 3 (AudioContext Autoplay): Resume promise rejection caught, retry on user gesture.   |
+|  - Boundary 4 (Mobile Viewport): Touch targets meet DESIGN.md min-h-[44px], subtitle text wraps.  |
+|  - Boundary 5 (Episode Clamping): Episode parameter strictly clamped to [1, 40].                 |
 +---------------------------------------------------------------------------------------------------+
-|  Tier 3: Cross-Feature Combinations & Sprite Coordinate Alignment (Pairwise Coverage)             |
-|  - Mathematical coordinate parity: All 110 card IDs verified against getCardSpriteCoords formulas |
-|    for cards1/cards2 (10x10), card100 (10x11), and card100_gemini (10x11).                        |
-|  - Faction horizontal placement: Exact x = ((id - 1) % 10) * 256, y = 0 mapping.                  |
-|  - Pixel synchronization: Normalized visual similarity between public/seat/<Card>.png and sliced   |
-|    cells from faction sheets and master sheets.                                                   |
-|  - Sub-pixel boundary integrity: Zero edge bleeding / ghosting between adjacent sprite cells.    |
+|  Tier 3: Cross-Feature Combinations & State Machine (8 Assertions across 5 Interactions)          |
+|  - Combination 1 (Mode Switch): Switching to MP4 halts Web Audio BGM & TTS; switching back restores|
+|    interactive player state without double-audio echo.                                            |
+|  - Combination 2 (CC & Language): CC toggle state preserved across language switches; active CC  |
+|    updates subtitle text reactively on language change.                                           |
+|  - Combination 3 (TTS Rapid Skip): Speech utterance flushed on rapid scene skipping (0 backlog).  |
+|  - Combination 4 (BGM Continuity): Same-theme scenes maintain continuous audio without restarting;|
+|    theme changes execute smooth >= 0.5s cross-fade.                                              |
+|  - Combination 5 (Stacking Order): Fullscreen z-index hierarchy (canvas < dock < subtitles < bar).|
 +---------------------------------------------------------------------------------------------------+
-|  Tier 4: Real-World Scenarios                                                                     |
-|  - CardItem rendering simulation: Surface tint classes and emblems across all 11 factions.         |
-|  - Rarity frame & sheen simulation: 50 Bronze, 32 Silver, 28 Gold (11 Bosses at Gold apex).       |
-|  - CanvasCardRenderer drawCardSprite blitting: Slicing geometry verified at mini (32px),          |
-|    hand (80x92px), board (120x140px), and zoom (256x296px) viewports.                            |
-|  - Priority resolver cascade: custom/processed -> default sprite -> seat fallback chain.          |
-|  - Total web payload audit: Comprehensive payload benchmark demonstrating >= 50% traffic cut.     |
+|  Tier 4: Real-World Application Scenarios (6 Assertions across 4 Scenarios)                       |
+|  - Scenario 1 (Full Playthrough): Episode 1 plays start to end, triggers onEpisodeComplete,        |
+|    viewing reward (100 SNS) saved in localStorage (hero_movie_claimed_episodes).                  |
+|  - Scenario 2 (MP4 Stream & Download): All 40 episodes streamable via URL and downloadable with   |
+|    SNSHero_Episode_XX.mp4 naming.                                                                 |
+|  - Scenario 3 (40-Episode Catalog): All 40 episodes unlocked in MOVIE_EPISODES, 0 blockers.      |
+|  - Scenario 4 (Fallback Resiliency): Graceful degradation when SpeechSynthesis/WebAudio missing.  |
 +---------------------------------------------------------------------------------------------------+
 ```
 
@@ -51,185 +60,174 @@ The testing strategy employs a **Dual-Track 4-Tier Automated Verification Framew
 
 ## 2. 4-Tier Test Suite Specification
 
-### Tier 1: Feature Coverage & Asset Integrity (>= 5 Tests per Feature)
+### Tier 1: Feature Coverage & Asset Integrity (35 Tests)
 
-#### T1.1 Individual Seat Portraits (`public/seat/*.png`, Feature 2)
-- **Objective**: Ensure all 110 hero character portraits exist, decode cleanly without binary or raster corruption, maintain exact dimensions, have unique visual identity, and preserve alpha transparency.
-- **Authoritative Sources**: `PROJECT.md` Feature 2, `ORIGINAL_REQUEST.md` R1 & R2, `cards_dataset.json`.
+#### T1.1 2,049 Webtoon Cutscenes Loadability (`src/content/webtoonEpisodeManifest.json`, `public/images/webtoon/`)
+- **Objective**: Verify that all 40 episodes and 2,049 cutscenes exist on disk, decode as valid WebP images, and maintain sequential chapter storytelling.
+- **Authoritative Sources**: `ORIGINAL_REQUEST.md` §R1 & §R3, `PROJECT.md` Feature 1.
 - **Assertions**:
-  1. `T1.F2.1` **File Existence**: All 110 individual portrait files exist in `public/seat/` matching `${title_en.replace(/ /g, '_')}.png`.
-  2. `T1.F2.2` **Raster Decode Validity**: All 110 files open and decode without syntax errors (PIL `UnidentifiedImageError`, truncated chunks, or bad CRC).
-  3. `T1.F2.3` **Exact Dimensions**: All 110 portraits are exactly `256 x 296` px (width 256, height 296).
-  4. `T1.F2.4` **110 Distinct SHA-256 Hashes**: Every portrait file yields a unique cryptographic hash; zero duplicate or clone files.
-  5. `T1.F2.5` **Zero Blank / Uniform Images**: Entropy $\ge 2.0$ and pixel standard deviation $\ge 8.0$; zero solid color or empty transparent canvases.
-  6. `T1.F2.6` **Alpha Transparency Support**: Image color mode is RGBA, LA, or paletted with alpha transparency enabled.
+  1. `T1.F1.1` **Manifest Episodes**: Manifest contains all 40 episodes (`"1"` through `"40"`).
+  2. `T1.F1.2` **Exact Cutscene Count**: Total cutscene count across all 40 episodes in manifest equals exactly 2,049.
+  3. `T1.F1.3` **Filesystem Existence**: All 2,049 WebP image files exist on disk in `public/images/webtoon/episode_XX/`.
+  4. `T1.F1.4` **WebP Magic Header**: All 2,049 cutscene files have valid WebP headers (`RIFF....WEBP`) and non-zero byte size.
+  5. `T1.F1.5` **Sequential Storytelling**: Every episode contains `scene_00.webp` title card followed by sequential story panels (`scene_01.webp`..`scene_XX.webp`).
 
-#### T1.2 Primary 10x10 Sprite Sheets (`public/cards1.png`, `public/cards2.png`, Feature 3)
-- **Objective**: Verify standard battle sprite sheets covering IDs 1–100 (`cards1.png`) and IDs 101–110 (`cards2.png`).
-- **Authoritative Sources**: `PROJECT.md` Feature 3, `src/lib/utils.ts` (`getCardSpriteCoords`).
+#### T1.2 40-Episode Standalone MP4 Video Assets (`public/videos/episodes/`, via `ffprobe`)
+- **Objective**: Ensure all 40 episodes have standalone MP4 video files with valid H.264 video, AAC audio, positive duration, and browser-streaming flags.
+- **Authoritative Sources**: `ORIGINAL_REQUEST.md` §R3, `PROJECT.md` Feature 7.
 - **Assertions**:
-  1. `T1.F3.1` **cards1.png Existence**: `public/cards1.png` exists on disk.
-  2. `T1.F3.2` **cards1.png Decode Validity**: Decodes cleanly as a genuine PNG image.
-  3. `T1.F3.3` **cards1.png Exact Dimensions**: Exactly `1000 x 1000` px (10 rows $\times$ 10 cols of `100 x 100` px cells).
-  4. `T1.F3.4` **cards2.png Existence**: `public/cards2.png` exists on disk.
-  5. `T1.F3.5` **cards2.png Decode Validity**: Decodes cleanly as a genuine PNG image.
-  6. `T1.F3.6` **cards2.png Exact Dimensions**: Exactly `1000 x 1000` px.
-  7. `T1.F3.7` **Populated Cell Content**: Sampled cells across `cards1.png` (IDs 1–100) and Row 0 of `cards2.png` (IDs 101–110) contain non-blank artwork.
+  1. `T1.F2.1` **All 40 Files Exist**: `episode_01.mp4` through `episode_40.mp4` exist in `public/videos/episodes/`.
+  2. `T1.F2.2` **Container Format**: `ffprobe` confirms format is `mp4` / `mov` with valid MP4 container structure.
+  3. `T1.F2.3` **H.264 Video Stream**: Video stream encoded with `h264` (`avc1`) at $\ge 20$ fps.
+  4. `T1.F2.4` **AAC Audio Stream**: Audio stream encoded with `aac` at $\ge 44.1$ kHz.
+  5. `T1.F2.5` **Positive Duration**: Every episode video has non-zero duration ($> 0.0$s).
+  6. `T1.F2.6` **Faststart Flag**: MP4 container places `moov` atom before `mdat` for instant browser streaming.
+  7. `T1.F2.7` **Payload Budget**: Video file size is $\le 25$ MB per episode.
 
-#### T1.3 Legacy Master 10x11 Sprite Sheets (`public/card100.png`, `public/card100_gemini.png`, Feature 4)
-- **Objective**: Verify legacy master sheets covering all 110 characters, strictly enforcing true RGBA format for `card100_gemini.png` to eliminate legacy JPEG disguise.
-- **Authoritative Sources**: `PROJECT.md` Feature 4, `ORIGINAL_REQUEST.md` R2.
+#### T1.3 Continuous BGM Synthesis Engine (`src/lib/MovieAudioSynthesizer.ts`)
+- **Objective**: Ensure the procedural audio synthesizer maintains continuous BGM anchored to episode lifecycle without restarting across scene transitions.
+- **Authoritative Sources**: `PROJECT.md` Feature 2 & Interface Contract 3.
 - **Assertions**:
-  1. `T1.F4.1` **card100.png Existence**: `public/card100.png` exists on disk.
-  2. `T1.F4.2` **card100.png Decode Validity**: Decodes as valid PNG.
-  3. `T1.F4.3` **card100.png Exact Dimensions**: Exactly `1135 x 1315` px (10 cols $\times$ 11 rows).
-  4. `T1.F4.4` **card100_gemini.png Existence**: `public/card100_gemini.png` exists on disk.
-  5. `T1.F4.5` **card100_gemini.png Genuine PNG Format**: Decodes as `PNG` format (fails if JPEG).
-  6. `T1.F4.6` **card100_gemini.png Exact Dimensions**: Exactly `1024 x 1024` px.
-  7. `T1.F4.7` **card100_gemini.png True RGBA Alpha**: Mode is `RGBA` or paletted with alpha; zero loss of transparency.
+  1. `T1.F3.1` **Singleton & Instance Export**: `MovieAudioSynthesizer` singleton and `movieAudio` exported.
+  2. `T1.F3.2` **initAudio()**: API method handles AudioContext initialization and user-gesture resumption.
+  3. `T1.F3.3` **startEpisodeBgm()**: API method initiates continuous episode BGM across scene transitions.
+  4. `T1.F3.4` **stopEpisodeBgm()**: API method cleanly fades out background music.
+  5. `T1.F3.5` **Thematic Presets**: Implements 6 core BGM themes (`arctic-blizzard`, `battle-march`, `arcane-mystery`, `triumph-fanfare`, `dark-ominous`, `sorrow-lament`).
 
-#### T1.4 Faction Horizontal Sheets (`public/character_sheet_*.png`, Feature 5)
-- **Objective**: Verify all 11 faction horizontal sheets containing 10 characters per sheet.
-- **Authoritative Sources**: `PROJECT.md` Feature 5, `explorer_survey_2/handoff.md`.
+#### T1.4 English-Base Cutscene & TTS Voiceover (`src/components/movie/CinematicMoviePlayer.tsx`)
+- **Objective**: Ensure the movie experience presents English dialogues and reads narration aloud via English TTS.
+- **Authoritative Sources**: `ORIGINAL_REQUEST.md` §R2, `PROJECT.md` Feature 3.
 - **Assertions**:
-  1. `T1.F5.1` **All 11 Sheets Exist**: Confirms files for water, fire, wind, earth, human, undead, elf, hobbit (dwarf), beast (monster), mecha (robot), and dragon.
-  2. `T1.F5.2` **Decode Validity**: All 11 sheets decode as valid PNGs.
-  3. `T1.F5.3` **Exact Dimensions**: Exactly `2560 x 296` px (10 horizontal cells of `256 x 296` px).
-  4. `T1.F5.4` **Alpha Transparency Support**: Alpha channel present across all 11 sheets.
-  5. `T1.F5.5` **Non-Blank Cells**: All 10 cells ($0..9$) in each faction sheet contain non-blank character artwork.
+  1. `T1.F4.1` **TTS Voiceover Method**: Synthesizer implements English narration voiceover.
+  2. `T1.F4.2` **Voice Selection**: TTS configures English voice matching (`en-US` / `en-GB`).
+  3. `T1.F4.3` **Player Binding**: Player binds English TTS to `narrationEn` and English dialogues.
+  4. `T1.F4.4` **Mute & Toggle State**: TTS respects `isTtsEnabled` and `isMuted` toggles.
+
+#### T1.5 Speaking Character Portrait Highlighting
+- **Objective**: Verify that speaking characters are highlighted with a glowing frame, pulse aura, and speaker badge while non-speakers are dimmed.
+- **Authoritative Sources**: `ORIGINAL_REQUEST.md` §R2, `PROJECT.md` Feature 4.
+- **Assertions**:
+  1. `T1.F5.1` **Card Mapping**: Cutscene dialogues reference character IDs mapping to `CARD_DATABASE` (1..110).
+  2. `T1.F5.2` **Portrait Existence**: Referenced hero portraits exist in `public/seat/*.png`.
+  3. `T1.F5.3` **Active Highlighting**: Active speaking character receives glowing border (`border-amber-400`), aura, and `[SPEAKER]` badge.
+  4. `T1.F5.4` **Inactive Dimming**: Non-speaking characters dimmed with opacity and scale reduction.
+
+#### T1.6 Animated Combat SFX Onomatopoeia Overlays
+- **Objective**: Verify animated sound effect typography and synchronized procedural audio SFX.
+- **Authoritative Sources**: `ORIGINAL_REQUEST.md` §R2, `PROJECT.md` Feature 5.
+- **Assertions**:
+  1. `T1.F6.1` **Structured sfxCues**: Webtoon cutscenes define structured SFX cues with Korean and English text.
+  2. `T1.F6.2` **Visual Onomatopoeia**: Player renders visual SFX overlays on movie stage.
+  3. `T1.F6.3` **Synchronized Audio**: Procedural battle audio SFX (`movieAudio.playSfx`) triggered synchronously.
+
+#### T1.7 Multi-Language Subtitles & Subtitle CC Toggle
+- **Objective**: Verify synchronized subtitle overlay with viewer language selection and `[CC ON/OFF]` toggle.
+- **Authoritative Sources**: `ORIGINAL_REQUEST.md` §R4, `PROJECT.md` Feature 6.
+- **Assertions**:
+  1. `T1.F7.1` **English Subtitles**: Displays English text for English viewers (`narrationEn`, `textEn`).
+  2. `T1.F7.2` **Localized Subtitles**: Displays localized text for non-English viewers (`narrationKo`, `textKo`, etc.).
+  3. `T1.F7.3` **CC Toggle Button**: Subtitle CC toggle button present in player control bar.
+  4. `T1.F7.4` **Visibility Control**: CC toggle cleanly shows/hides subtitle overlay container.
+
+#### T1.8 MP4 Player Mode & Download Integration
+- **Objective**: Ensure seamless switching between interactive cutscene theater and MP4 stream, plus episode download.
+- **Authoritative Sources**: `ORIGINAL_REQUEST.md` §R3, `PROJECT.md` Feature 8.
+- **Assertions**:
+  1. `T1.F8.1` **Player Mode Switcher**: Mode switcher between Cutscene Mode and MP4 Mode.
+  2. `T1.F8.2` **HTML5 <video> Element**: Native video element integrated for MP4 playback.
+  3. `T1.F8.3` **Direct Download Link**: Download link integrated with `SNSHero_Episode_XX.mp4` naming.
 
 ---
 
-### Tier 2: Boundary & Corner Cases (>= 5 Tests per Feature)
+### Tier 2: Boundary & Corner Cases (10 Tests)
 
-#### T2.1 Web Traffic & File Size Budgets (Feature 7)
-- **Objective**: Guarantee substantial web payload reduction via strict size budgets.
-- **Assertions**:
-  1. `T2.F7.1` **Seat Upper Budget**: Every `public/seat/*.png` $\le 35,840$ bytes (35 KB).
-  2. `T2.F7.2` **Seat Lower Budget**: Every `public/seat/*.png` $\ge 4,096$ bytes (4 KB, preventing empty stubs).
-  3. `T2.F7.3` **Master Sheets Budget**: `cards1.png`, `cards2.png`, `card100.png`, `card100_gemini.png` each $\le 819,200$ bytes (800 KB).
-  4. `T2.F7.4` **Faction Sheets Budget**: Every `character_sheet_*.png` $\le 307,200$ bytes (300 KB).
-  5. `T2.F7.5` **Aggregate Asset Payload Budget**: Total payload across all individual and sheet assets $\le 10,598,400$ bytes (~10.11 MB).
-
-#### T2.2 Binary Header Integrity & Magic Bytes Verification (Features 2 & 5)
-- **Objective**: Detect binary corruptions, notably the UTF-8 replacement byte sequence (`\xef\xbf\xbdPNG`) that historically corrupted `Celia.png`, `Hyperion_Prime.png`, `Sentinel.png`, `character_sheet_fire.png`, `character_sheet_hobbit.png`, and `character_sheet_mecha.png`.
-- **Assertions**:
-  1. `T2.F2.1` **Seat Magic Header**: All 110 seat files start with `\x89PNG\r\n\x1a\n` (`89 50 4E 47 0D 0A 1A 0A`).
-  2. `T2.F2.2` **Master Sheets Magic Header**: All 4 master sheets start with valid PNG magic bytes.
-  3. `T2.F2.3` **Faction Sheets Magic Header**: All 11 faction sheets start with valid PNG magic bytes.
-  4. `T2.F2.4` **IHDR Chunk Validation**: First chunk is 13-byte `IHDR` with non-zero dimensions and valid bit depth.
-
-#### T2.3 Grid Transitions & Boundary IDs (Features 3 & 6)
-- **Objective**: Validate critical grid transition points and out-of-bounds safety.
-- **Assertions**:
-  1. `T2.F6.1` **ID 100 to 101 Transition**: ID 100 is terminal cell of `cards1.png` (col 9, row 9, coords 900,900); ID 101 is origin cell of `cards2.png` (col 0, row 0, coords 0,0).
-  2. `T2.F6.2` **ID 110 Terminal Boundary**: ID 110 maps cleanly to `cards2.png` (col 9, row 0) and `card100.png` (col 9, row 10).
-  3. `T2.F6.3` **cards2.png Rows 1–9 Preservation**: Rows 1–9 (y in [100, 1000]) are preserved or cleanly formatted without corruption.
-  4. `T2.F6.4` **Boss Multiples of 10 Apex Alignment**: Cards 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110 align to apex column 9.
-  5. `T2.F6.5` **Out-of-Bounds Clamping Safety**: IDs $\le 0$, $> 110$, or non-numeric clamp safely per `utils.ts` without throwing exceptions.
+- `T2.B1.1` **Missing Subtitle Fallback**: Guards against `undefined` or `null` text.
+- `T2.B1.2` **Empty Dialogues Safety**: Safe navigation when scenes have no dialogue lines.
+- `T2.B2.1` **Rapid Skipping Speech Flush**: Cancels prior speech synthesis utterances immediately on skip.
+- `T2.B2.2` **Progress Timer Isolation**: Interval timers cleanly cleared on scene change and unmount.
+- `T2.B2.3` **Scene Index Clamping**: Index strictly clamped to $[0, \text{totalScenes} - 1]$.
+- `T2.B3.1` **AudioContext Resume Rejection**: Autoplay policy blocks caught without unhandled rejection.
+- `T2.B3.2` **User Gesture Retry**: Re-attempts audio initialization upon user interaction.
+- `T2.B4.1` **44px+ Touch Target Compliance**: Interactive controls meet mobile touch target standards ($\ge 44$px).
+- `T2.B4.2` **Subtitle Line Wrapping**: Subtitles wrap cleanly on narrow mobile viewports without clipping.
+- `T2.B5.1` **Episode Number Clamping**: Episode selection parameters strictly clamped to $[1, 40]$.
 
 ---
 
-### Tier 3: Cross-Feature Combinations & Sprite Coordinate Alignment (Pairwise Coverage)
+### Tier 3: Cross-Feature Combinations & State Machine (8 Tests)
 
-- **T3.F6.1 Exhaustive Coordinate Formula Parity (`cards1`/`cards2`)**:
-  - For every $id \in [1, 110]$, verify `col`, `row`, `xPercent`, `yPercent` calculated by `getCardSpriteCoords` match formula:
-    $$\text{idx} = id \le 100 \ ? \ (id - 1) : (id - 101), \quad \text{col} = \text{idx} \% 10, \quad \text{row} = \lfloor\text{idx} / 10\rfloor$$
-- **T3.F6.2 Exhaustive Coordinate Formula Parity (`card100.png` 10x11 Grid)**:
-  - For every $id \in [1, 110]$, verify `col = (id - 1) % 10`, `row = Math.floor((id - 1) / 10)`, `yPercent = row * 10%`.
-- **T3.F6.3 Faction Horizontal Placement Mapping**:
-  - Card $id$ maps to faction $\lfloor(id - 1) / 10\rfloor$ at horizontal offset $x = ((id - 1) \% 10) \times 256$ px, $y = 0$.
-- **T3.F6.4 Pixel Synchronization: Faction Sheets vs Seat Portraits**:
-  - Crop cell $x \in [c \times 256, (c + 1) \times 256]$ from `character_sheet_{faction}.png` and compute visual correlation against `public/seat/{Card}.png` (threshold $\ge 0.70$).
-- **T3.F6.5 Pixel Correspondence: Master Sheets Cells vs Seat Portraits**:
-  - Crop cell $(c \times 100, r \times 100)$ from `cards1.png` / `cards2.png` and verify visual correspondence with scaled seat portrait.
-- **T3.F6.6 Sub-Pixel Margin Bleed Check**:
-  - Verify that cell bounding margins have zero bleed or overlapping artifacts from adjacent cards.
+- `T3.X1.1` **Cutscene to MP4 Mode Audio Isolation**: Halts procedural Web Audio and TTS to prevent double-audio echo.
+- `T3.X1.2` **MP4 Back to Cutscene Recovery**: Restores interactive player state without desynchronization.
+- `T3.X2.1` **CC State Decoupling**: Subtitle CC state (ON/OFF) preserved across language switches.
+- `T3.X2.2` **Reactive Subtitle Language Switch**: Active subtitles immediately update to newly selected language.
+- `T3.X3.1` **Rapid Scene Advancement TTS Cancellation**: Prior scene utterances flushed; only active scene spoken.
+- `T3.X4.1` **Continuous BGM Across Scenes**: Same-theme scene transitions do not restart audio oscillators.
+- `T3.X4.2` **Smooth Theme Cross-Fade**: Theme changes execute $\ge 0.5$s smooth cross-fade.
+- `T3.X5.1` **Fullscreen Z-Index Stacking**: Strict visual layering (canvas < portraits < subtitles < controls).
 
 ---
 
-### Tier 4: Real-World Scenarios & UI Simulation
+### Tier 4: Real-World Application Scenarios (6 Tests)
 
-- **T4.F1.1 CardItem Faction Surface Tint & Emblem Simulation**:
-  - Simulates dynamic type surface background classes across all 11 factions:
-    - Water (`bg-[#d9effc]`), Fire (`bg-[#fce1ce]`), Wind (`bg-[#e1f3ef]`), Earth (`bg-[#ebedc8]`)
-    - Human (`bg-[#f6edcf]`), Undead (`bg-[#ece0f4]`), Elf (`bg-[#e0efd6]`), Dwarf (`bg-[#efe2d1]`)
-    - Monster (`bg-[#e5ead4]`), Robot (`bg-[#e3e9ef]`), Dragon (`bg-[#f1def0]`)
-- **T4.F1.2 CardItem Rarity Hierarchy & Boss Apex Verification**:
-  - Simulates 50 Bronze, 32 Silver, and 28 Gold cards, confirming that all 11 Bosses at multiples of 10 occupy the Gold apex tier.
-- **T4.F1.3 CanvasCardRenderer Slicing Geometry Simulation**:
-  - Simulates `drawCardSprite` across 4 standard screen scales:
-    - Mini Icon (`32 x 32` px)
-    - Hand Card (`80 x 92` px)
-    - Board Slot (`120 x 140` px)
-    - Zoom / Inspection (`256 x 296` px)
-- **T4.F1.4 Image Fallback Priority Cascade Simulation**:
-  - Simulates fallback sequence: `customImage` $\to$ `processedImage` $\to$ `resolvedSkin` $\to$ `activeCard.imageUrl` $\to$ default sprite $\to$ individual portrait.
-- **T4.F1.5 Total Web Traffic Payload Audit & Reduction Benchmark**:
-  - Calculates total network payload across all 125 assets, benchmarking against the unoptimized baseline (~12.9 MB) and enforcing the $\le 10.11$ MB threshold.
+- `T4.S1.1` **End-to-End Episode Playthrough**: Full sequence playback to conclusion, firing `onEpisodeComplete`.
+- `T4.S1.2` **LocalStorage Reward Persistence**: Viewing reward (100 SNS) saved in `hero_movie_claimed_episodes`.
+- `T4.S2.1` **All 40 Streaming URLs Valid**: Every episode maps to `/videos/episodes/episode_XX.mp4`.
+- `T4.S2.2` **Formatted Download Filenames**: Download links format filename as `SNSHero_Episode_XX.mp4`.
+- `T4.S3.1` **40-Episode Catalog Progression**: All 40 episodes unlocked in `MOVIE_EPISODES` with complete metadata.
+- `T4.S4.1` **SpeechSynthesis/WebAudio Resiliency**: Graceful visual playback when browser lacks Web Speech/Audio.
 
 ---
 
-## 3. Automated Test Runner (`tests/e2e_character_assets/runner.py`)
+## 3. Test Runner CLI & Execution Guide
 
-The test harness is implemented in Python 3 (using Pillow) for high-speed, headless, deterministic execution:
-
-### Invocations
+### Autonomous Python 3 Runner
 
 ```bash
-# Execute entire E2E test suite across all 4 tiers
-python3 tests/e2e_character_assets/runner.py
+# Full Verification across all 4 Tiers (59 Assertions)
+python3 tests/e2e_movie_theater/run_movie_e2e_tests.py
 
-# Execute specific tier
-python3 tests/e2e_character_assets/runner.py --tier 1
-python3 tests/e2e_character_assets/runner.py --tier 2
-python3 tests/e2e_character_assets/runner.py --tier 3
-python3 tests/e2e_character_assets/runner.py --tier 4
+# Tier-Specific Invocations
+python3 tests/e2e_movie_theater/run_movie_e2e_tests.py --tier 1   # Feature Coverage & Asset Integrity
+python3 tests/e2e_movie_theater/run_movie_e2e_tests.py --tier 2   # Boundary & Corner Cases
+python3 tests/e2e_movie_theater/run_movie_e2e_tests.py --tier 3   # Cross-Feature Combinations
+python3 tests/e2e_movie_theater/run_movie_e2e_tests.py --tier 4   # Real-World Scenarios
 
-# Detailed verbose logging (outputs per-card metrics and coordinates)
-python3 tests/e2e_character_assets/runner.py --verbose
+# Progressive Milestone Filtering
+python3 tests/e2e_movie_theater/run_movie_e2e_tests.py --milestone E2E  # 100% PASS on current cutscenes/baseline
+python3 tests/e2e_movie_theater/run_movie_e2e_tests.py --milestone M1   # Milestone 1 Scope (Player, Audio, Subtitles)
+python3 tests/e2e_movie_theater/run_movie_e2e_tests.py --milestone M2   # Milestone 2 Scope (MP4 Generation, Download)
 
-# Machine-readable JSON output (for CI/CD pipelines)
-python3 tests/e2e_character_assets/runner.py --json
+# Feature Keyword Filtering
+python3 tests/e2e_movie_theater/run_movie_e2e_tests.py --feature cutscenes
+python3 tests/e2e_movie_theater/run_movie_e2e_tests.py --feature bgm
+python3 tests/e2e_movie_theater/run_movie_e2e_tests.py --feature mp4
 
-# Baseline audit mode (exits with code 0 even if assertions fail)
-python3 tests/e2e_character_assets/runner.py --allow-fail
+# Baseline Audit Mode (exits with code 0 even if pending milestone features fail)
+python3 tests/e2e_movie_theater/run_movie_e2e_tests.py --allow-fail
+
+# Machine-Readable JSON Output
+python3 tests/e2e_movie_theater/run_movie_e2e_tests.py --json
 ```
 
-### Exit Codes
-- `0`: All executed test assertions passed 100%.
-- `1`: One or more test assertions failed (unmet milestone requirement or regression detected).
+### Exit Code Semantics
+- `0`: All assertions in scope passed 100% (or `--allow-fail` specified).
+- `1`: One or more assertions failed (indicates unmet milestone requirements or regressions).
 
 ---
 
-## 4. Requirement Verification & Baseline Matrix
+## 4. Coverage Thresholds & Quality Gates
 
-| Test ID | Scope | Requirement & Target Threshold | Verification Method | Current Baseline Status |
-|---|---|---|---|---|
-| **T1.F2.1** | `public/seat/*.png` | All 110 portrait files exist | `tier1_feature_coverage.py` | **PASS** (110/110 found) |
-| **T1.F2.2** | `public/seat/*.png` | All 110 portrait files decode cleanly | `tier1_feature_coverage.py` | **PASS** (110/110 valid) |
-| **T1.F2.3** | `public/seat/*.png` | Exact 256x296 dimensions | `tier1_feature_coverage.py` | **PASS** (110/110 matched) |
-| **T1.F2.4** | `public/seat/*.png` | 110 distinct SHA-256 hashes | `tier1_feature_coverage.py` | **PASS** (110 unique hashes) |
-| **T1.F2.5** | `public/seat/*.png` | Zero blank/uniform images | `tier1_feature_coverage.py` | **PASS** (entropy $\ge 2.0$) |
-| **T1.F2.6** | `public/seat/*.png` | Alpha transparency preserved | `tier1_feature_coverage.py` | **PASS** (110/110 with alpha) |
-| **T1.F3.1–3** | `public/cards1.png` | Exists, valid PNG, exact 1000x1000 | `tier1_feature_coverage.py` | **PASS** |
-| **T1.F3.4–6** | `public/cards2.png` | Exists, valid PNG, exact 1000x1000 | `tier1_feature_coverage.py` | **PASS** |
-| **T1.F3.7** | `cards1.png` / `cards2.png` | Cell content populated & non-blank | `tier1_feature_coverage.py` | **PASS** |
-| **T1.F4.1–3** | `public/card100.png` | Exists, valid PNG, exact 1135x1315 | `tier1_feature_coverage.py` | **PASS** |
-| **T1.F4.4–7** | `card100_gemini.png` | Exists, genuine PNG (not JPEG), 1024x1024 RGBA | `tier1_feature_coverage.py` | **FAIL** (legacy JPEG, RGB mode) [Pending M2] |
-| **T1.F5.1–4** | `character_sheet_*.png` | All 11 sheets exist, decode, 2560x296, RGBA | `tier1_feature_coverage.py` | **FAIL** (3 sheets corrupt: fire, hobbit, mecha) [Pending M2] |
-| **T1.F5.5** | `character_sheet_*.png` | All 10 cells per sheet contain rich art | `tier1_feature_coverage.py` | **FAIL** (low entropy in legacy sheets) [Pending M2] |
-| **T2.F7.1–2** | `public/seat/*.png` | Size budget: 4 KB $\le$ file $\le$ 35 KB | `tier2_boundary_corner.py` | **PASS** (all 110 within budget) |
-| **T2.F7.3** | Master Sheets (4 files) | File size budget: each $\le$ 800 KB | `tier2_boundary_corner.py` | **FAIL** (2.0–2.8 MB bloated) [Pending M3] |
-| **T2.F7.4** | Faction Sheets (11 files) | File size budget: each $\le$ 300 KB | `tier2_boundary_corner.py` | **FAIL** (3 sheets $> 300$ KB) [Pending M3] |
-| **T2.F7.5** | Aggregate Assets | Total payload $\le 10.11$ MB | `tier2_boundary_corner.py` | **FAIL** (10.64 MB total) [Pending M3] |
-| **T2.F2.1** | `public/seat/*.png` | PNG 8-byte magic header (\x89PNG\r\n\x1a\n) | `tier2_boundary_corner.py` | **PASS** (110/110 valid) |
-| **T2.F2.2** | Master Sheets | PNG 8-byte magic header verification | `tier2_boundary_corner.py` | **FAIL** (card100_gemini has JPEG SOI) [Pending M2] |
-| **T2.F2.3** | Faction Sheets | PNG 8-byte magic header verification | `tier2_boundary_corner.py` | **FAIL** (fire, hobbit, mecha have \xef\xbf\xbd) [Pending M2] |
-| **T2.F2.4** | All Sheets | IHDR chunk structure validation | `tier2_boundary_corner.py` | **PASS** |
-| **T2.F6.1–5** | Coordinates & IDs | ID 100/101 boundary, ID 110, Rows 1-9, Bosses, OOB | `tier2_boundary_corner.py` | **PASS** (5/5 passed) |
-| **T3.F6.1–3** | Math Verification | cards1/cards2, card100, faction horizontal formulas | `tier3_coordinate_alignment.py` | **PASS** (3/3 passed) |
-| **T3.F6.4–5** | Pixel Synchronization | Faction & Master sheets cells vs Seat portraits | `tier3_coordinate_alignment.py` | **FAIL** (pending M2 sprite sheet assembly) |
-| **T3.F6.6** | Edge Bleeding | Zero inter-cell sub-pixel bleed | `tier3_coordinate_alignment.py` | **PASS** |
-| **T4.F1.1–4** | UI Simulation | 11 Factions, 4 Rarities, Canvas blitting, Fallback cascade | `tier4_real_world.py` | **PASS** (4/4 passed) |
-| **T4.F1.5** | Payload Audit | Total web traffic reduction benchmark | `tier4_real_world.py` | **FAIL** (pending M3 quantization) |
+| Metric | Target Threshold | Validation Mechanism |
+|---|---|---|
+| Cutscene Loadability | **100%** (2,049 / 2,049 files) | `T1.F1.1`–`T1.F1.5` |
+| MP4 Video Assets | **40 / 40 files** verified via `ffprobe` | `T1.F2.1`–`T1.F2.7` |
+| Video Codec | **H.264** (`avc1`), $\ge 20$ fps | `T1.F2.3` |
+| Audio Codec | **AAC**, $\ge 44.1$ kHz | `T1.F2.4` |
+| Faststart Optimization | **100%** (`moov` before `mdat`) | `T1.F2.6` |
+| Max Video Size | $\le 25$ MB per episode | `T1.F2.7` |
+| BGM Engine API | 5 methods, 6 themes | `T1.F3.1`–`T1.F3.5` |
+| English TTS | Voice matching, `narrationEn` binding | `T1.F4.1`–`T1.F4.4` |
+| Speaker Highlighting | `CARD_DATABASE` mapping, glowing frame | `T1.F5.1`–`T1.F5.4` |
+| Subtitle System | English / Localized dual mode, `[CC ON/OFF]` | `T1.F7.1`–`T1.F7.4` |
+| Mobile Touch Target | $\ge 44$px (`min-h-[44px]`) | `T2.B4.1` |
+| Catalog Unlock | **40 / 40 episodes** (0 blockers) | `T4.S3.1` |

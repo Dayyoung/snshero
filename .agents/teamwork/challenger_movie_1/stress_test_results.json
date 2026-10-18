@@ -1,0 +1,203 @@
+{
+  "summary": {
+    "totalTests": 25,
+    "passedTests": 19,
+    "failedTests": 6,
+    "passRate": "76.0"
+  },
+  "metrics": [
+    {
+      "name": "Rapid Scrubbing Speech Flush (No Utterance Leak)",
+      "category": "Scrubbing",
+      "pass": true,
+      "value": 1,
+      "threshold": 1,
+      "details": "Only final scene spoken after 50 rapid scrubs"
+    },
+    {
+      "name": "MovieAudioSynthesizer Clears Pending Speech Timeout",
+      "category": "Scrubbing",
+      "pass": false,
+      "value": "Unmanaged window.setTimeout in speakNarration",
+      "threshold": "Timeout ID Tracked",
+      "details": "VULNERABILITY: 30ms setTimeout in speakNarration lacks clearTimeout in stopNarration"
+    },
+    {
+      "name": "Scene Index Clamping [-999 .. 9999]",
+      "category": "Scrubbing",
+      "pass": true,
+      "value": "Clamped [0, totalScenes - 1]",
+      "details": "Clamped safely across 8 boundary inputs for 50 scenes"
+    },
+    {
+      "name": "Empty Scenes (0 Count) Progress Calculation Resilience",
+      "category": "Scrubbing",
+      "pass": true,
+      "value": 0,
+      "details": "Safe non-NaN result (0%)"
+    },
+    {
+      "name": "Rapid Episode Switch Final State Correctness",
+      "category": "EpisodeSwitch",
+      "pass": true,
+      "value": 40,
+      "details": "Final episode 40 matches last in sequence 40"
+    },
+    {
+      "name": "Rapid Episode Switch BGM Node Cleanup (Zero Node Leak)",
+      "category": "EpisodeSwitch",
+      "pass": true,
+      "value": {
+        "created": 40,
+        "stopped": 36,
+        "active": 4
+      },
+      "details": "Stopped 36/36 prior oscillators, 4 active for current episode"
+    },
+    {
+      "name": "All 40 Episodes Metadata Definition Complete",
+      "category": "EpisodeSwitch",
+      "pass": true,
+      "value": 40,
+      "details": "All 40 episodes have valid title, bgmTheme, and metadata"
+    },
+    {
+      "name": "Autoplay Policy Rejection Gracefully Caught (0 Unhandled Rejections)",
+      "category": "AudioAutoplay",
+      "pass": true,
+      "value": "NotAllowedError caught",
+      "details": "AudioContext suspension without user gesture caught cleanly"
+    },
+    {
+      "name": "User Gesture (Play Button) Successfully Resumes AudioContext",
+      "category": "AudioAutoplay",
+      "pass": true,
+      "value": "running",
+      "details": "AudioContext successfully resumed upon user gesture"
+    },
+    {
+      "name": "Unmute Button Resumes Suspended AudioContext",
+      "category": "AudioAutoplay",
+      "pass": true,
+      "value": "Resumes on Unmute",
+      "threshold": "Resumes on Unmute",
+      "details": "Unmuting triggers initAudio/resume"
+    },
+    {
+      "name": "CC State (ON) Preserved Across All 13 Supported Languages",
+      "category": "Subtitles",
+      "pass": true,
+      "value": "13/13",
+      "details": "CC toggle state remains invariant across language transitions"
+    },
+    {
+      "name": "English (UK) en-GB Subtitle Language Mapping Exactness",
+      "category": "Subtitles",
+      "pass": false,
+      "value": "language === 'en' checks exact match only ('en-GB' falls back to 'ko')",
+      "threshold": "en-GB mapped to English",
+      "details": "BUG DETECTED: 'en-GB' user gets Korean subtitles because equality check fails"
+    },
+    {
+      "name": "Zero Undefined Subtitle Text Across All 13 Languages",
+      "category": "Subtitles",
+      "pass": true,
+      "value": "100% Valid Strings",
+      "details": "All languages produce valid non-empty subtitle strings"
+    },
+    {
+      "name": "Scene Index Preservation on Language Switch (Mid-Episode)",
+      "category": "Subtitles",
+      "pass": false,
+      "value": "Resets to Scene 0 on Language Change",
+      "threshold": "Preserves current scene index",
+      "details": "BEHAVIORAL FLAW: Switching language mid-episode resets player to Scene 0"
+    },
+    {
+      "name": "Empty Narration Duration Floor (>= 4.5s)",
+      "category": "SceneDuration",
+      "pass": true,
+      "value": "4.5s",
+      "details": "Clamped to minimum 4.5s floor"
+    },
+    {
+      "name": "1-Word Narration Duration Floor (>= 4.5s)",
+      "category": "SceneDuration",
+      "pass": true,
+      "value": "4.5s",
+      "details": "3.2 + 1*0.38 = 3.58s clamped up to 4.5s"
+    },
+    {
+      "name": "25-Word Narration Duration (Dynamic Scaling)",
+      "category": "SceneDuration",
+      "pass": true,
+      "value": "11.56s",
+      "details": "Scales smoothly with word count"
+    },
+    {
+      "name": "100+ Word Narration Duration Ceiling (<= 14.0s)",
+      "category": "SceneDuration",
+      "pass": true,
+      "value": "14s",
+      "details": "Clamped to maximum 14.0s ceiling"
+    },
+    {
+      "name": "Manifest Word Count Audit (2,049 Cutscenes)",
+      "category": "SceneDuration",
+      "pass": false,
+      "value": {
+        "maxWords": 126,
+        "maxScene": "Ep 2 Scene 8: 126 words",
+        "scenesOver28Words": 1218
+      },
+      "details": "Max words: 126 (Ep 2 Scene 8: 126 words). 1218 scenes exceed 28 words"
+    },
+    {
+      "name": "Card IDs 1..110 Portrait Resolution on Disk",
+      "category": "Portraits",
+      "pass": true,
+      "value": "110/110",
+      "details": "All 110 CARD_DATABASE IDs resolve to existing files in public/seat/"
+    },
+    {
+      "name": "Out of Bounds Card IDs (0, -1, 111, 999, NaN) Fallback to Speaker",
+      "category": "Portraits",
+      "pass": true,
+      "value": "Resolved to Kadan.png",
+      "details": "Gracefully bypasses missing card ID and resolves speaker name"
+    },
+    {
+      "name": "Unmapped Character Fallback Behavior",
+      "category": "Portraits",
+      "pass": true,
+      "value": "/seat/CompletelyUnknownWanderer.png",
+      "details": "Generates direct seat path (browser onError hides broken image)"
+    },
+    {
+      "name": "Path Traversal Immunity in Portrait Resolution",
+      "category": "Portraits",
+      "pass": false,
+      "value": "Path escape detected",
+      "details": "Replaces spaces but allows slash in input"
+    },
+    {
+      "name": "Special Character Slash Sanitization in Portrait Filenames",
+      "category": "Portraits",
+      "pass": false,
+      "value": "Contains unescaped slash (/seat/Kadan_/_Shadow.png)",
+      "threshold": "Sanitized",
+      "details": "CAVEAT: Slashes in speaker names create nested subpath in URL"
+    },
+    {
+      "name": "Manifest Dialogue Speakers Portrait Resolution on Disk",
+      "category": "Portraits",
+      "pass": true,
+      "value": {
+        "totalSpeakers": 27,
+        "missingCount": 0,
+        "missing": []
+      },
+      "details": "All dialogue speakers resolve to physical seat images"
+    }
+  ]
+}

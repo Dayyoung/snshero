@@ -168,3 +168,67 @@ Optimize all 840 generated webtoon scene images in `public/images/webtoon/` usin
 IMPORTANT RESOURCE FOR SCENE SYNTHESIS:
 16 newly generated Gemini Nano Banana Korean fantasy webtoon environment background plates (`800x450` px) have been prepared at `/tmp/webtoon_bg_plates/bg_01.jpg` through `/tmp/webtoon_bg_plates/bg_16.jpg` (covering Arc 1 to Arc 4: blizzards, taverns, frozen canyons, subterranean bell halls, crimson plains, elf sanctuaries, shadow battlements, ocean temples, volcanic citadels, undead necropolises, sky colosseums, mecha foundries, dragon spires, throne rooms, abyssal rifts, and dawn over Lighthaven).
 Please pass this path (`/tmp/webtoon_bg_plates/bg_01.jpg`..`bg_16.jpg`) to your orchestrator and workers so they can use these genuine Gemini Nano Banana backgrounds as base environment layers combined with the newly remastered V2 110 hero portraits in `public/seat/*.png` when generating all 840 webtoon scene panels (`public/images/webtoon/`)!
+
+## 2026-10-18T06:00:31Z
+
+Upgrade the SNSHero Movie Theater (`MovieView.tsx` and `CinematicMoviePlayer.tsx`) across all 40 episodes using the newly expanded 2,049 webtoon cutscenes (`public/images/webtoon/episode_01~40/scene_00~XX.webp`), featuring continuous episode BGM on play, English-base cutscene display with English TTS voiceover, English dialogue overlays with highlighted speaking character portraits, animated combat onomatopoeia (SFX) overlays, generated per-episode `.mp4` video files (`episode_01.mp4`–`episode_40.mp4`), and a multi-language subtitle system (showing the viewer's selected language, or English for English users) with an ON/OFF toggle.
+
+Working directory: /Users/dayyoung/project/snshero
+Integrity mode: development
+
+## Context & Reference Material
+- Webtoon cutscene manifest & assets (40 episodes, 2,049 total scenes):
+  - `src/content/webtoonEpisodeManifest.json` (`episode_01` to `episode_40`, each containing `scene_00.webp` title card + `scene_01.webp`..`scene_XX.webp` 2–3 line cutscenes)
+  - `public/book/image_narrations/episode_01_narrations.json` through `episode_40_narrations.json`
+  - Remastered V2 hero character portraits: `public/seat/*.png` (110 heroes) and `src/cardDatabase.ts`
+- Movie player & audio components:
+  - `src/views/MovieView.tsx`
+  - `src/components/movie/CinematicMoviePlayer.tsx`
+  - `src/lib/MovieAudioSynthesizer.ts`
+  - `src/content/movieEpisodeMapping.ts`
+- System tool available: `/opt/homebrew/bin/ffmpeg` (FFmpeg 8.0.1 with `libx264`, `aac`, `drawtext`, filtergraph support)
+
+## Requirements
+
+### R1. Updated Webtoon Cutscene Integration & Continuous Episode BGM on Play
+Update the Movie Theater (`CinematicMoviePlayer.tsx` and `MovieView.tsx`) so every episode (Episodes 1–40) plays through all of its newly generated webtoon cutscenes (`scene_00.webp` through `scene_XX.webp` from `webtoonEpisodeManifest.json`). Ensure that pressing Play reliably initializes/resumes the Web Audio synthesizer (`MovieAudioSynthesizer.ts`) and plays rich, continuous episode-matched background music (BGM) throughout the entire movie playback (and across scene transitions without cutting out), as well as embedding synthesized thematic BGM audio into the generated MP4 video files.
+
+### R2. English-Base Cutscene Display, English TTS Narration & Highlighted Character Dialogue
+Render the movie cutscene presentation on an **English version base**:
+1. **English TTS Voiceover**: Always read each cutscene's English narration (`narrationEn` and English dialogue lines) aloud using English TTS (`en-US` / `en-GB` SpeechSynthesis voiceover) when TTS is enabled, regardless of the user's UI language.
+2. **English Dialogue Overlay & Speaking Character Highlight**: Display the cutscene's spoken dialogue in English (`textEn`, `speakerEn`) on the movie stage, and visually highlight the speaking character by rendering their remastered portrait (`public/seat/*.png` mapped via `characterCardId` or character name) with an active glowing speaking frame, aura pulse, and speaker badge while dimming non-speaking characters.
+3. **Combat Onomatopoeia (SFX) Visuals**: During combat and action cutscenes, prominently display animated comic/webtoon sound effects (`sfxCues`, e.g., `CLANG! / 챙-!`, `SLASH! / 서걱-!`, `BOOM! / 콰아아앙!`, `CRACKLE! / 파지지직!`, `RUMBLE! / 쿠구구궁!`) on the movie canvas/stage alongside procedural combat audio SFX.
+
+### R3. Per-Episode MP4 Video Generation Across All 40 Episodes
+Combine all cutscenes for each episode (Episodes 1–40) into standalone per-episode `.mp4` video files (`public/videos/episodes/episode_01.mp4` through `public/videos/episodes/episode_40.mp4`) using `ffmpeg`:
+- Each episode MP4 must include all cutscenes (`scene_00.webp`..`scene_XX.webp`) of that episode in sequence, burned-in or overlaid English cutscene presentation/SFX styling, and an embedded procedural/synthesized episode BGM audio track (`aac`).
+- Optimize encoding (`libx264 -pix_fmt yuv420p -movflags +faststart`) so every `.mp4` plays natively in all desktop/mobile browsers and remains compact in file size.
+- Integrate MP4 playback & download support directly into `CinematicMoviePlayer.tsx` / `MovieView.tsx` so users can seamlessly play either the interactive English TTS+Cutscene theater or the rendered `.mp4` video stream (with synchronized subtitles and BGM) and download any episode's `.mp4`.
+
+### R4. Multi-Language Subtitle System & Subtitle ON/OFF Toggle
+Provide a synchronized subtitle overlay in the movie player (working in both Interactive Cutscene Mode and MP4 Video Mode):
+- When the user's selected app language is **English (`en`)**, display **English subtitles** (`narrationEn` / `textEn`).
+- When the user watches in **any other language** (`ko` Korean, `ja` Japanese, `zh-CN`, `zh-TW`, `de`, `es`, `fr`, `id`, `ru`, `th`, `vi`), display subtitles in **that selected language** (using `narrationKo` / `textKo` for Korean and localized/translated episode subtitle tracks for the supported languages).
+- Provide an intuitive **Subtitle ON/OFF toggle button (`CC / 자막 ON·OFF`)** in the player control bar so the user can turn subtitles on or off at any time.
+
+### R5. Build Integrity, Local Commit & Mandatory Google Form Report
+- Ensure `npm run lint` (`tsc --noEmit`) and `npm run build` pass with 0 errors.
+- Commit all changes locally (`git commit` without `git push`), log in `WORK_LOGS.md`, and submit the mandatory completion report via `skills/report-ex/scripts/submit_report.py`.
+
+## Acceptance Criteria
+
+### Per-Episode MP4 Video Assets (40 Files)
+- [ ] All 40 MP4 files `public/videos/episodes/episode_01.mp4` through `public/videos/episodes/episode_40.mp4` exist, are valid H.264/AAC MP4 containers verified via `ffprobe`, contain both a video stream (spanning the episode's cutscenes) and an audio stream (BGM), and have non-zero duration and web-optimized file sizes.
+
+### English Cutscene Base, English TTS, Character Highlight & Combat SFX
+- [ ] `CinematicMoviePlayer.tsx` loads all cutscenes from `webtoonEpisodeManifest.json` for Episodes 1–40, plays continuous episode BGM when Play is pressed, and speaks `narrationEn` using English TTS (`en-US`/`en-GB`).
+- [ ] Cutscene dialogues are displayed in English (`textEn` / `speakerEn`) with a highlighted speaking character portrait (`public/seat/*.png`) and glowing active speaker indicator.
+- [ ] Combat/action cutscenes render visual onomatopoeia (`sfxCues`) overlays on screen synchronized with combat audio SFX.
+
+### Multi-Language Subtitles & ON/OFF Toggle
+- [ ] When `language === 'en'`, subtitles display in English; when `language === 'ko'` (or another supported language), subtitles display in that language while the cutscene presentation and TTS voiceover remain in English.
+- [ ] Clicking the Subtitle ON/OFF toggle button (`CC / 자막 ON·OFF`) cleanly hides or shows the subtitle overlay in both Cutscene and MP4 playback modes.
+
+### Build & Project Hygiene
+- [ ] `npm run lint` and `npm run build` succeed with exit code 0.
+- [ ] Changes are committed locally (`git commit` without `git push`), logged in `WORK_LOGS.md`, and reported via `skills/report-ex/scripts/submit_report.py`.

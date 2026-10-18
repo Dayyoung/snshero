@@ -592,300 +592,262 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
       ref={containerRef}
       onMouseMove={resetControlsTimeout}
       onTouchStart={resetControlsTimeout}
-      className={`relative w-full overflow-hidden bg-black font-mono select-none ${
-        isFullscreen ? 'fixed inset-0 z-50 h-screen w-screen' : 'aspect-video min-h-[380px] max-h-[82vh] rounded-none border border-white/10 shadow-2xl'
+      className={`flex flex-col w-full overflow-hidden bg-[#0e0c0c] font-mono select-none ${
+        isFullscreen ? 'fixed inset-0 z-50 h-[100dvh] w-screen justify-between' : 'rounded-none border border-white/15 shadow-2xl'
       }`}
     >
-      {/* 1. KEN BURNS MULTI-PLANE MOTION STAGE */}
-      <div className="absolute inset-0 flex items-center justify-center overflow-hidden bg-black">
-        <img
-          key={`${episodeNumber}_scene_${currentSceneIdx}`}
-          src={currentScene?.imageUrl}
-          alt={`Scene ${currentSceneIdx + 1}`}
-          style={getCameraStyle()}
-          className={`h-full w-full object-cover will-change-transform ${
-            currentScene?.cameraMotion === 'shake' && isPlaying ? 'animate-pulse' : ''
-          }`}
-          onError={(e) => {
-            // Graceful fallback to dark atmospheric poster
-            (e.target as HTMLImageElement).src =
-              '/images/webtoon/episode_01/scene_00.webp';
-          }}
-        />
-
-        {/* Cinematic Vignette & Lighting Gradient */}
-        <div className="pointer-events-none absolute inset-0 bg-radial-[circle_at_center,transparent_40%,rgba(0,0,0,0.7)_100%]" />
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/80 via-black/30 to-transparent" />
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black/95 via-black/60 to-transparent" />
-      </div>
-
-      {/* 2. HTML5 PARTICLE VFX CANVAS OVERLAY */}
-      <MovieVfxCanvas vfxType={currentScene?.vfxType || 'none'} intensity={1.1} />
-
-      {/* 2.5 ANIMATED COMBAT ONOMATOPOEIA (SFX) OVERLAY */}
-      {currentScene?.sfxCues && currentScene.sfxCues.length > 0 && !isCompleted && (
-        <div className="absolute inset-0 pointer-events-none z-25 overflow-hidden">
-          {currentScene.sfxCues.map((sfx, idx) => {
-            const positionClass = {
-              'center': 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
-              'top-right': 'top-14 right-6 sm:right-12',
-              'top-left': 'top-14 left-6 sm:left-12',
-              'bottom-right': 'bottom-24 right-6 sm:right-12',
-              'bottom-left': 'bottom-24 left-6 sm:left-12',
-            }[sfx.position || 'center'];
-
-            const styleClass = {
-              slash: 'text-red-500 italic -rotate-12 border-red-500/80 drop-shadow-[0_4px_16px_rgba(239,68,68,0.9)] scale-110',
-              impact: 'text-amber-400 rotate-6 border-amber-400/80 drop-shadow-[0_4px_16px_rgba(251,191,36,0.9)] scale-125',
-              magic: 'text-cyan-400 -rotate-3 border-cyan-400/80 drop-shadow-[0_4px_16px_rgba(6,182,212,0.9)] scale-110',
-              rumble: 'text-stone-300 rotate-1 border-stone-400/80 drop-shadow-[0_4px_16px_rgba(214,211,209,0.9)] scale-105',
-            }[sfx.style || 'impact'];
-
-            return (
-              <div
-                key={`${currentSceneIdx}_sfx_${idx}`}
-                className={`absolute font-mono font-black select-none pointer-events-auto cursor-pointer ${positionClass} animate-in zoom-in-75 duration-200`}
-                onClick={() => {
-                  if (sfx.style === 'slash') movieAudio.playSfx('sword-strike');
-                  else if (sfx.style === 'magic') movieAudio.playSfx('magic-cast');
-                  else if (sfx.style === 'impact') movieAudio.playSfx('thunder-impact');
-                  else movieAudio.playSfx('shield-block');
-                }}
-                title="Click to replay SFX"
-              >
-                <div className={`px-4 py-1.5 bg-black/85 rounded-none border-2 backdrop-blur-sm text-2xl md:text-4xl tracking-widest ${styleClass}`}>
-                  <span>{sfx.textEn}</span>
-                  <span className="block text-[11px] font-medium text-stone-300 tracking-normal text-center mt-0.5">
-                    {sfx.textKo}
-                  </span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
-
-      {/* 2.6 ACTIVE CHARACTER PORTRAIT DOCK & STAGE DIALOGUE */}
-      {sceneCharacterNames.length > 0 && !isCompleted && (
-        <div className="absolute bottom-24 sm:bottom-28 left-3 sm:left-6 z-20 flex flex-col gap-2 pointer-events-none max-w-[85vw] sm:max-w-md">
-          {/* Floating English Dialogue Speech Box on the stage */}
-          {activeSpeakerDialogue && (
-            <div className="flex items-center gap-2 rounded-sm border border-amber-400/80 bg-black/85 px-3 py-1.5 backdrop-blur-md shadow-xl animate-in fade-in duration-200">
-              <div className="flex flex-col">
-                <div className="flex items-center gap-1.5 text-xs font-black text-amber-400">
-                  <span>[{activeSpeakerDialogue.speakerEn || activeSpeakerDialogue.speaker}]</span>
-                  {activeSpeakerDialogue.bubbleType && (
-                    <span className="text-[10px] uppercase text-stone-400">({activeSpeakerDialogue.bubbleType})</span>
-                  )}
-                </div>
-                <p className="text-xs sm:text-sm font-semibold text-white leading-snug">
-                  "{activeSpeakerDialogue.textEn || activeSpeakerDialogue.text}"
-                </p>
-              </div>
-            </div>
-          )}
-
-          {/* Character Portraits Dock */}
-          <div className="flex items-end gap-2 overflow-x-auto py-1">
-            {sceneCharacterNames.map((charName) => {
-              const isSpeaking = activeSpeakerName
-                ? charName.toLowerCase() === activeSpeakerName
-                : false;
-              const portraitUrl = getCharacterPortraitUrl(
-                isSpeaking ? activeSpeakerCardId : undefined,
-                charName
-              );
-
-              return (
-                <div
-                  key={charName}
-                  className={`relative transition-all duration-300 shrink-0 ${
-                    isSpeaking
-                      ? 'scale-110 z-10 translate-y-[-4px]'
-                      : 'scale-90 opacity-45 grayscale-40 brightness-75 z-0'
-                  }`}
-                >
-                  <div
-                    className={`h-16 w-14 sm:h-20 sm:w-16 overflow-hidden rounded-none border ${
-                      isSpeaking
-                        ? 'border-2 border-amber-400 ring-4 ring-amber-400/40 shadow-[0_0_18px_rgba(251,191,36,0.8)] bg-amber-950/40'
-                        : 'border-stone-700 bg-stone-900/70'
-                    }`}
-                  >
-                    <img
-                      src={portraitUrl}
-                      alt={charName}
-                      className="h-full w-full object-cover object-top"
-                      onError={(e) => {
-                        (e.target as HTMLElement).style.display = 'none';
-                      }}
-                    />
-                  </div>
-
-                  {/* Active Speaker Badge & Aura Pulse */}
-                  {isSpeaking && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap">
-                      <span className="flex items-center gap-1 rounded-none bg-amber-400 px-1.5 py-0.5 font-mono text-[9px] font-black uppercase tracking-wider text-black shadow-md animate-pulse">
-                        <span className="h-1.5 w-1.5 rounded-full bg-red-600 animate-ping" />
-                        {charName}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* 3. FLOATING THEATRICAL HEADER (Title & Badges) */}
-      <div
-        className={`absolute top-0 inset-x-0 z-20 flex items-center justify-between p-3 md:p-4 transition-opacity duration-300 ${
-          showControls ? 'opacity-100' : 'opacity-0 pointer-events-none'
-        }`}
-      >
-        <div className="flex items-center gap-2">
-          <span className="flex items-center gap-1.5 rounded-sm bg-amber-500/90 px-2 py-1 text-xs font-semibold tracking-wider text-black">
-            <Film size={13} />
+      {/* 1. TOP THEATRICAL HEADER BAR (Placed cleanly above the video canvas) */}
+      <div className="flex items-center justify-between px-3 py-2 bg-[#141212] border-b border-white/10 shrink-0">
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="flex items-center gap-1 rounded-sm bg-amber-500 px-2 py-0.5 text-[11px] font-bold tracking-wider text-black shrink-0">
+            <Film size={12} />
             EP.{String(episodeNumber).padStart(2, '0')}
           </span>
-          <div className="flex flex-col">
-            <h2 className="text-sm md:text-base font-bold text-white tracking-wide truncate max-w-[240px] md:max-w-md">
+          <div className="flex flex-col min-w-0">
+            <h2 className="text-xs sm:text-sm font-bold text-white tracking-wide truncate">
               {language === 'en' ? titleEn : titleKo}
             </h2>
-            <span className="text-[11px] text-stone-400 truncate hidden sm:inline">
+            <span className="text-[10px] text-stone-400 truncate hidden sm:inline">
               {language === 'en' ? titleKo : titleEn}
             </span>
           </div>
         </div>
 
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1.5 shrink-0">
           {/* Active VFX Indicator Badge */}
-          <span className="hidden sm:flex items-center gap-1 rounded-sm border border-white/20 bg-black/60 px-2 py-1 text-[11px] text-amber-300">
-            {currentScene?.vfxType === 'snow' && <CloudSnow size={12} />}
-            {currentScene?.vfxType === 'embers' && <Flame size={12} />}
-            {currentScene?.vfxType === 'runes' && <Sparkles size={12} />}
-            {currentScene?.vfxType === 'slash' && <Sword size={12} />}
+          <span className="hidden sm:flex items-center gap-1 rounded-sm border border-white/20 bg-black/60 px-2 py-1 text-[10px] text-amber-300">
+            {currentScene?.vfxType === 'snow' && <CloudSnow size={11} />}
+            {currentScene?.vfxType === 'embers' && <Flame size={11} />}
+            {currentScene?.vfxType === 'runes' && <Sparkles size={11} />}
+            {currentScene?.vfxType === 'slash' && <Sword size={11} />}
             {currentScene?.vfxType?.toUpperCase()}
           </span>
 
           {/* Fullscreen Button */}
           <button
             onClick={toggleFullscreen}
-            className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-sm border border-white/20 bg-black/70 text-white hover:bg-white/20 transition-colors"
+            className="flex min-h-[40px] min-w-[40px] sm:min-h-[44px] sm:min-w-[44px] items-center justify-center rounded-sm border border-white/20 bg-black/70 text-white hover:bg-white/20 transition-colors"
             title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
           >
-            {isFullscreen ? <Minimize size={18} /> : <Maximize size={18} />}
+            {isFullscreen ? <Minimize size={16} /> : <Maximize size={16} />}
           </button>
 
           {/* Close Button (if provided) */}
           {onClose && (
             <button
               onClick={onClose}
-              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-sm border border-white/20 bg-black/70 text-white hover:bg-red-600 transition-colors"
+              className="flex min-h-[40px] min-w-[40px] sm:min-h-[44px] sm:min-w-[44px] items-center justify-center rounded-sm border border-white/20 bg-black/70 text-white hover:bg-red-600 transition-colors"
               title="Close Player"
             >
-              <X size={18} />
+              <X size={16} />
             </button>
           )}
         </div>
       </div>
 
-      {/* 4. THEATRICAL SUBTITLE OVERLAY */}
-      {isCcEnabled && subtitleMode !== 'off' && !isCompleted && (
-        <div className="absolute bottom-16 md:bottom-20 inset-x-2 md:inset-x-8 z-20 flex flex-col items-center pointer-events-none">
-          <div className="max-w-4xl rounded-sm border border-white/10 bg-black/85 px-4 py-2.5 backdrop-blur-md text-center shadow-lg transition-all duration-200">
-            {/* Dialogue Speaker Tag if present */}
-            {currentScene?.dialogues && currentScene.dialogues.length > 0 && (
-              <div className="mb-1 flex items-center justify-center gap-1 text-xs font-bold text-amber-400">
-                <span>
-                  [{' '}
-                  {language === 'en'
-                    ? (currentScene.dialogues[0].speakerEn || currentScene.dialogues[0].speaker)
-                    : (currentScene.dialogues[0].speakerKo || currentScene.dialogues[0].speaker)}{' '}
-                  ]
-                </span>
-              </div>
-            )}
+      {/* 2. UNOBSTRUCTED 16:9 KEN BURNS MOTION STAGE */}
+      <div className={`relative w-full overflow-hidden bg-black ${isFullscreen ? 'flex-1 min-h-0' : 'aspect-video'}`}>
+        <div className="absolute inset-0 flex items-center justify-center overflow-hidden bg-black">
+          <img
+            key={`${episodeNumber}_scene_${currentSceneIdx}`}
+            src={currentScene?.imageUrl}
+            alt={`Scene ${currentSceneIdx + 1}`}
+            style={getCameraStyle()}
+            className={`h-full w-full object-contain sm:object-cover will-change-transform ${
+              currentScene?.cameraMotion === 'shake' && isPlaying ? 'animate-pulse' : ''
+            }`}
+            onError={(e) => {
+              (e.target as HTMLImageElement).src =
+                '/images/webtoon/episode_01/scene_00.webp';
+            }}
+          />
 
-            {/* Primary Language Subtitle */}
-            <p className="text-sm md:text-base font-medium text-white leading-relaxed tracking-wide">
+          {/* Subtle Cinematic Edge Vignette Only (No heavy dark bottom curtain blocking art) */}
+          <div className="pointer-events-none absolute inset-0 bg-radial-[circle_at_center,transparent_65%,rgba(0,0,0,0.45)_100%]" />
+        </div>
+
+        {/* HTML5 PARTICLE VFX CANVAS OVERLAY */}
+        <MovieVfxCanvas vfxType={currentScene?.vfxType || 'none'} intensity={0.9} />
+
+        {/* COMPACT NON-INTRUSIVE CORNER COMBAT SFX BADGE (Top-Right Corner Only) */}
+        {currentScene?.sfxCues && currentScene.sfxCues.length > 0 && !isCompleted && (
+          <div className="absolute top-2 right-2 z-20 flex flex-col items-end gap-1 pointer-events-none">
+            {currentScene.sfxCues.slice(0, 1).map((sfx, idx) => {
+              const styleClass = {
+                slash: 'text-red-400 border-red-500/70',
+                impact: 'text-amber-300 border-amber-400/70',
+                magic: 'text-cyan-300 border-cyan-400/70',
+                rumble: 'text-stone-200 border-stone-400/70',
+              }[sfx.style || 'impact'];
+
+              return (
+                <div
+                  key={`${currentSceneIdx}_sfx_${idx}`}
+                  className="pointer-events-auto cursor-pointer select-none animate-in zoom-in-90 duration-150"
+                  onClick={() => {
+                    if (sfx.style === 'slash') movieAudio.playSfx('sword-strike');
+                    else if (sfx.style === 'magic') movieAudio.playSfx('magic-cast');
+                    else if (sfx.style === 'impact') movieAudio.playSfx('thunder-impact');
+                    else movieAudio.playSfx('shield-block');
+                  }}
+                  title="Click to replay SFX"
+                >
+                  <div className={`px-2 py-0.5 bg-black/65 rounded-none border backdrop-blur-xs font-mono font-black text-xs sm:text-sm tracking-wider flex items-center gap-1.5 ${styleClass}`}>
+                    <span>{sfx.textEn}</span>
+                    <span className="text-[10px] font-normal text-stone-300">
+                      ({sfx.textKo})
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* EPISODE COMPLETION CELEBRATION MODAL */}
+        {isCompleted && (
+          <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/90 p-4 sm:p-6 text-center backdrop-blur-md">
+            <div className="flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-sm border border-emerald-500/40 bg-emerald-950/60 text-emerald-400 mb-3">
+              <CheckCircle2 size={30} />
+            </div>
+
+            <span className="text-[11px] uppercase tracking-widest text-amber-400 mb-1">
+              Episode Completed
+            </span>
+            <h3 className="text-lg sm:text-2xl font-bold text-white mb-1.5">
+              제 {episodeNumber}화 상영 완료!
+            </h3>
+            <p className="text-xs sm:text-sm text-stone-300 max-w-md mb-4 leading-relaxed">
               {language === 'en'
-                ? (currentScene?.dialogues?.[0]?.textEn || currentScene?.narrationEn)
-                : (currentScene?.dialogues?.[0]?.textKo || currentScene?.narrationKo)}
+                ? `You have experienced the full ${scenes.length}-scene cinematic adaptation of Episode ${episodeNumber}: ${titleEn}.`
+                : `제 ${episodeNumber}화: ${titleKo}의 전편 ${scenes.length}씬 시네마틱 상영을 모두 감상하셨습니다!`}
             </p>
 
-            {/* Secondary Language Subtitle (Dual Mode) */}
-            {subtitleMode === 'dual' && (
-              <p className="mt-1 text-xs text-stone-400 leading-normal tracking-tight">
-                {language === 'en'
-                  ? (currentScene?.dialogues?.[0]?.textKo || currentScene?.narrationKo)
-                  : (currentScene?.dialogues?.[0]?.textEn || currentScene?.narrationEn)}
-              </p>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* 5. EPISODE COMPLETION CELEBRATION MODAL */}
-      {isCompleted && (
-        <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/90 p-6 text-center backdrop-blur-md">
-          <div className="flex h-16 w-16 items-center justify-center rounded-sm border border-emerald-500/40 bg-emerald-950/60 text-emerald-400 mb-4 animate-bounce">
-            <CheckCircle2 size={36} />
-          </div>
-
-          <span className="text-xs uppercase tracking-widest text-amber-400 mb-1">
-            Episode Completed
-          </span>
-          <h3 className="text-xl md:text-2xl font-bold text-white mb-2">
-            제 {episodeNumber}화 상영 완료!
-          </h3>
-          <p className="text-xs md:text-sm text-stone-300 max-w-md mb-6 leading-relaxed">
-            {language === 'en'
-              ? `You have experienced the full ${scenes.length}-scene cinematic adaptation of Episode ${episodeNumber}: ${titleEn}. Watching rewards have been unlocked!`
-              : `제 ${episodeNumber}화: ${titleKo}의 전편 ${scenes.length}씬 시네마틱 상영을 모두 감상하셨습니다. 시청 보상이 활성화되었습니다!`}
-          </p>
-
-          <div className="flex flex-wrap items-center justify-center gap-3">
-            <button
-              onClick={handleReplayEpisode}
-              className="flex min-h-[44px] items-center gap-2 rounded-sm border border-stone-600 bg-stone-900 px-5 text-sm font-semibold text-white hover:bg-stone-800 transition-colors"
-            >
-              <RotateCcw size={16} />
-              <span>{language === 'en' ? 'Replay Episode' : '다시 보기'}</span>
-            </button>
-
-            {episodeNumber < totalEpisodes && onSelectEpisode && (
+            <div className="flex flex-wrap items-center justify-center gap-2.5">
               <button
-                onClick={handlePlayNextEpisode}
-                className="flex min-h-[44px] items-center gap-2 rounded-sm border border-amber-500 bg-amber-500 px-6 text-sm font-bold text-black hover:bg-amber-400 transition-colors shadow-lg shadow-amber-500/20"
+                onClick={handleReplayEpisode}
+                className="flex min-h-[44px] items-center gap-2 rounded-sm border border-stone-600 bg-stone-900 px-4 text-xs sm:text-sm font-semibold text-white hover:bg-stone-800 transition-colors"
               >
-                <span>{language === 'en' ? `Play Ep.${episodeNumber + 1}` : `다음 화 (제${episodeNumber + 1}화) 감상`}</span>
-                <ChevronRight size={16} />
+                <RotateCcw size={15} />
+                <span>{language === 'en' ? 'Replay Episode' : '다시 보기'}</span>
               </button>
-            )}
+
+              {episodeNumber < totalEpisodes && onSelectEpisode && (
+                <button
+                  onClick={handlePlayNextEpisode}
+                  className="flex min-h-[44px] items-center gap-2 rounded-sm border border-amber-500 bg-amber-500 px-5 text-xs sm:text-sm font-bold text-black hover:bg-amber-400 transition-colors"
+                >
+                  <span>{language === 'en' ? `Play Ep.${episodeNumber + 1}` : `다음 화 (제${episodeNumber + 1}화) 감상`}</span>
+                  <ChevronRight size={15} />
+                </button>
+              )}
+            </div>
           </div>
+        )}
+      </div>
+
+      {/* 3. DEDICATED CHARACTER DOCK & SUBTITLE DECK (Below the video stage — never covers the artwork!) */}
+      {!isCompleted && (
+        <div className="bg-[#121010] border-t border-white/10 px-3 py-2.5 flex flex-col gap-2 shrink-0">
+          {/* Character Portraits Row + Active Speaking Character Highlight */}
+          {sceneCharacterNames.length > 0 && (
+            <div className="flex items-center gap-2 overflow-x-auto pb-0.5">
+              <div className="flex items-center gap-1.5 shrink-0">
+                {sceneCharacterNames.map((charName) => {
+                  const isSpeaking = activeSpeakerName
+                    ? charName.toLowerCase() === activeSpeakerName
+                    : false;
+                  const portraitUrl = getCharacterPortraitUrl(
+                    isSpeaking ? activeSpeakerCardId : undefined,
+                    charName
+                  );
+
+                  return (
+                    <div
+                      key={charName}
+                      className={`relative flex items-center gap-1.5 transition-all duration-200 shrink-0 ${
+                        isSpeaking
+                          ? 'scale-105 z-10'
+                          : 'scale-95 opacity-45 grayscale-40 brightness-75 z-0'
+                      }`}
+                    >
+                      <div
+                        className={`h-10 w-9 sm:h-12 sm:w-10 overflow-hidden rounded-none border ${
+                          isSpeaking
+                            ? 'border-2 border-amber-400 ring-4 ring-amber-400/40 bg-amber-950/40'
+                            : 'border-stone-700 bg-stone-900/70'
+                        }`}
+                      >
+                        <img
+                          src={portraitUrl}
+                          alt={charName}
+                          className="h-full w-full object-cover object-top"
+                          onError={(e) => {
+                            (e.target as HTMLElement).style.display = 'none';
+                          }}
+                        />
+                      </div>
+
+                      {isSpeaking && (
+                        <span className="rounded-none bg-amber-400 px-1.5 py-0.5 font-mono text-[10px] font-black uppercase tracking-wider text-black">
+                          [{charName}]
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Active English Spoken Line beside the character dock */}
+              {activeSpeakerDialogue && (
+                <p className="text-xs sm:text-sm font-semibold text-amber-200 leading-snug line-clamp-2">
+                  "{activeSpeakerDialogue.textEn || activeSpeakerDialogue.text}"
+                </p>
+              )}
+            </div>
+          )}
+
+          {/* Synchronized Multi-Language Subtitle Box (Controlled by CC ON/OFF) */}
+          {isCcEnabled && subtitleMode !== 'off' && (
+            <div className="rounded-sm border border-white/10 bg-black/70 px-3 py-2 text-left sm:text-center">
+              {/* Primary Language Subtitle (User's selected language, or English for English users) */}
+              <p className="text-xs sm:text-sm font-medium text-white leading-relaxed">
+                {currentScene?.dialogues && currentScene.dialogues.length > 0 && (
+                  <span className="font-bold text-amber-400 mr-1.5">
+                    [
+                    {language === 'en'
+                      ? (currentScene.dialogues[0].speakerEn || currentScene.dialogues[0].speaker)
+                      : (currentScene.dialogues[0].speakerKo || currentScene.dialogues[0].speaker)}
+                    ]
+                  </span>
+                )}
+                {language === 'en'
+                  ? (currentScene?.dialogues?.[0]?.textEn || currentScene?.narrationEn)
+                  : (currentScene?.dialogues?.[0]?.textKo || currentScene?.narrationKo)}
+              </p>
+
+              {/* Secondary English/Korean Subtitle when Dual Mode is explicitly selected */}
+              {subtitleMode === 'dual' && language !== 'en' && (
+                <p className="mt-1 text-[11px] text-stone-400 leading-normal">
+                  {currentScene?.dialogues?.[0]?.textEn || currentScene?.narrationEn}
+                </p>
+              )}
+            </div>
+          )}
         </div>
       )}
 
-      {/* 6. BOTTOM PLAYBACK HUD & FLUID 40-55 SCENES SCRUBBER DOCK */}
-      <div
-        className={`absolute bottom-0 inset-x-0 z-20 flex flex-col bg-gradient-to-t from-black via-black/90 to-transparent p-2 md:p-3 transition-opacity duration-300 ${
-          showControls ? 'opacity-100' : 'opacity-0 pointer-events-none'
-        }`}
-      >
-        {/* Continuous Fluid Scrubber Track (Handles 40-55 scenes with zero overflow) */}
+      {/* 4. BOTTOM PLAYBACK HUD & FLUID SCRUBBER DOCK (Placed cleanly below the subtitle deck) */}
+      <div className="flex flex-col bg-[#181515] border-t border-white/10 p-2 sm:p-3 shrink-0">
+        {/* Continuous Fluid Scrubber Track */}
         <div className="mb-2 relative flex items-center px-1">
-          <div className="relative w-full h-2.5 bg-stone-800/90 rounded-none overflow-hidden cursor-pointer group">
-            {/* Progress Fill */}
+          <div className="relative w-full h-2 bg-stone-800 rounded-none overflow-hidden cursor-pointer">
             <div
               className="h-full bg-amber-400 transition-all duration-75"
               style={{
                 width: `${Math.min(100, Math.max(0, ((currentSceneIdx + sceneProgress / 100) / scenes.length) * 100))}%`,
               }}
             />
-
-            {/* Subtle Milestone Dividers for 40-55 scenes */}
             <div className="absolute inset-0 flex justify-between pointer-events-none opacity-30">
               {Array.from({ length: Math.min(10, scenes.length) }).map((_, i) => (
                 <div key={i} className="w-[1px] h-full bg-white/40" />
@@ -893,7 +855,6 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
             </div>
           </div>
 
-          {/* Interactive Range Input Overlay */}
           <input
             type="range"
             min={0}
@@ -912,7 +873,7 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
             <button
               onClick={handlePrevScene}
               disabled={currentSceneIdx === 0}
-              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-sm border border-stone-700 bg-stone-900/80 text-white disabled:opacity-40 hover:bg-stone-800 transition-colors"
+              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-sm border border-stone-700 bg-stone-900 text-white disabled:opacity-40 hover:bg-stone-800 transition-colors"
               title="Previous Scene (Left Arrow)"
             >
               <SkipBack size={18} />
@@ -920,7 +881,7 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
 
             <button
               onClick={handleTogglePlay}
-              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-sm border border-amber-500 bg-amber-500 text-black font-bold hover:bg-amber-400 transition-colors shadow-md shadow-amber-500/20"
+              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-sm border border-amber-500 bg-amber-500 text-black font-bold hover:bg-amber-400 transition-colors"
               title={isPlaying ? 'Pause (Space)' : 'Play (Space)'}
             >
               {isPlaying ? <Pause size={20} /> : <Play size={20} className="ml-0.5" />}
@@ -928,13 +889,12 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
 
             <button
               onClick={handleNextScene}
-              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-sm border border-stone-700 bg-stone-900/80 text-white hover:bg-stone-800 transition-colors"
+              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-sm border border-stone-700 bg-stone-900 text-white hover:bg-stone-800 transition-colors"
               title="Next Scene (Right Arrow)"
             >
               <SkipForward size={18} />
             </button>
 
-            {/* Scene Position Badge */}
             <span className="ml-1 sm:ml-2 text-xs text-stone-300 font-mono flex items-center gap-1">
               <span className="text-amber-400 font-bold">{currentSceneIdx + 1}</span>
               <span>/</span>
@@ -949,35 +909,32 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
 
           {/* Right Controls: Speed, TTS, CC Toggle, Subtitles, Audio Mute */}
           <div className="flex items-center gap-1.5">
-            {/* Speed Toggle */}
             <button
               onClick={handleCycleSpeed}
-              className="flex min-h-[44px] px-2.5 items-center justify-center rounded-sm border border-stone-700 bg-stone-900/80 text-xs font-bold text-stone-200 hover:bg-stone-800 transition-colors"
+              className="flex min-h-[44px] px-2.5 items-center justify-center rounded-sm border border-stone-700 bg-stone-900 text-xs font-bold text-stone-200 hover:bg-stone-800 transition-colors"
               title="Playback Speed"
             >
               {playbackSpeed}x
             </button>
 
-            {/* TTS Voiceover Toggle */}
             <button
               onClick={handleToggleTts}
               className={`flex min-h-[44px] min-w-[44px] items-center justify-center rounded-sm border transition-colors ${
                 isTtsEnabled
                   ? 'border-amber-500/80 bg-amber-500/20 text-amber-300'
-                  : 'border-stone-700 bg-stone-900/80 text-stone-400'
+                  : 'border-stone-700 bg-stone-900 text-stone-400'
               }`}
               title={isTtsEnabled ? 'English Voiceover TTS Enabled' : 'Voiceover TTS Disabled'}
             >
               {isTtsEnabled ? <Mic size={17} /> : <MicOff size={17} />}
             </button>
 
-            {/* Dedicated CC ON/OFF Toggle Button */}
             <button
               onClick={handleToggleCc}
               className={`flex min-h-[44px] px-2.5 items-center gap-1 rounded-sm border font-mono text-xs transition-colors ${
                 isCcEnabled
                   ? 'border-amber-400 bg-amber-400/20 text-amber-300'
-                  : 'border-stone-700 bg-stone-900/80 text-stone-500'
+                  : 'border-stone-700 bg-stone-900 text-stone-500'
               }`}
               title={isCcEnabled ? '자막 끄기 (CC OFF)' : '자막 켜기 (CC ON)'}
             >
@@ -985,24 +942,22 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
               <span className="font-bold text-[11px]">CC {isCcEnabled ? 'ON' : 'OFF'}</span>
             </button>
 
-            {/* Subtitle Mode Button (Dual / Primary) */}
             {isCcEnabled && (
               <button
                 onClick={handleCycleSubtitle}
-                className="hidden sm:flex min-h-[44px] px-2 items-center gap-1 rounded-sm border border-stone-700 bg-stone-900/80 text-xs text-stone-200 hover:bg-stone-800 transition-colors"
-                title="Subtitle Mode: Dual / Single"
+                className="flex min-h-[44px] px-2 items-center gap-1 rounded-sm border border-stone-700 bg-stone-900 text-xs text-stone-200 hover:bg-stone-800 transition-colors"
+                title="Subtitle Mode: Primary / Dual"
               >
                 <span className="uppercase text-[10px] font-semibold">{subtitleMode}</span>
               </button>
             )}
 
-            {/* Audio Mute Button */}
             <button
               onClick={handleToggleMute}
               className={`flex min-h-[44px] min-w-[44px] items-center justify-center rounded-sm border transition-colors ${
                 isMuted
                   ? 'border-red-500/80 bg-red-950/40 text-red-400'
-                  : 'border-stone-700 bg-stone-900/80 text-stone-200 hover:bg-stone-800'
+                  : 'border-stone-700 bg-stone-900 text-stone-200 hover:bg-stone-800'
               }`}
               title={isMuted ? 'Unmute Audio (M)' : 'Mute Audio (M)'}
             >

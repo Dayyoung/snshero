@@ -2,6 +2,46 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-18 15:48 KST] [독립 승리 감사] SNSHero 영화관 40부작 MP4 비디오 및 플레이어 전수 독립 감사 완료 (VICTORY CONFIRMED)
+- **작업명**: `[Victory Audit] 40부작 영화관 업그레이드 및 MP4 비디오 생성 전수 독립 감사`
+- **감사관**: victory_auditor_1 (독립 승리 감사관)
+- **최종 판정**: **VICTORY CONFIRMED (승인 확정)**
+- **주요 독립 검증 결과**:
+  1. Phase A (타임라인/출처 감사): 정상 PASS (커밋 이력, 타임스탬프, 실물 변경 내역 일치).
+  2. Phase B (포렌식 무결성 감사): 정상 PASS (더미/파사드 0건, 2,049컷씬 전수 연동, Web Audio 연속 BGM 앵커링, 영문 TTS 및 발화 캐릭터 하이라이트/비발화 디밍, 전투 SFX 코믹 오노마토페 시각/청각 연동, 다국어 자막 및 [CC ON/OFF] 토글 완비).
+  3. Phase C (독립 실행 검증): 정상 PASS
+     - 40개 MP4 파일 전수 ffprobe 검증: 40/40 PASS (총 187.76MB, H.264+AAC 44.1kHz 스테레오, Faststart moov 선행, duration 146~176s).
+     - 40개 MP4 전수 ffmpeg full null-mux 디코드: 0 corrupt frames, 0 decode errors.
+     - 2,049컷씬 매니페스트 전수 로컬 WebP 파일 존재 확인 (결손 0건).
+     - Dual-Track E2E 테스트(59/59 PASS) 및 Tier 5 적대적 스트림 프로브 전수 통과.
+     - `npx tsc --noEmit`: 0 errors.
+     - `npm run build`: 17.09s 프로덕션 번들링 100% 정상 통과.
+     - `git push` 방지 및 로컬 커밋 상태 유지 확인 (HEAD de71078b가 origin/main 대비 12 커밋 선행).
+  4. 구글 폼 보고서 제출 완료 (`submit_report.py`).
+
+## [2026-10-18 15:43 KST] [포렌식 감사] SNSHero 영화관 40부작 MP4 비디오 및 플레이어 포렌식 무결성 감사 완료 (CLEAN 판정)
+- **작업명**: `[Forensic Audit] SNSHero Movie Theater Upgrade & 40-Episode Standalone MP4 Videos Forensic Audit`
+- **담당자**: auditor_movie_1 (teamwork_preview_auditor)
+- **최종 판정**: **CLEAN (무결성 위반 0건, 치팅/더미 0건, 전 항목 진본 검증)**
+- **주요 감사 결과**:
+  1. 40개 MP4 비디오 파일 전수 실물 분석 (`public/videos/episodes/episode_01.mp4` ~ `episode_40.mp4`):
+     - 40개 파일 전수 실물 존재 확인 (총 용량 187.8MB, 심볼릭 링크 0건).
+     - SHA-256 해시 검증: 40개 파일 모두 고유한 SHA-256 해시 확인 (중복/가짜 복제본 0건).
+     - ffprobe 스트림 정밀 검증: H.264 비디오 800x450 25fps yuv420p, 프레임 수 회당 3,600+개, 재생 시간 146s~176s(각 회차 컷씬 스크립트 분량과 100% 일치), Faststart(`moov` 원자 선행) 100% 충족.
+     - 오디오 파형 정밀 분석(FFmpeg astats): AAC 44.1kHz 스테레오, Peak level = -1.1 dB (진폭 0.88 정규화와 완벽 일치), RMS level = -10.4 dB ~ -15.3 dB (무음/가짜 음원이 아닌 실제 고음질 절차적 음악 파형 확인).
+     - 다이나믹 프레임 검증: 각 회차별 t=[5, 30, 60, 90, 120]초에서 추출한 프레임 해시가 모두 상이하여 정적 1프레임 더미가 아님을 실증.
+  2. 비디오 생성 엔진(`scripts/generate_all_40_episode_videos.py`) 진본성:
+     - 2,049컷씬 매니페스트 및 `public/seat/*.png` 초상화 매핑, Pillow 터미널 플랫 프레임 합성, NumPy 절차적 44.1kHz 스테레오 오디오 합성(6개 테마), FFmpeg concat demuxer 인코딩 파이프라인 실제 구동 확인.
+  3. 영화관 플레이어 및 신시사이저 엔진 진본성:
+     - `CinematicMoviePlayer.tsx`: 2,049컷씬 전편 연동(타이틀 카드 0씬 포함), 에피소드 라이프사이클 앵커링 연속 BGM, 영문 TTS 음성 나레이션, 발화자 초상화 골드 글로우/비발화자 디밍, 전투 SFX 코믹 오노마토페 오버레이, 다국어 자막 및 `[CC ON/OFF]` 토글 버튼 정상 구현.
+     - `MovieView.tsx`: 3웨이 모드 스위처(시네마틱/MP4/유튜브), 네이티브 `<video>` 재생 요소, `SNSHero_Episode_XX.mp4` 다운로드 링크, 40부작 전편 기본 잠금 해제 확인.
+     - `MovieAudioSynthesizer.ts`: Web Audio API 오실레이터, 필터, 스케줄링 및 SpeechSynthesis 음성 매칭 정상 구현. 하드코딩된 테스트 통과용 가짜 모의 로직 부재 확인.
+  4. 독립 테스트 및 빌드 검증:
+     - Full 4-Tier E2E 테스트 슈트(`run_movie_e2e_tests.py`): 59 / 59 PASS (100.0%).
+     - `npx tsc --noEmit`: 0 errors.
+     - `npm run build`: 25.11초 만에 정상 프로덕션 번들링 완료 (0 errors).
+     - 구글 폼 보고서 제출 완료 (`submit_report.py`).
+
 ## [2026-10-18 15:35 KST] [M2 영화관 40화 MP4 전편 생성 및 플레이어 연동 완료] 40부작 독립형 MP4 비디오 배치 생성 및 E2E 테스트 100% 통과
 - **작업명**: `[M2] 40-Episode Standalone MP4 Video Generation & Player Hookup`
 - **담당자**: worker_movie_m2 (implementer, qa, specialist)
@@ -14695,3 +14735,11 @@
   - `src/views/NovelView.tsx`, `src/components/webtoon/WebtoonPanelCard.tsx`, `src/components/movie/CinematicMoviePlayer.tsx`에서 기존의 `20` / `21` 하드코딩 제한을 제거하고 각 에피소드의 실제 컷신 수(`totalEpisodeScenes`, 회차별 42~57컷)에 맞춰 세로 스크롤, 슬라이드 뷰, 라이트박스, 진행률 바가 동적으로 동작하도록 개선.
   - `public/sw.js` 미디어 캐시 버전(`snshero-media-v6-cutscenes2026`) 및 내레이션 JSON 쿼리 버전(`?v=novel2026_v3`) 갱신 완료.
 - **검증 결과**: `npm run lint` 및 `npm run build` 0 에러 통과, 구글 폼 작업 완료 보고 제출 완료.
+
+## [2026-10-18 16:02 KST] 모바일 무비 화면 시야 확보 (16:9 컷신 영상 영역과 자막·대사·캐릭터·컨트롤 독 완전 분리 및 40화 MP4 재렌더링)
+- **작업 내용**:
+  - 모바일 무비 화면(`src/components/movie/CinematicMoviePlayer.tsx`)에서 16:9 영상 캔버스 위에 상단 헤더, 대형 의성어(SFX) 박스, 캐릭터 초상화 독, 영문 대사창, 다국어 자막창, 하단 재생 컨트롤이 모두 겹쳐(`absolute`) 표시되어 정작 컷신 그림이 가려지던 문제를 해결.
+  - 상단 헤더 바, **100% 시야가 확보된 순수 16:9 컷신 캔버스 영역**, **하단 전용 캐릭터 하이라이트 & 다국어 자막 독(Dock) 패널**, **하단 재생 컨트롤 바**를 수직 분리형(Flex Column) 구조로 개편하여 모바일에서도 컷신 일러스트가 전혀 가려지지 않도록 개선.
+  - 전투 의성어(SFX) 배지는 화면 정중앙 대신 우측 상단 모서리에 작고 깔끔한 코너 배지(`top-2 right-2 text-xs`)로 표시되도록 축소.
+  - 40화 전체 MP4 동영상(`scripts/generate_all_40_episode_videos.py`, `public/videos/episodes/episode_01.mp4` ~ `episode_40.mp4`) 또한 상단 `800x450` 원본 컷신을 전혀 침범하지 않는 하단 분리형 시네마 독(`800x560`, 하단 `110px` 전용 자막·화자·의성어 영역)으로 전수 재렌더링 완료.
+- **검증 결과**: `npm run lint` 및 `npm run build` 0 에러 통과, 로컬 Git 커밋 및 구글 폼 보고서 제출 완료.

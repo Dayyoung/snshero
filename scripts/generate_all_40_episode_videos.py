@@ -264,83 +264,75 @@ def synthesize_bgm_wav(theme: str, duration_sec: float, out_wav_path: str):
 def render_styled_cutscene(bg_path: str, is_title: bool, title_en: str, title_ko: str,
                            speaker_en: str, text_en: str, portrait_file: str,
                            sfx_list: list, out_path: str):
-    """Render a terminal-flat styled 800x450 cutscene frame."""
+    """Render a terminal-flat styled 800x560 frame (800x450 unobstructed art + 800x110 dedicated bottom dock)."""
     base_img = Image.open(bg_path).convert('RGBA')
     if base_img.size != (800, 450):
         base_img = base_img.resize((800, 450), Image.Resampling.LANCZOS)
 
-    overlay = Image.new('RGBA', (800, 450), (0, 0, 0, 0))
+    canvas = Image.new('RGBA', (800, 560), (14, 12, 12, 255))
+    canvas.paste(base_img, (0, 0))
+
+    overlay = Image.new('RGBA', (800, 560), (0, 0, 0, 0))
     draw = ImageDraw.Draw(overlay)
 
-    font_title = ImageFont.truetype(FONT_PATH, 24) if FONT_PATH else ImageFont.load_default()
-    font_sub = ImageFont.truetype(FONT_PATH, 16) if FONT_PATH else ImageFont.load_default()
-    font_bold = ImageFont.truetype(FONT_PATH, 14) if FONT_PATH else ImageFont.load_default()
-    font_body = ImageFont.truetype(FONT_PATH, 13) if FONT_PATH else ImageFont.load_default()
-    font_sfx = ImageFont.truetype(FONT_PATH, 20) if FONT_PATH else ImageFont.load_default()
+    font_title = ImageFont.truetype(FONT_PATH, 22) if FONT_PATH else ImageFont.load_default()
+    font_sub = ImageFont.truetype(FONT_PATH, 15) if FONT_PATH else ImageFont.load_default()
+    font_bold = ImageFont.truetype(FONT_PATH, 13) if FONT_PATH else ImageFont.load_default()
+    font_body = ImageFont.truetype(FONT_PATH, 12) if FONT_PATH else ImageFont.load_default()
+    font_sfx = ImageFont.truetype(FONT_PATH, 13) if FONT_PATH else ImageFont.load_default()
     font_micro = ImageFont.truetype(FONT_PATH, 9) if FONT_PATH else ImageFont.load_default()
 
-    if is_title:
-        # Title card scrim & banner
-        draw.rectangle([0, 0, 800, 450], fill=(0, 0, 0, 110))
-        # Center card
-        card_box = [60, 140, 740, 310]
-        draw.rectangle(card_box, fill=(18, 16, 16, 230), outline=(212, 175, 55, 200), width=1)
-        # Badge
-        draw.rectangle([75, 155, 275, 180], fill=(30, 27, 27, 255), outline=(212, 175, 55, 120), width=1)
-        draw.text((85, 160), 'SNSHERO · THEATER', font=font_bold, fill=(212, 175, 55, 255))
-        # Main title EN
-        draw.text((75, 195), title_en, font=font_title, fill=(253, 252, 252, 255))
-        # Sub title KO
-        draw.text((75, 240), title_ko, font=font_sub, fill=(180, 180, 180, 255))
-        # Hairline divider
-        draw.line([75, 275, 725, 275], fill=(212, 175, 55, 80), width=1)
-    else:
-        # Story cutscene dialogue box
-        box_y1 = 310
-        box_y2 = 432
-        draw.rectangle([25, box_y1, 775, box_y2], fill=(16, 14, 14, 225), outline=(80, 75, 75, 160), width=1)
+    # Dedicated bottom cinema dock (y = 450..560, never covers the 800x450 artwork!)
+    dock_y1 = 450
+    dock_y2 = 560
+    draw.rectangle([0, dock_y1, 800, dock_y2], fill=(14, 12, 12, 255))
+    draw.line([0, dock_y1, 800, dock_y1], fill=(212, 175, 55, 160), width=1)
 
-        # Character portrait
+    if is_title:
+        draw.rectangle([16, dock_y1 + 14, 196, dock_y1 + 36], fill=(30, 27, 27, 255), outline=(212, 175, 55, 140), width=1)
+        draw.text((24, dock_y1 + 18), 'SNSHERO · THEATER', font=font_bold, fill=(212, 175, 55, 255))
+        draw.text((210, dock_y1 + 15), title_en, font=font_title, fill=(253, 252, 252, 255))
+        draw.text((210, dock_y1 + 48), title_ko, font=font_sub, fill=(185, 180, 175, 255))
+    else:
+        # Character portrait inside bottom dock
         portrait_rendered = False
         if portrait_file:
             seat_path = SEAT_DIR / portrait_file
             if seat_path.is_file():
                 try:
                     p_img = Image.open(seat_path).convert('RGBA')
-                    p_thumb = p_img.resize((72, 84), Image.Resampling.LANCZOS)
-                    p_x, p_y = 38, box_y1 + 18
+                    p_thumb = p_img.resize((64, 74), Image.Resampling.LANCZOS)
+                    p_x, p_y = 18, dock_y1 + 12
                     overlay.paste(p_thumb, (p_x, p_y))
-                    # Glowing golden border
-                    draw.rectangle([p_x - 1, p_y - 1, p_x + 72, p_y + 84], outline=(212, 175, 55, 220), width=1)
-                    # Speaker tag badge
-                    draw.rectangle([p_x - 2, p_y + 86, p_x + 73, p_y + 99], fill=(25, 23, 23, 240), outline=(212, 175, 55, 140), width=1)
-                    draw.text((p_x + 7, p_y + 87), 'SPEAKER', font=font_micro, fill=(212, 175, 55, 255))
+                    draw.rectangle([p_x - 1, p_y - 1, p_x + 64, p_y + 74], outline=(212, 175, 55, 230), width=1)
+                    draw.rectangle([p_x - 1, p_y + 76, p_x + 65, p_y + 89], fill=(212, 175, 55, 255))
+                    draw.text((p_x + 8, p_y + 77), 'SPEAKER', font=font_micro, fill=(14, 12, 12, 255))
                     portrait_rendered = True
                 except Exception:
                     portrait_rendered = False
 
-        # Speaker label
-        text_x = 125 if portrait_rendered else 45
+        text_x = 96 if portrait_rendered else 20
         label = (speaker_en.upper() if speaker_en else 'NARRATION')
-        draw.text((text_x, box_y1 + 14), f"[{label}]", font=font_bold, fill=(212, 175, 55, 255) if portrait_rendered else (140, 200, 255, 255))
+        draw.text((text_x, dock_y1 + 12), f"[{label}]", font=font_bold, fill=(212, 175, 55, 255) if portrait_rendered else (140, 200, 255, 255))
 
-        # Word-wrapped English dialogue text
-        wrap_width = 68 if portrait_rendered else 78
-        wrapped_lines = textwrap.wrap(text_en, width=wrap_width)
-        curr_y = box_y1 + 35
-        for line in wrapped_lines[:4]:
-            draw.text((text_x, curr_y), line, font=font_body, fill=(253, 252, 252, 255))
-            curr_y += 18
-
-        # SFX Onomatopoeia Sticker
+        # Compact SFX badge in the top-right of the bottom dock (never covering the artwork!)
         if sfx_list:
             sfx_entry = sfx_list[0]
             sfx_text = sfx_entry.get('textEn') or sfx_entry.get('textKo') or 'SFX!'
-            sfx_box = [620, 25, 775, 68]
-            draw.rectangle(sfx_box, fill=(20, 15, 15, 230), outline=(239, 68, 68, 220), width=2)
-            draw.text((635, 32), f"⚔️ {sfx_text}", font=font_sfx, fill=(255, 220, 100, 255))
+            sfx_w = max(95, len(sfx_text) * 9 + 24)
+            sfx_box = [784 - sfx_w, dock_y1 + 10, 784, dock_y1 + 32]
+            draw.rectangle(sfx_box, fill=(28, 18, 18, 255), outline=(239, 68, 68, 200), width=1)
+            draw.text((792 - sfx_w, dock_y1 + 13), f"SFX: {sfx_text}", font=font_sfx, fill=(255, 210, 90, 255))
 
-    final_img = Image.alpha_composite(base_img, overlay).convert('RGB')
+        # Word-wrapped English dialogue text inside the bottom dock
+        wrap_width = 76 if portrait_rendered else 86
+        wrapped_lines = textwrap.wrap(text_en, width=wrap_width)
+        curr_y = dock_y1 + 34
+        for line in wrapped_lines[:3]:
+            draw.text((text_x, curr_y), line, font=font_body, fill=(253, 252, 252, 255))
+            curr_y += 17
+
+    final_img = Image.alpha_composite(canvas, overlay).convert('RGB')
     final_img.save(out_path, 'JPEG', quality=88)
 
 

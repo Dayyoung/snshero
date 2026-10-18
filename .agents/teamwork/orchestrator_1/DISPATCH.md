@@ -29,3 +29,37 @@ Key Responsibilities & Deliverables:
    - Strict DESIGN.md compliance (font-mono, rounded-none containers, rounded-sm interactive elements, 44px+ mobile touch targets).
    - 0 TypeScript errors (npm run lint / tsc --noEmit) and 0 build errors (npm run build).
    - Mandatory Google Form completion reporting as required by AGENTS.md / GEMINI.md.
+
+
+## 2026-10-18T06:02:02Z
+
+You are the Project Orchestrator for SNSHero.
+Your working directory is: /Users/dayyoung/project/snshero/.agents/teamwork/orchestrator_1/
+The project root is: /Users/dayyoung/project/snshero
+
+Please read the user's latest request in:
+/Users/dayyoung/project/snshero/.agents/teamwork/ORIGINAL_REQUEST.md (under section ## 2026-10-18T06:00:31Z)
+
+Key Requirements:
+1. Updated Webtoon Cutscene Integration & Continuous Episode BGM on Play:
+   - Update `CinematicMoviePlayer.tsx` and `MovieView.tsx` to play all 40 episodes using all newly expanded 2,049 webtoon cutscenes (`scene_00.webp` through `scene_XX.webp` from `webtoonEpisodeManifest.json`).
+   - Reliable initialization/resumption of Web Audio synthesizer (`MovieAudioSynthesizer.ts`) when Play is pressed; plays continuous episode-matched BGM throughout movie playback and across scene transitions without cutting out.
+2. English-Base Cutscene Display, English TTS Voiceover & Highlighted Character Dialogue:
+   - English TTS voiceover: read `narrationEn` and English dialogue lines aloud using English TTS (`en-US`/`en-GB` SpeechSynthesis) when enabled, regardless of user UI language.
+   - Display cutscene spoken dialogue in English (`textEn`, `speakerEn`) on the movie stage; highlight speaking character by rendering remastered portrait (`public/seat/*.png`) with active glowing frame, aura pulse, and speaker badge while dimming non-speaking characters.
+   - Animated combat onomatopoeia (SFX) visuals (`sfxCues`) on the movie canvas/stage alongside procedural combat audio SFX.
+3. Per-Episode MP4 Video Generation Across All 40 Episodes:
+   - Generate standalone `.mp4` video files (`public/videos/episodes/episode_01.mp4` through `public/videos/episodes/episode_40.mp4`) using `/opt/homebrew/bin/ffmpeg`.
+   - Each MP4 must include all cutscenes of that episode in sequence, overlaid/burned-in cutscene presentation/SFX styling, and embedded procedural/synthesized episode BGM audio track (`aac`).
+   - Browser-compatible web encoding (`-pix_fmt yuv420p -movflags +faststart`).
+   - Integrate MP4 playback and download support into `CinematicMoviePlayer.tsx` / `MovieView.tsx`.
+4. Multi-Language Subtitle System & Subtitle ON/OFF Toggle:
+   - Synchronized subtitle overlay in movie player for both Interactive Cutscene Mode and MP4 Video Mode.
+   - When language is 'en', display English subtitles (`narrationEn` / `textEn`).
+   - When language is other ('ko', etc.), display subtitles in that selected language (`narrationKo` / `textKo`, etc.).
+   - Intuitive Subtitle ON/OFF toggle button (`CC / 자막 ON·OFF`).
+5. Quality & Compliance:
+   - Strict adherence to DESIGN.md.
+   - Zero errors on `npm run lint` (`tsc --noEmit`) and `npm run build`.
+   - Local git commit only (never git push unless requested).
+   - Log to `WORK_LOGS.md` and submit Google Form report (`python3 skills/report-ex/scripts/submit_report.py`).

@@ -1,0 +1,29 @@
+{
+  "mp4_videos": {
+    "count": 40,
+    "passed": 40,
+    "total_size_mb": 187.76,
+    "all_ok": true
+  },
+  "cutscenes": {
+    "ep_count": 40,
+    "total_cutscenes": 2049,
+    "all_scenes_exist": true,
+    "missing_count": 0
+  },
+  "code_features": {
+    "has_continuous_bgm": false,
+    "has_english_tts": true,
+    "has_speaker_highlight": true,
+    "has_sfx_cues": true,
+    "has_subtitles": true,
+    "has_mp4_mode": true,
+    "episodes_in_mapping": 41
+  },
+  "git": {
+    "head": "de71078b",
+    "origin": "7be8ae3e",
+    "ahead_commits": 12,
+    "pushed_to_remote": false
+  }
+}
