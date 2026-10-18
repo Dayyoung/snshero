@@ -2,6 +2,53 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-18 11:25 KST] [Milestone 2 & 3 완료] 110명 전 영웅 스프라이트 시트 합성(4대 마스터 시트 + 11대 팩션 시트) 및 Pillow FASTOCTREE 팔레트 압축 전수 완료 (50/50 PASS, 100%)
+- **작업명**: `[Milestone 2 & 3] 110-Hero Sprite Sheet Assembly & FASTOCTREE Palette Optimization (public/cards1.png, public/cards2.png, public/card100.png, public/card100_gemini.png, character_sheet_*.png)`
+- **담당자**: worker_m2 (implementer, qa, specialist)
+- **최종 판정**: **100% PASS (50 / 50 전 어설션 무결점 통과, Exit Code 0)**
+- **주요 수행 내역**:
+  1. **1차 10x10 스프라이트 시트 합성 (`public/cards1.png`, `public/cards2.png`)**:
+     - `public/cards1.png` (1000x1000 px, 10x10 그리드, 카드 ID 1–100): 리마스터된 `public/seat/*.png` (256x296) 포트레이트를 종횡비 보존 센터 크롭(aspect-fill/center-crop)하여 100x100 셀에 정밀 안착. `getCardSpriteCoords` 좌표 공식(`col = (id - 1) % 10`, `row = (id - 1) // 10`)과 100% 일치.
+     - `public/cards2.png` (1000x1000 px, 10x10 그리드): Row 0에 카드 ID 101–110 배치(`col = (id - 101) % 10`, `row = 0`). 기존 미니게임용 비-캐릭터 스프라이트 Row 1–9(1000x900 px)를 1픽셀의 왜곡 없이 원본 그대로 보존 완료.
+  2. **레거시 10x11 마스터 시트 합성 (`public/card100.png`, `public/card100_gemini.png`)**:
+     - `public/card100.png` (1135x1315 px, 10x11 그리드, 카드 ID 1–110, 셀 113.5 x 119.545 px): 전 영웅 110인 정밀 배치.
+     - `public/card100_gemini.png` (1024x1024 px, 10x11 그리드, 카드 ID 1–110, 셀 102.4 x 93.091 px): 구형 JPEG 위장 파일을 영구 퇴출하고 진성 알파 채널을 보유한 완전한 RGBA PNG로 전면 교체 생성.
+  3. **11개 팩션 가로형 시트 합성 및 헤더 손상 복구 (`public/character_sheet_*.png`, 11개 파일)**:
+     - 11개 전 팩션(`water`, `fire`, `wind`, `earth`, `human`, `undead`, `elf`, `hobbit`, `beast`, `mecha`, `dragon`) 시트를 2560x296 px (256x296 px 10개 셀) 규격으로 리마스터 포트레이트와 1:1 결합 생성.
+     - 커밋 `9e70c6b8`에서 UTF-8 대체 문자 바이트(`\xef\xbf\xbdPNG`)로 손상되었던 3개 파일(`fire`, `hobbit`, `mecha`)의 헤더를 완전 무결한 PNG 표준 매직 헤더(`\x89PNG\r\n\x1a\n`)로 복구 완료.
+  4. **Pillow FASTOCTREE 256색 팔레트 양자화 및 고효율 압축**:
+     - 4대 마스터 시트 예산 (<= 800 KB): `cards1.png` 104.1 KB (87.0% 여유), `cards2.png` 457.2 KB (42.8% 여유), `card100.png` 154.3 KB (80.7% 여유), `card100_gemini.png` 110.5 KB (86.2% 여유) 달성.
+     - 11대 팩션 시트 예산 (<= 300 KB): 전 파일 27.4 KB ~ 30.6 KB (기준치 대비 90% 트래픽 절감) 달성.
+     - 전체 캐릭터 에셋 총합 풋프린트: 기존 ~12.9 MB에서 1.70 MB로 축소 (**86.2% 웹 트래픽 절감** 달성, 총합 예산 10.11 MB 대비 83.2% 대폭 여유).
+  5. **검증 결과**:
+     - `python3 tests/e2e_character_assets/runner.py`: **50 / 50 전 어설션 PASS (100.0%, Exit Code 0)**.
+     - `npx tsc --noEmit`: 0 TypeScript errors (Exit Code 0).
+     - `npm run lint`: 0 errors.
+     - `npm run build`: Vite 프로덕션 빌드 클린 성공 (16.02초, 52개 SPA 라우트 및 구글 뉴스 SEO 390건 무결점 생성).
+     - 연동 구글 폼 보고서 제출 완료 (`submit_report.py`).
+
+## [2026-10-18 11:17 KST] [Milestone 1 테스트 오라클 보정 완료] T1.F2.5 엔트로피/표준편차 검증 보정 및 Tier 1 Feature 2 100% PASS 검증
+- **작업명**: `[Calibration] 110-Hero Character Illustration Remaster E2E Test Oracle Calibration (T1.F2.5)`
+- **담당자**: test_writer_calibrate (specialist, qa)
+- **최종 판정**: **100% PASS (Feature 2 6/6 완료, Exit Code 0)**
+- **주요 수행 내역**:
+  1. **T1.F2.5 오라클 임계치 정밀 보정 (`tests/e2e_character_assets/helpers.py:293`)**:
+     - 기존 하드코딩된 `entropy >= 2.0 and std >= 8.0`이 TCG 카드 특유의 90%+ 백색 캔버스 배경(수학적 전역 섀넌 엔트로피 0.33~0.76)으로 인해 정상 일러스트를 오판하던 결함 규명 및 수정.
+     - 보정 임계치: `std_dev >= 15.0 and (entropy >= 0.25 or fg_entropy >= 1.5)` 적용.
+     - 배경 최빈값(50% 초과)을 제외한 전경 엔트로피 계산 로직 탑재.
+     - 순수 단색(흰색/검정/회색/유색: std=0.0) 및 투명 이미지의 엄격한 탈락 보장.
+  2. **T1.F2.5 합성 블랭크/단색 거부 적대적 검증 탑재 (`tier1_feature_coverage.py:197`)**:
+     - 순수 흰색, 검정색, 회색, 완전 투명 이미지 4종에 대해 오라클이 즉각 탈락시키는지 자체 검증 수행.
+  3. **러너 점진적 검증성 지원 (`tests/e2e_character_assets/runner.py`)**:
+     - `--feature` (`-f`) 및 `--milestone` (`-m`) 옵션을 추가하여 마일스톤별 스코프 대상 정밀 격리 실행 지원.
+  4. **검증 결과**:
+     - `python3 tests/e2e_character_assets/runner.py --tier 1 --feature 2`: 6/6 PASS (100.0%, Exit Code 0).
+     - `python3 tests/e2e_character_assets/runner.py --tier 1`: 22/25 PASS (88.0%, 잔여 3건은 M2 대상).
+     - `python3 tests/e2e_character_assets/runner.py --allow-fail`: 39/50 PASS (78.0%, 잔여 11건은 M2/M3 대상).
+     - `npx tsc --noEmit`: 0 에러 (Exit Code 0).
+     - `TEST_READY.md`: 39/50 통과 베이스라인 및 로드맵 실시간 갱신 완료.
+     - 구글 폼 보고서 제출 완료 (`skills/report-ex/scripts/submit_report.py`).
+
 ## [2026-10-18 10:52 KST] [Milestone 1 완료] 110명 영웅 개별 포트레이트 고밀도 TCG 리마스터 및 용량 최적화 (110/110 PASS)
 - **작업명**: `[Milestone 1] 110-Hero Character Illustration Remaster & Individual Portrait Optimization`
 - **담당자**: worker_m1 (implementer, qa, specialist)
@@ -14489,3 +14536,23 @@
 - **작업 대상**: 스프레드시트 전체 대기 작업(총 161건) 및 최신 등록 작업(Row 814 ~ Row 818) 검증 동기화
 - **작업 내용**: SPA 환경 및 쿼리 파라미터 API(/api/addTask) 호환성 검증, 저사양 모드/UI 최적화 상태 점검, 린트 및 빌드 상태 무결성 확인
 - **검증 결과**: `npm run lint` (`tsc --noEmit`) 통과, Vite 프로덕션 빌드 성공, 구글 폼 완료 보고서 161건 제출 동기화 완료
+
+
+## [2026-10-18 11:02 KST / 02:02 UTC] [Challenger M1] 110종 영웅 초상화 리마스터 적대적 검증 및 스트레스 테스트 완료
+- **작업 대상**: `public/seat/*.png` (카드 ID 1~110 11개 팩션 전수 110종 초상화)
+- **수행 내용**:
+  1. 독립 적대적 검증 스크립트 작성 및 실행 (`tests/challenger_m1_portrait_stress.py`):
+     - 빈 이미지 및 균일 단색 여부: 픽셀 표준편차(Std Dev) 최소 45.87, 평균 61.59, 최대 75.60으로 전수 `std > 20.0` 기준 초과 통과 (비어있거나 단색인 초상화 0건). 유니크 색상수 평균 236.8개, 유효 투명도 알파 채널 및 바운딩 박스(256x216) 전수 보존.
+     - 파일 해상도: 110종 전수 `256 x 296` px 엄격 일치 (110/110 PASS).
+     - 파일 용량 예산: 4,098 B ~ 8,653 B (평균 5,619.9 B)로 [4,096, 35,840] 예산 100% 준수.
+     - 무손상 git baseline(커밋 `94a5ac5b`) 대비 시각적 개선 검증: 라플라시안 분산(Laplacian variance) 선명도 비율 최소 5.11배, 평균 7.69배(+668.7%), 최대 12.92배 향상. 전수 선명도 저하 0건.
+     - 원본 정체성 보존 검증: MAE 평균 3.10% (7.91 / 255), SSIM 평균 0.8520, 동일 픽셀 일치율 80.2% 이상으로 실루엣·의상·얼굴·팔레트 완벽 보존.
+     - 손상 3종(`Celia.png`, `Sentinel.png`, `Hyperion_Prime.png`) 복구 및 유효 PNG 헤더 검증.
+  2. E2E 테스트 러너(`runner.py`) 정밀 분석:
+     - `runner.py` 실행 시 `T1.F2.5`(Zero Blank)가 실패하는 원인이 `helpers.py:319`의 과도한 엔트로피 오라클 임계치(`entropy >= 2.0`) 때문임을 규명 (흰색 캔버스 배경으로 인해 94a5ac5b 원본 기준 110종도 전수 1.3~1.6으로 탈락). 표준편차 기준 적용 시 100% 정상 통과.
+- **검증 결과**:
+  - `python3 tests/challenger_m1_portrait_stress.py`: VERDICT `CONFIRM_CORRECT` (0 anomalies).
+  - `npx tsc --noEmit`: 0 Errors (타입 무결점 통과).
+  - `npm run build`: Vite 6 프로덕션 번들 정상 완료 (`built in 13.42s`).
+  - 구글 폼 완료 보고서 제출 완료 (`submit_report.py`).
+- **최종 판정**: **`CONFIRM_CORRECT`** (Milestone 1 에셋 검증 완료, Milestone 2 스프라이트 시트 합성 착수 승인).
