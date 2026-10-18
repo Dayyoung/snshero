@@ -107,7 +107,7 @@ export function getUserCollectionName(season: string): string {
 /**
  * Resolves a public asset path to properly support subpath hosting (e.g. GitHub Pages /snshero/).
  */
-const CHARACTER_ASSET_CACHE_TAG = 'v=banana2026';
+const CHARACTER_ASSET_CACHE_TAG = 'v=cutout2026';
 const CHARACTER_ASSET_REGEX = /^(cards1|cards2|card2|card100|character_sheet_|seat\/)/i;
 
 export function getAssetUrl(path: string | null | undefined): string {
@@ -279,122 +279,122 @@ const FACTION_BACKDROP_PALETTE: Record<
     ko: '물',
     en: 'WATER',
     emoji: '💧',
-    bgLight: '#e0f2fe',
-    bgMid: '#7dd3fc',
+    bgLight: '#bae6fd',
+    bgMid: '#38bdf8',
     bgDeep: '#0284c7',
     accentHex: '#0369a1',
-    glowRgba: 'rgba(14, 165, 233, 0.45)',
-    rayRgba: 'rgba(56, 189, 248, 0.36)',
+    glowRgba: 'rgba(14, 165, 233, 0.52)',
+    rayRgba: 'rgba(56, 189, 248, 0.42)',
   },
   fire: {
     ko: '불',
     en: 'FIRE',
     emoji: '🔥',
-    bgLight: '#ffedd5',
-    bgMid: '#fdba74',
+    bgLight: '#fed7aa',
+    bgMid: '#fb923c',
     bgDeep: '#ea580c',
     accentHex: '#c2410c',
-    glowRgba: 'rgba(249, 115, 22, 0.48)',
-    rayRgba: 'rgba(251, 146, 60, 0.40)',
+    glowRgba: 'rgba(249, 115, 22, 0.55)',
+    rayRgba: 'rgba(251, 146, 60, 0.44)',
   },
   wind: {
     ko: '바람',
     en: 'WIND',
     emoji: '🌪️',
-    bgLight: '#ccfbf1',
-    bgMid: '#5eead4',
+    bgLight: '#99f6e4',
+    bgMid: '#2dd4bf',
     bgDeep: '#0d9488',
     accentHex: '#0f766e',
-    glowRgba: 'rgba(20, 184, 166, 0.45)',
-    rayRgba: 'rgba(45, 212, 191, 0.36)',
+    glowRgba: 'rgba(20, 184, 166, 0.52)',
+    rayRgba: 'rgba(45, 212, 191, 0.42)',
   },
   earth: {
     ko: '대지',
     en: 'EARTH',
     emoji: '🪨',
-    bgLight: '#ecfccb',
-    bgMid: '#bef264',
+    bgLight: '#d9f99d',
+    bgMid: '#a3e635',
     bgDeep: '#65a30d',
     accentHex: '#4d7c0f',
-    glowRgba: 'rgba(132, 204, 22, 0.45)',
-    rayRgba: 'rgba(163, 230, 53, 0.36)',
+    glowRgba: 'rgba(132, 204, 22, 0.52)',
+    rayRgba: 'rgba(163, 230, 53, 0.42)',
   },
   human: {
     ko: '인간',
     en: 'HUMAN',
     emoji: '⚔️',
-    bgLight: '#fef9c3',
-    bgMid: '#fde047',
+    bgLight: '#fef08a',
+    bgMid: '#facc15',
     bgDeep: '#ca8a04',
     accentHex: '#a16207',
-    glowRgba: 'rgba(234, 179, 8, 0.45)',
-    rayRgba: 'rgba(250, 204, 21, 0.38)',
+    glowRgba: 'rgba(234, 179, 8, 0.52)',
+    rayRgba: 'rgba(250, 204, 21, 0.44)',
   },
   undead: {
     ko: '언데드',
     en: 'UNDEAD',
     emoji: '💀',
-    bgLight: '#f3e8ff',
-    bgMid: '#d8b4fe',
+    bgLight: '#e9d5ff',
+    bgMid: '#c084fc',
     bgDeep: '#9333ea',
     accentHex: '#6b21a8',
-    glowRgba: 'rgba(168, 85, 247, 0.45)',
-    rayRgba: 'rgba(192, 132, 252, 0.38)',
+    glowRgba: 'rgba(168, 85, 247, 0.52)',
+    rayRgba: 'rgba(192, 132, 252, 0.44)',
   },
   elf: {
     ko: '엘프',
     en: 'ELF',
     emoji: '🧝',
-    bgLight: '#dcfce7',
-    bgMid: '#86efac',
+    bgLight: '#bbf7d0',
+    bgMid: '#4ade80',
     bgDeep: '#16a34a',
     accentHex: '#15803d',
-    glowRgba: 'rgba(34, 197, 94, 0.45)',
-    rayRgba: 'rgba(74, 222, 128, 0.36)',
+    glowRgba: 'rgba(34, 197, 94, 0.52)',
+    rayRgba: 'rgba(74, 222, 128, 0.42)',
   },
   dwarf: {
     ko: '드워프',
     en: 'DWARF',
     emoji: '⛏️',
-    bgLight: '#fef3c7',
-    bgMid: '#fcd34d',
+    bgLight: '#fde68a',
+    bgMid: '#fbbf24',
     bgDeep: '#d97706',
     accentHex: '#92400e',
-    glowRgba: 'rgba(217, 119, 6, 0.46)',
-    rayRgba: 'rgba(245, 158, 11, 0.38)',
+    glowRgba: 'rgba(217, 119, 6, 0.52)',
+    rayRgba: 'rgba(245, 158, 11, 0.44)',
   },
   monster: {
     ko: '몬스터',
     en: 'MONSTER',
     emoji: '👹',
-    bgLight: '#ffe4e6',
-    bgMid: '#fda4af',
+    bgLight: '#fecdd3',
+    bgMid: '#fb7185',
     bgDeep: '#e11d48',
     accentHex: '#9f1239',
-    glowRgba: 'rgba(225, 29, 72, 0.45)',
-    rayRgba: 'rgba(251, 113, 133, 0.36)',
+    glowRgba: 'rgba(225, 29, 72, 0.52)',
+    rayRgba: 'rgba(251, 113, 133, 0.42)',
   },
   robot: {
     ko: '로봇',
     en: 'ROBOT',
     emoji: '🤖',
-    bgLight: '#e0e7ff',
-    bgMid: '#93c5fd',
+    bgLight: '#bfdbfe',
+    bgMid: '#60a5fa',
     bgDeep: '#2563eb',
     accentHex: '#1e40af',
-    glowRgba: 'rgba(59, 130, 246, 0.45)',
-    rayRgba: 'rgba(96, 165, 250, 0.36)',
+    glowRgba: 'rgba(59, 130, 246, 0.52)',
+    rayRgba: 'rgba(96, 165, 250, 0.42)',
   },
   dragon: {
     ko: '드래곤',
     en: 'DRAGON',
     emoji: '🐉',
-    bgLight: '#fef2f2',
-    bgMid: '#fca5a5',
+    bgLight: '#fecaca',
+    bgMid: '#f87171',
     bgDeep: '#dc2626',
     accentHex: '#991b1b',
-    glowRgba: 'rgba(220, 38, 38, 0.50)',
-    rayRgba: 'rgba(250, 204, 21, 0.45)',
+    glowRgba: 'rgba(220, 38, 38, 0.55)',
+    rayRgba: 'rgba(250, 204, 21, 0.48)',
   },
 };
 
@@ -559,29 +559,29 @@ export function getCardCharacterBackdropTheme(
 
   // Build CSS background layers combining:
   // 1) Power Tier sunburst / energy aura
-  // 2) Rarity halo ring
+  // 2) Rarity halo ring (using rich faction & rarity colors — NO white center glow!)
   // 3) Faction / Race color atmosphere
   const rayStepDeg = powerTier === 5 ? 7.5 : powerTier === 4 ? 10 : powerTier === 3 ? 15 : 30;
   const powerBurstLayer =
     powerTier >= 3
       ? `repeating-conic-gradient(from 0deg at 50% 52%, ${pal.rayRgba} 0deg ${rayStepDeg}deg, transparent ${rayStepDeg}deg ${rayStepDeg * 2}deg)`
-      : `repeating-linear-gradient(135deg, rgba(255,255,255,0.28) 0px 6px, transparent 6px 14px)`;
+      : `repeating-linear-gradient(135deg, ${pal.rayRgba} 0px 6px, transparent 6px 14px)`;
 
   const rarityHaloLayer =
     rarityGroup === 'special'
-      ? `radial-gradient(circle at 50% 52%, rgba(255,255,255,0.94) 0%, rgba(250,204,21,0.38) 32%, rgba(244,114,182,0.36) 52%, ${pal.glowRgba} 76%, transparent 92%)`
+      ? `radial-gradient(circle at 50% 52%, rgba(250,204,21,0.55) 0%, rgba(244,114,182,0.42) 36%, rgba(56,189,248,0.38) 58%, ${pal.glowRgba} 78%, transparent 94%)`
       : rarityGroup === 'gold'
-      ? `radial-gradient(circle at 50% 52%, rgba(255,254,240,0.96) 0%, rgba(250,204,21,0.48) 42%, ${pal.glowRgba} 72%, transparent 90%)`
+      ? `radial-gradient(circle at 50% 52%, rgba(250,204,21,0.58) 0%, rgba(234,179,8,0.42) 44%, ${pal.glowRgba} 74%, transparent 92%)`
       : rarityGroup === 'silver'
-      ? `radial-gradient(circle at 50% 52%, rgba(255,255,255,0.93) 0%, ${pal.glowRgba} 55%, rgba(148,163,184,0.38) 78%, transparent 92%)`
-      : `radial-gradient(circle at 50% 52%, rgba(255,255,255,0.88) 0%, ${pal.glowRgba} 58%, transparent 88%)`;
+      ? `radial-gradient(circle at 50% 52%, ${pal.bgLight} 0%, ${pal.glowRgba} 52%, rgba(148,163,184,0.42) 80%, transparent 94%)`
+      : `radial-gradient(circle at 50% 52%, ${pal.bgLight} 0%, ${pal.glowRgba} 58%, transparent 90%)`;
 
   const factionBaseLayer =
     powerTier >= 4
-      ? `linear-gradient(165deg, ${pal.bgLight} 0%, ${pal.bgMid} 52%, ${pal.bgDeep} 100%)`
+      ? `linear-gradient(165deg, ${pal.bgLight} 0%, ${pal.bgMid} 48%, ${pal.bgDeep} 100%)`
       : powerTier === 3
-      ? `linear-gradient(165deg, ${pal.bgLight} 0%, ${pal.bgMid} 68%, ${pal.bgDeep} 100%)`
-      : `linear-gradient(165deg, #fdfcfc 0%, ${pal.bgLight} 45%, ${pal.bgMid} 100%)`;
+      ? `linear-gradient(165deg, ${pal.bgLight} 0%, ${pal.bgMid} 62%, ${pal.bgDeep} 100%)`
+      : `linear-gradient(165deg, ${pal.bgLight} 0%, ${pal.bgMid} 78%, ${pal.bgDeep} 100%)`;
 
   const windowCssBackground = `${rarityHaloLayer}, ${powerBurstLayer}, ${factionBaseLayer}`;
 
