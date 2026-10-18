@@ -212,35 +212,35 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   const helpDesc = t(HELP_SLIDES[helpStep]?.descKey ?? 'profile_help_slide1_desc', language);
 
   return (
-    <div id="profile-info" className="p-4 md:p-8 pb-32 flex flex-col gap-6 max-w-4xl mx-auto min-h-screen bg-slate-50/30 text-slate-800 font-sans">
+    <div id="profile-info" className="p-4 md:p-8 pb-32 flex flex-col gap-6 max-w-4xl mx-auto min-h-screen bg-[#fdfcfc] text-[#201d1d] font-mono">
       <PageHeader
         title={t('profile_title', language)}
         onBack={onBack}
         rightAction={
           <button
             onClick={() => { setHelpOpen(true); setHelpStep(0); }}
-            className="w-8 h-8 rounded-full border border-slate-300 flex items-center justify-center hover:bg-slate-100 transition-colors"
+            className="min-w-[44px] min-h-[44px] rounded-sm border border-[rgba(15,0,0,0.12)] flex items-center justify-center hover:bg-[#f8f7f7] transition-colors"
             aria-label="Help"
             type="button"
           >
-            <HelpCircle size={16} className="text-slate-500" />
+            <HelpCircle size={16} className="text-[#201d1d]" />
           </button>
         }
       />
 
-      <div id="profile-card" className="bg-white border border-slate-100 rounded-lg p-5 sm:p-6 space-y-8 shadow-sm">
+      <div id="profile-card" className="bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-none p-5 sm:p-6 space-y-8">
         {/* Profile preview card */}
-        <section className="space-y-4 rounded-3xl border border-indigo-100 bg-gradient-to-br from-indigo-50 via-white to-slate-50 p-5 shadow-sm">
-          <div className="flex flex-col gap-4 rounded-2xl border border-slate-100 bg-white p-4 sm:flex-row sm:items-center">
-            <div className="relative h-20 w-20 shrink-0 overflow-visible rounded-2xl border border-slate-100 bg-slate-50 shadow-sm">
-              <div className="h-full w-full scale-[1.25] overflow-hidden rounded-2xl" style={getCardAvatarStyle(Number(selectedAvatar.split(':')[1]) || 1)} />
-              <div className="absolute -right-1 -top-1 flex h-8 w-8 items-center justify-center rounded-full border border-white bg-indigo-600 text-sm text-white shadow-md">
+        <section className="space-y-4 rounded-none border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] p-5">
+          <div className="flex flex-col gap-4 rounded-none border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-4 sm:flex-row sm:items-center">
+            <div className="relative h-20 w-20 shrink-0 overflow-visible rounded-none border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7]">
+              <div className="h-full w-full scale-[1.25] overflow-hidden rounded-none" style={getCardAvatarStyle(Number(selectedAvatar.split(':')[1]) || 1)} />
+              <div className="absolute -right-1 -top-1 flex h-8 w-8 items-center justify-center rounded-sm border border-[#201d1d] bg-[#201d1d] text-sm text-[#fdfcfc]">
                 {selectedEmoticon.symbol}
               </div>
               {previewPetCardId ? (
                 <MonsterPetBadge
                   cardId={previewPetCardId}
-                  className="absolute -bottom-2 -right-2 z-10 border-emerald-200 bg-white px-1 py-1"
+                  className="absolute -bottom-2 -right-2 z-10 border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] px-1 py-1 rounded-sm"
                   imageClassName="h-6 w-6"
                   label={t('monster_pet_badge', language)}
                 />
@@ -248,7 +248,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                <h4 className="truncate text-xl font-black tracking-tight text-slate-900">
+                <h4 className="truncate text-xl font-black tracking-tight text-[#201d1d]">
                   {nickname.trim() || user?.displayName || 'GUEST'}
                 </h4>
                 <span className="text-xl">{selectedEmoticon.symbol}</span>
@@ -269,32 +269,32 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
 
             <div className="grid grid-cols-1 sm:grid-cols-4 gap-2.5">
               {/* 시그니처 카드 핀 */}
-              <div className="p-2.5 bg-white border border-slate-200 rounded-lg flex items-center gap-2.5 sm:col-span-2 shadow-2xs">
-                <div className="w-12 h-12 shrink-0 overflow-hidden border border-amber-400 bg-amber-50 rounded-md relative flex items-center justify-center">
+              <div className="p-2.5 bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-none flex items-center gap-2.5 sm:col-span-2">
+                <div className="w-12 h-12 shrink-0 overflow-hidden border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] rounded-none relative flex items-center justify-center">
                   <div className="w-full h-full scale-[1.3]" style={getCardAvatarStyle(pinnedSignatureCardId)} />
-                  <span className="absolute top-0 right-0 bg-amber-500 text-stone-950 font-black text-[8px] px-0.5">PIN</span>
+                  <span className="absolute top-0 right-0 bg-[#201d1d] text-[#fdfcfc] font-black text-[8px] px-0.5">PIN</span>
                 </div>
                 <div className="min-w-0">
-                  <div className="text-[9px] uppercase font-bold text-amber-600">Signature Card</div>
-                  <div className="font-bold text-xs truncate text-slate-800">
+                  <div className="text-[9px] uppercase font-bold text-[#201d1d]">Signature Card</div>
+                  <div className="font-bold text-xs truncate text-[#201d1d]">
                     {CARD_DATABASE[pinnedSignatureCardId]?.title || `Hero #${pinnedSignatureCardId}`}
                   </div>
-                  <div className="text-[10px] text-slate-400">
+                  <div className="text-[10px] text-[#646262]">
                     ATK: {CARD_DATABASE[pinnedSignatureCardId]?.power || 8} ★3 Awakened
                   </div>
                 </div>
               </div>
 
               {/* 시즌 명예 배지 3슬롯 */}
-              <div className="p-2.5 bg-white border border-slate-200 rounded-lg flex items-center justify-around sm:col-span-2 shadow-2xs">
+              <div className="p-2.5 bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-none flex items-center justify-around sm:col-span-2">
                 {pinnedHonorBadges.slice(0, 3).map((badgeKey, idx) => {
                   const badge = getProfileBadgeByKey(badgeKey);
                   return (
                     <div key={idx} className="text-center group relative">
-                      <div className="w-9 h-9 mx-auto rounded-full bg-indigo-50 border border-indigo-200 flex items-center justify-center text-sm shadow-xs">
+                      <div className="w-9 h-9 mx-auto rounded-sm bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] flex items-center justify-center text-sm">
                         {badge?.symbol || '🎖️'}
                       </div>
-                      <div className="text-[9px] font-bold text-slate-600 truncate max-w-[60px] mt-1">
+                      <div className="text-[9px] font-bold text-[#646262] truncate max-w-[60px] mt-1 font-mono">
                         {badge?.labelKey ? t(badge.labelKey, language) : `Badge #${idx + 1}`}
                       </div>
                     </div>
@@ -328,17 +328,17 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                   disabled={!unlocked}
                   title={card ? (language === 'ko' ? card.title : (card.title_dis || card.title_en)) : `Card ${cardId}`}
                   className={cn(
-                    'relative group aspect-square rounded-xl overflow-hidden border transition-all bg-slate-50 flex items-center justify-center',
-                    isSelected ? 'border-indigo-600 ring-2 ring-indigo-600/20 scale-[1.02] shadow-sm' : 'border-slate-100',
-                    !unlocked ? 'opacity-40 grayscale cursor-not-allowed' : 'hover:border-slate-300',
+                    'relative group aspect-square rounded-none overflow-hidden border transition-all bg-[#f8f7f7] flex items-center justify-center min-h-[44px] min-w-[44px]',
+                    isSelected ? 'border-[#201d1d] ring-1 ring-[#201d1d]' : 'border-[rgba(15,0,0,0.12)]',
+                    !unlocked ? 'opacity-40 grayscale cursor-not-allowed' : 'hover:border-[#201d1d]',
                   )}
                 >
                   <div className="w-[135%] h-[135%] shrink-0" style={getCardAvatarStyle(cardId)} />
 
                   {isSelected && (
-                    <div className="absolute inset-0 bg-indigo-600/10 flex items-center justify-center">
-                      <div className="bg-indigo-600 p-1.5 rounded-full shadow-md">
-                        <Check className="text-white" size={18} />
+                    <div className="absolute inset-0 bg-[#201d1d]/10 flex items-center justify-center">
+                      <div className="bg-[#201d1d] p-1.5 rounded-sm">
+                        <Check className="text-[#fdfcfc]" size={18} />
                       </div>
                     </div>
                   )}
@@ -448,14 +448,14 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                     setSelectedTitleKey(titleOption.key);
                   }}
                   className={cn(
-                    'rounded-2xl border p-4 text-left transition-all',
-                    isSelected ? 'border-indigo-500 bg-indigo-50 shadow-sm' : 'border-slate-100 bg-slate-50',
-                    unlocked ? 'hover:border-slate-300' : 'opacity-60 cursor-not-allowed',
+                    'rounded-none border p-4 text-left transition-all min-h-[44px]',
+                    isSelected ? 'border-[#201d1d] bg-[#f8f7f7]' : 'border-[rgba(15,0,0,0.12)] bg-[#fdfcfc]',
+                    unlocked ? 'hover:border-[#201d1d]' : 'opacity-60 cursor-not-allowed',
                   )}
                 >
                   <div className="flex items-start justify-between gap-3">
-                    <p className="text-sm font-black tracking-tight text-slate-900">{t(titleOption.labelKey, language)}</p>
-                    {isSelected && unlocked ? <Check size={16} className="text-indigo-600 shrink-0" /> : null}
+                    <p className="text-sm font-black tracking-tight text-[#201d1d]">{t(titleOption.labelKey, language)}</p>
+                    {isSelected && unlocked ? <Check size={16} className="text-[#201d1d] shrink-0" /> : null}
                   </div>
                 </button>
               );
@@ -482,17 +482,17 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                     setSelectedEmoticonKey(emoticon.key);
                   }}
                   className={cn(
-                    'rounded-2xl border p-4 text-left transition-all',
-                    isSelected ? 'border-indigo-500 bg-indigo-50 shadow-sm' : 'border-slate-100 bg-slate-50',
-                    unlocked ? 'hover:border-slate-300' : 'opacity-60 cursor-not-allowed',
+                    'rounded-none border p-4 text-left transition-all min-h-[44px]',
+                    isSelected ? 'border-[#201d1d] bg-[#f8f7f7]' : 'border-[rgba(15,0,0,0.12)] bg-[#fdfcfc]',
+                    unlocked ? 'hover:border-[#201d1d]' : 'opacity-60 cursor-not-allowed',
                   )}
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-start gap-3">
-                      <span className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white bg-white text-2xl shadow-sm">{emoticon.symbol}</span>
-                      <p className="text-sm font-black tracking-tight text-slate-900">{t(emoticon.labelKey, language)}</p>
+                      <span className="flex h-11 w-11 items-center justify-center rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] text-2xl">{emoticon.symbol}</span>
+                      <p className="text-sm font-black tracking-tight text-[#201d1d]">{t(emoticon.labelKey, language)}</p>
                     </div>
-                    {isSelected && unlocked ? <Check size={16} className="text-indigo-600 shrink-0" /> : null}
+                    {isSelected && unlocked ? <Check size={16} className="text-[#201d1d] shrink-0" /> : null}
                   </div>
                 </button>
               );
@@ -519,17 +519,17 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                     setSelectedBadgeKey(badgeOption.key);
                   }}
                   className={cn(
-                    'rounded-2xl border p-4 text-left transition-all',
-                    isSelected ? 'border-indigo-500 bg-indigo-50 shadow-sm' : 'border-slate-100 bg-slate-50',
-                    unlocked ? 'hover:border-slate-300' : 'opacity-60 cursor-not-allowed',
+                    'rounded-none border p-4 text-left transition-all min-h-[44px]',
+                    isSelected ? 'border-[#201d1d] bg-[#f8f7f7]' : 'border-[rgba(15,0,0,0.12)] bg-[#fdfcfc]',
+                    unlocked ? 'hover:border-[#201d1d]' : 'opacity-60 cursor-not-allowed',
                   )}
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-start gap-3">
-                      <span className="flex h-11 min-w-11 items-center justify-center rounded-2xl border border-white bg-white text-xl shadow-sm">{badgeOption.symbol}</span>
-                      <p className="text-sm font-black tracking-tight text-slate-900">{t(badgeOption.labelKey, language)}</p>
+                      <span className="flex h-11 min-w-11 items-center justify-center rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] text-xl">{badgeOption.symbol}</span>
+                      <p className="text-sm font-black tracking-tight text-[#201d1d]">{t(badgeOption.labelKey, language)}</p>
                     </div>
-                    {isSelected && unlocked ? <Check size={16} className="text-indigo-600 shrink-0" /> : null}
+                    {isSelected && unlocked ? <Check size={16} className="text-[#201d1d] shrink-0" /> : null}
                   </div>
                 </button>
               );
@@ -543,7 +543,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
           disabled={isSaving || !isNicknameValid}
           id="profile-save-btn"
           className={cn(
-            'w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold tracking-wide rounded-lg transition-all active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-md shadow-indigo-600/10 cursor-pointer',
+            'w-full min-h-[44px] py-3.5 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] font-bold tracking-wide rounded-sm border border-[#201d1d] transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer font-mono',
             isSaving && 'animate-pulse',
           )}
         >
@@ -551,39 +551,39 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
         </button>
 
         {/* Battle stats: Hierarchical Modern Stat Grid */}
-        <div className="pt-6 border-t border-slate-200/80 space-y-3 font-mono">
+        <div className="pt-6 border-t border-[rgba(15,0,0,0.12)] space-y-3 font-mono">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#201d1d]">
               {language === 'ko' ? '📊 배틀 전적 대시보드' : '📊 Battle Records'}
             </span>
-            <span className="text-[10px] text-slate-400">
+            <span className="text-[10px] text-[#646262]">
               {language === 'ko' ? `총 ${stats.wins + stats.losses + stats.draws}전` : `Total ${stats.wins + stats.losses + stats.draws} Matches`}
             </span>
           </div>
 
           {/* Primary Stats 4-Column Grid: W / L / D / WinRate */}
           <div className="grid grid-cols-4 gap-2 text-center">
-            <div className="bg-slate-50 p-3 rounded-none border border-slate-200 shadow-2xs">
+            <div className="bg-[#f8f7f7] p-3 rounded-none border border-[rgba(15,0,0,0.12)]">
               <span className="text-base sm:text-lg font-black text-emerald-600 block">{stats.wins}</span>
-              <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tight block mt-0.5">{language === 'ko' ? '승리' : 'Wins'}</span>
+              <span className="text-[9px] font-bold text-[#646262] uppercase tracking-tight block mt-0.5">{language === 'ko' ? '승리' : 'Wins'}</span>
             </div>
-            <div className="bg-slate-50 p-3 rounded-none border border-slate-200 shadow-2xs">
+            <div className="bg-[#f8f7f7] p-3 rounded-none border border-[rgba(15,0,0,0.12)]">
               <span className="text-base sm:text-lg font-black text-rose-600 block">{stats.losses}</span>
-              <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tight block mt-0.5">{language === 'ko' ? '패배' : 'Losses'}</span>
+              <span className="text-[9px] font-bold text-[#646262] uppercase tracking-tight block mt-0.5">{language === 'ko' ? '패배' : 'Losses'}</span>
             </div>
-            <div className="bg-slate-50 p-3 rounded-none border border-slate-200 shadow-2xs">
-              <span className="text-base sm:text-lg font-black text-slate-600 block">{stats.draws}</span>
-              <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tight block mt-0.5">{language === 'ko' ? '무승부' : 'Draws'}</span>
+            <div className="bg-[#f8f7f7] p-3 rounded-none border border-[rgba(15,0,0,0.12)]">
+              <span className="text-base sm:text-lg font-black text-[#646262] block">{stats.draws}</span>
+              <span className="text-[9px] font-bold text-[#646262] uppercase tracking-tight block mt-0.5">{language === 'ko' ? '무승부' : 'Draws'}</span>
             </div>
-            <div className="bg-indigo-50/70 p-3 rounded-none border border-indigo-200 shadow-2xs">
-              <span className="text-base sm:text-lg font-black text-indigo-700 block">
+            <div className="bg-[#f8f7f7] p-3 rounded-none border border-[rgba(15,0,0,0.12)]">
+              <span className="text-base sm:text-lg font-black text-[#201d1d] block">
                 {(() => {
                   const total = stats.wins + stats.losses + stats.draws;
                   if (total === 0) return '0%';
                   return Math.round((stats.wins / total) * 100) + '%';
                 })()}
               </span>
-              <span className="text-[9px] font-bold text-indigo-500 uppercase tracking-tight block mt-0.5">{language === 'ko' ? '승률' : 'Win Rate'}</span>
+              <span className="text-[9px] font-bold text-[#646262] uppercase tracking-tight block mt-0.5">{language === 'ko' ? '승률' : 'Win Rate'}</span>
             </div>
           </div>
 
@@ -620,10 +620,10 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: 20, opacity: 0 }}
               className={cn(
-                'p-4 border rounded-lg text-center shadow-xs',
+                'p-4 border rounded-none text-center',
                 message.type === 'success'
-                  ? 'bg-green-50 border-green-200 text-green-800'
-                  : 'bg-rose-50 border-rose-200 text-rose-700',
+                  ? 'bg-[#f8f7f7] border-emerald-500 text-emerald-800'
+                  : 'bg-[#f8f7f7] border-rose-500 text-rose-700',
               )}
             >
               <p className="text-sm font-bold">{message.text}</p>
@@ -639,49 +639,50 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[209] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+            className="fixed inset-0 z-[209] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 font-mono"
           >
             <motion.div
               initial={{ scale: 0.95, y: 10 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 10 }}
-              className="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden"
+              className="bg-[#fdfcfc] rounded-none border border-[#201d1d] w-full max-w-sm overflow-hidden"
             >
-              <div className="flex items-center justify-between p-4 border-b border-slate-100">
+              <div className="flex items-center justify-between p-4 border-b border-[rgba(15,0,0,0.12)]">
                 <div className="flex items-center gap-2">
-                  <HelpCircle size={18} className="text-indigo-500" />
-                  <h3 className="text-sm font-black text-slate-800">{helpTitle}</h3>
+                  <HelpCircle size={18} className="text-[#201d1d]" />
+                  <h3 className="text-sm font-black text-[#201d1d]">{helpTitle}</h3>
                 </div>
                 <button
                   onClick={() => setHelpOpen(false)}
-                  className="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center hover:bg-slate-50 transition-colors"
+                  className="min-w-[44px] min-h-[44px] rounded-sm border border-[rgba(15,0,0,0.12)] flex items-center justify-center hover:bg-[#f8f7f7] transition-colors"
                   type="button"
+                  aria-label="Close"
                 >
-                  <X size={14} className="text-slate-500" />
+                  <X size={16} className="text-[#201d1d]" />
                 </button>
               </div>
               <div className="p-5 min-h-[100px]">
-                <p className="text-sm text-slate-600 leading-relaxed whitespace-pre-line">{helpDesc}</p>
+                <p className="text-sm text-[#201d1d] leading-relaxed whitespace-pre-line">{helpDesc}</p>
               </div>
               <div className="flex items-center justify-between px-4 pb-4">
                 <button
                   onClick={() => setHelpStep((s) => Math.max(0, s - 1))}
                   disabled={helpStep === 0}
-                  className="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center disabled:opacity-30 hover:bg-slate-50 transition-colors"
+                  className="min-w-[44px] min-h-[44px] rounded-sm border border-[rgba(15,0,0,0.12)] flex items-center justify-center disabled:opacity-30 hover:bg-[#f8f7f7] transition-colors text-xs font-bold"
                   type="button"
                 >
-                  <ChevronLeft size={16} className="text-slate-600" />
+                  <ChevronLeft size={16} className="text-[#201d1d]" />
                 </button>
-                <span className="text-[10px] font-bold text-slate-400">
+                <span className="text-[10px] font-bold text-[#646262]">
                   {helpStep + 1} / {HELP_SLIDES.length}
                 </span>
                 <button
                   onClick={() => setHelpStep((s) => Math.min(HELP_SLIDES.length - 1, s + 1))}
                   disabled={helpStep === HELP_SLIDES.length - 1}
-                  className="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center disabled:opacity-30 hover:bg-slate-50 transition-colors"
+                  className="min-w-[44px] min-h-[44px] rounded-sm border border-[rgba(15,0,0,0.12)] flex items-center justify-center disabled:opacity-30 hover:bg-[#f8f7f7] transition-colors text-xs font-bold"
                   type="button"
                 >
-                  <ChevronRight size={16} className="text-slate-600" />
+                  <ChevronRight size={16} className="text-[#201d1d]" />
                 </button>
               </div>
             </motion.div>

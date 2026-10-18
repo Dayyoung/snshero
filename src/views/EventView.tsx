@@ -439,18 +439,18 @@ export const EventView: React.FC<EventViewProps> = ({
   const helpDesc = t(HELP_SLIDES[helpStep]?.descKey ?? 'event_help_slide1_desc', language);
 
   return (
-    <div className="flex-1 flex flex-col w-full bg-slate-50/50 text-slate-800 font-sans overflow-y-auto pb-32">
+    <div className="flex-1 flex flex-col w-full bg-[#fdfcfc] text-[#201d1d] font-mono overflow-y-auto pb-32">
       <div className="max-w-4xl mx-auto w-full px-4">
         <PageHeader
           title={t('event', language)}
           rightAction={
             <button
               onClick={() => { setHelpOpen(true); setHelpStep(0); }}
-              className="w-7 h-7 rounded-full border border-slate-300 flex items-center justify-center hover:bg-slate-100 transition-colors"
+              className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] flex items-center justify-center hover:bg-[#f8f7f7] transition-colors"
               aria-label="Help"
               type="button"
             >
-              <HelpCircle size={14} className="text-slate-500" />
+              <HelpCircle size={16} className="text-[#201d1d]" />
             </button>
           }
         />
@@ -459,11 +459,11 @@ export const EventView: React.FC<EventViewProps> = ({
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mt-4 rounded-2xl border border-amber-200/70 bg-gradient-to-r from-amber-50 via-white to-purple-50 p-4 shadow-sm"
+          className="mt-4 rounded-none border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] p-4 text-[#201d1d]"
         >
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-slate-900">
-              <Zap size={16} className="text-amber-500" />
+            <div className="flex items-center gap-2">
+              <Zap size={16} className="text-amber-600" />
               <span className="text-2xl font-black tracking-tight">{sns.toLocaleString()} SNS</span>
             </div>
             <div className="flex gap-2">
@@ -473,7 +473,7 @@ export const EventView: React.FC<EventViewProps> = ({
                   playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                   setView?.('season-hub');
                 }}
-                className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-2 text-[10px] font-black uppercase tracking-[0.18em] text-emerald-700 transition hover:bg-emerald-100 touch-target"
+                className="min-h-[44px] rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] px-3 py-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[#201d1d] transition hover:bg-[#f8f7f7]"
               >
                 {t('sns_spend_go_season_hub', language)}
               </button>
@@ -483,7 +483,7 @@ export const EventView: React.FC<EventViewProps> = ({
                   playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                   setView?.('community');
                 }}
-                className="rounded-full border border-indigo-200 bg-indigo-50 px-3 py-2 text-[10px] font-black uppercase tracking-[0.18em] text-indigo-700 transition hover:bg-indigo-100 touch-target"
+                className="min-h-[44px] rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] px-3 py-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[#201d1d] transition hover:bg-[#f8f7f7]"
               >
                 {t('sns_spend_go_event', language)}
               </button>
@@ -502,29 +502,29 @@ export const EventView: React.FC<EventViewProps> = ({
                 playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                 setActiveModal('nine-slot');
               }}
-              className="group relative p-4 rounded-xl border-2 border-amber-400/80 bg-[#14101d] text-white shadow-md hover:shadow-xl overflow-hidden flex flex-col justify-between cursor-pointer transition-all"
+              className="group relative p-4 rounded-none border border-[rgba(15,0,0,0.12)] bg-[#201d1d] text-[#fdfcfc] overflow-hidden flex flex-col justify-between cursor-pointer transition-all"
             >
               <img
                 src="/minigame_cardslot.png"
                 alt="slot background"
-                className="absolute inset-0 w-full h-full object-cover opacity-25 group-hover:scale-105 transition-transform duration-500 pointer-events-none"
+                className="absolute inset-0 w-full h-full object-cover opacity-20 group-hover:scale-105 transition-transform duration-500 pointer-events-none"
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-[#120d1d]/95 via-[#120d1d]/80 to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-[#201d1d]/80 pointer-events-none" />
 
               <div className="relative z-10 flex items-start justify-between gap-2">
                 <div className="flex items-center gap-3">
-                  <div className="relative w-12 h-12 rounded-lg overflow-hidden border-2 border-yellow-300 shadow-[0_0_15px_rgba(250,204,21,0.5)] shrink-0 bg-black">
+                  <div className="relative w-12 h-12 rounded-none overflow-hidden border border-[rgba(15,0,0,0.12)] shrink-0 bg-black">
                     <img src="/seat/Kadan.png" alt="Kadan Wild" className="w-full h-full object-cover" />
-                    <span className="absolute bottom-0 inset-x-0 bg-yellow-400 text-black text-[8px] font-black text-center leading-tight">
+                    <span className="absolute bottom-0 inset-x-0 bg-[#fdfcfc] text-[#201d1d] text-[8px] font-black text-center leading-tight">
                       WILD x150
                     </span>
                   </div>
                   <div>
                     <div className="flex items-center gap-1.5">
-                      <h4 className="text-sm font-black text-amber-300 tracking-tight">
+                      <h4 className="text-sm font-black text-[#fdfcfc] tracking-tight">
                         {language === 'ko' ? 'HERO VEGAS 9구 슬롯' : 'HERO VEGAS 9-SLOT'}
                       </h4>
-                      <span className="inline-flex items-center px-1.5 py-0.5 text-[9px] font-black bg-rose-600 text-white rounded-xs animate-pulse shadow-xs">
+                      <span className="inline-flex items-center px-1.5 py-0.5 text-[9px] font-bold bg-[#fdfcfc] text-[#201d1d] rounded-sm">
                         NEW
                       </span>
                     </div>
@@ -537,12 +537,12 @@ export const EventView: React.FC<EventViewProps> = ({
                 </div>
               </div>
 
-              <div className="relative z-10 mt-3.5 pt-2.5 border-t border-amber-400/30 flex items-center justify-between">
-                <div className="flex items-center gap-1.5 text-[11px] font-black text-yellow-300">
-                  <Zap size={13} className="text-yellow-400" />
+              <div className="relative z-10 mt-3.5 pt-2.5 border-t border-stone-800 flex items-center justify-between">
+                <div className="flex items-center gap-1.5 text-[11px] font-bold text-stone-300">
+                  <Zap size={13} className="text-amber-400" />
                   <span>{language === 'ko' ? '1회 100 SNS · 피버 무료스핀' : '100 SNS · Fever Free Spins'}</span>
                 </div>
-                <span className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 font-black text-xs shadow-md flex items-center gap-1">
+                <span className="min-h-[44px] px-3.5 py-2 rounded-sm bg-[#fdfcfc] text-[#201d1d] font-bold text-xs flex items-center gap-1">
                   <span>{language === 'ko' ? '슬롯 입장' : 'PLAY SLOT'}</span>
                   <ChevronRight size={14} />
                 </span>
@@ -558,29 +558,29 @@ export const EventView: React.FC<EventViewProps> = ({
                 playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                 setActiveModal('daily-hidden');
               }}
-              className="group relative p-4 rounded-xl border-2 border-cyan-400/80 bg-[#0d1622] text-white shadow-md hover:shadow-xl overflow-hidden flex flex-col justify-between cursor-pointer transition-all"
+              className="group relative p-4 rounded-none border border-[rgba(15,0,0,0.12)] bg-[#201d1d] text-[#fdfcfc] overflow-hidden flex flex-col justify-between cursor-pointer transition-all"
             >
               <img
                 src="/banner/010.png"
                 alt="hidden hero world"
-                className="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:scale-105 transition-transform duration-500 pointer-events-none"
+                className="absolute inset-0 w-full h-full object-cover opacity-20 group-hover:scale-105 transition-transform duration-500 pointer-events-none"
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-[#0b131e]/95 via-[#0b131e]/80 to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-[#201d1d]/80 pointer-events-none" />
 
               <div className="relative z-10 flex items-start justify-between gap-2">
                 <div className="flex items-center gap-3">
-                  <div className="relative w-12 h-12 rounded-lg overflow-hidden border-2 border-cyan-300 shadow-[0_0_15px_rgba(34,211,238,0.5)] shrink-0 bg-black">
+                  <div className="relative w-12 h-12 rounded-none overflow-hidden border border-[rgba(15,0,0,0.12)] shrink-0 bg-black">
                     <img src="/seat/Poseidon.png" alt="Hidden Hero" className="w-full h-full object-cover" />
-                    <span className="absolute bottom-0 inset-x-0 bg-cyan-400 text-slate-950 text-[8px] font-black text-center leading-tight">
+                    <span className="absolute bottom-0 inset-x-0 bg-[#fdfcfc] text-[#201d1d] text-[8px] font-black text-center leading-tight">
                       5 TARGETS
                     </span>
                   </div>
                   <div>
                     <div className="flex items-center gap-1.5">
-                      <h4 className="text-sm font-black text-cyan-300 tracking-tight">
+                      <h4 className="text-sm font-black text-[#fdfcfc] tracking-tight">
                         {language === 'ko' ? '월리를 찾아라: 히어로 대수색' : "WHERE'S HERO? : WORLD HUNT"}
                       </h4>
-                      <span className="inline-flex items-center px-1.5 py-0.5 text-[9px] font-black bg-rose-600 text-white rounded-xs animate-pulse shadow-xs">
+                      <span className="inline-flex items-center px-1.5 py-0.5 text-[9px] font-bold bg-[#fdfcfc] text-[#201d1d] rounded-sm">
                         NEW
                       </span>
                     </div>
@@ -593,16 +593,16 @@ export const EventView: React.FC<EventViewProps> = ({
                 </div>
               </div>
 
-              <div className="relative z-10 mt-3.5 pt-2.5 border-t border-cyan-400/30 flex items-center justify-between">
-                <div className="flex items-center gap-1.5 text-[11px] font-black text-cyan-300">
-                  <Gift size={13} className="text-cyan-400" />
+              <div className="relative z-10 mt-3.5 pt-2.5 border-t border-stone-800 flex items-center justify-between">
+                <div className="flex items-center gap-1.5 text-[11px] font-bold text-stone-300">
+                  <Gift size={13} className="text-stone-300" />
                   <span>
                     {dailyHiddenCleared
                       ? (language === 'ko' ? '오늘 보상 완료 ✓ (자유 투어)' : 'Claimed ✓ (Free Tour)')
                       : '+1,500 SNS 일일 보상'}
                   </span>
                 </div>
-                <span className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-950 font-black text-xs shadow-md flex items-center gap-1">
+                <span className="min-h-[44px] px-3.5 py-2 rounded-sm bg-[#fdfcfc] text-[#201d1d] font-bold text-xs flex items-center gap-1">
                   <span>{language === 'ko' ? '월드 수색' : 'START HUNT'}</span>
                   <ChevronRight size={14} />
                 </span>
@@ -617,34 +617,34 @@ export const EventView: React.FC<EventViewProps> = ({
               return (
                 <motion.button
                   key={link.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.03 }}
+                  className="min-h-[44px] w-full flex items-center gap-3 p-3.5 rounded-none border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] hover:bg-[#f8f7f7] active:scale-[0.99] transition-all"
                   onClick={() => {
                     playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                     link.onClick();
                   }}
-                  className="w-full flex items-center gap-3 p-3.5 rounded-xl border border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm active:scale-[0.99] transition-all touch-target"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.03 }}
                 >
-                  <div className={`w-9 h-9 rounded-lg ${link.colorClass} flex items-center justify-center shrink-0`}>
-                    <IconComp size={16} className="text-white" />
+                  <div className="w-9 h-9 rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#201d1d] text-[#fdfcfc] flex items-center justify-center shrink-0">
+                    <IconComp size={16} />
                   </div>
                   <div className="flex-1 flex items-center gap-2 text-left">
-                    <span className="text-sm font-bold text-slate-800">
+                    <span className="text-sm font-bold text-[#201d1d]">
                       {link.label}
                     </span>
                     {link.isNew && (
-                      <span className="px-1.5 py-0.5 text-[9px] font-black bg-rose-600 text-white rounded-full animate-pulse shadow-xs">
+                      <span className="px-1.5 py-0.5 text-[9px] font-bold bg-[#201d1d] text-[#fdfcfc] rounded-sm">
                         NEW
                       </span>
                     )}
                   </div>
                   {link.rightExtra && (
-                    <span className="text-[10px] font-semibold text-slate-400 shrink-0">
+                    <span className="text-[10px] font-semibold text-stone-500 shrink-0">
                       {link.rightExtra}
                     </span>
                   )}
-                  <ChevronRight size={16} className="text-slate-300 shrink-0" />
+                  <ChevronRight size={16} className="text-stone-400 shrink-0" />
                 </motion.button>
               );
             })}
@@ -662,9 +662,9 @@ export const EventView: React.FC<EventViewProps> = ({
 
       <Suspense
         fallback={
-          <div className="fixed inset-0 z-[9998] flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-xs">
-            <div className="flex flex-col items-center gap-3 rounded-2xl border border-white/10 bg-slate-950/90 px-6 py-5 text-white shadow-2xl">
-              <div className="h-8 w-8 animate-spin rounded-full border-2 border-white/20 border-t-white" />
+          <div className="fixed inset-0 z-[9998] flex items-center justify-center bg-black/50 p-4 font-mono">
+            <div className="flex flex-col items-center gap-3 rounded-none border border-[#201d1d] bg-[#201d1d] px-6 py-5 text-[#fdfcfc]">
+              <div className="h-8 w-8 animate-spin rounded-none border-2 border-stone-700 border-t-white" />
               <span className="text-[10px] font-bold uppercase tracking-widest">{t('loading', language)}</span>
             </div>
           </div>
@@ -801,27 +801,26 @@ export const EventView: React.FC<EventViewProps> = ({
 
         {/* Patch Note Modal */}
         {activeModal === 'patchnote' && (
-          <div className="fixed inset-0 z-[9997] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs overflow-y-auto">
+          <div className="fixed inset-0 z-[9997] flex items-center justify-center p-4 bg-black/50 overflow-y-auto font-mono">
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
+              initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white text-slate-800 w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl border border-slate-100 relative font-sans my-8"
+              exit={{ opacity: 0, scale: 0.98 }}
+              className="bg-[#fdfcfc] text-[#201d1d] w-full max-w-lg rounded-none overflow-hidden border border-[#201d1d] relative my-8"
             >
               {/* Modal Header */}
-              <div className="p-5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-b border-blue-700 flex items-center justify-between sticky top-0 z-10">
+              <div className="p-4 bg-[#201d1d] text-[#fdfcfc] border-b border-[#201d1d] flex items-center justify-between sticky top-0 z-10">
                 <div className="flex items-center gap-2">
-                  <FileText size={18} className="text-blue-200" />
+                  <FileText size={18} className="text-stone-300" />
                   <h2 className="text-sm font-bold uppercase tracking-wide">
                     {t('patchnote_title', language)}
                   </h2>
                 </div>
                 <button
                   onClick={() => setActiveModal('none')}
-                  className="text-blue-200 hover:text-white transition-colors"
-                >
-                  <X size={20} />
-                </button>
+                  className="min-w-[44px] min-h-[44px] rounded-sm text-stone-300 hover:text-white flex items-center justify-center cursor-pointer"
+                  aria-label="Close"
+                ><X size={20} /></button>
               </div>
               {/* Modal Body */}
               <div className="p-5 max-h-[70vh] overflow-y-auto">
@@ -845,48 +844,47 @@ export const EventView: React.FC<EventViewProps> = ({
       {/* ── Help popup ── */}
       <AnimatePresence>
         {helpOpen && (
-          <div className="fixed inset-0 z-[209] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="fixed inset-0 z-[209] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 font-mono">
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
+              initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden"
+              exit={{ opacity: 0, scale: 0.98 }}
+              className="bg-[#fdfcfc] rounded-none border border-[#201d1d] w-full max-w-sm overflow-hidden text-[#201d1d]"
             >
-              <div className="flex items-center justify-between p-4 border-b border-slate-100">
+              <div className="flex items-center justify-between p-4 border-b border-[rgba(15,0,0,0.12)]">
                 <div className="flex items-center gap-2">
-                  <HelpCircle size={18} className="text-indigo-500" />
-                  <h3 className="text-sm font-black text-slate-800">{helpTitle}</h3>
+                  <HelpCircle size={18} className="text-[#201d1d]" />
+                  <h3 className="text-sm font-black text-[#201d1d]">{helpTitle}</h3>
                 </div>
                 <button
                   onClick={() => setHelpOpen(false)}
-                  className="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center hover:bg-slate-50 transition-colors"
+                  className="min-w-[44px] min-h-[44px] rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] flex items-center justify-center hover:bg-[#f8f7f7] transition-colors cursor-pointer"
                   type="button"
-                >
-                  <X size={14} className="text-slate-500" />
-                </button>
+                  aria-label="Close"
+                ><X size={14} className="text-stone-700" /></button>
               </div>
               <div className="p-5 min-h-[100px]">
-                <p className="text-sm text-slate-600 leading-relaxed whitespace-pre-line">{helpDesc}</p>
+                <p className="text-sm text-stone-700 leading-relaxed whitespace-pre-line">{helpDesc}</p>
               </div>
               <div className="flex items-center justify-between px-4 pb-4">
                 <button
                   onClick={() => setHelpStep((s) => Math.max(0, s - 1))}
                   disabled={helpStep === 0}
-                  className="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center disabled:opacity-30 hover:bg-slate-50 transition-colors"
+                  className="min-w-[44px] min-h-[44px] rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] flex items-center justify-center disabled:opacity-30 hover:bg-[#f8f7f7] transition-colors"
                   type="button"
                 >
-                  <ChevronLeft size={16} className="text-slate-600" />
+                  <ChevronLeft size={16} className="text-stone-700" />
                 </button>
-                <span className="text-[10px] font-bold text-slate-400">
+                <span className="text-[10px] font-bold text-stone-500">
                   {helpStep + 1} / {HELP_SLIDES.length}
                 </span>
                 <button
                   onClick={() => setHelpStep((s) => Math.min(HELP_SLIDES.length - 1, s + 1))}
                   disabled={helpStep === HELP_SLIDES.length - 1}
-                  className="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center disabled:opacity-30 hover:bg-slate-50 transition-colors"
+                  className="min-w-[44px] min-h-[44px] rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] flex items-center justify-center disabled:opacity-30 hover:bg-[#f8f7f7] transition-colors"
                   type="button"
                 >
-                  <ChevronRight size={16} className="text-slate-600" />
+                  <ChevronRight size={16} className="text-stone-700" />
                 </button>
               </div>
             </motion.div>
@@ -901,38 +899,37 @@ export const EventView: React.FC<EventViewProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs"
+            className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/50 font-mono"
           >
             <div
               className="absolute inset-0"
               onClick={() => setCustomAlert(prev => ({ ...prev, isOpen: false }))}
             />
             <motion.div
-              initial={{ scale: 0.95, y: 15 }}
+              initial={{ scale: 0.98, y: 10 }}
               animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.95, y: 15 }}
+              exit={{ scale: 0.98, y: 10 }}
               transition={{ type: 'spring', stiffness: 350, damping: 28 }}
-              className="bg-white text-slate-800 w-full max-w-sm rounded-3xl overflow-hidden shadow-2xl border border-slate-100 relative z-[10000] font-sans"
+              className="bg-[#fdfcfc] text-[#201d1d] w-full max-w-sm rounded-none overflow-hidden border border-[#201d1d] relative z-[10000]"
             >
-              <div className="p-5 bg-gradient-to-r from-slate-900 to-slate-950 text-white border-b border-slate-800 flex items-center justify-between">
+              <div className="p-4 bg-[#201d1d] text-[#fdfcfc] border-b border-[#201d1d] flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Star size={18} className="text-yellow-450 fill-yellow-450" />
+                  <Star size={18} className="text-amber-400 fill-amber-400" />
                   <h2 className="text-sm font-bold uppercase tracking-wide">{customAlert.title}</h2>
                 </div>
                 <button
                   onClick={() => setCustomAlert(prev => ({ ...prev, isOpen: false }))}
-                  className="text-slate-400 hover:text-white transition-colors"
-                >
-                  <X size={20} />
-                </button>
+                  className="min-w-[44px] min-h-[44px] rounded-sm text-stone-300 hover:text-white flex items-center justify-center cursor-pointer"
+                  aria-label="Close"
+                ><X size={20} /></button>
               </div>
               <div className="p-6">
-                <p className="text-xs font-bold text-slate-500 leading-relaxed whitespace-pre-line">{customAlert.message}</p>
+                <p className="text-xs font-bold text-stone-700 leading-relaxed whitespace-pre-line">{customAlert.message}</p>
               </div>
               <div className="px-6 pb-6">
                 <button
                   onClick={() => setCustomAlert(prev => ({ ...prev, isOpen: false }))}
-                  className="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold uppercase text-xs tracking-wider rounded-2xl active:scale-98 transition-all shadow-md cursor-pointer"
+                  className="w-full min-h-[44px] py-3 bg-[#201d1d] hover:bg-stone-800 text-[#fdfcfc] font-bold uppercase text-xs tracking-wider rounded-sm active:scale-98 transition-all cursor-pointer"
                 >
                   {language === 'ko' ? '확인' : 'OK'}
                 </button>

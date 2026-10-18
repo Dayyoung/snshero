@@ -527,14 +527,14 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
   };
 
   return (
-    <div className="min-h-screen app-bg text-slate-800 font-sans pb-32 overflow-x-hidden">
+    <div className="min-h-screen bg-[#fdfcfc] text-[#201d1d] font-mono pb-32 overflow-x-hidden">
       <div className="max-w-4xl mx-auto px-6">
         <PageHeader title={t('wiki_card_title', language)} onBack={() => onNavigate('home')} />
 
         {/* ── Item 62 / 69: Card Collection Progress Bar & Element Breakdown ── */}
-        <div className="mt-4 mb-6 p-4 rounded-xl border border-slate-200 bg-white/90 shadow-sm space-y-3">
-          <div className="flex items-center justify-between font-mono text-xs font-bold">
-            <span className="text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+        <div className="mt-4 mb-6 p-4 rounded-none border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] space-y-3 font-mono">
+          <div className="flex items-center justify-between text-xs font-bold">
+            <span className="text-[#201d1d] uppercase tracking-wider flex items-center gap-1.5">
               <Trophy size={16} className="text-amber-500" />
               {language === 'ko' ? '도감 수집 진행률' : 'Codex Collection Progress'}
             </span>
@@ -542,55 +542,55 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
               <button
                 type="button"
                 onClick={() => handleOpenWatchFace(null)}
-                className="inline-flex items-center gap-1 px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-700 rounded-lg text-[11px] font-bold transition-all active:scale-95 cursor-pointer shadow-2xs"
+                className="min-h-[44px] inline-flex items-center gap-1 px-3 py-1 bg-[#201d1d] hover:bg-stone-800 border border-[#201d1d] text-[#fdfcfc] rounded-sm text-[11px] font-bold transition-colors cursor-pointer"
               >
-                <Watch size={13} className="text-indigo-600" />
+                <Watch size={13} className="text-[#fdfcfc]" />
                 <span>{language === 'ko' ? '와치페이스' : 'Watch Face'}</span>
               </button>
-              <span className="text-indigo-600 font-extrabold text-sm">
+              <span className="text-[#201d1d] font-bold text-sm">
                 {ownedCount} / {totalDatabaseCards} ({collectionPercent}%)
               </span>
             </div>
           </div>
 
           {/* Progress Bar */}
-          <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200 p-0.5">
+          <div className="w-full h-3 bg-[rgba(15,0,0,0.06)] rounded-none overflow-hidden border border-[rgba(15,0,0,0.12)] p-0.5">
             <div
-              className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-amber-500 rounded-full transition-all duration-500"
+              className="h-full bg-[#201d1d] rounded-none transition-all duration-500"
               style={{ width: `${collectionPercent}%` }}
             />
           </div>
 
           {/* Element Badges */}
           <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 pt-1 text-[10px] font-mono font-bold">
-            <div className="p-1.5 rounded-lg bg-cyan-50 border border-cyan-200 text-cyan-800 text-center">
+            <div className="p-1.5 rounded-none bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] text-[#201d1d] text-center">
               💧 {language === 'ko' ? '수' : 'Water'}: {elementStats.WATER}
             </div>
-            <div className="p-1.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-800 text-center">
+            <div className="p-1.5 rounded-none bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] text-[#201d1d] text-center">
               🔥 {language === 'ko' ? '화' : 'Fire'}: {elementStats.FIRE}
             </div>
-            <div className="p-1.5 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-center">
+            <div className="p-1.5 rounded-none bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] text-[#201d1d] text-center">
               ⛰️ {language === 'ko' ? '지' : 'Earth'}: {elementStats.EARTH}
             </div>
-            <div className="p-1.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-center">
+            <div className="p-1.5 rounded-none bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] text-[#201d1d] text-center">
               🌪️ {language === 'ko' ? '풍' : 'Wind'}: {elementStats.WIND}
             </div>
-            <div className="p-1.5 rounded-lg bg-purple-50 border border-purple-200 text-purple-800 text-center">
+            <div className="p-1.5 rounded-none bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] text-[#201d1d] text-center">
               ✨ {language === 'ko' ? '신' : 'Holy'}: {elementStats.HOLY}
             </div>
-            <div className="p-1.5 rounded-lg bg-slate-100 border border-slate-300 text-slate-800 text-center">
+            <div className="p-1.5 rounded-none bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] text-[#201d1d] text-center">
               🌑 {language === 'ko' ? '암' : 'Dark'}: {elementStats.DARK}
             </div>
           </div>
 
           {/* ID 528: 카드 수집 도감 테마 세트 완성 트랙 */}
-          <div className="border-t border-slate-200 pt-3 font-mono space-y-2">
-            <div className="flex items-center justify-between text-xs font-bold text-slate-800">
+          <div className="border-t border-[rgba(15,0,0,0.08)] pt-3 font-mono space-y-2">
+            <div className="flex items-center justify-between text-xs font-bold text-[#201d1d]">
               <span className="flex items-center gap-1.5">
                 <span>🏆</span>
                 <span>{language === 'ko' ? '테마 세트 수집 보상 트랙 (세트당 500 SNS)' : 'Theme Set Completion Track (500 SNS/Set)'}</span>
               </span>
-              <span className="text-[10px] text-slate-500">
+              <span className="text-[10px] text-stone-500">
                 {claimedSets.length} / {themeSets.length} {language === 'ko' ? '수령 완료' : 'Claimed'}
               </span>
             </div>
@@ -603,38 +603,38 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
                   <div
                     key={set.id}
                     className={cn(
-                      "p-2 border flex flex-col justify-between transition-all",
+                      "p-2 border rounded-none flex flex-col justify-between transition-colors",
                       isClaimed
-                        ? "bg-slate-50 border-slate-200 opacity-70"
+                        ? "bg-[#f8f7f7] border-[rgba(15,0,0,0.08)] opacity-70"
                         : canClaim
-                          ? "bg-amber-50/90 border-amber-400 shadow-xs"
-                          : "bg-white border-slate-200"
+                          ? "bg-amber-500/10 border-amber-400"
+                          : "bg-[#fdfcfc] border-[rgba(15,0,0,0.12)]"
                     )}
                   >
                     <div className="flex items-center justify-between font-bold mb-1">
                       <span className="truncate">{set.icon} {language === 'ko' ? set.nameKo : set.nameEn}</span>
                       <span className={cn(
                         "text-[9px] px-1",
-                        set.isCompleted ? "text-emerald-600 font-black" : "text-slate-500"
+                        set.isCompleted ? "text-emerald-700 font-bold" : "text-stone-500"
                       )}>
                         [{set.collected}/{set.total}]
                       </span>
                     </div>
 
                     {isClaimed ? (
-                      <span className="text-[9px] text-emerald-600 font-bold text-center">
+                      <span className="text-[9px] text-emerald-700 font-bold text-center">
                         ✅ {language === 'ko' ? '수령 완료' : 'Claimed'}
                       </span>
                     ) : canClaim ? (
                       <button
                         type="button"
                         onClick={() => handleClaimThemeSet(set.id, set.reward)}
-                        className="w-full py-0.5 bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-[9px] rounded-xs cursor-pointer active:scale-95 animate-pulse"
+                        className="w-full min-h-[44px] py-1 bg-[#201d1d] hover:bg-stone-800 text-[#fdfcfc] font-bold text-[10px] rounded-sm cursor-pointer border border-[#201d1d] transition-colors flex items-center justify-center"
                       >
                         [🎁 500 SNS 수령]
                       </button>
                     ) : (
-                      <span className="text-[9px] text-slate-400 text-center">
+                      <span className="text-[9px] text-stone-400 text-center">
                         {set.total - set.collected}{language === 'ko' ? '장 부족' : ' more'}
                       </span>
                     )}
@@ -646,20 +646,20 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
         </div>
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 mt-6">
           <div className="flex items-center gap-2.5 sm:gap-3 flex-wrap">
-            <h1 className="text-3xl md:text-4xl font-extrabold uppercase tracking-tight text-slate-900">
+            <h1 className="text-2xl md:text-3xl font-bold uppercase tracking-tight text-[#201d1d]">
               {t('wiki_card_index', language)}
             </h1>
             <button
               onClick={() => { setShowHelp(true); setHelpStep(0); }}
-              className="w-8 h-8 rounded-full border border-slate-300 flex items-center justify-center hover:bg-slate-100 transition-colors shrink-0"
+              className="min-h-[44px] min-w-[44px] rounded-sm border border-[rgba(15,0,0,0.12)] flex items-center justify-center hover:bg-[rgba(15,0,0,0.05)] transition-colors shrink-0 text-[#201d1d] cursor-pointer"
               aria-label="Help"
             >
-              <HelpCircle size={16} className="text-slate-500" />
+              <HelpCircle size={16} />
             </button>
             <button
               type="button"
               onClick={() => handleOpenWatchFace(null)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-mono font-bold uppercase tracking-wider transition-all active:scale-95 shadow-sm cursor-pointer"
+              className="min-h-[44px] inline-flex items-center gap-1.5 px-3 py-2 bg-[#201d1d] hover:bg-stone-800 text-[#fdfcfc] rounded-sm text-xs font-mono font-bold uppercase tracking-wider transition-colors cursor-pointer border border-[#201d1d]"
             >
               <Watch size={14} />
               <span>{language === 'ko' ? '와치페이스' : 'Watch Face'}</span>
@@ -669,7 +669,7 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
             <select 
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
-              className="bg-transparent border-b border-slate-350 text-[10px] font-bold uppercase tracking-wider focus:outline-none focus:border-slate-800 transition-colors py-0.5 text-slate-700 cursor-pointer"
+              className="min-h-[44px] bg-transparent border-b border-[rgba(15,0,0,0.2)] text-[11px] font-bold uppercase tracking-wider focus:outline-none focus:border-[#201d1d] transition-colors py-1 text-[#201d1d] cursor-pointer font-mono"
             >
               <option value="id">{t('wiki_sort_index', language)}</option>
               <option value="name">{t('wiki_sort_name', language)}</option>
@@ -679,20 +679,20 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
             <div className="relative w-48 md:w-56">
               <Search
                 size={16}
-                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400"
               />
               <input
                 type="text"
                 placeholder={t('wiki_search_cards', language)}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-9 py-2.5 bg-white border border-slate-200/85 rounded-lg text-xs font-medium placeholder:opacity-50 focus:outline-none focus:border-indigo-500 shadow-sm focus:shadow-md transition-all"
+                className="min-h-[44px] w-full pl-10 pr-11 py-2 bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-sm text-xs font-mono placeholder:opacity-50 focus:outline-none focus:border-[#201d1d] transition-colors text-[#201d1d]"
               />
               {searchTerm && (
                 <button
                   type="button"
                   onClick={() => setSearchTerm("")}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 rounded-full hover:bg-slate-100 transition-colors cursor-pointer"
+                  className="min-h-[44px] min-w-[44px] absolute right-0 top-1/2 -translate-y-1/2 text-stone-500 hover:text-[#201d1d] flex items-center justify-center cursor-pointer"
                   aria-label="Clear search"
                 >
                   <X size={14} />
@@ -707,7 +707,7 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
           <select
             value={rarityFilter}
             onChange={(e) => setRarityFilter(e.target.value as CharacterRarityTier | "all")}
-            className="bg-white border border-slate-200/85 rounded-lg px-3 py-2 text-[10px] font-bold uppercase tracking-wider focus:outline-none focus:border-indigo-500 shadow-sm cursor-pointer text-slate-700"
+            className="min-h-[44px] bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-sm px-3 py-2 text-[10px] font-bold uppercase tracking-wider focus:outline-none focus:border-[#201d1d] cursor-pointer text-[#201d1d]"
           >
             <option value="all">{t('wiki_filter_all', language)}</option>
             <option value="bronze">{t('rarity_bronze', language)}</option>
@@ -720,7 +720,7 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
           <select
             value={factionFilter}
             onChange={(e) => setFactionFilter(e.target.value as CharacterFaction | "all")}
-            className="bg-white border border-slate-200/85 rounded-lg px-3 py-2 text-[10px] font-bold uppercase tracking-wider focus:outline-none focus:border-indigo-500 shadow-sm cursor-pointer text-slate-700"
+            className="min-h-[44px] bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-sm px-3 py-2 text-[10px] font-bold uppercase tracking-wider focus:outline-none focus:border-[#201d1d] cursor-pointer text-[#201d1d]"
           >
             <option value="all">{t('wiki_filter_all', language)}</option>
             {getAllFactions().map((f) => {
@@ -734,59 +734,64 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
           </select>
 
           {/* ID 437: Quick Top Stat Leaderboard Tags */}
-          <div className="flex items-center gap-1 overflow-x-auto py-1">
+          <div className="flex items-center gap-1.5 overflow-x-auto py-1">
             <button
               type="button"
               onClick={() => setTopStatFilter('all')}
-              className={`px-2 py-1 text-[9px] font-bold rounded-sm border ${
+              className={cn(
+                "min-h-[44px] px-3 py-2 text-[10px] font-bold rounded-sm border cursor-pointer transition-colors flex items-center justify-center shrink-0",
                 topStatFilter === 'all'
-                  ? 'bg-slate-800 text-white border-slate-800'
-                  : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-50'
-              }`}
+                  ? 'bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]'
+                  : 'bg-[#fdfcfc] text-[#201d1d] border-[rgba(15,0,0,0.12)] hover:bg-[#f8f7f7]'
+              )}
             >
               [전체]
             </button>
             <button
               type="button"
               onClick={() => setTopStatFilter(topStatFilter === 'fire_atk' ? 'all' : 'fire_atk')}
-              className={`px-2 py-1 text-[9px] font-bold rounded-sm border ${
+              className={cn(
+                "min-h-[44px] px-3 py-2 text-[10px] font-bold rounded-sm border cursor-pointer transition-colors flex items-center justify-center shrink-0",
                 topStatFilter === 'fire_atk'
-                  ? 'bg-red-600 text-white border-red-600'
-                  : 'bg-red-50 text-red-700 border-red-200 hover:bg-red-100'
-              }`}
+                  ? 'bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]'
+                  : 'bg-[#fdfcfc] text-rose-700 border-rose-300 hover:bg-rose-50'
+              )}
             >
               🔥 Top Fire ATK
             </button>
             <button
               type="button"
               onClick={() => setTopStatFilter(topStatFilter === 'water_def' ? 'all' : 'water_def')}
-              className={`px-2 py-1 text-[9px] font-bold rounded-sm border ${
+              className={cn(
+                "min-h-[44px] px-3 py-2 text-[10px] font-bold rounded-sm border cursor-pointer transition-colors flex items-center justify-center shrink-0",
                 topStatFilter === 'water_def'
-                  ? 'bg-blue-600 text-white border-blue-600'
-                  : 'bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100'
-              }`}
+                  ? 'bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]'
+                  : 'bg-[#fdfcfc] text-sky-700 border-sky-300 hover:bg-sky-50'
+              )}
             >
               💧 Top Water DEF
             </button>
             <button
               type="button"
               onClick={() => setTopStatFilter(topStatFilter === 'wind_spd' ? 'all' : 'wind_spd')}
-              className={`px-2 py-1 text-[9px] font-bold rounded-sm border ${
+              className={cn(
+                "min-h-[44px] px-3 py-2 text-[10px] font-bold rounded-sm border cursor-pointer transition-colors flex items-center justify-center shrink-0",
                 topStatFilter === 'wind_spd'
-                  ? 'bg-emerald-600 text-white border-emerald-600'
-                  : 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
-              }`}
+                  ? 'bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]'
+                  : 'bg-[#fdfcfc] text-emerald-700 border-emerald-300 hover:bg-emerald-50'
+              )}
             >
               🌪️ Top Wind SPD
             </button>
             <button
               type="button"
               onClick={() => setTopStatFilter(topStatFilter === 'earth_hp' ? 'all' : 'earth_hp')}
-              className={`px-2 py-1 text-[9px] font-bold rounded-sm border ${
+              className={cn(
+                "min-h-[44px] px-3 py-2 text-[10px] font-bold rounded-sm border cursor-pointer transition-colors flex items-center justify-center shrink-0",
                 topStatFilter === 'earth_hp'
-                  ? 'bg-amber-600 text-white border-amber-600'
-                  : 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100'
-              }`}
+                  ? 'bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]'
+                  : 'bg-[#fdfcfc] text-amber-700 border-amber-300 hover:bg-amber-50'
+              )}
             >
               ⛰️ Top Earth HP
             </button>
@@ -820,14 +825,15 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
               <div 
                 key={card.id} 
                 onClick={() => openCardDetail(card)}
-                className={`group relative flex gap-4 p-4 rounded-lg border bg-white shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden cursor-pointer active:scale-98 ${
-                  isOwned ? 'border-slate-100' : 'border-slate-200/60 bg-slate-50/50'
-                }`}
+                className={cn(
+                  "group relative flex gap-4 p-4 rounded-none border transition-colors overflow-hidden cursor-pointer",
+                  isOwned ? "bg-[#fdfcfc] border-[rgba(15,0,0,0.12)] hover:bg-[#f8f7f7]" : "border-[rgba(15,0,0,0.12)] bg-[#f8f7f7]/60"
+                )}
               >
                 <div className={`w-20 sm:w-24 shrink-0 relative z-10 ${!isOwned ? 'filter grayscale opacity-60' : ''}`}>
                   <CardItem
                     card={displayCard}
-                    className="w-full aspect-[5/7] shadow-lg"
+                    className="w-full aspect-[5/7]"
                     isLocked={!isOwned}
                     lowSpecMode={true}
                     ignoreBonuses={true}
@@ -836,19 +842,20 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
 
                 <div className="flex-1 min-w-0 flex flex-col justify-center relative z-10">
                   <div className="flex items-center justify-between gap-1 mb-1">
-                    <h3 className="text-base font-bold text-slate-800 tracking-tight uppercase leading-tight truncate">
+                    <h3 className="text-base font-bold text-[#201d1d] tracking-tight uppercase leading-tight truncate">
                       {getFormattedCardName(card, language)}
                     </h3>
-                    <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded ${
-                      isOwned ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-500 border border-slate-200'
-                    }`}>
+                    <span className={cn(
+                      "text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-sm border",
+                      isOwned ? "bg-emerald-500/10 text-emerald-800 border-emerald-400/40" : "bg-[#f8f7f7] text-stone-500 border-[rgba(15,0,0,0.12)]"
+                    )}>
                       {isOwned ? (language === 'ko' ? '보유중' : 'OWNED') : (language === 'ko' ? '미획득' : 'LOCKED')}
                     </span>
                   </div>
 
                   {/* Acquisition source for locked cards (Item 62, 69) */}
                   {!isOwned && (
-                    <p className="text-[9px] font-mono text-indigo-600 font-semibold mb-1.5">
+                    <p className="text-[9px] font-mono text-[#201d1d] font-bold mb-1.5">
                       💡 {language === 'ko' ? '획득처: 카드 소환 / 스토리 탐색' : 'Source: Gacha / Story'}
                     </p>
                   )}
@@ -856,15 +863,15 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
                   <div className="flex gap-1.5">
                     {['N', 'E', 'S', 'W'].map((dir, i) => (
                       <div key={dir} className="flex flex-col items-center">
-                        <span className="text-[7px] font-bold text-slate-400 leading-none mb-0.5">{dir}</span>
-                        <span className="text-[11px] font-semibold bg-slate-50 border border-slate-100 rounded-lg w-6.5 h-6.5 flex items-center justify-center text-slate-800">
+                        <span className="text-[7px] font-bold text-stone-400 leading-none mb-0.5">{dir}</span>
+                        <span className="text-[11px] font-bold bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-sm w-7 h-7 flex items-center justify-center text-[#201d1d]">
                           {card.stats[i]}
                         </span>
                       </div>
                     ))}
                     <div className="flex flex-col items-center ml-1">
-                      <span className="text-[7px] font-bold text-indigo-500 leading-none mb-0.5">CP</span>
-                      <span className="text-[11px] font-bold bg-indigo-50 border border-indigo-100 text-indigo-700 rounded-lg w-9 h-6.5 flex items-center justify-center shadow-xs">
+                      <span className="text-[7px] font-bold text-[#201d1d] leading-none mb-0.5">CP</span>
+                      <span className="text-[11px] font-bold bg-[#201d1d] border border-[#201d1d] text-[#fdfcfc] rounded-sm w-9 h-7 flex items-center justify-center">
                         {card.power}
                       </span>
                     </div>
@@ -875,7 +882,7 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
           })}
 
           {sortedCards.length === 0 && (
-            <div className="col-span-full py-12 text-center text-sm font-semibold opacity-50 uppercase tracking-widest text-slate-500">
+            <div className="col-span-full py-12 text-center text-sm font-bold opacity-50 uppercase tracking-widest text-stone-500">
               {t('wiki_no_cards_match', language)}
             </div>
           )}
@@ -887,7 +894,7 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
             <button
               type="button"
               onClick={() => setVisibleLimit(prev => prev + 24)}
-              className="px-6 py-2.5 bg-[#201d1d] text-white dark:bg-white dark:text-[#201d1d] font-mono text-xs font-bold uppercase tracking-wider rounded-sm hover:opacity-90 active:scale-95 transition-all shadow-sm"
+              className="min-h-[44px] px-6 py-2.5 bg-[#201d1d] text-[#fdfcfc] font-mono text-xs font-bold uppercase tracking-wider rounded-sm hover:opacity-90 transition-colors border border-[#201d1d] cursor-pointer inline-flex items-center justify-center"
             >
               [+ {language === 'ko' ? `카드 더보기 (${visibleLimit}/${finalCards.length})` : `Load More Cards (${visibleLimit}/${finalCards.length})`}]
             </button>
@@ -982,47 +989,52 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[209] bg-black/50 backdrop-blur-sm flex items-center justify-center"
+            className="fixed inset-0 z-[209] bg-black/50 flex items-center justify-center p-4 font-mono select-none"
             onClick={() => setShowHelp(false)}
           >
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
+              initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-2xl p-6 max-w-sm mx-4 shadow-2xl"
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-none p-6 max-w-sm w-full relative text-[#201d1d]"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex items-center justify-between mb-4 sticky top-0 z-10 bg-white pt-2">
-                <h3 className="text-lg font-bold text-slate-800">
+              <div className="flex items-center justify-between mb-4 sticky top-0 z-10 bg-[#fdfcfc] pt-1">
+                <h3 className="text-sm font-bold uppercase tracking-wider text-[#201d1d]">
                   {language === 'ko' ? '카드 도감 도움말' : 'Card Wiki Help'}
                 </h3>
                 <button
                   onClick={() => setShowHelp(false)}
-                  className="p-1 rounded-full hover:bg-slate-100 transition-colors"
+                  className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-sm hover:bg-[rgba(15,0,0,0.05)] border border-[rgba(15,0,0,0.12)] transition-colors cursor-pointer text-[#201d1d]"
+                  aria-label="Close"
                 >
-                  <X size={18} className="text-slate-500" />
+                  <X size={16} />
                 </button>
               </div>
-              <p className="text-sm text-slate-600 leading-relaxed mb-6">
-                {helpSteps[helpStep]}
-              </p>
-              <div className="flex items-center justify-between">
+              <div className="bg-[rgba(15,0,0,0.02)] border border-[rgba(15,0,0,0.06)] p-3 min-h-[90px] flex items-center mb-6">
+                <p className="text-xs text-stone-700 leading-relaxed">
+                  {helpSteps[helpStep]}
+                </p>
+              </div>
+              <div className="flex items-center justify-between pt-2 border-t border-[rgba(15,0,0,0.08)]">
                 <button
                   disabled={helpStep === 0}
                   onClick={() => setHelpStep(helpStep - 1)}
-                  className="p-1.5 rounded-full hover:bg-slate-100 disabled:opacity-30 transition-colors"
+                  className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-sm hover:bg-[rgba(15,0,0,0.05)] border border-[rgba(15,0,0,0.12)] disabled:opacity-30 transition-colors cursor-pointer text-[#201d1d]"
+                  aria-label="Previous"
                 >
-                  <ChevronLeft size={18} className="text-slate-600" />
+                  <ChevronLeft size={16} />
                 </button>
-                <span className="text-xs text-slate-400 font-medium">
+                <span className="text-[10px] text-stone-500 font-bold">
                   {helpStep + 1} / {helpSteps.length}
                 </span>
                 <button
                   disabled={helpStep === helpSteps.length - 1}
                   onClick={() => setHelpStep(helpStep + 1)}
-                  className="p-1.5 rounded-full hover:bg-slate-100 disabled:opacity-30 transition-colors"
+                  className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-sm hover:bg-[rgba(15,0,0,0.05)] border border-[rgba(15,0,0,0.12)] disabled:opacity-30 transition-colors cursor-pointer text-[#201d1d]"
+                  aria-label="Next"
                 >
-                  <ChevronRight size={18} className="text-slate-600" />
+                  <ChevronRight size={16} />
                 </button>
               </div>
             </motion.div>

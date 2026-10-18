@@ -892,7 +892,7 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                     type="button"
                     onClick={() => { triggerHaptic('selection'); setSlippage(slip); }}
                     className={cn(
-                      "px-2 py-1 rounded-sm border text-[9px] font-bold cursor-pointer transition-colors",
+                      "min-h-[44px] px-3 py-1 rounded-sm border text-[10px] font-bold cursor-pointer transition-colors flex items-center justify-center",
                       slippage === slip
                         ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
                         : "border-[rgba(15,0,0,0.12)] text-[#646262] hover:bg-[#eae8e8]"
@@ -1267,7 +1267,7 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                 </div>
                 <button
                   onClick={() => setSelectedCardId(null)}
-                  className="text-[#fdfcfc] hover:opacity-80 text-xs font-bold px-2 py-1 border border-white/20 rounded-sm cursor-pointer shrink-0"
+                  className="min-h-[44px] min-w-[44px] inline-flex items-center justify-center p-2 rounded-sm border border-stone-800 bg-[#201d1d] text-stone-300 hover:text-white hover:bg-stone-800 transition-colors cursor-pointer shrink-0 font-mono text-xs font-bold"
                 >
                   [x]
                 </button>
@@ -1304,7 +1304,7 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                               fetchChart(selectedCardId, tf);
                             }}
                             className={cn(
-                              "px-2 py-0.5 text-[9px] font-bold transition-colors cursor-pointer",
+                              "min-h-[44px] px-3 py-1 text-[10px] font-bold transition-colors cursor-pointer flex items-center justify-center",
                               chartTimeframe === tf ? "bg-[#201d1d] text-[#fdfcfc]" : "text-[#646262] hover:bg-[#f8f7f7]"
                             )}
                           >
@@ -1444,7 +1444,7 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                       <button
                         type="button"
                         onClick={() => { setSelectedCardId(null); setView('shop'); }}
-                        className="mt-1.5 min-h-[36px] px-2.5 py-1 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-black rounded-sm inline-flex items-center gap-1 cursor-pointer"
+                        className="mt-1.5 min-h-[44px] px-3 py-1.5 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-black rounded-sm inline-flex items-center gap-1 cursor-pointer"
                       >
                         <span>[💎 {language === 'ko' ? 'SNS 상점 충전 바로가기 ↗' : 'Top up SNS at Shop ↗'}]</span>
                       </button>
@@ -1494,7 +1494,8 @@ export const StockMarketView: React.FC<StockMarketViewProps> = ({
                 </div>
                 <button
                   onClick={() => setTradeSuccessModalInfo(null)}
-                  className="text-[#646262] hover:text-[#201d1d] text-xs font-bold cursor-pointer"
+                  className="min-h-[44px] min-w-[44px] p-2 flex items-center justify-center text-[#646262] hover:text-[#201d1d] text-xs font-bold cursor-pointer rounded-sm"
+                  aria-label="Close"
                 >
                   [x]
                 </button>

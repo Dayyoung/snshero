@@ -173,10 +173,10 @@ export const WorldCodexView: React.FC<WorldCodexViewProps> = ({ onNavigate, lang
           <button
             type="button"
             onClick={() => { setHelpOpen(true); setHelpStep(0); }}
-            className="inline-flex h-8 w-8 items-center justify-center rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-[#646262] hover:text-[#201d1d] hover:bg-[#f8f7f7] transition shrink-0"
+            className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-[#646262] hover:text-[#201d1d] hover:bg-[#f8f7f7] transition-colors shrink-0 cursor-pointer"
             aria-label={language === 'ko' ? '도움말' : 'Help'}
           >
-            <HelpCircle size={15} />
+            <HelpCircle size={16} />
           </button>
         </div>
 
@@ -192,17 +192,17 @@ export const WorldCodexView: React.FC<WorldCodexViewProps> = ({ onNavigate, lang
               <button
                 type="button"
                 onClick={openWorldCard}
-                className={cn('inline-flex min-h-9 items-center justify-center gap-1.5 rounded-sm bg-[#fdfcfc] px-3 py-1.5 text-xs font-bold uppercase text-[#201d1d] border border-[rgba(15,0,0,0.12)] cursor-pointer hover:bg-[#e2e0e0]', lowSpecCardClass)}
+                className={cn('inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-sm bg-[#fdfcfc] px-3.5 py-2 text-xs font-bold uppercase text-[#201d1d] border border-[rgba(15,0,0,0.12)] cursor-pointer hover:bg-[#e2e0e0] transition-colors', lowSpecCardClass)}
               >
-                <BookOpen size={13} />
+                <BookOpen size={14} />
                 [{t('world_open_card', language)}]
               </button>
               <button
                 type="button"
                 onClick={openWorldWebtoon}
-                className={cn('inline-flex min-h-9 items-center justify-center gap-1.5 rounded-sm border border-[rgba(253,252,252,0.3)] bg-transparent px-3 py-1.5 text-xs font-bold uppercase text-[#fdfcfc] cursor-pointer hover:bg-[#333030]', lowSpecCardClass)}
+                className={cn('inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-sm border border-[rgba(253,252,252,0.3)] bg-transparent px-3.5 py-2 text-xs font-bold uppercase text-[#fdfcfc] cursor-pointer hover:bg-[#333030] transition-colors', lowSpecCardClass)}
               >
-                <ArrowRight size={13} />
+                <ArrowRight size={14} />
                 [{t('world_open_webtoon', language)}]
               </button>
             </div>
@@ -263,7 +263,7 @@ export const WorldCodexView: React.FC<WorldCodexViewProps> = ({ onNavigate, lang
                   key={`${pair.left}-${pair.right}`}
                   type="button"
                   onClick={() => handleSelectFaction(pair.left)}
-                  className={cn('rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] p-2.5 text-left cursor-pointer hover:bg-[#e2e0e0]', lowSpecCardClass)}
+                  className={cn('min-h-[44px] rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] p-2.5 text-left cursor-pointer hover:bg-[#e2e0e0] flex flex-col justify-center', lowSpecCardClass)}
                 >
                   <div className="flex items-center gap-1.5 text-xs font-bold">
                     <span className="text-[#201d1d]">{leftDef ? t(leftDef.nameKey, language) : pair.left}</span>
@@ -325,7 +325,7 @@ export const WorldCodexView: React.FC<WorldCodexViewProps> = ({ onNavigate, lang
                         setSelectedCardId(card.id);
                         onNavigate('wiki-card');
                       }}
-                      className="inline-flex min-h-8 items-center justify-center gap-1 rounded-sm bg-[#201d1d] px-2.5 py-1 text-[10px] font-bold uppercase text-[#fdfcfc] cursor-pointer hover:bg-[#333030]"
+                      className="inline-flex min-h-[44px] items-center justify-center gap-1 rounded-sm bg-[#201d1d] px-3 py-2 text-[10px] font-bold uppercase text-[#fdfcfc] cursor-pointer hover:bg-[#333030] transition-colors border border-[#201d1d]"
                     >
                       <ChevronRight size={12} />
                       [{t('world_open_card', language)}]
@@ -337,7 +337,7 @@ export const WorldCodexView: React.FC<WorldCodexViewProps> = ({ onNavigate, lang
                         setSelectedCardId(card.id);
                         onNavigate('webtoon');
                       }}
-                      className="inline-flex min-h-8 items-center justify-center gap-1 rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] px-2.5 py-1 text-[10px] font-bold uppercase text-[#201d1d] cursor-pointer hover:bg-[#f8f7f7]"
+                      className="inline-flex min-h-[44px] items-center justify-center gap-1 rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] px-3 py-2 text-[10px] font-bold uppercase text-[#201d1d] cursor-pointer hover:bg-[#f8f7f7] transition-colors"
                     >
                       [{t('world_open_webtoon', language)}]
                     </button>
@@ -383,39 +383,42 @@ export const WorldCodexView: React.FC<WorldCodexViewProps> = ({ onNavigate, lang
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[209] flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
+            className="fixed inset-0 z-[209] flex items-center justify-center bg-black/50 p-4 font-mono select-none"
             onClick={() => setHelpOpen(false)}
           >
             <motion.div
-              initial={{ opacity: 0, y: 12, scale: 0.98 }}
+              initial={{ opacity: 0, y: 10, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 12, scale: 0.98 }}
-              className="relative w-full max-w-lg rounded-3xl border border-slate-200 bg-white p-5 shadow-2xl"
+              exit={{ opacity: 0, y: 10, scale: 0.98 }}
+              className="relative w-full max-w-lg rounded-none border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-6 text-[#201d1d]"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex items-start justify-between gap-3 mb-4 sticky top-0 z-10 bg-white pt-2">
-                <h3 className="text-lg font-black text-slate-900">{helpSlides[helpStep].title}</h3>
+              <div className="flex items-start justify-between gap-3 mb-4 sticky top-0 z-10 bg-[#fdfcfc] pt-1">
+                <h3 className="text-base font-bold uppercase tracking-wider text-[#201d1d]">{helpSlides[helpStep].title}</h3>
                 <button
                   type="button"
                   onClick={() => setHelpOpen(false)}
-                  className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 hover:text-slate-700 hover:border-slate-300 transition shrink-0"
+                  className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-[#201d1d] hover:bg-[rgba(15,0,0,0.05)] transition-colors shrink-0 cursor-pointer"
+                  aria-label="Close"
                 >
-                  <X size={18} />
+                  <X size={16} />
                 </button>
               </div>
-              <p className="text-sm text-slate-600 leading-relaxed mb-4 whitespace-pre-line">{helpSlides[helpStep].body}</p>
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-slate-400">{helpStep + 1}/{helpSlides.length}</span>
+              <div className="bg-[rgba(15,0,0,0.02)] border border-[rgba(15,0,0,0.06)] p-3 min-h-[90px] mb-4">
+                <p className="text-xs text-stone-700 leading-relaxed whitespace-pre-line">{helpSlides[helpStep].body}</p>
+              </div>
+              <div className="flex items-center justify-between pt-2 border-t border-[rgba(15,0,0,0.08)]">
+                <span className="text-[10px] text-stone-500 font-bold">{helpStep + 1}/{helpSlides.length}</span>
                 <div className="flex gap-2">
                   <button
                     type="button"
                     disabled={helpStep === 0}
                     onClick={() => setHelpStep((s) => s - 1)}
                     className={cn(
-                      'inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-bold transition',
+                      'inline-flex min-h-[44px] min-w-[44px] items-center justify-center gap-1 rounded-sm border border-[rgba(15,0,0,0.12)] px-3 py-2 text-xs font-bold transition-colors cursor-pointer',
                       helpStep === 0
-                        ? 'text-slate-300 cursor-not-allowed'
-                        : 'text-slate-600 hover:bg-slate-50 active:scale-95',
+                        ? 'opacity-30 cursor-not-allowed'
+                        : 'text-[#201d1d] hover:bg-[rgba(15,0,0,0.05)]',
                     )}
                   >
                     <ChevronLeft size={14} />
@@ -425,7 +428,7 @@ export const WorldCodexView: React.FC<WorldCodexViewProps> = ({ onNavigate, lang
                     <button
                       type="button"
                       onClick={() => setHelpStep((s) => s + 1)}
-                      className="inline-flex items-center gap-1 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-indigo-700 active:scale-95 transition"
+                      className="inline-flex min-h-[44px] items-center justify-center gap-1 rounded-sm bg-[#201d1d] px-4 py-2 text-xs font-bold text-[#fdfcfc] hover:bg-stone-800 transition-colors border border-[#201d1d] cursor-pointer"
                     >
                       {language === 'ko' ? '다음' : 'Next'}
                       <ChevronRight size={14} />
@@ -434,7 +437,7 @@ export const WorldCodexView: React.FC<WorldCodexViewProps> = ({ onNavigate, lang
                     <button
                       type="button"
                       onClick={() => setHelpOpen(false)}
-                      className="inline-flex items-center gap-1 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-indigo-700 active:scale-95 transition"
+                      className="inline-flex min-h-[44px] items-center justify-center gap-1 rounded-sm bg-[#201d1d] px-4 py-2 text-xs font-bold text-[#fdfcfc] hover:bg-stone-800 transition-colors border border-[#201d1d] cursor-pointer"
                     >
                       {language === 'ko' ? '닫기' : 'Close'}
                     </button>

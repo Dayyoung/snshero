@@ -3279,7 +3279,7 @@ function AppContent() {
   // Sound Settings
   const [bgmEnabled, setBgmEnabled] = useState(() => {
     try {
-      const combined = localStorage.getItem('snshero_audio_settings');
+      const combined = localStorage.getItem('hero_audio_settings');
       if (combined) {
         const parsed = JSON.parse(combined);
         if (typeof parsed.bgmEnabled === 'boolean') return parsed.bgmEnabled;
@@ -3290,7 +3290,7 @@ function AppContent() {
   });
   const [sfxEnabled, setSfxEnabled] = useState(() => {
     try {
-      const combined = localStorage.getItem('snshero_audio_settings');
+      const combined = localStorage.getItem('hero_audio_settings');
       if (combined) {
         const parsed = JSON.parse(combined);
         if (typeof parsed.sfxEnabled === 'boolean') return parsed.sfxEnabled;
@@ -3302,7 +3302,7 @@ function AppContent() {
 
   const [bgmVolume, setBgmVolume] = useState(() => {
     try {
-      const combined = localStorage.getItem('snshero_audio_settings');
+      const combined = localStorage.getItem('hero_audio_settings');
       if (combined) {
         const parsed = JSON.parse(combined);
         if (typeof parsed.bgmVolume === 'number') return parsed.bgmVolume;
@@ -3315,7 +3315,7 @@ function AppContent() {
 
   const [sfxVolume, setSfxVolume] = useState(() => {
     try {
-      const combined = localStorage.getItem('snshero_audio_settings');
+      const combined = localStorage.getItem('hero_audio_settings');
       if (combined) {
         const parsed = JSON.parse(combined);
         if (typeof parsed.sfxVolume === 'number') return parsed.sfxVolume;
@@ -4878,14 +4878,15 @@ function AppContent() {
     localStorage.setItem('hero_sfx_muted', sfxMuted ? 'true' : 'false');
     localStorage.setItem('hero_sound_muted', sfxMuted ? 'true' : 'false');
     try {
-      localStorage.setItem('snshero_audio_settings', JSON.stringify({
+      const audioPayload = JSON.stringify({
         bgmEnabled,
         sfxEnabled,
         bgmVolume,
         sfxVolume,
         bgmTrackId,
         updatedAt: Date.now(),
-      }));
+      });
+      localStorage.setItem('hero_audio_settings', audioPayload);
       window.dispatchEvent(new CustomEvent('snshero_audio_settings_changed', {
         detail: { isMuted: sfxMuted, masterVolume: sfxVolume }
       }));
@@ -6200,16 +6201,16 @@ function AppContent() {
         );
       case 'reward-ar':
         return (
-          <div className="flex-1 flex flex-col items-center justify-center p-6 bg-slate-950 text-white font-sans text-center">
-            <h1 className="text-xl font-bold mb-4 uppercase tracking-wider text-purple-400">AR CARD TARGET (id1)</h1>
-            <div className="bg-slate-900/90 p-5 rounded-3xl border border-purple-500/35 mb-6 max-w-xs shadow-2xl shadow-purple-500/10">
-              <div className="border border-slate-700/50 p-4 bg-gradient-to-br from-indigo-950/40 to-slate-900/40 rounded-2xl text-slate-100 shadow-inner">
+          <div className="flex-1 flex flex-col items-center justify-center p-6 bg-[#090d16] text-[#fdfcfc] font-mono text-center">
+            <h1 className="text-lg font-bold mb-4 uppercase tracking-wider text-amber-400">AR CARD TARGET (id1)</h1>
+            <div className="bg-stone-900 p-5 rounded-none border border-stone-800 mb-6 max-w-xs">
+              <div className="border border-stone-800 p-4 bg-stone-950 rounded-none text-stone-100">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-[10px] font-bold uppercase bg-indigo-650 text-indigo-500 px-2 py-0.5 rounded-full text-[8px] border border-indigo-550/30">WATER</span>
-                  <span className="text-xs font-bold text-indigo-450 text-indigo-400">ID: 1</span>
+                  <span className="text-[10px] font-bold uppercase bg-stone-800 text-stone-300 px-2 py-0.5 rounded-sm border border-stone-700">WATER</span>
+                  <span className="text-xs font-bold text-stone-400">ID: 1</span>
                 </div>
                 {/* Character preview */}
-                <div className="w-32 h-32 mx-auto bg-slate-950/85 rounded-2xl border border-slate-800 flex items-center justify-center overflow-hidden mb-3 shadow-md">
+                <div className="w-32 h-32 mx-auto bg-black rounded-none border border-stone-800 flex items-center justify-center overflow-hidden mb-3">
                   <div 
                     className="w-24 h-24 scale-[1.3] translate-y-[5%]"
                     style={{
@@ -6222,7 +6223,7 @@ function AppContent() {
                   />
                 </div>
                 <h3 className="font-bold text-sm mb-1 text-center">물조각 (Water Fragments)</h3>
-                <div className="grid grid-cols-4 gap-1 text-[9px] font-semibold text-center bg-slate-950/60 p-1.5 rounded-xl border border-slate-850 border-slate-800 text-indigo-350 text-indigo-300">
+                <div className="grid grid-cols-4 gap-1 text-[9px] font-bold text-center bg-stone-900 p-1.5 rounded-none border border-stone-800 text-stone-300">
                   <div>T: 1</div>
                   <div>R: 4</div>
                   <div>B: 1</div>
@@ -6230,12 +6231,12 @@ function AppContent() {
                 </div>
               </div>
             </div>
-            <p className="text-xs max-w-xs leading-relaxed text-slate-400 mb-6">
-              이 화면은 <span className="text-purple-400 font-semibold">"물조각 (ID: 1)"</span> 카드의 단독 상세 렌더링 화면입니다. 카메라로 감지해주시거나 스캔해주세요.
+            <p className="text-xs max-w-xs leading-relaxed text-stone-400 mb-6">
+              이 화면은 <span className="text-amber-400 font-bold">"물조각 (ID: 1)"</span> 카드의 단독 상세 렌더링 화면입니다. 카메라로 감지해주시거나 스캔해주세요.
             </p>
             <button
               onClick={() => setView('event')}
-              className="px-6 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold uppercase text-xs rounded-xl shadow-lg shadow-indigo-500/20 hover:from-indigo-600 hover:to-purple-750 hover:to-purple-700 transition-all cursor-pointer border-0"
+              className="min-h-[44px] px-6 py-2.5 bg-[#201d1d] hover:bg-stone-800 text-[#fdfcfc] font-bold uppercase text-xs rounded-sm border border-stone-700 transition-colors cursor-pointer flex items-center justify-center"
             >
               이벤트 홀로 복귀
             </button>
@@ -6417,15 +6418,15 @@ function AppContent() {
         theme === 'light' ? "theme-light" : ""
       )}>
         {simulationUser && (
-          <div className="fixed top-0 left-0 right-0 z-[99999] bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-sans px-4 py-1.5 flex items-center justify-between text-[11px] md:text-xs font-bold shadow-md border-b border-white/10 select-none">
+          <div className="fixed top-0 left-0 right-0 z-[99999] bg-[#201d1d] text-[#fdfcfc] font-mono px-4 py-1.5 flex items-center justify-between text-[11px] md:text-xs font-bold border-b border-stone-800 select-none">
             <div className="flex items-center gap-2">
-              <span className="animate-pulse text-yellow-300">⚡ SIMULATOR RUNNING</span>
+              <span className="text-amber-400">⚡ SIMULATOR RUNNING</span>
               <span className="opacity-30">|</span>
               <span>USER: {simulationUser.displayName} ({simulationUser.uid})</span>
             </div>
             <button 
               onClick={endSimulation} 
-              className="bg-red-500 hover:bg-red-600 text-white font-bold px-3 py-0.5 rounded-lg border border-white/10 active:scale-95 transition-all text-[10px]"
+              className="min-h-[44px] bg-rose-700 hover:bg-rose-600 text-white font-bold px-3 py-1 rounded-sm border border-rose-600 transition-colors text-[10px] cursor-pointer flex items-center justify-center"
             >
               END SIMULATION
             </button>
@@ -6439,7 +6440,7 @@ function AppContent() {
             aria-label="Google AdSense Left Wing"
             className="hidden lg:flex flex-col items-center w-[120px] xl:w-[160px] shrink-0 sticky top-6 mr-2 xl:mr-3 z-30 pointer-events-auto"
           >
-            <div className="w-full bg-[#fdfcfc]/90 dark:bg-slate-950/90 border border-slate-200 dark:border-slate-800 p-1.5 shadow-xs rounded-none">
+            <div className="w-full bg-[#fdfcfc]/90 dark:bg-slate-950/90 border border-slate-200 dark:border-slate-800 p-1.5 rounded-none">
               <AdSenseBanner 
                 format="vertical"
                 className="w-full min-h-[600px]"
@@ -6580,18 +6581,18 @@ function AppContent() {
                   className="fixed top-0 right-0 h-[100dvh] w-[min(90vw,360px)] bg-[var(--ui-canvas)] border-l border-[var(--ui-line)] z-[50001] flex flex-col font-mono text-[var(--ui-ink)] px-5 pb-5 pt-[calc(env(safe-area-inset-top,0px)+1.25rem)] select-none overflow-y-auto"
                 >
                   {/* Header */}
-                  <div className="flex items-center justify-between border-b border-slate-100 pb-4 shrink-0 mb-6">
-                    <span className="text-lg font-bold tracking-tight uppercase text-slate-800">
+                  <div className="flex items-center justify-between border-b border-[rgba(15,0,0,0.08)] pb-4 shrink-0 mb-6">
+                    <span className="text-base font-bold tracking-tight uppercase text-[#201d1d]">
                       {t('menu_title', language)}
                     </span>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5">
                       <button
                         onClick={() => {
                           playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                           setIsMenuOpen(false);
                           setView('setting');
                         }}
-                        className="min-h-10 min-w-10 p-2 border border-slate-200 rounded-lg hover:bg-slate-50 hover:text-indigo-600 active:scale-95 transition-all cursor-pointer bg-white flex items-center justify-center text-slate-600 shadow-sm touch-manipulation"
+                        className="min-h-[44px] min-w-[44px] p-2 border border-[rgba(15,0,0,0.12)] rounded-sm hover:bg-[rgba(15,0,0,0.05)] text-[#201d1d] transition-colors cursor-pointer bg-[#fdfcfc] flex items-center justify-center"
                         title={t('setting', language)}
                         aria-label={t('setting', language)}
                       >
@@ -6605,7 +6606,7 @@ function AppContent() {
                           playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                           setIsMenuOpen(false);
                         }}
-                        className="p-2 border border-slate-200 rounded-lg hover:bg-slate-50 hover:text-indigo-600 active:scale-95 transition-all cursor-pointer bg-white flex items-center justify-center text-slate-600 shadow-sm"
+                        className="min-h-[44px] min-w-[44px] p-2 border border-[rgba(15,0,0,0.12)] rounded-sm hover:bg-[rgba(15,0,0,0.05)] text-[#201d1d] transition-colors cursor-pointer bg-[#fdfcfc] flex items-center justify-center"
                         title={language === 'ko' ? '공식 기념품 샵' : 'Souvenir Shop'}
                       >
                         <ShoppingBag size={18} />
@@ -6616,7 +6617,7 @@ function AppContent() {
                           setIsMenuOpen(false);
                           setView('wiki');
                         }}
-                        className="p-2 border border-slate-200 rounded-lg hover:bg-slate-50 hover:text-indigo-600 active:scale-95 transition-all cursor-pointer bg-white flex items-center justify-center text-slate-600 font-bold text-sm w-9 h-9 shadow-sm"
+                        className="min-h-[44px] min-w-[44px] p-2 border border-[rgba(15,0,0,0.12)] rounded-sm hover:bg-[rgba(15,0,0,0.05)] text-[#201d1d] transition-colors cursor-pointer bg-[#fdfcfc] flex items-center justify-center"
                         title={language === 'ko' ? '위키 가이드' : 'Wiki Guide'}
                       >
                         <HelpCircle size={18} />
@@ -6626,7 +6627,8 @@ function AppContent() {
                           playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
                           setIsMenuOpen(false);
                         }}
-                        className="p-2 border border-slate-200 rounded-lg hover:bg-slate-50 hover:text-red-500 active:scale-95 transition-all cursor-pointer bg-white text-slate-600 shadow-sm"
+                        className="min-h-[44px] min-w-[44px] p-2 border border-[rgba(15,0,0,0.12)] rounded-sm hover:bg-[rgba(15,0,0,0.05)] text-[#201d1d] hover:text-rose-600 transition-colors cursor-pointer bg-[#fdfcfc] flex items-center justify-center"
+                        aria-label="Close menu"
                       >
                         <X size={18} />
                       </button>
@@ -6634,7 +6636,7 @@ function AppContent() {
                   </div>
 
                   {/* Menu items list (Scrollable with layout container) */}
-                  <div className="flex-1 flex flex-col space-y-3.5 mb-6 min-h-0">
+                  <div className="flex-1 flex flex-col space-y-3 mb-6 min-h-0">
                     {/* 1. Login status area */}
                     {(!effectiveUser || effectiveUser.uid === 'guest-id') ? (
                       <button
@@ -6647,28 +6649,28 @@ function AppContent() {
                             console.error("Login failed:", err);
                           }
                         }}
-                        className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white p-4 text-left transition-all relative flex items-center justify-between font-sans shadow-md shadow-orange-500/10 hover:shadow-lg active:scale-[0.98] cursor-pointer rounded-xl group"
+                        className="w-full min-h-[44px] bg-[#201d1d] hover:bg-stone-800 text-[#fdfcfc] p-3 text-left transition-colors relative flex items-center justify-between font-mono cursor-pointer rounded-none border border-[#201d1d] group"
                       >
                         <div className="flex items-center gap-3">
-                          <User size={20} className="text-white" />
-                          <span className="font-bold text-sm uppercase tracking-tight">
+                          <User size={18} className="text-[#fdfcfc]" />
+                          <span className="font-bold text-xs uppercase tracking-tight">
                             {t('menu_login', language)}
                           </span>
                         </div>
-                        <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform text-white" />
+                        <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform text-[#fdfcfc]" />
                       </button>
                     ) : (
-                      <div className="flex gap-2.5 w-full">
+                      <div className="flex gap-2 w-full">
                         <button
                           onClick={() => {
                             playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                             setIsMenuOpen(false);
                             setView('profile');
                           }}
-                          className="flex-1 border border-slate-100 p-3.5 text-left transition-all relative flex items-center justify-between font-sans bg-indigo-50/50 hover:bg-indigo-50 hover:border-indigo-100 active:scale-[0.98] shadow-sm cursor-pointer rounded-xl group min-w-0"
+                          className="flex-1 min-h-[44px] border border-[rgba(15,0,0,0.12)] p-3 text-left transition-colors relative flex items-center justify-between font-mono bg-[#fdfcfc] hover:bg-[#f8f7f7] cursor-pointer rounded-none group min-w-0"
                         >
                           <div className="flex items-center gap-3 min-w-0">
-                            <div className="w-8 h-8 rounded-full border border-slate-200 overflow-hidden bg-white shrink-0 flex items-center justify-center">
+                            <div className="w-8 h-8 rounded-sm border border-[rgba(15,0,0,0.12)] overflow-hidden bg-[#fdfcfc] shrink-0 flex items-center justify-center">
                               {effectiveUser.photoURL && effectiveUser.photoURL.startsWith('card:') ? (
                                 <div className="w-full h-full scale-125" style={getCardAvatarStyle(effectiveUser.photoURL)} />
                               ) : effectiveUser.photoURL && effectiveUser.photoURL.startsWith('preset:') ? (
@@ -6678,13 +6680,13 @@ function AppContent() {
                               )}
                             </div>
                             <div className="flex flex-col min-w-0">
-                              <span className="text-[9px] font-bold text-indigo-600 uppercase tracking-wider leading-none">SIGNED_IN</span>
-                              <span className="font-bold text-sm truncate text-slate-800 mt-1">
+                              <span className="text-[9px] font-bold text-stone-500 uppercase tracking-wider leading-none">SIGNED_IN</span>
+                              <span className="font-bold text-xs truncate text-[#201d1d] mt-1">
                                 {effectiveUser.displayName || 'HUNTER'}
                               </span>
                             </div>
                           </div>
-                          <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform shrink-0 text-indigo-500" />
+                          <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform shrink-0 text-[#201d1d]" />
                         </button>
                         <button
                           onClick={async () => {
@@ -6696,10 +6698,10 @@ function AppContent() {
                               console.error("Logout failed:", err);
                             }
                           }}
-                          className="p-3.5 border border-slate-200 rounded-xl hover:bg-red-50 hover:border-red-100 active:scale-[0.98] shadow-sm cursor-pointer bg-white flex items-center justify-center text-slate-600 hover:text-red-500 shrink-0"
+                          className="min-h-[44px] min-w-[44px] p-3 border border-[rgba(15,0,0,0.12)] rounded-none hover:bg-rose-50 hover:border-rose-200 cursor-pointer bg-[#fdfcfc] flex items-center justify-center text-[#201d1d] hover:text-rose-600 shrink-0 transition-colors"
                           title={language === 'ko' ? '로그아웃' : 'Logout'}
                         >
-                          <LogOut size={20} />
+                          <LogOut size={18} />
                         </button>
                       </div>
                     )}
@@ -6714,15 +6716,15 @@ function AppContent() {
                           window.history.pushState(null, '', '/reddit');
                         }
                       }}
-                      className="w-full border border-slate-100 p-3.5 text-left transition-all relative flex items-center justify-between font-sans bg-white hover:bg-slate-50/80 active:scale-[0.98] shadow-xs hover:border-slate-200 cursor-pointer rounded-xl group"
+                      className="w-full min-h-[44px] border border-[rgba(15,0,0,0.12)] p-3 text-left transition-colors relative flex items-center justify-between font-mono bg-[#fdfcfc] hover:bg-[#f8f7f7] cursor-pointer rounded-none group"
                     >
                       <div className="flex items-center gap-3">
-                        <MessageSquare size={20} className="text-orange-500 group-hover:text-orange-600 transition-colors" />
-                        <span className="font-bold text-sm uppercase tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-amber-500 to-rose-500">
+                        <MessageSquare size={18} className="text-[#201d1d]" />
+                        <span className="font-bold text-xs uppercase tracking-tight text-[#201d1d]">
                           {t('community', language)}
                         </span>
                       </div>
-                      <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform text-orange-500 animate-pulse" />
+                      <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform text-[#201d1d]" />
                     </button>
 
                     {/* Guild Management */}
@@ -6732,15 +6734,15 @@ function AppContent() {
                         setIsMenuOpen(false);
                         setView('guild-list');
                       }}
-                      className="w-full border border-slate-100 p-3.5 text-left transition-all relative flex items-center justify-between font-sans bg-white hover:bg-slate-50/80 active:scale-[0.98] shadow-xs hover:border-slate-200 cursor-pointer rounded-xl group"
+                      className="w-full min-h-[44px] border border-[rgba(15,0,0,0.12)] p-3 text-left transition-colors relative flex items-center justify-between font-mono bg-[#fdfcfc] hover:bg-[#f8f7f7] cursor-pointer rounded-none group"
                     >
                       <div className="flex items-center gap-3">
-                        <Shield size={20} className="text-slate-500 group-hover:text-indigo-600 transition-colors" />
-                        <span className="font-bold text-sm uppercase tracking-tight text-slate-700 group-hover:text-slate-900 transition-colors">
+                        <Shield size={18} className="text-[#201d1d]" />
+                        <span className="font-bold text-xs uppercase tracking-tight text-[#201d1d]">
                           {t('guild_management', language)}
                         </span>
                       </div>
-                      <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform text-slate-400 group-hover:text-slate-600" />
+                      <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform text-stone-400 group-hover:text-[#201d1d]" />
                     </button>
 
                     {/* Event */}
@@ -6750,15 +6752,15 @@ function AppContent() {
                         setIsMenuOpen(false);
                         setView('event');
                       }}
-                      className="w-full border border-slate-100 p-3.5 text-left transition-all relative flex items-center justify-between font-sans bg-white hover:bg-slate-50/80 active:scale-[0.98] shadow-xs hover:border-slate-200 cursor-pointer rounded-xl group"
+                      className="w-full min-h-[44px] border border-[rgba(15,0,0,0.12)] p-3 text-left transition-colors relative flex items-center justify-between font-mono bg-[#fdfcfc] hover:bg-[#f8f7f7] cursor-pointer rounded-none group"
                     >
                       <div className="flex items-center gap-3">
-                        <Gift size={20} className="text-slate-500 group-hover:text-indigo-600 transition-colors" />
-                        <span className="font-bold text-sm uppercase tracking-tight text-slate-700 group-hover:text-slate-900 transition-colors">
+                        <Gift size={18} className="text-[#201d1d]" />
+                        <span className="font-bold text-xs uppercase tracking-tight text-[#201d1d]">
                           {t('event', language)}
                         </span>
                       </div>
-                      <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform text-slate-400 group-hover:text-slate-600" />
+                      <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform text-stone-400 group-hover:text-[#201d1d]" />
                     </button>
 
                     {/* Stock Market */}
@@ -6768,15 +6770,15 @@ function AppContent() {
                         setIsMenuOpen(false);
                         setView('stock-market');
                       }}
-                      className="w-full border border-slate-100 p-3.5 text-left transition-all relative flex items-center justify-between font-sans bg-white hover:bg-slate-50/80 active:scale-[0.98] shadow-xs hover:border-slate-200 cursor-pointer rounded-xl group"
+                      className="w-full min-h-[44px] border border-[rgba(15,0,0,0.12)] p-3 text-left transition-colors relative flex items-center justify-between font-mono bg-[#fdfcfc] hover:bg-[#f8f7f7] cursor-pointer rounded-none group"
                     >
                       <div className="flex items-center gap-3">
-                        <Coins size={20} className="text-slate-500 group-hover:text-indigo-600 transition-colors" />
-                        <span className="font-bold text-sm uppercase tracking-tight text-slate-700 group-hover:text-slate-900 transition-colors">
+                        <Coins size={18} className="text-[#201d1d]" />
+                        <span className="font-bold text-xs uppercase tracking-tight text-[#201d1d]">
                           {t('stock_market', language)}
                         </span>
                       </div>
-                      <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform text-slate-400 group-hover:text-slate-600" />
+                      <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform text-stone-400 group-hover:text-[#201d1d]" />
                     </button>
 
                     {/* Prediction Market */}
@@ -6786,40 +6788,40 @@ function AppContent() {
                         setIsMenuOpen(false);
                         setView('prediction-market');
                       }}
-                      className="w-full border border-slate-100 p-3.5 text-left transition-all relative flex items-center justify-between font-sans bg-white hover:bg-slate-50/80 active:scale-[0.98] shadow-xs hover:border-slate-200 cursor-pointer rounded-xl group"
+                      className="w-full min-h-[44px] border border-[rgba(15,0,0,0.12)] p-3 text-left transition-colors relative flex items-center justify-between font-mono bg-[#fdfcfc] hover:bg-[#f8f7f7] cursor-pointer rounded-none group"
                     >
                       <div className="flex items-center gap-3">
-                        <BarChart3 size={20} className="text-slate-500 group-hover:text-indigo-600 transition-colors" />
-                        <span className="font-bold text-sm uppercase tracking-tight text-slate-700 group-hover:text-slate-900 transition-colors">
+                        <BarChart3 size={18} className="text-[#201d1d]" />
+                        <span className="font-bold text-xs uppercase tracking-tight text-[#201d1d]">
                           {t('prediction_market', language)}
                         </span>
                       </div>
-                      <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform text-slate-400 group-hover:text-slate-600" />
+                      <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform text-stone-400 group-hover:text-[#201d1d]" />
                     </button>
                     {/* Utility Tools Accordion (그리드 생성기 / 그리드 검수기) */}
-                    <div className="w-full flex flex-col border border-slate-200 bg-slate-50/70 rounded-xl overflow-hidden shadow-xs transition-all">
+                    <div className="w-full flex flex-col border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] rounded-none overflow-hidden transition-colors">
                       <button
                         onClick={() => {
                           playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                           setIsUtilityOpen(prev => !prev);
                         }}
-                        className="w-full p-3.5 text-left transition-all flex items-center justify-between font-sans bg-white hover:bg-slate-50 cursor-pointer group"
+                        className="w-full min-h-[44px] p-3 text-left transition-colors flex items-center justify-between font-mono bg-[#fdfcfc] hover:bg-[#f8f7f7] cursor-pointer group"
                       >
                         <div className="flex items-center gap-3">
-                          <Wrench size={20} className="text-amber-600 group-hover:rotate-12 transition-transform" />
+                          <Wrench size={18} className="text-[#201d1d]" />
                           <div className="flex flex-col">
-                            <span className="font-bold text-sm uppercase tracking-tight text-slate-800 flex items-center gap-1.5">
+                            <span className="font-bold text-xs uppercase tracking-tight text-[#201d1d] flex items-center gap-1.5">
                               <span>{language === 'ko' ? '유틸리티' : 'Utility'}</span>
-                              <span className="text-[9px] px-1 py-0.2 bg-amber-100 text-amber-900 border border-amber-300 font-bold rounded-xs">TOOLS</span>
+                              <span className="text-[9px] px-1 py-0.2 bg-[#f8f7f7] text-[#201d1d] border border-[rgba(15,0,0,0.12)] font-bold rounded-sm">TOOLS</span>
                             </span>
-                            <span className="text-[10px] text-slate-500 font-mono">
+                            <span className="text-[10px] text-stone-500 font-mono">
                               {language === 'ko' ? '개발 & 레이아웃 도구 모음' : 'Dev & Layout Toolset'}
                             </span>
                           </div>
                         </div>
                         <ChevronDown 
                           size={18} 
-                          className={`text-slate-400 transition-transform duration-200 ${isUtilityOpen ? 'rotate-180 text-slate-700' : ''}`} 
+                          className={`text-stone-400 transition-transform duration-200 ${isUtilityOpen ? 'rotate-180 text-[#201d1d]' : ''}`} 
                         />
                       </button>
 
@@ -6831,7 +6833,7 @@ function AppContent() {
                             animate={{ height: 'auto', opacity: 1 }}
                             exit={{ height: 0, opacity: 0 }}
                             transition={{ duration: 0.2 }}
-                            className="overflow-hidden border-t border-slate-200/80 bg-slate-50/50 p-2 space-y-1.5"
+                            className="overflow-hidden border-t border-[rgba(15,0,0,0.08)] bg-[#f8f7f7] p-2 space-y-1.5 font-mono"
                           >
                             {/* [1] Grid Generator (/tool/makegrid) */}
                             <button
@@ -6840,18 +6842,18 @@ function AppContent() {
                                 setIsMenuOpen(false);
                                 setView('tool-makegrid');
                               }}
-                              className="w-full p-2.5 bg-white hover:bg-emerald-50 text-left border border-slate-200 hover:border-emerald-300 rounded-lg flex items-center justify-between transition-all cursor-pointer group"
+                              className="w-full min-h-[44px] p-2.5 bg-[#fdfcfc] hover:bg-[rgba(15,0,0,0.05)] text-left border border-[rgba(15,0,0,0.12)] rounded-none flex items-center justify-between transition-colors cursor-pointer group"
                             >
                               <div className="flex items-center gap-2.5">
-                                <Grid3X3 size={17} className="text-emerald-600 group-hover:scale-110 transition-transform" />
+                                <Grid3X3 size={16} className="text-[#201d1d]" />
                                 <div className="flex flex-col">
-                                  <span className="font-bold text-xs text-slate-800 group-hover:text-emerald-900 flex items-center gap-1.5">
+                                  <span className="font-bold text-xs text-[#201d1d] flex items-center gap-1.5">
                                     <span>{language === 'ko' ? '그리드 생성기' : 'Grid Generator'}</span>
                                   </span>
-                                  <span className="text-[9px] text-slate-500 font-mono">/tool/makegrid</span>
+                                  <span className="text-[9px] text-stone-500 font-mono">/tool/makegrid</span>
                                 </div>
                               </div>
-                              <span className="text-[10px] font-mono font-bold text-emerald-700 bg-emerald-100 px-1.5 py-0.5 rounded-xs">
+                              <span className="text-[10px] font-mono font-bold text-[#201d1d] bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] px-1.5 py-0.5 rounded-sm">
                                 [→]
                               </span>
                             </button>
@@ -6863,18 +6865,18 @@ function AppContent() {
                                 setIsMenuOpen(false);
                                 setView('tool-checkgrid');
                               }}
-                              className="w-full p-2.5 bg-white hover:bg-indigo-50 text-left border border-slate-200 hover:border-indigo-300 rounded-lg flex items-center justify-between transition-all cursor-pointer group"
+                              className="w-full min-h-[44px] p-2.5 bg-[#fdfcfc] hover:bg-[rgba(15,0,0,0.05)] text-left border border-[rgba(15,0,0,0.12)] rounded-none flex items-center justify-between transition-colors cursor-pointer group"
                             >
                               <div className="flex items-center gap-2.5">
-                                <CheckCircle2 size={17} className="text-indigo-600 group-hover:scale-110 transition-transform" />
+                                <CheckCircle2 size={16} className="text-[#201d1d]" />
                                 <div className="flex flex-col">
-                                  <span className="font-bold text-xs text-slate-800 group-hover:text-indigo-900 flex items-center gap-1.5">
+                                  <span className="font-bold text-xs text-[#201d1d] flex items-center gap-1.5">
                                     <span>{language === 'ko' ? '그리드 검수기' : 'Grid Checker'}</span>
                                   </span>
-                                  <span className="text-[9px] text-slate-500 font-mono">/tool/checkgrid</span>
+                                  <span className="text-[9px] text-stone-500 font-mono">/tool/checkgrid</span>
                                 </div>
                               </div>
-                              <span className="text-[10px] font-mono font-bold text-indigo-700 bg-indigo-100 px-1.5 py-0.5 rounded-xs">
+                              <span className="text-[10px] font-mono font-bold text-[#201d1d] bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] px-1.5 py-0.5 rounded-sm">
                                 [→]
                               </span>
                             </button>
@@ -6886,18 +6888,18 @@ function AppContent() {
                                 setIsMenuOpen(false);
                                 setView('bench');
                               }}
-                              className="w-full p-2.5 bg-white hover:bg-amber-50 text-left border border-slate-200 hover:border-amber-300 rounded-lg flex items-center justify-between transition-all cursor-pointer group"
+                              className="w-full min-h-[44px] p-2.5 bg-[#fdfcfc] hover:bg-[rgba(15,0,0,0.05)] text-left border border-[rgba(15,0,0,0.12)] rounded-none flex items-center justify-between transition-colors cursor-pointer group"
                             >
                               <div className="flex items-center gap-2.5">
-                                <Trophy size={17} className="text-amber-500 group-hover:scale-110 transition-transform" />
+                                <Trophy size={16} className="text-amber-500" />
                                 <div className="flex flex-col">
-                                  <span className="font-bold text-xs text-slate-800 group-hover:text-amber-900 flex items-center gap-1.5">
+                                  <span className="font-bold text-xs text-[#201d1d] flex items-center gap-1.5">
                                     <span>{language === 'ko' ? 'SHBP AI 벤치마크' : 'SHBP AI Benchmark'}</span>
                                   </span>
-                                  <span className="text-[9px] text-slate-500 font-mono">/bench</span>
+                                  <span className="text-[9px] text-stone-500 font-mono">/bench</span>
                                 </div>
                               </div>
-                              <span className="text-[10px] font-mono font-bold text-amber-800 bg-amber-100 px-1.5 py-0.5 rounded-xs">
+                              <span className="text-[10px] font-mono font-bold text-amber-800 bg-amber-500/10 border border-amber-400/40 px-1.5 py-0.5 rounded-sm">
                                 [→]
                               </span>
                             </button>
@@ -6908,7 +6910,7 @@ function AppContent() {
                   </div>
 
                   {/* Bottom area (Settings & Footer) */}
-                  <div className="mt-auto pt-4 border-t border-slate-100 shrink-0 flex flex-col space-y-4">
+                  <div className="mt-auto pt-4 border-t border-[rgba(15,0,0,0.08)] shrink-0 flex flex-col space-y-4">
                     {/* Footer / Info */}
                     <div className="text-center pt-2">
                       <button
@@ -6917,7 +6919,7 @@ function AppContent() {
                           setIsMenuOpen(false);
                           setView('modoo');
                         }}
-                        className="text-[10px] font-bold text-slate-400 hover:text-[#201d1d] tracking-wider uppercase transition-colors cursor-pointer py-1 px-2 rounded-sm hover:bg-slate-100"
+                        className="min-h-[44px] text-[10px] font-bold text-stone-500 hover:text-[#201d1d] tracking-wider uppercase transition-colors cursor-pointer py-1.5 px-3 rounded-sm hover:bg-[rgba(15,0,0,0.05)] inline-flex items-center justify-center font-mono"
                         title={language === 'ko' ? '내부 개발팀 전용 모니터링 (클릭하여 이동)' : 'Internal Dev Team Monitor'}
                       >
                         SNS_HERO v2.1.0
@@ -7014,15 +7016,15 @@ function AppContent() {
                 transition={{ duration: 0.2, ease: "easeOut" }}
                 className={cn(
                   view === 'play'
-                    ? "fixed right-2 sm:right-4 md:right-6 lg:right-8 top-12 sm:top-14 bottom-14 sm:bottom-16 md:bottom-16 w-[92vw] sm:w-[320px] md:w-[340px] lg:w-[380px] max-h-[calc(100dvh-80px)] md:max-h-[560px] bg-[#090d16]/95 backdrop-blur-md text-white z-[10000] flex flex-col overflow-hidden rounded-xl border border-slate-700/80 shadow-[0_10px_35px_rgba(0,0,0,0.8)] font-mono"
-                    : "fixed inset-0 w-full h-full max-h-none border-0 rounded-none shadow-none md:inset-auto md:bottom-36 md:right-4 md:left-auto md:w-[360px] md:h-auto md:max-h-[500px] bg-white z-[10000] flex flex-col overflow-hidden md:rounded-3xl md:border md:border-slate-200/80 md:shadow-2xl"
+                    ? "fixed right-2 sm:right-4 md:right-6 lg:right-8 top-12 sm:top-14 bottom-14 sm:bottom-16 md:bottom-16 w-[92vw] sm:w-[320px] md:w-[340px] lg:w-[380px] max-h-[calc(100dvh-80px)] md:max-h-[560px] bg-[#090d16] text-white z-[10000] flex flex-col overflow-hidden rounded-none border border-stone-800 font-mono"
+                    : "fixed inset-0 w-full h-full max-h-none border-0 rounded-none md:inset-auto md:bottom-36 md:right-4 md:left-auto md:w-[360px] md:h-auto md:max-h-[500px] bg-[#fdfcfc] text-[#201d1d] z-[10000] flex flex-col overflow-hidden md:rounded-none md:border md:border-[rgba(15,0,0,0.12)] font-mono"
                 )}
               >
               <div className={cn(
                 "p-3.5 flex items-center justify-between border-b shrink-0 select-none",
                 view === 'play'
-                  ? "bg-slate-950/90 text-white border-slate-800"
-                  : "bg-gradient-to-r from-slate-900 to-slate-800 text-white border-slate-700/10"
+                  ? "bg-[#201d1d] text-white border-stone-800"
+                  : "bg-[#201d1d] text-white border-stone-800"
               )}>
                  <div className="flex items-center gap-1.5 flex-wrap">
                     <div className="flex items-center gap-1.5">
@@ -7041,18 +7043,18 @@ function AppContent() {
                           : (language === 'ko' ? '로컬 AI 미지원 브라우저: 클라우드 지식베이스 모드' : 'Local AI Unsupported: Cloud Knowledge Mode')
                       }
                       className={cn(
-                        "inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[8px] sm:text-[9px] font-mono font-bold tracking-tight border select-none transition-all cursor-help",
+                        "inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm text-[8px] sm:text-[9px] font-mono font-bold tracking-tight border select-none transition-colors cursor-help",
                         localAiStatus.state === 'ready'
-                          ? "bg-emerald-950/90 text-emerald-300 border-emerald-500/70 shadow-[0_0_8px_rgba(16,185,129,0.4)]"
+                          ? "bg-emerald-950/90 text-emerald-300 border-emerald-500/70"
                           : localAiStatus.state === 'downloadable' || localAiStatus.state === 'downloading'
                           ? "bg-amber-950/90 text-amber-300 border-amber-500/70"
-                          : "bg-slate-800/90 text-slate-300 border-slate-600/70"
+                          : "bg-stone-800 text-stone-300 border-stone-600"
                       )}
                     >
                       <span className={cn(
                         "w-1.5 h-1.5 rounded-full shrink-0",
                         localAiStatus.state === 'ready' ? "bg-emerald-400 animate-pulse" :
-                        localAiStatus.state === 'downloadable' || localAiStatus.state === 'downloading' ? "bg-amber-400 animate-ping" : "bg-slate-400"
+                        localAiStatus.state === 'downloadable' || localAiStatus.state === 'downloading' ? "bg-amber-400 animate-pulse" : "bg-slate-400"
                       )} />
                       <span>
                         {localAiStatus.state === 'ready' 
@@ -7084,17 +7086,17 @@ function AppContent() {
                        scrollToBottom();
                      }}
                      className={cn(
-                       "text-[9px] font-bold uppercase px-2 py-0.5 rounded transition-colors",
+                       "text-[9px] font-bold uppercase px-2.5 py-1 min-h-[44px] rounded-sm transition-colors flex items-center justify-center cursor-pointer border",
                        view === 'play'
-                         ? "bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700"
-                         : "bg-white text-black hover:bg-yellow-400"
+                         ? "bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700"
+                         : "bg-white text-black hover:bg-stone-100 border-stone-300"
                      )}
                    >
                      {t('read_all', language)}
                    </button>
                    <button 
                      onClick={() => setIsChatOpen(false)} 
-                     className={cn("transition-colors p-1", view === 'play' ? "text-slate-400 hover:text-red-400" : "hover:text-red-400")}
+                     className={cn("min-h-[44px] min-w-[44px] p-2 rounded-sm border border-transparent hover:border-stone-400 transition-colors flex items-center justify-center cursor-pointer", view === 'play' ? "text-slate-400 hover:text-red-400" : "hover:text-red-400")}
                      title="Close Chat"
                    >
                       <X size={20} />
@@ -7120,9 +7122,9 @@ function AppContent() {
                       playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                     }}
                     className={cn(
-                      "px-2 py-0.5 text-[9px] font-bold font-mono uppercase tracking-tighter truncate rounded border transition-all shrink-0 cursor-pointer",
+                      "px-3 py-1 text-[9px] font-bold font-mono uppercase tracking-tighter truncate rounded-sm border transition-all shrink-0 cursor-pointer min-h-[44px] flex items-center justify-center",
                       botRole === role 
-                        ? (isPlayingBattle ? "bg-indigo-600 text-white border-indigo-500 shadow-xs" : "bg-black text-white border-black shadow-sm")
+                        ? (isPlayingBattle ? "bg-indigo-600 text-white border-indigo-500" : "bg-black text-white border-black")
                         : (isPlayingBattle ? "bg-slate-900 text-slate-400 border-slate-800 hover:text-white" : "bg-white text-black/40 border-black/10 hover:border-black/30")
                     )}
                   >
@@ -7157,7 +7159,7 @@ function AppContent() {
                            }
                          }}
                           className={cn(
-                            "text-[10px] mb-0.5 px-1 font-bold flex items-center gap-1 flex-wrap",
+                            "text-[10px] min-h-[44px] mb-0.5 px-1 font-bold flex items-center gap-1 flex-wrap cursor-pointer",
                             isMe 
                               ? (view === 'play' ? "text-indigo-400" : "text-blue-600") 
                               : msg.isBot 
@@ -7186,14 +7188,14 @@ function AppContent() {
                           isMe ? "flex-row-reverse" : "flex-row"
                         )}>
                           <div className={cn(
-                            "px-3 py-1.5 rounded-2xl text-[12px] sm:text-[13px] break-words shadow-sm border max-w-full leading-relaxed",
+                            "px-3 py-1.5 rounded-sm text-[12px] sm:text-[13px] break-words border max-w-full leading-relaxed",
                             view === 'play'
-                              ? (isMe ? "bg-indigo-600/90 text-white border-indigo-500 rounded-tr-none" : 
-                                 msg.isBot ? "bg-rose-950/70 text-rose-200 border-rose-800/80 rounded-tl-none" :
-                                 "bg-slate-800/90 text-slate-100 border-slate-700 rounded-tl-none")
-                              : (isMe ? "bg-blue-600 text-white border-blue-700 rounded-tr-none" : 
-                                 msg.isBot ? "bg-red-50 text-red-900 border-red-200 rounded-tl-none" :
-                                 "bg-gray-100 text-gray-800 border-gray-200 rounded-tl-none")
+                              ? (isMe ? "bg-indigo-600/90 text-white border-indigo-500" : 
+                                 msg.isBot ? "bg-rose-950/70 text-rose-200 border-rose-800/80" :
+                                 "bg-stone-800 text-stone-100 border-stone-700")
+                              : (isMe ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]" : 
+                                 msg.isBot ? "bg-rose-50 text-rose-900 border-rose-200" :
+                                 "bg-[#f8f7f7] text-[#201d1d] border-[rgba(15,0,0,0.12)]")
                           )}>
                             {translatedTexts[msg.id] ? (
                               <div>
@@ -7208,16 +7210,16 @@ function AppContent() {
                                 <div className="space-y-2">
                                   {msg.meta.items.map((item) => (
                                     <div key={item.key} className={cn(
-                                      "rounded-2xl border px-3 py-3 text-left shadow-sm",
-                                      view === 'play' ? "border-red-500/30 bg-slate-900/80 text-slate-200" : "border-red-200/80 bg-white text-slate-900"
+                                      "rounded-sm border px-3 py-3 text-left",
+                                      view === 'play' ? "border-rose-500/30 bg-stone-900 text-stone-200" : "border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-[#201d1d]"
                                     )}>
                                       <div className="flex flex-wrap items-center gap-2">
-                                        <span className="rounded-full bg-red-600 px-2.5 py-1 text-[10px] font-black uppercase tracking-wide text-white">
+                                        <span className="rounded-sm bg-rose-700 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white">
                                           {item.command}
                                         </span>
                                         <span className={cn(
-                                          "rounded-full border px-2.5 py-1 text-[10px] font-bold",
-                                          view === 'play' ? "border-slate-700 bg-slate-800 text-slate-400" : "border-slate-200 bg-slate-50 text-slate-600"
+                                          "rounded-sm border px-2.5 py-1 text-[10px] font-bold",
+                                          view === 'play' ? "border-stone-700 bg-stone-800 text-stone-400" : "border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] text-stone-600"
                                         )}>
                                           {item.risk === 'confirm' ? t('admin_slash_risk_confirm', language) : t('admin_slash_risk_safe', language)}
                                         </span>
@@ -7244,15 +7246,15 @@ function AppContent() {
                             <button
                               onClick={() => handleTranslateChat(msg.id, msg.text)}
                               className={cn(
-                                "p-1.5 border rounded-lg shrink-0 flex items-center justify-center cursor-pointer transition-all",
+                                "min-h-[44px] min-w-[44px] p-2 border rounded-sm shrink-0 flex items-center justify-center cursor-pointer transition-colors",
                                 view === 'play'
-                                  ? "bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700"
-                                  : "border border-black bg-white hover:bg-yellow-100 active:translate-y-0.5 active:shadow-none shadow-[1px_1px_0px_rgba(0,0,0,1)] text-black",
-                                translatedTexts[msg.id] && (view === 'play' ? "bg-indigo-700 text-white" : "bg-yellow-400")
+                                  ? "bg-stone-800 border-stone-700 text-stone-300 hover:bg-stone-700"
+                                  : "border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] hover:bg-[#f8f7f7] text-[#201d1d]",
+                                translatedTexts[msg.id] && (view === 'play' ? "bg-indigo-700 text-white" : "bg-stone-200")
                               )}
                               title={t('translate', language)}
                             >
-                              <Languages size={11} className={translatingIds.has(msg.id) ? "animate-spin" : ""} />
+                              <Languages size={14} className={translatingIds.has(msg.id) ? "animate-spin" : ""} />
                             </button>
                           )}
                         </div>
@@ -7281,7 +7283,7 @@ function AppContent() {
                          <Bot size={12} className="animate-spin text-emerald-500" />
                          <span>{aiTypingName || (language === 'ko' ? '로컬 AI' : 'Local AI')}</span>
                          <span className={cn(
-                           "inline-flex items-center rounded px-1.5 py-0.2 text-[8px] font-bold uppercase tracking-tight",
+                           "inline-flex items-center rounded-sm px-1.5 py-0.2 text-[8px] font-bold uppercase tracking-tight",
                            view === 'play'
                              ? "border border-emerald-500/40 bg-emerald-950/60 text-emerald-300"
                              : "border border-emerald-300 bg-emerald-50 text-emerald-700"
@@ -7290,15 +7292,15 @@ function AppContent() {
                          </span>
                        </div>
                        <div className={cn(
-                         "px-3.5 py-2 rounded-2xl text-[12px] shadow-sm border rounded-tl-none flex items-center gap-2",
+                         "px-3.5 py-2 rounded-sm text-[12px] border flex items-center gap-2",
                          view === 'play'
-                           ? "bg-slate-900/90 text-slate-200 border-slate-700 shadow-[0_0_12px_rgba(16,185,129,0.15)]"
-                           : "bg-emerald-50/80 text-emerald-950 border-emerald-200 shadow-sm"
+                           ? "bg-stone-900 text-stone-200 border-stone-700"
+                           : "bg-emerald-50/80 text-emerald-950 border-emerald-200"
                        )}>
                          <span className="inline-flex gap-1 items-center py-0.5">
-                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-bounce" style={{ animationDelay: '0ms' }} />
-                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-bounce" style={{ animationDelay: '150ms' }} />
-                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-bounce" style={{ animationDelay: '300ms' }} />
+                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                          </span>
                          <span className="text-[11px] font-mono opacity-80">
                            {localAiStatus.state === 'ready'
@@ -7390,10 +7392,10 @@ function AppContent() {
                  <button 
                    type="submit" 
                    className={cn(
-                     "px-3.5 flex items-center justify-center transition-colors rounded-lg cursor-pointer",
+                     "px-3.5 min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors rounded-sm cursor-pointer",
                      view === 'play'
-                       ? "bg-indigo-600 text-white border border-indigo-500 hover:bg-indigo-500 shadow-sm"
-                       : "bg-black text-white px-4 border-2 border-black hover:bg-white hover:text-black"
+                       ? "bg-indigo-600 text-white border border-indigo-500 hover:bg-indigo-500"
+                       : "bg-black text-white px-4 border border-black hover:bg-stone-800"
                    )}
                  >
                     <PlusCircle size={20} />
@@ -7409,33 +7411,29 @@ function AppContent() {
       <AnimatePresence>
         {itemDropNotification && (
           <motion.div 
-            initial={{ scale: 0.5, opacity: 0 }}
+            initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.5, opacity: 0 }}
-            className="fixed inset-0 z-[2000] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+            exit={{ scale: 0.95, opacity: 0 }}
+            className="fixed inset-0 z-[2000] flex items-center justify-center p-4 bg-black/60 font-mono select-none"
           >
-            <div className="bg-white border-4 border-black p-6 rounded-2xl max-w-sm w-full shadow-2xl text-center">
-               <div className="text-4xl mb-4 animate-bounce">🎁</div>
-               <h2 className="text-xl font-black uppercase italic tracking-tighter mb-1">{t('item_dropped', language)}</h2>
-               <div className={cn(
-                 "p-4 border-2 rounded-xl mb-6 shadow-inner",
-                 itemDropNotification.rarity === 'rare' ? "border-yellow-400 bg-yellow-50" : 
-                 itemDropNotification.rarity === 'magic' ? "border-blue-400 bg-blue-50" : "border-gray-100 bg-gray-50"
-               )}>
-                 <p className="font-black text-lg leading-none mb-1 text-black">{(language === 'ko' ? itemDropNotification.name_ko : itemDropNotification.name_en)}</p>
-                 <p className="text-[10px] opacity-60 mb-2 font-bold uppercase tracking-widest">{t(`slot_${itemDropNotification.slot}` as any, language)}</p>
-                 <p className="text-[11px] font-medium text-gray-600 mb-4 leading-tight px-2">
+            <div className="bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] p-6 rounded-none max-w-sm w-full text-center text-[#201d1d]">
+               <div className="text-3xl mb-3">🎁</div>
+               <h2 className="text-lg font-bold uppercase tracking-wider mb-2">{t('item_dropped', language)}</h2>
+               <div className="p-4 border border-[rgba(15,0,0,0.12)] rounded-none mb-6 bg-[#f8f7f7]">
+                 <p className="font-bold text-base leading-none mb-1 text-[#201d1d]">{(language === 'ko' ? itemDropNotification.name_ko : itemDropNotification.name_en)}</p>
+                 <p className="text-[10px] text-stone-500 mb-2 font-bold uppercase tracking-wider">{t(`slot_${itemDropNotification.slot}` as any, language)}</p>
+                 <p className="text-[11px] text-stone-600 mb-4 leading-tight px-2">
                     {language === 'ko' ? itemDropNotification.description_ko : itemDropNotification.description_en}
                  </p>
-                 <div className="flex justify-center gap-4 text-[10px] font-black border-t border-black/5 pt-3">
-                    <span className="text-blue-600 font-black uppercase bg-blue-50 px-2 py-1 rounded-md border border-blue-100">
+                 <div className="flex justify-center gap-4 text-[10px] font-bold border-t border-[rgba(15,0,0,0.08)] pt-3">
+                    <span className="text-[#201d1d] font-bold uppercase bg-[#fdfcfc] px-2 py-1 rounded-sm border border-[rgba(15,0,0,0.12)]">
                       {itemDropNotification.stats?.map((s: number) => s >= 0 ? '+' + s : s).join(', ') || 'N/A'}
                     </span>
                  </div>
                </div>
                <button 
                  onClick={() => setItemDropNotification(null)}
-                 className="w-full bg-black text-white py-4 rounded-xl font-black uppercase tracking-widest hover:bg-gray-900 active:scale-95 transition-all shadow-lg"
+                 className="w-full min-h-[44px] bg-[#201d1d] text-[#fdfcfc] py-2.5 rounded-sm font-bold uppercase tracking-wider hover:bg-stone-800 transition-colors border border-[#201d1d] cursor-pointer flex items-center justify-center"
                >
                  {t('close', language) || "DONE"}
                </button>
@@ -7481,7 +7479,7 @@ function AppContent() {
                 onClick={handleSkipTutorial}
                 aria-label="SKIP TUTORIAL"
                 data-testid="skip-tutorial-btn"
-                className="bg-slate-900/95 hover:bg-slate-900 text-slate-200 hover:text-white px-3.5 py-2 rounded-xl font-black uppercase tracking-wider text-xs border border-slate-700 shadow-xl transition-all active:scale-95 cursor-pointer flex items-center gap-1.5"
+                className="bg-[#201d1d] hover:bg-stone-800 text-[#fdfcfc] px-4 min-h-[44px] rounded-sm font-mono font-bold uppercase tracking-wider text-xs border border-white/20 transition-all active:scale-95 cursor-pointer flex items-center gap-1.5"
               >
                 SKIP TUTORIAL
               </button>
@@ -7495,13 +7493,13 @@ function AppContent() {
                     <motion.div 
                       initial={{ opacity: 0, y: 20 }} 
                       animate={{ opacity: 1, y: 0 }} 
-                      className="bg-slate-900/95 border border-slate-700/50 backdrop-blur-xl p-6 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_30px_rgba(59,130,246,0.15)] space-y-4 text-white"
+                      className="bg-[#201d1d] border border-white/10 p-6 rounded-none space-y-4 text-[#fdfcfc] font-mono"
                     >
                       <div className="flex items-center gap-3 mb-2">
-                        <div className="w-12 h-12 bg-blue-500/10 border border-blue-500/30 text-blue-400 rounded-2xl flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.2)]">
+                        <div className="w-12 h-12 bg-blue-500/10 border border-blue-500/30 text-blue-400 rounded-sm flex items-center justify-center">
                           <Zap size={22} className="animate-pulse" />
                         </div>
-                        <h3 className="font-black italic uppercase tracking-wider text-xl text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-blue-400">
+                        <h3 className="font-mono font-bold uppercase tracking-wider text-lg text-[#fdfcfc]">
                           {t('tutorial_start_title', language)}
                         </h3>
                       </div>
@@ -7510,7 +7508,7 @@ function AppContent() {
                           setView('play');
                           setTutorialStep(3);
                         }}
-                        className="w-full bg-gradient-to-r from-blue-600 to-indigo-650 hover:from-blue-500 hover:to-indigo-600 text-white py-4 rounded-2xl font-black uppercase tracking-widest transition-all shadow-[0_4px_20px_rgba(59,130,246,0.3)] active:scale-[0.98] border border-blue-500/30 cursor-pointer"
+                        className="w-full bg-[#fdfcfc] hover:bg-stone-200 text-[#201d1d] min-h-[44px] rounded-sm font-mono font-bold uppercase tracking-widest text-xs border border-[#201d1d] transition-all cursor-pointer flex items-center justify-center"
                       >
                         {t('tutorial_start_btn', language)}
                       </button>
@@ -7518,7 +7516,7 @@ function AppContent() {
                         onClick={handleSkipTutorial}
                         aria-label="Skip tutorial step"
                         data-testid="skip-tutorial-card-btn"
-                        className="w-full bg-slate-950/80 hover:bg-slate-950 text-slate-400 hover:text-white py-3 rounded-2xl font-black uppercase tracking-widest text-[11px] border border-slate-800 hover:border-slate-700 transition-all active:scale-[0.98] cursor-pointer"
+                        className="w-full bg-stone-900 hover:bg-stone-800 text-stone-400 hover:text-white min-h-[44px] rounded-sm font-mono font-bold uppercase tracking-widest text-[11px] border border-white/10 transition-all cursor-pointer flex items-center justify-center"
                       >
                         {t('skip_tutorial', language)}
                       </button>
@@ -7533,23 +7531,22 @@ function AppContent() {
                 <motion.div 
                   initial={{ opacity: 0, scale: 0.9, y: 20 }} 
                   animate={{ opacity: 1, scale: 1, y: 0 }} 
-                  className="bg-slate-900/95 border border-slate-700/50 backdrop-blur-xl p-10 rounded-[32px] shadow-[0_25px_60px_rgba(0,0,0,0.6),0_0_40px_rgba(234,179,8,0.15)] max-w-sm w-full text-center space-y-8 relative overflow-hidden text-white"
+                  className="bg-[#201d1d] border border-white/10 p-8 rounded-none max-w-sm w-full text-center space-y-6 relative text-[#fdfcfc] font-mono"
                 >
-                  <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-yellow-500 via-amber-500 to-orange-500" />
-                  <div className="w-20 h-20 bg-yellow-500/10 border-2 border-yellow-500/30 rounded-3xl flex items-center justify-center mx-auto shadow-[0_0_25px_rgba(234,179,8,0.25)]">
-                    <Sparkles size={40} className="text-yellow-400" />
+                  <div className="w-16 h-16 bg-amber-500/10 border border-amber-500/30 rounded-sm flex items-center justify-center mx-auto text-amber-400">
+                    <Sparkles size={32} />
                   </div>
-                  <div className="space-y-4">
-                    <h3 className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-amber-400 font-black italic uppercase tracking-wider text-3xl leading-none">
+                  <div className="space-y-3">
+                    <h3 className="font-mono font-bold uppercase tracking-wider text-xl text-amber-300">
                       {t('tutorial_collect_title', language)}
                     </h3>
-                    <p className="text-base font-semibold leading-relaxed text-slate-300 px-2">
+                    <p className="text-xs font-mono leading-relaxed text-stone-300 px-2">
                       {t('tutorial_collect_desc', language)}
                     </p>
                   </div>
                   <button 
                     onClick={() => setTutorialStep(9)}
-                    className="w-full bg-gradient-to-r from-yellow-500 to-amber-500 text-black py-4.5 rounded-[20px] font-black uppercase tracking-widest text-lg border border-yellow-450/40 shadow-[0_4px_25px_rgba(234,179,8,0.3)] hover:from-yellow-400 hover:to-amber-400 transition-all active:scale-[0.98] cursor-pointer"
+                    className="w-full bg-amber-500 hover:bg-amber-400 text-black min-h-[44px] rounded-sm font-mono font-bold uppercase tracking-widest text-xs border border-amber-600 transition-all cursor-pointer flex items-center justify-center"
                   >
                     {t('tutorial_open_pack_btn', language)}
                   </button>
@@ -7563,28 +7560,28 @@ function AppContent() {
                 <motion.div 
                   initial={{ opacity: 0, y: 20 }} 
                   animate={{ opacity: 1, y: 0 }} 
-                  className="bg-slate-900/95 border border-slate-700/50 backdrop-blur-xl p-8 rounded-3xl shadow-[0_25px_50px_rgba(0,0,0,0.5),0_0_30px_rgba(99,102,241,0.15)] max-w-md w-full space-y-6 text-white"
+                  className="bg-[#201d1d] border border-white/10 p-6 rounded-none max-w-md w-full space-y-6 text-[#fdfcfc] font-mono"
                 >
-                  <h3 className="text-2xl font-black italic uppercase tracking-wider border-b border-slate-800 pb-3 text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-300">
+                  <h3 className="text-lg font-mono font-bold uppercase tracking-wider border-b border-stone-800 pb-3 text-[#fdfcfc]">
                     {t('guide_my_deck_title', language)}
                   </h3>
-                  <div className="space-y-4">
-                    <div className="flex gap-4 items-center">
-                      <div className="bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 px-3 py-1 text-xs font-black rounded-lg shadow-[0_0_10px_rgba(99,102,241,0.2)]">01</div>
-                      <p className="text-sm font-semibold text-slate-300">{t('guide_my_deck_step1', language)}</p>
+                  <div className="space-y-3">
+                    <div className="flex gap-3 items-center">
+                      <div className="bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 px-2.5 py-1 text-xs font-mono font-bold rounded-sm">01</div>
+                      <p className="text-xs font-mono text-stone-300">{t('guide_my_deck_step1', language)}</p>
                     </div>
-                    <div className="flex gap-4 items-center">
-                      <div className="bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 px-3 py-1 text-xs font-black rounded-lg shadow-[0_0_10px_rgba(99,102,241,0.2)]">02</div>
-                      <p className="text-sm font-semibold text-slate-300">{t('guide_my_deck_step2', language)}</p>
+                    <div className="flex gap-3 items-center">
+                      <div className="bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 px-2.5 py-1 text-xs font-mono font-bold rounded-sm">02</div>
+                      <p className="text-xs font-mono text-stone-300">{t('guide_my_deck_step2', language)}</p>
                     </div>
-                    <div className="flex gap-4 items-center">
-                      <div className="bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 px-3 py-1 text-xs font-black rounded-lg shadow-[0_0_10px_rgba(99,102,241,0.2)]">03</div>
-                      <p className="text-sm font-semibold text-slate-300">{t('guide_my_deck_step3', language)}</p>
+                    <div className="flex gap-3 items-center">
+                      <div className="bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 px-2.5 py-1 text-xs font-mono font-bold rounded-sm">03</div>
+                      <p className="text-xs font-mono text-stone-300">{t('guide_my_deck_step3', language)}</p>
                     </div>
                   </div>
                   <button 
                     onClick={() => setTutorialStep(12)}
-                    className="w-full bg-gradient-to-r from-indigo-600 to-violet-650 hover:from-indigo-500 hover:to-violet-600 text-white py-4 rounded-2xl font-black uppercase tracking-widest transition-all shadow-[0_4px_20px_rgba(99,102,241,0.3)] active:scale-[0.98] border border-indigo-500/30 cursor-pointer"
+                    className="w-full bg-[#fdfcfc] hover:bg-stone-200 text-[#201d1d] min-h-[44px] rounded-sm font-mono font-bold uppercase tracking-widest text-xs border border-white/20 transition-all cursor-pointer flex items-center justify-center"
                   >
                     {language === 'ko' ? '확인' : 'CONFIRM'}
                   </button>
@@ -7598,21 +7595,20 @@ function AppContent() {
                 <motion.div 
                   initial={{ opacity: 0, scale: 0.8 }} 
                   animate={{ opacity: 1, scale: 1 }} 
-                  className="bg-slate-900/95 border border-slate-700/50 backdrop-blur-xl p-8 rounded-[32px] shadow-[0_30px_60px_rgba(0,0,0,0.6),0_0_40px_rgba(59,130,246,0.2)] max-w-sm text-center space-y-6 relative overflow-hidden text-white"
+                  className="bg-[#201d1d] border border-white/10 p-8 rounded-none max-w-sm w-full text-center space-y-6 relative text-[#fdfcfc] font-mono"
                 >
-                  <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-500 via-purple-500 to-red-500" />
-                  <div className="w-20 h-20 bg-blue-500/10 border border-blue-500/30 rounded-full flex items-center justify-center mx-auto text-blue-400 shadow-[0_0_25px_rgba(59,130,246,0.25)] animate-pulse">
-                    <Bot size={40} />
+                  <div className="w-16 h-16 bg-blue-500/10 border border-blue-500/30 rounded-sm flex items-center justify-center mx-auto text-blue-400">
+                    <Bot size={32} />
                   </div>
                   <div className="space-y-2">
-                    <h3 className="text-4xl font-black italic uppercase tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-red-400 drop-shadow-[0_0_15px_rgba(168,85,247,0.3)]">WELCOME!</h3>
-                    <p className="text-sm font-semibold opacity-80 leading-relaxed text-slate-300">
+                    <h3 className="text-2xl font-mono font-bold uppercase tracking-wider text-[#fdfcfc]">WELCOME!</h3>
+                    <p className="text-xs font-mono leading-relaxed text-stone-300">
                       {t('tutorial_welcome_desc', language)}
                     </p>
                   </div>
                   <button 
                     onClick={finalizeTutorialCompletion}
-                    className="w-full bg-gradient-to-r from-blue-600 to-purple-650 text-white py-4.5 rounded-[20px] font-black uppercase tracking-widest hover:from-blue-500 hover:to-purple-600 transition-all border border-blue-500/30 shadow-[0_4px_25px_rgba(168,85,247,0.3)] active:scale-[0.98] cursor-pointer"
+                    className="w-full bg-[#fdfcfc] hover:bg-stone-200 text-[#201d1d] min-h-[44px] rounded-sm font-mono font-bold uppercase tracking-widest text-xs border border-white/20 transition-all cursor-pointer flex items-center justify-center"
                   >
                     {t('tutorial_start_now_btn', language)}
                   </button>
@@ -7652,8 +7648,8 @@ function AppContent() {
       {(isPlayingback || playbackLogActions.length > 0) && (
         <div className="macro-ui fixed bottom-48 right-6 z-[999] flex flex-col items-end gap-2 pointer-events-auto">
           {isPlayingback && (
-            <div className="bg-black text-green-400 font-mono text-[11px] font-black px-4 py-2 border-4 border-black rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center gap-2 select-none">
-              <span className="w-2.5 h-2.5 rounded-full bg-green-500 animate-ping" />
+            <div className="bg-stone-900 text-emerald-400 font-mono text-[11px] font-bold px-3 py-2 border border-emerald-500/40 rounded-none flex items-center gap-2 select-none">
+              <span className="w-2 h-2 rounded-sm bg-emerald-500" />
               <span>RUNNING: {playbackCurrentStep} / {playbackTotalSteps} STEPS</span>
             </div>
           )}
@@ -7666,19 +7662,16 @@ function AppContent() {
                 setIsLoopPlayback(false);
                 playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
               }}
-              className="px-5 py-3 rounded-2xl bg-red-600 hover:bg-red-500 text-white font-black uppercase tracking-widest text-xs border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all flex items-center gap-2"
+              className="min-h-[44px] px-4 py-2.5 rounded-sm bg-red-600 hover:bg-red-500 text-white font-mono font-bold uppercase tracking-widest text-xs border border-red-700 active:translate-y-[1px] transition-all flex items-center gap-2 cursor-pointer"
             >
-              <span className="relative flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
-              </span>
+              <span className="w-2 h-2 rounded-sm bg-white"></span>
               <span>메크로 테스트 중지</span>
             </button>
           )}
 
           {/* 실시간 메크로 재생 로그 콘솔 HUD (User Specified Macro Realtime Log style) */}
           {playbackLogActions.length > 0 && (
-            <div className="w-64 max-h-40 overflow-y-auto bg-black/90 text-[10px] text-green-400 font-mono p-3 border-4 border-black rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex flex-col gap-1 text-left mt-2 select-none animate-fade-in relative">
+            <div className="w-64 max-h-40 overflow-y-auto bg-stone-950/95 text-[10px] text-emerald-400 font-mono p-3 border border-emerald-500/30 rounded-none flex flex-col gap-1 text-left mt-2 select-none animate-fade-in relative">
               {/* 재생 종료 후 로그를 여유롭게 정독한 뒤 수동으로 창을 닫을 수 있도록 CLOSE 버튼 마련! */}
               {!isPlayingback && (
                 <button
@@ -7686,23 +7679,23 @@ function AppContent() {
                     setPlaybackLogActions([]);
                     playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                   }}
-                  className="absolute top-2 right-2 text-red-500 hover:text-red-400 font-black text-[9px] uppercase tracking-wider bg-red-500/10 px-1.5 py-0.5 rounded border border-red-500/20"
+                  className="absolute top-2 right-2 text-red-400 hover:text-red-300 font-mono font-bold text-[9px] uppercase tracking-wider bg-red-500/10 px-2.5 py-1 min-h-[44px] min-w-[44px] rounded-sm border border-red-500/30 cursor-pointer flex items-center justify-center"
                 >
                   CLOSE
                 </button>
               )}
               
-              <div className="border-b border-green-800 pb-1 mb-1 text-[9px] font-black uppercase text-green-500 tracking-widest flex justify-between">
+              <div className="border-b border-emerald-800 pb-1 mb-1 text-[9px] font-mono font-bold uppercase text-emerald-500 tracking-widest flex justify-between">
                 <span>⚡ MACRO REALTIME LOG</span>
                 <span className="animate-pulse">{isPlayingback ? "PLAY..." : "END"}</span>
               </div>
               {playbackLogActions.map((act, idx) => (
                 <div key={idx} className="truncate">
                   {act.isSystemLog ? (
-                    <span className="text-yellow-400 font-black animate-pulse">{act.systemMsg}</span>
+                    <span className="text-yellow-400 font-bold animate-pulse">{act.systemMsg}</span>
                   ) : (
                     <>
-                      <span className="text-yellow-400 font-black mr-1">[{idx + 1}]</span>
+                      <span className="text-yellow-400 font-bold mr-1">[{idx + 1}]</span>
                       X:{Math.round(act.x)} Y:{Math.round(act.y)} (ScrollY:{act.scrollY !== undefined ? act.scrollY : 0}) (time: {act.time !== undefined ? (act.time / 1000).toFixed(1) + 's' : '0.0s'})
                     </>
                   )}
@@ -7735,13 +7728,13 @@ function AppContent() {
               }
             }}
             className={cn(
-              "px-5 py-3 rounded-2xl font-black uppercase tracking-widest text-xs border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all flex items-center gap-2",
+              "min-h-[44px] px-4 py-2.5 rounded-sm font-mono font-bold uppercase tracking-widest text-xs border transition-all flex items-center gap-2 cursor-pointer",
               isRecording 
-                ? "bg-red-500 text-white animate-pulse" 
-                : "bg-yellow-400 text-black hover:bg-yellow-300"
+                ? "bg-red-600 hover:bg-red-500 text-white border-red-700 animate-pulse" 
+                : "bg-amber-400 hover:bg-amber-300 text-black border-amber-500"
             )}
           >
-            <div className={cn("w-3 h-3 rounded-full", isRecording ? "bg-white" : "bg-red-600 animate-ping")} />
+            <div className={cn("w-2.5 h-2.5 rounded-sm", isRecording ? "bg-white" : "bg-red-600")} />
             {isRecording ? t('macro_stop_record', language) : t('macro_start_record', language)}
           </button>
           <button
@@ -7749,21 +7742,21 @@ function AppContent() {
               setShowRecordBtn(false);
               setIsRecording(false);
             }}
-            className="px-3 py-1 bg-black text-white rounded-lg text-[9px] font-bold uppercase tracking-widest border-2 border-black"
+            className="min-h-[44px] px-3 py-1 bg-stone-900 hover:bg-stone-800 text-white rounded-sm text-[10px] font-mono font-bold uppercase tracking-widest border border-white/10 cursor-pointer flex items-center justify-center"
           >
             {t('macro_close_recorder', language)}
           </button>
 
           {/* 실시간 메크로 로깅 콘솔 HUD */}
           {isRecording && recordingActions.length > 0 && (
-            <div className="w-64 max-h-40 overflow-y-auto bg-black/90 text-[10px] text-green-400 font-mono p-3 border-4 border-black rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex flex-col gap-1 text-left mt-2 select-none">
-              <div className="border-b border-green-800 pb-1 mb-1 text-[9px] font-black uppercase text-green-500 tracking-widest flex justify-between">
+            <div className="w-64 max-h-40 overflow-y-auto bg-stone-950/95 text-[10px] text-emerald-400 font-mono p-3 border border-emerald-500/30 rounded-none flex flex-col gap-1 text-left mt-2 select-none">
+              <div className="border-b border-emerald-800 pb-1 mb-1 text-[9px] font-mono font-bold uppercase text-emerald-500 tracking-widest flex justify-between">
                 <span>{t('macro_realtime_log', language)}</span>
                 <span className="animate-pulse">{t('macro_rec_status', language)}</span>
               </div>
               {recordingActions.map((act, idx) => (
                 <div key={idx} className="truncate">
-                  <span className="text-yellow-400 font-black mr-1">[{idx + 1}]</span>
+                  <span className="text-yellow-400 font-bold mr-1">[{idx + 1}]</span>
                   X:{Math.round(act.x)} Y:{Math.round(act.y)} (ScrollY:{act.scrollY}) (time: {act.time !== undefined ? (act.time / 1000).toFixed(1) + 's' : '0.0s'})
                 </div>
               ))}
@@ -7775,38 +7768,38 @@ function AppContent() {
       {/* Record Results JSON Modal */}
       {showRecordResultModal && (
         <div className="macro-ui fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm pointer-events-auto">
-          <div className="bg-white border-4 border-black p-8 rounded-[32px] shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] max-w-lg w-full space-y-6">
-            <div className="flex justify-between items-center border-b-4 border-black pb-3">
-              <h3 className="text-2xl font-black italic uppercase tracking-tighter flex items-center gap-2">
-                <span className="w-4 h-4 bg-red-600 rounded-full animate-ping animate-duration-1000" />
+          <div className="bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] p-6 rounded-none max-w-lg w-full space-y-4 font-mono text-[#201d1d]">
+            <div className="flex justify-between items-center border-b border-stone-200 pb-3">
+              <h3 className="text-lg font-mono font-bold uppercase tracking-tight flex items-center gap-2">
+                <span className="w-2.5 h-2.5 bg-red-600 rounded-sm" />
                 {t('macro_recording_data', language)}
               </h3>
-              <span className="bg-black text-white px-2 py-1 text-[10px] font-black uppercase">
+              <span className="bg-[#201d1d] text-[#fdfcfc] px-2 py-0.5 text-[10px] font-mono font-bold uppercase rounded-sm">
                 {t('macro_clicks', language).replace('{count}', String(recordingActions.length))}
               </span>
             </div>
-            <p className="text-xs font-bold text-gray-500 leading-tight">
+            <p className="text-xs font-mono text-stone-500 leading-tight">
               {t('macro_desc', language).replace('{width}', String(window.innerWidth)).replace('{height}', String(window.innerHeight))}
             </p>
             <textarea
               readOnly
               value={JSON.stringify(recordingActions, null, 2)}
-              className="w-full h-48 p-4 font-mono text-[11px] bg-gray-900 text-green-400 border-4 border-black rounded-2xl resize-none focus:outline-none"
+              className="w-full h-48 p-3 font-mono text-[11px] bg-stone-900 text-emerald-400 border border-stone-800 rounded-none resize-none focus:outline-none"
             />
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3">
               <button
                 onClick={() => {
                   navigator.clipboard.writeText(JSON.stringify(recordingActions, null, 2));
                   // Silently close the modal immediately without any alert popups
                   setShowRecordResultModal(false);
                 }}
-                className="w-full bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-2xl font-black uppercase tracking-wider text-xs border-b-8 border-blue-900 active:border-b-0 active:translate-y-2 transition-all"
+                className="w-full bg-[#201d1d] hover:bg-stone-800 text-[#fdfcfc] min-h-[44px] rounded-sm font-mono font-bold uppercase tracking-wider text-xs border border-[#201d1d] transition-all cursor-pointer flex items-center justify-center"
               >
                 {t('macro_copy_json', language)}
               </button>
               <button
                 onClick={() => setShowRecordResultModal(false)}
-                className="w-full bg-black hover:bg-gray-800 text-white py-4 rounded-2xl font-black uppercase tracking-wider text-xs border-b-8 border-gray-900 active:border-b-0 active:translate-y-2 transition-all"
+                className="w-full bg-stone-100 hover:bg-stone-200 text-[#201d1d] min-h-[44px] rounded-sm font-mono font-bold uppercase tracking-wider text-xs border border-stone-300 transition-all cursor-pointer flex items-center justify-center"
               >
                 {t('close', language)}
               </button>
@@ -7818,41 +7811,41 @@ function AppContent() {
       {/* Playback Configuration Popup */}
       {showPlaybackPopup && (
         <div className="macro-ui fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm pointer-events-auto">
-          <div className="bg-white border-[6px] border-black p-8 rounded-[40px] shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] max-w-lg w-full space-y-6">
-            <div className="flex justify-between items-center border-b-4 border-black pb-3">
-              <h3 className="text-2xl font-black italic uppercase tracking-tighter flex items-center gap-2 text-blue-600">
+          <div className="bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] p-6 rounded-none max-w-lg w-full space-y-4 font-mono text-[#201d1d]">
+            <div className="flex justify-between items-center border-b border-stone-200 pb-3">
+              <h3 className="text-lg font-mono font-bold uppercase tracking-tight flex items-center gap-2 text-indigo-600">
                 {t('macro_console', language)}
               </h3>
               {isPlayingback && (
-                <span className="bg-blue-600 text-white px-2 py-1 text-[10px] font-black uppercase animate-bounce">
+                <span className="bg-[#201d1d] text-[#fdfcfc] px-2 py-0.5 text-[10px] font-mono font-bold uppercase rounded-sm">
                   {t('macro_playback_in_progress', language)}
                 </span>
               )}
             </div>
-            <div className="space-y-2 flex flex-col align-start text-left">
-              <label className="text-xs font-black uppercase tracking-wider text-left">{t('macro_paste_json_label', language)}</label>
+            <div className="space-y-1.5 flex flex-col align-start text-left">
+              <label className="text-xs font-mono font-bold uppercase tracking-wider text-left">{t('macro_paste_json_label', language)}</label>
               <textarea
                 placeholder='[ { "x": 100, "y": 200, "windowWidth": 1440, "windowHeight": 900, "timestamp": 171600000000 } ]'
                 value={playbackJson}
                 onChange={(e) => setPlaybackJson(e.target.value)}
-                className="w-full h-40 p-4 text-[11px] bg-gray-50 border-4 border-black rounded-2xl resize-none focus:outline-none focus:ring-4 focus:ring-blue-100"
+                className="w-full h-40 p-3 text-[11px] font-mono bg-stone-50 border border-stone-300 rounded-none resize-none focus:outline-none focus:border-stone-500"
               />
             </div>
             
-            <div className="flex items-center justify-between p-4 bg-gray-50 border-4 border-black rounded-2xl">
-              <span className="text-xs font-black uppercase tracking-wider">{t('macro_loop_playback_label', language)}</span>
-              <label className="relative inline-flex items-center cursor-pointer">
+            <div className="flex items-center justify-between p-3 bg-stone-50 border border-stone-200 rounded-none">
+              <span className="text-xs font-mono font-bold uppercase tracking-wider">{t('macro_loop_playback_label', language)}</span>
+              <label className="relative inline-flex items-center cursor-pointer min-h-[44px]">
                 <input
                   type="checkbox"
                   checked={isLoopPlayback}
                   onChange={(e) => setIsLoopPlayback(e.target.checked)}
                   className="sr-only peer"
                 />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                <div className="w-11 h-6 bg-stone-300 peer-focus:outline-none rounded-none peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[11px] after:left-[2px] after:bg-white after:border-stone-400 after:border after:rounded-none after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
               </label>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3">
               <button
                 disabled={isPlayingback}
                 onClick={() => {
@@ -7883,10 +7876,10 @@ function AppContent() {
                   }
                 }}
                 className={cn(
-                  "w-full py-4 rounded-2xl font-black uppercase tracking-wider text-xs transition-all border-b-8 border-blue-900 active:border-b-0 active:translate-y-2",
+                  "w-full min-h-[44px] rounded-sm font-mono font-bold uppercase tracking-wider text-xs transition-all flex items-center justify-center cursor-pointer border",
                   isPlayingback
-                    ? "bg-gray-300 text-gray-500 border-gray-400 cursor-not-allowed"
-                    : "bg-blue-600 hover:bg-blue-500 text-white"
+                    ? "bg-stone-200 text-stone-400 border-stone-300 cursor-not-allowed"
+                    : "bg-[#201d1d] hover:bg-stone-800 text-[#fdfcfc] border-[#201d1d]"
                 )}
               >
                 {isLoopPlayback ? t('macro_loop_play', language) : t('macro_single_play', language)}
@@ -7896,7 +7889,7 @@ function AppContent() {
                   setShowPlaybackPopup(false);
                   setIsLoopPlayback(false);
                 }}
-                className="w-full bg-black hover:bg-gray-800 text-white py-4 rounded-2xl font-black uppercase tracking-wider text-xs border-b-8 border-gray-900 active:border-b-0 active:translate-y-2 transition-all"
+                className="w-full bg-stone-100 hover:bg-stone-200 text-[#201d1d] min-h-[44px] rounded-sm font-mono font-bold uppercase tracking-wider text-xs border border-stone-300 transition-all flex items-center justify-center cursor-pointer"
               >
                 {t('macro_close_console', language)}
               </button>
@@ -7969,37 +7962,38 @@ function AppContent() {
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
-              className="bg-white text-black w-full max-w-md rounded-[32px] border-[6px] border-black p-6 shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] relative flex flex-col space-y-6"
+              className="bg-[#fdfcfc] text-[#201d1d] w-full max-w-md rounded-none border border-[rgba(15,0,0,0.12)] p-6 relative flex flex-col space-y-4 font-mono"
             >
-              <div className="flex items-center justify-between border-b-4 border-black pb-4">
-                <div className="flex items-center gap-2 text-green-600">
-                  <Navigation size={24} className="animate-bounce" />
-                  <h3 className="text-xl font-black italic uppercase tracking-tighter">
+              <div className="flex items-center justify-between border-b border-stone-200 pb-3">
+                <div className="flex items-center gap-2 text-emerald-600">
+                  <Navigation size={20} />
+                  <h3 className="text-lg font-mono font-bold uppercase tracking-tight">
                     {t('gps_perm_title', language)}
                   </h3>
                 </div>
                 <button
                   onClick={() => setShowGpsPermissionModal(false)}
-                  className="p-1.5 hover:bg-gray-100 rounded-full border-2 border-black transition-colors cursor-pointer"
+                  className="p-2 min-h-[44px] min-w-[44px] hover:bg-stone-100 rounded-sm border border-stone-300 transition-colors cursor-pointer flex items-center justify-center"
+                  aria-label={language === 'ko' ? '닫기' : 'Close'}
                 >
                   <X size={18} />
                 </button>
               </div>
 
-              <div className="text-sm font-bold opacity-75 leading-relaxed py-2 whitespace-pre-line">
+              <div className="text-xs font-mono font-medium leading-relaxed py-2 whitespace-pre-line text-stone-700">
                 {t('gps_perm_desc', language)}
               </div>
 
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2 pt-2">
                 <button
                   onClick={requestGpsPermission}
-                  className="w-full py-4 bg-green-600 text-white rounded-2xl border-4 border-black font-black uppercase italic tracking-wider hover:bg-green-500 transition-all active:scale-95 shadow-[4px_4px_0px_rgba(0,0,0,1)] active:translate-y-0.5 active:shadow-none cursor-pointer"
+                  className="w-full min-h-[44px] py-3 bg-[#201d1d] text-[#fdfcfc] rounded-sm border border-[#201d1d] font-mono font-bold uppercase tracking-wider hover:bg-stone-800 transition-all cursor-pointer flex items-center justify-center"
                 >
                   {t('gps_accept', language)}
                 </button>
                 <button
                   onClick={() => setShowGpsPermissionModal(false)}
-                  className="w-full py-3 bg-gray-200 text-black rounded-2xl border-4 border-black font-black uppercase italic tracking-wider hover:bg-gray-300 transition-all active:scale-95 shadow-[4px_4px_0px_rgba(0,0,0,1)] active:translate-y-0.5 active:shadow-none cursor-pointer"
+                  className="w-full min-h-[44px] py-3 bg-stone-100 text-[#201d1d] rounded-sm border border-stone-300 font-mono font-bold uppercase tracking-wider hover:bg-stone-200 transition-all cursor-pointer flex items-center justify-center"
                 >
                   {t('close', language)}
                 </button>
@@ -8017,24 +8011,24 @@ function AppContent() {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="bg-white border-4 border-black p-6 max-w-sm w-full rounded-2xl shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] text-black"
+              className="bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] p-6 max-w-sm w-full rounded-none text-[#201d1d] font-mono"
             >
-              <h3 className="text-lg font-black uppercase tracking-wider mb-2 border-b-2 border-black pb-2 flex items-center gap-2">
-                <Swords size={20} className="text-red-600 animate-bounce" />
+              <h3 className="text-base font-mono font-bold uppercase tracking-wider mb-2 border-b border-stone-200 pb-2 flex items-center gap-2">
+                <Swords size={20} className="text-red-600" />
                 {customPopup.title}
               </h3>
-              <p className="text-sm font-bold text-gray-700 my-4 whitespace-pre-wrap leading-relaxed">
+              <p className="text-xs font-mono text-stone-700 my-4 whitespace-pre-wrap leading-relaxed">
                 {customPopup.message}
               </p>
 
               {/* 자동 닫힘 카운트다운 뱃지 */}
               {customPopup.countdown !== undefined && customPopup.countdown !== null && customPopup.countdown > 0 && (
-                <div className="mb-4 py-1.5 px-3 bg-amber-50 border border-amber-300 rounded-lg text-amber-900 text-xs font-black flex items-center justify-center gap-1.5 animate-pulse">
+                <div className="mb-4 py-1.5 px-3 bg-amber-50 border border-amber-300 rounded-sm text-amber-900 text-xs font-mono font-bold flex items-center justify-center gap-1.5">
                   <span>⏱️ {language === 'ko' ? `${customPopup.countdown}초 후 자동으로 닫힙니다` : `Auto closing in ${customPopup.countdown}s...`}</span>
                 </div>
               )}
 
-              <div className="flex gap-3 mt-4">
+              <div className="flex gap-2 mt-4">
                 {customPopup.type === 'confirm' ? (
                   <>
                     <button
@@ -8043,7 +8037,7 @@ function AppContent() {
                         setCustomPopup(prev => ({ ...prev, isOpen: false, countdown: null }));
                         customPopup.onConfirm?.();
                       }}
-                      className="flex-1 py-2.5 bg-red-600 hover:bg-red-500 text-white font-black uppercase rounded-xl border-2 border-black shadow-[4px_4px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all cursor-pointer text-center"
+                      className="flex-1 min-h-[44px] py-2.5 bg-red-600 hover:bg-red-500 text-white font-mono font-bold uppercase rounded-sm border border-red-700 transition-all cursor-pointer flex items-center justify-center text-center text-xs"
                     >
                       {language === 'ko' ? '예' : 'YES'}
                     </button>
@@ -8053,7 +8047,7 @@ function AppContent() {
                         setCustomPopup(prev => ({ ...prev, isOpen: false, countdown: null }));
                         customPopup.onCancel?.();
                       }}
-                      className="flex-1 py-2.5 bg-gray-200 hover:bg-gray-100 text-black font-black uppercase rounded-xl border-2 border-black shadow-[4px_4px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all cursor-pointer text-center"
+                      className="flex-1 min-h-[44px] py-2.5 bg-stone-100 hover:bg-stone-200 text-[#201d1d] font-mono font-bold uppercase rounded-sm border border-stone-300 transition-all cursor-pointer flex items-center justify-center text-center text-xs"
                     >
                       {language === 'ko' ? '아니요' : 'NO'}
                     </button>
@@ -8064,7 +8058,7 @@ function AppContent() {
                       playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
                       setCustomPopup(prev => ({ ...prev, isOpen: false, countdown: null }));
                     }}
-                    className="w-full py-2.5 bg-yellow-400 hover:bg-yellow-300 text-black font-black uppercase rounded-xl border-2 border-black shadow-[4px_4px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all cursor-pointer text-center"
+                    className="w-full min-h-[44px] py-2.5 bg-[#201d1d] hover:bg-stone-800 text-[#fdfcfc] font-mono font-bold uppercase rounded-sm border border-[#201d1d] transition-all cursor-pointer flex items-center justify-center text-center text-xs"
                   >
                     {customPopup.countdown !== undefined && customPopup.countdown !== null && customPopup.countdown > 0
                       ? (language === 'ko' ? `확인 (${customPopup.countdown}초)` : `OK (${customPopup.countdown}s)`)
@@ -8085,48 +8079,48 @@ function AppContent() {
               initial={{ scale: 0.9, y: 20, opacity: 0 }}
               animate={{ scale: 1, y: 0, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-[#0b0f19] rounded-3xl p-6 sm:p-8 max-w-sm w-full border border-amber-500/40 shadow-[0_0_50px_rgba(245,158,11,0.25)] text-center space-y-5 font-mono text-white relative"
+              className="bg-[#0b0f19] rounded-none p-6 sm:p-8 max-w-sm w-full border border-amber-500/40 text-center space-y-5 font-mono text-white relative"
             >
               {/* Badge & Icon */}
-              <div className="relative mx-auto w-16 h-16 flex items-center justify-center">
-                <div className="absolute inset-0 rounded-2xl bg-amber-500/20 border border-amber-500/40 animate-pulse" />
-                <Swords size={32} className="text-amber-400 drop-shadow-[0_0_12px_rgba(245,158,11,0.8)] animate-bounce" />
+              <div className="relative mx-auto w-14 h-14 flex items-center justify-center">
+                <div className="absolute inset-0 rounded-sm bg-amber-500/20 border border-amber-500/40" />
+                <Swords size={28} className="text-amber-400" />
               </div>
 
               {/* Title & Description */}
               <div className="space-y-1">
-                <div className="inline-block px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[10px] font-black tracking-wider uppercase mb-1">
+                <div className="inline-block px-2.5 py-0.5 rounded-sm bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[10px] font-mono font-bold tracking-wider uppercase mb-1">
                   ⚔️ {language === 'ko' ? '실시간 랭킹대전 (PvP)' : 'RANKING BATTLE (PvP)'}
                 </div>
-                <h3 className="text-lg font-black tracking-tight text-slate-100">
+                <h3 className="text-base font-mono font-bold tracking-tight text-stone-100 uppercase">
                   {language === 'ko' ? '최적의 라이벌 매칭 완료!' : 'Optimal Rival Matched!'}
                 </h3>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs font-mono text-stone-400">
                   {language === 'ko' ? '3초 후 대전 화면으로 이동합니다' : 'Entering battle arena in 3s'}
                 </p>
               </div>
 
               {/* Opponent Preview Card */}
               {rankingBattlePendingOpponent && (
-                <div className="p-3 bg-stone-900/90 rounded-xl border border-stone-700/80 flex items-center justify-between text-left">
+                <div className="p-3 bg-stone-900/90 rounded-none border border-stone-800 flex items-center justify-between text-left">
                   <div className="flex items-center gap-2.5 min-w-0">
-                    <div className="w-9 h-9 rounded-lg bg-stone-800 border border-amber-500/40 flex items-center justify-center text-amber-400 font-bold shrink-0 text-base">
+                    <div className="w-9 h-9 rounded-sm bg-stone-800 border border-amber-500/40 flex items-center justify-center text-amber-400 font-bold shrink-0 text-base">
                       🤖
                     </div>
                     <div className="min-w-0">
-                      <div className="text-xs font-black text-amber-300 truncate">
+                      <div className="text-xs font-mono font-bold text-amber-300 truncate">
                         {rankingBattlePendingOpponent.name}
                       </div>
-                      <div className="text-[10px] text-stone-400">
+                      <div className="text-[10px] font-mono text-stone-400">
                         CP {rankingBattlePendingOpponent.totalPower.toLocaleString()} · {rankingBattlePendingOpponent.wins}W {rankingBattlePendingOpponent.losses}L
                       </div>
                     </div>
                   </div>
                   <div className="text-right shrink-0">
-                    <span className="text-[10px] text-amber-400 font-bold block">
+                    <span className="text-[10px] font-mono text-amber-400 font-bold block">
                       +{rankingBattlePendingOpponent.sns} SNS
                     </span>
-                    <span className="text-[9px] text-stone-500">
+                    <span className="text-[9px] font-mono text-stone-500">
                       {language === 'ko' ? '승리 기대' : 'Est. Reward'}
                     </span>
                   </div>
@@ -8135,10 +8129,10 @@ function AppContent() {
 
               {/* Huge Countdown Number */}
               <div className="flex flex-col items-center justify-center py-2">
-                <div className="text-6xl font-black text-amber-400 tracking-tighter drop-shadow-[0_0_20px_rgba(245,158,11,0.7)] animate-pulse">
+                <div className="text-5xl font-mono font-bold text-amber-400 tracking-tight">
                   {rankingBattleCountdown}
                 </div>
-                <div className="w-32 bg-stone-800 h-1.5 rounded-full overflow-hidden mt-3 border border-amber-500/20">
+                <div className="w-32 bg-stone-800 h-1.5 rounded-none overflow-hidden mt-3 border border-amber-500/20">
                   <div
                     className="bg-amber-400 h-full transition-all duration-1000 ease-linear"
                     style={{ width: `${(rankingBattleCountdown / 3) * 100}%` }}
@@ -8150,7 +8144,7 @@ function AppContent() {
               <button
                 type="button"
                 onClick={handleCancelRankingBattle}
-                className="w-full py-3 bg-stone-800 hover:bg-stone-700 text-stone-200 hover:text-white rounded-xl text-xs font-black uppercase transition-all shadow-md active:scale-95 cursor-pointer border border-stone-600 flex items-center justify-center gap-1.5"
+                className="w-full min-h-[44px] py-3 bg-stone-800 hover:bg-stone-700 text-stone-200 hover:text-white rounded-sm text-xs font-mono font-bold uppercase transition-all cursor-pointer border border-stone-700 flex items-center justify-center gap-1.5"
               >
                 <X size={14} />
                 <span>{language === 'ko' ? '매칭 취소' : 'Cancel Matching'}</span>
@@ -8285,24 +8279,24 @@ function AppContent() {
       />
 
       {isGlobalLoading && (
-        <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md pointer-events-auto animate-fade-in">
-          <div className="bg-slate-900/90 border border-slate-700/50 backdrop-blur-xl p-8 rounded-3xl shadow-[0_0_50px_rgba(59,130,246,0.3)] max-w-sm w-full flex flex-col items-center space-y-6 relative text-white">
+        <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center p-4 bg-black/80 backdrop-blur-md pointer-events-auto animate-fade-in">
+          <div className="bg-[#201d1d] border border-white/10 p-8 rounded-none max-w-sm w-full flex flex-col items-center space-y-6 relative text-[#fdfcfc] font-mono">
             <button
               onClick={() => {
                 setIsGlobalLoading(false);
                 setGlobalLoadingMessage('');
               }}
-              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white hover:bg-white/10 rounded-xl transition-all cursor-pointer z-10 border border-slate-800/80 bg-slate-950/90 shadow-md"
+              className="absolute top-4 right-4 p-2 min-h-[44px] min-w-[44px] text-stone-300 hover:text-white hover:bg-white/10 rounded-sm transition-all cursor-pointer z-10 border border-white/20 bg-stone-900 flex items-center justify-center"
               title={language === 'ko' ? '닫기' : 'Close'}
             >
               <X size={16} />
             </button>
             <div className="relative w-16 h-16 flex items-center justify-center">
-              <div className="w-16 h-16 rounded-full border-4 border-slate-800 border-t-blue-500 border-r-transparent animate-spin"></div>
-              <div className="absolute w-10 h-10 rounded-full border-4 border-slate-800 border-b-purple-500 border-l-transparent animate-spin [animation-direction:reverse]"></div>
+              <div className="w-16 h-16 rounded-full border-4 border-stone-800 border-t-amber-500 border-r-transparent animate-spin"></div>
+              <div className="absolute w-10 h-10 rounded-full border-4 border-stone-800 border-b-amber-400 border-l-transparent animate-spin [animation-direction:reverse]"></div>
             </div>
             <div className="text-center">
-              <h3 className="text-lg font-black italic uppercase tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 drop-shadow-[0_0_10px_rgba(168,85,247,0.3)]">
+              <h3 className="text-sm font-mono font-bold uppercase tracking-wider text-[#fdfcfc]">
                 {globalLoadingMessage || t('processing', language)}
               </h3>
             </div>
@@ -8321,7 +8315,7 @@ function AppContent() {
             aria-label="Google AdSense Right Wing"
             className="hidden lg:flex flex-col items-center w-[120px] xl:w-[160px] shrink-0 sticky top-6 ml-2 xl:ml-3 z-30 pointer-events-auto"
           >
-            <div className="w-full bg-[#fdfcfc]/90 dark:bg-slate-950/90 border border-slate-200 dark:border-slate-800 p-1.5 shadow-xs rounded-none">
+            <div className="w-full bg-[#fdfcfc]/90 dark:bg-slate-950/90 border border-slate-200 dark:border-slate-800 p-1.5 rounded-none">
               <AdSenseBanner 
                 format="vertical"
                 className="w-full min-h-[600px]"

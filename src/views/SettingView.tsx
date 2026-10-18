@@ -364,7 +364,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
   const handleDbModeChange = (mode: 'local' | 'production') => {
     if (mode === currentDbMode) return;
     playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-    localStorage.setItem('firebase_db_mode', mode);
+    localStorage.setItem('hero_firebase_db_mode', mode);
     setSystemNotice(t('db_mode_change_notice', language));
     setTimeout(() => window.location.reload(), 1000);
   };
@@ -590,7 +590,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
               type="button"
               onClick={() => { setActiveSubTab('attendance'); triggerHaptic('light'); }}
               className={cn(
-                "px-2 py-1 text-[10px] font-bold border transition-all cursor-pointer",
+                "min-h-[44px] px-3 py-1.5 text-[10px] font-bold border transition-all cursor-pointer flex items-center justify-center rounded-sm",
                 isCheckedAttendanceToday
                   ? "border-emerald-500 bg-emerald-50 text-emerald-700"
                   : "border-amber-500 bg-amber-50 text-amber-900 animate-pulse"
@@ -619,9 +619,9 @@ export const SettingView: React.FC<SettingViewProps> = ({
               type="button"
               onClick={() => { setActiveSubTab('missions'); triggerHaptic('light'); }}
               className={cn(
-                "px-2 py-1 text-[10px] font-bold border transition-all cursor-pointer",
+                "min-h-[44px] px-3 py-1.5 text-[10px] font-bold border transition-all cursor-pointer rounded-sm flex items-center justify-center",
                 claimableMissionCount > 0
-                  ? "border-rose-500 bg-rose-50 text-rose-700 animate-bounce"
+                  ? "border-rose-500 bg-rose-50 text-rose-700 font-bold"
                   : "border-[#201d1d]/20 bg-white text-[#201d1d]/70 hover:border-[#201d1d]"
               )}
             >
@@ -684,7 +684,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
           <Gift size={14} />
           <span>{language === 'ko' ? '일일 미션' : 'MISSIONS'}</span>
           {claimableMissionCount > 0 && (
-            <span className="ml-0.5 px-1.5 py-0.2 bg-rose-600 text-white text-[10px] font-bold rounded-full">
+            <span className="ml-0.5 px-1.5 py-0.2 bg-rose-600 text-white text-[10px] font-bold rounded-xs">
               {claimableMissionCount}
             </span>
           )}
@@ -693,7 +693,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
           type="button"
           onClick={() => { setActiveSubTab('attendance'); triggerHaptic('light'); }}
           className={cn(
-            "min-h-[44px] py-2 px-2 text-xs font-bold border transition-all flex items-center justify-center gap-1.5 cursor-pointer relative select-none",
+            "min-h-[44px] py-2 px-2 text-xs font-bold border transition-all flex items-center justify-center gap-1.5 cursor-pointer relative select-none rounded-xs",
             activeSubTab === 'attendance'
               ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
               : "bg-white text-[#201d1d] border-[#201d1d]/20 hover:border-[#201d1d] hover:bg-slate-50"
@@ -702,7 +702,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
           <CalendarCheck size={14} />
           <span>{language === 'ko' ? '7일 출석' : 'STREAK'}</span>
           {!isCheckedAttendanceToday && (
-            <span className="ml-0.5 w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+            <span className="ml-0.5 w-2 h-2 rounded-xs bg-amber-500 animate-pulse" />
           )}
         </button>
       </nav>
@@ -717,7 +717,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
              <h3 className="text-sm font-bold tracking-normal text-slate-800">{t('setting', language)}</h3>
           </div>
           
-          <div className="grid grid-cols-1 gap-0 border border-slate-200 rounded-lg overflow-hidden bg-white shadow-sm divide-y divide-slate-100">
+          <div className="grid grid-cols-1 gap-0 border border-[rgba(15,0,0,0.12)] rounded-none overflow-hidden bg-white divide-y divide-[rgba(15,0,0,0.08)]">
             <div className="bg-white p-6 space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
@@ -733,13 +733,14 @@ export const SettingView: React.FC<SettingViewProps> = ({
                     playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
                   }}
                   className={cn(
-                    "min-w-[44px] min-h-[44px] w-12 h-6 rounded-full transition-all relative flex items-center p-0.5",
-                    bgmEnabled ? 'bg-indigo-600' : 'bg-slate-200'
+                    "min-w-[44px] min-h-[44px] w-12 h-6 rounded-sm border transition-all relative flex items-center p-0.5 cursor-pointer",
+                    bgmEnabled ? 'bg-[#201d1d] border-[#201d1d]' : 'bg-[#f8f7f7] border-[rgba(15,0,0,0.12)]'
                   )}
+                  aria-label="Toggle BGM"
                 >
                   <div className={cn(
-                    "w-5 h-5 rounded-full transition-all transform bg-white shadow-sm",
-                    bgmEnabled ? 'translate-x-6' : 'translate-x-0'
+                    "w-5 h-5 rounded-xs transition-all transform",
+                    bgmEnabled ? 'translate-x-6 bg-[#fdfcfc]' : 'translate-x-0 bg-[#201d1d]'
                   )} />
                 </button>
               </div>
@@ -772,7 +773,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
                       <button
                         type="button"
                         onClick={() => setIsJukeboxOpen(true)}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-indigo-600 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 text-[10px] font-mono font-bold uppercase tracking-wider transition-all"
+                        className="inline-flex items-center gap-1.5 px-3 min-h-[44px] rounded-sm border border-indigo-600 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 text-[10px] font-mono font-bold uppercase tracking-wider transition-all"
                       >
                         <Music size={12} />
                         {language === 'ko' ? '주크박스 열기' : 'Open Jukebox'}
@@ -781,7 +782,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
                     {(() => {
                       const currentTrack = BGM_TRACKS.find(t => t.id === bgmTrackId) || BGM_TRACKS[0];
                       return (
-                        <div className="w-full rounded-lg border border-slate-200 bg-slate-50/50 p-4 transition-all hover:border-slate-300 hover:bg-slate-50">
+                        <div className="w-full rounded-none border border-slate-200 bg-slate-50/50 p-4 transition-all hover:border-slate-300 hover:bg-slate-50">
                           <div className="flex items-center justify-between gap-3">
                             <div className="min-w-0 flex flex-col">
                               <span className="font-bold text-xs uppercase tracking-tight text-slate-800">
@@ -794,7 +795,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
                             <button
                               type="button"
                               onClick={() => setIsJukeboxOpen(true)}
-                              className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-lg border border-slate-900 bg-slate-900 px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-white shadow-sm transition-all hover:bg-slate-800 active:scale-[0.98] touch-target"
+                              className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-sm border border-[#201d1d] bg-[#201d1d] px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-[#fdfcfc] transition-all hover:bg-[#302c2c] active:scale-[0.98] touch-target"
                             >
                               {t('change', language)}
                               <ArrowRight size={12} />
@@ -825,13 +826,14 @@ export const SettingView: React.FC<SettingViewProps> = ({
                     }
                   }}
                   className={cn(
-                    "min-w-[44px] min-h-[44px] w-12 h-6 rounded-full transition-all relative flex items-center p-0.5",
-                    sfxEnabled ? 'bg-indigo-600' : 'bg-slate-200'
+                    "min-w-[44px] min-h-[44px] w-12 h-6 rounded-sm border transition-all relative flex items-center p-0.5 cursor-pointer",
+                    sfxEnabled ? 'bg-[#201d1d] border-[#201d1d]' : 'bg-[#f8f7f7] border-[rgba(15,0,0,0.12)]'
                   )}
+                  aria-label="Toggle SFX"
                 >
                   <div className={cn(
-                    "w-5 h-5 rounded-full transition-all transform bg-white shadow-sm",
-                    sfxEnabled ? 'translate-x-6' : 'translate-x-0'
+                    "w-5 h-5 rounded-xs transition-all transform",
+                    sfxEnabled ? 'translate-x-6 bg-[#fdfcfc]' : 'translate-x-0 bg-[#201d1d]'
                   )} />
                 </button>
               </div>
@@ -849,7 +851,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
                     step="0.01" 
                     value={sfxVolume} 
                     onChange={(e) => setSfxVolume(parseFloat(e.target.value))}
-                    className="w-full h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+                    className="w-full h-1 bg-slate-200 rounded-none appearance-none cursor-pointer accent-[#201d1d]"
                   />
                 </div>
               )}
@@ -872,7 +874,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsHapticModalOpen(true)}
-                  className="px-2.5 py-1 text-[11px] font-bold border border-slate-300 dark:border-slate-600 rounded-sm hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 active:scale-95 transition-all"
+                  className="min-h-[44px] px-3 py-1 text-[11px] font-bold border border-[rgba(15,0,0,0.12)] rounded-sm hover:bg-[#f8f7f7] text-[#201d1d] active:scale-95 transition-all flex items-center justify-center"
                 >
                   [강도 조절]
                 </button>
@@ -883,13 +885,14 @@ export const SettingView: React.FC<SettingViewProps> = ({
                     if (next) triggerHaptic('medium');
                   }}
                   className={cn(
-                    "min-w-[44px] min-h-[44px] w-12 h-6 rounded-full transition-all relative flex items-center p-0.5",
-                    hapticEnabled ? 'bg-indigo-600' : 'bg-slate-200'
+                    "min-w-[44px] min-h-[44px] w-12 h-6 rounded-sm border transition-all relative flex items-center p-0.5 cursor-pointer",
+                    hapticEnabled ? 'bg-[#201d1d] border-[#201d1d]' : 'bg-[#f8f7f7] border-[rgba(15,0,0,0.12)]'
                   )}
+                  aria-label="Toggle Haptic"
                 >
                   <div className={cn(
-                    "w-5 h-5 rounded-full transition-all transform bg-white shadow-sm",
-                    hapticEnabled ? 'translate-x-6' : 'translate-x-0'
+                    "w-5 h-5 rounded-xs transition-all transform",
+                    hapticEnabled ? 'translate-x-6 bg-[#fdfcfc]' : 'translate-x-0 bg-[#201d1d]'
                   )} />
                 </button>
               </div>
@@ -910,13 +913,14 @@ export const SettingView: React.FC<SettingViewProps> = ({
                   playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
                 }}
                 className={cn(
-                  "min-w-[44px] min-h-[44px] w-12 h-6 rounded-full transition-all relative flex items-center p-0.5",
-                  lowSpecMode ? 'bg-indigo-600' : 'bg-slate-200'
+                  "min-w-[44px] min-h-[44px] w-12 h-6 rounded-sm border transition-all relative flex items-center p-0.5 cursor-pointer",
+                  lowSpecMode ? 'bg-[#201d1d] border-[#201d1d]' : 'bg-[#f8f7f7] border-[rgba(15,0,0,0.12)]'
                 )}
+                aria-label="Toggle Low Spec Mode"
               >
                 <div className={cn(
-                  "w-5 h-5 rounded-full transition-all transform bg-white shadow-sm",
-                  lowSpecMode ? 'translate-x-6' : 'translate-x-0'
+                  "w-5 h-5 rounded-xs transition-all transform",
+                  lowSpecMode ? 'translate-x-6 bg-[#fdfcfc]' : 'translate-x-0 bg-[#201d1d]'
                 )} />
               </button>
             </div>
@@ -962,13 +966,14 @@ export const SettingView: React.FC<SettingViewProps> = ({
                   playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
                 }}
                 className={cn(
-                  "min-w-[44px] min-h-[44px] w-12 h-6 rounded-full transition-all relative flex items-center p-0.5",
-                  batterySaver ? 'bg-emerald-600' : 'bg-slate-200'
+                  "min-w-[44px] min-h-[44px] w-12 h-6 rounded-sm border transition-all relative flex items-center p-0.5 cursor-pointer",
+                  batterySaver ? 'bg-[#201d1d] border-[#201d1d]' : 'bg-[#f8f7f7] border-[rgba(15,0,0,0.12)]'
                 )}
+                aria-label="Toggle Battery Saver"
               >
                 <div className={cn(
-                  "w-5 h-5 rounded-full transition-all transform bg-white shadow-sm",
-                  batterySaver ? 'translate-x-6' : 'translate-x-0'
+                  "w-5 h-5 rounded-xs transition-all transform",
+                  batterySaver ? 'translate-x-6 bg-[#fdfcfc]' : 'translate-x-0 bg-[#201d1d]'
                 )} />
               </button>
             </div>
@@ -988,15 +993,15 @@ export const SettingView: React.FC<SettingViewProps> = ({
                   </p>
                 </div>
               </div>
-              <div className="flex gap-1.5 bg-slate-100 p-1 rounded-xl">
+              <div className="flex gap-1.5 bg-[#f8f7f7] p-1 rounded-none border border-[rgba(15,0,0,0.12)]">
                 <button
                   onClick={() => {
                     setTargetFps('60');
                     playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
                   }}
                   className={cn(
-                    "px-3 py-1.5 rounded-lg text-xs font-black uppercase transition-all",
-                    targetFps === '60' ? "bg-indigo-600 text-white shadow-xs" : "text-slate-500 hover:text-slate-800"
+                    "px-3 py-1.5 min-h-[44px] rounded-sm text-xs font-black uppercase transition-all flex items-center justify-center border",
+                    targetFps === '60' ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]" : "text-[#646262] hover:text-[#201d1d] border-transparent"
                   )}
                 >
                   60 FPS
@@ -1007,8 +1012,8 @@ export const SettingView: React.FC<SettingViewProps> = ({
                     playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
                   }}
                   className={cn(
-                    "px-3 py-1.5 rounded-lg text-xs font-black uppercase transition-all",
-                    targetFps === '30' ? "bg-amber-500 text-slate-950 shadow-xs" : "text-slate-500 hover:text-slate-800"
+                    "px-3 py-1.5 min-h-[44px] rounded-sm text-xs font-black uppercase transition-all flex items-center justify-center border",
+                    targetFps === '30' ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]" : "text-[#646262] hover:text-[#201d1d] border-transparent"
                   )}
                 >
                   30 FPS
@@ -1030,13 +1035,14 @@ export const SettingView: React.FC<SettingViewProps> = ({
                   playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
                 }}
                 className={cn(
-                  "min-w-[44px] min-h-[44px] w-12 h-6 rounded-full transition-all relative flex items-center p-0.5",
-                  recommendMode ? 'bg-indigo-600' : 'bg-slate-200'
+                  "min-w-[44px] min-h-[44px] w-12 h-6 rounded-sm border transition-all relative flex items-center p-0.5 cursor-pointer",
+                  recommendMode ? 'bg-[#201d1d] border-[#201d1d]' : 'bg-[#f8f7f7] border-[rgba(15,0,0,0.12)]'
                 )}
+                aria-label="Toggle Recommend Mode"
               >
                 <div className={cn(
-                  "w-5 h-5 rounded-full transition-all transform bg-white shadow-sm",
-                  recommendMode ? 'translate-x-6' : 'translate-x-0'
+                  "w-5 h-5 rounded-xs transition-all transform",
+                  recommendMode ? 'translate-x-6 bg-[#fdfcfc]' : 'translate-x-0 bg-[#201d1d]'
                 )} />
               </button>
             </div>
@@ -1056,13 +1062,14 @@ export const SettingView: React.FC<SettingViewProps> = ({
                   playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
                 }}
                 className={cn(
-                  "min-w-[44px] min-h-[44px] w-12 h-6 rounded-full transition-all relative flex items-center p-0.5",
-                  isAutoBattle ? 'bg-indigo-600' : 'bg-slate-200'
+                  "min-w-[44px] min-h-[44px] w-12 h-6 rounded-sm border transition-all relative flex items-center p-0.5 cursor-pointer",
+                  isAutoBattle ? 'bg-[#201d1d] border-[#201d1d]' : 'bg-[#f8f7f7] border-[rgba(15,0,0,0.12)]'
                 )}
+                aria-label="Toggle Auto Battle"
               >
                 <div className={cn(
-                  "w-5 h-5 rounded-full transition-all transform bg-white shadow-sm",
-                  isAutoBattle ? 'translate-x-6' : 'translate-x-0'
+                  "w-5 h-5 rounded-xs transition-all transform",
+                  isAutoBattle ? 'translate-x-6 bg-[#fdfcfc]' : 'translate-x-0 bg-[#201d1d]'
                 )} />
               </button>
             </div>
@@ -1084,10 +1091,10 @@ export const SettingView: React.FC<SettingViewProps> = ({
                     playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
                   }}
                   className={cn(
-                    "flex-1 py-2.5 text-xs sm:text-sm font-bold rounded-xl border transition-all cursor-pointer",
+                    "flex-1 py-2.5 min-h-[44px] text-xs sm:text-sm font-bold rounded-sm border transition-all cursor-pointer flex items-center justify-center",
                     theme === 'light'
-                      ? "bg-slate-900 border-slate-900 text-white shadow-md"
-                      : "bg-slate-50 border-slate-200 text-slate-400 hover:bg-slate-100 hover:text-slate-650"
+                      ? "bg-[#201d1d] border-[#201d1d] text-[#fdfcfc]"
+                      : "bg-[#f8f7f7] border-[rgba(15,0,0,0.12)] text-[#201d1d] hover:bg-[#f1eeee]"
                   )}
                 >
                   {t('theme_light', language)}
@@ -1098,10 +1105,10 @@ export const SettingView: React.FC<SettingViewProps> = ({
                     playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
                   }}
                   className={cn(
-                    "flex-1 py-2.5 text-xs sm:text-sm font-bold rounded-xl border transition-all cursor-pointer",
+                    "flex-1 py-2.5 min-h-[44px] text-xs sm:text-sm font-bold rounded-sm border transition-all cursor-pointer flex items-center justify-center",
                     theme === 'dark'
-                      ? "bg-indigo-600 border-indigo-600 text-white shadow-[0_0_15px_rgba(99,102,241,0.4)]"
-                      : "bg-slate-50 border-slate-200 text-slate-400 hover:bg-slate-100 hover:text-slate-650"
+                      ? "bg-[#201d1d] border-[#201d1d] text-[#fdfcfc]"
+                      : "bg-[#f8f7f7] border-[rgba(15,0,0,0.12)] text-[#201d1d] hover:bg-[#f1eeee]"
                   )}
                 >
                   {t('theme_dark', language)}
@@ -1112,10 +1119,10 @@ export const SettingView: React.FC<SettingViewProps> = ({
                     playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
                   }}
                   className={cn(
-                    "flex-1 py-2.5 text-xs sm:text-sm font-bold rounded-xl border transition-all cursor-pointer",
+                    "flex-1 py-2.5 min-h-[44px] text-xs sm:text-sm font-bold rounded-sm border transition-all cursor-pointer flex items-center justify-center",
                     theme === 'metal'
-                      ? "bg-gradient-to-br from-slate-500 to-slate-600 border-slate-400 text-white shadow-[0_0_15px_rgba(100,100,120,0.4)]"
-                      : "bg-slate-50 border-slate-200 text-slate-400 hover:bg-slate-100 hover:text-slate-650"
+                      ? "bg-[#201d1d] border-[#201d1d] text-[#fdfcfc]"
+                      : "bg-[#f8f7f7] border-[rgba(15,0,0,0.12)] text-[#201d1d] hover:bg-[#f1eeee]"
                   )}
                 >
                   ⚙️ {language === 'ko' ? '메탈' : 'Metal'}
@@ -1133,7 +1140,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
              <h3 className="text-sm font-bold tracking-normal text-slate-800">{t('ai_difficulty', language)}</h3>
           </div>
           
-          <div className="flex gap-2 p-1.5 bg-slate-100 rounded-lg">
+          <div className="flex gap-2 p-1.5 bg-[#f8f7f7] rounded-none border border-[rgba(15,0,0,0.12)]">
             {(['easy', 'medium', 'hard'] as const).map(diff => (
               <button
                 key={diff}
@@ -1142,19 +1149,19 @@ export const SettingView: React.FC<SettingViewProps> = ({
                   playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
                 }}
                 className={cn(
-                  "flex-1 py-3 px-2 flex flex-col items-center justify-center gap-1.5 transition-all font-bold uppercase tracking-widest text-[10px] rounded-md active:scale-95",
+                  "flex-1 py-3 px-2 min-h-[44px] flex flex-col items-center justify-center gap-1.5 transition-all font-bold uppercase tracking-widest text-[10px] rounded-sm active:scale-95 border",
                   aiDifficulty === diff 
-                    ? "bg-white text-slate-800 shadow-sm border border-slate-100"
-                    : "bg-transparent text-slate-400 hover:text-slate-600"
+                    ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
+                    : "bg-transparent text-[#646262] border-transparent hover:text-[#201d1d]"
                 )}
               >
                 {t(`difficulty_${diff}` as any, language)}
               </button>
             ))}
           </div>
-          <div className="bg-slate-900 text-white p-4 rounded-lg text-[10px] font-bold uppercase tracking-widest flex items-start gap-2 shadow-sm">
+          <div className="bg-[#201d1d] text-[#fdfcfc] p-4 rounded-none border border-[#201d1d] text-[10px] font-bold uppercase tracking-widest flex items-start gap-2 font-mono">
             <Info size={14} className="shrink-0 mt-0.5 animate-pulse" />
-            <p className="leading-relaxed text-slate-200">
+            <p className="leading-relaxed text-[#fdfcfc]">
               {t(`difficulty_${aiDifficulty}_desc` as any, language)}
             </p>
           </div>
@@ -1179,53 +1186,53 @@ export const SettingView: React.FC<SettingViewProps> = ({
                     playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
                   }}
                   className={cn(
-                    "border p-5 sm:p-6 rounded-lg text-left transition-all relative flex flex-col gap-4 group",
+                    "border p-5 sm:p-6 rounded-none text-left transition-all relative flex flex-col gap-4 group",
                     isSelected 
-                      ? "border-slate-900 bg-white shadow-md" 
-                      : "border-slate-200 bg-white/60 text-slate-500 hover:border-slate-350 hover:bg-white"
+                      ? "border-[#201d1d] bg-[#f8f7f7]" 
+                      : "border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-[#646262] hover:border-[#201d1d]"
                   )}
                 >
                   <div className="flex items-center justify-between w-full">
                     <div className="flex items-center gap-4">
-                      <div className={cn("p-2 border rounded-lg text-slate-800 transition-colors", isSelected ? "border-slate-900 bg-slate-50" : "border-slate-200 bg-white")}>
+                      <div className={cn("p-2 border rounded-sm text-[#201d1d] transition-colors", isSelected ? "border-[#201d1d] bg-[#fdfcfc]" : "border-[rgba(15,0,0,0.12)] bg-[#f8f7f7]")}>
                         <Icon size={20} />
                       </div>
                       <div>
-                        <h4 className={cn("font-bold text-lg uppercase tracking-tighter transition-colors", isSelected ? "text-slate-900" : "text-slate-500 group-hover:text-slate-700")}>{strat.name}</h4>
+                        <h4 className={cn("font-bold text-lg uppercase tracking-tighter transition-colors", isSelected ? "text-[#201d1d]" : "text-[#646262] group-hover:text-[#201d1d]")}>{strat.name}</h4>
                         <div className="flex flex-wrap gap-2 mt-1">
                           {isSelected && (
-                            <div className="bg-indigo-600 text-white px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest leading-none rounded-md shadow-xs">
+                            <div className="bg-[#201d1d] text-[#fdfcfc] px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest leading-none rounded-sm">
                               ACTIVE
                             </div>
                           )}
-                          <div className={cn("px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest border rounded-md leading-none transition-colors",
-                             isSelected ? "border-slate-900 text-slate-900 bg-slate-50" : "border-slate-200 text-slate-400"
+                          <div className={cn("px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest border rounded-sm leading-none transition-colors",
+                             isSelected ? "border-[#201d1d] text-[#201d1d] bg-[#fdfcfc]" : "border-[rgba(15,0,0,0.12)] text-[#646262]"
                           )}>
                             {strat.stats}
                           </div>
                         </div>
                       </div>
                     </div>
-                    {isSelected && <CheckCircle2 className="text-indigo-650" size={24} />}
+                    {isSelected && <CheckCircle2 className="text-[#201d1d]" size={24} />}
                   </div>
 
                   <div className={cn("space-y-4 pt-2 transition-all w-full", isSelected ? "opacity-100 block" : "opacity-0 hidden")}>
-                    <p className="text-xs leading-relaxed font-bold border-l-2 border-indigo-600 pl-3 mt-2 text-slate-700">
+                    <p className="text-xs leading-relaxed font-bold border-l-2 border-[#201d1d] pl-3 mt-2 text-[#201d1d]">
                       {strat.desc}
                     </p>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <div className="p-4 border border-slate-200 rounded-lg bg-slate-50/50 text-slate-700">
-                        <p className="text-[10px] font-bold uppercase tracking-widest mb-2 flex items-center gap-1 border-b border-slate-200 pb-1 text-slate-400">
+                      <div className="p-4 border border-[rgba(15,0,0,0.12)] rounded-none bg-[#f8f7f7] text-[#201d1d]">
+                        <p className="text-[10px] font-bold uppercase tracking-widest mb-2 flex items-center gap-1 border-b border-[rgba(15,0,0,0.12)] pb-1 text-[#646262]">
                            {t('pros', language)}
                         </p>
-                        <p className="text-[10px] font-semibold leading-relaxed font-sans text-slate-650">{strat.pros}</p>
+                        <p className="text-[10px] font-semibold leading-relaxed font-mono text-[#201d1d]">{strat.pros}</p>
                       </div>
-                      <div className="p-4 border border-slate-200 rounded-lg bg-white text-slate-700">
-                        <p className="text-[10px] font-bold uppercase tracking-widest mb-2 flex items-center gap-1 border-b border-slate-200 pb-1 text-slate-400">
+                      <div className="p-4 border border-[rgba(15,0,0,0.12)] rounded-none bg-[#fdfcfc] text-[#201d1d]">
+                        <p className="text-[10px] font-bold uppercase tracking-widest mb-2 flex items-center gap-1 border-b border-[rgba(15,0,0,0.12)] pb-1 text-[#646262]">
                            {t('cons', language)}
                         </p>
-                        <p className="text-[10px] font-semibold leading-relaxed font-sans text-slate-650">{strat.cons}</p>
+                        <p className="text-[10px] font-semibold leading-relaxed font-mono text-[#646262]">{strat.cons}</p>
                       </div>
                     </div>
                   </div>
@@ -1246,18 +1253,18 @@ export const SettingView: React.FC<SettingViewProps> = ({
                setIsSimModalOpen(true);
                playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
              }}
-             className="w-full border border-slate-200 p-6 rounded-3xl text-left transition-all relative flex items-center justify-between group bg-slate-50 hover:bg-slate-900 hover:text-white active:scale-99 shadow-xs"
+             className="w-full border border-[rgba(15,0,0,0.12)] p-5 rounded-none text-left transition-all relative flex items-center justify-between group bg-[#f8f7f7] hover:bg-[#201d1d] text-[#201d1d] hover:text-[#fdfcfc] active:scale-99 cursor-pointer"
            >
               <div className="flex items-center gap-4">
-                <div className="p-2 border border-slate-200 bg-white text-slate-700 rounded-2xl group-hover:bg-slate-800 group-hover:border-slate-700 group-hover:text-white transition-colors">
+                <div className="p-2 border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-[#201d1d] rounded-sm group-hover:bg-[#302c2c] group-hover:border-[#302c2c] group-hover:text-[#fdfcfc] transition-colors">
                   <BarChart2 size={24} />
                 </div>
                 <div>
-                   <p className="font-bold text-lg uppercase tracking-tighter text-slate-800 group-hover:text-white">{language === 'ko' ? '매트릭스 연산 테스트' : 'MATRIX COMPUTATION'}</p>
-                   <p className="text-[10px] font-bold opacity-60 uppercase tracking-widest text-slate-400 group-hover:text-white/60">{language === 'ko' ? '승률 시뮬레이션 열기' : 'OPEN_WINRATE_SIMULATOR'}</p>
+                   <p className="font-bold text-lg uppercase tracking-tighter text-[#201d1d] group-hover:text-[#fdfcfc]">{language === 'ko' ? '매트릭스 연산 테스트' : 'MATRIX COMPUTATION'}</p>
+                   <p className="text-[10px] font-bold opacity-60 uppercase tracking-widest text-[#646262] group-hover:text-[#fdfcfc]/60">{language === 'ko' ? '승률 시뮬레이션 열기' : 'OPEN_WINRATE_SIMULATOR'}</p>
                 </div>
               </div>
-              <div className="border border-slate-200 bg-white text-slate-700 p-2 rounded-xl group-hover:bg-white group-hover:border-white transition-transform">
+              <div className="border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-[#201d1d] p-2 rounded-sm group-hover:bg-[#fdfcfc] group-hover:border-[#fdfcfc] transition-transform">
                   <Play size={16} className="ml-0.5" />
               </div>
            </button>
@@ -1270,14 +1277,14 @@ export const SettingView: React.FC<SettingViewProps> = ({
             <h3 className="text-sm font-bold tracking-normal text-slate-800">{t('language', language)}</h3>
           </div>
 
-          <div className="relative border border-slate-200 rounded-2xl bg-white group overflow-hidden shadow-xs">
+          <div className="relative border border-[rgba(15,0,0,0.12)] rounded-none bg-[#fdfcfc] group overflow-hidden">
             <select 
               value={language}
               onChange={(e) => {
                 setLanguage(e.target.value as Language);
                 playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
               }}
-              className="w-full p-4 pr-12 bg-transparent text-sm font-bold tracking-widest uppercase cursor-pointer focus:outline-none appearance-none"
+              className="w-full p-4 pr-12 min-h-[44px] bg-transparent text-sm font-bold tracking-widest uppercase cursor-pointer focus:outline-none appearance-none font-mono"
             >
               {LANGUAGES.map((lang) => (
                 <option key={lang.code} value={lang.code} className="text-black">
@@ -1285,11 +1292,11 @@ export const SettingView: React.FC<SettingViewProps> = ({
                 </option>
               ))}
             </select>
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none transition-transform group-hover:translate-x-1 bg-slate-900 text-white p-1.5 rounded-xl shadow-xs">
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none transition-transform group-hover:translate-x-1 bg-[#201d1d] text-[#fdfcfc] p-1.5 rounded-sm">
               <ArrowRight size={14} />
             </div>
           </div>
-          <p className="text-sm opacity-40 font-bold tracking-normal italic pt-2">
+          <p className="text-sm opacity-40 font-bold tracking-normal italic pt-2 font-mono">
             * {t('google_translate_notice', language)}
           </p>
         </section>
@@ -1301,7 +1308,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
             <h3 className="text-sm font-bold tracking-normal text-slate-800">{t('select_season', language)}</h3>
           </div>
 
-          <div className="relative border border-slate-200 rounded-2xl bg-white group overflow-hidden shadow-xs">
+          <div className="relative border border-[rgba(15,0,0,0.12)] rounded-none bg-[#fdfcfc] group overflow-hidden">
             <select 
               value={currentSeason}
               onChange={(e) => {
@@ -1311,7 +1318,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
                 setTargetSeason(season);
                 setIsSeasonModalOpen(true);
               }}
-              className="w-full p-4 pr-12 bg-transparent text-sm font-bold tracking-widest uppercase cursor-pointer focus:outline-none appearance-none"
+              className="w-full p-4 pr-12 min-h-[44px] bg-transparent text-sm font-bold tracking-widest uppercase cursor-pointer focus:outline-none appearance-none font-mono"
             >
               {(['season1', 'season2'] as const).map((season) => (
                 <option 
@@ -1324,7 +1331,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
                 </option>
               ))}
             </select>
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none transition-transform group-hover:translate-x-1 bg-slate-900 text-white p-1.5 rounded-xl shadow-xs">
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none transition-transform group-hover:translate-x-1 bg-[#201d1d] text-[#fdfcfc] p-1.5 rounded-sm">
               <ArrowRight size={14} />
             </div>
           </div>
@@ -1337,12 +1344,12 @@ export const SettingView: React.FC<SettingViewProps> = ({
              <h3 className="text-sm font-bold uppercase tracking-widest text-slate-800">{t('feedback_section_title', language)}</h3>
           </div>
 
-          <div className="border border-slate-200 rounded-3xl p-6 bg-white space-y-6 relative overflow-hidden shadow-sm">
-            <div className="absolute top-0 right-0 py-1.5 px-3 bg-indigo-50 text-indigo-600 text-[9px] font-bold uppercase tracking-widest rounded-bl-xl border-l border-b border-indigo-100">
+          <div className="border border-[rgba(15,0,0,0.12)] rounded-none p-5 sm:p-6 bg-[#fdfcfc] space-y-6 relative overflow-hidden font-mono">
+            <div className="absolute top-0 right-0 py-1 px-2.5 bg-[#f8f7f7] text-[#201d1d] text-[9px] font-bold uppercase tracking-widest border-l border-b border-[rgba(15,0,0,0.12)]">
               USER_INPUT
             </div>
 
-            <p className="text-[10px] font-bold opacity-50 uppercase tracking-widest pt-2 w-3/4 text-slate-500">
+            <p className="text-[10px] font-bold opacity-60 uppercase tracking-widest pt-2 w-3/4 text-[#646262]">
                {t('feedback_desc', language)}
             </p>
 
@@ -1354,10 +1361,10 @@ export const SettingView: React.FC<SettingViewProps> = ({
                          key={type}
                          onClick={() => setFeedbackType(type)}
                          className={cn(
-                           "flex-1 py-3 px-2 text-[10px] font-bold uppercase tracking-widest border transition-all rounded-xl",
+                           "flex-1 py-3 px-2 min-h-[44px] text-[10px] font-bold uppercase tracking-widest border transition-all rounded-sm flex items-center justify-center",
                            feedbackType === type 
-                            ? "bg-slate-900 text-white border-slate-900 shadow-sm" 
-                            : "bg-slate-50 text-slate-400 border-slate-200 hover:border-slate-350 hover:text-slate-700"
+                            ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]" 
+                            : "bg-[#f8f7f7] text-[#646262] border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] hover:text-[#201d1d]"
                          )}
                        >
                          {t(type as any, language)}
@@ -1366,13 +1373,13 @@ export const SettingView: React.FC<SettingViewProps> = ({
                   </div>
                </div>
 
-               <div className="border border-slate-200 rounded-2xl overflow-hidden focus-within:border-slate-400 focus-within:ring-1 focus-within:ring-slate-400 transition-all bg-white">
-                  <div className="bg-slate-900 text-white px-3 py-1.5 text-[9px] font-bold tracking-widest uppercase">CONTENT_DATA</div>
+               <div className="border border-[rgba(15,0,0,0.12)] rounded-none overflow-hidden focus-within:border-[#201d1d] transition-all bg-[#fdfcfc]">
+                  <div className="bg-[#201d1d] text-[#fdfcfc] px-3 py-1.5 text-[9px] font-bold tracking-widest uppercase">CONTENT_DATA</div>
                   <textarea
                     value={feedbackContent}
                     onChange={(e) => setFeedbackContent(e.target.value)}
                     placeholder={t('feedback_content_placeholder', language)}
-                    className="w-full h-32 p-4 bg-transparent focus:outline-none text-sm resize-none"
+                    className="w-full h-32 p-4 bg-transparent focus:outline-none text-sm resize-none font-mono"
                   />
                </div>
 
@@ -1380,10 +1387,10 @@ export const SettingView: React.FC<SettingViewProps> = ({
                  disabled={isSubmittingFeedback || !feedbackContent.trim()}
                  onClick={handleSubmitFeedback}
                  className={cn(
-                   "w-full py-4 flex items-center justify-center gap-2 font-bold uppercase tracking-widest border transition-all rounded-2xl active:scale-[0.98] shadow-sm",
+                   "w-full min-h-[44px] py-3.5 flex items-center justify-center gap-2 font-bold uppercase tracking-widest border transition-all rounded-sm active:scale-[0.98] font-mono cursor-pointer",
                    isSubmittingFeedback || !feedbackContent.trim()
-                     ? "bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed"
-                     : "bg-indigo-600 text-white border-indigo-600 hover:bg-indigo-700"
+                     ? "bg-[#f8f7f7] text-[#646262] border-[rgba(15,0,0,0.12)] cursor-not-allowed opacity-60"
+                     : "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d] hover:bg-[#302c2c]"
                  )}
                >
                  {isSubmittingFeedback ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
@@ -1406,10 +1413,10 @@ export const SettingView: React.FC<SettingViewProps> = ({
 
 
 
-        <section className="space-y-4 pt-4 border-t border-slate-200">
+        <section className="space-y-4 pt-4 border-t border-[rgba(15,0,0,0.12)] font-mono">
           <div className="flex items-center gap-4 mb-2">
              <Play size={18} className="opacity-40" />
-             <h3 className="text-sm font-bold tracking-normal uppercase text-slate-800">{language === 'ko' ? '가이드 및 튜토리얼' : 'GUIDE & TUTORIAL'}</h3>
+             <h3 className="text-sm font-bold tracking-normal uppercase text-[#201d1d]">{language === 'ko' ? '가이드 및 튜토리얼' : 'GUIDE & TUTORIAL'}</h3>
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -1418,20 +1425,20 @@ export const SettingView: React.FC<SettingViewProps> = ({
                 playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
                 onStartTutorial();
               }}
-              className="flex items-center justify-between p-5 bg-gradient-to-r from-amber-400 to-orange-500 border border-transparent rounded-3xl shadow-sm hover:-translate-y-0.5 active:scale-[0.98] transition-all group"
+              className="flex items-center justify-between p-5 min-h-[44px] bg-[#f8f7f7] border border-[#201d1d] rounded-none hover:bg-[#201d1d] text-[#201d1d] hover:text-[#fdfcfc] active:scale-[0.98] transition-all group cursor-pointer"
             >
               <div className="flex items-center gap-3">
-                <div className="bg-slate-900/10 p-2 rounded-xl">
-                  <Sword size={20} className="text-slate-900 group-hover:rotate-12 transition-transform" />
+                <div className="bg-[#201d1d]/10 p-2 rounded-sm group-hover:bg-[#fdfcfc]/20">
+                  <Sword size={20} className="text-[#201d1d] group-hover:text-[#fdfcfc] transition-transform" />
                 </div>
-                <div className="text-left text-slate-900">
-                  <p className="text-[9px] font-bold uppercase text-slate-900/60 tracking-widest leading-none">Training</p>
+                <div className="text-left">
+                  <p className="text-[9px] font-bold uppercase opacity-60 tracking-widest leading-none">Training</p>
                   <span className="font-bold text-sm uppercase tracking-tight">
                     {language === "ko" ? "튜토리얼" : "TUTORIAL"}
                   </span>
                 </div>
               </div>
-              <span className="text-xl animate-bounce">⚔️</span>
+              <span className="text-xl">⚔️</span>
             </button>
 
             <button
@@ -1439,33 +1446,33 @@ export const SettingView: React.FC<SettingViewProps> = ({
                 playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
                 onNavigate("wiki");
               }}
-              className="flex items-center justify-between p-5 bg-gradient-to-r from-cyan-500 to-indigo-600 border border-transparent rounded-3xl shadow-sm hover:-translate-y-0.5 active:scale-[0.98] transition-all group"
+              className="flex items-center justify-between p-5 min-h-[44px] bg-[#201d1d] border border-[#201d1d] rounded-none text-[#fdfcfc] hover:bg-[#302c2c] active:scale-[0.98] transition-all group cursor-pointer"
             >
               <div className="flex items-center gap-3">
-                <div className="bg-white/10 p-2 rounded-xl">
-                  <HelpCircle size={20} className="text-white group-hover:rotate-12 transition-transform" />
+                <div className="bg-white/10 p-2 rounded-sm">
+                  <HelpCircle size={20} className="text-[#fdfcfc] transition-transform" />
                 </div>
-                <div className="text-left text-white">
+                <div className="text-left text-[#fdfcfc]">
                   <p className="text-[9px] font-bold uppercase text-white/60 tracking-widest leading-none">Wiki</p>
                   <span className="font-bold text-sm uppercase tracking-tight">
                     {language === "ko" ? "게임 방법" : "HOW TO PLAY"}
                   </span>
                 </div>
               </div>
-              <span className="text-xl animate-pulse">📚</span>
+              <span className="text-xl">📚</span>
             </button>
           </div>
         </section>
 
-        <section className="space-y-6">
+        <section className="space-y-6 font-mono">
           <div className="flex items-center gap-4">
              <Terminal size={18} className="opacity-40" />
-             <h3 className="text-sm font-bold tracking-normal uppercase text-slate-800">{t('auth_management', language)}</h3>
+             <h3 className="text-sm font-bold tracking-normal uppercase text-[#201d1d]">{t('auth_management', language)}</h3>
           </div>
           {user ? (
             <button 
               onClick={onLogout}
-              className="w-full border border-slate-200 rounded-2xl bg-white text-slate-800 py-4 font-bold tracking-widest uppercase hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all flex items-center justify-between px-6 group active:scale-[0.98] shadow-sm"
+              className="w-full min-h-[44px] border border-[rgba(15,0,0,0.12)] rounded-none bg-[#fdfcfc] text-[#201d1d] py-3.5 font-bold tracking-widest uppercase hover:bg-[#201d1d] hover:text-[#fdfcfc] hover:border-[#201d1d] transition-all flex items-center justify-between px-6 group active:scale-[0.98] cursor-pointer"
             >
               <div className="flex items-center gap-3">
                 <LogOut size={16} />
@@ -1474,13 +1481,13 @@ export const SettingView: React.FC<SettingViewProps> = ({
               <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
             </button>
           ) : (
-            <div className="border border-dashed border-slate-350 rounded-3xl p-6 text-left bg-slate-50/50 flex items-center gap-4 shadow-sm">
-              <div className="p-3 bg-slate-200/40 rounded-2xl">
+            <div className="border border-dashed border-[rgba(15,0,0,0.2)] rounded-none p-5 text-left bg-[#f8f7f7] flex items-center gap-4">
+              <div className="p-3 bg-[rgba(15,0,0,0.05)] rounded-sm">
                <User size={24} className="opacity-40" />
               </div>
               <div>
-                 <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{language === 'ko' ? '현재 비인증 모드입니다.' : 'PRESENTLY IN GUEST_MODE.'}</p>
-                 <p className="text-[10px] font-bold uppercase tracking-widest text-slate-300 mt-1">{language === 'ko' ? '데이터가 클라우드에 백업되지 않습니다.' : 'DATA_NOT_BACKED_UP_TO_CLOUD.'}</p>
+                 <p className="text-[10px] font-bold uppercase tracking-widest text-[#646262]">{language === 'ko' ? '현재 비인증 모드입니다.' : 'PRESENTLY IN GUEST_MODE.'}</p>
+                 <p className="text-[10px] font-bold uppercase tracking-widest text-[#9a9898] mt-1">{language === 'ko' ? '데이터가 클라우드에 백업되지 않습니다.' : 'DATA_NOT_BACKED_UP_TO_CLOUD.'}</p>
               </div>
             </div>
           )}
@@ -1491,11 +1498,11 @@ export const SettingView: React.FC<SettingViewProps> = ({
               type="button"
               onClick={handlePurgeAllCaches}
               disabled={isPurgingCache}
-              className="w-full border border-slate-200 rounded-2xl bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-800 py-3.5 px-6 font-mono font-bold text-xs tracking-wider uppercase transition-all flex items-center justify-between group active:scale-[0.98] shadow-sm cursor-pointer disabled:opacity-60"
+              className="w-full min-h-[44px] border border-[rgba(15,0,0,0.12)] rounded-none bg-[#fdfcfc] hover:bg-[#f8f7f7] active:bg-[#f1eeee] text-[#201d1d] py-3.5 px-6 font-mono font-bold text-xs tracking-wider uppercase transition-all flex items-center justify-between group active:scale-[0.98] cursor-pointer disabled:opacity-60"
               title={language === 'ko' ? '브라우저 캐시 및 임시 리소스를 초기화합니다' : 'Purges asset cache and resets temporary resources'}
             >
               <div className="flex items-center gap-3">
-                <RefreshCw size={16} className={cn("text-slate-600 transition-transform", isPurgingCache && "animate-spin text-amber-600")} />
+                <RefreshCw size={16} className={cn("text-[#201d1d] transition-transform", isPurgingCache && "animate-spin text-amber-600")} />
                 <span className="text-left font-mono">
                   {isPurgingCache
                     ? (language === 'ko' ? '캐싱 초기화 진행 중...' : 'PURGING CACHES...')
@@ -1505,14 +1512,14 @@ export const SettingView: React.FC<SettingViewProps> = ({
                 </span>
               </div>
               {cachePurgeSuccess ? (
-                <CheckCircle2 size={16} className="text-emerald-600 animate-bounce" />
+                <CheckCircle2 size={16} className="text-emerald-600" />
               ) : (
-                <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-widest border border-slate-200 px-2 py-0.5 rounded-sm">
+                <span className="text-[10px] font-mono font-bold text-[#646262] uppercase tracking-widest border border-[rgba(15,0,0,0.12)] px-2 py-0.5 rounded-sm">
                   [RESET]
                 </span>
               )}
             </button>
-            <p className="text-[10px] font-mono text-slate-400 px-2 leading-relaxed">
+            <p className="text-[10px] font-mono text-[#646262] px-2 leading-relaxed">
               {language === 'ko'
                 ? '* 게임 데이터(카드/재화/덱/스탯)는 로컬에 100% 안전 보존되며, 이미지/사운드 등 임시 리소스 캐시만 초기화됩니다.'
                 : '* Saved game data (cards, SNS, decks) is 100% preserved. Only temporary asset caches are refreshed.'}
@@ -1524,7 +1531,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
 
           {/* ─── Silhouette Debug (testMode/admin only) ─── */}
           {canAccessThumbnailDiagnostics && (
-            <section className="space-y-6">
+            <section className="space-y-6 font-mono">
               <div className="flex items-center gap-4">
                 <Eye size={18} className="opacity-40" />
                 <h3 className="text-sm font-bold tracking-normal text-slate-800">
@@ -1537,49 +1544,49 @@ export const SettingView: React.FC<SettingViewProps> = ({
                   playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
                 }}
                 className={cn(
-                  'w-full border p-6 rounded-3xl text-left transition-all relative flex items-center justify-between group shadow-xs',
+                  'w-full min-h-[44px] border p-5 rounded-none text-left transition-all relative flex items-center justify-between group cursor-pointer',
                   isDebugOpen
-                    ? 'bg-slate-900 text-white border-slate-800'
-                    : 'bg-slate-50 border-slate-200 hover:bg-slate-900 hover:text-white',
+                    ? 'bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]'
+                    : 'bg-[#f8f7f7] border-[rgba(15,0,0,0.12)] hover:bg-[#201d1d] hover:text-[#fdfcfc]',
                 )}
               >
                 <div className="flex items-center gap-4">
                   <div className={cn(
-                    'p-2 border rounded-2xl transition-colors',
+                    'p-2 border rounded-sm transition-colors',
                     isDebugOpen
-                      ? 'border-slate-700 bg-slate-800 text-white'
-                      : 'border-slate-200 bg-white text-slate-700 group-hover:bg-slate-800 group-hover:border-slate-700 group-hover:text-white',
+                      ? 'border-[#302c2c] bg-[#302c2c] text-[#fdfcfc]'
+                      : 'border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-[#201d1d] group-hover:bg-[#302c2c] group-hover:border-[#302c2c] group-hover:text-[#fdfcfc]',
                   )}>
                     <Eye size={24} />
                   </div>
                   <div>
                     <p className={cn(
                       'font-bold text-lg uppercase tracking-tighter',
-                      isDebugOpen ? 'text-white' : 'text-slate-800 group-hover:text-white',
+                      isDebugOpen ? 'text-[#fdfcfc]' : 'text-[#201d1d] group-hover:text-[#fdfcfc]',
                     )}>
                       {t('thumbnail_diagnostics_title', language)}
                     </p>
                     <p className={cn(
                       'text-[10px] font-bold opacity-60 uppercase tracking-widest',
-                      isDebugOpen ? 'text-white/60' : 'text-slate-400 group-hover:text-white/60',
+                      isDebugOpen ? 'text-white/60' : 'text-[#646262] group-hover:text-[#fdfcfc]/60',
                     )}>
                       {t('thumbnail_diagnostics_desc', language)}
                     </p>
                   </div>
                 </div>
                 <div className={cn(
-                  'border rounded-xl p-2 transition-transform',
+                  'border rounded-sm p-2 transition-transform',
                   isDebugOpen
-                    ? 'border-slate-700 bg-slate-800 text-white'
-                    : 'border-slate-200 bg-white text-slate-700 group-hover:bg-white group-hover:border-white',
+                    ? 'border-[#302c2c] bg-[#302c2c] text-[#fdfcfc]'
+                    : 'border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-[#201d1d] group-hover:bg-[#fdfcfc] group-hover:border-[#fdfcfc]',
                 )}>
                   <Eye size={16} />
                 </div>
               </button>
 
               {isDebugOpen && (
-                <div className="rounded-3xl border border-slate-200 bg-white overflow-hidden shadow-sm">
-                  <div className="p-4 bg-slate-900 text-white text-[10px] font-bold uppercase tracking-widest flex items-center gap-2">
+                <div className="rounded-none border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] overflow-hidden">
+                  <div className="p-4 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-bold uppercase tracking-widest flex items-center gap-2">
                     <Eye size={12} />
                     <span>{t('thumbnail_diagnostics_mode', language)}</span>
                     <span className="ml-auto text-[8px] opacity-60">
@@ -1592,8 +1599,8 @@ export const SettingView: React.FC<SettingViewProps> = ({
                       lowSpecMode={lowSpecMode}
                     />
                   </div>
-                  <div className="p-4 border-t border-slate-100 bg-slate-50">
-                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider leading-relaxed">
+                  <div className="p-4 border-t border-[rgba(15,0,0,0.12)] bg-[#f8f7f7]">
+                    <p className="text-[9px] font-bold text-[#646262] uppercase tracking-wider leading-relaxed">
                       {t('thumbnail_diagnostics_note', language)}
                     </p>
                   </div>
@@ -1698,7 +1705,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsIosPwaGuideOpen(true)}
-                  className="mt-1 text-[11px] underline font-bold text-amber-950 cursor-pointer block"
+                  className="mt-1 min-h-[44px] text-[11px] underline font-bold text-amber-950 cursor-pointer flex items-center"
                 >
                   {language === 'ko' ? '[▶ iOS 설치 가이드 확인하기]' : '[▶ View iOS Install Guide]'}
                 </button>
@@ -1715,7 +1722,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
                   "flex-1 min-h-[44px] py-2.5 px-4 font-bold text-xs uppercase transition-all flex items-center justify-center gap-2 cursor-pointer rounded-xs border",
                   pushStatus.hasRegisteredToken
                     ? "bg-white border-[#201d1d]/30 text-[#201d1d] hover:bg-slate-50"
-                    : "bg-[#201d1d] hover:bg-[#201d1d]/90 text-[#fdfcfc] border-[#201d1d] shadow-sm"
+                    : "bg-[#201d1d] hover:bg-[#201d1d]/90 text-[#fdfcfc] border-[#201d1d]"
                 )}
               >
                 {isRegisteringPush ? (
@@ -1773,7 +1780,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
               playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
               onNavigate('policy-center');
             }}
-            className="w-full border border-slate-200 rounded-2xl bg-white text-slate-800 py-4 font-bold tracking-widest uppercase hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all flex items-center justify-between px-6 group active:scale-[0.98] shadow-sm"
+            className="w-full min-h-[44px] border border-[rgba(15,0,0,0.12)] rounded-none bg-[#fdfcfc] text-[#201d1d] py-3.5 font-bold tracking-widest uppercase hover:bg-[#201d1d] hover:text-[#fdfcfc] hover:border-[#201d1d] transition-all flex items-center justify-between px-6 group active:scale-[0.98] cursor-pointer"
           >
             <div className="flex items-center gap-3">
               <ShieldAlert size={16} />
@@ -1792,15 +1799,15 @@ export const SettingView: React.FC<SettingViewProps> = ({
             </h3>
           </div>
 
-          <div className="border border-slate-200 rounded-3xl p-6 bg-white space-y-4 shadow-sm">
+          <div className="border border-[rgba(15,0,0,0.12)] rounded-none p-5 sm:p-6 bg-[#fdfcfc] space-y-4 font-mono">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <Database size={24} className="text-slate-700" />
+                <Database size={24} className="text-[#201d1d]" />
                 <div>
-                  <p className="font-bold text-sm tracking-tight uppercase text-slate-800">
+                  <p className="font-bold text-sm tracking-tight uppercase text-[#201d1d]">
                     {t('backup_data', language)} / {t('restore_data', language)}
                   </p>
-                  <p className="text-[10px] text-slate-400 font-semibold tracking-widest uppercase">
+                  <p className="text-[10px] text-[#646262] font-semibold tracking-widest uppercase">
                     Save Data Backup (QR) & Camera Restore (Scan)
                   </p>
                 </div>
@@ -1814,7 +1821,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
                   playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
                   setBackupRestoreMode('backup');
                 }}
-                className="flex-1 py-3 px-4 bg-slate-900 text-white rounded-xl font-mono text-xs font-bold hover:bg-slate-800 transition-colors flex items-center justify-center gap-2 cursor-pointer active:scale-98 shadow-sm"
+                className="flex-1 min-h-[44px] py-3 px-4 bg-[#201d1d] text-[#fdfcfc] rounded-sm font-mono text-xs font-bold hover:bg-[#302c2c] transition-colors flex items-center justify-center gap-2 cursor-pointer active:scale-98 border border-[#201d1d]"
               >
                 [+] {t('backup_data', language)}
               </button>
@@ -1824,7 +1831,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
                   playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
                   setBackupRestoreMode('restore');
                 }}
-                className="flex-1 py-3 px-4 bg-emerald-700 text-white rounded-xl font-mono text-xs font-bold hover:bg-emerald-600 transition-colors flex items-center justify-center gap-2 cursor-pointer active:scale-98 shadow-sm"
+                className="flex-1 min-h-[44px] py-3 px-4 bg-[#201d1d] text-[#fdfcfc] rounded-sm font-mono text-xs font-bold hover:bg-[#302c2c] transition-colors flex items-center justify-center gap-2 cursor-pointer active:scale-98 border border-[#201d1d]"
               >
                 [+] {t('restore_data', language)}
               </button>
@@ -1834,7 +1841,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
                   playSfx('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3');
                   setIsGoogleSheetsModalOpen(true);
                 }}
-                className="flex-1 py-3 px-4 bg-indigo-800 text-white rounded-xl font-mono text-xs font-bold hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2 cursor-pointer active:scale-98 shadow-sm"
+                className="flex-1 min-h-[44px] py-3 px-4 bg-[#201d1d] text-[#fdfcfc] rounded-sm font-mono text-xs font-bold hover:bg-[#302c2c] transition-colors flex items-center justify-center gap-2 cursor-pointer active:scale-98 border border-[#201d1d]"
               >
                 [+] {language === 'ko' ? 'Google Sheets 연동 & 동기화' : 'Google Sheets Sync'}
               </button>
@@ -1874,7 +1881,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
               type="button"
               onClick={handleCheckVersion}
               disabled={isCheckingVersion}
-              className="py-2.5 px-4 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold hover:bg-[#201d1d]/90 active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              className="min-h-[44px] py-2.5 px-4 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold rounded-sm hover:bg-[#201d1d]/90 active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <RefreshCw size={14} className={isCheckingVersion ? "animate-spin" : ""} />
               {isCheckingVersion
@@ -1885,7 +1892,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
             <button
               type="button"
               onClick={handlePurgeAllCaches}
-              className="py-2.5 px-4 bg-[#fdfcfc] border border-[#201d1d] text-[#201d1d] text-xs font-bold hover:bg-[#201d1d] hover:text-[#fdfcfc] active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="min-h-[44px] py-2.5 px-4 bg-[#fdfcfc] border border-[#201d1d] text-[#201d1d] text-xs font-bold rounded-sm hover:bg-[#201d1d] hover:text-[#fdfcfc] active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               [x] {language === 'ko' ? '캐시 전면 초기화 (수동)' : 'Clear All Caches (Manual)'}
             </button>
@@ -2015,7 +2022,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
                 <button
                   type="button"
                   onClick={handleClaimDailyAttendance}
-                  className="w-full min-h-[48px] py-3.5 px-4 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold border border-[#201d1d] hover:bg-[#201d1d]/90 active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm rounded-none"
+                  className="w-full min-h-[48px] py-3.5 px-4 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold border border-[#201d1d] hover:bg-[#201d1d]/90 active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer rounded-none"
                 >
                   <Sparkles size={16} className="text-amber-300 animate-spin" />
                   <span>
@@ -2049,43 +2056,44 @@ export const SettingView: React.FC<SettingViewProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs"
+            className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs font-mono"
             onClick={() => setIsSimModalOpen(false)}
           >
             <motion.div
               initial={{ scale: 0.95, y: 15 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 15 }}
-              className="bg-white w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl flex flex-col relative"
+              className="bg-[#fdfcfc] w-full max-w-lg rounded-none border border-[#201d1d] overflow-hidden flex flex-col relative"
               onClick={e => e.stopPropagation()}
             >
-              <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+              <div className="p-5 border-b border-[rgba(15,0,0,0.12)] flex items-center justify-between bg-[#f8f7f7]">
                 <div className="flex items-center gap-3">
-                   <div className="p-2 bg-indigo-650 text-white rounded-xl shadow-md shadow-indigo-500/10"><BarChart2 size={20} /></div>
-                   <h3 className="font-bold uppercase tracking-tight text-lg text-slate-800">{t('strategy_simulation', language)}</h3>
+                   <div className="p-2 bg-[#201d1d] text-[#fdfcfc] rounded-sm"><BarChart2 size={20} /></div>
+                   <h3 className="font-bold uppercase tracking-tight text-lg text-[#201d1d]">{t('strategy_simulation', language)}</h3>
                 </div>
                 <button 
                   onClick={() => setIsSimModalOpen(false)}
-                  className="p-2 hover:bg-slate-100 rounded-full transition-all text-slate-400 hover:text-slate-600"
+                  className="min-w-[44px] min-h-[44px] rounded-sm border border-[rgba(15,0,0,0.12)] hover:bg-[#f8f7f7] transition-all text-[#201d1d] flex items-center justify-center cursor-pointer"
+                  aria-label="Close"
                 >
-                  <X size={20} />
+                  <X size={18} />
                 </button>
               </div>
               
-              <div className="p-6 overflow-y-auto max-h-[70vh] flex flex-col gap-6">
-                 <div className="bg-slate-50 p-6 rounded-3xl border border-slate-100 flex flex-col gap-4 text-center">
+              <div className="p-5 overflow-y-auto max-h-[70vh] flex flex-col gap-6">
+                 <div className="bg-[#f8f7f7] p-5 rounded-none border border-[rgba(15,0,0,0.12)] flex flex-col gap-4 text-center">
                     <div>
-                       <p className="font-bold text-sm uppercase text-slate-800">{language === 'ko' ? '엔진 상태' : 'ENGINE STATUS'}: {isSimulating ? 'COMPUTING...' : 'READY'}</p>
-                       <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider mt-1">200 ITERATIONS PER CONTEXT</p>
+                       <p className="font-bold text-sm uppercase text-[#201d1d]">{language === 'ko' ? '엔진 상태' : 'ENGINE STATUS'}: {isSimulating ? 'COMPUTING...' : 'READY'}</p>
+                       <p className="text-[10px] text-[#646262] font-semibold uppercase tracking-wider mt-1">200 ITERATIONS PER CONTEXT</p>
                     </div>
                     <button 
                       onClick={handleSimulate}
                       disabled={isSimulating}
                       className={cn(
-                        "py-3.5 rounded-2xl font-bold uppercase tracking-wider text-sm transition-all active:scale-95 flex items-center justify-center gap-2",
+                        "py-3.5 min-h-[44px] rounded-sm font-bold uppercase tracking-wider text-sm transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer border",
                         isSimulating 
-                          ? "bg-slate-100 text-slate-400 cursor-not-allowed" 
-                          : "bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white shadow-lg shadow-indigo-500/10"
+                          ? "bg-[#f8f7f7] text-[#646262] border-[rgba(15,0,0,0.12)] cursor-not-allowed opacity-60" 
+                          : "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d] hover:bg-[#302c2c]"
                       )}
                     >
                       {isSimulating ? <Loader2 size={16} className="animate-spin" /> : <Play size={16} fill="currentColor" />}
@@ -2096,27 +2104,27 @@ export const SettingView: React.FC<SettingViewProps> = ({
                  {simResults.length > 0 && (
                    <div className="space-y-4">
                       {simResults.map((res, i) => (
-                        <div key={i} className="border border-slate-100 rounded-3xl p-5 bg-white shadow-md flex flex-col gap-3">
-                           <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                        <div key={i} className="border border-[rgba(15,0,0,0.12)] rounded-none p-4 bg-[#fdfcfc] flex flex-col gap-3">
+                           <div className="flex items-center justify-between border-b border-[rgba(15,0,0,0.12)] pb-2.5">
                               <div className="flex items-center gap-2">
-                                 <span className={cn("text-[9px] font-bold px-2 py-0.5 text-white rounded-lg uppercase", 
-                                    aiStrategy === 'aggressive' ? "bg-red-500" :
-                                    aiStrategy === 'defensive' ? "bg-emerald-500" : "bg-indigo-650"
+                                 <span className={cn("text-[9px] font-bold px-2 py-0.5 text-[#fdfcfc] rounded-xs uppercase", 
+                                    aiStrategy === 'aggressive' ? "bg-red-600" :
+                                    aiStrategy === 'defensive' ? "bg-emerald-600" : "bg-[#201d1d]"
                                  )}>A: {aiStrategy}</span>
-                                <span className="text-[10px] font-bold text-slate-300">VS</span>
-                                <span className="text-[9px] font-bold px-2 py-0.5 bg-slate-100 text-slate-700 rounded-lg uppercase border border-slate-200/60">B: {res.stratB}</span>
+                                <span className="text-[10px] font-bold text-[#646262]">VS</span>
+                                <span className="text-[9px] font-bold px-2 py-0.5 bg-[#f8f7f7] text-[#201d1d] rounded-xs uppercase border border-[rgba(15,0,0,0.12)]">B: {res.stratB}</span>
                               </div>
-                              <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">200 MATCH_DATA</p>
+                              <p className="text-[9px] font-bold text-[#646262] uppercase tracking-wider">200 MATCH_DATA</p>
                            </div>
                            
                            <div className="space-y-2.5">
-                              <div className="h-2.5 bg-slate-100 flex rounded-full overflow-hidden">
+                              <div className="h-2.5 bg-[#f8f7f7] flex rounded-none overflow-hidden border border-[rgba(15,0,0,0.12)]">
                                  <div 
-                                    className="bg-indigo-650 transition-all duration-1000" 
+                                    className="bg-[#201d1d] transition-all duration-1000" 
                                     style={{ width: `${(res.winsA / res.total) * 100}%` }} 
                                  />
                                  <div 
-                                    className="bg-slate-300 transition-all duration-1000" 
+                                    className="bg-[#9a9898] transition-all duration-1000" 
                                     style={{ width: `${(res.draws / res.total) * 100}%` }} 
                                  />
                                  <div 
@@ -2125,16 +2133,16 @@ export const SettingView: React.FC<SettingViewProps> = ({
                                  />
                               </div>
                               <div className="flex items-center justify-between text-[11px] font-bold">
-                                 <div className="text-indigo-600 flex flex-col">
-                                    <span className="text-slate-400 text-[8px] uppercase tracking-wider">Wins A</span>
+                                 <div className="text-[#201d1d] flex flex-col">
+                                    <span className="text-[#646262] text-[8px] uppercase tracking-wider">Wins A</span>
                                     {Math.round((res.winsA / res.total) * 100)}%
                                  </div>
-                                 <div className="text-slate-400 flex flex-col items-center">
-                                    <span className="text-slate-400 text-[8px] uppercase tracking-wider">{t('draws', language)}</span>
+                                 <div className="text-[#646262] flex flex-col items-center">
+                                    <span className="text-[#646262] text-[8px] uppercase tracking-wider">{t('draws', language)}</span>
                                     {Math.round((res.draws / res.total) * 100)}%
                                  </div>
-                                 <div className="text-rose-500 flex flex-col items-end">
-                                    <span className="text-slate-400 text-[8px] uppercase tracking-wider">Wins B</span>
+                                 <div className="text-rose-600 flex flex-col items-end">
+                                    <span className="text-[#646262] text-[8px] uppercase tracking-wider">Wins B</span>
                                     {Math.round((res.winsB / res.total) * 100)}%
                                  </div>
                               </div>
@@ -2142,17 +2150,17 @@ export const SettingView: React.FC<SettingViewProps> = ({
                         </div>
                       ))}
                       <div className="text-center space-y-1 pt-2">
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider leading-tight">
+                        <p className="text-[10px] font-bold text-[#646262] uppercase tracking-wider leading-tight">
                           {language === 'ko' ? '* 무작위 덱 합성 시뮬레이션 결과입니다.' : '* RESULTS_BASED_ON_RANDOM_SYNTHESIS_MODEL'}
                         </p>
                       </div>
                    </div>
                  )}
               </div>
-              <div className="p-6 bg-slate-50/50 border-t border-slate-100 flex gap-4">
+              <div className="p-5 bg-[#f8f7f7] border-t border-[rgba(15,0,0,0.12)] flex gap-4">
                 <button 
                   onClick={() => setIsSimModalOpen(false)}
-                  className="w-full py-3.5 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl font-bold uppercase tracking-wider text-xs shadow-md active:scale-95 transition-all"
+                  className="w-full min-h-[44px] py-3 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] rounded-sm font-bold uppercase tracking-wider text-xs border border-[#201d1d] active:scale-95 transition-all cursor-pointer font-mono"
                 >
                   {t('close', language) || 'CLOSE_ENGINE'}
                 </button>
@@ -2166,25 +2174,25 @@ export const SettingView: React.FC<SettingViewProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs"
+            className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs font-mono"
           >
             <motion.div
               initial={{ scale: 0.95, y: 15 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 15 }}
-              className="bg-white rounded-3xl p-8 max-w-sm w-full border border-slate-100 shadow-2xl text-center space-y-6 select-none relative overflow-hidden"
+              className="bg-[#fdfcfc] rounded-none p-6 max-w-sm w-full border border-[#201d1d] text-center space-y-6 select-none relative overflow-hidden"
               onClick={e => e.stopPropagation()}
             >
-              <div className="w-16 h-16 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full mx-auto flex items-center justify-center shadow-lg shadow-orange-500/10">
-                <AlertTriangle size={28} className="text-white animate-bounce" />
+              <div className="w-14 h-14 bg-[#f8f7f7] border border-[#201d1d] rounded-sm mx-auto flex items-center justify-center text-[#201d1d]">
+                <AlertTriangle size={28} className="text-[#201d1d]" />
               </div>
               <div className="space-y-3">
-                <h3 className="text-2xl font-bold uppercase leading-none text-slate-800">{t('select_season', language)}</h3>
-                <p className="text-sm font-semibold text-slate-500 leading-tight">
+                <h3 className="text-xl font-bold uppercase leading-none text-[#201d1d]">{t('select_season', language)}</h3>
+                <p className="text-xs font-semibold text-[#646262] leading-tight">
                   {t('season_change_notice', language)}
                 </p>
-                <div className="bg-slate-50 border border-slate-150 p-4 rounded-2xl text-left">
-                  <p className="text-[10px] font-bold text-slate-500 leading-normal">
+                <div className="bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] p-4 rounded-none text-left">
+                  <p className="text-[10px] font-bold text-[#646262] leading-normal">
                     {language === 'ko' 
                       ? '시즌 데이터를 변경하면 이전 시즌의 게임 정보는 그대로 보존되며, 새로운 시즌 정보가 로드됩니다.'
                       : 'Changing seasons preserves your progress in the previous season and loads the selected season\'s data.'}
@@ -2201,7 +2209,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
                     playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
                     window.location.reload();
                   }}
-                  className="flex-1 bg-slate-900 text-white py-3 rounded-2xl font-bold uppercase tracking-wider text-xs hover:bg-slate-850 active:scale-95 transition-all cursor-pointer shadow-sm"
+                  className="flex-1 min-h-[44px] bg-[#201d1d] text-[#fdfcfc] py-3 rounded-sm font-bold uppercase tracking-wider text-xs hover:bg-[#302c2c] active:scale-95 transition-all cursor-pointer border border-[#201d1d]"
                 >
                   {t('yes_accept', language) || 'YES'}
                 </button>
@@ -2211,7 +2219,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
                     setTargetSeason(null);
                     playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
                   }}
-                  className="flex-1 bg-white text-slate-850 py-3 rounded-2xl font-bold uppercase tracking-wider text-xs border border-slate-200 active:scale-95 transition-all hover:bg-slate-50 cursor-pointer shadow-xs"
+                  className="flex-1 min-h-[44px] bg-[#f8f7f7] text-[#201d1d] py-3 rounded-sm font-bold uppercase tracking-wider text-xs border border-[rgba(15,0,0,0.12)] active:scale-95 transition-all hover:bg-[#f1eeee] cursor-pointer"
                 >
                   {language === 'ko' ? '취소' : 'CANCEL'}
                 </button>
@@ -2228,7 +2236,7 @@ export const SettingView: React.FC<SettingViewProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[209] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+            className="fixed inset-0 z-[209] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm font-mono"
             onClick={() => setShowHelp(false)}
           >
             <motion.div
@@ -2236,19 +2244,20 @@ export const SettingView: React.FC<SettingViewProps> = ({
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 20 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 relative"
+              className="bg-[#fdfcfc] rounded-none max-w-sm w-full p-6 border border-[#201d1d] relative"
             >
               <button
                 onClick={() => setShowHelp(false)}
-                className="absolute top-4 right-4 p-1.5 hover:bg-slate-100 rounded-full text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
+                className="absolute top-4 right-4 min-w-[44px] min-h-[44px] rounded-sm border border-[rgba(15,0,0,0.12)] hover:bg-[#f8f7f7] text-[#201d1d] flex items-center justify-center transition-colors cursor-pointer"
+                aria-label="Close"
               >
                 <X size={18} />
               </button>
               <div className="flex items-center gap-2 mb-4">
-                <HelpCircle size={20} className="text-indigo-500" />
-                <h3 className="font-bold text-sm text-slate-800">{t('setting', language)}</h3>
+                <HelpCircle size={20} className="text-[#201d1d]" />
+                <h3 className="font-bold text-sm text-[#201d1d]">{t('setting', language)}</h3>
               </div>
-              <div className="min-h-[120px] flex flex-col justify-center text-sm text-slate-600 leading-relaxed space-y-2 mb-4">
+              <div className="min-h-[120px] flex flex-col justify-center text-sm text-[#201d1d] leading-relaxed space-y-2 mb-4">
                 {helpSlide === 0 && (
                   <p>{language === 'ko' ? '설정 화면에서는 BGM/SFX 음량, 저사양 모드, 추천 모드, 자동 전투 등 게임 환경을 조절할 수 있습니다. 언어와 테마(라이트/다크/메탈)도 변경 가능합니다.' : 'Configure BGM/SFX volume, low-spec mode, recommend mode, auto-battle, and more. Change language and theme (Light/Dark/Metal).'}</p>
                 )}
@@ -2263,15 +2272,17 @@ export const SettingView: React.FC<SettingViewProps> = ({
                 <button
                   onClick={() => setHelpSlide((s) => Math.max(0, s - 1))}
                   disabled={helpSlide === 0}
-                  className="p-1.5 rounded-lg hover:bg-slate-100 disabled:opacity-30 transition-colors cursor-pointer"
+                  className="min-w-[44px] min-h-[44px] rounded-sm border border-[rgba(15,0,0,0.12)] flex items-center justify-center hover:bg-[#f8f7f7] disabled:opacity-30 transition-colors cursor-pointer"
+                  type="button"
                 >
                   <ChevronLeft size={18} />
                 </button>
-                <span className="text-[10px] font-bold text-slate-400">{helpSlide + 1} / 3</span>
+                <span className="text-[10px] font-bold text-[#646262]">{helpSlide + 1} / 3</span>
                 <button
                   onClick={() => setHelpSlide((s) => Math.min(2, s + 1))}
                   disabled={helpSlide === 2}
-                  className="p-1.5 rounded-lg hover:bg-slate-100 disabled:opacity-30 transition-colors cursor-pointer"
+                  className="min-w-[44px] min-h-[44px] rounded-sm border border-[rgba(15,0,0,0.12)] flex items-center justify-center hover:bg-[#f8f7f7] disabled:opacity-30 transition-colors cursor-pointer"
+                  type="button"
                 >
                   <ChevronRight size={18} />
                 </button>

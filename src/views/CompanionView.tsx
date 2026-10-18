@@ -220,7 +220,7 @@ export const CompanionView: React.FC<CompanionViewProps> = ({
   };
 
   return (
-    <div className="p-4 md:p-6 pb-32 flex flex-col gap-4 max-w-4xl mx-auto min-h-screen app-bg text-slate-800 font-sans">
+    <div className="p-4 md:p-6 pb-32 flex flex-col gap-4 max-w-4xl mx-auto min-h-screen bg-[#fdfcfc] text-[#201d1d] font-mono">
       <PageHeader
         title={t('companion', language)}
         onBack={onBack}
@@ -228,7 +228,7 @@ export const CompanionView: React.FC<CompanionViewProps> = ({
           <button
             type="button"
             onClick={() => { setHelpOpen(true); setHelpStep(0); }}
-            className="w-8 h-8 rounded-full border border-slate-300 flex items-center justify-center text-slate-500 hover:bg-slate-100 transition-colors"
+            className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] flex items-center justify-center text-[#201d1d] hover:bg-[#f8f7f7] transition-colors"
           >
             <HelpCircle size={16} />
           </button>
@@ -236,7 +236,7 @@ export const CompanionView: React.FC<CompanionViewProps> = ({
       />
 
       {/* Nurture View Sub-Tabs: 돌봄 / 카드 업그레이드 / 장비 관리 */}
-      <div className="flex items-center justify-center p-1 bg-stone-900 border border-stone-800 rounded-lg max-w-md mx-auto w-full gap-1 mt-1 font-mono text-xs">
+      <div className="flex items-center justify-center p-1 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none max-w-md mx-auto w-full gap-1 mt-1 font-mono text-xs">
         <button
           type="button"
           onClick={() => {
@@ -244,10 +244,10 @@ export const CompanionView: React.FC<CompanionViewProps> = ({
             setShowInventory(false);
           }}
           className={cn(
-            "flex-1 py-1.5 px-2 rounded-md font-bold transition-all text-center flex items-center justify-center gap-1 cursor-pointer",
+            "flex-1 min-h-[44px] py-1.5 px-2 rounded-sm font-bold transition-all text-center flex items-center justify-center gap-1 cursor-pointer",
             !showSkillTree && !showInventory
-              ? "bg-indigo-600 text-white shadow-sm"
-              : "text-stone-400 hover:text-stone-200"
+              ? "bg-[#201d1d] text-[#fdfcfc]"
+              : "text-stone-500 hover:text-stone-900"
           )}
         >
           <span>💖</span>
@@ -261,13 +261,13 @@ export const CompanionView: React.FC<CompanionViewProps> = ({
             setShowInventory(false);
           }}
           className={cn(
-            "flex-1 py-1.5 px-2 rounded-md font-bold transition-all text-center flex items-center justify-center gap-1 cursor-pointer",
+            "flex-1 min-h-[44px] py-1.5 px-2 rounded-sm font-bold transition-all text-center flex items-center justify-center gap-1 cursor-pointer",
             showSkillTree
-              ? "bg-amber-500 text-stone-950 font-black shadow-sm"
-              : "text-stone-400 hover:text-stone-200"
+              ? "bg-[#201d1d] text-[#fdfcfc]"
+              : "text-stone-500 hover:text-stone-900"
           )}
         >
-          <Zap size={14} className={showSkillTree ? "fill-stone-950" : "text-amber-400"} />
+          <Zap size={14} className={showSkillTree ? "fill-[#fdfcfc]" : "text-stone-700"} />
           <span>{language === 'ko' ? '카드 업그레이드' : 'Card Upgrade'}</span>
         </button>
 
@@ -278,10 +278,10 @@ export const CompanionView: React.FC<CompanionViewProps> = ({
             setShowSkillTree(false);
           }}
           className={cn(
-            "flex-1 py-1.5 px-2 rounded-md font-bold transition-all text-center flex items-center justify-center gap-1 cursor-pointer",
+            "flex-1 min-h-[44px] py-1.5 px-2 rounded-sm font-bold transition-all text-center flex items-center justify-center gap-1 cursor-pointer",
             showInventory
-              ? "bg-cyan-600 text-white shadow-sm"
-              : "text-stone-400 hover:text-stone-200"
+              ? "bg-[#201d1d] text-[#fdfcfc]"
+              : "text-stone-500 hover:text-stone-900"
           )}
         >
           <Package size={14} />
@@ -290,16 +290,16 @@ export const CompanionView: React.FC<CompanionViewProps> = ({
       </div>
 
       {/* Slot Selection */}
-      <div className="flex justify-center gap-2.5 mt-1">
+      <div className="flex justify-center gap-2.5 mt-1 font-mono">
         {[0, 1, 2, 3, 4].map((idx) => (
           <button
             key={idx}
             onClick={() => setSelectedCompanionIndex?.(idx)}
             className={cn(
-              "w-10 h-10 rounded-lg border transition-all flex items-center justify-center font-bold text-xs shadow-xs",
+              "w-11 h-11 min-w-[44px] min-h-[44px] rounded-sm border transition-all flex items-center justify-center font-bold text-xs",
               selectedCompanionIndex === idx 
-                ? "border-indigo-650 bg-gradient-to-tr from-indigo-600 to-violet-650 text-white scale-105 shadow-md shadow-indigo-150" 
-                : "border-slate-200 bg-white text-slate-400 hover:border-slate-300 hover:text-slate-600 hover:bg-slate-50/50"
+                ? "border-[#201d1d] bg-[#201d1d] text-[#fdfcfc]" 
+                : "border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-stone-600 hover:border-[#201d1d] hover:bg-[#f8f7f7]"
             )}
           >
             #{idx + 1}
@@ -307,9 +307,9 @@ export const CompanionView: React.FC<CompanionViewProps> = ({
         ))}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-2 font-mono">
         {/* Character Stage */}
-        <div className="bg-white border border-slate-200/80 rounded-lg flex flex-col items-center justify-center p-6 relative overflow-hidden h-[280px] md:h-[420px] shadow-sm">
+        <div className="bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-none flex flex-col items-center justify-center p-6 relative overflow-hidden h-[280px] md:h-[420px]">
           <div className="absolute inset-0 opacity-[0.02] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
           
           <AnimatePresence mode="wait">
@@ -328,7 +328,7 @@ export const CompanionView: React.FC<CompanionViewProps> = ({
                   imageIndex: 0 
                 } as any} 
                 className={cn(
-                  "w-32 h-44 md:w-52 md:h-72 shadow-2xl mb-2",
+                  "w-32 h-44 md:w-52 md:h-72 mb-2",
                   !companion && "opacity-30 grayscale"
                 )} 
                 customImage={customCardImage} 
@@ -343,7 +343,7 @@ export const CompanionView: React.FC<CompanionViewProps> = ({
                     animate={{ y: -130, opacity: 1, scale: 1.4 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.8, ease: "easeOut" }}
-                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[100] text-yellow-450 font-extrabold text-3xl drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)] pointer-events-none"
+                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[100] text-[#201d1d] font-extrabold text-3xl pointer-events-none"
                   >
                     +{fx.amount} EXP
                   </motion.div>
@@ -352,80 +352,80 @@ export const CompanionView: React.FC<CompanionViewProps> = ({
               
               {/* Interaction Overlays */}
               {isInteracting === 'eating' && (
-                <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: -40, opacity: 1 }} className="absolute top-0 text-4xl drop-shadow-md">🍖</motion.div>
+                <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: -40, opacity: 1 }} className="absolute top-0 text-4xl">🍖</motion.div>
               )}
               {isInteracting === 'playing' && (
                 <motion.div initial={{ scale: 0 }} animate={{ scale: [1, 1.2, 1], rotate: [0, 15, -15, 0] }} className="absolute top-0 text-4xl">❤️</motion.div>
               )}
               {isInteracting === 'evolving' && (
-                <motion.div animate={{ rotate: 360 }} className="absolute inset-0 border-4 border-dashed border-indigo-400 rounded-full" />
+                <motion.div animate={{ rotate: 360 }} className="absolute inset-0 border-4 border-dashed border-[#201d1d] rounded-none" />
               )}
             </motion.div>
           </AnimatePresence>
         </div>
 
         {/* Stats and Actions */}
-        <div className="flex flex-col gap-4">
-          <div className="bg-gradient-to-r from-slate-900 to-slate-950 text-white p-5 rounded-lg space-y-4 shadow-md border border-slate-800">
+        <div className="flex flex-col gap-4 font-mono">
+          <div className="bg-[#201d1d] text-[#fdfcfc] p-5 rounded-none space-y-4 border border-[#201d1d]">
             {/* Nurture Progress (Hunger & Happiness) */}
             <div className="space-y-3">
               <div className="space-y-1">
-                <div className="flex justify-between text-[10px] font-bold uppercase text-slate-400 tracking-wider">
+                <div className="flex justify-between text-[10px] font-bold uppercase text-stone-400 tracking-wider">
                   <span>{t('hunger', language)}</span>
                   <span>{Math.floor(hunger)}%</span>
                 </div>
-                <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+                <div className="h-2 bg-stone-800 rounded-none overflow-hidden">
                   <motion.div 
                     initial={{ width: 0 }}
                     animate={{ width: `${hunger}%` }}
                     className={cn(
-                      "h-full rounded-full transition-all",
-                      hunger > 50 ? "bg-emerald-500" : hunger > 20 ? "bg-amber-500" : "bg-rose-500 animate-pulse"
+                      "h-full rounded-none transition-all",
+                      hunger > 50 ? "bg-emerald-500" : hunger > 20 ? "bg-amber-500" : "bg-rose-500"
                     )}
                   />
                 </div>
               </div>
 
               <div className="space-y-1">
-                <div className="flex justify-between text-[10px] font-bold uppercase text-slate-400 tracking-wider">
+                <div className="flex justify-between text-[10px] font-bold uppercase text-stone-400 tracking-wider">
                   <span>{t('happiness', language)}</span>
                   <span>{Math.floor(happiness)}%</span>
                 </div>
-                <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+                <div className="h-2 bg-stone-800 rounded-none overflow-hidden">
                   <motion.div 
                     initial={{ width: 0 }}
                     animate={{ width: `${happiness}%` }}
                     className={cn(
-                      "h-full rounded-full transition-all",
-                      happiness > 50 ? "bg-indigo-500" : happiness > 20 ? "bg-violet-500" : "bg-slate-600"
+                      "h-full rounded-none transition-all",
+                      happiness > 50 ? "bg-[#fdfcfc]" : happiness > 20 ? "bg-stone-300" : "bg-stone-500"
                     )}
                   />
                 </div>
               </div>
             </div>
 
-            <div className="pt-3 border-t border-slate-800/80" />
+            <div className="pt-3 border-t border-stone-800" />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <button 
               onClick={() => handleAction('feed')}
               id="companion-feed-btn"
-              className="flex items-center justify-center gap-2 p-3.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg active:scale-98 transition-all font-bold text-xs shadow-md shadow-emerald-600/10 cursor-pointer"
+              className="flex items-center justify-center gap-2 p-3.5 min-h-[44px] bg-[#201d1d] hover:bg-stone-800 text-[#fdfcfc] rounded-sm active:scale-98 transition-all font-bold text-xs border border-[#201d1d] cursor-pointer"
             >
               🍖 {language === 'ko' ? '먹이' : 'FEED'}
             </button>
             <button 
               onClick={() => handleAction('play')}
               id="companion-play-btn"
-              className="flex items-center justify-center gap-2 p-3.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg active:scale-98 transition-all font-bold text-xs shadow-md shadow-rose-600/10 cursor-pointer"
+              className="flex items-center justify-center gap-2 p-3.5 min-h-[44px] bg-[#201d1d] hover:bg-stone-800 text-[#fdfcfc] rounded-sm active:scale-98 transition-all font-bold text-xs border border-[#201d1d] cursor-pointer"
             >
               ❤️ {language === 'ko' ? '놀기' : 'PLAY'}
             </button>
             <button 
               onClick={() => setShowInventory(true)}
               id="companion-inventory-btn"
-              className="flex items-center justify-center gap-2 p-3.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg active:scale-98 transition-all font-bold text-xs shadow-md shadow-slate-900/10 cursor-pointer"
+              className="flex items-center justify-center gap-2 p-3.5 min-h-[44px] bg-[#fdfcfc] hover:bg-[#f8f7f7] text-[#201d1d] rounded-sm active:scale-98 transition-all font-bold text-xs border border-[rgba(15,0,0,0.12)] cursor-pointer"
             >
               <Package size={16} />
               {t('inventory', language)}
@@ -433,9 +433,9 @@ export const CompanionView: React.FC<CompanionViewProps> = ({
             <button 
               onClick={() => setShowSkillTree(true)}
               id="companion-skill-btn"
-              className="flex items-center justify-center gap-2 p-3.5 bg-amber-500 hover:bg-amber-400 text-stone-950 rounded-lg active:scale-98 transition-all font-black text-xs uppercase shadow-md shadow-amber-500/20 border border-amber-400/40 cursor-pointer"
+              className="flex items-center justify-center gap-2 p-3.5 min-h-[44px] bg-[#201d1d] hover:bg-stone-800 text-[#fdfcfc] rounded-sm active:scale-98 transition-all font-bold text-xs uppercase border border-[#201d1d] cursor-pointer"
             >
-              <Zap size={16} className="fill-stone-950" />
+              <Zap size={16} className="fill-[#fdfcfc]" />
               {language === 'ko' ? '카드 업그레이드' : 'Card Upgrade'}
             </button>
           </div>
@@ -449,37 +449,37 @@ export const CompanionView: React.FC<CompanionViewProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[80000] flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-xs"
+            className="fixed inset-0 z-[80000] flex items-center justify-center bg-black/50 p-4 font-mono"
           >
             <motion.div 
-              initial={{ scale: 0.95, y: 15 }}
+              initial={{ scale: 0.98, y: 10 }}
               animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.95, y: 15 }}
-              className="bg-white w-full max-w-2xl h-[80vh] rounded-lg overflow-hidden flex flex-col shadow-2xl border border-slate-100 relative"
+              exit={{ scale: 0.98, y: 10 }}
+              className="bg-[#fdfcfc] w-full max-w-2xl h-[80vh] rounded-none overflow-hidden flex flex-col border border-[#201d1d] relative text-[#201d1d]"
             >
-              <div className="bg-gradient-to-r from-slate-900 to-slate-950 text-white p-5 flex justify-between items-center border-b border-slate-800">
+              <div className="bg-[#201d1d] text-[#fdfcfc] p-4 flex justify-between items-center border-b border-[#201d1d]">
                 <div className="flex items-center gap-2">
-                  <Package className="text-indigo-400" />
+                  <Package className="text-stone-300" />
                   <h3 className="font-bold uppercase tracking-wider text-sm">{t('inventory', language)}</h3>
                 </div>
                 <button 
                   type="button"
                   onClick={() => setShowInventory(false)} 
-                  className="text-slate-400 hover:text-white p-2 hover:bg-white/10 rounded-full transition-colors z-[999999] min-w-[44px] min-h-[44px] flex items-center justify-center cursor-pointer"
+                  className="text-stone-300 hover:text-white p-2 hover:bg-white/10 rounded-sm transition-colors z-[999999] min-w-[44px] min-h-[44px] flex items-center justify-center cursor-pointer"
                   aria-label="Close"
                 >
                   <X size={20} />
                 </button>
               </div>
 
-              <div className="flex bg-slate-50/50 border-b border-slate-200/60">
+              <div className="flex bg-[#f8f7f7] border-b border-[rgba(15,0,0,0.12)]">
                 <button 
                   onClick={() => setInventoryTab('equipped')}
                   className={cn(
-                    "flex-1 py-3.5 font-bold text-xs uppercase transition-all border-b-2",
+                    "flex-1 min-h-[44px] py-3 font-bold text-xs uppercase transition-all border-b-2",
                     inventoryTab === 'equipped' 
-                      ? "border-indigo-650 text-indigo-650 bg-white" 
-                      : "border-transparent text-slate-500 hover:text-slate-800"
+                      ? "border-[#201d1d] text-[#201d1d] bg-[#fdfcfc]" 
+                      : "border-transparent text-stone-500 hover:text-stone-900"
                   )}
                 >
                   {t('equipment', language)}
@@ -487,17 +487,17 @@ export const CompanionView: React.FC<CompanionViewProps> = ({
                 <button 
                   onClick={() => setInventoryTab('all')}
                   className={cn(
-                    "flex-1 py-3.5 font-bold text-xs uppercase transition-all border-b-2",
+                    "flex-1 min-h-[44px] py-3 font-bold text-xs uppercase transition-all border-b-2",
                     inventoryTab === 'all' 
-                      ? "border-indigo-650 text-indigo-650 bg-white" 
-                      : "border-transparent text-slate-500 hover:text-slate-800"
+                      ? "border-[#201d1d] text-[#201d1d] bg-[#fdfcfc]" 
+                      : "border-transparent text-stone-500 hover:text-stone-900"
                   )}
                 >
                   {t('inventory', language)}
                 </button>
               </div>
 
-              <div className="flex-1 overflow-y-auto p-5 custom-scrollbar bg-slate-50/30">
+              <div className="flex-1 overflow-y-auto p-5 bg-[#fdfcfc]">
                 {inventoryTab === 'equipped' ? (
                   <div className="grid grid-cols-3 gap-3 w-full">
                     {(['necklace', 'ring2', 'boots', 'ring1'] as const).map(slot => {
@@ -505,20 +505,20 @@ export const CompanionView: React.FC<CompanionViewProps> = ({
                       return (
                         <div key={slot} className="flex flex-col items-center gap-1.5">
                           <div className={cn(
-                            "w-12 h-12 rounded-xl border flex items-center justify-center transition-all bg-slate-50 overflow-hidden",
-                            equippedItem ? "border-indigo-500 bg-white shadow-md shadow-indigo-50" : "border-slate-200/70 opacity-40"
+                            "w-12 h-12 rounded-none border flex items-center justify-center transition-all bg-[#fdfcfc] overflow-hidden",
+                            equippedItem ? "border-[#201d1d]" : "border-[rgba(15,0,0,0.12)] opacity-40"
                           )}>
                             {equippedItem ? (
                               <ItemIcon imageIndex={equippedItem.imageIndex} size={40} />
                             ) : (
-                              <Package size={16} className="text-slate-350" />
+                              <Package size={16} className="text-stone-400" />
                             )}
                           </div>
-                          <span className="text-[8px] font-bold text-slate-500 uppercase truncate w-full text-center">{t(`slot_${slot}`, language)}</span>
+                          <span className="text-[8px] font-bold text-stone-600 uppercase truncate w-full text-center">{t(`slot_${slot}`, language)}</span>
                           {equippedItem && (
                             <button 
                               onClick={() => unequipItem(equippedItem.id, selectedCompanionIndex)}
-                              className="text-[8px] bg-rose-50 text-rose-650 px-1.5 py-0.5 rounded-md font-bold hover:bg-rose-100/60 transition-colors cursor-pointer"
+                              className="text-[10px] min-h-[44px] bg-[#fdfcfc] text-[#201d1d] border border-[rgba(15,0,0,0.12)] px-3 py-1 rounded-sm font-bold hover:bg-[#f8f7f7] transition-colors cursor-pointer"
                             >
                               {t('unequip', language)}
                             </button>
@@ -530,39 +530,31 @@ export const CompanionView: React.FC<CompanionViewProps> = ({
                 ) : (
                   <div className="space-y-3">
                     {displayItemList.filter(i => !i.equippedToId).length === 0 ? (
-                      <div className="py-12 text-center text-slate-400 text-xs italic">{t('no_items', language)}</div>
+                      <div className="py-12 text-center text-stone-500 text-xs italic">{t('no_items', language)}</div>
                     ) : (
                       displayItemList.filter(i => !i.equippedToId).map(item => (
-                        <div key={item.id} className={cn(
-                          "p-4 border rounded-lg flex items-center justify-between transition-colors",
-                          item.rarity === 'rare' ? "border-amber-200 bg-amber-50/30" : 
-                          item.rarity === 'magic' ? "border-indigo-200 bg-indigo-50/20" : "border-slate-100 bg-white"
-                        )}>
+                        <div key={item.id} className="p-4 border border-[rgba(15,0,0,0.12)] rounded-none flex items-center justify-between transition-colors bg-[#fdfcfc]">
                           <div className="flex gap-4 items-center min-w-0">
-                            <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center overflow-hidden border border-slate-150 shrink-0">
+                            <div className="w-12 h-12 bg-stone-100 rounded-none flex items-center justify-center overflow-hidden border border-[rgba(15,0,0,0.12)] shrink-0">
                                <ItemIcon imageIndex={item.imageIndex} size={40} />
                             </div>
                             <div className="min-w-0">
                                <div className="flex items-center gap-2">
-                                 <h5 className="text-xs font-bold text-slate-800 truncate">{(language === 'ko' ? item.name_ko : item.name_en)}</h5>
-                                 <span className={cn(
-                                   "text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase shrink-0",
-                                   item.rarity === 'rare' ? "bg-amber-100 text-amber-800" : 
-                                   item.rarity === 'magic' ? "bg-indigo-100 text-indigo-800" : "bg-slate-100 text-slate-650"
-                                  )}>{t(`rarity_${item.rarity}` as any, language)}</span>
+                                 <h5 className="text-xs font-bold text-[#201d1d] truncate">{(language === 'ko' ? item.name_ko : item.name_en)}</h5>
+                                 <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-sm uppercase shrink-0 bg-stone-150 text-stone-800 border border-[rgba(15,0,0,0.12)]">{t(`rarity_${item.rarity}` as any, language)}</span>
                                 </div>
-                               <p className="text-[9px] text-slate-400 mt-1 italic leading-tight truncate">{(language === 'ko' ? item.description_ko : item.description_en)}</p>
+                               <p className="text-[9px] text-stone-500 mt-1 italic leading-tight truncate">{(language === 'ko' ? item.description_ko : item.description_en)}</p>
                                <div className="flex flex-wrap gap-2 mt-1.5 text-[8px] font-bold">
-                                  <span className="text-slate-500 uppercase bg-slate-50 border border-slate-150 px-1.5 py-0.5 rounded">{item.stats.map(s => s >= 0 ? '+' + s : s).join(', ')}</span>
+                                  <span className="text-stone-700 uppercase bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] px-1.5 py-0.5 rounded-sm">{item.stats.map(s => s >= 0 ? '+' + s : s).join(', ')}</span>
                                   {item.magicChance && (
-                                    <span className="text-indigo-650 uppercase bg-indigo-50 border border-indigo-100 px-1.5 py-0.5 rounded">Magic +{item.magicChance}%</span>
+                                    <span className="text-[#201d1d] uppercase bg-stone-100 border border-[rgba(15,0,0,0.12)] px-1.5 py-0.5 rounded-sm">Magic +{item.magicChance}%</span>
                                   )}
                                 </div>
                             </div>
                           </div>
                           <button 
                             onClick={() => equipItem(item.id, selectedCompanionIndex)}
-                            className="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-[10px] px-3.5 py-1.5 rounded-xl font-bold uppercase transition-all shrink-0 ml-4 cursor-pointer"
+                            className="bg-[#201d1d] hover:bg-stone-800 active:scale-95 text-[#fdfcfc] text-[10px] min-h-[44px] px-4 py-2 rounded-sm font-bold uppercase transition-all shrink-0 ml-4 cursor-pointer"
                           >
                             {t('equip', language)}
                           </button>
@@ -584,21 +576,21 @@ export const CompanionView: React.FC<CompanionViewProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[80000] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs"
+            className="fixed inset-0 z-[80000] flex items-center justify-center p-4 bg-black/50 font-mono"
           >
             <motion.div
-              initial={{ scale: 0.95 }}
+              initial={{ scale: 0.98 }}
               animate={{ scale: 1 }}
-              exit={{ scale: 0.95 }}
-              className="bg-white rounded-3xl p-6 max-w-sm w-full text-center border border-slate-100 shadow-2xl relative"
+              exit={{ scale: 0.98 }}
+              className="bg-[#fdfcfc] rounded-none p-6 max-w-sm w-full text-center border border-[#201d1d] relative text-[#201d1d]"
             >
-              <div className="w-12 h-12 bg-rose-50 border border-rose-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <AlertCircle className="text-rose-500" size={24} />
+              <div className="w-12 h-12 bg-stone-100 border border-[rgba(15,0,0,0.12)] rounded-sm flex items-center justify-center mx-auto mb-4">
+                <AlertCircle className="text-[#201d1d]" size={24} />
               </div>
-              <p className="text-xs text-slate-500 leading-relaxed mb-5">{alertMsg}</p>
+              <p className="text-xs text-stone-700 leading-relaxed mb-5">{alertMsg}</p>
               <button
                 onClick={() => setAlertMsg(null)}
-                className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-md shadow-indigo-600/10 transition-colors active:scale-95 cursor-pointer"
+                className="w-full min-h-[44px] py-2.5 bg-[#201d1d] hover:bg-stone-800 text-[#fdfcfc] font-bold text-xs rounded-sm transition-colors active:scale-95 cursor-pointer"
               >
                 Close
               </button>
@@ -614,23 +606,23 @@ export const CompanionView: React.FC<CompanionViewProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[80000] flex items-center justify-center p-0 md:p-4 bg-slate-950/60 backdrop-blur-xs"
+            className="fixed inset-0 z-[80000] flex items-center justify-center p-0 md:p-4 bg-black/50 font-mono"
           >
             <motion.div 
-              initial={{ scale: 0.98, y: 15 }}
+              initial={{ scale: 0.98, y: 10 }}
               animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.98, y: 15 }}
-              className="bg-white w-full md:max-w-5xl h-full md:h-[90vh] md:rounded-3xl flex flex-col shadow-2xl relative border border-slate-100 overflow-hidden"
+              exit={{ scale: 0.98, y: 10 }}
+              className="bg-[#fdfcfc] w-full md:max-w-5xl h-full md:h-[90vh] rounded-none flex flex-col relative border border-[#201d1d] overflow-hidden text-[#201d1d]"
             >
               <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-[999999]">
                 <button 
                   type="button"
                   onClick={() => setShowSkillTree(false)}
-                  className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-[#141212] text-amber-300 hover:text-white hover:bg-[#201d1d] active:scale-95 shadow-2xl border-2 border-amber-400 flex items-center justify-center cursor-pointer touch-target transition-all"
+                  className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-sm bg-[#201d1d] text-[#fdfcfc] hover:bg-stone-800 active:scale-95 border border-[#201d1d] flex items-center justify-center cursor-pointer transition-all"
                   aria-label="Close"
                   title={language === 'ko' ? '닫기' : 'Close'}
                 >
-                  <X size={22} strokeWidth={2.8} />
+                  <X size={20} />
                 </button>
               </div>
 
@@ -660,29 +652,29 @@ export const CompanionView: React.FC<CompanionViewProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[80000] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+            className="fixed inset-0 z-[80000] flex items-center justify-center p-4 bg-black/50 font-mono"
           >
             <motion.div
-              initial={{ scale: 0.95, y: 10 }}
+              initial={{ scale: 0.98, y: 10 }}
               animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.95, y: 10 }}
-              className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl relative"
+              exit={{ scale: 0.98, y: 10 }}
+              className="bg-[#fdfcfc] rounded-none p-6 max-w-sm w-full relative border border-[#201d1d] text-[#201d1d]"
             >
               <button
                 type="button"
                 onClick={() => setHelpOpen(false)}
-                className="absolute top-3 right-3 min-w-[36px] min-h-[36px] rounded-full border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors z-[999999] cursor-pointer"
+                className="absolute top-3 right-3 min-w-[44px] min-h-[44px] rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] flex items-center justify-center text-[#201d1d] hover:bg-[#f8f7f7] transition-colors z-[999999] cursor-pointer"
                 aria-label="Close"
               >
                 <X size={16} />
               </button>
 
               <div className="text-center mb-5">
-                <HelpCircle size={24} className="mx-auto text-indigo-500 mb-2" />
-                <h3 className="text-sm font-black text-slate-900">
+                <HelpCircle size={24} className="mx-auto text-[#201d1d] mb-2" />
+                <h3 className="text-sm font-black text-[#201d1d]">
                   {t(HELP_STEPS[helpStep].titleKey, language)}
                 </h3>
-                <p className="text-xs text-slate-500 mt-1.5 leading-relaxed">
+                <p className="text-xs text-stone-600 mt-1.5 leading-relaxed">
                   {t(HELP_STEPS[helpStep].descKey, language)}
                 </p>
               </div>
@@ -692,7 +684,7 @@ export const CompanionView: React.FC<CompanionViewProps> = ({
                   type="button"
                   onClick={() => setHelpStep((s) => Math.max(0, s - 1))}
                   disabled={helpStep === 0}
-                  className="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-50 disabled:opacity-30 transition-colors"
+                  className="min-w-[44px] min-h-[44px] rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] flex items-center justify-center text-[#201d1d] hover:bg-[#f8f7f7] disabled:opacity-30 transition-colors"
                 >
                   <ChevronLeft size={16} />
                 </button>
@@ -701,8 +693,8 @@ export const CompanionView: React.FC<CompanionViewProps> = ({
                     <div
                       key={i}
                       className={cn(
-                        'w-1.5 h-1.5 rounded-full transition-colors',
-                        i === helpStep ? 'bg-indigo-500' : 'bg-slate-200',
+                        'w-2 h-2 rounded-none transition-colors',
+                        i === helpStep ? 'bg-[#201d1d]' : 'bg-stone-300',
                       )}
                     />
                   ))}
@@ -711,7 +703,7 @@ export const CompanionView: React.FC<CompanionViewProps> = ({
                   type="button"
                   onClick={() => setHelpStep((s) => Math.min(HELP_STEPS.length - 1, s + 1))}
                   disabled={helpStep === HELP_STEPS.length - 1}
-                  className="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-50 disabled:opacity-30 transition-colors"
+                  className="min-w-[44px] min-h-[44px] rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] flex items-center justify-center text-[#201d1d] hover:bg-[#f8f7f7] disabled:opacity-30 transition-colors"
                 >
                   <ChevronRight size={16} />
                 </button>

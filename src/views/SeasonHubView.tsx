@@ -281,36 +281,32 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
   // ─── Render helpers ────────────────────────────────────
 
   const renderSeasonBanner = () => (
-    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-950 via-slate-900 to-purple-950 p-5 sm:p-6 mb-4 border border-indigo-500/20 shadow-lg">
-      {/* Background decorative elements */}
-      <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl from-indigo-500/10 to-transparent rounded-full blur-2xl" />
-      <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-purple-500/10 to-transparent rounded-full blur-xl" />
-
+    <div className="relative overflow-hidden rounded-none bg-[#201d1d] text-[#fdfcfc] p-5 sm:p-6 mb-4 border border-[#201d1d]">
       <div className="relative z-10">
         {/* Season title & badge */}
         <div className="flex items-center gap-3 mb-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
-            <Crown size={20} className="text-white" />
+          <div className="w-10 h-10 rounded-sm bg-[#302c2c] border border-white/10 flex items-center justify-center">
+            <Crown size={20} className="text-[#fdfcfc]" />
           </div>
           <div className="flex items-center gap-2">
-            <h1 className="text-lg sm:text-xl font-black text-white tracking-tight">
+            <h1 className="text-lg sm:text-xl font-black text-[#fdfcfc] tracking-tight font-mono">
               {t(config.titleKey, language)}
             </h1>
             <button
               onClick={() => { setHelpOpen(true); setHelpStep(0); }}
-              className="w-7 h-7 rounded-full border border-white/30 flex items-center justify-center hover:bg-white/10 transition-colors"
+              className="min-w-[44px] min-h-[44px] rounded-sm border border-white/20 flex items-center justify-center hover:bg-white/10 transition-colors"
               aria-label="Help"
               type="button"
             >
-              <HelpCircle size={14} className="text-white/70" />
+              <HelpCircle size={16} className="text-[#fdfcfc]/80" />
             </button>
           </div>
         </div>
 
         {/* Key info row */}
-        <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+        <div className="flex flex-wrap items-center gap-3 sm:gap-4 font-mono">
           {/* Days left */}
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-red-500/10 border border-red-500/20">
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-sm bg-red-950/40 border border-red-500/30">
             <Timer size={14} className="text-red-400" />
             <span className="text-xs font-bold text-red-400">
               {t('season_days_left', language).replace('{days}', String(daysLeft))}
@@ -320,20 +316,15 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
           {/* Progress bar */}
           <div className="flex-1 min-w-[120px] max-w-[200px]">
             <div className="flex items-center justify-between mb-1">
-              <span className="text-[10px] text-indigo-400 font-bold">{progress}%</span>
+              <span className="text-[10px] text-[#fdfcfc]/80 font-bold">{progress}%</span>
             </div>
-            <div className="h-1.5 bg-slate-700/50 rounded-full overflow-hidden">
+            <div className="h-1.5 bg-stone-800 rounded-none overflow-hidden border border-white/10">
               <div
-                className={cn(
-                  'h-full rounded-full transition-all duration-700',
-                  lowSpecMode ? 'bg-indigo-500' : 'bg-gradient-to-r from-indigo-500 to-purple-500',
-                )}
+                className="h-full rounded-none bg-[#fdfcfc] transition-all duration-700"
                 style={{ width: `${progress}%` }}
               />
             </div>
           </div>
-
-
         </div>
       </div>
     </div>
@@ -348,7 +339,7 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
             updateProgress('visit_world');
             onNavigate('world-codex');
           }}
-          className="text-[11px] text-indigo-600 font-bold hover:text-indigo-700 flex items-center gap-1 ml-auto"
+          className="min-h-[44px] text-[11px] text-indigo-600 font-bold hover:text-indigo-700 flex items-center gap-1 ml-auto cursor-pointer"
         >
           {t('season_view_all', language)}
           <ChevronRight size={14} />
@@ -361,42 +352,42 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
           return (
             <motion.button
               key={card.id}
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.95 }}
-              animate={isInterested ? { scale: [1, 1.08, 1] } : { scale: 1 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              animate={isInterested ? { scale: [1, 1.04, 1] } : { scale: 1 }}
               transition={{ duration: 0.2 }}
               onClick={() => toggleCharacterInterest(card.id)}
               className={cn(
-                'relative group rounded-xl border p-3 flex flex-col items-center gap-2 transition-all duration-200 touch-target cursor-pointer',
+                'relative group rounded-none border p-3 flex flex-col items-center gap-2 transition-all duration-200 min-h-[44px] cursor-pointer',
                 isInterested
-                  ? 'border-indigo-400 bg-indigo-50 shadow-sm shadow-indigo-200/30'
-                  : 'border-slate-200 bg-white hover:border-slate-300',
+                  ? 'border-[#201d1d] bg-[#f8f7f7]'
+                  : 'border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] hover:border-[#201d1d]',
               )}
             >
-              {/* Rarity glow */}
+              {/* Rarity avatar */}
               <div
                 className={cn(
-                  'w-14 h-14 rounded-xl flex items-center justify-center',
+                  'w-14 h-14 rounded-none border border-[rgba(15,0,0,0.12)] flex items-center justify-center font-mono',
                   card.rarity === 'legendary'
-                    ? 'bg-gradient-to-br from-amber-400 to-yellow-600'
+                    ? 'bg-[#201d1d] text-[#fdfcfc]'
                     : card.rarity === 'gold'
-                      ? 'bg-gradient-to-br from-yellow-400 to-amber-600'
-                      : 'bg-gradient-to-br from-slate-300 to-slate-400',
+                      ? 'bg-amber-600 text-white'
+                      : 'bg-stone-300 text-stone-900',
                 )}
               >
-                <span className="text-lg font-black text-white">
+                <span className="text-lg font-black">
                   {getFormattedCardName(card, language).charAt(0)}
                 </span>
               </div>
-              <span className="text-[11px] font-bold text-slate-700 text-center leading-tight line-clamp-2">
+              <span className="text-[11px] font-bold text-[#201d1d] text-center leading-tight line-clamp-2">
                 {getFormattedCardName(card, language)}
               </span>
               {/* Interest indicator */}
               <div className={cn(
-                'absolute top-2 right-2 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all',
+                'absolute top-2 right-2 w-5 h-5 rounded-sm border flex items-center justify-center transition-all',
                 isInterested
-                  ? 'border-indigo-500 bg-indigo-500 text-white'
-                  : 'border-slate-300 bg-white',
+                  ? 'border-[#201d1d] bg-[#201d1d] text-[#fdfcfc]'
+                  : 'border-[rgba(15,0,0,0.2)] bg-[#fdfcfc]',
               )}>
                 {isInterested && <CheckCircle2 size={12} />}
               </div>
@@ -411,7 +402,7 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
     <div className="mb-5">
       <div className="flex items-center justify-between mb-3">
         {currentWeek && (
-          <span className="text-[10px] text-slate-500 font-semibold">
+          <span className="text-[10px] text-stone-500 font-semibold font-mono">
             {t('season_week_label', language).replace('{week}', String(currentWeek.weekNumber))}
           </span>
         )}
@@ -424,43 +415,43 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
             <div
               key={week.weekNumber}
               className={cn(
-                'flex-shrink-0 w-40 rounded-xl border p-3 transition-all',
+                'flex-shrink-0 w-40 rounded-none border p-3 transition-all font-mono',
                 isActive
-                  ? 'border-indigo-400 bg-indigo-50 shadow-sm shadow-indigo-200/20'
+                  ? 'border-[#201d1d] bg-[#f8f7f7]'
                   : isPast
-                    ? 'border-slate-200 bg-slate-50/50'
-                    : 'border-slate-200 bg-white opacity-70',
+                    ? 'border-[rgba(15,0,0,0.12)] bg-stone-100/50'
+                    : 'border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] opacity-70',
               )}
             >
               <div className="flex items-center justify-between mb-2">
                 <span className={cn(
                   'text-[10px] font-black uppercase',
-                  isActive ? 'text-indigo-600' : 'text-slate-500',
+                  isActive ? 'text-[#201d1d]' : 'text-stone-500',
                 )}>
                   {t('season_week_label', language).replace('{week}', String(week.weekNumber))}
                 </span>
                 {isActive && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
+                  <span className="w-1.5 h-1.5 rounded-none bg-[#201d1d]" />
                 )}
               </div>
               {week.newEpisodes.length > 0 && (
                 <div className="mb-1.5">
-                  <span className="text-[9px] font-semibold text-amber-600 uppercase">
+                  <span className="text-[9px] font-semibold text-amber-700 uppercase">
                     {t('season_new_episodes', language)} ({week.newEpisodes.length})
                   </span>
                 </div>
               )}
               {week.newMissions.length > 0 && (
                 <div>
-                  <span className="text-[9px] font-semibold text-emerald-600 uppercase">
+                  <span className="text-[9px] font-semibold text-emerald-700 uppercase">
                     {t('season_new_missions', language)} ({week.newMissions.length})
                   </span>
                 </div>
               )}
               {/* Next week preview */}
               {!isPast && week.nextWeekPreviewKey && (
-                <div className="mt-2 pt-2 border-t border-slate-100">
-                  <span className="text-[9px] text-slate-400 italic">
+                <div className="mt-2 pt-2 border-t border-[rgba(15,0,0,0.08)]">
+                  <span className="text-[9px] text-stone-500 italic">
                     {t('season_next_week', language)}: {t(week.nextWeekPreviewKey, language)}
                   </span>
                 </div>
@@ -476,17 +467,17 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
     if (!currentWebtoonEpisode || !currentWebtoonSpotlightCard) return null;
 
     return (
-      <div className="mb-5 rounded-2xl border border-indigo-200 bg-gradient-to-br from-indigo-50 via-white to-fuchsia-50 p-4 shadow-sm">
+      <div className="mb-5 rounded-none border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] p-4 font-mono">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <h2 className="text-lg font-black tracking-tight text-slate-900">
+            <h2 className="text-lg font-black tracking-tight text-[#201d1d]">
               {getFormattedCardName(currentWebtoonSpotlightCard, language)}
             </h2>
-            <p className="mt-1 text-sm font-semibold text-slate-600">
+            <p className="mt-1 text-sm font-semibold text-stone-600">
               {t(currentWebtoonEpisode.titleKey, language)}
             </p>
           </div>
-          <div className="rounded-full border border-white bg-white/80 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.22em] text-indigo-700 shadow-sm">
+          <div className="rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.22em] text-[#201d1d]">
             {currentWebtoonEpisode.releaseDate}
           </div>
         </div>
@@ -494,21 +485,21 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
         <div className="mt-4 flex flex-wrap gap-2">
           <button
             onClick={() => onNavigate('webtoon')}
-            className="inline-flex min-h-10 items-center gap-2 rounded-full bg-indigo-600 px-4 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-white transition-all hover:bg-indigo-500 active:scale-95"
+            className="inline-flex min-h-[44px] items-center gap-2 rounded-sm bg-[#201d1d] px-4 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-[#fdfcfc] transition-all hover:bg-stone-800 active:scale-95"
           >
             <BookOpen size={14} />
             {t('home_webtoon_read', language)}
           </button>
           <button
             onClick={() => onNavigate('wiki-card')}
-            className="inline-flex min-h-10 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-slate-700 transition-all hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700 active:scale-95"
+            className="inline-flex min-h-[44px] items-center gap-2 rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] px-4 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-[#201d1d] transition-all hover:border-[#201d1d] active:scale-95"
           >
             <Sparkles size={14} />
             {t('world_open_card', language)}
           </button>
           <button
             onClick={() => onNavigate('mydeck')}
-            className="inline-flex min-h-10 items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-emerald-700 transition-all hover:bg-emerald-100 active:scale-95"
+            className="inline-flex min-h-[44px] items-center gap-2 rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] px-4 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-[#201d1d] transition-all hover:border-[#201d1d] active:scale-95"
           >
             <Crown size={14} />
             {t('mydeck', language)}
@@ -519,9 +510,9 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
   };
 
   const renderEventMissions = () => (
-    <div className="mb-5">
+    <div className="mb-5 font-mono">
       <div className="flex items-center justify-between mb-3">
-        <span className="text-[10px] text-indigo-600 font-bold">
+        <span className="text-[10px] text-[#201d1d] font-bold">
           {completedMissionCount}/{config.eventMissions.length}
         </span>
       </div>
@@ -532,20 +523,20 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
             <div
               key={mission.id}
               className={cn(
-                'flex items-center gap-3 p-3 rounded-xl border transition-all',
+                'flex items-center gap-3 p-3 rounded-none border transition-all',
                 isCompleted
                   ? 'border-emerald-300 bg-emerald-50/50'
-                  : 'border-slate-200 bg-white hover:border-slate-300',
+                  : 'border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] hover:border-[#201d1d]',
               )}
             >
               {/* Mission icon */}
               <div className={cn(
-                'w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0',
-                mission.type === 'battle' && 'bg-red-100 text-red-600',
-                mission.type === 'collection' && 'bg-blue-100 text-blue-600',
-                mission.type === 'webtoon' && 'bg-amber-100 text-amber-600',
-                mission.type === 'community' && 'bg-purple-100 text-purple-600',
-                mission.type === 'daily' && 'bg-emerald-100 text-emerald-600',
+                'w-9 h-9 rounded-sm border border-[rgba(15,0,0,0.12)] flex items-center justify-center flex-shrink-0',
+                mission.type === 'battle' && 'bg-stone-100 text-stone-900',
+                mission.type === 'collection' && 'bg-stone-100 text-stone-900',
+                mission.type === 'webtoon' && 'bg-stone-100 text-stone-900',
+                mission.type === 'community' && 'bg-stone-100 text-stone-900',
+                mission.type === 'daily' && 'bg-stone-100 text-stone-900',
               )}>
                 {mission.type === 'battle' && <Swords size={16} />}
                 {mission.type === 'collection' && <Star size={16} />}
@@ -556,7 +547,7 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
 
               {/* Mission info */}
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-bold text-slate-800 truncate">
+                <p className="text-xs font-bold text-[#201d1d] truncate">
                   {t(mission.titleKey, language)}
                 </p>
               </div>
@@ -564,8 +555,8 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
               {/* Reward */}
               <div className="text-right flex-shrink-0">
                 <div className="flex items-center gap-1">
-                  <Zap size={12} className="text-yellow-500" />
-                  <span className="text-[10px] font-bold text-yellow-600">
+                  <Zap size={12} className="text-amber-600" />
+                  <span className="text-[10px] font-bold text-stone-700">
                     +{mission.rewardSns.toLocaleString()}
                   </span>
                 </div>
@@ -575,13 +566,13 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
               {!isCompleted && (
                 <button
                   onClick={() => completeMission(mission)}
-                  className="flex-shrink-0 px-3 py-1.5 bg-indigo-600 text-white text-[10px] font-bold rounded-lg hover:bg-indigo-700 active:scale-95 transition-all touch-target"
+                  className="flex-shrink-0 min-h-[44px] px-3 py-2 bg-[#201d1d] text-[#fdfcfc] text-[10px] font-bold rounded-sm hover:bg-stone-800 active:scale-95 transition-all"
                 >
                   {t('season_mission_do', language)}
                 </button>
               )}
               {isCompleted && (
-                <CheckCircle2 size={18} className="text-emerald-500 flex-shrink-0" />
+                <CheckCircle2 size={18} className="text-emerald-600 flex-shrink-0" />
               )}
             </div>
           );
@@ -594,8 +585,8 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
   const renderSeasonMissionList = (missions: SeasonMission[], periodLabelKey: string) => {
     if (missions.length === 0) return null;
     return (
-      <div className="mb-3">
-        <h3 className="text-[11px] font-black text-slate-500 uppercase tracking-wider mb-2 px-1">
+      <div className="mb-3 font-mono">
+        <h3 className="text-[11px] font-black text-stone-600 uppercase tracking-wider mb-2 px-1">
           {t(periodLabelKey, language)}
         </h3>
         <div className="space-y-1.5">
@@ -608,12 +599,12 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
               <div
                 key={mission.id}
                 className={cn(
-                  'flex items-center gap-2.5 p-2.5 rounded-lg border transition-all',
+                  'flex items-center gap-2.5 p-2.5 rounded-none border transition-all',
                   status === 'claimed'
-                    ? 'border-emerald-200 bg-emerald-50/40'
+                    ? 'border-emerald-300 bg-emerald-50/40'
                     : status === 'completed'
-                      ? 'border-indigo-200 bg-indigo-50/40'
-                      : 'border-slate-150 bg-white',
+                      ? 'border-[#201d1d] bg-[#f8f7f7]'
+                      : 'border-[rgba(15,0,0,0.12)] bg-[#fdfcfc]',
                 )}
               >
                 {/* Type icon */}
@@ -621,22 +612,22 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
 
                 {/* Info */}
                 <div className="flex-1 min-w-0">
-                  <p className="text-[11px] font-bold text-slate-800 truncate">
+                  <p className="text-[11px] font-bold text-[#201d1d] truncate">
                     {t(mission.titleKey, language)}
                   </p>
                   <div className="flex items-center gap-1.5 mt-0.5">
-                    <div className="flex-1 h-1 bg-slate-200 rounded-full overflow-hidden max-w-[80px]">
+                    <div className="flex-1 h-1 bg-stone-200 rounded-none overflow-hidden max-w-[80px]">
                       <div
                         className={cn(
-                          'h-full rounded-full transition-all',
+                          'h-full rounded-none transition-all',
                           status === 'claimed'
-                            ? 'bg-emerald-400'
-                            : 'bg-indigo-400',
+                            ? 'bg-emerald-600'
+                            : 'bg-[#201d1d]',
                         )}
                         style={{ width: `${Math.min(100, (progress / mission.targetValue) * 100)}%` }}
                       />
                     </div>
-                    <span className="text-[9px] text-slate-400 font-medium">
+                    <span className="text-[9px] text-stone-500 font-medium">
                       {progress}/{mission.targetValue}
                     </span>
                   </div>
@@ -645,7 +636,7 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
                 {/* Status / Claim button */}
                 <div className="flex-shrink-0">
                   {status === 'claimed' ? (
-                    <CheckCircle2 size={16} className="text-emerald-500" />
+                    <CheckCircle2 size={16} className="text-emerald-600" />
                   ) : status === 'completed' ? (
                     <button
                       disabled={claimingIds.includes(mission.id)}
@@ -667,7 +658,7 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
                           setClaimingIds((prev) => prev.filter((id) => id !== mission.id));
                         }, 500);
                       }}
-                      className="px-2.5 py-1 bg-indigo-600 text-white text-[9px] font-bold rounded-md hover:bg-indigo-700 active:scale-95 transition-all touch-target disabled:opacity-50"
+                      className="min-h-[44px] px-3 py-2 bg-[#201d1d] text-[#fdfcfc] text-[9px] font-bold rounded-sm hover:bg-stone-800 active:scale-95 transition-all disabled:opacity-50"
                     >
                       {t('claim_reward', language)}
                     </button>
@@ -682,33 +673,33 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
   };
 
   const renderRewardTrack = () => (
-    <div className="mb-5">
+    <div className="mb-5 font-mono">
       <div className="flex items-center justify-between mb-3">
-        <span className="text-[10px] text-slate-500 font-semibold">
+        <span className="text-[10px] text-stone-500 font-semibold">
           {hubState.seasonPoints}
         </span>
       </div>
 
       {/* Points progress to next tier */}
       {nextTier && (
-        <div className="mb-3 p-3 rounded-xl bg-indigo-50 border border-indigo-200">
+        <div className="mb-3 p-3 rounded-none bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)]">
           <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[10px] text-indigo-600 font-bold uppercase">
+            <span className="text-[10px] text-[#201d1d] font-bold uppercase">
               {t('season_next_reward', language)}
             </span>
-            <span className="text-[10px] text-indigo-500 font-semibold">
+            <span className="text-[10px] text-stone-600 font-semibold">
               {hubState.seasonPoints} / {nextTier.pointsRequired} pts
             </span>
           </div>
-          <div className="h-1.5 bg-indigo-200 rounded-full overflow-hidden">
+          <div className="h-1.5 bg-stone-200 rounded-none overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all"
+              className="h-full bg-[#201d1d] rounded-none transition-all"
               style={{
                 width: `${Math.min(100, (hubState.seasonPoints / nextTier.pointsRequired) * 100)}%`,
               }}
             />
           </div>
-          <p className="text-[10px] text-indigo-500 mt-1.5">
+          <p className="text-[10px] text-stone-600 mt-1.5">
             {t(nextTier.rewardTitleKey, language)} — {nextTier.rewardSns.toLocaleString()} SNS
             {nextTier.isPremium && ` (${t('season_premium_badge', language)})`}
           </p>
@@ -724,20 +715,20 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
             <div
               key={tier.tier}
               className={cn(
-                'flex items-center gap-3 p-3 rounded-xl border transition-all',
+                'flex items-center gap-3 p-3 rounded-none border transition-all',
                 isClaimed
                   ? 'border-emerald-300 bg-emerald-50/50'
                   : isReachable
-                    ? 'border-indigo-300 bg-indigo-50/30 hover:border-indigo-400'
-                    : 'border-slate-200 bg-white opacity-60',
+                    ? 'border-[#201d1d] bg-[#f8f7f7]'
+                    : 'border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] opacity-60',
               )}
             >
               {/* Tier badge */}
               <div className={cn(
-                'w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 font-black text-xs',
+                'w-9 h-9 rounded-sm border border-[rgba(15,0,0,0.12)] flex items-center justify-center flex-shrink-0 font-black text-xs',
                 tier.isPremium
-                  ? 'bg-gradient-to-br from-amber-400 to-yellow-600 text-white shadow-sm'
-                  : 'bg-slate-200 text-slate-600',
+                  ? 'bg-[#201d1d] text-[#fdfcfc]'
+                  : 'bg-stone-200 text-stone-700',
               )}>
                 {tier.tier}
               </div>
@@ -745,34 +736,34 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
               {/* Tier info */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5">
-                  <p className="text-xs font-bold text-slate-800">
+                  <p className="text-xs font-bold text-[#201d1d]">
                     {t(tier.rewardTitleKey, language)}
                   </p>
                   {tier.isPremium && (
-                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700">
+                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-sm bg-stone-200 text-stone-800">
                       ★
                     </span>
                   )}
                 </div>
                 <div className="flex items-center gap-2 mt-0.5">
-                  <span className="text-[10px] text-slate-500">{tier.pointsRequired} pts</span>
-                  <span className="text-[10px] text-yellow-600 font-bold">+{tier.rewardSns.toLocaleString()} SNS</span>
+                  <span className="text-[10px] text-stone-500">{tier.pointsRequired} pts</span>
+                  <span className="text-[10px] text-stone-800 font-bold">+{tier.rewardSns.toLocaleString()} SNS</span>
                 </div>
               </div>
 
               {/* Claim button */}
               {isClaimed ? (
-                <CheckCircle2 size={18} className="text-emerald-500 flex-shrink-0" />
+                <CheckCircle2 size={18} className="text-emerald-600 flex-shrink-0" />
               ) : isReachable ? (
                 <button
                   onClick={() => claimRewardTier(tier)}
-                  className="flex-shrink-0 px-3 py-1.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-[10px] font-bold rounded-lg hover:from-indigo-600 hover:to-purple-700 active:scale-95 transition-all touch-target shadow-sm"
+                  className="flex-shrink-0 min-h-[44px] min-w-[44px] inline-flex items-center justify-center bg-[#201d1d] text-[#fdfcfc] rounded-sm hover:bg-stone-800 active:scale-95 transition-all border border-[#201d1d]"
                 >
                   <Gift size={14} />
                 </button>
               ) : (
-                <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0">
-                  <span className="text-[10px] text-slate-400">🔒</span>
+                <div className="w-9 h-9 rounded-none border border-[rgba(15,0,0,0.12)] bg-stone-100 flex items-center justify-center flex-shrink-0">
+                  <span className="text-[10px] text-stone-400">🔒</span>
                 </div>
               )}
             </div>
@@ -783,42 +774,42 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
   );
 
   const renderCommunityMissions = () => (
-    <div className="mb-5">
+    <div className="mb-5 font-mono">
       <button
         onClick={() => {
           updateProgress('join_community');
           onNavigate('community');
         }}
-        className="w-full p-4 rounded-xl border border-purple-200 bg-gradient-to-r from-purple-50 to-indigo-50 hover:from-purple-100 hover:to-indigo-100 active:scale-[0.99] transition-all flex items-center gap-3 touch-target"
+        className="w-full p-4 rounded-none border border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] hover:bg-stone-100 active:scale-[0.99] transition-all flex items-center gap-3 min-h-[44px]"
       >
-        <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center flex-shrink-0">
-          <Users size={20} className="text-purple-600" />
+        <div className="w-10 h-10 rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#201d1d] text-[#fdfcfc] flex items-center justify-center flex-shrink-0">
+          <Users size={20} />
         </div>
         <div className="flex-1 text-left">
-          <p className="text-xs font-bold text-slate-800">
+          <p className="text-xs font-bold text-[#201d1d]">
             {t(config.communityMissionKey, language)}
           </p>
         </div>
-        <ChevronRight size={18} className="text-purple-400 flex-shrink-0" />
+        <ChevronRight size={18} className="text-stone-400 flex-shrink-0" />
       </button>
     </div>
   );
 
   const renderQuickActions = () => (
-    <div className="grid grid-cols-2 gap-2 mb-6">
+    <div className="grid grid-cols-2 gap-2 mb-6 font-mono">
       <button
         onClick={() => {
           playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
           updateProgress('read_webtoon');
           onNavigate('webtoon');
         }}
-        className="flex items-center gap-2 p-3 rounded-xl bg-amber-50 border border-amber-200 hover:bg-amber-100 active:scale-[0.98] transition-all touch-target"
+        className="flex items-center gap-2 p-3 rounded-sm bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] hover:bg-[#f8f7f7] active:scale-[0.98] transition-all min-h-[44px]"
       >
-        <BookOpen size={18} className="text-amber-600 flex-shrink-0" />
-        <span className="text-xs font-bold text-amber-800">
+        <BookOpen size={18} className="text-[#201d1d] flex-shrink-0" />
+        <span className="text-xs font-bold text-[#201d1d]">
           {t('season_weekly_webtoon', language)}
         </span>
-        <ChevronRight size={14} className="text-amber-400 ml-auto flex-shrink-0" />
+        <ChevronRight size={14} className="text-stone-400 ml-auto flex-shrink-0" />
       </button>
 
       <button
@@ -826,13 +817,13 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
           playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
           onNavigate('main');
         }}
-        className="flex items-center gap-2 p-3 rounded-xl bg-red-50 border border-red-200 hover:bg-red-100 active:scale-[0.98] transition-all touch-target"
+        className="flex items-center gap-2 p-3 rounded-sm bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] hover:bg-[#f8f7f7] active:scale-[0.98] transition-all min-h-[44px]"
       >
-        <Swords size={18} className="text-red-600 flex-shrink-0" />
-        <span className="text-xs font-bold text-red-800">
+        <Swords size={18} className="text-[#201d1d] flex-shrink-0" />
+        <span className="text-xs font-bold text-[#201d1d]">
           {t('season_featured_battle', language)}
         </span>
-        <ChevronRight size={14} className="text-red-400 ml-auto flex-shrink-0" />
+        <ChevronRight size={14} className="text-stone-400 ml-auto flex-shrink-0" />
       </button>
 
       <button
@@ -840,13 +831,13 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
           playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
           onNavigate('event');
         }}
-        className="flex items-center gap-2 p-3 rounded-xl bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 active:scale-[0.98] transition-all touch-target"
+        className="flex items-center gap-2 p-3 rounded-sm bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] hover:bg-[#f8f7f7] active:scale-[0.98] transition-all min-h-[44px]"
       >
-        <Gift size={18} className="text-emerald-600 flex-shrink-0" />
-        <span className="text-xs font-bold text-emerald-800">
+        <Gift size={18} className="text-[#201d1d] flex-shrink-0" />
+        <span className="text-xs font-bold text-[#201d1d]">
           {t('season_special_events', language)}
         </span>
-        <ChevronRight size={14} className="text-emerald-400 ml-auto flex-shrink-0" />
+        <ChevronRight size={14} className="text-stone-400 ml-auto flex-shrink-0" />
       </button>
 
       <button
@@ -855,13 +846,13 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
           updateProgress('share_card');
           onNavigate('share');
         }}
-        className="flex items-center gap-2 p-3 rounded-xl bg-blue-50 border border-blue-200 hover:bg-blue-100 active:scale-[0.98] transition-all touch-target"
+        className="flex items-center gap-2 p-3 rounded-sm bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] hover:bg-[#f8f7f7] active:scale-[0.98] transition-all min-h-[44px]"
       >
-        <Share2 size={18} className="text-blue-600 flex-shrink-0" />
-        <span className="text-xs font-bold text-blue-800">
+        <Share2 size={18} className="text-[#201d1d] flex-shrink-0" />
+        <span className="text-xs font-bold text-[#201d1d]">
           {t('season_share_mission', language)}
         </span>
-        <ChevronRight size={14} className="text-blue-400 ml-auto flex-shrink-0" />
+        <ChevronRight size={14} className="text-stone-400 ml-auto flex-shrink-0" />
       </button>
 
       <button
@@ -870,13 +861,13 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
           updateProgress('share_card');
           setShowSeasonShareTemplate(true);
         }}
-        className="flex items-center gap-2 p-3 rounded-xl bg-purple-50 border border-purple-200 hover:bg-purple-100 active:scale-[0.98] transition-all touch-target"
+        className="flex items-center gap-2 p-3 rounded-sm bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] hover:bg-[#f8f7f7] active:scale-[0.98] transition-all min-h-[44px]"
       >
-        <Download size={18} className="text-purple-600 flex-shrink-0" />
-        <span className="text-xs font-bold text-purple-800">
+        <Download size={18} className="text-[#201d1d] flex-shrink-0" />
+        <span className="text-xs font-bold text-[#201d1d]">
           {t('share_image_template_title', language)}
         </span>
-        <ChevronRight size={14} className="text-purple-400 ml-auto flex-shrink-0" />
+        <ChevronRight size={14} className="text-stone-400 ml-auto flex-shrink-0" />
       </button>
     </div>
   );
@@ -887,12 +878,12 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
   // ─── Main render ───────────────────────────────────────
 
   return (
-    <div className="flex-1 flex flex-col min-h-0 bg-slate-50/30">
+    <div className="flex-1 flex flex-col min-h-0 bg-[#fdfcfc] text-[#201d1d] font-mono">
       {/* Back button header */}
       <div className="px-4 pt-3 pb-1 flex items-center justify-between">
         <button
           onClick={() => onNavigate('home')}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-slate-600 hover:text-slate-900 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 active:scale-95 transition-all touch-target"
+          className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-[#201d1d] bg-[#fdfcfc] border border-[rgba(15,0,0,0.12)] rounded-sm hover:bg-[#f8f7f7] active:scale-95 transition-all min-h-[44px]"
         >
           <ArrowLeft size={14} />
           {t('back', language)}
@@ -908,16 +899,16 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
         {renderQuickActions()}
 
         {/* Tab switcher */}
-        <div className="flex bg-slate-100 rounded-xl p-1 mb-4">
+        <div className="flex bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none p-1 mb-4">
           {(['overview', 'missions', 'rewards'] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={cn(
-                'flex-1 py-2 text-xs font-bold rounded-lg transition-all touch-target',
+                'flex-1 min-h-[44px] py-2 text-xs font-bold rounded-sm transition-all',
                 activeTab === tab
-                  ? 'bg-white text-slate-900 shadow-sm'
-                  : 'text-slate-500 hover:text-slate-700',
+                  ? 'bg-[#201d1d] text-[#fdfcfc]'
+                  : 'text-stone-500 hover:text-stone-800',
               )}
             >
               {tab === 'overview' && t('season_tab_overview', language)}
@@ -959,21 +950,21 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
                   return (
                     <div
                       key={cardId}
-                      className="rounded-xl border border-slate-200 bg-white p-2 text-center"
+                      className="rounded-none border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-2 text-center"
                     >
                       <div
                         className={cn(
-                          'w-10 h-10 mx-auto rounded-lg flex items-center justify-center mb-1',
+                          'w-10 h-10 mx-auto rounded-none border border-[rgba(15,0,0,0.12)] flex items-center justify-center mb-1',
                           card.rarity === 'legendary'
-                            ? 'bg-gradient-to-br from-amber-400 to-yellow-600'
-                            : 'bg-slate-200',
+                            ? 'bg-[#201d1d] text-[#fdfcfc]'
+                            : 'bg-stone-200 text-stone-900',
                         )}
                       >
-                        <span className="text-xs font-black text-white">
+                        <span className="text-xs font-black">
                           {getFormattedCardName(card, language).charAt(0)}
                         </span>
                       </div>
-                      <p className="text-[10px] font-bold text-slate-700 truncate">
+                      <p className="text-[10px] font-bold text-[#201d1d] truncate">
                         {getFormattedCardName(card, language)}
                       </p>
                     </div>
@@ -990,43 +981,43 @@ export const SeasonHubView: React.FC<SeasonHubViewProps> = ({
         {helpOpen && (
           <div className="fixed inset-0 z-[209] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
             <div
-              className="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden"
+              className="bg-[#fdfcfc] border border-[#201d1d] rounded-none w-full max-w-sm overflow-hidden font-mono text-[#201d1d]"
             >
-              <div className="flex items-center justify-between p-4 border-b border-slate-100">
+              <div className="flex items-center justify-between p-4 border-b border-[rgba(15,0,0,0.12)]">
                 <div className="flex items-center gap-2">
-                  <HelpCircle size={18} className="text-indigo-500" />
-                  <h3 className="text-sm font-black text-slate-800">{helpTitle}</h3>
+                  <HelpCircle size={18} className="text-[#201d1d]" />
+                  <h3 className="text-sm font-black text-[#201d1d]">{helpTitle}</h3>
                 </div>
                 <button
                   onClick={() => setHelpOpen(false)}
-                  className="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center hover:bg-slate-50 transition-colors"
+                  className="min-w-[44px] min-h-[44px] rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] flex items-center justify-center hover:bg-[#f8f7f7] transition-colors"
                   type="button"
                 >
-                  <X size={14} className="text-slate-500" />
+                  <X size={14} className="text-stone-700" />
                 </button>
               </div>
               <div className="p-5 min-h-[100px]">
-                <p className="text-sm text-slate-600 leading-relaxed whitespace-pre-line">{helpDesc}</p>
+                <p className="text-sm text-stone-700 leading-relaxed whitespace-pre-line">{helpDesc}</p>
               </div>
               <div className="flex items-center justify-between px-4 pb-4">
                 <button
                   onClick={() => setHelpStep((s) => Math.max(0, s - 1))}
                   disabled={helpStep === 0}
-                  className="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center disabled:opacity-30 hover:bg-slate-50 transition-colors"
+                  className="min-w-[44px] min-h-[44px] rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] flex items-center justify-center disabled:opacity-30 hover:bg-[#f8f7f7] transition-colors"
                   type="button"
                 >
-                  <ChevronRight size={16} className="text-slate-600 rotate-180" />
+                  <ChevronRight size={16} className="text-stone-700 rotate-180" />
                 </button>
-                <span className="text-[10px] font-bold text-slate-400">
+                <span className="text-[10px] font-bold text-stone-500">
                   {helpStep + 1} / {HELP_SLIDES.length}
                 </span>
                 <button
                   onClick={() => setHelpStep((s) => Math.min(HELP_SLIDES.length - 1, s + 1))}
                   disabled={helpStep === HELP_SLIDES.length - 1}
-                  className="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center disabled:opacity-30 hover:bg-slate-50 transition-colors"
+                  className="min-w-[44px] min-h-[44px] rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] flex items-center justify-center disabled:opacity-30 hover:bg-[#f8f7f7] transition-colors"
                   type="button"
                 >
-                  <ChevronRight size={16} className="text-slate-600" />
+                  <ChevronRight size={16} className="text-stone-700" />
                 </button>
               </div>
             </div>
