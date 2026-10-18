@@ -2,6 +2,13 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-18 14:20 KST] 소설/웹툰 뷰(`NovelView.tsx`) 고대 유물 룬 봉인 해제 팝업(`SecretArtifactDecryptionModal`) 제거
+- **작업명**: `웹툰/소설 화면 고대 유물 룬 봉인 해제 팝업 제거`
+- **주요 수행 내역**:
+  1. `src/views/NovelView.tsx`에서 스크롤 완독 시 노출되던 `SecretArtifactDecryptionModal` (`[고대 유물 룬 봉인 해제]` 팝업) 트리거 및 JSX 제거.
+  2. `src/components/media/SecretArtifactDecryptionModal.tsx`에서도 모달 렌더링을 비활성화 처리.
+  3. `npm run lint` (`tsc --noEmit`) 및 `npm run build` 검증 통과, 로컬 Git 커밋 및 구글 폼 보고 완료.
+
 ## [2026-10-18 14:17 KST] 소설/웹툰 뷰(`NovelView.tsx`) 고삐 제어 타이밍 팝업(`CrimsonManeTamingWidget`) 제거
 - **작업명**: `웹툰/소설 화면 고삐 제어 타이밍 QTE 팝업 제거`
 - **주요 수행 내역**:

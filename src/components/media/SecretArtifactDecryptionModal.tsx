@@ -62,7 +62,8 @@ export const SecretArtifactDecryptionModal: React.FC<SecretArtifactDecryptionMod
     }
   }, [isOpen]);
 
-  if (!isOpen) return null;
+  // 고대 유물 룬 봉인 해제 팝업 비활성화
+  if (true || !isOpen) return null;
 
   const handleDecrypt = () => {
     setIsDecrypting(true);
