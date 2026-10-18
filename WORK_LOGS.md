@@ -2,6 +2,12 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-18 14:17 KST] 소설/웹툰 뷰(`NovelView.tsx`) 고삐 제어 타이밍 팝업(`CrimsonManeTamingWidget`) 제거
+- **작업명**: `웹툰/소설 화면 고삐 제어 타이밍 QTE 팝업 제거`
+- **주요 수행 내역**:
+  1. `src/views/NovelView.tsx`에서 웹툰/소설 열람 시 노출되던 `CrimsonManeTamingWidget` (고삐 제어 타이밍 팝업) 렌더링 및 import 제거.
+  2. `npm run lint` (`tsc --noEmit`) 및 `npm run build` 무결성 검증 통과, 로컬 Git 커밋 및 구글 폼 보고 완료.
+
 ## [2026-10-18 14:00 KST] [Milestone 1, 2 & 4 완료] 40부작 웹툰 전편 840개 씬 전면 리마스터링, 소설 시나리오 동기화 및 로컬 최적화 완료
 - **작업명**: `40부작 웹툰 840개 씬 전면 리마스터링 및 최신 소설 동기화 완료`
 - **담당자**: Worker 1, Worker 2, Worker 3 (teamwork_preview_worker_m4) (implementer, qa, specialist)
