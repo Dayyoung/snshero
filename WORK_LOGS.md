@@ -2,6 +2,26 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-18 15:35 KST] [M2 영화관 40화 MP4 전편 생성 및 플레이어 연동 완료] 40부작 독립형 MP4 비디오 배치 생성 및 E2E 테스트 100% 통과
+- **작업명**: `[M2] 40-Episode Standalone MP4 Video Generation & Player Hookup`
+- **담당자**: worker_movie_m2 (implementer, qa, specialist)
+- **주요 수행 내역**:
+  1. `scripts/generate_all_40_episode_videos.py` 프로덕션 배치 비디오 생성 엔진 구현:
+     - 40개 전 에피소드 2,049컷씬(`scene_00.webp` 타이틀 카드 ~ `scene_XX.webp`)을 순차 시퀀싱하고 Pillow 기반 터미널 플랫 다크 글래스 대화 상자, 영문 대사/나레이션, `public/seat/*.png` 발화 캐릭터 초상화 골드 프레임/`[SPEAKER]` 배지, 코믹 전투 SFX 오노마토페 배지(`⚔️ BOOM! / CLANG! / SLASH!`) 오버레이 렌더링.
+     - NumPy 기반 44.1kHz 스테레오 고음질 절차적 테마 BGM(6대 테마: `arctic-blizzard`, `battle-march`, `arcane-mystery`, `triumph-fanfare`, `dark-ominous`, `sorrow-lament`) 음원 합성 및 페이드 인/아웃(1.5s/2.5s) 적용.
+     - FFmpeg concat demuxer 기반 브라우저 표준 H.264/AAC MP4 인코딩(`-c:v libx264 -preset veryfast -crf 25 -r 25 -pix_fmt yuv420p -c:a aac -b:a 128k -ar 44100 -shortest -movflags +faststart`).
+     - 4개 프로세스 병렬 처리(ProcessPoolExecutor)로 전체 40화 MP4를 2.5분 내 초고속 일괄 생성 완료.
+  2. 전 40화 MP4 비디오 파일(`public/videos/episodes/episode_01.mp4` ~ `episode_40.mp4`) 생성 및 무결성 검증:
+     - 40개 파일 전수 존재 확인 (총 용량 210MB, 화당 4.1MB~5.4MB로 25MB 예산 완벽 준수).
+     - `ffprobe` 검증: 컨테이너 MP4/MOV 100%, 비디오 H.264 (25 fps, 800x450) 100%, 오디오 AAC (44.1 kHz 스테레오) 100%, 전 파일 지속시간 정상(146s~176s), Faststart(`moov` 원자 `mdat` 선행 배치) 100% 통과.
+  3. `CinematicMoviePlayer.tsx` & `MovieView.tsx` 플레이어 연동 및 다운로드 검증:
+     - HTML5 `<video>` 네이티브 재생 요소, `/videos/episodes/episode_XX.mp4` 직접 스트리밍, `SNSHero_Episode_XX.mp4` 서식화된 다운로드 버튼 정상 동작 확인.
+  4. 테스트 및 빌드 검증:
+     - `python3 tests/e2e_movie_theater/run_movie_e2e_tests.py --milestone M2`: 12 / 12 PASS (100.0%).
+     - `python3 tests/e2e_movie_theater/run_movie_e2e_tests.py`: 59 / 59 PASS (100.0%, Tiers 1–4 전수 통과).
+     - `npx tsc --noEmit` 0 에러 및 `npm run build` 프로덕션 번들링 클린 통과.
+     - 연동 구글 폼 보고서 제출 완료 (`submit_report.py`).
+
 ## [2026-10-18 15:25 KST] [M1 영화관 엔진] 2049컷씬 전편 연동·연속BGM·영문TTS·화자강조·SFX·자막CC·MP4전환 구현 완료
 - **작업명**: `[M1 영화관 엔진] 2049컷씬 연동·연속BGM·영문TTS·화자강조·SFX·자막CC·MP4전환 구현`
 - **주요 수행 내역**:
