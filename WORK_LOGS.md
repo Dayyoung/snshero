@@ -2,13 +2,13 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
-## [2026-10-19 14:58 KST] [실사 시네마(CinemaView) 제1화 영문 전용 시작 타이틀 + 72장 연속 재생 + 무자막 내레이션 전용 영상(episode_01.mp4) 완결] 자막·텍스트 오버레이 완전 제거 및 1~72번 연속 프레임 + 내레이션 단독 구성 완료
+## [2026-10-19 15:10 KST] [실사 시네마(CinemaView) 제1화 실제 카드 캐릭터 시트 100% 반영 72장 재생성 + 영문 시작 타이틀 + 무자막 영어(EN) TTS 내레이션 전용 영상(episode_01.mp4) 완결]
 - **작업 개요**:
-  1. **시작 타이틀만 영어로 표시 (`EPISODE 01 : TWO VOWS BENEATH THE BLIZZARD`)**:
-     - 오프닝 타이틀 구간(첫 4초)에만 영문 타이틀(`SNSHERO ORIGINAL LIVE-ACTION CINEMA / EPISODE 01 / TWO VOWS BENEATH THE BLIZZARD / ACT I : THE FROZEN HEARTH`)을 표시하고 한글 표기를 제거.
-  2. **72장 연속 프레임 순차 재생 + 무자막(Zero Subtitles) + 성우 내레이션 전용 구성**:
-     - `scripts/build_ep01_acting_cinema.py` 및 `src/components/movie/LiveActionCinemaPlayer.tsx`에서 본편 화면 위를 가리던 모든 자막 박스와 상·하단 텍스트 HUD를 완전히 제거.
-     - 8개 액트 × 9프레임 = 총 **72장의 연속 동작 이미지(`seq_01_frame_01.webp` ~ `seq_08_frame_09.webp`)**를 1번부터 72번까지 순차적으로 물 흐르듯 이어서 보여주며, 오디오로는 성우 내레이션과 시네마 사운드트랙만 재생되도록 `public/videos/cinema/episode_01.mp4` (`17 MB`, 24fps) 생성 및 빌드 완료.
+  1. **실제 카드 캐릭터(`public/seat/*.png`) 레퍼런스 시트(`ep01_card_character_prop_sheet.png`) 직접 전달 기반 72프레임 전수 재생성**:
+     - `Aleksandar.png`(푸른 사파이어 황금 왕관, 황금 판금 갑옷, 보랏빛·푸른빛 룬 광선 대검), `Balian.png`(하얀 날개 달린 은빛 투구, 황금 십자가 은빛 방패, 붉은 망토), `Hercul.png`(사자 갈기 갈색 장발, 눈썹 표식, 황금 화염 곡도), `Elwin.png`(금발, 은·금 발키리 갑옷), `Lucian.png`(초록 머리카락, 뾰족한 엘프 귀, 초록 마법 화살 활), `Death_Knight_Artus.png`(청록 영혼 화염 대검, 해골 뿔 투구), `Aila.png`(보랏빛 장발 이셀라), `Kadan.png`(금장 은빛 룬 쌍단검)를 직접 `ImagePaths`에 전달하여 8개 시퀀스(`act_seq_01.png` ~ `act_seq_08.png`, 총 72장 `seq_01_frame_01.webp` ~ `seq_08_frame_09.webp`) 전수 재생성 완료.
+  2. **영문 전용 시작 타이틀 + 무자막(Zero Subtitles) + 기본 영어(EN) TTS 내레이션 전용 구성**:
+     - 오프닝 타이틀만 영어로 표시하고 본편 72장 구간에서는 모든 자막/텍스트 박스를 제거.
+     - `scripts/build_ep01_acting_cinema.py` 및 `src/components/movie/LiveActionCinemaPlayer.tsx` 모두 기본 TTS 내레이션을 영어(`lang="en"`, Daniel 성우)로 설정하여 `public/videos/cinema/episode_01.mp4` 렌더링 및 프로덕션 빌드 완료.
 - **검증 결과**:
   - `npx tsc --noEmit` (0 errors) 및 `npm run build` (Exit code 0) 프로덕션 빌드 통과.
   - 연동 구글 폼 완료 보고서 제출 완료 (`submit_report.py`).

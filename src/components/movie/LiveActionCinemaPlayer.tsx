@@ -283,15 +283,9 @@ export const LiveActionCinemaPlayer: React.FC<LiveActionCinemaPlayerProps> = ({
 
     if (isVoiceEnabled && !isMuted) {
       const firstDialogue = currentScene.dialogues && currentScene.dialogues.length > 0 ? currentScene.dialogues[0] : null;
-      if (language === 'en') {
-        const spk = firstDialogue?.speakerEn ? `${firstDialogue.speakerEn}. ` : '';
-        const dlg = firstDialogue?.textEn ? `${firstDialogue.textEn}. ` : '';
-        movieAudio.speakNarration(`${spk}${dlg}${currentScene.narrationEn}`, 'en');
-      } else {
-        const spk = firstDialogue?.speakerKo ? `${firstDialogue.speakerKo}. ` : '';
-        const dlg = firstDialogue?.textKo ? `${firstDialogue.textKo}. ` : '';
-        movieAudio.speakNarration(`${spk}${dlg}${currentScene.narrationKo}`, 'ko');
-      }
+      const spk = firstDialogue?.speakerEn ? `${firstDialogue.speakerEn}. ` : '';
+      const dlg = firstDialogue?.textEn ? `${firstDialogue.textEn}. ` : '';
+      movieAudio.speakNarration(`${spk}${dlg}${currentScene.narrationEn}`, 'en');
     }
   }, [currentSceneIdx, isPlaying, isFinished, episodeNumber, language, currentScene, isVoiceEnabled, isMuted]);
 

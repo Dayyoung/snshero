@@ -323,47 +323,47 @@ def main():
 
     print(f"Prepared all {len(all_72_frames)} sequential frames (seq_01_frame_01 .. seq_08_frame_09)")
 
-    # 2. Define the 8 sequences (each has 9 consecutive frames = 72 frames total) with Narration ONLY
+    # 2. Define the 8 sequences (each has 9 consecutive frames = 72 frames total) with English Narration ONLY
     sequence_narrations = [
         {
             "seq": 1,
             "is_tavern": True,
-            "narration_ko": "라이트헤븐 남부 변방, 매서운 눈보라가 몰아치던 밤. 피투성이가 된 노전사 헤르쿨이 통나무 선술집 문을 박차고 들어선다. 알렉산다르와 발리안은 즉시 쌍검과 은빛 창을 뽑아 들고 경계하지만, 헤르쿨은 빈 두 손을 들어 올리며 형제들을 진정시킨다.",
+            "narration_en": "On a night of howling blizzard at the Lighthaven southern frontier, the battle-worn warrior Hercul bursts through the wooden tavern door. King Aleksandar in his golden crown and Paladin Balian in his winged silver helm instantly draw their rune broadsword and golden-cross shield, until Hercul raises his empty scarred palms in peace.",
         },
         {
             "seq": 2,
             "is_tavern": True,
-            "narration_ko": "헤르쿨이 손끝으로 황금빛 수호 결계를 펼쳐 선술집의 소리를 바깥 폭풍으로부터 차단한다. 그리고 품 속에서 처참히 갈라진 황금 성기사 흉갑 인장을 꺼내어 참나무 식탁 위에 내려놓으며 왕국의 비극을 전한다.",
+            "narration_en": "Hercul casts a golden runic barrier across the log tavern, sealing their voices from the raging storm outside. Reaching inside his leather armor, he places a cracked, blood-stained golden Holy Knight insignia upon the rough oak table.",
         },
         {
             "seq": 3,
             "is_tavern": True,
-            "narration_ko": "헤르쿨이 기름 먹인 사슴 가죽을 펼치자 푸른 고대 룬 문양이 새겨진 두 자루의 은빛 단검이 빛을 발한다. 알렉산다르와 발리안은 단검을 가슴에 품고, 태어날 아이들의 이름을 각각 카단과 이그니스라 부르기로 맹세한다.",
+            "narration_en": "Unwrapping oiled doe-skin upon the oak table, Hercul reveals twin masterwork silver daggers glowing with ancient blue runes and golden hilts. Holding the blades over their hearts, Aleksandar vows to name his unborn son Kadan, and Balian vows to name his son Ignis.",
         },
         {
             "seq": 4,
             "is_tavern": True,
-            "narration_ko": "두 자루의 은빛 단검 위에서 알렉산다르, 발리안, 헤르쿨 세 기사는 눈 녹인 물을 채운 철제 잔을 높이 들어 힘차게 부딪친다. 세 전사는 잔을 단숨에 들이켜며 태어날 아이들의 운명과 진실을 지킬 피의 서약을 맺는다.",
+            "narration_en": "Above the twin glowing silver daggers, Aleksandar, Balian, and Hercul raise three iron goblets filled with melted snow and strike them together. They drink in solemn unison, sealing an eternal blood oath to protect the truth and the fate of their children.",
         },
         {
             "seq": 5,
             "is_tavern": False,
-            "narration_ko": "사흘 뒤 안개 낀 설원. 만삭의 엘윈은 부상당한 귀족 청년 루시안에게 따뜻한 보리 수프를 건네고 상처를 감싸준다. 그러나 엘윈에게 뒤틀린 집착을 품은 루시안은 그날 밤 거짓 반역 영장에 붉은 인장을 찍고 횃불 군단을 이끌어 마을을 기습한다.",
+            "narration_en": "Three days later in the mist-shrouded snowfields, blonde shieldmaiden Elwin offers warm barley soup and bandages to the wounded elf archer Lucian. Yet consumed by dark obsession, Lucian kneels before Death Knight Artus that night, seals a forged treason warrant, and fires a glowing green magic arrow to ignite the village.",
         },
         {
             "seq": 6,
             "is_tavern": False,
-            "narration_ko": "화염에 휩싸인 마을에서 가족들을 대피시킨 알렉산다르는 홀로 협곡 출렁다리 위를 지킨다. 밀려드는 제국군을 쌍검으로 막아낸 알렉산다르는 우레 같은 포효와 함께 룬 대검을 내려쳐 다리의 굵은 밧줄을 단칼에 베어낸다.",
+            "narration_en": "As the frontier village burns, King Aleksandar stands alone upon the narrow suspension bridge in his golden crown and royal blue cape. Deflecting enemy spears with his glowing purple-blue rune broadsword, he unleashes a thunderous slash that severs the bridge cables and plunges the invaders into the abyss.",
         },
         {
             "seq": 7,
             "is_tavern": False,
-            "narration_ko": "수레가 전복된 눈길에서 이셀라는 얼어붙은 진흙을 움켜쥐어 루시안의 얼굴에 던지며 저항한다. 아내의 외침을 들은 발리안은 창대를 부러뜨린 뒤, 이셀라에게 반드시 살아남으라 외치며 적 기병들을 끌어안고 절벽 아래로 몸을 던진다.",
+            "narration_en": "Beside the overturned escape wagon, violet-haired Ysela hurls frozen slush into Lucian's face in fierce defiance. Hearing her cry from the cliff edge, Paladin Balian charges forward with his golden-cross silver shield, tackling the enemy knights over the icy precipice as he shouts for Ysela to live.",
         },
         {
             "seq": 8,
             "is_tavern": False,
-            "narration_ko": "남편의 부러진 검집과 은빛 룬 단검을 품에 안고 탈출한 엘윈은 새벽 설원에 무릎을 꿇는다. 언 땅을 맨손으로 파헤쳐 황금빛 밀 씨앗을 심은 그녀는, 아이에게 거짓 앞에 고개 숙이지 말라는 맹세를 남기며 여명이 밝아오는 산맥으로 걸어 나간다.",
+            "narration_en": "Escaping into the dawn pine forest clutching Aleksandar's golden crown and the silver rune dagger, Elwin kneels in the deep snow. With bare hands she plants golden wheat seeds into the frozen earth, whispering a solemn promise that her child will never bow before a lie.",
         },
     ]
 
@@ -390,8 +390,8 @@ def main():
         total_time = title_dur
         for idx, seq_item in enumerate(sequence_narrations):
             n_wav = tmp_dir / f"seq_{idx + 1:02d}.wav"
-            dur_tts = generate_narration_wav(seq_item["narration_ko"], n_wav, lang="ko")
-            # Ensure all 9 frames in this sequence have comfortable viewing time (~1.2s-1.6s per frame)
+            dur_tts = generate_narration_wav(seq_item["narration_en"], n_wav, lang="en")
+            # Ensure all 9 frames in this sequence have comfortable viewing time
             seq_dur = max(10.8, dur_tts + 0.8)
             seq_item["wav"] = n_wav if n_wav.exists() else None
             seq_item["start_sec"] = total_time
