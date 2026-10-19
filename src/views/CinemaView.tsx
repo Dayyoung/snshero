@@ -174,7 +174,7 @@ export const CinemaView: React.FC<CinemaViewProps> = ({
 
   const mp4Url =
     currentEpisodeNum === 1
-      ? '/videos/cinema/episode_01.mp4?v=acting72'
+      ? '/videos/cinema/episode_01.mp4?v=clean72'
       : `/videos/episodes/episode_${String(currentEpisodeNum).padStart(2, '0')}.mp4`;
 
   const posterUrl =

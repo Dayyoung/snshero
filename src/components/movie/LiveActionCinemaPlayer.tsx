@@ -589,21 +589,32 @@ export const LiveActionCinemaPlayer: React.FC<LiveActionCinemaPlayerProps> = ({
         />
 
         {/* Top 2.39:1 CinemaScope Matte Bar */}
-        <div className="pointer-events-none absolute top-0 inset-x-0 h-6 sm:h-8 bg-[#050507] border-b border-amber-500/25 flex items-center justify-between px-3 text-[10px] text-amber-200/80 z-10">
-          <span>ARRI ALEXA 65 · PANAVISION 70MM ANAMORPHIC</span>
-          <span>
-            24FPS · {titleKo} ({titleEn})
-          </span>
-        </div>
+        <div className="pointer-events-none absolute top-0 inset-x-0 h-6 sm:h-8 bg-black z-10" />
 
-        {/* ── Theatrical Cinema Subtitle Overlay (Bottom Center above Letterbox) ── */}
-        {currentSceneIdx > 0 && (
+        {/* ── English-Only Opening Title Overlay (Shown ONLY on Scene 0) ── */}
+        {currentSceneIdx === 0 && (
+          <div className="pointer-events-none absolute inset-0 z-20 bg-black/55 flex flex-col items-center justify-center px-4 text-center">
+            <div className="border-y border-amber-400/50 py-4 px-6 max-w-xl">
+              <div className="text-[10px] sm:text-xs tracking-[0.25em] text-amber-300/90 font-bold mb-1.5">
+                SNSHERO ORIGINAL LIVE-ACTION CINEMA
+              </div>
+              <div className="text-xl sm:text-3xl font-bold text-white tracking-widest mb-1.5">
+                EPISODE {String(episodeNumber).padStart(2, '0')}
+              </div>
+              <div className="text-sm sm:text-lg font-bold text-amber-200 tracking-wider uppercase">
+                {titleEn || 'TWO VOWS BENEATH THE BLIZZARD'}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── Theatrical Cinema Subtitle Overlay (Disabled for Episode 1 per user request: Narration ONLY, Zero Subtitles) ── */}
+        {episodeNumber !== 1 && currentSceneIdx > 0 && (
           <div
             onClick={(e) => e.stopPropagation()}
             className="absolute inset-x-3 sm:inset-x-10 bottom-8 sm:bottom-10 z-20 flex flex-col items-center pointer-events-none"
           >
             <div className="w-full max-w-3xl bg-black/80 border border-amber-500/35 px-3.5 py-2.5 sm:px-5 sm:py-3 rounded-none text-center">
-              {/* Speaker Tag & Voice Equalizer */}
               {activeSpeaker && (
                 <div className="flex items-center justify-center gap-2 mb-1">
                   {speakerPortrait && (
@@ -616,24 +627,15 @@ export const LiveActionCinemaPlayer: React.FC<LiveActionCinemaPlayerProps> = ({
                   <span className="text-[11px] sm:text-xs font-bold text-amber-400 tracking-wider uppercase">
                     [ {activeSpeaker} ]
                   </span>
-                  {isPlaying && isVoiceEnabled && !isMuted && (
-                    <span className="inline-flex items-end gap-0.5 h-3 ml-1" aria-hidden="true">
-                      <span className="w-0.5 h-2 bg-amber-400 animate-pulse" />
-                      <span className="w-0.5 h-3 bg-amber-400 animate-pulse" />
-                      <span className="w-0.5 h-1.5 bg-amber-400 animate-pulse" />
-                    </span>
-                  )}
                 </div>
               )}
 
-              {/* Primary Subtitle Line (Dialogue or Narration) */}
               {(subtitleLang === 'bilingual' || subtitleLang === 'ko') && (
                 <p className="text-xs sm:text-sm md:text-base font-bold text-white leading-snug drop-shadow">
                   {activeDialogue?.textKo ? `"${activeDialogue.textKo}"` : currentScene?.narrationKo}
                 </p>
               )}
 
-              {/* Secondary English Subtitle Line */}
               {(subtitleLang === 'bilingual' || subtitleLang === 'en') && (
                 <p className="text-[10px] sm:text-xs text-sky-200/90 mt-1 leading-snug line-clamp-2">
                   {activeDialogue?.textEn ? `"${activeDialogue.textEn}"` : currentScene?.narrationEn}
@@ -644,10 +646,7 @@ export const LiveActionCinemaPlayer: React.FC<LiveActionCinemaPlayerProps> = ({
         )}
 
         {/* Bottom 2.39:1 CinemaScope Matte Bar */}
-        <div className="pointer-events-none absolute bottom-0 inset-x-0 h-6 sm:h-7 bg-[#050507] border-t border-amber-500/25 flex items-center justify-between px-3 text-[10px] text-stone-400 z-10">
-          <span>2.39:1 CINEMASCOPE · KODAK VISION3 500T</span>
-          <span>CHARACTERS: {(currentScene?.characters || []).join(', ') || 'ENSEMBLE'}</span>
-        </div>
+        <div className="pointer-events-none absolute bottom-0 inset-x-0 h-6 sm:h-7 bg-black z-10" />
 
         {/* Episode Complete End-Card Overlay */}
         {isFinished && (
