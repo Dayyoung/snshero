@@ -15282,3 +15282,12 @@
   1. 유튜브 채널(`UC_xayYwKaB5TbH3eZXeREpA`)에 업로드된 40개 애니메이션 동영상(`E1`~`E40`) 전수의 본문(Description)을 영문 안내문(`This video is the game story of SNSHero.\n\nVisit https://snshero.com for more details!`)으로 일괄 수정 완료 ([update_all_40_descriptions_yt.py](file:///Users/dayyoung/project/snshero/scripts/update_all_40_descriptions_yt.py)).
 - **검증 결과**: YouTube Data API v3(`videos?part=snippet`) 조회 결과 40/40개 전수 영문 본문 일치 확인.
 - **구글 폼 보고**: `submit_report.py` 제출 완료.
+
+
+### [2026-10-19] 상점/홈 전체 소설(Part 1) 한글·영문 PDF e-Book 최신 40부작 웹소설 원문 전면 재생성 완료
+- **작업 내역**:
+  1. 최신 개편된 한글 웹소설 40화 전편(`public/book/episode_01.md` ~ `episode_40.md`)을 기반으로 `public/snshero_part1_ko.pdf` (총 **161 Pages**, 9.15MB) 전면 재생성 완료 ([generate_novel_ko_pdf.py](file:///Users/dayyoung/project/snshero/scripts/generate_novel_ko_pdf.py)).
+  2. 최신 개편된 영문 웹소설 40화 전편(`public/book/image_narrations/english_txt/SNSHero_Novel_Episode_01_..._EN.txt` ~ `Episode_40_..._EN.txt`)을 기반으로 영문 e-Book 생성 스크립트([generate_novel_en_pdf.py](file:///Users/dayyoung/project/snshero/scripts/generate_novel_en_pdf.py))를 작성하고 `public/snshero_part1.pdf` (총 **147 Pages**, 1.33MB) 전면 재생성 완료.
+  3. [ShopView.tsx](file:///Users/dayyoung/project/snshero/src/views/ShopView.tsx) 및 [HomeView.tsx](file:///Users/dayyoung/project/snshero/src/views/HomeView.tsx)에서 페이지 수 표기(`PDF e-Book (161 Pages)` / `PDF e-Book (147 Pages)`) 업데이트 및 브라우저 캐시 방지 쿼리(`?v=20261019`) 적용 완료.
+- **검증 결과**: 한글/영문 PDF 40화 목차 및 본문 생성 확인 완료, `npx tsc --noEmit` 0 에러 통과.
+- **구글 폼 보고**: `submit_report.py` 제출 완료.

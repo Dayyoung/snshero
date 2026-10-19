@@ -4612,7 +4612,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       {language === 'ko' ? '전체 소설 (Part 1)' : 'Full Novel (Part 1)'}
                     </h3>
                     <p className="text-xs text-emerald-700 font-mono font-bold">
-                      {language === 'ko' ? 'PDF e-Book (143 Pages)' : 'PDF e-Book (143 Pages)'}
+                      {language === 'ko' ? 'PDF e-Book (161 Pages)' : 'PDF e-Book (147 Pages)'}
                     </p>
                   </div>
                 </div>
@@ -4635,7 +4635,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   onClick={() => {
                     playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
                     const pdfFileName = language === 'ko' ? 'snshero_part1_ko.pdf' : 'snshero_part1.pdf';
-                    const pdfUrl = `/${pdfFileName}`;
+                    const pdfUrl = `/${pdfFileName}?v=20261019`;
                     const link = document.createElement('a');
                     link.href = pdfUrl;
                     link.download = pdfFileName;
