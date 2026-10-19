@@ -336,7 +336,7 @@ export const HomeCategoryHub: React.FC<HomeCategoryHubProps> = ({
  onClick={() => {
  triggerHaptic('light');
  playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
- onNavigate('anime');
+ onNavigate('movie');
  }}
  className="min-h-[48px] p-2.5 bg-[#fdfcfc] hover:bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] text-left rounded-sm cursor-pointer transition-colors flex items-center justify-between group"
  >
@@ -346,7 +346,7 @@ export const HomeCategoryHub: React.FC<HomeCategoryHubProps> = ({
  <div className="text-xs font-bold text-[#201d1d] group-hover:underline">
  {language === 'ko' ? '애니메이션' : 'Animation'}
  </div>
- <div className="text-[11px] text-[#646262]">숏폼 애니</div>
+ <div className="text-[11px] text-[#646262]">40부작 공식 애니</div>
  </div>
  </div>
  <ArrowRight size={12} className="text-[#646262]" />
@@ -357,7 +357,7 @@ export const HomeCategoryHub: React.FC<HomeCategoryHubProps> = ({
  onClick={() => {
  triggerHaptic('light');
  playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
- onNavigate('movie');
+ onNavigate('cinema');
  }}
  className="min-h-[48px] p-2.5 bg-[#fdfcfc] hover:bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] text-left rounded-sm cursor-pointer transition-colors flex items-center justify-between group"
  >
@@ -365,9 +365,9 @@ export const HomeCategoryHub: React.FC<HomeCategoryHubProps> = ({
  <Film size={16} className="text-[#201d1d] shrink-0" />
  <div>
  <div className="text-xs font-bold text-[#201d1d] group-hover:underline">
- {language === 'ko' ? '시네마틱 영화' : 'Movie'}
+ {language === 'ko' ? '실사 시네마' : 'Live Cinema'}
  </div>
- <div className="text-[11px] text-[#646262]">극장판 시네마틱</div>
+ <div className="text-[11px] text-[#646262]">70mm 실사 상영관</div>
  </div>
  </div>
  <ArrowRight size={12} className="text-[#646262]" />

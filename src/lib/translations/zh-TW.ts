@@ -2885,7 +2885,7 @@ export const zhTW = {
     novel_card_modal_open_wiki_hint: '此功能可在完整卡牌百科頁面中使用。',
     home_shortcut_novel: '網路小說',
     home_shortcut_webtoon: '網漫',
-    home_shortcut_movie: '電影',
+    home_shortcut_movie: '動畫',
     home_shortcut_cinema: '真人影院',
     cinema_title: 'SNSHero 70mm 真人電影院',
     cinema_subtitle: '採用暗黑奇幻真人實拍劇照與70mm變形寬銀幕調色打造的電影院。',

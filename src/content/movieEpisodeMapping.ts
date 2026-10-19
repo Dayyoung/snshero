@@ -662,3 +662,18 @@ export function getCharacterPortraitUrl(cardId?: number, speakerEn?: string, spe
   return '/seat/Kadan.png';
 }
 
+/**
+ * Returns the standardized animation MP4 filename (`SNSHero.com_E{epNum}_{titleKo}.mp4`)
+ */
+export function getAnimationVideoFilename(epNum: number): string {
+  const meta = MOVIE_EPISODES[epNum];
+  const titleKo = meta?.titleKo || `제${epNum}화`;
+  return `SNSHero.com_E${epNum}_${titleKo}.mp4`;
+}
+
+/**
+ * Returns the standardized animation MP4 streaming/download path (`/video/animation/SNSHero.com_E{epNum}_{titleKo}.mp4`)
+ */
+export function getAnimationVideoUrl(epNum: number): string {
+  return `/video/animation/${getAnimationVideoFilename(epNum)}`;
+}

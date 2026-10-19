@@ -2885,7 +2885,7 @@ export const vi = {
     novel_card_modal_open_wiki_hint: 'Hành động này khả dụng trong màn hình Wiki Thẻ bài đầy đủ.',
     home_shortcut_novel: 'Tiểu thuyết',
     home_shortcut_webtoon: 'Webtoon',
-    home_shortcut_movie: 'Phim',
+    home_shortcut_movie: 'Hoạt hình',
     home_shortcut_cinema: 'Rạp Cinema',
     cinema_title: 'Rạp Phim Live-Action 70mm SNSHero',
     cinema_subtitle: 'Rạp phim giả tưởng đen tối người đóng chân thực với chỉnh màu anamorphic 70mm.',

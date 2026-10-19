@@ -2880,7 +2880,7 @@ export const ru = {
     novel_card_modal_open_wiki_hint: 'Это действие доступно на полном экране Вики карт.',
     home_shortcut_novel: 'Веб-роман',
     home_shortcut_webtoon: 'Вебтун',
-    home_shortcut_movie: 'Фильм',
+    home_shortcut_movie: 'Анимация',
     home_shortcut_cinema: 'Синема',
     cinema_title: '70мм Кинотеатр Live-Action SNSHero',
     cinema_subtitle: 'Фотореалистичный кинотеатр темного фэнтези с 70-мм анаморфотной цветокоррекцией.',

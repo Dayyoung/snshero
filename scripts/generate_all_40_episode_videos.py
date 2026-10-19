@@ -37,7 +37,7 @@ MANIFEST_PATH = PROJECT_ROOT / 'src' / 'content' / 'webtoonEpisodeManifest.json'
 MAPPING_PATH = PROJECT_ROOT / 'src' / 'content' / 'movieEpisodeMapping.ts'
 CARD_DB_PATH = PROJECT_ROOT / 'src' / 'cardDatabase.ts'
 SEAT_DIR = PROJECT_ROOT / 'public' / 'seat'
-OUTPUT_DIR = PROJECT_ROOT / 'public' / 'videos' / 'episodes'
+OUTPUT_DIR = PROJECT_ROOT / 'public' / 'video' / 'animation'
 
 FFMPEG_BIN = shutil.which('ffmpeg') or '/opt/homebrew/bin/ffmpeg'
 FFPROBE_BIN = shutil.which('ffprobe') or '/opt/homebrew/bin/ffprobe'
@@ -903,7 +903,8 @@ def main():
                 if not ep_data:
                     continue
                 theme = themes.get(ep_num, 'arctic-blizzard')
-                out_path = OUTPUT_DIR / f'episode_{ep_num:02d}.mp4'
+                title_ko = ep_data.get('titleKo', f'제{ep_num}화').strip()
+                out_path = OUTPUT_DIR / f'SNSHero.com_E{ep_num}_{title_ko}.mp4'
                 future = executor.submit(
                     generate_single_episode,
                     ep_num, ep_data, theme, card_map, str(out_path), temp_base

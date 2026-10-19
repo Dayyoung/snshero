@@ -276,8 +276,12 @@ def run_tier1_tests() -> List[TestResult]:
     # ─────────────────────────────────────────────────────────────────────────
     # Feature 2: 40-Episode Standalone MP4 Video Assets (via ffprobe)
     # ─────────────────────────────────────────────────────────────────────────
-    video_dir = REPO_ROOT / "public" / "videos" / "episodes"
-    expected_mp4s = [video_dir / f"episode_{i:02d}.mp4" for i in range(1, 41)]
+    video_dir = REPO_ROOT / "public" / "video" / "animation"
+    episodes_meta_map = load_movie_episodes_meta()
+    expected_mp4s = [
+        video_dir / f"SNSHero.com_E{i}_{episodes_meta_map.get(i, {}).get('titleKo', f'제{i}화')}.mp4"
+        for i in range(1, 41)
+    ]
 
     t0 = time.perf_counter()
     missing_mp4s = [p.name for p in expected_mp4s if not p.is_file()]
@@ -289,7 +293,7 @@ def run_tier1_tests() -> List[TestResult]:
                 feature="Feature 2: MP4 Video Assets",
                 name="All 40 MP4 Video Files Exist on Disk",
                 status="PASS",
-                message="All 40 episode MP4 files exist in public/videos/episodes/",
+                message="All 40 episode MP4 files exist in public/video/animation/",
                 duration_ms=(time.perf_counter() - t0) * 1000,
             )
         )

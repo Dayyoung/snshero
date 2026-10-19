@@ -2880,7 +2880,7 @@ export const th = {
     novel_card_modal_open_wiki_hint: 'การดำเนินการนี้สามารถใช้งานได้ในหน้าวิกิการ์ดแบบเต็ม',
     home_shortcut_novel: 'นิยายเว็บ',
     home_shortcut_webtoon: 'เว็บตูน',
-    home_shortcut_movie: 'ภาพยนตร์',
+    home_shortcut_movie: 'แอนิเมชัน',
     home_shortcut_cinema: 'ซีนีม่า',
     cinema_title: 'โรงภาพยนตร์คนแสดง 70mm SNSHero',
     cinema_subtitle: 'ภาพยนตร์ดาร์กแฟนตาซีคนแสดงจริงพร้อมการเกรดสีอนามอร์ฟิก 70mm',

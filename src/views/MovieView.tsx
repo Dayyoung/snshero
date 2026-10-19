@@ -29,7 +29,7 @@ import { cn } from '../lib/utils';
 import { triggerHaptic } from '../lib/haptic';
 import { PageHeader } from '../components/PageHeader';
 import { getSeasonItem, setSeasonItem } from '../lib/webtoonProgress';
-import { MOVIE_EPISODES } from '../content/movieEpisodeMapping';
+import { MOVIE_EPISODES, getAnimationVideoFilename, getAnimationVideoUrl } from '../content/movieEpisodeMapping';
 import { CinematicMoviePlayer } from '../components/movie/CinematicMoviePlayer';
 import { movieAudio } from '../lib/MovieAudioSynthesizer';
 
@@ -97,7 +97,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
   const [showDrawer, setShowDrawer] = useState<boolean>(false);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [filterMode, setFilterMode] = useState<'all' | 'released' | 'upcoming'>('all');
-  const [playerMode, setPlayerMode] = useState<'cinematic' | 'mp4' | 'youtube'>('cinematic');
+  const [playerMode, setPlayerMode] = useState<'cinematic' | 'mp4' | 'youtube'>('mp4');
 
   const playerContainerRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<any>(null);
@@ -419,8 +419,8 @@ export const MovieView: React.FC<MovieViewProps> = ({
       showCustomAlert(
         language === 'ko' ? '시청 보상 수령' : 'Reward Claimed',
         language === 'ko'
-          ? `극장판 제 ${epNum}화 시청 완료 보상으로 100 SNS가 지급되었습니다!`
-          : `Received 100 SNS for watching Movie Episode ${epNum}!`,
+          ? `애니메이션 제 ${epNum}화 시청 완료 보상으로 100 SNS가 지급되었습니다!`
+          : `Received 100 SNS for watching Animation Episode ${epNum}!`,
         isAutoLoop ? 2 : 3
       );
     }
@@ -458,7 +458,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
       } catch {}
       setViralSharedToday(true);
       if (updateSns) {
-        updateSns(50, language === 'ko' ? '극장판 영화 & 도전장 링크 공유 보상' : 'Movie & Challenge Link Share Reward');
+        updateSns(50, language === 'ko' ? '공식 애니메이션 & 도전장 링크 공유 보상' : 'Animation & Challenge Link Share Reward');
       } else {
         try {
           const cur = parseInt(localStorage.getItem('hero_sns') || '500', 10);
@@ -467,16 +467,16 @@ export const MovieView: React.FC<MovieViewProps> = ({
         } catch {}
       }
       triggerHaptic('victory');
-      setShareToast(language === 'ko' ? '[v] 영화 & 도전장 링크 복사 완료 (+50 SNS 지급!)' : '[v] Movie & Duel Link Copied (+50 SNS!)');
+      setShareToast(language === 'ko' ? '[v] 애니메이션 & 도전장 링크 복사 완료 (+50 SNS 지급!)' : '[v] Animation & Duel Link Copied (+50 SNS!)');
       setTimeout(() => setShareToast(null), 2800);
     } else {
-      setShareToast(language === 'ko' ? '[v] 영화 & 도전장 링크 복사 완료' : '[v] Movie & Duel Link Copied');
+      setShareToast(language === 'ko' ? '[v] 애니메이션 & 도전장 링크 복사 완료' : '[v] Animation & Duel Link Copied');
       setTimeout(() => setShareToast(null), 2400);
     }
     if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
   };
 
-  // 극장판 에피소드 시청 시 미수령 보상 자동 지급 (수동 버튼 클릭 불필요)
+  // 애니메이션 에피소드 시청 시 미수령 보상 자동 지급 (수동 버튼 클릭 불필요)
   useEffect(() => {
     if (!claimedRewards[currentEpisodeNum] && isCurrentReleased) {
       const timer = setTimeout(() => {
@@ -492,6 +492,9 @@ export const MovieView: React.FC<MovieViewProps> = ({
     ? `https://www.youtube-nocookie.com/embed/${currentVideoId}?autoplay=1&rel=0&enablejsapi=1`
     : `https://www.youtube-nocookie.com/embed?listType=playlist&list=${YOUTUBE_PLAYLIST_ID}&index=${currentEpisodeNum - 1}&autoplay=1&rel=0&enablejsapi=1`;
 
+  const currentAnimUrl = getAnimationVideoUrl(currentEpisodeNum);
+  const currentAnimFilename = getAnimationVideoFilename(currentEpisodeNum);
+
   return (
     <div className="flex flex-col min-h-screen bg-[#fdfcfc] text-[#201d1d] font-mono px-0 py-2 sm:py-3 pb-32 max-w-none mx-auto w-full overflow-x-hidden">
       {shareToast && (
@@ -504,7 +507,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
       {/* ── Page Header ── */}
       <div className="px-2 sm:px-4">
         <PageHeader
-          title={t('movie_title', language) || 'SNSHero 공식 영화 (극장판)'}
+          title={t('movie_title', language) || 'SNSHero 공식 애니메이션 (40부작)'}
           onBack={() => onNavigate('home')}
           rightAction={
             <div className="flex items-center gap-1.5">
@@ -524,14 +527,14 @@ export const MovieView: React.FC<MovieViewProps> = ({
                 className="min-h-[44px] flex items-center gap-1.5 px-3 py-1.5 rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-xs font-bold text-[#201d1d] hover:bg-[#f8f7f7] transition-colors cursor-pointer shrink-0 font-mono"
               >
                 <List size={16} />
-                <span className="hidden sm:inline">[{t('movie_list', language) || '영화 회차 목록'}]</span>
+                <span className="hidden sm:inline">[{t('movie_list', language) || '애니메이션 회차 목록'}]</span>
               </button>
             </div>
           }
         />
       </div>
 
-      {/* ── Movie Banner Info Header ── */}
+      {/* ── Animation Banner Info Header ── */}
       <div className="mb-3 sm:mb-4 px-3 sm:px-4 py-3 sm:py-4 rounded-none border-y border-x-0 border-[#201d1d] bg-[#201d1d] text-[#fdfcfc]">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div className="flex items-start gap-2.5">
@@ -541,7 +544,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
             <div>
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="font-mono text-xs font-bold tracking-wider text-[#fdfcfc] uppercase">
-                  [SNSHERO THE MOVIE]
+                  [SNSHERO ANIMATION]
                 </span>
                 <span className="px-1.5 py-0.5 rounded-sm bg-[#fdfcfc] text-[#201d1d] text-[10px] font-bold font-mono">
                   {releasedCount}화 공개 중
@@ -553,7 +556,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
                 )}
               </div>
               <h2 className="text-sm sm:text-base font-bold mt-1 text-[#fdfcfc]">
-                {t('movie_subtitle', language) || '스펙터클한 SNSHero 극장판 영화 시리즈를 오피셜 플레이리스트로 감상하세요.'}
+                {t('movie_subtitle', language) || '스펙터클한 SNSHero 공식 애니메이션 40부작 시리즈를 풀버전으로 감상하세요.'}
               </h2>
             </div>
           </div>
@@ -591,27 +594,10 @@ export const MovieView: React.FC<MovieViewProps> = ({
         </div>
       </div>
 
-      {/* ── Main Movie Player Section ── */}
+      {/* ── Main Animation Player Section ── */}
       <div className="mb-6 space-y-2 sm:space-y-3 w-full">
-        {/* Playback Mode Switcher: Cinematic Player vs MP4 Video vs YouTube Stream */}
+        {/* Playback Mode Switcher: MP4 Animation vs Interactive Player vs YouTube Stream */}
         <div className="flex flex-wrap items-center gap-2 px-2 sm:px-4">
-          <button
-            type="button"
-            onClick={() => {
-              triggerHaptic('light');
-              movieAudio.unlockSpeech();
-              setPlayerMode('cinematic');
-            }}
-            className={cn(
-              'min-h-[44px] flex-1 min-w-[140px] flex items-center justify-center gap-2 px-3 py-2 rounded-sm border font-mono text-xs font-bold transition-colors cursor-pointer',
-              playerMode === 'cinematic'
-                ? 'border-[#201d1d] bg-[#201d1d] text-[#fdfcfc]'
-                : 'border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-[#201d1d] hover:bg-[#f8f7f7]'
-            )}
-          >
-            <Sparkles size={16} className={playerMode === 'cinematic' ? 'text-amber-400' : 'text-amber-600'} />
-            <span>[🎬 인터랙티브 영화관 (40부작)]</span>
-          </button>
           <button
             type="button"
             onClick={() => {
@@ -627,7 +613,24 @@ export const MovieView: React.FC<MovieViewProps> = ({
             )}
           >
             <Film size={16} className={playerMode === 'mp4' ? 'text-amber-400' : 'text-stone-700'} />
-            <span>[🎞️ MP4 비디오 상영]</span>
+            <span>[🎞️ MP4 애니메이션 상영]</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic('light');
+              movieAudio.unlockSpeech();
+              setPlayerMode('cinematic');
+            }}
+            className={cn(
+              'min-h-[44px] flex-1 min-w-[140px] flex items-center justify-center gap-2 px-3 py-2 rounded-sm border font-mono text-xs font-bold transition-colors cursor-pointer',
+              playerMode === 'cinematic'
+                ? 'border-[#201d1d] bg-[#201d1d] text-[#fdfcfc]'
+                : 'border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-[#201d1d] hover:bg-[#f8f7f7]'
+            )}
+          >
+            <Sparkles size={16} className={playerMode === 'cinematic' ? 'text-amber-400' : 'text-amber-600'} />
+            <span>[🎬 인터랙티브 애니메이션 (40부작)]</span>
           </button>
           <button
             type="button"
@@ -668,7 +671,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
           >
             <video
               key={`mp4-video-ep-${currentEpisodeNum}`}
-              src={`/videos/episodes/episode_${String(currentEpisodeNum).padStart(2, '0')}.mp4`}
+              src={currentAnimUrl}
               controls
               playsInline
               className="w-full h-full object-cover"
@@ -682,10 +685,10 @@ export const MovieView: React.FC<MovieViewProps> = ({
             {/* Top Bar with MP4 Download Button and Fullscreen */}
             <div className="absolute top-3 right-3 flex items-center gap-2 z-10">
               <a
-                href={`/videos/episodes/episode_${String(currentEpisodeNum).padStart(2, '0')}.mp4`}
-                download={`SNSHero_Episode_${String(currentEpisodeNum).padStart(2, '0')}.mp4`}
+                href={currentAnimUrl}
+                download={currentAnimFilename}
                 className="min-h-[44px] flex items-center gap-1.5 px-3 py-1.5 rounded-sm bg-[#201d1d] hover:bg-black text-[#fdfcfc] border border-[#fdfcfc]/30 font-mono text-xs font-bold transition-colors cursor-pointer shrink-0"
-                title="MP4 비디오 파일 다운로드"
+                title="MP4 애니메이션 파일 다운로드"
               >
                 <Download size={14} />
                 <span>[⬇️ MP4 다운로드]</span>
@@ -714,7 +717,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
                 key={`movie-yt-player-ep-${currentEpisodeNum}-${currentVideoId || 'playlist'}`}
                 id="movie-yt-player"
                 src={embedUrl}
-                title={`SNSHero Movie Ep.${currentEpisodeNum}`}
+                title={`SNSHero Animation Ep.${currentEpisodeNum}`}
                 className="w-full h-full border-0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
@@ -722,17 +725,17 @@ export const MovieView: React.FC<MovieViewProps> = ({
             ) : (
               <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center text-white bg-stone-950 font-mono">
                 <Sparkles size={36} className="text-amber-400 mb-3" />
-                <h4 className="text-base font-bold mb-2">제 {currentEpisodeNum}화는 인앱 시네마틱 영화관 전용 상영작입니다</h4>
+                <h4 className="text-base font-bold mb-2">제 {currentEpisodeNum}화는 인앱 애니메이션 상영관 전용 상영작입니다</h4>
                 <p className="text-xs text-stone-400 max-w-md mb-4">
-                  유튜브 공식 영상은 1~8화까지 제공되며, 9~40화는 멀티플레인 연출과 사운드 엔진이 탑재된 [인터랙티브 영화관] 또는 [MP4 비디오]에서 감상하실 수 있습니다.
+                  유튜브 공식 영상은 1~8화까지 제공되며, 9~40화는 [MP4 애니메이션 상영] 또는 [인터랙티브 애니메이션]에서 감상하실 수 있습니다.
                 </p>
                 <button
                   type="button"
-                  onClick={() => setPlayerMode('cinematic')}
+                  onClick={() => setPlayerMode('mp4')}
                   className="min-h-[44px] flex items-center gap-2 px-5 py-2 rounded-sm border border-amber-500 bg-amber-500 text-black font-bold text-xs hover:bg-amber-400 transition-colors cursor-pointer"
                 >
                   <Sparkles size={16} />
-                  <span>[시네마틱 영화관으로 전환하여 즉시 감상]</span>
+                  <span>[MP4 애니메이션으로 전환하여 즉시 감상]</span>
                 </button>
               </div>
             )}
@@ -755,7 +758,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
         <div className="p-3 sm:p-4 rounded-none border-y border-x-0 border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2 flex-wrap">
             <span className="font-mono text-xs font-bold px-2 py-1 rounded-sm bg-[#201d1d] text-[#fdfcfc]">
-              극장판 EP.{String(currentEpisodeNum).padStart(2, '0')}
+              애니메이션 EP.{String(currentEpisodeNum).padStart(2, '0')}
             </span>
             {isCurrentReleased ? (
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[11px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-300">
@@ -849,10 +852,10 @@ export const MovieView: React.FC<MovieViewProps> = ({
 
             {/* Direct MP4 Download Button */}
             <a
-              href={`/videos/episodes/episode_${String(currentEpisodeNum).padStart(2, '0')}.mp4`}
-              download={`SNSHero_Episode_${String(currentEpisodeNum).padStart(2, '0')}.mp4`}
+              href={currentAnimUrl}
+              download={currentAnimFilename}
               className="min-h-[44px] flex items-center gap-1.5 px-3 py-1.5 rounded-sm border border-[#201d1d] bg-[#201d1d] text-[#fdfcfc] hover:bg-black text-xs font-bold font-mono transition-colors cursor-pointer"
-              title={`제 ${currentEpisodeNum}화 MP4 비디오 파일 다운로드`}
+              title={`제 ${currentEpisodeNum}화 MP4 애니메이션 파일 다운로드`}
             >
               <Download size={13} />
               <span>[MP4 다운]</span>
@@ -1007,7 +1010,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
                 <div className="flex items-center gap-2">
                   <Film size={18} className="text-[#201d1d]" />
                   <h3 className="font-mono text-base font-bold text-[#201d1d]">
-                    [ 영화 회차 목록 (40부작) ]
+                    [ 애니메이션 회차 목록 (40부작) ]
                   </h3>
                 </div>
                 <button

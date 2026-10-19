@@ -215,10 +215,10 @@ export const HomeCategoryHubModal: React.FC<HomeCategoryHubModalProps> = ({
  {
  id: 'movie',
  icon: Film,
- titleKo: '공식 영화관 (Full Movie)',
- titleEn: 'Official Movie Hub',
- descKo: '시즌별 대서사 극장판 에피소드 풀버전 상영관',
- descEn: 'Full storyline theatrical cinematic release',
+ titleKo: '공식 애니메이션관 (Full Animation)',
+ titleEn: 'Official Animation Hub',
+ descKo: '시즌별 대서사 40부작 애니메이션 에피소드 풀버전 상영관',
+ descEn: 'Full 40-episode storyline animation series release',
  action: () => onNavigate('movie'),
  },
  {

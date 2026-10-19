@@ -980,12 +980,12 @@ export const NovelView: React.FC<NovelViewProps> = ({
             onNavigate('movie');
           }}
           className="min-h-[44px] px-3.5 py-1.5 border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] hover:bg-[#f1eeee] text-[#201d1d] rounded-sm font-bold text-xs sm:text-sm flex items-center gap-1.5 cursor-pointer transition-colors"
-          title={language === 'ko' ? '공식 유튜브 영화/애니메이션 감상' : 'Watch Official Movie & Anime'}
+          title={language === 'ko' ? '공식 애니메이션 감상' : 'Watch Official Animation'}
         >
           <Film size={15} />
-          <span>{language === 'ko' ? '[영화·애니]' : '[Movie/Anime]'}</span>
+          <span>{language === 'ko' ? '[애니메이션]' : '[Animation]'}</span>
           <span className="text-[10px] bg-[#201d1d] text-[#fdfcfc] px-1.5 py-0.5 rounded-sm font-mono ml-0.5">
-            YOUTUBE
+            ANIME
           </span>
         </button>
 

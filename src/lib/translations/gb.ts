@@ -2944,7 +2944,7 @@ export const gb = {
     novel_card_modal_open_wiki_hint: 'This action is available in the full Card Wiki screen.',
     home_shortcut_novel: 'Web Novel',
     home_shortcut_webtoon: 'Webtoon',
-    home_shortcut_movie: 'Movie',
+    home_shortcut_movie: 'Animation',
     home_shortcut_cinema: 'Cinema',
     cinema_title: 'SNSHero 70mm Live-Action Cinema',
     cinema_subtitle: 'Photorealistic dark fantasy live-action cinema with 70mm anamorphic colour grading.',

@@ -236,10 +236,11 @@ export const VIEW_ROUTES: Record<ViewType, RouteMeta> = {
   },
   movie: {
     path: '/movie',
-    titleKo: '영화관 (Movie) - SNS히어로',
-    titleEn: 'Movie Theater - SNSHero',
-    descriptionKo: '공식 3D 풀버전 스토리 무비를 연속 시청하고 보상을 획득하세요.',
-    descriptionEn: 'Stream full cinematic story movies and earn watch rewards.',
+    aliases: ['/animation'],
+    titleKo: '애니메이션 (Animation) - SNS히어로',
+    titleEn: 'Animation Theater - SNSHero',
+    descriptionKo: '공식 40부작 스토리 애니메이션을 연속 시청하고 보상을 획득하세요.',
+    descriptionEn: 'Stream full 40-episode story animations and earn watch rewards.',
   },
   cinema: {
     path: '/cinema',

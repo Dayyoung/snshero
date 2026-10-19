@@ -2,6 +2,17 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-19 16:54 KST] [40부작 동영상 `/public/video/animation` 이동·파일명(`SNSHero.com_E1_제목.mp4`) 변경 및 메인화면 '애니메이션' 명칭 적용]
+- **작업 개요**:
+  1. **40부작 동영상 디렉토리 이동 및 표준 파일명 규칙(`SNSHero.com_E{회차}_{제목}.mp4`) 일괄 변경**:
+     - 기존 `public/videos/episodes/episode_01.mp4` ~ `episode_40.mp4` 전수(40편)를 `public/video/animation/` 디렉토리로 이동하고, 파일명을 `SNSHero.com_E1_눈보라 아래 두 서약.mp4` ~ `SNSHero.com_E40_영웅이라 불리지 않는 자.mp4` 규칙으로 일괄 변경.
+     - `src/content/movieEpisodeMapping.ts`에 `getAnimationVideoFilename(epNum)` 및 `getAnimationVideoUrl(epNum)` 헬퍼 함수를 추가하고, `src/views/MovieView.tsx`의 기본 재생 모드를 `'mp4'`로 설정하여 진입 시 `/video/animation/SNSHero.com_E{회차}_{제목}.mp4` 영상이 즉시 스트리밍·다운로드되도록 연동.
+  2. **메인화면 및 12개 다국어 번역팩 '영화' ➔ '애니메이션' 명칭 전면 변경**:
+     - 메인화면(`src/views/HomeView.tsx`, `src/components/HomeCategoryHub.tsx`, `src/components/HomeCategoryHubModal.tsx`), 상영관 뷰(`src/views/MovieView.tsx`, `src/views/CinemaView.tsx`, `src/views/NovelView.tsx`, `src/routes.ts`) 및 12개 언어팩(`ko`, `en`, `gb`, `ja`, `zh-CN`, `zh-TW`, `de`, `es`, `fr`, `id`, `ru`, `th`, `vi`) 전수에서 '영화' 명칭을 '애니메이션'으로 변경하여 제공.
+- **검증 결과**:
+  - `public/video/animation/` 내 40개 MP4 파일(`SNSHero.com_E1_...` ~ `SNSHero.com_E40_...`) 존재 및 E2E 스트리밍/다운로드 경로 검증 통과.
+  - `npx tsc --noEmit` (0 errors) 통과 및 연동 구글 폼 보고서 제출 완료 (`submit_report.py`).
+
 ## [2026-10-19 15:23 KST] [실사 시네마(CinemaView) 제1화 8등신(1:8) 성인 인체 구조 전수 재작화 + 카드 캐릭터 개성·소품 100% 반영 + 무자막 영어(EN) 내레이션 영상(episode_01.mp4) 완결]
 - **작업 개요**:
   1. **2등신 SD 카드 체형 복제 방지 및 '8등신 성인 실사 캐스팅 & 소품 마스터 시트'(`ep01_realistic_8head_cast_sheet.jpg`) 구축**:

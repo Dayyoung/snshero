@@ -396,7 +396,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 </button>
               </div>
 
-              {/* ── Core IP Media Shortcuts (웹소설, 웹툰, 영화, 실사 시네마 바로가기 4열 그리드) ── */}
+              {/* ── Core IP Media Shortcuts (웹소설, 웹툰, 애니메이션, 실사 시네마 바로가기 4열 그리드) ── */}
               <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
                 {/* 1. 웹소설 */}
                 <button
@@ -426,7 +426,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   <span className="truncate">{t('home_shortcut_webtoon', language)}</span>
                 </button>
 
-                {/* 3. 영화 */}
+                {/* 3. 애니메이션 */}
                 <button
                   type="button"
                   onClick={() => {
@@ -437,7 +437,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   className="min-h-[44px] px-1.5 sm:px-2 py-2 bg-[#fdfcfc] text-[#201d1d] font-bold text-xs sm:text-sm border border-[rgba(15,0,0,0.12)] hover:bg-[#201d1d] hover:text-[#fdfcfc] transition-colors cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5 rounded-sm"
                 >
                   <Film size={15} className="shrink-0" />
-                  <span className="truncate">{t('home_shortcut_movie', language)}</span>
+                  <span className="truncate">{t('home_shortcut_movie', language) || (language === 'ko' ? '애니메이션' : 'Animation')}</span>
                 </button>
 
                 {/* 4. 실사 시네마 */}

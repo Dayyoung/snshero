@@ -2973,7 +2973,7 @@ export const ja = {
     novel_card_modal_open_wiki_hint: 'この機能はフルカードウィキ画面で利用可能です。',
     home_shortcut_novel: 'ウェブ小説',
     home_shortcut_webtoon: 'ウェブトゥーン',
-    home_shortcut_movie: '映画',
+    home_shortcut_movie: 'アニメ',
     home_shortcut_cinema: 'シネマ',
     cinema_title: 'SNSHero 実写シネマ館 (70mm Live-Action)',
     cinema_subtitle: '本格ダークファンタジー実写スチールと70mmアナモルフィック色彩補正によるシネマ劇場です。',
