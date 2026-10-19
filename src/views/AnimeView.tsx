@@ -21,6 +21,7 @@ import { t } from '../lib/i18n';
 import { cn } from '../lib/utils';
 import { PageHeader } from '../components/PageHeader';
 import { getSeasonItem, setSeasonItem } from '../lib/webtoonProgress';
+import { MOVIE_EPISODES } from '../content/movieEpisodeMapping';
 
 declare global {
  interface Window {
@@ -248,8 +249,11 @@ export const AnimeView: React.FC<AnimeViewProps> = ({
  }
  }, [currentEpisodeNum, claimedRewards]);
 
- // 에피소드 번호 기반 YouTube 임베드 URL (index=1이 1화)
- const embedUrl = `https://www.youtube-nocookie.com/embed?listType=playlist&list=${YOUTUBE_PLAYLIST_ID}&index=${currentEpisodeNum}&enablejsapi=1&rel=0`;
+ // 에피소드 번호 기반 YouTube 임베드 URL (정확한 Video ID 우선 및 0-based index)
+ const currentVideoId = MOVIE_EPISODES[currentEpisodeNum]?.videoId;
+ const embedUrl = currentVideoId
+  ? `https://www.youtube-nocookie.com/embed/${currentVideoId}?list=${YOUTUBE_PLAYLIST_ID}&index=${currentEpisodeNum - 1}&enablejsapi=1&rel=0`
+  : `https://www.youtube-nocookie.com/embed?listType=playlist&list=${YOUTUBE_PLAYLIST_ID}&index=${currentEpisodeNum - 1}&enablejsapi=1&rel=0`;
 
  return (
  <div className="flex flex-col min-h-screen bg-[#fdfcfc] text-[#201d1d] font-mono px-0 py-2 sm:py-3 pb-32 max-w-none mx-auto w-full overflow-x-hidden">

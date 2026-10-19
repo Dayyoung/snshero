@@ -489,7 +489,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
   // 에피소드 번호 기반 YouTube 임베드 URL (정확한 Video ID 우선, 없을 경우 0-based index 플레이리스트 폴백)
   const currentVideoId = getVideoId(currentEpisodeNum);
   const embedUrl = currentVideoId
-    ? `https://www.youtube-nocookie.com/embed/${currentVideoId}?autoplay=1&rel=0&enablejsapi=1`
+    ? `https://www.youtube-nocookie.com/embed/${currentVideoId}?list=${YOUTUBE_PLAYLIST_ID}&index=${currentEpisodeNum - 1}&autoplay=1&rel=0&enablejsapi=1`
     : `https://www.youtube-nocookie.com/embed?listType=playlist&list=${YOUTUBE_PLAYLIST_ID}&index=${currentEpisodeNum - 1}&autoplay=1&rel=0&enablejsapi=1`;
 
   const currentAnimUrl = getAnimationVideoUrl(currentEpisodeNum);

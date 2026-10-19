@@ -15267,3 +15267,11 @@
   4. `src/views/MovieView.tsx`, `src/views/AnimeView.tsx`, `src/views/NovelView.tsx`의 `YOUTUBE_PLAYLIST_ID` 및 재생목록 링크를 `PLJiaxYk_nDsc`로 업데이트 완료.
 - **검증 결과**: YouTube Data API v3(`playlistItems`) 조회 결과 40개 영상 등록 확인 완료, `npx tsc --noEmit` 0 에러 통과.
 - **구글 폼 보고**: `submit_report.py` 제출 완료.
+
+
+### [2026-10-19] 유튜브 재생목록(`SNSHero.com-Animation`, `PLJiaxYk_nDsc`) 기본 동영상 정렬 순서 1화~40화 정순 변경 완료
+- **작업 내역**:
+  1. YouTube Studio(`https://studio.youtube.com/playlist/PLJiaxYk_nDsc/edit`)에서 기본 동영상 순서가 `게시된 날짜(최신순)`으로 되어 있어 40화부터 역순 재생되던 문제를 확인하고, **`추가된 날짜(오래된순)`**으로 변경·저장하여 1화(`SNSHero.com_E1_Two Vows Beneath the Blizzard`, `P_hxWzd9WAE`)부터 40화(`SNSHero.com_E40_One Who Is Not Called a Hero`, `J_MiF0nx8BU`)까지 정순 재생되도록 수정 완료.
+  2. `src/views/MovieView.tsx` 및 `src/views/AnimeView.tsx`의 YouTube 임베드 URL이 에피소드별 고유 `videoId`와 0-based `index`(`currentEpisodeNum - 1`)를 함께 전달하도록 보강 완료.
+- **검증 결과**: YouTube Data API v3(`playlistItems`) 조회 결과 1번(`E1`)~40번(`E40`) 전 구간 정순 정렬 확인, `npx tsc --noEmit` 0 에러 통과.
+- **구글 폼 보고**: `submit_report.py` 제출 완료.
