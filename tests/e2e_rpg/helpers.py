@@ -495,7 +495,7 @@ class ChoiceTimerOracle:
     """Authoritative simulator and validator for Choice Prompts and Dual Timers."""
 
     MANUAL_DURATION_MS = 5000  # 5.0s in manual mode
-    AUTO_DURATION_MS = 1500    # 1.5s in auto mode
+    AUTO_DURATION_MS = 3000    # 3.0s in auto mode
 
     ATTITUDES = ["[결의/돌파]", "[신중/통찰]", "[성진호흡/공명]"]
 

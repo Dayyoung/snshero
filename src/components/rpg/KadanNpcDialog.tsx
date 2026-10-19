@@ -261,14 +261,14 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
     setLineIndex(conversationLines.length - 1);
   }, [conversationLines.length, currentChoices, handleSelectChoice, hasActiveChoices]);
 
-  // Choice countdown timer: 5.0s manual / 1.5s auto
+  // Choice countdown timer: 5.0s manual / 3.0s auto
   useEffect(() => {
     if (!hasActiveChoices || !currentChoices || currentChoices.length === 0) {
       setChoiceTimeLeftMs(0);
       return;
     }
 
-    const duration = autoMode ? 1500 : 5000;
+    const duration = autoMode ? 3000 : 5000;
     setChoiceTotalDurationMs(duration);
     setChoiceTimeLeftMs(duration);
 
@@ -294,7 +294,7 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
   useEffect(() => {
     if (!autoMode) return;
     if (hasActiveChoices) return;
-    const timer = window.setTimeout(advanceConversation, lineIndex < conversationLines.length - 1 ? 1800 : 2300);
+    const timer = window.setTimeout(advanceConversation, lineIndex < conversationLines.length - 1 ? 2400 : 3000);
     return () => window.clearTimeout(timer);
   }, [advanceConversation, autoMode, conversationLines.length, hasActiveChoices, lineIndex]);
 
@@ -447,7 +447,7 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
                     </span>
                     {autoMode && (
                       <span className="text-[10px] text-cyan-300 bg-cyan-950/80 px-1.5 py-0.5 border border-cyan-800 rounded-sm">
-                        {language === 'ko' ? '자동 선택 (1.5초)' : 'Auto-Pick (1.5s)'}
+                        {language === 'ko' ? '자동 선택 (3.0초)' : 'Auto-Pick (3.0s)'}
                       </span>
                     )}
                   </span>

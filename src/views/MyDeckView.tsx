@@ -2089,16 +2089,16 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                   setSelectingIndex(null);
                   setSelectionContext('replace');
                 }}
-                className="absolute top-3 right-3 sm:top-4 sm:right-4 z-[999999] flex items-center justify-center w-11 h-11 rounded-sm bg-[#201d1d] text-[#fdfcfc] hover:bg-[#302c2c] cursor-pointer transition-colors"
+                className="absolute top-1.5 right-2 sm:top-2 sm:right-3 z-[999999] flex items-center justify-center w-11 h-11 rounded-sm bg-[#201d1d] text-[#fdfcfc] hover:bg-[#302c2c] cursor-pointer transition-colors"
                 aria-label="Close"
                 title={language === 'ko' ? '닫기' : 'Close'}
               >
-                <X size={24} />
+                <X size={20} />
               </button>
 
-              <div className="p-4 sm:p-6 border-b border-[#0f0000]/12 flex flex-col gap-4 items-start bg-[#fdfcfc] relative pr-16 max-h-[45dvh] overflow-y-auto shrink-0">
-                <div className="space-y-1 pr-8">
-                  <h3 className="text-xl sm:text-2xl font-bold tracking-tight leading-none">
+              <div className="px-3 sm:px-4 py-1.5 border-b border-[#0f0000]/12 flex items-center justify-between gap-2 bg-[#fdfcfc] relative pr-14 shrink-0">
+                <div className="min-w-0 flex items-center gap-2">
+                  <h3 className="text-sm sm:text-base font-bold tracking-tight leading-none truncate">
                     {selectionContext === 'upgrade' 
                       ? (t('hero_nurture', language) || '업그레이드할 카드를 선택하세요') 
                       : selectionContext === 'equipment' 
@@ -2106,34 +2106,106 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                         : selectionContext === 'customize'
                           ? (language === 'ko' ? '덱 구성하기 (최대 5장)' : 'Customize Deck (Max 5)')
                           : selectingIndex !== null
-                            ? (language === 'ko' ? `슬롯 ${selectingIndex + 1}에 장착할 카드 선택` : `Select Card for Slot ${selectingIndex + 1}`)
+                            ? (language === 'ko' ? `슬롯 ${selectingIndex + 1} 장착 카드 선택` : `Slot ${selectingIndex + 1} Card`)
                             : (language === 'ko' ? '보유 카드 인벤토리' : 'Card Inventory')}
                   </h3>
-                  <p className="text-xs sm:text-sm font-bold opacity-40 tracking-normal italic">
+                  <span className="hidden md:inline text-[11px] font-bold opacity-45 truncate">
                     {selectionContext === 'customize' 
-                      ? (language === 'ko' ? '카드를 클릭하여 덱에 추가하거나 제거하세요.' : 'Click cards to add or remove from your battle deck.')
+                      ? (language === 'ko' ? '클릭하여 덱 추가/제거' : 'Click to add/remove')
                       : selectionContext === 'replace'
-                        ? (language === 'ko' ? '카드를 클릭하여 상세 확인 및 덱 슬롯에 장착하세요.' : 'Click a card to view details and equip to deck.')
-                        : t('deck_select_guide', language)}
-                  </p>
+                        ? (language === 'ko' ? '클릭하여 장착' : 'Click to equip')
+                        : ''}
+                  </span>
                 </div>
 
-                <div className="flex flex-col sm:flex-row flex-wrap gap-4 w-full sm:w-auto mt-2 sm:mt-0">
+                <div className="flex items-center gap-1.5 shrink-0">
                   {selectionContext !== 'upgrade' && selectionContext !== 'equipment' && (
-                    <label className="min-h-11 flex items-center gap-3 cursor-pointer bg-[#fdfcfc] border border-[#0f0000]/12 px-3 py-2 rounded-sm hover:bg-[#f1eeee] transition-colors">
+                    <label className="min-h-11 flex items-center gap-1.5 cursor-pointer bg-[#fdfcfc] border border-[#0f0000]/12 px-2.5 py-1 rounded-sm hover:bg-[#f1eeee] transition-colors">
                       <input 
                         type="checkbox" 
                         checked={showOwnedOnly}
                         onChange={(e) => setShowOwnedOnly(e.target.checked)}
-                        className="w-4 h-4 min-w-[20px] min-h-[20px] rounded-none border-gray-300 text-black focus:ring-black cursor-pointer"
+                        className="w-4 h-4 min-w-[16px] min-h-[16px] rounded-none border-gray-300 text-black focus:ring-black cursor-pointer"
                       />
-                      <span className="text-xs font-bold whitespace-nowrap">{t('owned_only', language)}</span>
+                      <span className="text-[11px] font-bold whitespace-nowrap">{t('owned_only', language)}</span>
                     </label>
                   )}
+                </div>
+              </div>
 
-                  <details className="w-full min-w-0 rounded-none border border-[#0f0000]/12 bg-[#f8f7f7]">
-                    <summary className="min-h-11 px-3 py-3 text-xs font-bold cursor-pointer">{t('details', language)}</summary>
-                  <div className="flex flex-wrap p-2 gap-1">
+              {/* ── Compact Collapsible Search, Element, Role/Rarity & Sort Toolbar ── */}
+              <details
+                className="w-full border-b border-[#0f0000]/12 bg-[#f8f7f7] shrink-0 group"
+                open={Boolean(cardSearchQuery || selectedElementFilter !== 'ALL' || selectedRoleFilter !== 'ALL' || selectedRarityFilter !== 'ALL') || undefined}
+              >
+                <summary className="min-h-11 px-3 sm:px-4 py-1.5 flex items-center justify-between gap-2 text-xs font-bold cursor-pointer select-none hover:bg-[#f1eeee] transition-colors list-none">
+                  <div className="flex items-center gap-2 min-w-0 truncate">
+                    <Search size={13} className="text-[#646262] shrink-0" />
+                    <span className="truncate">
+                      {language === 'ko' ? '검색 · 속성 · 정렬 필터' : 'Search · Element · Sort Filters'}
+                    </span>
+                    {(cardSearchQuery || selectedElementFilter !== 'ALL' || selectedRoleFilter !== 'ALL' || selectedRarityFilter !== 'ALL') && (
+                      <span className="px-1.5 py-0.5 text-[10px] bg-[#201d1d] text-[#fdfcfc] rounded-sm">
+                        {language === 'ko' ? '필터 적용중' : 'Active'}
+                      </span>
+                    )}
+                  </div>
+                  <span className="text-[10px] font-mono text-[#646262] shrink-0 border border-[#0f0000]/15 bg-[#fdfcfc] px-2 py-0.5 rounded-sm">
+                    {language === 'ko' ? '열기/접기 ▾' : 'Toggle ▾'}
+                  </span>
+                </summary>
+
+                <div className="px-3 sm:px-4 py-2 space-y-2 border-t border-[#0f0000]/12 max-h-[38dvh] overflow-y-auto">
+                  {/* Search + Element Chips Row */}
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                    <div className="relative flex-1 min-w-[160px]">
+                      <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                      <input
+                        type="text"
+                        value={cardSearchQuery}
+                        onChange={(e) => setCardSearchQuery(e.target.value)}
+                        placeholder={language === 'ko' ? '카드 이름 또는 설명 검색...' : 'Search card name or lore...'}
+                        className="min-h-11 w-full pl-8 pr-10 py-1.5 bg-[#fdfcfc] border border-[#0f0000]/12 rounded-sm text-xs text-[#201d1d] focus:outline-none focus:border-[#201d1d] transition-colors"
+                      />
+                      {cardSearchQuery && (
+                        <button
+                          onClick={() => setCardSearchQuery('')}
+                          className="absolute right-0 top-1/2 -translate-y-1/2 min-h-11 min-w-11 flex items-center justify-center text-[#646262] hover:text-[#201d1d]"
+                        >
+                          <X size={14} />
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Element Chips */}
+                    <div className="flex flex-wrap items-center gap-1">
+                      {[
+                        { id: 'ALL', labelKo: '전체', labelEn: 'ALL' },
+                        { id: 'WATER', labelKo: '수(水)', labelEn: 'Water' },
+                        { id: 'FIRE', labelKo: '화(火)', labelEn: 'Fire' },
+                        { id: 'EARTH', labelKo: '지(地)', labelEn: 'Earth' },
+                        { id: 'WIND', labelKo: '풍(風)', labelEn: 'Wind' },
+                        { id: 'HOLY', labelKo: '빛(聖)', labelEn: 'Holy' },
+                        { id: 'DARK', labelKo: '암(闇)', labelEn: 'Dark' }
+                      ].map(chip => (
+                        <button
+                          key={chip.id}
+                          onClick={() => setSelectedElementFilter(chip.id as any)}
+                          className={cn(
+                            "min-h-11 px-2.5 py-1 text-xs font-bold rounded-sm border transition-colors whitespace-nowrap cursor-pointer",
+                            selectedElementFilter === chip.id
+                              ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
+                              : "bg-[#fdfcfc] text-[#646262] border-[#0f0000]/12 hover:bg-[#f1eeee]"
+                          )}
+                        >
+                          {language === 'ko' ? chip.labelKo : chip.labelEn}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Sort Controls Row */}
+                  <div className="flex flex-wrap items-center gap-1 pt-1 border-t border-[#0f0000]/10">
                     {[
                       { id: 'recent', label: language === 'ko' ? '최근' : 'NEW' },
                       { id: 'index', label: 'ID' },
@@ -2154,51 +2226,48 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                           }
                         }}
                         className={cn(
-                          "min-h-11 min-w-11 px-3 py-2 text-xs font-bold rounded-sm transition-colors whitespace-nowrap flex items-center gap-1",
-                          sortBy === opt.id ? "bg-[#201d1d] text-[#fdfcfc]" : "bg-transparent text-[#646262] hover:bg-[#f1eeee]"
+                          "min-h-11 min-w-11 px-2.5 py-1 text-xs font-bold rounded-sm transition-colors whitespace-nowrap flex items-center justify-center gap-1",
+                          sortBy === opt.id ? "bg-[#201d1d] text-[#fdfcfc]" : "bg-[#fdfcfc] border border-[#0f0000]/12 text-[#646262] hover:bg-[#f1eeee]"
                         )}
                       >
                         {opt.label}
                         {sortBy === opt.id && (sortOrder === 'asc' ? <ArrowUp size={8} /> : <ArrowDown size={8} />)}
                       </button>
                     ))}
-                    {/* ID 362: 상하좌우 4방향 퀵 정렬 버튼 */}
                     <div className="flex items-center gap-0.5 border-l border-gray-300 pl-1">
                       <button
                         onClick={() => { setSortBy('dir_up'); setSortOrder('desc'); }}
-                        className={cn("min-h-11 min-w-11 p-2 text-xs font-bold rounded-sm cursor-pointer", sortBy === 'dir_up' ? "bg-[#201d1d] text-[#fdfcfc]" : "bg-[#f1eeee] text-[#646262]")}
+                        className={cn("min-h-11 min-w-11 p-1.5 text-xs font-bold rounded-sm cursor-pointer", sortBy === 'dir_up' ? "bg-[#201d1d] text-[#fdfcfc]" : "bg-[#f1eeee] text-[#646262]")}
                         title="상단 스탯 높은순 정렬"
                       >
                         ▲
                       </button>
                       <button
                         onClick={() => { setSortBy('dir_right'); setSortOrder('desc'); }}
-                        className={cn("min-h-11 min-w-11 p-2 text-xs font-bold rounded-sm cursor-pointer", sortBy === 'dir_right' ? "bg-[#201d1d] text-[#fdfcfc]" : "bg-[#f1eeee] text-[#646262]")}
+                        className={cn("min-h-11 min-w-11 p-1.5 text-xs font-bold rounded-sm cursor-pointer", sortBy === 'dir_right' ? "bg-[#201d1d] text-[#fdfcfc]" : "bg-[#f1eeee] text-[#646262]")}
                         title="우측 스탯 높은순 정렬"
                       >
                         ▶
                       </button>
                       <button
                         onClick={() => { setSortBy('dir_down'); setSortOrder('desc'); }}
-                        className={cn("min-h-11 min-w-11 p-2 text-xs font-bold rounded-sm cursor-pointer", sortBy === 'dir_down' ? "bg-[#201d1d] text-[#fdfcfc]" : "bg-[#f1eeee] text-[#646262]")}
+                        className={cn("min-h-11 min-w-11 p-1.5 text-xs font-bold rounded-sm cursor-pointer", sortBy === 'dir_down' ? "bg-[#201d1d] text-[#fdfcfc]" : "bg-[#f1eeee] text-[#646262]")}
                         title="하단 스탯 높은순 정렬"
                       >
                         ▼
                       </button>
                       <button
                         onClick={() => { setSortBy('dir_left'); setSortOrder('desc'); }}
-                        className={cn("min-h-11 min-w-11 p-2 text-xs font-bold rounded-sm cursor-pointer", sortBy === 'dir_left' ? "bg-[#201d1d] text-[#fdfcfc]" : "bg-[#f1eeee] text-[#646262]")}
+                        className={cn("min-h-11 min-w-11 p-1.5 text-xs font-bold rounded-sm cursor-pointer", sortBy === 'dir_left' ? "bg-[#201d1d] text-[#fdfcfc]" : "bg-[#f1eeee] text-[#646262]")}
                         title="좌측 스탯 높은순 정렬"
                       >
                         ◀
                       </button>
                     </div>
-
-                    {/* ID 387: 메타 카운터 추천 버튼 */}
                     <button
                       onClick={() => { setSortBy('meta_counter'); setSortOrder('desc'); }}
                       className={cn(
-                        "min-h-11 px-3 py-2 text-xs font-bold rounded-sm transition-colors flex items-center gap-2 cursor-pointer",
+                        "min-h-11 px-2.5 py-1 text-xs font-bold rounded-sm transition-colors flex items-center gap-1.5 cursor-pointer",
                         sortBy === 'meta_counter' ? "bg-[#201d1d] text-[#fdfcfc]" : "bg-[#fdfcfc] text-[#646262] border border-[#0f0000]/12 hover:bg-[#f1eeee]"
                       )}
                       title="메타 상성 카운터 픽 추천"
@@ -2207,63 +2276,9 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                       <span>{language === 'ko' ? '카운터' : 'COUNTER'}</span>
                     </button>
                   </div>
-                  </details>
-                </div>
-              </div>
 
-              {/* ── Item 44: Card Search Bar & Element Filter Chips ── */}
-              <div className="px-4 sm:px-6 py-3 space-y-3 border-b border-[#0f0000]/12 bg-[#f8f7f7] max-h-[32dvh] overflow-y-auto shrink-0">
-                <div className="flex flex-col items-stretch gap-3">
-                  <div className="relative flex-1 w-full">
-                    <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                    <input
-                      type="text"
-                      value={cardSearchQuery}
-                      onChange={(e) => setCardSearchQuery(e.target.value)}
-                      placeholder={language === 'ko' ? '카드 이름 또는 설명 검색...' : 'Search card name or lore...'}
-                      className="min-h-11 w-full pl-9 pr-12 py-3 bg-[#fdfcfc] border border-[#0f0000]/12 rounded-sm text-sm text-[#201d1d] focus:outline-none focus:border-[#201d1d] transition-colors"
-                    />
-                    {cardSearchQuery && (
-                      <button
-                        onClick={() => setCardSearchQuery('')}
-                        className="absolute right-0 top-1/2 -translate-y-1/2 min-h-11 min-w-11 flex items-center justify-center text-[#646262] hover:text-[#201d1d]"
-                      >
-                        <X size={14} />
-                      </button>
-                    )}
-                  </div>
-
-                  {/* Element Chips */}
-                  <div className="flex flex-wrap items-center gap-1.5 w-full">
-                    {[
-                      { id: 'ALL', labelKo: '전체', labelEn: 'ALL', color: 'bg-slate-800 text-white border-slate-700' },
-                      { id: 'WATER', labelKo: '수(水)', labelEn: 'Water', color: 'bg-blue-500 text-white border-blue-600' },
-                      { id: 'FIRE', labelKo: '화(火)', labelEn: 'Fire', color: 'bg-rose-500 text-white border-rose-600' },
-                      { id: 'EARTH', labelKo: '지(地)', labelEn: 'Earth', color: 'bg-emerald-600 text-white border-emerald-700' },
-                      { id: 'WIND', labelKo: '풍(風)', labelEn: 'Wind', color: 'bg-teal-500 text-white border-teal-600' },
-                      { id: 'HOLY', labelKo: '빛(聖)', labelEn: 'Holy', color: 'bg-amber-400 text-amber-950 border-amber-500' },
-                      { id: 'DARK', labelKo: '암(闇)', labelEn: 'Dark', color: 'bg-purple-900 text-purple-100 border-purple-800' }
-                    ].map(chip => (
-                      <button
-                        key={chip.id}
-                        onClick={() => setSelectedElementFilter(chip.id as any)}
-                        className={cn(
-                          "min-h-11 px-3 py-2 text-xs font-bold rounded-sm border transition-colors whitespace-nowrap cursor-pointer",
-                          selectedElementFilter === chip.id
-                            ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
-                            : "bg-[#fdfcfc] text-[#646262] border-[#0f0000]/12 hover:bg-[#f1eeee]"
-                        )}
-                      >
-                        {language === 'ko' ? chip.labelKo : chip.labelEn}
-                      </button>
-                    ))}
-                  </div>
-
-                  {/* ID 352: 역할 & 희귀도 다중 교차 필터 칩 바 */}
-                  <details className="w-full border-t border-[#0f0000]/12 text-xs font-mono" open={selectedRoleFilter !== 'ALL' || selectedRarityFilter !== 'ALL' ? true : undefined}>
-                    <summary className="min-h-11 py-3 cursor-pointer font-bold">{t('details', language)}</summary>
-                  <div className="flex flex-wrap items-center gap-2 pb-2">
-                    {/* 역할 필터 */}
+                  {/* Role & Rarity Filter Row */}
+                  <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-[#0f0000]/10 text-xs font-mono">
                     <div className="flex flex-wrap items-center gap-1 bg-[#fdfcfc] border border-[#0f0000]/12 p-1 rounded-none">
                       <span className="text-gray-400 pl-1">{language === 'ko' ? '역할:' : 'Role:'}</span>
                       {[
@@ -2275,7 +2290,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                           key={r.id}
                           onClick={() => setSelectedRoleFilter(r.id as any)}
                           className={cn(
-                            "min-h-11 min-w-11 px-3 py-2 rounded-sm font-bold cursor-pointer transition-colors",
+                            "min-h-11 min-w-11 px-2.5 py-1 rounded-sm font-bold cursor-pointer transition-colors",
                             selectedRoleFilter === r.id ? "bg-[#201d1d] text-[#fdfcfc]" : "text-[#646262] hover:bg-[#f1eeee]"
                           )}
                         >
@@ -2284,7 +2299,6 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                       ))}
                     </div>
 
-                    {/* 희귀도 필터 */}
                     <div className="flex flex-wrap items-center gap-1 bg-[#fdfcfc] border border-[#0f0000]/12 p-1 rounded-none">
                       <span className="text-gray-400 pl-1">{language === 'ko' ? '등급:' : 'Rarity:'}</span>
                       {['ALL', 'SSR', 'SR', 'R', 'N'].map((rar) => (
@@ -2292,7 +2306,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                           key={rar}
                           onClick={() => setSelectedRarityFilter(rar as any)}
                           className={cn(
-                            "min-h-11 min-w-11 px-3 py-2 rounded-sm font-bold cursor-pointer transition-colors",
+                            "min-h-11 min-w-11 px-2.5 py-1 rounded-sm font-bold cursor-pointer transition-colors",
                             selectedRarityFilter === rar ? "bg-[#201d1d] text-[#fdfcfc]" : "text-[#646262] hover:bg-[#f1eeee]"
                           )}
                         >
@@ -2301,9 +2315,8 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
                       ))}
                     </div>
                   </div>
-                  </details>
                 </div>
-              </div>
+              </details>
 
               {/* ID 412: 인벤토리 자동 스크롤 타깃 ID */}
               <div id="mydeck-card-inventory-grid" className="min-h-0 flex-1 overflow-y-auto p-4 sm:p-6 scrollbar-thin scrollbar-thumb-black">

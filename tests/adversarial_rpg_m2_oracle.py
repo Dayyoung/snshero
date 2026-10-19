@@ -64,8 +64,8 @@ class TestMilestone2(unittest.TestCase):
         self.assertIn("nameEn", self.dialog_src)
 
     def test_countdown_timer_implementation(self):
-        """Countdown timer 5.0s manual / 1.5s auto implemented"""
-        self.assertIn("autoMode ? 1500 : 5000", self.dialog_src)
+        """Countdown timer 5.0s manual / 3.0s auto implemented"""
+        self.assertIn("autoMode ? 3000 : 5000", self.dialog_src)
         self.assertIn("choiceTimeLeftMs", self.dialog_src)
         self.assertIn("clearInterval", self.dialog_src)
 

@@ -303,7 +303,8 @@ def render_styled_cutscene(bg_path: str, is_title: bool, title_en: str, title_ko
                     p_img = Image.open(seat_path).convert('RGBA')
                     p_thumb = p_img.resize((64, 74), Image.Resampling.LANCZOS)
                     p_x, p_y = 18, dock_y1 + 12
-                    overlay.paste(p_thumb, (p_x, p_y))
+                    draw.rectangle([p_x, p_y, p_x + 64, p_y + 74], fill=(28, 25, 25, 255))
+                    overlay.paste(p_thumb, (p_x, p_y), p_thumb)
                     draw.rectangle([p_x - 1, p_y - 1, p_x + 64, p_y + 74], outline=(212, 175, 55, 230), width=1)
                     draw.rectangle([p_x - 1, p_y + 76, p_x + 65, p_y + 89], fill=(212, 175, 55, 255))
                     draw.text((p_x + 8, p_y + 77), 'SPEAKER', font=font_micro, fill=(14, 12, 12, 255))

@@ -634,7 +634,7 @@ def run_tier1_tests(milestone_filter: Optional[str] = None, verbose: bool = Fals
         t0 = time.perf_counter()
         manual_d = ChoiceTimerOracle.get_duration(auto_mode=False)
         auto_d = ChoiceTimerOracle.get_duration(auto_mode=True)
-        durations_correct = (manual_d == 5000 and auto_d == 1500)
+        durations_correct = (manual_d == 5000 and auto_d == 3000)
 
         results.append(
             TestResult(
@@ -642,9 +642,9 @@ def run_tier1_tests(milestone_filter: Optional[str] = None, verbose: bool = Fals
                 tier=1,
                 feature="Feature 5: Dual-Mode Countdown Timer Bar",
                 milestone="M2",
-                name="Dual Countdown Duration Specification (5.0s Manual / 1.5s Auto)",
+                name="Dual Countdown Duration Specification (5.0s Manual / 3.0s Auto)",
                 status="PASS" if durations_correct else "FAIL",
-                message="Timer enforces 5000ms in manual mode and 1500ms in auto mode",
+                message="Timer enforces 5000ms in manual mode and 3000ms in auto mode",
                 duration_ms=(time.perf_counter() - t0) * 1000,
             )
         )
@@ -880,10 +880,10 @@ def run_tier1_tests(milestone_filter: Optional[str] = None, verbose: bool = Fals
             )
         )
 
-        # T1.F12.3: Timed Choice Auto-Selection in 1.5s
+        # T1.F12.3: Timed Choice Auto-Selection in 3.0s
         t0 = time.perf_counter()
         auto_duration = ChoiceTimerOracle.get_duration(auto_mode=True)
-        choice_auto_ok = auto_duration == 1500
+        choice_auto_ok = auto_duration == 3000
 
         results.append(
             TestResult(
@@ -891,9 +891,9 @@ def run_tier1_tests(milestone_filter: Optional[str] = None, verbose: bool = Fals
                 tier=1,
                 feature="Feature 12: 100% Hands-Free Auto-Play",
                 milestone="M4",
-                name="Timed Choice 1.5-Second Auto-Selection in Auto Mode",
+                name="Timed Choice 3.0-Second Auto-Selection in Auto Mode",
                 status="PASS" if choice_auto_ok else "FAIL",
-                message="Protagonist choices resolve in exactly 1.5s when autoMode is active",
+                message="Protagonist choices resolve in 3.0s when autoMode is active",
                 duration_ms=(time.perf_counter() - t0) * 1000,
             )
         )

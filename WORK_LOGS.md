@@ -2,6 +2,37 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-19 11:42 KST] [개선된 투명 누끼 캐릭터 기반 40화 전체 웹툰 씬(2,049장)·MP4 동영상(40편) 전수 재생성 & MyDeckView 카드 선택 모달 헤더 최소화] 40개 에피소드 MP4 알파 마스크 합성 렌더링 및 덱 슬롯 카드 선택 모달 스크롤 영역 극대화 완료
+- **작업 개요**:
+  1. 개선된 투명 배경(누끼) 캐릭터 스프라이트를 반영하여 1화~40화 전체 웹툰 씬(`2,049장` WebP)과 에피소드 MP4 동영상(`episode_01.mp4` ~ `episode_40.mp4`, 총 40편)을 전수 재생성.
+  2. `MyDeckView.tsx`의 카드 장착/선택 모달(`슬롯 X 장착 카드 선택`)에서 과도한 높이를 차지하던 2단 헤더(`max-h-[45dvh]` + `max-h-[32dvh]`)를 1줄 슬림 헤더 바 + 단일 접이식(`details`) 통합 검색·속성·정렬 필터 서랍으로 최소화하여 카드 인벤토리 스크롤 영역을 극대화.
+- **소유 파일 및 주요 구현/수정 내역**:
+  1. `scripts/generate_all_40_episode_videos.py`:
+     - 하단 화자 초상화(`public/seat/*.png`) 합성 시 RGBA 알파 마스크(`overlay.paste(p_thumb, (p_x, p_y), p_thumb)`)와 다크 프레임 배경(`(28, 25, 25, 255)`)을 적용하여 투명 누끼 캐릭터가 깔끔하게 렌더링되도록 개선.
+  2. `public/images/webtoon/episode_01` ~ `episode_40` (2,049 WebP) & `public/videos/episodes/episode_01.mp4` ~ `episode_40.mp4` (40 MP4):
+     - `generate_webtoon_scenes.py`를 통해 2,049개 전 씬 이미지를 누끼 캐릭터 에셋으로 재생성 후, `generate_all_40_episode_videos.py`로 1화부터 40화까지 총 40편의 H.264/AAC MP4 동영상 전수 재인코딩 완료.
+  3. `src/views/MyDeckView.tsx`:
+     - 카드 선택 모달 상단의 제목·설명·보유카드 체크박스·정렬 영역과 검색·속성·역할/등급 영역을 슬림 1줄 헤더(`px-3 sm:px-4 py-1.5`)와 접이식 `<details>` 통합 필터 바(`검색 · 속성 · 정렬 필터`)로 통합하여 기본 상태에서 카드 그리드(`#mydeck-card-inventory-grid`)가 화면 대부분을 차지하도록 개선 (모든 버튼 `min-h-11` 44px 터치 타깃 유지).
+- **검증 결과**:
+  - `public/videos/episodes/episode_01.mp4` ~ `episode_40.mp4`: 40/40개 파일 전수 생성 및 코덱(`h264/aac@44100Hz`) 검증 완료.
+  - `python3 tests/e2e_design_system/run_all_e2e_tests.py`: 377/377 assertions 전수 통과 (100.0%).
+  - `npx tsc --noEmit` & `npm run build`: 0 errors 무결점 빌드 완료.
+  - 연동 구글 폼 완료 보고서 제출 완료 (`submit_report.py`).
+
+## [2026-10-19 08:08 KST] [/main 대사 선택지 카운트다운 시간 3.0초로 확대] 자동 진행 모드(autoMode) 대사 선택 시간 1.5초 ➔ 3.0초(3000ms) 확대 및 E2E 테스트 동기화 완료
+- **작업 개요**:
+  - `/main` RPG 모드에서 기본 활성화된 자동 진행(`autoMode`) 시 주인공 대사 선택지 카운트다운이 1.5초로 너무 빠르게 지나가던 문제를 해결하기 위해 최소 3.0초(`3000ms`, 수동 모드 `5000ms`)를 부여하도록 개선.
+- **소유 파일 및 주요 구현/수정 내역**:
+  1. `src/components/rpg/KadanNpcDialog.tsx`:
+     - 대사 선택지 카운트다운 타이머 시간을 `autoMode ? 3000 : 5000`으로 변경하여 자동 진행 중에도 3.0초 동안 선택지를 읽고 직접 클릭할 수 있는 여유 시간을 보장.
+     - 상단 카운트다운 안내 뱃지 문구를 `자동 선택 (3.0초)` / `Auto-Pick (3.0s)`로 업데이트하고, 일반 대사 줄 자동 넘김 간격도 `2.4초~3.0초`로 여유 있게 조정.
+  2. `tests/e2e_rpg/helpers.py`, `tests/e2e_rpg/tier1_feature_coverage.py`, `tests/adversarial_rpg_m2_oracle.py`:
+     - `ChoiceTimerOracle.AUTO_DURATION_MS` 및 관련 어설션을 `3000`ms(3.0s)로 동기화.
+- **검증 결과**:
+  - `python3 tests/e2e_rpg/run_rpg_e2e_tests.py`: 52/52 assertions 전수 통과 (100.0%).
+  - `npx tsc --noEmit` & `npm run build`: 0 errors 무결점 빌드 완료.
+  - 연동 구글 폼 완료 보고서 제출 완료 (`submit_report.py`).
+
 ## [2026-10-19 07:56 KST] [캐릭터 스프라이트 비율(256:296) 왜곡 수정, 카드 배틀 시야 확보 및 3x3 보드 속성 타일 컬러 테두리·대형 아이콘 강조] KadanNpcDialog/CardItem 비율 보정, HUD 기본 접기 및 pb-safe 전환, ELEMENT_DEFINITIONS 속성별 컬러 테두리/대형 아이콘/워터마크 적용 완료
 - **작업 개요**:
   - NPC 대화창 및 카드 내부 캐릭터 스프라이트 이미지의 종횡비(`256:296`, `2560x2960` 시트 기준) 왜곡 수정, 카드 플레이 화면(`MobileCardPlayScreen`) 내 시야를 가리던 하단 여백/중복 배지/HUD 정리, 3x3 보드 속성 칸(`#board-slot-0`~`8`)의 속성별 고유 컬러 테두리 및 대형 아이콘 강조 적용.
