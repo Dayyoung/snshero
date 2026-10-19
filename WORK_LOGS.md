@@ -2,6 +2,21 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-20 06:10 KST] [실사 시네마(CinemaView) 40부작 전수 생성 완료] 100% 8등신(1:8) 성인 인체 구조 실사 배우·의상·무기·소품 고증 72프레임 연속 연기 + 영문 타이틀·영어 TTS 나레이션·무자막 MP4 (`episode_01.mp4` ~ `episode_40.mp4`, 전 40화) 완결
+- **작업 개요**:
+  1. **전 40화(`EP.01` ~ `EP.40`) 100% 8등신(1:8 성인 인체 비율) 다크 판타지 실사 배우/의상/무기/소품 고증 3x3 연속 연기 플립북 시트 전수 생성 (`320개 시트`, `2,880개 .webp 프레임`)**:
+     - 기존 `scripts/build_cinema_episodes.py` 내 2D 웹툰/만화 이미지를 복사하던 폴백 함수를 완전 제거하고 `verify_8_action_sheets_exist()` 검증 가드로 대체하여 2D 애니메이션/치비 혼입을 원천 차단.
+     - 제1화~제40화 전 구간(`public/images/cinema/raw_ep01_sheets/` ~ `raw_ep40_sheets/`)에 대해 8등신 성인 실사 배우 레퍼런스(`ref_8head_*.jpg`) 및 카드 캐릭터 고유 복장·무기·소품 고증 프롬프트를 적용하여 `gemini-3.1-flash-image` 기반 3x3 연속 연기 플립북 시트 총 320장(화당 8시트 × 9프레임 = 72장) 생성 완료.
+     - 각 에피소드별 72장 연속 연기 프레임(`public/images/cinema/episode_01_acting/seq_01_frame_01.webp` ~ `episode_40_acting/seq_08_frame_09.webp`, 총 2,880장) 슬라이싱 및 생성 완료.
+  2. **영문 전용 오프닝 타이틀 + 72장 연속 연기 + 무자막(Zero Subtitles) + 기본 영어(EN) TTS 내레이션 MP4 전 40편(`public/videos/cinema/episode_01.mp4` ~ `episode_40.mp4`) 렌더링 및 프론트엔드 연동**:
+     - 각 에피소드 비디오 시작 `0~4초` 구간에만 영어 전용 타이틀 카드(`EPISODE 01` ~ `EPISODE 40`, 영문 타이틀 및 Act 표기)를 표시하고, 본편 72장 연속 연기 구간에는 자막 및 HUD 텍스트를 일체 표시하지 않도록 구성.
+     - 기본 영어 성우 내레이션(`macOS say -v Daniel`, 44.1kHz)과 시네마틱 다크 판타지 BGM을 오디오 더킹 믹싱하여 24fps H.264/AAC MP4 동영상 40편(`episode_01.mp4` ~ `episode_40.mp4`) 전수 인코딩 완료.
+     - `src/views/CinemaView.tsx` 및 `src/components/movie/LiveActionCinemaPlayer.tsx`에서 1화~40화 전 에피소드 스트리밍(`?v=8head72en`) 및 72프레임 인터랙티브 재생 모드 연동 완료.
+- **검증 결과**:
+  - `python3 tests/verify_cinema_40_episodes.py`: 40/40 에피소드 MP4 및 2,880/2,880 `.webp` 프레임 무결성 검증 통과.
+  - `npx tsc --noEmit` (0 errors) 및 `npm run build` 프로덕션 빌드 통과.
+  - 연동 구글 폼 완료 보고서 제출 완료 (`submit_report.py`).
+
 ## [2026-10-19 16:54 KST] [40부작 동영상 `/public/video/animation` 이동·파일명(`SNSHero.com_E1_제목.mp4`) 변경 및 메인화면 '애니메이션' 명칭 적용]
 - **작업 개요**:
   1. **40부작 동영상 디렉토리 이동 및 표준 파일명 규칙(`SNSHero.com_E{회차}_{제목}.mp4`) 일괄 변경**:
