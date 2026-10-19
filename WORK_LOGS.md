@@ -15275,3 +15275,10 @@
   2. `src/views/MovieView.tsx` 및 `src/views/AnimeView.tsx`의 YouTube 임베드 URL이 에피소드별 고유 `videoId`와 0-based `index`(`currentEpisodeNum - 1`)를 함께 전달하도록 보강 완료.
 - **검증 결과**: YouTube Data API v3(`playlistItems`) 조회 결과 1번(`E1`)~40번(`E40`) 전 구간 정순 정렬 확인, `npx tsc --noEmit` 0 에러 통과.
 - **구글 폼 보고**: `submit_report.py` 제출 완료.
+
+
+### [2026-10-19] 유튜브 40부작 애니메이션 전편 본문(설명) 영문 일괄 수정 완료
+- **작업 내역**:
+  1. 유튜브 채널(`UC_xayYwKaB5TbH3eZXeREpA`)에 업로드된 40개 애니메이션 동영상(`E1`~`E40`) 전수의 본문(Description)을 영문 안내문(`This video is the game story of SNSHero.\n\nVisit https://snshero.com for more details!`)으로 일괄 수정 완료 ([update_all_40_descriptions_yt.py](file:///Users/dayyoung/project/snshero/scripts/update_all_40_descriptions_yt.py)).
+- **검증 결과**: YouTube Data API v3(`videos?part=snippet`) 조회 결과 40/40개 전수 영문 본문 일치 확인.
+- **구글 폼 보고**: `submit_report.py` 제출 완료.
