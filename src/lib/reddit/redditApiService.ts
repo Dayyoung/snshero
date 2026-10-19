@@ -313,6 +313,10 @@ export class RedditApiService {
   ): { post: RedditPost | null; comments: RedditComment[] } {
     let post: RedditPost | null = null;
     const cleanId = postId.replace(/_dup_.*$/, '').replace(/_repeat_.*$/, '');
+    
+    // 구글 뉴스 기사 인덱스 추출 (예: gnews_1791911400000_354 -> "354")
+    const gnewsIdxMatch = cleanId.match(/^gnews_.*_(\d+)$/) || cleanId.match(/^gnews_(\d+)$/);
+    const targetIdx = gnewsIdxMatch ? gnewsIdxMatch[1] : null;
 
     // 1. 사용자 작성 포스트에서 찾기
     if (userState && userState.userPosts.length > 0) {
@@ -320,10 +324,13 @@ export class RedditApiService {
       if (foundUserPost) post = { ...foundUserPost };
     }
 
-    // 2. Google News 포스트에서 찾기
+    // 2. Google News 포스트에서 찾기 (1순위 ID 완전일치 -> 2순위 _idx 번호 매칭)
     if (!post) {
       const gnews = GoogleNewsSheetService.getCachedGoogleNewsPosts(userState?.language || 'ko');
-      const foundNews = gnews.find((p) => p.id === cleanId || p.id === postId);
+      let foundNews = gnews.find((p) => p.id === cleanId || p.id === postId);
+      if (!foundNews && targetIdx !== null) {
+        foundNews = gnews.find((p) => p.id.endsWith(`_${targetIdx}`) || p.id === `gnews_${targetIdx}`);
+      }
       if (foundNews) post = { ...foundNews };
     }
 
@@ -336,7 +343,10 @@ export class RedditApiService {
     // 4. 실시간 피드 캐시 포스트에서 찾기
     if (!post) {
       const livePosts = RedditLiveFeedService.getCachedLivePosts();
-      const foundLive = livePosts.find((p) => p.id === cleanId || p.id === postId);
+      let foundLive = livePosts.find((p) => p.id === cleanId || p.id === postId);
+      if (!foundLive && targetIdx !== null) {
+        foundLive = livePosts.find((p) => p.id.endsWith(`_${targetIdx}`));
+      }
       if (foundLive) post = { ...foundLive };
     }
 

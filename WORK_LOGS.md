@@ -2,7 +2,36 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
-## [2026-10-20 07:08 KST] [유튜브 2개 채널(SNSHero & 모두소프트 MODOO) `SNSHero.com - Cinema` 재생목록 생성 및 실사 시네마 업로드·정방향 정렬 완료]
+## [2026-10-20 07:22 KST] [구글 검색 기사 링크 진입 시 /reddit 이동 버그 해결] UTC 타임스탬프 표준화, 타임존·인덱스 별칭 사전 렌더링, 정적 DOM 즉시 복원 및 클라이언트 라우팅 완성
+- **요청 사항**:
+  - `구글 검색을 통해서 https://snshero.com/r/news/comments/gnews_1791911400000_354/ 링크로 들어가도 /reddit 으로 이동하는 버그가 있어 /git-push`
+- **원인 분석**:
+  1. **타임존에 따른 기사 ID 불일치**:
+     - `googleNewsSeedData.ts`의 `parseTimestampSafe`가 로컬 머신 타임존에 따라 파싱되면서, UTC 머신(1791911400000)과 KST 머신(1791879000000) 간 9시간(32,400,000ms) 차이가 발생하여 구글 검색에 인덱싱된 URL과 로컬 생성 디렉토리명이 불일치함.
+  2. **React 마운트 시 기사 상세 화면 누락 및 피드 덮어쓰기**:
+     - `RedditCommunityView.tsx`에서 초기 상태가 `activePost: null`로 시작하고, 동기 캐시에서 354번 기사를 찾지 못해 `activePost`가 세팅되지 않은 채 전체 화면이 `/reddit` 피드로 전환되는 현상 발생.
+  3. **URL 정규식 및 슬래시 처리 한계**:
+     - `App.tsx`의 `postMatch` 정규식이 `/reddit/comments/` 경로를 포괄하지 못하고 trailing slash를 제거하지 않음.
+- **주요 구현 및 개선 내역**:
+  1. **`parseTimestampSafe` UTC 표준 타임존 강제 (`src/data/googleNewsSeedData.ts`)**:
+     - 타임존 오프셋이 없는 날짜 문자열도 항상 글로벌 표준 UTC로 파싱하여 빌드 머신 타임존과 무관하게 `1791911400000` 고유 ID를 보장.
+  2. **`RedditApiService.getPostDetail` 인덱스 기반(`_idx`) 2순위 매칭 탑재 (`src/lib/reddit/redditApiService.ts`)**:
+     - 완전 일치(`===`) 실패 시에도 끝 번호 인덱스(`_354`)를 추출하여 해당 기사를 100% 찾아내도록 매칭 로직 강화.
+  3. **정적 DOM/JSON-LD 즉시 복원 (`extractPostFromStaticDom`) 및 비동기 fallback (`src/views/RedditCommunityView.tsx`)**:
+     - React 마운트 즉시 `initialPostId`가 있으면 사전 렌더링된 HTML의 `NewsArticle` JSON-LD 또는 DOM에서 0ms 만에 기사 정보를 복원하여 `activePost`를 즉각 띄움.
+     - 미발견 시 백그라운드로 최신 구글 뉴스 시트를 즉시 fetch하여 재조회.
+  4. **App.tsx 정규식 및 경로 확장 (`src/App.tsx`)**:
+     - `^\/(?:r\/[^/]+|reddit)\/comments\/([^/]+)` 정규식 및 `replace(/\/$/, '')` 적용.
+  5. **UTC/KST/인덱스 전방위 별칭 디렉토리 사전 생성 (`scripts/generate-news-seo.ts`)**:
+     - 기사 빌드 시 표준 UTC ID뿐 아니라 KST 호환 ID 및 인덱스(`gnews_354`) 디렉토리까지 모두 사전 렌더링하여 구글 검색 어떤 URL로 들어와도 즉시 200 OK 정적 서빙 보장.
+- **검증 결과**:
+  - `curl -I http://localhost:3000/r/news/comments/gnews_1791911400000_354/`: `HTTP/1.1 200 OK` (52,368 bytes 완전한 기사 정적 HTML 확인).
+  - `curl -I -k https://dayyoung-macbookpro.tail3717a4.ts.net/r/news/comments/gnews_1791911400000_354/`: `HTTP/2 200 OK` 확인.
+  - `npm run build`: 0 Errors 빌드 완료.
+  - 연동 구글 폼 완료 보고서 제출 완료 (`submit_report.py`).
+  - `/git-push` 요청에 따라 `git push origin main` 원격 저장소 푸시 완료.
+
+
 - **작업 개요**:
   1. **SNSHero 채널 (`UCA6QmKiPstbiyBUHtnSMxyA`)**:
      - `SNSHero.com - Cinema` 재생목록(`PLSvmAWAJh8FU`) 신규 생성 및 실사 시네마 `episode_01.mp4` ~ `episode_21.mp4` (`E1: 6SG4TCSKkwg` ~ `E21: L41SwabNqJI`, 21편) 공개(Public) 업로드 완료 (유튜브 일일 업로드 한도 도달, `scripts/youtube_cinema_snshero_ids.json` 저장).

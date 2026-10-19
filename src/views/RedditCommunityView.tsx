@@ -63,6 +63,84 @@ interface RedditCommunityViewProps {
   onNavigateView?: (view: string) => void;
 }
 
+/**
+ * 정적 HTML (구글 뉴스 사전 렌더링 페이지)에 주입되어 있던 기사 메타데이터/JSON-LD로부터
+ * 즉각 RedditPost 객체를 복원 (첫 로딩 시 피드로 튕기는 현상 원천 방지)
+ */
+function extractPostFromStaticDom(targetId?: string): RedditPost | null {
+  if (typeof document === 'undefined' || !targetId) return null;
+  try {
+    const cleanId = targetId.replace(/\/$/, '');
+    const jsonLdScripts = document.querySelectorAll('script[type="application/ld+json"]');
+    for (const script of jsonLdScripts) {
+      try {
+        const data = JSON.parse(script.textContent || '');
+        if (data && (data['@type'] === 'NewsArticle' || data['@type']?.includes?.('NewsArticle'))) {
+          const headline = data.headline || document.querySelector('.snshero-news-headline')?.textContent?.trim() || '';
+          const body = data.articleBody || data.description || document.querySelector('.snshero-news-summary')?.textContent?.trim() || '';
+          const imgUrl = Array.isArray(data.image) ? data.image[0] : (data.image || '');
+          const author = data.author?.[0]?.name || data.author?.name || 'Google News';
+          const pubDate = data.datePublished ? new Date(data.datePublished).getTime() : Date.now();
+
+          if (headline) {
+            return {
+              id: cleanId,
+              subreddit: data.articleSection || 'news',
+              subredditIcon: 'https://www.gstatic.com/images/branding/googleg/1x/googleg_standard_color_48dp.png',
+              title: headline,
+              originalTitle: headline,
+              body: body,
+              originalBody: body,
+              author,
+              authorAvatar: 'https://www.gstatic.com/images/branding/googleg/1x/googleg_standard_color_48dp.png',
+              createdAt: pubDate,
+              score: 9420,
+              commentCount: 142,
+              flair: { text: '구글뉴스 / 실시간 속보', bgColor: '#DC2626', textColor: '#FFFFFF' },
+              isOriginalContent: false,
+              upvoteRatio: 0.95,
+              media: imgUrl ? { type: 'image', url: imgUrl, domain: 'google.com' } : undefined,
+              permalink: `/r/news/comments/${cleanId}`,
+              sourceUrl: (data.mainEntityOfPage && typeof data.mainEntityOfPage === 'object' ? data.mainEntityOfPage['@id'] : data.mainEntityOfPage) || (typeof window !== 'undefined' ? window.location.href : ''),
+            };
+          }
+        }
+      } catch {}
+    }
+
+    // 2. DOM 엘리먼트에서 직접 복원
+    const headlineEl = document.querySelector('.snshero-news-headline, h1');
+    const summaryEl = document.querySelector('.snshero-news-summary, article p');
+    const imgEl = document.querySelector('article img, figure img') as HTMLImageElement | null;
+    if (headlineEl && headlineEl.textContent?.trim()) {
+      const headline = headlineEl.textContent.trim();
+      const body = summaryEl?.textContent?.trim() || headline;
+      const imgUrl = imgEl?.src || '';
+      return {
+        id: cleanId,
+        subreddit: 'news',
+        subredditIcon: 'https://www.gstatic.com/images/branding/googleg/1x/googleg_standard_color_48dp.png',
+        title: headline,
+        originalTitle: headline,
+        body: body,
+        originalBody: body,
+        author: 'Google News',
+        authorAvatar: 'https://www.gstatic.com/images/branding/googleg/1x/googleg_standard_color_48dp.png',
+        createdAt: Date.now(),
+        score: 9420,
+        commentCount: 142,
+        flair: { text: '구글뉴스 / 실시간 속보', bgColor: '#DC2626', textColor: '#FFFFFF' },
+        isOriginalContent: false,
+        upvoteRatio: 0.95,
+        media: imgUrl ? { type: 'image', url: imgUrl, domain: 'google.com' } : undefined,
+        permalink: `/r/news/comments/${cleanId}`,
+        sourceUrl: typeof window !== 'undefined' ? window.location.href : '',
+      };
+    }
+  } catch {}
+  return null;
+}
+
 export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
   initialSubreddit = 'popular',
   initialPostId,
@@ -80,8 +158,14 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
   const [viewMode, setViewMode] = useState<ViewModeType>(userState.viewMode || 'card');
   const [activeTab, setActiveTab] = useState<'posts' | 'about' | 'rules'>('posts');
 
-  // 3. 모달 및 서브페이지 상태
-  const [activePost, setActivePost] = useState<RedditPost | null>(null);
+  // 3. 모달 및 서브페이지 상태 (initialPostId 존재 시 즉시 복원하여 피드로 튕김 원천 차단)
+  const [activePost, setActivePost] = useState<RedditPost | null>(() => {
+    if (!initialPostId) return null;
+    const cleanId = initialPostId.replace(/\/$/, '');
+    const { post } = RedditApiService.getPostDetail(cleanId, userState);
+    if (post) return post;
+    return extractPostFromStaticDom(cleanId);
+  });
   const [activeComments, setActiveComments] = useState<RedditComment[]>([]);
   const [activeUser, setActiveUser] = useState<RedditUser | null>(
     initialUsername ? RedditApiService.getUserProfile(initialUsername, userState) : null
@@ -285,13 +369,30 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
     return () => observer.disconnect();
   }, [isLoadingMorePosts, handleLoadMorePosts]);
 
-  // URL 및 초기 props 반영
+  // URL 및 초기 props 반영 (동기 조회 -> 정적 DOM 복원 -> 비동기 시트 동기화 다단계 fallback)
   useEffect(() => {
     if (initialPostId) {
-      const { post, comments } = RedditApiService.getPostDetail(initialPostId, userState);
+      const cleanId = initialPostId.replace(/\/$/, '');
+      const { post, comments } = RedditApiService.getPostDetail(cleanId, userState);
       if (post) {
         setActivePost(post);
         setActiveComments(comments);
+      } else {
+        // 정적 DOM / JSON-LD로부터 복원 시도
+        const recovered = extractPostFromStaticDom(cleanId);
+        if (recovered) {
+          setActivePost(recovered);
+        }
+        // 백그라운드 최신 구글 뉴스 시트 동기화 후 재조회
+        RedditApiService.syncGoogleNews(userState.language || 'ko', true)
+          .then(() => {
+            const retry = RedditApiService.getPostDetail(cleanId, userState);
+            if (retry.post) {
+              setActivePost(retry.post);
+              setActiveComments(retry.comments);
+            }
+          })
+          .catch(() => {});
       }
     }
   }, [initialPostId, userState, syncTick]);
@@ -300,16 +401,23 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
   useEffect(() => {
     const handlePopState = () => {
       const path = window.location.pathname;
-      const postMatch = path.match(/^\/r\/[^/]+\/comments\/([^/]+)/);
+      const postMatch = path.match(/^\/(?:r\/[^/]+|reddit)\/comments\/([^/]+)/);
       const subMatch = path.match(/^\/r\/([^/]+)/);
       const userMatch = path.match(/^\/u(?:ser)?\/([^/]+)/);
 
       if (postMatch) {
-        const { post, comments } = RedditApiService.getPostDetail(postMatch[1], userState);
+        const cleanId = postMatch[1].replace(/\/$/, '');
+        const { post, comments } = RedditApiService.getPostDetail(cleanId, userState);
         if (post) {
           setActivePost(post);
           setActiveComments(comments);
           return;
+        } else {
+          const recovered = extractPostFromStaticDom(cleanId);
+          if (recovered) {
+            setActivePost(recovered);
+            return;
+          }
         }
       }
 

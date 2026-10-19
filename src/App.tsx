@@ -5352,13 +5352,13 @@ function AppContent() {
       case 'reddit': {
         const path = typeof window !== 'undefined' ? window.location.pathname : '/';
         const subMatch = path.match(/^\/r\/([^/]+)/);
-        const postMatch = path.match(/^\/r\/[^/]+\/comments\/([^/]+)/);
+        const postMatch = path.match(/^\/(?:r\/[^/]+|reddit)\/comments\/([^/]+)/);
         const userMatch = path.match(/^\/u(?:ser)?\/([^/]+)/);
 
         return (
           <RedditCommunityView
             initialSubreddit={subMatch ? subMatch[1] : 'popular'}
-            initialPostId={postMatch ? postMatch[1] : undefined}
+            initialPostId={postMatch ? postMatch[1].replace(/\/$/, '') : undefined}
             initialUsername={userMatch ? userMatch[1] : undefined}
             onNavigateHome={() => {
               setView('home');
@@ -6352,7 +6352,7 @@ function AppContent() {
   if (view === 'reddit') {
     const path = typeof window !== 'undefined' ? window.location.pathname : '/reddit';
     const subMatch = path.match(/^\/r\/([^/]+)/);
-    const postMatch = path.match(/^\/r\/[^/]+\/comments\/([^/]+)/);
+    const postMatch = path.match(/^\/(?:r\/[^/]+|reddit)\/comments\/([^/]+)/);
     const userMatch = path.match(/^\/u(?:ser)?\/([^/]+)/);
 
     return (
@@ -6360,7 +6360,7 @@ function AppContent() {
         <Meta view={view} language={language} />
         <RedditCommunityView
           initialSubreddit={subMatch ? subMatch[1] : 'popular'}
-          initialPostId={postMatch ? postMatch[1] : undefined}
+          initialPostId={postMatch ? postMatch[1].replace(/\/$/, '') : undefined}
           initialUsername={userMatch ? userMatch[1] : undefined}
           onNavigateHome={() => {
             setView('home');

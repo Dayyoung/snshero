@@ -348,6 +348,7 @@ function extractDomain(url: string): string {
 
 /**
  * 다양한 날짜/시간 문자열(ISO, YYYY-MM-DD HH:mm, 점/슬래시 구분자 등)을 안전하게 Unix timestamp(ms)로 파싱
+ * (로컬 머신 타임존에 따라 기사 ID 타임스탬프가 달라지는 현상을 방지하기 위해 UTC를 기본 표준으로 처리)
  */
 function parseTimestampSafe(raw: string, fallbackIdx: number): number {
   if (!raw || !raw.trim()) {
@@ -355,20 +356,27 @@ function parseTimestampSafe(raw: string, fallbackIdx: number): number {
   }
   const clean = raw.trim();
 
-  // 1. 표준 ISO / Date.parse 시도
-  let parsed = Date.parse(clean);
+  // 1. 이미 'Z'나 '+', '-' 등 타임존 오프셋이 있는 경우
+  if (/Z|[+-]\d{2}(?::?\d{2})?$/i.test(clean)) {
+    const parsed = Date.parse(clean);
+    if (!isNaN(parsed) && parsed > 0) return parsed;
+  }
+
+  // 2. 타임존이 명시되지 않은 경우, 글로벌 표준인 UTC로 일관되게 해석 (서버/로컬 머신 타임존 편차 원천 차단)
+  const utcCandidate = clean.includes('T') ? `${clean}Z` : `${clean.replace(' ', 'T')}Z`;
+  let parsed = Date.parse(utcCandidate);
   if (!isNaN(parsed) && parsed > 0) return parsed;
 
-  // 2. 공백을 'T'로 치환한 ISO 형식 시도 (예: "2026-10-15 8:38")
-  parsed = Date.parse(clean.replace(' ', 'T'));
+  const utcWithSpace = clean.includes('UTC') ? clean : `${clean} UTC`;
+  parsed = Date.parse(utcWithSpace);
   if (!isNaN(parsed) && parsed > 0) return parsed;
 
-  // 3. 점/슬래시 구분자 정규화 후 시도 (예: "2026. 10. 15. 8:38")
+  // 3. 점/슬래시 구분자 정규화 후 UTC 시도
   const normalized = clean.replace(/\./g, '-').replace(/\//g, '-').replace(/\s+/g, ' ');
-  parsed = Date.parse(normalized);
+  parsed = Date.parse(normalized.replace(' ', 'T') + 'Z');
   if (!isNaN(parsed) && parsed > 0) return parsed;
 
-  parsed = Date.parse(normalized.replace(' ', 'T'));
+  parsed = Date.parse(normalized);
   if (!isNaN(parsed) && parsed > 0) return parsed;
 
   return Date.now() - (fallbackIdx + 1) * 1000 * 60 * 30;
