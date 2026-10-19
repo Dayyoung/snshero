@@ -15299,3 +15299,13 @@
   2. `vite preview`가 서빙하는 `dist/` 프로덕션 번들에 최신 [ShopView.tsx](file:///Users/dayyoung/project/snshero/src/views/ShopView.tsx) 및 [HomeView.tsx](file:///Users/dayyoung/project/snshero/src/views/HomeView.tsx)의 캐시 방지 쿼리(`?v=20261019_v2`)와 신규 PDF 파일이 즉시 반영되도록 `npm run build` 실행 완료.
 - **검증 결과**: `npm run build` 성공 및 영문/한글 PDF 1~4페이지 시각 레이아웃 일치 확인.
 - **구글 폼 보고**: `submit_report.py` 제출 완료.
+
+
+### [2026-10-20] 모바일 전용 큰글자용(18pt Large-Print) 한글·영문 전체 소설 PDF e-Book 별도 개발 및 상점/홈 연동 완료
+- **작업 내역**:
+  1. 스마트폰 화면에서 줌(확대) 없이도 선명하게 읽을 수 있도록 본문 **18pt** (표준판 10.5pt 대비 약 70% 확대), 챕터 제목 **24pt**, 좌우 여백 **10mm**, **1단 등장인물 카드** 및 **1단 목차** 레이아웃을 적용한 모바일 큰글자용 PDF 생성 스크립트([generate_novel_mobile_pdfs.py](file:///Users/dayyoung/project/snshero/scripts/generate_novel_mobile_pdfs.py))를 개발.
+  2. 한글 모바일 큰글자판(`public/snshero_part1_ko_mobile.pdf`, 총 **327 Pages**) 및 영문 모바일 큰글자판(`public/snshero_part1_mobile.pdf`, 총 **324 Pages**)을 동일한 다크 에메랄드 테마 디자인으로 생성 완료.
+  3. [ShopView.tsx](file:///Users/dayyoung/project/snshero/src/views/ShopView.tsx)에 **모바일 큰글자용 PDF (18pt 가독성 특화)** 전용 버튼을 추가하고 모바일 기기 접속 시 큰글자판이 자동 연결되도록 구현.
+  4. [HomeView.tsx](file:///Users/dayyoung/project/snshero/src/views/HomeView.tsx)의 PDF 뷰어 모달에서도 모바일 접속 시 큰글자판을 기본 로드하며, 좌측 상단에서 `[모바일 큰글자판 / PC 표준판]`을 원터치 전환할 수 있도록 구현 및 `npm run build` 프로덕션 반영 완료.
+- **검증 결과**: `npm run build` 성공 및 모바일 큰글자 PDF 시각 렌더링 검증 완료.
+- **구글 폼 보고**: `submit_report.py` 제출 완료.

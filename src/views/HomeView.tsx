@@ -80,6 +80,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [isAfkRewardOpen, setIsAfkRewardOpen] = useState(false);
   const [showPdf, setShowPdf] = useState(false);
+  const [isMobilePdfMode, setIsMobilePdfMode] = useState<boolean>(() =>
+    typeof window !== 'undefined' &&
+    (window.innerWidth < 768 || /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent))
+  );
   const [isMailboxOpen, setIsMailboxOpen] = useState(false);
   const [unreadMailCount, setUnreadMailCount] = useState(0);
   const [isNotifModalOpen, setIsNotifModalOpen] = useState(false);
@@ -737,10 +741,29 @@ export const HomeView: React.FC<HomeViewProps> = ({
           <div className="relative w-full h-full md:max-w-6xl md:max-h-[92vh] bg-[#fdfcfc] rounded-none overflow-hidden border border-[rgba(15,0,0,0.12)]">
             {/* iframe */}
             <iframe
-              src={language === 'ko' ? "/snshero_part1_ko.pdf?v=20261019_v2" : "/snshero_part1.pdf?v=20261019_v2"}
+              src={
+                isMobilePdfMode
+                  ? (language === 'ko' ? "/snshero_part1_ko_mobile.pdf?v=20261020_mob" : "/snshero_part1_mobile.pdf?v=20261020_mob")
+                  : (language === 'ko' ? "/snshero_part1_ko.pdf?v=20261020_mob" : "/snshero_part1.pdf?v=20261020_mob")
+              }
               title="SNSHero Part 1 PDF"
               className="w-full h-full border-none"
             />
+
+            {/* 좌측 상단 모바일 큰글자판 / PC 표준판 전환 버튼 */}
+            <button
+              onClick={() => {
+                playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+                setIsMobilePdfMode(prev => !prev);
+              }}
+              className="absolute top-4 left-4 z-20 min-h-11 px-3 py-2 rounded-sm bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] text-xs font-mono font-bold flex items-center gap-1.5 border border-[#201d1d] cursor-pointer"
+            >
+              <span>
+                {isMobilePdfMode
+                  ? (language === 'ko' ? '모바일 큰글자판 (PC 표준판 전환)' : 'Mobile Large-Print (Switch to PC)')
+                  : (language === 'ko' ? 'PC 표준판 (모바일 큰글자 전환)' : 'PC Standard (Switch to Mobile Large)')}
+              </span>
+            </button>
             
             {/* 우측 상단 닫기 버튼 */}
             <button

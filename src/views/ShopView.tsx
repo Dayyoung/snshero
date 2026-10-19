@@ -4612,7 +4612,9 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       {language === 'ko' ? '전체 소설 (Part 1)' : 'Full Novel (Part 1)'}
                     </h3>
                     <p className="text-xs text-emerald-700 font-mono font-bold">
-                      {language === 'ko' ? 'PDF e-Book (161 Pages)' : 'PDF e-Book (152 Pages)'}
+                      {language === 'ko'
+                        ? 'PDF e-Book (PC 161p / 모바일 큰글자 327p)'
+                        : 'PDF e-Book (PC 152p / Mobile Large 324p)'}
                     </p>
                   </div>
                 </div>
@@ -4620,22 +4622,22 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 <ul className="space-y-1.5 text-xs text-slate-600 border-t border-emerald-100 pt-3 font-medium">
                   <li className="flex items-center gap-1.5">
                     <span className="text-emerald-600 font-bold">✓</span>
-                    <span>{language === 'ko' ? '카단 & 아케인 에코즈 전편 포함' : 'Includes full Kadan & Arcane Echoes'}</span>
+                    <span>{language === 'ko' ? '카단 & 아케인 에코즈 40화 전편 수록' : 'Includes full 40-episode Kadan & Arcane Echoes'}</span>
                   </li>
                   <li className="flex items-center gap-1.5">
                     <span className="text-emerald-600 font-bold">✓</span>
-                    <span>{language === 'ko' ? '한글 폰트 적용 가독성 최적화' : 'Optimized e-book reading layout'}</span>
+                    <span>{language === 'ko' ? '모바일 전용 18pt 큰글자 PDF 자동/선택 지원' : 'Dedicated 18pt Mobile Large-Print PDF included'}</span>
                   </li>
                 </ul>
               </div>
 
-              <div className="relative z-10 mt-auto pt-2 w-full">
+              <div className="relative z-10 mt-auto pt-2 w-full flex flex-col gap-2">
                 <button
-                  id="shop-pack-download-novel-btn"
+                  id="shop-pack-download-novel-mobile-btn"
                   onClick={() => {
                     playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
-                    const pdfFileName = language === 'ko' ? 'snshero_part1_ko.pdf' : 'snshero_part1.pdf';
-                    const pdfUrl = `/${pdfFileName}?v=20261019_v2`;
+                    const pdfFileName = language === 'ko' ? 'snshero_part1_ko_mobile.pdf' : 'snshero_part1_mobile.pdf';
+                    const pdfUrl = `/${pdfFileName}?v=20261020_mob`;
                     const link = document.createElement('a');
                     link.href = pdfUrl;
                     link.download = pdfFileName;
@@ -4644,13 +4646,49 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     link.click();
                     document.body.removeChild(link);
                   }}
-                  className="min-h-[44px] h-auto w-full rounded-sm border border-emerald-700 bg-emerald-700 hover:bg-emerald-800 px-3 py-2.5 text-left text-white transition-all active:scale-95 touch-target flex items-center justify-between gap-1 overflow-hidden cursor-pointer"
+                  className="min-h-[44px] h-auto w-full rounded-sm border border-[#201d1d] bg-[#201d1d] hover:bg-[#302c2c] px-3 py-2.5 text-left text-[#fdfcfc] transition-all active:scale-95 touch-target flex items-center justify-between gap-1 overflow-hidden cursor-pointer font-mono"
                 >
                   <span className="min-w-0 leading-tight flex-1">
-                    <span className="block text-[10px] uppercase tracking-[0.05em] text-white/80 truncate">{language === 'ko' ? '소설 PDF 다운로드' : 'Download Novel PDF'}</span>
-                    <span className="text-sm font-black truncate block">FREE (PDF)</span>
+                    <span className="block text-[10px] uppercase tracking-[0.05em] text-emerald-300 font-bold truncate">
+                      {language === 'ko' ? '모바일 큰글자용 PDF (18pt 가독성 특화)' : 'Mobile Large-Print PDF (18pt Easy Read)'}
+                    </span>
+                    <span className="text-sm font-black truncate block">
+                      {language === 'ko' ? '모바일 큰글자 PDF 보기/다운로드' : 'Open Mobile Large-Print PDF'}
+                    </span>
                   </span>
-                  <Download size={16} className="shrink-0 opacity-80 ml-1" />
+                  <Download size={16} className="shrink-0 text-emerald-400 ml-1" />
+                </button>
+
+                <button
+                  id="shop-pack-download-novel-btn"
+                  onClick={() => {
+                    playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+                    const isMobileDevice =
+                      typeof window !== 'undefined' &&
+                      (window.innerWidth < 768 || /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent));
+                    const pdfFileName = isMobileDevice
+                      ? (language === 'ko' ? 'snshero_part1_ko_mobile.pdf' : 'snshero_part1_mobile.pdf')
+                      : (language === 'ko' ? 'snshero_part1_ko.pdf' : 'snshero_part1.pdf');
+                    const pdfUrl = `/${pdfFileName}?v=20261020_mob`;
+                    const link = document.createElement('a');
+                    link.href = pdfUrl;
+                    link.download = pdfFileName;
+                    link.target = '_blank';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                  }}
+                  className="min-h-[44px] h-auto w-full rounded-sm border border-emerald-700 bg-emerald-700 hover:bg-emerald-800 px-3 py-2 text-left text-white transition-all active:scale-95 touch-target flex items-center justify-between gap-1 overflow-hidden cursor-pointer font-mono"
+                >
+                  <span className="min-w-0 leading-tight flex-1">
+                    <span className="block text-[10px] uppercase tracking-[0.05em] text-white/80 truncate">
+                      {language === 'ko' ? 'PC/태블릿 표준 PDF (모바일 접속 시 큰글자 자동 연결)' : 'Standard A4 PDF (Auto Large-Print on Mobile)'}
+                    </span>
+                    <span className="text-xs font-black truncate block">
+                      {language === 'ko' ? '표준 PDF 다운로드 (FREE)' : 'Standard PDF Download (FREE)'}
+                    </span>
+                  </span>
+                  <Download size={15} className="shrink-0 opacity-80 ml-1" />
                 </button>
               </div>
             </motion.div>
