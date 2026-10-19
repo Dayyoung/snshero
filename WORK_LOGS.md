@@ -2,6 +2,20 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-20 07:08 KST] [유튜브 2개 채널(SNSHero & 모두소프트 MODOO) `SNSHero.com - Cinema` 재생목록 생성 및 실사 시네마 업로드·정방향 정렬 완료]
+- **작업 개요**:
+  1. **SNSHero 채널 (`UCA6QmKiPstbiyBUHtnSMxyA`)**:
+     - `SNSHero.com - Cinema` 재생목록(`PLSvmAWAJh8FU`) 신규 생성 및 실사 시네마 `episode_01.mp4` ~ `episode_21.mp4` (`E1: 6SG4TCSKkwg` ~ `E21: L41SwabNqJI`, 21편) 공개(Public) 업로드 완료 (유튜브 일일 업로드 한도 도달, `scripts/youtube_cinema_snshero_ids.json` 저장).
+     - 재생목록 기본 정렬을 `추가된 날짜(오래된순)`으로 설정하여 1화(`pos 0`)부터 21화(`pos 20`)까지 순차 재생되도록 검증 완료.
+  2. **모두소프트 MODOO 채널 (`UC_xayYwKaB5TbH3eZXeREpA`)**:
+     - `SNSHero.com - Cinema` 재생목록(`PLKUD8F7yxIJQ`) 신규 생성 및 실사 시네마 `episode_01.mp4` ~ `episode_21.mp4` (`E1: NhduWX9njtc` ~ `E21: lvXL9xMBBrA`, 21편) 공개(Public) 업로드 완료 (유튜브 일일 업로드 한도 도달, `scripts/youtube_cinema_modoosoft_ids.json` 저장).
+     - 재생목록 기본 정렬을 `추가된 날짜(오래된순)`으로 설정하여 1화(`pos 0`)부터 21화(`pos 20`)까지 순차 재생되도록 검증 완료.
+  3. **재개 스크립트 보존**:
+     - 한도 초기화 후 `python3 scripts/upload_cinema_snshero_channel_yt.py` 및 `python3 scripts/upload_cinema_modoosoft_channel_yt.py` 실행 시 1~21화는 자동 건너뛰고 22화~40화를 즉시 이어서 업로드.
+- **검증 결과**:
+  - YouTube Data API v3 (`playlistItems`)를 통해 `PLSvmAWAJh8FU` 및 `PLKUD8F7yxIJQ` 양쪽 재생목록 수량 및 1화(`pos 0`) 정방향 순서 검증 통과.
+  - 연동 구글 폼 완료 보고서 제출 완료 (`submit_report.py`).
+
 ## [2026-10-20 06:10 KST] [실사 시네마(CinemaView) 40부작 전수 생성 완료] 100% 8등신(1:8) 성인 인체 구조 실사 배우·의상·무기·소품 고증 72프레임 연속 연기 + 영문 타이틀·영어 TTS 나레이션·무자막 MP4 (`episode_01.mp4` ~ `episode_40.mp4`, 전 40화) 완결
 - **작업 개요**:
   1. **전 40화(`EP.01` ~ `EP.40`) 100% 8등신(1:8 성인 인체 비율) 다크 판타지 실사 배우/의상/무기/소품 고증 3x3 연속 연기 플립북 시트 전수 생성 (`320개 시트`, `2,880개 .webp 프레임`)**:
