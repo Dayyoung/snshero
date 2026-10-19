@@ -244,7 +244,7 @@ export const LiveActionCinemaPlayer: React.FC<LiveActionCinemaPlayerProps> = ({
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
   const [sceneProgress, setSceneProgress] = useState<number>(0);
   const [isMuted, setIsMuted] = useState<boolean>(() => movieAudio.getMuted());
-  const [isVoiceEnabled, setIsVoiceEnabled] = useState<boolean>(() => movieAudio.getVoiceEnabled());
+  const [isVoiceEnabled, setIsVoiceEnabled] = useState<boolean>(true);
   const [subtitleLang, setSubtitleLang] = useState<'bilingual' | 'ko' | 'en'>('bilingual');
   const [lutPreset, setLutPreset] = useState<CinemaLutPreset>('imax-70mm');
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
@@ -281,17 +281,19 @@ export const LiveActionCinemaPlayer: React.FC<LiveActionCinemaPlayerProps> = ({
       movieAudio.playSfx(currentScene.sfxTrigger);
     }
 
-    const firstDialogue = currentScene.dialogues && currentScene.dialogues.length > 0 ? currentScene.dialogues[0] : null;
-    if (language === 'en') {
-      const spk = firstDialogue?.speakerEn ? `${firstDialogue.speakerEn}. ` : '';
-      const dlg = firstDialogue?.textEn ? `${firstDialogue.textEn}. ` : '';
-      movieAudio.speakNarration(`${spk}${dlg}${currentScene.narrationEn}`, 'en');
-    } else {
-      const spk = firstDialogue?.speakerKo ? `${firstDialogue.speakerKo}. ` : '';
-      const dlg = firstDialogue?.textKo ? `${firstDialogue.textKo}. ` : '';
-      movieAudio.speakNarration(`${spk}${dlg}${currentScene.narrationKo}`, 'ko');
+    if (isVoiceEnabled && !isMuted) {
+      const firstDialogue = currentScene.dialogues && currentScene.dialogues.length > 0 ? currentScene.dialogues[0] : null;
+      if (language === 'en') {
+        const spk = firstDialogue?.speakerEn ? `${firstDialogue.speakerEn}. ` : '';
+        const dlg = firstDialogue?.textEn ? `${firstDialogue.textEn}. ` : '';
+        movieAudio.speakNarration(`${spk}${dlg}${currentScene.narrationEn}`, 'en');
+      } else {
+        const spk = firstDialogue?.speakerKo ? `${firstDialogue.speakerKo}. ` : '';
+        const dlg = firstDialogue?.textKo ? `${firstDialogue.textKo}. ` : '';
+        movieAudio.speakNarration(`${spk}${dlg}${currentScene.narrationKo}`, 'ko');
+      }
     }
-  }, [currentSceneIdx, isPlaying, isFinished, episodeNumber, language, currentScene]);
+  }, [currentSceneIdx, isPlaying, isFinished, episodeNumber, language, currentScene, isVoiceEnabled, isMuted]);
 
   useEffect(() => {
     return () => {
@@ -378,15 +380,19 @@ export const LiveActionCinemaPlayer: React.FC<LiveActionCinemaPlayerProps> = ({
 
   const handleToggleMute = () => {
     triggerHaptic('light');
-    const next = movieAudio.toggleMute();
+    const next = !isMuted;
+    movieAudio.setMuted(next);
     setIsMuted(next);
   };
 
   const handleToggleVoice = () => {
     triggerHaptic('light');
     movieAudio.unlockSpeech();
-    const next = movieAudio.toggleVoice();
-    setIsVoiceEnabled(next);
+    setIsVoiceEnabled((prev) => {
+      const next = !prev;
+      if (!next) movieAudio.stopNarration();
+      return next;
+    });
   };
 
   const toggleFullscreen = () => {
@@ -436,6 +442,53 @@ export const LiveActionCinemaPlayer: React.FC<LiveActionCinemaPlayerProps> = ({
       : activeDialogue?.speakerKo || activeDialogue?.speakerEn;
   const speakerPortrait = activeSpeaker ? getCharacterPortraitUrl(activeSpeaker) : undefined;
 
+  // Map Episode 1 scenes to the 8 continuous 9-frame acting flipbook sequences (72 sequential poses)
+  const getActiveCinemaFrameUrl = (): string => {
+    if (usingFallbackImg) return currentScene.fallbackImageUrl;
+    if (episodeNumber === 1 && currentSceneIdx > 0) {
+      let seqNum = 1;
+      let startFrame = 1;
+      let endFrame = 9;
+      if (currentSceneIdx <= 6) {
+        seqNum = 1;
+        startFrame = currentSceneIdx <= 3 ? 1 : 5;
+        endFrame = currentSceneIdx <= 3 ? 5 : 9;
+      } else if (currentSceneIdx <= 12) {
+        seqNum = 2;
+        startFrame = currentSceneIdx <= 9 ? 1 : 5;
+        endFrame = currentSceneIdx <= 9 ? 5 : 9;
+      } else if (currentSceneIdx <= 19) {
+        seqNum = 3;
+        startFrame = currentSceneIdx <= 15 ? 1 : 5;
+        endFrame = currentSceneIdx <= 15 ? 5 : 9;
+      } else if (currentSceneIdx <= 25) {
+        seqNum = 4;
+        startFrame = currentSceneIdx <= 22 ? 1 : 5;
+        endFrame = currentSceneIdx <= 22 ? 5 : 9;
+      } else if (currentSceneIdx <= 31) {
+        seqNum = 5;
+        startFrame = currentSceneIdx <= 28 ? 1 : 5;
+        endFrame = currentSceneIdx <= 28 ? 5 : 9;
+      } else if (currentSceneIdx <= 37) {
+        seqNum = 6;
+        startFrame = currentSceneIdx <= 34 ? 1 : 5;
+        endFrame = currentSceneIdx <= 34 ? 5 : 9;
+      } else if (currentSceneIdx <= 43) {
+        seqNum = 7;
+        startFrame = currentSceneIdx <= 40 ? 1 : 5;
+        endFrame = currentSceneIdx <= 40 ? 5 : 9;
+      } else {
+        seqNum = 8;
+        startFrame = currentSceneIdx <= 46 ? 1 : 5;
+        endFrame = currentSceneIdx <= 46 ? 5 : 9;
+      }
+      const span = Math.max(1, endFrame - startFrame);
+      const frameIdx = Math.min(9, Math.max(1, Math.round(startFrame + sceneProgress * span)));
+      return `/images/cinema/episode_01_acting/seq_${String(seqNum).padStart(2, '0')}_frame_${String(frameIdx).padStart(2, '0')}.webp`;
+    }
+    return currentScene.cinemaImageUrl;
+  };
+
   return (
     <div
       ref={containerRef}
@@ -454,7 +507,7 @@ export const LiveActionCinemaPlayer: React.FC<LiveActionCinemaPlayerProps> = ({
           </span>
           {episodeNumber === 1 ? (
             <span className="px-1.5 py-0.5 rounded-sm bg-emerald-950/90 text-emerald-300 border border-emerald-500/40 text-[10px]">
-              [v] 100% 실사 마스터 스틸
+              [v] 72프레임 연속 동작 플립북
             </span>
           ) : (
             <span className="px-1.5 py-0.5 rounded-sm bg-sky-950/90 text-sky-300 border border-sky-500/40 text-[10px]">
@@ -505,7 +558,7 @@ export const LiveActionCinemaPlayer: React.FC<LiveActionCinemaPlayerProps> = ({
         >
           <img
             key={`cinema-ep-${episodeNumber}-sc-${currentSceneIdx}`}
-            src={usingFallbackImg ? currentScene.fallbackImageUrl : currentScene.cinemaImageUrl}
+            src={getActiveCinemaFrameUrl()}
             alt={`Episode ${episodeNumber} Shot ${currentSceneIdx + 1}`}
             onError={() => {
               if (!usingFallbackImg) {

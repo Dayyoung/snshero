@@ -2,6 +2,18 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-19 14:41 KST] [실사 시네마(CinemaView) 4대 미디어 탭 신설 & 72프레임 연속 동작 플립북 + PyTorch MPS 광학 흐름 모션 워핑 제1화 실사 연기 동영상 구축] 배우·소품 레퍼런스 시트 기반 연속 연기 영상(episode_01.mp4) 및 인터랙티브 플레이어 완결
+- **작업 개요**:
+  1. **웹소설·웹툰·애니 무비에 이은 제4의 독립 미디어 허브 `시네마(CinemaView)` 구축**:
+     - `src/views/CinemaView.tsx`, `src/components/movie/LiveActionCinemaPlayer.tsx` 신설 및 홈 상단 4열 미디어 바(`웹소설` | `웹툰` | `영화` | `시네마`), `NovelView`, `MovieView`, `HomeCategoryHubModal`, 13개 다국어 번역 파일 연동.
+  2. **정적 스크린샷 슬라이드쇼를 탈피한 '배우·소품 일관성 72프레임 연속 동작 플립북 + PyTorch GPU(MPS) 광학 흐름 모션 워핑' 제1화 실사 영화 제작**:
+     - 마스터 배우/소품 레퍼런스 시트(`public/images/cinema/raw_ep01_sheets/ep01_actor_prop_ref.png`)로 배우 외모(`Aleksandar`, `Balian`, `Hercul`, `Elwin`, `Lucian`)와 핵심 소품 3종(금이 간 황금 성기사 인장, 룬 문자 은빛 쌍단검, 철제 잔 3개)을 고정.
+     - 동일 카메라 앵글에서 배우가 0.4초 간격으로 실제 연속 동작을 수행하는 8종의 3x3 액션 플립북 시트(`act_seq_01.png` ~ `act_seq_08.png`)를 생성하고 72개의 연속 연기 프레임(`public/images/cinema/episode_01_acting/seq_01..08_frame_01..09.webp`)으로 슬라이싱.
+     - `scripts/build_ep01_acting_cinema.py`를 통해 Apple Silicon GPU(`mps`) 기반 PyTorch Lucas-Kanade 광학 흐름(Optical Flow) 양방향 모션 워핑(`F.grid_sample`), 영어 성우 음성 진폭 반응형 하악(입술/턱) 아티큘레이션, 흉곽 호흡 변형을 적용한 24fps 실사 시네마 동영상(`public/videos/cinema/episode_01.mp4`, `15.42 MB`, `2,454 frames`) 인코딩 완료.
+- **검증 결과**:
+  - `npx tsc --noEmit` (0 errors) 및 `npm run build` (Exit code 0) 프로덕션 빌드 통과.
+  - 연동 구글 폼 완료 보고서 제출 완료 (`submit_report.py`).
+
 ## [2026-10-19 14:06 KST] [1~40화 전수 카드 캐릭터 일관성 웹툰(2,049컷) + 영문 전용 오프닝 타이틀 + 연속 모션 애니메이션 무비(40편) 전면 개편] 슬라이드쇼를 탈피한 실시간 카메라워크·파티클·검기·성우 반응형 40부작 애니메이션 무비 완성
 - **작업 개요**:
   1. **1~40화 전수 실제 카드 캐릭터(`public/seat/*.png`) 일관성 웹툰 2,049컷 및 영문 전용 오프닝 타이틀(`scene_00.webp`) 재생성**:

@@ -65,7 +65,7 @@ export const CinemaView: React.FC<CinemaViewProps> = ({
     return isNaN(parsed) || parsed < 1 || parsed > TOTAL_EPISODES ? 1 : Math.max(1, Math.min(TOTAL_EPISODES, parsed));
   });
 
-  const [playerMode, setPlayerMode] = useState<'live-interactive' | 'mp4'>('live-interactive');
+  const [playerMode, setPlayerMode] = useState<'live-interactive' | 'mp4'>('mp4');
   const [showDrawer, setShowDrawer] = useState<boolean>(false);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [filterMode, setFilterMode] = useState<'all' | 'mastered' | 'remastered'>('all');
@@ -174,12 +174,12 @@ export const CinemaView: React.FC<CinemaViewProps> = ({
 
   const mp4Url =
     currentEpisodeNum === 1
-      ? '/videos/cinema/episode_01.mp4'
+      ? '/videos/cinema/episode_01.mp4?v=acting72'
       : `/videos/episodes/episode_${String(currentEpisodeNum).padStart(2, '0')}.mp4`;
 
   const posterUrl =
     currentEpisodeNum === 1
-      ? '/images/cinema/episode_01/scene_00.webp'
+      ? '/images/cinema/episode_01_acting/seq_01_frame_01.webp'
       : `/images/webtoon/episode_${String(currentEpisodeNum).padStart(2, '0')}/scene_00.webp`;
 
   return (
@@ -215,7 +215,7 @@ export const CinemaView: React.FC<CinemaViewProps> = ({
                   [70MM IMAX LIVE-ACTION CINEMA]
                 </span>
                 <span className="px-1.5 py-0.5 rounded-sm bg-amber-400 text-black text-[10px] font-bold font-mono">
-                  제1화 100% 실사 마스터 개봉
+                  제1화 72프레임 연속 연기 & PyTorch 모션 워핑 적용
                 </span>
                 <span className="px-1.5 py-0.5 rounded-sm bg-[#fdfcfc]/10 text-[#fdfcfc] border border-[#fdfcfc]/20 text-[10px] font-mono">
                   2.39:1 시네마스코프 · 24fps
@@ -223,7 +223,7 @@ export const CinemaView: React.FC<CinemaViewProps> = ({
               </div>
               <h2 className="text-sm sm:text-base font-bold mt-1 text-[#fdfcfc]">
                 {t('cinema_subtitle', language) ||
-                  '정통 다크 판타지 블록버스터 실사(Live-Action) 스틸과 70mm 아나모픽 컬러 그레이딩으로 완성된 시네마 영화관입니다.'}
+                  '일관된 배우와 소품(은빛 단검·성기사 인장·철제 성배)이 연속 동작 플립북과 PyTorch 광학 흐름 모션으로 실제 연기하는 시네마 영화관입니다.'}
               </h2>
             </div>
           </div>
@@ -250,24 +250,6 @@ export const CinemaView: React.FC<CinemaViewProps> = ({
             type="button"
             onClick={() => {
               triggerHaptic('light');
-              movieAudio.unlockSpeech();
-              setPlayerMode('live-interactive');
-            }}
-            className={cn(
-              'min-h-[44px] flex-1 min-w-[160px] flex items-center justify-center gap-2 px-3 py-2 rounded-sm border font-mono text-xs font-bold transition-colors cursor-pointer',
-              playerMode === 'live-interactive'
-                ? 'border-[#201d1d] bg-[#201d1d] text-[#fdfcfc]'
-                : 'border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-[#201d1d] hover:bg-[#f8f7f7]'
-            )}
-          >
-            <Camera size={16} className={playerMode === 'live-interactive' ? 'text-amber-400' : 'text-amber-600'} />
-            <span>[🎥 실사 인터랙티브 시네마관 (70mm LUT)]</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => {
-              triggerHaptic('light');
               movieAudio.stopAll();
               setPlayerMode('mp4');
             }}
@@ -279,7 +261,25 @@ export const CinemaView: React.FC<CinemaViewProps> = ({
             )}
           >
             <Film size={16} className={playerMode === 'mp4' ? 'text-amber-400' : 'text-stone-700'} />
-            <span>[🎞️ 24fps 실사 MP4 극장판 상영]</span>
+            <span>[🎞️ 24fps 실사 연속 연기 동영상 상영 (MP4)]</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic('light');
+              movieAudio.unlockSpeech();
+              setPlayerMode('live-interactive');
+            }}
+            className={cn(
+              'min-h-[44px] flex-1 min-w-[160px] flex items-center justify-center gap-2 px-3 py-2 rounded-sm border font-mono text-xs font-bold transition-colors cursor-pointer',
+              playerMode === 'live-interactive'
+                ? 'border-[#201d1d] bg-[#201d1d] text-[#fdfcfc]'
+                : 'border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] text-[#201d1d] hover:bg-[#f8f7f7]'
+            )}
+          >
+            <Camera size={16} className={playerMode === 'live-interactive' ? 'text-amber-400' : 'text-amber-600'} />
+            <span>[🎥 인터랙티브 플립북 시네마관 (70mm LUT)]</span>
           </button>
         </div>
 
@@ -305,6 +305,7 @@ export const CinemaView: React.FC<CinemaViewProps> = ({
             <video
               key={`cinema-mp4-ep-${currentEpisodeNum}`}
               src={mp4Url}
+              autoPlay
               controls
               playsInline
               className="w-full h-full object-cover"
