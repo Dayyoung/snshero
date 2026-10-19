@@ -50,8 +50,8 @@ interface MovieViewProps {
 }
 
 const TOTAL_EPISODES = 40;
-const YOUTUBE_PLAYLIST_ID = 'PLOLtCtApKgp8';
-const YOUTUBE_PLAYLIST_URL = 'https://www.youtube.com/playlist?list=PLOLtCtApKgp8';
+const YOUTUBE_PLAYLIST_ID = 'PLJiaxYk_nDsc';
+const YOUTUBE_PLAYLIST_URL = 'https://www.youtube.com/playlist?list=PLJiaxYk_nDsc';
 
 // 기본 공개 완료 에피소드 기본값 (40부작 전편 100% 공개)
 const DEFAULT_RELEASED_COUNT = 40;

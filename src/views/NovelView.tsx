@@ -1590,7 +1590,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
                     <span>{language === 'ko' ? '영상 보기' : 'Watch Video'}</span>
                   </button>
                   <a
-                    href="https://www.youtube.com/playlist?list=PLMZVaaVQfrcU"
+                    href="https://www.youtube.com/playlist?list=PLJiaxYk_nDsc"
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => {

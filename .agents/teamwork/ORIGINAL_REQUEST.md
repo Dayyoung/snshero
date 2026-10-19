@@ -381,3 +381,53 @@ Ensure that when Auto-Play (`autoMode`) is enabled, 100% of `/main` progresses h
 - [ ] `python3 tests/e2e_design_system/run_all_e2e_tests.py` passes 100% (including verifying the new `/main` interactive dialogue choice and random encounter logic).
 - [ ] `npx tsc --noEmit` and `npm run build` succeed with `0` errors.
 - [ ] Changes are committed locally (`git commit` only) and reported via `python3 skills/report-ex/scripts/submit_report.py`.
+
+
+## 2026-10-19T06:29:23Z
+
+Generate the remaining 39 episodes (Episode 02 through Episode 40) of SNSHero's photorealistic Live-Action Cinema (`public/videos/cinema/episode_02.mp4` .. `episode_40.mp4` and 72 sequential acting frames per episode) using the exact same methodology established in Episode 01: realistic 8-head-tall adult human proportions preserving each game card character's iconic costume/weapons/props, an English-only opening title card, 72 continuous sequential frames played in order with zero subtitles/text overlays, and English (`en`) TTS narration over a cinematic soundtrack.
+
+Working directory: /Users/dayyoung/project/snshero
+Integrity mode: development
+
+Reference implementation & resources in workspace:
+- Episode 01 reference builder: `scripts/build_ep01_acting_cinema.py`
+- Episode 01 8-head-tall cast & prop master sheet: `public/images/cinema/raw_ep01_sheets/ep01_realistic_8head_cast_sheet.jpg`
+- Episode storylines & scene manifests: `src/content/webtoonEpisodeManifest.json` and `src/content/movieEpisodeMapping.ts`
+- Card character database & designs: `src/cardDatabase.ts` and `public/seat/*.png`
+- Cinema frontend views: `src/views/CinemaView.tsx` and `src/components/movie/LiveActionCinemaPlayer.tsx`
+
+## Requirements
+
+### R1. 8-Head-Tall Adult Proportions with 100% Card-Character & Prop Fidelity (72 Sequential Frames per Episode for Episodes 02–40)
+For every episode from Episode 02 to Episode 40:
+1. Establish 8-head-tall (1:8 head-to-body ratio) adult human live-action character & prop reference sheets that translate the episode's featured game card characters (`public/seat/*.png` and `src/cardDatabase.ts`) into realistic, tall, athletic adult human actors while preserving 100% of their signature card headgear, armor, capes, hair/ear traits, weapons, and story props. Never pass 2-head-tall chibi card sprites directly as image-to-image inputs without first translating them into 8-head-tall adult reference sheets, preventing any 2-head-tall chibi/dwarf/oversized-head distortions.
+2. Generate 8 sequential 3x3 live-action keyframe sheets per episode (`8 sheets x 9 frames = 72 sequential frames` per episode, strictly no text/subtitles/watermarks inside any panel) and slice them into `public/images/cinema/episode_XX_acting/seq_01_frame_01.webp` through `seq_08_frame_09.webp` (72 `.webp` files per episode, 2,808 new frames across Episodes 02–40).
+
+### R2. English-Only Opening Title, Continuous 72-Frame Playback, Zero Subtitles, and English (`en`) TTS Narration MP4s
+For each of the 39 episodes (`02` through `40`), render a 24fps H.264/AAC MP4 video at `public/videos/cinema/episode_XX.mp4` (`800x450`, 2.39:1 CinemaScope letterbox) that:
+1. Begins with a ~4.0-second **English-only Opening Title Card** (`SNSHERO ORIGINAL LIVE-ACTION CINEMA / EPISODE XX / <ENGLISH EPISODE TITLE> / <ACT SUBTITLE>`) containing zero Korean text.
+2. Plays all **72 sequential frames (`seq_01_frame_01` -> `seq_08_frame_09`) continuously in exact order (`1 -> 72`)** with smooth optical-flow/camera motion and **ZERO subtitles, ZERO speaker tags, and ZERO HUD text overlays** on the acting frames.
+3. Mixes a 44.1kHz stereo audio track combining **English (`en`, macOS `say -v Daniel`) TTS narration** of the episode's 8 narrative sequences with the episode's synthesized dark-fantasy BGM soundtrack.
+
+### R3. Zero-Cost Execution ($0 Paid APIs) & Full 40-Episode `/cinema` Frontend Integration
+1. Do **not** invoke any paid external cloud video/image APIs (such as paid Google Cloud `Veo` or `Imagen` endpoints via `gcloud` API keys). Use only the built-in free `image-generator` subagent tool and local Apple Silicon GPU (`mps`) PyTorch / `ffmpeg` / macOS `say` synthesis.
+2. Update `src/views/CinemaView.tsx` and `src/components/movie/LiveActionCinemaPlayer.tsx` so all 40 episodes (`Episode 01` through `Episode 40`):
+   - Stream their dedicated `/videos/cinema/episode_XX.mp4` in MP4 mode with `autoPlay`.
+   - Cycle through all 72 frames (`/images/cinema/episode_XX_acting/seq_01..08_frame_01..09.webp`) in interactive flipbook mode with English-only opening title on scene 0, English (`en`) TTS narration, and zero subtitle boxes.
+   - Display `[★] 100% 실사 마스터 촬영본 (72프레임 연속 연기)` badge across all 40 completed episodes.
+
+## Acceptance Criteria
+
+### Programmatic Asset Verification (Episodes 01–40)
+- [ ] All 40 MP4 files `public/videos/cinema/episode_01.mp4` through `public/videos/cinema/episode_40.mp4` exist, are non-empty (`> 3 MB` each), and pass `ffprobe` validation (`codec_name=h264`, `800x450`, `24fps`, `codec_name=aac`, `44100 Hz` stereo, duration `>= 60s`).
+- [ ] All 40 frame directories `public/images/cinema/episode_01_acting/` through `public/images/cinema/episode_40_acting/` each contain all 72 sequential `.webp` files (`seq_01_frame_01.webp` .. `seq_08_frame_09.webp`, 2,880 total files across 40 episodes), and within each episode all 72 frames have distinct SHA-256 hashes (zero duplicate placeholder copies).
+
+### Visual & Audio Rubric Verification
+- [ ] Characters in `episode_02_acting` through `episode_40_acting` exhibit realistic **8-head-tall adult human body proportions** (no 2-head-tall chibi/dwarf proportions or oversized heads) while retaining their card character's signature costume, headgear, and weapons/props.
+- [ ] Every video `episode_02.mp4` .. `episode_40.mp4` displays **only English text** on its opening title card (`0s–4s`), **zero subtitles or text overlays** during the 72-frame body, and plays **English spoken narration** mixed with BGM.
+
+### Frontend, Build & Mandatory Reporting Verification
+- [ ] `src/views/CinemaView.tsx` and `src/components/movie/LiveActionCinemaPlayer.tsx` map all episodes `1..40` to `/videos/cinema/episode_XX.mp4` and `/images/cinema/episode_XX_acting/seq_XX_frame_XX.webp`.
+- [ ] `npx tsc --noEmit` exits with code 0 and `npm run build` exits with code 0.
+- [ ] Mandatory Google Form completion report is submitted via `python3 skills/report-ex/scripts/submit_report.py`, recorded in `WORK_LOGS.md`, and committed locally via `git commit` (never `git push`).

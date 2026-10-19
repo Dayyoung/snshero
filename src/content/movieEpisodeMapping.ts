@@ -23,7 +23,7 @@ export const MOVIE_EPISODES: Record<number, MovieEpisodeMeta> = {
     titleKo: "눈보라 아래 두 서약",
     titleJa: "吹雪に誓う二つの契り",
     titleEn: "Two Vows Beneath the Blizzard",
-    videoId: "L01HUesRGvQ",
+    videoId: "P_hxWzd9WAE",
     arc: "설원의 서약과 운명의 탄생",
     arcEn: "Act I: Vows in the Blizzard & Birth of Fate",
     synopsisKo: "라이트헤븐 변방 엘윈 마을의 혹독한 눈보라 속, 몰락한 성기사단의 후예 알렉산다르와 발리안이 피투성이 순례자 헤르쿨과 마주하며 영원한 피의 맹세를 맺는다.",
@@ -39,7 +39,7 @@ export const MOVIE_EPISODES: Record<number, MovieEpisodeMeta> = {
     titleKo: "일곱 추적자의 맹세",
     titleJa: "七人の追跡者の誓い",
     titleEn: "Oath of the Seven Pursuers",
-    videoId: "Q4IgdCmLipI",
+    videoId: "tdPO8iucHh4",
     arc: "설원의 서약과 운명의 탄생",
     arcEn: "Act I: Vows in the Blizzard & Birth of Fate",
     synopsisKo: "섀도우렐름의 정예 척살단 일곱 추적자가 눈 덮인 산마루를 포위하고, 알렉산다르의 쌍검과 발리안의 마도창이 설원을 붉게 물들인다.",
@@ -55,7 +55,7 @@ export const MOVIE_EPISODES: Record<number, MovieEpisodeMeta> = {
     titleKo: "안개 절벽의 피",
     titleJa: "霧の崖の血",
     titleEn: "Blood on the Mist Cliff",
-    videoId: "tLlNTZYYBrg",
+    videoId: "0EzrpoaCflY",
     arc: "설원의 서약과 운명의 탄생",
     arcEn: "Act I: Vows in the Blizzard & Birth of Fate",
     synopsisKo: "안개 낀 천길 낭떠러지에서 추적자들을 유인한 두 전사. 벼랑 끝에서 펼쳐지는 혈투 속에서 희생과 생존의 갈림길이 열린다.",
@@ -71,7 +71,7 @@ export const MOVIE_EPISODES: Record<number, MovieEpisodeMeta> = {
     titleKo: "황야에서 자란 아이",
     titleJa: "荒野で育った子",
     titleEn: "The Child Raised in the Wastes",
-    videoId: "dqoDeA8DTvg",
+    videoId: "6Ke7olIPHQo",
     arc: "설원의 서약과 운명의 탄생",
     arcEn: "Act I: Vows in the Blizzard & Birth of Fate",
     synopsisKo: "황야의 거친 비바람 속에서 자라난 소년 카단. 스스로 은빛 단검을 벼리며 대지의 룬과 교감하는 잠재력을 드러내기 시작한다.",
@@ -87,7 +87,7 @@ export const MOVIE_EPISODES: Record<number, MovieEpisodeMeta> = {
     titleKo: "폭우 속의 유령",
     titleJa: "豪雨の中の亡霊",
     titleEn: "Phantom in the Downpour",
-    videoId: "if4xYWaXyTw",
+    videoId: "zP-aJLOGByo",
     arc: "설원의 서약과 운명의 탄생",
     arcEn: "Act I: Vows in the Blizzard & Birth of Fate",
     synopsisKo: "폭우가 쏟아지는 버려진 요새에서 마주친 유령 기사단. 잊혀진 왕국의 원혼들이 카단의 성흔을 알아보고 시험을 던진다.",
@@ -103,7 +103,7 @@ export const MOVIE_EPISODES: Record<number, MovieEpisodeMeta> = {
     titleKo: "별을 호흡하는 법",
     titleJa: "星を呼吸する方法",
     titleEn: "The Art of Breathing Stars",
-    videoId: "eX1nJf_95Hk",
+    videoId: "rib_k57b8hw",
     arc: "설원의 서약과 운명의 탄생",
     arcEn: "Act I: Vows in the Blizzard & Birth of Fate",
     synopsisKo: "밤하늘의 성좌와 마나 순환을 일치시키는 고대 비전 '성진호흡법(Star Breathing)'. 카단은 가슴 깊은 곳의 마력핵을 개방한다.",
@@ -119,7 +119,7 @@ export const MOVIE_EPISODES: Record<number, MovieEpisodeMeta> = {
     titleKo: "배신자들의 천막",
     titleJa: "裏切り者たちの天幕",
     titleEn: "The Traitors Camp",
-    videoId: "qbN4ngzVvIw",
+    videoId: "9Pa2fvZhu3k",
     arc: "설원의 서약과 운명의 탄생",
     arcEn: "Act I: Vows in the Blizzard & Birth of Fate",
     synopsisKo: "용병단 내부의 밀고자가 적군과 접선하는 사막 천막을 급습한 카단. 믿었던 동료의 배신 뒤에 숨은 잔혹한 진실을 목도한다.",
@@ -135,7 +135,7 @@ export const MOVIE_EPISODES: Record<number, MovieEpisodeMeta> = {
     titleKo: "붉은 갈기의 기수",
     titleJa: "紅いたてがみの騎手",
     titleEn: "Rider of the Crimson Mane",
-    videoId: "S8kgVJdYtP4",
+    videoId: "pKESHp3c5Vc",
     arc: "설원의 서약과 운명의 탄생",
     arcEn: "Act I: Vows in the Blizzard & Birth of Fate",
     synopsisKo: "붉은 갈기를 흩날리는 야생의 명마 '적갈기'와 카단의 운명적 교감. 거친 질주 끝에 선공권의 축복을 획득하고 전장으로 내달린다.",
@@ -663,16 +663,16 @@ export function getCharacterPortraitUrl(cardId?: number, speakerEn?: string, spe
 }
 
 /**
- * Returns the standardized animation MP4 filename (`SNSHero.com_E{epNum}_{titleKo}.mp4`)
+ * Returns the standardized animation MP4 filename (`SNSHero.com_E{epNum}_{titleEn}.mp4`)
  */
 export function getAnimationVideoFilename(epNum: number): string {
   const meta = MOVIE_EPISODES[epNum];
-  const titleKo = meta?.titleKo || `제${epNum}화`;
-  return `SNSHero.com_E${epNum}_${titleKo}.mp4`;
+  const titleEn = meta?.titleEn || `Episode ${epNum}`;
+  return `SNSHero.com_E${epNum}_${titleEn}.mp4`;
 }
 
 /**
- * Returns the standardized animation MP4 streaming/download path (`/video/animation/SNSHero.com_E{epNum}_{titleKo}.mp4`)
+ * Returns the standardized animation MP4 streaming/download path (`/video/animation/SNSHero.com_E{epNum}_{titleEn}.mp4`)
  */
 export function getAnimationVideoUrl(epNum: number): string {
   return `/video/animation/${getAnimationVideoFilename(epNum)}`;

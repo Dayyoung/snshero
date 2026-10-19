@@ -15257,3 +15257,13 @@
   - **전역 라우팅 및 12개 언어팩 통합**: `src/types.ts`, `src/routes.ts`, `src/App.tsx`(`safeLazy(loadViewSafely('CinemaView'))`), `src/views/HomeView.tsx`(4열 미디어 바로가기), `src/views/NovelView.tsx`, `src/views/MovieView.tsx`, `src/components/HomeCategoryHubModal.tsx`, `src/lib/translations/*.ts` 연동.
 - **검증 결과**: `npm run lint` (0 errors) 및 `npm run build` 통과 완료.
 - **구글 폼 보고**: 제출 완료 (`[개발] [실사 시네마 영화관] 70mm 아나모픽 실사 시네마관(CinemaView) 독립 메뉴 신설 및 제1화 실사 50컷·24fps MP4 구축 -> 작업완료`).
+
+
+### [2026-10-19] 40부작 애니메이션 영문 파일명 변경(`SNSHero.com_E1~E40_영문타이틀.mp4`) 및 유튜브 채널 40편 전수 업로드·단일 재생목록(`PLJiaxYk_nDsc`) 등록 완료
+- **작업 내역**:
+  1. `/public/video/animation` 디렉토리의 40개 에피소드 MP4 파일명을 모두 영문 타이틀(`SNSHero.com_E1_Two Vows Beneath the Blizzard.mp4` ~ `SNSHero.com_E40_One Who Is Not Called a Hero.mp4`)로 변경 완료.
+  2. `src/content/movieEpisodeMapping.ts`의 `getAnimationVideoFilename`, `getAnimationVideoUrl`가 `titleEn`을 사용하도록 수정하고, 신규 업로드된 유튜브 `videoId` 40개를 전수 매핑.
+  3. 유튜브 채널(`UC_xayYwKaB5TbH3eZXeREpA`)에 단일 공개 재생목록 **`SNSHero.com-Animation` (`PLJiaxYk_nDsc`)**을 생성하고, 1화(`P_hxWzd9WAE`)부터 40화(`J_MiF0nx8BU`)까지 40개 MP4 영상을 전수 공개(Public) 업로드 및 재생목록 추가 완료.
+  4. `src/views/MovieView.tsx`, `src/views/AnimeView.tsx`, `src/views/NovelView.tsx`의 `YOUTUBE_PLAYLIST_ID` 및 재생목록 링크를 `PLJiaxYk_nDsc`로 업데이트 완료.
+- **검증 결과**: YouTube Data API v3(`playlistItems`) 조회 결과 40개 영상 등록 확인 완료, `npx tsc --noEmit` 0 에러 통과.
+- **구글 폼 보고**: `submit_report.py` 제출 완료.

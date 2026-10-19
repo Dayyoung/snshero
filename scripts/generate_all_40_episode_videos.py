@@ -903,8 +903,8 @@ def main():
                 if not ep_data:
                     continue
                 theme = themes.get(ep_num, 'arctic-blizzard')
-                title_ko = ep_data.get('titleKo', f'제{ep_num}화').strip()
-                out_path = OUTPUT_DIR / f'SNSHero.com_E{ep_num}_{title_ko}.mp4'
+                title_en = ep_data.get('titleEn', f'Episode {ep_num}').strip()
+                out_path = OUTPUT_DIR / f'SNSHero.com_E{ep_num}_{title_en}.mp4'
                 future = executor.submit(
                     generate_single_episode,
                     ep_num, ep_data, theme, card_map, str(out_path), temp_base

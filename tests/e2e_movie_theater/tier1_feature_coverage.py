@@ -279,7 +279,7 @@ def run_tier1_tests() -> List[TestResult]:
     video_dir = REPO_ROOT / "public" / "video" / "animation"
     episodes_meta_map = load_movie_episodes_meta()
     expected_mp4s = [
-        video_dir / f"SNSHero.com_E{i}_{episodes_meta_map.get(i, {}).get('titleKo', f'제{i}화')}.mp4"
+        video_dir / f"SNSHero.com_E{i}_{episodes_meta_map.get(i, {}).get('titleEn', f'Episode {i}')}.mp4"
         for i in range(1, 41)
     ]
 

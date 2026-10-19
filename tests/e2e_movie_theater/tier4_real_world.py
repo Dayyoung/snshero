@@ -86,7 +86,7 @@ def run_tier4_tests() -> List[TestResult]:
         video_dir = REPO_ROOT / "public" / "video" / "animation"
         episodes_meta_map = load_movie_episodes_meta()
         expected_urls = [
-            f"/video/animation/SNSHero.com_E{i}_{episodes_meta_map.get(i, {}).get('titleKo', f'제{i}화')}.mp4"
+            f"/video/animation/SNSHero.com_E{i}_{episodes_meta_map.get(i, {}).get('titleEn', f'Episode {i}')}.mp4"
             for i in range(1, 41)
         ]
         existing_mp4_files = [f for f in expected_urls if (video_dir / f.split("/")[-1]).is_file()]
@@ -96,7 +96,7 @@ def run_tier4_tests() -> List[TestResult]:
                 test_id="T4.S2.1",
                 tier=4,
                 feature="Scenario 2: MP4 Stream & Download",
-                name="All 40 Episodes Map to Direct Streaming URL (/video/animation/SNSHero.com_E{ep}_{titleKo}.mp4)",
+                name="All 40 Episodes Map to Direct Streaming URL (/video/animation/SNSHero.com_E{ep}_{titleEn}.mp4)",
                 status="PASS" if len(existing_mp4_files) == 40 else "FAIL",
                 message=f"Verified {len(existing_mp4_files)} / 40 MP4 streaming URLs on disk"
                 if len(existing_mp4_files) == 40

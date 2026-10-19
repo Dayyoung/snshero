@@ -1,7 +1,7 @@
-# BRIEFING — 2026-10-18T21:40:30Z
+# BRIEFING — 2026-10-19T06:31:30Z
 
 ## Mission
-Overhaul the `/main` RPG mode (`src/views/KadanRpgView.tsx`, `src/content/kadanRpgStory.ts`, `src/content/kadanRpgNovelScript.ts`, `src/components/rpg/KadanNpcDialog.tsx`, and related RPG hooks/i18n) so that all 40 chapters follow the updated SNSHero webnovel/webtoon storyline, featuring interactive protagonist (Kadan) dialogue choices with tailored follow-up reactions, micro-bonuses, and a countdown auto-select timer, occasional random field encounters against Bandit (산적) and Thief (도둑) decks during tile movement, and 100% hands-free progression across all phases when Auto-Play is active.
+Generate the remaining 39 episodes (Episode 02 through Episode 40) of SNSHero's photorealistic Live-Action Cinema (`public/videos/cinema/episode_02.mp4` .. `episode_40.mp4` and 72 sequential acting frames per episode) using the exact same methodology established in Episode 01: realistic 8-head-tall adult human proportions preserving each game card character's iconic costume/weapons/props, an English-only opening title card, 72 continuous sequential frames played in order with zero subtitles/text overlays, and English (`en`) TTS narration over a cinematic soundtrack.
 
 ## 🔒 My Identity
 - Archetype: sentinel
@@ -14,6 +14,10 @@ Overhaul the `/main` RPG mode (`src/views/KadanRpgView.tsx`, `src/content/kadanR
 - Active Orchestrator: 0841dceb-1ed6-4895-a369-d9b2f167a28c (orchestrator_6)
 - Cron 1 (Progress Reporting): ff349f79-2c06-495e-9d17-dabd903b8544/task-26
 - Cron 2 (Liveness Check): ff349f79-2c06-495e-9d17-dabd903b8544/task-28
+- Active Orchestrator (Live-Action Cinema): 80e1d883-bfe3-4cb4-8345-3b1dd0b15b1d (orchestrator_7)
+- Cron 1 (Progress Reporting): 6aa4efa4-e302-4b46-87dc-f0a8cefa5bce/task-34
+- Cron 2 (Liveness Check): 6aa4efa4-e302-4b46-87dc-f0a8cefa5bce/task-36
+- Victory Auditor: [to be spawned on victory claim]
 
 ## 🔒 Key Constraints
 - No technical decisions — relay only
@@ -22,22 +26,22 @@ Overhaul the `/main` RPG mode (`src/views/KadanRpgView.tsx`, `src/content/kadanR
 - Never git push unless explicitly requested
 - Mandatory Google Form report submission upon completion
 - Keep context ultra-light
+- Route Summary: General path (teamwork_preview_orchestrator)
+- Zero-cost execution ($0 paid cloud APIs)
+- 8-head-tall adult human proportions for all characters (prevent chibi distortions)
+- 72 continuous sequential frames per episode with 0 subtitles/overlays on acting frames
+- English-only opening title card & English (en) TTS narration
 
 ## User Context
-- **Last user request**: Overhaul `/main` RPG mode (40 chapters synchronized with updated webnovel/webtoon storyline, interactive Kadan choices with reactions/bonuses & 5s/1.5s countdown timer, random field encounters with Bandit/Thief decks, 100% auto-play hands-free progression, DESIGN.md compliance, 0 banned classes, 44px+ touch targets).
+- **Last user request**: Generate remaining 39 episodes (Episode 02 through Episode 40) of photorealistic Live-Action Cinema (8-head-tall cast sheets, 72 sequential acting frames per episode, English-only opening title card, zero subtitles on acting frames, English TTS narration with BGM, zero paid APIs, full 40-episode `/cinema` integration, build & verification).
 - **Pending clarifications**: none
 - **Delivered results**:
-  - Task routed to General path (teamwork_preview_orchestrator).
-  - Orchestrator `orchestrator_6` dispatched (ID: `0841dceb-1ed6-4895-a369-d9b2f167a28c`).
-  - Monitoring crons (Progress Reporting & Liveness Check) registered.
-  - Phase 0 Survey complete across 3 Explorers; PROJECT.md compiled with 14 features and 5 milestones.
-  - Milestone 1 passed gate with 100% consensus (Reviewer 1, 2 APPROVE, Challenger 1, 2 APPROVE, Auditor CLEAN).
-  - Milestone 2 passed gate with 100% consensus (Reviewer 1, 2 APPROVE, Challenger 1, 2 APPROVE, Auditor CLEAN; commit `f0b14dc0`).
-  - Milestone 3 passed gate with 100% consensus in Iteration 2 (commit `e7446da6`).
-  - Milestone 4 (100% Hands-Free Auto-Progression & E2E Track) dispatched to Worker 4 (`worker_m4_1`).
+  - Task routed to General path (`teamwork_preview_orchestrator`).
+  - Orchestrator `orchestrator_7` spawned (conversation ID: `80e1d883-bfe3-4cb4-8345-3b1dd0b15b1d`).
+  - Progress reporting cron (`*/8 * * * *`, task-34) and liveness check cron (`*/10 * * * *`, task-36) registered.
 
 ## Project Status
-- **Phase**: in progress (Milestone 4 active)
+- **Phase**: in progress (Orchestrator dispatched)
 
 ## Victory Audit Status
 - **Triggered**: no
@@ -47,5 +51,7 @@ Overhaul the `/main` RPG mode (`src/views/KadanRpgView.tsx`, `src/content/kadanR
 ## Artifact Index
 - /Users/dayyoung/project/snshero/.agents/teamwork/ORIGINAL_REQUEST.md — Authoritative record of user requests
 - /Users/dayyoung/project/snshero/.agents/teamwork/BRIEFING.md — Sentinel persistent briefing
-- /Users/dayyoung/project/snshero/.agents/teamwork/orchestrator_6/ — Active Orchestrator working directory
-- /Users/dayyoung/project/snshero/PROJECT.md — Execution plan with 14 features and 5 milestones
+- /Users/dayyoung/project/snshero/.agents/teamwork/orchestrator_7/ — Active Orchestrator working directory
+- /Users/dayyoung/project/snshero/scripts/build_ep01_acting_cinema.py — Episode 01 reference builder
+- /Users/dayyoung/project/snshero/src/views/CinemaView.tsx — Cinema view frontend
+- /Users/dayyoung/project/snshero/src/components/movie/LiveActionCinemaPlayer.tsx — Cinema player frontend
