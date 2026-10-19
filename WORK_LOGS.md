@@ -15291,3 +15291,11 @@
   3. [ShopView.tsx](file:///Users/dayyoung/project/snshero/src/views/ShopView.tsx) 및 [HomeView.tsx](file:///Users/dayyoung/project/snshero/src/views/HomeView.tsx)에서 페이지 수 표기(`PDF e-Book (161 Pages)` / `PDF e-Book (147 Pages)`) 업데이트 및 브라우저 캐시 방지 쿼리(`?v=20261019`) 적용 완료.
 - **검증 결과**: 한글/영문 PDF 40화 목차 및 본문 생성 확인 완료, `npx tsc --noEmit` 0 에러 통과.
 - **구글 폼 보고**: `submit_report.py` 제출 완료.
+
+
+### [2026-10-19] 영문/한글 전체 소설(Part 1) PDF e-Book 디자인·서체·레이아웃 100% 통일 및 프로덕션 빌드(`dist/`) 반영 완료
+- **작업 내역**:
+  1. 영문 PDF(`public/snshero_part1.pdf`, 152 Pages) 생성 스크립트([generate_novel_en_pdf.py](file:///Users/dayyoung/project/snshero/scripts/generate_novel_en_pdf.py))의 서체(`Noto Serif KR` / `Noto Sans KR`), 행간(`line-height: 1.9`), 다크 에메랄드 표지, 등장인물 그리드, 2단 목차, 챕터 헤더 및 판권지 CSS를 한글 PDF([generate_novel_ko_pdf.py](file:///Users/dayyoung/project/snshero/scripts/generate_novel_ko_pdf.py), 161 Pages)와 100% 동일하게 통일하고 재생성 완료.
+  2. `vite preview`가 서빙하는 `dist/` 프로덕션 번들에 최신 [ShopView.tsx](file:///Users/dayyoung/project/snshero/src/views/ShopView.tsx) 및 [HomeView.tsx](file:///Users/dayyoung/project/snshero/src/views/HomeView.tsx)의 캐시 방지 쿼리(`?v=20261019_v2`)와 신규 PDF 파일이 즉시 반영되도록 `npm run build` 실행 완료.
+- **검증 결과**: `npm run build` 성공 및 영문/한글 PDF 1~4페이지 시각 레이아웃 일치 확인.
+- **구글 폼 보고**: `submit_report.py` 제출 완료.

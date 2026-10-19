@@ -11,7 +11,7 @@ HTML_TEMPLATE_EN = """<!DOCTYPE html>
 <title>SNSHero: Kadan & Arcane Echoes (Part 1)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
   @page {
     size: A4;
@@ -27,11 +27,13 @@ HTML_TEMPLATE_EN = """<!DOCTYPE html>
   body {
     margin: 0;
     padding: 0;
-    font-family: 'Noto Serif', Georgia, 'Times New Roman', serif;
+    font-family: 'Noto Serif KR', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'AppleGothic', serif;
     color: #24292f;
     background-color: #ffffff;
     font-size: 10.5pt;
-    line-height: 1.8;
+    line-height: 1.9;
+    letter-spacing: -0.01em;
+    word-break: keep-all;
     overflow-wrap: break-word;
   }
 
@@ -66,7 +68,7 @@ HTML_TEMPLATE_EN = """<!DOCTYPE html>
     background: rgba(16, 185, 129, 0.2);
     border: 1px solid #10b981;
     color: #34d399;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Noto Sans KR', sans-serif;
     font-size: 8.5pt;
     font-weight: 700;
     letter-spacing: 0.15em;
@@ -75,7 +77,7 @@ HTML_TEMPLATE_EN = """<!DOCTYPE html>
   }
 
   .cover-volume {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Noto Sans KR', sans-serif;
     font-size: 8.5pt;
     color: #a7f3d0;
     letter-spacing: 0.1em;
@@ -88,7 +90,7 @@ HTML_TEMPLATE_EN = """<!DOCTYPE html>
   }
 
   .cover-series {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Noto Sans KR', sans-serif;
     font-size: 11pt;
     letter-spacing: 0.3em;
     color: #a7f3d0;
@@ -98,7 +100,7 @@ HTML_TEMPLATE_EN = """<!DOCTYPE html>
   }
 
   .cover-title {
-    font-family: 'Noto Serif', serif;
+    font-family: 'Noto Serif KR', serif;
     font-size: 32pt;
     font-weight: 700;
     line-height: 1.25;
@@ -108,7 +110,7 @@ HTML_TEMPLATE_EN = """<!DOCTYPE html>
   }
 
   .cover-subtitle-kadan {
-    font-family: 'Noto Serif', serif;
+    font-family: 'Noto Serif KR', serif;
     font-size: 22pt;
     font-weight: 600;
     color: #6ee7b7;
@@ -116,7 +118,7 @@ HTML_TEMPLATE_EN = """<!DOCTYPE html>
   }
 
   .cover-subtitle {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Noto Sans KR', sans-serif;
     font-size: 12.5pt;
     font-weight: 500;
     color: #d1fae5;
@@ -134,7 +136,7 @@ HTML_TEMPLATE_EN = """<!DOCTYPE html>
 
   .cover-desc {
     font-size: 10pt;
-    line-height: 1.85;
+    line-height: 1.9;
     color: #e2e8f0;
     max-width: 500px;
     margin: 0 auto;
@@ -146,7 +148,7 @@ HTML_TEMPLATE_EN = """<!DOCTYPE html>
     align-items: flex-end;
     border-top: 1px solid rgba(16, 185, 129, 0.4);
     padding-top: 18px;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Noto Sans KR', sans-serif;
     font-size: 9pt;
     color: #94a3b8;
   }
@@ -175,7 +177,7 @@ HTML_TEMPLATE_EN = """<!DOCTYPE html>
   }
 
   .section-title {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Noto Sans KR', sans-serif;
     font-size: 16pt;
     font-weight: 700;
     color: #0f172a;
@@ -185,7 +187,7 @@ HTML_TEMPLATE_EN = """<!DOCTYPE html>
   .section-subtitle {
     font-size: 9pt;
     color: #64748b;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Noto Sans KR', sans-serif;
   }
 
   .char-grid {
@@ -203,7 +205,7 @@ HTML_TEMPLATE_EN = """<!DOCTYPE html>
   }
 
   .char-name {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Noto Sans KR', sans-serif;
     font-size: 11pt;
     font-weight: 700;
     color: #0f172a;
@@ -211,7 +213,7 @@ HTML_TEMPLATE_EN = """<!DOCTYPE html>
   }
 
   .char-role {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Noto Sans KR', sans-serif;
     font-size: 8.5pt;
     color: #059669;
     font-weight: 600;
@@ -248,7 +250,7 @@ HTML_TEMPLATE_EN = """<!DOCTYPE html>
   }
 
   .toc-num {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Noto Sans KR', sans-serif;
     font-weight: 700;
     color: #059669;
     margin-right: 8px;
@@ -277,7 +279,7 @@ HTML_TEMPLATE_EN = """<!DOCTYPE html>
   }
 
   .chapter-badge {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Noto Sans KR', sans-serif;
     font-size: 8.5pt;
     font-weight: 700;
     color: #059669;
@@ -287,7 +289,7 @@ HTML_TEMPLATE_EN = """<!DOCTYPE html>
   }
 
   .chapter-title {
-    font-family: 'Noto Serif', serif;
+    font-family: 'Noto Serif KR', serif;
     font-size: 16.5pt;
     font-weight: 700;
     color: #0f172a;
@@ -296,7 +298,7 @@ HTML_TEMPLATE_EN = """<!DOCTYPE html>
   }
 
   .chapter-meta {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Noto Sans KR', sans-serif;
     font-size: 8.5pt;
     color: #64748b;
     display: flex;
@@ -314,7 +316,7 @@ HTML_TEMPLATE_EN = """<!DOCTYPE html>
   .chapter-body p {
     margin: 0 0 1.15em 0;
     text-align: justify;
-    line-height: 1.85;
+    line-height: 1.9;
   }
 
   .chapter-body p.dialogue {
@@ -332,7 +334,7 @@ HTML_TEMPLATE_EN = """<!DOCTYPE html>
     justify-content: center;
     align-items: center;
     text-align: center;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Noto Sans KR', sans-serif;
   }
 
   .colophon-box {

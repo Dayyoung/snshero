@@ -737,7 +737,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
           <div className="relative w-full h-full md:max-w-6xl md:max-h-[92vh] bg-[#fdfcfc] rounded-none overflow-hidden border border-[rgba(15,0,0,0.12)]">
             {/* iframe */}
             <iframe
-              src={language === 'ko' ? "/snshero_part1_ko.pdf?v=20261019" : "/snshero_part1.pdf?v=20261019"}
+              src={language === 'ko' ? "/snshero_part1_ko.pdf?v=20261019_v2" : "/snshero_part1.pdf?v=20261019_v2"}
               title="SNSHero Part 1 PDF"
               className="w-full h-full border-none"
             />
