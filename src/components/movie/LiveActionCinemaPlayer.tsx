@@ -436,51 +436,20 @@ export const LiveActionCinemaPlayer: React.FC<LiveActionCinemaPlayerProps> = ({
       : activeDialogue?.speakerKo || activeDialogue?.speakerEn;
   const speakerPortrait = activeSpeaker ? getCharacterPortraitUrl(activeSpeaker) : undefined;
 
-  // Map Episode 1 scenes to the 8 continuous 9-frame acting flipbook sequences (72 sequential poses)
+  // Map any episode's scenes across the 8 continuous 9-frame acting flipbook sequences (72 sequential poses)
   const getActiveCinemaFrameUrl = (): string => {
     if (usingFallbackImg) return currentScene.fallbackImageUrl;
-    if (episodeNumber === 1 && currentSceneIdx > 0) {
-      let seqNum = 1;
-      let startFrame = 1;
-      let endFrame = 9;
-      if (currentSceneIdx <= 6) {
-        seqNum = 1;
-        startFrame = currentSceneIdx <= 3 ? 1 : 5;
-        endFrame = currentSceneIdx <= 3 ? 5 : 9;
-      } else if (currentSceneIdx <= 12) {
-        seqNum = 2;
-        startFrame = currentSceneIdx <= 9 ? 1 : 5;
-        endFrame = currentSceneIdx <= 9 ? 5 : 9;
-      } else if (currentSceneIdx <= 19) {
-        seqNum = 3;
-        startFrame = currentSceneIdx <= 15 ? 1 : 5;
-        endFrame = currentSceneIdx <= 15 ? 5 : 9;
-      } else if (currentSceneIdx <= 25) {
-        seqNum = 4;
-        startFrame = currentSceneIdx <= 22 ? 1 : 5;
-        endFrame = currentSceneIdx <= 22 ? 5 : 9;
-      } else if (currentSceneIdx <= 31) {
-        seqNum = 5;
-        startFrame = currentSceneIdx <= 28 ? 1 : 5;
-        endFrame = currentSceneIdx <= 28 ? 5 : 9;
-      } else if (currentSceneIdx <= 37) {
-        seqNum = 6;
-        startFrame = currentSceneIdx <= 34 ? 1 : 5;
-        endFrame = currentSceneIdx <= 34 ? 5 : 9;
-      } else if (currentSceneIdx <= 43) {
-        seqNum = 7;
-        startFrame = currentSceneIdx <= 40 ? 1 : 5;
-        endFrame = currentSceneIdx <= 40 ? 5 : 9;
-      } else {
-        seqNum = 8;
-        startFrame = currentSceneIdx <= 46 ? 1 : 5;
-        endFrame = currentSceneIdx <= 46 ? 5 : 9;
-      }
-      const span = Math.max(1, endFrame - startFrame);
-      const frameIdx = Math.min(9, Math.max(1, Math.round(startFrame + sceneProgress * span)));
-      return `/images/cinema/episode_01_acting/seq_${String(seqNum).padStart(2, '0')}_frame_${String(frameIdx).padStart(2, '0')}.webp`;
+    if (currentSceneIdx === 0) {
+      const padEp = String(episodeNumber).padStart(2, '0');
+      return `/images/cinema/episode_${padEp}_acting/seq_01_frame_01.webp`;
     }
-    return currentScene.cinemaImageUrl;
+    const padEp = String(episodeNumber).padStart(2, '0');
+    const totalActingScenes = Math.max(1, scenes.length - 1);
+    const normalizedPos = ((currentSceneIdx - 1 + sceneProgress) / totalActingScenes) * 72;
+    const globalFrameIdx = Math.min(71, Math.max(0, Math.floor(normalizedPos)));
+    const seqNum = Math.floor(globalFrameIdx / 9) + 1;
+    const frameIdx = (globalFrameIdx % 9) + 1;
+    return `/images/cinema/episode_${padEp}_acting/seq_${String(seqNum).padStart(2, '0')}_frame_${String(frameIdx).padStart(2, '0')}.webp`;
   };
 
   return (
@@ -499,15 +468,9 @@ export const LiveActionCinemaPlayer: React.FC<LiveActionCinemaPlayerProps> = ({
           <span className="text-stone-300 font-bold">
             EP.{String(episodeNumber).padStart(2, '0')} · SHOT {String(currentSceneIdx + 1).padStart(2, '0')}/{String(scenes.length).padStart(2, '0')}
           </span>
-          {episodeNumber === 1 ? (
-            <span className="px-1.5 py-0.5 rounded-sm bg-emerald-950/90 text-emerald-300 border border-emerald-500/40 text-[10px]">
-              [v] 72프레임 연속 동작 플립북
-            </span>
-          ) : (
-            <span className="px-1.5 py-0.5 rounded-sm bg-sky-950/90 text-sky-300 border border-sky-500/40 text-[10px]">
-              [70mm 아나모픽 LUT 리마스터 모드]
-            </span>
-          )}
+          <span className="px-1.5 py-0.5 rounded-sm bg-emerald-950/90 text-emerald-300 border border-emerald-500/40 text-[10px]">
+            [v] 8등신 실사 72프레임 연속 동작 플립북
+          </span>
         </div>
 
         {/* LUT Preset Switcher */}
@@ -602,8 +565,8 @@ export const LiveActionCinemaPlayer: React.FC<LiveActionCinemaPlayerProps> = ({
           </div>
         )}
 
-        {/* ── Theatrical Cinema Subtitle Overlay (Disabled for Episode 1 per user request: Narration ONLY, Zero Subtitles) ── */}
-        {episodeNumber !== 1 && currentSceneIdx > 0 && (
+        {/* ── Theatrical Cinema Subtitle Overlay (Disabled across all episodes per user request: Narration ONLY, Zero Subtitles) ── */}
+        {false && currentSceneIdx > 0 && (
           <div
             onClick={(e) => e.stopPropagation()}
             className="absolute inset-x-3 sm:inset-x-10 bottom-8 sm:bottom-10 z-20 flex flex-col items-center pointer-events-none"

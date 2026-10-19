@@ -172,15 +172,9 @@ export const CinemaView: React.FC<CinemaViewProps> = ({
     return { main: `Ep.${epNum} ${meta.titleEn}`, sub: meta.titleKo };
   };
 
-  const mp4Url =
-    currentEpisodeNum === 1
-      ? '/videos/cinema/episode_01.mp4?v=8head72en'
-      : `/videos/episodes/episode_${String(currentEpisodeNum).padStart(2, '0')}.mp4`;
-
-  const posterUrl =
-    currentEpisodeNum === 1
-      ? '/images/cinema/episode_01_acting/seq_01_frame_01.webp'
-      : `/images/webtoon/episode_${String(currentEpisodeNum).padStart(2, '0')}/scene_00.webp`;
+  const padEp = String(currentEpisodeNum).padStart(2, '0');
+  const mp4Url = `/videos/cinema/episode_${padEp}.mp4?v=8head72en`;
+  const posterUrl = `/images/cinema/episode_${padEp}_acting/seq_01_frame_01.webp?v=8head72en`;
 
   return (
     <div className="flex flex-col min-h-screen bg-[#fdfcfc] text-[#201d1d] font-mono px-0 py-2 sm:py-3 pb-32 max-w-none mx-auto w-full overflow-x-hidden">
@@ -308,12 +302,14 @@ export const CinemaView: React.FC<CinemaViewProps> = ({
               autoPlay
               controls
               playsInline
+              onError={(e) => {
+                const vid = e.currentTarget;
+                const fallbackSrc = `/videos/episodes/episode_${padEp}.mp4`;
+                if (!vid.src.endsWith(fallbackSrc)) {
+                  vid.src = fallbackSrc;
+                }
+              }}
               className="w-full h-full object-cover"
-              style={
-                currentEpisodeNum > 1
-                  ? { filter: 'contrast(1.16) saturate(0.82) sepia(0.10) brightness(0.95)' }
-                  : undefined
-              }
               poster={posterUrl}
             >
               <p className="text-white text-xs font-mono p-4">
@@ -348,17 +344,10 @@ export const CinemaView: React.FC<CinemaViewProps> = ({
             <span className="font-mono text-xs font-bold px-2 py-1 rounded-sm bg-[#201d1d] text-amber-400">
               실사 시네마 EP.{String(currentEpisodeNum).padStart(2, '0')}
             </span>
-            {currentEpisodeNum === 1 ? (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[11px] font-bold bg-amber-50 text-amber-900 border border-amber-400">
-                <Sparkles size={12} />
-                [★] 100% 실사 마스터 촬영본
-              </span>
-            ) : (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[11px] font-bold bg-sky-50 text-sky-900 border border-sky-300">
-                <CheckCircle2 size={12} />
-                [70mm LUT 리마스터 상영]
-              </span>
-            )}
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[11px] font-bold bg-amber-50 text-amber-900 border border-amber-400">
+              <Sparkles size={12} />
+              [★] 100% 실사 마스터 촬영본 (72프레임 연속 연기)
+            </span>
             <span className="text-xs font-bold text-[#201d1d] font-mono">
               {getEpisodeTitle(currentEpisodeNum).main}
               {getEpisodeTitle(currentEpisodeNum).sub && (
@@ -404,7 +393,7 @@ export const CinemaView: React.FC<CinemaViewProps> = ({
               className="min-h-[44px] flex items-center gap-1.5 px-3 py-1.5 rounded-sm border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] hover:bg-[#f1eeee] text-[#201d1d] text-xs font-bold font-mono transition-colors cursor-pointer"
             >
               <Film size={14} className="text-purple-800" />
-              <span>[🎬 무비 {currentEpisodeNum}화]</span>
+              <span>[🎬 애니메이션 {currentEpisodeNum}화]</span>
             </button>
 
             {/* Prev / Next Ep */}
@@ -481,32 +470,17 @@ export const CinemaView: React.FC<CinemaViewProps> = ({
                 filterMode === 'mastered' ? 'bg-[#201d1d] text-[#fdfcfc] font-bold' : 'text-[#201d1d] hover:bg-[#f1eeee]'
               )}
             >
-              [100% 실사 마스터 (EP.01)]
-            </button>
-            <button
-              type="button"
-              onClick={() => setFilterMode('remastered')}
-              className={cn(
-                'min-h-[44px] px-3 py-1.5 rounded-sm transition-colors cursor-pointer',
-                filterMode === 'remastered' ? 'bg-[#201d1d] text-[#fdfcfc] font-bold' : 'text-[#201d1d] hover:bg-[#f1eeee]'
-              )}
-            >
-              [70mm LUT 리마스터 (EP.02~40)]
+              [★ 100% 실사 마스터 (72프레임 연속 연기)]
             </button>
           </div>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-8 gap-2">
           {Array.from({ length: TOTAL_EPISODES }, (_, i) => i + 1)
-            .filter((ep) => {
-              if (filterMode === 'mastered') return ep === 1;
-              if (filterMode === 'remastered') return ep > 1;
-              return true;
-            })
             .map((ep) => {
               const isSelected = ep === currentEpisodeNum;
               const isClaimed = Boolean(claimedRewards[ep]);
-              const isMasterLive = ep === 1;
+              const isMasterLive = true;
 
               return (
                 <button
@@ -598,7 +572,7 @@ export const CinemaView: React.FC<CinemaViewProps> = ({
                 {Array.from({ length: TOTAL_EPISODES }, (_, i) => i + 1).map((ep) => {
                   const isSelected = ep === currentEpisodeNum;
                   const isClaimed = Boolean(claimedRewards[ep]);
-                  const isMaster = ep === 1;
+                  const isMaster = true;
 
                   return (
                     <button
