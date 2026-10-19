@@ -2,6 +2,21 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-19 12:37 KST] [제1화(눈보라 아래 두 서약) 실제 카드 캐릭터 외형 100% 일치 웹툰 50컷 작화 & episode_01.mp4 전면 개편] 카드 캐릭터 레퍼런스 시트 기반 장소·제스처·소품 일체형 웹툰 50컷 및 동영상 재제작 완료
+- **작업 개요**:
+  - 기존 정면 부동자세 스탠딩 합성 방식을 탈피하고, `public/seat/*.png`의 실제 카드 캐릭터 외형(`Aleksandar`, `Balian`, `Elwin`, `Ysela`, `Hercul`, `Lucian`, `Death Knight Artus`, `Kadan`, `Ignis`)과 100% 동일한 갑옷·투구·왕관·머리색·무기를 착용한 인물들이 제1화 대사 맥락에 맞는 장소에서 직접 행동(제스처)하고 소품(찻잔, 황금 인장, 부러진 흉갑, 푸른 룬 은빛 단검 2자루, 보리 수프, 외나무다리 밧줄 절단, 밀 씨앗 파종 등)과 상호작용하는 50개 전용 웹툰 컷신(`scene_00.webp` ~ `scene_49.webp`) 및 `episode_01.mp4` 동영상으로 전면 개편.
+- **소유 파일 및 주요 구현/수정 내역**:
+  1. `public/images/webtoon/raw_ep01_sheets/ep01_character_ref_sheet.png`:
+     - 제1화 등장 카드 캐릭터 9명의 실제 카드 일러스트(`public/seat/*.png`)와 특징을 집대성한 3x3 캐릭터 레퍼런스 시트 생성.
+  2. `public/images/webtoon/raw_ep01_sheets/sheet_01.png` ~ `sheet_06.png` & `scripts/build_ep01_webtoon_from_sheets.py`:
+     - `ep01_character_ref_sheet.png`를 직접 레퍼런스 이미지로 입력하여 생성한 6장의 3x3 고해상도 웹툰 스토리보드 시트에서 50개의 컷(`scene_00.webp` ~ `scene_49.webp` 및 `ep01_blizzard_vow.webp`/`.jpg`)을 슬라이싱·프레이밍하여 1화 전 구간을 실제 웹툰 작화로 교체.
+  3. `public/videos/episodes/episode_01.mp4`:
+     - 카드 캐릭터 외형이 반영된 신규 50컷 웹툰 시퀀스로 제1화 시네마틱 동영상(`435.3s`, `10.97 MB`, `h264/aac@44100Hz`) 재인코딩 완료.
+- **검증 결과**:
+  - `public/images/webtoon/episode_01/scene_00.webp` ~ `scene_49.webp`: 50/50개 고유 해시 및 용량 제한(`<= 75KB`) 100% 충족.
+  - `public/videos/episodes/episode_01.mp4`: 정상 렌더링 및 스트리밍 검증 완료.
+  - 연동 구글 폼 완료 보고서 제출 완료 (`submit_report.py`).
+
 ## [2026-10-19 11:42 KST] [개선된 투명 누끼 캐릭터 기반 40화 전체 웹툰 씬(2,049장)·MP4 동영상(40편) 전수 재생성 & MyDeckView 카드 선택 모달 헤더 최소화] 40개 에피소드 MP4 알파 마스크 합성 렌더링 및 덱 슬롯 카드 선택 모달 스크롤 영역 극대화 완료
 - **작업 개요**:
   1. 개선된 투명 배경(누끼) 캐릭터 스프라이트를 반영하여 1화~40화 전체 웹툰 씬(`2,049장` WebP)과 에피소드 MP4 동영상(`episode_01.mp4` ~ `episode_40.mp4`, 총 40편)을 전수 재생성.
