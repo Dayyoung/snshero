@@ -241,6 +241,14 @@ export const VIEW_ROUTES: Record<ViewType, RouteMeta> = {
     descriptionKo: '공식 3D 풀버전 스토리 무비를 연속 시청하고 보상을 획득하세요.',
     descriptionEn: 'Stream full cinematic story movies and earn watch rewards.',
   },
+  cinema: {
+    path: '/cinema',
+    aliases: ['/live-cinema', '/imax'],
+    titleKo: '실사 시네마관 (70mm Live-Action Cinema) - SNS히어로',
+    titleEn: '70mm Live-Action Cinema Theater - SNSHero',
+    descriptionKo: '정통 다크 판타지 블록버스터 실사(Live-Action) 이미지 기반의 70mm 아나모픽 시네마 영화를 감상하세요.',
+    descriptionEn: 'Experience the photorealistic 70mm anamorphic live-action dark fantasy cinema series.',
+  },
   mall: {
     path: '/mall',
     titleKo: '공식 굿즈 몰 (Mall) - SNS히어로',

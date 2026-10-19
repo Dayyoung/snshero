@@ -2940,4 +2940,8 @@ export const zhCN = {
     home_shortcut_novel: '网文小说',
     home_shortcut_webtoon: '条漫',
     home_shortcut_movie: '电影',
+    home_shortcut_cinema: '真人影院',
+    cinema_title: 'SNSHero 70mm 真人电影院',
+    cinema_subtitle: '采用暗黑奇幻真人实拍剧照与70mm变形宽银幕调色打造的电影院。',
+    cinema_list: '影院剧集列表',
 };

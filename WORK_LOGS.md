@@ -15227,3 +15227,12 @@
      - `npx tsc --noEmit`: 0 TypeScript errors (Exit Code 0).
      - `npm run build`: 프로덕션 번들링 클린 성공 (Exit Code 0).
      - 연동 구글 폼 완료 보고서 제출 완료 (`submit_report.py`).
+
+## [2026-10-19 14:16 KST] 70mm 아나모픽 실사 시네마관 (`CinemaView`) 독립 메뉴 신설 및 제1화 실사 50컷 · 24fps MP4 구축
+- **작업 내용**:
+  - **제1화("눈보라 아래 두 서약") 100% 실사 시네마 에셋 구축**: 정통 다크 판타지 블록버스터 실사 룩(ARRI Alexa 65, 70mm Panavision Anamorphic, 35mm 필름 그레인, 2.39:1 시네마스코프)으로 6종의 3x3 실사 마스터 시트(`public/images/cinema/raw_ep01_sheets/sheet_01..06.png`) 및 50개의 실사 스틸(`public/images/cinema/episode_01/scene_00..49.webp`) 생성 (`scripts/build_ep01_cinema_from_sheets.py`).
+  - **24fps 실사 시네마 MP4 렌더링**: 서브픽셀 카메라 달리/핸드헬드 모션, 아나모픽 블루 렌즈 플레어, 극장판 하단 자막 바, 44.1kHz 다크 판타지 사운드트랙 및 성우 TTS 보이스오버를 결합한 `public/videos/cinema/episode_01.mp4` (25.26MB, 6,984 프레임) 생성 (`scripts/generate_cinema_videos.py`).
+  - **인앱 실사 플레이어 & 독립 시네마관 뷰 구현**: `src/components/movie/LiveActionCinemaPlayer.tsx` (4종 70mm LUT 프리셋 스위처, 2.39:1 레터박스, 극장용 자막 바) 및 `src/views/CinemaView.tsx` (실사 인터랙티브 상영관 + 24fps MP4 상영/다운로드 + 관람 시 100 SNS 보상 로컬스토리지 자동 지급) 신규 개발.
+  - **전역 라우팅 및 12개 언어팩 통합**: `src/types.ts`, `src/routes.ts`, `src/App.tsx`(`safeLazy(loadViewSafely('CinemaView'))`), `src/views/HomeView.tsx`(4열 미디어 바로가기), `src/views/NovelView.tsx`, `src/views/MovieView.tsx`, `src/components/HomeCategoryHubModal.tsx`, `src/lib/translations/*.ts` 연동.
+- **검증 결과**: `npm run lint` (0 errors) 및 `npm run build` 통과 완료.
+- **구글 폼 보고**: 제출 완료 (`[개발] [실사 시네마 영화관] 70mm 아나모픽 실사 시네마관(CinemaView) 독립 메뉴 신설 및 제1화 실사 50컷·24fps MP4 구축 -> 작업완료`).

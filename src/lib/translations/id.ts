@@ -2886,4 +2886,8 @@ export const id = {
     home_shortcut_novel: 'Novel Web',
     home_shortcut_webtoon: 'Webtoon',
     home_shortcut_movie: 'Film',
+    home_shortcut_cinema: 'Sinema',
+    cinema_title: 'Sinema Live-Action 70mm SNSHero',
+    cinema_subtitle: 'Sinema aksi nyata fantasi gelap fotorealistik dengan gradasi warna anamorfik 70mm.',
+    cinema_list: 'Daftar Episode',
 };

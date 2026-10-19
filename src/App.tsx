@@ -209,6 +209,7 @@ const MallView = safeLazy(loadViewSafely('MallView'), 'MallView');
 const PacpikView = safeLazy(loadViewSafely('PacpikView'), 'PacpikView');
 const BenchmarkView = safeLazy(loadViewSafely('BenchmarkView'), 'BenchmarkView');
 const GwentView = safeLazy(loadViewSafely('GwentView'), 'GwentView');
+const CinemaView = safeLazy(loadViewSafely('CinemaView'), 'CinemaView');
 const WebMcpActiveBadge = safeLazy(
   loadComponentSafely('WebMcpActiveBadge'),
   'WebMcpActiveBadge'
@@ -6264,6 +6265,17 @@ function AppContent() {
             showCustomAlert={showCustomAlert}
           />
         );
+      case 'cinema':
+        return (
+          <CinemaView
+            language={language}
+            onNavigate={setView}
+            playSfx={playSfx}
+            currentSeason={currentSeason}
+            updateSns={updateSns}
+            showCustomAlert={showCustomAlert}
+          />
+        );
       case 'mall':
         return (
           <MallView
@@ -6404,7 +6416,7 @@ function AppContent() {
   }
 
     const isPlayingBattle = (view === 'play' && (playGameState === 'playing' || playGameState === 'searching' || playGameState === 'preMatch')) || view === 'card-play' || (view === 'main' && isRpgInBattle);
-    const showNavbar = (view !== 'reddit' && view !== 'bench' && view !== 'gwent' && view !== 'admin' && view !== 'landing' && view !== 'cartoonBook' && view !== 'novel' && view !== 'webtoon' && view !== 'anime' && view !== 'movie' && view !== 'card-play' && !isPlayingBattle) && !isGlobalPopupOpen;
+    const showNavbar = (view !== 'reddit' && view !== 'bench' && view !== 'gwent' && view !== 'admin' && view !== 'landing' && view !== 'cartoonBook' && view !== 'novel' && view !== 'webtoon' && view !== 'anime' && view !== 'movie' && view !== 'cinema' && view !== 'card-play' && !isPlayingBattle) && !isGlobalPopupOpen;
     const isMainTab = view === 'home' || view === 'mydeck' || view === 'shop' || view === 'play' || view === 'main';
     
 
@@ -6453,7 +6465,7 @@ function AppContent() {
         {/* Main Content */}
         <div className={cn(
           "flex-1 min-w-0 w-full mx-auto relative flex flex-col transition-colors duration-200",
-          (view === 'webtoon' || view === 'movie' || view === 'anime' || view === 'novel')
+          (view === 'webtoon' || view === 'movie' || view === 'cinema' || view === 'anime' || view === 'novel')
             ? "max-w-none border-x-0"
             : "max-w-[1024px] border-x border-[var(--ui-line)]",
           isPlayingBattle

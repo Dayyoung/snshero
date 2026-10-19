@@ -222,6 +222,18 @@ export const HomeCategoryHubModal: React.FC<HomeCategoryHubModalProps> = ({
  action: () => onNavigate('movie'),
  },
  {
+ id: 'cinema',
+ icon: Film,
+ titleKo: '실사 시네마관 (70mm Live-Action)',
+ titleEn: '70mm Live-Action Cinema',
+ descKo: '정통 다크 판타지 블록버스터 실사 영화 & 24fps MP4 상영관',
+ descEn: 'Photorealistic 70mm anamorphic live-action cinema release',
+ badgeKo: '실사개봉',
+ badgeEn: 'Live',
+ badgeTone: 'amber',
+ action: () => onNavigate('cinema'),
+ },
+ {
  id: 'codex',
  icon: Compass,
  titleKo: '세계관 & 캐릭터 도감',

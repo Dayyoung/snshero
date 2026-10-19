@@ -2886,4 +2886,8 @@ export const fr = {
     home_shortcut_novel: 'Roman Web',
     home_shortcut_webtoon: 'Webtoon',
     home_shortcut_movie: 'Film',
+    home_shortcut_cinema: 'Cinéma',
+    cinema_title: 'Cinéma Live-Action 70mm SNSHero',
+    cinema_subtitle: 'Cinéma de dark fantasy en prise de vues réelles avec étalonnage anamorphique 70mm.',
+    cinema_list: 'Liste des épisodes',
 };

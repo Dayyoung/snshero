@@ -816,6 +816,24 @@ export const MovieView: React.FC<MovieViewProps> = ({
               <span>[🖼️ 웹툰 {currentEpisodeNum}화]</span>
             </button>
 
+            <button
+              type="button"
+              onClick={() => {
+                triggerHaptic('light');
+                if (typeof window !== 'undefined') {
+                  const url = new URL(window.location.href);
+                  url.searchParams.set('ep', currentEpisodeNum.toString());
+                  window.history.replaceState(window.history.state, '', url.pathname + url.search);
+                }
+                onNavigate('cinema');
+              }}
+              className="min-h-[44px] flex items-center gap-1.5 px-3 py-1.5 rounded-sm border border-[#201d1d] bg-[#201d1d] hover:bg-stone-800 text-amber-400 text-xs font-bold font-mono transition-colors cursor-pointer"
+              title={`제 ${currentEpisodeNum}화 실사 시네마관 이동`}
+            >
+              <Sparkles size={14} className="text-amber-400" />
+              <span>[🎥 실사 시네마 {currentEpisodeNum}화]</span>
+            </button>
+
             {/* Direct YouTube Link Button */}
             <a
               href={getDirectYouTubeWatchUrl(currentEpisodeNum)}

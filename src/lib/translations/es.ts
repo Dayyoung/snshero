@@ -2886,4 +2886,8 @@ export const es = {
     home_shortcut_novel: 'Novela Web',
     home_shortcut_webtoon: 'Webtoon',
     home_shortcut_movie: 'Película',
+    home_shortcut_cinema: 'Cine',
+    cinema_title: 'Cine Live-Action 70mm SNSHero',
+    cinema_subtitle: 'Cine de fantasía oscura de acción real con gradación de color anamórfica de 70mm.',
+    cinema_list: 'Lista de episodios',
 };

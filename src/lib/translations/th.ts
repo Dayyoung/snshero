@@ -2881,4 +2881,8 @@ export const th = {
     home_shortcut_novel: 'นิยายเว็บ',
     home_shortcut_webtoon: 'เว็บตูน',
     home_shortcut_movie: 'ภาพยนตร์',
+    home_shortcut_cinema: 'ซีนีม่า',
+    cinema_title: 'โรงภาพยนตร์คนแสดง 70mm SNSHero',
+    cinema_subtitle: 'ภาพยนตร์ดาร์กแฟนตาซีคนแสดงจริงพร้อมการเกรดสีอนามอร์ฟิก 70mm',
+    cinema_list: 'รายการตอน',
 };

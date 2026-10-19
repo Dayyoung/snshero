@@ -2914,4 +2914,8 @@ export const de = {
     home_shortcut_novel: 'Web-Roman',
     home_shortcut_webtoon: 'Webtoon',
     home_shortcut_movie: 'Film',
+    home_shortcut_cinema: 'Kino',
+    cinema_title: 'SNSHero 70mm Live-Action Kino',
+    cinema_subtitle: 'Fotorealistisches Dark-Fantasy Live-Action-Kino mit 70mm-Anamorphot-Farbkorrektur.',
+    cinema_list: 'Kino-Episoden',
 };

@@ -2886,4 +2886,8 @@ export const vi = {
     home_shortcut_novel: 'Tiểu thuyết',
     home_shortcut_webtoon: 'Webtoon',
     home_shortcut_movie: 'Phim',
+    home_shortcut_cinema: 'Rạp Cinema',
+    cinema_title: 'Rạp Phim Live-Action 70mm SNSHero',
+    cinema_subtitle: 'Rạp phim giả tưởng đen tối người đóng chân thực với chỉnh màu anamorphic 70mm.',
+    cinema_list: 'Danh sách tập',
 };
