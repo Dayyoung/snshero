@@ -13,6 +13,11 @@ IDS_FILE = PROJECT_ROOT / "scripts/youtube_animation_ids.json"
 CHANNEL_UPLOAD_URL = "https://studio.youtube.com/channel/UC_xayYwKaB5TbH3eZXeREpA/content?d=ud"
 PLAYLIST_NAME = "SNSHero.com-Animation"
 
+ENGLISH_DESC = (
+    "This video is the game story of SNSHero.\n\n"
+    "Visit https://snshero.com for more details!"
+)
+
 
 def parse_episodes():
     text = MAPPING_FILE.read_text(encoding="utf-8")
@@ -45,7 +50,7 @@ def load_saved_ids():
             return json.loads(IDS_FILE.read_text(encoding="utf-8"))
         except Exception:
             pass
-    return {"1": "P_hxWzd9WAE"}
+    return {}
 
 
 def save_ids(ids_map):
@@ -70,7 +75,7 @@ def main():
         )
         page = ctx.pages[0] if ctx.pages else ctx.new_page()
 
-        for ep in range(2, 41):
+        for ep in range(1, 41):
             if str(ep) in ids_map and ids_map[str(ep)]:
                 print(f"[EP {ep}] Already uploaded: {ids_map[str(ep)]}, skipping.", flush=True)
                 continue
@@ -81,7 +86,6 @@ def main():
                 continue
 
             title_en = meta["titleEn"]
-            title_ko = meta["titleKo"]
             mp4_name = f"SNSHero.com_E{ep}_{title_en}.mp4"
             mp4_path = VIDEO_DIR / mp4_name
             if not mp4_path.exists():
@@ -89,12 +93,7 @@ def main():
                 continue
 
             yt_title = f"SNSHero.com_E{ep}_{title_en}"
-            yt_desc = (
-                f"SNSHero Official Animation Episode {ep}: {title_en} (제{ep}화 {title_ko})\n"
-                f"{meta['synopsisEn']}\n"
-                f"{meta['synopsisKo']}\n"
-                f"Play & Watch at https://snshero.com/?ep={ep}"
-            )
+            yt_desc = ENGLISH_DESC
 
             print(f"\n--- Uploading [EP {ep}/40] {mp4_name} ---", flush=True)
             try:
@@ -117,7 +116,6 @@ def main():
                 print(f"[EP {ep}] File attached, waiting for upload dialog metadata...", flush=True)
 
                 dialog = page.locator("ytcp-uploads-dialog")
-                # Wait up to 25s for youtu.be link or daily limit error
                 video_id = None
                 limit_hit = False
                 for _ in range(25):

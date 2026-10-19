@@ -15309,3 +15309,14 @@
   4. [HomeView.tsx](file:///Users/dayyoung/project/snshero/src/views/HomeView.tsx)의 PDF 뷰어 모달에서도 모바일 접속 시 큰글자판을 기본 로드하며, 좌측 상단에서 `[모바일 큰글자판 / PC 표준판]`을 원터치 전환할 수 있도록 구현 및 `npm run build` 프로덕션 반영 완료.
 - **검증 결과**: `npm run build` 성공 및 모바일 큰글자 PDF 시각 렌더링 검증 완료.
 - **구글 폼 보고**: `submit_report.py` 제출 완료.
+
+## 2026-10-20 06:08 (KST) — 유튜브 2개 채널(모두소프트 MODOO & SNSHero) 40개 애니메이션 자동번역 재업로드 및 SNSHero.com-Animation 재생목록 동기화
+- **작업 내역**:
+  1. **채널 1 (`UC_xayYwKaB5TbH3eZXeREpA`, 모두소프트 MODOO)**:
+     - 자동 번역 설정 반영을 위해 기존 `SNSHero.com_E1_...` ~ `SNSHero.com_E40_...` 40개 영상 일괄 삭제 후 전편(`E1: mbphBiVT8e0` ~ `E40: QGsc9Ianp14`) 재업로드 완료 (`scripts/youtube_animation_ids.json`, `src/content/movieEpisodeMapping.ts` 동기화).
+     - 재생목록 `SNSHero.com-Animation` (`PLJiaxYk_nDsc`)에 1화~40화 순차 등록 완료.
+  2. **채널 2 (`UCA6QmKiPstbiyBUHtnSMxyA`, SNSHero)**:
+     - 동일한 영문 타이틀(`SNSHero.com_E1_Two Vows Beneath the Blizzard` ~ `SNSHero.com_E40_One Who Is Not Called a Hero`) 및 영문 설명으로 40개 전편(`E1: R6ls-BIxLCQ` ~ `E40: pmZraAf-12k`) 업로드 완료 (`scripts/youtube_snshero_channel_ids.json`).
+     - 동일한 재생목록 `SNSHero.com-Animation` (`PLK35ZdYm5NNE`) 생성 및 기본 동영상 정렬을 `추가된 날짜(오래된순)`으로 설정하여 1화(`pos 0`)부터 40화(`pos 39`)까지 정방향 순차 재생되도록 설정 완료.
+- **검증 결과**: YouTube Data API v3를 통해 두 채널 모두 40개 영상 공개(Public) 상태 및 재생목록 순서 검증 완료, `npm run build` 성공.
+- **구글 폼 보고**: 제출 완료 (`작업완료`).
