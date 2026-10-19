@@ -2,6 +2,23 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-19 14:06 KST] [1~40화 전수 카드 캐릭터 일관성 웹툰(2,049컷) + 영문 전용 오프닝 타이틀 + 연속 모션 애니메이션 무비(40편) 전면 개편] 슬라이드쇼를 탈피한 실시간 카메라워크·파티클·검기·성우 반응형 40부작 애니메이션 무비 완성
+- **작업 개요**:
+  1. **1~40화 전수 실제 카드 캐릭터(`public/seat/*.png`) 일관성 웹툰 2,049컷 및 영문 전용 오프닝 타이틀(`scene_00.webp`) 재생성**:
+     - 에피소드별 실제 카드 일러스트 레퍼런스 시트를 기반으로 1화~40화 전 구간의 웹툰 컷신(`public/images/webtoon/episode_01` ~ `episode_40`, 총 2,049개 `.webp` 및 40개 대표 썸네일)을 캐릭터 외형·장소·제스처·소품이 살아있는 정통 웹툰 작화로 재생성.
+     - 모든 에피소드의 시작 타이틀(`scene_00.webp`) 및 `src/content/webtoonEpisodeManifest.json`의 첫 장면 메타데이터에서 한글 제목을 완전히 제거하고 100% 영문 전용 타이틀(`EPISODE 01` ~ `EPISODE 40`, 영문 부제 및 Act 표기)로 통일.
+  2. **정지 슬라이드쇼(`-f concat`)를 폐기한 연속 모션 애니메이션 무비 엔진(`scripts/generate_all_40_episode_videos.py`) 구축 및 40화 전체 동영상(`episode_01.mp4` ~ `episode_40.mp4`) 재제작**:
+     - 기존 1장씩 정지 화면을 이어붙이던 슬라이드쇼 방식을 폐기하고, FFmpeg `rawvideo` 파이프를 통해 매 프레임 연속 움직이는 2.5D 애니메이션 무비로 40편 전수 재인코딩 완료.
+- **소유 파일 및 주요 구현/수정 내역**:
+  1. `scripts/build_all_40_webtoons_from_sheets.py` & `src/content/webtoonEpisodeManifest.json`:
+     - 40개 에피소드 스토리보드 시트에서 2,049개 웹툰 씬(`.webp`, 모든 파일 `<= 75KB` 및 2,049개 100% 고유 해시 보장)과 영문 전용 오프닝 타이틀(`scene_00.webp`)을 생성하고 매니페스트 첫 컷을 영문 전용으로 업데이트.
+  2. `scripts/generate_all_40_episode_videos.py` & `public/videos/episodes/episode_01.mp4` ~ `episode_40.mp4`:
+     - 연속 서브픽셀 카메라 모션(Cosine-eased Push-In, Pull-Out, Pan L↔R, Diagonal Crane), 2레이어 실시간 공간 파티클 물리(눈보라, 전장 불티, 황궁 성운 빛무리, 심연 안개), 전투 타격 카메라 쉐이크·섬광·대각선 검기 슬래시 이펙트, 44.1kHz 영어 성우 음량 파형 반응형 화자 바운싱 & 5바 오디오 스펙트럼, 타이프라이터 자막 및 씬 간 크로스 디졸브(`Image.blend`) 전환 구현.
+- **검증 결과**:
+  - `public/images/webtoon/episode_01` ~ `episode_40`: 2,049 / 2,049개 `.webp` 고유 SHA-256 해시, 최대 파일 크기 `74,816 B (< 75 KB)` 100% 통과.
+  - `public/videos/episodes/episode_01.mp4` ~ `episode_40.mp4`: 40 / 40개 애니메이션 무비 생성 완료 (0 Failed, `h264/aac@44100Hz`).
+  - 연동 구글 폼 완료 보고서 제출 완료 (`submit_report.py`).
+
 ## [2026-10-19 12:37 KST] [제1화(눈보라 아래 두 서약) 실제 카드 캐릭터 외형 100% 일치 웹툰 50컷 작화 & episode_01.mp4 전면 개편] 카드 캐릭터 레퍼런스 시트 기반 장소·제스처·소품 일체형 웹툰 50컷 및 동영상 재제작 완료
 - **작업 개요**:
   - 기존 정면 부동자세 스탠딩 합성 방식을 탈피하고, `public/seat/*.png`의 실제 카드 캐릭터 외형(`Aleksandar`, `Balian`, `Elwin`, `Ysela`, `Hercul`, `Lucian`, `Death Knight Artus`, `Kadan`, `Ignis`)과 100% 동일한 갑옷·투구·왕관·머리색·무기를 착용한 인물들이 제1화 대사 맥락에 맞는 장소에서 직접 행동(제스처)하고 소품(찻잔, 황금 인장, 부러진 흉갑, 푸른 룬 은빛 단검 2자루, 보리 수프, 외나무다리 밧줄 절단, 밀 씨앗 파종 등)과 상호작용하는 50개 전용 웹툰 컷신(`scene_00.webp` ~ `scene_49.webp`) 및 `episode_01.mp4` 동영상으로 전면 개편.

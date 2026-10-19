@@ -10,7 +10,7 @@
         "imageUrl": "/images/webtoon/episode_01/scene_00.webp",
         "localArtUrl": "/images/webtoon/episode_01/scene_00.webp",
         "type": "title_card",
-        "narrationKo": "SNS히어로 제1화 - 눈보라 아래 두 서약",
+        "narrationKo": "SNSHERO · EPISODE 01 - Two Vows Beneath the Blizzard",
         "narrationEn": "SNSHERO · EPISODE 01 - Two Vows Beneath the Blizzard",
         "characters": [
           "Aleksandar",
@@ -22,16 +22,7 @@
           "Lucian",
           "Kadan"
         ],
-        "dialogues": [
-          {
-            "speakerKo": "내레이션",
-            "speakerEn": "Narration",
-            "textKo": "SNS히어로 제1화 - 눈보라 아래 두 서약",
-            "textEn": "SNSHERO · EPISODE 01 - Two Vows Beneath the Blizzard",
-            "bubbleType": "thought",
-            "position": "center"
-          }
-        ],
+        "dialogues": [],
         "sfxCues": []
       },
       {
@@ -1759,7 +1750,7 @@
         "imageUrl": "/images/webtoon/episode_02/scene_00.webp",
         "localArtUrl": "/images/webtoon/episode_02/scene_00.webp",
         "type": "title_card",
-        "narrationKo": "SNS히어로 제2화 - 일곱 추적자의 맹세",
+        "narrationKo": "SNSHERO · EPISODE 02 - Oath of the Seven Pursuers",
         "narrationEn": "SNSHERO · EPISODE 02 - Oath of the Seven Pursuers",
         "characters": [
           "Hercul",
@@ -1771,16 +1762,7 @@
           "Kaze",
           "Rondol"
         ],
-        "dialogues": [
-          {
-            "speakerKo": "내레이션",
-            "speakerEn": "Narration",
-            "textKo": "SNS히어로 제2화 - 일곱 추적자의 맹세",
-            "textEn": "SNSHERO · EPISODE 02 - Oath of the Seven Pursuers",
-            "bubbleType": "thought",
-            "position": "center"
-          }
-        ],
+        "dialogues": [],
         "sfxCues": []
       },
       {
@@ -3373,7 +3355,7 @@
         "imageUrl": "/images/webtoon/episode_03/scene_00.webp",
         "localArtUrl": "/images/webtoon/episode_03/scene_00.webp",
         "type": "title_card",
-        "narrationKo": "SNS히어로 제3화 - 안개 절벽의 피",
+        "narrationKo": "SNSHERO · EPISODE 03 - Blood on the Mist Cliff",
         "narrationEn": "SNSHERO · EPISODE 03 - Blood on the Mist Cliff",
         "characters": [
           "Eliana",
@@ -3385,16 +3367,7 @@
           "Aeolus",
           "Medusa Gorgo"
         ],
-        "dialogues": [
-          {
-            "speakerKo": "내레이션",
-            "speakerEn": "Narration",
-            "textKo": "SNS히어로 제3화 - 안개 절벽의 피",
-            "textEn": "SNSHERO · EPISODE 03 - Blood on the Mist Cliff",
-            "bubbleType": "thought",
-            "position": "center"
-          }
-        ],
+        "dialogues": [],
         "sfxCues": []
       },
       {
@@ -5218,7 +5191,7 @@
         "imageUrl": "/images/webtoon/episode_04/scene_00.webp",
         "localArtUrl": "/images/webtoon/episode_04/scene_00.webp",
         "type": "title_card",
-        "narrationKo": "SNS히어로 제4화 - 황야에서 자란 아이",
+        "narrationKo": "SNSHERO · EPISODE 04 - The Child Raised in the Wastes",
         "narrationEn": "SNSHERO · EPISODE 04 - The Child Raised in the Wastes",
         "characters": [
           "Elwin",
@@ -5230,16 +5203,7 @@
           "Grimli",
           "Aila"
         ],
-        "dialogues": [
-          {
-            "speakerKo": "내레이션",
-            "speakerEn": "Narration",
-            "textKo": "SNS히어로 제4화 - 황야에서 자란 아이",
-            "textEn": "SNSHERO · EPISODE 04 - The Child Raised in the Wastes",
-            "bubbleType": "thought",
-            "position": "center"
-          }
-        ],
+        "dialogues": [],
         "sfxCues": []
       },
       {
@@ -6813,7 +6777,7 @@
         "imageUrl": "/images/webtoon/episode_05/scene_00.webp",
         "localArtUrl": "/images/webtoon/episode_05/scene_00.webp",
         "type": "title_card",
-        "narrationKo": "SNS히어로 제5화 - 폭우 속의 유령",
+        "narrationKo": "SNSHERO · EPISODE 05 - Phantom in the Downpour",
         "narrationEn": "SNSHERO · EPISODE 05 - Phantom in the Downpour",
         "characters": [
           "Kadan",
@@ -6825,16 +6789,7 @@
           "Gawain",
           "Aeolus"
         ],
-        "dialogues": [
-          {
-            "speakerKo": "내레이션",
-            "speakerEn": "Narration",
-            "textKo": "SNS히어로 제5화 - 폭우 속의 유령",
-            "textEn": "SNSHERO · EPISODE 05 - Phantom in the Downpour",
-            "bubbleType": "thought",
-            "position": "center"
-          }
-        ],
+        "dialogues": [],
         "sfxCues": []
       },
       {
@@ -8605,7 +8560,7 @@
         "imageUrl": "/images/webtoon/episode_06/scene_00.webp",
         "localArtUrl": "/images/webtoon/episode_06/scene_00.webp",
         "type": "title_card",
-        "narrationKo": "SNS히어로 제6화 - 별을 호흡하는 법",
+        "narrationKo": "SNSHERO · EPISODE 06 - The Art of Breathing Stars",
         "narrationEn": "SNSHERO · EPISODE 06 - The Art of Breathing Stars",
         "characters": [
           "Kadan",
@@ -8617,16 +8572,7 @@
           "Gawain",
           "Aleksandar"
         ],
-        "dialogues": [
-          {
-            "speakerKo": "내레이션",
-            "speakerEn": "Narration",
-            "textKo": "SNS히어로 제6화 - 별을 호흡하는 법",
-            "textEn": "SNSHERO · EPISODE 06 - The Art of Breathing Stars",
-            "bubbleType": "thought",
-            "position": "center"
-          }
-        ],
+        "dialogues": [],
         "sfxCues": []
       },
       {
@@ -10389,7 +10335,7 @@
         "imageUrl": "/images/webtoon/episode_07/scene_00.webp",
         "localArtUrl": "/images/webtoon/episode_07/scene_00.webp",
         "type": "title_card",
-        "narrationKo": "SNS히어로 제7화 - 배신자들의 천막",
+        "narrationKo": "SNSHERO · EPISODE 07 - The Traitors Camp",
         "narrationEn": "SNSHERO · EPISODE 07 - The Traitors Camp",
         "characters": [
           "Kadan",
@@ -10401,16 +10347,7 @@
           "Lucian",
           "Balian"
         ],
-        "dialogues": [
-          {
-            "speakerKo": "내레이션",
-            "speakerEn": "Narration",
-            "textKo": "SNS히어로 제7화 - 배신자들의 천막",
-            "textEn": "SNSHERO · EPISODE 07 - The Traitors Camp",
-            "bubbleType": "thought",
-            "position": "center"
-          }
-        ],
+        "dialogues": [],
         "sfxCues": []
       },
       {
@@ -12149,7 +12086,7 @@
         "imageUrl": "/images/webtoon/episode_08/scene_00.webp",
         "localArtUrl": "/images/webtoon/episode_08/scene_00.webp",
         "type": "title_card",
-        "narrationKo": "SNS히어로 제8화 - 붉은 갈기의 기수",
+        "narrationKo": "SNSHERO · EPISODE 08 - Rider of the Crimson Mane",
         "narrationEn": "SNSHERO · EPISODE 08 - Rider of the Crimson Mane",
         "characters": [
           "Pegasus",
@@ -12161,16 +12098,7 @@
           "Balbo",
           "Eliana"
         ],
-        "dialogues": [
-          {
-            "speakerKo": "내레이션",
-            "speakerEn": "Narration",
-            "textKo": "SNS히어로 제8화 - 붉은 갈기의 기수",
-            "textEn": "SNSHERO · EPISODE 08 - Rider of the Crimson Mane",
-            "bubbleType": "thought",
-            "position": "center"
-          }
-        ],
+        "dialogues": [],
         "sfxCues": []
       },
       {
@@ -13744,7 +13672,7 @@
         "imageUrl": "/images/webtoon/episode_09/scene_00.webp",
         "localArtUrl": "/images/webtoon/episode_09/scene_00.webp",
         "type": "title_card",
-        "narrationKo": "SNS히어로 제9화 - 거지 옷의 바람",
+        "narrationKo": "SNSHERO · EPISODE 09 - Wind in Beggars Clothes",
         "narrationEn": "SNSHERO · EPISODE 09 - Wind in Beggars Clothes",
         "characters": [
           "Kadan",
@@ -13756,16 +13684,7 @@
           "Balian",
           "Death Knight Artus"
         ],
-        "dialogues": [
-          {
-            "speakerKo": "내레이션",
-            "speakerEn": "Narration",
-            "textKo": "SNS히어로 제9화 - 거지 옷의 바람",
-            "textEn": "SNSHERO · EPISODE 09 - Wind in Beggars Clothes",
-            "bubbleType": "thought",
-            "position": "center"
-          }
-        ],
+        "dialogues": [],
         "sfxCues": []
       },
       {
@@ -15495,7 +15414,7 @@
         "imageUrl": "/images/webtoon/episode_10/scene_00.webp",
         "localArtUrl": "/images/webtoon/episode_10/scene_00.webp",
         "type": "title_card",
-        "narrationKo": "SNS히어로 제10화 - 불꽃 궁정의 포로",
+        "narrationKo": "SNSHERO · EPISODE 10 - Prisoner of the Flame Court",
         "narrationEn": "SNSHERO · EPISODE 10 - Prisoner of the Flame Court",
         "characters": [
           "Lucian",
@@ -15507,16 +15426,7 @@
           "Medusa Gorgo",
           "Aleksandar"
         ],
-        "dialogues": [
-          {
-            "speakerKo": "내레이션",
-            "speakerEn": "Narration",
-            "textKo": "SNS히어로 제10화 - 불꽃 궁정의 포로",
-            "textEn": "SNSHERO · EPISODE 10 - Prisoner of the Flame Court",
-            "bubbleType": "thought",
-            "position": "center"
-          }
-        ],
+        "dialogues": [],
         "sfxCues": []
       },
       {
@@ -17279,7 +17189,7 @@
         "imageUrl": "/images/webtoon/episode_11/scene_00.webp",
         "localArtUrl": "/images/webtoon/episode_11/scene_00.webp",
         "type": "title_card",
-        "narrationKo": "SNS히어로 제11화 - 기억을 깨우는 단검",
+        "narrationKo": "SNSHERO · EPISODE 11 - The Dagger That Wakes Memory",
         "narrationEn": "SNSHERO · EPISODE 11 - The Dagger That Wakes Memory",
         "characters": [
           "Balian",
@@ -17291,16 +17201,7 @@
           "Ignis",
           "Elwin"
         ],
-        "dialogues": [
-          {
-            "speakerKo": "내레이션",
-            "speakerEn": "Narration",
-            "textKo": "SNS히어로 제11화 - 기억을 깨우는 단검",
-            "textEn": "SNSHERO · EPISODE 11 - The Dagger That Wakes Memory",
-            "bubbleType": "thought",
-            "position": "center"
-          }
-        ],
+        "dialogues": [],
         "sfxCues": []
       },
       {
@@ -19135,7 +19036,7 @@
         "imageUrl": "/images/webtoon/episode_12/scene_00.webp",
         "localArtUrl": "/images/webtoon/episode_12/scene_00.webp",
         "type": "title_card",
-        "narrationKo": "SNS히어로 제12화 - 두 무덤 사이의 봄",
+        "narrationKo": "SNSHERO · EPISODE 12 - Spring Between Two Graves",
         "narrationEn": "SNSHERO · EPISODE 12 - Spring Between Two Graves",
         "characters": [
           "Balian",
@@ -19147,16 +19048,7 @@
           "Walker",
           "Hercul"
         ],
-        "dialogues": [
-          {
-            "speakerKo": "내레이션",
-            "speakerEn": "Narration",
-            "textKo": "SNS히어로 제12화 - 두 무덤 사이의 봄",
-            "textEn": "SNSHERO · EPISODE 12 - Spring Between Two Graves",
-            "bubbleType": "thought",
-            "position": "center"
-          }
-        ],
+        "dialogues": [],
         "sfxCues": []
       },
       {
@@ -20800,7 +20692,7 @@
         "imageUrl": "/images/webtoon/episode_13/scene_00.webp",
         "localArtUrl": "/images/webtoon/episode_13/scene_00.webp",
         "type": "title_card",
-        "narrationKo": "SNS히어로 제13화 - 녹옥 지팡이의 주인",
+        "narrationKo": "SNSHERO · EPISODE 13 - Master of the Jade Staff",
         "narrationEn": "SNSHERO · EPISODE 13 - Master of the Jade Staff",
         "characters": [
           "Kadan",
@@ -20812,16 +20704,7 @@
           "Balian",
           "Aeolus"
         ],
-        "dialogues": [
-          {
-            "speakerKo": "내레이션",
-            "speakerEn": "Narration",
-            "textKo": "SNS히어로 제13화 - 녹옥 지팡이의 주인",
-            "textEn": "SNSHERO · EPISODE 13 - Master of the Jade Staff",
-            "bubbleType": "thought",
-            "position": "center"
-          }
-        ],
+        "dialogues": [],
         "sfxCues": []
       },
       {
@@ -22413,7 +22296,7 @@
         "imageUrl": "/images/webtoon/episode_14/scene_00.webp",
         "localArtUrl": "/images/webtoon/episode_14/scene_00.webp",
         "type": "title_card",
-        "narrationKo": "SNS히어로 제14화 - 안개 호수의 손님들",
+        "narrationKo": "SNSHERO · EPISODE 14 - Guests of the Mist Lake",
         "narrationEn": "SNSHERO · EPISODE 14 - Guests of the Mist Lake",
         "characters": [
           "Kadan",
@@ -22425,16 +22308,7 @@
           "Balian",
           "Medusa Gorgo"
         ],
-        "dialogues": [
-          {
-            "speakerKo": "내레이션",
-            "speakerEn": "Narration",
-            "textKo": "SNS히어로 제14화 - 안개 호수의 손님들",
-            "textEn": "SNSHERO · EPISODE 14 - Guests of the Mist Lake",
-            "bubbleType": "thought",
-            "position": "center"
-          }
-        ],
+        "dialogues": [],
         "sfxCues": []
       },
       {
@@ -24047,7 +23921,7 @@
         "imageUrl": "/images/webtoon/episode_15/scene_00.webp",
         "localArtUrl": "/images/webtoon/episode_15/scene_00.webp",
         "type": "title_card",
-        "narrationKo": "SNS히어로 제15화 - 독사와 사자의 밤",
+        "narrationKo": "SNSHERO · EPISODE 15 - Night of Serpent and Lion",
         "narrationEn": "SNSHERO · EPISODE 15 - Night of Serpent and Lion",
         "characters": [
           "Celia",
@@ -24059,16 +23933,7 @@
           "Ignis",
           "Balian"
         ],
-        "dialogues": [
-          {
-            "speakerKo": "내레이션",
-            "speakerEn": "Narration",
-            "textKo": "SNS히어로 제15화 - 독사와 사자의 밤",
-            "textEn": "SNSHERO · EPISODE 15 - Night of Serpent and Lion",
-            "bubbleType": "thought",
-            "position": "center"
-          }
-        ],
+        "dialogues": [],
         "sfxCues": []
       },
       {
@@ -25703,7 +25568,7 @@
         "imageUrl": "/images/webtoon/episode_16/scene_00.webp",
         "localArtUrl": "/images/webtoon/episode_16/scene_00.webp",
         "type": "title_card",
-        "narrationKo": "SNS히어로 제16화 - 폐허 앞의 형제",
+        "narrationKo": "SNSHERO · EPISODE 16 - Brothers Before the Ruins",
         "narrationEn": "SNSHERO · EPISODE 16 - Brothers Before the Ruins",
         "characters": [
           "Kadan",
@@ -25714,16 +25579,7 @@
           "Lucian",
           "Rondol"
         ],
-        "dialogues": [
-          {
-            "speakerKo": "내레이션",
-            "speakerEn": "Narration",
-            "textKo": "SNS히어로 제16화 - 폐허 앞의 형제",
-            "textEn": "SNSHERO · EPISODE 16 - Brothers Before the Ruins",
-            "bubbleType": "thought",
-            "position": "center"
-          }
-        ],
+        "dialogues": [],
         "sfxCues": []
       },
       {
@@ -27374,7 +27230,7 @@
         "imageUrl": "/images/webtoon/episode_17/scene_00.webp",
         "localArtUrl": "/images/webtoon/episode_17/scene_00.webp",
         "type": "title_card",
-        "narrationKo": "SNS히어로 제17화 - 바람섬의 초대장",
+        "narrationKo": "SNSHERO · EPISODE 17 - Invitation to the Wind Isle",
         "narrationEn": "SNSHERO · EPISODE 17 - Invitation to the Wind Isle",
         "characters": [
           "Rondol",
@@ -27386,16 +27242,7 @@
           "Aeolus",
           "Lucian"
         ],
-        "dialogues": [
-          {
-            "speakerKo": "내레이션",
-            "speakerEn": "Narration",
-            "textKo": "SNS히어로 제17화 - 바람섬의 초대장",
-            "textEn": "SNSHERO · EPISODE 17 - Invitation to the Wind Isle",
-            "bubbleType": "thought",
-            "position": "center"
-          }
-        ],
+        "dialogues": [],
         "sfxCues": []
       },
       {
@@ -28981,7 +28828,7 @@
         "imageUrl": "/images/webtoon/episode_18/scene_00.webp",
         "localArtUrl": "/images/webtoon/episode_18/scene_00.webp",
         "type": "title_card",
-        "narrationKo": "SNS히어로 제18화 - 검은 성전의 비밀",
+        "narrationKo": "SNSHERO · EPISODE 18 - Secret of the Black Sanctum",
         "narrationEn": "SNSHERO · EPISODE 18 - Secret of the Black Sanctum",
         "characters": [
           "Celia",
@@ -28993,16 +28840,7 @@
           "Lucian",
           "Medusa Gorgo"
         ],
-        "dialogues": [
-          {
-            "speakerKo": "내레이션",
-            "speakerEn": "Narration",
-            "textKo": "SNS히어로 제18화 - 검은 성전의 비밀",
-            "textEn": "SNSHERO · EPISODE 18 - Secret of the Black Sanctum",
-            "bubbleType": "thought",
-            "position": "center"
-          }
-        ],
+        "dialogues": [],
         "sfxCues": []
       },
       {
@@ -30904,7 +30742,7 @@
         "imageUrl": "/images/webtoon/episode_19/scene_00.webp",
         "localArtUrl": "/images/webtoon/episode_19/scene_00.webp",
         "type": "title_card",
-        "narrationKo": "SNS히어로 제19화 - 세 가지 시험",
+        "narrationKo": "SNSHERO · EPISODE 19 - Three Trials",
         "narrationEn": "SNSHERO · EPISODE 19 - Three Trials",
         "characters": [
           "Celia",
@@ -30915,16 +30753,7 @@
           "Ignis",
           "Elwin"
         ],
-        "dialogues": [
-          {
-            "speakerKo": "내레이션",
-            "speakerEn": "Narration",
-            "textKo": "SNS히어로 제19화 - 세 가지 시험",
-            "textEn": "SNSHERO · EPISODE 19 - Three Trials",
-            "bubbleType": "thought",
-            "position": "center"
-          }
-        ],
+        "dialogues": [],
         "sfxCues": []
       },
       {
@@ -32704,7 +32533,7 @@
         "imageUrl": "/images/webtoon/episode_20/scene_00.webp",
         "localArtUrl": "/images/webtoon/episode_20/scene_00.webp",
         "type": "title_card",
-        "narrationKo": "SNS히어로 제20화 - 꽃배를 삼킨 파도",
+        "narrationKo": "SNSHERO · EPISODE 20 - The Wave That Swallowed the Flower Ship",
         "narrationEn": "SNSHERO · EPISODE 20 - The Wave That Swallowed the Flower Ship",
         "characters": [
           "Aeolus",
@@ -32716,16 +32545,7 @@
           "Medusa Gorgo",
           "Aleksandar"
         ],
-        "dialogues": [
-          {
-            "speakerKo": "내레이션",
-            "speakerEn": "Narration",
-            "textKo": "SNS히어로 제20화 - 꽃배를 삼킨 파도",
-            "textEn": "SNSHERO · EPISODE 20 - The Wave That Swallowed the Flower Ship",
-            "bubbleType": "thought",
-            "position": "center"
-          }
-        ],
+        "dialogues": [],
         "sfxCues": []
       },
       {
@@ -34417,7 +34237,7 @@
         "imageUrl": "/images/webtoon/episode_21/scene_00.webp",
         "localArtUrl": "/images/webtoon/episode_21/scene_00.webp",
         "type": "title_card",
-        "narrationKo": "SNS히어로 제21화 - 불탄 배의 흔적",
+        "narrationKo": "SNSHERO · EPISODE 21 - Betrayal Aboard the Burning Ship",
         "narrationEn": "SNSHERO · EPISODE 21 - Betrayal Aboard the Burning Ship",
         "characters": [
           "Rondol",
@@ -34428,16 +34248,7 @@
           "Aleksandar",
           "Ignis"
         ],
-        "dialogues": [
-          {
-            "speakerKo": "내레이션",
-            "speakerEn": "Narration",
-            "textKo": "SNS히어로 제21화 - 불탄 배의 흔적",
-            "textEn": "SNSHERO · EPISODE 21 - Betrayal Aboard the Burning Ship",
-            "bubbleType": "thought",
-            "position": "center"
-          }
-        ],
+        "dialogues": [],
         "sfxCues": []
       },
       {
@@ -36008,7 +35819,7 @@
         "imageUrl": "/images/webtoon/episode_22/scene_00.webp",
         "localArtUrl": "/images/webtoon/episode_22/scene_00.webp",
         "type": "title_card",
-        "narrationKo": "SNS히어로 제22화 - 무인도의 투석기",
+        "narrationKo": "SNSHERO · EPISODE 22 - Four on a Deserted Island",
         "narrationEn": "SNSHERO · EPISODE 22 - Four on a Deserted Island",
         "characters": [
           "Lucian",
@@ -36020,16 +35831,7 @@
           "Aleksandar",
           "Balian"
         ],
-        "dialogues": [
-          {
-            "speakerKo": "내레이션",
-            "speakerEn": "Narration",
-            "textKo": "SNS히어로 제22화 - 무인도의 투석기",
-            "textEn": "SNSHERO · EPISODE 22 - Four on a Deserted Island",
-            "bubbleType": "thought",
-            "position": "center"
-          }
-        ],
+        "dialogues": [],
         "sfxCues": []
       },
       {
@@ -37947,7 +37749,7 @@
         "imageUrl": "/images/webtoon/episode_23/scene_00.webp",
         "localArtUrl": "/images/webtoon/episode_23/scene_00.webp",
         "type": "title_card",
-        "narrationKo": "SNS히어로 제23화 - 석굴의 기록",
+        "narrationKo": "SNSHERO · EPISODE 23 - The Record Sleeping in the Cave",
         "narrationEn": "SNSHERO · EPISODE 23 - The Record Sleeping in the Cave",
         "characters": [
           "Rondol",
@@ -37959,16 +37761,7 @@
           "Lucian",
           "Ysela"
         ],
-        "dialogues": [
-          {
-            "speakerKo": "내레이션",
-            "speakerEn": "Narration",
-            "textKo": "SNS히어로 제23화 - 석굴의 기록",
-            "textEn": "SNSHERO · EPISODE 23 - The Record Sleeping in the Cave",
-            "bubbleType": "thought",
-            "position": "center"
-          }
-        ],
+        "dialogues": [],
         "sfxCues": []
       },
       {
@@ -39766,7 +39559,7 @@
         "imageUrl": "/images/webtoon/episode_24/scene_00.webp",
         "localArtUrl": "/images/webtoon/episode_24/scene_00.webp",
         "type": "title_card",
-        "narrationKo": "SNS히어로 제24화 - 봉인된 석실",
+        "narrationKo": "SNSHERO · EPISODE 24 - Seven Nights in the Sealed Chamber",
         "narrationEn": "SNSHERO · EPISODE 24 - Seven Nights in the Sealed Chamber",
         "characters": [
           "Celia",
@@ -39778,16 +39571,7 @@
           "Gawain",
           "Lucian"
         ],
-        "dialogues": [
-          {
-            "speakerKo": "내레이션",
-            "speakerEn": "Narration",
-            "textKo": "SNS히어로 제24화 - 봉인된 석실",
-            "textEn": "SNSHERO · EPISODE 24 - Seven Nights in the Sealed Chamber",
-            "bubbleType": "thought",
-            "position": "center"
-          }
-        ],
+        "dialogues": [],
         "sfxCues": []
       },
       {
@@ -41526,7 +41310,7 @@
         "imageUrl": "/images/webtoon/episode_25/scene_00.webp",
         "localArtUrl": "/images/webtoon/episode_25/scene_00.webp",
         "type": "title_card",
-        "narrationKo": "SNS히어로 제25화 - 거짓된 혼례",
+        "narrationKo": "SNSHERO · EPISODE 25 - Night of the False Wedding",
         "narrationEn": "SNSHERO · EPISODE 25 - Night of the False Wedding",
         "characters": [
           "Lucian",
@@ -41536,16 +41320,7 @@
           "Ignis",
           "Death Knight Artus"
         ],
-        "dialogues": [
-          {
-            "speakerKo": "내레이션",
-            "speakerEn": "Narration",
-            "textKo": "SNS히어로 제25화 - 거짓된 혼례",
-            "textEn": "SNSHERO · EPISODE 25 - Night of the False Wedding",
-            "bubbleType": "thought",
-            "position": "center"
-          }
-        ],
+        "dialogues": [],
         "sfxCues": []
       },
       {
@@ -43370,7 +43145,7 @@
         "imageUrl": "/images/webtoon/episode_26/scene_00.webp",
         "localArtUrl": "/images/webtoon/episode_26/scene_00.webp",
         "type": "title_card",
-        "narrationKo": "SNS히어로 제26화 - 열린 문, 닫힌 마음",
+        "narrationKo": "SNSHERO · EPISODE 26 - Open Door, Closed Heart",
         "narrationEn": "SNSHERO · EPISODE 26 - Open Door, Closed Heart",
         "characters": [
           "Kadan",
@@ -43382,16 +43157,7 @@
           "Rondol",
           "Grimli"
         ],
-        "dialogues": [
-          {
-            "speakerKo": "내레이션",
-            "speakerEn": "Narration",
-            "textKo": "SNS히어로 제26화 - 열린 문, 닫힌 마음",
-            "textEn": "SNSHERO · EPISODE 26 - Open Door, Closed Heart",
-            "bubbleType": "thought",
-            "position": "center"
-          }
-        ],
+        "dialogues": [],
         "sfxCues": []
       },
       {
@@ -45290,7 +45056,7 @@
         "imageUrl": "/images/webtoon/episode_27/scene_00.webp",
         "localArtUrl": "/images/webtoon/episode_27/scene_00.webp",
         "type": "title_card",
-        "narrationKo": "SNS히어로 제27화 - 두 개의 약속 사이에서",
+        "narrationKo": "SNSHERO · EPISODE 27 - Between Two Promises",
         "narrationEn": "SNSHERO · EPISODE 27 - Between Two Promises",
         "characters": [
           "Kadan",
@@ -45300,16 +45066,7 @@
           "Balian",
           "Lucian"
         ],
-        "dialogues": [
-          {
-            "speakerKo": "내레이션",
-            "speakerEn": "Narration",
-            "textKo": "SNS히어로 제27화 - 두 개의 약속 사이에서",
-            "textEn": "SNSHERO · EPISODE 27 - Between Two Promises",
-            "bubbleType": "thought",
-            "position": "center"
-          }
-        ],
+        "dialogues": [],
         "sfxCues": []
       },
       {
@@ -46989,7 +46746,7 @@
         "imageUrl": "/images/webtoon/episode_28/scene_00.webp",
         "localArtUrl": "/images/webtoon/episode_28/scene_00.webp",
         "type": "title_card",
-        "narrationKo": "SNS히어로 제28화 - 비취 평의회의 반란",
+        "narrationKo": "SNSHERO · EPISODE 28 - Revolt of the Jade Council",
         "narrationEn": "SNSHERO · EPISODE 28 - Revolt of the Jade Council",
         "characters": [
           "Medusa Gorgo",
@@ -47001,16 +46758,7 @@
           "Ignis",
           "Aleksandar"
         ],
-        "dialogues": [
-          {
-            "speakerKo": "내레이션",
-            "speakerEn": "Narration",
-            "textKo": "SNS히어로 제28화 - 비취 평의회의 반란",
-            "textEn": "SNSHERO · EPISODE 28 - Revolt of the Jade Council",
-            "bubbleType": "thought",
-            "position": "center"
-          }
-        ],
+        "dialogues": [],
         "sfxCues": []
       },
       {
@@ -48899,7 +48647,7 @@
         "imageUrl": "/images/webtoon/episode_29/scene_00.webp",
         "localArtUrl": "/images/webtoon/episode_29/scene_00.webp",
         "type": "title_card",
-        "narrationKo": "SNS히어로 제29화 - 바람의 여왕",
+        "narrationKo": "SNSHERO · EPISODE 29 - Queen of the Wind",
         "narrationEn": "SNSHERO · EPISODE 29 - Queen of the Wind",
         "characters": [
           "Ignis",
@@ -48911,16 +48659,7 @@
           "Lucian",
           "Belphegor"
         ],
-        "dialogues": [
-          {
-            "speakerKo": "내레이션",
-            "speakerEn": "Narration",
-            "textKo": "SNS히어로 제29화 - 바람의 여왕",
-            "textEn": "SNSHERO · EPISODE 29 - Queen of the Wind",
-            "bubbleType": "thought",
-            "position": "center"
-          }
-        ],
+        "dialogues": [],
         "sfxCues": []
       },
       {
@@ -50711,7 +50450,7 @@
         "imageUrl": "/images/webtoon/episode_30/scene_00.webp",
         "localArtUrl": "/images/webtoon/episode_30/scene_00.webp",
         "type": "title_card",
-        "narrationKo": "SNS히어로 제30화 - 사문의 독",
+        "narrationKo": "SNSHERO · EPISODE 30 - Poison at the Four Gates",
         "narrationEn": "SNSHERO · EPISODE 30 - Poison at the Four Gates",
         "characters": [
           "Medusa Gorgo",
@@ -50723,16 +50462,7 @@
           "Gawain",
           "Eliana"
         ],
-        "dialogues": [
-          {
-            "speakerKo": "내레이션",
-            "speakerEn": "Narration",
-            "textKo": "SNS히어로 제30화 - 사문의 독",
-            "textEn": "SNSHERO · EPISODE 30 - Poison at the Four Gates",
-            "bubbleType": "thought",
-            "position": "center"
-          }
-        ],
+        "dialogues": [],
         "sfxCues": []
       },
       {
@@ -52461,7 +52191,7 @@
         "imageUrl": "/images/webtoon/episode_31/scene_00.webp",
         "localArtUrl": "/images/webtoon/episode_31/scene_00.webp",
         "type": "title_card",
-        "narrationKo": "SNS히어로 제31화 - 내기에 건 손",
+        "narrationKo": "SNSHERO · EPISODE 31 - The Hand That Wagered Everything",
         "narrationEn": "SNSHERO · EPISODE 31 - The Hand That Wagered Everything",
         "characters": [
           "Lucian",
@@ -52473,16 +52203,7 @@
           "Ignis",
           "Gawain"
         ],
-        "dialogues": [
-          {
-            "speakerKo": "내레이션",
-            "speakerEn": "Narration",
-            "textKo": "SNS히어로 제31화 - 내기에 건 손",
-            "textEn": "SNSHERO · EPISODE 31 - The Hand That Wagered Everything",
-            "bubbleType": "thought",
-            "position": "center"
-          }
-        ],
+        "dialogues": [],
         "sfxCues": []
       },
       {
@@ -54433,7 +54154,7 @@
         "imageUrl": "/images/webtoon/episode_32/scene_00.webp",
         "localArtUrl": "/images/webtoon/episode_32/scene_00.webp",
         "type": "title_card",
-        "narrationKo": "SNS히어로 제32화 - 첫사랑의 메아리",
+        "narrationKo": "SNSHERO · EPISODE 32 - Echo of First Love",
         "narrationEn": "SNSHERO · EPISODE 32 - Echo of First Love",
         "characters": [
           "Belphegor",
@@ -54445,16 +54166,7 @@
           "Grimli",
           "Rondol"
         ],
-        "dialogues": [
-          {
-            "speakerKo": "내레이션",
-            "speakerEn": "Narration",
-            "textKo": "SNS히어로 제32화 - 첫사랑의 메아리",
-            "textEn": "SNSHERO · EPISODE 32 - Echo of First Love",
-            "bubbleType": "thought",
-            "position": "center"
-          }
-        ],
+        "dialogues": [],
         "sfxCues": []
       },
       {
@@ -56186,7 +55898,7 @@
         "imageUrl": "/images/webtoon/episode_33/scene_00.webp",
         "localArtUrl": "/images/webtoon/episode_33/scene_00.webp",
         "type": "title_card",
-        "narrationKo": "SNS히어로 제33화 - 검은 늪",
+        "narrationKo": "SNSHERO · EPISODE 33 - Grudge of the Black Marsh",
         "narrationEn": "SNSHERO · EPISODE 33 - Grudge of the Black Marsh",
         "characters": [
           "Magitech Golem",
@@ -56198,16 +55910,7 @@
           "Gawain",
           "Aila"
         ],
-        "dialogues": [
-          {
-            "speakerKo": "내레이션",
-            "speakerEn": "Narration",
-            "textKo": "SNS히어로 제33화 - 검은 늪",
-            "textEn": "SNSHERO · EPISODE 33 - Grudge of the Black Marsh",
-            "bubbleType": "thought",
-            "position": "center"
-          }
-        ],
+        "dialogues": [],
         "sfxCues": []
       },
       {
@@ -57991,7 +57694,7 @@
         "imageUrl": "/images/webtoon/episode_34/scene_00.webp",
         "localArtUrl": "/images/webtoon/episode_34/scene_00.webp",
         "type": "title_card",
-        "narrationKo": "SNS히어로 제34화 - 쓰러진 바람섬",
+        "narrationKo": "SNSHERO · EPISODE 34 - The Fallen Wind Isle",
         "narrationEn": "SNSHERO · EPISODE 34 - The Fallen Wind Isle",
         "characters": [
           "Lucian",
@@ -58003,16 +57706,7 @@
           "Rondol",
           "Kaze"
         ],
-        "dialogues": [
-          {
-            "speakerKo": "내레이션",
-            "speakerEn": "Narration",
-            "textKo": "SNS히어로 제34화 - 쓰러진 바람섬",
-            "textEn": "SNSHERO · EPISODE 34 - The Fallen Wind Isle",
-            "bubbleType": "thought",
-            "position": "center"
-          }
-        ],
+        "dialogues": [],
         "sfxCues": []
       },
       {
@@ -59783,7 +59477,7 @@
         "imageUrl": "/images/webtoon/episode_35/scene_00.webp",
         "localArtUrl": "/images/webtoon/episode_35/scene_00.webp",
         "type": "title_card",
-        "narrationKo": "SNS히어로 제35화 - 안개 속의 착각",
+        "narrationKo": "SNSHERO · EPISODE 35 - Mistaken in the Fog",
         "narrationEn": "SNSHERO · EPISODE 35 - Mistaken in the Fog",
         "characters": [
           "Kadan",
@@ -59795,16 +59489,7 @@
           "Ignis",
           "Aleksandar"
         ],
-        "dialogues": [
-          {
-            "speakerKo": "내레이션",
-            "speakerEn": "Narration",
-            "textKo": "SNS히어로 제35화 - 안개 속의 착각",
-            "textEn": "SNSHERO · EPISODE 35 - Mistaken in the Fog",
-            "bubbleType": "thought",
-            "position": "center"
-          }
-        ],
+        "dialogues": [],
         "sfxCues": []
       },
       {
@@ -61653,7 +61338,7 @@
         "imageUrl": "/images/webtoon/episode_36/scene_00.webp",
         "localArtUrl": "/images/webtoon/episode_36/scene_00.webp",
         "type": "title_card",
-        "narrationKo": "SNS히어로 제36화 - 십자 흉터의 지도",
+        "narrationKo": "SNSHERO · EPISODE 36 - Map of the Cross-Shaped Scar",
         "narrationEn": "SNSHERO · EPISODE 36 - Map of the Cross-Shaped Scar",
         "characters": [
           "Kadan",
@@ -61665,16 +61350,7 @@
           "Ignis",
           "Fenrir"
         ],
-        "dialogues": [
-          {
-            "speakerKo": "내레이션",
-            "speakerEn": "Narration",
-            "textKo": "SNS히어로 제36화 - 십자 흉터의 지도",
-            "textEn": "SNSHERO · EPISODE 36 - Map of the Cross-Shaped Scar",
-            "bubbleType": "thought",
-            "position": "center"
-          }
-        ],
+        "dialogues": [],
         "sfxCues": []
       },
       {
@@ -63353,7 +63029,7 @@
         "imageUrl": "/images/webtoon/episode_37/scene_00.webp",
         "localArtUrl": "/images/webtoon/episode_37/scene_00.webp",
         "type": "title_card",
-        "narrationKo": "SNS히어로 제37화 - 패왕의 전쟁",
+        "narrationKo": "SNSHERO · EPISODE 37 - War of the Conqueror King",
         "narrationEn": "SNSHERO · EPISODE 37 - War of the Conqueror King",
         "characters": [
           "Fenrir",
@@ -63364,16 +63040,7 @@
           "Medusa Gorgo",
           "Ignis"
         ],
-        "dialogues": [
-          {
-            "speakerKo": "내레이션",
-            "speakerEn": "Narration",
-            "textKo": "SNS히어로 제37화 - 패왕의 전쟁",
-            "textEn": "SNSHERO · EPISODE 37 - War of the Conqueror King",
-            "bubbleType": "thought",
-            "position": "center"
-          }
-        ],
+        "dialogues": [],
         "sfxCues": []
       },
       {
@@ -65073,7 +64740,7 @@
         "imageUrl": "/images/webtoon/episode_38/scene_00.webp",
         "localArtUrl": "/images/webtoon/episode_38/scene_00.webp",
         "type": "title_card",
-        "narrationKo": "SNS히어로 제38화 - 세 개의 명주 봉인",
+        "narrationKo": "SNSHERO · EPISODE 38 - Three Silk Seals",
         "narrationEn": "SNSHERO · EPISODE 38 - Three Silk Seals",
         "characters": [
           "Lucian",
@@ -65084,16 +64751,7 @@
           "Aleksandar",
           "Ignis"
         ],
-        "dialogues": [
-          {
-            "speakerKo": "내레이션",
-            "speakerEn": "Narration",
-            "textKo": "SNS히어로 제38화 - 세 개의 명주 봉인",
-            "textEn": "SNSHERO · EPISODE 38 - Three Silk Seals",
-            "bubbleType": "thought",
-            "position": "center"
-          }
-        ],
+        "dialogues": [],
         "sfxCues": []
       },
       {
@@ -66900,7 +66558,7 @@
         "imageUrl": "/images/webtoon/episode_39/scene_00.webp",
         "localArtUrl": "/images/webtoon/episode_39/scene_00.webp",
         "type": "title_card",
-        "narrationKo": "SNS히어로 제39화 - 지킬 만한 가치가 있는 세상",
+        "narrationKo": "SNSHERO · EPISODE 39 - The World Worth Protecting",
         "narrationEn": "SNSHERO · EPISODE 39 - The World Worth Protecting",
         "characters": [
           "Death Knight Artus",
@@ -66912,16 +66570,7 @@
           "Aleksandar",
           "Ignis"
         ],
-        "dialogues": [
-          {
-            "speakerKo": "내레이션",
-            "speakerEn": "Narration",
-            "textKo": "SNS히어로 제39화 - 지킬 만한 가치가 있는 세상",
-            "textEn": "SNSHERO · EPISODE 39 - The World Worth Protecting",
-            "bubbleType": "thought",
-            "position": "center"
-          }
-        ],
+        "dialogues": [],
         "sfxCues": []
       },
       {
@@ -68762,7 +68411,7 @@
         "imageUrl": "/images/webtoon/episode_40/scene_00.webp",
         "localArtUrl": "/images/webtoon/episode_40/scene_00.webp",
         "type": "title_card",
-        "narrationKo": "SNS히어로 제40화 - 영웅이 아닌 사람",
+        "narrationKo": "SNSHERO · EPISODE 40 - One Who Is Not Called a Hero",
         "narrationEn": "SNSHERO · EPISODE 40 - One Who Is Not Called a Hero",
         "characters": [
           "Aleksandar",
@@ -68774,16 +68423,7 @@
           "Sylphid",
           "Elwin"
         ],
-        "dialogues": [
-          {
-            "speakerKo": "내레이션",
-            "speakerEn": "Narration",
-            "textKo": "SNS히어로 제40화 - 영웅이 아닌 사람",
-            "textEn": "SNSHERO · EPISODE 40 - One Who Is Not Called a Hero",
-            "bubbleType": "thought",
-            "position": "center"
-          }
-        ],
+        "dialogues": [],
         "sfxCues": []
       },
       {
