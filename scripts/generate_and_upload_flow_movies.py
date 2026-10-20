@@ -1251,6 +1251,19 @@ def main():
                                     print(f"    [EP{ep:02d}] Scene {sn} error in batch: {err_msg}", flush=True)
                                     if "비정상적인 활동" in err_msg or "Unusual activity" in err_msg or "TOO_MUCH_TRAFFIC" in err_msg:
                                         rate_limited = True
+                                    elif "SDK listener not ready" in err_msg or "SDK call timeout" in err_msg or "Empty SDK response" in err_msg:
+                                        print(f"  🔄 [EP{ep:02d}] Refreshing Flow page due to {err_msg}...", flush=True)
+                                        try:
+                                            fl = refresh_flow_page(page)
+                                            if not page.evaluate("() => !!window.__sdkListener"):
+                                                ctx.close()
+                                                ctx, page, fl = launch_flow_browser(p, profile_dir)
+                                        except Exception:
+                                            try:
+                                                ctx.close()
+                                            except Exception:
+                                                pass
+                                            ctx, page, fl = launch_flow_browser(p, profile_dir)
                                     elif "사용할 수 없습니다" in err_msg or "unavailable" in err_msg.lower():
                                         # Content safety filter triggered on prompt or first-frame image: purify immediately!
                                         shot_media_cache.pop(str(sn), None)
@@ -1306,6 +1319,15 @@ def main():
                                         err_fb = str(r.get("error") or "")
                                         if "비정상적인 활동" in err_fb or "Unusual activity" in err_fb or "TOO_MUCH_TRAFFIC" in err_fb:
                                             rate_limited_fb = True
+                                        elif "SDK listener not ready" in err_fb or "SDK call timeout" in err_fb:
+                                            try:
+                                                fl = refresh_flow_page(page)
+                                            except Exception:
+                                                try:
+                                                    ctx.close()
+                                                except Exception:
+                                                    pass
+                                                ctx, page, fl = launch_flow_browser(p, profile_dir)
                                     if r.get("imgMediaId"):
                                         shot_media_cache[str(sn)] = r["imgMediaId"]
                                         save_json(shot_media_cache_file, shot_media_cache)
