@@ -11,7 +11,7 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright
 
 FLOW_URL = "https://flow.google.com/project/2f9fc0dd-3554-4132-a2b1-5ca9f0d5b444/tool/971ab28e-f08f-43c2-816c-e59f79ba892b?fromViewSource=tools"
-FLOW_PROFILE_DIR = Path("/tmp/flow_chrome_profile")
+FLOW_PROFILE_DIR = Path("/tmp/flow_chrome_clean2")
 YT_PROFILE_DIR = Path("/tmp/yt_studio_chrome_profile6")
 YT_UPLOAD_URL = "https://studio.youtube.com/channel/UCA6QmKiPstbiyBUHtnSMxyA/content?d=ud"
 YT_PLAYLIST_NAME = "SNSHero.com - The Movie"
@@ -613,7 +613,7 @@ def ensure_flow_profile(profile_dir: Path = FLOW_PROFILE_DIR):
             src_root / "Default",
             profile_dir / "Default",
             symlinks=True,
-            ignore=shutil.ignore_patterns("Cache*", "Code Cache*", "GPUCache*", "Service Worker*", "Singleton*")
+            ignore=shutil.ignore_patterns("Cache*", "Code Cache*", "GPUCache*", "Service Worker*", "Singleton*", "Extensions*", "Extension*")
         )
 
 
@@ -623,54 +623,108 @@ def launch_flow_browser(p, profile_dir: Path = FLOW_PROFILE_DIR):
         user_data_dir=str(profile_dir),
         channel="chrome",
         headless=False,
-        ignore_default_args=["--use-mock-keychain", "--password-store=basic", "--site-per-process", "--enable-automation"],
+        ignore_default_args=["--use-mock-keychain", "--password-store=basic", "--enable-automation"],
         args=[
             "--profile-directory=Default",
+            "--disable-extensions",
             "--disable-blink-features=AutomationControlled",
-            "--disable-site-isolation-trials",
-            "--window-position=-2400,-2400",
-            "--window-size=1440,900",
+            "--window-size=1280,800",
         ],
-        viewport={"width": 1440, "height": 900},
+        viewport={"width": 1280, "height": 800},
     )
+    ctx.add_init_script("""
+        Object.defineProperty(navigator, "webdriver", {get: () => undefined});
+        window.__sdkListener = null;
+        window.__sdkCallbacks = {};
+        const origPost = MessagePort.prototype.postMessage;
+        MessagePort.prototype.postMessage = function(msg, transfer) {
+            if (msg && typeof msg === "object" && typeof msg.id === "number" && window.__sdkCallbacks[msg.id]) {
+                window.__sdkCallbacks[msg.id](msg);
+                delete window.__sdkCallbacks[msg.id];
+            }
+            return origPost.call(this, msg, transfer);
+        };
+        const origAdd = MessagePort.prototype.addEventListener;
+        MessagePort.prototype.addEventListener = function(type, listener, opts) {
+            if (type === "message" && listener && listener.toString().includes("SDK request handler")) {
+                window.__sdkListener = listener;
+            }
+            return origAdd.call(this, type, listener, opts);
+        };
+        const origOnMsg = Object.getOwnPropertyDescriptor(MessagePort.prototype, "onmessage");
+        if (origOnMsg) {
+            Object.defineProperty(MessagePort.prototype, "onmessage", {
+                set(fn) {
+                    if (fn && fn.toString().includes("SDK request handler")) {
+                        window.__sdkListener = fn;
+                    }
+                    return origOnMsg.set.call(this, fn);
+                },
+                get() {
+                    return origOnMsg.get.call(this);
+                }
+            });
+        }
+        window.__callFlowSdk = (type, payload, timeoutMs = 240000) => new Promise((resolve, reject) => {
+            if (!window.__sdkListener) {
+                return reject(new Error("SDK listener not ready"));
+            }
+            const id = Math.floor(Math.random() * 9000000) + 1000;
+            const timer = setTimeout(() => {
+                delete window.__sdkCallbacks[id];
+                reject(new Error("SDK call timeout"));
+            }, timeoutMs);
+            window.__sdkCallbacks[id] = (resp) => {
+                clearTimeout(timer);
+                if (!resp) return reject(new Error("Empty SDK response"));
+                if (resp.error) return reject(new Error(String(resp.error)));
+                if (resp.type && String(resp.type).includes("ERROR")) {
+                    return reject(new Error(JSON.stringify(resp.payload || resp)));
+                }
+                if (resp.payload && resp.payload.error) {
+                    return reject(new Error(String(resp.payload.error)));
+                }
+                resolve(resp.payload || resp);
+            };
+            window.__sdkListener({ data: { type, payload, id } });
+        });
+    """)
     page = ctx.pages[0] if ctx.pages else ctx.new_page()
     page.goto(FLOW_URL, wait_until="domcontentloaded", timeout=60000)
-    try:
-        page.mouse.move(400, 300)
-        page.mouse.move(650, 420, steps=10)
-    except Exception:
-        pass
-    fl = page.frame_locator('iframe[src*="flow-applet-runner"]')
     for _ in range(30):
         time.sleep(1)
         try:
-            ready = fl.locator("body").evaluate("() => !!window.FLOW_PORT")
+            ready = page.evaluate("() => !!window.__sdkListener")
             if ready:
                 break
         except Exception:
             pass
+    try:
+        page.mouse.move(400, 300)
+        page.mouse.click(400, 300)
+    except Exception:
+        pass
     time.sleep(2)
-    return ctx, page, fl
+    return ctx, page, page
 
 
 def refresh_flow_page(page):
-    try:
-        page.mouse.move(300, 250)
-        page.mouse.move(720, 480, steps=12)
-    except Exception:
-        pass
     page.goto(FLOW_URL, wait_until="domcontentloaded", timeout=60000)
-    fl = page.frame_locator('iframe[src*="flow-applet-runner"]')
     for _ in range(30):
         time.sleep(1)
         try:
-            ready = fl.locator("body").evaluate("() => !!window.FLOW_PORT")
+            ready = page.evaluate("() => !!window.__sdkListener")
             if ready:
                 break
         except Exception:
             pass
-    time.sleep(3)
-    return fl
+    try:
+        page.mouse.move(350, 280)
+        page.mouse.click(350, 280)
+    except Exception:
+        pass
+    time.sleep(2)
+    return page
 
 
 def ensure_character_media_ids(fl, char_names, char_media_map):
@@ -693,10 +747,10 @@ def ensure_character_media_ids(fl, char_names, char_media_map):
         try:
             res = fl.locator("body").evaluate(
                 """async (_el, { prompt }) => {
-                    const { Flow } = await import("flow-sdk");
-                    return await Flow.generate.image({
+                    return await window.__callFlowSdk("FLOW_GEN_IMAGE", {
                         prompt,
                         aspectRatio: "16:9",
+                        referenceImageMediaIds: null,
                         modelDisplayName: "🍌 Nano Banana 2 Lite"
                     });
                 }""",
@@ -822,72 +876,55 @@ def generate_scene_batch(fl, ep_num: int, ep_title: str, batch_items: list, char
 
     results = fl.locator("body").evaluate(
         """async (_el, { items }) => {
-            const { Flow } = await import("flow-sdk");
+            const genImg = (prompt, refIds) => window.__callFlowSdk("FLOW_GEN_IMAGE", {
+                prompt,
+                aspectRatio: "16:9",
+                referenceImageMediaIds: refIds && refIds.length > 0 ? refIds : null,
+                modelDisplayName: "🍌 Nano Banana 2 Lite"
+            });
+            const genVid = (prompt, firstFrameImageMediaId) => window.__callFlowSdk("FLOW_GEN_VIDEO", {
+                prompt,
+                modelDisplayName: "Omni Flash",
+                firstFrameImageMediaId,
+                lastFrameImageMediaId: null,
+                referenceImageMediaIds: null,
+                sourceVideoMediaId: null,
+                sourceVideoMode: null,
+                audioReferenceMediaIds: null,
+                aspectRatio: "16:9",
+                durationSeconds: 8,
+                resolution: null
+            });
             return await Promise.all(items.map(async (item, idx) => {
                 try {
                     if (idx > 0) {
-                        await new Promise(r => setTimeout(r, idx * 1800));
+                        await new Promise(r => setTimeout(r, idx * 2200));
                     }
                     let imgRes = null;
                     if (item.existingImgMediaId) {
                         imgRes = { mediaId: item.existingImgMediaId, base64: null };
                     } else {
                         try {
-                            imgRes = await Flow.generate.image({
-                                prompt: item.imgPrompt,
-                                aspectRatio: "16:9",
-                                referenceImageMediaIds: item.refIds && item.refIds.length > 0 ? item.refIds : undefined,
-                                modelDisplayName: "🍌 Nano Banana 2 Lite"
-                            });
+                            imgRes = await genImg(item.imgPrompt, item.refIds);
                         } catch (e1) {
                             try {
-                                imgRes = await Flow.generate.image({
-                                    prompt: item.imgPrompt,
-                                    aspectRatio: "16:9",
-                                    modelDisplayName: "🍌 Nano Banana 2 Lite"
-                                });
+                                imgRes = await genImg(item.imgPrompt, null);
                             } catch (e2) {
-                                imgRes = await Flow.generate.image({
-                                    prompt: item.safeImgPrompt,
-                                    aspectRatio: "16:9",
-                                    modelDisplayName: "🍌 Nano Banana 2 Lite"
-                                });
+                                imgRes = await genImg(item.safeImgPrompt, null);
                             }
                         }
                     }
 
                     let vidRes = null;
                     try {
-                        vidRes = await Flow.generate.video({
-                            prompt: item.vidPrompt,
-                            firstFrameImageMediaId: imgRes.mediaId,
-                            modelDisplayName: "Omni Flash",
-                            aspectRatio: "16:9",
-                            durationSeconds: 8
-                        });
+                        vidRes = await genVid(item.vidPrompt, imgRes.mediaId);
                     } catch (vErr1) {
                         try {
-                            vidRes = await Flow.generate.video({
-                                prompt: item.mildVidPrompt,
-                                firstFrameImageMediaId: imgRes.mediaId,
-                                modelDisplayName: "Omni Flash",
-                                aspectRatio: "16:9",
-                                durationSeconds: 8
-                            });
+                            vidRes = await genVid(item.mildVidPrompt, imgRes.mediaId);
                         } catch (vErr2) {
-                            const safeImg = await Flow.generate.image({
-                                prompt: item.safeImgPrompt,
-                                aspectRatio: "16:9",
-                                modelDisplayName: "🍌 Nano Banana 2 Lite"
-                            });
+                            const safeImg = await genImg(item.safeImgPrompt, null);
                             imgRes = safeImg;
-                            vidRes = await Flow.generate.video({
-                                prompt: item.mildVidPrompt,
-                                firstFrameImageMediaId: safeImg.mediaId,
-                                modelDisplayName: "Omni Flash",
-                                aspectRatio: "16:9",
-                                durationSeconds: 8
-                            });
+                            vidRes = await genVid(item.mildVidPrompt, safeImg.mediaId);
                         }
                     }
 
