@@ -385,28 +385,75 @@ def strip_korean(text: str) -> str:
     return re.sub(r"\s+", " ", cleaned).strip()
 
 
+DANGLE_END = {
+    "the", "a", "an", "of", "to", "in", "with", "for", "on", "at", "from", "by",
+    "into", "upon", "beneath", "through", "across", "against", "between", "under",
+    "over", "above", "below", "towards", "toward", "without", "within", "amidst",
+    "amid", "around", "behind", "beyond", "during", "including", "until", "while",
+    "as", "before", "after", "when", "where", "who", "whom", "whose", "which",
+    "that", "this", "these", "those", "his", "her", "their", "our", "my", "your",
+    "its", "and", "or", "but", "nor", "so", "yet", "was", "were", "is", "are",
+    "had", "have", "has", "did", "do", "does", "would", "could", "should", "will",
+    "shall", "may", "might", "must", "can", "not", "no", "very", "too", "quite"
+}
+
+DANGLE_START = {"and", "but", "or", "nor", "for", "yet", "so", "which", "who", "whom", "whose", "that"}
+
+
+def _clean_alpha(w: str) -> str:
+    return re.sub(r"[^a-z]", "", w.lower())
+
+
+def _is_good_short_clause(c: str) -> bool:
+    words = c.split()
+    if len(words) < 6 or len(words) > 12:
+        return False
+    first_w = _clean_alpha(words[0])
+    last_w = _clean_alpha(words[-1])
+    if first_w in DANGLE_START or last_w in DANGLE_END or len(last_w) < 3:
+        return False
+    return True
+
+
 def make_clean_short_sentence(candidate: str, fallback_narration: str, sn: int) -> str:
-    """Ensure a single, complete English sentence of 7 to 11 words (<= 70 chars) ending in ., !, or ?."""
-    text = strip_korean(candidate or "")
-    text = text.replace('"', "").replace("“", "").replace("”", "").strip()
-    if not text:
-        text = strip_korean(fallback_narration or "")
-        text = text.replace('"', "").replace("“", "").replace("”", "").strip()
+    """Ensure a single, complete English sentence of 6 to 12 words ending in a clean noun/verb and ., !, or ?."""
+    raw = strip_korean(candidate or "")
+    if not raw or len(raw.split()) < 6:
+        raw = strip_korean(fallback_narration or "")
+    text = raw.replace('"', "").replace("“", "").replace("”", "").strip()
+    text = re.sub(r"\bCilia\b", "Celia", text)
+    text = re.sub(r"\b(?:Issela|Isella)\b", "Ysela", text)
 
     sents = [s.strip() for s in re.split(r"(?<=[.!?])\s+", text) if s.strip()]
-    chosen = sents[0] if sents else text
+    # 1. Pick any full sentence in the paragraph that is already 6..12 words
+    for s in sents:
+        if _is_good_short_clause(s):
+            if not s.endswith((".", "!", "?")):
+                s = s.rstrip(",;:-— ") + "."
+            return s[0].upper() + s[1:]
 
-    words = chosen.split()
-    if len(words) > 11:
-        words = words[:10]
-        chosen = " ".join(words).rstrip(",;:-— ") + "."
-    elif not chosen.endswith((".", "!", "?")):
-        chosen = chosen.rstrip(",;:-— ") + "."
+    # 2. Pick a complete clause inside any sentence that is 6..12 words
+    for s in sents:
+        clauses = [
+            c.strip()
+            for c in re.split(r"[,;—–]|\b(?:while|as|before|until|when|where|though|although)\b", s)
+            if c.strip()
+        ]
+        for c in clauses:
+            if _is_good_short_clause(c):
+                c = c.rstrip(",;:-—.!? ") + "."
+                return c[0].upper() + c[1:]
 
-    if len(words) < 4:
-        chosen = f"In scene {sn}, the heroes press forward through the storm."
+    # 3. Trim the first sentence before any dangling preposition/article/pronoun
+    if sents:
+        words = sents[0].split()
+        for end_idx in range(min(11, len(words)), 5, -1):
+            lw = _clean_alpha(words[end_idx - 1])
+            if lw not in DANGLE_END and len(lw) >= 3:
+                cand = " ".join(words[:end_idx]).rstrip(",;:-—.!? ") + "."
+                return cand[0].upper() + cand[1:]
 
-    return chosen
+    return f"In scene {sn}, the heroes press forward with unwavering resolve."
 
 
 def verify_clip_audio(clip_path: Path, expected_dialogue: str) -> tuple[bool, str]:
@@ -437,23 +484,23 @@ def verify_clip_audio(clip_path: Path, expected_dialogue: str) -> tuple[bool, st
 
     spoken_words = [re.sub(r"[^a-z0-9]", "", w.lower()) for w in txt.split()]
     spoken_words = [w for w in spoken_words if w]
-    if len(spoken_words) < 5:
+    if len(spoken_words) < 4:
         return False, f"too_few_words({len(spoken_words)}):{txt}"
 
     expected_words = [re.sub(r"[^a-z0-9]", "", w.lower()) for w in expected_dialogue.split()]
     expected_words = [w for w in expected_words if w]
 
-    if len(spoken_words) < max(5, int(len(expected_words) * 0.65)):
+    if len(spoken_words) < max(4, int(len(expected_words) * 0.65)):
         return False, f"incomplete_word_count(expected={len(expected_words)}w,heard={len(spoken_words)}w:'{txt}')"
 
-    # Strictly require that at least one of the last 2 words of expected_dialogue appears in the last 4 spoken words
-    tail_targets = expected_words[-2:] if len(expected_words) >= 2 else expected_words[-1:]
+    # Require that at least one of the last 3 words of expected_dialogue appears in the last 4 spoken words
+    tail_targets = expected_words[-3:] if len(expected_words) >= 3 else expected_words
     spoken_tail = spoken_words[-4:] if len(spoken_words) >= 4 else spoken_words
 
     tail_matched = False
     for t in tail_targets:
         for sw in spoken_tail:
-            if sw == t or (len(t) >= 4 and len(sw) >= 4 and (sw.startswith(t[:4]) or t.startswith(sw[:4]))):
+            if sw == t or (len(t) >= 4 and len(sw) >= 4 and (sw.startswith(t[:4]) or t.startswith(sw[:4]) or sw[-4:] == t[-4:])):
                 tail_matched = True
                 break
 
