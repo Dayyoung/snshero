@@ -629,7 +629,7 @@ def ensure_character_media_ids(fl, char_names, char_media_map):
     return char_media_map
 
 
-def build_episode_storyboard(fl, ep_num: int, ep_data: dict, ep_dir: Path):
+def build_episode_storyboard(fl, ep_num: int, ep_data: dict, ep_dir: Path, use_llm: bool = False):
     sb_path = ep_dir / "storyboard.json"
     if sb_path.exists():
         existing = load_json(sb_path, [])
@@ -638,71 +638,38 @@ def build_episode_storyboard(fl, ep_num: int, ep_data: dict, ep_dir: Path):
 
     scenes = ep_data["scenes"]
     storyboard = []
+    camera_motions = [
+        "Slow cinematic push-in shot with dramatic lighting and subtle atmospheric movement.",
+        "Smooth tracking shot following the action across the medieval fantasy setting.",
+        "Slow sweeping pan across the scene with volumetric light rays and natural motion.",
+        "Subtle low-angle camera movement emphasizing dramatic tension and atmosphere."
+    ]
 
-    for batch_start in range(0, len(scenes), 10):
-        batch = scenes[batch_start:batch_start + 10]
-        scenes_text = "\n\n".join(
-            f"Scene {s['sceneNumber']}:\nContext: {s['narrationEn']}\nSuggested Short Voiceover: {s.get('dialogueEn', '')}"
-            for s in batch
-        )
-        sys_inst = (
-            "You are an expert cinematic storyboard director for a live-action dark fantasy epic movie in English. "
-            "For each scene provided, output a JSON object with a 'shots' array containing EXACTLY 1 item per scene: "
-            "{ \"sceneNumber\": number, \"title\": \"3-4 word English title\", "
-            "\"dialogueEn\": \"A SINGLE complete, natural English sentence of 8 to 11 words (maximum 68 characters) ending with two common English words and a period or exclamation mark\", "
-            "\"visualDescription\": \"3-4 vivid English sentences describing the physical setting, lighting, character positions, and cinematic action (avoid gore/explicit violence, keep it PG-13 cinematic fantasy)\", "
-            "\"motionDescription\": \"1-2 English sentences describing smooth camera movement (e.g. slow push-in, sweeping tracking shot, subtle pan) and natural character movement\" }. "
-            "Respond ONLY with valid JSON in English: { \"shots\": [...] }"
-        )
-        user_prompt = f"Create the 1-shot-per-scene English storyboard breakdown for Episode {ep_num} ({ep_data['titleEn']}):\n\n{scenes_text}"
-        parsed_shots = {}
-        try:
-            resp = fl.locator("body").evaluate(
-                """async (_el, { userPrompt, sysInst }) => {
-                    const { Flow } = await import("flow-sdk");
-                    return await Flow.generate.text(userPrompt, {
-                        systemInstruction: sysInst,
-                        modelDisplayName: "Gemini 3.0 Flash Preview",
-                        thinkingLevel: "low"
-                    });
-                }""",
-                {"userPrompt": user_prompt, "sysInst": sys_inst}
+    for s in scenes:
+        sn = s["sceneNumber"]
+        narration = strip_korean(s["narrationEn"])
+        if ep_num in (10, 11) and s.get("dialogueEn"):
+            dialogue_en = strip_korean(s["dialogueEn"])
+        else:
+            dialogue_en = make_clean_short_sentence(
+                s.get("dialogueEn", ""),
+                narration,
+                sn
             )
-            txt = resp.get("text", "")
-            m = re.search(r"\{[\s\S]*\}", txt)
-            if m:
-                data = json.loads(m.group(0))
-                for item in data.get("shots", []):
-                    sn = int(item.get("sceneNumber", 0))
-                    if sn > 0:
-                        parsed_shots[sn] = item
-        except Exception as e:
-            print(f"  [EP{ep_num:02d}] Storyboard LLM batch warning: {e}", flush=True)
-
-        for s in batch:
-            sn = s["sceneNumber"]
-            narration = strip_korean(s["narrationEn"])
-            item = parsed_shots.get(sn, {})
-            if ep_num in (10, 11) and s.get("dialogueEn"):
-                dialogue_en = strip_korean(s["dialogueEn"])
-            else:
-                dialogue_en = make_clean_short_sentence(
-                    item.get("dialogueEn") or s.get("dialogueEn", ""),
-                    narration,
-                    sn
-                )
-            vis_desc = strip_korean(item.get("visualDescription") or f"Cinematic medieval fantasy scene: {narration}")
-            mot_desc = strip_korean(item.get("motionDescription") or "Slow cinematic camera push-in with subtle atmospheric movement and dramatic lighting.")
-            chars = detect_characters_in_text(narration + " " + vis_desc + " " + dialogue_en)
-            storyboard.append({
-                "sceneNumber": sn,
-                "title": strip_korean(item.get("title") or s.get("title") or f"Scene {sn:02d}"),
-                "dialogueEn": dialogue_en,
-                "narrationEn": narration,
-                "visualDescription": vis_desc,
-                "motionDescription": mot_desc,
-                "characters": chars
-            })
+        vis_desc = strip_korean(
+            f"Live-action dark fantasy movie frame from '{ep_data['titleEn']}': {narration[:360]}"
+        )
+        mot_desc = camera_motions[(sn - 1) % len(camera_motions)]
+        chars = detect_characters_in_text(narration + " " + dialogue_en)
+        storyboard.append({
+            "sceneNumber": sn,
+            "title": strip_korean(s.get("title") or f"Scene {sn:02d}"),
+            "dialogueEn": dialogue_en,
+            "narrationEn": narration,
+            "visualDescription": vis_desc,
+            "motionDescription": mot_desc,
+            "characters": chars
+        })
 
     save_json(sb_path, storyboard)
     return storyboard
