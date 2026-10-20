@@ -622,14 +622,24 @@ def launch_flow_browser(p, profile_dir: Path = FLOW_PROFILE_DIR):
     ctx = p.chromium.launch_persistent_context(
         user_data_dir=str(profile_dir),
         channel="chrome",
-        headless=True,
-        user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
-        ignore_default_args=["--use-mock-keychain", "--password-store=basic", "--site-per-process"],
-        args=["--profile-directory=Default", "--disable-blink-features=AutomationControlled", "--disable-site-isolation-trials"],
+        headless=False,
+        ignore_default_args=["--use-mock-keychain", "--password-store=basic", "--site-per-process", "--enable-automation"],
+        args=[
+            "--profile-directory=Default",
+            "--disable-blink-features=AutomationControlled",
+            "--disable-site-isolation-trials",
+            "--window-position=-2400,-2400",
+            "--window-size=1440,900",
+        ],
         viewport={"width": 1440, "height": 900},
     )
     page = ctx.pages[0] if ctx.pages else ctx.new_page()
     page.goto(FLOW_URL, wait_until="domcontentloaded", timeout=60000)
+    try:
+        page.mouse.move(400, 300)
+        page.mouse.move(650, 420, steps=10)
+    except Exception:
+        pass
     fl = page.frame_locator('iframe[src*="flow-applet-runner"]')
     for _ in range(30):
         time.sleep(1)
@@ -641,6 +651,26 @@ def launch_flow_browser(p, profile_dir: Path = FLOW_PROFILE_DIR):
             pass
     time.sleep(2)
     return ctx, page, fl
+
+
+def refresh_flow_page(page):
+    try:
+        page.mouse.move(300, 250)
+        page.mouse.move(720, 480, steps=12)
+    except Exception:
+        pass
+    page.goto(FLOW_URL, wait_until="domcontentloaded", timeout=60000)
+    fl = page.frame_locator('iframe[src*="flow-applet-runner"]')
+    for _ in range(30):
+        time.sleep(1)
+        try:
+            ready = fl.locator("body").evaluate("() => !!window.FLOW_PORT")
+            if ready:
+                break
+        except Exception:
+            pass
+    time.sleep(3)
+    return fl
 
 
 def ensure_character_media_ids(fl, char_names, char_media_map):
@@ -793,8 +823,11 @@ def generate_scene_batch(fl, ep_num: int, ep_title: str, batch_items: list, char
     results = fl.locator("body").evaluate(
         """async (_el, { items }) => {
             const { Flow } = await import("flow-sdk");
-            return await Promise.all(items.map(async (item) => {
+            return await Promise.all(items.map(async (item, idx) => {
                 try {
+                    if (idx > 0) {
+                        await new Promise(r => setTimeout(r, idx * 1800));
+                    }
                     let imgRes = null;
                     if (item.existingImgMediaId) {
                         imgRes = { mediaId: item.existingImgMediaId, base64: null };
@@ -1115,17 +1148,21 @@ def main():
 
                 print(f"  [EP{ep:02d}] Scenes pending generation: {len(pending)}/{len(storyboard)}", flush=True)
 
-                batch_size = 4
+                batch_size = 3
                 for idx in range(0, len(pending), batch_size):
                     remaining_batch = [dict(x) for x in pending[idx:idx + batch_size]]
                     t0 = time.time()
 
-                    for attempt in range(5):
+                    for attempt in range(6):
                         if not remaining_batch:
                             break
                         sn_list = [b["sceneNumber"] for b in remaining_batch]
                         print(f"  [EP{ep:02d}] Generating scenes {sn_list} (attempt {attempt+1})...", flush=True)
                         try:
+                            try:
+                                page.mouse.move(200 + (idx * 17) % 600, 200 + (attempt * 53) % 400, steps=5)
+                            except Exception:
+                                pass
                             reuse_shots = {
                                 b["sceneNumber"]: shot_media_cache.get(str(b["sceneNumber"]))
                                 for b in remaining_batch
@@ -1133,6 +1170,7 @@ def main():
                             }
                             results = generate_scene_batch(fl, ep, title_en, remaining_batch, char_media_map, reuse_shots)
                             failed_sns = set()
+                            rate_limited = False
                             for r in results:
                                 sn = r["sceneNumber"]
                                 scene_item = next(b for b in remaining_batch if b["sceneNumber"] == sn)
@@ -1153,19 +1191,32 @@ def main():
                                         clip_path.unlink(missing_ok=True)
                                         failed_sns.add(sn)
                                 else:
-                                    print(f"    [EP{ep:02d}] Scene {sn} error in batch: {r.get('error')}", flush=True)
+                                    err_msg = str(r.get("error") or "")
+                                    print(f"    [EP{ep:02d}] Scene {sn} error in batch: {err_msg}", flush=True)
+                                    if "비정상적인 활동" in err_msg or "Unusual activity" in err_msg or "사용할 수 없습니다" in err_msg:
+                                        rate_limited = True
                                     failed_sns.add(sn)
                             remaining_batch = [b for b in remaining_batch if b["sceneNumber"] in failed_sns]
                             if not remaining_batch:
                                 print(f"  [EP{ep:02d}] Batch completed & verified in {time.time() - t0:.1f}s!", flush=True)
+                                time.sleep(4)
                                 break
+                            if rate_limited:
+                                wait_sec = 60 + attempt * 30
+                                print(f"  ⏳ [EP{ep:02d}] Rate-limit/reCAPTCHA cooldown: sleeping {wait_sec}s and restarting Chrome session...", flush=True)
+                                try:
+                                    ctx.close()
+                                except Exception:
+                                    pass
+                                time.sleep(wait_sec)
+                                ctx, page, fl = launch_flow_browser(p, profile_dir)
                         except Exception as e:
                             print(f"  [EP{ep:02d}] Batch exception on {sn_list}: {e}", flush=True)
                             try:
                                 ctx.close()
                             except Exception:
                                 pass
-                            time.sleep(3)
+                            time.sleep(15)
                             ctx, page, fl = launch_flow_browser(p, profile_dir)
 
                     for single_item in remaining_batch:
@@ -1173,7 +1224,7 @@ def main():
                         clip_path = ep_dir / f"clip_{sn:02d}.mp4"
                         if clip_path.exists() and clip_path.stat().st_size > 10000:
                             continue
-                        for fb_try in range(3):
+                        for fb_try in range(6):
                             try:
                                 safe_override = dict(single_item)
                                 safe_override["visualDescription"] = (
@@ -1184,7 +1235,12 @@ def main():
                                 safe_override["characters"] = []
                                 reuse_shots = {sn: shot_media_cache.get(str(sn))} if shot_media_cache.get(str(sn)) else {}
                                 results = generate_scene_batch(fl, ep, title_en, [safe_override], char_media_map, reuse_shots)
+                                rate_limited_fb = False
                                 for r in results:
+                                    if not r.get("ok"):
+                                        err_fb = str(r.get("error") or "")
+                                        if "비정상적인 활동" in err_fb or "Unusual activity" in err_fb or "사용할 수 없습니다" in err_fb:
+                                            rate_limited_fb = True
                                     if r.get("imgMediaId"):
                                         shot_media_cache[str(sn)] = r["imgMediaId"]
                                         save_json(shot_media_cache_file, shot_media_cache)
@@ -1192,17 +1248,29 @@ def main():
                                         (ep_dir / f"shot_{sn:02d}.jpg").write_bytes(base64.b64decode(r["imgBase64"]))
                                     if r.get("vidBase64"):
                                         clip_path.write_bytes(base64.b64decode(r["vidBase64"]))
+                                if rate_limited_fb:
+                                    wait_fb = 75 + fb_try * 30
+                                    print(f"  ⏳ [EP{ep:02d} S{sn:02d}] Fallback cooldown {wait_fb}s + browser restart...", flush=True)
+                                    try:
+                                        ctx.close()
+                                    except Exception:
+                                        pass
+                                    time.sleep(wait_fb)
+                                    ctx, page, fl = launch_flow_browser(p, profile_dir)
+                                    continue
                                 ok_audio, reason = verify_clip_audio(clip_path, safe_override["dialogueEn"])
                                 if ok_audio:
                                     print(f"  ✅ [EP{ep:02d} S{sn:02d}] Recovered & audio verified: {reason}", flush=True)
                                     break
                                 else:
-                                    print(f"  ⚠️ [EP{ep:02d} S{sn:02d}] Fallback audio check failed ({reason}), retry {fb_try+1}/3", flush=True)
+                                    print(f"  ⚠️ [EP{ep:02d} S{sn:02d}] Fallback audio check failed ({reason}), retry {fb_try+1}/6", flush=True)
                             except Exception as e2:
                                 print(f"  [EP{ep:02d}] Fatal error on scene {sn}: {e2}", flush=True)
 
                 concat_episode_clips(ep_dir, final_mp4, len(storyboard))
                 print(f"  ✅ [EP{ep:02d}] Full movie saved: {final_mp4} ({final_mp4.stat().st_size / (1024*1024):.1f} MB)", flush=True)
+                time.sleep(8)
+                fl = refresh_flow_page(page)
             else:
                 print(f"  ✅ [EP{ep:02d}] Movie file already exists: {final_mp4}", flush=True)
 
