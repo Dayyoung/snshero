@@ -243,6 +243,129 @@ EP10_CLEAN_SCENES = [
     }
 ]
 
+EP11_CLEAN_SCENES = [
+    {
+        "sceneNumber": 1,
+        "title": "Subterranean Labor Prison",
+        "dialogueEn": "Deep beneath the palace, thousands of nameless prisoners mined crimson stone.",
+        "narrationEn": "Subterranean Labor Prison No. 7 sprawled beneath the Red Glass Court above rivers of bubbling magma, where thousands of prisoners swung pickaxes to unearth crimson firestones."
+    },
+    {
+        "sceneNumber": 2,
+        "title": "Reading the Drafts",
+        "dialogueEn": "Celia pressed her jade staff down to read the subterranean wind.",
+        "narrationEn": "Celia positioned the tip of her jade staff against the cavern floor, gauging the cool subterranean drafts to bypass the central watchtower."
+    },
+    {
+        "sceneNumber": 3,
+        "title": "Freezing the Magma",
+        "dialogueEn": "Through his iron shield, Kadan froze the boiling river of lava.",
+        "narrationEn": "Drawing upon star-breathing, Kadan channeled frost mana through his iron shield, freezing the churning magma aqueduct beneath a span of silver ice."
+    },
+    {
+        "sceneNumber": 4,
+        "title": "The White-Haired Veteran",
+        "dialogueEn": "Seeing the silver dagger, the wounded veteran dropped his heavy pickaxe.",
+        "narrationEn": "At the darkest rock face stood the white-haired veteran Balian; the instant he saw the Silver Dagger at Kadan's belt, his heavy iron pickaxe clattered to the floor."
+    },
+    {
+        "sceneNumber": 5,
+        "title": "Blade of Aleksandar",
+        "dialogueEn": "That shining silver dagger belongs to my beloved older brother!",
+        "narrationEn": "Balian's raspy voice echoed against the damp cavern walls as he recognized his sworn elder brother Aleksandar's silver blade."
+    },
+    {
+        "sceneNumber": 6,
+        "title": "Names Carved in Stone",
+        "dialogueEn": "For eighteen winters, Balian carved every fallen name in stone.",
+        "narrationEn": "Using a steel chisel, Balian had secretly carved the names of fallen comrades and Aleksandar into the firestone wall every day for eighteen long years."
+    },
+    {
+        "sceneNumber": 7,
+        "title": "Reunion in the Abyss",
+        "dialogueEn": "Uncle Balian, I am Kadan, the son of your sworn brother.",
+        "narrationEn": "As Kadan sank to one knee and introduced himself as Aleksandar's son, Balian reached out a weathered hand to cradle the boy's cheek with rough tenderness."
+    },
+    {
+        "sceneNumber": 8,
+        "title": "Blocked by White Flame",
+        "dialogueEn": "Along the narrow drainage corridor, young Ignis blocked their only escape.",
+        "narrationEn": "As the companions retreated along the narrow drainage corridor, Ignis blocked their vanguard in silver plate armor, drawing a broadsword wrapped in white flame."
+    },
+    {
+        "sceneNumber": 9,
+        "title": "Throwing the Truth",
+        "dialogueEn": "Sheathe your burning sword and look upon your true father today!",
+        "narrationEn": "Rather than raising his weapon, Kadan tossed the secret ledger at Ignis's boots and declared that the prisoner before him was his true father, Duke Balian."
+    },
+    {
+        "sceneNumber": 10,
+        "title": "Ancestral Spear Art",
+        "dialogueEn": "With a single swift strike, Balian deflected the blazing white sword.",
+        "narrationEn": "Clutching a fractured spear shaft, Balian stepped forward and flicked the spearhead upward with blinding speed, deflecting Ignis's flaming blade using their ancestral spear art."
+    },
+    {
+        "sceneNumber": 11,
+        "title": "A Father's Correction",
+        "dialogueEn": "If you raise your thumb, the flame will scorch your wrist.",
+        "narrationEn": "Balian tapped the young commander's weapon to disrupt his balance and gently corrected his grip on the hilt just as he had in Ignis's childhood dreams."
+    },
+    {
+        "sceneNumber": 12,
+        "title": "Frantic Denial",
+        "dialogueEn": "The young commander recoiled in fear, denying his own childhood memory.",
+        "narrationEn": "Realizing his fingers had reflexively obeyed his father's warm voice, Ignis recoiled violently and slapped the spear aside in frantic denial."
+    },
+    {
+        "sceneNumber": 13,
+        "title": "Voice of the Heart",
+        "dialogueEn": "Before swinging your blade blindly, ask your heart what is true!",
+        "narrationEn": "Kadan set his iron shield firmly between them, urging Ignis to verify the truth with his own eyes and listen to his own heart."
+    },
+    {
+        "sceneNumber": 14,
+        "title": "Vanishing into the Flue",
+        "dialogueEn": "Balian opened the iron gate and vanished down the dark tunnel.",
+        "narrationEn": "As emergency bells rang out, Balian wrenched open the iron portcullis of the escape flue while Ignis stood motionless, watching his father vanish."
+    },
+    {
+        "sceneNumber": 15,
+        "title": "Distrust at the Sanctuary",
+        "dialogueEn": "In the mountain sanctuary, Grimli refused to trust the island princess.",
+        "narrationEn": "Emerging at the mountain sanctuary, Grimli the dwarf bared his teeth in distrust upon learning that Celia was the daughter of Sovereign Aeolus."
+    },
+    {
+        "sceneNumber": 16,
+        "title": "Medusa's Chain Ambush",
+        "dialogueEn": "From the black mist, Medusa lashed out with her iron chain.",
+        "narrationEn": "Suddenly a heavy silver chain whipped out from the black mist as Medusa ambushed the camp, and Kadan intercepted the strike with his iron shield."
+    },
+    {
+        "sceneNumber": 17,
+        "title": "Truth of Mistfall Cliff",
+        "dialogueEn": "At the raging waterfall cliff, your husband sacrificed his own life!",
+        "narrationEn": "Held in Medusa's claws, Kadan looked straight into her eyes and revealed that her husband had nobly sacrificed his life at Mistfall Cliff to save him."
+    },
+    {
+        "sceneNumber": 18,
+        "title": "Chime of Six Bells",
+        "dialogueEn": "Gawain struck the chain while six silver bells rang in unison.",
+        "narrationEn": "As Medusa's grip wavered, Gawain's iron staff struck the chain like thunder while the six silver bells of the pursuers chimed across the night."
+    },
+    {
+        "sceneNumber": 19,
+        "title": "Splitting the Flagstones",
+        "dialogueEn": "Balian slammed his heavy spear down to stop the bitter battle.",
+        "narrationEn": "Paladin Balian slammed his heavy spear shaft into the cracked flagstones of the ruined shrine, splitting the ground to halt the vengeful clash and free the prisoners."
+    },
+    {
+        "sceneNumber": 20,
+        "title": "Tears at Dawn",
+        "dialogueEn": "At dawn, the reunited couple wept quietly beneath the rising sun.",
+        "narrationEn": "At dawn's first light in the ancient sanctuary, Balian and Ysela finally stood before one another and wept in silent embrace after eighteen stolen years."
+    }
+]
+
 
 _WHISPER_MODEL = None
 
@@ -374,7 +497,8 @@ def build_clean_episodes_from_english_txt() -> dict:
                 title_en = parts[1].strip()
         body_paras = raw_lines[2:] if len(raw_lines) > 2 else raw_lines
 
-        if ep_num == 10:
+        preset_map = {10: EP10_CLEAN_SCENES, 11: EP11_CLEAN_SCENES}
+        if ep_num in preset_map:
             scenes = [
                 {
                     "sceneNumber": s["sceneNumber"],
@@ -382,7 +506,7 @@ def build_clean_episodes_from_english_txt() -> dict:
                     "dialogueEn": s["dialogueEn"],
                     "narrationEn": s["narrationEn"],
                 }
-                for s in EP10_CLEAN_SCENES
+                for s in preset_map[ep_num]
             ]
         else:
             scenes = []
@@ -559,7 +683,7 @@ def build_episode_storyboard(fl, ep_num: int, ep_data: dict, ep_dir: Path):
             sn = s["sceneNumber"]
             narration = strip_korean(s["narrationEn"])
             item = parsed_shots.get(sn, {})
-            if ep_num == 10 and s.get("dialogueEn"):
+            if ep_num in (10, 11) and s.get("dialogueEn"):
                 dialogue_en = strip_korean(s["dialogueEn"])
             else:
                 dialogue_en = make_clean_short_sentence(
