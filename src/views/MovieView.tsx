@@ -52,6 +52,7 @@ interface MovieViewProps {
 const TOTAL_EPISODES = 40;
 const YOUTUBE_PLAYLIST_ID = 'PLK35ZdYm5NNE';
 const YOUTUBE_PLAYLIST_URL = 'https://www.youtube.com/watch?v=R6ls-BIxLCQ&list=PLK35ZdYm5NNE';
+const YOUTUBE_DATA_API_KEY = 'AIzaSyBa9TidLv_iwMyB-9VSrVGWEVUr0WyjiQU';
 
 // 기본 공개 완료 에피소드 기본값 (40부작 전편 100% 공개)
 const DEFAULT_RELEASED_COUNT = 40;
@@ -132,22 +133,41 @@ export const MovieView: React.FC<MovieViewProps> = ({
     }
   };
 
-  // 유튜브 플레이리스트 최신 목록 실시간 동적 확인 (HTML 직접 파싱 + RSS + 다중 CORS 프록시 fallback 체인)
+  // 유튜브 플레이리스트 최신 목록 실시간 동적 확인 (YouTube Data API v3 1순위 + RSS/CORS 프록시 fallback 체인)
   const fetchLatestPlaylistStatus = async (silent = false) => {
     setIsCheckingPlaylist(true);
     try {
+      let fetchedVideoIds: string[] = [];
+
+      // 0. Official YouTube Data API v3 direct fetch (0.1s ultra-fast & reliable)
+      try {
+        const apiUrl = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${YOUTUBE_PLAYLIST_ID}&key=${YOUTUBE_DATA_API_KEY}`;
+        const apiRes = await fetch(apiUrl);
+        if (apiRes.ok) {
+          const apiData = await apiRes.json();
+          if (Array.isArray(apiData?.items)) {
+            const ids = apiData.items
+              .map((item: any) => item?.snippet?.resourceId?.videoId)
+              .filter(Boolean);
+            if (ids.length > 0) {
+              fetchedVideoIds = ids;
+            }
+          }
+        }
+      } catch {
+        // fallback to proxy chain if blocked
+      }
+
       const playlistPageUrl = `https://www.youtube.com/playlist?list=${YOUTUBE_PLAYLIST_ID}`;
       const rawRssUrl = `https://www.youtube.com/feeds/videos.xml?playlist_id=${YOUTUBE_PLAYLIST_ID}`;
       
-      const fetchTargets = [
+      const fetchTargets = fetchedVideoIds.length > 0 ? [] : [
         `https://api.allorigins.win/raw?url=${encodeURIComponent(playlistPageUrl)}`,
         `https://corsproxy.io/?url=${encodeURIComponent(playlistPageUrl)}`,
         `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(playlistPageUrl)}`,
         `https://api.allorigins.win/raw?url=${encodeURIComponent(rawRssUrl)}`,
         `https://corsproxy.io/?url=${encodeURIComponent(rawRssUrl)}`,
       ];
-
-      let fetchedVideoIds: string[] = [];
 
       for (const targetUrl of fetchTargets) {
         try {
@@ -907,6 +927,74 @@ export const MovieView: React.FC<MovieViewProps> = ({
                 <span>{language === 'ko' ? '[v] 시청 보상 100 SNS 자동 지급 완료' : '[v] 100 SNS Auto-Awarded'}</span>
               </div>
             )}
+          </div>
+        </div>
+
+        {/* ── Official YouTube Animation Promotion Text & Viewer Gift Box ── */}
+        <div className="mx-2 sm:mx-4 p-3 sm:p-4 rounded-none border border-[#201d1d] bg-[#fdfcfc] font-mono space-y-2.5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[rgba(15,0,0,0.12)] pb-2">
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 rounded-sm bg-[#201d1d] text-[#fdfcfc] text-[10px] font-bold">
+                [OFFICIAL PROMOTION]
+              </span>
+              <span className="text-xs font-bold text-[#201d1d]">
+                SNSHero 공식 애니메이션 제{currentEpisodeNum}화 프로모션 문구 & 시청자 특별 보급품
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <button
+                type="button"
+                onClick={() => {
+                  triggerHaptic('tap');
+                  const promoText = `[SNSHero 공식 애니메이션 제${currentEpisodeNum}화: ${MOVIE_EPISODES[currentEpisodeNum]?.titleKo || ''}]\n${MOVIE_EPISODES[currentEpisodeNum]?.synopsisKo || ''}\n\n▶ 애니메이션 속 영웅들로 지금 바로 1초 만에 카드 배틀을 즐겨보세요!\n▶ [애니 시청자 전용 특별 보급품: 전설(SSR) 영웅 '카단' + 1,000 보석 즉시 지급]\n👉 https://snshero.com/?utm_source=youtube&gift=anime_ssr&ep=${currentEpisodeNum}\n▶ 공식 유튜브 플레이리스트: ${ getDirectYouTubeWatchUrl(currentEpisodeNum) }`;
+                  if (typeof navigator !== 'undefined' && navigator.clipboard) {
+                    navigator.clipboard.writeText(promoText).catch(() => {});
+                  }
+                  const copyKey = `hero_yt_promo_copy_${todayStr}`;
+                  if (localStorage.getItem(copyKey) !== 'true') {
+                    localStorage.setItem(copyKey, 'true');
+                    if (updateSns) updateSns(100, 'YouTube Animation Promo Text Copy Bonus');
+                    setShareToast('[v] 동영상 프로모션 문구 복사 완료 (+100 SNS 지급!)');
+                  } else {
+                    setShareToast('[v] 동영상 프로모션 문구가 클립보드에 복사되었습니다!');
+                  }
+                  setTimeout(() => setShareToast(null), 2800);
+                }}
+                className="min-h-[44px] flex items-center gap-1.5 px-3 py-1.5 rounded-sm border border-[#201d1d] bg-[#201d1d] text-[#fdfcfc] hover:bg-black text-xs font-bold transition-colors cursor-pointer"
+              >
+                <Copy size={13} />
+                <span>[프로모션 홍보 문구 복사 (+100 SNS)]</span>
+              </button>
+              <a
+                href={`https://snshero.com/?utm_source=youtube&gift=anime_ssr&ep=${currentEpisodeNum}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  triggerHaptic('victory');
+                  if (localStorage.getItem('hero_youtube_anime_gift_claimed') !== 'true') {
+                    localStorage.setItem('hero_youtube_anime_gift_claimed', 'true');
+                    if (updateSns) updateSns(1000, 'YouTube Animation Viewer Special Gift');
+                    setShareToast('[v] 애니 시청자 특별 보급품 (+1,000 SNS) 수령 완료!');
+                    setTimeout(() => setShareToast(null), 3200);
+                  } else {
+                    setShareToast('[i] 이미 애니 시청자 특별 보급품을 수령하셨습니다.');
+                    setTimeout(() => setShareToast(null), 2400);
+                  }
+                }}
+                className="min-h-[44px] flex items-center gap-1.5 px-3 py-1.5 rounded-sm border border-[#201d1d] bg-[#fdfcfc] text-[#201d1d] hover:bg-[#f1eeee] text-xs font-bold transition-colors cursor-pointer"
+              >
+                <Gift size={14} />
+                <span>[시청자 보급품 (+1,000 SNS) 받기]</span>
+              </a>
+            </div>
+          </div>
+
+          <div className="p-2.5 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] text-xs text-[#201d1d] leading-relaxed whitespace-pre-line select-all">
+            {`[SNSHero 공식 애니메이션 제${currentEpisodeNum}화: ${MOVIE_EPISODES[currentEpisodeNum]?.titleKo || ''}]
+${MOVIE_EPISODES[currentEpisodeNum]?.synopsisKo || ''}
+
+• 애니메이션 속 전설 영웅들로 지금 바로 1초 만에 카드 배틀을 즐겨보세요! (앱 설치/다운로드 0초)
+• [애니 시청자 전용 특별 보급품: 전설(SSR) 영웅 '카단' + 1,000 보석 즉시 지급 링크]
+👉 https://snshero.com/?utm_source=youtube&gift=anime_ssr&ep=${currentEpisodeNum}`}
           </div>
         </div>
       </div>
