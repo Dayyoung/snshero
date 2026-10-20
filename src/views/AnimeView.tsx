@@ -256,7 +256,7 @@ export const AnimeView: React.FC<AnimeViewProps> = ({
   : `https://www.youtube-nocookie.com/embed?listType=playlist&list=${YOUTUBE_PLAYLIST_ID}&index=${currentEpisodeNum - 1}&enablejsapi=1&rel=0`;
 
  return (
- <div className="flex flex-col min-h-screen bg-[#fdfcfc] text-[#201d1d] font-mono px-0 py-2 sm:py-3 pb-32 max-w-none mx-auto w-full overflow-x-hidden">
+ <div className="flex flex-col min-h-screen bg-[#fdfcfc] text-[#201d1d] font-mono px-0 py-2 sm:py-3 pb-32 max-w-[1024px] mx-auto w-full overflow-x-hidden">
  {/* ── Page Header ── */}
  <div className="px-2 sm:px-4">
  <PageHeader

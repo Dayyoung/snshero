@@ -831,7 +831,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
       : 'text-xl leading-loose';
 
   return (
-    <div className="min-h-screen w-full bg-[#fdfcfc] text-[#201d1d] font-mono flex flex-col justify-between selection:bg-[#f1eeee] pb-32">
+    <div className="min-h-screen w-full max-w-[1024px] mx-auto bg-[#fdfcfc] text-[#201d1d] font-mono flex flex-col justify-between selection:bg-[#f1eeee] pb-32">
       {/* Copy Toast Feedback */}
       {copyToast && (
         <div className="fixed top-14 left-1/2 -translate-x-1/2 z-[100000] bg-[#201d1d] text-[#fdfcfc] text-xs px-4 py-2.5 rounded-none border border-[#201d1d] flex items-center gap-2 font-mono">
@@ -1135,7 +1135,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
       )}
 
       {/* Main Content Reader Canvas */}
-      <main className="flex-1 w-full max-w-none mx-auto px-0 py-0 flex flex-col items-center">
+      <main className="flex-1 w-full max-w-[1024px] mx-auto px-0 py-0 flex flex-col items-center">
         <div
           className={cn(
             "w-full border-y border-x-0 rounded-none transition-colors duration-200",
@@ -2166,7 +2166,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
           </div>
 
           {/* Lightbox Image Container */}
-          <div className="relative my-auto w-full max-w-none max-h-[85vh] flex items-center justify-center overflow-hidden" onClick={e => e.stopPropagation()}>
+          <div className="relative my-auto w-full max-w-[1024px] mx-auto max-h-[85vh] flex items-center justify-center overflow-hidden" onClick={e => e.stopPropagation()}>
             <img
               src={getCartoonSceneUrl(currentEpisodeNum, lightboxSceneIndex, sceneImgAttempts[`${currentEpisodeNum}_${lightboxSceneIndex}`] || 0)}
               alt={`Episode ${currentEpisodeNum} Scene ${lightboxSceneIndex}`}

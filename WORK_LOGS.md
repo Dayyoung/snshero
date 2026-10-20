@@ -15378,3 +15378,10 @@
      - 동일한 재생목록 `SNSHero.com-Animation` (`PLK35ZdYm5NNE`) 생성 및 기본 동영상 정렬을 `추가된 날짜(오래된순)`으로 설정하여 1화(`pos 0`)부터 40화(`pos 39`)까지 정방향 순차 재생되도록 설정 완료.
 - **검증 결과**: YouTube Data API v3를 통해 두 채널 모두 40개 영상 공개(Public) 상태 및 재생목록 순서 검증 완료, `npm run build` 성공.
 - **구글 폼 보고**: 제출 완료 (`작업완료`).
+
+## 2026-10-20 15:46 (KST) — 웹소설 / 웹툰 / 애니메이션 / 시네마 화면 최대 너비 1024px(`max-w-[1024px]`) 고정 통일
+- **작업 내역**:
+  1. `src/App.tsx`: 메인 콘텐츠 래퍼에서 `webtoon`, `movie`, `cinema`, `anime`, `novel` 진입 시 적용되던 `max-w-none border-x-0` 예외 분기를 제거하고 모든 화면과 동일하게 `max-w-[1024px] border-x border-[var(--ui-line)]`로 고정.
+  2. `src/views/NovelView.tsx`, `src/views/MovieView.tsx`, `src/views/AnimeView.tsx`, `src/views/CinemaView.tsx`: 각 뷰의 루트 및 본문 컨테이너의 `max-w-none`을 `max-w-[1024px] mx-auto`로 일원화.
+- **검증 결과**: `tsc --noEmit` 및 프로덕션 빌드 통과.
+- **구글 폼 보고**: 제출 완료 (`작업완료`).

@@ -496,7 +496,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
   const currentAnimFilename = getAnimationVideoFilename(currentEpisodeNum);
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#fdfcfc] text-[#201d1d] font-mono px-0 py-2 sm:py-3 pb-32 max-w-none mx-auto w-full overflow-x-hidden">
+    <div className="flex flex-col min-h-screen bg-[#fdfcfc] text-[#201d1d] font-mono px-0 py-2 sm:py-3 pb-32 max-w-[1024px] mx-auto w-full overflow-x-hidden">
       {shareToast && (
         <div className="fixed top-14 left-1/2 -translate-x-1/2 z-[100000] bg-[#201d1d] text-[#fdfcfc] text-xs px-4 py-2.5 rounded-none border border-[#201d1d] flex items-center gap-2 font-mono">
           <CheckCircle2 size={14} className="text-emerald-400" />

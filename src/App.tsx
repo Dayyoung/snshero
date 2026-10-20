@@ -6465,9 +6465,7 @@ function AppContent() {
         {/* Main Content */}
         <div className={cn(
           "flex-1 min-w-0 w-full mx-auto relative flex flex-col transition-colors duration-200",
-          (view === 'webtoon' || view === 'movie' || view === 'cinema' || view === 'anime' || view === 'novel')
-            ? "max-w-none border-x-0"
-            : "max-w-[1024px] border-x border-[var(--ui-line)]",
+          "max-w-[1024px] border-x border-[var(--ui-line)]",
           isPlayingBattle
             ? "bg-[#060a14] border-slate-800/80 h-[100dvh] max-h-[100dvh] overflow-hidden select-none touch-none overscroll-none"
             : (theme === 'dark' || theme === 'metal'
