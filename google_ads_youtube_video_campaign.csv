@@ -1,4 +1,4 @@
-﻿Action,Campaign,Budget,Budget type,Bid strategy type,EU political ads,Campaign Type,Campaign Status,Ad Group,Ad Group Status,Max CPV,Ad type,Ad Name,Video ID,Final URL,Display URL,Call to action,Headline
-Add,SNSHero_유튜브애니_영상광고_KR,20000,Daily,Manual CPV,No,Video,Enabled,,,,,,,,,,
-Add,SNSHero_유튜브애니_영상광고_KR,,,,,,,애니메이션_1화_인스트림,Enabled,50,,,,,,,
-Add,SNSHero_유튜브애니_영상광고_KR,,,,,,,애니메이션_1화_인스트림,,,In-stream ad,SNSHero_애니1화_프로모션,R6ls-BIxLCQ,https://snshero.com/?utm_source=youtube&utm_medium=video_ad&gift=anime_ssr,snshero.com,지금 시작,무설치 AI 카드배틀
+﻿Action,Campaign,Budget,Budget type,Bid strategy type,EU political ads,Campaign Type,Campaign Status,Ad Group,Ad Group Status,Ad Group Type,Ad type,Ad Name,YouTube Video ID,Final URL,Display URL,Call to action,Headline,Long headline,Description
+Add,SNSHero_유튜브애니_영상광고_KR,20000,Daily,Maximize conversions,No,Video,Enabled,,,,,,,,,,,,
+Add,SNSHero_유튜브애니_영상광고_KR,,,,,,,애니메이션_1화_인스트림,Enabled,In-stream,,,,,,,,,
+Add,SNSHero_유튜브애니_영상광고_KR,,,,,,,애니메이션_1화_인스트림,,,Skippable in-stream ad,SNSHero_애니1화_프로모션,R6ls-BIxLCQ,https://snshero.com/?utm_source=youtube&utm_medium=video_ad&gift=anime_ssr,snshero.com,지금 시작,무설치 AI 카드배틀,설치 없이 1초 만에 즐기는 SNSHero AI 카드 배틀,"애니메이션 시청자 전용 전설 SSR 영웅 카드와 1,000 보석 즉시 지급!"
