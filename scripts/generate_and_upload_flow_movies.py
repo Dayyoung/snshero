@@ -394,7 +394,9 @@ DANGLE_END = {
     "that", "this", "these", "those", "his", "her", "their", "our", "my", "your",
     "its", "and", "or", "but", "nor", "so", "yet", "was", "were", "is", "are",
     "had", "have", "has", "did", "do", "does", "would", "could", "should", "will",
-    "shall", "may", "might", "must", "can", "not", "no", "very", "too", "quite"
+    "shall", "may", "might", "must", "can", "not", "no", "very", "too", "quite",
+    "scarred", "calloused", "ancient", "heavy", "dark", "bright", "cold", "warm",
+    "golden", "silver", "crimson", "white", "black", "iron", "steel", "wooden"
 }
 
 DANGLE_START = {"and", "but", "or", "nor", "for", "yet", "so", "which", "who", "whom", "whose", "that"}
@@ -410,7 +412,7 @@ def _is_good_short_clause(c: str) -> bool:
         return False
     first_w = _clean_alpha(words[0])
     last_w = _clean_alpha(words[-1])
-    if first_w in DANGLE_START or last_w in DANGLE_END or len(last_w) < 3:
+    if first_w in DANGLE_START or first_w.endswith("ing") or last_w in DANGLE_END or len(last_w) < 3:
         return False
     return True
 
@@ -423,20 +425,25 @@ def make_clean_short_sentence(candidate: str, fallback_narration: str, sn: int) 
     text = raw.replace('"', "").replace("“", "").replace("”", "").strip()
     text = re.sub(r"\bCilia\b", "Celia", text)
     text = re.sub(r"\b(?:Issela|Isella)\b", "Ysela", text)
+    text = re.sub(r"\b([a-z]{4,}),\s+([a-z]{4,}\s+[a-z]{3,})\b", r"\1 \2", text)
 
     sents = [s.strip() for s in re.split(r"(?<=[.!?])\s+", text) if s.strip()]
     # 1. Pick any full sentence in the paragraph that is already 6..12 words
     for s in sents:
         if _is_good_short_clause(s):
-            if not s.endswith((".", "!", "?")):
-                s = s.rstrip(",;:-— ") + "."
+            s = s.rstrip(",;:-—.!? ") + ("!" if s.endswith("!") else "?" if s.endswith("?") else ".")
             return s[0].upper() + s[1:]
 
-    # 2. Pick a complete clause inside any sentence that is 6..12 words
+    # 2. Try stripping introductory phrase before comma or picking clean clauses
     for s in sents:
+        if "," in s:
+            after_comma = s.split(",", 1)[1].strip()
+            if _is_good_short_clause(after_comma):
+                after_comma = after_comma.rstrip(",;:-—.!? ") + "."
+                return after_comma[0].upper() + after_comma[1:]
         clauses = [
             c.strip()
-            for c in re.split(r"[,;—–]|\b(?:while|as|before|until|when|where|though|although)\b", s)
+            for c in re.split(r"[;—–]|\b(?:while|as|before|until|when|where|though|although)\b", s)
             if c.strip()
         ]
         for c in clauses:
@@ -446,8 +453,13 @@ def make_clean_short_sentence(candidate: str, fallback_narration: str, sn: int) 
 
     # 3. Trim the first sentence before any dangling preposition/article/pronoun
     if sents:
-        words = sents[0].split()
-        for end_idx in range(min(11, len(words)), 5, -1):
+        base = sents[0]
+        if "," in base and (_clean_alpha(base.split()[0]).endswith("ing") or _clean_alpha(base.split()[0]) in {"with", "at", "in", "on", "beneath", "under", "through", "amidst", "upon", "deep"}):
+            rest = base.split(",", 1)[1].strip()
+            if len(rest.split()) >= 6:
+                base = rest
+        words = base.split()
+        for end_idx in range(min(10, len(words)), 5, -1):
             lw = _clean_alpha(words[end_idx - 1])
             if lw not in DANGLE_END and len(lw) >= 3:
                 cand = " ".join(words[:end_idx]).rstrip(",;:-—.!? ") + "."
@@ -750,19 +762,20 @@ def generate_scene_batch(fl, ep_num: int, ep_title: str, batch_items: list, char
             f"Visual Style: {REALISTIC_STYLE_PROMPT}"
         )
 
-        # Single complete 8-11 word English sentence, ZERO Korean characters
+        # Single complete 6-12 word English sentence, ZERO Korean characters
         dialogue_en = strip_korean(item.get("dialogueEn") or make_clean_short_sentence("", item["narrationEn"], sn))
         dialogue_en = dialogue_en.replace('"', "'")
+        char_summary = ", ".join(chars) if chars else "the fantasy heroes"
 
         vid_prompt = strip_korean(
             f"Scene Dialogue: \"{dialogue_en}\"\n"
-            f"Audio: Clear, natural English voiceover speaking the entire Scene Dialogue sentence aloud within the first 6 seconds. English language only.\n\n"
-            f"Visual: {item['visualDescription']}\n\n"
+            f"Audio: Clear, natural English voiceover speaking ONLY the exact Scene Dialogue sentence above within the first 6 seconds. English language only.\n\n"
+            f"Visual: Cinematic live-action dark fantasy scene from '{ep_title}' featuring {char_summary}, dramatic lighting and atmospheric depth.\n\n"
             f"Motion: {item['motionDescription']}"
         )
         mild_vid_prompt = strip_korean(
             f"Scene Dialogue: \"{dialogue_en}\"\n"
-            f"Audio: Clear, natural English voiceover speaking the entire Scene Dialogue sentence aloud within the first 6 seconds. English language only.\n\n"
+            f"Audio: Clear, natural English voiceover speaking ONLY the exact Scene Dialogue sentence above within the first 6 seconds. English language only.\n\n"
             f"Visual: Cinematic medieval fantasy scene with dramatic lighting.\n\n"
             f"Motion: Smooth cinematic camera movement."
         )
