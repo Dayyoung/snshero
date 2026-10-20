@@ -401,14 +401,31 @@ DANGLE_END = {
 
 DANGLE_START = {"and", "but", "or", "nor", "for", "yet", "so", "which", "who", "whom", "whose", "that"}
 
+UNSAFE_WORDS = {
+    "exterminate", "slaughter", "slaughterhouse", "massacre", "butcher", "decapitate",
+    "corpse", "corpses", "bloodbath", "gore", "torture", "mutilate", "disembowel",
+    "entrails", "carcass", "skulls", "skull", "bones", "kill", "killing", "killed",
+    "murder", "murdered", "murderer", "murderers", "suicide", "vermin", "poisoned",
+    "lacerated", "throat", "neck", "blood", "bleed", "bleeding", "executes", "execute"
+}
+
 
 def _clean_alpha(w: str) -> str:
     return re.sub(r"[^a-z]", "", w.lower())
 
 
+def _has_unsafe_word(c: str) -> bool:
+    for w in c.split():
+        if _clean_alpha(w) in UNSAFE_WORDS:
+            return True
+    return False
+
+
 def _is_good_short_clause(c: str) -> bool:
     words = c.split()
     if len(words) < 6 or len(words) > 12:
+        return False
+    if _has_unsafe_word(c):
         return False
     first_w = _clean_alpha(words[0])
     last_w = _clean_alpha(words[-1])
@@ -451,9 +468,11 @@ def make_clean_short_sentence(candidate: str, fallback_narration: str, sn: int) 
                 c = c.rstrip(",;:-—.!? ") + "."
                 return c[0].upper() + c[1:]
 
-    # 3. Trim the first sentence before any dangling preposition/article/pronoun
-    if sents:
-        base = sents[0]
+    # 3. Trim the first non-unsafe sentence before any dangling preposition/article/pronoun
+    for s in sents:
+        if _has_unsafe_word(s):
+            continue
+        base = s
         if "," in base and (_clean_alpha(base.split()[0]).endswith("ing") or _clean_alpha(base.split()[0]) in {"with", "at", "in", "on", "beneath", "under", "through", "amidst", "upon", "deep"}):
             rest = base.split(",", 1)[1].strip()
             if len(rest.split()) >= 6:
@@ -465,7 +484,7 @@ def make_clean_short_sentence(candidate: str, fallback_narration: str, sn: int) 
                 cand = " ".join(words[:end_idx]).rstrip(",;:-—.!? ") + "."
                 return cand[0].upper() + cand[1:]
 
-    return f"In scene {sn}, the heroes press forward with unwavering resolve."
+    return "Without hesitation, the heroes stood firm to protect the innocent."
 
 
 def verify_clip_audio(clip_path: Path, expected_dialogue: str) -> tuple[bool, str]:
@@ -1230,8 +1249,17 @@ def main():
                                 else:
                                     err_msg = str(r.get("error") or "")
                                     print(f"    [EP{ep:02d}] Scene {sn} error in batch: {err_msg}", flush=True)
-                                    if "비정상적인 활동" in err_msg or "Unusual activity" in err_msg or "사용할 수 없습니다" in err_msg:
+                                    if "비정상적인 활동" in err_msg or "Unusual activity" in err_msg or "TOO_MUCH_TRAFFIC" in err_msg:
                                         rate_limited = True
+                                    elif "사용할 수 없습니다" in err_msg or "unavailable" in err_msg.lower():
+                                        # Content safety filter triggered on prompt or first-frame image: purify immediately!
+                                        shot_media_cache.pop(str(sn), None)
+                                        save_json(shot_media_cache_file, shot_media_cache)
+                                        scene_item["dialogueEn"] = "Without hesitation, the heroes raised their shields to protect the innocent."
+                                        scene_item["visualDescription"] = (
+                                            f"Cinematic wide shot of a medieval fantasy sanctuary during '{title_en}', "
+                                            f"dramatic light rays and heroic atmosphere."
+                                        )
                                     failed_sns.add(sn)
                             remaining_batch = [b for b in remaining_batch if b["sceneNumber"] in failed_sns]
                             if not remaining_batch:
@@ -1264,19 +1292,19 @@ def main():
                         for fb_try in range(6):
                             try:
                                 safe_override = dict(single_item)
+                                safe_override["dialogueEn"] = "Without hesitation, the heroes raised their shields to protect the innocent."
                                 safe_override["visualDescription"] = (
                                     f"Epic wide cinematic landscape of a medieval fantasy kingdom during '{title_en}', "
                                     f"dramatic volumetric light rays through ancient stone architecture, atmospheric mist."
                                 )
                                 safe_override["motionDescription"] = "Slow majestic camera pan across the fantasy landscape."
                                 safe_override["characters"] = []
-                                reuse_shots = {sn: shot_media_cache.get(str(sn))} if shot_media_cache.get(str(sn)) else {}
-                                results = generate_scene_batch(fl, ep, title_en, [safe_override], char_media_map, reuse_shots)
+                                results = generate_scene_batch(fl, ep, title_en, [safe_override], char_media_map, {})
                                 rate_limited_fb = False
                                 for r in results:
                                     if not r.get("ok"):
                                         err_fb = str(r.get("error") or "")
-                                        if "비정상적인 활동" in err_fb or "Unusual activity" in err_fb or "사용할 수 없습니다" in err_fb:
+                                        if "비정상적인 활동" in err_fb or "Unusual activity" in err_fb or "TOO_MUCH_TRAFFIC" in err_fb:
                                             rate_limited_fb = True
                                     if r.get("imgMediaId"):
                                         shot_media_cache[str(sn)] = r["imgMediaId"]
