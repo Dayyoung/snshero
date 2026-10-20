@@ -50,8 +50,8 @@ interface MovieViewProps {
 }
 
 const TOTAL_EPISODES = 40;
-const YOUTUBE_PLAYLIST_ID = 'PLJiaxYk_nDsc';
-const YOUTUBE_PLAYLIST_URL = 'https://www.youtube.com/playlist?list=PLJiaxYk_nDsc';
+const YOUTUBE_PLAYLIST_ID = 'PLK35ZdYm5NNE';
+const YOUTUBE_PLAYLIST_URL = 'https://www.youtube.com/watch?v=R6ls-BIxLCQ&list=PLK35ZdYm5NNE';
 
 // 기본 공개 완료 에피소드 기본값 (40부작 전편 100% 공개)
 const DEFAULT_RELEASED_COUNT = 40;
@@ -585,10 +585,27 @@ export const MovieView: React.FC<MovieViewProps> = ({
               href={YOUTUBE_PLAYLIST_URL}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => {
+                try {
+                  const key = `hero_yt_playlist_boost_${todayStr}`;
+                  if (localStorage.getItem(key) !== 'true') {
+                    localStorage.setItem(key, 'true');
+                    if (updateSns) {
+                      updateSns(300, 'YouTube Official Playlist Visit & Subscribe Bonus');
+                    } else {
+                      const cur = parseInt(localStorage.getItem('hero_sns') || '500', 10);
+                      localStorage.setItem('hero_sns', String(cur + 300));
+                      window.dispatchEvent(new Event('hero_sns_updated'));
+                    }
+                    setShareToast('[v] YouTube 공식 플레이리스트 응원 보상 (+300 SNS 지급!)');
+                    setTimeout(() => setShareToast(null), 3200);
+                  }
+                } catch {}
+              }}
               className="min-h-[44px] flex items-center gap-1.5 px-3 py-1.5 rounded-sm bg-[#201d1d] hover:bg-black text-[#fdfcfc] border border-[#fdfcfc]/30 font-mono text-xs font-bold transition-colors shrink-0"
             >
               <List size={13} />
-              <span>[전체 재생목록]</span>
+              <span>[YouTube 전체 재생목록 (+300 SNS)]</span>
             </a>
           </div>
         </div>
@@ -613,7 +630,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
             )}
           >
             <Film size={16} className={playerMode === 'mp4' ? 'text-amber-400' : 'text-stone-700'} />
-            <span>[🎞️ MP4 애니메이션 상영]</span>
+            <span>[MP4 애니메이션 상영]</span>
           </button>
           <button
             type="button"
@@ -630,7 +647,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
             )}
           >
             <Sparkles size={16} className={playerMode === 'cinematic' ? 'text-amber-400' : 'text-amber-600'} />
-            <span>[🎬 인터랙티브 애니메이션 (40부작)]</span>
+            <span>[인터랙티브 애니메이션 (40부작)]</span>
           </button>
           <button
             type="button"
@@ -647,7 +664,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
             )}
           >
             <Play size={16} />
-            <span>[📺 YouTube 오피셜{currentEpisodeNum <= 8 ? '' : ' (1~8화)'}]</span>
+            <span>[YouTube 오피셜 (40부작 전편)]</span>
           </button>
         </div>
 

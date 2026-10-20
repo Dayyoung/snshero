@@ -2,6 +2,23 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-20 16:53 KST] [인게임/마케팅] SNSHero 공식 유튜브 애니메이션 40부작 플레이리스트(PLK35ZdYm5NNE) 전수 연동, 시청자 보상 및 유튜브 동영상 광고 캠페인 구축 완료
+- **요청 사항**:
+  - `https://www.youtube.com/watch?v=R6ls-BIxLCQ&list=PLK35ZdYm5NNE` 플레이리스트를 활용한 인게임 연동(유튜브 시청자 전용 보상 포함) 및 Google Ads 유튜브 동영상 광고 생성 둘 다 진행 요청.
+- **주요 구현 및 개선 내역**:
+  1. **유튜브 플레이리스트 40부작 전편 Video ID 1:1 전수 매핑 (`src/content/movieEpisodeMapping.ts`)**:
+     - 신규 플레이리스트(`PLK35ZdYm5NNE`)에 수록된 제1화(`R6ls-BIxLCQ`)부터 제40화(`pmZraAf-12k`)까지 40개 전편의 실제 YouTube Video ID를 추출하여 `MOVIE_EPISODES` 1~40화에 100% 매핑 완료.
+  2. **인게임 극장 및 소설/애니 뷰 플레이리스트 최신화 & Watch-to-Earn 연동 (`src/views/MovieView.tsx`, `src/views/AnimeView.tsx`, `src/views/NovelView.tsx`)**:
+     - `YOUTUBE_PLAYLIST_ID = 'PLK35ZdYm5NNE'` 및 `https://www.youtube.com/watch?v=R6ls-BIxLCQ&list=PLK35ZdYm5NNE` 전면 적용.
+     - `/movie` 화면에서 `[YouTube 전체 재생목록 (+300 SNS)]` 클릭 시 일일 응원 보상으로 300 SNS 보석 즉시 지급 기능 탑재.
+  3. **유튜브 프로모션 링크 유입 유저 전용 환영 보상 자동 지급 (`src/App.tsx`)**:
+     - `?utm_source=youtube`, `?promo=youtube_anime`, 또는 `?gift=anime_ssr` 파라미터로 접속한 유저에게 최초 1회 **전설(SSR) 영웅 카드 `[카단 #1]` 1장 + `1,000 SNS` 보석**을 `localStorage` 기반으로 즉시 지급하고 환영 알림 모달 표시.
+  4. **Google Ads 유튜브 동영상 캠페인 대량 업로드 파일 생성**:
+     - `/Users/dayyoung/Downloads/google_ads_youtube_video_campaign.csv` 생성 완료 (Video ID: `R6ls-BIxLCQ`, Max CPV: 50원, 일일 예산: 20,000원).
+- **검증 결과**:
+  - `npx tsc --noEmit`: 0 Errors (TypeScript 컴파일 무결점 통과).
+  - 구글 폼 완료 보고서 제출 완료 (`submit_report.py`).
+
 ## [2026-10-20 16:15 KST] [구글 뉴스 원본 시트 고정 및 최신순 정렬 보장] 지정 스프레드시트 URL 복귀, 실시간 최신순(내림차순) 정렬 강제, v11 캐시 갱신 및 SEO 전면 재생성
 - **요청 사항**:
   - `https://docs.google.com/spreadsheets/d/e/2PACX-1vQkHP5pQDdSMrx3f0GyUz_rK5yqmMj5J12apkSom3JvF-NVk2yD55tFAk_Ka7qKM54dPr1ru3LP15Zu/pubhtml`

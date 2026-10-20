@@ -4794,6 +4794,33 @@ function AppContent() {
 
   const [isGlobalPopupOpen, setIsGlobalPopupOpen] = useState(false);
 
+  // YouTube 애니메이션 플레이리스트 프로모션 링크(?utm_source=youtube, ?promo=youtube_anime, ?gift=anime_ssr) 유입 시 특별 환영 보상(SSR 카단 + 1,000 SNS) 자동 지급
+  useEffect(() => {
+    try {
+      if (typeof window === 'undefined') return;
+      const params = new URLSearchParams(window.location.search);
+      const isYoutubePromo =
+        params.get('utm_source')?.toLowerCase() === 'youtube' ||
+        params.get('promo') === 'youtube_anime' ||
+        params.get('gift') === 'anime_ssr';
+
+      if (isYoutubePromo && localStorage.getItem('hero_youtube_anime_gift_claimed') !== 'true') {
+        localStorage.setItem('hero_youtube_anime_gift_claimed', 'true');
+        updateSns(1000, 'YouTube Animation Playlist Viewer Special Gift');
+        addCard('SSR', 1);
+        setTimeout(() => {
+          showCustomAlert(
+            language === 'ko' ? '[YouTube 애니메이션 시청자 특별 보급품]' : '[YouTube Anime Viewer Special Gift]',
+            language === 'ko'
+              ? 'SNSHero 공식 애니메이션을 시청하고 방문해 주셔서 감사합니다!\n\n[즉시 지급 완료]\n• 전설(SSR) 영웅 카드 [카단 #1] × 1장\n• 1,000 SNS 보석 보너스 지급!'
+              : 'Thank you for visiting from the official SNSHero YouTube Animation!\n\n[Claimed]\n• SSR Hero Card [Kadan #1] × 1\n• +1,000 SNS Gems Bonus!',
+            6
+          );
+        }, 800);
+      }
+    } catch {}
+  }, [addCard, language, updateSns]);
+
   // Listen for help popup and RPG battle events from any view to hide bottom nav
   useEffect(() => {
     const handleHelpOpen = () => setIsGlobalPopupOpen(true);
