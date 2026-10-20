@@ -127,7 +127,9 @@ async function loadGoogleNewsData(): Promise<RedditPost[]> {
     }
   }
 
-  const rawPosts = rawNewsItems.map((item, idx) => convertGoogleNewsToRedditPost(item, idx));
+  const rawPosts = rawNewsItems
+    .map((item, idx) => convertGoogleNewsToRedditPost(item, idx))
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   const normalizedPosts = normalizePostDates(rawPosts);
   console.log(`[generate-news-seo] Processed ${normalizedPosts.length} Google News articles with valid Google News timestamps.`);
   return normalizedPosts;

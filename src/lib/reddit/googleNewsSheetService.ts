@@ -9,21 +9,60 @@ import { RawGoogleNewsItem, INITIAL_GOOGLE_NEWS, convertGoogleNewsToRedditPost }
 import { translateRedditPosts } from './redditTranslationService';
 import { extractFirstValidImageUrl } from './googleNewsImageResolver';
 
-export const GOOGLE_NEWS_PUB_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT4vdpKAEI0UaFM6tW-dXVCQoLDq-ncnl06jX80SBL7Y1ZHCzwvzvRGuuduuTu-k5nb6akrqCbr57Oi/pub?output=csv';
+export const GOOGLE_NEWS_PUB_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQkHP5pQDdSMrx3f0GyUz_rK5yqmMj5J12apkSom3JvF-NVk2yD55tFAk_Ka7qKM54dPr1ru3LP15Zu/pub?output=csv';
 export const GOOGLE_NEWS_SPREADSHEET_ID = '1CT5Yy1-i6kkOfx3d-Yw1osOEYbN7fkk8IDiI8Vm82vM';
-export const getPostCacheKey = (lang: string = 'ko') => `hero_reddit_google_news_posts_v10_${lang}`;
-const RAW_CACHE_KEY = 'hero_reddit_google_news_raw_v10';
-const LAST_FETCH_KEY = 'hero_reddit_google_news_last_fetch_v10';
+export const getPostCacheKey = (lang: string = 'ko') => `hero_reddit_google_news_posts_v11_${lang}`;
+const RAW_CACHE_KEY = 'hero_reddit_google_news_raw_v11';
+const LAST_FETCH_KEY = 'hero_reddit_google_news_last_fetch_v11';
 
-// AI Studio 및 브라우저 환경에서 이전 구형 캐시(v1~v9) 자동 정리
+// AI Studio 및 브라우저 환경에서 이전 구형 캐시(v1~v10) 자동 정리
 if (typeof window !== 'undefined') {
   try {
-    ['v1', 'v2', 'v3', 'v4', 'v5', 'v6', 'v7', 'v8', 'v9'].forEach((ver) => {
+    ['v1', 'v2', 'v3', 'v4', 'v5', 'v6', 'v7', 'v8', 'v9', 'v10'].forEach((ver) => {
       localStorage.removeItem(`hero_reddit_google_news_posts_${ver}`);
+      localStorage.removeItem(`hero_reddit_google_news_posts_${ver}_ko`);
+      localStorage.removeItem(`hero_reddit_google_news_posts_${ver}_en`);
       localStorage.removeItem(`hero_reddit_google_news_raw_${ver}`);
       localStorage.removeItem(`hero_reddit_google_news_last_fetch_${ver}`);
     });
   } catch {}
+}
+
+/**
+ * 다양한 날짜/시간 문자열(ISO, YYYY-MM-DD HH:mm 등)을 Unix timestamp(ms)로 안전하게 파싱
+ */
+export function parseTimestampMillis(raw: string): number {
+  if (!raw || !raw.trim()) return 0;
+  const clean = raw.trim();
+
+  if (/Z|[+-]\d{2}(?::?\d{2})?$/i.test(clean)) {
+    const p = Date.parse(clean);
+    if (!isNaN(p) && p > 0) return p;
+  }
+
+  const utcCandidate = clean.includes('T') ? `${clean}Z` : `${clean.replace(' ', 'T')}Z`;
+  let p = Date.parse(utcCandidate);
+  if (!isNaN(p) && p > 0) return p;
+
+  const normalized = clean.replace(/\./g, '-').replace(/\//g, '-').replace(/\s+/g, ' ');
+  p = Date.parse(normalized.replace(' ', 'T') + 'Z');
+  if (!isNaN(p) && p > 0) return p;
+
+  p = Date.parse(normalized);
+  return isNaN(p) ? 0 : p;
+}
+
+/**
+ * RawGoogleNewsItem 배열을 수집일시(Timestamp) 기준 최신순(내림차순, 최신글 우선)으로 강제 정렬
+ * (시트의 위/아래 어디에 누적 추가되어도 항상 최신 기사가 상단에 오도록 보장)
+ */
+export function sortNewsItemsLatestFirst(items: RawGoogleNewsItem[]): RawGoogleNewsItem[] {
+  return [...items].sort((a, b) => {
+    const timeA = parseTimestampMillis(a.timestamp);
+    const timeB = parseTimestampMillis(b.timestamp);
+    if (timeA !== timeB) return timeB - timeA; // 최신 시간 우선 (내림차순)
+    return 0;
+  });
 }
 
 export type GoogleNewsSyncStatus = 'idle' | 'syncing' | 'ok' | 'unauthorized' | 'error';
@@ -170,11 +209,11 @@ export class GoogleNewsSheetService {
       });
     }
 
-    return items;
+    return sortNewsItemsLatestFirst(items);
   }
 
   /**
-   * CSV 텍스트를 파싱하여 RawGoogleNewsItem 배열로 변환 (스마트 헤더 분석 지원)
+   * CSV 텍스트를 파싱하여 RawGoogleNewsItem 배열로 변환 (스마트 헤더 분석 지원 및 최신순 정렬)
    */
   static parseCsv(csvText: string): RawGoogleNewsItem[] {
     const lines: string[] = [];
@@ -267,7 +306,7 @@ export class GoogleNewsSheetService {
       });
     }
 
-    return items;
+    return sortNewsItemsLatestFirst(items);
   }
 
   /**
@@ -429,24 +468,28 @@ export class GoogleNewsSheetService {
       }
     }
 
-    // 1. 최신 시트 데이터 가져오기 (실시간 fetch)
+    // 1. 최신 시트 데이터 가져오기 (실시간 fetch 및 최신순 강제 정렬)
     const rawItems = await this.fetchLatestNewsFromSheet();
+    const sortedRawItems = sortNewsItemsLatestFirst(rawItems);
 
-    // 2. RedditPost 객체로 변환 (기사-사진 100% 매칭 적용)
+    // 2. RedditPost 객체로 변환 (기사-사진 100% 매칭 적용 및 최신순 정렬 보장)
     const urlUsageMap = new Map<string, number>();
-    const converted = rawItems.map((item, idx) => convertGoogleNewsToRedditPost(item, idx, urlUsageMap));
+    const converted = sortedRawItems
+      .map((item, idx) => convertGoogleNewsToRedditPost(item, idx, urlUsageMap))
+      .sort((a, b) => b.createdAt - a.createdAt);
 
     // 3. 언어 설정에 맞춰 번역 (targetLang이 'en'이 아니면 번역 수행)
     if (targetLang !== 'en') {
       try {
         // 첫 페이지 노출용 상위 35개 기사 우선 병렬 번역
         const translated = await translateRedditPosts(converted, targetLang, 35);
-        this.cachedPosts = translated;
+        const sortedTranslated = [...translated].sort((a, b) => b.createdAt - a.createdAt);
+        this.cachedPosts = sortedTranslated;
         this.lastLang = targetLang;
         if (typeof window !== 'undefined') {
-          localStorage.setItem(cacheKey, JSON.stringify(translated));
+          localStorage.setItem(cacheKey, JSON.stringify(sortedTranslated));
         }
-        return translated;
+        return sortedTranslated;
       } catch (err) {
         console.warn('[GoogleNewsSheetService] Translation failed, returning converted', err);
       }
@@ -461,7 +504,7 @@ export class GoogleNewsSheetService {
   }
 
   /**
-   * 동기식(캐시) 조회 - 초기 렌더링 즉시 표시용
+   * 동기식(캐시) 조회 - 초기 렌더링 즉시 표시용 (최신순 정렬 보장)
    */
   static getCachedGoogleNewsPosts(targetLang: string = 'ko'): RedditPost[] {
     if (this.cachedPosts.length > 0 && this.lastLang === targetLang) {
@@ -475,17 +518,21 @@ export class GoogleNewsSheetService {
         if (stored) {
           const parsed: RedditPost[] = JSON.parse(stored);
           if (Array.isArray(parsed) && parsed.length > 0) {
-            this.cachedPosts = parsed;
+            const sorted = [...parsed].sort((a, b) => b.createdAt - a.createdAt);
+            this.cachedPosts = sorted;
             this.lastLang = targetLang;
-            return parsed;
+            return sorted;
           }
         }
       }
     } catch {}
 
-    // 캐시가 없으면 기본 시드로 즉시 변환 (기사-사진 매칭 적용)
+    // 캐시가 없으면 기본 시드로 즉시 변환 (기사-사진 매칭 적용 및 최신순 정렬)
     const fallbackUsageMap = new Map<string, number>();
-    const fallback = INITIAL_GOOGLE_NEWS.map((item, idx) => convertGoogleNewsToRedditPost(item, idx, fallbackUsageMap));
+    const sortedSeeds = sortNewsItemsLatestFirst(INITIAL_GOOGLE_NEWS);
+    const fallback = sortedSeeds
+      .map((item, idx) => convertGoogleNewsToRedditPost(item, idx, fallbackUsageMap))
+      .sort((a, b) => b.createdAt - a.createdAt);
     this.cachedPosts = fallback;
     this.lastLang = targetLang;
     return fallback;

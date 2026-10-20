@@ -2,6 +2,29 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-20 16:15 KST] [구글 뉴스 원본 시트 고정 및 최신순 정렬 보장] 지정 스프레드시트 URL 복귀, 실시간 최신순(내림차순) 정렬 강제, v11 캐시 갱신 및 SEO 전면 재생성
+- **요청 사항**:
+  - `https://docs.google.com/spreadsheets/d/e/2PACX-1vQkHP5pQDdSMrx3f0GyUz_rK5yqmMj5J12apkSom3JvF-NVk2yD55tFAk_Ka7qKM54dPr1ru3LP15Zu/pubhtml`
+  - "자꾸 원본 시트를 변경해서 미안. 앞으로 이 시트에 누적해서 업데이트 할거니까 최신순으로 가져와서 보여줘."
+- **구현 및 개선 내역**:
+  1. **원본 구글 뉴스 시트 URL 고정 (`src/lib/reddit/googleNewsSheetService.ts`)**:
+     - `GOOGLE_NEWS_PUB_CSV_URL`을 지정된 공개 CSV 엔드포인트(`https://docs.google.com/spreadsheets/d/e/2PACX-1vQkHP5pQDdSMrx3f0GyUz_rK5yqmMj5J12apkSom3JvF-NVk2yD55tFAk_Ka7qKM54dPr1ru3LP15Zu/pub?output=csv`)로 고정.
+     - `vite.config.ts`의 `/api/reddit/google-news-sheet` 프록시 타깃도 동일한 URL로 동기화.
+     - `public/data/google-news.csv`에 해당 시트의 110건 기사 전체를 다운로드하여 로컬 백업 완료.
+  2. **수집일시(Timestamp) 기준 최신순(내림차순, Latest First) 강제 정렬 보장**:
+     - `parseTimestampMillis(raw: string)` 및 `sortNewsItemsLatestFirst(items: RawGoogleNewsItem[])` 헬퍼 함수 구현.
+     - 시트에 행이 아래쪽으로 누적되든 위쪽에 추가되든 상관없이, CSV 파싱(`parseCsv`), GViz 파싱(`parseGvizTable`), API 조회(`getGoogleNewsPosts`), 로컬스토리지 캐시 반환(`getCachedGoogleNewsPosts`) 전수에서 `b.createdAt - a.createdAt` 내림차순 정렬을 강제 적용.
+  3. **캐시 버전 상향 및 즉각 반영 (`v11`)**:
+     - 캐시 키를 `hero_reddit_google_news_posts_v11_${lang}`로 상향하고, 이전 버전(`v1~v10`) 로컬 스토리지를 자동 클리어하여 사용자가 접속 즉시 최신 정렬된 뉴스를 보도록 보장.
+  4. **시드 데이터 최신 35건 한국어 번역 반영 (`src/data/googleNewsSeedData.ts`)**:
+     - 오늘 날짜(2026-10-20) 최신 뉴스 35건을 고품질 한국어로 사전 번역하여 오프라인/초기 로딩 시에도 즉시 한국어로 노출.
+  5. **정적 SEO 사전 렌더링 최신순 반영 (`scripts/generate-news-seo.ts`)**:
+     - 빌드 시 110개 기사 정적 HTML, `sitemap-news.xml`, `news-feed.xml` 최신순 정렬 반영.
+- **검증 결과**:
+  - `npm run build`: 0 Errors 빌드 통과.
+  - 최신 일시 기사(2026-10-20 15:16:34 KST)가 피드 최상단(1순위)으로 노출 검증 완료.
+  - 구글 폼 완료 보고서 제출 완료 (`submit_report.py`).
+
 ## [2026-10-20 16:07 KST] [기획/마케팅] Google Ads 초공격형 신규 부스트 캠페인(SNSHero_초고속노출_부스트_KR) 원클릭 대량 등록 CSV 생성 완료
 - **요청 사항**:
   - "지금 5일이 지났는데도 광고가 하나도 집행이 안되고있어. 그냥 신규 광고를 하나 더 만들자. 과감하게 광고할수있는 정책으로 추가해줘."
