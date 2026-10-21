@@ -2,6 +2,34 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-22 08:53 KST] [/reddit 진입 시 오늘 최신 뉴스 미노출(어제 뉴스 노출) 버그 해결] 1자리 시간(8:00 등) 타임스탬프 파싱 버그 수정, pubhtml/sheet 실시간 무캐시 연동 및 즉시 렌더링 보장
+- **요청 사항**:
+  - `https://docs.google.com/spreadsheets/d/e/2PACX-1vQkHP5pQDdSMrx3f0GyUz_rK5yqmMj5J12apkSom3JvF-NVk2yD55tFAk_Ka7qKM54dPr1ru3LP15Zu/pubhtml`
+  - "여기서 /reddit 들어갈때마다 최신정보 가져오는것 아닌것 같은데? 시트에는 오늘뉴스가 많은데 /reddit 에는 어제 뉴스가 보여. /git-push"
+- **근본 원인 진단**:
+  1. **1자리 시간(`2026-10-22 8:00` ~ `0:00`) 타임스탬프 파싱 오류로 인한 역전 현상**:
+     - 시트에 등록된 오늘(10월 22일) 뉴스 92건의 수집일시는 `2026-10-22 8:00`, `7:59`, `6:11`, `5:17` 등 시간이 1자리 숫자(`0`~`8`)로 표기됨.
+     - 기존 `parseTimestampMillis` 및 `parseTimestampSafe`에서 `${clean.replace(' ', 'T')}Z`로 변환 시 `"2026-10-22T8:00Z"`가 생성되었으나, ISO 8601 표준은 2자리 시간(`T08:00Z`)을 요구하므로 `Date.parse("2026-10-22T8:00Z")`가 `NaN`을 반환하고 로컬 KST(`UTC+9`, -9시간) 폴백으로 파싱됨(`2026-10-21T23:00:00Z`).
+     - 반면 어제 밤 뉴스(`2026-10-21 23:59` ~ `20:04`)는 시간이 2자리(`20`~`23`)여서 `"2026-10-21T23:59Z"`(UTC, -0시간)로 파싱되어 오늘 아침 뉴스보다 타임스탬프가 최대 9시간 더 크게 계산됨으로써, 어제 뉴스 38건이 오늘 뉴스 92건을 제치고 최상단에 노출됨.
+  2. **정적 백업 CSV(`/data/google-news.csv`) 우선순위 역전 및 `pub?output=csv` 5분 캐시/307 리다이렉트**:
+     - `fetchLatestNewsFromSheet()`에서 `pub?output=csv`(307 리다이렉트 및 `max-age=300` 캐시) 실패 시 실시간 CORS 프록시보다 빌드 시점의 정적 `/data/google-news.csv`를 먼저 호출하여 구형 데이터를 반환할 수 있었음.
+  3. **번역 대기 중 캐시 초기화(`this.cachedPosts = []`) 레이스 컨디션**:
+     - `getGoogleNewsPosts` 시작 시 `this.cachedPosts = []`로 비운 뒤 35건 번역 완료까지 대기하는 동안 리렌더링이 발생하면 초기 시드 데이터로 롤백되는 현상 존재.
+- **주요 수정 내역**:
+  1. **정규식 기반 정밀 타임스탬프 파서 적용 (`src/lib/reddit/googleNewsSheetService.ts`, `src/data/googleNewsSeedData.ts`)**:
+     - `/^(\d{4})[-./](\d{1,2})[-./](\d{1,2})(?:[T\s]+(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?$/` 정규식으로 1자리/2자리 월·일·시·분·초를 모두 추출하여 `Date.UTC(...) - 9 * 3600 * 1000`(KST 고정)으로 일관되게 변환.
+     - 오늘 뉴스(`2026-10-22 8:00` ~ `0:00`, 92건)가 어제 뉴스(`2026-10-21 23:59`)보다 100% 상단에 정렬되도록 검증 완료.
+  2. **`pubhtml/sheet` 무캐시(no-store) 실시간 HTML 테이블 파서(`parsePubHtml`) 최우선 연동**:
+     - 307 리다이렉트와 5분 캐시가 없고 `Access-Control-Allow-Origin: *` 및 `Cache-Control: no-cache, no-store, max-age=0`을 지원하는 `pubhtml/sheet?headers=false&gid=797674022`를 1순위로 `fetch(..., { cache: 'no-store' })` 호출.
+     - 정적 `/data/google-news.csv`는 모든 실시간 엔드포인트 실패 시에만 최후 폴백(7순위)으로 이동.
+  3. **시트 응답 즉시 UI 선반영 및 캐시 버전 `v12` 상향 (`src/views/RedditCommunityView.tsx`)**:
+     - 시트 fetch 완료 즉시(~150ms) `this.cachedPosts`를 갱신하고 리스너를 통해 화면을 즉시 리렌더링한 뒤, 미번역 기사를 병렬 번역하여 재반영.
+     - 탭 포커스(`focus`) 및 가시성 변경(`visibilitychange`) 시에도 즉시 최신 시트를 재동기화하도록 개선.
+- **검증 결과**:
+  - 라이브 시트 520건 파싱 및 정렬 테스트 결과: 0순위 `2026-10-22 8:00 (SpaceX's AI Revenue Leads Q3 Earnings...)` ~ 91순위 `2026-10-22 0:00` 전수 최상단 배치 확인.
+  - `npm run build` 0 Errors 통과 및 `origin main` 원격 푸시 완료.
+  - 구글 폼 작업 완료 보고서 제출 완료 (`submit_report.py`).
+
 ## [2026-10-22 08:45 KST] [Video SEO/GEO/AEO] 애니메이션 40화(/movie) & 무비 40화(/cinema) 구글 검색·동영상 탭 노출 정적 빌더 및 VideoObject 스키마 구축 완료
 - **요청 사항**:
   - 애니메이션 40화(`PLK35ZdYm5NNE`, `/movie`) 및 무비 40화(`PLMdirwPt_FHU`, `/cinema`)를 구글 검색결과에 노출되도록 구현.

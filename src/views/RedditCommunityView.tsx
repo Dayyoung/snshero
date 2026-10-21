@@ -179,11 +179,14 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
   const [syncStatus, setSyncStatus] = useState<GoogleNewsSyncStatus>(() => GoogleNewsSheetService.getSyncStatus());
   const [lastSyncTime, setLastSyncTime] = useState<number>(() => GoogleNewsSheetService.getLastFetchTime());
 
-  // GoogleNewsSheetService 실시간 상태 동기화 구독
+  // GoogleNewsSheetService 실시간 상태 동기화 구독 (시트 응답 즉시 피드 리렌더링 트리거)
   useEffect(() => {
     const unsubscribe = GoogleNewsSheetService.subscribe((status, lastFetch) => {
       setSyncStatus(status);
       setLastSyncTime(lastFetch);
+      if (status === 'ok') {
+        setSyncTick((t) => t + 1);
+      }
     });
     return () => unsubscribe();
   }, []);
@@ -235,15 +238,28 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
     RedditApiService.advanceRefreshRotation();
     RedditGoogleSheetCommentService.fetchAllSheetComments().catch(() => {});
     
-    // 1. 화면 열릴 때 즉각 최신 뉴스 자동 동기화 1회 실행
+    // 1. /reddit 진입 즉시 최신 뉴스 실시간 동기화 실행
     handleSyncLive();
 
-    // 2. 60초 주기 백그라운드 자동 최신 동기화 폴링
+    // 2. 탭 포커스 복귀 또는 페이지 가시성 활성화 시에도 최신 시트 즉시 재동기화
+    const onVisibilityOrFocus = () => {
+      if (typeof document === 'undefined' || document.visibilityState === 'visible') {
+        handleSyncLive();
+      }
+    };
+    window.addEventListener('focus', onVisibilityOrFocus);
+    document.addEventListener('visibilitychange', onVisibilityOrFocus);
+
+    // 3. 60초 주기 백그라운드 자동 최신 동기화 폴링
     const timer = setInterval(() => {
       handleSyncLive();
     }, 60000);
 
-    return () => clearInterval(timer);
+    return () => {
+      clearInterval(timer);
+      window.removeEventListener('focus', onVisibilityOrFocus);
+      document.removeEventListener('visibilitychange', onVisibilityOrFocus);
+    };
   }, [handleSyncLive]);
 
   // 커뮤니티 화면에서는 배경음악과 효과음 100% 완전 제거
@@ -263,11 +279,6 @@ export const RedditCommunityView: React.FC<RedditCommunityViewProps> = ({
       }
     };
   }, []);
-
-  // 마운트 시 실시간 구글 뉴스 자동 동기화
-  useEffect(() => {
-    handleSyncLive();
-  }, [handleSyncLive]);
 
   // 서브레딧 메타데이터
   const currentSubredditInfo = useMemo(() => {
