@@ -2,6 +2,23 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-21 15:09 KST] [UI/UX 단순화 & 용어 통일] 애니메이션(40화) 및 무비(40화) 유튜브 플레이리스트 전용 화면 단순화 및 '시네마 ➔ 무비' 용어 전면 통일 완료
+- **요청 사항**:
+  - `http://localhost:3000/` 화면에 애니메이션 / 시네마를 눌렀을 때 지정된 유튜브 링크의 동영상들만 표시하고 보상을 주도록 단순화 요청.
+  - 애니메이션 40화: `https://www.youtube.com/watch?v=R6ls-BIxLCQ&list=PLK35ZdYm5NNE`
+  - 무비 40화: `https://www.youtube.com/watch?v=P5KotZjJiZ8&list=PLMdirwPt_FHU`
+  - '시네마'는 '무비'로 단어 통일 요청.
+- **주요 구현 및 개선 내역**:
+  1. **무비 40화(`PLMdirwPt_FHU`) 전편 YouTube Video ID 1:1 매핑 (`src/content/movieEpisodeMapping.ts`)**:
+     - YouTube Data API v3로 조회한 무비 1~40화(`P5KotZjJiZ8` ~ `wRpBUBuI2Bk`) 실제 영상 ID를 `MOVIE_EPISODES`의 `movieVideoId` 필드에 전수 매핑 완료.
+  2. **애니메이션 뷰(`src/views/MovieView.tsx`) 및 무비 뷰(`src/views/CinemaView.tsx`) 전면 단순화**:
+     - 불필요한 로컬 MP4, 인터랙티브 시네마틱/플립북 플레이어 전환 탭을 모두 제거하고, 오직 지정된 유튜브 플레이리스트 40화 동영상만 즉시 재생하며 시청 시 회차당 `+100 SNS` 보상을 자동 지급하도록 단순화.
+  3. **'시네마 ➔ 무비(Movie)' 용어 전면 통일**:
+     - `HomeView.tsx`, `HomeCategoryHub.tsx`, `HomeCategoryHubModal.tsx`, `NovelView.tsx`, `MovieView.tsx`, `CinemaView.tsx`, `routes.ts` 및 12개 다국어 언어팩(`src/lib/translations/*.ts`) 전체에서 `'시네마'`를 `'무비'`(`Movie`)로 통일.
+- **검증 결과**:
+  - `npx tsc --noEmit` & `npm run build`: 0 Errors 통과 및 `http://localhost:3000/` 즉시 반영 완료.
+  - 로컬 Git 커밋(`d3f3e6c03`) 및 구글 폼 보고서 제출 완료.
+
 ## [2026-10-20 16:53 KST] [인게임/마케팅] SNSHero 공식 유튜브 애니메이션 40부작 플레이리스트(PLK35ZdYm5NNE) 전수 연동, 시청자 보상 및 유튜브 동영상 광고 캠페인 구축 완료
 - **요청 사항**:
   - `https://www.youtube.com/watch?v=R6ls-BIxLCQ&list=PLK35ZdYm5NNE` 플레이리스트를 활용한 인게임 연동(유튜브 시청자 전용 보상 포함) 및 Google Ads 유튜브 동영상 광고 생성 둘 다 진행 요청.
