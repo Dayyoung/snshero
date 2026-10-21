@@ -2,6 +2,23 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-22 08:45 KST] [Video SEO/GEO/AEO] 애니메이션 40화(/movie) & 무비 40화(/cinema) 구글 검색·동영상 탭 노출 정적 빌더 및 VideoObject 스키마 구축 완료
+- **요청 사항**:
+  - 애니메이션 40화(`PLK35ZdYm5NNE`, `/movie`) 및 무비 40화(`PLMdirwPt_FHU`, `/cinema`)를 구글 검색결과에 노출되도록 구현.
+  - SEO / GEO / AEO 관점에서 애니메이션·무비 80부작 시리즈가 가지는 핵심 경쟁력을 설명.
+- **주요 구현 및 개선 내역**:
+  1. **Google Video Sitemap 1.1 표준 `sitemap-video.xml` 및 83개 정적 페이지 빌더 구축 (`scripts/generate-video-seo.ts`, `scripts/post-build.js`)**:
+     - `public/sitemap-video.xml` (82개 비디오 엔트리: `/movie`, `/cinema`, `/movie/ep-1`~`/movie/ep-40`, `/cinema/ep-1`~`/cinema/ep-40`) 자동 생성 및 `sitemap.xml` 동기화.
+     - 에피소드별 독립 URL (`/movie/ep-1`~`/movie/ep-40`, `/cinema/ep-1`~`/cinema/ep-40`) 정적 `index.html` 사전 렌더링으로 JS 실행 없이도 Googlebot-Video 및 AI 검색봇이 즉시 색인 가능.
+  2. **Schema.org `VideoObject` + `TVSeries` / `MovieSeries` + `Clip`(Key Moments) + `FAQPage` JSON-LD 주입**:
+     - 구글 동영상 리치 스니펫(썸네일, 재생 시간, 챕터 클립) 및 AI Overviews / ChatGPT / Perplexity 인용을 위한 구조화 데이터 완비.
+  3. **클라이언트 라우팅 및 크롤러 매니페스트 연동 (`src/routes.ts`, `src/lib/geoManager.ts`, `src/views/MovieView.tsx`, `src/views/CinemaView.tsx`, `public/robots.txt`, `public/llms.txt`)**:
+     - `/movie/ep-N` 및 `/cinema/ep-N` 접속 시 해당 회차 자동 오픈 및 동적 `VideoObject` JSON-LD 갱신.
+     - `robots.txt`에 `Googlebot-Video` 허용 및 `Sitemap: https://snshero.com/sitemap-video.xml` 등록, `llms.txt`에 공식 애니메이션·무비 80부작 메타데이터 추가.
+- **검증 결과**:
+  - `npx tsc --noEmit` & `npm run build`: 0 Errors 통과, `sitemap-video.xml` 및 83개 정적 비디오 페이지 생성 확인.
+  - 구글 폼 보고서 제출 완료 (`submit_report.py`).
+
 ## [2026-10-21 15:09 KST] [UI/UX 단순화 & 용어 통일] 애니메이션(40화) 및 무비(40화) 유튜브 플레이리스트 전용 화면 단순화 및 '시네마 ➔ 무비' 용어 전면 통일 완료
 - **요청 사항**:
   - `http://localhost:3000/` 화면에 애니메이션 / 시네마를 눌렀을 때 지정된 유튜브 링크의 동영상들만 표시하고 보상을 주도록 단순화 요청.

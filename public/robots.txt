@@ -23,6 +23,11 @@ Allow: /
 User-agent: Googlebot-News
 Allow: /
 
+User-agent: Googlebot-Video
+Allow: /
+Allow: /movie
+Allow: /cinema
+
 User-agent: Mediapartners-Google
 Allow: /
 
@@ -87,9 +92,12 @@ Allow: /
 # Sitemaps & LLM Meta
 # ------------------
 Sitemap: https://snshero.com/sitemap.xml
+Sitemap: https://snshero.com/sitemap-video.xml
 Sitemap: https://snshero.com/sitemap-news.xml
 Sitemap: https://snshero.com/news-feed.xml
 Sitemap: https://snshero.com/rss.xml
+Allow: /movie
+Allow: /cinema
 Allow: /llms.txt
 Allow: /llms-full.txt
 Allow: /.well-known/mcp.json

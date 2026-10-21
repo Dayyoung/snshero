@@ -436,7 +436,9 @@ export function getViewFromPath(pathname: string, search = ''): ViewType {
 
   // 특수 접두사 라우팅
   if (cleanPath.startsWith('/creator/')) return 'creator';
-  if (cleanPath.startsWith('/novel/s1-')) return 'novel';
+  if (cleanPath.startsWith('/novel/s1-') || cleanPath.startsWith('/book/')) return 'novel';
+  if (cleanPath.startsWith('/movie/') || cleanPath.startsWith('/animation/')) return 'movie';
+  if (cleanPath.startsWith('/cinema/') || cleanPath.startsWith('/live-cinema/')) return 'cinema';
   if (cleanPath.startsWith('/gotest')) return 'home';
   if (cleanPath === '/gwent' || cleanPath.startsWith('/gwent/')) return 'gwent';
 

@@ -43,6 +43,13 @@ export const CinemaView: React.FC<CinemaViewProps> = ({
   const [currentEpisodeNum, setCurrentEpisodeNum] = useState<number>(() => {
     try {
       if (typeof window !== 'undefined') {
+        const pathMatch = window.location.pathname.match(/\/ep-(\d+)/i);
+        if (pathMatch && pathMatch[1]) {
+          const parsedPathEp = parseInt(pathMatch[1], 10);
+          if (!isNaN(parsedPathEp)) {
+            return Math.max(1, Math.min(TOTAL_EPISODES, parsedPathEp));
+          }
+        }
         const params = new URLSearchParams(window.location.search);
         const epParam = params.get('ep') || params.get('episode');
         if (epParam) {
@@ -135,11 +142,35 @@ export const CinemaView: React.FC<CinemaViewProps> = ({
           url.searchParams.set('ep', currentEpisodeNum.toString());
           window.history.replaceState(window.history.state, '', url.pathname + url.search);
         }
+        const meta = MOVIE_EPISODES[currentEpisodeNum];
+        const vid = meta?.movieVideoId || playlistVideoIds[currentEpisodeNum - 1] || 'P5KotZjJiZ8';
+        if (meta && typeof document !== 'undefined') {
+          document.title = `무비 제${currentEpisodeNum}화: ${meta.titleKo} (${meta.titleEn}) | SNSHero 공식 무비 40화`;
+          let scriptEl = document.getElementById('snshero-video-schema');
+          if (!scriptEl) {
+            scriptEl = document.createElement('script');
+            scriptEl.id = 'snshero-video-schema';
+            scriptEl.setAttribute('type', 'application/ld+json');
+            document.head.appendChild(scriptEl);
+          }
+          scriptEl.textContent = JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'VideoObject',
+            name: `SNSHero 공식 무비 제${currentEpisodeNum}화: ${meta.titleKo} (${meta.titleEn})`,
+            description: `${meta.synopsisKo} (${meta.synopsisEn}) 감상 시 +100 SNS 보상 지급.`,
+            thumbnailUrl: [`https://i.ytimg.com/vi/${vid}/maxresdefault.jpg`],
+            uploadDate: '2026-10-12T00:00:00+09:00',
+            duration: `PT${meta.durationMinutes || 6}M`,
+            contentUrl: `https://www.youtube.com/watch?v=${vid}&list=${YOUTUBE_PLAYLIST_ID}`,
+            embedUrl: `https://www.youtube.com/embed/${vid}?list=${YOUTUBE_PLAYLIST_ID}`,
+            isAccessibleForFree: true,
+          });
+        }
       } catch {
         // ignore
       }
     }
-  }, [currentEpisodeNum, currentSeason]);
+  }, [currentEpisodeNum, currentSeason, playlistVideoIds]);
 
   const handleSelectEpisode = (epNum: number) => {
     if (epNum < 1 || epNum > TOTAL_EPISODES) return;

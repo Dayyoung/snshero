@@ -52,7 +52,8 @@ Available via `navigator.modelContext` / `window.WebMCP`:
 - `/shop`: Bronze, Silver, Gold card pack summoning with pity guarantees and crypto payment.
 - `/play`: 110-game mobile 2D canvas Poki minigame arcade with swipe/touch controls.
 - `/novel`: Kadan & Arcane Echoes official color webtoons and web novel episodes.
-- `/movie`: Cinematic video streaming lounge for relaxation between matches.
+- `/movie`: SNSHero Official Animation 40-Episode Series (`https://www.youtube.com/watch?v=Av-SEvRvCw8&list=PLK35ZdYm5NNE`, `/movie/ep-1` ~ `/movie/ep-40`) with +100 SNS Watch-to-Earn reward per episode.
+- `/cinema`: SNSHero Official Movie 40-Episode Series (`https://www.youtube.com/watch?v=P5KotZjJiZ8&list=PLMdirwPt_FHU`, `/cinema/ep-1` ~ `/cinema/ep-40`) with +100 SNS Watch-to-Earn reward per episode.
 - `/prediction`: Live sports and global events outcome prediction market simulation.
 - `/stock`: Simulated virtual equity trading market with portfolio diversification.
 - `/reddit`: Reddit-style player community, deck boasting, guides, and upvote discussions.
@@ -70,16 +71,19 @@ AI models (Claude, GPT, Gemini, and custom agents) can be evaluated on autonomou
 
 ## 6. Official Core Resources & Vibe Coding Channels
 1. **바이브코딩 웹게임 개발 강의 (AI Studio)**: https://www.youtube.com/playlist?list=PLV8H2-pD9vH0
-2. **SNSHero.com 게임 플레이링크**: https://snshero.com/
-3. **SNSHero.com AI Studio 앱 프로젝트**: https://ai.studio/apps/636a37c3-97ce-4c80-be46-8c9a6f793f2d
-4. **SNSHero.com 소스파일 (GitHub)**: https://github.com/Dayyoung/snshero
-5. **SNSHero.com 개발 프롬프트 (snshero.md)**: https://snshero.com/snshero.md
-6. **SNSHero.com 유튜브 공식 채널**: https://www.youtube.com/@snshero
+2. **SNSHero.com 공식 애니메이션 40화 플레이리스트**: https://www.youtube.com/watch?v=Av-SEvRvCw8&list=PLK35ZdYm5NNE (https://snshero.com/movie)
+3. **SNSHero.com 공식 무비 40화 플레이리스트**: https://www.youtube.com/watch?v=P5KotZjJiZ8&list=PLMdirwPt_FHU (https://snshero.com/cinema)
+4. **SNSHero.com 게임 플레이링크**: https://snshero.com/
+5. **SNSHero.com AI Studio 앱 프로젝트**: https://ai.studio/apps/636a37c3-97ce-4c80-be46-8c9a6f793f2d
+6. **SNSHero.com 소스파일 (GitHub)**: https://github.com/Dayyoung/snshero
+7. **SNSHero.com 개발 프롬프트 (snshero.md)**: https://snshero.com/snshero.md
+8. **SNSHero.com 유튜브 공식 채널**: https://www.youtube.com/@snshero
 
 ### Supplementary Specs & Discovery Files:
 - **Full Specification**: https://snshero.com/llms-full.txt
 - **WebMCP Manifest**: https://snshero.com/.well-known/mcp.json
 - **Full Sitemap**: https://snshero.com/sitemap.xml
+- **Google Video Sitemap (80 Episodes)**: https://snshero.com/sitemap-video.xml
 - **Google News Sitemap**: https://snshero.com/sitemap-news.xml
 - **Google News RSS Feed**: https://snshero.com/news-feed.xml
 

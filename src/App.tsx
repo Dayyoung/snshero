@@ -588,6 +588,8 @@ function AppContent() {
         'card-play': '카드 배틀 아레나 (Battle Arena)',
         novel: '웹소설 라운지 (Web Novel)',
         webtoon: '웹툰 스튜디오 (Webtoon Studio)',
+        movie: '공식 애니메이션 40화 (Official Animation 40 Episodes)',
+        cinema: '공식 무비 40화 (Official Movie 40 Episodes)',
         'stock-market': 'SNS 주식 거래소 (Stock Market)',
         'card-marketplace': '카드 P2P 거래소 (Marketplace)',
         'prediction-market': '승부 예측 시장 (Prediction Market)',

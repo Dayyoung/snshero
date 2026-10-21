@@ -335,49 +335,6 @@ export const GEO_CONFIGS: Record<string, GeoViewConfig> = {
     })
   },
 
-  movie: {
-    title: {
-      ko: '시네마틱 미디어 라운지 - SNS히어로',
-      en: 'Cinematic Media Lounge - SNSHero',
-      gb: 'Cinematic Media Lounge - SNSHero',
-      ja: 'シネマティックメディアラウンジ - SNSヒーロー',
-      'zh-CN': '视听媒体放映厅 - SNS英雄',
-      'zh-TW': '視聽媒體放映廳 - SNS英雄',
-      de: 'Cinematic Medien-Lounge - SNSHero',
-      es: 'Lounge de Medios Cinemáticos - SNSHero',
-      fr: 'Salon Média Cinématique - SNSHero',
-      id: 'Lounge Media Sinematik - SNSHero',
-      ru: 'Кинематографический Медиа-Лаунж - SNSHero',
-      th: 'ห้องสื่อภาพยนตร์ - SNSHero',
-      vi: 'Phòng Chiếu Phim Điện Ảnh - SNSHero'
-    },
-    description: {
-      ko: 'SNS히어로 세계관 비디오 스트리밍 라운지. 카드 배틀 도중 편안하게 영상 시청으로 기분전환하고 시청 보상을 받으세요.',
-      en: 'Watch hero cinematics and animated videos in the Media Lounge to refresh between card battles with bonus rewards.',
-      gb: 'Watch hero cinematics and animated videos in the Media Lounge to refresh between card battles with bonus rewards.',
-      ja: 'カード対戦の合間にアニメーション動画を視聴してリフレッシュ。視聴ボーナス付き。',
-      'zh-CN': '在媒体放映厅观看英雄动画短片与背景影片，放松心情并领取观看奖励。',
-      'zh-TW': '在媒體放映廳觀看英雄動畫短片與背景影片，放鬆心情並領取觀看獎勵。',
-      de: 'Schau dir Videos in der Lounge an und entspanne dich zwischen den Kartenschlachten.',
-      es: 'Disfruta de vídeos animados en el Media Lounge para relajarte entre batallas.',
-      fr: 'Regardez des vidéos animées pour vous détendre entre deux combats de cartes.',
-      id: 'Tonton video animasi di Media Lounge untuk menyegarkan pikiran di antara pertarungan kartu.',
-      ru: 'Смотрите анимационные видеоролики в медиа-лаунже, отдыхая между боями.',
-      th: 'รับชมวิดีโอแอนิเมชันเพื่อผ่อนคลายระหว่างการต่อสู้การ์ดพร้อมรับรางวัล',
-      vi: 'Xem video hoạt hình tại Media Lounge để thư giãn giữa các trận đấu thẻ bài.'
-    },
-    canonicalPath: '/movie',
-    schemaType: 'VideoObject',
-    schemaGenerator: (lang) => ({
-      '@context': 'https://schema.org',
-      '@type': ['VideoObject', 'MediaObject'],
-      name: 'SNSHero Cinematic Media Lounge',
-      url: 'https://snshero.com/movie',
-      inLanguage: lang,
-      description: 'Official video streaming lounge for SNSHero universe.'
-    })
-  },
-
   prediction: {
     title: {
       ko: '실시간 예측 시장 (Prediction Market) - SNS히어로',
@@ -676,6 +633,94 @@ export const GEO_CONFIGS: Record<string, GeoViewConfig> = {
           ]
         }
       ]
+    })
+  },
+
+  movie: {
+    title: {
+      ko: 'SNSHero 공식 애니메이션 40화 (카단과 아케인의 메아리) | SNS히어로',
+      en: 'SNSHero Official Animation 40 Episodes | SNSHero',
+      gb: 'SNSHero Official Animation 40 Episodes | SNSHero',
+      ja: 'SNSHero 公式アニメーション全40話 | SNSヒーロー',
+      'zh-CN': 'SNSHero 官方动画全40集 | SNS英雄',
+      'zh-TW': 'SNSHero 官方動畫全40集 | SNS英雄',
+      de: 'SNSHero Offizielle Animation 40 Folgen | SNSHero',
+      es: 'SNSHero Animación Oficial 40 Episodios | SNSHero',
+      fr: 'SNSHero Animation Officielle 40 Épisodes | SNSHero',
+      id: 'SNSHero Animasi Resmi 40 Episode | SNSHero',
+      ru: 'SNSHero Официальная Анимация 40 Серий | SNSHero',
+      th: 'SNSHero แอนิเมชันทางการ 40 ตอน | SNSHero',
+      vi: 'SNSHero Hoạt Hình Chính Thức 40 Tập | SNSHero'
+    },
+    description: {
+      ko: 'SNS히어로 공식 40부작 판타지 애니메이션 시리즈(PLK35ZdYm5NNE) 무료 스트리밍! 매 화 시청 시 +100 SNS 게임 보상을 즉시 수령하세요.',
+      en: 'Watch the official 40-episode SNSHero fantasy animation series (PLK35ZdYm5NNE) and claim +100 SNS reward per episode.',
+      gb: 'Watch the official 40-episode SNSHero fantasy animation series (PLK35ZdYm5NNE) and claim +100 SNS reward per episode.',
+      ja: 'SNSヒーロー公式ファンタジーアニメ全40話無料配信！1話視聴ごとに+100 SNS報酬を獲得。',
+      'zh-CN': '免费观看SNS英雄官方40集奇幻动画系列，每集立领+100 SNS奖励！',
+      'zh-TW': '免費觀看SNS英雄官方40集奇幻動畫系列，每集立領+100 SNS獎勵！',
+      de: 'Sieh dir die 40-teilige SNSHero Fantasy-Animationsserie an und erhalte +100 SNS pro Folge.',
+      es: 'Mira la serie de animación oficial de 40 episodios de SNSHero y gana +100 SNS por episodio.',
+      fr: 'Regardez la série animée officielle de 40 épisodes de SNSHero et gagnez +100 SNS par épisode.',
+      id: 'Tonton seri animasi resmi 40 episode SNSHero dan klaim +100 SNS per episode.',
+      ru: 'Смотрите официальный 40-серийный мультсериал SNSHero и получайте +100 SNS за серию.',
+      th: 'รับชมแอนิเมชันแฟนตาซี 40 ตอนของ SNSHero ฟรี พร้อมรับ +100 SNS ต่อตอน',
+      vi: 'Xem trọn bộ 40 tập hoạt hình SNSHero miễn phí và nhận +100 SNS mỗi tập.'
+    },
+    canonicalPath: '/movie',
+    schemaType: 'TVSeries',
+    schemaGenerator: (lang) => ({
+      '@context': 'https://schema.org',
+      '@type': 'TVSeries',
+      name: 'SNSHero Official Animation (40 Episodes)',
+      url: 'https://snshero.com/movie',
+      numberOfEpisodes: 40,
+      inLanguage: lang,
+      sameAs: ['https://www.youtube.com/watch?v=Av-SEvRvCw8&list=PLK35ZdYm5NNE']
+    })
+  },
+
+  cinema: {
+    title: {
+      ko: 'SNSHero 공식 무비 40화 (Kadan & Arcane Echoes: The Movie) | SNS히어로',
+      en: 'SNSHero Official Movie 40 Episodes | SNSHero',
+      gb: 'SNSHero Official Movie 40 Episodes | SNSHero',
+      ja: 'SNSHero 公式ムービー全40話 | SNSヒーロー',
+      'zh-CN': 'SNSHero 官方电影全40集 | SNS英雄',
+      'zh-TW': 'SNSHero 官方電影全40集 | SNS英雄',
+      de: 'SNSHero Offizieller Film 40 Folgen | SNSHero',
+      es: 'SNSHero Película Oficial 40 Episodios | SNSHero',
+      fr: 'SNSHero Film Officiel 40 Épisodes | SNSHero',
+      id: 'SNSHero Film Resmi 40 Episode | SNSHero',
+      ru: 'SNSHero Официальный Фильм 40 Серий | SNSHero',
+      th: 'SNSHero มูฟวี่ทางการ 40 ตอน | SNSHero',
+      vi: 'SNSHero Phim Chính Thức 40 Tập | SNSHero'
+    },
+    description: {
+      ko: 'SNS히어로 공식 40부작 판타지 무비 시리즈(PLMdirwPt_FHU) 무료 감상! 매 화 감상 시 +100 SNS 게임 보상을 즉시 수령하세요.',
+      en: 'Stream the official 40-episode SNSHero cinematic movie series (PLMdirwPt_FHU) and earn +100 SNS reward per episode.',
+      gb: 'Stream the official 40-episode SNSHero cinematic movie series (PLMdirwPt_FHU) and earn +100 SNS reward per episode.',
+      ja: 'SNSヒーロー公式シネマティックムービー全40話無料配信！1話視聴ごとに+100 SNS報酬を獲得。',
+      'zh-CN': '免费观看SNS英雄官方40集电影系列，每集立领+100 SNS奖励！',
+      'zh-TW': '免費觀看SNS英雄官方40集電影系列，每集立領+100 SNS獎勵！',
+      de: 'Streame die 40-teilige SNSHero Filmreihe und sichere dir +100 SNS pro Folge.',
+      es: 'Disfruta de la serie de películas oficial de 40 episodios de SNSHero y gana +100 SNS por episodio.',
+      fr: 'Regardez la série de films officielle de 40 épisodes de SNSHero et gagnez +100 SNS par épisode.',
+      id: 'Streaming seri film resmi 40 episode SNSHero dan klaim +100 SNS per episode.',
+      ru: 'Смотрите официальный 40-серийный киносериал SNSHero и получайте +100 SNS за серию.',
+      th: 'รับชมมูฟวี่ 40 ตอนของ SNSHero ฟรี พร้อมรับ +100 SNS ต่อตอน',
+      vi: 'Xem trọn bộ 40 tập phim SNSHero miễn phí và nhận +100 SNS mỗi tập.'
+    },
+    canonicalPath: '/cinema',
+    schemaType: 'MovieSeries',
+    schemaGenerator: (lang) => ({
+      '@context': 'https://schema.org',
+      '@type': 'MovieSeries',
+      name: 'SNSHero Official Movie (40 Episodes)',
+      url: 'https://snshero.com/cinema',
+      numberOfEpisodes: 40,
+      inLanguage: lang,
+      sameAs: ['https://www.youtube.com/watch?v=P5KotZjJiZ8&list=PLMdirwPt_FHU']
     })
   }
 };

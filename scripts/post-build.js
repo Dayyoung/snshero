@@ -180,4 +180,12 @@ try {
   console.warn('[post-build] Warning: Google News SEO generator encountered an issue:', e.message);
 }
 
+// 7. Run Google Video SEO/GEO/AEO Static Prerenderer (Animation 40 + Movie 40)
+try {
+  console.log('[post-build] Running Google Video SEO/GEO/AEO static generator...');
+  execSync('npx tsx scripts/generate-video-seo.ts', { stdio: 'inherit' });
+} catch (e) {
+  console.warn('[post-build] Warning: Google Video SEO generator encountered an issue:', e.message);
+}
+
 console.log('[post-build] Post-build completed successfully.');
