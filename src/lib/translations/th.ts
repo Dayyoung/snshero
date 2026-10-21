@@ -2881,8 +2881,8 @@ export const th = {
     home_shortcut_novel: 'นิยายเว็บ',
     home_shortcut_webtoon: 'เว็บตูน',
     home_shortcut_movie: 'แอนิเมชัน',
-    home_shortcut_cinema: 'ซีนีม่า',
-    cinema_title: 'โรงภาพยนตร์คนแสดง 70mm SNSHero',
+    home_shortcut_cinema: 'มูฟวี่',
+    cinema_title: 'มูฟวี่อย่างเป็นทางการ SNSHero (40 ตอน)',
     cinema_subtitle: 'ภาพยนตร์ดาร์กแฟนตาซีคนแสดงจริงพร้อมการเกรดสีอนามอร์ฟิก 70mm',
     cinema_list: 'รายการตอน',
 };

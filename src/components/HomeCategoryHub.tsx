@@ -365,9 +365,9 @@ export const HomeCategoryHub: React.FC<HomeCategoryHubProps> = ({
  <Film size={16} className="text-[#201d1d] shrink-0" />
  <div>
  <div className="text-xs font-bold text-[#201d1d] group-hover:underline">
- {language === 'ko' ? '실사 시네마' : 'Live Cinema'}
+ {language === 'ko' ? '무비' : 'Movie'}
  </div>
- <div className="text-[11px] text-[#646262]">70mm 실사 상영관</div>
+ <div className="text-[11px] text-[#646262]">40화 공식 무비</div>
  </div>
  </div>
  <ArrowRight size={12} className="text-[#646262]" />

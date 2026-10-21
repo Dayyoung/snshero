@@ -245,10 +245,10 @@ export const VIEW_ROUTES: Record<ViewType, RouteMeta> = {
   cinema: {
     path: '/cinema',
     aliases: ['/live-cinema', '/imax'],
-    titleKo: '실사 시네마관 (70mm Live-Action Cinema) - SNS히어로',
-    titleEn: '70mm Live-Action Cinema Theater - SNSHero',
-    descriptionKo: '정통 다크 판타지 블록버스터 실사(Live-Action) 이미지 기반의 70mm 아나모픽 시네마 영화를 감상하세요.',
-    descriptionEn: 'Experience the photorealistic 70mm anamorphic live-action dark fantasy cinema series.',
+    titleKo: 'SNSHero 공식 무비 (40화) - SNS히어로',
+    titleEn: 'SNSHero Official Movie (40 Episodes) - SNSHero',
+    descriptionKo: 'SNSHero 공식 무비 40화 유튜브 시리즈를 감상하고 회차별 보상을 받으세요.',
+    descriptionEn: 'Watch the SNSHero Official Movie 40-episode YouTube series and claim episode rewards.',
   },
   mall: {
     path: '/mall',

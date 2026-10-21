@@ -444,7 +444,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   <span className="truncate">{t('home_shortcut_movie', language) || (language === 'ko' ? '애니메이션' : 'Animation')}</span>
                 </button>
 
-                {/* 4. 실사 시네마 */}
+                {/* 4. 무비 */}
                 <button
                   type="button"
                   onClick={() => {
@@ -453,10 +453,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     onNavigate('cinema');
                   }}
                   className="min-h-[44px] px-1.5 sm:px-2 py-2 bg-[#201d1d] text-[#fdfcfc] font-bold text-xs sm:text-sm border border-[#201d1d] hover:bg-stone-800 transition-colors cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5 rounded-sm"
-                  title="70mm 아나모픽 실사 시네마 영화관"
+                  title="SNSHero 공식 무비 (40화)"
                 >
                   <Camera size={15} className="shrink-0 text-amber-400" />
-                  <span className="truncate">{t('home_shortcut_cinema', language) || (language === 'ko' ? '시네마' : 'Cinema')}</span>
+                  <span className="truncate">{language === 'ko' ? '무비' : (t('home_shortcut_cinema', language) || 'Movie')}</span>
                 </button>
               </div>
 

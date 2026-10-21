@@ -2974,8 +2974,8 @@ export const ja = {
     home_shortcut_novel: 'ウェブ小説',
     home_shortcut_webtoon: 'ウェブトゥーン',
     home_shortcut_movie: 'アニメ',
-    home_shortcut_cinema: 'シネマ',
-    cinema_title: 'SNSHero 実写シネマ館 (70mm Live-Action)',
+    home_shortcut_cinema: 'ムービー',
+    cinema_title: 'SNSHero 公式ムービー (全40話)',
     cinema_subtitle: '本格ダークファンタジー実写スチールと70mmアナモルフィック色彩補正によるシネマ劇場です。',
     cinema_list: 'シネマ話数一覧',
 };

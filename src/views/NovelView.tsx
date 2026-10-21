@@ -989,7 +989,7 @@ export const NovelView: React.FC<NovelViewProps> = ({
           </span>
         </button>
 
-        {/* 70mm 실사 시네마관 숏컷 탭 */}
+        {/* 무비 숏컷 탭 */}
         <button
           onClick={() => {
             triggerHaptic('tap');
@@ -997,13 +997,10 @@ export const NovelView: React.FC<NovelViewProps> = ({
             onNavigate('cinema');
           }}
           className="min-h-[44px] px-3.5 py-1.5 border border-[#201d1d] bg-[#201d1d] hover:bg-stone-800 text-[#fdfcfc] rounded-sm font-bold text-xs sm:text-sm flex items-center gap-1.5 cursor-pointer transition-colors"
-          title={language === 'ko' ? '70mm 아나모픽 실사 시네마 영화관 감상' : 'Watch 70mm Live-Action Cinema'}
+          title={language === 'ko' ? 'SNSHero 공식 무비 (40화) 감상' : 'Watch SNSHero Official Movie'}
         >
           <Sparkles size={15} className="text-amber-400" />
-          <span>{language === 'ko' ? '[실사 시네마]' : '[Live Cinema]'}</span>
-          <span className="text-[10px] bg-amber-400 text-black px-1.5 py-0.5 rounded-sm font-mono font-bold ml-0.5">
-            70MM
-          </span>
+          <span>{language === 'ko' ? '[무비]' : '[Movie]'}</span>
         </button>
 
         <button

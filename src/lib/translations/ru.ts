@@ -2881,8 +2881,8 @@ export const ru = {
     home_shortcut_novel: 'Веб-роман',
     home_shortcut_webtoon: 'Вебтун',
     home_shortcut_movie: 'Анимация',
-    home_shortcut_cinema: 'Синема',
-    cinema_title: '70мм Кинотеатр Live-Action SNSHero',
+    home_shortcut_cinema: 'Фильм',
+    cinema_title: 'Официальный Фильм SNSHero (40 серий)',
     cinema_subtitle: 'Фотореалистичный кинотеатр темного фэнтези с 70-мм анаморфотной цветокоррекцией.',
     cinema_list: 'Список серий',
 };

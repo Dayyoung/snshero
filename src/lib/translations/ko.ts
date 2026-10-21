@@ -3241,8 +3241,8 @@ export const ko = {
     home_shortcut_novel: '웹소설',
     home_shortcut_webtoon: '웹툰',
     home_shortcut_movie: '애니메이션',
-    home_shortcut_cinema: '시네마',
-    cinema_title: 'SNSHero 실사 시네마관 (70mm Live-Action)',
-    cinema_subtitle: '정통 다크 판타지 블록버스터 실사(Live-Action) 스틸과 70mm 아나모픽 컬러 그레이딩으로 완성된 시네마 영화관입니다.',
-    cinema_list: '시네마 회차 목록',
+    home_shortcut_cinema: '무비',
+    cinema_title: 'SNSHero 공식 무비 (40화)',
+    cinema_subtitle: 'SNSHero 공식 무비 40화 시리즈를 감상하고 회차별 시청 보상을 받으세요.',
+    cinema_list: '무비 회차 목록',
 };
