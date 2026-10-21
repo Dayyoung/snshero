@@ -8,13 +8,13 @@ const srcDir = path.join(rootDir, 'src');
 let isBuilding = false;
 let pendingBuild = false;
 let debounceTimer = null;
+let lastBuildFinishedAt = 0;
 
 console.log('👀 [watch-build] Watching src/ directory for changes...');
 console.log('⚡ Any file save will automatically trigger production build into dist/');
 
 function runBuild() {
   if (isBuilding) {
-    pendingBuild = true;
     return;
   }
 
@@ -25,6 +25,7 @@ function runBuild() {
 
   exec('npm run build', (error, stdout, stderr) => {
     isBuilding = false;
+    lastBuildFinishedAt = Date.now();
     const duration = ((Date.now() - startTime) / 1000).toFixed(1);
 
     if (error) {
@@ -34,21 +35,30 @@ function runBuild() {
     }
 
     if (pendingBuild) {
+      pendingBuild = false;
       console.log('🔄 [watch-build] Pending changes detected during build. Rebuilding...');
-      setTimeout(runBuild, 500);
+      setTimeout(runBuild, 1500);
     }
   });
 }
 
 function onChange(eventType, filename) {
   if (!filename) return;
-  // Ignore temp files or non-source files
-  if (filename.includes('.git') || filename.includes('node_modules') || filename.includes('dist')) return;
+  if (isBuilding || Date.now() - lastBuildFinishedAt < 3000) return;
+  // Ignore temp files or auto-generated seed files
+  if (
+    filename.includes('.git') ||
+    filename.includes('node_modules') ||
+    filename.includes('dist') ||
+    filename.includes('googleNewsSeedData')
+  ) {
+    return;
+  }
 
   if (debounceTimer) clearTimeout(debounceTimer);
   debounceTimer = setTimeout(() => {
     runBuild();
-  }, 1200);
+  }, 1500);
 }
 
 try {
