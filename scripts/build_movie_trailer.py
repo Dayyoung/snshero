@@ -206,148 +206,86 @@ def extract_trailer_cut(
     subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
-def generate_epic_trailer_bgm(out_wav: Path, duration_sec: float = 160.0, sr: int = 48000) -> None:
+WORLDBEAT_MP3 = Path("/Users/dayyoung/project/snshero/public/mixkit-games-worldbeat-466.mp3")
+SFX_START_MP3 = Path("/Users/dayyoung/project/snshero/public/gwent/sfx/game_start.mp3")
+SFX_HORN_MP3 = Path("/Users/dayyoung/project/snshero/public/gwent/sfx/horn.mp3")
+SFX_WIN_MP3 = Path("/Users/dayyoung/project/snshero/public/gwent/sfx/round_win.mp3")
+
+
+def build_upbeat_trailer_bgm_wav(
+    out_wav: Path,
+    vo_windows: List[Tuple[float, float]],
+    duration_sec: float = 154.54,
+) -> None:
     """
-    Synthesizes a dramatic 4-stage cinematic trailer score (48kHz stereo WAV):
-    - 0..32s (Act I): Deep atmospheric cello/bass drone + haunting minor choir pad
-    - 32..68s (Act II): Adds steady cinematic heartbeat / low taiko pulse (every 1.0s)
-    - 68..105s (Act III): Rising orchestral strings + double-time percussion & brass swells
-    - 105..136s (Act IV Climax): Epic full orchestral progression (Dm - Bb - F - C - Gm - A7) with dramatic hits
-    - 136..160s (Act V Finale): Grand resonant D-minor/D-major picardy cadence + shimmering harp & brass sustain
+    Creates a 48kHz stereo WAV soundtrack from SNSHero's upbeat official theme
+    (`mixkit-games-worldbeat-466.mp3`, looped seamlessly with a 4s crossfade)
+    with automatic dynamic volume ducking/swelling:
+    - During voiceover lines: lively 0.36 volume so speech is crystal clear while the beat drives underneath.
+    - Between voiceover lines (action montage cuts & finale): swells smoothly to 0.72 volume for maximum excitement!
     """
-    log(f"Synthesizing epic theatrical trailer soundtrack ({duration_sec:.1f}s)...")
-    n_samples = int(duration_sec * sr)
-    t = np.linspace(0.0, duration_sec, n_samples, endpoint=False, dtype=np.float32)
+    raw_loop_wav = WORK_DIR / "worldbeat_looped_raw.wav"
+    fade_out_st = max(0.0, duration_sec - 2.5)
+    # Loop mixkit-games-worldbeat-466.mp3 (106.55s) with a smooth 4.0s crossfade -> ~209s, trim to duration_sec
+    subprocess.run(
+        [
+            "ffmpeg",
+            "-y",
+            "-i",
+            str(WORLDBEAT_MP3),
+            "-i",
+            str(WORLDBEAT_MP3),
+            "-filter_complex",
+            f"[0:a][1:a]acrossfade=d=4.0:c1=tri:c2=tri,afade=t=in:st=0:d=0.8,afade=t=out:st={fade_out_st:.2f}:d=2.5[aout]",
+            "-map",
+            "[aout]",
+            "-ar",
+            "48000",
+            "-ac",
+            "2",
+            "-t",
+            f"{duration_sec:.2f}",
+            str(raw_loop_wav),
+        ],
+        check=True,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
 
-    left = np.zeros(n_samples, dtype=np.float32)
-    right = np.zeros(n_samples, dtype=np.float32)
+    with wave.open(str(raw_loop_wav), "rb") as wf:
+        sr = wf.getframerate()
+        n_frames = wf.getnframes()
+        raw_bytes = wf.readframes(n_frames)
 
-    # Epic trailer chord progression (4-second bars)
-    chords = [
-        # Dm: D2, A2, D3, F3, A3, D4
-        [73.42, 110.00, 146.83, 174.61, 220.00, 293.66],
-        # Bbmaj7: Bb1, F2, Bb2, D3, F3, A3
-        [58.27, 87.31, 116.54, 146.83, 174.61, 220.00],
-        # F: F1, C2, F2, A2, C3, F3
-        [43.65, 65.41, 87.31, 110.00, 130.81, 174.61],
-        # C: C2, G2, C3, E3, G3, C4
-        [65.41, 98.00, 130.81, 164.81, 196.00, 261.63],
-        # Gm: G1, D2, G2, Bb2, D3, G3
-        [49.00, 73.42, 98.00, 116.54, 146.83, 196.00],
-        # A7sus4 -> A: A1, E2, A2, C#3, E3, A3
-        [55.00, 82.41, 110.00, 138.59, 164.81, 220.00],
-    ]
+    samples = np.frombuffer(raw_bytes, dtype=np.int16).astype(np.float32).reshape(-1, 2) / 32768.0
+    t = np.arange(samples.shape[0], dtype=np.float32) / float(sr)
 
-    bar_len = 4.0
-    num_bars = int(math.ceil(duration_sec / bar_len)) + 1
+    # Start with full upbeat montage gain (0.72) and duck smoothly to 0.34 during VO windows
+    gain = np.full_like(t, 0.72)
+    for vo_start, vo_end in vo_windows:
+        # Smooth cosine ramp down 0.35s before VO and ramp up 0.45s after VO
+        ramp = 0.40
+        mask_full = (t >= vo_start) & (t <= vo_end)
+        gain[mask_full] = 0.34
+        mask_in = (t >= vo_start - ramp) & (t < vo_start)
+        if np.any(mask_in):
+            u = (t[mask_in] - (vo_start - ramp)) / ramp
+            gain[mask_in] = np.minimum(gain[mask_in], 0.72 - (0.72 - 0.34) * 0.5 * (1.0 - np.cos(math.pi * u)))
+        mask_out = (t > vo_end) & (t <= vo_end + ramp)
+        if np.any(mask_out):
+            u = (t[mask_out] - vo_end) / ramp
+            gain[mask_out] = np.minimum(gain[mask_out], 0.34 + (0.72 - 0.34) * 0.5 * (1.0 - np.cos(math.pi * u)))
 
-    for bar in range(num_bars):
-        c_idx = bar % len(chords)
-        freqs = chords[c_idx]
-        center_t = bar * bar_len
-        start_t = max(0.0, center_t - bar_len)
-        end_t = min(duration_sec, center_t + bar_len)
-        i0 = int(start_t * sr)
-        i1 = int(end_t * sr)
-        if i1 <= i0:
-            continue
-        seg_t = t[i0:i1]
-        rel = (seg_t - center_t) / bar_len
-        env = 0.5 * (1.0 + np.cos(math.pi * np.clip(rel, -1.0, 1.0)))
+    samples[:, 0] *= gain
+    samples[:, 1] *= gain
 
-        # Dynamic intensity curve across the trailer (builds from 0.45 in Act I to 1.0 in Act IV)
-        intensity = np.interp(center_t, [0, 32, 68, 105, 136, duration_sec], [0.48, 0.62, 0.78, 1.00, 0.90, 0.70])
-
-        seg_l = np.zeros_like(seg_t)
-        seg_r = np.zeros_like(seg_t)
-        weights = [0.35, 0.25, 0.20, 0.16, 0.13, 0.10]
-        for v_i, (f, w) in enumerate(zip(freqs, weights)):
-            detune = 1.0018 if (v_i % 2 == 0) else 0.9982
-            vib = 0.0018 * np.sin(2.0 * math.pi * (3.6 + 0.25 * v_i) * seg_t)
-            ph_l = 2.0 * math.pi * f * (seg_t + vib)
-            ph_r = 2.0 * math.pi * (f * detune) * (seg_t - vib)
-            # Warm brass + string harmonics (stronger 2nd and 3rd harmonics during climax)
-            h2 = 0.30 * intensity
-            h3 = 0.12 * intensity
-            tone_l = np.sin(ph_l) + h2 * np.sin(2.0 * ph_l + 0.3) + h3 * np.sin(3.0 * ph_l + 0.7)
-            tone_r = np.sin(ph_r + 0.25) + h2 * np.sin(2.0 * ph_r + 0.8) + h3 * np.sin(3.0 * ph_r + 1.2)
-            seg_l += w * tone_l
-            seg_r += w * tone_r
-
-        # Add melodic heroic motif notes in Acts II-V
-        motif = [freqs[3] * 2.0, freqs[4] * 2.0, freqs[5] * 2.0, freqs[4] * 2.0]
-        for m_i, mf in enumerate(motif):
-            ns = center_t - 0.5 * bar_len + m_i * (bar_len / 4.0)
-            ni0 = max(i0, int(ns * sr))
-            ni1 = min(i1, int((ns + 1.8) * sr))
-            if ni1 > ni0:
-                nt = t[ni0:ni1] - ns
-                n_env = (1.0 - np.exp(-nt / 0.04)) * np.exp(-nt / 0.85)
-                n_sig = 0.065 * intensity * n_env * (np.sin(2.0 * math.pi * mf * nt) + 0.25 * np.sin(4.0 * math.pi * mf * nt))
-                if m_i % 2 == 0:
-                    left[ni0:ni1] += n_sig * 1.15
-                    right[ni0:ni1] += n_sig * 0.75
-                else:
-                    left[ni0:ni1] += n_sig * 0.75
-                    right[ni0:ni1] += n_sig * 1.15
-
-        left[i0:i1] += intensity * env * seg_l
-        right[i0:i1] += intensity * env * seg_r
-
-    # Add cinematic trailer percussion (deep taiko / sub-bass boom on downbeats & pulse beats)
-    pulse_times: List[Tuple[float, float]] = []
-    # Act I major title hits
-    for hit_t in [0.2, 3.8, 18.0]:
-        pulse_times.append((hit_t, 0.85))
-    # Act II steady heartbeat pulse every 2.0s
-    cur = 32.0
-    while cur < 68.0:
-        pulse_times.append((cur, 0.55))
-        cur += 2.0
-    # Act III rising pulse every 1.0s
-    cur = 68.0
-    while cur < 104.0:
-        amp = 0.70 if int(round(cur)) % 2 == 0 else 0.40
-        pulse_times.append((cur, amp))
-        cur += 1.0
-    # Act IV climax driving cinematic drums every 0.75s
-    cur = 104.0
-    while cur < 135.0:
-        pulse_times.append((cur, 0.85))
-        cur += 1.5
-    # Act V Finale grand boom on "SNSHERO.COM : THE MOVIE" and "Visit SNSHero.com!"
-    for hit_t in [135.5, 141.0, 146.0]:
-        pulse_times.append((hit_t, 1.0))
-
-    for hit_t, amp in pulse_times:
-        hi0 = int(hit_t * sr)
-        hi1 = min(n_samples, int((hit_t + 0.9) * sr))
-        if hi1 > hi0:
-            ht = t[hi0:hi1] - hit_t
-            # Pitch-dropping sub-bass taiko drum (95Hz -> 42Hz) + soft low-passed impact
-            freq_curve = 42.0 + 55.0 * np.exp(-ht / 0.09)
-            phase = 2.0 * math.pi * freq_curve * ht
-            drum_env = (1.0 - np.exp(-ht / 0.008)) * np.exp(-ht / 0.28)
-            boom = 0.38 * amp * drum_env * np.sin(phase)
-            left[hi0:hi1] += boom
-            right[hi0:hi1] += boom
-
-    # Normalize to 0.88 peak
-    peak = max(float(np.max(np.abs(left))), float(np.max(np.abs(right))), 1e-6)
-    left = (left / peak) * 0.88
-    right = (right / peak) * 0.88
-
-    stereo = np.empty((n_samples, 2), dtype=np.int16)
-    stereo[:, 0] = np.clip(left * 32767.0, -32768, 32767).astype(np.int16)
-    stereo[:, 1] = np.clip(right * 32767.0, -32768, 32767).astype(np.int16)
-
-    out_wav.parent.mkdir(parents=True, exist_ok=True)
+    out_pcm = np.clip(samples * 32767.0, -32768, 32767).astype(np.int16)
     with wave.open(str(out_wav), "wb") as wf:
         wf.setnchannels(2)
         wf.setsampwidth(2)
         wf.setframerate(sr)
-        wf.writeframes(stereo.tobytes())
-    log(f"Trailer BGM synthesized: {out_wav}")
+        wf.writeframes(out_pcm.tobytes())
+    log(f"Upbeat Worldbeat trailer BGM with dynamic montage swells generated: {out_wav}")
 
 
 async def synthesize_trailer_vo_segment(text: str, out_mp3: Path, rate: str = "-5%", pitch: str = "-3Hz") -> float:
@@ -484,65 +422,77 @@ async def main() -> None:
         ),
     ]
 
-    log(f"Rendering {len(timeline)} trailer cuts & title cards...")
-    segment_mp4s: List[Path] = []
-    cur_t = 0.0
-    for idx, item in enumerate(timeline, start=1):
-        seg_mp4 = clips_dir / f"seg_{idx:03d}.mp4"
-        kind = item[0]
-        if kind == "card":
-            _, lines, dur = item
-            render_trailer_card(
-                lines,
-                seg_mp4,
-                duration=dur,
-                gold_border=True,
-                fade_in=0.45,
-                fade_out=0.45,
-            )
-            cur_t += dur
-        else:
-            _, ep_num, sc_idx, offset_s, dur = item
-            extract_trailer_cut(
-                ep_num,
-                sc_idx,
-                offset_s,
-                dur,
-                seg_mp4,
-                fade_in=0.18,
-                fade_out=0.18,
-            )
-            cur_t += dur
-        segment_mp4s.append(seg_mp4)
-        if idx % 10 == 0 or idx == len(timeline):
-            log(f"  Rendered {idx}/{len(timeline)} segments (timeline at {cur_t:.1f}s)")
-
-    concat_txt = WORK_DIR / "trailer_concat.txt"
-    concat_txt.write_text("\n".join(f"file '{p}'" for p in segment_mp4s) + "\n", encoding="utf-8")
-
+    out_trailer_mp4 = IMPROVE_DIR / "SNSHero com The Movie - Official Theatrical Trailer.mp4"
     trailer_silent_mp4 = WORK_DIR / "trailer_silent.mp4"
-    subprocess.run(
-        [
-            "ffmpeg",
-            "-y",
-            "-f",
-            "concat",
-            "-safe",
-            "0",
-            "-i",
-            str(concat_txt),
-            "-c:v",
-            "copy",
-            "-an",
-            "-sn",
-            str(trailer_silent_mp4),
-        ],
-        check=True,
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-    )
+
+    if out_trailer_mp4.exists() and out_trailer_mp4.stat().st_size > 20_000_000:
+        log(f"Reusing existing 154.5s trailer video stream from {out_trailer_mp4.name} ...")
+        subprocess.run(
+            ["ffmpeg", "-y", "-i", str(out_trailer_mp4), "-c:v", "copy", "-an", "-sn", str(trailer_silent_mp4)],
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+    else:
+        log(f"Rendering {len(timeline)} trailer cuts & title cards...")
+        segment_mp4s: List[Path] = []
+        cur_t = 0.0
+        for idx, item in enumerate(timeline, start=1):
+            seg_mp4 = clips_dir / f"seg_{idx:03d}.mp4"
+            kind = item[0]
+            if kind == "card":
+                _, lines, dur = item
+                render_trailer_card(
+                    lines,
+                    seg_mp4,
+                    duration=dur,
+                    gold_border=True,
+                    fade_in=0.45,
+                    fade_out=0.45,
+                )
+                cur_t += dur
+            else:
+                _, ep_num, sc_idx, offset_s, dur = item
+                extract_trailer_cut(
+                    ep_num,
+                    sc_idx,
+                    offset_s,
+                    dur,
+                    seg_mp4,
+                    fade_in=0.18,
+                    fade_out=0.18,
+                )
+                cur_t += dur
+            segment_mp4s.append(seg_mp4)
+            if idx % 10 == 0 or idx == len(timeline):
+                log(f"  Rendered {idx}/{len(timeline)} segments (timeline at {cur_t:.1f}s)")
+
+        concat_txt = WORK_DIR / "trailer_concat.txt"
+        concat_txt.write_text("\n".join(f"file '{p}'" for p in segment_mp4s) + "\n", encoding="utf-8")
+
+        subprocess.run(
+            [
+                "ffmpeg",
+                "-y",
+                "-f",
+                "concat",
+                "-safe",
+                "0",
+                "-i",
+                str(concat_txt),
+                "-c:v",
+                "copy",
+                "-an",
+                "-sn",
+                str(trailer_silent_mp4),
+            ],
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+
     total_vid_dur = probe_duration(trailer_silent_mp4)
-    log(f"Trailer video stream assembled: {total_vid_dur:.2f}s (2m {int(total_vid_dur)%60:02d}s)")
+    log(f"Trailer video stream ready: {total_vid_dur:.2f}s (2m {int(total_vid_dur)%60:02d}s)")
 
     # Synthesize the 5-Act Movie Trailer Voiceover (timed precisely to the 5 Acts!)
     vo_specs = [
@@ -584,20 +534,19 @@ async def main() -> None:
     ]
 
     vo_files: List[Tuple[int, Path]] = []
+    vo_windows: List[Tuple[float, float]] = []
     for i, (st_sec, text) in enumerate(vo_specs, start=1):
         vo_mp3 = WORK_DIR / f"vo_act_{i}.mp3"
-        vo_dur = await synthesize_trailer_vo_segment(text, vo_mp3, rate="-5%", pitch="-3Hz")
+        vo_dur = await synthesize_trailer_vo_segment(text, vo_mp3, rate="+3%", pitch="+0Hz")
         log(f"  Act {i} VO: starts at {st_sec:.1f}s, duration {vo_dur:.2f}s (ends at {st_sec+vo_dur:.1f}s)")
         vo_files.append((int(round(st_sec * 1000)), vo_mp3))
+        vo_windows.append((st_sec, st_sec + vo_dur))
 
-    bgm_wav = WORK_DIR / "trailer_epic_bgm.wav"
-    generate_epic_trailer_bgm(bgm_wav, duration_sec=total_vid_dur + 2.0, sr=48000)
+    bgm_wav = WORK_DIR / "trailer_upbeat_bgm.wav"
+    build_upbeat_trailer_bgm_wav(bgm_wav, vo_windows, duration_sec=total_vid_dur)
 
-    # Mix BGM + 5 Act VO tracks
-    fade_out_st = total_vid_dur - 2.5
-    fc_parts = [
-        f"[0:a]volume=0.22,afade=t=in:st=0:d=1.0,afade=t=out:st={fade_out_st:.2f}:d=2.5[bgm]"
-    ]
+    # Mix Upbeat Worldbeat BGM + 5 Act VO tracks + Heroic SFX stingers
+    fc_parts = ["[0:a]volume=1.0[bgm]"]
     mix_labels = ["[bgm]"]
     cmd_inputs = ["-t", f"{total_vid_dur:.2f}", "-i", str(bgm_wav)]
     for idx, (delay_ms, vo_mp3) in enumerate(vo_files, start=1):
@@ -605,6 +554,21 @@ async def main() -> None:
         lbl = f"[vo{idx}]"
         fc_parts.append(f"[{idx}:a]volume=1.45,adelay={delay_ms}|{delay_ms}{lbl}")
         mix_labels.append(lbl)
+
+    # Add battle horn & victory stinger SFX at climax & finale
+    sfx_entries = [
+        (200, SFX_START_MP3, 0.45),
+        (104500, SFX_HORN_MP3, 0.40),
+        (146000, SFX_WIN_MP3, 0.50),
+    ]
+    next_input_idx = len(vo_files) + 1
+    for sfx_delay_ms, sfx_path, sfx_vol in sfx_entries:
+        if sfx_path.exists():
+            cmd_inputs.extend(["-i", str(sfx_path)])
+            lbl = f"[sfx{next_input_idx}]"
+            fc_parts.append(f"[{next_input_idx}:a]volume={sfx_vol:.2f},adelay={sfx_delay_ms}|{sfx_delay_ms}{lbl}")
+            mix_labels.append(lbl)
+            next_input_idx += 1
 
     n_in = len(mix_labels)
     fc_parts.append(
@@ -639,8 +603,6 @@ async def main() -> None:
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
     )
-
-    out_trailer_mp4 = IMPROVE_DIR / "SNSHero com The Movie - Official Theatrical Trailer.mp4"
     subprocess.run(
         [
             "ffmpeg",
