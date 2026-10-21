@@ -594,12 +594,16 @@ def build_episode_audio_mix(
     """
     Combines:
     - BGM (soft ambient pad at volume 0.14 with 1.5s fade-in and 2.5s fade-out)
-    - Title narration at t = 0.6s (during the 4.0s intro card)
-    - Story narration at t = 4.6s (if story_tts duration > 155.0s, applies slight atempo so it finishes cleanly before 160.5s)
+    - Title narration at t = 0.3s (during the 4.0s intro card)
+    - Story narration starting after both the 4.0s card and title_tts_mp3 finish (no overlap!)
     Outputs stereo 48kHz AAC (192k) of exact `total_duration` seconds.
     """
+    title_dur = probe_duration(title_tts_mp3)
+    story_start_sec = max(4.5, 0.3 + title_dur + 0.5)
+    story_start_ms = int(round(story_start_sec * 1000))
+
     story_dur = probe_duration(story_tts_mp3)
-    max_story_dur = total_duration - 7.5  # 156.5s max so there's a gentle tail before fade-out
+    max_story_dur = total_duration - story_start_sec - 2.5
     atempo_filter = ""
     if story_dur > max_story_dur:
         tempo = min(1.25, (story_dur / max_story_dur) * 1.02)
@@ -608,8 +612,8 @@ def build_episode_audio_mix(
     fade_out_st = total_duration - 2.5
     filter_complex = (
         f"[0:a]volume=0.14,afade=t=in:st=0:d=1.5,afade=t=out:st={fade_out_st:.2f}:d=2.5[bgm];"
-        f"[1:a]volume=1.35,adelay=600|600[title_vo];"
-        f"[2:a]{atempo_filter}volume=1.35,adelay=4600|4600[story_vo];"
+        f"[1:a]volume=1.35,adelay=300|300[title_vo];"
+        f"[2:a]{atempo_filter}volume=1.35,adelay={story_start_ms}|{story_start_ms}[story_vo];"
         f"[bgm][title_vo][story_vo]amix=inputs=3:duration=first:dropout_transition=0:normalize=0,"
         f"alimiter=limit=0.95[aout]"
     )
@@ -623,6 +627,62 @@ def build_episode_audio_mix(
         str(bgm_wav),
         "-i",
         str(title_tts_mp3),
+        "-i",
+        str(story_tts_mp3),
+        "-filter_complex",
+        filter_complex,
+        "-map",
+        "[aout]",
+        "-ac",
+        "2",
+        "-ar",
+        "48000",
+        "-c:a",
+        "aac",
+        "-b:a",
+        "192k",
+        "-t",
+        f"{total_duration:.2f}",
+        str(out_m4a),
+    ]
+    subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+
+def build_theatrical_episode_audio_mix(
+    story_tts_mp3: Path,
+    bgm_wav: Path,
+    out_m4a: Path,
+    total_duration: float = 160.0,
+) -> None:
+    """
+    Audio mix for the Full Theatrical Edition (NO episode title voiceover, 160.0s body only):
+    - Soft BGM at volume 0.14 with gentle 1.0s fade-in and 1.5s fade-out
+    - Story narration starting at t = 0.8s
+    """
+    story_start_sec = 0.8
+    story_start_ms = 800
+    story_dur = probe_duration(story_tts_mp3)
+    max_story_dur = total_duration - story_start_sec - 2.0
+    atempo_filter = ""
+    if story_dur > max_story_dur:
+        tempo = min(1.25, (story_dur / max_story_dur) * 1.02)
+        atempo_filter = f"atempo={tempo:.3f},"
+
+    fade_out_st = total_duration - 1.5
+    filter_complex = (
+        f"[0:a]volume=0.14,afade=t=in:st=0:d=1.0,afade=t=out:st={fade_out_st:.2f}:d=1.5[bgm];"
+        f"[1:a]{atempo_filter}volume=1.35,adelay={story_start_ms}|{story_start_ms}[story_vo];"
+        f"[bgm][story_vo]amix=inputs=2:duration=first:dropout_transition=0:normalize=0,"
+        f"alimiter=limit=0.95[aout]"
+    )
+
+    cmd = [
+        "ffmpeg",
+        "-y",
+        "-t",
+        f"{total_duration:.2f}",
+        "-i",
+        str(bgm_wav),
         "-i",
         str(story_tts_mp3),
         "-filter_complex",
@@ -946,56 +1006,79 @@ async def process_single_episode(
     title_ko: str,
     bgm_wav: Path,
     sem: asyncio.Semaphore,
-) -> Path:
+) -> Tuple[Path, Path]:
     """
-    Processes one episode (EP01..EP40) and writes the improved MP4 to `IMPROVE_DIR`.
+    Processes one episode (EP01..EP40):
+    - Returns (individual_164s_mp4_with_title, theatrical_160s_mp4_without_title)
     """
     out_name = f"SNSHero com The Movie EP{ep_num:02d} {title_en}.mp4"
     out_mp4 = IMPROVE_DIR / out_name
-    if out_mp4.exists() and out_mp4.stat().st_size > 10_000_000:
-        dur = probe_duration(out_mp4)
-        if 163.0 <= dur <= 165.0:
-            log(f"[EP{ep_num:02d}/40] Already completed ({dur:.2f}s): {out_name}")
-            return out_mp4
 
     ep_work = WORK_DIR / f"ep{ep_num:02d}"
     ep_work.mkdir(parents=True, exist_ok=True)
+    theatrical_ep_mp4 = ep_work / f"theatrical_ep{ep_num:02d}_notitle.mp4"
 
-    # 1. Generate 4.0s black-screen Episode Number & Title intro card
-    title_card_mp4 = ep_work / "title_card.mp4"
-    render_episode_title_card_mp4(ep_num, title_en, title_ko, title_card_mp4, duration=4.0)
-
-    # 2. Prepare 160.0s normalized silent video body
+    # 1. Prepare 160.0s normalized silent video body.
+    # If `out_mp4` (164s) already exists in IMPROVE_DIR, we can extract the 160s body from t=4.0s instantaneously!
     body_silent_mp4 = ep_work / "body_160s_silent.mp4"
-    normalize_video_body_160s(ep_num, src_mp4, body_silent_mp4)
+    if not (body_silent_mp4.exists() and body_silent_mp4.stat().st_size > 5_000_000):
+        if out_mp4.exists() and out_mp4.stat().st_size > 10_000_000:
+            dur = probe_duration(out_mp4)
+            if 163.0 <= dur <= 165.0:
+                subprocess.run(
+                    [
+                        "ffmpeg",
+                        "-y",
+                        "-ss",
+                        "4.0",
+                        "-i",
+                        str(out_mp4),
+                        "-c:v",
+                        "copy",
+                        "-an",
+                        "-sn",
+                        str(body_silent_mp4),
+                    ],
+                    check=True,
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                )
+        if not (body_silent_mp4.exists() and body_silent_mp4.stat().st_size > 5_000_000):
+            normalize_video_body_160s(ep_num, src_mp4, body_silent_mp4)
+
+    # 2. Generate 4.0s black-screen Episode Number & Title intro card (for individual episode file)
+    title_card_mp4 = ep_work / "title_card.mp4"
+    if not title_card_mp4.exists():
+        render_episode_title_card_mp4(ep_num, title_en, title_ko, title_card_mp4, duration=4.0)
 
     # 3. Concatenate 4.0s Title Card + 160.0s Body (lossless video stream copy -> 164.0s)
     joined_video_mp4 = ep_work / "joined_164s_silent.mp4"
-    concat_list = ep_work / "video_concat.txt"
-    concat_list.write_text(
-        f"file '{title_card_mp4}'\nfile '{body_silent_mp4}'\n",
-        encoding="utf-8",
-    )
-    subprocess.run(
-        [
-            "ffmpeg",
-            "-y",
-            "-f",
-            "concat",
-            "-safe",
-            "0",
-            "-i",
-            str(concat_list),
-            "-c:v",
-            "copy",
-            "-an",
-            "-sn",
-            str(joined_video_mp4),
-        ],
-        check=True,
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-    )
+    if not joined_video_mp4.exists():
+        concat_list = ep_work / "video_concat.txt"
+        concat_list.write_text(
+            f"file '{title_card_mp4}'\nfile '{body_silent_mp4}'\n",
+            encoding="utf-8",
+        )
+        subprocess.run(
+            [
+                "ffmpeg",
+                "-y",
+                "-f",
+                "concat",
+                "-safe",
+                "0",
+                "-i",
+                str(concat_list),
+                "-c:v",
+                "copy",
+                "-an",
+                "-sn",
+                str(joined_video_mp4),
+            ],
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
 
     # 4. Synthesize English Male Narration (Title announcement + 20-scene story script)
     title_tts_mp3 = ep_work / "title_tts.mp3"
@@ -1006,16 +1089,15 @@ async def process_single_episode(
 
     async with sem:
         if not (title_tts_mp3.exists() and title_tts_mp3.stat().st_size > 1000):
-            await synthesize_voice_mp3(title_spoken, title_tts_mp3, rate="-6%")
+            await synthesize_voice_mp3(title_spoken, title_tts_mp3, rate="+6%")
         if not (story_tts_mp3.exists() and story_tts_mp3.stat().st_size > 5000):
             await synthesize_voice_mp3(story_script, story_tts_mp3, rate="-4%")
 
-    # 5. Mix Soft Ambient BGM + Male Voiceover -> 164.0s stereo AAC
+    # 5A. Mix Soft Ambient BGM + Title VO + Story VO -> 164.0s individual episode MP4
     mixed_m4a = ep_work / "mixed_audio.m4a"
     vid_dur = probe_duration(joined_video_mp4)
     build_episode_audio_mix(title_tts_mp3, story_tts_mp3, bgm_wav, mixed_m4a, total_duration=vid_dur)
 
-    # 6. Mux 164.0s video + 164.0s audio into final improved MP4
     subprocess.run(
         [
             "ffmpeg",
@@ -1041,10 +1123,38 @@ async def process_single_episode(
         stderr=subprocess.DEVNULL,
     )
 
+    # 5B. Mix Soft Ambient BGM + Story VO ONLY (NO title card, NO title VO) -> 160.0s theatrical segment MP4
+    theatrical_m4a = ep_work / "theatrical_audio.m4a"
+    body_dur = probe_duration(body_silent_mp4)
+    build_theatrical_episode_audio_mix(story_tts_mp3, bgm_wav, theatrical_m4a, total_duration=body_dur)
+
+    subprocess.run(
+        [
+            "ffmpeg",
+            "-y",
+            "-i",
+            str(body_silent_mp4),
+            "-i",
+            str(theatrical_m4a),
+            "-map",
+            "0:v:0",
+            "-map",
+            "1:a:0",
+            "-c:v",
+            "copy",
+            "-c:a",
+            "copy",
+            str(theatrical_ep_mp4),
+        ],
+        check=True,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+
     final_dur = probe_duration(out_mp4)
-    size_mb = out_mp4.stat().st_size / (1024 * 1024)
-    log(f"[EP{ep_num:02d}/40] DONE -> {out_mp4.name} ({final_dur:.2f}s, {size_mb:.1f} MB)")
-    return out_mp4
+    th_dur = probe_duration(theatrical_ep_mp4)
+    log(f"[EP{ep_num:02d}/40] DONE -> Individual: {final_dur:.1f}s (w/ Title) | Theatrical: {th_dur:.1f}s (No Title)")
+    return out_mp4, theatrical_ep_mp4
 
 
 async def main() -> None:
@@ -1059,18 +1169,12 @@ async def main() -> None:
     bgm_wav = WORK_DIR / "bgm_soft_fantasy.wav"
     generate_soft_ambient_bgm(bgm_wav, duration_sec=180.0, sr=48000)
 
-    # First normalize EP07, EP08, EP09 sequentially so CPU isn't overloaded by parallel x264 encodes
-    for special_ep in (7, 8, 9):
-        src_mp4, title_en, title_ko = ep_info[special_ep]
-        ep_work = WORK_DIR / f"ep{special_ep:02d}"
-        ep_work.mkdir(parents=True, exist_ok=True)
-        normalize_video_body_160s(special_ep, src_mp4, ep_work / "body_160s_silent.mp4")
-
-    # Process all 40 episodes in batches of 4 with a concurrency semaphore of 3 for edge-tts
-    sem = asyncio.Semaphore(3)
+    # Process all 40 episodes in batches of 8 with a concurrency semaphore of 6 for edge-tts
+    sem = asyncio.Semaphore(6)
     improved_paths: Dict[int, Path] = {}
-    for batch_start in range(1, 41, 4):
-        batch_eps = list(range(batch_start, min(41, batch_start + 4)))
+    theatrical_paths: Dict[int, Path] = {}
+    for batch_start in range(1, 41, 8):
+        batch_eps = list(range(batch_start, min(41, batch_start + 8)))
         tasks = [
             process_single_episode(
                 ep,
@@ -1083,20 +1187,21 @@ async def main() -> None:
             for ep in batch_eps
         ]
         results = await asyncio.gather(*tasks)
-        for ep, p in zip(batch_eps, results):
-            improved_paths[ep] = p
+        for ep, (ind_p, th_p) in zip(batch_eps, results):
+            improved_paths[ep] = ind_p
+            theatrical_paths[ep] = th_p
 
     # Build Opening Credits & Ending Credits
     log("Building Opening Credits (16s) and Ending Credits (24s) for the Full Theatrical Edition...")
     open_mp4, end_mp4 = await build_opening_and_ending_credits(ep_info, bgm_wav)
 
-    # Concatenate Opening Credits + EP01..EP40 + Ending Credits into Full Theatrical Edition
+    # Concatenate Opening Credits + 40 Title-Free Theatrical Episodes + Ending Credits into Full Theatrical Edition
     theatrical_mp4 = IMPROVE_DIR / "SNSHero com The Movie - Full Theatrical Edition (EP01-EP40).mp4"
-    log(f"Assembling Full Theatrical Edition (Opening + 40 Episodes + Ending) -> {theatrical_mp4.name} ...")
+    log(f"Assembling Title-Free Full Theatrical Edition (Opening + 40 Title-Free Episodes + Ending) -> {theatrical_mp4.name} ...")
     theatrical_list = WORK_DIR / "theatrical_concat.txt"
     concat_entries = [f"file '{open_mp4}'"]
     for ep in range(1, 41):
-        concat_entries.append(f"file '{improved_paths[ep]}'")
+        concat_entries.append(f"file '{theatrical_paths[ep]}'")
     concat_entries.append(f"file '{end_mp4}'")
     theatrical_list.write_text("\n".join(concat_entries) + "\n", encoding="utf-8")
 
