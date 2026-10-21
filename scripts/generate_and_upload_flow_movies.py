@@ -565,7 +565,7 @@ def build_clean_episodes_from_english_txt() -> dict:
         if not m:
             continue
         ep_num = int(m.group(1))
-        if ep_num < 10 or ep_num > 40:
+        if ep_num < 1 or ep_num > 40:
             continue
         raw_lines = [strip_korean(line.strip()) for line in p.read_text(encoding="utf-8").splitlines() if line.strip()]
         title_en = m.group(2).replace("_", " ")
@@ -632,12 +632,17 @@ def ensure_flow_profile(profile_dir: Path = FLOW_PROFILE_DIR):
             src_root / "Default",
             profile_dir / "Default",
             symlinks=True,
-            ignore=shutil.ignore_patterns("Cache*", "Code Cache*", "GPUCache*", "Service Worker*", "Singleton*", "Extensions*", "Extension*")
+            ignore=shutil.ignore_patterns("Cache*", "Code Cache*", "GPUCache*", "Service Worker*", "Singleton*", "Extensions*", "Extension*", "Sessions*")
         )
+    shutil.rmtree(profile_dir / "Default" / "Sessions", ignore_errors=True)
 
 
 def launch_flow_browser(p, profile_dir: Path = FLOW_PROFILE_DIR):
+    subprocess.run(["pkill", "-9", "-f", str(profile_dir)], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    time.sleep(1.5)
     ensure_flow_profile(profile_dir)
+    for sf in profile_dir.glob("Singleton*"):
+        sf.unlink(missing_ok=True)
     ctx = p.chromium.launch_persistent_context(
         user_data_dir=str(profile_dir),
         channel="chrome",
@@ -647,10 +652,16 @@ def launch_flow_browser(p, profile_dir: Path = FLOW_PROFILE_DIR):
             "--profile-directory=Default",
             "--disable-extensions",
             "--disable-blink-features=AutomationControlled",
+            "--hide-crash-restore-bubble",
             "--window-size=1280,800",
         ],
         viewport={"width": 1280, "height": 800},
     )
+    for extra_p in ctx.pages[1:]:
+        try:
+            extra_p.close()
+        except Exception:
+            pass
     ctx.add_init_script("""
         Object.defineProperty(navigator, "webdriver", {get: () => undefined});
         window.__sdkListener = null;
@@ -709,15 +720,19 @@ def launch_flow_browser(p, profile_dir: Path = FLOW_PROFILE_DIR):
         });
     """)
     page = ctx.pages[0] if ctx.pages else ctx.new_page()
-    page.goto(FLOW_URL, wait_until="domcontentloaded", timeout=60000)
-    for _ in range(30):
-        time.sleep(1)
-        try:
-            ready = page.evaluate("() => !!window.__sdkListener")
-            if ready:
-                break
-        except Exception:
-            pass
+    for nav_try in range(2):
+        page.goto(FLOW_URL, wait_until="domcontentloaded", timeout=60000)
+        ready = False
+        for _ in range(25):
+            time.sleep(1)
+            try:
+                ready = page.evaluate("() => !!window.__sdkListener")
+                if ready:
+                    break
+            except Exception:
+                pass
+        if ready:
+            break
     try:
         page.mouse.move(400, 300)
         page.mouse.click(400, 300)
@@ -770,7 +785,7 @@ def ensure_character_media_ids(fl, char_names, char_media_map):
                         prompt,
                         aspectRatio: "16:9",
                         referenceImageMediaIds: null,
-                        modelDisplayName: "🍌 Nano Banana 2 Lite"
+                        modelDisplayName: null
                     });
                 }""",
                 {"prompt": prompt}
@@ -873,13 +888,13 @@ def generate_scene_batch(fl, ep_num: int, ep_title: str, batch_items: list, char
         vid_prompt = strip_korean(
             f"Scene Dialogue: \"{dialogue_en}\"\n"
             f"Audio: Clear, natural English voiceover speaking ONLY the exact Scene Dialogue sentence above within the first 6 seconds. English language only.\n\n"
-            f"Visual: Cinematic live-action dark fantasy scene from '{ep_title}' featuring {char_summary}, dramatic lighting and atmospheric depth.\n\n"
+            f"Visual: {item['visualDescription']} Featuring {char_summary}. {REALISTIC_STYLE_PROMPT}\n\n"
             f"Motion: {item['motionDescription']}"
         )
         mild_vid_prompt = strip_korean(
             f"Scene Dialogue: \"{dialogue_en}\"\n"
             f"Audio: Clear, natural English voiceover speaking ONLY the exact Scene Dialogue sentence above within the first 6 seconds. English language only.\n\n"
-            f"Visual: Cinematic medieval fantasy scene with dramatic lighting.\n\n"
+            f"Visual: Cinematic medieval fantasy scene with dramatic lighting. {REALISTIC_STYLE_PROMPT}\n\n"
             f"Motion: Smooth cinematic camera movement."
         )
 
@@ -889,48 +904,89 @@ def generate_scene_batch(fl, ep_num: int, ep_title: str, batch_items: list, char
             "imgPrompt": img_prompt[:3900],
             "safeImgPrompt": safe_img_prompt[:3900],
             "refIds": ref_ids[:3],
-            "vidPrompt": vid_prompt,
-            "mildVidPrompt": mild_vid_prompt,
+            "vidPrompt": vid_prompt[:3900],
+            "mildVidPrompt": mild_vid_prompt[:3900],
         })
 
     results = fl.locator("body").evaluate(
         """async (_el, { items }) => {
-            const genImg = (prompt, refIds) => window.__callFlowSdk("FLOW_GEN_IMAGE", {
-                prompt,
-                aspectRatio: "16:9",
-                referenceImageMediaIds: refIds && refIds.length > 0 ? refIds : null,
-                modelDisplayName: "🍌 Nano Banana 2 Lite"
-            });
-            const genVid = (prompt, firstFrameImageMediaId) => window.__callFlowSdk("FLOW_GEN_VIDEO", {
-                prompt,
-                modelDisplayName: "Omni Flash",
-                firstFrameImageMediaId,
-                lastFrameImageMediaId: null,
-                referenceImageMediaIds: null,
-                sourceVideoMediaId: null,
-                sourceVideoMode: null,
-                audioReferenceMediaIds: null,
-                aspectRatio: "16:9",
-                durationSeconds: 8,
-                resolution: null
-            });
+            const isBotErr = (e) => /비정상적인 활동|Unusual activity|TOO_MUCH_TRAFFIC/i.test(String(e && e.message ? e.message : e));
+            const isQuotaErr = (e) => /사용량 한도|수요가 많습니다|high demand|limit/i.test(String(e && e.message ? e.message : e));
+            const IMG_MODELS = ["🍌 Nano Banana Pro", null, "🍌 Nano Banana 2", "🍌 Nano Banana 2 Lite"];
+            const VID_MODELS = ["Veo 3.1 - Lite", "Veo 3.1 - Fast", "Veo 3.1 - Quality", "Omni Flash"];
+            window.__deadImgModels = window.__deadImgModels || {};
+            window.__deadVidModels = window.__deadVidModels || {};
+
+            const genImg = async (prompt, refIds) => {
+                let lastErr = null;
+                for (const m of IMG_MODELS) {
+                    const key = String(m);
+                    if (window.__deadImgModels[key]) continue;
+                    try {
+                        return await window.__callFlowSdk("FLOW_GEN_IMAGE", {
+                            prompt,
+                            aspectRatio: "16:9",
+                            referenceImageMediaIds: refIds && refIds.length > 0 ? refIds : null,
+                            modelDisplayName: m
+                        });
+                    } catch (e) {
+                        lastErr = e;
+                        if (isQuotaErr(e)) {
+                            window.__deadImgModels[key] = true;
+                            continue;
+                        }
+                        throw e;
+                    }
+                }
+                window.__skipFlowImage = true;
+                throw lastErr || new Error("All image models reached limit");
+            };
+
+            const genVid = async (prompt, firstFrameImageMediaId) => {
+                let lastErr = null;
+                for (const vm of VID_MODELS) {
+                    if (window.__deadVidModels[vm]) continue;
+                    try {
+                        const res = await window.__callFlowSdk("FLOW_GEN_VIDEO", {
+                            prompt,
+                            modelDisplayName: vm,
+                            firstFrameImageMediaId: firstFrameImageMediaId || null,
+                            lastFrameImageMediaId: null,
+                            referenceImageMediaIds: null,
+                            sourceVideoMediaId: null,
+                            sourceVideoMode: null,
+                            audioReferenceMediaIds: null,
+                            aspectRatio: "16:9",
+                            durationSeconds: 8,
+                            resolution: null
+                        });
+                        return res;
+                    } catch (e) {
+                        lastErr = e;
+                        if (isQuotaErr(e)) {
+                            window.__deadVidModels[vm] = true;
+                            continue;
+                        }
+                        throw e;
+                    }
+                }
+                throw lastErr || new Error("사용량 한도에 도달했습니다. 나중에 다시 시도해 주세요.");
+            };
+
             return await Promise.all(items.map(async (item, idx) => {
                 try {
                     if (idx > 0) {
-                        await new Promise(r => setTimeout(r, idx * 2200));
+                        await new Promise(r => setTimeout(r, idx * 4000));
                     }
-                    let imgRes = null;
+                    let imgRes = { mediaId: null, base64: null };
                     if (item.existingImgMediaId) {
                         imgRes = { mediaId: item.existingImgMediaId, base64: null };
-                    } else {
+                    } else if (!window.__skipFlowImage) {
                         try {
-                            imgRes = await genImg(item.imgPrompt, item.refIds);
+                            imgRes = await genImg(item.imgPrompt, null);
                         } catch (e1) {
-                            try {
-                                imgRes = await genImg(item.imgPrompt, null);
-                            } catch (e2) {
-                                imgRes = await genImg(item.safeImgPrompt, null);
-                            }
+                            if (isBotErr(e1)) throw e1;
+                            imgRes = { mediaId: null, base64: null };
                         }
                     }
 
@@ -938,13 +994,8 @@ def generate_scene_batch(fl, ep_num: int, ep_title: str, batch_items: list, char
                     try {
                         vidRes = await genVid(item.vidPrompt, imgRes.mediaId);
                     } catch (vErr1) {
-                        try {
-                            vidRes = await genVid(item.mildVidPrompt, imgRes.mediaId);
-                        } catch (vErr2) {
-                            const safeImg = await genImg(item.safeImgPrompt, null);
-                            imgRes = safeImg;
-                            vidRes = await genVid(item.mildVidPrompt, safeImg.mediaId);
-                        }
+                        if (isBotErr(vErr1) || isQuotaErr(vErr1)) throw vErr1;
+                        vidRes = await genVid(item.mildVidPrompt, null);
                     }
 
                     return {
@@ -968,6 +1019,149 @@ def generate_scene_batch(fl, ep_num: int, ep_title: str, batch_items: list, char
         timeout=360000
     )
     return results
+
+
+def generate_image_only_batch(fl, ep_num: int, ep_title: str, batch_items: list, char_media_map: dict):
+    payload_items = []
+    for item in batch_items:
+        sn = item["sceneNumber"]
+        chars = item.get("characters", [])
+        char_lines = []
+        ref_ids = []
+        for c in chars[:3]:
+            if c in CHARACTER_PROFILES:
+                char_lines.append(f"- {c}: {CHARACTER_PROFILES[c]['desc']}")
+            if c in char_media_map and char_media_map[c]:
+                ref_ids.append(char_media_map[c])
+        char_block = "\n".join(char_lines) if char_lines else "None"
+
+        img_prompt = strip_korean(
+            f"FrameDescription: {item['visualDescription']}\n"
+            f"Episode Context: {ep_title}\n"
+            f"Characters:\n{char_block}\n\n"
+            f"Visual Style: {REALISTIC_STYLE_PROMPT}"
+        )
+        safe_img_prompt = strip_korean(
+            f"Cinematic medieval fantasy film still from '{ep_title}', Scene {sn} ({item['title']}). "
+            f"Atmospheric lighting, dramatic epic composition.\n"
+            f"Characters:\n{char_block}\n\n"
+            f"Visual Style: {REALISTIC_STYLE_PROMPT}"
+        )
+        payload_items.append({
+            "sceneNumber": sn,
+            "imgPrompt": img_prompt[:3900],
+            "safeImgPrompt": safe_img_prompt[:3900],
+            "refIds": ref_ids[:3],
+        })
+
+    results = fl.locator("body").evaluate(
+        """async (_el, { items }) => {
+            const IMG_MODELS = ["🍌 Nano Banana Pro", null, "🍌 Nano Banana 2", "🍌 Nano Banana 2 Lite"];
+            window.__deadImgModels = window.__deadImgModels || {};
+            const genImg = async (prompt, refIds) => {
+                let lastErr = null;
+                for (const m of IMG_MODELS) {
+                    const key = String(m) + "_" + (refIds && refIds.length ? "ref" : "noref");
+                    if (window.__deadImgModels[key]) continue;
+                    try {
+                        return await window.__callFlowSdk("FLOW_GEN_IMAGE", {
+                            prompt,
+                            aspectRatio: "16:9",
+                            referenceImageMediaIds: refIds && refIds.length > 0 ? refIds : null,
+                            modelDisplayName: m
+                        });
+                    } catch (e) {
+                        lastErr = e;
+                        const msg = String(e && e.message ? e.message : e);
+                        if (/사용량 한도|수요가 많습니다|high demand|limit/i.test(msg)) {
+                            window.__deadImgModels[key] = true;
+                            continue;
+                        }
+                        throw e;
+                    }
+                }
+                throw lastErr || new Error("Image models limit reached");
+            };
+            return await Promise.all(items.map(async (item, idx) => {
+                try {
+                    if (idx > 0) {
+                        await new Promise(r => setTimeout(r, idx * 2500));
+                    }
+                    let imgRes = null;
+                    try {
+                        imgRes = await genImg(item.imgPrompt, item.refIds);
+                    } catch (e1) {
+                        try {
+                            imgRes = await genImg(item.imgPrompt, null);
+                        } catch (e2) {
+                            imgRes = await genImg(item.safeImgPrompt, null);
+                        }
+                    }
+                    return {
+                        ok: true,
+                        sceneNumber: item.sceneNumber,
+                        imgMediaId: imgRes.mediaId,
+                        imgBase64: imgRes.base64
+                    };
+                } catch (err) {
+                    return {
+                        ok: false,
+                        sceneNumber: item.sceneNumber,
+                        error: String(err && err.message ? err.message : err)
+                    };
+                }
+            }));
+        }""",
+        {"items": payload_items},
+        timeout=240000
+    )
+    return results
+
+
+def export_manual_video_prompts(ep_num: int, title_en: str, storyboard: list, ep_dir: Path, shot_media_cache: dict):
+    prompts_list = []
+    md_lines = [
+        f"# SNSHero.com - The Movie EP{ep_num:02d}: {title_en}",
+        "",
+        f"- **Episode**: EP{ep_num:02d} ({title_en})",
+        f"- **Total Scenes**: {len(storyboard)} (8s each = {len(storyboard)*8}s)",
+        f"- **Directory**: `{ep_dir}`",
+        "",
+        "---",
+        ""
+    ]
+    for item in storyboard:
+        sn = item["sceneNumber"]
+        chars = item.get("characters", [])
+        char_summary = ", ".join(chars) if chars else "the fantasy heroes"
+        dialogue_en = strip_korean(item.get("dialogueEn") or "").replace('"', "'")
+        vid_prompt = strip_korean(
+            f"Scene Dialogue: \"{dialogue_en}\"\n"
+            f"Audio: Clear, natural English voiceover speaking ONLY the exact Scene Dialogue sentence above within the first 6 seconds. English language only.\n\n"
+            f"Visual: Cinematic live-action dark fantasy scene from '{title_en}' featuring {char_summary}, dramatic lighting and atmospheric depth.\n\n"
+            f"Motion: {item['motionDescription']}"
+        )
+        prompts_list.append({
+            "sceneNumber": sn,
+            "shotFile": f"shot_{sn:02d}.jpg",
+            "flowMediaId": shot_media_cache.get(str(sn)),
+            "dialogueEn": dialogue_en,
+            "narrationEn": item.get("narrationEn", ""),
+            "videoPrompt": vid_prompt,
+        })
+        md_lines.extend([
+            f"## Scene {sn:02d} (`shot_{sn:02d}.jpg`)",
+            f"- **Characters**: {char_summary}",
+            f"- **Flow Image Media ID**: `{shot_media_cache.get(str(sn), '')}`",
+            f"- **Dialogue (EN)**: `{dialogue_en}`",
+            "",
+            "```text",
+            vid_prompt,
+            "```",
+            ""
+        ])
+    save_json(ep_dir / "video_prompts.json", prompts_list)
+    (ep_dir / "video_prompts.md").write_text("\n".join(md_lines), encoding="utf-8")
 
 
 def concat_episode_clips(ep_dir: Path, out_mp4: Path, scene_count: int = 20):
@@ -1141,6 +1335,7 @@ def main():
     parser.add_argument("--end-ep", type=int, default=40)
     parser.add_argument("--profile-dir", type=str, default=str(FLOW_PROFILE_DIR))
     parser.add_argument("--skip-youtube", action="store_true")
+    parser.add_argument("--images-only", action="store_true")
     args = parser.parse_args()
 
     profile_dir = Path(args.profile_dir)
@@ -1188,138 +1383,41 @@ def main():
                 shot_media_cache_file = ep_dir / "shot_media_ids.json"
                 shot_media_cache = load_json(shot_media_cache_file, {})
 
-                pending = []
-                for item in storyboard:
-                    sn = item["sceneNumber"]
-                    clip_path = ep_dir / f"clip_{sn:02d}.mp4"
-                    if clip_path.exists() and clip_path.stat().st_size > 10000:
-                        ok_audio, reason = verify_clip_audio(clip_path, item["dialogueEn"])
-                        if ok_audio:
-                            print(f"  [EP{ep:02d}] Scene {sn:02d} existing clip verified: {reason}", flush=True)
+                if args.images_only:
+                    pending_imgs = []
+                    for item in storyboard:
+                        sn = item["sceneNumber"]
+                        shot_path = ep_dir / f"shot_{sn:02d}.jpg"
+                        if shot_path.exists() and shot_path.stat().st_size > 5000:
+                            print(f"  [EP{ep:02d}] Scene {sn:02d} image already exists ({shot_path.name})", flush=True)
                             continue
-                        else:
-                            print(f"  [EP{ep:02d}] Scene {sn:02d} existing clip failed audio check ({reason}), regenerating...", flush=True)
-                            clip_path.unlink(missing_ok=True)
-                    pending.append(item)
+                        pending_imgs.append(item)
 
-                print(f"  [EP{ep:02d}] Scenes pending generation: {len(pending)}/{len(storyboard)}", flush=True)
-
-                batch_size = 3
-                for idx in range(0, len(pending), batch_size):
-                    remaining_batch = [dict(x) for x in pending[idx:idx + batch_size]]
-                    t0 = time.time()
-
-                    for attempt in range(6):
-                        if not remaining_batch:
-                            break
-                        sn_list = [b["sceneNumber"] for b in remaining_batch]
-                        print(f"  [EP{ep:02d}] Generating scenes {sn_list} (attempt {attempt+1})...", flush=True)
-                        try:
-                            try:
-                                page.mouse.move(200 + (idx * 17) % 600, 200 + (attempt * 53) % 400, steps=5)
-                            except Exception:
-                                pass
-                            reuse_shots = {
-                                b["sceneNumber"]: shot_media_cache.get(str(b["sceneNumber"]))
-                                for b in remaining_batch
-                                if shot_media_cache.get(str(b["sceneNumber"]))
-                            }
-                            results = generate_scene_batch(fl, ep, title_en, remaining_batch, char_media_map, reuse_shots)
-                            failed_sns = set()
-                            rate_limited = False
-                            for r in results:
-                                sn = r["sceneNumber"]
-                                scene_item = next(b for b in remaining_batch if b["sceneNumber"] == sn)
-                                if r.get("ok") and r.get("vidBase64"):
-                                    if r.get("imgMediaId"):
-                                        shot_media_cache[str(sn)] = r["imgMediaId"]
-                                        save_json(shot_media_cache_file, shot_media_cache)
-                                    if r.get("imgBase64"):
-                                        (ep_dir / f"shot_{sn:02d}.jpg").write_bytes(base64.b64decode(r["imgBase64"]))
-                                    clip_path = ep_dir / f"clip_{sn:02d}.mp4"
-                                    clip_path.write_bytes(base64.b64decode(r["vidBase64"]))
-
-                                    ok_audio, reason = verify_clip_audio(clip_path, scene_item["dialogueEn"])
-                                    if ok_audio:
-                                        print(f"    ✅ [EP{ep:02d} S{sn:02d}] Audio verified: {reason}", flush=True)
-                                    else:
-                                        print(f"    ⚠️ [EP{ep:02d} S{sn:02d}] Audio check failed ({reason}) -> retrying", flush=True)
-                                        clip_path.unlink(missing_ok=True)
-                                        failed_sns.add(sn)
-                                else:
-                                    err_msg = str(r.get("error") or "")
-                                    print(f"    [EP{ep:02d}] Scene {sn} error in batch: {err_msg}", flush=True)
-                                    if "비정상적인 활동" in err_msg or "Unusual activity" in err_msg or "TOO_MUCH_TRAFFIC" in err_msg:
-                                        rate_limited = True
-                                    elif "SDK listener not ready" in err_msg or "SDK call timeout" in err_msg or "Empty SDK response" in err_msg:
-                                        print(f"  🔄 [EP{ep:02d}] Refreshing Flow page due to {err_msg}...", flush=True)
-                                        try:
-                                            fl = refresh_flow_page(page)
-                                            if not page.evaluate("() => !!window.__sdkListener"):
-                                                ctx.close()
-                                                ctx, page, fl = launch_flow_browser(p, profile_dir)
-                                        except Exception:
-                                            try:
-                                                ctx.close()
-                                            except Exception:
-                                                pass
-                                            ctx, page, fl = launch_flow_browser(p, profile_dir)
-                                    elif "사용할 수 없습니다" in err_msg or "unavailable" in err_msg.lower():
-                                        # Content safety filter triggered on prompt or first-frame image: purify immediately!
-                                        shot_media_cache.pop(str(sn), None)
-                                        save_json(shot_media_cache_file, shot_media_cache)
-                                        scene_item["dialogueEn"] = "Without hesitation, the heroes raised their shields to protect the innocent."
-                                        scene_item["visualDescription"] = (
-                                            f"Cinematic wide shot of a medieval fantasy sanctuary during '{title_en}', "
-                                            f"dramatic light rays and heroic atmosphere."
-                                        )
-                                    failed_sns.add(sn)
-                            remaining_batch = [b for b in remaining_batch if b["sceneNumber"] in failed_sns]
-                            if not remaining_batch:
-                                print(f"  [EP{ep:02d}] Batch completed & verified in {time.time() - t0:.1f}s!", flush=True)
-                                time.sleep(4)
+                    print(f"  [EP{ep:02d}] Images pending generation: {len(pending_imgs)}/{len(storyboard)}", flush=True)
+                    batch_size = 3
+                    for idx in range(0, len(pending_imgs), batch_size):
+                        rem = [dict(x) for x in pending_imgs[idx:idx + batch_size]]
+                        for attempt in range(4):
+                            if not rem:
                                 break
-                            if rate_limited:
-                                wait_sec = 60 + attempt * 30
-                                print(f"  ⏳ [EP{ep:02d}] Rate-limit/reCAPTCHA cooldown: sleeping {wait_sec}s and restarting Chrome session...", flush=True)
-                                try:
-                                    ctx.close()
-                                except Exception:
-                                    pass
-                                time.sleep(wait_sec)
-                                ctx, page, fl = launch_flow_browser(p, profile_dir)
-                        except Exception as e:
-                            print(f"  [EP{ep:02d}] Batch exception on {sn_list}: {e}", flush=True)
+                            sn_list = [b["sceneNumber"] for b in rem]
+                            print(f"  [EP{ep:02d}] Generating images for scenes {sn_list} (attempt {attempt+1})...", flush=True)
                             try:
-                                ctx.close()
-                            except Exception:
-                                pass
-                            time.sleep(15)
-                            ctx, page, fl = launch_flow_browser(p, profile_dir)
-
-                    for single_item in remaining_batch:
-                        sn = single_item["sceneNumber"]
-                        clip_path = ep_dir / f"clip_{sn:02d}.mp4"
-                        if clip_path.exists() and clip_path.stat().st_size > 10000:
-                            continue
-                        for fb_try in range(6):
-                            try:
-                                safe_override = dict(single_item)
-                                safe_override["dialogueEn"] = "Without hesitation, the heroes raised their shields to protect the innocent."
-                                safe_override["visualDescription"] = (
-                                    f"Epic wide cinematic landscape of a medieval fantasy kingdom during '{title_en}', "
-                                    f"dramatic volumetric light rays through ancient stone architecture, atmospheric mist."
-                                )
-                                safe_override["motionDescription"] = "Slow majestic camera pan across the fantasy landscape."
-                                safe_override["characters"] = []
-                                results = generate_scene_batch(fl, ep, title_en, [safe_override], char_media_map, {})
-                                rate_limited_fb = False
-                                for r in results:
-                                    if not r.get("ok"):
-                                        err_fb = str(r.get("error") or "")
-                                        if "비정상적인 활동" in err_fb or "Unusual activity" in err_fb or "TOO_MUCH_TRAFFIC" in err_fb:
-                                            rate_limited_fb = True
-                                        elif "SDK listener not ready" in err_fb or "SDK call timeout" in err_fb:
+                                res_list = generate_image_only_batch(fl, ep, title_en, rem, char_media_map)
+                                failed_sns = set()
+                                for r in res_list:
+                                    sn = r["sceneNumber"]
+                                    if r.get("ok") and r.get("imgBase64"):
+                                        if r.get("imgMediaId"):
+                                            shot_media_cache[str(sn)] = r["imgMediaId"]
+                                            save_json(shot_media_cache_file, shot_media_cache)
+                                        shot_path = ep_dir / f"shot_{sn:02d}.jpg"
+                                        shot_path.write_bytes(base64.b64decode(r["imgBase64"]))
+                                        print(f"    🖼️ [EP{ep:02d} S{sn:02d}] Image saved: {shot_path.name} (mediaId={r.get('imgMediaId')})", flush=True)
+                                    else:
+                                        err_msg = str(r.get("error") or "")
+                                        print(f"    ⚠️ [EP{ep:02d} S{sn:02d}] Image error: {err_msg}", flush=True)
+                                        if "SDK listener not ready" in err_msg or "SDK call timeout" in err_msg:
                                             try:
                                                 fl = refresh_flow_page(page)
                                             except Exception:
@@ -1328,31 +1426,208 @@ def main():
                                                 except Exception:
                                                     pass
                                                 ctx, page, fl = launch_flow_browser(p, profile_dir)
-                                    if r.get("imgMediaId"):
-                                        shot_media_cache[str(sn)] = r["imgMediaId"]
-                                        save_json(shot_media_cache_file, shot_media_cache)
-                                    if r.get("imgBase64"):
-                                        (ep_dir / f"shot_{sn:02d}.jpg").write_bytes(base64.b64decode(r["imgBase64"]))
-                                    if r.get("vidBase64"):
+                                        failed_sns.add(sn)
+                                rem = [b for b in rem if b["sceneNumber"] in failed_sns]
+                            except Exception as e_img:
+                                print(f"  [EP{ep:02d}] Image batch exception: {e_img}", flush=True)
+                                try:
+                                    ctx.close()
+                                except Exception:
+                                    pass
+                                ctx, page, fl = launch_flow_browser(p, profile_dir)
+
+                    export_manual_video_prompts(ep, title_en, storyboard, ep_dir, shot_media_cache)
+                    print(f"  ✅ [EP{ep:02d}] All images & manual video prompts saved in {ep_dir}!", flush=True)
+                    continue
+
+                for ep_pass in range(10):
+                    pending = []
+                    for item in storyboard:
+                        sn = item["sceneNumber"]
+                        clip_path = ep_dir / f"clip_{sn:02d}.mp4"
+                        if clip_path.exists() and clip_path.stat().st_size > 10000:
+                            if ep_pass == 0:
+                                ok_audio, reason = verify_clip_audio(clip_path, item["dialogueEn"])
+                                if ok_audio:
+                                    print(f"  [EP{ep:02d}] Scene {sn:02d} existing clip verified: {reason}", flush=True)
+                                    continue
+                                else:
+                                    print(f"  [EP{ep:02d}] Scene {sn:02d} existing clip failed audio check ({reason}), regenerating...", flush=True)
+                                    clip_path.unlink(missing_ok=True)
+                            else:
+                                continue
+                        pending.append(item)
+
+                    if not pending:
+                        print(f"  [EP{ep:02d}] All {len(storyboard)} clips ready on pass {ep_pass+1}!", flush=True)
+                        break
+
+                    print(f"  [EP{ep:02d}] (Pass {ep_pass+1}/10) Scenes pending generation: {len(pending)}/{len(storyboard)}", flush=True)
+                    if ep_pass > 0:
+                        wait_pass = 90 + ep_pass * 30
+                        print(f"  ⏳ [EP{ep:02d}] Waiting {wait_pass}s before retry pass {ep_pass+1}...", flush=True)
+                        try:
+                            ctx.close()
+                        except Exception:
+                            pass
+                        time.sleep(wait_pass)
+                        ctx, page, fl = launch_flow_browser(p, profile_dir)
+
+                    batch_size = 2
+                    pass_rate_limited = False
+                    for idx in range(0, len(pending), batch_size):
+                        remaining_batch = [dict(x) for x in pending[idx:idx + batch_size]]
+                        t0 = time.time()
+                        batch_rate_limited = False
+
+                        for attempt in range(4):
+                            if not remaining_batch:
+                                break
+                            sn_list = [b["sceneNumber"] for b in remaining_batch]
+                            print(f"  [EP{ep:02d}] Generating scenes {sn_list} (attempt {attempt+1})...", flush=True)
+                            try:
+                                try:
+                                    page.mouse.move(200 + (idx * 17) % 600, 200 + (attempt * 53) % 400, steps=5)
+                                except Exception:
+                                    pass
+                                reuse_shots = {
+                                    b["sceneNumber"]: shot_media_cache.get(str(b["sceneNumber"]))
+                                    for b in remaining_batch
+                                    if shot_media_cache.get(str(b["sceneNumber"]))
+                                }
+                                results = generate_scene_batch(fl, ep, title_en, remaining_batch, char_media_map, reuse_shots)
+                                failed_sns = set()
+                                rate_limited = False
+                                for r in results:
+                                    sn = r["sceneNumber"]
+                                    scene_item = next(b for b in remaining_batch if b["sceneNumber"] == sn)
+                                    if r.get("ok") and r.get("vidBase64"):
+                                        if r.get("imgMediaId"):
+                                            shot_media_cache[str(sn)] = r["imgMediaId"]
+                                            save_json(shot_media_cache_file, shot_media_cache)
+                                        if r.get("imgBase64"):
+                                            (ep_dir / f"shot_{sn:02d}.jpg").write_bytes(base64.b64decode(r["imgBase64"]))
+                                        clip_path = ep_dir / f"clip_{sn:02d}.mp4"
                                         clip_path.write_bytes(base64.b64decode(r["vidBase64"]))
-                                if rate_limited_fb:
-                                    wait_fb = 75 + fb_try * 30
-                                    print(f"  ⏳ [EP{ep:02d} S{sn:02d}] Fallback cooldown {wait_fb}s + browser restart...", flush=True)
+
+                                        ok_audio, reason = verify_clip_audio(clip_path, scene_item["dialogueEn"])
+                                        if ok_audio:
+                                            print(f"    ✅ [EP{ep:02d} S{sn:02d}] Audio verified: {reason}", flush=True)
+                                        else:
+                                            print(f"    ⚠️ [EP{ep:02d} S{sn:02d}] Audio check failed ({reason}) -> retrying", flush=True)
+                                            clip_path.unlink(missing_ok=True)
+                                            failed_sns.add(sn)
+                                    else:
+                                        err_msg = str(r.get("error") or "")
+                                        print(f"    [EP{ep:02d}] Scene {sn} error in batch: {err_msg}", flush=True)
+                                        if any(k in err_msg for k in ("비정상적인 활동", "Unusual activity", "TOO_MUCH_TRAFFIC", "사용량 한도", "수요가 많습니다", "high demand", "limit")):
+                                            rate_limited = True
+                                        elif "SDK listener not ready" in err_msg or "SDK call timeout" in err_msg or "Empty SDK response" in err_msg:
+                                            print(f"  🔄 [EP{ep:02d}] Refreshing Flow page due to {err_msg}...", flush=True)
+                                            try:
+                                                fl = refresh_flow_page(page)
+                                                if not page.evaluate("() => !!window.__sdkListener"):
+                                                    ctx.close()
+                                                    ctx, page, fl = launch_flow_browser(p, profile_dir)
+                                            except Exception:
+                                                try:
+                                                    ctx.close()
+                                                except Exception:
+                                                    pass
+                                                ctx, page, fl = launch_flow_browser(p, profile_dir)
+                                        elif "사용할 수 없습니다" in err_msg or "unavailable" in err_msg.lower():
+                                            shot_media_cache.pop(str(sn), None)
+                                            save_json(shot_media_cache_file, shot_media_cache)
+                                            scene_item["dialogueEn"] = "Without hesitation, the heroes raised their shields to protect the innocent."
+                                            scene_item["visualDescription"] = (
+                                                f"Cinematic wide shot of a medieval fantasy sanctuary during '{title_en}', "
+                                                f"dramatic light rays and heroic atmosphere."
+                                            )
+                                        failed_sns.add(sn)
+                                remaining_batch = [b for b in remaining_batch if b["sceneNumber"] in failed_sns]
+                                if not remaining_batch:
+                                    print(f"  [EP{ep:02d}] Batch completed & verified in {time.time() - t0:.1f}s!", flush=True)
+                                    time.sleep(5)
+                                    break
+                                if rate_limited:
+                                    batch_rate_limited = True
+                                    wait_sec = 90 + attempt * 45
+                                    print(f"  ⏳ [EP{ep:02d}] Rate-limit/reCAPTCHA cooldown: sleeping {wait_sec}s and restarting Chrome session...", flush=True)
                                     try:
                                         ctx.close()
                                     except Exception:
                                         pass
-                                    time.sleep(wait_fb)
+                                    time.sleep(wait_sec)
                                     ctx, page, fl = launch_flow_browser(p, profile_dir)
-                                    continue
-                                ok_audio, reason = verify_clip_audio(clip_path, safe_override["dialogueEn"])
-                                if ok_audio:
-                                    print(f"  ✅ [EP{ep:02d} S{sn:02d}] Recovered & audio verified: {reason}", flush=True)
-                                    break
-                                else:
-                                    print(f"  ⚠️ [EP{ep:02d} S{sn:02d}] Fallback audio check failed ({reason}), retry {fb_try+1}/6", flush=True)
-                            except Exception as e2:
-                                print(f"  [EP{ep:02d}] Fatal error on scene {sn}: {e2}", flush=True)
+                            except Exception as e:
+                                print(f"  [EP{ep:02d}] Batch exception on {sn_list}: {e}", flush=True)
+                                try:
+                                    ctx.close()
+                                except Exception:
+                                    pass
+                                time.sleep(15)
+                                ctx, page, fl = launch_flow_browser(p, profile_dir)
+
+                        if batch_rate_limited and remaining_batch:
+                            pass_rate_limited = True
+                            break
+
+                        for single_item in remaining_batch:
+                            sn = single_item["sceneNumber"]
+                            clip_path = ep_dir / f"clip_{sn:02d}.mp4"
+                            if clip_path.exists() and clip_path.stat().st_size > 10000:
+                                continue
+                            for fb_try in range(4):
+                                try:
+                                    safe_override = dict(single_item)
+                                    safe_override["dialogueEn"] = "Without hesitation, the heroes raised their shields to protect the innocent."
+                                    safe_override["visualDescription"] = (
+                                        f"Epic wide cinematic landscape of a medieval fantasy kingdom during '{title_en}', "
+                                        f"dramatic volumetric light rays through ancient stone architecture, atmospheric mist."
+                                    )
+                                    safe_override["motionDescription"] = "Slow majestic camera pan across the fantasy landscape."
+                                    safe_override["characters"] = []
+                                    results = generate_scene_batch(fl, ep, title_en, [safe_override], char_media_map, {})
+                                    rate_limited_fb = False
+                                    for r in results:
+                                        if not r.get("ok"):
+                                            err_fb = str(r.get("error") or "")
+                                            if any(k in err_fb for k in ("비정상적인 활동", "Unusual activity", "TOO_MUCH_TRAFFIC", "사용량 한도", "수요가 많습니다", "high demand", "limit")):
+                                                rate_limited_fb = True
+                                            elif "SDK listener not ready" in err_fb or "SDK call timeout" in err_fb:
+                                                try:
+                                                    fl = refresh_flow_page(page)
+                                                except Exception:
+                                                    try:
+                                                        ctx.close()
+                                                    except Exception:
+                                                        pass
+                                                    ctx, page, fl = launch_flow_browser(p, profile_dir)
+                                        if r.get("imgMediaId"):
+                                            shot_media_cache[str(sn)] = r["imgMediaId"]
+                                            save_json(shot_media_cache_file, shot_media_cache)
+                                        if r.get("imgBase64"):
+                                            (ep_dir / f"shot_{sn:02d}.jpg").write_bytes(base64.b64decode(r["imgBase64"]))
+                                        if r.get("vidBase64"):
+                                            clip_path.write_bytes(base64.b64decode(r["vidBase64"]))
+                                    if rate_limited_fb:
+                                        wait_fb = 75 + fb_try * 30
+                                        print(f"  ⏳ [EP{ep:02d} S{sn:02d}] Fallback cooldown {wait_fb}s + browser restart...", flush=True)
+                                        try:
+                                            ctx.close()
+                                        except Exception:
+                                            pass
+                                        time.sleep(wait_fb)
+                                        ctx, page, fl = launch_flow_browser(p, profile_dir)
+                                        continue
+                                    ok_audio, reason = verify_clip_audio(clip_path, safe_override["dialogueEn"])
+                                    if ok_audio:
+                                        print(f"  ✅ [EP{ep:02d} S{sn:02d}] Recovered & audio verified: {reason}", flush=True)
+                                        break
+                                    else:
+                                        print(f"  ⚠️ [EP{ep:02d} S{sn:02d}] Fallback audio check failed ({reason}), retry {fb_try+1}/4", flush=True)
+                                except Exception as e2:
+                                    print(f"  [EP{ep:02d}] Fatal error on scene {sn}: {e2}", flush=True)
 
                 concat_episode_clips(ep_dir, final_mp4, len(storyboard))
                 print(f"  ✅ [EP{ep:02d}] Full movie saved: {final_mp4} ({final_mp4.stat().st_size / (1024*1024):.1f} MB)", flush=True)
