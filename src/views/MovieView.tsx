@@ -30,7 +30,7 @@ interface MovieViewProps {
 
 const TOTAL_EPISODES = 40;
 const YOUTUBE_PLAYLIST_ID = 'PLK35ZdYm5NNE';
-const YOUTUBE_PLAYLIST_URL = 'https://www.youtube.com/watch?v=R6ls-BIxLCQ&list=PLK35ZdYm5NNE';
+const YOUTUBE_PLAYLIST_URL = 'https://www.youtube.com/watch?v=Av-SEvRvCw8&list=PLK35ZdYm5NNE';
 const YOUTUBE_DATA_API_KEY = 'AIzaSyBa9TidLv_iwMyB-9VSrVGWEVUr0WyjiQU';
 
 export const MovieView: React.FC<MovieViewProps> = ({
@@ -189,7 +189,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
     }
   }, [currentEpisodeNum, claimedRewards]);
 
-  const currentVideoId = getVideoId(currentEpisodeNum) || 'R6ls-BIxLCQ';
+  const currentVideoId = getVideoId(currentEpisodeNum) || 'Av-SEvRvCw8';
   const embedUrl = `https://www.youtube.com/embed/${currentVideoId}?list=${YOUTUBE_PLAYLIST_ID}&index=${currentEpisodeNum - 1}&autoplay=1&rel=0`;
 
   return (
