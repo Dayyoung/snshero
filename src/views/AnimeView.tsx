@@ -61,88 +61,9 @@ export const AnimeView: React.FC<AnimeViewProps> = ({
  const [showDrawer, setShowDrawer] = useState<boolean>(false);
  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
  const playerContainerRef = useRef<HTMLDivElement>(null);
- const playerRef = useRef<any>(null);
- const [isPlayerReady, setIsPlayerReady] = useState<boolean>(false);
-
- // YouTube IFrame API Initializer
- useEffect(() => {
- let isMounted = true;
-
- if (!window.YT) {
- const scriptId = 'yt-iframe-api';
- let tag = document.getElementById(scriptId) as HTMLScriptElement | null;
- if (!tag) {
- tag = document.createElement('script');
- tag.id = scriptId;
- tag.src = 'https://www.youtube.com/iframe_api';
- tag.onerror = (e) => {
- console.warn('YouTube IFrame API script failed to load:', e);
- };
- const firstScriptTag = document.getElementsByTagName('script')[0];
- firstScriptTag?.parentNode?.insertBefore(tag, firstScriptTag);
- }
- }
-
- const initYTPlayer = () => {
- if (window.YT && window.YT.Player && !playerRef.current) {
- try {
- playerRef.current = new window.YT.Player('anime-yt-player', {
- events: {
- onReady: (event: any) => {
- if (!isMounted) return;
- setIsPlayerReady(true);
- try {
- event.target.cuePlaylist({
- listType: 'playlist',
- list: YOUTUBE_PLAYLIST_ID,
- index: currentEpisodeNum - 1,
- });
- } catch (err) {
- console.warn("Cue playlist error:", err);
- }
- },
- },
- });
- } catch (e) {
- console.warn("Init YT player error:", e);
- }
- }
- };
-
- if (window.YT && window.YT.Player) {
- initYTPlayer();
- } else {
- const prevCallback = window.onYouTubeIframeAPIReady;
- window.onYouTubeIframeAPIReady = () => {
- if (prevCallback) prevCallback();
- initYTPlayer();
- };
- }
-
- return () => {
- isMounted = false;
- };
- }, []);
-
- // Sync player episode when currentEpisodeNum changes
- useEffect(() => {
- if (playerRef.current && isPlayerReady) {
- try {
- if (typeof playerRef.current.playVideoAt === 'function') {
- playerRef.current.playVideoAt(currentEpisodeNum - 1);
- } else if (typeof playerRef.current.loadPlaylist === 'function') {
- playerRef.current.loadPlaylist({
- listType: 'playlist',
- list: YOUTUBE_PLAYLIST_ID,
- index: currentEpisodeNum - 1,
- });
- }
- } catch (err) {
- console.warn("Failed to switch playlist episode via YT API:", err);
- }
- }
 
  // Explicitly purge unreferenced chapter image/media buffers to maintain RAM footprint under 80MB
+ useEffect(() => {
  return () => {
  const cachedImages = document.querySelectorAll('img[data-webtoon-chapter]');
  cachedImages.forEach((el) => {
@@ -151,7 +72,7 @@ export const AnimeView: React.FC<AnimeViewProps> = ({
  img.removeAttribute('src');
  });
  };
- }, [currentEpisodeNum, isPlayerReady]);
+ }, [currentEpisodeNum]);
 
  // Fullscreen event listener
  useEffect(() => {
@@ -249,11 +170,9 @@ export const AnimeView: React.FC<AnimeViewProps> = ({
  }
  }, [currentEpisodeNum, claimedRewards]);
 
- // 에피소드 번호 기반 YouTube 임베드 URL (정확한 Video ID 우선 및 0-based index)
- const currentVideoId = MOVIE_EPISODES[currentEpisodeNum]?.videoId;
- const embedUrl = currentVideoId
-  ? `https://www.youtube-nocookie.com/embed/${currentVideoId}?list=${YOUTUBE_PLAYLIST_ID}&index=${currentEpisodeNum - 1}&enablejsapi=1&rel=0`
-  : `https://www.youtube-nocookie.com/embed?listType=playlist&list=${YOUTUBE_PLAYLIST_ID}&index=${currentEpisodeNum - 1}&enablejsapi=1&rel=0`;
+ // 에피소드 번호 기반 YouTube 임베드 URL (신규 교체된 개별 Video ID 직접 재생)
+ const currentVideoId = MOVIE_EPISODES[currentEpisodeNum]?.videoId || 'Av-SEvRvCw8';
+ const embedUrl = `https://www.youtube.com/embed/${currentVideoId}?autoplay=1&rel=0`;
 
  return (
  <div className="flex flex-col min-h-screen bg-[#fdfcfc] text-[#201d1d] font-mono px-0 py-2 sm:py-3 pb-32 max-w-[1024px] mx-auto w-full overflow-x-hidden">

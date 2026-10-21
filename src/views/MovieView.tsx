@@ -87,6 +87,11 @@ export const MovieView: React.FC<MovieViewProps> = ({
           const data = await res.json();
           if (Array.isArray(data?.items) && isMounted) {
             const ids = data.items
+              .filter(
+                (item: any) =>
+                  item?.snippet?.title !== 'Deleted video' &&
+                  item?.snippet?.title !== 'Private video'
+              )
               .map((item: any) => item?.snippet?.resourceId?.videoId)
               .filter(Boolean);
             if (ids.length > 0) {
@@ -111,7 +116,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
   const getDirectYouTubeWatchUrl = (epNum: number): string => {
     const vId = getVideoId(epNum);
     if (vId) {
-      return `https://www.youtube.com/watch?v=${vId}&list=${YOUTUBE_PLAYLIST_ID}&index=${epNum}`;
+      return `https://www.youtube.com/watch?v=${vId}&list=${YOUTUBE_PLAYLIST_ID}`;
     }
     return YOUTUBE_PLAYLIST_URL;
   };
@@ -190,7 +195,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
   }, [currentEpisodeNum, claimedRewards]);
 
   const currentVideoId = getVideoId(currentEpisodeNum) || 'Av-SEvRvCw8';
-  const embedUrl = `https://www.youtube.com/embed/${currentVideoId}?list=${YOUTUBE_PLAYLIST_ID}&index=${currentEpisodeNum - 1}&autoplay=1&rel=0`;
+  const embedUrl = `https://www.youtube.com/embed/${currentVideoId}?autoplay=1&rel=0`;
 
   return (
     <div className="flex flex-col min-h-screen bg-[#fdfcfc] text-[#201d1d] font-mono px-0 py-2 sm:py-3 pb-32 max-w-[1024px] mx-auto w-full overflow-x-hidden">
