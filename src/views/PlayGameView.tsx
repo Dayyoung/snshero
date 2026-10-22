@@ -43,6 +43,7 @@ import { incrementMissionProgress } from '../lib/dailyMissions';
 import { DailyMissions as DailyMissionsComponent } from '../components/DailyMissions';
 import { BattleResultPanel, LeveledUpCardInfo } from '../components/BattleResultPanel';
 import { useStoryProgress } from '../hooks/useStoryProgress';
+import { EpisodeMediaWatchModal, EPISODE_MEDIA_WATCH_REWARD_SNS } from '../components/rpg/EpisodeMediaWatchModal';
 import { recordDailyMinigamePlay } from '../utils/tacticalEnergyHelper';
 import { useCardSkins } from '../hooks/useCardSkins';
 import { StoryBattleBanner } from '../components/StoryBattleBanner';
@@ -2409,7 +2410,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
   };
 
   useEffect(() => {
-    if (gameState !== 'story' || !isStoryAutoPlay) return;
+    if (gameState !== 'story' || !isStoryAutoPlay || showStoryResultModal) return;
     const timer = setTimeout(() => {
       if (storyStep === 0) {
         const nextStep = 1;
@@ -11718,132 +11719,53 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
           </AnimatePresence>
         </main>
 
-        {/* Clear Act Reward Modal */}
-        <AnimatePresence>
-          {showStoryResultModal && (() => {
-            // 1, 2막 Akira 카드 (id 64)
-            const akiraCardData: CardData = {
-              id: 'story-akira',
-              title: CARD_DATABASE[64]?.title || '엘프군주',
-              title_en: CARD_DATABASE[64]?.title_en || 'Elf Lord',
-              title_dis: CARD_DATABASE[64]?.title_dis || 'Elf Lord',
-              stats: [...(CARD_DATABASE[64]?.stats || [7, 2, 3, 5])] as [number, number, number, number],
-              rarity: CARD_DATABASE[64]?.rarity || 'bronze',
-              level: 1,
-              imageIndex: 64,
-              owner: null
-            };
-
-            // 3, 4막 Charsi 카드 (id 79)
-            const charsiCardData: CardData = {
-              id: 'story-charsi',
-              title: CARD_DATABASE[79]?.title || '스트로베리',
-              title_en: CARD_DATABASE[79]?.title_en || 'Strawberry',
-              title_dis: CARD_DATABASE[79]?.title_dis || 'Strawberry',
-              stats: [...(CARD_DATABASE[79]?.stats || [5, 1, 9, 9])] as [number, number, number, number],
-              rarity: CARD_DATABASE[79]?.rarity || 'gold',
-              level: 1,
-              imageIndex: 79,
-              owner: null
-            };
-
-            return (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="fixed inset-0 z-[20000] flex items-center justify-center p-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] bg-black/80 backdrop-blur-md"
-              >
-                <motion.div
-                  initial={{ scale: 0.9, y: 20 }}
-                  animate={{ scale: 1, y: 0 }}
-                  exit={{ scale: 0.9, y: 20 }}
-                  className="bg-[#fdfcfc] text-[#201d1d] w-full max-w-md max-h-[90dvh] rounded-none border border-[#201d1d] relative flex flex-col z-[1001] font-mono"
-                >
-                  <div className="p-4 sm:p-5 bg-[#201d1d] border-b border-[#201d1d] text-[#fdfcfc] flex items-center justify-between shrink-0">
-                    <div className="flex items-center gap-2">
-                      <Sparkles size={20} className="text-amber-400" />
-                      <h2 className="text-base sm:text-lg font-bold uppercase tracking-tight text-[#fdfcfc]">{t('story_reward_earned', language)}</h2>
-                    </div>
-                    <button
-                      onClick={() => {
-                        playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                        claimStoryBattleReward(`story-reward-${storyAct}`);
-                        setShowStoryResultModal(false);
-                      }}
-                      className="min-h-[44px] min-w-[44px] p-1.5 rounded-sm bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer flex items-center justify-center font-bold text-xs"
-                      aria-label={t('close', language)}
-                    >
-                      [x]
-                    </button>
-                  </div>
-
-                  <div className="p-5 sm:p-6 space-y-4 text-center flex flex-col flex-1 min-h-0 overflow-y-auto">
-                    <h3 className="text-xl sm:text-2xl font-bold leading-tight pt-1 px-2 text-[#201d1d]">
-                      {t('story_act_prefix', language).replace('{act}', String(storyAct + 1))} {language === 'ko' ? "클리어!" : "Cleared!"}
-                    </h3>
-
-                    {/* Character Card Visual and Speech Message */}
-                    <div className="flex flex-col items-center gap-3 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none p-4">
-                      <div className="w-20 h-28 flex-shrink-0">
-                        <CardItem 
-                          card={storyAct === 0 || storyAct === 1 ? akiraCardData : charsiCardData} 
-                          className="w-full h-full pointer-events-none scale-100" 
-                          language={language}
-                        />
-                      </div>
-                      <div className="text-[11px] font-bold leading-relaxed text-left text-[#201d1d] bg-[#fdfcfc] p-3 border border-[rgba(15,0,0,0.12)] rounded-none relative w-full">
-                        <p className="relative z-10 text-center text-[#201d1d]">
-                          "{t(storyAct === 0 || storyAct === 1 ? 'story_akira_congratulations' : 'story_charsi_congratulations', language)}"
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="p-3 sm:p-4 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none text-center flex flex-col justify-center items-center">
-                        <span className="text-[9px] font-bold uppercase opacity-60 block mb-0.5 text-[#646262]">{t('reward', language)}</span>
-                        <span className="text-base sm:text-lg font-bold text-amber-700">+{storyReward} SNS</span>
-                      </div>
-
-                      <div className="p-3 sm:p-4 bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] rounded-none text-center flex flex-col justify-center items-center">
-                        <span className="text-[9px] font-bold uppercase opacity-60 block mb-0.5 text-[#646262]">
-                          {storyAct === 0 || storyAct === 1 ? (language === 'ko' ? "추가 보상" : "BONUS") : (language === 'ko' ? "획득 아이템" : "ITEM")}
-                        </span>
-                        {storyAct === 0 || storyAct === 1 ? (
-                          <span className="text-xs sm:text-sm font-bold text-amber-800">
-                            +1 {language === 'ko' ? "스킬포인트" : "Skill Point"}
-                          </span>
-                        ) : (
-                          <div className="flex items-center gap-1.5 justify-center">
-                            <span className="text-base text-amber-800 leading-none">
-                              {storyBonusItem?.emoji || '🛡️'}
-                            </span>
-                            <span className="text-[10px] font-bold text-amber-800 truncate max-w-[80px]">
-                              {language === 'ko' ? storyBonusItem?.name_ko : storyBonusItem?.name_en}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="p-4 sm:p-5 border-t border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] flex justify-center shrink-0">
-                    <button
-                      onClick={() => {
-                        playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                        claimStoryBattleReward(`story-reward-${storyAct}`);
-                        setShowStoryResultModal(false);
-                      }}
-                      className="w-full min-h-[44px] h-11 py-2 px-3 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] font-bold uppercase rounded-sm border border-[#201d1d] active:scale-98 transition-all cursor-pointer text-center text-xs sm:text-sm flex items-center justify-center"
-                    >
-                      {t('tournament_confirm_btn', language)}
-                    </button>
-                  </div>
-                </motion.div>
-              </motion.div>
-            );
-          })()}
-        </AnimatePresence>
+        {/* Clear Act & Episode Media Watch Reward Modal */}
+        {showStoryResultModal && (
+          <EpisodeMediaWatchModal
+            chapterNumber={storyAct + 1}
+            language={language}
+            chapterReward={{
+              id: `story-reward-${storyAct}`,
+              cardIds: [],
+              sns: storyReward,
+              titleKey: 'story_reward_earned',
+            }}
+            chapterRewardSnsTotal={storyReward}
+            onClaimWatchReward={async (mediaType, chapterNum) => {
+              const mediaLabelKo = mediaType === 'anime' ? '애니메이션' : '무비(시네마)';
+              const mediaLabelEn = mediaType === 'anime' ? 'Animation' : 'Movie';
+              const reason = language === 'ko'
+                ? `[스토리 제 ${chapterNum}화] ${mediaLabelKo} 시청 보상`
+                : `[Story EP.${chapterNum}] ${mediaLabelEn} Watch Bonus`;
+              if (updateSns) {
+                await updateSns(EPISODE_MEDIA_WATCH_REWARD_SNS, reason);
+              }
+              try {
+                localStorage.setItem(`hero_story_media_watch_ep_${chapterNum}`, 'true');
+              } catch {}
+              showCustomAlert(
+                language === 'ko' ? `제 ${chapterNum}화 ${mediaLabelKo} 시청 보상 지급!` : `EP.${chapterNum} ${mediaLabelEn} Reward Granted!`,
+                language === 'ko'
+                  ? `유튜브 영상을 시청하고 돌아오셔서 +${EPISODE_MEDIA_WATCH_REWARD_SNS} SNS 보상이 지급되었습니다!`
+                  : `You earned +${EPISODE_MEDIA_WATCH_REWARD_SNS} SNS for watching Episode ${chapterNum}!`,
+                2
+              );
+            }}
+            onProceedNext={() => {
+              playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+              claimStoryBattleReward(`story-reward-${storyAct}`);
+              setShowStoryResultModal(false);
+              if (storyAct === 3) {
+                setIsStoryFinished(true);
+              } else {
+                const nextAct = storyAct + 1;
+                setStoryAct(nextAct);
+                setStoryStep(0);
+                saveStoryProgress(nextAct, 0, true);
+              }
+            }}
+          />
+        )}
 
         {/* Global End Story Finished Modal */}
         <AnimatePresence>

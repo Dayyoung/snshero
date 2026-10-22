@@ -13,6 +13,7 @@ import {
  getKadanRpgRegion,
  getKadanRpgReward,
  type KadanRpgEvent,
+ type KadanRpgReward,
  type KadanRpgTile,
 } from '../content/kadanRpgStory';
 import { useKadanRpgProgress } from '../hooks/useKadanRpgProgress';
@@ -20,6 +21,7 @@ import { useKadanRpgAutoRunner } from '../hooks/useKadanRpgAutoRunner';
 import { KadanWorldMap } from '../components/rpg/KadanWorldMap';
 import { KadanNpcDialog } from '../components/rpg/KadanNpcDialog';
 import { KadanRewardModal } from '../components/rpg/KadanRewardModal';
+import { EpisodeMediaWatchModal, EPISODE_MEDIA_WATCH_REWARD_SNS } from '../components/rpg/EpisodeMediaWatchModal';
 import { CARD_DATABASE } from '../cardDatabase';
 import { INITIAL_CARDS, getCardPower } from '../constants';
 import type { KadanBattleResult } from '../lib/kadanRpgBattle';
@@ -122,6 +124,8 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  const [activeEvent, setActiveEvent] = useState<KadanRpgEvent | null>(null);
  const [battleEvent, setBattleEvent] = useState<KadanRpgEvent | null>(null);
  const [rewardEvent, setRewardEvent] = useState<KadanRpgEvent | null>(null);
+ const [mediaPromptEvent, setMediaPromptEvent] = useState<KadanRpgEvent | null>(null);
+ const [mediaPromptChapterReward, setMediaPromptChapterReward] = useState<{ reward: KadanRpgReward; totalSns: number } | null>(null);
  const [isMoving, setIsMoving] = useState(false);
  const [heroStepCount, setHeroStepCount] = useState(0);
  const [lastAmbushStep, setLastAmbushStep] = useState(-99);
@@ -327,7 +331,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  }, [markChestOpened, markNpcMet]);
 
  useEffect(() => {
- if (isMoving || activeEvent || battleEvent || rewardEvent || !targetTile || ambushAlert || ambushBattle) return;
+ if (isMoving || activeEvent || battleEvent || rewardEvent || mediaPromptEvent || !targetTile || ambushAlert || ambushBattle) return;
  if (!sameTile(heroTile, targetTile)) return;
 
  const arrivedEvent = regionEvents.find((event) => sameTile(event.tile, targetTile));
@@ -339,7 +343,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  openEvent(arrivedEvent);
  setTargetTile(null);
  }
- }, [activeEvent, battleEvent, dismissedEventId, heroTile, isMoving, openEvent, regionEvents, rewardEvent, targetTile, ambushAlert, ambushBattle]);
+ }, [activeEvent, battleEvent, dismissedEventId, heroTile, isMoving, mediaPromptEvent, openEvent, regionEvents, rewardEvent, targetTile, ambushAlert, ambushBattle]);
 
  const handleEventPress = useCallback((event: KadanRpgEvent) => {
  pauseForManualInput();
@@ -363,24 +367,26 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  setActiveEvent(null);
  setBattleEvent(null);
  setRewardEvent(null);
+ setMediaPromptEvent(null);
+ setMediaPromptChapterReward(null);
+ setDismissedEventId(null);
+
+ const nextChapterEvent = KADAN_RPG_EVENTS.find((e) => e.chapterNumber === event.chapterNumber + 1);
+ if (nextChapterEvent) {
+ setTargetTile(nextChapterEvent.tile);
+ }
  }, [completeEvent, heroTile]);
 
- const claimReward = useCallback(async (event: KadanRpgEvent) => {
- if (!event.rewardId || progress.claimedRewardIds.includes(event.rewardId)) {
- completeActiveEvent(event);
- return;
- }
+ const openEpisodeEndMediaPrompt = useCallback(async (event: KadanRpgEvent) => {
+ let claimedInfo: { reward: KadanRpgReward; totalSns: number } | null = null;
 
+ if (event.rewardId && !progress.claimedRewardIds.includes(event.rewardId)) {
  const reward = getKadanRpgReward(event.rewardId);
- if (!reward) {
- completeActiveEvent(event);
- return;
- }
-
- if (reward.sns > 0) {
+ if (reward) {
  const rebirthMultiplier = 1 + (progress.rebirthLevel * 0.25);
- const totalSns = Math.ceil(reward.sns * rebirthMultiplier);
- const reason = progress.rebirthLevel > 0 
+ const totalSns = reward.sns > 0 ? Math.ceil(reward.sns * rebirthMultiplier) : 0;
+ if (totalSns > 0) {
+ const reason = progress.rebirthLevel > 0
  ? `${t('kadan_rpg_reward_reason', language)} (${progress.rebirthLevel}환 +${progress.rebirthLevel * 25}%)`
  : t('kadan_rpg_reward_reason', language);
  await updateSns(totalSns, reason, 'earned');
@@ -391,19 +397,60 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  if (reward.itemRarity) {
  addItem(reward.itemRarity);
  }
-
  markRewardClaimed(reward.id);
- completeActiveEvent(event);
+ claimedInfo = { reward, totalSns };
+ }
+ }
+
+ setActiveEvent(null);
+ setBattleEvent(null);
+ setRewardEvent(null);
+ setMediaPromptChapterReward(claimedInfo);
+ setMediaPromptEvent(event);
  }, [
  addCard,
  addItem,
- completeActiveEvent,
  language,
  markRewardClaimed,
  progress.autoMode,
  progress.claimedRewardIds,
+ progress.rebirthLevel,
  updateSns,
  ]);
+
+ const handleClaimEpisodeMediaReward = useCallback(async (mediaType: 'anime' | 'movie', chapterNum: number) => {
+ const mediaLabelKo = mediaType === 'anime' ? '애니메이션' : '무비(시네마)';
+ const mediaLabelEn = mediaType === 'anime' ? 'Animation' : 'Movie';
+ const reason = language === 'ko'
+ ? `[스토리 제 ${chapterNum}화] ${mediaLabelKo} 시청 보상`
+ : `[Story EP.${chapterNum}] ${mediaLabelEn} Watch Bonus`;
+
+ await updateSns(EPISODE_MEDIA_WATCH_REWARD_SNS, reason, 'earned');
+
+ try {
+ localStorage.setItem(`hero_story_media_watch_ep_${chapterNum}`, 'true');
+ const storageKey = mediaType === 'anime'
+ ? `hero_movie_watched_${currentSeason}`
+ : `hero_cinema_watched_${currentSeason}`;
+ const rawList = localStorage.getItem(storageKey);
+ const watchedList: number[] = rawList ? JSON.parse(rawList) : [];
+ if (!watchedList.includes(chapterNum)) {
+ localStorage.setItem(storageKey, JSON.stringify([...watchedList, chapterNum]));
+ }
+ } catch {}
+
+ showCustomAlert(
+ language === 'ko' ? `제 ${chapterNum}화 ${mediaLabelKo} 시청 보상 지급!` : `EP.${chapterNum} ${mediaLabelEn} Reward Granted!`,
+ language === 'ko'
+ ? `유튜브 영상을 시청하고 돌아오셔서 +${EPISODE_MEDIA_WATCH_REWARD_SNS} SNS 보상이 지급되었습니다!`
+ : `You earned +${EPISODE_MEDIA_WATCH_REWARD_SNS} SNS for watching Episode ${chapterNum}!`,
+ 2
+ );
+ }, [currentSeason, language, showCustomAlert, updateSns]);
+
+ const claimReward = useCallback(async (event: KadanRpgEvent) => {
+ await openEpisodeEndMediaPrompt(event);
+ }, [openEpisodeEndMediaPrompt]);
 
  const handleBattleComplete = useCallback((result: KadanBattleResult) => {
  if (!battleEvent) return;
@@ -421,18 +468,14 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  if (result === 'win' || result === 'draw' || encounter.allowLossProgress) {
  markEncounterCleared(encounter.id);
  setBattleEvent(null);
- if (battleEvent.rewardId && !progress.claimedRewardIds.includes(battleEvent.rewardId)) {
- setRewardEvent(battleEvent);
- } else {
- completeActiveEvent(battleEvent);
- }
+ void openEpisodeEndMediaPrompt(battleEvent);
  return;
  }
 
  setBattleEvent(null);
  setActiveEvent(battleEvent);
  showCustomAlert(t('kadan_rpg_battle_loss_title', language), t('kadan_rpg_battle_loss_desc', language), 3);
- }, [battleEvent, completeActiveEvent, language, markEncounterCleared, onNavigate, progress.claimedRewardIds, progress.rebirthLevel, showCustomAlert]);
+ }, [battleEvent, language, markEncounterCleared, onNavigate, openEpisodeEndMediaPrompt, progress.rebirthLevel, showCustomAlert]);
 
  const handleEngageAmbush = useCallback(() => {
   if (!ambushAlert) return;
@@ -529,7 +572,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  hasDialog,
  hasBattle,
  hasReward,
- isBusy: isMoving || Boolean(battleEvent) || Boolean(activeEvent && !battleEvent && !rewardEvent) || Boolean(ambushAlert) || Boolean(ambushBattle),
+ isBusy: isMoving || Boolean(battleEvent) || Boolean(mediaPromptEvent) || Boolean(activeEvent && !battleEvent && !rewardEvent) || Boolean(ambushAlert) || Boolean(ambushBattle),
  onMoveToTarget: () => {
  if (nextEvent) moveToEvent(nextEvent);
  },
@@ -540,10 +583,8 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  if (!activeEvent) return;
  if (activeEvent.nodeType === 'enemy') {
  setBattleEvent(activeEvent);
- } else if (activeEvent.rewardId && !progress.claimedRewardIds.includes(activeEvent.rewardId)) {
- setRewardEvent(activeEvent);
  } else {
- completeActiveEvent(activeEvent);
+ void openEpisodeEndMediaPrompt(activeEvent);
  }
  },
  onStartBattle: () => {
@@ -592,6 +633,8 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  setActiveEvent(null);
  setBattleEvent(null);
  setRewardEvent(null);
+ setMediaPromptEvent(null);
+ setMediaPromptChapterReward(null);
  setAmbushAlert(null);
  setAmbushBattle(null);
  setHeroStepCount(0);
@@ -728,8 +771,8 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
   } catch {}
  }}
  onStartBattle={() => setBattleEvent(activeEvent)}
- onClaimReward={() => setRewardEvent(activeEvent)}
- onComplete={() => completeActiveEvent(activeEvent)}
+ onClaimReward={() => void openEpisodeEndMediaPrompt(activeEvent)}
+ onComplete={() => void openEpisodeEndMediaPrompt(activeEvent)}
  onClose={handleCloseDialog}
  onToggleAutoMode={() => setAutoMode(!progress.autoMode)}
  onNavigate={onNavigate}
@@ -910,6 +953,17 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  setRewardEvent(null);
  if (progress.autoMode) setAutoMode(false);
  }}
+ />
+ )}
+
+ {mediaPromptEvent && (
+ <EpisodeMediaWatchModal
+ chapterNumber={mediaPromptEvent.chapterNumber}
+ language={language}
+ chapterReward={mediaPromptChapterReward?.reward ?? null}
+ chapterRewardSnsTotal={mediaPromptChapterReward?.totalSns}
+ onClaimWatchReward={handleClaimEpisodeMediaReward}
+ onProceedNext={() => completeActiveEvent(mediaPromptEvent)}
  />
  )}
  </div>

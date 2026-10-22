@@ -2,6 +2,27 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-23 07:10 KST] [스토리모드 회차 종료 시 애니메이션/무비 시청 보상 안내 & 유튜브 새창 연동 & 3초 자동 다음 회차 이동 구현]
+- **요청 사항**:
+  - "스토리모드 진행 중 회차가 종료되는 시점에서 해당 회차의 애니메이션/무비를 시청하면 보상이 있다는 안내를 표시. 클릭하면 해당 플레이리스트/해당 회차 유튜브 링크를 새창으로 표시. 동영상을 보고 돌아오면 보상지급. 클릭을 안하면 3초 후 다음 회차 게임으로 이동"
+- **주요 구현 내역**:
+  1. **회차 종료 애니메이션/무비 시청 보상 모달 신규 구현 ([`src/components/rpg/EpisodeMediaWatchModal.tsx`](file:///Users/dayyoung/project/snshero/src/components/rpg/EpisodeMediaWatchModal.tsx))**:
+     - `MOVIE_EPISODES` 매핑을 기반으로 스토리모드 각 회차(1~40화) 종료 시 해당 회차의 공식 애니메이션/무비 시청 시 특별 보상(`+100 SNS`)이 지급된다는 안내 배너를 표시.
+     - **새창 유튜브 링크 및 플레이리스트 연동**:
+       - `[🎬 제 N화 애니메이션 시청 (+100 SNS)]`: `https://www.youtube.com/watch?v={videoId}&list=PLK35ZdYm5NNE` 새 창(`_blank`) 오픈.
+       - `[🎥 제 N화 무비(실사) 시청 (+100 SNS)]`: `https://www.youtube.com/watch?v={movieVideoId}&list=PLMdirwPt_FHU` 새 창(`_blank`) 오픈.
+       - `[애니 플레이리스트 새창]` / `[무비 플레이리스트 새창]` 버튼 함께 제공.
+     - **동영상 시청 후 복귀 감지 및 자동 보상 지급**:
+       - 버튼 클릭 시 3초 자동 이동 카운트다운이 즉시 일시정지되며 유튜브 새 창이 열림.
+       - 사용자가 영상을 보고 게임 창으로 돌아오면(`visibilitychange`, `focus`, `pageshow` 감지 또는 수동 시청 완료 버튼 클릭) 즉시 `+100 SNS` 보상을 `localStorage`에 지급하고 다음 회차 게임으로 이동.
+     - **미클릭 시 3초 후 다음 회차 게임 자동 이동**:
+       - 안내 표시 후 3초(`3.0s -> 0.0s`) 동안 클릭하지 않으면 실시간 프로그레스 바가 완료되면서 자동으로 다음 회차 게임으로 즉시 이동.
+  2. **카단 RPG 메인 스토리모드 1~40화 및 액트 스토리모드 전수 연동 ([`src/views/KadanRpgView.tsx`](file:///Users/dayyoung/project/snshero/src/views/KadanRpgView.tsx), [`src/views/PlayGameView.tsx`](file:///Users/dayyoung/project/snshero/src/views/PlayGameView.tsx))**:
+     - `KadanRpgView.tsx`에서 각 회차 완료 시점(`openEpisodeEndMediaPrompt`)에 기본 클리어 보상을 자동 정산한 뒤 `EpisodeMediaWatchModal`을 표시하고, 3초 경과 또는 영상 시청 복귀 시 다음 챕터 타일로 자동 이동(`completeActiveEvent`)하도록 연동.
+     - `PlayGameView.tsx`의 스토리 모드(`gameState === 'story'`) 회차 클리어 시점에도 동일하게 `EpisodeMediaWatchModal` 연동 완료.
+- **검증 결과**:
+  - `npm run build` 프로덕션 빌드 검증, 로컬 Git 커밋 및 구글 폼 완료 보고서 제출.
+
 ## [2026-10-22 17:46 KST] [애니메이션/무비 버튼 원래 색상 복원 및 HIT! 뱃지 표시 유지 + /git-push] 버튼 배경/테두리/아이콘 색상을 소설·웹툰 버튼과 동일한 기본 웜크림/잉크 톤으로 복원하고 HIT! 뱃지만 강조 + 원격 푸시 완료
 - **요청 사항**:
   - "애니메이션/ 무비 버튼 색상을 변경하지는 말아줘. 그냥 hit 만 표시. /git-push"
