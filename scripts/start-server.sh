@@ -41,9 +41,13 @@ if [ -n "$PUSH_SRV_PID" ]; then
   kill -9 $PUSH_SRV_PID 2>/dev/null || true
 fi
 
-# 2. 최신 번들 빌드 수행
-echo "🔨 [start-server] 최신 프로덕션 정적 번들 빌드를 수행합니다..."
-npm run build
+# 2. dist/index.html이 없거나 --build 옵션이 주어진 경우에만 초기 빌드 수행 (즉시 기동 보장)
+if [ ! -f "dist/index.html" ] || [ "$1" = "--build" ]; then
+  echo "🔨 [start-server] 최신 프로덕션 정적 번들 빌드를 수행합니다..."
+  npm run build
+else
+  echo "⚡ [start-server] 기존 최신 dist/ 번들을 감지했습니다. 대기 없이 즉시 서버를 기동합니다."
+fi
 
 # 프로세스 종료 시 자식 프로세스 자동 정리 trap
 cleanup() {

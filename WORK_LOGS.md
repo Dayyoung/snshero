@@ -2,6 +2,33 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-22 17:38 KST] [Tailscale 접속 하얀 화면(White Screen) 및 로딩 지연 근본 해결] 포트 3000 프리뷰 서버 재가동, 23,600개 누적 캐시 폴더 정리, 무중단 빌드(emptyOutDir: false), 초기 번들 10배 경량화(6.5MB → 616KB) 및 즉시 로딩 스켈레톤 적용
+- **요청 사항**:
+  - "tailscale 주소로 접속하면 게임이 바로 표시 안되는데? 하얀화면이 떠있어."
+- **원인 분석 (3대 복합 원인 규명)**:
+  1. **로컬 포트 3000 서버 중지 및 `watch-build` 무한 재빌드 공백**:
+     - Tailscale Funnel(`https://dayyoung-macbookpro.tail3717a4.ts.net` -> `127.0.0.1:3000`)과 연결된 로컬 프리뷰 서버가 꺼져 있었고, 서버 기동 직후 `watch-build.js`가 이전 빌드의 FSEvents를 감지해 재빌드를 반복 실행함.
+  2. **빌드 시 `emptyOutDir: true` 및 23,600개 누적 뉴스 폴더 복사 중 45초간 `dist/index.html` 증발(`404` / 백지 현상)**:
+     - `public/r/news/comments/` 아래에 이전 빌드들에서 생성된 `gnews_<timestamp>_<idx>` 폴더가 23,637개 누적되어, `vite build` 실행 시 `dist/`를 먼저 삭제한 뒤 23,637개 파일을 복사하느라 약 45초 동안 `dist/index.html`과 `dist/assets/`가 존재하지 않는 상태가 발생함.
+     - 또한 매 빌드마다 `-v${Date.now()}.js` 파일명이 강제 변경되면서 기존 탭/캐시에서 청크 로드 실패가 발생함.
+  3. **메인 엔트리 번들(`index-*.js`) 6.5MB 비대화 및 빈 `#root` 초기 화면**:
+     - `webtoonEpisodeManifest.json`(~2.2MB)과 12개국어 `i18n.ts`(~3.5MB)가 메인 `index.js`에 통째로 묶여 초기 JS가 6.5MB에 달했고, 다운로드되는 동안 `#root`가 완전히 비어 있어 하얀 화면으로 보임.
+- **해결 및 개선 내역**:
+  1. **[`vite.config.ts`](file:///Users/dayyoung/project/snshero/vite.config.ts)**:
+     - `emptyOutDir: false` 적용으로 재빌드 중에도 기존 `dist/index.html` 및 에셋이 삭제되지 않고 무중단 서빙되도록 개선.
+     - `-v${Date.now()}` 제거 후 콘텐츠 해시(`assets/[name]-[hash].js`)로 통일하여 불필요한 캐시 깨짐 방지.
+     - `webtoonEpisodeManifest`(`data-webtoon`)와 `src/lib/i18n`(`data-i18n`)을 별도 청크로 분리하여 **메인 엔트리 번들을 `6.5MB` → `616.7KB` (10분의 1 수준, 전송 시간 21ms)로 대폭 경량화**.
+  2. **[`scripts/generate-news-seo.ts`](file:///Users/dayyoung/project/snshero/scripts/generate-news-seo.ts) & [`scripts/watch-build.js`](file:///Users/dayyoung/project/snshero/scripts/watch-build.js) & [`scripts/start-server.sh`](file:///Users/dayyoung/project/snshero/scripts/start-server.sh)**:
+     - `public/r/news/comments` 및 `public/reddit/comments` 내 23,600여 개 누적 폴더를 일괄 정리하고 최신 120개 기사만 `dist/`에 생성하도록 개선.
+     - `watch-build.js` 초기 타임스탬프(`lastBuildFinishedAt = Date.now()`) 설정으로 서버 시작 직후 중복 빌드 루프 차단.
+     - `start-server.sh`에서 기존 `dist/index.html` 존재 시 대기 없이 0.1초 만에 즉시 `vite preview` 기동하도록 개선.
+  3. **[`index.html`](file:///Users/dayyoung/project/snshero/index.html)**:
+     - `#root:empty` CSS 즉시 로딩 스켈레톤(`SNS히어로 (SNSHero.com) - AI 카드 배틀 엔진을 불러오는 중입니다...`) 및 6초 부트 워치독 자동 복구 스크립트 추가.
+- **검증 결과**:
+  - `https://dayyoung-macbookpro.tail3717a4.ts.net/` 응답: `HTTP 200` (121ms), 메인 JS `616.7 KB` (21ms 로드 완료).
+  - `https://dayyoung-macbookpro.tail3717a4.ts.net/card-play` 응답: `HTTP 200`.
+  - 로컬 Git 커밋 및 구글 폼 보고서 제출 완료.
+
 ## [2026-10-22 17:33 KST] [구글 뉴스 깨진 이미지 0% 보장 및 기사 맥락 맞춤형 다단계 폴백 이미지 시스템 구축] 14대 의미론적 토픽 카탈로그 + 4단계 자동 폴백(onError/onLoad) + 인라인 SVG 에디토리얼 그래픽 탑재 완료
 - **요청 사항**:
   - "최신 뉴스를 가져올때 이미지가 깨지는 경우가 있는데? 기사와 관련있는 폴백 이미지를 준비해서 무조건 이미지가 표시되게 해줘."

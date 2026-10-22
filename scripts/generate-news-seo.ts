@@ -627,33 +627,32 @@ export async function runGenerateNewsSeo(): Promise<void> {
   const baseTemplatePath = fs.existsSync(distIndexPath) ? distIndexPath : rootIndexPath;
   const baseHtml = fs.readFileSync(baseTemplatePath, 'utf8');
 
-  // D. 개별 기사별 정적 HTML 생성
+  // D. 개별 기사별 정적 HTML 생성 (구버전 타임스탬프 누적 폴더 정리 후 최신 기사만 생성)
+  for (const staleCommentsDir of [
+    path.join(publicDir, 'r', 'news', 'comments'),
+    path.join(publicDir, 'reddit', 'comments'),
+  ]) {
+    if (fs.existsSync(staleCommentsDir)) {
+      fs.rmSync(staleCommentsDir, { recursive: true, force: true });
+    }
+  }
+
   let generatedArticleCount = 0;
-  for (const post of posts) {
+  const recentPostsForStatic = posts.slice(0, 120);
+  for (const post of recentPostsForStatic) {
     const articleHtml = buildArticleStaticHtml(baseHtml, post, posts);
 
-    // 경로: public 및 dist의 r/news/comments/{id} 와 reddit/comments/{id}
-    // (구글 검색에 이미 색인된 UTC/KST 타임스탬프 편차 및 인덱스 URL 100% 호환 지원)
+    // 경로: dist의 r/news/comments/{id} 와 reddit/comments/{id}
     const idxMatch = post.id.match(/_(\d+)$/);
     const postIdx = idxMatch ? idxMatch[1] : null;
 
     const idAliases = new Set<string>([post.id]);
     if (postIdx !== null) {
       idAliases.add(`gnews_${postIdx}`);
-      const tsMatch = post.id.match(/^gnews_(\d+)_\d+$/);
-      if (tsMatch) {
-        const rawTs = parseInt(tsMatch[1], 10);
-        // UTC와 KST의 9시간(32,400,000ms) 차이 호환성 보장
-        idAliases.add(`gnews_${rawTs - 32400000}_${postIdx}`);
-        idAliases.add(`gnews_${rawTs + 32400000}_${postIdx}`);
-      }
     }
 
     for (const aliasId of idAliases) {
-      const targetDirs = [
-        path.join(publicDir, 'r', 'news', 'comments', aliasId),
-        path.join(publicDir, 'reddit', 'comments', aliasId),
-      ];
+      const targetDirs: string[] = [];
 
       if (fs.existsSync(distDir)) {
         targetDirs.push(
@@ -671,7 +670,7 @@ export async function runGenerateNewsSeo(): Promise<void> {
     }
     generatedArticleCount++;
   }
-  console.log(`[generate-news-seo] Generated ${generatedArticleCount} static news articles across all timezone/index aliases.`);
+  console.log(`[generate-news-seo] Generated ${generatedArticleCount} static news articles in dist/.`);
 
   // E. /reddit 및 /r/news 메인 피드 정적 HTML 생성
   const redditIndexHtml = buildRedditNewsIndexHtml(baseHtml, posts);

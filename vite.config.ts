@@ -633,13 +633,15 @@ export default defineConfig(({mode}) => {
     build: {
       outDir: 'dist',
       assetsDir: 'assets',
-      emptyOutDir: true,
+      emptyOutDir: false,
       rollupOptions: {
         output: {
-          entryFileNames: `assets/[name]-[hash]-v${Date.now()}.js`,
-          chunkFileNames: `assets/[name]-[hash]-v${Date.now()}.js`,
-          assetFileNames: `assets/[name]-[hash]-v${Date.now()}[extname]`,
+          entryFileNames: `assets/[name]-[hash].js`,
+          chunkFileNames: `assets/[name]-[hash].js`,
+          assetFileNames: `assets/[name]-[hash][extname]`,
           manualChunks(id) {
+            if (id.includes('webtoonEpisodeManifest')) return 'data-webtoon';
+            if (id.includes('src/lib/i18n')) return 'data-i18n';
             if (!id.includes('node_modules')) return undefined;
             if (id.includes('/@tensorflow/') || id.includes('/seedrandom/')) return 'vendor-tensorflow';
             if (id.includes('/firebase/') || id.includes('/@firebase/')) return 'vendor-firebase';

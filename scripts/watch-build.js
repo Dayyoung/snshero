@@ -8,7 +8,7 @@ const srcDir = path.join(rootDir, 'src');
 let isBuilding = false;
 let pendingBuild = false;
 let debounceTimer = null;
-let lastBuildFinishedAt = 0;
+let lastBuildFinishedAt = Date.now();
 
 console.log('👀 [watch-build] Watching src/ directory for changes...');
 console.log('⚡ Any file save will automatically trigger production build into dist/');
