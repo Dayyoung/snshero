@@ -2,6 +2,20 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-22 17:22 KST] [첫 화면 애니메이션/무비 버튼 YouTube 로고 & HIT! 강조 및 /git-push] 홈 화면 및 카테고리 허브 내 애니메이션(/movie)·무비(/cinema) 버튼 YouTube 아이콘 및 HIT! 뱃지 강조 + 원격 푸시 완료
+- **요청 사항**:
+  - "게임 첫화면에 snshero.com 애니메이션 / 무비 버튼은 유튜브 로고로 강조해서 유튜브로 볼수있다는것을 강조하고 hit! 으로 더 강조해줘. /git-push"
+- **주요 수정 내역**:
+  1. **첫 화면 상단 2열 미디어 바로가기 버튼 강조 ([`src/views/HomeView.tsx`](file:///Users/dayyoung/project/snshero/src/views/HomeView.tsx))**:
+     - 기존 `Film`, `Camera` 아이콘을 공식 **`Youtube` 레드 로고 아이콘(`<Youtube size={16} className="shrink-0 text-red-500" />`)**으로 교체.
+     - 잉크 다크 배경(`bg-[#201d1d] text-[#fdfcfc] border border-red-600/80`) 및 우측 상단 코너에 강렬한 레드 **`HIT!` 뱃지(`bg-red-600 text-[#fdfcfc] text-[9px] font-mono font-black`)** 부착하여 유튜브에서 즉시 시청 가능한 핵심 인기 콘텐츠임을 직관적으로 강조.
+  2. **홈 카테고리 허브 그리드 및 모달 동기화 ([`src/components/HomeCategoryHub.tsx`](file:///Users/dayyoung/project/snshero/src/components/HomeCategoryHub.tsx), [`src/components/HomeCategoryHubModal.tsx`](file:///Users/dayyoung/project/snshero/src/components/HomeCategoryHubModal.tsx))**:
+     - 카테고리 허브의 `애니메이션` / `무비` 카드에도 `Youtube` 레드 아이콘, `HIT!` 뱃지, `YouTube 40부작 애니` / `YouTube 40화 무비` 설명 문구 적용.
+- **검증 및 배포 결과**:
+  - `npx tsc --noEmit` 0 Errors 및 `npm run build` 프로덕션 정적 번들 빌드 완료.
+  - 로컬 Git 커밋 및 `git push origin main` 원격 저장소 푸시 완료.
+  - 연동 구글 폼 보고서 제출 완료 (`submit_report.py`).
+
 ## [2026-10-22 16:30 KST] [신규 접속 SSR/Gold 전설 카드 지급 검증 및 개선] 일반 접속 포함 모든 신규 유저에게 최고 등급 전설 카드(#50 알렉산다르, #104 바하무트) + #41 카단 + 1,000 SNS 100% 실제 지급 보장
 - **요청 사항**:
   - "근데 지금 접속만 해도 SSR 지급이라고 했는데 진짜 지급중인것 맞아? 궁금해서"
