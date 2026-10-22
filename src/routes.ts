@@ -235,8 +235,8 @@ export const VIEW_ROUTES: Record<ViewType, RouteMeta> = {
     descriptionEn: 'Watch official SNSHero anime clips and lore shorts.',
   },
   movie: {
-    path: '/movie',
-    aliases: ['/animation'],
+    path: '/animation',
+    aliases: ['/movie'],
     titleKo: '애니메이션 (Animation) - SNS히어로',
     titleEn: 'Animation Theater - SNSHero',
     descriptionKo: '공식 40부작 스토리 애니메이션을 연속 시청하고 보상을 획득하세요.',

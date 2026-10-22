@@ -2,6 +2,19 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-23 07:13 KST] [스토리모드 회차 종료 시 애니메이션/무비 새창 링크를 /animation?ep=N 및 /cinema?ep=N으로 변경 완료]
+- **요청 사항**:
+  - "새창으로 유튜브를 띄우지는 말고 아래 링크로 새창 띄우고 볼 수 있게 해주자. 애니메이션 링크는 밑에 걸로 변경: `https://snshero.com/animation?ep=1`, `https://snshero.com/cinema?ep=1`"
+- **주요 수정 내역**:
+  1. **[`src/components/rpg/EpisodeMediaWatchModal.tsx`](file:///Users/dayyoung/project/snshero/src/components/rpg/EpisodeMediaWatchModal.tsx)**:
+     - 유튜브 직접 링크 대신 인게임 공식 미디어 페이지 URL을 새 창(`_blank`)으로 열도록 변경:
+       - 애니메이션: `https://snshero.com/animation?ep={회차번호}` (`${origin}/animation?ep=${safeChapter}`)
+       - 무비(시네마): `https://snshero.com/cinema?ep={회차번호}` (`${origin}/cinema?ep=${safeChapter}`)
+  2. **[`src/routes.ts`](file:///Users/dayyoung/project/snshero/src/routes.ts) & [`src/App.tsx`](file:///Users/dayyoung/project/snshero/src/App.tsx) & [`scripts/post-build.js`](file:///Users/dayyoung/project/snshero/scripts/post-build.js)**:
+     - `movie` 뷰의 기본 경로(`path`)를 `'/animation'`으로 변경(`'/movie'`는 `aliases`로 호환 유지).
+     - `App.tsx`의 URL 동기화 `useEffect`에서 `movie`, `cinema`, `anime`, `novel` 뷰 진입 시 `?ep=1` 등 쿼리 파라미터(`window.location.search`)가 유실되지 않고 보존되도록 수정.
+     - `post-build.js` 정적 라우트 목록에 `'animation'`, `'movie'`, `'cinema'`를 추가하여 직접 접속 시에도 최신 번들이 로드되도록 보장.
+
 ## [2026-10-23 07:10 KST] [스토리모드 회차 종료 시 애니메이션/무비 시청 보상 안내 & 유튜브 새창 연동 & 3초 자동 다음 회차 이동 구현]
 - **요청 사항**:
   - "스토리모드 진행 중 회차가 종료되는 시점에서 해당 회차의 애니메이션/무비를 시청하면 보상이 있다는 안내를 표시. 클릭하면 해당 플레이리스트/해당 회차 유튜브 링크를 새창으로 표시. 동영상을 보고 돌아오면 보상지급. 클릭을 안하면 3초 후 다음 회차 게임으로 이동"

@@ -1,13 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { ExternalLink, Film, CheckCircle2, Sparkles, Youtube, ArrowRight } from 'lucide-react';
+import { ExternalLink, Film, CheckCircle2, Sparkles, Play, ArrowRight } from 'lucide-react';
 import { MOVIE_EPISODES } from '../../content/movieEpisodeMapping';
 import { CARD_DATABASE } from '../../cardDatabase';
 import { t } from '../../lib/i18n';
 import type { Language } from '../../types';
 import type { KadanRpgReward } from '../../content/kadanRpgStory';
 
-export const ANIME_YOUTUBE_PLAYLIST_ID = 'PLK35ZdYm5NNE';
-export const MOVIE_YOUTUBE_PLAYLIST_ID = 'PLMdirwPt_FHU';
 export const EPISODE_MEDIA_WATCH_REWARD_SNS = 100;
 
 interface EpisodeMediaWatchModalProps {
@@ -37,10 +35,15 @@ export const EpisodeMediaWatchModal: React.FC<EpisodeMediaWatchModalProps> = ({
     ? epMeta.titleJa
     : epMeta.titleEn;
 
-  const animeEpisodeUrl = `https://www.youtube.com/watch?v=${epMeta.videoId}&list=${ANIME_YOUTUBE_PLAYLIST_ID}`;
-  const movieEpisodeUrl = `https://www.youtube.com/watch?v=${epMeta.movieVideoId}&list=${MOVIE_YOUTUBE_PLAYLIST_ID}`;
-  const animePlaylistUrl = `https://www.youtube.com/playlist?list=${ANIME_YOUTUBE_PLAYLIST_ID}`;
-  const moviePlaylistUrl = `https://www.youtube.com/playlist?list=${MOVIE_YOUTUBE_PLAYLIST_ID}`;
+  const baseOrigin =
+    typeof window !== 'undefined' && window.location.origin
+      ? window.location.origin
+      : 'https://snshero.com';
+
+  const animeEpisodeUrl = `${baseOrigin}/animation?ep=${safeChapter}`;
+  const movieEpisodeUrl = `${baseOrigin}/cinema?ep=${safeChapter}`;
+  const displayAnimeUrl = `https://snshero.com/animation?ep=${safeChapter}`;
+  const displayMovieUrl = `https://snshero.com/cinema?ep=${safeChapter}`;
 
   const TOTAL_COUNTDOWN_MS = 3000;
   const [timeLeftMs, setTimeLeftMs] = useState<number>(TOTAL_COUNTDOWN_MS);
@@ -95,7 +98,7 @@ export const EpisodeMediaWatchModal: React.FC<EpisodeMediaWatchModalProps> = ({
     };
   }, [safeProceedNext, watchState]);
 
-  // Detect when user returns from watching the YouTube video in the new window/tab
+  // Detect when user returns from watching the episode in the new window/tab
   useEffect(() => {
     if (watchState !== 'watching') return;
 
@@ -167,9 +170,7 @@ export const EpisodeMediaWatchModal: React.FC<EpisodeMediaWatchModalProps> = ({
             <Film size={18} className="text-amber-400 shrink-0" />
             <div className="min-w-0">
               <p className="text-[10px] font-bold uppercase tracking-wider text-amber-300 truncate">
-                {isKo
-                  ? `[EPISODE ${String(safeChapter).padStart(2, '0')} CLEAR · MEDIA REWARD]`
-                  : `[EPISODE ${String(safeChapter).padStart(2, '0')} CLEAR · MEDIA REWARD]`}
+                {`[EPISODE ${String(safeChapter).padStart(2, '0')} CLEAR · MEDIA REWARD]`}
               </p>
               <h3 className="text-sm sm:text-base font-bold truncate">
                 {isKo
@@ -236,81 +237,69 @@ export const EpisodeMediaWatchModal: React.FC<EpisodeMediaWatchModalProps> = ({
 
             <p className="text-xs sm:text-sm font-semibold leading-relaxed text-[#201d1d]">
               {isKo
-                ? `이번 회차(제 ${safeChapter}화)의 애니메이션 또는 무비를 시청하면 특별 보상(+${EPISODE_MEDIA_WATCH_REWARD_SNS} SNS)이 지급됩니다! 아래 버튼을 클릭하면 해당 회차 유튜브 링크/플레이리스트가 새 창으로 열리며, 동영상을 보고 돌아오면 보상이 즉시 지급됩니다.`
-                : `Watch Episode ${safeChapter}'s Animation or Movie to receive a special +${EPISODE_MEDIA_WATCH_REWARD_SNS} SNS reward! Click below to open the YouTube episode/playlist in a new window, and return to claim your reward.`}
+                ? `이번 회차(제 ${safeChapter}화)의 애니메이션 또는 무비를 시청하면 특별 보상(+${EPISODE_MEDIA_WATCH_REWARD_SNS} SNS)이 지급됩니다! 아래 버튼을 클릭하면 해당 회차 시청 페이지가 새 창으로 열리며, 동영상을 보고 돌아오면 보상이 즉시 지급됩니다.`
+                : `Watch Episode ${safeChapter}'s Animation or Movie to receive a special +${EPISODE_MEDIA_WATCH_REWARD_SNS} SNS reward! Click below to open the episode page in a new window, and return to claim your reward.`}
             </p>
           </div>
 
-          {/* Action Buttons: Open Episode YouTube / Playlist in New Window */}
+          {/* Action Buttons: Open /animation?ep=N and /cinema?ep=N in New Window */}
           {watchState === 'countdown' && (
             <div className="space-y-2.5">
-              {/* Primary Episode Links */}
+              {/* 1. Animation (/animation?ep=N) */}
               <button
                 type="button"
                 onClick={() => handleOpenMediaLink(animeEpisodeUrl, 'anime')}
-                className="w-full min-h-[48px] px-4 py-3 bg-[#201d1d] hover:bg-[#332e2e] text-[#fdfcfc] font-bold text-xs sm:text-sm rounded-sm border border-[#201d1d] flex items-center justify-between gap-2 cursor-pointer transition-colors"
+                className="w-full min-h-[54px] px-4 py-3 bg-[#201d1d] hover:bg-[#332e2e] text-[#fdfcfc] font-bold text-xs sm:text-sm rounded-sm border border-[#201d1d] flex items-center justify-between gap-2 cursor-pointer transition-colors text-left"
               >
-                <span className="flex items-center gap-2 truncate">
-                  <Youtube size={18} className="text-red-500 shrink-0" />
-                  <span className="truncate">
-                    {isKo
-                      ? `[🎬 제 ${safeChapter}화 애니메이션 시청 (+${EPISODE_MEDIA_WATCH_REWARD_SNS} SNS)]`
-                      : `[🎬 Watch EP.${safeChapter} Animation (+${EPISODE_MEDIA_WATCH_REWARD_SNS} SNS)]`}
+                <div className="flex flex-col gap-0.5 min-w-0">
+                  <span className="flex items-center gap-2 truncate">
+                    <Play size={16} className="text-amber-400 shrink-0" />
+                    <span className="truncate">
+                      {isKo
+                        ? `[🎬 제 ${safeChapter}화 애니메이션 시청 (+${EPISODE_MEDIA_WATCH_REWARD_SNS} SNS)]`
+                        : `[🎬 Watch EP.${safeChapter} Animation (+${EPISODE_MEDIA_WATCH_REWARD_SNS} SNS)]`}
+                    </span>
                   </span>
-                </span>
+                  <span className="text-[10px] text-stone-300 font-normal truncate pl-6">
+                    {displayAnimeUrl}
+                  </span>
+                </div>
                 <ExternalLink size={15} className="shrink-0 opacity-80" />
               </button>
 
+              {/* 2. Movie / Cinema (/cinema?ep=N) */}
               <button
                 type="button"
                 onClick={() => handleOpenMediaLink(movieEpisodeUrl, 'movie')}
-                className="w-full min-h-[48px] px-4 py-3 bg-[#fdfcfc] hover:bg-[#f1eeee] text-[#201d1d] font-bold text-xs sm:text-sm rounded-sm border border-[#201d1d] flex items-center justify-between gap-2 cursor-pointer transition-colors"
+                className="w-full min-h-[54px] px-4 py-3 bg-[#fdfcfc] hover:bg-[#f1eeee] text-[#201d1d] font-bold text-xs sm:text-sm rounded-sm border border-[#201d1d] flex items-center justify-between gap-2 cursor-pointer transition-colors text-left"
               >
-                <span className="flex items-center gap-2 truncate">
-                  <Film size={18} className="text-[#201d1d] shrink-0" />
-                  <span className="truncate">
-                    {isKo
-                      ? `[🎥 제 ${safeChapter}화 무비(실사) 시청 (+${EPISODE_MEDIA_WATCH_REWARD_SNS} SNS)]`
-                      : `[🎥 Watch EP.${safeChapter} Movie (+${EPISODE_MEDIA_WATCH_REWARD_SNS} SNS)]`}
+                <div className="flex flex-col gap-0.5 min-w-0">
+                  <span className="flex items-center gap-2 truncate">
+                    <Film size={16} className="text-[#201d1d] shrink-0" />
+                    <span className="truncate">
+                      {isKo
+                        ? `[🎥 제 ${safeChapter}화 무비 시청 (+${EPISODE_MEDIA_WATCH_REWARD_SNS} SNS)]`
+                        : `[🎥 Watch EP.${safeChapter} Movie (+${EPISODE_MEDIA_WATCH_REWARD_SNS} SNS)]`}
+                    </span>
                   </span>
-                </span>
+                  <span className="text-[10px] text-[#646262] font-normal truncate pl-6">
+                    {displayMovieUrl}
+                  </span>
+                </div>
                 <ExternalLink size={15} className="shrink-0 opacity-80" />
               </button>
-
-              {/* Playlist Links */}
-              <div className="grid grid-cols-2 gap-2 pt-0.5">
-                <button
-                  type="button"
-                  onClick={() => handleOpenMediaLink(animePlaylistUrl, 'anime')}
-                  className="min-h-[44px] px-2.5 py-2 bg-[#f8f7f7] hover:bg-[#f1eeee] text-[#201d1d] font-bold text-[11px] sm:text-xs rounded-sm border border-[rgba(15,0,0,0.18)] flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
-                >
-                  <Youtube size={14} className="text-red-600 shrink-0" />
-                  <span className="truncate">{isKo ? '애니 플레이리스트 새창' : 'Anime Playlist'}</span>
-                  <ExternalLink size={12} className="shrink-0 opacity-70" />
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => handleOpenMediaLink(moviePlaylistUrl, 'movie')}
-                  className="min-h-[44px] px-2.5 py-2 bg-[#f8f7f7] hover:bg-[#f1eeee] text-[#201d1d] font-bold text-[11px] sm:text-xs rounded-sm border border-[rgba(15,0,0,0.18)] flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
-                >
-                  <Film size={14} className="text-[#201d1d] shrink-0" />
-                  <span className="truncate">{isKo ? '무비 플레이리스트 새창' : 'Movie Playlist'}</span>
-                  <ExternalLink size={12} className="shrink-0 opacity-70" />
-                </button>
-              </div>
             </div>
           )}
 
-          {/* Watching State: Waiting for user to return from YouTube tab */}
+          {/* Watching State: Waiting for user to return from the new window/tab */}
           {watchState === 'watching' && (
             <div className="border border-[#201d1d] bg-[#201d1d] text-[#fdfcfc] p-4 rounded-none space-y-3">
               <div className="flex items-center gap-2 text-amber-300 font-bold text-xs sm:text-sm">
-                <Youtube size={18} className="text-red-500 shrink-0" />
+                <Film size={18} className="text-amber-400 shrink-0" />
                 <span>
                   {isKo
-                    ? '새 창에서 유튜브 동영상을 시청 중입니다...'
-                    : 'Watching YouTube video in a new window...'}
+                    ? '새 창에서 회차 동영상을 시청 중입니다...'
+                    : 'Watching episode video in a new window...'}
                 </span>
               </div>
               <p className="text-xs text-stone-300 leading-relaxed">

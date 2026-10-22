@@ -1731,11 +1731,12 @@ function AppContent() {
     }
 
     // Preserve search params for specific views if present
-    if ((view === 'prediction-market' || view === 'webtoon' || view === 'share') && window.location.search) {
+    if ((view === 'prediction-market' || view === 'webtoon' || view === 'share' || view === 'movie' || view === 'cinema' || view === 'anime' || view === 'novel') && window.location.search) {
       targetPath += window.location.search;
     }
 
-    if (currentPath !== targetPath) {
+    const currentFullUrl = currentPath + ((view === 'prediction-market' || view === 'webtoon' || view === 'share' || view === 'movie' || view === 'cinema' || view === 'anime' || view === 'novel') ? window.location.search : '');
+    if (currentFullUrl !== targetPath) {
       window.history.pushState({ view }, '', targetPath);
     }
 
