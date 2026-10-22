@@ -4796,7 +4796,7 @@ function AppContent() {
 
   const [isGlobalPopupOpen, setIsGlobalPopupOpen] = useState(false);
 
-  // YouTube 애니메이션 플레이리스트 프로모션 링크(?utm_source=youtube, ?promo=youtube_anime, ?gift=anime_ssr) 유입 시 특별 환영 보상(SSR 카단 + 1,000 SNS) 자동 지급
+  // 신규 접속자 전원 + YouTube 프로모션 유입 유저에게 전설(Gold/SSR) 영웅 카드 및 1,000 SNS 정착금 100% 실제 지급 보장
   useEffect(() => {
     try {
       if (typeof window === 'undefined') return;
@@ -4806,17 +4806,27 @@ function AppContent() {
         params.get('promo') === 'youtube_anime' ||
         params.get('gift') === 'anime_ssr';
 
+      // 1) 주소창 직접 입력(snshero.com) 포함 모든 최초 방문자에게 최고 등급 전설(Gold/SSR) 카드 즉시 지급
+      if (localStorage.getItem('hero_welcome_ssr_gift_claimed') !== 'true') {
+        localStorage.setItem('hero_welcome_ssr_gift_claimed', 'true');
+        // 최고 등급(gold = SSR급 전설) 영웅 카드 #50 알렉산다르 & #104 바하무트 + 주인공 #41 카단 지급
+        addCard('gold', 50, true);
+        addCard('gold', 104, true);
+        addCard('bronze', 41, true);
+      }
+
+      // 2) 유튜브 프로모션 파라미터(?utm_source=youtube, ?gift=anime_ssr) 유입 시 추가 1,000 SNS 보너스 + 알림
       if (isYoutubePromo && localStorage.getItem('hero_youtube_anime_gift_claimed') !== 'true') {
         localStorage.setItem('hero_youtube_anime_gift_claimed', 'true');
         updateSns(1000, 'YouTube Animation Playlist Viewer Special Gift');
-        addCard('SSR', 1);
+        addCard('gold', 50, true);
         setTimeout(() => {
           showCustomAlert(
-            language === 'ko' ? '[YouTube 애니메이션 시청자 특별 보급품]' : '[YouTube Anime Viewer Special Gift]',
+            language === 'ko' ? '[YouTube 특별 보급품 지급 완료]' : '[YouTube Special Gift Claimed]',
             language === 'ko'
-              ? 'SNSHero 공식 애니메이션을 시청하고 방문해 주셔서 감사합니다!\n\n[즉시 지급 완료]\n• 전설(SSR) 영웅 카드 [카단 #1] × 1장\n• 1,000 SNS 보석 보너스 지급!'
-              : 'Thank you for visiting from the official SNSHero YouTube Animation!\n\n[Claimed]\n• SSR Hero Card [Kadan #1] × 1\n• +1,000 SNS Gems Bonus!',
-            6
+              ? 'SNSHero 공식 애니메이션을 통해 방문해 주셔서 감사합니다!\n\n[즉시 지급 완료]\n• 전설(SSR/Gold) 영웅 카드 [알렉산다르 #50 & 바하무트 #104]\n• 주인공 [카단 #41] 카드\n• +1,000 SNS 보석 보너스 지급!'
+              : 'Thank you for visiting from the official SNSHero YouTube Animation!\n\n[Claimed]\n• Legendary (SSR/Gold) Hero Cards [Aleksandar #50 & Bahamut #104]\n• Hero [Kadan #41]\n• +1,000 SNS Gems Bonus!',
+            5
           );
         }, 800);
       }
