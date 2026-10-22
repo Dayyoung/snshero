@@ -2,6 +2,23 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-22 13:50 KST] [프로모션 광고 영상 제작] 40화 애니메이션 & SNSHero.com 카드게임 통합 홍보 영상(1분 41초, 1280x720 HD) 제작 완료
+- **요청 사항**:
+  - `animation`으로 구성된 1~2분짜리 광고 영상 1편 제작 요청 (총 40화 애니메이션 및 `snshero.com` 카드게임 홍보 목적).
+- **주요 구현 및 제작 내역**:
+  1. **5막 구조 프로모션 광고 영상 빌더 구현 (`scripts/build_animation_promo_trailer.py`)**:
+     - **총 러닝타임**: `101.8초 (1분 41초)` / 해상도 `1280x720 HD (24fps, H.264 High Profile)` / 오디오 `48kHz Stereo AAC 192kbps` / 용량 `19.9 MB`.
+     - **Act 1~3 (0s~66.6s)**: 공식 애니메이션 1화(`눈보라 아래 두 서약`)부터 40화(`영웅이라 불리지 않는 자`)까지 핵심 명장면 하이라이트 20개 컷과 상하단 프로모션 HUD(`WATCH & EARN +100 SNS`, `무료 플레이: snshero.com`) 합성.
+     - **Act 4 (66.6s~86.6s)**: `snshero.com` 3x3 전략 AI 카드 배틀 쇼케이스 — 전설(SSR) 영웅 카드 10종(`카단`, `실리아`, `이그니스`, `알렉산다르`, `발리안`, `바하무트`, `아쿠아로드`, `데스나이트 아서스`, `아일라`, `콜로서스`) 골드 카드 프레임 및 1,000 SNS 정착금 안내.
+     - **Act 5 (86.6s~101.8s)**: `Visit SNSHero.com!` & `https://snshero.com/movie` 클로징 콜투액션(CTA) 타이틀 카드.
+     - **오디오 믹싱**: 한국어 성우 내레이션(`ko-KR-InJoonNeural`) 5막 + 공식 테마 BGM(`mixkit-games-worldbeat-466.mp3`) 다이나믹 볼륨 더킹 + 전투 나팔·승리 팡파르 효과음 결합.
+  2. **출력 파일 위치**:
+     - `/Users/dayyoung/Downloads/SNSHero_Animation_40EP_CardGame_Promo_Ad.mp4`
+     - `/Users/dayyoung/project/snshero/public/video/SNSHero_Animation_Promo_Trailer.mp4`
+- **검증 결과**:
+  - `ffprobe` 스트림 무결성 검증 완료 (`1280x720`, `24fps`, `101.79s`, `h264 + aac`).
+  - 구글 폼 보고서 제출 완료 (`submit_report.py`).
+
 ## [2026-10-22 10:08 KST] [/reddit 상단 고정 공지 전면 제거] 피드 및 정적 SEO 페이지 상단 고정 게시물(궨트 출시, 게임 가이드 등) 일괄 제거 및 원격 푸시 완료
 - **요청 사항**:
   - "상단 고정 공지는 모두 제거 /git-push"
