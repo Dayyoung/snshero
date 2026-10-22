@@ -2,6 +2,21 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-22 15:56 KST] [유튜브 프로모션 썸네일 제작] 애니메이션 40화 & SNSHero.com 카드게임 고클릭률(CTR) 유튜브 썸네일 2종(KO/EN, 1280x720) 제작 완료
+- **요청 사항**:
+  - "유튜브용 썸네일도 하나 만들어줘."
+- **주요 구현 및 제작 내역**:
+  1. **유튜브 공식 규격(`1280x720`, 2MB 이하) 고클릭률(CTR) 썸네일 생성기 구현 (`scripts/build_animation_promo_thumbnail.py`)**:
+     - **배경 구성**: 애니메이션 1화·8화·20화·39화 순수 일러스트 명장면 4분할 콜라주 및 다크 골드 비네팅.
+     - **우측 히어로 카드 팬**: `카단(SSR PWR 98)`, `실리아(SSR PWR 95)`, `바하무트(SSR PWR 99)` 골드 프레임 카드 3종 입체 배치.
+     - **좌측/하단 타이포그래피**: `"공식 애니메이션 40화 × AI 카드게임"`, `"전 40화 무료 공개! 1초 원클릭 카드배틀 SNSHero.com"`, `"접속 즉시 1,000 SNS + SSR 전설 카드 무료! (애니 매 화 시청 시 +100 SNS)"` 고대비 스트로크 텍스트 및 벡터 아이콘 적용.
+  2. **출력 파일 위치**:
+     - 한국어 버전: `/Users/dayyoung/Downloads/SNSHero_Animation_Promo_Thumbnail_KO.jpg` (305 KB) & `.png`
+     - 글로벌 영어 버전: `/Users/dayyoung/Downloads/SNSHero_Animation_Promo_Thumbnail_EN.jpg` (315 KB) & `.png`
+     - 프로젝트 내 경로: `/Users/dayyoung/project/snshero/public/video/SNSHero_Animation_Promo_Thumbnail.jpg`
+- **검증 결과**:
+  - 이미지 시각 검수 완료(깨진 특수문자 0건, 모바일/데스크톱 가독성 100% 확보) 및 구글 폼 보고서 제출 완료 (`submit_report.py`).
+
 ## [2026-10-22 13:50 KST] [프로모션 광고 영상 제작] 40화 애니메이션 & SNSHero.com 카드게임 통합 홍보 영상(1분 41초, 1280x720 HD) 제작 완료
 - **요청 사항**:
   - `animation`으로 구성된 1~2분짜리 광고 영상 1편 제작 요청 (총 40화 애니메이션 및 `snshero.com` 카드게임 홍보 목적).
