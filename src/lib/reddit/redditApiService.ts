@@ -165,17 +165,16 @@ export class RedditApiService {
    * 바이브코딩 종합 안내, 1~5편 유튜브 강의, 6대 공식 리소스
    */
   static getSNSHeroPromotedPosts(userState?: RedditUserDataState): RedditPost[] {
-    const rawSeeds = SEED_POSTS.filter((p) => this.isSNSHeroPost(p));
-    // 고정 공지를 맨 앞에 두고 번호 순으로 정렬
-    const pinned = rawSeeds.filter((p) => Boolean(p.isPinned));
-    const unpinned = rawSeeds.filter((p) => !p.isPinned);
-    const ordered = [...pinned, ...unpinned];
-    return this.mapUserInteractions(ordered, userState);
+    const rawSeeds = SEED_POSTS.filter((p) => this.isSNSHeroPost(p)).map((p) => ({
+      ...p,
+      isPinned: false,
+    }));
+    return this.mapUserInteractions(rawSeeds, userState);
   }
 
   /**
    * 서브레딧 또는 메인 피드 포스트 목록 반환
-   * 공식 게임 소개 및 플레이 가이드 고정 게시물(isPinned: true)은 신규 글이 등록되거나 정렬이 바뀌어도 항상 최상단에 영구 고정!
+   * 상단 고정 공지 없이 순수 실시간 구글 뉴스 및 사용자 작성 포스트만 최신순으로 반환
    */
   static getPosts(
     subreddit: string = 'popular',
@@ -183,19 +182,14 @@ export class RedditApiService {
     timeFilter: TimeFilterType = 'today',
     userState?: RedditUserDataState
   ): RedditPost[] {
-    // 1. 공식 상단 고정(Pinned) 포스트: 궨트 게임 출시 최우선 고정 + SNSHero 게임 소개 및 가이드
-    const officialPinnedPosts = SEED_POSTS.filter((p) =>
-      Boolean(p.isPinned && (p.id === 'post_snshero_gwent_launch' || p.id === 'post_snshero_game_intro_guide'))
-    );
-
-    // 2. 실시간 구글 뉴스 스프레드시트 포스트 로드
+    // 1. 실시간 구글 뉴스 스프레드시트 포스트 로드
     const googleNewsPosts = GoogleNewsSheetService.getCachedGoogleNewsPosts(userState?.language || 'ko');
 
-    // 3. 사용자가 직접 작성한 포스트가 있다면 상단 포함
-    const userPosts = userState?.userPosts || [];
-    const pool = [...officialPinnedPosts, ...userPosts, ...googleNewsPosts];
+    // 2. 사용자가 직접 작성한 포스트가 있다면 포함 (상단 고정 공지 모두 제거)
+    const userPosts = (userState?.userPosts || []).map((p) => ({ ...p, isPinned: false }));
+    const pool = [...userPosts, ...googleNewsPosts.map((p) => ({ ...p, isPinned: false }))];
 
-    // 4. 정렬 및 사용자 상호작용(투표/북마크) 매핑 (isPinned는 무조건 최상단 0순위 고정)
+    // 3. 정렬 및 사용자 상호작용(투표/북마크) 매핑
     const sorted = this.sortPosts(pool, sort);
     return this.mapUserInteractions(sorted, userState);
   }
@@ -242,16 +236,9 @@ export class RedditApiService {
 
   /**
    * 포스트 정렬 (Hot, New, Top, Best, Rising)
-   * 상단 고정 글(isPinned === true)은 신규 글이 등록되거나 정렬 옵션이 변경되어도 무조건 최상단 유지!
    */
   static sortPosts(posts: RedditPost[], sort: FeedSortType): RedditPost[] {
-    const pinnedPosts = posts.filter((p) => Boolean(p.isPinned));
-    const unpinnedPosts = posts.filter((p) => !p.isPinned);
-
-    // 중복 고정 글 ID 정리
-    const uniquePinned = Array.from(new Map(pinnedPosts.map((p) => [p.id, p])).values());
-
-    const list = [...unpinnedPosts];
+    const list = [...posts];
     const now = Date.now();
 
     let sortedUnpinned: RedditPost[] = [];
@@ -301,7 +288,7 @@ export class RedditApiService {
         break;
     }
 
-    return [...uniquePinned, ...sortedUnpinned];
+    return sortedUnpinned;
   }
 
   /**

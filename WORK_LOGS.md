@@ -2,6 +2,21 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-22 10:08 KST] [/reddit 상단 고정 공지 전면 제거] 피드 및 정적 SEO 페이지 상단 고정 게시물(궨트 출시, 게임 가이드 등) 일괄 제거 및 원격 푸시 완료
+- **요청 사항**:
+  - "상단 고정 공지는 모두 제거 /git-push"
+- **주요 수정 내역**:
+  1. **`RedditApiService` 상단 고정 공지(`officialPinnedPosts` / `isPinned`) 제거 (`src/lib/reddit/redditApiService.ts`)**:
+     - `getPosts()`에서 `post_snshero_gwent_launch`, `post_snshero_game_intro_guide` 등 상단 고정 포스트 주입 로직 제거.
+     - `sortPosts()` 및 `getSNSHeroPromotedPosts()`에서 `isPinned` 최상단 강제 고정 로직을 제거하여 `/reddit` 진입 시 최상단부터 순수하게 최신 구글 뉴스 피드만 노출되도록 수정.
+  2. **시드 데이터 `isPinned` 플래그 해제 (`src/data/redditSeedData.ts`)**:
+     - 모든 시드 게시물의 `isPinned: true`를 `false`로 일괄 변경.
+  3. **정적 SEO 피드(`/reddit/index.html`, `/r/news/index.html`) 상단 고정 공지 제거 (`scripts/generate-news-seo.ts`)**:
+     - 정적 HTML 생성기에서도 상단 고정 공지 `<article>` 블록 2건을 완전히 제거.
+- **검증 및 배포**:
+  - `npm run build` 0 Errors 통과 및 `git push origin main` 원격 저장소 푸시 완료.
+  - 구글 폼 작업 완료 보고서 제출 완료 (`submit_report.py`).
+
 ## [2026-10-22 08:53 KST] [/reddit 진입 시 오늘 최신 뉴스 미노출(어제 뉴스 노출) 버그 해결] 1자리 시간(8:00 등) 타임스탬프 파싱 버그 수정, pubhtml/sheet 실시간 무캐시 연동 및 즉시 렌더링 보장
 - **요청 사항**:
   - `https://docs.google.com/spreadsheets/d/e/2PACX-1vQkHP5pQDdSMrx3f0GyUz_rK5yqmMj5J12apkSom3JvF-NVk2yD55tFAk_Ka7qKM54dPr1ru3LP15Zu/pubhtml`

@@ -361,7 +361,7 @@ export const SEED_POSTS: RedditPost[] = [
     score: 189400,
     commentCount: 528,
     flair: { text: '⚔️ 공식 출시 / Game Launch', bgColor: '#B91C1C', textColor: '#FFFFFF' },
-    isPinned: true,
+    isPinned: false,
     isOriginalContent: true,
     upvoteRatio: 0.99,
     media: {
@@ -436,7 +436,7 @@ export const SEED_POSTS: RedditPost[] = [
     score: 154200,
     commentCount: 412,
     flair: { text: '📌 공식 가이드 / Official Guide', bgColor: '#FF4500', textColor: '#FFFFFF' },
-    isPinned: true,
+    isPinned: false,
     isOriginalContent: true,
     upvoteRatio: 0.99,
     media: {
@@ -535,7 +535,7 @@ AI와 함께 진화하는 차세대 원클릭 웹 카드 배틀 RPG, **SNSHero.c
     score: 99999,
     commentCount: 142,
     flair: { text: '공식 강의 / OpenSource', bgColor: '#10B981', textColor: '#FFFFFF' },
-    isPinned: true,
+    isPinned: false,
     isOriginalContent: true,
     upvoteRatio: 0.99,
     media: {
@@ -582,7 +582,7 @@ https://www.youtube.com/@snshero
     score: 48200,
     commentCount: 89,
     flair: { text: '강의 1강 / Video', bgColor: '#FF4500', textColor: '#FFFFFF' },
-    isPinned: true,
+    isPinned: false,
     isOriginalContent: true,
     upvoteRatio: 0.99,
     media: {
@@ -611,7 +611,7 @@ https://www.youtube.com/@snshero
     score: 43500,
     commentCount: 64,
     flair: { text: '강의 2강 / Video', bgColor: '#FF4500', textColor: '#FFFFFF' },
-    isPinned: true,
+    isPinned: false,
     isOriginalContent: true,
     upvoteRatio: 0.98,
     media: {
@@ -639,7 +639,7 @@ AI Studio를 활용한 기능 확장과 카드 배틀 시스템 및 유저 상�
     score: 41200,
     commentCount: 52,
     flair: { text: '강의 3강 / Video', bgColor: '#FF4500', textColor: '#FFFFFF' },
-    isPinned: true,
+    isPinned: false,
     isOriginalContent: true,
     upvoteRatio: 0.98,
     media: {
@@ -667,7 +667,7 @@ AI Studio를 활용한 기능 확장과 카드 배틀 시스템 및 유저 상�
     score: 39800,
     commentCount: 47,
     flair: { text: '강의 4강 / Video', bgColor: '#FF4500', textColor: '#FFFFFF' },
-    isPinned: true,
+    isPinned: false,
     isOriginalContent: true,
     upvoteRatio: 0.97,
     media: {
@@ -695,7 +695,7 @@ AI Studio를 활용한 기능 확장과 카드 배틀 시스템 및 유저 상�
     score: 38400,
     commentCount: 41,
     flair: { text: '강의 5강 / Video', bgColor: '#FF4500', textColor: '#FFFFFF' },
-    isPinned: true,
+    isPinned: false,
     isOriginalContent: true,
     upvoteRatio: 0.98,
     media: {
@@ -723,7 +723,7 @@ AI Studio를 활용한 기능 확장과 카드 배틀 시스템 및 유저 상�
     score: 35100,
     commentCount: 38,
     flair: { text: '게임 플레이 / Play', bgColor: '#4F46E5', textColor: '#FFFFFF' },
-    isPinned: true,
+    isPinned: false,
     isOriginalContent: true,
     upvoteRatio: 0.99,
     media: {
@@ -747,7 +747,7 @@ AI Studio를 활용한 기능 확장과 카드 배틀 시스템 및 유저 상�
     score: 33400,
     commentCount: 31,
     flair: { text: 'AI Studio / NoCode', bgColor: '#0284C7', textColor: '#FFFFFF' },
-    isPinned: true,
+    isPinned: false,
     isOriginalContent: true,
     upvoteRatio: 0.98,
     media: {
@@ -770,7 +770,7 @@ AI Studio를 활용한 기능 확장과 카드 배틀 시스템 및 유저 상�
     score: 32900,
     commentCount: 29,
     flair: { text: '오픈소스 / GitHub', bgColor: '#24292E', textColor: '#FFFFFF' },
-    isPinned: true,
+    isPinned: false,
     isOriginalContent: true,
     upvoteRatio: 0.99,
     media: {
@@ -794,7 +794,7 @@ AI Studio를 활용한 기능 확장과 카드 배틀 시스템 및 유저 상�
     score: 31200,
     commentCount: 25,
     flair: { text: 'AI 프롬프트 / Markdown', bgColor: '#8B5CF6', textColor: '#FFFFFF' },
-    isPinned: true,
+    isPinned: false,
     isOriginalContent: true,
     upvoteRatio: 0.98,
     media: {
@@ -817,7 +817,7 @@ AI에게 웹게임의 규칙, 카드 스키마, UI 테마를 전달할 때 그�
     score: 29800,
     commentCount: 22,
     flair: { text: '카드 에셋 / Graphics', bgColor: '#EC4899', textColor: '#FFFFFF' },
-    isPinned: true,
+    isPinned: false,
     isOriginalContent: true,
     upvoteRatio: 0.98,
     media: {
@@ -846,7 +846,7 @@ AI에게 웹게임의 규칙, 카드 스키마, UI 테마를 전달할 때 그�
     score: 28700,
     commentCount: 19,
     flair: { text: '공식 채널 / YouTube', bgColor: '#DC2626', textColor: '#FFFFFF' },
-    isPinned: true,
+    isPinned: false,
     isOriginalContent: true,
     upvoteRatio: 0.99,
     media: {
