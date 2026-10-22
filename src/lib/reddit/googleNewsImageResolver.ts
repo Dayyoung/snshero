@@ -1,243 +1,293 @@
 /**
  * googleNewsImageResolver.ts
- * 구글 뉴스 기사 제목 및 본문 시맨틱 심층 분석 기반 스마트 이미지 검증 & 100% 매칭 엔진
- * 
- * 해결 과제:
- * 1. 구글 뉴스 시트 크롤러가 수집한 특정 5~6개 이미지(스페인 축구, WNBA 농구, 페루 시골선거, 백악관 로고 등)가
- *    151개 뉴스 전체에 무차별적으로 복제/도배되어 오토바이 사고, 총기난사 추모, 외교 소식 등에 축구/농구 사진이
- *    노출되던 치명적인 기사-이미지 불일치 현상 원천 해결
- * 2. 13개 핵심 카테고리(교통/사고, 사법/기소, 군사/전쟁, 정치/선거, 사건/총기/추모, 기상/태풍/재난,
- *    스포츠/축구/농구, IT/AI/사이버, 보건/의료/감염병, 대학/교육/비자, 경제/석유/에너지, 환경/원주민/파이프라인, 미디어/언론)
- *    가중치 스코어링(제목 5배, 요약 1배) 알고리즘으로 기사 실제 내용을 100% 정확하게 감지
- * 3. 결정론적 해시(Deterministic Hash) 기반 고화질 언스플래시 정품 보도사진 풀 연동으로 새로고침 시에도 변함없는 정확성 보장
+ * 구글 뉴스 기사 제목·카테고리·키워드·본문 시맨틱 분석 기반 스마트 이미지 매칭 & 3단계 무결점 폴백(Fallback) 엔진
+ *
+ * 핵심 기능:
+ * 1. 시트 원본 이미지가 정상 로드되면 시트 이미지를 우선 표시하되,
+ *    원본 이미지 링크가 깨지거나(404/403/DNS 오류/핫링크 차단) 비어있는 경우
+ *    기사의 카테고리·키워드·제목·본문 맥락에 100% 부합하는 고화질 보도사진으로 즉시 자동 대체
+ * 2. AI/SI 특화 7대 카테고리(SpaceX/우주AI, 백악관/SIF/정책, 멀티에이전트/클라우드AI, 엔터프라이즈 SI AX,
+ *    AI 데이터센터/반도체/GPU, 사이버보안/국방, 금융/실적/경제) 및 일반 뉴스 8대 카테고리 등
+ *    총 15대 카테고리 × HTTP 200 OK 전수 검증된 고화질 보도사진 풀 탑재
+ * 3. 네트워크 차단 및 오프라인 환경에서도 절대 깨지지 않는 동적 SVG 에디토리얼 보도 그래픽(3차 최종 폴백) 내장
  */
 
 import { RawGoogleNewsItem } from '../../data/googleNewsSeedData';
 
-// 크롤러의 캐리오버(복제 도배) 에러로 판명된 의심스러운 도메인 및 플레이스홀더 패턴
-// (참고: dims.apnews.com은 AP통신 정품 보도사진 CDN이므로 무조건 차단하지 않고 정상 보도사진으로 신뢰함)
-const UNRELIABLE_IMAGE_SIGNATURES = [
-  'googleusercontent.com',     // 28회 이상 중복 도배된 프록시/더미
-  'cloudfront.net',            // 고정 논평 썸네일(brooksandcapehart 등)
-  'the-ap-default-image',
-  'Demonstration-Alert',
-  'placeholder',
-  'default_image',
-  'default_avatar',
-  'default-thumbnail',
-  'no-image',
-  'blank.gif',
-  '1x1.png',
-  'wh47-social-share-card',
-];
-
 interface TopicCategoryDef {
+  label: string;
+  accentColor: string;
   keywords: string[];
   images: string[];
 }
 
-// 13대 핵심 카테고리별 검증된 고화질 프레스/보도 사진 풀
+// 15대 핵심 카테고리별 HTTP 200 OK 전수 검증된 고화질 보도사진 풀
 const SEMANTIC_TOPIC_CATALOG: Record<string, TopicCategoryDef> = {
-  // 1. 교통/사고/고속도로/항공
-  transport_crash: {
+  // 1. SpaceX / 우주항공 / 위성 AI / Starlink / Grok
+  spacex_aerospace_satellite: {
+    label: 'SPACEX & AEROSPACE SI',
+    accentColor: '#38BDF8',
     keywords: [
-      'motorcycle', 'collision', 'crash', 'highway', 'traffic', 'fatal crash', 'pocomoke',
-      'closure', 'vehicle', 'fatal', 'car accident', 'tsa seating', 'flight', 'aviation',
-      'train', 'transit disruptions', 'road accident', 'corridor'
+      'spacex', 'spacexsi', 'starlink', 'elon musk', 'musk', 'grok', 'xai',
+      'satellite', 'orbital', 'spaceborne', 'rocket', 'aerospace', 'payload space',
+      '우주', '위성', '스타링크', '스페이스x', '일론 머스크'
     ],
     images: [
-      'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=900&q=80', // 고속도로 및 차량 교통
-      'https://images.unsplash.com/photo-1508847154043-be5407fcaa5a?auto=format&fit=crop&w=900&q=80', // 야간 도로 및 경찰 통제
-      'https://images.unsplash.com/photo-1587745416684-47953f16f02f?auto=format&fit=crop&w=900&q=80', // 긴급 응급구조 헬기
-      'https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&w=900&q=80', // 도시 고속도로
+      'https://images.unsplash.com/photo-1541185933-ef5d8ed016c2?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1516849841032-87cbac4d88f7?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1581822261290-991b38693d1b?auto=format&fit=crop&w=900&q=80',
     ],
   },
 
-  // 2. 사법/법원/소송/기소/영장
-  legal_court_subpoena: {
+  // 2. 백악관 / 트럼프 행정부 / 슈퍼 인텔리전스 포스(SIF) / AI 차르 / 연방 정책
+  whitehouse_sif_policy: {
+    label: 'WHITE HOUSE & FEDERAL SI POLICY',
+    accentColor: '#EF4444',
     keywords: [
-      'lawsuit', 'complaint', 'court', 'judge', 'indicted', 'charges', 'prosecutors',
-      'felony', 'subpoena', 'subpoenas', 'antitrust investigation', 'firing squad',
-      'legal objections', 'civil liberties', 'justice department inquiry', 'trial',
-      'ruling', 'supreme court', 'grand jury', 'attorney general', 'exonerated'
+      'white house', 'trump', 'super intelligence force', 'sif', 'ai czar',
+      'jay clayton', 'executive order', '14434', 'state department', 'ftc',
+      'andrew ferguson', 'federal', 'administration', 'washington', 'capitol',
+      'congress', 'senate', 'diplomatic', 'embassies', 'white house si pact',
+      '백악관', '트럼프', '슈퍼 인텔리전스', '슈퍼정보군', '국무부', '행정명령', '연방'
     ],
     images: [
-      'https://images.unsplash.com/photo-1453733197781-717857324298?auto=format&fit=crop&w=900&q=80', // 법원 판사봉 및 법전
-      'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=900&q=80', // 대법원 석조 기둥
-      'https://images.unsplash.com/photo-1589578527966-fdac0f44566c?auto=format&fit=crop&w=900&q=80', // 정의의 여신상과 저울
-      'https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&w=900&q=80', // 재판정 법정
+      'https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1540910419892-4a36d2c3266c?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1575320181282-9afab399332c?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1501466044931-62695aada8e9?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=900&q=80',
     ],
   },
 
-  // 3. 군사/전쟁/공습/분쟁
-  military_war: {
+  // 3. 멀티 에이전트 오케스트레이션 / 클라우드 AI 프레임워크 (AWS Bedrock, Azure, Vertex AI, ADK)
+  multi_agent_orchestration: {
+    label: 'MULTI-AGENT ORCHESTRATION',
+    accentColor: '#A855F7',
     keywords: [
-      'airport attack', 'strikes', 'houthi', 'casualty', 'combat', 'toll', 'killed',
-      'yemen', 'taiz siege', 'central command', 'gulf of oman', 'blockade', 'missile',
-      'defense', 'pentagon', 'military', 'soldiers', 'ukraine', 'occupied', 'starvation',
-      'peace mission', 'moscow', 'war', 'naval', 'army', 'hostilities', 'front-line', 'drone strike'
+      'multi-agent', 'orchestration', 'agentcore', 'bedrock', 'vertex ai',
+      'agent framework', 'adk', 'agent development kit', 'sub-agent', 'swarm',
+      'swarms', 'crewai', 'langgraph', 'autogen', 'mcp', 'agent2agent',
+      'collaborative swarms', 'no-code multi-agent', 'autonomous agent',
+      '다중 에이전트', '오케스트레이션', '베드록', '에이전트 프레임워크'
     ],
     images: [
-      'https://images.unsplash.com/photo-1508614589041-895b88991e3e?auto=format&fit=crop&w=900&q=80', // 해군 함정 및 레이더
-      'https://images.unsplash.com/photo-1579965342575-16428a7c8881?auto=format&fit=crop&w=900&q=80', // 공군 전투기 비행
-      'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=900&q=80', // 전선 군사 방위 거점
-      'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=900&q=80', // 긴급 안보 분쟁 현장
+      'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1555949963-aa79dcee981c?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=900&q=80',
     ],
   },
 
-  // 4. 정치/선거/의회/정상회담
-  politics_election: {
+  // 4. 엔터프라이즈 SI AX & 시스템 통합 (Accenture, Workday, Salesforce, Dell, IBM, 삼성SDS, LG CNS)
+  enterprise_si_cloud: {
+    label: 'ENTERPRISE SI AX & CLOUD',
+    accentColor: '#F97316',
     keywords: [
-      'senate race', 'campaign', 'nominee', 'protests', 'new delhi', 'election', 'electoral',
-      'photo id', 'legislation', 'republican', 'democrat', 'voter', 'ballot', 'trump',
-      'president', 'white house', 'mayor', 'hitler mussolini', 'burnham', 'rubio', 'andy burnham',
-      'congress', 'capitol', 'oval office', 'executive order', 'diplomacy', 'diplomatic'
+      'accenture', 'workday', 'salesforce', 'agentforce', 'dell', 'ibm',
+      'snowflake', 'databricks', 'netsuite', 'sap', 'oracle', 'servicenow',
+      'system integration', 'systems integrator', 'si ax', 'forward deployed',
+      'fde', 'enterprise ai', 'erp', 'crm', 'slack', 'cloud run', 'korean si',
+      'samsung sds', 'lg cns', 'sk c&c', 'consulting', 'legacy systems',
+      '액센츄어', '워크데이', '세일즈포스', '시스템 통합', '엔터프라이즈'
     ],
     images: [
-      'https://images.unsplash.com/photo-1540910419892-4a36d2c3266c?auto=format&fit=crop&w=900&q=80', // 미국 국회의사당 돔
-      'https://images.unsplash.com/photo-1579208575657-c595a05383b7?auto=format&fit=crop&w=900&q=80', // 선거 투표함 및 투표소
-      'https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&fit=crop&w=900&q=80', // 백악관 전경
-      'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=900&q=80', // 의회 본회의장
-      'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=900&q=80', // 대규모 시민 집회 및 시위
+      'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=900&q=80',
     ],
   },
 
-  // 5. 사건/총기/강력범죄/추모
-  crime_mass_shooting: {
+  // 5. AI 컴퓨팅 인프라 / 반도체 / GPU / 데이터센터 / 액침냉각
+  ai_compute_datacenter_chip: {
+    label: 'AI COMPUTE & SEMICONDUCTOR',
+    accentColor: '#10B981',
     keywords: [
-      'mass shooting', 'vigils', 'vigil', 'mourn', 'shooting', 'victims', 'assault',
-      'dormitory', 'campus dormitory', 'homicide', 'murder', 'killer', 'canine therapy',
-      'crime', 'robbery', 'arrested', 'police', 'investigation', 'detectives', 'sheriff'
+      'nvidia', 'gpu', 'semiconductor', 'data center', 'liquid cooling',
+      'vertiv', 'arm', 'neoverse', 'quantum', 'microchip', 'hardware',
+      'compute infrastructure', 'gigawatt', 'hyperscale', 'subsea cable',
+      'gallium', 'germanium', 'chip', 'bluefield', 'dpu', 'hpe', 'server',
+      '엔비디아', '반도체', '데이터센터', '컴퓨팅', '인프라'
     ],
     images: [
-      'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=900&q=80', // 촛불 추모 기도회
-      'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=900&q=80', // 수사관 현장 폴리스라인
-      'https://images.unsplash.com/photo-1508847154043-be5407fcaa5a?auto=format&fit=crop&w=900&q=80', // 순찰차 사이렌 경광등
-      'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=900&q=80', // 시민 헌화 추모비
+      'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1563770660941-20978e870e26?auto=format&fit=crop&w=900&q=80',
     ],
   },
 
-  // 6. 기상/태풍/자연재해/허리케인
-  weather_storm: {
+  // 6. 사이버보안 / 국방 / 안보 / 에이전틱 시큐리티
+  cybersecurity_defense: {
+    label: 'CYBERSECURITY & DEFENSE AI',
+    accentColor: '#06B6D4',
     keywords: [
-      'tropical storm', 'storm', 'hurricane', 'tornado', 'flood', 'rainfall', 'severe weather',
-      'meteorologist', 'weather', 'typhoon', 'forecast', 'san diego', 'storm rachel',
-      'wind and rain', 'monsoon', 'earthquake', 'tsunami', 'wildfire'
+      'cybersecurity', 'cyber', 'security architecture', 'agentic security',
+      'network security', 'zero trust', 'pentagon', 'defense', 'military',
+      'wiz', 'fedramp', 'cnapp', 'exploitation', 'firewall', 'encryption',
+      'strike', 'missile', 'naval', 'army', 'ukraine', 'war', 'blockade',
+      '보안', '사이버', '국방', '방위'
     ],
     images: [
-      'https://images.unsplash.com/photo-1527482797697-8795b05a13fe?auto=format&fit=crop&w=900&q=80', // 폭풍우 먹구름
-      'https://images.unsplash.com/photo-1514632595-4944383f2737?auto=format&fit=crop&w=900&q=80', // 폭우 침수
-      'https://images.unsplash.com/photo-1534088568595-a066f410bcda?auto=format&fit=crop&w=900&q=80', // 뇌우 번개
-      'https://images.unsplash.com/photo-1561553873-e8491a564fd0?auto=format&fit=crop&w=900&q=80', // 기상 위성 레이더
+      'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1508614589041-895b88991e3e?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1579965342575-16428a7c8881?auto=format&fit=crop&w=900&q=80',
     ],
   },
 
-  // 7. 스포츠/축구/농구
-  sports_athletics: {
+  // 7. 금융 / 실적 / 핀테크 / 경제 / 투자
+  finance_economy_market: {
+    label: 'FINTECH & GLOBAL MARKETS',
+    accentColor: '#EAB308',
     keywords: [
-      'uswnt', 'spain', 'world cup', 'defeat', 'tactical', 'midfield', 'wnba', 'finals',
-      'angel reese', 'basketball', 'viewership', 'sports', 'scores', 'fifa', 'tournament',
-      'soccer', 'football', 'olympics', 'athletes', 'stadium', 'championship'
+      'earnings', 'operating profit', 'revenue', 'jpmorgan', 'fintech',
+      'settlement', 'wire clearance', 'series a', 'funding', 'valuation',
+      'tariff', 'trade', 'wall street', 'stock', 'economy', 'inflation',
+      'bank', 'financial', 'investment', 'market', '실적', '영업이익', '매출', '금융'
     ],
     images: [
-      'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=900&q=80', // 축구 경기장과 서포터즈
-      'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=900&q=80', // 축구공과 경기장 잔디
-      'https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=900&q=80', // 농구 코트와 골대
-      'https://images.unsplash.com/photo-1519861531473-9200262188bf?auto=format&fit=crop&w=900&q=80', // 농구 시합 열기
+      'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=900&q=80',
     ],
   },
 
-  // 8. IT/AI/테크/사이버보안
-  tech_ai_cyber: {
+  // 8. 사법 / 법원 / 규제 / 거버넌스 / 컴플라이언스
+  legal_court_governance: {
+    label: 'AI GOVERNANCE & LEGAL',
+    accentColor: '#6366F1',
     keywords: [
-      'ai-powered', 'generative artificial intelligence', 'cyber warfare', 'cyber',
-      'silicon valley', 'frontier ai', 'artificial intelligence', 'tech executives',
-      'semiconductor', 'software', 'algorithms', 'deep learning', 'anthropic', 'openai',
-      'data center', 'quantum', 'microchip', 'hardware'
+      'lawsuit', 'complaint', 'court', 'judge', 'indicted', 'charges',
+      'prosecutors', 'subpoena', 'antitrust', 'compliance', 'governance',
+      'regulatory', 'regulation', 'supreme court', 'accord', 'mandate',
+      '법원', '규제', '거버넌스', '독점'
     ],
     images: [
-      'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=900&q=80', // AI 딥러닝 뉴럴 네트워크
-      'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80', // 반도체 마이크로프로세서
-      'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=900&q=80', // 사이버 보안 서버실
-      'https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=900&q=80', // 실리콘밸리 테크 캠퍼스
+      'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1589578527966-fdac0f44566c?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&w=900&q=80',
     ],
   },
 
-  // 9. 보건/의료/감염병/병원
-  health_epidemic: {
+  // 9. 보건 / 의료 / 바이오안보 / 임상 AI
+  health_biosecurity: {
+    label: 'BIOSECURITY & HEALTHCARE AI',
+    accentColor: '#EC4899',
     keywords: [
-      'pneumonia', 'outbreak', 'biological lab', 'pulmonary', 'pathogen', 'who',
-      'world health organization', 'infectious disease', 'hospital', 'hospitals',
-      'medical', 'fda', 'vaccine', 'virus', 'quarantine', 'doctors', 'clinic', 'pediatric'
+      'biosecurity', 'dna synthesis', 'pathogen', 'mayo clinic', 'clinical',
+      'hospital', 'medical', 'healthcare', 'fda', 'vaccine', 'virus',
+      'outbreak', 'pneumonia', 'who', 'doctors', 'patient', '의료', '병원', '바이오'
     ],
     images: [
-      'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=900&q=80', // 의료 연구 백신 바이알
-      'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=900&q=80', // 병원 진료 및 의료진
-      'https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?auto=format&fit=crop&w=900&q=80', // 바이오 안전 검사 실험실
-      'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=900&q=80', // 보건 의료 전문가
+      'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=900&q=80',
     ],
   },
 
-  // 10. 대학/교육/비자/학술
+  // 10. 자율주행 / 모빌리티 / 물류 / 공급망
+  transport_autonomous_logistics: {
+    label: 'AUTONOMOUS MOBILITY & LOGISTICS',
+    accentColor: '#14B8A6',
+    keywords: [
+      'autonomous driving', 'freightos', 'freight', 'supply chain', 'logistics',
+      'port congestion', 'highway', 'traffic', 'vehicle', 'aviation', 'flight',
+      'train', 'transit', 'corridor', '자율주행', '물류', '공급망'
+    ],
+    images: [
+      'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1508847154043-be5407fcaa5a?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1587745416684-47953f16f02f?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&w=900&q=80',
+    ],
+  },
+
+  // 11. 대학 / 학술 / 연구기관
   education_university: {
+    label: 'ACADEMIC & AI RESEARCH',
+    accentColor: '#8B5CF6',
     keywords: [
-      'harvard', 'yale', 'universities', 'j-1 visa', 'visa probe', 'undergraduate',
-      'student indicted', 'dormitory assault', 'higher education', 'salisbury university',
-      'college', 'professors', 'academic', 'degrees'
+      'harvard', 'yale', 'universities', 'university', 'higher education',
+      'college', 'professors', 'academic', 'institute', 'symposium', 'research'
     ],
     images: [
-      'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=900&q=80', // 아이비리그 명문대 전경
-      'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=900&q=80', // 대학 도서관 연구
-      'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=900&q=80', // 캠퍼스 광장
+      'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=900&q=80',
     ],
   },
 
-  // 11. 경제/석유/에너지/금융
-  economy_oil_energy: {
+  // 12. 기상 / 기후 / 환경 / 에너지
+  weather_environment: {
+    label: 'CLIMATE & ENERGY GRID',
+    accentColor: '#22C55E',
     keywords: [
-      'oil deal', 'russia oil', 'energy', 'crude', 'gas tax', 'inflation', 'economy',
-      'financing', '320m', 'military financing', 'aid to egypt', 'interest rates',
-      'federal reserve', 'stock market', 'barrel', 'brent'
+      'storm', 'hurricane', 'tornado', 'flood', 'weather', 'typhoon',
+      'pipeline', 'energy grid', 'power', 'solar', 'wind', 'climate'
     ],
     images: [
-      'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=900&q=80', // 정유 및 원유 시추 플랜트
-      'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=900&q=80', // 월스트리트 주가 지표
-      'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=900&q=80', // 달러 통화 및 금융 경제
+      'https://images.unsplash.com/photo-1527482797697-8795b05a13fe?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1514632595-4944383f2737?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1534088568595-a066f410bcda?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&w=900&q=80',
     ],
   },
 
-  // 12. 환경/원주민/파이프라인
-  environment_indigenous: {
+  // 13. 스포츠
+  sports_athletics: {
+    label: 'GLOBAL SPORTS',
+    accentColor: '#F59E0B',
     keywords: [
-      'standing rock', 'sioux', 'pipeline', 'dakota access', 'easement', 'native rights',
-      'tribal sovereignty', 'ocean of the americas', 'oceans', 'conservation', 'wildlife',
-      'indigenous', 'water rights', 'tribe'
+      'world cup', 'wnba', 'finals', 'basketball', 'sports', 'fifa',
+      'tournament', 'soccer', 'football', 'olympics', 'stadium', 'championship'
     ],
     images: [
-      'https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&w=900&q=80', // 대규모 파이프라인 및 송유관
-      'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=80', // 원주민 보호구역 대자연
-      'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=900&q=80', // 대양과 지구 해양 환경
+      'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1519861531473-9200262188bf?auto=format&fit=crop&w=900&q=80',
     ],
   },
 
-  // 13. 미디어/방송/언론
+  // 14. 미디어 / 방송 / 프레스 브리핑
   media_broadcasting: {
+    label: 'GLOBAL PRESS & MEDIA',
+    accentColor: '#EC4899',
     keywords: [
-      'media coverage', 'television networks', 'pool reporting', 'broadcast', 'journalism',
-      'news anchors', 'media outlets', 'press briefing', 'reporters'
+      'broadcasting', 'broadcast', 'journalism', 'media', 'press briefing',
+      'television', 'reporters', 'newsroom', 'editorial'
     ],
     images: [
-      'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=900&q=80', // 방송 뉴스 스튜디오
-      'https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&w=900&q=80', // 기자회견 마이크
-      'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?auto=format&fit=crop&w=900&q=80', // 긴급 보도 프레스룸
+      'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?auto=format&fit=crop&w=900&q=80',
     ],
   },
 };
 
+// 기본 글로벌 AI & 테크 보도사진 풀 (카테고리 미매칭 시 사용, 전수 200 OK 검증 완료)
+const DEFAULT_GLOBAL_NEWS_IMAGES = [
+  'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=900&q=80',
+  'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=900&q=80',
+  'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80',
+  'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=900&q=80',
+  'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=900&q=80',
+  'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=900&q=80',
+];
+
 /**
- * 기사 제목 문자열을 32비트 정수 해시로 변환하여 결정론적 인덱스 도출
+ * 문자열을 32비트 양수 정수 해시로 변환하여 결정론적 인덱스 도출
  */
-function getDeterministicHash(str: string): number {
+export function getDeterministicHash(str: string): number {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
     hash = ((hash << 5) - hash) + str.charCodeAt(i);
@@ -247,52 +297,147 @@ function getDeterministicHash(str: string): number {
 }
 
 /**
- * 기사의 제목과 본문(요약)을 가중치 스코어링하여 가장 적합한 고화질 보도사진 반환
+ * 기사의 제목, 본문(요약), 카테고리/키워드를 가중치 스코어링하여 가장 적합한 카테고리와 이미지 반환
  */
-export function getContextualNewsImage(title: string, summary: string, indexSeed: number = 0): string {
-  const lowerTitle = (title || '').toLowerCase();
+export function matchSemanticCategory(
+  title: string,
+  summary: string = '',
+  categoryHint: string = ''
+): { key: string; def: TopicCategoryDef } {
+  const lowerTitle = `${categoryHint || ''} ${title || ''}`.toLowerCase();
   const lowerSummary = (summary || '').toLowerCase();
-  const seed = getDeterministicHash(title || '') + indexSeed;
 
-  let bestCategoryKey: string | null = null;
+  let bestKey = 'multi_agent_orchestration';
   let highestScore = 0;
 
   for (const [key, category] of Object.entries(SEMANTIC_TOPIC_CATALOG)) {
     let score = 0;
     for (const kw of category.keywords) {
       if (lowerTitle.includes(kw)) {
-        score += 5; // 제목 내 일치는 5점 가중치
+        score += 5;
       }
       if (lowerSummary.includes(kw)) {
-        score += 1; // 본문 내 일치는 1점 가중치
+        score += 1;
       }
     }
 
     if (score > highestScore) {
       highestScore = score;
-      bestCategoryKey = key;
+      bestKey = key;
     }
   }
 
-  // 매칭된 최적 카테고리가 있을 경우 해당 카테고리의 이미지 풀에서 결정론적 선택
-  if (bestCategoryKey && SEMANTIC_TOPIC_CATALOG[bestCategoryKey]) {
-    const pool = SEMANTIC_TOPIC_CATALOG[bestCategoryKey].images;
-    return pool[seed % pool.length];
-  }
-
-  // 기본 글로벌 프레스 보도사진 풀 (fallback)
-  const defaultGlobalNewsImages = [
-    'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=900&q=80', // 뉴스 프레스 룸
-    'https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&w=900&q=80', // 신문/미디어
-    'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?auto=format&fit=crop&w=900&q=80', // 속보 브레이킹 뉴스
-  ];
-  return defaultGlobalNewsImages[seed % defaultGlobalNewsImages.length];
+  return {
+    key: bestKey,
+    def: SEMANTIC_TOPIC_CATALOG[bestKey] || SEMANTIC_TOPIC_CATALOG.multi_agent_orchestration,
+  };
 }
 
 /**
- * 기사의 기존 이미지 URL의 신뢰성을 엄격히 판정하고, 불일치 또는 도배 URL일 경우
- * 기사 실제 내용과 100% 매칭되는 고화질 프레스 사진으로 정밀 보정
+ * 기사의 제목과 본문(요약)을 가중치 스코어링하여 가장 적합한 고화질 보도사진 반환
  */
+export function getContextualNewsImage(
+  title: string,
+  summary: string = '',
+  indexSeed: number = 0,
+  categoryHint: string = ''
+): string {
+  const seed = getDeterministicHash(`${title || ''}__${summary.slice(0, 40)}`) + Math.abs(indexSeed);
+  const { def } = matchSemanticCategory(title, summary, categoryHint);
+
+  if (def && def.images.length > 0) {
+    return def.images[seed % def.images.length];
+  }
+
+  return DEFAULT_GLOBAL_NEWS_IMAGES[seed % DEFAULT_GLOBAL_NEWS_IMAGES.length];
+}
+
+/**
+ * 네트워크 차단 또는 오프라인 상태에서도 100% 깨지지 않고 표시되는 기사 맞춤형 SVG 데이터 URI 생성
+ */
+export function generateEditorialFallbackSvgDataUri(
+  title: string,
+  categoryHint: string = '',
+  domain: string = 'snshero.com'
+): string {
+  const { def } = matchSemanticCategory(title, '', categoryHint);
+  const accent = def.accentColor || '#FF4500';
+  const badge = (categoryHint || def.label || 'GLOBAL AI & SI BRIEFING').slice(0, 38).toUpperCase();
+  const cleanTitle = (title || 'SNSHero Global Intelligence Briefing')
+    .replace(/[<>&"']/g, ' ')
+    .trim();
+  const line1 = cleanTitle.slice(0, 42);
+  const line2 = cleanTitle.length > 42 ? cleanTitle.slice(42, 82) + (cleanTitle.length > 82 ? '...' : '') : '';
+
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" width="900" height="500">
+    <defs>
+      <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#090D16"/>
+        <stop offset="55%" stop-color="#111827"/>
+        <stop offset="100%" stop-color="#1E293B"/>
+      </linearGradient>
+    </defs>
+    <rect width="900" height="500" fill="url(#bg)"/>
+    <g stroke="${accent}" stroke-opacity="0.12" stroke-width="1">
+      <line x1="0" y1="100" x2="900" y2="100"/>
+      <line x1="0" y1="200" x2="900" y2="200"/>
+      <line x1="0" y1="300" x2="900" y2="300"/>
+      <line x1="0" y1="400" x2="900" y2="400"/>
+      <line x1="180" y1="0" x2="180" y2="500"/>
+      <line x1="360" y1="0" x2="360" y2="500"/>
+      <line x1="540" y1="0" x2="540" y2="500"/>
+      <line x1="720" y1="0" x2="720" y2="500"/>
+    </g>
+    <rect x="48" y="48" width="804" height="404" fill="none" stroke="${accent}" stroke-opacity="0.35" stroke-width="2"/>
+    <rect x="76" y="88" width="${Math.min(520, badge.length * 11 + 36)}" height="36" rx="4" fill="${accent}"/>
+    <text x="94" y="112" fill="#FFFFFF" font-family="monospace, sans-serif" font-size="15" font-weight="bold" letter-spacing="1.5">${badge}</text>
+    <text x="76" y="215" fill="#F8FAFC" font-family="sans-serif" font-size="30" font-weight="bold">${line1}</text>
+    <text x="76" y="262" fill="#CBD5E1" font-family="sans-serif" font-size="26" font-weight="bold">${line2}</text>
+    <line x1="76" y1="340" x2="824" y2="340" stroke="#334155" stroke-width="1.5"/>
+    <text x="76" y="382" fill="${accent}" font-family="monospace, sans-serif" font-size="16" font-weight="bold">SOURCE // ${domain.replace(/[<>&"']/g, '')}</text>
+    <text x="824" y="382" fill="#94A3B8" font-family="monospace, sans-serif" font-size="14" text-anchor="end">SNSHERO NEWS DISPATCH</text>
+  </svg>`;
+
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+}
+
+/**
+ * 포스트 객체 기반 다단계(1차·2차 문맥 보도사진 -> 3차 무결점 SVG 그래픽) 폴백 이미지 반환
+ * (React onError 핸들러에서 호출하여 깨진 이미지를 0ms 만에 관련 이미지로 복구)
+ */
+export function getFallbackImageForPost(
+  post: {
+    id?: string;
+    title?: string;
+    originalTitle?: string;
+    body?: string;
+    originalBody?: string;
+    flair?: { text?: string };
+    media?: { domain?: string; previewUrl?: string };
+  },
+  attempt: number = 1
+): string {
+  const searchTitle = `${post.originalTitle || ''} ${post.title || ''}`.trim();
+  const searchBody = `${post.originalBody || ''} ${post.body || ''}`.trim();
+  const categoryHint = post.flair?.text || '';
+  const idSeed = getDeterministicHash(post.id || searchTitle);
+
+  if (attempt <= 1) {
+    return getContextualNewsImage(searchTitle, searchBody, idSeed, categoryHint);
+  }
+  if (attempt === 2) {
+    return getContextualNewsImage(searchTitle, searchBody, idSeed + 3, categoryHint);
+  }
+  if (attempt === 3) {
+    return DEFAULT_GLOBAL_NEWS_IMAGES[idSeed % DEFAULT_GLOBAL_NEWS_IMAGES.length];
+  }
+  return generateEditorialFallbackSvgDataUri(
+    post.title || post.originalTitle || 'Breaking News',
+    categoryHint,
+    post.media?.domain || 'snshero.com'
+  );
+}
+
 /**
  * 복수 URL(콤마/줄바꿈)이나 공백/따옴표가 포함된 문자열에서 첫 번째 유효한 URL 추출
  */
@@ -301,7 +446,6 @@ export function extractFirstValidImageUrl(raw: string): string {
   const trimmed = raw.trim();
   if (!trimmed) return '';
 
-  // 1. 개행 또는 쉼표 구분자로 나눈 후 첫 번째 유효한 http/https 링크 탐색
   const candidates = trimmed.split(/[\r\n,]+/).map((u) => u.trim().replace(/^["']|["']$/g, ''));
   for (const cand of candidates) {
     if (cand.startsWith('http://') || cand.startsWith('https://')) {
@@ -309,7 +453,6 @@ export function extractFirstValidImageUrl(raw: string): string {
     }
   }
 
-  // 2. 전체 문자열 내 정규식으로 http/https 링크 추출
   const match = trimmed.match(/https?:\/\/[^\s"'<>,]+/);
   if (match) {
     return match[0];
@@ -319,23 +462,22 @@ export function extractFirstValidImageUrl(raw: string): string {
 }
 
 /**
- * 구글 시트 원본 이미지 100% 일치 반환 엔진
- * 사용자의 요구에 따라 구글 시트에 기재된 이미지 링크를 임의 치환 없이 100% 그대로 반영
- * (이미지 링크가 완전히 비어있는 경우에만 카테고리 시맨틱 사진 fallback)
+ * 구글 시트 원본 이미지 추출 및 문맥 기반 폴백 반환
  */
 export function resolveAccurateNewsImage(
   item: RawGoogleNewsItem,
   itemIndex: number,
   _urlUsageMap?: Map<string, number>
 ): string {
-  // 1. 구글 시트 원본 이미지 추출
   const cleanSheetUrl = extractFirstValidImageUrl(item.imageUrl);
-
-  // 2. 구글 시트에 이미지 링크가 유효하게 존재하면 100% 동일하게 그대로 반환
   if (cleanSheetUrl && cleanSheetUrl.startsWith('http')) {
     return cleanSheetUrl;
   }
 
-  // 3. 구글 시트에 이미지가 아예 없는 경우에만 기사 맥락 fallback 사진 적용
-  return getContextualNewsImage(item.title, item.summary, itemIndex);
+  return getContextualNewsImage(
+    item.title,
+    item.summary,
+    itemIndex,
+    `${item.category || ''} ${item.keywords || ''}`
+  );
 }

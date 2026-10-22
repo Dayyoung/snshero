@@ -247,10 +247,10 @@ function parseTimestampSafe(raw: string, fallbackIdx: number): number {
   return Date.now() - (fallbackIdx + 1) * 1000 * 60 * 30;
 }
 
-import { resolveAccurateNewsImage, extractFirstValidImageUrl } from '../lib/reddit/googleNewsImageResolver';
+import { resolveAccurateNewsImage, extractFirstValidImageUrl, getContextualNewsImage } from '../lib/reddit/googleNewsImageResolver';
 
 /**
- * RawGoogleNewsItem을 정규 RedditPost 모델로 변환 (구글 시트 이미지 링크 100% 일치 적용)
+ * RawGoogleNewsItem을 정규 RedditPost 모델로 변환 (구글 시트 이미지 최우선 적용 + 문맥 기반 폴백 보장)
  */
 export function convertGoogleNewsToRedditPost(
   item: RawGoogleNewsItem,
@@ -263,9 +263,17 @@ export function convertGoogleNewsToRedditPost(
   const createdAt = parseTimestampSafe(item.timestamp, idx);
   const id = `gnews_${createdAt}_${idx}`;
 
-  // 구글 시트 원본 이미지 링크 100% 일치 최우선 적용
+  // 기사 카테고리·키워드·제목·본문 맥락에 맞는 고화질 폴백 이미지 사전 계산
+  const contextualFallbackUrl = getContextualNewsImage(
+    item.title,
+    item.summary,
+    idx,
+    `${item.category || ''} ${item.keywords || ''}`
+  );
+
+  // 구글 시트 원본 이미지 링크 최우선 적용 (비어있으면 즉시 문맥 폴백 이미지 사용)
   const sheetImage = extractFirstValidImageUrl(item.imageUrl);
-  const accurateImageUrl = sheetImage || resolveAccurateNewsImage(item, idx, urlUsageMap || new Map());
+  const accurateImageUrl = sheetImage || resolveAccurateNewsImage(item, idx, urlUsageMap || new Map()) || contextualFallbackUrl;
 
   // 카테고리 태그 뱃지 매핑
   const flairText = item.category
@@ -290,17 +298,12 @@ export function convertGoogleNewsToRedditPost(
     flair: { text: flairText, bgColor: '#DC2626', textColor: '#FFFFFF' },
     isOriginalContent: false,
     upvoteRatio: 0.94,
-    media: accurateImageUrl
-      ? {
-          type: 'image',
-          url: accurateImageUrl,
-          domain,
-        }
-      : {
-          type: 'link',
-          url: item.sourceUrl,
-          domain,
-        },
+    media: {
+      type: 'image',
+      url: accurateImageUrl,
+      previewUrl: contextualFallbackUrl,
+      domain,
+    },
     permalink: `/r/news/comments/${id}`,
     sourceUrl: item.sourceUrl,
   };

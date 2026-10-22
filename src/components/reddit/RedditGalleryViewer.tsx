@@ -7,6 +7,7 @@
 import React, { useState, useRef } from 'react';
 import { ChevronLeft, ChevronRight, Images, ZoomIn, X } from 'lucide-react';
 import { deduplicateImageUrls } from '../../lib/reddit/redditLiveFeedService';
+import { getContextualNewsImage, generateEditorialFallbackSvgDataUri } from '../../lib/reddit/googleNewsImageResolver';
 
 interface RedditGalleryViewerProps {
  images: string[];
@@ -29,6 +30,13 @@ export const RedditGalleryViewer: React.FC<RedditGalleryViewerProps> = ({
 }) => {
  const [currentIndex, setCurrentIndex] = useState(0);
  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+
+ const handleGalleryImgError = (e: React.SyntheticEvent<HTMLImageElement>, idx: number) => {
+ const el = e.currentTarget;
+ const step = Number(el.dataset.fbStep || '0') + 1;
+ el.dataset.fbStep = String(step);
+ el.src = step === 1 ? getContextualNewsImage(title, '', idx) : generateEditorialFallbackSvgDataUri(title || 'News Image');
+ };
 
  // 스와이프 제스처를 위한 터치 좌표 추적
  const touchStartXRef = useRef<number | null>(null);
@@ -53,6 +61,7 @@ export const RedditGalleryViewer: React.FC<RedditGalleryViewerProps> = ({
  <img
  src={currentUrl}
  alt={title}
+ onError={(e) => handleGalleryImgError(e, 0)}
  className={`w-full ${maxHeight} object-contain transition-transform duration-200`}
  loading="lazy"
  />
@@ -127,6 +136,7 @@ export const RedditGalleryViewer: React.FC<RedditGalleryViewerProps> = ({
  src={currentUrl}
  alt={title ? `${title} (${currentIndex + 1}/${total})` : `Image ${currentIndex + 1}`}
  loading="lazy"
+ onError={(e) => handleGalleryImgError(e, currentIndex)}
  className="w-full h-auto object-contain transition-all duration-300"
  />
 
@@ -202,7 +212,7 @@ export const RedditGalleryViewer: React.FC<RedditGalleryViewerProps> = ({
  : 'border-transparent opacity-60 hover:opacity-100'
  }`}
  >
- <img src={imgUrl} alt="" className="w-full h-full object-cover" />
+ <img src={imgUrl} alt="" onError={(e) => handleGalleryImgError(e, idx)} className="w-full h-full object-cover" />
  {currentIndex === idx && (
  <div className="absolute inset-0 bg-[#FF4500]/10 pointer-events-none" />
  )}
@@ -242,6 +252,7 @@ export const RedditGalleryViewer: React.FC<RedditGalleryViewerProps> = ({
  <img
  src={currentUrl}
  alt=""
+ onError={(e) => handleGalleryImgError(e, currentIndex)}
  className="max-w-full max-h-[85vh] object-contain"
  />
 
@@ -282,7 +293,7 @@ export const RedditGalleryViewer: React.FC<RedditGalleryViewerProps> = ({
  currentIndex === idx ? 'border-[#FF4500]' : 'border-transparent opacity-50 hover:opacity-100'
  }`}
  >
- <img src={imgUrl} alt="" className="w-full h-full object-cover" />
+ <img src={imgUrl} alt="" onError={(e) => handleGalleryImgError(e, idx)} className="w-full h-full object-cover" />
  </button>
  ))}
  </div>

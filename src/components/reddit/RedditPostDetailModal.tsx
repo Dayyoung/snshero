@@ -33,6 +33,7 @@ import { RedditVideoPlayer } from './RedditVideoPlayer';
 import { RedditGoogleSheetCommentService } from '../../lib/reddit/redditGoogleSheetCommentService';
 import { RedditGalleryViewer } from './RedditGalleryViewer';
 import { deduplicateImageUrls } from '../../lib/reddit/redditLiveFeedService';
+import { getFallbackImageForPost, getContextualNewsImage, generateEditorialFallbackSvgDataUri } from '../../lib/reddit/googleNewsImageResolver';
 
 interface RedditPostDetailModalProps {
  post: RedditPost;
@@ -122,7 +123,18 @@ function renderMarkdownBody(content: string): React.ReactNode {
  const src = imgMatch[2];
  return (
  <figure key={idx} className="my-3 rounded-none overflow-hidden border border-inherit/15 bg-black/5 dark:bg-white/5 p-1">
- <img src={src} alt={alt} className="w-full h-auto max-h-[520px] object-contain rounded-none" loading="lazy" />
+ <img
+ src={src}
+ alt={alt}
+ onError={(e) => {
+ const el = e.currentTarget;
+ const step = Number(el.dataset.fbStep || '0') + 1;
+ el.dataset.fbStep = String(step);
+ el.src = step === 1 ? getContextualNewsImage(alt || content.slice(0, 60), content, idx) : generateEditorialFallbackSvgDataUri(alt || 'News Image');
+ }}
+ className="w-full h-auto max-h-[520px] object-contain rounded-none"
+ loading="lazy"
+ />
  {alt && <figcaption className="text-xs text-center py-1.5 opacity-70 italic font-mono">{alt}</figcaption>}
  </figure>
  );
@@ -188,6 +200,26 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
  const [showOriginal, setShowOriginal] = useState(false);
  const [translatedTitle, setTranslatedTitle] = useState<string | null>(null);
  const [translatedBody, setTranslatedBody] = useState<string | null>(null);
+ const [imgFallbackStep, setImgFallbackStep] = useState(0);
+
+ useEffect(() => {
+ setImgFallbackStep(0);
+ }, [post.id, post.media?.url]);
+
+ const resolvedDetailImageUrl =
+ imgFallbackStep === 0
+ ? post.media?.url || getFallbackImageForPost(post, 1)
+ : getFallbackImageForPost(post, imgFallbackStep);
+
+ const handleDetailImageError = () => {
+ setImgFallbackStep((prev) => (prev < 4 ? prev + 1 : prev));
+ };
+
+ const handleDetailImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+ if (e.currentTarget.naturalWidth <= 2 || e.currentTarget.naturalHeight <= 2) {
+ handleDetailImageError();
+ }
+ };
 
  // 실제 reddit.com 원본 댓글 상태
  const [realComments, setRealComments] = useState<RedditComment[]>([]);
@@ -559,8 +591,10 @@ export const RedditPostDetailModal: React.FC<RedditPostDetailModalProps> = ({
  </div>
  ) : (
  <img
- src={post.media.url}
+ src={resolvedDetailImageUrl}
  alt={displayTitle}
+ onError={handleDetailImageError}
+ onLoad={handleDetailImageLoad}
  className="w-full h-auto max-h-[600px] object-contain bg-black"
  />
  )}

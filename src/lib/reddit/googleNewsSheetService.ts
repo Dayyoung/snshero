@@ -14,14 +14,14 @@ export const GOOGLE_NEWS_PUB_CSV_URL =
 export const GOOGLE_NEWS_PUBHTML_SHEET_URL =
   'https://docs.google.com/spreadsheets/d/e/2PACX-1vQkHP5pQDdSMrx3f0GyUz_rK5yqmMj5J12apkSom3JvF-NVk2yD55tFAk_Ka7qKM54dPr1ru3LP15Zu/pubhtml/sheet?headers=false&gid=797674022';
 export const GOOGLE_NEWS_SPREADSHEET_ID = '1CT5Yy1-i6kkOfx3d-Yw1osOEYbN7fkk8IDiI8Vm82vM';
-export const getPostCacheKey = (lang: string = 'ko') => `hero_reddit_google_news_posts_v12_${lang}`;
-const RAW_CACHE_KEY = 'hero_reddit_google_news_raw_v12';
-const LAST_FETCH_KEY = 'hero_reddit_google_news_last_fetch_v12';
+export const getPostCacheKey = (lang: string = 'ko') => `hero_reddit_google_news_posts_v13_${lang}`;
+const RAW_CACHE_KEY = 'hero_reddit_google_news_raw_v13';
+const LAST_FETCH_KEY = 'hero_reddit_google_news_last_fetch_v13';
 
-// AI Studio 및 브라우저 환경에서 이전 구형 캐시(v1~v11) 자동 정리
+// AI Studio 및 브라우저 환경에서 이전 구형 캐시(v1~v12) 자동 정리
 if (typeof window !== 'undefined') {
   try {
-    ['v1', 'v2', 'v3', 'v4', 'v5', 'v6', 'v7', 'v8', 'v9', 'v10', 'v11'].forEach((ver) => {
+    ['v1', 'v2', 'v3', 'v4', 'v5', 'v6', 'v7', 'v8', 'v9', 'v10', 'v11', 'v12'].forEach((ver) => {
       localStorage.removeItem(`hero_reddit_google_news_posts_${ver}`);
       localStorage.removeItem(`hero_reddit_google_news_posts_${ver}_ko`);
       localStorage.removeItem(`hero_reddit_google_news_posts_${ver}_en`);

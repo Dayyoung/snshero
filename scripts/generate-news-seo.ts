@@ -20,6 +20,7 @@ import path from 'path';
 import { INITIAL_GOOGLE_NEWS, convertGoogleNewsToRedditPost, RawGoogleNewsItem } from '../src/data/googleNewsSeedData';
 import { RedditPost } from '../src/lib/reddit/redditTypes';
 import { GoogleNewsSheetService, GOOGLE_NEWS_PUB_CSV_URL } from '../src/lib/reddit/googleNewsSheetService';
+import { getFallbackImageForPost } from '../src/lib/reddit/googleNewsImageResolver';
 
 const rootDir = process.cwd();
 const publicDir = path.join(rootDir, 'public');
@@ -243,7 +244,8 @@ function buildArticleStaticHtml(
   const url = `${BASE_URL}/r/news/comments/${post.id}`;
   const title = `${post.title} - SNSHero 실시간 구글 뉴스`;
   const desc = post.body ? post.body.slice(0, 160) : `${post.title} - SNSHero Realtime Google News`;
-  const imgUrl = post.media?.url || `${BASE_URL}/logo.jpg`;
+  const fallbackImgUrl = post.media?.previewUrl || getFallbackImageForPost(post, 1);
+  const imgUrl = post.media?.url || fallbackImgUrl || `${BASE_URL}/logo.jpg`;
   const pubDateIso = new Date(post.createdAt).toISOString();
   const lang = detectLanguage(post.title, post.body);
   const inLanguage = lang === 'ko' ? 'ko-KR' : 'en-US';
@@ -365,7 +367,7 @@ function buildArticleStaticHtml(
       <!-- 기사 본문 및 고화질 보도사진 -->
       <article style="font-size: 17px; line-height: 1.85; color: #1F2937; margin-bottom: 30px;">
         <figure style="margin: 0 0 24px 0;">
-          <img src="${imgUrl}" alt="${escapeHtml(post.title)}" style="width: 100%; max-height: 520px; object-fit: cover; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);" />
+          <img src="${imgUrl}" alt="${escapeHtml(post.title)}" onerror="this.onerror=null;this.src='${fallbackImgUrl}';" style="width: 100%; max-height: 520px; object-fit: cover; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);" />
           <figcaption style="font-size: 12px; color: #6B7280; margin-top: 8px; text-align: center;">
             보도 사진 제공: ${escapeHtml(post.media?.domain || 'Associated Press / Google News')}
           </figcaption>

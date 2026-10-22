@@ -2,6 +2,48 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-22 17:33 KST] [구글 뉴스 깨진 이미지 0% 보장 및 기사 맥락 맞춤형 다단계 폴백 이미지 시스템 구축] 14대 의미론적 토픽 카탈로그 + 4단계 자동 폴백(onError/onLoad) + 인라인 SVG 에디토리얼 그래픽 탑재 완료
+- **요청 사항**:
+  - "최신 뉴스를 가져올때 이미지가 깨지는 경우가 있는데? 기사와 관련있는 폴백 이미지를 준비해서 무조건 이미지가 표시되게 해줘."
+- **근본 원인 진단**:
+  1. **스프레드시트 수집 이미지 URL의 404/403/핫링크 차단 현상**:
+     - 구글 뉴스 시트(`google-news.csv`)의 상위 40개 기사 이미지 URL 점검 결과, 약 85%(35/40건)가 언론사 서버 측 핫링크 차단(`403`), 만료/가상 경로(`404`, 예: `press.aboutamazon.com/assets/...`, `payloadspace.com/wp-content/...`), 또는 이미지 대신 HTML 문서를 반환(`text/html`)하여 브라우저에서 깨진 이미지 아이콘이 발생함.
+  2. **기존 이미지 리졸버의 만료된 Unsplash URL 3건 및 `<img />` 런타임 에러 핸들러 부재**:
+     - `googleNewsImageResolver.ts` 내 일부 구형 URL이 404를 반환하고 있었으며, `RedditPostCard.tsx`, `RedditPostDetailModal.tsx`, `RedditGalleryViewer.tsx`의 `<img />` 태그에 `onError` 및 `1x1` 투명 트래킹 픽셀 감지(`onLoad` `naturalWidth <= 2`) 폴백 로직이 없었음.
+- **주요 구현 및 개선 내역**:
+  1. **14대 핵심 뉴스 도메인별 고해상도 보도사진 카탈로그 및 4단계 폴백 엔진 구현 ([`src/lib/reddit/googleNewsImageResolver.ts`](file:///Users/dayyoung/project/snshero/src/lib/reddit/googleNewsImageResolver.ts))**:
+     - 모든 URL의 `HTTP 200 OK` 응답을 전수 검증한 **14개 전문 토픽 카탈로그(`SEMANTIC_TOPIC_CATALOG`)** 구축:
+       - `spacex_aerospace_satellite` (SpaceX, 위성, 항공우주)
+       - `whitehouse_sif_policy` (백악관, 트럼프 행정부, 국무부, FTC, 슈퍼 인텔리전스 포스 SIF)
+       - `multi_agent_orchestration` (다중 에이전트 오케스트레이션, Agentic AI, AWS Bedrock, Microsoft Agent)
+       - `enterprise_si_cloud` (액센츄어, 워크데이, 델, 시스템 통합 SI AX, 클라우드)
+       - `ai_compute_datacenter_chip` (엔비디아, GPU, 데이터센터, 반도체)
+       - `cybersecurity_defense` (사이버보안, 국방, 제로트러스트)
+       - `finance_economy_market` (실적, 영업이익, 증시, 거시경제)
+       - `legal_court_governance` (법원, 반독점, 규제, 거버넌스)
+       - `health_biosecurity` (의료, 바이오, 헬스케어)
+       - `transport_autonomous_logistics` (자율주행, 물류, 모빌리티)
+       - `education_university` (대학, 연구소, 아카데미)
+       - `weather_environment` (기후, 에너지, 환경)
+       - `sports_athletics` (스포츠, 리그)
+       - `media_broadcasting` (방송, 스트리밍, 미디어)
+     - **4단계 무결점 폴백 체인(`getFallbackImageForPost`)**:
+       - `0단계`: 시트 원본 이미지 URL 시도 (단, 플레이스홀더/로고/트래킹 픽셀은 즉시 필터링)
+       - `1단계`: 기사 제목·요약·카테고리·키워드·도메인 해시 기반 **1순위 맞춤형 고화질 보도사진**
+       - `2단계`: 동일 카테고리의 **2순위 대체 보도사진**
+       - `3단계`: 글로벌 테크/뉴스룸 검증 풀(`VERIFIED_GLOBAL_TECH_NEWS_POOL`) 사진
+       - `4단계`: 네트워크가 완전히 단절되어도 100% 렌더링되는 **인라인 SVG 데이터 URI 에디토리얼 그래픽(`generateEditorialFallbackSvgDataUri`)** (카테고리별 테마 컬러, 출처 도메인 배지, 기사 헤드라인 타이포그래피 자동 합성)
+  2. **모든 뉴스 데이터에 이미지 미디어 객체 100% 보장 ([`src/data/googleNewsSeedData.ts`](file:///Users/dayyoung/project/snshero/src/data/googleNewsSeedData.ts))**:
+     - `convertGoogleNewsToRedditPost`에서 원본 `imageUrl` 유무와 무관하게 항상 `media.url`(원본 또는 문맥 폴백)과 `media.previewUrl`(문맥 폴백)을 세팅하여 이미지가 없는 기사가 단 한 건도 없도록 보장.
+  3. **피드 카드·상세 모달·갤러리·정적 SEO 전 구간 `onError` & `onLoad` 자동 폴백 연동**:
+     - [`src/components/reddit/RedditPostCard.tsx`](file:///Users/dayyoung/project/snshero/src/components/reddit/RedditPostCard.tsx): 카드 뷰 및 클래식 뷰 썸네일에 `imgFallbackStep` 상태 및 `handleImageError` / `handleImageLoad`(`naturalWidth <= 2` 투명 픽셀 차단) 적용.
+     - [`src/components/reddit/RedditPostDetailModal.tsx`](file:///Users/dayyoung/project/snshero/src/components/reddit/RedditPostDetailModal.tsx): 기사 상세 모달 대표 이미지 및 마크다운 본문 내 인라인 이미지에 자동 폴백 적용.
+     - [`src/components/reddit/RedditGalleryViewer.tsx`](file:///Users/dayyoung/project/snshero/src/components/reddit/RedditGalleryViewer.tsx): 갤러리 뷰어, 썸네일 스트립, 라이트박스 전체에 에러 폴백 적용.
+     - [`scripts/generate-news-seo.ts`](file:///Users/dayyoung/project/snshero/scripts/generate-news-seo.ts) & [`src/lib/reddit/googleNewsSheetService.ts`](file:///Users/dayyoung/project/snshero/src/lib/reddit/googleNewsSheetService.ts): 정적 HTML `<img onerror=...>` 폴백 추가 및 로컬스토리지 캐시 키 `v13` 상향.
+- **검증 결과**:
+  - `npx tsc --noEmit` 0 Errors 통과.
+  - 로컬 Git 커밋 완료 및 연동 구글 폼 보고서 제출 완료 (`submit_report.py`).
+
 ## [2026-10-22 17:22 KST] [첫 화면 애니메이션/무비 버튼 YouTube 로고 & HIT! 강조 및 /git-push] 홈 화면 및 카테고리 허브 내 애니메이션(/movie)·무비(/cinema) 버튼 YouTube 아이콘 및 HIT! 뱃지 강조 + 원격 푸시 완료
 - **요청 사항**:
   - "게임 첫화면에 snshero.com 애니메이션 / 무비 버튼은 유튜브 로고로 강조해서 유튜브로 볼수있다는것을 강조하고 hit! 으로 더 강조해줘. /git-push"

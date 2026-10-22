@@ -24,6 +24,7 @@ import { translateTextWithGoogle, isNeedsTranslation } from '../../lib/reddit/re
 import { RedditVideoPlayer } from './RedditVideoPlayer';
 import { RedditGalleryViewer } from './RedditGalleryViewer';
 import { deduplicateImageUrls } from '../../lib/reddit/redditLiveFeedService';
+import { getFallbackImageForPost } from '../../lib/reddit/googleNewsImageResolver';
 
 interface RedditPostCardProps {
  post: RedditPost;
@@ -56,6 +57,26 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
  const [translatedTitle, setTranslatedTitle] = useState<string | null>(null);
  const [translatedBody, setTranslatedBody] = useState<string | null>(null);
  const [isExpandedBody, setIsExpandedBody] = useState(false);
+ const [imgFallbackStep, setImgFallbackStep] = useState(0);
+
+ useEffect(() => {
+ setImgFallbackStep(0);
+ }, [post.id, post.media?.url]);
+
+ const resolvedImageUrl =
+ imgFallbackStep === 0
+ ? post.media?.url || getFallbackImageForPost(post, 1)
+ : getFallbackImageForPost(post, imgFallbackStep);
+
+ const handleImageError = () => {
+ setImgFallbackStep((prev) => (prev < 4 ? prev + 1 : prev));
+ };
+
+ const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+ if (e.currentTarget.naturalWidth <= 2 || e.currentTarget.naturalHeight <= 2) {
+ handleImageError();
+ }
+ };
 
  const targetLang = isKo ? 'ko' : 'en';
  const needsTrans = isNeedsTranslation(post.title, targetLang) || (post.body ? isNeedsTranslation(post.body, targetLang) : false);
@@ -209,11 +230,13 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
  </button>
  </div>
 
- {post.media && (post.media.url || post.media.previewUrl) && (
+ {post.media && (post.media.url || post.media.previewUrl || resolvedImageUrl) && (
  <div className="relative w-20 h-16 rounded-none overflow-hidden flex-shrink-0 bg-black/10">
  <img 
- src={post.media.previewUrl || post.media.url} 
- alt="" 
+ src={imgFallbackStep === 0 ? (post.media.url || post.media.previewUrl || resolvedImageUrl) : resolvedImageUrl} 
+ alt={displayTitle} 
+ onError={handleImageError}
+ onLoad={handleImageLoad}
  className="w-full h-full object-cover" 
  />
  {post.media.type === 'video' ? (
@@ -503,9 +526,11 @@ export const RedditPostCard: React.FC<RedditPostCardProps> = ({
  </div>
  ) : (
  <img
- src={post.media.url}
- alt={post.title}
+ src={resolvedImageUrl}
+ alt={displayTitle}
  loading="lazy"
+ onError={handleImageError}
+ onLoad={handleImageLoad}
  className="w-full h-auto max-h-[500px] object-contain transition-transform duration-300 hover:scale-[1.01]"
  />
  )}
