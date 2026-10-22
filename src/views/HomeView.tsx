@@ -438,13 +438,13 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
                     onNavigate('movie');
                   }}
-                  className="relative min-h-[44px] px-1.5 sm:px-2 py-2 bg-[#201d1d] text-[#fdfcfc] font-bold text-xs sm:text-sm border border-red-600/80 hover:bg-stone-800 transition-colors cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5 rounded-sm"
+                  className="relative min-h-[44px] px-1.5 sm:px-2 py-2 bg-[#fdfcfc] text-[#201d1d] font-bold text-xs sm:text-sm border border-[rgba(15,0,0,0.12)] hover:bg-[#201d1d] hover:text-[#fdfcfc] transition-colors cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5 rounded-sm"
                   title="SNSHero 공식 애니메이션 (40화) - YouTube 스트리밍"
                 >
-                  <span className="absolute -top-2 right-1 px-1 py-[1px] bg-red-600 text-[#fdfcfc] text-[9px] font-mono font-black leading-none tracking-tight border border-[#fdfcfc] rounded-sm">
+                  <span className="absolute -top-2 right-1 px-1 py-[1px] bg-red-600 text-[#fdfcfc] text-[9px] font-mono font-black leading-none tracking-tight rounded-sm">
                     HIT!
                   </span>
-                  <Youtube size={16} className="shrink-0 text-red-500" />
+                  <Youtube size={15} className="shrink-0" />
                   <span className="truncate">{t('home_shortcut_movie', language) || (language === 'ko' ? '애니메이션' : 'Animation')}</span>
                 </button>
 
@@ -456,13 +456,13 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     playSfx("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
                     onNavigate('cinema');
                   }}
-                  className="relative min-h-[44px] px-1.5 sm:px-2 py-2 bg-[#201d1d] text-[#fdfcfc] font-bold text-xs sm:text-sm border border-red-600/80 hover:bg-stone-800 transition-colors cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5 rounded-sm"
+                  className="relative min-h-[44px] px-1.5 sm:px-2 py-2 bg-[#fdfcfc] text-[#201d1d] font-bold text-xs sm:text-sm border border-[rgba(15,0,0,0.12)] hover:bg-[#201d1d] hover:text-[#fdfcfc] transition-colors cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5 rounded-sm"
                   title="SNSHero 공식 무비 (40화) - YouTube 스트리밍"
                 >
-                  <span className="absolute -top-2 right-1 px-1 py-[1px] bg-red-600 text-[#fdfcfc] text-[9px] font-mono font-black leading-none tracking-tight border border-[#fdfcfc] rounded-sm">
+                  <span className="absolute -top-2 right-1 px-1 py-[1px] bg-red-600 text-[#fdfcfc] text-[9px] font-mono font-black leading-none tracking-tight rounded-sm">
                     HIT!
                   </span>
-                  <Youtube size={16} className="shrink-0 text-red-500" />
+                  <Youtube size={15} className="shrink-0" />
                   <span className="truncate">{language === 'ko' ? '무비' : (t('home_shortcut_cinema', language) || 'Movie')}</span>
                 </button>
               </div>

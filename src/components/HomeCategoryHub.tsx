@@ -338,10 +338,10 @@ export const HomeCategoryHub: React.FC<HomeCategoryHubProps> = ({
  playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
  onNavigate('movie');
  }}
- className="min-h-[48px] p-2.5 bg-[#fdfcfc] hover:bg-[#f8f7f7] border border-red-600/50 hover:border-[#201d1d] text-left rounded-sm cursor-pointer transition-colors flex items-center justify-between group"
+ className="min-h-[48px] p-2.5 bg-[#fdfcfc] hover:bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] text-left rounded-sm cursor-pointer transition-colors flex items-center justify-between group"
  >
  <div className="flex items-center gap-2">
- <Youtube size={16} className="text-red-600 shrink-0" />
+ <Youtube size={16} className="text-[#201d1d] shrink-0" />
  <div>
  <div className="text-xs font-bold text-[#201d1d] group-hover:underline flex items-center gap-1">
  <span>{language === 'ko' ? '애니메이션' : 'Animation'}</span>
@@ -360,10 +360,10 @@ export const HomeCategoryHub: React.FC<HomeCategoryHubProps> = ({
  playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
  onNavigate('cinema');
  }}
- className="min-h-[48px] p-2.5 bg-[#fdfcfc] hover:bg-[#f8f7f7] border border-red-600/50 hover:border-[#201d1d] text-left rounded-sm cursor-pointer transition-colors flex items-center justify-between group"
+ className="min-h-[48px] p-2.5 bg-[#fdfcfc] hover:bg-[#f8f7f7] border border-[rgba(15,0,0,0.12)] hover:border-[#201d1d] text-left rounded-sm cursor-pointer transition-colors flex items-center justify-between group"
  >
  <div className="flex items-center gap-2">
- <Youtube size={16} className="text-red-600 shrink-0" />
+ <Youtube size={16} className="text-[#201d1d] shrink-0" />
  <div>
  <div className="text-xs font-bold text-[#201d1d] group-hover:underline flex items-center gap-1">
  <span>{language === 'ko' ? '무비' : 'Movie'}</span>

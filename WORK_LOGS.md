@@ -2,6 +2,18 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-22 17:46 KST] [애니메이션/무비 버튼 원래 색상 복원 및 HIT! 뱃지 표시 유지 + /git-push] 버튼 배경/테두리/아이콘 색상을 소설·웹툰 버튼과 동일한 기본 웜크림/잉크 톤으로 복원하고 HIT! 뱃지만 강조 + 원격 푸시 완료
+- **요청 사항**:
+  - "애니메이션/ 무비 버튼 색상을 변경하지는 말아줘. 그냥 hit 만 표시. /git-push"
+- **주요 수정 내역**:
+  1. **첫 화면 상단 2열 미디어 버튼 색상 복원 ([`src/views/HomeView.tsx`](file:///Users/dayyoung/project/snshero/src/views/HomeView.tsx))**:
+     - `애니메이션` 및 `무비` 버튼의 배경/글자/테두리/아이콘 색상을 좌측 `소설`, `웹툰` 버튼과 동일한 기본 웜크림/잉크 색상(`bg-[#fdfcfc] text-[#201d1d] border-[rgba(15,0,0,0.12)]`)으로 복원하고, 우측 상단 `HIT!` 뱃지만 표시되도록 정돈.
+  2. **홈 카테고리 허브 버튼 색상 복원 ([`src/components/HomeCategoryHub.tsx`](file:///Users/dayyoung/project/snshero/src/components/HomeCategoryHub.tsx))**:
+     - 카테고리 허브 내 `애니메이션`, `무비` 카드의 테두리 및 아이콘 색상도 기본 톤(`border-[rgba(15,0,0,0.12)]`, `text-[#201d1d]`)으로 복원하고 `HIT!` 뱃지만 유지.
+- **검증 및 배포 결과**:
+  - `npx tsc --noEmit` 0 Errors 및 `npm run build` 빌드 완료.
+  - `git push origin main` 원격 저장소 푸시 완료 및 구글 폼 보고서 제출 완료.
+
 ## [2026-10-22 17:38 KST] [Tailscale 접속 하얀 화면(White Screen) 및 로딩 지연 근본 해결] 포트 3000 프리뷰 서버 재가동, 23,600개 누적 캐시 폴더 정리, 무중단 빌드(emptyOutDir: false), 초기 번들 10배 경량화(6.5MB → 616KB) 및 즉시 로딩 스켈레톤 적용
 - **요청 사항**:
   - "tailscale 주소로 접속하면 게임이 바로 표시 안되는데? 하얀화면이 떠있어."
