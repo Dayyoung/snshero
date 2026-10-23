@@ -2,6 +2,26 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-23 12:34 KST] [유튜브 광고 클릭률(CTR) 극대화 고자극·매혹형 바이럴 썸네일 3종 제작] 매혹적 히로인 클로즈업 & 도파민 폭발 SSR 각성 일러스트 기반 1280x720 고클릭률 썸네일 3종 완성
+- **요청 사항**:
+  - "유튜브 광고가 실행중인데 아무도 클릭을 안해. 좀더 유혹적이고 자극적인 썸네일로 유인할 수 있을까."
+- **주요 구현 및 제작 내역**:
+  1. **유튜브 인피드/인스트림 광고 고클릭률(CTR) 특화 키비주얼 2종 생성 및 3종 썸네일 빌더 구현 ([`scripts/build_viral_youtube_thumbnails.py`](file:///Users/dayyoung/project/snshero/scripts/build_viral_youtube_thumbnails.py))**:
+     - **Type 1 (`SNSHero_Viral_Thumbnail_1_Seductive.jpg`, 312 KB — 매혹적 히로인 대사 & 후방주의 자극형)**:
+       - 우측에 황금빛 카드를 입술 끝에 살짝 댄 매혹적인 은발 엘프 히로인(`SSR 실리아 // 호감도 MAX`) 클로즈업 배치.
+       - 좌측에 `[주의] 후방주의! 혼자 있을 때만 켜세요` / `“오빠.. 내 카드 뽑아줄 거지?”` / `1화부터 선 넘은 미친 몰입감..!` 네온 핑크·골드 글로우 초대형 카피 적용.
+     - **Type 2 (`SNSHero_Viral_Thumbnail_2_Midnight.jpg`, 317 KB — 모바일 초고클릭률 4단어 밤샘 주의형)**:
+       - 스마트폰 작은 화면에서도 0.1초 만에 읽히는 `경고 // 자기 전에 절대 켜지 마세요` / `잠 못 자는 19금급 중독성?!` / `“잠깐만 보려다 40화 정주행하고 밤샜습니다..”` 극대비 타이포그래피 적용.
+     - **Type 3 (`SNSHero_Viral_Thumbnail_3_Jackpot.jpg`, 360 KB — 도파민 폭발 0.001% 신화 카드 무료 유출 자극형)**:
+       - 황금 발키리 여신 & 흑염 검사 각성 + 무지개 홀로그램 SSR 카드 일러스트와 `[긴급] 운영자 실수?! 막히기 전에 받으세요` / `확률 0.001% 신화 카드 접속 즉시 100% 무료 지급 실화?!` 후킹 카피 적용.
+  2. **출력 파일 위치**:
+     - `/Users/dayyoung/Downloads/SNSHero_Viral_Thumbnail_1_Seductive.jpg`
+     - `/Users/dayyoung/Downloads/SNSHero_Viral_Thumbnail_2_Midnight.jpg`
+     - `/Users/dayyoung/Downloads/SNSHero_Viral_Thumbnail_3_Jackpot.jpg`
+     - `/Users/dayyoung/project/snshero/public/video/` 내 동일 파일 및 기본 썸네일 교체 완료.
+- **검증 결과**:
+  - 3종 모두 `1280x720` (16:9 HD), 312~360KB (유튜브 2MB 제한 충족), 텍스트 겹침/잘림 0건 시각 검수 통과 및 구글 폼 보고서 제출 완료.
+
 ## [2026-10-23 07:13 KST] [스토리모드 회차 종료 시 애니메이션/무비 새창 링크를 /animation?ep=N 및 /cinema?ep=N으로 변경 완료]
 - **요청 사항**:
   - "새창으로 유튜브를 띄우지는 말고 아래 링크로 새창 띄우고 볼 수 있게 해주자. 애니메이션 링크는 밑에 걸로 변경: `https://snshero.com/animation?ep=1`, `https://snshero.com/cinema?ep=1`"
