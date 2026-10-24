@@ -210,6 +210,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
 
  const isComplete = !nextEvent;
  const [isEndingDismissed, setIsEndingDismissed] = useState(false);
+ const [rebirthCountdown, setRebirthCountdown] = useState<number>(3.0);
  const [dismissedEventId, setDismissedEventId] = useState<string | null>(null);
  const isAtTarget = sameTile(heroTile, nextEvent?.tile ?? null);
  const hasDialog = Boolean(activeEvent && activeEvent.nodeType !== 'enemy' && !battleEvent && !rewardEvent);
@@ -223,18 +224,12 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  }
  }, [progress.autoMode, setAutoMode]);
 
- // 데모모드 또는 랭킹분기 상태에서 스토리 완료(isComplete) 시 랭킹대전으로 순환 복귀
+ // 스토리 완결(isComplete) 도달 시 자동모드에서는 닫힌 팝업도 다시 열어 자동 환생 루프 보장
  useEffect(() => {
- if ((isDemoPlayActive() || isRankingDiverted()) && isComplete) {
- const timer = window.setTimeout(() => {
- if (isDemoPlayActive()) {
- setDemoPlayStep('ranking');
+ if (isComplete && isEndingDismissed && (progress.autoMode || isDemoPlayActive() || isRankingDiverted())) {
+ setIsEndingDismissed(false);
  }
- onNavigate('ranking');
- }, 2000);
- return () => window.clearTimeout(timer);
- }
- }, [isComplete, onNavigate]);
+ }, [isComplete, isEndingDismissed, progress.autoMode]);
 
  // Auto mode setting is persisted in local storage and managed by user toggle
  useEffect(() => {
@@ -644,6 +639,34 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  reincarnateProgress();
  }, [reincarnateProgress]);
 
+ // 환생 팝업 노출 시 멈추지 않고 3초 카운트다운 후 자동 환생 및 다음 회차 계속 진행
+ useEffect(() => {
+ if (!isComplete || isEndingDismissed) {
+ setRebirthCountdown(3.0);
+ return;
+ }
+
+ const durationMs = 3000;
+ const deadline = Date.now() + durationMs;
+ setRebirthCountdown(3.0);
+
+ let hasReincarnated = false;
+ const intervalId = window.setInterval(() => {
+ const remainingMs = Math.max(0, deadline - Date.now());
+ setRebirthCountdown(remainingMs / 1000);
+
+ if (remainingMs <= 0 && !hasReincarnated) {
+ hasReincarnated = true;
+ window.clearInterval(intervalId);
+ handleReincarnate();
+ }
+ }, 50);
+
+ return () => {
+ window.clearInterval(intervalId);
+ };
+ }, [isComplete, isEndingDismissed, handleReincarnate]);
+
  return (
  <div className="flex h-full min-h-screen flex-col bg-[#fdfcfc] text-slate-900 font-mono overflow-x-hidden pb-28">
  {!isBattling && (
@@ -1047,7 +1070,20 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  </div>
 
  {/* Footer */}
- <div className="shrink-0 flex flex-wrap items-center justify-between gap-2.5 sm:gap-3 border-t border-slate-100 p-3 sm:p-4 bg-slate-50/90">
+ <div className="shrink-0 flex flex-col gap-2.5 border-t border-slate-100 p-3 sm:p-4 bg-slate-50/90">
+ <div className="w-full">
+ <div className="flex justify-between text-[11px] text-violet-700 font-black mb-1 font-mono">
+ <span>⚡ {language === 'ko' ? '자동 환생 및 다음 회차 진행 중...' : 'Auto-Reincarnating to Next Cycle...'}</span>
+ <span>{Math.max(0, rebirthCountdown).toFixed(1)}s</span>
+ </div>
+ <div className="h-1.5 w-full bg-violet-100 rounded-none overflow-hidden border border-violet-200">
+ <div
+ className="h-full bg-violet-600 transition-all duration-75 ease-linear"
+ style={{ width: `${Math.max(0, Math.min(100, (rebirthCountdown / 3.0) * 100))}%` }}
+ />
+ </div>
+ </div>
+ <div className="flex flex-wrap items-center justify-between gap-2.5 sm:gap-3">
  <div className="rounded-none bg-violet-100 border border-violet-300 px-3.5 py-2 text-sm font-black text-violet-900 flex items-center gap-1.5">
  <span>👑</span>
  <span>{t('kadan_rpg_rebirth_level', language)}</span>
@@ -1056,7 +1092,10 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  <div className="flex items-center gap-2">
  <button
  type="button"
- onClick={() => setIsEndingDismissed(true)}
+ onClick={() => {
+ setAutoMode(false);
+ setIsEndingDismissed(true);
+ }}
  className="min-h-11 rounded-sm border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 transition-all hover:bg-slate-50 active:scale-95 cursor-pointer shadow-xs"
  >
  {language === 'ko' ? '닫기 (나중에 하기)' : t('close', language)}
@@ -1066,8 +1105,9 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  onClick={handleReincarnate}
  className="min-h-11 rounded-sm bg-violet-600 hover:bg-violet-700 px-5 py-2 text-sm font-black text-white shadow-none shadow-none transition-all active:scale-95 cursor-pointer"
  >
- {t('kadan_rpg_reincarnate', language)}
+ {t('kadan_rpg_reincarnate', language)} ({Math.max(1, Math.ceil(rebirthCountdown))}s)
  </button>
+ </div>
  </div>
  </div>
  </div>

@@ -226,7 +226,7 @@ export const useKadanRpgProgress = (season: string) => {
       const next = saveKadanRpgProgress(season, {
         ...base,
         rebirthLevel: previous.rebirthLevel + 1,
-        autoMode: previous.autoMode,
+        autoMode: true,
       });
       if (typeof window !== 'undefined') {
         window.dispatchEvent(new CustomEvent('hero_reincarnation_updated', {

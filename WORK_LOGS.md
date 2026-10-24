@@ -2,6 +2,19 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-24 10:35 KST] [스토리모드 엔딩/환생 팝업에서 멈추지 않고 3초 후 자동 환생 및 다음 회차 진행 구현 + /git-push 완료]
+- **요청 사항**:
+  - "그리고 환생 팝업에서 멈추는 버그도ㅠ있어. 계속 진행되게 해줘 /git-push"
+- **주요 수정 내역**:
+  1. **[`src/views/KadanRpgView.tsx`](file:///Users/dayyoung/project/snshero/src/views/KadanRpgView.tsx)**:
+     - 40화 완결(`isComplete === true`) 후 엔딩/환생 팝업이 열릴 때 3.0초 카운트다운(`rebirthCountdown`) 후 자동으로 `handleReincarnate()`를 실행하여 멈추지 않고 다음 환생 차수(1화)부터 즉시 자동 진행되도록 구현.
+     - 환생 팝업 하단에 실시간 진행 바(`⚡ 자동 환생 및 다음 회차 진행 중... 3.0s`) 및 버튼 카운트다운(`환생 (3s)`) UI 추가.
+     - `isEndingDismissed` 상태에서 자동모드가 켜져 있으면 즉시 환생 루프로 진입하도록 보강.
+  2. **[`src/hooks/useKadanRpgProgress.ts`](file:///Users/dayyoung/project/snshero/src/hooks/useKadanRpgProgress.ts)**:
+     - `reincarnateProgress()` 호출 시 `autoMode: true`를 유지하여 환생 직후 멈추지 않고 1화부터 자동 이동·전투를 이어가도록 보장.
+- **검증 및 배포 결과**:
+  - `npm run lint` 및 `npm run build` 검증 완료, 구글 폼 보고서 제출 완료, `git push origin main` 원격 저장소 푸시 완료.
+
 ## [2026-10-24 10:13 KST] [자동전투 진행 중 God 모드(디버그 센터) 화면 진입 원천 차단 완료]
 - **요청 사항**:
   - "자동전투 진행중에 god 모드 화면으로는 절대 들어가지 않게해줘"
