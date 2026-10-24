@@ -2452,11 +2452,15 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
   useEffect(() => {
     let mode: string | null = null;
+    let storyReturnTarget: string | null = null;
+    let isAutoOptimize = false;
     try {
       mode = localStorage.getItem('hero_auto_loop_mode');
+      storyReturnTarget = localStorage.getItem('hero_story_auto_loop_return');
+      isAutoOptimize = localStorage.getItem('hero_auto_optimize_deck') === 'true' || Boolean(storyReturnTarget);
     } catch {}
 
-    if (mode !== 'gacha_start' || smartLoopHandledRef.current) {
+    if ((mode !== 'gacha_start' && !isAutoOptimize) || smartLoopHandledRef.current) {
       if (isDemoPlayActive() && !smartLoopHandledRef.current) {
         smartLoopHandledRef.current = true;
         setSmartLoopStatus(
@@ -2476,8 +2480,16 @@ export const ShopView: React.FC<ShopViewProps> = ({
     const lang = languageRef.current;
     setSmartLoopStatus(
       lang === 'ko'
-        ? (isDemoPlayActive() ? '🎁 [데모플레이] 상점 카드팩 소환을 시작합니다...' : '🤖 [스마트 루프] 랭킹대전 승리 보상으로 카드 소환을 시작합니다...')
-        : (isDemoPlayActive() ? '🎁 [Demo Play] Summoning card pack in Shop...' : '🤖 [Smart Loop] Summoning card pack with Rank Match reward...')
+        ? (storyReturnTarget
+            ? '⚡ [연패 교착 탈출] 상점 카드팩 소환 후 마이덱 카드 최적화를 진행합니다...'
+            : isDemoPlayActive()
+              ? '🎁 [데모플레이] 상점 카드팩 소환을 시작합니다...'
+              : '🤖 [스마트 루프] 랭킹대전 승리 보상으로 카드 소환을 시작합니다...')
+        : (storyReturnTarget
+            ? '⚡ [Deadlock Escape] Summoning card pack in Shop before My Deck optimization...'
+            : isDemoPlayActive()
+              ? '🎁 [Demo Play] Summoning card pack in Shop...'
+              : '🤖 [Smart Loop] Summoning card pack with Rank Match reward...')
     );
 
     const executeSummon = () => {
@@ -2494,9 +2506,9 @@ export const ShopView: React.FC<ShopViewProps> = ({
         }
       })();
       const currentSns = Math.max(localSns, snsRef.current || 0);
-      const packRarity: GachaPackRarity = (currentSns >= 100) ? 'silver' : 'bronze';
+      const packRarity: GachaPackRarity = (storyReturnTarget || currentSns >= 100) ? 'silver' : 'bronze';
       const rawCost = (packRarity === 'silver') ? 100 : 10;
-      const packCost = currentSns >= rawCost ? rawCost : 0; // 잔액 부족 시 승리 보상 무료 소환
+      const packCost = currentSns >= rawCost ? rawCost : 0; // 잔액 부족 시 구제/승리 보상 무료 소환
 
       // 팩 구매 실행 및 획득 카드 목록 수신 (페일오버 완비)
       let drawnCards = buyPackRef.current ? buyPackRef.current(packCost, packRarity) : null;
@@ -2515,11 +2527,16 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
       if (!drawnCards || drawnCards.length === 0) {
         try {
-          localStorage.removeItem('hero_auto_loop_mode');
-          localStorage.setItem('hero_auto_loop_is_ranking', 'true');
+          if (isAutoOptimize) {
+            localStorage.setItem('hero_auto_loop_mode', 'deck_swap');
+            localStorage.setItem('hero_auto_optimize_deck', 'true');
+          } else {
+            localStorage.removeItem('hero_auto_loop_mode');
+            localStorage.setItem('hero_auto_loop_is_ranking', 'true');
+          }
         } catch {}
         smartLoopNavTimerRef.current = setTimeout(() => {
-          onNavigateRef.current?.('card-play');
+          onNavigateRef.current?.(isAutoOptimize ? 'mydeck' : 'card-play');
         }, 1500);
         return;
       }
@@ -2572,7 +2589,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
       });
 
       const isDemo = isDemoPlayActive();
-      const isUpgrade = Boolean(bestDrawnCard && (isDemo || baseDeck.length < 5 || bestDrawnPower > minDeckPower));
+      const isUpgrade = Boolean(bestDrawnCard && (isDemo || isAutoOptimize || baseDeck.length < 5 || bestDrawnPower > minDeckPower));
 
       if (isUpgrade && bestDrawnCard) {
         if (isDemo) {
@@ -2581,16 +2598,23 @@ export const ShopView: React.FC<ShopViewProps> = ({
         const cardTitle = bestDrawnCard.title || bestDrawnCard.name;
         try {
           localStorage.setItem('hero_auto_loop_mode', 'deck_swap');
+          localStorage.setItem('hero_auto_optimize_deck', 'true');
           localStorage.setItem('hero_auto_loop_card', JSON.stringify({ ...bestDrawnCard, targetSlot: weakestSlot }));
-          localStorage.setItem('hero_auto_loop_is_ranking', 'true');
+          if (!storyReturnTarget) {
+            localStorage.setItem('hero_auto_loop_is_ranking', 'true');
+          }
         } catch {}
 
-        let remainingSec = 3;
+        let remainingSec = 2;
         const updateBannerText = (sec: number) => {
           setSmartLoopStatus(
             languageRef.current === 'ko'
-              ? `🎉 [스마트 루프] 강력한 카드 [${cardTitle}] 획득! (전투력 ${bestDrawnPower} > 기존최저 ${minDeckPower})\n마이덱으로 이동하여 자동 교체 장착합니다 (${sec}초)...`
-              : `🎉 [Smart Loop] Stronger card [${cardTitle}] found! (Power ${bestDrawnPower} > Weakest ${minDeckPower})\nMoving to My Deck in ${sec}s...`
+              ? (storyReturnTarget
+                  ? `🎉 [상점 소환 완료] [${cardTitle}] 등 5장 획득!\n마이덱으로 이동하여 전체 카드 최적화를 수행합니다 (${sec}초)...`
+                  : `🎉 [스마트 루프] 강력한 카드 [${cardTitle}] 획득! (전투력 ${bestDrawnPower} > 기존최저 ${minDeckPower})\n마이덱으로 이동하여 자동 교체 장착합니다 (${sec}초)...`)
+              : (storyReturnTarget
+                  ? `🎉 [Summon Complete] Acquired [${cardTitle}] & 4 cards!\nMoving to My Deck for full deck optimization in ${sec}s...`
+                  : `🎉 [Smart Loop] Stronger card [${cardTitle}] found! (Power ${bestDrawnPower} > Weakest ${minDeckPower})\nMoving to My Deck in ${sec}s...`)
           );
         };
         updateBannerText(remainingSec);
@@ -2620,15 +2644,21 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
         smartLoopNavTimerRef.current = setTimeout(() => {
           proceedToDeck();
-        }, 3400);
+        }, 2400);
       } else {
-        // 데모플레이 모드일 때는 신규 카드가 발생하지 않았더라도 상점 화면 표시 후 다음 단계인 마이덱으로 이동!
-        if (isDemoPlayActive()) {
-          setDemoPlayStep('mydeck');
+        // 데모플레이 또는 자동 최적화 모드일 때는 신규 카드가 발생하지 않았더라도 상점 화면 표시 후 마이덱으로 이동!
+        if (isDemoPlayActive() || isAutoOptimize) {
+          if (isDemoPlayActive()) {
+            setDemoPlayStep('mydeck');
+          }
+          try {
+            localStorage.setItem('hero_auto_loop_mode', 'deck_swap');
+            localStorage.setItem('hero_auto_optimize_deck', 'true');
+          } catch {}
           setSmartLoopStatus(
             languageRef.current === 'ko'
-              ? '📦 [데모플레이] 카드 소환 완료 (기존 덱 유지). 마이덱으로 이동합니다 (1.5초)...'
-              : '📦 [Demo Play] Summon complete. Moving to My Deck in 1.5s...'
+              ? '📦 [상점 소환 완료] 마이덱으로 이동하여 카드 최적화를 진행합니다 (1.5초)...'
+              : '📦 [Summon Complete] Moving to My Deck for deck optimization in 1.5s...'
           );
           smartLoopNavTimerRef.current = setTimeout(() => {
             setSmartLoopStatus(null);

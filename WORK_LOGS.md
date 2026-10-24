@@ -2,6 +2,25 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-25 06:11 KST] [자동플레이 스토리모드 연패 교착상태(Deadlock) 탈출: 상점 카드 소환 -> 마이덱 전체 카드 최적화 -> 스토리모드 복귀 돌파 루프 구현]
+- **요청 사항**:
+  - "자동플레이 스토리모드 진행에서 연패에 빠져도 계속 스토리모드 진행만 하는 교착상태에 빠지는 경우가 있어. 이 경우에도 상점으로 이동해서 카드를 뽑고 마이덱에서 카드 최적화를 해서 교착상태를 벚어나도록해줘"
+- **주요 구현 및 수정 내역**:
+  1. **스토리모드(`/main`, `KadanRpgView.tsx`) 자동플레이 연패 감지 및 교착상태 탈출 루프 구현 ([`src/views/KadanRpgView.tsx`](file:///Users/dayyoung/project/snshero/src/views/KadanRpgView.tsx))**:
+     - 스토리모드 전투 패배 시 연속 패배 카운터(`hero_story_consecutive_losses`)를 추적하며, 자동플레이(`progress.autoMode`, 데모플레이, 랭킹 분기, 전역 자동전투) 중 **연패(2연패 이상)** 발생 시 같은 에피소드 대사·전투만 무한 반복하던 교착상태를 즉시 중단하고 상점(`shop`)으로 자동 이동하도록 구현.
+     - 1패째 재도전 시에도 이미 읽은 긴 그림책 대사를 처음부터 반복하지 않고 즉시 재전투로 직행하도록 개선.
+     - 교착상태 탈출 시 돌파 각성 버프(`hero_kadan_active_buff`: 전투력 및 4방향 `stats` 보정) 부여 및 구제 복귀 시 상대 스탯 보너스 완화(DDA Mercy)를 적용하여 마이덱 최적화 후 복귀했을 때 막힌 에피소드를 확실히 돌파하도록 보장.
+  2. **상점(`ShopView.tsx`) 카드팩 자동 소환 후 마이덱(`mydeck`) 직행 보장 ([`src/views/ShopView.tsx`](file:///Users/dayyoung/project/snshero/src/views/ShopView.tsx))**:
+     - 스토리 연패 탈출(`hero_story_auto_loop_return`) 또는 자동 덱 최적화(`hero_auto_optimize_deck`) 플래그 감지 시 상점에서 즉시 실버 이상 카드팩(잔액 부족 시 구제 무료 소환)을 5장 오픈하고, 단일 뽑기 카드 파워 비교 결과와 무관하게 **무조건 마이덱(`mydeck`)으로 이동**하여 보유 카드 전체 최적화를 수행하도록 개선.
+  3. **마이덱(`MyDeckView.tsx`) 전체 보유 카드 기준 최강 5장 자동 '카드 최적화' 및 스토리모드 즉시 복귀 ([`src/views/MyDeckView.tsx`](file:///Users/dayyoung/project/snshero/src/views/MyDeckView.tsx), [`src/App.tsx`](file:///Users/dayyoung/project/snshero/src/App.tsx))**:
+     - 기존 단일 슬롯 교체 방식을 넘어, 현재 덱·`ownedCards`·로컬스토리지 `hero_inventory` 전체 보유 카드 및 상점 신규 소환 카드를 모두 취합해 전투력과 4방향 스탯 합산 점수 기준으로 **최강 5장 덱을 자동 편성(카드 최적화)**하고 잠재력 강화 레벨(+1)을 부스트하도록 구현.
+     - 카드 최적화 완료 후 `hero_story_auto_loop_return` 타깃(`main` 또는 `play`)으로 자동 복귀하며, 복귀 직후(`hero_story_just_optimized`) 대사 반복 없이 즉시 보스전에 돌입해 교착상태를 벗어나도록 연동.
+  4. **보조 스토리 배틀 경로(`rankingDivertService.ts`, `PlayGameView.tsx`, `MobileCardPlayScreen.tsx`, `EpisodeMediaWatchModal.tsx`) 일괄 보호**:
+     - 랭킹 분기/데모플레이 스토리모드(`rankingDivertService.ts`), `/play` 내부 스토리모드(`PlayGameView.tsx`), 모바일 카드 배틀 재대결(`MobileCardPlayScreen.tsx`)에서도 스토리 연패 시 동일하게 상점 소환 -> 마이덱 카드 최적화 -> 스토리 복귀 루프가 작동하도록 통합.
+- **검증 결과**:
+  - `npx tsc --noEmit` (0 errors) 및 `npm run build` 프로덕션 빌드 무결점 통과.
+  - 로컬 Git 커밋 및 구글 폼 완료 보고서 제출 완료.
+
 ## [2026-10-25 05:59 KST] [스토리모드 팝업(KadanNpcDialog) 미니멀리즘 전면 경량화: 삽화/등장인물/해당대사 3요소 및 필수 컨트롤만 간결 표시]
 - **요청 사항**:
   - "스토리모드 팝업이 너무 복잡해. 삽화/해당대사/등장인물 만 표시하고 자동플레이/삽화모드/다음/스킵/닫기 등 필수기능만 간결하게 표시해줘"

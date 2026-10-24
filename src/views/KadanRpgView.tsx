@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { ArrowLeft, BookOpen, Bot, Compass, Film, Pause, Play, RotateCcw, Sparkles, Swords, X } from 'lucide-react';
 import { t } from '../lib/i18n';
@@ -72,14 +72,26 @@ const getBuffedPlayerDeck = (deck: Array<CardData | null>): CardData[] => {
   const rawDeck = deck.filter((c): c is CardData => Boolean(c));
   try {
     const rawBuff = localStorage.getItem('hero_kadan_active_buff');
-    if (!rawBuff) return rawDeck;
-    const buff = JSON.parse(rawBuff);
-    const buffVal = typeof buff.value === 'number' ? buff.value : (buff.id === 'atk_boost' ? 15 : buff.id === 'mana_surge' ? 20 : 15);
+    const rescueCount = parseInt(localStorage.getItem('hero_story_deadlock_rescue_count') || '0', 10) || 0;
+    if (!rawBuff && rescueCount <= 0) return rawDeck;
+
+    const buff = rawBuff ? JSON.parse(rawBuff) : {};
+    const buffVal = typeof buff.value === 'number'
+      ? buff.value
+      : (buff.id === 'atk_boost' ? 15 : buff.id === 'mana_surge' ? 20 : 15) + rescueCount * 25;
+    const statBonus = typeof buff.statBonus === 'number'
+      ? buff.statBonus
+      : Math.min(4, rescueCount > 0 ? rescueCount + 1 : 1);
     const multiplier = 1.0 + (buffVal / 100.0);
-    return rawDeck.map((card) => ({
-      ...card,
-      power: Math.round((card.power || 100) * multiplier),
-    }));
+
+    return rawDeck.map((card) => {
+      const baseStats = Array.isArray(card.stats) && card.stats.length === 4 ? card.stats : [3, 3, 3, 3];
+      return {
+        ...card,
+        stats: baseStats.map((s) => Math.max(1, Math.min(12, (Number(s) || 1) + statBonus))) as [number, number, number, number],
+        power: Math.round((card.power || 100) * multiplier),
+      };
+    });
   } catch {
     return rawDeck;
   }
@@ -137,6 +149,17 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  const [ambushAlert, setAmbushAlert] = useState<AmbushEncounter | null>(null);
  const [ambushBattle, setAmbushBattle] = useState<AmbushEncounter | null>(null);
  const [ambushCountdown, setAmbushCountdown] = useState<number>(1.0);
+ const [isQuickRetrying, setIsQuickRetrying] = useState<boolean>(false);
+ const isDeadlockExitingRef = useRef<boolean>(false);
+ const quickRetryTimerRef = useRef<number | null>(null);
+
+ useEffect(() => {
+  return () => {
+   if (quickRetryTimerRef.current) {
+    window.clearTimeout(quickRetryTimerRef.current);
+   }
+  };
+ }, []);
 
  const activeEncounter = useMemo(() => {
  if (!battleEvent) return undefined;
@@ -150,9 +173,14 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  const rpgOpponent = useMemo(() => {
  if (!activeEncounter || !battleEvent) return null;
 
+ let rescuePenaltyReduction = 0;
+ try {
+  rescuePenaltyReduction = parseInt(localStorage.getItem('hero_story_deadlock_rescue_count') || '0', 10) || 0;
+ } catch {}
+
  const diffBonus = activeEncounter.difficulty === 'boss' ? 2 : activeEncounter.difficulty === 'hard' ? 1 : activeEncounter.difficulty === 'normal' ? 0 : -1;
  const rebirthBonus = Math.max(0, Math.floor(progress.rebirthLevel));
- const totalBonus = diffBonus + Math.min(3, rebirthBonus);
+ const totalBonus = Math.max(-2, diffBonus + Math.min(3, rebirthBonus) - rescuePenaltyReduction);
 
  const boostStat = (val: number) => Math.max(1, Math.min(10, val + totalBonus));
 
@@ -220,9 +248,13 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  const hasBattle = Boolean(activeEvent && activeEvent.nodeType === 'enemy' && !battleEvent && !rewardEvent);
  const hasReward = Boolean(rewardEvent && activeReward);
 
- // 데모모드 또는 랭킹분기 상태에서 /main 진입 시 autoMode 자동 강제 활성화
+ // 데모모드, 랭킹분기, 또는 상점/마이덱 최적화 후 복귀 시 autoMode 자동 강제 활성화
  useEffect(() => {
- if ((isDemoPlayActive() || isRankingDiverted()) && !progress.autoMode) {
+ let justOptimized = false;
+ try {
+  justOptimized = localStorage.getItem('hero_story_just_optimized') === 'true';
+ } catch {}
+ if ((isDemoPlayActive() || isRankingDiverted() || justOptimized) && !progress.autoMode) {
  setAutoMode(true);
  }
  }, [progress.autoMode, setAutoMode]);
@@ -319,17 +351,34 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  }, []);
 
  const openEvent = useCallback((event: KadanRpgEvent) => {
- setActiveEvent(event);
+ if (isDeadlockExitingRef.current) return;
  if (event.nodeType === 'npc' || event.nodeType === 'story' || event.nodeType === 'portal') {
  markNpcMet(event.id);
  }
  if (event.nodeType === 'chest') {
  markChestOpened(event.id);
  }
+
+ // 상점 소환 & 마이덱 최적화 완료 후 복귀한 직후인 경우, 이미 읽은 대사를 반복하지 않고 즉시 전투로 돌입
+ let justOptimized = false;
+ try {
+  justOptimized = localStorage.getItem('hero_story_just_optimized') === 'true';
+  if (justOptimized) {
+   localStorage.removeItem('hero_story_just_optimized');
+  }
+ } catch {}
+
+ if (justOptimized) {
+  setActiveEvent(null);
+  setBattleEvent(event);
+  return;
+ }
+
+ setActiveEvent(event);
  }, [markChestOpened, markNpcMet]);
 
  useEffect(() => {
- if (isMoving || activeEvent || battleEvent || rewardEvent || mediaPromptEvent || !targetTile || ambushAlert || ambushBattle) return;
+ if (isDeadlockExitingRef.current || isQuickRetrying || isMoving || activeEvent || battleEvent || rewardEvent || mediaPromptEvent || !targetTile || ambushAlert || ambushBattle) return;
  if (!sameTile(heroTile, targetTile)) return;
 
  const arrivedEvent = regionEvents.find((event) => sameTile(event.tile, targetTile));
@@ -341,7 +390,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  openEvent(arrivedEvent);
  setTargetTile(null);
  }
- }, [activeEvent, battleEvent, dismissedEventId, heroTile, isMoving, mediaPromptEvent, openEvent, regionEvents, rewardEvent, targetTile, ambushAlert, ambushBattle]);
+ }, [activeEvent, battleEvent, dismissedEventId, heroTile, isMoving, isQuickRetrying, mediaPromptEvent, openEvent, regionEvents, rewardEvent, targetTile, ambushAlert, ambushBattle]);
 
  const handleEventPress = useCallback((event: KadanRpgEvent) => {
  pauseForManualInput();
@@ -452,28 +501,128 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
 
  const handleBattleComplete = useCallback((result: KadanBattleResult) => {
  if (!battleEvent) return;
- try {
-  localStorage.removeItem('hero_kadan_active_buff');
- } catch {}
  const encounter = getDynamicKadanEncounter(battleEvent, progress.rebirthLevel);
  if (!encounter) return;
 
- // 랭킹 분기 또는 데모 모드일 때 매치 결과 기록 및 3전 완료 시 랭킹 자동 복귀 처리
- if (isRankingDiverted() || isDemoPlayActive()) {
- handleDivertedMatchResult(result, onNavigate, language, showCustomAlert, true);
+ let prevLosses = 0;
+ let rescueCount = 0;
+ try {
+  prevLosses = parseInt(localStorage.getItem('hero_story_consecutive_losses') || '0', 10) || 0;
+  rescueCount = parseInt(localStorage.getItem('hero_story_deadlock_rescue_count') || '0', 10) || 0;
+ } catch {}
+
+ // 승리, 무승부, 또는 패배 진행 허용 챕터이거나, 상점/마이덱 최적화를 2회 이상 거쳤는데도 막힌 극단적 교착 상황일 때 클리어 진행
+ if (result === 'win' || result === 'draw' || encounter.allowLossProgress || (result === 'loss' && rescueCount >= 2)) {
+  try {
+   localStorage.removeItem('hero_kadan_active_buff');
+   localStorage.removeItem('hero_story_consecutive_losses');
+   localStorage.removeItem('hero_story_deadlock_rescue_count');
+   localStorage.removeItem('hero_story_just_optimized');
+  } catch {}
+
+  if (isRankingDiverted() || isDemoPlayActive()) {
+   handleDivertedMatchResult(result === 'loss' ? 'win' : result, onNavigate, language, showCustomAlert, true);
+  }
+
+  markEncounterCleared(encounter.id);
+  setBattleEvent(null);
+  void openEpisodeEndMediaPrompt(battleEvent);
+  return;
  }
 
- if (result === 'win' || result === 'draw' || encounter.allowLossProgress) {
- markEncounterCleared(encounter.id);
- setBattleEvent(null);
- void openEpisodeEndMediaPrompt(battleEvent);
- return;
+ // 패배(loss) 처리 및 연패 교착상태 감지
+ const nextLosses = prevLosses + 1;
+ try {
+  localStorage.setItem('hero_story_consecutive_losses', String(nextLosses));
+ } catch {}
+
+ let isAutoBattleGlobal = false;
+ try {
+  isAutoBattleGlobal = localStorage.getItem('hero_auto_battle') === 'true';
+ } catch {}
+ const isAutoStory = progress.autoMode || isDemoPlayActive() || isRankingDiverted() || isAutoBattleGlobal;
+
+ // 🌟 자동플레이 스토리모드 진행 중 연패(2연패 이상) 또는 최적화 직후 재패배 시:
+ // 계속 스토리모드만 반복하는 교착상태를 탈출하기 위해 [상점 카드 뽑기 -> 마이덱 카드 최적화 -> 스토리 복귀] 루프 가동!
+ if (isAutoStory && (nextLosses >= 2 || rescueCount >= 1)) {
+  isDeadlockExitingRef.current = true;
+  if (quickRetryTimerRef.current) {
+   window.clearTimeout(quickRetryTimerRef.current);
+   quickRetryTimerRef.current = null;
+  }
+  setIsQuickRetrying(false);
+  setBattleEvent(null);
+  setActiveEvent(null);
+  setTargetTile(null);
+
+  const nextRescue = rescueCount + 1;
+  try {
+   localStorage.setItem('hero_story_consecutive_losses', '0');
+   localStorage.setItem('hero_story_deadlock_rescue_count', String(nextRescue));
+   localStorage.setItem('hero_kadan_active_buff', JSON.stringify({
+    id: 'deadlock_breakthrough',
+    type: 'buff',
+    value: Math.min(120, nextRescue * 35),
+    statBonus: Math.min(4, nextRescue + 1),
+    name: '교착 돌파 각성 버프',
+    nameEn: 'Deadlock Breakthrough Buff',
+    chapterNumber: battleEvent.chapterNumber,
+    timestamp: Date.now(),
+   }));
+   localStorage.setItem('hero_auto_loop_mode', 'gacha_start');
+   localStorage.setItem('hero_auto_optimize_deck', 'true');
+   localStorage.setItem('hero_story_auto_loop_return', 'main');
+  } catch {}
+
+  if (isDemoPlayActive()) {
+   setDemoPlayStep('shop');
+  }
+
+  showCustomAlert(
+   language === 'ko' ? '⚡ [연패 교착 탈출] 상점 소환 & 마이덱 최적화' : '⚡ [Deadlock Escape] Shop Summon & Deck Optimize',
+   language === 'ko'
+    ? '스토리모드 연패 교착상태를 벗어나기 위해 상점으로 이동하여 카드를 뽑고 마이덱에서 카드 최적화를 진행합니다!'
+    : 'Moving to Shop to summon cards and optimize your deck in My Deck to break the story deadlock!',
+   2
+  );
+
+  onNavigate('shop');
+  return;
  }
 
+ // 자동플레이 중 1패째에는 이미 읽은 그림책 대사를 처음부터 반복하지 않고 즉시 재도전하여 빠르게 승부 확인
+ if (isAutoStory) {
+  const retryTarget = battleEvent;
+  setBattleEvent(null);
+  setActiveEvent(null);
+  setIsQuickRetrying(true);
+  showCustomAlert(
+   language === 'ko' ? '⚔️ [자동 재도전] 전열 재정비 후 즉시 재대결' : '⚔️ [Auto Retry] Immediate Rematch',
+   language === 'ko'
+    ? '전투에 패배하여 즉시 재도전합니다. (연속 패배 시 상점 카드 소환 및 마이덱 최적화로 자동 이동합니다)'
+    : 'Retrying battle immediately. (Consecutive losses will trigger Shop summon & My Deck optimization)',
+   2
+  );
+  if (quickRetryTimerRef.current) {
+   window.clearTimeout(quickRetryTimerRef.current);
+  }
+  quickRetryTimerRef.current = window.setTimeout(() => {
+   quickRetryTimerRef.current = null;
+   setIsQuickRetrying(false);
+   if (!isDeadlockExitingRef.current) {
+    setBattleEvent(retryTarget);
+   }
+  }, 1100);
+  return;
+ }
+
+ try {
+  localStorage.removeItem('hero_kadan_active_buff');
+ } catch {}
  setBattleEvent(null);
  setActiveEvent(battleEvent);
  showCustomAlert(t('kadan_rpg_battle_loss_title', language), t('kadan_rpg_battle_loss_desc', language), 3);
- }, [battleEvent, language, markEncounterCleared, onNavigate, openEpisodeEndMediaPrompt, progress.rebirthLevel, showCustomAlert]);
+ }, [battleEvent, language, markEncounterCleared, onNavigate, openEpisodeEndMediaPrompt, progress.autoMode, progress.rebirthLevel, showCustomAlert]);
 
  const handleEngageAmbush = useCallback(() => {
   if (!ambushAlert) return;
@@ -570,7 +719,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  hasDialog,
  hasBattle,
  hasReward,
- isBusy: isMoving || Boolean(battleEvent) || Boolean(mediaPromptEvent) || Boolean(activeEvent && !battleEvent && !rewardEvent) || Boolean(ambushAlert) || Boolean(ambushBattle),
+ isBusy: isQuickRetrying || isDeadlockExitingRef.current || isMoving || Boolean(battleEvent) || Boolean(mediaPromptEvent) || Boolean(activeEvent && !battleEvent && !rewardEvent) || Boolean(ambushAlert) || Boolean(ambushBattle),
  onMoveToTarget: () => {
  if (nextEvent) moveToEvent(nextEvent);
  },

@@ -145,18 +145,21 @@ export function handleDivertedMatchResult(
   showCustomAlert?: (title: string, message: string, autoCloseSeconds?: number) => void,
   isAutoBattleMode?: boolean
 ): { shouldReturnToRanking: boolean; consecutiveLosses: number } {
-  if (!isRankingDiverted()) {
+  if (!isRankingDiverted() && !isDemoPlayActive()) {
     return { shouldReturnToRanking: false, consecutiveLosses: 0 };
   }
 
   const currentMode = getDivertedMode() || 'main';
   const currentMatches = getDivertedMatchCount();
   const nextMatches = currentMatches + 1;
+  const prevLosses = getDivertedLossCount();
+  const nextLosses = result === 'loss' ? prevLosses + 1 : 0;
   const alreadyVerified = isDivertVerified();
 
-  // 대전 수 누적 저장
+  // 대전 수 및 연속 패배 수 누적 저장
   try {
     localStorage.setItem(STORAGE_KEY_DIVERTED_MATCH_COUNT, String(nextMatches));
+    localStorage.setItem(STORAGE_KEY_CONSECUTIVE_LOSSES, String(nextLosses));
   } catch {}
 
   // 자동 카드 플레이 여부 확인
@@ -179,6 +182,23 @@ export function handleDivertedMatchResult(
         detail: { mode: currentMode, timestamp: Date.now() }
       }));
     } catch {}
+  }
+
+  // 🌟 스토리모드('main') 진행 중 연패(2연패 이상)에 빠진 경우: 상점 소환 -> 마이덱 최적화 -> 스토리 복귀로 교착상태 탈출!
+  if (currentMode === 'main' && nextLosses >= 2) {
+    try {
+      localStorage.setItem(STORAGE_KEY_CONSECUTIVE_LOSSES, '0');
+      localStorage.setItem('hero_auto_loop_mode', 'gacha_start');
+      localStorage.setItem('hero_auto_optimize_deck', 'true');
+      localStorage.setItem('hero_story_auto_loop_return', 'main');
+    } catch {}
+    if (isDemoPlayActive()) {
+      setDemoPlayStep('shop');
+    }
+    setTimeout(() => {
+      onNavigate('shop');
+    }, 600);
+    return { shouldReturnToRanking: false, consecutiveLosses: nextLosses };
   }
 
   // 🌟 핵심: 승패 상관없이 3연속 대전 도달 시 무조건 다음 순환 과정으로 직행!

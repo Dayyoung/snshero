@@ -125,6 +125,11 @@ export function stopDemoPlay(onNavigate?: (view: string) => void): void {
     localStorage.removeItem('hero_ranking_diverted_mode');
     localStorage.removeItem('hero_diverted_consecutive_losses');
     localStorage.removeItem('hero_diverted_verified');
+    localStorage.removeItem('hero_story_consecutive_losses');
+    localStorage.removeItem('hero_story_deadlock_rescue_count');
+    localStorage.removeItem('hero_story_just_optimized');
+    localStorage.removeItem('hero_story_auto_loop_return');
+    localStorage.removeItem('hero_auto_optimize_deck');
 
     window.dispatchEvent(new CustomEvent('snshero_demo_play_changed', {
       detail: { active: false, timestamp: Date.now() }

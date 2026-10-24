@@ -1612,11 +1612,42 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
     return () => clearTimeout(timer);
   }, [rankingSearchCountdown, initMatchDecks]);
 
-  // 3초 카운트다운 감소 및 0초 도달 시 자동 재대결 (미션 게임은 3초 대사 보여주고 시작)
+  // 3초 카운트다운 감소 및 0초 도달 시 자동 재대결 (연패 교착 시 상점 소환 & 마이덱 최적화 자동 이동)
   useEffect(() => {
     if (rematchCountdown === null) return;
     if (rematchCountdown <= 0) {
       setRematchCountdown(null);
+
+      const isStoryBattle = Boolean(
+        opponentName && (opponentName.includes('스토리') || opponentName.includes('제 ') || opponentName.includes('Ch.'))
+      );
+
+      if (winner === 'player' || winner === 'draw') {
+        try {
+          localStorage.removeItem('hero_story_consecutive_losses');
+        } catch {}
+      } else if (winner === 'ai' && isAutoBattle && isStoryBattle) {
+        let prevLosses = 0;
+        try {
+          prevLosses = parseInt(localStorage.getItem('hero_story_consecutive_losses') || '0', 10) || 0;
+        } catch {}
+        const nextLosses = prevLosses + 1;
+        try {
+          localStorage.setItem('hero_story_consecutive_losses', String(nextLosses));
+        } catch {}
+
+        if (nextLosses >= 2 && onNavigate) {
+          try {
+            localStorage.setItem('hero_story_consecutive_losses', '0');
+            localStorage.setItem('hero_auto_loop_mode', 'gacha_start');
+            localStorage.setItem('hero_auto_optimize_deck', 'true');
+            localStorage.setItem('hero_story_auto_loop_return', 'main');
+          } catch {}
+          onNavigate('shop');
+          return;
+        }
+      }
+
       if (effectiveTargetCardId) {
         // 미션 게임: 3초 대사 보여주고 시작
         setShowMissionDialogue(true);
@@ -1628,7 +1659,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       setRematchCountdown(prev => (prev !== null ? prev - 1 : null));
     }, 1000);
     return () => clearTimeout(timer);
-  }, [rematchCountdown, effectiveTargetCardId, initMatchDecks]);
+  }, [rematchCountdown, effectiveTargetCardId, initMatchDecks, winner, isAutoBattle, opponentName, onNavigate]);
 
   // 튜토리얼 모드: 카운트다운 후 상점으로 이동
   useEffect(() => {

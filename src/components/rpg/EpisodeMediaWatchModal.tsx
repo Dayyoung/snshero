@@ -93,12 +93,14 @@ export const EpisodeMediaWatchModal: React.FC<EpisodeMediaWatchModalProps> = ({
   const hasRewardedRef = useRef(false);
   const watchOpenedAtRef = useRef<number>(0);
   const pageHiddenAfterOpenRef = useRef<boolean>(false);
+  const onProceedNextRef = useRef(onProceedNext);
+  onProceedNextRef.current = onProceedNext;
 
   const safeProceedNext = useCallback(() => {
     if (hasProceededRef.current) return;
     hasProceededRef.current = true;
-    onProceedNext();
-  }, [onProceedNext]);
+    onProceedNextRef.current();
+  }, []);
 
   const completeWatchAndGrantReward = useCallback(async () => {
     if (hasRewardedRef.current) return;

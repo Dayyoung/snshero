@@ -2466,6 +2466,9 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
     const actInfo = storyActData[storyAct];
 
     if (playerWon) {
+      try {
+        localStorage.removeItem('hero_story_consecutive_losses');
+      } catch {}
       if (storyStep === 1) {
         const nextStep = 2;
         setStoryStep(nextStep);
@@ -2498,6 +2501,25 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
         
         recordMatchResult('win', prize, undefined, 'robot');
         setShowStoryResultModal(true);
+      }
+    } else {
+      let prevLosses = 0;
+      try {
+        prevLosses = parseInt(localStorage.getItem('hero_story_consecutive_losses') || '0', 10) || 0;
+      } catch {}
+      const nextLosses = prevLosses + 1;
+      try {
+        localStorage.setItem('hero_story_consecutive_losses', String(nextLosses));
+      } catch {}
+
+      if ((isStoryAutoPlay || isAutoBattle || isDemoPlayActive()) && nextLosses >= 2 && setView) {
+        try {
+          localStorage.setItem('hero_story_consecutive_losses', '0');
+          localStorage.setItem('hero_auto_loop_mode', 'gacha_start');
+          localStorage.setItem('hero_auto_optimize_deck', 'true');
+          localStorage.setItem('hero_story_auto_loop_return', 'play_story');
+        } catch {}
+        setView('shop');
       }
     }
   };

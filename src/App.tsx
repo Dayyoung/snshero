@@ -3671,6 +3671,18 @@ function AppContent() {
     if (!recommendMode) return;
     if (!currentDeck || currentDeck.length === 0) return;
 
+    // 자동 덱 최적화/교체 루프 실행 중일 때는 MyDeckView가 자동으로 전체 최적화를 수행하므로 수동 모달 중복 노출 차단
+    try {
+      const autoMode = localStorage.getItem('hero_auto_loop_mode');
+      const autoOptimize = localStorage.getItem('hero_auto_optimize_deck') === 'true';
+      const storyReturn = localStorage.getItem('hero_story_auto_loop_return');
+      const demoActive = localStorage.getItem('hero_demo_play_active') === 'true';
+      if (autoMode === 'deck_swap' || autoOptimize || storyReturn || demoActive) {
+        if (upgradeDeckPrompt) setUpgradeDeckPrompt(null);
+        return;
+      }
+    } catch {}
+
     const season = currentSeason || localStorage.getItem('hero_current_season') || 'season1';
     const currentFingerprint = getCardStateFingerprint(currentDeck, inventory);
     const dismissedFingerprint = getSeasonItem('hero_deck_upgrade_dismissed', season);

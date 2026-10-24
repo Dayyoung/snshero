@@ -336,4 +336,10 @@
 - `hero_pwa_install_reward_claimed`: PWA 앱 설치(홈 화면 추가) 보너스(+100 SNS) 수령 여부 저장
 - `hero_push_notification_reward_claimed`: 웹푸시 알림 등록 보너스(+100 SNS) 수령 여부 저장
 - `hero_pwa_event_modal_dismissed_at`: PWA/알림 이벤트 모달 24시간 오늘 하루 보지 않기 타임스탬프 저장
+- `hero_story_consecutive_losses`: 스토리모드 연속 패배 횟수 추적 (연패 교착상태 감지용)
+- `hero_story_deadlock_rescue_count`: 스토리모드 연패 교착상태 구제(상점 소환 & 마이덱 최적화) 누적 횟수
+- `hero_story_just_optimized`: 상점 소환 및 마이덱 카드 최적화 직후 스토리모드 복귀 시 대사 생략 및 즉시 전투 돌입 플래그
+- `hero_story_auto_loop_return`: 상점 소환 및 마이덱 카드 최적화 완료 후 복귀할 스토리모드 뷰(`main` 또는 `play_story`) 저장
+- `hero_auto_optimize_deck`: 마이덱 진입 시 보유 카드 전체 기준 최강 5장 자동 카드 최적화 실행 플래그
+
 

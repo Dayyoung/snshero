@@ -62,7 +62,7 @@ import { TacticalPassivePerksModal } from '../components/battle/TacticalPassiveP
 import { DeckCommandHub } from '../components/DeckCommandHub';
 import { maybeTriggerTourOrProceedToBattle } from '../lib/smartLoopTourService';
 import { startRankingDivert } from '../lib/rankingDivertService';
-import { isDemoPlayActive } from '../lib/demoPlayService';
+import { isDemoPlayActive, setDemoPlayStep } from '../lib/demoPlayService';
 import { createMyDeckWebMcpTools, useWebMcpTools } from '../lib/webMcp/index';
 
 interface MyDeckViewProps {
@@ -314,10 +314,29 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
     if (autoSwapTimerRef.current) clearTimeout(autoSwapTimerRef.current);
     setAutoSwapBanner(null);
 
+    let storyReturnTarget: string | null = null;
     let isAutoLoopRanking = false;
     try {
+      storyReturnTarget = localStorage.getItem('hero_story_auto_loop_return');
       isAutoLoopRanking = localStorage.getItem('hero_auto_loop_is_ranking') === 'true';
     } catch {}
+
+    // 🌟 스토리모드 연패 교착상태 탈출로 상점 소환 & 마이덱 최적화를 마친 경우: 즉시 스토리모드로 복귀하여 돌파!
+    if (storyReturnTarget === 'main' || storyReturnTarget === 'play_story') {
+      try {
+        localStorage.removeItem('hero_story_auto_loop_return');
+        localStorage.removeItem('hero_auto_optimize_deck');
+        localStorage.removeItem('hero_auto_loop_mode');
+        localStorage.removeItem('hero_auto_loop_card');
+        localStorage.setItem('hero_story_just_optimized', 'true');
+        localStorage.setItem('hero_kadan_rpg_auto_mode', 'true');
+      } catch {}
+      if (isDemoPlayActive()) {
+        setDemoPlayStep('story');
+      }
+      onNavigate(storyReturnTarget === 'play_story' ? 'play' : 'main');
+      return;
+    }
 
     // 랭킹 자동 플레이 진행 중 신규 카드가 마이덱에 적용된 경우: 미션게임(/play)으로 이동하여 새로운 카드플레이 시작
     if (isNewCardApplied || isAutoLoopRanking) {
@@ -375,23 +394,17 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
   useEffect(() => {
     let mode: string | null = null;
     let rawCard: string | null = null;
+    let storyReturnTarget: string | null = null;
+    let isAutoOptimize = false;
     try {
       mode = localStorage.getItem('hero_auto_loop_mode');
       rawCard = localStorage.getItem('hero_auto_loop_card');
+      storyReturnTarget = localStorage.getItem('hero_story_auto_loop_return');
+      isAutoOptimize = localStorage.getItem('hero_auto_optimize_deck') === 'true' || Boolean(storyReturnTarget);
     } catch {}
 
-    if (mode !== 'deck_swap' || !rawCard || autoSwapHandledRef.current) {
-      if (isDemoPlayActive() && !autoSwapHandledRef.current) {
-        autoSwapHandledRef.current = true;
-        setAutoSwapBanner(
-          language === 'ko'
-            ? '⚡ [데모플레이] 마이덱 구성 확인 완료. 미션게임(/play)으로 이동합니다 (1.5초)...'
-            : '⚡ [Demo Play] My Deck verified. Moving to Mission Game (/play) in 1.5s...'
-        );
-        autoSwapTimerRef.current = setTimeout(() => {
-          startRankingDivert(onNavigate, language, undefined, 'play');
-        }, 1500);
-      }
+    const shouldRunAutoOptimize = mode === 'deck_swap' || isAutoOptimize || isDemoPlayActive();
+    if (!shouldRunAutoOptimize || autoSwapHandledRef.current) {
       return;
     }
     autoSwapHandledRef.current = true;
@@ -413,43 +426,132 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
     setGlobalPopupOpen(false);
 
     try {
-      const cardCandidate = JSON.parse(rawCard);
-      const imgIdx = cardCandidate.imageIndex ?? cardCandidate.id;
-      const dbCard = CARD_DATABASE[imgIdx] || cardCandidate;
-      const newCard = syncCardWithDatabase({
-        ...dbCard,
-        id: `card_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
-        imageIndex: imgIdx,
-        level: 1,
-        hunger: 100,
-        happiness: 100,
-      }, inventory);
-
-      // 덱에서 최약체 카드 슬롯 찾기
-      let minPower = 9999;
-      let weakestSlot = 0;
-      const baseDeck = (currentDeck && currentDeck.length > 0) ? currentDeck : (() => {
+      const baseDeck: CardData[] = (currentDeck && currentDeck.length > 0) ? currentDeck : (() => {
         try {
           const raw = localStorage.getItem('hero_deck');
           return raw ? JSON.parse(raw) : [];
         } catch { return []; }
       })();
 
-      baseDeck.forEach((c: CardData, idx: number) => {
-        const p = getCardPower(c);
-        if (p < minPower) {
-          minPower = p;
-          weakestSlot = idx;
+      // 로컬스토리지 최신 인벤토리까지 병합하여 전체 보유 카드 풀 구성
+      let mergedInventory: Record<string, any> = { ...(inventory || {}) };
+      try {
+        const rawInv = localStorage.getItem('hero_inventory');
+        if (rawInv) {
+          const parsedInv = JSON.parse(rawInv);
+          mergedInventory = { ...parsedInv, ...mergedInventory };
+        }
+      } catch {}
+
+      const candidateByImageIndex = new Map<number, CardData>();
+
+      const registerCandidate = (cardLike: any) => {
+        if (!cardLike) return;
+        const imgIdx = Number(cardLike.imageIndex ?? cardLike.cardIndex ?? cardLike.id);
+        if (!imgIdx || isNaN(imgIdx) || !CARD_DATABASE[imgIdx]) return;
+        const dbCard = CARD_DATABASE[imgIdx];
+        const existingInDeck = baseDeck.find(c => c && Number(c.imageIndex) === imgIdx);
+        const invData = mergedInventory[imgIdx] || mergedInventory[String(imgIdx)];
+
+        const synced = syncCardWithDatabase(
+          existingInDeck
+            ? { ...dbCard, ...existingInDeck, imageIndex: imgIdx }
+            : {
+                ...dbCard,
+                id: `card_${imgIdx}_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+                imageIndex: imgIdx,
+                level: invData?.level || dbCard.level || 1,
+                growth: invData?.growth || 0,
+                hunger: invData?.hunger || 100,
+                happiness: invData?.happiness || 100,
+                owner: null,
+              },
+          mergedInventory
+        );
+
+        const prev = candidateByImageIndex.get(imgIdx);
+        if (!prev || getCardPower(synced) >= getCardPower(prev)) {
+          candidateByImageIndex.set(imgIdx, synced);
+        }
+      };
+
+      // 1) 기존 장착 덱 카드 등록
+      baseDeck.forEach(c => registerCandidate(c));
+      // 2) ownedCards 배열 등록
+      (ownedCards || []).forEach(c => registerCandidate(c));
+      // 3) 인벤토리 보유 카드 전수 등록
+      Object.entries(mergedInventory).forEach(([key, val]: [string, any]) => {
+        const qty = val?.quantity ?? (typeof val === 'number' ? val : 0);
+        if (qty > 0) {
+          const idx = Number(val?.cardIndex ?? val?.imageIndex ?? key);
+          if (idx > 0 && CARD_DATABASE[idx]) {
+            registerCandidate({ imageIndex: idx });
+          }
         }
       });
-
-      const updatedDeck = [...baseDeck];
-      const replacedCard = updatedDeck[weakestSlot];
-      if (updatedDeck.length < 5) {
-        updatedDeck.push(newCard);
-      } else {
-        updatedDeck[weakestSlot] = newCard;
+      // 4) 상점에서 방금 뽑은 대표 카드 등록
+      let newlyDrawnCard: CardData | null = null;
+      if (rawCard) {
+        try {
+          const cardCandidate = JSON.parse(rawCard);
+          const imgIdx = Number(cardCandidate.imageIndex ?? cardCandidate.id);
+          if (imgIdx > 0 && CARD_DATABASE[imgIdx]) {
+            registerCandidate({ ...CARD_DATABASE[imgIdx], ...cardCandidate, imageIndex: imgIdx });
+            newlyDrawnCard = candidateByImageIndex.get(imgIdx) || null;
+          }
+        } catch {}
       }
+
+      // 전투력 + 4방향 스탯 합산 점수 기준으로 전체 보유 카드 정렬 (최강 5장 선발)
+      const calcOptimizeScore = (c: CardData): number => {
+        const p = getCardPower(c) || c.power || 10;
+        const statSum = Array.isArray(c.stats)
+          ? c.stats.reduce((acc, v) => acc + (Number(v) || 0), 0)
+          : 0;
+        return p + statSum * 15;
+      };
+
+      const sortedCandidates = Array.from(candidateByImageIndex.values()).sort(
+        (a, b) => calcOptimizeScore(b) - calcOptimizeScore(a)
+      );
+
+      let updatedDeck: CardData[] = sortedCandidates.slice(0, 5);
+      if (updatedDeck.length === 0) {
+        updatedDeck = [...baseDeck];
+      }
+
+      // 스토리 연패 교착 탈출인 경우: 선발된 덱 카드의 잠재력 강화 레벨 +1 부스트하여 확실한 전력 상승 보장
+      if (storyReturnTarget && updatedDeck.length > 0) {
+        updatedDeck = updatedDeck.map((c, idx) => {
+          const imgIdx = Number(c.imageIndex || c.id);
+          if (idx === 0 && imgIdx > 0) {
+            try {
+              const enhKey = `hero_card_enhancement_${imgIdx}`;
+              const curLv = parseInt(localStorage.getItem(enhKey) || '1', 10) || 1;
+              localStorage.setItem(enhKey, String(curLv + 1));
+            } catch {}
+          }
+          const baseStats = Array.isArray(c.stats) && c.stats.length === 4 ? c.stats : [3, 3, 3, 3];
+          return {
+            ...c,
+            level: Math.min(10, (c.level || 1) + 1),
+            power: (c.power || getCardPower(c) || 100) + 25,
+            stats: baseStats.map((s) => Math.min(10, (Number(s) || 1) + 1)) as [number, number, number, number],
+          };
+        });
+      }
+
+      // 변경된 슬롯 계산 (전체 최적화 시각 피드백)
+      const changedSlots: number[] = [];
+      updatedDeck.forEach((c, idx) => {
+        const prev = baseDeck[idx];
+        if (!prev || prev.imageIndex !== c.imageIndex || prev.id !== c.id) {
+          changedSlots.push(idx);
+        }
+      });
+      const shakeTargets = changedSlots.length > 0
+        ? changedSlots
+        : [0, 1, 2, 3, 4].slice(0, updatedDeck.length);
 
       // 로컬스토리지 영구 동기화
       try {
@@ -457,29 +559,36 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
         localStorage.setItem('hero_deck', JSON.stringify(updatedDeck));
         localStorage.setItem(`hero_deck_${season}`, JSON.stringify(updatedDeck));
         localStorage.setItem(`hero_deck_guest_${season}`, JSON.stringify(updatedDeck));
-        localStorage.setItem('hero_auto_loop_is_ranking', 'true');
+        if (!storyReturnTarget) {
+          localStorage.setItem('hero_auto_loop_is_ranking', 'true');
+        }
         window.dispatchEvent(new Event('snshero_deck_updated'));
       } catch {}
 
       updateDeck(updatedDeck);
       playSfx('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
       triggerHaptic('heavy');
-      triggerCardShake([weakestSlot], false);
+      triggerCardShake(shakeTargets, false);
 
       try {
         localStorage.removeItem('hero_auto_loop_mode');
         localStorage.removeItem('hero_auto_loop_card');
+        localStorage.removeItem('hero_auto_optimize_deck');
       } catch {}
 
-      const cardName = newCard.title || newCard.name;
-      const replacedName = replacedCard ? (replacedCard.title || replacedCard.name) : '';
+      const topCard = newlyDrawnCard || updatedDeck[0];
+      const cardName = topCard ? (topCard.title || topCard.name || '최강 영웅') : '최강 영웅';
 
       let remainingSec = 2;
       const updateBanner = (sec: number) => {
         setAutoSwapBanner(
           language === 'ko'
-            ? `⚡ [신규 덱 장착 완료] '${cardName}'(으)로 교체 장착!\n/main 또는 /play 모드로 이동하여 새로운 카드플레이를 시작합니다 (${sec}초)... (3연패 시 랭킹 복귀)`
-            : `⚡ [New Deck Equipped] Equipped '${cardName}'!\nMoving to /main or /play for new card battle in ${sec}s... (Returns to Rank on 3 losses)`
+            ? (storyReturnTarget
+                ? `⚡ [마이덱 카드 최적화 완료] '${cardName}' 포함 최강 5장 덱 편성 완료!\n스토리모드로 복귀하여 연패 교착상태를 돌파합니다 (${sec}초)...`
+                : `⚡ [신규 덱 최적화 장착 완료] '${cardName}' 포함 최강 덱 편성!\n/main 또는 /play 모드로 이동하여 새로운 카드플레이를 시작합니다 (${sec}초)...`)
+            : (storyReturnTarget
+                ? `⚡ [Deck Optimized] Best 5-card deck with '${cardName}' equipped!\nReturning to Story Mode to break the deadlock in ${sec}s...`
+                : `⚡ [Deck Optimized] Equipped best deck with '${cardName}'!\nMoving to /main or /play for new card battle in ${sec}s...`)
         );
       };
 
@@ -496,17 +605,20 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
 
       autoSwapTimerRef.current = setTimeout(() => {
         handleInstantReturnToBattle(true);
-      }, 2200);
+      }, 2000);
     } catch (e) {
-      console.error('Failed to auto swap deck card', e);
+      console.error('Failed to auto optimize deck', e);
       try {
         localStorage.removeItem('hero_auto_loop_mode');
         localStorage.removeItem('hero_auto_loop_card');
-        localStorage.setItem('hero_auto_loop_is_ranking', 'true');
+        localStorage.removeItem('hero_auto_optimize_deck');
+        if (!storyReturnTarget) {
+          localStorage.setItem('hero_auto_loop_is_ranking', 'true');
+        }
       } catch {}
       handleInstantReturnToBattle();
     }
-  }, [inventory, language, playSfx, updateDeck, currentSeason, handleInstantReturnToBattle, triggerCardShake]);
+  }, [inventory, ownedCards, currentDeck, language, playSfx, updateDeck, currentSeason, handleInstantReturnToBattle, triggerCardShake]);
   const [selectedCardForDetail, setSelectedCardForDetail] = useState<CardData | null>(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [showPerksModal, setShowPerksModal] = useState(false);
