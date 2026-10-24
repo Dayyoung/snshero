@@ -1,6 +1,6 @@
 /**
  * generate-video-seo.ts
- * SNSHero 애니메이션 40화(/movie, PLK35ZdYm5NNE) & 무비 40화(/cinema, PLMdirwPt_FHU)
+ * SNSHero 애니메이션 40화(/movie, PLWJoj18KXId0) & 무비 40화(/cinema, PLHiW8jLQ0t2Q)
  * 구글 검색 / 구글 동영상 탭 / AI Overviews (SEO · GEO · AEO) 정적 사전 렌더링 및 비디오 사이트맵 생성기
  *
  * 생성 산출물:
@@ -21,10 +21,10 @@ const publicDir = path.join(rootDir, 'public');
 const distDir = path.join(rootDir, 'dist');
 
 const BASE_URL = 'https://snshero.com';
-const ANIME_PLAYLIST_ID = 'PLK35ZdYm5NNE';
-const MOVIE_PLAYLIST_ID = 'PLMdirwPt_FHU';
-const ANIME_PLAYLIST_URL = `https://www.youtube.com/watch?v=Av-SEvRvCw8&list=${ANIME_PLAYLIST_ID}`;
-const MOVIE_PLAYLIST_URL = `https://www.youtube.com/watch?v=P5KotZjJiZ8&list=${MOVIE_PLAYLIST_ID}`;
+const ANIME_PLAYLIST_ID = 'PLWJoj18KXId0';
+const MOVIE_PLAYLIST_ID = 'PLHiW8jLQ0t2Q';
+const ANIME_PLAYLIST_URL = `https://www.youtube.com/watch?v=cbg1iP_7jOo&list=${ANIME_PLAYLIST_ID}`;
+const MOVIE_PLAYLIST_URL = `https://www.youtube.com/watch?v=hqgXClTuKmU&list=${MOVIE_PLAYLIST_ID}`;
 
 function escapeXml(unsafe: string): string {
   return (unsafe || '')
@@ -57,7 +57,7 @@ function generateVideoSitemapXml(episodes: MovieEpisodeMeta[]): string {
 
   // 1-A. 애니메이션 40화 메인 허브 (/movie)
   const firstAnimeEp = episodes[0];
-  const firstAnimeVid = firstAnimeEp?.videoId || 'Av-SEvRvCw8';
+  const firstAnimeVid = firstAnimeEp?.videoId || 'cbg1iP_7jOo';
   urlEntries.push(`  <url>
     <loc>${BASE_URL}/movie</loc>
     <video:video>
@@ -78,7 +78,7 @@ function generateVideoSitemapXml(episodes: MovieEpisodeMeta[]): string {
   </url>`);
 
   // 1-B. 무비 40화 메인 허브 (/cinema)
-  const firstMovieVid = firstAnimeEp?.movieVideoId || 'P5KotZjJiZ8';
+  const firstMovieVid = firstAnimeEp?.movieVideoId || 'hqgXClTuKmU';
   urlEntries.push(`  <url>
     <loc>${BASE_URL}/cinema</loc>
     <video:video>
@@ -170,7 +170,7 @@ function buildEpisodeHtml(
   const isAnime = mode === 'anime';
   const routePrefix = isAnime ? '/movie' : '/cinema';
   const playlistId = isAnime ? ANIME_PLAYLIST_ID : MOVIE_PLAYLIST_ID;
-  const videoId = (isAnime ? ep.videoId : ep.movieVideoId) || (isAnime ? 'Av-SEvRvCw8' : 'P5KotZjJiZ8');
+  const videoId = (isAnime ? ep.videoId : ep.movieVideoId) || (isAnime ? 'cbg1iP_7jOo' : 'hqgXClTuKmU');
   const counterpartRoute = isAnime ? `/cinema/ep-${ep.episodeNumber}` : `/movie/ep-${ep.episodeNumber}`;
   const counterpartLabel = isAnime ? '🎬 같은 회차 무비(Movie) 버전 감상하기' : '📺 같은 회차 애니메이션(Animation) 버전 감상하기';
 
@@ -428,7 +428,7 @@ function buildSeriesHubHtml(
   const routePrefix = isAnime ? '/movie' : '/cinema';
   const playlistId = isAnime ? ANIME_PLAYLIST_ID : MOVIE_PLAYLIST_ID;
   const playlistUrl = isAnime ? ANIME_PLAYLIST_URL : MOVIE_PLAYLIST_URL;
-  const firstVid = (isAnime ? episodes[0]?.videoId : episodes[0]?.movieVideoId) || (isAnime ? 'Av-SEvRvCw8' : 'P5KotZjJiZ8');
+  const firstVid = (isAnime ? episodes[0]?.videoId : episodes[0]?.movieVideoId) || (isAnime ? 'cbg1iP_7jOo' : 'hqgXClTuKmU');
   const canonicalUrl = `${BASE_URL}${routePrefix}`;
   const thumbUrl = `https://i.ytimg.com/vi/${firstVid}/maxresdefault.jpg`;
   const embedUrl = `https://www.youtube.com/embed/${firstVid}?list=${playlistId}&rel=0`;
@@ -438,8 +438,8 @@ function buildSeriesHubHtml(
     : 'SNSHero 공식 무비 40화 전편 스트리밍 (Kadan & Arcane Echoes: The Movie) | SNS히어로';
 
   const description = isAnime
-    ? 'SNSHero(SNS히어로) 공식 40부작 판타지 애니메이션 전편 무료 감상! 카단과 110여 종 영웅들의 서사시를 유튜브 플레이리스트(PLK35ZdYm5NNE)로 시청하고 매 화 +100 SNS 게임 보상을 즉시 수령하세요.'
-    : 'SNSHero(SNS히어로) 공식 40부작 시네마틱 무비 전편 무료 감상! 카단과 아케인 대륙의 블록버스터 판타지 무비 시리즈(PLMdirwPt_FHU)를 시청하고 회차별 +100 SNS 보상을 즉시 획득하세요.';
+    ? 'SNSHero(SNS히어로) 공식 40부작 판타지 애니메이션 전편 무료 감상! 카단과 110여 종 영웅들의 서사시를 유튜브 플레이리스트(PLWJoj18KXId0)로 시청하고 매 화 +100 SNS 게임 보상을 즉시 수령하세요.'
+    : 'SNSHero(SNS히어로) 공식 40부작 시네마틱 무비 전편 무료 감상! 카단과 아케인 대륙의 블록버스터 판타지 무비 시리즈(PLHiW8jLQ0t2Q)를 시청하고 회차별 +100 SNS 보상을 즉시 획득하세요.';
 
   const jsonLdGraph = {
     '@context': 'https://schema.org',

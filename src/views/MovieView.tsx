@@ -29,8 +29,8 @@ interface MovieViewProps {
 }
 
 const TOTAL_EPISODES = 40;
-const YOUTUBE_PLAYLIST_ID = 'PLK35ZdYm5NNE';
-const YOUTUBE_PLAYLIST_URL = 'https://www.youtube.com/watch?v=Av-SEvRvCw8&list=PLK35ZdYm5NNE';
+const YOUTUBE_PLAYLIST_ID = 'PLWJoj18KXId0';
+const YOUTUBE_PLAYLIST_URL = 'https://www.youtube.com/watch?v=cbg1iP_7jOo&list=PLWJoj18KXId0';
 const YOUTUBE_DATA_API_KEY = 'AIzaSyBa9TidLv_iwMyB-9VSrVGWEVUr0WyjiQU';
 
 export const MovieView: React.FC<MovieViewProps> = ({
@@ -93,14 +93,20 @@ export const MovieView: React.FC<MovieViewProps> = ({
         if (res.ok) {
           const data = await res.json();
           if (Array.isArray(data?.items) && isMounted) {
-            const ids = data.items
-              .filter(
-                (item: any) =>
-                  item?.snippet?.title !== 'Deleted video' &&
-                  item?.snippet?.title !== 'Private video'
-              )
-              .map((item: any) => item?.snippet?.resourceId?.videoId)
-              .filter(Boolean);
+            const validItems = data.items.filter(
+              (item: any) =>
+                item?.snippet?.title !== 'Deleted video' &&
+                item?.snippet?.title !== 'Private video' &&
+                item?.snippet?.resourceId?.videoId
+            );
+            validItems.sort((a: any, b: any) => {
+              const ma = String(a?.snippet?.title || '').match(/EP\.?0*(\d+)/i);
+              const mb = String(b?.snippet?.title || '').match(/EP\.?0*(\d+)/i);
+              const na = ma ? parseInt(ma[1], 10) : 999;
+              const nb = mb ? parseInt(mb[1], 10) : 999;
+              return na - nb;
+            });
+            const ids = validItems.map((item: any) => item?.snippet?.resourceId?.videoId);
             if (ids.length > 0) {
               setPlaylistVideoIds(ids);
             }
@@ -152,7 +158,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
           window.history.replaceState(window.history.state, '', url.pathname + url.search);
         }
         const meta = MOVIE_EPISODES[currentEpisodeNum];
-        const vid = meta?.videoId || playlistVideoIds[currentEpisodeNum - 1] || 'Av-SEvRvCw8';
+        const vid = meta?.videoId || playlistVideoIds[currentEpisodeNum - 1] || 'cbg1iP_7jOo';
         if (meta && typeof document !== 'undefined') {
           document.title = `애니메이션 제${currentEpisodeNum}화: ${meta.titleKo} (${meta.titleEn}) | SNSHero 공식 애니메이션 40화`;
           let scriptEl = document.getElementById('snshero-video-schema');
@@ -225,8 +231,8 @@ export const MovieView: React.FC<MovieViewProps> = ({
     }
   }, [currentEpisodeNum, claimedRewards]);
 
-  const currentVideoId = getVideoId(currentEpisodeNum) || 'Av-SEvRvCw8';
-  const embedUrl = `https://www.youtube.com/embed/${currentVideoId}?autoplay=1&rel=0`;
+  const currentVideoId = getVideoId(currentEpisodeNum) || 'cbg1iP_7jOo';
+  const embedUrl = `https://www.youtube.com/embed/${currentVideoId}?list=${YOUTUBE_PLAYLIST_ID}&autoplay=1&rel=0`;
 
   return (
     <div className="flex flex-col min-h-screen bg-[#fdfcfc] text-[#201d1d] font-mono px-0 py-2 sm:py-3 pb-32 max-w-[1024px] mx-auto w-full overflow-x-hidden">

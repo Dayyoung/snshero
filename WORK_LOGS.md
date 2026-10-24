@@ -2,6 +2,24 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-25 08:38 KST] [유튜브 애니메이션 40편 & 실사영화 40편 업로드, 신규 플레이리스트 2종 생성 및 인게임 미디어 뷰 전면 연동 완료]
+- **요청 사항**:
+  - `"AIzaSyBa9TidLv_iwMyB-9VSrVGWEVUr0WyjiQU \n 애니메이션 / 영화 각각 40편씩 업로드해서 신규 플레이리스트로 만들고 게임에서 애니메이션/영화 버튼눌렀을떄 해당 영상들로 변경해줘."`
+  - `/git-push` 원격 저장소 푸시 요청
+- **주요 구현 및 수행 내역**:
+  1. **애니메이션 40화(`public/video/animation/SNSHero.com_E1..40_*.mp4`) 유튜브 업로드 및 신규 플레이리스트(`PLWJoj18KXId0`) 생성**:
+     - 공식 SNSHero 유튜브 채널(`UCA6QmKiPstbiyBUHtnSMxyA`)에 오늘 새로 제작한 다중 캐릭터 그림책 기반 애니메이션 40편을 전수 업로드(공개)하고 신규 플레이리스트 **`SNSHero.com Official Animation (40 Episodes)` (`PLWJoj18KXId0`, 1화 ID: `cbg1iP_7jOo`, 총 40편)**로 편성 완료.
+  2. **실사영화 40편(`public/videos/cinema/episode_01..40.mp4`) 유튜브 업로드 및 신규 플레이리스트(`PLHiW8jLQ0t2Q`) 생성**:
+     - 2,009장 실사 이미지 기반으로 제작한 24fps 실사영화 40편을 공식 SNSHero 유튜브 채널에 전수 업로드(공개)하고 신규 플레이리스트 **`SNSHero.com Official Live-Action Movie (40 Episodes)` (`PLHiW8jLQ0t2Q`, 1화 ID: `hqgXClTuKmU`, 총 40편, 1~40화 순차 정렬)**로 편성 완료.
+  3. **인게임 애니메이션(`/animation`, `/movie`) 및 영화(`/cinema`) 버튼·뷰·SEO 매핑 전면 교체**:
+     - [`src/content/movieEpisodeMapping.ts`](file:///Users/dayyoung/project/snshero/src/content/movieEpisodeMapping.ts): 1~40화 전체 `videoId`(애니메이션 40편 신규 YouTube ID) 및 `movieVideoId`(실사영화 40편 신규 YouTube ID) 전수 업데이트.
+     - [`src/views/MovieView.tsx`](file:///Users/dayyoung/project/snshero/src/views/MovieView.tsx), [`src/views/AnimeView.tsx`](file:///Users/dayyoung/project/snshero/src/views/AnimeView.tsx), [`src/views/NovelView.tsx`](file:///Users/dayyoung/project/snshero/src/views/NovelView.tsx): 신규 애니메이션 플레이리스트(`PLWJoj18KXId0`) 및 YouTube Data API v3(`AIzaSyBa9TidLv_iwMyB-9VSrVGWEVUr0WyjiQU`) 회차 번호 정렬 연동.
+     - [`src/views/CinemaView.tsx`](file:///Users/dayyoung/project/snshero/src/views/CinemaView.tsx): 신규 실사영화 플레이리스트(`PLHiW8jLQ0t2Q`) 및 YouTube Data API v3(`AIzaSyBa9TidLv_iwMyB-9VSrVGWEVUr0WyjiQU`) 회차 번호 정렬 연동.
+     - [`src/lib/geoManager.ts`](file:///Users/dayyoung/project/snshero/src/lib/geoManager.ts), [`scripts/generate-video-seo.ts`](file:///Users/dayyoung/project/snshero/scripts/generate-video-seo.ts): 비디오 사이트맵(`sitemap-video.xml`) 및 `/movie/ep-1..40`, `/cinema/ep-1..40` 정적 SEO 페이지 전체에 신규 80편 Video ID 및 플레이리스트 ID 반영.
+- **검증 결과**:
+  - YouTube Data API v3(`AIzaSyBa9TidLv_iwMyB-9VSrVGWEVUr0WyjiQU`) 조회 검증: `PLWJoj18KXId0` (40/40편), `PLHiW8jLQ0t2Q` (40/40편) 전수 확인.
+  - `npm run lint` 및 `npm run build` 무결점 통과, 로컬 Git 커밋 및 구글 폼 보고서 제출 완료.
+
 ## [2026-10-25 07:01 KST] [실사영화 40편 MP4 전면 제작] 2,009장 실사 이미지(`public/images/cinema/episode_01..40/`) 기반 24fps 실사영화 40편(`public/videos/cinema/episode_01..40.mp4`) 전수 제작 완료
 - **요청 사항**:
   - "실사이미지로도 2009장 생성해 두었어. 그것으로 실사영화 40편 mp4 제작해줘"

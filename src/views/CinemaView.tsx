@@ -28,8 +28,8 @@ interface CinemaViewProps {
 }
 
 const TOTAL_EPISODES = 40;
-const YOUTUBE_PLAYLIST_ID = 'PLMdirwPt_FHU';
-const YOUTUBE_PLAYLIST_URL = 'https://www.youtube.com/watch?v=P5KotZjJiZ8&list=PLMdirwPt_FHU';
+const YOUTUBE_PLAYLIST_ID = 'PLHiW8jLQ0t2Q';
+const YOUTUBE_PLAYLIST_URL = 'https://www.youtube.com/watch?v=hqgXClTuKmU&list=PLHiW8jLQ0t2Q';
 const YOUTUBE_DATA_API_KEY = 'AIzaSyBa9TidLv_iwMyB-9VSrVGWEVUr0WyjiQU';
 
 export const CinemaView: React.FC<CinemaViewProps> = ({
@@ -92,9 +92,20 @@ export const CinemaView: React.FC<CinemaViewProps> = ({
         if (res.ok) {
           const data = await res.json();
           if (Array.isArray(data?.items) && isMounted) {
-            const ids = data.items
-              .map((item: any) => item?.snippet?.resourceId?.videoId)
-              .filter(Boolean);
+            const validItems = data.items.filter(
+              (item: any) =>
+                item?.snippet?.title !== 'Deleted video' &&
+                item?.snippet?.title !== 'Private video' &&
+                item?.snippet?.resourceId?.videoId
+            );
+            validItems.sort((a: any, b: any) => {
+              const ma = String(a?.snippet?.title || '').match(/EP\.?0*(\d+)/i);
+              const mb = String(b?.snippet?.title || '').match(/EP\.?0*(\d+)/i);
+              const na = ma ? parseInt(ma[1], 10) : 999;
+              const nb = mb ? parseInt(mb[1], 10) : 999;
+              return na - nb;
+            });
+            const ids = validItems.map((item: any) => item?.snippet?.resourceId?.videoId);
             if (ids.length > 0) {
               setPlaylistVideoIds(ids);
             }
@@ -143,7 +154,7 @@ export const CinemaView: React.FC<CinemaViewProps> = ({
           window.history.replaceState(window.history.state, '', url.pathname + url.search);
         }
         const meta = MOVIE_EPISODES[currentEpisodeNum];
-        const vid = meta?.movieVideoId || playlistVideoIds[currentEpisodeNum - 1] || 'P5KotZjJiZ8';
+        const vid = meta?.movieVideoId || playlistVideoIds[currentEpisodeNum - 1] || 'hqgXClTuKmU';
         if (meta && typeof document !== 'undefined') {
           document.title = `무비 제${currentEpisodeNum}화: ${meta.titleKo} (${meta.titleEn}) | SNSHero 공식 무비 40화`;
           let scriptEl = document.getElementById('snshero-video-schema');
@@ -216,7 +227,7 @@ export const CinemaView: React.FC<CinemaViewProps> = ({
     }
   }, [currentEpisodeNum, claimedRewards]);
 
-  const currentVideoId = getVideoId(currentEpisodeNum) || 'P5KotZjJiZ8';
+  const currentVideoId = getVideoId(currentEpisodeNum) || 'hqgXClTuKmU';
   const embedUrl = `https://www.youtube.com/embed/${currentVideoId}?list=${YOUTUBE_PLAYLIST_ID}&autoplay=1&rel=0`;
 
   return (
