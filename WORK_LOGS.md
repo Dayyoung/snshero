@@ -2,6 +2,20 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-25 06:28 KST] [로그아웃 시 전체 게임 데이터 완전 초기화 구현 및 원격 저장소 푸시(/git-push)]
+- **요청 사항**:
+  - "로그아웃 하면 모든 개임데이터가 초기화 되게해줘 /git-push"
+- **주요 구현 및 수정 내역**:
+  1. **로그아웃(`handleLogout` 및 `/logout`) 시 전체 게임 데이터 초기화(`resetAllGameData`) 구현 ([`src/App.tsx`](file:///Users/dayyoung/project/snshero/src/App.tsx))**:
+     - 기존에는 로그아웃 시 프로필(`hero_user_profile`)만 해제되고 보유 카드, 덱, SNS 코인, 전적, 아이템, 스토리 진행도 등 게임 데이터가 그대로 유지되거나 React 상태 동기화 `useEffect`에 의해 로컬스토리지가 재기록되는 문제가 있었음.
+     - `resetAllGameData` 함수를 구현하여 `localStorage.clear()` 및 `sessionStorage.clear()`를 수행(언어/테마 설정 유지)한 뒤, 초기 5장 기본 카드(`INITIAL_CARDS`), 기본 덱, 정착금 `1,000 SNS`, 초기 전투력, 빈 아이템 인벤토리, `0승 0패 0무` 전적 및 업적 초기화 상태를 로컬스토리지와 React 상태(`inventory`, `currentDeck`, `sns`, `purchasedSns`, `earnedSns`, `stats`, `itemInventory`, `totalPower`, `resetSessionKey` 등)에 동시에 반영하도록 수정.
+     - `resetSessionKey`를 뷰 컨테이너 key에 연동하고 `snshero_game_data_reset` 전역 이벤트를 브로드캐스트하여 하위 뷰 및 스토리모드(`useKadanRpgProgress.ts`) 진행 상태까지 즉시 초기 상태로 리셋되도록 연동.
+  2. **스토리모드 진행 상태 훅 리셋 이벤트 연동 ([`src/hooks/useKadanRpgProgress.ts`](file:///Users/dayyoung/project/snshero/src/hooks/useKadanRpgProgress.ts))**:
+     - `snshero_game_data_reset` 이벤트 수신 시 스토리 진행도를 1장 기본 상태(`createDefaultProgress`)로 즉시 초기화하도록 반영.
+- **검증 결과**:
+  - `npx tsc --noEmit` (0 errors) 및 `npm run build` 프로덕션 빌드 무결점 통과.
+  - 로컬 Git 커밋, 원격 저장소(`origin main`) 푸시 및 구글 폼 완료 보고서 제출 완료.
+
 ## [2026-10-25 06:11 KST] [자동플레이 스토리모드 연패 교착상태(Deadlock) 탈출: 상점 카드 소환 -> 마이덱 전체 카드 최적화 -> 스토리모드 복귀 돌파 루프 구현]
 - **요청 사항**:
   - "자동플레이 스토리모드 진행에서 연패에 빠져도 계속 스토리모드 진행만 하는 교착상태에 빠지는 경우가 있어. 이 경우에도 상점으로 이동해서 카드를 뽑고 마이덱에서 카드 최적화를 해서 교착상태를 벚어나도록해줘"

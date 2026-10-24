@@ -232,9 +232,14 @@ export const useKadanRpgProgress = (season: string) => {
         return saveKadanRpgProgress(season, { ...previous, artStyleMode: nextStyle });
       });
     };
+    const handleGameDataReset = () => {
+      setProgress(createDefaultProgress(season));
+    };
     window.addEventListener('hero_art_style_updated', handleArtStyleUpdated);
+    window.addEventListener('snshero_game_data_reset', handleGameDataReset);
     return () => {
       window.removeEventListener('hero_art_style_updated', handleArtStyleUpdated);
+      window.removeEventListener('snshero_game_data_reset', handleGameDataReset);
     };
   }, [season]);
 

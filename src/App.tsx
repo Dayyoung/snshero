@@ -517,6 +517,8 @@ function AppContent() {
   });  const [isGlobalLoading, setIsGlobalLoading] = useState(false);
   const [globalLoadingMessage, setGlobalLoadingMessage] = useState('');
   const [randomPlayTrigger, setRandomPlayTrigger] = useState(0);
+  const [resetSessionKey, setResetSessionKey] = useState(0);
+  const resetAllGameDataRef = useRef<() => void>(() => {});
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUtilityOpen, setIsUtilityOpen] = useState(false);
   const [autoStartPvp, setAutoStartPvp] = useState(false);
@@ -1727,8 +1729,7 @@ function AppContent() {
         } catch (err) {
           console.error("Firebase signOut failed:", err);
         }
-        localStorage.clear();
-        setUser(null);
+        resetAllGameDataRef.current();
         setView('home');
         window.history.replaceState({}, '', '/');
         return;
@@ -5337,21 +5338,136 @@ function AppContent() {
     }
   };
 
-  const handleLogout = useCallback(async () => {
-    setIsGlobalLoading(true);
-    setGlobalLoadingMessage(t('logging_out', language));
-    try {
-      await signOutGoogleAccount();
-      localStorage.removeItem('hero_user_profile');
+  const resetAllGameData = useCallback(() => {
+    const defaultSeason = 'season1';
+    const defaultInv: Record<number, InventoryRecord> = {};
+    INITIAL_CARDS.forEach((c) => {
+      if (c.imageIndex !== undefined) {
+        defaultInv[c.imageIndex] = {
+          cardIndex: c.imageIndex,
+          quantity: 1,
+          rarity: c.rarity || 'bronze',
+        };
+      }
+    });
+    const defaultDeck = INITIAL_CARDS.slice(0, 5).map((c) => syncCardWithDatabase(c, defaultInv));
+    const defaultPower = INITIAL_CARDS.reduce(
+      (acc, c) => acc + (CARD_DATABASE[c.imageIndex || 0]?.power || 0),
+      0
+    );
+    const defaultStats: UserStats = {
+      wins: 0,
+      losses: 0,
+      draws: 0,
+      skillPoints: 0,
+      winStreak: 0,
+      lossStreak: 0,
+      unlockedAchievements: [],
+      claimedAchievements: [],
+      achievementProgress: {},
+    };
+
+    if (typeof window !== 'undefined') {
+      const savedLang = localStorage.getItem('hero_language') || language;
+      const savedTheme = localStorage.getItem('hero_theme') || theme;
+      localStorage.clear();
+      try {
+        sessionStorage.clear();
+      } catch {}
+
+      localStorage.setItem('hero_language', savedLang);
+      localStorage.setItem('hero_theme', savedTheme);
+      localStorage.setItem('hero_current_season', defaultSeason);
+      localStorage.setItem('hero_welcome_ssr_gift_claimed', 'true');
+      localStorage.setItem('hero_card_art_ver', 'banana2026');
       localStorage.setItem('hero_user_name', 'GUEST');
       localStorage.setItem('hero_user_avatar', 'preset:0');
       localStorage.setItem(PROFILE_EMOTICON_STORAGE_KEY, DEFAULT_PROFILE_EMOTICON_KEY);
       localStorage.setItem(PROFILE_BADGE_STORAGE_KEY, DEFAULT_PROFILE_BADGE_KEY);
       localStorage.setItem(PROFILE_TITLE_STORAGE_KEY, DEFAULT_PROFILE_TITLE_KEY);
-      setUser(getStoredGuestProfile());
+
+      localStorage.setItem('hero_purchased_sns', '0');
+      localStorage.setItem('hero_earned_sns', '1000');
+      localStorage.setItem('hero_sns', '1000');
+      setSeasonItem('hero_sns', defaultSeason, '1000');
+      setSeasonItem('hero_sns_guest', defaultSeason, '1000');
+
+      localStorage.setItem('hero_inventory', JSON.stringify(defaultInv));
+      setSeasonItem('hero_inventory', defaultSeason, JSON.stringify(defaultInv));
+      setSeasonItem('hero_inventory_guest', defaultSeason, JSON.stringify(defaultInv));
+
+      localStorage.setItem('hero_deck', JSON.stringify(defaultDeck));
+      setSeasonItem('hero_deck', defaultSeason, JSON.stringify(defaultDeck));
+      setSeasonItem('hero_deck_guest', defaultSeason, JSON.stringify(defaultDeck));
+
+      localStorage.setItem('hero_itemInventory', '[]');
+      setSeasonItem('hero_itemInventory', defaultSeason, '[]');
+      setSeasonItem('hero_itemInventory_guest', defaultSeason, '[]');
+
+      localStorage.setItem('hero_stats', JSON.stringify(defaultStats));
+      setSeasonItem('hero_stats', defaultSeason, JSON.stringify(defaultStats));
+      setSeasonItem('hero_stats_guest', defaultSeason, JSON.stringify(defaultStats));
+
+      localStorage.setItem('hero_totalPower', defaultPower.toString());
+      setSeasonItem('hero_totalPower', defaultSeason, defaultPower.toString());
+      setSeasonItem('hero_totalPower_guest', defaultSeason, defaultPower.toString());
+    }
+
+    inventoryRef.current = defaultInv;
+    itemInventoryRef.current = [];
+    setCurrentSeason(defaultSeason);
+    setPurchasedSns(0);
+    setEarnedSns(1000);
+    setSns(1000);
+    setInventory(defaultInv);
+    setCurrentDeck(defaultDeck);
+    setItemInventory([]);
+    setStats(defaultStats);
+    setTotalPower(defaultPower);
+    setSelectedCompanionIndex(0);
+    setUserGuild(null);
+    setSelectedGuildId(null);
+    setSimulationUser(null);
+    setUpgradeDeckPrompt(null);
+    setItemDropNotification(null);
+    setIsPvpActive(false);
+    setPvpOpponent(null);
+    setIsGuildAttackActive(false);
+    setIsPlaygroundMode(false);
+    setPlaygroundDeck([]);
+    setIsAutoLoop(false);
+    setIsSimulationActive(false);
+    setIsDemoTourActive(false);
+    setAutoStartPvp(false);
+    setRankingBattleCountdown(null);
+    setRankingBattlePendingOpponent(null);
+    setUser(getStoredGuestProfile());
+    setResetSessionKey((prev) => prev + 1);
+
+    if (typeof window !== 'undefined') {
+      try {
+        window.dispatchEvent(new Event('snshero_sns_updated'));
+        window.dispatchEvent(new Event('sns_updated'));
+        window.dispatchEvent(new Event('snshero_stats_updated'));
+        window.dispatchEvent(new Event('snshero_match_history_updated'));
+        window.dispatchEvent(new Event('snshero_game_data_reset'));
+      } catch {}
+    }
+  }, [language, theme]);
+  resetAllGameDataRef.current = resetAllGameData;
+
+  const handleLogout = useCallback(async () => {
+    setIsGlobalLoading(true);
+    setGlobalLoadingMessage(t('logging_out', language));
+    try {
+      await signOutGoogleAccount();
+      resetAllGameData();
+      setView('home');
       showCustomAlert(
-        language === 'ko' ? '로그아웃' : 'Logout',
-        language === 'ko' ? '게스트 모드로 전환되었습니다.' : 'Switched to guest mode.'
+        language === 'ko' ? '로그아웃 및 데이터 초기화' : 'Logout & Data Reset',
+        language === 'ko'
+          ? '로그아웃되어 모든 게임 데이터가 초기 상태로 초기화되었습니다.'
+          : 'Logged out and all game data has been reset to initial state.'
       );
     } catch (error) {
       console.error("Logout failed:", error);
@@ -5359,7 +5475,7 @@ function AppContent() {
       setIsGlobalLoading(false);
       setGlobalLoadingMessage('');
     }
-  }, [language, getStoredGuestProfile, showCustomAlert]);
+  }, [language, resetAllGameData, setView, showCustomAlert]);
 
   const calculatedBattlePower = useMemo(() => {
     const basePowerWithBonus = Object.entries(inventory).reduce((acc, [idx, record]) => {
@@ -7090,7 +7206,7 @@ function AppContent() {
           )}>
             <AnimatePresence mode="wait">
               <motion.div
-                key={view}
+                key={`${view}-${resetSessionKey}`}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
