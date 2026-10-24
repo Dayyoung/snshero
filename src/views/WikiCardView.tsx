@@ -424,9 +424,8 @@ export const WikiCardView: React.FC<WikiCardViewProps> = ({
             ${mode === undefined ? `
             <div class="print-footer-container">
               <div class="logo-wrapper">
-                <div style="display: flex; align-items: baseline; justify-content: center; gap: 2px;">
-                  <span class="logo-text-gradient">S&SHERO</span>
-                  <span class="logo-subtext">.com</span>
+                <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+                  <img src="${language === 'ko' ? '/logo-ko.png' : '/logo-en.png'}" alt="${language === 'ko' ? '눈히어로.com' : 'S&SHero.com'}" style="height: 28px; width: auto; object-fit: contain; border-radius: 2px;" />
                 </div>
               </div>
               <div class="vertical-divider"></div>

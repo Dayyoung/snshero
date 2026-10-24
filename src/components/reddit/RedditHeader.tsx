@@ -125,20 +125,17 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
  <Menu className="w-5 h-5" />
  </button>
 
- {/* SNSHero 브랜드 로고 & 마크 (Reddit Snoo 마크 자리 완벽 대체) */}
+ {/* 눈히어로.com / S&SHero.com 브랜드 로고 & 마크 */}
  <button
  type="button"
  onClick={() => onSelectSubreddit('popular')}
- className="flex items-center gap-2.5 cursor-pointer group min-h-[44px]"
+ className="flex items-center gap-2 cursor-pointer group min-h-[44px]"
  >
- <div className="relative w-8 h-8 rounded-sm bg-[#FF4500] flex items-center justify-center overflow-hidden border border-[#FF4500]/30 transition-transform">
- <Gamepad2 className="w-5 h-5 text-white" />
- </div>
- <div className="flex items-baseline">
- <span className="font-extrabold text-xl sm:text-2xl tracking-tighter text-[#FF4500] font-mono">
- SNS<span className={isDark ? 'text-white' : 'text-gray-900'}>Hero</span>
- </span>
- </div>
+ <img
+ src={isKo ? '/logo-ko.png' : '/logo-en.png'}
+ alt={isKo ? '눈히어로.com' : 'S&SHero.com'}
+ className="h-9 sm:h-10 w-auto object-contain rounded-xs border border-[#201d1d]/20 bg-[#201d1d]"
+ />
  </button>
 
  {/* 현재 피드/서브레딧 드롭다운 (PC 화면) */}

@@ -80,12 +80,20 @@ const safeCardName = (card: DatabaseCard | undefined, language: Language): strin
  return language === 'ko' ? (card.title || card.title_dis) : (card.title_en || card.title_dis);
 };
 
-/** SNSHero 브랜드 로고 텍스트 */
-const BrandLogo: React.FC = () => (
- <span className="  text-amber-400 text-[10px] font-extrabold uppercase tracking-wider">
- SNSHero.com
+/** 눈히어로.com / S&SHero.com 브랜드 로고 */
+const BrandLogo: React.FC = () => {
+ const isKo = typeof window === 'undefined' || (localStorage.getItem('hero_language') || 'ko') === 'ko';
+ return (
+ <span className="inline-flex items-center gap-1 text-amber-400 text-[10px] font-extrabold tracking-wider">
+ <img
+ src={isKo ? '/logo-ko.png' : '/logo-en.png'}
+ alt={isKo ? '눈히어로.com' : 'S&SHero.com'}
+ className="h-4 w-auto object-contain rounded-xs"
+ />
+ <span>{isKo ? '눈히어로.com' : 'S&SHero.com'}</span>
  </span>
-);
+ );
+};
 
 /** 템플릿 타입별 적합한 기본 비율 */
 const defaultRatioForType = (type: ShareTemplateType): ShareAspectRatio => {

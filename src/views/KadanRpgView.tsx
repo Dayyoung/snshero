@@ -680,6 +680,12 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  >
  <ArrowLeft size={20} />
  </button>
+ <div className="min-w-0 flex-1 flex items-center gap-2.5">
+ <img
+ src={language === 'ko' ? '/logo-ko.png' : '/logo-en.png'}
+ alt={language === 'ko' ? '눈히어로.com' : 'S&SHero.com'}
+ className="h-9 sm:h-10 w-auto object-contain rounded-xs border border-[#201d1d]/20 bg-[#201d1d] shrink-0"
+ />
  <div className="min-w-0 flex-1">
  <div className="flex items-center gap-2">
  <p className="truncate text-xs font-black uppercase tracking-normal text-indigo-600">{t('kadan_rpg_title_badge', language)}</p>
@@ -705,6 +711,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  </span>
  </div>
  <h1 className="truncate text-base font-extrabold tracking-normal text-slate-900 md:text-lg">{t('kadan_rpg_title', language)}</h1>
+ </div>
  </div>
  {isComplete && (
  <button

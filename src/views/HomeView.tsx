@@ -255,8 +255,15 @@ export const HomeView: React.FC<HomeViewProps> = ({
           <div className="flex flex-col gap-5 p-4 sm:gap-6 sm:p-6">
             <div className="flex flex-wrap items-end justify-between gap-3 border-b border-[rgba(15,0,0,0.12)] pb-5">
               <div>
-                <p className="mb-2 text-sm text-[#646262]">SNSHero Revolution / {language === 'ko' ? '덱 미리보기' : 'Deck Preview'}</p>
-                <h1 id="main-logo" className="text-3xl sm:text-5xl font-bold leading-tight tracking-tight">S&amp;SHERO<span className="text-base sm:text-xl font-normal text-[#646262]">.com</span></h1>
+                <p className="mb-2 text-sm text-[#646262]">{language === 'ko' ? '눈히어로.com' : 'S&SHero.com'} / {language === 'ko' ? '덱 미리보기' : 'Deck Preview'}</p>
+                <h1 id="main-logo" className="leading-tight tracking-tight flex items-center">
+                  <img
+                    src={language === 'ko' ? '/logo-ko.png' : '/logo-en.png'}
+                    alt={language === 'ko' ? '눈히어로.com' : 'S&SHero.com'}
+                    className="h-14 sm:h-20 w-auto object-contain rounded-sm border border-[#201d1d]/20 bg-[#201d1d]"
+                  />
+                  <span className="sr-only">{language === 'ko' ? '눈히어로.com' : 'S&SHero.com'}</span>
+                </h1>
               </div>
               <span className="text-sm text-[#646262]">{language === 'ko' ? '티어: BRONZE I' : 'TIER: BRONZE I'}</span>
             </div>
@@ -666,7 +673,12 @@ export const HomeView: React.FC<HomeViewProps> = ({
       <footer className="w-full mt-4 pt-4 border-t border-[rgba(15,0,0,0.12)] flex flex-col items-center justify-between text-xs font-mono text-[#646262] gap-3 select-none">
         <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <span className="font-bold text-[#201d1d]">SNSHero Revolution</span>
+            <img
+              src={language === 'ko' ? '/logo-ko.png' : '/logo-en.png'}
+              alt={language === 'ko' ? '눈히어로.com' : 'S&SHero.com'}
+              className="h-6 sm:h-7 w-auto object-contain rounded-xs border border-[#201d1d]/20 bg-[#201d1d]"
+            />
+            <span className="font-bold text-[#201d1d]">{language === 'ko' ? '눈히어로.com' : 'S&SHero.com'}</span>
             <PingIndicator language={language} className="shrink-0" />
           </div>
           <div className="flex items-center gap-2 flex-wrap justify-center">

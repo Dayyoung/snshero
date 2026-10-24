@@ -626,8 +626,9 @@ function AppContent() {
   useEffect(() => {
     if (typeof document === 'undefined') return;
     try {
+      const brandTitle = language === 'ko' ? '눈히어로.com' : 'S&SHero.com';
       const viewTitleMap: Record<string, string> = {
-        home: 'SNS히어로 (SNSHero) - 원클릭 AI 웹 카드 배틀',
+        home: `${brandTitle} - 원클릭 AI 웹 카드 배틀`,
         mydeck: '마이덱 (My Deck) - 덱 편집 & 카드 육성',
         shop: '상점 (Shop) - 카드 소환 & 굿즈 몰',
         ranking: '랭킹대전 (Rank Match) - 명예의 전당',
@@ -645,8 +646,8 @@ function AppContent() {
         community: '히어로 커뮤니티 (Community)',
         play: '110종 모바일 미션 게임 (Games)'
       };
-      const title = viewTitleMap[view] || `SNSHero - ${view}`;
-      document.title = `${title} | SNSHero`;
+      const title = viewTitleMap[view] || `${brandTitle} - ${view}`;
+      document.title = `${title} | ${brandTitle}`;
 
       let metaDesc = document.querySelector('meta[name="description"]');
       if (!metaDesc) {
@@ -654,7 +655,7 @@ function AppContent() {
         metaDesc.setAttribute('name', 'description');
         document.head.appendChild(metaDesc);
       }
-      metaDesc.setAttribute('content', `${title} - 원클릭 AI 웹 카드 배틀 & 110종 모바일 게임 SNS히어로`);
+      metaDesc.setAttribute('content', `${title} - 원클릭 AI 웹 카드 배틀 & 110종 모바일 게임 ${brandTitle}`);
     } catch {}
   }, [view, language]);
 
@@ -6704,9 +6705,16 @@ function AppContent() {
                 >
                   {/* Header */}
                   <div className="flex items-center justify-between border-b border-[rgba(15,0,0,0.08)] pb-4 shrink-0 mb-6">
-                    <span className="text-base font-bold tracking-tight uppercase text-[#201d1d]">
-                      {t('menu_title', language)}
-                    </span>
+                    <div className="flex items-center gap-2 min-w-0">
+                      <img
+                        src={language === 'ko' ? '/logo-ko.png' : '/logo-en.png'}
+                        alt={language === 'ko' ? '눈히어로.com' : 'S&SHero.com'}
+                        className="h-8 w-auto object-contain rounded-xs border border-[#201d1d]/20 bg-[#201d1d]"
+                      />
+                      <span className="text-sm font-bold tracking-tight uppercase text-[#201d1d] truncate">
+                        {t('menu_title', language)}
+                      </span>
+                    </div>
                     <div className="flex items-center gap-1.5">
                       <button
                         onClick={() => {
@@ -7041,10 +7049,15 @@ function AppContent() {
                           setIsMenuOpen(false);
                           setView('modoo');
                         }}
-                        className="min-h-[44px] text-[10px] font-bold text-stone-500 hover:text-[#201d1d] tracking-wider uppercase transition-colors cursor-pointer py-1.5 px-3 rounded-sm hover:bg-[rgba(15,0,0,0.05)] inline-flex items-center justify-center font-mono"
+                        className="min-h-[44px] text-[10px] font-bold text-stone-500 hover:text-[#201d1d] tracking-wider uppercase transition-colors cursor-pointer py-1.5 px-3 rounded-sm hover:bg-[rgba(15,0,0,0.05)] inline-flex items-center justify-center gap-1.5 font-mono"
                         title={language === 'ko' ? '내부 개발팀 전용 모니터링 (클릭하여 이동)' : 'Internal Dev Team Monitor'}
                       >
-                        SNS_HERO v2.1.0
+                        <img
+                          src={language === 'ko' ? '/logo-ko.png' : '/logo-en.png'}
+                          alt={language === 'ko' ? '눈히어로.com' : 'S&SHero.com'}
+                          className="h-5 w-auto object-contain rounded-xs border border-[#201d1d]/20 bg-[#201d1d]"
+                        />
+                        <span>{language === 'ko' ? '눈히어로.com' : 'S&SHero.com'} v2.1.0</span>
                       </button>
                     </div>
                   </div>

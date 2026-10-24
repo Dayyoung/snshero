@@ -50,11 +50,16 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
  {/* Center: Title */}
  <h1
  className={cn(
- "flex-1 min-w-0 text-sm sm:text-base font-bold tracking-tight text-left truncate font-mono",
+ "flex-1 min-w-0 text-sm sm:text-base font-bold tracking-tight text-left truncate font-mono flex items-center gap-2",
  dark && "text-[#fdfcfc]"
  )}
  >
- {title}
+ <img
+ src={(typeof window !== 'undefined' && (localStorage.getItem('hero_language') || 'ko') !== 'ko') ? '/logo-en.png' : '/logo-ko.png'}
+ alt={(typeof window !== 'undefined' && (localStorage.getItem('hero_language') || 'ko') !== 'ko') ? 'S&SHero.com' : '눈히어로.com'}
+ className="h-6 sm:h-7 w-auto object-contain shrink-0 rounded-xs border border-[#201d1d]/20 bg-[#201d1d]"
+ />
+ <span className="truncate">{title}</span>
  </h1>
 
  {/* Right: Action or spacer */}

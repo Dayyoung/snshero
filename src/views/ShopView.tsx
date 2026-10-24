@@ -4949,7 +4949,9 @@ export const ShopView: React.FC<ShopViewProps> = ({
                           })()}
                         </div>
                         <div className="w-full flex justify-center origin-center scale-[0.4] my-0.5 whitespace-nowrap">
-                          <h1 id="main-logo" className="font-extrabold italic tracking-tight flex items-baseline justify-center mx-auto select-none font-mono"><span className="text-indigo-600 pr-0.5 text-[8px]">S&amp;SHERO</span><span className="text-slate-900 text-[5px] not-italic">.com</span></h1>
+                          <h1 id="main-logo" className="font-extrabold italic tracking-tight flex items-center justify-center mx-auto select-none font-mono">
+                            <img src={language === 'ko' ? '/logo-ko.png' : '/logo-en.png'} alt={language === 'ko' ? '눈히어로.com' : 'S&SHero.com'} className="h-3.5 w-auto object-contain rounded-xs" />
+                          </h1>
                         </div>
                       </div>
                     </div>

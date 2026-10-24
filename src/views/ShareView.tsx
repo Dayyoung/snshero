@@ -273,12 +273,17 @@ export const ShareView: React.FC<ShareViewProps> = ({
  <header className="border border-slate-100 bg-white/90 backdrop-blur-md p-4 flex justify-between items-center shadow-sm rounded-none">
  <div className="flex items-center gap-3">
  <div className="w-10" />
- <span 
- onClick={() => onNavigate('home')} 
- className="text-xl sm:text-2xl font-extrabold tracking-tight cursor-pointer uppercase   text-amber-400 transition-colors"
+ <button
+ type="button"
+ onClick={() => onNavigate('home')}
+ className="min-h-[44px] flex items-center cursor-pointer transition-opacity hover:opacity-90"
  >
- SNSHero.com
- </span>
+ <img
+ src={language === 'ko' ? '/logo-ko.png' : '/logo-en.png'}
+ alt={language === 'ko' ? '눈히어로.com' : 'S&SHero.com'}
+ className="h-9 sm:h-10 w-auto object-contain rounded-xs border border-[#201d1d]/20 bg-[#201d1d]"
+ />
+ </button>
  </div>
  <div className="flex items-center gap-2">
  <button

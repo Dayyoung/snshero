@@ -2,6 +2,23 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-24 22:00 KST] [제미나이 바나나(Nano Banana) 한글 '눈히어로.com' & 영문 'S&SHero.com' 타이틀 로고 생성 및 전역 타이틀 전면 교체]
+- **요청 사항**:
+  - "눈Hero.com 이라는 타이틀로고를 제미나이 바나나로 생성해서 현재 표시되는 모든 타이틀을 해당 타이틀로 교체해줘" / "한글로는 눈히어로.com 영어로는 S&SHero.com 으로 생성해서 적용하자."
+- **주요 구현 및 수정 내역**:
+  1. **제미나이 바나나(Nano Banana) 다크 판타지 실드 엠블럼 타이틀 로고 2종 생성 및 에셋 반영**:
+     - 한글 로고: [`/public/logo-ko.png`](file:///Users/dayyoung/project/snshero/public/logo-ko.png) (`눈히어로.com`)
+     - 영문 로고: [`/public/logo-en.png`](file:///Users/dayyoung/project/snshero/public/logo-en.png) (`S&SHero.com`)
+     - 대표 로고/배너 에셋 동기화: `/public/logo.png`, `/public/logo.jpg`, `/public/nunhero-logo.png`, `/public/banner_nano_banana.png`
+  2. **전역 UI 타이틀 로고 및 헤더 언어별(`ko`: `눈히어로.com` / 기타: `S&SHero.com`) 전면 교체**:
+     - [`src/views/HomeView.tsx`](file:///Users/dayyoung/project/snshero/src/views/HomeView.tsx): 메인 헤더(`#main-logo`) 및 하단 푸터 로고 교체
+     - [`src/components/PageHeader.tsx`](file:///Users/dayyoung/project/snshero/src/components/PageHeader.tsx): 전 화면 공통 상단 페이지 헤더에 타이틀 로고 배지 적용
+     - [`src/views/KadanRpgView.tsx`](file:///Users/dayyoung/project/snshero/src/views/KadanRpgView.tsx): 스토리모드(`/main`) 상단 헤더 타이틀 로고 적용
+     - [`src/App.tsx`](file:///Users/dayyoung/project/snshero/src/App.tsx): 브라우저 문서 타이틀(`document.title`), 햄버거 슬라이드 메뉴 상단 헤더 및 하단 버전 로고 교체
+     - [`src/components/reddit/RedditHeader.tsx`](file:///Users/dayyoung/project/snshero/src/components/reddit/RedditHeader.tsx), [`src/views/ShopView.tsx`](file:///Users/dayyoung/project/snshero/src/views/ShopView.tsx), [`src/views/WikiCardView.tsx`](file:///Users/dayyoung/project/snshero/src/views/WikiCardView.tsx), [`src/views/ShareView.tsx`](file:///Users/dayyoung/project/snshero/src/views/ShareView.tsx), [`src/components/ShareTemplateCard.tsx`](file:///Users/dayyoung/project/snshero/src/components/ShareTemplateCard.tsx) 타이틀 로고 일괄 교체
+- **검증 결과**:
+  - `npm run lint` 및 `npm run build` 프로덕션 빌드 무결성 검증 완료 및 구글 폼 보고서 제출 완료.
+
 ## [2026-10-24 10:35 KST] [스토리모드 엔딩/환생 팝업에서 멈추지 않고 3초 후 자동 환생 및 다음 회차 진행 구현 + /git-push 완료]
 - **요청 사항**:
   - "그리고 환생 팝업에서 멈추는 버그도ㅠ있어. 계속 진행되게 해줘 /git-push"
