@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { ArrowLeft, Bot, Compass, Pause, Play, RotateCcw, Sparkles, Swords, X } from 'lucide-react';
+import { ArrowLeft, BookOpen, Bot, Compass, Pause, Play, RotateCcw, Sparkles, Swords, X } from 'lucide-react';
 import { t } from '../lib/i18n';
 import { cn, getCardSpriteStyle } from '../lib/utils';
 import { isSfxMutedGlobal } from '../lib/sound';
@@ -600,13 +600,10 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  const currentObjective = nextEvent
  ? t(nextEvent.objectiveKey, language)
  : t('kadan_rpg_objective_complete', language);
- const epilogueLines = language === 'ko'
- ? KADAN_RPG_NOVEL_SCRIPTS[40]
- : [
- { name: t('kadan_rpg_ending_epilogue_title', language), text: t('kadan_rpg_ending_epilogue_1', language) },
- { name: t('kadan_rpg_ending_epilogue_title', language), text: t('kadan_rpg_ending_epilogue_2', language) },
- { name: t('kadan_rpg_ending_epilogue_title', language), text: t('kadan_rpg_ending_epilogue_3', language) },
- ];
+ const epilogueLines = useMemo(
+ () => (KADAN_RPG_NOVEL_SCRIPTS[40] || []).filter((line) => line.speaker !== 'choice'),
+ []
+ );
 
  const handleCloseDialog = useCallback(() => {
  if (activeEvent) {
@@ -1014,6 +1011,24 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  </p>
  <p className="mt-0.5 truncate text-[10px] font-semibold text-[#646262]">{currentObjective}</p>
  </div>
+ <div className="flex flex-wrap items-center gap-2 shrink-0">
+ {nextEvent && (
+ <button
+ type="button"
+ onClick={() => {
+ setDismissedEventId(null);
+ setActiveEvent(nextEvent);
+ }}
+ className="min-h-[44px] flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-sm border border-[#201d1d] bg-[#f8f7f7] hover:bg-[#efeded] px-3 text-xs font-bold text-[#201d1d] transition-all cursor-pointer font-mono"
+ >
+ <BookOpen size={14} className="text-amber-700" />
+ <span>
+ {language === 'ko'
+ ? `제${nextEvent.chapterNumber}화 그림책 정독 (원문 100%)`
+ : `EP.${nextEvent.chapterNumber} Picture Book (100% Novel)`}
+ </span>
+ </button>
+ )}
  <div className={cn(
  "relative inline-flex items-center justify-center overflow-hidden rounded-sm transition-all shrink-0",
  progress.autoMode ? "p-[2px] shadow-[0_0_10px_rgba(59,130,246,0.5)]" : ""
@@ -1033,6 +1048,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  {progress.autoMode ? <Pause size={14} className="text-blue-400" /> : <Play size={14} />}
  <span>{progress.autoMode ? t('kadan_rpg_auto_on', language) : t('kadan_rpg_auto_off', language)}</span>
  </button>
+ </div>
  </div>
  </div>
  </section>
@@ -1063,16 +1079,52 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  </div>
 
  {/* Content body */}
- <div className="flex-1 min-h-0 space-y-3 overflow-y-auto p-4 sm:p-5 custom-scrollbar">
+ <div className="flex-1 min-h-0 space-y-3 overflow-y-auto p-4 sm:p-5 custom-scrollbar font-mono">
  <p className="text-sm font-bold leading-6 text-slate-700">{t('kadan_rpg_ending_popup_desc', language)}</p>
- <div className="space-y-3 rounded-none bg-slate-50 p-3 sm:p-4">
- <p className="text-xs font-black uppercase tracking-normal text-violet-600">{t('kadan_rpg_ending_epilogue_title', language)}</p>
- {epilogueLines.map((line, index) => (
- <div key={`${line.name}-${index}`} className="rounded-none bg-white p-3 shadow-sm">
- <p className="text-xs font-black text-slate-500">{line.name}</p>
- <p className="mt-1 text-sm font-semibold leading-6 text-slate-800">{line.text}</p>
+ <div className="space-y-4 rounded-none bg-slate-50 p-3 sm:p-4 border border-slate-200">
+ <p className="text-xs font-black uppercase tracking-normal text-violet-700">{t('kadan_rpg_ending_epilogue_title', language)}</p>
+ {epilogueLines.map((line, index) => {
+ const lineTitle = language === 'ko' ? (line.sceneTitleKo || line.name) : (line.sceneTitleEn || line.nameEn || line.name);
+ const lineText = language === 'ko' ? line.text : (line.textEn || line.text);
+ const lineExplain = language === 'ko' ? line.sceneExplanationKo : (line.sceneExplanationEn || line.sceneExplanationKo);
+ return (
+ <div key={`${line.name}-${index}`} className="rounded-none border border-slate-200 bg-white overflow-hidden">
+ {line.sceneImageUrl && (
+ <div className="w-full aspect-[16/9] bg-stone-950 overflow-hidden border-b border-slate-200">
+ <img
+ src={line.sceneImageUrl}
+ alt={lineTitle}
+ loading="lazy"
+ className="w-full h-full object-cover"
+ />
  </div>
+ )}
+ <div className="p-3 sm:p-3.5 space-y-2">
+ <div className="flex flex-wrap items-center justify-between gap-2">
+ <p className="text-xs font-black text-slate-800">{lineTitle}</p>
+ {line.sceneCharacters && line.sceneCharacters.length > 0 && (
+ <div className="flex flex-wrap items-center gap-1">
+ {line.sceneCharacters.map((ch) => (
+ <span
+ key={ch.cardId}
+ className="px-1.5 py-0.5 text-[10px] font-bold bg-amber-50 text-amber-900 border border-amber-300 rounded-sm"
+ >
+ {language === 'ko' ? ch.nameKo : ch.nameEn}
+ </span>
  ))}
+ </div>
+ )}
+ </div>
+ {lineExplain && (
+ <p className="text-[11px] leading-relaxed text-amber-900 bg-amber-50/70 border border-amber-200 p-2 whitespace-pre-line">
+ {lineExplain}
+ </p>
+ )}
+ <p className="text-xs sm:text-sm font-semibold leading-relaxed text-slate-800 whitespace-pre-line">{lineText}</p>
+ </div>
+ </div>
+ );
+ })}
  </div>
  </div>
 

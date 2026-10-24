@@ -2,6 +2,26 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-24 22:24 KST] [메인게임(/main) 40화 소설 원문 100% 무삭제 수록 & 다중 캐릭터 등장 장면 그림책(Picture Book) 뷰어 전면 개편 + 반복 스케줄 등록]
+- **요청 사항**:
+  - "지금 메인게임을 진행을 다 해도 소설내용을 100% 담지 못하는것 같아. 지문이 길어져도 상관없으니 소설내용을 100% 설명하고 이해 할수 있게해줘. 단순하게 케릭터만 나오니까 이해도도 떨어지는것 같아. 해당 케릭터들이 포함된 장면을 각 대사별로 생성해서 그림책처럼 표시해줘. 오래 작업해도 상관없으니 정성스럽게 작업해줘. 필요하면 스케줄로 등록해서 반복 작업 수행하고"
+- **주요 구현 및 수정 내역**:
+  1. **1~40화 소설 원문 100.0% 무삭제 수록 및 장면별 스토리·인물 관계 해설 완비 ([`src/content/kadanRpgNovelScript.ts`](file:///Users/dayyoung/project/snshero/src/content/kadanRpgNovelScript.ts), [`scripts/build_100pct_rpg_novel_scripts.py`](file:///Users/dayyoung/project/snshero/scripts/build_100pct_rpg_novel_scripts.py))**:
+     - 기존 40화 합산 15,127자(소설의 9.86% 축약본)에 불과했던 메인게임 스크립트를 전면 재구축하여, `public/book/episode_01..40.md` 한글 소설 1,834개 전 문단(**153,444자, 100.0%**) 및 영문 소설 전 문단(**262,266자, 100.0%**)을 단 한 줄의 누락 없이 400개 그림책 장면(화당 10장면)과 2,009개 세부 대사·문장 컷(`subCuts`)에 100% 수록.
+     - 각 장면마다 `sceneTitleKo`/`En`, `sceneExplanationKo`/`En` (등장인물 관계, 배경 무대, 핵심 사건·복선 해설 가이드), `dialogueQuoteKo`/`En` (핵심 대사 인용), `sceneCharacters` (장면에 함께 등장하는 다중 캐릭터 목록·초상화·역할 설명), 3태도 선택지(`choices`)를 완벽 연동.
+  2. **400장 16:9 와이드 다중 캐릭터 그림책 장면 일러스트 생성 ([`public/images/storybook/ep_01..40/page_01..10.webp`](file:///Users/dayyoung/project/snshero/public/images/storybook/ep_01/page_01.webp))**:
+     - 단순 단일 캐릭터 스프라이트 대신, 각 장면에 등장하는 캐릭터들과 배경이 함께 어우러진 16:9 와이드 그림책 장면 일러스트 400장(`page_01.webp` ~ `page_10.webp`)을 생성하고 우측 하단에 해당 장면 참여 캐릭터 초상화 메달리온을 합성.
+  3. **메인게임 대화창을 인터랙티브 그림책(Picture Book) 뷰어로 전면 개편 ([`src/components/rpg/KadanNpcDialog.tsx`](file:///Users/dayyoung/project/snshero/src/components/rpg/KadanNpcDialog.tsx), [`src/views/KadanRpgView.tsx`](file:///Users/dayyoung/project/snshero/src/views/KadanRpgView.tsx))**:
+     - 상단 16:9 와이드 그림책 장면 캔버스 + 좌우 페이지 넘김 버튼 + 하단 `컷 #1..#N` 세부 컷 필름 스트립 제공.
+     - **`📚 장절 통합 그림책 모드 (10장면 · 원문 100% + 해설)`** ↔ **`🎞️ 50컷 세밀 보기 모드 (대사·문장별 전체 50컷)`** 1클릭 전환 토글 및 **`📑 장면 목차 (Scene Index)`** 드로어 제공.
+     - **장면 등장인물(Participating Characters) 캐스트 바**: 해당 장면에 등장하는 모든 캐릭터의 초상화, 이름, 작중 역할/관계 해설을 표시하고 클릭 시 인물 상세 설명을 확인할 수 있도록 구현.
+     - **💡 장면 해설 & 소설 줄거리 이해 가이드** 박스, **🗣️ 핵심 대사 하이라이트**, **📖 소설 원문 100% 지문 및 대사 (무삭제 완역, 대사 쌍따옴표 하이라이트)**, 3단계 자동 넘김 속도(`정독 4.8s` / `보통 2.6s` / `고속 1.2s`) 지원.
+     - `KadanRpgView.tsx` 하단 진행도 카드에 `제N화 그림책 정독 (원문 100%)` 즉시 열기 버튼 추가 및 40화 엔딩 에필로그 팝업에도 그림책 장면 일러스트·해설·원문 100% 연동.
+  4. **반복 스케줄(`schedule`) 등록 및 다중 캐릭터 AI 장면 시트 베이킹 파이프라인 구축 ([`scripts/bake_ai_storybook_sheet.py`](file:///Users/dayyoung/project/snshero/scripts/bake_ai_storybook_sheet.py))**:
+     - `*/15 * * * *` 주기로 1~40화 다중 캐릭터 AI 그림책 시트를 지속 고도화·갱신하는 백그라운드 스케줄 등록 완료.
+- **검증 결과**:
+  - `npm run lint` 및 `npm run build` 프로덕션 빌드 무결성 검증 완료 및 구글 폼 보고서 제출 완료.
+
 ## [2026-10-24 22:18 KST] [Tailscale Funnel 및 포트 3000 프리뷰 서버 재기동 접속 복구]
 - **요청 사항**:
   - "https://dayyoung-macbookpro.tail3717a4.ts.net/ 접근뷸가"
