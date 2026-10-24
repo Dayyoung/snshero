@@ -21,7 +21,12 @@
     15,
     16,
     17,
-    18
+    18,
+    19,
+    20,
+    21,
+    22,
+    25
   ],
   "resolution": "800x450 (16:9 Widescreen / 2.39:1 CinemaScope Framing)",
   "cameraSpec": "ARRI Alexa 65 · 70mm Panavision Anamorphic · Kodak Vision3 500T",
@@ -22631,7 +22636,7 @@
       "cutNumber": 1,
       "masterPanelIndex": 1,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_01.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_01.webp",
       "characters": [
@@ -22657,7 +22662,7 @@
       "cutNumber": 2,
       "masterPanelIndex": 1,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_02.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_02.webp",
       "characters": [
@@ -22683,7 +22688,7 @@
       "cutNumber": 3,
       "masterPanelIndex": 1,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_03.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_03.webp",
       "characters": [
@@ -22709,7 +22714,7 @@
       "cutNumber": 4,
       "masterPanelIndex": 1,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_04.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_04.webp",
       "characters": [
@@ -22735,7 +22740,7 @@
       "cutNumber": 5,
       "masterPanelIndex": 1,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_05.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_05.webp",
       "characters": [
@@ -22761,7 +22766,7 @@
       "cutNumber": 6,
       "masterPanelIndex": 1,
       "cameraShotType": "EMOTIONAL_TWO_SHOT_INTERACTION",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_06.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_06.webp",
       "characters": [
@@ -22786,7 +22791,7 @@
       "cutNumber": 7,
       "masterPanelIndex": 2,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_07.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_07.webp",
       "characters": [
@@ -22811,7 +22816,7 @@
       "cutNumber": 8,
       "masterPanelIndex": 2,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_08.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_08.webp",
       "characters": [
@@ -22836,7 +22841,7 @@
       "cutNumber": 9,
       "masterPanelIndex": 2,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_09.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_09.webp",
       "characters": [
@@ -22861,7 +22866,7 @@
       "cutNumber": 10,
       "masterPanelIndex": 2,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_10.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_10.webp",
       "characters": [
@@ -22886,7 +22891,7 @@
       "cutNumber": 11,
       "masterPanelIndex": 2,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_11.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_11.webp",
       "characters": [
@@ -22913,7 +22918,7 @@
       "cutNumber": 12,
       "masterPanelIndex": 2,
       "cameraShotType": "EMOTIONAL_TWO_SHOT_INTERACTION",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_12.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_12.webp",
       "characters": [
@@ -22940,7 +22945,7 @@
       "cutNumber": 13,
       "masterPanelIndex": 3,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_13.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_13.webp",
       "characters": [
@@ -22965,7 +22970,7 @@
       "cutNumber": 14,
       "masterPanelIndex": 3,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_14.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_14.webp",
       "characters": [
@@ -22990,7 +22995,7 @@
       "cutNumber": 15,
       "masterPanelIndex": 3,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_15.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_15.webp",
       "characters": [
@@ -23015,7 +23020,7 @@
       "cutNumber": 16,
       "masterPanelIndex": 3,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_16.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_16.webp",
       "characters": [
@@ -23040,7 +23045,7 @@
       "cutNumber": 17,
       "masterPanelIndex": 3,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_17.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_17.webp",
       "characters": [
@@ -23066,7 +23071,7 @@
       "cutNumber": 18,
       "masterPanelIndex": 4,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_18.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_18.webp",
       "characters": [
@@ -23091,7 +23096,7 @@
       "cutNumber": 19,
       "masterPanelIndex": 4,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_19.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_19.webp",
       "characters": [
@@ -23116,7 +23121,7 @@
       "cutNumber": 20,
       "masterPanelIndex": 4,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_20.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_20.webp",
       "characters": [
@@ -23141,7 +23146,7 @@
       "cutNumber": 21,
       "masterPanelIndex": 4,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_21.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_21.webp",
       "characters": [
@@ -23167,7 +23172,7 @@
       "cutNumber": 22,
       "masterPanelIndex": 4,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_22.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_22.webp",
       "characters": [
@@ -23193,7 +23198,7 @@
       "cutNumber": 23,
       "masterPanelIndex": 4,
       "cameraShotType": "EMOTIONAL_TWO_SHOT_INTERACTION",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_23.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_23.webp",
       "characters": [
@@ -23220,7 +23225,7 @@
       "cutNumber": 24,
       "masterPanelIndex": 5,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_24.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_24.webp",
       "characters": [
@@ -23245,7 +23250,7 @@
       "cutNumber": 25,
       "masterPanelIndex": 5,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_25.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_25.webp",
       "characters": [
@@ -23270,7 +23275,7 @@
       "cutNumber": 26,
       "masterPanelIndex": 5,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_26.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_26.webp",
       "characters": [
@@ -23295,7 +23300,7 @@
       "cutNumber": 27,
       "masterPanelIndex": 5,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_27.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_27.webp",
       "characters": [
@@ -23320,7 +23325,7 @@
       "cutNumber": 28,
       "masterPanelIndex": 5,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_28.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_28.webp",
       "characters": [
@@ -23345,7 +23350,7 @@
       "cutNumber": 29,
       "masterPanelIndex": 6,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_29.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_29.webp",
       "characters": [
@@ -23370,7 +23375,7 @@
       "cutNumber": 30,
       "masterPanelIndex": 6,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_30.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_30.webp",
       "characters": [
@@ -23396,7 +23401,7 @@
       "cutNumber": 31,
       "masterPanelIndex": 6,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_31.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_31.webp",
       "characters": [
@@ -23421,7 +23426,7 @@
       "cutNumber": 32,
       "masterPanelIndex": 6,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_32.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_32.webp",
       "characters": [
@@ -23446,7 +23451,7 @@
       "cutNumber": 33,
       "masterPanelIndex": 6,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_33.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_33.webp",
       "characters": [
@@ -23472,7 +23477,7 @@
       "cutNumber": 34,
       "masterPanelIndex": 6,
       "cameraShotType": "EMOTIONAL_TWO_SHOT_INTERACTION",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_34.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_34.webp",
       "characters": [
@@ -23498,7 +23503,7 @@
       "cutNumber": 35,
       "masterPanelIndex": 7,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_35.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_35.webp",
       "characters": [
@@ -23523,7 +23528,7 @@
       "cutNumber": 36,
       "masterPanelIndex": 7,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_36.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_36.webp",
       "characters": [
@@ -23548,7 +23553,7 @@
       "cutNumber": 37,
       "masterPanelIndex": 7,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_37.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_37.webp",
       "characters": [
@@ -23573,7 +23578,7 @@
       "cutNumber": 38,
       "masterPanelIndex": 7,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_38.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_38.webp",
       "characters": [
@@ -23598,7 +23603,7 @@
       "cutNumber": 39,
       "masterPanelIndex": 7,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_39.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_39.webp",
       "characters": [
@@ -23623,7 +23628,7 @@
       "cutNumber": 40,
       "masterPanelIndex": 8,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_40.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_40.webp",
       "characters": [
@@ -23648,7 +23653,7 @@
       "cutNumber": 41,
       "masterPanelIndex": 8,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_41.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_41.webp",
       "characters": [
@@ -23674,7 +23679,7 @@
       "cutNumber": 42,
       "masterPanelIndex": 8,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_42.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_42.webp",
       "characters": [
@@ -23702,7 +23707,7 @@
       "cutNumber": 43,
       "masterPanelIndex": 8,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_43.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_43.webp",
       "characters": [
@@ -23728,7 +23733,7 @@
       "cutNumber": 44,
       "masterPanelIndex": 8,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_44.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_44.webp",
       "characters": [
@@ -23754,7 +23759,7 @@
       "cutNumber": 45,
       "masterPanelIndex": 8,
       "cameraShotType": "EMOTIONAL_TWO_SHOT_INTERACTION",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_45.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_45.webp",
       "characters": [
@@ -23779,7 +23784,7 @@
       "cutNumber": 46,
       "masterPanelIndex": 9,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_46.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_46.webp",
       "characters": [
@@ -23804,7 +23809,7 @@
       "cutNumber": 47,
       "masterPanelIndex": 9,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_47.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_47.webp",
       "characters": [
@@ -23829,7 +23834,7 @@
       "cutNumber": 48,
       "masterPanelIndex": 9,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_48.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_48.webp",
       "characters": [
@@ -23854,7 +23859,7 @@
       "cutNumber": 49,
       "masterPanelIndex": 9,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_49.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_49.webp",
       "characters": [
@@ -23881,7 +23886,7 @@
       "cutNumber": 50,
       "masterPanelIndex": 9,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_19/scene_50.webp",
       "liveActionCutUrl": "/images/cinema/episode_19/scene_50.webp",
       "characters": [
@@ -23906,7 +23911,7 @@
       "cutNumber": 1,
       "masterPanelIndex": 1,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_01.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_01.webp",
       "characters": [
@@ -23932,7 +23937,7 @@
       "cutNumber": 2,
       "masterPanelIndex": 1,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_02.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_02.webp",
       "characters": [
@@ -23958,7 +23963,7 @@
       "cutNumber": 3,
       "masterPanelIndex": 1,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_03.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_03.webp",
       "characters": [
@@ -23984,7 +23989,7 @@
       "cutNumber": 4,
       "masterPanelIndex": 1,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_04.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_04.webp",
       "characters": [
@@ -24010,7 +24015,7 @@
       "cutNumber": 5,
       "masterPanelIndex": 1,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_05.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_05.webp",
       "characters": [
@@ -24036,7 +24041,7 @@
       "cutNumber": 6,
       "masterPanelIndex": 1,
       "cameraShotType": "EMOTIONAL_TWO_SHOT_INTERACTION",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_06.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_06.webp",
       "characters": [
@@ -24062,7 +24067,7 @@
       "cutNumber": 7,
       "masterPanelIndex": 2,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_07.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_07.webp",
       "characters": [
@@ -24088,7 +24093,7 @@
       "cutNumber": 8,
       "masterPanelIndex": 2,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_08.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_08.webp",
       "characters": [
@@ -24114,7 +24119,7 @@
       "cutNumber": 9,
       "masterPanelIndex": 2,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_09.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_09.webp",
       "characters": [
@@ -24139,7 +24144,7 @@
       "cutNumber": 10,
       "masterPanelIndex": 2,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_10.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_10.webp",
       "characters": [
@@ -24164,7 +24169,7 @@
       "cutNumber": 11,
       "masterPanelIndex": 2,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_11.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_11.webp",
       "characters": [
@@ -24189,7 +24194,7 @@
       "cutNumber": 12,
       "masterPanelIndex": 3,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_12.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_12.webp",
       "characters": [
@@ -24214,7 +24219,7 @@
       "cutNumber": 13,
       "masterPanelIndex": 3,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_13.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_13.webp",
       "characters": [
@@ -24239,7 +24244,7 @@
       "cutNumber": 14,
       "masterPanelIndex": 3,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_14.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_14.webp",
       "characters": [
@@ -24264,7 +24269,7 @@
       "cutNumber": 15,
       "masterPanelIndex": 3,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_15.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_15.webp",
       "characters": [
@@ -24289,7 +24294,7 @@
       "cutNumber": 16,
       "masterPanelIndex": 3,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_16.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_16.webp",
       "characters": [
@@ -24315,7 +24320,7 @@
       "cutNumber": 17,
       "masterPanelIndex": 4,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_17.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_17.webp",
       "characters": [
@@ -24340,7 +24345,7 @@
       "cutNumber": 18,
       "masterPanelIndex": 4,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_18.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_18.webp",
       "characters": [
@@ -24365,7 +24370,7 @@
       "cutNumber": 19,
       "masterPanelIndex": 4,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_19.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_19.webp",
       "characters": [
@@ -24390,7 +24395,7 @@
       "cutNumber": 20,
       "masterPanelIndex": 4,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_20.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_20.webp",
       "characters": [
@@ -24415,7 +24420,7 @@
       "cutNumber": 21,
       "masterPanelIndex": 4,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_21.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_21.webp",
       "characters": [
@@ -24440,7 +24445,7 @@
       "cutNumber": 22,
       "masterPanelIndex": 4,
       "cameraShotType": "EMOTIONAL_TWO_SHOT_INTERACTION",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_22.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_22.webp",
       "characters": [
@@ -24465,7 +24470,7 @@
       "cutNumber": 23,
       "masterPanelIndex": 5,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_23.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_23.webp",
       "characters": [
@@ -24490,7 +24495,7 @@
       "cutNumber": 24,
       "masterPanelIndex": 5,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_24.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_24.webp",
       "characters": [
@@ -24515,7 +24520,7 @@
       "cutNumber": 25,
       "masterPanelIndex": 5,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_25.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_25.webp",
       "characters": [
@@ -24540,7 +24545,7 @@
       "cutNumber": 26,
       "masterPanelIndex": 5,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_26.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_26.webp",
       "characters": [
@@ -24565,7 +24570,7 @@
       "cutNumber": 27,
       "masterPanelIndex": 5,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_27.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_27.webp",
       "characters": [
@@ -24590,7 +24595,7 @@
       "cutNumber": 28,
       "masterPanelIndex": 6,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_28.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_28.webp",
       "characters": [
@@ -24616,7 +24621,7 @@
       "cutNumber": 29,
       "masterPanelIndex": 6,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_29.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_29.webp",
       "characters": [
@@ -24641,7 +24646,7 @@
       "cutNumber": 30,
       "masterPanelIndex": 6,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_30.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_30.webp",
       "characters": [
@@ -24668,7 +24673,7 @@
       "cutNumber": 31,
       "masterPanelIndex": 6,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_31.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_31.webp",
       "characters": [
@@ -24695,7 +24700,7 @@
       "cutNumber": 32,
       "masterPanelIndex": 6,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_32.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_32.webp",
       "characters": [
@@ -24720,7 +24725,7 @@
       "cutNumber": 33,
       "masterPanelIndex": 7,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_33.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_33.webp",
       "characters": [
@@ -24745,7 +24750,7 @@
       "cutNumber": 34,
       "masterPanelIndex": 7,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_34.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_34.webp",
       "characters": [
@@ -24770,7 +24775,7 @@
       "cutNumber": 35,
       "masterPanelIndex": 7,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_35.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_35.webp",
       "characters": [
@@ -24795,7 +24800,7 @@
       "cutNumber": 36,
       "masterPanelIndex": 7,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_36.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_36.webp",
       "characters": [
@@ -24820,7 +24825,7 @@
       "cutNumber": 37,
       "masterPanelIndex": 7,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_37.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_37.webp",
       "characters": [
@@ -24846,7 +24851,7 @@
       "cutNumber": 38,
       "masterPanelIndex": 7,
       "cameraShotType": "EMOTIONAL_TWO_SHOT_INTERACTION",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_38.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_38.webp",
       "characters": [
@@ -24872,7 +24877,7 @@
       "cutNumber": 39,
       "masterPanelIndex": 8,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_39.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_39.webp",
       "characters": [
@@ -24898,7 +24903,7 @@
       "cutNumber": 40,
       "masterPanelIndex": 8,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_40.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_40.webp",
       "characters": [
@@ -24924,7 +24929,7 @@
       "cutNumber": 41,
       "masterPanelIndex": 8,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_41.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_41.webp",
       "characters": [
@@ -24950,7 +24955,7 @@
       "cutNumber": 42,
       "masterPanelIndex": 8,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_42.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_42.webp",
       "characters": [
@@ -24975,7 +24980,7 @@
       "cutNumber": 43,
       "masterPanelIndex": 8,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_43.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_43.webp",
       "characters": [
@@ -25001,7 +25006,7 @@
       "cutNumber": 44,
       "masterPanelIndex": 9,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_44.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_44.webp",
       "characters": [
@@ -25027,7 +25032,7 @@
       "cutNumber": 45,
       "masterPanelIndex": 9,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_45.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_45.webp",
       "characters": [
@@ -25053,7 +25058,7 @@
       "cutNumber": 46,
       "masterPanelIndex": 9,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_46.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_46.webp",
       "characters": [
@@ -25079,7 +25084,7 @@
       "cutNumber": 47,
       "masterPanelIndex": 9,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_47.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_47.webp",
       "characters": [
@@ -25105,7 +25110,7 @@
       "cutNumber": 48,
       "masterPanelIndex": 9,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_20/scene_48.webp",
       "liveActionCutUrl": "/images/cinema/episode_20/scene_48.webp",
       "characters": [
@@ -25131,7 +25136,7 @@
       "cutNumber": 1,
       "masterPanelIndex": 1,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_01.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_01.webp",
       "characters": [
@@ -25157,7 +25162,7 @@
       "cutNumber": 2,
       "masterPanelIndex": 1,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_02.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_02.webp",
       "characters": [
@@ -25183,7 +25188,7 @@
       "cutNumber": 3,
       "masterPanelIndex": 1,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_03.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_03.webp",
       "characters": [
@@ -25209,7 +25214,7 @@
       "cutNumber": 4,
       "masterPanelIndex": 1,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_04.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_04.webp",
       "characters": [
@@ -25235,7 +25240,7 @@
       "cutNumber": 5,
       "masterPanelIndex": 1,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_05.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_05.webp",
       "characters": [
@@ -25260,7 +25265,7 @@
       "cutNumber": 6,
       "masterPanelIndex": 1,
       "cameraShotType": "EMOTIONAL_TWO_SHOT_INTERACTION",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_06.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_06.webp",
       "characters": [
@@ -25285,7 +25290,7 @@
       "cutNumber": 7,
       "masterPanelIndex": 2,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_07.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_07.webp",
       "characters": [
@@ -25310,7 +25315,7 @@
       "cutNumber": 8,
       "masterPanelIndex": 2,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_08.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_08.webp",
       "characters": [
@@ -25336,7 +25341,7 @@
       "cutNumber": 9,
       "masterPanelIndex": 2,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_09.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_09.webp",
       "characters": [
@@ -25361,7 +25366,7 @@
       "cutNumber": 10,
       "masterPanelIndex": 2,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_10.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_10.webp",
       "characters": [
@@ -25386,7 +25391,7 @@
       "cutNumber": 11,
       "masterPanelIndex": 2,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_11.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_11.webp",
       "characters": [
@@ -25411,7 +25416,7 @@
       "cutNumber": 12,
       "masterPanelIndex": 3,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_12.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_12.webp",
       "characters": [
@@ -25437,7 +25442,7 @@
       "cutNumber": 13,
       "masterPanelIndex": 3,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_13.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_13.webp",
       "characters": [
@@ -25462,7 +25467,7 @@
       "cutNumber": 14,
       "masterPanelIndex": 3,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_14.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_14.webp",
       "characters": [
@@ -25488,7 +25493,7 @@
       "cutNumber": 15,
       "masterPanelIndex": 3,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_15.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_15.webp",
       "characters": [
@@ -25514,7 +25519,7 @@
       "cutNumber": 16,
       "masterPanelIndex": 3,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_16.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_16.webp",
       "characters": [
@@ -25539,7 +25544,7 @@
       "cutNumber": 17,
       "masterPanelIndex": 4,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_17.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_17.webp",
       "characters": [
@@ -25565,7 +25570,7 @@
       "cutNumber": 18,
       "masterPanelIndex": 4,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_18.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_18.webp",
       "characters": [
@@ -25590,7 +25595,7 @@
       "cutNumber": 19,
       "masterPanelIndex": 4,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_19.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_19.webp",
       "characters": [
@@ -25615,7 +25620,7 @@
       "cutNumber": 20,
       "masterPanelIndex": 4,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_20.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_20.webp",
       "characters": [
@@ -25640,7 +25645,7 @@
       "cutNumber": 21,
       "masterPanelIndex": 4,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_21.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_21.webp",
       "characters": [
@@ -25665,7 +25670,7 @@
       "cutNumber": 22,
       "masterPanelIndex": 5,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_22.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_22.webp",
       "characters": [
@@ -25690,7 +25695,7 @@
       "cutNumber": 23,
       "masterPanelIndex": 5,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_23.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_23.webp",
       "characters": [
@@ -25715,7 +25720,7 @@
       "cutNumber": 24,
       "masterPanelIndex": 5,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_24.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_24.webp",
       "characters": [
@@ -25740,7 +25745,7 @@
       "cutNumber": 25,
       "masterPanelIndex": 5,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_25.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_25.webp",
       "characters": [
@@ -25765,7 +25770,7 @@
       "cutNumber": 26,
       "masterPanelIndex": 5,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_26.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_26.webp",
       "characters": [
@@ -25790,7 +25795,7 @@
       "cutNumber": 27,
       "masterPanelIndex": 6,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_27.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_27.webp",
       "characters": [
@@ -25815,7 +25820,7 @@
       "cutNumber": 28,
       "masterPanelIndex": 6,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_28.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_28.webp",
       "characters": [
@@ -25840,7 +25845,7 @@
       "cutNumber": 29,
       "masterPanelIndex": 6,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_29.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_29.webp",
       "characters": [
@@ -25865,7 +25870,7 @@
       "cutNumber": 30,
       "masterPanelIndex": 6,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_30.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_30.webp",
       "characters": [
@@ -25890,7 +25895,7 @@
       "cutNumber": 31,
       "masterPanelIndex": 6,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_31.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_31.webp",
       "characters": [
@@ -25915,7 +25920,7 @@
       "cutNumber": 32,
       "masterPanelIndex": 7,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_32.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_32.webp",
       "characters": [
@@ -25940,7 +25945,7 @@
       "cutNumber": 33,
       "masterPanelIndex": 7,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_33.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_33.webp",
       "characters": [
@@ -25965,7 +25970,7 @@
       "cutNumber": 34,
       "masterPanelIndex": 7,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_34.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_34.webp",
       "characters": [
@@ -25991,7 +25996,7 @@
       "cutNumber": 35,
       "masterPanelIndex": 7,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_35.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_35.webp",
       "characters": [
@@ -26016,7 +26021,7 @@
       "cutNumber": 36,
       "masterPanelIndex": 7,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_36.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_36.webp",
       "characters": [
@@ -26041,7 +26046,7 @@
       "cutNumber": 37,
       "masterPanelIndex": 8,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_37.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_37.webp",
       "characters": [
@@ -26067,7 +26072,7 @@
       "cutNumber": 38,
       "masterPanelIndex": 8,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_38.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_38.webp",
       "characters": [
@@ -26093,7 +26098,7 @@
       "cutNumber": 39,
       "masterPanelIndex": 8,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_39.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_39.webp",
       "characters": [
@@ -26119,7 +26124,7 @@
       "cutNumber": 40,
       "masterPanelIndex": 8,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_40.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_40.webp",
       "characters": [
@@ -26146,7 +26151,7 @@
       "cutNumber": 41,
       "masterPanelIndex": 8,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_41.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_41.webp",
       "characters": [
@@ -26173,7 +26178,7 @@
       "cutNumber": 42,
       "masterPanelIndex": 9,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_42.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_42.webp",
       "characters": [
@@ -26199,7 +26204,7 @@
       "cutNumber": 43,
       "masterPanelIndex": 9,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_43.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_43.webp",
       "characters": [
@@ -26224,7 +26229,7 @@
       "cutNumber": 44,
       "masterPanelIndex": 9,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_44.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_44.webp",
       "characters": [
@@ -26249,7 +26254,7 @@
       "cutNumber": 45,
       "masterPanelIndex": 9,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_45.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_45.webp",
       "characters": [
@@ -26276,7 +26281,7 @@
       "cutNumber": 46,
       "masterPanelIndex": 9,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_21/scene_46.webp",
       "liveActionCutUrl": "/images/cinema/episode_21/scene_46.webp",
       "characters": [
@@ -26303,7 +26308,7 @@
       "cutNumber": 1,
       "masterPanelIndex": 1,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_01.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_01.webp",
       "characters": [
@@ -26329,7 +26334,7 @@
       "cutNumber": 2,
       "masterPanelIndex": 1,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_02.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_02.webp",
       "characters": [
@@ -26354,7 +26359,7 @@
       "cutNumber": 3,
       "masterPanelIndex": 1,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_03.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_03.webp",
       "characters": [
@@ -26379,7 +26384,7 @@
       "cutNumber": 4,
       "masterPanelIndex": 1,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_04.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_04.webp",
       "characters": [
@@ -26404,7 +26409,7 @@
       "cutNumber": 5,
       "masterPanelIndex": 1,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_05.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_05.webp",
       "characters": [
@@ -26429,7 +26434,7 @@
       "cutNumber": 6,
       "masterPanelIndex": 1,
       "cameraShotType": "EMOTIONAL_TWO_SHOT_INTERACTION",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_06.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_06.webp",
       "characters": [
@@ -26454,7 +26459,7 @@
       "cutNumber": 7,
       "masterPanelIndex": 1,
       "cameraShotType": "CINEMATIC_TRACKING_PAN",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_07.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_07.webp",
       "characters": [
@@ -26479,7 +26484,7 @@
       "cutNumber": 8,
       "masterPanelIndex": 2,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_08.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_08.webp",
       "characters": [
@@ -26504,7 +26509,7 @@
       "cutNumber": 9,
       "masterPanelIndex": 2,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_09.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_09.webp",
       "characters": [
@@ -26529,7 +26534,7 @@
       "cutNumber": 10,
       "masterPanelIndex": 2,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_10.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_10.webp",
       "characters": [
@@ -26554,7 +26559,7 @@
       "cutNumber": 11,
       "masterPanelIndex": 2,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_11.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_11.webp",
       "characters": [
@@ -26579,7 +26584,7 @@
       "cutNumber": 12,
       "masterPanelIndex": 2,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_12.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_12.webp",
       "characters": [
@@ -26604,7 +26609,7 @@
       "cutNumber": 13,
       "masterPanelIndex": 2,
       "cameraShotType": "EMOTIONAL_TWO_SHOT_INTERACTION",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_13.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_13.webp",
       "characters": [
@@ -26629,7 +26634,7 @@
       "cutNumber": 14,
       "masterPanelIndex": 3,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_14.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_14.webp",
       "characters": [
@@ -26654,7 +26659,7 @@
       "cutNumber": 15,
       "masterPanelIndex": 3,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_15.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_15.webp",
       "characters": [
@@ -26679,7 +26684,7 @@
       "cutNumber": 16,
       "masterPanelIndex": 3,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_16.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_16.webp",
       "characters": [
@@ -26704,7 +26709,7 @@
       "cutNumber": 17,
       "masterPanelIndex": 3,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_17.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_17.webp",
       "characters": [
@@ -26729,7 +26734,7 @@
       "cutNumber": 18,
       "masterPanelIndex": 3,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_18.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_18.webp",
       "characters": [
@@ -26755,7 +26760,7 @@
       "cutNumber": 19,
       "masterPanelIndex": 3,
       "cameraShotType": "EMOTIONAL_TWO_SHOT_INTERACTION",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_19.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_19.webp",
       "characters": [
@@ -26780,7 +26785,7 @@
       "cutNumber": 20,
       "masterPanelIndex": 4,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_20.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_20.webp",
       "characters": [
@@ -26806,7 +26811,7 @@
       "cutNumber": 21,
       "masterPanelIndex": 4,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_21.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_21.webp",
       "characters": [
@@ -26831,7 +26836,7 @@
       "cutNumber": 22,
       "masterPanelIndex": 4,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_22.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_22.webp",
       "characters": [
@@ -26856,7 +26861,7 @@
       "cutNumber": 23,
       "masterPanelIndex": 4,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_23.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_23.webp",
       "characters": [
@@ -26881,7 +26886,7 @@
       "cutNumber": 24,
       "masterPanelIndex": 4,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_24.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_24.webp",
       "characters": [
@@ -26906,7 +26911,7 @@
       "cutNumber": 25,
       "masterPanelIndex": 4,
       "cameraShotType": "EMOTIONAL_TWO_SHOT_INTERACTION",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_25.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_25.webp",
       "characters": [
@@ -26931,7 +26936,7 @@
       "cutNumber": 26,
       "masterPanelIndex": 5,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_26.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_26.webp",
       "characters": [
@@ -26957,7 +26962,7 @@
       "cutNumber": 27,
       "masterPanelIndex": 5,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_27.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_27.webp",
       "characters": [
@@ -26983,7 +26988,7 @@
       "cutNumber": 28,
       "masterPanelIndex": 5,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_28.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_28.webp",
       "characters": [
@@ -27008,7 +27013,7 @@
       "cutNumber": 29,
       "masterPanelIndex": 5,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_29.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_29.webp",
       "characters": [
@@ -27034,7 +27039,7 @@
       "cutNumber": 30,
       "masterPanelIndex": 5,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_30.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_30.webp",
       "characters": [
@@ -27061,7 +27066,7 @@
       "cutNumber": 31,
       "masterPanelIndex": 5,
       "cameraShotType": "EMOTIONAL_TWO_SHOT_INTERACTION",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_31.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_31.webp",
       "characters": [
@@ -27086,7 +27091,7 @@
       "cutNumber": 32,
       "masterPanelIndex": 5,
       "cameraShotType": "CINEMATIC_TRACKING_PAN",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_32.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_32.webp",
       "characters": [
@@ -27111,7 +27116,7 @@
       "cutNumber": 33,
       "masterPanelIndex": 6,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_33.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_33.webp",
       "characters": [
@@ -27136,7 +27141,7 @@
       "cutNumber": 34,
       "masterPanelIndex": 6,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_34.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_34.webp",
       "characters": [
@@ -27161,7 +27166,7 @@
       "cutNumber": 35,
       "masterPanelIndex": 6,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_35.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_35.webp",
       "characters": [
@@ -27188,7 +27193,7 @@
       "cutNumber": 36,
       "masterPanelIndex": 6,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_36.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_36.webp",
       "characters": [
@@ -27213,7 +27218,7 @@
       "cutNumber": 37,
       "masterPanelIndex": 6,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_37.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_37.webp",
       "characters": [
@@ -27238,7 +27243,7 @@
       "cutNumber": 38,
       "masterPanelIndex": 6,
       "cameraShotType": "EMOTIONAL_TWO_SHOT_INTERACTION",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_38.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_38.webp",
       "characters": [
@@ -27263,7 +27268,7 @@
       "cutNumber": 39,
       "masterPanelIndex": 7,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_39.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_39.webp",
       "characters": [
@@ -27288,7 +27293,7 @@
       "cutNumber": 40,
       "masterPanelIndex": 7,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_40.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_40.webp",
       "characters": [
@@ -27313,7 +27318,7 @@
       "cutNumber": 41,
       "masterPanelIndex": 7,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_41.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_41.webp",
       "characters": [
@@ -27338,7 +27343,7 @@
       "cutNumber": 42,
       "masterPanelIndex": 7,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_42.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_42.webp",
       "characters": [
@@ -27363,7 +27368,7 @@
       "cutNumber": 43,
       "masterPanelIndex": 7,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_43.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_43.webp",
       "characters": [
@@ -27388,7 +27393,7 @@
       "cutNumber": 44,
       "masterPanelIndex": 7,
       "cameraShotType": "EMOTIONAL_TWO_SHOT_INTERACTION",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_44.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_44.webp",
       "characters": [
@@ -27413,7 +27418,7 @@
       "cutNumber": 45,
       "masterPanelIndex": 8,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_45.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_45.webp",
       "characters": [
@@ -27438,7 +27443,7 @@
       "cutNumber": 46,
       "masterPanelIndex": 8,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_46.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_46.webp",
       "characters": [
@@ -27463,7 +27468,7 @@
       "cutNumber": 47,
       "masterPanelIndex": 8,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_47.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_47.webp",
       "characters": [
@@ -27488,7 +27493,7 @@
       "cutNumber": 48,
       "masterPanelIndex": 8,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_48.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_48.webp",
       "characters": [
@@ -27513,7 +27518,7 @@
       "cutNumber": 49,
       "masterPanelIndex": 8,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_49.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_49.webp",
       "characters": [
@@ -27538,7 +27543,7 @@
       "cutNumber": 50,
       "masterPanelIndex": 8,
       "cameraShotType": "EMOTIONAL_TWO_SHOT_INTERACTION",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_50.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_50.webp",
       "characters": [
@@ -27565,7 +27570,7 @@
       "cutNumber": 51,
       "masterPanelIndex": 9,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_51.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_51.webp",
       "characters": [
@@ -27591,7 +27596,7 @@
       "cutNumber": 52,
       "masterPanelIndex": 9,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_52.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_52.webp",
       "characters": [
@@ -27616,7 +27621,7 @@
       "cutNumber": 53,
       "masterPanelIndex": 9,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_53.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_53.webp",
       "characters": [
@@ -27641,7 +27646,7 @@
       "cutNumber": 54,
       "masterPanelIndex": 9,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_54.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_54.webp",
       "characters": [
@@ -27666,7 +27671,7 @@
       "cutNumber": 55,
       "masterPanelIndex": 9,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_55.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_55.webp",
       "characters": [
@@ -27691,7 +27696,7 @@
       "cutNumber": 56,
       "masterPanelIndex": 9,
       "cameraShotType": "EMOTIONAL_TWO_SHOT_INTERACTION",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_22/scene_56.webp",
       "liveActionCutUrl": "/images/cinema/episode_22/scene_56.webp",
       "characters": [
@@ -30336,7 +30341,7 @@
       "cutNumber": 1,
       "masterPanelIndex": 1,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_01.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_01.webp",
       "characters": [
@@ -30362,7 +30367,7 @@
       "cutNumber": 2,
       "masterPanelIndex": 1,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_02.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_02.webp",
       "characters": [
@@ -30388,7 +30393,7 @@
       "cutNumber": 3,
       "masterPanelIndex": 1,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_03.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_03.webp",
       "characters": [
@@ -30414,7 +30419,7 @@
       "cutNumber": 4,
       "masterPanelIndex": 1,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_04.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_04.webp",
       "characters": [
@@ -30439,7 +30444,7 @@
       "cutNumber": 5,
       "masterPanelIndex": 1,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_05.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_05.webp",
       "characters": [
@@ -30464,7 +30469,7 @@
       "cutNumber": 6,
       "masterPanelIndex": 1,
       "cameraShotType": "EMOTIONAL_TWO_SHOT_INTERACTION",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_06.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_06.webp",
       "characters": [
@@ -30490,7 +30495,7 @@
       "cutNumber": 7,
       "masterPanelIndex": 2,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_07.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_07.webp",
       "characters": [
@@ -30515,7 +30520,7 @@
       "cutNumber": 8,
       "masterPanelIndex": 2,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_08.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_08.webp",
       "characters": [
@@ -30541,7 +30546,7 @@
       "cutNumber": 9,
       "masterPanelIndex": 2,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_09.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_09.webp",
       "characters": [
@@ -30566,7 +30571,7 @@
       "cutNumber": 10,
       "masterPanelIndex": 2,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_10.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_10.webp",
       "characters": [
@@ -30593,7 +30598,7 @@
       "cutNumber": 11,
       "masterPanelIndex": 2,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_11.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_11.webp",
       "characters": [
@@ -30620,7 +30625,7 @@
       "cutNumber": 12,
       "masterPanelIndex": 2,
       "cameraShotType": "EMOTIONAL_TWO_SHOT_INTERACTION",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_12.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_12.webp",
       "characters": [
@@ -30647,7 +30652,7 @@
       "cutNumber": 13,
       "masterPanelIndex": 3,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_13.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_13.webp",
       "characters": [
@@ -30673,7 +30678,7 @@
       "cutNumber": 14,
       "masterPanelIndex": 3,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_14.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_14.webp",
       "characters": [
@@ -30698,7 +30703,7 @@
       "cutNumber": 15,
       "masterPanelIndex": 3,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_15.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_15.webp",
       "characters": [
@@ -30723,7 +30728,7 @@
       "cutNumber": 16,
       "masterPanelIndex": 3,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_16.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_16.webp",
       "characters": [
@@ -30748,7 +30753,7 @@
       "cutNumber": 17,
       "masterPanelIndex": 3,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_17.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_17.webp",
       "characters": [
@@ -30773,7 +30778,7 @@
       "cutNumber": 18,
       "masterPanelIndex": 3,
       "cameraShotType": "EMOTIONAL_TWO_SHOT_INTERACTION",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_18.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_18.webp",
       "characters": [
@@ -30798,7 +30803,7 @@
       "cutNumber": 19,
       "masterPanelIndex": 4,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_19.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_19.webp",
       "characters": [
@@ -30823,7 +30828,7 @@
       "cutNumber": 20,
       "masterPanelIndex": 4,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_20.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_20.webp",
       "characters": [
@@ -30849,7 +30854,7 @@
       "cutNumber": 21,
       "masterPanelIndex": 4,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_21.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_21.webp",
       "characters": [
@@ -30874,7 +30879,7 @@
       "cutNumber": 22,
       "masterPanelIndex": 4,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_22.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_22.webp",
       "characters": [
@@ -30899,7 +30904,7 @@
       "cutNumber": 23,
       "masterPanelIndex": 4,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_23.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_23.webp",
       "characters": [
@@ -30925,7 +30930,7 @@
       "cutNumber": 24,
       "masterPanelIndex": 4,
       "cameraShotType": "EMOTIONAL_TWO_SHOT_INTERACTION",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_24.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_24.webp",
       "characters": [
@@ -30950,7 +30955,7 @@
       "cutNumber": 25,
       "masterPanelIndex": 5,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_25.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_25.webp",
       "characters": [
@@ -30975,7 +30980,7 @@
       "cutNumber": 26,
       "masterPanelIndex": 5,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_26.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_26.webp",
       "characters": [
@@ -31000,7 +31005,7 @@
       "cutNumber": 27,
       "masterPanelIndex": 5,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_27.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_27.webp",
       "characters": [
@@ -31025,7 +31030,7 @@
       "cutNumber": 28,
       "masterPanelIndex": 5,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_28.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_28.webp",
       "characters": [
@@ -31050,7 +31055,7 @@
       "cutNumber": 29,
       "masterPanelIndex": 5,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_29.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_29.webp",
       "characters": [
@@ -31076,7 +31081,7 @@
       "cutNumber": 30,
       "masterPanelIndex": 6,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_30.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_30.webp",
       "characters": [
@@ -31102,7 +31107,7 @@
       "cutNumber": 31,
       "masterPanelIndex": 6,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_31.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_31.webp",
       "characters": [
@@ -31128,7 +31133,7 @@
       "cutNumber": 32,
       "masterPanelIndex": 6,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_32.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_32.webp",
       "characters": [
@@ -31153,7 +31158,7 @@
       "cutNumber": 33,
       "masterPanelIndex": 6,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_33.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_33.webp",
       "characters": [
@@ -31179,7 +31184,7 @@
       "cutNumber": 34,
       "masterPanelIndex": 6,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_34.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_34.webp",
       "characters": [
@@ -31204,7 +31209,7 @@
       "cutNumber": 35,
       "masterPanelIndex": 6,
       "cameraShotType": "EMOTIONAL_TWO_SHOT_INTERACTION",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_35.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_35.webp",
       "characters": [
@@ -31230,7 +31235,7 @@
       "cutNumber": 36,
       "masterPanelIndex": 7,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_36.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_36.webp",
       "characters": [
@@ -31256,7 +31261,7 @@
       "cutNumber": 37,
       "masterPanelIndex": 7,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_37.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_37.webp",
       "characters": [
@@ -31281,7 +31286,7 @@
       "cutNumber": 38,
       "masterPanelIndex": 7,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_38.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_38.webp",
       "characters": [
@@ -31306,7 +31311,7 @@
       "cutNumber": 39,
       "masterPanelIndex": 7,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_39.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_39.webp",
       "characters": [
@@ -31332,7 +31337,7 @@
       "cutNumber": 40,
       "masterPanelIndex": 7,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_40.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_40.webp",
       "characters": [
@@ -31358,7 +31363,7 @@
       "cutNumber": 41,
       "masterPanelIndex": 7,
       "cameraShotType": "EMOTIONAL_TWO_SHOT_INTERACTION",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_41.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_41.webp",
       "characters": [
@@ -31384,7 +31389,7 @@
       "cutNumber": 42,
       "masterPanelIndex": 8,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_42.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_42.webp",
       "characters": [
@@ -31410,7 +31415,7 @@
       "cutNumber": 43,
       "masterPanelIndex": 8,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_43.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_43.webp",
       "characters": [
@@ -31436,7 +31441,7 @@
       "cutNumber": 44,
       "masterPanelIndex": 8,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_44.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_44.webp",
       "characters": [
@@ -31463,7 +31468,7 @@
       "cutNumber": 45,
       "masterPanelIndex": 8,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_45.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_45.webp",
       "characters": [
@@ -31491,7 +31496,7 @@
       "cutNumber": 46,
       "masterPanelIndex": 8,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_46.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_46.webp",
       "characters": [
@@ -31516,7 +31521,7 @@
       "cutNumber": 47,
       "masterPanelIndex": 8,
       "cameraShotType": "EMOTIONAL_TWO_SHOT_INTERACTION",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_47.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_47.webp",
       "characters": [
@@ -31542,7 +31547,7 @@
       "cutNumber": 48,
       "masterPanelIndex": 9,
       "cameraShotType": "WIDE_ESTABLISHING_SHOT_70MM",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_48.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_48.webp",
       "characters": [
@@ -31568,7 +31573,7 @@
       "cutNumber": 49,
       "masterPanelIndex": 9,
       "cameraShotType": "MEDIUM_LEFT_SUBJECT_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_49.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_49.webp",
       "characters": [
@@ -31595,7 +31600,7 @@
       "cutNumber": 50,
       "masterPanelIndex": 9,
       "cameraShotType": "MEDIUM_RIGHT_REACTION_SHOT",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_50.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_50.webp",
       "characters": [
@@ -31622,7 +31627,7 @@
       "cutNumber": 51,
       "masterPanelIndex": 9,
       "cameraShotType": "DRAMATIC_CENTER_CLOSEUP",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_51.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_51.webp",
       "characters": [
@@ -31648,7 +31653,7 @@
       "cutNumber": 52,
       "masterPanelIndex": 9,
       "cameraShotType": "HEROIC_LOW_ANGLE_FOCUS",
-      "sourceMode": "70MM_ANAMORPHIC_GRADED_MASTER",
+      "sourceMode": "AI_70MM_LIVEACTION_SHEET",
       "animationCutUrl": "/images/webtoon/episode_25/scene_52.webp",
       "liveActionCutUrl": "/images/cinema/episode_25/scene_52.webp",
       "characters": [
