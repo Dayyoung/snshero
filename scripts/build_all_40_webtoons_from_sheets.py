@@ -14,8 +14,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageEnhance
 
 PROJECT_ROOT = Path("/Users/dayyoung/project/snshero")
 MANIFEST_PATH = PROJECT_ROOT / "src/content/webtoonEpisodeManifest.json"
-RAW_EP01_DIR = PROJECT_ROOT / "public/images/webtoon/raw_ep01_sheets"
-RAW_ALL_DIR = PROJECT_ROOT / "public/images/webtoon/raw_ep_sheets"
+STORYBOOK_RAW_DIR = PROJECT_ROOT / "public/images/storybook/raw_sheets"
 WEBTOON_DIR = PROJECT_ROOT / "public/images/webtoon"
 
 WIDTH = 800
@@ -152,11 +151,10 @@ def render_english_title_card(cover_panel: Image.Image, ep_num: int, ep_data: di
 
 def compose_webtoon_cut(raw_cells: list[Image.Image], p: int, sub_idx: int, scene_idx: int) -> Image.Image:
     """
-    Creates a distinct cinematic webtoon panel composition for (p, sub_idx)
-    from the high-resolution raw 3x3 cells.
+    Creates a distinct, clean full-bleed 16:9 widescreen composition for (p, sub_idx)
+    from today's high-resolution multi-character 3x3 storybook cells (no artificial split bars or inset boxes).
     """
     cell = raw_cells[p]
-    next_cell = raw_cells[min(8, p + 1)] if p < 8 else raw_cells[max(0, p - 1)]
 
     if sub_idx == 0:
         # 1. Full Wide Establishing Cut
@@ -164,54 +162,31 @@ def compose_webtoon_cut(raw_cells: list[Image.Image], p: int, sub_idx: int, scen
 
     elif sub_idx == 1:
         # 2. Left Subject / Action Focus Zoom
-        return crop_16x9_and_resize(cell, 0.0, 0.03, 0.78, 0.93)
+        return crop_16x9_and_resize(cell, 0.0, 0.03, 0.80, 0.94)
 
     elif sub_idx == 2:
         # 3. Right Subject / Reaction Focus Zoom
-        return crop_16x9_and_resize(cell, 0.22, 0.05, 1.0, 0.95)
+        return crop_16x9_and_resize(cell, 0.20, 0.04, 1.0, 0.95)
 
     elif sub_idx == 3:
         # 4. Dramatic Center Close-Up (Gesture & Prop Focus)
-        img = crop_16x9_and_resize(cell, 0.11, 0.08, 0.89, 0.91)
+        img = crop_16x9_and_resize(cell, 0.10, 0.06, 0.90, 0.92)
         return ImageEnhance.Contrast(img).enhance(1.04)
 
     elif sub_idx == 4:
-        # 5. Dynamic Slanted 2-Panel Webtoon Split (Action -> Reaction)
-        left_img = crop_16x9_and_resize(cell, 0.04, 0.04, 0.84, 0.94)
-        right_img = crop_16x9_and_resize(next_cell, 0.14, 0.04, 0.96, 0.94)
-
-        canvas = left_img.copy()
-        # Create slanted polygon mask for right side
-        mask = Image.new("L", (WIDTH, HEIGHT), 0)
-        mdraw = ImageDraw.Draw(mask)
-        split_top = int(WIDTH * 0.54)
-        split_bot = int(WIDTH * 0.46)
-        mdraw.polygon([(split_top, 0), (WIDTH, 0), (WIDTH, HEIGHT), (split_bot, HEIGHT)], fill=255)
-        canvas.paste(right_img, (0, 0), mask)
-
-        # Draw crisp angled comic gutter divider
-        cdraw = ImageDraw.Draw(canvas)
-        cdraw.line([(split_top, 0), (split_bot, HEIGHT)], fill=(12, 10, 10), width=10)
-        cdraw.line([(split_top - 4, 0), (split_bot - 4, HEIGHT)], fill=(210, 190, 145), width=1)
-        cdraw.line([(split_top + 4, 0), (split_bot + 4, HEIGHT)], fill=(210, 190, 145), width=1)
-        return canvas
+        # 5. Upper-Left Heroic Focus Cut
+        img = crop_16x9_and_resize(cell, 0.04, 0.01, 0.86, 0.89)
+        return ImageEnhance.Brightness(img).enhance(1.02)
 
     elif sub_idx == 5:
-        # 6. Webtoon Picture-in-Picture Prop/Expression Inset Cut
-        base = crop_16x9_and_resize(cell, 0.02, 0.0, 0.98, 0.96)
-        inset_src = next_cell if (scene_idx % 2 == 0) else cell
-        inset = crop_16x9_and_resize(inset_src, 0.18, 0.12, 0.82, 0.84).resize((290, 164), Image.Resampling.LANCZOS)
-
-        ix, iy = WIDTH - 312, HEIGHT - 188
-        draw = ImageDraw.Draw(base)
-        draw.rectangle([ix - 4, iy - 4, ix + 294, iy + 168], fill=(12, 10, 12), outline=(215, 195, 150), width=2)
-        base.paste(inset, (ix, iy))
-        return base
+        # 6. Lower-Right Emotional / Interaction Focus Cut
+        img = crop_16x9_and_resize(cell, 0.14, 0.08, 0.96, 0.97)
+        return ImageEnhance.Sharpness(img).enhance(1.05)
 
     else:
         # 7. Upper/Lower Widescreen Cinematic Pan
         shift = min(0.12, (sub_idx - 5) * 0.03)
-        return crop_16x9_and_resize(cell, 0.05 + shift, 0.02, 0.95 - shift * 0.5, 0.88)
+        return crop_16x9_and_resize(cell, 0.05 + shift, 0.02, 0.95 - shift * 0.5, 0.90)
 
 
 def frame_webtoon_scene(panel_img: Image.Image, ep_num: int, scene_idx: int, out_file: Path) -> int:
@@ -232,53 +207,13 @@ def frame_webtoon_scene(panel_img: Image.Image, ep_num: int, scene_idx: int, out
     return save_webp_under_limit(final_rgb, out_file)
 
 
-def build_episode_01(ep_data: dict) -> tuple[int, list[int], set[str]]:
-    out_dir = WEBTOON_DIR / "episode_01"
-    out_dir.mkdir(parents=True, exist_ok=True)
-
-    sheets = []
-    for i in range(1, 7):
-        sp = RAW_EP01_DIR / f"sheet_{i:02d}.png"
-        cells = extract_raw_cells(sp)
-        sheets.append([crop_16x9_and_resize(c) for c in cells])
-
-    scene_to_panel: dict[int, Image.Image] = {}
-    scene_to_panel[0] = sheets[5][0]
-    for idx in range(1, 10):
-        scene_to_panel[idx] = sheets[0][idx - 1]
-    for idx in range(10, 19):
-        scene_to_panel[idx] = sheets[1][idx - 10]
-    for idx in range(19, 28):
-        scene_to_panel[idx] = sheets[2][idx - 19]
-    for idx in range(28, 37):
-        scene_to_panel[idx] = sheets[3][idx - 28]
-    for idx in range(37, 46):
-        scene_to_panel[idx] = sheets[4][idx - 37]
-    for idx in range(46, 50):
-        scene_to_panel[idx] = sheets[5][idx - 46 + 1]
-
-    sizes = []
-    hashes = set()
-    for idx in range(50):
-        out_file = out_dir / f"scene_{idx:02d}.webp"
-        panel = scene_to_panel[idx]
-        if idx == 0:
-            sz = render_english_title_card(panel, 1, ep_data, out_file)
-        else:
-            sz = frame_webtoon_scene(panel, 1, idx, out_file)
-        sizes.append(sz)
-        hashes.add(hashlib.sha256(out_file.read_bytes()).hexdigest())
-
-    return 50, sizes, hashes
-
-
 def build_episode_n(ep_num: int, ep_data: dict) -> tuple[int, list[int], set[str]]:
     out_dir = WEBTOON_DIR / f"episode_{ep_num:02d}"
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    sheet_path = RAW_ALL_DIR / f"ep{ep_num:02d}_sheet.png"
+    sheet_path = STORYBOOK_RAW_DIR / f"ep{ep_num:02d}_storybook_sheet.png"
     if not sheet_path.exists():
-        raise FileNotFoundError(f"Missing sheet for EP {ep_num:02d}: {sheet_path}")
+        raise FileNotFoundError(f"Missing storybook sheet for EP {ep_num:02d}: {sheet_path}")
 
     raw_cells = extract_raw_cells(sheet_path)
     images_list = ep_data.get("images", [])
@@ -299,8 +234,8 @@ def build_episode_n(ep_num: int, ep_data: dict) -> tuple[int, list[int], set[str
     sizes = []
     hashes = set()
 
-    # Scene 00: English-only title card using a dramatic composite of Panel 0 and Panel 8
-    cover_base = compose_webtoon_cut(raw_cells, 0, 4, 0)
+    # Scene 00: English-only title card using Panel 0 (Full Wide Establishing Cut)
+    cover_base = compose_webtoon_cut(raw_cells, 0, 0, 0)
     out_00 = out_dir / "scene_00.webp"
     sz0 = render_english_title_card(cover_base, ep_num, ep_data, out_00)
     sizes.append(sz0)
@@ -336,10 +271,7 @@ def main():
             img0["narrationEn"] = en_caption
             img0["dialogues"] = []
 
-        if ep_num == 1:
-            cnt, sizes, hashes = build_episode_01(ep_data)
-        else:
-            cnt, sizes, hashes = build_episode_n(ep_num, ep_data)
+        cnt, sizes, hashes = build_episode_n(ep_num, ep_data)
         total_files += cnt
         all_sizes.extend(sizes)
         global_hashes.update(hashes)

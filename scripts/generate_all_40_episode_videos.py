@@ -37,6 +37,7 @@ MANIFEST_PATH = PROJECT_ROOT / 'src' / 'content' / 'webtoonEpisodeManifest.json'
 MAPPING_PATH = PROJECT_ROOT / 'src' / 'content' / 'movieEpisodeMapping.ts'
 CARD_DB_PATH = PROJECT_ROOT / 'src' / 'cardDatabase.ts'
 SEAT_DIR = PROJECT_ROOT / 'public' / 'seat'
+STORYBOOK_RAW_DIR = PROJECT_ROOT / 'public' / 'images' / 'storybook' / 'raw_sheets'
 OUTPUT_DIR = PROJECT_ROOT / 'public' / 'video' / 'animation'
 
 FFMPEG_BIN = shutil.which('ffmpeg') or '/opt/homebrew/bin/ffmpeg'
@@ -467,12 +468,88 @@ def build_scrolling_particle_atlas(theme: str) -> tuple[Image.Image, tuple[int, 
     return atlas, vel
 
 
-def prepare_highres_art_source(src_path: Path, is_title: bool) -> Image.Image:
+def extract_raw_storybook_cells(ep_num: int) -> list[Image.Image]:
     """
-    Loads the webtoon scene image. For narrative scenes (idx >= 1), strips the static
-    18px top / 14px bottom letterbox trim so the inner illustration can pan/zoom/shake
-    freely without moving the letterbox border!
+    Extracts the 9 cells from today's 3x3 multi-character storybook sheet
+    `public/images/storybook/raw_sheets/ep{ep_num:02d}_storybook_sheet.png` at full raw resolution.
     """
+    sheet_path = STORYBOOK_RAW_DIR / f"ep{ep_num:02d}_storybook_sheet.png"
+    if not sheet_path.is_file():
+        return []
+    im = Image.open(sheet_path).convert('RGB')
+    sw, sh = im.size
+    cell_w = sw / 3.0
+    cell_h = sh / 3.0
+    pad_x = int(cell_w * 0.024)
+    pad_y = int(cell_h * 0.026)
+
+    cells = []
+    for row in range(3):
+        for col in range(3):
+            x0 = int(col * cell_w) + pad_x
+            y0 = int(row * cell_h) + pad_y
+            x1 = int((col + 1) * cell_w) - pad_x
+            y1 = int((row + 1) * cell_h) - pad_y
+            cells.append(im.crop((x0, y0, x1, y1)))
+    return cells
+
+
+def crop_cell_to_highres_960x540(cell: Image.Image, sub_idx: int) -> Image.Image:
+    """
+    Crops a clean full-bleed 16:9 widescreen sub-region from a raw 3x3 storybook cell
+    and resizes to 960x540 (1.20x of 800x450) for smooth sub-pixel camera motion.
+    """
+    if sub_idx == 0:
+        rx0, ry0, rx1, ry1 = 0.0, 0.0, 1.0, 1.0
+    elif sub_idx == 1:
+        rx0, ry0, rx1, ry1 = 0.0, 0.03, 0.80, 0.94
+    elif sub_idx == 2:
+        rx0, ry0, rx1, ry1 = 0.20, 0.04, 1.0, 0.95
+    elif sub_idx == 3:
+        rx0, ry0, rx1, ry1 = 0.10, 0.06, 0.90, 0.92
+    elif sub_idx == 4:
+        rx0, ry0, rx1, ry1 = 0.04, 0.01, 0.86, 0.89
+    elif sub_idx == 5:
+        rx0, ry0, rx1, ry1 = 0.14, 0.08, 0.96, 0.97
+    else:
+        shift = min(0.12, (sub_idx - 5) * 0.03)
+        rx0, ry0, rx1, ry1 = 0.05 + shift, 0.02, 0.95 - shift * 0.5, 0.90
+
+    w, h = cell.size
+    x0 = max(0, int(w * rx0))
+    y0 = max(0, int(h * ry0))
+    x1 = min(w, int(w * rx1))
+    y1 = min(h, int(h * ry1))
+    sub = cell.crop((x0, y0, x1, y1))
+
+    cw, ch = sub.size
+    target_ratio = 960.0 / 540.0
+    curr_ratio = cw / float(max(1, ch))
+    if curr_ratio > target_ratio:
+        new_w = int(ch * target_ratio)
+        off_x = (cw - new_w) // 2
+        sub = sub.crop((off_x, 0, off_x + new_w, ch))
+    elif curr_ratio < target_ratio:
+        new_h = int(cw / target_ratio)
+        off_y = (ch - new_h) // 2
+        sub = sub.crop((0, off_y, cw, off_y + new_h))
+
+    panel = sub.resize((960, 540), Image.Resampling.LANCZOS)
+    panel = ImageEnhance.Contrast(panel).enhance(1.04)
+    panel = ImageEnhance.Sharpness(panel).enhance(1.08)
+    return panel
+
+
+def prepare_highres_art_source(src_path: Path, is_title: bool,
+                               raw_cell: Image.Image = None, sub_idx: int = 0) -> Image.Image:
+    """
+    Loads the scene image for 960x540 virtual camera motion.
+    For narrative scenes (not is_title), uses today's raw multi-character storybook cell directly
+    when available so there is zero WebP compression loss or letterbox cropping needed.
+    """
+    if not is_title and raw_cell is not None:
+        return crop_cell_to_highres_960x540(raw_cell, sub_idx)
+
     im = Image.open(src_path).convert('RGB')
     w, h = im.size
     if not is_title and h >= 440:
@@ -685,14 +762,21 @@ def render_animated_episode_frames(
 
         return canvas
 
-    # Pre-compute frame counts per scene and render with 6-frame (0.40s) cross-dissolve transitions
-    scene_frame_counts = [max(FPS * 2, int(round(d * FPS))) for d in aligned_durations]
+    # Pre-compute frame counts per scene and render with 6-frame (0.40s) cross-dissolve transitions.
+    # Add trans_frames to scenes 1..N-1 to compensate for the cross-dissolve overlap so total emitted
+    # frames equal sum(aligned_durations) * FPS with zero truncation!
     trans_frames = 6  # 0.40s smooth cross-dissolve between scenes at 15fps
+    scene_frame_counts = [
+        max(FPS * 2, int(round(d * FPS)) + (trans_frames if i > 0 else 0))
+        for i, d in enumerate(aligned_durations)
+    ]
     g_frame = 0
 
     n_scenes = len(scenes_meta)
     for s_idx, sm in enumerate(scenes_meta):
-        sm['highres_art'] = prepare_highres_art_source(sm['src_path'], sm['is_title'])
+        sm['highres_art'] = prepare_highres_art_source(
+            sm['src_path'], sm['is_title'], sm.get('raw_cell'), sm.get('sub_idx', 0)
+        )
 
     for s_idx in range(n_scenes):
         sm = scenes_meta[s_idx]
@@ -722,9 +806,56 @@ def render_animated_episode_frames(
         sm['highres_art'] = None
 
 
+def extract_existing_remastered_audio(existing_mp4: Path, ep_dir: Path, fallback_durations: list[float]) -> tuple[Path, list[float], np.ndarray] | None:
+    """
+    If `existing_mp4` already exists and has the remastered soft female voiceover + calm BGM
+    audio stream, extracts the lossless AAC audio track (.m4a), computes the per-frame voice
+    envelope at FPS, and scales scene durations proportionally to match the exact audio duration.
+    """
+    if not existing_mp4.is_file() or existing_mp4.stat().st_size < 100_000:
+        return None
+    try:
+        out_m4a = ep_dir / 'remastered_audio.m4a'
+        out_wav = ep_dir / 'remastered_probe.wav'
+        subprocess.run(
+            [FFMPEG_BIN, '-y', '-i', str(existing_mp4), '-vn', '-c:a', 'copy', str(out_m4a)],
+            check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+        )
+        subprocess.run(
+            [FFMPEG_BIN, '-y', '-i', str(out_m4a), '-ac', '1', '-ar', '22050', str(out_wav)],
+            check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+        )
+        with wave.open(str(out_wav), 'rb') as wf:
+            sr = wf.getframerate()
+            n_frames = wf.getnframes()
+            raw_bytes = wf.readframes(n_frames)
+        out_wav.unlink(missing_ok=True)
+
+        audio_dur = n_frames / float(max(1, sr))
+        if audio_dur < 30.0:
+            return None
+
+        pcm = np.frombuffer(raw_bytes, dtype=np.int16).astype(np.float32) / 32768.0
+        samples_per_vframe = max(1, int(sr / FPS))
+        n_vframes = max(1, len(pcm) // samples_per_vframe)
+        v_env = np.abs(pcm[:n_vframes * samples_per_vframe]).reshape(n_vframes, samples_per_vframe).mean(axis=1)
+        v_env = np.clip(v_env * 6.0, 0.0, 1.0)
+
+        base_sum = sum(fallback_durations)
+        scale = audio_dur / max(1.0, base_sum)
+        aligned_durations = [max(1.8, d * scale) for d in fallback_durations]
+        # Adjust last scene so total duration matches audio_dur
+        diff = audio_dur - sum(aligned_durations)
+        aligned_durations[-1] = max(2.0, aligned_durations[-1] + diff)
+
+        return out_m4a, aligned_durations, v_env
+    except Exception:
+        return None
+
+
 def generate_single_episode(ep_num: int, ep_data: dict, theme: str, card_map: dict,
                             out_mp4_path: str, temp_base_dir: str) -> dict:
-    """Generate standalone 15fps continuous-motion MP4 video for one episode."""
+    """Generate standalone 15fps continuous-motion MP4 video for one episode using today's storybook sheets."""
     ep_dir = Path(temp_base_dir) / f'ep_{ep_num:02d}'
     ep_dir.mkdir(parents=True, exist_ok=True)
 
@@ -732,7 +863,19 @@ def generate_single_episode(ep_num: int, ep_data: dict, theme: str, card_map: di
     if not images:
         return {'ep_num': ep_num, 'status': 'FAIL', 'error': 'No images in manifest'}
 
-    title_en = ep_data.get('episodeTitle', f'Episode {ep_num}')
+    raw_cells = extract_raw_storybook_cells(ep_num)
+    total_scenes = len(images)
+    n_narrative = max(1, total_scenes - 1)
+    panel_buckets: dict[int, list[int]] = {p: [] for p in range(9)}
+    for idx in range(1, total_scenes):
+        p = min(8, int((idx - 1) * 9 / n_narrative))
+        panel_buckets[p].append(idx)
+    scene_to_p_sub: dict[int, tuple[int, int]] = {}
+    for p, idx_list in panel_buckets.items():
+        for sub_idx, idx in enumerate(idx_list):
+            scene_to_p_sub[idx] = (p, sub_idx)
+
+    title_en = ep_data.get('episodeTitle') or ep_data.get('titleEn') or f'Episode {ep_num}'
     scenes_meta = []
     fallback_durations = []
     scene_scripts = []
@@ -776,6 +919,12 @@ def generate_single_episode(ep_num: int, ep_data: dict, theme: str, card_map: di
             word_count = len(spoken_en.split())
             duration = 2.4 + min(word_count * 0.04, 1.2)
 
+        raw_cell = None
+        sub_idx = 0
+        if not is_title and len(raw_cells) == 9 and idx in scene_to_p_sub:
+            p, sub_idx = scene_to_p_sub[idx]
+            raw_cell = raw_cells[p]
+
         scenes_meta.append({
             'src_path': src_path,
             'is_title': is_title,
@@ -785,6 +934,8 @@ def generate_single_episode(ep_num: int, ep_data: dict, theme: str, card_map: di
             'portrait_file': portrait_file,
             'sfx_list': sfx_list,
             'has_combat_kw': bool(combat_re.search(spoken_en)),
+            'raw_cell': raw_cell,
+            'sub_idx': sub_idx,
             'highres_art': None,
         })
         fallback_durations.append(duration)
@@ -794,13 +945,23 @@ def generate_single_episode(ep_num: int, ep_data: dict, theme: str, card_map: di
         shutil.rmtree(ep_dir, ignore_errors=True)
         return {'ep_num': ep_num, 'status': 'FAIL', 'error': 'Zero valid scenes'}
 
-    bgm_wav_path = ep_dir / 'bgm.wav'
-    aligned_durations, voice_env = synthesize_tts_and_bgm_wav(
-        ep_num, scene_scripts, theme, fallback_durations, str(bgm_wav_path)
-    )
-    total_duration = sum(aligned_durations)
+    existing_mp4 = Path(out_mp4_path)
+    remastered = extract_existing_remastered_audio(existing_mp4, ep_dir, fallback_durations)
+    if remastered is not None:
+        audio_input_path, aligned_durations, voice_env = remastered
+        audio_codec_args = ['-c:a', 'copy']
+    else:
+        bgm_wav_path = ep_dir / 'bgm.wav'
+        aligned_durations, voice_env = synthesize_tts_and_bgm_wav(
+            ep_num, scene_scripts, theme, fallback_durations, str(bgm_wav_path)
+        )
+        audio_input_path = bgm_wav_path
+        audio_codec_args = ['-c:a', 'aac', '-b:a', '128k', '-ar', '44100']
 
-    # Stream raw RGB24 video frames directly into FFmpeg alongside the 44.1kHz stereo WAV
+    total_duration = sum(aligned_durations)
+    tmp_out_mp4 = ep_dir / f'new_ep_{ep_num:02d}.mp4'
+
+    # Stream raw RGB24 video frames directly into FFmpeg alongside the audio track
     cmd = [
         FFMPEG_BIN, '-y',
         '-f', 'rawvideo',
@@ -809,14 +970,14 @@ def generate_single_episode(ep_num: int, ep_data: dict, theme: str, card_map: di
         '-pix_fmt', 'rgb24',
         '-r', str(FPS),
         '-i', '-',
-        '-i', str(bgm_wav_path),
+        '-i', str(audio_input_path),
         '-c:v', 'libx264', '-preset', 'veryfast',
-        '-crf', '28', '-maxrate', '360k', '-bufsize', '720k',
+        '-crf', '26', '-maxrate', '420k', '-bufsize', '840k',
         '-pix_fmt', 'yuv420p',
-        '-c:a', 'aac', '-b:a', '128k', '-ar', '44100',
+        *audio_codec_args,
         '-shortest',
         '-movflags', '+faststart',
-        str(out_mp4_path)
+        str(tmp_out_mp4)
     ]
 
     proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -830,10 +991,13 @@ def generate_single_episode(ep_num: int, ep_data: dict, theme: str, card_map: di
 
     stderr_bytes = proc.stderr.read()
     ret = proc.wait()
-    shutil.rmtree(ep_dir, ignore_errors=True)
 
-    if ret != 0:
+    if ret != 0 or not tmp_out_mp4.is_file():
+        shutil.rmtree(ep_dir, ignore_errors=True)
         return {'ep_num': ep_num, 'status': 'FAIL', 'error': f"FFmpeg failed: {stderr_bytes.decode('utf-8', 'ignore')[:200]}"}
+
+    shutil.move(str(tmp_out_mp4), str(out_mp4_path))
+    shutil.rmtree(ep_dir, ignore_errors=True)
 
     probe_cmd = [
         FFPROBE_BIN, '-v', 'error',
@@ -903,8 +1067,12 @@ def main():
                 if not ep_data:
                     continue
                 theme = themes.get(ep_num, 'arctic-blizzard')
-                title_en = ep_data.get('titleEn', f'Episode {ep_num}').strip()
-                out_path = OUTPUT_DIR / f'SNSHero.com_E{ep_num}_{title_en}.mp4'
+                existing_matches = sorted(OUTPUT_DIR.glob(f'SNSHero.com_E{ep_num}_*.mp4'))
+                if existing_matches:
+                    out_path = existing_matches[0]
+                else:
+                    title_en = (ep_data.get('episodeTitle') or ep_data.get('titleEn') or f'Episode {ep_num}').strip()
+                    out_path = OUTPUT_DIR / f'SNSHero.com_E{ep_num}_{title_en}.mp4'
                 future = executor.submit(
                     generate_single_episode,
                     ep_num, ep_data, theme, card_map, str(out_path), temp_base
