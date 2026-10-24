@@ -2,6 +2,14 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-24 22:18 KST] [Tailscale Funnel 및 포트 3000 프리뷰 서버 재기동 접속 복구]
+- **요청 사항**:
+  - "https://dayyoung-macbookpro.tail3717a4.ts.net/ 접근뷸가"
+- **원인 및 조치 내역**:
+  1. Tailscale Funnel(`https://dayyoung-macbookpro.tail3717a4.ts.net` -> `http://127.0.0.1:3000`)은 정상 프록시 중이었으나, 이전 세션 재시작으로 인해 로컬 포트 `3000` 프리뷰 서버 프로세스가 종료되어 있던 상태 확인.
+  2. [`scripts/start-server.sh`](file:///Users/dayyoung/project/snshero/scripts/start-server.sh)를 실행하여 최신 `dist/` 번들 기반 고속 프리뷰 서버(`0.0.0.0:3000`), W3C 웹푸시 디스패처(`0.0.0.0:3001`), 실시간 `watch-build` 워처를 백그라운드에서 즉시 재가동.
+  3. `curl -I https://dayyoung-macbookpro.tail3717a4.ts.net/` 호출 결과 `HTTP/2 200 OK` 정상 응답 확인 완료.
+
 ## [2026-10-24 22:00 KST] [제미나이 바나나(Nano Banana) 한글 '눈히어로.com' & 영문 'S&SHero.com' 타이틀 로고 생성 및 전역 타이틀 전면 교체]
 - **요청 사항**:
   - "눈Hero.com 이라는 타이틀로고를 제미나이 바나나로 생성해서 현재 표시되는 모든 타이틀을 해당 타이틀로 교체해줘" / "한글로는 눈히어로.com 영어로는 S&SHero.com 으로 생성해서 적용하자."
