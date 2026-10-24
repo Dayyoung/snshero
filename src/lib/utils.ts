@@ -107,7 +107,7 @@ export function getUserCollectionName(season: string): string {
 /**
  * Resolves a public asset path to properly support subpath hosting (e.g. GitHub Pages /snshero/).
  */
-const CHARACTER_ASSET_CACHE_TAG = 'v=cutout2026';
+const CHARACTER_ASSET_CACHE_TAG = 'v=atk2026v2';
 const CHARACTER_ASSET_REGEX = /^(cards1|cards2|card2|card100|character_sheet_|seat\/|seat_attack\/|characters\/animations\/)/i;
 
 export function getAssetUrl(path: string | null | undefined): string {

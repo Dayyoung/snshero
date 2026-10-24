@@ -15857,3 +15857,19 @@
      - 카드 상세 모달(`WikiCardDetailModal.tsx`)에도 `[공격모션 보기 / ATTACK MOTION]` 토글 버튼을 추가하여 110종 캐릭터의 공격모션을 도감/덱에서 즉시 감상 가능하도록 개선.
 - **검증 결과**: `npx tsc --noEmit` 0 에러 통과 및 `npm run build` 프로덕션 빌드 성공.
 - **구글 폼 보고**: 제출 완료.
+
+## [2026-10-25 05:32 KST] 110종 캐릭터 공격모션 특수효과 가림 현상 해결 및 3x3 보드 배치 카드 캐릭터 미표시 버그 수정 완료
+- **원인 분석**:
+  1. **놓여진 카드에 캐릭터가 표시되지 않던 버그**: `MobileCardPlayScreen.tsx` 및 `PlayGameView.tsx`에서 카드 배치 시 `motion.div`의 `initial={{ opacity: 0 }}` 상태에서 다중 키프레임 배열(`scale` 4개, `y` 3개, `rotate` 2개)과 4원소 베지어 배열 `ease: [0.22, 1, 0.36, 1]`이 충돌하여 `motion` 애니메이션이 중단되면서 슬롯 내부 카드가 `opacity: 0` 상태로 남는 현상 확인.
+  2. **캐릭터가 특수효과에 가려져 잘 표현되지 않던 문제**:
+     - `scripts/generate_110_attack_motions.py`에서 전면 검기/충격파 레이어(`fg_layer`, `fg_bloom`)가 캐릭터(`char_layer`) 위에 그대로 덮어씌워져 캐릭터 본체를 가리던 구조.
+     - `SlotAttackMotionBurst`가 캐릭터 위(`z-[45]`)에서 불투명 SVG 다각형/원(`cx=50, cy=50`) 및 하단 배지를 렌더링하여 얼굴과 몸통을 가리고, `CardItem.tsx`의 홀로그램/골드 포일(`z-15`)이 보드 카드 위에도 중첩되던 문제.
+- **수정 내역**:
+  1. `scripts/generate_110_attack_motions.py`: 공격 검기/파동/아우라가 캐릭터 본체 **뒤편(`bg_slash`) 및 외곽 실루엣 테두리(`fg_rim_only`)**에만 배치되고 캐릭터 본체(`char_layer`)가 최상단 전면에 선명하게 드러나도록 110종 공격모션 에셋(`public/seat_attack/*.png`, `public/characters/animations/*.webp`, `public/cards1_attack.png`, `public/cards2_attack.png`, `public/card100_attack.png`) 전수 재생성 완료.
+  2. `src/components/CardItem.tsx` & `src/components/battle/CardAttackMotionEffect.tsx`:
+     - 보드 배치 시 고해상도 256×296 `cutoutAttackUrl`(`seat_attack/*.png`)을 최우선 로드하고, 보드 위에서 `z-15` 포일 오버레이를 비활성화하여 캐릭터 시인성 극대화.
+     - `SlotAttackMotionBurst`를 캐릭터 뒤편(`z-[5]`) 외곽 링 효과로 배치하고, 캐릭터 이미지 자체(`z-10`)가 `getCharacterAttackLungeAnimation`으로 역동적인 돌격/타격 모션을 수행하도록 개선.
+     - `BoardAttackVectorOverlay`의 타격 궤적이 캐릭터 얼굴 중앙이 아닌 슬롯 외곽 경계선에서 출발하도록 수정.
+  3. `src/views/MobileCardPlayScreen.tsx` & `src/views/PlayGameView.tsx`: 보드 슬롯 `motion.div`의 `opacity`를 상시 `1`로 고정하고 `ease: 'easeOut'`으로 통일하여 카드 배치 시 캐릭터가 누락되거나 투명해지는 현상 100% 해결.
+- **검증 결과**: `npx tsc --noEmit` 통과, `npm run build` 성공, 헤드리스 크롬 실화면(`/card-play`) 캡처 검증 완료.
+- **구글 폼 보고**: 제출 완료.

@@ -2017,35 +2017,18 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                 >
                   {isOccupied && cell ? (
                     <motion.div
-                      initial={
-                        suppressMotion
-                          ? false
-                          : {
-                              opacity: 0,
-                              scale: 1.24,
-                              y: -14,
-                              rotate: cell.owner === 'player' ? -4 : 4,
-                            }
-                      }
+                      initial={suppressMotion ? false : { opacity: 1, scale: 1.08, y: -4 }}
                       animate={
                         isFlipped && !suppressMotion
                           ? {
                               opacity: 1,
-                              scale: [1, 1.12, 0.94, 1],
-                              x: [0, cell.owner === 'player' ? -6 : 6, cell.owner === 'player' ? 4 : -4, 0],
+                              scale: [1, 1.06, 1],
+                              x: [0, cell.owner === 'player' ? -4 : 4, 0],
                               y: 0,
-                              rotate: 0,
                             }
-                          : isJustPlaced && !suppressMotion
-                            ? {
-                                opacity: 1,
-                                scale: [1.18, 0.95, 1.03, 1],
-                                y: [-10, 2, 0],
-                                rotate: [cell.owner === 'player' ? -3 : 3, 0],
-                              }
-                            : { opacity: 1, scale: 1, x: 0, y: 0, rotate: 0 }
+                          : { opacity: 1, scale: 1, x: 0, y: 0 }
                       }
-                      transition={{ duration: suppressMotion ? 0 : 0.36, ease: [0.22, 1, 0.36, 1] }}
+                      transition={{ duration: suppressMotion ? 0 : 0.24, ease: 'easeOut' }}
                       className="w-full h-full relative p-0.5 flex items-center justify-center"
                     >
                       <CardItem

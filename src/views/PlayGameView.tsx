@@ -16657,22 +16657,22 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                                 <motion.div
                                   key={`${card.id}`}
                                   initial={{ 
-                                    scale: 1.22, 
-                                    y: -12,
-                                    opacity: 0
+                                    scale: 1.08, 
+                                    y: -4,
+                                    opacity: 1
                                   }}
                                   animate={{ 
-                                    scale: lastPlacedIdx === idx ? [1.18, 0.95, 1.03, 1] : 1,
-                                    y: lastPlacedIdx === idx ? [-10, 2, 0] : 0,
+                                    scale: 1,
+                                    y: 0,
                                     opacity: 1,
-                                    x: lastPlacedIdx === idx ? [0, -6, 6, -6, 6, 0] : 0,
+                                    x: lastPlacedIdx === idx ? [0, -5, 5, 0] : 0,
                                     zIndex: 20
                                   }}
                                   transition={{
-                                    scale: { duration: 0.34, ease: [0.22, 1, 0.36, 1] },
-                                    y: { duration: 0.28 },
-                                    opacity: { duration: 0.15 },
-                                    x: { duration: 0.3 }
+                                    scale: { duration: 0.22, ease: 'easeOut' },
+                                    y: { duration: 0.22, ease: 'easeOut' },
+                                    opacity: { duration: 0.1 },
+                                    x: { duration: 0.26, ease: 'easeOut' }
                                   }}
                                   className={cn("absolute inset-0", isRoarActive && "roar-flame-active")}
                                 >
