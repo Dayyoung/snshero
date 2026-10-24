@@ -81,14 +81,6 @@ export const DEMO_TOUR_FEATURES: DemoTourFeature[] = [
     badge: 'REWARD'
   },
   {
-    viewId: 'god',
-    titleKo: '🌌 신전 (판테온)',
-    titleEn: '🌌 Temple of Gods',
-    descKo: '팩션 수호신들의 축복과 가호를 받고 특별 능력치를 개방하는 신전!',
-    descEn: 'Receive blessings from faction guardian gods and unlock divine powers!',
-    badge: 'PANTHEON'
-  },
-  {
     viewId: 'community',
     titleKo: '💬 히어로 커뮤니티',
     titleEn: '💬 Hero Community',
@@ -99,6 +91,7 @@ export const DEMO_TOUR_FEATURES: DemoTourFeature[] = [
 ];
 
 const TOUR_TRIGGER_PROBABILITY = 0.35; // 약 35% 확률로 기능 데모 투어 발동
+let activeTourTimeout: ReturnType<typeof setTimeout> | null = null;
 
 /**
  * 데모 투어를 발동할지 여부 결정
@@ -120,21 +113,22 @@ export function shouldTriggerDemoTour(): boolean {
 }
 
 /**
- * 다음으로 소개할 화면을 순환(Round-Robin) 방식으로 선택
+ * 다음으로 소개할 화면을 순환(Round-Robin) 방식으로 선택 (god/admin 화면 절대 진입 금지)
  */
 export function getNextTourFeature(): DemoTourFeature {
+  const safeFeatures = DEMO_TOUR_FEATURES.filter(f => f.viewId !== 'god' && f.viewId !== 'admin');
   try {
     const lastIdxStr = localStorage.getItem('hero_auto_loop_last_tour_idx');
     let nextIdx = 0;
     if (lastIdxStr !== null) {
-      nextIdx = (parseInt(lastIdxStr, 10) + 1) % DEMO_TOUR_FEATURES.length;
+      nextIdx = (parseInt(lastIdxStr, 10) + 1) % safeFeatures.length;
     } else {
-      nextIdx = Math.floor(Math.random() * DEMO_TOUR_FEATURES.length);
+      nextIdx = Math.floor(Math.random() * safeFeatures.length);
     }
     localStorage.setItem('hero_auto_loop_last_tour_idx', String(nextIdx));
-    return DEMO_TOUR_FEATURES[nextIdx];
+    return safeFeatures[nextIdx] || safeFeatures[0];
   } catch {
-    return DEMO_TOUR_FEATURES[0];
+    return safeFeatures[0];
   }
 }
 
@@ -144,27 +138,43 @@ export function getNextTourFeature(): DemoTourFeature {
 export function getActiveTourFeature(viewId?: string): DemoTourFeature | null {
   try {
     const targetView = viewId || localStorage.getItem('hero_auto_loop_tour_view');
-    if (!targetView) return null;
-    return DEMO_TOUR_FEATURES.find(f => f.viewId === targetView) || null;
+    if (!targetView || targetView === 'god' || targetView === 'admin') return null;
+    return DEMO_TOUR_FEATURES.find(f => f.viewId === targetView && f.viewId !== 'god') || null;
   } catch {
     return null;
   }
 }
 
 /**
- * 신규 기능 화면 데모 투어 시작
+ * 신규 기능 화면 데모 투어 시작 (자동전투 중 god 모드 절대 진입 차단 + 4초 후 자동 복귀 보장)
  */
 export function startDemoTour(onNavigate: (view: string) => void): DemoTourFeature {
   const feature = getNextTourFeature();
+  const safeViewId = (feature.viewId === 'god' || feature.viewId === 'admin') ? 'card-play' : feature.viewId;
+
+  if (activeTourTimeout) {
+    clearTimeout(activeTourTimeout);
+    activeTourTimeout = null;
+  }
+
   try {
     localStorage.setItem('hero_auto_loop_mode', 'demo_tour');
-    localStorage.setItem('hero_auto_loop_tour_view', feature.viewId);
+    localStorage.setItem('hero_auto_loop_tour_view', safeViewId);
     localStorage.setItem('hero_auto_loop_is_ranking', 'true');
     window.dispatchEvent(new CustomEvent('snshero_demo_tour_start', { detail: feature }));
   } catch (e) {
     console.error('Failed to start demo tour', e);
   }
-  onNavigate(feature.viewId);
+  onNavigate(safeViewId);
+
+  activeTourTimeout = setTimeout(() => {
+    try {
+      if (localStorage.getItem('hero_auto_loop_mode') === 'demo_tour') {
+        endDemoTour(onNavigate, false);
+      }
+    } catch {}
+  }, 4000);
+
   return feature;
 }
 
@@ -192,6 +202,10 @@ export function maybeTriggerTourOrProceedToBattle(onNavigate: (view: string) => 
  * @param stayHere true면 자동플레이를 끄고 현재 화면에 머묾, false면 랭킹대전으로 복귀
  */
 export function endDemoTour(onNavigate: (view: string) => void, stayHere = false): void {
+  if (activeTourTimeout) {
+    clearTimeout(activeTourTimeout);
+    activeTourTimeout = null;
+  }
   try {
     localStorage.removeItem('hero_auto_loop_mode');
     localStorage.removeItem('hero_auto_loop_tour_view');

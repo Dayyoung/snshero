@@ -490,6 +490,24 @@ function getViewFromPathAndUrl(): ViewType {
   return getViewFromPath(window.location.pathname, window.location.search);
 }
 
+function isAutoBattleOrAutoLoopActive(): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    return (
+      localStorage.getItem('hero_auto_loop_is_ranking') === 'true' ||
+      localStorage.getItem('hero_auto_loop_mode') !== null ||
+      localStorage.getItem('hero_demo_play_active') === 'true' ||
+      localStorage.getItem('hero_ranking_diverted_mode') !== null ||
+      localStorage.getItem('hero_auto_start_pvp') === 'true' ||
+      localStorage.getItem('hero_simulation_autoloop') === 'true' ||
+      localStorage.getItem('hero_auto_battle') === 'true' ||
+      localStorage.getItem('hero_auto_battle_setting') === 'true'
+    );
+  } catch {
+    return false;
+  }
+}
+
 function AppContent() {
   const [currentSeason, setCurrentSeason] = useState<string>(() => {
     if (typeof window !== 'undefined') {
@@ -503,7 +521,35 @@ function AppContent() {
   const [isUtilityOpen, setIsUtilityOpen] = useState(false);
   const [autoStartPvp, setAutoStartPvp] = useState(false);
   const [fromBackToRanking, setFromBackToRanking] = useState(false);
-  const [view, setView] = useState<ViewType>(() => getViewFromPathAndUrl());
+  const [view, setRawView] = useState<ViewType>(() => {
+    const initial = getViewFromPathAndUrl();
+    if (initial === 'god' && isAutoBattleOrAutoLoopActive()) {
+      return 'home';
+    }
+    return initial;
+  });
+
+  const setView = useCallback((nextView: React.SetStateAction<ViewType>) => {
+    setRawView((prevView) => {
+      const resolved = typeof nextView === 'function' ? (nextView as (prev: ViewType) => ViewType)(prevView) : nextView;
+      if (resolved === 'god' && isAutoBattleOrAutoLoopActive()) {
+        try {
+          if (localStorage.getItem('hero_auto_loop_tour_view') === 'god') {
+            localStorage.removeItem('hero_auto_loop_tour_view');
+          }
+          if (localStorage.getItem('hero_auto_loop_mode') === 'demo_tour') {
+            localStorage.removeItem('hero_auto_loop_mode');
+          }
+          const isLooping =
+            localStorage.getItem('hero_auto_loop_is_ranking') === 'true' ||
+            localStorage.getItem('hero_demo_play_active') === 'true';
+          if (isLooping) return 'card-play';
+        } catch {}
+        return prevView === 'god' ? 'home' : prevView;
+      }
+      return resolved;
+    });
+  }, []);
 
   // Viral Instant Challenge Deck Modal (?challenge={deckCode})
   const [challengeDeckCode, setChallengeDeckCode] = useState<string | null>(() => {
@@ -661,6 +707,26 @@ function AppContent() {
     if (setting !== null) return JSON.parse(setting) === true;
     return true; // 기본값: 시작 시 자동 전투 활성화 (AUTO ON)
   });
+
+  // 자동전투/자동루프 진행 중 god 모드 화면 절대 진입 차단 가드
+  useEffect(() => {
+    if (view === 'god' && (isAutoBattle || isAutoBattleOrAutoLoopActive())) {
+      try {
+        if (localStorage.getItem('hero_auto_loop_tour_view') === 'god') {
+          localStorage.removeItem('hero_auto_loop_tour_view');
+        }
+        if (localStorage.getItem('hero_auto_loop_mode') === 'demo_tour') {
+          localStorage.removeItem('hero_auto_loop_mode');
+        }
+        const isLooping =
+          localStorage.getItem('hero_auto_loop_is_ranking') === 'true' ||
+          localStorage.getItem('hero_demo_play_active') === 'true';
+        setRawView(isLooping ? 'card-play' : 'home');
+      } catch {
+        setRawView('home');
+      }
+    }
+  }, [view, isAutoBattle]);
   const [isRpgInBattle, setIsRpgInBattle] = useState(false);
   const [isGpsActive, setIsGpsActive] = useState(false);
   const [gpsCoords, setGpsCoords] = useState<{lat: number, lng: number} | null>(null);
@@ -6111,6 +6177,9 @@ function AppContent() {
       case 'wiki-skill':
         return <WikiSkillView onNavigate={setView} language={language} />;
       case 'god':
+        if (isAutoBattle || isAutoBattleOrAutoLoopActive()) {
+          return null;
+        }
         return (
           <GodView
             language={language}

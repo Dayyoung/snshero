@@ -2,6 +2,19 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-24 10:13 KST] [자동전투 진행 중 God 모드(디버그 센터) 화면 진입 원천 차단 완료]
+- **요청 사항**:
+  - "자동전투 진행중에 god 모드 화면으로는 절대 들어가지 않게해줘"
+- **주요 수정 내역**:
+  1. **[`src/lib/smartLoopTourService.ts`](file:///Users/dayyoung/project/snshero/src/lib/smartLoopTourService.ts)**:
+     - 자동전투(스마트 루프) 시 순환 시연 목록인 `DEMO_TOUR_FEATURES`에서 `viewId: 'god'` 항목을 완전 제거.
+     - `getNextTourFeature()`, `getActiveTourFeature()`, `startDemoTour()`에서 `viewId === 'god'` 및 `'admin'`을 이중 필터링하여 자동 투어 중 절대 선택·이동되지 않도록 차단하고, 투어 진입 시 4초 후 자동으로 `'card-play'`로 복귀하는 안전 타이머 추가.
+  2. **[`src/App.tsx`](file:///Users/dayyoung/project/snshero/src/App.tsx)**:
+     - `isAutoBattleOrAutoLoopActive()` 헬퍼 및 `setView` 래퍼 가드를 구현하여 자동전투/자동루프/데모플레이 진행 중 어떠한 경로로든 `view === 'god'` 전환 요청이 발생하면 즉시 차단하고 `'card-play'`(루프 중) 또는 현재 화면으로 유지되도록 방어.
+     - `useEffect` 상태 감시 및 `renderView`의 `case 'god':` 렌더링 가드를 추가하여 자동전투 중 `<GodView />` 마운트를 원천 차단.
+- **검증 결과**:
+  - `npm run lint` 및 `npm run build` 프로덕션 빌드 무결성 검증 완료 및 구글 폼 보고서 제출 완료.
+
 ## [2026-10-23 12:34 KST] [유튜브 광고 클릭률(CTR) 극대화 고자극·매혹형 바이럴 썸네일 3종 제작] 매혹적 히로인 클로즈업 & 도파민 폭발 SSR 각성 일러스트 기반 1280x720 고클릭률 썸네일 3종 완성
 - **요청 사항**:
   - "유튜브 광고가 실행중인데 아무도 클릭을 안해. 좀더 유혹적이고 자극적인 썸네일로 유인할 수 있을까."
