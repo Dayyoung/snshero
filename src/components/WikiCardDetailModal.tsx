@@ -12,6 +12,7 @@ import { t } from '../lib/i18n';
 import { cn, getFormattedCardName, getAssetUrl, getCardSpriteStyle, isSpriteSheet } from '../lib/utils';
 import { SkinSelector } from './SkinSelector';
 import { resolveCardImage } from '../content/cardImageVariants';
+import { getCharacterAttackMotionMeta } from '../lib/attackMotionEngine';
 import { useGameSettings } from '../contexts/GameSettingsContext';
 import { CardItem } from './CardItem';
 import { ElementCounterSimulator } from './ElementCounterSimulator';
@@ -118,6 +119,8 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
  const [storyExpanded, setStoryExpanded] = useState(false);
  const [toastMessage, setToastMessage] = useState<string | null>(null);
  const [showArtifactModal, setShowArtifactModal] = useState(false);
+ const [previewAttackMotion, setPreviewAttackMotion] = useState(false);
+ const attackMotionMeta = useMemo(() => getCharacterAttackMotionMeta(selectedCard.id), [selectedCard.id]);
 
  const { cardSkinTheme } = useGameSettings();
  const resolvedImg = useMemo(
@@ -425,11 +428,27 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
  <div className="w-44 sm:w-48 aspect-[3/4] drop-shadow-none transition-transform hover:scale-105">
  <CardItem
  card={selectedCard as unknown as CardData}
+ showAttackMotion={previewAttackMotion}
  language={language}
  lowSpecMode={lowSpecMode}
  />
  </div>
  <div className="flex flex-wrap items-center justify-center gap-1.5 mt-1">
+ <button
+ type="button"
+ onClick={() => setPreviewAttackMotion(v => !v)}
+ className={cn(
+ "min-h-[44px] inline-flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-[10px] font-black uppercase tracking-wider transition-all active:scale-95 cursor-pointer border",
+ previewAttackMotion
+ ? "bg-[#201d1d] text-[#fdfcfc] border-amber-400"
+ : "bg-[#fff9e9] text-[#201d1d] border-[#201d1d]"
+ )}
+ >
+ <Swords size={12} />
+ {previewAttackMotion
+ ? (language === 'ko' ? '기본자세 보기' : 'BASE POSE')
+ : (language === 'ko' ? '공격모션 보기' : 'ATTACK MOTION')}
+ </button>
  <button
  type="button"
  onClick={onOpenViewer}
@@ -839,6 +858,7 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
  <div className="w-44 sm:w-52 aspect-[3/4] shrink-0 drop-shadow-none transition-transform hover:scale-105">
  <CardItem
  card={selectedCard as unknown as CardData}
+ showAttackMotion={previewAttackMotion}
  language={language}
  lowSpecMode={lowSpecMode}
  />
@@ -847,7 +867,20 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
  {/* 일러스트 원본 이미지 뷰 */}
  <div className="flex-1 min-w-0 flex flex-col items-center justify-center w-full max-w-xs">
  <div className="w-full flex items-center justify-between text-[10px] font-black uppercase tracking-[0.2em] text-white/50 mb-2 px-1">
- <span>{language === 'ko' ? '일러스트 원본 아트' : 'Full Illustration Art'}</span>
+ <span>
+ {previewAttackMotion
+ ? (language === 'ko' ? `공격모션: ${attackMotionMeta?.moveNameKo || '전술 타격'}` : `Attack Motion: ${attackMotionMeta?.moveNameEn || 'Strike'}`)
+ : (language === 'ko' ? '일러스트 원본 아트' : 'Full Illustration Art')}
+ </span>
+ <div className="flex items-center gap-1.5">
+ <button
+ type="button"
+ onClick={() => setPreviewAttackMotion(v => !v)}
+ className="min-h-[44px] text-[9px] font-bold text-amber-300 hover:text-amber-200 flex items-center gap-1 border border-amber-500/40 bg-amber-950/60 px-2 py-0.5 rounded-sm cursor-pointer transition-colors"
+ >
+ <Swords size={10} />
+ <span>{previewAttackMotion ? (language === 'ko' ? '기본 아트' : 'Base Art') : (language === 'ko' ? '공격모션' : 'Attack Art')}</span>
+ </button>
  <button
  type="button"
  onClick={() => setActiveTab('skins')}
@@ -857,8 +890,16 @@ export const WikiCardDetailModal: React.FC<WikiCardDetailModalProps> = ({
  <span>{language === 'ko' ? '스킨 변경' : 'Skins'}</span>
  </button>
  </div>
+ </div>
  <div className="w-full aspect-square rounded-none bg-[#fdfcfc] border border-white/20 overflow-hidden flex items-center justify-center p-2">
- {resolvedImg.source && !isSpriteSheet(resolvedImg.source) ? (
+ {previewAttackMotion && attackMotionMeta ? (
+ <img
+ src={attackMotionMeta.cutoutAttackUrl}
+ alt={`${cardName} Attack Motion`}
+ className="h-full w-full object-contain drop-shadow-none rounded-none"
+ referrerPolicy="no-referrer"
+ />
+ ) : resolvedImg.source && !isSpriteSheet(resolvedImg.source) ? (
  <img
  src={resolvedImg.source}
  alt={cardName}

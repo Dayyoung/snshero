@@ -108,7 +108,7 @@ export function getUserCollectionName(season: string): string {
  * Resolves a public asset path to properly support subpath hosting (e.g. GitHub Pages /snshero/).
  */
 const CHARACTER_ASSET_CACHE_TAG = 'v=cutout2026';
-const CHARACTER_ASSET_REGEX = /^(cards1|cards2|card2|card100|character_sheet_|seat\/)/i;
+const CHARACTER_ASSET_REGEX = /^(cards1|cards2|card2|card100|character_sheet_|seat\/|seat_attack\/|characters\/animations\/)/i;
 
 export function getAssetUrl(path: string | null | undefined): string {
   if (!path) return '';
@@ -148,6 +148,16 @@ export function isSpriteSheet(source?: string | null): boolean {
 export function getCardSpriteAsset(cardId: number): string {
   const id = Number(cardId) || 1;
   return id >= 101 ? '/cards2.png' : '/cards1.png';
+}
+
+/**
+ * Returns the ATTACK MOTION sprite sheet asset URL for a given card ID.
+ * - ID 1 ~ 100: /cards1_attack.png (10x10 sheet)
+ * - ID 101+: /cards2_attack.png (10x10 sheet)
+ */
+export function getCardAttackSpriteAsset(cardId: number): string {
+  const id = Number(cardId) || 1;
+  return id >= 101 ? '/cards2_attack.png' : '/cards1_attack.png';
 }
 
 export interface CardSpriteCoords {
@@ -637,6 +647,10 @@ export function getCardSpriteStyle(cardId: number, customSource?: string | null)
     boxShadow: backdrop.thumbnailBoxShadow,
     imageRendering: 'auto' as const,
   };
+}
+
+export function getCardAttackSpriteStyle(cardId: number): CSSProperties {
+  return getCardSpriteStyle(cardId, getCardAttackSpriteAsset(cardId));
 }
 
 

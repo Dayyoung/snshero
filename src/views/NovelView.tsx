@@ -228,9 +228,28 @@ export const NovelView: React.FC<NovelViewProps> = ({
 
   // Cartoon layout mode: 'scroll' (vertical webtoon strip) or 'slides' (page-by-page carousel)
   const [cartoonDisplayMode, setCartoonDisplayMode] = useState<'scroll' | 'slides'>('scroll');
+  const [cartoonArtStyle, setCartoonArtStyle] = useState<'animation' | 'liveaction'>(() => {
+    try {
+      return localStorage.getItem('hero_storybook_art_style') === 'liveaction' ? 'liveaction' : 'animation';
+    } catch {
+      return 'animation';
+    }
+  });
   const [activeSlideIndex, setActiveSlideIndex] = useState<number>(1);
   // Cartoon speech bubbles & SFX overlays toggle (기본 비표시)
   const [showCartoonBubbles, setShowCartoonBubbles] = useState<boolean>(false);
+
+  const toggleCartoonArtStyle = () => {
+    setCartoonArtStyle((prev) => {
+      const next = prev === 'animation' ? 'liveaction' : 'animation';
+      try {
+        localStorage.setItem('hero_storybook_art_style', next);
+      } catch {
+        // ignore
+      }
+      return next;
+    });
+  };
 
   // Get cartoon image info for a specific episode and scene index (0..N)
   const getCartoonImageInfo = (epNum: number, sceneIdx: number): WebtoonManifestImage | undefined => {
@@ -244,16 +263,19 @@ export const NovelView: React.FC<NovelViewProps> = ({
     (WEBTOON_DATA[String(currentEpisodeNum)]?.images?.length || 21) - 1
   );
 
-  // Get cartoon scene image URL candidate pointing to local webtoon assets
+  // Get cartoon scene image URL candidate pointing to local webtoon or live-action cinema assets
   const getCartoonSceneUrl = (epNum: number, sceneIdx: number, attempt = 0): string => {
+    const epPad = pad2(epNum);
+    const scPad = pad2(sceneIdx);
+    if (cartoonArtStyle === 'liveaction') {
+      return `/images/cinema/episode_${epPad}/scene_${scPad}.webp`;
+    }
     const epData = WEBTOON_DATA[String(epNum)];
     const imgInfo = epData?.images?.find(img => img.index === sceneIdx);
     if (imgInfo) {
       if (imgInfo.localArtUrl) return imgInfo.localArtUrl;
       if (imgInfo.imageUrl) return imgInfo.imageUrl;
     }
-    const epPad = pad2(epNum);
-    const scPad = pad2(sceneIdx);
     return `/images/webtoon/episode_${epPad}/scene_${scPad}.webp`;
   };
 
@@ -1575,6 +1597,24 @@ export const NovelView: React.FC<NovelViewProps> = ({
                 </div>
 
                 <div className="flex flex-wrap items-center gap-2 self-end sm:self-auto">
+                  <button
+                    type="button"
+                    onClick={toggleCartoonArtStyle}
+                    className={cn(
+                      "min-h-[44px] px-3 py-1.5 text-xs font-bold border rounded-sm transition-colors cursor-pointer flex items-center gap-1.5",
+                      cartoonArtStyle === 'liveaction'
+                        ? "bg-[#201d1d] text-[#fdfcfc] border-[#201d1d]"
+                        : "bg-[#fdfcfc] text-[#201d1d] border-[#201d1d] hover:bg-[#f1eeee]"
+                    )}
+                    title={language === 'ko' ? '애니메이션 컷(2,009컷)과 70mm 실사 영화 컷(2,009컷) 1:1 전환' : 'Toggle between Animation Cuts and 70mm Live-Action Movie Cuts'}
+                  >
+                    <Film size={14} />
+                    <span>
+                      {cartoonArtStyle === 'liveaction'
+                        ? (language === 'ko' ? '🎬 실사 컷 모드 (ON)' : '🎬 Live-Action (ON)')
+                        : (language === 'ko' ? '🎬 실사 컷 전환 (2,009컷)' : '🎬 Live-Action Cuts')}
+                    </span>
+                  </button>
                   <button
                     onClick={() => {
                       if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');

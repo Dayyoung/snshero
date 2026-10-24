@@ -11743,13 +11743,6 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
               try {
                 localStorage.setItem(`hero_story_media_watch_ep_${chapterNum}`, 'true');
               } catch {}
-              showCustomAlert(
-                language === 'ko' ? `제 ${chapterNum}화 ${mediaLabelKo} 시청 보상 지급!` : `EP.${chapterNum} ${mediaLabelEn} Reward Granted!`,
-                language === 'ko'
-                  ? `유튜브 영상을 시청하고 돌아오셔서 +${EPISODE_MEDIA_WATCH_REWARD_SNS} SNS 보상이 지급되었습니다!`
-                  : `You earned +${EPISODE_MEDIA_WATCH_REWARD_SNS} SNS for watching Episode ${chapterNum}!`,
-                2
-              );
             }}
             onProceedNext={() => {
               playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
@@ -16664,17 +16657,20 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                                 <motion.div
                                   key={`${card.id}`}
                                   initial={{ 
-                                    scale: 0.8, 
+                                    scale: 1.22, 
+                                    y: -12,
                                     opacity: 0
                                   }}
                                   animate={{ 
-                                    scale: 1,
+                                    scale: lastPlacedIdx === idx ? [1.18, 0.95, 1.03, 1] : 1,
+                                    y: lastPlacedIdx === idx ? [-10, 2, 0] : 0,
                                     opacity: 1,
                                     x: lastPlacedIdx === idx ? [0, -6, 6, -6, 6, 0] : 0,
                                     zIndex: 20
                                   }}
                                   transition={{
-                                    scale: { duration: 0.15 },
+                                    scale: { duration: 0.34, ease: [0.22, 1, 0.36, 1] },
+                                    y: { duration: 0.28 },
                                     opacity: { duration: 0.15 },
                                     x: { duration: 0.3 }
                                   }}
@@ -16684,6 +16680,7 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                                     card={card} 
                                     isLocked={true} 
                                     isOnBoard={true}
+                                    showAttackMotion={true}
                                     isDamaged={Boolean(damagedCells[idx])}
                                     className={cn(
                                       "w-full h-full z-10 rounded-sm",

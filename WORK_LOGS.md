@@ -15812,3 +15812,15 @@
   2. `src/views/NovelView.tsx`, `src/views/MovieView.tsx`, `src/views/AnimeView.tsx`, `src/views/CinemaView.tsx`: 각 뷰의 루트 및 본문 컨테이너의 `max-w-none`을 `max-w-[1024px] mx-auto`로 일원화.
 - **검증 결과**: `tsc --noEmit` 및 프로덕션 빌드 통과.
 - **구글 폼 보고**: 제출 완료 (`작업완료`).
+
+## [2026-10-25 04:18 KST] 110개 캐릭터 공격모션 이미지 전수 생성 및 3x3 보드 카드 배치 시 역동적 공격모션 이펙트 적용 완료
+- **작업 내역**:
+  1. **110종 캐릭터 공격모션 전용 일러스트 및 스프라이트 시트 전수 생성** (`scripts/generate_110_attack_motions.py`):
+     - 1~110번 전체 캐릭터의 진영(물/불/바람/대지/인간/언데드/엘프/드워프/몬스터/로봇/드래곤) 및 고유 공격 타입(`slash`, `strike`, `blast`, `burst`, `spin`, `charge`)에 맞춰 전방 돌격(Articulated Lunge Pose Warp), 잔상 에코(Motion Afterimage), 속성 검기/빔/충격파, 임팩트 스파크가 합성된 110종의 개별 공격모션 이미지(`public/seat_attack/*.png`, `public/characters/animations/card-001.webp`~`card-110.webp`) 및 스프라이트 시트(`public/cards1_attack.png`, `public/cards2_attack.png`, `public/card100_attack.png`) 전수 생성 완료.
+  2. **공격모션 매핑 엔진 및 역동적 배틀 VFX 컴포넌트 구현** (`src/lib/attackMotionEngine.ts`, `src/components/battle/CardAttackMotionEffect.tsx`, `src/lib/utils.ts`):
+     - `getCharacterAttackMotionMeta`, `getCardAttackSpriteAsset`, `SlotAttackMotionBurst`, `BoardAttackVectorOverlay` 구현.
+  3. **3x3 보드 카드 배치 시 공격모션 아트 전환 및 타격 연출 연동** (`src/components/CardItem.tsx`, `src/views/MobileCardPlayScreen.tsx`, `src/views/PlayGameView.tsx`, `src/components/WikiCardDetailModal.tsx`):
+     - 카드를 3x3 보드에 내려놓는 즉시 해당 캐릭터의 공격모션 아트로 전환되고, 슬롯 돌격 팝아웃(`SlotAttackMotionBurst`) 및 인접/캡처 타일 방향 검기·충격파 궤적(`BoardAttackVectorOverlay`)이 역동적으로 재생되도록 연동.
+     - 카드 상세 모달(`WikiCardDetailModal.tsx`)에도 `[공격모션 보기 / ATTACK MOTION]` 토글 버튼을 추가하여 110종 캐릭터의 공격모션을 도감/덱에서 즉시 감상 가능하도록 개선.
+- **검증 결과**: `npx tsc --noEmit` 0 에러 통과 및 `npm run build` 프로덕션 빌드 성공.
+- **구글 폼 보고**: 제출 완료.

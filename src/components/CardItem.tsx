@@ -4,7 +4,9 @@ import {
  Star, Zap, Shield, Mountain, Waves, Flame, Wind, User, Skull, Leaf, Hammer, Ghost, Bot, Lock,
 } from 'lucide-react';
 import type { CharacterFaction, CharacterRarityTier, CardData } from '../types';
-import { cn, getAssetUrl, getCardSpriteAsset, getCardSpriteCoords, getCardCharacterBackdropTheme } from '../lib/utils';
+import { cn, getAssetUrl, getCardSpriteAsset, getCardAttackSpriteAsset, getCardSpriteCoords, getCardCharacterBackdropTheme } from '../lib/utils';
+import { getCharacterAttackMotionMeta } from '../lib/attackMotionEngine';
+import { SlotAttackMotionBurst } from './battle/CardAttackMotionEffect';
 import { CARD_DATABASE } from '../cardDatabase';
 import { getCardPower, getCardStatWithBonus, getNormalizedElement } from '../constants';
 import { t } from '../lib/i18n';
@@ -40,6 +42,8 @@ interface CardItemProps {
  activeSkin?: CardSkin | null;
  /** Brief damage feedback, without shaking the board. */
  isDamaged?: boolean;
+ /** Explicitly render the character's Attack Motion image & effect (auto-enabled when isOnBoard is true). */
+ showAttackMotion?: boolean;
 }
 
 const areNumberArraysEqual = (left?: number[], right?: number[]) => {
@@ -117,21 +121,28 @@ const getFactionIcon = (faction?: CharacterFaction | string) => {
  }
 };
 
-export const CardItem = React.memo(({ card, className, onClick, isLocked, isSelected, isDragging, hideBackground, isOnBoard, customImage, combatHighlights, lowSpecMode, processedImage, language = 'en', cellElement, hideStats, isMatgo, ignoreBonuses, downloadMode, activeSkin, isDamaged }: CardItemProps) => {
+export const CardItem = React.memo(({ card, className, onClick, isLocked, isSelected, isDragging, hideBackground, isOnBoard, customImage, combatHighlights, lowSpecMode, processedImage, language = 'en', cellElement, hideStats, isMatgo, ignoreBonuses, downloadMode, activeSkin, isDamaged, showAttackMotion }: CardItemProps) => {
  const { cardSkinTheme, lowSpecMode: settingsLowSpecMode } = useGameSettings();
  const reducedMotion = useReducedMotion();
  // Keep live battle stats; do not replace the card with its database record.
  const activeCard = card;
- const isIOSDevice = useMemo(() => {
- if (typeof window === 'undefined' || typeof navigator === 'undefined') return false;
- return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
- (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
- }, []);
- const performanceMode = lowSpecMode || settingsLowSpecMode || isOnBoard || isIOSDevice || reducedMotion;
+ const performanceMode = Boolean(lowSpecMode || settingsLowSpecMode || reducedMotion);
  const shouldHideBg = hideBackground || !!downloadMode;
  const [isFlipping, setIsFlipping] = useState(false);
  const [damageFeedback, setDamageFeedback] = useState(false);
+ const [attackBurstCounter, setAttackBurstCounter] = useState<number>(() => (isOnBoard ? 1 : 0));
+ const [isAttackBurstActive, setIsAttackBurstActive] = useState<boolean>(() => Boolean(isOnBoard && !performanceMode));
  const prevOwnerRef = useRef(activeCard.owner);
+
+ useEffect(() => {
+ if (!isOnBoard || performanceMode) {
+  setIsAttackBurstActive(false);
+  return;
+ }
+ setIsAttackBurstActive(true);
+ const timer = setTimeout(() => setIsAttackBurstActive(false), 860);
+ return () => clearTimeout(timer);
+ }, [isOnBoard, attackBurstCounter, performanceMode]);
 
  useEffect(() => {
  const previousOwner = prevOwnerRef.current;
@@ -139,11 +150,14 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
  prevOwnerRef.current = activeCard.owner;
  if (previousOwner != null && previousOwner !== activeCard.owner) {
  setIsFlipping(true);
+ if (isOnBoard) {
+  setAttackBurstCounter(c => c + 1);
+ }
  const timer = setTimeout(() => setIsFlipping(false), 220);
  return () => clearTimeout(timer);
  }
  setIsFlipping(false);
- }, [activeCard.owner]);
+ }, [activeCard.owner, isOnBoard]);
 
  useEffect(() => {
  setDamageFeedback(!!isDamaged);
@@ -153,6 +167,8 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
  }, [isDamaged]);
 
  const visualCardId = useMemo(() => getVisualCardId(activeCard), [activeCard]);
+ const useAttackMotionArt = Boolean(isOnBoard || showAttackMotion);
+ const attackMotionMeta = useMemo(() => visualCardId ? getCharacterAttackMotionMeta(visualCardId) : undefined, [visualCardId]);
  const ipProfile = useMemo(() => visualCardId ? getCharacterIpProfile(visualCardId) : undefined, [visualCardId]);
  const rarityTier = useMemo(() => {
  if (ipProfile?.rarityTier) return ipProfile.rarityTier;
@@ -180,14 +196,26 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
  const imageFallback = useMemo(() => visualCardId ? getCardImageFallback(visualCardId) : resolvedImage.fallback, [visualCardId, resolvedImage.fallback]);
  const imageSources = useMemo(() => {
  const defaultSprite = visualCardId ? getCardSpriteAsset(visualCardId) : '/cards1.png';
- const orderedSources = [
- processedImage, customImage, resolvedImage.source, activeCard.imageUrl, defaultSprite,
- assetManifestEntry?.targetAssetPath, assetManifestEntry?.frontAssetPath,
- assetManifestEntry?.legacySpritePath, assetManifestEntry?.fallbackAssetPath,
- assetManifestEntry?.lowSpecFallbackAssetPath,
- ];
+ const attackSprite = visualCardId ? getCardAttackSpriteAsset(visualCardId) : '/cards1_attack.png';
+ const orderedSources = useAttackMotionArt
+  ? [
+     processedImage,
+     customImage,
+     attackSprite,
+     attackMotionMeta?.cutoutAttackUrl,
+     attackMotionMeta?.webpAttackUrl,
+     resolvedImage.source,
+     activeCard.imageUrl,
+     defaultSprite,
+    ]
+  : [
+     processedImage, customImage, resolvedImage.source, activeCard.imageUrl, defaultSprite,
+     assetManifestEntry?.targetAssetPath, assetManifestEntry?.frontAssetPath,
+     assetManifestEntry?.legacySpritePath, assetManifestEntry?.fallbackAssetPath,
+     assetManifestEntry?.lowSpecFallbackAssetPath,
+    ];
  return Array.from(new Set(orderedSources.filter((source): source is string => Boolean(source)).map(src => getAssetUrl(src))));
- }, [activeCard.imageUrl, assetManifestEntry, customImage, processedImage, resolvedImage.source, visualCardId]);
+ }, [activeCard.imageUrl, assetManifestEntry, attackMotionMeta, customImage, processedImage, resolvedImage.source, useAttackMotionArt, visualCardId]);
  const [imageSourceIndex, setImageSourceIndex] = useState(0);
  useEffect(() => { setImageSourceIndex(0); }, [imageSources]);
  const currentImageSource = imageSources[imageSourceIndex];
@@ -713,7 +741,10 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
      <div
       role="img"
       aria-label={displayCardName}
-      className="absolute left-1/2 top-1/2 z-10 w-[min(88cqw,88cqh)] -translate-x-1/2 -translate-y-1/2"
+      className={cn(
+       'absolute left-1/2 top-1/2 z-10 w-[min(88cqw,88cqh)] -translate-x-1/2 -translate-y-1/2 transition-transform duration-300',
+       useAttackMotionArt && 'scale-[1.06]'
+      )}
       style={{ ...getSpritePosition(visualCardId, currentImageSource), aspectRatio: '256 / 296' }}
      />
     </>
@@ -722,7 +753,10 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
      key={currentImageSource}
      src={currentImageSource}
      alt={displayCardName}
-     className="relative z-10 h-full w-full object-contain"
+     className={cn(
+      'relative z-10 h-full w-full object-contain transition-transform duration-300',
+      useAttackMotionArt && 'scale-[1.05]'
+     )}
      referrerPolicy="no-referrer"
      onError={() => setImageSourceIndex(currentIndex => currentIndex + 1)}
     />
@@ -761,6 +795,17 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
    })}
   </div>
  </div>
+
+ {/* Dynamic Attack Motion Burst Overlay when card is placed on board or attacks/captures */}
+ {isAttackBurstActive && visualCardId && (
+  <SlotAttackMotionBurst
+   cardId={visualCardId}
+   isPlayer={owner !== 'ai'}
+   language={language}
+   lowSpecMode={performanceMode}
+   triggerKey={attackBurstCounter}
+  />
+ )}
 
  {/* Board view compact top-left power indicator */}
  {isOnBoard && <div className={cn(
@@ -878,6 +923,7 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
  prev.isDragging === next.isDragging &&
  prev.hideBackground === next.hideBackground &&
  prev.isOnBoard === next.isOnBoard &&
+ prev.showAttackMotion === next.showAttackMotion &&
  prev.customImage === next.customImage &&
  prev.lowSpecMode === next.lowSpecMode &&
  prev.processedImage === next.processedImage &&

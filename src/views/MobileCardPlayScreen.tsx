@@ -23,6 +23,7 @@ import {
 import { cn, getCardSpriteStyle } from '../lib/utils';
 import { AdSenseBanner } from '../components/AdSenseBanner';
 import { CardItem } from '../components/CardItem';
+import { BoardAttackVectorOverlay, type PlacedCardAttackEvent } from '../components/battle/CardAttackMotionEffect';
 import { t } from '../lib/i18n';
 import { MissionDialogueIntro } from '../components/MissionDialogueIntro';
 import { pickNewRankOpponent, RankOpponentInfo } from '../data/rankingOpponents';
@@ -306,6 +307,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
   const [gameOver, setGameOver] = useState(false);
   const [winner, setWinner] = useState<'player' | 'ai' | 'draw' | null>(null);
   const [flippedSlots, setFlippedSlots] = useState<number[]>([]);
+  const [lastPlacedAttack, setLastPlacedAttack] = useState<PlacedCardAttackEvent | null>(null);
   const [isEvaluating, setIsEvaluating] = useState(false);
   const [matchResultReported, setMatchResultReported] = useState(false);
   const [rematchCountdown, setRematchCountdown] = useState<number | null>(null);
@@ -1021,6 +1023,21 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
       playSound('flip');
       setTimeout(() => setFlippedSlots([]), 800);
     }
+
+    const rawCardId = Number(cardToPlace.imageIndex ?? cardToPlace.id) || 1;
+    const normalizedCardId = rawCardId >= 1 && rawCardId <= 110 ? rawCardId : ((Math.abs(rawCardId) - 1) % 110) + 1;
+    const attackEventId = `${slotIdx}-${Date.now()}`;
+    setLastPlacedAttack({
+      id: attackEventId,
+      slotIdx,
+      cardId: normalizedCardId,
+      isPlayer,
+      flippedIndices,
+      timestamp: Date.now(),
+    });
+    setTimeout(() => {
+      setLastPlacedAttack(prev => (prev?.id === attackEventId ? null : prev));
+    }, 920);
 
     setBoard(updatedBoard);
     setBoardShields(nextShields);
@@ -1948,10 +1965,16 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
           id="mobile-card-center-board"
           className="w-full shrink-0 flex items-center justify-center [@media(max-height:500px)_and_(min-width:480px)]:col-start-2 [@media(max-height:500px)_and_(min-width:480px)]:row-start-1 [@media(max-height:500px)_and_(min-width:480px)]:row-span-2"
         >
-          <div className="w-full aspect-square min-h-[290px] sm:min-h-[350px] grid grid-cols-3 grid-rows-3 gap-1.5 bg-[#f1eeee] border border-[#0f0000]/12 p-1.5 rounded-sm shadow-xs">
+          <div className="relative w-full aspect-square min-h-[290px] sm:min-h-[350px] grid grid-cols-3 grid-rows-3 gap-1.5 bg-[#f1eeee] border border-[#0f0000]/12 p-1.5 rounded-sm shadow-xs">
+            <BoardAttackVectorOverlay
+              attackEvent={lastPlacedAttack}
+              language={language}
+              lowSpecMode={suppressMotion}
+            />
             {board.map((cell, idx) => {
               const isOccupied = cell !== null;
               const isFlipped = flippedSlots.includes(idx);
+              const isJustPlaced = lastPlacedAttack?.slotIdx === idx;
               const isSelectedHand = selectedHandIndex !== null && playerHand[selectedHandIndex];
               const isShielded = boardShields[idx];
               const isPlayable = !isOccupied && Boolean(isSelectedHand) && turn === 'player' && !gameOver && !isEvaluating && rankingSearchCountdown === null && !showMissionDialogue;
@@ -1994,14 +2017,42 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                 >
                   {isOccupied && cell ? (
                     <motion.div
-                      initial={suppressMotion ? false : { opacity: 0, scale: 0.94 }}
-                      animate={isFlipped && !suppressMotion ? { opacity: 1, scale: [1, 0.94, 1], x: [0, cell.owner === 'player' ? -3 : 3, 0] } : { opacity: 1, scale: 1, x: 0 }}
-                      transition={{ duration: suppressMotion ? 0 : 0.22, ease: 'easeOut' }}
+                      initial={
+                        suppressMotion
+                          ? false
+                          : {
+                              opacity: 0,
+                              scale: 1.24,
+                              y: -14,
+                              rotate: cell.owner === 'player' ? -4 : 4,
+                            }
+                      }
+                      animate={
+                        isFlipped && !suppressMotion
+                          ? {
+                              opacity: 1,
+                              scale: [1, 1.12, 0.94, 1],
+                              x: [0, cell.owner === 'player' ? -6 : 6, cell.owner === 'player' ? 4 : -4, 0],
+                              y: 0,
+                              rotate: 0,
+                            }
+                          : isJustPlaced && !suppressMotion
+                            ? {
+                                opacity: 1,
+                                scale: [1.18, 0.95, 1.03, 1],
+                                y: [-10, 2, 0],
+                                rotate: [cell.owner === 'player' ? -3 : 3, 0],
+                              }
+                            : { opacity: 1, scale: 1, x: 0, y: 0, rotate: 0 }
+                      }
+                      transition={{ duration: suppressMotion ? 0 : 0.36, ease: [0.22, 1, 0.36, 1] }}
                       className="w-full h-full relative p-0.5 flex items-center justify-center"
                     >
                       <CardItem
                         card={cell}
                         isOnBoard={true}
+                        showAttackMotion={true}
+                        isDamaged={isFlipped}
                         isLocked={true}
                         language={language}
                         lowSpecMode={suppressMotion}

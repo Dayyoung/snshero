@@ -150,9 +150,40 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
   const [lineIndex, setLineIndex] = useState(0);
   const [activeSubCutIdx, setActiveSubCutIdx] = useState<number | null>(null);
   const [viewGranularity, setViewGranularity] = useState<'storybook' | 'all_cuts'>('storybook');
+  const [artStyleMode, setArtStyleMode] = useState<'animation' | 'liveaction'>(() => {
+    try {
+      return localStorage.getItem('hero_storybook_art_style') === 'liveaction'
+        ? 'liveaction'
+        : 'animation';
+    } catch {
+      return 'animation';
+    }
+  });
   const [selectedCharCardId, setSelectedCharCardId] = useState<number | null>(null);
   const [showSceneIndexModal, setShowSceneIndexModal] = useState(false);
   const [autoSpeedMode, setAutoSpeedMode] = useState<'normal' | 'slow' | 'fast'>('normal');
+
+  const toggleArtStyleMode = useCallback(() => {
+    setArtStyleMode((prev) => {
+      const next = prev === 'animation' ? 'liveaction' : 'animation';
+      try {
+        localStorage.setItem('hero_storybook_art_style', next);
+      } catch {
+        // ignore storage error
+      }
+      return next;
+    });
+  }, []);
+
+  const resolveArtStyleUrl = useCallback(
+    (rawUrl: string) => {
+      if (artStyleMode !== 'liveaction') return rawUrl;
+      return rawUrl
+        .replace('/images/webtoon/episode_', '/images/cinema/episode_')
+        .replace('/images/storybook/ep_', '/images/storybook_liveaction/ep_');
+    },
+    [artStyleMode]
+  );
 
   // Suspend Background BGM Processing during Dialogue Overlay to reduce CPU/audio load
   useEffect(() => {
@@ -496,11 +527,12 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
   const activeSubCut =
     activeSubCutIdx !== null && subCuts[activeSubCutIdx] ? subCuts[activeSubCutIdx] : null;
 
-  const displayImageUrl = getAssetUrl(
+  const rawSceneUrl =
     activeSubCut?.imageUrl ||
-      currentLine?.sceneImageUrl ||
-      `/images/webtoon/episode_${String(event.chapterNumber).padStart(2, '0')}/scene_01.webp`
-  );
+    currentLine?.sceneImageUrl ||
+    `/images/webtoon/episode_${String(event.chapterNumber).padStart(2, '0')}/scene_01.webp`;
+
+  const displayImageUrl = getAssetUrl(resolveArtStyleUrl(rawSceneUrl));
 
   const sceneCharacters: KadanRpgSceneCharacter[] = useMemo(() => {
     if (currentLine?.sceneCharacters && currentLine.sceneCharacters.length > 0) {
@@ -590,7 +622,35 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
             )}
           </div>
 
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1.5 flex-wrap">
+            {/* 애니메이션 컷 vs 70mm 실사 영화 컷 (2,009컷) 1클릭 전환 */}
+            <button
+              type="button"
+              onClick={toggleArtStyleMode}
+              className={cn(
+                'min-h-[38px] sm:min-h-[40px] rounded-sm px-2.5 py-1 text-[11px] font-mono font-bold border transition-colors cursor-pointer flex items-center gap-1.5',
+                artStyleMode === 'liveaction'
+                  ? 'bg-amber-500 border-amber-300 text-stone-950 font-black'
+                  : 'bg-stone-900 border-stone-700 text-cyan-300 hover:bg-stone-800'
+              )}
+              title={
+                language === 'ko'
+                  ? '오늘 생성된 애니메이션 컷(2,009컷)과 70mm 실사 영화 제작용 컷(2,009컷)을 1:1로 즉시 전환합니다'
+                  : 'Toggle 1:1 between Animation Cuts (2,009 cuts) and 70mm Photorealistic Live-Action Movie Cuts (2,009 cuts)'
+              }
+            >
+              <Film size={13} />
+              <span>
+                {artStyleMode === 'liveaction'
+                  ? language === 'ko'
+                    ? '🎬 실사 영화 컷 (ON)'
+                    : '🎬 Live-Action (ON)'
+                  : language === 'ko'
+                  ? '🎬 실사 영화 컷 보기'
+                  : '🎬 Live-Action Cuts'}
+              </span>
+            </button>
+
             {/* 그림책 보기 모드 전환: 장절 완독(10장면) vs 대사/문장별 50컷 */}
             <button
               type="button"
@@ -1040,8 +1100,10 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
             <div className="flex-1 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 gap-2.5 pr-1 custom-scrollbar">
               {conversationLines.map((item, idx) => {
                 const thumbUrl = getAssetUrl(
-                  item.sceneImageUrl ||
-                    `/images/webtoon/episode_${String(event.chapterNumber).padStart(2, '0')}/scene_01.webp`
+                  resolveArtStyleUrl(
+                    item.sceneImageUrl ||
+                      `/images/webtoon/episode_${String(event.chapterNumber).padStart(2, '0')}/scene_01.webp`
+                  )
                 );
                 const itemTitle = isEn
                   ? item.sceneTitleEn || item.nameEn || item.name
