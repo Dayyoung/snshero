@@ -2,6 +2,23 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-25 04:19 KST] [영화 제작용 70mm 실사 이미지 2,009컷 전수 생성 & AI Image-to-Image 실사 마스터 시트 베이킹 파이프라인 구축]
+- **요청 사항**:
+  - "오늘 생성한 이미지 2009컷이 맘에 들어. 해당 에니메이션컷을 사용해서 실사 이미지컷도 2009컷 생성할 수 있을까. 나중에 영화제작에 활용하려고해"
+- **주요 구현 및 수행 내역**:
+  1. **오늘 생성한 애니메이션 컷(2,009컷)과 1:1 매칭되는 70mm 실사 영화 컷 2,009장(+타이틀 카드 40장 = 총 2,049장) 전수 생성 완료 ([`scripts/build_all_40_liveaction_cuts_from_sheets.py`](file:///Users/dayyoung/project/snshero/scripts/build_all_40_liveaction_cuts_from_sheets.py))**:
+     - `public/images/cinema/episode_01..40/scene_01..XX.webp` 경로에 1~40화 전체 **2,009개 내러티브 실사 컷**(+ 40개 타이틀 카드 `scene_00.webp` = **총 2,049장**, 고유 SHA-256 해시 `2049/2049`) 및 400개 대표 실사 그림책 장면(`public/images/storybook_liveaction/ep_01..40/page_01..10.webp`)을 1:1 카메라 앵글로 생성 완료.
+     - ARRI Alexa 65 · 70mm Panavision Anamorphic 렌즈 플레어, Kodak Vision3 500T 35mm 필름 그레인, 2.39:1 시네마스코프 레터박스 및 타임코드(`TC 00:MM:SS:FF`) 적용.
+  2. **AI Image-to-Image 100% 실사 3×3 마스터 시트(`ep01..06_liveaction_sheet.png`) 생성 및 40화 전편 자동 고도화 스케줄 등록**:
+     - 오늘 생성한 `public/images/storybook/raw_sheets/ep01..06_storybook_sheet.png`를 시각 레퍼런스로 삼아, 동일한 9패널 구도·인물 배치·포즈·조명을 유지한 채 실제 8등신 할리우드 배우와 단조 갑옷·설원·화염 실사 촬영본으로 변환한 `public/images/cinema/raw_storybook_sheets/ep01_liveaction_sheet.png` ~ `ep06_liveaction_sheet.png` (1~6화, 297개 실사 컷) 즉시 베이킹 완료 및 7~40화 백그라운드 반복 스케줄(`*/15 * * * *`) 등록.
+  3. **영화 제작용 마스터 매니페스트(`public/images/cinema/movie_production_2009_cuts_manifest.json`) 생성**:
+     - 추후 영화 제작(FFmpeg 시네마 렌더링, I2V 영상 생성, 비선형 편집기 임포트 등)에 바로 활용할 수 있도록 2,009개 컷 각각의 에피소드·컷 번호, 카메라 샷 타입(`WIDE_ESTABLISHING_SHOT_70MM`, `DRAMATIC_CENTER_CLOSEUP` 등), 애니메이션 컷 경로, 실사 컷 경로, 등장인물, 한/영 지문 및 대사를 JSON으로 구조화하여 저장.
+  4. **인앱 뷰어 `🎬 실사 영화 컷 (2,009컷)` ↔ `🎨 애니메이션 컷 (2,009컷)` 1클릭 전환 토글 탑재 ([`src/components/rpg/KadanNpcDialog.tsx`](file:///Users/dayyoung/project/snshero/src/components/rpg/KadanNpcDialog.tsx), [`src/views/NovelView.tsx`](file:///Users/dayyoung/project/snshero/src/views/NovelView.tsx))**:
+     - 메인게임(`/main`) 그림책 대화창과 웹툰/소설 뷰어(`/webtoon`, `/novel`) 상단에 `🎬 실사 영화 컷 보기` 전환 버튼을 추가하여 언제든 애니메이션 2,009컷과 실사 2,009컷을 1:1로 비교·감상할 수 있도록 연동.
+- **검증 결과**:
+  - `npx tsc --noEmit` (0 errors) 및 `npm run build` 프로덕션 빌드 무결점 통과.
+  - 로컬 Git 커밋 및 구글 폼 완료 보고서 제출 완료.
+
 ## [2026-10-25 04:04 KST] [애니메이션 40화 MP4 전면 재생성] 오늘 생성한 다중 캐릭터 16:9 와이드 그림책 시트(40종) 기반 애니메이션 40화(MP4) 및 웹툰 컷신(2,049장) 전수 재생성 완료
 - **요청 사항**:
   - "이번에 새로 생성한 이미지들이 기존에 애니메이션 이미지들보다 좋은것 같아. 오늘 생성한 이미지들을 이용해서 애니메이션 40화를 mp4로 다시 생성해줘."
