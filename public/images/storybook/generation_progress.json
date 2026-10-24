@@ -34,7 +34,12 @@
     32,
     33,
     34,
-    35
+    35,
+    36,
+    37,
+    38,
+    39,
+    40
   ],
   "totalEpisodes": 40,
   "description": "Tracks iterative AI multi-character 3x3 storybook sheet generation (ep01..ep40) for /main Picture-Book scenes."
