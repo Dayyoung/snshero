@@ -2,6 +2,22 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-25 05:22 KST] [1~40화 전편(100.0%) AI Image-to-Image 70mm 실사 마스터 시트(40종) 및 실사 이미지 2,009컷 전수 베이킹 완수 & 스케줄 정상 종료]
+- **요청 사항**:
+  - "오늘 생성한 이미지 2009컷이 맘에 들어. 해당 에니메이션컷을 사용해서 실사 이미지컷도 2009컷 생성할 수 있을까. 나중에 영화제작에 활용하려고해"
+- **최종 완수 내역 (1~40화 100.0% 달성)**:
+  1. **전 40화(`EP01`~`EP40`) AI Image-to-Image 할리우드 70mm 실사 3×3 마스터 시트 40종 전수 생성 완료 (`public/images/cinema/raw_storybook_sheets/ep01_liveaction_sheet.png` ~ `ep40_liveaction_sheet.png`)**:
+     - 오늘 생성한 `ep01..40_storybook_sheet.png`를 1:1 레이아웃·구도·인물 포즈 레퍼런스로 삼아, 1화부터 40화까지 총 360개 마스터 패널을 8등신 실사 배우·단조 금속 갑옷·실제 자연/성채 세트·ARRI Alexa 65 70mm 아나모픽 시네마 촬영본으로 100% 변환 완료 (`completedAiLiveActionSheets: [1..40]`).
+  2. **2,009개 내러티브 실사 컷(+ 40개 타이틀 카드 = 총 2,049장) 및 400개 실사 그림책 장면 전수 베이킹 완료 ([`scripts/build_all_40_liveaction_cuts_from_sheets.py`](file:///Users/dayyoung/project/snshero/scripts/build_all_40_liveaction_cuts_from_sheets.py))**:
+     - `public/images/cinema/episode_01..40/scene_00..XX.webp`: 40화 전체 **2,009개 실사 컷**(+ 오프닝 타이틀 40장 = 2,049장, 고유 SHA-256 해시 `2049/2049`)을 전부 `AI_70MM_LIVEACTION_SHEET` 모드로 슬라이싱·베이킹 완료.
+     - `public/images/storybook_liveaction/ep_01..40/page_01..10.webp`: 400개 장절 대표 실사 그림책 장면 전수 베이킹 완료.
+     - `public/images/cinema/movie_production_2009_cuts_manifest.json`: 2,009개 전체 컷의 영화 제작용 메타데이터(`sourceMode: "AI_70MM_LIVEACTION_SHEET"`) 100% 갱신 완료.
+  3. **백그라운드 반복 스케줄(`task-101`) 정상 종료**:
+     - 40개 에피소드 전수 완료에 따라 반복 스케줄을 정상 종료 처리.
+- **검증 결과**:
+  - 40개 AI 실사 마스터 시트(`40/40`), 2,049개 실사 컷(`2049/2049`), 400개 실사 그림책 페이지(`400/400`) 무결성 검증 완료.
+  - 로컬 Git 커밋 및 구글 폼 최종 완료 보고서 제출 완료.
+
 ## [2026-10-25 04:19 KST] [영화 제작용 70mm 실사 이미지 2,009컷 전수 생성 & AI Image-to-Image 실사 마스터 시트 베이킹 파이프라인 구축]
 - **요청 사항**:
   - "오늘 생성한 이미지 2009컷이 맘에 들어. 해당 에니메이션컷을 사용해서 실사 이미지컷도 2009컷 생성할 수 있을까. 나중에 영화제작에 활용하려고해"

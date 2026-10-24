@@ -6,7 +6,7 @@ import {
 import type { CharacterFaction, CharacterRarityTier, CardData } from '../types';
 import { cn, getAssetUrl, getCardSpriteAsset, getCardAttackSpriteAsset, getCardSpriteCoords, getCardCharacterBackdropTheme } from '../lib/utils';
 import { getCharacterAttackMotionMeta } from '../lib/attackMotionEngine';
-import { SlotAttackMotionBurst } from './battle/CardAttackMotionEffect';
+import { SlotAttackMotionBurst, getCharacterAttackLungeAnimation } from './battle/CardAttackMotionEffect';
 import { CARD_DATABASE } from '../cardDatabase';
 import { getCardPower, getCardStatWithBonus, getNormalizedElement } from '../constants';
 import { t } from '../lib/i18n';
@@ -201,9 +201,9 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
   ? [
      processedImage,
      customImage,
-     attackSprite,
      attackMotionMeta?.cutoutAttackUrl,
      attackMotionMeta?.webpAttackUrl,
+     attackSprite,
      resolvedImage.source,
      activeCard.imageUrl,
      defaultSprite,
@@ -535,7 +535,7 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
  )}
 
  {/* Special Holographic Foil Rainbow Sheen */}
- {pokemonTheme.isHolo && !performanceMode && !shouldHideBg && (
+ {pokemonTheme.isHolo && !performanceMode && !isOnBoard && !shouldHideBg && (
  <div
  className="pointer-events-none absolute inset-0 z-15 overflow-hidden rounded-[inherit] mix-blend-color-dodge opacity-55"
  style={{
@@ -545,7 +545,7 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
  )}
 
  {/* Gold Foil Metallic Sheen */}
- {pokemonTheme.isGold && !performanceMode && !shouldHideBg && (
+ {pokemonTheme.isGold && !performanceMode && !isOnBoard && !shouldHideBg && (
  <div
  className="pointer-events-none absolute inset-0 z-15 overflow-hidden rounded-[inherit] mix-blend-overlay opacity-45"
  style={{
@@ -733,30 +733,51 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
    />
   </div>
 
-  {/* Layer 4: Foreground Character Sprite / Image (exact 256:296 aspect ratio) */}
+  {/* Layer 3: Dynamic Attack Motion Aura Burst BEHIND the character (z-[5], never covers the character!) */}
+  {isAttackBurstActive && visualCardId && (
+   <SlotAttackMotionBurst
+    cardId={visualCardId}
+    isPlayer={owner !== 'ai'}
+    language={language}
+    lowSpecMode={performanceMode}
+    triggerKey={attackBurstCounter}
+   />
+  )}
+
+  {/* Layer 4: Foreground Character Sprite / Image (exact 256:296 aspect ratio, z-10 in front of all effects) */}
   {currentImageSource ? (
    isSpriteSheet(currentImageSource) && visualCardId ? (
     <>
      <img key={currentImageSource} src={currentImageSource} alt="" className="hidden" aria-hidden="true" referrerPolicy="no-referrer" onError={() => setImageSourceIndex(currentIndex => currentIndex + 1)} />
-     <div
+     <motion.div
+      key={`sprite-${visualCardId}-${attackBurstCounter}`}
       role="img"
       aria-label={displayCardName}
+      animate={
+       isAttackBurstActive && !performanceMode && attackMotionMeta
+        ? getCharacterAttackLungeAnimation(attackMotionMeta.attackAnimation)
+        : { scale: useAttackMotionArt ? 1.05 : 1, x: 0, y: 0, rotate: 0 }
+      }
+      transition={{ duration: performanceMode ? 0 : 0.42, ease: 'easeOut' }}
       className={cn(
-       'absolute left-1/2 top-1/2 z-10 w-[min(88cqw,88cqh)] -translate-x-1/2 -translate-y-1/2 transition-transform duration-300',
-       useAttackMotionArt && 'scale-[1.06]'
+       'absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2',
+       isOnBoard ? 'w-[min(92cqw,92cqh)]' : 'w-[min(88cqw,88cqh)]'
       )}
       style={{ ...getSpritePosition(visualCardId, currentImageSource), aspectRatio: '256 / 296' }}
      />
     </>
    ) : (
-    <img
-     key={currentImageSource}
+    <motion.img
+     key={`${currentImageSource}-${attackBurstCounter}`}
      src={currentImageSource}
      alt={displayCardName}
-     className={cn(
-      'relative z-10 h-full w-full object-contain transition-transform duration-300',
-      useAttackMotionArt && 'scale-[1.05]'
-     )}
+     animate={
+      isAttackBurstActive && !performanceMode && attackMotionMeta
+       ? getCharacterAttackLungeAnimation(attackMotionMeta.attackAnimation)
+       : { scale: useAttackMotionArt ? 1.05 : 1, x: 0, y: 0, rotate: 0 }
+     }
+     transition={{ duration: performanceMode ? 0 : 0.42, ease: 'easeOut' }}
+     className="relative z-10 h-full w-full object-contain"
      referrerPolicy="no-referrer"
      onError={() => setImageSourceIndex(currentIndex => currentIndex + 1)}
     />
@@ -795,17 +816,6 @@ export const CardItem = React.memo(({ card, className, onClick, isLocked, isSele
    })}
   </div>
  </div>
-
- {/* Dynamic Attack Motion Burst Overlay when card is placed on board or attacks/captures */}
- {isAttackBurstActive && visualCardId && (
-  <SlotAttackMotionBurst
-   cardId={visualCardId}
-   isPlayer={owner !== 'ai'}
-   language={language}
-   lowSpecMode={performanceMode}
-   triggerKey={attackBurstCounter}
-  />
- )}
 
  {/* Board view compact top-left power indicator */}
  {isOnBoard && <div className={cn(

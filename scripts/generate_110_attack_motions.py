@@ -544,43 +544,27 @@ def render_character_attack_image(card: dict) -> Image.Image:
         raw_arr[by0:by1, bx0:bx1] = center_patch
     base_seat = Image.fromarray(raw_arr).resize((W, H), Image.Resampling.LANCZOS)
 
-    # 1. Background Layer: High-energy radial action lines & elemental shock halo behind character
+    # 1. Background Layer: Clean luminous aura & radial speed accents BEHIND the character (never cluttering the character!)
     bg_layer = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     bg_draw = ImageDraw.Draw(bg_layer)
-    cx, cy = W * 0.48, H * 0.52
+    cx, cy = W * 0.50, H * 0.50
     is_high = rarity in ("gold", "platinum", "diamond", "legendary") or power >= 24
 
-    num_rays = 24 if is_high else 18
+    num_rays = 14 if is_high else 10
     for i in range(num_rays):
-        ang = (i / num_rays) * 2 * math.pi + rng.uniform(-0.06, 0.06)
-        r_in = rng.uniform(85, 125)
-        r_out = rng.uniform(225, 252)
-        da = rng.uniform(0.025, 0.05)
+        ang = (i / num_rays) * 2 * math.pi + rng.uniform(-0.05, 0.05)
+        r_in = rng.uniform(135, 165)
+        r_out = rng.uniform(228, 252)
+        da = rng.uniform(0.018, 0.036)
         p1 = (cx + r_in * math.cos(ang - da), cy + r_in * math.sin(ang - da))
         p2 = (cx + r_out * math.cos(ang), cy + r_out * math.sin(ang))
         p3 = (cx + r_in * math.cos(ang + da), cy + r_in * math.sin(ang + da))
-        col = (*pal["mid"], 185) if i % 2 == 0 else (*pal["bright"], 210)
+        col = (*pal["bright"], 155) if i % 2 == 0 else (*pal["core"], 175)
         bg_draw.polygon([p1, p2, p3], fill=col)
 
-    # Back aura ring
-    bg_draw.ellipse([cx - 212, cy - 202, cx + 212, cy + 202], outline=(*pal["deep"], 195), width=12)
-    bg_draw.ellipse([cx - 206, cy - 196, cx + 206, cy + 196], outline=(*pal["bright"], 235), width=5)
+    bg_layer = bg_layer.filter(ImageFilter.GaussianBlur(radius=1.5))
 
-    # For 'spin' or 'burst', draw the upper-back half of the vortex ring on bg_layer (behind character!)
-    if atk_type in ("spin", "burst"):
-        draw_bezier_slash_ribbon(
-            bg_draw,
-            (W * 0.10, H * 0.48),
-            (W * 0.28, H * 0.14),
-            (W * 0.74, H * 0.14),
-            (W * 0.92, H * 0.48),
-            max_width=40,
-            pal=pal,
-        )
-
-    bg_layer = bg_layer.filter(ImageFilter.GaussianBlur(radius=1.0))
-
-    # 2. Character Layer: Articulated Attack Pose Warp + Motion Echoes + Rim Light
+    # 2. Character Layer: Articulated Attack Pose Warp + Motion Echoes + Crisp Rim Light
     warped_char = warp_character_attack_pose(base_seat, atk_type, cid)
     char_layer = build_character_with_motion_echo(warped_char, pal, atk_type)
 
@@ -732,15 +716,33 @@ def render_character_attack_image(card: dict) -> Image.Image:
             )
         draw_impact_star(fg_draw, W * 0.14, H * 0.58, 78, 20, 6, 10, pal)
 
-    draw_perimeter_particles(fg_draw, W, H, pal, rng, count=16 if is_high else 11)
+    draw_perimeter_particles(fg_draw, W, H, pal, rng, count=10 if is_high else 7)
     fg_layer = apply_face_protection_mask(fg_layer)
-    fg_bloom = fg_layer.filter(ImageFilter.GaussianBlur(radius=4.5))
+
+    # Keep the character 100% hero-focused and unobstructed:
+    # Mask out interior character body from fg_layer so attack arcs wrap BEHIND and AROUND the outer edge/weapon tip,
+    # never burying or obscuring the character art!
+    eroded_body = np.array(
+        Image.fromarray(np.clip(w_alpha, 0, 255).astype(np.uint8)).filter(ImageFilter.MinFilter(9)),
+        dtype=np.float32,
+    ) / 255.0
+    fg_arr = np.array(fg_layer, dtype=np.float32)
+    # Full intensity outside character + on weapon/silhouette rim, strongly attenuated (12% max) inside character body
+    fg_arr[:, :, 3] *= (1.0 - eroded_body * 0.88)
+    fg_rim_only = Image.fromarray(np.clip(fg_arr, 0, 255).astype(np.uint8))
+
+    # Full attack arcs also placed BEHIND the character so the silhouette bursts out in front of the slash wave!
+    bg_slash = fg_layer.copy()
+    if hole_fill.max() > 0.1:
+        bgs_arr = np.array(bg_slash, dtype=np.float32)
+        bgs_arr[:, :, 3] *= 1.0 - hole_fill
+        bg_slash = Image.fromarray(np.clip(bgs_arr, 0, 255).astype(np.uint8))
 
     comp = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     comp.alpha_composite(bg_layer)
+    comp.alpha_composite(bg_slash)
     comp.alpha_composite(char_layer)
-    comp.alpha_composite(fg_bloom)
-    comp.alpha_composite(fg_layer)
+    comp.alpha_composite(fg_rim_only)
 
     return comp.resize((256, 296), Image.Resampling.LANCZOS)
 
