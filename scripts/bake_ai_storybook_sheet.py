@@ -114,22 +114,47 @@ def frame_storybook_panel(panel: Image.Image, ep_num: int, page_num: int, total_
             break
 
 
+def load_scripts() -> dict:
+    raw_ts = SCRIPT_TS_PATH.read_text(encoding="utf-8")
+    idx_start = raw_ts.find("export const KADAN_RPG_NOVEL_SCRIPTS:")
+    idx_json = raw_ts.find("= {\n", idx_start) + 2
+    idx_end = raw_ts.rfind("};") + 1
+    if idx_start < 0 or idx_json < 2 or idx_end <= idx_json:
+        print("Could not parse KADAN_RPG_NOVEL_SCRIPTS")
+        sys.exit(1)
+    json_str = re.sub(r'^  (\d+): \[', r'  "\1": [', raw_ts[idx_json:idx_end], flags=re.M)
+    return json.loads(json_str)
+
+
+def print_prompt_for_episode(ep_num: int):
+    scripts = load_scripts()
+    lines = [l for l in scripts.get(str(ep_num), []) if l.get("speaker") != "choice"]
+    print(f"=== EPISODE {ep_num:02d} (Ref: /Users/dayyoung/project/snshero/public/images/webtoon/raw_ep_sheets/ep{ep_num:02d}_char_ref.png) ===")
+    for i, l in enumerate(lines[:9], 1):
+        c_list = []
+        for c in l.get("sceneCharacters", []):
+            n = c["nameEn"]
+            r = c["roleEn"].split("·")[0].strip()
+            c_list.append(f"{n} ({r})")
+        chars = ", ".join(c_list)
+        text_en = re.sub(r"\s+", " ", l.get("textEn", ""))[:220]
+        print(f"Panel {i}: [Characters in scene: {chars}] {text_en}...")
+
+
 def main():
     if len(sys.argv) < 2:
-        print("Usage: python3 scripts/bake_ai_storybook_sheet.py <ep_num>")
+        print("Usage: python3 scripts/bake_ai_storybook_sheet.py <ep_num> | --prompt <ep_num>")
         sys.exit(1)
+    if sys.argv[1] == "--prompt":
+        print_prompt_for_episode(int(sys.argv[2]))
+        return
     ep_num = int(sys.argv[1])
     sheet_path = RAW_SHEETS_DIR / f"ep{ep_num:02d}_storybook_sheet.png"
     if not sheet_path.exists():
         print(f"Sheet not found: {sheet_path}")
         sys.exit(1)
 
-    raw_ts = SCRIPT_TS_PATH.read_text(encoding="utf-8")
-    m = re.search(r"export const KADAN_RPG_NOVEL_SCRIPTS: Record<number, KadanRpgDialogLine\[\]> = (\{.*\});\s*$", raw_ts, re.S)
-    if not m:
-        print("Could not parse KADAN_RPG_NOVEL_SCRIPTS")
-        sys.exit(1)
-    scripts = json.loads(m.group(1))
+    scripts = load_scripts()
     ep_lines = scripts.get(str(ep_num), [])
     if not ep_lines:
         print(f"No lines for EP {ep_num}")
