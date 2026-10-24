@@ -4,6 +4,52 @@ import { KADAN_RPG_EVENTS, getKadanRpgRegion, type KadanRpgTile } from '../conte
 
 export const KADAN_RPG_PROGRESS_STORAGE_KEY = 'hero_kadan_rpg_progress';
 export const KADAN_RPG_AUTO_MODE_STORAGE_KEY = 'hero_kadan_rpg_auto_mode';
+export const KADAN_RPG_ART_STYLE_STORAGE_KEY = 'hero_storybook_art_style';
+
+export type KadanArtStyleMode = 'animation' | 'liveaction';
+
+export const loadKadanArtStyleMode = (): KadanArtStyleMode => {
+  try {
+    if (typeof window === 'undefined') return 'animation';
+    const raw = localStorage.getItem(KADAN_RPG_ART_STYLE_STORAGE_KEY);
+    return raw === 'liveaction' ? 'liveaction' : 'animation';
+  } catch {
+    return 'animation';
+  }
+};
+
+export const saveKadanArtStyleMode = (mode: KadanArtStyleMode): KadanArtStyleMode => {
+  const safeMode: KadanArtStyleMode = mode === 'liveaction' ? 'liveaction' : 'animation';
+  try {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(KADAN_RPG_ART_STYLE_STORAGE_KEY, safeMode);
+      window.dispatchEvent(
+        new CustomEvent('hero_art_style_updated', { detail: { artStyleMode: safeMode } })
+      );
+    }
+  } catch {
+    // ignore storage errors
+  }
+  return safeMode;
+};
+
+/**
+ * Converts 1:1 between Animation cuts (webtoon / storybook) and Movie Live-Action cuts (cinema / storybook_liveaction).
+ */
+export const resolveKadanArtStyleUrl = (
+  rawUrl: string | undefined,
+  mode: KadanArtStyleMode
+): string => {
+  if (!rawUrl) return '';
+  if (mode === 'liveaction') {
+    return rawUrl
+      .replace('/images/webtoon/episode_', '/images/cinema/episode_')
+      .replace('/images/storybook/ep_', '/images/storybook_liveaction/ep_');
+  }
+  return rawUrl
+    .replace('/images/cinema/episode_', '/images/webtoon/episode_')
+    .replace('/images/storybook_liveaction/ep_', '/images/storybook/ep_');
+};
 
 export interface KadanRpgProgress {
   season: string;
@@ -16,6 +62,7 @@ export interface KadanRpgProgress {
   claimedRewardIds: string[];
   lastTile: KadanRpgTile;
   autoMode: boolean;
+  artStyleMode: KadanArtStyleMode;
   rebirthLevel: number;
   lastAutoEventId?: string;
   updatedAt: number;
@@ -53,6 +100,7 @@ const createDefaultProgress = (season: string): KadanRpgProgress => {
     claimedRewardIds: [],
     lastTile: firstRegion.startTile,
     autoMode: true,
+    artStyleMode: loadKadanArtStyleMode(),
     rebirthLevel: 0,
     updatedAt: Date.now(),
   };
@@ -71,6 +119,11 @@ const normalizeProgress = (season: string, value: unknown): KadanRpgProgress => 
   const region = getKadanRpgRegion(
     typeof value.currentRegionId === 'string' ? value.currentRegionId : currentEvent.regionId,
   );
+  const storedArtStyle = loadKadanArtStyleMode();
+  const artStyleMode: KadanArtStyleMode =
+    value.artStyleMode === 'liveaction' || value.artStyleMode === 'animation'
+      ? value.artStyleMode
+      : storedArtStyle;
 
   return {
     season,
@@ -83,6 +136,7 @@ const normalizeProgress = (season: string, value: unknown): KadanRpgProgress => 
     claimedRewardIds: stringArray(value.claimedRewardIds),
     lastTile: tileOrFallback(value.lastTile, region.startTile),
     autoMode: typeof value.autoMode === 'boolean' ? value.autoMode : true,
+    artStyleMode,
     rebirthLevel: typeof value.rebirthLevel === 'number' && Number.isFinite(value.rebirthLevel)
       ? Math.max(0, Math.floor(value.rebirthLevel))
       : 0,
@@ -94,20 +148,28 @@ const normalizeProgress = (season: string, value: unknown): KadanRpgProgress => 
 export const loadKadanRpgProgress = (season: string): KadanRpgProgress => {
   const raw = getSeasonItem(KADAN_RPG_PROGRESS_STORAGE_KEY, season);
   const autoModeRaw = getSeasonItem(KADAN_RPG_AUTO_MODE_STORAGE_KEY, season);
+  const globalArtStyleRaw =
+    typeof window !== 'undefined' ? localStorage.getItem(KADAN_RPG_ART_STYLE_STORAGE_KEY) : null;
 
   if (!raw) {
     const base = createDefaultProgress(season);
     return {
       ...base,
       autoMode: autoModeRaw === null ? base.autoMode : autoModeRaw === 'true',
+      artStyleMode: globalArtStyleRaw === 'liveaction' ? 'liveaction' : base.artStyleMode,
     };
   }
 
   try {
     const parsed = normalizeProgress(season, JSON.parse(raw) as unknown);
+    const resolvedArtStyle: KadanArtStyleMode =
+      globalArtStyleRaw === 'liveaction' || globalArtStyleRaw === 'animation'
+        ? globalArtStyleRaw
+        : parsed.artStyleMode;
     return {
       ...parsed,
       autoMode: autoModeRaw === null ? parsed.autoMode : autoModeRaw === 'true',
+      artStyleMode: resolvedArtStyle,
     };
   } catch {
     return createDefaultProgress(season);
@@ -123,6 +185,13 @@ export const saveKadanRpgProgress = (season: string, progress: KadanRpgProgress)
 
   setSeasonItem(KADAN_RPG_PROGRESS_STORAGE_KEY, season, JSON.stringify(normalized));
   setSeasonItem(KADAN_RPG_AUTO_MODE_STORAGE_KEY, season, normalized.autoMode ? 'true' : 'false');
+  try {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(KADAN_RPG_ART_STYLE_STORAGE_KEY, normalized.artStyleMode);
+    }
+  } catch {
+    // ignore storage errors
+  }
   return normalized;
 };
 
@@ -148,6 +217,27 @@ export const useKadanRpgProgress = (season: string) => {
     setProgress(loadKadanRpgProgress(season));
   }, [season]);
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const handleArtStyleUpdated = (e: Event) => {
+      const customEvent = e as CustomEvent<{ artStyleMode?: KadanArtStyleMode }>;
+      const nextStyle =
+        customEvent.detail?.artStyleMode === 'liveaction'
+          ? 'liveaction'
+          : customEvent.detail?.artStyleMode === 'animation'
+          ? 'animation'
+          : loadKadanArtStyleMode();
+      setProgress((previous) => {
+        if (previous.artStyleMode === nextStyle) return previous;
+        return saveKadanRpgProgress(season, { ...previous, artStyleMode: nextStyle });
+      });
+    };
+    window.addEventListener('hero_art_style_updated', handleArtStyleUpdated);
+    return () => {
+      window.removeEventListener('hero_art_style_updated', handleArtStyleUpdated);
+    };
+  }, [season]);
+
   const persist = useCallback((updater: (previous: KadanRpgProgress) => KadanRpgProgress) => {
     setProgress((previous) => {
       const next = saveKadanRpgProgress(season, updater(previous));
@@ -160,6 +250,20 @@ export const useKadanRpgProgress = (season: string) => {
   const setAutoMode = useCallback((autoMode: boolean) => {
     persist((previous) => ({ ...previous, autoMode }));
   }, [persist]);
+
+  const setArtStyleMode = useCallback((artStyleMode: KadanArtStyleMode) => {
+    const safeMode = saveKadanArtStyleMode(artStyleMode);
+    persist((previous) => ({ ...previous, artStyleMode: safeMode }));
+  }, [persist]);
+
+  const toggleArtStyleMode = useCallback(() => {
+    setProgress((previous) => {
+      const nextMode: KadanArtStyleMode =
+        previous.artStyleMode === 'liveaction' ? 'animation' : 'liveaction';
+      saveKadanArtStyleMode(nextMode);
+      return saveKadanRpgProgress(season, { ...previous, artStyleMode: nextMode });
+    });
+  }, [season]);
 
   const setLastTile = useCallback((lastTile: KadanRpgTile) => {
     persist((previous) => ({ ...previous, lastTile }));
@@ -216,8 +320,13 @@ export const useKadanRpgProgress = (season: string) => {
   }, [persist]);
 
   const resetProgress = useCallback(() => {
-    const next = saveKadanRpgProgress(season, createDefaultProgress(season));
-    setProgress(next);
+    setProgress((previous) => {
+      const base = createDefaultProgress(season);
+      return saveKadanRpgProgress(season, {
+        ...base,
+        artStyleMode: previous.artStyleMode,
+      });
+    });
   }, [season]);
 
   const reincarnateProgress = useCallback(() => {
@@ -227,6 +336,7 @@ export const useKadanRpgProgress = (season: string) => {
         ...base,
         rebirthLevel: previous.rebirthLevel + 1,
         autoMode: true,
+        artStyleMode: previous.artStyleMode,
       });
       if (typeof window !== 'undefined') {
         window.dispatchEvent(new CustomEvent('hero_reincarnation_updated', {
@@ -241,6 +351,9 @@ export const useKadanRpgProgress = (season: string) => {
     progress,
     nextEvent,
     setAutoMode,
+    artStyleMode: progress.artStyleMode,
+    setArtStyleMode,
+    toggleArtStyleMode,
     setLastTile,
     markNpcMet,
     markChestOpened,

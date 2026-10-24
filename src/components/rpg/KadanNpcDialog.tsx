@@ -30,12 +30,21 @@ import {
   type KadanRpgSceneCharacter,
   type KadanRpgSubCut,
 } from '../../content/kadanRpgNovelScript';
+import {
+  loadKadanArtStyleMode,
+  resolveKadanArtStyleUrl,
+  saveKadanArtStyleMode,
+  type KadanArtStyleMode,
+} from '../../hooks/useKadanRpgProgress';
 
 interface KadanNpcDialogProps {
   event: KadanRpgEvent;
   language: Language;
   isCompleted: boolean;
   autoMode: boolean;
+  artStyleMode?: KadanArtStyleMode;
+  onChangeArtStyleMode?: (mode: KadanArtStyleMode) => void;
+  onToggleArtStyleMode?: () => void;
   canStartBattle: boolean;
   canClaimReward: boolean;
   rebirthLevel?: number;
@@ -122,6 +131,9 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
   language,
   isCompleted,
   autoMode,
+  artStyleMode: propArtStyleMode,
+  onChangeArtStyleMode,
+  onToggleArtStyleMode,
   canStartBattle,
   canClaimReward,
   rebirthLevel = 0,
@@ -150,38 +162,55 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
   const [lineIndex, setLineIndex] = useState(0);
   const [activeSubCutIdx, setActiveSubCutIdx] = useState<number | null>(null);
   const [viewGranularity, setViewGranularity] = useState<'storybook' | 'all_cuts'>('storybook');
-  const [artStyleMode, setArtStyleMode] = useState<'animation' | 'liveaction'>(() => {
-    try {
-      return localStorage.getItem('hero_storybook_art_style') === 'liveaction'
-        ? 'liveaction'
-        : 'animation';
-    } catch {
-      return 'animation';
-    }
-  });
+  const [localArtStyleMode, setLocalArtStyleMode] = useState<KadanArtStyleMode>(() =>
+    propArtStyleMode ?? loadKadanArtStyleMode()
+  );
   const [selectedCharCardId, setSelectedCharCardId] = useState<number | null>(null);
   const [showSceneIndexModal, setShowSceneIndexModal] = useState(false);
   const [autoSpeedMode, setAutoSpeedMode] = useState<'normal' | 'slow' | 'fast'>('normal');
 
-  const toggleArtStyleMode = useCallback(() => {
-    setArtStyleMode((prev) => {
-      const next = prev === 'animation' ? 'liveaction' : 'animation';
-      try {
-        localStorage.setItem('hero_storybook_art_style', next);
-      } catch {
-        // ignore storage error
-      }
-      return next;
-    });
+  const artStyleMode = propArtStyleMode ?? localArtStyleMode;
+
+  useEffect(() => {
+    if (propArtStyleMode) {
+      setLocalArtStyleMode(propArtStyleMode);
+    }
+  }, [propArtStyleMode]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const handleStyleUpdated = (e: Event) => {
+      const customEvent = e as CustomEvent<{ artStyleMode?: KadanArtStyleMode }>;
+      const next =
+        customEvent.detail?.artStyleMode === 'liveaction' ? 'liveaction' : 'animation';
+      setLocalArtStyleMode(next);
+    };
+    window.addEventListener('hero_art_style_updated', handleStyleUpdated);
+    return () => {
+      window.removeEventListener('hero_art_style_updated', handleStyleUpdated);
+    };
   }, []);
 
-  const resolveArtStyleUrl = useCallback(
-    (rawUrl: string) => {
-      if (artStyleMode !== 'liveaction') return rawUrl;
-      return rawUrl
-        .replace('/images/webtoon/episode_', '/images/cinema/episode_')
-        .replace('/images/storybook/ep_', '/images/storybook_liveaction/ep_');
+  const handleSetArtStyleMode = useCallback(
+    (nextMode: KadanArtStyleMode) => {
+      const saved = saveKadanArtStyleMode(nextMode);
+      setLocalArtStyleMode(saved);
+      onChangeArtStyleMode?.(saved);
     },
+    [onChangeArtStyleMode]
+  );
+
+  const toggleArtStyleMode = useCallback(() => {
+    if (onToggleArtStyleMode) {
+      onToggleArtStyleMode();
+      return;
+    }
+    const next: KadanArtStyleMode = artStyleMode === 'animation' ? 'liveaction' : 'animation';
+    handleSetArtStyleMode(next);
+  }, [artStyleMode, handleSetArtStyleMode, onToggleArtStyleMode]);
+
+  const resolveArtStyleUrl = useCallback(
+    (rawUrl: string) => resolveKadanArtStyleUrl(rawUrl, artStyleMode),
     [artStyleMode]
   );
 
@@ -623,33 +652,47 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
           </div>
 
           <div className="flex items-center gap-1.5 flex-wrap">
-            {/* 애니메이션 컷 vs 70mm 실사 영화 컷 (2,009컷) 1클릭 전환 */}
-            <button
-              type="button"
-              onClick={toggleArtStyleMode}
-              className={cn(
-                'min-h-[38px] sm:min-h-[40px] rounded-sm px-2.5 py-1 text-[11px] font-mono font-bold border transition-colors cursor-pointer flex items-center gap-1.5',
-                artStyleMode === 'liveaction'
-                  ? 'bg-amber-500 border-amber-300 text-stone-950 font-black'
-                  : 'bg-stone-900 border-stone-700 text-cyan-300 hover:bg-stone-800'
-              )}
-              title={
-                language === 'ko'
-                  ? '오늘 생성된 애니메이션 컷(2,009컷)과 70mm 실사 영화 제작용 컷(2,009컷)을 1:1로 즉시 전환합니다'
-                  : 'Toggle 1:1 between Animation Cuts (2,009 cuts) and 70mm Photorealistic Live-Action Movie Cuts (2,009 cuts)'
-              }
+            {/* 애니메이션 vs 무비(실사) 이미지 스타일 토글 (저장됨) */}
+            <div
+              className="inline-flex min-h-[40px] items-center rounded-sm border border-stone-700 bg-stone-950 p-0.5 font-mono"
+              role="group"
+              aria-label={language === 'ko' ? '애니메이션/무비 이미지 스타일 토글' : 'Animation / Movie Image Style Toggle'}
             >
-              <Film size={13} />
-              <span>
-                {artStyleMode === 'liveaction'
-                  ? language === 'ko'
-                    ? '🎬 실사 영화 컷 (ON)'
-                    : '🎬 Live-Action (ON)'
-                  : language === 'ko'
-                  ? '🎬 실사 영화 컷 보기'
-                  : '🎬 Live-Action Cuts'}
-              </span>
-            </button>
+              <button
+                type="button"
+                onClick={() => handleSetArtStyleMode('animation')}
+                className={cn(
+                  'min-h-[34px] px-2.5 py-1 rounded-sm text-[11px] font-mono font-bold transition-colors cursor-pointer flex items-center gap-1',
+                  artStyleMode === 'animation'
+                    ? 'bg-cyan-400 text-stone-950 font-black'
+                    : 'text-stone-400 hover:text-stone-200'
+                )}
+                title={
+                  language === 'ko'
+                    ? '애니메이션 이미지 스타일로 게임 진행 (설정 자동 저장)'
+                    : 'Play with Animation image style (Saved)'
+                }
+              >
+                <span>🎨 {language === 'ko' ? '애니메이션' : 'Anime'}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSetArtStyleMode('liveaction')}
+                className={cn(
+                  'min-h-[34px] px-2.5 py-1 rounded-sm text-[11px] font-mono font-bold transition-colors cursor-pointer flex items-center gap-1',
+                  artStyleMode === 'liveaction'
+                    ? 'bg-amber-400 text-stone-950 font-black'
+                    : 'text-stone-400 hover:text-stone-200'
+                )}
+                title={
+                  language === 'ko'
+                    ? '무비(70mm 실사) 이미지 스타일로 게임 진행 (설정 자동 저장)'
+                    : 'Play with Movie (70mm Live-Action) image style (Saved)'
+                }
+              >
+                <span>🎬 {language === 'ko' ? '무비' : 'Movie'}</span>
+              </button>
+            </div>
 
             {/* 그림책 보기 모드 전환: 장절 완독(10장면) vs 대사/문장별 50컷 */}
             <button
@@ -720,16 +763,41 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
                 loading="eager"
               />
 
-              {/* 상단 장면 타이틀 오버레이 배지 */}
-              <div className="pointer-events-none absolute inset-x-0 top-0 bg-black/65 px-3 py-1.5 flex items-center justify-between gap-2 border-b border-white/10">
-                <span className="truncate text-[11px] sm:text-xs font-mono font-bold text-amber-200">
+              {/* 상단 장면 타이틀 & 현재 이미지 스타일 오버레이 배지 */}
+              <div className="absolute inset-x-0 top-0 bg-black/70 px-3 py-1.5 flex items-center justify-between gap-2 border-b border-white/10">
+                <span className="truncate text-[11px] sm:text-xs font-mono font-bold text-amber-200 pointer-events-none">
                   {sceneTitle}
                 </span>
-                <span className="shrink-0 rounded-sm bg-amber-500/20 border border-amber-400/50 px-2 py-0.5 text-[10px] font-mono font-black text-amber-300">
-                  {language === 'ko'
-                    ? `소설 원문 100% 수록 · ${lineIndex + 1}/${conversationLines.length}장면`
-                    : `100% Full Novel · Page ${lineIndex + 1}/${conversationLines.length}`}
-                </span>
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <button
+                    type="button"
+                    onClick={toggleArtStyleMode}
+                    className={cn(
+                      'rounded-sm px-2 py-0.5 text-[10px] font-mono font-black border cursor-pointer transition-colors',
+                      artStyleMode === 'liveaction'
+                        ? 'bg-amber-400 text-stone-950 border-amber-300'
+                        : 'bg-cyan-400 text-stone-950 border-cyan-300'
+                    )}
+                    title={
+                      language === 'ko'
+                        ? '클릭하여 애니메이션 / 무비(실사) 이미지 스타일 전환 (자동 저장)'
+                        : 'Click to toggle Animation / Movie image style (Saved)'
+                    }
+                  >
+                    {artStyleMode === 'liveaction'
+                      ? language === 'ko'
+                        ? '🎬 무비(실사) 모드'
+                        : '🎬 MOVIE MODE'
+                      : language === 'ko'
+                      ? '🎨 애니메이션 모드'
+                      : '🎨 ANIME MODE'}
+                  </button>
+                  <span className="pointer-events-none hidden sm:inline-block rounded-sm bg-amber-500/20 border border-amber-400/50 px-2 py-0.5 text-[10px] font-mono font-black text-amber-300">
+                    {language === 'ko'
+                      ? `${lineIndex + 1}/${conversationLines.length}장면`
+                      : `Page ${lineIndex + 1}/${conversationLines.length}`}
+                  </span>
+                </div>
               </div>
 
               {/* 좌우 그림책 페이지 넘김 버튼 (44px+ 터치 타깃) */}

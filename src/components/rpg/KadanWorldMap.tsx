@@ -4,6 +4,7 @@ import { cn, getAssetUrl } from '../../lib/utils';
 import { t } from '../../lib/i18n';
 import type { Language } from '../../types';
 import type { KadanRpgEvent, KadanRpgRegion, KadanRpgTile } from '../../content/kadanRpgStory';
+import type { KadanArtStyleMode } from '../../hooks/useKadanRpgProgress';
 
 interface KadanWorldMapProps {
  region: KadanRpgRegion;
@@ -13,6 +14,8 @@ interface KadanWorldMapProps {
  activeEventId?: string;
  completedEventIds: string[];
  rebirthLevel?: number;
+ artStyleMode?: KadanArtStyleMode;
+ onToggleArtStyleMode?: () => void;
  language: Language;
  lowSpecMode: boolean;
  onTilePress: (tile: KadanRpgTile) => void;
@@ -69,6 +72,8 @@ export const KadanWorldMap: React.FC<KadanWorldMapProps> = ({
  activeEventId,
  completedEventIds,
  rebirthLevel = 0,
+ artStyleMode = 'animation',
+ onToggleArtStyleMode,
  language,
  lowSpecMode,
  onTilePress,
@@ -84,13 +89,13 @@ export const KadanWorldMap: React.FC<KadanWorldMapProps> = ({
  )}>
  <div className="mb-3 flex items-center justify-between gap-3 flex-wrap">
  <div>
- <div className="flex items-center gap-2">
- <p className="text-xs font-bold uppercase tracking-normal text-slate-500/90">{t('kadan_rpg_world_map', language)}</p>
+ <div className="flex items-center gap-2 flex-wrap">
+ <p className="text-xs font-bold uppercase tracking-normal text-slate-400">{t('kadan_rpg_world_map', language)}</p>
  {/* Reincarnation Badge on World Map */}
  <span className={cn(
- "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-black tracking-tight border select-none shadow-xs font-mono",
+ "inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[11px] font-black tracking-tight border select-none font-mono",
  rebirthLevel > 0
- ? "bg-amber-950/90 text-amber-300 border-amber-500/80 shadow-[0_0_8px_rgba(245,158,11,0.3)] animate-pulse"
+ ? "bg-amber-950/90 text-amber-300 border-amber-500/80 animate-pulse"
  : "bg-slate-900/80 text-emerald-300 border-slate-700/80"
  )}>
  <span>{rebirthLevel > 0 ? '👑' : '🌱'}</span>
@@ -100,8 +105,35 @@ export const KadanWorldMap: React.FC<KadanWorldMapProps> = ({
  : t('kadan_rpg_first_journey_badge', language)}
  </span>
  </span>
+ {onToggleArtStyleMode && (
+ <button
+ type="button"
+ onClick={onToggleArtStyleMode}
+ className={cn(
+ "inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[11px] font-black tracking-tight border cursor-pointer transition-colors font-mono",
+ artStyleMode === 'liveaction'
+ ? "bg-amber-400 text-stone-950 border-amber-300"
+ : "bg-cyan-400 text-stone-950 border-cyan-300"
+ )}
+ title={
+ language === 'ko'
+ ? '클릭하여 애니메이션 / 무비(실사) 이미지 스타일 토글 (자동 저장)'
+ : 'Click to toggle Animation / Movie image style (Saved)'
+ }
+ >
+ <span>
+ {artStyleMode === 'liveaction'
+ ? language === 'ko'
+ ? '🎬 무비(실사) 스타일 진행 중'
+ : '🎬 MOVIE STYLE ON'
+ : language === 'ko'
+ ? '🎨 애니메이션 스타일 진행 중'
+ : '🎨 ANIME STYLE ON'}
+ </span>
+ </button>
+ )}
  </div>
- <h2 className="text-lg font-extrabold tracking-normal">{t(region.nameKey, language)}</h2>
+ <h2 className="text-lg font-extrabold tracking-normal text-white">{t(region.nameKey, language)}</h2>
  </div>
  <div className="flex items-center gap-1 rounded-none bg-white/80 px-3 py-2 text-xs font-bold text-slate-700 shadow-sm">
  <MapPin size={16} />

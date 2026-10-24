@@ -2,6 +2,26 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-25 05:50 KST] [메인게임(/main) 애니메이션(🎨) / 무비(🎬) 이미지 스타일 실시간 토글 및 로컬스토리지 영구 저장 구현 완료]
+- **요청 사항**:
+  - "/main 게임을 진행할때 에니메이션/무비 이미지 스타일을 토글할 수 있게해서 해당 이미지 스타일로 게임을 진행. 해당 토글 설정은 저장해줘"
+- **주요 구현 및 수정 내역**:
+  1. **로컬스토리지 영구 저장 및 전역 실시간 동기화 훅 구현 ([`src/hooks/useKadanRpgProgress.ts`](file:///Users/dayyoung/project/snshero/src/hooks/useKadanRpgProgress.ts))**:
+     - `KadanArtStyleMode = 'animation' | 'liveaction'` 타입 및 `KADAN_RPG_ART_STYLE_STORAGE_KEY = 'hero_storybook_art_style'` 상수 정의.
+     - `loadKadanArtStyleMode()`, `saveKadanArtStyleMode()`, `resolveKadanArtStyleUrl()` 유틸리티 및 `KadanRpgProgress.artStyleMode` 필드를 추가하여, 로컬스토리지(`hero_storybook_art_style` 및 `hero_kadan_rpg_progress_{season}`)에 이중 영구 보존하고 새로고침·회차 이동·자동 환생(`reincarnateProgress`) 이후에도 선택한 이미지 스타일이 초기화되지 않도록 구현.
+     - 커스텀 이벤트(`hero_art_style_updated`)를 통해 `/main` 상단 바, 월드맵, 하단 진행도 카드, 그림책 대화창, 회차 클리어 모달, 엔딩 모달 간 토글 상태를 실시간 동기화.
+  2. **`/main` 메인 게임 화면 전역 토글 및 스타일별 이미지 렌더링 연동 ([`src/views/KadanRpgView.tsx`](file:///Users/dayyoung/project/snshero/src/views/KadanRpgView.tsx), [`src/components/rpg/KadanWorldMap.tsx`](file:///Users/dayyoung/project/snshero/src/components/rpg/KadanWorldMap.tsx))**:
+     - `/main` 상단 헤더 바(자동 진행 버튼 좌측)에 **`[🎨 애니메이션 | 🎬 무비]`** 2단 토글 버튼을 상시 배치.
+     - 월드맵(`KadanWorldMap.tsx`) 상단 배지 바에 현재 진행 중인 이미지 스타일(`🎨 애니메이션 스타일 진행 중` / `🎬 무비(실사) 스타일 진행 중`) 배지 및 1클릭 전환 토글 연동.
+     - `/main` 맵 하단 진행도(Progress) 카드에 현재 회차의 16:9 대표 장면 썸네일 미리보기(애니메이션 컷 ↔ 70mm 무비 실사 컷 실시간 전환)와 **`🎨 애니메이션 스타일 (ON)` / `🎬 무비 스타일 (ON)`** 토글 버튼 추가.
+     - 40화 완결 엔딩/환생 모달(`isComplete`) 헤더에 스타일 토글 버튼 추가 및 에필로그 10장면 이미지(`line.sceneImageUrl`)에 `resolveKadanArtStyleUrl` 적용.
+  3. **그림책 대화창 및 회차 종료 미디어 모달 1:1 스타일 연동 ([`src/components/rpg/KadanNpcDialog.tsx`](file:///Users/dayyoung/project/snshero/src/components/rpg/KadanNpcDialog.tsx), [`src/components/rpg/EpisodeMediaWatchModal.tsx`](file:///Users/dayyoung/project/snshero/src/components/rpg/EpisodeMediaWatchModal.tsx))**:
+     - `KadanNpcDialog.tsx`: 상단 헤더에 **`[🎨 애니메이션 | 🎬 무비]`** 세그먼트 토글 및 16:9 장면 캔버스 우측 상단에 클릭 가능한 현재 모드 배지(`🎨 애니메이션 모드` / `🎬 무비(실사) 모드`)를 배치하여, 장절 통합 모드(400장면)와 50컷 세밀 보기 모드(2,009컷), 장면 목차 썸네일 전체가 선택한 이미지 스타일로 즉시 전환되도록 구현.
+     - `EpisodeMediaWatchModal.tsx`: 회차 종료 보상 모달에도 `[🎨 애니 | 🎬 무비]` 토글 및 선택한 스타일의 회차 대표 16:9 스틸컷 미리보기를 표시.
+- **검증 결과**:
+  - `npx tsc --noEmit` (0 errors) 및 `npm run build` 프로덕션 빌드 무결점 통과 (`✓ built in 18.62s`).
+  - 로컬 Git 커밋 및 구글 폼 완료 보고서 제출 완료.
+
 ## [2026-10-25 05:22 KST] [1~40화 전편(100.0%) AI Image-to-Image 70mm 실사 마스터 시트(40종) 및 실사 이미지 2,009컷 전수 베이킹 완수 & 스케줄 정상 종료]
 - **요청 사항**:
   - "오늘 생성한 이미지 2009컷이 맘에 들어. 해당 에니메이션컷을 사용해서 실사 이미지컷도 2009컷 생성할 수 있을까. 나중에 영화제작에 활용하려고해"

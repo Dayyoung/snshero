@@ -3,6 +3,13 @@ import { ExternalLink, Film, CheckCircle2, Sparkles, Play, ArrowRight } from 'lu
 import { MOVIE_EPISODES } from '../../content/movieEpisodeMapping';
 import { CARD_DATABASE } from '../../cardDatabase';
 import { t } from '../../lib/i18n';
+import { cn, getAssetUrl } from '../../lib/utils';
+import {
+  loadKadanArtStyleMode,
+  resolveKadanArtStyleUrl,
+  saveKadanArtStyleMode,
+  type KadanArtStyleMode,
+} from '../../hooks/useKadanRpgProgress';
 import type { Language } from '../../types';
 import type { KadanRpgReward } from '../../content/kadanRpgStory';
 
@@ -11,6 +18,8 @@ export const EPISODE_MEDIA_WATCH_REWARD_SNS = 100;
 interface EpisodeMediaWatchModalProps {
   chapterNumber: number;
   language: Language;
+  artStyleMode?: KadanArtStyleMode;
+  onChangeArtStyleMode?: (mode: KadanArtStyleMode) => void;
   chapterReward?: KadanRpgReward | null;
   chapterRewardSnsTotal?: number;
   onClaimWatchReward: (mediaType: 'anime' | 'movie', chapterNumber: number) => Promise<void> | void;
@@ -20,6 +29,8 @@ interface EpisodeMediaWatchModalProps {
 export const EpisodeMediaWatchModal: React.FC<EpisodeMediaWatchModalProps> = ({
   chapterNumber,
   language,
+  artStyleMode: propArtStyleMode,
+  onChangeArtStyleMode,
   chapterReward,
   chapterRewardSnsTotal,
   onClaimWatchReward,
@@ -28,6 +39,33 @@ export const EpisodeMediaWatchModal: React.FC<EpisodeMediaWatchModalProps> = ({
   const isKo = language === 'ko';
   const safeChapter = Math.max(1, Math.min(40, chapterNumber || 1));
   const epMeta = MOVIE_EPISODES[safeChapter] ?? MOVIE_EPISODES[1];
+
+  const [localArtStyleMode, setLocalArtStyleMode] = useState<KadanArtStyleMode>(() =>
+    propArtStyleMode ?? loadKadanArtStyleMode()
+  );
+  const artStyleMode = propArtStyleMode ?? localArtStyleMode;
+
+  useEffect(() => {
+    if (propArtStyleMode) {
+      setLocalArtStyleMode(propArtStyleMode);
+    }
+  }, [propArtStyleMode]);
+
+  const handleSetArtStyle = useCallback(
+    (mode: KadanArtStyleMode) => {
+      const saved = saveKadanArtStyleMode(mode);
+      setLocalArtStyleMode(saved);
+      onChangeArtStyleMode?.(saved);
+    },
+    [onChangeArtStyleMode]
+  );
+
+  const episodePreviewUrl = getAssetUrl(
+    resolveKadanArtStyleUrl(
+      `/images/storybook/ep_${String(safeChapter).padStart(2, '0')}/page_01.webp`,
+      artStyleMode
+    )
+  );
 
   const episodeTitle = isKo
     ? epMeta.titleKo
@@ -221,13 +259,58 @@ export const EpisodeMediaWatchModal: React.FC<EpisodeMediaWatchModalProps> = ({
           )}
 
           {/* Episode Title & Watch Reward Guidance Box */}
-          <div className="border border-[#201d1d] bg-[#f8f7f7] p-3.5 sm:p-4 rounded-none space-y-2">
-            <div className="flex items-center justify-between gap-2">
-              <span className="inline-block px-2 py-0.5 text-[11px] font-bold bg-[#201d1d] text-[#fdfcfc] rounded-sm">
-                {isKo ? `제 ${safeChapter}화 공식 영상` : `EP.${safeChapter} OFFICIAL MEDIA`}
-              </span>
+          <div className="border border-[#201d1d] bg-[#f8f7f7] p-3.5 sm:p-4 rounded-none space-y-2.5">
+            <div className="flex items-center justify-between gap-2 flex-wrap">
+              <div className="flex items-center gap-1.5">
+                <span className="inline-block px-2 py-0.5 text-[11px] font-bold bg-[#201d1d] text-[#fdfcfc] rounded-sm">
+                  {isKo ? `제 ${safeChapter}화 공식 영상` : `EP.${safeChapter} OFFICIAL MEDIA`}
+                </span>
+                <div className="inline-flex items-center rounded-sm border border-[#201d1d] bg-[#fdfcfc] p-0.5">
+                  <button
+                    type="button"
+                    onClick={() => handleSetArtStyle('animation')}
+                    className={cn(
+                      'px-2 py-0.5 text-[10px] font-bold rounded-sm cursor-pointer transition-colors',
+                      artStyleMode === 'animation'
+                        ? 'bg-[#201d1d] text-[#fdfcfc]'
+                        : 'text-[#646262] hover:text-[#201d1d]'
+                    )}
+                  >
+                    🎨 {isKo ? '애니' : 'Anime'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleSetArtStyle('liveaction')}
+                    className={cn(
+                      'px-2 py-0.5 text-[10px] font-bold rounded-sm cursor-pointer transition-colors',
+                      artStyleMode === 'liveaction'
+                        ? 'bg-amber-400 text-[#201d1d]'
+                        : 'text-[#646262] hover:text-[#201d1d]'
+                    )}
+                  >
+                    🎬 {isKo ? '무비' : 'Movie'}
+                  </button>
+                </div>
+              </div>
               <span className="inline-block px-2 py-0.5 text-xs font-bold bg-amber-500 text-[#201d1d] rounded-sm border border-[#201d1d]">
                 +{EPISODE_MEDIA_WATCH_REWARD_SNS} SNS {isKo ? '보상' : 'BONUS'}
+              </span>
+            </div>
+
+            <div className="relative w-full aspect-video overflow-hidden rounded-none border border-[#201d1d] bg-stone-950">
+              <img
+                src={episodePreviewUrl}
+                alt={episodeTitle}
+                className="w-full h-full object-cover"
+              />
+              <span className="absolute top-2 right-2 px-2 py-0.5 text-[10px] font-black rounded-sm border border-stone-900 bg-amber-400 text-stone-950">
+                {artStyleMode === 'liveaction'
+                  ? isKo
+                    ? '🎬 무비(실사) 스틸컷'
+                    : '🎬 MOVIE STILL'
+                  : isKo
+                  ? '🎨 애니메이션 스틸컷'
+                  : '🎨 ANIME STILL'}
               </span>
             </div>
 

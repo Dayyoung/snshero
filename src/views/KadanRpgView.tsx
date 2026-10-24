@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { ArrowLeft, BookOpen, Bot, Compass, Pause, Play, RotateCcw, Sparkles, Swords, X } from 'lucide-react';
+import { ArrowLeft, BookOpen, Bot, Compass, Film, Pause, Play, RotateCcw, Sparkles, Swords, X } from 'lucide-react';
 import { t } from '../lib/i18n';
-import { cn, getCardSpriteStyle } from '../lib/utils';
+import { cn, getAssetUrl, getCardSpriteStyle } from '../lib/utils';
 import { isSfxMutedGlobal } from '../lib/sound';
 import type { CardData, CardElement, CardRarity, ItemRarity, Language, ViewType } from '../types';
 import {
@@ -16,7 +16,7 @@ import {
  type KadanRpgReward,
  type KadanRpgTile,
 } from '../content/kadanRpgStory';
-import { useKadanRpgProgress } from '../hooks/useKadanRpgProgress';
+import { resolveKadanArtStyleUrl, useKadanRpgProgress } from '../hooks/useKadanRpgProgress';
 import { useKadanRpgAutoRunner } from '../hooks/useKadanRpgAutoRunner';
 import { KadanWorldMap } from '../components/rpg/KadanWorldMap';
 import { KadanNpcDialog } from '../components/rpg/KadanNpcDialog';
@@ -104,6 +104,9 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  progress,
  nextEvent,
  setAutoMode,
+ artStyleMode,
+ setArtStyleMode,
+ toggleArtStyleMode,
  setLastTile,
  markNpcMet,
  markChestOpened,
@@ -721,6 +724,50 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  <span>{language === 'ko' ? '엔딩/환생' : 'Ending'}</span>
  </button>
  )}
+ {/* 애니메이션 / 무비(실사) 이미지 스타일 토글 (로컬스토리지 영구 저장) */}
+ <div
+ className="inline-flex min-h-11 items-center rounded-sm border border-[#201d1d] bg-[#f8f7f7] p-0.5 font-mono shrink-0"
+ role="group"
+ aria-label={language === 'ko' ? '애니메이션/무비 이미지 스타일 토글' : 'Animation / Movie Image Style Toggle'}
+ >
+ <button
+ type="button"
+ onClick={() => setArtStyleMode('animation')}
+ className={cn(
+ 'min-h-[38px] px-2.5 py-1.5 rounded-sm text-xs font-mono font-bold transition-colors cursor-pointer flex items-center gap-1',
+ artStyleMode === 'animation'
+ ? 'bg-[#201d1d] text-[#fdfcfc] font-black'
+ : 'text-[#646262] hover:text-[#201d1d]'
+ )}
+ title={
+ language === 'ko'
+ ? '애니메이션 이미지 스타일(2,009컷)로 게임 진행 (설정 자동 저장)'
+ : 'Play with Animation image style (Saved)'
+ }
+ >
+ <span>🎨</span>
+ <span className="hidden md:inline">{language === 'ko' ? '애니메이션' : 'Anime'}</span>
+ <span className="md:hidden">{language === 'ko' ? '애니' : 'Anime'}</span>
+ </button>
+ <button
+ type="button"
+ onClick={() => setArtStyleMode('liveaction')}
+ className={cn(
+ 'min-h-[38px] px-2.5 py-1.5 rounded-sm text-xs font-mono font-bold transition-colors cursor-pointer flex items-center gap-1',
+ artStyleMode === 'liveaction'
+ ? 'bg-amber-400 text-[#201d1d] font-black border border-[#201d1d]'
+ : 'text-[#646262] hover:text-[#201d1d]'
+ )}
+ title={
+ language === 'ko'
+ ? '무비(70mm 실사) 이미지 스타일(2,009컷)로 게임 진행 (설정 자동 저장)'
+ : 'Play with Movie (70mm Live-Action) image style (Saved)'
+ }
+ >
+ <span>🎬</span>
+ <span>{language === 'ko' ? '무비' : 'Movie'}</span>
+ </button>
+ </div>
  <div className={cn(
  "relative inline-flex items-center justify-center overflow-hidden rounded-none transition-all",
  progress.autoMode ? "p-[2px] shadow-[0_0_12px_rgba(59,130,246,0.6)]" : ""
@@ -774,6 +821,8 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  activeEventId={activeEvent?.id}
  completedEventIds={completedIds}
  rebirthLevel={progress.rebirthLevel}
+ artStyleMode={artStyleMode}
+ onToggleArtStyleMode={toggleArtStyleMode}
  language={language}
  lowSpecMode={lowSpecMode}
  onTilePress={handleTilePress}
@@ -785,6 +834,9 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  event={activeEvent}
  language={language}
  autoMode={progress.autoMode}
+ artStyleMode={artStyleMode}
+ onChangeArtStyleMode={setArtStyleMode}
+ onToggleArtStyleMode={toggleArtStyleMode}
  isCompleted={completedIds.includes(activeEvent.id)}
  canStartBattle={true}
  canClaimReward={Boolean(activeEvent.rewardId && !progress.claimedRewardIds.includes(activeEvent.rewardId) && progress.clearedEncounterIds.includes(activeEvent.encounterId || `enc-ch${String(activeEvent.chapterNumber).padStart(2, '0')}`))}
@@ -987,6 +1039,8 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  <EpisodeMediaWatchModal
  chapterNumber={mediaPromptEvent.chapterNumber}
  language={language}
+ artStyleMode={artStyleMode}
+ onChangeArtStyleMode={setArtStyleMode}
  chapterReward={mediaPromptChapterReward?.reward ?? null}
  chapterRewardSnsTotal={mediaPromptChapterReward?.totalSns}
  onClaimWatchReward={handleClaimEpisodeMediaReward}
@@ -995,9 +1049,52 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  )}
  </div>
 
- {/* ─── 맵 바로 아래 배치된 진행도(Progress) 카드 ─── */}
+ {/* ─── 맵 바로 아래 배치된 진행도(Progress) & 애니메이션/무비 스타일 미리보기 카드 ─── */}
  <section className="w-full rounded-none border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] p-4 mb-4 pb-4 shadow-xs">
  <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+ <div className="flex items-center gap-3 flex-1 min-w-0">
+ <button
+ type="button"
+ onClick={() => {
+ if (nextEvent) {
+ setDismissedEventId(null);
+ setActiveEvent(nextEvent);
+ }
+ }}
+ className="relative w-24 sm:w-32 aspect-video shrink-0 overflow-hidden rounded-none border border-[#201d1d] bg-stone-950 cursor-pointer group"
+ title={
+ language === 'ko'
+ ? '클릭하여 현재 회차 그림책 열기'
+ : 'Click to open current chapter picture book'
+ }
+ >
+ <img
+ src={getAssetUrl(
+ resolveKadanArtStyleUrl(
+ `/images/storybook/ep_${String(nextEvent?.chapterNumber ?? 40).padStart(2, '0')}/page_01.webp`,
+ artStyleMode
+ )
+ )}
+ alt={formatStageTitle(nextEvent, language)}
+ className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
+ />
+ <span
+ className={cn(
+ 'absolute bottom-1 right-1 px-1.5 py-0.5 text-[9px] font-mono font-black rounded-sm border',
+ artStyleMode === 'liveaction'
+ ? 'bg-amber-400 text-stone-950 border-stone-950'
+ : 'bg-cyan-400 text-stone-950 border-stone-950'
+ )}
+ >
+ {artStyleMode === 'liveaction'
+ ? language === 'ko'
+ ? '🎬 무비'
+ : '🎬 MOVIE'
+ : language === 'ko'
+ ? '🎨 애니'
+ : '🎨 ANIME'}
+ </span>
+ </button>
  <div className="flex-1 min-w-0">
  <div className="mb-2 flex items-center justify-between text-xs font-bold text-[#646262]">
  <span>{t('kadan_rpg_progress', language)}</span>
@@ -1011,7 +1108,34 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  </p>
  <p className="mt-0.5 truncate text-[10px] font-semibold text-[#646262]">{currentObjective}</p>
  </div>
+ </div>
  <div className="flex flex-wrap items-center gap-2 shrink-0">
+ <button
+ type="button"
+ onClick={toggleArtStyleMode}
+ className={cn(
+ 'min-h-[44px] flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-sm border px-3 text-xs font-bold transition-all cursor-pointer font-mono',
+ artStyleMode === 'liveaction'
+ ? 'border-[#201d1d] bg-amber-400 text-[#201d1d] font-black hover:bg-amber-300'
+ : 'border-[#201d1d] bg-[#201d1d] text-[#fdfcfc] hover:bg-[#332e2e]'
+ )}
+ title={
+ language === 'ko'
+ ? '애니메이션 / 무비(실사) 이미지 스타일 토글 (로컬스토리지 저장)'
+ : 'Toggle Animation / Movie image style (Saved to LocalStorage)'
+ }
+ >
+ <Film size={14} />
+ <span>
+ {artStyleMode === 'liveaction'
+ ? language === 'ko'
+ ? '🎬 무비 스타일 (ON)'
+ : '🎬 Movie Style (ON)'
+ : language === 'ko'
+ ? '🎨 애니메이션 스타일 (ON)'
+ : '🎨 Anime Style (ON)'}
+ </span>
+ </button>
  {nextEvent && (
  <button
  type="button"
@@ -1024,8 +1148,8 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  <BookOpen size={14} className="text-amber-700" />
  <span>
  {language === 'ko'
- ? `제${nextEvent.chapterNumber}화 그림책 정독 (원문 100%)`
- : `EP.${nextEvent.chapterNumber} Picture Book (100% Novel)`}
+ ? `제${nextEvent.chapterNumber}화 ${artStyleMode === 'liveaction' ? '무비' : '애니'} 그림책 정독`
+ : `EP.${nextEvent.chapterNumber} ${artStyleMode === 'liveaction' ? 'Movie' : 'Anime'} Book`}
  </span>
  </button>
  )}
@@ -1058,16 +1182,35 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  <div className="fixed inset-0 z-[20000] flex items-center justify-center bg-slate-950/85 p-3 sm:p-4 pb-[calc(env(safe-area-inset-bottom)+1.5rem)] backdrop-blur-sm">
  <div className="w-full max-w-2xl max-h-[85dvh] sm:max-h-[88dvh] flex flex-col overflow-hidden rounded-none border border-violet-200 bg-white shadow-none">
  {/* Header */}
- <div className="shrink-0 border-b border-slate-100 bg-[#201d1d] p-4 sm:p-5 text-white flex items-center justify-between">
- <div className="flex items-center gap-3">
+ <div className="shrink-0 border-b border-slate-100 bg-[#201d1d] p-4 sm:p-5 text-white flex items-center justify-between gap-2">
+ <div className="flex items-center gap-3 min-w-0">
  <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-none bg-white/15 shrink-0">
  <Sparkles size={22} />
  </div>
- <div>
+ <div className="min-w-0">
  <p className="text-xs font-black uppercase tracking-normal text-violet-100">{t('kadan_rpg_ending_popup_badge', language)}</p>
- <h2 className="text-lg sm:text-xl font-black">{t('kadan_rpg_ending_popup_title', language)}</h2>
+ <h2 className="text-lg sm:text-xl font-black truncate">{t('kadan_rpg_ending_popup_title', language)}</h2>
  </div>
  </div>
+ <div className="flex items-center gap-2 shrink-0">
+ <button
+ type="button"
+ onClick={toggleArtStyleMode}
+ className={cn(
+ 'min-h-[44px] px-2.5 py-1.5 rounded-sm border text-xs font-mono font-black cursor-pointer transition-colors',
+ artStyleMode === 'liveaction'
+ ? 'bg-amber-400 text-stone-950 border-amber-300'
+ : 'bg-cyan-400 text-stone-950 border-cyan-300'
+ )}
+ >
+ {artStyleMode === 'liveaction'
+ ? language === 'ko'
+ ? '🎬 무비(실사)'
+ : '🎬 Movie'
+ : language === 'ko'
+ ? '🎨 애니메이션'
+ : '🎨 Anime'}
+ </button>
  <button
  type="button"
  onClick={() => setIsEndingDismissed(true)}
@@ -1076,6 +1219,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  >
  <X size={18} />
  </button>
+ </div>
  </div>
 
  {/* Content body */}
@@ -1092,7 +1236,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  {line.sceneImageUrl && (
  <div className="w-full aspect-[16/9] bg-stone-950 overflow-hidden border-b border-slate-200">
  <img
- src={line.sceneImageUrl}
+ src={getAssetUrl(resolveKadanArtStyleUrl(line.sceneImageUrl, artStyleMode))}
  alt={lineTitle}
  loading="lazy"
  className="w-full h-full object-cover"
