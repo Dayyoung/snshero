@@ -40,8 +40,8 @@ interface AnimeViewProps {
 }
 
 const TOTAL_EPISODES = 40;
-const YOUTUBE_PLAYLIST_ID = 'PLBTRBTakaSNU';
-const YOUTUBE_PLAYLIST_URL = 'https://www.youtube.com/watch?v=6kug0HSmtOM&list=PLBTRBTakaSNU';
+const YOUTUBE_PLAYLIST_ID = 'PLZZ2e1Pf7sfI';
+const YOUTUBE_PLAYLIST_URL = 'https://www.youtube.com/watch?v=PuaWbOI_VFI&list=PLZZ2e1Pf7sfI';
 
 export const AnimeView: React.FC<AnimeViewProps> = ({
  language,
@@ -171,7 +171,7 @@ export const AnimeView: React.FC<AnimeViewProps> = ({
  }, [currentEpisodeNum, claimedRewards]);
 
  // 에피소드 번호 기반 YouTube 임베드 URL (신규 교체된 개별 Video ID 직접 재생)
- const currentVideoId = MOVIE_EPISODES[currentEpisodeNum]?.videoId || '6kug0HSmtOM';
+ const currentVideoId = MOVIE_EPISODES[currentEpisodeNum]?.videoId || 'PuaWbOI_VFI';
  const embedUrl = `https://www.youtube.com/embed/${currentVideoId}?autoplay=1&rel=0`;
 
  return (

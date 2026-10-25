@@ -31,21 +31,37 @@ YOUTUBE_API_KEY = "AIzaSyBa9TidLv_iwMyB-9VSrVGWEVUr0WyjiQU"
 
 CHANNELS = [
     {
-        "name": "SNSHero Official (Profile 6)",
-        "profile_dir_name": "Profile 6",
-        "tmp_dir": Path("/tmp/yt_studio_chrome_profile6"),
-        "channel_id": "UCA6QmKiPstbiyBUHtnSMxyA",
+        "name": "dayyoung (Profile 4)",
+        "profile_dir_name": "Profile 4",
+        "tmp_dir": Path("/tmp/yt_studio_chrome_profile4"),
+        "channel_id": None,
+        "existing_anim_drafts": {},
     },
     {
-        "name": "ModooSoft Official (Profile 2)",
-        "profile_dir_name": "Profile 2",
-        "tmp_dir": Path("/tmp/yt_studio_chrome_profile2"),
-        "channel_id": "UC_xayYwKaB5TbH3eZXeREpA",
+        "name": "Day young (Default)",
+        "profile_dir_name": "Default",
+        "tmp_dir": Path("/tmp/yt_studio_chrome_default"),
+        "channel_id": None,
+        "existing_anim_drafts": {},
+    },
+    {
+        "name": "Siot (Profile 1)",
+        "profile_dir_name": "Profile 1",
+        "tmp_dir": Path("/tmp/yt_studio_chrome_profile1"),
+        "channel_id": None,
+        "existing_anim_drafts": {},
+    },
+    {
+        "name": "JD (Profile 5)",
+        "profile_dir_name": "Profile 5",
+        "tmp_dir": Path("/tmp/yt_studio_chrome_profile5"),
+        "channel_id": None,
+        "existing_anim_drafts": {},
     },
 ]
 
-ANIMATION_PLAYLIST_TITLE = "SNSHero.com Official Animation (40 Episodes - Synced)"
-CINEMA_PLAYLIST_TITLE = "SNSHero.com Official Live-Action Movie (40 Episodes - Synced)"
+ANIMATION_PLAYLIST_TITLE = "SNSHero.com Official Animation (40 Episodes - 1:1 Aligned)"
+CINEMA_PLAYLIST_TITLE = "SNSHero.com Official Live-Action Movie (40 Episodes - 1:1 Aligned)"
 
 
 def log(msg: str) -> None:
@@ -275,60 +291,162 @@ def update_codebase(state: dict) -> None:
 
 
 def select_or_create_playlist(page, dialog, playlist_title: str, ep: int) -> None:
-    playlist_trigger = dialog.locator("ytcp-video-metadata-playlists").first
-    if playlist_trigger.count() == 0:
-        return
-    playlist_trigger.scroll_into_view_if_needed()
-    playlist_trigger.click(force=True)
-    time.sleep(2.0)
+    try:
+        playlist_trigger = dialog.locator("ytcp-video-metadata-playlists").first
+        if playlist_trigger.count() == 0:
+            return
+        playlist_trigger.scroll_into_view_if_needed()
+        playlist_trigger.click()
+        time.sleep(1.8)
 
-    pl_item = page.locator(f'ytcp-playlist-dialog label:has-text("{playlist_title}")').first
-    if pl_item.count() == 0:
-        log(f"[EP{ep:02d}] Creating brand-new playlist '{playlist_title}'...")
-        new_pl_btn = page.locator(
-            "ytcp-playlist-dialog ytcp-button#new-playlist-button, "
-            'ytcp-playlist-dialog button:has-text("새 재생목록"), '
-            'ytcp-playlist-dialog button:has-text("New playlist")'
+        pl_dialog = page.locator("ytcp-playlist-dialog")
+        pl_item = pl_dialog.locator(f'label:has-text("{playlist_title}")').first
+        if pl_item.count() > 0:
+            pl_item.click()
+            time.sleep(0.6)
+        else:
+            log(f"[EP{ep:02d}] Creating brand-new playlist '{playlist_title}'...")
+            new_pl_btn = pl_dialog.locator(
+                "ytcp-button#new-playlist-button, "
+                'button:has-text("새 재생목록"), '
+                'button:has-text("New playlist")'
+            ).first
+            if new_pl_btn.count() > 0:
+                new_pl_btn.click()
+                time.sleep(1.0)
+                sub_item = page.locator(
+                    'tp-yt-paper-item:has-text("새로운 재생목록"), '
+                    'tp-yt-paper-item:has-text("새 재생목록"), '
+                    'tp-yt-paper-item:has-text("New playlist")'
+                ).first
+                if sub_item.count() > 0 and sub_item.is_visible():
+                    sub_item.click()
+                    time.sleep(1.5)
+                pl_title_box = page.locator(
+                    "ytcp-playlist-creation-dialog #title-textarea #textbox, "
+                    "ytcp-playlist-dialog #title-textarea #textbox"
+                ).first
+                pl_title_box.wait_for(state="visible", timeout=10000)
+                pl_title_box.click()
+                pl_title_box.fill(playlist_title)
+                time.sleep(0.8)
+                create_pl_confirm = page.locator(
+                    "ytcp-playlist-creation-dialog ytcp-button#create-button, "
+                    'ytcp-playlist-creation-dialog button:has-text("만들기"), '
+                    'ytcp-playlist-dialog button:has-text("만들기"), '
+                    'ytcp-playlist-creation-dialog button:has-text("Create")'
+                ).first
+                create_pl_confirm.click()
+                time.sleep(2.5)
+
+        pl_done = pl_dialog.locator(
+            "ytcp-button#done-button, "
+            'button:has-text("완료"), '
+            'button:has-text("Done")'
         ).first
-        if new_pl_btn.count() > 0:
-            new_pl_btn.click(force=True)
-            time.sleep(1.0)
-            sub_item = page.locator(
-                'tp-yt-paper-item:has-text("새로운 재생목록"), '
-                'tp-yt-paper-item:has-text("새 재생목록"), '
-                'tp-yt-paper-item:has-text("New playlist")'
-            ).first
-            if sub_item.count() > 0 and sub_item.is_visible():
-                sub_item.click(force=True)
-                time.sleep(1.5)
-            pl_title_box = page.locator(
-                "ytcp-playlist-creation-dialog #title-textarea #textbox, "
-                "ytcp-playlist-dialog #title-textarea #textbox"
-            ).first
-            pl_title_box.wait_for(state="visible", timeout=10000)
-            pl_title_box.click(force=True)
-            pl_title_box.fill(playlist_title)
+        if pl_done.count() > 0 and pl_done.is_visible():
+            pl_done.click()
             time.sleep(0.8)
-            create_pl_confirm = page.locator(
-                "ytcp-playlist-creation-dialog ytcp-button#create-button, "
-                'ytcp-playlist-creation-dialog button:has-text("만들기"), '
-                'ytcp-playlist-dialog button:has-text("만들기"), '
-                'ytcp-playlist-creation-dialog button:has-text("Create")'
-            ).first
-            create_pl_confirm.click(force=True)
-            time.sleep(3.0)
-    else:
-        pl_item.click(force=True)
-        time.sleep(0.8)
+    except Exception as e:
+        log(f"[EP{ep:02d}] Playlist selection warning: {e}")
 
-    pl_done = page.locator(
-        "ytcp-playlist-dialog ytcp-button#done-button, "
-        'ytcp-playlist-dialog button:has-text("완료"), '
-        'ytcp-playlist-dialog button:has-text("Done")'
+
+def publish_existing_draft(
+    page,
+    channel_id: str,
+    vid: str,
+    yt_title: str,
+    yt_desc: str,
+    playlist_title: str,
+    ep: int,
+    label: str,
+) -> bool:
+    log(f"[{label} EP{ep:02d}/40] Publishing existing draft {vid} -> '{yt_title}'...")
+    page.goto(f"https://studio.youtube.com/channel/{channel_id}/videos", wait_until="domcontentloaded", timeout=45000)
+    time.sleep(4.0)
+
+    row = page.locator(f'ytcp-video-row:has(a[href*="{vid}"])').first
+    if row.count() == 0:
+        log(f"[{label} EP{ep:02d}/40] Could not find draft row for {vid} on /videos page.")
+        return False
+
+    edit_draft_btn = row.locator(
+        'ytcp-button.edit-draft-button, ytcp-button:has-text("초안 수정"), ytcp-button:has-text("Edit draft")'
     ).first
-    if pl_done.count() > 0:
-        pl_done.click(force=True)
+    if edit_draft_btn.count() > 0 and edit_draft_btn.is_visible():
+        edit_draft_btn.click(force=True)
+        time.sleep(2.5)
+        dialog = page.locator("ytcp-uploads-dialog")
+    else:
+        log(f"[{label} EP{ep:02d}/40] Draft {vid} is already published!")
+        return True
+
+    title_box = dialog.locator("#title-textarea #textbox").first
+    if title_box.count() > 0 and title_box.is_visible():
+        title_box.click()
+        page.keyboard.press("Meta+A")
+        page.keyboard.press("Backspace")
+        title_box.fill(yt_title)
+        time.sleep(0.3)
+
+    desc_box = dialog.locator("#description-textarea #textbox").first
+    if desc_box.count() > 0 and desc_box.is_visible():
+        desc_box.click()
+        page.keyboard.press("Meta+A")
+        page.keyboard.press("Backspace")
+        desc_box.fill(yt_desc)
+        time.sleep(0.3)
+
+    select_or_create_playlist(page, dialog, playlist_title, ep)
+
+    not_mfk = dialog.locator('tp-yt-paper-radio-button[name="VIDEO_MADE_FOR_KIDS_NOT_MFK"]').first
+    not_mfk.scroll_into_view_if_needed()
+    not_mfk.click()
+    time.sleep(0.5)
+
+    step3 = dialog.locator("#step-badge-3").first
+    step3.click()
+    time.sleep(1.0)
+
+    pub_radio = dialog.locator('tp-yt-paper-radio-button[name="PUBLIC"]').first
+    pub_radio.wait_for(state="visible", timeout=10000)
+    pub_radio.click()
+    time.sleep(0.6)
+
+    done_btn = dialog.locator("#done-button").first
+    for _ in range(45):
+        disabled_attr = done_btn.get_attribute("disabled")
+        aria_disabled = done_btn.get_attribute("aria-disabled")
+        if disabled_attr is None and aria_disabled != "true":
+            break
         time.sleep(1.0)
+
+    done_btn.click()
+    log(f"[{label} EP{ep:02d}/40] PUBLISHED DRAFT -> https://youtu.be/{vid}")
+    time.sleep(3.5)
+    return True
+
+
+def bypass_studio_interstitials(page) -> None:
+    try:
+        skip_btn = page.locator(
+            'a:has-text("YOUTUBE 스튜디오로 건너뛰기"), '
+            'a:has-text("Skip to YouTube Studio"), '
+            'button:has-text("YOUTUBE 스튜디오로 건너뛰기"), '
+            ':text("YOUTUBE 스튜디오로 건너뛰기")'
+        ).first
+        if skip_btn.count() > 0 and skip_btn.is_visible():
+            log("Clicking 'YOUTUBE 스튜디오로 건너뛰기' interstitial...")
+            skip_btn.click(force=True)
+            time.sleep(4.5)
+        cont_btn = page.locator(
+            'ytcp-button:has-text("계속"), ytcp-button:has-text("Continue"), ytcp-button#dismiss-button'
+        ).first
+        if cont_btn.count() > 0 and cont_btn.is_visible():
+            cont_btn.click(force=True)
+            time.sleep(1.5)
+    except Exception:
+        pass
 
 
 def upload_single_video(
@@ -348,6 +466,7 @@ def upload_single_video(
     log(f"--- Uploading {label} [EP{ep:02d}/40] ({channel_id}): {mp4_path.name} -> '{yt_title}' ---")
     page.goto(upload_url, wait_until="domcontentloaded", timeout=45000)
     time.sleep(3.5)
+    bypass_studio_interstitials(page)
 
     file_input = page.locator("input[type=file]")
     if file_input.count() == 0:
@@ -393,22 +512,20 @@ def upload_single_video(
     # Fill Title
     title_box = dialog.locator("#title-textarea #textbox").first
     title_box.wait_for(state="visible", timeout=15000)
-    title_box.click(force=True)
+    title_box.click()
     page.keyboard.press("Meta+A")
     page.keyboard.press("Backspace")
     title_box.fill(yt_title)
     time.sleep(0.4)
 
-    # Fill Description
+    # Fill Description (DO NOT press Escape or it closes ytcp-uploads-dialog!)
     desc_box = dialog.locator("#description-textarea #textbox").first
     if desc_box.count() > 0:
-        desc_box.click(force=True)
+        desc_box.click()
         page.keyboard.press("Meta+A")
         page.keyboard.press("Backspace")
         desc_box.fill(yt_desc)
-        time.sleep(0.3)
-        page.keyboard.press("Escape")
-        time.sleep(0.3)
+        time.sleep(0.4)
 
     # Select or Create Playlist
     select_or_create_playlist(page, dialog, playlist_title, ep)
@@ -416,18 +533,18 @@ def upload_single_video(
     # Select Not Made For Kids
     not_mfk = dialog.locator('tp-yt-paper-radio-button[name="VIDEO_MADE_FOR_KIDS_NOT_MFK"]').first
     not_mfk.scroll_into_view_if_needed()
-    not_mfk.click(force=True)
+    not_mfk.click()
     time.sleep(0.6)
 
     # Step 3 (Visibility)
     step3 = dialog.locator("#step-badge-3").first
-    step3.click(force=True)
+    step3.click()
     time.sleep(1.2)
 
     # Select PUBLIC
     pub_radio = dialog.locator('tp-yt-paper-radio-button[name="PUBLIC"]').first
     pub_radio.wait_for(state="visible", timeout=10000)
-    pub_radio.click(force=True)
+    pub_radio.click()
     time.sleep(0.8)
 
     # Wait for #done-button to be enabled and click Publish
@@ -439,9 +556,9 @@ def upload_single_video(
             break
         time.sleep(1.0)
 
-    done_btn.click(force=True)
+    done_btn.click()
     log(f"[{label} EP{ep:02d}/40] PUBLISHED -> https://youtu.be/{video_id}")
-    time.sleep(4.5)
+    time.sleep(4.0)
     return video_id, False
 
 
@@ -475,7 +592,8 @@ def sort_playlist_oldest_first(page, playlist_id: Optional[str], label: str) -> 
 def run_uploads_on_channel(p, ch_cfg: dict, episodes: dict, state: dict) -> None:
     profile_dir_name = ch_cfg["profile_dir_name"]
     tmp_dir = ch_cfg["tmp_dir"]
-    channel_id = ch_cfg["channel_id"]
+    channel_id = ch_cfg.get("channel_id")
+    existing_anim_drafts = ch_cfg.get("existing_anim_drafts", {})
 
     ensure_chrome_profile(profile_dir_name, tmp_dir)
 
@@ -483,7 +601,7 @@ def run_uploads_on_channel(p, ch_cfg: dict, episodes: dict, state: dict) -> None
         user_data_dir=str(tmp_dir),
         channel="chrome",
         headless=True,
-        user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+        user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
         ignore_default_args=["--use-mock-keychain", "--password-store=basic"],
         args=[f"--profile-directory={profile_dir_name}", "--disable-blink-features=AutomationControlled"],
         viewport={"width": 1440, "height": 900},
@@ -492,6 +610,20 @@ def run_uploads_on_channel(p, ch_cfg: dict, episodes: dict, state: dict) -> None
     limit_hit = False
 
     try:
+        if not channel_id:
+            log(f"Auto-discovering YouTube Studio channel_id for {ch_cfg['name']}...")
+            page.goto("https://studio.youtube.com", wait_until="domcontentloaded", timeout=45000)
+            time.sleep(4.0)
+            bypass_studio_interstitials(page)
+            m = re.search(r"channel/(UC[A-Za-z0-9_-]+)", page.url)
+            if not m:
+                m = re.search(r"channel/(UC[A-Za-z0-9_-]{22})", page.content())
+            if not m:
+                log(f"Could not find active YouTube channel on {ch_cfg['name']} (url={page.url}). Skipping profile.")
+                return
+            channel_id = m.group(1)
+            log(f"Discovered channel_id={channel_id} for {ch_cfg['name']}")
+
         # 1. Animation Episodes 1..40
         for ep in range(1, 41):
             ep_str = str(ep)
@@ -515,6 +647,20 @@ def run_uploads_on_channel(p, ch_cfg: dict, episodes: dict, state: dict) -> None
             yt_desc = build_animation_description(ep, title_en, arc_en, synopsis_en)
 
             try:
+                if ep_str in existing_anim_drafts:
+                    draft_vid = existing_anim_drafts[ep_str]
+                    if publish_existing_draft(
+                        page, channel_id, draft_vid, yt_title, yt_desc, ANIMATION_PLAYLIST_TITLE, ep, "ANIM"
+                    ):
+                        state["animation_ids"][ep_str] = draft_vid
+                        pl_id = fetch_playlist_id_by_title(channel_id, ANIMATION_PLAYLIST_TITLE)
+                        if pl_id:
+                            state["animation_playlist_id"] = pl_id
+                            log(f"[ANIM] Active Animation Playlist ID: {pl_id}")
+                        save_state(state)
+                        update_codebase(state)
+                        continue
+
                 vid, limit_hit = upload_single_video(
                     page, channel_id, mp4_path, yt_title, yt_desc, ANIMATION_PLAYLIST_TITLE, ep, "ANIM"
                 )

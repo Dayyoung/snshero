@@ -1,6 +1,24 @@
 # SNSHero 개발 및 개선 작업 로그 (WORK_LOGS.md)
 
-이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
+이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
+
+## [2026-10-26 00:44 KST] [전 40화(EP01~EP40) 2,009컷 1:1 자막-이미지 완벽 정렬, 애니메이션 40편 & 실사 영화 40편 MP4 전수 재인코딩 및 유튜브 80편 재업로드·링크 전면 교체 완료]
+- **요청 사항**:
+  - `"내가 초반 10개 웹툰을 확인해보았는데 여전히 나레이션 자막과 생성된 이미지 사이에서 불일치하는 설명이 있는것 같아. 완벽하게 맞출수는 없을까"`
+  - `"유튜브에도 업로드 완료하고 링크도 교체했어?"`
+- **주요 구현 및 수정 내역**:
+  1. **전 40화(`EP01~EP40`) 2,009개 서사 컷(+40개 타이틀 카드 = 2,049장면) 1:1 내레이션 자막-이미지 정렬 및 순수 AI 5~6장 마스터 시트 체제 완성 ([`scripts/build_conquest_2009_all_media.py`](file:///Users/dayyoung/project/snshero/scripts/build_conquest_2009_all_media.py))**:
+     - 기존 `epXX_storybook_sheet.png`가 회차 전체 요약 9장면이어서 초반 `Scenes 01~09`부터 8컷씩 밀리던 오프셋 문제와 후반부 배우 프로필 사진(`act_seq_cells`) 폴백을 완전히 제거.
+     - `EP02~EP40` 전 회차에 대해 `Scenes 01~09` 전용 3×3 순수 AI 시트(`public/images/storybook/raw_full_sheets/ep02..40_sheet_01_s01_09.png`) 및 `Scenes 10~마지막 컷` 전용 3×3 순수 AI 시트(`ep02..40_sheet_02..05.png`, `ep22_sheet_06.png`) 총 196장(= 1,764개 순수 AI 패널)을 생성하여 `EXACT_SHEET_SCENES` 1:1 매핑 적용.
+     - 전 40화 웹툰/애니메이션 컷(`public/images/webtoon/episode_01..40/scene_00..XX.webp`, 2,049장), 스토리북(`public/images/storybook/ep_01..40/page_01..10.webp`, 400장), 실사 시네마 컷(`public/images/cinema/episode_01..40/scene_00..XX.webp`, 2,049장) 전수 재베이킹 완료.
+  2. **1:1 자막 정렬된 애니메이션 40편 MP4 & 실사 영화 40편 MP4(총 80편) 전수 재인코딩 완료**:
+     - 공식 애니메이션 40편 MP4 (`public/video/animation/SNSHero.com_E1..40_*.mp4`, `40/40 PASS`).
+     - 공식 실사 무비 40편 MP4 (`public/videos/cinema/episode_01..40.mp4`, `40/40 PASS`).
+  3. **유튜브 스튜디오 80편(`40 Animation` + `40 Live-Action Movie`) 신규 업로드 및 코드베이스 전체 링크 교체 완료 ([`scripts/upload_new_animation_and_cinema_80_yt.py`](file:///Users/dayyoung/project/snshero/scripts/upload_new_animation_and_cinema_80_yt.py))**:
+     - 애니메이션 40편(`EP01: PuaWbOI_VFI` ~ `EP40: P5WxRs_DLcU`, 재생목록 `PLZZ2e1Pf7sfI` / `PLC567OVb8ls8`) 및 실사 영화 40편(`EP01: WExGcjJvqkk` ~ `EP40: qBgnh8WaYCQ`, 재생목록 `PLVGizJQ-mFZ8`) 유튜브 공개 업로드 완료.
+     - [`src/content/movieEpisodeMapping.ts`](file:///Users/dayyoung/project/snshero/src/content/movieEpisodeMapping.ts), [`src/views/MovieView.tsx`](file:///Users/dayyoung/project/snshero/src/views/MovieView.tsx), [`src/views/AnimeView.tsx`](file:///Users/dayyoung/project/snshero/src/views/AnimeView.tsx), [`src/views/CinemaView.tsx`](file:///Users/dayyoung/project/snshero/src/views/CinemaView.tsx), [`src/views/NovelView.tsx`](file:///Users/dayyoung/project/snshero/src/views/NovelView.tsx), [`src/lib/geoManager.ts`](file:///Users/dayyoung/project/snshero/src/lib/geoManager.ts), [`scripts/generate-video-seo.ts`](file:///Users/dayyoung/project/snshero/scripts/generate-video-seo.ts), [`public/sitemap-video.xml`](file:///Users/dayyoung/project/snshero/public/sitemap-video.xml) 내 모든 `videoId`, `movieVideoId`, 재생목록 ID 일괄 교체 완료.
+- **검증 및 보고**:
+  - `npm run lint` 및 `npm run build` 프로덕션 빌드(정적 비디오 SEO 80개 에피소드 페이지 및 `sitemap-video.xml` 포함) 0에러 통과, 로컬 Git 커밋 및 구글 폼 보고서 제출 완료.
 
 ## [2026-10-25 18:20 KST] [한영 공통 타이틀 로고('눈히어로.com' / 'S&SHero.com') 겨울왕국(Frozen) 빙하 얼음 결정·고드름·눈덮임 스타일 생성 및 투명 배경 적용]
 - **요청 사항**:

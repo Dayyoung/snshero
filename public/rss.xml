@@ -9,7 +9,7 @@
     <link>https://snshero.com/reddit</link>
     <description>실시간 구글 뉴스(Google News US Edition) 기반 신속하고 정확한 글로벌 뉴스 및 인공지능 요약 브리핑 - SNSHero News</description>
     <language>en-US</language>
-    <lastBuildDate>Sun, 25 Oct 2026 13:49:35 GMT</lastBuildDate>
+    <lastBuildDate>Sun, 25 Oct 2026 15:44:09 GMT</lastBuildDate>
     <atom:link href="https://snshero.com/news-feed.xml" rel="self" type="application/rss+xml" />
     <image>
       <url>https://snshero.com/logo.jpg</url>
@@ -17,9 +17,409 @@
       <link>https://snshero.com/reddit</link>
     </image>
     <item>
+      <title><![CDATA[SpaceX Delivers Blockbuster Q3 Financial Results as Super Intelligence Segment Booms]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1792940880000_0</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792940880000_0</guid>
+      <pubDate>Sun, 25 Oct 2026 15:08:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_teslarati]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Teslarati details SpaceX reporting record quarterly earnings propelled by its SpaceXSI (SpaceX Super Intelligence) division, highlighting exponential enterprise adoption of Grok foundation models.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://www.teslarati.com/wp-content/uploads/2026/10/spacex-super-intelligence-q3.jpg" alt="SpaceX Delivers Blockbuster Q3 Financial Results as Super Intelligence Segment Booms" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Teslarati details SpaceX reporting record quarterly earnings propelled by its SpaceXSI (SpaceX Super Intelligence) division, highlighting exponential enterprise adoption of Grok foundation models.</p>
+          <p><small>출처 및 원문: <a href="https://www.teslarati.com/spacex-spcx-delivers-blockbuster-q3-results-super-intelligence-booms/">teslarati.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://www.teslarati.com/wp-content/uploads/2026/10/spacex-super-intelligence-q3.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://www.teslarati.com/wp-content/uploads/2026/10/spacex-super-intelligence-q3.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[SpaceX Delivers Blockbuster Q3 Financial Results as Super Intelligence Segment Booms]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Boomi Announces 2026 APAC Customer Innovation Award Winners for Enterprise Integration Excellence]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1792940820000_1</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792940820000_1</guid>
+      <pubDate>Sun, 25 Oct 2026 15:07:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_businesswire]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Boomi celebrates enterprise systems integration leaders across the Asia-Pacific region, recognizing organizations that deploy AI-driven iPaaS architectures to unify fragmented corporate software estates.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://mms.businesswire.com/media/20260901735213/en/boomi-apac-awards.jpg" alt="Boomi Announces 2026 APAC Customer Innovation Award Winners for Enterprise Integration Excellence" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Boomi celebrates enterprise systems integration leaders across the Asia-Pacific region, recognizing organizations that deploy AI-driven iPaaS architectures to unify fragmented corporate software estates.</p>
+          <p><small>출처 및 원문: <a href="https://www.businesswire.com/news/home/20260901735213/en/Boomi-Announces-2026-APAC-Customer-Innovation-Award-Winners">businesswire.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://mms.businesswire.com/media/20260901735213/en/boomi-apac-awards.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://mms.businesswire.com/media/20260901735213/en/boomi-apac-awards.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Boomi Announces 2026 APAC Customer Innovation Award Winners for Enterprise Integration Excellence]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[NTT DATA Launches Dedicated Agentic AI Integration Services for Global Hyperscaler Platforms]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1792940760000_2</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792940760000_2</guid>
+      <pubDate>Sun, 25 Oct 2026 15:06:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_businesswire]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[NTT DATA rolls out full-lifecycle agentic AI services, partnering with major hyperscalers to architect, integrate, and govern autonomous multi-agent workloads within enterprise environments.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://mms.businesswire.com/media/20250320628624/en/ntt-data-hyperscaler.jpg" alt="NTT DATA Launches Dedicated Agentic AI Integration Services for Global Hyperscaler Platforms" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>NTT DATA rolls out full-lifecycle agentic AI services, partnering with major hyperscalers to architect, integrate, and govern autonomous multi-agent workloads within enterprise environments.</p>
+          <p><small>출처 및 원문: <a href="https://www.businesswire.com/news/home/20250320628624/en/NTT-DATA-Launches-Agentic-AI-Services-for-Hyperscaler-AI-Technologies">businesswire.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://mms.businesswire.com/media/20250320628624/en/ntt-data-hyperscaler.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://mms.businesswire.com/media/20250320628624/en/ntt-data-hyperscaler.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[NTT DATA Launches Dedicated Agentic AI Integration Services for Global Hyperscaler Platforms]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[F5 and CrowdStrike Strengthen Enterprise Web Traffic Security with Deep Platform Integration]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1792940700000_3</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792940700000_3</guid>
+      <pubDate>Sun, 25 Oct 2026 15:05:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_businesswire]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[F5 and CrowdStrike announce a joint systems integration architecture combining Falcon threat telemetry with F5 BIG-IP application security to protect AI-native enterprise endpoints.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://mms.businesswire.com/media/20251112998392/en/f5-crowdstrike-integration.jpg" alt="F5 and CrowdStrike Strengthen Enterprise Web Traffic Security with Deep Platform Integration" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>F5 and CrowdStrike announce a joint systems integration architecture combining Falcon threat telemetry with F5 BIG-IP application security to protect AI-native enterprise endpoints.</p>
+          <p><small>출처 및 원문: <a href="https://www.businesswire.com/news/home/20251112998392/en/F5-and-CrowdStrike-Strengthen-Web-Traffic-Security-with-Falcon-for-F5-BIG-IP">businesswire.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://mms.businesswire.com/media/20251112998392/en/f5-crowdstrike-integration.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://mms.businesswire.com/media/20251112998392/en/f5-crowdstrike-integration.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[F5 and CrowdStrike Strengthen Enterprise Web Traffic Security with Deep Platform Integration]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[FabrixAI Launches Governed VibeOps Platform Powered by Enterprise Domain Small Language Models]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1792940640000_4</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792940640000_4</guid>
+      <pubDate>Sun, 25 Oct 2026 15:04:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_prnewswire]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[FabrixAI introduces VibeOps, an agentic operational framework enabling systems integrators to deploy governed small language models that automate complex domain workflows without data leakage.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://mma.prnewswire.com/media/2517892/FabrixAI_VibeOps.jpg" alt="FabrixAI Launches Governed VibeOps Platform Powered by Enterprise Domain Small Language Models" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>FabrixAI introduces VibeOps, an agentic operational framework enabling systems integrators to deploy governed small language models that automate complex domain workflows without data leakage.</p>
+          <p><small>출처 및 원문: <a href="https://www.prnewswire.com/news-releases/fabrixai-launches-governed-vibeops-powered-by-fabrix-slms---argos-302873768.html">prnewswire.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://mma.prnewswire.com/media/2517892/FabrixAI_VibeOps.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://mma.prnewswire.com/media/2517892/FabrixAI_VibeOps.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[FabrixAI Launches Governed VibeOps Platform Powered by Enterprise Domain Small Language Models]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Tech Mahindra Wins TM Forum DTW Ignite Catalyst Award for AI-Powered Assurance Architecture]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1792940580000_5</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792940580000_5</guid>
+      <pubDate>Sun, 25 Oct 2026 15:03:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_prnewswire]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Tech Mahindra receives the TM Forum Catalyst Award for its AI-native business assurance platform, recognizing excellence in telecom systems integration and autonomous operations management.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://mma.prnewswire.com/media/2516783/Tech_Mahindra_TMForum.jpg" alt="Tech Mahindra Wins TM Forum DTW Ignite Catalyst Award for AI-Powered Assurance Architecture" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Tech Mahindra receives the TM Forum Catalyst Award for its AI-native business assurance platform, recognizing excellence in telecom systems integration and autonomous operations management.</p>
+          <p><small>출처 및 원문: <a href="https://www.prnewswire.com/news-releases/tech-mahindras-ai-powered-business-aware-assurance-solution-wins-tm-forum-dtw-ignite-2026-catalyst-award-302842414.html">prnewswire.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://mma.prnewswire.com/media/2516783/Tech_Mahindra_TMForum.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://mma.prnewswire.com/media/2516783/Tech_Mahindra_TMForum.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Tech Mahindra Wins TM Forum DTW Ignite Catalyst Award for AI-Powered Assurance Architecture]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Visier Announces World's First Analytic AI Agent Platform for Enterprise Workforce Systems]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1792940520000_6</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792940520000_6</guid>
+      <pubDate>Sun, 25 Oct 2026 15:02:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_prnewswire]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Visier launches an analytic agent platform enabling systems integrators to embed autonomous workforce intelligence agents directly into enterprise HCM and ERP applications.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://mma.prnewswire.com/media/2513452/Visier_Analytic_Agent.jpg" alt="Visier Announces World&apos;s First Analytic AI Agent Platform for Enterprise Workforce Systems" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Visier launches an analytic agent platform enabling systems integrators to embed autonomous workforce intelligence agents directly into enterprise HCM and ERP applications.</p>
+          <p><small>출처 및 원문: <a href="https://www.prnewswire.com/news-releases/visier-announces-worlds-first-analytic-ai-agent-platform-to-augment-and-extend-every-employees-performance-and-productivity-302320330.html">prnewswire.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://mma.prnewswire.com/media/2513452/Visier_Analytic_Agent.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://mma.prnewswire.com/media/2513452/Visier_Analytic_Agent.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Visier Announces World's First Analytic AI Agent Platform for Enterprise Workforce Systems]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[IDC FutureScape 2026 Predictions Reveal Rise of Agentic AI as Turning Point in Transformation]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1792940460000_7</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792940460000_7</guid>
+      <pubDate>Sun, 25 Oct 2026 15:01:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_businesswire]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[IDC releases its global technology predictions, identifying autonomous agentic systems and comprehensive IT integration as the pivotal turning point for enterprise digital transformation in 2026.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://mms.businesswire.com/media/20251023490057/en/idc-futurescape-2026.jpg" alt="IDC FutureScape 2026 Predictions Reveal Rise of Agentic AI as Turning Point in Transformation" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>IDC releases its global technology predictions, identifying autonomous agentic systems and comprehensive IT integration as the pivotal turning point for enterprise digital transformation in 2026.</p>
+          <p><small>출처 및 원문: <a href="https://www.businesswire.com/news/home/20251023490057/en/IDC-FutureScape-2026-Predictions-Reveal-the-Rise-of-Agentic-AI-and-a-Turning-Point-in-Enterprise-Transformation">businesswire.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://mms.businesswire.com/media/20251023490057/en/idc-futurescape-2026.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://mms.businesswire.com/media/20251023490057/en/idc-futurescape-2026.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[IDC FutureScape 2026 Predictions Reveal Rise of Agentic AI as Turning Point in Transformation]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Joget Outlines Enterprise Transition from Isolated AI Models to Coordinated Agentic Systems]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1792940400000_8</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792940400000_8</guid>
+      <pubDate>Sun, 25 Oct 2026 15:00:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_joget]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Joget publishes technical guidance for systems integrators on deploying open low-code orchestration frameworks to connect autonomous multi-agent teams with core enterprise records.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://joget.com/wp-content/uploads/2025/10/joget-agentic-ai.jpg" alt="Joget Outlines Enterprise Transition from Isolated AI Models to Coordinated Agentic Systems" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Joget publishes technical guidance for systems integrators on deploying open low-code orchestration frameworks to connect autonomous multi-agent teams with core enterprise records.</p>
+          <p><small>출처 및 원문: <a href="https://joget.com/agentic-ai-the-next-big-thing-in-ai/">joget.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://joget.com/wp-content/uploads/2025/10/joget-agentic-ai.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://joget.com/wp-content/uploads/2025/10/joget-agentic-ai.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Joget Outlines Enterprise Transition from Isolated AI Models to Coordinated Agentic Systems]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Auditoria Closes Record Fiscal Year Driven by Accelerating Enterprise Agentic Automation Deployments]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1792940340000_9</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792940340000_9</guid>
+      <pubDate>Sun, 25 Oct 2026 14:59:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_globenewswire]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Auditoria reports record annual growth driven by global enterprise systems integrators implementing its autonomous finance agents across SAP, Oracle, and NetSuite ERP ecosystems.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://ml.globenewswire.com/Resource/Download/auditoria-record-year.jpg" alt="Auditoria Closes Record Fiscal Year Driven by Accelerating Enterprise Agentic Automation Deployments" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Auditoria reports record annual growth driven by global enterprise systems integrators implementing its autonomous finance agents across SAP, Oracle, and NetSuite ERP ecosystems.</p>
+          <p><small>출처 및 원문: <a href="https://www.globenewswire.com/news-release/2026/03/03/3248722/0/en/auditoria-closes-record-fiscal-year-with-accelerating-growth-and-expanding-global-footprint.html">globenewswire.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://ml.globenewswire.com/Resource/Download/auditoria-record-year.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://ml.globenewswire.com/Resource/Download/auditoria-record-year.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Auditoria Closes Record Fiscal Year Driven by Accelerating Enterprise Agentic Automation Deployments]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[SpaceX Super Intelligence for Enterprise Business: Scaling Grok Across Corporate Stacks]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1792938120000_10</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792938120000_10</guid>
+      <pubDate>Sun, 25 Oct 2026 14:22:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_spotdev]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[SpotDev details how enterprises are integrating SpaceXSI (SpaceX Super Intelligence) into commercial operations, deploying Grok models across customer data platforms and developer workflows.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://www.spotdev.co.uk/hubfs/spacex-super-intelligence.jpg" alt="SpaceX Super Intelligence for Enterprise Business: Scaling Grok Across Corporate Stacks" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>SpotDev details how enterprises are integrating SpaceXSI (SpaceX Super Intelligence) into commercial operations, deploying Grok models across customer data platforms and developer workflows.</p>
+          <p><small>출처 및 원문: <a href="https://www.spotdev.co.uk/blog/spacex-super-intelligence-for-uk-business">spotdev.co.uk</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://www.spotdev.co.uk/hubfs/spacex-super-intelligence.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://www.spotdev.co.uk/hubfs/spacex-super-intelligence.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[SpaceX Super Intelligence for Enterprise Business: Scaling Grok Across Corporate Stacks]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Dell Technologies Advances Enterprise Agentic AI from the Deskside to Data Center with NVIDIA]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1792938060000_11</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792938060000_11</guid>
+      <pubDate>Sun, 25 Oct 2026 14:21:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_businesswire]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Dell Technologies introduces end-to-end infrastructure solutions co-engineered with NVIDIA, enabling systems integrators to build and scale secure agentic AI deployments across enterprise data centers.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://mms.businesswire.com/media/20261021803536/en/dell-nvidia-agentic.jpg" alt="Dell Technologies Advances Enterprise Agentic AI from the Deskside to Data Center with NVIDIA" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Dell Technologies introduces end-to-end infrastructure solutions co-engineered with NVIDIA, enabling systems integrators to build and scale secure agentic AI deployments across enterprise data centers.</p>
+          <p><small>출처 및 원문: <a href="https://www.businesswire.com/news/home/20261021803536/en/Dell-Technologies-Advances-Enterprise-Agentic-AI-from-the-Deskside-to-Data-Center-with-NVIDIA">businesswire.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://mms.businesswire.com/media/20261021803536/en/dell-nvidia-agentic.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://mms.businesswire.com/media/20261021803536/en/dell-nvidia-agentic.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Dell Technologies Advances Enterprise Agentic AI from the Deskside to Data Center with NVIDIA]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Vultr Advances Agentic AI Infrastructure for the Enterprise with High-Density Cloud Upgrades]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1792938000000_12</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792938000000_12</guid>
+      <pubDate>Sun, 25 Oct 2026 14:20:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_businesswire]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Vultr rolls out platform enhancements optimized for enterprise agentic workloads, providing low-latency inference clusters and systems integration APIs for autonomous multi-agent applications.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://mms.businesswire.com/media/20261019198619/en/vultr-agentic-cloud.jpg" alt="Vultr Advances Agentic AI Infrastructure for the Enterprise with High-Density Cloud Upgrades" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Vultr rolls out platform enhancements optimized for enterprise agentic workloads, providing low-latency inference clusters and systems integration APIs for autonomous multi-agent applications.</p>
+          <p><small>출처 및 원문: <a href="https://www.businesswire.com/news/home/20261019198619/en/Vultr-Advances-Agentic-AI-Infrastructure-for-the-Enterprise-with-New-Platform-Upgrades">businesswire.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://mms.businesswire.com/media/20261019198619/en/vultr-agentic-cloud.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://mms.businesswire.com/media/20261019198619/en/vultr-agentic-cloud.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Vultr Advances Agentic AI Infrastructure for the Enterprise with High-Density Cloud Upgrades]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[OutSystems Unveils Open Agentic Systems Platform for Full-Lifecycle Enterprise AI]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1792937940000_13</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792937940000_13</guid>
+      <pubDate>Sun, 25 Oct 2026 14:19:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_businesswire]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[OutSystems announces an open agentic development platform that combines low-code visual modeling with autonomous agent orchestration, accelerating enterprise systems integration across core operations.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://mms.businesswire.com/media/20260601330502/en/outsystems-agentic-platform.jpg" alt="OutSystems Unveils Open Agentic Systems Platform for Full-Lifecycle Enterprise AI" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>OutSystems announces an open agentic development platform that combines low-code visual modeling with autonomous agent orchestration, accelerating enterprise systems integration across core operations.</p>
+          <p><small>출처 및 원문: <a href="https://www.businesswire.com/news/home/20260601330502/en/OutSystems-Unveils-Open-Agentic-Systems-Platform-for-Enterprise-AI">businesswire.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://mms.businesswire.com/media/20260601330502/en/outsystems-agentic-platform.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://mms.businesswire.com/media/20260601330502/en/outsystems-agentic-platform.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[OutSystems Unveils Open Agentic Systems Platform for Full-Lifecycle Enterprise AI]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Deloitte Outlines the Enterprise Strategic Path to Autonomous Agentic AI Transformation]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1792937880000_14</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792937880000_14</guid>
+      <pubDate>Sun, 25 Oct 2026 14:18:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_deloitte]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Deloitte releases strategic guidance on agentic transformation (SI AX), advising enterprise tech leaders on architectural requirements for transitioning from copilot pilots to autonomous multi-agent ecosystems.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://www.deloitte.com/content/dam/insights/us/articles/path-to-agentic-transformation.jpg" alt="Deloitte Outlines the Enterprise Strategic Path to Autonomous Agentic AI Transformation" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Deloitte releases strategic guidance on agentic transformation (SI AX), advising enterprise tech leaders on architectural requirements for transitioning from copilot pilots to autonomous multi-agent ecosystems.</p>
+          <p><small>출처 및 원문: <a href="https://www.deloitte.com/us/en/insights/industry/technology/path-to-agentic-transformation.html">deloitte.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://www.deloitte.com/content/dam/insights/us/articles/path-to-agentic-transformation.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://www.deloitte.com/content/dam/insights/us/articles/path-to-agentic-transformation.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Deloitte Outlines the Enterprise Strategic Path to Autonomous Agentic AI Transformation]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[DXC and LangChain Advance Agentic AI Harnesses for Mission-Critical Enterprise IT Operations]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1792937820000_15</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792937820000_15</guid>
+      <pubDate>Sun, 25 Oct 2026 14:17:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_prnewswire]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Global systems integrator DXC Technology collaborates with LangChain to build production-grade agent harnesses, orchestrating autonomous AI workflows across complex legacy IT environments.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://mma.prnewswire.com/media/2517891/DXC_LangChain.jpg" alt="DXC and LangChain Advance Agentic AI Harnesses for Mission-Critical Enterprise IT Operations" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Global systems integrator DXC Technology collaborates with LangChain to build production-grade agent harnesses, orchestrating autonomous AI workflows across complex legacy IT environments.</p>
+          <p><small>출처 및 원문: <a href="https://www.prnewswire.com/news-releases/dxc-and-langchain-advance-agentic-ai-harnesses-for-mission-critical-it-operations-302906356.html">prnewswire.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://mma.prnewswire.com/media/2517891/DXC_LangChain.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://mma.prnewswire.com/media/2517891/DXC_LangChain.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[DXC and LangChain Advance Agentic AI Harnesses for Mission-Critical Enterprise IT Operations]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Enterprise Benchmark Report Finds 77% of Organizations Paid Price for Ungoverned AI Agents]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1792937760000_16</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792937760000_16</guid>
+      <pubDate>Sun, 25 Oct 2026 14:16:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_prnewswire]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[A comprehensive 2026 enterprise study shows that 77% of organizations experienced operational disruptions from ungoverned agents, prompting systems integrators to mandate strict orchestration controls.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://mma.prnewswire.com/media/2519012/Ungoverned_Agents_Report.jpg" alt="Enterprise Benchmark Report Finds 77% of Organizations Paid Price for Ungoverned AI Agents" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>A comprehensive 2026 enterprise study shows that 77% of organizations experienced operational disruptions from ungoverned agents, prompting systems integrators to mandate strict orchestration controls.</p>
+          <p><small>출처 및 원문: <a href="https://www.prnewswire.com/news-releases/77-of-enterprises-have-paid-a-price-for-ungoverned-ai-agents-302916282.html">prnewswire.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://mma.prnewswire.com/media/2519012/Ungoverned_Agents_Report.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://mma.prnewswire.com/media/2519012/Ungoverned_Agents_Report.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Enterprise Benchmark Report Finds 77% of Organizations Paid Price for Ungoverned AI Agents]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Agentic AI Market Enters Rapid Growth Phase Driven by Enterprise System Fragmentation]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1792937700000_17</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792937700000_17</guid>
+      <pubDate>Sun, 25 Oct 2026 14:15:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_prnewswire]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Market research highlights exponential growth in enterprise agentic AI as organizations deploy autonomous cognitive execution layers to bridge legacy system fragmentation and manual workflows.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://mma.prnewswire.com/media/2514562/Agentic_AI_Market_Report.jpg" alt="Agentic AI Market Enters Rapid Growth Phase Driven by Enterprise System Fragmentation" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Market research highlights exponential growth in enterprise agentic AI as organizations deploy autonomous cognitive execution layers to bridge legacy system fragmentation and manual workflows.</p>
+          <p><small>출처 및 원문: <a href="https://www.prnewswire.com/news-releases/agentic-ai-market-enters-high-growth-phase-driven-by-autonomous-execution-demand-enterprise-software-fragmentation-and-rising-hitl-costs-302678866.html">prnewswire.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://mma.prnewswire.com/media/2514562/Agentic_AI_Market_Report.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://mma.prnewswire.com/media/2514562/Agentic_AI_Market_Report.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Agentic AI Market Enters Rapid Growth Phase Driven by Enterprise System Fragmentation]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Everymind Expands Salesforce Partner Cloud Practice as Leading Enterprise Systems Integrator]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1792937640000_18</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792937640000_18</guid>
+      <pubDate>Sun, 25 Oct 2026 14:14:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_globenewswire]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Everymind scales its Salesforce partner cloud integration practice, leveraging agentic architectures to transform corporate partner ecosystems into high-velocity revenue engines.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://ml.globenewswire.com/Resource/Download/everymind-salesforce-partner.jpg" alt="Everymind Expands Salesforce Partner Cloud Practice as Leading Enterprise Systems Integrator" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Everymind scales its Salesforce partner cloud integration practice, leveraging agentic architectures to transform corporate partner ecosystems into high-velocity revenue engines.</p>
+          <p><small>출처 및 원문: <a href="https://www.globenewswire.com/news-release/2026/06/11/3310620/0/en/ai-r-everymind-expands-salesforce-partner-cloud-practice-to-transform-partner-ecosystems-into-revenue-engines-and-become-the-world-s-1-partner-cloud-integrator.html">globenewswire.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://ml.globenewswire.com/Resource/Download/everymind-salesforce-partner.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://ml.globenewswire.com/Resource/Download/everymind-salesforce-partner.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Everymind Expands Salesforce Partner Cloud Practice as Leading Enterprise Systems Integrator]]></media:title>
+      </media:content>
+    </item>
+    <item>
+      <title><![CDATA[Driven Tech Launches Armor Redefining Autonomous Security Operations for the Enterprise Era]]></title>
+      <link>https://snshero.com/r/news/comments/gnews_1792937580000_19</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792937580000_19</guid>
+      <pubDate>Sun, 25 Oct 2026 14:13:00 GMT</pubDate>
+      <dc:creator><![CDATA[GoogleNews_prnewswire]]></dc:creator>
+      <category><![CDATA[World News]]></category>
+      <description><![CDATA[Driven Tech introduces Armor, an AI-native security orchestration platform that automates multi-agent threat response and legacy systems integration for enterprise SOCs.]]></description>
+      <content:encoded><![CDATA[
+        <article>
+          <p><img src="https://mma.prnewswire.com/media/2516782/Driven_Tech_Armor.jpg" alt="Driven Tech Launches Armor Redefining Autonomous Security Operations for the Enterprise Era" style="max-width:100%;height:auto;border-radius:8px;" /></p>
+          <p>Driven Tech introduces Armor, an AI-native security orchestration platform that automates multi-agent threat response and legacy systems integration for enterprise SOCs.</p>
+          <p><small>출처 및 원문: <a href="https://www.prnewswire.com/news-releases/driven-tech-launches-armor-redefining-security-operations-for-the-intelligence-era-302841587.html">prnewswire.com</a> | 발행: SNSHero News</small></p>
+        </article>
+      ]]></content:encoded>
+      <enclosure url="https://mma.prnewswire.com/media/2516782/Driven_Tech_Armor.jpg" length="240000" type="image/jpeg" />
+      <media:content url="https://mma.prnewswire.com/media/2516782/Driven_Tech_Armor.jpg" medium="image" width="1200" height="675">
+        <media:title><![CDATA[Driven Tech Launches Armor Redefining Autonomous Security Operations for the Enterprise Era]]></media:title>
+      </media:content>
+    </item>
+    <item>
       <title><![CDATA[Tech Mahindra and SpaceXSI Partner to Bring Grok Build Coding Agents to Enterprise Workloads]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792934580000_0</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792934580000_0</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1792934580000_20</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792934580000_20</guid>
       <pubDate>Sun, 25 Oct 2026 13:23:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_techgig]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -38,8 +438,8 @@
     </item>
     <item>
       <title><![CDATA[Trump Forms Super Intelligence Force to Cement US Dominance in Next-Generation AI]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792934520000_1</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792934520000_1</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1792934520000_21</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792934520000_21</guid>
       <pubDate>Sun, 25 Oct 2026 13:22:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_m]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -58,8 +458,8 @@
     </item>
     <item>
       <title><![CDATA[Built In Explains White House Super Intelligence Force Mandate and Federal Policy Overhaul]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792934460000_2</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792934460000_2</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1792934460000_22</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792934460000_22</guid>
       <pubDate>Sun, 25 Oct 2026 13:21:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_builtin]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -78,8 +478,8 @@
     </item>
     <item>
       <title><![CDATA[Metrocom Featured Among Launch Partners of SpaceX Super Intelligence Partner Network]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792934400000_3</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792934400000_3</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1792934400000_23</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792934400000_23</guid>
       <pubDate>Sun, 25 Oct 2026 13:20:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_metrocom]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -98,8 +498,8 @@
     </item>
     <item>
       <title><![CDATA[SAP and Google Cloud Expand Partnership to Deploy Multi-Agent Orchestration for Enterprise CX]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792934340000_4</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792934340000_4</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1792934340000_24</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792934340000_24</guid>
       <pubDate>Sun, 25 Oct 2026 13:19:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_prnewswire]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -118,8 +518,8 @@
     </item>
     <item>
       <title><![CDATA[Callsine Launches CDP-Powered Agentic Orchestration for Autonomous Enterprise Workflows]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792934280000_5</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792934280000_5</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1792934280000_25</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792934280000_25</guid>
       <pubDate>Sun, 25 Oct 2026 13:18:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_prnewswire]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -138,8 +538,8 @@
     </item>
     <item>
       <title><![CDATA[Tech Mahindra and StackGen Announce Partnership to Power Agentic AI for Enterprise Cloud]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792934220000_6</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792934220000_6</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1792934220000_26</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792934220000_26</guid>
       <pubDate>Sun, 25 Oct 2026 13:17:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_prnewswire]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -158,8 +558,8 @@
     </item>
     <item>
       <title><![CDATA[Persistent Systems Earns Databricks Brickbuilder Specialization for Governed AI in Banking]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792934160000_7</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792934160000_7</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1792934160000_27</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792934160000_27</guid>
       <pubDate>Sun, 25 Oct 2026 13:16:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_prnewswire]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -178,8 +578,8 @@
     </item>
     <item>
       <title><![CDATA[FPT Recognized for Enterprise Agentic AI at 2026 Artificial Intelligence Excellence Awards]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792934100000_8</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792934100000_8</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1792934100000_28</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792934100000_28</guid>
       <pubDate>Sun, 25 Oct 2026 13:15:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_businesswire]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -198,8 +598,8 @@
     </item>
     <item>
       <title><![CDATA[Intel Announces New AI Innovations at Computex Delivering Rackscale Solutions with Integrators]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792934040000_9</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792934040000_9</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1792934040000_29</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792934040000_29</guid>
       <pubDate>Sun, 25 Oct 2026 13:14:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_businesswire]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -218,8 +618,8 @@
     </item>
     <item>
       <title><![CDATA[Weaver Launches as the AI-Native Systems Integrator Proving Enterprise ROI Before Building]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792930860000_10</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792930860000_10</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1792930860000_30</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792930860000_30</guid>
       <pubDate>Sun, 25 Oct 2026 12:21:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_businesswire]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -238,8 +638,8 @@
     </item>
     <item>
       <title><![CDATA[NTT DATA Named Market Leader in HFS Horizons 2026 Report for Enterprise Agentic Services]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792930800000_11</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792930800000_11</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1792930800000_31</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792930800000_31</guid>
       <pubDate>Sun, 25 Oct 2026 12:20:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_businesswire]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -258,8 +658,8 @@
     </item>
     <item>
       <title><![CDATA[EPAM Awarded 2026 Databricks Consulting and Systems Integrator AI Partner of the Year]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792930740000_12</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792930740000_12</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1792930740000_32</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792930740000_32</guid>
       <pubDate>Sun, 25 Oct 2026 12:19:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_prnewswire]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -278,8 +678,8 @@
     </item>
     <item>
       <title><![CDATA[HCLTech and Anthropic Sign Global Premier Partnership to Scale Governed Enterprise Agentic AI]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792930680000_13</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792930680000_13</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1792930680000_33</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792930680000_33</guid>
       <pubDate>Sun, 25 Oct 2026 12:18:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_prnewswire]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -298,8 +698,8 @@
     </item>
     <item>
       <title><![CDATA[Hitachi Digital Services Ranked Market Leader in 2026 Next-Gen IT Infrastructure Services Report]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792930620000_14</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792930620000_14</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1792930620000_34</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792930620000_34</guid>
       <pubDate>Sun, 25 Oct 2026 12:17:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_businesswire]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -318,8 +718,8 @@
     </item>
     <item>
       <title><![CDATA[Opkey Introduces Design Studio Agentic Suite Slashed Cloud Application Implementation Times]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792930560000_15</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792930560000_15</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1792930560000_35</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792930560000_35</guid>
       <pubDate>Sun, 25 Oct 2026 12:16:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_globenewswire]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -338,8 +738,8 @@
     </item>
     <item>
       <title><![CDATA[7AI Launches Partner-First Global Alliance Program to Scale Enterprise Agentic SOC Operations]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792930500000_16</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792930500000_16</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1792930500000_36</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792930500000_36</guid>
       <pubDate>Sun, 25 Oct 2026 12:15:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_globenewswire]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -358,8 +758,8 @@
     </item>
     <item>
       <title><![CDATA[Cloudastructure Partners with Systems Integrator SAGE Integration to Expand AI Surveillance]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792930440000_17</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792930440000_17</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1792930440000_37</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792930440000_37</guid>
       <pubDate>Sun, 25 Oct 2026 12:14:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_globenewswire]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -378,8 +778,8 @@
     </item>
     <item>
       <title><![CDATA[FPT Expands Strategic Collaboration with Microsoft to Advance AI Frontier Integration Across Asia]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792930380000_18</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792930380000_18</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1792930380000_38</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792930380000_38</guid>
       <pubDate>Sun, 25 Oct 2026 12:13:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_businesswire]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -398,8 +798,8 @@
     </item>
     <item>
       <title><![CDATA[Seekr and SNC Form Strategic Partnership for AI-Enabled Multi-Domain Mission Integration]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792930320000_19</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792930320000_19</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1792930320000_39</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792930320000_39</guid>
       <pubDate>Sun, 25 Oct 2026 12:12:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_prnewswire]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -418,8 +818,8 @@
     </item>
     <item>
       <title><![CDATA[Meta Infrastructure VP at VB Transform: Enterprises Have 20 Months to Rebuild Systems for AI Agents]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792927260000_20</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792927260000_20</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1792927260000_40</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792927260000_40</guid>
       <pubDate>Sun, 25 Oct 2026 11:21:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_venturebeat]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -438,8 +838,8 @@
     </item>
     <item>
       <title><![CDATA[The Era of Agentic AI Demands an Enterprise Data Constitution and Systems Integration Architecture]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792927200000_21</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792927200000_21</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1792927200000_41</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792927200000_41</guid>
       <pubDate>Sun, 25 Oct 2026 11:20:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_venturebeat]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -458,8 +858,8 @@
     </item>
     <item>
       <title><![CDATA[Six Data and Systems Integration Shifts That Will Shape Enterprise AI in 2026]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792927140000_22</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792927140000_22</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1792927140000_42</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792927140000_42</guid>
       <pubDate>Sun, 25 Oct 2026 11:19:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_venturebeat]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -478,8 +878,8 @@
     </item>
     <item>
       <title><![CDATA[VB Pulse Releases Enterprise Agentic Orchestration Report on Multi-Agent Platform Adoption]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792927080000_23</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792927080000_23</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1792927080000_43</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792927080000_43</guid>
       <pubDate>Sun, 25 Oct 2026 11:18:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_venturebeat]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -498,8 +898,8 @@
     </item>
     <item>
       <title><![CDATA[Snyk Unveils Evo Agentic Application Security Platform for AI-Native Software Lifecycles]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792927020000_24</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792927020000_24</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1792927020000_44</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792927020000_44</guid>
       <pubDate>Sun, 25 Oct 2026 11:17:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_snyk]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -518,8 +918,8 @@
     </item>
     <item>
       <title><![CDATA[DXC Engineering and LOXO Partner to Accelerate Enterprise Systems Integration for Autonomous Fleets]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792926960000_25</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792926960000_25</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1792926960000_45</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792926960000_45</guid>
       <pubDate>Sun, 25 Oct 2026 11:16:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_prnewswire]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -538,8 +938,8 @@
     </item>
     <item>
       <title><![CDATA[DynPro and Turgon AI Announce Strategic Partnership for AI-Native IT Modernization and Systems Integration]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792926900000_26</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792926900000_26</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1792926900000_46</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792926900000_46</guid>
       <pubDate>Sun, 25 Oct 2026 11:15:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_prnewswire]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -558,8 +958,8 @@
     </item>
     <item>
       <title><![CDATA[GMI Cloud and Magna AI Partner on Sovereign AI Infrastructure and Enterprise Systems Integration]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792926840000_27</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792926840000_27</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1792926840000_47</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792926840000_47</guid>
       <pubDate>Sun, 25 Oct 2026 11:14:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_prnewswire]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -578,8 +978,8 @@
     </item>
     <item>
       <title><![CDATA[NCS Launches Enterprise AI Platforms to Accelerate AI Transformation and Systems Integration]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792926780000_28</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792926780000_28</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1792926780000_48</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792926780000_48</guid>
       <pubDate>Sun, 25 Oct 2026 11:13:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_prnewswire]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -598,8 +998,8 @@
     </item>
     <item>
       <title><![CDATA[Cognizant and Gulf Edge Launch Strategic AI Partnership to Drive Enterprise Systems Integration]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792926720000_29</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792926720000_29</guid>
+      <link>https://snshero.com/r/news/comments/gnews_1792926720000_49</link>
+      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792926720000_49</guid>
       <pubDate>Sun, 25 Oct 2026 11:12:00 GMT</pubDate>
       <dc:creator><![CDATA[GoogleNews_prnewswire]]></dc:creator>
       <category><![CDATA[World News]]></category>
@@ -614,406 +1014,6 @@
       <enclosure url="https://mma.prnewswire.com/media/2517345/Cognizant_Gulf_Edge.jpg" length="240000" type="image/jpeg" />
       <media:content url="https://mma.prnewswire.com/media/2517345/Cognizant_Gulf_Edge.jpg" medium="image" width="1200" height="675">
         <media:title><![CDATA[Cognizant and Gulf Edge Launch Strategic AI Partnership to Drive Enterprise Systems Integration]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[HPE Teams with NVIDIA to Advance Secure Agentic AI Across Enterprise and Industrial Systems]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792923120000_30</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792923120000_30</guid>
-      <pubDate>Sun, 25 Oct 2026 10:12:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_businesswire]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[HPE collaborates with NVIDIA to deliver full-stack agentic infrastructure within HPE Private Cloud AI, enabling systems integrators to deploy compliant autonomous agents across industrial environments.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://mms.businesswire.com/media/20261021721099/en/hpe-nvidia-agentic.jpg" alt="HPE Teams with NVIDIA to Advance Secure Agentic AI Across Enterprise and Industrial Systems" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>HPE collaborates with NVIDIA to deliver full-stack agentic infrastructure within HPE Private Cloud AI, enabling systems integrators to deploy compliant autonomous agents across industrial environments.</p>
-          <p><small>출처 및 원문: <a href="https://www.businesswire.com/news/home/20261021721099/en/HPE-Teams-With-NVIDIA-to-Advance-Secure-Agentic-AI-Across-Enterprises-and-Industrial-Environments">businesswire.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://mms.businesswire.com/media/20261021721099/en/hpe-nvidia-agentic.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://mms.businesswire.com/media/20261021721099/en/hpe-nvidia-agentic.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[HPE Teams with NVIDIA to Advance Secure Agentic AI Across Enterprise and Industrial Systems]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[ASUS Unveils Enterprise Agentic AI Solution and Full-Stack Agent Computers at NVIDIA GTC]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792923060000_31</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792923060000_31</guid>
-      <pubDate>Sun, 25 Oct 2026 10:11:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_prnewswire]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[ASUS introduces its Enterprise Agentic AI Solution and turnkey agent computing appliances, accelerating corporate systems integration by embedding fine-tuned multi-agent execution directly onto edge servers.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://mma.prnewswire.com/media/2519123/ASUS_Agentic_AI.jpg" alt="ASUS Unveils Enterprise Agentic AI Solution and Full-Stack Agent Computers at NVIDIA GTC" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>ASUS introduces its Enterprise Agentic AI Solution and turnkey agent computing appliances, accelerating corporate systems integration by embedding fine-tuned multi-agent execution directly onto edge servers.</p>
-          <p><small>출처 및 원문: <a href="https://www.prnewswire.com/news-releases/asus-unveils-enterprise-agentic-ai-solution-and-full-stack-agent-computer-at-nvidia-gtc-berlin-2026-302915377.html">prnewswire.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://mma.prnewswire.com/media/2519123/ASUS_Agentic_AI.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://mma.prnewswire.com/media/2519123/ASUS_Agentic_AI.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[ASUS Unveils Enterprise Agentic AI Solution and Full-Stack Agent Computers at NVIDIA GTC]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Agentic AI Market Surges Toward $206 Billion as Enterprises Transition from Copilots to Autonomous Systems]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792923000000_32</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792923000000_32</guid>
-      <pubDate>Sun, 25 Oct 2026 10:10:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_globenewswire]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[GlobeNewswire analyzes global market forecasts projecting agentic AI software to reach $206 billion by 2033, driven by enterprise systems integrators connecting multi-agent runtime frameworks with legacy ERP and CRM platforms.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://ml.globenewswire.com/Resource/Download/agentic-ai-forecast-2033.jpg" alt="Agentic AI Market Surges Toward $206 Billion as Enterprises Transition from Copilots to Autonomous Systems" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>GlobeNewswire analyzes global market forecasts projecting agentic AI software to reach $206 billion by 2033, driven by enterprise systems integrators connecting multi-agent runtime frameworks with legacy ERP and CRM platforms.</p>
-          <p><small>출처 및 원문: <a href="https://www.globenewswire.com/news-release/2026/10/21/3385229/0/en/agentic-ai-market-size-share-trends-and-global-forecast-to-2033-companies-move-from-copilots-to-autonomous-agents-fueling-a-206-billion-market.html">globenewswire.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://ml.globenewswire.com/Resource/Download/agentic-ai-forecast-2033.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://ml.globenewswire.com/Resource/Download/agentic-ai-forecast-2033.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Agentic AI Market Surges Toward $206 Billion as Enterprises Transition from Copilots to Autonomous Systems]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[SUSE Brings Sovereign Control and Security to Enterprise Agentic AI Deployments with NVIDIA]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792922940000_33</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792922940000_33</guid>
-      <pubDate>Sun, 25 Oct 2026 10:09:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_globenewswire]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[SUSE partners with NVIDIA to deliver sovereign air-gapped container runtimes for enterprise AI agents, empowering systems integrators to orchestrate autonomous workflows while complying with data residency standards.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://ml.globenewswire.com/Resource/Download/suse-nvidia-sovereign-ai.jpg" alt="SUSE Brings Sovereign Control and Security to Enterprise Agentic AI Deployments with NVIDIA" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>SUSE partners with NVIDIA to deliver sovereign air-gapped container runtimes for enterprise AI agents, empowering systems integrators to orchestrate autonomous workflows while complying with data residency standards.</p>
-          <p><small>출처 및 원문: <a href="https://www.globenewswire.com/news-release/2026/10/21/3385421/0/en/suse-brings-sovereign-control-to-enterprise-agentic-ai-with-nvidia.html">globenewswire.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://ml.globenewswire.com/Resource/Download/suse-nvidia-sovereign-ai.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://ml.globenewswire.com/Resource/Download/suse-nvidia-sovereign-ai.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[SUSE Brings Sovereign Control and Security to Enterprise Agentic AI Deployments with NVIDIA]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Redwood Software Showcases Agentic Orchestration Platform for Enterprise SAP Integrations]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792922880000_34</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792922880000_34</guid>
-      <pubDate>Sun, 25 Oct 2026 10:08:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_prnewswire]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Redwood Software demonstrates its autonomous agentic orchestration engine at SAP Sapphire, highlighting end-to-end automation and multi-agent coordination across mission-critical enterprise supply chain systems.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://mma.prnewswire.com/media/2513456/Redwood_Software_Logo.jpg" alt="Redwood Software Showcases Agentic Orchestration Platform for Enterprise SAP Integrations" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Redwood Software demonstrates its autonomous agentic orchestration engine at SAP Sapphire, highlighting end-to-end automation and multi-agent coordination across mission-critical enterprise supply chain systems.</p>
-          <p><small>출처 및 원문: <a href="https://www.prnewswire.com/news-releases/redwood-software-to-showcase-agentic-orchestration-platform-at-sap-sapphire-302759932.html">prnewswire.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://mma.prnewswire.com/media/2513456/Redwood_Software_Logo.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://mma.prnewswire.com/media/2513456/Redwood_Software_Logo.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Redwood Software Showcases Agentic Orchestration Platform for Enterprise SAP Integrations]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Decisions Recognized as Major Contender in 2026 Process Orchestration PEAK Matrix Assessment]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792922820000_35</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792922820000_35</guid>
-      <pubDate>Sun, 25 Oct 2026 10:07:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_prnewswire]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Everest Group evaluates no-code process orchestration platforms, naming Decisions a Major Contender for its rule-based multi-agent coordination engines that streamline complex enterprise legacy modernizations.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://mma.prnewswire.com/media/2517654/Decisions_Logo.jpg" alt="Decisions Recognized as Major Contender in 2026 Process Orchestration PEAK Matrix Assessment" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Everest Group evaluates no-code process orchestration platforms, naming Decisions a Major Contender for its rule-based multi-agent coordination engines that streamline complex enterprise legacy modernizations.</p>
-          <p><small>출처 및 원문: <a href="https://www.prnewswire.com/news-releases/decisions-named-a-major-contender-in-everest-groups-process-orchestration-products-peak-matrix-assessment-2026-302901993.html">prnewswire.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://mma.prnewswire.com/media/2517654/Decisions_Logo.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://mma.prnewswire.com/media/2517654/Decisions_Logo.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Decisions Recognized as Major Contender in 2026 Process Orchestration PEAK Matrix Assessment]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Aragon Research Unveils 2026 Globe for Workflow and Content Automation Emphasizing Agentic Shifts]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792922760000_36</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792922760000_36</guid>
-      <pubDate>Sun, 25 Oct 2026 10:06:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_prnewswire]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Aragon Research publishes its annual technology assessment, identifying a strategic industry transition from static robotic process automation toward autonomous agentic workflows and multi-agent document intelligence.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://mma.prnewswire.com/media/2518901/Aragon_Research_WCA.jpg" alt="Aragon Research Unveils 2026 Globe for Workflow and Content Automation Emphasizing Agentic Shifts" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Aragon Research publishes its annual technology assessment, identifying a strategic industry transition from static robotic process automation toward autonomous agentic workflows and multi-agent document intelligence.</p>
-          <p><small>출처 및 원문: <a href="https://www.prnewswire.com/news-releases/aragon-research-unveils-the-2026-globe-for-workflow-and-content-automation-the-shift-to-ai-content-assistants-and-agentic-workflows-302830560.html">prnewswire.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://mma.prnewswire.com/media/2518901/Aragon_Research_WCA.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://mma.prnewswire.com/media/2518901/Aragon_Research_WCA.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Aragon Research Unveils 2026 Globe for Workflow and Content Automation Emphasizing Agentic Shifts]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[MaiAgent Showcases Turnkey Multi-Agent Orchestration Core for Enterprise Systems Integration]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792922700000_37</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792922700000_37</guid>
-      <pubDate>Sun, 25 Oct 2026 10:05:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_prnewswire]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[At VivaTech, MaiAgent presents its ISO-certified enterprise agent platform, advising IT organizations to leverage unified multi-agent orchestration frameworks rather than building custom agent pipelines from scratch.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://mma.prnewswire.com/media/2515678/MaiAgent_VivaTech.jpg" alt="MaiAgent Showcases Turnkey Multi-Agent Orchestration Core for Enterprise Systems Integration" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>At VivaTech, MaiAgent presents its ISO-certified enterprise agent platform, advising IT organizations to leverage unified multi-agent orchestration frameworks rather than building custom agent pipelines from scratch.</p>
-          <p><small>출처 및 원문: <a href="https://www.prnewswire.com/news-releases/at-vivatech-2026-taiwan-based-maiagent-says-enterprises-should-stop-building-rag-and-ai-agent-systems-from-scratch-302804868.html">prnewswire.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://mma.prnewswire.com/media/2515678/MaiAgent_VivaTech.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://mma.prnewswire.com/media/2515678/MaiAgent_VivaTech.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[MaiAgent Showcases Turnkey Multi-Agent Orchestration Core for Enterprise Systems Integration]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Airrived Launches AetherClaw to Deliver Enterprise-Grade Governance for Autonomous Agent Security]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792922640000_38</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792922640000_38</guid>
-      <pubDate>Sun, 25 Oct 2026 10:04:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_businesswire]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Airrived introduces AetherClaw, an agentic security inspection gateway that enforces real-time permission boundaries, token throttling, and audit logging across autonomous multi-agent enterprise deployments.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://mms.businesswire.com/media/20260319946021/en/airrived-aetherclaw.jpg" alt="Airrived Launches AetherClaw to Deliver Enterprise-Grade Governance for Autonomous Agent Security" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Airrived introduces AetherClaw, an agentic security inspection gateway that enforces real-time permission boundaries, token throttling, and audit logging across autonomous multi-agent enterprise deployments.</p>
-          <p><small>출처 및 원문: <a href="https://www.businesswire.com/news/home/20260319946021/en/Airrived-Launches-AetherClaw-Bringing-Enterprise-Grade-Governance-to-Agentic-AI-Security">businesswire.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://mms.businesswire.com/media/20260319946021/en/airrived-aetherclaw.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://mms.businesswire.com/media/20260319946021/en/airrived-aetherclaw.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Airrived Launches AetherClaw to Deliver Enterprise-Grade Governance for Autonomous Agent Security]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[GXO Expands Technology Organization to Scale Agentic AI and Autonomous Warehouse Systems Integration]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792922580000_39</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792922580000_39</guid>
-      <pubDate>Sun, 25 Oct 2026 10:03:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_globenewswire]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[GXO expands its global engineering group to accelerate systems integration across autonomous logistics robotics and AI-native supply chain orchestration platforms.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://ml.globenewswire.com/Resource/Download/gxo-logistics-tech.jpg" alt="GXO Expands Technology Organization to Scale Agentic AI and Autonomous Warehouse Systems Integration" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>GXO expands its global engineering group to accelerate systems integration across autonomous logistics robotics and AI-native supply chain orchestration platforms.</p>
-          <p><small>출처 및 원문: <a href="https://www.globenewswire.com/news-release/2026/09/03/3355756/0/en/gxo-expands-technology-organization-to-enable-scale-and-resilience-and-accelerate-innovation.html">globenewswire.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://ml.globenewswire.com/Resource/Download/gxo-logistics-tech.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://ml.globenewswire.com/Resource/Download/gxo-logistics-tech.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[GXO Expands Technology Organization to Scale Agentic AI and Autonomous Warehouse Systems Integration]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Experts Explain What AI Superintelligence Means as Federal Agencies Transition Terminology]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792920240000_40</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792920240000_40</guid>
-      <pubDate>Sun, 25 Oct 2026 09:24:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_forbes]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Forbes analyzes the technical and policy implications of federal agencies transitioning from AI to Super Intelligence following White House executive directives and industry accords.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://imageio.forbes.com/specials-images/imageserve/66d1bb22fca4a9ecae11ef85/0x0.jpg?format=jpg&crop=1778" alt="Experts Explain What AI Superintelligence Means as Federal Agencies Transition Terminology" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Forbes analyzes the technical and policy implications of federal agencies transitioning from AI to Super Intelligence following White House executive directives and industry accords.</p>
-          <p><small>출처 및 원문: <a href="https://www.forbes.com/sites/technology/article/ai-superintelligence/">forbes.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://imageio.forbes.com/specials-images/imageserve/66d1bb22fca4a9ecae11ef85/0x0.jpg?format=jpg&amp;crop=1778" length="240000" type="image/jpeg" />
-      <media:content url="https://imageio.forbes.com/specials-images/imageserve/66d1bb22fca4a9ecae11ef85/0x0.jpg?format=jpg&amp;crop=1778" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Experts Explain What AI Superintelligence Means as Federal Agencies Transition Terminology]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Sam Altman Outlines Super Intelligence Trajectory and Compute Bottlenecks at White House Forum]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792920180000_41</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792920180000_41</guid>
-      <pubDate>Sun, 25 Oct 2026 09:23:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_forbes]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Forbes details OpenAI CEO Sam Altman presenting long-term Super Intelligence compute roadmaps to administration officials, focusing on data center energy demands and national infrastructure security.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://imageio.forbes.com/specials-images/imageserve/6ac55e1df11b43aa1786ec79/0x0.jpg?format=jpg&height=900&width=1600&fit=bounds" alt="Sam Altman Outlines Super Intelligence Trajectory and Compute Bottlenecks at White House Forum" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Forbes details OpenAI CEO Sam Altman presenting long-term Super Intelligence compute roadmaps to administration officials, focusing on data center energy demands and national infrastructure security.</p>
-          <p><small>출처 및 원문: <a href="https://www.forbes.com/sites/anishasircar/2026/10/22/sam-altman-reportedly-laid-out-three-endgames-for-ai-and-one-ends-with-rivals-gpus-melted/">forbes.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://imageio.forbes.com/specials-images/imageserve/6ac55e1df11b43aa1786ec79/0x0.jpg?format=jpg&amp;height=900&amp;width=1600&amp;fit=bounds" length="240000" type="image/jpeg" />
-      <media:content url="https://imageio.forbes.com/specials-images/imageserve/6ac55e1df11b43aa1786ec79/0x0.jpg?format=jpg&amp;height=900&amp;width=1600&amp;fit=bounds" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Sam Altman Outlines Super Intelligence Trajectory and Compute Bottlenecks at White House Forum]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[AsuriAI Launches Multi-Agent Platform for Persistent Enterprise Systems Integration]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792920120000_42</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792920120000_42</guid>
-      <pubDate>Sun, 25 Oct 2026 09:22:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_prnewswire]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[AsuriAI announces the commercial launch of its enterprise platform, utilizing persistent state graphs and multi-agent orchestration to automate mission-critical workflows across legacy IT stacks.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://mma.prnewswire.com/media/2518421/AsuriAI_Logo.jpg" alt="AsuriAI Launches Multi-Agent Platform for Persistent Enterprise Systems Integration" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>AsuriAI announces the commercial launch of its enterprise platform, utilizing persistent state graphs and multi-agent orchestration to automate mission-critical workflows across legacy IT stacks.</p>
-          <p><small>출처 및 원문: <a href="https://www.prnewswire.com/news-releases/asuriai-launches-multi-agent-ai-platform-for-persistent-business-workflows-302915829.html">prnewswire.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://mma.prnewswire.com/media/2518421/AsuriAI_Logo.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://mma.prnewswire.com/media/2518421/AsuriAI_Logo.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[AsuriAI Launches Multi-Agent Platform for Persistent Enterprise Systems Integration]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Aragon Research Releases 2026 Globe for Agent Platforms Highlighting Multi-Agent Orchestration]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792920060000_43</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792920060000_43</guid>
-      <pubDate>Sun, 25 Oct 2026 09:21:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_prnewswire]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Aragon Research publishes its 2026 market evaluation of enterprise agent platforms, identifying reasoning engines and standardized Agent-to-Agent (A2A) orchestration as essential for digital labor.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://mma.prnewswire.com/media/2512345/Aragon_Research_Logo.jpg" alt="Aragon Research Releases 2026 Globe for Agent Platforms Highlighting Multi-Agent Orchestration" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Aragon Research publishes its 2026 market evaluation of enterprise agent platforms, identifying reasoning engines and standardized Agent-to-Agent (A2A) orchestration as essential for digital labor.</p>
-          <p><small>출처 및 원문: <a href="https://www.prnewswire.com/news-releases/aragon-research-releases-its-2026-globe-for-agent-platforms-in-the-icc-the-era-of-ai-digital-labor-begins-302698279.html">prnewswire.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://mma.prnewswire.com/media/2512345/Aragon_Research_Logo.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://mma.prnewswire.com/media/2512345/Aragon_Research_Logo.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Aragon Research Releases 2026 Globe for Agent Platforms Highlighting Multi-Agent Orchestration]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Domain-Specific Multi-Agent Systems to Define Enterprise Healthcare Integration in 2026]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792920000000_44</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792920000000_44</guid>
-      <pubDate>Sun, 25 Oct 2026 09:20:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_cio]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[CIO analyzes why enterprise healthcare and regulated industries are transitioning from single monolithic LLMs to collaborative multi-agent architectures integrated directly into EHR systems.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://images.idgesg.net/images/article/2026/01/healthcare-multi-agent-integration-100951234-large.jpg" alt="Domain-Specific Multi-Agent Systems to Define Enterprise Healthcare Integration in 2026" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>CIO analyzes why enterprise healthcare and regulated industries are transitioning from single monolithic LLMs to collaborative multi-agent architectures integrated directly into EHR systems.</p>
-          <p><small>출처 및 원문: <a href="https://www.cio.com/article/4114606/multi-agent-domain-specific-and-governed-models-will-define-healthcare-genai-in-2026.html">cio.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://images.idgesg.net/images/article/2026/01/healthcare-multi-agent-integration-100951234-large.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://images.idgesg.net/images/article/2026/01/healthcare-multi-agent-integration-100951234-large.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Domain-Specific Multi-Agent Systems to Define Enterprise Healthcare Integration in 2026]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Ivo Partners with Harbor to Deliver Agentic Contract Intelligence for Enterprise Systems Integration]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792919940000_45</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792919940000_45</guid>
-      <pubDate>Sun, 25 Oct 2026 09:19:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_globenewswire]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Ivo partners with systems integrator Harbor to implement autonomous contract review agents across global corporate legal departments, integrating intelligent document pipelines with enterprise ERPs.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://ml.globenewswire.com/Resource/Download/ivo-harbor-partnership.jpg" alt="Ivo Partners with Harbor to Deliver Agentic Contract Intelligence for Enterprise Systems Integration" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Ivo partners with systems integrator Harbor to implement autonomous contract review agents across global corporate legal departments, integrating intelligent document pipelines with enterprise ERPs.</p>
-          <p><small>출처 및 원문: <a href="https://www.globenewswire.com/fr/news-release/2026/10/21/3385579/0/en/ivo-partners-with-harbor-to-bring-contract-intelligence-to-enterprise-legal-departments.html">globenewswire.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://ml.globenewswire.com/Resource/Download/ivo-harbor-partnership.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://ml.globenewswire.com/Resource/Download/ivo-harbor-partnership.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Ivo Partners with Harbor to Deliver Agentic Contract Intelligence for Enterprise Systems Integration]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Atos Expands Systems Integration Partnership with Fortinet for AI-Driven Cloud Security]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792919880000_46</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792919880000_46</guid>
-      <pubDate>Sun, 25 Oct 2026 09:18:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_globenewswire]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[IT systems integration leader Atos strengthens its collaboration with Fortinet, architecting a unified cybersecurity framework powered by autonomous threat response agents across hybrid enterprise clouds.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://ml.globenewswire.com/Resource/Download/atos-fortinet-cybersecurity.jpg" alt="Atos Expands Systems Integration Partnership with Fortinet for AI-Driven Cloud Security" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>IT systems integration leader Atos strengthens its collaboration with Fortinet, architecting a unified cybersecurity framework powered by autonomous threat response agents across hybrid enterprise clouds.</p>
-          <p><small>출처 및 원문: <a href="https://www.globenewswire.com/fr/news-release/2026/10/14/3380365/0/en/atos-expands-partnership-with-fortinet-to-deliver-a-global-unified-cybersecurity-framework-across-hybrid-and-multi-cloud-environments.html">globenewswire.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://ml.globenewswire.com/Resource/Download/atos-fortinet-cybersecurity.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://ml.globenewswire.com/Resource/Download/atos-fortinet-cybersecurity.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Atos Expands Systems Integration Partnership with Fortinet for AI-Driven Cloud Security]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Airrived Recognized as Leader in IDC MarketScape for Autonomous Enterprise AI SOC Platforms]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792919820000_47</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792919820000_47</guid>
-      <pubDate>Sun, 25 Oct 2026 09:17:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_businesswire]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[IDC MarketScape evaluates standalone AI security operations center platforms, positioning Airrived as a Leader for its agentic systems that automate threat triage and systems integration in enterprise IT.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://mms.businesswire.com/media/20261013390521/en/airrived-idc-marketscape.jpg" alt="Airrived Recognized as Leader in IDC MarketScape for Autonomous Enterprise AI SOC Platforms" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>IDC MarketScape evaluates standalone AI security operations center platforms, positioning Airrived as a Leader for its agentic systems that automate threat triage and systems integration in enterprise IT.</p>
-          <p><small>출처 및 원문: <a href="https://www.businesswire.com/news/home/20261013390521/en/Airrived-Named-a-Leader-in-the-IDC-MarketScape-Worldwide-Standalone-AI-SOC-Platforms-2026-Vendor-Assessment">businesswire.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://mms.businesswire.com/media/20261013390521/en/airrived-idc-marketscape.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://mms.businesswire.com/media/20261013390521/en/airrived-idc-marketscape.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Airrived Recognized as Leader in IDC MarketScape for Autonomous Enterprise AI SOC Platforms]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[Gartner Names Airrived a Cool Vendor in 2026 Agentic AI Security and Enterprise Operations]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792919760000_48</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792919760000_48</guid>
-      <pubDate>Sun, 25 Oct 2026 09:16:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_businesswire]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[Gartner selects Airrived as a Cool Vendor in agentic AI security, acknowledging its autonomous multi-agent defense architecture that insulates enterprise data pipelines from emerging model risks.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://mms.businesswire.com/media/20261008304451/en/airrived-gartner-cool-vendor.jpg" alt="Gartner Names Airrived a Cool Vendor in 2026 Agentic AI Security and Enterprise Operations" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>Gartner selects Airrived as a Cool Vendor in agentic AI security, acknowledging its autonomous multi-agent defense architecture that insulates enterprise data pipelines from emerging model risks.</p>
-          <p><small>출처 및 원문: <a href="https://www.businesswire.com/news/home/20261008304451/en/Airrived-Named-a-Cool-Vendor-in-the-2026-Gartner-Coolest-Vendor-Innovations-in-Agentic-AI-Security">businesswire.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://mms.businesswire.com/media/20261008304451/en/airrived-gartner-cool-vendor.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://mms.businesswire.com/media/20261008304451/en/airrived-gartner-cool-vendor.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[Gartner Names Airrived a Cool Vendor in 2026 Agentic AI Security and Enterprise Operations]]></media:title>
-      </media:content>
-    </item>
-    <item>
-      <title><![CDATA[IBM Think 2026 Delivers Blueprint for Enterprise AI Operating Model and Agent Orchestration]]></title>
-      <link>https://snshero.com/r/news/comments/gnews_1792919700000_49</link>
-      <guid isPermaLink="true">https://snshero.com/r/news/comments/gnews_1792919700000_49</guid>
-      <pubDate>Sun, 25 Oct 2026 09:15:00 GMT</pubDate>
-      <dc:creator><![CDATA[GoogleNews_prnewswire]]></dc:creator>
-      <category><![CDATA[World News]]></category>
-      <description><![CDATA[IBM outlines its enterprise AI operating blueprint at Think 2026, delivering next-generation multi-agent orchestration, governed data foundations, and systems integration across hybrid cloud environments.]]></description>
-      <content:encoded><![CDATA[
-        <article>
-          <p><img src="https://mma.prnewswire.com/media/2517890/IBM_Think_2026.jpg" alt="IBM Think 2026 Delivers Blueprint for Enterprise AI Operating Model and Agent Orchestration" style="max-width:100%;height:auto;border-radius:8px;" /></p>
-          <p>IBM outlines its enterprise AI operating blueprint at Think 2026, delivering next-generation multi-agent orchestration, governed data foundations, and systems integration across hybrid cloud environments.</p>
-          <p><small>출처 및 원문: <a href="https://www.prnewswire.com/news-releases/think-2026-ibm-delivers-the-blueprint-for-the-ai-operating-model-as-the-ai-divide-widens-302762136.html">prnewswire.com</a> | 발행: SNSHero News</small></p>
-        </article>
-      ]]></content:encoded>
-      <enclosure url="https://mma.prnewswire.com/media/2517890/IBM_Think_2026.jpg" length="240000" type="image/jpeg" />
-      <media:content url="https://mma.prnewswire.com/media/2517890/IBM_Think_2026.jpg" medium="image" width="1200" height="675">
-        <media:title><![CDATA[IBM Think 2026 Delivers Blueprint for Enterprise AI Operating Model and Agent Orchestration]]></media:title>
       </media:content>
     </item>
   </channel>
