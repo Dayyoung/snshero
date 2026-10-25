@@ -148,8 +148,13 @@ const buildScenesForEpisode = (epNum: number, language: 'ko' | 'en' | 'ja' = 'ko
  const targetImages = epData.images;
 
  return targetImages.map((img, idx) => {
- const textKo = img.narrationKo || '';
- const textEn = img.narrationEn || '';
+ const isTitleCard = img.type === 'title_card' || img.index === 0;
+ const textKo = isTitleCard
+ ? `제 ${epNum}화: ${meta?.titleKo || img.narrationKo || ''}`
+ : (img.narrationKo || '');
+ const textEn = isTitleCard
+ ? `Episode ${epNum}: ${meta?.titleEn || img.narrationEn || ''}`
+ : (img.narrationEn || '');
  const sfxCues: CinematicSfxCue[] = img.sfxCues || [];
  const characters: string[] = img.characters || [];
 
@@ -205,14 +210,19 @@ const buildScenesForEpisode = (epNum: number, language: 'ko' | 'en' | 'ja' = 'ko
  characterCardId: d.characterCardId,
  }));
 
- // Dynamic scene timing based on English word count and speech synthesis length
+ // Dynamic scene timing based on primary language character/word count and speech synthesis length
+ const koChars = (textKo || '').replace(/\s+/g, '').length;
  const enWords = (textEn + ' ' + (img.dialogues?.map((d) => d.textEn).join(' ') || ''))
  .split(/\s+/)
  .filter(Boolean).length;
- const isTitleCard = img.type === 'title_card' || img.index === 0;
+ const estimatedKoSec = 3.2 + koChars * 0.16;
+ const estimatedEnSec = 3.2 + enWords * 0.38;
  const dynamicDuration = isTitleCard
- ? 4.5
- : Math.max(4.5, Math.min(14.0, 3.2 + enWords * 0.38));
+ ? 4.8
+ : Math.max(
+ 5.5,
+ Math.min(20.0, language === 'en' ? estimatedEnSec : Math.max(estimatedKoSec, estimatedEnSec))
+ );
 
  return {
  sceneNumber: idx + 1,
@@ -259,7 +269,7 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
  const [isMuted, setIsMuted] = useState<boolean>(false);
  const [isTtsEnabled, setIsTtsEnabled] = useState<boolean>(true);
  const [isCcEnabled, setIsCcEnabled] = useState<boolean>(true);
- const [subtitleMode, setSubtitleMode] = useState<'dual' | 'primary' | 'off'>('dual');
+ const [subtitleMode, setSubtitleMode] = useState<'primary' | 'dual' | 'off'>('primary');
  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
  const [showControls, setShowControls] = useState<boolean>(true);
  const [isCompleted, setIsCompleted] = useState<boolean>(false);
@@ -295,10 +305,22 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
 
  const currentScene = scenes[currentSceneIdx] || scenes[0];
 
- // Clean, non-duplicated English script for TTS voiceover
- const getSceneEnglishTtsScript = useCallback(
+ // Primary language for subtitles and TTS (Default: Primary Subtitle Language)
+ const primaryTtsLang: 'ko' | 'en' | 'ja' =
+ language === 'en' ? 'en' : language === 'ja' ? 'ja' : 'ko';
+
+ // Clean, non-duplicated Primary Language script for TTS voiceover
+ const getScenePrimaryTtsScript = useCallback(
  (scene: CinematicScene | undefined): string => {
  if (!scene) return '';
+ if (scene.type === 'title_card' || scene.sceneNumber === 1) {
+ if (primaryTtsLang === 'en') {
+ return `Episode ${episodeNumber}. ${titleEn || ''}.`.trim();
+ }
+ return `제 ${episodeNumber}화. ${titleKo || ''}.`.trim();
+ }
+
+ if (primaryTtsLang === 'en') {
  const narration = (scene.narrationEn || '').trim();
  const nonNarrationDialogues = (scene.dialogues || [])
  .filter(
@@ -309,18 +331,34 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
  d.speakerEn !== '내레이션' &&
  d.textEn.trim() !== narration
  )
- .map((d) => `${d.speakerEn}: ${d.textEn.trim()}`);
+ .map((d) => d.textEn.trim());
 
  const parts = [...nonNarrationDialogues, narration].filter(Boolean);
  if (parts.length > 0) {
- return parts.join('. ');
+ return parts.join(' ');
  }
- if (scene.type === 'title_card' || scene.sceneNumber === 1) {
- return `Episode ${episodeNumber}. ${titleEn || ''}.`.trim();
+ return (scene.dialogues?.[0]?.textEn || '').trim();
  }
- return '';
+
+ const narration = (scene.narrationKo || '').trim();
+ const nonNarrationDialogues = (scene.dialogues || [])
+ .filter(
+ (d) =>
+ d.textKo &&
+ d.speakerKo &&
+ d.speakerKo !== 'Narration' &&
+ d.speakerKo !== '내레이션' &&
+ d.textKo.trim() !== narration
+ )
+ .map((d) => d.textKo.trim());
+
+ const parts = [...nonNarrationDialogues, narration].filter(Boolean);
+ if (parts.length > 0) {
+ return parts.join(' ');
+ }
+ return (scene.dialogues?.[0]?.textKo || scene.narrationEn || '').trim();
  },
- [episodeNumber, titleEn]
+ [episodeNumber, titleKo, titleEn, primaryTtsLang]
  );
 
  // Characters present in current scene (manifest characters + dialogue speakers)
@@ -375,7 +413,7 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
  };
  }, []);
 
- // 2. Audio SFX & English TTS voiceover on scene change (WITHOUT cutting episode BGM)
+ // 2. Audio SFX & Primary Language TTS voiceover on scene change (WITHOUT cutting episode BGM)
  useEffect(() => {
  const activeScene = scenes[currentSceneIdx] || scenes[0];
  if (!activeScene) return;
@@ -385,12 +423,11 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
  movieAudio.playSfx(activeScene.sfxTrigger);
  }
 
- // English-Base TTS Voiceover (Requirement R2)
- // Always speaks English narrationEn and English dialogues
+ // Primary Subtitle-Base TTS Voiceover
  if (isTtsEnabled && isPlaying && !isMuted) {
- const fullEnglishScript = getSceneEnglishTtsScript(activeScene);
- if (fullEnglishScript) {
- movieAudio.speakEnglishNarration(fullEnglishScript);
+ const primaryScript = getScenePrimaryTtsScript(activeScene);
+ if (primaryScript) {
+ movieAudio.speakNarration(primaryScript, primaryTtsLang, undefined, playbackSpeed);
  }
  } else {
  movieAudio.stopNarration();
@@ -399,9 +436,9 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
  return () => {
  movieAudio.stopNarration();
  };
- }, [episodeNumber, currentSceneIdx, isTtsEnabled, isPlaying, isMuted, getSceneEnglishTtsScript]);
+ }, [episodeNumber, currentSceneIdx, isTtsEnabled, isPlaying, isMuted, primaryTtsLang, playbackSpeed, getScenePrimaryTtsScript]);
 
- // Scene auto-advance timer and progress ticker
+ // Scene auto-advance timer and progress ticker (waits for active TTS completion so voiceover never cuts off mid-sentence!)
  useEffect(() => {
  if (!isPlaying || isCompleted) {
  if (progressTimerRef.current) window.clearInterval(progressTimerRef.current);
@@ -418,6 +455,10 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
  setSceneProgress((prev) => {
  const next = prev + increment;
  if (next >= 100) {
+ // Hold at 99% while TTS is still speaking the current scene so voiceover is never cut off
+ if (isTtsEnabled && !isMuted && movieAudio.isSpeaking()) {
+ return 99;
+ }
  // Advance to next scene
  if (currentSceneIdx < scenes.length - 1) {
  setCurrentSceneIdx((c) => c + 1);
@@ -440,7 +481,7 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
  return () => {
  if (progressTimerRef.current) window.clearInterval(progressTimerRef.current);
  };
- }, [currentSceneIdx, isPlaying, isCompleted, playbackSpeed, currentScene, scenes.length, episodeNumber, onEpisodeComplete]);
+ }, [currentSceneIdx, isPlaying, isCompleted, playbackSpeed, currentScene, scenes.length, episodeNumber, onEpisodeComplete, isTtsEnabled, isMuted]);
 
  // Fullscreen toggle
  const toggleFullscreen = async () => {
@@ -482,15 +523,14 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
  isPlaying &&
  isTtsEnabled &&
  !isMuted &&
- typeof window !== 'undefined' &&
- (!('speechSynthesis' in window) || !window.speechSynthesis.speaking)
+ !movieAudio.isSpeaking()
  ) {
- const script = getSceneEnglishTtsScript(currentScene);
+ const script = getScenePrimaryTtsScript(currentScene);
  if (script) {
- movieAudio.speakEnglishNarration(script);
+ movieAudio.speakNarration(script, primaryTtsLang, undefined, playbackSpeed);
  }
  }
- }, [isPlaying, isTtsEnabled, isMuted, episodeNumber, currentScene, getSceneEnglishTtsScript]);
+ }, [isPlaying, isTtsEnabled, isMuted, episodeNumber, currentScene, primaryTtsLang, playbackSpeed, getScenePrimaryTtsScript]);
 
  // Controls Handlers
  const handleTogglePlay = () => {
@@ -506,9 +546,9 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
  }
  });
  if (willPlay && isTtsEnabled && !isMuted) {
- const script = getSceneEnglishTtsScript(currentScene);
+ const script = getScenePrimaryTtsScript(currentScene);
  if (script) {
- movieAudio.speakEnglishNarration(script);
+ movieAudio.speakNarration(script, primaryTtsLang, undefined, playbackSpeed);
  }
  } else if (!willPlay) {
  movieAudio.stopNarration();
@@ -556,9 +596,9 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
  setIsMuted(nextMuted);
  movieAudio.setMuted(nextMuted);
  if (!nextMuted && isPlaying && isTtsEnabled) {
- const script = getSceneEnglishTtsScript(currentScene);
+ const script = getScenePrimaryTtsScript(currentScene);
  if (script) {
- movieAudio.speakEnglishNarration(script);
+ movieAudio.speakNarration(script, primaryTtsLang, undefined, playbackSpeed);
  }
  }
  resetControlsTimeout();
@@ -574,7 +614,7 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
 
  const handleCycleSubtitle = () => {
  triggerHaptic('light');
- const modes: Array<'dual' | 'primary' | 'off'> = ['dual', 'primary', 'off'];
+ const modes: Array<'primary' | 'dual' | 'off'> = ['primary', 'dual', 'off'];
  const nextIdx = (modes.indexOf(subtitleMode) + 1) % modes.length;
  setSubtitleMode(modes[nextIdx]);
  resetControlsTimeout();
@@ -592,9 +632,9 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
  const nextTts = !isTtsEnabled;
  setIsTtsEnabled(nextTts);
  if (nextTts && isPlaying && !isMuted) {
- const script = getSceneEnglishTtsScript(currentScene);
+ const script = getScenePrimaryTtsScript(currentScene);
  if (script) {
- movieAudio.speakEnglishNarration(script);
+ movieAudio.speakNarration(script, primaryTtsLang, undefined, playbackSpeed);
  }
  } else {
  movieAudio.stopNarration();
@@ -881,24 +921,17 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
 
  {isSpeaking && (
  <span className="rounded-none bg-amber-400 px-1.5 py-0.5 font-mono text-[10px] font-black uppercase tracking-wider text-black">
- [{charName}]
+ [{language === 'en' ? charName : (activeSpeakerDialogue?.speakerKo || charName)}]
  </span>
  )}
  </div>
  );
  })}
  </div>
-
- {/* Active English Spoken Line beside the character dock */}
- {activeSpeakerDialogue && (
- <p className="text-xs sm:text-sm font-semibold text-amber-200 leading-snug line-clamp-2">
- "{activeSpeakerDialogue.textEn || activeSpeakerDialogue.text}"
- </p>
- )}
  </div>
  )}
 
- {/* Synchronized Multi-Language Subtitle Box (Controlled by CC ON/OFF) */}
+ {/* Synchronized Multi-Language Subtitle Box (Default: Primary Subtitle) */}
  {isCcEnabled && subtitleMode !== 'off' && (
  <div className="rounded-sm border border-white/10 bg-black/70 px-3 py-2 text-left sm:text-center">
  {/* Primary Language Subtitle (User's selected language, or English for English users) */}
@@ -918,9 +951,11 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
  </p>
 
  {/* Secondary English/Korean Subtitle when Dual Mode is explicitly selected */}
- {subtitleMode === 'dual' && language !== 'en' && (
+ {subtitleMode === 'dual' && (
  <p className="mt-1 text-[11px] text-stone-400 leading-normal">
- {currentScene?.dialogues?.[0]?.textEn || currentScene?.narrationEn}
+ {language === 'en'
+ ? (currentScene?.dialogues?.[0]?.textKo || currentScene?.narrationKo)
+ : (currentScene?.dialogues?.[0]?.textEn || currentScene?.narrationEn)}
  </p>
  )}
  </div>
@@ -1015,7 +1050,7 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
  ? 'border-amber-500/80 bg-amber-500/20 text-amber-300'
  : 'border-stone-700 bg-stone-900 text-stone-400'
  }`}
- title={isTtsEnabled ? 'English Voiceover TTS Enabled' : 'Voiceover TTS Disabled'}
+ title={isTtsEnabled ? 'TTS 음성 켜짐 (기본 자막 기준)' : 'TTS 음성 꺼짐'}
  >
  {isTtsEnabled ? <Mic size={17} /> : <MicOff size={17} />}
  </button>

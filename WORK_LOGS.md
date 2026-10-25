@@ -16124,3 +16124,14 @@
   3. `EP34 ~ EP40` 애니메이션 MP4(`SNSHero.com_E34..E40_*.mp4`) 1:1 자막 싱크 재인코딩 및 `npm run build` 프로덕션 번들 빌드 완료.
 - **검증 결과**: `npm run build` 성공 (`0` 에러), 전 40화 `2,049/2,049`컷 고유 SHA-256 및 1:1 자막-이미지 정합성 100% 검증 완료.
 - **구글 폼 보고**: 제출 완료 (`작업완료`).
+
+## [2026-10-26 04:44 KST] 인터랙티브 극장 Primary 자막 기본값 적용 및 기본 언어 기준 TTS 재생·끊김 방지 최적화
+- **작업 내역**:
+  1. **Primary 자막 기본값 설정**: `CinematicMoviePlayer.tsx` 및 `LiveActionCinemaPlayer.tsx`의 자막 모드(`subtitleMode`) 초기값을 `'primary'`로 변경하고, 캐릭터 초상화 독 옆에 중복 표시되던 고정 영어 대사를 제거하여 기본 언어(한국어 설정 시 한국어, 영어 설정 시 영어) 자막만 깔끔하게 표시되도록 개선.
+  2. **기본값(Primary 자막 언어) 기준 TTS 재생**: 고정 영어(`en`) TTS 대신 현재 기본 언어(`primaryTtsLang`: `'ko'` / `'en'` / `'ja'`)의 대사·내레이션을 읽도록 연동하고, 동일 문장 중복 합산 발화 버그 해결.
+  3. **TTS 재생 중 끊김 현상 완벽 해결**:
+     - `MovieAudioSynthesizer.ts`에서 발화 시작 450ms 만에 `speechSynthesis.cancel()`을 호출하여 브라우저 TTS를 강제 중단시키던 `fallbackCheckTimeoutId` 버그 제거.
+     - 긴 내레이션 발화 시 브라우저 15초 타임아웃 및 가비지 컬렉션(GC)으로 인한 중간 끊김을 막기 위해 문장 호흡 단위 청크 순차 발화 및 `activeUtterances` 강한 참조 유지 적용.
+     - 씬 자동 전환 타이머가 TTS 발화 도중 다음 씬으로 넘어가 말을 자르지 않도록 `movieAudio.isSpeaking()`이 끝날 때까지 99%에서 대기 후 전환되도록 동기화.
+- **검증 결과**: `npm run lint` 및 `npm run build` 무결점 통과 완료.
+- **구글 폼 제출 여부**: 제출 완료 (`[개발] [인터랙티브 극장] Primary 자막 기본값 적용 및 기본 언어 기준 TTS 재생·끊김 방지 최적화 -> 작업완료`)

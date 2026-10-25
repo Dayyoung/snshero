@@ -165,8 +165,13 @@ const buildLiveActionScenes = (epNum: number): LiveActionScene[] => {
   }
 
   return epData.images.map((img, idx) => {
-    const textKo = img.narrationKo || '';
-    const textEn = img.narrationEn || '';
+    const isTitleCard = img.type === 'title_card' || idx === 0;
+    const textKo = isTitleCard
+      ? `제 ${epNum}화: ${meta?.titleKo || img.narrationKo || ''}`
+      : (img.narrationKo || '');
+    const textEn = isTitleCard
+      ? `Episode ${epNum}: ${meta?.titleEn || img.narrationEn || ''}`
+      : (img.narrationEn || '');
     const sfxCues: LiveActionSfxCue[] = img.sfxCues || [];
     const padSc = String(img.index ?? idx).padStart(2, '0');
 
@@ -207,9 +212,10 @@ const buildLiveActionScenes = (epNum: number): LiveActionScene[] => {
       characterCardId: d.characterCardId,
     }));
 
-    const isTitleCard = img.type === 'title_card' || idx === 0;
-    const charLen = Math.max(textKo.length, textEn.length);
-    const durationSeconds = isTitleCard ? 4.2 : Math.max(4.5, Math.min(7.0, 4.0 + Math.floor(charLen / 50) + dialogues.length * 0.7));
+    const koChars = (textKo || '').replace(/\s+/g, '').length;
+    const enWords = (textEn || '').split(/\s+/).filter(Boolean).length;
+    const estimatedSec = Math.max(3.2 + koChars * 0.16, 3.2 + enWords * 0.38);
+    const durationSeconds = isTitleCard ? 4.8 : Math.max(5.5, Math.min(20.0, estimatedSec));
 
     return {
       sceneNumber: idx + 1,
@@ -245,7 +251,7 @@ export const LiveActionCinemaPlayer: React.FC<LiveActionCinemaPlayerProps> = ({
   const [sceneProgress, setSceneProgress] = useState<number>(0);
   const [isMuted, setIsMuted] = useState<boolean>(() => movieAudio.getMuted());
   const [isVoiceEnabled, setIsVoiceEnabled] = useState<boolean>(true);
-  const [subtitleLang, setSubtitleLang] = useState<'bilingual' | 'ko' | 'en'>('bilingual');
+  const [subtitleMode, setSubtitleMode] = useState<'primary' | 'dual' | 'off'>('primary');
   const [lutPreset, setLutPreset] = useState<CinemaLutPreset>('imax-70mm');
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [isFinished, setIsFinished] = useState<boolean>(false);
@@ -255,6 +261,50 @@ export const LiveActionCinemaPlayer: React.FC<LiveActionCinemaPlayerProps> = ({
   const progressIntervalRef = useRef<number | null>(null);
   const currentScene = scenes[currentSceneIdx] || scenes[0];
   const sceneDuration = (currentScene?.durationSeconds || 5.5) * 1000;
+
+  const primaryTtsLang: 'ko' | 'en' | 'ja' =
+    language === 'en' ? 'en' : language === 'ja' ? 'ja' : 'ko';
+
+  const getScenePrimaryTtsScript = useCallback(
+    (scene: LiveActionScene | undefined): string => {
+      if (!scene) return '';
+      if (scene.type === 'title_card' || scene.sceneNumber === 1) {
+        if (primaryTtsLang === 'en') {
+          return `Episode ${episodeNumber}. ${titleEn || ''}.`.trim();
+        }
+        return `제 ${episodeNumber}화. ${titleKo || ''}.`.trim();
+      }
+      if (primaryTtsLang === 'en') {
+        const narration = (scene.narrationEn || '').trim();
+        const nonNarrationDialogues = (scene.dialogues || [])
+          .filter(
+            (d) =>
+              d.textEn &&
+              d.speakerEn &&
+              d.speakerEn !== 'Narration' &&
+              d.speakerEn !== '내레이션' &&
+              d.textEn.trim() !== narration
+          )
+          .map((d) => d.textEn.trim());
+        const parts = [...nonNarrationDialogues, narration].filter(Boolean);
+        return parts.length > 0 ? parts.join(' ') : (scene.dialogues?.[0]?.textEn || '').trim();
+      }
+      const narration = (scene.narrationKo || '').trim();
+      const nonNarrationDialogues = (scene.dialogues || [])
+        .filter(
+          (d) =>
+            d.textKo &&
+            d.speakerKo &&
+            d.speakerKo !== 'Narration' &&
+            d.speakerKo !== '내레이션' &&
+            d.textKo.trim() !== narration
+        )
+        .map((d) => d.textKo.trim());
+      const parts = [...nonNarrationDialogues, narration].filter(Boolean);
+      return parts.length > 0 ? parts.join(' ') : (scene.dialogues?.[0]?.textKo || scene.narrationEn || '').trim();
+    },
+    [episodeNumber, titleKo, titleEn, primaryTtsLang]
+  );
 
   useEffect(() => {
     movieAudio.unlockSpeech();
@@ -266,28 +316,36 @@ export const LiveActionCinemaPlayer: React.FC<LiveActionCinemaPlayerProps> = ({
     setUsingFallbackImg(false);
   }, [episodeNumber]);
 
-  // Trigger audio & voiceover on scene change
+  // Trigger audio & primary language voiceover on scene change
   useEffect(() => {
     if (!currentScene || !isPlaying || isFinished) {
-      movieAudio.stopBgm();
+      movieAudio.stopNarration();
       return;
     }
 
     setUsingFallbackImg(false);
-    const meta = MOVIE_EPISODES[episodeNumber];
-    movieAudio.startBgm(currentScene.bgmTheme || meta?.bgmTheme || 'arctic-blizzard');
+    if (!isMuted) {
+      const meta = MOVIE_EPISODES[episodeNumber];
+      movieAudio.startEpisodeBgm(episodeNumber, currentScene.bgmTheme || meta?.bgmTheme || 'arctic-blizzard');
+    }
 
     if (currentScene.sfxTrigger) {
       movieAudio.playSfx(currentScene.sfxTrigger);
     }
 
     if (isVoiceEnabled && !isMuted) {
-      const firstDialogue = currentScene.dialogues && currentScene.dialogues.length > 0 ? currentScene.dialogues[0] : null;
-      const spk = firstDialogue?.speakerEn ? `${firstDialogue.speakerEn}. ` : '';
-      const dlg = firstDialogue?.textEn ? `${firstDialogue.textEn}. ` : '';
-      movieAudio.speakNarration(`${spk}${dlg}${currentScene.narrationEn}`, 'en');
+      const script = getScenePrimaryTtsScript(currentScene);
+      if (script) {
+        movieAudio.speakNarration(script, primaryTtsLang);
+      }
+    } else {
+      movieAudio.stopNarration();
     }
-  }, [currentSceneIdx, isPlaying, isFinished, episodeNumber, language, currentScene, isVoiceEnabled, isMuted]);
+
+    return () => {
+      movieAudio.stopNarration();
+    };
+  }, [currentSceneIdx, isPlaying, isFinished, episodeNumber, currentScene, isVoiceEnabled, isMuted, primaryTtsLang, getScenePrimaryTtsScript]);
 
   useEffect(() => {
     return () => {
@@ -295,7 +353,7 @@ export const LiveActionCinemaPlayer: React.FC<LiveActionCinemaPlayerProps> = ({
     };
   }, []);
 
-  // Scene timeline ticker
+  // Scene timeline ticker (holds at 99% while active TTS is still speaking)
   useEffect(() => {
     if (!isPlaying || isFinished) {
       if (progressIntervalRef.current) {
@@ -310,6 +368,9 @@ export const LiveActionCinemaPlayer: React.FC<LiveActionCinemaPlayerProps> = ({
       setSceneProgress((prev) => {
         const next = prev + stepMs / sceneDuration;
         if (next >= 1) {
+          if (isVoiceEnabled && !isMuted && movieAudio.isSpeaking()) {
+            return 0.99;
+          }
           if (currentSceneIdx < scenes.length - 1) {
             setCurrentSceneIdx((idx) => idx + 1);
             return 0;
@@ -331,7 +392,7 @@ export const LiveActionCinemaPlayer: React.FC<LiveActionCinemaPlayerProps> = ({
         progressIntervalRef.current = null;
       }
     };
-  }, [isPlaying, isFinished, currentSceneIdx, scenes.length, sceneDuration, episodeNumber, onEpisodeComplete]);
+  }, [isPlaying, isFinished, currentSceneIdx, scenes.length, sceneDuration, episodeNumber, onEpisodeComplete, isVoiceEnabled, isMuted]);
 
   const togglePlay = useCallback(() => {
     triggerHaptic('light');
@@ -565,8 +626,8 @@ export const LiveActionCinemaPlayer: React.FC<LiveActionCinemaPlayerProps> = ({
           </div>
         )}
 
-        {/* ── Theatrical Cinema Subtitle Overlay (Disabled across all episodes per user request: Narration ONLY, Zero Subtitles) ── */}
-        {false && currentSceneIdx > 0 && (
+        {/* ── Theatrical Cinema Subtitle Overlay (Default: Primary Subtitle) ── */}
+        {subtitleMode !== 'off' && currentSceneIdx > 0 && (
           <div
             onClick={(e) => e.stopPropagation()}
             className="absolute inset-x-3 sm:inset-x-10 bottom-8 sm:bottom-10 z-20 flex flex-col items-center pointer-events-none"
@@ -587,15 +648,17 @@ export const LiveActionCinemaPlayer: React.FC<LiveActionCinemaPlayerProps> = ({
                 </div>
               )}
 
-              {(subtitleLang === 'bilingual' || subtitleLang === 'ko') && (
-                <p className="text-xs sm:text-sm md:text-base font-bold text-white leading-snug drop-shadow">
-                  {activeDialogue?.textKo ? `"${activeDialogue.textKo}"` : currentScene?.narrationKo}
-                </p>
-              )}
+              <p className="text-xs sm:text-sm md:text-base font-bold text-white leading-snug drop-shadow">
+                {language === 'en'
+                  ? (activeDialogue?.textEn ? `"${activeDialogue.textEn}"` : currentScene?.narrationEn)
+                  : (activeDialogue?.textKo ? `"${activeDialogue.textKo}"` : currentScene?.narrationKo)}
+              </p>
 
-              {(subtitleLang === 'bilingual' || subtitleLang === 'en') && (
+              {subtitleMode === 'dual' && (
                 <p className="text-[10px] sm:text-xs text-sky-200/90 mt-1 leading-snug line-clamp-2">
-                  {activeDialogue?.textEn ? `"${activeDialogue.textEn}"` : currentScene?.narrationEn}
+                  {language === 'en'
+                    ? (activeDialogue?.textKo ? `"${activeDialogue.textKo}"` : currentScene?.narrationKo)
+                    : (activeDialogue?.textEn ? `"${activeDialogue.textEn}"` : currentScene?.narrationEn)}
                 </p>
               )}
             </div>
@@ -730,16 +793,16 @@ export const LiveActionCinemaPlayer: React.FC<LiveActionCinemaPlayerProps> = ({
               type="button"
               onClick={() => {
                 triggerHaptic('light');
-                setSubtitleLang((prev) =>
-                  prev === 'bilingual' ? 'ko' : prev === 'ko' ? 'en' : 'bilingual'
+                setSubtitleMode((prev) =>
+                  prev === 'primary' ? 'dual' : prev === 'dual' ? 'off' : 'primary'
                 );
               }}
               className="min-h-[44px] px-2.5 py-1.5 rounded-sm border border-white/20 bg-[#1a1d26] hover:bg-stone-800 text-white text-xs flex items-center gap-1 cursor-pointer"
-              title="자막 언어 전환"
+              title="자막 모드 전환 (Primary / Dual / Off)"
             >
               <Languages size={15} className="text-sky-400" />
-              <span>
-                {subtitleLang === 'bilingual' ? '한/영 자막' : subtitleLang === 'ko' ? '한국어' : 'ENG'}
+              <span className="uppercase">
+                {subtitleMode}
               </span>
             </button>
 
