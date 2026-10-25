@@ -16098,3 +16098,11 @@
   3. 전 40화 웹툰(`public/images/webtoon/episode_01..40/scene_00..XX.webp`), 스토리북(`public/images/storybook/ep_01..40/page_01..10.webp`), 시네마(`public/images/cinema/episode_01..40/scene_00..XX.webp`), 애니메이션 MP4 40편(`public/video/animation/SNSHero.com_E1..E40_*.mp4`) 전수 재빌드 및 프론트엔드 `?v=conquest2009_v2` 캐시 버스팅 반영 완료.
 - **검증 결과**: `npm run build` 성공 (`0` 에러), 전 40화 `2,009/2,009`컷 고유 SHA-256 및 1:1 자막-이미지 정합성 검증 완료.
 - **구글 폼 보고**: 제출 완료 (`작업완료`).
+
+## 2026-10-25 22:49 (KST) — [웹툰/애니메이션/무비] 전 40화(EP01~EP40, 2,009컷) 100% 순수 AI 5시트 풀세트 생성 및 1:1 나레이션-이미지 매칭 최종 완수
+- **작업 내용**:
+  1. 22:28 KST 쿼터 리셋 직후 `ep34_sheet_05.png` 및 `EP35 ~ EP40`의 전 구간 순수 AI 3x3 시트(`ep35..40_sheet_01_s01_09.png` + `ep35..40_sheet_02..05.png`, 총 31개 시트) 병렬 생성 완료.
+  2. 이로써 **전 40화(`EP01 ~ EP40`) 100% 모든 에피소드**가 `Scenes 01..09` 전용 순수 AI 시트(`sheet_01_s01_09.png`) + `Scenes 10..end` 순수 AI 시트(`sheet_02..05.png`) 풀세트를 갖추었으며, `EXACT_SHEET_SCENES` 1:1 매핑을 통해 `2,009`개 본편 컷(+ `40`개 타이틀 컷 = `2,049`컷) 전수에서 나레이션 자막(`narrationKo`/`narrationEn`)과 생성 이미지가 오차 없이 1:1 일치하도록 베이킹 완료.
+  3. `EP34 ~ EP40` 애니메이션 MP4(`SNSHero.com_E34..E40_*.mp4`) 1:1 자막 싱크 재인코딩 및 `npm run build` 프로덕션 번들 빌드 완료.
+- **검증 결과**: `npm run build` 성공 (`0` 에러), 전 40화 `2,049/2,049`컷 고유 SHA-256 및 1:1 자막-이미지 정합성 100% 검증 완료.
+- **구글 폼 보고**: 제출 완료 (`작업완료`).
