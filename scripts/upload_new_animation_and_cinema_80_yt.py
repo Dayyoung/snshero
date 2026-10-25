@@ -640,9 +640,17 @@ def run_uploads_on_channel(p, ch_cfg: dict, episodes: dict, state: dict) -> None
                         update_codebase(state)
                         continue
 
-                vid, limit_hit = upload_single_video(
-                    page, channel_id, mp4_path, yt_title, yt_desc, ANIMATION_PLAYLIST_TITLE, ep, "ANIM"
-                )
+                vid = None
+                for attempt in range(180):
+                    vid, limit_hit = upload_single_video(
+                        page, channel_id, mp4_path, yt_title, yt_desc, ANIMATION_PLAYLIST_TITLE, ep, "ANIM"
+                    )
+                    if not limit_hit:
+                        break
+                    log(
+                        f"[ANIM EP{ep:02d}] Waiting 60s for rolling 24h quota window on {channel_id} (attempt {attempt+1}/180)..."
+                    )
+                    time.sleep(60.0)
                 if limit_hit:
                     break
                 if vid:
@@ -680,9 +688,17 @@ def run_uploads_on_channel(p, ch_cfg: dict, episodes: dict, state: dict) -> None
                 yt_desc = build_cinema_description(ep, title_en, arc_en, synopsis_en)
 
                 try:
-                    vid, limit_hit = upload_single_video(
-                        page, channel_id, mp4_path, yt_title, yt_desc, CINEMA_PLAYLIST_TITLE, ep, "MOVIE"
-                    )
+                    vid = None
+                    for attempt in range(180):
+                        vid, limit_hit = upload_single_video(
+                            page, channel_id, mp4_path, yt_title, yt_desc, CINEMA_PLAYLIST_TITLE, ep, "MOVIE"
+                        )
+                        if not limit_hit:
+                            break
+                        log(
+                            f"[MOVIE EP{ep:02d}] Waiting 60s for rolling 24h quota window on {channel_id} (attempt {attempt+1}/180)..."
+                        )
+                        time.sleep(60.0)
                     if limit_hit:
                         break
                     if vid:

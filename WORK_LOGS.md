@@ -2,6 +2,22 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-26 08:01 KST] [AIzaSyBa9TidLv_iwMyB-9VSrVGWEVUr0WyjiQU 공식 SNSHero 채널(UCA6QmKiPstbiyBUHtnSMxyA)에 1:1 자막 정렬본 애니메이션 40편 & 실사 영화 40편(총 80편) 전수 업로드 및 전체 링크 교체 완료]
+- **요청 사항**:
+  - `"AIzaSyBa9TidLv_iwMyB-9VSrVGWEVUr0WyjiQU 이 채널로 업로드 및 링크변경"`
+- **주요 구현 및 수정 내역**:
+  1. **공식 `SNSHero` 유튜브 채널(`UCA6QmKiPstbiyBUHtnSMxyA`, `@snshero`)에 1:1 자막-이미지 정렬본 애니메이션 40편 & 실사 영화 40편(총 80편) 전수 공개 업로드 및 신규 재생목록 2종 생성 완료 ([`scripts/youtube_snshero_official_80_state.json`](file:///Users/dayyoung/project/snshero/scripts/youtube_snshero_official_80_state.json))**:
+     - **공식 애니메이션 40편 (`40/40` 공개 완료)**:
+       - 신규 재생목록: **`PLfJ0X_nGc5Uc`** (`SNSHero.com Official Animation (40 Episodes - 1:1 Synced)`)
+       - 회차별 영상 ID: `EP01: kk-4FB4k8ck`, `EP02: czQylu2iokc`, `EP03: epVLUFsWgBg`, `EP04: 3ZclW4ClaUs`, `EP05: brPi3nB0LGg`, `EP06: oQrQ7g2E4Eo`, `EP07: 4Y4fJ3_kQuc`, `EP08: xlpshV8YJ_M`, `EP09: lNfopPDr47g`, `EP10: I4Q4MY1jBIQ` ~ `EP40: v0p1zldiwWY`
+     - **공식 실사 영화 40편 (`40/40` 공개 완료)**:
+       - 신규 재생목록: **`PLAP5BnG0QZw8`** (`SNSHero.com Official Live-Action Movie (40 Episodes - 1:1 Synced)`)
+       - 회차별 영상 ID: `EP01: tX0KRuQ3C0U`, `EP02: GpHKGpjHh4s`, `EP03: LrCDxIsUd8g`, `EP04: mJjK5Q2Mls0`, `EP05: -pXOFiz7INo`, `EP06: kefLuWtNQ-U`, `EP07: oQMFO39_m1k`, `EP08: xUjWAxbKHCs`, `EP09: m0tlwPVpl_0`, `EP10: exPR4YVBFSw` ~ `EP40: dY6NdHLQou4`
+  2. **코드베이스 내 모든 비디오 ID(`videoId`, `movieVideoId`) 및 재생목록 링크 전면 교체 완료**:
+     - [`src/content/movieEpisodeMapping.ts`](file:///Users/dayyoung/project/snshero/src/content/movieEpisodeMapping.ts), [`src/views/MovieView.tsx`](file:///Users/dayyoung/project/snshero/src/views/MovieView.tsx), [`src/views/CinemaView.tsx`](file:///Users/dayyoung/project/snshero/src/views/CinemaView.tsx), [`src/views/AnimeView.tsx`](file:///Users/dayyoung/project/snshero/src/views/AnimeView.tsx), [`src/views/NovelView.tsx`](file:///Users/dayyoung/project/snshero/src/views/NovelView.tsx), [`src/lib/geoManager.ts`](file:///Users/dayyoung/project/snshero/src/lib/geoManager.ts), [`scripts/generate-video-seo.ts`](file:///Users/dayyoung/project/snshero/scripts/generate-video-seo.ts), [`public/sitemap-video.xml`](file:///Users/dayyoung/project/snshero/public/sitemap-video.xml) 일괄 교체 완료.
+- **검증 및 보고**:
+  - YouTube Data API v3 (`AIzaSyBa9TidLv_iwMyB-9VSrVGWEVUr0WyjiQU`) 조회 검증(`PLfJ0X_nGc5Uc` 40편, `PLAP5BnG0QZw8` 40편) 및 `npm run build` 프로덕션 빌드 0에러 통과, 로컬 Git 커밋 및 구글 폼 보고서 제출 완료.
+
 ## [2026-10-26 05:20 KST] [/main 스토리모드 전체컷(all_cuts, 2,009컷) 기본 동작 전환 및 컷별 TTS 종료 시 다음 컷 자동 이동·연속 재생 연동 완료]
 - **요청 사항**:
   - `"/main도 전체컷 기준으로 동작하게 해줘"`
