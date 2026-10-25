@@ -600,40 +600,11 @@ def build_distinct_liveaction_pool_for_episode(ep_num: int, n_narrative: int) ->
 
 
 def frame_storybook_panel(panel: Image.Image, chars: list[dict], out_webp: Path):
+    """
+    Saves a clean full-bleed 800x450 16:9 storybook panel with a crisp 1px dark frame
+    (without legacy bottom-right square sticker icons, since KadanNpcDialog renders Cast separately).
+    """
     comp = panel.convert("RGBA")
-    shown_chars = chars[:4]
-    badge_size = 50
-    gap = 6
-    start_x = WIDTH - 10 - (len(shown_chars) * (badge_size + gap)) + gap
-    by = HEIGHT - badge_size - 8
-
-    for idx, ch in enumerate(shown_chars):
-        bx = start_x + idx * (badge_size + gap)
-        seat_rel = ch.get("seatAsset", "").lstrip("/")
-        if not seat_rel:
-            continue
-        seat_path = PROJECT_ROOT / "public" / seat_rel
-        if not seat_path.exists():
-            continue
-        try:
-            b_bg = Image.new("RGBA", (badge_size, badge_size), (18, 16, 16, 215))
-            b_draw = ImageDraw.Draw(b_bg)
-            border_col = (245, 190, 75, 255) if ch.get("isSpeaker") else (165, 155, 140, 200)
-            b_draw.rectangle([0, 0, badge_size - 1, badge_size - 1], outline=border_col, width=2 if ch.get("isSpeaker") else 1)
-
-            sp = Image.open(seat_path).convert("RGBA")
-            alpha = sp.getchannel("A")
-            bbox = alpha.getbbox()
-            if bbox:
-                sp = sp.crop(bbox)
-            sp.thumbnail((badge_size - 6, badge_size - 6), Image.Resampling.LANCZOS)
-            sx = (badge_size - sp.width) // 2
-            sy = (badge_size - sp.height) // 2
-            b_bg.paste(sp, (sx, sy), sp)
-            comp.paste(b_bg, (bx, by), b_bg)
-        except Exception:
-            pass
-
     cdraw = ImageDraw.Draw(comp)
     cdraw.rectangle([0, 0, WIDTH - 1, HEIGHT - 1], outline=(55, 50, 45, 230), width=1)
     save_webp_under_limit(comp.convert("RGB"), out_webp, limit_bytes=78000)
@@ -700,9 +671,17 @@ def process_single_episode(args: tuple[int, dict, list[dict]]) -> dict:
         ep_wt_hashes.add(h_wt)
         ep_la_hashes.add(h_la)
 
-    # Also bake the 10 Picture-Book pages (page_01..10.webp) with ZERO duplicate on the choice page!
-    sb_master_cells = extract_3x3_cells(STORYBOOK_RAW_DIR / f"ep{ep_num:02d}_storybook_sheet.png")
-    la_master_cells = extract_3x3_cells(LIVEACTION_RAW_DIR / f"ep{ep_num:02d}_liveaction_sheet.png")
+    # Bake the 10 Picture-Book pages (page_01..10.webp) directly from the newly generated 1:1 pure AI cuts
+    # (`anime_cuts` & `la_cuts`) matching each scene's exact `subCuts` with ZERO duplicate pages!
+    used_page_cut_indices: set[int] = set()
+    narrative_first_indices: set[int] = set()
+    for line in ep_lines:
+        if line.get("speaker") != "choice":
+            sc_list = line.get("subCuts", [])
+            if sc_list:
+                c0 = max(0, min(len(anime_cuts) - 1, int(sc_list[0].get("cutNumber", 1)) - 1))
+                narrative_first_indices.add(c0)
+
     narrative_cursor = 0
     for i, line in enumerate(ep_lines):
         page_num = i + 1
@@ -710,15 +689,29 @@ def process_single_episode(args: tuple[int, dict, list[dict]]) -> dict:
         chars = line.get("sceneCharacters", [])
         out_sb_anime = STORYBOOK_DIR / f"ep_{ep_num:02d}" / f"page_{page_num:02d}.webp"
         out_sb_la = STORYBOOK_LA_DIR / f"ep_{ep_num:02d}" / f"page_{page_num:02d}.webp"
+
         if is_choice:
-            mid_idx = min(len(anime_cuts) - 1, max(1, len(anime_cuts) // 2 + 1))
-            p_anime = anime_cuts[mid_idx]
-            p_la = apply_70mm_cinema_grade(la_cuts[mid_idx], ep_num, page_num * 5)
+            prev_sub = ep_lines[i - 1].get("subCuts", []) if i > 0 else []
+            if len(prev_sub) >= 2:
+                cand_idx = max(0, min(len(anime_cuts) - 1, int(prev_sub[-1].get("cutNumber", 1)) - 1))
+            else:
+                cand_idx = min(len(anime_cuts) - 1, max(1, len(anime_cuts) * 2 // 3))
+            while (cand_idx in used_page_cut_indices or cand_idx in narrative_first_indices) and cand_idx + 1 < len(anime_cuts):
+                cand_idx += 1
+            cut_idx = cand_idx
         else:
-            c_idx = min(8, narrative_cursor)
-            p_anime = sb_master_cells[c_idx]
-            p_la = apply_70mm_cinema_grade(la_master_cells[c_idx], ep_num, page_num * 5)
+            sc_list = line.get("subCuts", [])
+            if sc_list:
+                cut_idx = max(0, min(len(anime_cuts) - 1, int(sc_list[0].get("cutNumber", 1)) - 1))
+            else:
+                cut_idx = min(len(anime_cuts) - 1, int(round(narrative_cursor * (len(anime_cuts) - 1) / 8.0)))
+            while cut_idx in used_page_cut_indices and cut_idx + 1 < len(anime_cuts):
+                cut_idx += 1
             narrative_cursor += 1
+
+        used_page_cut_indices.add(cut_idx)
+        p_anime = anime_cuts[cut_idx].copy()
+        p_la = apply_70mm_cinema_grade(la_cuts[cut_idx], ep_num, cut_idx + 1)
         frame_storybook_panel(p_anime, chars, out_sb_anime)
         frame_storybook_panel(p_la, chars, out_sb_la)
 

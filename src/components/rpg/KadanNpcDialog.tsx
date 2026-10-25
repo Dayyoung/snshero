@@ -161,7 +161,8 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
     : 'kadan_rpg_dialog_story';
 
   const [lineIndex, setLineIndex] = useState(0);
-  const [activeSubCutIdx, setActiveSubCutIdx] = useState<number | null>(null);
+  const [activeSubCutIdx, setActiveSubCutIdx] = useState<number | null>(0);
+  const [manualSubCutLock, setManualSubCutLock] = useState(false);
   const [viewGranularity, setViewGranularity] = useState<'storybook' | 'all_cuts'>('storybook');
   const [localArtStyleMode, setLocalArtStyleMode] = useState<KadanArtStyleMode>(() =>
     propArtStyleMode ?? loadKadanArtStyleMode()
@@ -335,14 +336,16 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
   useEffect(() => {
     setDynamicLines(baseLines);
     setLineIndex(0);
-    setActiveSubCutIdx(null);
+    setActiveSubCutIdx(0);
+    setManualSubCutLock(false);
     setSelectedChoiceIds({});
     setChoiceTimeLeftMs(0);
     setSelectedCharCardId(null);
   }, [baseLines, event.id]);
 
   useEffect(() => {
-    setActiveSubCutIdx(null);
+    setActiveSubCutIdx(0);
+    setManualSubCutLock(false);
     setSelectedCharCardId(null);
   }, [lineIndex]);
 
@@ -573,7 +576,22 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
   // Active sub-cut or main storybook scene image
   const subCuts = currentLine?.subCuts ?? [];
   const activeSubCut =
-    activeSubCutIdx !== null && subCuts[activeSubCutIdx] ? subCuts[activeSubCutIdx] : null;
+    viewGranularity === 'storybook' && activeSubCutIdx !== null && subCuts[activeSubCutIdx]
+      ? subCuts[activeSubCutIdx]
+      : null;
+
+  // Automatically cycle through the scene's newly generated sub-cuts in storybook mode
+  useEffect(() => {
+    if (viewGranularity !== 'storybook' || subCuts.length <= 1 || manualSubCutLock) return;
+    const stepMs = autoMode ? Math.max(450, Math.floor(2400 / subCuts.length)) : 1800;
+    const timer = window.setInterval(() => {
+      setActiveSubCutIdx((prev) => {
+        const curr = prev ?? 0;
+        return (curr + 1) % subCuts.length;
+      });
+    }, stepMs);
+    return () => window.clearInterval(timer);
+  }, [autoMode, lineIndex, manualSubCutLock, subCuts.length, viewGranularity]);
 
   const rawSceneUrl =
     activeSubCut?.imageUrl ||
@@ -605,8 +623,8 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
     : currentLine?.sceneTitleKo || currentLine?.sceneTitleEn || t(event.chapterTitleKey, language);
 
   const displayedNovelText = isEn
-    ? activeSubCut?.narrationEn || currentLine?.textEn || currentLine?.text
-    : activeSubCut?.narrationKo || currentLine?.text;
+    ? currentLine?.textEn || currentLine?.text || activeSubCut?.narrationEn
+    : currentLine?.text || activeSubCut?.narrationKo;
 
   const sceneProgressPct = Math.max(
     4,
@@ -634,10 +652,10 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
           </span>
         </div>
 
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           {/* 장면 구성 단위 토글: 10장면 요약 / 50컷 전체 */}
           <div
-            className="hidden sm:inline-flex min-h-[40px] items-center rounded-sm border border-stone-700 bg-stone-950 p-0.5 font-mono"
+            className="inline-flex min-h-[40px] items-center rounded-sm border border-stone-700 bg-stone-950 p-0.5 font-mono"
             role="group"
             aria-label={language === 'ko' ? '장면 구성 전환' : 'Scene Granularity'}
           >
@@ -645,7 +663,7 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
               type="button"
               onClick={() => setViewGranularity('storybook')}
               className={cn(
-                'min-h-[34px] px-2.5 py-1 rounded-sm text-xs font-mono font-bold transition-colors cursor-pointer',
+                'min-h-[34px] px-2 sm:px-2.5 py-1 rounded-sm text-[11px] sm:text-xs font-mono font-bold transition-colors cursor-pointer',
                 viewGranularity === 'storybook'
                   ? 'bg-emerald-400 text-stone-950 font-black'
                   : 'text-stone-400 hover:text-stone-200'
@@ -657,7 +675,7 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
               type="button"
               onClick={() => setViewGranularity('all_cuts')}
               className={cn(
-                'min-h-[34px] px-2.5 py-1 rounded-sm text-xs font-mono font-bold transition-colors cursor-pointer',
+                'min-h-[34px] px-2 sm:px-2.5 py-1 rounded-sm text-[11px] sm:text-xs font-mono font-bold transition-colors cursor-pointer',
                 viewGranularity === 'all_cuts'
                   ? 'bg-emerald-400 text-stone-950 font-black'
                   : 'text-stone-400 hover:text-stone-200'
@@ -725,15 +743,52 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
         {/* ① 삽화 (모바일 상단 와이드 뷰포트 / 데스크톱 좌측 58% 풀하이트 시네마틱 뷰포트) */}
         <div className="relative w-full h-[38dvh] sm:h-[45dvh] lg:h-full lg:w-[58%] shrink-0 bg-stone-950 border-b lg:border-b-0 lg:border-r border-stone-800 select-none overflow-hidden flex items-center justify-center">
           <img
-            key={`storybook-scene-${event.chapterNumber}-${lineIndex}`}
+            key={`storybook-scene-${event.chapterNumber}-${lineIndex}-${activeSubCut?.cutNumber ?? 0}-${artStyleMode}`}
             src={displayImageUrl}
             alt={sceneTitle}
             className="h-full w-full object-cover"
             loading="eager"
           />
+          {viewGranularity === 'storybook' && subCuts.length > 1 && (
+            <div className="absolute top-2 left-2 right-2 z-10 flex items-center justify-between gap-2 pointer-events-auto">
+              <div className="flex items-center gap-1 overflow-x-auto max-w-full bg-black/80 border border-stone-700 px-2 py-1 rounded-sm custom-scrollbar">
+                <span className="shrink-0 text-[10px] font-mono font-bold text-amber-300 mr-1">
+                  {language === 'ko'
+                    ? `컷 ${(activeSubCutIdx ?? 0) + 1}/${subCuts.length}`
+                    : `Cut ${(activeSubCutIdx ?? 0) + 1}/${subCuts.length}`}
+                </span>
+                {subCuts.map((sc, sIdx) => {
+                  const isCurrent = (activeSubCutIdx ?? 0) === sIdx;
+                  return (
+                    <button
+                      key={sc.cutNumber}
+                      type="button"
+                      onClick={() => {
+                        setManualSubCutLock(true);
+                        setActiveSubCutIdx(sIdx);
+                      }}
+                      className={cn(
+                        'min-w-[24px] h-6 px-1.5 rounded-sm text-[10px] font-mono font-bold border transition-colors cursor-pointer',
+                        isCurrent
+                          ? 'bg-amber-400 text-stone-950 border-amber-300 font-black'
+                          : 'bg-stone-900/90 text-stone-300 border-stone-700 hover:bg-stone-800'
+                      )}
+                      title={`#${sc.cutNumber}`}
+                    >
+                      {sIdx + 1}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
           <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-black/75 border-t border-white/10 px-3 sm:px-4 py-2 flex items-center justify-between gap-2">
             <span className="truncate text-xs sm:text-sm font-mono font-bold text-amber-200">
-              {sceneTitle}
+              {activeSubCut && viewGranularity === 'storybook'
+                ? `[#${activeSubCut.cutNumber}] ${
+                    (isEn ? activeSubCut.narrationEn : activeSubCut.narrationKo) || sceneTitle
+                  }`
+                : sceneTitle}
             </span>
             <span className="shrink-0 text-[11px] font-mono text-stone-300">
               {artStyleMode === 'liveaction'

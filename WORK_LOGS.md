@@ -2,6 +2,23 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-26 04:57 KST] [/main 플레이 다이얼로그(KadanNpcDialog) 및 스토리북 800장(애니 400장·무비 400장) 신규 생성 1:1 이미지 전면 업데이트 완료]
+- **요청 사항**:
+  - `"/main 에 플레이 다이얼로그도 새로 생성된 이미지로 업데이트 해줘"`
+- **원인 분석**:
+  1. [`scripts/build_conquest_2009_all_media.py`](file:///Users/dayyoung/project/snshero/scripts/build_conquest_2009_all_media.py)에서 웹툰(`public/images/webtoon/episode_01..40/`)과 시네마(`public/images/cinema/episode_01..40/`) 2,009개 컷은 신규 생성된 5~6장 순수 AI 시트(`anime_cuts` / `la_cuts`)로 교체되었으나, `/main`의 플레이 다이얼로그([`src/components/rpg/KadanNpcDialog.tsx`](file:///Users/dayyoung/project/snshero/src/components/rpg/KadanNpcDialog.tsx)), 진행도 미리보기 카드([`src/views/KadanRpgView.tsx`](file:///Users/dayyoung/project/snshero/src/views/KadanRpgView.tsx)), 에피소드 종료 미디어 모달([`src/components/rpg/EpisodeMediaWatchModal.tsx`](file:///Users/dayyoung/project/snshero/src/components/rpg/EpisodeMediaWatchModal.tsx))이 참조하는 `public/images/storybook/ep_01..40/page_01..10.webp`(400장) 및 `public/images/storybook_liveaction/ep_01..40/page_01..10.webp`(400장)은 여전히 구버전 단일 시트(`STORYBOOK_RAW_DIR / epXX_storybook_sheet.png`)와 우측 하단 스티커 합성본을 사용하고 있었음.
+  2. 또한 `KadanNpcDialog.tsx`의 `📚 10장면` 모드에서 각 장면에 포함된 세부 컷(`subCuts`)들을 순차적으로 보여주거나 선택할 수 있는 인터랙션이 없었고, 모바일에서 `📚 10장면 / 🎞️ 전체컷` 전환 토글이 숨겨져 있었음.
+- **주요 수정 및 개선 내역**:
+  1. **전 40화 스토리북 800장(`storybook/ep_01..40/page_01..10.webp` 400장 + `storybook_liveaction/ep_01..40/page_01..10.webp` 400장) 신규 1:1 이미지 전면 재베이킹 ([`scripts/build_conquest_2009_all_media.py`](file:///Users/dayyoung/project/snshero/scripts/build_conquest_2009_all_media.py))**:
+     - 구버전 `epXX_storybook_sheet.png` 참조 및 우측 하단 사각형 스티커 합성을 제거하고, 각 페이지(`page_01..10.webp`)가 해당 장면의 `subCuts` 시작 컷 번호에 정확히 1:1 대응하는 신규 생성 순수 AI `anime_cuts` 및 70mm 실사 `la_cuts` 풀블리드(800×450) 일러스트로 생성되도록 전면 업데이트.
+  2. **`/main` 플레이 다이얼로그(`KadanNpcDialog.tsx`) 신규 생성 세부 컷 자동 슬라이드쇼 및 컷 선택 바 추가 ([`src/components/rpg/KadanNpcDialog.tsx`](file:///Users/dayyoung/project/snshero/src/components/rpg/KadanNpcDialog.tsx))**:
+     - `📚 10장면` 모드에서도 각 장면에 속한 신규 생성 세부 컷(`subCuts`)들이 자동으로 순차 전환되며, 상단 컷 번호 버튼(`컷 1/N ...`)을 눌러 원하는 세부 컷을 직접 확인할 수 있도록 개선(본문 소설 텍스트는 줄어들지 않고 전체 문단 유지).
+     - 모바일 화면에서도 `📚 10장면` / `🎞️ 전체컷` 토글 버튼이 항상 표시되도록 반응형 레이아웃 개선.
+  3. **캐시 버스팅 버전 태그 갱신 ([`src/hooks/useKadanRpgProgress.ts`](file:///Users/dayyoung/project/snshero/src/hooks/useKadanRpgProgress.ts))**:
+     - `resolveKadanArtStyleUrl`의 캐시 버스팅 쿼리를 `?v=conquest2009_v3`로 업데이트하여 브라우저 캐시 없이 즉시 새 이미지가 로드되도록 적용.
+- **검증 및 보고**:
+  - `npm run lint` 및 `npm run build` 프로덕션 빌드 무결성 검증(0 에러) 완료, 로컬 Git 커밋 및 구글 폼 완료 보고서 제출 완료.
+
 ## [2026-10-26 00:44 KST] [전 40화(EP01~EP40) 2,009컷 1:1 자막-이미지 완벽 정렬, 애니메이션 40편 & 실사 영화 40편 MP4 전수 재인코딩 및 유튜브 80편 재업로드·링크 전면 교체 완료]
 - **요청 사항**:
   - `"내가 초반 10개 웹툰을 확인해보았는데 여전히 나레이션 자막과 생성된 이미지 사이에서 불일치하는 설명이 있는것 같아. 완벽하게 맞출수는 없을까"`
