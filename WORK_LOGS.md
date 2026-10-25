@@ -2,6 +2,14 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-25 15:21 KST] [EP01~EP20 (20개 에피소드) 순수 AI 다인물 3x3 마스터 시트 6/6장 전수 완비 & EP21 5/6장 반영 및 웹툰·그림책·애니메이션 MP4(E1~E21) 인코딩 완료]
+- **작업 내용**:
+  - **EP01 ~ EP20 (총 20개 에피소드, 전체 40화의 50% 돌파)**: 회차당 6장씩의 순수 AI 다인물 3×3 다크판타지 애니메이션 마스터 시트(`public/images/storybook/raw_full_sheets/ep01..20_sheet_01..06.png`, 총 120장 = 1,080개 순수 AI 패널) 생성 완비.
+  - **EP21 (`불탄 배의 흔적`)**: `ep21_sheet_02.png`, `ep21_sheet_03.png`, `ep21_sheet_05.png` 신규 생성 완료(총 5/6장 반영 완료, `ep21_sheet_04.png` 및 `EP22~EP40`은 이미지 모델 쿼터 리셋 시각에 맞춰 백그라운드 크론 `task-273`이 자동으로 이어서 생성).
+  - 생성된 모든 시트를 [`scripts/build_conquest_2009_all_media.py`](file:///Users/dayyoung/project/snshero/scripts/build_conquest_2009_all_media.py) 및 [`scripts/generate_all_40_episode_videos.py`](file:///Users/dayyoung/project/snshero/scripts/generate_all_40_episode_videos.py)로 즉시 웹툰(`public/images/webtoon/episode_01..21/`), 메인 RPG 그림책(`public/images/storybook/ep_01..21/`), 공식 애니메이션 MP4(`public/video/animation/SNSHero.com_E1..E21_*.mp4`)에 베이킹 및 1:1 음성 싱크 재인코딩 완료.
+- **검증 및 보고**:
+  - 전 에피소드 컷 SHA-256 중복 0% 검증 통과, 로컬 Git 커밋(`a4d2053b6`, `7ff1b0c35`, `2c486752c`) 및 구글 폼 보고 제출 완료.
+
 ## [2026-10-25 12:55 KST] [완전정복 2,009컷(총 2,049장면) 중복 0% 1:1 고유 일러스트 전면 생성 및 웹툰·애니메이션(40편 MP4)·무비(40편 MP4)·메인 RPG 전수 적용 완료]
 - **요청 사항**:
   - `"새로 생성한 애니메이션 이미지 2009장이 웹툰에도 적용된것 맞어? 동일한 화면이 자주 표시되는데"`
