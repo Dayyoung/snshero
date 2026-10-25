@@ -325,37 +325,12 @@ def frame_liveaction_scene(
     has_ai_sheet: bool,
     out_file: Path,
 ) -> int:
+    """
+    Applies 70mm live-action cinema color grading and saves clean full-bleed 16:9 frame
+    with zero top/bottom black label bars.
+    """
     graded = apply_photoreal_70mm_cinema_grade(panel_img, ep_num, scene_idx, has_ai_sheet)
-    comp = graded.convert("RGBA")
-    overlay = Image.new("RGBA", (WIDTH, HEIGHT), (0, 0, 0, 0))
-    odraw = ImageDraw.Draw(overlay)
-
-    # 2.39:1 CinemaScope Top & Bottom Letterbox Bars (22px each for maximum picture area)
-    bar_h = 22
-    odraw.rectangle([0, 0, WIDTH, bar_h], fill=(6, 6, 8, 235))
-    odraw.rectangle([0, HEIGHT - bar_h, WIDTH, HEIGHT], fill=(6, 6, 8, 235))
-    odraw.line([(0, bar_h), (WIDTH, bar_h)], fill=(185, 165, 125, 95), width=1)
-    odraw.line([(0, HEIGHT - bar_h), (WIDTH, HEIGHT - bar_h)], fill=(185, 165, 125, 95), width=1)
-
-    font_mono = ImageFont.truetype(FONT_MONO, 10)
-    tc_min = (scene_idx * 5) // 60
-    tc_sec = (scene_idx * 5) % 60
-    odraw.text(
-        (12, bar_h // 2),
-        "SNSHERO LIVE-ACTION · 70MM IMAX",
-        fill=(205, 190, 155, 195),
-        font=font_mono,
-        anchor="lm",
-    )
-    odraw.text(
-        (WIDTH - 12, bar_h // 2),
-        f"EP.{ep_num:02d} · CUT {scene_idx:02d} · TC 00:{tc_min:02d}:{tc_sec:02d}:08",
-        fill=(175, 200, 225, 195),
-        font=font_mono,
-        anchor="rm",
-    )
-
-    final_rgb = Image.alpha_composite(comp, overlay).convert("RGB")
+    final_rgb = graded.convert("RGB")
     return save_webp_under_limit(final_rgb, out_file)
 
 
@@ -370,24 +345,7 @@ def frame_liveaction_storybook_page(
     out_webp: Path,
 ):
     graded = apply_photoreal_70mm_cinema_grade(panel_img, ep_num, page_num * 5, has_ai_sheet)
-    base = graded.convert("RGBA")
-    overlay = Image.new("RGBA", (WIDTH, HEIGHT), (0, 0, 0, 0))
-    odraw = ImageDraw.Draw(overlay)
-
-    odraw.rectangle([0, 0, WIDTH, 24], fill=(10, 11, 14, 225))
-    odraw.line([(0, 24), (WIDTH, 24)], fill=(185, 165, 125, 175), width=1)
-
-    font_mono = ImageFont.truetype(FONT_MONO, 10)
-    char_names_en = " · ".join(c["nameEn"].upper() for c in chars[:3])
-    left_label = f"SNSHERO 70MM LIVE-ACTION · EP.{ep_num:02d}"
-    right_label = f"SCENE {page_num:02d}/{total_pages:02d} · {'FATE DECISION' if is_choice else char_names_en}"
-    odraw.text((12, 12), left_label, fill=(215, 200, 165, 240), font=font_mono, anchor="lm")
-    odraw.text((WIDTH - 12, 12), right_label, fill=(175, 205, 235, 230), font=font_mono, anchor="rm")
-
-    comp = Image.alpha_composite(base, overlay)
-    cdraw = ImageDraw.Draw(comp)
-    cdraw.rectangle([0, 0, WIDTH - 1, HEIGHT - 1], outline=(55, 50, 45, 230), width=1)
-    save_webp_under_limit(comp.convert("RGB"), out_webp, limit_bytes=78000)
+    save_webp_under_limit(graded.convert("RGB"), out_webp, limit_bytes=78000)
 
 
 def load_rpg_scripts() -> dict:
@@ -450,14 +408,17 @@ def build_episode_liveaction(
 
     # 2. Scenes 01 .. total_scenes - 1 (The 2,009 narrative cuts across 40 episodes)
     for idx in range(1, total_scenes):
-        p, sub_idx = scene_to_p_sub[idx]
+        img_meta = images_list[idx] if idx < len(images_list) else {}
+        if "panelIndex" in img_meta and "subIndex" in img_meta:
+            p = int(img_meta["panelIndex"])
+            sub_idx = int(img_meta["subIndex"])
+        else:
+            p, sub_idx = scene_to_p_sub[idx]
         cut_img = compose_liveaction_cut(raw_cells, p, sub_idx)
         out_file = out_dir / f"scene_{idx:02d}.webp"
         sz = frame_liveaction_scene(cut_img, ep_num, idx, has_ai_sheet, out_file)
         sizes.append(sz)
         hashes.add(hashlib.sha256(out_file.read_bytes()).hexdigest())
-
-        img_meta = images_list[idx] if idx < len(images_list) else {}
         shot_type = CAMERA_SHOT_TYPES.get(sub_idx, "CINEMATIC_TRACKING_PAN")
         cut_records.append(
             {

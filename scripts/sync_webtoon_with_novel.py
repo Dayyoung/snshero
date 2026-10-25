@@ -313,10 +313,178 @@ def build_2_3_line_chunks_ko(paras: list, max_chars: int = 118) -> list:
 def split_en_paras_into_sentences(en_paras: list) -> list:
     sents = []
     for p in en_paras:
-        # Split on sentence-ending punctuation outside quotes or at end of quotes
         parts = [s.strip() for s in re.split(r'(?<=[.!?”"])\s+(?=[A-Z“"])', p.strip()) if s.strip()]
         sents.extend(parts)
     return sents
+
+
+def split_en_sentence_into_clauses(sent: str) -> list:
+    """Splits a long multi-clause English sentence into 2 balanced clauses if possible."""
+    mid = len(sent) // 2
+    cands = []
+    for m in re.finditer(
+        r'(;\s+|:\s+|—\s*|,\s+(?:and|but|while|where|though|yet|as|for|who|which|choosing|leaving|shielding|wiping|turning|dragging|holding|drawing|brandishing|concealing)\b|,\s+)',
+        sent
+    ):
+        pos = m.end()
+        if 28 <= pos <= len(sent) - 28:
+            weight = 0 if (len(m.group(0)) > 3 or m.group(0)[0] in ';:—') else 18
+            cands.append((abs(pos - mid) + weight, m.start(), m.end()))
+    if not cands:
+        return [sent]
+    cands.sort(key=lambda x: x[0])
+    _, sp_start, _ = cands[0]
+    left = sent[:sp_start].strip()
+    if left and left[-1] not in '.!?"”':
+        left += '.'
+    right = sent[sp_start:].lstrip(',;:— ').strip()
+    if right:
+        right = right[0].upper() + right[1:]
+    return [left, right] if (left and right) else [sent]
+
+
+def build_en_sents_with_panel(en_paras: list, target_min_sents: int) -> list:
+    """
+    Partitions en_paras into the 9 AI storyboard panel buckets (p = 0..8)
+    and returns a list of (panel_idx, sentence_str) tuples.
+    If total sentences < target_min_sents, splits the longest multi-clause sentences
+    so DP alignment can assign at least 1 distinct sentence/clause per cut.
+    """
+    m_paras = len(en_paras)
+    items = []
+    for p in range(9):
+        st = int(round(p * m_paras / 9))
+        en = int(round((p + 1) * m_paras / 9))
+        for s in split_en_paras_into_sentences(en_paras[st:en]):
+            items.append((p, s))
+
+    # Also split any very long English sentence (> 210 chars) that isn't inside quotes
+    expanded = []
+    for p, s in items:
+        if len(s) > 210 and '"' not in s and '“' not in s:
+            for cl in split_en_sentence_into_clauses(s):
+                expanded.append((p, cl))
+        else:
+            expanded.append((p, s))
+    items = expanded
+
+    while len(items) < target_min_sents:
+        best_i = -1
+        best_len = 0
+        for idx, (p, s) in enumerate(items):
+            if len(s) > best_len and len(s) >= 75:
+                clauses = split_en_sentence_into_clauses(s)
+                if len(clauses) > 1:
+                    best_len = len(s)
+                    best_i = idx
+        if best_i < 0:
+            break
+        p_val, s_val = items[best_i]
+        clauses = split_en_sentence_into_clauses(s_val)
+        items[best_i:best_i + 1] = [(p_val, c) for c in clauses]
+
+    return items
+
+
+def align_ko_chunks_with_en_sents(ko_chunks: list, en_sents_with_panel: list) -> list:
+    """
+    Uses dynamic programming with multi-feature similarity (character names, quote presence,
+    translated length ratio, and cumulative narrative progress) to align each ko_chunk (0..n_cuts-1)
+    to a contiguous slice (se, ee) of en_sents_with_panel.
+    Returns a list of (se, ee, panel_idx) for each cut.
+    """
+    n_cuts = len(ko_chunks)
+    n_sents = len(en_sents_with_panel)
+    if n_sents < n_cuts:
+        # Fallback proportional mapping if still fewer sentences than cuts
+        res = []
+        for i in range(n_cuts):
+            se = min(n_sents - 1, int(round(i * n_sents / n_cuts)))
+            ee = max(se + 1, int(round((i + 1) * n_sents / n_cuts)))
+            res.append((se, ee, en_sents_with_panel[se][0]))
+        return res
+
+    ko_lens = [max(8, len(c)) for c in ko_chunks]
+    en_lens = [max(8, len(s)) for _, s in en_sents_with_panel]
+    tot_ko = float(sum(ko_lens))
+    tot_en = float(sum(en_lens))
+
+    ko_cum = []
+    acc = 0.0
+    for l in ko_lens:
+        acc += l
+        ko_cum.append(acc / tot_ko)
+
+    en_cum = []
+    acc = 0.0
+    for l in en_lens:
+        acc += l
+        en_cum.append(acc / tot_en)
+
+    ko_has_q = [bool(re.search(r'[“"”]', c)) for c in ko_chunks]
+    ko_chars = [set(ch["en"] for ch in extract_chars_in_text(c)) for c in ko_chunks]
+
+    en_has_q = [bool(re.search(r'[“"”]', s)) for _, s in en_sents_with_panel]
+    en_chars = [
+        set(ch["en"] for ch in NOVEL_CHARS if ch["en"].lower() in s.lower())
+        for _, s in en_sents_with_panel
+    ]
+
+    INF = 1e12
+    dp = [[INF] * n_sents for _ in range(n_cuts)]
+    parent = [[0] * n_sents for _ in range(n_cuts)]
+
+    def calc_cost(i: int, k_start: int, j_end: int) -> float:
+        en_len = sum(en_lens[m] for m in range(k_start, j_end + 1))
+        exp_len = ko_lens[i] * 2.15
+        len_c = abs(en_len - exp_len) / max(75.0, exp_len)
+
+        eq = any(en_has_q[m] for m in range(k_start, j_end + 1))
+        q_c = 0.0 if (ko_has_q[i] == eq) else 0.55
+
+        ck = ko_chars[i]
+        ce = set()
+        for m in range(k_start, j_end + 1):
+            ce |= en_chars[m]
+        if ck or ce:
+            ch_c = 0.45 * (1.0 - len(ck & ce) / float(len(ck | ce)))
+        else:
+            ch_c = 0.0
+
+        pos_c = abs(ko_cum[i] - en_cum[j_end]) * 2.2
+        return len_c * 0.40 + q_c + ch_c + pos_c
+
+    max_first = min(6, n_sents - (n_cuts - 1))
+    for j in range(max_first):
+        dp[0][j] = calc_cost(0, 0, j)
+
+    for i in range(1, n_cuts):
+        rem_cuts = n_cuts - 1 - i
+        j_min = i
+        j_max = n_sents - 1 - rem_cuts
+        for j in range(j_min, j_max + 1):
+            k_min = max(i - 1, j - 5)
+            best_v = INF
+            best_k = i - 1
+            for k in range(k_min, j):
+                prev_v = dp[i - 1][k]
+                if prev_v < INF:
+                    v = prev_v + calc_cost(i, k + 1, j)
+                    if v < best_v:
+                        best_v = v
+                        best_k = k
+            dp[i][j] = best_v
+            parent[i][j] = best_k
+
+    assign = [None] * n_cuts
+    curr_j = n_sents - 1
+    for i in range(n_cuts - 1, 0, -1):
+        pk = parent[i][curr_j]
+        p_idx = en_sents_with_panel[pk + 1][0]
+        assign[i] = (pk + 1, curr_j + 1, p_idx)
+        curr_j = pk
+    assign[0] = (0, curr_j + 1, en_sents_with_panel[0][0])
+    return assign
 
 def extract_english_quotes_from_text(en_text: str) -> list:
     merged_p = re.sub(r'[”"]\s*[^”".!?]{2,45}?,\s*[“"]', ' ', en_text)
@@ -373,7 +541,16 @@ def main():
         # Build 2-3 line Korean narration chunks for this episode
         ko_chunks = build_2_3_line_chunks_ko(ko_paras, max_chars=122)
         num_scenes = len(ko_chunks)
-        en_sents = split_en_paras_into_sentences(en_paras)
+        en_sents_with_panel = build_en_sents_with_panel(en_paras, num_scenes)
+        cut_assignments = align_ko_chunks_with_en_sents(ko_chunks, en_sents_with_panel)
+
+        # Compute sub_idx within each panel bucket (0..8)
+        panel_counters = {p: 0 for p in range(9)}
+        cut_panel_sub = []
+        for se, ee, p_idx in cut_assignments:
+            sub_i = panel_counters[p_idx]
+            panel_counters[p_idx] += 1
+            cut_panel_sub.append((se, ee, p_idx, sub_i))
 
         # Precompute quotes & speakers across all ko_chunks in this episode
         chunk_quotes_ko = {}
@@ -444,12 +621,9 @@ def main():
             if len(narration_ko) > max_chunk_len_seen:
                 max_chunk_len_seen = len(narration_ko)
 
-            se = round((idx - 1) * len(en_sents) / num_scenes)
-            ee = round(idx * len(en_sents) / num_scenes)
-            if ee <= se:
-                ee = min(len(en_sents), se + 1)
-            e_slice = en_sents[se:ee]
-            narration_en = " ".join(e_slice) if e_slice else title_en
+            se, ee, panel_idx, sub_idx = cut_panel_sub[idx - 1]
+            e_slice = [en_sents_with_panel[m][1] for m in range(se, ee)]
+            narration_en = " ".join(e_slice).strip() if e_slice else title_en
 
             local_webp = f"/images/webtoon/episode_{ep_pad}/scene_{idx:02d}.webp"
             scene_quotes_ko = chunk_quotes_ko.get(idx - 1, [])
@@ -478,22 +652,21 @@ def main():
                     dialogues.append({
                         "speakerKo": speaker_ko,
                         "speakerEn": speaker_en,
-                        "textKo": f"“{q_ko}”",
-                        "textEn": f"“{q_en}”",
+                        "textKo": narration_ko if len(scene_quotes_ko) == 1 else f"“{q_ko}”",
+                        "textEn": narration_en if len(scene_quotes_ko) == 1 else f"“{q_en}”",
                         "bubbleType": b_type,
                         "position": pos,
                         "characterCardId": card_id
                     })
             else:
                 total_narration_scenes += 1
-                best_ko, best_en = get_concise_narration_sentence(narration_ko, narration_en)
                 lead_char = scene_chars[0]
                 pos = positions[(ep_num + idx) % len(positions)]
                 dialogues.append({
                     "speakerKo": "내레이션",
                     "speakerEn": "Narration",
-                    "textKo": best_ko,
-                    "textEn": best_en,
+                    "textKo": narration_ko,
+                    "textEn": narration_en,
                     "bubbleType": "thought",
                     "position": pos,
                     "characterCardId": lead_char["cardId"]
@@ -502,6 +675,8 @@ def main():
             sfx_cues = determine_sfx(narration_ko, ep_num, idx)
             img_entry = {
                 "index": idx,
+                "panelIndex": panel_idx,
+                "subIndex": sub_idx,
                 "fileName": f"scene_{idx:02d}.webp",
                 "imageUrl": local_webp,
                 "localArtUrl": local_webp,

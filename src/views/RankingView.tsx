@@ -765,12 +765,23 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
     return () => clearTimeout(timer);
   }, [autoBattleCountdown, startOptimalBattleNow]);
 
-  // 1. http://localhost:3000/ranking 입장 시 자동 상대검색 팝업 (단, 뒤로가기로 왔을 때만 제외)
+  // 1. /rank 또는 /ranking 입장 시 자동 상대검색 팝업 (단, 뒤로가기로 왔을 때만 제외하되 hero_auto_start_pvp 요청 시 무조건 실행)
   useEffect(() => {
-    if (fromBackNavigation) {
+    let forcedAutoStart = false;
+    try {
+      if (localStorage.getItem('hero_auto_start_pvp') === 'true') {
+        localStorage.removeItem('hero_auto_start_pvp');
+        forcedAutoStart = true;
+      }
+    } catch {}
+
+    if (fromBackNavigation && !forcedAutoStart && !autoStartPvp) {
       // 뒤로가기 했을 때만 상대검색 팝업 안 뜨게 처리
       onClearFromBackNavigation?.();
       return;
+    }
+    if (fromBackNavigation) {
+      onClearFromBackNavigation?.();
     }
     triggerAutoSearch();
   }, []);
@@ -1118,6 +1129,16 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
             </div>
             <span className="text-[10px] opacity-80 hidden sm:inline">[P2P LOCAL]</span>
           </button>
+        </div>
+
+        {/* 랭킹대전 승부 결과에 따른 SNS 차감 필수 고지 배너 */}
+        <div className="mt-2.5 p-3 bg-rose-50 border border-rose-300 rounded-none flex items-start sm:items-center gap-2 text-xs font-bold text-rose-800">
+          <ShieldAlert size={16} className="shrink-0 text-rose-700 mt-0.5 sm:mt-0" />
+          <span>
+            {language === 'ko'
+              ? '⚠️ 필수 안내: 랭킹대전은 승부 결과에 따라 보유 SNS가 차감될 수 있습니다. (승리 시 +30 SNS 획득 / 패배 시 -30 SNS 차감)'
+              : '⚠️ Notice: In Ranking Battles, your SNS may be deducted depending on the match result. (Win +30 SNS / Loss -30 SNS)'}
+          </span>
         </div>
       </div>
 
@@ -1608,7 +1629,7 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
                 <Swords size={28} />
               </div>
               <div className="space-y-1">
-                <h3 className="text-lg font-bold uppercase tracking-tight text-[#201d1d]">{language === 'ko' ? '자동 매칭' : 'AUTO MATCHING'}</h3>
+                <h3 className="text-lg font-bold uppercase tracking-tight text-[#201d1d]">{language === 'ko' ? '랭킹대전 상대 검색' : 'RANKING OPPONENT SEARCH'}</h3>
                 <p className="text-xs font-semibold text-[#646262] leading-tight">
                   {language === 'ko' ? '전적 기반 맞춤 상대를 탐색하고 있습니다...' : 'Finding personalized opponent based on battle records...'}
                 </p>
@@ -1620,6 +1641,17 @@ export const RankingView: React.FC<RankingViewProps> = ({ onBack, setView, playS
                     {language === 'ko' ? ddaProfile.descriptionKo : ddaProfile.descriptionEn}
                   </p>
                 </div>
+              </div>
+              <div className="p-3 bg-rose-50 border border-rose-300 rounded-none text-left space-y-1">
+                <div className="text-[11px] font-black text-rose-800 uppercase flex items-center gap-1.5">
+                  <ShieldAlert size={14} className="shrink-0 text-rose-700" />
+                  <span>{language === 'ko' ? '필수 안내: SNS 차감 주의' : 'NOTICE: SNS DEDUCTION'}</span>
+                </div>
+                <p className="text-xs font-bold text-rose-700 leading-snug">
+                  {language === 'ko'
+                    ? '승부 결과에 따라 보유 SNS가 차감될 수 있습니다. (승리 시 +30 SNS 획득 / 패배 시 -30 SNS 차감)'
+                    : 'Your SNS may be deducted depending on the match result. (Win +30 SNS / Loss -30 SNS)'}
+                </p>
               </div>
               <div className="text-5xl font-black text-[#201d1d] font-mono">
                 {autoBattleCountdown}

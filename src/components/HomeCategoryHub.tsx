@@ -219,11 +219,18 @@ export const HomeCategoryHub: React.FC<HomeCategoryHubProps> = ({
  <div className="grid grid-cols-2 gap-2">
  <button
  type="button"
- onClick={onQuickBattle}
+ onClick={() => {
+ triggerHaptic('light');
+ playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+ try {
+ localStorage.setItem('hero_auto_start_pvp', 'true');
+ } catch {}
+ onNavigate('ranking');
+ }}
  className="min-h-[48px] p-2.5 bg-[#201d1d] text-[#fdfcfc] hover:bg-[#302c2c] font-bold text-xs rounded-sm border border-[#201d1d] flex items-center justify-center gap-2 cursor-pointer transition-colors"
  >
  <Swords size={15} className="shrink-0" />
- <span>{language === 'ko' ? '[3초 즉시 1:1 배틀]' : '[Instant 1v1 Match]'}</span>
+ <span>{language === 'ko' ? '[⚔️ 랭킹대전]' : '[⚔️ Ranking Battle]'}</span>
  </button>
 
  <button

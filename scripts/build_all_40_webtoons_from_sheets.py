@@ -190,20 +190,10 @@ def compose_webtoon_cut(raw_cells: list[Image.Image], p: int, sub_idx: int, scen
 
 
 def frame_webtoon_scene(panel_img: Image.Image, ep_num: int, scene_idx: int, out_file: Path) -> int:
-    comp = panel_img.convert("RGBA")
-    overlay = Image.new("RGBA", (WIDTH, HEIGHT), (0, 0, 0, 0))
-    odraw = ImageDraw.Draw(overlay)
-
-    # Top & bottom webtoon letterbox trim & 1px hairline border
-    odraw.rectangle([0, 0, WIDTH, 18], fill=(10, 9, 9, 148))
-    odraw.rectangle([0, HEIGHT - 14, WIDTH, HEIGHT], fill=(10, 9, 9, 148))
-    odraw.rectangle([0, 0, WIDTH - 1, HEIGHT - 1], outline=(45, 42, 40, 210), width=1)
-
-    font_mono = ImageFont.truetype(FONT_MONO, 10)
-    odraw.text((WIDTH - 12, 9), f"EP.{ep_num:02d} · CUT {scene_idx:02d}", fill=(205, 198, 185, 180), font=font_mono, anchor="rm")
-    odraw.text((12, 9), "SNSHERO WEBTOON", fill=(175, 165, 145, 165), font=font_mono, anchor="lm")
-
-    final_rgb = Image.alpha_composite(comp, overlay).convert("RGB")
+    """
+    Saves clean full-bleed 16:9 webtoon scene without top/bottom black label bars.
+    """
+    final_rgb = panel_img.convert("RGB")
     return save_webp_under_limit(final_rgb, out_file)
 
 
@@ -243,7 +233,12 @@ def build_episode_n(ep_num: int, ep_data: dict) -> tuple[int, list[int], set[str
 
     # Scenes 01 .. total_scenes - 1
     for idx in range(1, total_scenes):
-        p, sub_idx = scene_to_p_sub[idx]
+        img_meta = images_list[idx] if idx < len(images_list) else {}
+        if "panelIndex" in img_meta and "subIndex" in img_meta:
+            p = int(img_meta["panelIndex"])
+            sub_idx = int(img_meta["subIndex"])
+        else:
+            p, sub_idx = scene_to_p_sub[idx]
         cut_img = compose_webtoon_cut(raw_cells, p, sub_idx, idx)
         out_file = out_dir / f"scene_{idx:02d}.webp"
         sz = frame_webtoon_scene(cut_img, ep_num, idx, out_file)

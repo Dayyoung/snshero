@@ -594,11 +594,7 @@ def render_storybook_page_image(
     """
     out_webp.parent.mkdir(parents=True, exist_ok=True)
     im = Image.open(src_webp).convert("RGB")
-    w, h = im.size
-    # Trim the old webtoon top/bottom letterbox bars (18px top, 14px bottom) for clean full-bleed art
-    if h >= 440:
-        im = im.crop((0, 18, w, h - 14)).resize((WIDTH, HEIGHT), Image.Resampling.LANCZOS)
-    else:
+    if im.size != (WIDTH, HEIGHT):
         im = im.resize((WIDTH, HEIGHT), Image.Resampling.LANCZOS)
 
     im = ImageEnhance.Contrast(im).enhance(1.03)
@@ -613,22 +609,8 @@ def render_storybook_page_image(
         alpha = int(150 * ((y - (HEIGHT - 64)) / 64.0) ** 1.3)
         odraw.line([(0, y), (WIDTH, y)], fill=(12, 10, 14, alpha))
 
-    # Top header bar (22px)
-    odraw.rectangle([0, 0, WIDTH, 22], fill=(16, 14, 18, 175))
-    # Crisp double picture-book hairline border
+    # Crisp 1px picture-book hairline border (no top black label bar)
     odraw.rectangle([0, 0, WIDTH - 1, HEIGHT - 1], outline=(70, 62, 52, 220), width=1)
-    odraw.rectangle([3, 25, WIDTH - 4, HEIGHT - 4], outline=(215, 195, 150, 95), width=1)
-
-    font_mono = ImageFont.truetype(FONT_MONO, 10)
-    tag_left = f"SNSHERO PICTURE BOOK · EP.{ep_num:02d}"
-    if is_choice:
-        tag_right = f"SCENE {page_num:02d}/{total_pages:02d} · FATE DECISION"
-    else:
-        char_en_str = " · ".join(c["nameEn"].upper() for c in chars[:3])
-        tag_right = f"SCENE {page_num:02d}/{total_pages:02d} · {char_en_str}"
-
-    odraw.text((10, 11), tag_left, fill=(225, 205, 160, 220), font=font_mono, anchor="lm")
-    odraw.text((WIDTH - 10, 11), tag_right[:54], fill=(205, 215, 230, 210), font=font_mono, anchor="rm")
 
     # Render participating character portrait medallions in bottom-right of the storybook canvas
     # so even at a glance the picture shows every character involved in this dialogue
@@ -740,7 +722,10 @@ def build_all_episodes():
         en_buckets = partition_paragraphs(en_paras, n_sections)
         cut_buckets: list[list[dict]] = [[] for _ in range(n_sections)]
         for i, img_item in enumerate(narrative_imgs):
-            p = min(n_sections - 1, int(i * n_sections / max(1, len(narrative_imgs))))
+            if "panelIndex" in img_item:
+                p = min(n_sections - 1, max(0, int(img_item["panelIndex"])))
+            else:
+                p = min(n_sections - 1, int(i * n_sections / max(1, len(narrative_imgs))))
             cut_buckets[p].append(img_item)
 
         ep_script_lines: list[dict] = []

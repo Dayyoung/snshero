@@ -143,13 +143,20 @@ export const RankMatchSearchOverlay: React.FC<RankMatchSearchOverlayProps> = ({
  </div>
 
  {/* Progress bar */}
- <div className="w-full h-1.5 bg-slate-800 rounded-none overflow-hidden mb-4">
+ <div className="w-full h-1.5 bg-slate-800 rounded-none overflow-hidden mb-3">
  <motion.div
  className="h-full bg-[#201d1d] "
  initial={{ width: '0%' }}
  animate={{ width: `${((3 - countdown) / 3) * 100}%` }}
  transition={{ duration: 0.3 }}
  />
+ </div>
+
+ {/* Mandatory SNS Deduction Notice */}
+ <div className="w-full p-2.5 mb-3 bg-rose-950/60 border border-rose-500/50 rounded-none text-left text-[11px] font-bold text-rose-200 leading-snug">
+ {language === 'ko'
+ ? '⚠️ 필수 안내: 승부 결과에 따라 보유 SNS가 차감될 수 있습니다. (승리 +30 / 패배 -30 SNS)'
+ : '⚠️ Notice: Your SNS may be deducted depending on the match result. (Win +30 / Loss -30 SNS)'}
  </div>
 
  {/* Footer Note & Cancel Button */}

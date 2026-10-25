@@ -2,6 +2,20 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-25 12:09 KST] [플레이 화면 1:1 즉시 공략/랜덤 대결 버튼 삭제 후 랭킹대전(/rank 상대검색 & SNS 차감 필수 안내) 전환 및 1분 주기 버전 확인/강제 새로고침 구현 완료]
+- **요청 사항**:
+  - `"1:1 즉시 공략 / 랜덤 즉석 대결 버튼은 삭제하고 랭킹대전 버튼을 추가해서 누르면 /rank 로 이동하고 상대검색. 승부결과에 따라서 sns가 차감될수 있다는 정보를 무조건 주도록해. 지금 업데이트를 해도 기존에 플레이어 화면에 바로 반영이 안되는 문제가 있어 . 1분에 한번씩은 버전확인을 꼭 하고 버전이 다르면 페이지 강제 새로고침"`
+- **주요 구현 및 수정 내역**:
+  1. **플레이 화면(`[CODEX HUD]`)의 `[1초 즉시 공략]` 및 `[랜덤 1:1 즉시 대결]` 버튼 삭제 & `[⚔️ 랭킹대전 (상대검색)]` 버튼 및 SNS 차감 필수 안내 탑재 ([`src/views/PlayGameView.tsx`](file:///Users/dayyoung/project/snshero/src/views/PlayGameView.tsx), [`src/routes.ts`](file:///Users/dayyoung/project/snshero/src/routes.ts), [`src/views/RankingView.tsx`](file:///Users/dayyoung/project/snshero/src/views/RankingView.tsx), [`src/views/MobileCardPlayScreen.tsx`](file:///Users/dayyoung/project/snshero/src/views/MobileCardPlayScreen.tsx))**:
+     - `PlayGameView.tsx`에서 기존 `[추천 타깃] - [1초 즉시 공략]` 배너와 `[랜덤 1:1 즉시 대결]` 버튼을 모두 제거하고, `[⚔️ 랭킹대전 (상대검색)]` 버튼과 `⚠️ 필수 안내: 승부 결과에 따라 보유 SNS가 차감될 수 있습니다. (승리 시 +30 SNS 획득 / 패배 시 -30 SNS 차감)` 고지 배너로 전면 교체.
+     - `routes.ts`에서 `ranking` 라우트 기본 경로를 `/rank`(별칭 `/ranking`)로 지정하여 버튼 클릭 시 즉시 `/rank`로 이동하고 `hero_auto_start_pvp` 플래그를 통해 지체 없이 상대 검색(3초 자동 매칭 팝업)을 실행하도록 연동.
+     - `RankingView.tsx` 상단 매칭 컨트롤 하단, 상대 검색 카운트다운 모달, `App.tsx` 글로벌 랭킹 매칭 모달, `RankMatchSearchOverlay.tsx`, `MobileCardPlayScreen.tsx` 재검색 오버레이 및 결과 화면에 승부 결과에 따른 SNS 차감 안내 및 실제 패배 시 `-30 SNS` 차감 로직을 일관되게 반영.
+  2. **1분(60초) 주기 서버 버전 확인 및 버전 불일치 시 캐시 초기화 + 페이지 강제 새로고침 구현 ([`src/lib/versionManager.ts`](file:///Users/dayyoung/project/snshero/src/lib/versionManager.ts), [`src/App.tsx`](file:///Users/dayyoung/project/snshero/src/App.tsx), [`scripts/post-build.js`](file:///Users/dayyoung/project/snshero/scripts/post-build.js), [`vite.config.ts`](file:///Users/dayyoung/project/snshero/vite.config.ts))**:
+     - **원인 해결**: 기존 `post-build.js`에서 `version.json`의 `version`이 `'2.1.0'`으로 고정되어 있었고 `dist/assets` 내 과거 `index-*.js`를 잘못 참조하던 문제 및 `vite.config.ts`에서 `version.json`에 `max-age=3600` 캐시 헤더가 붙던 문제를 전수 해결(`dist/index.html`에서 최신 엔트리 스크립트를 정확히 추출하고 `version: 2.1.0-${buildTimestamp}` 고유 버전 부여 및 `no-store, no-cache` 헤더 적용).
+     - `App.tsx`에서 최초 로드 시, 탭 활성화(`visibilitychange`) 시, 그리고 **매 1분(`60 * 1000`ms) 주기(`setInterval`)**로 `checkAndSyncAppVersion({ autoReload: true })`를 실행하여 서버 버전(`version`, `buildTimestamp`, `entryScript`)이 현재 실행 중인 화면의 버전과 다르면 즉시 캐시를 비우고 `window.location.reload()`로 페이지를 강제 새로고침하도록 구현.
+- **검증 결과**:
+  - `npx tsc --noEmit` 및 `npm run build` 무결점 통과, 로컬 Git 커밋 및 구글 폼 보고 완료.
+
 ## [2026-10-25 10:08 KST] [자동플레이 40화 완주 시 애니메이션 ⇄ 실사(무비) 모드 자동 교차 토글 구현 완료]
 - **요청 사항**:
   - `"자동플레이시 에니메이션만 보여주니까 좀 지루하다. 40화가 재생되면 에니메이션 과 실사가 서로 토글되서 교차로 40화 끝날때마다 토글되게 해줘"`

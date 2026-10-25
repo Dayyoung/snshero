@@ -573,7 +573,13 @@ export default defineConfig(({mode}) => {
                       res.statusCode = 200;
                       res.setHeader('Content-Type', contentType);
                       res.setHeader('Content-Length', stat.size);
-                      res.setHeader('Cache-Control', 'public, max-age=3600');
+                      if (ext === '.html' || ext === '.json' || relativePath === 'version.json') {
+                        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+                        res.setHeader('Pragma', 'no-cache');
+                        res.setHeader('Expires', '0');
+                      } else {
+                        res.setHeader('Cache-Control', 'public, max-age=3600');
+                      }
                       res.setHeader('Access-Control-Allow-Origin', '*');
                       fs.createReadStream(targetPath).pipe(res);
                       return;
@@ -603,12 +609,25 @@ export default defineConfig(({mode}) => {
               return;
             }
 
-            if (req.url?.startsWith('/api/version') || req.url === '/version') {
+            const cleanReqPath = (req.url || '').split('?')[0];
+            if (cleanReqPath === '/api/version' || cleanReqPath === '/version' || cleanReqPath === '/version.json') {
               res.statusCode = 200;
-              res.setHeader('Content-Type', 'application/json');
+              res.setHeader('Content-Type', 'application/json; charset=utf-8');
               res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
               res.setHeader('Pragma', 'no-cache');
               res.setHeader('Expires', '0');
+              try {
+                const distVersionPath = path.resolve(process.cwd(), 'dist', 'version.json');
+                const publicVersionPath = path.resolve(process.cwd(), 'public', 'version.json');
+                if (fs.existsSync(distVersionPath)) {
+                  res.end(fs.readFileSync(distVersionPath, 'utf8'));
+                  return;
+                }
+                if (fs.existsSync(publicVersionPath)) {
+                  res.end(fs.readFileSync(publicVersionPath, 'utf8'));
+                  return;
+                }
+              } catch {}
               const versionData = {
                 version: '2.1.0',
                 buildTime: new Date().toISOString(),

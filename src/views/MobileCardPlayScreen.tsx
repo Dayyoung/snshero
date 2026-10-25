@@ -1120,7 +1120,9 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
         } : (opponentName ? { id: `opp-${Date.now()}`, name: opponentName } : undefined);
 
         if (recordMatchResult && !matchResultReported) {
-          const rewardAmount = winState === 'player' ? 30 : (winState === 'draw' ? 15 : 10);
+          const rewardAmount = winState === 'player'
+            ? 30
+            : (winState === 'draw' ? 15 : (isRankingMatch ? -Math.min(sns, 30) : 10));
           recordMatchResult(calculatedResult, rewardAmount, undefined, currentBattleType, currentOppInfo);
           setMatchResultReported(true);
         }
@@ -1235,8 +1237,8 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
           }
         } else if (winState === 'ai') {
           playSound('defeat');
-          const earnSns = 10;
-          if (updateSns) updateSns(earnSns, 'battle_defeat_reward', 'earned');
+          const earnSns = isRankingMatch ? -Math.min(sns, 30) : 10;
+          if (!recordMatchResult && updateSns) updateSns(earnSns, 'battle_defeat_reward', isRankingMatch ? 'spent' : 'earned');
           if (!recordMatchResult && updateStats) {
             updateStats({
               losses: (userStats?.losses || 0) + 1,
@@ -1247,7 +1249,7 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
           // Draw
           playSound('place');
           const earnSns = 15;
-          if (updateSns) updateSns(earnSns, 'battle_draw', 'earned');
+          if (!recordMatchResult && updateSns) updateSns(earnSns, 'battle_draw', 'earned');
           if (!recordMatchResult && updateStats) {
             updateStats({ draws: (userStats?.draws || 0) + 1 });
           }
@@ -2417,10 +2419,14 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
                 <div className="flex justify-between items-center text-xs border-b border-[#0f0000]/12 pb-1.5">
                   <span className="font-bold flex items-center gap-1">
                     <span>💰</span>
-                    <span>{language === 'ko' ? '획득 SNS 보상' : 'Earned SNS'}</span>:
+                    <span>
+                      {isRankingMatch && winner === 'ai'
+                        ? (language === 'ko' ? '랭킹전 패배 SNS 차감' : 'Ranking Defeat Deduction')
+                        : (language === 'ko' ? '획득 SNS 보상' : 'Earned SNS')}
+                    </span>:
                   </span>
-                  <span className="font-bold text-base flex items-center gap-1">
-                    +{winner === 'player' ? 30 : (winner === 'ai' ? 10 : 15)} SNS
+                  <span className={cn("font-bold text-base flex items-center gap-1", isRankingMatch && winner === 'ai' && "text-rose-700")}>
+                    {winner === 'player' ? '+30' : (winner === 'ai' ? (isRankingMatch ? '-30' : '+10') : '+15')} SNS
                   </span>
                 </div>
 
@@ -2784,6 +2790,12 @@ export const MobileCardPlayScreen: React.FC<MobileCardPlayScreenProps> = ({
               <p className="text-[11px] text-[#646262] mt-3">
                 {language === 'ko' ? '3초 후 새로운 상대와 즉시 배틀이 시작됩니다.' : 'Battle begins in 3 seconds with new rival.'}
               </p>
+
+              <div className="mt-2.5 w-full p-2.5 bg-rose-50 border border-rose-300 rounded-none text-[11px] font-bold text-rose-700 leading-snug">
+                {language === 'ko'
+                  ? '⚠️ 안내: 승부 결과에 따라 보유 SNS가 차감될 수 있습니다. (승리 +30 / 패배 -30 SNS)'
+                  : '⚠️ Notice: Your SNS may be deducted depending on the match result. (Win +30 / Loss -30 SNS)'}
+              </div>
 
               <button
                 type="button"

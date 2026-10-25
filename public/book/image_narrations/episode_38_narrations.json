@@ -9,7 +9,7 @@
       "sceneNumber": 1,
       "imageFile": "episode_38/scene_01.webp",
       "sourceImageFile": "episode_38/scene_01.webp",
-      "narrationEn": "The grand throne room atop the Citadel of Ruin was engulfed in a maelstrom of corrupted crimson mana.",
+      "narrationEn": "The grand throne room atop the Citadel of Ruin was engulfed in a maelstrom of corrupted crimson mana. Upon the obsidian dais sat High Chancellor Lucian, who had cast aside every vestige of humanity.",
       "narrationKo": "파멸의 제단 최정상 옥좌 홀은 핏빛 암흑 마나의 소용돌이로 가득 차 있었다. 홀 중앙의 흑요석 옥좌 위에는 최고 재상 루시안이 흉포한 모습으로 군림하고 있었다. 루시안은 이미 인간의 형상을 완전히 벗어던진 상태였다.",
       "sourceSentenceStart": 1,
       "sourceSentenceEnd": 1,
@@ -18,8 +18,8 @@
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "루시안은 이미 인간의 형상을 완전히 벗어던진 상태였다.",
-          "textEn": "The grand throne room atop the Citadel of Ruin was engulfed in a maelstrom of corrupted crimson mana.",
+          "textKo": "파멸의 제단 최정상 옥좌 홀은 핏빛 암흑 마나의 소용돌이로 가득 차 있었다. 홀 중앙의 흑요석 옥좌 위에는 최고 재상 루시안이 흉포한 모습으로 군림하고 있었다. 루시안은 이미 인간의 형상을 완전히 벗어던진 상태였다.",
+          "textEn": "The grand throne room atop the Citadel of Ruin was engulfed in a maelstrom of corrupted crimson mana. Upon the obsidian dais sat High Chancellor Lucian, who had cast aside every vestige of humanity.",
           "bubbleType": "thought",
           "position": "bottom-right",
           "characterCardId": 61
@@ -38,7 +38,7 @@
       "sceneNumber": 2,
       "imageFile": "episode_38/scene_02.webp",
       "sourceImageFile": "episode_38/scene_02.webp",
-      "narrationEn": "Upon the obsidian dais sat High Chancellor Lucian, who had cast aside every vestige of humanity.",
+      "narrationEn": "From his arched spine sprouted the venomous serpentine wings of Medusa Gorgo and the curled black horns of Belphegor.",
       "narrationKo": "그의 등 뒤에서는 메두사 고르고의 독사 날개와 벨페고르의 흑철 뿔이 돋아나 있었고,",
       "sourceSentenceStart": 2,
       "sourceSentenceEnd": 2,
@@ -48,7 +48,7 @@
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
           "textKo": "그의 등 뒤에서는 메두사 고르고의 독사 날개와 벨페고르의 흑철 뿔이 돋아나 있었고,",
-          "textEn": "Upon the obsidian dais sat High Chancellor Lucian, who had cast aside every vestige of humanity.",
+          "textEn": "From his arched spine sprouted the venomous serpentine wings of Medusa Gorgo and the curled black horns of Belphegor.",
           "bubbleType": "thought",
           "position": "top-left",
           "characterCardId": 89
@@ -67,7 +67,7 @@
       "sceneNumber": 3,
       "imageFile": "episode_38/scene_03.webp",
       "sourceImageFile": "episode_38/scene_03.webp",
-      "narrationEn": "From his arched spine sprouted the venomous serpentine wings of Medusa Gorgo and the curled black horns of Belphegor, while hovering before his gauntlets were the Three Silk Seals of the Nine Shadows Codex, burning with oily black smoke.",
+      "narrationEn": "While hovering before his gauntlets were the Three Silk Seals of the Nine Shadows Codex, burning with oily black smoke.",
       "narrationKo": "그의 손에는 나인섀도우 코덱스의 봉인을 해제하는 ‘세 개의 명주 봉인(Three Silk Seals)’이 검은 연기를 뿜으며 불타오르고 있었다.",
       "sourceSentenceStart": 3,
       "sourceSentenceEnd": 3,
@@ -77,7 +77,7 @@
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
           "textKo": "그의 손에는 나인섀도우 코덱스의 봉인을 해제하는 ‘세 개의 명주 봉인(Three Silk Seals)’이 검은 연기를 뿜으며 불타오르고 있었다.",
-          "textEn": "From his arched spine sprouted the venomous serpentine wings of Medusa Gorgo and the curled black horns of Belphegor, while hovering before his gauntlets were the Three Silk Seals of the Nine Shadows Codex, burning with oily black smoke.",
+          "textEn": "While hovering before his gauntlets were the Three Silk Seals of the Nine Shadows Codex, burning with oily black smoke.",
           "bubbleType": "thought",
           "position": "top-right",
           "characterCardId": 89
@@ -135,7 +135,7 @@
           "speakerKo": "루시안",
           "speakerEn": "Lucian",
           "textKo": "“크하하하! 기어코 내 옥좌 앞까지 기어 올라왔구나, 애송이 놈들! 하지만 너무 늦었다! 세 개의 명주 봉인이 풀려나면, 대륙 전체가 나인섀도우의 심연 속으로 영원히 가라앉을 것이다!”",
-          "textEn": "“\"Hahaha!”",
+          "textEn": "\"Hahaha!",
           "bubbleType": "shout",
           "position": "top-right",
           "characterCardId": 61
@@ -154,7 +154,7 @@
       "sceneNumber": 6,
       "imageFile": "episode_38/scene_06.webp",
       "sourceImageFile": "episode_38/scene_06.webp",
-      "narrationEn": "You have crawled like vermin before my throne at last!",
+      "narrationEn": "You have crawled like vermin before my throne at last! Yet you are too late!",
       "narrationKo": "루시안의 외침과 함께 첫 번째 명주 봉인이 풀려나며, 홀 바닥에서 거대한 검붉은 촉수들이 솟구쳐 올랐다.",
       "sourceSentenceStart": 6,
       "sourceSentenceEnd": 6,
@@ -164,7 +164,7 @@
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
           "textKo": "루시안의 외침과 함께 첫 번째 명주 봉인이 풀려나며, 홀 바닥에서 거대한 검붉은 촉수들이 솟구쳐 올랐다.",
-          "textEn": "You have crawled like vermin before my throne at last!",
+          "textEn": "You have crawled like vermin before my throne at last! Yet you are too late!",
           "bubbleType": "thought",
           "position": "top-left",
           "characterCardId": 61
@@ -189,7 +189,7 @@
       "sceneNumber": 7,
       "imageFile": "episode_38/scene_07.webp",
       "sourceImageFile": "episode_38/scene_07.webp",
-      "narrationEn": "Yet you are too late!",
+      "narrationEn": "When these three seals dissolve, the entire realm shall sink into the bottomless abyss!\"",
       "narrationKo": "카단이 드래곤 브레이커 방패를 전면에 세우며 하체를 낮추었다. “네 추악한 야망은 결코 이루어지지 않는다! 이 방패가 서 있는 한, 대륙의 생명은 결코 꺼지지 않는다!”",
       "sourceSentenceStart": 7,
       "sourceSentenceEnd": 7,
@@ -198,8 +198,8 @@
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "“네 추악한 야망은 결코 이루어지지 않는다! 이 방패가 서 있는 한, 대륙의 생명은 결코 꺼지지 않는다!”",
-          "textEn": "“Yet you are too late!”",
+          "textKo": "카단이 드래곤 브레이커 방패를 전면에 세우며 하체를 낮추었다. “네 추악한 야망은 결코 이루어지지 않는다! 이 방패가 서 있는 한, 대륙의 생명은 결코 꺼지지 않는다!”",
+          "textEn": "When these three seals dissolve, the entire realm shall sink into the bottomless abyss!\"",
           "bubbleType": "shout",
           "position": "bottom-right",
           "characterCardId": 41
@@ -218,7 +218,7 @@
       "sceneNumber": 8,
       "imageFile": "episode_38/scene_08.webp",
       "sourceImageFile": "episode_38/scene_08.webp",
-      "narrationEn": "When these three seals dissolve, the entire realm shall sink into the bottomless abyss!\"",
+      "narrationEn": "With a savage hiss, Lucian tore the first silk seal.",
       "narrationKo": "옥좌 홀의 공기는 숨을 쉴 때마다 폐부를 도려내는 듯한 지독한 유황 냄새와 부식성 산액으로 가득 차 있었다.",
       "sourceSentenceStart": 8,
       "sourceSentenceEnd": 8,
@@ -228,7 +228,7 @@
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
           "textKo": "옥좌 홀의 공기는 숨을 쉴 때마다 폐부를 도려내는 듯한 지독한 유황 냄새와 부식성 산액으로 가득 차 있었다.",
-          "textEn": "When these three seals dissolve, the entire realm shall sink into the bottomless abyss!\"",
+          "textEn": "With a savage hiss, Lucian tore the first silk seal.",
           "bubbleType": "thought",
           "position": "bottom-left",
           "characterCardId": 41
@@ -247,7 +247,7 @@
       "sceneNumber": 9,
       "imageFile": "episode_38/scene_09.webp",
       "sourceImageFile": "episode_38/scene_09.webp",
-      "narrationEn": "With a savage hiss, Lucian tore the first silk seal.",
+      "narrationEn": "From the obsidian floor erupted dozens of barbed crimson tentacles, weeping corrosive bile that hissed upon the flagstones.",
       "narrationKo": "루시안의 거대한 등 뒤로 펼쳐진 독사 날개에서는 검은 핏방울들이 뚝뚝 떨어져 흑요석 바닥을 녹여 내리고 있었고, 천장에 매달린 흑요석 샹들리에들은 차원의 균열에 흔들리며 불길한 쇳소리를 냈다.",
       "sourceSentenceStart": 9,
       "sourceSentenceEnd": 9,
@@ -257,7 +257,7 @@
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
           "textKo": "루시안의 거대한 등 뒤로 펼쳐진 독사 날개에서는 검은 핏방울들이 뚝뚝 떨어져 흑요석 바닥을 녹여 내리고 있었고, 천장에 매달린 흑요석 샹들리에들은 차원의 균열에 흔들리며 불길한 쇳소리를 냈다.",
-          "textEn": "With a savage hiss, Lucian tore the first silk seal.",
+          "textEn": "From the obsidian floor erupted dozens of barbed crimson tentacles, weeping corrosive bile that hissed upon the flagstones.",
           "bubbleType": "thought",
           "position": "bottom-right",
           "characterCardId": 61
@@ -282,7 +282,7 @@
       "sceneNumber": 10,
       "imageFile": "episode_38/scene_10.webp",
       "sourceImageFile": "episode_38/scene_10.webp",
-      "narrationEn": "From the obsidian floor erupted dozens of barbed crimson tentacles, weeping corrosive bile that hissed upon the flagstones.",
+      "narrationEn": "Kadan braced his footing, bringing the Dragon Breaker shield forward.",
       "narrationKo": "카단은 드래곤 브레이커 방패를 고쳐 쥐며 전신의 마나를 끌어올렸다.",
       "sourceSentenceStart": 10,
       "sourceSentenceEnd": 10,
@@ -292,7 +292,7 @@
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
           "textKo": "카단은 드래곤 브레이커 방패를 고쳐 쥐며 전신의 마나를 끌어올렸다.",
-          "textEn": "From the obsidian floor erupted dozens of barbed crimson tentacles, weeping corrosive bile that hissed upon the flagstones.",
+          "textEn": "Kadan braced his footing, bringing the Dragon Breaker shield forward.",
           "bubbleType": "thought",
           "position": "top-left",
           "characterCardId": 41
@@ -317,7 +317,7 @@
       "sceneNumber": 11,
       "imageFile": "episode_38/scene_11.webp",
       "sourceImageFile": "episode_38/scene_11.webp",
-      "narrationEn": "Kadan braced his footing, bringing the Dragon Breaker shield forward.",
+      "narrationEn": "\"Your monstrous ambition ends here!",
       "narrationKo": "실리아가 녹옥 지팡이를 비껴 쥐며 말했다. “세 개의 명주 봉인이 풀려날 때마다 나인섀도우의 심연 군주들이 차례로 강림하게 돼요. 한순간도 방심할 수 없어요.”",
       "sourceSentenceStart": 11,
       "sourceSentenceEnd": 11,
@@ -326,8 +326,8 @@
         {
           "speakerKo": "실리아",
           "speakerEn": "Celia",
-          "textKo": "“세 개의 명주 봉인이 풀려날 때마다 나인섀도우의 심연 군주들이 차례로 강림하게 돼요. 한순간도 방심할 수 없어요.”",
-          "textEn": "“Kadan braced his footing, bringing the Dragon Breaker shield forward.”",
+          "textKo": "실리아가 녹옥 지팡이를 비껴 쥐며 말했다. “세 개의 명주 봉인이 풀려날 때마다 나인섀도우의 심연 군주들이 차례로 강림하게 돼요. 한순간도 방심할 수 없어요.”",
+          "textEn": "\"Your monstrous ambition ends here!",
           "bubbleType": "speech",
           "position": "bottom-right",
           "characterCardId": 62
@@ -346,7 +346,7 @@
       "sceneNumber": 12,
       "imageFile": "episode_38/scene_12.webp",
       "sourceImageFile": "episode_38/scene_12.webp",
-      "narrationEn": "\"Your monstrous ambition ends here!",
+      "narrationEn": "So long as this shield stands, the light of this continent shall never flicker out!\"",
       "narrationKo": "루시안이 손짓하자, 수백 가닥의 맹독 촉수들이 날카로운 창날이 되어 카단과 실리아를 향해 빗발치듯 쏟아져 내렸다. 촉수 끝마다 스치기만 해도 뼈를 녹이는 부식액이 뚝뚝 떨어지고 있었다.",
       "sourceSentenceStart": 12,
       "sourceSentenceEnd": 12,
@@ -355,8 +355,8 @@
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "촉수 끝마다 스치기만 해도 뼈를 녹이는 부식액이 뚝뚝 떨어지고 있었다.",
-          "textEn": "\"Your monstrous ambition ends here!",
+          "textKo": "루시안이 손짓하자, 수백 가닥의 맹독 촉수들이 날카로운 창날이 되어 카단과 실리아를 향해 빗발치듯 쏟아져 내렸다. 촉수 끝마다 스치기만 해도 뼈를 녹이는 부식액이 뚝뚝 떨어지고 있었다.",
+          "textEn": "So long as this shield stands, the light of this continent shall never flicker out!\"",
           "bubbleType": "thought",
           "position": "bottom-left",
           "characterCardId": 61
@@ -375,7 +375,7 @@
       "sceneNumber": 13,
       "imageFile": "episode_38/scene_13.webp",
       "sourceImageFile": "episode_38/scene_13.webp",
-      "narrationEn": "So long as this shield stands, the light of this continent shall never flicker out!\" Cilia pointed her staff toward the ceiling vaults.",
+      "narrationEn": "Cilia pointed her staff toward the ceiling vaults.",
       "narrationKo": "카단이 별의 호흡을 터뜨리며 방패를 회전시켰다. 콰아앙!",
       "sourceSentenceStart": 13,
       "sourceSentenceEnd": 13,
@@ -384,8 +384,8 @@
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "콰아앙!",
-          "textEn": "So long as this shield stands, the light of this continent shall never flicker out!\" Cilia pointed her staff toward the ceiling vaults.",
+          "textKo": "카단이 별의 호흡을 터뜨리며 방패를 회전시켰다. 콰아앙!",
+          "textEn": "Cilia pointed her staff toward the ceiling vaults.",
           "bubbleType": "thought",
           "position": "bottom-right",
           "characterCardId": 41
@@ -448,8 +448,8 @@
         {
           "speakerKo": "실리아",
           "speakerEn": "Celia",
-          "textKo": "“바람의 칼날이여, 첫 번째 저주의 사슬을 끊어라!”",
-          "textEn": "“We cannot afford a heartbeat of hesitation!\"”",
+          "textKo": "실리아가 공중으로 도약하며 녹옥 지팡이를 휘둘렀다. “바람의 칼날이여, 첫 번째 저주의 사슬을 끊어라!”",
+          "textEn": "We cannot afford a heartbeat of hesitation!\"",
           "bubbleType": "shout",
           "position": "bottom-right",
           "characterCardId": 62
@@ -483,7 +483,7 @@
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "파지직 하는 비명과 함께 첫 번째 봉인이 산산조각 나며 바닥의 검붉은 촉수들이 일제히 검은 재가 되어 허공으로 흩어졌다.",
+          "textKo": "청아한 바람의 참격이 허공을 가르며 첫 번째 명주 봉인을 정통으로 꿰뚫었다. 파지직 하는 비명과 함께 첫 번째 봉인이 산산조각 나며 바닥의 검붉은 촉수들이 일제히 검은 재가 되어 허공으로 흩어졌다.",
           "textEn": "The barbed tentacles descended in a vicious volley, striking like steel ballista bolts.",
           "bubbleType": "thought",
           "position": "bottom-left",
@@ -518,8 +518,8 @@
         {
           "speakerKo": "루시안",
           "speakerEn": "Lucian",
-          "textKo": "“건방진 계집년이! 감히 내 첫 번째 봉인을 깨뜨리다니!”",
-          "textEn": "“Yet Kadan channeled star-breathing through his vanguard, the adamantite plate of his shield scattering the acid in blinding golden sparks.”",
+          "textKo": "루시안이 고통에 찬 비명을 지르며 이를 갈았다. “건방진 계집년이! 감히 내 첫 번째 봉인을 깨뜨리다니!”",
+          "textEn": "Yet Kadan channeled star-breathing through his vanguard, the adamantite plate of his shield scattering the acid in blinding golden sparks.",
           "bubbleType": "shout",
           "position": "top-right",
           "characterCardId": 61
@@ -605,7 +605,7 @@
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "루시안의 흉측한 날개 한쪽이 불길에 휩싸이며 타들어갔다.",
+          "textKo": "실리아의 질풍 참격이 첫 번째 명주 봉인을 강타하자, 봉인에 갇혀 있던 벨페고르의 암흑 마나가 비명을 지르며 소멸했다. 루시안의 흉측한 날개 한쪽이 불길에 휩싸이며 타들어갔다.",
           "textEn": "Leaping into the air, Cilia swung her jade staff in a wide arc.",
           "bubbleType": "thought",
           "position": "bottom-left",
@@ -640,8 +640,8 @@
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "“네가 부린 거짓의 마물들은 모두 사라졌다! 진실의 빛을 마주하라!”",
-          "textEn": "“Blades of the southern gale, sever the first chain of curse!”",
+          "textKo": "카단이 전진하며 외쳤다. “네가 부린 거짓의 마물들은 모두 사라졌다! 진실의 빛을 마주하라!”",
+          "textEn": "\"Blades of the southern gale, sever the first chain of curse!\"",
           "bubbleType": "shout",
           "position": "top-right",
           "characterCardId": 41
@@ -698,7 +698,7 @@
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "수십 개의 붉은 눈동자를 번뜩이는 거대한 뱀은 맹렬한 석화 광선을 뿜어내며 실리아를 향해 쇄도했다.",
+          "textKo": "그러자 제단 천장에서 고대 심연의 사령 마수 ‘고르고의 환영체’가 거대한 뱀의 형상으로 솟구쳐 올라왔다. 수십 개의 붉은 눈동자를 번뜩이는 거대한 뱀은 맹렬한 석화 광선을 뿜어내며 실리아를 향해 쇄도했다.",
           "textEn": "With a shriek like tearing iron, the seal burst into fragments, and the flailing tentacles turned to grey ash.",
           "bubbleType": "thought",
           "position": "top-right",
@@ -785,8 +785,8 @@
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "“내 등 뒤의 사람은 단 한 줌도 다치게 할 수 없다!”",
-          "textEn": "“Marble pillars struck by the rays turned to chalky limestone, crumbling into dust.”",
+          "textKo": "“내 등 뒤의 사람은 단 한 줌도 다치게 할 수 없다!” 치이익!",
+          "textEn": "Marble pillars struck by the rays turned to chalky limestone, crumbling into dust.",
           "bubbleType": "shout",
           "position": "bottom-left",
           "characterCardId": 41
@@ -814,7 +814,7 @@
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "방패 표면의 아다만티움 장갑판이 일순간 회색으로 굳어지려 했지만, 카단은 허리춤의 은빛 단검을 뽑아 방패의 중심핵에 꽂아 넣었다.",
+          "textKo": "석화 광선이 드래곤 브레이커 방패 표면에 정면으로 격돌했다. 방패 표면의 아다만티움 장갑판이 일순간 회색으로 굳어지려 했지만, 카단은 허리춤의 은빛 단검을 뽑아 방패의 중심핵에 꽂아 넣었다.",
           "textEn": "Kadan threw himself in front of Cilia, planting his shield into the stone.",
           "bubbleType": "thought",
           "position": "top-right",
@@ -884,7 +884,7 @@
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "황금빛 섬광이 고르고의 환영체를 정통으로 강타하자, 거대한 뱀은 비명을 지르며 두 번째 명주 봉인과 함께 산산조각 났다.",
+          "textKo": "카단이 방패를 앞으로 내지르며 반발 충격파를 폭발시켰다. 황금빛 섬광이 고르고의 환영체를 정통으로 강타하자, 거대한 뱀은 비명을 지르며 두 번째 명주 봉인과 함께 산산조각 났다.",
           "textEn": "The petrifying beam struck the Dragon Breaker shield dead center.",
           "bubbleType": "thought",
           "position": "bottom-right",
@@ -919,7 +919,7 @@
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "그러나 알렉산다르 스승의 은빛 단검에 깃든 성기사의 영원한 서약은 그 어떤 저주보다 순수하고 강인했다.",
+          "textKo": "고르고의 석화 환영체가 뿜어낸 붉은 광선은 바위와 철판마저 순식간에 차가운 석회석으로 굳혀버리는 절대적인 저주였다. 그러나 알렉산다르 스승의 은빛 단검에 깃든 성기사의 영원한 서약은 그 어떤 저주보다 순수하고 강인했다.",
           "textEn": "As the adamantite plate began to turn grey under the ancient curse, Kadan unsheathed the Silver Dagger and drove its tip into the shield's core.",
           "bubbleType": "thought",
           "position": "top-left",
@@ -989,8 +989,8 @@
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "“거짓된 어둠의 환영은 빛의 진실 앞에서 한 줌의 재로 돌아갈 뿐이다!”",
-          "textEn": "“Cilia called out in triumph.”",
+          "textKo": "카단이 방패를 앞으로 내지르며 사자후를 토했다. “거짓된 어둠의 환영은 빛의 진실 앞에서 한 줌의 재로 돌아갈 뿐이다!” 두 번째 봉인이 깨어지며 제단 천장의 암흑 균열이 절반으로 줄어들었다.",
+          "textEn": "Cilia called out in triumph.",
           "bubbleType": "shout",
           "position": "top-left",
           "characterCardId": 41
@@ -1024,8 +1024,8 @@
         {
           "speakerKo": "실리아",
           "speakerEn": "Celia",
-          "textKo": "“두 번째 봉인도 격파되었어요! 이제 루시안의 심장에 깃든 마지막 핵뿐이에요!”",
-          "textEn": "“\"The second seal has fallen!”",
+          "textKo": "실리아가 환호했다. “두 번째 봉인도 격파되었어요! 이제 루시안의 심장에 깃든 마지막 핵뿐이에요!”",
+          "textEn": "\"The second seal has fallen!",
           "bubbleType": "shout",
           "position": "top-right",
           "characterCardId": 62
@@ -1053,7 +1053,7 @@
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "마나의 역류로 인해 그의 육신이 붕괴하기 시작한 것이었다.",
+          "textKo": "두 개의 봉인이 깨어지자, 루시안의 몸에서 검은 피가 분수처럼 뿜어져 나왔다. 마나의 역류로 인해 그의 육신이 붕괴하기 시작한 것이었다.",
           "textEn": "Only the dark core within Lucian's heart remains!\"",
           "bubbleType": "thought",
           "position": "top-left",
@@ -1118,7 +1118,7 @@
           "speakerKo": "루시안",
           "speakerEn": "Lucian",
           "textKo": "“내가 죽더라도 네놈들을 길동무로 삼겠다! 심연의 군주 벨페고르여, 내 영혼을 바치니 저놈들을 영원한 지옥으로 끌고 가라!”",
-          "textEn": "“Driven to utter madness, the tyrant plunged the third silk seal directly into his own heart.”",
+          "textEn": "Driven to utter madness, the tyrant plunged the third silk seal directly into his own heart.",
           "bubbleType": "shout",
           "position": "top-left",
           "characterCardId": 61
@@ -1181,8 +1181,8 @@
         {
           "speakerKo": "실리아",
           "speakerEn": "Celia",
-          "textKo": "“세 번째 봉인이 루시안의 심장과 융합되었어요! 저 핵을 직접 파괴하지 않으면 제단 전체가 차원 붕괴에 휘말려요!”",
-          "textEn": "“Lord Belphegor, accept my mortal soul and pull this world into eternal damnation!\"”",
+          "textKo": "실리아가 녹옥 지팡이를 두 손으로 꼭 쥐며 외쳤다. “세 번째 봉인이 루시안의 심장과 융합되었어요! 저 핵을 직접 파괴하지 않으면 제단 전체가 차원 붕괴에 휘말려요!”",
+          "textEn": "Lord Belphegor, accept my mortal soul and pull this world into eternal damnation!\"",
           "bubbleType": "shout",
           "position": "bottom-left",
           "characterCardId": 62
@@ -1201,7 +1201,7 @@
       "sceneNumber": 39,
       "imageFile": "episode_38/scene_39.webp",
       "sourceImageFile": "episode_38/scene_39.webp",
-      "narrationEn": "A dimensional singularity tore open within Lucian's chest, threatening to swallow the citadel and the capital into the void. Cilia gripped her staff, her voice urgent.",
+      "narrationEn": "A dimensional singularity tore open within Lucian's chest, threatening to swallow the citadel and the capital into the void.",
       "narrationKo": "카단이 은빛 단검을 꽉 쥐며 결연하게 말했다. “내가 길을 열겠다. 실리아, 네 바람으로 내 등을 받쳐다오!”",
       "sourceSentenceStart": 39,
       "sourceSentenceEnd": 39,
@@ -1210,8 +1210,8 @@
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "“내가 길을 열겠다. 실리아, 네 바람으로 내 등을 받쳐다오!”",
-          "textEn": "“A dimensional singularity tore open within Lucian's chest, threatening to swallow the citadel and the capital into the void. Cilia gripped her staff, her voice urgent.”",
+          "textKo": "카단이 은빛 단검을 꽉 쥐며 결연하게 말했다. “내가 길을 열겠다. 실리아, 네 바람으로 내 등을 받쳐다오!”",
+          "textEn": "A dimensional singularity tore open within Lucian's chest, threatening to swallow the citadel and the capital into the void.",
           "bubbleType": "shout",
           "position": "bottom-right",
           "characterCardId": 41
@@ -1236,7 +1236,7 @@
       "sceneNumber": 40,
       "imageFile": "episode_38/scene_40.webp",
       "sourceImageFile": "episode_38/scene_40.webp",
-      "narrationEn": "\"The third seal is fused to his life force!",
+      "narrationEn": "Cilia gripped her staff, her voice urgent.",
       "narrationKo": "루시안의 가슴팍에 박힌 세 번째 명주 봉인은 심연의 본체와 직접 연결된 차원의 통로였다.",
       "sourceSentenceStart": 40,
       "sourceSentenceEnd": 40,
@@ -1246,7 +1246,7 @@
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
           "textKo": "루시안의 가슴팍에 박힌 세 번째 명주 봉인은 심연의 본체와 직접 연결된 차원의 통로였다.",
-          "textEn": "\"The third seal is fused to his life force!",
+          "textEn": "Cilia gripped her staff, her voice urgent.",
           "bubbleType": "thought",
           "position": "bottom-left",
           "characterCardId": 61
@@ -1265,7 +1265,7 @@
       "sceneNumber": 41,
       "imageFile": "episode_38/scene_41.webp",
       "sourceImageFile": "episode_38/scene_41.webp",
-      "narrationEn": "Unless we pierce that core, the entire mountain will collapse into the void!",
+      "narrationEn": "\"The third seal is fused to his life force!",
       "narrationKo": "루시안의 살갗이 찢어지며 뿜어져 나온 검은 피가 거대한 차원 소용돌이를 형성했고, 소용돌이 중심부에서는 대륙 전체를 집어삼킬 거대한 흑구(黑球)가 팽창하고 있었다.",
       "sourceSentenceStart": 41,
       "sourceSentenceEnd": 41,
@@ -1275,7 +1275,7 @@
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
           "textKo": "루시안의 살갗이 찢어지며 뿜어져 나온 검은 피가 거대한 차원 소용돌이를 형성했고, 소용돌이 중심부에서는 대륙 전체를 집어삼킬 거대한 흑구(黑球)가 팽창하고 있었다.",
-          "textEn": "Unless we pierce that core, the entire mountain will collapse into the void!",
+          "textEn": "\"The third seal is fused to his life force!",
           "bubbleType": "thought",
           "position": "bottom-right",
           "characterCardId": 61
@@ -1300,7 +1300,7 @@
       "sceneNumber": 42,
       "imageFile": "episode_38/scene_42.webp",
       "sourceImageFile": "episode_38/scene_42.webp",
-      "narrationEn": "Kadan, I trust your shield and blade!\"",
+      "narrationEn": "Unless we pierce that core, the entire mountain will collapse into the void!",
       "narrationKo": "카단과 실리아의 옷자락이 거센 차원의 중력에 찢겨 나갔다.",
       "sourceSentenceStart": 42,
       "sourceSentenceEnd": 42,
@@ -1310,7 +1310,7 @@
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
           "textKo": "카단과 실리아의 옷자락이 거센 차원의 중력에 찢겨 나갔다.",
-          "textEn": "Kadan, I trust your shield and blade!\"",
+          "textEn": "Unless we pierce that core, the entire mountain will collapse into the void!",
           "bubbleType": "thought",
           "position": "top-left",
           "characterCardId": 41
@@ -1329,7 +1329,7 @@
       "sceneNumber": 43,
       "imageFile": "episode_38/scene_43.webp",
       "sourceImageFile": "episode_38/scene_43.webp",
-      "narrationEn": "Kadan set his jaw, pressing Ignis's White Glass Ember against the crest of his shield.",
+      "narrationEn": "Kadan, I trust your shield and blade!\"",
       "narrationKo": "실리아가 지팡이로 중심축을 겨누며 외쳤다. “저 핵을 파괴하지 못하면 성채뿐만 아니라 수도 전체가 차원 저편으로 빨려 들어가요! 카단, 당신의 방패와 단검을 믿어요!”",
       "sourceSentenceStart": 43,
       "sourceSentenceEnd": 43,
@@ -1338,8 +1338,8 @@
         {
           "speakerKo": "실리아",
           "speakerEn": "Celia",
-          "textKo": "“저 핵을 파괴하지 못하면 성채뿐만 아니라 수도 전체가 차원 저편으로 빨려 들어가요! 카단, 당신의 방패와 단검을 믿어요!”",
-          "textEn": "“Kadan set his jaw, pressing Ignis's White Glass Ember against the crest of his shield.”",
+          "textKo": "실리아가 지팡이로 중심축을 겨누며 외쳤다. “저 핵을 파괴하지 못하면 성채뿐만 아니라 수도 전체가 차원 저편으로 빨려 들어가요! 카단, 당신의 방패와 단검을 믿어요!”",
+          "textEn": "Kadan, I trust your shield and blade!\"",
           "bubbleType": "shout",
           "position": "bottom-right",
           "characterCardId": 62
@@ -1364,7 +1364,7 @@
       "sceneNumber": 44,
       "imageFile": "episode_38/scene_44.webp",
       "sourceImageFile": "episode_38/scene_44.webp",
-      "narrationEn": "\"I shall open the vanguard.",
+      "narrationEn": "Kadan set his jaw, pressing Ignis's White Glass Ember against the crest of his shield.",
       "narrationKo": "카단은 품속에서 이그니스의 유리 불씨를 꺼내 방패 전면에 밀착시켰다.",
       "sourceSentenceStart": 44,
       "sourceSentenceEnd": 44,
@@ -1374,7 +1374,7 @@
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
           "textKo": "카단은 품속에서 이그니스의 유리 불씨를 꺼내 방패 전면에 밀착시켰다.",
-          "textEn": "\"I shall open the vanguard.",
+          "textEn": "Kadan set his jaw, pressing Ignis's White Glass Ember against the crest of his shield.",
           "bubbleType": "thought",
           "position": "bottom-left",
           "characterCardId": 41
@@ -1393,7 +1393,7 @@
       "sceneNumber": 45,
       "imageFile": "episode_38/scene_45.webp",
       "sourceImageFile": "episode_38/scene_45.webp",
-      "narrationEn": "Support my back with your wind, Cilia!\"",
+      "narrationEn": "\"I shall open the vanguard.",
       "narrationKo": "순백의 성화와 황금빛 별빛, 그리고 실리아의 청아한 비취빛 바람이 하나로 어우러지며, 카단의 전신을 감싸는 거대한 삼위일체의 빛의 창(槍)이 형성되었다.",
       "sourceSentenceStart": 45,
       "sourceSentenceEnd": 45,
@@ -1403,7 +1403,7 @@
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
           "textKo": "순백의 성화와 황금빛 별빛, 그리고 실리아의 청아한 비취빛 바람이 하나로 어우러지며, 카단의 전신을 감싸는 거대한 삼위일체의 빛의 창(槍)이 형성되었다.",
-          "textEn": "Support my back with your wind, Cilia!\"",
+          "textEn": "\"I shall open the vanguard.",
           "bubbleType": "thought",
           "position": "bottom-right",
           "characterCardId": 62
@@ -1428,7 +1428,7 @@
       "sceneNumber": 46,
       "imageFile": "episode_38/scene_46.webp",
       "sourceImageFile": "episode_38/scene_46.webp",
-      "narrationEn": "Pure white sanctifying flame, golden starlight mana, and Cilia's jade wind converged into a towering spear of incandescent brilliance that enveloped Kadan's silhouette.",
+      "narrationEn": "Support my back with your wind, Cilia!\"",
       "narrationKo": "카단이 폭주하는 루시안의 마나 폭풍을 향해 쐐기처럼 돌진했다. “우리가 지켜낸 생명의 이름으로, 어둠의 심장을 꿰뚫는다!”",
       "sourceSentenceStart": 46,
       "sourceSentenceEnd": 46,
@@ -1437,8 +1437,8 @@
         {
           "speakerKo": "카단",
           "speakerEn": "Kadan",
-          "textKo": "“우리가 지켜낸 생명의 이름으로, 어둠의 심장을 꿰뚫는다!”",
-          "textEn": "“Pure white sanctifying flame, golden starlight mana, and Cilia's jade wind converged into a towering spear of incandescent brilliance that enveloped Kadan's silhouette.”",
+          "textKo": "카단이 폭주하는 루시안의 마나 폭풍을 향해 쐐기처럼 돌진했다. “우리가 지켜낸 생명의 이름으로, 어둠의 심장을 꿰뚫는다!”",
+          "textEn": "Support my back with your wind, Cilia!\"",
           "bubbleType": "shout",
           "position": "bottom-left",
           "characterCardId": 41
@@ -1463,7 +1463,7 @@
       "sceneNumber": 47,
       "imageFile": "episode_38/scene_47.webp",
       "sourceImageFile": "episode_38/scene_47.webp",
-      "narrationEn": "\"In the name of every life we have defended, pierce the heart of darkness!\"",
+      "narrationEn": "Pure white sanctifying flame, golden starlight mana, and Cilia's jade wind converged into a towering spear of incandescent brilliance that enveloped Kadan's silhouette.",
       "narrationKo": "카단의 드래곤 브레이커 방패가 루시안의 암흑 결계를 박살 내며 돌파했고, 카단의 은빛 단검이 세 번째 명주 봉인의 중심핵을 정통으로 꿰뚫었다.",
       "sourceSentenceStart": 47,
       "sourceSentenceEnd": 47,
@@ -1473,7 +1473,7 @@
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
           "textKo": "카단의 드래곤 브레이커 방패가 루시안의 암흑 결계를 박살 내며 돌파했고, 카단의 은빛 단검이 세 번째 명주 봉인의 중심핵을 정통으로 꿰뚫었다.",
-          "textEn": "\"In the name of every life we have defended, pierce the heart of darkness!\"",
+          "textEn": "Pure white sanctifying flame, golden starlight mana, and Cilia's jade wind converged into a towering spear of incandescent brilliance that enveloped Kadan's silhouette.",
           "bubbleType": "thought",
           "position": "top-right",
           "characterCardId": 41
@@ -1498,7 +1498,7 @@
       "sceneNumber": 48,
       "imageFile": "episode_38/scene_48.webp",
       "sourceImageFile": "episode_38/scene_48.webp",
-      "narrationEn": "Kadan charged directly into the vortex.",
+      "narrationEn": "\"In the name of every life we have defended, pierce the heart of darkness!\"",
       "narrationKo": "콰아아아아앙! 눈이 멀 것 같은 찬란한 빛의 폭풍이 제단 전체를 뒤덮었다. 세 번째 봉인이 깨어지며 루시안의 암흑 마나는 완전히 소멸되었고, 대륙을 옥죄던 나인섀도우의 저주받은 결계가 영원히 허공으로 부서져 내렸다.",
       "sourceSentenceStart": 48,
       "sourceSentenceEnd": 48,
@@ -1507,8 +1507,8 @@
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "세 번째 봉인이 깨어지며 루시안의 암흑 마나는 완전히 소멸되었고, 대륙을 옥죄던 나인섀도우의 저주받은 결계가 영원히 허공으로 부서져 내렸다.",
-          "textEn": "Kadan charged directly into the vortex.",
+          "textKo": "콰아아아아앙! 눈이 멀 것 같은 찬란한 빛의 폭풍이 제단 전체를 뒤덮었다. 세 번째 봉인이 깨어지며 루시안의 암흑 마나는 완전히 소멸되었고, 대륙을 옥죄던 나인섀도우의 저주받은 결계가 영원히 허공으로 부서져 내렸다.",
+          "textEn": "\"In the name of every life we have defended, pierce the heart of darkness!\"",
           "bubbleType": "thought",
           "position": "bottom-left",
           "characterCardId": 61
@@ -1527,7 +1527,7 @@
       "sceneNumber": 49,
       "imageFile": "episode_38/scene_49.webp",
       "sourceImageFile": "episode_38/scene_49.webp",
-      "narrationEn": "The Dragon Breaker shield smashed through the dark barrier, and the Silver Dagger drove through the glowing core of the third silk seal.",
+      "narrationEn": "Kadan charged directly into the vortex.",
       "narrationKo": "이그니스의 순백 유리 불씨가 방패 전면에서 태양보다 눈부신 성화를 뿜어내며 카단의 돌격을 엄호했다.",
       "sourceSentenceStart": 49,
       "sourceSentenceEnd": 49,
@@ -1537,7 +1537,7 @@
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
           "textKo": "이그니스의 순백 유리 불씨가 방패 전면에서 태양보다 눈부신 성화를 뿜어내며 카단의 돌격을 엄호했다.",
-          "textEn": "The Dragon Breaker shield smashed through the dark barrier, and the Silver Dagger drove through the glowing core of the third silk seal.",
+          "textEn": "Kadan charged directly into the vortex.",
           "bubbleType": "thought",
           "position": "bottom-right",
           "characterCardId": 11
@@ -1556,7 +1556,7 @@
       "sceneNumber": 50,
       "imageFile": "episode_38/scene_50.webp",
       "sourceImageFile": "episode_38/scene_50.webp",
-      "narrationEn": "A blinding explosion of immaculate light filled the hall.",
+      "narrationEn": "The Dragon Breaker shield smashed through the dark barrier, and the Silver Dagger drove through the glowing core of the third silk seal. A blinding explosion of immaculate light filled the hall.",
       "narrationKo": "카단의 드래곤 브레이커 방패는 차원의 중력을 정면으로 찢어발기며 루시안의 암흑 폭풍 속으로 파고들었고, 카단의 은빛 단검이 마지막 세 번째 봉인을 꿰뚫었다.",
       "sourceSentenceStart": 50,
       "sourceSentenceEnd": 50,
@@ -1566,7 +1566,7 @@
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
           "textKo": "카단의 드래곤 브레이커 방패는 차원의 중력을 정면으로 찢어발기며 루시안의 암흑 폭풍 속으로 파고들었고, 카단의 은빛 단검이 마지막 세 번째 봉인을 꿰뚫었다.",
-          "textEn": "A blinding explosion of immaculate light filled the hall.",
+          "textEn": "The Dragon Breaker shield smashed through the dark barrier, and the Silver Dagger drove through the glowing core of the third silk seal. A blinding explosion of immaculate light filled the hall.",
           "bubbleType": "thought",
           "position": "top-left",
           "characterCardId": 41
@@ -1600,7 +1600,7 @@
         {
           "speakerKo": "내레이션",
           "speakerEn": "Narration",
-          "textKo": "눈이 멀 것 같은 찬란한 빛의 폭풍이 제단을 뒤덮으며, 나인섀도우 코덱스의 어둠은 마침내 영원한 먼지가 되어 대기 중으로 소멸되었다.",
+          "textKo": "콰아아앙! 눈이 멀 것 같은 찬란한 빛의 폭풍이 제단을 뒤덮으며, 나인섀도우 코덱스의 어둠은 마침내 영원한 먼지가 되어 대기 중으로 소멸되었다.",
           "textEn": "The third seal shattered, Lucian's dark mana dissolved into nothingness, and the cursed wards of the Nine Shadows Codex dispersed forever on the morning gale.",
           "bubbleType": "thought",
           "position": "top-right",

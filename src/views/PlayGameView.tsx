@@ -13648,62 +13648,42 @@ export const PlayGameView: React.FC<PlayGameViewProps> = ({
                 />
               </div>
 
-              {/* 오늘의 추천 공략 타깃 (Hot Challenge Target) 1탭 배너 */}
-              {recommendedTargetMode && (
-                <div className="w-full p-3 bg-[#fdfcfc] border border-[#201d1d] rounded-none flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                  <div className="flex items-start sm:items-center gap-2.5 min-w-0">
-                    <span className="px-2 py-1 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold shrink-0 rounded-none">
-                      {language === 'ko' ? '[추천 타깃]' : '[HOT TARGET]'}
+              {/* 랭킹대전 바로가기 & SNS 차감 필수 안내 배너 */}
+              <div className="w-full p-3 bg-[#fdfcfc] border border-[#201d1d] rounded-none flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex flex-col gap-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="px-2 py-0.5 bg-[#201d1d] text-[#fdfcfc] text-xs font-bold shrink-0 rounded-none">
+                      {language === 'ko' ? '[랭킹대전]' : '[RANK BATTLE]'}
                     </span>
-                    <div className="min-w-0">
-                      <div className="text-sm font-bold text-[#201d1d] truncate">
-                        {language === 'ko'
-                          ? `No.${String(recCardIndex).padStart(2, '0')} ${recCharName} (P.${recCharCard?.power || 10})`
-                          : `No.${String(recCardIndex).padStart(2, '0')} ${recCharName} (P.${recCharCard?.power || 10})`}
-                      </div>
-                      <p className="text-xs text-[#646262] truncate mt-0.5">
-                        {language === 'ko'
-                          ? '미보유 도전 목표 · 승리 시 해당 카드 획득 확률 및 +30 SNS 보상'
-                          : 'Unowned Target · Win to obtain hero card & +30 SNS reward'}
-                      </p>
-                    </div>
+                    <span className="text-sm font-bold text-[#201d1d] truncate">
+                      {language === 'ko' ? '실시간 헌터 라이벌 상대 검색 및 랭킹 대결' : 'Search Rival Hunter & Start Ranking Battle'}
+                    </span>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      triggerHaptic('light');
-                      playBattleSfx('button_tap');
-                      recordModePlay(recommendedTargetMode.id);
-                      startMissionCardBattle(recCardIndex);
-                    }}
-                    className="min-h-[44px] px-4 py-2 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] text-xs sm:text-sm font-bold rounded-sm border border-[#201d1d] cursor-pointer shrink-0 flex items-center justify-center gap-1.5"
-                  >
-                    <Swords size={15} className="shrink-0" />
-                    <span>{language === 'ko' ? '[1초 즉시 공략]' : '[1-TAP BATTLE]'}</span>
-                  </button>
+                  <p className="text-xs font-bold text-rose-700 leading-snug">
+                    {language === 'ko'
+                      ? '⚠️ 필수 안내: 승부 결과에 따라 보유 SNS가 차감될 수 있습니다. (승리 시 +30 SNS 획득 / 패배 시 -30 SNS 차감)'
+                      : '⚠️ Notice: Your SNS may be deducted depending on the match result. (Win +30 SNS / Loss -30 SNS)'}
+                  </p>
                 </div>
-              )}
-
-              {/* 원핸드 아레나 퀵 액션 버튼 바 */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
-                {/* 1) 랜덤 1:1 대결 */}
                 <button
                   type="button"
                   onClick={() => {
                     triggerHaptic('light');
                     playBattleSfx('button_tap');
-                    const randomIdx = Math.floor(Math.random() * modes.length);
-                    const picked = modes[randomIdx] || modes[0];
-                    const targetId = picked?.characterId || (randomIdx + 1);
-                    if (picked) recordModePlay(picked.id);
-                    startMissionCardBattle(targetId);
+                    try {
+                      localStorage.setItem('hero_auto_start_pvp', 'true');
+                    } catch {}
+                    if (setView) {
+                      setView('ranking');
+                    } else if (typeof window !== 'undefined') {
+                      window.location.href = '/rank';
+                    }
                   }}
-                  className="min-h-[44px] px-3 py-2 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] text-xs font-bold rounded-sm border border-[#201d1d] cursor-pointer flex items-center justify-center gap-1.5 transition-colors"
+                  className="min-h-[44px] px-4 py-2 bg-[#201d1d] hover:bg-[#302c2c] text-[#fdfcfc] text-xs sm:text-sm font-bold rounded-sm border border-[#201d1d] cursor-pointer shrink-0 flex items-center justify-center gap-1.5 transition-colors"
                 >
-                  <Dices size={15} className="shrink-0" />
-                  <span>{language === 'ko' ? '[랜덤 1:1 즉시 대결]' : '[Random 1:1 Battle]'}</span>
+                  <Trophy size={15} className="shrink-0" />
+                  <span>{language === 'ko' ? '[⚔️ 랭킹대전 (상대검색)]' : '[⚔️ Ranking Battle]'}</span>
                 </button>
-
               </div>
             </div>
 

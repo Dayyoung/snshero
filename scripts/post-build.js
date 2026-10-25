@@ -13,23 +13,40 @@ if (!fs.existsSync(distDir)) {
   fs.mkdirSync(distDir, { recursive: true });
 }
 
-// 1. Find entry script in dist/assets
+// 1. Find entry script in dist/index.html (fallback to newest index-*.js in dist/assets)
 let entryScript = '';
-const assetsDir = path.join(distDir, 'assets');
-if (fs.existsSync(assetsDir)) {
-  const files = fs.readdirSync(assetsDir);
-  const indexJs = files.find(f => f.startsWith('index-') && f.endsWith('.js'));
-  if (indexJs) {
-    entryScript = `/assets/${indexJs}`;
-    console.log(`[post-build] Detected entry script: ${entryScript}`);
+const builtIndexHtmlPath = path.join(distDir, 'index.html');
+if (fs.existsSync(builtIndexHtmlPath)) {
+  const indexHtmlContent = fs.readFileSync(builtIndexHtmlPath, 'utf8');
+  const scriptMatch = indexHtmlContent.match(/\/assets\/(index-[A-Za-z0-9_-]+\.js)/);
+  if (scriptMatch && scriptMatch[1]) {
+    entryScript = `/assets/${scriptMatch[1]}`;
+    console.log(`[post-build] Detected entry script from index.html: ${entryScript}`);
+  }
+}
+if (!entryScript) {
+  const assetsDir = path.join(distDir, 'assets');
+  if (fs.existsSync(assetsDir)) {
+    const files = fs.readdirSync(assetsDir)
+      .filter(f => f.startsWith('index-') && f.endsWith('.js'))
+      .sort((a, b) => {
+        const mtimeA = fs.statSync(path.join(assetsDir, a)).mtimeMs;
+        const mtimeB = fs.statSync(path.join(assetsDir, b)).mtimeMs;
+        return mtimeB - mtimeA;
+      });
+    if (files[0]) {
+      entryScript = `/assets/${files[0]}`;
+      console.log(`[post-build] Detected latest entry script: ${entryScript}`);
+    }
   }
 }
 
 // 2. Generate version.json
+const buildTimestamp = Date.now();
 const versionData = {
-  version: '2.1.0',
-  buildTime: new Date().toISOString(),
-  buildTimestamp: Date.now(),
+  version: `2.1.0-${buildTimestamp}`,
+  buildTime: new Date(buildTimestamp).toISOString(),
+  buildTimestamp,
   service: 'snshero-revolution',
   minRequiredVersion: '2.0.0',
   entryScript: entryScript || '/assets/index.js',
@@ -54,7 +71,7 @@ if (fs.existsSync(metaSource)) {
 // 4. Generate SPA route directories with index.html for clean URL routing (SEO/AEO/GEO direct crawlable)
 const routes = [
   'home', 'bench', 'benchmark', 'shbp', 'reddit', 'play', 'card-play', 'deck', 'mydeck', 'shop', 'battle', 'market',
-  'ranking', 'guild', 'novel', 'book', 'webtoon', 'animation', 'movie', 'cinema', 'event', 'companion',
+  'rank', 'ranking', 'guild', 'novel', 'book', 'webtoon', 'animation', 'movie', 'cinema', 'event', 'companion',
   'stock', 'community', 'admin', 'status', 'profile',
   'setting', 'share', 'boost', 'creator', 'web3', 'mall',
   // Wiki pages

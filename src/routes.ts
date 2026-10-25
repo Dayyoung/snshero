@@ -79,7 +79,8 @@ export const VIEW_ROUTES: Record<ViewType, RouteMeta> = {
     descriptionEn: 'Adjust BGM, sound effects, language, and account settings.',
   },
   ranking: {
-    path: '/ranking',
+    path: '/rank',
+    aliases: ['/ranking'],
     titleKo: '랭킹대전 (Ranking) - SNS히어로',
     titleEn: 'Rankings - SNSHero Leaderboard',
     descriptionKo: 'SNS히어로 랭킹 경쟁에서 다른 헌터의 덱과 전투력을 비교하고 도전하세요.',

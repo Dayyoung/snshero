@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 """
-Uploads all 40 newly regenerated Animation MP4s (`public/video/animation/SNSHero.com_E1..40_*.mp4`)
-and all 40 newly produced Live-Action Movie MP4s (`public/videos/cinema/episode_01..40.mp4`)
-to the official SNSHero YouTube channel (`UCA6QmKiPstbiyBUHtnSMxyA`), creates two brand-new
-YouTube playlists:
-  1. `SNSHero.com Official Animation (40 Episodes)`
-  2. `SNSHero.com Official Live-Action Movie (40 Episodes)`
+Uploads all 40 newly regenerated 1:1 Narration-Synced Animation MP4s (`public/video/animation/SNSHero.com_E1..40_*.mp4`)
+and all 40 newly regenerated 1:1 Narration-Synced Live-Action Movie MP4s (`public/videos/cinema/episode_01..40.mp4`)
+to YouTube Studio, creates two brand-new playlists:
+  1. `SNSHero.com Official Animation (40 Episodes - Synced)`
+  2. `SNSHero.com Official Live-Action Movie (40 Episodes - Synced)`
 fetches their new Playlist IDs via the YouTube Data API v3 (`AIzaSyBa9TidLv_iwMyB-9VSrVGWEVUr0WyjiQU`),
 and updates all game files (`movieEpisodeMapping.ts`, `MovieView.tsx`, `CinemaView.tsx`,
-`AnimeView.tsx`, `NovelView.tsx`, `geoManager.ts`, `generate-video-seo.ts`) so that clicking
-the Animation or Movie buttons in the game plays the newly uploaded videos and playlists.
+`AnimeView.tsx`, `NovelView.tsx`, `geoManager.ts`, `generate-video-seo.ts`).
+Automatically fails over from Profile 6 (`UCA6QmKiPstbiyBUHtnSMxyA`) to Profile 2 (`UC_xayYwKaB5TbH3eZXeREpA`)
+if YouTube's 24-hour per-channel upload quota is reached.
 """
 
 import json
@@ -25,16 +25,27 @@ PROJECT_ROOT = Path("/Users/dayyoung/project/snshero")
 MAPPING_FILE = PROJECT_ROOT / "src/content/movieEpisodeMapping.ts"
 ANIMATION_DIR = PROJECT_ROOT / "public/video/animation"
 CINEMA_DIR = PROJECT_ROOT / "public/videos/cinema"
-STATE_FILE = PROJECT_ROOT / "scripts/youtube_new_80_upload_state.json"
+STATE_FILE = PROJECT_ROOT / "scripts/youtube_synced_80_upload_state.json"
 
-CHANNEL_ID = "UCA6QmKiPstbiyBUHtnSMxyA"
-CHANNEL_UPLOAD_URL = f"https://studio.youtube.com/channel/{CHANNEL_ID}/content?d=ud"
 YOUTUBE_API_KEY = "AIzaSyBa9TidLv_iwMyB-9VSrVGWEVUr0WyjiQU"
 
-ANIMATION_PLAYLIST_TITLE = "SNSHero.com Official Animation (40 Episodes)"
-CINEMA_PLAYLIST_TITLE = "SNSHero.com Official Live-Action Movie (40 Episodes)"
+CHANNELS = [
+    {
+        "name": "SNSHero Official (Profile 6)",
+        "profile_dir_name": "Profile 6",
+        "tmp_dir": Path("/tmp/yt_studio_chrome_profile6"),
+        "channel_id": "UCA6QmKiPstbiyBUHtnSMxyA",
+    },
+    {
+        "name": "ModooSoft Official (Profile 2)",
+        "profile_dir_name": "Profile 2",
+        "tmp_dir": Path("/tmp/yt_studio_chrome_profile2"),
+        "channel_id": "UC_xayYwKaB5TbH3eZXeREpA",
+    },
+]
 
-CHROME_PROFILE_DIR = Path("/tmp/yt_studio_chrome_profile6")
+ANIMATION_PLAYLIST_TITLE = "SNSHero.com Official Animation (40 Episodes - Synced)"
+CINEMA_PLAYLIST_TITLE = "SNSHero.com Official Live-Action Movie (40 Episodes - Synced)"
 
 
 def log(msg: str) -> None:
@@ -42,21 +53,21 @@ def log(msg: str) -> None:
     print(f"[{ts}] {msg}", flush=True)
 
 
-def ensure_chrome_profile6() -> None:
+def ensure_chrome_profile(profile_dir_name: str, tmp_dir: Path) -> None:
     src_root = Path("/Users/dayyoung/Library/Application Support/Google/Chrome")
-    if not CHROME_PROFILE_DIR.exists() or not (CHROME_PROFILE_DIR / "Profile 6").exists():
-        log("Copying Chrome Profile 6 (snsherocom@gmail.com) to /tmp/yt_studio_chrome_profile6 ...")
-        CHROME_PROFILE_DIR.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(src_root / "Local State", CHROME_PROFILE_DIR / "Local State")
+    if not tmp_dir.exists() or not (tmp_dir / profile_dir_name).exists():
+        log(f"Copying Chrome {profile_dir_name} to {tmp_dir} ...")
+        tmp_dir.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(src_root / "Local State", tmp_dir / "Local State")
         shutil.copytree(
-            src_root / "Profile 6",
-            CHROME_PROFILE_DIR / "Profile 6",
+            src_root / profile_dir_name,
+            tmp_dir / profile_dir_name,
             symlinks=True,
             ignore=shutil.ignore_patterns(
                 "Cache*", "Code Cache*", "GPUCache*", "Service Worker*", "Singleton*", "Sessions*"
             ),
         )
-    for sf in CHROME_PROFILE_DIR.glob("Singleton*"):
+    for sf in tmp_dir.glob("Singleton*"):
         sf.unlink(missing_ok=True)
 
 
@@ -95,10 +106,9 @@ def build_animation_description(ep: int, title_en: str, arc_en: str, synopsis_en
         f"{synopsis_en}\n\n"
         f"⚔️ Visit https://snshero.com now to play the game and experience the full 40-episode saga!\n\n"
         f"🔥 About SNSHero.com — Official Animated Picture-Book Chronicle & AI Card Battle Game:\n"
-        f"• 40-Episode Multi-Character Animated Fantasy Series: Follow Kadan, Ignis, Celia, Aleksandar, and Balian across 2,049 illustrated picture-book scenes with English narration.\n"
+        f"• 40-Episode Multi-Character Animated Fantasy Series: Follow Kadan, Ignis, Celia, Aleksandar, and Balian across 2,009 illustrated picture-book scenes with 1:1 synchronized narration.\n"
         f"• Instant 3x3 Tactical Card Battle Game: Command over 110 legendary heroes and conquer 110 mission games directly in your browser—100% free!\n\n"
-        f"👉 Play Free Now: https://snshero.com/animation?ep={ep}\n\n"
-        f"#SNSHero #DarkFantasy #FantasyAnimation #CardBattleGame #WebGame #RPG #Audiobook"
+        f"👉 Play Free Now: https://snshero.com/animation?ep={ep}\n"
     )
 
 
@@ -110,10 +120,9 @@ def build_cinema_description(ep: int, title_en: str, arc_en: str, synopsis_en: s
         f"{synopsis_en}\n\n"
         f"⚔️ Visit https://snshero.com now to play the game and experience the full 40-episode saga!\n\n"
         f"🔥 About SNSHero.com — Official Live-Action Dark Fantasy Movie & AI Card Battle Game:\n"
-        f"• 40-Episode Photorealistic Live-Action Cinema Chronicle: Experience 2,009 live-action dark fantasy cuts of Kadan, Ignis, Celia, Aleksandar, and Balian in 2.39:1 CinemaScope.\n"
+        f"• 40-Episode Photorealistic Live-Action Cinema Chronicle: Experience 2,009 live-action dark fantasy cuts of Kadan, Ignis, Celia, Aleksandar, and Balian with 1:1 synchronized narration.\n"
         f"• Instant 3x3 Tactical Card Battle Game: Command over 110 legendary heroes and conquer 110 mission games directly in your browser—100% free!\n\n"
-        f"👉 Watch & Play Free Now: https://snshero.com/cinema?ep={ep}\n\n"
-        f"#SNSHero #DarkFantasy #FantasyMovie #LiveAction #CardBattleGame #WebGame #RPG"
+        f"👉 Watch & Play Free Now: https://snshero.com/cinema?ep={ep}\n"
     )
 
 
@@ -135,10 +144,10 @@ def save_state(state: dict) -> None:
     STATE_FILE.write_text(json.dumps(state, indent=2, ensure_ascii=False), encoding="utf-8")
 
 
-def fetch_playlist_id_by_title(target_title: str) -> Optional[str]:
+def fetch_playlist_id_by_title(channel_id: str, target_title: str) -> Optional[str]:
     url = (
         f"https://www.googleapis.com/youtube/v3/playlists"
-        f"?part=snippet,contentDetails&channelId={CHANNEL_ID}&maxResults=50&key={YOUTUBE_API_KEY}"
+        f"?part=snippet,contentDetails&channelId={channel_id}&maxResults=50&key={YOUTUBE_API_KEY}"
     )
     try:
         req = urllib.request.Request(url, headers={"Accept": "application/json"})
@@ -179,7 +188,6 @@ def update_codebase(state: dict) -> None:
 
     MAPPING_FILE.write_text(mapping_txt, encoding="utf-8")
 
-    # Save legacy JSON files too for compatibility
     if anim_ids:
         (PROJECT_ROOT / "scripts/youtube_snshero_channel_ids.json").write_text(
             json.dumps(anim_ids, indent=2, ensure_ascii=False), encoding="utf-8"
@@ -197,7 +205,7 @@ def update_codebase(state: dict) -> None:
                 pass
         existing_movie_json.write_text(json.dumps(movie_data, indent=2, ensure_ascii=False), encoding="utf-8")
 
-    # 2. Update MovieView.tsx, AnimeView.tsx, NovelView.tsx if anim_pl_id / anim EP1 available
+    # 2. Update MovieView.tsx, AnimeView.tsx, NovelView.tsx, geoManager.ts, generate-video-seo.ts
     ep1_anim = anim_ids.get("1")
     if anim_pl_id and ep1_anim:
         for rel in ["src/views/MovieView.tsx", "src/views/AnimeView.tsx"]:
@@ -231,6 +239,17 @@ def update_codebase(state: dict) -> None:
             )
             novel_fp.write_text(ntxt, encoding="utf-8")
 
+        for seo_rel in ["src/lib/geoManager.ts", "scripts/generate-video-seo.ts"]:
+            sfp = PROJECT_ROOT / seo_rel
+            if sfp.exists():
+                stxt = sfp.read_text(encoding="utf-8")
+                stxt = re.sub(
+                    r"embed/[A-Za-z0-9_-]{11}",
+                    f"embed/{ep1_anim}",
+                    stxt,
+                )
+                sfp.write_text(stxt, encoding="utf-8")
+
     # 3. Update CinemaView.tsx if cinema_pl_id / cinema EP1 available
     ep1_cinema = cinema_ids.get("1")
     if cinema_pl_id and ep1_cinema:
@@ -260,7 +279,7 @@ def select_or_create_playlist(page, dialog, playlist_title: str, ep: int) -> Non
     if playlist_trigger.count() == 0:
         return
     playlist_trigger.scroll_into_view_if_needed()
-    playlist_trigger.click()
+    playlist_trigger.click(force=True)
     time.sleep(2.0)
 
     pl_item = page.locator(f'ytcp-playlist-dialog label:has-text("{playlist_title}")').first
@@ -272,7 +291,7 @@ def select_or_create_playlist(page, dialog, playlist_title: str, ep: int) -> Non
             'ytcp-playlist-dialog button:has-text("New playlist")'
         ).first
         if new_pl_btn.count() > 0:
-            new_pl_btn.click()
+            new_pl_btn.click(force=True)
             time.sleep(1.0)
             sub_item = page.locator(
                 'tp-yt-paper-item:has-text("새로운 재생목록"), '
@@ -280,14 +299,14 @@ def select_or_create_playlist(page, dialog, playlist_title: str, ep: int) -> Non
                 'tp-yt-paper-item:has-text("New playlist")'
             ).first
             if sub_item.count() > 0 and sub_item.is_visible():
-                sub_item.click()
+                sub_item.click(force=True)
                 time.sleep(1.5)
             pl_title_box = page.locator(
                 "ytcp-playlist-creation-dialog #title-textarea #textbox, "
                 "ytcp-playlist-dialog #title-textarea #textbox"
             ).first
             pl_title_box.wait_for(state="visible", timeout=10000)
-            pl_title_box.click()
+            pl_title_box.click(force=True)
             pl_title_box.fill(playlist_title)
             time.sleep(0.8)
             create_pl_confirm = page.locator(
@@ -296,10 +315,10 @@ def select_or_create_playlist(page, dialog, playlist_title: str, ep: int) -> Non
                 'ytcp-playlist-dialog button:has-text("만들기"), '
                 'ytcp-playlist-creation-dialog button:has-text("Create")'
             ).first
-            create_pl_confirm.click()
+            create_pl_confirm.click(force=True)
             time.sleep(3.0)
     else:
-        pl_item.click()
+        pl_item.click(force=True)
         time.sleep(0.8)
 
     pl_done = page.locator(
@@ -308,12 +327,13 @@ def select_or_create_playlist(page, dialog, playlist_title: str, ep: int) -> Non
         'ytcp-playlist-dialog button:has-text("Done")'
     ).first
     if pl_done.count() > 0:
-        pl_done.click()
+        pl_done.click(force=True)
         time.sleep(1.0)
 
 
 def upload_single_video(
     page,
+    channel_id: str,
     mp4_path: Path,
     yt_title: str,
     yt_desc: str,
@@ -324,19 +344,20 @@ def upload_single_video(
     """
     Returns `(video_id, limit_hit)`.
     """
-    log(f"--- Uploading {label} [EP{ep:02d}/40]: {mp4_path.name} -> '{yt_title}' ---")
-    page.goto(CHANNEL_UPLOAD_URL, wait_until="domcontentloaded", timeout=45000)
+    upload_url = f"https://studio.youtube.com/channel/{channel_id}/content?d=ud"
+    log(f"--- Uploading {label} [EP{ep:02d}/40] ({channel_id}): {mp4_path.name} -> '{yt_title}' ---")
+    page.goto(upload_url, wait_until="domcontentloaded", timeout=45000)
     time.sleep(3.5)
 
     file_input = page.locator("input[type=file]")
     if file_input.count() == 0:
         create_btn = page.locator("ytcp-button#create-icon, #create-icon").first
         if create_btn.count() > 0:
-            create_btn.click()
+            create_btn.click(force=True)
             time.sleep(1.5)
             upload_item = page.locator("tp-yt-paper-item#text-item-0").first
             if upload_item.count() > 0:
-                upload_item.click()
+                upload_item.click(force=True)
                 time.sleep(2.0)
 
     file_input = page.locator("input[type=file]").first
@@ -346,11 +367,11 @@ def upload_single_video(
     dialog = page.locator("ytcp-uploads-dialog")
     video_id = None
     limit_hit = False
-    for _ in range(40):
+    for _ in range(45):
         time.sleep(1.0)
         body_txt = dialog.inner_text() if dialog.count() > 0 else page.inner_text("body")
         if "일일 업로드 한도" in body_txt or "Daily upload limit" in body_txt:
-            log(f"[{label} EP{ep:02d}] STOP: Daily upload limit reached on YouTube Studio!")
+            log(f"[{label} EP{ep:02d}] Daily upload limit reached on channel {channel_id}!")
             limit_hit = True
             break
         links = dialog.locator("a[href*='youtu.be']")
@@ -364,7 +385,7 @@ def upload_single_video(
     if limit_hit:
         return None, True
     if not video_id:
-        log(f"[{label} EP{ep:02d}] Could not detect video_id within 40s.")
+        log(f"[{label} EP{ep:02d}] Could not detect video_id within 45s.")
         return None, False
 
     log(f"[{label} EP{ep:02d}] Assigned YouTube Video ID: {video_id} (https://youtu.be/{video_id})")
@@ -372,7 +393,7 @@ def upload_single_video(
     # Fill Title
     title_box = dialog.locator("#title-textarea #textbox").first
     title_box.wait_for(state="visible", timeout=15000)
-    title_box.click()
+    title_box.click(force=True)
     page.keyboard.press("Meta+A")
     page.keyboard.press("Backspace")
     title_box.fill(yt_title)
@@ -381,11 +402,13 @@ def upload_single_video(
     # Fill Description
     desc_box = dialog.locator("#description-textarea #textbox").first
     if desc_box.count() > 0:
-        desc_box.click()
+        desc_box.click(force=True)
         page.keyboard.press("Meta+A")
         page.keyboard.press("Backspace")
         desc_box.fill(yt_desc)
-        time.sleep(0.4)
+        time.sleep(0.3)
+        page.keyboard.press("Escape")
+        time.sleep(0.3)
 
     # Select or Create Playlist
     select_or_create_playlist(page, dialog, playlist_title, ep)
@@ -393,18 +416,18 @@ def upload_single_video(
     # Select Not Made For Kids
     not_mfk = dialog.locator('tp-yt-paper-radio-button[name="VIDEO_MADE_FOR_KIDS_NOT_MFK"]').first
     not_mfk.scroll_into_view_if_needed()
-    not_mfk.click()
+    not_mfk.click(force=True)
     time.sleep(0.6)
 
     # Step 3 (Visibility)
     step3 = dialog.locator("#step-badge-3").first
-    step3.click()
+    step3.click(force=True)
     time.sleep(1.2)
 
     # Select PUBLIC
     pub_radio = dialog.locator('tp-yt-paper-radio-button[name="PUBLIC"]').first
     pub_radio.wait_for(state="visible", timeout=10000)
-    pub_radio.click()
+    pub_radio.click(force=True)
     time.sleep(0.8)
 
     # Wait for #done-button to be enabled and click Publish
@@ -416,7 +439,7 @@ def upload_single_video(
             break
         time.sleep(1.0)
 
-    done_btn.click()
+    done_btn.click(force=True)
     log(f"[{label} EP{ep:02d}/40] PUBLISHED -> https://youtu.be/{video_id}")
     time.sleep(4.5)
     return video_id, False
@@ -434,48 +457,45 @@ def sort_playlist_oldest_first(page, playlist_id: Optional[str], label: str) -> 
             ':text("게시된 날짜(최신순)")'
         ).first
         if sort_trigger.count() > 0 and sort_trigger.is_visible():
-            sort_trigger.click()
+            sort_trigger.click(force=True)
             time.sleep(1.5)
             oldest_opt = page.locator('tp-yt-paper-item:has-text("게시된 날짜(오래된순)")').first
             if oldest_opt.count() > 0:
-                oldest_opt.click()
+                oldest_opt.click(force=True)
                 time.sleep(1.5)
                 save_btn = page.locator('ytcp-button#save-button, ytcp-button#save, ytcp-button:has-text("저장")').first
                 if save_btn.count() > 0:
-                    save_btn.click()
+                    save_btn.click(force=True)
                     time.sleep(3.0)
                     log(f"[{label}] Set playlist {playlist_id} sort order to Oldest First.")
     except Exception as e:
         log(f"[{label}] Playlist sort note: {e}")
 
 
-def main() -> None:
-    ensure_chrome_profile6()
-    episodes = parse_episodes()
-    state = load_state()
-    save_state(state)
+def run_uploads_on_channel(p, ch_cfg: dict, episodes: dict, state: dict) -> None:
+    profile_dir_name = ch_cfg["profile_dir_name"]
+    tmp_dir = ch_cfg["tmp_dir"]
+    channel_id = ch_cfg["channel_id"]
 
-    with sync_playwright() as p:
-        ctx = p.chromium.launch_persistent_context(
-            user_data_dir=str(CHROME_PROFILE_DIR),
-            channel="chrome",
-            headless=True,
-            user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
-            ignore_default_args=["--use-mock-keychain", "--password-store=basic"],
-            args=["--profile-directory=Profile 6", "--disable-blink-features=AutomationControlled"],
-            viewport={"width": 1440, "height": 900},
-        )
-        page = ctx.pages[0] if ctx.pages else ctx.new_page()
+    ensure_chrome_profile(profile_dir_name, tmp_dir)
 
-        limit_hit = False
+    ctx = p.chromium.launch_persistent_context(
+        user_data_dir=str(tmp_dir),
+        channel="chrome",
+        headless=True,
+        user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+        ignore_default_args=["--use-mock-keychain", "--password-store=basic"],
+        args=[f"--profile-directory={profile_dir_name}", "--disable-blink-features=AutomationControlled"],
+        viewport={"width": 1440, "height": 900},
+    )
+    page = ctx.pages[0] if ctx.pages else ctx.new_page()
+    limit_hit = False
 
-        # =====================================================================
-        # BATCH 1: Upload 40 New Animation Episodes
-        # =====================================================================
+    try:
+        # 1. Animation Episodes 1..40
         for ep in range(1, 41):
             ep_str = str(ep)
             if ep_str in state["animation_ids"] and state["animation_ids"][ep_str]:
-                log(f"[ANIM EP{ep:02d}/40] Already uploaded ({state['animation_ids'][ep_str]}), skipping.")
                 continue
 
             meta = episodes.get(ep, {})
@@ -489,7 +509,6 @@ def main() -> None:
                 if matches:
                     mp4_path = matches[0]
                 else:
-                    log(f"[ANIM EP{ep:02d}] Missing MP4: {mp4_path}")
                     continue
 
             yt_title = f"SNSHero.com Animation EP{ep:02d} - {title_en}"
@@ -497,40 +516,30 @@ def main() -> None:
 
             try:
                 vid, limit_hit = upload_single_video(
-                    page, mp4_path, yt_title, yt_desc, ANIMATION_PLAYLIST_TITLE, ep, "ANIM"
+                    page, channel_id, mp4_path, yt_title, yt_desc, ANIMATION_PLAYLIST_TITLE, ep, "ANIM"
                 )
                 if limit_hit:
                     break
                 if vid:
                     state["animation_ids"][ep_str] = vid
-                    if not state.get("animation_playlist_id"):
-                        pl_id = fetch_playlist_id_by_title(ANIMATION_PLAYLIST_TITLE)
-                        if pl_id:
-                            state["animation_playlist_id"] = pl_id
-                            log(f"[ANIM] Detected new Animation Playlist ID: {pl_id}")
+                    pl_id = fetch_playlist_id_by_title(channel_id, ANIMATION_PLAYLIST_TITLE)
+                    if pl_id:
+                        state["animation_playlist_id"] = pl_id
+                        log(f"[ANIM] Active Animation Playlist ID: {pl_id}")
                     save_state(state)
                     update_codebase(state)
             except Exception as e:
                 log(f"[ANIM EP{ep:02d}] Upload error: {e}")
                 time.sleep(3.0)
 
-        if not state.get("animation_playlist_id"):
-            pl_id = fetch_playlist_id_by_title(ANIMATION_PLAYLIST_TITLE)
-            if pl_id:
-                state["animation_playlist_id"] = pl_id
-                save_state(state)
-                update_codebase(state)
+        if state.get("animation_playlist_id"):
+            sort_playlist_oldest_first(page, state.get("animation_playlist_id"), "ANIM")
 
-        sort_playlist_oldest_first(page, state.get("animation_playlist_id"), "ANIM")
-
-        # =====================================================================
-        # BATCH 2: Upload 40 New Live-Action Movie Episodes
-        # =====================================================================
+        # 2. Live-Action Movie Episodes 1..40
         if not limit_hit:
             for ep in range(1, 41):
                 ep_str = str(ep)
                 if ep_str in state["cinema_ids"] and state["cinema_ids"][ep_str]:
-                    log(f"[MOVIE EP{ep:02d}/40] Already uploaded ({state['cinema_ids'][ep_str]}), skipping.")
                     continue
 
                 meta = episodes.get(ep, {})
@@ -540,7 +549,6 @@ def main() -> None:
 
                 mp4_path = CINEMA_DIR / f"episode_{ep:02d}.mp4"
                 if not mp4_path.exists():
-                    log(f"[MOVIE EP{ep:02d}] Missing MP4: {mp4_path}")
                     continue
 
                 yt_title = f"SNSHero.com The Movie EP{ep:02d} - {title_en}"
@@ -548,37 +556,46 @@ def main() -> None:
 
                 try:
                     vid, limit_hit = upload_single_video(
-                        page, mp4_path, yt_title, yt_desc, CINEMA_PLAYLIST_TITLE, ep, "MOVIE"
+                        page, channel_id, mp4_path, yt_title, yt_desc, CINEMA_PLAYLIST_TITLE, ep, "MOVIE"
                     )
                     if limit_hit:
                         break
                     if vid:
                         state["cinema_ids"][ep_str] = vid
-                        if not state.get("cinema_playlist_id"):
-                            pl_id = fetch_playlist_id_by_title(CINEMA_PLAYLIST_TITLE)
-                            if pl_id:
-                                state["cinema_playlist_id"] = pl_id
-                                log(f"[MOVIE] Detected new Live-Action Movie Playlist ID: {pl_id}")
+                        pl_id = fetch_playlist_id_by_title(channel_id, CINEMA_PLAYLIST_TITLE)
+                        if pl_id:
+                            state["cinema_playlist_id"] = pl_id
+                            log(f"[MOVIE] Active Live-Action Movie Playlist ID: {pl_id}")
                         save_state(state)
                         update_codebase(state)
                 except Exception as e:
                     log(f"[MOVIE EP{ep:02d}] Upload error: {e}")
                     time.sleep(3.0)
 
-        if not state.get("cinema_playlist_id"):
-            pl_id = fetch_playlist_id_by_title(CINEMA_PLAYLIST_TITLE)
-            if pl_id:
-                state["cinema_playlist_id"] = pl_id
-                save_state(state)
-                update_codebase(state)
-
-        sort_playlist_oldest_first(page, state.get("cinema_playlist_id"), "MOVIE")
-
+            if state.get("cinema_playlist_id"):
+                sort_playlist_oldest_first(page, state.get("cinema_playlist_id"), "MOVIE")
+    finally:
         ctx.close()
 
+
+def main() -> None:
+    episodes = parse_episodes()
+    state = load_state()
+    save_state(state)
+
+    with sync_playwright() as p:
+        for ch_cfg in CHANNELS:
+            rem_anim = 40 - len(state["animation_ids"])
+            rem_movie = 40 - len(state["cinema_ids"])
+            if rem_anim == 0 and rem_movie == 0:
+                break
+            log(f"=== Starting Upload Batch on {ch_cfg['name']} (Remaining: {rem_anim} Anim, {rem_movie} Movie) ===")
+            run_uploads_on_channel(p, ch_cfg, episodes, state)
+
+    update_codebase(state)
     log(
-        f"DONE! Animation uploaded: {len(state['animation_ids'])}/40 (Playlist: {state.get('animation_playlist_id')}), "
-        f"Movie uploaded: {len(state['cinema_ids'])}/40 (Playlist: {state.get('cinema_playlist_id')})"
+        f"ALL UPLOADS COMPLETE! Animation: {len(state['animation_ids'])}/40 (Playlist: {state.get('animation_playlist_id')}), "
+        f"Movie: {len(state['cinema_ids'])}/40 (Playlist: {state.get('cinema_playlist_id')})"
     )
 
 

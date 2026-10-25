@@ -675,22 +675,35 @@ function AppContent() {
 
 
 
-  // 최초 접속 및 새로고침 시 백그라운드에서 조용히 서버 버전 비교 (화면 블로킹 없이 기존 캐시 사용)
-  // 최신이 아닌 경우에만 백그라운드 캐시 업데이트
+  // 최초 접속 및 매 1분(60초) 주기로 서버 최신 버전을 확인하고, 버전이 다르면 즉시 페이지 강제 새로고침
   useEffect(() => {
     const syncVersionInBackground = async () => {
       try {
-        const result = await checkAndSyncAppVersion();
+        const result = await checkAndSyncAppVersion({ autoReload: true });
         if (result.isUpdated) {
-          console.log(`[VersionSync] App updated to v${result.newVersion}. Cache refreshed in background.`);
+          console.log(`[VersionSync] App updated to v${result.newVersion}. Forcing page reload...`);
         }
       } catch (err) {
         // 네트워크 실패 시 기존 캐시로 안전 유지
       }
     };
 
-    const syncTimer = window.setTimeout(syncVersionInBackground, 1200);
-    return () => clearTimeout(syncTimer);
+    const initialTimer = window.setTimeout(syncVersionInBackground, 1200);
+    // 1분(60,000ms)마다 서버 버전 확인 후 불일치 시 강제 새로고침
+    const intervalId = window.setInterval(syncVersionInBackground, 60 * 1000);
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        void syncVersionInBackground();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      clearTimeout(initialTimer);
+      clearInterval(intervalId);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, []);
 
   const [creatorCode, setCreatorCode] = useState<string>(() => {
@@ -3754,6 +3767,7 @@ function AppContent() {
     if (view === 'ranking') {
       try {
         if (localStorage.getItem('hero_auto_start_pvp') === 'true') {
+          setFromBackToRanking(false);
           setAutoStartPvp(true);
         }
       } catch {}
@@ -4588,8 +4602,10 @@ function AppContent() {
       return `${d.getUTCFullYear()}-${d.getUTCMonth() + 1}`;
     };
 
-    const reward = rewardOverride !== undefined ? rewardOverride : (result === 'win' ? 50 : (result === 'draw' ? 20 : 10));
-    const newSns = sns + reward;
+    const reward = rewardOverride !== undefined
+      ? rewardOverride
+      : (result === 'win' ? 50 : (result === 'draw' ? 20 : (battleType === 'pvp_attack' ? -Math.min(sns, 30) : 10)));
+    const newSns = Math.max(0, sns + reward);
     if (reward > 0) {
       incrementMissionProgress('earn_sns', reward);
     }
@@ -8391,6 +8407,13 @@ function AppContent() {
                   </div>
                 </div>
               )}
+
+              {/* SNS 차감 필수 고지 */}
+              <div className="p-2.5 bg-rose-950/70 border border-rose-500/50 rounded-none text-left text-[11px] font-mono font-bold text-rose-200 leading-snug">
+                {language === 'ko'
+                  ? '⚠️ 필수 안내: 승부 결과에 따라 보유 SNS가 차감될 수 있습니다. (승리 +30 / 패배 -30 SNS)'
+                  : '⚠️ Notice: Your SNS may be deducted depending on the match result. (Win +30 / Loss -30 SNS)'}
+              </div>
 
               {/* Huge Countdown Number */}
               <div className="flex flex-col items-center justify-center py-2">

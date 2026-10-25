@@ -52,25 +52,7 @@ def extract_3x3_cells(sheet_path: Path) -> list[Image.Image]:
 
 
 def frame_storybook_panel(panel: Image.Image, ep_num: int, page_num: int, total_pages: int, chars: list[dict], is_choice: bool, out_webp: Path):
-    base = panel.convert("RGBA")
-    overlay = Image.new("RGBA", (WIDTH, HEIGHT), (0, 0, 0, 0))
-    odraw = ImageDraw.Draw(overlay)
-
-    odraw.rectangle([0, 0, WIDTH, 24], fill=(15, 13, 13, 210))
-    odraw.line([(0, 24), (WIDTH, 24)], fill=(215, 195, 150, 175), width=1)
-
-    try:
-        font_mono = ImageFont.truetype(FONT_MONO, 11)
-    except Exception:
-        font_mono = ImageFont.load_default()
-
-    char_names_en = " · ".join(c["nameEn"].upper() for c in chars[:3])
-    left_label = f"SNSHERO PICTURE BOOK · EP.{ep_num:02d}"
-    right_label = f"SCENE {page_num:02d}/{total_pages:02d} · {'FATE DECISION' if is_choice else char_names_en}"
-    odraw.text((12, 12), left_label, fill=(235, 220, 185, 240), font=font_mono, anchor="lm")
-    odraw.text((WIDTH - 12, 12), right_label, fill=(210, 205, 195, 230), font=font_mono, anchor="rm")
-
-    comp = Image.alpha_composite(base, overlay)
+    comp = panel.convert("RGBA")
 
     shown_chars = chars[:4]
     badge_size = 50
@@ -104,7 +86,6 @@ def frame_storybook_panel(panel: Image.Image, ep_num: int, page_num: int, total_
 
     cdraw = ImageDraw.Draw(comp)
     cdraw.rectangle([0, 0, WIDTH - 1, HEIGHT - 1], outline=(55, 50, 45, 230), width=1)
-    cdraw.rectangle([3, 27, WIDTH - 4, HEIGHT - 4], outline=(215, 195, 150, 110), width=1)
 
     out_webp.parent.mkdir(parents=True, exist_ok=True)
     final_rgb = comp.convert("RGB")
