@@ -55,6 +55,7 @@ export class MovieAudioSynthesizer {
   private isNarrating: boolean = false;
   private narrationSessionId: number = 0;
   private activeScriptKey: string = '';
+  private activeOnEnd: (() => void) | undefined = undefined;
   private narrationStartedAt: number = 0;
 
   private constructor() {
@@ -767,7 +768,8 @@ export class MovieAudioSynthesizer {
   }
 
   private splitIntoSpeakableChunks(cleanText: string, language: 'ko' | 'en' | 'ja'): string[] {
-    const maxChunkLen = language === 'en' ? 165 : 85;
+    // 씬별 대사/내레이션(한국어 최대 125자, 영어 최대 378자)이 중간에 쪼개져 끊기지 않도록 단일 Utterance 우선 발화
+    const maxChunkLen = language === 'en' ? 420 : 240;
     if (cleanText.length <= maxChunkLen) {
       return [cleanText];
     }
@@ -842,21 +844,41 @@ export class MovieAudioSynthesizer {
   private playHtml5AudioTtsFallback(
     cleanText: string,
     language: 'ko' | 'en' | 'ja',
-    onEnd?: () => void
+    onEnd?: () => void,
+    fallbackDurationMs: number = 3200
   ): void {
     if (this.isMuted || typeof window === 'undefined') {
       this.isNarrating = false;
       this.activeScriptKey = '';
+      this.activeOnEnd = undefined;
       this.setBgmDucking(false);
       if (onEnd) onEnd();
       return;
     }
+
+    const completeAfterFallbackDelay = (sessionId: number) => {
+      this.fallbackAudio = null;
+      const elapsed = Date.now() - this.narrationStartedAt;
+      const remainMs = Math.max(400, fallbackDurationMs - elapsed);
+      this.chunkWatchdogTimeoutId = window.setTimeout(() => {
+        this.chunkWatchdogTimeoutId = null;
+        if (sessionId === this.narrationSessionId) {
+          this.isNarrating = false;
+          this.activeScriptKey = '';
+          this.activeOnEnd = undefined;
+          this.setBgmDucking(false);
+          if (onEnd) onEnd();
+        }
+      }, remainMs);
+    };
+
     try {
       const tl = language === 'ko' ? 'ko' : language === 'ja' ? 'ja' : 'en';
       const chunks = this.splitIntoSpeakableChunks(cleanText, language);
       if (chunks.length === 0) {
         this.isNarrating = false;
         this.activeScriptKey = '';
+        this.activeOnEnd = undefined;
         this.setBgmDucking(false);
         if (onEnd) onEnd();
         return;
@@ -870,6 +892,7 @@ export class MovieAudioSynthesizer {
           if (sessionId === this.narrationSessionId) {
             this.isNarrating = false;
             this.activeScriptKey = '';
+            this.activeOnEnd = undefined;
             this.setBgmDucking(false);
             if (onEnd) onEnd();
           }
@@ -882,31 +905,16 @@ export class MovieAudioSynthesizer {
         this.fallbackAudio = audio;
         audio.onended = () => playNextChunk();
         audio.onerror = () => {
-          this.fallbackAudio = null;
-          if (sessionId === this.narrationSessionId) {
-            this.isNarrating = false;
-            this.activeScriptKey = '';
-            this.setBgmDucking(false);
-            if (onEnd) onEnd();
-          }
+          completeAfterFallbackDelay(sessionId);
         };
         audio.play().catch(() => {
-          this.fallbackAudio = null;
-          if (sessionId === this.narrationSessionId) {
-            this.isNarrating = false;
-            this.activeScriptKey = '';
-            this.setBgmDucking(false);
-            if (onEnd) onEnd();
-          }
+          completeAfterFallbackDelay(sessionId);
         });
       };
 
       playNextChunk();
     } catch {
-      this.isNarrating = false;
-      this.activeScriptKey = '';
-      this.setBgmDucking(false);
-      if (onEnd) onEnd();
+      completeAfterFallbackDelay(this.narrationSessionId);
     }
   }
 
@@ -931,8 +939,9 @@ export class MovieAudioSynthesizer {
       return;
     }
 
-    const scriptKey = `${language}:${cleanText}`;
-    // 이미 동일한 스크립트를 정상 발화 중이면 중단하지 않고 그대로 유지 (포인터/리렌더 중복 호출에 의한 끊김 방지)
+    const safeRate = Math.max(0.8, Math.min(1.8, rate || 1.0));
+    const scriptKey = `${language}:${safeRate}:${cleanText}`;
+    // 이미 동일한 스크립트를 정상 발화 중이면 중단하지 않고 onEnd 콜백만 최신화하여 그대로 유지
     if (
       this.isNarrating &&
       this.activeScriptKey === scriptKey &&
@@ -940,25 +949,42 @@ export class MovieAudioSynthesizer {
       'speechSynthesis' in window &&
       (window.speechSynthesis.speaking || window.speechSynthesis.pending || this.speakTimeoutId !== null)
     ) {
+      this.activeOnEnd = onEnd;
       return;
     }
+
+    const estimatedReadingMs = Math.max(
+      2200,
+      Math.min(
+        14000,
+        Math.round(((language === 'en' ? cleanText.length * 55 : cleanText.length * 115) / safeRate))
+      )
+    );
 
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
       this.narrationSessionId++;
       this.isNarrating = true;
       this.activeScriptKey = scriptKey;
+      this.activeOnEnd = onEnd;
       this.narrationStartedAt = Date.now();
       this.setBgmDucking(true);
-      this.playHtml5AudioTtsFallback(cleanText, language, onEnd);
+      this.playHtml5AudioTtsFallback(cleanText, language, onEnd, estimatedReadingMs);
       return;
     }
 
     try {
-      this.stopNarration();
+      // 직전 발화가 이미 자연 종료된 상태라면 speechSynthesis.cancel()을 호출하지 않아 다음 씬 발화가 씹히는 현상 방지
+      const wasActivelySpeaking =
+        this.isNarrating ||
+        window.speechSynthesis.speaking ||
+        window.speechSynthesis.pending;
+
+      this.stopNarration(wasActivelySpeaking);
 
       const sessionId = ++this.narrationSessionId;
       this.isNarrating = true;
       this.activeScriptKey = scriptKey;
+      this.activeOnEnd = onEnd;
       this.narrationStartedAt = Date.now();
       this.setBgmDucking(true);
 
@@ -969,9 +995,8 @@ export class MovieAudioSynthesizer {
         ja: 'ja-JP',
       };
       const targetLangTag = langMap[language] || 'ko-KR';
-      const safeRate = Math.max(0.8, Math.min(1.8, rate || 1.0));
+      const startDelayMs = wasActivelySpeaking ? 50 : 12;
 
-      // cancel() 직후 브라우저 큐 안정화를 위해 50ms 후 첫 청크 발화 시작
       this.speakTimeoutId = window.setTimeout(() => {
         this.speakTimeoutId = null;
         if (sessionId !== this.narrationSessionId || this.isMuted) {
@@ -981,7 +1006,7 @@ export class MovieAudioSynthesizer {
         const matchedVoice = this.selectBestVoice(language);
         let chunkIdx = 0;
 
-        const finishSession = () => {
+        const finishSession = (invokeCallback: boolean = true) => {
           if (sessionId !== this.narrationSessionId) return;
           if (this.keepAliveIntervalId !== null) {
             window.clearInterval(this.keepAliveIntervalId);
@@ -995,8 +1020,12 @@ export class MovieAudioSynthesizer {
           this.activeUtterances = [];
           this.isNarrating = false;
           this.activeScriptKey = '';
+          const cb = this.activeOnEnd;
+          this.activeOnEnd = undefined;
           this.setBgmDucking(false);
-          if (onEnd) onEnd();
+          if (invokeCallback && cb) {
+            cb();
+          }
         };
 
         const speakNextChunk = () => {
@@ -1004,11 +1033,14 @@ export class MovieAudioSynthesizer {
             return;
           }
           if (chunkIdx >= chunks.length) {
-            finishSession();
+            finishSession(true);
             return;
           }
 
           const chunkText = chunks[chunkIdx++];
+          let chunkStarted = false;
+          const chunkQueuedAt = Date.now();
+
           try {
             if (window.speechSynthesis.paused) {
               window.speechSynthesis.resume();
@@ -1044,8 +1076,8 @@ export class MovieAudioSynthesizer {
           if (this.chunkWatchdogTimeoutId !== null) {
             window.clearTimeout(this.chunkWatchdogTimeoutId);
           }
-          // 청크당 최대 대기 워치독 (비정상 멈춤 시 다음 청크로 안전 진행)
-          const watchdogMs = Math.max(8000, Math.min(20000, chunkText.length * 220));
+          // 청크당 최대 대기 워치독 (비정상 멈춤 시 다음 청크/씬으로 안전 진행)
+          const watchdogMs = Math.max(8500, Math.min(20000, estimatedReadingMs + 4500));
           this.chunkWatchdogTimeoutId = window.setTimeout(() => {
             this.chunkWatchdogTimeoutId = null;
             if (sessionId === this.narrationSessionId && this.currentUtterance === utterance) {
@@ -1055,6 +1087,7 @@ export class MovieAudioSynthesizer {
 
           utterance.onstart = () => {
             if (sessionId !== this.narrationSessionId) return;
+            chunkStarted = true;
             this.speechUnlocked = true;
           };
 
@@ -1064,10 +1097,21 @@ export class MovieAudioSynthesizer {
               window.clearTimeout(this.chunkWatchdogTimeoutId);
               this.chunkWatchdogTimeoutId = null;
             }
+            const elapsed = Date.now() - chunkQueuedAt;
+            // 브라우저 정책 등으로 발화 없이 즉시(200ms 미만) 종료된 경우 폴백 오디오/타이머로 자연 전환
+            if (!chunkStarted && elapsed < 200 && chunkText.length > 4) {
+              const cb = this.activeOnEnd;
+              this.playHtml5AudioTtsFallback(cleanText, language, cb, estimatedReadingMs);
+              return;
+            }
             if (chunkIdx < chunks.length) {
               speakNextChunk();
             } else {
-              finishSession();
+              // 마지막 음절 여운이 잘리지 않도록 80ms 후 다음 씬 전환 콜백 호출
+              this.speakTimeoutId = window.setTimeout(() => {
+                this.speakTimeoutId = null;
+                finishSession(true);
+              }, 80);
             }
           };
 
@@ -1079,15 +1123,12 @@ export class MovieAudioSynthesizer {
             }
             const errType = (ev as SpeechSynthesisErrorEvent)?.error;
             if (errType === 'canceled' || errType === 'interrupted') {
-              finishSession();
+              finishSession(false);
               return;
             }
-            // 개별 청크 오류 시 다음 청크 시도 또는 완료 처리
-            if (chunkIdx < chunks.length) {
-              speakNextChunk();
-            } else {
-              finishSession();
-            }
+            // Web Speech 합성 실패/차단 시 HTML5 Audio TTS 및 읽기 시간 폴백으로 끊김 없이 진행
+            const cb = this.activeOnEnd;
+            this.playHtml5AudioTtsFallback(cleanText, language, cb, estimatedReadingMs);
           };
 
           window.speechSynthesis.speak(utterance);
@@ -1107,20 +1148,18 @@ export class MovieAudioSynthesizer {
         }, 2500);
 
         speakNextChunk();
-      }, 50);
+      }, startDelayMs);
     } catch (err) {
       console.warn('[MovieAudioSynthesizer] SpeechSynthesis error:', err);
-      this.isNarrating = false;
-      this.activeScriptKey = '';
-      this.setBgmDucking(false);
-      if (onEnd) onEnd();
+      this.playHtml5AudioTtsFallback(cleanText, language, onEnd, estimatedReadingMs);
     }
   }
 
-  public stopNarration(): void {
+  public stopNarration(cancelBrowserSpeech: boolean = true): void {
     this.narrationSessionId++;
     this.isNarrating = false;
     this.activeScriptKey = '';
+    this.activeOnEnd = undefined;
     this.setBgmDucking(false);
 
     if (this.speakTimeoutId !== null) {
@@ -1144,7 +1183,7 @@ export class MovieAudioSynthesizer {
       }
       this.fallbackAudio = null;
     }
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+    if (cancelBrowserSpeech && typeof window !== 'undefined' && 'speechSynthesis' in window) {
       try {
         if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
           window.speechSynthesis.cancel();

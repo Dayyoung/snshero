@@ -309,179 +309,198 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
  const primaryTtsLang: 'ko' | 'en' | 'ja' =
  language === 'en' ? 'en' : language === 'ja' ? 'ja' : 'ko';
 
- // Clean, non-duplicated Primary Language script for TTS voiceover
- const getScenePrimaryTtsScript = useCallback(
- (scene: CinematicScene | undefined): string => {
- if (!scene) return '';
- if (scene.type === 'title_card' || scene.sceneNumber === 1) {
- if (primaryTtsLang === 'en') {
- return `Episode ${episodeNumber}. ${titleEn || ''}.`.trim();
- }
- return `제 ${episodeNumber}화. ${titleKo || ''}.`.trim();
- }
+  // Clean 1:1 Primary Subtitle script for TTS voiceover
+  const getScenePrimaryTtsScript = useCallback(
+    (scene: CinematicScene | undefined): string => {
+      if (!scene) return '';
+      if (scene.type === 'title_card' || scene.sceneNumber === 1) {
+        if (primaryTtsLang === 'en') {
+          return `Episode ${episodeNumber}. ${titleEn || ''}.`.trim();
+        }
+        return `제 ${episodeNumber}화. ${titleKo || ''}.`.trim();
+      }
 
- if (primaryTtsLang === 'en') {
- const narration = (scene.narrationEn || '').trim();
- const nonNarrationDialogues = (scene.dialogues || [])
- .filter(
- (d) =>
- d.textEn &&
- d.speakerEn &&
- d.speakerEn !== 'Narration' &&
- d.speakerEn !== '내레이션' &&
- d.textEn.trim() !== narration
- )
- .map((d) => d.textEn.trim());
+      if (primaryTtsLang === 'en') {
+        return (scene.dialogues?.[0]?.textEn || scene.narrationEn || '').trim();
+      }
 
- const parts = [...nonNarrationDialogues, narration].filter(Boolean);
- if (parts.length > 0) {
- return parts.join(' ');
- }
- return (scene.dialogues?.[0]?.textEn || '').trim();
- }
+      return (scene.dialogues?.[0]?.textKo || scene.narrationKo || scene.narrationEn || '').trim();
+    },
+    [episodeNumber, titleKo, titleEn, primaryTtsLang]
+  );
 
- const narration = (scene.narrationKo || '').trim();
- const nonNarrationDialogues = (scene.dialogues || [])
- .filter(
- (d) =>
- d.textKo &&
- d.speakerKo &&
- d.speakerKo !== 'Narration' &&
- d.speakerKo !== '내레이션' &&
- d.textKo.trim() !== narration
- )
- .map((d) => d.textKo.trim());
+  // Advance to the next scene (or finish episode) with idempotent scene index guard
+  const advanceToNextScene = useCallback(
+    (fromSceneIdx: number) => {
+      setCurrentSceneIdx((prevIdx) => {
+        if (prevIdx !== fromSceneIdx) return prevIdx;
+        if (prevIdx < scenes.length - 1) {
+          setSceneProgress(0);
+          return prevIdx + 1;
+        } else {
+          setIsPlaying(false);
+          setIsCompleted(true);
+          movieAudio.playSfx('victory-chime');
+          if (onEpisodeComplete) {
+            onEpisodeComplete(episodeNumber);
+          }
+          setSceneProgress(100);
+          return prevIdx;
+        }
+      });
+    },
+    [scenes.length, episodeNumber, onEpisodeComplete]
+  );
 
- const parts = [...nonNarrationDialogues, narration].filter(Boolean);
- if (parts.length > 0) {
- return parts.join(' ');
- }
- return (scene.dialogues?.[0]?.textKo || scene.narrationEn || '').trim();
- },
- [episodeNumber, titleKo, titleEn, primaryTtsLang]
- );
+  // Characters present in current scene (manifest characters + dialogue speakers)
+  const sceneCharacterNames: string[] = Array.from(
+    new Set([
+      ...(currentScene?.characters || []),
+      ...(currentScene?.dialogues || [])
+        .map((d) => d.speakerEn)
+        .filter((s): s is string => Boolean(s && s !== 'Narration' && s !== '내레이션')),
+    ])
+  );
 
- // Characters present in current scene (manifest characters + dialogue speakers)
- const sceneCharacterNames: string[] = Array.from(
- new Set([
- ...(currentScene?.characters || []),
- ...(currentScene?.dialogues || [])
- .map((d) => d.speakerEn)
- .filter((s): s is string => Boolean(s && s !== 'Narration' && s !== '내레이션')),
- ])
- );
+  const activeSpeakerDialogue = currentScene?.dialogues?.find(
+    (d) => d.speakerEn && d.speakerEn !== 'Narration' && d.speakerEn !== '내레이션'
+  );
+  const activeSpeakerName = activeSpeakerDialogue?.speakerEn?.toLowerCase();
+  const activeSpeakerCardId = activeSpeakerDialogue?.characterCardId;
 
- const activeSpeakerDialogue = currentScene?.dialogues?.find(
- (d) => d.speakerEn && d.speakerEn !== 'Narration' && d.speakerEn !== '내레이션'
- );
- const activeSpeakerName = activeSpeakerDialogue?.speakerEn?.toLowerCase();
- const activeSpeakerCardId = activeSpeakerDialogue?.characterCardId;
+  // Auto-hide controls timer
+  const resetControlsTimeout = useCallback(() => {
+    setShowControls(true);
+    if (controlsTimeoutRef.current) {
+      window.clearTimeout(controlsTimeoutRef.current);
+    }
+    if (isPlaying) {
+      controlsTimeoutRef.current = window.setTimeout(() => {
+        setShowControls(false);
+      }, 3500);
+    }
+  }, [isPlaying]);
 
- // Auto-hide controls timer
- const resetControlsTimeout = useCallback(() => {
- setShowControls(true);
- if (controlsTimeoutRef.current) {
- window.clearTimeout(controlsTimeoutRef.current);
- }
- if (isPlaying) {
- controlsTimeoutRef.current = window.setTimeout(() => {
- setShowControls(false);
- }, 3500);
- }
- }, [isPlaying]);
+  useEffect(() => {
+    resetControlsTimeout();
+    return () => {
+      if (controlsTimeoutRef.current) window.clearTimeout(controlsTimeoutRef.current);
+    };
+  }, [resetControlsTimeout]);
 
- useEffect(() => {
- resetControlsTimeout();
- return () => {
- if (controlsTimeoutRef.current) window.clearTimeout(controlsTimeoutRef.current);
- };
- }, [resetControlsTimeout]);
+  // 1. Episode BGM Lifecycle: Starts continuous BGM on playback & persists across scenes
+  useEffect(() => {
+    if (isPlaying && !isMuted) {
+      const meta = MOVIE_EPISODES[episodeNumber];
+      const episodeTheme = meta?.bgmTheme || currentScene?.bgmTheme || 'arcane-mystery';
+      movieAudio.startEpisodeBgm(episodeNumber, episodeTheme);
+    }
+  }, [episodeNumber, isPlaying, isMuted, currentScene?.bgmTheme]);
 
- // 1. Episode BGM Lifecycle: Starts continuous BGM on playback & persists across scenes
- useEffect(() => {
- if (isPlaying && !isMuted) {
- const meta = MOVIE_EPISODES[episodeNumber];
- const episodeTheme = meta?.bgmTheme || currentScene?.bgmTheme || 'arcane-mystery';
- movieAudio.startEpisodeBgm(episodeNumber, episodeTheme);
- }
- }, [episodeNumber, isPlaying, isMuted, currentScene?.bgmTheme]);
+  // Clean unmount audio stop
+  useEffect(() => {
+    return () => {
+      movieAudio.stopAll();
+    };
+  }, []);
 
- // Clean unmount audio stop
- useEffect(() => {
- return () => {
- movieAudio.stopAll();
- };
- }, []);
+  // 2. Audio SFX & Primary Language TTS voiceover on scene change -> When TTS ends, immediately advance to next scene!
+  useEffect(() => {
+    if (!isPlaying || isCompleted) {
+      movieAudio.stopNarration();
+      return;
+    }
 
- // 2. Audio SFX & Primary Language TTS voiceover on scene change (WITHOUT cutting episode BGM)
- useEffect(() => {
- const activeScene = scenes[currentSceneIdx] || scenes[0];
- if (!activeScene) return;
+    const activeScene = scenes[currentSceneIdx] || scenes[0];
+    if (!activeScene) return;
 
- // Trigger one-shot combat sound effect
- if (activeScene.sfxTrigger) {
- movieAudio.playSfx(activeScene.sfxTrigger);
- }
+    // Trigger one-shot combat sound effect
+    if (activeScene.sfxTrigger && !isMuted) {
+      movieAudio.playSfx(activeScene.sfxTrigger);
+    }
 
- // Primary Subtitle-Base TTS Voiceover
- if (isTtsEnabled && isPlaying && !isMuted) {
- const primaryScript = getScenePrimaryTtsScript(activeScene);
- if (primaryScript) {
- movieAudio.speakNarration(primaryScript, primaryTtsLang, undefined, playbackSpeed);
- }
- } else {
- movieAudio.stopNarration();
- }
+    // Primary Subtitle-Base TTS Voiceover: advances to next scene immediately upon TTS completion
+    if (isTtsEnabled && !isMuted) {
+      const primaryScript = getScenePrimaryTtsScript(activeScene);
+      const targetSceneIdx = currentSceneIdx;
+      if (primaryScript) {
+        movieAudio.speakNarration(
+          primaryScript,
+          primaryTtsLang,
+          () => {
+            advanceToNextScene(targetSceneIdx);
+          },
+          playbackSpeed
+        );
+      } else {
+        advanceToNextScene(targetSceneIdx);
+      }
+    } else {
+      movieAudio.stopNarration();
+    }
+  }, [
+    episodeNumber,
+    currentSceneIdx,
+    scenes,
+    isTtsEnabled,
+    isPlaying,
+    isCompleted,
+    isMuted,
+    primaryTtsLang,
+    playbackSpeed,
+    getScenePrimaryTtsScript,
+    advanceToNextScene,
+  ]);
 
- return () => {
- movieAudio.stopNarration();
- };
- }, [episodeNumber, currentSceneIdx, isTtsEnabled, isPlaying, isMuted, primaryTtsLang, playbackSpeed, getScenePrimaryTtsScript]);
+  // Scene progress bar ticker (when TTS is enabled, TTS onEnd drives scene transition; timer only drives visual progress or non-TTS advance)
+  useEffect(() => {
+    if (!isPlaying || isCompleted) {
+      if (progressTimerRef.current) window.clearInterval(progressTimerRef.current);
+      return;
+    }
 
- // Scene auto-advance timer and progress ticker (waits for active TTS completion so voiceover never cuts off mid-sentence!)
- useEffect(() => {
- if (!isPlaying || isCompleted) {
- if (progressTimerRef.current) window.clearInterval(progressTimerRef.current);
- return;
- }
+    const durationSec = (currentScene?.durationSeconds || 6.5) / playbackSpeed;
+    const intervalMs = 50;
+    const increment = (intervalMs / (durationSec * 1000)) * 100;
+    const targetSceneIdx = currentSceneIdx;
 
- const durationSec = (currentScene?.durationSeconds || 6.5) / playbackSpeed;
- const intervalMs = 50;
- const increment = (intervalMs / (durationSec * 1000)) * 100;
+    setSceneProgress(0);
+    let elapsedTicks = 0;
 
- setSceneProgress(0);
+    progressTimerRef.current = window.setInterval(() => {
+      elapsedTicks += 1;
+      const nextProgress = elapsedTicks * increment;
 
- progressTimerRef.current = window.setInterval(() => {
- setSceneProgress((prev) => {
- const next = prev + increment;
- if (next >= 100) {
- // Hold at 99% while TTS is still speaking the current scene so voiceover is never cut off
- if (isTtsEnabled && !isMuted && movieAudio.isSpeaking()) {
- return 99;
- }
- // Advance to next scene
- if (currentSceneIdx < scenes.length - 1) {
- setCurrentSceneIdx((c) => c + 1);
- return 0;
- } else {
- // Episode finished!
- setIsPlaying(false);
- setIsCompleted(true);
- movieAudio.playSfx('victory-chime');
- if (onEpisodeComplete) {
- onEpisodeComplete(episodeNumber);
- }
- return 100;
- }
- }
- return next;
- });
- }, intervalMs);
+      if (isTtsEnabled && !isMuted) {
+        // TTS 활성 시: TTS 종료 콜백(onEnd)이 즉시 다음 씬으로 이동시키므로 프로그레스 바는 97%까지 부드럽게 진행
+        setSceneProgress(Math.min(97, nextProgress));
+        // 만약 비정상 예외로 TTS가 이미 완전히 종료되었고 충분한 시간이 지났다면 안전 폴백으로 다음 씬 이동
+        if (nextProgress >= 120 && !movieAudio.isSpeaking()) {
+          advanceToNextScene(targetSceneIdx);
+        }
+      } else {
+        // TTS 비활성 또는 음소거 시: 타이머 완료 시 다음 씬으로 이동
+        if (nextProgress >= 100) {
+          advanceToNextScene(targetSceneIdx);
+        } else {
+          setSceneProgress(nextProgress);
+        }
+      }
+    }, intervalMs);
 
- return () => {
- if (progressTimerRef.current) window.clearInterval(progressTimerRef.current);
- };
- }, [currentSceneIdx, isPlaying, isCompleted, playbackSpeed, currentScene, scenes.length, episodeNumber, onEpisodeComplete, isTtsEnabled, isMuted]);
+    return () => {
+      if (progressTimerRef.current) window.clearInterval(progressTimerRef.current);
+    };
+  }, [
+    currentSceneIdx,
+    isPlaying,
+    isCompleted,
+    playbackSpeed,
+    currentScene,
+    isTtsEnabled,
+    isMuted,
+    advanceToNextScene,
+  ]);
 
  // Fullscreen toggle
  const toggleFullscreen = async () => {
@@ -509,138 +528,111 @@ export const CinematicMoviePlayer: React.FC<CinematicMoviePlayerProps> = ({
  return () => document.removeEventListener('fullscreenchange', handleFsChange);
  }, []);
 
- // Ensure any pointer gesture inside the player unlocks Web Audio + SpeechSynthesis if blocked by browser autoplay policy
- const handleUserAudioUnlock = useCallback(() => {
- movieAudio.unlockSpeech();
- movieAudio.initAudio().then(() => {
- if (isPlaying && !isMuted) {
- const meta = MOVIE_EPISODES[episodeNumber];
- const episodeTheme = meta?.bgmTheme || currentScene?.bgmTheme || 'arcane-mystery';
- movieAudio.startEpisodeBgm(episodeNumber, episodeTheme);
- }
- });
- if (
- isPlaying &&
- isTtsEnabled &&
- !isMuted &&
- !movieAudio.isSpeaking()
- ) {
- const script = getScenePrimaryTtsScript(currentScene);
- if (script) {
- movieAudio.speakNarration(script, primaryTtsLang, undefined, playbackSpeed);
- }
- }
- }, [isPlaying, isTtsEnabled, isMuted, episodeNumber, currentScene, primaryTtsLang, playbackSpeed, getScenePrimaryTtsScript]);
+  // Ensure any pointer gesture inside the player unlocks Web Audio + SpeechSynthesis if blocked by browser autoplay policy
+  const handleUserAudioUnlock = useCallback(() => {
+    movieAudio.unlockSpeech();
+    movieAudio.initAudio().then(() => {
+      if (isPlaying && !isMuted) {
+        const meta = MOVIE_EPISODES[episodeNumber];
+        const episodeTheme = meta?.bgmTheme || currentScene?.bgmTheme || 'arcane-mystery';
+        movieAudio.startEpisodeBgm(episodeNumber, episodeTheme);
+      }
+    });
+  }, [isPlaying, isMuted, episodeNumber, currentScene?.bgmTheme]);
 
- // Controls Handlers
- const handleTogglePlay = () => {
- triggerHaptic('light');
- movieAudio.unlockSpeech();
- const willPlay = !isPlaying;
- setIsPlaying(willPlay);
- movieAudio.initAudio().then(() => {
- if (willPlay && !isMuted) {
- const meta = MOVIE_EPISODES[episodeNumber];
- const episodeTheme = meta?.bgmTheme || currentScene?.bgmTheme || 'arcane-mystery';
- movieAudio.startEpisodeBgm(episodeNumber, episodeTheme);
- }
- });
- if (willPlay && isTtsEnabled && !isMuted) {
- const script = getScenePrimaryTtsScript(currentScene);
- if (script) {
- movieAudio.speakNarration(script, primaryTtsLang, undefined, playbackSpeed);
- }
- } else if (!willPlay) {
- movieAudio.stopNarration();
- }
- resetControlsTimeout();
- };
+  // Controls Handlers
+  const handleTogglePlay = () => {
+    triggerHaptic('light');
+    movieAudio.unlockSpeech();
+    const willPlay = !isPlaying;
+    setIsPlaying(willPlay);
+    movieAudio.initAudio().then(() => {
+      if (willPlay && !isMuted) {
+        const meta = MOVIE_EPISODES[episodeNumber];
+        const episodeTheme = meta?.bgmTheme || currentScene?.bgmTheme || 'arcane-mystery';
+        movieAudio.startEpisodeBgm(episodeNumber, episodeTheme);
+      }
+    });
+    if (!willPlay) {
+      movieAudio.stopNarration();
+    }
+    resetControlsTimeout();
+  };
 
- const handlePrevScene = () => {
- triggerHaptic('light');
- movieAudio.unlockSpeech();
- movieAudio.playSfx('whoosh');
- setCurrentSceneIdx((prev) => Math.max(0, prev - 1));
- setSceneProgress(0);
- resetControlsTimeout();
- };
+  const handlePrevScene = () => {
+    triggerHaptic('light');
+    movieAudio.unlockSpeech();
+    movieAudio.playSfx('whoosh');
+    setCurrentSceneIdx((prev) => Math.max(0, prev - 1));
+    setSceneProgress(0);
+    resetControlsTimeout();
+  };
 
- const handleNextScene = () => {
- triggerHaptic('light');
- movieAudio.unlockSpeech();
- movieAudio.playSfx('whoosh');
- if (currentSceneIdx < scenes.length - 1) {
- setCurrentSceneIdx((prev) => prev + 1);
- setSceneProgress(0);
- } else {
- setIsCompleted(true);
- setIsPlaying(false);
- }
- resetControlsTimeout();
- };
+  const handleNextScene = () => {
+    triggerHaptic('light');
+    movieAudio.unlockSpeech();
+    movieAudio.playSfx('whoosh');
+    if (currentSceneIdx < scenes.length - 1) {
+      setCurrentSceneIdx((prev) => prev + 1);
+      setSceneProgress(0);
+    } else {
+      setIsCompleted(true);
+      setIsPlaying(false);
+    }
+    resetControlsTimeout();
+  };
 
- const handleJumpToScene = (idx: number) => {
- triggerHaptic('light');
- movieAudio.unlockSpeech();
- movieAudio.playSfx('whoosh');
- setCurrentSceneIdx(idx);
- setSceneProgress(0);
- setIsCompleted(false);
- resetControlsTimeout();
- };
+  const handleJumpToScene = (idx: number) => {
+    triggerHaptic('light');
+    movieAudio.unlockSpeech();
+    movieAudio.playSfx('whoosh');
+    setCurrentSceneIdx(idx);
+    setSceneProgress(0);
+    setIsCompleted(false);
+    resetControlsTimeout();
+  };
 
- const handleToggleMute = () => {
- triggerHaptic('light');
- movieAudio.unlockSpeech();
- const nextMuted = !isMuted;
- setIsMuted(nextMuted);
- movieAudio.setMuted(nextMuted);
- if (!nextMuted && isPlaying && isTtsEnabled) {
- const script = getScenePrimaryTtsScript(currentScene);
- if (script) {
- movieAudio.speakNarration(script, primaryTtsLang, undefined, playbackSpeed);
- }
- }
- resetControlsTimeout();
- };
+  const handleToggleMute = () => {
+    triggerHaptic('light');
+    movieAudio.unlockSpeech();
+    const nextMuted = !isMuted;
+    movieAudio.setMuted(nextMuted);
+    setIsMuted(nextMuted);
+    resetControlsTimeout();
+  };
 
- const handleCycleSpeed = () => {
- triggerHaptic('light');
- const speeds = [1.0, 1.25, 1.5, 2.0];
- const nextIdx = (speeds.indexOf(playbackSpeed) + 1) % speeds.length;
- setPlaybackSpeed(speeds[nextIdx]);
- resetControlsTimeout();
- };
+  const handleCycleSpeed = () => {
+    triggerHaptic('light');
+    const speeds = [1.0, 1.25, 1.5, 2.0];
+    const nextIdx = (speeds.indexOf(playbackSpeed) + 1) % speeds.length;
+    setPlaybackSpeed(speeds[nextIdx]);
+    resetControlsTimeout();
+  };
 
- const handleCycleSubtitle = () => {
- triggerHaptic('light');
- const modes: Array<'primary' | 'dual' | 'off'> = ['primary', 'dual', 'off'];
- const nextIdx = (modes.indexOf(subtitleMode) + 1) % modes.length;
- setSubtitleMode(modes[nextIdx]);
- resetControlsTimeout();
- };
+  const handleCycleSubtitle = () => {
+    triggerHaptic('light');
+    const modes: Array<'primary' | 'dual' | 'off'> = ['primary', 'dual', 'off'];
+    const nextIdx = (modes.indexOf(subtitleMode) + 1) % modes.length;
+    setSubtitleMode(modes[nextIdx]);
+    resetControlsTimeout();
+  };
 
- const handleToggleCc = () => {
- triggerHaptic('light');
- setIsCcEnabled((prev) => !prev);
- resetControlsTimeout();
- };
+  const handleToggleCc = () => {
+    triggerHaptic('light');
+    setIsCcEnabled((prev) => !prev);
+    resetControlsTimeout();
+  };
 
- const handleToggleTts = () => {
- triggerHaptic('light');
- movieAudio.unlockSpeech();
- const nextTts = !isTtsEnabled;
- setIsTtsEnabled(nextTts);
- if (nextTts && isPlaying && !isMuted) {
- const script = getScenePrimaryTtsScript(currentScene);
- if (script) {
- movieAudio.speakNarration(script, primaryTtsLang, undefined, playbackSpeed);
- }
- } else {
- movieAudio.stopNarration();
- }
- resetControlsTimeout();
- };
+  const handleToggleTts = () => {
+    triggerHaptic('light');
+    movieAudio.unlockSpeech();
+    const nextTts = !isTtsEnabled;
+    if (!nextTts) {
+      movieAudio.stopNarration();
+    }
+    setIsTtsEnabled(nextTts);
+    resetControlsTimeout();
+  };
 
  const handleReplayEpisode = () => {
  triggerHaptic('medium');

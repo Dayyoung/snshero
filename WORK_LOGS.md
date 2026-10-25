@@ -2,6 +2,25 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-26 05:14 KST] [인터랙티브 무비 TTS 종료 시 즉시 다음 화면 이동 및 다음 화면 TTS 끊김 없는 연속 재생 구현 완료]
+- **요청 사항**:
+  - `"인터렉티브 무비에서 tts가 종료되면 다음화면으로 이동. 이동하면 tts재생. 끊김없이 재생해줘"`
+- **원인 분석**:
+  1. [`src/components/movie/CinematicMoviePlayer.tsx`](file:///Users/dayyoung/project/snshero/src/components/movie/CinematicMoviePlayer.tsx) 및 [`src/components/movie/LiveActionCinemaPlayer.tsx`](file:///Users/dayyoung/project/snshero/src/components/movie/LiveActionCinemaPlayer.tsx)에서 `movieAudio.speakNarration(script, primaryTtsLang, undefined, playbackSpeed)`와 같이 `onEnd` 완료 콜백을 비워둔 채 고정 인터벌 타이머(`setSceneProgress` 내부 상태 업데이터)에만 의존하여 화면을 전환하고 있었음.
+  2. 또한 씬 변경 `useEffect`의 cleanup(`return () => movieAudio.stopNarration()`)과 컨트롤 핸들러의 중복 호출이 겹치면서 발화 중인 TTS가 중간에 취소(`speechSynthesis.cancel()`)되거나, 이전 씬의 발화가 자연 종료(`onend`)된 직후 다음 씬 발화 시작 시 불필요한 `cancel()` 호출로 인해 브라우저 음성 합성 큐가 다음 씬의 첫 문장을 드롭하는 현상이 발생함.
+  3. [`src/lib/MovieAudioSynthesizer.ts`](file:///Users/dayyoung/project/snshero/src/lib/MovieAudioSynthesizer.ts)에서 한국어 청크 분할 기준이 `85자`로 낮게 설정되어 있어 90~125자 분량의 단일 씬 내레이션이 2개 청크로 쪼개지며 문장 중간에 호흡이 끊기는 현상이 있었음.
+- **주요 수정 및 개선 내역**:
+  1. **단일 씬 무분할 발화 및 자연 전환 시 무중단 큐 핸들링 ([`src/lib/MovieAudioSynthesizer.ts`](file:///Users/dayyoung/project/snshero/src/lib/MovieAudioSynthesizer.ts))**:
+     - `splitIntoSpeakableChunks`의 청크 최대 길이를 한국어/일본어 `240자`, 영어 `420자`로 상향하여 전 40화 모든 씬(한국어 최대 125자, 영어 최대 378자)이 중간 분할 없이 단일 `SpeechSynthesisUtterance`로 매끄럽게 발화되도록 개선.
+     - 이전 씬의 발화가 `onend`로 자연 종료된 직후 다음 씬 발화를 시작할 때는(`wasActivelySpeaking === false`) `window.speechSynthesis.cancel()`을 호출하지 않고 즉시(`12ms`) 다음 씬 발화를 이어가도록 개선하여 씬 간 음성 끊김/씹힘 현상 원천 차단.
+     - 동일한 스크립트 발화 중 리렌더가 발생하더라도 발화를 중단하지 않고 `activeOnEnd` 콜백만 최신화하도록 보호.
+  2. **TTS 발화 완료(`onEnd`) 즉시 다음 화면 자동 이동 및 즉시 TTS 재생 ([`src/components/movie/CinematicMoviePlayer.tsx`](file:///Users/dayyoung/project/snshero/src/components/movie/CinematicMoviePlayer.tsx), [`src/components/movie/LiveActionCinemaPlayer.tsx`](file:///Users/dayyoung/project/snshero/src/components/movie/LiveActionCinemaPlayer.tsx))**:
+     - 멱등성 가드가 적용된 `advanceToNextScene(fromSceneIdx)` 콜백을 구현하여 `movieAudio.speakNarration(primaryScript, primaryTtsLang, () => advanceToNextScene(targetSceneIdx), playbackSpeed)`에 직접 연결.
+     - 현재 화면의 TTS가 끝나자마자 즉시 다음 화면(`currentSceneIdx + 1`)으로 이동하고, 이동 즉시 새 화면의 Primary 자막과 1:1 일치하는 대사/내레이션 TTS를 곧바로 재생하도록 구현.
+     - 씬 변경 `useEffect`에서 불필요한 cleanup `stopNarration()` 및 클릭 핸들러 중복 발화 호출을 제거하여 재생 중 끊김을 완전히 해결.
+- **검증 및 보고**:
+  - `npx tsc --noEmit` 및 `npm run build` 프로덕션 빌드 무결성 검증(0 에러) 완료, 로컬 Git 커밋 및 구글 폼 완료 보고서 제출 완료.
+
 ## [2026-10-26 04:57 KST] [/main 플레이 다이얼로그(KadanNpcDialog) 및 스토리북 800장(애니 400장·무비 400장) 신규 생성 1:1 이미지 전면 업데이트 완료]
 - **요청 사항**:
   - `"/main 에 플레이 다이얼로그도 새로 생성된 이미지로 업데이트 해줘"`

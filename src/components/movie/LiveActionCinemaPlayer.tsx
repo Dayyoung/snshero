@@ -275,35 +275,32 @@ export const LiveActionCinemaPlayer: React.FC<LiveActionCinemaPlayerProps> = ({
         return `제 ${episodeNumber}화. ${titleKo || ''}.`.trim();
       }
       if (primaryTtsLang === 'en') {
-        const narration = (scene.narrationEn || '').trim();
-        const nonNarrationDialogues = (scene.dialogues || [])
-          .filter(
-            (d) =>
-              d.textEn &&
-              d.speakerEn &&
-              d.speakerEn !== 'Narration' &&
-              d.speakerEn !== '내레이션' &&
-              d.textEn.trim() !== narration
-          )
-          .map((d) => d.textEn.trim());
-        const parts = [...nonNarrationDialogues, narration].filter(Boolean);
-        return parts.length > 0 ? parts.join(' ') : (scene.dialogues?.[0]?.textEn || '').trim();
+        return (scene.dialogues?.[0]?.textEn || scene.narrationEn || '').trim();
       }
-      const narration = (scene.narrationKo || '').trim();
-      const nonNarrationDialogues = (scene.dialogues || [])
-        .filter(
-          (d) =>
-            d.textKo &&
-            d.speakerKo &&
-            d.speakerKo !== 'Narration' &&
-            d.speakerKo !== '내레이션' &&
-            d.textKo.trim() !== narration
-        )
-        .map((d) => d.textKo.trim());
-      const parts = [...nonNarrationDialogues, narration].filter(Boolean);
-      return parts.length > 0 ? parts.join(' ') : (scene.dialogues?.[0]?.textKo || scene.narrationEn || '').trim();
+      return (scene.dialogues?.[0]?.textKo || scene.narrationKo || scene.narrationEn || '').trim();
     },
     [episodeNumber, titleKo, titleEn, primaryTtsLang]
+  );
+
+  // Advance to the next scene (or finish episode) with idempotent scene index guard
+  const advanceToNextScene = useCallback(
+    (fromSceneIdx: number) => {
+      setCurrentSceneIdx((prevIdx) => {
+        if (prevIdx !== fromSceneIdx) return prevIdx;
+        if (prevIdx < scenes.length - 1) {
+          setSceneProgress(0);
+          return prevIdx + 1;
+        } else {
+          setIsPlaying(false);
+          setIsFinished(true);
+          movieAudio.stopBgm();
+          if (onEpisodeComplete) onEpisodeComplete(episodeNumber);
+          setSceneProgress(1);
+          return prevIdx;
+        }
+      });
+    },
+    [scenes.length, episodeNumber, onEpisodeComplete]
   );
 
   useEffect(() => {
@@ -316,7 +313,7 @@ export const LiveActionCinemaPlayer: React.FC<LiveActionCinemaPlayerProps> = ({
     setUsingFallbackImg(false);
   }, [episodeNumber]);
 
-  // Trigger audio & primary language voiceover on scene change
+  // Trigger audio & primary language voiceover on scene change -> When TTS ends, immediately advance to next scene!
   useEffect(() => {
     if (!currentScene || !isPlaying || isFinished) {
       movieAudio.stopNarration();
@@ -329,23 +326,35 @@ export const LiveActionCinemaPlayer: React.FC<LiveActionCinemaPlayerProps> = ({
       movieAudio.startEpisodeBgm(episodeNumber, currentScene.bgmTheme || meta?.bgmTheme || 'arctic-blizzard');
     }
 
-    if (currentScene.sfxTrigger) {
+    if (currentScene.sfxTrigger && !isMuted) {
       movieAudio.playSfx(currentScene.sfxTrigger);
     }
 
     if (isVoiceEnabled && !isMuted) {
       const script = getScenePrimaryTtsScript(currentScene);
+      const targetSceneIdx = currentSceneIdx;
       if (script) {
-        movieAudio.speakNarration(script, primaryTtsLang);
+        movieAudio.speakNarration(script, primaryTtsLang, () => {
+          advanceToNextScene(targetSceneIdx);
+        });
+      } else {
+        advanceToNextScene(targetSceneIdx);
       }
     } else {
       movieAudio.stopNarration();
     }
-
-    return () => {
-      movieAudio.stopNarration();
-    };
-  }, [currentSceneIdx, isPlaying, isFinished, episodeNumber, currentScene, isVoiceEnabled, isMuted, primaryTtsLang, getScenePrimaryTtsScript]);
+  }, [
+    currentSceneIdx,
+    isPlaying,
+    isFinished,
+    episodeNumber,
+    currentScene,
+    isVoiceEnabled,
+    isMuted,
+    primaryTtsLang,
+    getScenePrimaryTtsScript,
+    advanceToNextScene,
+  ]);
 
   useEffect(() => {
     return () => {
@@ -353,7 +362,7 @@ export const LiveActionCinemaPlayer: React.FC<LiveActionCinemaPlayerProps> = ({
     };
   }, []);
 
-  // Scene timeline ticker (holds at 99% while active TTS is still speaking)
+  // Scene timeline ticker (when TTS is enabled, TTS onEnd drives scene transition; timer only drives camera motion or non-TTS advance)
   useEffect(() => {
     if (!isPlaying || isFinished) {
       if (progressIntervalRef.current) {
@@ -364,26 +373,27 @@ export const LiveActionCinemaPlayer: React.FC<LiveActionCinemaPlayerProps> = ({
     }
 
     const stepMs = 40;
+    const targetSceneIdx = currentSceneIdx;
+    setSceneProgress(0);
+    let elapsedTicks = 0;
+
     progressIntervalRef.current = window.setInterval(() => {
-      setSceneProgress((prev) => {
-        const next = prev + stepMs / sceneDuration;
-        if (next >= 1) {
-          if (isVoiceEnabled && !isMuted && movieAudio.isSpeaking()) {
-            return 0.99;
-          }
-          if (currentSceneIdx < scenes.length - 1) {
-            setCurrentSceneIdx((idx) => idx + 1);
-            return 0;
-          } else {
-            setIsPlaying(false);
-            setIsFinished(true);
-            movieAudio.stopBgm();
-            if (onEpisodeComplete) onEpisodeComplete(episodeNumber);
-            return 1;
-          }
+      elapsedTicks += 1;
+      const nextProgress = (elapsedTicks * stepMs) / sceneDuration;
+
+      if (isVoiceEnabled && !isMuted) {
+        // TTS 활성 시: TTS 종료 콜백(onEnd)이 즉시 다음 씬으로 이동시키므로 프로그레스는 0.97까지 부드럽게 진행
+        setSceneProgress(Math.min(0.97, nextProgress));
+        if (nextProgress >= 1.2 && !movieAudio.isSpeaking()) {
+          advanceToNextScene(targetSceneIdx);
         }
-        return next;
-      });
+      } else {
+        if (nextProgress >= 1) {
+          advanceToNextScene(targetSceneIdx);
+        } else {
+          setSceneProgress(nextProgress);
+        }
+      }
     }, stepMs);
 
     return () => {
@@ -392,7 +402,15 @@ export const LiveActionCinemaPlayer: React.FC<LiveActionCinemaPlayerProps> = ({
         progressIntervalRef.current = null;
       }
     };
-  }, [isPlaying, isFinished, currentSceneIdx, scenes.length, sceneDuration, episodeNumber, onEpisodeComplete, isVoiceEnabled, isMuted]);
+  }, [
+    isPlaying,
+    isFinished,
+    currentSceneIdx,
+    sceneDuration,
+    isVoiceEnabled,
+    isMuted,
+    advanceToNextScene,
+  ]);
 
   const togglePlay = useCallback(() => {
     triggerHaptic('light');
