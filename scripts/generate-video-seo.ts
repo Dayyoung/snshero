@@ -21,10 +21,10 @@ const publicDir = path.join(rootDir, 'public');
 const distDir = path.join(rootDir, 'dist');
 
 const BASE_URL = 'https://snshero.com';
-const ANIME_PLAYLIST_ID = 'PLWJoj18KXId0';
-const MOVIE_PLAYLIST_ID = 'PLHiW8jLQ0t2Q';
-const ANIME_PLAYLIST_URL = `https://www.youtube.com/watch?v=cbg1iP_7jOo&list=${ANIME_PLAYLIST_ID}`;
-const MOVIE_PLAYLIST_URL = `https://www.youtube.com/watch?v=hqgXClTuKmU&list=${MOVIE_PLAYLIST_ID}`;
+const ANIME_PLAYLIST_ID = 'PLBTRBTakaSNU';
+const MOVIE_PLAYLIST_ID = 'PLeb-8Xpcho0o';
+const ANIME_PLAYLIST_URL = `https://www.youtube.com/watch?v=6kug0HSmtOM&list=${ANIME_PLAYLIST_ID}`;
+const MOVIE_PLAYLIST_URL = `https://www.youtube.com/watch?v=6ILGHhuYK2c&list=${MOVIE_PLAYLIST_ID}`;
 
 function escapeXml(unsafe: string): string {
   return (unsafe || '')
