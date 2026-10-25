@@ -2,6 +2,16 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-25 18:20 KST] [한영 공통 타이틀 로고('눈히어로.com' / 'S&SHero.com') 겨울왕국(Frozen) 빙하 얼음 결정·고드름·눈덮임 스타일 생성 및 투명 배경 적용]
+- **요청 사항**:
+  - `"로고가 겨울왕국 느낌나게 좀더 얼어있었으면 좋겠어. 한영 공통으로"`
+- **주요 구현 및 수정 내역**:
+  1. **제미나이 바나나(Nano Banana) 겨울왕국(Frozen) 콘셉트 빙하 크리스탈 타이틀 로고 2종 신규 생성 및 Un-premultiplied 알파 투명 배경(RGBA) 처리**:
+     - 한글 로고 ([`/public/logo-ko.png`](file:///Users/dayyoung/project/snshero/public/logo-ko.png), `눈히어로.com`) 및 영문 로고 ([`/public/logo-en.png`](file:///Users/dayyoung/project/snshero/public/logo-en.png), `S&SHero.com`) 모두 상단에 쌓인 하얀 눈(Snow caps), 글자 및 방패 하단에 매달린 날카로운 얼음 고드름(Icicles), 투명하게 빛나는 아이스 시안/다이아몬드 블루 빙하 결정 질감, 주변 눈송이 결정으로 전면 업그레이드.
+     - 밝은 배경(`#fdfcfc`)과 어두운 배경(`#201d1d`) 모두에서 어두운 테두리 없이 영롱한 하늘색/흰색 얼음 빛깔이 유지되도록 Un-premultiplied Alpha Matting 적용 및 [`/public/logo.png`](file:///Users/dayyoung/project/snshero/public/logo.png), [`/public/nunhero-logo.png`](file:///Users/dayyoung/project/snshero/public/nunhero-logo.png), [`/public/logo.jpg`](file:///Users/dayyoung/project/snshero/public/logo.jpg) 일괄 동기화.
+- **검증 및 보고**:
+  - `npm run build` 프로덕션 빌드 검증 완료, 로컬 Git 커밋 및 구글 폼 보고서 제출 완료.
+
 ## [2026-10-25 18:06 KST] [공통 타이틀 로고('눈히어로.com' / 'S&SHero.com') 투명 배경(RGBA) 적용 및 전 화면 클릭 시 무조건 '/' 홈 이동 구현]
 - **요청 사항**:
   - `"공통적용한 로고의 배경을 투명색으로 적용해줘. 클릭하면 무조건 /로 이동"`
