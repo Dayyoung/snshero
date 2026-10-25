@@ -105,7 +105,7 @@ const buildSeasonEpisodes = (): WebtoonEpisode[] => {
       const cleanImg = baseImg.split('?')[0];
       return {
         id: `ep_${pad}_p${img.index}`,
-        imageUrl: `${cleanImg}?v=conquest2009`,
+        imageUrl: `${cleanImg}?v=conquest2009_v2`,
         captionKey: img.index === 0 ? `webtoon_ep_${pad}_title` : `webtoon_ep_${pad}_caption${img.index}`,
         narrationEn: img.narrationEn,
         narrationKo: img.narrationKo,

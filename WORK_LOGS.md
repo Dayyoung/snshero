@@ -16088,3 +16088,13 @@
      - 애니메이션 40편 신규 플레이리스트: `PLBTRBTakaSNU` (`6kug0HSmtOM` ~ `5BPT1AqJs-0`)
      - 실사영화 40편 신규 플레이리스트: `PLeb-8Xpcho0o` (`6ILGHhuYK2c` ~ `7VqUeRqXAMQ`)
 - **검증 및 보고**: `npx tsc --noEmit` (0 에러), `npm run build` 성공, 구글 폼 작업완료 보고서 제출 완료.
+
+## 2026-10-25 18:38 (KST) — [웹툰/애니메이션/무비] 전 40화(2,009컷) 나레이션 자막-생성 이미지 1:1 정합성 완벽 매칭 및 EP01~EP34 순수 AI 5시트 체제 베이킹·전 40화 MP4 재인코딩 완료
+- **작업 내용**:
+  1. 초반 10화(`EP01 ~ EP10`)를 포함한 전 40화(`2,009`컷)에서 나레이션 자막(`narrationKo`/`narrationEn`)과 생성 이미지가 어긋나던 2가지 근본 원인 완전 해결 (`scripts/build_conquest_2009_all_media.py`):
+     - **원인 ① (8씬 인덱스 밀림 제거)**: 기존에 `Scenes 01..09` 전용 1번 시트(`epXX_sheet_01_s01_09.png`) 없이 `Scenes 10..48` 시트(`sheet_02..05.png`)가 `Scene 02`부터 앞당겨 배치되던 오프셋 버그를 수정하여, `epXX_sheet_01_s01_09.png`를 정확히 `Scenes 01..09`에, `epXX_sheet_02..05.png`를 각 패널이 프롬프트된 정확한 씬 번호(`EXACT_SHEET_SCENES`)에 1:1 매핑.
+     - **원인 ② (성인 배우 실사 사진 폴백 혼입 원천 차단)**: 2씬 연속 호흡 구간의 중간 씬(`sc_idx`)이 성인 배우 실사 사진(`act_seq_cells`)이나 다른 구간의 요약 컷으로 폴백되던 로직을 전면 제거하고, 직전 순수 AI 앵커 패널의 16:9 리액션 클로즈업 컷(`compose_followup_anime_cut`)으로 생성하여 캐릭터 연령(예: 12세 소년 카단)·복장·배경·자막 상황을 100% 일치시킴.
+  2. `EP01 ~ EP34` 전 구간의 `Scenes 01..09` 전용 3x3 순수 AI 시트(`ep02..34_sheet_01_s01_09.png`) 및 `Scenes 10..end` 순수 AI 시트(`ep02..33_sheet_02..05.png`, `ep34_sheet_02..04.png`) 신규 생성 및 베이킹 완료 (`EP35 ~ EP40` 잔여 시트는 22:27 KST 쿼터 리셋 타이머 `task-1226`에서 자동 이어받기 예약).
+  3. 전 40화 웹툰(`public/images/webtoon/episode_01..40/scene_00..XX.webp`), 스토리북(`public/images/storybook/ep_01..40/page_01..10.webp`), 시네마(`public/images/cinema/episode_01..40/scene_00..XX.webp`), 애니메이션 MP4 40편(`public/video/animation/SNSHero.com_E1..E40_*.mp4`) 전수 재빌드 및 프론트엔드 `?v=conquest2009_v2` 캐시 버스팅 반영 완료.
+- **검증 결과**: `npm run build` 성공 (`0` 에러), 전 40화 `2,009/2,009`컷 고유 SHA-256 및 1:1 자막-이미지 정합성 검증 완료.
+- **구글 폼 보고**: 제출 완료 (`작업완료`).

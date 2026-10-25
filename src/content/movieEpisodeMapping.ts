@@ -745,16 +745,16 @@ export function getAnimationVideoFilename(epNum: number): string {
 }
 
 /**
- * Returns the standardized animation MP4 streaming/download path (`/video/animation/SNSHero.com_E{epNum}_{titleEn}.mp4?v=conquest2009`)
+ * Returns the standardized animation MP4 streaming/download path (`/video/animation/SNSHero.com_E{epNum}_{titleEn}.mp4?v=conquest2009_v2`)
  */
 export function getAnimationVideoUrl(epNum: number): string {
-  return `/video/animation/${getAnimationVideoFilename(epNum)}?v=conquest2009`;
+  return `/video/animation/${getAnimationVideoFilename(epNum)}?v=conquest2009_v2`;
 }
 
 /**
- * Returns the standardized live-action cinema MP4 streaming/download path (`/videos/cinema/episode_{epNum}.mp4?v=conquest2009`)
+ * Returns the standardized live-action cinema MP4 streaming/download path (`/videos/cinema/episode_{epNum}.mp4?v=conquest2009_v2`)
  */
 export function getCinemaVideoUrl(epNum: number): string {
   const pad = String(Math.max(1, Math.min(40, epNum))).padStart(2, '0');
-  return `/videos/cinema/episode_${pad}.mp4?v=conquest2009`;
+  return `/videos/cinema/episode_${pad}.mp4?v=conquest2009_v2`;
 }

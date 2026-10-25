@@ -216,7 +216,7 @@ const buildScenesForEpisode = (epNum: number, language: 'ko' | 'en' | 'ja' = 'ko
 
  return {
  sceneNumber: idx + 1,
- imageUrl: `${(img.localArtUrl || img.imageUrl || `/images/webtoon/episode_${String(epNum).padStart(2, '0')}/scene_${String(idx).padStart(2, '0')}.webp`).split('?')[0]}?v=conquest2009`,
+ imageUrl: `${(img.localArtUrl || img.imageUrl || `/images/webtoon/episode_${String(epNum).padStart(2, '0')}/scene_${String(idx).padStart(2, '0')}.webp`).split('?')[0]}?v=conquest2009_v2`,
  narrationKo: textKo,
  narrationEn: textEn,
  characters,
