@@ -2,6 +2,16 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-26 08:08 KST] [/setting 화면 언어설정 및 로그아웃 버튼 상시 최하단 배치 개선]
+- **요청 사항**:
+  - `"https://snshero.com/setting 언어설정/로그아웃 버튼은 항상 최 하단에 위치하게 해줘."`
+- **주요 구현 및 수정 내역**:
+  1. **설정 화면([`src/views/SettingView.tsx`](file:///Users/dayyoung/project/snshero/src/views/SettingView.tsx))의 언어 설정(`Language Selection`) 및 로그아웃(`Logout / SIGN OUT`) 섹션을 페이지 최하단(`mt-auto`)으로 이동**:
+     - 기존에 시스템 설정 탭 중간에 위치해 있던 언어 설정 드롭다운과 인증/로그아웃 영역을 모든 서브 탭(`시스템 설정`, `일일 미션`, `7일 출석`) 콘텐츠 아래의 페이지 최하단(`footer` 바로 위, `mt-auto pt-6 border-t`)으로 이동하여 어느 탭에서든 항상 최하단에 위치하도록 개선.
+     - 게스트/로그인 여부와 무관하게 최하단에서 언제든 `로그아웃 (SIGN OUT)` 버튼을 클릭하여 게임 데이터 초기화 및 로그아웃을 수행할 수 있도록 상시 노출.
+- **검증 및 보고**:
+  - `npx tsc --noEmit` 및 `npm run build` 프로덕션 빌드 무결점 통과, 로컬 Git 커밋 및 구글 폼 보고서 제출 완료.
+
 ## [2026-10-26 08:01 KST] [AIzaSyBa9TidLv_iwMyB-9VSrVGWEVUr0WyjiQU 공식 SNSHero 채널(UCA6QmKiPstbiyBUHtnSMxyA)에 1:1 자막 정렬본 애니메이션 40편 & 실사 영화 40편(총 80편) 전수 업로드 및 전체 링크 교체 완료]
 - **요청 사항**:
   - `"AIzaSyBa9TidLv_iwMyB-9VSrVGWEVUr0WyjiQU 이 채널로 업로드 및 링크변경"`

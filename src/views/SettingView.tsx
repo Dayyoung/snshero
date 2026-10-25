@@ -1270,37 +1270,6 @@ export const SettingView: React.FC<SettingViewProps> = ({
            </button>
         </section>
 
-        {/* Language Selection */}
-        <section className="space-y-6">
-          <div className="flex items-center gap-4">
-            <Globe className="opacity-40" size={18} />
-            <h3 className="text-sm font-bold tracking-normal text-slate-800">{t('language', language)}</h3>
-          </div>
-
-          <div className="relative border border-[rgba(15,0,0,0.12)] rounded-none bg-[#fdfcfc] group overflow-hidden">
-            <select 
-              value={language}
-              onChange={(e) => {
-                setLanguage(e.target.value as Language);
-                playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
-              }}
-              className="w-full p-4 pr-12 min-h-[44px] bg-transparent text-sm font-bold tracking-widest uppercase cursor-pointer focus:outline-none appearance-none font-mono"
-            >
-              {LANGUAGES.map((lang) => (
-                <option key={lang.code} value={lang.code} className="text-black">
-                  {lang.name.toUpperCase()}
-                </option>
-              ))}
-            </select>
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none transition-transform group-hover:translate-x-1 bg-[#201d1d] text-[#fdfcfc] p-1.5 rounded-sm">
-              <ArrowRight size={14} />
-            </div>
-          </div>
-          <p className="text-sm opacity-40 font-bold tracking-normal italic pt-2 font-mono">
-            * {t('google_translate_notice', language)}
-          </p>
-        </section>
-
         {/* Season Selection */}
         <section className="space-y-6">
           <div className="flex items-center gap-4">
@@ -1464,35 +1433,8 @@ export const SettingView: React.FC<SettingViewProps> = ({
           </div>
         </section>
 
-        <section className="space-y-6 font-mono">
-          <div className="flex items-center gap-4">
-             <Terminal size={18} className="opacity-40" />
-             <h3 className="text-sm font-bold tracking-normal uppercase text-[#201d1d]">{t('auth_management', language)}</h3>
-          </div>
-          {user ? (
-            <button 
-              onClick={onLogout}
-              className="w-full min-h-[44px] border border-[rgba(15,0,0,0.12)] rounded-none bg-[#fdfcfc] text-[#201d1d] py-3.5 font-bold tracking-widest uppercase hover:bg-[#201d1d] hover:text-[#fdfcfc] hover:border-[#201d1d] transition-all flex items-center justify-between px-6 group active:scale-[0.98] cursor-pointer"
-            >
-              <div className="flex items-center gap-3">
-                <LogOut size={16} />
-                <span>{t('logout', language)} (SIGN OUT)</span>
-              </div>
-              <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
-            </button>
-          ) : (
-            <div className="border border-dashed border-[rgba(15,0,0,0.2)] rounded-none p-5 text-left bg-[#f8f7f7] flex items-center gap-4">
-              <div className="p-3 bg-[rgba(15,0,0,0.05)] rounded-sm">
-               <User size={24} className="opacity-40" />
-              </div>
-              <div>
-                 <p className="text-[10px] font-bold uppercase tracking-widest text-[#646262]">{language === 'ko' ? '현재 비인증 모드입니다.' : 'PRESENTLY IN GUEST_MODE.'}</p>
-                 <p className="text-[10px] font-bold uppercase tracking-widest text-[#9a9898] mt-1">{language === 'ko' ? '데이터가 클라우드에 백업되지 않습니다.' : 'DATA_NOT_BACKED_UP_TO_CLOUD.'}</p>
-              </div>
-            </div>
-          )}
-
-          {/* ─── 캐싱 초기화 (로그아웃 바로 아래 배치) ─── */}
+        <section className="space-y-4 font-mono">
+          {/* ─── 캐싱 초기화 ─── */}
           <div className="pt-2 space-y-2">
             <button
               type="button"
@@ -2046,7 +1988,72 @@ export const SettingView: React.FC<SettingViewProps> = ({
         </div>
       )}
 
-          <footer className="pt-20 text-center">
+      {/* ─── 최하단 고정 배치: 언어 설정 & 로그아웃 ─── */}
+      <div className="mt-auto pt-6 border-t border-[rgba(15,0,0,0.12)] space-y-6 font-mono">
+        {/* 언어 설정 (Language Selection) */}
+        <section className="space-y-3">
+          <div className="flex items-center gap-3">
+            <Globe className="opacity-40" size={18} />
+            <h3 className="text-sm font-bold tracking-normal uppercase text-[#201d1d]">
+              {t('language', language)}
+            </h3>
+          </div>
+
+          <div className="relative border border-[rgba(15,0,0,0.12)] rounded-none bg-[#fdfcfc] group overflow-hidden">
+            <select
+              value={language}
+              onChange={(e) => {
+                setLanguage(e.target.value as Language);
+                playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
+              }}
+              className="w-full p-4 pr-12 min-h-[44px] bg-transparent text-sm font-bold tracking-widest uppercase cursor-pointer focus:outline-none appearance-none font-mono"
+            >
+              {LANGUAGES.map((lang) => (
+                <option key={lang.code} value={lang.code} className="text-black">
+                  {lang.name.toUpperCase()}
+                </option>
+              ))}
+            </select>
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none transition-transform group-hover:translate-x-1 bg-[#201d1d] text-[#fdfcfc] p-1.5 rounded-sm">
+              <ArrowRight size={14} />
+            </div>
+          </div>
+          <p className="text-xs opacity-40 font-bold tracking-normal italic font-mono">
+            * {t('google_translate_notice', language)}
+          </p>
+        </section>
+
+        {/* 로그아웃 (Logout / Auth Management) */}
+        <section className="space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Terminal size={18} className="opacity-40" />
+              <h3 className="text-sm font-bold tracking-normal uppercase text-[#201d1d]">
+                {t('auth_management', language)}
+              </h3>
+            </div>
+            {!user && (
+              <span className="text-[10px] font-bold uppercase tracking-widest text-[#646262]">
+                {language === 'ko' ? '게스트 모드 (로컬 저장)' : 'GUEST MODE (LOCAL)'}
+              </span>
+            )}
+          </div>
+
+          <button
+            type="button"
+            onClick={onLogout}
+            className="w-full min-h-[44px] border border-[#201d1d] rounded-none bg-[#fdfcfc] text-[#201d1d] py-3.5 font-bold tracking-widest uppercase hover:bg-[#201d1d] hover:text-[#fdfcfc] transition-all flex items-center justify-between px-6 group active:scale-[0.98] cursor-pointer"
+          >
+            <div className="flex items-center gap-3">
+              <LogOut size={16} />
+              <span>{t('logout', language)} (SIGN OUT)</span>
+            </div>
+            <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+          </button>
+        </section>
+      </div>
+
+      <footer className="pt-8 text-center">
         <p className="text-sm font-bold tracking-[0.6em] opacity-10">{t('system_version', language)} SNS_HERO_KERNAL v{appCurrentVersion}.Build</p>
       </footer>
 
