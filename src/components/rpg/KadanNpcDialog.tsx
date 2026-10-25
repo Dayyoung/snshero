@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { createPortal } from 'react-dom';
 import {
   ArrowLeft,
   BookOpen,
@@ -103,7 +104,7 @@ const renderFormattedNovelText = (rawText: string) => {
     return (
       <p
         key={pIdx}
-        className="mb-3 last:mb-0 font-mono text-xs sm:text-sm md:text-[15px] leading-relaxed text-slate-100 break-words"
+        className="mb-3.5 last:mb-0 font-mono text-sm sm:text-base md:text-lg leading-relaxed text-slate-100 break-words"
       >
         {parts.map((part, sIdx) => {
           const isQuote =
@@ -113,7 +114,7 @@ const renderFormattedNovelText = (rawText: string) => {
             return (
               <span
                 key={sIdx}
-                className="font-bold text-amber-300 bg-amber-950/40 px-1 py-0.5 rounded-sm border border-amber-500/30"
+                className="font-bold text-amber-300 bg-amber-950/40 px-1.5 py-0.5 rounded-sm border border-amber-500/30"
               >
                 {part}
               </span>
@@ -607,91 +608,118 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
     ? activeSubCut?.narrationEn || currentLine?.textEn || currentLine?.text
     : activeSubCut?.narrationKo || currentLine?.text;
 
-  return (
+  const sceneProgressPct = Math.max(
+    4,
+    Math.min(100, Math.round(((lineIndex + 1) / Math.max(1, conversationLines.length)) * 100))
+  );
+
+  const dialogContent = (
     <div
-      className="fixed inset-0 z-[10010] flex items-center justify-center p-2 sm:p-4 bg-black/75 backdrop-blur-xs animate-in fade-in duration-200"
+      className="fixed inset-0 z-[20000] flex h-[100dvh] max-h-[100dvh] w-screen flex-col overflow-hidden bg-[#0d0c10] text-[#fdfcfc] font-mono select-none animate-in fade-in duration-200"
       role="dialog"
       aria-modal="true"
       aria-label={t(event.chapterTitleKey, language) || 'Story Dialogue'}
     >
-      {/* ─── 간결한 스토리모드 팝업 프레임 (삽화 / 등장인물 / 해당대사 + 필수 컨트롤) ─── */}
-      <div className="relative z-20 flex max-h-[92dvh] w-full max-w-2xl flex-col overflow-hidden rounded-none border border-stone-700 bg-[#141216] text-[#fdfcfc] shadow-none font-mono">
-        {/* ─── 1. 상단 바: 회차 제목 · 삽화모드(애니/무비) · 닫기 ─── */}
-        <div className="shrink-0 flex items-center justify-between gap-2 border-b border-stone-800 bg-[#1c191e] px-3 py-2">
-          <div className="flex items-center gap-2 min-w-0">
-            <span className="shrink-0 rounded-sm bg-amber-500 px-2 py-0.5 text-xs font-mono font-black text-stone-950">
-              {language === 'ko' ? `제${event.chapterNumber}화` : `EP.${event.chapterNumber}`}
-            </span>
-            <span className="truncate text-xs sm:text-sm font-mono font-bold text-stone-100">
-              {t(event.chapterTitleKey, language)}
-            </span>
-            <span className="shrink-0 text-[11px] font-mono text-stone-400">
-              ({lineIndex + 1}/{conversationLines.length})
-            </span>
-          </div>
+      {/* ─── 1. 상단 전체화면 헤더 바: 회차 제목 · 장면 진행도 · 삽화모드(애니/무비) · 닫기 ─── */}
+      <div className="shrink-0 flex items-center justify-between gap-2 border-b border-stone-800 bg-[#16141b] px-3 sm:px-5 py-2.5">
+        <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+          <span className="shrink-0 rounded-sm bg-amber-500 px-2.5 py-1 text-xs sm:text-sm font-mono font-black text-stone-950">
+            {language === 'ko' ? `제${event.chapterNumber}화 / 40화` : `EP.${event.chapterNumber} / 40`}
+          </span>
+          <span className="truncate text-sm sm:text-base md:text-lg font-mono font-extrabold text-stone-100">
+            {t(event.chapterTitleKey, language)}
+          </span>
+          <span className="shrink-0 rounded-sm border border-stone-700 bg-stone-900 px-2 py-0.5 text-xs font-mono font-bold text-amber-300">
+            {lineIndex + 1} / {conversationLines.length}
+          </span>
+        </div>
 
-          <div className="flex items-center gap-1.5 shrink-0">
-            {/* 삽화모드 토글: 애니 / 무비 */}
-            <div
-              className="inline-flex min-h-[38px] items-center rounded-sm border border-stone-700 bg-stone-950 p-0.5 font-mono"
-              role="group"
-              aria-label={language === 'ko' ? '삽화모드 전환' : 'Illustration Mode'}
-            >
-              <button
-                type="button"
-                onClick={() => handleSetArtStyleMode('animation')}
-                className={cn(
-                  'min-h-[32px] px-2 py-0.5 rounded-sm text-[11px] font-mono font-bold transition-colors cursor-pointer',
-                  artStyleMode === 'animation'
-                    ? 'bg-cyan-400 text-stone-950 font-black'
-                    : 'text-stone-400 hover:text-stone-200'
-                )}
-              >
-                🎨 {language === 'ko' ? '애니' : 'Anime'}
-              </button>
-              <button
-                type="button"
-                onClick={() => handleSetArtStyleMode('liveaction')}
-                className={cn(
-                  'min-h-[32px] px-2 py-0.5 rounded-sm text-[11px] font-mono font-bold transition-colors cursor-pointer',
-                  artStyleMode === 'liveaction'
-                    ? 'bg-amber-400 text-stone-950 font-black'
-                    : 'text-stone-400 hover:text-stone-200'
-                )}
-              >
-                🎬 {language === 'ko' ? '무비' : 'Movie'}
-              </button>
-            </div>
-
-            {/* 닫기 */}
+        <div className="flex items-center gap-2 shrink-0">
+          {/* 삽화모드 토글: 애니 / 무비 */}
+          <div
+            className="inline-flex min-h-[40px] items-center rounded-sm border border-stone-700 bg-stone-950 p-0.5 font-mono"
+            role="group"
+            aria-label={language === 'ko' ? '삽화모드 전환' : 'Illustration Mode'}
+          >
             <button
               type="button"
-              onClick={onClose}
-              className="min-h-[38px] min-w-[38px] flex items-center justify-center rounded-sm border border-stone-700 bg-stone-900 hover:bg-stone-800 text-stone-300 hover:text-white transition-colors cursor-pointer"
-              aria-label={t('kadan_rpg_close', language) || 'Close'}
-              title={t('kadan_rpg_close', language) || 'Close'}
+              onClick={() => handleSetArtStyleMode('animation')}
+              className={cn(
+                'min-h-[34px] px-2.5 py-1 rounded-sm text-xs font-mono font-bold transition-colors cursor-pointer',
+                artStyleMode === 'animation'
+                  ? 'bg-cyan-400 text-stone-950 font-black'
+                  : 'text-stone-400 hover:text-stone-200'
+              )}
             >
-              <X size={16} />
+              🎨 {language === 'ko' ? '애니' : 'Anime'}
             </button>
+            <button
+              type="button"
+              onClick={() => handleSetArtStyleMode('liveaction')}
+              className={cn(
+                'min-h-[34px] px-2.5 py-1 rounded-sm text-xs font-mono font-bold transition-colors cursor-pointer',
+                artStyleMode === 'liveaction'
+                  ? 'bg-amber-400 text-stone-950 font-black'
+                  : 'text-stone-400 hover:text-stone-200'
+              )}
+            >
+              🎬 {language === 'ko' ? '무비' : 'Movie'}
+            </button>
+          </div>
+
+          {/* 닫기 */}
+          <button
+            type="button"
+            onClick={onClose}
+            className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-sm border border-stone-700 bg-stone-900 hover:bg-stone-800 text-stone-300 hover:text-white transition-colors cursor-pointer"
+            aria-label={t('kadan_rpg_close', language) || 'Close'}
+            title={t('kadan_rpg_close', language) || 'Close'}
+          >
+            <X size={18} />
+          </button>
+        </div>
+      </div>
+
+      {/* 상단 회차 장면 진행 프로그레스 라인 */}
+      <div className="h-1 w-full shrink-0 bg-stone-900 overflow-hidden">
+        <div
+          className="h-full bg-amber-400 transition-all duration-300 ease-out"
+          style={{ width: `${sceneProgressPct}%` }}
+        />
+      </div>
+
+      {/* ─── 2. 전체화면 몰입형 본문 영역: ① 대화면 삽화 + ② 등장인물 + ③ 전체화면 대사창 ─── */}
+      <div className="flex-1 min-h-0 flex flex-col lg:flex-row overflow-hidden bg-[#121016]">
+        {/* ① 삽화 (모바일 상단 와이드 뷰포트 / 데스크톱 좌측 58% 풀하이트 시네마틱 뷰포트) */}
+        <div className="relative w-full h-[38dvh] sm:h-[45dvh] lg:h-full lg:w-[58%] shrink-0 bg-stone-950 border-b lg:border-b-0 lg:border-r border-stone-800 select-none overflow-hidden flex items-center justify-center">
+          <img
+            key={`storybook-scene-${event.chapterNumber}-${lineIndex}`}
+            src={displayImageUrl}
+            alt={sceneTitle}
+            className="h-full w-full object-cover"
+            loading="eager"
+          />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-black/75 border-t border-white/10 px-3 sm:px-4 py-2 flex items-center justify-between gap-2">
+            <span className="truncate text-xs sm:text-sm font-mono font-bold text-amber-200">
+              {sceneTitle}
+            </span>
+            <span className="shrink-0 text-[11px] font-mono text-stone-300">
+              {artStyleMode === 'liveaction'
+                ? language === 'ko'
+                  ? '🎬 70mm 무비 컷'
+                  : '🎬 70mm Movie Cut'
+                : language === 'ko'
+                ? '🎨 애니메이션 컷'
+                : '🎨 Anime Cut'}
+            </span>
           </div>
         </div>
 
-        {/* ─── 2. 본문 영역: ① 삽화 + ② 등장인물 + ③ 해당 대사 ─── */}
-        <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar bg-[#18151b]">
-          {/* ① 삽화 (16:9 와이드 장면) */}
-          <div className="relative w-full aspect-video bg-stone-950 border-b border-stone-800 select-none overflow-hidden">
-            <img
-              key={`storybook-scene-${event.chapterNumber}-${lineIndex}`}
-              src={displayImageUrl}
-              alt={sceneTitle}
-              className="h-full w-full object-cover"
-              loading="eager"
-            />
-          </div>
-
-          {/* ② 등장인물 (간결한 1줄 캐릭터 바) */}
-          <div className="px-3 py-2 bg-[#1b1820] border-b border-stone-800 flex items-center gap-2 overflow-x-auto custom-scrollbar">
-            <span className="shrink-0 text-[11px] font-mono font-bold text-stone-400">
+        {/* 우측/하단: ② 등장인물 캐스트 바 + ③ 몰입형 대사 및 선택지 영역 */}
+        <div className="flex-1 min-h-0 flex flex-col overflow-hidden bg-[#141218]">
+          {/* ② 등장인물 (간결한 캐릭터 바) */}
+          <div className="shrink-0 px-3 sm:px-5 py-2.5 bg-[#1b1822] border-b border-stone-800 flex items-center gap-2 overflow-x-auto custom-scrollbar">
+            <span className="shrink-0 text-xs font-mono font-bold text-stone-400">
               {language === 'ko' ? '등장인물' : 'Cast'}
             </span>
             {sceneCharacters.map((ch) => {
@@ -701,13 +729,13 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
                 <div
                   key={ch.cardId}
                   className={cn(
-                    'shrink-0 flex items-center gap-1.5 rounded-sm border px-2 py-1',
+                    'shrink-0 flex items-center gap-2 rounded-sm border px-2.5 py-1',
                     isSpk
-                      ? 'bg-amber-950/70 border-amber-400 text-amber-200'
+                      ? 'bg-amber-950/80 border-amber-400 text-amber-200'
                       : 'bg-stone-900 border-stone-700 text-stone-300'
                   )}
                 >
-                  <div className="h-6 w-6 shrink-0 overflow-hidden rounded-none border border-stone-600 bg-stone-950">
+                  <div className="h-7 w-7 shrink-0 overflow-hidden rounded-none border border-stone-600 bg-stone-950">
                     {seatUrl ? (
                       <img
                         src={seatUrl}
@@ -724,7 +752,7 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
                       />
                     )}
                   </div>
-                  <span className="text-xs font-mono font-bold">
+                  <span className="text-xs sm:text-sm font-mono font-bold">
                     {isEn ? ch.nameEn : ch.nameKo}
                   </span>
                 </div>
@@ -732,37 +760,43 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
             })}
           </div>
 
-          {/* ③ 해당 대사 (단일 대화창 + 선택지 시에만 선택 버튼) */}
-          <div className="p-3.5 sm:p-4 space-y-3">
-            <div className="rounded-none border border-stone-800 bg-[#121015] p-3.5">
-              <div className="mb-2 flex items-center gap-2">
-                <span className="inline-flex items-center gap-1 rounded-sm bg-amber-500/20 border border-amber-500/50 px-2 py-0.5 text-xs font-mono font-black text-amber-300">
-                  <Icon size={12} />
+          {/* ③ 해당 대사 (전체화면 남은 영역을 꽉 채우는 몰입형 대화창) */}
+          <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar p-4 sm:p-6 flex flex-col justify-between gap-4">
+            <div className="rounded-none border border-stone-800 bg-[#0f0d13] p-4 sm:p-5 flex-1 flex flex-col">
+              <div className="mb-3 flex items-center justify-between gap-2 border-b border-stone-800/80 pb-2.5">
+                <span className="inline-flex items-center gap-1.5 rounded-sm bg-amber-500/20 border border-amber-500/60 px-2.5 py-1 text-xs sm:text-sm font-mono font-black text-amber-300">
+                  <Icon size={14} />
                   {currentLine.name}
                 </span>
+                {autoMode && (
+                  <span className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-mono font-bold text-cyan-300">
+                    <Bot size={13} className="animate-spin" />
+                    {language === 'ko' ? '자동 스토리 진행 중' : 'Auto Story Playing'}
+                  </span>
+                )}
               </div>
-              <div className="max-h-[220px] overflow-y-auto pr-1 custom-scrollbar">
+              <div className="flex-1 overflow-y-auto pr-1 custom-scrollbar">
                 {renderFormattedNovelText(displayedNovelText || '')}
               </div>
             </div>
 
-            {/* 선택지가 있는 장면일 때만 간결한 선택지 표시 */}
+            {/* 선택지가 있는 장면일 때만 선택지 표시 */}
             {hasActiveChoices && currentChoices && currentChoices.length > 0 && (
-              <div className="rounded-none border border-amber-500/80 bg-[#1c1614] p-3 space-y-2">
-                <div className="flex items-center justify-between text-[11px] font-mono text-amber-300">
+              <div className="shrink-0 rounded-none border border-amber-500/80 bg-[#1c1614] p-3.5 sm:p-4 space-y-2.5">
+                <div className="flex items-center justify-between text-xs font-mono text-amber-300">
                   <span className="font-bold">
-                    {language === 'ko' ? '선택' : 'Choice'}
+                    {language === 'ko' ? '운명의 선택' : 'Choice of Fate'}
                   </span>
                   <span className="font-bold">{(choiceTimeLeftMs / 1000).toFixed(1)}s</span>
                 </div>
-                <div className="flex flex-col gap-1.5">
+                <div className="flex flex-col gap-2">
                   {currentChoices.map((choice) => (
                     <button
                       key={choice.id}
                       type="button"
                       onClick={() => handleSelectChoice(choice)}
                       className={cn(
-                        'w-full min-h-[44px] px-3 py-2 text-left font-mono rounded-sm border transition-colors flex items-center justify-between gap-2 cursor-pointer text-xs sm:text-sm font-semibold',
+                        'w-full min-h-[46px] px-3.5 py-2.5 text-left font-mono rounded-sm border transition-colors flex items-center justify-between gap-2 cursor-pointer text-xs sm:text-sm font-semibold',
                         choice.isDefault
                           ? 'bg-stone-900 hover:bg-stone-800 border-amber-500/80 text-white'
                           : 'bg-stone-950 hover:bg-stone-800/80 border-stone-700 text-stone-200'
@@ -774,7 +808,7 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
                           : choice.labelKo || choice.text || choice.labelEn}
                       </span>
                       {(choice.bonusDescKo || choice.bonusDescEn) && (
-                        <span className="text-[11px] font-mono font-bold text-emerald-400 shrink-0">
+                        <span className="text-xs font-mono font-bold text-emerald-400 shrink-0">
                           {isEn
                             ? choice.bonusDescEn || choice.bonusDescKo
                             : choice.bonusDescKo || choice.bonusDescEn}
@@ -787,82 +821,87 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
             )}
           </div>
         </div>
+      </div>
 
-        {/* ─── 3. 하단 컨트롤 바: 자동플레이 · 스킵 · 다음 (필수 기능만 간결 배치) ─── */}
-        <div className="shrink-0 flex items-center justify-between gap-2 border-t border-stone-800 bg-[#1c191e] px-3 py-2.5">
-          <div className="flex items-center gap-1.5">
-            {/* 자동플레이 */}
-            {onToggleAutoMode && (
-              <button
-                type="button"
-                onClick={onToggleAutoMode}
-                className={cn(
-                  'min-h-[44px] rounded-sm px-3 py-2 text-xs font-mono font-bold transition-all active:scale-95 cursor-pointer flex items-center gap-1.5 border',
-                  autoMode
-                    ? 'bg-indigo-600 border-indigo-400 text-white'
-                    : 'bg-stone-900 border-stone-700 text-stone-300 hover:bg-stone-800'
-                )}
-              >
-                {autoMode ? (
-                  <Bot size={14} className="animate-spin text-cyan-200" />
-                ) : (
-                  <Pause size={14} />
-                )}
-                <span>
-                  {autoMode
-                    ? language === 'ko'
-                      ? '자동플레이 ON'
-                      : 'Auto ON'
-                    : language === 'ko'
-                    ? '자동플레이 OFF'
-                    : 'Auto OFF'}
-                </span>
-              </button>
-            )}
-
-            {/* 스킵 */}
+      {/* ─── 3. 하단 전체화면 컨트롤 바: 자동플레이 · 스킵 · 이전/다음 ─── */}
+      <div className="shrink-0 flex items-center justify-between gap-2 border-t border-stone-800 bg-[#16141b] px-3 sm:px-5 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+        <div className="flex items-center gap-2">
+          {/* 자동플레이 */}
+          {onToggleAutoMode && (
             <button
               type="button"
-              onClick={handleSkipStory}
-              className="min-h-[44px] rounded-sm px-3 py-2 text-xs font-mono font-bold border border-stone-700 bg-stone-900 hover:bg-stone-800 text-stone-300 transition-all active:scale-95 cursor-pointer flex items-center gap-1.5"
-              title={language === 'ko' ? '대화 건너뛰기' : 'Skip Dialogue'}
-            >
-              <FastForward size={14} className="text-amber-400" />
-              <span>{language === 'ko' ? '스킵' : 'Skip'}</span>
-            </button>
-          </div>
-
-          <div className="flex items-center gap-1.5">
-            {lineIndex > 0 && (
-              <button
-                type="button"
-                onClick={retreatConversation}
-                className="min-h-[44px] min-w-[44px] rounded-sm border border-stone-700 bg-stone-900 text-stone-200 hover:bg-stone-800 px-2.5 py-2 text-xs font-mono font-bold transition-all active:scale-95 cursor-pointer flex items-center justify-center"
-                aria-label={language === 'ko' ? '이전' : 'Prev'}
-                title={language === 'ko' ? '이전 장면' : 'Previous'}
-              >
-                <ChevronLeft size={16} />
-              </button>
-            )}
-
-            {/* 다음 / 전투 시작 / 완료 */}
-            <button
-              type="button"
-              onClick={advanceConversation}
+              onClick={onToggleAutoMode}
               className={cn(
-                'min-h-[44px] rounded-sm px-4 sm:px-5 py-2 text-xs font-mono font-black text-white shadow-none transition-all active:scale-95 cursor-pointer flex items-center gap-1.5',
-                hasActiveChoices
-                  ? 'bg-amber-500 hover:bg-amber-400 text-stone-950'
-                  : isFinalLine && canStartBattle
-                  ? 'bg-rose-600 hover:bg-rose-500 text-white'
-                  : 'bg-amber-500 hover:bg-amber-400 text-stone-950'
+                'min-h-[44px] rounded-sm px-3.5 py-2 text-xs sm:text-sm font-mono font-bold transition-all active:scale-95 cursor-pointer flex items-center gap-1.5 border',
+                autoMode
+                  ? 'bg-indigo-600 border-indigo-400 text-white'
+                  : 'bg-stone-900 border-stone-700 text-stone-300 hover:bg-stone-800'
               )}
             >
-              <span>{primaryLabel}</span>
+              {autoMode ? (
+                <Bot size={15} className="animate-spin text-cyan-200" />
+              ) : (
+                <Pause size={15} />
+              )}
+              <span>
+                {autoMode
+                  ? language === 'ko'
+                    ? '자동플레이 ON'
+                    : 'Auto ON'
+                  : language === 'ko'
+                  ? '자동플레이 OFF'
+                  : 'Auto OFF'}
+              </span>
             </button>
-          </div>
+          )}
+
+          {/* 스킵 */}
+          <button
+            type="button"
+            onClick={handleSkipStory}
+            className="min-h-[44px] rounded-sm px-3.5 py-2 text-xs sm:text-sm font-mono font-bold border border-stone-700 bg-stone-900 hover:bg-stone-800 text-stone-300 transition-all active:scale-95 cursor-pointer flex items-center gap-1.5"
+            title={language === 'ko' ? '대화 건너뛰기' : 'Skip Dialogue'}
+          >
+            <FastForward size={15} className="text-amber-400" />
+            <span>{language === 'ko' ? '스킵' : 'Skip'}</span>
+          </button>
+        </div>
+
+        <div className="flex items-center gap-2">
+          {lineIndex > 0 && (
+            <button
+              type="button"
+              onClick={retreatConversation}
+              className="min-h-[44px] min-w-[44px] rounded-sm border border-stone-700 bg-stone-900 text-stone-200 hover:bg-stone-800 px-3 py-2 text-xs sm:text-sm font-mono font-bold transition-all active:scale-95 cursor-pointer flex items-center justify-center"
+              aria-label={language === 'ko' ? '이전' : 'Prev'}
+              title={language === 'ko' ? '이전 장면' : 'Previous'}
+            >
+              <ChevronLeft size={18} />
+            </button>
+          )}
+
+          {/* 다음 / 전투 시작 / 완료 */}
+          <button
+            type="button"
+            onClick={advanceConversation}
+            className={cn(
+              'min-h-[44px] rounded-sm px-5 sm:px-6 py-2 text-xs sm:text-sm font-mono font-black text-white shadow-none transition-all active:scale-95 cursor-pointer flex items-center gap-1.5',
+              hasActiveChoices
+                ? 'bg-amber-500 hover:bg-amber-400 text-stone-950'
+                : isFinalLine && canStartBattle
+                ? 'bg-rose-600 hover:bg-rose-500 text-white'
+                : 'bg-amber-500 hover:bg-amber-400 text-stone-950'
+            )}
+          >
+            <span>{primaryLabel}</span>
+          </button>
         </div>
       </div>
     </div>
   );
+
+  if (typeof document !== 'undefined') {
+    return createPortal(dialogContent, document.body);
+  }
+  return dialogContent;
 };

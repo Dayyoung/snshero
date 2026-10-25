@@ -281,6 +281,14 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
   }
  }, [nextEvent?.id, currentChapterLegId]);
 
+ // 자동플레이 중에는 적 난입(Ambush)과 마주치지 않고 에피소드 스토리에 온전히 몰입하도록 즉시 해제
+ useEffect(() => {
+  if (progress.autoMode && (ambushAlert || ambushBattle)) {
+   setAmbushAlert(null);
+   setAmbushBattle(null);
+  }
+ }, [progress.autoMode, ambushAlert, ambushBattle]);
+
  useEffect(() => {
   if (!targetTile || sameTile(heroTile, targetTile) || ambushAlert || ambushBattle) {
    setIsMoving(false);
@@ -289,16 +297,18 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
 
   setIsMoving(true);
   const timer = window.setTimeout(() => {
-   setHeroTile((previous) => {
-    const next = stepToward(previous, targetTile);
-    setLastTile(next);
+   const next = stepToward(heroTile, targetTile);
+   setHeroTile(next);
+   setLastTile(next);
 
-    const nextStep = heroStepCount + 1;
-    setHeroStepCount(nextStep);
+   const nextStep = heroStepCount + 1;
+   setHeroStepCount(nextStep);
 
-    const isDest = sameTile(next, targetTile);
-    const isStart = sameTile(next, currentRegion.startTile);
+   const isDest = sameTile(next, targetTile);
+   const isStart = sameTile(next, currentRegion.startTile);
 
+   // 자동플레이 시에는 적 난입 출현을 발생시키지 않아 1~40회 스토리 몰입 보장
+   if (!progress.autoMode && !isDemoPlayActive() && !isRankingDiverted()) {
     const triggered = shouldTriggerAmbush(
      nextStep,
      lastAmbushStep,
@@ -318,9 +328,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
      setAmbushedInLeg(true);
      setAmbushAlert(encounter);
     }
-
-    return next;
-   });
+   }
   }, lowSpecMode ? 110 : 180);
 
   return () => window.clearTimeout(timer);
@@ -336,6 +344,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
   ambushedInLeg,
   currentRegion,
   nextEvent,
+  progress.autoMode,
   progress.rebirthLevel,
   activeEvent,
   battleEvent,
@@ -381,7 +390,12 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  if (isDeadlockExitingRef.current || isQuickRetrying || isMoving || activeEvent || battleEvent || rewardEvent || mediaPromptEvent || !targetTile || ambushAlert || ambushBattle) return;
  if (!sameTile(heroTile, targetTile)) return;
 
- const arrivedEvent = regionEvents.find((event) => sameTile(event.tile, targetTile));
+ const arrivedEvent =
+  nextEvent && nextEvent.regionId === currentRegion.id && sameTile(nextEvent.tile, targetTile)
+   ? nextEvent
+   : regionEvents.find((event) => sameTile(event.tile, targetTile) && !progress.completedChapterIds.includes(event.id)) ??
+     regionEvents.find((event) => sameTile(event.tile, targetTile));
+
  if (arrivedEvent) {
  if (dismissedEventId === arrivedEvent.id) {
  setTargetTile(null);
@@ -390,7 +404,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  openEvent(arrivedEvent);
  setTargetTile(null);
  }
- }, [activeEvent, battleEvent, dismissedEventId, heroTile, isMoving, isQuickRetrying, mediaPromptEvent, openEvent, regionEvents, rewardEvent, targetTile, ambushAlert, ambushBattle]);
+ }, [activeEvent, battleEvent, currentRegion.id, dismissedEventId, heroTile, isMoving, isQuickRetrying, mediaPromptEvent, nextEvent, openEvent, progress.completedChapterIds, regionEvents, rewardEvent, targetTile, ambushAlert, ambushBattle]);
 
  const handleEventPress = useCallback((event: KadanRpgEvent) => {
  pauseForManualInput();
@@ -420,7 +434,13 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
 
  const nextChapterEvent = KADAN_RPG_EVENTS.find((e) => e.chapterNumber === event.chapterNumber + 1);
  if (nextChapterEvent) {
+ if (nextChapterEvent.regionId !== event.regionId) {
+ const nextRegion = getKadanRpgRegion(nextChapterEvent.regionId);
+ setHeroTile(clampTile(nextRegion.startTile, nextRegion.width, nextRegion.height));
+ }
  setTargetTile(nextChapterEvent.tile);
+ } else {
+ setTargetTile(null);
  }
  }, [completeEvent, heroTile]);
 
@@ -506,13 +526,16 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
 
  let prevLosses = 0;
  let rescueCount = 0;
+ let isAutoBattleGlobal = false;
  try {
   prevLosses = parseInt(localStorage.getItem('hero_story_consecutive_losses') || '0', 10) || 0;
   rescueCount = parseInt(localStorage.getItem('hero_story_deadlock_rescue_count') || '0', 10) || 0;
+  isAutoBattleGlobal = localStorage.getItem('hero_auto_battle') === 'true';
  } catch {}
+ const isAutoStory = progress.autoMode || isDemoPlayActive() || isRankingDiverted() || isAutoBattleGlobal;
 
- // 승리, 무승부, 또는 패배 진행 허용 챕터이거나, 상점/마이덱 최적화를 2회 이상 거쳤는데도 막힌 극단적 교착 상황일 때 클리어 진행
- if (result === 'win' || result === 'draw' || encounter.allowLossProgress || (result === 'loss' && rescueCount >= 2)) {
+ // 승리, 무승부, 자동플레이 중 스토리 진행(1~40회 순차 진행 보장), 패배 진행 허용 챕터이거나, 교착 상황일 때 클리어 진행
+ if (result === 'win' || result === 'draw' || isAutoStory || encounter.allowLossProgress || (result === 'loss' && rescueCount >= 2)) {
   try {
    localStorage.removeItem('hero_kadan_active_buff');
    localStorage.removeItem('hero_story_consecutive_losses');
@@ -530,17 +553,11 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
   return;
  }
 
- // 패배(loss) 처리 및 연패 교착상태 감지
+ // 패배(loss) 처리 및 연패 교착상태 감지 (수동 플레이 시)
  const nextLosses = prevLosses + 1;
  try {
   localStorage.setItem('hero_story_consecutive_losses', String(nextLosses));
  } catch {}
-
- let isAutoBattleGlobal = false;
- try {
-  isAutoBattleGlobal = localStorage.getItem('hero_auto_battle') === 'true';
- } catch {}
- const isAutoStory = progress.autoMode || isDemoPlayActive() || isRankingDiverted() || isAutoBattleGlobal;
 
  // 🌟 자동플레이 스토리모드 진행 중 연패(2연패 이상) 또는 최적화 직후 재패배 시:
  // 계속 스토리모드만 반복하는 교착상태를 탈출하기 위해 [상점 카드 뽑기 -> 마이덱 카드 최적화 -> 스토리 복귀] 루프 가동!
@@ -1186,6 +1203,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
 
  {mediaPromptEvent && (
  <EpisodeMediaWatchModal
+ key={mediaPromptEvent.id}
  chapterNumber={mediaPromptEvent.chapterNumber}
  language={language}
  artStyleMode={artStyleMode}
@@ -1328,8 +1346,8 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  </main>
 
  {isComplete && !isEndingDismissed && (
- <div className="fixed inset-0 z-[20000] flex items-center justify-center bg-slate-950/85 p-3 sm:p-4 pb-[calc(env(safe-area-inset-bottom)+1.5rem)] backdrop-blur-sm">
- <div className="w-full max-w-2xl max-h-[85dvh] sm:max-h-[88dvh] flex flex-col overflow-hidden rounded-none border border-violet-200 bg-white shadow-none">
+ <div className="fixed inset-0 z-[20000] w-screen h-[100dvh] max-h-[100dvh] flex flex-col bg-[#fdfcfc] overflow-hidden">
+ <div className="w-full h-full flex flex-col overflow-hidden rounded-none bg-white shadow-none">
  {/* Header */}
  <div className="shrink-0 border-b border-slate-100 bg-[#201d1d] p-4 sm:p-5 text-white flex items-center justify-between gap-2">
  <div className="flex items-center gap-3 min-w-0">

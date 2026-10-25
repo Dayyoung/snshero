@@ -110,15 +110,48 @@ const normalizeProgress = (season: string, value: unknown): KadanRpgProgress => 
   const fallback = createDefaultProgress(season);
   if (!isRecord(value)) return fallback;
 
-  const currentChapterId = typeof value.currentChapterId === 'string'
+  const rawCompletedIds = stringArray(value.completedChapterIds);
+  const rawCurrentChapterId = typeof value.currentChapterId === 'string'
     && KADAN_RPG_EVENTS.some((event) => event.id === value.currentChapterId)
     ? value.currentChapterId
     : fallback.currentChapterId;
+  const rawLastAutoEventId = typeof value.lastAutoEventId === 'string' ? value.lastAutoEventId : undefined;
 
-  const currentEvent = KADAN_RPG_EVENTS.find((event) => event.id === currentChapterId) ?? KADAN_RPG_EVENTS[0];
-  const region = getKadanRpgRegion(
-    typeof value.currentRegionId === 'string' ? value.currentRegionId : currentEvent.regionId,
+  const currentChapEvent = KADAN_RPG_EVENTS.find((event) => event.id === rawCurrentChapterId);
+  const lastAutoEvent = rawLastAutoEventId
+    ? KADAN_RPG_EVENTS.find((event) => event.id === rawLastAutoEventId)
+    : undefined;
+
+  const completedNums = rawCompletedIds
+    .map((id) => KADAN_RPG_EVENTS.find((event) => event.id === id)?.chapterNumber ?? 0)
+    .filter((num) => num > 0);
+
+  const maxFromCompleted = completedNums.length > 0 ? Math.max(...completedNums) : 0;
+  const maxFromCurrent = currentChapEvent ? Math.max(0, currentChapEvent.chapterNumber - 1) : 0;
+  const maxFromLastAuto = lastAutoEvent ? lastAutoEvent.chapterNumber : 0;
+
+  // Enforce strict 1 -> 40 sequential completion so skipped earlier chapters (e.g. Ch.31)
+  // never cause the player to jump backward instead of advancing to Ch.38.
+  const highestCompletedChapter = rawCompletedIds.length === 0 && maxFromCurrent === 0
+    ? 0
+    : Math.min(KADAN_RPG_EVENTS.length, Math.max(maxFromCompleted, maxFromCurrent, maxFromLastAuto));
+
+  const sequentialCompletedIds = KADAN_RPG_EVENTS
+    .filter((event) => event.chapterNumber <= highestCompletedChapter)
+    .map((event) => event.id);
+
+  const nextSequentialEvent = KADAN_RPG_EVENTS.find(
+    (event) => !sequentialCompletedIds.includes(event.id)
   );
+
+  const currentChapterId = nextSequentialEvent?.id
+    ?? KADAN_RPG_EVENTS[KADAN_RPG_EVENTS.length - 1].id;
+
+  const currentEvent = nextSequentialEvent
+    ?? KADAN_RPG_EVENTS.find((event) => event.id === currentChapterId)
+    ?? KADAN_RPG_EVENTS[0];
+
+  const region = getKadanRpgRegion(currentEvent.regionId);
   const storedArtStyle = loadKadanArtStyleMode();
   const artStyleMode: KadanArtStyleMode =
     value.artStyleMode === 'liveaction' || value.artStyleMode === 'animation'
@@ -129,7 +162,7 @@ const normalizeProgress = (season: string, value: unknown): KadanRpgProgress => 
     season,
     currentRegionId: region.id,
     currentChapterId,
-    completedChapterIds: stringArray(value.completedChapterIds),
+    completedChapterIds: sequentialCompletedIds,
     clearedEncounterIds: stringArray(value.clearedEncounterIds),
     openedChestIds: stringArray(value.openedChestIds),
     metNpcIds: stringArray(value.metNpcIds),
@@ -140,7 +173,7 @@ const normalizeProgress = (season: string, value: unknown): KadanRpgProgress => 
     rebirthLevel: typeof value.rebirthLevel === 'number' && Number.isFinite(value.rebirthLevel)
       ? Math.max(0, Math.floor(value.rebirthLevel))
       : 0,
-    lastAutoEventId: typeof value.lastAutoEventId === 'string' ? value.lastAutoEventId : undefined,
+    lastAutoEventId: rawLastAutoEventId,
     updatedAt: typeof value.updatedAt === 'number' ? value.updatedAt : Date.now(),
   };
 };
@@ -235,11 +268,21 @@ export const useKadanRpgProgress = (season: string) => {
     const handleGameDataReset = () => {
       setProgress(createDefaultProgress(season));
     };
+    const handleAutoModeUpdated = (e: Event) => {
+      const customEvent = e as CustomEvent<{ autoMode?: boolean }>;
+      const nextAuto = typeof customEvent.detail?.autoMode === 'boolean' ? customEvent.detail.autoMode : true;
+      setProgress((previous) => {
+        if (previous.autoMode === nextAuto) return previous;
+        return saveKadanRpgProgress(season, { ...previous, autoMode: nextAuto });
+      });
+    };
     window.addEventListener('hero_art_style_updated', handleArtStyleUpdated);
     window.addEventListener('snshero_game_data_reset', handleGameDataReset);
+    window.addEventListener('hero_kadan_rpg_auto_mode_updated', handleAutoModeUpdated);
     return () => {
       window.removeEventListener('hero_art_style_updated', handleArtStyleUpdated);
       window.removeEventListener('snshero_game_data_reset', handleGameDataReset);
+      window.removeEventListener('hero_kadan_rpg_auto_mode_updated', handleAutoModeUpdated);
     };
   }, [season]);
 
@@ -308,17 +351,36 @@ export const useKadanRpgProgress = (season: string) => {
 
   const completeEvent = useCallback((eventId: string, tile: KadanRpgTile) => {
     persist((previous) => {
-      const completedChapterIds = previous.completedChapterIds.includes(eventId)
-        ? previous.completedChapterIds
-        : [...previous.completedChapterIds, eventId];
-      const nextEvent = KADAN_RPG_EVENTS.find((event) => !completedChapterIds.includes(event.id));
+      const completedEvent = KADAN_RPG_EVENTS.find((event) => event.id === eventId);
+      const completedChapterNum = completedEvent?.chapterNumber ?? 0;
+
+      // Guarantee sequential 1 -> completedChapterNum completion so progression never jumps backward
+      const sequentialUpToNow = KADAN_RPG_EVENTS
+        .filter((event) => event.chapterNumber <= completedChapterNum)
+        .map((event) => event.id);
+
+      const completedChapterIds = Array.from(
+        new Set([...previous.completedChapterIds, eventId, ...sequentialUpToNow])
+      );
+
+      const nextEvent =
+        KADAN_RPG_EVENTS.find(
+          (event) => event.chapterNumber === completedChapterNum + 1 && !completedChapterIds.includes(event.id)
+        ) ??
+        KADAN_RPG_EVENTS.find((event) => !completedChapterIds.includes(event.id));
+
+      const nextRegionId = nextEvent?.regionId ?? previous.currentRegionId;
+      const nextLastTile =
+        nextEvent && nextEvent.regionId !== previous.currentRegionId
+          ? getKadanRpgRegion(nextEvent.regionId).startTile
+          : tile;
 
       return {
         ...previous,
         completedChapterIds,
         currentChapterId: nextEvent?.id ?? eventId,
-        currentRegionId: nextEvent?.regionId ?? previous.currentRegionId,
-        lastTile: tile,
+        currentRegionId: nextRegionId,
+        lastTile: nextLastTile,
         lastAutoEventId: eventId,
       };
     });

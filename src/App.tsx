@@ -5636,6 +5636,7 @@ function AppContent() {
             tutorialStep={tutorialStep}
             onStartPlayNow={() => {
               setSeasonItem('hero_kadan_rpg_auto_mode', currentSeason, 'true');
+              window.dispatchEvent(new CustomEvent('hero_kadan_rpg_auto_mode_updated', { detail: { autoMode: true } }));
               setView('main');
             }}
           />
@@ -6579,6 +6580,7 @@ function AppContent() {
             tutorialStep={tutorialStep}
             onStartPlayNow={() => {
               setSeasonItem('hero_kadan_rpg_auto_mode', currentSeason, 'true');
+              window.dispatchEvent(new CustomEvent('hero_kadan_rpg_auto_mode_updated', { detail: { autoMode: true } }));
               setView('main');
             }}
           />

@@ -56,7 +56,7 @@ export const useKadanRpgAutoRunner = ({
       previousStepRef.current = nextStep;
     }
 
-    setStep(repeatedStepCountRef.current > 18 ? 'paused' : nextStep);
+    setStep(nextStep);
   }, []);
 
   const pause = useCallback(() => {

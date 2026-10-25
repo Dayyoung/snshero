@@ -128,6 +128,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setView, setIsAutoB
  if (typeof window !== 'undefined') {
  const season = localStorage.getItem('hero_current_season') || 'season1';
  localStorage.setItem(`hero_kadan_rpg_auto_mode_${season}`, 'true');
+ window.dispatchEvent(new CustomEvent('hero_kadan_rpg_auto_mode_updated', { detail: { autoMode: true } }));
  }
  } else if (setIsAutoBattle) {
  setIsAutoBattle(false);

@@ -2,6 +2,23 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-25 09:08 KST] [에피소드 1~40회 순차 자동 진행 버그 수정 (38화→31화 역주행 해결), 다이얼로그 100dvh 전체화면 전환 및 자동플레이 시 적 난입 차단 완료]
+- **요청 사항**:
+  - `"플레이 눌러서 에피소드 진행 시 , 회차별로 진행이 되지않는 버그가 있어. 자동플레이시에 1회 부터 40회까지 순서대로 진행되게 해줘. 에피소드 다이얼로그도 전체화면으로 표시해서 몰입감을 높여줘. 적 난입 출현도 자동플레이 시에는 마주치지 않게해줘. 스토리에 몰입할수있게 /git-push"`
+  - `"진행도사 38화 로 이동해야하는데 31화로 이동하는 버그가 있어"`
+- **원인 분석 및 주요 구현 내역**:
+  1. **38화로 이동해야 하는데 30~31화 등으로 이동하던 버그 및 1~40회 순차 진행 무결점 수정 ([`src/content/kadanRpgStory.ts`](file:///Users/dayyoung/project/snshero/src/content/kadanRpgStory.ts), [`src/hooks/useKadanRpgProgress.ts`](file:///Users/dayyoung/project/snshero/src/hooks/useKadanRpgProgress.ts), [`src/hooks/useKadanRpgAutoRunner.ts`](file:///Users/dayyoung/project/snshero/src/hooks/useKadanRpgAutoRunner.ts), [`src/views/KadanRpgView.tsx`](file:///Users/dayyoung/project/snshero/src/views/KadanRpgView.tsx))**:
+     - **원인 1 (지역 내 타일 좌표 충돌)**: `kadanRpgStory.ts`의 `eventTiles`가 8개(`index % 8`)뿐이어서 12개 회차(29~40화)가 배치된 `final-citadel` 지역에서 37~40화가 29~32화와 완전히 동일한 타일 좌표를 공유했고, 타일 도착 시 `regionEvents.find()`가 배열 앞쪽의 29~32화를 먼저 매칭하는 버그가 존재했음. ➔ `eventTiles`를 모든 지역의 `startTile` 및 `blockedTiles`와 겹치지 않는 **12개 고유 좌표**로 확장하고, 타일 도착 시 현재 목표인 `nextEvent`를 최우선 매칭하도록 수정.
+     - **원인 2 (과거 미완료 회차로 역주행)**: 이전 회차 중 일부(예: 31화)가 `completedChapterIds`에서 누락되어 있을 때 37화 클리어 후 `getNextKadanRpgEvent`가 38화 대신 31화를 반환해 역주행하던 버그. ➔ `normalizeProgress`와 `completeEvent`에서 현재 도달한 회차 이하(`1 ~ completedChapterNum`)를 연속 완료 상태로 정규화하고 항상 정확히 `chapterNumber + 1`화(1화 ➔ 2화 ➔ ... ➔ 38화 ➔ 39화 ➔ 40화)로 순차 진행되도록 수정.
+     - **원인 3 (자동플레이 중 스텝 가드 및 패배 시 상점 이탈)**: `useKadanRpgAutoRunner`에서 동일 스텝 18회 초과 시 `'paused'`로 멈추던 제한을 제거하고, 자동플레이 중에는 전투 결과와 무관하게 상점으로 이탈하거나 동일 회차를 반복하지 않고 1회부터 40회까지 순서대로 클리어 및 다음 회차로 직행하도록 수정.
+  2. **에피소드 다이얼로그 전체화면(`100dvh` Fullscreen) 전환으로 스토리 몰입감 극대화 ([`src/components/rpg/KadanNpcDialog.tsx`](file:///Users/dayyoung/project/snshero/src/components/rpg/KadanNpcDialog.tsx), [`src/views/KadanRpgView.tsx`](file:///Users/dayyoung/project/snshero/src/views/KadanRpgView.tsx))**:
+     - 기존 `max-w-2xl max-h-[92dvh]` 소형 모달 박스를 `createPortal` 기반 `fixed inset-0 z-[20000] w-screen h-[100dvh] max-h-[100dvh]` 완전 전체화면 시네마틱 뷰포트로 전환.
+     - 대화면 삽화 뷰포트, 실시간 장면 진행 프로그레스 라인, 확대된 가독성 타이포그래피(`text-sm sm:text-base md:text-lg`) 및 하단 컨트롤 바를 전체화면으로 배치.
+  3. **자동플레이 시 적 난입(`Ambush`) 완전 차단 ([`src/views/KadanRpgView.tsx`](file:///Users/dayyoung/project/snshero/src/views/KadanRpgView.tsx))**:
+     - `progress.autoMode` 활성화 중에는 이동 시 `shouldTriggerAmbush`가 호출되지 않도록 원천 차단하고, 기존에 떠 있던 `ambushAlert` / `ambushBattle`도 자동플레이 전환 즉시 해제되도록 처리하여 스토리에 온전히 몰입할 수 있도록 개선.
+- **검증 결과**:
+  - `npx tsc --noEmit` 및 `npm run build` 0 에러 통과, 로컬 Git 커밋, `git push origin main` 및 구글 폼 보고 완료.
+
 ## [2026-10-25 08:38 KST] [유튜브 애니메이션 40편 & 실사영화 40편 업로드, 신규 플레이리스트 2종 생성 및 인게임 미디어 뷰 전면 연동 완료]
 - **요청 사항**:
   - `"AIzaSyBa9TidLv_iwMyB-9VSrVGWEVUr0WyjiQU \n 애니메이션 / 영화 각각 40편씩 업로드해서 신규 플레이리스트로 만들고 게임에서 애니메이션/영화 버튼눌렀을떄 해당 영상들로 변경해줘."`

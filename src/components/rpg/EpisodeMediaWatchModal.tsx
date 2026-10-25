@@ -96,6 +96,13 @@ export const EpisodeMediaWatchModal: React.FC<EpisodeMediaWatchModalProps> = ({
   const onProceedNextRef = useRef(onProceedNext);
   onProceedNextRef.current = onProceedNext;
 
+  useEffect(() => {
+    hasProceededRef.current = false;
+    hasRewardedRef.current = false;
+    setWatchState('countdown');
+    setTimeLeftMs(TOTAL_COUNTDOWN_MS);
+  }, [safeChapter]);
+
   const safeProceedNext = useCallback(() => {
     if (hasProceededRef.current) return;
     hasProceededRef.current = true;
