@@ -399,15 +399,19 @@ export const useKadanRpgProgress = (season: string) => {
   const reincarnateProgress = useCallback(() => {
     setProgress((previous) => {
       const base = createDefaultProgress(season);
+      // 40화 완주(환생)할 때마다 애니메이션('animation') <-> 실사('liveaction') 모드를 자동으로 교차 토글
+      const toggledArtStyle: KadanArtStyleMode =
+        previous.artStyleMode === 'liveaction' ? 'animation' : 'liveaction';
+      saveKadanArtStyleMode(toggledArtStyle);
       const next = saveKadanRpgProgress(season, {
         ...base,
         rebirthLevel: previous.rebirthLevel + 1,
         autoMode: true,
-        artStyleMode: previous.artStyleMode,
+        artStyleMode: toggledArtStyle,
       });
       if (typeof window !== 'undefined') {
         window.dispatchEvent(new CustomEvent('hero_reincarnation_updated', {
-          detail: { rebirthLevel: next.rebirthLevel }
+          detail: { rebirthLevel: next.rebirthLevel, artStyleMode: toggledArtStyle }
         }));
       }
       return next;

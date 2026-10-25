@@ -231,8 +231,52 @@ export const MovieView: React.FC<MovieViewProps> = ({
     }
   }, [currentEpisodeNum, claimedRewards]);
 
+  // 40화 재생 종료 시 애니메이션 <-> 실사(무비) 자동 교차 토글
+  const handleAdvanceOrToggleCrossMedia = () => {
+    triggerHaptic('light');
+    if (currentEpisodeNum < TOTAL_EPISODES) {
+      handleSelectEpisode(currentEpisodeNum + 1);
+      return;
+    }
+    setSeasonItem('hero_cinema_progress', '1', currentSeason);
+    try {
+      localStorage.setItem('hero_storybook_art_style', 'liveaction');
+      window.dispatchEvent(
+        new CustomEvent('hero_art_style_updated', { detail: { artStyleMode: 'liveaction' } })
+      );
+    } catch {}
+    if (showCustomAlert) {
+      showCustomAlert(
+        language === 'ko' ? '🎬 [40화 완주] 실사 무비 교차 전환!' : '🎬 [EP.40 Complete] Switched to Live-Action Movie!',
+        language === 'ko'
+          ? '애니메이션 40화 재생이 완료되어 실사 무비(1~40화) 모드로 자동 교차 전환됩니다!'
+          : 'Completed 40 Animation episodes! Automatically toggling to Live-Action Movie (EP.1-40)!',
+        2
+      );
+    }
+    onNavigate('cinema');
+  };
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const handleYouTubeMessage = (event: MessageEvent) => {
+      if (!event.origin.includes('youtube.com')) return;
+      try {
+        const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+        const isEnded =
+          (data?.event === 'onStateChange' && data?.info === 0) ||
+          (data?.event === 'infoDelivery' && data?.info?.playerState === 0);
+        if (isEnded) {
+          handleAdvanceOrToggleCrossMedia();
+        }
+      } catch {}
+    };
+    window.addEventListener('message', handleYouTubeMessage);
+    return () => window.removeEventListener('message', handleYouTubeMessage);
+  }, [currentEpisodeNum, currentSeason, language]);
+
   const currentVideoId = getVideoId(currentEpisodeNum) || 'cbg1iP_7jOo';
-  const embedUrl = `https://www.youtube.com/embed/${currentVideoId}?list=${YOUTUBE_PLAYLIST_ID}&autoplay=1&rel=0`;
+  const embedUrl = `https://www.youtube.com/embed/${currentVideoId}?list=${YOUTUBE_PLAYLIST_ID}&autoplay=1&rel=0&enablejsapi=1`;
 
   return (
     <div className="flex flex-col min-h-screen bg-[#fdfcfc] text-[#201d1d] font-mono px-0 py-2 sm:py-3 pb-32 max-w-[1024px] mx-auto w-full overflow-x-hidden">
@@ -373,11 +417,16 @@ export const MovieView: React.FC<MovieViewProps> = ({
 
             <button
               type="button"
-              disabled={currentEpisodeNum >= TOTAL_EPISODES}
-              onClick={() => handleSelectEpisode(currentEpisodeNum + 1)}
+              onClick={handleAdvanceOrToggleCrossMedia}
               className="min-h-[44px] flex items-center gap-1 px-3 py-1.5 rounded-sm border bg-[#201d1d] text-[#fdfcfc] border-[#201d1d] hover:bg-black text-xs font-bold font-mono transition-colors cursor-pointer"
             >
-              <span>다음 화</span>
+              <span>
+                {currentEpisodeNum >= TOTAL_EPISODES
+                  ? language === 'ko'
+                    ? '🎬 실사 1화로 교차'
+                    : '🎬 Toggle to Movie EP.1'
+                  : '다음 화'}
+              </span>
               <ChevronRight size={16} />
             </button>
 

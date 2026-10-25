@@ -790,6 +790,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  }, [activeEvent, setAutoMode]);
 
  const handleReincarnate = useCallback(() => {
+ const nextStyle = artStyleMode === 'liveaction' ? 'animation' : 'liveaction';
  setIsEndingDismissed(false);
  setActiveEvent(null);
  setBattleEvent(null);
@@ -803,7 +804,16 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  setAmbushedInLeg(false);
  setIsMoving(false);
  reincarnateProgress();
- }, [reincarnateProgress]);
+ showCustomAlert(
+  language === 'ko'
+   ? (nextStyle === 'liveaction' ? '🎬 [40화 완주] 실사(무비) 모드 교차 전환!' : '🎨 [40화 완주] 애니메이션 모드 교차 전환!')
+   : (nextStyle === 'liveaction' ? '🎬 [EP.40 Clear] Switched to Live-Action Mode!' : '🎨 [EP.40 Clear] Switched to Animation Mode!'),
+  language === 'ko'
+   ? `40화 완주로 삽화/영상 모드가 자동 토글되었습니다. 이번 1~40회차는 [${nextStyle === 'liveaction' ? '🎬 실사(무비)' : '🎨 애니메이션'}] 스타일로 진행됩니다!`
+   : `Completed 40 episodes! Toggled to [${nextStyle === 'liveaction' ? '🎬 Live-Action Movie' : '🎨 Animation'}] style for the next 1-40 cycle!`,
+  2
+ );
+ }, [artStyleMode, language, reincarnateProgress, showCustomAlert]);
 
  // 환생 팝업 노출 시 멈추지 않고 3초 카운트다운 후 자동 환생 및 다음 회차 계속 진행
  useEffect(() => {
@@ -1443,7 +1453,11 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  <div className="shrink-0 flex flex-col gap-2.5 border-t border-slate-100 p-3 sm:p-4 bg-slate-50/90">
  <div className="w-full">
  <div className="flex justify-between text-[11px] text-violet-700 font-black mb-1 font-mono">
- <span>⚡ {language === 'ko' ? '자동 환생 및 다음 회차 진행 중...' : 'Auto-Reincarnating to Next Cycle...'}</span>
+ <span>
+  ⚡ {language === 'ko'
+   ? `자동 환생 및 다음 1~40화 [${artStyleMode === 'liveaction' ? '🎨 애니메이션' : '🎬 실사(무비)'}] 교차 전환 중...`
+   : `Auto-Reincarnating & Toggling to [${artStyleMode === 'liveaction' ? '🎨 Animation' : '🎬 Live-Action'}]...`}
+ </span>
  <span>{Math.max(0, rebirthCountdown).toFixed(1)}s</span>
  </div>
  <div className="h-1.5 w-full bg-violet-100 rounded-none overflow-hidden border border-violet-200">

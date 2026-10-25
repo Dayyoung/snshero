@@ -2,6 +2,18 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-25 10:08 KST] [자동플레이 40화 완주 시 애니메이션 ⇄ 실사(무비) 모드 자동 교차 토글 구현 완료]
+- **요청 사항**:
+  - `"자동플레이시 에니메이션만 보여주니까 좀 지루하다. 40화가 재생되면 에니메이션 과 실사가 서로 토글되서 교차로 40화 끝날때마다 토글되게 해줘"`
+- **주요 구현 및 수정 내역**:
+  1. **스토리 RPG 1~40화 자동플레이 완주(환생) 시 애니메이션(`animation`) ⇄ 실사(`liveaction`) 자동 교차 토글 ([`src/hooks/useKadanRpgProgress.ts`](file:///Users/dayyoung/project/snshero/src/hooks/useKadanRpgProgress.ts), [`src/views/KadanRpgView.tsx`](file:///Users/dayyoung/project/snshero/src/views/KadanRpgView.tsx))**:
+     - `reincarnateProgress()`에서 40화가 끝나고 다음 1~40화 사이클로 넘어갈 때마다 `previous.artStyleMode === 'liveaction' ? 'animation' : 'liveaction'`으로 자동 토글되도록 구현하고, 로컬스토리지(`hero_storybook_art_style`) 및 전역 이벤트(`hero_art_style_updated`, `hero_reincarnation_updated`)에 즉시 반영.
+     - `KadanRpgView.tsx`의 40화 완주/자동 환생 화면 및 알림 팝업에서 다음 1~40화 사이클이 교차 전환된 모드(`🎬 실사(무비)` ⇄ `🎨 애니메이션`)로 진행됨을 안내하도록 개선.
+  2. **공식 애니메이션(`MovieView`) ⇄ 공식 실사 무비(`CinemaView`) 40화 재생 종료 시 상호 교차 전환 ([`src/views/MovieView.tsx`](file:///Users/dayyoung/project/snshero/src/views/MovieView.tsx), [`src/views/CinemaView.tsx`](file:///Users/dayyoung/project/snshero/src/views/CinemaView.tsx))**:
+     - YouTube IFrame API `enablejsapi=1` 및 `onStateChange(ENDED)` 감지를 연동하여, 40화 재생 완료 또는 40화에서 다음 버튼 클릭 시 애니메이션 40화 완료 ➔ 실사 무비 1화(`cinema`), 실사 무비 40화 완료 ➔ 애니메이션 1화(`movie`)로 자동 교차 토글되도록 구현.
+- **검증 결과**:
+  - `npx tsc --noEmit` 및 `npm run build` 무결점 통과, 로컬 Git 커밋 및 구글 폼 보고 완료.
+
 ## [2026-10-25 09:08 KST] [에피소드 1~40회 순차 자동 진행 버그 수정 (38화→31화 역주행 해결), 다이얼로그 100dvh 전체화면 전환 및 자동플레이 시 적 난입 차단 완료]
 - **요청 사항**:
   - `"플레이 눌러서 에피소드 진행 시 , 회차별로 진행이 되지않는 버그가 있어. 자동플레이시에 1회 부터 40회까지 순서대로 진행되게 해줘. 에피소드 다이얼로그도 전체화면으로 표시해서 몰입감을 높여줘. 적 난입 출현도 자동플레이 시에는 마주치지 않게해줘. 스토리에 몰입할수있게 /git-push"`
