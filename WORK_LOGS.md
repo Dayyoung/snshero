@@ -2,6 +2,20 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-26 05:20 KST] [/main 스토리모드 전체컷(all_cuts, 2,009컷) 기본 동작 전환 및 컷별 TTS 종료 시 다음 컷 자동 이동·연속 재생 연동 완료]
+- **요청 사항**:
+  - `"/main도 전체컷 기준으로 동작하게 해줘"`
+- **주요 수정 및 개선 내역**:
+  1. **`/main` 플레이 다이얼로그(`KadanNpcDialog.tsx`) 기본 동작을 `🎞️ 전체컷 (all_cuts)` 기준으로 전환 ([`src/components/rpg/KadanNpcDialog.tsx`](file:///Users/dayyoung/project/snshero/src/components/rpg/KadanNpcDialog.tsx))**:
+     - `viewGranularity` 초기값을 `'storybook'`(`📚 10장면`)에서 `'all_cuts'`(`🎞️ 전체컷`, 회차당 약 50컷 · 전 40화 2,009컷)로 변경하고, 상단 토글 버튼 순서도 `🎞️ 전체컷`을 첫 번째(기본 선택)로 배치.
+     - 각 세부 컷(`subCuts`)의 실제 화자(`speakerKo`/`speakerEn`)를 `sceneCharacters`의 `cardId`와 1:1 매칭하여 컷마다 말하는 등장인물이 캐스트 바에서 정확히 하이라이트되도록 개선.
+     - 컷별 Primary 언어 TTS(`movieAudio.speakNarration`)를 자동 재생하고, 현재 컷의 TTS 발화가 완료(`onEnd`)되면 즉시 다음 컷(`advanceFromCutIndex`)으로 이동하여 다음 컷의 TTS를 끊김 없이 연속 재생하도록 연동(상단 헤더에 `🔊 TTS` 켜기/끄기 토글 버튼 제공).
+  2. **`/main` 월드맵 하단 진행도 카드 및 40화 완주 에필로그·종료 미디어 모달 전체컷 기준 일괄 전환 ([`src/views/KadanRpgView.tsx`](file:///Users/dayyoung/project/snshero/src/views/KadanRpgView.tsx), [`src/components/rpg/EpisodeMediaWatchModal.tsx`](file:///Users/dayyoung/project/snshero/src/components/rpg/EpisodeMediaWatchModal.tsx))**:
+     - 40화 완주 에필로그(`epilogueLines`)가 10장면 요약본 대신 전체 세부 컷(`subCuts`)을 기준으로 표시되도록 확장.
+     - 진행도 미리보기 썸네일 및 회차 종료 미디어 모달 썸네일도 전체컷(`scene_01.webp`) 에셋을 직접 참조하도록 통일.
+- **검증 및 보고**:
+  - `npx tsc --noEmit` 및 `npm run build` 프로덕션 빌드 무결성 검증(0 에러) 완료, 로컬 Git 커밋 및 구글 폼 완료 보고서 제출 완료.
+
 ## [2026-10-26 05:14 KST] [인터랙티브 무비 TTS 종료 시 즉시 다음 화면 이동 및 다음 화면 TTS 끊김 없는 연속 재생 구현 완료]
 - **요청 사항**:
   - `"인터렉티브 무비에서 tts가 종료되면 다음화면으로 이동. 이동하면 tts재생. 끊김없이 재생해줘"`

@@ -769,10 +769,31 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  const currentObjective = nextEvent
  ? t(nextEvent.objectiveKey, language)
  : t('kadan_rpg_objective_complete', language);
- const epilogueLines = useMemo(
- () => (KADAN_RPG_NOVEL_SCRIPTS[40] || []).filter((line) => line.speaker !== 'choice'),
- []
- );
+  const epilogueLines = useMemo(() => {
+    const rawLines = (KADAN_RPG_NOVEL_SCRIPTS[40] || []).filter((line) => line.speaker !== 'choice');
+    const expanded: typeof rawLines = [];
+    rawLines.forEach((line) => {
+      if (line.subCuts && line.subCuts.length > 0) {
+        line.subCuts.forEach((cut, cIdx) => {
+          expanded.push({
+            ...line,
+            name: cut.speakerKo || line.name,
+            nameEn: cut.speakerEn || line.nameEn,
+            text: cut.narrationKo || line.text,
+            textEn: cut.narrationEn || line.textEn,
+            sceneTitleKo: `[제40화 · 컷 #${cut.cutNumber}] ${line.sceneTitleKo?.replace(/^\[[^\]]+\]\s*/, '') || ''}`,
+            sceneTitleEn: `[EP.40 · Cut #${cut.cutNumber}] ${line.sceneTitleEn?.replace(/^\[[^\]]+\]\s*/, '') || ''}`,
+            sceneExplanationKo: cIdx === 0 ? line.sceneExplanationKo : undefined,
+            sceneExplanationEn: cIdx === 0 ? line.sceneExplanationEn : undefined,
+            sceneImageUrl: cut.imageUrl || line.sceneImageUrl,
+          });
+        });
+      } else {
+        expanded.push(line);
+      }
+    });
+    return expanded;
+  }, []);
 
  const handleCloseDialog = useCallback(() => {
  if (activeEvent) {
@@ -1260,7 +1281,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  <img
  src={getAssetUrl(
  resolveKadanArtStyleUrl(
- `/images/storybook/ep_${String(nextEvent?.chapterNumber ?? 40).padStart(2, '0')}/page_01.webp`,
+ `/images/webtoon/episode_${String(nextEvent?.chapterNumber ?? 40).padStart(2, '0')}/scene_01.webp`,
  artStyleMode
  )
  )}

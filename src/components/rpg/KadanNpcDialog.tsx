@@ -18,10 +18,14 @@ import {
   Sparkles,
   Swords,
   Users,
+  Volume2,
+  VolumeX,
   X,
 } from 'lucide-react';
 import { cn, getAssetUrl, getCardSpriteStyle } from '../../lib/utils';
 import { t } from '../../lib/i18n';
+import { isSfxMutedGlobal } from '../../lib/sound';
+import { movieAudio } from '../../lib/MovieAudioSynthesizer';
 import { CARD_DATABASE } from '../../cardDatabase';
 import type { Language, ViewType } from '../../types';
 import type { KadanRpgEvent } from '../../content/kadanRpgStory';
@@ -163,7 +167,8 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
   const [lineIndex, setLineIndex] = useState(0);
   const [activeSubCutIdx, setActiveSubCutIdx] = useState<number | null>(0);
   const [manualSubCutLock, setManualSubCutLock] = useState(false);
-  const [viewGranularity, setViewGranularity] = useState<'storybook' | 'all_cuts'>('storybook');
+  const [viewGranularity, setViewGranularity] = useState<'storybook' | 'all_cuts'>('all_cuts');
+  const [isTtsEnabled, setIsTtsEnabled] = useState<boolean>(true);
   const [localArtStyleMode, setLocalArtStyleMode] = useState<KadanArtStyleMode>(() =>
     propArtStyleMode ?? loadKadanArtStyleMode()
   );
@@ -218,14 +223,18 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
 
   // Suspend Background BGM Processing during Dialogue Overlay to reduce CPU/audio load
   useEffect(() => {
+    movieAudio.unlockSpeech();
     window.dispatchEvent(new Event('snshero-dialogue-overlay-open'));
     return () => {
+      movieAudio.stopNarration();
       window.dispatchEvent(new Event('snshero-dialogue-overlay-close'));
     };
   }, []);
 
   const fallbackSpeakerName = speakerName || t('kadan_rpg_unknown_echo', language);
   const isEn = language !== 'ko';
+  const primaryTtsLang: 'ko' | 'en' | 'ja' =
+    language === 'en' ? 'en' : language === 'ja' ? 'ja' : 'ko';
 
   const baseLines = useMemo<ConversationLine[]>(() => {
     const novelScript = KADAN_RPG_NOVEL_SCRIPTS[event.chapterNumber];
@@ -233,6 +242,8 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
       if (viewGranularity === 'all_cuts') {
         // Expand all subCuts into individual Picture-Book pages (~50 pages per episode)
         const expanded: ConversationLine[] = [];
+        let lastCutImageUrl = `/images/webtoon/episode_${String(event.chapterNumber).padStart(2, '0')}/scene_01.webp`;
+
         novelScript.forEach((line) => {
           if (line.speaker === 'choice' || !line.subCuts || line.subCuts.length === 0) {
             expanded.push({
@@ -240,9 +251,13 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
               cardId: line.cardId ?? event.speakerCardId,
               name: isEn ? (line.nameEn || line.name) : line.name,
               text: isEn ? (line.textEn || line.text) : line.text,
+              sceneImageUrl: lastCutImageUrl || line.sceneImageUrl,
             });
           } else {
             line.subCuts.forEach((cut, cIdx) => {
+              if (cut.imageUrl) {
+                lastCutImageUrl = cut.imageUrl;
+              }
               const cutSpeakerName = isEn
                 ? cut.speakerEn || line.nameEn || line.name
                 : cut.speakerKo || line.name;
@@ -250,9 +265,16 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
                 ? cut.narrationEn || line.textEn || line.text
                 : cut.narrationKo || line.text;
               const cutDialog = isEn ? cut.dialogueEn : cut.dialogueKo;
+              const matchedChar = line.sceneCharacters?.find(
+                (ch) =>
+                  (cut.speakerKo && ch.nameKo === cut.speakerKo) ||
+                  (cut.speakerEn && ch.nameEn.toLowerCase() === cut.speakerEn.toLowerCase())
+              );
+              const cutCardId = matchedChar?.cardId ?? line.cardId ?? event.speakerCardId;
+
               expanded.push({
                 speaker: line.speaker,
-                cardId: line.cardId ?? event.speakerCardId,
+                cardId: cutCardId,
                 name: cutSpeakerName,
                 nameEn: cut.speakerEn || line.nameEn,
                 text: cutText,
@@ -359,6 +381,7 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
     Boolean(currentChoices && currentChoices.length > 0 && !selectedChoiceIds[lineIndex]);
 
   const finishConversation = useCallback(() => {
+    movieAudio.stopNarration();
     if (canStartBattle) {
       onStartBattle();
       return;
@@ -463,7 +486,24 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
     ]
   );
 
+  const advanceFromCutIndex = useCallback(
+    (fromIdx: number) => {
+      setLineIndex((currIdx) => {
+        if (currIdx !== fromIdx) return currIdx;
+        if (currIdx < conversationLines.length - 1) {
+          return currIdx + 1;
+        }
+        window.setTimeout(() => {
+          finishConversation();
+        }, 0);
+        return currIdx;
+      });
+    },
+    [conversationLines.length, finishConversation]
+  );
+
   const advanceConversation = useCallback(() => {
+    movieAudio.unlockSpeech();
     if (hasActiveChoices && currentChoices && currentChoices.length > 0) {
       const defaultChoice = currentChoices.find((c) => c.isDefault) ?? currentChoices[0];
       handleSelectChoice(defaultChoice);
@@ -484,12 +524,14 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
   ]);
 
   const retreatConversation = useCallback(() => {
+    movieAudio.unlockSpeech();
     if (lineIndex > 0) {
       setLineIndex((current) => current - 1);
     }
   }, [lineIndex]);
 
   const handleSkipStory = useCallback(() => {
+    movieAudio.stopNarration();
     if (hasActiveChoices && currentChoices && currentChoices.length > 0) {
       const defaultChoice = currentChoices.find((c) => c.isDefault) ?? currentChoices[0];
       const snsAmount =
@@ -544,10 +586,23 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
     };
   }, [autoMode, currentChoices, handleSelectChoice, hasActiveChoices, lineIndex]);
 
-  // Normal dialogue auto-advance (paused when waiting on choices)
+  // Normal dialogue auto-advance when TTS is disabled/muted (when TTS is enabled, TTS onEnd drives cut transition)
   useEffect(() => {
     if (!autoMode) return;
     if (hasActiveChoices) return;
+
+    const ttsActive = isTtsEnabled && !isSfxMutedGlobal();
+    if (ttsActive) {
+      // TTS 활성 시에는 TTS 종료 콜백이 즉시 다음 컷으로 넘기므로, 비정상 대기 시에만 15초 안전 폴백 작동
+      const targetIdx = lineIndex;
+      const safetyTimer = window.setTimeout(() => {
+        if (!movieAudio.isSpeaking()) {
+          advanceFromCutIndex(targetIdx);
+        }
+      }, 15000);
+      return () => window.clearTimeout(safetyTimer);
+    }
+
     const delayMs =
       autoSpeedMode === 'slow' ? 4800 : autoSpeedMode === 'fast' ? 1200 : 2600;
     const timer = window.setTimeout(
@@ -555,7 +610,16 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
       lineIndex < conversationLines.length - 1 ? delayMs : 3000
     );
     return () => window.clearTimeout(timer);
-  }, [advanceConversation, autoMode, autoSpeedMode, conversationLines.length, hasActiveChoices, lineIndex]);
+  }, [
+    advanceConversation,
+    advanceFromCutIndex,
+    autoMode,
+    autoSpeedMode,
+    conversationLines.length,
+    hasActiveChoices,
+    isTtsEnabled,
+    lineIndex,
+  ]);
 
   const primaryLabel = hasActiveChoices
     ? language === 'ko'
@@ -626,6 +690,35 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
     ? currentLine?.textEn || currentLine?.text || activeSubCut?.narrationEn
     : currentLine?.text || activeSubCut?.narrationKo;
 
+  // Primary Language TTS Voiceover on cut change -> When TTS ends, immediately advance to next cut!
+  useEffect(() => {
+    if (!isTtsEnabled || isSfxMutedGlobal()) {
+      movieAudio.stopNarration();
+      return;
+    }
+    const scriptText = (displayedNovelText || '').trim();
+    const targetIdx = lineIndex;
+    if (!scriptText) {
+      if (!hasActiveChoices) {
+        advanceFromCutIndex(targetIdx);
+      }
+      return;
+    }
+
+    movieAudio.speakNarration(scriptText, primaryTtsLang, () => {
+      if (!hasActiveChoices) {
+        advanceFromCutIndex(targetIdx);
+      }
+    });
+  }, [
+    advanceFromCutIndex,
+    displayedNovelText,
+    hasActiveChoices,
+    isTtsEnabled,
+    lineIndex,
+    primaryTtsLang,
+  ]);
+
   const sceneProgressPct = Math.max(
     4,
     Math.min(100, Math.round(((lineIndex + 1) / Math.max(1, conversationLines.length)) * 100))
@@ -637,6 +730,7 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
       role="dialog"
       aria-modal="true"
       aria-label={t(event.chapterTitleKey, language) || 'Story Dialogue'}
+      onPointerDown={() => movieAudio.unlockSpeech()}
     >
       {/* ─── 1. 상단 전체화면 헤더 바: 회차 제목 · 장면 진행도 · 삽화모드(애니/무비) · 닫기 ─── */}
       <div className="shrink-0 flex items-center justify-between gap-2 border-b border-stone-800 bg-[#16141b] px-3 sm:px-5 py-2.5">
@@ -653,24 +747,12 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
         </div>
 
         <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-          {/* 장면 구성 단위 토글: 10장면 요약 / 50컷 전체 */}
+          {/* 장면 구성 단위 토글: 전체컷(기본값) / 10장면 요약 */}
           <div
             className="inline-flex min-h-[40px] items-center rounded-sm border border-stone-700 bg-stone-950 p-0.5 font-mono"
             role="group"
             aria-label={language === 'ko' ? '장면 구성 전환' : 'Scene Granularity'}
           >
-            <button
-              type="button"
-              onClick={() => setViewGranularity('storybook')}
-              className={cn(
-                'min-h-[34px] px-2 sm:px-2.5 py-1 rounded-sm text-[11px] sm:text-xs font-mono font-bold transition-colors cursor-pointer',
-                viewGranularity === 'storybook'
-                  ? 'bg-emerald-400 text-stone-950 font-black'
-                  : 'text-stone-400 hover:text-stone-200'
-              )}
-            >
-              📚 {language === 'ko' ? '10장면' : '10 Scenes'}
-            </button>
             <button
               type="button"
               onClick={() => setViewGranularity('all_cuts')}
@@ -683,7 +765,40 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
             >
               🎞️ {language === 'ko' ? '전체컷' : 'All Cuts'}
             </button>
+            <button
+              type="button"
+              onClick={() => setViewGranularity('storybook')}
+              className={cn(
+                'min-h-[34px] px-2 sm:px-2.5 py-1 rounded-sm text-[11px] sm:text-xs font-mono font-bold transition-colors cursor-pointer',
+                viewGranularity === 'storybook'
+                  ? 'bg-emerald-400 text-stone-950 font-black'
+                  : 'text-stone-400 hover:text-stone-200'
+              )}
+            >
+              📚 {language === 'ko' ? '10장면' : '10 Scenes'}
+            </button>
           </div>
+
+          {/* TTS 음성 토글 */}
+          <button
+            type="button"
+            onClick={() => {
+              movieAudio.unlockSpeech();
+              const next = !isTtsEnabled;
+              if (!next) movieAudio.stopNarration();
+              setIsTtsEnabled(next);
+            }}
+            className={cn(
+              'min-h-[40px] px-2.5 py-1 rounded-sm border text-xs font-mono font-bold transition-colors cursor-pointer flex items-center gap-1',
+              isTtsEnabled
+                ? 'border-amber-400 bg-amber-400/20 text-amber-300 font-black'
+                : 'border-stone-700 bg-stone-900 text-stone-400 hover:text-stone-200'
+            )}
+            title={language === 'ko' ? 'TTS 음성 낭독 켜기/끄기' : 'Toggle TTS Voiceover'}
+          >
+            {isTtsEnabled ? <Volume2 size={15} /> : <VolumeX size={15} />}
+            <span className="hidden sm:inline">TTS</span>
+          </button>
 
           {/* 삽화모드 토글: 애니 / 무비 */}
           <div
@@ -720,7 +835,10 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
           {/* 닫기 */}
           <button
             type="button"
-            onClick={onClose}
+            onClick={() => {
+              movieAudio.stopNarration();
+              onClose();
+            }}
             className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-sm border border-stone-700 bg-stone-900 hover:bg-stone-800 text-stone-300 hover:text-white transition-colors cursor-pointer"
             aria-label={t('kadan_rpg_close', language) || 'Close'}
             title={t('kadan_rpg_close', language) || 'Close'}

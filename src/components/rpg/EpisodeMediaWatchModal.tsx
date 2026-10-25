@@ -62,7 +62,7 @@ export const EpisodeMediaWatchModal: React.FC<EpisodeMediaWatchModalProps> = ({
 
   const episodePreviewUrl = getAssetUrl(
     resolveKadanArtStyleUrl(
-      `/images/storybook/ep_${String(safeChapter).padStart(2, '0')}/page_01.webp`,
+      `/images/webtoon/episode_${String(safeChapter).padStart(2, '0')}/scene_01.webp`,
       artStyleMode
     )
   );
