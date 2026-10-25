@@ -1775,6 +1775,10 @@ function AppContent() {
         }
       }
 
+      if (targetView === 'home') {
+        setIsMenuOpen(false);
+      }
+
       setView(targetView);
     };
     
@@ -5618,7 +5622,11 @@ function AppContent() {
               }
             }}
             onNavigateView={(targetView) => {
-              setView(targetView);
+              if (targetView === 'home') {
+        setIsMenuOpen(false);
+      }
+
+      setView(targetView);
               if (typeof window !== 'undefined') {
                 window.history.pushState(null, '', '/' + targetView);
               }
@@ -5636,7 +5644,11 @@ function AppContent() {
             currentDeck={currentDeck}
             currentSeason={currentSeason}
             onNavigate={(targetView) => {
-              setView(targetView);
+              if (targetView === 'home') {
+        setIsMenuOpen(false);
+      }
+
+      setView(targetView);
             }} 
             language={language} 
             user={effectiveUser}
@@ -6585,7 +6597,11 @@ function AppContent() {
             currentSeason={currentSeason}
             language={language} 
             onNavigate={(targetView) => {
-              setView(targetView);
+              if (targetView === 'home') {
+        setIsMenuOpen(false);
+      }
+
+      setView(targetView);
             }} 
             playSfx={playSfx} 
             bgmStarted={audioStarted} 
@@ -6625,7 +6641,11 @@ function AppContent() {
             }
           }}
           onNavigateView={(targetView) => {
-            setView(targetView);
+            if (targetView === 'home') {
+        setIsMenuOpen(false);
+      }
+
+      setView(targetView);
             if (typeof window !== 'undefined') {
               window.history.pushState(null, '', '/' + targetView);
             }
@@ -6643,7 +6663,11 @@ function AppContent() {
         <BenchmarkView
           language={language}
           onNavigate={(targetView) => {
-            setView(targetView);
+            if (targetView === 'home') {
+        setIsMenuOpen(false);
+      }
+
+      setView(targetView);
             if (typeof window !== 'undefined') {
               window.history.pushState(null, '', targetView === 'home' ? '/' : '/' + targetView);
             }
@@ -6852,11 +6876,25 @@ function AppContent() {
                   {/* Header */}
                   <div className="flex items-center justify-between border-b border-[rgba(15,0,0,0.08)] pb-4 shrink-0 mb-6">
                     <div className="flex items-center gap-2 min-w-0">
-                      <img
-                        src={language === 'ko' ? '/logo-ko.png' : '/logo-en.png'}
-                        alt={language === 'ko' ? '눈히어로.com' : 'S&SHero.com'}
-                        className="h-8 w-auto object-contain rounded-xs border border-[#201d1d]/20 bg-[#201d1d]"
-                      />
+                      <a
+                        href="/"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                          setIsMenuOpen(false);
+                          setView('home');
+                          window.history.pushState({ view: 'home' }, '', '/');
+                          window.dispatchEvent(new PopStateEvent('popstate'));
+                        }}
+                        className="inline-flex items-center shrink-0 cursor-pointer bg-transparent transition-opacity hover:opacity-85"
+                        aria-label={language === 'ko' ? '눈히어로.com 홈으로 이동' : 'Go to S&SHero.com Home'}
+                      >
+                        <img
+                          src={language === 'ko' ? '/logo-ko.png' : '/logo-en.png'}
+                          alt={language === 'ko' ? '눈히어로.com' : 'S&SHero.com'}
+                          className="h-8 w-auto object-contain bg-transparent"
+                        />
+                      </a>
                       <span className="text-sm font-bold tracking-tight uppercase text-[#201d1d] truncate">
                         {t('menu_title', language)}
                       </span>
@@ -7201,7 +7239,15 @@ function AppContent() {
                         <img
                           src={language === 'ko' ? '/logo-ko.png' : '/logo-en.png'}
                           alt={language === 'ko' ? '눈히어로.com' : 'S&SHero.com'}
-                          className="h-5 w-auto object-contain rounded-xs border border-[#201d1d]/20 bg-[#201d1d]"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                            setIsMenuOpen(false);
+                            setView('home');
+                            window.history.pushState({ view: 'home' }, '', '/');
+                            window.dispatchEvent(new PopStateEvent('popstate'));
+                          }}
+                          className="h-5 w-auto object-contain bg-transparent cursor-pointer"
                         />
                         <span>{language === 'ko' ? '눈히어로.com' : 'S&SHero.com'} v2.1.0</span>
                       </button>

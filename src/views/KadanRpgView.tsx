@@ -857,11 +857,23 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  <ArrowLeft size={20} />
  </button>
  <div className="min-w-0 flex-1 flex items-center gap-2.5">
+ <a
+ href="/"
+ onClick={(e) => {
+ e.preventDefault();
+ onNavigate('home');
+ window.history.pushState({ view: 'home' }, '', '/');
+ window.dispatchEvent(new PopStateEvent('popstate'));
+ }}
+ className="inline-flex items-center shrink-0 cursor-pointer bg-transparent transition-opacity hover:opacity-85"
+ aria-label={t('home', language)}
+ >
  <img
  src={language === 'ko' ? '/logo-ko.png' : '/logo-en.png'}
  alt={language === 'ko' ? '눈히어로.com' : 'S&SHero.com'}
- className="h-9 sm:h-10 w-auto object-contain rounded-xs border border-[#201d1d]/20 bg-[#201d1d] shrink-0"
+ className="h-9 sm:h-10 w-auto object-contain bg-transparent shrink-0"
  />
+ </a>
  <div className="min-w-0 flex-1">
  <div className="flex items-center gap-2">
  <p className="truncate text-xs font-black uppercase tracking-normal text-indigo-600">{t('kadan_rpg_title_badge', language)}</p>

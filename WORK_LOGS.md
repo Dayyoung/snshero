@@ -2,6 +2,21 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-25 18:06 KST] [공통 타이틀 로고('눈히어로.com' / 'S&SHero.com') 투명 배경(RGBA) 적용 및 전 화면 클릭 시 무조건 '/' 홈 이동 구현]
+- **요청 사항**:
+  - `"공통적용한 로고의 배경을 투명색으로 적용해줘. 클릭하면 무조건 /로 이동"`
+- **주요 구현 및 수정 내역**:
+  1. **로고 이미지 에셋 100% 알파 투명 배경(RGBA Transparent) 처리 및 최적화**:
+     - [`/public/logo-ko.png`](file:///Users/dayyoung/project/snshero/public/logo-ko.png) (`눈히어로.com`), [`/public/logo-en.png`](file:///Users/dayyoung/project/snshero/public/logo-en.png) (`S&SHero.com`), [`/public/logo.png`](file:///Users/dayyoung/project/snshero/public/logo.png), [`/public/nunhero-logo.png`](file:///Users/dayyoung/project/snshero/public/nunhero-logo.png)의 외곽 어두운 배경과 글자 사이 닫힌 배경 구멍을 제거하고 방패 엠블럼 내부 디테일을 보존한 고해상도 알파 투명 PNG로 변환.
+  2. **공통 로고 적용 전 컴포넌트·뷰 배경 투명화(`bg-transparent`) 및 클릭 시 무조건 `/` 이동 연동**:
+     - [`src/components/PageHeader.tsx`](file:///Users/dayyoung/project/snshero/src/components/PageHeader.tsx): 전 화면 공통 상단 헤더 로고의 어두운 배경/테두리(`bg-[#201d1d] border`)를 제거하여 투명 배경(`bg-transparent`)으로 적용하고, 클릭 시 무조건 `/` 홈으로 이동하도록 `<a href="/">` 및 SPA 라우팅 연동.
+     - [`src/views/HomeView.tsx`](file:///Users/dayyoung/project/snshero/src/views/HomeView.tsx): 상단 메인 로고(`#main-logo`) 및 하단 푸터 로고에 투명 배경 적용 및 클릭 시 `/` 이동 연동.
+     - [`src/views/KadanRpgView.tsx`](file:///Users/dayyoung/project/snshero/src/views/KadanRpgView.tsx): 스토리모드(`/main`) 상단 헤더 로고 투명 배경 적용 및 클릭 시 `/` 이동 연동.
+     - [`src/components/reddit/RedditHeader.tsx`](file:///Users/dayyoung/project/snshero/src/components/reddit/RedditHeader.tsx): 커뮤니티(`/reddit`) 상단 헤더 로고 투명 배경 적용 및 클릭 시 기존 서브레딧 전환 대신 무조건 `/` 홈으로 이동하도록 변경.
+     - [`src/views/ShareView.tsx`](file:///Users/dayyoung/project/snshero/src/views/ShareView.tsx), [`src/App.tsx`](file:///Users/dayyoung/project/snshero/src/App.tsx), [`src/components/ShareTemplateCard.tsx`](file:///Users/dayyoung/project/snshero/src/components/ShareTemplateCard.tsx), [`src/views/ShopView.tsx`](file:///Users/dayyoung/project/snshero/src/views/ShopView.tsx), [`src/views/WikiCardView.tsx`](file:///Users/dayyoung/project/snshero/src/views/WikiCardView.tsx): 모든 공통 로고에 투명 배경 및 클릭 시 `/` 이동 일괄 적용.
+- **검증 및 보고**:
+  - `npm run lint` 및 `npm run build` 프로덕션 빌드 무결성 검증 완료, 로컬 Git 커밋 및 구글 폼 보고서 제출 완료.
+
 ## [2026-10-25 15:21 KST] [EP01~EP20 (20개 에피소드) 순수 AI 다인물 3x3 마스터 시트 6/6장 전수 완비 & EP21 5/6장 반영 및 웹툰·그림책·애니메이션 MP4(E1~E21) 인코딩 완료]
 - **작업 내용**:
   - **EP01 ~ EP20 (총 20개 에피소드, 전체 40화의 50% 돌파)**: 회차당 6장씩의 순수 AI 다인물 3×3 다크판타지 애니메이션 마스터 시트(`public/images/storybook/raw_full_sheets/ep01..20_sheet_01..06.png`, 총 120장 = 1,080개 순수 AI 패널) 생성 완비.

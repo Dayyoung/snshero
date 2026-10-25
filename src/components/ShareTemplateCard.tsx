@@ -84,14 +84,23 @@ const safeCardName = (card: DatabaseCard | undefined, language: Language): strin
 const BrandLogo: React.FC = () => {
  const isKo = typeof window === 'undefined' || (localStorage.getItem('hero_language') || 'ko') === 'ko';
  return (
- <span className="inline-flex items-center gap-1 text-amber-400 text-[10px] font-extrabold tracking-wider">
+ <a
+ href="/"
+ onClick={(e) => {
+ e.preventDefault();
+ e.stopPropagation();
+ window.history.pushState({ view: 'home' }, '', '/');
+ window.dispatchEvent(new PopStateEvent('popstate'));
+ }}
+ className="inline-flex items-center gap-1 text-amber-400 text-[10px] font-extrabold tracking-wider bg-transparent cursor-pointer"
+ >
  <img
  src={isKo ? '/logo-ko.png' : '/logo-en.png'}
  alt={isKo ? '눈히어로.com' : 'S&SHero.com'}
- className="h-4 w-auto object-contain rounded-xs"
+ className="h-4 w-auto object-contain bg-transparent"
  />
  <span>{isKo ? '눈히어로.com' : 'S&SHero.com'}</span>
- </span>
+ </a>
  );
 };
 

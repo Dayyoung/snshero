@@ -54,11 +54,22 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
  dark && "text-[#fdfcfc]"
  )}
  >
+ <a
+ href="/"
+ onClick={(e) => {
+ e.preventDefault();
+ window.history.pushState({ view: 'home' }, '', '/');
+ window.dispatchEvent(new PopStateEvent('popstate'));
+ }}
+ className="inline-flex items-center shrink-0 cursor-pointer bg-transparent transition-opacity hover:opacity-85"
+ aria-label="Home"
+ >
  <img
  src={(typeof window !== 'undefined' && (localStorage.getItem('hero_language') || 'ko') !== 'ko') ? '/logo-en.png' : '/logo-ko.png'}
  alt={(typeof window !== 'undefined' && (localStorage.getItem('hero_language') || 'ko') !== 'ko') ? 'S&SHero.com' : '눈히어로.com'}
- className="h-6 sm:h-7 w-auto object-contain shrink-0 rounded-xs border border-[#201d1d]/20 bg-[#201d1d]"
+ className="h-7 sm:h-8 w-auto object-contain shrink-0 bg-transparent"
  />
+ </a>
  <span className="truncate">{title}</span>
  </h1>
 

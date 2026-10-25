@@ -4980,7 +4980,18 @@ export const ShopView: React.FC<ShopViewProps> = ({
                         </div>
                         <div className="w-full flex justify-center origin-center scale-[0.4] my-0.5 whitespace-nowrap">
                           <h1 id="main-logo" className="font-extrabold italic tracking-tight flex items-center justify-center mx-auto select-none font-mono">
-                            <img src={language === 'ko' ? '/logo-ko.png' : '/logo-en.png'} alt={language === 'ko' ? '눈히어로.com' : 'S&SHero.com'} className="h-3.5 w-auto object-contain rounded-xs" />
+                            <a
+                              href="/"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                window.history.pushState({ view: 'home' }, '', '/');
+                                window.dispatchEvent(new PopStateEvent('popstate'));
+                              }}
+                              className="inline-flex items-center bg-transparent cursor-pointer"
+                            >
+                              <img src={language === 'ko' ? '/logo-ko.png' : '/logo-en.png'} alt={language === 'ko' ? '눈히어로.com' : 'S&SHero.com'} className="h-3.5 w-auto object-contain bg-transparent" />
+                            </a>
                           </h1>
                         </div>
                       </div>

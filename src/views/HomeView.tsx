@@ -257,11 +257,24 @@ export const HomeView: React.FC<HomeViewProps> = ({
               <div>
                 <p className="mb-2 text-sm text-[#646262]">{language === 'ko' ? '눈히어로.com' : 'S&SHero.com'} / {language === 'ko' ? '덱 미리보기' : 'Deck Preview'}</p>
                 <h1 id="main-logo" className="leading-tight tracking-tight flex items-center">
-                  <img
-                    src={language === 'ko' ? '/logo-ko.png' : '/logo-en.png'}
-                    alt={language === 'ko' ? '눈히어로.com' : 'S&SHero.com'}
-                    className="h-14 sm:h-20 w-auto object-contain rounded-sm border border-[#201d1d]/20 bg-[#201d1d]"
-                  />
+                  <a
+                    href="/"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onNavigate('home');
+                      window.history.pushState({ view: 'home' }, '', '/');
+                      window.dispatchEvent(new PopStateEvent('popstate'));
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    className="inline-flex items-center cursor-pointer bg-transparent transition-opacity hover:opacity-85"
+                    aria-label={language === 'ko' ? '눈히어로.com 홈으로 이동' : 'Go to S&SHero.com Home'}
+                  >
+                    <img
+                      src={language === 'ko' ? '/logo-ko.png' : '/logo-en.png'}
+                      alt={language === 'ko' ? '눈히어로.com' : 'S&SHero.com'}
+                      className="h-14 sm:h-20 w-auto object-contain bg-transparent"
+                    />
+                  </a>
                   <span className="sr-only">{language === 'ko' ? '눈히어로.com' : 'S&SHero.com'}</span>
                 </h1>
               </div>
@@ -673,12 +686,24 @@ export const HomeView: React.FC<HomeViewProps> = ({
       <footer className="w-full mt-4 pt-4 border-t border-[rgba(15,0,0,0.12)] flex flex-col items-center justify-between text-xs font-mono text-[#646262] gap-3 select-none">
         <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <img
-              src={language === 'ko' ? '/logo-ko.png' : '/logo-en.png'}
-              alt={language === 'ko' ? '눈히어로.com' : 'S&SHero.com'}
-              className="h-6 sm:h-7 w-auto object-contain rounded-xs border border-[#201d1d]/20 bg-[#201d1d]"
-            />
-            <span className="font-bold text-[#201d1d]">{language === 'ko' ? '눈히어로.com' : 'S&SHero.com'}</span>
+            <a
+              href="/"
+              onClick={(e) => {
+                e.preventDefault();
+                onNavigate('home');
+                window.history.pushState({ view: 'home' }, '', '/');
+                window.dispatchEvent(new PopStateEvent('popstate'));
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="inline-flex items-center gap-2 cursor-pointer bg-transparent transition-opacity hover:opacity-85"
+            >
+              <img
+                src={language === 'ko' ? '/logo-ko.png' : '/logo-en.png'}
+                alt={language === 'ko' ? '눈히어로.com' : 'S&SHero.com'}
+                className="h-7 sm:h-8 w-auto object-contain bg-transparent"
+              />
+              <span className="font-bold text-[#201d1d]">{language === 'ko' ? '눈히어로.com' : 'S&SHero.com'}</span>
+            </a>
             <PingIndicator language={language} className="shrink-0" />
           </div>
           <div className="flex items-center gap-2 flex-wrap justify-center">

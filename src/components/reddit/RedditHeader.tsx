@@ -126,17 +126,22 @@ export const RedditHeader: React.FC<RedditHeaderProps> = ({
  </button>
 
  {/* 눈히어로.com / S&SHero.com 브랜드 로고 & 마크 */}
- <button
- type="button"
- onClick={() => onSelectSubreddit('popular')}
- className="flex items-center gap-2 cursor-pointer group min-h-[44px]"
+ <a
+ href="/"
+ onClick={(e) => {
+ e.preventDefault();
+ window.history.pushState({ view: 'home' }, '', '/');
+ window.dispatchEvent(new PopStateEvent('popstate'));
+ }}
+ className="flex items-center gap-2 cursor-pointer group min-h-[44px] bg-transparent transition-opacity hover:opacity-85"
+ aria-label={isKo ? '눈히어로.com 홈으로 이동' : 'Go to S&SHero.com Home'}
  >
  <img
  src={isKo ? '/logo-ko.png' : '/logo-en.png'}
  alt={isKo ? '눈히어로.com' : 'S&SHero.com'}
- className="h-9 sm:h-10 w-auto object-contain rounded-xs border border-[#201d1d]/20 bg-[#201d1d]"
+ className="h-9 sm:h-10 w-auto object-contain bg-transparent"
  />
- </button>
+ </a>
 
  {/* 현재 피드/서브레딧 드롭다운 (PC 화면) */}
  <div className="relative hidden md:block" ref={communityDropdownRef}>
