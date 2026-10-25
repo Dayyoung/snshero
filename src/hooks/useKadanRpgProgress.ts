@@ -41,14 +41,16 @@ export const resolveKadanArtStyleUrl = (
   mode: KadanArtStyleMode
 ): string => {
   if (!rawUrl) return '';
-  if (mode === 'liveaction') {
-    return rawUrl
-      .replace('/images/webtoon/episode_', '/images/cinema/episode_')
-      .replace('/images/storybook/ep_', '/images/storybook_liveaction/ep_');
-  }
-  return rawUrl
-    .replace('/images/cinema/episode_', '/images/webtoon/episode_')
-    .replace('/images/storybook_liveaction/ep_', '/images/storybook/ep_');
+  const cleanUrl = rawUrl.split('?')[0];
+  const mapped =
+    mode === 'liveaction'
+      ? cleanUrl
+          .replace('/images/webtoon/episode_', '/images/cinema/episode_')
+          .replace('/images/storybook/ep_', '/images/storybook_liveaction/ep_')
+      : cleanUrl
+          .replace('/images/cinema/episode_', '/images/webtoon/episode_')
+          .replace('/images/storybook_liveaction/ep_', '/images/storybook/ep_');
+  return `${mapped}?v=conquest2009`;
 };
 
 export interface KadanRpgProgress {

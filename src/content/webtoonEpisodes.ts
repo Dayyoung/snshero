@@ -100,14 +100,18 @@ const buildSeasonEpisodes = (): WebtoonEpisode[] => {
     const epImages = epData?.images || [];
     const heroMeta = EPISODE_HERO_MAP[epNum] || { focusCardId: 41, characterIds: [41] };
 
-    const panels: WebtoonPanel[] = epImages.map((img) => ({
-      id: `ep_${pad}_p${img.index}`,
-      imageUrl: img.localArtUrl || img.imageUrl || `/images/webtoon/episode_${pad}/scene_${String(img.index).padStart(2, '0')}.webp`,
-      captionKey: img.index === 0 ? `webtoon_ep_${pad}_title` : `webtoon_ep_${pad}_caption${img.index}`,
-      narrationEn: img.narrationEn,
-      narrationKo: img.narrationKo,
-      focusCardId: heroMeta.focusCardId,
-    }));
+    const panels: WebtoonPanel[] = epImages.map((img) => {
+      const baseImg = img.localArtUrl || img.imageUrl || `/images/webtoon/episode_${pad}/scene_${String(img.index).padStart(2, '0')}.webp`;
+      const cleanImg = baseImg.split('?')[0];
+      return {
+        id: `ep_${pad}_p${img.index}`,
+        imageUrl: `${cleanImg}?v=conquest2009`,
+        captionKey: img.index === 0 ? `webtoon_ep_${pad}_title` : `webtoon_ep_${pad}_caption${img.index}`,
+        narrationEn: img.narrationEn,
+        narrationKo: img.narrationKo,
+        focusCardId: heroMeta.focusCardId,
+      };
+    });
 
     return {
       id: `ep_${pad}`,

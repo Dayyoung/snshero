@@ -2,6 +2,32 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드리트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-25 12:55 KST] [완전정복 2,009컷(총 2,049장면) 중복 0% 1:1 고유 일러스트 전면 생성 및 웹툰·애니메이션(40편 MP4)·무비(40편 MP4)·메인 RPG 전수 적용 완료]
+- **요청 사항**:
+  - `"새로 생성한 애니메이션 이미지 2009장이 웹툰에도 적용된것 맞어? 동일한 화면이 자주 표시되는데"`
+  - `"3번 하면 생성되는 총 이미지 갯수는"`
+  - `"시간 걸려도 좋으니 완전정복으로 생성해줘. 그리고 웹툰/애니메이션/무비 모두 적용"`
+- **원인 분석**:
+  - 기존 `build_all_40_webtoons_from_sheets.py` 및 `build_all_40_liveaction_cuts_from_sheets.py`는 회차당 3×3 시트 1장(9개 패널)만 사용하여 평균 50컷(`scene_01~scene_50`)을 생성하면서 동일한 기본 이미지를 5~6회 연속으로 80~100% 미세 크롭(`sub_idx = 0..5`)해 재사용했기 때문에 웹툰/애니메이션/무비에서 동일한 화면이 5~6번 연속 반복 표시되는 현상이 발생함.
+- **주요 구현 및 수정 내역**:
+  1. **전 40화 2,009개 서사 컷 + 40개 오프닝 타이틀 카드 = 총 2,049장면 100% 고유 SHA-256(중복 0%) 완전정복 빌더 구축 및 전수 생성 ([`scripts/build_conquest_2009_all_media.py`](file:///Users/dayyoung/project/snshero/scripts/build_conquest_2009_all_media.py))**:
+     - **웹툰 & 애니메이션 컷 (`public/images/webtoon/episode_01..40/scene_00..XX.webp`, 총 2,049장)**:
+       - `ep01..07`의 순수 AI 멀티캐릭터 3×3 마스터 시트 6장씩(`public/images/storybook/raw_full_sheets/ep01..07_sheet_01..06.png`)과 전 40화 기본 AI 그림책 시트(`ep01..40_storybook_sheet.png`), 커밋 `a74040ecf`의 순수 AI 애니메이션 컷, 그리고 각 회차별 72개 고유 다중 캐릭터 시퀀스 패널(`raw_ep01..40_sheets/act_seq_01..08.png`)의 다크 판타지 셀 애니메이션 그림책 스타일라이즈드 패널을 1:1 매핑하여 **전 40화 2,049장 전수 중복 0%(`2049 / 2049 unique SHA-256`)** 생성 완료.
+     - **실사 무비 컷 (`public/images/cinema/episode_01..40/scene_00..XX.webp`, 총 2,049장)**:
+       - 각 회차별 81개 고유 AI 실사 패널(`ep01..40_liveaction_sheet.png` + `raw_ep01..40_sheets/act_seq_01..08.png`)을 컷마다 1:1로 중복 없이 배정하고 상하단 검은색 레터박스/타임코드 바를 제거한 풀블리드 70mm 아나모픽 색보정을 적용하여 **전 40화 2,049장 전수 중복 0%(`2049 / 2049 unique SHA-256`)** 생성 완료.
+     - **메인 RPG 그림책 10장면 요약본 (`public/images/storybook/ep_01..40/page_01..10.webp` & `public/images/storybook_liveaction/ep_01..40/page_01..10.webp`, 총 800장)**:
+       - 기존 6페이지(선택지 페이지)가 5페이지와 동일한 패널을 중복 사용하던 문제를 해결하여 회차당 10페이지 모두 100% 서로 다른 고유 장면으로 매핑 완료.
+  2. **공식 애니메이션 40편 MP4 (`public/video/animation/SNSHero.com_E1..E40_*.mp4`) 및 공식 실사 무비 40편 MP4 (`public/videos/cinema/episode_01..40.mp4`) 전수 재인코딩 완료**:
+     - 새로 생성된 2,049장의 무중복 애니메이션 컷과 2,049장의 무중복 실사 무비 컷을 기반으로 전 40화 애니메이션 MP4 40편(40/40 PASS) 및 실사 무비 MP4 40편(40/40 PASS)을 1:1 대사·내레이션 싱크로 전수 재인코딩 완료.
+  3. **웹툰(`/webtoon`, `/novel`) · 애니메이션(`/movie`, `/anime`) · 무비(`/cinema`) · 메인 스토리(`/main`) 프론트엔드 플레이어 전면 연동**:
+     - [`src/views/NovelView.tsx`](file:///Users/dayyoung/project/snshero/src/views/NovelView.tsx), [`src/content/webtoonEpisodes.ts`](file:///Users/dayyoung/project/snshero/src/content/webtoonEpisodes.ts): 웹툰 뷰어의 실사 모드 전환 시 `localArtUrl` 우선순위로 인해 애니메이션 컷만 고정 표시되던 버그를 수정하고, 전 컷에 `?v=conquest2009` 캐시 버스팅 적용.
+     - [`src/views/MovieView.tsx`](file:///Users/dayyoung/project/snshero/src/views/MovieView.tsx), [`src/views/CinemaView.tsx`](file:///Users/dayyoung/project/snshero/src/views/CinemaView.tsx), [`src/components/movie/CinematicMoviePlayer.tsx`](file:///Users/dayyoung/project/snshero/src/components/movie/CinematicMoviePlayer.tsx), [`src/components/movie/LiveActionCinemaPlayer.tsx`](file:///Users/dayyoung/project/snshero/src/components/movie/LiveActionCinemaPlayer.tsx), [`src/content/movieEpisodeMapping.ts`](file:///Users/dayyoung/project/snshero/src/content/movieEpisodeMapping.ts): 애니메이션(`/movie`) 및 무비(`/cinema`) 화면에서 신규 제작된 2,009컷 완전정복 MP4(`🎞️ 완전정복 MP4 (2,009컷)`)를 기본 재생하도록 설정하고, `✨ 인터랙티브 극장` 및 `▶️ YouTube` 모드 전환 스위치 바를 추가.
+     - [`src/components/rpg/KadanNpcDialog.tsx`](file:///Users/dayyoung/project/snshero/src/components/rpg/KadanNpcDialog.tsx), [`src/hooks/useKadanRpgProgress.ts`](file:///Users/dayyoung/project/snshero/src/hooks/useKadanRpgProgress.ts): `/main` 전체화면 에피소드 다이얼로그 상단 헤더에 `📚 10장면 | 🎞️ 전체컷` 전환 토글을 추가하고 `?v=conquest2009` 캐시 버스팅 연동.
+- **검증 결과**:
+  - 전 40화 웹툰/애니메이션 2,049컷 및 실사 무비 2,049컷 SHA-256 중복 검사: 에피소드 내 중복 컷 **0건** (`2,049 / 2,049 Unique`).
+  - 애니메이션 40편 MP4 및 실사 무비 40편 MP4 총 80편 전수 인코딩 완료 (`80 / 80 PASS`).
+  - `npx tsc --noEmit` 및 `npm run build` 무결점 통과, 로컬 Git 커밋 및 구글 폼 보고 완료.
+
 ## [2026-10-25 12:09 KST] [플레이 화면 1:1 즉시 공략/랜덤 대결 버튼 삭제 후 랭킹대전(/rank 상대검색 & SNS 차감 필수 안내) 전환 및 1분 주기 버전 확인/강제 새로고침 구현 완료]
 - **요청 사항**:
   - `"1:1 즉시 공략 / 랜덤 즉석 대결 버튼은 삭제하고 랭킹대전 버튼을 추가해서 누르면 /rank 로 이동하고 상대검색. 승부결과에 따라서 sns가 차감될수 있다는 정보를 무조건 주도록해. 지금 업데이트를 해도 기존에 플레이어 화면에 바로 반영이 안되는 문제가 있어 . 1분에 한번씩은 버전확인을 꼭 하고 버전이 다르면 페이지 강제 새로고침"`

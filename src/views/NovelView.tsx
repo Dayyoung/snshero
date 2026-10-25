@@ -267,16 +267,17 @@ export const NovelView: React.FC<NovelViewProps> = ({
   const getCartoonSceneUrl = (epNum: number, sceneIdx: number, attempt = 0): string => {
     const epPad = pad2(epNum);
     const scPad = pad2(sceneIdx);
+    const cacheBust = '?v=conquest2009';
     if (cartoonArtStyle === 'liveaction') {
-      return `/images/cinema/episode_${epPad}/scene_${scPad}.webp`;
+      return `/images/cinema/episode_${epPad}/scene_${scPad}.webp${cacheBust}`;
     }
     const epData = WEBTOON_DATA[String(epNum)];
     const imgInfo = epData?.images?.find(img => img.index === sceneIdx);
     if (imgInfo) {
-      if (imgInfo.localArtUrl) return imgInfo.localArtUrl;
-      if (imgInfo.imageUrl) return imgInfo.imageUrl;
+      if (imgInfo.localArtUrl) return `${imgInfo.localArtUrl}${cacheBust}`;
+      if (imgInfo.imageUrl) return `${imgInfo.imageUrl}${cacheBust}`;
     }
-    return `/images/webtoon/episode_${epPad}/scene_${scPad}.webp`;
+    return `/images/webtoon/episode_${epPad}/scene_${scPad}.webp${cacheBust}`;
   };
 
   // Reader Customization Settings
@@ -1683,12 +1684,12 @@ export const NovelView: React.FC<NovelViewProps> = ({
 
                     return (
                       <WebtoonPanelCard
-                        key={scNum}
+                        key={`${cartoonArtStyle}_${scNum}`}
                         episodeNumber={currentEpisodeNum}
                         sceneIndex={scNum}
                         totalScenes={totalEpisodeScenes}
                         imgUrl={imgUrl}
-                        localArtUrl={imgInfo?.localArtUrl}
+                        localArtUrl={cartoonArtStyle === 'liveaction' ? undefined : (imgInfo?.localArtUrl ? `${imgInfo.localArtUrl}?v=conquest2009` : undefined)}
                         isKeyClimax={imgInfo?.isKeyClimax}
                         narrationText={sentenceText || ''}
                         dialogues={imgInfo?.dialogues}
@@ -1750,11 +1751,12 @@ export const NovelView: React.FC<NovelViewProps> = ({
 
                         {/* Active Slide Webtoon Panel Card */}
                         <WebtoonPanelCard
+                          key={`slide_${cartoonArtStyle}_${scNum}`}
                           episodeNumber={currentEpisodeNum}
                           sceneIndex={scNum}
                           totalScenes={totalEpisodeScenes}
                           imgUrl={imgUrl}
-                          localArtUrl={imgInfo?.localArtUrl}
+                          localArtUrl={cartoonArtStyle === 'liveaction' ? undefined : (imgInfo?.localArtUrl ? `${imgInfo.localArtUrl}?v=conquest2009` : undefined)}
                           isKeyClimax={imgInfo?.isKeyClimax}
                           narrationText={sentenceText || ''}
                           dialogues={imgInfo?.dialogues}

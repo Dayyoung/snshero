@@ -1,8 +1,8 @@
 {
-  "version": "2.1.0-1792897745736",
-  "buildTime": "2026-10-25T03:09:05.736Z",
-  "buildTimestamp": 1792897745736,
+  "version": "2.1.0-1792900501566",
+  "buildTime": "2026-10-25T03:55:01.566Z",
+  "buildTimestamp": 1792900501566,
   "service": "snshero-revolution",
   "minRequiredVersion": "2.0.0",
-  "entryScript": "/assets/index-FXpSmkr2.js"
+  "entryScript": "/assets/index-6rKwU0MC.js"
 }

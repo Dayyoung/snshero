@@ -16,7 +16,8 @@ import { cn } from '../lib/utils';
 import { triggerHaptic } from '../lib/haptic';
 import { PageHeader } from '../components/PageHeader';
 import { getSeasonItem, setSeasonItem } from '../lib/webtoonProgress';
-import { MOVIE_EPISODES } from '../content/movieEpisodeMapping';
+import { MOVIE_EPISODES, getCinemaVideoUrl } from '../content/movieEpisodeMapping';
+import { LiveActionCinemaPlayer } from '../components/movie/LiveActionCinemaPlayer';
 
 interface CinemaViewProps {
   language: Language;
@@ -70,6 +71,7 @@ export const CinemaView: React.FC<CinemaViewProps> = ({
   const [playlistVideoIds, setPlaylistVideoIds] = useState<string[]>([]);
   const [showDrawer, setShowDrawer] = useState<boolean>(false);
   const [shareToast, setShareToast] = useState<string | null>(null);
+  const [playerMode, setPlayerMode] = useState<'conquest_mp4' | 'interactive' | 'youtube'>('conquest_mp4');
   const todayStr = new Date().toISOString().split('T')[0];
 
   const [claimedRewards, setClaimedRewards] = useState<Record<number, boolean>>(() => {
@@ -347,18 +349,93 @@ export const CinemaView: React.FC<CinemaViewProps> = ({
         </div>
       </div>
 
-      {/* ── YouTube Movie Player Only ── */}
+      {/* ── Live-Action Movie Player Mode Switch & Video Viewport ── */}
       <div className="mb-5 w-full">
-        <div className="relative w-full aspect-video rounded-none overflow-hidden bg-black border-y border-x-0 border-[#201d1d]">
-          <iframe
-            key={`movie-yt-ep-${currentEpisodeNum}-${currentVideoId}`}
-            src={embedUrl}
-            title={`SNSHero The Movie Ep.${currentEpisodeNum}`}
-            className="w-full h-full border-0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowFullScreen
-          />
+        <div className="px-2 sm:px-4 py-2 bg-[#f8f7f7] border-t border-x-0 border-[rgba(15,0,0,0.12)] flex items-center justify-between gap-2 flex-wrap">
+          <div className="inline-flex items-center rounded-sm border border-[#201d1d] bg-[#fdfcfc] p-0.5 font-mono">
+            <button
+              type="button"
+              onClick={() => setPlayerMode('conquest_mp4')}
+              className={cn(
+                'min-h-[36px] px-2.5 py-1 rounded-sm text-xs font-mono font-bold transition-colors cursor-pointer',
+                playerMode === 'conquest_mp4'
+                  ? 'bg-[#201d1d] text-[#fdfcfc]'
+                  : 'text-[#646262] hover:text-[#201d1d]'
+              )}
+            >
+              🎞️ {language === 'ko' ? '완전정복 MP4 (2,009컷)' : 'Conquest MP4 (2,009 Cuts)'}
+            </button>
+            <button
+              type="button"
+              onClick={() => setPlayerMode('interactive')}
+              className={cn(
+                'min-h-[36px] px-2.5 py-1 rounded-sm text-xs font-mono font-bold transition-colors cursor-pointer',
+                playerMode === 'interactive'
+                  ? 'bg-[#201d1d] text-[#fdfcfc]'
+                  : 'text-[#646262] hover:text-[#201d1d]'
+              )}
+            >
+              🎬 {language === 'ko' ? '인터랙티브 70mm 극장' : 'Interactive 70mm Cinema'}
+            </button>
+            <button
+              type="button"
+              onClick={() => setPlayerMode('youtube')}
+              className={cn(
+                'min-h-[36px] px-2.5 py-1 rounded-sm text-xs font-mono font-bold transition-colors cursor-pointer',
+                playerMode === 'youtube'
+                  ? 'bg-[#201d1d] text-[#fdfcfc]'
+                  : 'text-[#646262] hover:text-[#201d1d]'
+              )}
+            >
+              ▶️ YouTube
+            </button>
+          </div>
+          <span className="text-[11px] font-mono text-[#646262]">
+            {language === 'ko'
+              ? '중복 0% · 전 40화 2,009컷 1:1 완전정복 70mm 실사 무비 적용'
+              : '0% Duplicates · All 40 Episodes 2,009 Unique Live-Action Cuts Applied'}
+          </span>
         </div>
+
+        {playerMode === 'conquest_mp4' ? (
+          <div className="relative w-full aspect-video rounded-none overflow-hidden bg-black border-y border-x-0 border-[#201d1d]">
+            <video
+              key={`movie-mp4-ep-${currentEpisodeNum}`}
+              src={getCinemaVideoUrl(currentEpisodeNum)}
+              controls
+              autoPlay
+              playsInline
+              onEnded={handleAdvanceOrToggleCrossMedia}
+              onError={() => setPlayerMode('interactive')}
+              className="w-full h-full object-contain bg-black"
+            />
+          </div>
+        ) : playerMode === 'interactive' ? (
+          <div className="w-full border-y border-x-0 border-[#201d1d]">
+            <LiveActionCinemaPlayer
+              key={`movie-interactive-ep-${currentEpisodeNum}`}
+              episodeNumber={currentEpisodeNum}
+              titleKo={MOVIE_EPISODES[currentEpisodeNum]?.titleKo || `제 ${currentEpisodeNum}화`}
+              titleEn={MOVIE_EPISODES[currentEpisodeNum]?.titleEn || `Episode ${currentEpisodeNum}`}
+              titleJa={MOVIE_EPISODES[currentEpisodeNum]?.titleJa}
+              language={language === 'ko' || language === 'ja' ? language : 'en'}
+              onEpisodeComplete={() => handleAdvanceOrToggleCrossMedia()}
+              onSelectEpisode={handleSelectEpisode}
+              totalEpisodes={TOTAL_EPISODES}
+            />
+          </div>
+        ) : (
+          <div className="relative w-full aspect-video rounded-none overflow-hidden bg-black border-y border-x-0 border-[#201d1d]">
+            <iframe
+              key={`movie-yt-ep-${currentEpisodeNum}-${currentVideoId}`}
+              src={embedUrl}
+              title={`SNSHero The Movie Ep.${currentEpisodeNum}`}
+              className="w-full h-full border-0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+            />
+          </div>
+        )}
 
         {/* Episode Info & Navigation Bar */}
         <div className="p-3 sm:p-4 rounded-none border-b border-x-0 border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">

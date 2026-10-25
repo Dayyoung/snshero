@@ -635,6 +635,38 @@ export const KadanNpcDialog: React.FC<KadanNpcDialogProps> = ({
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
+          {/* 장면 구성 단위 토글: 10장면 요약 / 50컷 전체 */}
+          <div
+            className="hidden sm:inline-flex min-h-[40px] items-center rounded-sm border border-stone-700 bg-stone-950 p-0.5 font-mono"
+            role="group"
+            aria-label={language === 'ko' ? '장면 구성 전환' : 'Scene Granularity'}
+          >
+            <button
+              type="button"
+              onClick={() => setViewGranularity('storybook')}
+              className={cn(
+                'min-h-[34px] px-2.5 py-1 rounded-sm text-xs font-mono font-bold transition-colors cursor-pointer',
+                viewGranularity === 'storybook'
+                  ? 'bg-emerald-400 text-stone-950 font-black'
+                  : 'text-stone-400 hover:text-stone-200'
+              )}
+            >
+              📚 {language === 'ko' ? '10장면' : '10 Scenes'}
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewGranularity('all_cuts')}
+              className={cn(
+                'min-h-[34px] px-2.5 py-1 rounded-sm text-xs font-mono font-bold transition-colors cursor-pointer',
+                viewGranularity === 'all_cuts'
+                  ? 'bg-emerald-400 text-stone-950 font-black'
+                  : 'text-stone-400 hover:text-stone-200'
+              )}
+            >
+              🎞️ {language === 'ko' ? '전체컷' : 'All Cuts'}
+            </button>
+          </div>
+
           {/* 삽화모드 토글: 애니 / 무비 */}
           <div
             className="inline-flex min-h-[40px] items-center rounded-sm border border-stone-700 bg-stone-950 p-0.5 font-mono"
