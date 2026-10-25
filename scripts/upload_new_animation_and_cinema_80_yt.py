@@ -25,43 +25,22 @@ PROJECT_ROOT = Path("/Users/dayyoung/project/snshero")
 MAPPING_FILE = PROJECT_ROOT / "src/content/movieEpisodeMapping.ts"
 ANIMATION_DIR = PROJECT_ROOT / "public/video/animation"
 CINEMA_DIR = PROJECT_ROOT / "public/videos/cinema"
-STATE_FILE = PROJECT_ROOT / "scripts/youtube_synced_80_upload_state.json"
+STATE_FILE = PROJECT_ROOT / "scripts/youtube_snshero_official_80_state.json"
 
 YOUTUBE_API_KEY = "AIzaSyBa9TidLv_iwMyB-9VSrVGWEVUr0WyjiQU"
 
 CHANNELS = [
     {
-        "name": "dayyoung (Profile 4)",
-        "profile_dir_name": "Profile 4",
-        "tmp_dir": Path("/tmp/yt_studio_chrome_profile4"),
-        "channel_id": None,
-        "existing_anim_drafts": {},
-    },
-    {
-        "name": "Day young (Default)",
-        "profile_dir_name": "Default",
-        "tmp_dir": Path("/tmp/yt_studio_chrome_default"),
-        "channel_id": None,
-        "existing_anim_drafts": {},
-    },
-    {
-        "name": "Siot (Profile 1)",
-        "profile_dir_name": "Profile 1",
-        "tmp_dir": Path("/tmp/yt_studio_chrome_profile1"),
-        "channel_id": None,
-        "existing_anim_drafts": {},
-    },
-    {
-        "name": "JD (Profile 5)",
-        "profile_dir_name": "Profile 5",
-        "tmp_dir": Path("/tmp/yt_studio_chrome_profile5"),
-        "channel_id": None,
+        "name": "SNSHero Official (Profile 6)",
+        "profile_dir_name": "Profile 6",
+        "tmp_dir": Path("/tmp/yt_studio_chrome_profile6"),
+        "channel_id": "UCA6QmKiPstbiyBUHtnSMxyA",
         "existing_anim_drafts": {},
     },
 ]
 
-ANIMATION_PLAYLIST_TITLE = "SNSHero.com Official Animation (40 Episodes - 1:1 Aligned)"
-CINEMA_PLAYLIST_TITLE = "SNSHero.com Official Live-Action Movie (40 Episodes - 1:1 Aligned)"
+ANIMATION_PLAYLIST_TITLE = "SNSHero.com Official Animation (40 Episodes - 1:1 Synced)"
+CINEMA_PLAYLIST_TITLE = "SNSHero.com Official Live-Action Movie (40 Episodes - 1:1 Synced)"
 
 
 def log(msg: str) -> None:
