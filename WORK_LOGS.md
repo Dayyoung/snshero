@@ -16041,3 +16041,17 @@
   3. `src/views/MobileCardPlayScreen.tsx` & `src/views/PlayGameView.tsx`: 보드 슬롯 `motion.div`의 `opacity`를 상시 `1`로 고정하고 `ease: 'easeOut'`으로 통일하여 카드 배치 시 캐릭터가 누락되거나 투명해지는 현상 100% 해결.
 - **검증 결과**: `npx tsc --noEmit` 통과, `npm run build` 성공, 헤드리스 크롬 실화면(`/card-play`) 캡처 검증 완료.
 - **구글 폼 보고**: 제출 완료.
+
+## 2026-10-25 13:05 (KST) — 2,009장 컷신 상단 검은라벨·흔들림 제거 및 1:1 나레이션 동기화 애니메이션/실사영화 80편 재생성·유튜브 최신화 완료
+- **작업 내역**:
+  1. **상단 검은 라벨 바 전수 제거 (`build_all_40_webtoons_from_sheets.py`, `build_all_40_liveaction_cuts_from_sheets.py`, `bake_ai_storybook_sheet.py`, `build_100pct_rpg_novel_scripts.py`)**:
+     - 애니메이션 2,009장(`public/images/webtoon/episode_01..40/`), 실사 2,009장(`public/images/cinema/episode_01..40/`), 그림책 400장(`public/images/storybook/` & `public/images/storybook_liveaction/`)에서 상단/하단 검은 라벨 바를 완전 제거하여 순수 풀블리드 아트워크로 재생성 완료.
+  2. **2,009장 컷신-나레이션 1:1 정밀 동기화 (`sync_webtoon_with_novel.py`, `synced_narration_engine.py`)**:
+     - 다중 특징 동적 계획법(DP Sequence Alignment)으로 40화 전체 한국어·영어 문단 및 컷신(`panelIndex`, `subIndex`)을 1:1 정렬(`src/content/webtoonEpisodeManifest.json`, `public/book/image_narrations/episode_01..40_narrations.json`).
+     - `edge_tts`의 `SentenceBoundary` 타임스탬프 기반 컷 전환 경계(`boundaries_sec`)를 계산하여 컷신 화면 전환과 음성 나레이션의 오차 `0.00s` 동기화 달성.
+  3. **흔들림 효과 제거 및 애니메이션 40편·실사영화 40편 MP4 재생성 (`generate_all_40_episode_videos.py`, `generate_cinema_videos.py`)**:
+     - 상단 검은 라벨, 카메라 흔들림(`shake_x`, `shake_y`, `breath_x`, `breath_y`), 팬/줌 크롭 떨림, 눈보라/불티 파티클, 검기 슬래시/렌즈 플레어 선, 초상화 바운스, 타이핑 깜빡임 효과를 모두 제거하고 80편 전수 재생성 완료.
+  4. **유튜브 플레이리스트 80편 업로드·발행 및 게임 링크 최신화 (`publish_all_80_synced_drafts_yt.py`, `movieEpisodeMapping.ts`, `MovieView.tsx`, `AnimeView.tsx`, `CinemaView.tsx`, `NovelView.tsx`, `geoManager.ts`, `generate-video-seo.ts`)**:
+     - 애니메이션 40편 신규 플레이리스트: `PLBTRBTakaSNU` (`6kug0HSmtOM` ~ `5BPT1AqJs-0`)
+     - 실사영화 40편 신규 플레이리스트: `PLeb-8Xpcho0o` (`6ILGHhuYK2c` ~ `7VqUeRqXAMQ`)
+- **검증 및 보고**: `npx tsc --noEmit` (0 에러), `npm run build` 성공, 구글 폼 작업완료 보고서 제출 완료.

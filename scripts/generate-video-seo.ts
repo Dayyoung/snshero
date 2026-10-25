@@ -428,7 +428,7 @@ function buildSeriesHubHtml(
   const routePrefix = isAnime ? '/movie' : '/cinema';
   const playlistId = isAnime ? ANIME_PLAYLIST_ID : MOVIE_PLAYLIST_ID;
   const playlistUrl = isAnime ? ANIME_PLAYLIST_URL : MOVIE_PLAYLIST_URL;
-  const firstVid = (isAnime ? episodes[0]?.videoId : episodes[0]?.movieVideoId) || (isAnime ? 'cbg1iP_7jOo' : 'hqgXClTuKmU');
+  const firstVid = (isAnime ? episodes[0]?.videoId : episodes[0]?.movieVideoId) || (isAnime ? '6kug0HSmtOM' : '6ILGHhuYK2c');
   const canonicalUrl = `${BASE_URL}${routePrefix}`;
   const thumbUrl = `https://i.ytimg.com/vi/${firstVid}/maxresdefault.jpg`;
   const embedUrl = `https://www.youtube.com/embed/${firstVid}?list=${playlistId}&rel=0`;
@@ -438,8 +438,8 @@ function buildSeriesHubHtml(
     : 'SNSHero 공식 무비 40화 전편 스트리밍 (Kadan & Arcane Echoes: The Movie) | SNS히어로';
 
   const description = isAnime
-    ? 'SNSHero(SNS히어로) 공식 40부작 판타지 애니메이션 전편 무료 감상! 카단과 110여 종 영웅들의 서사시를 유튜브 플레이리스트(PLWJoj18KXId0)로 시청하고 매 화 +100 SNS 게임 보상을 즉시 수령하세요.'
-    : 'SNSHero(SNS히어로) 공식 40부작 시네마틱 무비 전편 무료 감상! 카단과 아케인 대륙의 블록버스터 판타지 무비 시리즈(PLHiW8jLQ0t2Q)를 시청하고 회차별 +100 SNS 보상을 즉시 획득하세요.';
+    ? 'SNSHero(SNS히어로) 공식 40부작 판타지 애니메이션 전편 무료 감상! 카단과 110여 종 영웅들의 서사시를 유튜브 플레이리스트(PLBTRBTakaSNU)로 시청하고 매 화 +100 SNS 게임 보상을 즉시 수령하세요.'
+    : 'SNSHero(SNS히어로) 공식 40부작 시네마틱 무비 전편 무료 감상! 카단과 아케인 대륙의 블록버스터 판타지 무비 시리즈(PLeb-8Xpcho0o)를 시청하고 회차별 +100 SNS 보상을 즉시 획득하세요.';
 
   const jsonLdGraph = {
     '@context': 'https://schema.org',
