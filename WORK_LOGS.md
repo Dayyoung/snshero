@@ -2,6 +2,15 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-26 20:29 KST] [자동 플레이 시 필드 기습(Field Ambush) 이벤트 발생 원천 차단]
+- **요청 사항**:
+  - "자동 플레이 시, 필드 기습 이벤트는 발생하지 않게해줘."
+- **원인 및 주요 수정 내역**:
+  1. **[`src/views/KadanRpgView.tsx`](file:///Users/dayyoung/project/snshero/src/views/KadanRpgView.tsx)**:
+     - 기존에는 `progress.autoMode`가 일시적으로 `false`로 전환되었으나 전역 자동 플레이(`hero_auto_battle === 'true'`, `hero_kadan_rpg_auto_mode === 'true'`, `hero_auto_loop_is_ranking === 'true'`, `hero_auto_loop_mode !== null`)나 챕터 간 자동 타일 이동이 진행될 때 `shouldTriggerAmbush`가 호출되어 `[필드 기습 / FIELD AMBUSH]` 이벤트가 발생하는 문제가 있었음.
+     - `isAutoPlayActive` 통합 판별식을 구성하고, 사용자가 직접 필드 타일을 클릭/터치하여 이동한 경우(`isManualFieldMoveRef.current === true`)이자 자동 플레이가 아닐 때(`!isAutoPlayActive`)만 필드 기습 체크가 동작하도록 제한.
+     - 자동 플레이 활성화 또는 비수동 이동 시 진행 중인 `ambushAlert` 및 `ambushBattle` 상태를 즉시 초기화하고 렌더링 가드(`!isAutoPlayActive`)를 추가하여 자동 플레이 중 필드 기습 팝업/배틀이 절대 발생하지 않도록 원천 차단.
+
 ## [2026-10-26 17:17 KST] [/wiki/card 미소유 카드 컬러 표시 및 /play 미소유 카드 회색(Grayscale) 표시 적용]
 - **요청 사항**:
   - "https://snshero.com/wiki/card 여기에 있는 카드들은 소유하지 않아도 회색으로 표시되지 않게 해줘."

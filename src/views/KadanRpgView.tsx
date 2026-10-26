@@ -151,6 +151,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  const [ambushCountdown, setAmbushCountdown] = useState<number>(1.0);
  const [isQuickRetrying, setIsQuickRetrying] = useState<boolean>(false);
  const isDeadlockExitingRef = useRef<boolean>(false);
+ const isManualFieldMoveRef = useRef<boolean>(false);
  const quickRetryTimerRef = useRef<number | null>(null);
 
  useEffect(() => {
@@ -251,25 +252,46 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  // 데모모드, 랭킹분기, 또는 상점/마이덱 최적화 후 복귀 시 autoMode 자동 강제 활성화
  useEffect(() => {
  let justOptimized = false;
+ let globalAutoMode = false;
  try {
   justOptimized = localStorage.getItem('hero_story_just_optimized') === 'true';
+  globalAutoMode = localStorage.getItem('hero_kadan_rpg_auto_mode') === 'true';
  } catch {}
- if ((isDemoPlayActive() || isRankingDiverted() || justOptimized) && !progress.autoMode) {
+ if ((isDemoPlayActive() || isRankingDiverted() || justOptimized || globalAutoMode) && !progress.autoMode) {
  setAutoMode(true);
  }
  }, [progress.autoMode, setAutoMode]);
 
+ const isAutoPlayActive = Boolean(
+  progress.autoMode ||
+  isDemoPlayActive() ||
+  isRankingDiverted() ||
+  (() => {
+   try {
+    return (
+     localStorage.getItem('hero_auto_battle') === 'true' ||
+     localStorage.getItem('hero_kadan_rpg_auto_mode') === 'true' ||
+     localStorage.getItem('hero_auto_loop_is_ranking') === 'true' ||
+     localStorage.getItem('hero_auto_loop_mode') !== null
+    );
+   } catch {
+    return false;
+   }
+  })()
+ );
+
  // 스토리 완결(isComplete) 도달 시 자동모드에서는 닫힌 팝업도 다시 열어 자동 환생 루프 보장
  useEffect(() => {
- if (isComplete && isEndingDismissed && (progress.autoMode || isDemoPlayActive() || isRankingDiverted())) {
+ if (isComplete && isEndingDismissed && isAutoPlayActive) {
  setIsEndingDismissed(false);
  }
- }, [isComplete, isEndingDismissed, progress.autoMode]);
+ }, [isComplete, isEndingDismissed, isAutoPlayActive]);
 
  // Auto mode setting is persisted in local storage and managed by user toggle
  useEffect(() => {
  const region = getKadanRpgRegion(nextEvent?.regionId ?? progress.currentRegionId);
  setHeroTile(clampTile(progress.lastTile, region.width, region.height));
+ isManualFieldMoveRef.current = false;
  setTargetTile(nextEvent?.tile ?? null);
  setDismissedEventId(null);
  }, [nextEvent, progress.currentChapterId, progress.currentRegionId, progress.rebirthLevel]);
@@ -283,11 +305,14 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
 
  // 자동플레이 중에는 적 난입(Ambush)과 마주치지 않고 에피소드 스토리에 온전히 몰입하도록 즉시 해제
  useEffect(() => {
-  if (progress.autoMode && (ambushAlert || ambushBattle)) {
+  if (isAutoPlayActive) {
+   isManualFieldMoveRef.current = false;
+  }
+  if ((isAutoPlayActive || !isManualFieldMoveRef.current) && (ambushAlert || ambushBattle)) {
    setAmbushAlert(null);
    setAmbushBattle(null);
   }
- }, [progress.autoMode, ambushAlert, ambushBattle]);
+ }, [isAutoPlayActive, ambushAlert, ambushBattle]);
 
  useEffect(() => {
   if (!targetTile || sameTile(heroTile, targetTile) || ambushAlert || ambushBattle) {
@@ -307,8 +332,8 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
    const isDest = sameTile(next, targetTile);
    const isStart = sameTile(next, currentRegion.startTile);
 
-   // 자동플레이 시에는 적 난입 출현을 발생시키지 않아 1~40회 스토리 몰입 보장
-   if (!progress.autoMode && !isDemoPlayActive() && !isRankingDiverted()) {
+   // 자동플레이 시(또는 챕터 간 자동 이동 시)에는 필드 기습 이벤트가 절대 발생하지 않도록 차단 (오직 수동 필드 타일 이동 시에만 발생)
+   if (!isAutoPlayActive && isManualFieldMoveRef.current) {
     const triggered = shouldTriggerAmbush(
      nextStep,
      lastAmbushStep,
@@ -344,7 +369,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
   ambushedInLeg,
   currentRegion,
   nextEvent,
-  progress.autoMode,
+  isAutoPlayActive,
   progress.rebirthLevel,
   activeEvent,
   battleEvent,
@@ -356,6 +381,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  }, [progress.autoMode, setAutoMode]);
 
  const moveToEvent = useCallback((event: KadanRpgEvent) => {
+ isManualFieldMoveRef.current = false;
  setTargetTile(event.tile);
  }, []);
 
@@ -419,6 +445,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
 
  const handleTilePress = useCallback((tile: KadanRpgTile) => {
  pauseForManualInput();
+ isManualFieldMoveRef.current = true;
  setDismissedEventId(null);
  setTargetTile(clampTile(tile, currentRegion.width, currentRegion.height));
  }, [currentRegion.height, currentRegion.width, pauseForManualInput]);
@@ -431,6 +458,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  setMediaPromptEvent(null);
  setMediaPromptChapterReward(null);
  setDismissedEventId(null);
+ isManualFieldMoveRef.current = false;
 
  const nextChapterEvent = KADAN_RPG_EVENTS.find((e) => e.chapterNumber === event.chapterNumber + 1);
  if (nextChapterEvent) {
@@ -1103,7 +1131,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  document.body
  )}
 
- {ambushBattle && createPortal(
+ {!isAutoPlayActive && ambushBattle && createPortal(
  <div className="fixed inset-0 z-[99999] w-full h-[100dvh] max-h-[100dvh] bg-[#060a14] flex flex-col items-center justify-center overflow-hidden pointer-events-auto select-none touch-none">
  <MobileCardPlayScreen
  isAdRemoved={isAdRemoved}
@@ -1139,7 +1167,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  document.body
  )}
 
- {ambushAlert && (
+ {!isAutoPlayActive && ambushAlert && (
  <div 
  className="fixed inset-0 z-[10020] flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs font-mono select-none"
  role="dialog"
