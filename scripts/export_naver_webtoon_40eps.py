@@ -2,19 +2,23 @@
 # -*- coding: utf-8 -*-
 """
 눈히어로.com - 카단의 여정 (1화 ~ 40화)
-네이버 웹툰 연재용 고화질 세로 연결 통이미지(이미지 + 대사번호 + 대사) 40개 일괄 생성 스크립트
+네이버 웹툰 연재 규격 (가로 690px 고정, 파일당 5MB 이하 보장, 01~40 넘버링 및 정렬)
+세로 연결 통이미지(이미지 + 대사번호 + 대사 + 엔딩 카드게임 안내 컷) 40개 일괄 생성 스크립트
 """
 
+import io
 import json
 import os
 import re
+import time
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
 FONT_PATH = "/System/Library/Fonts/AppleSDGothicNeo.ttc"
-CANVAS_W = 1080
-IMG_W = 1080
-IMG_H = 608  # 16:9 FHD Webtoon Width from 800x450 source
+CANVAS_W = 690
+IMG_W = 690
+IMG_H = 388  # 690 * 9 / 16 (16:9 ratio)
+MAX_FILE_BYTES = 4_750_000  # Strict < 5,000,000 bytes (5MB decimal & binary safe)
 
 with open("src/content/webtoonEpisodeManifest.json", "r", encoding="utf-8") as f:
     MANIFEST = json.load(f)
@@ -60,13 +64,13 @@ def wrap_korean_text(draw, text, font, max_width):
 
 
 def render_single_episode(ep_num, out_dir):
-    font_title_lg = ImageFont.truetype(FONT_PATH, 34, index=14)
-    font_title_sub = ImageFont.truetype(FONT_PATH, 20, index=4)
-    font_scene_hdr = ImageFont.truetype(FONT_PATH, 19, index=6)
-    font_climax_badge = ImageFont.truetype(FONT_PATH, 16, index=6)
-    font_num_badge = ImageFont.truetype(FONT_PATH, 20, index=14)
-    font_dialogue = ImageFont.truetype(FONT_PATH, 25, index=4)
-    font_footer = ImageFont.truetype(FONT_PATH, 21, index=6)
+    font_title_lg = ImageFont.truetype(FONT_PATH, 24, index=14)
+    font_title_sub = ImageFont.truetype(FONT_PATH, 14, index=6)
+    font_scene_hdr = ImageFont.truetype(FONT_PATH, 13, index=6)
+    font_climax_badge = ImageFont.truetype(FONT_PATH, 11, index=6)
+    font_num_badge = ImageFont.truetype(FONT_PATH, 14, index=14)
+    font_dialogue = ImageFont.truetype(FONT_PATH, 17, index=4)
+    font_footer = ImageFont.truetype(FONT_PATH, 15, index=6)
 
     ep_data = MANIFEST[str(ep_num)]
     ep_meta = EP_META_MAP.get(ep_num, {})
@@ -79,10 +83,10 @@ def render_single_episode(ep_num, out_dir):
     dummy_img = Image.new("RGB", (100, 100))
     dummy_draw = ImageDraw.Draw(dummy_img)
 
-    TOP_HEADER_H = 158
-    PANEL_HDR_H = 50
-    PANEL_GAP = 22
-    FOOTER_H = 124
+    TOP_HEADER_H = 112
+    PANEL_HDR_H = 36
+    PANEL_GAP = 14
+    FOOTER_H = 88
 
     panel_layouts = []
     total_h = TOP_HEADER_H + PANEL_GAP
@@ -95,14 +99,14 @@ def render_single_episode(ep_num, out_dir):
             narr_ko = f"제 {ep_num:02d}화 : {title_ko} ({title_en})"
 
         badge_text = "TITLE" if sc_idx == 0 else f"#{sc_idx:02d}"
-        badge_w = 88 if sc_idx == 0 else 76
-        text_x = 28 + badge_w + 18
-        max_text_w = CANVAS_W - text_x - 32
+        badge_w = 62 if sc_idx == 0 else 54
+        text_x = 18 + badge_w + 12
+        max_text_w = CANVAS_W - text_x - 20
 
         lines = wrap_korean_text(dummy_draw, narr_ko, font_dialogue, max_text_w)
-        line_h = 38
+        line_h = 26
         text_block_h = len(lines) * line_h
-        dialogue_box_h = max(86, text_block_h + 44)
+        dialogue_box_h = max(60, text_block_h + 28)
 
         panel_h = PANEL_HDR_H + IMG_H + dialogue_box_h
         panel_layouts.append({
@@ -126,18 +130,18 @@ def render_single_episode(ep_num, out_dir):
 
     # 1. Top Episode Header Banner
     draw.rectangle([0, 0, CANVAS_W, TOP_HEADER_H], fill=(32, 29, 29))
-    draw.rectangle([0, TOP_HEADER_H - 4, CANVAS_W, TOP_HEADER_H], fill=(217, 119, 6))
+    draw.rectangle([0, TOP_HEADER_H - 3, CANVAS_W, TOP_HEADER_H], fill=(217, 119, 6))
 
     series_label = f"눈히어로.com - 카단의 여정  |  EPISODE {ep_num:02d} / 40"
     if source_range:
         series_label += f"  ({source_range})"
-    draw.text((36, 26), series_label, font=font_title_sub, fill=(251, 191, 36))
+    draw.text((22, 18), series_label, font=font_title_sub, fill=(251, 191, 36))
 
     main_title_str = f"제 {ep_num:02d}화. {title_ko}"
-    draw.text((36, 62), main_title_str, font=font_title_lg, fill=(253, 252, 252))
+    draw.text((22, 43), main_title_str, font=font_title_lg, fill=(253, 252, 252))
 
     sub_title_str = f"{title_en}  ·  총 {total_scenes}컷 (타이틀 포함 {len(images_info)}컷)"
-    draw.text((36, 112), sub_title_str, font=font_title_sub, fill=(185, 180, 180))
+    draw.text((22, 79), sub_title_str, font=font_title_sub, fill=(185, 180, 180))
 
     # 2. Scene Panels
     curr_y = TOP_HEADER_H + PANEL_GAP
@@ -147,28 +151,27 @@ def render_single_episode(ep_num, out_dir):
         is_climax = p["is_climax"]
         p_h = p["panel_h"]
 
-        # Panel Top Header Bar
         hdr_bg = (254, 243, 199) if is_climax else (248, 247, 247)
         draw.rectangle([0, curr_y, CANVAS_W, curr_y + PANEL_HDR_H], fill=hdr_bg)
-        draw.line([(0, curr_y), (CANVAS_W, curr_y)], fill=(32, 29, 29), width=2)
+        draw.line([(0, curr_y), (CANVAS_W, curr_y)], fill=(32, 29, 29), width=1)
         draw.line([(0, curr_y + PANEL_HDR_H - 1), (CANVAS_W, curr_y + PANEL_HDR_H - 1)], fill=(215, 212, 212), width=1)
 
         mid_hdr_y = curr_y + PANEL_HDR_H // 2
         dot_color = (217, 119, 6) if is_climax else (32, 29, 29)
-        draw.rectangle([28, mid_hdr_y - 6, 40, mid_hdr_y + 6], fill=dot_color)
+        draw.rectangle([18, mid_hdr_y - 4, 26, mid_hdr_y + 4], fill=dot_color)
 
-        hdr_label = "[ TITLE CARD ]" if sc_idx == 0 else f"SCENE {sc_idx:02d} / {total_scenes:02d}   ·   대사번호 #{sc_idx:02d}"
-        draw.text((52, mid_hdr_y), hdr_label, font=font_scene_hdr, fill=(32, 29, 29), anchor="lm")
+        hdr_label = "[ TITLE CARD ]" if sc_idx == 0 else f"SCENE {sc_idx:02d} / {total_scenes:02d}  ·  대사번호 #{sc_idx:02d}"
+        draw.text((34, mid_hdr_y), hdr_label, font=font_scene_hdr, fill=(32, 29, 29), anchor="lm")
 
         if is_climax:
-            climax_str = "★ 클라이맥스 명장면 (CLIMAX)"
+            climax_str = "★ 클라이맥스 명장면"
             cbbox = draw.textbbox((0, 0), climax_str, font=font_climax_badge)
             cw = cbbox[2] - cbbox[0]
-            bx2 = CANVAS_W - 24
-            bx1 = bx2 - cw - 28
-            by1 = curr_y + 10
-            by2 = curr_y + 40
-            draw.rounded_rectangle([bx1, by1, bx2, by2], radius=4, fill=(217, 119, 6))
+            bx2 = CANVAS_W - 16
+            bx1 = bx2 - cw - 18
+            by1 = curr_y + 7
+            by2 = curr_y + 29
+            draw.rounded_rectangle([bx1, by1, bx2, by2], radius=3, fill=(217, 119, 6))
             draw.text(((bx1 + bx2) / 2, (by1 + by2) / 2), climax_str, font=font_climax_badge, fill=(255, 255, 255), anchor="mm")
 
         # Scene Image
@@ -176,35 +179,32 @@ def render_single_episode(ep_num, out_dir):
         with Image.open(p["img_rel_path"]) as sc_im:
             sc_rgb = sc_im.convert("RGB")
             sc_up = sc_rgb.resize((IMG_W, IMG_H), Image.Resampling.LANCZOS)
-            sc_sharp = sc_up.filter(ImageFilter.UnsharpMask(radius=1.1, percent=60, threshold=2))
+            sc_sharp = sc_up.filter(ImageFilter.UnsharpMask(radius=0.9, percent=45, threshold=2))
             strip.paste(sc_sharp, (0, img_y))
 
-        # Scene Bottom Dialogue Number & Dialogue Box
+        # Scene Bottom Dialogue Box
         d_y = img_y + IMG_H
         d_h = p["dialogue_box_h"]
         d_bg = (255, 251, 235) if is_climax else (253, 252, 252)
         draw.rectangle([0, d_y, CANVAS_W, d_y + d_h], fill=d_bg)
         draw.line([(0, d_y), (CANVAS_W, d_y)], fill=(210, 206, 206), width=1)
-        draw.line([(0, d_y + d_h - 1), (CANVAS_W, d_y + d_h - 1)], fill=(180, 175, 175), width=2)
+        draw.line([(0, d_y + d_h - 1), (CANVAS_W, d_y + d_h - 1)], fill=(180, 175, 175), width=1)
 
-        # Left vertical accent bar
         accent_color = (217, 119, 6) if is_climax else (32, 29, 29)
-        draw.rectangle([0, d_y, 6, d_y + d_h], fill=accent_color)
+        draw.rectangle([0, d_y, 4, d_y + d_h], fill=accent_color)
 
-        # Dialogue Number Badge (#01, #02, ...)
-        bx1 = 28
-        by1 = d_y + 24
+        bx1 = 18
+        by1 = d_y + 16
         bx2 = bx1 + p["badge_w"]
-        by2 = by1 + 38
+        by2 = by1 + 28
         badge_bg = (180, 83, 9) if is_climax else (32, 29, 29)
-        draw.rounded_rectangle([bx1, by1, bx2, by2], radius=4, fill=badge_bg)
+        draw.rounded_rectangle([bx1, by1, bx2, by2], radius=3, fill=badge_bg)
         draw.text(((bx1 + bx2) / 2, (by1 + by2) / 2), p["badge_text"], font=font_num_badge, fill=(253, 252, 252), anchor="mm")
 
-        # Dialogue Lines
         if len(p["lines"]) == 1:
             draw.text((p["text_x"], (by1 + by2) / 2), p["lines"][0], font=font_dialogue, fill=(32, 29, 29), anchor="lm")
         else:
-            text_y = d_y + 25
+            text_y = d_y + 16
             for line in p["lines"]:
                 draw.text((p["text_x"], text_y), line, font=font_dialogue, fill=(32, 29, 29))
                 text_y += p["line_h"]
@@ -214,28 +214,42 @@ def render_single_episode(ep_num, out_dir):
     # 3. Bottom Episode Footer
     draw.rectangle([0, curr_y, CANVAS_W, total_h], fill=(32, 29, 29))
     footer_msg = f"[ 눈히어로.com - 카단의 여정 · 제 {ep_num:02d}화 ({title_ko}) 완독 ]"
-    draw.text((36, curr_y + 30), footer_msg, font=font_footer, fill=(253, 252, 252))
+    draw.text((22, curr_y + 20), footer_msg, font=font_footer, fill=(253, 252, 252))
     next_msg = (
-        f"다음 화 예고: 제 {ep_num + 1:02d}화에서 계속됩니다. (https://snshero.com/book)"
+        f"다음 화 예고: 제 {ep_num + 1:02d}화에서 계속됩니다. (https://SNSHero.com)"
         if ep_num < 40
-        else "대단원의 막 — 전 40화 완결 (https://snshero.com/book)"
+        else "대단원의 막 — 전 40화 완결 (https://SNSHero.com)"
     )
-    draw.text((36, curr_y + 70), next_msg, font=font_title_sub, fill=(251, 191, 36))
+    draw.text((22, curr_y + 50), next_msg, font=font_title_sub, fill=(251, 191, 36))
 
     safe_title = re.sub(r"[^\w가-힣]+", "_", title_ko).strip("_")
     filename = f"{ep_num:02d}_눈히어로_코믹툰_제{ep_num:02d}화_{safe_title}.jpg"
     out_path = os.path.join(out_dir, filename)
-    strip.save(out_path, "JPEG", quality=95, subsampling=0, optimize=True)
-    size_mb = round(os.path.getsize(out_path) / (1024 * 1024), 2)
+
+    chosen_bytes = None
+    for q, sub in [(92, 0), (89, 0), (86, 0), (85, 1), (82, 1), (78, 1), (75, 1)]:
+        buf = io.BytesIO()
+        strip.save(buf, "JPEG", quality=q, subsampling=sub, optimize=True)
+        if buf.tell() <= MAX_FILE_BYTES:
+            chosen_bytes = buf.getvalue()
+            break
+    if chosen_bytes is None:
+        buf = io.BytesIO()
+        strip.save(buf, "JPEG", quality=72, subsampling=2, optimize=True)
+        chosen_bytes = buf.getvalue()
+
+    with open(out_path, "wb") as f_out:
+        f_out.write(chosen_bytes)
+
+    size_mb = round(len(chosen_bytes) / (1024 * 1024), 2)
     return ep_num, filename, strip.size, size_mb
 
 
 def main():
-    import time
     downloads_dir = os.path.expanduser("~/Downloads")
     os.makedirs(downloads_dir, exist_ok=True)
 
-    print(f"Generating 40 high-res Naver Webtoon episodes into {downloads_dir} ...")
+    print(f"Generating 40 Naver Webtoon episodes (690px width, <5MB) into {downloads_dir} ...")
     results = []
     with ProcessPoolExecutor(max_workers=8) as executor:
         futures = {
@@ -254,7 +268,8 @@ def main():
         t = base_time + ep_num
         os.utime(fpath, (t, t))
     total_mb = round(sum(r[3] for r in results), 2)
-    print(f"\n전 40화 고화질 웹툰 이미지 생성 및 01~40 정렬 완료! (총 40개 파일, 합계 {total_mb}MB)")
+    max_mb = max(r[3] for r in results)
+    print(f"\n전 40화(690px, 최대 {max_mb}MB <= 5MB) 웹툰 이미지 생성 및 01~40 정렬 완료! (합계 {total_mb}MB)")
 
 
 if __name__ == "__main__":
