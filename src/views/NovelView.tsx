@@ -225,6 +225,8 @@ export const NovelView: React.FC<NovelViewProps> = ({
 
   // Lightbox Modal state for cartoon full-screen image viewing
   const [lightboxSceneIndex, setLightboxSceneIndex] = useState<number | null>(null);
+  // Official Novel Book Cover Modal state ("눈히어로 - 카단의 여정")
+  const [showBookCoverModal, setShowBookCoverModal] = useState<boolean>(false);
 
   // Cartoon layout mode: 'scroll' (vertical webtoon strip) or 'slides' (page-by-page carousel)
   const [cartoonDisplayMode, setCartoonDisplayMode] = useState<'scroll' | 'slides'>('scroll');
@@ -1169,34 +1171,72 @@ export const NovelView: React.FC<NovelViewProps> = ({
             "border-b border-[rgba(15,0,0,0.12)] pb-4 mb-4 sm:mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4",
             readerTab === 'cartoon' && !isPromptMode ? "px-3 sm:px-4" : ""
           )}>
-            <div>
-              <div className="flex items-center gap-2 mb-2 flex-wrap">
-                <button
-                  onClick={() => {
-                    setShowEpisodeModal(true);
-                    if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                  }}
-                  className="min-h-[44px] text-xs font-bold uppercase tracking-widest text-[#201d1d] px-3 py-2 border border-[#201d1d] bg-[#f8f7f7] hover:bg-[#f1eeee] rounded-sm flex items-center gap-1.5 cursor-pointer transition-colors group"
-                  title={t('novel_select_episode_hint', language)}
-                >
-                  <BookOpen size={13} />
-                  <span>EPISODE {currentEpisodeNum} / {TOTAL_EPISODES}</span>
-                  <ChevronDown size={13} />
-                </button>
-                {parsedContent.sourceRange && (
-                  <span className="text-xs font-bold text-[#646262] px-2 py-0.5 border border-[rgba(15,0,0,0.12)] rounded-sm bg-[#f8f7f7]">
-                    {parsedContent.sourceRange}
-                  </span>
-                )}
-                {claimedRewards[currentEpisodeNum] && (
-                  <span className="text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 border border-emerald-300 rounded-sm flex items-center gap-1">
-                    <Check size={10} /> {language === 'ko' ? '완독 보상 획득' : 'Completed'}
-                  </span>
-                )}
+            <div className="flex items-start gap-3.5">
+              {/* Official Novel Book Cover Thumbnail ("눈히어로 - 카단의 여정") */}
+              <button
+                type="button"
+                onClick={() => {
+                  triggerHaptic('tap');
+                  setShowBookCoverModal(true);
+                  if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                }}
+                className="group relative shrink-0 w-16 sm:w-20 aspect-[2/3] border border-[#201d1d] rounded-none overflow-hidden bg-[#201d1d] cursor-pointer"
+                title={language === 'ko' ? '《눈히어로 - 카단의 여정》 공식 소설 표지 크게 보기' : "View 'SNSHero : Kadan's Journey' Official Book Cover"}
+              >
+                <img
+                  src={getAssetUrl('/book/kadan_novel_cover.jpg')}
+                  alt="눈히어로 - 카단의 여정 소설 표지"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                />
+                <span className="absolute bottom-0 inset-x-0 bg-[#201d1d]/85 text-[#fdfcfc] text-[9px] font-bold py-0.5 text-center font-mono">
+                  {language === 'ko' ? '[표지]' : '[COVER]'}
+                </span>
+              </button>
+
+              <div>
+                <div className="flex items-center gap-2 mb-2 flex-wrap">
+                  <button
+                    onClick={() => {
+                      setShowEpisodeModal(true);
+                      if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                    }}
+                    className="min-h-[44px] text-xs font-bold uppercase tracking-widest text-[#201d1d] px-3 py-2 border border-[#201d1d] bg-[#f8f7f7] hover:bg-[#f1eeee] rounded-sm flex items-center gap-1.5 cursor-pointer transition-colors group"
+                    title={t('novel_select_episode_hint', language)}
+                  >
+                    <BookOpen size={13} />
+                    <span>EPISODE {currentEpisodeNum} / {TOTAL_EPISODES}</span>
+                    <ChevronDown size={13} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      triggerHaptic('tap');
+                      setShowBookCoverModal(true);
+                      if (playSfx) playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                    }}
+                    className="min-h-[44px] text-xs font-bold text-[#201d1d] px-3 py-2 border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] hover:bg-[#f8f7f7] rounded-sm flex items-center gap-1.5 cursor-pointer transition-colors"
+                  >
+                    <Maximize2 size={12} />
+                    <span>{language === 'ko' ? '[소설 표지 보기]' : '[Book Cover]'}</span>
+                  </button>
+                  {parsedContent.sourceRange && (
+                    <span className="text-xs font-bold text-[#646262] px-2 py-0.5 border border-[rgba(15,0,0,0.12)] rounded-sm bg-[#f8f7f7]">
+                      {parsedContent.sourceRange}
+                    </span>
+                  )}
+                  {claimedRewards[currentEpisodeNum] && (
+                    <span className="text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 border border-emerald-300 rounded-sm flex items-center gap-1">
+                      <Check size={10} /> {language === 'ko' ? '완독 보상 획득' : 'Completed'}
+                    </span>
+                  )}
+                </div>
+                <p className="text-[11px] font-bold text-[#646262] mb-0.5">
+                  {language === 'ko' ? '눈히어로 - 카단의 여정 (SNSHero : Kadan’s Journey)' : 'SNSHero : Kadan’s Journey — Official Novel'}
+                </p>
+                <h1 className="text-xl sm:text-2xl font-bold tracking-tight">
+                  {parsedContent.title}
+                </h1>
               </div>
-              <h1 className="text-xl sm:text-2xl font-bold tracking-tight">
-                {parsedContent.title}
-              </h1>
             </div>
 
             {/* Featured Characters in this episode */}
@@ -2366,6 +2406,66 @@ export const NovelView: React.FC<NovelViewProps> = ({
           <span className="text-[8px] font-bold">TOP</span>
         </button>
       </aside>
+
+      {/* Official Novel Book Cover Modal ("눈히어로 - 카단의 여정") */}
+      {showBookCoverModal && (
+        <div
+          className="fixed inset-0 z-[99999] bg-[#201d1d]/90 flex items-center justify-center p-4 font-mono"
+          onClick={() => setShowBookCoverModal(false)}
+        >
+          <div
+            className="w-full max-w-[460px] bg-[#fdfcfc] text-[#201d1d] border border-[#201d1d] rounded-none overflow-hidden flex flex-col"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="px-4 py-3 border-b border-[rgba(15,0,0,0.12)] bg-[#f8f7f7] flex items-center justify-between">
+              <span className="text-xs font-bold tracking-tight">
+                {language === 'ko'
+                  ? '[ OFFICIAL BOOK COVER : 눈히어로 - 카단의 여정 ]'
+                  : '[ OFFICIAL BOOK COVER : SNSHero - Kadan’s Journey ]'}
+              </span>
+              <button
+                type="button"
+                onClick={() => setShowBookCoverModal(false)}
+                className="min-h-[44px] min-w-[44px] flex items-center justify-center border border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] hover:bg-[#f1eeee] text-[#201d1d] font-bold text-xs rounded-sm cursor-pointer"
+                title={language === 'ko' ? '닫기' : 'Close'}
+              >
+                [x]
+              </button>
+            </div>
+
+            <div className="p-4 bg-[#201d1d] flex items-center justify-center">
+              <img
+                src={getAssetUrl('/book/kadan_novel_cover.jpg')}
+                alt="눈히어로 - 카단의 여정 공식 소설책 표지"
+                className="w-full max-h-[68vh] object-contain border border-[#646262]/40 rounded-none"
+              />
+            </div>
+
+            <div className="px-4 py-3 border-t border-[rgba(15,0,0,0.12)] bg-[#fdfcfc] flex items-center justify-between gap-2">
+              <div className="text-[11px] text-[#646262]">
+                <p className="font-bold text-[#201d1d]">눈히어로 : 카단의 여정 (40부작 완결)</p>
+                <p>SNSHero : Kadan’s Journey — Official Fantasy Novel</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <a
+                  href={getAssetUrl('/book/kadan_novel_cover.jpg')}
+                  download="SNSHero_Kadan_Journey_Novel_Cover.jpg"
+                  className="min-h-[44px] px-3.5 py-2 border border-[#201d1d] bg-[#fdfcfc] hover:bg-[#f8f7f7] text-[#201d1d] font-bold text-xs rounded-sm flex items-center justify-center cursor-pointer"
+                >
+                  {language === 'ko' ? '[표지 저장]' : '[Download]'}
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setShowBookCoverModal(false)}
+                  className="min-h-[44px] px-4 py-2 bg-[#201d1d] text-[#fdfcfc] border border-[#201d1d] font-bold text-xs rounded-sm cursor-pointer"
+                >
+                  {language === 'ko' ? '[닫기]' : '[Close]'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* RSI-017: Tactical Lore Clue Annotation & Recruitment Dock */}
       <TacticalLoreDock
