@@ -1847,7 +1847,9 @@
           "Kadan"
         ],
         "dialogues": [],
-        "sfxCues": []
+        "sfxCues": [],
+        "panelIndex": 49,
+        "subIndex": 0
       }
     ],
     "episodeTitleKo": "눈보라 아래 두 서약"
@@ -3561,7 +3563,9 @@
           "Kadan"
         ],
         "dialogues": [],
-        "sfxCues": []
+        "sfxCues": [],
+        "panelIndex": 47,
+        "subIndex": 0
       }
     ],
     "episodeTitleKo": "일곱 추적자의 맹세"
@@ -5516,7 +5520,9 @@
           "Kadan"
         ],
         "dialogues": [],
-        "sfxCues": []
+        "sfxCues": [],
+        "panelIndex": 52,
+        "subIndex": 0
       }
     ],
     "episodeTitleKo": "안개 절벽의 피"
@@ -7209,7 +7215,9 @@
           "Kadan"
         ],
         "dialogues": [],
-        "sfxCues": []
+        "sfxCues": [],
+        "panelIndex": 46,
+        "subIndex": 0
       }
     ],
     "episodeTitleKo": "황야에서 자란 아이"
@@ -9109,7 +9117,9 @@
           "Kadan"
         ],
         "dialogues": [],
-        "sfxCues": []
+        "sfxCues": [],
+        "panelIndex": 51,
+        "subIndex": 0
       }
     ],
     "episodeTitleKo": "폭우 속의 유령"
@@ -11003,7 +11013,9 @@
           "Kadan"
         ],
         "dialogues": [],
-        "sfxCues": []
+        "sfxCues": [],
+        "panelIndex": 52,
+        "subIndex": 0
       }
     ],
     "episodeTitleKo": "별을 호흡하는 법"
@@ -12871,7 +12883,9 @@
           "Kadan"
         ],
         "dialogues": [],
-        "sfxCues": []
+        "sfxCues": [],
+        "panelIndex": 51,
+        "subIndex": 0
       }
     ],
     "episodeTitleKo": "배신자들의 천막"
@@ -14564,7 +14578,9 @@
           "Kadan"
         ],
         "dialogues": [],
-        "sfxCues": []
+        "sfxCues": [],
+        "panelIndex": 46,
+        "subIndex": 0
       }
     ],
     "episodeTitleKo": "붉은 갈기의 기수"
@@ -16419,7 +16435,9 @@
           "Kadan"
         ],
         "dialogues": [],
-        "sfxCues": []
+        "sfxCues": [],
+        "panelIndex": 49,
+        "subIndex": 0
       }
     ],
     "episodeTitleKo": "거지 옷의 바람"
@@ -18309,7 +18327,9 @@
           "Kadan"
         ],
         "dialogues": [],
-        "sfxCues": []
+        "sfxCues": [],
+        "panelIndex": 50,
+        "subIndex": 0
       }
     ],
     "episodeTitleKo": "불꽃 궁정의 포로"
@@ -20277,7 +20297,9 @@
           "Kadan"
         ],
         "dialogues": [],
-        "sfxCues": []
+        "sfxCues": [],
+        "panelIndex": 53,
+        "subIndex": 0
       }
     ],
     "episodeTitleKo": "기억을 깨우는 단검"
@@ -22042,7 +22064,9 @@
           "Kadan"
         ],
         "dialogues": [],
-        "sfxCues": []
+        "sfxCues": [],
+        "panelIndex": 47,
+        "subIndex": 0
       }
     ],
     "episodeTitleKo": "두 무덤 사이의 봄"
@@ -23753,7 +23777,9 @@
           "Kadan"
         ],
         "dialogues": [],
-        "sfxCues": []
+        "sfxCues": [],
+        "panelIndex": 46,
+        "subIndex": 0
       }
     ],
     "episodeTitleKo": "녹옥 지팡이의 주인"
@@ -25487,7 +25513,9 @@
           "Kadan"
         ],
         "dialogues": [],
-        "sfxCues": []
+        "sfxCues": [],
+        "panelIndex": 47,
+        "subIndex": 0
       }
     ],
     "episodeTitleKo": "안개 호수의 손님들"
@@ -27245,7 +27273,9 @@
           "Kadan"
         ],
         "dialogues": [],
-        "sfxCues": []
+        "sfxCues": [],
+        "panelIndex": 48,
+        "subIndex": 0
       }
     ],
     "episodeTitleKo": "독사와 사자의 밤"
@@ -29018,7 +29048,9 @@
           "Kadan"
         ],
         "dialogues": [],
-        "sfxCues": []
+        "sfxCues": [],
+        "panelIndex": 48,
+        "subIndex": 0
       }
     ],
     "episodeTitleKo": "폐허 앞의 형제"
@@ -30721,7 +30753,9 @@
           "Kadan"
         ],
         "dialogues": [],
-        "sfxCues": []
+        "sfxCues": [],
+        "panelIndex": 45,
+        "subIndex": 0
       }
     ],
     "episodeTitleKo": "바람섬의 초대장"
@@ -32760,7 +32794,9 @@
           "Kadan"
         ],
         "dialogues": [],
-        "sfxCues": []
+        "sfxCues": [],
+        "panelIndex": 55,
+        "subIndex": 0
       }
     ],
     "episodeTitleKo": "검은 성전의 비밀"
@@ -34666,7 +34702,9 @@
           "Kadan"
         ],
         "dialogues": [],
-        "sfxCues": []
+        "sfxCues": [],
+        "panelIndex": 50,
+        "subIndex": 0
       }
     ],
     "episodeTitleKo": "세 가지 시험"
@@ -36481,7 +36519,9 @@
           "Kadan"
         ],
         "dialogues": [],
-        "sfxCues": []
+        "sfxCues": [],
+        "panelIndex": 48,
+        "subIndex": 0
       }
     ],
     "episodeTitleKo": "꽃배를 삼킨 파도"
@@ -38170,7 +38210,9 @@
           "Kadan"
         ],
         "dialogues": [],
-        "sfxCues": []
+        "sfxCues": [],
+        "panelIndex": 46,
+        "subIndex": 0
       }
     ],
     "episodeTitleKo": "불탄 배의 흔적"
@@ -40227,7 +40269,9 @@
           "Kadan"
         ],
         "dialogues": [],
-        "sfxCues": []
+        "sfxCues": [],
+        "panelIndex": 56,
+        "subIndex": 0
       }
     ],
     "episodeTitleKo": "무인도의 투석기"
@@ -42158,7 +42202,9 @@
           "Kadan"
         ],
         "dialogues": [],
-        "sfxCues": []
+        "sfxCues": [],
+        "panelIndex": 53,
+        "subIndex": 0
       }
     ],
     "episodeTitleKo": "석굴의 기록"
@@ -44024,7 +44070,9 @@
           "Kadan"
         ],
         "dialogues": [],
-        "sfxCues": []
+        "sfxCues": [],
+        "panelIndex": 50,
+        "subIndex": 0
       }
     ],
     "episodeTitleKo": "봉인된 석실"
@@ -45978,7 +46026,9 @@
           "Kadan"
         ],
         "dialogues": [],
-        "sfxCues": []
+        "sfxCues": [],
+        "panelIndex": 52,
+        "subIndex": 0
       }
     ],
     "episodeTitleKo": "거짓된 혼례"
@@ -48014,7 +48064,9 @@
           "Kadan"
         ],
         "dialogues": [],
-        "sfxCues": []
+        "sfxCues": [],
+        "panelIndex": 55,
+        "subIndex": 0
       }
     ],
     "episodeTitleKo": "열린 문, 닫힌 마음"
@@ -49819,7 +49871,9 @@
           "Kadan"
         ],
         "dialogues": [],
-        "sfxCues": []
+        "sfxCues": [],
+        "panelIndex": 50,
+        "subIndex": 0
       }
     ],
     "episodeTitleKo": "두 개의 약속 사이에서"
@@ -51843,7 +51897,9 @@
           "Kadan"
         ],
         "dialogues": [],
-        "sfxCues": []
+        "sfxCues": [],
+        "panelIndex": 54,
+        "subIndex": 0
       }
     ],
     "episodeTitleKo": "비취 평의회의 반란"
@@ -53765,7 +53821,9 @@
           "Kadan"
         ],
         "dialogues": [],
-        "sfxCues": []
+        "sfxCues": [],
+        "panelIndex": 52,
+        "subIndex": 0
       }
     ],
     "episodeTitleKo": "바람의 여왕"
@@ -55619,7 +55677,9 @@
           "Kadan"
         ],
         "dialogues": [],
-        "sfxCues": []
+        "sfxCues": [],
+        "panelIndex": 49,
+        "subIndex": 0
       }
     ],
     "episodeTitleKo": "사문의 독"
@@ -57715,7 +57775,9 @@
           "Kadan"
         ],
         "dialogues": [],
-        "sfxCues": []
+        "sfxCues": [],
+        "panelIndex": 59,
+        "subIndex": 0
       }
     ],
     "episodeTitleKo": "내기에 건 손"
@@ -59574,7 +59636,9 @@
           "Kadan"
         ],
         "dialogues": [],
-        "sfxCues": []
+        "sfxCues": [],
+        "panelIndex": 50,
+        "subIndex": 0
       }
     ],
     "episodeTitleKo": "첫사랑의 메아리"
@@ -61485,7 +61549,9 @@
           "Kadan"
         ],
         "dialogues": [],
-        "sfxCues": []
+        "sfxCues": [],
+        "panelIndex": 50,
+        "subIndex": 0
       }
     ],
     "episodeTitleKo": "검은 늪"
@@ -63385,7 +63451,9 @@
           "Kadan"
         ],
         "dialogues": [],
-        "sfxCues": []
+        "sfxCues": [],
+        "panelIndex": 51,
+        "subIndex": 0
       }
     ],
     "episodeTitleKo": "쓰러진 바람섬"
@@ -65365,7 +65433,9 @@
           "Kadan"
         ],
         "dialogues": [],
-        "sfxCues": []
+        "sfxCues": [],
+        "panelIndex": 52,
+        "subIndex": 0
       }
     ],
     "episodeTitleKo": "안개 속의 착각"
@@ -67165,7 +67235,9 @@
           "Kadan"
         ],
         "dialogues": [],
-        "sfxCues": []
+        "sfxCues": [],
+        "panelIndex": 47,
+        "subIndex": 0
       }
     ],
     "episodeTitleKo": "십자 흉터의 지도"
@@ -68987,7 +69059,9 @@
           "Kadan"
         ],
         "dialogues": [],
-        "sfxCues": []
+        "sfxCues": [],
+        "panelIndex": 48,
+        "subIndex": 0
       }
     ],
     "episodeTitleKo": "패왕의 전쟁"
@@ -70922,7 +70996,9 @@
           "Kadan"
         ],
         "dialogues": [],
-        "sfxCues": []
+        "sfxCues": [],
+        "panelIndex": 51,
+        "subIndex": 0
       }
     ],
     "episodeTitleKo": "세 개의 명주 봉인"
@@ -72896,7 +72972,9 @@
           "Kadan"
         ],
         "dialogues": [],
-        "sfxCues": []
+        "sfxCues": [],
+        "panelIndex": 53,
+        "subIndex": 0
       }
     ],
     "episodeTitleKo": "지킬 만한 가치가 있는 세상"
@@ -74743,7 +74821,9 @@
           "Kadan"
         ],
         "dialogues": [],
-        "sfxCues": []
+        "sfxCues": [],
+        "panelIndex": 51,
+        "subIndex": 0
       }
     ],
     "episodeTitleKo": "영웅이 아닌 사람"

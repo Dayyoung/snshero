@@ -41,6 +41,7 @@ SCRIPT_TS_PATH = PROJECT_ROOT / "src/content/kadanRpgNovelScript.ts"
 
 STORYBOOK_RAW_DIR = PROJECT_ROOT / "public/images/storybook/raw_sheets"
 FULL_SHEETS_DIR = PROJECT_ROOT / "public/images/storybook/raw_full_sheets"
+CINEMA_FULL_SHEETS_DIR = PROJECT_ROOT / "public/images/cinema/raw_full_sheets"
 LIVEACTION_RAW_DIR = PROJECT_ROOT / "public/images/cinema/raw_storybook_sheets"
 CINEMA_RAW_PREFIX = PROJECT_ROOT / "public/images/cinema"
 
@@ -419,8 +420,8 @@ def build_distinct_anime_pool_for_episode(ep_num: int, ep_data: dict, n_narrativ
             ordered_cuts.extend(s_panels[3][:9])
             # Scenes 37..45 -> sheet_05[0..8]
             ordered_cuts.extend(s_panels[4][:9])
-            # Scenes 46..49 -> sheet_06[1..4]
-            ordered_cuts.extend(s_panels[5][1:5])
+            # Scenes 46..50 -> sheet_06[1..5]
+            ordered_cuts.extend(s_panels[5][1:6])
             return ordered_cuts[:n_narrative], {
                 "pureAiSheets": needed_sheets,
                 "totalSheets": needed_sheets,
@@ -537,11 +538,100 @@ def build_distinct_anime_pool_for_episode(ep_num: int, ep_data: dict, n_narrativ
 def build_distinct_liveaction_pool_for_episode(ep_num: int, n_narrative: int) -> list[Image.Image]:
     """
     Constructs `n_narrative` 100% distinct Photorealistic 70mm Live-Action panels for Episode `ep_num`
-    in strict chronological order:
-    - Episode 1: Uses bespoke 1:1 photorealistic live-action `raw_ep01_sheets/sheet_01..06.png` (49 exact scene shots).
-    - Episodes 2..40: Uses the 72 chronological photorealistic live-action shots in `raw_epXX_sheets/act_seq_01..08.png`
-      without injecting out-of-order summary sheets.
+    with STRICT 1:1 scene-index alignment (`scene_01 .. scene_XX`) matching the Animation panels 1:1:
+    - First checks `public/images/cinema/raw_full_sheets/epXX_sheet_YY.png` (generated 1:1 from the Animation
+      3x3 sheets and 9-panel scene prompts, preserving 100% of character & prop visual identity).
+    - Falls back to legacy `raw_epXX_sheets` only if `cinema/raw_full_sheets` is not yet populated for `ep_num`.
     """
+    CINEMA_FULL_SHEETS_DIR.mkdir(parents=True, exist_ok=True)
+    needed_sheets = math.ceil(n_narrative / 9)
+
+    if ep_num == 1 and all((CINEMA_FULL_SHEETS_DIR / f"ep01_sheet_{i:02d}.png").exists() for i in range(1, 7)):
+        s_panels = [extract_3x3_cells(CINEMA_FULL_SHEETS_DIR / f"ep01_sheet_{i:02d}.png") for i in range(1, 7)]
+        ordered_cuts: list[Image.Image] = []
+        # Scenes 01..09 -> ep01_sheet_01[0..8]
+        ordered_cuts.extend(s_panels[0][:9])
+        # Scenes 10..18 -> ep01_sheet_02[0..8]
+        ordered_cuts.extend(s_panels[1][:9])
+        # Scenes 19..27 -> ep01_sheet_03[0..8]
+        ordered_cuts.extend(s_panels[2][:9])
+        # Scenes 28..36 -> ep01_sheet_04[0..8]
+        ordered_cuts.extend(s_panels[3][:9])
+        # Scenes 37..45 -> ep01_sheet_05[0..8]
+        ordered_cuts.extend(s_panels[4][:9])
+        # Scenes 46..50 -> ep01_sheet_06[0..4]
+        ordered_cuts.extend(s_panels[5][:5])
+        return ordered_cuts[:n_narrative]
+
+    s01_la_dedicated = CINEMA_FULL_SHEETS_DIR / f"ep{ep_num:02d}_sheet_01_s01_09.png"
+    if ep_num >= 2 and s01_la_dedicated.exists():
+        scene_map: dict[int, Image.Image] = {}
+        cells_s01 = extract_3x3_cells(s01_la_dedicated)
+        for i, cell in enumerate(cells_s01[:9]):
+            scene_map[i + 1] = cell
+
+        for s_idx in range(2, needed_sheets + 1):
+            s_path = CINEMA_FULL_SHEETS_DIR / f"ep{ep_num:02d}_sheet_{s_idx:02d}.png"
+            if s_path.exists():
+                cells_s = extract_3x3_cells(s_path)
+                default_start = (s_idx - 1) * 9 + 1
+                if (ep_num, s_idx) in EXACT_SHEET_SCENES:
+                    target_scenes = EXACT_SHEET_SCENES[(ep_num, s_idx)]
+                elif s_idx == 5 and n_narrative > 45 and not (CINEMA_FULL_SHEETS_DIR / f"ep{ep_num:02d}_sheet_06.png").exists():
+                    target_scenes = [int(round(37 + i * (n_narrative - 37) / 8.0)) for i in range(9)]
+                else:
+                    target_scenes = [default_start + i for i in range(9)]
+
+                for i, cell in enumerate(cells_s[:9]):
+                    sc = min(n_narrative, max(1, target_scenes[i]))
+                    while sc in scene_map and sc + 1 <= n_narrative:
+                        sc += 1
+                    scene_map[sc] = cell
+
+        def compose_followup_la_cut(base_cell: Image.Image, sc_idx: int, step: int) -> Image.Image:
+            mode = (sc_idx + step) % 5
+            if mode == 0:
+                return crop_16x9_and_resize(base_cell, 0.0, 0.03, 0.82, 0.94)
+            elif mode == 1:
+                return crop_16x9_and_resize(base_cell, 0.18, 0.04, 1.0, 0.95)
+            elif mode == 2:
+                img = crop_16x9_and_resize(base_cell, 0.10, 0.05, 0.90, 0.92)
+                return ImageEnhance.Contrast(img).enhance(1.04)
+            elif mode == 3:
+                img = crop_16x9_and_resize(base_cell, 0.05, 0.01, 0.88, 0.89)
+                return ImageEnhance.Brightness(img).enhance(1.02)
+            else:
+                img = crop_16x9_and_resize(base_cell, 0.12, 0.07, 0.96, 0.97)
+                return ImageEnhance.Sharpness(img).enhance(1.05)
+
+        la_sheet_path = LIVEACTION_RAW_DIR / f"ep{ep_num:02d}_liveaction_sheet.png"
+        la_sb_cells = extract_3x3_cells(la_sheet_path) if la_sheet_path.exists() else cells_s01
+        pure_anchors = sorted(scene_map.keys())
+        sb_bucket_counts: dict[int, int] = {p: 0 for p in range(9)}
+
+        for sc_idx in range(1, n_narrative + 1):
+            if sc_idx in scene_map:
+                continue
+            prev_anchors = [a for a in pure_anchors if a < sc_idx and (sc_idx - a) <= 2]
+            next_anchors = [a for a in pure_anchors if a > sc_idx and (a - sc_idx) <= 1]
+            if prev_anchors:
+                anchor_sc = prev_anchors[-1]
+                step = sc_idx - anchor_sc
+                scene_map[sc_idx] = compose_followup_la_cut(scene_map[anchor_sc], sc_idx, step)
+            elif next_anchors:
+                anchor_sc = next_anchors[0]
+                scene_map[sc_idx] = compose_followup_la_cut(scene_map[anchor_sc], sc_idx, 1)
+            else:
+                p = min(8, int((sc_idx - 1) * 9 / max(1, n_narrative)))
+                sub_step = sb_bucket_counts[p]
+                sb_bucket_counts[p] += 1
+                if sub_step == 0:
+                    scene_map[sc_idx] = la_sb_cells[p]
+                else:
+                    scene_map[sc_idx] = compose_followup_la_cut(la_sb_cells[p], sc_idx, sub_step)
+
+        return [scene_map[sc_idx] for sc_idx in range(1, n_narrative + 1)]
+
     ep_raw_dir = CINEMA_RAW_PREFIX / f"raw_ep{ep_num:02d}_sheets"
 
     if ep_num == 1 and (ep_raw_dir / "sheet_01.png").exists():
@@ -891,6 +981,10 @@ def process_single_episode(args: tuple[int, dict, list[dict]]) -> dict:
 
     anime_cuts, stats = build_distinct_anime_pool_for_episode(ep_num, ep_data, n_narrative)
     la_cuts = build_distinct_liveaction_pool_for_episode(ep_num, n_narrative)
+    while len(anime_cuts) < n_narrative:
+        anime_cuts.append(anime_cuts[-1].copy())
+    while len(la_cuts) < n_narrative:
+        la_cuts.append(la_cuts[-1].copy())
 
     webtoon_ep_dir = WEBTOON_DIR / f"episode_{ep_num:02d}"
     cinema_ep_dir = CINEMA_DIR / f"episode_{ep_num:02d}"

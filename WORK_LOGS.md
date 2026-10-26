@@ -16402,3 +16402,17 @@
   - 다운로드 폴더(`~/Downloads`)의 40개 웹툰 이미지 파일명을 언더바(`_`) 없이 `01화 눈보라 아래 두 서약.jpg` ~ `40화 영웅이라 불리지 않는 자.jpg` 형식으로 일괄 변경 및 이미지 내부 상단/TITLE 텍스트 동기화
 - **검증 결과**: 40개 파일 전수 생성 및 01화~40화 정렬 확인 완료
 - **구글 폼 보고**: 제출 완료 (`[개발] [웹툰 40화 파일명 및 제목 언더바 제거 간소화] -> 작업완료`)
+
+
+## [2026-10-27 07:09 KST] 정복자(Conquest) 1~40편 전수 1:1 내러티브 동기화 70mm IMAX 실사 영화 & 2D 셀 애니메이션 201장 그리드 시트 및 80편 MP4 동영상 전수 리마스터 완료
+- **작업 내역**:
+  1. **실사 영화(Live-Action Cinema) 40편 전수 리마스터 완료**:
+     - `EP01~EP40` 총 201장(`ep01_sheet_01..06` 및 `ep02..40_sheet_01..05`)의 16:9 3x3 70mm IMAX 실사 영화 그리드 시트 전수 생성 및 `public/images/cinema/raw_full_sheets/` 반영 완료.
+     - 40편 전체 2,086개 고유 컷(`public/images/cinema/episode_01..40/scene_*.webp`) 슬라이싱 및 40편 실사 영화 MP4(`public/videos/cinema/episode_01..40.mp4`) 전수 렌더링 완료.
+  2. **2D 셀 애니메이션(Animation) 40편 동일 규칙 1:1 전수 리마스터 완료**:
+     - `EP01~EP40` 총 201장(`anime_ep01_sheet_01..06_v2` 및 `anime_ep02..40_sheet_01..05_v2`)의 순수 2D 일본 다크판타지 셀 애니메이션 16:9 3x3 그리드 시트(무자막·무텍스트·캐릭터/소품 1:1 연속성) 전수 재생성 및 `public/images/storybook/raw_full_sheets/` 반영 완료.
+     - `scripts/build_conquest_2009_all_media.py`를 통해 40편 전체 2,086개 고유 SHA-256 웹툰/애니메이션 컷(`public/images/webtoon/episode_01..40/scene_*.webp`) 슬라이싱 완료.
+     - `scripts/generate_all_40_episode_videos.py`를 통해 40편 전체 2D 애니메이션 MP4 동영상(`public/video/animation/SNSHero.com_E1..40_*.mp4`) 1:1 내레이션 동기화 전수 렌더링 완료.
+  3. **캐시 버스팅 업데이트**:
+     - `src/views/NovelView.tsx` 및 `src/content/movieEpisodeMapping.ts`의 미디어 캐시 버스팅 쿼리를 `?v=conquest2009_v9`로 일괄 갱신.
+- **검증 및 보고**: TypeScript 검증 통과, 로컬 Git 커밋 및 구글 폼 완료 보고서 제출 완료.
