@@ -2,6 +2,24 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-27 08:57 KST] [신규 생성 애니메이션 40편 & 무비 40편(총 80편) 공식 SNSHero 유튜브 채널 전수 공개 업로드 및 전체 링크 최신화 완료]
+- **요청 사항**:
+  - "새로 생성한 유튜브/무비 영상 각각 40개 업로드 및 링크 최신화"
+- **주요 구현 및 수정 내역**:
+  1. **공식 `SNSHero` 유튜브 채널(`UCA6QmKiPstbiyBUHtnSMxyA`, `@snshero`)에 신규 생성 애니메이션 40편 & 실사 무비 40편(총 80편) 전수 공개(Public) 업로드 및 신규 재생목록 2종 생성 완료 ([`scripts/youtube_kadan_journey_80_state.json`](file:///Users/dayyoung/project/snshero/scripts/youtube_kadan_journey_80_state.json), [`scripts/youtube_snshero_official_80_state.json`](file:///Users/dayyoung/project/snshero/scripts/youtube_snshero_official_80_state.json))**:
+     - **공식 애니메이션 40편 (`40/40` PUBLIC 검증 완료)**:
+       - 신규 재생목록: **`PLY6O_zlgCxYY`** (`SNSHero.com - Kadan's Journey | Official Animation (40 Episodes)`)
+       - 대표 영상 URL: `https://www.youtube.com/watch?v=62ziCvTMfB8&list=PLY6O_zlgCxYY`
+       - 회차별 영상 ID: `EP01: 62ziCvTMfB8`, `EP02: geJ2EzKR41o`, `EP03: M-QssqWfPBY`, `EP04: x7VZ6W1_J1U`, `EP05: pMrP12h_zt8`, `EP06: XMP1iMUK8gE`, `EP07: YPZ8Iptgzj4`, `EP08: mCjrBsUXruI`, `EP09: R_F_6VMrbC0`, `EP10: MbLcuzegh48` ~ `EP40: jdAoSYT5ouo`
+     - **공식 실사 무비 40편 (`40/40` PUBLIC 검증 완료)**:
+       - 신규 재생목록: **`PLMkfo7bS3l4Q`** (`SNSHero.com - Kadan's Journey | Official Live-Action Movie (40 Episodes)`)
+       - 대표 영상 URL: `https://www.youtube.com/watch?v=kipcS4NOw5s&list=PLMkfo7bS3l4Q`
+       - 회차별 영상 ID: `EP01: kipcS4NOw5s`, `EP02: BnuzagPG1gE`, `EP03: Bl0wQw8KgEk`, `EP04: Aa292InuKGo`, `EP05: hEj5BOcWGaA`, `EP06: wtCOISbdSIw`, `EP07: NqdaoSg00Kc`, `EP08: 3XM8yVE9W2Q`, `EP09: 1rF8TBoyU8A`, `EP10: zuEouiUELWw` ~ `EP40: kDGG_YSQvfM`
+  2. **코드베이스 내 모든 비디오 ID(`videoId`, `movieVideoId`), 재생목록 ID 및 정적 비디오 SEO/GEO/AEO 페이지 전면 최신화 완료**:
+     - [`src/content/movieEpisodeMapping.ts`](file:///Users/dayyoung/project/snshero/src/content/movieEpisodeMapping.ts), [`src/views/MovieView.tsx`](file:///Users/dayyoung/project/snshero/src/views/MovieView.tsx), [`src/views/CinemaView.tsx`](file:///Users/dayyoung/project/snshero/src/views/CinemaView.tsx), [`src/views/AnimeView.tsx`](file:///Users/dayyoung/project/snshero/src/views/AnimeView.tsx), [`src/views/NovelView.tsx`](file:///Users/dayyoung/project/snshero/src/views/NovelView.tsx), [`src/lib/geoManager.ts`](file:///Users/dayyoung/project/snshero/src/lib/geoManager.ts), [`scripts/generate-video-seo.ts`](file:///Users/dayyoung/project/snshero/scripts/generate-video-seo.ts), [`public/sitemap-video.xml`](file:///Users/dayyoung/project/snshero/public/sitemap-video.xml) 및 80개 에피소드 정적 HTML 프리렌더링 페이지 일괄 최신화 완료.
+- **검증 및 보고**:
+  - YouTube Data API v3 조회 검증(`ANIM 40/40 PUBLIC`, `MOVIE 40/40 PUBLIC`) 및 `npm run build` 프로덕션 빌드 무결점 통과, 로컬 Git 커밋 및 구글 폼 보고서 제출 완료.
+
 ## [2026-10-26 20:34 KST] [자동 플레이 시 필드 기습(Field Ambush) 발생 차단 및 필드 기습 팝업 노출 시 3초 카운트다운 후 자동 전투 진입 적용]
 - **요청 사항**:
   - "자동 플레이 시, 필드 기습 이벤트는 발생하지 않게해줘."

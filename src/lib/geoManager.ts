@@ -654,9 +654,9 @@ export const GEO_CONFIGS: Record<string, GeoViewConfig> = {
       vi: "SNSHero.com - Kadan's Journey | Hoạt Hình Chính Thức 40 Tập"
     },
     description: {
-      ko: '눈히어로.com - 카단의 여정 공식 40부작 판타지 애니메이션 시리즈(PLBTRBTakaSNU) 무료 스트리밍! 매 화 시청 시 +100 SNS 게임 보상을 즉시 수령하세요.',
-      en: "Watch the official 40-episode SNSHero.com - Kadan's Journey fantasy animation series (PLBTRBTakaSNU) and claim +100 SNS reward per episode.",
-      gb: "Watch the official 40-episode SNSHero.com - Kadan's Journey fantasy animation series (PLBTRBTakaSNU) and claim +100 SNS reward per episode.",
+      ko: '눈히어로.com - 카단의 여정 공식 40부작 판타지 애니메이션 시리즈(PLY6O_zlgCxYY) 무료 스트리밍! 매 화 시청 시 +100 SNS 게임 보상을 즉시 수령하세요.',
+      en: "Watch the official 40-episode SNSHero.com - Kadan's Journey fantasy animation series (PLY6O_zlgCxYY) and claim +100 SNS reward per episode.",
+      gb: "Watch the official 40-episode SNSHero.com - Kadan's Journey fantasy animation series (PLY6O_zlgCxYY) and claim +100 SNS reward per episode.",
       ja: "SNSHero.com - Kadan's Journey 公式ファンタジーアニメ全40話無料配信！1話視聴ごとに+100 SNS報酬を獲得。",
       'zh-CN': "免费观看SNSHero.com - Kadan's Journey官方40集奇幻动画系列，每集立领+100 SNS奖励！",
       'zh-TW': "免費觀看SNSHero.com - Kadan's Journey官方40集奇幻動畫系列，每集立領+100 SNS獎勵！",
@@ -677,7 +677,7 @@ export const GEO_CONFIGS: Record<string, GeoViewConfig> = {
       url: 'https://snshero.com/movie',
       numberOfEpisodes: 40,
       inLanguage: lang,
-      sameAs: ['https://www.youtube.com/watch?v=6kug0HSmtOM&list=PLBTRBTakaSNU']
+      sameAs: ['https://www.youtube.com/watch?v=62ziCvTMfB8&list=PLY6O_zlgCxYY']
     })
   },
 
@@ -698,9 +698,9 @@ export const GEO_CONFIGS: Record<string, GeoViewConfig> = {
       vi: "SNSHero.com - Kadan's Journey | Phim Chính Thức 40 Tập"
     },
     description: {
-      ko: '눈히어로.com - 카단의 여정 공식 40부작 판타지 무비 시리즈(PLeb-8Xpcho0o) 무료 감상! 매 화 감상 시 +100 SNS 게임 보상을 즉시 수령하세요.',
-      en: "Stream the official 40-episode SNSHero.com - Kadan's Journey cinematic movie series (PLeb-8Xpcho0o) and earn +100 SNS reward per episode.",
-      gb: "Stream the official 40-episode SNSHero.com - Kadan's Journey cinematic movie series (PLeb-8Xpcho0o) and earn +100 SNS reward per episode.",
+      ko: '눈히어로.com - 카단의 여정 공식 40부작 판타지 무비 시리즈(PLMkfo7bS3l4Q) 무료 감상! 매 화 감상 시 +100 SNS 게임 보상을 즉시 수령하세요.',
+      en: "Stream the official 40-episode SNSHero.com - Kadan's Journey cinematic movie series (PLMkfo7bS3l4Q) and earn +100 SNS reward per episode.",
+      gb: "Stream the official 40-episode SNSHero.com - Kadan's Journey cinematic movie series (PLMkfo7bS3l4Q) and earn +100 SNS reward per episode.",
       ja: "SNSHero.com - Kadan's Journey 公式シネマティックムービー全40話無料配信！1話視聴ごとに+100 SNS報酬を獲得。",
       'zh-CN': "免费观看SNSHero.com - Kadan's Journey官方40集电影系列，每集立领+100 SNS奖励！",
       'zh-TW': "免費觀看SNSHero.com - Kadan's Journey官方40集電影系列，每集立領+100 SNS獎勵！",
@@ -721,7 +721,7 @@ export const GEO_CONFIGS: Record<string, GeoViewConfig> = {
       url: 'https://snshero.com/cinema',
       numberOfEpisodes: 40,
       inLanguage: lang,
-      sameAs: ['https://www.youtube.com/watch?v=6ILGHhuYK2c&list=PLeb-8Xpcho0o']
+      sameAs: ['https://www.youtube.com/watch?v=kipcS4NOw5s&list=PLMkfo7bS3l4Q']
     })
   }
 };

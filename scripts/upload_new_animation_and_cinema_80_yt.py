@@ -25,7 +25,8 @@ PROJECT_ROOT = Path("/Users/dayyoung/project/snshero")
 MAPPING_FILE = PROJECT_ROOT / "src/content/movieEpisodeMapping.ts"
 ANIMATION_DIR = PROJECT_ROOT / "public/video/animation"
 CINEMA_DIR = PROJECT_ROOT / "public/videos/cinema"
-STATE_FILE = PROJECT_ROOT / "scripts/youtube_snshero_official_80_state.json"
+STATE_FILE = PROJECT_ROOT / "scripts/youtube_kadan_journey_80_state.json"
+OFFICIAL_STATE_FILE = PROJECT_ROOT / "scripts/youtube_snshero_official_80_state.json"
 
 YOUTUBE_API_KEY = "AIzaSyBa9TidLv_iwMyB-9VSrVGWEVUr0WyjiQU"
 
@@ -37,10 +38,17 @@ CHANNELS = [
         "channel_id": "UCA6QmKiPstbiyBUHtnSMxyA",
         "existing_anim_drafts": {},
     },
+    {
+        "name": "MODOO Official (Profile 2)",
+        "profile_dir_name": "Profile 2",
+        "tmp_dir": Path("/tmp/yt_studio_chrome_profile2"),
+        "channel_id": "UC_xayYwKaB5TbH3eZXeREpA",
+        "existing_anim_drafts": {},
+    },
 ]
 
-ANIMATION_PLAYLIST_TITLE = "SNSHero.com Official Animation (40 Episodes - 1:1 Synced)"
-CINEMA_PLAYLIST_TITLE = "SNSHero.com Official Live-Action Movie (40 Episodes - 1:1 Synced)"
+ANIMATION_PLAYLIST_TITLE = "SNSHero.com - Kadan's Journey | Official Animation (40 Episodes)"
+CINEMA_PLAYLIST_TITLE = "SNSHero.com - Kadan's Journey | Official Live-Action Movie (40 Episodes)"
 
 
 def log(msg: str) -> None:
@@ -95,12 +103,12 @@ def parse_episodes() -> Dict[int, Dict[str, str]]:
 
 def build_animation_description(ep: int, title_en: str, arc_en: str, synopsis_en: str) -> str:
     return (
-        f"🎨 SNSHero.com Official Animation — Episode {ep:02d}: {title_en}\n"
+        f"🎨 SNSHero.com - Kadan's Journey (눈히어로.com - 카단의 여정) | Official Animation — Episode {ep:02d}: {title_en}\n"
         f"({arc_en})\n\n"
         f"📖 Episode Story:\n"
         f"{synopsis_en}\n\n"
         f"⚔️ Visit https://snshero.com now to play the game and experience the full 40-episode saga!\n\n"
-        f"🔥 About SNSHero.com — Official Animated Picture-Book Chronicle & AI Card Battle Game:\n"
+        f"🔥 About SNSHero.com - Kadan's Journey (눈히어로.com - 카단의 여정):\n"
         f"• 40-Episode Multi-Character Animated Fantasy Series: Follow Kadan, Ignis, Celia, Aleksandar, and Balian across 2,009 illustrated picture-book scenes with 1:1 synchronized narration.\n"
         f"• Instant 3x3 Tactical Card Battle Game: Command over 110 legendary heroes and conquer 110 mission games directly in your browser—100% free!\n\n"
         f"👉 Play Free Now: https://snshero.com/animation?ep={ep}\n"
@@ -109,12 +117,12 @@ def build_animation_description(ep: int, title_en: str, arc_en: str, synopsis_en
 
 def build_cinema_description(ep: int, title_en: str, arc_en: str, synopsis_en: str) -> str:
     return (
-        f"🎬 SNSHero.com Official Live-Action Movie — Episode {ep:02d}: {title_en}\n"
+        f"🎬 SNSHero.com - Kadan's Journey (눈히어로.com - 카단의 여정) | Official Live-Action Movie — Episode {ep:02d}: {title_en}\n"
         f"({arc_en})\n\n"
         f"📖 Episode Story:\n"
         f"{synopsis_en}\n\n"
         f"⚔️ Visit https://snshero.com now to play the game and experience the full 40-episode saga!\n\n"
-        f"🔥 About SNSHero.com — Official Live-Action Dark Fantasy Movie & AI Card Battle Game:\n"
+        f"🔥 About SNSHero.com - Kadan's Journey (눈히어로.com - 카단의 여정):\n"
         f"• 40-Episode Photorealistic Live-Action Cinema Chronicle: Experience 2,009 live-action dark fantasy cuts of Kadan, Ignis, Celia, Aleksandar, and Balian with 1:1 synchronized narration.\n"
         f"• Instant 3x3 Tactical Card Battle Game: Command over 110 legendary heroes and conquer 110 mission games directly in your browser—100% free!\n\n"
         f"👉 Watch & Play Free Now: https://snshero.com/cinema?ep={ep}\n"
@@ -136,7 +144,9 @@ def load_state() -> dict:
 
 
 def save_state(state: dict) -> None:
-    STATE_FILE.write_text(json.dumps(state, indent=2, ensure_ascii=False), encoding="utf-8")
+    payload = json.dumps(state, indent=2, ensure_ascii=False)
+    STATE_FILE.write_text(payload, encoding="utf-8")
+    OFFICIAL_STATE_FILE.write_text(payload, encoding="utf-8")
 
 
 def fetch_playlist_id_by_title(channel_id: str, target_title: str) -> Optional[str]:
@@ -245,6 +255,42 @@ def update_codebase(state: dict) -> None:
                 )
                 sfp.write_text(stxt, encoding="utf-8")
 
+        geo_fp = PROJECT_ROOT / "src/lib/geoManager.ts"
+        if geo_fp.exists():
+            gtxt = geo_fp.read_text(encoding="utf-8")
+            gtxt = re.sub(
+                r"애니메이션 시리즈\(PL[A-Za-z0-9_-]+\)",
+                f"애니메이션 시리즈({anim_pl_id})",
+                gtxt,
+            )
+            gtxt = re.sub(
+                r"animation series \(PL[A-Za-z0-9_-]+\)",
+                f"animation series ({anim_pl_id})",
+                gtxt,
+            )
+            gtxt = re.sub(
+                r"(url:\s*'https://snshero\.com/movie'.*?sameAs:\s*\['https://www\.youtube\.com/watch\?v=)[^']+('])",
+                rf"\g<1>{ep1_anim}&list={anim_pl_id}\g<2>",
+                gtxt,
+                flags=re.DOTALL,
+            )
+            geo_fp.write_text(gtxt, encoding="utf-8")
+
+        vseo_fp = PROJECT_ROOT / "scripts/generate-video-seo.ts"
+        if vseo_fp.exists():
+            vtxt = vseo_fp.read_text(encoding="utf-8")
+            vtxt = re.sub(
+                r"const ANIME_PLAYLIST_ID = '[^']+';",
+                f"const ANIME_PLAYLIST_ID = '{anim_pl_id}';",
+                vtxt,
+            )
+            vtxt = re.sub(
+                r"const ANIME_PLAYLIST_URL = `https://www\.youtube\.com/watch\?v=[^&`]+&list=\$\{ANIME_PLAYLIST_ID\}`;",
+                f"const ANIME_PLAYLIST_URL = `https://www.youtube.com/watch?v={ep1_anim}&list=${{ANIME_PLAYLIST_ID}}`;",
+                vtxt,
+            )
+            vseo_fp.write_text(vtxt, encoding="utf-8")
+
     # 3. Update CinemaView.tsx if cinema_pl_id / cinema EP1 available
     ep1_cinema = cinema_ids.get("1")
     if cinema_pl_id and ep1_cinema:
@@ -267,6 +313,42 @@ def update_codebase(state: dict) -> None:
                 ctxt,
             )
             cfp.write_text(ctxt, encoding="utf-8")
+
+        geo_fp = PROJECT_ROOT / "src/lib/geoManager.ts"
+        if geo_fp.exists():
+            gtxt = geo_fp.read_text(encoding="utf-8")
+            gtxt = re.sub(
+                r"무비 시리즈\(PL[A-Za-z0-9_-]+\)",
+                f"무비 시리즈({cinema_pl_id})",
+                gtxt,
+            )
+            gtxt = re.sub(
+                r"movie series \(PL[A-Za-z0-9_-]+\)",
+                f"movie series ({cinema_pl_id})",
+                gtxt,
+            )
+            gtxt = re.sub(
+                r"(url:\s*'https://snshero\.com/cinema'.*?sameAs:\s*\['https://www\.youtube\.com/watch\?v=)[^']+('])",
+                rf"\g<1>{ep1_cinema}&list={cinema_pl_id}\g<2>",
+                gtxt,
+                flags=re.DOTALL,
+            )
+            geo_fp.write_text(gtxt, encoding="utf-8")
+
+        vseo_fp = PROJECT_ROOT / "scripts/generate-video-seo.ts"
+        if vseo_fp.exists():
+            vtxt = vseo_fp.read_text(encoding="utf-8")
+            vtxt = re.sub(
+                r"const MOVIE_PLAYLIST_ID = '[^']+';",
+                f"const MOVIE_PLAYLIST_ID = '{cinema_pl_id}';",
+                vtxt,
+            )
+            vtxt = re.sub(
+                r"const MOVIE_PLAYLIST_URL = `https://www\.youtube\.com/watch\?v=[^&`]+&list=\$\{MOVIE_PLAYLIST_ID\}`;",
+                f"const MOVIE_PLAYLIST_URL = `https://www.youtube.com/watch?v={ep1_cinema}&list=${{MOVIE_PLAYLIST_ID}}`;",
+                vtxt,
+            )
+            vseo_fp.write_text(vtxt, encoding="utf-8")
 
 
 def select_or_create_playlist(page, dialog, playlist_title: str, ep: int) -> None:
@@ -640,17 +722,9 @@ def run_uploads_on_channel(p, ch_cfg: dict, episodes: dict, state: dict) -> None
                         update_codebase(state)
                         continue
 
-                vid = None
-                for attempt in range(180):
-                    vid, limit_hit = upload_single_video(
-                        page, channel_id, mp4_path, yt_title, yt_desc, ANIMATION_PLAYLIST_TITLE, ep, "ANIM"
-                    )
-                    if not limit_hit:
-                        break
-                    log(
-                        f"[ANIM EP{ep:02d}] Waiting 60s for rolling 24h quota window on {channel_id} (attempt {attempt+1}/180)..."
-                    )
-                    time.sleep(60.0)
+                vid, limit_hit = upload_single_video(
+                    page, channel_id, mp4_path, yt_title, yt_desc, ANIMATION_PLAYLIST_TITLE, ep, "ANIM"
+                )
                 if limit_hit:
                     break
                 if vid:
@@ -688,17 +762,9 @@ def run_uploads_on_channel(p, ch_cfg: dict, episodes: dict, state: dict) -> None
                 yt_desc = build_cinema_description(ep, title_en, arc_en, synopsis_en)
 
                 try:
-                    vid = None
-                    for attempt in range(180):
-                        vid, limit_hit = upload_single_video(
-                            page, channel_id, mp4_path, yt_title, yt_desc, CINEMA_PLAYLIST_TITLE, ep, "MOVIE"
-                        )
-                        if not limit_hit:
-                            break
-                        log(
-                            f"[MOVIE EP{ep:02d}] Waiting 60s for rolling 24h quota window on {channel_id} (attempt {attempt+1}/180)..."
-                        )
-                        time.sleep(60.0)
+                    vid, limit_hit = upload_single_video(
+                        page, channel_id, mp4_path, yt_title, yt_desc, CINEMA_PLAYLIST_TITLE, ep, "MOVIE"
+                    )
                     if limit_hit:
                         break
                     if vid:

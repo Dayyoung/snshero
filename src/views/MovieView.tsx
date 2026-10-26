@@ -30,8 +30,8 @@ interface MovieViewProps {
 }
 
 const TOTAL_EPISODES = 40;
-const YOUTUBE_PLAYLIST_ID = 'PLfJ0X_nGc5Uc';
-const YOUTUBE_PLAYLIST_URL = 'https://www.youtube.com/watch?v=kk-4FB4k8ck&list=PLfJ0X_nGc5Uc';
+const YOUTUBE_PLAYLIST_ID = 'PLY6O_zlgCxYY';
+const YOUTUBE_PLAYLIST_URL = 'https://www.youtube.com/watch?v=62ziCvTMfB8&list=PLY6O_zlgCxYY';
 const YOUTUBE_DATA_API_KEY = 'AIzaSyBa9TidLv_iwMyB-9VSrVGWEVUr0WyjiQU';
 
 export const MovieView: React.FC<MovieViewProps> = ({
@@ -160,7 +160,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
           window.history.replaceState(window.history.state, '', url.pathname + url.search);
         }
         const meta = MOVIE_EPISODES[currentEpisodeNum];
-        const vid = meta?.videoId || playlistVideoIds[currentEpisodeNum - 1] || 'kk-4FB4k8ck';
+        const vid = meta?.videoId || playlistVideoIds[currentEpisodeNum - 1] || '62ziCvTMfB8';
         if (meta && typeof document !== 'undefined') {
           document.title = language === 'ko'
             ? `애니메이션 제${currentEpisodeNum}화: ${meta.titleKo} (${meta.titleEn}) | 눈히어로.com - 카단의 여정 공식 애니메이션 40화`
@@ -281,7 +281,7 @@ export const MovieView: React.FC<MovieViewProps> = ({
     return () => window.removeEventListener('message', handleYouTubeMessage);
   }, [currentEpisodeNum, currentSeason, language]);
 
-  const currentVideoId = getVideoId(currentEpisodeNum) || 'kk-4FB4k8ck';
+  const currentVideoId = getVideoId(currentEpisodeNum) || '62ziCvTMfB8';
   const embedUrl = `https://www.youtube.com/embed/${currentVideoId}?list=${YOUTUBE_PLAYLIST_ID}&autoplay=1&rel=0&enablejsapi=1`;
 
   return (
