@@ -2,6 +2,23 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-26 11:49 KST] [무비(/cinema, /novel 실사 모드, /main 무비 모드) 전 40화(2,049컷) 나레이션 1:1 매칭 실제 실사 영화 이미지(Photorealistic Live-Action) 전면 분리 복원 및 무비 40편 MP4(자막·상단 라벨 제거 버전) 재인코딩 완료]
+- **요청 사항**:
+  - `"지금 애니메이션 / 무비 의 이미지가 별 차이가 없어. 무비의 이미지는 실제 이미지 로 이미지가 표시되야해."`
+- **원인 분석 및 해결**:
+  - 이전 `aa7fa9c84` 수정에서 `la_cuts = [c.copy() for c in anime_cuts]`로 설정하여 무비(`/cinema`)에서도 2D 애니메이션과 동일한 일러스트가 노출되던 문제를 해결.
+  - 원래 1화 무비에서 장면과 나레이션이 어긋났던 진짜 원인은 [`scripts/build_conquest_2009_all_media.py`](file:///Users/dayyoung/project/snshero/scripts/build_conquest_2009_all_media.py)의 `build_distinct_liveaction_pool_for_episode`가 `public/images/cinema/raw_ep01_sheets/sheet_01..06.png`(1화 1~49번 장면에 1:1로 제작된 실제 실사 촬영 컷 49장) 대신 `act_seq_01..08.png`를 먼저 읽고, 거기에 순서가 섞인 요약 시트(`epXX_liveaction_sheet.png`)를 9곳(`cut_i = 0, 6, 12...`)에 덮어썼기 때문임을 규명.
+- **주요 구현 및 수정 내역**:
+  1. **전 40화 무비 실제 실사 이미지(`2,049개 WebP 컷` & `400개 스토리북 페이지`) 나레이션 1:1 시간순 매칭 재생성 ([`scripts/build_conquest_2009_all_media.py`](file:///Users/dayyoung/project/snshero/scripts/build_conquest_2009_all_media.py))**:
+     - **제1화(`ep_num == 1`)**: `public/images/cinema/raw_ep01_sheets/sheet_01.png` ~ `sheet_06.png`의 실제 실사 영화 촬영 컷 49장(`s_panels[0][:9] + s_panels[1][:9] + s_panels[2][:9] + s_panels[3][:9] + s_panels[4][:9] + s_panels[5][1:5]`)을 Scene 01(눈 덮인 성벽 없는 엘윈 마을) ~ Scene 49까지 나레이션과 1:1로 정확히 매핑.
+     - **제2화~제40화(`ep_num in 2..40`)**: 순서가 뒤섞인 요약 시트(`epXX_liveaction_sheet.png`) 덮어쓰기를 완전히 제거하고, 각 화별 72장의 시간순 실제 실사 영화 촬영 시트(`public/images/cinema/raw_ep02..40_sheets/act_seq_01..08.png`)만을 시간순 1:1로 샘플링하여 `public/images/cinema/episode_01..40/scene_00..XX.webp`(2,049컷) 및 `public/images/storybook_liveaction/ep_01..40/page_01..10.webp`(400페이지) 전수 재생성 완료.
+  2. **무비 40편 MP4 동영상(`public/videos/cinema/episode_01..40.mp4`) 실제 실사 이미지 기반(상단 라벨·자막 제거 버전) 전수 재인코딩 완료 ([`scripts/generate_cinema_videos.py`](file:///Users/dayyoung/project/snshero/scripts/generate_cinema_videos.py))**:
+     - 새로 생성된 실제 실사 이미지(`cinema/episode_01..40/scene_00..XX.webp`, 총 2,009 내러티브 컷)를 사용하여 상단 라벨과 하단 자막이 완전히 제거된 `800x450`(16:9) 풀블리드 실사 무비 MP4 40편 전수 재인코딩 완료.
+  3. **브라우저 캐시 무효화(`?v=conquest2009_v5`)**:
+     - [`src/hooks/useKadanRpgProgress.ts`](file:///Users/dayyoung/project/snshero/src/hooks/useKadanRpgProgress.ts), [`src/content/movieEpisodeMapping.ts`](file:///Users/dayyoung/project/snshero/src/content/movieEpisodeMapping.ts), [`src/components/movie/LiveActionCinemaPlayer.tsx`](file:///Users/dayyoung/project/snshero/src/components/movie/LiveActionCinemaPlayer.tsx), [`src/views/NovelView.tsx`](file:///Users/dayyoung/project/snshero/src/views/NovelView.tsx) 캐시 버전을 `?v=conquest2009_v5`로 상향.
+- **검증 및 보고**:
+  - `npx tsc --noEmit` 및 `npm run build` 프로덕션 빌드 무결점 통과, 로컬 Git 커밋 및 구글 폼 보고서 제출 완료 (유튜브 업로드는 사용자 확인 지시 전까지 대기 유지).
+
 ## [2026-10-26 11:42 KST] [전 화면·소설·PDF·애니메이션·무비·SEO/GEO/AEO 브랜드 및 공식 부제 전면 통일: 한글 '눈히어로.com - 카단의 여정' / 영문 'SNSHero.com - Kadan's Journey']
 - **요청 사항**:
   - `"지금 눈히어로.com / SNSHero.com 이 혼재되서 사용되는것 같아. 모든 화면에서 한글에서는 눈히어로.com / 영문에서는 SNSHero.com 으로 통일하자. 검색 SEO/GEO/AEO 에도 해당 내용 반영해줘. 부재는 카단의 여정 이야. 눈히어로.com - 카단의 여정 / SNSHero.com -Kadan's Journey 소설 / Pdf / 에니메이션 / 무비 모든 컨텐츠에 적용해줘."`
