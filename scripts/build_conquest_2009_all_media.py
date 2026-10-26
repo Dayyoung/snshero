@@ -601,17 +601,256 @@ def build_distinct_liveaction_pool_for_episode(ep_num: int, n_narrative: int) ->
         ]
         return ordered_la_cuts[:n_narrative]
 
-    extra_la_cells: list[Image.Image] = []
+    s_panels: list[list[Image.Image]] = []
     for seq_i in range(1, 9):
         seq_p = ep_raw_dir / f"act_seq_{seq_i:02d}.png"
         if seq_p.exists():
-            extra_la_cells.extend(extract_3x3_cells(seq_p))
+            s_panels.append(extract_3x3_cells(seq_p))
 
+    la_sheet_path = LIVEACTION_RAW_DIR / f"ep{ep_num:02d}_liveaction_sheet.png"
+    la_master_cells = extract_3x3_cells(la_sheet_path) if la_sheet_path.exists() else []
+
+    if ep_num == 2 and len(s_panels) == 8:
+        # Exact 1:1 scene-by-scene mapping of the 72 panels in raw_ep02_sheets/act_seq_01..08.png
+        # to Episode 2 Scenes 01..47 (matching every character, weapon, prop, and dialogue line 1:1):
+        ordered_la_cuts = [
+            s_panels[0][0],  # Scene 01: 불타버린 엘윈 마을의 잿더미에 당도한 헤르쿨
+            s_panels[0][4],  # Scene 02: 얼어붙은 진흙과 서릿발 위에 무릎을 꿇고 오열하는 헤르쿨
+            s_panels[0][5],  # Scene 03: 알렉산다르의 부러진 검 조각과 발리안의 찢어진 푸른 망토 수습
+            s_panels[0][1],  # Scene 04: 라이트헤이븐 직속 특무대의 흔적을 살피는 헤르쿨
+            s_panels[0][6],  # Scene 05: 분노로 부르르 떨리는 헤르쿨의 얼굴 클로즈업
+            s_panels[0][8],  # Scene 06: 두 전우의 유품을 갈무리하고 세븐브리지로 향하는 헤르쿨
+            s_panels[1][0],  # Scene 07: 바다 안개가 자욱한 항구 도시 세븐브리지의 거리
+            s_panels[1][1],  # Scene 08: 뒷골목에서 일곱 추적자와 마주친 헤르쿨
+            s_panels[1][3],  # Scene 09: 거대한 전쟁 망치를 어깨에 걸친 드워프 전사 그림리
+            s_panels[1][4],  # Scene 10: 철장을 짚은 노전사 가웨인과 그림리, 방패 전사 론돌
+            s_panels[1][5],  # Scene 11: 그림자 궁수 에일라와 단검의 카제
+            s_panels[1][7],  # Scene 12: "거기 서라, 황궁의 사냥개 놈아!" 포효하는 그림리
+            s_panels[2][5],  # Scene 13: 침을 뱉으며 으르렁거리고 전쟁 망치를 치켜드는 그림리
+            s_panels[1][6],  # Scene 14: 당장 해명할 틈도 없이 포위된 헤르쿨
+            s_panels[1][2],  # Scene 15: 루시안의 거짓 소문에 속아 무기를 뽑아 드는 추적자들
+            s_panels[2][0],  # Scene 16: "황궁의 충견 놈들에게 피 값을 치르게 해주마!" 쇠뇌를 겨누는 에일라
+            s_panels[2][4],  # Scene 17: 황금빛 방호진으로 에일라의 쇠뇌 화살을 튕겨내는 헤르쿨
+            s_panels[2][7],  # Scene 18: 콰아앙! 헤르쿨의 황금 방벽과 격돌하는 그림리의 전쟁 망치
+            s_panels[2][3],  # Scene 19: 치명적인 반격을 가하지 않고 방어 태세만 유지하는 헤르쿨
+            s_panels[4][2],  # Scene 20: 철장을 들어 올리며 "잠깐, 그림리! 에일라!" 외치는 가웨인
+            s_panels[2][8],  # Scene 21: 멈추지 않고 몰아치는 격렬한 무기 충돌
+            s_panels[3][3],  # Scene 22: 부서진 수레 너머로 쇄도하는 카제의 단검과 론돌의 방패
+            s_panels[3][1],  # Scene 23: 최루성 약초 가루 병을 던져 전장을 가로막는 약초사 엘리아나
+            s_panels[3][5],  # Scene 24: 연기 속에서 뛰쳐나온 엘윈 마을의 피난민 노인과 어린 소녀
+            s_panels[3][6],  # Scene 25: "멈추세요! 제발 그분을 해치지 마세요!" 두 팔을 벌린 피난민 소녀와 노인
+            s_panels[3][8],  # Scene 26: "이 아저씨가 불타는 다리에서 우리를 구해주셨단 말이에요!" 무기를 내리는 일행
+            s_panels[4][4],  # Scene 27: 품속에서 반으로 쪼개진 성기사단 황금 인장을 꺼내는 헤르쿨
+            s_panels[4][6],  # Scene 28: 그림리와 가웨인 앞에 성기사단 인장을 내보이는 헤르쿨
+            s_panels[4][0],  # Scene 29: 전쟁 망치를 바닥에 쿵 내려놓는 그림리
+            s_panels[4][1],  # Scene 30: "크하하... 성질 급한 드워프 체면이 말이 아니게 됐구먼!" 호탕하게 웃는 그림리
+            s_panels[4][3],  # Scene 31: 부러진 검 조각을 어루만지며 사흘 전 두 아이의 출생과 맹세를 전하는 헤르쿨
+            s_panels[5][2],  # Scene 32: 북쪽 야생지 지도를 가리키며 가웨인과 대책을 논의하는 헤르쿨
+            s_panels[5][5],  # Scene 33: 철장 위에 두 손을 얹고 침통하게 결의를 다지는 가웨인
+            s_panels[5][0],  # Scene 34: 탁자 주위에 모여 각자의 사명을 다짐하는 일곱 추적자
+            s_panels[5][7],  # Scene 35: "그림자 속에서 루시안의 밀정들을 사냥하겠어요." 화살로 북방을 가리키는 에일라
+            s_panels[6][1],  # Scene 36: "황궁의 밀서와 암살 경로는 내가 끊어놓겠다." 은빛 단검을 쥔 카제
+            s_panels[6][2],  # Scene 37: "세븐브리지의 나루터와 수로는 내 방패가 지킨다!" 노와 사자 방패를 든 론돌
+            s_panels[6][4],  # Scene 38: "다친 피난민들과 아이들의 숨결은 제가 돌보겠어요." 약초 주머니를 챙기는 엘리아나
+            s_panels[6][5],  # Scene 39: "미스트폴 절벽의 길목은 내 화살이 막아낼 테니 걱정 말라고!" 장궁을 든 로비냐드
+            s_panels[6][6],  # Scene 40: 뜨거운 눈시울을 붉히며 일곱 전우를 둘러보는 헤르쿨
+            s_panels[5][3],  # Scene 41: "나는 스스로 적의 심장부인 붉은 유리 궁정으로 걸어 들어가겠소." 두 주먹을 짚은 헤르쿨
+            s_panels[7][0],  # Scene 42: 세븐브리지 중앙 종탑 아래에서 마주 선 가웨인과 헤르쿨
+            s_panels[7][1],  # Scene 43: "진실의 룬이 다시 빛을 발하는 그날까지!" 손을 내미는 가웨인
+            s_panels[7][2],  # Scene 44: "카단과 이그니스가 대륙의 새벽을 여는 그날까지!" 서로의 팔뚝을 굳게 맞잡는 맹세
+            s_panels[7][3],  # Scene 45: 타오르는 불길 위에서 굳게 맞잡은 두 전사의 강철 완갑 클로즈업
+            s_panels[7][7],  # Scene 46: 종탑의 아홉 번 종소리를 신호 삼아 눈보라 치는 성문 밖으로 달려 나가는 추적자들
+            s_panels[7][8],  # Scene 47: 대륙의 지평선 너머로 아득하게 뻗어 나가는 일곱 추적자의 여정
+        ]
+        return ordered_la_cuts[:n_narrative]
+
+    if ep_num == 3 and len(s_panels) == 8:
+        # Exact 1:1 scene-by-scene mapping for Episode 3 (Scenes 01..52), excluding all anachronistic panels:
+        ordered_la_cuts = [
+            s_panels[0][0],  # Scene 01: 미스트폴 절벽의 기괴한 침묵 속에 도착한 일곱 추적자
+            s_panels[0][1],  # Scene 02: 안개 너머로 거인의 묘비처럼 솟아오른 현무암 암벽
+            la_master_cells[0] if len(la_master_cells) == 9 else crop_16x9_and_resize(s_panels[0][0], 0.08, 0.04, 0.92, 0.94),  # Scene 03: 차가운 흑암 안개가 차오른 협곡과 일행
+            s_panels[0][2],  # Scene 04: 검붉은 바위벽에 찍힌 기괴한 나선형 손자국을 살피는 가웨인과 엘리아나
+            s_panels[0][5],  # Scene 05: 말에서 내려 유리병의 푸른 감식액을 바위벽에 떨어뜨리는 엘리아나
+            s_panels[0][8],  # Scene 06: 푸른 감식액이 반응하며 피어오르는 은빛 마력 입자
+            s_panels[1][0],  # Scene 07: 금지된 흑마술의 흔적을 경고하는 엘리아나
+            s_panels[1][1],  # Scene 08: 안개 속에서 거칠게 콧김을 뿜으며 긴장하는 일행
+            s_panels[1][2],  # Scene 09: "조심해라, 모두 무기를 쥐어라." 가웨인의 경고
+            s_panels[1][3],  # Scene 10: 은화 세 닢을 튕기며 바람의 흐름을 읽는 카제
+            s_panels[1][4],  # Scene 11: "바람의 흐름이 한 지점으로 뒤틀리고 있어." 카제 클로즈업
+            s_panels[1][5],  # Scene 12: 물결무늬 지팡이(노)와 방패를 고쳐 쥐는 뱃사공 론돌
+            s_panels[1][6],  # Scene 13: "원한 맺힌 영혼들의 피 냄새가 섞인 마력의 장벽이오."
+            s_panels[1][7],  # Scene 14: 쇠망치를 바닥에 쿵 내려놓으며 수염을 쓸어내리는 그림리
+            s_panels[2][0],  # Scene 15: "내 망치 앞에 걸리면 대가리가 모루에 달군 쇳덩이 꼴이 날 게다."
+            s_panels[2][1],  # Scene 16: 바위 난간 위로 가볍게 뛰어올라 안개 너머를 살피는 로비냐드
+            s_panels[2][2],  # Scene 17: "다들 긴장 풀어요. 줄타기에서 발이 얼어붙으면 떨어지는 법이니까요."
+            s_panels[2][3],  # Scene 18: 절벽 정상 고대 타이탄 폐신전 돌기둥 사이로 스며든 두 그림자
+            s_panels[2][4],  # Scene 19: 파문당한 제자들 메두사 고르고와 결정술사 벨페고르의 등장
+            s_panels[2][6],  # Scene 20: 나인섀도우 코덱스의 암흑 마공을 번뜩이는 벨페고르와 고르고
+            s_panels[2][8],  # Scene 21: 검은 비단 안대의 고르고와 흑요석 결정 갑옷의 벨페고르
+            s_panels[3][0],  # Scene 22: 쇠지팡이 끝으로 신전 바닥의 판석을 세 번 두드리는 가웨인
+            s_panels[3][1],  # Scene 23: 일곱 개가 아닌 여덟 개의 공명음을 감지하고 굳어진 가웨인
+            s_panels[3][2],  # Scene 24: "천장이다! 흩어져라!" 천장을 부수며 낙하해 바닥을 내리찍는 벨페고르
+            s_panels[3][4],  # Scene 25: 쇠망치로 벨페고르를 받아치는 그림리와 쇠뇌를 쏘는 에일라
+            s_panels[3][6],  # Scene 26: 화살의 마찰열을 감지하고 유연하게 허리를 꺾어 피하는 메두사 고르고
+            s_panels[4][0],  # Scene 27: 칠흑의 마나 실가닥으로 로비냐드의 그림자를 바닥에 꿰매는 고르고
+            s_panels[4][1],  # Scene 28: 그림자가 묶여 보이지 않는 족쇄에 갇힌 듯 굳어버린 로비냐드
+            s_panels[4][2],  # Scene 29: 합을 맞춰 본 경험이 부족해 엇갈리는 일곱 추적자의 진형
+            s_panels[4][4],  # Scene 30: 물살과 망치바람에 휩쓸리는 카제의 비검과 에일라의 조준선
+            s_panels[4][6],  # Scene 31: "크하하하! 오합지졸 사냥꾼 놈들!" 포효하는 벨페고르
+            s_panels[4][7],  # Scene 32: 벨페고르의 흑요석 철권에 어깨를 강타당해 피를 토하는 그림리
+            s_panels[4][8],  # Scene 33: 폐신전 내부를 가득 채우는 고르고의 보랏빛 독안개
+            s_panels[5][0],  # Scene 34: "숨을 참아라!" 정화의 약초 가루를 뿌리는 엘리아나
+            s_panels[5][1],  # Scene 35: 예리한 비수로 바닥돌을 후벼 파 자신의 그림자 사슬을 찢어내는 로비냐드
+            s_panels[5][2],  # Scene 36: 살갗이 타들어 가는 고통을 뚫고 벨페고르의 목덜미로 몸을 날리는 로비냐드
+            s_panels[5][3],  # Scene 37: 복부를 꿰뚫리면서도 두 팔과 다리로 괴물의 관절을 붙잡아 멈춰 세운 로비냐드
+            s_panels[5][4],  # Scene 38: "지금이야... 에일라, 그림리... 서로의 숨소리를 듣고 움직여라!"
+            s_panels[5][5],  # Scene 39: 가웨인의 지팡이 울림을 나침반 삼아 화살을 쏘아 올리는 에일라
+            s_panels[5][6],  # Scene 40: 카제의 비검, 론돌의 급류, 그림리의 전력 망치질이 흑요석 갑옷을 박살 냄
+            s_panels[6][2],  # Scene 41: 파편 틈으로 엘리아나가 던진 성수가 스며들며 천 길 낭떠러지로 추락하는 벨페고르
+            s_panels[5][8],  # Scene 42: 파트너의 최후에 이를 갈며 독안개 속으로 물러나는 메두사 고르고
+            s_panels[3][8],  # Scene 43: "오늘의 피는 너희의 목숨으로 반드시 되갚아 주마!" 사라지는 고르고
+            s_panels[6][6],  # Scene 44: 안개가 걷힌 신전 바닥에 쓰러진 로비냐드
+            s_panels[6][8],  # Scene 45: "형제들이여... 울지 마라. 내 목숨 하나로 괴물을 꺾었으니 남는 장사 아닌가."
+            s_panels[7][0],  # Scene 46: 희미하게 웃으며 가쁜 숨을 몰아쉬는 로비냐드와 동료들
+            s_panels[7][1],  # Scene 47: "북쪽으로 가라... 아이를 찾아야 해... 알렉산다르의 맹세를..."
+            s_panels[7][2],  # Scene 48: 오열하는 엘리아나의 품에서 조용히 미소를 머금고 눈을 감는 로비냐드
+            s_panels[7][4],  # Scene 49: 바위 봉우리 위에 로비냐드의 돌무덤을 쌓고 은빛 방울을 망치에 묶는 그림리
+            s_panels[7][5],  # Scene 50: "이 방울 소리가 울릴 때마다 네가 우리 곁에 있다고 믿겠다."
+            s_panels[7][7],  # Scene 51: 돌무덤 앞에서 피 섞인 맹세를 토해내는 그림리와 지팡이를 짚은 가웨인
+            s_panels[7][8],  # Scene 52: 하나의 심장으로 결속하여 북쪽 황야로 발걸음을 옮기는 여섯 사냥꾼
+        ]
+        return ordered_la_cuts[:n_narrative]
+
+    if ep_num == 4 and len(s_panels) == 8 and len(la_master_cells) == 9:
+        # Exact 1:1 scene-by-scene mapping for Episode 4 (Scenes 01..46), replacing seq_01 crowned-Aleksandar panels
+        # with true snowy nomad yurt & young Kadan/Elwin live-action frames:
+        ordered_la_cuts = [
+            la_master_cells[0],  # Scene 01: 북방 와일드랜드 유목 부족 천막촌에서 아들 카단과 살아가는 엘윈
+            crop_16x9_and_resize(la_master_cells[0], 0.0, 0.02, 0.86, 0.94),  # Scene 02: 영구동토의 차가운 설원 위에 세워진 둥근 가죽 천막촌
+            s_panels[0][7],  # Scene 03: 매서운 북풍 속에서 어린 카단을 따뜻하게 감싸 안는 어머니 엘윈
+            crop_16x9_and_resize(la_master_cells[0], 0.14, 0.05, 1.0, 0.96),  # Scene 04: 장작더미 옆에서 묵묵히 궂은일을 도맡는 카단
+            s_panels[0][4],  # Scene 05: 두꺼운 굳은살이 박이고 얼어터진 카단의 거친 손과 은빛 단검
+            la_master_cells[1],  # Scene 06: 마구간 천막 안에서 어린 생명을 담요로 감싸 돌보는 우직한 소년 카단
+            s_panels[1][0],  # Scene 07: 하루의 고된 노동이 끝난 뒤 어머니 엘윈과 마주 앉은 카단
+            s_panels[1][3],  # Scene 08: 어머니가 건네주는 따뜻한 격려와 보살핌을 소중히 여기는 카단
+            s_panels[1][4],  # Scene 09: "어머니, 오늘 울타리를 고치다가 눈더미에 갇힌 어린 생명을 보았어요."
+            s_panels[1][6],  # Scene 10: 화로가에서 다정하게 아들의 이야기에 귀 기울이는 엘윈
+            s_panels[1][1],  # Scene 11: 아버지의 은빛 단검으로 얼음을 파내어 보금자리를 만들어 주는 카단
+            s_panels[1][2],  # Scene 12: 백은의 칼날에 서린 아케 성기사단의 고대 룬 클로즈업
+            s_panels[1][5],  # Scene 13: 다친 어린 새에게 먹이를 주며 생명의 온기를 나누는 카단
+            s_panels[1][7],  # Scene 14: "생명을 귀하게 여기는 마음이야말로 그 어떤 마법보다 위대한 힘이란다."
+            s_panels[1][8],  # Scene 15: "굳센 나무는 가장 혹독한 칼바람 속에서 가장 깊은 뿌리를 내리는 법이란다."
+            s_panels[2][0],  # Scene 16: 얼어붙은 협곡에서 적대 부족 암살자들에게 추격당하는 정복왕 펜릴의 아들 길가메시
+            s_panels[2][1],  # Scene 17: 암살자들의 포위망 속에서 절체절명의 위기에 몰린 길가메시
+            s_panels[2][5],  # Scene 18: 눈보라 치는 협곡 비탈길을 한 치의 망설임 없이 달려 내려가는 카단
+            s_panels[2][6],  # Scene 19: "이곳에서 사람을 해치지 마라!" 암살자 앞을 가로막는 카단
+            la_master_cells[2],  # Scene 20: 피 흘리는 길가메시를 구해 들쳐 업으려 달려드는 카단과 추격자들
+            s_panels[3][0],  # Scene 21: "날 내려놓고 도망쳐! 저놈들은 살인귀들이야!" 소리치는 길가메시
+            la_master_cells[3],  # Scene 22: 길가메시를 등에 업고 살얼음이 갈라지는 얼어붙은 강바닥을 내달리는 카단
+            s_panels[3][2],  # Scene 23: 무게를 분산시키며 필사적으로 빙판 협곡을 돌파하는 두 소년
+            s_panels[4][0],  # Scene 24: 얼음판에 몸을 낮추어 썰매처럼 빙판을 미끄러지며 화살 세례를 견디는 카단
+            s_panels[4][1],  # Scene 25: 암살자들의 쇠뇌 화살이 허벅지를 스치며 불꽃과 핏방울이 튀는 순간
+            s_panels[4][2],  # Scene 26: 끔찍한 고통 속에서도 길가메시의 팔을 끝까지 놓지 않는 카단
+            s_panels[4][3],  # Scene 27: "조금만 참아라! 저 언덕 너머에 늑대 기병대의 망루가 있다!"
+            s_panels[4][4],  # Scene 28: 절벽 위에서 달려와 암살자들을 섬멸하는 정복왕 펜릴의 백색 거대 늑대
+            s_panels[5][0],  # Scene 29: 쓰러진 부상자 곁을 지키는 카단 앞에 우뚝 멈춰 선 거대 백랑 펜릴
+            s_panels[5][1],  # Scene 30: "어린놈이 어찌 목숨을 버릴 각오로 내 아들을 살려냈느냐?"
+            s_panels[5][2],  # Scene 31: 상처를 감싸 쥔 채 흔들림 없는 맑은 눈동자로 답하는 카단
+            s_panels[5][4],  # Scene 32: "눈앞에서 피 흘리는 아이를 버려두고 도망치는 것은 부끄러운 짓이라 배웠습니다."
+            s_panels[5][7],  # Scene 33: 카단의 사내다운 배짱에 호탕하게 포효하는 정복왕 펜릴
+            s_panels[4][6],  # Scene 34: 카단을 전우이자 형제로 인정하며 나란히 서는 길가메시
+            s_panels[4][8],  # Scene 35: "내 목숨은 네 것이다, 카단. 앞으로 너를 형제라 부르겠다."
+            s_panels[6][0],  # Scene 36: 육 년 만에 북방 천막촌에 도달한 백발의 노전사 가웨인과 카단
+            s_panels[6][2],  # Scene 37: 가웨인과 붉은 수염의 드워프 전사 그림리를 비롯한 여섯 스승의 도착
+            s_panels[6][1],  # Scene 38: 카단의 허리춤에 매달려 백은의 빛으로 공명하는 아케 성기사단의 은빛 단검
+            s_panels[6][5],  # Scene 39: 카단의 단검과 공명하며 맑게 울리는 그림리의 전쟁 망치 끝 은빛 방울 클로즈업
+            s_panels[6][6],  # Scene 40: "찾았다... 드디어 찾았어. 알렉산다르의 아들을!" 감격하는 스승들
+            s_panels[6][7],  # Scene 41: "알렉산다르의 부러진 검과 이 은빛 단검의 주인을 찾아 대륙의 절반을 가로질러 왔단다."
+            s_panels[7][0],  # Scene 42: 천막 문을 열고 나와 여섯 스승을 맞이하는 엘윈과 카단
+            s_panels[7][4],  # Scene 43: 가슴에 손을 얹고 엘윈 부인에게 정중히 예를 표하는 가웨인
+            s_panels[7][6],  # Scene 44: "부인, 우리는 로비냐드의 목숨과 바꾼 맹세를 지키러 왔습니다." 고개 숙여 인사하는 가웨인
+            s_panels[7][8],  # Scene 45: 모닥불 앞에서 엘윈의 손을 맞잡고 카단을 대륙 최고의 방패로 길러낼 것을 다짐하는 스승들
+            la_master_cells[8],  # Scene 46: 오로라와 모닥불 아래에서 하나로 이어진 은빛 단검의 빛과 여섯 스승의 맹세
+        ]
+        return ordered_la_cuts[:n_narrative]
+
+    if len(s_panels) == 8:
+        # For Episodes 5..40:
+        # 1. Lock every sequence `s_i` (0..7) strictly to its corresponding `act_seq_{s_i+1:02d}.png`
+        #    so ZERO scenes ever cross sequence boundaries (`st .. en-1` -> `s_panels[s_i]`).
+        # 2. Filter out any panel containing baked-in subtitle text or dead-character hallucinations
+        #    (King Aleksandar's golden crown + royal blue velvet cape + neon greatsword in Ep >= 5).
+        def is_clean_sequence_panel(cell: Image.Image, ep_n: int, seq_n: int, p_idx: int) -> bool:
+            if (ep_n, seq_n, p_idx) == (9, 2, 3):
+                return False  # Exclude panel with baked-in English subtitle text
+            arr = np.asarray(cell, dtype=np.float32)
+            h, w, _ = arr.shape
+            torso = arr[int(h * 0.25):int(h * 0.85), int(w * 0.08):int(w * 0.92)]
+            tr, tg, tb = torso[:, :, 0], torso[:, :, 1], torso[:, :, 2]
+            upper = arr[int(h * 0.05):int(h * 0.75), int(w * 0.08):int(w * 0.92)]
+            ur, ug, ub = upper[:, :, 0], upper[:, :, 1], upper[:, :, 2]
+            royal_blue = ((tb > 85) & (tb > tr * 1.65) & (tb > tg * 1.28) & (tr < 90)).mean()
+            gold_armor = ((ur > 135) & (ug > 105) & (ub < 85) & (ur > ub * 1.7) & (ug > ub * 1.35)).mean()
+            # Crowned King Aleksandar combines vivid royal blue cape + ornate gold plate armor
+            if royal_blue > 0.008 and gold_armor > 0.0015:
+                return False
+            return True
+
+        def compose_la_followup_cut(base_cell: Image.Image, seed_idx: int, step: int) -> Image.Image:
+            mode = (seed_idx + step) % 5
+            if mode == 0:
+                return crop_16x9_and_resize(base_cell, 0.0, 0.03, 0.86, 0.95)
+            elif mode == 1:
+                return crop_16x9_and_resize(base_cell, 0.14, 0.03, 1.0, 0.95)
+            elif mode == 2:
+                return crop_16x9_and_resize(base_cell, 0.08, 0.04, 0.92, 0.93)
+            elif mode == 3:
+                return crop_16x9_and_resize(base_cell, 0.04, 0.01, 0.90, 0.90)
+            else:
+                return crop_16x9_and_resize(base_cell, 0.10, 0.06, 0.96, 0.97)
+
+        ordered_la_cuts = []
+        seg_size = n_narrative / 8.0
+        for s_i in range(8):
+            st = int(round(s_i * seg_size))
+            en = int(round((s_i + 1) * seg_size)) if s_i < 7 else n_narrative
+            seg_len = max(0, en - st)
+            if seg_len == 0:
+                continue
+            seq_cells = s_panels[s_i]
+            clean_indices = [idx for idx in range(len(seq_cells)) if is_clean_sequence_panel(seq_cells[idx], ep_num, s_i + 1, idx)]
+            if len(clean_indices) < 2:
+                clean_indices = [idx for idx in range(len(seq_cells)) if (ep_num, s_i + 1, idx) != (9, 2, 3)]
+
+            if len(clean_indices) >= seg_len:
+                used_local: set[int] = set()
+                for local_k in range(seg_len):
+                    pos = int(round(local_k * (len(clean_indices) - 1) / max(1, seg_len - 1)))
+                    while pos in used_local and pos + 1 < len(clean_indices):
+                        pos += 1
+                    used_local.add(pos)
+                    ordered_la_cuts.append(seq_cells[clean_indices[pos]])
+            else:
+                # Expand clean_indices to `seg_len` cuts in strict chronological order using subtle camera framing
+                bucket_counts: dict[int, int] = {ci: 0 for ci in clean_indices}
+                for local_k in range(seg_len):
+                    ci = clean_indices[min(len(clean_indices) - 1, int(local_k * len(clean_indices) / max(1, seg_len)))]
+                    sub_step = bucket_counts[ci]
+                    bucket_counts[ci] += 1
+                    if sub_step == 0:
+                        ordered_la_cuts.append(seq_cells[ci])
+                    else:
+                        ordered_la_cuts.append(compose_la_followup_cut(seq_cells[ci], st + local_k, sub_step))
+
+        return ordered_la_cuts[:n_narrative]
+
+    extra_la_cells: list[Image.Image] = []
+    for seq_cells in s_panels:
+        extra_la_cells.extend(seq_cells)
     if not extra_la_cells:
-        la_sheet_path = LIVEACTION_RAW_DIR / f"ep{ep_num:02d}_liveaction_sheet.png"
-        extra_la_cells = extract_3x3_cells(la_sheet_path) if la_sheet_path.exists() else []
+        extra_la_cells = la_master_cells
 
-    # Pick `n_narrative` strictly distinct photorealistic live-action panels in chronological order
     ordered_la_cuts = []
     used_indices: set[int] = set()
     for k in range(n_narrative):

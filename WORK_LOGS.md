@@ -2,6 +2,28 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-26 13:16 KST] [제2화(/book?ep=2 실사 컷 모드) 47개 전 장면 1:1 정밀 매핑 및 제3~40화 실사(Live-Action) 시퀀스 경계 밀림·사망 캐릭터 오등장 전수 교정 완료]
+- **요청 사항**:
+  - `"매핑된것 확인했어. 2화부터 40화까지는 문제 없는거야?"`
+  - `"http://localhost:3000/book?ep=2 애니메이션은 맞는데 실사 이미지가 내용이 안맞아? 다시 확인"`
+- **원인 분석**:
+  1. **제2화(`ep=2`, 47개 내러티브 씬 `scene_01~47`) 실사 컷 불일치 원인**:
+     - [`scripts/build_conquest_2009_all_media.py`](file:///Users/dayyoung/project/snshero/scripts/build_conquest_2009_all_media.py)에서 제1화(`ep_num == 1`)만 49개 씬 1:1 매핑 테이블이 적용되어 있었고, 제2~40화는 72개 패널(`act_seq_01~08.png`)에 대한 단순 선형 인덱스 샘플링(`round(k * 71 / (n_narrative - 1))`)을 사용하고 있었음.
+     - 특히 `raw_ep02_sheets/act_seq_03~07.png` 내부 패널들이 문장 순서가 아닌 캐릭터/동작별로 배치되어 있어, 단순 선형 샘플링 시 `Scene 13`(그림리가 으르렁거림)에 에일라의 쇠뇌 사격이 나오고, `Scene 16`(에일라의 외침)에 그림리의 망치가 나오며, `Scene 19~20`(가웨인의 제지)에 엘리아나의 최루성 연기가 나오고, `Scene 24~25`(피난민 소녀의 애원)에 그림리가 웃는 장면이 나오며, `Scene 38`(엘리아나의 약초 주머니)에 론돌이 노를 든 장면이 표시되던 현상 규명.
+  2. **제3~40화(`ep=3~40`) 시퀀스 경계 이탈 및 회상 대사 기반 사망 캐릭터(알렉산다르 등) 오등장 원인**:
+     - 전역 선형 샘플링으로 인해 23개 에피소드(34개 씬)에서 씬이 인접 시퀀스 시트(`act_seq`)로 넘어가는 경계 밀림(boundary drift)이 발생했고, 대사 내 `"알렉산다르의 아들"`, `"알렉산다르의 맹세"` 언급 때문에 일부 시트 패널에 왕관을 쓴 알렉산다르가 섞여 있거나 `EP09 seq_02 panel 3`에 영문 자막이 구워져 있던 문제 확인.
+- **주요 구현 및 수정 내역**:
+  1. **제2화(`ep_num == 2`) 47개 씬(`scene_01~47`) 1:1 전수 정밀 매핑 ([`scripts/build_conquest_2009_all_media.py`](file:///Users/dayyoung/project/snshero/scripts/build_conquest_2009_all_media.py))**:
+     - `Scene 01~06`(불타버린 엘윈 마을 잿더미의 헤르쿨·유품 수습), `Scene 07~15`(세븐브리지 안개 골목의 일곱 추적자 조우·그림리·가웨인·에일라·카제), `Scene 16~19`(에일라의 쇠뇌 사격과 헤르쿨의 황금 방호진, 그림리의 전쟁 망치 격돌), `Scene 20`(철장을 들어 제지하는 가웨인 `s_panels[4][2]`), `Scene 22`(카제·론돌의 협공 `s_panels[3][3]`), `Scene 23`(최루성 약초 가루 병을 던지는 엘리아나 `s_panels[3][1]`), `Scene 24~25`(연기 속에서 뛰쳐나와 헤르쿨을 감싸는 피난민 소녀와 노인 `s_panels[3][5..6]`), `Scene 27~28`(성기사단 황금 인장을 꺼내 보이는 헤르쿨 `s_panels[4][4,6]`), `Scene 29~30`(망치를 내려놓고 호탕하게 웃으며 사과하는 그림리 `s_panels[4][0..1]`), `Scene 32~41`(지도 탁자 앞 가웨인·에일라·카제·론돌·엘리아나·로비냐드·헤르쿨 각자의 다짐), `Scene 42~47`(세븐브리지 중앙 종탑 아래 팔뚝을 맞잡는 맹세와 출발)까지 47개 전 장면을 1:1 매핑 완료.
+  2. **제3화(`52개 씬`) 및 제4화(`46개 씬`) 1:1 전수 정밀 매핑 및 제5~40화 시퀀스 락(Sequence-Lock)·오등장 패널 자동 필터링 적용**:
+     - 제3화(`ep_num == 3`): `act_seq_01`의 무관한 암살자 패널 및 `act_seq_07`의 왕관 쓴 알렉산다르 패널을 전수 배제하고 미스트폴 절벽 감식액·벨페고르/고르고 전투·로비냐드의 희생과 돌무덤 맹세 52개 씬을 1:1 매핑.
+     - 제4화(`ep_num == 4`): `act_seq_01`의 왕관 쓴 성인 알렉산다르 패널을 배제하고 북방 유목 천막촌의 어린 카단·어머니 엘윈·어린 생명 보살핌·길가메시 구출·펜릴 조우·여섯 스승과의 재회 46개 씬을 1:1 매핑.
+     - 제5~40화(`ep_num in 5..40`): 각 시퀀스(`s_i = 0..7`)가 반드시 해당 `act_seq_{s_i+1:02d}.png` 내부에서만 매핑되도록 시퀀스 경계를 엄격히 고정하고, 자막 오염(`EP09 seq_02 panel 3`) 및 왕관·푸른 망토 알렉산다르 오등장 패널을 자동 필터링하여 전 40화 `2,049 / 2,049` 고유 SHA-256 달성.
+  3. **전 40화 고화질 네이버 웹툰 스트립(`~/Downloads/눈히어로_코믹툰_제01~40화.jpg`), 무비 MP4(`episode_02~04.mp4`) 재인코딩 및 브라우저 캐시 버전 상향(`?v=conquest2009_v7`)**:
+     - [`src/views/NovelView.tsx`](file:///Users/dayyoung/project/snshero/src/views/NovelView.tsx), [`src/hooks/useKadanRpgProgress.ts`](file:///Users/dayyoung/project/snshero/src/hooks/useKadanRpgProgress.ts), [`src/components/movie/LiveActionCinemaPlayer.tsx`](file:///Users/dayyoung/project/snshero/src/components/movie/LiveActionCinemaPlayer.tsx), [`src/content/movieEpisodeMapping.ts`](file:///Users/dayyoung/project/snshero/src/content/movieEpisodeMapping.ts)의 캐시 버전을 `?v=conquest2009_v7`로 업데이트.
+- **검증 및 보고**:
+  - `npm run lint` 무결점 통과, 전 40화 애니메이션/실사 각 `2,049 / 2,049` 고유 SHA-256 검증 완료, 로컬 Git 커밋 및 구글 폼 보고서 제출 완료.
+
 ## [2026-10-26 12:16 KST] [제1화(/book?ep=1 실사 컷 모드 및 /cinema?ep=1) 49개 나레이션·대사 문장별 실제 실사 컷(sheet_01..06.png) 1:1 인덱스 오프셋 전수 교정 및 episode_01.mp4 재인코딩 완료]
 - **요청 사항**:
   - `"http://localhost:3000/book?ep=1 애니메이션 이미지는 나레이션과 대사 나레이션 내용이 맞는데 실사 컷 전환 하면 나레이션과 이미지가 내용이 맞지않아."`

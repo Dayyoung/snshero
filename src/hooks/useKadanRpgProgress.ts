@@ -50,7 +50,7 @@ export const resolveKadanArtStyleUrl = (
       : cleanUrl
           .replace('/images/cinema/episode_', '/images/webtoon/episode_')
           .replace('/images/storybook_liveaction/ep_', '/images/storybook/ep_');
-  return `${mapped}?v=conquest2009_v6`;
+  return `${mapped}?v=conquest2009_v7`;
 };
 
 export interface KadanRpgProgress {
