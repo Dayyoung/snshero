@@ -148,7 +148,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  const [currentChapterLegId, setCurrentChapterLegId] = useState<string | null>(nextEvent?.id ?? null);
  const [ambushAlert, setAmbushAlert] = useState<AmbushEncounter | null>(null);
  const [ambushBattle, setAmbushBattle] = useState<AmbushEncounter | null>(null);
- const [ambushCountdown, setAmbushCountdown] = useState<number>(1.0);
+ const [ambushCountdown, setAmbushCountdown] = useState<number>(3.0);
  const [isQuickRetrying, setIsQuickRetrying] = useState<boolean>(false);
  const isDeadlockExitingRef = useRef<boolean>(false);
  const isManualFieldMoveRef = useRef<boolean>(false);
@@ -269,7 +269,6 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
   (() => {
    try {
     return (
-     localStorage.getItem('hero_auto_battle') === 'true' ||
      localStorage.getItem('hero_kadan_rpg_auto_mode') === 'true' ||
      localStorage.getItem('hero_auto_loop_is_ranking') === 'true' ||
      localStorage.getItem('hero_auto_loop_mode') !== null
@@ -307,10 +306,10 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  useEffect(() => {
   if (isAutoPlayActive) {
    isManualFieldMoveRef.current = false;
-  }
-  if ((isAutoPlayActive || !isManualFieldMoveRef.current) && (ambushAlert || ambushBattle)) {
-   setAmbushAlert(null);
-   setAmbushBattle(null);
+   if (ambushAlert || ambushBattle) {
+    setAmbushAlert(null);
+    setAmbushBattle(null);
+   }
   }
  }, [isAutoPlayActive, ambushAlert, ambushBattle]);
 
@@ -332,8 +331,8 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
    const isDest = sameTile(next, targetTile);
    const isStart = sameTile(next, currentRegion.startTile);
 
-   // 자동플레이 시(또는 챕터 간 자동 이동 시)에는 필드 기습 이벤트가 절대 발생하지 않도록 차단 (오직 수동 필드 타일 이동 시에만 발생)
-   if (!isAutoPlayActive && isManualFieldMoveRef.current) {
+   // 자동플레이 시에는 필드 기습 이벤트가 발생하지 않도록 차단 (수동 플레이 시에만 발생)
+   if (!isAutoPlayActive) {
     const triggered = shouldTriggerAmbush(
      nextStep,
      lastAmbushStep,
@@ -686,14 +685,14 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  }, [language, progress.autoMode, setAutoMode, showCustomAlert]);
 
  useEffect(() => {
-  if (!ambushAlert || !progress.autoMode) {
-   setAmbushCountdown(1.0);
+  if (!ambushAlert) {
+   setAmbushCountdown(3.0);
    return;
   }
 
-  const durationMs = 1000;
+  const durationMs = 3000;
   const deadline = Date.now() + durationMs;
-  setAmbushCountdown(1.0);
+  setAmbushCountdown(3.0);
 
   let hasEngaged = false;
   const intervalId = window.setInterval(() => {
@@ -710,7 +709,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
   return () => {
    window.clearInterval(intervalId);
   };
- }, [ambushAlert, handleEngageAmbush, progress.autoMode]);
+ }, [ambushAlert, handleEngageAmbush]);
 
  const handleAmbushBattleComplete = useCallback(async (result: KadanBattleResult) => {
   if (!ambushBattle) return;
@@ -1140,7 +1139,7 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  opponentName={language === 'ko' ? `[기습] ${ambushBattle.name}` : `[Ambush] ${ambushBattle.nameEn}`}
  language={language}
  initialAutoBattle={true}
- autoCloseOnComplete={progress.autoMode || isDemoPlayActive() || isRankingDiverted()}
+ autoCloseOnComplete={true}
  onToggleAutoBattle={() => setAutoMode(!progress.autoMode)}
  onBack={(completed) => {
   setAmbushBattle(null);
@@ -1224,20 +1223,18 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  </div>
  </div>
 
- {progress.autoMode && (
  <div className="mb-4">
  <div className="flex justify-between text-[10px] text-amber-400/90 font-bold mb-1">
- <span>⚡ {language === 'ko' ? '자동 전투 개시 중...' : 'Engaging Auto-Battle...'}</span>
+ <span>⚡ {language === 'ko' ? '3초 후 자동 전투 개시 중...' : 'Engaging Auto-Battle in 3s...'}</span>
  <span>{Math.max(0, ambushCountdown).toFixed(1)}s</span>
  </div>
  <div className="h-1.5 w-full bg-stone-800 rounded-none overflow-hidden">
  <div 
- className="h-full bg-amber-400 transition-all duration-100 ease-linear"
- style={{ width: `${Math.max(0, Math.min(100, (ambushCountdown / 1.0) * 100))}%` }}
+ className="h-full bg-amber-400 transition-all duration-75 ease-linear"
+ style={{ width: `${Math.max(0, Math.min(100, (ambushCountdown / 3.0) * 100))}%` }}
  />
  </div>
  </div>
- )}
 
  <div className="flex items-center justify-end gap-2 pt-2 border-t border-stone-800">
  <button
@@ -1253,7 +1250,11 @@ export const KadanRpgView: React.FC<KadanRpgViewProps> = ({
  className="min-h-[44px] flex-1 rounded-sm bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-xs px-4 py-2 transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-2"
  >
  <Swords size={16} />
- <span>{language === 'ko' ? '전투 개시 (ENGAGE BATTLE)' : 'ENGAGE BATTLE'}</span>
+ <span>
+  {language === 'ko'
+   ? `전투 개시 (ENGAGE BATTLE) (${Math.max(1, Math.ceil(ambushCountdown))}s)`
+   : `ENGAGE BATTLE (${Math.max(1, Math.ceil(ambushCountdown))}s)`}
+ </span>
  </button>
  </div>
  </div>
