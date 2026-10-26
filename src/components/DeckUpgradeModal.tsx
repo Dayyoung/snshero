@@ -30,7 +30,11 @@ export const DeckUpgradeModal: React.FC<DeckUpgradeModalProps> = ({
 
  const isAutoLoopRanking = typeof window !== 'undefined' && (() => {
  try {
- return localStorage.getItem('hero_auto_loop_is_ranking') === 'true';
+ return (
+ localStorage.getItem('hero_auto_loop_mode') === 'deck_swap' ||
+ localStorage.getItem('hero_auto_optimize_deck') === 'true' ||
+ localStorage.getItem('hero_demo_play_active') === 'true'
+ );
  } catch {
  return false;
  }

@@ -130,8 +130,21 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setView, setIsAutoB
  localStorage.setItem(`hero_kadan_rpg_auto_mode_${season}`, 'true');
  window.dispatchEvent(new CustomEvent('hero_kadan_rpg_auto_mode_updated', { detail: { autoMode: true } }));
  }
- } else if (setIsAutoBattle) {
+ } else {
+ if (setIsAutoBattle) {
  setIsAutoBattle(false);
+ }
+ try {
+ localStorage.removeItem('hero_auto_loop_mode');
+ localStorage.removeItem('hero_auto_optimize_deck');
+ localStorage.removeItem('hero_story_auto_loop_return');
+ localStorage.removeItem('hero_auto_loop_is_ranking');
+ if (localStorage.getItem('hero_demo_play_active') === 'true') {
+ localStorage.removeItem('hero_demo_play_active');
+ localStorage.removeItem('hero_demo_play_step');
+ window.dispatchEvent(new CustomEvent('snshero_demo_play_changed', { detail: { active: false, timestamp: Date.now() } }));
+ }
+ } catch {}
  }
  setView(item.id as ViewType);
  playSfx('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');

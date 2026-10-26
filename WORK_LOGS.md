@@ -2,6 +2,16 @@
 
 이 문서는 매시 정각 주기 스케줄러 및 수동 실행 시 스프레드시트 작업 동기화, 코드 수정 및 검증, 구글 폼 보고 내역을 기록하는 영구 로그입니다.
 
+## [2026-10-26 15:00 KST] [마이덱(MyDeckView) 수동 카드 변경/적용 시 플레이 화면 자동 이동 버그 수정 (오직 자동 플레이 시에만 이동하도록 제한)]
+- **요청 사항**:
+  - "마이덱 으로 이동해서 카드를 변경해서 적용하면 플레이 화면으로 자동으로 이동하는 버그가 있어. 자동 플레이 시에만 이동해야지"
+- **원인 및 주요 수정 내역**:
+  1. **[`src/views/MyDeckView.tsx`](file:///Users/dayyoung/project/snshero/src/views/MyDeckView.tsx)**:
+     - `snshero_deck_slots_upgraded` 이벤트 핸들러(`handleDeckSlotsUpgraded`) 및 `handleAutoFillOptimalSynergy`에서 수동 적용 시에도 `triggerCardShake(..., true)`를 무조건 호출하여 1.4초 뒤 `handleInstantReturnToBattle(true)` -> `startRankingDivert`를 통해 `/play` 또는 `/main`으로 강제 이동하던 버그 수정.
+     - `isAutoPlaySessionRef`를 도입하여 실제 자동 플레이 루프(`hero_auto_loop_mode === 'deck_swap'`, `hero_auto_optimize_deck === 'true'`, `hero_story_auto_loop_return`, `isDemoPlayActive()`)로 진입한 경우에만 대전 화면으로 자동 이동하고, 수동 카드 선택/변경(`selectMasterCard`) 및 업그레이드 적용 시에는 카드 장착 흔들림 애니메이션만 재생하고 마이덱 화면을 그대로 유지하도록 수정.
+  2. **[`src/App.tsx`](file:///Users/dayyoung/project/snshero/src/App.tsx) & [`src/components/DeckUpgradeModal.tsx`](file:///Users/dayyoung/project/snshero/src/components/DeckUpgradeModal.tsx) & [`src/components/Navbar.tsx`](file:///Users/dayyoung/project/snshero/src/components/Navbar.tsx)**:
+     - 수동으로 마이덱(`mydeck`) 이동 시 잔존 `hero_auto_loop_is_ranking` 플래그를 정리하고, `updateDeck` 시 현재 덱 핑거프린트를 즉시 갱신하여 수동 카드 교체 직후 불필요한 업그레이드 모달이 재호출되지 않도록 개선.
+
 ## [2026-10-26 14:02 KST] [한국 타깃 구글 애드센스/GDN 디스플레이 광고배너 6종(게임·웹툰·애니·무비 올인원 홍보) 및 신규 캠페인 CSV 제작 완료]
 - **요청 사항**:
   - "아직도 구글 에드센스 광고가 집행이 안되고있어. 게임/웹툰/애니메이션/무비 를 홍보할 수 있는 눈히어로.com 한국사용자를 유혹할 수 있는 광고배너를 생성해서 광고를 다시 해보자."

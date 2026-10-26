@@ -298,6 +298,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
   // ─── 스마트 루프: 상점 소환 후 덱 자동 강화 장착 ────────────────
   const [autoSwapBanner, setAutoSwapBanner] = useState<string | null>(null);
   const autoSwapHandledRef = useRef(false);
+  const isAutoPlaySessionRef = useRef(false);
   const autoSwapTimerRef = useRef<NodeJS.Timeout | null>(null);
   const autoSwapCountdownRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -316,10 +317,22 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
 
     let storyReturnTarget: string | null = null;
     let isAutoLoopRanking = false;
+    let isAutoPlayActive = false;
     try {
       storyReturnTarget = localStorage.getItem('hero_story_auto_loop_return');
       isAutoLoopRanking = localStorage.getItem('hero_auto_loop_is_ranking') === 'true';
+      isAutoPlayActive =
+        isAutoPlaySessionRef.current ||
+        isDemoPlayActive() ||
+        localStorage.getItem('hero_auto_loop_mode') === 'deck_swap' ||
+        localStorage.getItem('hero_auto_optimize_deck') === 'true' ||
+        Boolean(storyReturnTarget);
     } catch {}
+
+    // 수동으로 마이덱에 진입하여 카드를 변경/적용한 경우에는 플레이 화면으로 자동 이동하지 않음 (오직 자동 플레이 시에만 이동)
+    if (!isAutoPlayActive) {
+      return;
+    }
 
     // 🌟 스토리모드 연패 교착상태 탈출로 상점 소환 & 마이덱 최적화를 마친 경우: 즉시 스토리모드로 복귀하여 돌파!
     if (storyReturnTarget === 'main' || storyReturnTarget === 'play_story') {
@@ -364,8 +377,8 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
       setShakingSlotIndices([]);
     }, 1200);
 
-    // 명시적으로 자동 복귀 플래그가 지정된 경우에만 애니메이션 재생 후 대전 복귀
-    if (andReturnToAutoLoop) {
+    // 명시적으로 자동 복귀 플래그가 지정되고 실제 자동 플레이 세션일 때만 애니메이션 재생 후 대전 복귀
+    if (andReturnToAutoLoop && isAutoPlaySessionRef.current) {
       if (autoReturnTimerRef.current) clearTimeout(autoReturnTimerRef.current);
       autoReturnTimerRef.current = setTimeout(() => {
         handleInstantReturnToBattle(true);
@@ -379,7 +392,21 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
       const customEvent = e as CustomEvent<{ slots: number[] }>;
       const slots = customEvent.detail?.slots || [];
       if (slots.length > 0) {
-        triggerCardShake(slots, true);
+        const shouldAutoReturn =
+          isAutoPlaySessionRef.current ||
+          isDemoPlayActive() ||
+          (() => {
+            try {
+              return (
+                localStorage.getItem('hero_auto_loop_mode') === 'deck_swap' ||
+                localStorage.getItem('hero_auto_optimize_deck') === 'true' ||
+                Boolean(localStorage.getItem('hero_story_auto_loop_return'))
+              );
+            } catch {
+              return false;
+            }
+          })();
+        triggerCardShake(slots, shouldAutoReturn);
       }
     };
 
@@ -408,6 +435,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
       return;
     }
     autoSwapHandledRef.current = true;
+    isAutoPlaySessionRef.current = true;
 
     // 팝업/모달 간섭 원천 차단: 모든 모달 강제 닫기
     setIsPopupOpen(false);
@@ -868,7 +896,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
     const optimalDeck = buildOptimalSynergyDeck(allAvailable as any[], 8);
     if (optimalDeck && optimalDeck.length > 0) {
       updateDeck(optimalDeck as CardData[]);
-      triggerCardShake([0, 1, 2, 3, 4].slice(0, optimalDeck.length), true);
+      triggerCardShake([0, 1, 2, 3, 4].slice(0, optimalDeck.length), false);
       if (showCustomAlert) {
         showCustomAlert(
           language === 'ko' ? '✨ 최적 시너지 덱 편성 완료' : '✨ Optimal Synergy Deck Built',
@@ -1338,6 +1366,13 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
   };
 
   const selectMasterCard = (imgIdx: number, overrideTargetIndex?: number) => {
+    // 수동 카드 선택/변경 시 자동 복귀 타이머 즉시 해제 (마이덱 화면 유지 보장)
+    isAutoPlaySessionRef.current = false;
+    if (autoSwapCountdownRef.current) clearInterval(autoSwapCountdownRef.current);
+    if (autoSwapTimerRef.current) clearTimeout(autoSwapTimerRef.current);
+    if (autoReturnTimerRef.current) clearTimeout(autoReturnTimerRef.current);
+    setAutoSwapBanner(null);
+
     playSfx('https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3');
     let targetIndex = overrideTargetIndex ?? selectingIndex;
     
@@ -1355,6 +1390,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
         newDeck[targetIndex] = newDeck[existingIndex];
         newDeck[existingIndex] = temp;
         updateDeck(newDeck);
+        triggerCardShake([targetIndex, existingIndex], false);
       }
       setIsPopupOpen(false);
       setSelectingIndex(null);
@@ -1381,6 +1417,7 @@ export const MyDeckView: React.FC<MyDeckViewProps> = ({
     newDeck[targetIndex] = newCard;
     
     updateDeck(newDeck);
+    triggerCardShake([targetIndex], false);
     setIsPopupOpen(false);
     setSelectingIndex(null);
     setSelectionContext('replace');

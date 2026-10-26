@@ -549,6 +549,18 @@ function AppContent() {
         } catch {}
         return prevView === 'god' ? 'home' : prevView;
       }
+      if (resolved === 'mydeck') {
+        try {
+          const isAutoDeckLoop =
+            localStorage.getItem('hero_auto_loop_mode') === 'deck_swap' ||
+            localStorage.getItem('hero_auto_optimize_deck') === 'true' ||
+            Boolean(localStorage.getItem('hero_story_auto_loop_return')) ||
+            localStorage.getItem('hero_demo_play_active') === 'true';
+          if (!isAutoDeckLoop) {
+            localStorage.removeItem('hero_auto_loop_is_ranking');
+          }
+        } catch {}
+      }
       return resolved;
     });
   }, []);
@@ -4211,6 +4223,8 @@ function AppContent() {
       setSeasonItem('hero_deck', season, JSON.stringify(syncedDeck));
       setSeasonItem('hero_deck_guest', season, JSON.stringify(syncedDeck));
       localStorage.setItem('hero_deck', JSON.stringify(syncedDeck));
+      const newFingerprint = getCardStateFingerprint(syncedDeck, inventory);
+      setSeasonItem('hero_deck_upgrade_dismissed', season, newFingerprint);
     }
   }, [inventory]);
 
@@ -8250,12 +8264,16 @@ function AppContent() {
                   detail: { slots: targetSlots }
                 }));
 
-                // 자동 루프 랭킹 플레이 복귀 안전 백업 (신규 카드 마이덱 적용 시 /main 또는 /play 전환)
-                let isAutoLoopRanking = false;
+                // 자동 루프 플레이 진행 중일 때만 복귀 (수동 적용 시에는 마이덱 화면 유지)
+                let isAutoLoopActive = false;
                 try {
-                  isAutoLoopRanking = localStorage.getItem('hero_auto_loop_is_ranking') === 'true';
+                  isAutoLoopActive =
+                    localStorage.getItem('hero_auto_loop_mode') === 'deck_swap' ||
+                    localStorage.getItem('hero_auto_optimize_deck') === 'true' ||
+                    localStorage.getItem('hero_demo_play_active') === 'true' ||
+                    Boolean(localStorage.getItem('hero_story_auto_loop_return'));
                 } catch {}
-                if (isAutoLoopRanking && view !== 'mydeck' && !isRankingDiverted()) {
+                if (isAutoLoopActive && view !== 'mydeck' && !isRankingDiverted()) {
                   setTimeout(() => {
                     startRankingDivert(setView, language, showCustomAlert);
                   }, 1400);
